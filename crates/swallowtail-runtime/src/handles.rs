@@ -1,0 +1,54 @@
+use crate::{
+    BoxEventStream, BoxFuture, CallbackExchange, CancellationControl, CleanupOutcome, HostServices,
+    RequestId, RuntimeFailure, RuntimeRunId, RuntimeSessionId, RuntimeTurnId, ServingInstanceId,
+    SessionResumeBinding, TerminalOutcome, TurnRequest,
+};
+use swallowtail_core::{InstanceOwnership, RunRef, SessionRef, TurnRef};
+
+pub trait RunHandle: Send {
+    fn request_id(&self) -> &RequestId;
+    fn run_id(&self) -> &RuntimeRunId;
+    fn provider_run_ref(&self) -> Option<&RunRef>;
+    fn take_events(&mut self) -> Option<BoxEventStream>;
+    fn cancellation(&self) -> &dyn CancellationControl;
+    fn take_terminal_outcome(&mut self) -> Option<BoxFuture<'static, TerminalOutcome>>;
+    fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome>;
+}
+
+pub trait TurnHandle: Send {
+    fn turn_id(&self) -> &RuntimeTurnId;
+    fn provider_turn_ref(&self) -> Option<&TurnRef>;
+    fn take_events(&mut self) -> Option<BoxEventStream>;
+    fn take_callbacks(&mut self) -> Option<CallbackExchange> {
+        None
+    }
+    fn cancellation(&self) -> &dyn CancellationControl;
+    fn take_terminal_outcome(&mut self) -> Option<BoxFuture<'static, TerminalOutcome>>;
+    fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome>;
+}
+
+pub trait InteractiveSessionHandle: Send {
+    fn request_id(&self) -> &RequestId;
+    fn session_id(&self) -> &RuntimeSessionId;
+    fn provider_session_ref(&self) -> Option<&SessionRef>;
+    fn resume_binding(&self) -> Option<&SessionResumeBinding>;
+    fn start_turn<'a>(
+        &'a mut self,
+        request: TurnRequest,
+        services: HostServices,
+    ) -> BoxFuture<'a, Result<Box<dyn TurnHandle>, RuntimeFailure>>;
+    fn cancellation(&self) -> &dyn CancellationControl;
+    fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome>;
+}
+
+/// An attached service can be released but exposes no generic stop operation.
+pub trait AttachedServingHandle: Send {
+    fn serving_instance_id(&self) -> &ServingInstanceId;
+    fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome>;
+}
+
+pub trait OwnedServingHandle: Send {
+    fn serving_instance_id(&self) -> &ServingInstanceId;
+    fn ownership(&self) -> InstanceOwnership;
+    fn stop(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome>;
+}

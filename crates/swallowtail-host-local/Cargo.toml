@@ -1,0 +1,14 @@
+[package]
+name = "swallowtail-host-local"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Host-approved local process services for Swallowtail"
+
+[dependencies]
+swallowtail-core = { path = "../swallowtail-core" }
+swallowtail-runtime = { path = "../swallowtail-runtime" }
+
+[lints]
+workspace = true

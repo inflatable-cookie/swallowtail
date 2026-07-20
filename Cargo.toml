@@ -1,0 +1,18 @@
+[workspace]
+members = [
+  "crates/swallowtail-adapter-codex",
+  "crates/swallowtail-core",
+  "crates/swallowtail-host-local",
+  "crates/swallowtail-runtime",
+  "crates/swallowtail-testkit",
+]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+repository = "https://github.com/inflatable-cookie/swallowtail"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"

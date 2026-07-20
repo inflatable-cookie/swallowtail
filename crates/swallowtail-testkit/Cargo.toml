@@ -1,0 +1,15 @@
+[package]
+name = "swallowtail-testkit"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Deterministic adapter conformance support for Swallowtail"
+
+[dependencies]
+futures-core = "0.3"
+swallowtail-core = { path = "../swallowtail-core" }
+swallowtail-runtime = { path = "../swallowtail-runtime" }
+
+[lints]
+workspace = true

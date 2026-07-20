@@ -1,0 +1,22 @@
+[package]
+name = "swallowtail-adapter-codex"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Codex harness drivers for Swallowtail"
+
+[dependencies]
+futures-core = "0.3"
+futures-util = "0.3"
+serde_json = "1"
+swallowtail-core = { path = "../swallowtail-core" }
+swallowtail-runtime = { path = "../swallowtail-runtime" }
+
+[dev-dependencies]
+futures-executor = "0.3"
+futures-util = "0.3"
+swallowtail-testkit = { path = "../swallowtail-testkit" }
+
+[lints]
+workspace = true

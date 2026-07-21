@@ -7,15 +7,15 @@ use std::sync::{Arc, Mutex, Weak};
 use std::task::{Context, Poll, Waker};
 use swallowtail_runtime::{
     BoxCallbackStream, BoxFuture, CallbackAbandonment, CallbackExchange, CallbackFailureKind,
-    CallbackId, CallbackRequest, CallbackResponder, CallbackResponse, CallbackResult,
-    RuntimeFailure, RuntimeTurnId,
+    CallbackId, CallbackOperationId, CallbackRequest, CallbackResponder, CallbackResponse,
+    CallbackResult, RuntimeFailure,
 };
 
 const CALLBACK_CAPACITY: usize = 64;
 
 struct PendingCallback {
     provider_request_id: Value,
-    turn_id: RuntimeTurnId,
+    operation_id: CallbackOperationId,
 }
 
 struct CallbackState {
@@ -77,7 +77,7 @@ impl CallbackHub {
             request.callback_id().clone(),
             PendingCallback {
                 provider_request_id,
-                turn_id: request.turn_id().clone(),
+                operation_id: request.operation_id().clone(),
             },
         );
         state.requests.push_back(request);
@@ -189,7 +189,7 @@ fn claim_response(
             "Callback response id is unknown or was already used",
         )
     })?;
-    if &pending.turn_id != response.turn_id() {
+    if &pending.operation_id != response.operation_id() {
         return Err(failure(
             "swallowtail.codex.app_server.callback_turn_mismatch",
             "Callback response belongs to a different turn",

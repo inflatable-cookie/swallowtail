@@ -47,7 +47,7 @@ impl CallbackExchangeFixture {
             ));
         }
         if response.callback_id() != self.request.callback_id()
-            || response.turn_id() != self.request.turn_id()
+            || response.operation_id() != self.request.operation_id()
         {
             return Err(failure(
                 "swallowtail.testkit.callback_correlation_mismatch",
@@ -79,7 +79,10 @@ impl CallbackExchangeFixture {
 pub fn successful_callback_response(request: &CallbackRequest) -> CallbackResponse {
     CallbackResponse::new(
         request.callback_id().clone(),
-        request.turn_id().clone(),
+        request
+            .turn_id()
+            .expect("fixture callback belongs to a turn")
+            .clone(),
         CallbackResult::Success(
             CallbackPayload::new(b"fixture-result".to_vec(), 64)
                 .expect("fixture callback payload is bounded"),
@@ -127,7 +130,11 @@ mod tests {
         let mut mismatch = fixture();
         let wrong = CallbackResponse::new(
             CallbackId::new("callback-other").expect("callback id is valid"),
-            mismatch.request().turn_id().clone(),
+            mismatch
+                .request()
+                .turn_id()
+                .expect("fixture callback belongs to a turn")
+                .clone(),
             CallbackResult::Success(
                 CallbackPayload::new(Vec::new(), 1).expect("empty payload is bounded"),
             ),

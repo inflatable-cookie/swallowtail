@@ -1,0 +1,9 @@
+{
+  "x-request-id": "req_fixture_success",
+  "x-ratelimit-limit-requests": "100",
+  "x-ratelimit-remaining-requests": "99",
+  "x-ratelimit-reset-requests": "1s",
+  "x-ratelimit-limit-tokens": "100000",
+  "x-ratelimit-remaining-tokens": "99000",
+  "x-ratelimit-reset-tokens": "2s"
+}

@@ -1,0 +1,10 @@
+{
+  "events": [
+    {
+      "type": "user.custom_tool_result",
+      "custom_tool_use_id": "event_tool",
+      "content": [{"type": "text", "text": "fixture-value"}]
+    }
+  ]
+}
+

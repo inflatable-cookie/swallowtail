@@ -1,0 +1,51 @@
+{
+  "fixture_schema": 1,
+  "sdk_crate": "aws-sdk-bedrockruntime",
+  "sdk_version": "1.136.0",
+  "service_api": "Amazon Bedrock Runtime ConverseStream",
+  "transport": "in_process_rust_sdk_typed_eventstream",
+  "endpoint_audience": "bedrock-runtime",
+  "endpoint_source": "host_approved_grant",
+  "region_source": "configured_instance_exact",
+  "authentication": {
+    "mechanism": "cloud_provider_identity",
+    "source": "host_authorized_delegated_sdk_provider",
+    "default_chain_allowed": false,
+    "secret_exposed_by_runtime_lease": false
+  },
+  "metering": "cloud_account_billing",
+  "support_authority": "provider_supported",
+  "inference": {
+    "operation": "ConverseStream",
+    "maximum_attempts": 1,
+    "retry_allowed": false,
+    "maximum_output_tokens_source": "consumer_owned_run_input",
+    "model_source": "preflight_bound_exact_route"
+  },
+  "stream": {
+    "semantic_order": [
+      "message_start",
+      "text_delta",
+      "content_block_stop",
+      "message_stop",
+      "metadata_usage"
+    ],
+    "unknown_sdk_variant": "fail_closed",
+    "unsupported_content_semantics": "fail_closed",
+    "bounded_projection": true
+  },
+  "excluded": [
+    "ambient_aws_environment",
+    "shared_aws_config_files",
+    "instance_or_container_metadata",
+    "model_catalogue",
+    "cross_region_inference_profile",
+    "global_routing",
+    "provider_tools",
+    "guardrails",
+    "prompt_resources",
+    "attachments",
+    "automatic_retry",
+    "live_authentication_in_default_qa"
+  ]
+}

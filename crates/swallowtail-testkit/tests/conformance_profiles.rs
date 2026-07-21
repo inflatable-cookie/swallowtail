@@ -22,9 +22,9 @@ const COMMON_ASSERTIONS: [ConformanceAssertion; 14] = [
 ];
 
 #[test]
-fn all_nine_profiles_cover_every_common_contract_assertion() {
+fn all_ten_profiles_cover_every_common_contract_assertion() {
     let reports = run_all_synthetic_profiles();
-    assert_eq!(reports.len(), 9);
+    assert_eq!(reports.len(), 10);
 
     for report in &reports {
         for assertion in COMMON_ASSERTIONS {
@@ -60,6 +60,10 @@ fn each_profile_proves_its_shape_specific_boundary() {
         (
             SyntheticProfile::HostedDirectApi,
             ConformanceAssertion::HostedApiNeedsNoProcess,
+        ),
+        (
+            SyntheticProfile::ProviderManagedRemoteHarness,
+            ConformanceAssertion::ProviderManagedHarnessLifecycle,
         ),
         (
             SyntheticProfile::ConnectionScopedDirectSession,
@@ -193,6 +197,26 @@ fn connection_scoped_profile_proves_contract_016_boundaries() {
         ConformanceAssertion::NoImplicitSessionRecovery,
     ] {
         assert!(direct.covers(assertion));
+    }
+}
+
+#[test]
+fn managed_harness_profile_proves_contract_022_boundaries() {
+    let reports = run_all_synthetic_profiles();
+    let managed = reports
+        .iter()
+        .find(|report| report.profile() == SyntheticProfile::ProviderManagedRemoteHarness)
+        .expect("managed-harness profile report exists");
+
+    for assertion in [
+        ConformanceAssertion::ProviderManagedHarnessLifecycle,
+        ConformanceAssertion::DurableRetentionExplicit,
+        ConformanceAssertion::ManagedRecoveryExplicit,
+        ConformanceAssertion::OwnedRemoteDeletionTruth,
+        ConformanceAssertion::CallbackExchange,
+        ConformanceAssertion::HostTopologyPreserved,
+    ] {
+        assert!(managed.covers(assertion));
     }
 }
 

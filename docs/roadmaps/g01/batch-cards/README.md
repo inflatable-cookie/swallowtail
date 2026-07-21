@@ -69,12 +69,30 @@
 - `066-optional-harness-isolation-rebaseline.md`
 - `058-kimi-acp-portability-driver.md`
 - `059-kimi-acp-conformance.md`
+- `067-post-portability-coverage-evidence.md`
+- `068-selected-route-contract-and-fixtures.md`
+- `069-selected-route-driver-and-conformance.md`
+- `070-bedrock-catalogue-evidence-and-boundary.md`
+- `071-bedrock-catalogue-sdk-fixtures.md`
+- `072-bedrock-catalogue-driver-and-conformance.md`
+- `073-post-sdk-coverage-evidence.md`
+- `074-background-run-contract-and-fixtures.md`
+- `075-openai-background-driver-and-conformance.md`
+- `076-post-background-coverage-evidence.md`
+- `077-claude-managed-agent-records-and-fixtures.md`
+- `078-claude-managed-agent-driver.md`
+- `079-claude-managed-agent-conformance-and-closeout.md`
+- `080-qwen-headless-isolation-records-and-fixtures.md`
+- `081-qwen-headless-driver.md`
 
 ## Blocked
 
-- `068-selected-route-contract-and-fixtures.md` — blocked by card 067
-- `069-selected-route-driver-and-conformance.md` — blocked by card 068
+None.
 
 ## Ready
 
-- `067-post-portability-coverage-evidence.md`
+- `082-qwen-headless-conformance-and-closeout.md`
+
+## Planned
+
+None.

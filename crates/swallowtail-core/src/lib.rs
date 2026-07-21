@@ -13,9 +13,12 @@ mod identity;
 mod instance;
 mod model;
 mod model_artifact;
+mod model_catalog;
 mod preflight;
+mod provider_agent;
 mod provider_reference;
 mod registration;
+mod remote_resource;
 mod requirement;
 mod runtime_identity;
 mod session_access;
@@ -40,14 +43,21 @@ pub use model_artifact::{
     ModelArtifactBinding, ModelArtifactDescriptor, ModelArtifactDigest, ModelArtifactFormat,
     ModelArtifactId, ModelArtifactRef, ModelArtifactRevision,
 };
+pub use model_catalog::{
+    CatalogObservation, CatalogTimestamp, InvalidCatalogObservation, ModelCatalogObservations,
+    ModelCustomizationType, ModelInferenceType, ModelLifecycleObservation, ModelLifecycleStatus,
+    ModelLifecycleTransition, ModelModality, ProviderCatalogValue,
+};
 pub use preflight::{
     PreflightContext, PreflightDimension, PreflightFailure, PreflightPlan, StalePreflightPlan,
     preflight,
 };
+pub use provider_agent::{ProviderAgentBinding, ProviderAgentId, ProviderAgentVersion};
 pub use provider_reference::{ProviderRequestRef, RunRef, SessionRef, TurnRef};
 pub use registration::{
     DiscoveryAction, DiscoveryOutcome, DiscoveryStatus, DriverDescriptor, SignInAction,
 };
+pub use remote_resource::OwnedRemoteResourceKind;
 pub use requirement::{
     AccessRequirement, CancellationScope, CapabilityConstraint, CapabilityProfile,
     CapabilityRequirement, NamedCapabilityConstraint, OperationRequirements,

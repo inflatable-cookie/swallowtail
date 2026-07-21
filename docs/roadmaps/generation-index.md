@@ -13,6 +13,7 @@ Updated: 2026-07-21
 ## Generation Size
 
 A generation normally contains 30-50 numbered roadmap files. Batch cards do
-not count toward this range. g01 currently contains twenty roadmaps and remains
-the active container for the foreseeable runway. Roadmap 020 continues the
-post-portability coverage lane without rolling generations.
+not count toward this range. g01 currently contains 26 roadmaps and remains
+the active container for the foreseeable runway. Roadmap 026 owns the stable
+Qwen Code headless proof without rolling generations. Card 080 is complete and
+the production driver is ready on card 081.

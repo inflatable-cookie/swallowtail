@@ -1,0 +1,5 @@
+event: session.status_running
+data: {"id":"event_2","type":"session.status_running","processed_at":"2026-07-21T09:00:01Z"}
+
+event: agent.message
+data: {"id":"event_partial","type":"agent.message","processed_at":"2026-07-21T09:00:03Z","content":[{"type":"text","text":"truncated"}]}

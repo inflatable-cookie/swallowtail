@@ -46,8 +46,9 @@ pub use attachment::{
     LeaseCleanupAuthority,
 };
 pub use callback::{
-    CallbackAbandonment, CallbackExchange, CallbackFailureKind, CallbackPayload, CallbackRequest,
-    CallbackRequestKind, CallbackResponder, CallbackResponse, CallbackResult, CallbackWaitState,
+    CallbackAbandonment, CallbackExchange, CallbackFailureKind, CallbackOperationId,
+    CallbackPayload, CallbackRequest, CallbackRequestKind, CallbackResponder, CallbackResponse,
+    CallbackResult, CallbackWaitState,
 };
 pub use cancellation::{CancellationAcknowledgement, CancellationControl, ImmediateCancellation};
 pub use content::OperationContent;
@@ -75,10 +76,14 @@ pub use identity::{
 pub use input::{InputLimitExceeded, InputValueRequired};
 pub use model_artifact::{ModelArtifactAccess, ModelArtifactLease, ModelArtifactService};
 pub use network::{AuthorizedEndpoint, NetworkGrant, NetworkPolicyService};
-pub use operation_policy::{IncompatibleOperationPolicy, OperationPolicy};
+pub use operation_policy::{
+    IncompatibleOperationPolicy, OperationPolicy, ProviderExecutionPolicy, ProviderRecoveryPolicy,
+    ProviderRetentionPolicy, StreamReattachmentPolicy, validate_harness_isolation_policy,
+};
 pub use outcome::{
-    CleanupOutcome, ProviderRequestObservation, TerminalAlreadySet, TerminalOutcome,
-    TerminalOutcomeFuture, TerminalOutcomeSender, TerminalStatus, terminal_outcome_channel,
+    CleanupOutcome, ProviderCancellationOutcome, ProviderRequestObservation,
+    RemoteResourceDeletionOutcome, TerminalAlreadySet, TerminalOutcome, TerminalOutcomeFuture,
+    TerminalOutcomeSender, TerminalStatus, terminal_outcome_channel,
 };
 pub use process_input::ProcessRequest;
 pub use process_io::{ProcessExit, ProcessInputChunk, ProcessOutputChunk, ProcessOutputStream};
@@ -107,8 +112,9 @@ pub use swallowtail_core::{
     CredentialRef, ExternalNetworkPolicy, ExternalSearchPolicy, FilesystemBoundary,
     HarnessIsolation, IncompatibleSessionAccessPolicy, ModelArtifactBinding,
     ModelArtifactDescriptor, ModelArtifactDigest, ModelArtifactFormat, ModelArtifactId,
-    ModelArtifactRef, ModelArtifactRevision, ProviderApprovalPolicy, ProviderRequestHandling,
-    ProviderRequestPolicy, ResourceAccess, ResourceRepresentation, SessionAccessPolicy,
+    ModelArtifactRef, ModelArtifactRevision, OwnedRemoteResourceKind, ProviderApprovalPolicy,
+    ProviderRequestHandling, ProviderRequestPolicy, ResourceAccess, ResourceRepresentation,
+    SessionAccessPolicy,
 };
 pub use time::{Deadline, DeadlineObservation, MonotonicInstant};
 pub use working_resource_io::{

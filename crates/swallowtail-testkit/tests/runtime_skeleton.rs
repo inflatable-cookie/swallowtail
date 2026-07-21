@@ -260,6 +260,28 @@ fn operation_policy_requires_explicit_search_authority_and_reasoning() {
 }
 
 #[test]
+fn structured_run_tools_are_explicit_bounded_inputs() {
+    let tool = swallowtail_runtime::ToolDeclaration::new(
+        "fixture_lookup",
+        SchemaDocument::inline(br#"{"type":"object"}"#.to_vec(), 128)
+            .expect("fixture schema is bounded"),
+        "application/schema+json",
+        "json-schema-2020-12",
+    )
+    .expect("fixture tool is valid");
+    let request = StructuredRunRequest::new(
+        RequestId::new("tool-run").expect("request id is valid"),
+        swallowtail_runtime::OperationContent::new("private prompt").expect("content is valid"),
+        OperationPolicy::offline(),
+    )
+    .with_tools([tool]);
+
+    assert_eq!(request.tools().len(), 1);
+    assert!(!format!("{request:?}").contains("private prompt"));
+    assert!(!format!("{request:?}").contains("\"type\""));
+}
+
+#[test]
 fn direct_structured_run_needs_no_placeholder_working_resource() {
     let request = StructuredRunRequest::new(
         RequestId::new("direct-request").expect("request id is valid"),

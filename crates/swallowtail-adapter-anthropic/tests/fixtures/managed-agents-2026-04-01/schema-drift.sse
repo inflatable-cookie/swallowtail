@@ -1,0 +1,3 @@
+event: session.status_idle
+data: {"id":"event_drift","type":"session.status_running","processed_at":"2026-07-21T09:04:00Z"}
+

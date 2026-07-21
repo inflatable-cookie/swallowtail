@@ -10,6 +10,9 @@ pub trait RunHandle: Send {
     fn run_id(&self) -> &RuntimeRunId;
     fn provider_run_ref(&self) -> Option<&RunRef>;
     fn take_events(&mut self) -> Option<BoxEventStream>;
+    fn take_callbacks(&mut self) -> Option<CallbackExchange> {
+        None
+    }
     fn cancellation(&self) -> &dyn CancellationControl;
     fn take_terminal_outcome(&mut self) -> Option<BoxFuture<'static, TerminalOutcome>>;
     fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome>;

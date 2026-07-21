@@ -1,0 +1,9 @@
+event: session.status_running
+data: {"id":"event_running","type":"session.status_running","processed_at":"2026-07-21T09:01:00Z"}
+
+event: agent.custom_tool_use
+data: {"id":"event_tool","type":"agent.custom_tool_use","processed_at":"2026-07-21T09:01:01Z","name":"lookup_fixture","input":{"key":"alpha"}}
+
+event: session.status_idle
+data: {"id":"event_wait","type":"session.status_idle","processed_at":"2026-07-21T09:01:02Z","stop_reason":{"type":"requires_action","event_ids":["event_tool"]}}
+

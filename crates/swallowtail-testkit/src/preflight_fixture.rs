@@ -5,8 +5,8 @@ use swallowtail_core::{
     CapabilityRequirement, ConfiguredInstance, ConfiguredInstanceId, CredentialMechanism,
     CredentialState, DriverDescriptor, DriverRole, EndpointAudience, EndpointAuthorization,
     EntitlementMetering, EntitlementState, ExecutionHostId, ExecutionLayer, ExtensionNamespace,
-    HostServiceKind, InstanceOwnership, InstancePolicyId, InstanceRevision, InstanceTargetRef,
-    IntegrationFamilyId, ModelId, ModelRoute, ModelRouteId, ModelRouteRevision,
+    HarnessIsolation, HostServiceKind, InstanceOwnership, InstancePolicyId, InstanceRevision,
+    InstanceTargetRef, IntegrationFamilyId, ModelId, ModelRoute, ModelRouteId, ModelRouteRevision,
     OperationRequirements, OperationShape, PreflightContext, PreflightFailure, PreflightPlan,
     ProtocolFacadeId, ReasoningMode, RuntimeReadiness, SupportAuthority, TransportFamilyId,
     preflight,
@@ -41,6 +41,8 @@ pub enum PreflightFixtureCase {
     RejectedOwnership,
     WrongExecutionHost,
     MissingExtension,
+    HarnessIsolationAmbient,
+    DirectInferenceHarnessIsolation,
 }
 
 /// Canonical pure-preflight fixture with a provider-side-effect recorder.
@@ -69,6 +71,11 @@ impl RuntimePreflightFixture {
         let complete_capabilities =
             capability_profile(Some(constraint.clone()), Some(reasoning.clone()), true);
 
+        let execution_layer = if case == PreflightFixtureCase::DirectInferenceHarnessIsolation {
+            ExecutionLayer::DirectModelInference
+        } else {
+            ExecutionLayer::HarnessInteraction
+        };
         let mut driver = DriverDescriptor::new(
             AdapterIdentity::new(
                 adapter_id(),
@@ -78,7 +85,7 @@ impl RuntimePreflightFixture {
             valid_text!(TransportFamilyId, "structured-cli"),
         )
         .with_roles([DriverRole::StructuredRun])
-        .with_execution_layers([ExecutionLayer::HarnessInteraction])
+        .with_execution_layers([execution_layer])
         .with_operation_shapes([OperationShape::StructuredRun])
         .with_required_host_services(
             DriverRole::StructuredRun,
@@ -185,7 +192,7 @@ impl RuntimePreflightFixture {
             .with_runtime_readiness([RuntimeReadiness::Ready])
             .with_support_authorities([SupportAuthority::ProviderSupported]);
         let requirements = OperationRequirements::new(
-            ExecutionLayer::HarnessInteraction,
+            execution_layer,
             OperationShape::StructuredRun,
             DriverRole::StructuredRun,
             required_host,
@@ -218,6 +225,15 @@ impl RuntimePreflightFixture {
         ])
         .with_extension_namespaces([extension])
         .require_model_route();
+        let requirements = if matches!(
+            case,
+            PreflightFixtureCase::HarnessIsolationAmbient
+                | PreflightFixtureCase::DirectInferenceHarnessIsolation
+        ) {
+            requirements.with_harness_isolation(HarnessIsolation::AmbientHost)
+        } else {
+            requirements
+        };
 
         let host_services = if case == PreflightFixtureCase::MissingHostService {
             vec![HostServiceKind::Task]

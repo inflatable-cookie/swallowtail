@@ -5,6 +5,20 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-07-21 Qwen Headless Driver](2026-07-21-qwen-headless-driver.md)
+- [2026-07-21 Qwen Headless Isolation Records And Fixtures](2026-07-21-qwen-headless-isolation-records-and-fixtures.md)
+- [2026-07-21 Claude Managed Agent Conformance And Closeout](2026-07-21-claude-managed-agent-conformance-and-closeout.md)
+- [2026-07-21 Claude Managed Agent Driver](2026-07-21-claude-managed-agent-driver.md)
+- [2026-07-21 Claude Managed Agent Records And Fixtures](2026-07-21-claude-managed-agent-records-and-fixtures.md)
+- [2026-07-21 Claude Managed Agent Coverage Selection](2026-07-21-claude-managed-agent-coverage-selection.md)
+- [2026-07-21 OpenAI Background Driver And Conformance](2026-07-21-openai-background-driver-and-conformance.md)
+- [2026-07-21 OpenAI Background Contract And Fixtures](2026-07-21-openai-background-contract-and-fixtures.md)
+- [2026-07-21 Post-SDK Coverage Selection](2026-07-21-post-sdk-coverage-selection.md)
+- [2026-07-21 Bedrock Catalogue Driver And Conformance](2026-07-21-bedrock-catalogue-driver-and-conformance.md)
+- [2026-07-21 Bedrock Catalogue Records And Fixtures](2026-07-21-bedrock-catalogue-records-and-fixtures.md)
+- [2026-07-21 Bedrock Control-Plane Catalogue Boundary](2026-07-21-bedrock-control-plane-catalogue-boundary.md)
+- [2026-07-21 Bedrock Runtime Driver And Conformance](2026-07-21-bedrock-runtime-driver-and-conformance.md)
+- [2026-07-21 Bedrock SDK Selection And Fixtures](2026-07-21-bedrock-sdk-selection-and-fixtures.md)
 - [2026-07-21 Kimi ACP Conformance Closeout](2026-07-21-kimi-acp-conformance-closeout.md)
 - [2026-07-21 Kimi ACP Production Driver](2026-07-21-kimi-acp-production-driver.md)
 - [2026-07-21 Optional Harness Isolation Rebaseline](2026-07-21-optional-harness-isolation-rebaseline.md)

@@ -1,7 +1,7 @@
 use super::capability::validate_capabilities;
 use super::session_access::validate_session_access;
 use super::{PreflightContext, PreflightDimension, PreflightFailure};
-use crate::{HostServiceKind, OperationRequirements};
+use crate::{ExecutionLayer, HostServiceKind, OperationRequirements, OperationShape};
 
 pub(super) fn validate(
     context: &PreflightContext<'_>,
@@ -54,6 +54,7 @@ pub(super) fn validate(
     validate_route(context, requirements)?;
     validate_artifact(context, requirements)?;
     validate_host_services(context, requirements)?;
+    validate_harness_isolation(requirements)?;
     validate_session_access(requirements)?;
     validate_capabilities(context, requirements)?;
 
@@ -65,6 +66,35 @@ pub(super) fn validate(
             ));
         }
     }
+    Ok(())
+}
+
+fn validate_harness_isolation(
+    requirements: &OperationRequirements,
+) -> Result<(), PreflightFailure> {
+    let Some(isolation) = requirements.harness_isolation() else {
+        return Ok(());
+    };
+
+    if requirements.execution_layer() != ExecutionLayer::HarnessInteraction {
+        return Err(failure(
+            PreflightDimension::HarnessIsolation,
+            "Direct model inference cannot declare harness isolation",
+        ));
+    }
+
+    if requirements.operation_shape() == OperationShape::InteractiveSession {
+        let session_isolation = requirements
+            .session_access_policy()
+            .and_then(|policy| policy.harness_isolation());
+        if session_isolation != Some(isolation) {
+            return Err(failure(
+                PreflightDimension::HarnessIsolation,
+                "Harness isolation does not match interactive session access policy",
+            ));
+        }
+    }
+
     Ok(())
 }
 

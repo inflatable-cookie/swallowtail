@@ -1,0 +1,26 @@
+{
+  "fixture_schema": 1,
+  "frozen_on": "2026-07-21",
+  "endpoint_audience": "api.anthropic.com",
+  "api_version": "2023-06-01",
+  "beta_version": "managed-agents-2026-04-01",
+  "credential_header": "x-api-key",
+  "authoritative_events": "persisted",
+  "preview_events_accepted": false,
+  "history_limit": 1000,
+  "maximum_reconciliations": 1,
+  "retention": "durable_allowed",
+  "provider_recovery": "managed_allowed",
+  "owned_resources": ["environment", "session"],
+  "cleanup_order": ["session", "environment"],
+  "environment": {
+    "type": "cloud",
+    "networking": {
+      "type": "limited",
+      "allowed_hosts": [],
+      "allow_mcp_servers": false,
+      "allow_package_managers": false
+    }
+  }
+}
+

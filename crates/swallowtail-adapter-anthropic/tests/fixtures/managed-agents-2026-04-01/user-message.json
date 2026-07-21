@@ -1,0 +1,9 @@
+{
+  "events": [
+    {
+      "type": "user.message",
+      "content": [{"type": "text", "text": "Return the fixture summary."}]
+    }
+  ]
+}
+

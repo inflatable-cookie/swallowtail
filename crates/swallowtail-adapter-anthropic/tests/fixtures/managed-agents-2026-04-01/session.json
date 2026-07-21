@@ -1,0 +1,32 @@
+{
+  "id": "session_fixture",
+  "environment_id": "env_fixture",
+  "status": "idle",
+  "agent": {
+    "id": "agent_fixture",
+    "version": 7,
+    "model": "claude-fixture-model",
+    "tools": [
+      {
+        "type": "custom",
+        "name": "lookup_fixture",
+        "description": "Return one deterministic fixture value.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "key": {"type": "string"}
+          },
+          "required": ["key"]
+        }
+      }
+    ],
+    "mcp_servers": [],
+    "skills": [],
+    "multiagent": null
+  },
+  "usage": {
+    "input_tokens": 12,
+    "output_tokens": 8
+  }
+}
+

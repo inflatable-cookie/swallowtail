@@ -1,6 +1,6 @@
 # 067 Post-Portability Coverage Evidence
 
-Status: ready
+Status: completed
 Owner: Tom
 Updated: 2026-07-21
 Milestone: `../020-post-portability-coverage-expansion.md`
@@ -33,14 +33,37 @@ evidence after the xAI, Kimi, and owned llama.cpp tranche.
 
 ## Acceptance Criteria
 
-- [ ] current official provider or maintained-project sources are cited
-- [ ] at least one SDK-native candidate is accepted or rejected against an
+- [x] current official provider or maintained-project sources are cited
+- [x] at least one SDK-native candidate is accepted or rejected against an
       exact embedding boundary
-- [ ] the selected route exercises behavior not already covered by a cheaper
+- [x] the selected route exercises behavior not already covered by a cheaper
       existing profile
-- [ ] missing shared contracts are named before implementation
-- [ ] access and support authority are explicit
-- [ ] roadmap 020 cards 068-069 are narrowed to one coherent route
+- [x] missing shared contracts are named before implementation
+- [x] access and support authority are explicit
+- [x] roadmap 020 cards 068-069 are narrowed to one coherent route
+
+## Evidence
+
+- Research 013 rechecks official OpenAI, Anthropic, Google, xAI, AWS, ACP,
+  Qwen, and Kimi surfaces against the exact Rust embedding boundary
+- Claude, Qwen, and Kimi SDKs still use non-Rust clients and provider binaries;
+  Kimi's new Rust agent is an experimental Wire-mode binary, not a library
+- OpenAI Rust remains community-supported; Anthropic, Gemini, and xAI publish
+  no provider-supported Rust client
+- ACP's proposed replacement Rust SDK remains Preview and overlaps the already
+  proven owned ACP layer
+- official `aws-sdk-bedrockruntime = 1.136.0` is accepted as the first true
+  in-process Rust SDK route
+- the selected `ConverseStream` proof adds cloud identity, SigV4, explicit
+  region/service binding, typed EventStream, SDK retry/timeout defaults, and
+  cloud-account billing
+- Contract 019 promotes the missing shared SDK, delegated credential-provider,
+  private executor, one-attempt, and control-plane separation rules
+- access is provider-supported AWS SDK use with cloud-provider identity and
+  cloud-account billing; IAM, model access, region, rate, quota, and readiness
+  remain separate
+- no model, region, credential, endpoint, provider, or consumer routing default
+  is selected
 
 ## Validation
 

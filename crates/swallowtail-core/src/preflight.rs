@@ -9,7 +9,7 @@ use crate::runtime_identity::{
 };
 use crate::{
     AdapterIdentity, CredentialMechanism, CredentialRef, EndpointAudience, ModelArtifactBinding,
-    ModelId, ProviderId,
+    ModelId, ProviderAgentBinding, ProviderId,
 };
 use std::collections::BTreeSet;
 use std::error::Error;
@@ -76,6 +76,7 @@ pub enum PreflightDimension {
     Capability,
     Constraint,
     Extension,
+    HarnessIsolation,
     SessionAccess,
 }
 
@@ -179,6 +180,11 @@ impl PreflightPlan {
             .model_route
             .as_ref()
             .and_then(ModelRoute::provider_id)
+    }
+
+    #[must_use]
+    pub const fn provider_agent(&self) -> Option<&ProviderAgentBinding> {
+        self.binding.instance.provider_agent()
     }
 
     #[must_use]

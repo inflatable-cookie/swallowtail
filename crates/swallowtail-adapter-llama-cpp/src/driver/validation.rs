@@ -59,15 +59,26 @@ fn validate_run(
     if request.attachments().len() != 0 {
         return Err(unsupported("attachments"));
     }
+    if request.tools().len() != 0 {
+        return Err(unsupported("structured-run tools"));
+    }
     if request.structured_output().is_some() {
         return Err(unsupported("structured output"));
     }
     if request.policy().reasoning_mode().is_some()
         || request.policy().external_network() != ExternalNetworkPolicy::Denied
         || request.policy().external_search() != ExternalSearchPolicy::Disabled
+        || request.policy().provider_execution()
+            != swallowtail_runtime::ProviderExecutionPolicy::Attached
+        || request.policy().provider_retention()
+            != swallowtail_runtime::ProviderRetentionPolicy::Prohibited
+        || request.policy().provider_recovery()
+            != swallowtail_runtime::ProviderRecoveryPolicy::Prohibited
+        || request.policy().stream_reattachment()
+            != swallowtail_runtime::StreamReattachmentPolicy::Disabled
     {
         return Err(unsupported(
-            "tools, reasoning, or provider-side network policy",
+            "tools, reasoning, network, background, retention, or reattachment policy",
         ));
     }
     if let Some(deadline) = request.deadline()

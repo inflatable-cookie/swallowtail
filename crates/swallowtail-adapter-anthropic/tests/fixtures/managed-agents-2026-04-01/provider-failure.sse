@@ -1,0 +1,6 @@
+event: session.error
+data: {"id":"event_error","type":"session.error","processed_at":"2026-07-21T09:03:00Z","error":{"type":"fixture_error","message":"provider payload contains fixture-secret-never-log"},"retry_status":{"type":"exhausted"}}
+
+event: session.status_idle
+data: {"id":"event_error_idle","type":"session.status_idle","processed_at":"2026-07-21T09:03:01Z","stop_reason":{"type":"retries_exhausted"}}
+

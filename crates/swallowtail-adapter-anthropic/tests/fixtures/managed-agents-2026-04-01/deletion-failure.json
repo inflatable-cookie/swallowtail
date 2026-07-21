@@ -1,0 +1,8 @@
+{
+  "type": "error",
+  "error": {
+    "type": "conflict_error",
+    "message": "fixture-secret-never-log: environment still has an active session"
+  },
+  "request_id": "req_fixture_delete"
+}

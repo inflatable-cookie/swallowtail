@@ -12,7 +12,6 @@ const SUCCESS: &str = include_str!("../fixtures/anthropic-2023-06-01/success.sse
 const MIDSTREAM_ERROR: &str = include_str!("../fixtures/anthropic-2023-06-01/midstream-error.sse");
 const UNKNOWN: &str = include_str!("../fixtures/anthropic-2023-06-01/unknown-event.sse");
 const DISCONNECT: &str = include_str!("../fixtures/anthropic-2023-06-01/disconnect.sse");
-
 #[derive(Clone, Copy)]
 pub enum StreamFixture {
     Success,
@@ -162,3 +161,4 @@ fn read_request(stream: &mut TcpStream) -> Option<FixtureRequest> {
 }
 
 include!("server/responses.rs");
+include!("server/managed.rs");

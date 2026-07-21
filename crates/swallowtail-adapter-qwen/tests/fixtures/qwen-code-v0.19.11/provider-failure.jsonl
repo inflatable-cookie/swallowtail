@@ -1,0 +1,2 @@
+{"type":"system","subtype":"session_start","uuid":"event-system-2","session_id":"session-fixture-2","model":"qwen3-coder-plus","permission_mode":"default","qwen_code_version":"0.19.11"}
+{"type":"result","subtype":"error_during_execution","uuid":"event-result-2","session_id":"session-fixture-2","is_error":true,"duration_ms":17,"duration_api_ms":9,"num_turns":0,"usage":{"input_tokens":0,"output_tokens":0},"permission_denials":[],"error":{"type":"provider_error","message":"fixture-provider-secret-never-diagnose"}}

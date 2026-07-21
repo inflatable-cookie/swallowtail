@@ -1,7 +1,9 @@
 use std::error::Error;
 use std::fmt;
+use std::num::NonZeroU32;
 use swallowtail_core::{
-    ExternalNetworkPolicy, ExternalSearchPolicy, ReasoningMode, SafeDiagnostic,
+    ExternalNetworkPolicy, ExternalSearchPolicy, HarnessIsolation, PreflightPlan, ReasoningMode,
+    SafeDiagnostic,
 };
 
 /// Explicit policy selected for one operation. Catalog defaults do not populate it.
@@ -10,6 +12,40 @@ pub struct OperationPolicy {
     external_network: ExternalNetworkPolicy,
     external_search: ExternalSearchPolicy,
     reasoning_mode: Option<ReasoningMode>,
+    provider_execution: ProviderExecutionPolicy,
+    provider_retention: ProviderRetentionPolicy,
+    provider_recovery: ProviderRecoveryPolicy,
+    stream_reattachment: StreamReattachmentPolicy,
+    harness_isolation: Option<HarnessIsolation>,
+}
+
+#[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
+pub enum ProviderExecutionPolicy {
+    #[default]
+    Attached,
+    Background,
+}
+
+#[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
+pub enum ProviderRetentionPolicy {
+    #[default]
+    Prohibited,
+    TemporaryAllowed,
+    DurableAllowed,
+}
+
+#[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
+pub enum ProviderRecoveryPolicy {
+    #[default]
+    Prohibited,
+    ManagedAllowed,
+}
+
+#[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
+pub enum StreamReattachmentPolicy {
+    #[default]
+    Disabled,
+    Bounded(NonZeroU32),
 }
 
 impl OperationPolicy {
@@ -29,6 +65,11 @@ impl OperationPolicy {
             external_network,
             external_search,
             reasoning_mode: None,
+            provider_execution: ProviderExecutionPolicy::Attached,
+            provider_retention: ProviderRetentionPolicy::Prohibited,
+            provider_recovery: ProviderRecoveryPolicy::Prohibited,
+            stream_reattachment: StreamReattachmentPolicy::Disabled,
+            harness_isolation: None,
         })
     }
 
@@ -48,6 +89,36 @@ impl OperationPolicy {
     }
 
     #[must_use]
+    pub const fn with_provider_execution(mut self, policy: ProviderExecutionPolicy) -> Self {
+        self.provider_execution = policy;
+        self
+    }
+
+    #[must_use]
+    pub const fn with_provider_retention(mut self, policy: ProviderRetentionPolicy) -> Self {
+        self.provider_retention = policy;
+        self
+    }
+
+    #[must_use]
+    pub const fn with_provider_recovery(mut self, policy: ProviderRecoveryPolicy) -> Self {
+        self.provider_recovery = policy;
+        self
+    }
+
+    #[must_use]
+    pub const fn with_stream_reattachment(mut self, policy: StreamReattachmentPolicy) -> Self {
+        self.stream_reattachment = policy;
+        self
+    }
+
+    #[must_use]
+    pub const fn with_harness_isolation(mut self, isolation: HarnessIsolation) -> Self {
+        self.harness_isolation = Some(isolation);
+        self
+    }
+
+    #[must_use]
     pub const fn external_network(&self) -> ExternalNetworkPolicy {
         self.external_network
     }
@@ -60,6 +131,43 @@ impl OperationPolicy {
     #[must_use]
     pub const fn reasoning_mode(&self) -> Option<&ReasoningMode> {
         self.reasoning_mode.as_ref()
+    }
+
+    #[must_use]
+    pub const fn provider_execution(&self) -> ProviderExecutionPolicy {
+        self.provider_execution
+    }
+
+    #[must_use]
+    pub const fn provider_retention(&self) -> ProviderRetentionPolicy {
+        self.provider_retention
+    }
+
+    #[must_use]
+    pub const fn provider_recovery(&self) -> ProviderRecoveryPolicy {
+        self.provider_recovery
+    }
+
+    #[must_use]
+    pub const fn stream_reattachment(&self) -> StreamReattachmentPolicy {
+        self.stream_reattachment
+    }
+
+    #[must_use]
+    pub const fn harness_isolation(&self) -> Option<HarnessIsolation> {
+        self.harness_isolation
+    }
+}
+
+/// Compares the request posture with its pure preflight binding.
+pub fn validate_harness_isolation_policy(
+    plan: &PreflightPlan,
+    policy: &OperationPolicy,
+) -> Result<(), IncompatibleOperationPolicy> {
+    if plan.requirements().harness_isolation() == policy.harness_isolation() {
+        Ok(())
+    } else {
+        Err(IncompatibleOperationPolicy::harness_isolation_mismatch())
     }
 }
 
@@ -87,6 +195,15 @@ impl IncompatibleOperationPolicy {
         }
     }
 
+    fn harness_isolation_mismatch() -> Self {
+        Self {
+            diagnostic: SafeDiagnostic::new(
+                "swallowtail.operation_policy_rejected",
+                "Harness isolation does not match the preflight-bound posture",
+            ),
+        }
+    }
+
     #[must_use]
     pub const fn diagnostic(&self) -> &SafeDiagnostic {
         &self.diagnostic
@@ -102,32 +219,4 @@ impl fmt::Display for IncompatibleOperationPolicy {
 impl Error for IncompatibleOperationPolicy {}
 
 #[cfg(test)]
-mod tests {
-    use super::{ExternalNetworkPolicy, ExternalSearchPolicy, OperationPolicy};
-
-    #[test]
-    fn external_search_never_implies_network_authority() {
-        let error =
-            OperationPolicy::new(ExternalNetworkPolicy::Denied, ExternalSearchPolicy::Enabled)
-                .expect_err("search without network authority must fail");
-
-        assert_eq!(
-            error.diagnostic().code(),
-            "swallowtail.operation_policy_rejected"
-        );
-    }
-
-    #[test]
-    fn ambient_network_authority_is_harness_only() {
-        let error = OperationPolicy::new(
-            ExternalNetworkPolicy::AmbientHost,
-            ExternalSearchPolicy::Disabled,
-        )
-        .expect_err("direct operation policy must reject ambient host authority");
-
-        assert_eq!(
-            error.diagnostic().message(),
-            "Ambient host network authority is valid only for a harness session"
-        );
-    }
-}
+mod tests;

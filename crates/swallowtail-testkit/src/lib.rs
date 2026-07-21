@@ -8,6 +8,7 @@
 mod assertions;
 mod callback_fixture;
 mod fixture;
+mod managed_harness_fixture;
 mod preflight_assertions;
 mod preflight_fixture;
 mod profile_acp;
@@ -16,6 +17,8 @@ mod profile_common;
 mod profile_direct_session;
 mod profile_fixture;
 mod profile_hosted;
+mod profile_managed_harness;
+mod profile_managed_harness_shape;
 mod profile_network_harness;
 mod profile_one_shot;
 mod profile_owned;
@@ -36,6 +39,7 @@ pub use assertions::{
 };
 pub use callback_fixture::{CallbackExchangeFixture, successful_callback_response};
 pub use fixture::ContractKernelFixture;
+pub use managed_harness_fixture::{ManagedHarnessPreflightCase, ManagedHarnessPreflightFixture};
 pub use preflight_assertions::{
     assert_changed_revision_invalidates_plan, assert_preflight_rejection_without_side_effects,
     assert_successful_preflight_binding,
@@ -49,6 +53,7 @@ pub use profiles::{
     run_connection_scoped_direct_session_profile, run_hosted_direct_api_profile,
     run_long_lived_acp_profile, run_long_lived_rpc_profile, run_one_shot_structured_cli_profile,
     run_owned_self_hosted_profile, run_persistent_acp_profile,
+    run_provider_managed_harness_profile,
 };
 pub use recording_host::{
     RecordedHostCall, RecordingHostServices, RecordingOutcome, poll_immediate,

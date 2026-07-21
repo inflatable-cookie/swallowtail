@@ -1,4 +1,5 @@
 use crate::diagnostic::{ValueRequired, required_text};
+use crate::model_catalog::ModelCatalogObservations;
 use std::collections::BTreeSet;
 
 /// Stable adapter-owned model identity.
@@ -117,6 +118,7 @@ pub struct ModelMetadata {
     is_default: bool,
     reasoning: Option<ReasoningMetadata>,
     token_limits: Option<ModelTokenLimits>,
+    catalog_observations: Option<ModelCatalogObservations>,
 }
 
 impl ModelMetadata {
@@ -127,6 +129,7 @@ impl ModelMetadata {
             is_default: false,
             reasoning: None,
             token_limits: None,
+            catalog_observations: None,
         })
     }
 
@@ -157,6 +160,12 @@ impl ModelMetadata {
     }
 
     #[must_use]
+    pub fn with_catalog_observations(mut self, observations: ModelCatalogObservations) -> Self {
+        self.catalog_observations = Some(observations);
+        self
+    }
+
+    #[must_use]
     pub fn display_name(&self) -> Option<&str> {
         self.display_name.as_deref()
     }
@@ -179,6 +188,11 @@ impl ModelMetadata {
     #[must_use]
     pub const fn token_limits(&self) -> Option<ModelTokenLimits> {
         self.token_limits
+    }
+
+    #[must_use]
+    pub const fn catalog_observations(&self) -> Option<&ModelCatalogObservations> {
+        self.catalog_observations.as_ref()
     }
 }
 
@@ -222,72 +236,4 @@ impl ModelCatalogEntry {
 }
 
 #[cfg(test)]
-mod tests {
-    use super::{
-        ModelCatalogEntry, ModelId, ModelMetadata, ModelTokenLimits, ProviderId, ReasoningMetadata,
-        ReasoningMode,
-    };
-
-    #[test]
-    fn stable_identity_is_separate_from_display_metadata() {
-        let id = ModelId::new("provider/model-1").expect("model id is valid");
-        let entry = ModelCatalogEntry::new(
-            id.clone(),
-            ModelMetadata::with_display_name("Model One")
-                .expect("display name is valid")
-                .with_description("A model")
-                .expect("description is valid")
-                .with_default(true),
-        );
-
-        assert_eq!(entry.id(), &id);
-        assert_eq!(entry.metadata().display_name(), Some("Model One"));
-        assert_eq!(entry.metadata().description(), Some("A model"));
-        assert!(entry.metadata().is_default());
-    }
-
-    #[test]
-    fn harness_provider_and_model_ids_remain_separate() {
-        let provider = ProviderId::new("anthropic").expect("provider id is valid");
-        let model = ModelId::new("claude-sonnet").expect("model id is valid");
-        let entry = ModelCatalogEntry::new(model.clone(), ModelMetadata::default())
-            .with_provider_id(provider.clone());
-
-        assert_eq!(entry.provider_id(), Some(&provider));
-        assert_eq!(entry.id(), &model);
-    }
-
-    #[test]
-    fn reasoning_metadata_is_evidence_not_an_implicit_selection() {
-        let low = ReasoningMode::new("low").expect("mode is valid");
-        let high = ReasoningMode::new("high").expect("mode is valid");
-        let metadata = ModelMetadata::default().with_reasoning(ReasoningMetadata::new(
-            [low.clone(), high],
-            Some(low.clone()),
-        ));
-
-        let reasoning = metadata.reasoning().expect("reasoning evidence is present");
-        assert!(reasoning.supports(&low));
-        assert_eq!(reasoning.default_mode(), Some(&low));
-    }
-
-    #[test]
-    fn absent_token_limits_are_unknown_and_observed_limits_are_mutable_metadata() {
-        let unknown = ModelMetadata::default();
-        assert_eq!(unknown.token_limits(), None);
-
-        let observed = unknown.with_token_limits(ModelTokenLimits::new(Some(200_000), Some(8_192)));
-        assert_eq!(
-            observed
-                .token_limits()
-                .and_then(|limits| limits.maximum_input_tokens()),
-            Some(200_000)
-        );
-        assert_eq!(
-            observed
-                .token_limits()
-                .and_then(|limits| limits.maximum_output_tokens()),
-            Some(8_192)
-        );
-    }
-}
+mod tests;

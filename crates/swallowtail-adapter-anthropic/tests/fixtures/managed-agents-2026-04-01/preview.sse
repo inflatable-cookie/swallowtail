@@ -1,0 +1,3 @@
+event: event_start
+data: {"type":"event_start","event":{"type":"agent.message","id":"event_preview"}}
+

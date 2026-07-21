@@ -1,0 +1,15 @@
+event: session.status_running
+data: {"id":"event_r1","type":"session.status_running","processed_at":"2026-07-21T09:02:00Z"}
+
+event: session.status_rescheduled
+data: {"id":"event_r2","type":"session.status_rescheduled","processed_at":"2026-07-21T09:02:01Z"}
+
+event: session.status_running
+data: {"id":"event_r3","type":"session.status_running","processed_at":"2026-07-21T09:02:02Z"}
+
+event: agent.message
+data: {"id":"event_r4","type":"agent.message","processed_at":"2026-07-21T09:02:03Z","content":[{"type":"text","text":"Recovered once."}]}
+
+event: session.status_idle
+data: {"id":"event_r5","type":"session.status_idle","processed_at":"2026-07-21T09:02:04Z","stop_reason":{"type":"end_turn"}}
+

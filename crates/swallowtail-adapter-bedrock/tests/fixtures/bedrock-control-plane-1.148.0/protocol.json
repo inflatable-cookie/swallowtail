@@ -1,0 +1,59 @@
+{
+  "fixture_schema": 1,
+  "sdk_crate": "aws-sdk-bedrock",
+  "sdk_version": "1.148.0",
+  "service_api": "Amazon Bedrock ListFoundationModels",
+  "transport": "in_process_rust_sdk_control_plane",
+  "endpoint_audience": "bedrock",
+  "endpoint_source": "host_approved_grant",
+  "region_source": "configured_instance_exact",
+  "authentication": {
+    "mechanism": "cloud_provider_identity",
+    "source": "host_authorized_delegated_sdk_provider",
+    "default_chain_allowed": false,
+    "secret_exposed_by_runtime_lease": false
+  },
+  "authorization": {
+    "iam_action": "bedrock:ListFoundationModels",
+    "resource": "*",
+    "runtime_inference_implied": false,
+    "marketplace_side_effect_allowed": false
+  },
+  "request": {
+    "operation": "ListFoundationModels",
+    "filters": [],
+    "pagination": "none",
+    "maximum_provider_requests": 1,
+    "maximum_sdk_attempts": 1,
+    "maximum_entries": 1024
+  },
+  "observations": [
+    "model_id",
+    "model_name",
+    "provider_display_name",
+    "input_modalities",
+    "output_modalities",
+    "response_streaming_supported",
+    "inference_types",
+    "customization_types",
+    "model_lifecycle"
+  ],
+  "unknown_enum_policy": "bounded_namespaced_observation",
+  "absent_optional_policy": "unknown",
+  "provider_resource_arn": "adapter_private",
+  "catalogue_presence_implies": [],
+  "excluded": [
+    "ambient_aws_environment",
+    "shared_aws_config_files",
+    "instance_or_container_metadata",
+    "bedrock_runtime_endpoint_grant",
+    "model_route_creation",
+    "runtime_capability_widening",
+    "model_invocation",
+    "marketplace_subscription",
+    "provider_onboarding",
+    "bedrock_mantle_models",
+    "automatic_retry",
+    "live_authentication_in_default_qa"
+  ]
+}

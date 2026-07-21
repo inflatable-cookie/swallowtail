@@ -6,25 +6,37 @@ Updated: 2026-07-21
 
 ## Realized State
 
-Swallowtail has a twelve-crate Rust workspace plus its strict Northstar authority
+Swallowtail has a fifteen-crate Rust workspace plus its strict Northstar authority
 spine:
 
 - `swallowtail-core` owns pure provider-neutral contract records, including
   runtime identities, access state, configured instances, model routes,
   model-artifact identity and preflight bindings, reasoning and token-limit
-  catalog evidence, expanded interactive access and harness-isolation policy,
-  parameterized requirements, and side-effect-free preflight
+  catalog evidence, source-scoped catalogue modality, lifecycle, streaming,
+  inference, customization, and provider-extension observations, expanded
+  interactive access and harness-isolation policy, parameterized requirements,
+  owned remote-resource deletion kinds, durable-retention and managed-recovery
+  capabilities, opaque provider-agent/version bindings, and side-effect-free
+  preflight; structured harness operations may now bind exact ambient,
+  provider-enforced, or host-enforced isolation independently of session policy
 - `swallowtail-runtime` depends on core plus `futures-core` and owns
   executor-neutral dynamic roles, lifecycle handles, bounded events, terminal
   outcomes, explicit operation policy, typed usage/rate/quota observations,
   scope- and audience-bound endpoint/credential ports, scoped
   materialization leases, read-only model-artifact leases, scoped owned-serving
   endpoint publication, a distinct working-resource callback I/O port, and
-  portable runtime inputs
+  portable runtime inputs; structured-run requests reuse bounded tool
+  declarations, run handles may expose callback exchange with explicit run or
+  turn ownership, operation policy
+  separates durable retention from provider-managed recovery, carries exact
+  structured-run harness isolation, rejects request/preflight posture mismatch,
+  and terminal
+  outcomes keep deletion truth per owned remote resource
 - `swallowtail-testkit` depends on core and runtime and owns deterministic
   Contract 003, Contract 008, runtime-skeleton, and Contract 011 cross-shape
   fixtures and assertions, including distinct local and remote-authoritative
-  execution-host identities
+  execution-host identities plus pure remote-harness policy fixtures for
+  durable retention, managed recovery, and exact resource ownership
 - `swallowtail-host-local` depends on core and runtime and implements concrete
   host-approved local process, endpoint, credential, materialization, and
   monotonic deadline behavior behind capability-scoped runtime ports
@@ -40,7 +52,17 @@ spine:
   model discovery and ambient-host interactive sessions with read-only tool
   permissions over host-approved HTTP and bounded SSE
 - `swallowtail-adapter-anthropic` implements provider-supported `2023-06-01`
-  Models catalogue and Messages direct inference over host-approved HTTP/SSE
+  Models catalogue and Messages direct inference over host-approved HTTP/SSE;
+  its separate `managed-agents-2026-04-01` remote-harness driver binds one
+  operator-owned agent version, one driver-owned limited environment and
+  session, authoritative events, callbacks, bounded recovery, interruption,
+  usage evidence, and ordered deletion
+- `swallowtail-adapter-bedrock` pins the provider-supported
+  `aws-sdk-bedrockruntime = 1.136.0` in-process Rust boundary and implements
+  one exact `ConverseStream` production route; its native catalogue fixture
+  boundary pins `aws-sdk-bedrock = 1.148.0`, the distinct regional control-
+  plane audience, generated request, summary, lifecycle and error types, and
+  bounded provider-neutral projection
 - `swallowtail-adapter-gemini` implements the pinned Gemini CLI `0.51.0`
   ambient-host interactive subset with Plan Mode and bounded read callbacks
   over ACP v1 stdio
@@ -53,10 +75,19 @@ spine:
 - `swallowtail-adapter-xai` implements resource-free interactive direct
   inference over one host-approved Responses WebSocket with serial turns,
   private continuation, exact billed cost, and connection-ending cancellation
+- `swallowtail-adapter-openai` implements one public-API Responses background
+  structured-run route with explicit temporary retention, one create attempt,
+  maximum-one cursor reattachment, bounded retrieve, native cancel, and joined
+  HTTP/SSE cleanup
+- `swallowtail-adapter-qwen` implements the pinned Qwen Code `v0.19.11`
+  headless structured-run route with exact read-only argv, text stdin, bounded
+  stream JSON, typed usage, explicit native budgets, durable local retention,
+  redacted terminal classifications, host deadline and cancellation, joined
+  process cleanup, and `AmbientHost` isolation without a sandbox claim
 
 There is no global async executor, durable credential store, or consumer
-dependency. The concrete libcurl client remains private to the OpenCode
-adapter and runs only through host blocking-work ports.
+dependency. Concrete libcurl clients remain private to their adapters and run
+only through host blocking-work ports.
 
 ## Package Direction
 
@@ -80,7 +111,7 @@ Crate status:
 
 - `swallowtail-core` — realized
 - `swallowtail-testkit` — realized with reusable contract-kernel, preflight,
-  and callback fixtures, recording runtime host services, and nine composable
+  and callback fixtures, recording runtime host services, and ten composable
   provider-free conformance profile runners
 - `swallowtail-runtime` — realized under Contracts 008-010 and 012 with only
   core and `futures-core` dependencies
@@ -101,7 +132,22 @@ Crate status:
   API subset with API-key and version headers, bounded catalogue pagination,
   explicit output bounds, ordered SSE, usage, rate and request evidence,
   provider errors, unknown events, local cancellation, one inference attempt,
-  joined work, and awaited credential release
+  joined work, and awaited credential release; a separately registered
+  managed-harness driver realizes the frozen beta REST/SSE lifecycle with
+  explicit durable retention, provider recovery, remote resource ownership,
+  callback relay, one history reconciliation, per-resource deletion truth,
+  local and remote-authoritative topology, and joined cleanup
+- `swallowtail-adapter-bedrock` — realized under Contract 019 for one exact
+  hosted-direct Bedrock Runtime `ConverseStream` route through the official
+  Rust SDK, explicit region and host-approved endpoint, delegated cloud
+  credential provider, one attempt, typed bounded EventStream projection,
+  complete-stream deadline, cancellation, and joined operation-private Tokio;
+  generated fixtures and default tests use no live AWS or ambient
+  configuration; a separately registered Contract 020 control-plane driver
+  uses `aws-sdk-bedrock` for one unfiltered `ListFoundationModels` request with
+  its own instance, endpoint audience, region, access profile, delegated
+  provider, deadline, one-attempt bound, observation projection, and joined
+  private executor
 - `swallowtail-adapter-gemini` — realized for pinned initialization, isolated
   API-key process state, Plan Mode new sessions, text prompts, ordered updates,
   host-bounded reads, permission cancellation, active-turn cancellation, and
@@ -114,14 +160,34 @@ Crate status:
   one active turn, private `store=false` continuation, ordered text and usage,
   exact USD ticks, distinct provider failures, cancellation, deadline,
   disconnect invalidation, and joined credential cleanup
+- `swallowtail-adapter-openai` — realized under Contract 021 for one exact
+  public-API Responses background structured run with API-key access, explicit
+  model, output, deadline, retention, and reattachment policy, ordered SSE,
+  bounded recovery, native cancel, provider cancellation evidence, and joined
+  credential cleanup
 
-Core, runtime, and testkit are realized and validated as one kernel. The nine
+Core, runtime, and testkit are realized and validated as one kernel. The ten
 synthetic Contract 011 profiles use only public APIs and cover one-shot CLI,
 long-lived RPC, long-lived ACP, attached network harness, hosted API, attached
 self-hosted, owned self-hosted, connection-scoped direct-session, and a
-persistent ACP extension. The extension composes load, replay, resume, bounded
-write, delegated-auth, ambient-authority, topology, and cleanup claims without
-widening the baseline ACP profile.
+persistent ACP extension, plus a provider-managed remote harness. The managed
+profile adds exact agent binding, durable retention, managed recovery, bounded
+reattachment, run callbacks, per-resource deletion truth, topology, and cleanup
+ordering without widening the other nine profiles. The ACP extension composes
+load, replay, resume, bounded write, delegated-auth, ambient-authority,
+topology, and cleanup claims without widening the baseline ACP profile.
+Structured-run policy now keeps attached execution, prohibited provider
+retention, and disabled stream reattachment as the defaults. Provider-managed
+background execution, temporary retention, and bounded reattachment are three
+independent opt-ins backed by explicit capabilities. Existing structured-run
+drivers reject that posture. Terminal outcomes may separately record confirmed,
+completion-raced, or unconfirmed provider cancellation without replacing the
+local terminal status.
+Durable provider retention and provider-managed recovery are further
+independent opt-ins. Owned environment and session deletion truth is keyed by
+resource kind, so one confirmation cannot stand in for the other. Structured-
+run tools and callbacks reuse the existing bounded declaration and exchange
+records; drivers that do not implement that subset reject them before work.
 The owned profile now binds one exact model artifact into preflight, rejects
 artifact substitution before host effects, acquires a distinct read-only
 artifact lease, publishes a redacted execution-host endpoint binding, and
@@ -186,8 +252,8 @@ Interactive session requests now carry optional redacted developer
 instructions, an exact reasoning selection, and bounded tool declarations.
 Turn handles may expose a one-shot callback exchange with a bounded request
 stream and object-safe response port. Callback requests bind a distinct
-redacted callback id to one runtime turn id, event sequence, optional monotonic
-deadline, and bounded opaque payload. Testkit proves response correlation,
+redacted callback id to one runtime run or turn id, event sequence, optional
+monotonic deadline, and bounded opaque payload. Testkit proves response correlation,
 exactly-once state, timeout abandonment, late-response rejection, and matching
 callback event order. The Codex driver translates preflight-bound developer
 instructions, reasoning effort, and inline JSON Schema tool declarations into

@@ -144,6 +144,12 @@ impl ActiveTurn {
         self.finished.load(Ordering::SeqCst)
     }
 
+    pub(crate) fn is_stopping(&self) -> bool {
+        self.is_finished()
+            || self.cancelled.load(Ordering::SeqCst)
+            || self.timed_out.load(Ordering::SeqCst)
+    }
+
     pub(crate) fn finished_future(&self) -> TurnFinishedFuture {
         TurnFinishedFuture(Arc::clone(&self.finish_signal))
     }

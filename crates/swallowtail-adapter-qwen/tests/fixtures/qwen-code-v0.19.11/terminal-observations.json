@@ -1,0 +1,44 @@
+[
+  {
+    "case": "success",
+    "exit_code": 0,
+    "stream_fixture": "success.jsonl",
+    "terminal_class": "completed",
+    "public_diagnostic": null
+  },
+  {
+    "case": "provider_failure",
+    "exit_code": 1,
+    "stream_fixture": "provider-failure.jsonl",
+    "terminal_class": "provider_failure",
+    "public_diagnostic": "Qwen Code reported a provider execution failure"
+  },
+  {
+    "case": "session_turn_limit",
+    "exit_code": 53,
+    "stream_fixture": null,
+    "terminal_class": "provider_native_turn_limit",
+    "public_diagnostic": "Qwen Code reached its configured session-turn limit"
+  },
+  {
+    "case": "native_budget",
+    "exit_code": 55,
+    "stream_fixture": null,
+    "terminal_class": "provider_native_budget",
+    "public_diagnostic": "Qwen Code reached a configured native run budget"
+  },
+  {
+    "case": "host_cancellation",
+    "exit_code": 130,
+    "stream_fixture": null,
+    "terminal_class": "cancelled",
+    "public_diagnostic": "Qwen Code stopped after cancellation"
+  },
+  {
+    "case": "malformed_output",
+    "exit_code": 0,
+    "stream_fixture": "malformed.jsonl",
+    "terminal_class": "protocol_failure",
+    "public_diagnostic": "Qwen Code emitted malformed stream output"
+  }
+]

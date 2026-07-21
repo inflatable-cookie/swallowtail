@@ -44,12 +44,32 @@ conformance extension under local and remote-authoritative host identities
 without widening Gemini's baseline.
 Owned llama.cpp now passes production conformance for read-only artifact
 leases, readiness handoff, local and remote-authoritative topology, and joined
-child cleanup without absorbing Monkey. Roadmap 020 now rechecks SDK-native
-routes for a real maintained Rust embedding or explicit supported language
-boundary. If none is ready, it selects the next hosted catalogue, protocol,
-harness, direct-inference, or attached-runtime route by new contract pressure.
-Similar HTTP/SSE and one-shot JSONL routes remain behind higher-information
-shapes.
+child cleanup without absorbing Monkey. Roadmaps 020-021 complete separate
+provider-supported Bedrock Runtime and control-plane SDK routes. Roadmap 022
+selects OpenAI Responses background mode as the next high-information shape:
+one provider-owned asynchronous direct run, explicit temporary retention,
+recoverable SSE cursor, and native cancel. Roadmap 023 owns its contract,
+deterministic corpus, production driver, and conformance. Cursor Cloud Agents
+remain later behind an explicit repository, GitHub integration, remote-
+workspace, artifact, and deletion-authority choice. Roadmap 023 closes the
+OpenAI production driver and conformance proof. Research 016 and Contract 022
+select Claude Managed Agents as the next high-information shape: a provider-
+hosted harness with versioned agent configuration, driver-owned environment
+and session resources, durable retention, provider-managed rescheduling,
+authoritative persisted events, callbacks, and remote deletion truth. Roadmap
+025 completes the resource-free proof. It requires no local container, consumer
+repository, provider filesystem, or external sandbox network. Cursor remains
+later behind explicit repository and remote-mutation authority. Similar
+HTTP/SSE and one-shot JSONL routes remain behind higher-information shapes.
+
+The managed-harness proof closes with ten provider-neutral conformance profiles
+and 330 passing repository tests. Research 017 then selects stable Qwen Code
+`v0.19.11` headless over unfinished remote ACP, policy-bound Cursor Background
+Agents, and the experimental Qwen daemon. Contract 023 keeps structured-run
+isolation, provider permissions, native budgets, durable local transcript
+state, and optional sandboxing separate. Card 080 freezes the first read-only
+`AmbientHost` route with text stdin, bounded stream JSON, explicit tool posture,
+and no container. Card 081 is ready for the production driver.
 
 These stages normally become numbered roadmaps inside the active generation.
 They do not each create a generation. A generation rolls over near the 30-50

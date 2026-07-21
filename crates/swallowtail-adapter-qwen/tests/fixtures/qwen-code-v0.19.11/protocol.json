@@ -1,0 +1,146 @@
+{
+  "fixture_schema": "swallowtail.qwen.headless.v1",
+  "source": {
+    "release": "v0.19.11",
+    "version": "0.19.11",
+    "commit": "f22cf5009ee3eb26b5c5de2eca6e1f1d0ffee0ad",
+    "frozen_on": "2026-07-21",
+    "support_authority": "integration_maintainer_supported"
+  },
+  "route": {
+    "execution_layer": "harness_interaction",
+    "operation_shape": "structured_run",
+    "transport": "attached_process_text_stdin_stream_json_stdout",
+    "model_route": "required_exact_preflight_binding",
+    "provider_fallback": false
+  },
+  "access": {
+    "credential_mechanism": "qwen-code/delegated-harness-auth",
+    "access_profile": "required_exact_preflight_binding",
+    "endpoint_audience": "required_exact_preflight_binding",
+    "entitlement_and_metering": "required_exact_preflight_binding",
+    "raw_credential_read": false
+  },
+  "invocation": {
+    "prompt_transport": "stdin_text",
+    "arguments": [
+      "--input-format",
+      "text",
+      "--output-format",
+      "stream-json",
+      "--include-partial-messages",
+      "--safe-mode",
+      "--approval-mode",
+      "default",
+      "--model",
+      "{model_id}",
+      "--core-tools",
+      "read_file,grep_search,glob,list_directory,lsp",
+      "--exclude-tools",
+      "run_shell_command,monitor,edit,write_file,notebook_edit,agent,web_fetch,save_memory,skill,workflow,artifact,record_artifact,cron_create,cron_delete,create_sub_session,task_create,task_update,task_stop,team_create,team_delete,send_message,enter_worktree,exit_worktree",
+      "--max-wall-time",
+      "60s",
+      "--max-tool-calls",
+      "16",
+      "--max-session-turns",
+      "24"
+    ],
+    "forbidden_arguments": [
+      "--prompt",
+      "-p",
+      "--yolo",
+      "--sandbox",
+      "--continue",
+      "--resume",
+      "--include-directories",
+      "--json-schema",
+      "--experimental-acp",
+      "--acp"
+    ],
+    "approval_mode": "default",
+    "safe_mode": true,
+    "sandbox": false,
+    "persistent_retry": false
+  },
+  "tools": {
+    "registry_allowlist": [
+      "read_file",
+      "grep_search",
+      "glob",
+      "list_directory",
+      "lsp"
+    ],
+    "explicit_denylist": [
+      "run_shell_command",
+      "monitor",
+      "edit",
+      "write_file",
+      "notebook_edit",
+      "agent",
+      "web_fetch",
+      "save_memory",
+      "skill",
+      "workflow",
+      "artifact",
+      "record_artifact",
+      "cron_create",
+      "cron_delete",
+      "create_sub_session",
+      "task_create",
+      "task_update",
+      "task_stop",
+      "team_create",
+      "team_delete",
+      "send_message",
+      "enter_worktree",
+      "exit_worktree"
+    ],
+    "consumer_tools": false,
+    "permission_callbacks": false
+  },
+  "isolation": {
+    "posture": "ambient_host",
+    "provider_sandbox": false,
+    "container_required": false,
+    "safe_mode_implies_isolation": false,
+    "tool_policy_implies_isolation": false
+  },
+  "native_budgets": {
+    "wall_time": "60s",
+    "top_level_tool_calls": 16,
+    "session_turns": 24,
+    "subagent_inner_calls_covered": false,
+    "structured_output_retries_covered_by_tool_budget": false,
+    "host_deadline_replaced": false
+  },
+  "retention": {
+    "policy": "durable_allowed",
+    "provider_behavior": "project_scoped_local_jsonl",
+    "resume_authority": false,
+    "enumerate_authority": false,
+    "delete_authority": false,
+    "exit_proves_deletion": false
+  },
+  "stream": {
+    "maximum_line_bytes": 1048576,
+    "maximum_event_count": 4096,
+    "known_top_level_types": [
+      "system",
+      "assistant",
+      "stream_event",
+      "result"
+    ],
+    "unknown_event_policy": "observe_and_continue",
+    "raw_payload_in_diagnostics": false
+  },
+  "exclusions": {
+    "attachments": false,
+    "background_agents": false,
+    "multi_directory": false,
+    "resume": false,
+    "scheduled_work": false,
+    "structured_output": false,
+    "web_search": false,
+    "workspace_write": false
+  }
+}

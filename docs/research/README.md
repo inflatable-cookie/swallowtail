@@ -20,3 +20,8 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [010 Kimi Code Successor And Artifact Currentness Repair](010-kimi-code-successor-and-artifact-currentness-repair.md)
 - [011 Kimi macOS App Sandbox Runtime Compatibility](011-kimi-macos-app-sandbox-runtime-compatibility.md)
 - [012 Local Harness Orchestrator Isolation Posture](012-local-harness-orchestrator-isolation-posture.md)
+- [013 SDK-Native And Post-Portability Route Evidence](013-sdk-native-and-post-portability-route-evidence.md)
+- [014 Bedrock Control-Plane Catalogue Evidence](014-bedrock-control-plane-catalogue-evidence.md)
+- [015 Provider-Owned Background Run Evidence](015-provider-owned-background-run-evidence.md)
+- [016 Claude Managed Agent And Post-Background Coverage Evidence](016-claude-managed-agent-and-post-background-coverage-evidence.md)
+- [017 Qwen Headless And Post-Managed-Harness Coverage Evidence](017-qwen-headless-and-post-managed-harness-coverage-evidence.md)

@@ -56,6 +56,7 @@ impl TokenUsage {
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum RateLimitKind {
     Requests,
+    Tokens,
     InputTokens,
     OutputTokens,
 }

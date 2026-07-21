@@ -1,0 +1,3 @@
+{"type":"system","subtype":"session_start","uuid":"event-system-3","session_id":"session-fixture-3","model":"qwen3-coder-plus","permission_mode":"default","qwen_code_version":"0.19.11"}
+{"type":"system","subtype":"future_fixture_event","uuid":"event-unknown-1","session_id":"session-fixture-3","data":{"private":"fixture-provider-secret-never-diagnose"}}
+{"type":"result","subtype":"success","uuid":"event-result-3","session_id":"session-fixture-3","is_error":false,"duration_ms":20,"duration_api_ms":10,"num_turns":1,"result":"fixture answer","usage":{"input_tokens":8,"output_tokens":2},"permission_denials":[]}

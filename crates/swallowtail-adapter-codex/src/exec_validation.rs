@@ -13,6 +13,20 @@ pub(crate) fn validate(
     request: &StructuredRunRequest,
     services: &HostServices,
 ) -> Result<(), RuntimeFailure> {
+    if request.policy().provider_execution()
+        != swallowtail_runtime::ProviderExecutionPolicy::Attached
+        || request.policy().provider_retention()
+            != swallowtail_runtime::ProviderRetentionPolicy::Prohibited
+        || request.policy().provider_recovery()
+            != swallowtail_runtime::ProviderRecoveryPolicy::Prohibited
+        || request.policy().stream_reattachment()
+            != swallowtail_runtime::StreamReattachmentPolicy::Disabled
+    {
+        return Err(unsupported("provider-managed background execution"));
+    }
+    if request.tools().len() != 0 {
+        return Err(unsupported("structured-run tools"));
+    }
     validate_feature_binding(
         plan,
         request.attachments().len() != 0,

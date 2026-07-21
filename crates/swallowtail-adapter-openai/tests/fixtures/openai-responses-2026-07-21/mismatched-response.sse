@@ -1,0 +1,3 @@
+event: response.output_text.delta
+data: {"type":"response.output_text.delta","sequence_number":4,"response_id":"resp_other","delta":"wrong"}
+

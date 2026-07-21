@@ -1,0 +1,13 @@
+{
+  "name": "swallowtail-managed-run",
+  "config": {
+    "type": "cloud",
+    "networking": {
+      "type": "limited",
+      "allowed_hosts": [],
+      "allow_mcp_servers": false,
+      "allow_package_managers": false
+    }
+  }
+}
+

@@ -72,6 +72,17 @@ impl TimeService for ThreadServices {
     }
 
     fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
-        Box::pin(async move { DeadlineObservation::new(deadline, deadline.instant()) })
+        let now = self.now().ticks();
+        let remaining = deadline.instant().ticks().saturating_sub(now);
+        let (sender, receiver) = oneshot::channel();
+        thread::spawn(move || {
+            thread::sleep(std::time::Duration::from_millis(remaining));
+            let _ = sender.send(DeadlineObservation::new(deadline, deadline.instant()));
+        });
+        Box::pin(async move {
+            receiver
+                .await
+                .expect("fixture deadline worker returns an observation")
+        })
     }
 }

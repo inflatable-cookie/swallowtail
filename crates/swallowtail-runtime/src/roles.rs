@@ -3,7 +3,7 @@ use crate::{
     InteractiveSessionHandle, ModelArtifactBinding, OperationContent, OperationPolicy,
     OwnedServingHandle, RequestId, RunHandle, RuntimeFailure, RuntimeTurnId, ScopeId,
     ServingInstanceId, SessionAccessPolicy, SessionOptions, SessionReplayItem,
-    SessionResumeBinding, StructuredOutputDescriptor, WorkingResourceRef,
+    SessionResumeBinding, StructuredOutputDescriptor, ToolDeclaration, WorkingResourceRef,
 };
 use std::num::NonZeroU64;
 use swallowtail_core::{
@@ -67,6 +67,7 @@ pub struct StructuredRunRequest {
     policy: OperationPolicy,
     deadline: Option<Deadline>,
     attachments: Vec<AttachmentDescriptor>,
+    tools: Vec<ToolDeclaration>,
     structured_output: Option<StructuredOutputDescriptor>,
     maximum_output_tokens: Option<NonZeroU64>,
 }
@@ -81,6 +82,7 @@ impl StructuredRunRequest {
             policy,
             deadline: None,
             attachments: Vec::new(),
+            tools: Vec::new(),
             structured_output: None,
             maximum_output_tokens: None,
         }
@@ -104,6 +106,12 @@ impl StructuredRunRequest {
         attachments: impl IntoIterator<Item = AttachmentDescriptor>,
     ) -> Self {
         self.attachments = attachments.into_iter().collect();
+        self
+    }
+
+    #[must_use]
+    pub fn with_tools(mut self, tools: impl IntoIterator<Item = ToolDeclaration>) -> Self {
+        self.tools = tools.into_iter().collect();
         self
     }
 
@@ -146,6 +154,10 @@ impl StructuredRunRequest {
 
     pub fn attachments(&self) -> impl ExactSizeIterator<Item = &AttachmentDescriptor> {
         self.attachments.iter()
+    }
+
+    pub fn tools(&self) -> impl ExactSizeIterator<Item = &ToolDeclaration> {
+        self.tools.iter()
     }
 
     #[must_use]

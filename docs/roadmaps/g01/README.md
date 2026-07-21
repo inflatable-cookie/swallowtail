@@ -27,6 +27,8 @@ cross-adapter adoption without prematurely stabilizing the public API.
 - OpenCode HTTP harness and Anthropic direct-inference proofs
 - Gemini ACP and attached llama.cpp runtime proofs
 - xAI connection-scoped direct inference and provider-billed-cost evidence
+- provider-managed remote harness resources, durable sessions, event recovery,
+  callbacks, interruption, and deletion truth
 
 ## Current Checkpoint
 
@@ -416,12 +418,125 @@ cross-adapter adoption without prematurely stabilizing the public API.
 - the production Kimi lifecycle passes under local and remote-authoritative
   host ids; its installed `0.28.1` check remains explicitly gated
 - roadmap 018 and cards 055-059, 065-066 are complete
-- roadmap 020 is active; card 067 rechecks SDK-native embedding first and then
-  selects the next highest-information remaining route
-- full repository QA passes with 271 tests; three installed/live probes remain
+- Research 013 selects provider-supported Bedrock Runtime `ConverseStream` as
+  the first real in-process Rust SDK route; Contract 019 fixes explicit SDK,
+  delegated cloud credential, private executor, and one-attempt boundaries
+- the fixture-first Bedrock adapter pins `aws-sdk-bedrockruntime = 1.136.0` and
+  proves generated typed text, stop, usage, failure, semantic-drift, and retry
+  configuration behavior without AWS access
+- the production Bedrock Runtime driver binds one exact host, endpoint, region,
+  delegated AWS credential provider, route, model, positive output bound, and
+  one SDK attempt without ambient AWS configuration
+- typed bounded EventStream output and usage, cancellation, complete-stream
+  deadline, and credential release finish inside joined operation-private
+  Tokio work
+- local and remote-authoritative deterministic fixtures pass the hosted-direct
+  profile without a credential, account, network request, or paid inference
+- Research 014 fixes the separate native Bedrock catalogue to
+  `aws-sdk-bedrock = 1.148.0` and one non-paginated
+  `ListFoundationModels` request; the distinct Mantle `/models` audience stays
+  outside roadmap 021
+- Contract 020 keeps bounded catalogue lifecycle, modality, streaming,
+  inference, customization, and provider-extension observations separate from
+  runtime capability, entitlement, and route selection
+- provider-neutral observations preserve source, absent-versus-empty evidence,
+  lifecycle transitions, advertised streaming, and bounded namespaced drift
+  without creating provider ids, model routes, or runtime capabilities
+- the Bedrock adapter pins `aws-sdk-bedrock = 1.148.0`; generated unfiltered
+  request, single-response, summary, lifecycle, error, explicit-config, one-
+  attempt, bound, and redaction fixtures pass without AWS access
+- roadmap 020 and cards 067-069 are complete; cards 070-071 establish the
+  separate control-plane boundary and generated SDK corpus
+- full repository QA passes with 283 tests; three installed/live probes remain
   gated and ignored by default
 - doctor remains at the inherited 19 oversized-file findings: 12 warnings and
   7 errors
+- the separately registered Bedrock catalogue descriptor exposes only the
+  model-catalogue role over `rust-sdk-control-plane`; its instance, endpoint,
+  region, access profile, delegated provider, and permission boundary remain
+  independent from Bedrock Runtime inference
+- one unfiltered, non-paginated, one-attempt SDK request runs inside joined
+  host blocking work; deadline signalling finishes the operation-private Tokio
+  executor before credential release
+- local and remote-authoritative fixtures prove exact endpoint use, bounded
+  observation projection, drift rejection, redaction, provider failure, and
+  cleanup without creating a model route or provider identity
+- the new core and adapter catalogue files were split before closeout; doctor
+  remains at the inherited 19 findings with no new structural debt
+- full repository QA passes with 291 tests; three installed/live probes remain
+  gated and ignored by default
+- Research 015 selects OpenAI Responses background mode as the next proof: a
+  provider-owned async run, required temporary retention, recoverable SSE
+  cursor, and native cancellation through one public-API access boundary
+- ChatGPT, Codex, harness, subscription, and community OAuth access remain
+  separate; no endpoint, model, provider, or consumer route becomes a default
+- Cursor Cloud Agents remain later behind explicit GitHub, repository,
+  provider-VM, artifact, and durable-agent deletion authority
+- roadmap 022 and card 073 select roadmap 023's background Responses proof
+- Contract 021 makes provider-managed background execution, temporary
+  retention, and bounded reattachment independent opt-ins; ordinary structured
+  runs remain attached, retention-prohibited, and non-reattaching
+- provider cancellation truth now preserves confirmed, completion-raced, and
+  unconfirmed outcomes separately from the local terminal status
+- the dated OpenAI public-API fixture corpus fixes create, retrieve, one SSE
+  reattachment, cancel, all background statuses, usage, rate, failure,
+  identity separation, redaction, and one-attempt loopback behavior
+- the production OpenAI background driver binds the public API endpoint,
+  API-key lease, exact model route, output bound, explicit deadline, temporary
+  retention, one create attempt, and one maximum cursor reattachment
+- ordered SSE phase and cursor validation, output agreement, bounded retrieve,
+  native cancel, usage, rate, request correlation, redaction, and provider
+  cancellation truth pass deterministic local and remote-authoritative tests
+- roadmap 023 and cards 074-075 are complete
+- full repository QA passes with 314 tests; three installed/live probes remain
+  gated, and doctor stays at the inherited 19 findings
+- Research 016 selects Claude Managed Agents as the next high-information
+  shape without requiring repository authority or a local container
+- Contract 022 fixes operator-owned agent configuration, driver-owned remote
+  environment and session resources, durable retention, provider-managed
+  rescheduling, authoritative persisted events, callbacks, interruption,
+  deletion truth, metering, and joined cleanup
+- roadmap 024 and card 076 are complete; roadmap 025 is complete
+- card 077 realizes durable-retention, managed-recovery, owned-resource
+  deletion, structured-run tool/callback records, exact preflight rejection,
+  and the dated Managed Agents REST/SSE and loopback corpus
+- card 078 adds the separately registered production remote-harness driver,
+  exact agent/version preflight identity, structured-run callback ownership,
+  bounded recovery, interruption, usage evidence, and ordered resource cleanup
+- nine deterministic production-driver tests cover success, callback,
+  rescheduling, reconnect, cancellation, deadline, provider failure, deletion
+  ambiguity, redaction, and lease release without live access
+- 181 affected-crate tests and focused warnings-denied clippy pass; doctor is
+  restored to the inherited 19 findings after splitting new lifecycle files
+- card 079 adds the tenth provider-neutral conformance profile and proves the
+  production driver under local and remote-authoritative host identities
+- roadmap 025 and cards 077-079 are complete
+- full repository QA passes with 330 tests; three installed/live probes remain
+  gated, and doctor stays at the inherited 19 findings
+- Research 017 selects stable Qwen Code `v0.19.11` headless after rechecking
+  remote ACP, Cursor Background Agents, and the experimental Qwen daemon
+- Contract 023 makes harness isolation explicit for structured runs without
+  treating safe mode, tool permissions, native budgets, or optional sandboxing
+  as process containment
+- card 080 adds exact common requirement/runtime-policy isolation bindings and
+  pure mismatch validation while leaving older structured drivers consistently
+  unbound until migration
+- the fixture-only `swallowtail-adapter-qwen` crate freezes text stdin,
+  stream-JSON output, a registry-level read-only tool allowlist, native exits,
+  durable local retention, redaction, and explicit `AmbientHost` posture
+- 110 focused core, runtime, testkit, and Qwen fixture tests pass without a
+  Qwen binary, credential, provider request, or container
+- the separately registered Qwen headless production driver binds one exact
+  executable, environment, working resource, delegated harness access profile,
+  provider, model, deadline, durable-retention acceptance, and `AmbientHost`
+  policy before process start
+- exact frozen argv and stdin content transport, bounded stream JSON, typed
+  usage, native budget exits, provider/protocol failure, cancellation, timeout,
+  redaction, process wait, and task join pass 13 focused Qwen tests
+- no sandbox, container, resume, transcript deletion, background execution,
+  provider fallback, or direct-inference authority is claimed
+- doctor remains at the inherited 19 findings after splitting the new parser
+  and test files; roadmap 026 is active and card 082 is ready
 
 ## Milestones
 
@@ -448,7 +563,18 @@ cross-adapter adoption without prematurely stabilizing the public API.
 - [017 xAI Responses WebSocket Proof](017-xai-responses-websocket-proof.md) — completed
 - [018 Kimi Code ACP Portability Proof](018-kimi-code-acp-portability-proof.md) — completed
 - [019 Owned llama.cpp Serving Proof](019-owned-llama-cpp-serving-proof.md) — completed
-- [020 Post-Portability Coverage Expansion](020-post-portability-coverage-expansion.md) — active
+- [020 Post-Portability Coverage Expansion](020-post-portability-coverage-expansion.md) — completed
+- [021 Bedrock Control-Plane Catalogue Proof](021-bedrock-control-plane-catalogue-proof.md)
+  — completed
+- [022 Post-SDK Coverage Checkpoint](022-post-sdk-coverage-checkpoint.md) — completed
+- [023 OpenAI Background Responses Proof](023-openai-background-responses-proof.md)
+  — completed
+- [024 Post-Background Coverage Checkpoint](024-post-background-coverage-checkpoint.md)
+  — completed
+- [025 Claude Managed Agent Remote Harness Proof](025-claude-managed-agent-remote-harness-proof.md)
+  — completed
+- [026 Qwen Headless Structured Harness Proof](026-qwen-headless-structured-harness-proof.md)
+  — active
 
 ## Batch Shape
 
@@ -473,6 +599,12 @@ cross-adapter adoption without prematurely stabilizing the public API.
 - card 066 makes harness isolation optional and explicit before Kimi mapping
 - cards 067-069 form the post-portability evidence, selected-boundary, and
   production-proof lane
+- cards 070-072 form the separate Bedrock control-plane catalogue lane
+- card 073 closes the post-SDK coverage checkpoint
+- cards 074-075 form the OpenAI background Responses proof
+- card 076 closes the post-background coverage checkpoint
+- cards 077-079 form the Claude Managed Agents remote-harness proof
+- cards 080-082 form the Qwen Code headless structured-harness proof
 
 Run validation after each complete batch, not after each small card.
 

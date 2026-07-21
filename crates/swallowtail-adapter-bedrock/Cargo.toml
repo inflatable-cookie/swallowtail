@@ -1,0 +1,27 @@
+[package]
+name = "swallowtail-adapter-bedrock"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Amazon Bedrock SDK-native direct-inference drivers for Swallowtail"
+
+[dependencies]
+aws-credential-types = "1.3.0"
+aws-sdk-bedrock = { version = "=1.148.0", default-features = false, features = ["default-https-client", "rt-tokio", "rustls"] }
+aws-sdk-bedrockruntime = { version = "=1.136.0", default-features = false, features = ["default-https-client", "rt-tokio", "rustls"] }
+futures-channel = { version = "0.3", features = ["sink"] }
+futures-core = "0.3"
+futures-util = { version = "0.3", features = ["sink"] }
+swallowtail-core = { path = "../swallowtail-core" }
+swallowtail-runtime = { path = "../swallowtail-runtime" }
+tokio = { version = "1", features = ["macros", "rt", "sync"] }
+
+[dev-dependencies]
+futures-executor = "0.3"
+serde_json = "1"
+swallowtail-host-local = { path = "../swallowtail-host-local" }
+swallowtail-testkit = { path = "../swallowtail-testkit" }
+
+[lints]
+workspace = true

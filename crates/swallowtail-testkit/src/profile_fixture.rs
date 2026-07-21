@@ -4,13 +4,16 @@ use swallowtail_core::{
     CapabilityRequirement, ConfiguredInstance, ConfiguredInstanceId, DriverDescriptor,
     EndpointAudience, EndpointAuthorization, EntitlementState, ExecutionHostId, ExtensionNamespace,
     HostServiceKind, InstancePolicyId, InstanceRevision, InstanceTargetRef, IntegrationFamilyId,
-    ModelArtifactBinding, ModelArtifactDescriptor, ModelArtifactDigest, ModelArtifactFormat,
-    ModelArtifactId, ModelArtifactRef, ModelArtifactRevision, ModelId, ModelRoute, ModelRouteId,
-    ModelRouteRevision, OperationRequirements, PreflightContext, PreflightFailure, PreflightPlan,
-    ProtocolFacadeId, RuntimeReadiness, SupportAuthority, TransportFamilyId, preflight,
+    ModelArtifactBinding, ModelId, ModelRoute, ModelRouteId, ModelRouteRevision,
+    OperationRequirements, PreflightContext, PreflightFailure, PreflightPlan, ProtocolFacadeId,
+    ProviderAgentBinding, ProviderAgentId, ProviderAgentVersion, RuntimeReadiness,
+    SupportAuthority, TransportFamilyId, preflight,
 };
 
 use crate::{SyntheticProfile, profile_shape::ProfileShape};
+
+mod artifact;
+mod managed;
 
 pub(crate) struct ProfilePreflightFixture {
     driver: DriverDescriptor,
@@ -60,6 +63,14 @@ impl ProfilePreflightFixture {
             valid(InstancePolicyId::new, "fixture-profile-policy"),
             capabilities.clone(),
         );
+        let instance = if profile == SyntheticProfile::ProviderManagedRemoteHarness {
+            instance.with_provider_agent(ProviderAgentBinding::new(
+                valid(ProviderAgentId::new, "fixture-managed-agent"),
+                valid(ProviderAgentVersion::new, "7"),
+            ))
+        } else {
+            instance
+        };
         let route = ModelRoute::new(
             valid(ModelRouteId::new, shape.route_id),
             valid(ModelRouteRevision::new, "fixture-route-revision-1"),
@@ -88,7 +99,8 @@ impl ProfilePreflightFixture {
             .with_endpoint_authorizations([EndpointAuthorization::Allowed])
             .with_runtime_readiness([RuntimeReadiness::Ready])
             .with_support_authorities([SupportAuthority::ProviderSupported]);
-        let artifact = (profile == SyntheticProfile::OwnedSelfHosted).then(fixture_artifact);
+        let artifact =
+            (profile == SyntheticProfile::OwnedSelfHosted).then(artifact::fixture_artifact);
         let mut requirements = OperationRequirements::new(
             shape.layer,
             shape.operation_shape,
@@ -165,18 +177,6 @@ impl ProfilePreflightFixture {
     }
 }
 
-fn fixture_artifact() -> ModelArtifactBinding {
-    ModelArtifactBinding::new(
-        valid(ModelArtifactRef::new, "fixture.model-artifact"),
-        ModelArtifactDescriptor::new(
-            valid(ModelArtifactId::new, "fixture-artifact"),
-            valid(ModelArtifactFormat::new, "gguf"),
-            valid(ModelArtifactRevision::new, "fixture-artifact-revision-1"),
-            valid(ModelArtifactDigest::new, "sha256:fixture-artifact"),
-        ),
-    )
-}
-
 fn capability_profile(profile: SyntheticProfile) -> CapabilityProfile {
     CapabilityProfile::new(capability_requirements(profile))
 }
@@ -244,6 +244,9 @@ fn capability_requirements(profile: SyntheticProfile) -> Vec<CapabilityRequireme
         SyntheticProfile::AttachedSelfHosted | SyntheticProfile::OwnedSelfHosted => {}
         SyntheticProfile::OneShotStructuredCli | SyntheticProfile::HostedDirectApi => {
             capabilities.push(CapabilityRequirement::new(Capability::StructuredRun, []));
+        }
+        SyntheticProfile::ProviderManagedRemoteHarness => {
+            capabilities.extend(managed::capabilities());
         }
     }
     capabilities

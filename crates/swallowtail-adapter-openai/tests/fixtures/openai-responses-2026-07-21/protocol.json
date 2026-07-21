@@ -1,0 +1,15 @@
+{
+  "captured": "2026-07-21",
+  "integration_family": "openai",
+  "service": "responses",
+  "endpoint_audience": "api.openai.com",
+  "credential_mechanism": "public_api_key",
+  "metering": "openai_api_billing",
+  "support_authority": "provider-supported-public-api",
+  "background": true,
+  "stream": true,
+  "store": false,
+  "temporary_provider_retention_required": true,
+  "maximum_reattachments": 1,
+  "inference_attempts": 1
+}

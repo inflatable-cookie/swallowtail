@@ -377,6 +377,9 @@ impl RpcConnection {
             if let Err(error) = turn.handle_tool_call(id.clone(), params, callback_id) {
                 self.reject_server_request(id, -32602, "Dynamic tool callback rejected")
                     .await?;
+                if turn.is_stopping() {
+                    return Ok(());
+                }
                 return Err(error);
             }
             return Ok(());

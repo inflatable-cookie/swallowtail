@@ -7,11 +7,13 @@ Swallowtail owns portable integration mechanisms. Applications retain their
 prompts, tools, authority, workflows, persistence, and product state.
 
 Status: foundation. The repository is in strict Northstar posture. The
-provider-neutral core, pure preflight, executor-neutral runtime, nine synthetic
+provider-neutral core, pure preflight, executor-neutral runtime, ten synthetic
 conformance profiles, host-approved local process/endpoint/credential services,
-and eight production transport routes across Codex, OpenCode, Anthropic, Gemini,
-Kimi, llama.cpp, and xAI are validated. Codex app-server supports both unchanged read-
-only sessions and one explicit host-resolved bounded workspace profile.
+fourteen production driver routes, including separate SDK-native Bedrock Runtime
+and control-plane routes, across Codex, OpenCode, OpenAI, Anthropic, Bedrock,
+Gemini, Kimi, llama.cpp, and xAI are validated. Codex app-server supports both
+unchanged read-only sessions and one explicit host-resolved bounded workspace
+profile.
 
 ## Start Here
 
@@ -38,11 +40,12 @@ Then read [docs/README.md](docs/README.md).
 - local and remote execution hosts treated as equal topologies
 - Nucleus and Soundcheck as initial consumers, not Swallowtail authorities
 
-The twelve-crate Rust workspace contains `swallowtail-core`, `swallowtail-runtime`,
+The fifteen-crate Rust workspace contains `swallowtail-core`, `swallowtail-runtime`,
 `swallowtail-testkit`, `swallowtail-host-local`, `swallowtail-protocol-acp`,
 `swallowtail-adapter-codex`, `swallowtail-adapter-opencode`,
-`swallowtail-adapter-anthropic`, `swallowtail-adapter-gemini`,
-`swallowtail-adapter-kimi`, and `swallowtail-adapter-llama-cpp`, plus the production
+`swallowtail-adapter-anthropic`, `swallowtail-adapter-bedrock`, `swallowtail-adapter-gemini`,
+`swallowtail-adapter-kimi`, `swallowtail-adapter-llama-cpp`,
+`swallowtail-adapter-openai`, `swallowtail-adapter-qwen`, and
 `swallowtail-adapter-xai`. Provider behavior stays isolated in adapters.
 
 The Soundcheck structured-run and Nucleus interactive-session lanes are
@@ -121,8 +124,72 @@ joins process, callback, resource, and delegated-credential work without a
 filesystem, descendant, or provider-tool network containment claim. A separate
 persistent ACP extension proves load, replay, resume, bounded writes, delegated
 auth, topology, redaction, and ordered cleanup without widening Gemini's
-baseline. Roadmap 018 is complete. Roadmap 020 now rechecks real SDK-native
-embedding first, then selects the next highest-information provider or
-transport route.
-Full repository QA passes with 271 tests; three installed/live probes remain
-separately gated. Doctor remains at the inherited 19 oversized-file findings.
+baseline. Roadmap 018 is complete. Research 013 accepts the provider-supported
+`aws-sdk-bedrockruntime = 1.136.0` route as the first real in-process Rust SDK
+proof. Contract 019 forbids ambient SDK configuration and fixes delegated cloud
+credentials, private executor ownership, explicit region/endpoint binding, and
+one inference attempt. The production Bedrock Runtime driver now binds one
+exact host, endpoint, region, delegated credential provider, route, model, and
+output bound. Typed `ConverseStream` projection, cancellation, full-stream
+deadline, and credential release finish inside joined operation-private Tokio
+work. Local and remote-authoritative hosted-direct conformance passes without
+AWS access. Roadmap 020 and cards 067-069 are complete. Research 014 and
+Contract 020 now fix the separate native Bedrock control-plane catalogue
+boundary: one non-paginated `ListFoundationModels` request through
+`aws-sdk-bedrock = 1.148.0`, with source-scoped observations that cannot imply
+runtime capability, entitlement, or route selection. Card 071 completes the
+provider-neutral records and generated SDK fixtures. The separately registered
+production driver now binds its own descriptor, configured instance, regional
+endpoint, access profile, delegated provider, deadline, one request, one SDK
+attempt, and bounded projection. Local and remote-authoritative fixtures prove
+deadline signalling, joined private execution, drift rejection, redaction,
+credential release, and the absence of implicit routes or provider identity.
+Roadmap 021 and cards 070-072 are complete. Research 015 and roadmap 022 select
+OpenAI Responses background mode as the next proof because the provider-owned
+run can outlive one SSE attachment and supports bounded cursor reattachment
+and native cancel. Required temporary provider retention remains explicit even
+with `store=false`. The route uses the OpenAI public API only; ChatGPT, Codex,
+harness, subscription, and community OAuth access remain separate. Contract
+021 and card 074 fix optional provider-managed background execution, explicit
+temporary retention, maximum-one stream reattachment, provider cancellation
+truth, and a deterministic public-API corpus. The production OpenAI driver now
+binds one exact public endpoint, API-key lease, model route, output bound,
+deadline, create attempt, reattachment, bounded retrieve, and native cancel.
+Local and remote-authoritative conformance preserves ordered output, usage,
+rate, request, failure, cancellation-race, deadline, redaction, and joined-
+cleanup truth. Ordinary harness and direct runs remain attached with retention
+prohibited and reattachment disabled. Roadmap 023 is complete. Research 016
+selects Claude Managed Agents as the next high-information proof: a provider-
+hosted remote harness with explicit durable retention, provider-managed
+rescheduling, authoritative persisted events, callbacks, interruption, and
+remote deletion truth. Contract 022 fixes a resource-free subset with one
+operator-owned agent and driver-owned environment and session. It grants no
+repository, provider filesystem, external sandbox network, or local-container
+authority. Roadmap 025 and cards 077-079 own the proof. Cursor Cloud Agents
+remains behind a separate repository and remote-workspace authority decision.
+Card 077 realizes the minimum shared durable-retention, managed-recovery,
+owned-resource deletion, structured-run tool/callback, exact preflight, and
+dated REST/SSE fixture boundaries. The empty-host limited environment, pinned
+session override, authoritative event reconciliation, callback, interrupt,
+and ordered deletion transcript pass without live access. Card 078 adds the
+production driver with exact provider-agent preflight identity, bounded
+callbacks and recovery, native interrupt, usage evidence, ordered deletion,
+safe failure, and joined cleanup. Card 079 adds the tenth provider-neutral
+profile and proves the production driver under local and remote-authoritative
+host identities. Roadmap 025 is complete. Full repository QA passes with 330
+tests; three installed/live probes remain separately gated. Research 017 now
+selects stable Qwen Code `v0.19.11` headless over unfinished remote ACP,
+policy-bound Cursor Background Agents, and the experimental Qwen daemon.
+Contract 023 makes structured-run harness isolation explicit without turning
+safe mode, tool restrictions, native budgets, or optional sandboxing into a
+containment claim. Card 080 adds the shared binding and a pinned offline Qwen
+corpus with text stdin, stream JSON, a read-only tool registry, native terminal
+exits, durable local retention, and explicit `AmbientHost`. Its 110 focused
+tests pass without a Qwen binary, credential, provider request, or container.
+Card 081 adds the separately registered production driver with exact preflight,
+frozen argv, stdin-only content, bounded stream JSON, typed usage, native budget
+truth, cancellation, deadlines, safe diagnostics, and joined cleanup. It makes
+no sandbox, container, resume, transcript-deletion, provider-fallback, or direct-
+inference claim. Card 082 is ready for provider-neutral local and remote-
+authoritative conformance. Doctor remains at the inherited 19 oversized-file
+findings.

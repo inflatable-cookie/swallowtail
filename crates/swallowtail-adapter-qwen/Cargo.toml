@@ -1,0 +1,19 @@
+[package]
+name = "swallowtail-adapter-qwen"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Qwen Code harness drivers for Swallowtail"
+
+[dependencies]
+serde_json = "1"
+swallowtail-core = { path = "../swallowtail-core" }
+swallowtail-runtime = { path = "../swallowtail-runtime" }
+
+[dev-dependencies]
+futures-executor = "0.3"
+futures-util = "0.3"
+
+[lints]
+workspace = true

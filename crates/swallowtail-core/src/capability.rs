@@ -24,6 +24,12 @@ pub enum Capability {
     UsageReporting,
     BilledCostReporting,
     OutputTokenLimit,
+    ProviderBackgroundExecution,
+    ProviderTemporaryRetention,
+    ProviderDurableRetention,
+    ProviderManagedRecovery,
+    OwnedRemoteResourceDeletion,
+    StreamReattachment,
 }
 
 #[derive(Clone, Debug, Default, Eq, PartialEq)]

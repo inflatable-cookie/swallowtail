@@ -337,7 +337,10 @@ fn session_options_and_dynamic_tool_callback_round_trip() {
     }
     let response = CallbackResponse::new(
         request.callback_id().clone(),
-        request.turn_id().clone(),
+        request
+            .turn_id()
+            .expect("callback belongs to a turn")
+            .clone(),
         CallbackResult::Success(
             CallbackPayload::new(br#"{"tasks":[]}"#.to_vec(), 128)
                 .expect("callback result is bounded"),
@@ -547,7 +550,10 @@ fn cancellation_abandons_pending_callback_and_rejects_late_response() {
     assert_eq!(terminal.status(), &TerminalStatus::Cancelled);
     let late = CallbackResponse::new(
         request.callback_id().clone(),
-        request.turn_id().clone(),
+        request
+            .turn_id()
+            .expect("callback belongs to a turn")
+            .clone(),
         CallbackResult::Success(
             CallbackPayload::new(b"late".to_vec(), 16).expect("payload is bounded"),
         ),

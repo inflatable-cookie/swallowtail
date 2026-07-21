@@ -1,0 +1,3 @@
+event: response.new_semantics
+data: {"type":"response.new_semantics","sequence_number":4,"response_id":"resp_fixture_123"}
+

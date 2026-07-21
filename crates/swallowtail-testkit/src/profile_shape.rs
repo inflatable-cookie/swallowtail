@@ -33,6 +33,9 @@ impl ProfileShape {
             SyntheticProfile::PersistentAcpHarness => crate::profile_persistent_acp_shape::shape(),
             SyntheticProfile::AttachedNetworkHarness => Self::network_harness(),
             SyntheticProfile::HostedDirectApi => Self::hosted(),
+            SyntheticProfile::ProviderManagedRemoteHarness => {
+                crate::profile_managed_harness_shape::shape()
+            }
             SyntheticProfile::ConnectionScopedDirectSession => Self::direct_session(),
             SyntheticProfile::AttachedSelfHosted => Self::self_hosted(
                 "fixture.driver.attached",

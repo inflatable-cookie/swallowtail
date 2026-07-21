@@ -1,0 +1,10 @@
+{
+  "id": "agent_fixture",
+  "version": 7,
+  "model": "claude-fixture-model",
+  "tools": [],
+  "mcp_servers": [],
+  "skills": [],
+  "multiagent": null
+}
+

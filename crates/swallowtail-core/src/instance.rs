@@ -1,6 +1,7 @@
 use crate::access::SupportAuthority;
 use crate::identity::AdapterId;
 use crate::model::{ModelId, ProviderId};
+use crate::provider_agent::ProviderAgentBinding;
 use crate::requirement::CapabilityProfile;
 use crate::runtime_identity::{
     AccessProfileId, ConfiguredInstanceId, ExecutionHostId, InstanceOwnership, InstancePolicyId,
@@ -20,6 +21,7 @@ pub struct ConfiguredInstance {
     protocol_facade_id: ProtocolFacadeId,
     policy_id: InstancePolicyId,
     capabilities: CapabilityProfile,
+    provider_agent: Option<ProviderAgentBinding>,
 }
 
 impl ConfiguredInstance {
@@ -50,6 +52,7 @@ impl ConfiguredInstance {
             protocol_facade_id,
             policy_id,
             capabilities,
+            provider_agent: None,
         }
     }
 
@@ -106,6 +109,17 @@ impl ConfiguredInstance {
     #[must_use]
     pub const fn capabilities(&self) -> &CapabilityProfile {
         &self.capabilities
+    }
+
+    #[must_use]
+    pub fn with_provider_agent(mut self, binding: ProviderAgentBinding) -> Self {
+        self.provider_agent = Some(binding);
+        self
+    }
+
+    #[must_use]
+    pub const fn provider_agent(&self) -> Option<&ProviderAgentBinding> {
+        self.provider_agent.as_ref()
     }
 }
 

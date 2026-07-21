@@ -59,6 +59,8 @@ pub enum ConformanceAssertion {
     DurableRetentionExplicit,
     ManagedRecoveryExplicit,
     OwnedRemoteDeletionTruth,
+    NativeBudgetIndependent,
+    NoTranscriptDeletionClaim,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -97,6 +99,11 @@ impl ConformanceReport {
 #[must_use]
 pub fn run_one_shot_structured_cli_profile() -> ConformanceReport {
     crate::profile_one_shot::run()
+}
+
+#[must_use]
+pub fn run_structured_harness_native_boundary_assertions() -> ConformanceReport {
+    crate::profile_harness_native::run()
 }
 
 #[must_use]

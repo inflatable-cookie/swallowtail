@@ -1,6 +1,6 @@
 # 026 Qwen Headless Structured Harness Proof
 
-Status: active
+Status: completed
 Owner: Tom
 Updated: 2026-07-21
 
@@ -38,20 +38,20 @@ route as the immediate proof.
 - [x] Freeze the exact Qwen version, invocation, output, native-budget,
       retention, failure, and exclusion boundary offline.
 - [x] Implement one separately registered Qwen headless structured-run driver.
-- [ ] Prove one-shot structured-CLI conformance under local and remote-
+- [x] Prove one-shot structured-CLI conformance under local and remote-
       authoritative host identities without an implicit sandbox.
 
 ## Execution Plan
 
 - [x] Shared isolation records and Qwen protocol corpus: card 080.
 - [x] Qwen headless production driver: card 081.
-- [ ] Qwen structured-CLI conformance and closeout: card 082.
+- [x] Qwen structured-CLI conformance and closeout: card 082.
 
 ## Cards
 
 - `batch-cards/080-qwen-headless-isolation-records-and-fixtures.md` — completed
 - `batch-cards/081-qwen-headless-driver.md` — completed
-- `batch-cards/082-qwen-headless-conformance-and-closeout.md` — ready
+- `batch-cards/082-qwen-headless-conformance-and-closeout.md` — completed
 
 ## Bounded First Proof
 

@@ -84,6 +84,8 @@
 - `079-claude-managed-agent-conformance-and-closeout.md`
 - `080-qwen-headless-isolation-records-and-fixtures.md`
 - `081-qwen-headless-driver.md`
+- `082-qwen-headless-conformance-and-closeout.md`
+- `083-direct-provider-compatibility-evidence.md`
 
 ## Blocked
 
@@ -91,8 +93,9 @@ None.
 
 ## Ready
 
-- `082-qwen-headless-conformance-and-closeout.md`
+- `084-compatible-chat-codec-and-kimi-k3-fixtures.md`
 
 ## Planned
 
-None.
+- `085-kimi-platform-direct-driver.md`
+- `086-kimi-platform-conformance-and-closeout.md`

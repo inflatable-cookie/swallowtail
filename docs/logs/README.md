@@ -5,6 +5,8 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-07-21 Direct Provider Compatible-Codec Selection](2026-07-21-direct-provider-compatible-codec-selection.md)
+- [2026-07-21 Qwen Headless Conformance And Closeout](2026-07-21-qwen-headless-conformance-and-closeout.md)
 - [2026-07-21 Qwen Headless Driver](2026-07-21-qwen-headless-driver.md)
 - [2026-07-21 Qwen Headless Isolation Records And Fixtures](2026-07-21-qwen-headless-isolation-records-and-fixtures.md)
 - [2026-07-21 Claude Managed Agent Conformance And Closeout](2026-07-21-claude-managed-agent-conformance-and-closeout.md)

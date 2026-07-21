@@ -69,7 +69,15 @@ Agents, and the experimental Qwen daemon. Contract 023 keeps structured-run
 isolation, provider permissions, native budgets, durable local transcript
 state, and optional sandboxing separate. Card 080 freezes the first read-only
 `AmbientHost` route with text stdin, bounded stream JSON, explicit tool posture,
-and no container. Card 081 is ready for the production driver.
+and no container. Cards 081-082 complete the production driver and unchanged
+one-shot-profile proof under local and remote-authoritative hosts. Full QA
+passes with 360 tests. Roadmap 027 revalidates direct Kimi Platform, DeepSeek,
+Z.AI, and Alibaba/Qwen compatibility seams. Research 018 and Contract 024
+select a smaller structural Chat Completions codec plus one exact Kimi
+Platform K3 proof. The codec must pass independent llama.cpp and Kimi corpora;
+provider access, model, reasoning, errors, catalogue, retry, and lifecycle stay
+outside it. Roadmap 028 owns cards 084-086. DeepSeek V4, Z.AI general API, and
+Alibaba Model Studio remain later separate mappings.
 
 These stages normally become numbered roadmaps inside the active generation.
 They do not each create a generation. A generation rolls over near the 30-50

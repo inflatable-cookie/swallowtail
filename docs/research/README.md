@@ -25,3 +25,4 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [015 Provider-Owned Background Run Evidence](015-provider-owned-background-run-evidence.md)
 - [016 Claude Managed Agent And Post-Background Coverage Evidence](016-claude-managed-agent-and-post-background-coverage-evidence.md)
 - [017 Qwen Headless And Post-Managed-Harness Coverage Evidence](017-qwen-headless-and-post-managed-harness-coverage-evidence.md)
+- [018 Direct Provider Compatible-Codec Evidence](018-direct-provider-compatible-codec-evidence.md)

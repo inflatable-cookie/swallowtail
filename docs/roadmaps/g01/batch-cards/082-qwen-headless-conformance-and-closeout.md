@@ -1,6 +1,6 @@
 # 082 Qwen Headless Conformance And Closeout
 
-Status: ready
+Status: completed
 Owner: Tom
 Updated: 2026-07-21
 Milestone: `../026-qwen-headless-structured-harness-proof.md`
@@ -28,12 +28,12 @@ prove isolation and native-bound assertions, and close roadmap 026.
 
 ## Acceptance Criteria
 
-- [ ] the existing one-shot profile passes without provider-specific branches
-- [ ] Contract 023 assertions pass under both host topologies
-- [ ] enforced-isolation substitution fails before process effects
-- [ ] process exit leaves no detached task and claims no transcript deletion
-- [ ] existing drivers and profiles remain unchanged
-- [ ] one next provider-breadth checkpoint remains after closeout
+- [x] the existing one-shot profile passes without provider-specific branches
+- [x] Contract 023 assertions pass under both host topologies
+- [x] enforced-isolation substitution fails before process effects
+- [x] process exit leaves no detached task and claims no transcript deletion
+- [x] existing drivers and profiles remain unchanged
+- [x] one next provider-breadth checkpoint remains after closeout
 
 ## Validation
 
@@ -52,3 +52,21 @@ prove isolation and native-bound assertions, and close roadmap 026.
 ## Auto-Continuation
 
 No. Return to the direct-provider compatibility evidence checkpoint.
+
+## Completion Evidence
+
+- the existing one-shot structured-CLI profile remains provider-free and
+  unchanged
+- a separate Contract 023 assertion pack proves ambient harness authority,
+  explicit durable retention, native-budget independence, and no transcript-
+  deletion claim without creating an eleventh transport profile
+- production Qwen fixtures pass under local and remote-authoritative host
+  identities across success, native exits, provider and protocol failure,
+  disconnect, cancellation, timeout, redaction, and pre-effect isolation
+  rejection
+- every started process is waited and every scoped reader task is joined;
+  terminal outcomes contain no remote-resource deletion record
+- focused tests and warnings-denied clippy pass; full `effigy qa` passes with
+  360 tests and three separately gated probes ignored
+- `effigy doctor` remains at the inherited 19 findings: 12 warnings and 7
+  errors; `git diff --check` passes

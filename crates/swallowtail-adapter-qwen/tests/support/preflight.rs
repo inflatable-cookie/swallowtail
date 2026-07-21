@@ -15,20 +15,37 @@ use swallowtail_runtime::{
     RequestId, StructuredRunRequest, WorkingResourceRef,
 };
 
-const HOST_ID: &str = "host.local";
-
 pub fn plan() -> PreflightPlan {
+    bound_plan(
+        ExecutionHostId::new("host.local").expect("host id is valid"),
+        ConfiguredInstanceId::new("qwen-headless.local").expect("instance id is valid"),
+        InstanceTargetRef::new("qwen-executable").expect("target is valid"),
+    )
+}
+
+pub fn plan_for(topology: &swallowtail_testkit::ExecutionTopologyFixture) -> PreflightPlan {
+    bound_plan(
+        topology.execution_host_id().clone(),
+        topology.configured_instance_id().clone(),
+        topology.instance_target().clone(),
+    )
+}
+
+fn bound_plan(
+    host: ExecutionHostId,
+    instance_id: ConfiguredInstanceId,
+    target: InstanceTargetRef,
+) -> PreflightPlan {
     let descriptor = qwen_headless_descriptor();
-    let host = ExecutionHostId::new(HOST_ID).expect("host id is valid");
     let access_id = AccessProfileId::new("access.qwen-headless").expect("access id is valid");
     let requirements = capabilities();
     let profile = CapabilityProfile::new(requirements.clone());
     let instance = ConfiguredInstance::new(
-        ConfiguredInstanceId::new("qwen-headless.local").expect("instance id is valid"),
+        instance_id,
         InstanceRevision::new("1").expect("revision is valid"),
         descriptor.identity().id().clone(),
         host.clone(),
-        InstanceTargetRef::new("qwen-executable").expect("target is valid"),
+        target,
         InstanceOwnership::HostOwnedEphemeral,
         access_id.clone(),
         SupportAuthority::IntegrationMaintainerSupported,
@@ -92,6 +109,10 @@ pub fn plan() -> PreflightPlan {
 }
 
 pub fn request(id: &str) -> StructuredRunRequest {
+    request_for(id, working_resource())
+}
+
+pub fn request_for(id: &str, resource: WorkingResourceRef) -> StructuredRunRequest {
     StructuredRunRequest::new(
         RequestId::new(id).expect("request id is valid"),
         OperationContent::new("fixture-private-prompt").expect("content is valid"),
@@ -99,7 +120,7 @@ pub fn request(id: &str) -> StructuredRunRequest {
             .with_provider_retention(ProviderRetentionPolicy::DurableAllowed)
             .with_harness_isolation(HarnessIsolation::AmbientHost),
     )
-    .with_working_resource(working_resource())
+    .with_working_resource(resource)
     .with_deadline(Deadline::at(MonotonicInstant::from_ticks(1_000)))
 }
 

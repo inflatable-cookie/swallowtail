@@ -536,7 +536,30 @@ cross-adapter adoption without prematurely stabilizing the public API.
 - no sandbox, container, resume, transcript deletion, background execution,
   provider fallback, or direct-inference authority is claimed
 - doctor remains at the inherited 19 findings after splitting the new parser
-  and test files; roadmap 026 is active and card 082 is ready
+  and test files
+- Qwen passes the unchanged provider-neutral one-shot structured-CLI profile;
+  a separate Contract 023 assertion pack covers ambient authority, explicit
+  durable retention, native-budget independence, and no transcript-deletion
+  claim without creating an eleventh profile
+- local and remote-authoritative production fixtures prove success, native
+  exits, provider and protocol failure, disconnect, cancellation, timeout,
+  redaction, pre-effect isolation rejection, process wait, and task join
+- full repository QA passes with 360 tests; three installed/live probes remain
+  separately gated, and doctor stays at the inherited 19 findings
+- roadmap 026 and cards 080-082 are complete; roadmap 027 and card 083 then
+  opened the direct Kimi Platform, DeepSeek, Z.AI, and Alibaba/Qwen
+  compatibility evidence checkpoint
+- Research 018 revalidates Kimi Platform, DeepSeek, Z.AI, and Alibaba Model
+  Studio from official sources and keeps their public, subscription, plan,
+  region, workspace, and product audiences separate
+- Kimi Platform K3 is selected as the first direct-provider breadth proof: one
+  stateless Chat Completions stream, one authenticated catalogue, exact
+  `api.moonshot.ai` pay-as-you-go access, and no Membership or Kimi Code key
+- Contract 024 limits common Chat Completions reuse to bounded structural wire
+  truth; provider access, model, capability, error, lifecycle, retry, and
+  fallback semantics remain in separate adapters
+- roadmap 027 and card 083 are complete; roadmap 028 and cards 084-086 own the
+  common codec, Kimi K3 corpus, production driver, and conformance
 
 ## Milestones
 
@@ -574,6 +597,10 @@ cross-adapter adoption without prematurely stabilizing the public API.
 - [025 Claude Managed Agent Remote Harness Proof](025-claude-managed-agent-remote-harness-proof.md)
   — completed
 - [026 Qwen Headless Structured Harness Proof](026-qwen-headless-structured-harness-proof.md)
+  — completed
+- [027 Direct Provider Compatible-Codec Checkpoint](027-direct-provider-compatible-codec-checkpoint.md)
+  — completed
+- [028 Kimi Platform K3 Direct Inference Proof](028-kimi-platform-k3-direct-inference-proof.md)
   — active
 
 ## Batch Shape
@@ -605,6 +632,8 @@ cross-adapter adoption without prematurely stabilizing the public API.
 - card 076 closes the post-background coverage checkpoint
 - cards 077-079 form the Claude Managed Agents remote-harness proof
 - cards 080-082 form the Qwen Code headless structured-harness proof
+- card 083 opens the direct-provider compatible-codec evidence checkpoint
+- cards 084-086 form the Kimi Platform K3 direct-inference proof
 
 Run validation after each complete batch, not after each small card.
 

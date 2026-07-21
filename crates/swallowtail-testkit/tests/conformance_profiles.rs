@@ -2,6 +2,7 @@ use swallowtail_core::PreflightDimension;
 use swallowtail_testkit::{
     ConformanceAssertion, PreflightFixtureCase, SyntheticProfile,
     assert_preflight_rejection_without_side_effects, run_all_synthetic_profiles,
+    run_structured_harness_native_boundary_assertions,
 };
 
 const COMMON_ASSERTIONS: [ConformanceAssertion; 14] = [
@@ -217,6 +218,20 @@ fn managed_harness_profile_proves_contract_022_boundaries() {
         ConformanceAssertion::HostTopologyPreserved,
     ] {
         assert!(managed.covers(assertion));
+    }
+}
+
+#[test]
+fn structured_harness_assertion_pack_proves_contract_023_without_a_new_profile() {
+    let report = run_structured_harness_native_boundary_assertions();
+    assert_eq!(report.profile(), SyntheticProfile::OneShotStructuredCli);
+    for assertion in [
+        ConformanceAssertion::AmbientHarnessAuthority,
+        ConformanceAssertion::DurableRetentionExplicit,
+        ConformanceAssertion::NativeBudgetIndependent,
+        ConformanceAssertion::NoTranscriptDeletionClaim,
+    ] {
+        assert!(report.covers(assertion), "missing {assertion:?}");
     }
 }
 

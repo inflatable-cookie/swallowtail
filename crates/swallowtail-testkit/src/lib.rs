@@ -16,6 +16,7 @@ mod profile_attached;
 mod profile_common;
 mod profile_direct_session;
 mod profile_fixture;
+mod profile_harness_native;
 mod profile_hosted;
 mod profile_managed_harness;
 mod profile_managed_harness_shape;
@@ -53,7 +54,7 @@ pub use profiles::{
     run_connection_scoped_direct_session_profile, run_hosted_direct_api_profile,
     run_long_lived_acp_profile, run_long_lived_rpc_profile, run_one_shot_structured_cli_profile,
     run_owned_self_hosted_profile, run_persistent_acp_profile,
-    run_provider_managed_harness_profile,
+    run_provider_managed_harness_profile, run_structured_harness_native_boundary_assertions,
 };
 pub use recording_host::{
     RecordedHostCall, RecordingHostServices, RecordingOutcome, poll_immediate,

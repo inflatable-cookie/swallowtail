@@ -1,16 +1,10 @@
-use futures_executor::block_on;
 use std::collections::VecDeque;
-use std::future::Future;
-use std::pin::Pin;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
-use std::task::{Context, Poll};
-use std::thread::{self, JoinHandle};
-use swallowtail_core::ExecutionHostId;
+use std::thread;
 use swallowtail_runtime::{
-    BoxFuture, Deadline, DeadlineObservation, HostServices, JoinedTask, MonotonicInstant,
-    ProcessExit, ProcessHandle, ProcessInputChunk, ProcessOutputChunk, ProcessOutputStream,
-    ProcessRequest, ProcessService, RuntimeFailure, ScopeId, ScopedTaskService, TimeService,
+    BoxFuture, ProcessExit, ProcessHandle, ProcessInputChunk, ProcessOutputChunk,
+    ProcessOutputStream, ProcessRequest, ProcessService, RuntimeFailure, ScopeId,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -202,75 +196,4 @@ impl ProcessHandle for FakeProcessHandle {
         let exit = self.exit;
         Box::pin(async move { Ok(exit) })
     }
-}
-
-struct ThreadTaskService;
-struct ThreadTask(Mutex<Option<JoinHandle<()>>>);
-
-impl ScopedTaskService for ThreadTaskService {
-    fn spawn(
-        &self,
-        _scope: ScopeId,
-        task: BoxFuture<'static, ()>,
-    ) -> Result<Box<dyn JoinedTask>, RuntimeFailure> {
-        Ok(Box::new(ThreadTask(Mutex::new(Some(thread::spawn(
-            move || block_on(task),
-        ))))))
-    }
-}
-
-impl JoinedTask for ThreadTask {
-    fn join(self: Box<Self>) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
-        Box::pin(async move {
-            self.0
-                .lock()
-                .expect("task lock is available")
-                .take()
-                .expect("task joins once")
-                .join()
-                .expect("fixture task does not panic");
-            Ok(())
-        })
-    }
-}
-
-pub struct PendingTimeService;
-
-impl TimeService for PendingTimeService {
-    fn now(&self) -> MonotonicInstant {
-        MonotonicInstant::from_ticks(0)
-    }
-
-    fn wait_until(&self, _deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
-        Box::pin(PendingDeadline)
-    }
-}
-
-struct PendingDeadline;
-
-impl Future for PendingDeadline {
-    type Output = DeadlineObservation;
-
-    fn poll(self: Pin<&mut Self>, _context: &mut Context<'_>) -> Poll<Self::Output> {
-        Poll::Pending
-    }
-}
-
-pub struct ImmediateTimeService;
-
-impl TimeService for ImmediateTimeService {
-    fn now(&self) -> MonotonicInstant {
-        MonotonicInstant::from_ticks(1_000)
-    }
-
-    fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
-        Box::pin(async move { DeadlineObservation::new(deadline, deadline.instant()) })
-    }
-}
-
-pub fn host_services(process: Arc<dyn ProcessService>, time: Arc<dyn TimeService>) -> HostServices {
-    HostServices::new(ExecutionHostId::new("host.local").expect("host id is valid"))
-        .with_task(Arc::new(ThreadTaskService))
-        .with_process(process)
-        .with_time(time)
 }

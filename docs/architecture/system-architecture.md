@@ -36,7 +36,9 @@ spine:
   Contract 003, Contract 008, runtime-skeleton, and Contract 011 cross-shape
   fixtures and assertions, including distinct local and remote-authoritative
   execution-host identities plus pure remote-harness policy fixtures for
-  durable retention, managed recovery, and exact resource ownership
+  durable retention, managed recovery, exact resource ownership, and a
+  separate structured-harness native-bound assertion pack that does not create
+  a new transport profile
 - `swallowtail-host-local` depends on core and runtime and implements concrete
   host-approved local process, endpoint, credential, materialization, and
   monotonic deadline behavior behind capability-scoped runtime ports
@@ -83,7 +85,9 @@ spine:
   headless structured-run route with exact read-only argv, text stdin, bounded
   stream JSON, typed usage, explicit native budgets, durable local retention,
   redacted terminal classifications, host deadline and cancellation, joined
-  process cleanup, and `AmbientHost` isolation without a sandbox claim
+  process cleanup, and `AmbientHost` isolation without a sandbox claim; the
+  production driver passes the provider-neutral one-shot profile under local
+  and remote-authoritative host identities
 
 There is no global async executor, durable credential store, or consumer
 dependency. Concrete libcurl clients remain private to their adapters and run

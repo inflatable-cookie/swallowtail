@@ -11,11 +11,10 @@ shape.
 
 ## Next Task
 
-Execute [card 082](g01/batch-cards/082-qwen-headless-conformance-and-closeout.md):
-run the Qwen Code `v0.19.11` production driver through provider-neutral one-shot
-structured-CLI conformance under local and remote-authoritative hosts. Prove
-`AmbientHost`, durable retention, native budgets, host lifecycle, and no
-container claim, then close roadmap 026.
+Execute [card 084](g01/batch-cards/084-compatible-chat-codec-and-kimi-k3-fixtures.md):
+extract the bounded provider-neutral Chat Completions structural codec, prove it
+against independent llama.cpp and Kimi K3 corpora, and freeze the exact Kimi
+Platform catalogue, stream, access, and exclusion boundary offline.
 
 ## Index
 

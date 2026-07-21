@@ -188,8 +188,15 @@ exits, durable local retention, and explicit `AmbientHost`. Its 110 focused
 tests pass without a Qwen binary, credential, provider request, or container.
 Card 081 adds the separately registered production driver with exact preflight,
 frozen argv, stdin-only content, bounded stream JSON, typed usage, native budget
-truth, cancellation, deadlines, safe diagnostics, and joined cleanup. It makes
-no sandbox, container, resume, transcript-deletion, provider-fallback, or direct-
-inference claim. Card 082 is ready for provider-neutral local and remote-
-authoritative conformance. Doctor remains at the inherited 19 oversized-file
-findings.
+truth, cancellation, deadlines, safe diagnostics, and joined cleanup. Card 082
+passes the unchanged one-shot structured-CLI profile and a separate Contract
+023 assertion pack under local and remote-authoritative host identities. It
+makes no sandbox, container, resume, transcript-deletion, provider-fallback, or
+direct-inference claim. Roadmap 026 is complete with 360 passing repository
+tests. Research 018 revalidates direct Kimi Platform, DeepSeek, Z.AI, and
+Alibaba/Qwen and selects the current Kimi K3 public API. Contract 024 keeps
+shared Chat Completions reuse structural: provider access, model, reasoning,
+catalogue, error, retry, and lifecycle semantics remain separately mapped.
+Roadmap 028 now owns the common codec, offline Kimi K3 corpus, production
+driver, and hosted-direct conformance. Doctor remains at the inherited 19
+oversized-file findings.

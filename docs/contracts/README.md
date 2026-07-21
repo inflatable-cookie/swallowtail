@@ -28,6 +28,7 @@ Contracts hold durable, testable rules.
 - [021 Provider-Owned Background Run And Temporary Retention Boundary](021-provider-owned-background-run-and-temporary-retention-boundary.md)
 - [022 Provider-Managed Agent Resource And Durable Session Boundary](022-provider-managed-agent-resource-and-durable-session-boundary.md)
 - [023 Harness Operation Isolation And Native Boundary](023-harness-operation-isolation-and-native-boundary.md)
+- [024 Compatible Chat Codec And Provider Semantics](024-compatible-chat-codec-and-provider-semantics.md)
 
 Contract 003 defines the provider-neutral record kernel. Contracts 004-016
 govern the realized runtime and current proof drivers. Contract 017 governs
@@ -45,3 +46,6 @@ authoritative persisted events, and remote deletion truth.
 Contract 023 makes harness isolation operation-shape neutral and keeps provider
 permissions, native budgets, retained state, and optional sandboxing separate
 from host deadline, cancellation, and process authority.
+Contract 024 permits structural Chat Completions codec reuse while keeping
+provider access, model, capability, lifecycle, evidence, retry, and fallback
+semantics inside separately qualified adapters.

@@ -14,6 +14,7 @@ swallowtail-runtime = { path = "../swallowtail-runtime" }
 [dev-dependencies]
 futures-executor = "0.3"
 futures-util = "0.3"
+swallowtail-testkit = { path = "../swallowtail-testkit" }
 
 [lints]
 workspace = true

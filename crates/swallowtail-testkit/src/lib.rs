@@ -10,13 +10,19 @@ mod callback_fixture;
 mod fixture;
 mod preflight_assertions;
 mod preflight_fixture;
+mod profile_acp;
 mod profile_attached;
 mod profile_common;
+mod profile_direct_session;
 mod profile_fixture;
 mod profile_hosted;
+mod profile_network_harness;
 mod profile_one_shot;
 mod profile_owned;
+mod profile_persistent_acp;
+mod profile_persistent_acp_shape;
 mod profile_rpc;
+mod profile_session_access;
 mod profile_shape;
 mod profiles;
 mod recording_host;
@@ -39,8 +45,10 @@ pub(crate) use profile_common::assert_common_contract;
 pub(crate) use profile_fixture::ProfilePreflightFixture;
 pub use profiles::{
     ConformanceAssertion, ConformanceReport, SyntheticProfile, run_all_synthetic_profiles,
-    run_attached_self_hosted_profile, run_hosted_direct_api_profile, run_long_lived_rpc_profile,
-    run_one_shot_structured_cli_profile, run_owned_self_hosted_profile,
+    run_attached_network_harness_profile, run_attached_self_hosted_profile,
+    run_connection_scoped_direct_session_profile, run_hosted_direct_api_profile,
+    run_long_lived_acp_profile, run_long_lived_rpc_profile, run_one_shot_structured_cli_profile,
+    run_owned_self_hosted_profile, run_persistent_acp_profile,
 };
 pub use recording_host::{
     RecordedHostCall, RecordingHostServices, RecordingOutcome, poll_immediate,

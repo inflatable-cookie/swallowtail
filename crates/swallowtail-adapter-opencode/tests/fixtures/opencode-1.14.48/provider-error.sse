@@ -1,0 +1,4 @@
+data: {"id":"evt_1","type":"server.connected","properties":{}}
+
+data: {"id":"evt_2","type":"session.error","properties":{"sessionID":"ses_fixture","error":{"name":"APIError","data":{"message":"raw-secret-error-sentinel","statusCode":529,"isRetryable":true}}}}
+

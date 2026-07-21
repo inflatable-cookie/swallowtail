@@ -1,0 +1,2 @@
+{"direction":"client_to_agent","message":{"jsonrpc":"2.0","id":1,"method":"session/new","params":{"cwd":"/fixture/workspace","mcpServers":[]}}}
+{"direction":"agent_to_client","message":{"jsonrpc":"2.0","id":1,"error":{"code":-32000,"message":"Authentication required"}}}

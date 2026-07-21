@@ -4,9 +4,10 @@ use swallowtail_core::{
     CapabilityRequirement, ConfiguredInstance, ConfiguredInstanceId, DriverDescriptor,
     EndpointAudience, EndpointAuthorization, EntitlementState, ExecutionHostId, ExtensionNamespace,
     HostServiceKind, InstancePolicyId, InstanceRevision, InstanceTargetRef, IntegrationFamilyId,
-    ModelId, ModelRoute, ModelRouteId, ModelRouteRevision, OperationRequirements, PreflightContext,
-    PreflightFailure, PreflightPlan, ProtocolFacadeId, RuntimeReadiness, SupportAuthority,
-    TransportFamilyId, preflight,
+    ModelArtifactBinding, ModelArtifactDescriptor, ModelArtifactDigest, ModelArtifactFormat,
+    ModelArtifactId, ModelArtifactRef, ModelArtifactRevision, ModelId, ModelRoute, ModelRouteId,
+    ModelRouteRevision, OperationRequirements, PreflightContext, PreflightFailure, PreflightPlan,
+    ProtocolFacadeId, RuntimeReadiness, SupportAuthority, TransportFamilyId, preflight,
 };
 
 use crate::{SyntheticProfile, profile_shape::ProfileShape};
@@ -15,6 +16,7 @@ pub(crate) struct ProfilePreflightFixture {
     driver: DriverDescriptor,
     instance: ConfiguredInstance,
     route: ModelRoute,
+    artifact: Option<ModelArtifactBinding>,
     access_profile: AccessProfile,
     access_status: AccessStatus,
     requirements: OperationRequirements,
@@ -23,10 +25,13 @@ pub(crate) struct ProfilePreflightFixture {
 
 impl ProfilePreflightFixture {
     pub(crate) fn new(profile: SyntheticProfile) -> Self {
+        Self::for_host(profile, valid(ExecutionHostId::new, "fixture.host.profile"))
+    }
+
+    pub(crate) fn for_host(profile: SyntheticProfile, host_id: ExecutionHostId) -> Self {
         let shape = ProfileShape::for_profile(profile);
         let adapter_id = valid(AdapterId::new, shape.adapter_id);
         let access_profile_id = valid(AccessProfileId::new, shape.access_profile_id);
-        let host_id = valid(ExecutionHostId::new, "fixture.host.profile");
         let capabilities = capability_profile(profile);
         let driver = DriverDescriptor::new(
             AdapterIdentity::new(
@@ -83,7 +88,8 @@ impl ProfilePreflightFixture {
             .with_endpoint_authorizations([EndpointAuthorization::Allowed])
             .with_runtime_readiness([RuntimeReadiness::Ready])
             .with_support_authorities([SupportAuthority::ProviderSupported]);
-        let requirements = OperationRequirements::new(
+        let artifact = (profile == SyntheticProfile::OwnedSelfHosted).then(fixture_artifact);
+        let mut requirements = OperationRequirements::new(
             shape.layer,
             shape.operation_shape,
             shape.role,
@@ -95,11 +101,16 @@ impl ProfilePreflightFixture {
         .with_capabilities(capability_requirements(profile))
         .with_extension_namespaces([extension_namespace()])
         .require_model_route();
+        if shape.operation_shape == swallowtail_core::OperationShape::InteractiveSession {
+            requirements = requirements
+                .with_session_access_policy(crate::profile_session_access::policy(profile));
+        }
 
         Self {
             driver,
             instance,
             route,
+            artifact,
             access_profile,
             access_status,
             requirements,
@@ -111,15 +122,34 @@ impl ProfilePreflightFixture {
         preflight(&self.context(), &self.requirements)
     }
 
+    pub(crate) fn preflight_without_artifact(&self) -> Result<PreflightPlan, PreflightFailure> {
+        preflight(
+            &PreflightContext::new(
+                &self.driver,
+                &self.instance,
+                &self.access_profile,
+                &self.access_status,
+                self.available_services.iter().copied(),
+            )
+            .with_model_route(&self.route),
+            &self.requirements,
+        )
+    }
+
     pub(crate) fn context(&self) -> PreflightContext<'_> {
-        PreflightContext::new(
+        let context = PreflightContext::new(
             &self.driver,
             &self.instance,
             &self.access_profile,
             &self.access_status,
             self.available_services.iter().copied(),
         )
-        .with_model_route(&self.route)
+        .with_model_route(&self.route);
+        if let Some(artifact) = &self.artifact {
+            context.with_model_artifact(artifact)
+        } else {
+            context
+        }
     }
 
     pub(crate) const fn driver(&self) -> &DriverDescriptor {
@@ -129,6 +159,22 @@ impl ProfilePreflightFixture {
     pub(crate) const fn instance(&self) -> &ConfiguredInstance {
         &self.instance
     }
+
+    pub(crate) const fn artifact(&self) -> Option<&ModelArtifactBinding> {
+        self.artifact.as_ref()
+    }
+}
+
+fn fixture_artifact() -> ModelArtifactBinding {
+    ModelArtifactBinding::new(
+        valid(ModelArtifactRef::new, "fixture.model-artifact"),
+        ModelArtifactDescriptor::new(
+            valid(ModelArtifactId::new, "fixture-artifact"),
+            valid(ModelArtifactFormat::new, "gguf"),
+            valid(ModelArtifactRevision::new, "fixture-artifact-revision-1"),
+            valid(ModelArtifactDigest::new, "sha256:fixture-artifact"),
+        ),
+    )
 }
 
 fn capability_profile(profile: SyntheticProfile) -> CapabilityProfile {
@@ -137,7 +183,11 @@ fn capability_profile(profile: SyntheticProfile) -> CapabilityProfile {
 
 fn capability_requirements(profile: SyntheticProfile) -> Vec<CapabilityRequirement> {
     let interruption_scope = match profile {
-        SyntheticProfile::LongLivedRpcHarness => CancellationScope::ActiveTurn,
+        SyntheticProfile::LongLivedRpcHarness
+        | SyntheticProfile::LongLivedAcpHarness
+        | SyntheticProfile::PersistentAcpHarness
+        | SyntheticProfile::AttachedNetworkHarness
+        | SyntheticProfile::ConnectionScopedDirectSession => CancellationScope::ActiveTurn,
         SyntheticProfile::OwnedSelfHosted => CancellationScope::OwnedServingInstance,
         _ => CancellationScope::StructuredRun,
     };
@@ -155,6 +205,41 @@ fn capability_requirements(profile: SyntheticProfile) -> Vec<CapabilityRequireme
                 [],
             ));
             capabilities.push(CapabilityRequirement::new(Capability::Resume, []));
+        }
+        SyntheticProfile::LongLivedAcpHarness => {
+            capabilities.push(CapabilityRequirement::new(
+                Capability::InteractiveSession,
+                [],
+            ));
+            capabilities.push(CapabilityRequirement::new(
+                Capability::WorkingResource,
+                [
+                    CapabilityConstraint::ResourceAccess(swallowtail_core::ResourceAccess::Read),
+                    CapabilityConstraint::ResourceRepresentation(
+                        swallowtail_core::ResourceRepresentation::Filesystem,
+                    ),
+                ],
+            ));
+        }
+        SyntheticProfile::PersistentAcpHarness => {
+            capabilities.extend(crate::profile_persistent_acp_shape::capabilities());
+        }
+        SyntheticProfile::ConnectionScopedDirectSession => {
+            capabilities.push(CapabilityRequirement::new(
+                Capability::InteractiveSession,
+                [],
+            ));
+            capabilities.push(CapabilityRequirement::new(Capability::UsageReporting, []));
+            capabilities.push(CapabilityRequirement::new(
+                Capability::BilledCostReporting,
+                [],
+            ));
+        }
+        SyntheticProfile::AttachedNetworkHarness => {
+            capabilities.push(CapabilityRequirement::new(
+                Capability::InteractiveSession,
+                [],
+            ));
         }
         SyntheticProfile::AttachedSelfHosted | SyntheticProfile::OwnedSelfHosted => {}
         SyntheticProfile::OneShotStructuredCli | SyntheticProfile::HostedDirectApi => {

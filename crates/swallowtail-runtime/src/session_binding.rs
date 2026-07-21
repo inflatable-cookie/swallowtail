@@ -1,5 +1,7 @@
+use crate::WorkingResourceRef;
 use swallowtail_core::{
-    ConfiguredInstanceId, ExecutionHostId, ModelId, ModelRouteId, PreflightPlan, SessionRef,
+    ConfiguredInstanceId, ExecutionHostId, ModelId, ModelRouteId, PreflightPlan,
+    SessionAccessPolicy, SessionRef,
 };
 
 /// Durable provider-session identity plus the route that is allowed to resume it.
@@ -10,6 +12,8 @@ pub struct SessionResumeBinding {
     execution_host_id: ExecutionHostId,
     model_route_id: ModelRouteId,
     model_id: ModelId,
+    working_resource: WorkingResourceRef,
+    access_policy: SessionAccessPolicy,
 }
 
 impl SessionResumeBinding {
@@ -20,6 +24,8 @@ impl SessionResumeBinding {
         execution_host_id: ExecutionHostId,
         model_route_id: ModelRouteId,
         model_id: ModelId,
+        working_resource: WorkingResourceRef,
+        access_policy: SessionAccessPolicy,
     ) -> Self {
         Self {
             provider_session_ref,
@@ -27,6 +33,8 @@ impl SessionResumeBinding {
             execution_host_id,
             model_route_id,
             model_id,
+            working_resource,
+            access_policy,
         }
     }
 
@@ -56,11 +64,33 @@ impl SessionResumeBinding {
     }
 
     #[must_use]
+    pub const fn working_resource(&self) -> &WorkingResourceRef {
+        &self.working_resource
+    }
+
+    #[must_use]
+    pub const fn access_policy(&self) -> &SessionAccessPolicy {
+        &self.access_policy
+    }
+
+    #[must_use]
     pub fn matches_plan(&self, plan: &PreflightPlan) -> bool {
         &self.configured_instance_id == plan.instance_id()
             && &self.execution_host_id == plan.execution_host_id()
             && plan.model_route_id() == Some(&self.model_route_id)
             && plan.model_id() == Some(&self.model_id)
+    }
+
+    #[must_use]
+    pub fn matches_attachment(
+        &self,
+        plan: &PreflightPlan,
+        working_resource: &WorkingResourceRef,
+        access_policy: &SessionAccessPolicy,
+    ) -> bool {
+        self.matches_plan(plan)
+            && &self.working_resource == working_resource
+            && &self.access_policy == access_policy
     }
 }
 
@@ -79,6 +109,10 @@ mod tests {
             ExecutionHostId::new("host.one").expect("host id is valid"),
             ModelRouteId::new("route.one").expect("route id is valid"),
             ModelId::new("model.one").expect("model id is valid"),
+            crate::WorkingResourceRef::new("resource.one").expect("resource ref is valid"),
+            swallowtail_core::SessionAccessPolicy::ambient_harness(
+                swallowtail_core::ResourceAccess::Read,
+            ),
         );
 
         assert!(!format!("{binding:?}").contains("provider/private/thread"));

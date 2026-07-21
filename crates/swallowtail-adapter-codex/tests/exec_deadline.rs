@@ -102,9 +102,9 @@ fn request(id: &str) -> StructuredRunRequest {
     StructuredRunRequest::new(
         RequestId::new(id).expect("request id is valid"),
         OperationContent::new("wait if needed").expect("content is valid"),
-        working_resource(),
         OperationPolicy::offline(),
     )
+    .with_working_resource(working_resource())
 }
 
 fn driver() -> CodexExecDriver {

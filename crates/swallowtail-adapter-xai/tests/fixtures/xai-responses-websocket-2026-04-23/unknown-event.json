@@ -1,0 +1,5 @@
+{
+  "type": "response.future_semantic_content",
+  "response_id": "resp_raw_private",
+  "content": "must not be silently ignored"
+}

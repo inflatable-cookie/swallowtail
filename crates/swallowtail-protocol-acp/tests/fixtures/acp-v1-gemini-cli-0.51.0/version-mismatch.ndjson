@@ -1,0 +1,2 @@
+{"direction":"client_to_agent","message":{"jsonrpc":"2.0","id":0,"method":"initialize","params":{"protocolVersion":1,"clientCapabilities":{}}}}
+{"direction":"agent_to_client","message":{"jsonrpc":"2.0","id":0,"result":{"protocolVersion":2,"agentCapabilities":[],"authMethods":[]}}}

@@ -12,14 +12,18 @@ pub enum Capability {
     StreamingEvents,
     ToolCalls,
     Interruption,
+    LoadSession,
     Resume,
     StructuredOutput,
     Attachments,
     ReasoningSelection,
     WorkingResource,
+    WorkingResourceTextWrite,
     ProviderExternalNetwork,
     ExternalSearch,
     UsageReporting,
+    BilledCostReporting,
+    OutputTokenLimit,
 }
 
 #[derive(Clone, Debug, Default, Eq, PartialEq)]

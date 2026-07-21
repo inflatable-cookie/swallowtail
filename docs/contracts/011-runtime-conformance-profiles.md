@@ -37,10 +37,29 @@ scope. The same public profile must run against distinct local and remote-
 authoritative host identities without exposing paths or moving authority to a
 client.
 
+### Persistent ACP Harness Extension
+
+Composes with the long-lived ACP baseline only for agents that advertise the
+additional lifecycle. Proves separately bound load and resume, ordered bounded
+replay before load readiness, no replay on resume, exact read-write callback
+authority, delegated harness authentication, explicit ambient execution, and
+joined process, resource, and credential cleanup. Baseline ACP agents do not
+inherit these claims.
+
 ### Hosted Direct API
 
 Proves scoped credential use, endpoint policy, streaming, cancellation limits,
-terminal outcome, and absence of process-service requirements.
+terminal outcome, usage and limit evidence, and absence of process-service
+requirements. Direct inference does not require a placeholder working
+resource.
+
+### Connection-Scoped Direct Session
+
+Proves resource-free interactive direct inference, one connection-bound
+endpoint and credential lease, serial turns, private continuation, exact
+turn-scoped billed cost, cancellation or deadline connection invalidation,
+absence of resume, local and remote-authoritative topology, and joined
+connection cleanup before credential release.
 
 ### Attached Self-Hosted Runtime
 
@@ -50,8 +69,10 @@ external service.
 
 ### Owned Self-Hosted Runtime
 
-Proves start, readiness, route availability, resource failure, stop authority,
-and cleanup for ephemeral and persistent ownership modes.
+Proves artifact authority, start, dynamically observed endpoint binding,
+readiness, route availability, resource failure, stop authority, and cleanup.
+Contract 018's first production proof covers ephemeral ownership. Persistent
+ownership remains synthetic until separately contracted.
 
 ## Common Assertions
 
@@ -81,6 +102,11 @@ Every applicable profile asserts:
 - unknown extensions follow explicit preserve or reject policy
 - no implicit fallback crosses execution, access, support, billing, privacy,
   ownership, or topology boundaries
+- endpoint and credential grants cannot cross operation scope or audience
+- credential release is awaited after connection cleanup
+- cumulative usage does not become repeated-attempt usage
+- rate, quota, billing, and retry evidence remain separate
+- a provider error inside a successful stream cannot complete successfully
 
 ## Fixture API Direction
 

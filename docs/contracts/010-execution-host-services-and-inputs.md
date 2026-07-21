@@ -79,6 +79,10 @@ denominator byte transport. A driver may own its protocol client internally,
 but it must use approved instance configuration, remain cancellable through the
 common lifecycle, and expose safe normalized diagnostics.
 
+Contract 014 makes authorization operation-scoped and audience-bound and
+requires one redacted driver-usable endpoint value. Route transport remains
+separate from provider-side network and search policy.
+
 ## Credential Service
 
 Public records use opaque credential references. The credential service may
@@ -92,6 +96,10 @@ return:
 Secret leases are non-serializable, redacted in `Debug` and `Display`, scoped
 to the operation or instance, and released during cleanup. Drivers cannot scan
 unrelated credential stores or replay credentials across endpoint audiences.
+
+Contract 014 requires exact operation-scope and audience binding plus an
+explicit awaited release boundary. Delegated harness authentication still
+exposes no secret.
 
 ## Working Resources
 
@@ -116,6 +124,19 @@ host and scope and report cleanup failure rather than hiding it.
 Driver requests for working-resource representation and access mode participate
 in preflight. A write-capable harness cannot run against a read-only resource
 capability without an explicit failure.
+
+Contract 015 adds a distinct `WorkingResourceIo` service for bidirectional
+protocols whose agent calls back into the client filesystem. The callback port
+does not expose general filesystem authority. Each operation repeats the owning
+scope and resource lease, resolves under that lease, applies content bounds,
+and rejects traversal or cross-host use before I/O. A resolved filesystem path
+alone does not authorize a callback implementation inside an adapter.
+
+Contract 017 extends that port with bounded text replacement under an exact
+`ReadWrite` filesystem lease. Callback mediation does not approve a provider
+tool or contain other process filesystem paths. A driver whose harness can
+bypass the callback requires separately preflight-bound and tested provider or
+execution-host containment before claiming bounded filesystem access.
 
 ## Attachments
 
@@ -142,6 +163,14 @@ must finish removal before returning `Clean`.
 Count, size, media, representation, and transport limits participate in
 preflight. Temporary materialization and uploads belong to the operation scope
 and clean up after provider/process work.
+
+## Model Artifacts
+
+Model artifacts are not attachments. Contract 018 adds opaque artifact
+references and serving-scope, read-only leases for owned ephemeral servers.
+Artifact resolution stays on the execution host, driver accessors remain
+redacted, and release follows owned-child join without deleting consumer-owned
+model material.
 
 ## Schemas And Results
 

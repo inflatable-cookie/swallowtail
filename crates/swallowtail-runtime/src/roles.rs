@@ -1,9 +1,11 @@
 use crate::{
     AttachedServingHandle, AttachmentDescriptor, BoxFuture, Deadline, HostServices,
-    InteractiveSessionHandle, OperationContent, OperationPolicy, OwnedServingHandle, RequestId,
-    RunHandle, RuntimeFailure, RuntimeTurnId, ServingInstanceId, SessionAccessPolicy,
-    SessionOptions, SessionResumeBinding, StructuredOutputDescriptor, WorkingResourceRef,
+    InteractiveSessionHandle, ModelArtifactBinding, OperationContent, OperationPolicy,
+    OwnedServingHandle, RequestId, RunHandle, RuntimeFailure, RuntimeTurnId, ScopeId,
+    ServingInstanceId, SessionAccessPolicy, SessionOptions, SessionReplayItem,
+    SessionResumeBinding, StructuredOutputDescriptor, WorkingResourceRef,
 };
+use std::num::NonZeroU64;
 use swallowtail_core::{
     DiscoveryOutcome, ExecutionHostId, ModelCatalogEntry, PreflightPlan, SessionRef,
 };
@@ -61,30 +63,33 @@ impl ModelCatalogRequest {
 pub struct StructuredRunRequest {
     request_id: RequestId,
     content: OperationContent,
-    working_resource: WorkingResourceRef,
+    working_resource: Option<WorkingResourceRef>,
     policy: OperationPolicy,
     deadline: Option<Deadline>,
     attachments: Vec<AttachmentDescriptor>,
     structured_output: Option<StructuredOutputDescriptor>,
+    maximum_output_tokens: Option<NonZeroU64>,
 }
 
 impl StructuredRunRequest {
     #[must_use]
-    pub fn new(
-        request_id: RequestId,
-        content: OperationContent,
-        working_resource: WorkingResourceRef,
-        policy: OperationPolicy,
-    ) -> Self {
+    pub fn new(request_id: RequestId, content: OperationContent, policy: OperationPolicy) -> Self {
         Self {
             request_id,
             content,
-            working_resource,
+            working_resource: None,
             policy,
             deadline: None,
             attachments: Vec::new(),
             structured_output: None,
+            maximum_output_tokens: None,
         }
+    }
+
+    #[must_use]
+    pub fn with_working_resource(mut self, working_resource: WorkingResourceRef) -> Self {
+        self.working_resource = Some(working_resource);
+        self
     }
 
     #[must_use]
@@ -109,6 +114,12 @@ impl StructuredRunRequest {
     }
 
     #[must_use]
+    pub const fn with_maximum_output_tokens(mut self, maximum: NonZeroU64) -> Self {
+        self.maximum_output_tokens = Some(maximum);
+        self
+    }
+
+    #[must_use]
     pub const fn request_id(&self) -> &RequestId {
         &self.request_id
     }
@@ -119,8 +130,8 @@ impl StructuredRunRequest {
     }
 
     #[must_use]
-    pub const fn working_resource(&self) -> &WorkingResourceRef {
-        &self.working_resource
+    pub const fn working_resource(&self) -> Option<&WorkingResourceRef> {
+        self.working_resource.as_ref()
     }
 
     #[must_use]
@@ -141,12 +152,17 @@ impl StructuredRunRequest {
     pub const fn structured_output(&self) -> Option<&StructuredOutputDescriptor> {
         self.structured_output.as_ref()
     }
+
+    #[must_use]
+    pub const fn maximum_output_tokens(&self) -> Option<NonZeroU64> {
+        self.maximum_output_tokens
+    }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct OpenSessionRequest {
     request_id: RequestId,
-    working_resource: WorkingResourceRef,
+    working_resource: Option<WorkingResourceRef>,
     deadline: Option<Deadline>,
     options: SessionOptions,
     access_policy: SessionAccessPolicy,
@@ -161,10 +177,21 @@ impl OpenSessionRequest {
     ) -> Self {
         Self {
             request_id,
-            working_resource,
+            working_resource: Some(working_resource),
             deadline,
             options: SessionOptions::default(),
             access_policy: SessionAccessPolicy::default(),
+        }
+    }
+
+    #[must_use]
+    pub fn resource_free(request_id: RequestId, deadline: Option<Deadline>) -> Self {
+        Self {
+            request_id,
+            working_resource: None,
+            deadline,
+            options: SessionOptions::default(),
+            access_policy: SessionAccessPolicy::resource_free(),
         }
     }
 
@@ -186,8 +213,8 @@ impl OpenSessionRequest {
     }
 
     #[must_use]
-    pub const fn working_resource(&self) -> &WorkingResourceRef {
-        &self.working_resource
+    pub const fn working_resource(&self) -> Option<&WorkingResourceRef> {
+        self.working_resource.as_ref()
     }
 
     #[must_use]
@@ -214,6 +241,97 @@ pub struct ResumeSessionRequest {
     deadline: Option<Deadline>,
     options: SessionOptions,
     access_policy: SessionAccessPolicy,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct LoadSessionRequest {
+    request_id: RequestId,
+    binding: SessionResumeBinding,
+    working_resource: WorkingResourceRef,
+    deadline: Option<Deadline>,
+    options: SessionOptions,
+    access_policy: SessionAccessPolicy,
+}
+
+impl LoadSessionRequest {
+    #[must_use]
+    pub fn new(
+        request_id: RequestId,
+        binding: SessionResumeBinding,
+        working_resource: WorkingResourceRef,
+        deadline: Option<Deadline>,
+    ) -> Self {
+        Self {
+            request_id,
+            binding,
+            working_resource,
+            deadline,
+            options: SessionOptions::default(),
+            access_policy: SessionAccessPolicy::default(),
+        }
+    }
+
+    #[must_use]
+    pub fn with_options(mut self, options: SessionOptions) -> Self {
+        self.options = options;
+        self
+    }
+
+    #[must_use]
+    pub fn with_access_policy(mut self, policy: SessionAccessPolicy) -> Self {
+        self.access_policy = policy;
+        self
+    }
+
+    #[must_use]
+    pub const fn request_id(&self) -> &RequestId {
+        &self.request_id
+    }
+    #[must_use]
+    pub const fn provider_session_ref(&self) -> &SessionRef {
+        self.binding.provider_session_ref()
+    }
+    #[must_use]
+    pub const fn resume_binding(&self) -> &SessionResumeBinding {
+        &self.binding
+    }
+    #[must_use]
+    pub const fn working_resource(&self) -> &WorkingResourceRef {
+        &self.working_resource
+    }
+    #[must_use]
+    pub const fn deadline(&self) -> Option<Deadline> {
+        self.deadline
+    }
+    #[must_use]
+    pub const fn options(&self) -> &SessionOptions {
+        &self.options
+    }
+    #[must_use]
+    pub const fn access_policy(&self) -> &SessionAccessPolicy {
+        &self.access_policy
+    }
+}
+
+pub struct LoadedSession {
+    replay: Vec<SessionReplayItem>,
+    session: Box<dyn InteractiveSessionHandle>,
+}
+
+impl LoadedSession {
+    #[must_use]
+    pub fn new(replay: Vec<SessionReplayItem>, session: Box<dyn InteractiveSessionHandle>) -> Self {
+        Self { replay, session }
+    }
+
+    pub fn replay(&self) -> impl ExactSizeIterator<Item = &SessionReplayItem> {
+        self.replay.iter()
+    }
+
+    #[must_use]
+    pub fn into_parts(self) -> (Vec<SessionReplayItem>, Box<dyn InteractiveSessionHandle>) {
+        (self.replay, self.session)
+    }
 }
 
 impl ResumeSessionRequest {
@@ -370,22 +488,46 @@ impl AttachServingRequest {
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct StartServingRequest {
+    scope: ScopeId,
     serving_instance_id: ServingInstanceId,
-    deadline: Option<Deadline>,
+    artifact: ModelArtifactBinding,
+    deadline: Deadline,
 }
 
 impl StartServingRequest {
     #[must_use]
-    pub const fn new(serving_instance_id: ServingInstanceId, deadline: Option<Deadline>) -> Self {
+    pub const fn new(
+        scope: ScopeId,
+        serving_instance_id: ServingInstanceId,
+        artifact: ModelArtifactBinding,
+        deadline: Deadline,
+    ) -> Self {
         Self {
+            scope,
             serving_instance_id,
+            artifact,
             deadline,
         }
     }
 
     #[must_use]
+    pub const fn scope(&self) -> &ScopeId {
+        &self.scope
+    }
+
+    #[must_use]
     pub const fn serving_instance_id(&self) -> &ServingInstanceId {
         &self.serving_instance_id
+    }
+
+    #[must_use]
+    pub const fn artifact(&self) -> &ModelArtifactBinding {
+        &self.artifact
+    }
+
+    #[must_use]
+    pub const fn deadline(&self) -> Deadline {
+        self.deadline
     }
 }
 
@@ -429,6 +571,20 @@ pub trait InteractiveSessionDriver: Send + Sync {
         request: ResumeSessionRequest,
         services: HostServices,
     ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>>;
+
+    fn load_session(
+        &self,
+        _plan: PreflightPlan,
+        _request: LoadSessionRequest,
+        _services: HostServices,
+    ) -> BoxFuture<'_, Result<LoadedSession, RuntimeFailure>> {
+        Box::pin(async {
+            Err(RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
+                "swallowtail.session_load_unsupported",
+                "Driver does not support provider session load",
+            )))
+        })
+    }
 }
 
 pub trait ServingInstanceDriver: Send + Sync {

@@ -88,6 +88,11 @@ pub(crate) fn run() -> ConformanceReport {
             .expect("RPC plan has a model route")
             .clone(),
         plan.model_id().expect("RPC plan has a model").clone(),
+        swallowtail_runtime::WorkingResourceRef::new("rpc-resource")
+            .expect("resource ref is valid"),
+        swallowtail_runtime::SessionAccessPolicy::ambient_harness(
+            swallowtail_runtime::ResourceAccess::Read,
+        ),
     );
     assert!(resume_binding.matches_plan(&plan));
 

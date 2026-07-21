@@ -1,0 +1,90 @@
+{
+  "fixture_schema": 1,
+  "checked_at": "2026-07-20",
+  "integration_family": "llama.cpp",
+  "adapter_driver": "swallowtail.llama-cpp.attached-openai-chat",
+  "transport": "http_sse",
+  "server": {
+    "id": "llama.cpp/llama-server",
+    "release": "b9910",
+    "build": 9910,
+    "commit": "f5525f7e7a7e7cbecd386144299493ea40499bd3",
+    "installed_source": "homebrew",
+    "latest_official_release_at_recheck": "b10069"
+  },
+  "artifact": {
+    "id": "sha256:270cba1bd5109f42d03350f60406024560464db173c0e387d91f0426d3bd256d",
+    "repository": "ggml-org/test-model-stories260K",
+    "revision": "479896ec924af6d40fd419ab8f4d1eb2101de00d",
+    "file": "stories260K-f32.gguf",
+    "size_bytes": 1185376,
+    "source": "operator_supplied",
+    "bundled_by_swallowtail": false,
+    "downloaded_by_swallowtail": false
+  },
+  "deployment": {
+    "id": "llama-cpp-b9910-stories260k-attached",
+    "ownership": "attached_external",
+    "topology": "loopback_http",
+    "endpoint_source": "host_approved_grant",
+    "port_default_allowed": false,
+    "credential_mechanism": "none",
+    "server_started_by_swallowtail": false
+  },
+  "facade": {
+    "id": "llama.cpp.openai-chat-completions.b9910",
+    "compatibility_family": "openai_chat_completions",
+    "compatibility_claim": "bounded_observed_subset",
+    "routes": [
+      ["GET", "/health"],
+      ["GET", "/props"],
+      ["GET", "/v1/models"],
+      ["POST", "/v1/chat/completions"]
+    ]
+  },
+  "route": {
+    "id": "llama-cpp-b9910/stories260k",
+    "model_alias": "swallowtail-fixture-stories260k",
+    "provider_id": null
+  },
+  "configuration": {
+    "host": "127.0.0.1",
+    "port": "operator_selected_and_host_approved",
+    "context_size": 512,
+    "batch_size": 32,
+    "parallel_slots": 1,
+    "seed": 42,
+    "jinja": true,
+    "chat_template": "chatml",
+    "reasoning_format": "none",
+    "web_ui": false
+  },
+  "observed_capabilities": {
+    "text_chat": true,
+    "streaming": true,
+    "usage": true,
+    "system_role_template": true,
+    "tools": false,
+    "reasoning": false,
+    "structured_output": false,
+    "multimodal": false
+  },
+  "inference": {
+    "maximum_attempts": 1,
+    "retry_allowed": false,
+    "provider_cancel_route": null,
+    "cancellation_effect": "stop_local_connection_work"
+  },
+  "cleanup": {
+    "close_owned_connection": true,
+    "join_owned_tasks": true,
+    "stop_server": false,
+    "delete_or_move_artifact": false
+  },
+  "default_qa": {
+    "uses_synthetic_payloads": true,
+    "requires_server": false,
+    "requires_model": false,
+    "requires_network": false
+  }
+}

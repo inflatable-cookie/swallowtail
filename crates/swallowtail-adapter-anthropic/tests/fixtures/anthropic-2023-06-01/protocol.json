@@ -1,0 +1,61 @@
+{
+  "fixture_schema": 1,
+  "captured_at": "2026-07-20",
+  "api_version": "2023-06-01",
+  "endpoint_audience": "api.anthropic.com",
+  "endpoint_source": "host_approved_grant",
+  "support_authority": "provider_supported",
+  "authentication": {
+    "mechanism": "api_key",
+    "header": "x-api-key",
+    "credential_source": "scope_and_audience_bound_secret_lease",
+    "workload_identity_in_subset": false,
+    "subscription_oauth_in_subset": false
+  },
+  "headers": {
+    "required": ["anthropic-version"],
+    "messages_required": ["content-type"],
+    "beta_allowed": false,
+    "response_request_id": "request-id",
+    "rate_prefix": "anthropic-ratelimit-"
+  },
+  "routes": [
+    ["GET", "/v1/models"],
+    ["POST", "/v1/messages"]
+  ],
+  "catalogue": {
+    "page_limit": 2,
+    "next_cursor_query": "after_id",
+    "bounded_max_pages": 8,
+    "internal_pagination_is_inference_retry": false,
+    "unknown_limit_means": "unknown"
+  },
+  "message": {
+    "stream": true,
+    "maximum_inference_attempts": 1,
+    "max_tokens_source": "consumer_owned_run_input",
+    "catalogue_default_allowed": false,
+    "retry_or_recovery_allowed": false
+  },
+  "stream": {
+    "order": [
+      "message_start",
+      "content_block_start",
+      "content_block_delta",
+      "content_block_stop",
+      "message_delta",
+      "message_stop"
+    ],
+    "ping": "keepalive",
+    "message_delta_usage": "cumulative_replacement",
+    "unknown_top_level_event": "ignore",
+    "unknown_content_semantics": "protocol_failure",
+    "error_event": "provider_stream_failure"
+  },
+  "cancellation": {
+    "provider_cancel_route": null,
+    "local_action": "stop_read_close_connection_join_work",
+    "provider_completion_guaranteed": false,
+    "followup_request_allowed": false
+  }
+}

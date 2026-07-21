@@ -1,0 +1,4 @@
+data: {"id":"evt_1","type":"permission.asked","properties":{"id":"per_fixture","sessionID":"ses_fixture","permission":"edit","patterns":["*"],"metadata":{},"always":[]}}
+
+data: {"id":"evt_2","type":"question.asked","properties":{"id":"que_fixture","sessionID":"ses_fixture","questions":[]}}
+

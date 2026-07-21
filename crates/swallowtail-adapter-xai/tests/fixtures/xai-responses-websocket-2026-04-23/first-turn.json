@@ -1,0 +1,11 @@
+{
+  "type": "response.create",
+  "model": "grok-fixture-exact",
+  "store": false,
+  "input": [{
+    "type": "message",
+    "role": "user",
+    "content": [{"type": "input_text", "text": "First fixture turn."}]
+  }],
+  "tools": []
+}

@@ -1,0 +1,205 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-07-21",
+  "protocol": {
+    "wire_version": 1,
+    "schema_artifact": "schema-v1.19.1",
+    "schema_tag_object": "0331ddaea7814afa147194cd5e93495a2a0f8c82",
+    "schema_source_commit": "d0549a115750a0a25c1c5631dd72e0d248859aa4",
+    "schema_meta_sha256": "e0bf36f8123b2544b499174197fdc371ec49a1b4572a35114513d56492741599",
+    "schema_sha256": "92c1dfcda10dd47e99127500a3763da2b471f9ac61e12b9bf0430c32cf953796",
+    "stable_schema_only": true,
+    "transport": "stdio_ndjson",
+    "encoding": "utf-8",
+    "delimiter": "newline",
+    "embedded_newline_allowed": false
+  },
+  "kimi": {
+    "source_repository": "MoonshotAI/kimi-code",
+    "version": "0.28.1",
+    "release_tag": "@moonshot-ai/kimi-code@0.28.1",
+    "release_published": "2026-07-20T15:00:02Z",
+    "tag_object": "0032545b65f95c139ecba5a48ba1b911844e1ffe",
+    "source_commit": "efacf0452d46f5dbd67499eabc053869495d5213",
+    "acp_adapter_package": "0.3.4",
+    "acp_sdk": "0.23.0",
+    "sdk_integrity": "sha512-wIGDQMSXwhoSPNCJflSQvf4WeSU2Jq1bbPRAwwb49euo9qMcND5Pb80hD7hVfuAwz9ZvvDuzVrNTOZrvKPR9Eg==",
+    "server_sha256": "d7ea7a3da9cab909306f34f788a1999a1ad742fe2e2310435ce5353116180957",
+    "session_sha256": "a4e30a1c7e8a5ed1a3c09be4077c8aa28901333141e21016c1a5b457b878b6da",
+    "filesystem_bridge_sha256": "09b2e5a85661cf683dfc36c30750c1aedc562982968b6bcb98b770318137e73f",
+    "arguments": ["acp"],
+    "working_directory_source": "host_resolved_bound_resource",
+    "process_environment_source": "host_approved_isolated_provider_state"
+  },
+  "executable": {
+    "platform": "darwin-arm64",
+    "resolution": "host_approved_pinned_embedded_artifact",
+    "ambient_path_allowed": false,
+    "archive": "kimi-code-darwin-arm64.zip",
+    "archive_size": 50630141,
+    "archive_sha256": "fa93e9daa30449c5cb32d8adb2a75651ec6c60dcd72fd4bf65c530edb8c144f9",
+    "archive_member": "kimi",
+    "upstream_executable_size": 158004544,
+    "upstream_executable_sha256": "297d4521d23ebab163fd778dfc3422dcb2cc216a6a0eadd535b914f20c538cd6",
+    "format": "mach-o-arm64",
+    "upstream_signature": {
+      "identifier": "kimi",
+      "team_identifier": "2J9472RW75",
+      "authority": "Developer ID Application: Beijing Moonshot Technology Co., Ltd (2J9472RW75)",
+      "hardened_runtime": true,
+      "verified_on_disk": true,
+      "app_sandbox": false,
+      "inherit": false,
+      "entitlements": [
+        "com.apple.security.cs.allow-dyld-environment-variables",
+        "com.apple.security.cs.allow-jit",
+        "com.apple.security.cs.allow-unsigned-executable-memory",
+        "com.apple.security.cs.disable-library-validation"
+      ]
+    }
+  },
+  "provider_state": {
+    "root_environment": "KIMI_CODE_HOME",
+    "root_source": "host_approved_isolated_provider_state",
+    "ambient_home_allowed": false,
+    "auto_update_environment": {
+      "KIMI_CODE_NO_AUTO_UPDATE": "1"
+    }
+  },
+  "upgrade_gate": {
+    "floating_latest_allowed": false,
+    "self_upgrade_allowed": false,
+    "upgrade_command_allowed": false,
+    "prelaunch_match": [
+      "release_tag",
+      "source_commit",
+      "archive_sha256"
+    ],
+    "initialize_match": [
+      "agent_info_version",
+      "wire_version",
+      "capability_matrix"
+    ],
+    "mismatch": "reject_before_session_work"
+  },
+  "access": {
+    "selected_configured_instance": "kimi_code_membership_oauth_delegated_state",
+    "credential_mechanism": "pre_existing_delegated_harness_auth",
+    "authenticate_method_called": false,
+    "terminal_auth_capability_advertised_by_client": false,
+    "advertised_login_is_evidence_only": true,
+    "advertised_login_executed": false,
+    "configured_non_oauth_credentials_in_subset": false,
+    "separate_configured_instances": [
+      "kimi_code_membership_oauth_delegated_state",
+      "kimi_membership_backed_api_key",
+      "kimi_platform_api_key",
+      "configured_external_provider_credential"
+    ],
+    "credential_store_scan_allowed": false,
+    "implicit_auth_fallback_allowed": false,
+    "missing_auth": "sign_in_required"
+  },
+  "negotiation": {
+    "version_mismatch": "close_and_fail",
+    "omitted_capability": "unsupported",
+    "additive_capability": "observed_not_claimed",
+    "unknown_core_request": "method_not_found_then_fail",
+    "unknown_extension_request": "method_not_found",
+    "unknown_extension_notification": "ignore"
+  },
+  "claimed_agent_methods": [
+    "initialize",
+    "session/new",
+    "session/load",
+    "session/resume",
+    "session/prompt",
+    "session/cancel"
+  ],
+  "claimed_client_methods": [
+    "session/update",
+    "fs/write_text_file"
+  ],
+  "persistent_session": {
+    "binding_source": "prior_swallowtail_new_session_only",
+    "binding_dimensions": [
+      "provider_session",
+      "configured_instance",
+      "execution_host",
+      "model_route",
+      "model",
+      "working_resource",
+      "resource_access",
+      "session_access_policy",
+      "harness_isolation"
+    ],
+    "arbitrary_session_id": "reject_before_process_or_wire",
+    "load": "ordered_replay_then_response",
+    "resume": "response_without_history_replay",
+    "session_list": "not_called",
+    "stored_cwd_authoritative": false
+  },
+  "prompt": {
+    "content": ["text"],
+    "one_active_turn": true,
+    "terminal_response": "single_stop_reason",
+    "image_and_embedded_resource": "advertised_not_claimed"
+  },
+  "client_callbacks": {
+    "fs_write": "host_bounded_utf8_replace_or_create",
+    "required_resource_access": "read_write",
+    "tool_approval": "separate_not_granted",
+    "process_containment": "ambient_host_not_claimed",
+    "append": "not_claimed",
+    "binary_fidelity": "not_claimed",
+    "rename_delete_or_directory_mutation": "not_claimed",
+    "path_escape": "reject_before_io",
+    "raw_path_or_content_in_public_diagnostic": false
+  },
+  "isolation": {
+    "posture": "ambient_host",
+    "working_directory_role": "location_and_callback_scope_only",
+    "filesystem_boundary_claimed": false,
+    "network_authority": "ambient_host",
+    "provider_enforced_available": false,
+    "host_enforced_available": false,
+    "silent_fallback_allowed": false
+  },
+  "excluded_agent_methods": [
+    "session/list",
+    "session/set_mode",
+    "session/set_config_option",
+    "session/close",
+    "logout"
+  ],
+  "excluded_client_methods": [
+    "session/request_permission",
+    "terminal/create",
+    "terminal/output",
+    "terminal/release",
+    "terminal/kill",
+    "terminal/wait_for_exit"
+  ],
+  "excluded_provider_features": [
+    "image_prompt",
+    "embedded_context_prompt",
+    "mcp_http",
+    "mcp_sse",
+    "mcp_stdio",
+    "session_list",
+    "mode_or_config_mutation",
+    "unstable_model_selection",
+    "provider_permission_approval",
+    "local_shell_execution",
+    "plugins",
+    "background_work",
+    "subagents"
+  ],
+  "cleanup": {
+    "turn_cancel": "session/cancel",
+    "turn_cancel_response": "prompt_stop_reason_cancelled",
+    "session_close": "close_stdin_stop_owned_process_join",
+    "provider_state_deleted_on_disconnect": false,
+    "detached_tasks_allowed": false
+  }
+}

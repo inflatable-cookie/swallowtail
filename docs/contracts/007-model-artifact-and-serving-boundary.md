@@ -87,9 +87,16 @@ The runtime distinguishes at least:
 Failures remain safe diagnostics and retain driver, instance, and route
 identity without leaking secrets or sensitive host paths.
 
+## Owned Ephemeral Promotion
+
+Contract 018 promotes the first narrow owned-serving mechanism: opaque model-
+artifact references, host-resolved read-only artifact leases, dynamically
+observed host-scoped endpoint bindings, and joined child cleanup. It does not
+promote model acquisition, persistent serving, or fleet authority.
+
 ## Deferred Decisions
 
 This contract does not choose download mechanisms, provider-specific health
 probes, or Monkey ownership. Spec 002 settles the shared semantics; Contracts
 008-011 promote runtime and conformance boundaries against both hosted and
-self-hosted drivers.
+self-hosted drivers. Contract 018 governs the owned ephemeral proof.

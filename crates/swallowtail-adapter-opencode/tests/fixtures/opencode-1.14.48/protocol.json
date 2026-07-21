@@ -1,0 +1,40 @@
+{
+  "fixture_schema": 1,
+  "observed_server_version": "1.14.48",
+  "openapi_version": "3.1.0",
+  "openapi_sha256": "cf27aa005d0bb366671b134c4cdfdb040a939b513ae0db1af35a172af8daecf2",
+  "endpoint_source": "host_approved_grant",
+  "default_port_assumption": false,
+  "provider_authentication": "delegated_to_opencode",
+  "provider_default_is_evidence_only": true,
+  "routes": [
+    ["global.health", "GET", "/global/health"],
+    ["provider.list", "GET", "/provider"],
+    ["session.create", "POST", "/session"],
+    ["session.prompt_async", "POST", "/session/{sessionID}/prompt_async"],
+    ["event.subscribe", "GET", "/event"],
+    ["session.abort", "POST", "/session/{sessionID}/abort"]
+  ],
+  "session_permission": [
+    {"permission": "*", "pattern": "*", "action": "deny"},
+    {"permission": "read", "pattern": "*", "action": "allow"},
+    {"permission": "glob", "pattern": "*", "action": "allow"},
+    {"permission": "grep", "pattern": "*", "action": "allow"}
+  ],
+  "event_policy": {
+    "accepted": [
+      "server.connected",
+      "message.part.delta",
+      "message.part.updated",
+      "session.status",
+      "session.idle",
+      "session.error"
+    ],
+    "stop_and_abort": ["permission.asked", "question.asked"],
+    "unknown": "protocol_failure"
+  },
+  "attached_close": {
+    "owns_server": false,
+    "requests": []
+  }
+}

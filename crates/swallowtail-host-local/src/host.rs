@@ -1,16 +1,22 @@
 use crate::child::LocalProcessHandle;
+use crate::credential::LocalCredentialLeaseState;
+use crate::hosted::{LocalCredentialApproval, LocalEndpointApproval};
 use crate::limits::{LocalMaterializationLimits, LocalProcessLimits};
 use crate::materialization::LocalMaterializationState;
+use crate::model_artifact::{LocalModelArtifactApproval, LocalModelArtifactLeaseState};
 use crate::output::failure;
+use crate::serving_endpoint::LocalServingEndpointState;
 use std::collections::HashMap;
 use std::ffi::OsString;
 use std::path::PathBuf;
 use std::process::{Command, Stdio};
 use std::sync::Arc;
 use std::time::Instant;
+use swallowtail_core::{ExecutionHostId, ModelArtifactRef};
 use swallowtail_runtime::{
-    AttachmentRef, BoxFuture, EnvironmentRef, ExecutableRef, ProcessHandle, ProcessRequest,
-    ProcessService, RuntimeFailure, SchemaRef, ScopeId, WorkingResourceRef,
+    AttachmentRef, BoxFuture, CredentialRef, EndpointRef, EnvironmentRef, ExecutableRef,
+    ProcessHandle, ProcessRequest, ProcessService, RuntimeFailure, SchemaRef, ScopeId,
+    WorkingResourceRef,
 };
 
 type EnvironmentValues = Vec<(OsString, OsString)>;
@@ -22,13 +28,17 @@ pub(crate) struct LocalApprovals {
     pub(crate) working_resources: HashMap<WorkingResourceRef, PathBuf>,
     pub(crate) attachments: HashMap<AttachmentRef, PathBuf>,
     pub(crate) schemas: HashMap<SchemaRef, PathBuf>,
+    pub(crate) endpoints: HashMap<EndpointRef, LocalEndpointApproval>,
+    pub(crate) credentials: HashMap<CredentialRef, LocalCredentialApproval>,
+    pub(crate) model_artifacts: HashMap<ModelArtifactRef, LocalModelArtifactApproval>,
 }
 
 pub struct LocalProcessHostBuilder {
     limits: LocalProcessLimits,
     materialization_limits: LocalMaterializationLimits,
-    temporary_root: PathBuf,
-    approvals: LocalApprovals,
+    pub(crate) temporary_root: PathBuf,
+    pub(crate) execution_host_id: Option<ExecutionHostId>,
+    pub(crate) approvals: LocalApprovals,
 }
 
 impl LocalProcessHostBuilder {
@@ -89,18 +99,16 @@ impl LocalProcessHostBuilder {
     }
 
     #[must_use]
-    pub fn with_temporary_root(mut self, path: impl Into<PathBuf>) -> Self {
-        self.temporary_root = path.into();
-        self
-    }
-
-    #[must_use]
     pub fn build(self) -> LocalProcessHost {
         LocalProcessHost {
             limits: self.limits,
             materialization_limits: self.materialization_limits,
             approvals: Arc::new(self.approvals),
             materialization: Arc::new(LocalMaterializationState::new(self.temporary_root)),
+            credential_leases: Arc::new(LocalCredentialLeaseState::default()),
+            model_artifact_leases: Arc::new(LocalModelArtifactLeaseState::default()),
+            serving_endpoints: Arc::new(LocalServingEndpointState::default()),
+            execution_host_id: self.execution_host_id,
             monotonic_origin: Instant::now(),
         }
     }
@@ -112,6 +120,10 @@ pub struct LocalProcessHost {
     pub(crate) materialization_limits: LocalMaterializationLimits,
     pub(crate) approvals: Arc<LocalApprovals>,
     pub(crate) materialization: Arc<LocalMaterializationState>,
+    pub(crate) credential_leases: Arc<LocalCredentialLeaseState>,
+    pub(crate) model_artifact_leases: Arc<LocalModelArtifactLeaseState>,
+    pub(crate) serving_endpoints: Arc<LocalServingEndpointState>,
+    pub(crate) execution_host_id: Option<ExecutionHostId>,
     pub(crate) monotonic_origin: Instant,
 }
 
@@ -122,6 +134,7 @@ impl LocalProcessHost {
             limits,
             materialization_limits: LocalMaterializationLimits::default(),
             temporary_root: std::env::temp_dir(),
+            execution_host_id: None,
             approvals: LocalApprovals::default(),
         }
     }

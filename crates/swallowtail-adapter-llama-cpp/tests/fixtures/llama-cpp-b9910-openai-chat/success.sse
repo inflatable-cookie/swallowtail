@@ -1,0 +1,12 @@
+data: {"id":"chatcmpl-fixture","object":"chat.completion.chunk","created":0,"model":"swallowtail-fixture-stories260k","choices":[{"index":0,"delta":{"role":"assistant","content":null},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-fixture","object":"chat.completion.chunk","created":0,"model":"swallowtail-fixture-stories260k","choices":[{"index":0,"delta":{"content":"Fixture "},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-fixture","object":"chat.completion.chunk","created":0,"model":"swallowtail-fixture-stories260k","choices":[{"index":0,"delta":{"content":"output"},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-fixture","object":"chat.completion.chunk","created":0,"model":"swallowtail-fixture-stories260k","choices":[{"index":0,"delta":{},"finish_reason":"length"}]}
+
+data: {"id":"chatcmpl-fixture","object":"chat.completion.chunk","created":0,"model":"swallowtail-fixture-stories260k","choices":[],"usage":{"prompt_tokens":12,"completion_tokens":2,"total_tokens":14}}
+
+data: [DONE]
+

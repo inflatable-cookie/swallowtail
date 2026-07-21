@@ -1,8 +1,8 @@
 use serde_json::Value;
 use swallowtail_core::SafeDiagnostic;
 use swallowtail_runtime::{
-    CleanupOutcome, OperationContent, RuntimeEvent, RuntimeEventKind, RuntimeFailure,
-    TerminalOutcome, TerminalStatus,
+    CleanupOutcome, OperationContent, ProviderObservation, RuntimeEvent, RuntimeEventKind,
+    RuntimeFailure, TerminalOutcome, TerminalStatus, TokenUsage,
 };
 
 pub(crate) struct ExecEventParser {
@@ -67,9 +67,11 @@ impl ExecEventParser {
         match event_type {
             "turn.completed" => {
                 self.completed = true;
-                Ok(token_usage(&payload)
-                    .and_then(|content| OperationContent::new(content).ok())
-                    .map(|content| self.event_with(RuntimeEventKind::ProgressSnapshot, content)))
+                Ok(token_usage(&payload).map(|usage| {
+                    self.event(RuntimeEventKind::ProviderObservation(
+                        ProviderObservation::Usage(usage),
+                    ))
+                }))
             }
             "turn.failed" | "error" => {
                 self.provider_failure = Some(SafeDiagnostic::new(
@@ -141,14 +143,14 @@ impl ExecEventParser {
     }
 }
 
-fn token_usage(payload: &Value) -> Option<String> {
+fn token_usage(payload: &Value) -> Option<TokenUsage> {
     let input = payload
         .pointer("/usage/input_tokens")
         .and_then(Value::as_u64)?;
     let output = payload
         .pointer("/usage/output_tokens")
         .and_then(Value::as_u64)?;
-    Some(format!("{input} input · {output} output tokens"))
+    Some(TokenUsage::new(Some(input), Some(output)))
 }
 
 pub(crate) struct ParsedTerminal {
@@ -197,7 +199,7 @@ fn malformed_stream() -> RuntimeFailure {
 #[cfg(test)]
 mod tests {
     use super::ExecEventParser;
-    use swallowtail_runtime::{RuntimeEventKind, TerminalStatus};
+    use swallowtail_runtime::{ProviderObservation, RuntimeEventKind, TerminalStatus, TokenUsage};
 
     #[test]
     fn parser_handles_split_jsonl_and_preserves_final_output() {
@@ -248,11 +250,13 @@ mod tests {
             events[1].content().map(|value| value.as_str()),
             Some("Checking evidence")
         );
-        assert_eq!(events[2].kind(), &RuntimeEventKind::ProgressSnapshot);
-        assert_eq!(
-            events[2].content().map(|value| value.as_str()),
-            Some("12 input · 4 output tokens")
-        );
+        let RuntimeEventKind::ProviderObservation(ProviderObservation::Usage(usage)) =
+            events[2].kind()
+        else {
+            panic!("usage remains a typed provider observation");
+        };
+        assert_eq!(usage, &TokenUsage::new(Some(12), Some(4)));
+        assert!(events[2].content().is_none());
     }
 
     #[test]

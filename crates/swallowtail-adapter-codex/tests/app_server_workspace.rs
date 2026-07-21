@@ -15,7 +15,7 @@ use swallowtail_core::{DriverRole, HostServiceKind};
 use swallowtail_runtime::{
     CallbackRequestKind, CleanupOutcome, EnvironmentRef, InteractiveSessionDriver,
     OpenSessionRequest, OperationContent, ProviderRequestObservation, RequestId, RuntimeTurnId,
-    TerminalStatus, TurnRequest,
+    SessionAccessPolicy, TerminalStatus, TurnRequest,
 };
 use swallowtail_testkit::{
     ExecutionTopologyFixture, RecordedHostCall, RecordingHostServices, RecordingOutcome,
@@ -91,15 +91,18 @@ fn bounded_workspace_maps_one_host_authorized_root_and_denies_network() {
 fn read_only_session_request_shape_remains_unchanged() {
     let (process, state) = ScriptedAppServer::new(AppServerMode::CompleteTurn);
     let services = host_services(process);
-    let mut session = block_on(driver().open_session(
-        app_server_plan(DriverRole::InteractiveSession),
-        OpenSessionRequest::new(
-            RequestId::new("read-only-session").expect("request id is valid"),
-            working_resource(),
-            None,
+    let mut session = block_on(
+        driver().open_session(
+            app_server_plan(DriverRole::InteractiveSession),
+            OpenSessionRequest::new(
+                RequestId::new("read-only-session").expect("request id is valid"),
+                working_resource(),
+                None,
+            )
+            .with_access_policy(SessionAccessPolicy::read_only()),
+            services.clone(),
         ),
-        services.clone(),
-    ))
+    )
     .expect("read-only session opens");
     let thread = message(&state.messages(), "thread/start");
     assert_eq!(thread["params"]["sandbox"], "read-only");

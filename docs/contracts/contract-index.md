@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-20
+Updated: 2026-07-21
 
 | Contract | Status | Scope |
 | --- | --- | --- |
@@ -18,4 +18,9 @@ Updated: 2026-07-20
 | [010 Execution Host Services and Inputs](010-execution-host-services-and-inputs.md) | active | Capability-scoped host authority, credentials, resources, attachments, schemas, and diagnostics |
 | [011 Runtime Conformance Profiles](011-runtime-conformance-profiles.md) | active | Deterministic cross-shape runtime proof profiles and assertions |
 | [012 Interactive Session Options and Callback Exchange](012-interactive-session-options-and-callback-exchange.md) | active | Session instructions, reasoning selection, tool declarations, and correlated callback lifecycle |
-| [013 Interactive Session Access Policy](013-interactive-session-access-policy.md) | active | Independent resource, filesystem, approval, network, provider-request, deadline, and cleanup policy for interactive sessions |
+| [013 Interactive Session Access Policy](013-interactive-session-access-policy.md) | active | Independent resource, isolation, filesystem, approval, network, provider-request, deadline, and cleanup policy for interactive sessions |
+| [014 Hosted Transport, Credential, And Evidence Boundary](014-hosted-transport-credential-and-evidence-boundary.md) | active | Scoped endpoint grants, credential leases, direct streaming, catalogue metadata, and provider usage or limit evidence |
+| [015 ACP v1 Negotiation And Client Callbacks](015-acp-v1-negotiation-and-client-callbacks.md) | active | ACP wire negotiation, capability gates, session lifecycle, and execution-host callback authority |
+| [016 Connection-Scoped Direct Sessions And Billed Cost](016-connection-scoped-direct-sessions-and-billed-cost.md) | active | Resource-free direct sessions, connection-bound continuation and cleanup, and exact provider-billed-cost evidence |
+| [017 Provider-Owned Session Load, Replay, And Host Containment](017-provider-owned-session-load-replay-and-host-containment.md) | active | Persistent session bindings, load and resume, replay, write callbacks, delegated login, ambient execution, and optional containment |
+| [018 Owned Ephemeral Model Serving Lifecycle](018-owned-ephemeral-model-serving-lifecycle.md) | active | Model-artifact leases, dynamic endpoint readiness, and joined owned-child cleanup |

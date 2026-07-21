@@ -1,0 +1,38 @@
+{
+  "fixture_schema": 1,
+  "load_or_resume": [
+    {
+      "case": "unbound_provider_session",
+      "expected": "reject_before_process_or_wire"
+    },
+    {
+      "case": "working_resource_mismatch",
+      "expected": "reject_before_process_or_wire"
+    },
+    {
+      "case": "resource_access_mismatch",
+      "expected": "reject_before_process_or_wire"
+    },
+    {
+      "case": "session_access_policy_mismatch",
+      "expected": "reject_before_process_or_wire"
+    }
+  ],
+  "write_callback": [
+    {
+      "case": "wrong_provider_session",
+      "expected_error": -32602,
+      "mutation": false
+    },
+    {
+      "case": "path_escape",
+      "expected_error": -32602,
+      "mutation": false
+    },
+    {
+      "case": "read_only_lease",
+      "expected_error": -32602,
+      "mutation": false
+    }
+  ]
+}

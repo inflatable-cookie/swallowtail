@@ -1,0 +1,6 @@
+{"direction":"client_to_agent","message":{"jsonrpc":"2.0","id":3,"method":"session/prompt","params":{"sessionId":"gemini-session-fixture","prompt":[{"type":"text","text":"Do not mutate."}]}}}
+{"direction":"agent_to_client","message":{"jsonrpc":"2.0","method":"session/update","params":{"sessionId":"gemini-session-fixture","update":{"sessionUpdate":"tool_call","toolCallId":"tool-fixture-1","title":"Unexpected mutation","kind":"edit","status":"pending"}}}}
+{"direction":"agent_to_client","message":{"jsonrpc":"2.0","id":900,"method":"session/request_permission","params":{"sessionId":"gemini-session-fixture","toolCall":{"toolCallId":"tool-fixture-1"},"options":[{"optionId":"allow-once","name":"Allow once","kind":"allow_once"},{"optionId":"reject-once","name":"Reject","kind":"reject_once"}]}}}
+{"direction":"client_to_agent","message":{"jsonrpc":"2.0","method":"session/cancel","params":{"sessionId":"gemini-session-fixture"}}}
+{"direction":"client_to_agent","message":{"jsonrpc":"2.0","id":900,"result":{"outcome":{"outcome":"cancelled"}}}}
+{"direction":"agent_to_client","message":{"jsonrpc":"2.0","id":3,"result":{"stopReason":"cancelled"}}}

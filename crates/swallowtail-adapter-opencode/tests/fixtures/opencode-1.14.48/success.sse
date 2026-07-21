@@ -1,0 +1,14 @@
+data: {"id":"evt_1","type":"server.connected","properties":{}}
+
+: keepalive
+
+data: {"id":"evt_2","type":"session.status","properties":{"sessionID":"ses_fixture","status":{"type":"busy"}}}
+
+data: {"id":"evt_3","type":"message.part.delta","properties":{"sessionID":"ses_fixture","messageID":"msg_fixture","partID":"prt_fixture","field":"text","delta":"hello"}}
+
+data: {"id":"evt_4","type":"message.part.updated","properties":{"sessionID":"ses_fixture","part":{"id":"prt_fixture","sessionID":"ses_fixture","messageID":"msg_fixture","type":"text","text":"hello world"},"time":2}}
+
+data: {"id":"evt_5","type":"session.status","properties":{"sessionID":"ses_fixture","status":{"type":"idle"}}}
+
+data: {"id":"evt_6","type":"session.idle","properties":{"sessionID":"ses_fixture"}}
+

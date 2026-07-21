@@ -1,6 +1,6 @@
 use crate::access::SupportAuthority;
 use crate::identity::AdapterId;
-use crate::model::ModelId;
+use crate::model::{ModelId, ProviderId};
 use crate::requirement::CapabilityProfile;
 use crate::runtime_identity::{
     AccessProfileId, ConfiguredInstanceId, ExecutionHostId, InstanceOwnership, InstancePolicyId,
@@ -115,6 +115,7 @@ pub struct ModelRoute {
     revision: ModelRouteRevision,
     instance_id: ConfiguredInstanceId,
     model_id: ModelId,
+    provider_id: Option<ProviderId>,
     capabilities: CapabilityProfile,
 }
 
@@ -132,6 +133,7 @@ impl ModelRoute {
             revision,
             instance_id,
             model_id,
+            provider_id: None,
             capabilities,
         }
     }
@@ -154,6 +156,17 @@ impl ModelRoute {
     #[must_use]
     pub const fn model_id(&self) -> &ModelId {
         &self.model_id
+    }
+
+    #[must_use]
+    pub fn with_provider_id(mut self, provider_id: ProviderId) -> Self {
+        self.provider_id = Some(provider_id);
+        self
+    }
+
+    #[must_use]
+    pub const fn provider_id(&self) -> Option<&ProviderId> {
+        self.provider_id.as_ref()
     }
 
     #[must_use]

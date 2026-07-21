@@ -37,6 +37,15 @@ pub(crate) fn validate(
         Capability::ExternalSearch,
         "external search",
     )?;
+    validate_feature_binding(
+        plan,
+        request.maximum_output_tokens().is_some(),
+        Capability::OutputTokenLimit,
+        "maximum output tokens",
+    )?;
+    if request.maximum_output_tokens().is_some() {
+        return Err(unsupported("maximum output tokens"));
+    }
 
     if request.attachments().len() > 1 {
         return Err(unsupported("more than one image attachment"));
@@ -86,6 +95,9 @@ pub(crate) fn validate(
         }
         (ExternalNetworkPolicy::Denied, ExternalSearchPolicy::Enabled) => {
             return Err(plan_mismatch("external-search network policy"));
+        }
+        (ExternalNetworkPolicy::AmbientHost, _) => {
+            return Err(unsupported("ambient host network authority"));
         }
     }
 

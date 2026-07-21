@@ -1,0 +1,4 @@
+{"direction":"client_to_agent","message":{"jsonrpc":"2.0","id":5,"method":"session/prompt","params":{"sessionId":"kimi-session-bound","prompt":[{"type":"text","text":"Begin cancellable work."}]}}}
+{"direction":"agent_to_client","message":{"jsonrpc":"2.0","method":"session/update","params":{"sessionId":"kimi-session-bound","update":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"Partial"}}}}}
+{"direction":"client_to_agent","message":{"jsonrpc":"2.0","method":"session/cancel","params":{"sessionId":"kimi-session-bound"}}}
+{"direction":"agent_to_client","message":{"jsonrpc":"2.0","id":5,"result":{"stopReason":"cancelled"}}}

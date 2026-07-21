@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-20
+Updated: 2026-07-21
 
 ## Purpose
 
@@ -23,6 +23,10 @@ cross-adapter adoption without prematurely stabilizing the public API.
 - synthetic cross-shape conformance
 - separate Codex exec and app-server proof drivers
 - later Soundcheck, Nucleus, and non-Codex proof roadmaps
+- hosted transport and credential foundations
+- OpenCode HTTP harness and Anthropic direct-inference proofs
+- Gemini ACP and attached llama.cpp runtime proofs
+- xAI connection-scoped direct inference and provider-billed-cost evidence
 
 ## Current Checkpoint
 
@@ -164,6 +168,260 @@ cross-adapter adoption without prematurely stabilizing the public API.
   downstream validation
 - full repository QA passes with 119 tests
 - roadmap 010 and cards 031-034 are complete
+- provider evidence is refreshed in Research 004
+- Contract 014 settles scoped endpoint grants, credential leases, direct
+  streaming, catalogue limits, and provider usage or limit evidence
+- roadmaps 011-015 compile the first cross-adapter, ACP, and self-hosted runway
+- roadmap 019 completes the owned ephemeral llama.cpp lifecycle; roadmap 018
+  is now active on the current Kimi successor boundary
+- roadmap 011 and cards 035-038 are complete
+- scoped endpoint grants and credential leases bind operation, reference, and
+  audience and expose only redacted driver accessors
+- structured direct runs no longer need a placeholder working resource; Codex
+  retains its explicit resource requirement before process start
+- model token limits, token usage, rate-limit state, and quota state are typed
+  mutable evidence without retry or billing behavior
+- the local host implements explicit endpoint, secret, and delegated-credential
+  approvals with audience checks and tracked awaited lease release
+- hosted Contract 014 conformance and full repository QA pass with 129 tests
+- the versioned OpenCode `1.14.48` fixture freezes six attached HTTP/SSE routes,
+  exact provider/model identity, deny-first read-only permissions, ordered
+  success and failure events, abort, disconnect, and unknown-event handling
+- card 039 is complete with six focused tests
+- the production OpenCode driver uses host-approved libcurl blocking work,
+  bounded SSE delivery, delegated credentials, exact provider/model identity,
+  read-only sessions, abort, deadlines, and joined cleanup
+- a sixth provider-neutral conformance profile covers attached HTTP/SSE
+  harnesses without importing process or direct-inference behavior
+- roadmap 012 and cards 039-041 are complete
+- full repository QA passes with 150 tests
+- the Anthropic `2023-06-01` public-API fixture freezes Models pagination,
+  explicit message output bounds, SSE order, cumulative usage, request and rate
+  evidence, errors, unknown events, local-only cancellation, and one attempt
+- card 042 is complete with nine focused tests
+- full repository QA passes with 159 tests
+- the Anthropic direct driver adds an explicit output-token request bound,
+  bounded catalogue pagination, one-attempt Messages SSE, typed request/rate/
+  usage evidence, safe errors, local cancellation, and awaited secret cleanup
+- the hosted-direct profile covers explicit output bounds; 18 focused adapter
+  and profile tests pass without a live credential
+- full repository QA passes with 168 tests; the separately gated OpenCode
+  installed probe remains ignored by default
+- roadmap 013 and cards 042-044 are complete
+- ACP wire version 1 and stable schema release `v1.19.0` are distinct from SDK
+  and agent artifact versions under Contract 015
+- the Gemini CLI `0.51.0` fixture freezes a new-session, text-prompt, update,
+  permission-cancel, filesystem-read, turn-cancel, and process-close subset
+- authentication mutation, consumer membership, load/resume, mode/model
+  mutation, MCP injection, writes, terminals, and native session close remain
+  excluded from the first Gemini driver
+- eight focused ACP fixture tests pass without a binary or credential
+- the production ACP layer owns bounded v1 NDJSON framing and correlation with
+  no Gemini identity branch
+- `WorkingResourceIo` separates provider filesystem callbacks from consumer
+  tools and rejects traversal or symlink escape under the leased read-only root
+- the Gemini CLI `0.51.0` adapter pins API-key access identity, isolated
+  process state, Plan Mode, new text sessions, updates, permission
+  cancellation, native turn cancellation, and joined process close
+- 29 focused adapter, protocol, and local-host tests pass without a Gemini
+  binary or credential
+- a seventh provider-neutral profile covers long-lived ACP without weakening
+  the six existing transport and serving shapes
+- deterministic Gemini conformance covers local and remote-authoritative
+  topology, read callbacks, permission observation, cancellation, disconnect,
+  terminal event closure, redaction, and joined cleanup
+- prompt correlation now precedes waiter-task spawn, preventing cancellation
+  from overtaking the active ACP request
+- full repository QA passes with 190 tests; Gemini and OpenCode installed
+  probes remain separately gated and ignored by default
+- doctor remains at the pre-existing 19 findings with no new oversized-file
+  debt
+- roadmap 014 and cards 045-047 are complete
+- llama.cpp build `9910`, its bounded native/OpenAI-compatible facade, and one
+  operator-supplied 1.19 MB Stories 260K fixture are frozen without model or
+  server ownership
+- eight deterministic llama.cpp protocol tests pass without a server, model,
+  credential, or network request
+- the production llama.cpp driver observes readiness, exact build, template
+  capabilities, modality posture, and route alias before catalogue or run work
+- one bounded Chat Completions SSE attempt preserves output, usage,
+  cancellation, deadline, failure, redaction, and joined cleanup while the
+  attached server remains running
+- local and remote-authoritative hosts pass the same public seam; 17 focused
+  llama.cpp tests and full QA pass with 207 tests
+- roadmap 015 and cards 048-050 are complete
+- Research 005 revalidates xAI WebSocket, Kimi Code ACP `0.28.0`, current
+  SDK wrappers, and owned self-hosted authority
+- Contract 016 settles resource-free direct sessions, session-bound network
+  and credential leases, connection-local continuation, no implicit recovery,
+  and exact provider-billed-cost evidence
+- xAI Responses WebSocket is selected as the next highest-information proof;
+  Kimi ACP, owned llama.cpp, and SDK-native work remain sequenced behind it
+- roadmap 016 and card 051 are complete
+- the xAI evidence snapshot freezes the exact `/v1/responses` WebSocket
+  upgrade and bearer boundary, serial `store=false` turns, private latest-
+  response continuation, ordered text events, terminal usage, exact billed
+  ticks, provider failures, disconnect, and cancellation by connection close
+- eight focused fixture tests pass against a deterministic loopback WebSocket;
+  no provider credential or external inference request is used
+- resource-free session records now represent absence without a fake working
+  resource; existing resource-bound sessions retain their explicit constructor
+- exact provider-billed-cost evidence carries USD scale, cumulative-replacement
+  semantics, turn, route, access profile, and provider-attempt identity
+- the production xAI driver owns one host-approved WebSocket and API-key lease
+  across serial `store=false` turns with private latest-response continuation
+- deterministic driver tests prove concurrent rejection before a second frame,
+  cancellation and deadline invalidation, disconnect, distinct provider
+  failures, safe diagnostics, and task join before credential release
+- 91 focused tests, strict focused clippy, all-target workspace compile,
+  formatting, and diff checks pass; doctor remains at the known 19 findings
+- an eighth provider-neutral profile covers connection-scoped direct sessions
+  without importing xAI identity
+- local and remote-authoritative xAI fixtures prove two chained turns, terminal
+  event closure, exact turn cost, redaction, and joined connection cleanup
+  before one awaited credential release
+- full repository QA passes with 227 tests; the two installed/live probes
+  remain separately gated and ignored by default
+- roadmap 017 and cards 052-054 are complete
+- Research 006 supersedes the Kimi `0.28.0` planning pin with provider release
+  `0.28.1`, adapter package `0.3.4`, exact ACP SDK `0.23.0`, wire `1`, and
+  stable schema artifact `v1.19.1`
+- current ACP and tagged Kimi source agree that load replays history before its
+  response while resume reattaches without replay
+- Contract 017 binds provider-owned sessions to exact route, host, resource,
+  access, and policy identity and separates replay from live turns
+- bounded text writes now require exact `ReadWrite` callback authority, but
+  callback mediation remains separate from provider tool approval and process
+  filesystem containment
+- Kimi accepts both existing OAuth state and configured non-OAuth provider
+  credentials; the first proof selects only an isolated pre-existing delegated
+  harness route and launches no sign-in action
+- the exact Kimi ACP fixture corpus pins provider, adapter, SDK, wire, schema,
+  source hashes, access, and exclusions independently
+- deterministic new, load, resume, prompt, cancellation, write, drift, auth,
+  and disconnect transcripts pass 10 adapter-local assertions without changing
+  the provider-neutral ACP decoder
+- load replay must finish before its response, resume must not replay, and
+  wrong-session or write-authority mismatches fail closed
+- cards 055-056 are complete with the second-agent protocol corpus
+- Research 007 finds no current local mechanism that meets Contract 017:
+  Landlock alone is incomplete, macOS App Sandbox needs signed deployment
+  authority, `sandbox-exec` is deprecated, and the Windows process-sandbox API
+  is experimental
+- Contract 017 now rejects partial, best-effort, deprecated, private,
+  experimental, and locally fabricated remote containment claims
+- the original local-only card 057 stopped because the current host has no
+  qualifying dynamic process-filesystem containment mechanism
+- Research 009 records the operator's native macOS App Sandbox helper
+  selection: one persisted user-selected project grant, isolated Kimi state,
+  inherited descendants, and no container or broad home access
+- Research 010 repairs the successor currentness error: `0.28.1` already is the
+  maintained TypeScript Kimi Code line, not the wound-down Python line
+- annotated tag objects and peeled source commits are now distinct for both
+  Kimi Code and ACP schema `v1.19.1`
+- the exact official arm64 archive, extracted executable, upstream signature,
+  dynamic-code entitlements, isolated state root, exclusions, and upgrade gate
+  are frozen for the deployment helper proof
+- current tagged source retains separate load-with-replay and resume-without-
+  replay; the existing protocol transcripts remain current
+- Research 008 pins llama.cpp `b10069`, proves its race-free loopback port-zero
+  bind, and excludes downloads, router mode, tools, UI, public listeners, and
+  persistent serving
+- Contract 018 promotes read-only model-artifact leases, readiness-before-
+  handle, safe host-scoped endpoint handoff, and joined child cleanup before
+  endpoint and artifact release
+- provider-neutral artifact identities and preflight bindings are now distinct
+  from opaque host references and request attachments
+- the runtime exposes read-only artifact leases plus host-scoped serving
+  endpoint publication without a global registry or generic inference handle
+- owned start substitution and host-service drift fail before recorded process,
+  network, artifact, or endpoint effects
+- full repository QA passes with 230 tests; doctor remains at the inherited 19
+  findings, including 7 errors
+- the local host now binds exact approved regular-file artifacts to one
+  execution host and verifies their SHA-256 digest before issuing read-only
+  serving leases without taking deletion authority
+- only exact nonzero loopback HTTP sockets can become dynamic scoped endpoint
+  grants, and awaited release invalidates their network authority
+- owned conformance records artifact acquisition, process start, endpoint
+  publication, process stop and join, endpoint release, and artifact release in
+  contract order under both local and remote-authoritative host identities
+- 50 focused local-host and testkit tests pass; full QA passes with 236 tests
+- the distinct b10069 owned driver launches only one host-approved artifact on
+  exact loopback port zero with offline, no-UI, and no-agent flags
+- bounded startup supervision remains active through health, exact build, and
+  single-route readiness; no handle appears before all evidence agrees
+- deterministic failure fixtures prove malformed, duplicate, non-loopback,
+  early-exit, build-mismatch, graceful-stop, forced-stop, joined process,
+  endpoint-release, artifact-release, and redaction behavior
+- 25 focused llama.cpp tests and all 254 repository tests pass; warnings-denied
+  clippy passes and doctor remains at the inherited 19 findings
+- the common owned profile now passes beside the production b10069 driver, and
+  local plus remote-authoritative fixtures preserve serving scope, host,
+  ownership, and ordered cleanup through the public handle
+- deterministic readiness timeout and route-mismatch fixtures join the child
+  before endpoint and artifact release and keep endpoint values and artifact
+  paths out of diagnostics
+- the b9910 attached suite remains distinct and proves cleanup cannot stop its
+  external server
+- 28 focused llama.cpp tests and all 257 repository tests pass; two installed
+  or live probes remain gated, warnings-denied clippy passes, and doctor
+  remains at the inherited 19 findings
+- roadmap 019 and cards 060-064 are complete
+- card 065 is complete with 22 focused ACP fixture tests
+- full repository QA passes with 259 tests; doctor remains at the inherited 19
+  oversized-file findings, including 7 errors
+- Research 011 proves dynamic security-scoped bookmark propagation through a
+  compatible inherited App Sandbox helper, including shell and background
+  descendants and denied outside-root access
+- the exact Kimi `0.28.1` artifact crashes during V8 initialization under the
+  documented helper signature; JITless then stalls on an extracted native
+  module and is not a supported route
+- Contract 017's exact-runtime stop condition fired before portable records or
+  a host-enforced provider mapping
+- Research 012 finds T3 Code and similar orchestrators map harness-native
+  permission or sandbox controls without imposing one portable outer sandbox
+- the operator selected optional explicit isolation: `AmbientHost`,
+  `ProviderEnforced`, and `HostEnforced` remain distinct with no fallback
+- generic harness sessions now default to ambient disclosure; Codex retains
+  explicit provider-enforced read-only and bounded-workspace profiles
+- Gemini ACP and attached OpenCode are reclassified as ambient because their
+  working resources and permission rules do not contain every process path
+- card 057 is complete as negative capability evidence; card 066 rebaselines
+  shared records and card 058 is ready for ambient Kimi ACP
+- full repository QA passes with 262 tests; installed/live probes remain gated
+- doctor remains at the inherited 19 oversized-file findings, including 7
+  errors
+- the production Kimi Code `0.28.1` ACP driver is an explicit `AmbientHost`
+  route with isolated provider state and an opaque delegated membership lease
+- provider-owned load returns bounded ordered replay before a ready handle;
+  resume remains a separate replay-free operation
+- durable session bindings now fix working resource and expanded access policy
+  beside provider, instance, host, route, and model identity
+- one-MiB text replacement callbacks require an exact preflight capability and
+  `ReadWrite` filesystem lease; callback authority makes no process-containment
+  or provider-tool approval claim
+- deterministic Kimi fixtures prove new, load, resume, prompt, write,
+  cancellation, pre-effect binding rejection, and joined resource/credential
+  cleanup without adding a Kimi branch to shared ACP framing
+- card 058 is complete; card 059 is complete with cross-agent conformance and
+  roadmap 018 closeout
+- full repository QA passes with 269 tests; Gemini and OpenCode installed
+  probes remain separately gated and ignored by default
+- one provider-neutral ACP decoder accepts pinned Gemini and Kimi corpora;
+  Kimi-only lifecycle methods do not widen Gemini's baseline claims
+- a ninth provider-neutral profile composes persistent load, replay, resume,
+  bounded text write, delegated auth, ambient authority, topology, redaction,
+  and ordered cleanup
+- the production Kimi lifecycle passes under local and remote-authoritative
+  host ids; its installed `0.28.1` check remains explicitly gated
+- roadmap 018 and cards 055-059, 065-066 are complete
+- roadmap 020 is active; card 067 rechecks SDK-native embedding first and then
+  selects the next highest-information remaining route
+- full repository QA passes with 271 tests; three installed/live probes remain
+  gated and ignored by default
+- doctor remains at the inherited 19 oversized-file findings: 12 warnings and
+  7 errors
 
 ## Milestones
 
@@ -181,6 +439,16 @@ cross-adapter adoption without prematurely stabilizing the public API.
   — completed
 - [009 Soundcheck Consumer Adoption](009-soundcheck-consumer-adoption.md) — completed
 - [010 Bounded Workspace Session Access](010-bounded-workspace-session-access.md) — completed
+- [011 Hosted Transport Foundations](011-hosted-transport-foundations.md) — completed
+- [012 OpenCode HTTP Harness Proof](012-opencode-http-harness-proof.md) — completed
+- [013 Anthropic Direct Inference Proof](013-anthropic-direct-inference-proof.md) — completed
+- [014 Gemini ACP Proof](014-gemini-acp-proof.md) — completed
+- [015 llama.cpp Attached Runtime Proof](015-llama-cpp-attached-runtime-proof.md) — completed
+- [016 Post-Tranche Coverage Checkpoint](016-post-tranche-coverage-checkpoint.md) — completed
+- [017 xAI Responses WebSocket Proof](017-xai-responses-websocket-proof.md) — completed
+- [018 Kimi Code ACP Portability Proof](018-kimi-code-acp-portability-proof.md) — completed
+- [019 Owned llama.cpp Serving Proof](019-owned-llama-cpp-serving-proof.md) — completed
+- [020 Post-Portability Coverage Expansion](020-post-portability-coverage-expansion.md) — active
 
 ## Batch Shape
 
@@ -192,6 +460,19 @@ cross-adapter adoption without prematurely stabilizing the public API.
 - cards 026-029 form the later Nucleus shared-readiness and handoff lane
 - card 030 closed the first real Soundcheck consumer feedback loop
 - cards 031-034 completed the bounded interactive workspace-access lane
+- cards 035-038 form the hosted transport foundation lane
+- cards 039-041 form the OpenCode HTTP harness proof
+- cards 042-044 form the Anthropic direct-inference proof
+- cards 045-047 form the Gemini ACP proof
+- cards 048-050 form the attached llama.cpp proof
+- card 051 closed the post-tranche provider-coverage checkpoint
+- cards 052-054 form the xAI Responses WebSocket proof
+- cards 055-059 form the Kimi Code ACP portability proof
+- cards 060-064 form the owned llama.cpp serving proof
+- card 065 repairs the Kimi Code successor pin before production mapping
+- card 066 makes harness isolation optional and explicit before Kimi mapping
+- cards 067-069 form the post-portability evidence, selected-boundary, and
+  production-proof lane
 
 Run validation after each complete batch, not after each small card.
 

@@ -1,8 +1,15 @@
 [workspace]
 members = [
+  "crates/swallowtail-adapter-anthropic",
   "crates/swallowtail-adapter-codex",
+  "crates/swallowtail-adapter-gemini",
+  "crates/swallowtail-adapter-kimi",
+  "crates/swallowtail-adapter-llama-cpp",
+  "crates/swallowtail-adapter-opencode",
+  "crates/swallowtail-adapter-xai",
   "crates/swallowtail-core",
   "crates/swallowtail-host-local",
+  "crates/swallowtail-protocol-acp",
   "crates/swallowtail-runtime",
   "crates/swallowtail-testkit",
 ]

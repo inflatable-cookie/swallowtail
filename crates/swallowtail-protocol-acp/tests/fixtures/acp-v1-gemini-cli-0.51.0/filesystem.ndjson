@@ -1,0 +1,2 @@
+{"direction":"agent_to_client","message":{"jsonrpc":"2.0","id":701,"method":"fs/read_text_file","params":{"sessionId":"gemini-session-fixture","path":"/fixture/workspace/src/lib.rs","line":1,"limit":32}}}
+{"direction":"client_to_agent","message":{"jsonrpc":"2.0","id":701,"result":{"content":"pub fn fixture() {}\n"}}}

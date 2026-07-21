@@ -57,22 +57,31 @@ fn every_recording_host_service_exposes_attempted_effects() {
     poll_immediate(process.wait()).expect("wait succeeds");
 
     let endpoint = EndpointRef::new("fixture-endpoint").expect("reference is valid");
+    let audience = EndpointAudience::new("fixture-audience").expect("audience is valid");
     poll_immediate(
         services
             .network()
             .expect("network service is registered")
-            .authorize(endpoint),
+            .authorize(scope.clone(), endpoint, audience.clone()),
     )
     .expect("network authorization succeeds");
     let credential = CredentialRef::new("fixture-credential").expect("reference is valid");
-    let audience = EndpointAudience::new("fixture-audience").expect("audience is valid");
-    poll_immediate(
+    let credential_lease = poll_immediate(
         services
             .credential()
             .expect("credential service is registered")
-            .acquire(credential, audience),
+            .acquire(scope.clone(), credential, audience),
     )
     .expect("credential acquisition succeeds");
+    assert_eq!(
+        poll_immediate(
+            services
+                .credential()
+                .expect("credential service is registered")
+                .release(credential_lease),
+        ),
+        swallowtail_runtime::CleanupOutcome::Clean
+    );
     let resource = WorkingResourceRef::new("fixture-resource").expect("reference is valid");
     let borrowed = poll_immediate(
         services
@@ -201,6 +210,7 @@ fn every_recording_host_service_exposes_attempted_effects() {
         RecordedHostCall::ProcessWait,
         RecordedHostCall::NetworkAuthorize,
         RecordedHostCall::CredentialAcquire,
+        RecordedHostCall::CredentialRelease,
         RecordedHostCall::WorkingResourceResolve,
         RecordedHostCall::WorkingResourceCreateTemporary,
         RecordedHostCall::AttachmentMaterializeFile,
@@ -236,9 +246,9 @@ fn operation_policy_requires_explicit_search_authority_and_reasoning() {
     let request = StructuredRunRequest::new(
         RequestId::new("policy-request").expect("request id is valid"),
         swallowtail_runtime::OperationContent::new("private prompt").expect("content is valid"),
-        WorkingResourceRef::new("policy-resource").expect("resource is valid"),
         policy,
-    );
+    )
+    .with_working_resource(WorkingResourceRef::new("policy-resource").expect("resource is valid"));
     assert_eq!(
         request.policy().external_network(),
         ExternalNetworkPolicy::HostApproved
@@ -247,6 +257,17 @@ fn operation_policy_requires_explicit_search_authority_and_reasoning() {
         request.policy().external_search(),
         ExternalSearchPolicy::Enabled
     );
+}
+
+#[test]
+fn direct_structured_run_needs_no_placeholder_working_resource() {
+    let request = StructuredRunRequest::new(
+        RequestId::new("direct-request").expect("request id is valid"),
+        swallowtail_runtime::OperationContent::new("private prompt").expect("content is valid"),
+        OperationPolicy::offline(),
+    );
+
+    assert!(request.working_resource().is_none());
 }
 
 #[test]
@@ -271,12 +292,14 @@ fn scripted_host_failure_is_recorded_before_rejection() {
         "Host rejected operation",
     )));
     let endpoint = EndpointRef::new("fixture-endpoint").expect("reference is valid");
+    let scope = ScopeId::new("failure-scope").expect("scope is valid");
+    let audience = EndpointAudience::new("failure-audience").expect("audience is valid");
     let result = poll_immediate(
         recording
             .services()
             .network()
             .expect("network service is registered")
-            .authorize(endpoint),
+            .authorize(scope, endpoint, audience),
     );
 
     assert!(result.is_err());

@@ -4,11 +4,15 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
-description = "Host-approved local process services for Swallowtail"
+description = "Host-approved local execution services for Swallowtail"
 
 [dependencies]
+sha2 = "0.10"
 swallowtail-core = { path = "../swallowtail-core" }
 swallowtail-runtime = { path = "../swallowtail-runtime" }
+
+[dev-dependencies]
+futures-executor = "0.3"
 
 [lints]
 workspace = true

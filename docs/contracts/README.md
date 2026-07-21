@@ -18,7 +18,15 @@ Contracts hold durable, testable rules.
 - [011 Runtime Conformance Profiles](011-runtime-conformance-profiles.md)
 - [012 Interactive Session Options and Callback Exchange](012-interactive-session-options-and-callback-exchange.md)
 - [013 Interactive Session Access Policy](013-interactive-session-access-policy.md)
+- [014 Hosted Transport, Credential, And Evidence Boundary](014-hosted-transport-credential-and-evidence-boundary.md)
+- [015 ACP v1 Negotiation And Client Callbacks](015-acp-v1-negotiation-and-client-callbacks.md)
+- [016 Connection-Scoped Direct Sessions And Billed Cost](016-connection-scoped-direct-sessions-and-billed-cost.md)
+- [017 Provider-Owned Session Load, Replay, And Host Containment](017-provider-owned-session-load-replay-and-host-containment.md)
+- [018 Owned Ephemeral Model Serving Lifecycle](018-owned-ephemeral-model-serving-lifecycle.md)
 
-Contract 003 defines the provider-neutral record kernel. Contracts 004-013
-govern the realized runtime, local-process host, and first Codex proof drivers
-while later consumer and cross-adapter work continues to constrain the API.
+Contract 003 defines the provider-neutral record kernel. Contracts 004-016
+govern the realized runtime and current proof drivers. Contract 017 governs
+persistent-session, write-callback, ambient-harness, and optional process-
+containment work; exact deployed-runtime qualification applies only to an
+enforced isolation claim. Contract 018 governs owned ephemeral serving, now
+realized by the llama.cpp proof.

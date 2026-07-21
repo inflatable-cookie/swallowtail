@@ -139,13 +139,33 @@ fn runtime_services_must_belong_to_the_preflight_bound_host() {
     assert!(!state.started());
 }
 
+#[test]
+fn codex_exec_requires_its_working_resource_before_process_start() {
+    let (process, state) = FakeProcessService::completed("");
+    let request = StructuredRunRequest::new(
+        RequestId::new("missing-resource").expect("request id is valid"),
+        OperationContent::new("bounded prompt").expect("content is valid"),
+        OperationPolicy::offline(),
+    );
+
+    let failure = block_on(driver().start_run(plan_with([], []), request, host_services(process)))
+        .err()
+        .expect("missing resource must fail");
+
+    assert_eq!(
+        failure.diagnostic().code(),
+        "swallowtail.codex.exec.working_resource_missing"
+    );
+    assert!(!state.started());
+}
+
 fn request(id: &str, policy: OperationPolicy) -> StructuredRunRequest {
     StructuredRunRequest::new(
         RequestId::new(id).expect("request id is valid"),
         OperationContent::new("bounded prompt").expect("content is valid"),
-        working_resource(),
         policy,
     )
+    .with_working_resource(working_resource())
 }
 
 fn driver() -> CodexExecDriver {

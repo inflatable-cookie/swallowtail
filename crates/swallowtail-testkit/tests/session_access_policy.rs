@@ -13,7 +13,7 @@ fn host_id(value: &str) -> ExecutionHostId {
 }
 
 #[test]
-fn interactive_requests_and_preflight_keep_read_only_as_the_default() {
+fn provider_enforced_read_only_is_selected_explicitly() {
     let fixture = SessionAccessPreflightFixture::for_case(
         SessionAccessFixtureCase::ReadOnly,
         host_id("fixture.host.local"),
@@ -23,7 +23,8 @@ fn interactive_requests_and_preflight_keep_read_only_as_the_default() {
         RequestId::new("read-only-request").expect("request id is valid"),
         fixture.working_resource().clone(),
         None,
-    );
+    )
+    .with_access_policy(SessionAccessPolicy::read_only());
 
     assert_eq!(request.access_policy(), &SessionAccessPolicy::read_only());
     assert_eq!(
@@ -31,7 +32,37 @@ fn interactive_requests_and_preflight_keep_read_only_as_the_default() {
         Some(request.access_policy())
     );
     validate_session_access_plan(&plan, request.access_policy())
-        .expect("default request matches default preflight");
+        .expect("explicit request matches explicit preflight");
+    assert_eq!(fixture.provider_side_effect_count(), 0);
+}
+
+#[test]
+fn resource_free_session_request_and_policy_need_no_placeholder_resource() {
+    let fixture = SessionAccessPreflightFixture::for_case(
+        SessionAccessFixtureCase::ResourceFree,
+        host_id("fixture.host.direct-session"),
+    );
+    let plan = fixture
+        .preflight()
+        .expect("resource-free preflight succeeds");
+    let request = OpenSessionRequest::resource_free(
+        RequestId::new("resource-free-request").expect("request id is valid"),
+        None,
+    );
+    let recording = RecordingHostServices::default();
+
+    assert!(request.working_resource().is_none());
+    assert_eq!(
+        request.access_policy(),
+        &SessionAccessPolicy::resource_free()
+    );
+    assert_eq!(
+        plan.requirements().session_access_policy(),
+        Some(request.access_policy())
+    );
+    validate_session_access_plan(&plan, request.access_policy())
+        .expect("resource-free request matches preflight");
+    assert_eq!(recording.count(RecordedHostCall::WorkingResourceResolve), 0);
     assert_eq!(fixture.provider_side_effect_count(), 0);
 }
 
@@ -83,7 +114,10 @@ fn bounded_workspace_lease_retains_exact_access_and_execution_host() {
                 .resolve(
                     ScopeId::new("bounded-session-scope").expect("scope is valid"),
                     fixture.working_resource().clone(),
-                    fixture.policy().resource_access(),
+                    fixture
+                        .policy()
+                        .resource_access()
+                        .expect("bounded policy has resource access"),
                     ResourceRepresentation::Filesystem,
                 ),
         )

@@ -28,7 +28,13 @@ pub fn validate_session_resource_lease(
             "Working-resource lease does not match the session request",
         ));
     }
-    if lease.access() != requested.resource_access() {
+    let requested_access = requested.resource_access().ok_or_else(|| {
+        failure(
+            "swallowtail.session_access.resource_unexpected",
+            "Resource-free session policy cannot validate a working-resource lease",
+        )
+    })?;
+    if lease.access() != requested_access {
         return Err(failure(
             "swallowtail.session_access.resource_access_mismatch",
             "Working-resource lease access does not match the session policy",

@@ -1,8 +1,10 @@
-use crate::CredentialRef;
+use crate::{CredentialRef, ScopeId};
 use std::fmt;
 use swallowtail_core::EndpointAudience;
 
 pub struct SecretLease {
+    scope: ScopeId,
+    reference: CredentialRef,
     bytes: Vec<u8>,
     audience: EndpointAudience,
     release: Option<Box<dyn FnOnce() + Send + 'static>>,
@@ -10,8 +12,15 @@ pub struct SecretLease {
 
 impl SecretLease {
     #[must_use]
-    pub const fn new(bytes: Vec<u8>, audience: EndpointAudience) -> Self {
+    pub const fn new(
+        scope: ScopeId,
+        reference: CredentialRef,
+        bytes: Vec<u8>,
+        audience: EndpointAudience,
+    ) -> Self {
         Self {
+            scope,
+            reference,
             bytes,
             audience,
             release: None,
@@ -28,6 +37,16 @@ impl SecretLease {
     #[must_use]
     pub fn expose_secret(&self) -> &[u8] {
         &self.bytes
+    }
+
+    #[must_use]
+    pub const fn scope(&self) -> &ScopeId {
+        &self.scope
+    }
+
+    #[must_use]
+    pub const fn reference(&self) -> &CredentialRef {
+        &self.reference
     }
 
     #[must_use]
@@ -49,6 +68,8 @@ impl fmt::Debug for SecretLease {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         formatter
             .debug_struct("SecretLease")
+            .field("scope", &self.scope)
+            .field("reference", &self.reference)
             .field("bytes", &"<redacted>")
             .field("audience", &self.audience)
             .finish()
@@ -63,24 +84,66 @@ impl fmt::Display for SecretLease {
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct DelegatedCredential {
+    scope: ScopeId,
     reference: CredentialRef,
+    audience: EndpointAudience,
 }
 
 impl DelegatedCredential {
     #[must_use]
-    pub const fn new(reference: CredentialRef) -> Self {
-        Self { reference }
+    pub const fn new(scope: ScopeId, reference: CredentialRef, audience: EndpointAudience) -> Self {
+        Self {
+            scope,
+            reference,
+            audience,
+        }
+    }
+
+    #[must_use]
+    pub const fn scope(&self) -> &ScopeId {
+        &self.scope
     }
 
     #[must_use]
     pub const fn reference(&self) -> &CredentialRef {
         &self.reference
     }
+
+    #[must_use]
+    pub const fn audience(&self) -> &EndpointAudience {
+        &self.audience
+    }
 }
 
 pub enum CredentialLease {
     Secret(SecretLease),
     Delegated(DelegatedCredential),
+}
+
+impl CredentialLease {
+    #[must_use]
+    pub const fn scope(&self) -> &ScopeId {
+        match self {
+            Self::Secret(lease) => lease.scope(),
+            Self::Delegated(credential) => credential.scope(),
+        }
+    }
+
+    #[must_use]
+    pub const fn reference(&self) -> &CredentialRef {
+        match self {
+            Self::Secret(lease) => lease.reference(),
+            Self::Delegated(credential) => credential.reference(),
+        }
+    }
+
+    #[must_use]
+    pub const fn audience(&self) -> &EndpointAudience {
+        match self {
+            Self::Secret(lease) => lease.audience(),
+            Self::Delegated(credential) => credential.audience(),
+        }
+    }
 }
 
 impl fmt::Debug for CredentialLease {
@@ -98,6 +161,7 @@ impl fmt::Debug for CredentialLease {
 #[cfg(test)]
 mod tests {
     use super::SecretLease;
+    use crate::{CredentialRef, ScopeId};
     use std::sync::{
         Arc,
         atomic::{AtomicUsize, Ordering},
@@ -109,7 +173,13 @@ mod tests {
         let releases = Arc::new(AtomicUsize::new(0));
         let release_counter = Arc::clone(&releases);
         let audience = EndpointAudience::new("fixture-api").expect("audience is valid");
-        let lease = SecretLease::new(b"raw-secret".to_vec(), audience).with_release(move || {
+        let lease = SecretLease::new(
+            ScopeId::new("scope-1").expect("scope is valid"),
+            CredentialRef::new("credential-1").expect("credential is valid"),
+            b"raw-secret".to_vec(),
+            audience,
+        )
+        .with_release(move || {
             release_counter.fetch_add(1, Ordering::SeqCst);
         });
 

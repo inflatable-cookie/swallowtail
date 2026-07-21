@@ -1,0 +1,82 @@
+{
+  "fixture_schema": 1,
+  "evidence_snapshot": "2026-07-20",
+  "source_guide_updated": "2026-04-23",
+  "provider_api_version_claimed": false,
+  "endpoint_audience": "api.x.ai",
+  "endpoint_source": "host_approved_grant",
+  "support_authority": "provider_supported",
+  "transport": {
+    "scheme": "wss",
+    "path": "/v1/responses",
+    "upgrade": "websocket",
+    "maximum_connection_minutes": 25,
+    "one_active_response": true,
+    "provider_queue_relied_on": false
+  },
+  "authentication": {
+    "mechanism": "api_key_bearer",
+    "header": "authorization",
+    "shape": "Bearer <secret-lease-bytes>",
+    "credential_source": "scope_and_audience_bound_secret_lease",
+    "grok_product_oauth_in_subset": false
+  },
+  "request": {
+    "type": "response.create",
+    "store": false,
+    "model_source": "exact_configured_route",
+    "continuation": "adapter_private_latest_successful_response",
+    "stream_field_allowed": false,
+    "background_field_allowed": false,
+    "generate_field_allowed": false
+  },
+  "events": {
+    "supported": [
+      "response.created",
+      "response.in_progress",
+      "response.output_text.delta",
+      "response.output_text.done",
+      "response.completed",
+      "error"
+    ],
+    "unknown": "protocol_failure",
+    "terminal_success": "response.completed",
+    "usage_source": "terminal_response_usage",
+    "earlier_cumulative_usage": "replace_not_sum"
+  },
+  "billed_cost": {
+    "field": "cost_in_usd_ticks",
+    "currency": "USD",
+    "ticks_per_usd": 10000000000,
+    "scope": "one_provider_request",
+    "source": "provider_reported"
+  },
+  "chain": {
+    "provider_field": "previous_response_id",
+    "caller_can_supply": false,
+    "store": false,
+    "branching": false,
+    "retry": false,
+    "reconnect": false,
+    "resume_after_close": false
+  },
+  "cancellation": {
+    "text_cancel_frame": null,
+    "action": "close_websocket_end_session_join_work",
+    "provider_completion_guaranteed": false
+  },
+  "excluded": [
+    "model_catalogue",
+    "warmup",
+    "background",
+    "tools",
+    "search",
+    "attachments",
+    "structured_output",
+    "storage",
+    "retry",
+    "reconnect",
+    "resume",
+    "live_authentication"
+  ]
+}

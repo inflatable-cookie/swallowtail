@@ -1,4 +1,4 @@
-use crate::{CallbackId, OperationContent};
+use crate::{CallbackId, OperationContent, ProviderObservation};
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum EventDelivery {
@@ -13,23 +13,26 @@ pub enum RuntimeEventKind {
     ExternalSearchProgress,
     ReasoningProgress,
     ProgressSnapshot,
+    Keepalive,
     OutputDelta,
     OutputAvailable,
     CallbackRequested(CallbackId),
+    ProviderObservation(ProviderObservation),
 }
 
 impl RuntimeEventKind {
     #[must_use]
     pub const fn delivery(&self) -> EventDelivery {
         match self {
-            Self::ProgressSnapshot => EventDelivery::Coalescible,
+            Self::ProgressSnapshot | Self::Keepalive => EventDelivery::Coalescible,
             Self::Started
             | Self::Progress
             | Self::ExternalSearchProgress
             | Self::ReasoningProgress
             | Self::OutputDelta
             | Self::OutputAvailable
-            | Self::CallbackRequested(_) => EventDelivery::Semantic,
+            | Self::CallbackRequested(_)
+            | Self::ProviderObservation(_) => EventDelivery::Semantic,
         }
     }
 }

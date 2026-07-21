@@ -1,0 +1,13 @@
+{
+  "data": [
+    {
+      "id": "claude-fixture-legacy",
+      "created_at": "2024-01-01T00:00:00Z",
+      "display_name": "Claude Fixture Legacy",
+      "type": "model"
+    }
+  ],
+  "first_id": "claude-fixture-legacy",
+  "has_more": false,
+  "last_id": "claude-fixture-legacy"
+}

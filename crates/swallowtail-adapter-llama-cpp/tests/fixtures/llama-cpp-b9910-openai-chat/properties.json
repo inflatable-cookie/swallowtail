@@ -1,0 +1,22 @@
+{
+  "model_alias": "swallowtail-fixture-stories260k",
+  "model_path": "/operator-owned/redacted/stories260K-f32.gguf",
+  "build_info": "b9910-f5525f7e7",
+  "chat_template": "chatml",
+  "chat_template_caps": {
+    "supports_string_content": true,
+    "supports_typed_content": false,
+    "supports_tools": false,
+    "supports_tool_calls": false,
+    "supports_parallel_tool_calls": false,
+    "supports_system_role": true,
+    "supports_preserve_reasoning": false,
+    "supports_object_arguments": false
+  },
+  "modalities": {
+    "vision": false,
+    "audio": false,
+    "video": false
+  },
+  "is_sleeping": false
+}

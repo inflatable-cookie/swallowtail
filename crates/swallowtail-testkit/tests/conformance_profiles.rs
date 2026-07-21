@@ -22,9 +22,9 @@ const COMMON_ASSERTIONS: [ConformanceAssertion; 14] = [
 ];
 
 #[test]
-fn all_five_profiles_cover_every_common_contract_assertion() {
+fn all_nine_profiles_cover_every_common_contract_assertion() {
     let reports = run_all_synthetic_profiles();
-    assert_eq!(reports.len(), 5);
+    assert_eq!(reports.len(), 9);
 
     for report in &reports {
         for assertion in COMMON_ASSERTIONS {
@@ -50,8 +50,24 @@ fn each_profile_proves_its_shape_specific_boundary() {
             ConformanceAssertion::SessionLifecycle,
         ),
         (
+            SyntheticProfile::LongLivedAcpHarness,
+            ConformanceAssertion::WorkingResourceCallback,
+        ),
+        (
+            SyntheticProfile::PersistentAcpHarness,
+            ConformanceAssertion::PersistentSessionLifecycle,
+        ),
+        (
             SyntheticProfile::HostedDirectApi,
             ConformanceAssertion::HostedApiNeedsNoProcess,
+        ),
+        (
+            SyntheticProfile::ConnectionScopedDirectSession,
+            ConformanceAssertion::ConnectionScopedLeaseLifecycle,
+        ),
+        (
+            SyntheticProfile::AttachedNetworkHarness,
+            ConformanceAssertion::AttachedNetworkHarnessLifecycle,
         ),
         (
             SyntheticProfile::AttachedSelfHosted,
@@ -73,6 +89,25 @@ fn each_profile_proves_its_shape_specific_boundary() {
 }
 
 #[test]
+fn long_lived_acp_profile_proves_process_callback_and_topology_boundaries() {
+    let reports = run_all_synthetic_profiles();
+    let acp = reports
+        .iter()
+        .find(|report| report.profile() == SyntheticProfile::LongLivedAcpHarness)
+        .expect("ACP profile report exists");
+
+    for assertion in [
+        ConformanceAssertion::SessionLifecycle,
+        ConformanceAssertion::ProcessLifecycle,
+        ConformanceAssertion::WorkingResourceCallback,
+        ConformanceAssertion::HostTopologyPreserved,
+    ] {
+        assert!(acp.covers(assertion));
+    }
+    assert!(!acp.covers(ConformanceAssertion::CallbackExchange));
+}
+
+#[test]
 fn long_lived_rpc_profile_proves_callback_exchange() {
     let reports = run_all_synthetic_profiles();
     let rpc = reports
@@ -81,6 +116,84 @@ fn long_lived_rpc_profile_proves_callback_exchange() {
         .expect("RPC profile report exists");
 
     assert!(rpc.covers(ConformanceAssertion::CallbackExchange));
+}
+
+#[test]
+fn persistent_acp_profile_adds_lifecycle_write_auth_and_ambient_boundaries() {
+    let reports = run_all_synthetic_profiles();
+    let persistent = reports
+        .iter()
+        .find(|report| report.profile() == SyntheticProfile::PersistentAcpHarness)
+        .expect("persistent ACP profile report exists");
+
+    for assertion in [
+        ConformanceAssertion::SessionLifecycle,
+        ConformanceAssertion::ProcessLifecycle,
+        ConformanceAssertion::PersistentSessionLifecycle,
+        ConformanceAssertion::ReplayPhase,
+        ConformanceAssertion::WorkingResourceWriteCallback,
+        ConformanceAssertion::AmbientHarnessAuthority,
+        ConformanceAssertion::DelegatedAuthentication,
+        ConformanceAssertion::HostTopologyPreserved,
+    ] {
+        assert!(persistent.covers(assertion));
+    }
+}
+
+#[test]
+fn owned_profile_proves_artifact_endpoint_cleanup_and_topology_boundaries() {
+    let reports = run_all_synthetic_profiles();
+    let owned = reports
+        .iter()
+        .find(|report| report.profile() == SyntheticProfile::OwnedSelfHosted)
+        .expect("owned profile report exists");
+
+    for assertion in [
+        ConformanceAssertion::OwnedArtifactLease,
+        ConformanceAssertion::OwnedEndpointBinding,
+        ConformanceAssertion::OwnedCleanupOrdered,
+        ConformanceAssertion::HostTopologyPreserved,
+    ] {
+        assert!(owned.covers(assertion));
+    }
+}
+
+#[test]
+fn hosted_profile_proves_contract_014_foundations() {
+    let reports = run_all_synthetic_profiles();
+    let hosted = reports
+        .iter()
+        .find(|report| report.profile() == SyntheticProfile::HostedDirectApi)
+        .expect("hosted profile report exists");
+
+    for assertion in [
+        ConformanceAssertion::HostedEndpointCredentialBinding,
+        ConformanceAssertion::DirectRunNoResource,
+        ConformanceAssertion::ProviderEvidenceSeparated,
+    ] {
+        assert!(hosted.covers(assertion));
+    }
+}
+
+#[test]
+fn connection_scoped_profile_proves_contract_016_boundaries() {
+    let reports = run_all_synthetic_profiles();
+    let direct = reports
+        .iter()
+        .find(|report| report.profile() == SyntheticProfile::ConnectionScopedDirectSession)
+        .expect("direct-session profile report exists");
+
+    for assertion in [
+        ConformanceAssertion::SessionLifecycle,
+        ConformanceAssertion::HostTopologyPreserved,
+        ConformanceAssertion::HostedEndpointCredentialBinding,
+        ConformanceAssertion::DirectSessionNoResource,
+        ConformanceAssertion::ConnectionScopedLeaseLifecycle,
+        ConformanceAssertion::BilledCostTurnScoped,
+        ConformanceAssertion::NoImplicitSessionRecovery,
+    ] {
+        assert!(direct.covers(assertion));
+    }
 }
 
 #[test]

@@ -1,0 +1,3 @@
+data: {"id":"evt_1","type":"server.connected","properties":{}}
+
+data: {"id":"evt_2","type":"message.part.delta"

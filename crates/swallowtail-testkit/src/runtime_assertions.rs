@@ -158,8 +158,10 @@ pub fn assert_dynamic_role_registration_and_calls() {
                 StructuredRunRequest::new(
                     valid_request("request-run"),
                     OperationContent::new("fixture prompt").expect("content is valid"),
-                    WorkingResourceRef::new("fixture-resource").expect("resource is valid"),
                     OperationPolicy::offline(),
+                )
+                .with_working_resource(
+                    WorkingResourceRef::new("fixture-resource").expect("resource is valid"),
                 ),
                 services.clone(),
             ),

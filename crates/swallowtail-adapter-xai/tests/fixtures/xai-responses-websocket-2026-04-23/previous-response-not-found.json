@@ -1,0 +1,9 @@
+{
+  "type": "error",
+  "status": 400,
+  "error": {
+    "code": "previous_response_not_found",
+    "message": "raw response id and provider message must remain private",
+    "param": "previous_response_id"
+  }
+}

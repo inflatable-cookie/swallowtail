@@ -1,5 +1,5 @@
 use crate::event::ExtensionNamespace;
-use crate::runtime_identity::{AccessProfileId, EndpointAudience};
+use crate::runtime_identity::{AccessProfileId, CredentialRef, EndpointAudience};
 
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum CredentialMechanism {
@@ -40,6 +40,7 @@ pub struct AccessProfile {
     credential_mechanism: CredentialMechanism,
     entitlement_metering: EntitlementMetering,
     endpoint_audience: EndpointAudience,
+    credential_reference: Option<CredentialRef>,
     support_authority: SupportAuthority,
 }
 
@@ -57,6 +58,7 @@ impl AccessProfile {
             credential_mechanism,
             entitlement_metering,
             endpoint_audience,
+            credential_reference: None,
             support_authority,
         }
     }
@@ -79,6 +81,17 @@ impl AccessProfile {
     #[must_use]
     pub const fn endpoint_audience(&self) -> &EndpointAudience {
         &self.endpoint_audience
+    }
+
+    #[must_use]
+    pub fn with_credential_reference(mut self, reference: CredentialRef) -> Self {
+        self.credential_reference = Some(reference);
+        self
+    }
+
+    #[must_use]
+    pub const fn credential_reference(&self) -> Option<&CredentialRef> {
+        self.credential_reference.as_ref()
     }
 
     #[must_use]
@@ -180,5 +193,27 @@ impl AccessStatus {
     #[must_use]
     pub const fn support_authority(&self) -> SupportAuthority {
         self.support_authority
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{AccessProfile, CredentialMechanism, EntitlementMetering, SupportAuthority};
+    use crate::{AccessProfileId, CredentialRef, EndpointAudience};
+
+    #[test]
+    fn access_profile_binds_an_opaque_credential_reference() {
+        let reference = CredentialRef::new("private-credential-ref").expect("reference is valid");
+        let profile = AccessProfile::new(
+            AccessProfileId::new("fixture-access").expect("access id is valid"),
+            CredentialMechanism::GatewayHelper,
+            EntitlementMetering::Unknown,
+            EndpointAudience::new("fixture-audience").expect("audience is valid"),
+            SupportAuthority::IntegrationMaintainerSupported,
+        )
+        .with_credential_reference(reference.clone());
+
+        assert_eq!(profile.credential_reference(), Some(&reference));
+        assert!(!format!("{profile:?}").contains(reference.as_host_value()));
     }
 }

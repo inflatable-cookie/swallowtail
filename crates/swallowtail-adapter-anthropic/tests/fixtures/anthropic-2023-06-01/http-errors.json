@@ -1,0 +1,10 @@
+[
+  [400, "invalid_request_error", "invalid_request"],
+  [401, "authentication_error", "authentication_rejected"],
+  [402, "billing_error", "billing_unavailable"],
+  [403, "permission_error", "permission_denied"],
+  [429, "rate_limit_error", "rate_limited"],
+  [500, "api_error", "provider_failed"],
+  [504, "timeout_error", "provider_failed"],
+  [529, "overloaded_error", "provider_overloaded"]
+]

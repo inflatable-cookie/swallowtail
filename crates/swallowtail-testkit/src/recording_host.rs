@@ -4,15 +4,19 @@ use std::sync::{Arc, Mutex};
 use std::task::{Context, Poll, Waker};
 use swallowtail_core::{Diagnostic, EndpointAudience, ExecutionHostId, SafeDiagnostic};
 use swallowtail_runtime::{
-    AttachmentDescriptor, AttachmentFileLease, AttachmentService, BlockingJob, BlockingWorkService,
-    BoxFuture, CleanupOutcome, CredentialLease, CredentialRef, CredentialService, Deadline,
-    DeadlineObservation, DelegatedCredential, DiagnosticObserver, EndpointRef, HostServices,
-    JoinedTask, MaterializedFileRef, MaterializedResourceRef, MonotonicInstant, NetworkGrant,
-    NetworkPolicyService, ProcessExit, ProcessHandle, ProcessInputChunk, ProcessOutputChunk,
-    ProcessRequest, ProcessService, ResourceAccess, ResourceLease, ResourceRepresentation,
-    RuntimeFailure, SchemaDocument, SchemaFileLease, SchemaService, ScopeId, ScopedTaskService,
-    TimeService, WorkingResourceRef, WorkingResourceService,
+    AttachmentDescriptor, AttachmentFileLease, AttachmentService, AuthorizedEndpoint, BlockingJob,
+    BlockingWorkService, BoxFuture, CleanupOutcome, CredentialLease, CredentialRef,
+    CredentialService, Deadline, DeadlineObservation, DelegatedCredential, DiagnosticObserver,
+    EndpointRef, HostServices, JoinedTask, MaterializedFileRef, MaterializedResourceRef,
+    MonotonicInstant, NetworkGrant, NetworkPolicyService, ProcessExit, ProcessHandle,
+    ProcessInputChunk, ProcessOutputChunk, ProcessRequest, ProcessService, ResourceAccess,
+    ResourceLease, ResourceRepresentation, RuntimeFailure, SchemaDocument, SchemaFileLease,
+    SchemaService, ScopeId, ScopedTaskService, TimeService, WorkingResourceRef,
+    WorkingResourceService,
 };
+
+mod serving;
+mod working_resource_io;
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum RecordedHostCall {
@@ -27,11 +31,18 @@ pub enum RecordedHostCall {
     ProcessWait,
     NetworkAuthorize,
     CredentialAcquire,
+    CredentialRelease,
     WorkingResourceResolve,
     WorkingResourceCreateTemporary,
     WorkingResourceRelease,
+    WorkingResourceReadText,
+    WorkingResourceWriteText,
     AttachmentMaterializeFile,
     AttachmentFileRelease,
+    ModelArtifactAcquire,
+    ModelArtifactRelease,
+    ServingEndpointPublish,
+    ServingEndpointRelease,
     SchemaMaterializeFile,
     SchemaFileRelease,
     DiagnosticObserve,
@@ -184,11 +195,19 @@ impl ProcessService for RecordingService {
 impl NetworkPolicyService for RecordingService {
     fn authorize(
         &self,
+        scope: ScopeId,
         endpoint: EndpointRef,
+        audience: EndpointAudience,
     ) -> BoxFuture<'static, Result<NetworkGrant, RuntimeFailure>> {
-        let result = self
-            .record(RecordedHostCall::NetworkAuthorize)
-            .map(|()| NetworkGrant::new(endpoint));
+        let result = self.record(RecordedHostCall::NetworkAuthorize).map(|()| {
+            NetworkGrant::new(
+                scope,
+                endpoint,
+                audience,
+                AuthorizedEndpoint::new("https://recording.invalid/v1")
+                    .expect("recording endpoint is valid"),
+            )
+        });
         Box::pin(async move { result })
     }
 }
@@ -196,13 +215,19 @@ impl NetworkPolicyService for RecordingService {
 impl CredentialService for RecordingService {
     fn acquire(
         &self,
+        scope: ScopeId,
         reference: CredentialRef,
-        _audience: EndpointAudience,
+        audience: EndpointAudience,
     ) -> BoxFuture<'static, Result<CredentialLease, RuntimeFailure>> {
-        let result = self
-            .record(RecordedHostCall::CredentialAcquire)
-            .map(|()| CredentialLease::Delegated(DelegatedCredential::new(reference)));
+        let result = self.record(RecordedHostCall::CredentialAcquire).map(|()| {
+            CredentialLease::Delegated(DelegatedCredential::new(scope, reference, audience))
+        });
         Box::pin(async move { result })
+    }
+
+    fn release(&self, _lease: CredentialLease) -> BoxFuture<'static, CleanupOutcome> {
+        let outcome = self.cleanup(RecordedHostCall::CredentialRelease);
+        Box::pin(async move { outcome })
     }
 }
 
@@ -353,7 +378,10 @@ impl RecordingHostServices {
             .with_network(service.clone())
             .with_credential(service.clone())
             .with_working_resource(service.clone())
+            .with_working_resource_io(service.clone())
             .with_attachment(service.clone())
+            .with_model_artifact(service.clone())
+            .with_serving_endpoint(service.clone())
             .with_schema(service.clone())
             .with_diagnostic_observer(service);
         Self { state, services }

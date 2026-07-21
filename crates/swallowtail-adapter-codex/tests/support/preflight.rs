@@ -9,10 +9,8 @@ use swallowtail_core::{
     EntitlementState, ExecutionHostId, ExecutionLayer, HostServiceKind, InstanceOwnership,
     InstancePolicyId, InstanceRevision, InstanceTargetRef, ModelId, ModelRoute, ModelRouteId,
     ModelRouteRevision, OperationRequirements, OperationShape, PreflightContext, PreflightPlan,
-    ProtocolFacadeId, RuntimeReadiness, SessionAccessPolicy, SessionRef, SupportAuthority,
-    preflight,
+    ProtocolFacadeId, RuntimeReadiness, SessionAccessPolicy, SupportAuthority, preflight,
 };
-use swallowtail_runtime::SessionResumeBinding;
 
 pub fn app_server_plan(role: DriverRole) -> PreflightPlan {
     app_server_plan_with(role, [], [])
@@ -148,18 +146,6 @@ pub fn bounded_workspace_plan_for(
 
 pub fn plan() -> PreflightPlan {
     plan_with([], [])
-}
-
-pub fn session_resume_binding(plan: &PreflightPlan, provider_ref: &str) -> SessionResumeBinding {
-    SessionResumeBinding::new(
-        SessionRef::new(provider_ref).expect("provider session ref is valid"),
-        plan.instance_id().clone(),
-        plan.execution_host_id().clone(),
-        plan.model_route_id()
-            .expect("session plan has a model route")
-            .clone(),
-        plan.model_id().expect("session plan has a model").clone(),
-    )
 }
 
 pub fn plan_with(

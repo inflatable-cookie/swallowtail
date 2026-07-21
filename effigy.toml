@@ -48,6 +48,8 @@ allowlist_file = "docs/policy/vision-next-task-verbs.txt"
 "check:rust" = "cargo check --workspace --all-targets"
 "lint:rust" = "cargo clippy --workspace --all-targets -- -D warnings"
 "test:rust" = "cargo test --workspace"
+"probe:opencode-installed" = "cargo test -p swallowtail-adapter-opencode --test installed_probe -- --ignored --exact installed_opencode_health_and_schema_match_the_frozen_subset"
+"probe:kimi-installed" = "cargo test -p swallowtail-adapter-kimi --test installed_probe -- --ignored --exact pinned_kimi_code_cli_is_installed_when_live_probe_is_enabled"
 
 "qa" = [
   { task = "qa:docs" },

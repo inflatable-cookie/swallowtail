@@ -1,0 +1,4 @@
+data: {"id":"evt_1","type":"server.connected","properties":{}}
+
+data: {"id":"evt_2","type":"session.error","properties":{"sessionID":"ses_fixture","error":{"name":"MessageAbortedError","data":{"message":"The operation was aborted"}}}}
+

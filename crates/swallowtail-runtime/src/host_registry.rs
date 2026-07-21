@@ -1,7 +1,8 @@
 use crate::{
     AttachmentService, BlockingWorkService, CredentialService, DiagnosticObserver,
-    NetworkPolicyService, ProcessService, RuntimeFailure, SchemaService, ScopedTaskService,
-    TimeService, WorkingResourceService,
+    ModelArtifactService, NetworkPolicyService, ProcessService, RuntimeFailure, SchemaService,
+    ScopedTaskService, ServingEndpointService, TimeService, WorkingResourceIoService,
+    WorkingResourceService,
 };
 use std::collections::BTreeSet;
 use std::sync::Arc;
@@ -17,7 +18,10 @@ pub struct HostServices {
     network: Option<Arc<dyn NetworkPolicyService>>,
     credential: Option<Arc<dyn CredentialService>>,
     working_resource: Option<Arc<dyn WorkingResourceService>>,
+    working_resource_io: Option<Arc<dyn WorkingResourceIoService>>,
     attachment: Option<Arc<dyn AttachmentService>>,
+    model_artifact: Option<Arc<dyn ModelArtifactService>>,
+    serving_endpoint: Option<Arc<dyn ServingEndpointService>>,
     schema: Option<Arc<dyn SchemaService>>,
     diagnostic_observer: Option<Arc<dyn DiagnosticObserver>>,
 }
@@ -34,7 +38,10 @@ impl HostServices {
             network: None,
             credential: None,
             working_resource: None,
+            working_resource_io: None,
             attachment: None,
+            model_artifact: None,
+            serving_endpoint: None,
             schema: None,
             diagnostic_observer: None,
         }
@@ -99,8 +106,26 @@ impl HostServices {
     }
 
     #[must_use]
+    pub fn with_working_resource_io(mut self, service: Arc<dyn WorkingResourceIoService>) -> Self {
+        self.working_resource_io = Some(service);
+        self
+    }
+
+    #[must_use]
     pub fn with_attachment(mut self, service: Arc<dyn AttachmentService>) -> Self {
         self.attachment = Some(service);
+        self
+    }
+
+    #[must_use]
+    pub fn with_model_artifact(mut self, service: Arc<dyn ModelArtifactService>) -> Self {
+        self.model_artifact = Some(service);
+        self
+    }
+
+    #[must_use]
+    pub fn with_serving_endpoint(mut self, service: Arc<dyn ServingEndpointService>) -> Self {
+        self.serving_endpoint = Some(service);
         self
     }
 
@@ -152,8 +177,23 @@ impl HostServices {
     }
 
     #[must_use]
+    pub fn working_resource_io(&self) -> Option<&Arc<dyn WorkingResourceIoService>> {
+        self.working_resource_io.as_ref()
+    }
+
+    #[must_use]
     pub fn attachment(&self) -> Option<&Arc<dyn AttachmentService>> {
         self.attachment.as_ref()
+    }
+
+    #[must_use]
+    pub fn model_artifact(&self) -> Option<&Arc<dyn ModelArtifactService>> {
+        self.model_artifact.as_ref()
+    }
+
+    #[must_use]
+    pub fn serving_endpoint(&self) -> Option<&Arc<dyn ServingEndpointService>> {
+        self.serving_endpoint.as_ref()
     }
 
     #[must_use]
@@ -190,8 +230,17 @@ impl HostServices {
         if self.working_resource.is_some() {
             kinds.insert(HostServiceKind::WorkingResource);
         }
+        if self.working_resource_io.is_some() {
+            kinds.insert(HostServiceKind::WorkingResourceIo);
+        }
         if self.attachment.is_some() {
             kinds.insert(HostServiceKind::Attachment);
+        }
+        if self.model_artifact.is_some() {
+            kinds.insert(HostServiceKind::ModelArtifact);
+        }
+        if self.serving_endpoint.is_some() {
+            kinds.insert(HostServiceKind::ServingEndpoint);
         }
         if self.schema.is_some() {
             kinds.insert(HostServiceKind::Schema);

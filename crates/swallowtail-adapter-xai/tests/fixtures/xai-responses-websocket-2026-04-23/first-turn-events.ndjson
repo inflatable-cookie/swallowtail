@@ -1,0 +1,5 @@
+{"type":"response.created","sequence_number":0,"response":{"id":"resp_fixture_first","object":"response","status":"in_progress","model":"grok-fixture-exact","output":[],"usage":null}}
+{"type":"response.in_progress","sequence_number":1,"response":{"id":"resp_fixture_first","object":"response","status":"in_progress","model":"grok-fixture-exact","output":[],"usage":null}}
+{"type":"response.output_text.delta","sequence_number":2,"response_id":"resp_fixture_first","item_id":"msg_fixture_first","output_index":0,"content_index":0,"delta":"First response."}
+{"type":"response.output_text.done","sequence_number":3,"response_id":"resp_fixture_first","item_id":"msg_fixture_first","output_index":0,"content_index":0,"text":"First response."}
+{"type":"response.completed","sequence_number":4,"response":{"id":"resp_fixture_first","object":"response","status":"completed","model":"grok-fixture-exact","output":[{"type":"message","id":"msg_fixture_first","status":"completed","role":"assistant","content":[{"type":"output_text","text":"First response.","annotations":[]}]}],"usage":{"input_tokens":5,"output_tokens":3,"total_tokens":8,"cost_in_usd_ticks":125000}}}

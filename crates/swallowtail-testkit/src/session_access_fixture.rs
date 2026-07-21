@@ -21,6 +21,7 @@ const OBSERVED_EXTENSION: &str = "fixture.session/provider-request-v1";
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum SessionAccessFixtureCase {
+    ResourceFree,
     ReadOnly,
     BoundedWorkspace,
     MissingWriteCapability,
@@ -47,8 +48,11 @@ impl SessionAccessPreflightFixture {
         let access_id = AccessProfileId::new(ACCESS_ID).expect("fixture access id is valid");
         let extension =
             ExtensionNamespace::new(OBSERVED_EXTENSION).expect("fixture extension is valid");
-        let bounded = case != SessionAccessFixtureCase::ReadOnly;
-        let policy = if bounded {
+        let resource_free = case == SessionAccessFixtureCase::ResourceFree;
+        let bounded = !resource_free && case != SessionAccessFixtureCase::ReadOnly;
+        let policy = if resource_free {
+            SessionAccessPolicy::resource_free()
+        } else if bounded {
             SessionAccessPolicy::bounded_workspace([extension.clone()])
         } else {
             SessionAccessPolicy::read_only()

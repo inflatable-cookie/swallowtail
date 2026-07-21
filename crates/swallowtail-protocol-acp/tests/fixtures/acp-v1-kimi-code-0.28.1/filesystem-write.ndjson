@@ -1,0 +1,2 @@
+{"direction":"agent_to_client","message":{"jsonrpc":"2.0","id":701,"method":"fs/write_text_file","params":{"sessionId":"kimi-session-bound","path":"/fixture/workspace/src/generated.rs","content":"pub fn generated() {}\n"}}}
+{"direction":"client_to_agent","message":{"jsonrpc":"2.0","id":701,"result":null}}

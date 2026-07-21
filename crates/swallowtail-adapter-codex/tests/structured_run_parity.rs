@@ -69,7 +69,6 @@ fn public_catalog_and_structured_run_cover_the_complete_transport_seam() {
     let request = StructuredRunRequest::new(
         RequestId::new("parity-run").expect("request id is valid"),
         OperationContent::new("Return one structured result").expect("content is valid"),
-        working_resource(),
         OperationPolicy::new(
             ExternalNetworkPolicy::HostApproved,
             ExternalSearchPolicy::Enabled,
@@ -77,6 +76,7 @@ fn public_catalog_and_structured_run_cover_the_complete_transport_seam() {
         .expect("search policy is valid")
         .with_reasoning_mode(low),
     )
+    .with_working_resource(working_resource())
     .with_attachments([image("parity-image")])
     .with_structured_output(schema());
     let mut handle = block_on(CodexExecDriver::new(environment).start_run(
@@ -261,9 +261,9 @@ fn basic_request(id: &str) -> StructuredRunRequest {
     StructuredRunRequest::new(
         RequestId::new(id).expect("request id is valid"),
         OperationContent::new("Return one result").expect("content is valid"),
-        working_resource(),
         OperationPolicy::offline(),
     )
+    .with_working_resource(working_resource())
 }
 
 fn environment() -> EnvironmentRef {

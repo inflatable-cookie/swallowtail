@@ -130,7 +130,8 @@ for joining leaked child work and reporting cleanup failure.
 - output deltas remain distinct from completed output so consumers do not need
   provider-specific heuristics to assemble a message
 - late provider events are quarantined as internal diagnostics
-- replay is consumer persistence policy, not a runtime guarantee
+- provider history replay is a distinct load phase under Contract 017;
+  consumer transcript persistence and merge policy remain downstream
 
 ## Terminal And Cleanup Outcomes
 
@@ -172,6 +173,8 @@ authorized owned serving instance.
 - forceful process or connection termination requires ownership and host
   authority
 - external processes and services are never force-stopped by generic cleanup
+- owned ephemeral serving start does not return a handle before readiness;
+  Contract 018 orders child join before endpoint and artifact release
 - timeout, cancellation, provider failure, host failure, and cleanup failure
   remain distinguishable
 

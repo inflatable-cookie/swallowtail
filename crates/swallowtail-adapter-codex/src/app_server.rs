@@ -15,7 +15,7 @@ use swallowtail_runtime::{
     BoxFuture, CleanupOutcome, EnvironmentRef, ExecutableRef, HostServices,
     InteractiveSessionDriver, InteractiveSessionHandle, JoinedTask, ModelCatalogDriver,
     ModelCatalogRequest, OpenSessionRequest, ProcessHandle, ProcessRequest, RequestId,
-    ResumeSessionRequest, RuntimeFailure, ScopeId, SessionResumeBinding, WorkingResourceRef,
+    ResumeSessionRequest, RuntimeFailure, ScopeId, WorkingResourceRef,
 };
 
 pub struct CodexAppServerDriver {
@@ -148,7 +148,9 @@ impl InteractiveSessionDriver for CodexAppServerDriver {
             let access = CodexSessionAccess::prepare(
                 &plan,
                 request.access_policy(),
-                request.working_resource(),
+                request
+                    .working_resource()
+                    .ok_or_else(|| unsupported("a resource-free session"))?,
                 scope.clone(),
                 &services,
             )
@@ -201,7 +203,7 @@ impl InteractiveSessionDriver for CodexAppServerDriver {
             validate_session_deadline(request.deadline().is_some())?;
             self.validate_plan(&plan)?;
             let session_input = CodexSessionInput::for_resume(&plan, request.options())?;
-            validate_resume_binding(&plan, request.resume_binding())?;
+            validate_resume_binding(&plan, &request)?;
             let deadline_planned = plan
                 .requirements()
                 .host_services()
@@ -377,9 +379,13 @@ impl CodexAppServerDriver {
 
 fn validate_resume_binding(
     plan: &PreflightPlan,
-    binding: &SessionResumeBinding,
+    request: &ResumeSessionRequest,
 ) -> Result<(), RuntimeFailure> {
-    if binding.matches_plan(plan) {
+    if request.resume_binding().matches_attachment(
+        plan,
+        request.working_resource(),
+        request.access_policy(),
+    ) {
         Ok(())
     } else {
         Err(failure(

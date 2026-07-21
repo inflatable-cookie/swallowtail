@@ -17,6 +17,9 @@ impl OperationPolicy {
         external_network: ExternalNetworkPolicy,
         external_search: ExternalSearchPolicy,
     ) -> Result<Self, IncompatibleOperationPolicy> {
+        if external_network == ExternalNetworkPolicy::AmbientHost {
+            return Err(IncompatibleOperationPolicy::ambient_network_requires_harness());
+        }
         if external_search == ExternalSearchPolicy::Enabled
             && external_network == ExternalNetworkPolicy::Denied
         {
@@ -75,6 +78,15 @@ impl IncompatibleOperationPolicy {
         }
     }
 
+    fn ambient_network_requires_harness() -> Self {
+        Self {
+            diagnostic: SafeDiagnostic::new(
+                "swallowtail.operation_policy_rejected",
+                "Ambient host network authority is valid only for a harness session",
+            ),
+        }
+    }
+
     #[must_use]
     pub const fn diagnostic(&self) -> &SafeDiagnostic {
         &self.diagnostic
@@ -102,6 +114,20 @@ mod tests {
         assert_eq!(
             error.diagnostic().code(),
             "swallowtail.operation_policy_rejected"
+        );
+    }
+
+    #[test]
+    fn ambient_network_authority_is_harness_only() {
+        let error = OperationPolicy::new(
+            ExternalNetworkPolicy::AmbientHost,
+            ExternalSearchPolicy::Disabled,
+        )
+        .expect_err("direct operation policy must reject ambient host authority");
+
+        assert_eq!(
+            error.diagnostic().message(),
+            "Ambient host network authority is valid only for a harness session"
         );
     }
 }

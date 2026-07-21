@@ -2,15 +2,16 @@
 
 pub(crate) mod app_server;
 mod preflight;
+mod resume;
 pub(crate) mod topology;
 
-#[allow(unused_imports)]
-pub use preflight::session_resume_binding;
 #[allow(unused_imports)]
 pub use preflight::{
     app_server_plan, app_server_plan_for, app_server_plan_with, bounded_workspace_plan,
     bounded_workspace_plan_for, plan, plan_with,
 };
+#[allow(unused_imports)]
+pub use resume::{session_resume_binding, session_resume_binding_for};
 
 use futures_executor::block_on;
 use std::collections::VecDeque;

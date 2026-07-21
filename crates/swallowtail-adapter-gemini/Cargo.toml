@@ -1,0 +1,21 @@
+[package]
+name = "swallowtail-adapter-gemini"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Gemini harness drivers for Swallowtail"
+
+[dependencies]
+serde_json = "1"
+swallowtail-core = { path = "../swallowtail-core" }
+swallowtail-protocol-acp = { path = "../swallowtail-protocol-acp" }
+swallowtail-runtime = { path = "../swallowtail-runtime" }
+
+[dev-dependencies]
+futures-executor = "0.3"
+futures-util = "0.3"
+swallowtail-testkit = { path = "../swallowtail-testkit" }
+
+[lints]
+workspace = true

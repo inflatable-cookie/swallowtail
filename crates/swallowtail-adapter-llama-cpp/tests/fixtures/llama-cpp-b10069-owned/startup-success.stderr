@@ -1,0 +1,3 @@
+build: b10069 (178a6c449)
+srv  load_model: loading model
+srv  listening on {{ENDPOINT}}

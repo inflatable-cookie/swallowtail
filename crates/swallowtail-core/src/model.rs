@@ -16,6 +16,21 @@ impl ModelId {
     }
 }
 
+/// Stable adapter-owned provider identity when a harness exposes one separately.
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+pub struct ProviderId(String);
+
+impl ProviderId {
+    pub fn new(value: impl Into<String>) -> Result<Self, ValueRequired> {
+        required_text("provider id", value).map(Self)
+    }
+
+    #[must_use]
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
+}
+
 /// Driver-owned name for one reasoning mode accepted by a model route.
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct ReasoningMode(String);
@@ -36,6 +51,35 @@ impl ReasoningMode {
 pub struct ReasoningMetadata {
     supported_modes: BTreeSet<ReasoningMode>,
     default_mode: Option<ReasoningMode>,
+}
+
+#[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
+pub struct ModelTokenLimits {
+    maximum_input_tokens: Option<u64>,
+    maximum_output_tokens: Option<u64>,
+}
+
+impl ModelTokenLimits {
+    #[must_use]
+    pub const fn new(
+        maximum_input_tokens: Option<u64>,
+        maximum_output_tokens: Option<u64>,
+    ) -> Self {
+        Self {
+            maximum_input_tokens,
+            maximum_output_tokens,
+        }
+    }
+
+    #[must_use]
+    pub const fn maximum_input_tokens(&self) -> Option<u64> {
+        self.maximum_input_tokens
+    }
+
+    #[must_use]
+    pub const fn maximum_output_tokens(&self) -> Option<u64> {
+        self.maximum_output_tokens
+    }
 }
 
 impl ReasoningMetadata {
@@ -72,6 +116,7 @@ pub struct ModelMetadata {
     description: Option<String>,
     is_default: bool,
     reasoning: Option<ReasoningMetadata>,
+    token_limits: Option<ModelTokenLimits>,
 }
 
 impl ModelMetadata {
@@ -81,6 +126,7 @@ impl ModelMetadata {
             description: None,
             is_default: false,
             reasoning: None,
+            token_limits: None,
         })
     }
 
@@ -105,6 +151,12 @@ impl ModelMetadata {
     }
 
     #[must_use]
+    pub const fn with_token_limits(mut self, token_limits: ModelTokenLimits) -> Self {
+        self.token_limits = Some(token_limits);
+        self
+    }
+
+    #[must_use]
     pub fn display_name(&self) -> Option<&str> {
         self.display_name.as_deref()
     }
@@ -123,23 +175,44 @@ impl ModelMetadata {
     pub const fn reasoning(&self) -> Option<&ReasoningMetadata> {
         self.reasoning.as_ref()
     }
+
+    #[must_use]
+    pub const fn token_limits(&self) -> Option<ModelTokenLimits> {
+        self.token_limits
+    }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ModelCatalogEntry {
     id: ModelId,
+    provider_id: Option<ProviderId>,
     metadata: ModelMetadata,
 }
 
 impl ModelCatalogEntry {
     #[must_use]
     pub const fn new(id: ModelId, metadata: ModelMetadata) -> Self {
-        Self { id, metadata }
+        Self {
+            id,
+            provider_id: None,
+            metadata,
+        }
+    }
+
+    #[must_use]
+    pub fn with_provider_id(mut self, provider_id: ProviderId) -> Self {
+        self.provider_id = Some(provider_id);
+        self
     }
 
     #[must_use]
     pub const fn id(&self) -> &ModelId {
         &self.id
+    }
+
+    #[must_use]
+    pub const fn provider_id(&self) -> Option<&ProviderId> {
+        self.provider_id.as_ref()
     }
 
     #[must_use]
@@ -150,7 +223,10 @@ impl ModelCatalogEntry {
 
 #[cfg(test)]
 mod tests {
-    use super::{ModelCatalogEntry, ModelId, ModelMetadata, ReasoningMetadata, ReasoningMode};
+    use super::{
+        ModelCatalogEntry, ModelId, ModelMetadata, ModelTokenLimits, ProviderId, ReasoningMetadata,
+        ReasoningMode,
+    };
 
     #[test]
     fn stable_identity_is_separate_from_display_metadata() {
@@ -171,6 +247,17 @@ mod tests {
     }
 
     #[test]
+    fn harness_provider_and_model_ids_remain_separate() {
+        let provider = ProviderId::new("anthropic").expect("provider id is valid");
+        let model = ModelId::new("claude-sonnet").expect("model id is valid");
+        let entry = ModelCatalogEntry::new(model.clone(), ModelMetadata::default())
+            .with_provider_id(provider.clone());
+
+        assert_eq!(entry.provider_id(), Some(&provider));
+        assert_eq!(entry.id(), &model);
+    }
+
+    #[test]
     fn reasoning_metadata_is_evidence_not_an_implicit_selection() {
         let low = ReasoningMode::new("low").expect("mode is valid");
         let high = ReasoningMode::new("high").expect("mode is valid");
@@ -182,5 +269,25 @@ mod tests {
         let reasoning = metadata.reasoning().expect("reasoning evidence is present");
         assert!(reasoning.supports(&low));
         assert_eq!(reasoning.default_mode(), Some(&low));
+    }
+
+    #[test]
+    fn absent_token_limits_are_unknown_and_observed_limits_are_mutable_metadata() {
+        let unknown = ModelMetadata::default();
+        assert_eq!(unknown.token_limits(), None);
+
+        let observed = unknown.with_token_limits(ModelTokenLimits::new(Some(200_000), Some(8_192)));
+        assert_eq!(
+            observed
+                .token_limits()
+                .and_then(|limits| limits.maximum_input_tokens()),
+            Some(200_000)
+        );
+        assert_eq!(
+            observed
+                .token_limits()
+                .and_then(|limits| limits.maximum_output_tokens()),
+            Some(8_192)
+        );
     }
 }

@@ -33,15 +33,25 @@ macro_rules! opaque_host_reference {
 opaque_host_reference!(ExecutableRef, "executable reference");
 opaque_host_reference!(EnvironmentRef, "environment reference");
 opaque_host_reference!(EndpointRef, "endpoint reference");
-opaque_host_reference!(CredentialRef, "credential reference");
 opaque_host_reference!(WorkingResourceRef, "working resource reference");
 opaque_host_reference!(AttachmentRef, "attachment reference");
 opaque_host_reference!(SchemaRef, "schema reference");
 opaque_host_reference!(MaterializedFileRef, "materialized file reference");
 opaque_host_reference!(MaterializedResourceRef, "materialized resource reference");
+opaque_host_reference!(
+    MaterializedModelArtifactRef,
+    "materialized model artifact reference"
+);
 
 impl ExecutableRef {
     /// Preserves the opaque configured-instance target for host resolution.
+    pub fn from_instance_target(reference: &InstanceTargetRef) -> Self {
+        Self(reference.as_host_value().to_owned())
+    }
+}
+
+impl EndpointRef {
+    /// Preserves the preflight-bound configured-instance target for host resolution.
     pub fn from_instance_target(reference: &InstanceTargetRef) -> Self {
         Self(reference.as_host_value().to_owned())
     }
@@ -57,6 +67,14 @@ impl MaterializedFileRef {
 
 impl MaterializedResourceRef {
     /// Gives a driver the host-authorized filesystem root while keeping formatting redacted.
+    #[must_use]
+    pub fn as_driver_value(&self) -> &str {
+        self.as_host_value()
+    }
+}
+
+impl MaterializedModelArtifactRef {
+    /// Gives a serving driver the host-authorized artifact value while keeping formatting redacted.
     #[must_use]
     pub fn as_driver_value(&self) -> &str {
         self.as_host_value()

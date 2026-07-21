@@ -12,6 +12,7 @@ mod event;
 mod identity;
 mod instance;
 mod model;
+mod model_artifact;
 mod preflight;
 mod provider_reference;
 mod registration;
@@ -31,7 +32,14 @@ pub use event::{
 };
 pub use identity::{AdapterId, AdapterIdentity, AdapterVersion};
 pub use instance::{ConfiguredInstance, ModelRoute};
-pub use model::{ModelCatalogEntry, ModelId, ModelMetadata, ReasoningMetadata, ReasoningMode};
+pub use model::{
+    ModelCatalogEntry, ModelId, ModelMetadata, ModelTokenLimits, ProviderId, ReasoningMetadata,
+    ReasoningMode,
+};
+pub use model_artifact::{
+    ModelArtifactBinding, ModelArtifactDescriptor, ModelArtifactDigest, ModelArtifactFormat,
+    ModelArtifactId, ModelArtifactRef, ModelArtifactRevision,
+};
 pub use preflight::{
     PreflightContext, PreflightDimension, PreflightFailure, PreflightPlan, StalePreflightPlan,
     preflight,
@@ -45,13 +53,13 @@ pub use requirement::{
     CapabilityRequirement, NamedCapabilityConstraint, OperationRequirements,
 };
 pub use runtime_identity::{
-    AccessProfileId, ConfiguredInstanceId, DriverRole, EndpointAudience, ExecutionHostId,
-    ExecutionLayer, HostServiceKind, InstanceOwnership, InstancePolicyId, InstanceRevision,
-    InstanceTargetRef, IntegrationFamilyId, ModelRouteId, ModelRouteRevision, OperationShape,
-    ProtocolFacadeId, TransportFamilyId,
+    AccessProfileId, ConfiguredInstanceId, CredentialRef, DriverRole, EndpointAudience,
+    ExecutionHostId, ExecutionLayer, HostServiceKind, InstanceOwnership, InstancePolicyId,
+    InstanceRevision, InstanceTargetRef, IntegrationFamilyId, ModelRouteId, ModelRouteRevision,
+    OperationShape, ProtocolFacadeId, TransportFamilyId,
 };
 pub use session_access::{
-    ExternalNetworkPolicy, ExternalSearchPolicy, FilesystemBoundary,
+    ExternalNetworkPolicy, ExternalSearchPolicy, FilesystemBoundary, HarnessIsolation,
     IncompatibleSessionAccessPolicy, ProviderApprovalPolicy, ProviderRequestHandling,
     ProviderRequestPolicy, ResourceAccess, ResourceRepresentation, SessionAccessPolicy,
 };

@@ -22,6 +22,14 @@ pub enum FilesystemBoundary {
     WorkingResource,
 }
 
+/// How a local harness process is isolated from execution-host resources.
+#[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+pub enum HarnessIsolation {
+    AmbientHost,
+    ProviderEnforced,
+    HostEnforced,
+}
+
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum ProviderApprovalPolicy {
     Never,
@@ -32,6 +40,7 @@ pub enum ProviderApprovalPolicy {
 pub enum ExternalNetworkPolicy {
     Denied,
     HostApproved,
+    AmbientHost,
 }
 
 /// Whether the operation may ask the provider or harness to search externally.
@@ -83,8 +92,9 @@ impl ProviderRequestPolicy {
 /// Expanded access policy for one interactive session.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SessionAccessPolicy {
-    resource_access: ResourceAccess,
-    filesystem_boundary: FilesystemBoundary,
+    resource_access: Option<ResourceAccess>,
+    filesystem_boundary: Option<FilesystemBoundary>,
+    harness_isolation: Option<HarnessIsolation>,
     approval_policy: ProviderApprovalPolicy,
     external_network: ExternalNetworkPolicy,
     external_search: ExternalSearchPolicy,
@@ -95,6 +105,7 @@ impl SessionAccessPolicy {
     pub fn new(
         resource_access: ResourceAccess,
         filesystem_boundary: FilesystemBoundary,
+        harness_isolation: HarnessIsolation,
         approval_policy: ProviderApprovalPolicy,
         external_network: ExternalNetworkPolicy,
         external_search: ExternalSearchPolicy,
@@ -105,9 +116,13 @@ impl SessionAccessPolicy {
         {
             return Err(IncompatibleSessionAccessPolicy::search_requires_network());
         }
+        if harness_isolation == HarnessIsolation::AmbientHost {
+            return Err(IncompatibleSessionAccessPolicy::ambient_boundary());
+        }
         Ok(Self {
-            resource_access,
-            filesystem_boundary,
+            resource_access: Some(resource_access),
+            filesystem_boundary: Some(filesystem_boundary),
+            harness_isolation: Some(harness_isolation),
             approval_policy,
             external_network,
             external_search,
@@ -120,12 +135,42 @@ impl SessionAccessPolicy {
         Self::new(
             ResourceAccess::Read,
             FilesystemBoundary::WorkingResource,
+            HarnessIsolation::ProviderEnforced,
             ProviderApprovalPolicy::Never,
             ExternalNetworkPolicy::Denied,
             ExternalSearchPolicy::Disabled,
             ProviderRequestPolicy::reject_all(),
         )
         .expect("read-only session access policy is internally valid")
+    }
+
+    /// A session with no filesystem or working-resource authority.
+    #[must_use]
+    pub fn resource_free() -> Self {
+        Self {
+            resource_access: None,
+            filesystem_boundary: None,
+            harness_isolation: None,
+            approval_policy: ProviderApprovalPolicy::Never,
+            external_network: ExternalNetworkPolicy::Denied,
+            external_search: ExternalSearchPolicy::Disabled,
+            provider_requests: ProviderRequestPolicy::reject_all(),
+        }
+    }
+
+    /// A local harness with an intended working resource but no filesystem or
+    /// process-isolation claim.
+    #[must_use]
+    pub fn ambient_harness(resource_access: ResourceAccess) -> Self {
+        Self {
+            resource_access: Some(resource_access),
+            filesystem_boundary: None,
+            harness_isolation: Some(HarnessIsolation::AmbientHost),
+            approval_policy: ProviderApprovalPolicy::Never,
+            external_network: ExternalNetworkPolicy::AmbientHost,
+            external_search: ExternalSearchPolicy::Disabled,
+            provider_requests: ProviderRequestPolicy::reject_all(),
+        }
     }
 
     #[must_use]
@@ -135,6 +180,7 @@ impl SessionAccessPolicy {
         Self::new(
             ResourceAccess::ReadWrite,
             FilesystemBoundary::WorkingResource,
+            HarnessIsolation::ProviderEnforced,
             ProviderApprovalPolicy::Never,
             ExternalNetworkPolicy::Denied,
             ExternalSearchPolicy::Disabled,
@@ -144,13 +190,18 @@ impl SessionAccessPolicy {
     }
 
     #[must_use]
-    pub const fn resource_access(&self) -> ResourceAccess {
+    pub const fn resource_access(&self) -> Option<ResourceAccess> {
         self.resource_access
     }
 
     #[must_use]
-    pub const fn filesystem_boundary(&self) -> FilesystemBoundary {
+    pub const fn filesystem_boundary(&self) -> Option<FilesystemBoundary> {
         self.filesystem_boundary
+    }
+
+    #[must_use]
+    pub const fn harness_isolation(&self) -> Option<HarnessIsolation> {
+        self.harness_isolation
     }
 
     #[must_use]
@@ -176,7 +227,7 @@ impl SessionAccessPolicy {
 
 impl Default for SessionAccessPolicy {
     fn default() -> Self {
-        Self::read_only()
+        Self::ambient_harness(ResourceAccess::Read)
     }
 }
 
@@ -191,6 +242,15 @@ impl IncompatibleSessionAccessPolicy {
             diagnostic: SafeDiagnostic::new(
                 "swallowtail.session_access_policy_rejected",
                 "External search requires host-approved external network access",
+            ),
+        }
+    }
+
+    fn ambient_boundary() -> Self {
+        Self {
+            diagnostic: SafeDiagnostic::new(
+                "swallowtail.session_access_policy_rejected",
+                "Ambient harness execution cannot claim a bounded filesystem",
             ),
         }
     }
@@ -210,59 +270,5 @@ impl fmt::Display for IncompatibleSessionAccessPolicy {
 impl Error for IncompatibleSessionAccessPolicy {}
 
 #[cfg(test)]
-mod tests {
-    use super::{
-        ExternalNetworkPolicy, ExternalSearchPolicy, FilesystemBoundary, ProviderApprovalPolicy,
-        ProviderRequestHandling, ProviderRequestPolicy, ResourceAccess, SessionAccessPolicy,
-    };
-    use crate::ExtensionNamespace;
-
-    #[test]
-    fn read_only_is_the_expanded_default() {
-        let policy = SessionAccessPolicy::default();
-
-        assert_eq!(policy.resource_access(), ResourceAccess::Read);
-        assert_eq!(
-            policy.filesystem_boundary(),
-            FilesystemBoundary::WorkingResource
-        );
-        assert_eq!(policy.approval_policy(), ProviderApprovalPolicy::Never);
-        assert_eq!(policy.external_network(), ExternalNetworkPolicy::Denied);
-        assert_eq!(policy.external_search(), ExternalSearchPolicy::Disabled);
-        assert_eq!(policy.provider_requests().observed_extensions().len(), 0);
-    }
-
-    #[test]
-    fn observed_provider_requests_are_explicit_and_default_to_reject() {
-        let approval = ExtensionNamespace::new("example/approval").expect("namespace is valid");
-        let unknown = ExtensionNamespace::new("example/unknown").expect("namespace is valid");
-        let policy = ProviderRequestPolicy::observe_and_stop([approval.clone()]);
-
-        assert_eq!(
-            policy.handling_for(&approval),
-            ProviderRequestHandling::ObserveAndStop
-        );
-        assert_eq!(
-            policy.handling_for(&unknown),
-            ProviderRequestHandling::Reject
-        );
-    }
-
-    #[test]
-    fn external_search_cannot_imply_network_authority() {
-        let error = SessionAccessPolicy::new(
-            ResourceAccess::Read,
-            FilesystemBoundary::WorkingResource,
-            ProviderApprovalPolicy::Never,
-            ExternalNetworkPolicy::Denied,
-            ExternalSearchPolicy::Enabled,
-            ProviderRequestPolicy::reject_all(),
-        )
-        .expect_err("search without network authority must fail");
-
-        assert_eq!(
-            error.diagnostic().code(),
-            "swallowtail.session_access_policy_rejected"
-        );
-    }
-}
+#[path = "session_access/tests.rs"]
+mod tests;

@@ -47,6 +47,31 @@ impl InstanceTargetRef {
     }
 }
 
+/// Host-owned reference to one credential or delegated-auth context.
+#[derive(Clone, Eq, Hash, Ord, PartialEq, PartialOrd)]
+pub struct CredentialRef(String);
+
+impl CredentialRef {
+    pub fn new(value: impl Into<String>) -> Result<Self, ValueRequired> {
+        required_text("credential reference", value).map(Self)
+    }
+
+    /// Passes the opaque reference back to the execution host.
+    #[must_use]
+    pub fn as_host_value(&self) -> &str {
+        &self.0
+    }
+}
+
+impl fmt::Debug for CredentialRef {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter
+            .debug_tuple("CredentialRef")
+            .field(&"<opaque>")
+            .finish()
+    }
+}
+
 impl fmt::Debug for InstanceTargetRef {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         formatter
@@ -93,7 +118,10 @@ pub enum HostServiceKind {
     Network,
     Credential,
     WorkingResource,
+    WorkingResourceIo,
     Attachment,
+    ModelArtifact,
+    ServingEndpoint,
     Schema,
     DiagnosticObserver,
 }

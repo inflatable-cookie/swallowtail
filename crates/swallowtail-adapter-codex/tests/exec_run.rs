@@ -33,9 +33,9 @@ fn structured_run_translates_request_and_normalizes_jsonl() {
     let request = StructuredRunRequest::new(
         RequestId::new("request-1").expect("request id is valid"),
         OperationContent::new("private prompt").expect("content is valid"),
-        working_resource(),
         OperationPolicy::offline(),
-    );
+    )
+    .with_working_resource(working_resource());
     let mut handle =
         block_on(driver.start_run(plan(), request, host_services(process))).expect("run starts");
     let events = block_on(
@@ -149,9 +149,9 @@ fn structured_inputs_use_only_host_materializations_and_explicit_policy() {
     let request = StructuredRunRequest::new(
         RequestId::new("request-structured").expect("request id is valid"),
         OperationContent::new("private prompt").expect("content is valid"),
-        working_resource(),
         policy,
     )
+    .with_working_resource(working_resource())
     .with_attachments([attachment])
     .with_structured_output(schema);
     let mut handle = block_on(driver().start_run(
@@ -224,9 +224,9 @@ fn unsupported_inputs_fail_before_process_side_effects() {
     let request = StructuredRunRequest::new(
         RequestId::new("request-deadline").expect("request id is valid"),
         OperationContent::new("bounded prompt").expect("content is valid"),
-        working_resource(),
         OperationPolicy::offline(),
     )
+    .with_working_resource(working_resource())
     .with_deadline(Deadline::at(MonotonicInstant::from_ticks(10)));
 
     let result = block_on(driver.start_run(plan(), request, host_services(process)));
@@ -237,13 +237,13 @@ fn unsupported_inputs_fail_before_process_side_effects() {
     let request = StructuredRunRequest::new(
         RequestId::new("request-search").expect("request id is valid"),
         OperationContent::new("bounded prompt").expect("content is valid"),
-        working_resource(),
         OperationPolicy::new(
             ExternalNetworkPolicy::HostApproved,
             ExternalSearchPolicy::Enabled,
         )
         .expect("search policy is explicit"),
-    );
+    )
+    .with_working_resource(working_resource());
     let (process, state) = FakeProcessService::completed("");
     let result = block_on(driver.start_run(plan(), request, host_services(process)));
 
@@ -260,9 +260,9 @@ fn cancellation_force_stops_and_joins_the_owned_process() {
     let request = StructuredRunRequest::new(
         RequestId::new("request-cancel").expect("request id is valid"),
         OperationContent::new("wait indefinitely").expect("content is valid"),
-        working_resource(),
         OperationPolicy::offline(),
-    );
+    )
+    .with_working_resource(working_resource());
     let mut handle =
         block_on(driver.start_run(plan(), request, host_services(process))).expect("run starts");
     assert_eq!(

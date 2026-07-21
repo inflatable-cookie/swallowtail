@@ -1,0 +1,4 @@
+{"direction":"client_to_agent","message":{"jsonrpc":"2.0","id":2,"method":"session/prompt","params":{"sessionId":"gemini-session-fixture","prompt":[{"type":"text","text":"Inspect without mutation."}]}}}
+{"direction":"agent_to_client","message":{"jsonrpc":"2.0","method":"session/update","params":{"sessionId":"gemini-session-fixture","update":{"sessionUpdate":"agent_message_chunk","messageId":"message-fixture-1","content":{"type":"text","text":"Read-only fixture "}}}}}
+{"direction":"agent_to_client","message":{"jsonrpc":"2.0","method":"session/update","params":{"sessionId":"gemini-session-fixture","update":{"sessionUpdate":"agent_message_chunk","messageId":"message-fixture-1","content":{"type":"text","text":"response."}}}}}
+{"direction":"agent_to_client","message":{"jsonrpc":"2.0","id":2,"result":{"stopReason":"end_turn"}}}

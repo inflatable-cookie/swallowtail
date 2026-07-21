@@ -1,0 +1,95 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-07-20",
+  "protocol": {
+    "wire_version": 1,
+    "schema_artifact": "schema-v1.19.0",
+    "schema_meta_sha256": "e0bf36f8123b2544b499174197fdc371ec49a1b4572a35114513d56492741599",
+    "schema_sha256": "92c1dfcda10dd47e99127500a3763da2b471f9ac61e12b9bf0430c32cf953796",
+    "stable_schema_only": true,
+    "transport": "stdio_ndjson",
+    "encoding": "utf-8",
+    "delimiter": "newline",
+    "embedded_newline_allowed": false
+  },
+  "gemini": {
+    "version": "0.51.0",
+    "tag_commit": "8d951de3855750d5f8219d65ae22524b606133b6",
+    "acp_sdk": "0.16.1",
+    "dispatcher_sha256": "0efad1ad0db341802cc27710a5d5ab522666f3cd1a229faece8094a81a992660",
+    "session_manager_sha256": "63e38dfcfe035a317acc9e2943810b765e7403ecb6383597633394e8ff214f1e",
+    "command": ["gemini", "--acp", "--approval-mode", "plan"],
+    "working_directory_source": "host_resolved_read_only_resource",
+    "process_environment_source": "host_approved_reference",
+    "provider_state_root": "host_approved_isolated"
+  },
+  "access": {
+    "authenticate_method_in_subset": false,
+    "advertised_auth_methods_are_evidence_only": true,
+    "first_credential_mechanism": "api_key_via_host_approved_process_environment",
+    "first_metering": "pay_as_you_go",
+    "consumer_membership_in_subset": false,
+    "ambient_config_allowed": false,
+    "credential_store_scan_allowed": false,
+    "implicit_auth_fallback_allowed": false,
+    "missing_or_rejected_auth": "provider_failure"
+  },
+  "negotiation": {
+    "version_mismatch": "close_and_fail",
+    "omitted_capability": "unsupported",
+    "unknown_core_request": "method_not_found_then_fail",
+    "unknown_extension_request": "method_not_found",
+    "unknown_extension_notification": "ignore"
+  },
+  "baseline_agent_methods": [
+    "initialize",
+    "session/new",
+    "session/prompt",
+    "session/cancel"
+  ],
+  "baseline_client_methods": [
+    "session/update"
+  ],
+  "gemini_subset": {
+    "load_session": "observed_not_claimed",
+    "load_exclusion": "gemini_0_51_replay_completion_is_not_awaited_before_response",
+    "authenticate": "not_called",
+    "set_mode": "not_called",
+    "set_model": "unstable_not_called",
+    "config_options": "not_advertised",
+    "mcp_servers": "empty",
+    "session_close": "not_advertised_process_close_only"
+  },
+  "prompt": {
+    "content": ["text"],
+    "image_audio_embedded_context": "advertised_by_gemini_not_claimed",
+    "one_active_turn": true,
+    "terminal_response": "single_stop_reason"
+  },
+  "permission_policy": {
+    "request_method": "session/request_permission",
+    "consumer_tool_callback": false,
+    "allow_option_selected": false,
+    "pending_on_cancel": "cancelled_outcome",
+    "turn_action": "session_cancel_then_observed_stop"
+  },
+  "client_callbacks": {
+    "fs_read": "host_bounded_working_resource_io",
+    "fs_write": "not_advertised",
+    "terminal": "not_advertised",
+    "path_escape": "reject_before_io",
+    "raw_path_in_public_event": false
+  },
+  "extensions": {
+    "meta_policy": "bounded_adapter_private",
+    "unknown_request": "method_not_found",
+    "unknown_notification": "ignore",
+    "gemini_unstable_model_fields": "observation_only"
+  },
+  "cleanup": {
+    "turn_cancel": "session/cancel",
+    "turn_cancel_response": "prompt_stop_reason_cancelled",
+    "session_close": "close_stdin_stop_owned_process_join",
+    "detached_tasks_allowed": false
+  }
+}

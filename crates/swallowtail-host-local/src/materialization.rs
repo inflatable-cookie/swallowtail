@@ -1,3 +1,4 @@
+use crate::host::LocalProcessHostBuilder;
 use crate::output::failure;
 use std::collections::{HashMap, HashSet};
 use std::fs;
@@ -7,6 +8,14 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use swallowtail_runtime::{
     CleanupOutcome, MaterializedFileRef, RuntimeFailure, ScopeId, WorkingResourceRef,
 };
+
+impl LocalProcessHostBuilder {
+    #[must_use]
+    pub fn with_temporary_root(mut self, path: impl Into<PathBuf>) -> Self {
+        self.temporary_root = path.into();
+        self
+    }
+}
 
 #[derive(Clone)]
 struct ScopedPath {

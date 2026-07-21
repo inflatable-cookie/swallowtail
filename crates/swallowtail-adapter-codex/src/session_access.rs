@@ -61,6 +61,7 @@ pub(crate) struct CodexSessionAccess {
     working_resource: WorkingResourceRef,
     writable_root: Option<String>,
     provider_requests: ProviderRequestPolicy,
+    policy: SessionAccessPolicy,
     resource_service: Option<Arc<dyn WorkingResourceService>>,
     lease: Option<ResourceLease>,
 }
@@ -84,11 +85,12 @@ impl CodexSessionAccess {
         }
         validate_provider_requests(policy.provider_requests())?;
 
-        if policy.resource_access() == ResourceAccess::Read {
+        if policy.resource_access() == Some(ResourceAccess::Read) {
             return Ok(Self {
                 working_resource: working_resource.clone(),
                 writable_root: None,
                 provider_requests: policy.provider_requests().clone(),
+                policy: policy.clone(),
                 resource_service: None,
                 lease: None,
             });
@@ -122,6 +124,7 @@ impl CodexSessionAccess {
             working_resource: lease.reference().clone(),
             writable_root: Some(writable_root),
             provider_requests: policy.provider_requests().clone(),
+            policy: policy.clone(),
             resource_service: Some(service),
             lease: Some(lease),
         })
@@ -173,6 +176,10 @@ impl CodexSessionAccess {
 
     pub(crate) const fn working_resource(&self) -> &WorkingResourceRef {
         &self.working_resource
+    }
+
+    pub(crate) const fn policy(&self) -> &SessionAccessPolicy {
+        &self.policy
     }
 
     pub(crate) fn provider_requests(&self) -> ProviderRequestPolicy {

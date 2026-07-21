@@ -29,7 +29,11 @@ impl ProfileShape {
         match profile {
             SyntheticProfile::OneShotStructuredCli => Self::one_shot(),
             SyntheticProfile::LongLivedRpcHarness => Self::rpc(),
+            SyntheticProfile::LongLivedAcpHarness => Self::acp(),
+            SyntheticProfile::PersistentAcpHarness => crate::profile_persistent_acp_shape::shape(),
+            SyntheticProfile::AttachedNetworkHarness => Self::network_harness(),
             SyntheticProfile::HostedDirectApi => Self::hosted(),
+            SyntheticProfile::ConnectionScopedDirectSession => Self::direct_session(),
             SyntheticProfile::AttachedSelfHosted => Self::self_hosted(
                 "fixture.driver.attached",
                 "fixture.instance.attached",
@@ -97,6 +101,32 @@ impl ProfileShape {
         }
     }
 
+    fn acp() -> Self {
+        Self {
+            adapter_id: "fixture.driver.acp",
+            integration_family: "fixture-acp-agent",
+            transport_family: "acp-v1-stdio",
+            instance_id: "fixture.instance.acp",
+            route_id: "fixture.route.acp",
+            model_id: "fixture-model-acp",
+            access_profile_id: "fixture.access.acp-api-key",
+            audience: "fixture-acp-provider-api",
+            role: DriverRole::InteractiveSession,
+            layer: ExecutionLayer::HarnessInteraction,
+            operation_shape: OperationShape::InteractiveSession,
+            ownership: InstanceOwnership::HostOwnedEphemeral,
+            credential: CredentialMechanism::ApiKey,
+            credential_state: CredentialState::Ready,
+            metering: EntitlementMetering::PayAsYouGo,
+            required_services: vec![
+                HostServiceKind::Task,
+                HostServiceKind::Process,
+                HostServiceKind::WorkingResource,
+                HostServiceKind::WorkingResourceIo,
+            ],
+        }
+    }
+
     fn hosted() -> Self {
         Self {
             adapter_id: "fixture.driver.hosted-api",
@@ -123,6 +153,61 @@ impl ProfileShape {
         }
     }
 
+    fn direct_session() -> Self {
+        Self {
+            adapter_id: "fixture.driver.direct-session",
+            integration_family: "fixture-provider",
+            transport_family: "connection-stream",
+            instance_id: "fixture.instance.direct-session",
+            route_id: "fixture.route.direct-session",
+            model_id: "fixture-model-direct-session",
+            access_profile_id: "fixture.access.direct-session",
+            audience: "fixture-direct-session-api",
+            role: DriverRole::InteractiveSession,
+            layer: ExecutionLayer::DirectModelInference,
+            operation_shape: OperationShape::InteractiveSession,
+            ownership: InstanceOwnership::ExternalAttached,
+            credential: CredentialMechanism::ApiKey,
+            credential_state: CredentialState::Ready,
+            metering: EntitlementMetering::PayAsYouGo,
+            required_services: vec![
+                HostServiceKind::Task,
+                HostServiceKind::BlockingWork,
+                HostServiceKind::Time,
+                HostServiceKind::Network,
+                HostServiceKind::Credential,
+            ],
+        }
+    }
+
+    fn network_harness() -> Self {
+        Self {
+            adapter_id: "fixture.driver.network-harness",
+            integration_family: "fixture-harness",
+            transport_family: "http-sse",
+            instance_id: "fixture.instance.network-harness",
+            route_id: "fixture.route.network-harness",
+            model_id: "fixture-model-network-harness",
+            access_profile_id: "fixture.access.network-harness",
+            audience: "fixture-harness-server",
+            role: DriverRole::InteractiveSession,
+            layer: ExecutionLayer::HarnessInteraction,
+            operation_shape: OperationShape::InteractiveSession,
+            ownership: InstanceOwnership::ExternalAttached,
+            credential: CredentialMechanism::GatewayHelper,
+            credential_state: CredentialState::Ready,
+            metering: EntitlementMetering::Unknown,
+            required_services: vec![
+                HostServiceKind::Task,
+                HostServiceKind::BlockingWork,
+                HostServiceKind::Time,
+                HostServiceKind::Network,
+                HostServiceKind::Credential,
+                HostServiceKind::WorkingResource,
+            ],
+        }
+    }
+
     fn self_hosted(
         adapter_id: &'static str,
         instance_id: &'static str,
@@ -130,6 +215,19 @@ impl ProfileShape {
         access_profile_id: &'static str,
         ownership: InstanceOwnership,
     ) -> Self {
+        let required_services = if ownership == InstanceOwnership::HostOwnedEphemeral {
+            vec![
+                HostServiceKind::Task,
+                HostServiceKind::BlockingWork,
+                HostServiceKind::Time,
+                HostServiceKind::Process,
+                HostServiceKind::Network,
+                HostServiceKind::ModelArtifact,
+                HostServiceKind::ServingEndpoint,
+            ]
+        } else {
+            vec![HostServiceKind::Task, HostServiceKind::Time]
+        };
         Self {
             adapter_id,
             integration_family: "fixture-local-runtime",
@@ -146,7 +244,7 @@ impl ProfileShape {
             credential: CredentialMechanism::LocalUnauthenticated,
             credential_state: CredentialState::NotRequired,
             metering: EntitlementMetering::LocalCompute,
-            required_services: vec![HostServiceKind::Task, HostServiceKind::Time],
+            required_services,
         }
     }
 }

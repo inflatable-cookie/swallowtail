@@ -31,15 +31,50 @@
 - `027-codex-app-server-tool-callbacks.md`
 - `028-nucleus-topology-and-lifecycle-proof.md`
 - `029-nucleus-adoption-handoff.md`
-
 - `030-soundcheck-consumer-adoption-proof.md`
 - `031-interactive-session-access-contract.md`
+- `032-interactive-access-policy-records.md`
+- `033-codex-bounded-workspace-session.md`
+- `034-bounded-session-conformance-and-handoff.md`
+- `035-provider-expansion-evidence-and-contract.md`
+- `036-scoped-endpoint-and-credential-grants.md`
+- `037-direct-run-catalogue-and-provider-evidence.md`
+- `038-local-hosted-services-and-conformance.md`
+- `039-opencode-http-protocol-fixtures.md`
+- `040-opencode-http-harness-driver.md`
+- `041-opencode-http-conformance.md`
+- `042-anthropic-api-fixtures.md`
+- `043-anthropic-direct-driver.md`
+- `044-anthropic-direct-conformance.md`
+- `045-acp-v1-authority-and-fixtures.md`
+- `046-gemini-acp-driver.md`
+- `047-gemini-acp-conformance.md`
+- `048-llama-cpp-deployment-fixtures.md`
+- `049-llama-cpp-attached-driver.md`
+- `050-llama-cpp-attached-conformance.md`
+- `051-post-tranche-coverage-evidence.md`
+- `052-xai-websocket-protocol-fixtures.md`
+- `053-xai-websocket-session-driver.md`
+- `054-xai-websocket-conformance.md`
+- `055-kimi-acp-currentness-and-session-contract.md`
+- `056-kimi-acp-protocol-fixtures.md`
+- `060-owned-llama-cpp-evidence-and-contract.md`
+- `061-model-artifact-and-owned-serving-records.md`
+- `062-local-artifact-host-and-owned-conformance.md`
+- `063-llama-cpp-owned-serving-driver.md`
+- `064-owned-serving-conformance-and-closeout.md`
+- `065-kimi-code-successor-currentness-and-fixture-delta.md`
+- `057-harness-process-filesystem-containment.md` — completed qualification;
+  host-enforced Kimi is unavailable for the pinned artifact
+- `066-optional-harness-isolation-rebaseline.md`
+- `058-kimi-acp-portability-driver.md`
+- `059-kimi-acp-conformance.md`
+
+## Blocked
+
+- `068-selected-route-contract-and-fixtures.md` — blocked by card 067
+- `069-selected-route-driver-and-conformance.md` — blocked by card 068
 
 ## Ready
 
-- `032-interactive-access-policy-records.md`
-
-## Planned
-
-- `033-codex-bounded-workspace-session.md`
-- `034-bounded-session-conformance-and-handoff.md`
+- `067-post-portability-coverage-evidence.md`

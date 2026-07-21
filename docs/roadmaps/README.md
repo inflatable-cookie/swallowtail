@@ -11,8 +11,12 @@ shape.
 
 ## Next Task
 
-Support Nucleus's adoption of the bounded task-execution handoff. Keep the
-shared runtime fixed unless concrete consumer evidence exposes a portable gap.
+Execute card 067: revalidate SDK-native and remaining provider/transport routes
+against current authoritative evidence. Accept an SDK route only with a real
+maintained Rust embedding or explicit supported language boundary. Otherwise
+select the next hosted catalogue, protocol, harness, direct-inference, or
+attached-runtime proof by new architectural information, then narrow cards
+068-069 to that one route.
 
 ## Index
 

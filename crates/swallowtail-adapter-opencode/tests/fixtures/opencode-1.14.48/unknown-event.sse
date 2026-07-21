@@ -1,0 +1,2 @@
+data: {"id":"evt_future","type":"provider.future.event","properties":{"private":"raw-future-payload"}}
+

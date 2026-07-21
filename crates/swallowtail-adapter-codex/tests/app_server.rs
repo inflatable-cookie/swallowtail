@@ -16,9 +16,9 @@ use swallowtail_runtime::{
     CallbackPayload, CallbackRequestKind, CallbackResponse, CallbackResult,
     CancellationAcknowledgement, CleanupOutcome, Deadline, EnvironmentRef,
     InteractiveSessionDriver, ModelCatalogDriver, ModelCatalogRequest, MonotonicInstant,
-    OpenSessionRequest, OperationContent, RequestId, ResumeSessionRequest, RuntimeEventKind,
-    RuntimeTurnId, SchemaDocument, SessionOptions, StructuredOutputDescriptor, TerminalStatus,
-    ToolDeclaration, TurnRequest,
+    OperationContent, RequestId, RuntimeEventKind, RuntimeTurnId, SchemaDocument,
+    SessionAccessPolicy, SessionOptions, SessionResumeBinding, StructuredOutputDescriptor,
+    TerminalStatus, ToolDeclaration, TurnRequest, WorkingResourceRef,
 };
 use swallowtail_testkit::RecordingHostServices;
 
@@ -26,6 +26,25 @@ fn driver() -> CodexAppServerDriver {
     CodexAppServerDriver::new(
         EnvironmentRef::new("codex-saved-login").expect("environment is valid"),
     )
+}
+
+fn read_only_open_request(
+    request_id: RequestId,
+    working_resource: WorkingResourceRef,
+    deadline: Option<Deadline>,
+) -> swallowtail_runtime::OpenSessionRequest {
+    swallowtail_runtime::OpenSessionRequest::new(request_id, working_resource, deadline)
+        .with_access_policy(SessionAccessPolicy::read_only())
+}
+
+fn read_only_resume_request(
+    request_id: RequestId,
+    binding: SessionResumeBinding,
+    working_resource: WorkingResourceRef,
+    deadline: Option<Deadline>,
+) -> swallowtail_runtime::ResumeSessionRequest {
+    swallowtail_runtime::ResumeSessionRequest::new(request_id, binding, working_resource, deadline)
+        .with_access_policy(SessionAccessPolicy::read_only())
 }
 
 fn tool_declaration(name: &str) -> ToolDeclaration {
@@ -163,7 +182,7 @@ fn session_turn_streams_output_and_preserves_provider_ids() {
     let services = host_services(process);
     let mut session = block_on(driver().open_session(
         app_server_plan(DriverRole::InteractiveSession),
-        OpenSessionRequest::new(
+        read_only_open_request(
             RequestId::new("session-1").expect("request id is valid"),
             working_resource(),
             None,
@@ -243,7 +262,7 @@ fn session_options_and_dynamic_tool_callback_round_trip() {
     let mut session = block_on(
         driver().open_session(
             plan,
-            OpenSessionRequest::new(
+            read_only_open_request(
                 RequestId::new("session-tools").expect("request id is valid"),
                 working_resource(),
                 None,
@@ -365,7 +384,7 @@ fn undeclared_dynamic_tool_never_reaches_the_consumer() {
                 [reasoning_capability(), tool_capability()],
                 [],
             ),
-            OpenSessionRequest::new(
+            read_only_open_request(
                 RequestId::new("session-unknown-tool").expect("request id is valid"),
                 working_resource(),
                 None,
@@ -413,7 +432,7 @@ fn resumed_turn_uses_native_interruption_without_stopping_session() {
     let mut session = block_on(
         driver().resume_session(
             plan,
-            ResumeSessionRequest::new(
+            read_only_resume_request(
                 RequestId::new("session-resume").expect("request id is valid"),
                 binding,
                 working_resource(),
@@ -493,7 +512,7 @@ fn cancellation_abandons_pending_callback_and_rejects_late_response() {
                 [reasoning_capability(), tool_capability()],
                 [],
             ),
-            OpenSessionRequest::new(
+            read_only_open_request(
                 RequestId::new("session-cancel-tool").expect("request id is valid"),
                 working_resource(),
                 None,
@@ -554,7 +573,7 @@ fn callback_wait_ends_when_the_host_deadline_is_observed() {
                 [reasoning_capability(), tool_capability()],
                 [HostServiceKind::Time],
             ),
-            OpenSessionRequest::new(
+            read_only_open_request(
                 RequestId::new("session-timeout-tool").expect("request id is valid"),
                 working_resource(),
                 None,
@@ -598,7 +617,7 @@ fn whole_session_cancellation_force_stops_and_joins() {
     let (process, state) = ScriptedAppServer::new(AppServerMode::HoldTurn);
     let session = block_on(driver().open_session(
         app_server_plan(DriverRole::InteractiveSession),
-        OpenSessionRequest::new(
+        read_only_open_request(
             RequestId::new("session-cancel").expect("request id is valid"),
             working_resource(),
             None,
@@ -625,7 +644,7 @@ fn unsupported_server_request_fails_instead_of_hanging() {
     let services = host_services(process);
     let mut session = block_on(driver().open_session(
         app_server_plan(DriverRole::InteractiveSession),
-        OpenSessionRequest::new(
+        read_only_open_request(
             RequestId::new("session-callback").expect("request id is valid"),
             working_resource(),
             None,
@@ -661,7 +680,7 @@ fn unsupported_session_input_fails_before_process_start() {
     let (process, state) = ScriptedAppServer::new(AppServerMode::CompleteTurn);
     let result = block_on(driver().open_session(
         app_server_plan(DriverRole::InteractiveSession),
-        OpenSessionRequest::new(
+        read_only_open_request(
             RequestId::new("session-deadline").expect("request id is valid"),
             working_resource(),
             Some(Deadline::at(MonotonicInstant::from_ticks(10))),
@@ -676,7 +695,7 @@ fn unsupported_session_input_fails_before_process_start() {
 #[test]
 fn session_options_without_matching_preflight_fail_before_process_start() {
     let (process, state) = ScriptedAppServer::new(AppServerMode::CompleteTurn);
-    let request = OpenSessionRequest::new(
+    let request = read_only_open_request(
         RequestId::new("session-options").expect("request id is valid"),
         working_resource(),
         None,
@@ -707,7 +726,7 @@ fn resumed_dynamic_tools_fail_before_process_start_when_schema_cannot_redeclare_
     let result = block_on(
         driver().resume_session(
             plan,
-            ResumeSessionRequest::new(
+            read_only_resume_request(
                 RequestId::new("resume-tools").expect("request id is valid"),
                 binding,
                 working_resource(),
@@ -728,7 +747,7 @@ fn structured_output_is_rejected_before_turn_provider_work() {
     let services = host_services(process);
     let mut session = block_on(driver().open_session(
         app_server_plan(DriverRole::InteractiveSession),
-        OpenSessionRequest::new(
+        read_only_open_request(
             RequestId::new("session-structured-output").expect("request id is valid"),
             working_resource(),
             None,

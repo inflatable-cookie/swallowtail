@@ -1,0 +1,3 @@
+{"direction":"client_to_agent","message":{"jsonrpc":"2.0","id":2,"method":"session/load","params":{"sessionId":"kimi-session-bound","cwd":"/fixture/workspace","mcpServers":[]}}}
+{"direction":"agent_to_client","message":{"jsonrpc":"2.0","id":2,"result":{}}}
+{"direction":"agent_to_client","message":{"jsonrpc":"2.0","method":"session/update","params":{"sessionId":"kimi-session-bound","update":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"Late replay."}}}}}

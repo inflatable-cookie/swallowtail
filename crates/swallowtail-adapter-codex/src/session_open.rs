@@ -80,7 +80,12 @@ impl PendingSessionOpen {
         let runtime_id =
             RuntimeSessionId::new(format!("codex-app-server:{}", self.request_id.as_str()))
                 .expect("request id produces a valid session id");
-        let resume_binding = resume_binding(plan, provider_ref)?;
+        let resume_binding = resume_binding(
+            plan,
+            provider_ref,
+            self.access.working_resource().clone(),
+            self.access.policy().clone(),
+        )?;
         let runtime = self.session_input.into_runtime(
             self.deadline_planned,
             self.access.turn_sandbox_policy(),
@@ -107,6 +112,8 @@ impl PendingSessionOpen {
 fn resume_binding(
     plan: &PreflightPlan,
     provider_ref: SessionRef,
+    working_resource: swallowtail_runtime::WorkingResourceRef,
+    access_policy: swallowtail_core::SessionAccessPolicy,
 ) -> Result<SessionResumeBinding, RuntimeFailure> {
     let route = plan.model_route_id().cloned().ok_or_else(|| {
         failure(
@@ -126,6 +133,8 @@ fn resume_binding(
         plan.execution_host_id().clone(),
         route,
         model,
+        working_resource,
+        access_policy,
     ))
 }
 

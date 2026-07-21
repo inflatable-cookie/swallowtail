@@ -1,6 +1,6 @@
 use crate::{
     AttachmentDescriptor, AttachmentRef, BoxFuture, CleanupOutcome, CredentialLease, CredentialRef,
-    Deadline, DeadlineObservation, EndpointRef, LeaseCleanupAuthority, MaterializedFileRef,
+    Deadline, DeadlineObservation, LeaseCleanupAuthority, MaterializedFileRef,
     MaterializedResourceRef, MonotonicInstant, ProcessExit, ProcessInputChunk, ProcessOutputChunk,
     ProcessRequest, ResourceAccess, ResourceRepresentation, RuntimeFailure, SchemaDocument,
     ScopeId, WorkingResourceRef,
@@ -51,36 +51,15 @@ pub trait ProcessService: Send + Sync {
     ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>>;
 }
 
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub struct NetworkGrant {
-    endpoint: EndpointRef,
-}
-
-impl NetworkGrant {
-    #[must_use]
-    pub const fn new(endpoint: EndpointRef) -> Self {
-        Self { endpoint }
-    }
-
-    #[must_use]
-    pub const fn endpoint(&self) -> &EndpointRef {
-        &self.endpoint
-    }
-}
-
-pub trait NetworkPolicyService: Send + Sync {
-    fn authorize(
-        &self,
-        endpoint: EndpointRef,
-    ) -> BoxFuture<'static, Result<NetworkGrant, RuntimeFailure>>;
-}
-
 pub trait CredentialService: Send + Sync {
     fn acquire(
         &self,
+        scope: ScopeId,
         reference: CredentialRef,
         audience: EndpointAudience,
     ) -> BoxFuture<'static, Result<CredentialLease, RuntimeFailure>>;
+
+    fn release(&self, lease: CredentialLease) -> BoxFuture<'static, CleanupOutcome>;
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

@@ -1,9 +1,9 @@
 use crate::{
     BoxEventStream, BoxFuture, CallbackExchange, CancellationControl, CleanupOutcome, HostServices,
-    RequestId, RuntimeFailure, RuntimeRunId, RuntimeSessionId, RuntimeTurnId, ServingInstanceId,
-    SessionResumeBinding, TerminalOutcome, TurnRequest,
+    RequestId, RuntimeFailure, RuntimeRunId, RuntimeSessionId, RuntimeTurnId,
+    ServingEndpointBinding, ServingInstanceId, SessionResumeBinding, TerminalOutcome, TurnRequest,
 };
-use swallowtail_core::{InstanceOwnership, RunRef, SessionRef, TurnRef};
+use swallowtail_core::{ExecutionHostId, InstanceOwnership, RunRef, SessionRef, TurnRef};
 
 pub trait RunHandle: Send {
     fn request_id(&self) -> &RequestId;
@@ -50,5 +50,7 @@ pub trait AttachedServingHandle: Send {
 pub trait OwnedServingHandle: Send {
     fn serving_instance_id(&self) -> &ServingInstanceId;
     fn ownership(&self) -> InstanceOwnership;
+    fn execution_host_id(&self) -> &ExecutionHostId;
+    fn endpoint_binding(&self) -> &ServingEndpointBinding;
     fn stop(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome>;
 }

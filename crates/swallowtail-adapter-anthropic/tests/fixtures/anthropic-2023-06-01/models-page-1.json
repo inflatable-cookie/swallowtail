@@ -1,0 +1,27 @@
+{
+  "data": [
+    {
+      "id": "claude-fixture-primary",
+      "capabilities": {
+        "image_input": {"supported": true},
+        "structured_outputs": {"supported": false}
+      },
+      "created_at": "2026-01-01T00:00:00Z",
+      "display_name": "Claude Fixture Primary",
+      "max_input_tokens": 123456,
+      "max_tokens": 4096,
+      "type": "model"
+    },
+    {
+      "id": "claude-fixture-secondary",
+      "created_at": "2025-01-01T00:00:00Z",
+      "display_name": "Claude Fixture Secondary",
+      "max_input_tokens": 65432,
+      "max_tokens": 2048,
+      "type": "model"
+    }
+  ],
+  "first_id": "claude-fixture-primary",
+  "has_more": true,
+  "last_id": "claude-fixture-secondary"
+}

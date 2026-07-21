@@ -1,0 +1,109 @@
+[
+  {
+    "request": {"method": "GET", "path": "/global/health"},
+    "response": {
+      "status": 200,
+      "content_type": "application/json",
+      "body": {"healthy": true, "version": "1.14.48"}
+    }
+  },
+  {
+    "request": {"method": "GET", "path": "/provider"},
+    "response": {
+      "status": 200,
+      "content_type": "application/json",
+      "body": {
+        "all": [
+          {
+            "id": "anthropic",
+            "name": "Anthropic",
+            "source": "custom",
+            "env": [],
+            "options": {},
+            "models": {
+              "claude-sonnet": {
+                "id": "claude-sonnet",
+                "providerID": "anthropic",
+                "api": {
+                  "id": "claude-sonnet",
+                  "url": "https://fixture.invalid/v1",
+                  "npm": "@ai-sdk/anthropic"
+                },
+                "name": "Claude Sonnet Fixture",
+                "capabilities": {
+                  "temperature": true,
+                  "reasoning": true,
+                  "attachment": true,
+                  "toolcall": true,
+                  "input": {"text": true, "audio": false, "image": true, "video": false, "pdf": true},
+                  "output": {"text": true, "audio": false, "image": false, "video": false, "pdf": false},
+                  "interleaved": false
+                },
+                "cost": {"input": 0, "output": 0, "cache": {"read": 0, "write": 0}},
+                "limit": {"context": 200000, "input": 190000, "output": 10000},
+                "status": "active",
+                "options": {},
+                "headers": {},
+                "release_date": "2026-01-01"
+              }
+            }
+          }
+        ],
+        "default": {"anthropic": "claude-sonnet"},
+        "connected": ["anthropic"]
+      }
+    }
+  },
+  {
+    "request": {
+      "method": "POST",
+      "path": "/session?directory=%2Fworkspace%2Ffixture",
+      "body": {
+        "title": "Swallowtail fixture",
+        "model": {"id": "claude-sonnet", "providerID": "anthropic"},
+        "permission": [
+          {"permission": "*", "pattern": "*", "action": "deny"},
+          {"permission": "read", "pattern": "*", "action": "allow"},
+          {"permission": "glob", "pattern": "*", "action": "allow"},
+          {"permission": "grep", "pattern": "*", "action": "allow"}
+        ]
+      }
+    },
+    "response": {
+      "status": 200,
+      "content_type": "application/json",
+      "body": {
+        "id": "ses_fixture",
+        "slug": "fixture",
+        "projectID": "project-fixture",
+        "directory": "/workspace/fixture",
+        "title": "Swallowtail fixture",
+        "model": {"id": "claude-sonnet", "providerID": "anthropic"},
+        "version": "1.14.48",
+        "time": {"created": 1, "updated": 1}
+      }
+    }
+  },
+  {
+    "request": {
+      "method": "POST",
+      "path": "/session/ses_fixture/prompt_async?directory=%2Fworkspace%2Ffixture",
+      "body": {
+        "model": {"providerID": "anthropic", "modelID": "claude-sonnet"},
+        "parts": [{"type": "text", "text": "fixture input"}]
+      }
+    },
+    "response": {"status": 204}
+  },
+  {
+    "request": {
+      "method": "POST",
+      "path": "/session/ses_fixture/abort?directory=%2Fworkspace%2Ffixture"
+    },
+    "response": {
+      "status": 200,
+      "content_type": "application/json",
+      "body": true
+    }
+  }
+]

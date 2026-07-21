@@ -90,6 +90,12 @@ impl CodexExecDriver {
                 "Codex exec requires a preflight-bound model",
             )
         })?;
+        let working_resource = request.working_resource().ok_or_else(|| {
+            failure(
+                "swallowtail.codex.exec.working_resource_missing",
+                "Codex exec requires a working resource",
+            )
+        })?;
         let scope = ScopeId::new(format!("codex-exec:{}", request.request_id().as_str()))
             .expect("request id produces a non-empty scope id");
         let (event_sender, event_stream) = runtime_event_channel(EVENT_CAPACITY)?;
@@ -100,7 +106,7 @@ impl CodexExecDriver {
         let process_request = ProcessRequest::new(executable)
             .with_arguments(arguments)
             .with_environment([self.environment.clone()])
-            .with_working_resource(request.working_resource().clone());
+            .with_working_resource(working_resource.clone());
         let process: Arc<dyn ProcessHandle> =
             match process_service.start(scope.clone(), process_request).await {
                 Ok(process) => Arc::from(process),

@@ -1,0 +1,16 @@
+[package]
+name = "swallowtail-protocol-acp"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "ACP protocol transport for Swallowtail"
+
+[dependencies]
+serde_json = "1"
+
+[dev-dependencies]
+futures-executor = "0.3"
+
+[lints]
+workspace = true

@@ -1,0 +1,8 @@
+{
+  "model": "claude-fixture-primary",
+  "max_tokens": 64,
+  "messages": [
+    {"role": "user", "content": "fixture prompt"}
+  ],
+  "stream": true
+}

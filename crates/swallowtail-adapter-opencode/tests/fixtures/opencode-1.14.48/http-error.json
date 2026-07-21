@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/session/ses_missing/prompt_async?directory=%2Fworkspace%2Ffixture",
+    "body": {
+      "model": {"providerID": "anthropic", "modelID": "claude-sonnet"},
+      "parts": [{"type": "text", "text": "private fixture input"}]
+    }
+  },
+  "response": {
+    "status": 404,
+    "content_type": "application/json",
+    "body": {
+      "name": "NotFoundError",
+      "data": {"message": "raw-provider-payload-must-not-enter-diagnostics"}
+    }
+  }
+}

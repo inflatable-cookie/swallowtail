@@ -79,16 +79,18 @@ fn registrations_share_a_family_without_flattening_roles_or_transports() {
 #[test]
 fn drivers_reject_each_others_bound_plans_before_process_work() {
     let (exec_process, exec_state) = FakeProcessService::completed("");
-    let exec_result = block_on(CodexExecDriver::new(environment()).start_run(
-        app_server_plan(DriverRole::InteractiveSession),
-        StructuredRunRequest::new(
-            RequestId::new("cross-plan-exec").expect("request id is valid"),
-            OperationContent::new("private prompt").expect("content is valid"),
-            working_resource(),
-            OperationPolicy::offline(),
+    let exec_result = block_on(
+        CodexExecDriver::new(environment()).start_run(
+            app_server_plan(DriverRole::InteractiveSession),
+            StructuredRunRequest::new(
+                RequestId::new("cross-plan-exec").expect("request id is valid"),
+                OperationContent::new("private prompt").expect("content is valid"),
+                OperationPolicy::offline(),
+            )
+            .with_working_resource(working_resource()),
+            host_services(exec_process),
         ),
-        host_services(exec_process),
-    ));
+    );
     assert!(exec_result.is_err());
     assert!(!exec_state.started());
 

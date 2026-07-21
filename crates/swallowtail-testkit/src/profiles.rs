@@ -4,7 +4,11 @@ use std::collections::BTreeSet;
 pub enum SyntheticProfile {
     OneShotStructuredCli,
     LongLivedRpcHarness,
+    LongLivedAcpHarness,
+    PersistentAcpHarness,
+    AttachedNetworkHarness,
     HostedDirectApi,
+    ConnectionScopedDirectSession,
     AttachedSelfHosted,
     OwnedSelfHosted,
 }
@@ -28,9 +32,28 @@ pub enum ConformanceAssertion {
     ProcessLifecycle,
     SessionLifecycle,
     CallbackExchange,
+    WorkingResourceCallback,
+    PersistentSessionLifecycle,
+    ReplayPhase,
+    WorkingResourceWriteCallback,
+    AmbientHarnessAuthority,
+    DelegatedAuthentication,
+    HostTopologyPreserved,
+    AttachedNetworkHarnessLifecycle,
     HostedApiNeedsNoProcess,
+    HostedEndpointCredentialBinding,
+    DirectRunNoResource,
+    DirectRunOutputBound,
+    DirectSessionNoResource,
+    ConnectionScopedLeaseLifecycle,
+    BilledCostTurnScoped,
+    NoImplicitSessionRecovery,
+    ProviderEvidenceSeparated,
     AttachedServiceNeverStopped,
     OwnedServiceStops,
+    OwnedArtifactLease,
+    OwnedEndpointBinding,
+    OwnedCleanupOrdered,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -77,8 +100,28 @@ pub fn run_long_lived_rpc_profile() -> ConformanceReport {
 }
 
 #[must_use]
+pub fn run_long_lived_acp_profile() -> ConformanceReport {
+    crate::profile_acp::run()
+}
+
+#[must_use]
+pub fn run_persistent_acp_profile() -> ConformanceReport {
+    crate::profile_persistent_acp::run()
+}
+
+#[must_use]
 pub fn run_hosted_direct_api_profile() -> ConformanceReport {
     crate::profile_hosted::run()
+}
+
+#[must_use]
+pub fn run_connection_scoped_direct_session_profile() -> ConformanceReport {
+    crate::profile_direct_session::run()
+}
+
+#[must_use]
+pub fn run_attached_network_harness_profile() -> ConformanceReport {
+    crate::profile_network_harness::run()
 }
 
 #[must_use]
@@ -96,7 +139,11 @@ pub fn run_all_synthetic_profiles() -> Vec<ConformanceReport> {
     vec![
         run_one_shot_structured_cli_profile(),
         run_long_lived_rpc_profile(),
+        run_long_lived_acp_profile(),
+        run_persistent_acp_profile(),
+        run_attached_network_harness_profile(),
         run_hosted_direct_api_profile(),
+        run_connection_scoped_direct_session_profile(),
         run_attached_self_hosted_profile(),
         run_owned_self_hosted_profile(),
     ]

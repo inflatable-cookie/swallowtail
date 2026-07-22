@@ -31,6 +31,7 @@ pub enum Capability {
     OwnedRemoteResourceDeletion,
     StreamReattachment,
     RealtimeMedia,
+    PlannedConnectionRollover,
 }
 
 #[derive(Clone, Debug, Default, Eq, PartialEq)]

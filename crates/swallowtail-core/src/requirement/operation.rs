@@ -1,8 +1,9 @@
 use super::{AccessRequirement, CapabilityRequirement};
 use crate::{
     DriverRole, ExecutionHostId, ExecutionLayer, ExtensionNamespace, HarnessIsolation,
-    HostServiceKind, InstanceOwnership, OperationShape, RealtimeMediaRequirements,
-    SessionAccessPolicy, SessionProviderStatePolicy,
+    HarnessRpcPolicy, HostServiceKind, InstanceOwnership, InterfaceVersionBinding, OperationShape,
+    PlannedConnectionRolloverPolicy, RealtimeMediaRequirements, SessionAccessPolicy,
+    SessionProviderStatePolicy,
 };
 use std::collections::BTreeSet;
 
@@ -22,6 +23,9 @@ pub struct OperationRequirements {
     session_access_policy: Option<SessionAccessPolicy>,
     session_provider_state_policy: Option<SessionProviderStatePolicy>,
     realtime_media: Option<RealtimeMediaRequirements>,
+    planned_connection_rollover: PlannedConnectionRolloverPolicy,
+    interface_versions: BTreeSet<InterfaceVersionBinding>,
+    harness_rpc_policy: Option<HarnessRpcPolicy>,
 }
 
 impl OperationRequirements {
@@ -52,6 +56,9 @@ impl OperationRequirements {
             session_access_policy,
             session_provider_state_policy,
             realtime_media: None,
+            planned_connection_rollover: PlannedConnectionRolloverPolicy::Disabled,
+            interface_versions: BTreeSet::new(),
+            harness_rpc_policy: None,
         }
     }
 
@@ -125,6 +132,30 @@ impl OperationRequirements {
     }
 
     #[must_use]
+    pub const fn with_planned_connection_rollover(
+        mut self,
+        policy: PlannedConnectionRolloverPolicy,
+    ) -> Self {
+        self.planned_connection_rollover = policy;
+        self
+    }
+
+    #[must_use]
+    pub fn with_interface_versions(
+        mut self,
+        versions: impl IntoIterator<Item = InterfaceVersionBinding>,
+    ) -> Self {
+        self.interface_versions = versions.into_iter().collect();
+        self
+    }
+
+    #[must_use]
+    pub fn with_harness_rpc_policy(mut self, policy: HarnessRpcPolicy) -> Self {
+        self.harness_rpc_policy = Some(policy);
+        self
+    }
+
+    #[must_use]
     pub const fn execution_layer(&self) -> ExecutionLayer {
         self.execution_layer
     }
@@ -189,5 +220,19 @@ impl OperationRequirements {
     #[must_use]
     pub const fn realtime_media(&self) -> Option<&RealtimeMediaRequirements> {
         self.realtime_media.as_ref()
+    }
+
+    #[must_use]
+    pub const fn planned_connection_rollover(&self) -> PlannedConnectionRolloverPolicy {
+        self.planned_connection_rollover
+    }
+
+    pub fn interface_versions(&self) -> impl ExactSizeIterator<Item = &InterfaceVersionBinding> {
+        self.interface_versions.iter()
+    }
+
+    #[must_use]
+    pub const fn harness_rpc_policy(&self) -> Option<&HarnessRpcPolicy> {
+        self.harness_rpc_policy.as_ref()
     }
 }

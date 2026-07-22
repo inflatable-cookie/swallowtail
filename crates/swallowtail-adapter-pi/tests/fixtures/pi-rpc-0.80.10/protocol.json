@@ -1,0 +1,30 @@
+{
+  "package": "@earendil-works/pi-coding-agent",
+  "package_version": "0.80.10",
+  "compatibility_claim": "exact_qualification_point",
+  "transport": "strict-lf-jsonl-stdio",
+  "argv": [
+    "--mode", "rpc",
+    "--no-session",
+    "--offline",
+    "--provider", "fixture-provider",
+    "--model", "fixture-model",
+    "--tools", "read,grep,find,ls",
+    "--no-extensions",
+    "--no-skills",
+    "--no-prompt-templates",
+    "--no-themes",
+    "--no-context-files"
+  ],
+  "startup_commands": [
+    {"type": "set_auto_retry", "enabled": false},
+    {"type": "set_auto_compaction", "enabled": false},
+    {"type": "set_steering_mode", "mode": "one-at-a-time"},
+    {"type": "set_follow_up_mode", "mode": "one-at-a-time"},
+    {"type": "get_state"}
+  ],
+  "maximum_active_operations": 1,
+  "maximum_completed_prompts": 2,
+  "maximum_pending_steering": 1,
+  "maximum_pending_follow_up": 1
+}

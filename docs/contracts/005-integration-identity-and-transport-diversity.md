@@ -38,6 +38,9 @@ are not durable adapter-instance identities.
 - Provider extensions remain namespaced and optional outside the owning driver.
 - Configured-instance capabilities reflect transport, version, account,
   endpoint, and host reality rather than family-wide promises.
+- Adapter, artifact, SDK, wire, service, facade, instance, and route versions
+  remain separate. Contract 029 governs exact qualification points and
+  evidence-backed multi-version claims.
 - Execution layer and access-profile dimensions follow Contract 006 and remain
   independent of family, driver, transport, instance, and model-route identity.
 - Open-weight artifact, serving-runtime, deployment, facade, and route identity

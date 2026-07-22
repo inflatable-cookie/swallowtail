@@ -29,3 +29,4 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [019 Alibaba Model Studio Conversation Selection](019-alibaba-model-studio-conversation-selection.md)
 - [020 Post-Direct Breadth And Realtime Media Selection](020-post-direct-breadth-and-realtime-media-selection.md)
 - [021 Post-Realtime Portability Selection](021-post-realtime-portability-selection.md)
+- [022 Pi RPC And Post-Realtime Provider Coverage Selection](022-pi-rpc-and-post-realtime-provider-coverage-selection.md)

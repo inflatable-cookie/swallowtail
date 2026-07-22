@@ -1,5 +1,7 @@
 use crate::{Deadline, RequestId};
-use swallowtail_core::{RealtimeMediaConfig, SessionProviderStatePolicy};
+use swallowtail_core::{
+    PlannedConnectionRolloverPolicy, RealtimeMediaConfig, SessionProviderStatePolicy,
+};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct OpenRealtimeMediaSessionRequest {
@@ -7,6 +9,7 @@ pub struct OpenRealtimeMediaSessionRequest {
     config: RealtimeMediaConfig,
     deadline: Option<Deadline>,
     provider_state_policy: SessionProviderStatePolicy,
+    planned_connection_rollover: PlannedConnectionRolloverPolicy,
 }
 
 impl OpenRealtimeMediaSessionRequest {
@@ -21,6 +24,7 @@ impl OpenRealtimeMediaSessionRequest {
             config,
             deadline,
             provider_state_policy: SessionProviderStatePolicy::Prohibited,
+            planned_connection_rollover: PlannedConnectionRolloverPolicy::Disabled,
         }
     }
 
@@ -42,5 +46,19 @@ impl OpenRealtimeMediaSessionRequest {
     #[must_use]
     pub const fn provider_state_policy(&self) -> SessionProviderStatePolicy {
         self.provider_state_policy
+    }
+
+    #[must_use]
+    pub const fn with_planned_connection_rollover(
+        mut self,
+        policy: PlannedConnectionRolloverPolicy,
+    ) -> Self {
+        self.planned_connection_rollover = policy;
+        self
+    }
+
+    #[must_use]
+    pub const fn planned_connection_rollover(&self) -> PlannedConnectionRolloverPolicy {
+        self.planned_connection_rollover
     }
 }

@@ -1,6 +1,6 @@
 use crate::{
-    BoxCallbackStream, BoxFuture, CallbackId, Deadline, InputLimitExceeded, RuntimeFailure,
-    RuntimeRunId, RuntimeTurnId,
+    BoxCallbackStream, BoxFuture, CallbackId, Deadline, HarnessUiDialog, InputLimitExceeded,
+    RuntimeFailure, RuntimeRunId, RuntimeTurnId,
 };
 use std::fmt;
 use std::sync::Arc;

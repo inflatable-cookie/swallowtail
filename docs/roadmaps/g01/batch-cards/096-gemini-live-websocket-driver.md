@@ -1,6 +1,6 @@
 # 096 Gemini Live WebSocket Driver
 
-Status: planned
+Status: completed
 Owner: Tom
 Updated: 2026-07-22
 Milestone: `../033-gemini-live-realtime-portability-proof.md`
@@ -35,17 +35,32 @@ contract gap returns to card 095 before network work.
 
 ## Acceptance Criteria
 
-- [ ] exact preflight plan survives both connections, turns, and cleanup
-- [ ] invalid access, preview, route, model, format, activity, or rollover
+- [x] exact preflight plan survives both connections, turns, and cleanup
+- [x] invalid access, preview, route, model, format, activity, or rollover
       posture rejects before provider effects
-- [ ] only frozen client frames are sent and setup completes before input
-- [ ] one successful rollover carries the latest handle with no replay
-- [ ] missing handle, exhausted rollover, replacement failure, and unexpected
+- [x] only frozen client frames are sent and setup completes before input
+- [x] one successful rollover carries the latest handle with no replay
+- [x] missing handle, exhausted rollover, replacement failure, and unexpected
       disconnect fail closed without a fresh session
-- [ ] cancellation and deadline never claim native provider stop
-- [ ] both connection workers and timers join before credential release
-- [ ] authenticated URL, credential, handle, audio, transcript, ids, and frames
+- [x] cancellation and deadline never claim native provider stop
+- [x] both connection workers and timers join before credential release
+- [x] authenticated URL, credential, handle, audio, transcript, ids, and frames
       remain out of stable diagnostics
+
+## Completion Evidence
+
+- a separate `swallowtail.gemini.live` realtime-media descriptor binds the
+  exact preview facade, model, authorization-key profile, asymmetric formats,
+  manual activity, and maximum-one rollover plan
+- production transport uses one host-approved endpoint grant and one secret
+  lease; query authentication exists only inside private WebSocket work
+- the first response retains the latest private handle and `GoAway` warning,
+  confirms replacement setup, switches input, then joins the old worker
+- deterministic loopback proves two turns with two setups and no input replay
+- missing handle, replacement failure, exhausted rollover, disconnect,
+  cancellation, deadline, redaction, and credential-last cleanup pass offline
+- focused Gemini tests pass; doctor remains at the inherited 19 findings with
+  no new oversized file
 
 ## Validation
 
@@ -64,3 +79,6 @@ contract gap returns to card 095 before network work.
 ## Auto-Continuation
 
 No. Prove the exact driver before topology conformance.
+
+Card 097 is ready. It owns unchanged-profile, dual-topology, failure-matrix,
+and full-repository closeout evidence.

@@ -20,6 +20,7 @@ execution-host services.
 - instance ownership mode
 - model-route identity separate from model display metadata
 - safe access profile and dimensional access status
+- exact safe interface-version bindings and qualification-claim identity
 - required host-service kinds
 - parameterized capability requirements and observed constraints
 - driver descriptors and safe discovery outcomes
@@ -155,6 +156,11 @@ Successful preflight produces an immutable execution plan bound to the exact
 driver registration, instance revision, model route, requirements, access
 profile, ownership, and execution host. Execution rejects a stale plan when a
 material bound revision changes.
+
+When an operation requires an executable, package, SDK, wire, service, schema,
+or facade version, preflight binds the exact configured-instance point and
+checks the selected driver's qualified support under Contract 029. A range is
+never substituted for the exact point reached by execution.
 
 The runtime host-service set identifies the execution host that owns its
 services. A driver rejects a service set whose host id differs from the

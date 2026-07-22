@@ -1,0 +1,13 @@
+[package]
+name = "swallowtail-adapter-pi"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Pi RPC adapter for Swallowtail"
+
+[dependencies]
+serde_json = "1"
+
+[lints]
+workspace = true

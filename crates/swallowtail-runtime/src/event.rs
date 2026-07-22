@@ -1,4 +1,4 @@
-use crate::{CallbackId, OperationContent, ProviderObservation};
+use crate::{CallbackId, HarnessUiDisplay, OperationContent, ProviderObservation};
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum EventDelivery {
@@ -18,6 +18,7 @@ pub enum RuntimeEventKind {
     OutputAvailable,
     CallbackRequested(CallbackId),
     ProviderObservation(ProviderObservation),
+    HarnessUiDisplay(HarnessUiDisplay),
 }
 
 impl RuntimeEventKind {
@@ -33,6 +34,7 @@ impl RuntimeEventKind {
             | Self::OutputAvailable
             | Self::CallbackRequested(_)
             | Self::ProviderObservation(_) => EventDelivery::Semantic,
+            Self::HarnessUiDisplay(_) => EventDelivery::Semantic,
         }
     }
 }

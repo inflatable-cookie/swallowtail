@@ -1,3 +1,5 @@
+use crate::HarnessRpcPolicy;
+use crate::InterfaceVersionBinding;
 use crate::access::SupportAuthority;
 use crate::identity::AdapterId;
 use crate::model::{ModelId, ProviderId};
@@ -7,6 +9,7 @@ use crate::runtime_identity::{
     AccessProfileId, ConfiguredInstanceId, ExecutionHostId, InstanceOwnership, InstancePolicyId,
     InstanceRevision, InstanceTargetRef, ModelRouteId, ModelRouteRevision, ProtocolFacadeId,
 };
+use std::collections::BTreeSet;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ConfiguredInstance {
@@ -22,6 +25,8 @@ pub struct ConfiguredInstance {
     policy_id: InstancePolicyId,
     capabilities: CapabilityProfile,
     provider_agent: Option<ProviderAgentBinding>,
+    interface_versions: BTreeSet<InterfaceVersionBinding>,
+    harness_rpc_policy: Option<HarnessRpcPolicy>,
 }
 
 impl ConfiguredInstance {
@@ -53,6 +58,8 @@ impl ConfiguredInstance {
             policy_id,
             capabilities,
             provider_agent: None,
+            interface_versions: BTreeSet::new(),
+            harness_rpc_policy: None,
         }
     }
 
@@ -120,6 +127,35 @@ impl ConfiguredInstance {
     #[must_use]
     pub const fn provider_agent(&self) -> Option<&ProviderAgentBinding> {
         self.provider_agent.as_ref()
+    }
+
+    #[must_use]
+    pub fn with_interface_versions(
+        mut self,
+        versions: impl IntoIterator<Item = InterfaceVersionBinding>,
+    ) -> Self {
+        self.interface_versions = versions.into_iter().collect();
+        self
+    }
+
+    pub fn interface_versions(&self) -> impl ExactSizeIterator<Item = &InterfaceVersionBinding> {
+        self.interface_versions.iter()
+    }
+
+    #[must_use]
+    pub fn has_interface_version(&self, binding: &InterfaceVersionBinding) -> bool {
+        self.interface_versions.contains(binding)
+    }
+
+    #[must_use]
+    pub fn with_harness_rpc_policy(mut self, policy: HarnessRpcPolicy) -> Self {
+        self.harness_rpc_policy = Some(policy);
+        self
+    }
+
+    #[must_use]
+    pub const fn harness_rpc_policy(&self) -> Option<&HarnessRpcPolicy> {
+        self.harness_rpc_policy.as_ref()
     }
 }
 

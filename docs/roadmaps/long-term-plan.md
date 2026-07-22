@@ -119,6 +119,22 @@ maintained SDK and hardening evidence. Cursor's new local SDK remains beta and
 lower-information; its cloud route still requires repository and remote-
 mutation policy.
 
+Roadmap 033 closes with the eighteenth production route and 443 passing tests.
+The unchanged eleventh realtime profile and separate bounded-rollover pack
+pass against Gemini Live production fixtures under both host identities. The
+complete offline matrix preserves warning, handle, replay, failure,
+cancellation, deadline, nonreuse, and two-generation cleanup truth. Roadmap 034
+and card 098 close after Research 022 audits all eighteen descriptors and
+eleven profiles. Pi `0.80.10` RPC is the next proof: a maintained strict-LF
+process protocol with distinct prompt, steering, follow-up, abort, and
+extension-UI relay. Contract 028 keeps downstream provider/model identity
+exact, `AmbientHost` visible, sandboxing optional, retry disabled, and cleanup
+joined. Roadmap 035 and cards 099-101 own records, corpus, production driver,
+and conformance. DeepSeek V4 reasoning/tool continuation is the next direct-
+contract target; it is not authorized as a stateless compatible breadth
+adapter. Remote ACP remains Active but unfinished. Claude subscription-backed
+third-party SDK use and Cursor's public-beta bridge retain explicit gates.
+
 These stages normally become numbered roadmaps inside the active generation.
 They do not each create a generation. A generation rolls over near the 30-50
 roadmap range or through explicit operator-authorized restructuring.

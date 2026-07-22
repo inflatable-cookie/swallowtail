@@ -61,6 +61,7 @@ runtime_identity!(CallbackId, "callback id");
 runtime_identity!(ServingInstanceId, "serving instance id");
 runtime_identity!(ScopeId, "scope id");
 runtime_identity!(MediaStreamId, "media stream id");
+runtime_identity!(HarnessCommandId, "harness command id");
 
 #[cfg(test)]
 mod tests {

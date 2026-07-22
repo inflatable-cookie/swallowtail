@@ -9,6 +9,7 @@ members = [
   "crates/swallowtail-adapter-kimi-platform",
   "crates/swallowtail-adapter-llama-cpp",
   "crates/swallowtail-adapter-opencode",
+  "crates/swallowtail-adapter-pi",
   "crates/swallowtail-adapter-openai",
   "crates/swallowtail-adapter-qwen",
   "crates/swallowtail-adapter-xai",

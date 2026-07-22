@@ -2,7 +2,7 @@ use swallowtail_core::PreflightDimension;
 use swallowtail_testkit::{
     ConformanceAssertion, PreflightFixtureCase, SyntheticProfile,
     assert_preflight_rejection_without_side_effects, run_all_synthetic_profiles,
-    run_structured_harness_native_boundary_assertions,
+    run_harness_rpc_contract_assertions, run_structured_harness_native_boundary_assertions,
 };
 
 const COMMON_ASSERTIONS: [ConformanceAssertion; 14] = [
@@ -125,6 +125,21 @@ fn long_lived_rpc_profile_proves_callback_exchange() {
         .expect("RPC profile report exists");
 
     assert!(rpc.covers(ConformanceAssertion::CallbackExchange));
+}
+
+#[test]
+fn rpc_assertion_pack_proves_scheduling_ui_policy_and_version_without_a_new_profile() {
+    let report = run_harness_rpc_contract_assertions();
+    assert_eq!(report.profile(), SyntheticProfile::LongLivedRpcHarness);
+    for assertion in [
+        ConformanceAssertion::InterfaceVersionQualified,
+        ConformanceAssertion::HarnessPolicyExact,
+        ConformanceAssertion::HarnessScheduling,
+        ConformanceAssertion::CommandAcknowledgement,
+        ConformanceAssertion::HarnessUiRelay,
+    ] {
+        assert!(report.covers(assertion), "missing {assertion:?}");
+    }
 }
 
 #[test]

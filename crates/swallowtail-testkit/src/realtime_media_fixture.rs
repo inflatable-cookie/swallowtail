@@ -1,17 +1,22 @@
 use std::cell::Cell;
-use std::num::{NonZeroU16, NonZeroU32, NonZeroU64};
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessRequirement, AccessStatus, AdapterId, AdapterIdentity,
-    AdapterVersion, AudioEncoding, Capability, CapabilityConstraint, CapabilityProfile,
-    CapabilityRequirement, ConfiguredInstance, ConfiguredInstanceId, CredentialMechanism,
-    CredentialState, DriverDescriptor, DriverRole, EndpointAudience, EndpointAuthorization,
-    EntitlementMetering, EntitlementState, ExecutionHostId, ExecutionLayer, HostServiceKind,
-    InstanceOwnership, InstancePolicyId, InstanceRevision, InstanceTargetRef, IntegrationFamilyId,
-    MediaDirection, MediaFormat, ModelId, ModelRoute, ModelRouteId, ModelRouteRevision,
-    OperationRequirements, OperationShape, PreflightContext, PreflightFailure, PreflightPlan,
-    ProtocolFacadeId, RealtimeMediaConfig, RealtimeMediaRequirements, RuntimeReadiness,
-    SessionAccessPolicy, SupportAuthority, TransportFamilyId, preflight,
+    AdapterVersion, Capability, CapabilityConstraint, CapabilityProfile, CapabilityRequirement,
+    ConfiguredInstance, ConfiguredInstanceId, CredentialMechanism, CredentialState,
+    DriverDescriptor, DriverRole, EndpointAudience, EndpointAuthorization, EntitlementMetering,
+    EntitlementState, ExecutionHostId, ExecutionLayer, HostServiceKind, InstanceOwnership,
+    InstancePolicyId, InstanceRevision, InstanceTargetRef, IntegrationFamilyId, MediaDirection,
+    ModelId, ModelRoute, ModelRouteId, ModelRouteRevision, OperationRequirements, OperationShape,
+    PreflightContext, PreflightFailure, PreflightPlan, ProtocolFacadeId, RealtimeMediaRequirements,
+    RuntimeReadiness, SessionAccessPolicy, SupportAuthority, TransportFamilyId, preflight,
 };
+use swallowtail_runtime::{OpenRealtimeMediaSessionRequest, RequestId};
+
+mod rollover;
+mod shape;
+
+pub(crate) use shape::realtime_media_config;
+use shape::{common_capabilities, host_services};
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum RealtimeMediaPreflightCase {
@@ -25,6 +30,13 @@ pub enum RealtimeMediaPreflightCase {
     WrongChunkBound,
     RejectedAccess,
     MissingHostService,
+    RolloverCanonical,
+    RolloverCapabilityWhileDisabled,
+    RolloverMissingCapability,
+    RolloverMismatchedBound,
+    RolloverZeroBound,
+    RolloverInstanceMissing,
+    RolloverRouteWrongBound,
 }
 
 pub struct RealtimeMediaPreflightFixture {
@@ -61,7 +73,8 @@ impl RealtimeMediaPreflightFixture {
         } else {
             OperationShape::InteractiveSession
         };
-        let advertised = advertised_capabilities(case);
+        let instance_advertised = advertised_capabilities(case, false);
+        let route_advertised = advertised_capabilities(case, true);
         let driver = DriverDescriptor::new(
             AdapterIdentity::new(adapter_id.clone(), valid(AdapterVersion::new, "fixture-v1")),
             valid(IntegrationFamilyId::new, "fixture-realtime-provider"),
@@ -82,7 +95,7 @@ impl RealtimeMediaPreflightFixture {
             SupportAuthority::ProviderSupported,
             valid(ProtocolFacadeId::new, "fixture-realtime-v1"),
             valid(InstancePolicyId::new, "fixture-realtime-policy"),
-            CapabilityProfile::new(advertised.clone()),
+            CapabilityProfile::new(instance_advertised),
         );
         let route_model = if case == RealtimeMediaPreflightCase::WrongModel {
             "fixture-other-model"
@@ -94,7 +107,7 @@ impl RealtimeMediaPreflightFixture {
             valid(ModelRouteRevision::new, "fixture-route-revision-1"),
             instance_id,
             valid(ModelId::new, route_model),
-            CapabilityProfile::new(advertised),
+            CapabilityProfile::new(route_advertised),
         );
         let access_profile = AccessProfile::new(
             profile_id.clone(),
@@ -129,8 +142,9 @@ impl RealtimeMediaPreflightFixture {
         let requirements = OperationRequirements::new(layer, shape, role, host_id, access)
             .with_ownership_modes([InstanceOwnership::ExternalAttached])
             .with_host_services(host_services())
-            .with_capabilities(common_capabilities())
+            .with_capabilities(required_capabilities(case))
             .with_realtime_media(media)
+            .with_planned_connection_rollover(rollover::policy(case))
             .require_model_route();
         let requirements = if shape == OperationShape::InteractiveSession {
             requirements.with_session_access_policy(SessionAccessPolicy::resource_free())
@@ -173,23 +187,22 @@ impl RealtimeMediaPreflightFixture {
     pub fn provider_side_effect_count(&self) -> usize {
         self.provider_side_effects.get()
     }
+
+    #[must_use]
+    pub fn open_request(&self) -> OpenRealtimeMediaSessionRequest {
+        OpenRealtimeMediaSessionRequest::new(
+            valid(RequestId::new, "fixture-realtime-request"),
+            realtime_media_config(),
+            None,
+        )
+        .with_planned_connection_rollover(self.requirements.planned_connection_rollover())
+    }
 }
 
-pub(crate) fn realtime_media_config() -> RealtimeMediaConfig {
-    let format = MediaFormat::audio(
-        AudioEncoding::Pcm16LittleEndian,
-        NonZeroU32::new(24_000).expect("sample rate is nonzero"),
-        NonZeroU16::new(1).expect("channel count is nonzero"),
-    );
-    RealtimeMediaConfig::new(
-        format,
-        format,
-        NonZeroU64::new(32_768).expect("chunk bound is nonzero"),
-        NonZeroU32::new(2).expect("turn bound is nonzero"),
-    )
-}
-
-fn advertised_capabilities(case: RealtimeMediaPreflightCase) -> Vec<CapabilityRequirement> {
+fn advertised_capabilities(
+    case: RealtimeMediaPreflightCase,
+    route: bool,
+) -> Vec<CapabilityRequirement> {
     let config = realtime_media_config();
     let mut media: Vec<_> = config
         .capability_requirement()
@@ -215,30 +228,18 @@ fn advertised_capabilities(case: RealtimeMediaPreflightCase) -> Vec<CapabilityRe
     }
     let mut capabilities = common_capabilities();
     capabilities.push(CapabilityRequirement::new(Capability::RealtimeMedia, media));
+    if let Some(capability) = rollover::advertised_capability(case, route) {
+        capabilities.push(capability);
+    }
     capabilities
 }
 
-fn common_capabilities() -> Vec<CapabilityRequirement> {
-    vec![
-        CapabilityRequirement::new(Capability::StreamingEvents, []),
-        CapabilityRequirement::new(Capability::UsageReporting, []),
-        CapabilityRequirement::new(
-            Capability::Interruption,
-            [CapabilityConstraint::CancellationScope(
-                swallowtail_core::CancellationScope::ActiveResponse,
-            )],
-        ),
-    ]
-}
-
-fn host_services() -> [HostServiceKind; 5] {
-    [
-        HostServiceKind::Task,
-        HostServiceKind::BlockingWork,
-        HostServiceKind::Time,
-        HostServiceKind::Network,
-        HostServiceKind::Credential,
-    ]
+fn required_capabilities(case: RealtimeMediaPreflightCase) -> Vec<CapabilityRequirement> {
+    let mut capabilities = common_capabilities();
+    if let Some(capability) = rollover::required_capability(case) {
+        capabilities.push(capability);
+    }
+    capabilities
 }
 
 fn valid<T, E>(constructor: impl FnOnce(String) -> Result<T, E>, value: &str) -> T

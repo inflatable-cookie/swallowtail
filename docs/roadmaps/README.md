@@ -11,9 +11,9 @@ shape.
 
 ## Next Task
 
-Execute [card 095](g01/batch-cards/095-realtime-rollover-records-and-gemini-corpus.md):
-realize the explicit bounded-rollover records and assertion pack, then freeze
-the exact Gemini Live preview raw-WebSocket corpus before production transport.
+Execute [card 100](g01/batch-cards/100-pi-rpc-production-driver.md): implement
+the Pi `0.80.10` process driver against the qualified strict-LF corpus and
+shared scheduling, UI-relay, ambient-policy, and version bindings.
 
 ## Index
 

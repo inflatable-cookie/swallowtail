@@ -1,4 +1,5 @@
 use super::capability::validate_capabilities;
+use super::planned_connection_rollover::validate_planned_connection_rollover;
 use super::realtime_media::validate_realtime_media;
 use super::session_access::validate_session_access;
 use super::session_provider_state::validate_session_provider_state;
@@ -53,6 +54,8 @@ pub(super) fn validate(
     }
 
     validate_access(context, requirements)?;
+    validate_interface_versions(context, requirements)?;
+    validate_harness_rpc_policy(context, requirements)?;
     validate_route(context, requirements)?;
     validate_artifact(context, requirements)?;
     validate_host_services(context, requirements)?;
@@ -60,6 +63,7 @@ pub(super) fn validate(
     validate_session_access(requirements)?;
     validate_session_provider_state(requirements)?;
     validate_realtime_media(context, requirements)?;
+    validate_planned_connection_rollover(requirements)?;
     validate_capabilities(context, requirements)?;
 
     for namespace in requirements.extension_namespaces() {
@@ -67,6 +71,57 @@ pub(super) fn validate(
             return Err(failure(
                 PreflightDimension::Extension,
                 format!("Required extension '{}' is unsupported", namespace.as_str()),
+            ));
+        }
+    }
+    Ok(())
+}
+
+fn validate_harness_rpc_policy(
+    context: &PreflightContext<'_>,
+    requirements: &OperationRequirements,
+) -> Result<(), PreflightFailure> {
+    let Some(required) = requirements.harness_rpc_policy() else {
+        return Ok(());
+    };
+    if requirements.execution_layer() != ExecutionLayer::HarnessInteraction
+        || requirements.operation_shape() != OperationShape::InteractiveSession
+    {
+        return Err(failure(
+            PreflightDimension::HarnessRpcPolicy,
+            "Harness RPC policy requires an interactive harness operation",
+        ));
+    }
+    if context.instance.harness_rpc_policy() != Some(required) {
+        return Err(failure(
+            PreflightDimension::HarnessRpcPolicy,
+            "Configured instance does not match the required harness RPC policy",
+        ));
+    }
+    Ok(())
+}
+
+fn validate_interface_versions(
+    context: &PreflightContext<'_>,
+    requirements: &OperationRequirements,
+) -> Result<(), PreflightFailure> {
+    for required in requirements.interface_versions() {
+        if !context.instance.has_interface_version(required) {
+            return Err(failure(
+                PreflightDimension::InterfaceVersion,
+                format!(
+                    "Configured instance does not bind required interface axis '{}'",
+                    required.axis().as_str()
+                ),
+            ));
+        }
+        if !context.driver.supports_interface_version(required) {
+            return Err(failure(
+                PreflightDimension::InterfaceVersion,
+                format!(
+                    "Selected driver is not qualified for interface axis '{}'",
+                    required.axis().as_str()
+                ),
             ));
         }
     }

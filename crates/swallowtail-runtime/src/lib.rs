@@ -15,6 +15,7 @@ mod event_buffer;
 mod event_channel;
 mod failure;
 mod handles;
+mod harness_rpc;
 mod host_reference;
 mod host_registry;
 mod host_traits;
@@ -24,6 +25,7 @@ mod model_artifact;
 mod network;
 mod operation_policy;
 mod outcome;
+mod planned_connection_rollover;
 mod process_input;
 mod process_io;
 mod provider_observation;
@@ -62,6 +64,10 @@ pub use handles::{
     AttachedServingHandle, InteractiveSessionHandle, OwnedServingHandle,
     RealtimeMediaResponseHandle, RealtimeMediaSessionHandle, RunHandle, TurnHandle,
 };
+pub use harness_rpc::{
+    HarnessCommandAcknowledgement, HarnessCommandResponse, HarnessScheduledMessage,
+    HarnessUiDialog, HarnessUiDialogKind, HarnessUiDisplay, HarnessUiDisplayKind,
+};
 pub use host_reference::{
     AttachmentRef, EndpointRef, EnvironmentRef, ExecutableRef, MaterializedFileRef,
     MaterializedModelArtifactRef, MaterializedResourceRef, SchemaRef, WorkingResourceRef,
@@ -73,8 +79,8 @@ pub use host_traits::{
     SchemaService, ScopedTaskService, TimeService, WorkingResourceService,
 };
 pub use identity::{
-    CallbackId, MediaStreamId, RequestId, RuntimeIdentityRequired, RuntimeRunId, RuntimeSessionId,
-    RuntimeTurnId, ScopeId, ServingInstanceId,
+    CallbackId, HarnessCommandId, MediaStreamId, RequestId, RuntimeIdentityRequired, RuntimeRunId,
+    RuntimeSessionId, RuntimeTurnId, ScopeId, ServingInstanceId,
 };
 pub use input::{InputLimitExceeded, InputValueRequired};
 pub use model_artifact::{ModelArtifactAccess, ModelArtifactLease, ModelArtifactService};
@@ -88,6 +94,7 @@ pub use outcome::{
     RemoteResourceDeletionOutcome, TerminalAlreadySet, TerminalOutcome, TerminalOutcomeFuture,
     TerminalOutcomeSender, TerminalStatus, terminal_outcome_channel,
 };
+pub use planned_connection_rollover::validate_planned_connection_rollover_plan;
 pub use process_input::ProcessRequest;
 pub use process_io::{ProcessExit, ProcessInputChunk, ProcessOutputChunk, ProcessOutputStream};
 pub use provider_observation::{
@@ -121,9 +128,10 @@ pub use swallowtail_core::{
     CredentialRef, ExternalNetworkPolicy, ExternalSearchPolicy, FilesystemBoundary,
     HarnessIsolation, IncompatibleSessionAccessPolicy, ModelArtifactBinding,
     ModelArtifactDescriptor, ModelArtifactDigest, ModelArtifactFormat, ModelArtifactId,
-    ModelArtifactRef, ModelArtifactRevision, OwnedRemoteResourceKind, ProviderApprovalPolicy,
-    ProviderRequestHandling, ProviderRequestPolicy, ResourceAccess, ResourceRepresentation,
-    SessionAccessPolicy, SessionProviderStatePolicy,
+    ModelArtifactRef, ModelArtifactRevision, OwnedRemoteResourceKind,
+    PlannedConnectionRolloverPolicy, ProviderApprovalPolicy, ProviderRequestHandling,
+    ProviderRequestPolicy, ResourceAccess, ResourceRepresentation, SessionAccessPolicy,
+    SessionProviderStatePolicy,
 };
 pub use time::{Deadline, DeadlineObservation, MonotonicInstant};
 pub use working_resource_io::{

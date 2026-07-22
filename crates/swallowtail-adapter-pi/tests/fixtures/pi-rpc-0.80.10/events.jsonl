@@ -1,0 +1,8 @@
+{"type":"agent_start"}
+{"type":"turn_start"}
+{"type":"message_start","message":{"role":"assistant","content":[]}}
+{"type":"message_update","message":{"role":"assistant","content":[]},"assistantMessageEvent":{"type":"text_delta","contentIndex":0,"delta":"fixture","partial":{}}}
+{"type":"queue_update","steering":["fixture steering"],"followUp":["fixture follow-up"]}
+{"type":"turn_end","message":{"role":"assistant","content":[]},"toolResults":[]}
+{"type":"agent_end","messages":[],"willRetry":false}
+{"type":"agent_settled"}

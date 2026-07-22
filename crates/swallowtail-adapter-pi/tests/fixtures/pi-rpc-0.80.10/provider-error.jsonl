@@ -1,0 +1,3 @@
+{"type":"message_end","message":{"role":"assistant","content":[],"stopReason":"error","errorMessage":"fixture provider failure"}}
+{"type":"agent_end","messages":[],"willRetry":false}
+{"type":"agent_settled"}

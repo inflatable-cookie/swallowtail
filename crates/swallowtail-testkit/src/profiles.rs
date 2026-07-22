@@ -65,6 +65,14 @@ pub enum ConformanceAssertion {
     RealtimeMediaBoundary,
     RealtimeMediaOrdering,
     RealtimeMediaInterruptionEndsSession,
+    PlannedConnectionRollover,
+    RolloverNoReplay,
+    RolloverCleanupOrdered,
+    InterfaceVersionQualified,
+    HarnessPolicyExact,
+    HarnessScheduling,
+    CommandAcknowledgement,
+    HarnessUiRelay,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -116,6 +124,11 @@ pub fn run_long_lived_rpc_profile() -> ConformanceReport {
 }
 
 #[must_use]
+pub fn run_harness_rpc_contract_assertions() -> ConformanceReport {
+    crate::profile_harness_rpc_contract::run()
+}
+
+#[must_use]
 pub fn run_long_lived_acp_profile() -> ConformanceReport {
     crate::profile_acp::run()
 }
@@ -138,6 +151,11 @@ pub fn run_connection_scoped_direct_session_profile() -> ConformanceReport {
 #[must_use]
 pub fn run_realtime_media_direct_session_profile() -> ConformanceReport {
     crate::profile_realtime_media::run()
+}
+
+#[must_use]
+pub fn run_realtime_rollover_boundary_assertions() -> ConformanceReport {
+    crate::profile_realtime_rollover::run()
 }
 
 #[must_use]

@@ -1,6 +1,6 @@
 # 095 Realtime Rollover Records And Gemini Corpus
 
-Status: ready
+Status: completed
 Owner: Tom
 Updated: 2026-07-22
 Milestone: `../033-gemini-live-realtime-portability-proof.md`
@@ -56,17 +56,29 @@ policy remains unresolved in the bounded subset.
 
 ## Acceptance Criteria
 
-- [ ] planned rollover is distinct from resume, reconnect, reattachment,
+- [x] planned rollover is distinct from resume, reconnect, reattachment,
       recovery, retry, and durable state
-- [ ] disabled remains the default for every existing driver and request
-- [ ] one positive bound is visible before provider effects
-- [ ] handles are private, replaceable, redacted, and operation-scoped
-- [ ] the common realtime role and eleven existing profiles do not widen
-- [ ] the corpus fixes exact setup, manual activity, formats, voice, thinking,
+- [x] disabled remains the default for every existing driver and request
+- [x] one positive bound is visible before provider effects
+- [x] handles are private, replaceable, redacted, and operation-scoped
+- [x] the common realtime role and eleven existing profiles do not widen
+- [x] the corpus fixes exact setup, manual activity, formats, voice, thinking,
       usage, warning, handle, and terminal semantics
-- [ ] raw authenticated URLs, keys, handles, audio, transcripts, provider ids,
+- [x] raw authenticated URLs, keys, handles, audio, transcripts, provider ids,
       and payloads remain outside stable diagnostics
-- [ ] no live provider or credential state enters default QA
+- [x] no live provider or credential state enters default QA
+
+## Completion Evidence
+
+- core exposes a disabled-or-positive-bounded planned-rollover policy, exact
+  capability constraint, and dedicated pure-preflight rejection dimension
+- realtime open requests bind the same policy to their immutable plan
+- the existing realtime profile has a separate rollover assertion pack; the
+  synthetic profile count remains eleven
+- Gemini owns a dated test-only raw-WebSocket codec corpus and private
+  zeroizing handle fixture; no production transport was added
+- focused core, runtime, testkit, Gemini, and unchanged OpenAI tests pass
+- focused warnings-denied clippy, docs QA, and diff checks pass
 
 ## Evidence Required
 

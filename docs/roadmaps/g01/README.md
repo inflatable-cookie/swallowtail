@@ -627,10 +627,48 @@ cross-adapter adoption without prematurely stabilizing the public API.
 - Research 021 selects Gemini Live preview; Contract 027 separates one
   opt-in planned connection rollover from reconnect, reattachment, retry,
   consumer resume, and durable provider state
-- roadmap 033 and cards 095-097 own exact Gemini Live records, corpus, driver,
-  portability conformance, and closeout; card 095 is the sole ready task
-- Grok Build remains later harness breadth; remote ACP remains behind
-  implementation and hardening evidence; Cursor remains beta and policy-heavy
+- card 095 realizes exact disabled-or-bounded rollover records, immutable
+  preflight/request agreement, and a provider-neutral assertion pack over the
+  unchanged eleventh profile
+- the dated Gemini Live corpus freezes preview setup, asymmetric audio, manual
+  activity, output, usage, resumption, GoAway, drift, failure, and private
+  zeroizing-handle behavior without production transport
+- the separate production Gemini Live driver binds the exact preview plan to
+  host-approved raw WebSocket and authorization-key access, manual activity,
+  two serial turns, one private-handle rollover, local-only interruption, and
+  joined credential-last cleanup
+- deterministic loopback proves setup-before-input, no replay, replacement
+  failure, missing handle, rollover exhaustion, disconnect, cancellation,
+  deadline, warning retention, and safe diagnostics without live access
+- the unchanged realtime profile and separate bounded-rollover assertion pack
+  pass against production without provider branches or a twelfth profile
+- local and remote-authoritative loopback proves exact plan identity, latest-
+  handle handoff, no replay, distinct failure truth, nonreuse, and ordered
+  timer/task/two-connection cleanup before credential release
+- roadmap 033 and cards 095-097 are complete; full repository QA passes 443
+  tests, three gated probes remain ignored, and doctor remains at the inherited
+  19 findings
+- roadmap 034 and card 098 are complete with Research 022's full candidate,
+  access, maturity, and runtime-pressure audit
+- Contract 028 separates prompt, steering, follow-up, command acknowledgement,
+  extension UI, downstream provider/model identity, ambient authority, retry,
+  and joined cleanup
+- Contract 029 separates exact interface observations from maintained driver
+  windows with baseline, latest-qualified boundary, behavior milestones,
+  deprecation states, and exclusions; unsupported versions fail preflight
+  without fallback
+- card 099 realizes exact version binding, restrictive RPC policy, scheduling,
+  maintained-window classification, acknowledgement, bounded UI records, a
+  separate assertion pack over the unchanged eleven profiles, and the frozen
+  Pi `0.80.10` strict-LF corpus
+- 129 focused core, runtime, testkit, and Pi tests pass without an installed
+  harness, credential, container, or provider request
+- workspace all-target check and focused warnings-denied clippy pass; doctor
+  remains at the inherited 19 findings with no new oversized file
+- roadmap 035 is active; card 100 is the sole ready Pi production-driver task
+- DeepSeek V4 reasoning/tool continuation is the next direct-contract target;
+  Grok Build and Z.AI remain later breadth; remote ACP, Claude subscription
+  access, and Cursor SDK retain explicit maturity or authority gates
 
 ## Milestones
 
@@ -682,7 +720,10 @@ cross-adapter adoption without prematurely stabilizing the public API.
 - [032 Post-Realtime Coverage Checkpoint](032-post-realtime-coverage-checkpoint.md)
   — completed
 - [033 Gemini Live Realtime Portability Proof](033-gemini-live-realtime-portability-proof.md)
-  — active
+  — completed
+- [034 Post-Gemini-Live Coverage Checkpoint](034-post-gemini-live-coverage-checkpoint.md)
+  — completed
+- [035 Pi RPC Harness Proof](035-pi-rpc-harness-proof.md) — active
 
 ## Batch Shape
 
@@ -722,6 +763,9 @@ cross-adapter adoption without prematurely stabilizing the public API.
   lane
 - card 094 closes the post-realtime provider-coverage checkpoint
 - cards 095-097 form the Gemini Live rollover records, driver, and portability
+  conformance lane
+- card 098 closes the post-Gemini-Live provider-coverage checkpoint
+- cards 099-101 form the Pi RPC records, production-driver, and scheduling-
   conformance lane
 
 Run validation after each complete batch, not after each small card.

@@ -1,6 +1,10 @@
 use crate::diagnostic::SafeDiagnostic;
 use crate::event::ExtensionNamespace;
 use crate::identity::AdapterIdentity;
+use crate::interface_version::{
+    InterfaceCompatibilityClaim, InterfaceCompatibilityMatch, InterfaceVersionAxis,
+    InterfaceVersionBinding,
+};
 use crate::runtime_identity::{
     DriverRole, ExecutionLayer, HostServiceKind, IntegrationFamilyId, OperationShape,
     TransportFamilyId,
@@ -32,6 +36,7 @@ pub struct DriverDescriptor {
     discovery_actions: BTreeSet<DiscoveryAction>,
     sign_in_actions: BTreeSet<SignInAction>,
     extension_namespaces: BTreeSet<ExtensionNamespace>,
+    interface_compatibility: BTreeMap<InterfaceVersionAxis, InterfaceCompatibilityClaim>,
 }
 
 impl DriverDescriptor {
@@ -52,6 +57,7 @@ impl DriverDescriptor {
             discovery_actions: BTreeSet::new(),
             sign_in_actions: BTreeSet::new(),
             extension_namespaces: BTreeSet::new(),
+            interface_compatibility: BTreeMap::new(),
         }
     }
 
@@ -115,6 +121,13 @@ impl DriverDescriptor {
     }
 
     #[must_use]
+    pub fn with_interface_compatibility(mut self, claim: InterfaceCompatibilityClaim) -> Self {
+        self.interface_compatibility
+            .insert(claim.axis().clone(), claim);
+        self
+    }
+
+    #[must_use]
     pub const fn identity(&self) -> &AdapterIdentity {
         &self.identity
     }
@@ -166,6 +179,31 @@ impl DriverDescriptor {
 
     pub fn sign_in_actions(&self) -> impl ExactSizeIterator<Item = SignInAction> + '_ {
         self.sign_in_actions.iter().copied()
+    }
+
+    #[must_use]
+    pub fn interface_compatibility(
+        &self,
+        axis: &InterfaceVersionAxis,
+    ) -> Option<&InterfaceCompatibilityClaim> {
+        self.interface_compatibility.get(axis)
+    }
+
+    #[must_use]
+    pub fn supports_interface_version(&self, binding: &InterfaceVersionBinding) -> bool {
+        self.interface_compatibility
+            .get(binding.axis())
+            .is_some_and(|claim| claim.supports(binding.version()))
+    }
+
+    #[must_use]
+    pub fn classify_interface_version(
+        &self,
+        binding: &InterfaceVersionBinding,
+    ) -> Option<InterfaceCompatibilityMatch> {
+        self.interface_compatibility
+            .get(binding.axis())
+            .and_then(|claim| claim.classify(binding.version()))
     }
 }
 

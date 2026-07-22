@@ -1,0 +1,5 @@
+{"id":"prompt-1","type":"response","command":"prompt","success":true}
+{"id":"steer-1","type":"response","command":"steer","success":true}
+{"id":"follow-up-1","type":"response","command":"follow_up","success":true}
+{"id":"abort-1","type":"response","command":"abort","success":true}
+{"id":"prompt-busy","type":"response","command":"prompt","success":false,"error":"streamingBehavior required while active"}

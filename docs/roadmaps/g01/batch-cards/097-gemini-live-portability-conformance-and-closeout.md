@@ -1,6 +1,6 @@
 # 097 Gemini Live Portability Conformance And Closeout
 
-Status: planned
+Status: completed
 Owner: Tom
 Updated: 2026-07-22
 Milestone: `../033-gemini-live-realtime-portability-proof.md`
@@ -31,16 +31,33 @@ protocol and lifecycle fixtures.
 
 ## Acceptance Criteria
 
-- [ ] both topologies preserve exact instance, host, audience, access, preview,
+- [x] both topologies preserve exact instance, host, audience, access, preview,
       route, model, formats, rollover, and cleanup truth
-- [ ] the first turn, handoff, and second turn contain no replay or sequence
+- [x] the first turn, handoff, and second turn contain no replay or sequence
       ambiguity
-- [ ] provider warning, rollover failure, disconnect, cancellation, deadline,
+- [x] provider warning, rollover failure, disconnect, cancellation, deadline,
       and provider failure remain distinct
-- [ ] handles remain private and interrupted or uncertain sessions cannot be
+- [x] handles remain private and interrupted or uncertain sessions cannot be
       reused
-- [ ] OpenAI realtime and all prior production drivers remain passing
-- [ ] roadmap 033 closes with one sole next task
+- [x] OpenAI realtime and all prior production drivers remain passing
+- [x] roadmap 033 closes with one sole next task
+
+## Completion Evidence
+
+- the unchanged eleventh realtime profile passes with no Gemini branch and the
+  bounded-rollover assertions remain a separate provider-neutral pack
+- production loopback passes exact two-generation lifecycle under local and
+  remote-authoritative execution-host identities
+- the first response accepts multiple handle observations, retains only the
+  latest, completes after `GoAway`, and hands off without replay
+- missing handle, replacement failure, second warning, provider failure,
+  unknown event, format drift, disconnect, cancellation, deadline, nonreuse,
+  and cleanup failure remain distinct
+- normal and failed cleanup join response tasks, timers, and both blocking
+  connection generations before the sole credential release
+- `effigy qa` passes all 443 runnable repository tests, formatting, workspace
+  checks, warnings-denied clippy, and docs QA; three gated probes remain ignored
+- doctor remains at the inherited 19 findings with no new oversized file
 
 ## Validation
 

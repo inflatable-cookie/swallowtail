@@ -1,0 +1,192 @@
+use crate::failure::failure;
+use crate::live_protocol::{ServerEvent, parse_server_frame};
+use futures_channel::{mpsc, oneshot};
+use std::net::{Shutdown, TcpStream};
+use std::sync::mpsc as sync_mpsc;
+use std::sync::{Arc, Mutex};
+use swallowtail_runtime::RuntimeFailure;
+use tungstenite::{Error, Message};
+
+mod transport;
+
+use transport::{Socket, open_socket};
+
+const UPDATE_CAPACITY: usize = 32;
+
+pub(super) enum WorkerUpdate {
+    Event(ServerEvent),
+    Failed(RuntimeFailure),
+    Disconnected,
+}
+
+enum WorkerCommand {
+    Send(String, oneshot::Sender<Result<(), RuntimeFailure>>),
+    Close(oneshot::Sender<()>),
+}
+
+pub(super) struct ConnectionWorker {
+    socket: Socket,
+    commands: sync_mpsc::Receiver<WorkerCommand>,
+    updates: mpsc::Sender<WorkerUpdate>,
+}
+
+#[derive(Clone)]
+pub(super) struct WorkerHandle {
+    commands: sync_mpsc::Sender<WorkerCommand>,
+    updates: Arc<Mutex<Option<mpsc::Receiver<WorkerUpdate>>>>,
+    closer: SocketCloser,
+}
+
+#[derive(Clone)]
+struct SocketCloser(Arc<Mutex<Option<TcpStream>>>);
+
+impl SocketCloser {
+    fn shutdown(&self) {
+        if let Some(stream) = self.0.lock().expect("closer lock poisoned").take() {
+            let _ = stream.shutdown(Shutdown::Both);
+        }
+    }
+}
+
+impl ConnectionWorker {
+    pub(super) fn open(
+        endpoint: &str,
+        secret: &[u8],
+    ) -> Result<(Self, WorkerHandle), RuntimeFailure> {
+        let (socket, control) = open_socket(endpoint, secret)?;
+        let closer = SocketCloser(Arc::new(Mutex::new(Some(control))));
+        let (command_sender, commands) = sync_mpsc::channel();
+        let (updates, update_receiver) = mpsc::channel(UPDATE_CAPACITY);
+        let handle = WorkerHandle {
+            commands: command_sender,
+            updates: Arc::new(Mutex::new(Some(update_receiver))),
+            closer,
+        };
+        Ok((
+            Self {
+                socket,
+                commands,
+                updates,
+            },
+            handle,
+        ))
+    }
+
+    pub(super) fn run(mut self) -> Result<(), RuntimeFailure> {
+        loop {
+            match self.commands.try_recv() {
+                Ok(WorkerCommand::Send(frame, acknowledgement)) => {
+                    let result = self
+                        .socket
+                        .send(Message::Text(frame.into()))
+                        .map_err(|_| disconnected());
+                    let failed = result.is_err();
+                    let _ = acknowledgement.send(result);
+                    if failed {
+                        return Err(disconnected());
+                    }
+                    continue;
+                }
+                Ok(WorkerCommand::Close(acknowledgement)) => {
+                    let _ = self.socket.close(None);
+                    let _ = acknowledgement.send(());
+                    return Ok(());
+                }
+                Err(sync_mpsc::TryRecvError::Disconnected) => return Ok(()),
+                Err(sync_mpsc::TryRecvError::Empty) => {}
+            }
+            match self.socket.read() {
+                Ok(Message::Text(frame)) => match parse_server_frame(frame.as_bytes()) {
+                    Ok(events) => {
+                        for event in events {
+                            if self.updates.try_send(WorkerUpdate::Event(event)).is_err() {
+                                return Err(ingress_overflow());
+                            }
+                        }
+                    }
+                    Err(error) => {
+                        let _ = self.updates.try_send(WorkerUpdate::Failed(error));
+                        return Ok(());
+                    }
+                },
+                Ok(Message::Ping(bytes)) => self
+                    .socket
+                    .send(Message::Pong(bytes))
+                    .map_err(|_| disconnected())?,
+                Ok(Message::Pong(_)) => {}
+                Ok(Message::Close(_)) => {
+                    let _ = self.updates.try_send(WorkerUpdate::Disconnected);
+                    return Ok(());
+                }
+                Ok(Message::Binary(_) | Message::Frame(_)) => {
+                    let _ = self.updates.try_send(WorkerUpdate::Failed(failure(
+                        "swallowtail.gemini.live_frame_type_rejected",
+                        "Gemini Live returned an unsupported frame type",
+                    )));
+                    return Ok(());
+                }
+                Err(Error::Io(error))
+                    if matches!(
+                        error.kind(),
+                        std::io::ErrorKind::WouldBlock | std::io::ErrorKind::TimedOut
+                    ) => {}
+                Err(Error::ConnectionClosed | Error::AlreadyClosed) => {
+                    let _ = self.updates.try_send(WorkerUpdate::Disconnected);
+                    return Ok(());
+                }
+                Err(_) => {
+                    let _ = self.updates.try_send(WorkerUpdate::Disconnected);
+                    return Ok(());
+                }
+            }
+        }
+    }
+}
+
+impl WorkerHandle {
+    pub(super) fn same_connection(&self, other: &Self) -> bool {
+        Arc::ptr_eq(&self.updates, &other.updates)
+    }
+
+    pub(super) fn take_updates(&self) -> Option<mpsc::Receiver<WorkerUpdate>> {
+        self.updates.lock().expect("updates lock poisoned").take()
+    }
+
+    pub(super) async fn send(&self, event: serde_json::Value) -> Result<(), RuntimeFailure> {
+        let (sender, receiver) = oneshot::channel();
+        self.commands
+            .send(WorkerCommand::Send(event.to_string(), sender))
+            .map_err(|_| disconnected())?;
+        receiver.await.map_err(|_| disconnected())?
+    }
+
+    pub(super) async fn close(&self) -> Result<(), RuntimeFailure> {
+        let (sender, receiver) = oneshot::channel();
+        if self.commands.send(WorkerCommand::Close(sender)).is_err() {
+            self.closer.shutdown();
+            return Ok(());
+        }
+        if receiver.await.is_err() {
+            self.closer.shutdown();
+        }
+        Ok(())
+    }
+
+    pub(super) fn abort(&self) {
+        self.closer.shutdown();
+    }
+}
+
+fn disconnected() -> RuntimeFailure {
+    failure(
+        "swallowtail.gemini.live_disconnected",
+        "Gemini Live connection ended before terminal response truth",
+    )
+}
+
+fn ingress_overflow() -> RuntimeFailure {
+    failure(
+        "swallowtail.gemini.live_ingress_overflow",
+        "Gemini Live event ingress exceeded its bounded capacity",
+    )
+}

@@ -1,18 +1,20 @@
+use std::num::NonZeroU32;
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessRequirement, AccessStatus, AdapterId, AdapterIdentity,
     AdapterVersion, ConfiguredInstance, ConfiguredInstanceId, DriverDescriptor, EndpointAudience,
-    EndpointAuthorization, EntitlementState, ExecutionHostId, ExtensionNamespace, HostServiceKind,
-    InstancePolicyId, InstanceRevision, InstanceTargetRef, IntegrationFamilyId,
-    ModelArtifactBinding, ModelId, ModelRoute, ModelRouteId, ModelRouteRevision,
-    OperationRequirements, PreflightContext, PreflightFailure, PreflightPlan, ProtocolFacadeId,
-    ProviderAgentBinding, ProviderAgentId, ProviderAgentVersion, RuntimeReadiness,
-    SupportAuthority, TransportFamilyId, preflight,
+    EndpointAuthorization, EntitlementState, ExecutionHostId, ExtensionNamespace, HarnessRpcPolicy,
+    HarnessSchedulingBounds, HostServiceKind, InstancePolicyId, InstanceRevision,
+    InstanceTargetRef, IntegrationFamilyId, ModelArtifactBinding, ModelId, ModelRoute,
+    ModelRouteId, ModelRouteRevision, OperationRequirements, PreflightContext, PreflightFailure,
+    PreflightPlan, ProtocolFacadeId, ProviderAgentBinding, ProviderAgentId, ProviderAgentVersion,
+    RuntimeReadiness, SupportAuthority, TransportFamilyId, preflight,
 };
 
 use crate::{SyntheticProfile, profile_shape::ProfileShape};
 
 mod artifact;
 mod capabilities;
+mod interface_version;
 mod managed;
 
 pub(crate) struct ProfilePreflightFixture {
@@ -137,6 +139,10 @@ impl ProfilePreflightFixture {
         }
     }
 
+    pub(crate) fn require_harness_rpc_policy(&mut self, policy: HarnessRpcPolicy) {
+        self.requirements = self.requirements.clone().with_harness_rpc_policy(policy);
+    }
+
     pub(crate) fn preflight(&self) -> Result<PreflightPlan, PreflightFailure> {
         preflight(&self.context(), &self.requirements)
     }
@@ -182,6 +188,15 @@ impl ProfilePreflightFixture {
     pub(crate) const fn artifact(&self) -> Option<&ModelArtifactBinding> {
         self.artifact.as_ref()
     }
+}
+
+pub(crate) fn restrictive_rpc_policy() -> HarnessRpcPolicy {
+    HarnessRpcPolicy::restrictive(HarnessSchedulingBounds::new(
+        NonZeroU32::new(1).unwrap(),
+        NonZeroU32::new(2).unwrap(),
+        NonZeroU32::new(1).unwrap(),
+        NonZeroU32::new(1).unwrap(),
+    ))
 }
 
 fn extension_namespace() -> ExtensionNamespace {

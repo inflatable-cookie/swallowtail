@@ -97,6 +97,11 @@
 - `092-openai-realtime-websocket-driver.md`
 - `093-realtime-media-conformance-and-closeout.md`
 - `094-post-realtime-provider-coverage-evidence.md`
+- `095-realtime-rollover-records-and-gemini-corpus.md`
+- `096-gemini-live-websocket-driver.md`
+- `097-gemini-live-portability-conformance-and-closeout.md`
+- `098-post-gemini-live-provider-coverage-evidence.md`
+- `099-pi-rpc-contract-records-and-corpus.md`
 
 ## Blocked
 
@@ -104,9 +109,8 @@ None.
 
 ## Ready
 
-- `095-realtime-rollover-records-and-gemini-corpus.md`
+- `100-pi-rpc-production-driver.md`
 
 ## Planned
 
-- `096-gemini-live-websocket-driver.md`
-- `097-gemini-live-portability-conformance-and-closeout.md`
+- `101-pi-rpc-scheduling-conformance-and-closeout.md`

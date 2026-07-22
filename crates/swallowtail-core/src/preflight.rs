@@ -1,22 +1,18 @@
+use crate::ModelArtifactBinding;
 use crate::access::{AccessProfile, AccessStatus};
 use crate::diagnostic::SafeDiagnostic;
 use crate::instance::{ConfiguredInstance, ModelRoute};
 use crate::registration::DriverDescriptor;
 use crate::requirement::OperationRequirements;
-use crate::runtime_identity::{
-    AccessProfileId, ConfiguredInstanceId, ExecutionHostId, HostServiceKind, InstanceOwnership,
-    InstanceRevision, InstanceTargetRef, ModelRouteId,
-};
-use crate::{
-    AdapterIdentity, CredentialMechanism, CredentialRef, EndpointAudience, ModelArtifactBinding,
-    ModelId, ProviderAgentBinding, ProviderId,
-};
+use crate::runtime_identity::HostServiceKind;
 use std::collections::BTreeSet;
 use std::error::Error;
 use std::fmt;
 
 mod artifact;
 mod capability;
+mod plan;
+mod planned_connection_rollover;
 mod realtime_media;
 mod session_access;
 mod session_provider_state;
@@ -82,6 +78,9 @@ pub enum PreflightDimension {
     SessionAccess,
     SessionProviderState,
     RealtimeMedia,
+    PlannedConnectionRollover,
+    InterfaceVersion,
+    HarnessRpcPolicy,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -145,100 +144,6 @@ impl PlanBinding {
 pub struct PreflightPlan {
     binding: PlanBinding,
     requirements: OperationRequirements,
-}
-
-impl PreflightPlan {
-    #[must_use]
-    pub const fn driver_identity(&self) -> &AdapterIdentity {
-        self.binding.driver.identity()
-    }
-
-    #[must_use]
-    pub const fn instance_id(&self) -> &ConfiguredInstanceId {
-        self.binding.instance.id()
-    }
-
-    #[must_use]
-    pub const fn instance_revision(&self) -> &InstanceRevision {
-        self.binding.instance.revision()
-    }
-
-    #[must_use]
-    pub const fn instance_target_ref(&self) -> &InstanceTargetRef {
-        self.binding.instance.target_reference()
-    }
-
-    #[must_use]
-    pub fn model_route_id(&self) -> Option<&ModelRouteId> {
-        self.binding.model_route.as_ref().map(ModelRoute::id)
-    }
-
-    #[must_use]
-    pub fn model_id(&self) -> Option<&ModelId> {
-        self.binding.model_route.as_ref().map(ModelRoute::model_id)
-    }
-
-    #[must_use]
-    pub fn provider_id(&self) -> Option<&ProviderId> {
-        self.binding
-            .model_route
-            .as_ref()
-            .and_then(ModelRoute::provider_id)
-    }
-
-    #[must_use]
-    pub const fn provider_agent(&self) -> Option<&ProviderAgentBinding> {
-        self.binding.instance.provider_agent()
-    }
-
-    #[must_use]
-    pub const fn access_profile_id(&self) -> &AccessProfileId {
-        self.binding.access_profile.id()
-    }
-
-    #[must_use]
-    pub const fn credential_mechanism(&self) -> &CredentialMechanism {
-        self.binding.access_profile.credential_mechanism()
-    }
-
-    #[must_use]
-    pub const fn credential_reference(&self) -> Option<&CredentialRef> {
-        self.binding.access_profile.credential_reference()
-    }
-
-    #[must_use]
-    pub const fn endpoint_audience(&self) -> &EndpointAudience {
-        self.binding.access_profile.endpoint_audience()
-    }
-
-    #[must_use]
-    pub const fn ownership(&self) -> InstanceOwnership {
-        self.binding.instance.ownership()
-    }
-
-    #[must_use]
-    pub const fn execution_host_id(&self) -> &ExecutionHostId {
-        self.binding.instance.execution_host_id()
-    }
-
-    #[must_use]
-    pub const fn requirements(&self) -> &OperationRequirements {
-        &self.requirements
-    }
-
-    /// Rejects execution if a material preflight binding changed.
-    pub fn validate_current(
-        &self,
-        context: &PreflightContext<'_>,
-    ) -> Result<(), StalePreflightPlan> {
-        validate(context, &self.requirements).map_err(StalePreflightPlan::preflight_failed)?;
-        let current = PlanBinding::from_context(context);
-        if current == self.binding {
-            Ok(())
-        } else {
-            Err(StalePreflightPlan::binding_changed())
-        }
-    }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

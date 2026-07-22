@@ -102,6 +102,8 @@ Every applicable profile asserts:
 - unknown extensions follow explicit preserve or reject policy
 - no implicit fallback crosses execution, access, support, billing, privacy,
   ownership, or topology boundaries
+- exact interface-version points are bound; a multi-version claim covers its
+  boundaries, known breakpoints, and exclusions under Contract 029
 - endpoint and credential grants cannot cross operation scope or audience
 - credential release is awaited after connection cleanup
 - cumulative usage does not become repeated-attempt usage

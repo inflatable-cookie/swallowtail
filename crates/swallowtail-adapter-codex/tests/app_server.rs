@@ -334,6 +334,7 @@ fn session_options_and_dynamic_tool_callback_round_trip() {
             );
         }
         CallbackRequestKind::Extension(_) => panic!("expected a dynamic tool callback"),
+        CallbackRequestKind::HarnessUiDialog(_) => panic!("expected a dynamic tool callback"),
     }
     let response = CallbackResponse::new(
         request.callback_id().clone(),

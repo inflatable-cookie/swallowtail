@@ -17,6 +17,7 @@ mod profile_common;
 mod profile_direct_session;
 mod profile_fixture;
 mod profile_harness_native;
+mod profile_harness_rpc_contract;
 mod profile_hosted;
 mod profile_managed_harness;
 mod profile_managed_harness_shape;
@@ -28,6 +29,7 @@ mod profile_persistent_acp_shape;
 mod profile_provider_conversation;
 mod profile_realtime_media;
 mod profile_realtime_media_shape;
+mod profile_realtime_rollover;
 mod profile_rpc;
 mod profile_session_access;
 mod profile_shape;
@@ -57,11 +59,11 @@ pub use profile_provider_conversation::run_provider_conversation_boundary_assert
 pub use profiles::{
     ConformanceAssertion, ConformanceReport, SyntheticProfile, run_all_synthetic_profiles,
     run_attached_network_harness_profile, run_attached_self_hosted_profile,
-    run_connection_scoped_direct_session_profile, run_hosted_direct_api_profile,
-    run_long_lived_acp_profile, run_long_lived_rpc_profile, run_one_shot_structured_cli_profile,
-    run_owned_self_hosted_profile, run_persistent_acp_profile,
+    run_connection_scoped_direct_session_profile, run_harness_rpc_contract_assertions,
+    run_hosted_direct_api_profile, run_long_lived_acp_profile, run_long_lived_rpc_profile,
+    run_one_shot_structured_cli_profile, run_owned_self_hosted_profile, run_persistent_acp_profile,
     run_provider_managed_harness_profile, run_realtime_media_direct_session_profile,
-    run_structured_harness_native_boundary_assertions,
+    run_realtime_rollover_boundary_assertions, run_structured_harness_native_boundary_assertions,
 };
 pub use provider_conversation_fixture::{
     ProviderConversationPreflightCase, ProviderConversationPreflightFixture,

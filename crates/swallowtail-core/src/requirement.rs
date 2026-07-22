@@ -76,6 +76,7 @@ pub enum CapabilityConstraint {
     MaximumTurns(u32),
     RealtimeMediaFormat(MediaDirection, MediaFormat),
     RealtimeMediaMaximumChunkBytes(u64),
+    PlannedConnectionRolloverMaximumCount(u32),
     Named(NamedCapabilityConstraint),
 }
 

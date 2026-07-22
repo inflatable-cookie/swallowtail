@@ -32,6 +32,8 @@ Contracts hold durable, testable rules.
 - [025 Provider-Owned Direct Conversation And Deletion Boundary](025-provider-owned-direct-conversation-and-deletion-boundary.md)
 - [026 Realtime Media Direct Session Boundary](026-realtime-media-direct-session-boundary.md)
 - [027 Planned Connection Rollover And Realtime Continuity](027-planned-connection-rollover-and-realtime-continuity.md)
+- [028 Harness RPC Scheduling And UI Relay Boundary](028-harness-rpc-scheduling-and-ui-relay-boundary.md)
+- [029 Interface Version Qualification And Compatibility](029-interface-version-qualification-and-compatibility.md)
 
 Contract 003 defines the provider-neutral record kernel. Contracts 004-016
 govern the realized runtime and current proof drivers. Contract 017 governs
@@ -62,3 +64,11 @@ Contract 027 makes provider-planned connection replacement explicit and
 bounded, keeps resumable provider handles private and operation-scoped, and
 separates rollover from reconnect, reattachment, retry, consumer resume, and
 durable state.
+Contract 028 separates prompt, steering, follow-up, abort, command
+acknowledgement, and extension-UI relay for harness RPCs. It keeps downstream
+provider/model identity exact, ambient read intent uncontained, retry disabled,
+and cleanup joined.
+Contract 029 keeps adapter, artifact, SDK, wire, service, facade, instance,
+route, and model versions separate. Execution binds exact observed points;
+drivers support maintained baseline-to-latest windows only through ordered,
+evidence-backed milestones, deprecation states, and exact exclusions.

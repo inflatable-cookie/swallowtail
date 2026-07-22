@@ -1,0 +1,10 @@
+{"id":"setup-retry","type":"set_auto_retry","enabled":false}
+{"id":"setup-compaction","type":"set_auto_compaction","enabled":false}
+{"id":"setup-steering","type":"set_steering_mode","mode":"one-at-a-time"}
+{"id":"setup-follow-up","type":"set_follow_up_mode","mode":"one-at-a-time"}
+{"id":"state-1","type":"get_state"}
+{"id":"prompt-1","type":"prompt","message":"fixture prompt"}
+{"id":"steer-1","type":"steer","message":"fixture steering"}
+{"id":"follow-up-1","type":"follow_up","message":"fixture follow-up"}
+{"id":"abort-1","type":"abort"}
+{"type":"extension_ui_response","id":"ui-dialog-1","value":"Allow"}

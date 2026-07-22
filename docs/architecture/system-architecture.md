@@ -17,7 +17,8 @@ spine:
   interactive access and harness-isolation policy, parameterized requirements,
   owned remote-resource deletion kinds, durable-retention and managed-recovery
   capabilities, opaque provider-agent/version bindings, realtime audio format
-  and bound requirements, and side-effect-free preflight; interactive sessions
+  and bound requirements, disabled-or-positive-bounded planned connection
+  rollover, and side-effect-free preflight; interactive sessions
   separately bind prohibited or durable-
   conversation-delete-on-close provider state, while structured harness
   operations may bind exact ambient,
@@ -38,14 +39,16 @@ spine:
   must match the immutable provider-state policy in preflight; a separate
   realtime-media role owns resource-free requests, redacted zeroized chunks,
   exact append/commit/output sequencing, transcripts, observations, response
-  handles, terminal reuse, and session-ending interruption
+  handles, terminal reuse, session-ending interruption, and immutable
+  planned-rollover request-plan agreement
 - `swallowtail-testkit` depends on core and runtime and owns deterministic
   Contract 003, Contract 008, runtime-skeleton, and Contract 011 cross-shape
   fixtures and assertions, including distinct local and remote-authoritative
   execution-host identities plus pure remote-harness policy fixtures for
   durable retention, managed recovery, exact resource ownership, and a
   separate structured-harness native-bound and provider-conversation assertion
-  packs plus an eleventh realtime-media direct-session profile
+  packs plus an eleventh realtime-media direct-session profile and a separate
+  planned-rollover assertion pack over that unchanged profile
 - `swallowtail-host-local` depends on core and runtime and implements concrete
   host-approved local process, endpoint, credential, materialization, and
   monotonic deadline behavior behind capability-scoped runtime ports
@@ -84,7 +87,10 @@ spine:
   bounded provider-neutral projection
 - `swallowtail-adapter-gemini` implements the pinned Gemini CLI `0.51.0`
   ambient-host interactive subset with Plan Mode and bounded read callbacks
-  over ACP v1 stdio
+  over ACP v1 stdio; its separate Gemini Live production driver binds exact
+  `v1beta` preview setup, asymmetric audio, manual activity, output, usage,
+  latest private handle, one planned raw-WebSocket rollover, local-only
+  interruption, and joined two-generation cleanup under both host identities
 - `swallowtail-adapter-kimi` implements the pinned Kimi Code `0.28.1`
   ambient-host interactive lifecycle with distinct new, load-with-replay, and
   replay-free resume plus bounded write callbacks over ACP v1 stdio
@@ -194,7 +200,10 @@ Crate status:
 - `swallowtail-adapter-gemini` — realized for pinned initialization, isolated
   API-key process state, Plan Mode new sessions, text prompts, ordered updates,
   host-bounded reads, permission cancellation, active-turn cancellation, and
-  joined process close
+  joined process close; a separate direct realtime-media driver binds exact
+  Gemini Live preview identity, host-approved query-key raw WebSocket access,
+  asymmetric PCM, manual activity, two serial turns, one private-handle
+  planned rollover, local-only interruption, and joined credential-last close
 - `swallowtail-adapter-kimi` — realized for pinned initialization, isolated
   harness state, delegated membership auth, exact persistent bindings, new,
   load, ordered replay, resume, prompt, bounded text replacement, native turn
@@ -456,6 +465,28 @@ reasoning, schema, or multimodal claim. Cancellation and deadline stop local
 connection work; run close joins owned work and never stops the external
 server. Local and remote-authoritative execution-host identities use the same
 public driver seam.
+
+Interface qualification now has its own provider-neutral boundary. Adapter,
+package, SDK, wire, service, schema, facade, configured-instance, route, and
+model versions remain independent. Configured instances and immutable plans
+bind exact safe version points. Driver descriptors carry a maintained support
+window per interface axis: an oldest supported baseline, latest-qualified
+boundary, ordered behavior milestones, deprecated-but-supported segments, and
+exact exclusions. Private driver dispatch uses the exact bound version and its
+matched behavior revision. This lets one Swallowtail or consuming-application
+release serve older installed harnesses deliberately. Versions outside the
+window fail preflight; moving the baseline is an explicit later-release change.
+No open-ended `latest` or unevidenced range participates in routing.
+
+The Pi RPC records compose with the existing long-lived RPC profile. One
+restrictive policy binds one active operation, two completed prompts, one
+pending steering message, one pending follow-up, no ambient customization, no
+update, telemetry, package, or automatic-retry action, and explicit
+`AmbientHost` read intent without a filesystem boundary. Command acceptance is
+separate from model lifecycle. Correlated dialogs use callback exchange;
+display-only UI becomes bounded semantic observation. The first adapter-private
+corpus binds package `0.80.10`, strict LF JSONL, exact provider/model argv, and
+offline startup without launching Pi or contacting a provider.
 
 A separate llama.cpp owned driver binds build `10069`, one host-approved GGUF,
 one host-approved executable, `HostOwnedEphemeral` ownership, loopback port

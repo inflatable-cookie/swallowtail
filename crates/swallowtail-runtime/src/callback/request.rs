@@ -51,6 +51,7 @@ pub enum CallbackRequestKind {
         arguments: CallbackPayload,
     },
     Extension(ProviderExtension),
+    HarnessUiDialog(HarnessUiDialog),
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -144,6 +145,24 @@ impl CallbackRequest {
             provider_request_ref: None,
             kind: CallbackRequestKind::Extension(extension),
         })
+    }
+
+    #[must_use]
+    pub fn harness_ui_dialog(
+        callback_id: CallbackId,
+        turn_id: RuntimeTurnId,
+        event_sequence: u64,
+        deadline: Option<Deadline>,
+        dialog: HarnessUiDialog,
+    ) -> Self {
+        Self {
+            callback_id,
+            operation_id: CallbackOperationId::Turn(turn_id),
+            event_sequence,
+            deadline,
+            provider_request_ref: None,
+            kind: CallbackRequestKind::HarnessUiDialog(dialog),
+        }
     }
 
     #[must_use]

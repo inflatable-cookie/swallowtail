@@ -9,11 +9,14 @@ mod access;
 mod capability;
 mod diagnostic;
 mod event;
+mod harness_rpc;
 mod identity;
 mod instance;
+mod interface_version;
 mod model;
 mod model_artifact;
 mod model_catalog;
+mod planned_connection_rollover;
 mod preflight;
 mod provider_agent;
 mod provider_reference;
@@ -35,8 +38,18 @@ pub use event::{
     EventEnvelope, EventKind, ExtensionNamespace, ExtensionPolicy, ExtensionRejected,
     ProviderExtension,
 };
+pub use harness_rpc::{
+    HarnessBackgroundAction, HarnessConfigurationSource, HarnessMessageClass, HarnessRpcPolicy,
+    HarnessSchedulingBounds,
+};
 pub use identity::{AdapterId, AdapterIdentity, AdapterVersion};
 pub use instance::{ConfiguredInstance, ModelRoute};
+pub use interface_version::{
+    InterfaceBehaviorRevision, InterfaceCompatibilityClaim, InterfaceCompatibilityClaimId,
+    InterfaceCompatibilityMatch, InterfaceSupportStatus, InterfaceVersion, InterfaceVersionAxis,
+    InterfaceVersionBinding, InterfaceVersionScheme, InterfaceVersionSegment,
+    InvalidInterfaceCompatibilityClaim,
+};
 pub use model::{
     ModelCatalogEntry, ModelId, ModelMetadata, ModelTokenLimits, ProviderId, ReasoningMetadata,
     ReasoningMode,
@@ -50,6 +63,7 @@ pub use model_catalog::{
     ModelCustomizationType, ModelInferenceType, ModelLifecycleObservation, ModelLifecycleStatus,
     ModelLifecycleTransition, ModelModality, ProviderCatalogValue,
 };
+pub use planned_connection_rollover::PlannedConnectionRolloverPolicy;
 pub use preflight::{
     PreflightContext, PreflightDimension, PreflightFailure, PreflightPlan, StalePreflightPlan,
     preflight,

@@ -9,7 +9,7 @@ prompts, tools, authority, workflows, persistence, and product state.
 Status: foundation. The repository is in strict Northstar posture. The
 provider-neutral core, pure preflight, executor-neutral runtime, eleven synthetic
 conformance profiles, host-approved local process/endpoint/credential services,
-seventeen production driver routes, including separate SDK-native Bedrock Runtime
+eighteen production driver routes, including separate SDK-native Bedrock Runtime
 and control-plane routes, across Codex, OpenCode, OpenAI, Anthropic, Bedrock,
 Gemini, Kimi, llama.cpp, and xAI are validated. Codex app-server supports both
 unchanged read-only sessions and one explicit host-resolved bounded workspace
@@ -242,5 +242,33 @@ doctor remains at the inherited 19 oversized-file findings. Roadmap 032 now
 closes after selecting Gemini Live preview as the next realtime portability
 proof. Contract 027 makes one provider-planned connection rollover explicit,
 bounded, private-handle-backed, and distinct from reconnect or consumer resume.
-Roadmap 033 starts with card 095's provider-neutral rollover records and frozen
-Gemini Live raw-WebSocket corpus before production transport.
+Card 095 realizes the provider-neutral bounded-rollover policy, exact
+preflight/request agreement, an assertion pack over the unchanged realtime
+profile, and a dated Gemini Live raw-WebSocket corpus with private redacted
+handle lifecycle. Card 096 adds the separate production driver with exact
+preview preflight, host-approved query-key WebSocket access, manual asymmetric
+audio, two serial turns, one confirmed private-handle rollover, local-only
+interruption, safe failures, and joined credential-last cleanup. Card 097 is
+complete with unchanged-profile and bounded-rollover conformance, local and
+remote-authoritative topology, the full failure matrix, and 443 passing tests.
+Roadmap 034 and card 098 close the post-Gemini-Live coverage checkpoint.
+Research 022 audits all eighteen production
+descriptors and eleven common profiles. Maintained Pi `0.80.10` RPC is the next
+proof. Contract 028 keeps prompt, steering, follow-up, abort, extension UI,
+downstream provider/model identity, ambient authority, retry, and cleanup
+separate. The first route needs no container or sandbox and makes no
+containment claim. Roadmap 035 and cards 099-101 own the records, frozen
+corpus, production driver, and conformance. DeepSeek V4 reasoning/tool
+continuation remains the next direct-contract research target rather than a
+stateless compatible breadth adapter.
+
+Card 099 now adds exact interface-version bindings and maintained compatibility
+windows under Contract 029. Exact runtime versions remain separate from a
+driver's supported baseline, latest-qualified boundary, behavior milestones,
+deprecated segments, and exclusions. One application release can therefore
+serve a deliberate range of installed harness versions without changing
+consumer operations. The shared Pi RPC scheduling,
+restrictive ambient policy, acknowledgement, and bounded UI records are
+realized as an assertion pack over the unchanged eleven profiles. The frozen
+`0.80.10` corpus passes offline. Card 100 is ready for the production process
+driver.

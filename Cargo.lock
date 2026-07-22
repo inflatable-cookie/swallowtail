@@ -1691,13 +1691,20 @@ dependencies = [
 name = "swallowtail-adapter-gemini"
 version = "0.1.0"
 dependencies = [
+ "base64",
+ "futures-channel",
+ "futures-core",
  "futures-executor",
  "futures-util",
  "serde_json",
  "swallowtail-core",
+ "swallowtail-host-local",
  "swallowtail-protocol-acp",
  "swallowtail-runtime",
  "swallowtail-testkit",
+ "tungstenite",
+ "url",
+ "zeroize",
 ]
 
 [[package]]
@@ -1789,6 +1796,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "swallowtail-adapter-pi"
+version = "0.1.0"
+dependencies = [
+ "serde_json",
+]
+
+[[package]]
 name = "swallowtail-adapter-qwen"
 version = "0.1.0"
 dependencies = [
@@ -1819,6 +1833,9 @@ dependencies = [
 [[package]]
 name = "swallowtail-core"
 version = "0.1.0"
+dependencies = [
+ "semver",
+]
 
 [[package]]
 name = "swallowtail-host-local"

@@ -1,5 +1,7 @@
 use super::capability::validate_capabilities;
+use super::realtime_media::validate_realtime_media;
 use super::session_access::validate_session_access;
+use super::session_provider_state::validate_session_provider_state;
 use super::{PreflightContext, PreflightDimension, PreflightFailure};
 use crate::{ExecutionLayer, HostServiceKind, OperationRequirements, OperationShape};
 
@@ -56,6 +58,8 @@ pub(super) fn validate(
     validate_host_services(context, requirements)?;
     validate_harness_isolation(requirements)?;
     validate_session_access(requirements)?;
+    validate_session_provider_state(requirements)?;
+    validate_realtime_media(context, requirements)?;
     validate_capabilities(context, requirements)?;
 
     for namespace in requirements.extension_namespaces() {

@@ -23,9 +23,9 @@ const COMMON_ASSERTIONS: [ConformanceAssertion; 14] = [
 ];
 
 #[test]
-fn all_ten_profiles_cover_every_common_contract_assertion() {
+fn all_eleven_profiles_cover_every_common_contract_assertion() {
     let reports = run_all_synthetic_profiles();
-    assert_eq!(reports.len(), 10);
+    assert_eq!(reports.len(), 11);
 
     for report in &reports {
         for assertion in COMMON_ASSERTIONS {
@@ -69,6 +69,10 @@ fn each_profile_proves_its_shape_specific_boundary() {
         (
             SyntheticProfile::ConnectionScopedDirectSession,
             ConformanceAssertion::ConnectionScopedLeaseLifecycle,
+        ),
+        (
+            SyntheticProfile::RealtimeMediaDirectSession,
+            ConformanceAssertion::RealtimeMediaBoundary,
         ),
         (
             SyntheticProfile::AttachedNetworkHarness,

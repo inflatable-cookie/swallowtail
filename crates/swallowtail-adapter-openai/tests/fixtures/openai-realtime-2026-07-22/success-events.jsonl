@@ -1,0 +1,10 @@
+{"event_id":"server-session-1","type":"session.created","session":{"id":"sess_fixture","model":"gpt-realtime-2.1","audio":{"input":{"format":{"type":"audio/pcm","rate":24000}},"output":{"format":{"type":"audio/pcm","rate":24000},"voice":"marin"}}}}
+{"event_id":"server-session-2","type":"session.updated","session":{"id":"sess_fixture","model":"gpt-realtime-2.1","audio":{"input":{"format":{"type":"audio/pcm","rate":24000}},"output":{"format":{"type":"audio/pcm","rate":24000},"voice":"marin"}}}}
+{"event_id":"server-commit-1","type":"input_audio_buffer.committed","item_id":"item_fixture_user","previous_item_id":null}
+{"event_id":"server-response-1","type":"response.created","response":{"id":"resp_fixture_1","object":"realtime.response","status":"in_progress","output":[]}}
+{"event_id":"server-rate-1","type":"rate_limits.updated","rate_limits":[{"name":"requests","limit":1000,"remaining":999,"reset_seconds":60.0},{"name":"tokens","limit":50000,"remaining":49950,"reset_seconds":60.0}]}
+{"event_id":"server-audio-1","type":"response.output_audio.delta","response_id":"resp_fixture_1","item_id":"item_fixture_assistant","output_index":0,"content_index":0,"delta":"CQgHBg=="}
+{"event_id":"server-transcript-1","type":"response.output_audio_transcript.delta","response_id":"resp_fixture_1","item_id":"item_fixture_assistant","output_index":0,"content_index":0,"delta":"Hello"}
+{"event_id":"server-audio-2","type":"response.output_audio.done","response_id":"resp_fixture_1","item_id":"item_fixture_assistant","output_index":0,"content_index":0}
+{"event_id":"server-transcript-2","type":"response.output_audio_transcript.done","response_id":"resp_fixture_1","item_id":"item_fixture_assistant","output_index":0,"content_index":0,"transcript":"Hello"}
+{"event_id":"server-response-2","type":"response.done","response":{"id":"resp_fixture_1","object":"realtime.response","status":"completed","output":[],"usage":{"total_tokens":7,"input_tokens":4,"output_tokens":3}}}

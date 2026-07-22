@@ -106,6 +106,7 @@ pub enum DriverRole {
     ModelCatalog,
     StructuredRun,
     InteractiveSession,
+    RealtimeMediaSession,
     ServingInstanceLifecycle,
 }
 

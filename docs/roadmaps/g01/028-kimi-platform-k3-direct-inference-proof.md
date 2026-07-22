@@ -1,6 +1,6 @@
 # 028 Kimi Platform K3 Direct Inference Proof
 
-Status: active
+Status: completed
 Owner: Tom
 Updated: 2026-07-21
 
@@ -31,26 +31,26 @@ Code access, regional platform keys, and automatic retry remain excluded.
 
 ## Goals
 
-- [ ] Extract a provider-neutral bounded Chat Completions structural codec and
+- [x] Extract a provider-neutral bounded Chat Completions structural codec and
       prove it against independent llama.cpp and Kimi corpora.
-- [ ] Freeze the 2026-07-21 Kimi K3 catalogue, request, stream, usage, error,
+- [x] Freeze the 2026-07-21 Kimi K3 catalogue, request, stream, usage, error,
       model-agreement, and exclusion boundary offline.
-- [ ] Implement one separately registered Kimi Platform catalogue and
+- [x] Implement one separately registered Kimi Platform catalogue and
       structured direct-inference driver.
-- [ ] Prove hosted-direct conformance under local and remote-authoritative host
+- [x] Prove hosted-direct conformance under local and remote-authoritative host
       identities with one attempt and joined cleanup.
 
 ## Execution Plan
 
-- [ ] Compatible codec and Kimi K3 fixtures: card 084.
-- [ ] Kimi Platform production driver: card 085.
-- [ ] Kimi Platform conformance and closeout: card 086.
+- [x] Compatible codec and Kimi K3 fixtures: card 084.
+- [x] Kimi Platform production driver: card 085.
+- [x] Kimi Platform conformance and closeout: card 086.
 
 ## Cards
 
-- `batch-cards/084-compatible-chat-codec-and-kimi-k3-fixtures.md` — ready
-- `batch-cards/085-kimi-platform-direct-driver.md` — planned
-- `batch-cards/086-kimi-platform-conformance-and-closeout.md` — planned
+- `batch-cards/084-compatible-chat-codec-and-kimi-k3-fixtures.md` — completed
+- `batch-cards/085-kimi-platform-direct-driver.md` — completed
+- `batch-cards/086-kimi-platform-conformance-and-closeout.md` — completed
 
 ## Bounded First Proof
 
@@ -72,6 +72,9 @@ DeepSeek V4, Z.AI general API, and Alibaba Model Studio remain later provider
 mappings. Each needs a dated corpus over the common codec. DeepSeek alias and
 ignored-field behavior, Z.AI general-versus-plan authority, and Alibaba region,
 workspace, plan, and Responses state remain adapter-specific.
+
+Roadmap 029 owns the currentness and selection checkpoint for those remaining
+providers. It does not presume that wire compatibility settles the next route.
 
 ## Stop Condition
 

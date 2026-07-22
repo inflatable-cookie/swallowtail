@@ -5,6 +5,7 @@ use crate::capability::Capability;
 use crate::diagnostic::{ValueRequired, required_text};
 use crate::event::ExtensionNamespace;
 use crate::model::ReasoningMode;
+use crate::realtime_media::{MediaDirection, MediaFormat};
 use crate::remote_resource::OwnedRemoteResourceKind;
 use crate::runtime_identity::AccessProfileId;
 use crate::session_access::{ResourceAccess, ResourceRepresentation};
@@ -20,6 +21,7 @@ pub enum CancellationScope {
     ActiveTurn,
     InteractiveSession,
     OwnedServingInstance,
+    ActiveResponse,
 }
 
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
@@ -71,6 +73,9 @@ pub enum CapabilityConstraint {
     OwnedRemoteResource(OwnedRemoteResourceKind),
     ContextLimit(u64),
     MaximumConcurrency(u32),
+    MaximumTurns(u32),
+    RealtimeMediaFormat(MediaDirection, MediaFormat),
+    RealtimeMediaMaximumChunkBytes(u64),
     Named(NamedCapabilityConstraint),
 }
 

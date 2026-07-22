@@ -37,6 +37,9 @@ impl ProfileShape {
                 crate::profile_managed_harness_shape::shape()
             }
             SyntheticProfile::ConnectionScopedDirectSession => Self::direct_session(),
+            SyntheticProfile::RealtimeMediaDirectSession => {
+                crate::profile_realtime_media_shape::shape()
+            }
             SyntheticProfile::AttachedSelfHosted => Self::self_hosted(
                 "fixture.driver.attached",
                 "fixture.instance.attached",

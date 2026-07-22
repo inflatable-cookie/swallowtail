@@ -178,6 +178,9 @@ pub(crate) fn parse_deletion(
     let expected_type = match kind {
         OwnedRemoteResourceKind::Environment => "environment_deleted",
         OwnedRemoteResourceKind::Session => "session_deleted",
+        OwnedRemoteResourceKind::Conversation | OwnedRemoteResourceKind::ConversationItems => {
+            return Err(protocol_failure("unsupported deletion resource"));
+        }
     };
     if value.pointer("/id").and_then(Value::as_str) == Some(expected_id)
         && value.pointer("/type").and_then(Value::as_str) == Some(expected_type)

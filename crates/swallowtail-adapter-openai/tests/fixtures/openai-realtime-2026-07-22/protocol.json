@@ -1,0 +1,16 @@
+{
+  "endpoint": "wss://api.openai.com/v1/realtime",
+  "endpoint_audience": "api.openai.com",
+  "credential_mechanism": "public_api_key",
+  "metering": "openai_api_billing",
+  "model": "gpt-realtime-2.1",
+  "transport": "server_websocket",
+  "input_format": {"kind": "audio", "encoding": "pcm16le", "rate": 24000, "channels": 1},
+  "output_format": {"kind": "audio", "encoding": "pcm16le", "rate": 24000, "channels": 1},
+  "maximum_chunk_bytes": 32768,
+  "maximum_successful_turns": 2,
+  "manual_turns": true,
+  "reconnect": false,
+  "resume": false,
+  "storage": false
+}

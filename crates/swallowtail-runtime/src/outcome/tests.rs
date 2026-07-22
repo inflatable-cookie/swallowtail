@@ -123,3 +123,32 @@ fn owned_remote_resource_deletion_truth_remains_per_resource() {
     );
     assert_eq!(outcome.remote_resource_deletions().count(), 2);
 }
+
+#[test]
+fn conversation_deletion_cannot_stand_in_for_item_deletion() {
+    let outcome = TerminalOutcome::new(
+        TerminalStatus::Completed,
+        CleanupOutcome::Degraded(swallowtail_core::SafeDiagnostic::new(
+            "fixture.conversation_items_unconfirmed",
+            "Conversation item deletion was not confirmed",
+        )),
+    )
+    .with_remote_resource_deletion(
+        swallowtail_core::OwnedRemoteResourceKind::ConversationItems,
+        RemoteResourceDeletionOutcome::Unconfirmed,
+    )
+    .with_remote_resource_deletion(
+        swallowtail_core::OwnedRemoteResourceKind::Conversation,
+        RemoteResourceDeletionOutcome::Confirmed,
+    );
+
+    assert_eq!(
+        outcome
+            .remote_resource_deletion(swallowtail_core::OwnedRemoteResourceKind::ConversationItems),
+        Some(RemoteResourceDeletionOutcome::Unconfirmed)
+    );
+    assert_eq!(
+        outcome.remote_resource_deletion(swallowtail_core::OwnedRemoteResourceKind::Conversation),
+        Some(RemoteResourceDeletionOutcome::Confirmed)
+    );
+}

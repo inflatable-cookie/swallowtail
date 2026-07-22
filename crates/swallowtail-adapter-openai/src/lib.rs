@@ -8,6 +8,8 @@
 mod driver;
 mod failure;
 mod protocol;
+#[cfg(test)]
+mod realtime_protocol;
 mod transport;
 
 pub use driver::{OpenAiBackgroundDriver, openai_background_descriptor};

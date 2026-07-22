@@ -26,6 +26,12 @@ streaming reasoning and output deltas, and has a one-million-token context
 window. The Chat Completions route is `POST
 https://api.moonshot.ai/v1/chat/completions` with bearer API-key access.
 
+The dedicated Thinking Effort guide and the current request schema both expose
+`low`, `high`, and `max`. One older embedded paragraph on the Chat Completions
+page still says K3 accepts only `max`; that paragraph conflicts with the K3
+guide, dedicated capability guide, and schema. The frozen corpus follows the
+dedicated guide and schema and requires an explicit selection.
+
 The direct API is stateless. Consumers return prior messages and tool results
 explicitly; the provider does not retain chat history for this route. SSE ends
 with `[DONE]`, and the terminal chunk may carry prompt, completion, total, and
@@ -46,6 +52,7 @@ Evidence, accessed 2026-07-21:
 
 - [Kimi API overview](https://platform.kimi.ai/docs/api/overview)
 - [Kimi K3](https://platform.kimi.ai/docs/guide/kimi-k3-quickstart)
+- [Thinking effort](https://platform.kimi.ai/docs/guide/use-thinking-effort)
 - [Chat Completions](https://platform.kimi.ai/docs/api/chat)
 - [Model catalogue](https://platform.kimi.ai/docs/api/list-models)
 - [Products and plans](https://platform.kimi.ai/docs/guide/product-plans)

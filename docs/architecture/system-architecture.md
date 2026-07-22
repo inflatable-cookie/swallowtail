@@ -2,11 +2,11 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-21
+Updated: 2026-07-22
 
 ## Realized State
 
-Swallowtail has a fifteen-crate Rust workspace plus its strict Northstar authority
+Swallowtail has an eighteen-crate Rust workspace plus its strict Northstar authority
 spine:
 
 - `swallowtail-core` owns pure provider-neutral contract records, including
@@ -16,10 +16,13 @@ spine:
   inference, customization, and provider-extension observations, expanded
   interactive access and harness-isolation policy, parameterized requirements,
   owned remote-resource deletion kinds, durable-retention and managed-recovery
-  capabilities, opaque provider-agent/version bindings, and side-effect-free
-  preflight; structured harness operations may now bind exact ambient,
+  capabilities, opaque provider-agent/version bindings, realtime audio format
+  and bound requirements, and side-effect-free preflight; interactive sessions
+  separately bind prohibited or durable-
+  conversation-delete-on-close provider state, while structured harness
+  operations may bind exact ambient,
   provider-enforced, or host-enforced isolation independently of session policy
-- `swallowtail-runtime` depends on core plus `futures-core` and owns
+- `swallowtail-runtime` depends on core plus `futures-core` and `zeroize` and owns
   executor-neutral dynamic roles, lifecycle handles, bounded events, terminal
   outcomes, explicit operation policy, typed usage/rate/quota observations,
   scope- and audience-bound endpoint/credential ports, scoped
@@ -31,14 +34,18 @@ spine:
   separates durable retention from provider-managed recovery, carries exact
   structured-run harness isolation, rejects request/preflight posture mismatch,
   and terminal
-  outcomes keep deletion truth per owned remote resource
+  outcomes keep deletion truth per owned remote resource; open-session requests
+  must match the immutable provider-state policy in preflight; a separate
+  realtime-media role owns resource-free requests, redacted zeroized chunks,
+  exact append/commit/output sequencing, transcripts, observations, response
+  handles, terminal reuse, and session-ending interruption
 - `swallowtail-testkit` depends on core and runtime and owns deterministic
   Contract 003, Contract 008, runtime-skeleton, and Contract 011 cross-shape
   fixtures and assertions, including distinct local and remote-authoritative
   execution-host identities plus pure remote-harness policy fixtures for
   durable retention, managed recovery, exact resource ownership, and a
-  separate structured-harness native-bound assertion pack that does not create
-  a new transport profile
+  separate structured-harness native-bound and provider-conversation assertion
+  packs plus an eleventh realtime-media direct-session profile
 - `swallowtail-host-local` depends on core and runtime and implements concrete
   host-approved local process, endpoint, credential, materialization, and
   monotonic deadline behavior behind capability-scoped runtime ports
@@ -47,6 +54,16 @@ spine:
   pinned independently to Gemini CLI `0.51.0`/schema `v1.19.0` and Kimi Code
   `0.28.1`/schema `v1.19.1`; the Kimi corpus also freezes exact annotated-tag,
   source-commit, arm64 executable, isolated-state, and upgrade-gate evidence
+- `swallowtail-protocol-openai-chat` owns bounded compatible Chat Completions
+  request encoding, JSON envelope decoding, structural unknowns, SSE comments,
+  data records, fragmentation, disconnect, and `[DONE]`; it has no endpoint,
+  credential, provider selection, retry, lifecycle, runtime-event, host, or
+  consumer authority
+- `swallowtail-adapter-alibaba-model-studio` implements the 2026-07-22 Singapore
+  workspace-dedicated Conversations and Responses subset through one session-
+  scoped host-approved endpoint and API-key lease; exact provider-state policy,
+  serial HTTP/SSE turns, usage, cancellation uncertainty, inventory, item-before-
+  conversation deletion, and joined cleanup remain adapter-owned
 - `swallowtail-adapter-codex` depends on core and runtime and implements the
   read-only, ephemeral `codex exec` structured-run surface plus read-only and
   bounded-workspace app-server interactive sessions through runtime host ports
@@ -71,16 +88,23 @@ spine:
 - `swallowtail-adapter-kimi` implements the pinned Kimi Code `0.28.1`
   ambient-host interactive lifecycle with distinct new, load-with-replay, and
   replay-free resume plus bounded write callbacks over ACP v1 stdio
+- `swallowtail-adapter-kimi-platform` implements a separate public-platform
+  API-key catalogue and exact `kimi-k3` direct route over host-approved HTTP/SSE;
+  it shares only structural compatible-chat encoding and decoding with
+  llama.cpp and owns its access, reasoning, error, usage, and lifecycle mapping
 - `swallowtail-adapter-llama-cpp` implements attached llama.cpp build `9910`
   readiness, catalogue, and bounded Chat Completions direct inference without
-  owning the model artifact or server
+  owning the model artifact or server; its exact request and text-only semantic
+  mapping now use the common compatible-chat framing and envelope codec
 - `swallowtail-adapter-xai` implements resource-free interactive direct
   inference over one host-approved Responses WebSocket with serial turns,
   private continuation, exact billed cost, and connection-ending cancellation
 - `swallowtail-adapter-openai` implements one public-API Responses background
   structured-run route with explicit temporary retention, one create attempt,
   maximum-one cursor reattachment, bounded retrieve, native cancel, and joined
-  HTTP/SSE cleanup
+  HTTP/SSE cleanup; its test-only Realtime protocol boundary freezes the dated
+  GA WebSocket handshake and manual PCM client/server event corpus before a
+  production driver exists
 - `swallowtail-adapter-qwen` implements the pinned Qwen Code `v0.19.11`
   headless structured-run route with exact read-only argv, text stdin, bounded
   stream JSON, typed usage, explicit native budgets, durable local retention,
@@ -108,25 +132,36 @@ host crates   provider adapter crates
 
 consumer and adapter tests -> swallowtail-testkit -> core/runtime contracts
 
-provider adapter crates -> swallowtail-protocol-acp
+provider adapter crates -> swallowtail-protocol-acp / swallowtail-protocol-openai-chat
 ```
 
 Crate status:
 
 - `swallowtail-core` — realized
 - `swallowtail-testkit` — realized with reusable contract-kernel, preflight,
-  and callback fixtures, recording runtime host services, and ten composable
+  and callback fixtures, recording runtime host services, and eleven composable
   provider-free conformance profile runners
-- `swallowtail-runtime` — realized under Contracts 008-010 and 012 with only
-  core and `futures-core` dependencies
+- `swallowtail-runtime` — realized under Contracts 008-010, 012, and 026 with
+  only core, `futures-core`, and `zeroize` dependencies
 - `swallowtail-protocol-acp` — realized for bounded ACP v1 NDJSON framing,
   request/notification/response classification, and safe error responses
+- `swallowtail-protocol-openai-chat` — realized under Contract 024 for bounded
+  request JSON, SSE framing, common chunks, choices, deltas, model, finish,
+  usage and error envelopes, and explicit bounded structural unknowns; the
+  library depends only on `serde_json`
 - `swallowtail-host-local` — realized with host-owned approvals, bounded piped
   I/O, supervised exit, graceful EOF stop, explicit force-stop, and joined
   reader cleanup; it also owns bounded attachment/schema copies,
   operation-scoped temporary working resources, explicit lease release, and
   cancellable monotonic deadline waits; exact endpoint and secret/delegated
   credential approvals remain scope- and audience-bound and redacted
+- `swallowtail-adapter-alibaba-model-studio` — realized under Contract 025 for
+  one exact Singapore workspace-dedicated, general-API-key, pay-as-you-go
+  `qwen3.7-plus-2026-05-26` session; the production driver creates one provider
+  conversation, permits two serial synchronous Responses turns, rejects resume
+  and unsupported inputs, keeps local cancellation distinct from remote stop,
+  inventories and deletes every item before the conversation, and releases its
+  credential only after transport and cleanup work join
 - `swallowtail-adapter-codex` — realized for bounded exec runs plus local stdio
   app-server model discovery and interactive sessions
 - `swallowtail-adapter-opencode` — realized for attached model catalogue and
@@ -160,6 +195,16 @@ Crate status:
   harness state, delegated membership auth, exact persistent bindings, new,
   load, ordered replay, resume, prompt, bounded text replacement, native turn
   cancellation, disconnect, and joined process/resource/credential cleanup
+- `swallowtail-adapter-kimi-platform` — realized for one authenticated bounded
+  catalogue and one exact K3 Chat Completions attempt with explicit
+  `low`/`high`/`max` reasoning, positive output bound, ordered reasoning,
+  output, terminal usage and `[DONE]`, exact returned-model agreement, distinct
+  safe failures, local cancellation/deadline, joined connection work, and
+  awaited platform-key release without retry, recovery, or fallback; the
+  unchanged hosted-direct profile proves exact instance, endpoint, access,
+  route, model, and execution-host identity under local and remote-authoritative
+  topology while catalogue observations imply no entitlement or invocation
+  readiness
 - `swallowtail-adapter-xai` — realized for one exact API-key WebSocket route,
   one active turn, private `store=false` continuation, ordered text and usage,
   exact USD ticks, distinct provider failures, cancellation, deadline,
@@ -170,16 +215,20 @@ Crate status:
   bounded recovery, native cancel, provider cancellation evidence, and joined
   credential cleanup
 
-Core, runtime, and testkit are realized and validated as one kernel. The ten
+Core, runtime, and testkit are realized and validated as one kernel. The eleven
 synthetic Contract 011 profiles use only public APIs and cover one-shot CLI,
 long-lived RPC, long-lived ACP, attached network harness, hosted API, attached
 self-hosted, owned self-hosted, connection-scoped direct-session, and a
-persistent ACP extension, plus a provider-managed remote harness. The managed
+persistent ACP extension, a provider-managed remote harness, plus a bounded
+realtime-media direct session. The managed
 profile adds exact agent binding, durable retention, managed recovery, bounded
 reattachment, run callbacks, per-resource deletion truth, topology, and cleanup
 ordering without widening the other nine profiles. The ACP extension composes
 load, replay, resume, bounded write, delegated-auth, ambient-authority,
 topology, and cleanup claims without widening the baseline ACP profile.
+The realtime profile adds exact model and PCM format binding, bounded chunks,
+two serial manual turns, transcript and provider evidence, interruption, and
+joined cleanup without changing existing text operation shapes.
 Structured-run policy now keeps attached execution, prohibited provider
 retention, and disabled stream reattachment as the defaults. Provider-managed
 background execution, temporary retention, and bounded reattachment are three
@@ -188,8 +237,10 @@ drivers reject that posture. Terminal outcomes may separately record confirmed,
 completion-raced, or unconfirmed provider cancellation without replacing the
 local terminal status.
 Durable provider retention and provider-managed recovery are further
-independent opt-ins. Owned environment and session deletion truth is keyed by
-resource kind, so one confirmation cannot stand in for the other. Structured-
+independent opt-ins. Interactive provider conversation retention is a separate
+session-only opt-in and defaults prohibited. Owned environment, session,
+conversation, and aggregate conversation-item deletion truth is keyed by
+resource kind, so one confirmation cannot stand in for another. Structured-
 run tools and callbacks reuse the existing bounded declaration and exchange
 records; drivers that do not implement that subset reject them before work.
 The owned profile now binds one exact model artifact into preflight, rejects

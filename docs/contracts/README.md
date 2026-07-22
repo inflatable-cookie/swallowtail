@@ -29,6 +29,8 @@ Contracts hold durable, testable rules.
 - [022 Provider-Managed Agent Resource And Durable Session Boundary](022-provider-managed-agent-resource-and-durable-session-boundary.md)
 - [023 Harness Operation Isolation And Native Boundary](023-harness-operation-isolation-and-native-boundary.md)
 - [024 Compatible Chat Codec And Provider Semantics](024-compatible-chat-codec-and-provider-semantics.md)
+- [025 Provider-Owned Direct Conversation And Deletion Boundary](025-provider-owned-direct-conversation-and-deletion-boundary.md)
+- [026 Realtime Media Direct Session Boundary](026-realtime-media-direct-session-boundary.md)
 
 Contract 003 defines the provider-neutral record kernel. Contracts 004-016
 govern the realized runtime and current proof drivers. Contract 017 governs
@@ -49,3 +51,9 @@ from host deadline, cancellation, and process authority.
 Contract 024 permits structural Chat Completions codec reuse while keeping
 provider access, model, capability, lifecycle, evidence, retry, and fallback
 semantics inside separately qualified adapters.
+Contract 025 makes provider-owned direct conversations an explicit interactive
+session posture and keeps regional workspace access, response storage, item
+inventory, deletion truth, cancellation, resume, and cleanup independent.
+Contract 026 adds a separate realtime-media interactive role with exact media
+formats, bounded redacted chunks, native response cancellation, consumer-owned
+device and playback truth, and joined duplex cleanup.

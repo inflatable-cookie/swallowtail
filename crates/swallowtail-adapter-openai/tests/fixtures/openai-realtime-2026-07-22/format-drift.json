@@ -1,0 +1,1 @@
+{"event_id":"server-session-drift","type":"session.updated","session":{"id":"sess_secret","model":"gpt-realtime-2.1","audio":{"input":{"format":{"type":"audio/pcm","rate":24000}},"output":{"format":{"type":"audio/pcm","rate":16000},"voice":"marin"}}}}

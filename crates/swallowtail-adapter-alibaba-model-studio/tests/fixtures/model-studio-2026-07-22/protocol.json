@@ -1,0 +1,16 @@
+{
+  "evidence_date": "2026-07-22",
+  "region": "ap-southeast-1",
+  "endpoint_template": "https://{WorkspaceId}.ap-southeast-1.maas.aliyuncs.com",
+  "endpoint_audience": "model-studio.workspace.ap-southeast-1",
+  "credential": "general-model-studio-api-key",
+  "metering": "pay-as-you-go",
+  "support_authority": "provider-supported",
+  "deployment_scope": "International",
+  "model": "qwen3.7-plus-2026-05-26",
+  "maximum_turns": 2,
+  "maximum_concurrency": 1,
+  "response_storage": false,
+  "session_cache": false,
+  "native_response_cancel": false
+}

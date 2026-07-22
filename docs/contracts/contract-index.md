@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-21
+Updated: 2026-07-22
 
 | Contract | Status | Scope |
 | --- | --- | --- |
@@ -30,3 +30,5 @@ Updated: 2026-07-21
 | [022 Provider-Managed Agent Resource And Durable Session Boundary](022-provider-managed-agent-resource-and-durable-session-boundary.md) | active | Provider-hosted agent resources, durable retention, managed recovery, authoritative events, and remote deletion truth |
 | [023 Harness Operation Isolation And Native Boundary](023-harness-operation-isolation-and-native-boundary.md) | active | Operation-shape-neutral harness isolation, optional provider sandboxing, native budgets, and retained local state |
 | [024 Compatible Chat Codec And Provider Semantics](024-compatible-chat-codec-and-provider-semantics.md) | active | Structural Chat Completions codec reuse with provider-owned access, model, capability, lifecycle, and failure semantics |
+| [025 Provider-Owned Direct Conversation And Deletion Boundary](025-provider-owned-direct-conversation-and-deletion-boundary.md) | active | Direct interactive provider conversations, explicit retention, regional workspace access, and item-before-conversation deletion truth |
+| [026 Realtime Media Direct Session Boundary](026-realtime-media-direct-session-boundary.md) | active | Direct interactive realtime media, bounded chunks and formats, native response cancellation, consumer device ownership, and joined duplex cleanup |

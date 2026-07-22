@@ -9,6 +9,7 @@ description = "Executor-neutral runtime contracts for Swallowtail drivers and ho
 [dependencies]
 futures-core = "0.3"
 swallowtail-core = { path = "../swallowtail-core" }
+zeroize = "1"
 
 [lints]
 workspace = true

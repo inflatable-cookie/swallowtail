@@ -1,10 +1,12 @@
 [workspace]
 members = [
+  "crates/swallowtail-adapter-alibaba-model-studio",
   "crates/swallowtail-adapter-anthropic",
   "crates/swallowtail-adapter-bedrock",
   "crates/swallowtail-adapter-codex",
   "crates/swallowtail-adapter-gemini",
   "crates/swallowtail-adapter-kimi",
+  "crates/swallowtail-adapter-kimi-platform",
   "crates/swallowtail-adapter-llama-cpp",
   "crates/swallowtail-adapter-opencode",
   "crates/swallowtail-adapter-openai",
@@ -13,6 +15,7 @@ members = [
   "crates/swallowtail-core",
   "crates/swallowtail-host-local",
   "crates/swallowtail-protocol-acp",
+  "crates/swallowtail-protocol-openai-chat",
   "crates/swallowtail-runtime",
   "crates/swallowtail-testkit",
 ]

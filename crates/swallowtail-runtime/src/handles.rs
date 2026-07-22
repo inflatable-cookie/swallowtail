@@ -1,7 +1,8 @@
 use crate::{
-    BoxEventStream, BoxFuture, CallbackExchange, CancellationControl, CleanupOutcome, HostServices,
-    RequestId, RuntimeFailure, RuntimeRunId, RuntimeSessionId, RuntimeTurnId,
-    ServingEndpointBinding, ServingInstanceId, SessionResumeBinding, TerminalOutcome, TurnRequest,
+    BoxEventStream, BoxFuture, BoxRealtimeMediaEventStream, CallbackExchange, CancellationControl,
+    CleanupOutcome, HostServices, MediaChunk, MediaInputCommit, RequestId, RuntimeFailure,
+    RuntimeRunId, RuntimeSessionId, RuntimeTurnId, ServingEndpointBinding, ServingInstanceId,
+    SessionResumeBinding, TerminalOutcome, TurnRequest,
 };
 use swallowtail_core::{ExecutionHostId, InstanceOwnership, RunRef, SessionRef, TurnRef};
 
@@ -40,6 +41,31 @@ pub trait InteractiveSessionHandle: Send {
         request: TurnRequest,
         services: HostServices,
     ) -> BoxFuture<'a, Result<Box<dyn TurnHandle>, RuntimeFailure>>;
+    fn cancellation(&self) -> &dyn CancellationControl;
+    fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome>;
+}
+
+pub trait RealtimeMediaResponseHandle: Send {
+    fn turn_id(&self) -> &RuntimeTurnId;
+    fn take_events(&mut self) -> Option<BoxRealtimeMediaEventStream>;
+    fn cancellation(&self) -> &dyn CancellationControl;
+    fn take_terminal_outcome(&mut self) -> Option<BoxFuture<'static, TerminalOutcome>>;
+    fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome>;
+}
+
+pub trait RealtimeMediaSessionHandle: Send {
+    fn request_id(&self) -> &RequestId;
+    fn session_id(&self) -> &RuntimeSessionId;
+    fn append_input<'a>(
+        &'a mut self,
+        chunk: MediaChunk,
+        services: HostServices,
+    ) -> BoxFuture<'a, Result<(), RuntimeFailure>>;
+    fn commit_input<'a>(
+        &'a mut self,
+        commit: MediaInputCommit,
+        services: HostServices,
+    ) -> BoxFuture<'a, Result<Box<dyn RealtimeMediaResponseHandle>, RuntimeFailure>>;
     fn cancellation(&self) -> &dyn CancellationControl;
     fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome>;
 }

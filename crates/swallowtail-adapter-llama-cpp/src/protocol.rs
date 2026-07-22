@@ -1,7 +1,7 @@
 use crate::failure::failure;
 use serde::Deserialize;
-use serde_json::json;
 use swallowtail_core::{ModelCatalogEntry, ModelId, ModelMetadata};
+use swallowtail_protocol_openai_chat::{ChatMessage, ChatRequest, CodecLimits, encode_request};
 use swallowtail_runtime::{OperationContent, RuntimeFailure};
 
 #[derive(Clone, Copy)]
@@ -57,15 +57,22 @@ impl Request {
                 "llama.cpp maximum output tokens exceeded the supported request range",
             )
         })?;
-        let body = serde_json::to_vec(&json!({
-            "model": model,
-            "max_tokens": maximum,
-            "messages": [{"role": "user", "content": content.as_str()}],
-            "stream": true,
-            "stream_options": {"include_usage": true},
-            "temperature": 0
-        }))
-        .expect("chat request JSON serializes");
+        let mut chat = ChatRequest::new(
+            model,
+            vec![ChatMessage::new("user", content.as_str())],
+            true,
+            true,
+        );
+        chat.insert_extension("max_tokens", serde_json::json!(maximum))
+            .expect("llama.cpp extension is structurally valid");
+        chat.insert_extension("temperature", serde_json::json!(0))
+            .expect("llama.cpp extension is structurally valid");
+        let body = encode_request(&chat, CodecLimits::default()).map_err(|_| {
+            failure(
+                "swallowtail.llama_cpp.request_invalid",
+                "llama.cpp chat request exceeded the compatible codec bounds",
+            )
+        })?;
         Ok(Self {
             method: Method::Post,
             path: "/v1/chat/completions".to_owned(),

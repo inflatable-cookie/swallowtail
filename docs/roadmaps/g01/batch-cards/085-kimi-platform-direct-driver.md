@@ -1,6 +1,6 @@
 # 085 Kimi Platform Direct Driver
 
-Status: planned
+Status: completed
 Owner: Tom
 Updated: 2026-07-21
 Milestone: `../028-kimi-platform-k3-direct-inference-proof.md`
@@ -30,17 +30,17 @@ direct-inference driver against card 084's frozen corpus.
 
 ## Acceptance Criteria
 
-- [ ] descriptor, instance, access, audience, route, model, reasoning, and
+- [x] descriptor, instance, access, audience, route, model, reasoning, and
       output bound are exact before endpoint or credential work
-- [ ] Membership, Kimi Code, subscription, and regional platform credentials
+- [x] Membership, Kimi Code, subscription, and regional platform credentials
       cannot satisfy the direct access profile
-- [ ] catalogue evidence remains source-scoped and does not create routes or
+- [x] catalogue evidence remains source-scoped and does not create routes or
       prove entitlement
-- [ ] one start emits one provider attempt through the shared structural codec
-- [ ] returned-model mismatch, unknown semantics, provider errors, disconnect,
+- [x] one start emits one provider attempt through the shared structural codec
+- [x] returned-model mismatch, unknown semantics, provider errors, disconnect,
       cancellation, and deadline remain distinct
-- [ ] every connection task is joined before awaited credential release
-- [ ] stable diagnostics expose no endpoint, secret, raw payload, prompt,
+- [x] every connection task is joined before awaited credential release
+- [x] stable diagnostics expose no endpoint, secret, raw payload, prompt,
       reasoning, output, or provider id
 
 ## Validation
@@ -56,6 +56,28 @@ direct-inference driver against card 084's frozen corpus.
 - implementation needs an ambient endpoint or credential
 - the provider requires implicit retry, state, model alias, or fallback
 - common runtime or codec APIs need Kimi identity
+
+## Evidence
+
+- `swallowtail-adapter-kimi-platform` registers the separate
+  `swallowtail.kimi-platform.direct-chat` driver over `http-sse`.
+- Exact preflight checks reject non-direct ownership, non-platform API keys,
+  regional audiences, non-K3 routes, non-Moonshot provider identity, missing
+  output bounds, and missing or mismatched reasoning before host effects.
+- The authenticated catalogue maps one bounded response into source-scoped
+  metadata only. It creates no model route and claims no entitlement.
+- The structured run sends one codec-built request, preserves reasoning,
+  output, usage, returned-model agreement, and `[DONE]` order, and performs no
+  retry, reconnect, state recovery, or fallback.
+- Deterministic local HTTP fixtures prove success, provider error, unknown
+  semantics, model mismatch, partial-record disconnect, cancellation, elapsed
+  and in-flight deadlines, redaction, one attempt, connection join, and
+  awaited credential release.
+- Twelve adapter tests pass. Focused warnings-denied clippy and all-target
+  workspace compilation pass without live Kimi access.
+- The two new warning-level oversized-file findings observed during the first
+  doctor pass were split immediately. Doctor returns to the inherited 19
+  findings: 12 warnings and seven errors.
 
 ## Auto-Continuation
 

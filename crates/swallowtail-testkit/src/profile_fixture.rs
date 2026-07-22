@@ -1,9 +1,8 @@
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessRequirement, AccessStatus, AdapterId, AdapterIdentity,
-    AdapterVersion, CancellationScope, Capability, CapabilityConstraint, CapabilityProfile,
-    CapabilityRequirement, ConfiguredInstance, ConfiguredInstanceId, DriverDescriptor,
-    EndpointAudience, EndpointAuthorization, EntitlementState, ExecutionHostId, ExtensionNamespace,
-    HostServiceKind, InstancePolicyId, InstanceRevision, InstanceTargetRef, IntegrationFamilyId,
+    AdapterVersion, ConfiguredInstance, ConfiguredInstanceId, DriverDescriptor, EndpointAudience,
+    EndpointAuthorization, EntitlementState, ExecutionHostId, ExtensionNamespace, HostServiceKind,
+    InstancePolicyId, InstanceRevision, InstanceTargetRef, IntegrationFamilyId,
     ModelArtifactBinding, ModelId, ModelRoute, ModelRouteId, ModelRouteRevision,
     OperationRequirements, PreflightContext, PreflightFailure, PreflightPlan, ProtocolFacadeId,
     ProviderAgentBinding, ProviderAgentId, ProviderAgentVersion, RuntimeReadiness,
@@ -13,6 +12,7 @@ use swallowtail_core::{
 use crate::{SyntheticProfile, profile_shape::ProfileShape};
 
 mod artifact;
+mod capabilities;
 mod managed;
 
 pub(crate) struct ProfilePreflightFixture {
@@ -35,7 +35,7 @@ impl ProfilePreflightFixture {
         let shape = ProfileShape::for_profile(profile);
         let adapter_id = valid(AdapterId::new, shape.adapter_id);
         let access_profile_id = valid(AccessProfileId::new, shape.access_profile_id);
-        let capabilities = capability_profile(profile);
+        let capabilities = capabilities::profile(profile);
         let driver = DriverDescriptor::new(
             AdapterIdentity::new(
                 adapter_id.clone(),
@@ -110,12 +110,19 @@ impl ProfilePreflightFixture {
         )
         .with_ownership_modes([shape.ownership])
         .with_host_services(shape.required_services.iter().copied())
-        .with_capabilities(capability_requirements(profile))
+        .with_capabilities(capabilities::requirements(profile))
         .with_extension_namespaces([extension_namespace()])
         .require_model_route();
         if shape.operation_shape == swallowtail_core::OperationShape::InteractiveSession {
             requirements = requirements
                 .with_session_access_policy(crate::profile_session_access::policy(profile));
+        }
+        if profile == SyntheticProfile::RealtimeMediaDirectSession {
+            requirements =
+                requirements.with_realtime_media(swallowtail_core::RealtimeMediaRequirements::new(
+                    valid(ModelId::new, shape.model_id),
+                    crate::realtime_media_fixture::realtime_media_config(),
+                ));
         }
 
         Self {
@@ -175,81 +182,6 @@ impl ProfilePreflightFixture {
     pub(crate) const fn artifact(&self) -> Option<&ModelArtifactBinding> {
         self.artifact.as_ref()
     }
-}
-
-fn capability_profile(profile: SyntheticProfile) -> CapabilityProfile {
-    CapabilityProfile::new(capability_requirements(profile))
-}
-
-fn capability_requirements(profile: SyntheticProfile) -> Vec<CapabilityRequirement> {
-    let interruption_scope = match profile {
-        SyntheticProfile::LongLivedRpcHarness
-        | SyntheticProfile::LongLivedAcpHarness
-        | SyntheticProfile::PersistentAcpHarness
-        | SyntheticProfile::AttachedNetworkHarness
-        | SyntheticProfile::ConnectionScopedDirectSession => CancellationScope::ActiveTurn,
-        SyntheticProfile::OwnedSelfHosted => CancellationScope::OwnedServingInstance,
-        _ => CancellationScope::StructuredRun,
-    };
-    let mut capabilities = vec![
-        CapabilityRequirement::new(Capability::StreamingEvents, []),
-        CapabilityRequirement::new(
-            Capability::Interruption,
-            [CapabilityConstraint::CancellationScope(interruption_scope)],
-        ),
-    ];
-    match profile {
-        SyntheticProfile::LongLivedRpcHarness => {
-            capabilities.push(CapabilityRequirement::new(
-                Capability::InteractiveSession,
-                [],
-            ));
-            capabilities.push(CapabilityRequirement::new(Capability::Resume, []));
-        }
-        SyntheticProfile::LongLivedAcpHarness => {
-            capabilities.push(CapabilityRequirement::new(
-                Capability::InteractiveSession,
-                [],
-            ));
-            capabilities.push(CapabilityRequirement::new(
-                Capability::WorkingResource,
-                [
-                    CapabilityConstraint::ResourceAccess(swallowtail_core::ResourceAccess::Read),
-                    CapabilityConstraint::ResourceRepresentation(
-                        swallowtail_core::ResourceRepresentation::Filesystem,
-                    ),
-                ],
-            ));
-        }
-        SyntheticProfile::PersistentAcpHarness => {
-            capabilities.extend(crate::profile_persistent_acp_shape::capabilities());
-        }
-        SyntheticProfile::ConnectionScopedDirectSession => {
-            capabilities.push(CapabilityRequirement::new(
-                Capability::InteractiveSession,
-                [],
-            ));
-            capabilities.push(CapabilityRequirement::new(Capability::UsageReporting, []));
-            capabilities.push(CapabilityRequirement::new(
-                Capability::BilledCostReporting,
-                [],
-            ));
-        }
-        SyntheticProfile::AttachedNetworkHarness => {
-            capabilities.push(CapabilityRequirement::new(
-                Capability::InteractiveSession,
-                [],
-            ));
-        }
-        SyntheticProfile::AttachedSelfHosted | SyntheticProfile::OwnedSelfHosted => {}
-        SyntheticProfile::OneShotStructuredCli | SyntheticProfile::HostedDirectApi => {
-            capabilities.push(CapabilityRequirement::new(Capability::StructuredRun, []));
-        }
-        SyntheticProfile::ProviderManagedRemoteHarness => {
-            capabilities.extend(managed::capabilities());
-        }
-    }
-    capabilities
 }
 
 fn extension_namespace() -> ExtensionNamespace {

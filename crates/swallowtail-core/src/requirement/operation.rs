@@ -1,7 +1,8 @@
 use super::{AccessRequirement, CapabilityRequirement};
 use crate::{
     DriverRole, ExecutionHostId, ExecutionLayer, ExtensionNamespace, HarnessIsolation,
-    HostServiceKind, InstanceOwnership, OperationShape, SessionAccessPolicy,
+    HostServiceKind, InstanceOwnership, OperationShape, RealtimeMediaRequirements,
+    SessionAccessPolicy, SessionProviderStatePolicy,
 };
 use std::collections::BTreeSet;
 
@@ -19,6 +20,8 @@ pub struct OperationRequirements {
     model_route_required: bool,
     harness_isolation: Option<HarnessIsolation>,
     session_access_policy: Option<SessionAccessPolicy>,
+    session_provider_state_policy: Option<SessionProviderStatePolicy>,
+    realtime_media: Option<RealtimeMediaRequirements>,
 }
 
 impl OperationRequirements {
@@ -32,6 +35,8 @@ impl OperationRequirements {
     ) -> Self {
         let session_access_policy = (operation_shape == OperationShape::InteractiveSession)
             .then(SessionAccessPolicy::default);
+        let session_provider_state_policy = (operation_shape == OperationShape::InteractiveSession)
+            .then(SessionProviderStatePolicy::default);
         Self {
             execution_layer,
             operation_shape,
@@ -45,6 +50,8 @@ impl OperationRequirements {
             model_route_required: false,
             harness_isolation: None,
             session_access_policy,
+            session_provider_state_policy,
+            realtime_media: None,
         }
     }
 
@@ -103,6 +110,21 @@ impl OperationRequirements {
     }
 
     #[must_use]
+    pub const fn with_session_provider_state_policy(
+        mut self,
+        policy: SessionProviderStatePolicy,
+    ) -> Self {
+        self.session_provider_state_policy = Some(policy);
+        self
+    }
+
+    #[must_use]
+    pub fn with_realtime_media(mut self, requirements: RealtimeMediaRequirements) -> Self {
+        self.realtime_media = Some(requirements);
+        self
+    }
+
+    #[must_use]
     pub const fn execution_layer(&self) -> ExecutionLayer {
         self.execution_layer
     }
@@ -157,5 +179,15 @@ impl OperationRequirements {
     #[must_use]
     pub const fn session_access_policy(&self) -> Option<&SessionAccessPolicy> {
         self.session_access_policy.as_ref()
+    }
+
+    #[must_use]
+    pub const fn session_provider_state_policy(&self) -> Option<SessionProviderStatePolicy> {
+        self.session_provider_state_policy
+    }
+
+    #[must_use]
+    pub const fn realtime_media(&self) -> Option<&RealtimeMediaRequirements> {
+        self.realtime_media.as_ref()
     }
 }

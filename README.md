@@ -7,9 +7,9 @@ Swallowtail owns portable integration mechanisms. Applications retain their
 prompts, tools, authority, workflows, persistence, and product state.
 
 Status: foundation. The repository is in strict Northstar posture. The
-provider-neutral core, pure preflight, executor-neutral runtime, ten synthetic
+provider-neutral core, pure preflight, executor-neutral runtime, eleven synthetic
 conformance profiles, host-approved local process/endpoint/credential services,
-fourteen production driver routes, including separate SDK-native Bedrock Runtime
+sixteen production driver routes, including separate SDK-native Bedrock Runtime
 and control-plane routes, across Codex, OpenCode, OpenAI, Anthropic, Bedrock,
 Gemini, Kimi, llama.cpp, and xAI are validated. Codex app-server supports both
 unchanged read-only sessions and one explicit host-resolved bounded workspace
@@ -40,11 +40,14 @@ Then read [docs/README.md](docs/README.md).
 - local and remote execution hosts treated as equal topologies
 - Nucleus and Soundcheck as initial consumers, not Swallowtail authorities
 
-The fifteen-crate Rust workspace contains `swallowtail-core`, `swallowtail-runtime`,
+The eighteen-crate Rust workspace contains `swallowtail-core`, `swallowtail-runtime`,
 `swallowtail-testkit`, `swallowtail-host-local`, `swallowtail-protocol-acp`,
+`swallowtail-protocol-openai-chat`,
+`swallowtail-adapter-alibaba-model-studio`,
 `swallowtail-adapter-codex`, `swallowtail-adapter-opencode`,
 `swallowtail-adapter-anthropic`, `swallowtail-adapter-bedrock`, `swallowtail-adapter-gemini`,
-`swallowtail-adapter-kimi`, `swallowtail-adapter-llama-cpp`,
+`swallowtail-adapter-kimi`, `swallowtail-adapter-kimi-platform`,
+`swallowtail-adapter-llama-cpp`,
 `swallowtail-adapter-openai`, `swallowtail-adapter-qwen`, and
 `swallowtail-adapter-xai`. Provider behavior stays isolated in adapters.
 
@@ -198,5 +201,36 @@ Alibaba/Qwen and selects the current Kimi K3 public API. Contract 024 keeps
 shared Chat Completions reuse structural: provider access, model, reasoning,
 catalogue, error, retry, and lifecycle semantics remain separately mapped.
 Roadmap 028 now owns the common codec, offline Kimi K3 corpus, production
-driver, and hosted-direct conformance. Doctor remains at the inherited 19
-oversized-file findings.
+driver, and hosted-direct conformance. The bounded common codec and dated K3
+corpus are realized: fragmented SSE, comments, `[DONE]`, common JSON envelopes,
+structural unknowns, K3 reasoning/output/usage, safe errors, model mismatch,
+and disconnect behavior pass offline. llama.cpp now uses the same codec without
+changing its attached or owned driver behavior. The separate Kimi Platform
+driver now binds one host-approved API-key audience, authenticated catalogue,
+exact K3 route, reasoning mode, output bound, and one streaming attempt. Its
+offline production fixtures prove ordered reasoning/output/usage, distinct
+failure and disconnect classes, cancellation, deadline, redaction, joined
+connection work, and awaited credential release. The unchanged hosted-direct
+profile now passes under local and remote-authoritative execution hosts with
+exact topology, source-scoped catalogue truth, one attempt, and no fallback or
+detached work. Roadmap 028 is complete with 384 passing repository tests; three
+installed or live probes remain separately gated. Research 019 selects Alibaba
+Model Studio's Singapore workspace-dedicated Conversations and Responses route
+over another stateless DeepSeek or Z.AI mapping. Contract 025 now governs
+explicit provider-conversation retention, exact regional workspace access,
+local-only cancellation, and item-before-conversation deletion. The shared
+session-only provider-state policy, conversation and aggregate-item deletion
+kinds, dated corpus, production Alibaba driver, and local plus remote-
+authoritative conformance are realized. Roadmap 029 is complete. Full repository
+QA passes with 404 tests; three installed or live probes remain separately
+gated. Research 020 re-ranks the remaining routes and selects the provider-
+supported OpenAI Realtime GA WebSocket because continuous media exchange is the
+largest missing mechanism. Contract 026 keeps realtime media inside a separate
+direct interactive role with bounded redacted chunks, exact formats, consumer-
+owned device and playback truth, native response cancellation, and joined
+duplex cleanup. Card 091 now realizes the role, records, pure preflight,
+eleventh synthetic profile, and dated OpenAI Realtime offline corpus. The
+existing sixteen production routes remain unchanged. Full repository QA passes
+with 416 tests; three installed or live probes remain gated. Card 092 is ready
+for the first production Realtime WebSocket driver. Doctor remains at the
+inherited 19 oversized-file findings.

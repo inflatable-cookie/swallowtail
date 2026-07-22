@@ -1,0 +1,3 @@
+data: {"id":"chatcmpl-k3-fixture","object":"chat.completion.chunk","created":1784592000,"model":"kimi-k3","choices":[{"index":0,"delta":{"reasoning_content":"complete"},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-k3-fixture","object":"chat.completion.chunk","created":1784592000,"model":"kimi-k3","choices":[{"index":0,"delta":{"content":"partial

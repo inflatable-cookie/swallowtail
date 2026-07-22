@@ -1,0 +1,13 @@
+[package]
+name = "swallowtail-protocol-openai-chat"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Bounded OpenAI-compatible Chat Completions wire codec for Swallowtail"
+
+[dependencies]
+serde_json = "1"
+
+[lints]
+workspace = true

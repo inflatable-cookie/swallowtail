@@ -5,6 +5,14 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-07-22 Realtime Media Records And OpenAI Corpus](2026-07-22-realtime-media-records-and-openai-corpus.md)
+- [2026-07-22 Post-Direct Breadth And Realtime Selection](2026-07-22-post-direct-breadth-and-realtime-selection.md)
+- [2026-07-22 Alibaba Conversation Driver And Conformance](2026-07-22-alibaba-conversation-driver-and-conformance.md)
+- [2026-07-22 Alibaba Conversation Records And Fixtures](2026-07-22-alibaba-conversation-records-and-fixtures.md)
+- [2026-07-22 Alibaba Model Studio Conversation Selection](2026-07-22-alibaba-model-studio-conversation-selection.md)
+- [2026-07-21 Kimi Platform Conformance And Closeout](2026-07-21-kimi-platform-conformance-and-closeout.md)
+- [2026-07-21 Kimi Platform Direct Driver](2026-07-21-kimi-platform-direct-driver.md)
+- [2026-07-21 Compatible Chat Codec And Kimi K3 Fixtures](2026-07-21-compatible-chat-codec-and-kimi-k3-fixtures.md)
 - [2026-07-21 Direct Provider Compatible-Codec Selection](2026-07-21-direct-provider-compatible-codec-selection.md)
 - [2026-07-21 Qwen Headless Conformance And Closeout](2026-07-21-qwen-headless-conformance-and-closeout.md)
 - [2026-07-21 Qwen Headless Driver](2026-07-21-qwen-headless-driver.md)

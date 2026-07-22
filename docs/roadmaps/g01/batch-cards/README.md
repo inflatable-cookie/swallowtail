@@ -86,6 +86,14 @@
 - `081-qwen-headless-driver.md`
 - `082-qwen-headless-conformance-and-closeout.md`
 - `083-direct-provider-compatibility-evidence.md`
+- `084-compatible-chat-codec-and-kimi-k3-fixtures.md`
+- `085-kimi-platform-direct-driver.md`
+- `086-kimi-platform-conformance-and-closeout.md`
+- `087-remaining-direct-provider-selection.md`
+- `088-alibaba-conversation-records-and-fixtures.md`
+- `089-alibaba-conversation-driver-and-conformance.md`
+- `090-post-direct-provider-breadth-coverage-evidence.md`
+- `091-realtime-media-records-and-openai-corpus.md`
 
 ## Blocked
 
@@ -93,9 +101,8 @@ None.
 
 ## Ready
 
-- `084-compatible-chat-codec-and-kimi-k3-fixtures.md`
+- `092-openai-realtime-websocket-driver.md`
 
 ## Planned
 
-- `085-kimi-platform-direct-driver.md`
-- `086-kimi-platform-conformance-and-closeout.md`
+- `093-realtime-media-conformance-and-closeout.md`

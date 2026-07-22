@@ -1,0 +1,8 @@
+{
+  "request": {
+    "authorization": "Bearer <credential-lease>"
+  },
+  "response": {
+    "x-request-id": "req_realtime_fixture"
+  }
+}

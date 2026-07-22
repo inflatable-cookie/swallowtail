@@ -6,10 +6,11 @@ use swallowtail_core::{
 use swallowtail_runtime::{
     AttachServingRequest, AttachedServingHandle, BoxFuture, CleanupOutcome, DiscoveryDriver,
     DiscoveryRequest, DriverRegistration, HostServices, InteractiveSessionDriver,
-    InteractiveSessionHandle, ModelCatalogDriver, ModelCatalogRequest, OpenSessionRequest,
-    OperationContent, OperationPolicy, OwnedServingHandle, RequestId, ResumeSessionRequest,
-    RunHandle, RuntimeFailure, ServingInstanceDriver, ServingInstanceId, StructuredRunDriver,
-    StructuredRunRequest, WorkingResourceRef,
+    InteractiveSessionHandle, ModelCatalogDriver, ModelCatalogRequest,
+    OpenRealtimeMediaSessionRequest, OpenSessionRequest, OperationContent, OperationPolicy,
+    OwnedServingHandle, RealtimeMediaSessionDriver, RealtimeMediaSessionHandle, RequestId,
+    ResumeSessionRequest, RunHandle, RuntimeFailure, ServingInstanceDriver, ServingInstanceId,
+    StructuredRunDriver, StructuredRunRequest, WorkingResourceRef,
 };
 
 struct RecordingRejectingDriver {
@@ -81,6 +82,17 @@ impl InteractiveSessionDriver for RecordingRejectingDriver {
     }
 }
 
+impl RealtimeMediaSessionDriver for RecordingRejectingDriver {
+    fn open_realtime_media_session(
+        &self,
+        _plan: PreflightPlan,
+        _request: OpenRealtimeMediaSessionRequest,
+        _services: HostServices,
+    ) -> BoxFuture<'_, Result<Box<dyn RealtimeMediaSessionHandle>, RuntimeFailure>> {
+        self.reject()
+    }
+}
+
 impl ServingInstanceDriver for RecordingRejectingDriver {
     fn attach(
         &self,
@@ -112,6 +124,7 @@ pub fn assert_dynamic_role_registration_and_calls() {
         DriverRole::ModelCatalog,
         DriverRole::StructuredRun,
         DriverRole::InteractiveSession,
+        DriverRole::RealtimeMediaSession,
         DriverRole::ServingInstanceLifecycle,
     ]);
     let registration = DriverRegistration::new(descriptor)
@@ -123,6 +136,8 @@ pub fn assert_dynamic_role_registration_and_calls() {
         .expect("descriptor declares structured run")
         .with_interactive_session(driver.clone())
         .expect("descriptor declares interactive session")
+        .with_realtime_media_session(driver.clone())
+        .expect("descriptor declares realtime media session")
         .with_serving_instance(driver)
         .expect("descriptor declares serving lifecycle");
     let services = RecordingHostServices::default().services().clone();
@@ -182,6 +197,21 @@ pub fn assert_dynamic_role_registration_and_calls() {
             ),
     );
     assert!(session_result.is_err());
+    let media_result = poll_immediate(
+        registration
+            .realtime_media_session()
+            .expect("realtime media role is registered")
+            .open_realtime_media_session(
+                plan.clone(),
+                OpenRealtimeMediaSessionRequest::new(
+                    valid_request("request-media"),
+                    crate::realtime_media_fixture::realtime_media_config(),
+                    None,
+                ),
+                services.clone(),
+            ),
+    );
+    assert!(media_result.is_err());
     let serving_result = poll_immediate(
         registration
             .serving_instance()
@@ -196,7 +226,7 @@ pub fn assert_dynamic_role_registration_and_calls() {
     );
     assert!(serving_result.is_err());
 
-    assert_eq!(calls.load(std::sync::atomic::Ordering::SeqCst), 5);
+    assert_eq!(calls.load(std::sync::atomic::Ordering::SeqCst), 6);
 }
 
 pub fn assert_missing_roles_are_explicit() {
@@ -207,6 +237,7 @@ pub fn assert_missing_roles_are_explicit() {
     assert!(registration.model_catalog().is_none());
     assert!(registration.structured_run().is_none());
     assert!(registration.interactive_session().is_none());
+    assert!(registration.realtime_media_session().is_none());
     assert!(registration.serving_instance().is_none());
 
     let driver = Arc::new(RecordingRejectingDriver {

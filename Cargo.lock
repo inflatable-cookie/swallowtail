@@ -1621,6 +1621,23 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "13c2bddecc57b384dee18652358fb23172facb8a2c51ccc10d74c157bdea3292"
 
 [[package]]
+name = "swallowtail-adapter-alibaba-model-studio"
+version = "0.1.0"
+dependencies = [
+ "curl",
+ "futures-channel",
+ "futures-core",
+ "futures-executor",
+ "futures-util",
+ "serde_json",
+ "swallowtail-core",
+ "swallowtail-host-local",
+ "swallowtail-runtime",
+ "swallowtail-testkit",
+ "url",
+]
+
+[[package]]
 name = "swallowtail-adapter-anthropic"
 version = "0.1.0"
 dependencies = [
@@ -1697,6 +1714,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "swallowtail-adapter-kimi-platform"
+version = "0.1.0"
+dependencies = [
+ "curl",
+ "futures-channel",
+ "futures-core",
+ "futures-executor",
+ "futures-util",
+ "serde",
+ "serde_json",
+ "swallowtail-core",
+ "swallowtail-host-local",
+ "swallowtail-protocol-openai-chat",
+ "swallowtail-runtime",
+ "swallowtail-testkit",
+ "url",
+]
+
+[[package]]
 name = "swallowtail-adapter-llama-cpp"
 version = "0.1.0"
 dependencies = [
@@ -1709,6 +1745,7 @@ dependencies = [
  "serde_json",
  "swallowtail-core",
  "swallowtail-host-local",
+ "swallowtail-protocol-openai-chat",
  "swallowtail-runtime",
  "swallowtail-testkit",
  "url",
@@ -1718,6 +1755,7 @@ dependencies = [
 name = "swallowtail-adapter-openai"
 version = "0.1.0"
 dependencies = [
+ "base64",
  "curl",
  "futures-channel",
  "futures-core",
@@ -1729,6 +1767,7 @@ dependencies = [
  "swallowtail-runtime",
  "swallowtail-testkit",
  "url",
+ "zeroize",
 ]
 
 [[package]]
@@ -1799,11 +1838,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "swallowtail-protocol-openai-chat"
+version = "0.1.0"
+dependencies = [
+ "serde_json",
+]
+
+[[package]]
 name = "swallowtail-runtime"
 version = "0.1.0"
 dependencies = [
  "futures-core",
  "swallowtail-core",
+ "zeroize",
 ]
 
 [[package]]

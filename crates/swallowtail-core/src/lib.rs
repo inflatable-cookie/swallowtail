@@ -17,11 +17,13 @@ mod model_catalog;
 mod preflight;
 mod provider_agent;
 mod provider_reference;
+mod realtime_media;
 mod registration;
 mod remote_resource;
 mod requirement;
 mod runtime_identity;
 mod session_access;
+mod session_provider_state;
 
 pub use access::{
     AccessProfile, AccessStatus, CredentialMechanism, CredentialState, EndpointAuthorization,
@@ -54,6 +56,10 @@ pub use preflight::{
 };
 pub use provider_agent::{ProviderAgentBinding, ProviderAgentId, ProviderAgentVersion};
 pub use provider_reference::{ProviderRequestRef, RunRef, SessionRef, TurnRef};
+pub use realtime_media::{
+    AudioEncoding, MediaDirection, MediaFormat, MediaKind, RealtimeMediaConfig,
+    RealtimeMediaRequirements,
+};
 pub use registration::{
     DiscoveryAction, DiscoveryOutcome, DiscoveryStatus, DriverDescriptor, SignInAction,
 };
@@ -73,3 +79,4 @@ pub use session_access::{
     IncompatibleSessionAccessPolicy, ProviderApprovalPolicy, ProviderRequestHandling,
     ProviderRequestPolicy, ResourceAccess, ResourceRepresentation, SessionAccessPolicy,
 };
+pub use session_provider_state::SessionProviderStatePolicy;

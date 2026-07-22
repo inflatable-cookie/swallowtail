@@ -1,0 +1,62 @@
+[
+  {
+    "status": 401,
+    "body": {
+      "error": {
+        "type": "invalid_authentication_error",
+        "message": "synthetic secret-bearing provider message",
+        "code": "invalid_authentication_error"
+      }
+    }
+  },
+  {
+    "status": 403,
+    "body": {
+      "error": {
+        "type": "permission_denied_error",
+        "message": "synthetic permission detail",
+        "code": "permission_denied_error"
+      }
+    }
+  },
+  {
+    "status": 404,
+    "body": {
+      "error": {
+        "type": "resource_not_found_error",
+        "message": "synthetic model detail",
+        "code": "resource_not_found_error"
+      }
+    }
+  },
+  {
+    "status": 429,
+    "body": {
+      "error": {
+        "type": "exceeded_current_quota_error",
+        "message": "synthetic billing detail",
+        "code": "exceeded_current_quota_error"
+      }
+    }
+  },
+  {
+    "status": 429,
+    "body": {
+      "error": {
+        "type": "rate_limit_reached_error",
+        "message": "synthetic rate detail",
+        "code": "rate_limit_reached_error"
+      }
+    }
+  },
+  {
+    "status": 503,
+    "body": {
+      "error": {
+        "type": "server_unavailable",
+        "message": "synthetic server detail",
+        "code": "server_unavailable"
+      }
+    }
+  }
+]

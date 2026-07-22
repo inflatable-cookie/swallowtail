@@ -1,9 +1,10 @@
 use crate::{
     AttachedServingHandle, AttachmentDescriptor, BoxFuture, Deadline, HostServices,
-    InteractiveSessionHandle, ModelArtifactBinding, OperationContent, OperationPolicy,
-    OwnedServingHandle, RequestId, RunHandle, RuntimeFailure, RuntimeTurnId, ScopeId,
-    ServingInstanceId, SessionAccessPolicy, SessionOptions, SessionReplayItem,
-    SessionResumeBinding, StructuredOutputDescriptor, ToolDeclaration, WorkingResourceRef,
+    InteractiveSessionHandle, ModelArtifactBinding, OpenRealtimeMediaSessionRequest,
+    OperationContent, OperationPolicy, OwnedServingHandle, RealtimeMediaSessionHandle, RequestId,
+    RunHandle, RuntimeFailure, RuntimeTurnId, ScopeId, ServingInstanceId, SessionAccessPolicy,
+    SessionOptions, SessionReplayItem, SessionResumeBinding, StructuredOutputDescriptor,
+    ToolDeclaration, WorkingResourceRef,
 };
 use std::num::NonZeroU64;
 use swallowtail_core::{
@@ -178,6 +179,7 @@ pub struct OpenSessionRequest {
     deadline: Option<Deadline>,
     options: SessionOptions,
     access_policy: SessionAccessPolicy,
+    provider_state_policy: swallowtail_core::SessionProviderStatePolicy,
 }
 
 impl OpenSessionRequest {
@@ -193,6 +195,7 @@ impl OpenSessionRequest {
             deadline,
             options: SessionOptions::default(),
             access_policy: SessionAccessPolicy::default(),
+            provider_state_policy: swallowtail_core::SessionProviderStatePolicy::default(),
         }
     }
 
@@ -204,6 +207,7 @@ impl OpenSessionRequest {
             deadline,
             options: SessionOptions::default(),
             access_policy: SessionAccessPolicy::resource_free(),
+            provider_state_policy: swallowtail_core::SessionProviderStatePolicy::default(),
         }
     }
 
@@ -216,6 +220,15 @@ impl OpenSessionRequest {
     #[must_use]
     pub fn with_access_policy(mut self, policy: SessionAccessPolicy) -> Self {
         self.access_policy = policy;
+        self
+    }
+
+    #[must_use]
+    pub const fn with_provider_state_policy(
+        mut self,
+        policy: swallowtail_core::SessionProviderStatePolicy,
+    ) -> Self {
+        self.provider_state_policy = policy;
         self
     }
 
@@ -242,6 +255,11 @@ impl OpenSessionRequest {
     #[must_use]
     pub const fn access_policy(&self) -> &SessionAccessPolicy {
         &self.access_policy
+    }
+
+    #[must_use]
+    pub const fn provider_state_policy(&self) -> swallowtail_core::SessionProviderStatePolicy {
+        self.provider_state_policy
     }
 }
 
@@ -597,6 +615,15 @@ pub trait InteractiveSessionDriver: Send + Sync {
             )))
         })
     }
+}
+
+pub trait RealtimeMediaSessionDriver: Send + Sync {
+    fn open_realtime_media_session(
+        &self,
+        plan: PreflightPlan,
+        request: OpenRealtimeMediaSessionRequest,
+        services: HostServices,
+    ) -> BoxFuture<'_, Result<Box<dyn RealtimeMediaSessionHandle>, RuntimeFailure>>;
 }
 
 pub trait ServingInstanceDriver: Send + Sync {

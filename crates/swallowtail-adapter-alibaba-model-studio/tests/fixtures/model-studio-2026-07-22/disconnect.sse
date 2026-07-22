@@ -1,0 +1,2 @@
+event: response.output_text.delta
+data: {"sequence_number":0,"type":"response.output_text.delta","delta":"partial"

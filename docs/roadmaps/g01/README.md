@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-21
+Updated: 2026-07-22
 
 ## Purpose
 
@@ -558,8 +558,58 @@ cross-adapter adoption without prematurely stabilizing the public API.
 - Contract 024 limits common Chat Completions reuse to bounded structural wire
   truth; provider access, model, capability, error, lifecycle, retry, and
   fallback semantics remain in separate adapters
-- roadmap 027 and card 083 are complete; roadmap 028 and cards 084-086 own the
-  common codec, Kimi K3 corpus, production driver, and conformance
+- `swallowtail-protocol-openai-chat` now realizes that structural boundary with
+  only a `serde_json` dependency; independent llama.cpp and Kimi corpora pass
+  the same fragmented SSE and JSON decoder
+- the llama.cpp build-9910 request and semantic mapping use the common codec;
+  all attached, owned-serving, cancellation, usage, and conformance behavior
+  remains green
+- the dated offline K3 corpus freezes platform access, catalogue, exact request,
+  reasoning/output/usage, errors, unknowns, model mismatch, disconnect, fixed
+  parameter omissions, and exclusions without a credential or network request
+- the separate Kimi Platform production adapter binds one exact public API-key
+  audience, authenticated catalogue, `kimi-k3` route, reasoning selection,
+  output bound, and one streaming attempt before host effects
+- ordered reasoning, output, usage, returned-model agreement, provider error,
+  unknown semantics, disconnect, cancellation, deadline, redaction, joined
+  connection work, and awaited credential cleanup pass 12 focused tests
+- the unchanged hosted-direct profile proves the Kimi Platform production
+  route under local and remote-authoritative execution-host identities
+- exact topology, one-attempt inference, source-scoped catalogue truth,
+  connection-before-credential cleanup, and no fallback or detached work pass
+  deterministic conformance
+- 93 focused Kimi Platform, compatible-chat, llama.cpp, and testkit tests pass;
+  full repository QA passes with 384 tests and three gated probes ignored
+- doctor remains at the inherited 19 findings with no new oversized file
+- roadmap 028 and cards 084-086 are complete
+- Research 019 revalidates DeepSeek V4, Z.AI GLM-5.1, and Alibaba Model Studio
+  from official 2026-07-22 evidence
+- Alibaba Model Studio's Singapore workspace-dedicated Conversations and
+  Responses route is selected for provider-owned direct-session context and
+  separate conversation-item deletion truth
+- Contract 025 fixes explicit session retention, exact regional workspace
+  access, local-only cancellation, and item-before-conversation cleanup
+- cards 087-089 and roadmap 029 are complete; the production Alibaba driver
+  realizes the exact two-turn conversation and ordered deletion boundary
+- local and remote-authoritative fixtures preserve the same instance, access,
+  route, lifecycle, redaction, cleanup, and joined-release truth
+- full repository QA passes with 404 tests; three installed or live probes
+  remain separately gated
+- doctor remains at the inherited 19 findings with no new oversized file
+- Research 020 inventories all sixteen production drivers and ten common
+  profiles, then selects OpenAI Realtime GA as the missing duplex-media shape
+- Contract 026 fixes a separate realtime-media direct-session role, exact
+  formats, bounded chunks, consumer playback ownership, cancellation, and
+  joined cleanup
+- card 091 realizes the separate role, records, pure preflight, eleventh common
+  profile, and frozen OpenAI corpus without changing the sixteen production
+  routes
+- full repository QA passes with 416 tests; three installed or live probes
+  remain separately gated, and doctor remains at the inherited 19 findings
+- roadmap 030 and cards 090-091 are complete; card 092 is ready for the
+  production OpenAI Realtime WebSocket driver
+- Gemini Live remains the first later realtime portability candidate; Grok
+  Build, DeepSeek, and Z.AI remain later provider mappings
 
 ## Milestones
 
@@ -601,6 +651,12 @@ cross-adapter adoption without prematurely stabilizing the public API.
 - [027 Direct Provider Compatible-Codec Checkpoint](027-direct-provider-compatible-codec-checkpoint.md)
   — completed
 - [028 Kimi Platform K3 Direct Inference Proof](028-kimi-platform-k3-direct-inference-proof.md)
+  — completed
+- [029 Remaining Direct Provider Breadth](029-remaining-direct-provider-breadth.md)
+  — completed
+- [030 Post Direct Provider Breadth Coverage Checkpoint](030-post-direct-provider-breadth-coverage-checkpoint.md)
+  — completed
+- [031 OpenAI Realtime Media Direct Session Proof](031-openai-realtime-media-direct-session-proof.md)
   — active
 
 ## Batch Shape
@@ -634,6 +690,11 @@ cross-adapter adoption without prematurely stabilizing the public API.
 - cards 080-082 form the Qwen Code headless structured-harness proof
 - card 083 opens the direct-provider compatible-codec evidence checkpoint
 - cards 084-086 form the Kimi Platform K3 direct-inference proof
+- cards 087-089 form the Alibaba direct-conversation selection, records,
+  fixtures, and production-proof lane
+- card 090 closes the post-direct-provider breadth evidence checkpoint
+- cards 091-093 form the OpenAI Realtime media records, driver, and conformance
+  lane
 
 Run validation after each complete batch, not after each small card.
 

@@ -30,6 +30,7 @@ pub enum Capability {
     ProviderManagedRecovery,
     OwnedRemoteResourceDeletion,
     StreamReattachment,
+    RealtimeMedia,
 }
 
 #[derive(Clone, Debug, Default, Eq, PartialEq)]

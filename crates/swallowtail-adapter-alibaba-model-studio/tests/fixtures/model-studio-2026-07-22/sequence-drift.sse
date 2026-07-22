@@ -1,0 +1,6 @@
+event: response.created
+data: {"sequence_number":0,"type":"response.created","response":{"id":"resp_fixture_drift","model":"qwen3.7-plus-2026-05-26","output":[],"status":"queued"}}
+
+event: response.in_progress
+data: {"sequence_number":2,"type":"response.in_progress","response":{"id":"resp_fixture_drift","status":"in_progress"}}
+

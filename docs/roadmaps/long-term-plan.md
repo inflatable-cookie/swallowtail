@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-21
+Updated: 2026-07-22
 
 ## Sequence
 
@@ -78,6 +78,36 @@ Platform K3 proof. The codec must pass independent llama.cpp and Kimi corpora;
 provider access, model, reasoning, errors, catalogue, retry, and lifecycle stay
 outside it. Roadmap 028 owns cards 084-086. DeepSeek V4, Z.AI general API, and
 Alibaba Model Studio remain later separate mappings.
+
+Card 084 realizes the bounded codec and dated K3 corpus. llama.cpp and Kimi now
+pass the same structural decoder while retaining separate semantic mappings.
+Card 085 realizes the separate Kimi Platform driver with one exact K3 request,
+bounded authenticated catalogue, ordered reasoning/output/usage, distinct
+failure classes, local cancellation and deadline, and joined credential
+cleanup. Card 086 proves the unchanged hosted-direct profile under local and
+remote-authoritative hosts, exact topology, source-scoped catalogue truth, one
+attempt, and connection-before-credential cleanup. Roadmap 028 closes with 384
+passing repository tests and three gated probes ignored. Research 019 then
+selects Alibaba Model Studio's Singapore workspace-dedicated Conversations and
+Responses route over another stateless DeepSeek or Z.AI Chat Completions
+mapping. Contract 025 fixes a resource-free direct interactive session with
+explicit provider conversation retention, exact regional workspace access,
+local-only cancellation, and item-before-conversation deletion truth. Cards
+088-089 realize the provider-neutral records, dated corpus, production driver,
+and local plus remote-authoritative conformance. Roadmap 029 closes with 404
+tests. Roadmap 030 and card 090 re-rank remaining harness, direct, protocol,
+SDK, catalogue, and self-hosted pressure before another implementation.
+DeepSeek V4 and Z.AI GLM-5.1 remain candidates rather than automatic defaults.
+Research 020 closes that checkpoint by selecting OpenAI Realtime's GA server-
+side WebSocket. Contract 026 adds a separate realtime-media direct-session role
+with exact media formats, bounded redacted chunks, consumer-owned device and
+playback truth, native response cancellation, and joined duplex cleanup.
+Card 091 realizes the provider-neutral role, records, preflight, eleventh
+profile, and dated OpenAI corpus without adding a production route. Card 092 is
+ready for production transport, followed by local plus remote-authoritative
+conformance in card 093. Gemini
+Live remains the first later portability route; Grok Build remains later
+harness breadth because its structured CLI and ACP shapes are already proved.
 
 These stages normally become numbered roadmaps inside the active generation.
 They do not each create a generation. A generation rolls over near the 30-50

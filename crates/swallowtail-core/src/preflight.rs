@@ -17,7 +17,9 @@ use std::fmt;
 
 mod artifact;
 mod capability;
+mod realtime_media;
 mod session_access;
+mod session_provider_state;
 mod validation;
 
 use validation::validate;
@@ -78,6 +80,8 @@ pub enum PreflightDimension {
     Extension,
     HarnessIsolation,
     SessionAccess,
+    SessionProviderState,
+    RealtimeMedia,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

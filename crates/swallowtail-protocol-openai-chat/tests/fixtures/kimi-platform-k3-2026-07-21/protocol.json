@@ -1,0 +1,74 @@
+{
+  "fixture_schema": 1,
+  "checked_at": "2026-07-21",
+  "integration_family": "kimi-platform",
+  "adapter_driver": "swallowtail.kimi-platform.direct-chat",
+  "transport": "https_sse",
+  "configured_instance": {
+    "endpoint_audience": "https://api.moonshot.ai",
+    "endpoint_source": "host_approved_grant",
+    "credential_mechanism": "api_key_lease",
+    "credential_issuer": "platform.kimi.ai",
+    "entitlement": "account_top_up_required",
+    "metering": "pay_as_you_go",
+    "support_authority": "provider_supported"
+  },
+  "routes": {
+    "catalogue": ["GET", "/v1/models"],
+    "inference": ["POST", "/v1/chat/completions"]
+  },
+  "model_route": {
+    "model": "kimi-k3",
+    "context_length": 1048576,
+    "fallback_allowed": false,
+    "returned_model_must_match": true
+  },
+  "request": {
+    "reasoning_efforts": ["low", "high", "max"],
+    "reasoning_required": true,
+    "output_bound_field": "max_completion_tokens",
+    "fixed_parameters_omitted": [
+      "temperature",
+      "top_p",
+      "n",
+      "presence_penalty",
+      "frequency_penalty"
+    ],
+    "maximum_attempts": 1,
+    "retry_allowed": false,
+    "reconnect_allowed": false
+  },
+  "capabilities": {
+    "text_chat": true,
+    "streaming": true,
+    "reasoning_progress": true,
+    "usage": true,
+    "authenticated_catalogue": true
+  },
+  "excluded": [
+    "membership",
+    "kimi_code",
+    "regional_keys",
+    "subscription",
+    "tools",
+    "structured_output",
+    "multimodal",
+    "files",
+    "batch",
+    "balance",
+    "official_tools",
+    "web_search",
+    "partial_mode",
+    "provider_history",
+    "retry",
+    "reconnect",
+    "fallback"
+  ],
+  "default_qa": {
+    "synthetic": true,
+    "requires_credential": false,
+    "requires_network": false,
+    "requires_paid_inference": false,
+    "requires_live_catalogue": false
+  }
+}

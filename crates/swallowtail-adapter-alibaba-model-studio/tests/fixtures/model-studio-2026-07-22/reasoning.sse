@@ -1,0 +1,6 @@
+event: response.created
+data: {"sequence_number":0,"type":"response.created","response":{"id":"resp_fixture_reasoning","model":"qwen3.7-plus-2026-05-26","output":[],"status":"queued"}}
+
+event: response.reasoning_summary_text.delta
+data: {"sequence_number":1,"type":"response.reasoning_summary_text.delta","delta":"must not appear"}
+

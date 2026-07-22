@@ -1,0 +1,16 @@
+: synthetic keepalive
+
+data: {"id":"chatcmpl-k3-fixture","object":"chat.completion.chunk","created":1784592000,"model":"kimi-k3","choices":[{"index":0,"delta":{"role":"assistant","content":null},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-k3-fixture","object":"chat.completion.chunk","created":1784592000,"model":"kimi-k3","choices":[{"index":0,"delta":{"reasoning_content":"Fixture "},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-k3-fixture","object":"chat.completion.chunk","created":1784592000,"model":"kimi-k3","choices":[{"index":0,"delta":{"reasoning_content":"reasoning"},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-k3-fixture","object":"chat.completion.chunk","created":1784592000,"model":"kimi-k3","choices":[{"index":0,"delta":{"content":"Fixture "},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-k3-fixture","object":"chat.completion.chunk","created":1784592000,"model":"kimi-k3","choices":[{"index":0,"delta":{"content":"answer"},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-k3-fixture","object":"chat.completion.chunk","created":1784592000,"model":"kimi-k3","choices":[{"index":0,"delta":{},"finish_reason":"stop"}],"usage":{"prompt_tokens":18,"completion_tokens":9,"total_tokens":27,"cached_tokens":4}}
+
+data: [DONE]
+

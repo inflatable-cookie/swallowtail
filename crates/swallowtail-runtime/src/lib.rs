@@ -27,6 +27,7 @@ mod outcome;
 mod process_input;
 mod process_io;
 mod provider_observation;
+mod realtime_media;
 mod registration;
 mod roles;
 mod schema;
@@ -36,11 +37,12 @@ mod serving_lifecycle;
 mod session_access;
 mod session_binding;
 mod session_options;
+mod session_provider_state;
 mod session_replay;
 mod time;
 mod working_resource_io;
 
-pub use async_types::{BoxCallbackStream, BoxEventStream, BoxFuture};
+pub use async_types::{BoxCallbackStream, BoxEventStream, BoxFuture, BoxRealtimeMediaEventStream};
 pub use attachment::{
     AttachmentDescriptor, AttachmentDigest, AttachmentRepresentation, AttachmentRole,
     LeaseCleanupAuthority,
@@ -57,7 +59,8 @@ pub use event_buffer::{EventBufferFailure, EventBufferFailureKind, OrderedEventB
 pub use event_channel::{RuntimeEventSender, RuntimeEventStream, runtime_event_channel};
 pub use failure::RuntimeFailure;
 pub use handles::{
-    AttachedServingHandle, InteractiveSessionHandle, OwnedServingHandle, RunHandle, TurnHandle,
+    AttachedServingHandle, InteractiveSessionHandle, OwnedServingHandle,
+    RealtimeMediaResponseHandle, RealtimeMediaSessionHandle, RunHandle, TurnHandle,
 };
 pub use host_reference::{
     AttachmentRef, EndpointRef, EnvironmentRef, ExecutableRef, MaterializedFileRef,
@@ -70,8 +73,8 @@ pub use host_traits::{
     SchemaService, ScopedTaskService, TimeService, WorkingResourceService,
 };
 pub use identity::{
-    CallbackId, RequestId, RuntimeIdentityRequired, RuntimeRunId, RuntimeSessionId, RuntimeTurnId,
-    ScopeId, ServingInstanceId,
+    CallbackId, MediaStreamId, RequestId, RuntimeIdentityRequired, RuntimeRunId, RuntimeSessionId,
+    RuntimeTurnId, ScopeId, ServingInstanceId,
 };
 pub use input::{InputLimitExceeded, InputValueRequired};
 pub use model_artifact::{ModelArtifactAccess, ModelArtifactLease, ModelArtifactService};
@@ -91,12 +94,17 @@ pub use provider_observation::{
     BilledCostObservation, BilledCostSemantics, BilledCostSource, Currency, ProviderObservation,
     QuotaObservation, QuotaState, RateLimitKind, RateLimitObservation, TokenUsage,
 };
+pub use realtime_media::{
+    MediaChunk, MediaInputCommit, MediaTranscript, OpenRealtimeMediaSessionRequest,
+    RealtimeMediaEvent, RealtimeMediaEventKind, RealtimeMediaFailure, RealtimeMediaFailureKind,
+    RealtimeMediaResponseStatus, RealtimeMediaSessionState,
+};
 pub use registration::{DriverRegistration, RegistrationFailure};
 pub use roles::{
     AttachServingRequest, DiscoveryDriver, DiscoveryRequest, InteractiveSessionDriver,
     LoadSessionRequest, LoadedSession, ModelCatalogDriver, ModelCatalogRequest, OpenSessionRequest,
-    ResumeSessionRequest, ServingInstanceDriver, StartServingRequest, StructuredRunDriver,
-    StructuredRunRequest, TurnRequest,
+    RealtimeMediaSessionDriver, ResumeSessionRequest, ServingInstanceDriver, StartServingRequest,
+    StructuredRunDriver, StructuredRunRequest, TurnRequest,
 };
 pub use schema::{SchemaDocument, StructuredOutputDescriptor};
 pub use secret::{CredentialLease, DelegatedCredential, SecretLease};
@@ -107,6 +115,7 @@ pub use serving_lifecycle::validate_owned_serving_start;
 pub use session_access::{validate_session_access_plan, validate_session_resource_lease};
 pub use session_binding::SessionResumeBinding;
 pub use session_options::{SessionOptions, ToolDeclaration};
+pub use session_provider_state::validate_session_provider_state_plan;
 pub use session_replay::{SessionReplayItem, SessionReplayKind};
 pub use swallowtail_core::{
     CredentialRef, ExternalNetworkPolicy, ExternalSearchPolicy, FilesystemBoundary,
@@ -114,7 +123,7 @@ pub use swallowtail_core::{
     ModelArtifactDescriptor, ModelArtifactDigest, ModelArtifactFormat, ModelArtifactId,
     ModelArtifactRef, ModelArtifactRevision, OwnedRemoteResourceKind, ProviderApprovalPolicy,
     ProviderRequestHandling, ProviderRequestPolicy, ResourceAccess, ResourceRepresentation,
-    SessionAccessPolicy,
+    SessionAccessPolicy, SessionProviderStatePolicy,
 };
 pub use time::{Deadline, DeadlineObservation, MonotonicInstant};
 pub use working_resource_io::{

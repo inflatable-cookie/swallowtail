@@ -1,0 +1,8 @@
+{
+  "local_turn_statuses": ["cancelled", "timed-out"],
+  "provider_cancellation": "unconfirmed",
+  "late_remote_mutation_possible": true,
+  "conversation_items_deletion": "unconfirmed",
+  "conversation_deletion": "unconfirmed",
+  "credential_release": "awaited-after-cleanup"
+}

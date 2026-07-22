@@ -1,6 +1,6 @@
 # 086 Kimi Platform Conformance And Closeout
 
-Status: planned
+Status: completed
 Owner: Tom
 Updated: 2026-07-21
 Milestone: `../028-kimi-platform-k3-direct-inference-proof.md`
@@ -29,14 +29,14 @@ prove topology and cleanup, and close roadmap 028.
 
 ## Acceptance Criteria
 
-- [ ] the hosted-direct profile passes without provider-specific branches
-- [ ] both topologies preserve exact endpoint, access, route, model, and host
+- [x] the hosted-direct profile passes without provider-specific branches
+- [x] both topologies preserve exact endpoint, access, route, model, and host
       identity
-- [ ] one operation produces no retry, reconnect, fallback, or detached work
-- [ ] catalogue discovery cannot imply K3 entitlement or invocation readiness
-- [ ] existing llama.cpp behavior and all ten conformance profiles remain
+- [x] one operation produces no retry, reconnect, fallback, or detached work
+- [x] catalogue discovery cannot imply K3 entitlement or invocation readiness
+- [x] existing llama.cpp behavior and all ten conformance profiles remain
       unchanged
-- [ ] one next provider-breadth checkpoint remains after closeout
+- [x] one next provider-breadth checkpoint remains after closeout
 
 ## Validation
 
@@ -55,3 +55,26 @@ prove topology and cleanup, and close roadmap 028.
 ## Auto-Continuation
 
 No. Return to the DeepSeek, Z.AI, and Alibaba provider-breadth checkpoint.
+
+## Completion Evidence
+
+- the unchanged hosted-direct profile passes for the production Kimi Platform
+  driver without Kimi-specific testkit branches
+- local and remote-authoritative fixtures preserve exact execution host,
+  configured instance, endpoint target, public-platform API-key audience,
+  catalogue source, K3 route, model, and provider identity
+- the exact success transcript contains one inference attempt, two HTTP
+  requests, terminal reasoning, output, and usage, and no retry, reconnect,
+  fallback, or detached task
+- connection work completes before both credential releases; operation close
+  leaves no owned work
+- catalogue output remains source-scoped observation and grants no entitlement,
+  route, or invocation-readiness claim
+- 93 focused Kimi Platform, compatible-chat, llama.cpp, and testkit tests pass;
+  focused warnings-denied clippy passes
+- full repository QA passes with 384 tests; three installed or live probes
+  remain separately gated and ignored by default
+- doctor remains at the inherited 19 oversized-file findings: 12 warnings and
+  seven errors, with no new finding from this batch
+- roadmap 029 and cards 087-089 return the active lane to current DeepSeek,
+  Z.AI, and Alibaba Model Studio evidence before another provider is selected

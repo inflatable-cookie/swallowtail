@@ -11,10 +11,10 @@ shape.
 
 ## Next Task
 
-Execute [card 084](g01/batch-cards/084-compatible-chat-codec-and-kimi-k3-fixtures.md):
-extract the bounded provider-neutral Chat Completions structural codec, prove it
-against independent llama.cpp and Kimi K3 corpora, and freeze the exact Kimi
-Platform catalogue, stream, access, and exclusion boundary offline.
+Execute [card 092](g01/batch-cards/092-openai-realtime-websocket-driver.md):
+implement the exact OpenAI Realtime GA server-to-server WebSocket driver over
+card 091's provider-neutral records and frozen offline corpus, with loopback
+fixtures only and no live credential or paid request.
 
 ## Index
 

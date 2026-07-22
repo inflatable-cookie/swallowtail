@@ -1,7 +1,7 @@
-use serde_json::Value;
+use swallowtail_protocol_openai_chat::{
+    Payload, ProtocolError, ProtocolErrorKind, SseRecord, decode_payload,
+};
 use swallowtail_runtime::TokenUsage;
-
-const MAX_SSE_BYTES: usize = 1_048_576;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) enum Event {
@@ -15,125 +15,89 @@ pub(crate) enum Event {
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) struct SseFrame {
-    pub data: Vec<u8>,
+    record: SseRecord,
 }
 
 #[derive(Default)]
 pub(crate) struct SseDecoder {
-    buffer: Vec<u8>,
+    inner: swallowtail_protocol_openai_chat::SseDecoder,
 }
 
 impl SseDecoder {
     pub(crate) fn push(&mut self, chunk: &[u8]) -> Result<Vec<SseFrame>, RuntimeFailure> {
-        if self.buffer.len().saturating_add(chunk.len()) > MAX_SSE_BYTES {
-            return Err(failure(
-                "swallowtail.llama_cpp.sse_limit",
-                "llama.cpp SSE input exceeded its limit",
-            ));
-        }
-        self.buffer.extend_from_slice(chunk);
-        let mut frames = Vec::new();
-        while let Some(end) = boundary(&self.buffer) {
-            let frame: Vec<_> = self.buffer.drain(..end).collect();
-            let separator = if self.buffer.starts_with(b"\r\n\r\n") {
-                4
-            } else {
-                2
-            };
-            self.buffer.drain(..separator);
-            if let Some(frame) = decode_frame(&frame)? {
-                frames.push(frame);
-            }
-        }
-        Ok(frames)
+        self.inner
+            .push(chunk)
+            .map(|records| {
+                records
+                    .into_iter()
+                    .map(|record| SseFrame { record })
+                    .collect()
+            })
+            .map_err(map_sse_failure)
     }
 
     pub(crate) fn finish(self) -> Result<(), RuntimeFailure> {
-        if self.buffer.iter().all(u8::is_ascii_whitespace) {
-            Ok(())
-        } else {
-            Err(failure(
-                "swallowtail.llama_cpp.sse_disconnected",
-                "llama.cpp SSE disconnected during an event",
-            ))
-        }
+        self.inner.finish().map_err(map_sse_failure)
     }
 }
 
 pub(crate) fn parse_event(frame: &SseFrame) -> Result<Event, RuntimeFailure> {
-    if frame.data == b"[DONE]" {
+    let SseRecord::Data(data) = &frame.record else {
         return Ok(Event::Done);
-    }
-    let value: Value = serde_json::from_slice(&frame.data)
+    };
+    let payload = decode_payload(
+        data,
+        swallowtail_protocol_openai_chat::CodecLimits::default(),
+    )
         .map_err(|_| protocol_failure("stream event"))?;
-    if value.get("error").is_some() {
+    let Payload::Chunk(chunk) = payload else {
         return Ok(Event::ProviderFailed);
+    };
+    if !chunk.unknown_fields.is_empty() {
+        return Err(protocol_failure("stream fields"));
     }
-    let choices = value["choices"]
-        .as_array()
-        .ok_or_else(|| protocol_failure("stream choices"))?;
-    if choices.is_empty() {
-        let usage = &value["usage"];
+    if chunk.choices.is_empty() {
+        let usage = chunk
+            .usage
+            .filter(|usage| usage.unknown_fields.is_empty())
+            .ok_or_else(|| protocol_failure("stream usage"))?;
         return Ok(Event::Usage(TokenUsage::new(
-            usage["prompt_tokens"].as_u64(),
-            usage["completion_tokens"].as_u64(),
+            usage.prompt_tokens,
+            usage.completion_tokens,
         )));
     }
-    if choices.len() != 1 {
+    if chunk.choices.len() != 1 {
         return Err(protocol_failure("stream choice count"));
     }
-    let choice = &choices[0];
-    let delta = &choice["delta"];
-    if delta.get("tool_calls").is_some()
-        || delta.get("function_call").is_some()
-        || delta.get("reasoning_content").is_some()
-    {
+    let choice = &chunk.choices[0];
+    if !choice.unknown_fields.is_empty() || !choice.delta.unknown_fields.is_empty() {
         return Err(failure(
             "swallowtail.llama_cpp.content_semantics_unsupported",
             "llama.cpp emitted content outside the observed text-only fixture",
         ));
     }
-    if delta["role"].as_str() == Some("assistant") && delta["content"].is_null() {
+    if choice.delta.role.as_deref() == Some("assistant") && choice.delta.content.is_none() {
         return Ok(Event::RoleStart);
     }
-    if let Some(content) = delta["content"].as_str() {
-        return Ok(Event::OutputDelta(content.to_owned()));
+    if let Some(content) = &choice.delta.content {
+        return Ok(Event::OutputDelta(content.clone()));
     }
-    if let Some(reason) = choice["finish_reason"].as_str() {
-        return Ok(Event::Finished(reason.to_owned()));
+    if let Some(reason) = &choice.finish_reason {
+        return Ok(Event::Finished(reason.clone()));
     }
     Err(protocol_failure("stream delta"))
 }
 
-fn boundary(buffer: &[u8]) -> Option<usize> {
-    buffer
-        .windows(2)
-        .position(|value| value == b"\n\n")
-        .or_else(|| {
-            buffer
-                .windows(4)
-                .position(|value| value == b"\r\n\r\n")
-        })
-}
-
-fn decode_frame(frame: &[u8]) -> Result<Option<SseFrame>, RuntimeFailure> {
-    let text = std::str::from_utf8(frame).map_err(|_| protocol_failure("SSE encoding"))?;
-    let mut data = Vec::new();
-    for line in text.lines() {
-        if let Some(value) = line.strip_prefix("data:") {
-            if !data.is_empty() {
-                data.push(b'\n');
-            }
-            data.extend_from_slice(value.trim_start().as_bytes());
-        } else if !line.starts_with(':') {
-            return Err(protocol_failure("SSE field"));
-        }
+fn map_sse_failure(error: ProtocolError) -> RuntimeFailure {
+    match error.kind() {
+        ProtocolErrorKind::BufferLimitExceeded | ProtocolErrorKind::WireLimitExceeded => failure(
+            "swallowtail.llama_cpp.sse_limit",
+            "llama.cpp SSE input exceeded its limit",
+        ),
+        ProtocolErrorKind::IncompleteRecord => failure(
+            "swallowtail.llama_cpp.sse_disconnected",
+            "llama.cpp SSE disconnected during an event",
+        ),
+        _ => protocol_failure("SSE framing"),
     }
-    if data.is_empty() && text.lines().all(|line| line.starts_with(':')) {
-        return Ok(None);
-    }
-    if data.is_empty() {
-        return Err(protocol_failure("SSE data"));
-    }
-    Ok(Some(SseFrame { data }))
 }

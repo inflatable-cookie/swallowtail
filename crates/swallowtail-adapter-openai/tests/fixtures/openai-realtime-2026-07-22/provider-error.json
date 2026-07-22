@@ -1,0 +1,1 @@
+{"event_id":"server-error-1","type":"error","error":{"type":"invalid_request_error","code":"invalid_value","message":"synthetic private provider detail","event_id":"input-append-secret"}}

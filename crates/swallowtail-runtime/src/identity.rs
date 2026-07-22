@@ -60,6 +60,7 @@ runtime_identity!(RuntimeTurnId, "runtime turn id");
 runtime_identity!(CallbackId, "callback id");
 runtime_identity!(ServingInstanceId, "serving instance id");
 runtime_identity!(ScopeId, "scope id");
+runtime_identity!(MediaStreamId, "media stream id");
 
 #[cfg(test)]
 mod tests {

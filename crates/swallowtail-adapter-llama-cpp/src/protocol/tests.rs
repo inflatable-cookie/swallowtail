@@ -127,7 +127,12 @@ mod tests {
         assert_eq!(error.diagnostic().code(), "swallowtail.llama_cpp.sse_disconnected");
 
         let mut oversized = SseDecoder::default();
-        let error = oversized.push(&vec![b'x'; MAX_SSE_BYTES + 1]).expect_err("oversized input fails");
+        let error = oversized
+            .push(&vec![
+                b'x';
+                swallowtail_protocol_openai_chat::DEFAULT_MAX_WIRE_BYTES + 1
+            ])
+            .expect_err("oversized input fails");
         assert_eq!(error.diagnostic().code(), "swallowtail.llama_cpp.sse_limit");
         assert!(!error.to_string().contains("raw-provider-payload"));
     }

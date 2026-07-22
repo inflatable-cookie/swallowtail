@@ -10,6 +10,7 @@ pub enum SyntheticProfile {
     HostedDirectApi,
     ProviderManagedRemoteHarness,
     ConnectionScopedDirectSession,
+    RealtimeMediaDirectSession,
     AttachedSelfHosted,
     OwnedSelfHosted,
 }
@@ -61,6 +62,9 @@ pub enum ConformanceAssertion {
     OwnedRemoteDeletionTruth,
     NativeBudgetIndependent,
     NoTranscriptDeletionClaim,
+    RealtimeMediaBoundary,
+    RealtimeMediaOrdering,
+    RealtimeMediaInterruptionEndsSession,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -132,6 +136,11 @@ pub fn run_connection_scoped_direct_session_profile() -> ConformanceReport {
 }
 
 #[must_use]
+pub fn run_realtime_media_direct_session_profile() -> ConformanceReport {
+    crate::profile_realtime_media::run()
+}
+
+#[must_use]
 pub fn run_provider_managed_harness_profile() -> ConformanceReport {
     crate::profile_managed_harness::run()
 }
@@ -162,6 +171,7 @@ pub fn run_all_synthetic_profiles() -> Vec<ConformanceReport> {
         run_hosted_direct_api_profile(),
         run_provider_managed_harness_profile(),
         run_connection_scoped_direct_session_profile(),
+        run_realtime_media_direct_session_profile(),
         run_attached_self_hosted_profile(),
         run_owned_self_hosted_profile(),
     ]

@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-21
+Updated: 2026-07-22
 
 ## Generations
 
@@ -13,7 +13,8 @@ Updated: 2026-07-21
 ## Generation Size
 
 A generation normally contains 30-50 numbered roadmap files. Batch cards do
-not count toward this range. g01 currently contains 28 roadmaps and remains
-the active container for the foreseeable runway. Roadmap 027 selects Kimi
-Platform K3 and Contract 024's structural compatible-codec boundary. Roadmap
-028 owns the production proof without rolling generations.
+not count toward this range. g01 currently contains 31 roadmaps and remains
+the active container for the foreseeable runway. Roadmap 030 selects the
+provider-supported OpenAI Realtime GA WebSocket as the missing duplex-media
+shape. Roadmap 031 owns its proof. Card 091 completes the records and offline
+corpus; card 092 is ready for the production driver. g01 does not roll.

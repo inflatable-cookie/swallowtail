@@ -8,11 +8,12 @@
 mod driver;
 mod failure;
 mod protocol;
-#[cfg(test)]
+mod realtime;
 mod realtime_protocol;
 mod transport;
 
 pub use driver::{OpenAiBackgroundDriver, openai_background_descriptor};
+pub use realtime::{OpenAiRealtimeDriver, openai_realtime_descriptor};
 
 pub(crate) const ENDPOINT_AUDIENCE: &str = "api.openai.com";
 pub(crate) const INTEGRATION_FAMILY: &str = "openai";

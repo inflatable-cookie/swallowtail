@@ -40,7 +40,7 @@ fn client_events_match_the_frozen_manual_audio_subset() {
         .to_json(),
         ClientEvent::ResponseCancel {
             event_id: "response-cancel-1",
-            response_id: "resp_fixture_1",
+            response_id: None,
         }
         .to_json(),
     ];

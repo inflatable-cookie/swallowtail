@@ -11,10 +11,9 @@ shape.
 
 ## Next Task
 
-Execute [card 092](g01/batch-cards/092-openai-realtime-websocket-driver.md):
-implement the exact OpenAI Realtime GA server-to-server WebSocket driver over
-card 091's provider-neutral records and frozen offline corpus, with loopback
-fixtures only and no live credential or paid request.
+Execute [card 095](g01/batch-cards/095-realtime-rollover-records-and-gemini-corpus.md):
+realize the explicit bounded-rollover records and assertion pack, then freeze
+the exact Gemini Live preview raw-WebSocket corpus before production transport.
 
 ## Index
 

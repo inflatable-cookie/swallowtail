@@ -1,6 +1,6 @@
 # 031 OpenAI Realtime Media Direct Session Proof
 
-Status: active
+Status: completed
 Owner: Tom
 Updated: 2026-07-22
 
@@ -12,9 +12,9 @@ and playback policy from consumers.
 
 ## Generation Runway
 
-Keep g01 active. It now contains 31 numbered roadmaps and remains inside the
-normal 30-50 roadmap range. Realtime media extends the current generation; it
-does not create g02.
+Keep g01 active. It now contains 32 numbered roadmaps and remains inside the
+normal 30-50 roadmap range. This proof extended the current generation; it did
+not create g02.
 
 ## Contracts
 
@@ -37,22 +37,35 @@ separate surfaces and access boundaries.
       event, role, lifecycle, preflight, and conformance records.
 - [x] Freeze the current OpenAI Realtime GA WebSocket corpus for one exact
       audio-only manual-turn subset.
-- [ ] Implement a separately registered OpenAI Realtime media driver without
+- [x] Implement a separately registered OpenAI Realtime media driver without
       changing the background Responses driver.
-- [ ] Prove two serial audio turns, native cancellation, connection failure,
+- [x] Prove two serial audio turns, native cancellation, connection failure,
       redaction, and joined cleanup under local and remote-authoritative hosts.
 
 ## Execution Plan
 
 - [x] Realtime media records and OpenAI corpus: card 091.
-- [ ] OpenAI Realtime WebSocket driver: card 092.
-- [ ] Realtime media conformance and closeout: card 093.
+- [x] OpenAI Realtime WebSocket driver: card 092.
+- [x] Realtime media conformance and closeout: card 093.
 
 ## Cards
 
 - `batch-cards/091-realtime-media-records-and-openai-corpus.md` — completed
-- `batch-cards/092-openai-realtime-websocket-driver.md` — ready
-- `batch-cards/093-realtime-media-conformance-and-closeout.md` — planned
+- `batch-cards/092-openai-realtime-websocket-driver.md` — completed
+- `batch-cards/093-realtime-media-conformance-and-closeout.md` — completed
+
+## Completion Evidence
+
+The seventeenth production route passes the eleventh provider-neutral profile
+under local and remote-authoritative host identities. Deterministic fixtures
+cover exact plan binding, two serial turns, bounds, parallel rejection,
+provider failure, unknown semantics, format drift, connection loss, confirmed
+and unconfirmed cancellation, deadline, cleanup failure, redaction, and
+credential-last joined cleanup.
+
+Full `effigy qa` passes with 430 tests. Three installed or live probes remain
+separately gated and ignored. Effigy doctor remains at the inherited 19
+findings with no new oversized file.
 
 ## Bounded First Proof
 

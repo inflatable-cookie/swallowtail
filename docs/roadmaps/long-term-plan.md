@@ -103,11 +103,21 @@ side WebSocket. Contract 026 adds a separate realtime-media direct-session role
 with exact media formats, bounded redacted chunks, consumer-owned device and
 playback truth, native response cancellation, and joined duplex cleanup.
 Card 091 realizes the provider-neutral role, records, preflight, eleventh
-profile, and dated OpenAI corpus without adding a production route. Card 092 is
-ready for production transport, followed by local plus remote-authoritative
-conformance in card 093. Gemini
-Live remains the first later portability route; Grok Build remains later
-harness breadth because its structured CLI and ACP shapes are already proved.
+profile, and dated OpenAI corpus. Card 092 adds the separate production
+Realtime WebSocket driver with local plus remote-authoritative loopback
+evidence. Card 093 adds provider-neutral production conformance, adversarial
+failure and disconnect coverage, cancellation uncertainty, timer and cleanup
+ordering, and both host identities. Roadmap 031 closes with 430 passing tests.
+Roadmap 032 and card 094 close after current evidence selects Gemini Live raw
+server-to-server WebSocket. Contract 027 makes one provider-planned connection
+replacement explicit and opt-in, keeps resumption handles private, and
+separates rollover from reconnect, reattachment, retry, consumer resume, and
+durable state. Roadmap 033 and cards 095-097 own the exact preview records,
+corpus, production driver, portability conformance, and closeout. Grok Build
+remains later harness breadth. Remote ACP has advanced to Active but waits for
+maintained SDK and hardening evidence. Cursor's new local SDK remains beta and
+lower-information; its cloud route still requires repository and remote-
+mutation policy.
 
 These stages normally become numbered roadmaps inside the active generation.
 They do not each create a generation. A generation rolls over near the 30-50

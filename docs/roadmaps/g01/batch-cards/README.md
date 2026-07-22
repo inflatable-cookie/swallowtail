@@ -94,6 +94,9 @@
 - `089-alibaba-conversation-driver-and-conformance.md`
 - `090-post-direct-provider-breadth-coverage-evidence.md`
 - `091-realtime-media-records-and-openai-corpus.md`
+- `092-openai-realtime-websocket-driver.md`
+- `093-realtime-media-conformance-and-closeout.md`
+- `094-post-realtime-provider-coverage-evidence.md`
 
 ## Blocked
 
@@ -101,8 +104,9 @@ None.
 
 ## Ready
 
-- `092-openai-realtime-websocket-driver.md`
+- `095-realtime-rollover-records-and-gemini-corpus.md`
 
 ## Planned
 
-- `093-realtime-media-conformance-and-closeout.md`
+- `096-gemini-live-websocket-driver.md`
+- `097-gemini-live-portability-conformance-and-closeout.md`

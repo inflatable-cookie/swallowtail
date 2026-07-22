@@ -28,3 +28,4 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [018 Direct Provider Compatible-Codec Evidence](018-direct-provider-compatible-codec-evidence.md)
 - [019 Alibaba Model Studio Conversation Selection](019-alibaba-model-studio-conversation-selection.md)
 - [020 Post-Direct Breadth And Realtime Media Selection](020-post-direct-breadth-and-realtime-media-selection.md)
+- [021 Post-Realtime Portability Selection](021-post-realtime-portability-selection.md)

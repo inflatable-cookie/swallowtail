@@ -99,12 +99,16 @@ spine:
 - `swallowtail-adapter-xai` implements resource-free interactive direct
   inference over one host-approved Responses WebSocket with serial turns,
   private continuation, exact billed cost, and connection-ending cancellation
-- `swallowtail-adapter-openai` implements one public-API Responses background
-  structured-run route with explicit temporary retention, one create attempt,
-  maximum-one cursor reattachment, bounded retrieve, native cancel, and joined
-  HTTP/SSE cleanup; its test-only Realtime protocol boundary freezes the dated
-  GA WebSocket handshake and manual PCM client/server event corpus before a
-  production driver exists
+- `swallowtail-adapter-openai` implements separate public-API drivers for
+  background Responses and Realtime media. The background structured-run route
+  owns explicit temporary retention, one create attempt, maximum-one cursor
+  reattachment, bounded retrieve, native cancel, and joined HTTP/SSE cleanup.
+  The Realtime role owns one host-approved GA WebSocket, exact
+  `gpt-realtime-2.1` and PCM16 formats, two serial responses, native response
+  cancellation, bounded typed events, and credential-last joined cleanup. It
+  passes the realtime-media profile under local and remote-authoritative host
+  identities; transport loss, provider failure, protocol drift, and
+  cancellation uncertainty remain distinct
 - `swallowtail-adapter-qwen` implements the pinned Qwen Code `v0.19.11`
   headless structured-run route with exact read-only argv, text stdin, bounded
   stream JSON, typed usage, explicit native budgets, durable local retention,

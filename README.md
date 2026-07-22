@@ -9,7 +9,7 @@ prompts, tools, authority, workflows, persistence, and product state.
 Status: foundation. The repository is in strict Northstar posture. The
 provider-neutral core, pure preflight, executor-neutral runtime, eleven synthetic
 conformance profiles, host-approved local process/endpoint/credential services,
-sixteen production driver routes, including separate SDK-native Bedrock Runtime
+seventeen production driver routes, including separate SDK-native Bedrock Runtime
 and control-plane routes, across Codex, OpenCode, OpenAI, Anthropic, Bedrock,
 Gemini, Kimi, llama.cpp, and xAI are validated. Codex app-server supports both
 unchanged read-only sessions and one explicit host-resolved bounded workspace
@@ -228,9 +228,19 @@ supported OpenAI Realtime GA WebSocket because continuous media exchange is the
 largest missing mechanism. Contract 026 keeps realtime media inside a separate
 direct interactive role with bounded redacted chunks, exact formats, consumer-
 owned device and playback truth, native response cancellation, and joined
-duplex cleanup. Card 091 now realizes the role, records, pure preflight,
-eleventh synthetic profile, and dated OpenAI Realtime offline corpus. The
-existing sixteen production routes remain unchanged. Full repository QA passes
-with 416 tests; three installed or live probes remain gated. Card 092 is ready
-for the first production Realtime WebSocket driver. Doctor remains at the
-inherited 19 oversized-file findings.
+duplex cleanup. Card 091 realizes the role, records, pure preflight, eleventh
+synthetic profile, and dated OpenAI Realtime offline corpus. Card 092 adds a
+separately registered production WebSocket driver with exact public API-key
+access, fixed PCM16 formats, two serial responses, native response
+cancellation, ordered typed evidence, and joined credential-last cleanup under
+both host identities. The production driver now passes the eleventh common
+profile plus deterministic parallel, provider-failure, format-drift,
+disconnect, cancellation-uncertainty, deadline, timer, and cleanup-failure
+coverage under both host identities. Roadmap 031 is complete. Full repository
+QA passes with 430 tests; three installed or live probes remain ignored and
+doctor remains at the inherited 19 oversized-file findings. Roadmap 032 now
+closes after selecting Gemini Live preview as the next realtime portability
+proof. Contract 027 makes one provider-planned connection rollover explicit,
+bounded, private-handle-backed, and distinct from reconnect or consumer resume.
+Roadmap 033 starts with card 095's provider-neutral rollover records and frozen
+Gemini Live raw-WebSocket corpus before production transport.

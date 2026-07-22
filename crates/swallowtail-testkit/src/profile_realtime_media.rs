@@ -55,6 +55,7 @@ pub(crate) fn run() -> ConformanceReport {
 
     assert_two_serial_turns();
     report.record(ConformanceAssertion::RealtimeMediaOrdering);
+    report.record(ConformanceAssertion::ProviderEvidenceSeparated);
 
     lifecycle::assert_interruption_ends_session();
     report.record(ConformanceAssertion::RealtimeMediaInterruptionEndsSession);

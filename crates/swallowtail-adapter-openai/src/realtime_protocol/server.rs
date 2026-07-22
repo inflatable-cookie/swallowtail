@@ -36,6 +36,7 @@ impl Drop for ProviderAudio {
 pub(crate) enum RealtimeServerEvent {
     SessionConfigured,
     InputCommitted,
+    Structural,
     ResponseStarted(String),
     AudioDelta {
         response_id: String,
@@ -66,6 +67,7 @@ impl std::fmt::Debug for RealtimeServerEvent {
         formatter.write_str(match self {
             Self::SessionConfigured => "RealtimeServerEvent::SessionConfigured",
             Self::InputCommitted => "RealtimeServerEvent::InputCommitted",
+            Self::Structural => "RealtimeServerEvent::Structural",
             Self::ResponseStarted(_) => "RealtimeServerEvent::ResponseStarted(<redacted>)",
             Self::AudioDelta { .. } => "RealtimeServerEvent::AudioDelta(<redacted>)",
             Self::AudioCompleted { .. } => "RealtimeServerEvent::AudioCompleted(<redacted>)",
@@ -86,6 +88,11 @@ pub(crate) fn parse_server_event(bytes: &[u8]) -> Result<RealtimeServerEvent, Ru
     match kind {
         "session.created" | "session.updated" => parse_session(&value),
         "input_audio_buffer.committed" => Ok(RealtimeServerEvent::InputCommitted),
+        "conversation.item.created"
+        | "response.output_item.added"
+        | "response.content_part.added"
+        | "response.content_part.done"
+        | "response.output_item.done" => Ok(RealtimeServerEvent::Structural),
         "response.created" => Ok(RealtimeServerEvent::ResponseStarted(
             nested_text(&value, &["response", "id"])?.to_owned(),
         )),

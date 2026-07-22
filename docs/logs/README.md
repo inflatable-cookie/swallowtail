@@ -5,6 +5,9 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-07-22 Gemini Live Portability Selection](2026-07-22-gemini-live-portability-selection.md)
+- [2026-07-22 OpenAI Realtime Conformance Closeout](2026-07-22-openai-realtime-conformance-closeout.md)
+- [2026-07-22 OpenAI Realtime WebSocket Driver](2026-07-22-openai-realtime-websocket-driver.md)
 - [2026-07-22 Realtime Media Records And OpenAI Corpus](2026-07-22-realtime-media-records-and-openai-corpus.md)
 - [2026-07-22 Post-Direct Breadth And Realtime Selection](2026-07-22-post-direct-breadth-and-realtime-selection.md)
 - [2026-07-22 Alibaba Conversation Driver And Conformance](2026-07-22-alibaba-conversation-driver-and-conformance.md)

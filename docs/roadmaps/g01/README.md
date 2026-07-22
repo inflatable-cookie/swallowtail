@@ -29,6 +29,7 @@ cross-adapter adoption without prematurely stabilizing the public API.
 - xAI connection-scoped direct inference and provider-billed-cost evidence
 - provider-managed remote harness resources, durable sessions, event recovery,
   callbacks, interruption, and deletion truth
+- realtime media portability and explicit provider-planned connection rollover
 
 ## Current Checkpoint
 
@@ -606,10 +607,30 @@ cross-adapter adoption without prematurely stabilizing the public API.
   routes
 - full repository QA passes with 416 tests; three installed or live probes
   remain separately gated, and doctor remains at the inherited 19 findings
-- roadmap 030 and cards 090-091 are complete; card 092 is ready for the
-  production OpenAI Realtime WebSocket driver
-- Gemini Live remains the first later realtime portability candidate; Grok
-  Build, DeepSeek, and Z.AI remain later provider mappings
+- card 092 adds the seventeenth production route: one exact OpenAI Realtime GA
+  WebSocket session with host-approved public API-key access, two serial audio
+  responses, native cancellation, typed evidence, and joined credential-last
+  cleanup
+- all 23 focused OpenAI adapter tests and warnings-denied clippy pass; doctor
+  remains at the inherited 19 findings with no new oversized file
+- card 093 proves exact plan identity, serial and parallel behavior, provider
+  failure, unknown semantics, format drift, disconnect, confirmed and
+  unconfirmed cancellation, deadline, redaction, and credential-last cleanup
+  under local and remote-authoritative hosts
+- the eleventh common profile records separate provider usage, rate, quota,
+  and request evidence; the production driver passes without shared provider
+  branches
+- roadmap 031 and cards 091-093 are complete; full repository QA passes with
+  430 tests and doctor remains at the inherited 19 findings
+- roadmap 032 and card 094 complete the post-realtime provider-coverage
+  checkpoint
+- Research 021 selects Gemini Live preview; Contract 027 separates one
+  opt-in planned connection rollover from reconnect, reattachment, retry,
+  consumer resume, and durable provider state
+- roadmap 033 and cards 095-097 own exact Gemini Live records, corpus, driver,
+  portability conformance, and closeout; card 095 is the sole ready task
+- Grok Build remains later harness breadth; remote ACP remains behind
+  implementation and hardening evidence; Cursor remains beta and policy-heavy
 
 ## Milestones
 
@@ -657,6 +678,10 @@ cross-adapter adoption without prematurely stabilizing the public API.
 - [030 Post Direct Provider Breadth Coverage Checkpoint](030-post-direct-provider-breadth-coverage-checkpoint.md)
   — completed
 - [031 OpenAI Realtime Media Direct Session Proof](031-openai-realtime-media-direct-session-proof.md)
+  — completed
+- [032 Post-Realtime Coverage Checkpoint](032-post-realtime-coverage-checkpoint.md)
+  — completed
+- [033 Gemini Live Realtime Portability Proof](033-gemini-live-realtime-portability-proof.md)
   — active
 
 ## Batch Shape
@@ -695,6 +720,9 @@ cross-adapter adoption without prematurely stabilizing the public API.
 - card 090 closes the post-direct-provider breadth evidence checkpoint
 - cards 091-093 form the OpenAI Realtime media records, driver, and conformance
   lane
+- card 094 closes the post-realtime provider-coverage checkpoint
+- cards 095-097 form the Gemini Live rollover records, driver, and portability
+  conformance lane
 
 Run validation after each complete batch, not after each small card.
 

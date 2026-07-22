@@ -16,7 +16,7 @@ pub(crate) enum ClientEvent<'a> {
     },
     ResponseCancel {
         event_id: &'a str,
-        response_id: &'a str,
+        response_id: Option<&'a str>,
     },
 }
 
@@ -59,11 +59,16 @@ impl ClientEvent<'_> {
             Self::ResponseCancel {
                 event_id,
                 response_id,
-            } => json!({
-                "event_id": event_id,
-                "type": "response.cancel",
-                "response_id": response_id
-            }),
+            } => {
+                let mut event = json!({
+                    "event_id": event_id,
+                    "type": "response.cancel"
+                });
+                if let Some(response_id) = response_id {
+                    event["response_id"] = json!(response_id);
+                }
+                event
+            }
         }
     }
 }

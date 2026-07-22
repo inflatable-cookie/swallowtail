@@ -1,6 +1,6 @@
 # 093 Realtime Media Conformance And Closeout
 
-Status: planned
+Status: completed
 Owner: Tom
 Updated: 2026-07-22
 Milestone: `../031-openai-realtime-media-direct-session-proof.md`
@@ -27,14 +27,38 @@ protocol and lifecycle fixtures.
 
 ## Acceptance Criteria
 
-- [ ] both topologies preserve exact instance, host, audience, access, route,
+- [x] both topologies preserve exact instance, host, audience, access, route,
       model, media format, lifecycle, and cleanup truth
-- [ ] two serial turns and one active response match the frozen transcript
-- [ ] cancellation acknowledgement, deadline, disconnect, and provider failure
+- [x] two serial turns and one active response match the frozen transcript
+- [x] cancellation acknowledgement, deadline, disconnect, and provider failure
       remain distinct
-- [ ] interrupted sessions cannot be reused
-- [ ] all prior profiles and production drivers remain unchanged
-- [ ] roadmap 031 closes with one sole next task
+- [x] interrupted sessions cannot be reused
+- [x] all prior profiles and production drivers remain passing
+- [x] roadmap 031 closes with one sole next task
+
+## Evidence
+
+- the eleventh common profile now records its already-proved separation of
+  usage, rate, quota, and request-correlation evidence; the production driver
+  passes the profile without provider branches
+- local and remote-authoritative fixtures preserve exact host, audience,
+  access, route, model, PCM16 format, turn bound, and credential lifetime
+- deterministic production tests cover two serial turns, active-response
+  rejection, provider failure, unknown semantics, format drift, disconnect,
+  confirmed and unconfirmed cancellation, deadline, and cleanup failure
+- transport reset now retains disconnected runtime truth instead of becoming
+  a provider failure
+- response timers and tasks plus connection blocking work join before the sole
+  credential release; injected release failure remains visible
+- all 28 OpenAI adapter tests and focused warnings-denied clippy pass
+- full `effigy qa` passes with 430 tests; three existing installed or live
+  probes remain ignored by default
+- Effigy doctor remains at the inherited 19 findings: 12 warnings and 7 errors
+
+## Continuation
+
+Roadmap 032 and card 094 own the post-realtime evidence checkpoint. No provider
+or transport is preselected.
 
 ## Validation
 

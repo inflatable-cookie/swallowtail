@@ -2,4 +2,4 @@
 {"event_id":"input-append-1","type":"input_audio_buffer.append","audio":"AQIDBA=="}
 {"event_id":"input-commit-1","type":"input_audio_buffer.commit"}
 {"event_id":"response-create-1","type":"response.create"}
-{"event_id":"response-cancel-1","type":"response.cancel","response_id":"resp_fixture_1"}
+{"event_id":"response-cancel-1","type":"response.cancel"}

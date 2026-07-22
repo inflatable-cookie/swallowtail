@@ -39,6 +39,7 @@ impl RealtimeServerStream {
         Ok(())
     }
 
+    #[cfg(test)]
     pub(crate) fn disconnected(&self) -> Result<(), RuntimeFailure> {
         if self.terminal {
             Ok(())

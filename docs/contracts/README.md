@@ -31,6 +31,7 @@ Contracts hold durable, testable rules.
 - [024 Compatible Chat Codec And Provider Semantics](024-compatible-chat-codec-and-provider-semantics.md)
 - [025 Provider-Owned Direct Conversation And Deletion Boundary](025-provider-owned-direct-conversation-and-deletion-boundary.md)
 - [026 Realtime Media Direct Session Boundary](026-realtime-media-direct-session-boundary.md)
+- [027 Planned Connection Rollover And Realtime Continuity](027-planned-connection-rollover-and-realtime-continuity.md)
 
 Contract 003 defines the provider-neutral record kernel. Contracts 004-016
 govern the realized runtime and current proof drivers. Contract 017 governs
@@ -57,3 +58,7 @@ inventory, deletion truth, cancellation, resume, and cleanup independent.
 Contract 026 adds a separate realtime-media interactive role with exact media
 formats, bounded redacted chunks, native response cancellation, consumer-owned
 device and playback truth, and joined duplex cleanup.
+Contract 027 makes provider-planned connection replacement explicit and
+bounded, keeps resumable provider handles private and operation-scoped, and
+separates rollover from reconnect, reattachment, retry, consumer resume, and
+durable state.

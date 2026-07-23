@@ -82,6 +82,7 @@ pub enum ConformanceAssertion {
     AttachedRuntimeBinding,
     RuntimeManagedResidency,
     ClosedCompatibilityWindow,
+    HarnessConfigurationExact,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -135,6 +136,11 @@ pub fn run_long_lived_rpc_profile() -> ConformanceReport {
 #[must_use]
 pub fn run_harness_rpc_contract_assertions() -> ConformanceReport {
     crate::profile_harness_rpc_contract::run()
+}
+
+#[must_use]
+pub fn run_harness_configuration_boundary_assertions() -> Vec<ConformanceReport> {
+    crate::profile_harness_configuration::run()
 }
 
 #[must_use]

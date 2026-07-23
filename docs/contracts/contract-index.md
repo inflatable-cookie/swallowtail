@@ -37,3 +37,5 @@ Updated: 2026-07-23
 | [029 Interface Version Qualification And Compatibility](029-interface-version-qualification-and-compatibility.md) | active | Exact runtime bindings and maintained baseline, milestone, deprecation, and exclusion windows |
 | [030 Consumer-Owned Direct Tool Continuation](030-consumer-owned-direct-tool-continuation.md) | active | Explicit direct-inference attempts around consumer tools with private ephemeral provider continuation |
 | [031 Attached Native Runtime Version And Residency](031-attached-native-runtime-version-and-residency.md) | active | Attach-only runtime version, installed/running catalogue, and inference-caused residency truth |
+| [032 Installed Executable Observation And Discovery](032-installed-executable-observation-and-discovery.md) | active | Explicit host-approved executable targets, exact version classification, and bounded joined discovery |
+| [033 Harness Configuration Posture](033-harness-configuration-posture.md) | active | Exact ambient, provider-suppressed, or host-scoped harness configuration independent from isolation and access |

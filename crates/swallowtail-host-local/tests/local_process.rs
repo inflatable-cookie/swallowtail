@@ -2,10 +2,11 @@
 mod support;
 
 use support::*;
+use swallowtail_core::InterfaceVersionAxis;
 use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{
-    CleanupOutcome, ProcessInputChunk, ProcessOutputStream, ProcessRequest, ResourceAccess,
-    ResourceRepresentation, WorkingResourceService,
+    CleanupOutcome, InstalledExecutableTarget, ProcessInputChunk, ProcessOutputStream,
+    ProcessRequest, ResourceAccess, ResourceRepresentation, WorkingResourceService,
 };
 
 #[test]
@@ -66,6 +67,47 @@ fn only_host_approved_references_and_arguments_spawn() {
         ),
         "swallowtail.local_process.argument_limit_exceeded",
     );
+}
+
+#[test]
+fn installed_version_probe_uses_only_the_explicit_approved_target_and_joins() {
+    let resource_directory = temporary_resource();
+    let limits = LocalProcessLimits::new(8, 1024, 64, 1024, 1024);
+    let (host, executable, environment, resource) =
+        fixture_host("version", limits, &resource_directory);
+    let target = InstalledExecutableTarget::new(
+        executable.clone(),
+        InterfaceVersionAxis::new("fixture.harness.package").expect("axis is valid"),
+    );
+    let probe = ProcessRequest::new(target.executable().clone())
+        .with_arguments(fixture_arguments())
+        .with_environment([environment])
+        .with_working_resource(resource);
+    let process = start(&host, probe).expect("approved target starts");
+    block_on(process.close_stdin()).expect("probe input closes");
+    let (stdout, stderr) = collect_output(process.as_ref()).expect("probe output is bounded");
+    assert!(stderr.is_empty());
+    assert!(
+        String::from_utf8_lossy(&stdout).contains("fixture-harness 1.2.0\n"),
+        "bounded fixture output must contain the exact version line"
+    );
+    assert!(
+        block_on(process.wait())
+            .expect("probe child joins")
+            .success()
+    );
+    assert!(!format!("{target:?}").contains("fixture-local-process"));
+
+    let unapproved = LocalProcessHost::builder(limits).build();
+    assert_failure_code(
+        start(
+            &unapproved,
+            ProcessRequest::new(target.executable().clone()).with_arguments(fixture_arguments()),
+        ),
+        "swallowtail.local_process.executable_not_approved",
+    );
+
+    std::fs::remove_dir_all(resource_directory).expect("fixture resource is removed");
 }
 
 #[test]

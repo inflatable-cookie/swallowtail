@@ -21,7 +21,9 @@ spine:
   rollover, positive locally continued direct-session bounds, fixed buffered/
   SSE attempt transports, explicit provider-automatic tool selection, exact
   model identity, provider-cache acceptance without cache management, and
-  side-effect-free preflight; interactive sessions
+  side-effect-free preflight; harness operations may separately bind ambient,
+  provider-suppressed, or reserved host-scoped configuration posture;
+  interactive sessions
   separately bind prohibited or durable-
   conversation-delete-on-close provider state, while structured harness
   operations may bind exact ambient,
@@ -37,7 +39,8 @@ spine:
   turn ownership, operation policy
   separates durable retention from provider-managed recovery, carries exact
   structured-run harness isolation, rejects request/preflight posture mismatch,
-  and terminal
+  carries exact harness-configuration request policy independently from
+  isolation, rejects request/preflight mismatch, and terminal
   outcomes keep deletion truth per owned remote resource; open-session requests
   must match the immutable provider-state policy in preflight; a separate
   realtime-media role owns resource-free requests, redacted zeroized chunks,
@@ -503,6 +506,30 @@ matched behavior revision. This lets one Swallowtail or consuming-application
 release serve older installed harnesses deliberately. Versions outside the
 window fail preflight; moving the baseline is an explicit later-release change.
 No open-ended `latest` or unevidenced range participates in routing.
+
+Installed-executable observation now has a separate additive discovery
+boundary. One request binds a request id, operation scope, authoritative
+execution host, opaque host-approved executable target, exact version axis,
+monotonic deadline, and shared cancellation signal. Safe observations retain
+only host identity, exact version binding, claim identity, and compatible or
+incompatible classification. General discovery remains unchanged; drivers
+without the target-aware operation reject it explicitly. The local process
+host resolves only the supplied opaque reference and existing process
+completion remains joined. Testkit assertions exercise local and
+remote-authoritative identities, exact classification, redaction, terminal
+state separation, and process join without installing or invoking a provider
+harness.
+
+Harness configuration posture is now a separate provider-neutral preflight
+boundary. Configured instances, operation requirements, immutable plans, and
+runtime request policy distinguish explicit ambient configuration from an
+exact provider-suppressed invocation. The posture applies to both structured
+runs and interactive harness sessions and does not imply isolation,
+authentication, retention, or working-resource authority. `HostScoped` is
+represented but rejected before effects until a separate opaque host
+configuration lease and capability-scoped service are contracted. Absent
+posture remains unmigrated state, not an ambient alias; no posture falls back
+to another.
 
 The Pi RPC records compose with the existing long-lived RPC profile. One
 restrictive policy binds one active operation, two completed prompts, one

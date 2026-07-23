@@ -1,10 +1,11 @@
 use crate::{
     AttachedServingHandle, AttachmentDescriptor, BoxFuture, Deadline, HostServices,
-    InteractiveSessionHandle, ModelArtifactBinding, OpenDirectContinuationSessionRequest,
-    OpenRealtimeMediaSessionRequest, OperationContent, OperationPolicy, OwnedServingHandle,
-    RealtimeMediaSessionHandle, RequestId, RunHandle, RuntimeFailure, RuntimeTurnId, ScopeId,
-    ServingInstanceId, SessionAccessPolicy, SessionOptions, SessionReplayItem,
-    SessionResumeBinding, StructuredOutputDescriptor, ToolDeclaration, WorkingResourceRef,
+    InstalledExecutableDiscoveryRequest, InteractiveSessionHandle, ModelArtifactBinding,
+    OpenDirectContinuationSessionRequest, OpenRealtimeMediaSessionRequest, OperationContent,
+    OperationPolicy, OwnedServingHandle, RealtimeMediaSessionHandle, RequestId, RunHandle,
+    RuntimeFailure, RuntimeTurnId, ScopeId, ServingInstanceId, SessionAccessPolicy, SessionOptions,
+    SessionReplayItem, SessionResumeBinding, StructuredOutputDescriptor, ToolDeclaration,
+    WorkingResourceRef,
 };
 use std::num::NonZeroU64;
 use swallowtail_core::{
@@ -567,6 +568,19 @@ pub trait DiscoveryDriver: Send + Sync {
         request: DiscoveryRequest,
         services: HostServices,
     ) -> BoxFuture<'_, Result<Vec<DiscoveryOutcome>, RuntimeFailure>>;
+
+    fn discover_installed_executable(
+        &self,
+        _request: InstalledExecutableDiscoveryRequest,
+        _services: HostServices,
+    ) -> BoxFuture<'_, Result<DiscoveryOutcome, RuntimeFailure>> {
+        Box::pin(async {
+            Err(RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
+                "swallowtail.installed_executable.discovery_unsupported",
+                "Driver does not support installed executable discovery",
+            )))
+        })
+    }
 }
 
 pub trait ModelCatalogDriver: Send + Sync {

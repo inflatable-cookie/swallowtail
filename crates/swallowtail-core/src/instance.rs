@@ -1,3 +1,4 @@
+use crate::HarnessConfigurationPosture;
 use crate::HarnessRpcPolicy;
 use crate::InterfaceVersionBinding;
 use crate::access::SupportAuthority;
@@ -27,6 +28,7 @@ pub struct ConfiguredInstance {
     provider_agent: Option<ProviderAgentBinding>,
     interface_versions: BTreeSet<InterfaceVersionBinding>,
     harness_rpc_policy: Option<HarnessRpcPolicy>,
+    harness_configuration_posture: Option<HarnessConfigurationPosture>,
 }
 
 impl ConfiguredInstance {
@@ -60,6 +62,7 @@ impl ConfiguredInstance {
             provider_agent: None,
             interface_versions: BTreeSet::new(),
             harness_rpc_policy: None,
+            harness_configuration_posture: None,
         }
     }
 
@@ -156,6 +159,20 @@ impl ConfiguredInstance {
     #[must_use]
     pub const fn harness_rpc_policy(&self) -> Option<&HarnessRpcPolicy> {
         self.harness_rpc_policy.as_ref()
+    }
+
+    #[must_use]
+    pub const fn with_harness_configuration_posture(
+        mut self,
+        posture: HarnessConfigurationPosture,
+    ) -> Self {
+        self.harness_configuration_posture = Some(posture);
+        self
+    }
+
+    #[must_use]
+    pub const fn harness_configuration_posture(&self) -> Option<HarnessConfigurationPosture> {
+        self.harness_configuration_posture
     }
 }
 

@@ -308,6 +308,33 @@ Portability and full repository QA now pass with 522 tests. Research 025
 revalidates every installed production harness pin and selects both Codex
 drivers for the first maintained-range retrofit. Current candidate floors are
 exec `0.122.0` and app-server v2 `0.110.0`; latest stable is `0.145.0`.
-Version-specific corpora and experimental-gate enforcement must pass before
-either range is published. Card 111 now adds explicit safe observation of one
-host-approved installed executable.
+Version-specific corpora and experimental-gate enforcement now pass. Contract
+032 and card 111 add explicit safe
+observation of one host-approved installed executable with authoritative
+topology, exact classification, cancellation, deadline, and joined cleanup.
+Card 112 freezes exact Codex exec and app-server release corpora, stable versus
+experimental schemas, rejection neighbors, and gate-enforcing transcripts.
+Card 113 now publishes independent exact-observation claims: exec
+`0.122.0..=0.145.0`, and app-server `0.110.0..=0.130.0` plus
+`0.131.0..=0.145.0`. Joined target-aware discovery, milestone dispatch, and
+stable-versus-experimental negotiation pass focused validation. Cross-topology
+range conformance and full repository QA now pass with a 549-test inventory:
+545 pass and four separately gated probes remain ignored. The older
+January-to-April audit found the selected app-server v2 surface in exact
+`0.80.0` tagged source. Deprecated six-month segments are now compiled without
+a v1 driver, container, temporary credential home, or implicit fallback.
+Legacy exec will expose ambient configuration and pre-`0.99.0` durable
+retention explicitly; current isolated behavior remains separate. Shared
+harness-configuration posture is now realized independently from isolation,
+credentials, retention, and working resources. Exact ambient and
+provider-suppressed bindings pass structured-run and long-lived harness
+profiles; host-scoped execution stays closed until a separate host lease
+exists. Exact January-to-April exec and app-server corpora now distinguish
+source-generated schemas, upstream-published schemas, default versus explicit
+stdio, ambient versus suppressed configuration, and retained versus ephemeral
+execution. Both production drivers now select those private behavior segments
+only from an immutable exact executable-version binding. Legacy policy and
+capability mismatches fail before harness work; current isolation and
+experimental gates remain unchanged. Full six-month range conformance and
+roadmap closeout now pass. The next lane revalidates OpenCode, Gemini ACP, Kimi
+ACP, Qwen, and Pi before selecting the second installed-harness range proof.

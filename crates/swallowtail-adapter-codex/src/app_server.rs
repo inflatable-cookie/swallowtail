@@ -1,4 +1,5 @@
 use crate::rpc::{RpcConnection, failure};
+use crate::selection::{CodexAppServerBehavior, classify_app_server_plan, codex_app_server_claim};
 use crate::session_access::{CodexSessionAccess, codex_provider_request_extensions};
 use crate::session_input::CodexSessionInput;
 use crate::session_open::PendingSessionOpen;
@@ -7,9 +8,10 @@ use std::future::poll_fn;
 use std::sync::Arc;
 use std::task::Poll;
 use swallowtail_core::{
-    AdapterId, AdapterIdentity, AdapterVersion, DriverDescriptor, DriverRole, ExecutionLayer,
-    HostServiceKind, IntegrationFamilyId, ModelCatalogEntry, ModelId, ModelMetadata,
-    OperationShape, PreflightPlan, ReasoningMetadata, ReasoningMode, TransportFamilyId,
+    AdapterId, AdapterIdentity, AdapterVersion, Capability, CapabilityConstraint, DriverDescriptor,
+    DriverRole, ExecutionLayer, HarnessConfigurationPosture, HostServiceKind, IntegrationFamilyId,
+    ModelCatalogEntry, ModelId, ModelMetadata, OperationShape, PreflightPlan, ReasoningMetadata,
+    ReasoningMode, ResourceAccess, TransportFamilyId,
 };
 use swallowtail_runtime::{
     BoxFuture, CleanupOutcome, EnvironmentRef, ExecutableRef, HostServices,
@@ -40,7 +42,11 @@ pub fn codex_app_server_descriptor() -> DriverDescriptor {
         IntegrationFamilyId::new("codex").expect("static family id is valid"),
         TransportFamilyId::new("jsonl-rpc-stdio").expect("static transport id is valid"),
     )
-    .with_roles([DriverRole::ModelCatalog, DriverRole::InteractiveSession])
+    .with_roles([
+        DriverRole::Discovery,
+        DriverRole::ModelCatalog,
+        DriverRole::InteractiveSession,
+    ])
     .with_execution_layers([ExecutionLayer::HarnessInteraction])
     .with_operation_shapes([OperationShape::InteractiveSession])
     .with_required_host_services(
@@ -51,7 +57,17 @@ pub fn codex_app_server_descriptor() -> DriverDescriptor {
         DriverRole::InteractiveSession,
         [HostServiceKind::Task, HostServiceKind::Process],
     )
+    .with_required_host_services(
+        DriverRole::Discovery,
+        [
+            HostServiceKind::Task,
+            HostServiceKind::Time,
+            HostServiceKind::Process,
+        ],
+    )
+    .with_discovery_actions([swallowtail_core::DiscoveryAction::Probe])
     .with_extension_namespaces(codex_provider_request_extensions())
+    .with_interface_compatibility(codex_app_server_claim())
 }
 
 impl ModelCatalogDriver for CodexAppServerDriver {
@@ -62,7 +78,7 @@ impl ModelCatalogDriver for CodexAppServerDriver {
         services: HostServices,
     ) -> BoxFuture<'_, Result<Vec<ModelCatalogEntry>, RuntimeFailure>> {
         Box::pin(async move {
-            self.validate_plan(&plan)?;
+            let behavior = self.validate_plan(&plan)?;
             let deadline = request
                 .deadline()
                 .map(|deadline| {
@@ -79,7 +95,7 @@ impl ModelCatalogDriver for CodexAppServerDriver {
                 .transpose()?;
             let scope = scope("catalog", request.request_id());
             let (connection, task) = self
-                .start_connection(&plan, scope, None, false, &services)
+                .start_connection(&plan, behavior, scope, None, false, &services)
                 .await?;
             let result = match deadline {
                 Some(deadline) => {
@@ -132,7 +148,8 @@ impl InteractiveSessionDriver for CodexAppServerDriver {
     ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
         Box::pin(async move {
             validate_session_deadline(request.deadline().is_some())?;
-            self.validate_plan(&plan)?;
+            let behavior = self.validate_plan(&plan)?;
+            validate_workspace_behavior(&behavior, request.access_policy())?;
             let session_input = CodexSessionInput::for_open(&plan, request.options())?;
             let deadline_planned = plan
                 .requirements()
@@ -160,6 +177,7 @@ impl InteractiveSessionDriver for CodexAppServerDriver {
             let connection = self
                 .start_connection(
                     &plan,
+                    behavior,
                     scope,
                     Some(access.working_resource().clone()),
                     experimental_api,
@@ -173,10 +191,7 @@ impl InteractiveSessionDriver for CodexAppServerDriver {
                     return Err(error);
                 }
             };
-            let mut params = serde_json::json!({
-                "model": model.as_str(),
-                "allowProviderModelFallback": false
-            });
+            let mut params = serde_json::json!({"model": model.as_str()});
             access.apply_thread(&mut params);
             session_input.apply_open(&mut params);
             let response = connection.request("thread/start", params).await;
@@ -201,7 +216,8 @@ impl InteractiveSessionDriver for CodexAppServerDriver {
     ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
         Box::pin(async move {
             validate_session_deadline(request.deadline().is_some())?;
-            self.validate_plan(&plan)?;
+            let behavior = self.validate_plan(&plan)?;
+            validate_workspace_behavior(&behavior, request.access_policy())?;
             let session_input = CodexSessionInput::for_resume(&plan, request.options())?;
             validate_resume_binding(&plan, &request)?;
             let deadline_planned = plan
@@ -227,6 +243,7 @@ impl InteractiveSessionDriver for CodexAppServerDriver {
             let connection = self
                 .start_connection(
                     &plan,
+                    behavior,
                     scope,
                     Some(access.working_resource().clone()),
                     experimental_api,
@@ -273,21 +290,72 @@ fn validate_session_deadline(has_deadline: bool) -> Result<(), RuntimeFailure> {
     }
 }
 
+fn validate_workspace_behavior(
+    behavior: &CodexAppServerBehavior,
+    policy: &swallowtail_core::SessionAccessPolicy,
+) -> Result<(), RuntimeFailure> {
+    if policy.resource_access() == Some(swallowtail_core::ResourceAccess::ReadWrite)
+        && !behavior.supports_workspace_roots()
+    {
+        Err(unsupported(
+            "bounded workspace sessions before Codex 0.131.0",
+        ))
+    } else {
+        Ok(())
+    }
+}
+
+fn validate_app_server_plan(
+    plan: &PreflightPlan,
+    behavior: CodexAppServerBehavior,
+) -> Result<(), RuntimeFailure> {
+    if plan.harness_configuration_posture() != Some(HarnessConfigurationPosture::Ambient) {
+        return Err(failure(
+            "swallowtail.codex.app_server.preflight_mismatch",
+            "Codex app-server requires explicit ambient harness configuration agreement",
+        ));
+    }
+    if !behavior.is_legacy() {
+        return Ok(());
+    }
+    for requirement in plan.requirements().capabilities() {
+        if requirement.capability() == Capability::ToolCalls
+            || (requirement.capability() == Capability::WorkingResource
+                && requirement.constraints().any(|constraint| {
+                    constraint == &CapabilityConstraint::ResourceAccess(ResourceAccess::ReadWrite)
+                }))
+        {
+            return Err(unsupported(
+                "dynamic tools or bounded workspace roots on legacy Codex app-server",
+            ));
+        }
+    }
+    if plan.requirements().extension_namespaces().next().is_some() {
+        return Err(unsupported("provider requests on legacy Codex app-server"));
+    }
+    Ok(())
+}
+
 impl CodexAppServerDriver {
-    fn validate_plan(&self, plan: &PreflightPlan) -> Result<(), RuntimeFailure> {
-        if plan.driver_identity().id().as_str() == "swallowtail.codex.app-server" {
-            Ok(())
-        } else {
-            Err(failure(
+    fn validate_plan(
+        &self,
+        plan: &PreflightPlan,
+    ) -> Result<CodexAppServerBehavior, RuntimeFailure> {
+        if plan.driver_identity().id().as_str() != "swallowtail.codex.app-server" {
+            return Err(failure(
                 "swallowtail.codex.app_server.plan_driver_mismatch",
                 "Preflight plan is bound to a different driver",
-            ))
+            ));
         }
+        let behavior = classify_app_server_plan(plan)?;
+        validate_app_server_plan(plan, behavior)?;
+        Ok(behavior)
     }
 
     async fn start_connection(
         &self,
         plan: &PreflightPlan,
+        behavior: CodexAppServerBehavior,
         scope: ScopeId,
         working_resource: Option<WorkingResourceRef>,
         experimental_api: bool,
@@ -308,11 +376,7 @@ impl CodexAppServerDriver {
         })?;
         let executable = ExecutableRef::from_instance_target(plan.instance_target_ref());
         let mut process_request = ProcessRequest::new(executable)
-            .with_arguments([
-                "app-server".to_owned(),
-                "--listen".to_owned(),
-                "stdio://".to_owned(),
-            ])
+            .with_arguments(behavior.invocation())
             .with_environment([self.environment.clone()]);
         if let Some(resource) = working_resource {
             process_request = process_request.with_working_resource(resource);

@@ -12,6 +12,8 @@ use swallowtail_core::{
     preflight,
 };
 
+mod harness_configuration;
+
 const DRIVER_ID: &str = "fixture.harness.structured-cli";
 const INSTANCE_ID: &str = "fixture.instance.local";
 const INSTANCE_REVISION: &str = "revision-1";
@@ -43,6 +45,11 @@ pub enum PreflightFixtureCase {
     MissingExtension,
     HarnessIsolationAmbient,
     DirectInferenceHarnessIsolation,
+    HarnessConfigurationAmbient,
+    HarnessConfigurationMismatch,
+    ProviderSuppressedWithoutVersionEvidence,
+    DirectInferenceHarnessConfiguration,
+    HostScopedHarnessConfiguration,
 }
 
 /// Canonical pure-preflight fixture with a provider-side-effect recorder.
@@ -71,7 +78,11 @@ impl RuntimePreflightFixture {
         let complete_capabilities =
             capability_profile(Some(constraint.clone()), Some(reasoning.clone()), true);
 
-        let execution_layer = if case == PreflightFixtureCase::DirectInferenceHarnessIsolation {
+        let execution_layer = if matches!(
+            case,
+            PreflightFixtureCase::DirectInferenceHarnessIsolation
+                | PreflightFixtureCase::DirectInferenceHarnessConfiguration
+        ) {
             ExecutionLayer::DirectModelInference
         } else {
             ExecutionLayer::HarnessInteraction
@@ -137,12 +148,16 @@ impl RuntimePreflightFixture {
         } else {
             SupportAuthority::ProviderSupported
         };
-        let instance = configured_instance(
+        let mut instance = configured_instance(
             valid_text!(InstanceRevision, INSTANCE_REVISION),
             instance_capabilities,
             ownership,
             support_authority,
         );
+        let instance_configuration = harness_configuration::instance_posture(case);
+        if let Some(posture) = instance_configuration {
+            instance = instance.with_harness_configuration_posture(posture);
+        }
 
         let model_route = (case != PreflightFixtureCase::MissingModelRoute).then(|| {
             ModelRoute::new(
@@ -234,6 +249,7 @@ impl RuntimePreflightFixture {
         } else {
             requirements
         };
+        let requirements = harness_configuration::bind_requirement(case, requirements);
 
         let host_services = if case == PreflightFixtureCase::MissingHostService {
             vec![HostServiceKind::Task]
@@ -286,12 +302,16 @@ impl RuntimePreflightFixture {
 
     #[must_use]
     pub fn with_instance_revision(mut self, revision: &str) -> Self {
-        self.instance = configured_instance(
+        let mut instance = configured_instance(
             valid_text!(InstanceRevision, revision),
             self.instance.capabilities().clone(),
             self.instance.ownership(),
             self.instance.support_authority(),
         );
+        if let Some(posture) = self.instance.harness_configuration_posture() {
+            instance = instance.with_harness_configuration_posture(posture);
+        }
+        self.instance = instance;
         self
     }
 

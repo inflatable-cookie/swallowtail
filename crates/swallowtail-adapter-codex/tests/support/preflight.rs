@@ -1,16 +1,25 @@
 use swallowtail_adapter_codex::{
-    codex_app_server_descriptor, codex_bounded_workspace_access_policy,
-    codex_bounded_workspace_capability, codex_exec_descriptor,
+    CODEX_LATEST_QUALIFIED_VERSION, codex_app_server_descriptor,
+    codex_bounded_workspace_access_policy, codex_bounded_workspace_capability, codex_cli_binding,
 };
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessRequirement, AccessStatus, Capability, CapabilityProfile,
     CapabilityRequirement, ConfiguredInstance, ConfiguredInstanceId, CredentialMechanism,
     CredentialState, DriverRole, EndpointAudience, EndpointAuthorization, EntitlementMetering,
-    EntitlementState, ExecutionHostId, ExecutionLayer, HostServiceKind, InstanceOwnership,
-    InstancePolicyId, InstanceRevision, InstanceTargetRef, ModelId, ModelRoute, ModelRouteId,
-    ModelRouteRevision, OperationRequirements, OperationShape, PreflightContext, PreflightPlan,
-    ProtocolFacadeId, RuntimeReadiness, SessionAccessPolicy, SupportAuthority, preflight,
+    EntitlementState, ExecutionHostId, ExecutionLayer, HarnessConfigurationPosture,
+    HostServiceKind, InstanceOwnership, InstancePolicyId, InstanceRevision, InstanceTargetRef,
+    ModelId, ModelRoute, ModelRouteId, ModelRouteRevision, OperationRequirements, OperationShape,
+    PreflightContext, PreflightPlan, ProtocolFacadeId, RuntimeReadiness, SessionAccessPolicy,
+    SupportAuthority, preflight,
 };
+
+mod exec;
+mod unqualified;
+pub use exec::{
+    bind_current_exec_policy, current_exec_policy, exec_policy_for_version, plan, plan_with,
+    plan_with_version, unqualified_exec_plan,
+};
+pub use unqualified::unqualified_app_server_plan;
 
 pub fn app_server_plan(role: DriverRole) -> PreflightPlan {
     app_server_plan_with(role, [], [])
@@ -21,11 +30,12 @@ pub fn app_server_plan_with(
     optional_capabilities: impl IntoIterator<Item = CapabilityRequirement>,
     optional_host_services: impl IntoIterator<Item = HostServiceKind>,
 ) -> PreflightPlan {
-    app_server_plan_for(
+    app_server_plan_for_version(
         role,
         ExecutionHostId::new("host.local").expect("host id is valid"),
         ConfiguredInstanceId::new("codex.app-server.local").expect("instance id is valid"),
         InstanceTargetRef::new("codex-app-server-executable").expect("target is valid"),
+        CODEX_LATEST_QUALIFIED_VERSION,
         optional_capabilities,
         optional_host_services,
     )
@@ -39,11 +49,33 @@ pub fn app_server_plan_for(
     optional_capabilities: impl IntoIterator<Item = CapabilityRequirement>,
     optional_host_services: impl IntoIterator<Item = HostServiceKind>,
 ) -> PreflightPlan {
+    app_server_plan_for_version(
+        role,
+        host_id,
+        instance_id,
+        target,
+        CODEX_LATEST_QUALIFIED_VERSION,
+        optional_capabilities,
+        optional_host_services,
+    )
+}
+
+pub fn app_server_plan_for_version(
+    role: DriverRole,
+    host_id: ExecutionHostId,
+    instance_id: ConfiguredInstanceId,
+    target: InstanceTargetRef,
+    version: &str,
+    optional_capabilities: impl IntoIterator<Item = CapabilityRequirement>,
+    optional_host_services: impl IntoIterator<Item = HostServiceKind>,
+) -> PreflightPlan {
     app_server_plan_for_policy(
         role,
         host_id,
         instance_id,
         target,
+        Some(version),
+        Some(version),
         optional_capabilities,
         optional_host_services,
         SessionAccessPolicy::read_only(),
@@ -57,6 +89,8 @@ fn app_server_plan_for_policy(
     host_id: ExecutionHostId,
     instance_id: ConfiguredInstanceId,
     target: InstanceTargetRef,
+    instance_version: Option<&str>,
+    required_version: Option<&str>,
     optional_capabilities: impl IntoIterator<Item = CapabilityRequirement>,
     optional_host_services: impl IntoIterator<Item = HostServiceKind>,
     access_policy: SessionAccessPolicy,
@@ -74,33 +108,41 @@ fn app_server_plan_for_policy(
     let mut host_services = vec![HostServiceKind::Task, HostServiceKind::Process];
     host_services.extend(optional_host_services);
     let capabilities = CapabilityProfile::new(capability_requirements.clone());
-    let instance = ConfiguredInstance::new(
-        instance_id,
-        InstanceRevision::new("1").expect("revision is valid"),
-        descriptor.identity().id().clone(),
-        host_id.clone(),
-        target,
-        InstanceOwnership::HostOwnedPersistent,
-        access_id.clone(),
-        SupportAuthority::ProviderSupported,
-        ProtocolFacadeId::new("codex-app-server-v2").expect("facade is valid"),
-        InstancePolicyId::new("read-only-no-approval").expect("policy is valid"),
-        capabilities.clone(),
+    let instance = bind_instance_version(
+        ConfiguredInstance::new(
+            instance_id,
+            InstanceRevision::new("1").expect("revision is valid"),
+            descriptor.identity().id().clone(),
+            host_id.clone(),
+            target,
+            InstanceOwnership::HostOwnedPersistent,
+            access_id.clone(),
+            SupportAuthority::ProviderSupported,
+            ProtocolFacadeId::new("codex-app-server-v2").expect("facade is valid"),
+            InstancePolicyId::new("read-only-no-approval").expect("policy is valid"),
+            capabilities.clone(),
+        )
+        .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient),
+        instance_version,
     );
     let route = model_route("codex-app-server-model-route", &instance, capabilities);
     let (access, status) = access_state(access_id.clone());
-    let requirements = OperationRequirements::new(
-        ExecutionLayer::HarnessInteraction,
-        OperationShape::InteractiveSession,
-        role,
-        host_id,
-        access_requirement(access_id),
-    )
-    .with_ownership_modes([InstanceOwnership::HostOwnedPersistent])
-    .with_host_services(host_services.clone())
-    .with_capabilities(capability_requirements)
-    .with_extension_namespaces(extensions)
-    .with_session_access_policy(access_policy);
+    let requirements = bind_required_version(
+        OperationRequirements::new(
+            ExecutionLayer::HarnessInteraction,
+            OperationShape::InteractiveSession,
+            role,
+            host_id,
+            access_requirement(access_id),
+        )
+        .with_ownership_modes([InstanceOwnership::HostOwnedPersistent])
+        .with_host_services(host_services.clone())
+        .with_capabilities(capability_requirements)
+        .with_extension_namespaces(extensions)
+        .with_session_access_policy(access_policy)
+        .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient),
+        required_version,
+    );
     let context = PreflightContext::new(&descriptor, &instance, &access, &status, host_services);
     if role == DriverRole::ModelCatalog {
         preflight(&context, &requirements).expect("app-server catalog preflight succeeds")
@@ -126,6 +168,15 @@ pub fn bounded_workspace_plan_for(
     instance_id: ConfiguredInstanceId,
     target: InstanceTargetRef,
 ) -> PreflightPlan {
+    bounded_workspace_plan_for_version(host_id, instance_id, target, CODEX_LATEST_QUALIFIED_VERSION)
+}
+
+pub fn bounded_workspace_plan_for_version(
+    host_id: ExecutionHostId,
+    instance_id: ConfiguredInstanceId,
+    target: InstanceTargetRef,
+    version: &str,
+) -> PreflightPlan {
     let policy = codex_bounded_workspace_access_policy();
     let extensions = policy
         .provider_requests()
@@ -137,6 +188,8 @@ pub fn bounded_workspace_plan_for(
         host_id,
         instance_id,
         target,
+        Some(version),
+        Some(version),
         [codex_bounded_workspace_capability()],
         [HostServiceKind::WorkingResource],
         policy,
@@ -144,55 +197,22 @@ pub fn bounded_workspace_plan_for(
     )
 }
 
-pub fn plan() -> PreflightPlan {
-    plan_with([], [])
+fn bind_instance_version(
+    instance: ConfiguredInstance,
+    version: Option<&str>,
+) -> ConfiguredInstance {
+    version.map_or(instance.clone(), |version| {
+        instance.with_interface_versions([codex_cli_binding(version)])
+    })
 }
 
-pub fn plan_with(
-    optional_capabilities: impl IntoIterator<Item = CapabilityRequirement>,
-    optional_host_services: impl IntoIterator<Item = HostServiceKind>,
-) -> PreflightPlan {
-    let descriptor = codex_exec_descriptor();
-    let host_id = ExecutionHostId::new("host.local").expect("host id is valid");
-    let access_id = AccessProfileId::new("access.codex").expect("access id is valid");
-    let mut capability_requirements =
-        vec![CapabilityRequirement::new(Capability::StructuredRun, [])];
-    capability_requirements.extend(optional_capabilities);
-    let mut host_services = vec![HostServiceKind::Task, HostServiceKind::Process];
-    host_services.extend(optional_host_services);
-    let capabilities = CapabilityProfile::new(capability_requirements.clone());
-    let instance = ConfiguredInstance::new(
-        ConfiguredInstanceId::new("codex.local").expect("instance id is valid"),
-        InstanceRevision::new("1").expect("revision is valid"),
-        descriptor.identity().id().clone(),
-        host_id.clone(),
-        InstanceTargetRef::new("codex-executable").expect("target is valid"),
-        InstanceOwnership::HostOwnedEphemeral,
-        access_id.clone(),
-        SupportAuthority::ProviderSupported,
-        ProtocolFacadeId::new("codex-exec-jsonl").expect("facade is valid"),
-        InstancePolicyId::new("read-only").expect("policy is valid"),
-        capabilities.clone(),
-    );
-    let route = model_route("codex-model-route", &instance, capabilities);
-    let (access, status) = access_state(access_id.clone());
-    let requirements = OperationRequirements::new(
-        ExecutionLayer::HarnessInteraction,
-        OperationShape::StructuredRun,
-        DriverRole::StructuredRun,
-        host_id,
-        access_requirement(access_id),
-    )
-    .with_ownership_modes([InstanceOwnership::HostOwnedEphemeral])
-    .with_host_services(host_services.clone())
-    .with_capabilities(capability_requirements)
-    .require_model_route();
-    preflight(
-        &PreflightContext::new(&descriptor, &instance, &access, &status, host_services)
-            .with_model_route(&route),
-        &requirements,
-    )
-    .expect("Codex fixture preflight succeeds")
+fn bind_required_version(
+    requirements: OperationRequirements,
+    version: Option<&str>,
+) -> OperationRequirements {
+    version.map_or(requirements.clone(), |version| {
+        requirements.with_interface_versions([codex_cli_binding(version)])
+    })
 }
 
 fn model_route(

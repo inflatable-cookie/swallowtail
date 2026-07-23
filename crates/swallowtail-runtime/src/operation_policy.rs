@@ -2,9 +2,13 @@ use std::error::Error;
 use std::fmt;
 use std::num::NonZeroU32;
 use swallowtail_core::{
-    AttachedRuntimeResidency, ExternalNetworkPolicy, ExternalSearchPolicy, HarnessIsolation,
-    PreflightPlan, ReasoningMode, SafeDiagnostic,
+    AttachedRuntimeResidency, ExternalNetworkPolicy, ExternalSearchPolicy,
+    HarnessConfigurationPosture, HarnessIsolation, PreflightPlan, ReasoningMode, SafeDiagnostic,
 };
+
+mod harness_configuration;
+
+pub use harness_configuration::validate_harness_configuration_policy;
 
 /// Explicit policy selected for one operation. Catalog defaults do not populate it.
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -18,6 +22,7 @@ pub struct OperationPolicy {
     stream_reattachment: StreamReattachmentPolicy,
     harness_isolation: Option<HarnessIsolation>,
     attached_runtime_residency: Option<AttachedRuntimeResidency>,
+    harness_configuration_posture: Option<HarnessConfigurationPosture>,
 }
 
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
@@ -72,6 +77,7 @@ impl OperationPolicy {
             stream_reattachment: StreamReattachmentPolicy::Disabled,
             harness_isolation: None,
             attached_runtime_residency: None,
+            harness_configuration_posture: None,
         })
     }
 
@@ -130,6 +136,15 @@ impl OperationPolicy {
     }
 
     #[must_use]
+    pub const fn with_harness_configuration_posture(
+        mut self,
+        posture: HarnessConfigurationPosture,
+    ) -> Self {
+        self.harness_configuration_posture = Some(posture);
+        self
+    }
+
+    #[must_use]
     pub const fn external_network(&self) -> ExternalNetworkPolicy {
         self.external_network
     }
@@ -172,6 +187,11 @@ impl OperationPolicy {
     #[must_use]
     pub const fn attached_runtime_residency(&self) -> Option<AttachedRuntimeResidency> {
         self.attached_runtime_residency
+    }
+
+    #[must_use]
+    pub const fn harness_configuration_posture(&self) -> Option<HarnessConfigurationPosture> {
+        self.harness_configuration_posture
     }
 }
 

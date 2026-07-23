@@ -36,6 +36,8 @@ Contracts hold durable, testable rules.
 - [029 Interface Version Qualification And Compatibility](029-interface-version-qualification-and-compatibility.md)
 - [030 Consumer-Owned Direct Tool Continuation](030-consumer-owned-direct-tool-continuation.md)
 - [031 Attached Native Runtime Version And Residency](031-attached-native-runtime-version-and-residency.md)
+- [032 Installed Executable Observation And Discovery](032-installed-executable-observation-and-discovery.md)
+- [033 Harness Configuration Posture](033-harness-configuration-posture.md)
 
 Contract 003 defines the provider-neutral record kernel. Contracts 004-016
 govern the realized runtime and current proof drivers. Contract 017 governs
@@ -82,3 +84,12 @@ Contract 031 governs attach-only native model runtimes. It keeps exact runtime
 version, installed and running inventory, selected route, artifact identity,
 and invocation-caused model residency separate without granting installation,
 model mutation, unload, or serving-lifecycle authority.
+Contract 032 adds target-aware installed-executable discovery. It binds one
+opaque host-approved candidate, exact version axis, deadline, cancellation,
+authoritative host, compatibility classification, and joined process cleanup
+without executable search, configuration promotion, authentication, or
+execution authority.
+Contract 033 binds ambient, provider-suppressed, and host-scoped harness
+configuration independently from isolation, credentials, retention, and
+working resources. Host-scoped execution remains gated until a separate opaque
+host lease and service exist.

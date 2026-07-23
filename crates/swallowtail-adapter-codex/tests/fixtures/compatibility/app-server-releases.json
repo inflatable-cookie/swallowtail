@@ -1,0 +1,146 @@
+{
+  "axis": "codex.cli",
+  "facade": "codex-app-server-v2",
+  "candidate_versions": [
+    "0.110.0",
+    "0.120.0",
+    "0.131.0",
+    "0.140.0",
+    "0.144.6",
+    "0.145.0"
+  ],
+  "stable_methods": [
+    "initialize",
+    "model/list",
+    "thread/start",
+    "thread/resume",
+    "turn/start",
+    "turn/interrupt",
+    "turn/started",
+    "turn/completed",
+    "item/completed",
+    "item/agentMessage/delta"
+  ],
+  "transcript_coverage": [
+    "initialize",
+    "catalogue",
+    "session-open",
+    "session-resume",
+    "turn",
+    "callback",
+    "interrupt",
+    "provider-failure",
+    "disconnect",
+    "close"
+  ],
+  "rejections": [
+    {
+      "version": "0.107.0",
+      "tag_commit": "19f8797c0f62abecb347e817aac36d18c5fc554e",
+      "reason": "no-flat-v2-schema-bundle"
+    },
+    {
+      "version": "0.108.0",
+      "tag_commit": "89b79419a1e0720856d4450cf17379221e5a3b1d",
+      "reason": "source-tag-without-published-npm-release"
+    },
+    {
+      "version": "0.109.0",
+      "tag_commit": "37133fb8455766068008b8453a1da1dacae4274c",
+      "reason": "source-tag-without-published-npm-release"
+    },
+    {
+      "version": "0.146.0-alpha.4",
+      "tag_commit": "34a3d19b2fa18fafee7236c834f8b63c584c1986",
+      "reason": "prerelease"
+    },
+    {
+      "version": "not-a-version",
+      "reason": "malformed"
+    },
+    {
+      "version": "0.146.0",
+      "reason": "unknown-newer"
+    }
+  ],
+  "releases": [
+    {
+      "version": "0.110.0",
+      "tag_commit": "77aabe4218ab7ddaf4b6d471887bda043a4c16e6",
+      "npm_integrity": "sha512-yCrO3HLpohNM5zqqEzJhqtBBAH4r9nHb+h7F0+2/T0qbCJwxzL6XtgjQonvKW9Ol6qc3kqlW7uQVFEX+z13Ydg==",
+      "npm_shasum": "35ae11a092e09e803ca9deba0b979349bf3fd51a",
+      "stable_bundle_sha256": "941918dcc25dc35bc607e8ce8326a783eae837d5e61cd266c174fdee0d0db7c1",
+      "experimental_bundle_sha256": "52d42023197bd988cbba2fb2de2a0b503223aae06a7753882bc2280c564772ee",
+      "model_list_schema_sha256": "15fe002384980924829aebea6038ea95809aab105324bd5c65488444a40e22b9",
+      "experimental_thread_fields": ["dynamicTools"],
+      "runtime_workspace_roots": false,
+      "allow_provider_model_fallback": false,
+      "behavior_revision": "codex.app-server.v2.base"
+    },
+    {
+      "version": "0.120.0",
+      "tag_commit": "65319eb1400cbd2890c43d572263dabd25f18ba9",
+      "npm_integrity": "sha512-7CU+I5kBaMuoqfG3xisq0mUWzxoEHvfu34cB8a0KpBiIhAgu12fKpmYgZ4/DvRP6Wm9Fu6LJYKVF5apUHFp8nQ==",
+      "npm_shasum": "a05627fe08e4a8af41949177c55cfa718b939284",
+      "stable_bundle_sha256": "edd45c4d4023657b844ee70d8b1ac247136de8f0ec547abd3c20f27e77df073b",
+      "experimental_bundle_sha256": "f0636462c2f2039b8de330fd6e69df195f26f1081a4e0dff2c79eb2f5a493746",
+      "model_list_schema_sha256": "3884ac2f8892897d2f75dc42b2b4024783262bcfe8da65b89d3d091a04e6637a",
+      "experimental_thread_fields": ["dynamicTools"],
+      "runtime_workspace_roots": false,
+      "allow_provider_model_fallback": false,
+      "behavior_revision": "codex.app-server.v2.base"
+    },
+    {
+      "version": "0.131.0",
+      "tag_commit": "05eb8678451435cbc8d79c6d8254276289f2bdf1",
+      "npm_integrity": "sha512-e4EZ7XjK1zrkW65nZdhCqQFVKd/zt/of26w4L32wcfibzKE15/Lw2i3FGTD9ufUUqVzF+gowu/lEiBRvDoh21w==",
+      "npm_shasum": "5de56108393d965abb9e75395935d17d6fe44a90",
+      "stable_bundle_sha256": "48459f64e72e24f2376f755f87fe47f163a297fb4b3643af6a8e909100299c53",
+      "experimental_bundle_sha256": "67ad8db07e0185ed8e7fa12345c31fbd94fbd4f9f861f009a12b0effac83e5cb",
+      "model_list_schema_sha256": "a05d317dd6e6ea2313f4b40e3f0c0b1554193daa456618f3a5e3736ad91286bd",
+      "experimental_thread_fields": ["dynamicTools", "runtimeWorkspaceRoots"],
+      "runtime_workspace_roots": true,
+      "allow_provider_model_fallback": false,
+      "behavior_revision": "codex.app-server.v2.workspace-roots"
+    },
+    {
+      "version": "0.140.0",
+      "tag_commit": "6506579001c322927a3e4bd440563267a7ac6c1f",
+      "npm_integrity": "sha512-KDyQHsxdc8FHZKziSBXs82ABgben/8lLPdhi2Nu+wj6qs2RAp4k/IvE8foafVnp3OeGqhtEFbhlZp0H4Dg/Slg==",
+      "npm_shasum": "47f0cd24604ff9817a28210671914c5f0166d822",
+      "stable_bundle_sha256": "098faafd7008f3b8df320ed099b7eb06026ec3b90750271f1468429835a39524",
+      "experimental_bundle_sha256": "392f0ddf7dc81b6bb5366bbd2d62664041dc780c00dc87ff1fa4a18e75ec7571",
+      "model_list_schema_sha256": "59039842824f56f4fbdf0379b54a940986fca63e1f4577493d2498005dcbafe9",
+      "experimental_thread_fields": ["dynamicTools", "runtimeWorkspaceRoots"],
+      "runtime_workspace_roots": true,
+      "allow_provider_model_fallback": false,
+      "behavior_revision": "codex.app-server.v2.workspace-roots"
+    },
+    {
+      "version": "0.144.6",
+      "tag_commit": "5d1fbf26c43abc65a203928b2e31561cb039e06d",
+      "npm_integrity": "sha512-6zgvh70MzBNSeT17HEhSOrmmGGZGAKzSC7x6JAq+edkJkdPYA9P0I1tG7aJ49GlBkBxuC+MKBH1qm6+2Cghcww==",
+      "npm_shasum": "0eef8324082ad73f35b45ff0218db366e4ef54d9",
+      "stable_bundle_sha256": "51494470d785811478ccf617a7da76f8e498b3aaadfc631e944a28ffc38e9fa0",
+      "experimental_bundle_sha256": "9a79aa961a9fade0405437726d66862859c5cc69841ef68858793428323c7be6",
+      "model_list_schema_sha256": "59039842824f56f4fbdf0379b54a940986fca63e1f4577493d2498005dcbafe9",
+      "experimental_thread_fields": ["allowProviderModelFallback", "dynamicTools", "runtimeWorkspaceRoots"],
+      "runtime_workspace_roots": true,
+      "allow_provider_model_fallback": true,
+      "behavior_revision": "codex.app-server.v2.workspace-roots"
+    },
+    {
+      "version": "0.145.0",
+      "tag_commit": "25af12f7e61572b0bc18ddb1008be543b91519b0",
+      "npm_integrity": "sha512-h6aQ0UxnaP8mIM/9/qPAH9MNkRliJo88toq1T36IxNM2L5JSU0TFamu+MZn7YkFgDsrp0RfiI+97Tm8AVVxqtA==",
+      "npm_shasum": "1857ec544fc4c90463adf0ee1f33b46f8780df88",
+      "stable_bundle_sha256": "ad0645ed15f3d1ecf57fdab5e95238b4a28f6e02d37f02d85d7bec8fd0a12830",
+      "experimental_bundle_sha256": "7c1a3edfc8d7921936584273bb3e3c596eb784c1f022adf730684ca3ee918abf",
+      "model_list_schema_sha256": "6e5e52922a2cd66123b074ac0ef197557a151120db815b3a6ca8402da5aec7a0",
+      "experimental_thread_fields": ["allowProviderModelFallback", "dynamicTools", "runtimeWorkspaceRoots"],
+      "runtime_workspace_roots": true,
+      "allow_provider_model_fallback": true,
+      "behavior_revision": "codex.app-server.v2.workspace-roots"
+    }
+  ]
+}

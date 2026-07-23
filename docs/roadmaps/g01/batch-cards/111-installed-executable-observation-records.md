@@ -1,6 +1,6 @@
 # 111 Installed Executable Observation Records
 
-Status: ready
+Status: completed
 Owner: Tom
 Updated: 2026-07-23
 Milestone: `../039-installed-harness-compatibility-range-audit.md`
@@ -26,13 +26,13 @@ host-approved installed executable before configuration and preflight.
 
 ## Acceptance Criteria
 
-- [ ] discovery probes only the explicit host-approved candidate
-- [ ] exact observations remain separate from maintained windows
-- [ ] safe results carry no executable path, raw stdout, environment, or token
-- [ ] discovery cannot create a configured instance or authorize execution
-- [ ] remote-authoritative discovery runs on the authoritative host
-- [ ] all work is deadline-aware and joined
-- [ ] existing discovery drivers and profiles retain their behavior
+- [x] discovery probes only the explicit host-approved candidate
+- [x] exact observations remain separate from maintained windows
+- [x] safe results carry no executable path, raw stdout, environment, or token
+- [x] discovery cannot create a configured instance or authorize execution
+- [x] remote-authoritative discovery runs on the authoritative host
+- [x] all work is deadline-aware and joined
+- [x] existing discovery drivers and profiles retain their behavior
 
 ## Validation
 
@@ -40,6 +40,25 @@ host-approved installed executable before configuration and preflight.
 - focused warnings-denied clippy
 - `effigy doctor` delta review
 - `git diff --check`
+
+## Evidence
+
+- Contract 032 fixes one request, scope, authoritative host, opaque executable
+  target, exact version axis, deadline, cancellation signal, classified safe
+  observation, and joined process lifecycle.
+- core classifies one exact version against one claim without carrying the
+  executable reference or raw process material.
+- runtime adds an additive installed-target discovery method. Existing general
+  discovery remains unchanged and unsupported drivers fail explicitly.
+- target-aware requests require task, time, and process services from the
+  matching execution host.
+- testkit assertions cover local and remote-authoritative topology, compatible
+  and incompatible exact points, safe terminal-state separation, redaction,
+  and process join.
+- the local host proves only an explicitly approved target starts; an
+  unapproved reference fails without ambient search.
+- 165 focused core, runtime, testkit, and local-host tests pass. Focused
+  warnings-denied clippy and `git diff --check` pass.
 
 ## Auto-Continuation
 

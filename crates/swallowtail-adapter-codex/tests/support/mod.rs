@@ -7,8 +7,10 @@ pub(crate) mod topology;
 
 #[allow(unused_imports)]
 pub use preflight::{
-    app_server_plan, app_server_plan_for, app_server_plan_with, bounded_workspace_plan,
-    bounded_workspace_plan_for, plan, plan_with,
+    app_server_plan, app_server_plan_for, app_server_plan_for_version, app_server_plan_with,
+    bind_current_exec_policy, bounded_workspace_plan, bounded_workspace_plan_for,
+    bounded_workspace_plan_for_version, current_exec_policy, exec_policy_for_version, plan,
+    plan_with, plan_with_version, unqualified_app_server_plan, unqualified_exec_plan,
 };
 #[allow(unused_imports)]
 pub use resume::{session_resume_binding, session_resume_binding_for};

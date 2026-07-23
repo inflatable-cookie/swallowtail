@@ -1,0 +1,133 @@
+{
+  "axis": "codex.cli",
+  "candidate_versions": [
+    "0.122.0",
+    "0.130.0",
+    "0.140.0",
+    "0.144.6",
+    "0.145.0"
+  ],
+  "required_argv": [
+    "exec",
+    "--json",
+    "--ephemeral",
+    "--ignore-user-config",
+    "--ignore-rules",
+    "--skip-git-repo-check",
+    "--sandbox",
+    "read-only"
+  ],
+  "selected_events": [
+    "turn.started",
+    "turn.completed",
+    "turn.failed",
+    "error",
+    "item.completed:agent_message",
+    "item.completed:reasoning",
+    "item.completed:web_search"
+  ],
+  "releases": [
+    {
+      "version": "0.121.0",
+      "tag_commit": "d65ed92a5e440972626965d0af9a6345179783bc",
+      "npm_integrity": "sha512-ZyBqIB6Fb4I0hGb/h65Vu7ePYjHSmGiqqfm+/1djEuxDPkqjfi4wkxYxNYNY+6najyNGN4UijOSTTf19eDCrqw==",
+      "npm_shasum": "1d0645f40deb741ebae896c65125f141560d9473",
+      "help_sha256": "ead7e186079d9af485ab376ce56db0781862110269abfc0feb4c8053accd28bb",
+      "cli_source_sha256": "78b92ec8f86473470d6edcec04c9b88090f0a1b08a0d12055c7bb41289532a64",
+      "events_source_sha256": "ca878eb2bffe60c5194fc574ffceb2dc9a9ab08ce36452283fd2f90c77b3cb58",
+      "json": true,
+      "ephemeral": true,
+      "ignore_user_config": false,
+      "ignore_rules": false,
+      "classification": "below_baseline"
+    },
+    {
+      "version": "0.122.0",
+      "tag_commit": "230dcadee609fa99d6162fe1107457030e5270a7",
+      "npm_integrity": "sha512-J1rUDdVBgIwpFqwmkjgVWbbAk8oxuw/1JuIGUXJMz7wAsdvEgsVazwndIjQVN1nDtdD6zznlUtl69oPV1hhXcA==",
+      "npm_shasum": "b9ba50d5189509c2fe247d4677b73588f6e17e75",
+      "help_sha256": "0ef7bde1f34c23069d12b73e8e4ebbc1d874728c5ae98c9dda4501ad4a7e0fcd",
+      "cli_source_sha256": "122daae32b3e91f3509ed076a18c1fd5f248935b09b5cb5210496818502423e4",
+      "events_source_sha256": "ca878eb2bffe60c5194fc574ffceb2dc9a9ab08ce36452283fd2f90c77b3cb58",
+      "json": true,
+      "ephemeral": true,
+      "ignore_user_config": true,
+      "ignore_rules": true,
+      "classification": "candidate"
+    },
+    {
+      "version": "0.130.0",
+      "tag_commit": "58573da43ab697e8b79f152c53df4b42230395a8",
+      "npm_integrity": "sha512-R9pkGC7kwC8yQ8el5hvBlmugQlcsG/pHMEFgZluu03X9fD2TezGxdq3KqRDRCZuMYl07ILamVEoqknuJ0cq7MA==",
+      "npm_shasum": "666ace868b7c3250a866a98e7e4de2be0bb10e9e",
+      "help_sha256": "59708b8452790c5ca27a6d4ef81d8fa7ebff0990e2c43340150b9df9941a8416",
+      "cli_source_sha256": "09893f0870089c29b1f221a448f8e4ed601c53898308edfaa527215f03d0d72d",
+      "events_source_sha256": "2faa2a60b15d29a766f2b8f354c2c406e0be41aa68e7ae6f50eaa7877d40c8c5",
+      "json": true,
+      "ephemeral": true,
+      "ignore_user_config": true,
+      "ignore_rules": true,
+      "classification": "candidate"
+    },
+    {
+      "version": "0.140.0",
+      "tag_commit": "6506579001c322927a3e4bd440563267a7ac6c1f",
+      "npm_integrity": "sha512-KDyQHsxdc8FHZKziSBXs82ABgben/8lLPdhi2Nu+wj6qs2RAp4k/IvE8foafVnp3OeGqhtEFbhlZp0H4Dg/Slg==",
+      "npm_shasum": "47f0cd24604ff9817a28210671914c5f0166d822",
+      "help_sha256": "9f86f0115238ddde2514587e5f95b0ab0aa6b89495e5912878d49ad26038aa19",
+      "cli_source_sha256": "e60d93d09929b1e03f62ecc04db363faa9e791f87b2ddf030d2102a3400c6566",
+      "events_source_sha256": "fa46724c54076701d04d29415f22398eb1e8c45abc60b54abd95fad0ecbfe201",
+      "json": true,
+      "ephemeral": true,
+      "ignore_user_config": true,
+      "ignore_rules": true,
+      "classification": "candidate"
+    },
+    {
+      "version": "0.144.6",
+      "tag_commit": "5d1fbf26c43abc65a203928b2e31561cb039e06d",
+      "npm_integrity": "sha512-6zgvh70MzBNSeT17HEhSOrmmGGZGAKzSC7x6JAq+edkJkdPYA9P0I1tG7aJ49GlBkBxuC+MKBH1qm6+2Cghcww==",
+      "npm_shasum": "0eef8324082ad73f35b45ff0218db366e4ef54d9",
+      "help_sha256": "9f86f0115238ddde2514587e5f95b0ab0aa6b89495e5912878d49ad26038aa19",
+      "cli_source_sha256": "e60d93d09929b1e03f62ecc04db363faa9e791f87b2ddf030d2102a3400c6566",
+      "events_source_sha256": "fa46724c54076701d04d29415f22398eb1e8c45abc60b54abd95fad0ecbfe201",
+      "json": true,
+      "ephemeral": true,
+      "ignore_user_config": true,
+      "ignore_rules": true,
+      "classification": "candidate"
+    },
+    {
+      "version": "0.145.0",
+      "tag_commit": "25af12f7e61572b0bc18ddb1008be543b91519b0",
+      "npm_integrity": "sha512-h6aQ0UxnaP8mIM/9/qPAH9MNkRliJo88toq1T36IxNM2L5JSU0TFamu+MZn7YkFgDsrp0RfiI+97Tm8AVVxqtA==",
+      "npm_shasum": "1857ec544fc4c90463adf0ee1f33b46f8780df88",
+      "help_sha256": "9f86f0115238ddde2514587e5f95b0ab0aa6b89495e5912878d49ad26038aa19",
+      "cli_source_sha256": "e60d93d09929b1e03f62ecc04db363faa9e791f87b2ddf030d2102a3400c6566",
+      "events_source_sha256": "c404928e0f2a463e19d1b263081c9d5e0380aec9f651a05ee0766f7bb7527f32",
+      "json": true,
+      "ephemeral": true,
+      "ignore_user_config": true,
+      "ignore_rules": true,
+      "classification": "candidate"
+    },
+    {
+      "version": "0.146.0-alpha.4",
+      "tag_commit": "34a3d19b2fa18fafee7236c834f8b63c584c1986",
+      "npm_integrity": "sha512-vjaXlVT2yfl0RWigu7dlU8imc29EBVm6y5heN0AWDeAHl3J7r1Oo1XdLk+ZU1gqrUPaeujYo4BLLtZjVGwN8wQ==",
+      "npm_shasum": "5385fbf3bdd845f2c1bc22ee0c5f8cd1a353f578",
+      "help_sha256": "9f86f0115238ddde2514587e5f95b0ab0aa6b89495e5912878d49ad26038aa19",
+      "cli_source_sha256": "e60d93d09929b1e03f62ecc04db363faa9e791f87b2ddf030d2102a3400c6566",
+      "events_source_sha256": "c404928e0f2a463e19d1b263081c9d5e0380aec9f651a05ee0766f7bb7527f32",
+      "json": true,
+      "ephemeral": true,
+      "ignore_user_config": true,
+      "ignore_rules": true,
+      "classification": "prerelease"
+    }
+  ],
+  "synthetic_rejections": [
+    "not-a-version",
+    "0.146.0"
+  ]
+}

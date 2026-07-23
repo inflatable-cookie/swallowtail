@@ -154,7 +154,8 @@ state mutation.
 ## Cancellation And Deadlines
 
 Cancellation scopes are run, active turn, whole session, and separately
-authorized owned serving instance.
+authorized owned serving instance. Contract 032 adds a bounded discovery-probe
+scope whose call completes only after its owned process joins.
 
 - requests are idempotent
 - acknowledgement is distinct from terminal cancellation

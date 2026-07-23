@@ -22,6 +22,7 @@ mod host_registry;
 mod host_traits;
 mod identity;
 mod input;
+mod installed_executable;
 mod model_artifact;
 mod network;
 mod operation_policy;
@@ -95,12 +96,16 @@ pub use identity::{
     ServingInstanceId,
 };
 pub use input::{InputLimitExceeded, InputValueRequired};
+pub use installed_executable::{
+    DiscoveryCancellation, InstalledExecutableDiscoveryRequest, InstalledExecutableTarget,
+    validate_installed_executable_discovery_services,
+};
 pub use model_artifact::{ModelArtifactAccess, ModelArtifactLease, ModelArtifactService};
 pub use network::{AuthorizedEndpoint, NetworkGrant, NetworkPolicyService};
 pub use operation_policy::{
     IncompatibleOperationPolicy, OperationPolicy, ProviderExecutionPolicy, ProviderRecoveryPolicy,
     ProviderRetentionPolicy, StreamReattachmentPolicy, validate_attached_runtime_residency_policy,
-    validate_harness_isolation_policy,
+    validate_harness_configuration_policy, validate_harness_isolation_policy,
 };
 pub use outcome::{
     CleanupOutcome, ProviderCancellationOutcome, ProviderRequestObservation,

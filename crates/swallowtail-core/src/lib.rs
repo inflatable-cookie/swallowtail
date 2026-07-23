@@ -11,8 +11,10 @@ mod capability;
 mod diagnostic;
 mod direct_continuation;
 mod event;
+mod harness_configuration;
 mod harness_rpc;
 mod identity;
+mod installed_executable;
 mod instance;
 mod interface_version;
 mod model;
@@ -49,11 +51,16 @@ pub use event::{
     EventEnvelope, EventKind, ExtensionNamespace, ExtensionPolicy, ExtensionRejected,
     ProviderExtension,
 };
+pub use harness_configuration::HarnessConfigurationPosture;
 pub use harness_rpc::{
     HarnessBackgroundAction, HarnessConfigurationSource, HarnessMessageClass, HarnessRpcPolicy,
     HarnessSchedulingBounds,
 };
 pub use identity::{AdapterId, AdapterIdentity, AdapterVersion};
+pub use installed_executable::{
+    InstalledExecutableCompatibility, InstalledExecutableObservation,
+    InvalidInstalledExecutableObservation,
+};
 pub use instance::{ConfiguredInstance, ModelRoute};
 pub use interface_version::{
     InterfaceBehaviorRevision, InterfaceCompatibilityClaim, InterfaceCompatibilityClaimId,

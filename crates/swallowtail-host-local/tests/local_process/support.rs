@@ -59,6 +59,11 @@ fn process_fixture() {
                 .expect("fixture writes inside the host-owned resource");
         }
         "sleep" => thread::sleep(Duration::from_secs(30)),
+        "version" => {
+            std::io::stdout()
+                .write_all(b"fixture-harness 1.2.0\n")
+                .expect("fixture writes version");
+        }
         _ => panic!("unknown fixture mode"),
     }
 }

@@ -9,13 +9,19 @@ use swallowtail_runtime::{
 use swallowtail_testkit::{
     RecordedHostCall, RecordingHostServices, RecordingOutcome,
     assert_cleanup_states_remain_distinct, assert_dynamic_role_registration_and_calls,
-    assert_missing_roles_are_explicit, poll_immediate,
+    assert_installed_executable_observation_contract, assert_missing_roles_are_explicit,
+    poll_immediate,
 };
 
 #[test]
 fn dynamic_roles_are_object_safe_registered_and_callable() {
     assert_dynamic_role_registration_and_calls();
     assert_missing_roles_are_explicit();
+}
+
+#[test]
+fn installed_executable_observations_are_targeted_classified_and_joined() {
+    assert_installed_executable_observation_contract();
 }
 
 #[test]

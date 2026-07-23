@@ -1,6 +1,6 @@
 # 115 Codex Six-Month Legacy Span Feasibility
 
-Status: planned
+Status: completed
 Owner: Tom
 Updated: 2026-07-23
 Milestone: `../039-installed-harness-compatibility-range-audit.md`
@@ -24,15 +24,15 @@ weakening bounded execution or pretending legacy app-server v1 is v2.
 
 ## Acceptance Criteria
 
-- [ ] the six-month target is either compiled into exact proof work or rejected
+- [x] the six-month target is either compiled into exact proof work or rejected
       with a technical boundary
-- [ ] user config, rules, persistence, and sandbox behavior cannot drift
+- [x] user config, rules, persistence, and sandbox behavior cannot drift
       silently
-- [ ] app-server v1 and v2 remain distinct protocol facades
-- [ ] no range crosses an unpublished or untested transition
-- [ ] any support-floor decision requiring product policy is returned to the
+- [x] app-server v1 and v2 remain distinct protocol facades
+- [x] no range crosses an unpublished or untested transition
+- [x] any support-floor decision requiring product policy is returned to the
       operator
-- [ ] one sole next task remains
+- [x] one sole next task remains
 
 ## Validation
 
@@ -44,3 +44,31 @@ weakening bounded execution or pretending legacy app-server v1 is v2.
 
 No. Stop if legacy support would weaken current contracts or establish an
 unfixed consumer support policy.
+
+## Decision
+
+Proceed with exact deprecated legacy segments. Do not use a container,
+temporary credential home, v1 app-server driver, or implicit fallback.
+
+Tagged `0.80.0` source already exposes the selected app-server v2 methods. Its
+legacy difference is default stdio invocation; `--listen stdio://` begins at
+`0.100.0`. The existing v2 facade can extend to January with private behavior
+dispatch and a stable read-only capability subset.
+
+Exec remains one structured-CLI driver with explicit behavior segments:
+
+- `0.80.0..=0.81.0`: ambient config, durable retention, legacy search config
+- `0.84.0..=0.98.0`: ambient config, durable retention, search-mode config
+- `0.99.0..=0.121.0`: ambient config, ephemeral
+- `0.122.0..=0.145.0`: suppressed config, ephemeral
+
+Unpublished `0.82.0`, `0.83.0`, `0.108.0`, and `0.109.0` stay excluded.
+Consumer warning, route preference, and acceptance of deprecated posture remain
+downstream policy. Swallowtail only exposes exact requirements and capabilities.
+
+## Continuation
+
+- card 116: shared harness-configuration posture contract and records
+- card 117: exact Codex legacy corpora
+- card 118: private legacy version dispatch in both existing drivers
+- card 119: six-month conformance and full closeout

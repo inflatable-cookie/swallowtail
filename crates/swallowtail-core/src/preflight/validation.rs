@@ -1,6 +1,7 @@
 use super::attached_runtime::validate_attached_runtime;
 use super::capability::validate_capabilities;
 use super::direct_continuation::validate_direct_continuation;
+use super::harness_configuration::validate_harness_configuration;
 use super::planned_connection_rollover::validate_planned_connection_rollover;
 use super::realtime_media::validate_realtime_media;
 use super::session_access::validate_session_access;
@@ -57,6 +58,7 @@ pub(super) fn validate(
 
     validate_access(context, requirements)?;
     validate_interface_versions(context, requirements)?;
+    validate_harness_configuration(context, requirements)?;
     validate_harness_rpc_policy(context, requirements)?;
     validate_route(context, requirements)?;
     validate_artifact(context, requirements)?;

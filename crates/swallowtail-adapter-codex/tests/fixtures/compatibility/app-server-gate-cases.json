@@ -1,0 +1,83 @@
+[
+  {
+    "name": "stable-thread",
+    "experimental_api": false,
+    "message": {
+      "id": 1,
+      "method": "thread/start",
+      "params": {
+        "model": "gpt-fixture",
+        "sandbox": "read-only"
+      }
+    },
+    "accepted": true
+  },
+  {
+    "name": "dynamic-tools-without-gate",
+    "experimental_api": false,
+    "message": {
+      "id": 2,
+      "method": "thread/start",
+      "params": {
+        "model": "gpt-fixture",
+        "dynamicTools": []
+      }
+    },
+    "accepted": false
+  },
+  {
+    "name": "dynamic-tools-with-gate",
+    "experimental_api": true,
+    "message": {
+      "id": 3,
+      "method": "thread/start",
+      "params": {
+        "model": "gpt-fixture",
+        "dynamicTools": []
+      }
+    },
+    "accepted": true
+  },
+  {
+    "name": "runtime-workspace-roots-without-gate",
+    "experimental_api": false,
+    "message": {
+      "id": 4,
+      "method": "thread/start",
+      "params": {
+        "model": "gpt-fixture",
+        "runtimeWorkspaceRoots": ["/private/workspace"]
+      }
+    },
+    "accepted": false
+  },
+  {
+    "name": "provider-model-fallback-without-gate",
+    "experimental_api": false,
+    "message": {
+      "id": 5,
+      "method": "thread/start",
+      "params": {
+        "model": "gpt-fixture",
+        "allowProviderModelFallback": false
+      }
+    },
+    "accepted": false
+  },
+  {
+    "name": "collaboration-mode-without-gate",
+    "experimental_api": false,
+    "message": {
+      "id": 6,
+      "method": "turn/start",
+      "params": {
+        "threadId": "thread-fixture",
+        "input": [],
+        "collaborationMode": {
+          "mode": "default"
+        }
+      }
+    },
+    "accepted": false
+  }
+]

@@ -13,6 +13,7 @@ mod artifact;
 mod attached_runtime;
 mod capability;
 mod direct_continuation;
+mod harness_configuration;
 mod plan;
 mod planned_connection_rollover;
 mod realtime_media;
@@ -96,6 +97,7 @@ pub enum PreflightDimension {
     AttachedRuntime,
     InterfaceVersion,
     HarnessRpcPolicy,
+    HarnessConfiguration,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

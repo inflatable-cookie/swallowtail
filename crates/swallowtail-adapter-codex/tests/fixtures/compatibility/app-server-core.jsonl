@@ -1,0 +1,12 @@
+{"id":0,"result":{"codexHome":"/private/redacted","platformFamily":"unix","platformOs":"macos","userAgent":"fixture"}}
+{"id":1,"result":{"data":[{"model":"gpt-fixture","displayName":"Fixture","description":"Fixture model","isDefault":true,"supportedReasoningEfforts":[{"reasoningEffort":"medium","description":"Balanced"}],"defaultReasoningEffort":"medium"}],"nextCursor":null}}
+{"id":2,"result":{"thread":{"id":"thread-fixture"}}}
+{"id":3,"result":{"turn":{"id":"turn-fixture"}}}
+{"method":"turn/started","params":{"threadId":"thread-fixture","turn":{"id":"turn-fixture","items":[],"status":"inProgress"}}}
+{"method":"future/additive","params":{"safe":"progress"}}
+{"method":"item/agentMessage/delta","params":{"threadId":"thread-fixture","turnId":"turn-fixture","itemId":"message-1","delta":"final "}}
+{"method":"item/completed","params":{"threadId":"thread-fixture","turnId":"turn-fixture","item":{"id":"message-1","type":"agentMessage","text":"final answer"}}}
+{"method":"turn/completed","params":{"threadId":"thread-fixture","turn":{"id":"turn-fixture","items":[],"status":"completed"}}}
+{"id":"callback-fixture","method":"item/tool/call","params":{"threadId":"thread-fixture","turnId":"turn-fixture","callId":"call-fixture","tool":"fixture_tool","arguments":{}}}
+{"id":4,"result":{}}
+{"id":5,"error":{"code":-32000,"message":"fixture provider failure"}}

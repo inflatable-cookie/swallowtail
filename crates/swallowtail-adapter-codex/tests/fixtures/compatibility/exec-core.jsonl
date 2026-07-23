@@ -1,0 +1,7 @@
+{"type":"thread.started","thread_id":"thread-fixture"}
+{"type":"turn.started"}
+{"type":"item.completed","item":{"id":"search-1","type":"web_search","query":"official evidence"}}
+{"type":"item.completed","item":{"id":"reason-1","type":"reasoning","text":"Checked fixture"}}
+{"type":"item.completed","item":{"id":"message-1","type":"agent_message","text":"final answer"}}
+{"type":"future.additive","safe":"ignored as progress"}
+{"type":"turn.completed","usage":{"input_tokens":12,"cached_input_tokens":2,"output_tokens":4}}

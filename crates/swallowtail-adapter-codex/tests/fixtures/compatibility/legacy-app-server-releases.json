@@ -1,0 +1,292 @@
+{
+  "axis": "codex.cli",
+  "facade": "codex-app-server-v2",
+  "claim_state": "evidence-only",
+  "profile": "stable-read-only",
+  "diagnostic_fields": [
+    "version",
+    "segment",
+    "schema_authority",
+    "rejection_reason"
+  ],
+  "selected_methods": [
+    "initialize",
+    "model/list",
+    "thread/start",
+    "thread/resume",
+    "turn/start",
+    "turn/interrupt"
+  ],
+  "selected_notifications": [
+    "error",
+    "thread/started",
+    "turn/started",
+    "turn/completed",
+    "item/completed",
+    "item/agentMessage/delta"
+  ],
+  "excluded_capabilities": [
+    "dynamic-tools",
+    "provider-requests",
+    "runtime-workspace-roots",
+    "workspace-write"
+  ],
+  "segments": [
+    {
+      "id": "legacy-default-stdio-first",
+      "range": "0.80.0..=0.81.0",
+      "checkpoints": ["0.80.0", "0.81.0"],
+      "invocation": ["app-server"]
+    },
+    {
+      "id": "legacy-default-stdio-second",
+      "range": "0.84.0..=0.99.0",
+      "checkpoints": ["0.84.0", "0.94.0", "0.99.0"],
+      "invocation": ["app-server"]
+    },
+    {
+      "id": "legacy-explicit-stdio",
+      "range": "0.100.0..=0.107.0",
+      "checkpoints": ["0.100.0", "0.107.0"],
+      "invocation": ["app-server", "--listen", "stdio://"]
+    },
+    {
+      "id": "current-explicit-stdio-boundary",
+      "range": "0.110.0..=0.130.0",
+      "checkpoints": ["0.110.0"],
+      "invocation": ["app-server", "--listen", "stdio://"]
+    }
+  ],
+  "releases": [
+    {
+      "version": "0.80.0",
+      "segment": "legacy-default-stdio-first",
+      "published_at": "2026-01-09T19:49:15.685Z",
+      "tag_commit": "f0679a6ab2563135e01cc922698cb54921a1719f",
+      "npm_package": "@openai/codex",
+      "npm_artifact_version": "0.80.0",
+      "npm_integrity": "sha512-U1DWDy7eTjx+SF32Wx9oO6cyX1dd9WiRvIW4XCP3FVcv7Xq7CSCvDrFAdzpFxPNPg6CLz9a4qtO42yntpcJpDw==",
+      "npm_shasum": "12a4314bca28019f0595964cf9111973fdcc6c58",
+      "protocol_common_source_sha256": "f5624e2af0272edfda25cad2579efa230cc5276213ea3d03db784bfac291cdb6",
+      "protocol_v2_source_sha256": "a00db77082831a06a0e3a68d218838d36ce61c3dfa4c449dff80284415a30e6e",
+      "cli_main_source_sha256": "556a2941f4936ff8baaa9af4a7c8eb5b9c617fa4eabde33d1df780b9453e49a9",
+      "app_server_main_source_sha256": "ae57151963bc938358946bb637114d277c173e75f1fb56e9e8a2860fa5e8cb49",
+      "schema": {
+        "authority": "source-generated",
+        "source_commit": "f0679a6ab2563135e01cc922698cb54921a1719f",
+        "generation_command": "cargo run --manifest-path codex-rs/Cargo.toml -p codex-app-server-protocol --bin export -- --out <output-dir>",
+        "aggregate_sha256": {
+          "ClientNotification.json": "706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a",
+          "ClientRequest.json": "44c8602121c5c4ee5d6559f75f6129f47a7a6769be864fbf4364c06235f57311",
+          "ServerNotification.json": "df287882af1b36afa69fc7858eec483498f4047363676112cdf94a83623eb293",
+          "ServerRequest.json": "989e5e3ab25e70a88298a14407f92a03e9321b6d656d3e904bd6098b56961a3d"
+        }
+      }
+    },
+    {
+      "version": "0.81.0",
+      "segment": "legacy-default-stdio-first",
+      "published_at": "2026-01-14T18:13:47.226Z",
+      "tag_commit": "7e7f828e2ce5d31a61d577bcabb517cca342f8ad",
+      "npm_package": "@openai/codex",
+      "npm_artifact_version": "0.81.0",
+      "npm_integrity": "sha512-A9SB7BvUgJxOgPDeurr2BufO8S+krnjG34azR6784CEClAo+IKlTWpqtdue6JFhuFSz0KRE3EcIvqR2PMfaB+w==",
+      "npm_shasum": "04abbd7f3bc6832e44e050294c5f2eaf0dee5e50",
+      "protocol_common_source_sha256": "89d2a8d096cbaead943ca7ef5c8dddd0a44b8defd1074712c00705291e1ff772",
+      "protocol_v2_source_sha256": "ad855a9d3e2e2101c604a042f48b223ffeab485d3f63de3070b1acdfe657c4c9",
+      "cli_main_source_sha256": "0861e37b17f404707473857853882ea7a31035b03ae9d98f959e43185bb0c8cc",
+      "app_server_main_source_sha256": "10a2cffdef627e42cf632c1d52c9dd764c571395ebb11c4950900bb5bab52b9a",
+      "schema": {
+        "authority": "source-generated",
+        "source_commit": "7e7f828e2ce5d31a61d577bcabb517cca342f8ad",
+        "generation_command": "cargo run --manifest-path codex-rs/Cargo.toml -p codex-app-server-protocol --bin export -- --out <output-dir>",
+        "aggregate_sha256": {
+          "ClientNotification.json": "706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a",
+          "ClientRequest.json": "5aae3d93613572a19f79ca3be46ffb62673d7d85b6d34e47a8e73c5750184809",
+          "ServerNotification.json": "5e20279e9efef53ddc23f430502024f847b3a244bd1c018747014381785d5e06",
+          "ServerRequest.json": "989e5e3ab25e70a88298a14407f92a03e9321b6d656d3e904bd6098b56961a3d"
+        }
+      }
+    },
+    {
+      "version": "0.84.0",
+      "segment": "legacy-default-stdio-second",
+      "published_at": "2026-01-15T01:30:11.748Z",
+      "tag_commit": "d67aa9eaa0c895b62926b6cf9e83f9535fd94d28",
+      "npm_package": "@openai/codex",
+      "npm_artifact_version": "0.84.0",
+      "npm_integrity": "sha512-1reR4CV3Lqfm0iYSZM8Ka1XSuYEep1xpOfySGBWZU6+NTcHRH960pfIbGENL3GKsbrCyavcEM8Gz2XQEolp+uA==",
+      "npm_shasum": "d892c0157ce01528f727d1d3cb119de1e977e39b",
+      "protocol_common_source_sha256": "89d2a8d096cbaead943ca7ef5c8dddd0a44b8defd1074712c00705291e1ff772",
+      "protocol_v2_source_sha256": "b99aa0babbcada95317ded28037bd8084ce28ca7064339a7776b4a6d36c46530",
+      "cli_main_source_sha256": "ebb191d358f7ed644799743f0102985eb2c430228c4930487d9ae4c7b7c353ac",
+      "app_server_main_source_sha256": "10a2cffdef627e42cf632c1d52c9dd764c571395ebb11c4950900bb5bab52b9a",
+      "schema": {
+        "authority": "source-generated",
+        "source_commit": "d67aa9eaa0c895b62926b6cf9e83f9535fd94d28",
+        "generation_command": "cargo run --manifest-path codex-rs/Cargo.toml -p codex-app-server-protocol --bin export -- --out <output-dir>",
+        "aggregate_sha256": {
+          "ClientNotification.json": "706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a",
+          "ClientRequest.json": "a624d89f4b856deb84bd1a62fe03cf4c13f718ddac1706a1779c2c2e3ee99583",
+          "ServerNotification.json": "0dbae47fa6b0ba317d2d9097565c7b9112960a420c1db6233e929f441e1e5ad5",
+          "ServerRequest.json": "989e5e3ab25e70a88298a14407f92a03e9321b6d656d3e904bd6098b56961a3d"
+        }
+      }
+    },
+    {
+      "version": "0.94.0",
+      "segment": "legacy-default-stdio-second",
+      "published_at": "2026-02-02T18:28:42.990Z",
+      "tag_commit": "dce99bc2595e58acc4d88a324f3ccab05cf5cd7d",
+      "npm_package": "@openai/codex",
+      "npm_artifact_version": "0.94.0",
+      "npm_integrity": "sha512-GKOU2ty3NXls2aeiFSCnSSB6zQBtENqC5OnPa8s79Z576YP1r2DIfUrhQZzVDKmFei852E1SG4TNljFL/081gg==",
+      "npm_shasum": "97945e40b68fa01b0ec6ce1fc7774e1be9485ef7",
+      "protocol_common_source_sha256": "53126dc9c0f1f1b69ccbf1263d5f0a0118162dd8a8eef10d33dd82e8c6c28bf3",
+      "protocol_v2_source_sha256": "c2b7b48c4bca7ae28ff7dec26c67fb169089c9fcca8a7ead7d0b7c0cbfc70e33",
+      "cli_main_source_sha256": "a5d9c7e18a84f019003948419e9ac5a12841cea0f21f0ec821d12b076297fa72",
+      "app_server_main_source_sha256": "10a2cffdef627e42cf632c1d52c9dd764c571395ebb11c4950900bb5bab52b9a",
+      "schema": {
+        "authority": "upstream-published",
+        "source_commit": "dce99bc2595e58acc4d88a324f3ccab05cf5cd7d",
+        "source_path": "codex-rs/app-server-protocol/schema/json",
+        "aggregate_sha256": {
+          "ClientNotification.json": "706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a",
+          "ClientRequest.json": "aab5f78cd84f161ba2a665b871841528143b9ee1bc254315748deefe5bc21b70",
+          "ServerNotification.json": "377f7e6897cfbf355fa75ee021aa41cb902b8d14e647936162dc0c0f9f0a7baf",
+          "ServerRequest.json": "675c9e1494476fa7a16f0f414d9c52c491f13f0db63bd2ca60fbe129d8d7f8bb"
+        }
+      }
+    },
+    {
+      "version": "0.99.0",
+      "segment": "legacy-default-stdio-second",
+      "published_at": "2026-02-11T20:43:52.809Z",
+      "tag_commit": "ec9f76ce4f854c7d4f3c78c9b1bacbe128df286e",
+      "npm_package": "@openai/codex",
+      "npm_artifact_version": "0.99.0-darwin-arm64",
+      "npm_integrity": "sha512-pu02RGrHbdCbPKAJBvOQx5sfIr78CZ7BtlG2jMhiyX2QXin7+WJ2jsGXtjJSpNU4ttmieuuHGXKLMgjsw+/6vg==",
+      "npm_shasum": "ea80a1c68ef179189b6109fe2ffe582fc01b5fd6",
+      "protocol_common_source_sha256": "527ef77f7e35126c96e20e9a922f3164e3fcb114407cb33df1a59a05153e338d",
+      "protocol_v2_source_sha256": "920c9738c2038be84d1eee01195ff791f6dc7820dc06124dd5fbecc6bb17292f",
+      "cli_main_source_sha256": "bb0ea07a43d53fd5e854ff26066dda7c65b19144aeb90003a5903cbb3ae6b129",
+      "app_server_main_source_sha256": "10a2cffdef627e42cf632c1d52c9dd764c571395ebb11c4950900bb5bab52b9a",
+      "schema": {
+        "authority": "upstream-published",
+        "source_commit": "ec9f76ce4f854c7d4f3c78c9b1bacbe128df286e",
+        "source_path": "codex-rs/app-server-protocol/schema/json",
+        "aggregate_sha256": {
+          "ClientNotification.json": "706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a",
+          "ClientRequest.json": "bf7bcb41f90a1ca13d14ea37955eae303df0d2a93dcc49977d46e98452725ede",
+          "ServerNotification.json": "288d2bdb74993950261c306356919fece11333fefc7a39476c0e6ba16fa577bc",
+          "ServerRequest.json": "0545fa54ffa76bc61b0e7f3daac68005bd7e0aaa8b7812757ad6a914f9372c7d"
+        }
+      }
+    },
+    {
+      "version": "0.100.0",
+      "segment": "legacy-explicit-stdio",
+      "published_at": "2026-02-12T18:30:51.007Z",
+      "tag_commit": "8272f9a71ee7364d8de992418103628f8a17eb6f",
+      "npm_package": "@openai/codex",
+      "npm_artifact_version": "0.100.0-darwin-arm64",
+      "npm_integrity": "sha512-smDGkYOwcZmIwYMQM+zmpt4oEGhuGVecY0KWePE4/eskIY0dFsDdUMK3kcyKSEy7v7u5SKTnqgPq4Q4QI2bhWg==",
+      "npm_shasum": "5518198dc104efda05b61c48f776dceb6b7a5d81",
+      "protocol_common_source_sha256": "527ef77f7e35126c96e20e9a922f3164e3fcb114407cb33df1a59a05153e338d",
+      "protocol_v2_source_sha256": "6b829cc54f564368657172ff5608006dc48b7cdb7167c9a466a21fc01f20ab68",
+      "cli_main_source_sha256": "4923318093d86e546a1e4c8bbe96178f5fdcb708024e9876f8a3ae8c295969cc",
+      "app_server_main_source_sha256": "52eb878ba578f3827f7d72de0e9c35deaabe4ca681e641677a742c4a03ef7d44",
+      "schema": {
+        "authority": "upstream-published",
+        "source_commit": "8272f9a71ee7364d8de992418103628f8a17eb6f",
+        "source_path": "codex-rs/app-server-protocol/schema/json",
+        "aggregate_sha256": {
+          "ClientNotification.json": "706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a",
+          "ClientRequest.json": "479ed1320e96f25658c4df0ab84c110da9daab55b59d15195b9e5b1327c46804",
+          "ServerNotification.json": "54536e42e7a5af95a76078f22420ae5fedfb0e10e6660cdc6f8fafafb7139cc0",
+          "ServerRequest.json": "0545fa54ffa76bc61b0e7f3daac68005bd7e0aaa8b7812757ad6a914f9372c7d"
+        }
+      }
+    },
+    {
+      "version": "0.107.0",
+      "segment": "legacy-explicit-stdio",
+      "published_at": "2026-03-02T18:00:55.212Z",
+      "tag_commit": "19f8797c0f62abecb347e817aac36d18c5fc554e",
+      "npm_package": "@openai/codex",
+      "npm_artifact_version": "0.107.0-darwin-arm64",
+      "npm_integrity": "sha512-g8u0nsns9JaHNYehVuw1eSL/83BSuBsmdOo2rrEU0D1rKI/QoIQSv6S6offZnQFerCHeqj0LabxYzqUTBzEh0g==",
+      "npm_shasum": "633c7a543c9e254403bc72fb7e578e252f4496df",
+      "protocol_common_source_sha256": "01a3fe323dde49330ad221b7e233cbe9573cf9acf5820ede4b85ae47f4ff2181",
+      "protocol_v2_source_sha256": "57a7e28d56d5270ec6d96ee59cb9816c00043371240b792bcce3da745409c3e0",
+      "cli_main_source_sha256": "bbcd542ae90a2a613523be052cf77a2ce18b1dc4326527aa56dd717617edb734",
+      "app_server_main_source_sha256": "959403a526d3f8d9d15730624453fe4ef694a13611bfbb9dfb47a114fa2a8d8f",
+      "schema": {
+        "authority": "upstream-published",
+        "source_commit": "19f8797c0f62abecb347e817aac36d18c5fc554e",
+        "source_path": "codex-rs/app-server-protocol/schema/json",
+        "aggregate_sha256": {
+          "ClientNotification.json": "706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a",
+          "ClientRequest.json": "f90626c146c51fd68d37ff26c398b8b25f256bd403316bcb8074d422cafd8215",
+          "ServerNotification.json": "fa9521623d41b448e24514c97e3386def9f16afb7d6e863fa93da85c82941808",
+          "ServerRequest.json": "5e341bdd2b2062b04b49d013b18336d16d7d24fae018077f262185169258d4ad"
+        }
+      }
+    },
+    {
+      "version": "0.110.0",
+      "segment": "current-explicit-stdio-boundary",
+      "published_at": "2026-03-05T02:23:39.861Z",
+      "tag_commit": "77aabe4218ab7ddaf4b6d471887bda043a4c16e6",
+      "npm_package": "@openai/codex",
+      "npm_artifact_version": "0.110.0-darwin-arm64",
+      "npm_integrity": "sha512-yCrO3HLpohNM5zqqEzJhqtBBAH4r9nHb+h7F0+2/T0qbCJwxzL6XtgjQonvKW9Ol6qc3kqlW7uQVFEX+z13Ydg==",
+      "npm_shasum": "35ae11a092e09e803ca9deba0b979349bf3fd51a",
+      "protocol_common_source_sha256": "315f3d640ae620746094e8c5670b06f2de043b1d9541bcc37178114a83747d00",
+      "protocol_v2_source_sha256": "2529fe7d066e66c34bbb57a1f0970e78df263b3fcb6f3e0dfc58faefcf28e891",
+      "cli_main_source_sha256": "5df873f90c54bd0750fb2bff7d01857ff6916b0f591daed866d9fb8f90f178a5",
+      "app_server_main_source_sha256": "959403a526d3f8d9d15730624453fe4ef694a13611bfbb9dfb47a114fa2a8d8f",
+      "schema": {
+        "authority": "upstream-published",
+        "source_commit": "77aabe4218ab7ddaf4b6d471887bda043a4c16e6",
+        "source_path": "codex-rs/app-server-protocol/schema/json",
+        "aggregate_sha256": {
+          "ClientNotification.json": "706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a",
+          "ClientRequest.json": "1b028bb334f22bb81b1079ba90c69a2d8e23fd17037bcac70a1ed1a4a566793e",
+          "ServerNotification.json": "adecf41d2ac47a5b6f0fd4689181675b5e9a7338e1cc59a27244672167a3013c",
+          "ServerRequest.json": "74f2b88ddd54fe3c756ed618b62b397359484e8fb04e837a8b2a25c53505e08f"
+        }
+      }
+    }
+  ],
+  "rejections": [
+    {
+      "version": "0.82.0",
+      "tag_commit": "1324fffe5d620c8b49b0ffc6e6df5969f6bad639",
+      "rejection_reason": "source-tag-without-published-npm-release"
+    },
+    {
+      "version": "0.83.0",
+      "tag_commit": "5fe0cd19437ef03549ae8c12b9fb74364237378d",
+      "rejection_reason": "source-tag-without-published-npm-release"
+    },
+    {
+      "version": "0.108.0",
+      "tag_commit": "89b79419a1e0720856d4450cf17379221e5a3b1d",
+      "rejection_reason": "source-tag-without-published-npm-release"
+    },
+    {
+      "version": "0.109.0",
+      "tag_commit": "37133fb8455766068008b8453a1da1dacae4274c",
+      "rejection_reason": "source-tag-without-published-npm-release"
+    },
+    {
+      "version": "0.146.0",
+      "rejection_reason": "unknown-newer"
+    },
+    {
+      "version": "not-a-version",
+      "rejection_reason": "malformed"
+    }
+  ]
+}

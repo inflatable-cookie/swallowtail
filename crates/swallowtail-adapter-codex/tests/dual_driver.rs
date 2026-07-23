@@ -11,8 +11,7 @@ use swallowtail_adapter_codex::{
 use swallowtail_core::{Capability, DriverRole};
 use swallowtail_runtime::{
     DriverRegistration, EnvironmentRef, InteractiveSessionDriver, ModelCatalogDriver,
-    OpenSessionRequest, OperationContent, OperationPolicy, RequestId, StructuredRunDriver,
-    StructuredRunRequest,
+    OpenSessionRequest, OperationContent, RequestId, StructuredRunDriver, StructuredRunRequest,
 };
 use swallowtail_testkit::{
     ConformanceAssertion, ConformanceReport, run_long_lived_rpc_profile,
@@ -85,7 +84,7 @@ fn drivers_reject_each_others_bound_plans_before_process_work() {
             StructuredRunRequest::new(
                 RequestId::new("cross-plan-exec").expect("request id is valid"),
                 OperationContent::new("private prompt").expect("content is valid"),
-                OperationPolicy::offline(),
+                support::current_exec_policy(),
             )
             .with_working_resource(working_resource()),
             host_services(exec_process),

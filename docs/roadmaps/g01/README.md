@@ -758,6 +758,68 @@ cross-adapter adoption without prematurely stabilizing the public API.
   production-range, and conformance tranche
 - card 115 retains the January-to-April legacy feasibility span without
   weakening the first claims
+- Contract 032 and card 111 now bind one explicit host-approved executable
+  target, authoritative topology, deadline, cancellation, exact classified
+  observation, safe terminal states, and joined process completion
+- card 112 freezes exact exec and app-server checkpoints, rejection neighbors,
+  stable and experimental schemas, protocol transcripts, and capability gates
+- the gate-enforcing mock proves the current default-false model-fallback field
+  is experimental and rejected without explicit negotiation
+- card 113 binds both production drivers to joined exact-version discovery and
+  publishes only the corpus-qualified windows
+- exec now supports `0.122.0..=0.145.0`; app-server supports
+  `0.110.0..=0.130.0` and `0.131.0..=0.145.0`
+- app-server selects bounded workspace behavior from the exact `0.131.0`
+  milestone, omits stable default-false experimental fields, and negotiates
+  every requested experimental feature
+- card 114 proves exact target discovery, every frozen release checkpoint,
+  rejection neighbors, the workspace-root milestone, stable and experimental
+  sessions, both authoritative host topologies, and unchanged common profiles
+- full QA has a 549-test inventory: 545 pass and four separately gated probes
+  remain ignored; doctor retains the inherited seven errors and twelve warnings
+- Research 026 corrects the legacy app-server assumption: the selected v2
+  surface exists at `0.80.0`; default stdio ends at `0.99.0` and explicit
+  listener invocation begins at `0.100.0`
+- card 115 selects deprecated six-month segments without a v1 driver,
+  container, temporary credential home, or implicit route fallback
+- legacy exec keeps ambient config and pre-`0.99.0` durable retention explicit;
+  current `0.122.0+` suppressed and ephemeral behavior remains separate
+- unpublished `0.82.0`, `0.83.0`, `0.108.0`, and `0.109.0` stay excluded
+- cards 116-119 sequence the shared configuration posture, exact legacy
+  corpora, private version dispatch, and full six-month conformance
+- Contract 033 keeps ambient, provider-suppressed, and host-scoped harness
+  configuration separate from isolation, credentials, retention, and working
+  resources
+- card 116 binds exact configured-instance, requirement, immutable-plan, and
+  request-policy agreement across structured CLI and long-lived RPC profiles
+- host-scoped execution remains closed until a separate opaque host lease and
+  capability-scoped service exist
+- 66 focused tests, workspace all-target check, and warnings-denied clippy pass
+- card 117 freezes ten exec and eight app-server checkpoints with exact npm,
+  tagged-source, invocation, search, configuration, retention, and schema
+  provenance evidence
+- source-generated `0.80.0`, `0.81.0`, and `0.84.0` app-server schemas remain
+  distinct from upstream-published `0.94.0+` artifacts
+- the legacy app subset excludes dynamic tools, provider requests, workspace
+  roots, and workspace writes; production claims remain unchanged
+- eight current and legacy corpus tests pass; doctor retains the inherited
+  seven errors and twelve warnings
+- card 118 extends both production claims to the exact deprecated segments
+- exec now dispatches retained boolean search, retained mode search, ephemeral
+  ambient, and ephemeral suppressed behavior from the immutable version binding
+- app-server now dispatches default stdio, explicit stdio, current stable, and
+  workspace-root behavior from the immutable version binding
+- legacy policy or capability mismatches reject before process work; current
+  isolation and experimental gates remain unchanged
+- 72 Codex adapter tests, workspace all-target check, and warnings-denied
+  clippy pass; doctor remains at the inherited seven errors and twelve warnings
+- card 119 closes the exact six-month Codex range across topology, policy,
+  lifecycle, redaction, and unchanged common profiles
+- full repository QA inventories 563 tests: 559 pass and four separately gated
+  live or installed probes remain ignored
+- roadmap 039 is complete
+- roadmap 040 and card 120 begin the second installed-harness range selection;
+  OpenCode leads current evidence but remains subject to fresh qualification
 
 ## Milestones
 
@@ -820,6 +882,8 @@ cross-adapter adoption without prematurely stabilizing the public API.
 - [038 Ollama Native Attached Runtime Proof](038-ollama-native-attached-runtime-proof.md)
   — completed
 - [039 Installed Harness Compatibility Range Audit](039-installed-harness-compatibility-range-audit.md)
+  — completed
+- [040 Cross-Harness Compatibility Range Expansion](040-cross-harness-compatibility-range-expansion.md)
   — active
 
 ## Batch Shape
@@ -872,8 +936,11 @@ cross-adapter adoption without prematurely stabilizing the public API.
   portability-conformance lane
 - card 110 opens and completes the installed-harness compatibility-range audit
 - cards 111-114 form the first Codex maintained-range retrofit
-- card 115 audits the older six-month Codex span after the current-behavior
-  claims close
+- card 115 audits and compiles the older six-month Codex span
+- cards 116-119 form the shared configuration-posture and deprecated Codex
+  range extension
+- cards 120-123 form the second installed-harness selection, corpus, dispatch,
+  and cross-harness conformance lane
 
 Run validation after each complete batch, not after each small card.
 

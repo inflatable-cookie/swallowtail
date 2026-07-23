@@ -113,6 +113,15 @@
 - `108-ollama-native-attached-driver.md`
 - `109-ollama-portability-conformance-and-closeout.md`
 - `110-installed-harness-compatibility-range-audit.md`
+- `111-installed-executable-observation-records.md`
+- `112-codex-multi-release-compatibility-corpora.md`
+- `113-codex-version-discovery-and-range-drivers.md`
+- `114-codex-range-conformance-and-closeout.md`
+- `115-codex-six-month-legacy-span-feasibility.md`
+- `116-harness-configuration-posture-records.md`
+- `117-codex-six-month-legacy-corpora.md`
+- `118-codex-legacy-version-dispatch.md`
+- `119-codex-six-month-range-conformance-and-closeout.md`
 
 ## Blocked
 
@@ -120,11 +129,10 @@ None.
 
 ## Ready
 
-- `111-installed-executable-observation-records.md`
+- `120-second-installed-harness-range-selection.md`
 
 ## Planned
 
-- `112-codex-multi-release-compatibility-corpora.md`
-- `113-codex-version-discovery-and-range-drivers.md`
-- `114-codex-range-conformance-and-closeout.md`
-- `115-codex-six-month-legacy-span-feasibility.md`
+- `121-selected-harness-observation-and-corpus.md`
+- `122-selected-harness-range-dispatch.md`
+- `123-cross-harness-range-conformance-and-closeout.md`

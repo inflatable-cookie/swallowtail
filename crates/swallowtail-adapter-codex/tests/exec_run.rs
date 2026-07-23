@@ -3,7 +3,8 @@ mod support;
 use futures_executor::block_on;
 use futures_util::StreamExt;
 use support::{
-    FakeProcessService, host_services, host_services_with, plan, plan_with, working_resource,
+    FakeProcessService, bind_current_exec_policy, current_exec_policy, host_services,
+    host_services_with, plan, plan_with, working_resource,
 };
 use swallowtail_adapter_codex::CodexExecDriver;
 use swallowtail_core::{
@@ -33,7 +34,7 @@ fn structured_run_translates_request_and_normalizes_jsonl() {
     let request = StructuredRunRequest::new(
         RequestId::new("request-1").expect("request id is valid"),
         OperationContent::new("private prompt").expect("content is valid"),
-        OperationPolicy::offline(),
+        current_exec_policy(),
     )
     .with_working_resource(working_resource());
     let mut handle =
@@ -140,11 +141,13 @@ fn structured_inputs_use_only_host_materializations_and_explicit_policy() {
         "json-schema-2020-12",
     )
     .expect("structured output is valid");
-    let policy = OperationPolicy::new(
-        ExternalNetworkPolicy::HostApproved,
-        ExternalSearchPolicy::Enabled,
+    let policy = bind_current_exec_policy(
+        OperationPolicy::new(
+            ExternalNetworkPolicy::HostApproved,
+            ExternalSearchPolicy::Enabled,
+        )
+        .expect("search policy is explicit"),
     )
-    .expect("search policy is explicit")
     .with_reasoning_mode(reasoning);
     let request = StructuredRunRequest::new(
         RequestId::new("request-structured").expect("request id is valid"),
@@ -224,7 +227,7 @@ fn unsupported_inputs_fail_before_process_side_effects() {
     let request = StructuredRunRequest::new(
         RequestId::new("request-deadline").expect("request id is valid"),
         OperationContent::new("bounded prompt").expect("content is valid"),
-        OperationPolicy::offline(),
+        current_exec_policy(),
     )
     .with_working_resource(working_resource())
     .with_deadline(Deadline::at(MonotonicInstant::from_ticks(10)));
@@ -237,11 +240,13 @@ fn unsupported_inputs_fail_before_process_side_effects() {
     let request = StructuredRunRequest::new(
         RequestId::new("request-search").expect("request id is valid"),
         OperationContent::new("bounded prompt").expect("content is valid"),
-        OperationPolicy::new(
-            ExternalNetworkPolicy::HostApproved,
-            ExternalSearchPolicy::Enabled,
-        )
-        .expect("search policy is explicit"),
+        bind_current_exec_policy(
+            OperationPolicy::new(
+                ExternalNetworkPolicy::HostApproved,
+                ExternalSearchPolicy::Enabled,
+            )
+            .expect("search policy is explicit"),
+        ),
     )
     .with_working_resource(working_resource());
     let (process, state) = FakeProcessService::completed("");
@@ -260,7 +265,7 @@ fn cancellation_force_stops_and_joins_the_owned_process() {
     let request = StructuredRunRequest::new(
         RequestId::new("request-cancel").expect("request id is valid"),
         OperationContent::new("wait indefinitely").expect("content is valid"),
-        OperationPolicy::offline(),
+        current_exec_policy(),
     )
     .with_working_resource(working_resource());
     let mut handle =

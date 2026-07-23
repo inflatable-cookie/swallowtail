@@ -252,7 +252,7 @@ fn session_turn_streams_output_and_preserves_provider_ids() {
 
 #[test]
 fn session_options_and_dynamic_tool_callback_round_trip() {
-    let (process, state) = ScriptedAppServer::new(AppServerMode::DynamicToolCall);
+    let (process, state) = ScriptedAppServer::gate_enforcing(AppServerMode::DynamicToolCall);
     let services = host_services(process);
     let plan = app_server_plan_with(
         DriverRole::InteractiveSession,
@@ -294,7 +294,11 @@ fn session_options_and_dynamic_tool_callback_round_trip() {
         thread_start["params"]["developerInstructions"],
         "private session instructions"
     );
-    assert_eq!(thread_start["params"]["allowProviderModelFallback"], false);
+    assert!(
+        thread_start["params"]
+            .get("allowProviderModelFallback")
+            .is_none()
+    );
     assert_eq!(
         thread_start["params"]["dynamicTools"][0]["type"],
         "function"
@@ -375,6 +379,44 @@ fn session_options_and_dynamic_tool_callback_round_trip() {
     assert_eq!(provider_response["result"]["success"], true);
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
     assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+}
+
+#[test]
+fn gate_fixture_accepts_stable_session_without_experimental_fields() {
+    let (process, state) = ScriptedAppServer::gate_enforcing(AppServerMode::CompleteTurn);
+    let result = block_on(driver().open_session(
+        app_server_plan(DriverRole::InteractiveSession),
+        read_only_open_request(
+            RequestId::new("session-experimental-gate").expect("request id is valid"),
+            working_resource(),
+            None,
+        ),
+        host_services(process),
+    ));
+
+    let session = result.expect("stable session opens without experimental negotiation");
+    let initialize = state
+        .messages()
+        .into_iter()
+        .find(|message| message["method"] == "initialize")
+        .expect("initialize was sent");
+    assert!(
+        initialize
+            .pointer("/params/capabilities/experimentalApi")
+            .is_none()
+    );
+    let thread_start = state
+        .messages()
+        .into_iter()
+        .find(|message| message["method"] == "thread/start")
+        .expect("thread/start was sent");
+    assert!(
+        thread_start["params"]
+            .get("allowProviderModelFallback")
+            .is_none()
+    );
+    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert!(state.waited());
 }
 
 #[test]

@@ -11,8 +11,8 @@ use swallowtail_adapter_codex::CodexExecDriver;
 use swallowtail_core::{Capability, CapabilityConstraint, CapabilityRequirement, HostServiceKind};
 use swallowtail_runtime::{
     AttachmentDescriptor, AttachmentRef, AttachmentRole, BoxFuture, Deadline, DeadlineObservation,
-    EnvironmentRef, MonotonicInstant, OperationContent, OperationPolicy, RequestId,
-    StructuredRunDriver, StructuredRunRequest, TerminalStatus, TimeService,
+    EnvironmentRef, MonotonicInstant, OperationContent, RequestId, StructuredRunDriver,
+    StructuredRunRequest, TerminalStatus, TimeService,
 };
 use swallowtail_testkit::{RecordedHostCall, RecordingHostServices};
 
@@ -102,7 +102,7 @@ fn request(id: &str) -> StructuredRunRequest {
     StructuredRunRequest::new(
         RequestId::new(id).expect("request id is valid"),
         OperationContent::new("wait if needed").expect("content is valid"),
-        OperationPolicy::offline(),
+        support::current_exec_policy(),
     )
     .with_working_resource(working_resource())
 }

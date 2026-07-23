@@ -1,4 +1,5 @@
 use crate::exec_validation::validate;
+use crate::selection::CodexExecBehavior;
 use std::sync::Arc;
 use std::sync::Mutex;
 use swallowtail_core::{ModelId, PreflightPlan};
@@ -81,13 +82,14 @@ pub(crate) async fn prepare(
     services: &HostServices,
     scope: &ScopeId,
     model: &ModelId,
+    behavior: CodexExecBehavior,
 ) -> Result<PreparedExecInput, RuntimeFailure> {
-    validate(plan, request, services)?;
+    validate(plan, request, services, behavior)?;
     let attachment_service = services.attachment().cloned();
     let schema_service = services.schema().cloned();
     let mut materializations =
         ExecMaterializations::new(attachment_service.clone(), schema_service.clone());
-    let mut arguments = base_arguments(model, request);
+    let mut arguments = base_arguments(model, request, behavior);
 
     if let Some(mode) = request.policy().reasoning_mode() {
         arguments.extend([
@@ -142,19 +144,26 @@ pub(crate) async fn prepare(
     })
 }
 
-fn base_arguments(model: &ModelId, request: &StructuredRunRequest) -> Vec<String> {
-    let web_search = match request.policy().external_search() {
-        ExternalSearchPolicy::Disabled => "disabled",
-        ExternalSearchPolicy::Enabled => "live",
-    };
-    vec![
-        "exec".to_owned(),
-        "--json".to_owned(),
-        "--ephemeral".to_owned(),
-        "--color".to_owned(),
-        "never".to_owned(),
-        "--ignore-user-config".to_owned(),
-        "--ignore-rules".to_owned(),
+fn base_arguments(
+    model: &ModelId,
+    request: &StructuredRunRequest,
+    behavior: CodexExecBehavior,
+) -> Vec<String> {
+    let mut arguments = vec!["exec".to_owned(), "--json".to_owned()];
+    if matches!(
+        behavior,
+        CodexExecBehavior::EphemeralAmbient | CodexExecBehavior::EphemeralSuppressed
+    ) {
+        arguments.push("--ephemeral".to_owned());
+    }
+    arguments.extend(["--color".to_owned(), "never".to_owned()]);
+    if behavior == CodexExecBehavior::EphemeralSuppressed {
+        arguments.extend([
+            "--ignore-user-config".to_owned(),
+            "--ignore-rules".to_owned(),
+        ]);
+    }
+    arguments.extend([
         "--skip-git-repo-check".to_owned(),
         "--sandbox".to_owned(),
         "read-only".to_owned(),
@@ -169,8 +178,25 @@ fn base_arguments(model: &ModelId, request: &StructuredRunRequest) -> Vec<String
         "--config".to_owned(),
         "show_raw_agent_reasoning=false".to_owned(),
         "--config".to_owned(),
-        config_string("web_search", web_search),
-    ]
+        search_config(request.policy().external_search(), behavior),
+    ]);
+    arguments
+}
+
+fn search_config(policy: ExternalSearchPolicy, behavior: CodexExecBehavior) -> String {
+    match behavior {
+        CodexExecBehavior::RetainedBooleanSearch => format!(
+            "features.web_search_request={}",
+            policy == ExternalSearchPolicy::Enabled
+        ),
+        _ => config_string(
+            "web_search",
+            match policy {
+                ExternalSearchPolicy::Disabled => "disabled",
+                ExternalSearchPolicy::Enabled => "live",
+            },
+        ),
+    }
 }
 
 fn config_string(key: &str, value: &str) -> String {

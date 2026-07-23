@@ -11,9 +11,9 @@ shape.
 
 ## Next Task
 
-Execute [card 111](g01/batch-cards/111-installed-executable-observation-records.md):
-add explicit, bounded, safe observation of one host-approved installed
-executable before the Codex compatibility corpora and claims.
+Execute [card 120](g01/batch-cards/120-second-installed-harness-range-selection.md):
+revalidate the remaining installed harnesses and select the second
+evidence-backed compatibility-range retrofit.
 
 ## Index
 

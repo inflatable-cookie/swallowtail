@@ -56,6 +56,8 @@ Catalog defaults never silently fill operation policy.
 The process service may:
 
 - resolve a host-approved executable reference
+- run one Contract 032 target-aware installed-executable version probe without
+  ambient search
 - spawn with approved arguments, environment references, working resources,
   stdio, and limits
 - exchange bounded stdin, stdout, and stderr

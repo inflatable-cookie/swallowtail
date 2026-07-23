@@ -4,14 +4,17 @@ use futures_executor::block_on;
 use futures_util::StreamExt;
 use support::app_server::{AppServerMode, ScriptedAppServer};
 use support::{
-    app_server_plan, bounded_workspace_plan, bounded_workspace_plan_for, host_services,
-    host_services_with, host_services_with_for, working_resource,
+    app_server_plan, bounded_workspace_plan, bounded_workspace_plan_for,
+    bounded_workspace_plan_for_version, host_services, host_services_with, host_services_with_for,
+    working_resource,
 };
 use swallowtail_adapter_codex::{
     CodexAppServerDriver, codex_approval_request_extension, codex_bounded_workspace_access_policy,
     codex_user_input_request_extension,
 };
-use swallowtail_core::{DriverRole, HostServiceKind};
+use swallowtail_core::{
+    ConfiguredInstanceId, DriverRole, ExecutionHostId, HostServiceKind, InstanceTargetRef,
+};
 use swallowtail_runtime::{
     CallbackRequestKind, CleanupOutcome, EnvironmentRef, InteractiveSessionDriver,
     OpenSessionRequest, OperationContent, ProviderRequestObservation, RequestId, RuntimeTurnId,
@@ -30,11 +33,16 @@ fn driver() -> CodexAppServerDriver {
 #[test]
 fn bounded_workspace_maps_one_host_authorized_root_and_denies_network() {
     let recording = RecordingHostServices::default();
-    let (process, state) = ScriptedAppServer::new(AppServerMode::CompleteTurn);
+    let (process, state) = ScriptedAppServer::gate_enforcing(AppServerMode::CompleteTurn);
     let services = host_services_with(process, &recording, [HostServiceKind::WorkingResource]);
     let mut session = block_on(
         driver().open_session(
-            bounded_workspace_plan(),
+            bounded_workspace_plan_for_version(
+                ExecutionHostId::new("host.local").unwrap(),
+                ConfiguredInstanceId::new("codex.app-server.local").unwrap(),
+                InstanceTargetRef::new("codex-app-server-executable").unwrap(),
+                "0.131.0",
+            ),
             OpenSessionRequest::new(
                 RequestId::new("workspace-session").expect("request id is valid"),
                 working_resource(),
@@ -148,6 +156,35 @@ fn writable_request_without_host_resource_service_fails_before_process_start() {
 }
 
 #[test]
+fn pre_workspace_root_segment_rejects_bounded_access_before_host_or_process_work() {
+    let recording = RecordingHostServices::default();
+    let (process, state) = ScriptedAppServer::new(AppServerMode::CompleteTurn);
+    let services = host_services_with(process, &recording, [HostServiceKind::WorkingResource]);
+    let plan = bounded_workspace_plan_for_version(
+        ExecutionHostId::new("host.local").unwrap(),
+        ConfiguredInstanceId::new("codex.app-server.local").unwrap(),
+        InstanceTargetRef::new("codex-app-server-executable").unwrap(),
+        "0.130.0",
+    );
+    let result = block_on(
+        driver().open_session(
+            plan,
+            OpenSessionRequest::new(
+                RequestId::new("workspace-before-milestone").unwrap(),
+                working_resource(),
+                None,
+            )
+            .with_access_policy(codex_bounded_workspace_access_policy()),
+            services,
+        ),
+    );
+
+    assert!(result.is_err());
+    assert!(!state.started());
+    assert_eq!(recording.count(RecordedHostCall::WorkingResourceResolve), 0);
+}
+
+#[test]
 fn bounded_workspace_open_retains_local_and_remote_authoritative_host_identity() {
     for topology in [
         ExecutionTopologyFixture::local(),
@@ -211,7 +248,7 @@ fn declared_approval_and_user_input_requests_are_observed_then_stop() {
         ),
     ] {
         let recording = RecordingHostServices::default();
-        let (process, state) = ScriptedAppServer::new(mode);
+        let (process, state) = ScriptedAppServer::gate_enforcing(mode);
         let services = host_services_with(process, &recording, [HostServiceKind::WorkingResource]);
         let mut session = block_on(
             driver().open_session(

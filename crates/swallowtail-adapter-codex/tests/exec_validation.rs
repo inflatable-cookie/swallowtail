@@ -2,8 +2,8 @@ mod support;
 
 use futures_executor::block_on;
 use support::{
-    FakeProcessService, host_services, host_services_for, host_services_with, plan_with,
-    working_resource,
+    FakeProcessService, bind_current_exec_policy, current_exec_policy, host_services,
+    host_services_for, host_services_with, plan_with, working_resource,
 };
 use swallowtail_adapter_codex::CodexExecDriver;
 use swallowtail_core::{
@@ -31,7 +31,7 @@ fn reasoning_selection_must_match_the_exact_preflight_constraint() {
     );
     let request = request(
         "reasoning-mismatch",
-        OperationPolicy::offline().with_reasoning_mode(high),
+        current_exec_policy().with_reasoning_mode(high),
     );
 
     let failure = block_on(driver().start_run(plan, request, host_services(process)))
@@ -52,11 +52,13 @@ fn preflight_bound_optional_service_must_exist_at_execution() {
         [CapabilityRequirement::new(Capability::ExternalSearch, [])],
         [HostServiceKind::Network],
     );
-    let policy = OperationPolicy::new(
-        ExternalNetworkPolicy::HostApproved,
-        ExternalSearchPolicy::Enabled,
-    )
-    .expect("search policy is explicit");
+    let policy = bind_current_exec_policy(
+        OperationPolicy::new(
+            ExternalNetworkPolicy::HostApproved,
+            ExternalSearchPolicy::Enabled,
+        )
+        .expect("search policy is explicit"),
+    );
 
     let failure = block_on(driver().start_run(
         plan,
@@ -96,7 +98,7 @@ fn non_image_attachment_rejects_before_materialization_or_process_start() {
     )
     .expect("attachment descriptor is valid")
     .with_known_length(512);
-    let request = request("non-image", OperationPolicy::offline()).with_attachments([attachment]);
+    let request = request("non-image", current_exec_policy()).with_attachments([attachment]);
 
     let failure = block_on(driver().start_run(
         plan,
@@ -123,7 +125,7 @@ fn runtime_services_must_belong_to_the_preflight_bound_host() {
     let plan = plan_with([], []);
     let failure = block_on(driver().start_run(
         plan,
-        request("wrong-host", OperationPolicy::offline()),
+        request("wrong-host", current_exec_policy()),
         host_services_for(
             ExecutionHostId::new("host.remote").expect("host id is valid"),
             process,
@@ -145,7 +147,7 @@ fn codex_exec_requires_its_working_resource_before_process_start() {
     let request = StructuredRunRequest::new(
         RequestId::new("missing-resource").expect("request id is valid"),
         OperationContent::new("bounded prompt").expect("content is valid"),
-        OperationPolicy::offline(),
+        current_exec_policy(),
     );
 
     let failure = block_on(driver().start_run(plan_with([], []), request, host_services(process)))

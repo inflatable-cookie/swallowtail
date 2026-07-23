@@ -3,10 +3,11 @@ use super::{
 };
 use crate::{
     AccessProfileId, AdapterIdentity, AttachedModelObservation, ConfiguredInstanceId,
-    CredentialMechanism, CredentialRef, EndpointAudience, ExecutionHostId, HarnessRpcPolicy,
-    InstanceOwnership, InstancePolicyId, InstanceRevision, InstanceTargetRef,
-    InterfaceCompatibilityMatch, InterfaceVersionBinding, ModelId, ModelRoute, ModelRouteId,
-    OperationRequirements, ProtocolFacadeId, ProviderAgentBinding, ProviderId,
+    CredentialMechanism, CredentialRef, EndpointAudience, ExecutionHostId,
+    HarnessConfigurationPosture, HarnessRpcPolicy, InstanceOwnership, InstancePolicyId,
+    InstanceRevision, InstanceTargetRef, InterfaceCompatibilityMatch, InterfaceVersionBinding,
+    ModelId, ModelRoute, ModelRouteId, OperationRequirements, ProtocolFacadeId,
+    ProviderAgentBinding, ProviderId,
 };
 
 impl PreflightPlan {
@@ -83,6 +84,11 @@ impl PreflightPlan {
     #[must_use]
     pub const fn harness_rpc_policy(&self) -> Option<&HarnessRpcPolicy> {
         self.binding.instance.harness_rpc_policy()
+    }
+
+    #[must_use]
+    pub const fn harness_configuration_posture(&self) -> Option<HarnessConfigurationPosture> {
+        self.binding.instance.harness_configuration_posture()
     }
 
     #[must_use]

@@ -69,11 +69,13 @@ fn public_catalog_and_structured_run_cover_the_complete_transport_seam() {
     let request = StructuredRunRequest::new(
         RequestId::new("parity-run").expect("request id is valid"),
         OperationContent::new("Return one structured result").expect("content is valid"),
-        OperationPolicy::new(
-            ExternalNetworkPolicy::HostApproved,
-            ExternalSearchPolicy::Enabled,
+        support::bind_current_exec_policy(
+            OperationPolicy::new(
+                ExternalNetworkPolicy::HostApproved,
+                ExternalSearchPolicy::Enabled,
+            )
+            .expect("search policy is valid"),
         )
-        .expect("search policy is valid")
         .with_reasoning_mode(low),
     )
     .with_working_resource(working_resource())
@@ -261,7 +263,7 @@ fn basic_request(id: &str) -> StructuredRunRequest {
     StructuredRunRequest::new(
         RequestId::new(id).expect("request id is valid"),
         OperationContent::new("Return one result").expect("content is valid"),
-        OperationPolicy::offline(),
+        support::current_exec_policy(),
     )
     .with_working_resource(working_resource())
 }

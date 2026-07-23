@@ -3,8 +3,8 @@ use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessRequirement, AccessStatus, AdapterId, AdapterIdentity,
     AdapterVersion, AttachedModelObservation, ConfiguredInstance, ConfiguredInstanceId,
     DriverDescriptor, EndpointAudience, EndpointAuthorization, EntitlementState, ExecutionHostId,
-    ExtensionNamespace, HarnessRpcPolicy, HarnessSchedulingBounds, HostServiceKind,
-    InstancePolicyId, InstanceRevision, InstanceTargetRef, IntegrationFamilyId,
+    ExtensionNamespace, HarnessConfigurationPosture, HarnessRpcPolicy, HarnessSchedulingBounds,
+    HostServiceKind, InstancePolicyId, InstanceRevision, InstanceTargetRef, IntegrationFamilyId,
     ModelArtifactBinding, ModelId, ModelRoute, ModelRouteId, ModelRouteRevision,
     OperationRequirements, PreflightContext, PreflightFailure, PreflightPlan, ProtocolFacadeId,
     ProviderAgentBinding, ProviderAgentId, ProviderAgentVersion, RuntimeReadiness,
@@ -153,6 +153,17 @@ impl ProfilePreflightFixture {
 
     pub(crate) fn require_harness_rpc_policy(&mut self, policy: HarnessRpcPolicy) {
         self.requirements = self.requirements.clone().with_harness_rpc_policy(policy);
+    }
+
+    pub(crate) fn bind_harness_configuration(&mut self, posture: HarnessConfigurationPosture) {
+        self.instance = self
+            .instance
+            .clone()
+            .with_harness_configuration_posture(posture);
+        self.requirements = self
+            .requirements
+            .clone()
+            .with_harness_configuration_posture(posture);
     }
 
     pub(crate) fn preflight(&self) -> Result<PreflightPlan, PreflightFailure> {

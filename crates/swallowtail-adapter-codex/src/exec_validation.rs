@@ -1,9 +1,12 @@
 use crate::exec::failure;
+use crate::selection::CodexExecBehavior;
 use swallowtail_core::{
-    Capability, CapabilityConstraint, CapabilityRequirement, HostServiceKind, PreflightPlan,
+    Capability, CapabilityConstraint, CapabilityRequirement, HarnessConfigurationPosture,
+    HostServiceKind, PreflightPlan,
 };
 use swallowtail_runtime::{
-    ExternalNetworkPolicy, ExternalSearchPolicy, HostServices, RuntimeFailure, StructuredRunRequest,
+    ExternalNetworkPolicy, ExternalSearchPolicy, HostServices, ProviderRetentionPolicy,
+    RuntimeFailure, StructuredRunRequest, validate_harness_configuration_policy,
 };
 
 const JSON_SCHEMA_MEDIA_TYPE: &str = "application/schema+json";
@@ -12,11 +15,11 @@ pub(crate) fn validate(
     plan: &PreflightPlan,
     request: &StructuredRunRequest,
     services: &HostServices,
+    behavior: CodexExecBehavior,
 ) -> Result<(), RuntimeFailure> {
+    validate_behavior_policy(plan, request, behavior)?;
     if request.policy().provider_execution()
         != swallowtail_runtime::ProviderExecutionPolicy::Attached
-        || request.policy().provider_retention()
-            != swallowtail_runtime::ProviderRetentionPolicy::Prohibited
         || request.policy().provider_recovery()
             != swallowtail_runtime::ProviderRecoveryPolicy::Prohibited
         || request.policy().stream_reattachment()
@@ -118,6 +121,36 @@ pub(crate) fn validate(
     if request.deadline().is_some() {
         require_planned_service(plan, HostServiceKind::Time, "deadlines")?;
         require_available(services.time().is_some(), "time")?;
+    }
+    Ok(())
+}
+
+fn validate_behavior_policy(
+    plan: &PreflightPlan,
+    request: &StructuredRunRequest,
+    behavior: CodexExecBehavior,
+) -> Result<(), RuntimeFailure> {
+    let configuration = if behavior == CodexExecBehavior::EphemeralSuppressed {
+        HarnessConfigurationPosture::ProviderSuppressed
+    } else {
+        HarnessConfigurationPosture::Ambient
+    };
+    if plan.harness_configuration_posture() != Some(configuration) {
+        return Err(plan_mismatch("harness configuration posture"));
+    }
+    validate_harness_configuration_policy(plan, request.policy())
+        .map_err(|_| plan_mismatch("harness configuration posture"))?;
+
+    let retention = match behavior {
+        CodexExecBehavior::RetainedBooleanSearch | CodexExecBehavior::RetainedSearchMode => {
+            ProviderRetentionPolicy::DurableAllowed
+        }
+        CodexExecBehavior::EphemeralAmbient | CodexExecBehavior::EphemeralSuppressed => {
+            ProviderRetentionPolicy::Prohibited
+        }
+    };
+    if request.policy().provider_retention() != retention {
+        return Err(unsupported("provider retention policy"));
     }
     Ok(())
 }

@@ -1678,9 +1678,11 @@ dependencies = [
 name = "swallowtail-adapter-codex"
 version = "0.1.0"
 dependencies = [
+ "futures-channel",
  "futures-core",
  "futures-executor",
  "futures-util",
+ "semver",
  "serde_json",
  "swallowtail-core",
  "swallowtail-runtime",

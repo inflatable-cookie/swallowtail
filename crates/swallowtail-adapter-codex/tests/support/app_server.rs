@@ -30,6 +30,7 @@ pub struct AppServerState {
     output: Mutex<VecDeque<ProcessOutputChunk>>,
     input: Mutex<Vec<u8>>,
     active_thread: Mutex<Option<String>>,
+    experimental_api: AtomicBool,
     closed: AtomicBool,
     forced: AtomicBool,
     waited: AtomicBool,
@@ -88,16 +89,29 @@ impl AppServerState {
 pub struct ScriptedAppServer {
     state: Arc<AppServerState>,
     mode: AppServerMode,
+    enforce_experimental_gate: bool,
     started: AtomicBool,
 }
 
 impl ScriptedAppServer {
     pub fn new(mode: AppServerMode) -> (Arc<Self>, Arc<AppServerState>) {
+        Self::with_experimental_gate(mode, false)
+    }
+
+    pub fn gate_enforcing(mode: AppServerMode) -> (Arc<Self>, Arc<AppServerState>) {
+        Self::with_experimental_gate(mode, true)
+    }
+
+    fn with_experimental_gate(
+        mode: AppServerMode,
+        enforce_experimental_gate: bool,
+    ) -> (Arc<Self>, Arc<AppServerState>) {
         let state = Arc::new(AppServerState::default());
         (
             Arc::new(Self {
                 state: Arc::clone(&state),
                 mode,
+                enforce_experimental_gate,
                 started: AtomicBool::new(false),
             }),
             state,
@@ -130,6 +144,7 @@ impl ProcessService for ScriptedAppServer {
         let handle = ScriptedAppServerHandle {
             state: Arc::clone(&self.state),
             mode: self.mode,
+            enforce_experimental_gate: self.enforce_experimental_gate,
         };
         Box::pin(async move { Ok(Box::new(handle) as Box<dyn ProcessHandle>) })
     }
@@ -138,6 +153,7 @@ impl ProcessService for ScriptedAppServer {
 struct ScriptedAppServerHandle {
     state: Arc<AppServerState>,
     mode: AppServerMode,
+    enforce_experimental_gate: bool,
 }
 
 impl ScriptedAppServerHandle {
@@ -173,6 +189,27 @@ impl ScriptedAppServerHandle {
         let Some(method) = message.get("method").and_then(serde_json::Value::as_str) else {
             return;
         };
+        if method == "initialize" {
+            let enabled = message
+                .pointer("/params/capabilities/experimentalApi")
+                .and_then(serde_json::Value::as_bool)
+                .unwrap_or(false);
+            self.state.experimental_api.store(enabled, Ordering::SeqCst);
+        } else if self.enforce_experimental_gate
+            && message_requires_experimental_api(message)
+            && !self.state.experimental_api.load(Ordering::SeqCst)
+        {
+            if let Some(id) = message.get("id") {
+                self.state.push(serde_json::json!({
+                    "id": id,
+                    "error": {
+                        "code": -32602,
+                        "message": "experimentalApi capability required"
+                    }
+                }));
+            }
+            return;
+        }
         let id = message.get("id").and_then(serde_json::Value::as_u64);
         match (method, id) {
             ("initialize", Some(id)) => self.state.push(serde_json::json!({
@@ -383,6 +420,23 @@ impl ScriptedAppServerHandle {
             }
         }));
     }
+}
+
+fn message_requires_experimental_api(message: &serde_json::Value) -> bool {
+    const EXPERIMENTAL_FIELDS: &[&str] = &[
+        "allowProviderModelFallback",
+        "collaborationMode",
+        "dynamicTools",
+        "runtimeWorkspaceRoots",
+    ];
+    message
+        .get("params")
+        .and_then(serde_json::Value::as_object)
+        .is_some_and(|params| {
+            EXPERIMENTAL_FIELDS
+                .iter()
+                .any(|field| params.contains_key(*field))
+        })
 }
 
 impl ProcessHandle for ScriptedAppServerHandle {

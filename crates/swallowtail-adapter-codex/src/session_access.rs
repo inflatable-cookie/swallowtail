@@ -169,9 +169,11 @@ impl CodexSessionAccess {
     }
 
     pub(crate) fn requires_experimental_api(&self) -> bool {
-        self.provider_requests
-            .handling_for(&codex_user_input_request_extension())
-            == ProviderRequestHandling::ObserveAndStop
+        self.writable_root.is_some()
+            || self
+                .provider_requests
+                .handling_for(&codex_user_input_request_extension())
+                == ProviderRequestHandling::ObserveAndStop
     }
 
     pub(crate) const fn working_resource(&self) -> &WorkingResourceRef {

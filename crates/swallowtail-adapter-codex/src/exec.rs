@@ -1,6 +1,7 @@
 use crate::exec_handle::{CodexExecRunHandle, ProcessCancellation};
 use crate::exec_input::{SharedExecMaterializations, prepare};
 use crate::exec_pump::{cleanup_failed_start, pump};
+use crate::selection::{classify_exec_plan, codex_exec_claim};
 use std::sync::Arc;
 use swallowtail_core::{
     AdapterId, AdapterIdentity, AdapterVersion, DriverDescriptor, DriverRole, ExecutionLayer,
@@ -38,13 +39,23 @@ pub fn codex_exec_descriptor() -> DriverDescriptor {
         IntegrationFamilyId::new("codex").expect("static family id is valid"),
         TransportFamilyId::new("structured-cli").expect("static transport id is valid"),
     )
-    .with_roles([DriverRole::StructuredRun])
+    .with_roles([DriverRole::Discovery, DriverRole::StructuredRun])
     .with_execution_layers([ExecutionLayer::HarnessInteraction])
     .with_operation_shapes([OperationShape::StructuredRun])
     .with_required_host_services(
         DriverRole::StructuredRun,
         [HostServiceKind::Task, HostServiceKind::Process],
     )
+    .with_required_host_services(
+        DriverRole::Discovery,
+        [
+            HostServiceKind::Task,
+            HostServiceKind::Time,
+            HostServiceKind::Process,
+        ],
+    )
+    .with_discovery_actions([swallowtail_core::DiscoveryAction::Probe])
+    .with_interface_compatibility(codex_exec_claim())
 }
 
 impl StructuredRunDriver for CodexExecDriver {
@@ -71,6 +82,7 @@ impl CodexExecDriver {
                 "Preflight plan is bound to a different driver",
             ));
         }
+        let behavior = classify_exec_plan(&plan)?;
         services.require_execution_host(plan.execution_host_id())?;
         let task_service = services.task().cloned().ok_or_else(|| {
             failure(
@@ -99,7 +111,7 @@ impl CodexExecDriver {
         let scope = ScopeId::new(format!("codex-exec:{}", request.request_id().as_str()))
             .expect("request id produces a non-empty scope id");
         let (event_sender, event_stream) = runtime_event_channel(EVENT_CAPACITY)?;
-        let prepared = prepare(&plan, &request, &services, &scope, model).await?;
+        let prepared = prepare(&plan, &request, &services, &scope, model, behavior).await?;
         let (arguments, materializations) = prepared.into_parts();
         let materializations = SharedExecMaterializations::new(materializations);
         let executable = ExecutableRef::from_instance_target(plan.instance_target_ref());

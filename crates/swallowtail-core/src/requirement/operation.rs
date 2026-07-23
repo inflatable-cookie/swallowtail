@@ -1,9 +1,10 @@
 use super::{AccessRequirement, CapabilityRequirement};
 use crate::{
     AttachedRuntimeRequirements, DirectContinuationRequirements, DriverRole, ExecutionHostId,
-    ExecutionLayer, ExtensionNamespace, HarnessIsolation, HarnessRpcPolicy, HostServiceKind,
-    InstanceOwnership, InterfaceVersionBinding, OperationShape, PlannedConnectionRolloverPolicy,
-    RealtimeMediaRequirements, SessionAccessPolicy, SessionProviderStatePolicy,
+    ExecutionLayer, ExtensionNamespace, HarnessConfigurationPosture, HarnessIsolation,
+    HarnessRpcPolicy, HostServiceKind, InstanceOwnership, InterfaceVersionBinding, OperationShape,
+    PlannedConnectionRolloverPolicy, RealtimeMediaRequirements, SessionAccessPolicy,
+    SessionProviderStatePolicy,
 };
 use std::collections::BTreeSet;
 
@@ -28,6 +29,7 @@ pub struct OperationRequirements {
     attached_runtime: Option<AttachedRuntimeRequirements>,
     interface_versions: BTreeSet<InterfaceVersionBinding>,
     harness_rpc_policy: Option<HarnessRpcPolicy>,
+    harness_configuration_posture: Option<HarnessConfigurationPosture>,
 }
 
 impl OperationRequirements {
@@ -63,6 +65,7 @@ impl OperationRequirements {
             attached_runtime: None,
             interface_versions: BTreeSet::new(),
             harness_rpc_policy: None,
+            harness_configuration_posture: None,
         }
     }
 
@@ -175,6 +178,15 @@ impl OperationRequirements {
     }
 
     #[must_use]
+    pub const fn with_harness_configuration_posture(
+        mut self,
+        posture: HarnessConfigurationPosture,
+    ) -> Self {
+        self.harness_configuration_posture = Some(posture);
+        self
+    }
+
+    #[must_use]
     pub const fn execution_layer(&self) -> ExecutionLayer {
         self.execution_layer
     }
@@ -263,5 +275,10 @@ impl OperationRequirements {
     #[must_use]
     pub const fn harness_rpc_policy(&self) -> Option<&HarnessRpcPolicy> {
         self.harness_rpc_policy.as_ref()
+    }
+
+    #[must_use]
+    pub const fn harness_configuration_posture(&self) -> Option<HarnessConfigurationPosture> {
+        self.harness_configuration_posture
     }
 }

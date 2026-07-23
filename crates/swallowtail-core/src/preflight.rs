@@ -1,16 +1,18 @@
-use crate::ModelArtifactBinding;
 use crate::access::{AccessProfile, AccessStatus};
 use crate::diagnostic::SafeDiagnostic;
 use crate::instance::{ConfiguredInstance, ModelRoute};
 use crate::registration::DriverDescriptor;
 use crate::requirement::OperationRequirements;
 use crate::runtime_identity::HostServiceKind;
+use crate::{AttachedModelObservation, ModelArtifactBinding};
 use std::collections::BTreeSet;
 use std::error::Error;
 use std::fmt;
 
 mod artifact;
+mod attached_runtime;
 mod capability;
+mod direct_continuation;
 mod plan;
 mod planned_connection_rollover;
 mod realtime_media;
@@ -25,6 +27,7 @@ pub struct PreflightContext<'a> {
     instance: &'a ConfiguredInstance,
     model_route: Option<&'a ModelRoute>,
     model_artifact: Option<&'a ModelArtifactBinding>,
+    attached_model_observation: Option<&'a AttachedModelObservation>,
     access_profile: &'a AccessProfile,
     access_status: &'a AccessStatus,
     available_host_services: BTreeSet<HostServiceKind>,
@@ -44,6 +47,7 @@ impl<'a> PreflightContext<'a> {
             instance,
             model_route: None,
             model_artifact: None,
+            attached_model_observation: None,
             access_profile,
             access_status,
             available_host_services: available_host_services.into_iter().collect(),
@@ -53,6 +57,15 @@ impl<'a> PreflightContext<'a> {
     #[must_use]
     pub const fn with_model_route(mut self, model_route: &'a ModelRoute) -> Self {
         self.model_route = Some(model_route);
+        self
+    }
+
+    #[must_use]
+    pub const fn with_attached_model_observation(
+        mut self,
+        observation: &'a AttachedModelObservation,
+    ) -> Self {
+        self.attached_model_observation = Some(observation);
         self
     }
 }
@@ -79,6 +92,8 @@ pub enum PreflightDimension {
     SessionProviderState,
     RealtimeMedia,
     PlannedConnectionRollover,
+    DirectContinuation,
+    AttachedRuntime,
     InterfaceVersion,
     HarnessRpcPolicy,
 }
@@ -122,6 +137,7 @@ struct PlanBinding {
     instance: ConfiguredInstance,
     model_route: Option<ModelRoute>,
     model_artifact: Option<ModelArtifactBinding>,
+    attached_model_observation: Option<AttachedModelObservation>,
     access_profile: AccessProfile,
     access_status: AccessStatus,
 }
@@ -133,6 +149,7 @@ impl PlanBinding {
             instance: context.instance.clone(),
             model_route: context.model_route.cloned(),
             model_artifact: context.model_artifact.cloned(),
+            attached_model_observation: context.attached_model_observation.cloned(),
             access_profile: context.access_profile.clone(),
             access_status: context.access_status.clone(),
         }

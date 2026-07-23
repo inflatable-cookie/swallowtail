@@ -1,6 +1,7 @@
 use super::{
-    ExternalNetworkPolicy, ExternalSearchPolicy, OperationPolicy, ProviderExecutionPolicy,
-    ProviderRecoveryPolicy, ProviderRetentionPolicy, StreamReattachmentPolicy,
+    AttachedRuntimeResidency, ExternalNetworkPolicy, ExternalSearchPolicy, OperationPolicy,
+    ProviderExecutionPolicy, ProviderRecoveryPolicy, ProviderRetentionPolicy,
+    StreamReattachmentPolicy,
 };
 use std::num::NonZeroU32;
 
@@ -86,5 +87,18 @@ fn durable_retention_and_provider_recovery_are_independent_opt_ins() {
     assert_eq!(
         managed.provider_recovery(),
         ProviderRecoveryPolicy::ManagedAllowed
+    );
+}
+
+#[test]
+fn attached_runtime_residency_is_absent_until_explicitly_accepted() {
+    let ordinary = OperationPolicy::offline();
+    assert_eq!(ordinary.attached_runtime_residency(), None);
+
+    let attached =
+        ordinary.with_attached_runtime_residency(AttachedRuntimeResidency::RuntimeManaged);
+    assert_eq!(
+        attached.attached_runtime_residency(),
+        Some(AttachedRuntimeResidency::RuntimeManaged)
     );
 }

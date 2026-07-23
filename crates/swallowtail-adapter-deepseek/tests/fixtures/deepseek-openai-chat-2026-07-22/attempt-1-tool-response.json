@@ -1,0 +1,32 @@
+{
+  "id": "chatcmpl-fixture-1",
+  "object": "chat.completion",
+  "created": 1784680001,
+  "model": "deepseek-v4-pro",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": null,
+        "reasoning_content": "fixture-private-reasoning-1",
+        "tool_calls": [
+          {
+            "id": "call_weather_1",
+            "type": "function",
+            "function": {"name": "lookup_weather", "arguments": "{\"city\":\"London\"}"}
+          }
+        ]
+      },
+      "finish_reason": "tool_calls"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 120,
+    "completion_tokens": 18,
+    "total_tokens": 138,
+    "prompt_cache_hit_tokens": 96,
+    "prompt_cache_miss_tokens": 24
+  },
+  "system_fingerprint": "fp_fixture_v4"
+}

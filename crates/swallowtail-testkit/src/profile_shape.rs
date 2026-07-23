@@ -37,6 +37,7 @@ impl ProfileShape {
                 crate::profile_managed_harness_shape::shape()
             }
             SyntheticProfile::ConnectionScopedDirectSession => Self::direct_session(),
+            SyntheticProfile::LocallyContinuedDirectSession => Self::local_continuation(),
             SyntheticProfile::RealtimeMediaDirectSession => {
                 crate::profile_realtime_media_shape::shape()
             }
@@ -169,6 +170,33 @@ impl ProfileShape {
             model_id: "fixture-model-direct-session",
             access_profile_id: "fixture.access.direct-session",
             audience: "fixture-direct-session-api",
+            role: DriverRole::InteractiveSession,
+            layer: ExecutionLayer::DirectModelInference,
+            operation_shape: OperationShape::InteractiveSession,
+            ownership: InstanceOwnership::ExternalAttached,
+            credential: CredentialMechanism::ApiKey,
+            credential_state: CredentialState::Ready,
+            metering: EntitlementMetering::PayAsYouGo,
+            required_services: vec![
+                HostServiceKind::Task,
+                HostServiceKind::BlockingWork,
+                HostServiceKind::Time,
+                HostServiceKind::Network,
+                HostServiceKind::Credential,
+            ],
+        }
+    }
+
+    fn local_continuation() -> Self {
+        Self {
+            adapter_id: "fixture.driver.local-continuation",
+            integration_family: "fixture-provider",
+            transport_family: "http-sse-continuation",
+            instance_id: "fixture.instance.local-continuation",
+            route_id: "fixture.route.local-continuation",
+            model_id: "fixture-model-local-continuation",
+            access_profile_id: "fixture.access.local-continuation",
+            audience: "fixture-local-continuation-api",
             role: DriverRole::InteractiveSession,
             layer: ExecutionLayer::DirectModelInference,
             operation_shape: OperationShape::InteractiveSession,

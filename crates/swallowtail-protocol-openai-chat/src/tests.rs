@@ -78,6 +78,20 @@ fn request_encoding_is_explicit_and_extension_names_do_not_collide() {
 }
 
 #[test]
+fn structural_messages_preserve_null_content_and_bounded_extensions() {
+    let mut assistant = ChatMessage::without_content("assistant");
+    assistant
+        .insert_extension("tool_calls", json!([{"id":"call-1"}]))
+        .unwrap();
+    let request = ChatRequest::new("fixture", vec![assistant], false, false);
+    let encoded = encode_request(&request, CodecLimits::default()).unwrap();
+    let value: Value = serde_json::from_slice(&encoded).unwrap();
+
+    assert!(value["messages"][0]["content"].is_null());
+    assert_eq!(value["messages"][0]["tool_calls"][0]["id"], "call-1");
+}
+
+#[test]
 fn structural_unknowns_are_returned_and_error_messages_are_redacted_in_debug() {
     let payload = decode_payload(
         br#"{"id":"one","model":"fixture","choices":[{"index":0,"delta":{"reasoning_content":"private"},"finish_reason":null}],"future":"bounded"}"#,

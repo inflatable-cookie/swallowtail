@@ -1,0 +1,4 @@
+data: {"id":"drift","model":"deepseek-v4-pro","choices":[{"index":0,"delta":{"provider_magic":"unknown"},"finish_reason":"stop"}]}
+
+data: [DONE]
+

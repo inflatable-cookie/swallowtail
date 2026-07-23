@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-19
+Updated: 2026-07-23
 
 ## Purpose
 
@@ -29,6 +29,13 @@ The time service provides monotonic time and deadline observation. A
 `wait_until` future resolves to a `DeadlineObservation`; it does not request
 cancellation or choose a terminal outcome. Wall-clock time may annotate safe
 records but never controls timeout correctness.
+
+The same host time boundary may expose a UTC catalogue observation clock.
+Drivers use it only to timestamp evidence observed by the current operation.
+It remains distinct from provider-reported lifecycle timestamps and monotonic
+deadline time. A host that cannot supply it fails that catalogue operation;
+the driver does not substitute provider `modified_at`, request time, or an
+ambient process clock.
 
 ## Operation Policy
 

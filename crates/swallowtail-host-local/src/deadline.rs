@@ -4,9 +4,10 @@ use std::pin::Pin;
 use std::sync::{Arc, Condvar, Mutex};
 use std::task::{Context, Poll, Waker};
 use std::thread::JoinHandle;
-use std::time::{Duration, Instant};
+use std::time::{Duration, Instant, SystemTime};
+use swallowtail_core::{CatalogTimestamp, SafeDiagnostic};
 use swallowtail_runtime::{
-    BoxFuture, Deadline, DeadlineObservation, MonotonicInstant, TimeService,
+    BoxFuture, Deadline, DeadlineObservation, MonotonicInstant, RuntimeFailure, TimeService,
 };
 
 impl TimeService for LocalProcessHost {
@@ -21,6 +22,22 @@ impl TimeService for LocalProcessHost {
         }
         Box::pin(DeadlineWait::new(self.monotonic_origin, deadline))
     }
+
+    fn catalog_now(&self) -> Result<CatalogTimestamp, RuntimeFailure> {
+        let elapsed = SystemTime::now()
+            .duration_since(SystemTime::UNIX_EPOCH)
+            .map_err(|_| observation_clock_failure())?;
+        let seconds = i64::try_from(elapsed.as_secs()).map_err(|_| observation_clock_failure())?;
+        CatalogTimestamp::new(seconds, elapsed.subsec_nanos())
+            .map_err(|_| observation_clock_failure())
+    }
+}
+
+fn observation_clock_failure() -> RuntimeFailure {
+    RuntimeFailure::new(SafeDiagnostic::new(
+        "swallowtail.local_host.observation_clock_failed",
+        "Local host could not read the observation clock",
+    ))
 }
 
 struct WaitState {

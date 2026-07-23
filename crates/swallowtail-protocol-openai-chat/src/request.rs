@@ -5,7 +5,8 @@ use std::collections::BTreeMap;
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ChatMessage {
     role: String,
-    content: String,
+    content: Option<String>,
+    extensions: BTreeMap<String, Value>,
 }
 
 impl ChatMessage {
@@ -13,8 +14,34 @@ impl ChatMessage {
     pub fn new(role: impl Into<String>, content: impl Into<String>) -> Self {
         Self {
             role: role.into(),
-            content: content.into(),
+            content: Some(content.into()),
+            extensions: BTreeMap::new(),
         }
+    }
+
+    #[must_use]
+    pub fn without_content(role: impl Into<String>) -> Self {
+        Self {
+            role: role.into(),
+            content: None,
+            extensions: BTreeMap::new(),
+        }
+    }
+
+    pub fn insert_extension(
+        &mut self,
+        name: impl Into<String>,
+        value: Value,
+    ) -> Result<(), ProtocolError> {
+        let name = name.into();
+        if name.is_empty()
+            || matches!(name.as_str(), "role" | "content")
+            || self.extensions.contains_key(&name)
+        {
+            return Err(ProtocolError::new(ProtocolErrorKind::InvalidStructure));
+        }
+        self.extensions.insert(name, value);
+        Ok(())
     }
 }
 
@@ -72,11 +99,23 @@ pub fn encode_request(
     let mut messages = Vec::with_capacity(request.messages.len());
     for message in &request.messages {
         check_string(&message.role, limits)?;
-        check_string(&message.content, limits)?;
-        messages.push(serde_json::json!({
-            "role": message.role,
-            "content": message.content
-        }));
+        if let Some(content) = &message.content {
+            check_string(content, limits)?;
+        }
+        if message.extensions.len().saturating_add(2) > limits.maximum_fields() {
+            return Err(ProtocolError::new(ProtocolErrorKind::FieldLimitExceeded));
+        }
+        let mut encoded = Map::new();
+        encoded.insert("role".to_owned(), Value::String(message.role.clone()));
+        encoded.insert(
+            "content".to_owned(),
+            message.content.clone().map_or(Value::Null, Value::String),
+        );
+        for (name, value) in &message.extensions {
+            check_string(name, limits)?;
+            encoded.insert(name.clone(), value.clone());
+        }
+        messages.push(Value::Object(encoded));
     }
     let mut object = Map::new();
     object.insert("model".to_owned(), Value::String(request.model.clone()));

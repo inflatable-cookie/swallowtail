@@ -2,7 +2,11 @@ use super::{
     ModelCatalogEntry, ModelId, ModelMetadata, ModelTokenLimits, ProviderId, ReasoningMetadata,
     ReasoningMode,
 };
-use crate::{IntegrationFamilyId, ModelCatalogObservations};
+use crate::{
+    AttachedModelObservation, AttachedModelObservationScope, AttachedModelTag, CatalogTimestamp,
+    ConfiguredInstanceId, ExecutionHostId, IntegrationFamilyId, InterfaceVersion,
+    InterfaceVersionAxis, InterfaceVersionBinding, ModelCatalogObservations, ModelManifestDigest,
+};
 
 #[test]
 fn stable_identity_is_separate_from_display_metadata() {
@@ -86,5 +90,39 @@ fn catalogue_observations_do_not_change_model_or_provider_identity() {
             .catalog_observations()
             .and_then(ModelCatalogObservations::provider_display_name),
         Some("Underlying Provider")
+    );
+}
+
+#[test]
+fn attached_observations_do_not_create_a_route_or_provider_identity() {
+    let observation = AttachedModelObservation::new(
+        AttachedModelObservationScope::InstalledInventory,
+        ConfiguredInstanceId::new("instance.local").expect("instance is valid"),
+        ExecutionHostId::new("host.local").expect("host is valid"),
+        InterfaceVersionBinding::new(
+            InterfaceVersionAxis::new("runtime.version").expect("axis is valid"),
+            InterfaceVersion::new("1.0.0").expect("version is valid"),
+        ),
+        CatalogTimestamp::new(1_700_000_000, 0).expect("timestamp is valid"),
+        AttachedModelTag::new("model:tag").expect("tag is valid"),
+    )
+    .with_manifest_digest(
+        ModelManifestDigest::new(
+            "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        )
+        .expect("digest is valid"),
+    );
+    let entry = ModelCatalogEntry::new(
+        ModelId::new("model:tag").expect("model id is valid"),
+        ModelMetadata::default().with_attached_model_observations([observation.clone()]),
+    );
+
+    assert_eq!(entry.provider_id(), None);
+    assert_eq!(
+        entry
+            .metadata()
+            .attached_model_observations()
+            .collect::<Vec<_>>(),
+        [&observation]
     );
 }

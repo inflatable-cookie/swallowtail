@@ -1,0 +1,16 @@
+{
+  "id": "chatcmpl-drift",
+  "object": "chat.completion",
+  "created": 1784680004,
+  "model": "deepseek-v4-pro",
+  "choices": [],
+  "usage": {
+    "prompt_tokens": 1,
+    "completion_tokens": 1,
+    "total_tokens": 2,
+    "prompt_cache_hit_tokens": 0,
+    "prompt_cache_miss_tokens": 1
+  },
+  "system_fingerprint": "fp_fixture_v4",
+  "unknown_semantic_field": true
+}

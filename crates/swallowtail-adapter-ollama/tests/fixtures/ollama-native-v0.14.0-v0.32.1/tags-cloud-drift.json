@@ -1,0 +1,15 @@
+{
+  "models": [
+    {
+      "name": "fixture-model:8b",
+      "model": "fixture-model:8b",
+      "remote_model": "provider/private-model",
+      "remote_host": "https://cloud.example.invalid",
+      "digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "details": {
+        "format": "gguf",
+        "family": "fixture"
+      }
+    }
+  ]
+}

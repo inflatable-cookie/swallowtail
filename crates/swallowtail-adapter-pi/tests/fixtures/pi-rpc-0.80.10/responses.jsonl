@@ -1,3 +1,8 @@
+{"id":"setup-retry","type":"response","command":"set_auto_retry","success":true}
+{"id":"setup-compaction","type":"response","command":"set_auto_compaction","success":true}
+{"id":"setup-steering","type":"response","command":"set_steering_mode","success":true}
+{"id":"setup-follow-up","type":"response","command":"set_follow_up_mode","success":true}
+{"id":"state-1","type":"response","command":"get_state","success":true,"data":{"model":{"id":"fixture-model","provider":"fixture-provider"},"isStreaming":false,"isCompacting":false,"steeringMode":"one-at-a-time","followUpMode":"one-at-a-time","autoCompactionEnabled":false,"messageCount":0,"pendingMessageCount":0}}
 {"id":"prompt-1","type":"response","command":"prompt","success":true}
 {"id":"steer-1","type":"response","command":"steer","success":true}
 {"id":"follow-up-1","type":"response","command":"follow_up","success":true}

@@ -1,0 +1,22 @@
+pub(super) fn arguments(provider: &str, model: &str) -> Vec<String> {
+    [
+        "--mode",
+        "rpc",
+        "--no-session",
+        "--offline",
+        "--provider",
+        provider,
+        "--model",
+        model,
+        "--tools",
+        "read,grep,find,ls",
+        "--no-extensions",
+        "--no-skills",
+        "--no-prompt-templates",
+        "--no-themes",
+        "--no-context-files",
+    ]
+    .into_iter()
+    .map(str::to_owned)
+    .collect()
+}

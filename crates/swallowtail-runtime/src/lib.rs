@@ -10,6 +10,7 @@ mod attachment;
 mod callback;
 mod cancellation;
 mod content;
+mod direct_continuation;
 mod event;
 mod event_buffer;
 mod event_channel;
@@ -44,7 +45,10 @@ mod session_replay;
 mod time;
 mod working_resource_io;
 
-pub use async_types::{BoxCallbackStream, BoxEventStream, BoxFuture, BoxRealtimeMediaEventStream};
+pub use async_types::{
+    BoxCallbackStream, BoxDirectToolCallStream, BoxEventStream, BoxFuture,
+    BoxRealtimeMediaEventStream,
+};
 pub use attachment::{
     AttachmentDescriptor, AttachmentDigest, AttachmentRepresentation, AttachmentRole,
     LeaseCleanupAuthority,
@@ -56,6 +60,13 @@ pub use callback::{
 };
 pub use cancellation::{CancellationAcknowledgement, CancellationControl, ImmediateCancellation};
 pub use content::OperationContent;
+pub use direct_continuation::{
+    DirectAttemptAuthorizationKind, DirectContinuationBinding, DirectContinuationState,
+    DirectContinuationTurnRequest, DirectInferenceAttempt, DirectToolArguments, DirectToolCall,
+    DirectToolExchange, DirectToolResult, DirectToolResultContent, DirectToolResultSubmitter,
+    OpenDirectContinuationSessionRequest, ProviderPrivateContinuationRecord,
+    validate_direct_continuation_plan,
+};
 pub use event::{EventDelivery, RuntimeEvent, RuntimeEventKind};
 pub use event_buffer::{EventBufferFailure, EventBufferFailureKind, OrderedEventBuffer};
 pub use event_channel::{RuntimeEventSender, RuntimeEventStream, runtime_event_channel};
@@ -79,15 +90,17 @@ pub use host_traits::{
     SchemaService, ScopedTaskService, TimeService, WorkingResourceService,
 };
 pub use identity::{
-    CallbackId, HarnessCommandId, MediaStreamId, RequestId, RuntimeIdentityRequired, RuntimeRunId,
-    RuntimeSessionId, RuntimeTurnId, ScopeId, ServingInstanceId,
+    CallbackId, DirectInferenceAttemptId, DirectToolCallId, HarnessCommandId, MediaStreamId,
+    RequestId, RuntimeIdentityRequired, RuntimeRunId, RuntimeSessionId, RuntimeTurnId, ScopeId,
+    ServingInstanceId,
 };
 pub use input::{InputLimitExceeded, InputValueRequired};
 pub use model_artifact::{ModelArtifactAccess, ModelArtifactLease, ModelArtifactService};
 pub use network::{AuthorizedEndpoint, NetworkGrant, NetworkPolicyService};
 pub use operation_policy::{
     IncompatibleOperationPolicy, OperationPolicy, ProviderExecutionPolicy, ProviderRecoveryPolicy,
-    ProviderRetentionPolicy, StreamReattachmentPolicy, validate_harness_isolation_policy,
+    ProviderRetentionPolicy, StreamReattachmentPolicy, validate_attached_runtime_residency_policy,
+    validate_harness_isolation_policy,
 };
 pub use outcome::{
     CleanupOutcome, ProviderCancellationOutcome, ProviderRequestObservation,
@@ -98,8 +111,10 @@ pub use planned_connection_rollover::validate_planned_connection_rollover_plan;
 pub use process_input::ProcessRequest;
 pub use process_io::{ProcessExit, ProcessInputChunk, ProcessOutputChunk, ProcessOutputStream};
 pub use provider_observation::{
-    BilledCostObservation, BilledCostSemantics, BilledCostSource, Currency, ProviderObservation,
-    QuotaObservation, QuotaState, RateLimitKind, RateLimitObservation, TokenUsage,
+    BilledCostObservation, BilledCostSemantics, BilledCostSource, Currency,
+    DirectAttemptFinishObservation, DirectAttemptUsageObservation, ProviderFinishReason,
+    ProviderObservation, QuotaObservation, QuotaState, RateLimitKind, RateLimitObservation,
+    TokenUsage,
 };
 pub use realtime_media::{
     MediaChunk, MediaInputCommit, MediaTranscript, OpenRealtimeMediaSessionRequest,
@@ -125,13 +140,13 @@ pub use session_options::{SessionOptions, ToolDeclaration};
 pub use session_provider_state::validate_session_provider_state_plan;
 pub use session_replay::{SessionReplayItem, SessionReplayKind};
 pub use swallowtail_core::{
-    CredentialRef, ExternalNetworkPolicy, ExternalSearchPolicy, FilesystemBoundary,
-    HarnessIsolation, IncompatibleSessionAccessPolicy, ModelArtifactBinding,
+    AttachedRuntimeResidency, CredentialRef, ExternalNetworkPolicy, ExternalSearchPolicy,
+    FilesystemBoundary, HarnessIsolation, IncompatibleSessionAccessPolicy, ModelArtifactBinding,
     ModelArtifactDescriptor, ModelArtifactDigest, ModelArtifactFormat, ModelArtifactId,
     ModelArtifactRef, ModelArtifactRevision, OwnedRemoteResourceKind,
-    PlannedConnectionRolloverPolicy, ProviderApprovalPolicy, ProviderRequestHandling,
-    ProviderRequestPolicy, ResourceAccess, ResourceRepresentation, SessionAccessPolicy,
-    SessionProviderStatePolicy,
+    PlannedConnectionRolloverPolicy, ProviderApprovalPolicy, ProviderInferenceCachePolicy,
+    ProviderRequestHandling, ProviderRequestPolicy, ResourceAccess, ResourceRepresentation,
+    SessionAccessPolicy, SessionProviderStatePolicy,
 };
 pub use time::{Deadline, DeadlineObservation, MonotonicInstant};
 pub use working_resource_io::{

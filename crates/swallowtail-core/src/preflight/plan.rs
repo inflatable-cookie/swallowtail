@@ -2,11 +2,11 @@ use super::{
     PlanBinding, PreflightContext, PreflightPlan, StalePreflightPlan, validation::validate,
 };
 use crate::{
-    AccessProfileId, AdapterIdentity, ConfiguredInstanceId, CredentialMechanism, CredentialRef,
-    EndpointAudience, ExecutionHostId, HarnessRpcPolicy, InstanceOwnership, InstancePolicyId,
-    InstanceRevision, InstanceTargetRef, InterfaceCompatibilityMatch, InterfaceVersionBinding,
-    ModelId, ModelRoute, ModelRouteId, OperationRequirements, ProtocolFacadeId,
-    ProviderAgentBinding, ProviderId,
+    AccessProfileId, AdapterIdentity, AttachedModelObservation, ConfiguredInstanceId,
+    CredentialMechanism, CredentialRef, EndpointAudience, ExecutionHostId, HarnessRpcPolicy,
+    InstanceOwnership, InstancePolicyId, InstanceRevision, InstanceTargetRef,
+    InterfaceCompatibilityMatch, InterfaceVersionBinding, ModelId, ModelRoute, ModelRouteId,
+    OperationRequirements, ProtocolFacadeId, ProviderAgentBinding, ProviderId,
 };
 
 impl PreflightPlan {
@@ -65,6 +65,11 @@ impl PreflightPlan {
 
     pub fn interface_versions(&self) -> impl ExactSizeIterator<Item = &InterfaceVersionBinding> {
         self.binding.instance.interface_versions()
+    }
+
+    #[must_use]
+    pub const fn attached_model_observation(&self) -> Option<&AttachedModelObservation> {
+        self.binding.attached_model_observation.as_ref()
     }
 
     #[must_use]

@@ -46,6 +46,36 @@ fn semantic_window_tracks_baseline_milestones_deprecation_and_exclusion() {
     assert!(!claim.supports(&version("0.78.2")));
     assert!(!claim.supports(&version("0.80.11")));
     assert!(!claim.supports(&version("0.69.9")));
+    assert!(!claim.supports(&version("0.75.0-rc.1")));
+}
+
+#[test]
+fn semantic_prerelease_requires_a_separate_exact_segment() {
+    let claim = InterfaceCompatibilityClaim::new(
+        claim_id(),
+        axis(),
+        InterfaceVersionScheme::Semantic,
+        [
+            segment(
+                "0.9.0-rc.1",
+                "0.9.0-rc.1",
+                "rc-v1",
+                InterfaceSupportStatus::Maintained,
+            ),
+            segment(
+                "0.9.0",
+                "1.0.0",
+                "stable-v1",
+                InterfaceSupportStatus::Maintained,
+            ),
+        ],
+        [],
+    )
+    .unwrap();
+
+    assert!(claim.supports(&version("0.9.0-rc.1")));
+    assert!(!claim.supports(&version("0.9.0-rc.2")));
+    assert!(claim.supports(&version("0.9.0")));
 }
 
 #[test]

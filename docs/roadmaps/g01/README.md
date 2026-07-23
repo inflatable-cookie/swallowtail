@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-22
+Updated: 2026-07-23
 
 ## Purpose
 
@@ -30,6 +30,7 @@ cross-adapter adoption without prematurely stabilizing the public API.
 - provider-managed remote harness resources, durable sessions, event recovery,
   callbacks, interruption, and deletion truth
 - realtime media portability and explicit provider-planned connection rollover
+- maintained interface-version windows and attach-only native runtime truth
 
 ## Current Checkpoint
 
@@ -665,10 +666,98 @@ cross-adapter adoption without prematurely stabilizing the public API.
   harness, credential, container, or provider request
 - workspace all-target check and focused warnings-denied clippy pass; doctor
   remains at the inherited 19 findings with no new oversized file
-- roadmap 035 is active; card 100 is the sole ready Pi production-driver task
-- DeepSeek V4 reasoning/tool continuation is the next direct-contract target;
-  Grok Build and Z.AI remain later breadth; remote ACP, Claude subscription
-  access, and Cursor SDK retain explicit maturity or authority gates
+- card 100 adds the separately registered Pi production driver with exact
+  `0.80.10` preflight, provider/model argv, restrictive state validation,
+  supervised strict-LF transport, prompt, steering, follow-up, UI relay,
+  native abort, deadlines, and joined credential-last cleanup
+- 8 Pi production and corpus tests plus 47 runtime tests pass; focused
+  warnings-denied clippy passes and doctor remains at the inherited 19
+  findings
+- card 101 proves unchanged-profile and scheduling/UI conformance under local
+  and remote-authoritative hosts, deterministic callback expiry and late
+  response, distinct failure truth, bounded concurrency, and visible cleanup
+  failure
+- roadmap 035 and cards 099-101 are complete; no sandbox or containment claim
+  entered the Pi route
+- full repository QA passes with a 469-test inventory: 466 pass and 3 gated
+  probes remain ignored; doctor retains the inherited 19 findings
+- Research 023 selects the exact OpenAI-format `deepseek-v4-pro` first route;
+  Anthropic mapping, retiring aliases, V4 Flash, streamed tool-call assembly,
+  and beta features remain excluded
+- Contract 030 adds the twelfth locally continued direct-session profile,
+  explicit consumer authorization for every inference attempt, consumer-owned
+  tool execution, private ephemeral continuation, and explicit provider-cache
+  posture
+- card 103 realizes exact direct-continuation bounds, request-plan agreement,
+  redacted attempt/tool/continuation records, the additive twelfth profile,
+  bounded compatible-message extensions, and the dated DeepSeek V4 Pro
+  buffered-plus-SSE corpus without live access
+- 148 focused tests, focused warnings-denied clippy, and full repository QA
+  pass; the final inventory is 482 tests with 479 runnable and three ignored,
+  doctor remains at the inherited 19 findings, and the prior eleven profile
+  claims remain unchanged
+- roadmap 036 and cards 102-104 complete the evidence, contract/corpus, exact
+  DeepSeek V4 Pro driver, and both-topology production proof
+- the twentieth production route binds host-approved catalogue and completion
+  requests, consumer-owned tool exchange, private route-bound continuation,
+  three exact attempts, and joined credential-last cleanup
+- the unchanged twelfth profile passes under both host identities; full QA has
+  a 489-test inventory with 486 passing and three gated probes ignored
+- roadmap 037 and card 105 complete the post-continuation coverage and
+  compatibility-window checkpoint
+- Research 024 confirms only Pi and DeepSeek expose descriptor compatibility
+  claims, both as one-point windows; remote ACP is Draft
+- Contract 031 keeps exact attached-runtime version, installed/running
+  catalogue, model identity, and inference-caused residency separate
+- roadmap 038 and cards 106-109 select attach-only Ollama native API as the
+  first non-singleton range proof without a container or model acquisition
+- card 106 realizes provider-neutral attached-runtime observation, exact
+  version, native tag, safe manifest digest, topology, and runtime-managed
+  residency bindings without changing the existing attached profile
+- reusable closed-window assertions cover both boundaries, intermediate
+  qualification points, below/above range, prerelease rejection, mismatched
+  observation scope, and stale claim revision before provider effects
+- stable semantic compatibility ranges now reject prereleases unless an exact
+  prerelease segment is separately qualified
+- focused core, runtime, and testkit tests plus warnings-denied clippy pass;
+  doctor retains the inherited 19 findings
+- card 107 freezes exact tagged-source commits at `0.14.0`, `0.18.0`,
+  `0.30.0`, and `0.32.1` under one unchanged native text behavior segment
+- the first Ollama crate provides bounded pure version, installed, running,
+  selected-detail, request, and NDJSON codecs; 11 tests pass and one installed
+  loopback probe remains separately gated
+- cloud fields, thinking, malformed records, missing terminal state, range
+  drift, retry, fallback, mutation, and administration stay outside the corpus
+- card 108 adds the twenty-first production route: separate Ollama native
+  catalogue and structured-run roles over host-approved loopback HTTP/NDJSON
+- the execution-host clock timestamps installed, running, and selected-detail
+  observations without substituting provider lifecycle fields or monotonic time
+- exact runtime version, tag, and manifest digest are revalidated before one
+  text-only inference attempt; cancellation, deadline, provider failure, joined
+  close, redaction, and both host identities pass 20 focused Ollama tests
+- no process, credential, artifact, server lifecycle, model mutation, unload,
+  retry, fallback, cloud, container, or Monkey authority enters the driver
+- card 109 proves the unchanged attached-runtime pack and production driver
+  under both host identities, independent runs, failure, cancellation,
+  deadline, redaction, and cleanup-failure paths
+- full QA passes with 522 tests: 518 pass and four installed/live probes remain
+  ignored; doctor returns to the inherited seven errors and twelve warnings
+- roadmap 038 and cards 106-109 complete the first maintained multi-release
+  interface window
+- card 110 revalidates every installed production harness pin against current
+  maintained releases and selects both Codex drivers for the first retrofit
+- Codex latest stable is `0.145.0`; all `0.146.0-alpha.*` releases remain
+  rejected
+- the exec candidate window begins at `0.122.0`, where the two current
+  isolation flags appear; `0.121.0` is the rejection neighbor
+- the app-server v2 candidate window begins at published `0.110.0`;
+  `0.131.0` begins the runtime-workspace-root behavior segment
+- official app-server schemas are executable-version-specific, and existing
+  mocks do not enforce the experimental capability gate
+- cards 111-114 form the installed-executable observation, Codex corpus,
+  production-range, and conformance tranche
+- card 115 retains the January-to-April legacy feasibility span without
+  weakening the first claims
 
 ## Milestones
 
@@ -723,7 +812,15 @@ cross-adapter adoption without prematurely stabilizing the public API.
   — completed
 - [034 Post-Gemini-Live Coverage Checkpoint](034-post-gemini-live-coverage-checkpoint.md)
   — completed
-- [035 Pi RPC Harness Proof](035-pi-rpc-harness-proof.md) — active
+- [035 Pi RPC Harness Proof](035-pi-rpc-harness-proof.md) — completed
+- [036 DeepSeek Direct Continuation Proof](036-deepseek-direct-continuation-proof.md)
+  — completed
+- [037 Post-Continuation Coverage And Compatibility Checkpoint](037-post-continuation-coverage-and-compatibility-checkpoint.md)
+  — completed
+- [038 Ollama Native Attached Runtime Proof](038-ollama-native-attached-runtime-proof.md)
+  — completed
+- [039 Installed Harness Compatibility Range Audit](039-installed-harness-compatibility-range-audit.md)
+  — active
 
 ## Batch Shape
 
@@ -767,6 +864,16 @@ cross-adapter adoption without prematurely stabilizing the public API.
 - card 098 closes the post-Gemini-Live provider-coverage checkpoint
 - cards 099-101 form the Pi RPC records, production-driver, and scheduling-
   conformance lane
+- cards 102-104 form the DeepSeek direct-continuation evidence, contract/corpus,
+  and production-proof lane
+- card 105 closes the post-continuation coverage and compatibility-window
+  checkpoint
+- cards 106-109 form the attached Ollama native range, corpus, driver, and
+  portability-conformance lane
+- card 110 opens and completes the installed-harness compatibility-range audit
+- cards 111-114 form the first Codex maintained-range retrofit
+- card 115 audits the older six-month Codex span after the current-behavior
+  claims close
 
 Run validation after each complete batch, not after each small card.
 

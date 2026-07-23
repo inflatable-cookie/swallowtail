@@ -1,3 +1,9 @@
+mod direct;
+
+pub use direct::{
+    DirectAttemptFinishObservation, DirectAttemptUsageObservation, ProviderFinishReason,
+};
+
 use crate::RuntimeTurnId;
 use std::num::NonZeroU64;
 use swallowtail_core::{AccessProfileId, ModelRouteId, ProviderRequestRef};
@@ -8,6 +14,7 @@ pub struct TokenUsage {
     output_tokens: Option<u64>,
     cache_read_input_tokens: Option<u64>,
     cache_write_input_tokens: Option<u64>,
+    cache_miss_input_tokens: Option<u64>,
 }
 
 impl TokenUsage {
@@ -18,6 +25,7 @@ impl TokenUsage {
             output_tokens,
             cache_read_input_tokens: None,
             cache_write_input_tokens: None,
+            cache_miss_input_tokens: None,
         }
     }
 
@@ -50,6 +58,17 @@ impl TokenUsage {
     #[must_use]
     pub const fn cache_write_input_tokens(&self) -> Option<u64> {
         self.cache_write_input_tokens
+    }
+
+    #[must_use]
+    pub const fn with_cache_miss_input_tokens(mut self, tokens: Option<u64>) -> Self {
+        self.cache_miss_input_tokens = tokens;
+        self
+    }
+
+    #[must_use]
+    pub const fn cache_miss_input_tokens(&self) -> Option<u64> {
+        self.cache_miss_input_tokens
     }
 }
 
@@ -232,6 +251,8 @@ impl BilledCostObservation {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum ProviderObservation {
     Usage(TokenUsage),
+    DirectAttemptUsage(DirectAttemptUsageObservation),
+    DirectAttemptFinish(DirectAttemptFinishObservation),
     BilledCost(BilledCostObservation),
     RateLimit(RateLimitObservation),
     Quota(QuotaObservation),

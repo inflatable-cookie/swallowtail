@@ -1,9 +1,9 @@
 use super::{AccessRequirement, CapabilityRequirement};
 use crate::{
-    DriverRole, ExecutionHostId, ExecutionLayer, ExtensionNamespace, HarnessIsolation,
-    HarnessRpcPolicy, HostServiceKind, InstanceOwnership, InterfaceVersionBinding, OperationShape,
-    PlannedConnectionRolloverPolicy, RealtimeMediaRequirements, SessionAccessPolicy,
-    SessionProviderStatePolicy,
+    AttachedRuntimeRequirements, DirectContinuationRequirements, DriverRole, ExecutionHostId,
+    ExecutionLayer, ExtensionNamespace, HarnessIsolation, HarnessRpcPolicy, HostServiceKind,
+    InstanceOwnership, InterfaceVersionBinding, OperationShape, PlannedConnectionRolloverPolicy,
+    RealtimeMediaRequirements, SessionAccessPolicy, SessionProviderStatePolicy,
 };
 use std::collections::BTreeSet;
 
@@ -24,6 +24,8 @@ pub struct OperationRequirements {
     session_provider_state_policy: Option<SessionProviderStatePolicy>,
     realtime_media: Option<RealtimeMediaRequirements>,
     planned_connection_rollover: PlannedConnectionRolloverPolicy,
+    direct_continuation: Option<DirectContinuationRequirements>,
+    attached_runtime: Option<AttachedRuntimeRequirements>,
     interface_versions: BTreeSet<InterfaceVersionBinding>,
     harness_rpc_policy: Option<HarnessRpcPolicy>,
 }
@@ -57,6 +59,8 @@ impl OperationRequirements {
             session_provider_state_policy,
             realtime_media: None,
             planned_connection_rollover: PlannedConnectionRolloverPolicy::Disabled,
+            direct_continuation: None,
+            attached_runtime: None,
             interface_versions: BTreeSet::new(),
             harness_rpc_policy: None,
         }
@@ -137,6 +141,21 @@ impl OperationRequirements {
         policy: PlannedConnectionRolloverPolicy,
     ) -> Self {
         self.planned_connection_rollover = policy;
+        self
+    }
+
+    #[must_use]
+    pub fn with_direct_continuation(
+        mut self,
+        requirements: DirectContinuationRequirements,
+    ) -> Self {
+        self.direct_continuation = Some(requirements);
+        self
+    }
+
+    #[must_use]
+    pub fn with_attached_runtime(mut self, requirements: AttachedRuntimeRequirements) -> Self {
+        self.attached_runtime = Some(requirements);
         self
     }
 
@@ -225,6 +244,16 @@ impl OperationRequirements {
     #[must_use]
     pub const fn planned_connection_rollover(&self) -> PlannedConnectionRolloverPolicy {
         self.planned_connection_rollover
+    }
+
+    #[must_use]
+    pub const fn direct_continuation(&self) -> Option<&DirectContinuationRequirements> {
+        self.direct_continuation.as_ref()
+    }
+
+    #[must_use]
+    pub const fn attached_runtime(&self) -> Option<&AttachedRuntimeRequirements> {
+        self.attached_runtime.as_ref()
     }
 
     pub fn interface_versions(&self) -> impl ExactSizeIterator<Item = &InterfaceVersionBinding> {

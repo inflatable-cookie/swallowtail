@@ -30,3 +30,6 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [020 Post-Direct Breadth And Realtime Media Selection](020-post-direct-breadth-and-realtime-media-selection.md)
 - [021 Post-Realtime Portability Selection](021-post-realtime-portability-selection.md)
 - [022 Pi RPC And Post-Realtime Provider Coverage Selection](022-pi-rpc-and-post-realtime-provider-coverage-selection.md)
+- [023 DeepSeek V4 Direct Continuation Boundary](023-deepseek-v4-direct-continuation-boundary.md)
+- [024 Post-Continuation Coverage And Ollama Selection](024-post-continuation-coverage-and-ollama-selection.md)
+- [025 Installed Harness Compatibility And Codex Range Selection](025-installed-harness-compatibility-and-codex-range-selection.md)

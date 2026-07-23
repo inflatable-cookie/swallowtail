@@ -23,9 +23,9 @@ const COMMON_ASSERTIONS: [ConformanceAssertion; 14] = [
 ];
 
 #[test]
-fn all_eleven_profiles_cover_every_common_contract_assertion() {
+fn all_twelve_profiles_cover_every_common_contract_assertion() {
     let reports = run_all_synthetic_profiles();
-    assert_eq!(reports.len(), 11);
+    assert_eq!(reports.len(), 12);
 
     for report in &reports {
         for assertion in COMMON_ASSERTIONS {
@@ -71,6 +71,10 @@ fn each_profile_proves_its_shape_specific_boundary() {
             ConformanceAssertion::ConnectionScopedLeaseLifecycle,
         ),
         (
+            SyntheticProfile::LocallyContinuedDirectSession,
+            ConformanceAssertion::ExplicitAttemptAuthorization,
+        ),
+        (
             SyntheticProfile::RealtimeMediaDirectSession,
             ConformanceAssertion::RealtimeMediaBoundary,
         ),
@@ -95,25 +99,6 @@ fn each_profile_proves_its_shape_specific_boundary() {
             .expect("profile report exists");
         assert!(report.covers(assertion));
     }
-}
-
-#[test]
-fn long_lived_acp_profile_proves_process_callback_and_topology_boundaries() {
-    let reports = run_all_synthetic_profiles();
-    let acp = reports
-        .iter()
-        .find(|report| report.profile() == SyntheticProfile::LongLivedAcpHarness)
-        .expect("ACP profile report exists");
-
-    for assertion in [
-        ConformanceAssertion::SessionLifecycle,
-        ConformanceAssertion::ProcessLifecycle,
-        ConformanceAssertion::WorkingResourceCallback,
-        ConformanceAssertion::HostTopologyPreserved,
-    ] {
-        assert!(acp.covers(assertion));
-    }
-    assert!(!acp.covers(ConformanceAssertion::CallbackExchange));
 }
 
 #[test]
@@ -277,3 +262,6 @@ fn deliberate_violations_name_the_exact_dimension_before_effects() {
         assert_preflight_rejection_without_side_effects(case, dimension);
     }
 }
+
+#[path = "conformance_profiles/continuation_and_acp.rs"]
+mod continuation_and_acp;

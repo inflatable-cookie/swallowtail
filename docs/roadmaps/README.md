@@ -11,9 +11,9 @@ shape.
 
 ## Next Task
 
-Execute [card 100](g01/batch-cards/100-pi-rpc-production-driver.md): implement
-the Pi `0.80.10` process driver against the qualified strict-LF corpus and
-shared scheduling, UI-relay, ambient-policy, and version bindings.
+Execute [card 111](g01/batch-cards/111-installed-executable-observation-records.md):
+add explicit, bounded, safe observation of one host-approved installed
+executable before the Codex compatibility corpora and claims.
 
 ## Index
 

@@ -10,6 +10,7 @@ pub enum SyntheticProfile {
     HostedDirectApi,
     ProviderManagedRemoteHarness,
     ConnectionScopedDirectSession,
+    LocallyContinuedDirectSession,
     RealtimeMediaDirectSession,
     AttachedSelfHosted,
     OwnedSelfHosted,
@@ -73,6 +74,14 @@ pub enum ConformanceAssertion {
     HarnessScheduling,
     CommandAcknowledgement,
     HarnessUiRelay,
+    ExplicitAttemptAuthorization,
+    ConsumerToolExchange,
+    PrivateContinuationBounded,
+    ProviderCachePosture,
+    RequestScopedLeaseLifecycle,
+    AttachedRuntimeBinding,
+    RuntimeManagedResidency,
+    ClosedCompatibilityWindow,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -149,6 +158,11 @@ pub fn run_connection_scoped_direct_session_profile() -> ConformanceReport {
 }
 
 #[must_use]
+pub fn run_locally_continued_direct_session_profile() -> ConformanceReport {
+    crate::profile_local_continuation::run()
+}
+
+#[must_use]
 pub fn run_realtime_media_direct_session_profile() -> ConformanceReport {
     crate::profile_realtime_media::run()
 }
@@ -174,6 +188,11 @@ pub fn run_attached_self_hosted_profile() -> ConformanceReport {
 }
 
 #[must_use]
+pub fn run_attached_runtime_boundary_assertions() -> ConformanceReport {
+    crate::profile_attached_runtime::run()
+}
+
+#[must_use]
 pub fn run_owned_self_hosted_profile() -> ConformanceReport {
     crate::profile_owned::run()
 }
@@ -189,6 +208,7 @@ pub fn run_all_synthetic_profiles() -> Vec<ConformanceReport> {
         run_hosted_direct_api_profile(),
         run_provider_managed_harness_profile(),
         run_connection_scoped_direct_session_profile(),
+        run_locally_continued_direct_session_profile(),
         run_realtime_media_direct_session_profile(),
         run_attached_self_hosted_profile(),
         run_owned_self_hosted_profile(),

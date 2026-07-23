@@ -227,6 +227,15 @@ fn monotonic_deadlines_observe_expiry_and_cancel_without_detached_waiters() {
     assert!(started.elapsed() < Duration::from_secs(1));
 }
 
+#[test]
+fn local_time_exposes_a_distinct_catalogue_observation_clock() {
+    let host = LocalProcessHost::builder(LocalProcessLimits::default()).build();
+    let timestamp = host.catalog_now().expect("catalogue clock is available");
+
+    assert!(timestamp.epoch_seconds() > 0);
+    assert!(timestamp.subsecond_nanos() < 1_000_000_000);
+}
+
 fn attachment_ref() -> AttachmentRef {
     AttachmentRef::new("fixture-attachment").expect("attachment reference is valid")
 }

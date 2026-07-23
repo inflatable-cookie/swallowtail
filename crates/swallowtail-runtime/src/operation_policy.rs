@@ -2,8 +2,8 @@ use std::error::Error;
 use std::fmt;
 use std::num::NonZeroU32;
 use swallowtail_core::{
-    ExternalNetworkPolicy, ExternalSearchPolicy, HarnessIsolation, PreflightPlan, ReasoningMode,
-    SafeDiagnostic,
+    AttachedRuntimeResidency, ExternalNetworkPolicy, ExternalSearchPolicy, HarnessIsolation,
+    PreflightPlan, ReasoningMode, SafeDiagnostic,
 };
 
 /// Explicit policy selected for one operation. Catalog defaults do not populate it.
@@ -17,6 +17,7 @@ pub struct OperationPolicy {
     provider_recovery: ProviderRecoveryPolicy,
     stream_reattachment: StreamReattachmentPolicy,
     harness_isolation: Option<HarnessIsolation>,
+    attached_runtime_residency: Option<AttachedRuntimeResidency>,
 }
 
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
@@ -70,6 +71,7 @@ impl OperationPolicy {
             provider_recovery: ProviderRecoveryPolicy::Prohibited,
             stream_reattachment: StreamReattachmentPolicy::Disabled,
             harness_isolation: None,
+            attached_runtime_residency: None,
         })
     }
 
@@ -119,6 +121,15 @@ impl OperationPolicy {
     }
 
     #[must_use]
+    pub const fn with_attached_runtime_residency(
+        mut self,
+        residency: AttachedRuntimeResidency,
+    ) -> Self {
+        self.attached_runtime_residency = Some(residency);
+        self
+    }
+
+    #[must_use]
     pub const fn external_network(&self) -> ExternalNetworkPolicy {
         self.external_network
     }
@@ -157,6 +168,11 @@ impl OperationPolicy {
     pub const fn harness_isolation(&self) -> Option<HarnessIsolation> {
         self.harness_isolation
     }
+
+    #[must_use]
+    pub const fn attached_runtime_residency(&self) -> Option<AttachedRuntimeResidency> {
+        self.attached_runtime_residency
+    }
 }
 
 /// Compares the request posture with its pure preflight binding.
@@ -168,6 +184,22 @@ pub fn validate_harness_isolation_policy(
         Ok(())
     } else {
         Err(IncompatibleOperationPolicy::harness_isolation_mismatch())
+    }
+}
+
+/// Rejects requests that omit or change the preflight-bound residency posture.
+pub fn validate_attached_runtime_residency_policy(
+    plan: &PreflightPlan,
+    policy: &OperationPolicy,
+) -> Result<(), IncompatibleOperationPolicy> {
+    let required = plan
+        .requirements()
+        .attached_runtime()
+        .map(swallowtail_core::AttachedRuntimeRequirements::residency);
+    if required == policy.attached_runtime_residency() {
+        Ok(())
+    } else {
+        Err(IncompatibleOperationPolicy::attached_runtime_residency_mismatch())
     }
 }
 
@@ -200,6 +232,15 @@ impl IncompatibleOperationPolicy {
             diagnostic: SafeDiagnostic::new(
                 "swallowtail.operation_policy_rejected",
                 "Harness isolation does not match the preflight-bound posture",
+            ),
+        }
+    }
+
+    fn attached_runtime_residency_mismatch() -> Self {
+        Self {
+            diagnostic: SafeDiagnostic::new(
+                "swallowtail.operation_policy_rejected",
+                "Attached-runtime residency does not match the preflight-bound posture",
             ),
         }
     }

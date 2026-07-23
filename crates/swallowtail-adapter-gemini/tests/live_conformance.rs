@@ -51,7 +51,7 @@ fn separate_rollover_assertions_remain_bounded_and_provider_neutral() {
 #[test]
 fn rollover_does_not_create_a_twelfth_common_profile() {
     let reports = run_all_synthetic_profiles();
-    assert_eq!(reports.len(), 11);
+    assert_eq!(reports.len(), 12);
     assert_eq!(
         reports
             .iter()

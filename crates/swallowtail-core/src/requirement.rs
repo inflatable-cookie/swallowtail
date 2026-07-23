@@ -77,6 +77,14 @@ pub enum CapabilityConstraint {
     RealtimeMediaFormat(MediaDirection, MediaFormat),
     RealtimeMediaMaximumChunkBytes(u64),
     PlannedConnectionRolloverMaximumCount(u32),
+    MaximumInferenceAttempts(u32),
+    MaximumToolCalls(u32),
+    ToolArgumentMaximumBytes(u64),
+    ToolResultMaximumBytes(u64),
+    PrivateContinuationMaximumBytes(u64),
+    PrivateHistoryMaximumBytes(u64),
+    StreamRecordMaximumCount(u32),
+    OutputTokenMaximum(u64),
     Named(NamedCapabilityConstraint),
 }
 

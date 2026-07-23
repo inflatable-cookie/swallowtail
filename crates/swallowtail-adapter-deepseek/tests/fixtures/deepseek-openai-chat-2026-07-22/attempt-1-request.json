@@ -1,0 +1,25 @@
+{
+  "model": "deepseek-v4-pro",
+  "messages": [
+    {"role": "user", "content": "What is the fixture weather in London?"}
+  ],
+  "stream": false,
+  "thinking": {"type": "enabled"},
+  "reasoning_effort": "high",
+  "max_tokens": 8192,
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "lookup_weather",
+        "description": "Return fixture weather",
+        "parameters": {
+          "type": "object",
+          "properties": {"city": {"type": "string"}},
+          "required": ["city"],
+          "additionalProperties": false
+        }
+      }
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+use crate::AttachedModelObservation;
 use crate::diagnostic::{ValueRequired, required_text};
 use crate::model_catalog::ModelCatalogObservations;
 use std::collections::BTreeSet;
@@ -119,6 +120,7 @@ pub struct ModelMetadata {
     reasoning: Option<ReasoningMetadata>,
     token_limits: Option<ModelTokenLimits>,
     catalog_observations: Option<ModelCatalogObservations>,
+    attached_model_observations: Vec<AttachedModelObservation>,
 }
 
 impl ModelMetadata {
@@ -130,6 +132,7 @@ impl ModelMetadata {
             reasoning: None,
             token_limits: None,
             catalog_observations: None,
+            attached_model_observations: Vec::new(),
         })
     }
 
@@ -166,6 +169,15 @@ impl ModelMetadata {
     }
 
     #[must_use]
+    pub fn with_attached_model_observations(
+        mut self,
+        observations: impl IntoIterator<Item = AttachedModelObservation>,
+    ) -> Self {
+        self.attached_model_observations = observations.into_iter().collect();
+        self
+    }
+
+    #[must_use]
     pub fn display_name(&self) -> Option<&str> {
         self.display_name.as_deref()
     }
@@ -193,6 +205,12 @@ impl ModelMetadata {
     #[must_use]
     pub const fn catalog_observations(&self) -> Option<&ModelCatalogObservations> {
         self.catalog_observations.as_ref()
+    }
+
+    pub fn attached_model_observations(
+        &self,
+    ) -> impl ExactSizeIterator<Item = &AttachedModelObservation> {
+        self.attached_model_observations.iter()
     }
 }
 

@@ -5,7 +5,7 @@ use crate::{
     ProcessRequest, ResourceAccess, ResourceRepresentation, RuntimeFailure, SchemaDocument,
     ScopeId, WorkingResourceRef,
 };
-use swallowtail_core::{Diagnostic, EndpointAudience};
+use swallowtail_core::{CatalogTimestamp, Diagnostic, EndpointAudience, SafeDiagnostic};
 
 pub trait JoinedTask: Send {
     fn join(self: Box<Self>) -> BoxFuture<'static, Result<(), RuntimeFailure>>;
@@ -32,6 +32,13 @@ pub trait BlockingWorkService: Send + Sync {
 pub trait TimeService: Send + Sync {
     fn now(&self) -> MonotonicInstant;
     fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, DeadlineObservation>;
+
+    fn catalog_now(&self) -> Result<CatalogTimestamp, RuntimeFailure> {
+        Err(RuntimeFailure::new(SafeDiagnostic::new(
+            "swallowtail.catalog_clock_unavailable",
+            "Runtime host does not expose an observation clock",
+        )))
+    }
 }
 
 pub trait ProcessHandle: Send + Sync {

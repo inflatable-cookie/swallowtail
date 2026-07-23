@@ -1,0 +1,1 @@
+{"messages":[{"content":"Fixture prompt","role":"user"}],"model":"fixture-model:8b","options":{"num_predict":8},"stream":true}

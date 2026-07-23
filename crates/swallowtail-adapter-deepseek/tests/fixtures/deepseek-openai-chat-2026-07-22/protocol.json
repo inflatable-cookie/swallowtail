@@ -1,0 +1,38 @@
+{
+  "observed": "2026-07-22",
+  "facade_revision": "deepseek-openai-chat-2026-07-22",
+  "endpoint": "https://api.deepseek.com",
+  "path": "/chat/completions",
+  "models_path": "/models",
+  "model": "deepseek-v4-pro",
+  "credential": "public_open_platform_api_key",
+  "billing": "usage_balance",
+  "thinking": "enabled",
+  "reasoning_effort": "high",
+  "tool_selection": "provider_automatic_omitted_on_wire",
+  "turns": {"maximum": 2, "deadline": "host_monotonic_required"},
+  "attempts": {"maximum": 3, "first": "buffered", "continued": "sse"},
+  "bounds": {
+    "declared_tools": 8,
+    "returned_tool_calls": 1,
+    "tool_argument_bytes": 65536,
+    "tool_result_bytes": 65536,
+    "private_continuation_bytes": 262144,
+    "private_history_bytes": 1048576,
+    "sse_records_per_attempt": 4096,
+    "output_tokens_per_attempt": 8192
+  },
+  "provider_cache": {"accepted": true, "read": false, "list": false, "delete": false},
+  "excluded": [
+    "/v1",
+    "anthropic_facade",
+    "beta_endpoint",
+    "deepseek-chat",
+    "deepseek-reasoner",
+    "deepseek-v4-flash",
+    "streamed_tool_call_assembly",
+    "strict_tools",
+    "retry",
+    "resume"
+  ]
+}

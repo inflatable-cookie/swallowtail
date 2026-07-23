@@ -4,6 +4,7 @@ use swallowtail_core::{ResourceAccess, SessionAccessPolicy};
 pub(crate) fn policy(profile: SyntheticProfile) -> SessionAccessPolicy {
     match profile {
         SyntheticProfile::ConnectionScopedDirectSession
+        | SyntheticProfile::LocallyContinuedDirectSession
         | SyntheticProfile::RealtimeMediaDirectSession => SessionAccessPolicy::resource_free(),
         SyntheticProfile::PersistentAcpHarness => {
             SessionAccessPolicy::ambient_harness(ResourceAccess::ReadWrite)

@@ -1,4 +1,6 @@
+use super::attached_runtime::validate_attached_runtime;
 use super::capability::validate_capabilities;
+use super::direct_continuation::validate_direct_continuation;
 use super::planned_connection_rollover::validate_planned_connection_rollover;
 use super::realtime_media::validate_realtime_media;
 use super::session_access::validate_session_access;
@@ -64,6 +66,8 @@ pub(super) fn validate(
     validate_session_provider_state(requirements)?;
     validate_realtime_media(context, requirements)?;
     validate_planned_connection_rollover(requirements)?;
+    validate_direct_continuation(context, requirements)?;
+    validate_attached_runtime(context, requirements)?;
     validate_capabilities(context, requirements)?;
 
     for namespace in requirements.extension_namespaces() {

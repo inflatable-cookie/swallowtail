@@ -1688,6 +1688,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "swallowtail-adapter-deepseek"
+version = "0.1.0"
+dependencies = [
+ "curl",
+ "futures-channel",
+ "futures-core",
+ "futures-executor",
+ "futures-util",
+ "serde",
+ "serde_json",
+ "swallowtail-core",
+ "swallowtail-host-local",
+ "swallowtail-protocol-openai-chat",
+ "swallowtail-runtime",
+ "swallowtail-testkit",
+ "url",
+]
+
+[[package]]
 name = "swallowtail-adapter-gemini"
 version = "0.1.0"
 dependencies = [
@@ -1759,6 +1778,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "swallowtail-adapter-ollama"
+version = "0.1.0"
+dependencies = [
+ "curl",
+ "futures-channel",
+ "futures-core",
+ "futures-executor",
+ "futures-util",
+ "serde",
+ "serde_json",
+ "swallowtail-core",
+ "swallowtail-host-local",
+ "swallowtail-runtime",
+ "swallowtail-testkit",
+ "url",
+]
+
+[[package]]
 name = "swallowtail-adapter-openai"
 version = "0.1.0"
 dependencies = [
@@ -1799,7 +1836,13 @@ dependencies = [
 name = "swallowtail-adapter-pi"
 version = "0.1.0"
 dependencies = [
+ "futures-core",
+ "futures-executor",
+ "futures-util",
  "serde_json",
+ "swallowtail-core",
+ "swallowtail-runtime",
+ "swallowtail-testkit",
 ]
 
 [[package]]

@@ -40,6 +40,10 @@ pub(super) fn compare_versions(
     }
 }
 
+pub(super) fn is_semantic_prerelease(version: &InterfaceVersion) -> bool {
+    Version::parse(version.as_str()).is_ok_and(|version| !version.pre.is_empty())
+}
+
 fn parse_calendar_date(
     version: &InterfaceVersion,
 ) -> Result<(u16, u8, u8), InvalidInterfaceCompatibilityClaim> {

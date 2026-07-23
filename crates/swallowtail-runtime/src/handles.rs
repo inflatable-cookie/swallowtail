@@ -1,6 +1,7 @@
 use crate::{
     BoxEventStream, BoxFuture, BoxRealtimeMediaEventStream, CallbackExchange, CancellationControl,
-    CleanupOutcome, HostServices, MediaChunk, MediaInputCommit, RequestId, RuntimeFailure,
+    CleanupOutcome, DirectContinuationTurnRequest, DirectToolExchange, HarnessCommandResponse,
+    HarnessScheduledMessage, HostServices, MediaChunk, MediaInputCommit, RequestId, RuntimeFailure,
     RuntimeRunId, RuntimeSessionId, RuntimeTurnId, ServingEndpointBinding, ServingInstanceId,
     SessionResumeBinding, TerminalOutcome, TurnRequest,
 };
@@ -26,6 +27,20 @@ pub trait TurnHandle: Send {
     fn take_callbacks(&mut self) -> Option<CallbackExchange> {
         None
     }
+    fn take_direct_tool_exchange(&mut self) -> Option<DirectToolExchange> {
+        None
+    }
+    fn schedule_harness_message(
+        &mut self,
+        _message: HarnessScheduledMessage,
+    ) -> BoxFuture<'_, Result<HarnessCommandResponse, RuntimeFailure>> {
+        Box::pin(async {
+            Err(RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
+                "swallowtail.harness_message_scheduling_unsupported",
+                "Turn does not support harness message scheduling",
+            )))
+        })
+    }
     fn cancellation(&self) -> &dyn CancellationControl;
     fn take_terminal_outcome(&mut self) -> Option<BoxFuture<'static, TerminalOutcome>>;
     fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome>;
@@ -41,6 +56,18 @@ pub trait InteractiveSessionHandle: Send {
         request: TurnRequest,
         services: HostServices,
     ) -> BoxFuture<'a, Result<Box<dyn TurnHandle>, RuntimeFailure>>;
+    fn start_direct_continuation_turn<'a>(
+        &'a mut self,
+        _request: DirectContinuationTurnRequest,
+        _services: HostServices,
+    ) -> BoxFuture<'a, Result<Box<dyn TurnHandle>, RuntimeFailure>> {
+        Box::pin(async {
+            Err(RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
+                "swallowtail.direct_continuation.unsupported",
+                "Driver does not support locally continued direct turns",
+            )))
+        })
+    }
     fn cancellation(&self) -> &dyn CancellationControl;
     fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome>;
 }

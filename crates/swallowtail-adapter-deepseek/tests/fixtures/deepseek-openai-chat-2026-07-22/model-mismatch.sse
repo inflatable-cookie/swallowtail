@@ -1,0 +1,4 @@
+data: {"id":"drift","model":"deepseek-v4-flash","choices":[{"index":0,"delta":{"content":"wrong route"},"finish_reason":"stop"}]}
+
+data: [DONE]
+

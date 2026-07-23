@@ -34,6 +34,8 @@ Contracts hold durable, testable rules.
 - [027 Planned Connection Rollover And Realtime Continuity](027-planned-connection-rollover-and-realtime-continuity.md)
 - [028 Harness RPC Scheduling And UI Relay Boundary](028-harness-rpc-scheduling-and-ui-relay-boundary.md)
 - [029 Interface Version Qualification And Compatibility](029-interface-version-qualification-and-compatibility.md)
+- [030 Consumer-Owned Direct Tool Continuation](030-consumer-owned-direct-tool-continuation.md)
+- [031 Attached Native Runtime Version And Residency](031-attached-native-runtime-version-and-residency.md)
 
 Contract 003 defines the provider-neutral record kernel. Contracts 004-016
 govern the realized runtime and current proof drivers. Contract 017 governs
@@ -72,3 +74,11 @@ Contract 029 keeps adapter, artifact, SDK, wire, service, facade, instance,
 route, and model versions separate. Execution binds exact observed points;
 drivers support maintained baseline-to-latest windows only through ordered,
 evidence-backed milestones, deprecation states, and exact exclusions.
+Contract 030 adds a locally continued direct-session profile. Every provider
+attempt needs explicit consumer authorization; tool execution remains
+downstream while provider-private continuation stays bounded, redacted,
+route-bound, ephemeral, and distinct from provider cache or consumer memory.
+Contract 031 governs attach-only native model runtimes. It keeps exact runtime
+version, installed and running inventory, selected route, artifact identity,
+and invocation-caused model residency separate without granting installation,
+model mutation, unload, or serving-lifecycle authority.

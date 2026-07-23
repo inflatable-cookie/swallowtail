@@ -1,0 +1,18 @@
+{
+  "license": "Synthetic fixture license",
+  "parameters": "num_ctx 4096",
+  "template": "synthetic private template",
+  "capabilities": ["completion"],
+  "modified_at": "2026-07-23T10:00:00Z",
+  "details": {
+    "parent_model": "",
+    "format": "gguf",
+    "family": "fixture",
+    "families": ["fixture"],
+    "parameter_size": "8B",
+    "quantization_level": "Q4_K_M"
+  },
+  "model_info": {
+    "fixture.context_length": 4096
+  }
+}

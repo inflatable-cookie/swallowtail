@@ -1,0 +1,19 @@
+{
+  "models": [
+    {
+      "name": "fixture-model:8b",
+      "model": "fixture-model:8b",
+      "modified_at": "2026-07-23T10:00:00Z",
+      "size": 5000000000,
+      "digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "details": {
+        "parent_model": "",
+        "format": "gguf",
+        "family": "fixture",
+        "families": ["fixture"],
+        "parameter_size": "8B",
+        "quantization_level": "Q4_K_M"
+      }
+    }
+  ]
+}

@@ -62,6 +62,8 @@ runtime_identity!(ServingInstanceId, "serving instance id");
 runtime_identity!(ScopeId, "scope id");
 runtime_identity!(MediaStreamId, "media stream id");
 runtime_identity!(HarnessCommandId, "harness command id");
+runtime_identity!(DirectInferenceAttemptId, "direct inference attempt id");
+runtime_identity!(DirectToolCallId, "direct tool call id");
 
 #[cfg(test)]
 mod tests {

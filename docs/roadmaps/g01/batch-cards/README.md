@@ -102,6 +102,17 @@
 - `097-gemini-live-portability-conformance-and-closeout.md`
 - `098-post-gemini-live-provider-coverage-evidence.md`
 - `099-pi-rpc-contract-records-and-corpus.md`
+- `100-pi-rpc-production-driver.md`
+- `101-pi-rpc-scheduling-conformance-and-closeout.md`
+- `102-deepseek-v4-direct-continuation-evidence.md`
+- `103-direct-continuation-contract-and-deepseek-corpus.md`
+- `104-deepseek-v4-driver-conformance-and-closeout.md`
+- `105-post-continuation-coverage-and-version-evidence.md`
+- `106-attached-runtime-version-and-residency-records.md`
+- `107-ollama-multi-release-native-corpus.md`
+- `108-ollama-native-attached-driver.md`
+- `109-ollama-portability-conformance-and-closeout.md`
+- `110-installed-harness-compatibility-range-audit.md`
 
 ## Blocked
 
@@ -109,8 +120,11 @@ None.
 
 ## Ready
 
-- `100-pi-rpc-production-driver.md`
+- `111-installed-executable-observation-records.md`
 
 ## Planned
 
-- `101-pi-rpc-scheduling-conformance-and-closeout.md`
+- `112-codex-multi-release-compatibility-corpora.md`
+- `113-codex-version-discovery-and-range-drivers.md`
+- `114-codex-range-conformance-and-closeout.md`
+- `115-codex-six-month-legacy-span-feasibility.md`

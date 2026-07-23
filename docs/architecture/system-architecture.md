@@ -2,11 +2,11 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-22
+Updated: 2026-07-23
 
 ## Realized State
 
-Swallowtail has an eighteen-crate Rust workspace plus its strict Northstar authority
+Swallowtail has a twenty-crate Rust workspace plus its strict Northstar authority
 spine:
 
 - `swallowtail-core` owns pure provider-neutral contract records, including
@@ -18,7 +18,10 @@ spine:
   owned remote-resource deletion kinds, durable-retention and managed-recovery
   capabilities, opaque provider-agent/version bindings, realtime audio format
   and bound requirements, disabled-or-positive-bounded planned connection
-  rollover, and side-effect-free preflight; interactive sessions
+  rollover, positive locally continued direct-session bounds, fixed buffered/
+  SSE attempt transports, explicit provider-automatic tool selection, exact
+  model identity, provider-cache acceptance without cache management, and
+  side-effect-free preflight; interactive sessions
   separately bind prohibited or durable-
   conversation-delete-on-close provider state, while structured harness
   operations may bind exact ambient,
@@ -40,15 +43,19 @@ spine:
   realtime-media role owns resource-free requests, redacted zeroized chunks,
   exact append/commit/output sequencing, transcripts, observations, response
   handles, terminal reuse, session-ending interruption, and immutable
-  planned-rollover request-plan agreement
+  planned-rollover request-plan agreement plus distinct locally continued
+  direct-session requests, explicit attempt authorization, bounded redacted
+  tool-call/result records, and private-continuation binding metadata that
+  never carries provider reasoning bytes
 - `swallowtail-testkit` depends on core and runtime and owns deterministic
   Contract 003, Contract 008, runtime-skeleton, and Contract 011 cross-shape
   fixtures and assertions, including distinct local and remote-authoritative
   execution-host identities plus pure remote-harness policy fixtures for
   durable retention, managed recovery, exact resource ownership, and a
   separate structured-harness native-bound and provider-conversation assertion
-  packs plus an eleventh realtime-media direct-session profile and a separate
-  planned-rollover assertion pack over that unchanged profile
+  packs plus an eleventh realtime-media direct-session profile, a twelfth
+  locally continued direct-session profile, and a separate planned-rollover
+  assertion pack over the unchanged realtime profile
 - `swallowtail-host-local` depends on core and runtime and implements concrete
   host-approved local process, endpoint, credential, materialization, and
   monotonic deadline behavior behind capability-scoped runtime ports
@@ -58,7 +65,8 @@ spine:
   `0.28.1`/schema `v1.19.1`; the Kimi corpus also freezes exact annotated-tag,
   source-commit, arm64 executable, isolated-state, and upgrade-gate evidence
 - `swallowtail-protocol-openai-chat` owns bounded compatible Chat Completions
-  request encoding, JSON envelope decoding, structural unknowns, SSE comments,
+  request encoding, including null content and bounded structural message
+  extensions, JSON envelope decoding, structural unknowns, SSE comments,
   data records, fragmentation, disconnect, and `[DONE]`; it has no endpoint,
   credential, provider selection, retry, lifecycle, runtime-event, host, or
   consumer authority
@@ -70,6 +78,11 @@ spine:
 - `swallowtail-adapter-codex` depends on core and runtime and implements the
   read-only, ephemeral `codex exec` structured-run surface plus read-only and
   bounded-workspace app-server interactive sessions through runtime host ports
+- `swallowtail-adapter-deepseek` implements the exact
+  `deepseek-openai-chat-2026-07-22` V4 Pro locally continued session over
+  host-approved HTTP/SSE, including authenticated catalogue, consumer-owned
+  tool exchange, private reasoning continuation, and joined credential-last
+  cleanup
 - `swallowtail-adapter-opencode` implements version-bound OpenCode `1.14.48`
   model discovery and ambient-host interactive sessions with read-only tool
   permissions over host-approved HTTP and bounded SSE
@@ -98,6 +111,10 @@ spine:
   API-key catalogue and exact `kimi-k3` direct route over host-approved HTTP/SSE;
   it shares only structural compatible-chat encoding and decoding with
   llama.cpp and owns its access, reasoning, error, usage, and lifecycle mapping
+- `swallowtail-adapter-pi` implements the pinned Pi `0.80.10` restrictive
+  ambient-host RPC subset over supervised strict-LF JSONL stdio with exact
+  downstream provider/model routing, prompt, steering, follow-up, correlated
+  extension UI, native abort, deadlines, and joined credential-last cleanup
 - `swallowtail-adapter-llama-cpp` implements attached llama.cpp build `9910`
   readiness, catalogue, and bounded Chat Completions direct inference without
   owning the model artifact or server; its exact request and text-only semantic
@@ -149,7 +166,7 @@ Crate status:
 
 - `swallowtail-core` — realized
 - `swallowtail-testkit` — realized with reusable contract-kernel, preflight,
-  and callback fixtures, recording runtime host services, and eleven composable
+  and callback fixtures, recording runtime host services, and twelve composable
   provider-free conformance profile runners
 - `swallowtail-runtime` — realized under Contracts 008-010, 012, and 026 with
   only core, `futures-core`, and `zeroize` dependencies
@@ -174,6 +191,10 @@ Crate status:
   credential only after transport and cleanup work join
 - `swallowtail-adapter-codex` — realized for bounded exec runs plus local stdio
   app-server model discovery and interactive sessions
+- `swallowtail-adapter-deepseek` — realized for one exact opaque facade
+  revision, V4 Pro catalogue and selection, buffered tool response, streaming
+  finals, private continuation, cache usage, consumer-authorized attempts,
+  failure, cancellation, disconnect, drift, and both host topologies
 - `swallowtail-adapter-opencode` — realized for attached model catalogue and
   read-only interactive sessions over a six-route HTTP/SSE subset with exact
   delegated-auth, version, provider/model, abort, deadline, and cleanup bounds
@@ -228,20 +249,25 @@ Crate status:
   bounded recovery, native cancel, provider cancellation evidence, and joined
   credential cleanup
 
-Core, runtime, and testkit are realized and validated as one kernel. The eleven
+Core, runtime, and testkit are realized and validated as one kernel. The twelve
 synthetic Contract 011 profiles use only public APIs and cover one-shot CLI,
 long-lived RPC, long-lived ACP, attached network harness, hosted API, attached
 self-hosted, owned self-hosted, connection-scoped direct-session, and a
 persistent ACP extension, a provider-managed remote harness, plus a bounded
-realtime-media direct session. The managed
+realtime-media direct session and a locally continued direct session. The managed
 profile adds exact agent binding, durable retention, managed recovery, bounded
 reattachment, run callbacks, per-resource deletion truth, topology, and cleanup
-ordering without widening the other nine profiles. The ACP extension composes
+ordering without widening the other profiles. The ACP extension composes
 load, replay, resume, bounded write, delegated-auth, ambient-authority,
 topology, and cleanup claims without widening the baseline ACP profile.
 The realtime profile adds exact model and PCM format binding, bounded chunks,
 two serial manual turns, transcript and provider evidence, interruption, and
 joined cleanup without changing existing text operation shapes.
+The locally continued profile adds separate provider requests, explicit user-
+turn or correlated-tool-result authorization for every attempt, consumer-
+executed tools, bounded adapter-private continuation, explicit provider-cache
+posture, and request-scoped cleanup without widening harness callbacks,
+connection continuation, or provider conversation state.
 Structured-run policy now keeps attached execution, prohibited provider
 retention, and disabled stream reattachment as the defaults. Provider-managed
 background execution, temporary retention, and bounded reattachment are three
@@ -486,7 +512,38 @@ update, telemetry, package, or automatic-retry action, and explicit
 separate from model lifecycle. Correlated dialogs use callback exchange;
 display-only UI becomes bounded semantic observation. The first adapter-private
 corpus binds package `0.80.10`, strict LF JSONL, exact provider/model argv, and
-offline startup without launching Pi or contacting a provider.
+offline startup without launching Pi or contacting a provider. The separate
+production driver binds that exact point to one host-approved executable,
+delegated harness credential, filesystem working resource, provider, model,
+and `AmbientHost` read-intent policy. Its supervised connection keeps command
+acknowledgement separate from model settlement, relays bounded extension UI,
+uses native abort for cancellation and deadline requests without claiming
+provider stop, and joins process work before resource and credential release.
+The production fixture matrix passes the unchanged long-lived RPC profile and
+the separate scheduling/UI assertion pack under local and remote-authoritative
+host identities. It proves prompt-before-steering-before-follow-up ordering,
+command acknowledgement before model settlement, deterministic callback
+expiry and late-response rejection, distinct provider/retry/disconnect/format
+failures, bounded prompt concurrency, redaction, and visible cleanup failure
+without weakening terminal provider truth.
+
+The DeepSeek production boundary composes Contract 030 with common compatible-chat
+structure but keeps provider semantics private. Its opaque facade claim
+qualifies only `deepseek-openai-chat-2026-07-22`, exact endpoint
+`https://api.deepseek.com`, `/chat/completions`, and `deepseek-v4-pro`. The
+corpus freezes one buffered tool-bearing attempt, two streaming final attempts,
+later-turn reasoning continuation, cache hit/miss usage, status and provider-
+stream failure, cancellation uncertainty, deadline posture, disconnect, model
+mismatch, and unknown-field rejection. The separately registered driver uses
+host-approved endpoint and API-key leases for authenticated catalogue and
+completion requests. It pauses after the buffered tool call until the consumer
+submits the exact correlated result, then streams the authorized continuation.
+A later user turn replays bounded private history only into the same session,
+facade, route, model, and access binding. Local and remote-authoritative
+fixtures prove no provider request during tool wait, exact three-attempt
+replay, per-attempt usage and cache evidence, finish and request evidence,
+cancellation, deadline, safe failure, joined HTTP/SSE work, zeroization, and
+credential-last cleanup without a live credential or paid inference.
 
 A separate llama.cpp owned driver binds build `10069`, one host-approved GGUF,
 one host-approved executable, `HostOwnedEphemeral` ownership, loopback port

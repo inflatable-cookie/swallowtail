@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-22
+Updated: 2026-07-23
 
 ## Sequence
 
@@ -114,8 +114,8 @@ replacement explicit and opt-in, keeps resumption handles private, and
 separates rollover from reconnect, reattachment, retry, consumer resume, and
 durable state. Roadmap 033 and cards 095-097 own the exact preview records,
 corpus, production driver, portability conformance, and closeout. Grok Build
-remains later harness breadth. Remote ACP has advanced to Active but waits for
-maintained SDK and hardening evidence. Cursor's new local SDK remains beta and
+remains later harness breadth. Remote ACP is Draft and waits for maintained SDK
+and hardening evidence. Cursor's new local SDK remains beta and
 lower-information; its cloud route still requires repository and remote-
 mutation policy.
 
@@ -129,11 +129,33 @@ eleven profiles. Pi `0.80.10` RPC is the next proof: a maintained strict-LF
 process protocol with distinct prompt, steering, follow-up, abort, and
 extension-UI relay. Contract 028 keeps downstream provider/model identity
 exact, `AmbientHost` visible, sandboxing optional, retry disabled, and cleanup
-joined. Roadmap 035 and cards 099-101 own records, corpus, production driver,
-and conformance. DeepSeek V4 reasoning/tool continuation is the next direct-
-contract target; it is not authorized as a stateless compatible breadth
-adapter. Remote ACP remains Active but unfinished. Claude subscription-backed
-third-party SDK use and Cursor's public-beta bridge retain explicit gates.
+joined. Roadmap 035 and cards 099-101 close after production conformance proves
+both host identities, exact scheduling, callback expiry, failure separation,
+and joined cleanup. Roadmap 036 and cards 102-104 complete DeepSeek V4
+continuation evidence, Contract 030's locally continued direct-session
+boundary, one exact V4 Pro corpus, production driver, and both-topology
+conformance. The twentieth route uses the OpenAI-format facade, explicit
+attempt authorization, consumer-executed tools, private ephemeral reasoning
+continuation, explicit provider-cache acceptance, and joined credential-last
+cleanup. Roadmap 037 and card 105 close after auditing all twenty routes and
+twelve profiles against Contract 029. Only Pi and DeepSeek expose descriptor
+claims, both as one-point windows. Remote ACP is Draft. Claude subscription-
+backed third-party SDK use and Cursor's public-beta bridge retain explicit
+gates.
+
+Research 024 and Contract 031 select attach-only Ollama native API as the first
+non-singleton compatibility proof. Roadmap 038 and cards 106-109 qualify stable
+`0.14.0` through `0.32.1`, exact runtime version, installed and running model
+observations, one selected text route, native NDJSON, and explicit
+runtime-managed residency. The route installs nothing, downloads no model,
+uses no cloud access, needs no container, and does not absorb Monkey.
+
+Roadmap 039 returns compatibility work to installed harnesses. Card 110
+revalidates their release histories and discovery surfaces, starting with
+Codex exec and app-server because consumer devices may carry a six-month
+release span. Exact baseline, behavior milestones, exclusions, and
+latest-qualified points need frozen evidence before any descriptor range is
+published.
 
 These stages normally become numbered roadmaps inside the active generation.
 They do not each create a generation. A generation rolls over near the 30-50

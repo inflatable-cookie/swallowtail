@@ -1,5 +1,5 @@
 use super::error::InvalidInterfaceCompatibilityClaim;
-use super::ordering::{compare_versions, validate_version};
+use super::ordering::{compare_versions, is_semantic_prerelease, validate_version};
 use super::{
     InterfaceBehaviorRevision, InterfaceCompatibilityClaimId, InterfaceSupportStatus,
     InterfaceVersion, InterfaceVersionAxis, InterfaceVersionScheme,
@@ -157,6 +157,16 @@ impl InterfaceCompatibilityClaim {
     pub fn classify(&self, version: &InterfaceVersion) -> Option<InterfaceCompatibilityMatch> {
         if self.exclusions.contains(version) || validate_version(self.scheme, version).is_err() {
             return None;
+        }
+        if self.scheme == InterfaceVersionScheme::Semantic && is_semantic_prerelease(version) {
+            return self
+                .segments
+                .iter()
+                .find(|segment| segment.minimum() == version && segment.maximum() == version)
+                .map(|segment| InterfaceCompatibilityMatch {
+                    behavior_revision: segment.behavior_revision.clone(),
+                    support_status: segment.support_status,
+                });
         }
         self.segments
             .iter()

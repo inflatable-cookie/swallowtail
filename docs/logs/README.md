@@ -5,6 +5,17 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-07-23 Installed Harness Compatibility And Codex Range Selection](2026-07-23-installed-harness-compatibility-and-codex-range-selection.md)
+- [2026-07-23 Ollama Portability Closeout](2026-07-23-ollama-portability-closeout.md)
+- [2026-07-23 Ollama Native Attached Driver](2026-07-23-ollama-native-attached-driver.md)
+- [2026-07-23 Ollama Multi-Release Native Corpus](2026-07-23-ollama-multi-release-native-corpus.md)
+- [2026-07-23 Attached Runtime Records And Range Assertions](2026-07-23-attached-runtime-records-and-range-assertions.md)
+- [2026-07-23 Post-Continuation Coverage And Ollama Selection](2026-07-23-post-continuation-coverage-and-ollama-selection.md)
+- [2026-07-22 DeepSeek V4 Production Conformance Closeout](2026-07-22-deepseek-v4-production-conformance-closeout.md)
+- [2026-07-22 DeepSeek Continuation Records And Corpus](2026-07-22-deepseek-continuation-records-and-corpus.md)
+- [2026-07-22 DeepSeek V4 Continuation Selection](2026-07-22-deepseek-v4-continuation-selection.md)
+- [2026-07-22 Pi RPC Conformance Closeout](2026-07-22-pi-rpc-conformance-closeout.md)
+- [2026-07-22 Pi RPC Production Driver](2026-07-22-pi-rpc-production-driver.md)
 - [2026-07-22 Interface Compatibility Window Correction](2026-07-22-interface-compatibility-window-correction.md)
 - [2026-07-22 Pi RPC Records, Version Qualification, And Corpus](2026-07-22-pi-rpc-records-version-qualification-and-corpus.md)
 - [2026-07-22 Pi RPC Provider Coverage Selection](2026-07-22-pi-rpc-provider-coverage-selection.md)

@@ -6,8 +6,10 @@
 #![forbid(unsafe_code)]
 
 mod access;
+mod attached_runtime;
 mod capability;
 mod diagnostic;
+mod direct_continuation;
 mod event;
 mod harness_rpc;
 mod identity;
@@ -32,8 +34,17 @@ pub use access::{
     AccessProfile, AccessStatus, CredentialMechanism, CredentialState, EndpointAuthorization,
     EntitlementMetering, EntitlementState, RuntimeReadiness, SupportAuthority,
 };
+pub use attached_runtime::{
+    AttachedModelObservation, AttachedModelObservationScope, AttachedModelTag,
+    AttachedRuntimeRequirements, AttachedRuntimeResidency, InvalidAttachedRuntimeRecord,
+    ModelManifestDigest,
+};
 pub use capability::{Capability, CapabilityManifest, UnsupportedCapability};
 pub use diagnostic::{Diagnostic, SafeDiagnostic, ValueRequired};
+pub use direct_continuation::{
+    DirectAttemptTransport, DirectContinuationConfig, DirectContinuationRequirements,
+    DirectToolSelection, ProviderInferenceCachePolicy,
+};
 pub use event::{
     EventEnvelope, EventKind, ExtensionNamespace, ExtensionPolicy, ExtensionRejected,
     ProviderExtension,

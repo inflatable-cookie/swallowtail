@@ -1,18 +1,20 @@
 use std::num::NonZeroU32;
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessRequirement, AccessStatus, AdapterId, AdapterIdentity,
-    AdapterVersion, ConfiguredInstance, ConfiguredInstanceId, DriverDescriptor, EndpointAudience,
-    EndpointAuthorization, EntitlementState, ExecutionHostId, ExtensionNamespace, HarnessRpcPolicy,
-    HarnessSchedulingBounds, HostServiceKind, InstancePolicyId, InstanceRevision,
-    InstanceTargetRef, IntegrationFamilyId, ModelArtifactBinding, ModelId, ModelRoute,
-    ModelRouteId, ModelRouteRevision, OperationRequirements, PreflightContext, PreflightFailure,
-    PreflightPlan, ProtocolFacadeId, ProviderAgentBinding, ProviderAgentId, ProviderAgentVersion,
-    RuntimeReadiness, SupportAuthority, TransportFamilyId, preflight,
+    AdapterVersion, AttachedModelObservation, ConfiguredInstance, ConfiguredInstanceId,
+    DriverDescriptor, EndpointAudience, EndpointAuthorization, EntitlementState, ExecutionHostId,
+    ExtensionNamespace, HarnessRpcPolicy, HarnessSchedulingBounds, HostServiceKind,
+    InstancePolicyId, InstanceRevision, InstanceTargetRef, IntegrationFamilyId,
+    ModelArtifactBinding, ModelId, ModelRoute, ModelRouteId, ModelRouteRevision,
+    OperationRequirements, PreflightContext, PreflightFailure, PreflightPlan, ProtocolFacadeId,
+    ProviderAgentBinding, ProviderAgentId, ProviderAgentVersion, RuntimeReadiness,
+    SupportAuthority, TransportFamilyId, preflight,
 };
 
 use crate::{SyntheticProfile, profile_shape::ProfileShape};
 
 mod artifact;
+pub(crate) mod attached_runtime;
 mod capabilities;
 mod interface_version;
 mod managed;
@@ -22,6 +24,7 @@ pub(crate) struct ProfilePreflightFixture {
     instance: ConfiguredInstance,
     route: ModelRoute,
     artifact: Option<ModelArtifactBinding>,
+    attached_model_observation: Option<AttachedModelObservation>,
     access_profile: AccessProfile,
     access_status: AccessStatus,
     requirements: OperationRequirements,
@@ -126,12 +129,21 @@ impl ProfilePreflightFixture {
                     crate::realtime_media_fixture::realtime_media_config(),
                 ));
         }
+        if profile == SyntheticProfile::LocallyContinuedDirectSession {
+            requirements = requirements.with_direct_continuation(
+                swallowtail_core::DirectContinuationRequirements::new(
+                    valid(ModelId::new, shape.model_id),
+                    crate::direct_continuation_fixture::config(),
+                ),
+            );
+        }
 
         Self {
             driver,
             instance,
             route,
             artifact,
+            attached_model_observation: None,
             access_profile,
             access_status,
             requirements,
@@ -162,7 +174,7 @@ impl ProfilePreflightFixture {
     }
 
     pub(crate) fn context(&self) -> PreflightContext<'_> {
-        let context = PreflightContext::new(
+        let mut context = PreflightContext::new(
             &self.driver,
             &self.instance,
             &self.access_profile,
@@ -171,10 +183,12 @@ impl ProfilePreflightFixture {
         )
         .with_model_route(&self.route);
         if let Some(artifact) = &self.artifact {
-            context.with_model_artifact(artifact)
-        } else {
-            context
+            context = context.with_model_artifact(artifact);
         }
+        if let Some(observation) = &self.attached_model_observation {
+            context = context.with_attached_model_observation(observation);
+        }
+        context
     }
 
     pub(crate) const fn driver(&self) -> &DriverDescriptor {

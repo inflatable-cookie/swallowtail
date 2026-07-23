@@ -56,7 +56,7 @@ fn local_and_remote_authority_preserve_the_same_exact_k3_lifecycle() {
 #[test]
 fn all_provider_neutral_profiles_keep_the_common_contract() {
     let reports = run_all_synthetic_profiles();
-    assert_eq!(reports.len(), 11);
+    assert_eq!(reports.len(), 12);
     assert_eq!(
         reports
             .iter()

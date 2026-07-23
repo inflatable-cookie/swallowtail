@@ -32,6 +32,8 @@ pub enum Capability {
     StreamReattachment,
     RealtimeMedia,
     PlannedConnectionRollover,
+    DirectToolContinuation,
+    ProviderManagedInferenceCache,
 }
 
 #[derive(Clone, Debug, Default, Eq, PartialEq)]

@@ -1,6 +1,6 @@
 # 035 Pi RPC Harness Proof
 
-Status: active
+Status: completed
 Owner: Tom
 Updated: 2026-07-22
 
@@ -39,23 +39,23 @@ published baseline remains supported.
 - [x] Add the minimum provider-neutral scheduling and UI-relay records without
       widening existing RPC, ACP, or structured-run behavior.
 - [x] Freeze a dated Pi `0.80.10` strict-LF RPC corpus.
-- [ ] Add one separately registered Pi RPC production driver.
-- [ ] Prove prompt, steering, follow-up, abort, callback relay, ambient posture,
+- [x] Add one separately registered Pi RPC production driver.
+- [x] Prove prompt, steering, follow-up, abort, callback relay, ambient posture,
       exact downstream routing, and joined cleanup.
-- [ ] Keep sandboxing optional and make no filesystem or network containment
+- [x] Keep sandboxing optional and make no filesystem or network containment
       claim.
 
 ## Execution Plan
 
 - [x] Shared records and Pi RPC corpus: card 099.
-- [ ] Pi RPC production driver: card 100.
-- [ ] Scheduling conformance and closeout: card 101.
+- [x] Pi RPC production driver: card 100.
+- [x] Scheduling conformance and closeout: card 101.
 
 ## Cards
 
 - `batch-cards/099-pi-rpc-contract-records-and-corpus.md` — completed
-- `batch-cards/100-pi-rpc-production-driver.md` — ready
-- `batch-cards/101-pi-rpc-scheduling-conformance-and-closeout.md` — pending
+- `batch-cards/100-pi-rpc-production-driver.md` — completed
+- `batch-cards/101-pi-rpc-scheduling-conformance-and-closeout.md` — completed
 
 ## Bounded First Proof
 

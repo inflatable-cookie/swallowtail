@@ -7,11 +7,13 @@ Swallowtail owns portable integration mechanisms. Applications retain their
 prompts, tools, authority, workflows, persistence, and product state.
 
 Status: foundation. The repository is in strict Northstar posture. The
-provider-neutral core, pure preflight, executor-neutral runtime, eleven synthetic
+provider-neutral core, pure preflight, executor-neutral runtime, twelve synthetic
 conformance profiles, host-approved local process/endpoint/credential services,
-eighteen production driver routes, including separate SDK-native Bedrock Runtime
-and control-plane routes, across Codex, OpenCode, OpenAI, Anthropic, Bedrock,
-Gemini, Kimi, llama.cpp, and xAI are validated. Codex app-server supports both
+twenty-one production driver routes, including separate SDK-native Bedrock Runtime
+and control-plane routes, across Alibaba Model Studio, Anthropic, Bedrock,
+Codex, DeepSeek, Gemini, Kimi, llama.cpp, Ollama, OpenAI, OpenCode, Pi, Qwen,
+and xAI
+are validated. Codex app-server supports both
 unchanged read-only sessions and one explicit host-resolved bounded workspace
 profile.
 
@@ -40,14 +42,15 @@ Then read [docs/README.md](docs/README.md).
 - local and remote execution hosts treated as equal topologies
 - Nucleus and Soundcheck as initial consumers, not Swallowtail authorities
 
-The eighteen-crate Rust workspace contains `swallowtail-core`, `swallowtail-runtime`,
+The twenty-one-crate Rust workspace contains `swallowtail-core`, `swallowtail-runtime`,
 `swallowtail-testkit`, `swallowtail-host-local`, `swallowtail-protocol-acp`,
 `swallowtail-protocol-openai-chat`,
 `swallowtail-adapter-alibaba-model-studio`,
-`swallowtail-adapter-codex`, `swallowtail-adapter-opencode`,
+`swallowtail-adapter-codex`, `swallowtail-adapter-deepseek`, `swallowtail-adapter-opencode`,
 `swallowtail-adapter-anthropic`, `swallowtail-adapter-bedrock`, `swallowtail-adapter-gemini`,
 `swallowtail-adapter-kimi`, `swallowtail-adapter-kimi-platform`,
-`swallowtail-adapter-llama-cpp`,
+`swallowtail-adapter-llama-cpp`, `swallowtail-adapter-ollama`,
+`swallowtail-adapter-pi`,
 `swallowtail-adapter-openai`, `swallowtail-adapter-qwen`, and
 `swallowtail-adapter-xai`. Provider behavior stays isolated in adapters.
 
@@ -267,8 +270,44 @@ windows under Contract 029. Exact runtime versions remain separate from a
 driver's supported baseline, latest-qualified boundary, behavior milestones,
 deprecated segments, and exclusions. One application release can therefore
 serve a deliberate range of installed harness versions without changing
-consumer operations. The shared Pi RPC scheduling,
-restrictive ambient policy, acknowledgement, and bounded UI records are
-realized as an assertion pack over the unchanged eleven profiles. The frozen
-`0.80.10` corpus passes offline. Card 100 is ready for the production process
-driver.
+consumer operations. The shared Pi RPC scheduling, restrictive ambient policy,
+acknowledgement, and bounded UI records are realized as an assertion pack over
+the unchanged eleven profiles. The frozen `0.80.10` corpus passes offline.
+Card 100 adds the separately registered production process driver with exact
+provider/model argv, restrictive startup-state validation, supervised strict-
+LF transport, prompt, steering, follow-up, UI relay, native abort, deadlines,
+and joined credential-last cleanup. Card 101 completes cross-topology
+scheduling, callback-expiry, late-response, failure, and cleanup conformance
+without changing the long-lived RPC profile. Roadmap 035 is closed.
+Full repository QA passes with 466 tests and three gated probes ignored.
+
+Roadmap 036 completes the DeepSeek V4 direct-continuation lane. Research 023
+selects the exact OpenAI-format endpoint and `deepseek-v4-pro`; the Anthropic
+facade is excluded from the first proof because it maps unsupported models and
+ignores fields. Contract 030 defines a resource-free locally continued direct
+session: every provider attempt needs explicit consumer authorization, tools
+remain consumer-executed, and provider reasoning stays private, bounded,
+ephemeral, and route-bound. Provider disk-cache posture is explicit. Card 103
+now realizes provider-neutral continuation bounds, pure request-plan agreement,
+redacted attempt/tool/continuation records, the additive twelfth profile, and
+the exact V4 Pro buffered-plus-SSE offline corpus. The separately registered
+production driver now proves authenticated catalogue access, consumer-owned
+tool exchange, private continuation replay, three bounded attempts, exact
+usage/cache/finish/request evidence, cancellation, deadline, failure, and
+credential-last cleanup under both host identities. Full QA has a 489-test
+inventory: 486 pass and three gated probes remain ignored. Roadmap 037 and card
+105 close the coverage and compatibility-window checkpoint. Research 024
+confirms only Pi and DeepSeek publish descriptor claims, both as one-point
+windows; remote ACP is Draft. Contract 031 and roadmap 038 select attach-only
+Ollama native API as the first non-singleton compatibility proof. Stable
+`0.14.0` through `0.32.1` now drives a production attach-only catalogue and
+structured-run route with exact runtime discovery, installed and running model
+observation, native NDJSON, and explicit inference-caused residency. The route
+adds no container, model acquisition, cloud access, or Monkey authority.
+Portability and full repository QA now pass with 522 tests. Research 025
+revalidates every installed production harness pin and selects both Codex
+drivers for the first maintained-range retrofit. Current candidate floors are
+exec `0.122.0` and app-server v2 `0.110.0`; latest stable is `0.145.0`.
+Version-specific corpora and experimental-gate enforcement must pass before
+either range is published. Card 111 now adds explicit safe observation of one
+host-approved installed executable.

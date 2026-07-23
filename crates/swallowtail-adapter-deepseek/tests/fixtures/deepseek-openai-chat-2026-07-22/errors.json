@@ -1,0 +1,8 @@
+[
+  {"status": 400, "kind": "invalid_request_or_continuation", "retry": false},
+  {"status": 401, "kind": "authentication", "retry": false},
+  {"status": 402, "kind": "insufficient_balance", "retry": false},
+  {"status": 429, "kind": "account_concurrency", "remaining": null, "reset": null, "retry": false},
+  {"status": 500, "kind": "provider_failure", "retry": false},
+  {"status": 503, "kind": "overload", "retry": false}
+]

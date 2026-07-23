@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-22
+Updated: 2026-07-23
 
 | Contract | Status | Scope |
 | --- | --- | --- |
@@ -35,3 +35,5 @@ Updated: 2026-07-22
 | [027 Planned Connection Rollover And Realtime Continuity](027-planned-connection-rollover-and-realtime-continuity.md) | active | Explicit bounded provider-planned connection replacement, private session handles, no replay, and joined multi-connection cleanup |
 | [028 Harness RPC Scheduling And UI Relay Boundary](028-harness-rpc-scheduling-and-ui-relay-boundary.md) | active | Distinct prompt, steering, follow-up, abort, UI-relay, downstream-route, ambient-authority, and joined-cleanup semantics |
 | [029 Interface Version Qualification And Compatibility](029-interface-version-qualification-and-compatibility.md) | active | Exact runtime bindings and maintained baseline, milestone, deprecation, and exclusion windows |
+| [030 Consumer-Owned Direct Tool Continuation](030-consumer-owned-direct-tool-continuation.md) | active | Explicit direct-inference attempts around consumer tools with private ephemeral provider continuation |
+| [031 Attached Native Runtime Version And Residency](031-attached-native-runtime-version-and-residency.md) | active | Attach-only runtime version, installed/running catalogue, and inference-caused residency truth |

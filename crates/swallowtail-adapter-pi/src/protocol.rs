@@ -1,6 +1,12 @@
-use serde_json::Value;
 use std::error::Error;
 use std::fmt;
+
+mod wire;
+
+pub(crate) use wire::{
+    PiAgentEvent, PiRpcDecoder, PiRpcRecord, PiUiDialog, PiUiDialogMethod, PiUiDisplay,
+    PiUiDisplayKind,
+};
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum PiRpcRecordKind {
@@ -19,6 +25,7 @@ pub enum PiRpcProtocolFailureKind {
     UnknownRecord,
     InvalidResponse,
     InvalidUiRequest,
+    RecordTooLarge,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -59,67 +66,7 @@ pub fn decode_records(bytes: &[u8]) -> Result<Vec<PiRpcRecordKind>, PiRpcProtoco
 }
 
 fn decode_record(bytes: &[u8]) -> Result<PiRpcRecordKind, PiRpcProtocolFailure> {
-    if bytes.is_empty() {
-        return Err(PiRpcProtocolFailure::new(
-            PiRpcProtocolFailureKind::EmptyRecord,
-        ));
-    }
-    let value: Value = serde_json::from_slice(bytes)
-        .map_err(|_| PiRpcProtocolFailure::new(PiRpcProtocolFailureKind::MalformedJson))?;
-    let record_type = value
-        .get("type")
-        .and_then(Value::as_str)
-        .ok_or_else(|| PiRpcProtocolFailure::new(PiRpcProtocolFailureKind::MissingType))?;
-    match record_type {
-        "response" => decode_response(&value),
-        "extension_ui_request" => decode_ui_request(&value),
-        "agent_start"
-        | "agent_end"
-        | "agent_settled"
-        | "turn_start"
-        | "turn_end"
-        | "message_start"
-        | "message_update"
-        | "message_end"
-        | "tool_execution_start"
-        | "tool_execution_update"
-        | "tool_execution_end"
-        | "queue_update"
-        | "auto_retry_start"
-        | "auto_retry_end"
-        | "extension_error" => Ok(PiRpcRecordKind::AgentEvent),
-        _ => Err(PiRpcProtocolFailure::new(
-            PiRpcProtocolFailureKind::UnknownRecord,
-        )),
-    }
-}
-
-fn decode_response(value: &Value) -> Result<PiRpcRecordKind, PiRpcProtocolFailure> {
-    if value.get("command").and_then(Value::as_str).is_none()
-        || value.get("success").and_then(Value::as_bool).is_none()
-    {
-        return Err(PiRpcProtocolFailure::new(
-            PiRpcProtocolFailureKind::InvalidResponse,
-        ));
-    }
-    Ok(PiRpcRecordKind::Response)
-}
-
-fn decode_ui_request(value: &Value) -> Result<PiRpcRecordKind, PiRpcProtocolFailure> {
-    if value.get("id").and_then(Value::as_str).is_none() {
-        return Err(PiRpcProtocolFailure::new(
-            PiRpcProtocolFailureKind::InvalidUiRequest,
-        ));
-    }
-    match value.get("method").and_then(Value::as_str) {
-        Some("select" | "confirm" | "input" | "editor") => Ok(PiRpcRecordKind::ExtensionUiDialog),
-        Some("notify" | "setStatus" | "setWidget" | "setTitle" | "set_editor_text") => {
-            Ok(PiRpcRecordKind::ExtensionUiDisplay)
-        }
-        _ => Err(PiRpcProtocolFailure::new(
-            PiRpcProtocolFailureKind::InvalidUiRequest,
-        )),
-    }
+    wire::decode_record(bytes).map(|record| record.kind())
 }
 
 #[cfg(test)]

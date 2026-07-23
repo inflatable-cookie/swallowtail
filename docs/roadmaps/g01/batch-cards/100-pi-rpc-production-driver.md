@@ -1,6 +1,6 @@
 # 100 Pi RPC Production Driver
 
-Status: ready
+Status: completed
 Owner: Tom
 Updated: 2026-07-22
 Milestone: `../035-pi-rpc-harness-proof.md`
@@ -31,21 +31,47 @@ profile posture, and a frozen corpus.
 
 ## Acceptance Criteria
 
-- [ ] the descriptor is separate from Codex, ACP, and direct-inference drivers
-- [ ] exact downstream provider and model reach argv without fallback
-- [ ] no process or credential work occurs before successful preflight
-- [ ] command acknowledgement and model terminal events remain separate
-- [ ] native abort cannot overclaim provider stop
-- [ ] ambient read-intent behavior makes no containment claim
-- [ ] excluded sources and retry stay disabled
-- [ ] all process, reader, callback, resource, and auth work joins before close
+- [x] the descriptor is separate from Codex, ACP, and direct-inference drivers
+- [x] exact downstream provider and model reach argv without fallback
+- [x] no process or credential work occurs before successful preflight
+- [x] command acknowledgement and model terminal events remain separate
+- [x] native abort cannot overclaim provider stop
+- [x] ambient read-intent behavior makes no containment claim
+- [x] excluded sources and retry stay disabled
+- [x] all process, reader, callback, resource, and auth work joins before close
 
 ## Validation
 
-- focused Pi adapter and host fixtures
-- focused warnings-denied clippy
-- `effigy qa:docs`
-- `git diff --check`
+- 8 Pi adapter tests pass against the frozen corpus and supervised process
+  fixture
+- 47 runtime tests pass with the optional scheduling seam
+- focused runtime and Pi warnings-denied clippy passes
+- workspace all-target check, docs QA, format check, and diff check pass
+- `effigy doctor` remains at the inherited 19 findings: 7 errors and 12
+  warnings
+
+## Evidence
+
+The production driver owns a separate `swallowtail.pi.rpc` descriptor, exact
+`0.80.10` compatibility point, supervised strict-LF process connection,
+restrictive startup state validation, prompt and scheduled-message transport,
+UI callback relay, native abort, deadline projection, safe failures, and
+owner-ordered cleanup. Deterministic fixtures prove exact provider/model argv,
+disabled customization and retry, acknowledgement-before-terminal behavior,
+preflight-before-effects, startup drift cleanup, cancellation, timeout, and
+credential-last release without installing Pi or contacting a provider.
+
+Card 101 remains the cross-topology assertion-pack, callback-timeout, late-
+response, disconnect, and full closeout gate.
+
+## Open Risks
+
+- callback deadlines are projected but expiry and late-response rejection need
+  the card 101 deterministic timer matrix
+- remote-authoritative host identity and shared RPC-profile conformance remain
+  unproven against the production driver
+- disconnect, provider failure, retry drift, malformed correlation, and cleanup
+  failure need the card 101 cross-product before roadmap 035 closes
 
 ## Stop Conditions
 

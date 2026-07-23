@@ -1,10 +1,10 @@
 use crate::{
     AttachedServingHandle, AttachmentDescriptor, BoxFuture, Deadline, HostServices,
-    InteractiveSessionHandle, ModelArtifactBinding, OpenRealtimeMediaSessionRequest,
-    OperationContent, OperationPolicy, OwnedServingHandle, RealtimeMediaSessionHandle, RequestId,
-    RunHandle, RuntimeFailure, RuntimeTurnId, ScopeId, ServingInstanceId, SessionAccessPolicy,
-    SessionOptions, SessionReplayItem, SessionResumeBinding, StructuredOutputDescriptor,
-    ToolDeclaration, WorkingResourceRef,
+    InteractiveSessionHandle, ModelArtifactBinding, OpenDirectContinuationSessionRequest,
+    OpenRealtimeMediaSessionRequest, OperationContent, OperationPolicy, OwnedServingHandle,
+    RealtimeMediaSessionHandle, RequestId, RunHandle, RuntimeFailure, RuntimeTurnId, ScopeId,
+    ServingInstanceId, SessionAccessPolicy, SessionOptions, SessionReplayItem,
+    SessionResumeBinding, StructuredOutputDescriptor, ToolDeclaration, WorkingResourceRef,
 };
 use std::num::NonZeroU64;
 use swallowtail_core::{
@@ -612,6 +612,20 @@ pub trait InteractiveSessionDriver: Send + Sync {
             Err(RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
                 "swallowtail.session_load_unsupported",
                 "Driver does not support provider session load",
+            )))
+        })
+    }
+
+    fn open_direct_continuation_session(
+        &self,
+        _plan: PreflightPlan,
+        _request: OpenDirectContinuationSessionRequest,
+        _services: HostServices,
+    ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
+        Box::pin(async {
+            Err(RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
+                "swallowtail.direct_continuation.unsupported",
+                "Driver does not support locally continued direct sessions",
             )))
         })
     }

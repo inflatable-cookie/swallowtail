@@ -1,0 +1,66 @@
+{
+  "fixture_schema": 1,
+  "claim_id": "ollama.native-runtime-window-1",
+  "axis": "ollama.runtime",
+  "scheme": "semantic",
+  "baseline": "0.14.0",
+  "latest_qualified": "0.32.1",
+  "behavior_revision": "ollama.native-text-v1",
+  "qualification_points": [
+    {
+      "version": "0.14.0",
+      "commit": "02a24015968d612b418448b73cffaa1b0652d161",
+      "corpus": "native-text-v1"
+    },
+    {
+      "version": "0.18.0",
+      "commit": "3980c0217d27e05a441808a446e7ee5ea7e04256",
+      "corpus": "native-text-v1"
+    },
+    {
+      "version": "0.30.0",
+      "commit": "2c71d8d7ca6edbc9bdc1a312f71ce3b079c0fe56",
+      "corpus": "native-text-v1"
+    },
+    {
+      "version": "0.32.1",
+      "commit": "30c390384e20333b67cadab60da5bcb669407f01",
+      "corpus": "native-text-v1"
+    }
+  ],
+  "routes": [
+    "GET /api/version",
+    "GET /api/tags",
+    "GET /api/ps",
+    "POST /api/show",
+    "POST /api/chat"
+  ],
+  "model": {
+    "tag": "fixture-model:8b",
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "format": "gguf",
+    "capabilities": [
+      "completion"
+    ]
+  },
+  "inference": {
+    "stream": true,
+    "maximum_attempts": 1,
+    "maximum_output_tokens": 8,
+    "residency": "runtime_managed"
+  },
+  "excluded": [
+    "tools",
+    "thinking",
+    "vision",
+    "format",
+    "embedding",
+    "generation",
+    "keep_alive",
+    "cloud",
+    "model_mutation",
+    "runtime_administration",
+    "retry",
+    "fallback"
+  ]
+}

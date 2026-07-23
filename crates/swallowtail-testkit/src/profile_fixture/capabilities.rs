@@ -14,7 +14,8 @@ pub(super) fn requirements(profile: SyntheticProfile) -> Vec<CapabilityRequireme
         | SyntheticProfile::LongLivedAcpHarness
         | SyntheticProfile::PersistentAcpHarness
         | SyntheticProfile::AttachedNetworkHarness
-        | SyntheticProfile::ConnectionScopedDirectSession => CancellationScope::ActiveTurn,
+        | SyntheticProfile::ConnectionScopedDirectSession
+        | SyntheticProfile::LocallyContinuedDirectSession => CancellationScope::ActiveTurn,
         SyntheticProfile::RealtimeMediaDirectSession => CancellationScope::ActiveResponse,
         SyntheticProfile::OwnedSelfHosted => CancellationScope::OwnedServingInstance,
         _ => CancellationScope::StructuredRun,
@@ -62,6 +63,17 @@ pub(super) fn requirements(profile: SyntheticProfile) -> Vec<CapabilityRequireme
                 Capability::BilledCostReporting,
                 [],
             ));
+        }
+        SyntheticProfile::LocallyContinuedDirectSession => {
+            capabilities.push(CapabilityRequirement::new(
+                Capability::InteractiveSession,
+                [],
+            ));
+            capabilities.push(CapabilityRequirement::new(Capability::ToolCalls, []));
+            capabilities.push(CapabilityRequirement::new(Capability::UsageReporting, []));
+            capabilities.push(CapabilityRequirement::new(Capability::OutputTokenLimit, []));
+            capabilities
+                .extend(crate::direct_continuation_fixture::config().capability_requirements());
         }
         SyntheticProfile::RealtimeMediaDirectSession => {
             capabilities.push(

@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-19
+Updated: 2026-07-22
 
 ## Purpose
 
@@ -61,6 +61,15 @@ turn-scoped billed cost, cancellation or deadline connection invalidation,
 absence of resume, local and remote-authoritative topology, and joined
 connection cleanup before credential release.
 
+### Locally Continued Direct Session
+
+Proves resource-free interactive direct inference over separate provider
+requests, explicit consumer authorization for every attempt, consumer-executed
+tool exchange, bounded adapter-private continuation, provider-cache posture,
+serial turns, no resume, local and remote-authoritative topology, and joined
+network and private-state cleanup before credential release. Contract 030
+governs the first production proof.
+
 ### Attached Self-Hosted Runtime
 
 Proves route discovery, observed model capabilities, optional local
@@ -109,6 +118,9 @@ Every applicable profile asserts:
 - cumulative usage does not become repeated-attempt usage
 - rate, quota, billing, and retry evidence remain separate
 - a provider error inside a successful stream cannot complete successfully
+- each locally continued inference attempt requires explicit authorization
+- provider-private continuation stays redacted, route-bound, ephemeral, and
+  distinct from consumer transcript or provider cache
 
 ## Fixture API Direction
 

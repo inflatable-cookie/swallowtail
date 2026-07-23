@@ -1,0 +1,14 @@
+{
+  "retry_count": 0,
+  "cancellation": {"local_connection_closed": true, "remote_stop_confirmed": false},
+  "deadline": {"uses_host_monotonic_time": true, "covers_tool_wait": true},
+  "provider_cache": {"acceptance_required": true, "management_authority": false},
+  "cleanup_order": [
+    "reject_new_work",
+    "abandon_tool_wait",
+    "join_http_sse",
+    "zeroize_private_history",
+    "join_tasks_and_timers",
+    "release_endpoint_and_credential"
+  ]
+}

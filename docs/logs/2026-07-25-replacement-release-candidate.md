@@ -72,3 +72,9 @@ checksums. The exact prior candidate is retained at
 Registry upload, owner changes, credentials, tags, pushes, workflows, releases,
 and consumer edits remain blocked. The sole next task is an operator decision
 on the exact external mutation set.
+
+## Superseded State
+
+Roadmap g02.013 later replaced this card's parentless source snapshot with the
+canonical-history candidate recorded in active evidence. This log remains
+historical evidence for the first provider-wide package proof.

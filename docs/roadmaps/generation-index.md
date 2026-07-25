@@ -23,8 +23,8 @@ g01 reached 49 roadmaps and the next programme changes the sequencing baseline
 from integration-shape expansion to library stabilization and release
 discipline. Roadmap 001 proves package and candidate preparation. Roadmaps
 002-006 complete prepared integration contracts, the Codex facade, Nucleus and
-Soundcheck migration, and packaged consumer runtime proof. Roadmaps 007-012
+Soundcheck migration, and packaged consumer runtime proof. Roadmaps 007-013
 sequence provider-wide facade foundations, representative cross-shape proofs,
-all remaining production routes, packaged acceptance, and later replacement
-candidate evidence. No package publication, tag, or release mutation is
-implied.
+all remaining production routes, packaged acceptance, replacement candidate
+evidence, and canonical source provenance. No package publication, tag, or
+release mutation is implied.

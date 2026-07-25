@@ -12,12 +12,14 @@ shape.
 
 ## Next Task
 
-Execute
-[g02 card 038](g02/batch-cards/038-canonical-main-candidate.md):
-commit the accepted source tree locally on `main`, then build and verify a
-candidate from that exact normal-history commit. Continue to card 039 after
-atomic candidate promotion. All registry, remote push, tag, release, workflow,
-and consumer mutations remain blocked.
+Return the canonical `0.1.0` candidate to the publication decision. The
+operator must name the exact crates.io owner username and explicitly authorize
+the desired bounded mutations: push the local canonical-history commits to
+`origin/main`, publish the 23 crates sequentially in the recorded three-stage
+order, create and push `v0.1.0` at candidate source commit
+recorded in `release-candidates/0.1.0/candidate.env`, and create the GitHub
+release. Workflow, owner-team, and consumer changes remain out of scope unless
+separately authorized.
 
 ## Index
 

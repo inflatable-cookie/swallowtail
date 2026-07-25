@@ -6,9 +6,9 @@ Candidate: `0.1.0`
 
 ## Outcome
 
-The package candidate remains reproducible, but the publication lane is
-`strict-paused`. Read-only inspection found that its synthetic source commit
-is parentless. It cannot be fast-forwarded onto canonical `main`.
+The package candidate was reproducible, but the publication lane entered
+`strict-paused` after read-only inspection found that its synthetic source
+commit was parentless. It could not be fast-forwarded onto canonical `main`.
 
 That source shape was sufficient for isolated package proof. Publishing it
 would require an orphan release tag while the public default branch remained
@@ -61,10 +61,15 @@ permanent publish.
 The operator accepted canonical-history provenance through the next-task
 continuation.
 
-Roadmap g02.013 now tightens Contract 036 and the release topology, adds a
-clean-HEAD final-candidate mode, materializes the accepted tree locally on
-`main`, and rebuilds the candidate. The later publication decision must name
-the crates.io owner identity and explicitly authorize the desired external
-mutation set.
+Roadmap g02.013 tightened Contract 036 and the release topology, added a
+clean-HEAD final-candidate mode, materialized the accepted tree locally on
+`main`, and rebuilt the candidate. The later publication decision must name the
+crates.io owner identity and explicitly authorize the desired external mutation
+set.
 
-Until then, all external mutations remain blocked.
+Roadmap g02.013 is complete. The active candidate uses the exact normal local
+`main` source and parent recorded in `release-candidates/0.1.0/candidate.env`
+and passes final packaged acceptance. The provenance pause is resolved.
+
+Publication remains blocked until the operator names the exact crates.io owner
+and authorizes the bounded external mutations.

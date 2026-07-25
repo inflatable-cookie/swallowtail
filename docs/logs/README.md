@@ -5,6 +5,7 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-07-25 Canonical-History Release Candidate](2026-07-25-canonical-history-release-candidate.md)
 - [2026-07-25 Publication Authorization Gate](2026-07-25-publication-authorization-gate.md)
 - [2026-07-25 Replacement Release Candidate](2026-07-25-replacement-release-candidate.md)
 - [2026-07-25 Provider Route Matrix And Packaged Proof](2026-07-25-provider-route-matrix-and-packaged-proof.md)

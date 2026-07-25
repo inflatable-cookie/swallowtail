@@ -38,6 +38,8 @@
 - `035-packaged-provider-wide-facade-proof.md`
 - `036-replacement-release-candidate-and-handoffs.md`
 - `037-canonical-source-provenance-gate.md`
+- `038-canonical-main-candidate.md`
+- `039-final-candidate-packaged-acceptance.md`
 
 ## Superseded
 
@@ -50,8 +52,7 @@ None. Cross-generation deferred work lives in `docs/roadmaps/backlog/`.
 
 ## Ready
 
-- `038-canonical-main-candidate.md`
-- `039-final-candidate-packaged-acceptance.md`
+None. Publication requires a new bounded operator authorization.
 
 ## Planned
 

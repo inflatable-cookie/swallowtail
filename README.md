@@ -46,12 +46,13 @@ separate SDK-native facades with explicit region and credential-provider
 configuration. llama.cpp now completes all 22 prepared routes with distinct
 attached inference and owned ephemeral-serving paths. The exact cross-route
 matrix and unified integration guidance are complete. All 22 prepared routes
-now pass from extracted package artifacts, alongside the unchanged Nucleus and
+now pass from extracted package artifacts, alongside the Nucleus and
 Soundcheck Codex proofs. One reproducible provider-wide `0.1.0` candidate is
-held while its parentless verification snapshot is replaced by a clean
-canonical-history candidate. Prior candidates remain superseded evidence.
-Roadmap g02.013 owns the provenance repair and packaged reacceptance. No
-external release state has changed.
+ready for the publication decision; its exact canonical source, parent,
+artifacts, and validation digests are retained in the candidate evidence.
+Prior candidates remain superseded evidence. Publication still requires the
+exact crates.io owner identity and explicit authorization of each external
+mutation. No external release state has changed.
 
 ## Current Direction
 

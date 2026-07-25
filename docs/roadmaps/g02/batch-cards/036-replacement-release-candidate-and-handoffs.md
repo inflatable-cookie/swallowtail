@@ -60,7 +60,7 @@ No. Return the exact candidate to the sole publication decision.
 
 ## Execution Evidence
 
-The active unpublished candidate is built from clean synthetic source commit
+The candidate produced by this card was built from clean synthetic source commit
 `73c7f5b5b5611ef20bdcc1572deeb39ca50630e1`, based on repository commit
 `91a0774010ee83594a4565e1b4e2b0daa998db28`. Its package checksum-manifest
 digest is
@@ -89,3 +89,7 @@ initial `0.1.0` baseline, not a released compatibility event.
 
 No registry, owner, credential, upload, tag, push, workflow, release, or
 consumer mutation occurred.
+
+Roadmap g02.013 later superseded this parentless candidate with the
+canonical-history candidate. This card remains the historical provider-wide
+package proof; it no longer names the active source.

@@ -1,6 +1,6 @@
 # 038 Canonical Main Candidate
 
-Status: in progress
+Status: completed
 Owner: Tom
 Created: 2026-07-25
 Milestone: `../013-canonical-source-provenance-and-final-candidate.md`
@@ -28,11 +28,11 @@ verify a candidate from that exact normal-history commit.
 
 ## Acceptance Criteria
 
-- [ ] local `main` advances by one normal commit from the prior base
-- [ ] the candidate source commit equals local `main`
-- [ ] the candidate source parent equals the prior base
-- [ ] all 23 packages and audited file lists reproduce
-- [ ] the old candidate remains immutable and indexed
+- [x] local `main` advances through normal commits from the prior base
+- [x] the candidate source commit equals local `main`
+- [x] the candidate source parent equals the prior base
+- [x] all 23 packages and audited file lists reproduce
+- [x] the old candidate remains immutable and indexed
 
 ## Validation
 
@@ -51,3 +51,21 @@ verify a candidate from that exact normal-history commit.
 ## Auto-Continuation
 
 Yes. Continue to card 039 after atomic candidate promotion.
+
+## Execution Evidence
+
+The accepted source tree differed from the prior frozen package source only by
+the provenance contract, architecture, tooling, roadmap, release-currentness,
+and closeout files in this lane. Local `main` advanced normally from
+`91a0774010ee83594a4565e1b4e2b0daa998db28` to the source recorded in active
+candidate evidence.
+
+Candidate format v2 records that exact commit, exact parent, and
+`clean-head-excluding-generated-candidate-evidence` scope. Bundle verification
+reports complete history. Regeneration reproduces all 23 archive and audited
+file-list checksums. Exact source, parent, package-manifest, and
+evidence-manifest values are retained under `release-candidates/0.1.0/`.
+
+The former active candidate moved intact to
+`.effigy/release-candidates/superseded/0.1.0-73c7f5b5b561/`. No external state
+changed.

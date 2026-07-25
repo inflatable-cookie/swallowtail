@@ -178,6 +178,9 @@ Card 003 realized this architecture with:
 - extracted package-family check and test compilation without registry upload
   or any other release mutation
 
-Card 004 produced the superseded first candidate. Card 036 owns the active
-provider-wide package evidence. Roadmap g02.013 replaces its synthetic-root
-source shape with a canonical-history final candidate before publication.
+Card 004 produced the superseded first candidate. Card 036 produced the
+provider-wide synthetic-root candidate. Roadmap g02.013 supersedes that source
+shape with the final canonical-history candidate recorded in
+`release-candidates/0.1.0/candidate.env`. The candidate bundle preserves
+complete normal history and reproduces all 23 package archives plus audited
+file lists.

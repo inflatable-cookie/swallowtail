@@ -1,6 +1,6 @@
 # 039 Final Candidate Packaged Acceptance
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-07-25
 Milestone: `../013-canonical-source-provenance-and-final-candidate.md`
@@ -27,12 +27,12 @@ consumer, then return it to the exact publication decision.
 
 ## Acceptance Criteria
 
-- [ ] all 22 production route proofs pass
-- [ ] packaged consumer and Codex proofs pass
-- [ ] exact source, parent, archive, file-list, provider, and consumer evidence
+- [x] all 22 production route proofs pass
+- [x] packaged consumer and Codex proofs pass
+- [x] exact source, parent, archive, file-list, provider, and consumer evidence
       is recorded
-- [ ] only one active candidate remains
-- [ ] one exact publication decision remains
+- [x] only one active candidate remains
+- [x] one exact publication decision remains
 
 ## Validation
 
@@ -53,3 +53,20 @@ consumer, then return it to the exact publication decision.
 
 No. Return the exact candidate and request the crates.io owner identity plus
 bounded publication authorization.
+
+## Execution Evidence
+
+The retained candidate passes 20 packaged prepared-facade suites across all 22
+production routes. Exact provider evidence is retained under
+`release-candidates/0.1.0/`.
+
+The isolated consumer proof passes Nucleus with 14 tests and two live probes
+ignored, Soundcheck with four tests and one installed probe ignored, and the
+full packaged Codex suite with 89 tests. The retained evidence names the exact
+consumer snapshots and digest used; Swallowtail made no consumer edits.
+
+An initial parallel Soundcheck run exceeded its ten-second fake discovery
+deadline while two complete package proofs contended for the machine. The
+isolated rerun completed that test in 0.15 seconds. The direct retained-
+candidate run completed it in 0.14 seconds. No provider credentials or calls
+were used.

@@ -28,7 +28,7 @@ evidence-led provider work.
 | Prove the facade across installed, hosted-direct, and attached-runtime shapes. | completed | Contract 037 | `g02.008` |
 | Cover every remaining harness, hosted, realtime, SDK, and local-runtime route. | completed | Contracts 014-035, 037 | `g02.009`-`g02.011` |
 | Prove packaged provider-wide integration and replace the held candidate. | completed | Contracts 011, 036-037 | `g02.012` |
-| Replace synthetic candidate provenance with one canonical-history final candidate. | active | Contract 036, release topology architecture | `g02.013` |
+| Replace synthetic candidate provenance with one canonical-history final candidate. | completed | Contract 036, release topology architecture | `g02.013` |
 
 ## Current Checkpoint
 
@@ -197,7 +197,7 @@ evidence-led provider work.
   with explicit target, access, version, operation, and low-level escape-hatch
   guidance
 - card 035 proves 65 prepared tests across all 22 route identities from one
-  extracted 23-package candidate, then passes the unchanged Nucleus,
+  extracted 23-package candidate, then passes the selected Nucleus,
   Soundcheck, and packaged Codex runtime proofs
 - package metadata, public API, docs, MSRV, content, route, and repository
   gates pass
@@ -206,24 +206,26 @@ evidence-led provider work.
 - the replacement's 23 packages reproduce from its source bundle, all 22
   packaged route proofs pass, and Nucleus, Soundcheck, and packaged Codex
   runtime evidence remains green
-- the superseded compile-only and provisional candidates remain retained as
-  immutable historical evidence
+- the superseded compile-only, provisional, and parentless provider-wide
+  candidates remain retained as immutable historical evidence
 - publication remains blocked; no registry, tag, push, release, or workflow
   mutation occurred
 - the publication reassessment rechecked all 23 exact crates.io names as
   absent but unreserved, verified the complete candidate source bundle, and
   found no local or remote `v0.1.0` tag
-- origin `main` remains at candidate base
-  `91a0774010ee83594a4565e1b4e2b0daa998db28`; the candidate commit is a
-  parentless deterministic snapshot retained only in its source bundle and
-  cannot fast-forward `main`
-- the package proof remains valid, but publication is held on a source-
-  provenance decision; the recommendation is to require a clean canonical-
-  history commit and rebuild the final candidate from it
+- cards 037-038 require clean non-root candidate provenance, preserve dirty
+  working-tree package checks separately, and advance local `main` through
+  normal history to the exact source recorded in active candidate evidence
+- the complete source bundle reproduces all 23 archives and audited file lists
+- card 039 passes 20 packaged suites across all 22 production routes,
+  Nucleus, Soundcheck, and the 89-test packaged Codex suite without credentials
+  or provider calls
+- local `main` is ahead of origin only; the candidate source is not yet
+  reachable from the canonical remote branch and no `v0.1.0` tag exists
 - later publication still requires the exact crates.io owner identity and
   separate approval of the desired main push, staged uploads, tag push, and
   GitHub release
-- roadmap g02.013 and cards 037-039 own the accepted provenance repair,
+- roadmap g02.013 and cards 037-039 complete the accepted provenance repair,
   canonical local commit, candidate replacement, and packaged acceptance
 
 ## Milestones
@@ -253,7 +255,7 @@ evidence-led provider work.
 - [012 Provider-Wide Acceptance And Candidate Return](012-provider-wide-acceptance-and-candidate-return.md)
   — completed
 - [013 Canonical Source Provenance And Final Candidate](013-canonical-source-provenance-and-final-candidate.md)
-  — active
+  — completed
 
 ## Held Backlog
 
@@ -310,6 +312,9 @@ the active g02 queue.
 - card 036 replaced the held candidate, refreshed release and consumer
   handoffs, retained superseded evidence, and returned one exact unpublished
   candidate to the operator
+- cards 037-039 replaced parentless provenance with one normal-history source
+  commit, reproduced the 23-package candidate, passed all packaged facade and
+  consumer proofs, and returned the canonical candidate to publication
 - cards 024-026 own remaining harness facades
 - cards 027-030 own hosted direct and provider-state facades
 - cards 031-033 own realtime, SDK, and llama.cpp facades
@@ -319,7 +324,7 @@ the active g02 queue.
 
 ## Generation Boundary
 
-g02 is a long-lived generation with 12 roadmaps. It remains well below its
+g02 is a long-lived generation with 13 roadmaps. It remains well below its
 30-50-roadmap rollover range. Provider-wide facade work stabilizes the existing
 production routes; it does not add provider names or reopen their qualified
 protocol evidence.

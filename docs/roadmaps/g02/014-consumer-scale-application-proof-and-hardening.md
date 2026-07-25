@@ -6,7 +6,8 @@ Owner: Tom
 Created: 2026-07-25
 Depends on: g02.013
 Contract refs: 009, 011-013, 029, 032-037
-Planning state: card 040 completed; cards 041-044 planned
+Planning state: card 040 completed; card 041 active and paused; cards 042-044
+planned
 
 ## Problem
 
@@ -94,5 +95,8 @@ Agent Chat cancellation, a proof-only deadline, and a disposable fixture
 binding before the native pilot. Nucleus g05 cards 007-010 now implement those
 consumer-owned rules, pass deterministic evidence, and freeze the exact
 source, executable, access, topology, model, fixture, workload, and stop tuple
-without a provider call. Card 041 is ready except for operator acceptance of
-the ChatGPT-backed 15-turn and 60-minute live envelope.
+without a provider call. The operator accepted the ChatGPT-backed 15-turn and
+60-minute live envelope. Card 041 launch one confirmed the model and audience,
+then exposed a Swallowtail-owned prepared-tool ceiling before provider-session
+or turn work. The deterministic repair passes. Live work is paused for an
+explicit one-launch, one-catalogue reset decision.

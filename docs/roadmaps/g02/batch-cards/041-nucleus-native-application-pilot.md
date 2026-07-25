@@ -1,6 +1,6 @@
 # 041 Nucleus Native Application Pilot
 
-Status: ready
+Status: active, paused
 Owner: Tom
 Created: 2026-07-25
 Updated: 2026-07-25
@@ -20,7 +20,7 @@ catalogue and Agent Chat path before sustained or writable work.
   and native Effigy proof selector available
 - exact runtime, executable, access, topology, fixture, and workload tuple
   frozen
-- exact 15-attempt authenticated Codex ceiling approved — open
+- exact 15-attempt authenticated Codex ceiling approved — complete
 - live test data contains no private or durable user material
 
 ## Scope
@@ -43,8 +43,8 @@ catalogue and Agent Chat path before sustained or writable work.
 - Nucleus runtime:
   `11d17810ed68e2b02173c3ae907b83f8db867b58`
 - Swallowtail runtime-code source:
-  `e9ead4d35fb7754962053417bf8328e646839b32`; pre-handoff checkpoint:
-  `ea22603d5fc50545b0ef477187b3ab83a8ab785c`
+  `54fbbc2af4e1615bed67815037aa2bcd6cc91dcb`; original pilot source:
+  `e9ead4d35fb7754962053417bf8328e646839b32`
 - Codex: `0.145.0`, qualified latest, app-server v2 workspace-roots behavior
 - access: ChatGPT interactive OAuth and subscription allowance
 - model: exact `gpt-5.4-mini`, low reasoning, no fallback
@@ -55,6 +55,46 @@ catalogue and Agent Chat path before sustained or writable work.
 
 The first approved catalogue attempt confirms model presence and access
 audience. It is not permission to continue after either value drifts.
+
+## Pilot Evidence
+
+The operator approved the 15-turn and 60-minute ceiling. Physical launch one
+then:
+
+- observed the exact `gpt-5.4-mini` route and unchanged ChatGPT audience;
+- selected low reasoning through the normal native UI;
+- failed before provider-session open or turn persistence because the
+  prepared Codex facade rejected one bounded consumer tool schema above its
+  invented 4 KiB ceiling; and
+- stopped with zero turns, zero provider threads, no retained Codex child,
+  and no fixture or workspace write.
+
+Swallowtail owns the defect. Codex 0.145.0's generated experimental app-server
+schema publishes no `dynamicTools` item maximum or `inputSchema` size bound.
+Contract 012 requires a bounded declaration and truthful plan constraint, not
+a second adapter-invented provider ceiling.
+
+Commit `54fbbc2` now derives the planned tool count and maximum schema bytes
+from the already bounded declarations. A deterministic two-tool fixture with
+an input schema above 8 KiB proves preparation, exact plan constraints,
+experimental negotiation, transport, and joined close. All 90 Codex-adapter
+tests pass.
+
+The failed pre-turn launch still consumed one authenticated catalogue
+attempt. Live work remains paused because the original three-launch envelope
+cannot now contain three clean launches without one additional physical
+launch and catalogue attempt.
+
+## Required Reset
+
+Recommended reset:
+
+- retain the failed launch as pre-turn defect evidence;
+- authorize 4 physical launches and 4 catalogue attempts in total;
+- execute the original workload across 3 clean launches;
+- retain 12 planned turns, 15 maximum turns, 6 provider threads, 3 live
+  children, read-only effects, and the original 60-minute ceiling; and
+- make no further provider call before explicit approval.
 
 ## Acceptance Criteria
 
@@ -73,3 +113,4 @@ audience. It is not permission to continue after either value drifts.
 - current consumer changes overlap the proof path
 - cleanup, persistence, or provider truth becomes uncertain
 - a defect requires changing consumer product policy
+- the required one-launch, one-catalogue reset is not explicitly approved

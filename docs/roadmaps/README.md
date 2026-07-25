@@ -12,10 +12,11 @@ shape.
 
 ## Next Task
 
-Review the exact Nucleus handoff in
-`docs/logs/2026-07-25-nucleus-native-pilot-handoff.md`. On explicit approval
-of its ChatGPT-backed 15-turn and 60-minute ceilings, execute card 041. Do not
-make a catalogue request or model turn before that approval. Do not publish,
+Review the first-defect evidence in
+`docs/logs/2026-07-25-nucleus-native-pilot-first-defect.md`. Approve or reject
+card 041's narrow reset to 4 physical launches and 4 catalogue attempts total
+while retaining the original 15-turn, 6-thread, read-only, and 60-minute
+ceilings. Make no further provider call before that decision. Do not publish,
 push, tag, release, or write a workspace.
 
 ## Index

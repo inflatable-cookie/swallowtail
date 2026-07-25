@@ -519,5 +519,9 @@ application-scale proof through normal consumer paths. Nucleus now has the
 credential-free isolated profile, bounded deadline, native cancellation,
 terminal persistence, disposable fixture binding, Effigy selectors, and
 sanitized evidence needed for the first pilot. Its exact source and pilot
-tuple are frozen. The ChatGPT-backed 15-turn and 60-minute live envelope still
-needs separate approval before any provider call.
+tuple are frozen. The first approved launch confirmed the exact model and
+ChatGPT audience, then stopped before provider-session or turn work on a
+Swallowtail prepared-tool bound. That defect is fixed with deterministic
+coverage. The pilot is paused for approval of one additional physical launch
+and catalogue attempt; its model-turn, provider-thread, effect, and time
+ceilings do not increase.

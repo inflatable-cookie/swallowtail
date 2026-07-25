@@ -51,10 +51,10 @@
 
 None. Cross-generation deferred work lives in `docs/roadmaps/backlog/`.
 
-## Ready
+## Active
 
-- `041-nucleus-native-application-pilot.md` — exact handoff complete; explicit
-  live-effect approval open
+- `041-nucleus-native-application-pilot.md` — first pre-turn defect fixed;
+  paused for one additional physical launch and catalogue-attempt decision
 
 ## Planned
 

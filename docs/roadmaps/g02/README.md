@@ -246,8 +246,16 @@ evidence-led provider work.
 - Nucleus cards 007-010 complete deterministic readiness and freeze the exact
   runtime, Codex, access, topology, model, fixture, workload, and stop tuple
   without a provider call
-- card 041 is ready except for explicit acceptance of the ChatGPT-backed
-  15-turn and 60-minute live envelope
+- card 041 started after explicit acceptance of the ChatGPT-backed 15-turn
+  and 60-minute live envelope
+- launch one confirmed the exact model and audience, then exposed a
+  Swallowtail-owned prepared-tool bound before session or turn work
+- commit `54fbbc2` replaces the invented 4 KiB ceiling with exact bounds from
+  the consumer's bounded declarations; all 90 Codex-adapter tests pass
+- card 041 is paused for one narrow reset: 4 physical launches and catalogue
+  attempts total so the original workload can still run across 3 clean
+  launches without increasing model turns, provider threads, effects, or
+  time
 - live provider calls, workspace writes, and consumer mutations remain
   separately gated
 
@@ -280,7 +288,8 @@ evidence-led provider work.
 - [013 Canonical Source Provenance And Final Candidate](013-canonical-source-provenance-and-final-candidate.md)
   — completed
 - [014 Consumer-Scale Application Proof And Hardening](014-consumer-scale-application-proof-and-hardening.md)
-  — active, paused; card 040 complete, cards 041-044 planned
+  — active, paused; card 040 complete, card 041 active and paused, cards
+  042-044 planned
 
 ## Held Backlog
 
@@ -343,6 +352,9 @@ the active g02 queue.
   g02.014
 - card 040 completed the read-only consumer-scale envelope and current-state
   audit
+- card 041 confirmed its model and audience gate, reduced the first pre-turn
+  failure to a deterministic Swallowtail regression, and paused before a
+  changed live envelope
 - cards 041-043 own Nucleus pilot, Nucleus sustained hardening, and Soundcheck
   secondary proof under consumer authority
 - card 044 owns candidate refresh and release-readiness reassessment

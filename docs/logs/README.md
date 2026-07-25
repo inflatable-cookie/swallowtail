@@ -5,6 +5,7 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-07-25 Nucleus Native Proof Readiness](2026-07-25-nucleus-native-proof-readiness.md)
 - [2026-07-25 Application-Scale Proof Before Publication](2026-07-25-application-scale-proof-before-publication.md)
 - [2026-07-25 Canonical-History Release Candidate](2026-07-25-canonical-history-release-candidate.md)
 - [2026-07-25 Publication Authorization Gate](2026-07-25-publication-authorization-gate.md)

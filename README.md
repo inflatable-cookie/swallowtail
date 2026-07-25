@@ -513,3 +513,10 @@ exact GGUF artifact, route, loopback readiness, and ordered teardown. All 22
 production routes now have adapter-local prepared normal paths. The held
 replacement candidate returns only after route-matrix and provider-wide
 packaged evidence.
+
+Publication remains held after that candidate. The active lane is
+application-scale proof through normal consumer paths. Nucleus now has the
+credential-free isolated profile, bounded deadline, native cancellation,
+terminal persistence, Effigy selectors, and sanitized evidence needed for the
+first pilot. Its source must be checkpointed and the exact 15-turn live
+envelope separately approved before any provider call.

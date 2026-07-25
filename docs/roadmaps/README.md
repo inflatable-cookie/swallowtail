@@ -12,13 +12,11 @@ shape.
 
 ## Next Task
 
-Wait for Nucleus card 006's operator validation and checkpoint of the
-overlapping desktop changes. Then execute Nucleus g05 cards 007-009 as the
-credential-free companion batch: isolated desktop data, normal Agent Chat
-cancellation, exact terminal truth, bounded proof deadline, and native Effigy
-proof readiness. Return card 010 before any live call. Swallowtail card 041
-still requires separate approval of card 040's 15-turn pilot ceiling. Do not
-publish, push, tag, release, or write a workspace.
+Review and checkpoint the completed Nucleus g05 cards 007-009 proof-readiness
+batch. Then execute Nucleus card 010 to freeze exact source, installed Codex,
+route, state-root, workload, and stop bounds without making a provider call.
+Return Swallowtail card 041 for separate approval of card 040's 15-turn pilot
+ceiling. Do not publish, push, tag, release, or write a workspace.
 
 ## Index
 

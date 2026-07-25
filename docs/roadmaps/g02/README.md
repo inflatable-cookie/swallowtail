@@ -242,8 +242,12 @@ evidence-led provider work.
   normal Agent Chat cancellation, proof deadline control, and a native proof
   selector under a non-overlapping companion roadmap
 - Nucleus commit `962d1901` promotes that companion contract and plans g05
-  cards 007-010; implementation waits for overlapping sidebar card 006 to
-  close and checkpoint
+  cards 007-010
+- Nucleus cards 007-009 now complete deterministic isolated-state, deadline,
+  cancellation, terminal-truth, selector, and sanitized-evidence readiness
+  without a provider call
+- the Nucleus proof implementation needs an exact source checkpoint before
+  card 010 can freeze the native pilot handoff
 - live provider calls, workspace writes, and consumer mutations remain
   separately gated
 

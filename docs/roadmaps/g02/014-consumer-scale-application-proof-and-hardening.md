@@ -1,7 +1,7 @@
 # 014 Consumer-Scale Application Proof And Hardening
 
 Status: active
-Posture: strict-paused
+Posture: strict-checkpoint-gated
 Owner: Tom
 Created: 2026-07-25
 Depends on: g02.013
@@ -91,8 +91,9 @@ candidate evidence but cannot publish, push, tag, or release.
 
 Card 040 found that Nucleus needs an app-scoped isolated state root, normal
 Agent Chat cancellation, and a proof-only deadline control before the native
-pilot. Nucleus commit `962d1901` promotes those consumer-owned rules and plans
-g05 cards 007-010. The lane remains paused while Nucleus card 006 owns
-overlapping uncommitted Tauri, Agent Chat, and server changes. After that
-checkpoint, Nucleus cards 007-009 may execute credential-free. The operator
-must still accept the 15-turn pilot ceiling before any live call.
+pilot. Nucleus g05 cards 007-009 now implement those consumer-owned rules and
+the credential-free native proof selector. Focused Rust, desktop, client, and
+redaction evidence passes without a provider call. The lane now waits for the
+proof-readiness working tree to be checkpointed so Nucleus card 010 can freeze
+an exact source and route tuple. The operator must still accept the 15-turn
+pilot ceiling before any live call.

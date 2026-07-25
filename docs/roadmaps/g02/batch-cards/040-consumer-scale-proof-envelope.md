@@ -223,10 +223,16 @@ run.
 
 - Nucleus and Soundcheck repository, task, worktree, native-path, persistence,
   cancellation, and live-smoke surfaces were inspected read-only.
+- Nucleus g05 cards 007-009 now implement the required isolated profile,
+  bounded deadline, normal cancellation, exact terminal persistence, proof
+  selectors, and sanitized evidence in its working tree.
+- Nucleus deterministic readiness passes without credentials or provider
+  calls. Its proof changes still need an exact source checkpoint before card
+  041 can freeze the pilot tuple.
 - No provider call, consumer edit, credential read, workspace write, registry
   mutation, push, tag, or release occurred.
-- The exact workload is a recommendation. Card 041 remains gated on explicit
-  consumer-edit and live-call approval.
+- The exact workload is accepted as the planned envelope. Card 041 remains
+  gated on an exact Nucleus checkpoint and explicit live-call approval.
 
 ## Auto-Continuation
 

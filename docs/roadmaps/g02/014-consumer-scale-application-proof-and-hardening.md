@@ -89,11 +89,10 @@ consumer-repository authority plus exact live-effect authorization. Workspace
 writes need a separate disposable-resource grant. Card 044 may refresh local
 candidate evidence but cannot publish, push, tag, or release.
 
-Card 040 found that Nucleus needs an app-scoped isolated state root, normal
-Agent Chat cancellation, and a proof-only deadline control before the native
-pilot. Nucleus g05 cards 007-009 now implement those consumer-owned rules and
-the credential-free native proof selector. Focused Rust, desktop, client, and
-redaction evidence passes without a provider call. The lane now waits for the
-proof-readiness working tree to be checkpointed so Nucleus card 010 can freeze
-an exact source and route tuple. The operator must still accept the 15-turn
-pilot ceiling before any live call.
+Card 040 found that Nucleus needed an app-scoped isolated state root, normal
+Agent Chat cancellation, a proof-only deadline, and a disposable fixture
+binding before the native pilot. Nucleus g05 cards 007-010 now implement those
+consumer-owned rules, pass deterministic evidence, and freeze the exact
+source, executable, access, topology, model, fixture, workload, and stop tuple
+without a provider call. Card 041 is ready except for operator acceptance of
+the ChatGPT-backed 15-turn and 60-minute live envelope.

@@ -53,12 +53,11 @@ None. Cross-generation deferred work lives in `docs/roadmaps/backlog/`.
 
 ## Ready
 
-None. The consumer-scale lane is paused at its authority and companion-roadmap
-gate.
+- `041-nucleus-native-application-pilot.md` — exact handoff complete; explicit
+  live-effect approval open
 
 ## Planned
 
-- `041-nucleus-native-application-pilot.md`
 - `042-nucleus-sustained-workload-hardening.md`
 - `043-soundcheck-secondary-application-proof.md`
 - `044-hardened-candidate-refresh-and-release-reassessment.md`

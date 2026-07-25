@@ -14,6 +14,7 @@ from Swallowtail card 040:
 - typed cancelled, timed-out, cleanup-failed, and other failure mapping
 - distinct durable completed, cancelled, timed-out, and failed truth
 - explicit native launch and query-only evidence selectors
+- explicit disposable Git fixture binding instead of the Nucleus source tree
 - count-only evidence that excludes prompts, output, provider ids, errors,
   credentials, project ids, and paths
 
@@ -24,16 +25,15 @@ client, and redaction tests. Nucleus desktop checking reports zero errors and
 all 20 client tests pass. Missing or relative proof roots stop before desktop
 launch.
 
-The consumer used clean Swallowtail source
-`2959810f2da3cc64b28cf979094e0166a34c3ff8`. Its own implementation is not yet
-checkpointed, so no exact resulting Nucleus commit is claimed.
+The completed Nucleus runtime is
+`2a6d72a8d3326cc70c6852f8fa86ff7f8ca995f2`. The exact pilot handoff is
+recorded separately in `2026-07-25-nucleus-native-pilot-handoff.md`.
 
 No Codex process, provider request, credential lookup, workspace write,
 publication, push, tag, release, or registry mutation occurred.
 
 ## Gate
 
-Nucleus card 010 can freeze the exact pilot tuple only after the operator
-reviews and checkpoints the proof-readiness changes. Swallowtail card 041
-still requires separate acceptance of the 15-attempt and 60-minute live
+Nucleus card 010 is complete. Swallowtail card 041 is ready but still requires
+separate acceptance of the ChatGPT-backed 15-attempt and 60-minute live
 ceilings.

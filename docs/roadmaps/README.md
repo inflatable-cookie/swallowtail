@@ -12,11 +12,11 @@ shape.
 
 ## Next Task
 
-Review and checkpoint the completed Nucleus g05 cards 007-009 proof-readiness
-batch. Then execute Nucleus card 010 to freeze exact source, installed Codex,
-route, state-root, workload, and stop bounds without making a provider call.
-Return Swallowtail card 041 for separate approval of card 040's 15-turn pilot
-ceiling. Do not publish, push, tag, release, or write a workspace.
+Review the exact Nucleus handoff in
+`docs/logs/2026-07-25-nucleus-native-pilot-handoff.md`. On explicit approval
+of its ChatGPT-backed 15-turn and 60-minute ceilings, execute card 041. Do not
+make a catalogue request or model turn before that approval. Do not publish,
+push, tag, release, or write a workspace.
 
 ## Index
 

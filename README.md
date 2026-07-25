@@ -517,6 +517,7 @@ packaged evidence.
 Publication remains held after that candidate. The active lane is
 application-scale proof through normal consumer paths. Nucleus now has the
 credential-free isolated profile, bounded deadline, native cancellation,
-terminal persistence, Effigy selectors, and sanitized evidence needed for the
-first pilot. Its source must be checkpointed and the exact 15-turn live
-envelope separately approved before any provider call.
+terminal persistence, disposable fixture binding, Effigy selectors, and
+sanitized evidence needed for the first pilot. Its exact source and pilot
+tuple are frozen. The ChatGPT-backed 15-turn and 60-minute live envelope still
+needs separate approval before any provider call.

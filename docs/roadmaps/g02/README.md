@@ -238,16 +238,16 @@ evidence-led provider work.
   bounded structured-run proof
 - card 040 completes the read-only proof-envelope audit and fixes exact
   Nucleus pilot, sustained, writable, and Soundcheck comparison workloads
-- the lane is paused before card 041: Nucleus needs app-scoped isolated state,
-  normal Agent Chat cancellation, proof deadline control, and a native proof
-  selector under a non-overlapping companion roadmap
+- Nucleus now has app-scoped isolated state, normal Agent Chat cancellation,
+  proof deadline control, a native proof selector, and disposable fixture
+  binding
 - Nucleus commit `962d1901` promotes that companion contract and plans g05
   cards 007-010
-- Nucleus cards 007-009 now complete deterministic isolated-state, deadline,
-  cancellation, terminal-truth, selector, and sanitized-evidence readiness
+- Nucleus cards 007-010 complete deterministic readiness and freeze the exact
+  runtime, Codex, access, topology, model, fixture, workload, and stop tuple
   without a provider call
-- the Nucleus proof implementation needs an exact source checkpoint before
-  card 010 can freeze the native pilot handoff
+- card 041 is ready except for explicit acceptance of the ChatGPT-backed
+  15-turn and 60-minute live envelope
 - live provider calls, workspace writes, and consumer mutations remain
   separately gated
 

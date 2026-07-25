@@ -74,12 +74,10 @@ the settled shape into Contracts 008, 010, and 030 plus roadmap g05.003:
 - Effigy launches and inspects the credential-free native proof profile
 
 Nucleus commit `962d1901` records the plan without touching the user's active
-code changes. Cards 007-009 remain planned because current sidebar card 006
-modifies the same Tauri, Agent Chat, and server files.
+code changes. Cards 007-010 later completed the deterministic readiness,
+disposable fixture binding, exact runtime checkpoint, and live handoff.
 
 ## Next Move
 
-Complete and checkpoint Nucleus card 006, then execute Nucleus cards 007-009
-without credentials or provider calls. Card 010 returns the exact pilot.
-Separately approve or revise the 15-turn live ceiling before Swallowtail card
-041.
+Review the exact pilot handoff. Separately approve or revise the
+ChatGPT-backed 15-turn and 60-minute live ceiling before Swallowtail card 041.

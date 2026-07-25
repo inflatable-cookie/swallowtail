@@ -238,7 +238,11 @@ impl CodexPreparedIntegration {
             model.model_id().clone(),
             capabilities,
         );
-        let mut host_services = vec![HostServiceKind::Task, HostServiceKind::Process];
+        let mut host_services = vec![
+            HostServiceKind::Task,
+            HostServiceKind::Time,
+            HostServiceKind::Process,
+        ];
         if kind == CodexPreparedSessionKind::BoundedWorkspace {
             host_services.push(HostServiceKind::WorkingResource);
         }

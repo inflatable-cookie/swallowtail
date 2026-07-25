@@ -24,8 +24,8 @@ use swallowtail_runtime::{
     AttachmentDescriptor, AttachmentRef, AttachmentRole, BoxFuture, CleanupOutcome, Deadline,
     DeadlineObservation, DiscoveryCancellation, EnvironmentRef, ExecutableRef,
     InstalledExecutableTarget, MonotonicInstant, OperationContent, PreparationStage,
-    PreparedAccessEvidence, ProviderRetentionPolicy, RequestId, SchemaDocument, SessionOptions,
-    StructuredOutputDescriptor, TimeService, ToolDeclaration,
+    PreparedAccessEvidence, ProviderRetentionPolicy, RequestId, RuntimeTurnId, SchemaDocument,
+    SessionOptions, StructuredOutputDescriptor, TimeService, ToolDeclaration, TurnRequest,
 };
 use swallowtail_testkit::RecordingHostServices;
 
@@ -81,10 +81,30 @@ fn prepared_catalogue_and_read_only_session_execute_through_bound_operations() {
         Some(swallowtail_core::HarnessConfigurationPosture::Ambient)
     );
     assert_eq!(session.request().options().tools().len(), 1);
+    assert!(
+        session
+            .plan()
+            .requirements()
+            .host_services()
+            .any(|service| service == HostServiceKind::Time)
+    );
 
     let (process, state) = ScriptedAppServer::gate_enforcing(AppServerMode::CompleteTurn);
-    let handle = block_on(session.open_session(support::host_services(process)))
-        .expect("prepared session opens");
+    let services = support::host_services(process).with_time(Arc::new(PendingTime));
+    let mut handle =
+        block_on(session.open_session(services.clone())).expect("prepared session opens");
+    let turn = block_on(
+        handle.start_turn(
+            TurnRequest::new(
+                RuntimeTurnId::new("prepared-deadline-turn").unwrap(),
+                OperationContent::new("bounded turn").unwrap(),
+            )
+            .with_deadline(Deadline::at(MonotonicInstant::from_ticks(200))),
+            services,
+        ),
+    )
+    .expect("prepared session starts a deadline-bound turn");
+    assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
     assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
     assert!(state.methods().contains(&"thread/start".to_owned()));
     assert!(state.waited());

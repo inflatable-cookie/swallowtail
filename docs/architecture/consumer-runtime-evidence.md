@@ -2,12 +2,30 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-20
+Updated: 2026-07-24
 
 ## Purpose
 
 Record the realized runtime shapes in the first two consumers. This is not a
 final Swallowtail trait design.
+
+## Usability Audit
+
+The first package candidate proved that Nucleus and Soundcheck compile against
+Swallowtail. It did not prove that their normal Codex setup reaches a valid
+runtime plan.
+
+Nucleus exposed missing exact-version preparation, installed-discovery
+diagnostics, explicit ambient harness-configuration agreement, and request/
+plan access-policy drift. Its working repair duplicates adapter-owned setup.
+Soundcheck carries a second low-level setup path that can compile with an
+incomplete plan.
+
+Research 034 records the evidence. Contract 037 now fixes a two-layer response:
+the low-level roles stay public, while adapter-specific prepared profiles bind
+adapter-owned facts, retain honest access provenance, and derive immutable
+plan echoes. The shared layer and Codex prepared facade are now realized.
+Consumer migrations remain separate repository-owned work.
 
 ## Nucleus: Interactive Session
 
@@ -97,7 +115,8 @@ Soundcheck went first because its one-shot boundary does not require callback
 exchange or durable multi-turn continuity. Swallowtail covers the shared
 Nucleus callback, session-option, and host-topology boundary. Nucleus now uses
 the sibling Swallowtail workspace for local development; version pinning waits
-for versioned distribution.
+for versioned distribution. Both adoptions require a second pass through the
+prepared facade before replacement release-candidate evidence.
 
 ## Common Boundary
 

@@ -6,8 +6,8 @@ use support::{DriverCall, DriverFixture, ServerScenario};
 use swallowtail_adapter_xai::XaiWebSocketDriver;
 use swallowtail_runtime::{
     CleanupOutcome, InteractiveSessionDriver, OpenSessionRequest, OperationContent,
-    ProviderObservation, RequestId, RuntimeEvent, RuntimeEventKind, RuntimeTurnId, TerminalOutcome,
-    TerminalStatus, TurnHandle, TurnRequest,
+    ProviderObservation, RequestId, RuntimeEvent, RuntimeEventKind, RuntimeTurnId,
+    SessionPlanAgreement, TerminalOutcome, TerminalStatus, TurnHandle, TurnRequest,
 };
 use swallowtail_testkit::{
     ConformanceAssertion, ExecutionTopologyFixture, SyntheticProfile,
@@ -56,6 +56,11 @@ fn xai_driver_preserves_local_and_remote_authority_through_chained_cleanup() {
             OpenSessionRequest::resource_free(
                 RequestId::new("conformance-session").expect("request id is valid"),
                 None,
+                SessionPlanAgreement::explicit(
+                    swallowtail_core::SessionAccessPolicy::resource_free(),
+                    Some(swallowtail_core::SessionProviderStatePolicy::Prohibited),
+                    None,
+                ),
             ),
             fixture.services(),
         ))

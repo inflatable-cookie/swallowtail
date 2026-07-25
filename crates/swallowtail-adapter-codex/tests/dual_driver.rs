@@ -4,18 +4,22 @@ use futures_executor::block_on;
 use std::collections::BTreeSet;
 use std::sync::Arc;
 use support::app_server::{AppServerMode, ScriptedAppServer};
-use support::{FakeProcessService, app_server_plan, host_services, plan, working_resource};
-use swallowtail_adapter_codex::{
-    CodexAppServerDriver, CodexExecDriver, codex_app_server_descriptor, codex_exec_descriptor,
+use support::{
+    FakeProcessService, app_server_plan, app_server_session_agreement, host_services, plan,
+    working_resource,
 };
-use swallowtail_core::{Capability, DriverRole};
+use swallowtail_adapter_codex::{
+    CodexAppServerDriver, CodexExecDriver, codex_app_server_claim, codex_app_server_descriptor,
+    codex_cli_binding, codex_exec_claim, codex_exec_descriptor,
+};
+use swallowtail_core::{Capability, DriverRole, SessionAccessPolicy};
 use swallowtail_runtime::{
     DriverRegistration, EnvironmentRef, InteractiveSessionDriver, ModelCatalogDriver,
     OpenSessionRequest, OperationContent, RequestId, StructuredRunDriver, StructuredRunRequest,
 };
 use swallowtail_testkit::{
-    ConformanceAssertion, ConformanceReport, run_long_lived_rpc_profile,
-    run_one_shot_structured_cli_profile,
+    ConformanceAssertion, ConformanceReport, assert_unverified_newer_execution,
+    run_long_lived_rpc_profile, run_one_shot_structured_cli_profile,
 };
 
 fn environment() -> EnvironmentRef {
@@ -100,6 +104,7 @@ fn drivers_reject_each_others_bound_plans_before_process_work() {
             RequestId::new("cross-plan-app-server").expect("request id is valid"),
             working_resource(),
             None,
+            app_server_session_agreement(SessionAccessPolicy::read_only()),
         ),
         host_services(app_process),
     ));
@@ -117,6 +122,13 @@ fn selected_profiles_keep_identical_common_assertions() {
     assert!(long_lived.covers(ConformanceAssertion::SessionLifecycle));
     assert!(!long_lived.covers(ConformanceAssertion::ProcessLifecycle));
     assert_eq!(common_assertions(&one_shot), common_assertions(&long_lived));
+}
+
+#[test]
+fn both_codex_transports_keep_newer_execution_outside_qualified_support() {
+    let version = codex_cli_binding("0.146.0");
+    assert_unverified_newer_execution(&codex_exec_claim(), version.version());
+    assert_unverified_newer_execution(&codex_app_server_claim(), version.version());
 }
 
 fn capabilities(plan: &swallowtail_core::PreflightPlan) -> BTreeSet<Capability> {

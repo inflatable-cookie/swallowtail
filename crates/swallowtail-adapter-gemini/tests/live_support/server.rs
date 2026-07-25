@@ -165,6 +165,8 @@ fn run(
             read_turn(&mut second, frames);
             if matches!(scenario, LiveScenario::SecondGoAway) {
                 send(&mut second, json!({"goAway":{"timeLeft":"10s"}}));
+                wait_for_close(&mut second);
+                return;
             }
             send_success(&mut second, 2);
             wait_for_close(&mut second);

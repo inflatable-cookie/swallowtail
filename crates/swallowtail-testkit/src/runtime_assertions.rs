@@ -2,6 +2,7 @@ use crate::{RecordingHostServices, RuntimePreflightFixture, poll_immediate};
 use std::sync::Arc;
 use swallowtail_core::{
     DiscoveryOutcome, DiscoveryStatus, DriverRole, ExecutionHostId, PreflightPlan, SafeDiagnostic,
+    SessionAccessPolicy,
 };
 use swallowtail_runtime::{
     AttachServingRequest, AttachedServingHandle, BoxFuture, CleanupOutcome, DiscoveryDriver,
@@ -10,7 +11,7 @@ use swallowtail_runtime::{
     OpenRealtimeMediaSessionRequest, OpenSessionRequest, OperationContent, OperationPolicy,
     OwnedServingHandle, RealtimeMediaSessionDriver, RealtimeMediaSessionHandle, RequestId,
     ResumeSessionRequest, RunHandle, RuntimeFailure, ServingInstanceDriver, ServingInstanceId,
-    StructuredRunDriver, StructuredRunRequest, WorkingResourceRef,
+    SessionPlanAgreement, StructuredRunDriver, StructuredRunRequest, WorkingResourceRef,
 };
 
 struct RecordingRejectingDriver {
@@ -192,6 +193,7 @@ pub fn assert_dynamic_role_registration_and_calls() {
                     valid_request("request-session"),
                     WorkingResourceRef::new("fixture-resource").expect("resource is valid"),
                     None,
+                    SessionPlanAgreement::explicit(SessionAccessPolicy::read_only(), None, None),
                 ),
                 services.clone(),
             ),

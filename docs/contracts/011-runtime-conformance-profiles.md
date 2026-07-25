@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-22
+Updated: 2026-07-24
 
 ## Purpose
 
@@ -69,6 +69,15 @@ tool exchange, bounded adapter-private continuation, provider-cache posture,
 serial turns, no resume, local and remote-authoritative topology, and joined
 network and private-state cleanup before credential release. Contract 030
 governs the first production proof.
+
+### Remote ACP Harness
+
+Proves one provider-neutral remote ACP connection over an exact host-approved
+HTTP/SSE or WebSocket endpoint, bounded connection-private affinity, distinct
+operation, connection, and session identity, callback exchange, cancellation,
+disconnect, explicit close, no implicit recovery or transport fallback, local
+and remote-authoritative topology, and joined network work. Contract 035
+governs the first unauthenticated experimental proof.
 
 ### Attached Self-Hosted Runtime
 

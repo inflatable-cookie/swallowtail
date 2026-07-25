@@ -1,4 +1,6 @@
-use super::{Message, NdjsonDecoder, ProtocolErrorKind, encode_request};
+use super::{
+    Message, NdjsonDecoder, ProtocolErrorKind, decode_message, encode_message, encode_request,
+};
 use serde_json::json;
 
 #[test]
@@ -32,4 +34,28 @@ fn decoder_rejects_incomplete_and_oversized_frames() {
         ProtocolErrorKind::IncompleteFrame
     );
     assert!(encode_request(1, "session/prompt", json!({"text": "x"})).is_ok());
+}
+
+#[test]
+fn complete_message_codec_preserves_protocol_shapes() {
+    let messages = [
+        Message::Request {
+            id: json!(7),
+            method: "session/prompt".to_owned(),
+            params: json!({"sessionId": "session-1"}),
+        },
+        Message::Notification {
+            method: "session/cancel".to_owned(),
+            params: json!({"sessionId": "session-1"}),
+        },
+        Message::Response {
+            id: json!("callback-1"),
+            result: Ok(json!({"outcome": "cancelled"})),
+        },
+    ];
+    for message in messages {
+        let encoded = encode_message(&message).expect("message encodes");
+        let decoded = decode_message(&encoded[..encoded.len() - 1]).expect("message decodes");
+        assert_eq!(decoded, message);
+    }
 }

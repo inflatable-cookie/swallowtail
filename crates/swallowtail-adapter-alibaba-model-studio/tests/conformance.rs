@@ -4,7 +4,7 @@ use futures_executor::block_on;
 use futures_util::StreamExt;
 use support::{DriverFixture, ServerScenario};
 use swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioDriver;
-use swallowtail_core::{CredentialMechanism, SessionProviderStatePolicy};
+use swallowtail_core::CredentialMechanism;
 use swallowtail_runtime::{
     CleanupOutcome, InteractiveSessionDriver, OpenSessionRequest, OperationContent,
     ProviderObservation, RequestId, RuntimeEventKind, RuntimeTurnId, TerminalStatus, TurnRequest,
@@ -53,11 +53,12 @@ fn local_and_remote_authority_preserve_the_exact_conversation_lifecycle() {
             "qwen3.7-plus-2026-05-26"
         );
 
-        let request = OpenSessionRequest::resource_free(
+        let request = OpenSessionRequest::resource_free_from_plan(
+            &plan,
             RequestId::new("topology-session").expect("request id"),
             None,
         )
-        .with_provider_state_policy(SessionProviderStatePolicy::DurableConversationDeleteOnClose);
+        .expect("session request derives from plan");
         let mut session = block_on(AlibabaModelStudioDriver::new().open_session(
             plan,
             request,
@@ -96,7 +97,7 @@ fn local_and_remote_authority_preserve_the_exact_conversation_lifecycle() {
 #[test]
 fn all_provider_neutral_profiles_keep_the_common_contract() {
     let reports = run_all_synthetic_profiles();
-    assert_eq!(reports.len(), 12);
+    assert_eq!(reports.len(), 13);
     assert_eq!(
         reports
             .iter()

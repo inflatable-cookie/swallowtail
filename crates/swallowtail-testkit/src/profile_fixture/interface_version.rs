@@ -18,6 +18,7 @@ impl ProfilePreflightFixture {
                 ),
                 version.axis().clone(),
                 InterfaceVersionScheme::Semantic,
+                swallowtail_core::InterfaceNewerVersionPosture::QualifiedOnly,
                 [InterfaceVersionSegment::exact(
                     version.version().clone(),
                     valid(InterfaceBehaviorRevision::new, "fixture.rpc-v1"),
@@ -80,6 +81,7 @@ fn harness_rpc_window_claim() -> InterfaceCompatibilityClaim {
         ),
         valid(InterfaceVersionAxis::new, "fixture.harness.package"),
         InterfaceVersionScheme::Semantic,
+        swallowtail_core::InterfaceNewerVersionPosture::AllowUnverified,
         [
             InterfaceVersionSegment::new(
                 valid(InterfaceVersion::new, "0.8.0"),

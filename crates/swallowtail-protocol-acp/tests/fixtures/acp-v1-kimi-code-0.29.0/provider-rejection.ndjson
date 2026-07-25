@@ -1,0 +1,2 @@
+{"direction":"client_to_agent","message":{"jsonrpc":"2.0","id":3,"method":"session/set_config_option","params":{"sessionId":"kimi-session-effort","configId":"thinking","value":"high"}}}
+{"direction":"agent_to_client","message":{"jsonrpc":"2.0","id":3,"error":{"code":-32602,"message":"Reasoning option was rejected"}}}

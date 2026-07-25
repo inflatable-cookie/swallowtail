@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-23
+Updated: 2026-07-25
 
 ## Purpose
 
@@ -45,8 +45,10 @@ side effect.
 
 The runtime's exact observed version is a required configured-instance
 binding. Contract 029 governs its maintained compatibility window. Discovery
-does not accept `latest`, an ambient executable version, or a server newer than
-the latest-qualified boundary.
+does not accept `latest` or an ambient executable version. Exact stable
+versions above the latest-qualified boundary may run only as visible
+unverified-newer points when the ordered claim permits them. They do not
+extend guaranteed support.
 
 A closed range needs maintained upstream compatibility evidence plus frozen
 corpora at the baseline, latest-qualified boundary, both sides of every
@@ -117,6 +119,9 @@ conformance pass. Its qualification target binds:
 - semantic runtime versions `0.14.0` through `0.32.1`, inclusive
 - qualification points `0.14.0`, `0.18.0`, `0.30.0`, and `0.32.1`
 - one maintained text-only behavior segment
+- unverified attempts for exact later stable versions through the latest
+  qualified text behavior
+- exact exclusion `0.32.2`; semantic prereleases remain incompatible
 - exact `/api/version` observation
 - bounded `/api/tags`, `/api/ps`, and `/api/show`
 - one host-approved loopback endpoint and local unauthenticated access profile
@@ -130,9 +135,10 @@ keep-alive administration, or compatible-facade fields. It uses no Ollama
 Cloud route, sign-in state, cloud model, API key, model mutation, or owned
 server lifecycle.
 
-`0.32.2`, `0.32.3-rc0`, other prereleases, older versions, and unknown newer
-versions fail compatibility preflight. A later claim revision may extend the
-window only after corpus and conformance qualification.
+`0.32.2`, `0.32.3-rc0`, other prereleases, older versions, gaps, and malformed
+versions fail compatibility preflight. Exact later stable versions retain
+their identity and unverified-newer assessment. A later claim revision may
+extend the guaranteed window only after corpus and conformance qualification.
 
 ## Conformance
 
@@ -141,8 +147,10 @@ Deterministic default QA proves:
 - exact instance, endpoint, topology, access profile, runtime version, route,
   model tag, digest, output bound, and residency posture
 - baseline, latest-qualified, and intermediate qualification points
-- rejection below baseline, above latest, prerelease, malformed, substituted,
-  and stale-claim versions
+- rejection below baseline, prerelease, malformed, substituted,
+  exact-excluded, and stale-claim versions
+- preservation of one exact stable newer version as unverified, followed by
+  the same runtime drift and protocol checks
 - bounded installed, running, and model-detail observations without implicit
   route construction
 - one native streaming attempt, ordered output and usage, mid-stream error,
@@ -160,6 +168,8 @@ catalogue shape. Live model inference remains separately gated.
 
 - attached runtime ownership remains external
 - exact observed version and maintained range remain distinct
+- exact stable newer versions may run unverified without becoming guaranteed
+  support
 - the first range spans only tested stable releases and selected behavior
 - installed, running, detailed, routed, and artifact identities remain
   separate

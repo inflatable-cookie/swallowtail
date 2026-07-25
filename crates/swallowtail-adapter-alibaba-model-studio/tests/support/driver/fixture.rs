@@ -2,18 +2,19 @@ use super::server::{FixtureRequest, FixtureServer, ServerScenario};
 use super::services::{CallLog, DriverCall, ThreadServices, TrackingCredential};
 use std::sync::{Arc, Mutex};
 use swallowtail_adapter_alibaba_model_studio::{
-    alibaba_model_studio_access_profile, alibaba_model_studio_descriptor,
-    alibaba_model_studio_instance, alibaba_model_studio_requirements, alibaba_model_studio_route,
+    AlibabaModelStudioPreparationInput, alibaba_model_studio_access_profile,
+    alibaba_model_studio_descriptor, alibaba_model_studio_instance,
+    alibaba_model_studio_requirements, alibaba_model_studio_route,
 };
 use swallowtail_core::{
-    AccessProfileId, AccessStatus, CredentialState, EndpointAuthorization, EntitlementState,
-    ExecutionHostId, PreflightContext, PreflightPlan, RuntimeReadiness, SupportAuthority,
-    preflight,
+    AccessProfile, AccessProfileId, AccessStatus, CredentialState, EndpointAuthorization,
+    EntitlementMetering, EntitlementState, ExecutionHostId, InstanceRevision, PreflightContext,
+    PreflightPlan, RuntimeReadiness, SupportAuthority, preflight,
 };
 use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{
     BlockingWorkService, CredentialService, EndpointRef, HostServices, NetworkPolicyService,
-    ScopedTaskService, TimeService,
+    PreparedAccessEvidence, ScopedTaskService, TimeService,
 };
 
 pub struct DriverFixture {
@@ -96,6 +97,37 @@ impl DriverFixture {
             &requirements,
         )
         .expect("Alibaba Model Studio preflight succeeds")
+    }
+
+    pub fn preparation_input(&self) -> AlibabaModelStudioPreparationInput {
+        self.preparation_input_with_metering(EntitlementMetering::PayAsYouGo)
+    }
+
+    pub fn preparation_input_with_metering(
+        &self,
+        metering: EntitlementMetering,
+    ) -> AlibabaModelStudioPreparationInput {
+        let selected = alibaba_model_studio_access_profile();
+        let access = AccessProfile::new(
+            selected.id().clone(),
+            selected.credential_mechanism().clone(),
+            metering,
+            selected.endpoint_audience().clone(),
+            selected.support_authority(),
+        )
+        .with_credential_reference(
+            selected
+                .credential_reference()
+                .expect("credential reference")
+                .clone(),
+        );
+        let status = ready_status(access.id().clone());
+        AlibabaModelStudioPreparationInput::new(
+            InstanceRevision::new("prepared-1").expect("revision"),
+            self.host_id.clone(),
+            access,
+            PreparedAccessEvidence::caller_asserted(status),
+        )
     }
 
     pub fn requests(&self) -> Vec<FixtureRequest> {

@@ -31,6 +31,7 @@ impl ProfileShape {
             SyntheticProfile::LongLivedRpcHarness => Self::rpc(),
             SyntheticProfile::LongLivedAcpHarness => Self::acp(),
             SyntheticProfile::PersistentAcpHarness => crate::profile_persistent_acp_shape::shape(),
+            SyntheticProfile::RemoteAcpHarness => Self::remote_acp(),
             SyntheticProfile::AttachedNetworkHarness => Self::network_harness(),
             SyntheticProfile::HostedDirectApi => Self::hosted(),
             SyntheticProfile::ProviderManagedRemoteHarness => {
@@ -156,6 +157,32 @@ impl ProfileShape {
                 HostServiceKind::Time,
                 HostServiceKind::Network,
                 HostServiceKind::Credential,
+            ],
+        }
+    }
+
+    fn remote_acp() -> Self {
+        Self {
+            adapter_id: "fixture.driver.remote-acp",
+            integration_family: "fixture-remote-acp-agent",
+            transport_family: "acp-v1-remote",
+            instance_id: "fixture.instance.remote-acp",
+            route_id: "fixture.route.remote-acp",
+            model_id: "fixture-model-remote-acp",
+            access_profile_id: "fixture.access.remote-acp",
+            audience: "fixture-remote-acp-endpoint",
+            role: DriverRole::InteractiveSession,
+            layer: ExecutionLayer::HarnessInteraction,
+            operation_shape: OperationShape::InteractiveSession,
+            ownership: InstanceOwnership::ExternalAttached,
+            credential: CredentialMechanism::Unauthenticated,
+            credential_state: CredentialState::NotRequired,
+            metering: EntitlementMetering::Unknown,
+            required_services: vec![
+                HostServiceKind::Task,
+                HostServiceKind::BlockingWork,
+                HostServiceKind::Time,
+                HostServiceKind::Network,
             ],
         }
     }

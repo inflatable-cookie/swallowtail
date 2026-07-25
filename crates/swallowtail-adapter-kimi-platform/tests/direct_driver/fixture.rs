@@ -217,6 +217,9 @@ impl CredentialService for TrackingCredential {
     }
 }
 
+#[path = "fixture/prepared.rs"]
+mod prepared;
+
 fn capability_requirements(role: DriverRole) -> Vec<CapabilityRequirement> {
     if role == DriverRole::ModelCatalog {
         vec![CapabilityRequirement::new(Capability::ModelCatalog, [])]

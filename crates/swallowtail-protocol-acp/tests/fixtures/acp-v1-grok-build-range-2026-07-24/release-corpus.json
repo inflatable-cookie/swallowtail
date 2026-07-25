@@ -1,0 +1,64 @@
+{
+  "accessed": "2026-07-24",
+  "launcher_package": "@xai-official/grok",
+  "platform_package": "@xai-official/grok-darwin-arm64",
+  "publication": {
+    "first": "0.2.0",
+    "last": "0.2.111",
+    "count": 111,
+    "published_patch_runs": [
+      {"first": 0, "last": 47},
+      {"first": 49, "last": 111}
+    ],
+    "missing": ["0.2.48"],
+    "first_published_at": "2026-05-26T08:13:58.424Z",
+    "last_published_at": "2026-07-22T21:07:12.743Z"
+  },
+  "distribution_tags": {
+    "launcher": {"latest": "0.2.111", "alpha": "0.2.111"},
+    "platform": {"latest": "0.1.220", "alpha": "0.2.111"}
+  },
+  "source_snapshots": {
+    "launcher_registry_sha256": "c1bfe532803270cacce4b5894821bb843bb6e693a79c08611d572bd3bf82ce15",
+    "platform_registry_sha256": "47818b7cfbbed649500b2d1e8bc3a8ec135e4f272afb185e5391299d3f353e03",
+    "acp_registry_sha256": "4a84814039a4db41c6e2bb793a9d8da71a20a1c1d0ffc232a73dc29bbe549d44"
+  },
+  "inspected_releases": ["0.2.0", "0.2.111"],
+  "observed_milestones": [
+    {
+      "axis": "version_probe_state",
+      "before": "0.2.0 writes bundled state during --version",
+      "after": "0.2.111 writes no state during --version",
+      "exact_transition": null
+    },
+    {
+      "axis": "acp_sdk",
+      "before": "0.6.0",
+      "after": "0.10.4",
+      "exact_transition": null
+    },
+    {
+      "axis": "model",
+      "before": "grok-build-latest",
+      "after": "grok-4.5",
+      "exact_transition": null
+    },
+    {
+      "axis": "reasoning_effort",
+      "before": "not advertised",
+      "after": "low, medium, high",
+      "exact_transition": null
+    }
+  ],
+  "qualification": {
+    "segments": [],
+    "qualified_releases": [],
+    "unverified_newer": false,
+    "candidate": "0.2.111",
+    "blocked_by": [
+      "mandatory ACP authentication activation lacks exact non-interactive evidence",
+      "official ACP auth method ids differ from the inspected artifact",
+      "ambient project configuration and hooks prevent a bounded read-only claim"
+    ]
+  }
+}

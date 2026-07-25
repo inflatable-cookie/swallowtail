@@ -6,7 +6,8 @@ use crate::{
 use std::collections::VecDeque;
 use swallowtail_core::{
     FilesystemBoundary, HarnessBackgroundAction, HarnessConfigurationSource, HarnessIsolation,
-    HarnessMessageClass, InterfaceSupportStatus, PreflightDimension, ResourceAccess,
+    HarnessMessageClass, InterfaceCompatibilityAssessment, InterfaceSupportStatus,
+    PreflightDimension, ResourceAccess,
 };
 use swallowtail_runtime::{
     CallbackAbandonment, CallbackId, CallbackRequest, CallbackWaitState, Deadline, EventDelivery,
@@ -93,7 +94,22 @@ fn assert_preflight_contract() {
         );
     }
 
-    for version in ["0.9.5", "1.0.1", "0.7.9"] {
+    let mut newer = ProfilePreflightFixture::harness_rpc_contract();
+    newer.use_harness_rpc_compatibility_window("1.0.1");
+    let plan = newer
+        .preflight()
+        .expect("unverified newer interface version is permitted");
+    let binding = plan.interface_versions().next().unwrap();
+    let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
+        plan.assess_interface_version(binding)
+    else {
+        panic!("newer point must not become qualified");
+    };
+    assert_eq!(unverified.version().as_str(), "1.0.1");
+    assert_eq!(unverified.latest_qualified().as_str(), "1.0.0");
+    assert!(plan.classify_interface_version(binding).is_none());
+
+    for version in ["0.9.5", "1.0.1-rc.1", "0.7.9"] {
         let mut unsupported = ProfilePreflightFixture::harness_rpc_contract();
         unsupported.use_harness_rpc_compatibility_window(version);
         let failure = unsupported

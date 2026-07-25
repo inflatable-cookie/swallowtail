@@ -1,6 +1,6 @@
 {
   "fixture_schema": 1,
-  "claim_id": "ollama.native-runtime-window-1",
+  "claim_id": "ollama.native-runtime-window-2",
   "axis": "ollama.runtime",
   "scheme": "semantic",
   "baseline": "0.14.0",

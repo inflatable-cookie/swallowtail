@@ -4,9 +4,9 @@ use futures_executor::block_on;
 use futures_util::StreamExt;
 use support::app_server::{AppServerMode, ScriptedAppServer};
 use support::{
-    FakeProcessService, app_server_plan_for_version, bounded_workspace_plan_for_version,
-    current_exec_policy, exec_policy_for_version, host_services, plan_with_version,
-    working_resource,
+    FakeProcessService, app_server_plan_for_version, app_server_session_agreement,
+    bounded_workspace_plan_for_version, current_exec_policy, exec_policy_for_version,
+    host_services, plan_with_version, working_resource,
 };
 use swallowtail_adapter_codex::{CodexAppServerDriver, CodexExecDriver};
 use swallowtail_core::{
@@ -26,10 +26,10 @@ const COMPLETED_JSONL: &str = concat!(
 );
 
 #[test]
-fn exec_runs_at_every_corpus_qualification_point() {
+fn exec_runs_at_every_qualified_point_and_one_unverified_newer_version() {
     for version in [
         "0.80.0", "0.81.0", "0.84.0", "0.94.0", "0.98.0", "0.99.0", "0.100.0", "0.110.0",
-        "0.121.0", "0.122.0", "0.130.0", "0.140.0", "0.144.6", "0.145.0",
+        "0.121.0", "0.122.0", "0.130.0", "0.140.0", "0.144.6", "0.145.0", "0.146.0",
     ] {
         let (process, state) = FakeProcessService::completed(COMPLETED_JSONL);
         let mut run = block_on(exec_driver().start_run(
@@ -49,10 +49,10 @@ fn exec_runs_at_every_corpus_qualification_point() {
 }
 
 #[test]
-fn app_server_catalogue_runs_at_every_corpus_qualification_point() {
+fn app_server_catalogue_runs_at_every_qualified_point_and_one_unverified_newer_version() {
     for version in [
         "0.80.0", "0.81.0", "0.84.0", "0.94.0", "0.99.0", "0.100.0", "0.107.0", "0.110.0",
-        "0.120.0", "0.130.0", "0.131.0", "0.140.0", "0.144.6", "0.145.0",
+        "0.120.0", "0.130.0", "0.131.0", "0.140.0", "0.144.6", "0.145.0", "0.146.0",
     ] {
         let (process, state) = ScriptedAppServer::new(AppServerMode::CompleteTurn);
         let models = block_on(app_driver().list_models(
@@ -132,26 +132,24 @@ fn legacy_app_server_runs_only_the_stable_read_only_subset() {
     let instance = ConfiguredInstanceId::new("codex.app-server.local").unwrap();
     let target = InstanceTargetRef::new("codex-app-server-executable").unwrap();
     let (process, state) = ScriptedAppServer::new(AppServerMode::CompleteTurn);
-    let session = block_on(
-        app_driver().open_session(
-            app_server_plan_for_version(
-                DriverRole::InteractiveSession,
-                host.clone(),
-                instance.clone(),
-                target.clone(),
-                "0.80.0",
-                [],
-                [],
-            ),
-            OpenSessionRequest::new(
-                RequestId::new("legacy-read-only").unwrap(),
-                working_resource(),
-                None,
-            )
-            .with_access_policy(SessionAccessPolicy::read_only()),
-            host_services(process),
+    let session = block_on(app_driver().open_session(
+        app_server_plan_for_version(
+            DriverRole::InteractiveSession,
+            host.clone(),
+            instance.clone(),
+            target.clone(),
+            "0.80.0",
+            [],
+            [],
         ),
-    )
+        OpenSessionRequest::new(
+            RequestId::new("legacy-read-only").unwrap(),
+            working_resource(),
+            None,
+            app_server_session_agreement(SessionAccessPolicy::read_only()),
+        ),
+        host_services(process),
+    ))
     .expect("legacy read-only session opens");
     assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
     assert_eq!(state.request().arguments, ["app-server"]);
@@ -176,18 +174,18 @@ fn legacy_app_server_runs_only_the_stable_read_only_subset() {
     }
 
     let (process, state) = ScriptedAppServer::new(AppServerMode::CompleteTurn);
-    let failure = block_on(
-        app_driver().open_session(
-            bounded_workspace_plan_for_version(host, instance, target, "0.107.0"),
-            OpenSessionRequest::new(
-                RequestId::new("legacy-workspace-rejected").unwrap(),
-                working_resource(),
-                None,
-            )
-            .with_access_policy(swallowtail_adapter_codex::codex_bounded_workspace_access_policy()),
-            host_services(process),
+    let failure = block_on(app_driver().open_session(
+        bounded_workspace_plan_for_version(host, instance, target, "0.107.0"),
+        OpenSessionRequest::new(
+            RequestId::new("legacy-workspace-rejected").unwrap(),
+            working_resource(),
+            None,
+            app_server_session_agreement(
+                swallowtail_adapter_codex::codex_bounded_workspace_access_policy(),
+            ),
         ),
-    )
+        host_services(process),
+    ))
     .err()
     .expect("legacy workspace capability fails");
     assert_eq!(

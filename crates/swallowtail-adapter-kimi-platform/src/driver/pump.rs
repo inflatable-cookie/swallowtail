@@ -22,7 +22,8 @@ async fn pump_run(
             )),
             RunSignal::Item(Err(_)) if cancellation.is_requested() => break TerminalStatus::Cancelled,
             RunSignal::Item(Err(error)) => break provider_status(error),
-            RunSignal::Item(Ok(StreamItem::Frame(frame))) => match parse_events(&frame, MODEL_ID) {
+            RunSignal::Item(Ok(StreamItem::Frame(frame))) => {
+                match parse_events(&frame, KIMI_PLATFORM_MODEL_ID) {
                 Err(error) => break provider_status(error),
                 Ok(parsed) => {
                     let mut terminal = None;
@@ -76,7 +77,8 @@ async fn pump_run(
                     }
                     if let Some(terminal) = terminal { break terminal; }
                 }
-            },
+                }
+            }
         }
     };
     let connection = cleanup_result(subscription.close().await);

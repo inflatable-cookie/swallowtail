@@ -2,14 +2,14 @@ mod support;
 
 use futures_executor::block_on;
 use futures_util::StreamExt;
-use support::{DriverCall, DriverFixture, ServerScenario};
+use support::{DriverCall, DriverFixture, ServerScenario, turn_request};
 use swallowtail_adapter_xai::{USD_TICKS_PER_USD, XaiWebSocketDriver};
 use swallowtail_core::SessionAccessPolicy;
 use swallowtail_runtime::{
     CancellationAcknowledgement, CleanupOutcome, Currency, Deadline, InteractiveSessionDriver,
-    InteractiveSessionHandle, MonotonicInstant, OpenSessionRequest, OperationContent,
-    ProviderObservation, RequestId, RuntimeEvent, RuntimeEventKind, RuntimeTurnId, TerminalOutcome,
-    TerminalStatus, TurnHandle, TurnRequest, WorkingResourceRef,
+    InteractiveSessionHandle, MonotonicInstant, OpenSessionRequest, ProviderObservation, RequestId,
+    RuntimeEvent, RuntimeEventKind, SessionPlanAgreement, TerminalOutcome, TerminalStatus,
+    TurnHandle, WorkingResourceRef,
 };
 
 #[test]
@@ -155,8 +155,12 @@ fn resource_bound_open_fails_before_network_or_credential_effects() {
         RequestId::new("resource-bound-session").expect("request id is valid"),
         WorkingResourceRef::new("unexpected-workspace").expect("resource is valid"),
         None,
-    )
-    .with_access_policy(SessionAccessPolicy::read_only());
+        SessionPlanAgreement::explicit(
+            SessionAccessPolicy::read_only(),
+            Some(swallowtail_core::SessionProviderStatePolicy::Prohibited),
+            None,
+        ),
+    );
     let error = block_on(XaiWebSocketDriver::new().open_session(
         fixture.plan(),
         request,
@@ -173,15 +177,15 @@ fn resource_bound_open_fails_before_network_or_credential_effects() {
 }
 
 fn open_session(fixture: &DriverFixture, request_id: &str) -> Box<dyn InteractiveSessionHandle> {
-    block_on(XaiWebSocketDriver::new().open_session(
-        fixture.plan(),
-        OpenSessionRequest::resource_free(
-            RequestId::new(request_id).expect("request id is valid"),
-            None,
-        ),
-        fixture.services(),
-    ))
-    .expect("session opens")
+    let plan = fixture.plan();
+    let request = OpenSessionRequest::resource_free_from_plan(
+        &plan,
+        RequestId::new(request_id).expect("request id is valid"),
+        None,
+    )
+    .expect("session request derives from plan");
+    block_on(XaiWebSocketDriver::new().open_session(plan, request, fixture.services()))
+        .expect("session opens")
 }
 
 fn start_turn(
@@ -190,13 +194,6 @@ fn start_turn(
     turn_id: &str,
 ) -> Box<dyn TurnHandle> {
     block_on(session.start_turn(turn_request(turn_id), fixture.services())).expect("turn starts")
-}
-
-fn turn_request(turn_id: &str) -> TurnRequest {
-    TurnRequest::new(
-        RuntimeTurnId::new(turn_id).expect("turn id is valid"),
-        OperationContent::new("fixture input").expect("content is valid"),
-    )
 }
 
 fn complete_turn(

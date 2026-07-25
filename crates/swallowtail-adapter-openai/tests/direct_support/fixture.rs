@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use crate::server::{FixtureServer, ServerMode};
 use crate::services::{ThreadServices, TimeMode};
 use std::sync::Arc;
@@ -15,7 +17,7 @@ use swallowtail_core::{
 use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{
     BlockingWorkService, CredentialRef, CredentialService, EndpointRef, HostServices,
-    NetworkPolicyService, ScopedTaskService, TimeService,
+    NetworkPolicyService, PreparedAccessEvidence, ScopedTaskService, TimeService,
 };
 
 pub struct Fixture {
@@ -33,7 +35,8 @@ impl Fixture {
     pub fn new(mode: ServerMode, host: &str, time: TimeMode) -> Self {
         let server = FixtureServer::start_with(mode);
         let host_id = ExecutionHostId::new(host).expect("host id is valid");
-        let target = InstanceTargetRef::new("openai-fixture-endpoint").expect("target is valid");
+        let target = InstanceTargetRef::new(swallowtail_adapter_openai::OPENAI_BACKGROUND_ENDPOINT)
+            .expect("target is valid");
         let audience = EndpointAudience::new("api.openai.com").expect("audience is valid");
         let credential = CredentialRef::new("openai-fixture-key").expect("credential is valid");
         let host = LocalProcessHost::builder(LocalProcessLimits::default())
@@ -75,6 +78,29 @@ impl Fixture {
 
     pub fn releases(&self) -> usize {
         self.releases.load(Ordering::SeqCst)
+    }
+
+    #[allow(dead_code)]
+    pub fn preparation_input(
+        &self,
+    ) -> swallowtail_adapter_openai::OpenAiBackgroundPreparationInput {
+        let access =
+            swallowtail_adapter_openai::openai_background_access_profile(self.credential.clone());
+        let status = AccessStatus::new(
+            access.id().clone(),
+            CredentialState::Ready,
+            EntitlementState::Available,
+            EndpointAuthorization::Allowed,
+            RuntimeReadiness::Ready,
+            SupportAuthority::ProviderSupported,
+        );
+        swallowtail_adapter_openai::OpenAiBackgroundPreparationInput::new(
+            InstanceRevision::new("prepared-1").expect("revision is valid"),
+            self.host_id.clone(),
+            self.target.clone(),
+            access,
+            PreparedAccessEvidence::caller_asserted(status),
+        )
     }
 
     pub fn plan(&self) -> swallowtail_core::PreflightPlan {

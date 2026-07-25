@@ -1,13 +1,19 @@
 #[cfg(test)]
 mod tests {
     use super::{
-        Event, Response, SseDecoder, abort, parse_catalog, parse_event, parse_health, prompt,
-        session_create,
+        Event, Response, SseDecoder, abort, observe_health, parse_catalog, parse_event,
+        parse_session_for_version, prompt, session_create,
     };
+    use crate::selection::opencode_server_binding;
+    use swallowtail_core::InterfaceCompatibilityAssessment;
 
     const ROOT: &str = concat!(
         env!("CARGO_MANIFEST_DIR"),
         "/tests/fixtures/opencode-1.14.48"
+    );
+    const RANGE_ROOT: &str = concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/tests/fixtures/opencode-v1.14.48-v1.18.4"
     );
 
     #[test]
@@ -18,7 +24,7 @@ mod tests {
         .expect("fixture parses");
         let responses = fixture.as_array().expect("fixture is an array");
         let health = serde_json::to_vec(&responses[0]["response"]["body"]).expect("serializes");
-        parse_health(&Response {
+        observe_health(&Response {
             status: 200,
             body: health,
         })
@@ -38,6 +44,99 @@ mod tests {
                 .expect("limits")
                 .maximum_input_tokens(),
             Some(190_000)
+        );
+    }
+
+    #[test]
+    fn health_observation_is_exact_classified_and_safe() {
+        let response = fixture_response("health-supported.json");
+        let observation = observe_health(&response).expect("candidate health is supported");
+        assert_eq!(observation.binding().axis().as_str(), "opencode.server");
+        assert_eq!(observation.binding().version().as_str(), "1.18.4");
+        assert_eq!(
+            observation
+                .assessment()
+                .behavior_revision()
+                .expect("qualified observation has behavior")
+                .as_str(),
+            "opencode.http-sse.surface-18"
+        );
+        assert!(matches!(
+            observation.assessment(),
+            InterfaceCompatibilityAssessment::Qualified(_)
+        ));
+        let formatted = format!("{observation:?}");
+        assert!(!formatted.contains("endpoint"));
+        assert!(!formatted.contains("credential"));
+
+    }
+
+    #[test]
+    fn newer_stable_health_is_permitted_but_unverified() {
+        let observation =
+            observe_health(&fixture_response("health-above.json")).expect("newer version permits");
+        let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
+            observation.assessment()
+        else {
+            panic!("newer stable version must remain unverified");
+        };
+        assert_eq!(unverified.version().as_str(), "1.18.5");
+        assert_eq!(unverified.latest_qualified().as_str(), "1.18.4");
+        assert_eq!(
+            unverified.behavior_revision().as_str(),
+            "opencode.http-sse.surface-18"
+        );
+    }
+
+    #[test]
+    fn incompatible_and_invalid_health_envelopes_fail_closed() {
+        for fixture in ["health-below.json", "health-prerelease.json"] {
+            let error = observe_health(&fixture_response(fixture)).expect_err("version rejects");
+            assert_eq!(
+                error.diagnostic().code(),
+                "swallowtail.opencode.version_unsupported"
+            );
+        }
+        let malformed =
+            observe_health(&fixture_response("health-malformed.json")).expect_err("malformed");
+        assert_eq!(
+            malformed.diagnostic().code(),
+            "swallowtail.opencode.version_invalid"
+        );
+        let missing =
+            observe_health(&fixture_response("health-missing.json")).expect_err("missing");
+        assert_eq!(
+            missing.diagnostic().code(),
+            "swallowtail.opencode.protocol_invalid"
+        );
+        let unhealthy =
+            observe_health(&fixture_response("health-unhealthy.json")).expect_err("unhealthy");
+        assert_eq!(
+            unhealthy.diagnostic().code(),
+            "swallowtail.opencode.unhealthy"
+        );
+        let unpublished = observe_health(&Response {
+            status: 200,
+            body: br#"{"healthy":true,"version":"1.15.8"}"#.to_vec(),
+        })
+        .expect_err("unpublished semantic gap rejects");
+        assert_eq!(
+            unpublished.diagnostic().code(),
+            "swallowtail.opencode.version_unsupported"
+        );
+    }
+
+    #[test]
+    fn session_version_must_match_the_exact_health_binding() {
+        let expected = opencode_server_binding("1.18.4").expect("expected version is safe");
+        let error = parse_session_for_version(
+            &fixture_response("session-version-mismatch.json"),
+            &expected,
+        )
+        .expect_err("session drift rejects");
+        assert_eq!(
+            error.diagnostic().code(),
+            "swallowtail.opencode.session_invalid"
         );
     }
 
@@ -143,5 +242,11 @@ mod tests {
             "swallowtail.opencode.event_unknown"
         );
     }
-}
 
+    fn fixture_response(name: &str) -> Response {
+        Response {
+            status: 200,
+            body: std::fs::read(format!("{RANGE_ROOT}/{name}")).expect("range fixture reads"),
+        }
+    }
+}

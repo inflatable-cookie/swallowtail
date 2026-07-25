@@ -2,10 +2,15 @@ use crate::failure::failure;
 use serde::Deserialize;
 use serde_json::{Map, Value, json};
 use std::collections::BTreeMap;
-use swallowtail_core::{ModelCatalogEntry, ModelId, ModelMetadata, ModelTokenLimits, ProviderId};
+use swallowtail_core::{
+    InterfaceVersionBinding, ModelCatalogEntry, ModelId, ModelMetadata, ModelTokenLimits,
+    ProviderId,
+};
 use swallowtail_runtime::RuntimeFailure;
 
-pub(crate) const OBSERVED_VERSION: &str = "1.14.48";
+mod health;
+pub(crate) use health::observe_health;
+pub(crate) use health::require_health_matches;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) struct Request {
@@ -51,30 +56,6 @@ impl Request {
 pub(crate) struct Response {
     pub status: u32,
     pub body: Vec<u8>,
-}
-
-#[derive(Deserialize)]
-struct Health {
-    healthy: bool,
-    version: String,
-}
-
-pub(crate) fn parse_health(response: &Response) -> Result<(), RuntimeFailure> {
-    require_success(response, "health request")?;
-    let health: Health = parse_json(&response.body, "health response")?;
-    if !health.healthy {
-        return Err(failure(
-            "swallowtail.opencode.unhealthy",
-            "OpenCode reported an unhealthy server",
-        ));
-    }
-    if health.version != OBSERVED_VERSION {
-        return Err(failure(
-            "swallowtail.opencode.version_mismatch",
-            "OpenCode server version is outside the observed protocol fixture",
-        ));
-    }
-    Ok(())
 }
 
 #[derive(Deserialize)]
@@ -167,7 +148,10 @@ pub(crate) fn session_create(provider_id: &str, model_id: &str, directory: &str)
     .with_directory(directory)
 }
 
-pub(crate) fn parse_session(response: &Response) -> Result<String, RuntimeFailure> {
+pub(crate) fn parse_session_for_version(
+    response: &Response,
+    expected: &InterfaceVersionBinding,
+) -> Result<String, RuntimeFailure> {
     require_success(response, "session create request")?;
     #[derive(Deserialize)]
     struct Session {
@@ -175,7 +159,7 @@ pub(crate) fn parse_session(response: &Response) -> Result<String, RuntimeFailur
         version: String,
     }
     let session: Session = parse_json(&response.body, "session create response")?;
-    if session.version != OBSERVED_VERSION || session.id.trim().is_empty() {
+    if session.version != expected.version().as_str() || session.id.trim().is_empty() {
         return Err(failure(
             "swallowtail.opencode.session_invalid",
             "OpenCode returned an invalid session binding",

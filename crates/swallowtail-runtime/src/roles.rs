@@ -2,14 +2,15 @@ use crate::{
     AttachedServingHandle, AttachmentDescriptor, BoxFuture, Deadline, HostServices,
     InstalledExecutableDiscoveryRequest, InteractiveSessionHandle, ModelArtifactBinding,
     OpenDirectContinuationSessionRequest, OpenRealtimeMediaSessionRequest, OperationContent,
-    OperationPolicy, OwnedServingHandle, RealtimeMediaSessionHandle, RequestId, RunHandle,
-    RuntimeFailure, RuntimeTurnId, ScopeId, ServingInstanceId, SessionAccessPolicy, SessionOptions,
-    SessionReplayItem, SessionResumeBinding, StructuredOutputDescriptor, ToolDeclaration,
-    WorkingResourceRef,
+    OperationPolicy, OwnedServingHandle, PreparationFailure, RealtimeMediaSessionHandle, RequestId,
+    RunHandle, RuntimeFailure, RuntimeTurnId, ScopeId, ServingInstanceId, SessionAccessPolicy,
+    SessionOptions, SessionPlanAgreement, SessionReplayItem, SessionResumeBinding,
+    StructuredOutputDescriptor, ToolDeclaration, WorkingResourceRef,
 };
 use std::num::NonZeroU64;
 use swallowtail_core::{
-    DiscoveryOutcome, ExecutionHostId, ModelCatalogEntry, PreflightPlan, SessionRef,
+    DiscoveryOutcome, ExecutionHostId, HarnessConfigurationPosture, ModelCatalogEntry,
+    PreflightPlan, SessionProviderStatePolicy, SessionRef,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -179,8 +180,7 @@ pub struct OpenSessionRequest {
     working_resource: Option<WorkingResourceRef>,
     deadline: Option<Deadline>,
     options: SessionOptions,
-    access_policy: SessionAccessPolicy,
-    provider_state_policy: swallowtail_core::SessionProviderStatePolicy,
+    plan_agreement: SessionPlanAgreement,
 }
 
 impl OpenSessionRequest {
@@ -189,47 +189,61 @@ impl OpenSessionRequest {
         request_id: RequestId,
         working_resource: WorkingResourceRef,
         deadline: Option<Deadline>,
+        plan_agreement: SessionPlanAgreement,
     ) -> Self {
         Self {
             request_id,
             working_resource: Some(working_resource),
             deadline,
             options: SessionOptions::default(),
-            access_policy: SessionAccessPolicy::default(),
-            provider_state_policy: swallowtail_core::SessionProviderStatePolicy::default(),
+            plan_agreement,
         }
     }
 
     #[must_use]
-    pub fn resource_free(request_id: RequestId, deadline: Option<Deadline>) -> Self {
+    pub fn resource_free(
+        request_id: RequestId,
+        deadline: Option<Deadline>,
+        plan_agreement: SessionPlanAgreement,
+    ) -> Self {
         Self {
             request_id,
             working_resource: None,
             deadline,
             options: SessionOptions::default(),
-            access_policy: SessionAccessPolicy::resource_free(),
-            provider_state_policy: swallowtail_core::SessionProviderStatePolicy::default(),
+            plan_agreement,
         }
+    }
+
+    pub fn from_plan(
+        plan: &PreflightPlan,
+        request_id: RequestId,
+        working_resource: WorkingResourceRef,
+        deadline: Option<Deadline>,
+    ) -> Result<Self, PreparationFailure> {
+        Ok(Self::new(
+            request_id,
+            working_resource,
+            deadline,
+            SessionPlanAgreement::from_plan(plan)?,
+        ))
+    }
+
+    pub fn resource_free_from_plan(
+        plan: &PreflightPlan,
+        request_id: RequestId,
+        deadline: Option<Deadline>,
+    ) -> Result<Self, PreparationFailure> {
+        Ok(Self::resource_free(
+            request_id,
+            deadline,
+            SessionPlanAgreement::from_plan(plan)?,
+        ))
     }
 
     #[must_use]
     pub fn with_options(mut self, options: SessionOptions) -> Self {
         self.options = options;
-        self
-    }
-
-    #[must_use]
-    pub fn with_access_policy(mut self, policy: SessionAccessPolicy) -> Self {
-        self.access_policy = policy;
-        self
-    }
-
-    #[must_use]
-    pub const fn with_provider_state_policy(
-        mut self,
-        policy: swallowtail_core::SessionProviderStatePolicy,
-    ) -> Self {
-        self.provider_state_policy = policy;
         self
     }
 
@@ -255,12 +269,22 @@ impl OpenSessionRequest {
 
     #[must_use]
     pub const fn access_policy(&self) -> &SessionAccessPolicy {
-        &self.access_policy
+        self.plan_agreement.access_policy()
     }
 
     #[must_use]
-    pub const fn provider_state_policy(&self) -> swallowtail_core::SessionProviderStatePolicy {
-        self.provider_state_policy
+    pub const fn provider_state_policy(&self) -> Option<SessionProviderStatePolicy> {
+        self.plan_agreement.provider_state_policy()
+    }
+
+    #[must_use]
+    pub const fn harness_configuration_posture(&self) -> Option<HarnessConfigurationPosture> {
+        self.plan_agreement.harness_configuration_posture()
+    }
+
+    #[must_use]
+    pub const fn plan_agreement(&self) -> &SessionPlanAgreement {
+        &self.plan_agreement
     }
 }
 
@@ -271,7 +295,7 @@ pub struct ResumeSessionRequest {
     working_resource: WorkingResourceRef,
     deadline: Option<Deadline>,
     options: SessionOptions,
-    access_policy: SessionAccessPolicy,
+    plan_agreement: SessionPlanAgreement,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -281,7 +305,7 @@ pub struct LoadSessionRequest {
     working_resource: WorkingResourceRef,
     deadline: Option<Deadline>,
     options: SessionOptions,
-    access_policy: SessionAccessPolicy,
+    plan_agreement: SessionPlanAgreement,
 }
 
 impl LoadSessionRequest {
@@ -291,6 +315,7 @@ impl LoadSessionRequest {
         binding: SessionResumeBinding,
         working_resource: WorkingResourceRef,
         deadline: Option<Deadline>,
+        plan_agreement: SessionPlanAgreement,
     ) -> Self {
         Self {
             request_id,
@@ -298,19 +323,29 @@ impl LoadSessionRequest {
             working_resource,
             deadline,
             options: SessionOptions::default(),
-            access_policy: SessionAccessPolicy::default(),
+            plan_agreement,
         }
+    }
+
+    pub fn from_plan(
+        plan: &PreflightPlan,
+        request_id: RequestId,
+        binding: SessionResumeBinding,
+        working_resource: WorkingResourceRef,
+        deadline: Option<Deadline>,
+    ) -> Result<Self, PreparationFailure> {
+        Ok(Self::new(
+            request_id,
+            binding,
+            working_resource,
+            deadline,
+            SessionPlanAgreement::from_plan(plan)?,
+        ))
     }
 
     #[must_use]
     pub fn with_options(mut self, options: SessionOptions) -> Self {
         self.options = options;
-        self
-    }
-
-    #[must_use]
-    pub fn with_access_policy(mut self, policy: SessionAccessPolicy) -> Self {
-        self.access_policy = policy;
         self
     }
 
@@ -340,7 +375,19 @@ impl LoadSessionRequest {
     }
     #[must_use]
     pub const fn access_policy(&self) -> &SessionAccessPolicy {
-        &self.access_policy
+        self.plan_agreement.access_policy()
+    }
+    #[must_use]
+    pub const fn provider_state_policy(&self) -> Option<SessionProviderStatePolicy> {
+        self.plan_agreement.provider_state_policy()
+    }
+    #[must_use]
+    pub const fn harness_configuration_posture(&self) -> Option<HarnessConfigurationPosture> {
+        self.plan_agreement.harness_configuration_posture()
+    }
+    #[must_use]
+    pub const fn plan_agreement(&self) -> &SessionPlanAgreement {
+        &self.plan_agreement
     }
 }
 
@@ -372,6 +419,7 @@ impl ResumeSessionRequest {
         binding: SessionResumeBinding,
         working_resource: WorkingResourceRef,
         deadline: Option<Deadline>,
+        plan_agreement: SessionPlanAgreement,
     ) -> Self {
         Self {
             request_id,
@@ -379,19 +427,29 @@ impl ResumeSessionRequest {
             working_resource,
             deadline,
             options: SessionOptions::default(),
-            access_policy: SessionAccessPolicy::default(),
+            plan_agreement,
         }
+    }
+
+    pub fn from_plan(
+        plan: &PreflightPlan,
+        request_id: RequestId,
+        binding: SessionResumeBinding,
+        working_resource: WorkingResourceRef,
+        deadline: Option<Deadline>,
+    ) -> Result<Self, PreparationFailure> {
+        Ok(Self::new(
+            request_id,
+            binding,
+            working_resource,
+            deadline,
+            SessionPlanAgreement::from_plan(plan)?,
+        ))
     }
 
     #[must_use]
     pub fn with_options(mut self, options: SessionOptions) -> Self {
         self.options = options;
-        self
-    }
-
-    #[must_use]
-    pub fn with_access_policy(mut self, policy: SessionAccessPolicy) -> Self {
-        self.access_policy = policy;
         self
     }
 
@@ -427,7 +485,19 @@ impl ResumeSessionRequest {
 
     #[must_use]
     pub const fn access_policy(&self) -> &SessionAccessPolicy {
-        &self.access_policy
+        self.plan_agreement.access_policy()
+    }
+    #[must_use]
+    pub const fn provider_state_policy(&self) -> Option<SessionProviderStatePolicy> {
+        self.plan_agreement.provider_state_policy()
+    }
+    #[must_use]
+    pub const fn harness_configuration_posture(&self) -> Option<HarnessConfigurationPosture> {
+        self.plan_agreement.harness_configuration_posture()
+    }
+    #[must_use]
+    pub const fn plan_agreement(&self) -> &SessionPlanAgreement {
+        &self.plan_agreement
     }
 }
 

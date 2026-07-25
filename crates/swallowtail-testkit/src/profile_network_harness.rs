@@ -116,6 +116,7 @@ pub(crate) fn run() -> ConformanceReport {
         assert_eq!(recording.count(call), 1);
     }
     assert_eq!(recording.count(RecordedHostCall::ProcessStart), 0);
+    report.record(ConformanceAssertion::DelegatedAuthentication);
     report.record(ConformanceAssertion::AttachedNetworkHarnessLifecycle);
     report
 }

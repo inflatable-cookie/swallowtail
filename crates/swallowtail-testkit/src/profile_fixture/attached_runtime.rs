@@ -70,6 +70,7 @@ pub(crate) fn runtime_claim(id: &str) -> InterfaceCompatibilityClaim {
         valid(InterfaceCompatibilityClaimId::new, id),
         valid(InterfaceVersionAxis::new, "fixture.attached.runtime"),
         InterfaceVersionScheme::Semantic,
+        swallowtail_core::InterfaceNewerVersionPosture::QualifiedOnly,
         [InterfaceVersionSegment::new(
             valid(InterfaceVersion::new, "0.14.0"),
             valid(InterfaceVersion::new, "0.32.1"),

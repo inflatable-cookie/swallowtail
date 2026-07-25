@@ -1,0 +1,2 @@
+{"direction":"client_to_agent","message":{"jsonrpc":"2.0","id":6,"method":"session/prompt","params":{"sessionId":"claude-agent-session-fixture","prompt":[{"type":"text","text":"Return one bounded response."}]}}}
+{"direction":"agent_to_client","message":{"jsonrpc":"2.0","method":"session/update","params":{"sessionId":"claude-agent-session-fixture","update":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"Partial"}}}}}

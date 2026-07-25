@@ -1,8 +1,9 @@
 # g01 Swallowtail Foundation
 
-Status: active
+Status: completed
 Owner: Tom
-Updated: 2026-07-23
+Updated: 2026-07-24
+Disposition: closed at 49 roadmaps; g02 active
 
 ## Purpose
 
@@ -705,8 +706,8 @@ cross-adapter adoption without prematurely stabilizing the public API.
   a 489-test inventory with 486 passing and three gated probes ignored
 - roadmap 037 and card 105 complete the post-continuation coverage and
   compatibility-window checkpoint
-- Research 024 confirms only Pi and DeepSeek expose descriptor compatibility
-  claims, both as one-point windows; remote ACP is Draft
+- Research 024 confirmed only Pi and DeepSeek exposed descriptor compatibility
+  claims, both as one-point windows; remote ACP was Draft at that checkpoint
 - Contract 031 keeps exact attached-runtime version, installed/running
   catalogue, model identity, and inference-caused residency separate
 - roadmap 038 and cards 106-109 select attach-only Ollama native API as the
@@ -818,8 +819,164 @@ cross-adapter adoption without prematurely stabilizing the public API.
 - full repository QA inventories 563 tests: 559 pass and four separately gated
   live or installed probes remain ignored
 - roadmap 039 is complete
-- roadmap 040 and card 120 begin the second installed-harness range selection;
-  OpenCode leads current evidence but remains subject to fresh qualification
+- Research 027 revalidates OpenCode, Gemini ACP, Kimi ACP, Qwen, and Pi against
+  current stable releases and exact observation seams
+- card 120 selects OpenCode HTTP as the second range proof with candidate
+  envelope `1.14.48..=1.18.4`
+- the 45-release OpenCode envelope retains all six selected operation ids
+- card 121 freezes 18 recursively closed selected surfaces and 20 contiguous
+  published segments without inferring unpublished patch or cross-minor points
+- safe health observation classifies exact server evidence without widening
+  the production descriptor, endpoint authority, authentication, or execution
+- endpoint health remains separate from installed-executable discovery;
+  Contract 029 and existing HTTP/SSE authority are sufficient
+- Kimi Code `0.29.0` remains the leading later ACP range because its thinking
+  capability negotiation changes materially
+- card 122 publishes the exact OpenCode claim and binds configured instance,
+  requirements, immutable plan, endpoint health, created session, and private
+  behavior revision to one qualified release
+- card 123 proves all 18 surfaces, closed-window exclusions, current behavior,
+  and baseline/latest endpoint health under local and remote-authoritative
+  hosts without changing the attached-network harness profile
+- full repository QA inventories 577 tests: 573 pass and four separately gated
+  probes remain ignored; doctor remains at the inherited 19 findings
+- the operator corrected the upper-bound policy on 2026-07-24: qualified
+  ranges guarantee support, while explicitly permitted exact newer releases
+  may run as unverified without forcing an immediate Swallowtail release
+- Contract 029 and Contract 032 now distinguish qualified,
+  unverified-newer, and incompatible exact observations
+- ordered claims explicitly choose qualified-only or unverified-newer posture;
+  preflight and installed discovery retain exact assessment
+- Codex and OpenCode dispatch stable newer exact versions through their latest
+  qualified private behavior without counting them as supported
+- cross-topology discovery, health, catalogue, session, drift, and rejection
+  conformance pass
+- roadmap 041 and cards 124-127 are complete
+- full repository QA inventories 583 tests: 579 pass and four separately gated
+  probes remain ignored; doctor remains at the inherited 19 findings
+- roadmap 042 and card 128 resume provider-coverage selection without
+  preselecting Kimi
+- Research 028 inventories all 21 production descriptors across 16 exact
+  integration family ids and confirms that the original transport and
+  lifecycle shapes are represented
+- remote ACP moved from Draft to Active, but maintained SDK support,
+  reconnect semantics, replay, protocol headers, and hardening remain
+  unfinished
+- exact Kimi Code `0.28.1` and `0.29.0` are selected as separate qualified
+  ACP behavior segments; later stable exact releases may run as unverified
+  newer without extending guaranteed support
+- Contract 034 maps typed portable reasoning setup through version-qualified
+  private harness options without adding a generic configuration surface
+- roadmap 042 and card 128 are complete
+- roadmap 043 and cards 129-131 own the Kimi multi-release corpus, installed
+  discovery, private reasoning dispatch, and cross-topology conformance
+- card 129 realizes typed request-plan-capability-lifecycle agreement and exact
+  effective reasoning confirmation without a generic provider option map
+- exact Kimi `0.28.1` legacy-select and `0.29.0` declared-effort corpora freeze
+  singleton version segments, source evidence, dynamic option shapes, every
+  rejection path, and latest-qualified unverified-newer reuse
+- card 130 publishes exact host-approved Kimi discovery, two private behavior
+  points, visible unverified-newer dispatch, initialization corroboration, and
+  one confirmed new-session reasoning selection
+- option omission, ambiguity, malformed shape, unsupported value, provider
+  rejection, missing confirmation, effective drift, lifecycle misuse, and
+  handshake drift fail without fallback and join owned work
+- card 131 proves exact baseline, latest, and unverified-newer behavior under
+  local and remote-authoritative host identities
+- the unchanged persistent ACP profile and Contract 034 assertion pack pass
+  without leaking Kimi option ids into core or runtime
+- roadmap 043 and cards 129-131 are complete
+- full repository QA inventories 606 tests: 602 pass and four separately gated
+  probes remain ignored; doctor remains at the inherited 19 findings
+- Research 029 confirms the realized inventory remains 21 production
+  descriptors across 16 integration families and twelve common profiles
+- the Active remote ACP transport RFD now has a maintained Rust HTTP transport
+  crate at `2.0.0`, correcting the prior readiness assessment
+- Contract 035 selects an unauthenticated, provider-neutral,
+  `ExperimentalObserved` remote ACP proof over explicit HTTP/SSE or WebSocket
+- remote ACP remains a transport rather than a generic provider; authentication,
+  reconnect, retry, replay, pooling, multiplexing, and fallback remain excluded
+- roadmap 044 and card 132 are complete
+- roadmap 045 and cards 133-135 own shared records and corpus, the reusable
+  transport crate, cross-topology conformance, and the generation-boundary
+  checkpoint
+- card 133 realizes portable unauthenticated access, exact remote ACP
+  transport, affinity, bounds, and independent wire/RFD/SDK version evidence
+- the additive thirteenth profile proves no-recovery remote ACP lifecycle,
+  callback exchange, topology, and joined network work without a provider
+  identity or process authority
+- independent raw HTTP/SSE and WebSocket corpora pin wire version 1 and SDK
+  `2.0.0`; both retain bounded connection-private cookies as required by the
+  Active RFD
+- card 134 adds `swallowtail-transport-acp-remote` as the twenty-second
+  workspace crate with one preflight-bound public client over distinct bounded
+  HTTP/2 SSE and WebSocket actors
+- the exact core SDK validates private wire schema; the maintained HTTP client
+  is not the production actor because its queues are unbounded, HTTP/2 is not
+  enabled, and WebSocket upgrade state is discarded
+- corpus-driven loopback fixtures prove initialization, callbacks, affinity,
+  cancellation, deadline, disconnect invalidation, explicit close, and joined
+  host-owned private runtime work without recovery or authentication
+- card 135 proves the same public HTTP/SSE and WebSocket client across local
+  and remote-authoritative execution-host identities
+- raw loopback corpora remain primary; the maintained ACP HTTP `2.0.0` server
+  independently agrees on health, missing-connection, and media-type rejection
+- stable diagnostics and cleanup failure remain redacted; SDK, HTTP,
+  WebSocket, cookie, and Tokio dependencies stay inside the transport crate
+- roadmap 045 and cards 133-135 are complete
+- full repository QA inventories 629 tests: 625 pass and four separately gated
+  probes remain ignored; doctor remains at the inherited 19 findings
+- Research 030 confirms the live ACP registry remains a local distribution
+  catalogue rather than a provider-hosted remote endpoint catalogue
+- ACP v1 has added stable optional lifecycle surfaces, while ACP v2 and
+  interactive authentication status remain Draft and outside support
+- Research 031 freezes the exact Grok Build `0.2.0` and `0.2.111` artifacts,
+  all 111 published `0.2.x` points, missing `0.2.48`, and the live ACP registry
+  entry without installing, authenticating, or making a provider request
+- no release is qualified: only direct `0.2.111 --no-auto-update --version`
+  satisfies installed-discovery observation, and its exact agent advertises an
+  authentication method that does not match the maintained public example
+- exact bundled guidance disproves the planned bounded read-only claim;
+  the viable route is explicit ambient harness relay with ambient
+  configuration and durable local state, while sandboxing remains separate
+  and opt-in
+- roadmap 046 and card 136 are complete
+- the operator placed roadmap 047 and cards 138-141 on hold because no Grok
+  account is available; card 137 and the unresolved authentication gate remain
+  intact
+- Research 032 and cards 142-143 select and qualify Claude Agent ACP as the
+  active post-Grok route: ACP v1 stdio, adapter range
+  `0.53.0..=0.61.0` excluding unpublished `0.58.0`,
+  Anthropic public-API-key access, `Ambient` configuration, and `AmbientHost`
+  isolation
+- four private revisions preserve baseline, session-config, provider-capability,
+  and steering-metadata milestones without widening the portable subset
+- exact Agent SDK `0.3.195..=0.3.217` and nested Claude Code
+  `2.1.195..=2.1.217` evidence remains separate from adapter and ACP wire
+  versions
+- Claude subscription login, terminal auth, provider switching, persistent
+  sessions, writes, shells, sandbox claims, package installation, and implicit
+  fallback remain outside the first proof
+- card 143's eight focused deterministic corpus tests pass without an account
+  or container
+- card 144 adds the separate `swallowtail-adapter-claude-agent` production
+  driver with exact installed discovery, four private range revisions, visible
+  unverified-newer execution, public-API-key access, exact model confirmation,
+  provider-native read tools, permission rejection, deadlines, and joined
+  cleanup without a sandbox claim
+- card 145 proves the unchanged long-lived ACP profile plus adapter-local
+  version, topology, access, exclusion, lifecycle, redaction, and cleanup
+  assertions under local and remote-authoritative hosts
+- full repository QA inventories 658 tests: 654 pass and four separately gated
+  probes remain ignored; Doctor remains at the inherited 19 findings
+- roadmap 048 and cards 142-145 are complete
+- roadmap 049 and card 146 complete the deliberate generation-disposition
+  checkpoint
+- the operator approved g01 closure and a g02 stabilization and release-
+  discipline programme
+- roadmap 047 moved to the shared backlog; cards 138-141 stay with g01 as
+  backlog evidence and provisional Spec 003 retains its exact promotion gate
+- g01 closes with 48 completed roadmaps and one roadmap moved to backlog
 
 ## Milestones
 
@@ -884,7 +1041,25 @@ cross-adapter adoption without prematurely stabilizing the public API.
 - [039 Installed Harness Compatibility Range Audit](039-installed-harness-compatibility-range-audit.md)
   — completed
 - [040 Cross-Harness Compatibility Range Expansion](040-cross-harness-compatibility-range-expansion.md)
-  — active
+  — completed
+- [041 Qualified Support And Newer-Version Execution](041-qualified-support-and-newer-version-execution.md)
+  — completed
+- [042 Post-Forward-Compatibility Provider Coverage Checkpoint](042-post-forward-compatibility-provider-coverage-checkpoint.md)
+  — completed
+- [043 Kimi Code Capability Range](043-kimi-code-capability-range.md) —
+  completed
+- [044 Post-Kimi-Range Provider Coverage Checkpoint](044-post-kimi-range-provider-coverage-checkpoint.md)
+  — completed
+- [045 Remote ACP Transport Proof](045-remote-acp-transport-proof.md) —
+  completed
+- [046 Generation Boundary And Provider Coverage Checkpoint](046-generation-boundary-and-provider-coverage-checkpoint.md)
+  — completed
+- [047 Grok Build Maintained ACP Range](047-grok-build-maintained-acp-range.md)
+  — moved to backlog
+- [048 Post-Grok-Hold Provider Coverage Continuation](048-post-grok-hold-provider-coverage-continuation.md)
+  — completed
+- [049 g01 Generation Disposition Checkpoint](049-generation-disposition-checkpoint.md)
+  — completed
 
 ## Batch Shape
 
@@ -939,8 +1114,27 @@ cross-adapter adoption without prematurely stabilizing the public API.
 - card 115 audits and compiles the older six-month Codex span
 - cards 116-119 form the shared configuration-posture and deprecated Codex
   range extension
-- cards 120-123 form the second installed-harness selection, corpus, dispatch,
-  and cross-harness conformance lane
+- card 120 selects OpenCode for the second installed-harness range proof
+- cards 121-123 form the OpenCode corpus, exact health observation, private
+  dispatch, and cross-harness conformance lane
+- cards 124-127 correct forward-compatibility policy, core assessment, first
+  adapter dispatch, and conformance before provider-coverage selection resumes
+- card 128 resumes provider-coverage evidence and next-proof selection
+- cards 129-131 form the Kimi negotiated-option corpus, version discovery,
+  private range dispatch, and conformance lane
+- card 132 closes the post-Kimi-range provider-coverage checkpoint
+- cards 133-135 form the remote ACP records/corpus, reusable client transport,
+  portability-conformance, and closeout lane
+- card 136 closes the generation-boundary and provider-coverage checkpoint
+- card 137 freezes the exact Grok Build artifact and ACP corpus
+- cards 138-141 preserve the held Grok authentication, discovery, driver, and
+  portability-closeout lane
+- card 142 selects Claude Agent ACP without a live developer-account or
+  heavy-container prerequisite
+- card 143 completes the Claude Agent ACP range and corpus
+- cards 144-145 form its production-driver and conformance-closeout runway
+- card 146 completes the 49-roadmap generation-disposition checkpoint without
+  selecting another provider or creating g02 automatically
 
 Run validation after each complete batch, not after each small card.
 
@@ -950,3 +1144,9 @@ g01 is a long-lived generation. It normally remains active until it contains
 roughly 30-50 numbered roadmap files. Batch cards do not count toward that
 range. New implementation phases extend g01 rather than creating a generation
 per phase.
+
+At 49 roadmaps, this generation reached its intended boundary. Roadmap 050 was
+not justified: the only unfinished coherent lane was Grok, and it remained
+externally blocked. The operator approved closure on 2026-07-24. g02 now owns
+the stabilization and release-discipline sequence; the Grok lane remains in
+the shared backlog.

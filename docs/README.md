@@ -13,6 +13,8 @@ here.
 - [Roadmaps](roadmaps/README.md) — sequenced delivery generations
 - [Logs](logs/README.md) — decisions and validation evidence
 - [Research](research/README.md) — evidence awaiting promotion
+- [Releases](releases/README.md) — candidate and published compatibility notes
+- [Guides](guides/README.md) — non-authoritative integration usage
 - [Policy](policy/internal-writing-style.md) — repository working style
 
 ## Authority Rule

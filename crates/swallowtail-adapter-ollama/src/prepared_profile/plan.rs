@@ -1,0 +1,146 @@
+use crate::OllamaPreparedIntegration;
+use swallowtail_core::{
+    AccessRequirement, AttachedRuntimeRequirements, AttachedRuntimeResidency, CapabilityProfile,
+    CapabilityRequirement, ConfiguredInstance, CredentialState, Diagnostic, DriverRole,
+    EndpointAuthorization, EntitlementState, ExecutionLayer, ModelRoute, OperationRequirements,
+    OperationShape, PreflightContext, PreflightPlan, RuntimeReadiness, preflight,
+};
+use swallowtail_runtime::{PreparationFailure, PreparationStage, PreparedOperationEvidence};
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct OllamaPreparedEvidence {
+    runtime: crate::OllamaPreparedRuntimeObservation,
+    operation: PreparedOperationEvidence,
+}
+
+impl OllamaPreparedEvidence {
+    pub(super) fn from_prepared(
+        prepared: &OllamaPreparedIntegration,
+        plan: PreflightPlan,
+    ) -> Result<Self, PreparationFailure> {
+        Ok(Self {
+            runtime: prepared.runtime().clone(),
+            operation: PreparedOperationEvidence::from_plan(
+                plan,
+                prepared.access_evidence().clone(),
+            )?,
+        })
+    }
+
+    #[must_use]
+    pub const fn runtime(&self) -> &crate::OllamaPreparedRuntimeObservation {
+        &self.runtime
+    }
+
+    #[must_use]
+    pub const fn access(&self) -> &swallowtail_runtime::PreparedAccessEvidence {
+        self.operation.access()
+    }
+
+    #[must_use]
+    pub const fn operation(&self) -> &PreparedOperationEvidence {
+        &self.operation
+    }
+
+    #[must_use]
+    pub const fn plan(&self) -> &PreflightPlan {
+        self.operation.plan()
+    }
+}
+
+pub(super) fn instance_with_capabilities(
+    prepared: &OllamaPreparedIntegration,
+    capabilities: CapabilityProfile,
+) -> ConfiguredInstance {
+    let base = prepared.instance();
+    ConfiguredInstance::new(
+        base.id().clone(),
+        base.revision().clone(),
+        base.driver_id().clone(),
+        base.execution_host_id().clone(),
+        base.target_reference().clone(),
+        base.ownership(),
+        base.access_profile_id().clone(),
+        base.support_authority(),
+        base.protocol_facade_id().clone(),
+        base.policy_id().clone(),
+        capabilities,
+    )
+    .with_interface_versions(base.interface_versions().cloned())
+}
+
+pub(super) fn model_route(
+    prepared: &OllamaPreparedIntegration,
+    model: super::OllamaModelSelection,
+    capabilities: CapabilityProfile,
+) -> ModelRoute {
+    let (route_id, route_revision, model_id) = model.into_parts();
+    ModelRoute::new(
+        route_id,
+        route_revision,
+        prepared.instance().id().clone(),
+        model_id,
+        capabilities,
+    )
+}
+
+pub(super) fn requirements(
+    prepared: &OllamaPreparedIntegration,
+    route: &ModelRoute,
+    role: DriverRole,
+    capabilities: impl IntoIterator<Item = CapabilityRequirement>,
+) -> OperationRequirements {
+    let descriptor = crate::ollama_native_descriptor();
+    let detail = prepared.runtime().selected_detail();
+    OperationRequirements::new(
+        ExecutionLayer::DirectModelInference,
+        OperationShape::StructuredRun,
+        role,
+        prepared.instance().execution_host_id().clone(),
+        AccessRequirement::new(prepared.access_profile().id().clone())
+            .with_credential_states([CredentialState::NotRequired])
+            .with_entitlement_states([EntitlementState::Available])
+            .with_endpoint_authorizations([EndpointAuthorization::Allowed])
+            .with_runtime_readiness([RuntimeReadiness::Ready])
+            .with_support_authorities([prepared.access_profile().support_authority()]),
+    )
+    .with_ownership_modes([prepared.instance().ownership()])
+    .with_host_services(descriptor.required_host_services(role))
+    .with_capabilities(capabilities)
+    .with_interface_versions([prepared.runtime().runtime_version().clone()])
+    .with_attached_runtime(AttachedRuntimeRequirements::new(
+        prepared.runtime().runtime_version().clone(),
+        route.model_id().clone(),
+        detail.model_tag().clone(),
+        detail
+            .manifest_digest()
+            .expect("prepared Ollama detail binds a manifest digest")
+            .clone(),
+        AttachedRuntimeResidency::RuntimeManaged,
+    ))
+    .require_model_route()
+}
+
+pub(super) fn build_plan(
+    prepared: &OllamaPreparedIntegration,
+    instance: &ConfiguredInstance,
+    route: &ModelRoute,
+    requirements: &OperationRequirements,
+) -> Result<PreflightPlan, PreparationFailure> {
+    let descriptor = crate::ollama_native_descriptor();
+    let context = PreflightContext::new(
+        &descriptor,
+        instance,
+        prepared.access_profile(),
+        prepared.access_evidence().status(),
+        prepared.available_host_services(),
+    )
+    .with_model_route(route)
+    .with_attached_model_observation(prepared.runtime().selected_detail());
+    preflight(&context, requirements).map_err(|error| {
+        PreparationFailure::new(
+            PreparationStage::Preflight,
+            Diagnostic::new(error.diagnostic().clone()),
+        )
+    })
+}

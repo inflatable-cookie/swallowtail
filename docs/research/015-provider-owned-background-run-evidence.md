@@ -2,7 +2,7 @@
 
 Status: promoted
 Owner: Tom
-Updated: 2026-07-21
+Updated: 2026-07-25
 
 ## Question
 
@@ -17,6 +17,12 @@ Official provider documentation, maintained-project documentation, current
 protocol status, and the ten realized Swallowtail production routes were
 checked on 2026-07-21. No credential store, provider account, subscription,
 repository integration, or live endpoint was used.
+
+The OpenAI background guide and public Responses endpoint inventory were
+rechecked on 2026-07-25. The selected route still supports explicit background
+creation, polling, native cancel, cursor reattachment only for responses
+created with streaming, and temporary provider retention with `store=false`.
+The guide now demonstrates `gpt-5.6`; no contract or fixture change was needed.
 
 Candidates were compared on operation ownership, stream recovery,
 cancellation, credential and endpoint authority, provider retention, workspace

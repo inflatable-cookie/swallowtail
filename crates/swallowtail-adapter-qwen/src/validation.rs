@@ -1,8 +1,8 @@
 use crate::DRIVER_ID;
 use swallowtail_core::{
-    CancellationScope, Capability, CapabilityConstraint, CredentialMechanism, HarnessIsolation,
-    HostServiceKind, InstanceOwnership, PreflightPlan, ResourceAccess, ResourceRepresentation,
-    SafeDiagnostic,
+    CancellationScope, Capability, CapabilityConstraint, CredentialMechanism,
+    HarnessConfigurationPosture, HarnessIsolation, HostServiceKind, InstanceOwnership,
+    PreflightPlan, ResourceAccess, ResourceRepresentation, SafeDiagnostic,
 };
 use swallowtail_runtime::{
     ExternalNetworkPolicy, ExternalSearchPolicy, HostServices, ProviderExecutionPolicy,
@@ -21,6 +21,7 @@ pub(crate) fn validate(
     if plan.driver_identity().id().as_str() != DRIVER_ID {
         return Err(plan_mismatch("driver"));
     }
+    crate::selection::validate_qwen_plan_version(plan)?;
     services.require_execution_host(plan.execution_host_id())?;
     require_service(
         plan,
@@ -55,6 +56,12 @@ pub(crate) fn validate(
     if plan.provider_id().is_none() || plan.model_id().is_none() || plan.model_route_id().is_none()
     {
         return Err(plan_mismatch("provider and model route"));
+    }
+    if plan.harness_configuration_posture() != Some(HarnessConfigurationPosture::Ambient)
+        || request.policy().harness_configuration_posture()
+            != Some(HarnessConfigurationPosture::Ambient)
+    {
+        return Err(plan_mismatch("harness configuration posture"));
     }
 
     validate_harness_isolation_policy(plan, request.policy())

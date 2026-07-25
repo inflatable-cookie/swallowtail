@@ -1,6 +1,17 @@
 use super::*;
 
 #[test]
+fn long_lived_rpc_profile_proves_callback_exchange() {
+    let reports = run_all_synthetic_profiles();
+    let rpc = reports
+        .iter()
+        .find(|report| report.profile() == SyntheticProfile::LongLivedRpcHarness)
+        .expect("RPC profile report exists");
+
+    assert!(rpc.covers(ConformanceAssertion::CallbackExchange));
+}
+
+#[test]
 fn locally_continued_profile_proves_contract_030_boundaries() {
     let reports = run_all_synthetic_profiles();
     let direct = reports

@@ -19,11 +19,7 @@ fn catalogue_and_read_only_session_run_against_the_frozen_http_fixture() {
 
     let mut session = block_on(driver.open_session(
         fixture.plan(DriverRole::InteractiveSession),
-        OpenSessionRequest::new(
-            RequestId::new("session").expect("request id is valid"),
-            fixture.resource.clone(),
-            None,
-        ),
+        open_session_request("session", fixture.resource.clone()),
         fixture.services(),
     ))
     .expect("session opens");
@@ -83,5 +79,4 @@ fn catalogue_and_read_only_session_run_against_the_frozen_http_fixture() {
             || request.contains("/config")
     }));
 }
-
 

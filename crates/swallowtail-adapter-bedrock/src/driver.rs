@@ -71,6 +71,7 @@ impl BedrockDirectDriver {
 
 #[must_use]
 pub fn bedrock_direct_descriptor() -> DriverDescriptor {
+    let [sdk_claim, service_claim] = crate::bedrock_runtime_interface_claims();
     DriverDescriptor::new(
         AdapterIdentity::new(
             AdapterId::new(DRIVER_ID).expect("static adapter id is valid"),
@@ -80,6 +81,8 @@ pub fn bedrock_direct_descriptor() -> DriverDescriptor {
         IntegrationFamilyId::new("amazon-bedrock").expect("static family id is valid"),
         TransportFamilyId::new("rust-sdk-eventstream").expect("static transport id is valid"),
     )
+    .with_interface_compatibility(sdk_claim)
+    .with_interface_compatibility(service_claim)
     .with_roles([DriverRole::StructuredRun])
     .with_execution_layers([ExecutionLayer::DirectModelInference])
     .with_operation_shapes([OperationShape::StructuredRun])

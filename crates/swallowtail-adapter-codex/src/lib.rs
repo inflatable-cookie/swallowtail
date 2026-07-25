@@ -11,6 +11,8 @@ mod exec_handle;
 mod exec_input;
 mod exec_pump;
 mod exec_validation;
+mod prepared;
+mod prepared_profile;
 mod rpc;
 mod selection;
 mod session;
@@ -21,6 +23,15 @@ mod turn_state;
 
 pub use app_server::{CodexAppServerDriver, codex_app_server_descriptor};
 pub use exec::{CodexExecDriver, codex_exec_descriptor};
+pub use prepared::{
+    CodexPreparationInput, CodexPreparationProbe, CodexPreparedDriver, CodexPreparedIntegration,
+    prepare_codex,
+};
+pub use prepared_profile::{
+    CodexExecProfileInput, CodexModelSelection, CodexPreparedCatalogue, CodexPreparedEvidence,
+    CodexPreparedExec, CodexPreparedSession, CodexPreparedSessionFuture, CodexPreparedSessionKind,
+    CodexSessionProfileInput,
+};
 pub use selection::{
     CODEX_APP_SERVER_BASELINE_VERSION, CODEX_CLI_AXIS, CODEX_EXEC_BASELINE_VERSION,
     CODEX_LATEST_QUALIFIED_VERSION, codex_app_server_claim, codex_cli_binding, codex_exec_claim,

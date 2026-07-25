@@ -6,7 +6,7 @@ impl ModelCatalogDriver for OpenCodeHttpDriver {
         services: HostServices,
     ) -> BoxFuture<'_, Result<Vec<ModelCatalogEntry>, RuntimeFailure>> {
         Box::pin(async move {
-            Self::validate_plan(&plan)?;
+            let version = Self::validate_plan(&plan)?;
             services.require_execution_host(plan.execution_host_id())?;
             require_services(&services, false)?;
             let scope = scope("catalog", request.request_id().as_str())?;
@@ -28,7 +28,7 @@ impl ModelCatalogDriver for OpenCodeHttpDriver {
                     "OpenCode model discovery timed out",
                 )
                 .await?;
-                parse_health(&health)?;
+                require_health_matches(&health, &version)?;
                 let response = complete_before_deadline(
                     self.transport.request(
                         scope,
@@ -68,7 +68,7 @@ impl InteractiveSessionDriver for OpenCodeHttpDriver {
         services: HostServices,
     ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
         Box::pin(async move {
-            Self::validate_plan(&plan)?;
+            let version = Self::validate_plan(&plan)?;
             services.require_execution_host(plan.execution_host_id())?;
             validate_open(&plan, &request, &services)?;
             let provider_id = plan.provider_id().cloned().ok_or_else(|| {
@@ -121,7 +121,7 @@ impl InteractiveSessionDriver for OpenCodeHttpDriver {
                     "OpenCode session open timed out",
                 )
                 .await?;
-                parse_health(&health)?;
+                require_health_matches(&health, &version)?;
                 let response = complete_before_deadline(
                     self.transport.request(
                         scope,
@@ -137,7 +137,7 @@ impl InteractiveSessionDriver for OpenCodeHttpDriver {
                     "OpenCode session open timed out",
                 )
                 .await?;
-                parse_session(&response)
+                parse_session_for_version(&response, version.binding())
             }
             .await;
             let provider_session_id = match open {
@@ -195,10 +195,13 @@ impl InteractiveSessionDriver for OpenCodeHttpDriver {
 
     fn resume_session(
         &self,
-        _plan: PreflightPlan,
+        plan: PreflightPlan,
         _request: ResumeSessionRequest,
         _services: HostServices,
     ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
-        Box::pin(async { Err(unsupported("session resume")) })
+        Box::pin(async move {
+            Self::validate_plan(&plan)?;
+            Err(unsupported("session resume"))
+        })
     }
 }

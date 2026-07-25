@@ -10,6 +10,7 @@ pub enum CredentialMechanism {
     WorkloadIdentity,
     CloudProviderIdentity,
     GatewayHelper,
+    Unauthenticated,
     LocalUnauthenticated,
     ProviderSpecific(ExtensionNamespace),
 }
@@ -215,5 +216,29 @@ mod tests {
 
         assert_eq!(profile.credential_reference(), Some(&reference));
         assert!(!format!("{profile:?}").contains(reference.as_host_value()));
+    }
+
+    #[test]
+    fn unauthenticated_access_does_not_imply_local_topology_or_metering() {
+        assert_ne!(
+            CredentialMechanism::Unauthenticated,
+            CredentialMechanism::LocalUnauthenticated
+        );
+        let profile = AccessProfile::new(
+            AccessProfileId::new("remote-unauthenticated").expect("access id is valid"),
+            CredentialMechanism::Unauthenticated,
+            EntitlementMetering::Unknown,
+            EndpointAudience::new("remote-acp-endpoint").expect("audience is valid"),
+            SupportAuthority::ExperimentalObserved,
+        );
+
+        assert_eq!(
+            profile.credential_mechanism(),
+            &CredentialMechanism::Unauthenticated
+        );
+        assert_eq!(
+            profile.entitlement_metering(),
+            &EntitlementMetering::Unknown
+        );
     }
 }

@@ -26,6 +26,7 @@ mod provider_agent;
 mod provider_reference;
 mod realtime_media;
 mod registration;
+mod remote_acp;
 mod remote_resource;
 mod requirement;
 mod runtime_identity;
@@ -63,8 +64,9 @@ pub use installed_executable::{
 };
 pub use instance::{ConfiguredInstance, ModelRoute};
 pub use interface_version::{
-    InterfaceBehaviorRevision, InterfaceCompatibilityClaim, InterfaceCompatibilityClaimId,
-    InterfaceCompatibilityMatch, InterfaceSupportStatus, InterfaceVersion, InterfaceVersionAxis,
+    InterfaceBehaviorRevision, InterfaceCompatibilityAssessment, InterfaceCompatibilityClaim,
+    InterfaceCompatibilityClaimId, InterfaceCompatibilityMatch, InterfaceNewerVersionPosture,
+    InterfaceSupportStatus, InterfaceUnverifiedNewer, InterfaceVersion, InterfaceVersionAxis,
     InterfaceVersionBinding, InterfaceVersionScheme, InterfaceVersionSegment,
     InvalidInterfaceCompatibilityClaim,
 };
@@ -94,6 +96,12 @@ pub use realtime_media::{
 };
 pub use registration::{
     DiscoveryAction, DiscoveryOutcome, DiscoveryStatus, DriverDescriptor, SignInAction,
+};
+pub use remote_acp::{
+    InvalidRemoteAcpRequirements, REMOTE_ACP_WIRE_VERSION, RemoteAcpAffinityPolicy,
+    RemoteAcpConnectionBounds, RemoteAcpCoreSdkVersion, RemoteAcpRequirements,
+    RemoteAcpRfdRevision, RemoteAcpRfdStatus, RemoteAcpTransport, RemoteAcpTransportSdkVersion,
+    RemoteAcpVersionEvidence,
 };
 pub use remote_resource::OwnedRemoteResourceKind;
 pub use requirement::{

@@ -24,10 +24,14 @@ mod identity;
 mod input;
 mod installed_executable;
 mod model_artifact;
+mod negotiated_session_options;
 mod network;
 mod operation_policy;
 mod outcome;
 mod planned_connection_rollover;
+mod preparation;
+mod prepared_access;
+mod prepared_operation;
 mod process_input;
 mod process_io;
 mod provider_observation;
@@ -41,6 +45,7 @@ mod serving_lifecycle;
 mod session_access;
 mod session_binding;
 mod session_options;
+mod session_plan_agreement;
 mod session_provider_state;
 mod session_replay;
 mod time;
@@ -91,9 +96,9 @@ pub use host_traits::{
     SchemaService, ScopedTaskService, TimeService, WorkingResourceService,
 };
 pub use identity::{
-    CallbackId, DirectInferenceAttemptId, DirectToolCallId, HarnessCommandId, MediaStreamId,
-    RequestId, RuntimeIdentityRequired, RuntimeRunId, RuntimeSessionId, RuntimeTurnId, ScopeId,
-    ServingInstanceId,
+    AccessEvidenceSourceId, CallbackId, DirectInferenceAttemptId, DirectToolCallId,
+    HarnessCommandId, MediaStreamId, RequestId, RuntimeIdentityRequired, RuntimeRunId,
+    RuntimeSessionId, RuntimeTurnId, ScopeId, ServingInstanceId,
 };
 pub use input::{InputLimitExceeded, InputValueRequired};
 pub use installed_executable::{
@@ -101,6 +106,10 @@ pub use installed_executable::{
     validate_installed_executable_discovery_services,
 };
 pub use model_artifact::{ModelArtifactAccess, ModelArtifactLease, ModelArtifactService};
+pub use negotiated_session_options::{
+    EffectiveReasoningSetup, NegotiatedReasoningSetup, SessionLifecycleOperation,
+    prepare_negotiated_reasoning_setup,
+};
 pub use network::{AuthorizedEndpoint, NetworkGrant, NetworkPolicyService};
 pub use operation_policy::{
     IncompatibleOperationPolicy, OperationPolicy, ProviderExecutionPolicy, ProviderRecoveryPolicy,
@@ -113,6 +122,11 @@ pub use outcome::{
     TerminalOutcomeSender, TerminalStatus, terminal_outcome_channel,
 };
 pub use planned_connection_rollover::validate_planned_connection_rollover_plan;
+pub use preparation::{PreparationFailure, PreparationStage};
+pub use prepared_access::{AccessEvidenceProvenance, PreparedAccessEvidence};
+pub use prepared_operation::{
+    PreparedInterfaceCompatibility, PreparedOperationBinding, PreparedOperationEvidence,
+};
 pub use process_input::ProcessRequest;
 pub use process_io::{ProcessExit, ProcessInputChunk, ProcessOutputChunk, ProcessOutputStream};
 pub use provider_observation::{
@@ -142,6 +156,7 @@ pub use serving_lifecycle::validate_owned_serving_start;
 pub use session_access::{validate_session_access_plan, validate_session_resource_lease};
 pub use session_binding::SessionResumeBinding;
 pub use session_options::{SessionOptions, ToolDeclaration};
+pub use session_plan_agreement::{SessionPlanAgreement, validate_session_plan_agreement};
 pub use session_provider_state::validate_session_provider_state_plan;
 pub use session_replay::{SessionReplayItem, SessionReplayKind};
 pub use swallowtail_core::{

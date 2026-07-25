@@ -39,7 +39,7 @@ pub fn qwen_headless_descriptor() -> DriverDescriptor {
         IntegrationFamilyId::new("qwen-code").expect("static family id is valid"),
         TransportFamilyId::new("structured-cli-stream-json").expect("static transport id is valid"),
     )
-    .with_roles([DriverRole::StructuredRun])
+    .with_roles([DriverRole::Discovery, DriverRole::StructuredRun])
     .with_execution_layers([ExecutionLayer::HarnessInteraction])
     .with_operation_shapes([OperationShape::StructuredRun])
     .with_required_host_services(
@@ -50,6 +50,16 @@ pub fn qwen_headless_descriptor() -> DriverDescriptor {
             HostServiceKind::Time,
         ],
     )
+    .with_required_host_services(
+        DriverRole::Discovery,
+        [
+            HostServiceKind::Task,
+            HostServiceKind::Time,
+            HostServiceKind::Process,
+        ],
+    )
+    .with_discovery_actions([swallowtail_core::DiscoveryAction::Probe])
+    .with_interface_compatibility(crate::qwen_headless_claim())
 }
 
 impl StructuredRunDriver for QwenHeadlessDriver {

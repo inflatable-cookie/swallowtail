@@ -8,7 +8,8 @@ use swallowtail_core::{
     InstancePolicyId, InstanceRevision, InstanceTargetRef, IntegrationFamilyId, MediaDirection,
     ModelId, ModelRoute, ModelRouteId, ModelRouteRevision, OperationRequirements, OperationShape,
     PreflightContext, PreflightFailure, PreflightPlan, ProtocolFacadeId, RealtimeMediaRequirements,
-    RuntimeReadiness, SessionAccessPolicy, SupportAuthority, TransportFamilyId, preflight,
+    RuntimeReadiness, SessionAccessPolicy, SessionProviderStatePolicy, SupportAuthority,
+    TransportFamilyId, preflight,
 };
 use swallowtail_runtime::{OpenRealtimeMediaSessionRequest, RequestId};
 
@@ -147,7 +148,9 @@ impl RealtimeMediaPreflightFixture {
             .with_planned_connection_rollover(rollover::policy(case))
             .require_model_route();
         let requirements = if shape == OperationShape::InteractiveSession {
-            requirements.with_session_access_policy(SessionAccessPolicy::resource_free())
+            requirements
+                .with_session_access_policy(SessionAccessPolicy::resource_free())
+                .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited)
         } else {
             requirements
         };

@@ -12,3 +12,6 @@ until code lands.
   Swallowtail and its consumers
 - [Consumer Runtime Evidence](consumer-runtime-evidence.md) — realized Nucleus
   and Soundcheck execution shapes
+- [Release And Package Topology](release-and-package-topology.md) — realized
+  public package roles, dependency order, version shape, MSRV bands,
+  deterministic local gates, and release authority

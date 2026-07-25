@@ -33,7 +33,7 @@ fn validate_open(
     services: &HostServices,
 ) -> Result<(), RuntimeFailure> {
     require_services(services, true)?;
-    validate_session_access_plan(plan, request.access_policy())?;
+    swallowtail_runtime::validate_session_plan_agreement(plan, request.plan_agreement())?;
     if request.access_policy()
         != &SessionAccessPolicy::ambient_harness(swallowtail_core::ResourceAccess::Read)
     {

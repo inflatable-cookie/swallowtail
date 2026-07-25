@@ -2,24 +2,29 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-23
+Updated: 2026-07-25
 
 ## Generations
 
 | Generation | Status | Focus |
 | --- | --- | --- |
-| `g01` | active | Standalone authority, contract and runtime kernels, integration landscape, proof drivers, consumer adoption, hosted transports, ACP, and self-hosted coverage. |
+| `g01` | completed | Standalone authority, contract and runtime kernels, integration landscape, proof drivers, consumer adoption, hosted transports, ACP, and self-hosted coverage. |
+| `g02` | active | API stabilization, provider-wide prepared facades, packaging, consumer upgrade support, and release discipline. |
 
 ## Generation Size
 
 A generation normally contains 30-50 numbered roadmap files. Batch cards do
-not count toward this range. g01 contains 40 roadmaps and remains the active
-container. Roadmaps 031-033 complete OpenAI Realtime and Gemini Live
-portability. Roadmap 034 closes the post-Gemini coverage checkpoint. Roadmap
-035 closes the Pi RPC harness proof. Roadmap 036 and cards 102-104 complete the
-DeepSeek direct-continuation evidence, contract, and production proof. Roadmap
-037 and card 105 close the post-continuation coverage and compatibility-window
-checkpoint. Roadmap 038 and cards 106-109 complete the attach-only Ollama
-native range proof. Roadmap 039 begins the installed-harness compatibility
-range audit and closes the first six-month Codex proof. Roadmap 040 begins the
-second installed-harness range selection. g01 does not roll.
+not count toward this range. The operator closed g01 on 2026-07-24 after 48
+completed roadmaps and one backlog move. Roadmap 047 moved to the shared
+backlog; its cards remain g01 evidence.
+
+g02 resets numbering and begins at roadmap 001. The rollover is manual because
+g01 reached 49 roadmaps and the next programme changes the sequencing baseline
+from integration-shape expansion to library stabilization and release
+discipline. Roadmap 001 proves package and candidate preparation. Roadmaps
+002-006 complete prepared integration contracts, the Codex facade, Nucleus and
+Soundcheck migration, and packaged consumer runtime proof. Roadmaps 007-012
+sequence provider-wide facade foundations, representative cross-shape proofs,
+all remaining production routes, packaged acceptance, and later replacement
+candidate evidence. No package publication, tag, or release mutation is
+implied.

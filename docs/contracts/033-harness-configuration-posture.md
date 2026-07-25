@@ -36,6 +36,11 @@ requires the same posture for each operation. The immutable preflight plan
 retains that binding. The runtime request policy must agree exactly before any
 provider or host effect.
 
+A Contract 037 provider-specific profile may bind the posture fixed by its
+selected qualified driver and derive the matching runtime request echo. The
+expanded posture remains inspectable before effects. This does not choose a
+different posture, infer ambient agreement, or add configuration authority.
+
 An absent posture means the route has not migrated to this contract. It is not
 an alias for `Ambient`. New and migrated harness routes bind a posture
 explicitly. Direct-model inference cannot declare one.

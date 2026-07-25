@@ -5,17 +5,17 @@ use swallowtail_core::{
     CapabilityConstraint, CapabilityProfile, CapabilityRequirement, ConfiguredInstance,
     ConfiguredInstanceId, CredentialMechanism, CredentialRef, CredentialState, DriverRole,
     EndpointAudience, EndpointAuthorization, EntitlementMetering, EntitlementState,
-    ExecutionHostId, ExecutionLayer, ExtensionNamespace, HarnessIsolation, HarnessRpcPolicy,
-    HarnessSchedulingBounds, HostServiceKind, InstanceOwnership, InstancePolicyId,
-    InstanceRevision, InstanceTargetRef, InterfaceVersion, InterfaceVersionAxis,
-    InterfaceVersionBinding, ModelId, ModelRoute, ModelRouteId, ModelRouteRevision,
-    OperationRequirements, OperationShape, PreflightContext, PreflightPlan, ProtocolFacadeId,
-    ProviderId, ResourceAccess, ResourceRepresentation, RuntimeReadiness, SessionAccessPolicy,
-    SupportAuthority, preflight,
+    ExecutionHostId, ExecutionLayer, ExtensionNamespace, HarnessConfigurationPosture,
+    HarnessIsolation, HarnessRpcPolicy, HarnessSchedulingBounds, HostServiceKind,
+    InstanceOwnership, InstancePolicyId, InstanceRevision, InstanceTargetRef, InterfaceVersion,
+    InterfaceVersionAxis, InterfaceVersionBinding, ModelId, ModelRoute, ModelRouteId,
+    ModelRouteRevision, OperationRequirements, OperationShape, PreflightContext, PreflightPlan,
+    ProtocolFacadeId, ProviderId, ResourceAccess, ResourceRepresentation, RuntimeReadiness,
+    SessionAccessPolicy, SessionProviderStatePolicy, SupportAuthority, preflight,
 };
 use swallowtail_runtime::{
-    Deadline, OpenSessionRequest, OperationContent, RequestId, RuntimeTurnId, TurnRequest,
-    WorkingResourceRef,
+    Deadline, OpenSessionRequest, OperationContent, RequestId, RuntimeTurnId, SessionPlanAgreement,
+    TurnRequest, WorkingResourceRef,
 };
 use swallowtail_testkit::ExecutionTopologyFixture;
 
@@ -73,6 +73,7 @@ fn build_selection(
         capabilities.clone(),
     )
     .with_interface_versions([version.clone()])
+    .with_harness_configuration_posture(HarnessConfigurationPosture::ProviderSuppressed)
     .with_harness_rpc_policy(rpc_policy.clone());
     let route = ModelRoute::new(
         ModelRouteId::new("pi.fixture.route").expect("valid route"),
@@ -117,7 +118,9 @@ fn build_selection(
     .with_host_services(services)
     .with_capabilities(capability_requirements)
     .with_harness_isolation(HarnessIsolation::AmbientHost)
+    .with_harness_configuration_posture(HarnessConfigurationPosture::ProviderSuppressed)
     .with_session_access_policy(SessionAccessPolicy::ambient_harness(ResourceAccess::Read))
+    .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited)
     .with_interface_versions([version])
     .with_harness_rpc_policy(rpc_policy)
     .require_model_route();
@@ -135,8 +138,16 @@ fn build_selection(
 }
 
 pub fn open_request(id: &str, resource: WorkingResourceRef) -> OpenSessionRequest {
-    OpenSessionRequest::new(RequestId::new(id).expect("valid request"), resource, None)
-        .with_access_policy(SessionAccessPolicy::ambient_harness(ResourceAccess::Read))
+    OpenSessionRequest::new(
+        RequestId::new(id).expect("valid request"),
+        resource,
+        None,
+        SessionPlanAgreement::explicit(
+            SessionAccessPolicy::ambient_harness(ResourceAccess::Read),
+            Some(SessionProviderStatePolicy::Prohibited),
+            Some(HarnessConfigurationPosture::ProviderSuppressed),
+        ),
+    )
 }
 
 pub fn turn_request(id: &str, deadline: Deadline) -> TurnRequest {

@@ -1,5 +1,6 @@
 use crate::failure::{failure, unsupported};
-use crate::protocol::{AUDIENCE, Request, parse_models};
+use crate::protocol::{Request, parse_models};
+use crate::selection::KIMI_PLATFORM_ENDPOINT_AUDIENCE;
 use crate::transport::CurlTransport;
 use std::sync::Arc;
 use std::sync::atomic::AtomicBool;
@@ -38,7 +39,7 @@ impl KimiPlatformDirectDriver {
         }
         if plan.credential_mechanism() != &CredentialMechanism::ApiKey
             || plan.credential_reference().is_none()
-            || plan.endpoint_audience().as_str() != AUDIENCE
+            || plan.endpoint_audience().as_str() != KIMI_PLATFORM_ENDPOINT_AUDIENCE
         {
             return Err(failure(
                 "swallowtail.kimi_platform.access_binding_rejected",

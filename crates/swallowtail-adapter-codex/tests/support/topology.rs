@@ -5,7 +5,7 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     EnvironmentRef, OpenSessionRequest, RequestId, SchemaDocument, SessionAccessPolicy,
-    SessionOptions, ToolDeclaration,
+    SessionOptions, SessionPlanAgreement, ToolDeclaration,
 };
 use swallowtail_testkit::ExecutionTopologyFixture;
 
@@ -42,8 +42,12 @@ pub fn open_request(prefix: &str, topology: &ExecutionTopologyFixture) -> OpenSe
         request_id(prefix, topology),
         topology.working_resource().clone(),
         None,
+        SessionPlanAgreement::explicit(
+            SessionAccessPolicy::read_only(),
+            Some(swallowtail_core::SessionProviderStatePolicy::Prohibited),
+            Some(swallowtail_core::HarnessConfigurationPosture::Ambient),
+        ),
     )
-    .with_access_policy(SessionAccessPolicy::read_only())
 }
 
 pub fn tool_capability() -> CapabilityRequirement {

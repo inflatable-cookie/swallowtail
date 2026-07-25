@@ -49,10 +49,12 @@ pub(crate) fn run() -> ConformanceReport {
             .any(|requirement| requirement.capability() == Capability::Resume)
     );
 
-    let open = OpenSessionRequest::resource_free(
+    let open = OpenSessionRequest::resource_free_from_plan(
+        &plan,
         RequestId::new("direct-session-open").expect("request id is valid"),
         None,
-    );
+    )
+    .expect("direct-session request derives from plan");
     assert!(open.working_resource().is_none());
     assert!(open.access_policy().resource_access().is_none());
 

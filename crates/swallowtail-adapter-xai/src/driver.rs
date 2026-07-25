@@ -65,4 +65,5 @@ pub fn xai_websocket_descriptor() -> DriverDescriptor {
             HostServiceKind::Credential,
         ],
     )
+    .with_interface_compatibility(crate::xai_responses_facade_claim())
 }

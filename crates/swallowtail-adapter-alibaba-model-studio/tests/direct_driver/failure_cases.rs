@@ -1,9 +1,9 @@
-use super::{complete, open, open_request, turn_request};
+use super::{complete, open, open_request, plan_agreement, turn_request};
 use crate::support::{DriverFixture, ServerScenario};
 use futures_executor::block_on;
 use futures_util::StreamExt;
 use swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioDriver;
-use swallowtail_core::{OwnedRemoteResourceKind, ReasoningMode, SessionProviderStatePolicy};
+use swallowtail_core::{OwnedRemoteResourceKind, ReasoningMode};
 use swallowtail_runtime::{
     CleanupOutcome, Deadline, InteractiveSessionDriver, MonotonicInstant, OpenSessionRequest,
     ProviderCancellationOutcome, RemoteResourceDeletionOutcome, RequestId, SessionOptions,
@@ -157,8 +157,8 @@ fn unsupported_session_options_and_elapsed_deadline_fail_before_effects() {
     let expired = OpenSessionRequest::resource_free(
         RequestId::new("deadline-reject").expect("request id"),
         Some(Deadline::at(MonotonicInstant::from_ticks(0))),
-    )
-    .with_provider_state_policy(SessionProviderStatePolicy::DurableConversationDeleteOnClose);
+        plan_agreement(),
+    );
     let error = block_on(AlibabaModelStudioDriver::new().open_session(
         fixture.plan(),
         expired,

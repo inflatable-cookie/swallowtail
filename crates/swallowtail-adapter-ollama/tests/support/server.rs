@@ -21,6 +21,9 @@ const DISCONNECT: &str =
 pub enum VersionFixture {
     Expected,
     Drift,
+    DriftAfterPreparation,
+    Excluded,
+    Newer,
 }
 
 #[derive(Clone, Copy)]
@@ -36,6 +39,7 @@ pub struct FixtureServer {
     endpoint: String,
     targets: Arc<Mutex<Vec<String>>>,
     inference_attempts: Arc<AtomicUsize>,
+    version_requests: Arc<AtomicUsize>,
     stop: Arc<AtomicBool>,
     thread: Option<JoinHandle<()>>,
 }
@@ -50,9 +54,11 @@ impl FixtureServer {
         let endpoint = format!("http://{}", listener.local_addr().expect("address exists"));
         let targets = Arc::new(Mutex::new(Vec::new()));
         let inference_attempts = Arc::new(AtomicUsize::new(0));
+        let version_requests = Arc::new(AtomicUsize::new(0));
         let stop = Arc::new(AtomicBool::new(false));
         let server_targets = Arc::clone(&targets);
         let server_attempts = Arc::clone(&inference_attempts);
+        let server_versions = Arc::clone(&version_requests);
         let server_stop = Arc::clone(&stop);
         let thread = thread::spawn(move || {
             loop {
@@ -71,6 +77,7 @@ impl FixtureServer {
                         &mut stream,
                         &request,
                         &server_attempts,
+                        &server_versions,
                         version,
                         stream_fixture,
                     );
@@ -81,6 +88,7 @@ impl FixtureServer {
             endpoint,
             targets,
             inference_attempts,
+            version_requests,
             stop,
             thread: Some(thread),
         }
@@ -99,6 +107,10 @@ impl FixtureServer {
 
     pub fn inference_attempts(&self) -> usize {
         self.inference_attempts.load(Ordering::SeqCst)
+    }
+
+    pub fn version_requests(&self) -> usize {
+        self.version_requests.load(Ordering::SeqCst)
     }
 
     pub fn is_reachable(&self) -> bool {
@@ -163,14 +175,20 @@ fn respond(
     stream: &mut TcpStream,
     request: &FixtureRequest,
     attempts: &AtomicUsize,
+    version_requests: &AtomicUsize,
     version: VersionFixture,
     stream_fixture: StreamFixture,
 ) {
     match (request.method.as_str(), request.target.as_str()) {
         ("GET", "/api/version") => {
+            let request_index = version_requests.fetch_add(1, Ordering::SeqCst);
             let body = match version {
                 VersionFixture::Expected => VERSION.to_owned(),
                 VersionFixture::Drift => VERSION.replace("0.30.0", "0.32.1"),
+                VersionFixture::DriftAfterPreparation if request_index == 0 => VERSION.to_owned(),
+                VersionFixture::DriftAfterPreparation => VERSION.replace("0.30.0", "0.32.1"),
+                VersionFixture::Excluded => VERSION.replace("0.30.0", "0.32.2"),
+                VersionFixture::Newer => VERSION.replace("0.30.0", "0.33.0"),
             };
             respond_with(stream, 200, "application/json", &body);
         }

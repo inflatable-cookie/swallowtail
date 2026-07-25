@@ -6,11 +6,10 @@ mod session;
 mod worker;
 
 use crate::failure::failure;
-use std::num::{NonZeroU16, NonZeroU32, NonZeroU64};
 use swallowtail_core::{
-    AdapterId, AdapterIdentity, AdapterVersion, AudioEncoding, Capability, CapabilityConstraint,
+    AdapterId, AdapterIdentity, AdapterVersion, Capability, CapabilityConstraint,
     CredentialMechanism, DriverDescriptor, DriverRole, ExecutionLayer, HostServiceKind,
-    MediaFormat, OperationShape, PreflightPlan, RealtimeMediaConfig, TransportFamilyId,
+    OperationShape, PreflightPlan, RealtimeMediaConfig, TransportFamilyId,
 };
 use swallowtail_runtime::{HostServices, OpenRealtimeMediaSessionRequest, RuntimeFailure};
 
@@ -132,20 +131,11 @@ pub fn openai_realtime_descriptor() -> DriverDescriptor {
             HostServiceKind::Credential,
         ],
     )
+    .with_interface_compatibility(crate::openai_realtime_facade_claim())
 }
 
 pub(crate) fn realtime_config() -> RealtimeMediaConfig {
-    let format = MediaFormat::audio(
-        AudioEncoding::Pcm16LittleEndian,
-        NonZeroU32::new(24_000).expect("sample rate is nonzero"),
-        NonZeroU16::new(1).expect("channel count is nonzero"),
-    );
-    RealtimeMediaConfig::new(
-        format,
-        format,
-        NonZeroU64::new(32_768).expect("chunk bound is nonzero"),
-        NonZeroU32::new(2).expect("turn bound is nonzero"),
-    )
+    crate::openai_realtime_media_config()
 }
 
 fn rejected(reason: &'static str) -> RuntimeFailure {

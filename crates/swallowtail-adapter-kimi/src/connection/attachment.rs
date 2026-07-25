@@ -33,6 +33,18 @@ impl AcpConnection {
             .await
     }
 
+    pub(crate) async fn set_config_option(
+        &self,
+        session_id: &str,
+        value: &str,
+    ) -> Result<Value, RuntimeFailure> {
+        self.request(
+            "session/set_config_option",
+            json!({"sessionId": session_id, "configId": "thinking", "value": value}),
+        )
+        .await
+    }
+
     pub(crate) async fn load_session(
         &self,
         session: SessionRef,

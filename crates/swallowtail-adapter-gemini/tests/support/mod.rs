@@ -9,11 +9,11 @@ use swallowtail_core::{
     CapabilityConstraint, CapabilityProfile, CapabilityRequirement, ConfiguredInstance,
     ConfiguredInstanceId, CredentialMechanism, CredentialRef, CredentialState, DriverRole,
     EndpointAudience, EndpointAuthorization, EntitlementMetering, EntitlementState,
-    ExecutionHostId, ExecutionLayer, InstanceOwnership, InstancePolicyId, InstanceRevision,
-    InstanceTargetRef, ModelId, ModelRoute, ModelRouteId, ModelRouteRevision,
+    ExecutionHostId, ExecutionLayer, HarnessConfigurationPosture, HarnessIsolation,
+    InstanceOwnership, InstancePolicyId, InstanceRevision, InstanceTargetRef,
     OperationRequirements, OperationShape, PreflightContext, PreflightPlan, ProtocolFacadeId,
     ResourceAccess, ResourceRepresentation, RuntimeReadiness, SessionAccessPolicy,
-    SupportAuthority, preflight,
+    SessionProviderStatePolicy, SupportAuthority, preflight,
 };
 use swallowtail_runtime::{
     BoxFuture, CleanupOutcome, HostServices, JoinedTask, ProcessExit, ProcessHandle,
@@ -33,11 +33,16 @@ pub struct FixtureHost {
 
 impl FixtureHost {
     pub fn new(scenario: Scenario) -> Self {
+        Self::with_version(scenario, "0.51.0")
+    }
+
+    pub fn with_version(scenario: Scenario, version: &str) -> Self {
         Self {
             agent: Arc::new(SharedAgent {
                 state: Mutex::new(AgentState::default()),
                 changed: Condvar::new(),
                 scenario,
+                version: version.to_owned(),
             }),
             process: Arc::new(Mutex::new(None)),
             reads: Arc::new(AtomicUsize::new(0)),

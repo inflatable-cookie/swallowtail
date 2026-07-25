@@ -4,12 +4,15 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
+readme.workspace = true
+publish.workspace = true
+rust-version.workspace = true
 description = "Deterministic adapter conformance support for Swallowtail"
 
 [dependencies]
 futures-core = "0.3"
-swallowtail-core = { path = "../swallowtail-core" }
-swallowtail-runtime = { path = "../swallowtail-runtime" }
+swallowtail-core.workspace = true
+swallowtail-runtime.workspace = true
 
 [lints]
 workspace = true

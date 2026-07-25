@@ -29,7 +29,7 @@ fn validate_open(
             return Err(failure(code, message));
         }
     }
-    validate_session_access_plan(plan, request.access_policy())?;
+    swallowtail_runtime::validate_session_plan_agreement(plan, request.plan_agreement())?;
     if request.access_policy()
         != &SessionAccessPolicy::ambient_harness(swallowtail_core::ResourceAccess::Read)
     {
@@ -50,14 +50,17 @@ fn validate_open(
     Ok(())
 }
 
-fn validate_initialize(response: &Value) -> Result<(), RuntimeFailure> {
+fn validate_initialize(
+    response: &Value,
+    selected_version: &swallowtail_core::InterfaceVersion,
+) -> Result<(), RuntimeFailure> {
     let info = response.get("agentInfo").ok_or_else(malformed)?;
     if info.get("name").and_then(Value::as_str) != Some("gemini-cli")
-        || info.get("version").and_then(Value::as_str) != Some(GEMINI_VERSION)
+        || info.get("version").and_then(Value::as_str) != Some(selected_version.as_str())
     {
         return Err(failure(
             "swallowtail.gemini.acp.agent_version_rejected",
-            "Gemini ACP requires the pinned Gemini CLI version",
+            "Gemini ACP identity does not match the preflight version",
         ));
     }
     let has_api_key = response

@@ -1,0 +1,2 @@
+{"direction":"client_to_agent","message":{"jsonrpc":"2.0","id":3,"method":"session/set_config_option","params":{"sessionId":"kimi-session-effort","configId":"thinking","value":"high"}}}
+{"direction":"agent_to_client","message":{"jsonrpc":"2.0","id":3,"result":{"configOptions":[{"type":"select","id":"thinking","name":"Thinking","category":"thought_level","currentValue":"medium","options":[{"value":"off","name":"Off"},{"value":"low","name":"Low"},{"value":"medium","name":"Medium"},{"value":"high","name":"High"}]}]}}}

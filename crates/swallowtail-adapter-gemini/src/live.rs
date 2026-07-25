@@ -6,12 +6,12 @@ mod session;
 mod worker;
 
 use crate::failure::failure;
-use std::num::{NonZeroU16, NonZeroU32, NonZeroU64};
+use std::num::NonZeroU32;
 use swallowtail_core::{
-    AdapterId, AdapterIdentity, AdapterVersion, AudioEncoding, Capability, CapabilityConstraint,
+    AdapterId, AdapterIdentity, AdapterVersion, Capability, CapabilityConstraint,
     CredentialMechanism, DriverDescriptor, DriverRole, ExecutionLayer, HostServiceKind,
-    MediaFormat, OperationShape, PlannedConnectionRolloverPolicy, PreflightPlan,
-    RealtimeMediaConfig, TransportFamilyId,
+    OperationShape, PlannedConnectionRolloverPolicy, PreflightPlan, RealtimeMediaConfig,
+    TransportFamilyId,
 };
 use swallowtail_runtime::{
     HostServices, OpenRealtimeMediaSessionRequest, RuntimeFailure,
@@ -19,14 +19,13 @@ use swallowtail_runtime::{
 };
 
 pub(crate) const DRIVER_ID: &str = "swallowtail.gemini.live";
-pub(crate) const MODEL_ID: &str = "gemini-3.1-flash-live-preview";
+pub(crate) const MODEL_ID: &str = crate::GEMINI_LIVE_MODEL_ID;
 pub(crate) const MODEL_RESOURCE: &str = "models/gemini-3.1-flash-live-preview";
 pub(crate) const LIVE_PATH: &str =
     "/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent";
-pub(crate) const AUDIENCE: &str = "generativelanguage.googleapis.com";
-const ACCESS_PROFILE: &str = "gemini.authorization-api-key.project";
-const PROTOCOL_FACADE: &str =
-    "google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent";
+pub(crate) const AUDIENCE: &str = crate::GEMINI_LIVE_ENDPOINT_AUDIENCE;
+const ACCESS_PROFILE: &str = crate::GEMINI_LIVE_ACCESS_PROFILE_ID;
+const PROTOCOL_FACADE: &str = crate::GEMINI_LIVE_FACADE_REVISION;
 const INSTANCE_POLICY: &str = "gemini-live-preview-authorization-key-manual-audio";
 
 #[derive(Clone, Default)]
@@ -156,25 +155,11 @@ pub fn gemini_live_descriptor() -> DriverDescriptor {
             HostServiceKind::Credential,
         ],
     )
+    .with_interface_compatibility(crate::gemini_live_facade_claim())
 }
 
 pub(crate) fn live_config() -> RealtimeMediaConfig {
-    let input = MediaFormat::audio(
-        AudioEncoding::Pcm16LittleEndian,
-        NonZeroU32::new(16_000).unwrap(),
-        NonZeroU16::new(1).unwrap(),
-    );
-    let output = MediaFormat::audio(
-        AudioEncoding::Pcm16LittleEndian,
-        NonZeroU32::new(24_000).unwrap(),
-        NonZeroU16::new(1).unwrap(),
-    );
-    RealtimeMediaConfig::new(
-        input,
-        output,
-        NonZeroU64::new(32_768).unwrap(),
-        NonZeroU32::new(2).unwrap(),
-    )
+    crate::gemini_live_media_config()
 }
 
 fn rejected(reason: &'static str) -> RuntimeFailure {

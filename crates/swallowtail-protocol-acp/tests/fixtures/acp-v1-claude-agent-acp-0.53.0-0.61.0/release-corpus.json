@@ -1,0 +1,176 @@
+{
+  "accessed": "2026-07-24",
+  "package": "@agentclientprotocol/claude-agent-acp",
+  "platform_package": "@anthropic-ai/claude-agent-sdk-darwin-arm64",
+  "publication": {
+    "candidate_first": "0.52.0",
+    "qualified_first": "0.53.0",
+    "last": "0.61.0",
+    "published_count": 11,
+    "missing": ["0.58.0"]
+  },
+  "releases": [
+    {
+      "version": "0.52.0",
+      "published_at": "2026-06-25T15:12:08.435Z",
+      "tag_commit": "e9163f855398511c6eec0116216d8c06c52ec658",
+      "acp_sdk": "1.0.0",
+      "agent_sdk": "0.3.191",
+      "native_cli": "2.1.191",
+      "native_cli_sha256": "99fdfb552a5260e649aedd06c024d0a4105b09cefec0bf67d558e017ee66c400",
+      "qualified": false
+    },
+    {
+      "version": "0.53.0",
+      "published_at": "2026-06-29T13:50:45.154Z",
+      "tag_commit": "47fee477096f9edd4aeb994679658fb0914cc0c0",
+      "acp_sdk": "1.0.0",
+      "agent_sdk": "0.3.195",
+      "native_cli": "2.1.195",
+      "native_cli_sha256": "8b45adad93f336ab95f33e714494b19fd3377a494eb05c122c8677bc895876ad",
+      "qualified": true
+    },
+    {
+      "version": "0.54.0",
+      "published_at": "2026-06-30T19:02:39.071Z",
+      "tag_commit": "71d93b3adac16baf0229bce9775a2bdf94a6d47c",
+      "acp_sdk": "1.1.0",
+      "agent_sdk": "0.3.197",
+      "native_cli": "2.1.197",
+      "native_cli_sha256": "8cc0c4d1e4eb1dca3b0cc92ab02ee3505de764e023f8c901761c167b72041fb8",
+      "qualified": true
+    },
+    {
+      "version": "0.54.1",
+      "published_at": "2026-06-30T19:04:43.494Z",
+      "tag_commit": "15ec9ab0dcd79b417674b11748bfeace629c085d",
+      "acp_sdk": "1.1.0",
+      "agent_sdk": "0.3.197",
+      "native_cli": "2.1.197",
+      "native_cli_sha256": "8cc0c4d1e4eb1dca3b0cc92ab02ee3505de764e023f8c901761c167b72041fb8",
+      "qualified": true
+    },
+    {
+      "version": "0.55.0",
+      "published_at": "2026-07-02T11:17:31.393Z",
+      "tag_commit": "6e0179288af6485f7c933a9c21f403fa353f42c1",
+      "acp_sdk": "1.1.0",
+      "agent_sdk": "0.3.198",
+      "native_cli": "2.1.198",
+      "native_cli_sha256": "ab6f7ee109816ede414f7c285446633f805b623aa609f425609a64266451d61e",
+      "qualified": true
+    },
+    {
+      "version": "0.56.0",
+      "published_at": "2026-07-06T09:32:04.067Z",
+      "tag_commit": "837989ef96091cb1910f7865ef1807b42e9a9f86",
+      "acp_sdk": "1.1.0",
+      "agent_sdk": "0.3.201",
+      "native_cli": "2.1.201",
+      "native_cli_sha256": "a0852d76afc47b30f5cb0b7625ec9a7714cb189f2eeef6c28c77e2be954fb7fd",
+      "qualified": true
+    },
+    {
+      "version": "0.57.0",
+      "published_at": "2026-07-07T08:38:49.135Z",
+      "tag_commit": "2bf865eb42bbe744c476d38a005444eab8f4b624",
+      "acp_sdk": "1.2.0",
+      "agent_sdk": "0.3.202",
+      "native_cli": "2.1.202",
+      "native_cli_sha256": "7414f707861e2fe5afef33a466f888a8d2170e5028f5e9d2858f1d3ef45ffca5",
+      "qualified": true
+    },
+    {
+      "version": "0.58.1",
+      "published_at": "2026-07-09T12:20:41.292Z",
+      "tag_commit": "3500ef736ffe816ab5b01c0c20669015fb4cf8b7",
+      "acp_sdk": "1.2.1",
+      "agent_sdk": "0.3.205",
+      "native_cli": "2.1.205",
+      "native_cli_sha256": "33e28624c5ae84f2bd7d2d8761e5d2e77997ba965cb11b6448de6b6e2c566f9c",
+      "qualified": true
+    },
+    {
+      "version": "0.59.0",
+      "published_at": "2026-07-13T16:47:10.636Z",
+      "tag_commit": "30b7c06f7640fb6a0530ba18f85e26fe2bc08882",
+      "acp_sdk": "1.2.1",
+      "agent_sdk": "0.3.207",
+      "native_cli": "2.1.207",
+      "native_cli_sha256": "1397a062c6889675055e3314dd956376ac51262a7734ad9e819c26975d71547a",
+      "qualified": true
+    },
+    {
+      "version": "0.60.0",
+      "published_at": "2026-07-20T12:51:55.179Z",
+      "tag_commit": "0a88de2a83d017e0f5f6f429f7edea3700313f3a",
+      "acp_sdk": "1.2.1",
+      "agent_sdk": "0.3.215",
+      "native_cli": "2.1.215",
+      "native_cli_sha256": "90608b5c5ab504e96e77365cea6203d046e291d59b2bb42cf28dcb2ccdf9dd58",
+      "qualified": true
+    },
+    {
+      "version": "0.61.0",
+      "published_at": "2026-07-22T13:43:42.946Z",
+      "tag_commit": "c19bddcf7914259d6c15103a2d1580c7371e1d16",
+      "acp_sdk": "1.3.0",
+      "agent_sdk": "0.3.217",
+      "native_cli": "2.1.217",
+      "native_cli_sha256": "5840c777fd47115e9ca276e165563c6e121e7c7e2b4d86598e0025f8cc37de56",
+      "qualified": true
+    }
+  ],
+  "milestones": [
+    {
+      "version": "0.53.0",
+      "behavior_revision": "claude-agent.acp.baseline-v1",
+      "evidence": ["nested --cli --version forwarding", "tool_call precedes permission request", "ACP logout advertised but excluded"]
+    },
+    {
+      "version": "0.54.0",
+      "behavior_revision": "claude-agent.acp.session-config-v2",
+      "evidence": ["fast mode session option added", "ACP SDK 1.1.0"]
+    },
+    {
+      "version": "0.60.0",
+      "behavior_revision": "claude-agent.acp.provider-capability-v3",
+      "evidence": ["providers capability added", "provider mutation excluded"]
+    },
+    {
+      "version": "0.61.0",
+      "behavior_revision": "claude-agent.acp.steering-metadata-v4",
+      "evidence": ["steering metadata added", "steering request excluded"]
+    }
+  ],
+  "source_digests": {
+    "0.53.0": {
+      "package_json_sha256": "28dd04b45663f2ff8328d6943fc367c09c08a81bdf6a23ca80e587b40e68d1f2",
+      "index_ts_sha256": "ce0f82181291c9ea53d74614dc0ffdcffc506b42bf50ef063f50e2d418831c9e",
+      "acp_agent_ts_sha256": "f2165a699d70d7764f8021931cb1bb2ce858988ba1d27634b4dbd1a472e94ea6"
+    },
+    "0.54.0": {
+      "package_json_sha256": "f43b7a4d0ac395e7f08a4deb9bf0ee27adb495b122e92cc26557386dc1fec6c9",
+      "index_ts_sha256": "ce0f82181291c9ea53d74614dc0ffdcffc506b42bf50ef063f50e2d418831c9e",
+      "acp_agent_ts_sha256": "b4867da6caa114b330f8c55c259371de9478136e86b97c9ab258a170b19904f6"
+    },
+    "0.60.0": {
+      "package_json_sha256": "75208fcbec992fdd6690dbca202279f6eddfefdc090d5c93cc765f62efc08478",
+      "index_ts_sha256": "ce0f82181291c9ea53d74614dc0ffdcffc506b42bf50ef063f50e2d418831c9e",
+      "acp_agent_ts_sha256": "48ee1e659d47cf2e4662b98ad2bd697598c4627a64689af3c4a51ff99c45a422"
+    },
+    "0.61.0": {
+      "package_json_sha256": "be16421fa58472d12f3579375e25e6eef4093c33b44002f23881575aa17f8895",
+      "index_ts_sha256": "ce0f82181291c9ea53d74614dc0ffdcffc506b42bf50ef063f50e2d418831c9e",
+      "acp_agent_ts_sha256": "7805f0931c2c3eb803bb5d6264d610efdac08b00afa4538fe2484623ecf4e885"
+    }
+  },
+  "native_probe": {
+    "platform": "darwin-arm64",
+    "network": "denied",
+    "home": "empty",
+    "state_files_created": 0,
+    "codesign_identifier": "com.anthropic.claude-code",
+    "codesign_team": "Q6L2SF6YDW"
+  }
+}

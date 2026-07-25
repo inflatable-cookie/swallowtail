@@ -1,0 +1,126 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-07-24",
+  "release": {
+    "repository": "MoonshotAI/kimi-code",
+    "version": "0.29.0",
+    "tag": "@moonshot-ai/kimi-code@0.29.0",
+    "published_at": "2026-07-22T09:27:29Z",
+    "annotated_tag_object": "03c34eefa49513e6216390a9773326077a37f414",
+    "source_commit": "8bf5bacba9e524c38fb808c0122070037ead25a8",
+    "acp_adapter_package": "0.3.5",
+    "locked_acp_sdk": "0.23.0",
+    "locked_zod": "4.3.6",
+    "wire_version": 1
+  },
+  "source": {
+    "config_options_sha256": "4fb35fb760a868dff6ec0b212d050904eb48435701c42e86e3e192552b8d4567",
+    "session_sha256": "1e4fe3cfd52b29cd4a3210099678cd486550b9cf012f078c40f66dbc0ff11e97",
+    "server_sha256": "46fece2ed9c523dcfcda68087624ee796370751b5e8baba78312caa29cd68184",
+    "lockfile_sha256": "ecb6064212b85980b76024f978323ff140a0e9977033d052b3e184d70d16d485"
+  },
+  "behavior_revision": "kimi.acp.reasoning.declared-effort-v2",
+  "compatibility": {
+    "axis": "kimi-code.executable",
+    "newer_version_posture": "allow_unverified",
+    "segments": [
+      {
+        "minimum": "0.28.1",
+        "maximum": "0.28.1",
+        "behavior_revision": "kimi.acp.reasoning.legacy-select-v1"
+      },
+      {
+        "minimum": "0.29.0",
+        "maximum": "0.29.0",
+        "behavior_revision": "kimi.acp.reasoning.declared-effort-v2"
+      }
+    ],
+    "cases": [
+      {"version": "0.28.1", "assessment": "qualified"},
+      {"version": "0.29.0", "assessment": "qualified"},
+      {"version": "0.28.0", "assessment": "incompatible"},
+      {"version": "0.28.2", "assessment": "incompatible"},
+      {"version": "0.29.0-rc.1", "assessment": "incompatible"},
+      {"version": "not-a-version", "assessment": "incompatible"},
+      {
+        "version": "0.30.0",
+        "assessment": "unverified_newer",
+        "behavior_revision": "kimi.acp.reasoning.declared-effort-v2"
+      }
+    ]
+  },
+  "portable_mapping": {
+    "capability": "reasoning_selection",
+    "provider_option_id": "thinking",
+    "provider_category": "thought_level",
+    "provider_type": "select",
+    "new_session_only": true,
+    "load_or_resume": "reject_before_process_or_wire",
+    "declared_efforts": "map_exactly",
+    "legacy_on": "map_to_declared_default",
+    "legacy_off": "map_to_off_when_selectable",
+    "unsupported": "reject_before_provider_request"
+  },
+  "option_shapes": {
+    "declared_efforts": {
+      "id": "thinking",
+      "category": "thought_level",
+      "type": "select",
+      "currentValue": "off",
+      "options": [
+        {"value": "off", "name": "Off"},
+        {"value": "low", "name": "Low"},
+        {"value": "medium", "name": "Medium"},
+        {"value": "high", "name": "High"}
+      ]
+    },
+    "boolean_fallback": {
+      "id": "thinking",
+      "category": "thought_level",
+      "type": "select",
+      "currentValue": "off",
+      "options": [
+        {"value": "off", "name": "Off"},
+        {"value": "on", "name": "On"}
+      ]
+    },
+    "always_thinking": {
+      "id": "thinking",
+      "category": "thought_level",
+      "type": "select",
+      "currentValue": "medium",
+      "options": [
+        {"value": "low", "name": "Low"},
+        {"value": "medium", "name": "Medium"},
+        {"value": "high", "name": "High"}
+      ]
+    },
+    "missing": [],
+    "ambiguous": [
+      {
+        "id": "thinking",
+        "category": "thought_level",
+        "type": "select",
+        "currentValue": "off",
+        "options": [{"value": "off", "name": "Off"}]
+      },
+      {
+        "id": "thinking",
+        "category": "thought_level",
+        "type": "select",
+        "currentValue": "high",
+        "options": [{"value": "high", "name": "High"}]
+      }
+    ]
+  },
+  "rejections": {
+    "missing_option": "runtime_drift",
+    "duplicate_option_id": "runtime_drift",
+    "unsupported_value": "reject_before_provider_request",
+    "always_thinking_off": "requested_value_not_selectable",
+    "provider_rejection": "provider_failure",
+    "missing_confirmation": "runtime_drift",
+    "effective_value_drift": "runtime_drift",
+    "fallback_allowed": false
+  }
+}

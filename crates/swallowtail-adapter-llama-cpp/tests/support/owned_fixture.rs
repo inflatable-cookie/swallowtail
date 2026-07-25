@@ -133,6 +133,10 @@ impl OwnedFixture {
     pub fn artifact(&self) -> ModelArtifactBinding {
         self.artifact.clone()
     }
+
+    pub fn host_id(&self) -> ExecutionHostId {
+        self.host_id.clone()
+    }
 }
 
 fn capabilities() -> Vec<CapabilityRequirement> {

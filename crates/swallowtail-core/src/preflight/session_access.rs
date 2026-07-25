@@ -1,7 +1,7 @@
 use super::{PreflightDimension, PreflightFailure};
 use crate::{
-    Capability, CapabilityConstraint, HostServiceKind, OperationRequirements, ResourceAccess,
-    ResourceRepresentation, SessionAccessPolicy,
+    Capability, CapabilityConstraint, DriverRole, HostServiceKind, OperationRequirements,
+    ResourceAccess, ResourceRepresentation, SessionAccessPolicy,
 };
 
 pub(super) fn validate_session_access(
@@ -16,9 +16,12 @@ pub(super) fn validate_session_access(
             validate_network(requirements, policy)?;
             validate_provider_requests(requirements, policy)?;
         }
-        (crate::OperationShape::InteractiveSession, None) => {
+        (crate::OperationShape::InteractiveSession, None)
+            if requirements.driver_role() != DriverRole::ModelCatalog =>
+        {
             return Err(failure("Interactive session access policy is missing"));
         }
+        (crate::OperationShape::InteractiveSession, None) => {}
         (_, Some(_)) => {
             return Err(failure(
                 "Session access policy is bound to a non-interactive operation",

@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-19
+Updated: 2026-07-24
 
 ## Purpose
 
@@ -156,6 +156,13 @@ Successful preflight produces an immutable execution plan bound to the exact
 driver registration, instance revision, model route, requirements, access
 profile, ownership, and execution host. Execution rejects a stale plan when a
 material bound revision changes.
+
+Contract 037 permits a provider-specific prepared integration to construct
+these low-level inputs when it receives one explicit driver, host, target,
+access evidence, and operation profile. Preparation adds no authority. The
+expanded configured instance, requirements, access provenance, route, and plan
+remain inspectable. Advanced consumers may construct and preflight the same
+records directly.
 
 When an operation requires an executable, package, SDK, wire, service, schema,
 or facade version, preflight binds the exact configured-instance point and

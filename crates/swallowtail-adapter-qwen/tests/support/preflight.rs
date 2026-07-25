@@ -4,11 +4,12 @@ use swallowtail_core::{
     CapabilityConstraint, CapabilityProfile, CapabilityRequirement, ConfiguredInstance,
     ConfiguredInstanceId, CredentialMechanism, CredentialState, DriverRole, EndpointAudience,
     EndpointAuthorization, EntitlementMetering, EntitlementState, ExecutionHostId, ExecutionLayer,
-    ExtensionNamespace, HarnessIsolation, HostServiceKind, InstanceOwnership, InstancePolicyId,
-    InstanceRevision, InstanceTargetRef, ModelId, ModelRoute, ModelRouteId, ModelRouteRevision,
-    OperationRequirements, OperationShape, PreflightContext, PreflightPlan, ProtocolFacadeId,
-    ProviderId, ResourceAccess, ResourceRepresentation, RuntimeReadiness, SupportAuthority,
-    preflight,
+    ExtensionNamespace, HarnessConfigurationPosture, HarnessIsolation, HostServiceKind,
+    InstanceOwnership, InstancePolicyId, InstanceRevision, InstanceTargetRef, InterfaceVersion,
+    InterfaceVersionAxis, InterfaceVersionBinding, ModelId, ModelRoute, ModelRouteId,
+    ModelRouteRevision, OperationRequirements, OperationShape, PreflightContext, PreflightPlan,
+    ProtocolFacadeId, ProviderId, ResourceAccess, ResourceRepresentation, RuntimeReadiness,
+    SupportAuthority, preflight,
 };
 use swallowtail_runtime::{
     Deadline, MonotonicInstant, OperationContent, OperationPolicy, ProviderRetentionPolicy,
@@ -52,7 +53,12 @@ fn bound_plan(
         ProtocolFacadeId::new("qwen-code-v0.19.11-stream-json").expect("facade is valid"),
         InstancePolicyId::new("read-only-ambient-host").expect("policy is valid"),
         profile.clone(),
-    );
+    )
+    .with_interface_versions([InterfaceVersionBinding::new(
+        InterfaceVersionAxis::new("qwen-code.package").expect("axis is valid"),
+        InterfaceVersion::new("0.19.11").expect("version is valid"),
+    )])
+    .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient);
     let route = ModelRoute::new(
         ModelRouteId::new("qwen-model-route").expect("route id is valid"),
         ModelRouteRevision::new("1").expect("route revision is valid"),
@@ -99,6 +105,11 @@ fn bound_plan(
     .with_host_services(host_services)
     .with_capabilities(requirements)
     .with_harness_isolation(HarnessIsolation::AmbientHost)
+    .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient)
+    .with_interface_versions([InterfaceVersionBinding::new(
+        InterfaceVersionAxis::new("qwen-code.package").expect("axis is valid"),
+        InterfaceVersion::new("0.19.11").expect("version is valid"),
+    )])
     .require_model_route();
     preflight(
         &PreflightContext::new(&descriptor, &instance, &access, &status, host_services)
@@ -118,7 +129,8 @@ pub fn request_for(id: &str, resource: WorkingResourceRef) -> StructuredRunReque
         OperationContent::new("fixture-private-prompt").expect("content is valid"),
         OperationPolicy::offline()
             .with_provider_retention(ProviderRetentionPolicy::DurableAllowed)
-            .with_harness_isolation(HarnessIsolation::AmbientHost),
+            .with_harness_isolation(HarnessIsolation::AmbientHost)
+            .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient),
     )
     .with_working_resource(resource)
     .with_deadline(Deadline::at(MonotonicInstant::from_ticks(1_000)))

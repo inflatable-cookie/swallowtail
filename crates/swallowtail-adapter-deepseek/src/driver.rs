@@ -6,7 +6,7 @@ mod session;
 mod turn;
 
 use crate::failure::failure;
-use crate::selection::{DEEPSEEK_AUDIENCE, DEEPSEEK_PROVIDER_ID, deepseek_facade_claim};
+use crate::selection::{DEEPSEEK_ENDPOINT_AUDIENCE, DEEPSEEK_PROVIDER_ID, deepseek_facade_claim};
 use crate::transport::CurlTransport;
 use swallowtail_core::{
     AdapterId, AdapterIdentity, AdapterVersion, CredentialMechanism, DriverDescriptor, DriverRole,
@@ -43,7 +43,7 @@ impl DeepSeekDirectDriver {
         }
         if plan.credential_mechanism() != &CredentialMechanism::ApiKey
             || plan.credential_reference().is_none()
-            || plan.endpoint_audience().as_str() != DEEPSEEK_AUDIENCE
+            || plan.endpoint_audience().as_str() != DEEPSEEK_ENDPOINT_AUDIENCE
         {
             return Err(failure(
                 "swallowtail.deepseek.access_binding_rejected",

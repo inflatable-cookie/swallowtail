@@ -6,6 +6,10 @@ use serde_json::{Value, json};
 use std::error::Error;
 use std::fmt;
 
+mod message;
+
+pub use message::{decode_message, encode_message};
+
 /// Stable ACP wire protocol version supported by this transport.
 pub const ACP_PROTOCOL_VERSION: u64 = 1;
 pub const DEFAULT_MAX_FRAME_BYTES: usize = 64 * 1024;
@@ -199,7 +203,7 @@ pub fn encode_error(id: Value, code: i64, message: &'static str) -> Result<Vec<u
     }))
 }
 
-fn encode(value: Value) -> Result<Vec<u8>, ProtocolError> {
+pub(crate) fn encode(value: Value) -> Result<Vec<u8>, ProtocolError> {
     let mut bytes = serde_json::to_vec(&value)
         .map_err(|_| ProtocolError::new(ProtocolErrorKind::SerializationFailed))?;
     if bytes.len() > DEFAULT_MAX_FRAME_BYTES {
@@ -209,7 +213,7 @@ fn encode(value: Value) -> Result<Vec<u8>, ProtocolError> {
     Ok(bytes)
 }
 
-fn decode_frame(frame: &[u8]) -> Result<Message, ProtocolError> {
+pub(crate) fn decode_frame(frame: &[u8]) -> Result<Message, ProtocolError> {
     if frame.is_empty() {
         return Err(ProtocolError::new(ProtocolErrorKind::InvalidMessage));
     }

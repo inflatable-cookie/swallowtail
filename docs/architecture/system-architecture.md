@@ -2,11 +2,11 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-23
+Updated: 2026-07-24
 
 ## Realized State
 
-Swallowtail has a twenty-crate Rust workspace plus its strict Northstar authority
+Swallowtail has a twenty-three-crate Rust workspace plus its strict Northstar authority
 spine:
 
 - `swallowtail-core` owns pure provider-neutral contract records, including
@@ -28,6 +28,9 @@ spine:
   conversation-delete-on-close provider state, while structured harness
   operations may bind exact ambient,
   provider-enforced, or host-enforced isolation independently of session policy
+  and remote ACP operations may bind exact transport, connection-affinity,
+  bounded-state, and independent wire/RFD/SDK version evidence; portable
+  unauthenticated access remains distinct from local topology
 - `swallowtail-runtime` depends on core plus `futures-core` and `zeroize` and owns
   executor-neutral dynamic roles, lifecycle handles, bounded events, terminal
   outcomes, explicit operation policy, typed usage/rate/quota observations,
@@ -41,8 +44,11 @@ spine:
   structured-run harness isolation, rejects request/preflight posture mismatch,
   carries exact harness-configuration request policy independently from
   isolation, rejects request/preflight mismatch, and terminal
-  outcomes keep deletion truth per owned remote resource; open-session requests
-  must match the immutable provider-state policy in preflight; a separate
+  outcomes keep deletion truth per owned remote resource; interactive open,
+  load, and resume requests carry one explicit or plan-derived agreement for
+  access, provider state, and harness configuration; safe preparation failures
+  distinguish nine stages and access evidence retains observed or
+  caller-asserted provenance; a separate
   realtime-media role owns resource-free requests, redacted zeroized chunks,
   exact append/commit/output sequencing, transcripts, observations, response
   handles, terminal reuse, session-ending interruption, and immutable
@@ -57,16 +63,27 @@ spine:
   durable retention, managed recovery, exact resource ownership, and a
   separate structured-harness native-bound and provider-conversation assertion
   packs plus an eleventh realtime-media direct-session profile, a twelfth
-  locally continued direct-session profile, and a separate planned-rollover
-  assertion pack over the unchanged realtime profile
+  locally continued direct-session profile, a thirteenth remote ACP harness
+  profile, and a separate planned-rollover assertion pack over the unchanged
+  realtime profile
 - `swallowtail-host-local` depends on core and runtime and implements concrete
   host-approved local process, endpoint, credential, materialization, and
-  monotonic deadline behavior behind capability-scoped runtime ports
+  monotonic deadline behavior behind capability-scoped runtime ports; it also
+  provides per-host joined scoped tasks, inspectable exact service
+  composition, and explicit executable approval returning one opaque discovery
+  target
 - `swallowtail-protocol-acp` is the provider-neutral ACP wire boundary; it owns
   bounded v1 NDJSON framing and message classification plus a fixture corpus
   pinned independently to Gemini CLI `0.51.0`/schema `v1.19.0` and Kimi Code
   `0.28.1`/schema `v1.19.1`; the Kimi corpus also freezes exact annotated-tag,
-  source-commit, arm64 executable, isolated-state, and upgrade-gate evidence
+  source-commit, arm64 executable, isolated-state, and upgrade-gate evidence;
+  a separate raw remote-transport corpus freezes HTTP/SSE and WebSocket
+  lifecycle behavior against wire version 1, the Active transport RFD, and SDK
+  `2.0.0` without depending on a production client
+- `swallowtail-transport-acp-remote` depends on core, runtime, and the ACP
+  protocol boundary; it keeps exact SDK, Tokio, HTTP/2, SSE, WebSocket, TLS,
+  cookie, and transport errors private while exposing one operation-scoped
+  bounded client over an exact preflight plan and network grant
 - `swallowtail-protocol-openai-chat` owns bounded compatible Chat Completions
   request encoding, including null content and bounded structural message
   extensions, JSON envelope decoding, structural unknowns, SSE comments,
@@ -81,14 +98,23 @@ spine:
 - `swallowtail-adapter-codex` depends on core and runtime and implements the
   read-only, ephemeral `codex exec` structured-run surface plus read-only and
   bounded-workspace app-server interactive sessions through runtime host ports
+- `swallowtail-adapter-claude-agent` implements installed discovery and
+  read-only interactive sessions for Claude Agent ACP
+  `0.53.0..=0.61.0`, excluding `0.58.0`, over ACP v1 stdio; stable newer
+  versions remain visible and unverified, while exact public-API-key access,
+  model confirmation, ambient configuration, ambient-host isolation,
+  permission rejection, cancellation, deadlines, and joined cleanup stay
+  driver-owned
 - `swallowtail-adapter-deepseek` implements the exact
   `deepseek-openai-chat-2026-07-22` V4 Pro locally continued session over
   host-approved HTTP/SSE, including authenticated catalogue, consumer-owned
   tool exchange, private reasoning continuation, and joined credential-last
   cleanup
-- `swallowtail-adapter-opencode` implements version-bound OpenCode `1.14.48`
-  model discovery and ambient-host interactive sessions with read-only tool
-  permissions over host-approved HTTP and bounded SSE
+- `swallowtail-adapter-opencode` implements version-bound OpenCode
+  `1.14.48..=1.18.4` model discovery and ambient-host interactive sessions with
+  read-only tool permissions over host-approved HTTP and bounded SSE; exact
+  stable newer releases may run as visibly unverified without extending
+  guaranteed support
 - `swallowtail-adapter-anthropic` implements provider-supported `2023-06-01`
   Models catalogue and Messages direct inference over host-approved HTTP/SSE;
   its separate `managed-agents-2026-04-01` remote-harness driver binds one
@@ -122,6 +148,11 @@ spine:
   readiness, catalogue, and bounded Chat Completions direct inference without
   owning the model artifact or server; its exact request and text-only semantic
   mapping now use the common compatible-chat framing and envelope codec
+- `swallowtail-adapter-ollama` implements attach-only native Ollama API
+  catalogue and text structured runs across qualified stable releases
+  `0.14.0..=0.32.1`; exact runtime, installed and running model observations,
+  NDJSON output, and inference-caused residency remain distinct, with no
+  installation, model acquisition, cloud access, unload, or server ownership
 - `swallowtail-adapter-xai` implements resource-free interactive direct
   inference over one host-approved Responses WebSocket with serial turns,
   private continuation, exact billed cost, and connection-ending cancellation
@@ -163,18 +194,36 @@ host crates   provider adapter crates
 consumer and adapter tests -> swallowtail-testkit -> core/runtime contracts
 
 provider adapter crates -> swallowtail-protocol-acp / swallowtail-protocol-openai-chat
+
+remote ACP operations -> swallowtail-transport-acp-remote -> core/runtime/protocol-acp
 ```
+
+The active public release topology is recorded in
+`release-and-package-topology.md` and governed by Contract 036. All 23
+workspace libraries are separately consumable public packages under one
+coordinated pre-1.0 version. The three-stage publication order is core plus
+protocols, then runtime, then support, transport, and adapters. Current
+manifests realize the compatible registry dependencies, resolver 3,
+Rust-version floors, and package metadata rules. Roadmap g02.001 card 003 adds
+the deterministic local metadata, API-declaration, documentation, MSRV,
+content, clean-snapshot assembly, and extracted-package-family gates.
 
 Crate status:
 
 - `swallowtail-core` — realized
 - `swallowtail-testkit` — realized with reusable contract-kernel, preflight,
-  and callback fixtures, recording runtime host services, and twelve composable
+  and callback fixtures, recording runtime host services, and thirteen composable
   provider-free conformance profile runners
 - `swallowtail-runtime` — realized under Contracts 008-010, 012, and 026 with
   only core, `futures-core`, and `zeroize` dependencies
 - `swallowtail-protocol-acp` — realized for bounded ACP v1 NDJSON framing,
-  request/notification/response classification, and safe error responses
+  request/notification/response classification, safe error responses, and
+  independent raw HTTP/SSE plus WebSocket remote-transport fixtures
+- `swallowtail-transport-acp-remote` — realized under Contract 035 with
+  explicit HTTP/2 SSE or WebSocket selection, bounded connection-private
+  cookies, frames, streams, request/callback correlation, initialize-version
+  validation, cancellation, deadline, disconnect invalidation, explicit
+  close, and host-owned joined private runtime work
 - `swallowtail-protocol-openai-chat` — realized under Contract 024 for bounded
   request JSON, SSE framing, common chunks, choices, deltas, model, finish,
   usage and error envelopes, and explicit bounded structural unknowns; the
@@ -184,7 +233,10 @@ Crate status:
   reader cleanup; it also owns bounded attachment/schema copies,
   operation-scoped temporary working resources, explicit lease release, and
   cancellable monotonic deadline waits; exact endpoint and secret/delegated
-  credential approvals remain scope- and audience-bound and redacted
+  credential approvals remain scope- and audience-bound and redacted; per-host
+  scoped task handles join explicitly or on drop, `LocalHostServices` composes
+  the exact supported ports under one host identity, and installed executable
+  approval returns only an opaque target
 - `swallowtail-adapter-alibaba-model-studio` — realized under Contract 025 for
   one exact Singapore workspace-dedicated, general-API-key, pay-as-you-go
   `qwen3.7-plus-2026-05-26` session; the production driver creates one provider
@@ -194,6 +246,12 @@ Crate status:
   credential only after transport and cleanup work join
 - `swallowtail-adapter-codex` — realized for bounded exec runs plus local stdio
   app-server model discovery and interactive sessions
+- `swallowtail-adapter-claude-agent` — realized for exact installed wrapper
+  discovery and four private behavior revisions across the maintained ACP
+  range, plus one exact read-only new-session lifecycle with public-API-key
+  access, no-argument process launch, bounded read callbacks, permission
+  rejection, cancellation, deadlines, disconnect classification, and joined
+  resource- and credential-last cleanup
 - `swallowtail-adapter-deepseek` — realized for one exact opaque facade
   revision, V4 Pro catalogue and selection, buffered tool response, streaming
   finals, private continuation, cache usage, consumer-authorized attempts,
@@ -252,12 +310,13 @@ Crate status:
   bounded recovery, native cancel, provider cancellation evidence, and joined
   credential cleanup
 
-Core, runtime, and testkit are realized and validated as one kernel. The twelve
+Core, runtime, and testkit are realized and validated as one kernel. The thirteen
 synthetic Contract 011 profiles use only public APIs and cover one-shot CLI,
 long-lived RPC, long-lived ACP, attached network harness, hosted API, attached
 self-hosted, owned self-hosted, connection-scoped direct-session, and a
 persistent ACP extension, a provider-managed remote harness, plus a bounded
-realtime-media direct session and a locally continued direct session. The managed
+realtime-media direct session, a locally continued direct session, and a
+remote ACP harness. The managed
 profile adds exact agent binding, durable retention, managed recovery, bounded
 reattachment, run callbacks, per-resource deletion truth, topology, and cleanup
 ordering without widening the other profiles. The ACP extension composes
@@ -271,6 +330,10 @@ turn or correlated-tool-result authorization for every attempt, consumer-
 executed tools, bounded adapter-private continuation, explicit provider-cache
 posture, and request-scoped cleanup without widening harness callbacks,
 connection continuation, or provider conversation state.
+The remote ACP profile adds explicit HTTP/SSE or WebSocket selection, bounded
+connection-private cookie affinity, separate version axes, no recovery or
+fallback, callbacks, topology, and joined network work without creating a
+generic provider or widening process ACP.
 Structured-run policy now keeps attached execution, prohibited provider
 retention, and disabled stream reattachment as the defaults. Provider-managed
 background execution, temporary retention, and bounded reattachment are three
@@ -501,18 +564,48 @@ model versions remain independent. Configured instances and immutable plans
 bind exact safe version points. Driver descriptors carry a maintained support
 window per interface axis: an oldest supported baseline, latest-qualified
 boundary, ordered behavior milestones, deprecated-but-supported segments, and
-exact exclusions. Private driver dispatch uses the exact bound version and its
-matched behavior revision. This lets one Swallowtail or consuming-application
-release serve older installed harnesses deliberately. Versions outside the
-window fail preflight; moving the baseline is an explicit later-release change.
-No open-ended `latest` or unevidenced range participates in routing.
+exact exclusions. Qualified points are the guaranteed support claim. An
+ordered claim may separately permit an exact stable version above its latest
+qualified boundary as `UnverifiedNewer`; preflight then retains that exact
+version and private driver dispatch uses the latest qualified behavior
+revision. Such execution is allowed, not guaranteed. Below-baseline points,
+in-range gaps, explicit exclusions, non-qualified prereleases, malformed
+values, and qualified-only claims remain incompatible. Moving the baseline or
+latest-qualified boundary is an explicit later-release change. No open-ended
+`latest` value participates in routing.
+
+The OpenCode HTTP adapter has a closed qualified server-version boundary.
+Tagged OpenAPI evidence for 45 stable releases from `1.14.48` through
+`1.18.4` closes six selected operations through every transitive local schema
+reference. Eighteen closed surfaces map to 20 contiguous segments so
+unpublished patches and cross-minor synthetic versions remain unsupported.
+The production descriptor publishes the `opencode.server` claim. Configured
+instances, requirements, and immutable plans must bind one matching exact
+release. Stable exact releases above `1.18.4` may execute as unverified through
+surface 18 without widening the qualified range. `GET /global/health` produces
+only that safe binding and three-way assessment; no endpoint, credential, raw
+payload, configured instance, or execution authority enters the observation.
+Catalogue and session work stop unless health matches the exact plan, and
+created sessions must report the same release. Behavior selection remains
+adapter-private. Cross-topology conformance proves qualified boundaries and
+unverified-newer health and session work under local and remote-authoritative
+host identities. The attached-network harness profile remains unchanged.
+Its adapter-local prepared facade first authorizes one opaque endpoint,
+acquires and releases one delegated credential lease, and observes exact
+health. Separate prepared catalogue and read-only session values then delegate
+to the unchanged low-level roles. The configured instance remains
+`ExternalAttached`; ambient configuration and ambient-host isolation stay
+visible, provider and model selection occurs only for sessions, and no server
+lifecycle, authentication discovery, resume, remote-ACP fallback, or recovery
+authority is added.
 
 Installed-executable observation now has a separate additive discovery
 boundary. One request binds a request id, operation scope, authoritative
 execution host, opaque host-approved executable target, exact version axis,
 monotonic deadline, and shared cancellation signal. Safe observations retain
-only host identity, exact version binding, claim identity, and compatible or
-incompatible classification. General discovery remains unchanged; drivers
+only host identity, exact version binding, claim identity, and qualified,
+unverified-newer, or incompatible classification. General discovery remains
+unchanged; drivers
 without the target-aware operation reject it explicitly. The local process
 host resolves only the supplied opaque reference and existing process
 completion remains joined. Testkit assertions exercise local and
@@ -554,8 +647,8 @@ expiry and late-response rejection, distinct provider/retry/disconnect/format
 failures, bounded prompt concurrency, redaction, and visible cleanup failure
 without weakening terminal provider truth.
 
-The DeepSeek production boundary composes Contract 030 with common compatible-chat
-structure but keeps provider semantics private. Its opaque facade claim
+The DeepSeek production boundary composes Contract 030 with common
+compatible-chat structure but keeps provider semantics private. Its opaque facade claim
 qualifies only `deepseek-openai-chat-2026-07-22`, exact endpoint
 `https://api.deepseek.com`, `/chat/completions`, and `deepseek-v4-pro`. The
 corpus freezes one buffered tool-bearing attempt, two streaming final attempts,
@@ -583,6 +676,240 @@ fixtures preserve scope and execution-host identity. Its stop authority reaches
 only its owned child; the build-9910 attached driver retains no serving-
 lifecycle role and leaves its external server running.
 
+## Prepared Integration And Bound Operation Layer
+
+Contract 037 fixes the application-facing normal path without changing the
+realized 23-crate dependency graph:
+
+```text
+consumer intent and explicit authority
+  -> provider-adapter prepared profile
+  -> expanded configured instance, requirements, access provenance, and plan
+  -> typed bound operation for one existing runtime role
+  -> existing low-level runtime role
+  -> existing host services and provider driver
+```
+
+Provider-specific prepared surfaces belong to their adapter crates. Shared
+plan-derived request, safe evidence, and diagnostic records belong to
+`swallowtail-runtime`; common facade assertions belong to
+`swallowtail-testkit`. Joined local service composition belongs to
+`swallowtail-host-local`. Core, runtime, hosts, and low-level adapter roles
+remain independently consumable. No umbrella crate constructs or selects a
+provider.
+
+Preparation binds adapter-owned facts and derives only state that repeats an
+immutable plan. It cannot choose provider, model, target, credential, endpoint,
+billing, topology, writable access, network, search, tools, prompts, workflows,
+or persistence. Access status remains observed or visibly caller-asserted.
+Every expanded profile is inspectable before effects.
+
+Typed bound operations remove repeated driver and matching-request wiring, not
+role semantics. Catalogue, structured run, interactive session, direct
+session, background run, managed agent, realtime media, SDK, attached runtime,
+and owned-serving operations remain separate types and methods. There is no
+generic prompt method.
+
+The current 22 production routes form six facade implementation families:
+installed harness, attached harness network, hosted direct and provider-owned
+state, realtime connection, embedded SDK, and local model runtime. Family
+helpers may share host and preparation mechanics. They cannot select a
+provider, model, target, credential, endpoint, topology, or fallback.
+
+Codex is the first realized proof. Its exec structured-run, app-server
+catalogue, and app-server interactive-session paths remain separate.
+Read-only and bounded-workspace profiles remain separate. Exact installed-
+version classification, local and remote-authoritative host identity,
+cancellation, deadlines, callbacks, and joined cleanup continue through the
+existing roles.
+
+The shared layer is realized: runtime owns plan-derived session agreement,
+staged safe failures, access provenance, and `PreparedOperationEvidence`.
+That record owns one immutable expanded plan and exposes safe driver, role,
+layer, shape, instance, revision, host, opaque target, facade, access, and
+exact interface-assessment evidence. Testkit proves the same record across
+installed-harness, hosted-direct, and attached-runtime fixtures. It adds no
+execution trait, provider selection, or operation request.
+
+Host-local owns joined scoped tasks, exact service composition, and opaque
+executable target approval. The Codex adapter owns an exact-target factory that
+derives its discovery request, retains exact qualified, deprecated, or
+unverified-newer evidence, preserves access provenance, and builds one
+immutable configured-instance base from the same opaque target. It also owns
+separate prepared catalogue, read-only session, bounded-workspace session, and
+structured-exec values. Each retains the shared evidence and matching runtime
+request. Model, reasoning, writable access, network, search, tools, schemas,
+attachments, and deadlines remain explicit consumer inputs.
+
+Codex prepared values now expose typed `list_models`, `start_run`,
+`open_session`, and `resume_session` operations. Each constructs the exact
+selected low-level Codex driver and delegates the immutable plan, explicit
+request, and host services to the existing runtime role. Preflight, topology,
+cancellation, deadlines, callbacks, terminal outcomes, and joined cleanup are
+unchanged. `low_level_driver`, `plan`, `request`, and `into_parts` preserve the
+advanced escape hatch and current consumer path. No new crate was needed.
+
+Kimi Code ACP is the second realized facade and first non-Codex proof. Its
+prepared installation discovers one host-approved executable and retains exact
+qualified or unverified-newer evidence, caller-supplied access provenance,
+isolated-state environment, target, host, and configured instance. Its prepared
+persistent-session profile derives ambient harness configuration,
+`AmbientHost` isolation, read-write resource authority, prohibited
+Swallowtail-owned provider state, bounded writes, replay, resume,
+active-turn interruption, and optional reasoning into one inspectable plan.
+Bound new, load, and resume delegate to the existing ACP role. Prompt and
+interruption continue through its returned session and turn handles. Load
+returns provider replay; resume remains replay-free. Delegated credentials,
+write callbacks, local and remote-authoritative topology, and ordered joined
+cleanup remain unchanged. No sandbox or containment claim is introduced.
+
+Anthropic Messages is the third realized facade and first hosted-direct proof.
+`prepare_anthropic_direct` binds one opaque host-approved endpoint target,
+provider-supported `api.anthropic.com` API-key profile, access provenance,
+execution host, externally owned configured instance, and dated
+`anthropic-2023-06-01` facade without network or credential effects. Separate
+prepared catalogue and inference-attempt values derive their own roles,
+capabilities, immutable plans, and requests. Catalogue has no model route and
+cannot select one. Inference requires an exact route, model, content, positive
+output bound, and optional deadline; one `start_run` is one provider request.
+The current text-only subset declares no tool or direct-continuation
+capability. HTTP/SSE events, cancellation, deadline, usage and rate evidence,
+safe failures, connection close, joined work, and credential-last cleanup
+continue through the unchanged low-level driver under local or remote-
+authoritative host identity.
+
+Kimi Platform and DeepSeek now add two separate prepared surfaces over the
+shared compatible-chat structure. Kimi preparation accepts only the
+provider-supported `api.moonshot.ai` Platform API-key and pay-as-you-go profile;
+Membership, Kimi Code, regional keys, and subscription metering fail before
+effects. Separate catalogue and `kimi-k3` values bind explicit model,
+reasoning, output bound, and one structured inference attempt. They expose no
+tool or continuation capability even though newer Kimi documentation contains
+compatible tool fields.
+
+DeepSeek preparation accepts only the exact `https://api.deepseek.com` target,
+`api.deepseek.com` Open Platform API-key profile, dated OpenAI facade, and
+`deepseek-v4-pro` route. Catalogue stays route-free. Session preparation
+requires high reasoning, consumer-declared tools, and explicit acceptance of
+provider-managed cache without management authority. Opening returns the
+existing direct-continuation session. Each user turn authorizes its first
+attempt; only correlated tool-result submission authorizes another. Private
+reasoning replay, attempt bounds, cancellation, deadline, zeroization, and
+credential-last cleanup remain in the low-level driver. Shared JSON and SSE
+structure creates no cross-provider model, credential, lifecycle, or fallback
+path.
+
+Alibaba Model Studio now adds a prepared provider-conversation surface over
+the existing Singapore workspace driver. Preparation binds the exact regional
+audience, general pay-as-you-go API-key profile, configured instance revision,
+host-approved workspace endpoint, route, model, and access provenance.
+Conversation preparation requires explicit durable-provider-retention and
+delete-on-close posture. Opening delegates provider conversation creation to
+the existing driver; returned session turns retain serial Responses semantics.
+Close still joins active work, obtains a bounded item inventory, deletes every
+item, deletes the conversation separately, joins cleanup, then releases the
+credential. Provider conversation state remains distinct from consumer memory,
+and neither deletion outcome can stand in for the other.
+
+OpenAI Responses background mode now has a separate prepared public-API
+surface. Preparation binds `https://api.openai.com`, API-key pay-as-you-go
+access, provider support authority, the exact dated facade and GPT-5.6 route,
+host services, and access provenance without endpoint or credential effects.
+Background creation, required temporary provider retention, and maximum-one
+cursor reattachment remain explicit inputs. `store=false` does not become a
+no-retention claim.
+
+Starting the prepared value delegates to the existing structured-run driver.
+One create request remains one inference attempt. Cursor reattachment, bounded
+retrieve, and native cancel manage that attempt and cannot replay input or
+select another route. Provider response identity, stream cursor, runtime run,
+local attachment, cancellation request, and terminal provider truth remain
+separate. The facade adds no cross-process recovery, polling loop, retry,
+fallback, durable consumer storage, ChatGPT access, Codex access, subscription
+OAuth, or community OAuth route.
+
+Anthropic Managed Agents now has a prepared provider-hosted harness surface
+separate from Anthropic Messages direct inference. Preparation binds the
+first-party API-key audience, exact beta facade, operator-owned agent identity
+and numeric version, model route, host-approved endpoint target, access
+provenance, and `HarnessInteraction` layer. It creates or mutates no provider
+resource.
+
+Run preparation requires durable retention, provider-managed recovery, and
+one authoritative-history reattachment. Starting delegates to the existing
+managed driver, which creates one limited-network environment and one session,
+reconciles persisted event history after one disconnect, relays correlated
+custom-tool callbacks without executing them, and interrupts active work on
+cancel or deadline. Cleanup deletes the session before the environment, joins
+owned work, then releases the credential. The operator-owned agent is never
+deleted. Repository, provider filesystem, built-in tools, external sandbox
+network, MCP, skills, vaults, memory, schedules, webhooks, files, and local
+containers remain excluded.
+
+Realtime routes now expose three separate prepared connection surfaces. xAI
+Responses WebSocket requires an explicit caller-selected model and retains
+serial text turns, connection-private continuation, billed cost, and
+whole-session invalidation. OpenAI Realtime binds `gpt-realtime-2.1`, mono
+24 kHz PCM, manual input commit, native response cancellation, and no planned
+rollover. Gemini Live binds `gemini-3.1-flash-live-preview`, 16 kHz input,
+24 kHz output, local interruption truth, and exactly one provider-planned
+rollover at an idle boundary. Each retains bounded chunks, two serial
+responses, endpoint and credential leases, connection cleanup, and the
+unchanged low-level driver. No common method hides their model selection,
+media events, cancellation truth, billed evidence, retry posture, or rollover.
+Capture, playback, conversion, pacing, privacy, and played-position truth
+remain downstream.
+
+Bedrock Runtime and control-plane catalogue now expose separate prepared SDK
+surfaces. Each requires an exact region and an already-selected opaque
+credential provider through `BedrockCloudClientConfig`; neither consults the
+ambient AWS region, credential, profile, file, container, or instance-metadata
+chains. Runtime binds `aws-sdk-bedrockruntime = 1.136.0`,
+`ConverseStream`, one exact model route and underlying provider, bounded text
+output, and one structured attempt. Catalogue binds
+`aws-sdk-bedrock = 1.148.0`, `ListFoundationModels`, its own access and
+regional control-plane target, and no model route. Their prepared evidence
+retains separate SDK and service interface axes. Bound operations delegate to
+the unchanged one-attempt drivers; private SDK work joins before credential
+release. Catalogue observations cannot construct Runtime capability,
+entitlement, availability, or route truth.
+
+Ollama native is the fourth realized facade and first attached-runtime proof.
+`prepare_ollama_attached` binds one host-approved native endpoint, configured
+instance, selected route, native model tag, expected manifest digest, and
+local-unauthenticated access evidence. It observes exact runtime version,
+installed inventory, running inventory, and selected-model detail without
+inference or model mutation. Prepared inventory and one-attempt inference stay
+separate. Inference declares runtime-managed residency but grants no pull,
+unload, restoration, process, or server authority. Exact endpoint and runtime
+drift fail before operation effects. The guaranteed `0.14.0` through `0.32.1`
+window, exact `0.32.2` exclusion, prerelease closure, and visibly unverified
+later stable execution remain explicit.
+
+llama.cpp completes the local-runtime family with deliberately separate
+prepared types. `prepare_llama_cpp_attached` binds one host-approved external
+endpoint, exact b9910/f5525f7e7 runtime identity, local-unauthenticated access,
+and separate catalogue or one-attempt inference plans. It exposes no serving
+start or stop authority; closing inference leaves the external server running.
+
+`prepare_llama_cpp_owned` instead binds one host-approved executable, exact
+b10069/178a6c449 runtime identity, one GGUF artifact, one route and alias, and
+host-owned ephemeral lifecycle authority. Its typed serving selection couples
+artifact and route before preflight. Bound start delegates to the existing
+owned driver, which acquires the artifact, starts offline loopback serving,
+observes and publishes the endpoint, verifies health, properties, and
+catalogue, then returns the owned handle. Stop joins the child, invalidates
+endpoint authority, and only then releases the artifact. Acquisition,
+persistent serving, and Monkey ownership remain outside Swallowtail.
+
+The provider-wide prepared contract is now realized across all 22 production
+routes. The g02.008 cross-shape review accepted the common
+`PreparedOperationEvidence`, adapter-local evidence, two-phase construction,
+safe preparation stages, and typed low-level delegation without a new durable
+rule. The prepared-facade authoring guide records that pattern. Roadmaps
+g02.009-g02.011 complete every remaining route. Roadmap g02.012 now owns the
+exact route matrix, packaged proof, and replacement candidate evidence.
+
 ## Dependency Rules
 
 - consumers depend toward Swallowtail; Swallowtail never depends on consumers
@@ -594,5 +921,7 @@ lifecycle role and leaves its external server running.
 
 ## Architecture Promotion Rule
 
-Move a planned package or boundary into this document only after it exists and
-validation proves the dependency direction.
+Realized sections name only implemented and validated structure. A separately
+labelled contracted section may record an active contract and dependency
+direction before implementation. It must state the realization gap and owning
+roadmap.

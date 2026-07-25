@@ -130,11 +130,14 @@ impl ProviderConversationPreflightFixture {
 
     #[must_use]
     pub fn open_request(&self) -> OpenSessionRequest {
-        OpenSessionRequest::resource_free(
+        OpenSessionRequest::resource_free_from_plan(
+            &self
+                .preflight()
+                .expect("canonical conversation preflight succeeds"),
             RequestId::new("fixture-conversation-open").expect("static request id is valid"),
             None,
         )
-        .with_provider_state_policy(SessionProviderStatePolicy::DurableConversationDeleteOnClose)
+        .expect("conversation request derives from plan")
     }
 
     pub fn record_provider_side_effect(&self) {

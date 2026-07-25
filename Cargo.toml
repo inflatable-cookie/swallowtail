@@ -3,6 +3,7 @@ members = [
   "crates/swallowtail-adapter-alibaba-model-studio",
   "crates/swallowtail-adapter-anthropic",
   "crates/swallowtail-adapter-bedrock",
+  "crates/swallowtail-adapter-claude-agent",
   "crates/swallowtail-adapter-codex",
   "crates/swallowtail-adapter-deepseek",
   "crates/swallowtail-adapter-gemini",
@@ -21,14 +22,26 @@ members = [
   "crates/swallowtail-protocol-openai-chat",
   "crates/swallowtail-runtime",
   "crates/swallowtail-testkit",
+  "crates/swallowtail-transport-acp-remote",
 ]
-resolver = "2"
+resolver = "3"
 
 [workspace.package]
 version = "0.1.0"
 edition = "2024"
 license = "MIT"
 repository = "https://github.com/inflatable-cookie/swallowtail"
+readme = "README.md"
+publish = ["crates-io"]
+rust-version = "1.93"
+
+[workspace.dependencies]
+swallowtail-core = { path = "crates/swallowtail-core", version = "0.1.0" }
+swallowtail-host-local = { path = "crates/swallowtail-host-local", version = "0.1.0" }
+swallowtail-protocol-acp = { path = "crates/swallowtail-protocol-acp", version = "0.1.0" }
+swallowtail-protocol-openai-chat = { path = "crates/swallowtail-protocol-openai-chat", version = "0.1.0" }
+swallowtail-runtime = { path = "crates/swallowtail-runtime", version = "0.1.0" }
+swallowtail-testkit = { path = "crates/swallowtail-testkit", version = "0.1.0" }
 
 [workspace.lints.rust]
 unsafe_code = "forbid"

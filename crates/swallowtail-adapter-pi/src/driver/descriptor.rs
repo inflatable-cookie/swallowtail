@@ -1,28 +1,11 @@
-use crate::{DRIVER_ID, PINNED_PI_VERSION};
+use crate::DRIVER_ID;
 use swallowtail_core::{
     AdapterId, AdapterIdentity, AdapterVersion, DriverDescriptor, DriverRole, ExecutionLayer,
-    HostServiceKind, IntegrationFamilyId, InterfaceBehaviorRevision, InterfaceCompatibilityClaim,
-    InterfaceCompatibilityClaimId, InterfaceSupportStatus, InterfaceVersion, InterfaceVersionAxis,
-    InterfaceVersionScheme, InterfaceVersionSegment, OperationShape, TransportFamilyId,
+    HostServiceKind, IntegrationFamilyId, OperationShape, TransportFamilyId,
 };
 
 #[must_use]
 pub fn pi_rpc_descriptor() -> DriverDescriptor {
-    let version = InterfaceVersion::new(PINNED_PI_VERSION).expect("static Pi version is valid");
-    let claim = InterfaceCompatibilityClaim::new(
-        InterfaceCompatibilityClaimId::new("pi.rpc.package-window-1")
-            .expect("static claim id is valid"),
-        InterfaceVersionAxis::new("pi.package").expect("static version axis is valid"),
-        InterfaceVersionScheme::Semantic,
-        [InterfaceVersionSegment::exact(
-            version,
-            InterfaceBehaviorRevision::new("pi.rpc.strict-lf-v1")
-                .expect("static behavior revision is valid"),
-            InterfaceSupportStatus::Maintained,
-        )],
-        [],
-    )
-    .expect("static Pi compatibility claim is valid");
     DriverDescriptor::new(
         AdapterIdentity::new(
             AdapterId::new(DRIVER_ID).expect("static adapter id is valid"),
@@ -32,7 +15,7 @@ pub fn pi_rpc_descriptor() -> DriverDescriptor {
         IntegrationFamilyId::new("pi").expect("static family id is valid"),
         TransportFamilyId::new("strict-lf-jsonl-stdio").expect("static transport id is valid"),
     )
-    .with_roles([DriverRole::InteractiveSession])
+    .with_roles([DriverRole::Discovery, DriverRole::InteractiveSession])
     .with_execution_layers([ExecutionLayer::HarnessInteraction])
     .with_operation_shapes([OperationShape::InteractiveSession])
     .with_required_host_services(
@@ -45,5 +28,14 @@ pub fn pi_rpc_descriptor() -> DriverDescriptor {
             HostServiceKind::Time,
         ],
     )
-    .with_interface_compatibility(claim)
+    .with_required_host_services(
+        DriverRole::Discovery,
+        [
+            HostServiceKind::Task,
+            HostServiceKind::Time,
+            HostServiceKind::Process,
+        ],
+    )
+    .with_discovery_actions([swallowtail_core::DiscoveryAction::Probe])
+    .with_interface_compatibility(crate::pi_rpc_claim())
 }

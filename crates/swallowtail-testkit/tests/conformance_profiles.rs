@@ -23,9 +23,9 @@ const COMMON_ASSERTIONS: [ConformanceAssertion; 14] = [
 ];
 
 #[test]
-fn all_twelve_profiles_cover_every_common_contract_assertion() {
+fn all_thirteen_profiles_cover_every_common_contract_assertion() {
     let reports = run_all_synthetic_profiles();
-    assert_eq!(reports.len(), 12);
+    assert_eq!(reports.len(), 13);
 
     for report in &reports {
         for assertion in COMMON_ASSERTIONS {
@@ -57,6 +57,10 @@ fn each_profile_proves_its_shape_specific_boundary() {
         (
             SyntheticProfile::PersistentAcpHarness,
             ConformanceAssertion::PersistentSessionLifecycle,
+        ),
+        (
+            SyntheticProfile::RemoteAcpHarness,
+            ConformanceAssertion::RemoteAcpConnectionLifecycle,
         ),
         (
             SyntheticProfile::HostedDirectApi,
@@ -99,17 +103,6 @@ fn each_profile_proves_its_shape_specific_boundary() {
             .expect("profile report exists");
         assert!(report.covers(assertion));
     }
-}
-
-#[test]
-fn long_lived_rpc_profile_proves_callback_exchange() {
-    let reports = run_all_synthetic_profiles();
-    let rpc = reports
-        .iter()
-        .find(|report| report.profile() == SyntheticProfile::LongLivedRpcHarness)
-        .expect("RPC profile report exists");
-
-    assert!(rpc.covers(ConformanceAssertion::CallbackExchange));
 }
 
 #[test]
@@ -265,3 +258,5 @@ fn deliberate_violations_name_the_exact_dimension_before_effects() {
 
 #[path = "conformance_profiles/continuation_and_acp.rs"]
 mod continuation_and_acp;
+#[path = "conformance_profiles/remote_acp.rs"]
+mod remote_acp;

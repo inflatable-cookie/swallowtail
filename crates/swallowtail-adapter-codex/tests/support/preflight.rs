@@ -10,7 +10,7 @@ use swallowtail_core::{
     HostServiceKind, InstanceOwnership, InstancePolicyId, InstanceRevision, InstanceTargetRef,
     ModelId, ModelRoute, ModelRouteId, ModelRouteRevision, OperationRequirements, OperationShape,
     PreflightContext, PreflightPlan, ProtocolFacadeId, RuntimeReadiness, SessionAccessPolicy,
-    SupportAuthority, preflight,
+    SessionProviderStatePolicy, SupportAuthority, preflight,
 };
 
 mod exec;
@@ -140,6 +140,7 @@ fn app_server_plan_for_policy(
         .with_capabilities(capability_requirements)
         .with_extension_namespaces(extensions)
         .with_session_access_policy(access_policy)
+        .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited)
         .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient),
         required_version,
     );

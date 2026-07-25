@@ -2,7 +2,9 @@ use super::server::{LiveFixtureServer, LiveScenario};
 use super::services::{CallLog, ThreadServices, TimeMode, TrackingCredential, TrackingNetwork};
 use std::num::{NonZeroU16, NonZeroU32, NonZeroU64};
 use std::sync::Arc;
-use swallowtail_adapter_gemini::gemini_live_descriptor;
+use swallowtail_adapter_gemini::{
+    GeminiLivePreparationInput, gemini_live_access_profile, gemini_live_descriptor,
+};
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessRequirement, AccessStatus, AudioEncoding, Capability,
     CapabilityConstraint, CapabilityProfile, CapabilityRequirement, ConfiguredInstance,
@@ -12,12 +14,12 @@ use swallowtail_core::{
     ModelRoute, ModelRouteId, ModelRouteRevision, OperationRequirements, OperationShape,
     PlannedConnectionRolloverPolicy, PreflightContext, ProtocolFacadeId, ProviderId,
     RealtimeMediaConfig, RealtimeMediaRequirements, RuntimeReadiness, SessionAccessPolicy,
-    SupportAuthority, preflight,
+    SessionProviderStatePolicy, SupportAuthority, preflight,
 };
 use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{
     BlockingWorkService, CredentialRef, CredentialService, EndpointRef, HostServices,
-    NetworkPolicyService, ScopedTaskService, TimeService,
+    NetworkPolicyService, PreparedAccessEvidence, ScopedTaskService, TimeService,
 };
 
 pub struct LiveFixture {
@@ -94,6 +96,25 @@ impl LiveFixture {
             }) as Arc<dyn CredentialService>)
     }
 
+    pub fn preparation_input(&self) -> GeminiLivePreparationInput {
+        let access = gemini_live_access_profile(self.credential.clone());
+        let status = AccessStatus::new(
+            access.id().clone(),
+            CredentialState::Ready,
+            EntitlementState::Available,
+            EndpointAuthorization::Allowed,
+            RuntimeReadiness::Ready,
+            SupportAuthority::ProviderSupported,
+        );
+        GeminiLivePreparationInput::new(
+            InstanceRevision::new("prepared-1").expect("revision is valid"),
+            self.host_id.clone(),
+            self.target.clone(),
+            access,
+            PreparedAccessEvidence::caller_asserted(status),
+        )
+    }
+
     pub fn plan(&self) -> swallowtail_core::PreflightPlan {
         let descriptor = gemini_live_descriptor();
         let access_id = AccessProfileId::new("gemini.authorization-api-key.project").unwrap();
@@ -157,6 +178,7 @@ impl LiveFixture {
         .with_host_services(host_services.clone())
         .with_capabilities(requirements)
         .with_session_access_policy(SessionAccessPolicy::resource_free())
+        .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited)
         .with_realtime_media(RealtimeMediaRequirements::new(
             ModelId::new("gemini-3.1-flash-live-preview").unwrap(),
             config(),

@@ -14,7 +14,7 @@ policy into Swallowtail.
 
 - Contract 002: Repository Authority
 - Contract 003: Portable Contract Kernel
-- `docs/specs/001-foundation-and-extraction.md`
+- `docs/specs/archive/001-foundation-and-extraction.md`
 - `docs/roadmaps/g01/003-integration-landscape-and-runtime-boundary.md`
 
 ## Scope

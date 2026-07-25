@@ -69,20 +69,22 @@ pub(crate) fn run() -> ConformanceReport {
     assert!(binding.matches_attachment(&plan, &resource, &policy));
     assert!(!format!("{binding:?}").contains(provider_session.as_provider_value()));
 
-    let load = LoadSessionRequest::new(
+    let load = LoadSessionRequest::from_plan(
+        &plan,
         RequestId::new("persistent-acp-load").expect("request is valid"),
         binding.clone(),
         resource.clone(),
         None,
     )
-    .with_access_policy(policy.clone());
-    let resume = ResumeSessionRequest::new(
+    .expect("load request derives from plan");
+    let resume = ResumeSessionRequest::from_plan(
+        &plan,
         RequestId::new("persistent-acp-resume").expect("request is valid"),
         binding,
         resource.clone(),
         None,
     )
-    .with_access_policy(policy.clone());
+    .expect("resume request derives from plan");
     assert_eq!(load.provider_session_ref(), resume.provider_session_ref());
     assert_eq!(load.access_policy(), &policy);
     assert_eq!(resume.access_policy(), &policy);

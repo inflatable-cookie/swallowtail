@@ -10,8 +10,8 @@ use swallowtail_adapter_codex::{
     CODEX_CLI_AXIS, CodexAppServerDriver, CodexExecDriver, codex_app_server_claim, codex_exec_claim,
 };
 use swallowtail_core::{
-    ConfiguredInstanceId, DiscoveryStatus, DriverRole, ExecutionHostId, InstanceTargetRef,
-    InterfaceVersionAxis, PreflightPlan,
+    ConfiguredInstanceId, DiscoveryStatus, DriverRole, ExecutionHostId,
+    InstalledExecutableCompatibility, InstanceTargetRef, InterfaceVersionAxis, PreflightPlan,
 };
 use swallowtail_runtime::{
     BoxFuture, CancellationControl, Deadline, DeadlineObservation, DiscoveryCancellation,
@@ -113,11 +113,13 @@ fn host_deadline_wins_and_joins_the_probe_process() {
 
 #[test]
 fn local_and_remote_authoritative_hosts_execute_their_own_probe() {
-    for topology in [
-        ExecutionTopologyFixture::local(),
-        ExecutionTopologyFixture::remote_authoritative(),
+    for (topology, version) in [
+        (ExecutionTopologyFixture::local(), "0.145.0"),
+        (ExecutionTopologyFixture::remote_authoritative(), "0.145.0"),
+        (ExecutionTopologyFixture::local(), "0.146.0"),
+        (ExecutionTopologyFixture::remote_authoritative(), "0.146.0"),
     ] {
-        let (process, state) = FakeProcessService::completed("codex-cli 0.145.0\n");
+        let (process, state) = FakeProcessService::completed(&format!("codex-cli {version}\n"));
         let services = host_services_for(topology.execution_host_id().clone(), process)
             .with_time(Arc::new(PendingTime));
         let outcome = block_on(exec_driver().discover_installed_executable(
@@ -138,6 +140,18 @@ fn local_and_remote_authoritative_hosts_execute_their_own_probe() {
                 .execution_host_id(),
             topology.execution_host_id()
         );
+        let observation = outcome.installed_executable_observation().unwrap();
+        if version == "0.146.0" {
+            let InstalledExecutableCompatibility::UnverifiedNewer(unverified) =
+                observation.compatibility()
+            else {
+                panic!("newer version must remain unverified");
+            };
+            assert_eq!(unverified.version().as_str(), version);
+            assert_eq!(unverified.latest_qualified().as_str(), "0.145.0");
+        } else {
+            assert!(observation.is_qualified());
+        }
         assert_eq!(
             state.request().executable,
             topology.instance_target().as_host_value()

@@ -121,11 +121,11 @@ fn validate_interface_versions(
                 ),
             ));
         }
-        if !context.driver.supports_interface_version(required) {
+        if !context.driver.permits_interface_version(required) {
             return Err(failure(
                 PreflightDimension::InterfaceVersion,
                 format!(
-                    "Selected driver is not qualified for interface axis '{}'",
+                    "Selected driver does not permit interface axis '{}'",
                     required.axis().as_str()
                 ),
             ));

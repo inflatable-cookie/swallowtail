@@ -1,4 +1,10 @@
 use crate::failure::failure;
+use crate::selection::KIMI_PLATFORM_MAXIMUM_OUTPUT_TOKENS;
+#[cfg(test)]
+use crate::selection::{
+    KIMI_PLATFORM_MAXIMUM_OUTPUT_TOKENS as MAXIMUM_OUTPUT_TOKENS,
+    KIMI_PLATFORM_MODEL_ID as MODEL_ID, KIMI_PLATFORM_PROVIDER_ID as PROVIDER_ID,
+};
 use serde::Deserialize;
 use std::collections::BTreeMap;
 use swallowtail_core::{
@@ -11,11 +17,6 @@ use swallowtail_protocol_openai_chat::{
     decode_payload, encode_request,
 };
 use swallowtail_runtime::{OperationContent, RuntimeFailure, TokenUsage};
-
-pub(crate) const PROVIDER_ID: &str = "moonshot";
-pub(crate) const MODEL_ID: &str = "kimi-k3";
-pub(crate) const AUDIENCE: &str = "api.moonshot.ai";
-pub(crate) const MAXIMUM_OUTPUT_TOKENS: u64 = 1_048_576;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) struct Request {
@@ -45,7 +46,8 @@ impl Request {
         reasoning: &ReasoningMode,
         maximum_output_tokens: u64,
     ) -> Result<Self, RuntimeFailure> {
-        if maximum_output_tokens == 0 || maximum_output_tokens > MAXIMUM_OUTPUT_TOKENS {
+        if maximum_output_tokens == 0 || maximum_output_tokens > KIMI_PLATFORM_MAXIMUM_OUTPUT_TOKENS
+        {
             return Err(failure(
                 "swallowtail.kimi_platform.output_limit_invalid",
                 "Kimi Platform maximum output tokens exceeded the K3 route bound",

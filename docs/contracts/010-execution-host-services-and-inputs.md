@@ -37,6 +37,12 @@ deadline time. A host that cannot supply it fails that catalogue operation;
 the driver does not substitute provider `modified_at`, request time, or an
 ambient process clock.
 
+Contract 037 permits a host crate to compose these services through one
+inspectable per-host builder or result. Composition retains one exact host id,
+registers only explicitly supplied services, and owns joined task work. It is
+not a global executor and grants no service, process, network, credential, or
+resource authority by default.
+
 ## Operation Policy
 
 `OperationPolicy` keeps provider-side access separate from route transport:
@@ -63,6 +69,11 @@ The process service may:
 - exchange bounded stdin, stdout, and stderr
 - request graceful stop, force-stop owned children, and wait for exit
 - report cleanup state
+
+Executable selection and host approval may occur before installed discovery.
+That host action produces one opaque approved target. It does not change
+Contract 032: the discovery role receives one target and performs no ambient
+search or fallback.
 
 Renderer or remote-client data cannot establish authority by naming an
 executable path, environment variable, or working directory. Process output is

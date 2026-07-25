@@ -69,6 +69,7 @@ impl BedrockCatalogueDriver {
 
 #[must_use]
 pub fn bedrock_catalogue_descriptor() -> DriverDescriptor {
+    let [sdk_claim, service_claim] = crate::bedrock_catalogue_interface_claims();
     DriverDescriptor::new(
         AdapterIdentity::new(
             AdapterId::new(DRIVER_ID).expect("static adapter id is valid"),
@@ -78,6 +79,8 @@ pub fn bedrock_catalogue_descriptor() -> DriverDescriptor {
         IntegrationFamilyId::new("amazon-bedrock").expect("static family id is valid"),
         TransportFamilyId::new("rust-sdk-control-plane").expect("static transport id is valid"),
     )
+    .with_interface_compatibility(sdk_claim)
+    .with_interface_compatibility(service_claim)
     .with_roles([DriverRole::ModelCatalog])
     .with_execution_layers([ExecutionLayer::DirectModelInference])
     .with_operation_shapes([OperationShape::StructuredRun])

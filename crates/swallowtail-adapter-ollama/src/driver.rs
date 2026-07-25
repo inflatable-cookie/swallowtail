@@ -70,9 +70,9 @@ impl OllamaNativeAttachedDriver {
                 "Ollama requires selected-model detail evidence",
             )
         })?;
-        if plan
-            .classify_interface_version(requirements.runtime_version())
-            .is_none()
+        if !plan
+            .assess_interface_version(requirements.runtime_version())
+            .is_permitted()
             || plan.model_id() != Some(requirements.model_id())
             || plan.provider_id().is_some()
             || observation.scope() != AttachedModelObservationScope::SelectedModelDetail

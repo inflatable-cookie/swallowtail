@@ -1,8 +1,9 @@
 use crate::failure::{failure, unsupported};
 use crate::protocol::{
-    Event, Request, abort, parse_catalog, parse_event, parse_health, parse_session, prompt,
-    require_abort_success, require_no_content, session_create,
+    Event, Request, abort, parse_catalog, parse_event, parse_session_for_version, prompt,
+    require_abort_success, require_health_matches, require_no_content, session_create,
 };
+use crate::selection::{OpenCodePlanVersion, classify_plan, opencode_http_claim};
 use crate::transport::{CurlTransport, Subscription};
 use std::future::{Future, poll_fn};
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -21,8 +22,7 @@ use swallowtail_runtime::{
     ModelCatalogRequest, OpenSessionRequest, RequestId, ResourceLease, ResumeSessionRequest,
     RuntimeEvent, RuntimeEventKind, RuntimeFailure, RuntimeSessionId, RuntimeTurnId, ScopeId,
     SessionResumeBinding, TerminalOutcome, TerminalStatus, TurnHandle, TurnRequest,
-    runtime_event_channel, terminal_outcome_channel, validate_session_access_plan,
-    validate_session_resource_lease,
+    runtime_event_channel, terminal_outcome_channel, validate_session_resource_lease,
 };
 
 const DRIVER_ID: &str = "swallowtail.opencode.http";
@@ -39,7 +39,7 @@ impl OpenCodeHttpDriver {
         Self::default()
     }
 
-    fn validate_plan(plan: &PreflightPlan) -> Result<(), RuntimeFailure> {
+    fn validate_plan(plan: &PreflightPlan) -> Result<OpenCodePlanVersion, RuntimeFailure> {
         if plan.driver_identity().id().as_str() != DRIVER_ID {
             return Err(failure(
                 "swallowtail.opencode.plan_driver_mismatch",
@@ -65,7 +65,7 @@ impl OpenCodeHttpDriver {
                 "OpenCode HTTP requires delegated harness authentication",
             ));
         }
-        Ok(())
+        classify_plan(plan)
     }
 }
 
@@ -81,6 +81,7 @@ pub fn opencode_http_descriptor() -> DriverDescriptor {
         TransportFamilyId::new("http-sse").expect("static transport id is valid"),
     )
     .with_roles([DriverRole::ModelCatalog, DriverRole::InteractiveSession])
+    .with_interface_compatibility(opencode_http_claim())
     .with_execution_layers([ExecutionLayer::HarnessInteraction])
     .with_operation_shapes([OperationShape::InteractiveSession])
     .with_required_host_services(

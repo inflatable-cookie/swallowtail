@@ -78,7 +78,21 @@ fn assert_topology_and_join(
 
 fn assert_classification_and_safe_outcomes(claim: &InterfaceCompatibilityClaim) {
     let host = ExecutionHostId::new("fixture.host.local").expect("host id is valid");
-    let incompatible = InstalledExecutableObservation::classify(host, version("2.0.0"), claim)
+    let unverified =
+        InstalledExecutableObservation::classify(host.clone(), version("2.0.0"), claim)
+            .expect("fixture claim axis matches");
+    let InstalledExecutableCompatibility::UnverifiedNewer(forward) = unverified.compatibility()
+    else {
+        panic!("newer ordered release must be unverified");
+    };
+    assert_eq!(forward.version().as_str(), "2.0.0");
+    assert_eq!(forward.latest_qualified().as_str(), "1.5.0");
+    assert_eq!(
+        DiscoveryOutcome::installed_executable(unverified).status(),
+        DiscoveryStatus::Discovered
+    );
+
+    let incompatible = InstalledExecutableObservation::classify(host, version("0.9.0"), claim)
         .expect("fixture claim axis matches");
     assert_eq!(
         incompatible.compatibility(),
@@ -131,6 +145,7 @@ fn compatibility_claim() -> InterfaceCompatibilityClaim {
             .expect("claim id is valid"),
         axis(),
         InterfaceVersionScheme::Semantic,
+        swallowtail_core::InterfaceNewerVersionPosture::AllowUnverified,
         [InterfaceVersionSegment::new(
             InterfaceVersion::new("1.0.0").expect("version is valid"),
             InterfaceVersion::new("1.5.0").expect("version is valid"),
@@ -138,7 +153,7 @@ fn compatibility_claim() -> InterfaceCompatibilityClaim {
                 .expect("behavior revision is valid"),
             InterfaceSupportStatus::Maintained,
         )],
-        [],
+        [InterfaceVersion::new("2.1.0").expect("version is valid")],
     )
     .expect("claim is valid")
 }

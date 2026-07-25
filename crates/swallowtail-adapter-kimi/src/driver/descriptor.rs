@@ -1,3 +1,5 @@
+const DRIVER_ID: &str = "swallowtail.kimi.acp";
+
 #[must_use]
 pub fn kimi_acp_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(
@@ -9,7 +11,7 @@ pub fn kimi_acp_descriptor() -> DriverDescriptor {
         IntegrationFamilyId::new("kimi-code").expect("static family id is valid"),
         TransportFamilyId::new("acp-v1-stdio").expect("static transport id is valid"),
     )
-    .with_roles([DriverRole::InteractiveSession])
+    .with_roles([DriverRole::Discovery, DriverRole::InteractiveSession])
     .with_execution_layers([ExecutionLayer::HarnessInteraction])
     .with_operation_shapes([OperationShape::InteractiveSession])
     .with_required_host_services(
@@ -22,4 +24,14 @@ pub fn kimi_acp_descriptor() -> DriverDescriptor {
             HostServiceKind::WorkingResourceIo,
         ],
     )
+    .with_required_host_services(
+        DriverRole::Discovery,
+        [
+            HostServiceKind::Task,
+            HostServiceKind::Time,
+            HostServiceKind::Process,
+        ],
+    )
+    .with_discovery_actions([swallowtail_core::DiscoveryAction::Probe])
+    .with_interface_compatibility(crate::kimi_acp_claim())
 }

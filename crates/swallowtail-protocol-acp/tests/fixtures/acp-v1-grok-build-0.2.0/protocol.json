@@ -1,0 +1,50 @@
+{
+  "accessed": "2026-07-24",
+  "release": {
+    "package_version": "0.2.0",
+    "executable_version": "0.2.0",
+    "source_revision": "d89b1a2fa7a",
+    "wire_version": 1,
+    "bundled_acp_sdk": "0.6.0",
+    "bundled_acp_schema": "0.5.0"
+  },
+  "artifacts": {
+    "launcher_tarball_sha256": "5931a75a6a67bb6210b9398babe1ba63106a736368bc946a3f14f7bc4967f798",
+    "platform_tarball_sha256": "1b6bd3fdac17326831e24eaa3d5608c6dae33f365e20b3fa1fae079d1829e628",
+    "launcher_sha256": "8b18061c51332d8de2dc60ebac92ba75c03f1ff650a3a8a94f6bef1b19ea7ffb",
+    "compressed_binary_sha256": "7c866acc8fb9f812b6355f73d8046db74be063e51cbabf3e1dee305585dae64c",
+    "executable_sha256": "be4db9c6dd288dce2c5d8f130421769872046e5208b6c6457679e692286dfd57",
+    "codesign_team": "5Y6N3AJ54S",
+    "codesign_identifier": "xai-grok-pager"
+  },
+  "version_observation": {
+    "argv": ["--no-auto-update", "--version"],
+    "stdout": "grok 0.2.0 (d89b1a2fa7a)",
+    "state_files_created": 21,
+    "state_bytes_created": 200381,
+    "safe_for_contract_032": false
+  },
+  "invocation": {
+    "direct_executable_argv": ["--no-auto-update", "agent", "stdio"],
+    "npm_launcher_may_materialize_executable_in_grok_home": true
+  },
+  "state": {
+    "acp_start_initializes_grok_home": true,
+    "session_new_failure_created_local_session_state": true,
+    "retention": "durable_local"
+  },
+  "authentication": {
+    "advertised_without_credential": ["grok.com"],
+    "session_new_requires_authentication": true,
+    "authentication_request_observed": false,
+    "qualified": false
+  },
+  "configuration": {
+    "posture": "ambient",
+    "bounded_read_only_claim": false
+  },
+  "model": {
+    "current": "grok-build-latest",
+    "reasoning_efforts": []
+  }
+}

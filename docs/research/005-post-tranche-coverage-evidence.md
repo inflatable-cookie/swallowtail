@@ -2,7 +2,7 @@
 
 Status: promoted
 Owner: Tom
-Updated: 2026-07-20
+Updated: 2026-07-25
 
 ## Question
 
@@ -67,6 +67,17 @@ uses HTTP, not the Responses WebSocket. The first WebSocket proof does not
 silently derive a second endpoint or combine two configured instances. It uses
 one explicit model route. A later xAI catalogue driver may bind its own exact
 HTTP endpoint and transport identity.
+
+Currentness recheck on 2026-07-25 confirms the text Responses WebSocket route,
+`store=false` connection-local continuation, serial provider processing,
+25-minute connection limit, and the two documented connection-specific
+errors. Current examples use `grok-4.5`; the prepared facade therefore keeps
+the exact model route consumer-selected rather than turning that example into
+an adapter default.
+
+xAI now also documents a separate `/v1/realtime` voice API with different
+media, cancellation, duration, and billing semantics. It is not the text
+Responses route selected here and does not enter this contract or facade.
 
 Evidence:
 

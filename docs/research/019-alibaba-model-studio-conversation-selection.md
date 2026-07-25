@@ -2,7 +2,7 @@
 
 Status: promoted
 Owner: Tom
-Updated: 2026-07-22
+Updated: 2026-07-25
 
 ## Question
 
@@ -13,9 +13,10 @@ region choice, workspace authority, or provider retention as implicit?
 ## Method
 
 Official DeepSeek, Z.AI, and Alibaba Cloud documentation was checked on
-2026-07-22 against Swallowtail's realized direct, session, retention,
-catalogue, deletion, and compatible-codec boundaries. No credential, account,
-workspace, provider request, paid inference, or live catalogue was used.
+2026-07-22 and the selected Alibaba surfaces were rechecked on 2026-07-25
+against Swallowtail's realized direct, session, retention, catalogue,
+deletion, and compatible-codec boundaries. No credential, account, workspace,
+provider request, paid inference, or live catalogue was used.
 
 ## DeepSeek Currentness
 

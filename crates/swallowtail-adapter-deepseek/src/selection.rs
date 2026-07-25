@@ -8,7 +8,7 @@ use swallowtail_core::{
     InterfaceCompatibilityClaimId, InterfaceSupportStatus, InterfaceVersion, InterfaceVersionAxis,
     InterfaceVersionBinding, InterfaceVersionScheme, InterfaceVersionSegment, ModelId,
     OperationRequirements, OperationShape, ProviderInferenceCachePolicy, RuntimeReadiness,
-    SessionAccessPolicy, SupportAuthority,
+    SessionAccessPolicy, SessionProviderStatePolicy, SupportAuthority,
 };
 use swallowtail_runtime::{
     OpenDirectContinuationSessionRequest, RuntimeFailure, validate_direct_continuation_plan,
@@ -18,7 +18,9 @@ pub const DEEPSEEK_FACADE_REVISION: &str = "deepseek-openai-chat-2026-07-22";
 pub const DEEPSEEK_ENDPOINT: &str = "https://api.deepseek.com";
 pub const DEEPSEEK_MODEL_ID: &str = "deepseek-v4-pro";
 pub(crate) const DEEPSEEK_PROVIDER_ID: &str = "deepseek";
-pub(crate) const DEEPSEEK_AUDIENCE: &str = "api.deepseek.com";
+pub const DEEPSEEK_ENDPOINT_AUDIENCE: &str = "api.deepseek.com";
+#[cfg(test)]
+const DEEPSEEK_AUDIENCE: &str = DEEPSEEK_ENDPOINT_AUDIENCE;
 pub(crate) const DEEPSEEK_FACADE_AXIS: &str = "deepseek.openai-chat-facade";
 
 #[must_use]
@@ -55,6 +57,7 @@ pub fn deepseek_facade_claim() -> InterfaceCompatibilityClaim {
         InterfaceCompatibilityClaimId::new("deepseek.openai-chat-window-1").unwrap(),
         InterfaceVersionAxis::new(DEEPSEEK_FACADE_AXIS).unwrap(),
         InterfaceVersionScheme::Opaque,
+        swallowtail_core::InterfaceNewerVersionPosture::QualifiedOnly,
         [InterfaceVersionSegment::exact(
             InterfaceVersion::new(DEEPSEEK_FACADE_REVISION).unwrap(),
             InterfaceBehaviorRevision::new("deepseek.v4-thinking-tools-v1").unwrap(),
@@ -107,6 +110,7 @@ pub fn deepseek_v4_requirements(
     ])
     .with_capabilities(capabilities)
     .with_session_access_policy(SessionAccessPolicy::resource_free())
+    .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited)
     .with_direct_continuation(DirectContinuationRequirements::new(
         ModelId::new(DEEPSEEK_MODEL_ID).unwrap(),
         config,
@@ -133,7 +137,7 @@ pub fn validate_deepseek_request_plan(
         || plan
             .model_id()
             .is_none_or(|id| id.as_str() != DEEPSEEK_MODEL_ID)
-        || plan.endpoint_audience().as_str() != DEEPSEEK_AUDIENCE
+        || plan.endpoint_audience().as_str() != DEEPSEEK_ENDPOINT_AUDIENCE
         || plan.credential_mechanism() != &CredentialMechanism::ApiKey
         || !plan
             .interface_versions()

@@ -8,7 +8,7 @@ use swallowtail_core::{
     ModelArtifactBinding, ModelId, ModelRoute, ModelRouteId, ModelRouteRevision,
     OperationRequirements, PreflightContext, PreflightFailure, PreflightPlan, ProtocolFacadeId,
     ProviderAgentBinding, ProviderAgentId, ProviderAgentVersion, RuntimeReadiness,
-    SupportAuthority, TransportFamilyId, preflight,
+    SessionProviderStatePolicy, SupportAuthority, TransportFamilyId, preflight,
 };
 
 use crate::{SyntheticProfile, profile_shape::ProfileShape};
@@ -38,6 +38,11 @@ impl ProfilePreflightFixture {
 
     pub(crate) fn for_host(profile: SyntheticProfile, host_id: ExecutionHostId) -> Self {
         let shape = ProfileShape::for_profile(profile);
+        let support_authority = if profile == SyntheticProfile::RemoteAcpHarness {
+            SupportAuthority::ExperimentalObserved
+        } else {
+            SupportAuthority::ProviderSupported
+        };
         let adapter_id = valid(AdapterId::new, shape.adapter_id);
         let access_profile_id = valid(AccessProfileId::new, shape.access_profile_id);
         let capabilities = capabilities::profile(profile);
@@ -63,7 +68,7 @@ impl ProfilePreflightFixture {
             valid(InstanceTargetRef::new, "fixture-profile-target"),
             shape.ownership,
             access_profile_id.clone(),
-            SupportAuthority::ProviderSupported,
+            support_authority,
             valid(ProtocolFacadeId::new, shape.transport_family),
             valid(InstancePolicyId::new, "fixture-profile-policy"),
             capabilities.clone(),
@@ -88,7 +93,7 @@ impl ProfilePreflightFixture {
             shape.credential,
             shape.metering,
             valid(EndpointAudience::new, shape.audience),
-            SupportAuthority::ProviderSupported,
+            support_authority,
         );
         let access_status = AccessStatus::new(
             access_profile_id.clone(),
@@ -96,14 +101,14 @@ impl ProfilePreflightFixture {
             EntitlementState::Available,
             EndpointAuthorization::Allowed,
             RuntimeReadiness::Ready,
-            SupportAuthority::ProviderSupported,
+            support_authority,
         );
         let access_requirement = AccessRequirement::new(access_profile_id)
             .with_credential_states([shape.credential_state])
             .with_entitlement_states([EntitlementState::Available])
             .with_endpoint_authorizations([EndpointAuthorization::Allowed])
             .with_runtime_readiness([RuntimeReadiness::Ready])
-            .with_support_authorities([SupportAuthority::ProviderSupported]);
+            .with_support_authorities([support_authority]);
         let artifact =
             (profile == SyntheticProfile::OwnedSelfHosted).then(artifact::fixture_artifact);
         let mut requirements = OperationRequirements::new(
@@ -120,7 +125,8 @@ impl ProfilePreflightFixture {
         .require_model_route();
         if shape.operation_shape == swallowtail_core::OperationShape::InteractiveSession {
             requirements = requirements
-                .with_session_access_policy(crate::profile_session_access::policy(profile));
+                .with_session_access_policy(crate::profile_session_access::policy(profile))
+                .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited);
         }
         if profile == SyntheticProfile::RealtimeMediaDirectSession {
             requirements =
@@ -137,6 +143,11 @@ impl ProfilePreflightFixture {
                 ),
             );
         }
+        if profile == SyntheticProfile::RemoteAcpHarness {
+            requirements = requirements.with_remote_acp(crate::remote_acp_requirements(
+                swallowtail_core::RemoteAcpTransport::StreamableHttpSse,
+            ));
+        }
 
         Self {
             driver,
@@ -149,6 +160,18 @@ impl ProfilePreflightFixture {
             requirements,
             available_services: shape.required_services,
         }
+    }
+
+    pub(crate) fn for_remote_acp(
+        transport: swallowtail_core::RemoteAcpTransport,
+        host_id: ExecutionHostId,
+    ) -> Self {
+        let mut fixture = Self::for_host(SyntheticProfile::RemoteAcpHarness, host_id);
+        fixture.requirements = fixture
+            .requirements
+            .clone()
+            .with_remote_acp(crate::remote_acp_requirements(transport));
+        fixture
     }
 
     pub(crate) fn require_harness_rpc_policy(&mut self, policy: HarnessRpcPolicy) {

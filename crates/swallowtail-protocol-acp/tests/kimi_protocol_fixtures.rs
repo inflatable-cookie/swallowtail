@@ -4,6 +4,8 @@ mod support;
 mod authority;
 #[path = "kimi_protocol_fixtures/lifecycle.rs"]
 mod lifecycle;
+#[path = "kimi_protocol_fixtures/reasoning.rs"]
+mod reasoning;
 
 use serde_json::Value;
 use support::Frame;
@@ -32,6 +34,18 @@ const FILESYSTEM_WRITE_REJECTED: &str =
     include_str!("fixtures/acp-v1-kimi-code-0.28.1/filesystem-write-rejected.ndjson");
 const AUTH_REQUIRED: &str = include_str!("fixtures/acp-v1-kimi-code-0.28.1/auth-required.ndjson");
 const DISCONNECT: &str = include_str!("fixtures/acp-v1-kimi-code-0.28.1/disconnect.ndjson");
+const LEGACY_REASONING: &str = include_str!("fixtures/acp-v1-kimi-code-0.28.1/reasoning.json");
+const LEGACY_REASONING_SUCCESS: &str =
+    include_str!("fixtures/acp-v1-kimi-code-0.28.1/reasoning-success.ndjson");
+const EFFORT_REASONING: &str = include_str!("fixtures/acp-v1-kimi-code-0.29.0/protocol.json");
+const EFFORT_REASONING_SUCCESS: &str =
+    include_str!("fixtures/acp-v1-kimi-code-0.29.0/reasoning-success.ndjson");
+const PROVIDER_REJECTION: &str =
+    include_str!("fixtures/acp-v1-kimi-code-0.29.0/provider-rejection.ndjson");
+const MISSING_CONFIRMATION: &str =
+    include_str!("fixtures/acp-v1-kimi-code-0.29.0/missing-confirmation.ndjson");
+const EFFECTIVE_DRIFT: &str =
+    include_str!("fixtures/acp-v1-kimi-code-0.29.0/effective-drift.ndjson");
 
 const SESSION_ID: &str = "kimi-session-bound";
 

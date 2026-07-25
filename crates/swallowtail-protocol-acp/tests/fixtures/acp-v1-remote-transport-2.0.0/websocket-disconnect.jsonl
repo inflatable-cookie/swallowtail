@@ -1,0 +1,5 @@
+{"kind":"client_upgrade","method":"GET","path":"/acp","headers":{"connection":"Upgrade","upgrade":"websocket"}}
+{"kind":"server_upgrade","status":101,"headers":{"connection":"Upgrade","upgrade":"websocket","acp-connection-id":"connection-private","set-cookie":"affinity=opaque-cookie; Secure; HttpOnly"}}
+{"kind":"client_text","body":{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":1}}}
+{"kind":"server_text","body":{"jsonrpc":"2.0","id":1,"result":{"protocolVersion":1}}}
+{"kind":"disconnect","connection_invalidated":true,"session_deletion_claimed":false,"retry":false,"reconnect":false,"replay":false,"resumption":false,"transport_fallback":false,"owned_work_must_join":true}

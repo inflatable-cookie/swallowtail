@@ -1,0 +1,199 @@
+use swallowtail_core::{
+    InterfaceBehaviorRevision, InterfaceCompatibilityClaim, InterfaceCompatibilityClaimId,
+    InterfaceNewerVersionPosture, InterfaceSupportStatus, InterfaceVersion, InterfaceVersionAxis,
+    InterfaceVersionBinding, InterfaceVersionScheme, InterfaceVersionSegment, PreflightPlan,
+};
+use swallowtail_runtime::RuntimeFailure;
+
+use crate::failure::failure;
+
+pub const CLAUDE_AGENT_ACP_AXIS: &str = "claude-agent.acp-adapter";
+pub const CLAUDE_AGENT_ACP_BASELINE_VERSION: &str = "0.53.0";
+pub const CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION: &str = "0.61.0";
+
+const BASELINE_BEHAVIOR: &str = "claude-agent.acp.baseline-v1";
+const SESSION_CONFIG_BEHAVIOR: &str = "claude-agent.acp.session-config-v2";
+const PROVIDER_CAPABILITY_BEHAVIOR: &str = "claude-agent.acp.provider-capability-v3";
+const STEERING_METADATA_BEHAVIOR: &str = "claude-agent.acp.steering-metadata-v4";
+const MAX_VERSION_BYTES: usize = 64;
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(crate) enum ClaudeAgentBehavior {
+    Baseline,
+    SessionConfig,
+    ProviderCapability,
+    SteeringMetadata,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) struct ClaudeAgentPlanSelection {
+    behavior: ClaudeAgentBehavior,
+    version: InterfaceVersion,
+}
+
+impl ClaudeAgentPlanSelection {
+    pub(crate) const fn behavior(&self) -> ClaudeAgentBehavior {
+        self.behavior
+    }
+
+    pub(crate) const fn version(&self) -> &InterfaceVersion {
+        &self.version
+    }
+}
+
+#[must_use]
+pub fn claude_agent_acp_binding(value: &str) -> Option<InterfaceVersionBinding> {
+    if value.is_empty()
+        || value.len() > MAX_VERSION_BYTES
+        || value.trim() != value
+        || value.chars().any(char::is_control)
+        || semver::Version::parse(value).is_err()
+    {
+        return None;
+    }
+    Some(InterfaceVersionBinding::new(
+        axis(),
+        InterfaceVersion::new(value).ok()?,
+    ))
+}
+
+#[must_use]
+pub fn claude_agent_acp_claim() -> InterfaceCompatibilityClaim {
+    InterfaceCompatibilityClaim::new(
+        InterfaceCompatibilityClaimId::new("claude-agent.acp.range-v1")
+            .expect("static Claude Agent claim id is valid"),
+        axis(),
+        InterfaceVersionScheme::Semantic,
+        InterfaceNewerVersionPosture::AllowUnverified,
+        [
+            segment("0.53.0", "0.53.0", BASELINE_BEHAVIOR),
+            segment("0.54.0", "0.59.0", SESSION_CONFIG_BEHAVIOR),
+            segment("0.60.0", "0.60.0", PROVIDER_CAPABILITY_BEHAVIOR),
+            segment("0.61.0", "0.61.0", STEERING_METADATA_BEHAVIOR),
+        ],
+        [version("0.52.0"), version("0.58.0")],
+    )
+    .expect("static Claude Agent compatibility claim is valid")
+}
+
+pub(crate) fn select_claude_agent_plan(
+    plan: &PreflightPlan,
+) -> Result<ClaudeAgentPlanSelection, RuntimeFailure> {
+    let claim = claude_agent_acp_claim();
+    let mut bindings = plan
+        .interface_versions()
+        .filter(|binding| binding.axis() == claim.axis());
+    let binding = bindings.next().ok_or_else(|| {
+        failure(
+            "swallowtail.claude_agent.acp.version_missing",
+            "Claude Agent ACP plan is missing its exact adapter version",
+        )
+    })?;
+    if bindings.next().is_some() {
+        return Err(failure(
+            "swallowtail.claude_agent.acp.version_ambiguous",
+            "Claude Agent ACP plan contains more than one adapter version",
+        ));
+    }
+
+    let assessment = claim.assess(binding.version());
+    if assessment != plan.assess_interface_version(binding) || !assessment.is_permitted() {
+        return Err(failure(
+            "swallowtail.claude_agent.acp.version_incompatible",
+            "Claude Agent ACP adapter version is incompatible with this driver",
+        ));
+    }
+    let behavior = match assessment
+        .behavior_revision()
+        .expect("permitted assessment has a behavior revision")
+        .as_str()
+    {
+        BASELINE_BEHAVIOR => ClaudeAgentBehavior::Baseline,
+        SESSION_CONFIG_BEHAVIOR => ClaudeAgentBehavior::SessionConfig,
+        PROVIDER_CAPABILITY_BEHAVIOR => ClaudeAgentBehavior::ProviderCapability,
+        STEERING_METADATA_BEHAVIOR => ClaudeAgentBehavior::SteeringMetadata,
+        _ => {
+            return Err(failure(
+                "swallowtail.claude_agent.acp.behavior_incompatible",
+                "Claude Agent ACP behavior is not mapped by this driver",
+            ));
+        }
+    };
+    Ok(ClaudeAgentPlanSelection {
+        behavior,
+        version: binding.version().clone(),
+    })
+}
+
+fn axis() -> InterfaceVersionAxis {
+    InterfaceVersionAxis::new(CLAUDE_AGENT_ACP_AXIS).expect("static Claude Agent axis is valid")
+}
+
+fn version(value: &str) -> InterfaceVersion {
+    InterfaceVersion::new(value).expect("static Claude Agent version is valid")
+}
+
+fn segment(minimum: &str, maximum: &str, revision: &str) -> InterfaceVersionSegment {
+    InterfaceVersionSegment::new(
+        version(minimum),
+        version(maximum),
+        InterfaceBehaviorRevision::new(revision).expect("static behavior revision is valid"),
+        InterfaceSupportStatus::Maintained,
+    )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{
+        CLAUDE_AGENT_ACP_AXIS, STEERING_METADATA_BEHAVIOR, claude_agent_acp_binding,
+        claude_agent_acp_claim,
+    };
+    use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
+
+    #[test]
+    fn claim_preserves_four_milestones_exclusions_and_visible_newer_execution() {
+        let claim = claude_agent_acp_claim();
+        assert_eq!(claim.baseline().as_str(), "0.53.0");
+        assert_eq!(claim.latest_qualified().as_str(), "0.61.0");
+        assert_eq!(claim.milestones().len(), 4);
+        for qualified in ["0.53.0", "0.54.1", "0.58.1", "0.59.0", "0.61.0"] {
+            assert!(claim.supports(&version(qualified)));
+        }
+        for incompatible in ["0.52.0", "0.58.0", "0.61.0-rc.1", "invalid"] {
+            assert!(!claim.permits(&version(incompatible)));
+        }
+        let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
+            claim.assess(&version("0.62.0"))
+        else {
+            panic!("newer stable version remains unverified");
+        };
+        assert_eq!(
+            newer.behavior_revision().as_str(),
+            STEERING_METADATA_BEHAVIOR
+        );
+    }
+
+    #[test]
+    fn binding_accepts_only_one_exact_semantic_version() {
+        assert_eq!(
+            claude_agent_acp_binding("0.61.0")
+                .expect("version binds")
+                .axis()
+                .as_str(),
+            CLAUDE_AGENT_ACP_AXIS
+        );
+        for rejected in [
+            "",
+            " 0.61.0",
+            "claude-agent 0.61.0",
+            "0.61.0 extra",
+            "latest",
+        ] {
+            assert!(claude_agent_acp_binding(rejected).is_none());
+        }
+    }
+
+    fn version(value: &str) -> InterfaceVersion {
+        InterfaceVersion::new(value).expect("fixture version is non-empty")
+    }
+}

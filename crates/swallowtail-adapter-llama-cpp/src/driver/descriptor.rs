@@ -35,4 +35,5 @@ pub fn llama_cpp_attached_descriptor() -> DriverDescriptor {
             HostServiceKind::Network,
         ],
     )
+    .with_interface_compatibility(crate::llama_cpp_attached_runtime_claim())
 }

@@ -1,6 +1,9 @@
 use crate::selection::{codex_app_server_claim, codex_exec_claim};
 use crate::{CodexAppServerDriver, CodexExecDriver};
+#[path = "discovery/outcome.rs"]
+mod outcome_result;
 use futures_channel::oneshot;
+use outcome_result::{exit_failed, outcome, output_failed, output_limit, spawn_failed};
 use std::future::poll_fn;
 use std::task::Poll;
 use swallowtail_core::{
@@ -89,11 +92,9 @@ async fn probe_joined(
         }),
     ) {
         Ok(task) => task,
-        Err(_) => return Ok(outcome(DiscoveryStatus::Failed)),
+        Err(_) => return Ok(spawn_failed()),
     };
-    let result = receiver
-        .await
-        .unwrap_or_else(|_| Ok(outcome(DiscoveryStatus::Failed)));
+    let result = receiver.await.unwrap_or_else(|_| Ok(spawn_failed()));
     if task.join().await.is_err() {
         Ok(outcome(DiscoveryStatus::CleanupFailed))
     } else {
@@ -117,10 +118,10 @@ async fn probe_process(
         .await
     {
         Ok(process) => process,
-        Err(_) => return Ok(outcome(DiscoveryStatus::Failed)),
+        Err(_) => return Ok(spawn_failed()),
     };
     if process.close_stdin().await.is_err() {
-        return Ok(stop_and_classify(process.as_ref(), DiscoveryStatus::Failed).await);
+        return Ok(stop_and_classify(process.as_ref(), exit_failed()).await);
     }
 
     let mut deadline = services
@@ -132,21 +133,25 @@ async fn probe_process(
     loop {
         match next_output(process.as_ref(), &mut deadline, &mut cancelled).await {
             ProbeSignal::Cancelled => {
-                return Ok(stop_and_classify(process.as_ref(), DiscoveryStatus::Cancelled).await);
+                return Ok(stop_and_classify(
+                    process.as_ref(),
+                    outcome(DiscoveryStatus::Cancelled),
+                )
+                .await);
             }
             ProbeSignal::TimedOut => {
-                return Ok(stop_and_classify(process.as_ref(), DiscoveryStatus::TimedOut).await);
+                return Ok(
+                    stop_and_classify(process.as_ref(), outcome(DiscoveryStatus::TimedOut)).await,
+                );
             }
             ProbeSignal::Output(Err(_)) => {
-                return Ok(stop_and_classify(process.as_ref(), DiscoveryStatus::Failed).await);
+                return Ok(stop_and_classify(process.as_ref(), output_failed()).await);
             }
             ProbeSignal::Output(Ok(Some(chunk)))
                 if chunk.stream() == ProcessOutputStream::Stdout =>
             {
                 if stdout.len().saturating_add(chunk.bytes().len()) > MAX_VERSION_OUTPUT_BYTES {
-                    return Ok(
-                        stop_and_classify(process.as_ref(), DiscoveryStatus::Malformed).await,
-                    );
+                    return Ok(stop_and_classify(process.as_ref(), output_limit()).await);
                 }
                 stdout.extend_from_slice(chunk.bytes());
             }
@@ -160,7 +165,7 @@ async fn probe_process(
         Err(_) => return Ok(outcome(DiscoveryStatus::CleanupFailed)),
     };
     if !exit.success() {
-        return Ok(outcome(DiscoveryStatus::Failed));
+        return Ok(exit_failed());
     }
     let Some(binding) = parse_version(&stdout, claim.axis().clone()) else {
         return Ok(outcome(DiscoveryStatus::Malformed));
@@ -205,7 +210,7 @@ async fn next_output(
 
 async fn stop_and_classify(
     process: &dyn ProcessHandle,
-    status: DiscoveryStatus,
+    desired: DiscoveryOutcome,
 ) -> DiscoveryOutcome {
     let graceful = process.request_stop().await;
     let forced = process.force_stop().await;
@@ -213,7 +218,7 @@ async fn stop_and_classify(
     if graceful.is_err() || forced.is_err() || waited.is_err() {
         outcome(DiscoveryStatus::CleanupFailed)
     } else {
-        outcome(status)
+        desired
     }
 }
 
@@ -233,29 +238,6 @@ fn parse_version(
         axis,
         InterfaceVersion::new(version).ok()?,
     ))
-}
-
-fn outcome(status: DiscoveryStatus) -> DiscoveryOutcome {
-    DiscoveryOutcome::new(
-        status,
-        Some(SafeDiagnostic::new(
-            status_code(status),
-            "Codex installed executable discovery did not produce a compatible observation",
-        )),
-    )
-}
-
-const fn status_code(status: DiscoveryStatus) -> &'static str {
-    match status {
-        DiscoveryStatus::Absent => "swallowtail.codex.discovery_absent",
-        DiscoveryStatus::Discovered => "swallowtail.codex.discovery_discovered",
-        DiscoveryStatus::Incompatible => "swallowtail.codex.discovery_incompatible",
-        DiscoveryStatus::Malformed => "swallowtail.codex.discovery_malformed",
-        DiscoveryStatus::TimedOut => "swallowtail.codex.discovery_timed_out",
-        DiscoveryStatus::Cancelled => "swallowtail.codex.discovery_cancelled",
-        DiscoveryStatus::Failed => "swallowtail.codex.discovery_failed",
-        DiscoveryStatus::CleanupFailed => "swallowtail.codex.discovery_cleanup_failed",
-    }
 }
 
 fn failure(code: &'static str, message: &'static str) -> RuntimeFailure {

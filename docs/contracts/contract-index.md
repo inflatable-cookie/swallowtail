@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-23
+Updated: 2026-07-25
 
 | Contract | Status | Scope |
 | --- | --- | --- |
@@ -39,3 +39,7 @@ Updated: 2026-07-23
 | [031 Attached Native Runtime Version And Residency](031-attached-native-runtime-version-and-residency.md) | active | Attach-only runtime version, installed/running catalogue, and inference-caused residency truth |
 | [032 Installed Executable Observation And Discovery](032-installed-executable-observation-and-discovery.md) | active | Explicit host-approved executable targets, exact version classification, and bounded joined discovery |
 | [033 Harness Configuration Posture](033-harness-configuration-posture.md) | active | Exact ambient, provider-suppressed, or host-scoped harness configuration independent from isolation and access |
+| [034 Negotiated Harness Session Options](034-negotiated-harness-session-options.md) | active | Version-qualified mapping of typed portable session options through private harness configuration channels |
+| [035 Remote ACP Connection Transport](035-remote-acp-connection-transport.md) | active | Experimental host-approved remote ACP over explicit HTTP/SSE or WebSocket with scoped affinity and no implicit recovery |
+| [036 Crate Release And Compatibility Boundary](036-crate-release-and-compatibility-boundary.md) | active | Public package topology, coordinated pre-1.0 compatibility, MSRV, package evidence, consumer handoffs, and human release authority |
+| [037 Provider-Wide Prepared Integration And Bound Operations](037-prepared-consumer-integration.md) | active | Adapter-local preparation and typed bound operations for every production driver, with plan derivation, access provenance, version truth, safe stages, joined host composition, and low-level escape hatch |

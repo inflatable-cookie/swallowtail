@@ -20,12 +20,20 @@ use std::collections::VecDeque;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use std::thread::{self, JoinHandle};
-use swallowtail_core::{ExecutionHostId, HostServiceKind};
+use swallowtail_core::{ExecutionHostId, HarnessConfigurationPosture, HostServiceKind};
 use swallowtail_runtime::{
     BoxFuture, HostServices, JoinedTask, ProcessExit, ProcessHandle, ProcessInputChunk,
     ProcessOutputChunk, ProcessOutputStream, ProcessRequest, ProcessService, RuntimeFailure,
-    ScopeId, ScopedTaskService, WorkingResourceRef,
+    ScopeId, ScopedTaskService, SessionAccessPolicy, SessionPlanAgreement, WorkingResourceRef,
 };
+
+pub fn app_server_session_agreement(policy: SessionAccessPolicy) -> SessionPlanAgreement {
+    SessionPlanAgreement::explicit(
+        policy,
+        Some(swallowtail_core::SessionProviderStatePolicy::Prohibited),
+        Some(HarnessConfigurationPosture::Ambient),
+    )
+}
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ObservedProcessRequest {
@@ -81,6 +89,9 @@ pub struct FakeProcessService {
     state: Arc<ProcessState>,
     output: Mutex<Option<VecDeque<ProcessOutputChunk>>>,
     hold_open: bool,
+    read_failure: bool,
+    cleanup_failure: bool,
+    exit_success: bool,
 }
 
 impl FakeProcessService {
@@ -91,16 +102,30 @@ impl FakeProcessService {
                 jsonl.as_bytes().to_vec(),
             )],
             false,
+            false,
+            false,
+            true,
         )
     }
 
     pub fn held_open() -> (Arc<Self>, Arc<ProcessState>) {
-        Self::new([], true)
+        Self::new([], true, false, false, true)
+    }
+
+    pub fn failed_exit() -> (Arc<Self>, Arc<ProcessState>) {
+        Self::new([], false, false, false, false)
+    }
+
+    pub fn failed_output(cleanup_failure: bool) -> (Arc<Self>, Arc<ProcessState>) {
+        Self::new([], false, true, cleanup_failure, true)
     }
 
     fn new(
         output: impl IntoIterator<Item = ProcessOutputChunk>,
         hold_open: bool,
+        read_failure: bool,
+        cleanup_failure: bool,
+        exit_success: bool,
     ) -> (Arc<Self>, Arc<ProcessState>) {
         let state = Arc::new(ProcessState::default());
         (
@@ -108,6 +133,9 @@ impl FakeProcessService {
                 state: Arc::clone(&state),
                 output: Mutex::new(Some(output.into_iter().collect())),
                 hold_open,
+                read_failure,
+                cleanup_failure,
+                exit_success,
             }),
             state,
         )
@@ -145,6 +173,9 @@ impl ProcessService for FakeProcessService {
             state: Arc::clone(&self.state),
             output: Mutex::new(output),
             hold_open: self.hold_open,
+            read_failure: self.read_failure,
+            cleanup_failure: self.cleanup_failure,
+            exit_success: self.exit_success,
         };
         Box::pin(async move { Ok(Box::new(handle) as Box<dyn ProcessHandle>) })
     }
@@ -154,6 +185,9 @@ struct FakeProcessHandle {
     state: Arc<ProcessState>,
     output: Mutex<VecDeque<ProcessOutputChunk>>,
     hold_open: bool,
+    read_failure: bool,
+    cleanup_failure: bool,
+    exit_success: bool,
 }
 
 impl ProcessHandle for FakeProcessHandle {
@@ -173,6 +207,9 @@ impl ProcessHandle for FakeProcessHandle {
 
     fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
         Box::pin(async move {
+            if self.read_failure {
+                return Err(fixture_failure("fixture process output failed"));
+            }
             loop {
                 if let Some(chunk) = self
                     .output
@@ -192,18 +229,45 @@ impl ProcessHandle for FakeProcessHandle {
 
     fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
         self.state.stdin_closed.store(true, Ordering::SeqCst);
-        Box::pin(async { Ok(()) })
+        let cleanup_failure = self.cleanup_failure;
+        Box::pin(async move {
+            if cleanup_failure {
+                Err(fixture_failure("fixture process stop failed"))
+            } else {
+                Ok(())
+            }
+        })
     }
 
     fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
         self.state.force_stopped.store(true, Ordering::SeqCst);
-        Box::pin(async { Ok(()) })
+        let cleanup_failure = self.cleanup_failure;
+        Box::pin(async move {
+            if cleanup_failure {
+                Err(fixture_failure("fixture process force-stop failed"))
+            } else {
+                Ok(())
+            }
+        })
     }
 
     fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
         self.state.waited.store(true, Ordering::SeqCst);
-        Box::pin(async { Ok(ProcessExit::new(true, Some(0))) })
+        let exit_success = self.exit_success;
+        Box::pin(async move {
+            Ok(ProcessExit::new(
+                exit_success,
+                Some(i32::from(!exit_success)),
+            ))
+        })
     }
+}
+
+fn fixture_failure(message: &'static str) -> RuntimeFailure {
+    RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
+        "swallowtail.codex.fixture_failure",
+        message,
+    ))
 }
 
 pub struct ThreadTaskService;

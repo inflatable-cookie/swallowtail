@@ -1,0 +1,66 @@
+{
+  "fixture_schema": 1,
+  "protocol": {
+    "wire_version": 1,
+    "transport_rfd_status": "active",
+    "transport_rfd_revision": "observed-2026-07-24",
+    "protocol_version_header": "not_available"
+  },
+  "sdk": {
+    "transport_crate": "agent-client-protocol-http",
+    "transport_version": "2.0.0",
+    "core_crate": "agent-client-protocol",
+    "core_version": "2.0.0",
+    "runtime_interface_range_claimed": false
+  },
+  "profiles": {
+    "streamable_http_sse": {
+      "http_version": "2",
+      "methods": ["POST", "GET", "DELETE"],
+      "connection_streams": 1,
+      "active_sessions": 1,
+      "session_streams_per_session": 1,
+      "cookies": "connection_scoped_required"
+    },
+    "websocket": {
+      "upgrade": "websocket",
+      "text_frames": true,
+      "binary_frames": "ignored",
+      "active_sessions": 1,
+      "cookies": "connection_scoped_required"
+    }
+  },
+  "bounds": {
+    "maximum_records": 64,
+    "maximum_record_bytes": 65536,
+    "maximum_pending_requests": 16,
+    "maximum_pending_callbacks": 8,
+    "maximum_cookie_count": 16,
+    "maximum_cookie_bytes": 16384
+  },
+  "identity": {
+    "operation_id": "swallowtail_private",
+    "connection_id": "transport_private",
+    "session_id": "acp_private",
+    "credential": "absent"
+  },
+  "recovery": {
+    "redirect": false,
+    "retry": false,
+    "reconnect": false,
+    "replay": false,
+    "resumption": false,
+    "pooling": false,
+    "multiplexing": false,
+    "transport_fallback": false
+  },
+  "diagnostics": {
+    "endpoint": "redacted",
+    "headers": "redacted",
+    "cookies": "redacted",
+    "connection_id": "redacted",
+    "session_id": "redacted",
+    "frames": "redacted",
+    "sdk_errors": "redacted"
+  }
+}

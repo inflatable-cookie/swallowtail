@@ -24,6 +24,37 @@ impl fmt::Debug for BedrockCredentialProvider {
     }
 }
 
+/// Explicit SDK client inputs selected by the consumer or execution host.
+///
+/// This value does not consult the ambient AWS region or credential chains.
+#[derive(Clone, Debug)]
+pub struct BedrockCloudClientConfig {
+    region: BedrockRegion,
+    credential_provider: BedrockCredentialProvider,
+}
+
+impl BedrockCloudClientConfig {
+    #[must_use]
+    pub const fn new(
+        region: BedrockRegion,
+        credential_provider: BedrockCredentialProvider,
+    ) -> Self {
+        Self {
+            region,
+            credential_provider,
+        }
+    }
+
+    #[must_use]
+    pub const fn region(&self) -> &BedrockRegion {
+        &self.region
+    }
+
+    pub(crate) fn into_parts(self) -> (BedrockRegion, BedrockCredentialProvider) {
+        (self.region, self.credential_provider)
+    }
+}
+
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct BedrockRegion(String);
 

@@ -1,0 +1,192 @@
+use swallowtail_core::{
+    ExternalNetworkPolicy, ExternalSearchPolicy, ModelId, ModelRouteId, ModelRouteRevision,
+    ReasoningMode,
+};
+use swallowtail_runtime::{
+    AttachmentDescriptor, Deadline, OperationContent, RequestId, SessionOptions,
+    StructuredOutputDescriptor, ToolDeclaration, WorkingResourceRef,
+};
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct CodexModelSelection {
+    route_id: ModelRouteId,
+    route_revision: ModelRouteRevision,
+    model_id: ModelId,
+}
+
+impl CodexModelSelection {
+    #[must_use]
+    pub const fn new(
+        route_id: ModelRouteId,
+        route_revision: ModelRouteRevision,
+        model_id: ModelId,
+    ) -> Self {
+        Self {
+            route_id,
+            route_revision,
+            model_id,
+        }
+    }
+
+    pub(crate) const fn route_id(&self) -> &ModelRouteId {
+        &self.route_id
+    }
+
+    pub(crate) const fn route_revision(&self) -> &ModelRouteRevision {
+        &self.route_revision
+    }
+
+    pub(crate) const fn model_id(&self) -> &ModelId {
+        &self.model_id
+    }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct CodexSessionProfileInput {
+    request_id: RequestId,
+    model: CodexModelSelection,
+    working_resource: WorkingResourceRef,
+    deadline: Option<Deadline>,
+    options: SessionOptions,
+}
+
+impl CodexSessionProfileInput {
+    #[must_use]
+    pub const fn new(
+        request_id: RequestId,
+        model: CodexModelSelection,
+        working_resource: WorkingResourceRef,
+        deadline: Option<Deadline>,
+        options: SessionOptions,
+    ) -> Self {
+        Self {
+            request_id,
+            model,
+            working_resource,
+            deadline,
+            options,
+        }
+    }
+
+    pub(crate) fn into_parts(
+        self,
+    ) -> (
+        RequestId,
+        CodexModelSelection,
+        WorkingResourceRef,
+        Option<Deadline>,
+        SessionOptions,
+    ) {
+        (
+            self.request_id,
+            self.model,
+            self.working_resource,
+            self.deadline,
+            self.options,
+        )
+    }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct CodexExecProfileInput {
+    request_id: RequestId,
+    content: OperationContent,
+    model: CodexModelSelection,
+    working_resource: WorkingResourceRef,
+    external_network: ExternalNetworkPolicy,
+    external_search: ExternalSearchPolicy,
+    reasoning_mode: Option<ReasoningMode>,
+    deadline: Option<Deadline>,
+    attachments: Vec<AttachmentDescriptor>,
+    tools: Vec<ToolDeclaration>,
+    structured_output: Option<StructuredOutputDescriptor>,
+}
+
+impl CodexExecProfileInput {
+    #[must_use]
+    pub const fn new(
+        request_id: RequestId,
+        content: OperationContent,
+        model: CodexModelSelection,
+        working_resource: WorkingResourceRef,
+        external_network: ExternalNetworkPolicy,
+        external_search: ExternalSearchPolicy,
+    ) -> Self {
+        Self {
+            request_id,
+            content,
+            model,
+            working_resource,
+            external_network,
+            external_search,
+            reasoning_mode: None,
+            deadline: None,
+            attachments: Vec::new(),
+            tools: Vec::new(),
+            structured_output: None,
+        }
+    }
+
+    #[must_use]
+    pub fn with_reasoning_mode(mut self, mode: ReasoningMode) -> Self {
+        self.reasoning_mode = Some(mode);
+        self
+    }
+
+    #[must_use]
+    pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
+        self.deadline = Some(deadline);
+        self
+    }
+
+    #[must_use]
+    pub fn with_attachments(
+        mut self,
+        attachments: impl IntoIterator<Item = AttachmentDescriptor>,
+    ) -> Self {
+        self.attachments = attachments.into_iter().collect();
+        self
+    }
+
+    #[must_use]
+    pub fn with_tools(mut self, tools: impl IntoIterator<Item = ToolDeclaration>) -> Self {
+        self.tools = tools.into_iter().collect();
+        self
+    }
+
+    #[must_use]
+    pub fn with_structured_output(mut self, output: StructuredOutputDescriptor) -> Self {
+        self.structured_output = Some(output);
+        self
+    }
+
+    pub(crate) fn into_parts(self) -> CodexExecProfileParts {
+        CodexExecProfileParts {
+            request_id: self.request_id,
+            content: self.content,
+            model: self.model,
+            working_resource: self.working_resource,
+            external_network: self.external_network,
+            external_search: self.external_search,
+            reasoning_mode: self.reasoning_mode,
+            deadline: self.deadline,
+            attachments: self.attachments,
+            tools: self.tools,
+            structured_output: self.structured_output,
+        }
+    }
+}
+
+pub(crate) struct CodexExecProfileParts {
+    pub request_id: RequestId,
+    pub content: OperationContent,
+    pub model: CodexModelSelection,
+    pub working_resource: WorkingResourceRef,
+    pub external_network: ExternalNetworkPolicy,
+    pub external_search: ExternalSearchPolicy,
+    pub reasoning_mode: Option<ReasoningMode>,
+    pub deadline: Option<Deadline>,
+    pub attachments: Vec<AttachmentDescriptor>,
+    pub tools: Vec<ToolDeclaration>,
+    pub structured_output: Option<StructuredOutputDescriptor>,
+}

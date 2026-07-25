@@ -20,8 +20,8 @@ pub const EXACT_MODEL_ID: &str = "qwen3.7-plus-2026-05-26";
 pub const ACCESS_PROFILE_ID: &str = "alibaba-model-studio.sg.workspace.api-key.payg";
 
 const DRIVER_ID: &str = "swallowtail.alibaba-model-studio.conversations-responses";
-const INSTANCE_ID: &str = "alibaba-model-studio.sg.workspace-dedicated";
-const ROUTE_ID: &str = "alibaba-model-studio.sg.qwen3.7-plus-2026-05-26";
+pub const CONFIGURED_INSTANCE_ID: &str = "alibaba-model-studio.sg.workspace-dedicated";
+pub const MODEL_ROUTE_ID: &str = "alibaba-model-studio.sg.qwen3.7-plus-2026-05-26";
 
 #[must_use]
 pub fn alibaba_model_studio_descriptor() -> DriverDescriptor {
@@ -57,7 +57,7 @@ pub fn alibaba_model_studio_access_profile() -> AccessProfile {
 #[must_use]
 pub fn alibaba_model_studio_instance(host_id: ExecutionHostId) -> ConfiguredInstance {
     ConfiguredInstance::new(
-        id(ConfiguredInstanceId::new, INSTANCE_ID),
+        id(ConfiguredInstanceId::new, CONFIGURED_INSTANCE_ID),
         id(InstanceRevision::new, "fixture-1"),
         id(AdapterId::new, DRIVER_ID),
         host_id,
@@ -77,9 +77,9 @@ pub fn alibaba_model_studio_instance(host_id: ExecutionHostId) -> ConfiguredInst
 #[must_use]
 pub fn alibaba_model_studio_route() -> ModelRoute {
     ModelRoute::new(
-        id(ModelRouteId::new, ROUTE_ID),
+        id(ModelRouteId::new, MODEL_ROUTE_ID),
         id(ModelRouteRevision::new, "fixture-1"),
-        id(ConfiguredInstanceId::new, INSTANCE_ID),
+        id(ConfiguredInstanceId::new, CONFIGURED_INSTANCE_ID),
         id(ModelId::new, EXACT_MODEL_ID),
         CapabilityProfile::new(capabilities()),
     )
@@ -115,7 +115,7 @@ pub fn validate_alibaba_model_studio_plan(
 ) -> Result<(), AlibabaProtocolFailure> {
     let requirements = plan.requirements();
     if plan.driver_identity().id().as_str() != DRIVER_ID
-        || plan.instance_id().as_str() != INSTANCE_ID
+        || plan.instance_id().as_str() != CONFIGURED_INSTANCE_ID
         || plan.instance_target_ref()
             != &id(
                 InstanceTargetRef::new,
@@ -124,7 +124,7 @@ pub fn validate_alibaba_model_studio_plan(
         || plan.access_profile_id().as_str() != ACCESS_PROFILE_ID
         || plan.endpoint_audience().as_str() != ENDPOINT_AUDIENCE
         || plan.credential_mechanism() != &CredentialMechanism::ApiKey
-        || plan.model_route_id().map(ModelRouteId::as_str) != Some(ROUTE_ID)
+        || plan.model_route_id().map(ModelRouteId::as_str) != Some(MODEL_ROUTE_ID)
         || plan.model_id().map(ModelId::as_str) != Some(EXACT_MODEL_ID)
         || requirements.execution_layer() != ExecutionLayer::DirectModelInference
         || requirements.operation_shape() != OperationShape::InteractiveSession

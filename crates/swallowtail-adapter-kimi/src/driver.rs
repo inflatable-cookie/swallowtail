@@ -15,45 +15,10 @@ use swallowtail_runtime::{
     CredentialLease, EnvironmentRef, ExecutableRef, HostServices, InteractiveSessionDriver,
     InteractiveSessionHandle, JoinedTask, LoadSessionRequest, LoadedSession, OpenSessionRequest,
     ProcessHandle, ProcessRequest, RequestId, ResourceLease, ResumeSessionRequest, RuntimeFailure,
-    RuntimeSessionId, ScopeId, SessionResumeBinding, TerminalOutcome, TurnHandle, TurnRequest,
-    validate_session_access_plan, validate_session_resource_lease,
+    RuntimeSessionId, ScopeId, SessionLifecycleOperation, SessionResumeBinding, TerminalOutcome,
+    TurnHandle, TurnRequest, prepare_negotiated_reasoning_setup, validate_session_access_plan,
+    validate_session_plan_agreement, validate_session_resource_lease,
 };
-
-const DRIVER_ID: &str = "swallowtail.kimi.acp";
-const KIMI_VERSION: &str = "0.28.1";
-
-pub struct KimiAcpDriver {
-    isolated_environment: EnvironmentRef,
-    credential: CredentialRef,
-}
-
-impl KimiAcpDriver {
-    #[must_use]
-    pub const fn new(isolated_environment: EnvironmentRef, credential: CredentialRef) -> Self {
-        Self {
-            isolated_environment,
-            credential,
-        }
-    }
-
-    fn validate_plan(&self, plan: &PreflightPlan) -> Result<(), RuntimeFailure> {
-        if plan.driver_identity().id().as_str() != DRIVER_ID {
-            return Err(failure(
-                "swallowtail.kimi.acp.plan_driver_mismatch",
-                "Preflight plan is bound to a different driver",
-            ));
-        }
-        if plan.credential_mechanism() != &CredentialMechanism::InteractiveOauth
-            || plan.credential_reference() != Some(&self.credential)
-        {
-            return Err(failure(
-                "swallowtail.kimi.acp.access_profile_rejected",
-                "Kimi Code ACP requires its delegated membership OAuth profile",
-            ));
-        }
-        Ok(())
-    }
-}
 
 impl InteractiveSessionDriver for KimiAcpDriver {
     fn open_session(
@@ -63,7 +28,13 @@ impl InteractiveSessionDriver for KimiAcpDriver {
         services: HostServices,
     ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
         Box::pin(async move {
-            self.validate_plan(&plan)?;
+            validate_session_plan_agreement(&plan, request.plan_agreement())?;
+            let selected = self.validate_plan(&plan)?;
+            let reasoning = prepare_negotiated_reasoning_setup(
+                &plan,
+                SessionLifecycleOperation::Open,
+                request.options(),
+            )?;
             validate_request(
                 &plan,
                 request.access_policy(),
@@ -82,7 +53,7 @@ impl InteractiveSessionDriver for KimiAcpDriver {
                 .await?;
             let opened = async {
                 let initialize = attachment.connection.initialize().await?;
-                validate_initialize(&initialize)?;
+                validate_initialize(&initialize, selected.version().as_str())?;
                 let response = attachment
                     .connection
                     .new_session(attachment.cwd.clone())
@@ -90,6 +61,18 @@ impl InteractiveSessionDriver for KimiAcpDriver {
                 let provider_id =
                     parse_session(&response, plan.model_id().expect("validated model"))?;
                 attachment.connection.set_session_id(provider_id.clone())?;
+                if let Some(reasoning) = reasoning {
+                    let selection = reasoning::prepare_reasoning_selection(
+                        &response,
+                        selected.behavior(),
+                        reasoning,
+                    )?;
+                    let confirmation = attachment
+                        .connection
+                        .set_config_option(&provider_id, selection.provider_value())
+                        .await?;
+                    let _ = selection.confirm(&confirmation, selected.behavior())?;
+                }
                 let provider_ref = SessionRef::new(&provider_id).map_err(|_| malformed())?;
                 let binding = SessionResumeBinding::new(
                     provider_ref.clone(),
@@ -120,7 +103,13 @@ impl InteractiveSessionDriver for KimiAcpDriver {
         services: HostServices,
     ) -> BoxFuture<'_, Result<LoadedSession, RuntimeFailure>> {
         Box::pin(async move {
-            self.validate_plan(&plan)?;
+            validate_session_plan_agreement(&plan, request.plan_agreement())?;
+            let selected = self.validate_plan(&plan)?;
+            let _ = prepare_negotiated_reasoning_setup(
+                &plan,
+                SessionLifecycleOperation::Load,
+                request.options(),
+            )?;
             require_capability(&plan, Capability::LoadSession)?;
             require_constraint(
                 &plan,
@@ -154,7 +143,10 @@ impl InteractiveSessionDriver for KimiAcpDriver {
                 )
                 .await?;
             let loaded = async {
-                validate_initialize(&attachment.connection.initialize().await?)?;
+                validate_initialize(
+                    &attachment.connection.initialize().await?,
+                    selected.version().as_str(),
+                )?;
                 let provider_ref = request.provider_session_ref().clone();
                 let (response, replay) = attachment
                     .connection
@@ -191,7 +183,13 @@ impl InteractiveSessionDriver for KimiAcpDriver {
         services: HostServices,
     ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
         Box::pin(async move {
-            self.validate_plan(&plan)?;
+            validate_session_plan_agreement(&plan, request.plan_agreement())?;
+            let selected = self.validate_plan(&plan)?;
+            let _ = prepare_negotiated_reasoning_setup(
+                &plan,
+                SessionLifecycleOperation::Resume,
+                request.options(),
+            )?;
             require_capability(&plan, Capability::Resume)?;
             validate_bound_request(
                 &plan,
@@ -215,7 +213,10 @@ impl InteractiveSessionDriver for KimiAcpDriver {
                 )
                 .await?;
             let resumed = async {
-                validate_initialize(&attachment.connection.initialize().await?)?;
+                validate_initialize(
+                    &attachment.connection.initialize().await?,
+                    selected.version().as_str(),
+                )?;
                 let provider_ref = request.provider_session_ref().clone();
                 let response = attachment
                     .connection
@@ -247,5 +248,6 @@ impl InteractiveSessionDriver for KimiAcpDriver {
 
 include!("driver/access.rs");
 include!("driver/descriptor.rs");
+include!("driver/plan.rs");
 include!("driver/session.rs");
 include!("driver/validation.rs");

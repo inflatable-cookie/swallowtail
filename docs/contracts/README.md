@@ -38,6 +38,10 @@ Contracts hold durable, testable rules.
 - [031 Attached Native Runtime Version And Residency](031-attached-native-runtime-version-and-residency.md)
 - [032 Installed Executable Observation And Discovery](032-installed-executable-observation-and-discovery.md)
 - [033 Harness Configuration Posture](033-harness-configuration-posture.md)
+- [034 Negotiated Harness Session Options](034-negotiated-harness-session-options.md)
+- [035 Remote ACP Connection Transport](035-remote-acp-connection-transport.md)
+- [036 Crate Release And Compatibility Boundary](036-crate-release-and-compatibility-boundary.md)
+- [037 Provider-Wide Prepared Integration And Bound Operations](037-prepared-consumer-integration.md)
 
 Contract 003 defines the provider-neutral record kernel. Contracts 004-016
 govern the realized runtime and current proof drivers. Contract 017 governs
@@ -75,7 +79,9 @@ and cleanup joined.
 Contract 029 keeps adapter, artifact, SDK, wire, service, facade, instance,
 route, and model versions separate. Execution binds exact observed points;
 drivers support maintained baseline-to-latest windows only through ordered,
-evidence-backed milestones, deprecation states, and exact exclusions.
+evidence-backed milestones, deprecation states, and exact exclusions. Ordered
+claims may separately permit exact unverified-newer attempts without extending
+their guaranteed support window; opaque claims remain exact-only.
 Contract 030 adds a locally continued direct-session profile. Every provider
 attempt needs explicit consumer authorization; tool execution remains
 downstream while provider-private continuation stays bounded, redacted,
@@ -86,10 +92,30 @@ and invocation-caused model residency separate without granting installation,
 model mutation, unload, or serving-lifecycle authority.
 Contract 032 adds target-aware installed-executable discovery. It binds one
 opaque host-approved candidate, exact version axis, deadline, cancellation,
-authoritative host, compatibility classification, and joined process cleanup
-without executable search, configuration promotion, authentication, or
-execution authority.
+authoritative host, qualified, unverified-newer, or incompatible
+classification, and joined process cleanup without executable search,
+configuration promotion, authentication, or execution authority.
 Contract 033 binds ambient, provider-suppressed, and host-scoped harness
 configuration independently from isolation, credentials, retention, and
 working resources. Host-scoped execution remains gated until a separate opaque
 host lease and service exist.
+Contract 034 maps exact typed session options through version-qualified,
+harness-advertised configuration channels. Provider option records remain
+private; exact confirmation is required without model, route, access,
+isolation, or lifecycle fallback.
+Contract 035 adds an opt-in experimental remote ACP transport over one exact
+host-approved HTTP/SSE or WebSocket endpoint. It keeps transport separate from
+provider identity, scopes connection and affinity state, excludes
+authentication and implicit recovery, and requires explicit joined close.
+Contract 036 fixes the 23 public packages, coordinated pre-1.0 version,
+compatible internal requirements, three-stage publication order, bounded MSRV,
+package and consumer evidence, and explicit human authority for every external
+release mutation. Crate versions remain separate from Contract 029 provider-
+interface ranges.
+Contract 037 requires an adapter-local prepared normal path for every
+production driver above the unchanged low-level roles. It binds adapter-owned
+facts, derives immutable plan echoes, preserves explicit access provenance and
+authority, exposes safe staged diagnostics, and permits typed bound operations
+without flattening role lifecycle. It also preserves unverified-newer posture,
+joined per-host service composition, and provider-wide deterministic evidence
+before replacement candidate freeze.

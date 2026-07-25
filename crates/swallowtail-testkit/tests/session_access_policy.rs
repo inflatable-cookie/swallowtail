@@ -19,12 +19,13 @@ fn provider_enforced_read_only_is_selected_explicitly() {
         host_id("fixture.host.local"),
     );
     let plan = fixture.preflight().expect("read-only preflight succeeds");
-    let request = OpenSessionRequest::new(
+    let request = OpenSessionRequest::from_plan(
+        &plan,
         RequestId::new("read-only-request").expect("request id is valid"),
         fixture.working_resource().clone(),
         None,
     )
-    .with_access_policy(SessionAccessPolicy::read_only());
+    .expect("read-only request derives from plan");
 
     assert_eq!(request.access_policy(), &SessionAccessPolicy::read_only());
     assert_eq!(
@@ -45,10 +46,12 @@ fn resource_free_session_request_and_policy_need_no_placeholder_resource() {
     let plan = fixture
         .preflight()
         .expect("resource-free preflight succeeds");
-    let request = OpenSessionRequest::resource_free(
+    let request = OpenSessionRequest::resource_free_from_plan(
+        &plan,
         RequestId::new("resource-free-request").expect("request id is valid"),
         None,
-    );
+    )
+    .expect("resource-free request derives from plan");
     let recording = RecordingHostServices::default();
 
     assert!(request.working_resource().is_none());

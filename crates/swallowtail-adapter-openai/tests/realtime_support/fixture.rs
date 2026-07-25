@@ -2,7 +2,9 @@ use super::server::{RealtimeFixtureServer, RealtimeScenario};
 use super::services::{CallLog, ThreadServices, TimeMode, TrackingCredential, TrackingNetwork};
 use std::num::{NonZeroU16, NonZeroU32, NonZeroU64};
 use std::sync::Arc;
-use swallowtail_adapter_openai::openai_realtime_descriptor;
+use swallowtail_adapter_openai::{
+    OpenAiRealtimePreparationInput, openai_realtime_access_profile, openai_realtime_descriptor,
+};
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessRequirement, AccessStatus, AudioEncoding, Capability,
     CapabilityConstraint, CapabilityProfile, CapabilityRequirement, ConfiguredInstance,
@@ -11,12 +13,12 @@ use swallowtail_core::{
     InstanceOwnership, InstancePolicyId, InstanceRevision, InstanceTargetRef, MediaFormat, ModelId,
     ModelRoute, ModelRouteId, ModelRouteRevision, OperationRequirements, OperationShape,
     PreflightContext, ProtocolFacadeId, ProviderId, RealtimeMediaConfig, RealtimeMediaRequirements,
-    RuntimeReadiness, SessionAccessPolicy, SupportAuthority, preflight,
+    RuntimeReadiness, SessionAccessPolicy, SessionProviderStatePolicy, SupportAuthority, preflight,
 };
 use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{
     BlockingWorkService, CredentialRef, CredentialService, EndpointRef, HostServices,
-    NetworkPolicyService, ScopedTaskService, TimeService,
+    NetworkPolicyService, PreparedAccessEvidence, ScopedTaskService, TimeService,
 };
 
 pub struct RealtimeFixture {
@@ -95,6 +97,25 @@ impl RealtimeFixture {
             }) as Arc<dyn CredentialService>)
     }
 
+    pub fn preparation_input(&self) -> OpenAiRealtimePreparationInput {
+        let access = openai_realtime_access_profile(self.credential.clone());
+        let status = AccessStatus::new(
+            access.id().clone(),
+            CredentialState::Ready,
+            EntitlementState::Available,
+            EndpointAuthorization::Allowed,
+            RuntimeReadiness::Ready,
+            SupportAuthority::ProviderSupported,
+        );
+        OpenAiRealtimePreparationInput::new(
+            InstanceRevision::new("prepared-1").expect("revision is valid"),
+            self.host_id.clone(),
+            self.target.clone(),
+            access,
+            PreparedAccessEvidence::caller_asserted(status),
+        )
+    }
+
     pub fn plan(&self) -> swallowtail_core::PreflightPlan {
         let descriptor = openai_realtime_descriptor();
         let access_id = AccessProfileId::new("access.openai.realtime").expect("access id is valid");
@@ -155,6 +176,7 @@ impl RealtimeFixture {
         .with_host_services(host_services.clone())
         .with_capabilities(requirements)
         .with_session_access_policy(SessionAccessPolicy::resource_free())
+        .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited)
         .with_realtime_media(RealtimeMediaRequirements::new(
             ModelId::new("gpt-realtime-2.1").expect("model id is valid"),
             config(),

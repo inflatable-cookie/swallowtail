@@ -6,7 +6,7 @@ use std::task::Waker;
 use swallowtail_core::ExecutionHostId;
 use swallowtail_runtime::{
     BoxFuture, HostServices, ProcessExit, ProcessHandle, ProcessInputChunk, ProcessOutputChunk,
-    ProcessRequest, ProcessService, RuntimeFailure, ScopeId,
+    ProcessOutputStream, ProcessRequest, ProcessService, RuntimeFailure, ScopeId,
 };
 
 use self::script::respond;
@@ -41,6 +41,7 @@ pub struct FixtureHost {
     shared: Arc<Shared>,
     scenario: Scenario,
     process_wait_failure: bool,
+    version: Option<String>,
 }
 
 struct Shared {
@@ -79,7 +80,15 @@ impl FixtureHost {
             }),
             scenario,
             process_wait_failure: false,
+            version: None,
         }
+    }
+
+    #[allow(dead_code)]
+    pub fn version_probe(version: &str) -> Self {
+        let mut host = Self::new(Scenario::Complete);
+        host.version = Some(version.to_owned());
+        host
     }
 
     pub fn with_immediate_time(self) -> Self {
@@ -120,6 +129,18 @@ impl ProcessService for FixtureHost {
             .process_request
             .lock()
             .expect("Pi fixture process lock poisoned") = Some(request);
+        if let Some(version) = &self.version {
+            let mut state = self
+                .shared
+                .process
+                .lock()
+                .expect("Pi fixture state lock poisoned");
+            state.output.push_back(ProcessOutputChunk::new(
+                ProcessOutputStream::Stdout,
+                format!("{version}\n").into_bytes(),
+            ));
+            state.stopped = true;
+        }
         let handle = FixtureProcess {
             shared: Arc::clone(&self.shared),
             scenario: self.scenario,

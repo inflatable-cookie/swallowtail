@@ -1,6 +1,7 @@
 use crate::{
-    ExecutionHostId, InterfaceCompatibilityClaim, InterfaceCompatibilityClaimId,
-    InterfaceCompatibilityMatch, InterfaceVersionBinding, SafeDiagnostic,
+    ExecutionHostId, InterfaceCompatibilityAssessment, InterfaceCompatibilityClaim,
+    InterfaceCompatibilityClaimId, InterfaceCompatibilityMatch, InterfaceUnverifiedNewer,
+    InterfaceVersionBinding, SafeDiagnostic,
 };
 use std::error::Error;
 use std::fmt;
@@ -8,7 +9,8 @@ use std::fmt;
 /// Classification of one exact installed executable against one driver claim.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum InstalledExecutableCompatibility {
-    Compatible(InterfaceCompatibilityMatch),
+    Qualified(InterfaceCompatibilityMatch),
+    UnverifiedNewer(InterfaceUnverifiedNewer),
     Incompatible,
 }
 
@@ -30,11 +32,17 @@ impl InstalledExecutableObservation {
         if version.axis() != claim.axis() {
             return Err(InvalidInstalledExecutableObservation::axis_mismatch());
         }
-        let compatibility = claim
-            .classify(version.version())
-            .map_or(InstalledExecutableCompatibility::Incompatible, |matched| {
-                InstalledExecutableCompatibility::Compatible(matched)
-            });
+        let compatibility = match claim.assess(version.version()) {
+            InterfaceCompatibilityAssessment::Qualified(matched) => {
+                InstalledExecutableCompatibility::Qualified(matched)
+            }
+            InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) => {
+                InstalledExecutableCompatibility::UnverifiedNewer(unverified)
+            }
+            InterfaceCompatibilityAssessment::Incompatible => {
+                InstalledExecutableCompatibility::Incompatible
+            }
+        };
         Ok(Self {
             execution_host_id,
             version,
@@ -64,10 +72,19 @@ impl InstalledExecutableObservation {
     }
 
     #[must_use]
-    pub const fn is_compatible(&self) -> bool {
+    pub const fn is_qualified(&self) -> bool {
         matches!(
             self.compatibility,
-            InstalledExecutableCompatibility::Compatible(_)
+            InstalledExecutableCompatibility::Qualified(_)
+        )
+    }
+
+    #[must_use]
+    pub const fn is_permitted(&self) -> bool {
+        matches!(
+            self.compatibility,
+            InstalledExecutableCompatibility::Qualified(_)
+                | InstalledExecutableCompatibility::UnverifiedNewer(_)
         )
     }
 }
@@ -106,8 +123,8 @@ mod tests {
     use super::{InstalledExecutableCompatibility, InstalledExecutableObservation};
     use crate::{
         ExecutionHostId, InterfaceBehaviorRevision, InterfaceCompatibilityClaim,
-        InterfaceCompatibilityClaimId, InterfaceSupportStatus, InterfaceVersion,
-        InterfaceVersionAxis, InterfaceVersionBinding, InterfaceVersionScheme,
+        InterfaceCompatibilityClaimId, InterfaceNewerVersionPosture, InterfaceSupportStatus,
+        InterfaceVersion, InterfaceVersionAxis, InterfaceVersionBinding, InterfaceVersionScheme,
         InterfaceVersionSegment,
     };
 
@@ -124,7 +141,7 @@ mod tests {
 
         assert_eq!(observation.execution_host_id(), &host);
         assert_eq!(observation.claim_id(), claim.id());
-        let InstalledExecutableCompatibility::Compatible(matched) = observation.compatibility()
+        let InstalledExecutableCompatibility::Qualified(matched) = observation.compatibility()
         else {
             panic!("qualified version must be compatible");
         };
@@ -171,6 +188,7 @@ mod tests {
             InterfaceCompatibilityClaimId::new("fixture.claim.v1").expect("claim id is valid"),
             InterfaceVersionAxis::new("fixture.harness").expect("axis is valid"),
             InterfaceVersionScheme::Semantic,
+            InterfaceNewerVersionPosture::QualifiedOnly,
             [InterfaceVersionSegment::new(
                 InterfaceVersion::new("1.0.0").expect("version is valid"),
                 InterfaceVersion::new("1.5.0").expect("version is valid"),

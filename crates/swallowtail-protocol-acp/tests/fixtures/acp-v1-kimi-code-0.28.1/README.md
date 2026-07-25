@@ -25,6 +25,10 @@ resume without replay, text prompt/update, active-turn cancellation, bounded
 text replacement callbacks, authority rejection, capability/version drift,
 authentication failure, disconnect, and process-owned close evidence.
 
+`reasoning.json` and `reasoning-success.ndjson` separately freeze the planned
+legacy `off`/`on` negotiated-reasoning behavior. They do not claim that the
+current production driver dispatches that option before its range work lands.
+
 It does not launch Kimi, authenticate, approve tools, mutate provider state,
 run local shell or background work, enable plugins, MCP, subagents, image or
 embedded-context prompts, claim native session close, or treat filesystem

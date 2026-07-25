@@ -7,7 +7,7 @@ use swallowtail_adapter_gemini::GeminiAcpDriver;
 use swallowtail_core::{ExecutionHostId, ProviderRequestHandling};
 use swallowtail_runtime::{
     CleanupOutcome, InteractiveSessionDriver, OpenSessionRequest, OperationContent, RequestId,
-    RuntimeEventKind, RuntimeTurnId, TerminalStatus, TurnRequest,
+    RuntimeEventKind, RuntimeTurnId, SessionPlanAgreement, TerminalStatus, TurnRequest,
 };
 
 #[test]
@@ -28,6 +28,13 @@ fn success_and_read_callbacks_preserve_local_and_remote_host_authority() {
                 RequestId::new("gemini-open").expect("valid request"),
                 selected.resource.clone(),
                 None,
+                SessionPlanAgreement::explicit(
+                    swallowtail_core::SessionAccessPolicy::ambient_harness(
+                        swallowtail_core::ResourceAccess::Read,
+                    ),
+                    Some(swallowtail_core::SessionProviderStatePolicy::Prohibited),
+                    Some(swallowtail_core::HarnessConfigurationPosture::Ambient),
+                ),
             ),
             services.clone(),
         ))
@@ -163,6 +170,13 @@ fn open(
             RequestId::new(format!("gemini-{suffix}")).expect("valid request"),
             selected.resource,
             None,
+            SessionPlanAgreement::explicit(
+                swallowtail_core::SessionAccessPolicy::ambient_harness(
+                    swallowtail_core::ResourceAccess::Read,
+                ),
+                Some(swallowtail_core::SessionProviderStatePolicy::Prohibited),
+                Some(swallowtail_core::HarnessConfigurationPosture::Ambient),
+            ),
         ),
         services.clone(),
     ))

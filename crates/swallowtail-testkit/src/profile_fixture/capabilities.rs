@@ -13,6 +13,7 @@ pub(super) fn requirements(profile: SyntheticProfile) -> Vec<CapabilityRequireme
         SyntheticProfile::LongLivedRpcHarness
         | SyntheticProfile::LongLivedAcpHarness
         | SyntheticProfile::PersistentAcpHarness
+        | SyntheticProfile::RemoteAcpHarness
         | SyntheticProfile::AttachedNetworkHarness
         | SyntheticProfile::ConnectionScopedDirectSession
         | SyntheticProfile::LocallyContinuedDirectSession => CancellationScope::ActiveTurn,
@@ -52,6 +53,13 @@ pub(super) fn requirements(profile: SyntheticProfile) -> Vec<CapabilityRequireme
         }
         SyntheticProfile::PersistentAcpHarness => {
             capabilities.extend(crate::profile_persistent_acp_shape::capabilities());
+        }
+        SyntheticProfile::RemoteAcpHarness => {
+            capabilities.push(CapabilityRequirement::new(
+                Capability::InteractiveSession,
+                [],
+            ));
+            capabilities.push(CapabilityRequirement::new(Capability::ToolCalls, []));
         }
         SyntheticProfile::ConnectionScopedDirectSession => {
             capabilities.push(CapabilityRequirement::new(

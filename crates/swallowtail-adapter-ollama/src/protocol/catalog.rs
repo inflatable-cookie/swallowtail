@@ -22,7 +22,7 @@ pub fn parse_version(response: &Response) -> Result<InterfaceVersionBinding, Run
     require_success(response, "version")?;
     let envelope: VersionEnvelope = bounded_json(&response.body, "version")?;
     let binding = ollama_runtime_binding(&envelope.version);
-    if ollama_runtime_claim().supports(binding.version()) {
+    if ollama_runtime_claim().permits(binding.version()) {
         Ok(binding)
     } else {
         Err(crate::failure::failure(

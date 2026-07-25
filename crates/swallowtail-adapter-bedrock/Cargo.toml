@@ -4,6 +4,9 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
+readme.workspace = true
+publish.workspace = true
+rust-version = "1.94.1"
 description = "Amazon Bedrock SDK-native direct-inference drivers for Swallowtail"
 
 [dependencies]
@@ -13,15 +16,15 @@ aws-sdk-bedrockruntime = { version = "=1.136.0", default-features = false, featu
 futures-channel = { version = "0.3", features = ["sink"] }
 futures-core = "0.3"
 futures-util = { version = "0.3", features = ["sink"] }
-swallowtail-core = { path = "../swallowtail-core" }
-swallowtail-runtime = { path = "../swallowtail-runtime" }
+swallowtail-core.workspace = true
+swallowtail-runtime.workspace = true
 tokio = { version = "1", features = ["macros", "rt", "sync"] }
 
 [dev-dependencies]
 futures-executor = "0.3"
 serde_json = "1"
-swallowtail-host-local = { path = "../swallowtail-host-local" }
-swallowtail-testkit = { path = "../swallowtail-testkit" }
+swallowtail-host-local.workspace = true
+swallowtail-testkit.workspace = true
 
 [lints]
 workspace = true

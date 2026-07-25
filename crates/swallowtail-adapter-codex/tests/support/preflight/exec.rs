@@ -113,10 +113,13 @@ pub fn bind_current_exec_policy(policy: OperationPolicy) -> OperationPolicy {
 }
 
 pub fn exec_policy_for_version(version: &str) -> OperationPolicy {
-    let matched = codex_exec_claim()
-        .classify(codex_cli_binding(version).version())
-        .expect("fixture version is qualified");
-    let retention = if matched.behavior_revision().as_str().contains("retained-") {
+    let assessment = codex_exec_claim().assess(codex_cli_binding(version).version());
+    let retention = if assessment
+        .behavior_revision()
+        .expect("fixture version is permitted")
+        .as_str()
+        .contains("retained-")
+    {
         ProviderRetentionPolicy::DurableAllowed
     } else {
         ProviderRetentionPolicy::Prohibited

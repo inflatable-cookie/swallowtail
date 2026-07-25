@@ -4,11 +4,14 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
+readme.workspace = true
+publish.workspace = true
+rust-version.workspace = true
 description = "Executor-neutral runtime contracts for Swallowtail drivers and hosts"
 
 [dependencies]
 futures-core = "0.3"
-swallowtail-core = { path = "../swallowtail-core" }
+swallowtail-core.workspace = true
 zeroize = "1"
 
 [lints]

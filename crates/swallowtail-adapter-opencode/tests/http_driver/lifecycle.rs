@@ -5,11 +5,7 @@ fn timeout_aborts_and_joins_without_becoming_cancellation() {
     let driver = OpenCodeHttpDriver::new();
     let mut session = block_on(driver.open_session(
         fixture.plan(DriverRole::InteractiveSession),
-        OpenSessionRequest::new(
-            RequestId::new("deadline-session").expect("request id is valid"),
-            fixture.resource.clone(),
-            None,
-        ),
+        open_session_request("deadline-session", fixture.resource.clone()),
         fixture.services(),
     ))
     .expect("session opens");
@@ -53,11 +49,7 @@ fn explicit_cancellation_stays_cancelled_and_uses_abort() {
     let driver = OpenCodeHttpDriver::new();
     let mut session = block_on(driver.open_session(
         fixture.plan(DriverRole::InteractiveSession),
-        OpenSessionRequest::new(
-            RequestId::new("cancel-session").expect("request id is valid"),
-            fixture.resource.clone(),
-            None,
-        ),
+        open_session_request("cancel-session", fixture.resource.clone()),
         fixture.services(),
     ))
     .expect("session opens");
@@ -90,5 +82,4 @@ fn explicit_cancellation_stays_cancelled_and_uses_abort() {
             .any(|request| request.contains("/abort?directory="))
     );
 }
-
 

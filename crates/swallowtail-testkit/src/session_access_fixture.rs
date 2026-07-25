@@ -4,12 +4,13 @@ use swallowtail_core::{
     AdapterVersion, Capability, CapabilityConstraint, CapabilityProfile, CapabilityRequirement,
     ConfiguredInstance, ConfiguredInstanceId, CredentialMechanism, CredentialState,
     DriverDescriptor, DriverRole, EndpointAudience, EndpointAuthorization, EntitlementMetering,
-    EntitlementState, ExecutionHostId, ExecutionLayer, ExtensionNamespace, HostServiceKind,
-    InstanceOwnership, InstancePolicyId, InstanceRevision, InstanceTargetRef, IntegrationFamilyId,
-    ModelId, ModelRoute, ModelRouteId, ModelRouteRevision, OperationRequirements, OperationShape,
-    PreflightContext, PreflightFailure, PreflightPlan, ProtocolFacadeId, ResourceAccess,
-    ResourceRepresentation, RuntimeReadiness, SessionAccessPolicy, SupportAuthority,
-    TransportFamilyId, preflight,
+    EntitlementState, ExecutionHostId, ExecutionLayer, ExtensionNamespace,
+    HarnessConfigurationPosture, HostServiceKind, InstanceOwnership, InstancePolicyId,
+    InstanceRevision, InstanceTargetRef, IntegrationFamilyId, ModelId, ModelRoute, ModelRouteId,
+    ModelRouteRevision, OperationRequirements, OperationShape, PreflightContext, PreflightFailure,
+    PreflightPlan, ProtocolFacadeId, ResourceAccess, ResourceRepresentation, RuntimeReadiness,
+    SessionAccessPolicy, SessionProviderStatePolicy, SupportAuthority, TransportFamilyId,
+    preflight,
 };
 use swallowtail_runtime::WorkingResourceRef;
 
@@ -150,6 +151,7 @@ impl SessionAccessPreflightFixture {
         .with_host_services(required_services.clone())
         .with_capabilities(capabilities)
         .with_session_access_policy(policy.clone())
+        .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited)
         .require_model_route();
         if bounded && case != SessionAccessFixtureCase::UnboundProviderRequest {
             requirements = requirements.with_extension_namespaces([extension]);
@@ -182,6 +184,22 @@ impl SessionAccessPreflightFixture {
             .with_model_route(&self.route),
             &self.requirements,
         )
+    }
+
+    #[must_use]
+    pub fn with_session_plan_echoes(
+        mut self,
+        provider_state: SessionProviderStatePolicy,
+        configuration: HarnessConfigurationPosture,
+    ) -> Self {
+        self.instance = self
+            .instance
+            .with_harness_configuration_posture(configuration);
+        self.requirements = self
+            .requirements
+            .with_session_provider_state_policy(provider_state)
+            .with_harness_configuration_posture(configuration);
+        self
     }
 
     #[must_use]

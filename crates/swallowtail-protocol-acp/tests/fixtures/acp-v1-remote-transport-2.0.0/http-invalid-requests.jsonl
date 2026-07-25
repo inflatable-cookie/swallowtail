@@ -1,0 +1,12 @@
+{"kind":"client_request","case":"missing-connection","http_version":"2","method":"GET","path":"/acp","headers":{"accept":"text/event-stream"}}
+{"kind":"server_response","case":"missing-connection","status":400}
+{"kind":"client_request","case":"unknown-connection","http_version":"2","method":"POST","path":"/acp","headers":{"content-type":"application/json","acp-connection-id":"wrong-connection"},"body":{"jsonrpc":"2.0","id":2,"method":"session/new","params":{}}}
+{"kind":"server_response","case":"unknown-connection","status":404}
+{"kind":"client_request","case":"missing-session","http_version":"2","method":"POST","path":"/acp","headers":{"content-type":"application/json","acp-connection-id":"connection-private"},"body":{"jsonrpc":"2.0","id":3,"method":"session/prompt","params":{"sessionId":"session-private"}}}
+{"kind":"server_response","case":"missing-session","status":400}
+{"kind":"client_request","case":"wrong-content-type","http_version":"2","method":"POST","path":"/acp","headers":{"content-type":"text/plain"},"body":{"jsonrpc":"2.0","id":4,"method":"initialize","params":{"protocolVersion":1}}}
+{"kind":"server_response","case":"wrong-content-type","status":415}
+{"kind":"client_request","case":"missing-sse-accept","http_version":"2","method":"GET","path":"/acp","headers":{"acp-connection-id":"connection-private"}}
+{"kind":"server_response","case":"missing-sse-accept","status":406}
+{"kind":"client_request","case":"batch","http_version":"2","method":"POST","path":"/acp","headers":{"content-type":"application/json","acp-connection-id":"connection-private"},"body":[{"jsonrpc":"2.0","id":5,"method":"session/new","params":{}}]}
+{"kind":"server_response","case":"batch","status":501}

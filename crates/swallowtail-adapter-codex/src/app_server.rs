@@ -18,6 +18,7 @@ use swallowtail_runtime::{
     InteractiveSessionDriver, InteractiveSessionHandle, JoinedTask, ModelCatalogDriver,
     ModelCatalogRequest, OpenSessionRequest, ProcessHandle, ProcessRequest, RequestId,
     ResumeSessionRequest, RuntimeFailure, ScopeId, WorkingResourceRef,
+    validate_session_plan_agreement,
 };
 
 pub struct CodexAppServerDriver {
@@ -148,6 +149,7 @@ impl InteractiveSessionDriver for CodexAppServerDriver {
     ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
         Box::pin(async move {
             validate_session_deadline(request.deadline().is_some())?;
+            validate_session_plan_agreement(&plan, request.plan_agreement())?;
             let behavior = self.validate_plan(&plan)?;
             validate_workspace_behavior(&behavior, request.access_policy())?;
             let session_input = CodexSessionInput::for_open(&plan, request.options())?;
@@ -216,6 +218,7 @@ impl InteractiveSessionDriver for CodexAppServerDriver {
     ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
         Box::pin(async move {
             validate_session_deadline(request.deadline().is_some())?;
+            validate_session_plan_agreement(&plan, request.plan_agreement())?;
             let behavior = self.validate_plan(&plan)?;
             validate_workspace_behavior(&behavior, request.access_policy())?;
             let session_input = CodexSessionInput::for_resume(&plan, request.options())?;

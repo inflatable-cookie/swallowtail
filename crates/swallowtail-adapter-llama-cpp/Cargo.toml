@@ -4,6 +4,9 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
+readme.workspace = true
+publish.workspace = true
+rust-version.workspace = true
 description = "llama.cpp serving-runtime drivers for Swallowtail"
 
 [dependencies]
@@ -12,16 +15,16 @@ futures-channel = "0.3"
 futures-core = "0.3"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-swallowtail-core = { path = "../swallowtail-core" }
-swallowtail-protocol-openai-chat = { path = "../swallowtail-protocol-openai-chat" }
-swallowtail-runtime = { path = "../swallowtail-runtime" }
+swallowtail-core.workspace = true
+swallowtail-protocol-openai-chat.workspace = true
+swallowtail-runtime.workspace = true
 url = "2"
 
 [dev-dependencies]
 futures-executor = "0.3"
 futures-util = "0.3"
-swallowtail-host-local = { path = "../swallowtail-host-local" }
-swallowtail-testkit = { path = "../swallowtail-testkit" }
+swallowtail-host-local.workspace = true
+swallowtail-testkit.workspace = true
 
 [lints]
 workspace = true

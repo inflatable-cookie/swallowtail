@@ -1,0 +1,197 @@
+use super::*;
+use crate::selection::{ClaudeAgentBehavior, ClaudeAgentPlanSelection};
+
+pub(super) fn validate_plan(
+    plan: &PreflightPlan,
+    credential: &CredentialRef,
+) -> Result<ClaudeAgentPlanSelection, RuntimeFailure> {
+    if plan.driver_identity().id().as_str() != DRIVER_ID {
+        return Err(failure(
+            "swallowtail.claude_agent.acp.plan_driver_mismatch",
+            "Preflight plan is bound to a different driver",
+        ));
+    }
+    if plan.credential_mechanism() != &CredentialMechanism::ApiKey
+        || plan.credential_reference() != Some(credential)
+        || plan.endpoint_audience().as_str() != ENDPOINT_AUDIENCE
+    {
+        return Err(failure(
+            "swallowtail.claude_agent.acp.access_profile_rejected",
+            "Claude Agent ACP requires its configured Anthropic public-API key profile",
+        ));
+    }
+    if plan.harness_configuration_posture() != Some(HarnessConfigurationPosture::Ambient) {
+        return Err(failure(
+            "swallowtail.claude_agent.acp.configuration_posture_rejected",
+            "Claude Agent ACP requires explicit ambient configuration",
+        ));
+    }
+    if plan.requirements().harness_isolation() != Some(HarnessIsolation::AmbientHost) {
+        return Err(failure(
+            "swallowtail.claude_agent.acp.isolation_rejected",
+            "Claude Agent ACP requires explicit ambient-host isolation posture",
+        ));
+    }
+    crate::selection::select_claude_agent_plan(plan)
+}
+
+pub(super) fn validate_open(
+    plan: &PreflightPlan,
+    request: &OpenSessionRequest,
+    services: &HostServices,
+) -> Result<(), RuntimeFailure> {
+    services.require_execution_host(plan.execution_host_id())?;
+    for (present, code, message) in [
+        (
+            services.task().is_some(),
+            "swallowtail.claude_agent.acp.task_service_missing",
+            "Claude Agent ACP requires a scoped task service",
+        ),
+        (
+            services.time().is_some(),
+            "swallowtail.claude_agent.acp.time_service_missing",
+            "Claude Agent ACP requires a monotonic time service",
+        ),
+        (
+            services.process().is_some(),
+            "swallowtail.claude_agent.acp.process_service_missing",
+            "Claude Agent ACP requires a process service",
+        ),
+        (
+            services.credential().is_some(),
+            "swallowtail.claude_agent.acp.credential_service_missing",
+            "Claude Agent ACP requires an API-key credential service",
+        ),
+        (
+            services.working_resource().is_some(),
+            "swallowtail.claude_agent.acp.resource_service_missing",
+            "Claude Agent ACP requires a working-resource service",
+        ),
+        (
+            services.working_resource_io().is_some(),
+            "swallowtail.claude_agent.acp.resource_io_service_missing",
+            "Claude Agent ACP requires working-resource read I/O",
+        ),
+    ] {
+        if !present {
+            return Err(failure(code, message));
+        }
+    }
+    swallowtail_runtime::validate_session_plan_agreement(plan, request.plan_agreement())?;
+    if request.access_policy() != &SessionAccessPolicy::ambient_harness(ResourceAccess::Read) {
+        return Err(failure(
+            "swallowtail.claude_agent.acp.access_policy_rejected",
+            "Claude Agent ACP requires explicit ambient read-only access",
+        ));
+    }
+    if request.working_resource().is_none() {
+        return Err(unsupported("a resource-free session"));
+    }
+    if request.deadline().is_some() {
+        return Err(unsupported("session deadline"));
+    }
+    if !request.options().is_empty() {
+        return Err(unsupported("session options"));
+    }
+    Ok(())
+}
+
+pub(super) fn validate_initialize(
+    response: &Value,
+    selected: &ClaudeAgentPlanSelection,
+) -> Result<(), RuntimeFailure> {
+    let info = response.get("agentInfo").ok_or_else(malformed)?;
+    if info.get("name").and_then(Value::as_str) != Some("@agentclientprotocol/claude-agent-acp")
+        || info.get("version").and_then(Value::as_str) != Some(selected.version().as_str())
+    {
+        return Err(failure(
+            "swallowtail.claude_agent.acp.agent_version_rejected",
+            "Claude Agent ACP identity does not match the preflight version",
+        ));
+    }
+    if response
+        .get("authMethods")
+        .and_then(Value::as_array)
+        .is_none_or(|methods| !methods.is_empty())
+    {
+        return Err(failure(
+            "swallowtail.claude_agent.acp.terminal_auth_rejected",
+            "Claude Agent advertised authentication outside the API-key subset",
+        ));
+    }
+    let capabilities = response.get("agentCapabilities").ok_or_else(malformed)?;
+    let providers = capabilities.get("providers").is_some();
+    let steering = response
+        .get("_meta")
+        .and_then(|meta| meta.get("steering"))
+        .and_then(|value| value.get("supported"))
+        .and_then(Value::as_bool)
+        == Some(true);
+    match selected.behavior() {
+        ClaudeAgentBehavior::Baseline | ClaudeAgentBehavior::SessionConfig
+            if providers || steering =>
+        {
+            Err(capability_drift())
+        }
+        ClaudeAgentBehavior::ProviderCapability if !providers || steering => {
+            Err(capability_drift())
+        }
+        ClaudeAgentBehavior::SteeringMetadata if !providers || !steering => Err(capability_drift()),
+        _ => Ok(()),
+    }
+}
+
+pub(super) fn parse_session(response: &Value, model: &str) -> Result<String, RuntimeFailure> {
+    let configured = response
+        .get("configOptions")
+        .and_then(Value::as_array)
+        .and_then(|options| {
+            options
+                .iter()
+                .find(|option| option.get("id").and_then(Value::as_str) == Some("model"))
+        })
+        .and_then(|option| option.get("currentValue"))
+        .and_then(Value::as_str)
+        .ok_or_else(malformed)?;
+    if configured != model {
+        return Err(failure(
+            "swallowtail.claude_agent.acp.model_mismatch",
+            "Claude Agent session model does not match the preflight route",
+        ));
+    }
+    response
+        .get("sessionId")
+        .and_then(Value::as_str)
+        .map(str::to_owned)
+        .ok_or_else(malformed)
+}
+
+pub(super) fn validate_turn(
+    request: &TurnRequest,
+    services: &HostServices,
+) -> Result<(), RuntimeFailure> {
+    if let Some(deadline) = request.deadline()
+        && services
+            .time()
+            .is_some_and(|time| time.now() >= deadline.instant())
+    {
+        return Err(failure(
+            "swallowtail.claude_agent.acp.deadline_elapsed",
+            "Claude Agent turn deadline elapsed before provider work",
+        ));
+    }
+    if request.attachments().len() != 0 {
+        return Err(unsupported("turn attachments"));
+    }
+    if request.structured_output().is_some() {
+        return Err(unsupported("structured output"));
+    }
+    Ok(())
+}
+
+fn capability_drift() -> RuntimeFailure {
+    failure(
+        "swallowtail.claude_agent.acp.capability_drift",
+        "Claude Agent capabilities do not match the selected behavior revision",
+    )
+}

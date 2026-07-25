@@ -2,7 +2,7 @@ use crate::{ProviderConversationPreflightCase, ProviderConversationPreflightFixt
 use swallowtail_core::{OwnedRemoteResourceKind, SessionProviderStatePolicy};
 use swallowtail_runtime::{
     CleanupOutcome, ProviderCancellationOutcome, RemoteResourceDeletionOutcome, TerminalOutcome,
-    TerminalStatus, validate_session_provider_state_plan,
+    TerminalStatus, validate_session_plan_agreement, validate_session_provider_state_plan,
 };
 
 pub fn run_provider_conversation_boundary_assertions() {
@@ -16,9 +16,9 @@ pub fn run_provider_conversation_boundary_assertions() {
     assert!(request.working_resource().is_none());
     assert_eq!(
         request.provider_state_policy(),
-        SessionProviderStatePolicy::DurableConversationDeleteOnClose
+        Some(SessionProviderStatePolicy::DurableConversationDeleteOnClose)
     );
-    validate_session_provider_state_plan(&plan, request.provider_state_policy())
+    validate_session_plan_agreement(&plan, request.plan_agreement())
         .expect("request policy matches preflight");
     assert!(
         validate_session_provider_state_plan(&plan, SessionProviderStatePolicy::Prohibited)

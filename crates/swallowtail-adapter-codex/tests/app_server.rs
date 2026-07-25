@@ -17,8 +17,8 @@ use swallowtail_runtime::{
     CancellationAcknowledgement, CleanupOutcome, Deadline, EnvironmentRef,
     InteractiveSessionDriver, ModelCatalogDriver, ModelCatalogRequest, MonotonicInstant,
     OperationContent, RequestId, RuntimeEventKind, RuntimeTurnId, SchemaDocument,
-    SessionAccessPolicy, SessionOptions, SessionResumeBinding, StructuredOutputDescriptor,
-    TerminalStatus, ToolDeclaration, TurnRequest, WorkingResourceRef,
+    SessionAccessPolicy, SessionOptions, SessionPlanAgreement, SessionResumeBinding,
+    StructuredOutputDescriptor, TerminalStatus, ToolDeclaration, TurnRequest, WorkingResourceRef,
 };
 use swallowtail_testkit::RecordingHostServices;
 
@@ -33,8 +33,16 @@ fn read_only_open_request(
     working_resource: WorkingResourceRef,
     deadline: Option<Deadline>,
 ) -> swallowtail_runtime::OpenSessionRequest {
-    swallowtail_runtime::OpenSessionRequest::new(request_id, working_resource, deadline)
-        .with_access_policy(SessionAccessPolicy::read_only())
+    swallowtail_runtime::OpenSessionRequest::new(
+        request_id,
+        working_resource,
+        deadline,
+        SessionPlanAgreement::explicit(
+            SessionAccessPolicy::read_only(),
+            Some(swallowtail_core::SessionProviderStatePolicy::Prohibited),
+            Some(swallowtail_core::HarnessConfigurationPosture::Ambient),
+        ),
+    )
 }
 
 fn read_only_resume_request(
@@ -43,8 +51,17 @@ fn read_only_resume_request(
     working_resource: WorkingResourceRef,
     deadline: Option<Deadline>,
 ) -> swallowtail_runtime::ResumeSessionRequest {
-    swallowtail_runtime::ResumeSessionRequest::new(request_id, binding, working_resource, deadline)
-        .with_access_policy(SessionAccessPolicy::read_only())
+    swallowtail_runtime::ResumeSessionRequest::new(
+        request_id,
+        binding,
+        working_resource,
+        deadline,
+        SessionPlanAgreement::explicit(
+            SessionAccessPolicy::read_only(),
+            Some(swallowtail_core::SessionProviderStatePolicy::Prohibited),
+            Some(swallowtail_core::HarnessConfigurationPosture::Ambient),
+        ),
+    )
 }
 
 fn tool_declaration(name: &str) -> ToolDeclaration {

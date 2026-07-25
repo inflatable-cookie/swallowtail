@@ -1,3 +1,4 @@
+#[allow(dead_code)]
 struct Fixture {
     server: ManagedFixtureServer,
     host_id: ExecutionHostId,
@@ -10,6 +11,7 @@ struct Fixture {
     thread: ThreadServices,
 }
 
+#[allow(dead_code)]
 impl Fixture {
     fn new() -> Self {
         Self::with_stream(ManagedStreamFixture::Success)
@@ -216,6 +218,7 @@ impl CredentialService for TrackingCredential {
     }
 }
 
+#[allow(dead_code)]
 fn managed_capabilities() -> Vec<CapabilityRequirement> {
     vec![
         CapabilityRequirement::new(Capability::StructuredRun, []),

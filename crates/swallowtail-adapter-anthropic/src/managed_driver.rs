@@ -87,6 +87,7 @@ pub fn anthropic_managed_agent_descriptor() -> DriverDescriptor {
             HostServiceKind::Credential,
         ],
     )
+    .with_interface_compatibility(crate::anthropic_managed_facade_claim())
 }
 
 fn require_services(services: &HostServices) -> Result<(), RuntimeFailure> {

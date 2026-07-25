@@ -2,8 +2,8 @@ use crate::support::{FixtureServer, ServerScenario, ThreadServices};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
 use swallowtail_adapter_deepseek::{
-    DEEPSEEK_ENDPOINT, DEEPSEEK_FACADE_REVISION, DEEPSEEK_MODEL_ID, deepseek_direct_descriptor,
-    deepseek_facade_binding, deepseek_v4_requirements,
+    DEEPSEEK_ENDPOINT, DEEPSEEK_FACADE_REVISION, DEEPSEEK_MODEL_ID, DeepSeekPreparationInput,
+    deepseek_direct_descriptor, deepseek_facade_binding, deepseek_v4_requirements,
 };
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessRequirement, AccessStatus, Capability, CapabilityProfile,
@@ -17,8 +17,8 @@ use swallowtail_core::{
 use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{
     BlockingWorkService, BoxFuture, CleanupOutcome, CredentialLease, CredentialRef,
-    CredentialService, EndpointRef, HostServices, NetworkPolicyService, RuntimeFailure, ScopeId,
-    ScopedTaskService, TimeService,
+    CredentialService, EndpointRef, HostServices, NetworkPolicyService, PreparedAccessEvidence,
+    RuntimeFailure, ScopeId, ScopedTaskService, TimeService,
 };
 use swallowtail_testkit::ExecutionTopologyFixture;
 
@@ -111,6 +111,34 @@ impl Fixture {
             .lock()
             .expect("release-order lock")
             .clone()
+    }
+
+    #[allow(dead_code)]
+    pub fn preparation_input(&self) -> DeepSeekPreparationInput {
+        let access = AccessProfile::new(
+            self.access_id.clone(),
+            CredentialMechanism::ApiKey,
+            EntitlementMetering::PayAsYouGo,
+            self.audience.clone(),
+            SupportAuthority::ProviderSupported,
+        )
+        .with_credential_reference(self.credential.clone());
+        let status = AccessStatus::new(
+            access.id().clone(),
+            CredentialState::Ready,
+            EntitlementState::Available,
+            EndpointAuthorization::Allowed,
+            RuntimeReadiness::Ready,
+            SupportAuthority::ProviderSupported,
+        );
+        DeepSeekPreparationInput::new(
+            self.instance_id.clone(),
+            InstanceRevision::new("prepared-1").expect("revision"),
+            self.host_id.clone(),
+            self.target.clone(),
+            access,
+            PreparedAccessEvidence::caller_asserted(status),
+        )
     }
 
     pub fn plan(&self, role: DriverRole) -> swallowtail_core::PreflightPlan {

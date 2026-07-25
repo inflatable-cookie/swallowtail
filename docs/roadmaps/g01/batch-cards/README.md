@@ -122,17 +122,37 @@
 - `117-codex-six-month-legacy-corpora.md`
 - `118-codex-legacy-version-dispatch.md`
 - `119-codex-six-month-range-conformance-and-closeout.md`
+- `120-second-installed-harness-range-selection.md`
+- `121-opencode-range-corpus-and-health-observation.md`
+- `122-opencode-range-dispatch.md`
+- `123-opencode-range-conformance-and-closeout.md`
+- `124-forward-compatibility-policy-correction.md`
+- `125-unverified-newer-core-assessment.md`
+- `126-codex-opencode-newer-version-dispatch.md`
+- `127-forward-compatibility-conformance-and-closeout.md`
+- `128-post-forward-compatibility-provider-coverage-evidence.md`
+- `129-negotiated-session-option-records-and-kimi-range-corpus.md`
+- `130-kimi-version-discovery-range-and-reasoning-dispatch.md`
+- `131-kimi-capability-range-conformance-and-closeout.md`
+- `132-post-kimi-range-provider-coverage-evidence.md`
+- `133-remote-acp-records-and-independent-corpus.md`
+- `134-remote-acp-client-transport.md`
+- `135-remote-acp-portability-and-closeout.md`
+- `136-generation-boundary-and-provider-coverage-evidence.md`
+- `137-grok-build-range-corpus.md`
+- `142-post-grok-hold-provider-and-transport-evidence.md`
+- `143-claude-agent-acp-range-authority-and-corpus.md`
+- `144-claude-agent-acp-production-driver.md`
+- `145-claude-agent-acp-range-conformance-and-closeout.md`
+- `146-g01-generation-disposition.md`
 
-## Blocked
+## Backlog
 
-None.
+- `138-grok-delegated-authentication-and-access-qualification.md`
+- `139-grok-installed-discovery-and-dispatch.md`
+- `140-grok-acp-production-driver.md`
+- `141-grok-range-conformance-and-closeout.md`
 
 ## Ready
 
-- `120-second-installed-harness-range-selection.md`
-
-## Planned
-
-- `121-selected-harness-observation-and-corpus.md`
-- `122-selected-harness-range-dispatch.md`
-- `123-cross-harness-range-conformance-and-closeout.md`
+None. g01 is complete.

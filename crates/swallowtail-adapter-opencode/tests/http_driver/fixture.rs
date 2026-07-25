@@ -4,12 +4,17 @@ struct Fixture {
     audience: EndpointAudience,
     credential: CredentialRef,
     resource: WorkingResourceRef,
+    server_version: String,
     host: LocalProcessHost,
     thread: ThreadServices,
 }
 
 impl Fixture {
     fn new(endpoint: &str, host_id: &str) -> Self {
+        Self::new_with_version(endpoint, host_id, "1.14.48")
+    }
+
+    fn new_with_version(endpoint: &str, host_id: &str, server_version: &str) -> Self {
         let host_id = ExecutionHostId::new(host_id).expect("host id is valid");
         let target = InstanceTargetRef::new("opencode-fixture-endpoint").expect("target is valid");
         let audience = EndpointAudience::new("opencode-fixture").expect("audience is valid");
@@ -30,6 +35,7 @@ impl Fixture {
             audience,
             credential,
             resource,
+            server_version: server_version.to_owned(),
             host,
             thread: ThreadServices::new(),
         }
@@ -47,6 +53,10 @@ impl Fixture {
     }
 
     fn plan(&self, role: DriverRole) -> PreflightPlan {
+        self.plan_with_versions(role, &[self.server_version.as_str()])
+    }
+
+    fn plan_with_versions(&self, role: DriverRole, versions: &[&str]) -> PreflightPlan {
         let descriptor = opencode_http_descriptor();
         let access_id = AccessProfileId::new("access.opencode").expect("access id is valid");
         let capability = if role == DriverRole::ModelCatalog {
@@ -56,6 +66,10 @@ impl Fixture {
         };
         let capability_requirements = vec![CapabilityRequirement::new(capability, [])];
         let capabilities = CapabilityProfile::new(capability_requirements.clone());
+        let versions: Vec<_> = versions
+            .iter()
+            .map(|version| opencode_server_binding(version).expect("fixture version is safe"))
+            .collect();
         let instance = ConfiguredInstance::new(
             ConfiguredInstanceId::new("opencode.attached").expect("instance id is valid"),
             InstanceRevision::new("1").expect("revision is valid"),
@@ -65,10 +79,11 @@ impl Fixture {
             InstanceOwnership::ExternalAttached,
             access_id.clone(),
             SupportAuthority::IntegrationMaintainerSupported,
-            ProtocolFacadeId::new("opencode-http-1.14.48").expect("facade is valid"),
+            ProtocolFacadeId::new("opencode-http-sse-v1").expect("facade is valid"),
             InstancePolicyId::new("read-only-deny-first").expect("policy is valid"),
             capabilities.clone(),
-        );
+        )
+        .with_interface_versions(versions.clone());
         let route = ModelRoute::new(
             ModelRouteId::new("opencode-anthropic-sonnet").expect("route id is valid"),
             ModelRouteRevision::new("1").expect("route revision is valid"),
@@ -111,9 +126,11 @@ impl Fixture {
         .with_ownership_modes([InstanceOwnership::ExternalAttached])
         .with_host_services(host_services.clone())
         .with_capabilities(capability_requirements)
+        .with_interface_versions(versions)
         .with_session_access_policy(SessionAccessPolicy::ambient_harness(
             swallowtail_core::ResourceAccess::Read,
-        ));
+        ))
+        .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited);
         let context =
             PreflightContext::new(&descriptor, &instance, &access, &status, host_services);
         if role == DriverRole::ModelCatalog {

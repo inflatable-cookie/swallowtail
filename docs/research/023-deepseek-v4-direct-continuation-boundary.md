@@ -2,7 +2,7 @@
 
 Status: promoted
 Owner: Tom
-Updated: 2026-07-22
+Updated: 2026-07-25
 
 ## Question
 
@@ -12,9 +12,9 @@ shared boundary must exist before implementation?
 ## Method
 
 Official DeepSeek API, guide, change-log, pricing, rate, cache, error, and
-privacy material was accessed on 2026-07-22. No account, API key, balance
-request, paid inference, external mutation, SDK installation, or live model
-call was used.
+privacy material was accessed on 2026-07-22 and rechecked on 2026-07-25. No
+account, API key, balance request, paid inference, external mutation, SDK
+installation, or live model call was used.
 
 The audit compares DeepSeek's OpenAI and Anthropic facades against Contracts
 006, 008-011, 014, 020, 024, 025, and 029. The target is integration
@@ -27,9 +27,11 @@ DeepSeek exposes exact `deepseek-v4-flash` and `deepseek-v4-pro` routes at
 tools, a 1M context window, and a documented maximum 384K output. The
 authenticated `GET /models` surface reports both ids.
 
-The mutable `deepseek-chat` and `deepseek-reasoner` aliases map to V4 Flash
-during transition and retire on 2026-07-24 at 15:59 UTC. They are not eligible
-qualification points.
+The documented 2026-07-24 15:59 UTC retirement cutoff for the mutable
+`deepseek-chat` and `deepseek-reasoner` aliases has passed. Current V4
+documentation names `deepseek-v4-flash` and `deepseek-v4-pro`; the legacy
+aliases remain ineligible qualification points. This recheck did not use a
+live request to test retired-alias behavior.
 
 Access uses one DeepSeek Open Platform bearer API key. Usage draws from granted
 or topped-up balance. HTTP 401, 402, 429, 500, and 503 evidence keeps
@@ -72,7 +74,7 @@ Pin `deepseek-v4-pro` for the first corpus and driver. This is a fixture and
 qualification anchor, not a consumer default.
 
 Official thinking/tool continuation examples use V4 Pro. It exercises the
-strongest documented route while avoiding the retiring aliases. V4 Flash has
+strongest documented route while avoiding the retired aliases. V4 Flash has
 the same advertised high-level mechanism but remains a separate model route;
 it needs its own returned-model, usage, limit, and corpus qualification before
 the driver claims it.
@@ -217,4 +219,3 @@ Evidence:
 - production driver and closeout: card 104
 - V4 Flash, Anthropic facade, streamed tool-call assembly, strict beta tools,
   multiple tool rounds, persistent resume, and live auth remain later work
-

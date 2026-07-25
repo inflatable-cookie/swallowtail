@@ -1,4 +1,7 @@
-use swallowtail_core::{InterfaceCompatibilityClaim, InterfaceVersion, InterfaceVersionScheme};
+use swallowtail_core::{
+    InterfaceCompatibilityAssessment, InterfaceCompatibilityClaim, InterfaceVersion,
+    InterfaceVersionScheme,
+};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ClosedSemanticWindowCase {
@@ -32,7 +35,7 @@ impl ClosedSemanticWindowCase {
     }
 }
 
-/// Asserts a bounded semantic claim without widening it through sampling.
+/// Asserts a bounded qualified-support window without widening it through sampling.
 pub fn assert_closed_semantic_compatibility_window(
     claim: &InterfaceCompatibilityClaim,
     case: &ClosedSemanticWindowCase,
@@ -52,19 +55,37 @@ pub fn assert_closed_semantic_compatibility_window(
     for version in &case.rejected {
         assert!(
             !claim.supports(version),
-            "expected incompatible version {}",
+            "expected unqualified version {}",
             version.as_str()
         );
     }
 }
 
+/// Asserts that an ordered point may execute without entering qualified support.
+pub fn assert_unverified_newer_execution(
+    claim: &InterfaceCompatibilityClaim,
+    version: &InterfaceVersion,
+) {
+    assert!(!claim.supports(version));
+    let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) = claim.assess(version)
+    else {
+        panic!("expected an unverified-newer assessment");
+    };
+    assert_eq!(unverified.version(), version);
+    assert_eq!(unverified.latest_qualified(), claim.latest_qualified());
+    assert!(claim.permits(version));
+}
+
 #[cfg(test)]
 mod tests {
-    use super::{ClosedSemanticWindowCase, assert_closed_semantic_compatibility_window};
+    use super::{
+        ClosedSemanticWindowCase, assert_closed_semantic_compatibility_window,
+        assert_unverified_newer_execution,
+    };
     use swallowtail_core::{
         InterfaceBehaviorRevision, InterfaceCompatibilityClaim, InterfaceCompatibilityClaimId,
-        InterfaceSupportStatus, InterfaceVersion, InterfaceVersionAxis, InterfaceVersionScheme,
-        InterfaceVersionSegment,
+        InterfaceNewerVersionPosture, InterfaceSupportStatus, InterfaceVersion,
+        InterfaceVersionAxis, InterfaceVersionScheme, InterfaceVersionSegment,
     };
 
     #[test]
@@ -73,6 +94,7 @@ mod tests {
             valid(InterfaceCompatibilityClaimId::new, "fixture.claim-1"),
             valid(InterfaceVersionAxis::new, "fixture.runtime"),
             InterfaceVersionScheme::Semantic,
+            swallowtail_core::InterfaceNewerVersionPosture::QualifiedOnly,
             [InterfaceVersionSegment::new(
                 version("0.14.0"),
                 version("0.32.1"),
@@ -87,6 +109,26 @@ mod tests {
             .with_rejected([version("0.13.5"), version("0.18.0-rc.1"), version("0.32.2")]);
 
         assert_closed_semantic_compatibility_window(&claim, &case);
+    }
+
+    #[test]
+    fn newer_execution_does_not_widen_qualified_support() {
+        let claim = InterfaceCompatibilityClaim::new(
+            valid(InterfaceCompatibilityClaimId::new, "fixture.forward-claim"),
+            valid(InterfaceVersionAxis::new, "fixture.forward-runtime"),
+            InterfaceVersionScheme::Semantic,
+            InterfaceNewerVersionPosture::AllowUnverified,
+            [InterfaceVersionSegment::new(
+                version("1.0.0"),
+                version("1.4.0"),
+                valid(InterfaceBehaviorRevision::new, "fixture.forward-behavior"),
+                InterfaceSupportStatus::Maintained,
+            )],
+            [],
+        )
+        .expect("claim is valid");
+
+        assert_unverified_newer_execution(&claim, &version("1.4.1"));
     }
 
     fn version(value: &str) -> InterfaceVersion {

@@ -14,7 +14,7 @@ use swallowtail_runtime::{
     BoxFuture, CancellationControl, CleanupOutcome, HostServices, InteractiveSessionDriver,
     InteractiveSessionHandle, OpenSessionRequest, RequestId, ResumeSessionRequest, RuntimeFailure,
     RuntimeSessionId, ScopeId, SessionAccessPolicy, SessionResumeBinding, TurnHandle, TurnRequest,
-    validate_session_access_plan, validate_session_provider_state_plan,
+    validate_session_plan_agreement,
 };
 
 mod cleanup;
@@ -193,8 +193,7 @@ fn validate_open(
             "Alibaba Model Studio required host services are unavailable",
         ));
     }
-    validate_session_access_plan(plan, request.access_policy())?;
-    validate_session_provider_state_plan(plan, request.provider_state_policy())?;
+    validate_session_plan_agreement(plan, request.plan_agreement())?;
     if request.working_resource().is_some()
         || request.access_policy() != &SessionAccessPolicy::resource_free()
     {

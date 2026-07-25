@@ -66,6 +66,7 @@ pub fn openai_background_descriptor() -> DriverDescriptor {
             HostServiceKind::Credential,
         ],
     )
+    .with_interface_compatibility(crate::openai_background_facade_claim())
 }
 
 struct AccessLeases {

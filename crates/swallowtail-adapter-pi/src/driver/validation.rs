@@ -2,12 +2,12 @@ use crate::DRIVER_ID;
 use crate::failure::{failure, unsupported};
 use swallowtail_core::{
     CancellationScope, Capability, CapabilityConstraint, CredentialMechanism,
-    HarnessBackgroundAction, HarnessConfigurationSource, HarnessIsolation, HostServiceKind,
-    InstanceOwnership, PreflightPlan, ResourceAccess, ResourceRepresentation, SessionAccessPolicy,
-    SessionProviderStatePolicy,
+    HarnessBackgroundAction, HarnessConfigurationPosture, HarnessConfigurationSource,
+    HarnessIsolation, HostServiceKind, InstanceOwnership, PreflightPlan, ResourceAccess,
+    ResourceRepresentation, SessionAccessPolicy, SessionProviderStatePolicy,
 };
 use swallowtail_runtime::{
-    HostServices, OpenSessionRequest, RuntimeFailure, TurnRequest, validate_session_access_plan,
+    HostServices, OpenSessionRequest, RuntimeFailure, TurnRequest, validate_session_plan_agreement,
 };
 
 pub(super) const ACCESS_NAMESPACE: &str = "pi/delegated-harness-auth";
@@ -22,6 +22,7 @@ pub(super) fn validate_open(
     if plan.driver_identity().id().as_str() != DRIVER_ID {
         return Err(plan_mismatch("driver"));
     }
+    crate::selection::validate_pi_plan_version(plan)?;
     services.require_execution_host(plan.execution_host_id())?;
     for (service, present) in [
         (HostServiceKind::Task, services.task().is_some()),
@@ -59,6 +60,10 @@ pub(super) fn validate_open(
     {
         return Err(plan_mismatch("provider and model route"));
     }
+    if plan.harness_configuration_posture() != Some(HarnessConfigurationPosture::ProviderSuppressed)
+    {
+        return Err(plan_mismatch("harness configuration posture"));
+    }
     let policy = plan
         .harness_rpc_policy()
         .ok_or_else(|| plan_mismatch("harness RPC policy"))?;
@@ -90,13 +95,13 @@ pub(super) fn validate_open(
             return Err(plan_mismatch("disabled background action"));
         }
     }
-    validate_session_access_plan(plan, request.access_policy())?;
+    validate_session_plan_agreement(plan, request.plan_agreement())?;
     if request.access_policy() != &SessionAccessPolicy::ambient_harness(ResourceAccess::Read)
         || plan.requirements().harness_isolation() != Some(HarnessIsolation::AmbientHost)
     {
         return Err(plan_mismatch("ambient read access"));
     }
-    if request.provider_state_policy() != SessionProviderStatePolicy::Prohibited {
+    if request.provider_state_policy() != Some(SessionProviderStatePolicy::Prohibited) {
         return Err(unsupported("provider session persistence"));
     }
     if request.working_resource().is_none() {

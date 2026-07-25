@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-19
+Updated: 2026-07-24
 
 ## Purpose
 
@@ -49,6 +49,11 @@ The runtime defines separate object-safe roles for:
 Role methods consume a successful immutable preflight plan. They do not repeat
 routing or silently alter the selected instance, route, access profile,
 ownership, or host.
+
+Under Contract 037, prepared constructors derive request fields that merely
+echo immutable plan state. Low-level constructors require those fields
+explicitly and retain the existing exact-agreement checks. A constructor
+default cannot select policy that may contradict the plan.
 
 ## Scoped Handles
 

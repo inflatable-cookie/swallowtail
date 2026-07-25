@@ -9,7 +9,10 @@ use swallowtail_adapter_codex::{
     CODEX_CLI_AXIS, CodexAppServerDriver, CodexExecDriver, codex_app_server_claim,
     codex_app_server_descriptor, codex_cli_binding, codex_exec_claim, codex_exec_descriptor,
 };
-use swallowtail_core::{DriverRole, InterfaceSupportStatus, InterfaceVersionAxis};
+use swallowtail_core::{
+    DriverRole, InterfaceCompatibilityAssessment, InterfaceNewerVersionPosture,
+    InterfaceSupportStatus, InterfaceVersionAxis,
+};
 use swallowtail_runtime::{
     EnvironmentRef, ModelCatalogDriver, ModelCatalogRequest, OperationContent, RequestId,
     StructuredRunDriver, StructuredRunRequest,
@@ -29,6 +32,14 @@ fn descriptors_publish_independent_closed_claims_on_one_observed_axis() {
         Some(&codex_app_server_claim())
     );
     assert_ne!(codex_exec_claim().id(), codex_app_server_claim().id());
+    assert_eq!(
+        codex_exec_claim().newer_version_posture(),
+        InterfaceNewerVersionPosture::AllowUnverified
+    );
+    assert_eq!(
+        codex_app_server_claim().newer_version_posture(),
+        InterfaceNewerVersionPosture::AllowUnverified
+    );
     assert!(exec.supports_interface_version(&codex_cli_binding("0.80.0")));
     assert!(exec.supports_interface_version(&codex_cli_binding("0.121.0")));
     assert!(app.supports_interface_version(&codex_cli_binding("0.121.0")));
@@ -51,6 +62,16 @@ fn descriptors_publish_independent_closed_claims_on_one_observed_axis() {
                 .support_status(),
             InterfaceSupportStatus::Maintained
         );
+        let newer = codex_cli_binding("0.146.0");
+        assert!(!claim.supports(newer.version()));
+        assert!(claim.permits(newer.version()));
+        let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
+            claim.assess(newer.version())
+        else {
+            panic!("newer stable Codex version must remain unverified");
+        };
+        assert_eq!(unverified.version(), newer.version());
+        assert_eq!(unverified.latest_qualified().as_str(), "0.145.0");
     }
 }
 
@@ -68,10 +89,6 @@ fn exec_rejects_missing_and_unqualified_versions_before_process_work() {
         ),
         (
             Some("0.146.0-alpha.4"),
-            "swallowtail.codex.exec.version_incompatible",
-        ),
-        (
-            Some("0.146.0"),
             "swallowtail.codex.exec.version_incompatible",
         ),
     ] {
@@ -102,10 +119,6 @@ fn app_server_rejects_missing_and_unqualified_versions_before_process_work() {
         ),
         (
             Some("0.146.0-alpha.4"),
-            "swallowtail.codex.app_server.version_incompatible",
-        ),
-        (
-            Some("0.146.0"),
             "swallowtail.codex.app_server.version_incompatible",
         ),
     ] {

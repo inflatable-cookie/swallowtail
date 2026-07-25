@@ -1,0 +1,15 @@
+{"kind":"client_upgrade","method":"GET","path":"/acp","headers":{"connection":"Upgrade","upgrade":"websocket"}}
+{"kind":"server_upgrade","status":101,"headers":{"connection":"Upgrade","upgrade":"websocket","acp-connection-id":"connection-private","set-cookie":"affinity=opaque-cookie; Secure; HttpOnly"}}
+{"kind":"private_cookie_state","scope":"connection","retained":true,"maximum_count":16,"maximum_bytes":16384}
+{"kind":"client_text","body":{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":1}}}
+{"kind":"server_text","body":{"jsonrpc":"2.0","id":1,"result":{"protocolVersion":1,"agentCapabilities":{"loadSession":false}}}}
+{"kind":"client_text","body":{"jsonrpc":"2.0","id":2,"method":"session/new","params":{"cwd":"/fixture/workspace","mcpServers":[]}}}
+{"kind":"server_text","body":{"jsonrpc":"2.0","id":2,"result":{"sessionId":"session-private"}}}
+{"kind":"client_text","body":{"jsonrpc":"2.0","id":3,"method":"session/prompt","params":{"sessionId":"session-private","prompt":[{"type":"text","text":"fixture prompt"}]}}}
+{"kind":"server_text","body":{"jsonrpc":"2.0","method":"session/update","params":{"sessionId":"session-private","update":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"fixture response"}}}}}
+{"kind":"server_text","body":{"jsonrpc":"2.0","id":99,"method":"session/request_permission","params":{"sessionId":"session-private","toolCall":{"toolCallId":"tool-private","title":"fixture"}}}}
+{"kind":"client_text","body":{"jsonrpc":"2.0","id":99,"result":{"outcome":{"outcome":"cancelled"}}}}
+{"kind":"server_text","body":{"jsonrpc":"2.0","id":3,"result":{"stopReason":"end_turn"}}}
+{"kind":"client_text","body":{"jsonrpc":"2.0","method":"session/cancel","params":{"sessionId":"session-private"}}}
+{"kind":"client_close","code":1000}
+{"kind":"server_close","code":1000,"cookie_state_discarded":true,"owned_work_joined":true}

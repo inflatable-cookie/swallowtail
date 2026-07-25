@@ -7,7 +7,7 @@ mod server;
 mod services;
 
 pub use client::{authenticated_connect, connect_request, read_turn};
-pub use driver_fixture::DriverFixture;
+pub use driver_fixture::{DriverFixture, turn_request};
 pub use parser::{
     Conversation, Event, FixtureError, MAX_FRAME_BYTES, ProviderFailure, TurnEvidence, parse_event,
 };

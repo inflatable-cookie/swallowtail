@@ -1,0 +1,26 @@
+[package]
+name = "swallowtail-adapter-claude-agent"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+readme.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+description = "Claude Agent ACP harness driver for Swallowtail"
+
+[dependencies]
+futures-channel = "0.3"
+semver = "1"
+serde_json = "1"
+swallowtail-core.workspace = true
+swallowtail-protocol-acp.workspace = true
+swallowtail-runtime.workspace = true
+
+[dev-dependencies]
+futures-executor = "0.3"
+futures-util = "0.3"
+swallowtail-testkit.workspace = true
+
+[lints]
+workspace = true

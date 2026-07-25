@@ -1,12 +1,14 @@
 use crate::diagnostic::{ValueRequired, required_text};
 
+mod assessment;
 mod claim;
 mod error;
 mod ordering;
 
-pub use claim::{
-    InterfaceCompatibilityClaim, InterfaceCompatibilityMatch, InterfaceVersionSegment,
+pub use assessment::{
+    InterfaceCompatibilityAssessment, InterfaceCompatibilityMatch, InterfaceUnverifiedNewer,
 };
+pub use claim::{InterfaceCompatibilityClaim, InterfaceVersionSegment};
 pub use error::InvalidInterfaceCompatibilityClaim;
 
 macro_rules! text_value {
@@ -71,6 +73,12 @@ pub enum InterfaceVersionScheme {
 pub enum InterfaceSupportStatus {
     Maintained,
     Deprecated,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum InterfaceNewerVersionPosture {
+    QualifiedOnly,
+    AllowUnverified,
 }
 
 #[cfg(test)]

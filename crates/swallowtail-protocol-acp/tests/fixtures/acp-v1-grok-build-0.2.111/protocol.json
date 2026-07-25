@@ -1,0 +1,63 @@
+{
+  "accessed": "2026-07-24",
+  "release": {
+    "package_version": "0.2.111",
+    "executable_version": "0.2.111",
+    "source_revision": "94172f2aa4e5",
+    "wire_version": 1,
+    "bundled_acp_sdk": "0.10.4",
+    "bundled_acp_schema": null
+  },
+  "artifacts": {
+    "launcher_tarball_sha256": "8101d0171afe845071c686f442c7957514b1fb276258708e706761acbaa4d439",
+    "platform_tarball_sha256": "634712255fafb1a57f92bd24724e013b18def045ca301dff4d8279806b1da6e1",
+    "launcher_sha256": "13a2405556fe9e86108731a801771db1b9a742ef11e934ab2cb886f1089aeef0",
+    "compressed_binary_sha256": "97d9111af5a35ece0b849cbc4a5074fed2434277aa1ae49ff93e20c2982119cb",
+    "executable_sha256": "e1fafdfffe14f339460befaf194360e8f90bfd02efe8a4f24cfa1c7aea657ffe",
+    "codesign_team": "5Y6N3AJ54S",
+    "codesign_identifier": "xai-grok-pager"
+  },
+  "bundled_docs": {
+    "authentication_sha256": "4d829996a6e18f37342179f380273a0bad5cbc3a33e83e55fb72a84bd5eac8d5",
+    "agent_mode_sha256": "9ec66e8510b30e31efe3eb8f0bce4638a8e58840ff57a8c34c864aa052631e3a",
+    "sessions_sha256": "be297f6fba5c90ffe3d8e41cdc8feafecb73e6af31c64a35f9f2984af32cfc56",
+    "plan_mode_sha256": "1c9e8dabbc6a782484d761210e1dc4c92dac09d8a27b2c7db77c2347e506b012",
+    "permissions_sha256": "83b9e9c882ada73f4b126c01611614950f31d73e096c8327e64bffd6fbb3645d"
+  },
+  "version_observation": {
+    "argv": ["--no-auto-update", "--version"],
+    "stdout": "grok 0.2.111 (94172f2aa4e5)",
+    "state_files_created": 0,
+    "state_bytes_created": 0,
+    "safe_for_contract_032": true
+  },
+  "invocation": {
+    "direct_executable_argv": ["--no-auto-update", "agent", "stdio"],
+    "npm_launcher_may_materialize_executable_in_grok_home": true
+  },
+  "state": {
+    "acp_start_initializes_grok_home": true,
+    "session_new_failure_created_local_session_state": true,
+    "retention": "durable_local"
+  },
+  "authentication": {
+    "advertised_without_credential": ["grok.com"],
+    "public_example_expected": ["xai.api_key", "cached_token"],
+    "session_new_requires_authentication": true,
+    "authentication_request_observed": false,
+    "qualified": false
+  },
+  "configuration": {
+    "posture": "ambient",
+    "reads_project_grok_claude_and_cursor_sources": true,
+    "plan_mode_blocks_only_edit_tools": true,
+    "plan_mode_allows_shell_and_subagent_bypass": true,
+    "permission_flag_dont_ask_is_not_enforcing": true,
+    "hooks_may_fail_open": true,
+    "bounded_read_only_claim": false
+  },
+  "model": {
+    "current": "grok-4.5",
+    "reasoning_efforts": ["low", "medium", "high"]
+  }
+}

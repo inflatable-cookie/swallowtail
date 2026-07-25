@@ -1,0 +1,244 @@
+use crate::{CODEX_CLI_AXIS, CodexAppServerDriver, CodexExecDriver};
+#[path = "prepared/failure.rs"]
+mod failure;
+#[path = "prepared/instance.rs"]
+mod instance;
+use failure::{discovery_outcome_failure, discovery_runtime_failure, preparation_failure};
+use instance::configured_instance;
+use std::collections::BTreeSet;
+use swallowtail_core::{
+    AccessProfile, ConfiguredInstance, ConfiguredInstanceId, DiscoveryOutcome, ExecutionHostId,
+    HostServiceKind, InstalledExecutableObservation, InstanceRevision,
+};
+use swallowtail_runtime::{
+    Deadline, DiscoveryCancellation, DiscoveryDriver, EnvironmentRef, HostServices,
+    InstalledExecutableDiscoveryRequest, InstalledExecutableTarget, PreparationFailure,
+    PreparationStage, PreparedAccessEvidence, RequestId, ScopeId,
+};
+
+/// The Codex transport selected before preparation.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum CodexPreparedDriver {
+    StructuredExec,
+    AppServer,
+}
+
+/// Adapter-local facts required to prepare one exact Codex installation.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct CodexPreparationInput {
+    driver: CodexPreparedDriver,
+    instance_id: ConfiguredInstanceId,
+    instance_revision: InstanceRevision,
+    execution_host_id: ExecutionHostId,
+    target: InstalledExecutableTarget,
+    environment: EnvironmentRef,
+    access_profile: AccessProfile,
+    access_evidence: PreparedAccessEvidence,
+}
+
+impl CodexPreparationInput {
+    #[must_use]
+    #[allow(clippy::too_many_arguments)]
+    pub const fn new(
+        driver: CodexPreparedDriver,
+        instance_id: ConfiguredInstanceId,
+        instance_revision: InstanceRevision,
+        execution_host_id: ExecutionHostId,
+        target: InstalledExecutableTarget,
+        environment: EnvironmentRef,
+        access_profile: AccessProfile,
+        access_evidence: PreparedAccessEvidence,
+    ) -> Self {
+        Self {
+            driver,
+            instance_id,
+            instance_revision,
+            execution_host_id,
+            target,
+            environment,
+            access_profile,
+            access_evidence,
+        }
+    }
+}
+
+/// Caller-owned lifecycle controls for the bounded installed-version probe.
+#[derive(Clone, Debug)]
+pub struct CodexPreparationProbe {
+    request_id: RequestId,
+    scope_id: ScopeId,
+    deadline: Deadline,
+    cancellation: DiscoveryCancellation,
+}
+
+impl CodexPreparationProbe {
+    #[must_use]
+    pub const fn new(
+        request_id: RequestId,
+        scope_id: ScopeId,
+        deadline: Deadline,
+        cancellation: DiscoveryCancellation,
+    ) -> Self {
+        Self {
+            request_id,
+            scope_id,
+            deadline,
+            cancellation,
+        }
+    }
+}
+
+/// One prepared Codex driver bound to one host-approved executable observation.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct CodexPreparedIntegration {
+    driver: CodexPreparedDriver,
+    environment: EnvironmentRef,
+    target: InstalledExecutableTarget,
+    observation: InstalledExecutableObservation,
+    access_profile: AccessProfile,
+    access_evidence: PreparedAccessEvidence,
+    instance: ConfiguredInstance,
+    available_host_services: BTreeSet<HostServiceKind>,
+}
+
+impl CodexPreparedIntegration {
+    #[must_use]
+    pub const fn driver(&self) -> CodexPreparedDriver {
+        self.driver
+    }
+
+    #[must_use]
+    pub const fn environment(&self) -> &EnvironmentRef {
+        &self.environment
+    }
+
+    #[must_use]
+    pub const fn target(&self) -> &InstalledExecutableTarget {
+        &self.target
+    }
+
+    #[must_use]
+    pub const fn observation(&self) -> &InstalledExecutableObservation {
+        &self.observation
+    }
+
+    #[must_use]
+    pub const fn access_profile(&self) -> &AccessProfile {
+        &self.access_profile
+    }
+
+    #[must_use]
+    pub const fn access_evidence(&self) -> &PreparedAccessEvidence {
+        &self.access_evidence
+    }
+
+    #[must_use]
+    pub const fn instance(&self) -> &ConfiguredInstance {
+        &self.instance
+    }
+
+    pub fn available_host_services(&self) -> impl ExactSizeIterator<Item = HostServiceKind> + '_ {
+        self.available_host_services.iter().copied()
+    }
+
+    /// Rejects host registry or approved-target drift before provider effects.
+    pub fn validate_execution_binding(
+        &self,
+        execution_host_id: &ExecutionHostId,
+        target: &InstalledExecutableTarget,
+    ) -> Result<(), PreparationFailure> {
+        if execution_host_id != self.observation.execution_host_id() || target != &self.target {
+            return Err(preparation_failure(
+                PreparationStage::TargetSelection,
+                "swallowtail.codex.preparation.target_drift",
+                "Prepared Codex host or executable target no longer matches",
+            ));
+        }
+        Ok(())
+    }
+}
+
+/// Discovers and binds one exact Codex executable without selecting operation intent.
+pub async fn prepare_codex(
+    input: CodexPreparationInput,
+    probe: CodexPreparationProbe,
+    services: HostServices,
+) -> Result<CodexPreparedIntegration, PreparationFailure> {
+    validate_input(&input)?;
+    let available_host_services = services.available_kinds();
+    let probe = InstalledExecutableDiscoveryRequest::new(
+        probe.request_id,
+        probe.scope_id,
+        input.execution_host_id.clone(),
+        input.target.clone(),
+        probe.deadline,
+        probe.cancellation,
+    );
+    let outcome = match input.driver {
+        CodexPreparedDriver::StructuredExec => {
+            CodexExecDriver::new(input.environment.clone())
+                .discover_installed_executable(probe, services)
+                .await
+        }
+        CodexPreparedDriver::AppServer => {
+            CodexAppServerDriver::new(input.environment.clone())
+                .discover_installed_executable(probe, services)
+                .await
+        }
+    }
+    .map_err(discovery_runtime_failure)?;
+    promote(input, outcome, available_host_services)
+}
+
+fn validate_input(input: &CodexPreparationInput) -> Result<(), PreparationFailure> {
+    if input.target.version_axis().as_str() != CODEX_CLI_AXIS {
+        return Err(preparation_failure(
+            PreparationStage::TargetSelection,
+            "swallowtail.codex.preparation.target_axis_mismatch",
+            "Codex preparation target uses a different version axis",
+        ));
+    }
+    let status = input.access_evidence.status();
+    if status.profile_id() != input.access_profile.id()
+        || status.support_authority() != input.access_profile.support_authority()
+    {
+        return Err(preparation_failure(
+            PreparationStage::AccessEvidence,
+            "swallowtail.codex.preparation.access_evidence_mismatch",
+            "Codex access evidence does not match the selected access profile",
+        ));
+    }
+    Ok(())
+}
+
+fn promote(
+    input: CodexPreparationInput,
+    outcome: DiscoveryOutcome,
+    available_host_services: BTreeSet<HostServiceKind>,
+) -> Result<CodexPreparedIntegration, PreparationFailure> {
+    let observation = outcome
+        .installed_executable_observation()
+        .filter(|observation| observation.is_permitted())
+        .cloned()
+        .ok_or_else(|| discovery_outcome_failure(&outcome))?;
+    if observation.execution_host_id() != &input.execution_host_id
+        || observation.version().axis() != input.target.version_axis()
+    {
+        return Err(preparation_failure(
+            PreparationStage::CompatibilityClassification,
+            "swallowtail.codex.preparation.observation_mismatch",
+            "Codex discovery observation does not match the prepared target",
+        ));
+    }
+    let instance = configured_instance(&input, &observation)?;
+    Ok(CodexPreparedIntegration {
+        driver: input.driver,
+        environment: input.environment,
+        target: input.target,
+        observation,
+        access_profile: input.access_profile,
+        access_evidence: input.access_evidence,
+        instance,
+        available_host_services,
+    })
+}

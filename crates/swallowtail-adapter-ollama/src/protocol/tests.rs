@@ -62,33 +62,6 @@ fn manifest_binds_every_tagged_source_to_one_text_behavior() {
 }
 
 #[test]
-fn exact_version_codec_accepts_only_the_closed_qualified_window() {
-    for version in ["0.14.0", "0.18.0", "0.30.0", "0.32.1"] {
-        let name = format!("version-{version}.json");
-        let body = std::fs::read(
-            std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
-                .join("tests/fixtures/ollama-native-v0.14.0-v0.32.1")
-                .join(name),
-        )
-        .expect("fixture reads");
-        let binding = parse_version(&response(200, &body)).expect("version is qualified");
-        assert_eq!(binding.version().as_str(), version);
-    }
-    for body in [
-        fixture_bytes!("version-below.json").as_slice(),
-        fixture_bytes!("version-above.json").as_slice(),
-        fixture_bytes!("version-prerelease.json").as_slice(),
-        fixture_bytes!("version-malformed.json").as_slice(),
-    ] {
-        let error = parse_version(&response(200, body)).expect_err("version fails closed");
-        assert_eq!(
-            error.diagnostic().code(),
-            "swallowtail.ollama.version_unsupported"
-        );
-    }
-}
-
-#[test]
 fn inventory_scopes_preserve_runtime_identity_without_creating_routes() {
     let binding = observation_binding();
     let installed = parse_inventory(
@@ -260,9 +233,4 @@ fn assert_json_eq(actual: Vec<u8>, expected: &str) {
     );
 }
 
-#[test]
-fn selected_fixture_versions_are_semantic_values() {
-    for version in ["0.14.0", "0.18.0", "0.30.0", "0.32.1"] {
-        assert!(!InterfaceVersion::new(version).unwrap().as_str().is_empty());
-    }
-}
+include!("version_tests.rs");

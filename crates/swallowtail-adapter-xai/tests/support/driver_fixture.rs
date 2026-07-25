@@ -2,7 +2,9 @@ use super::{
     CallLog, FixtureServer, ServerScenario, ThreadServices, TrackingCredential, TrackingNetwork,
 };
 use std::sync::Arc;
-use swallowtail_adapter_xai::xai_websocket_descriptor;
+use swallowtail_adapter_xai::{
+    XaiPreparationInput, xai_responses_access_profile, xai_websocket_descriptor,
+};
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessRequirement, AccessStatus, Capability, CapabilityProfile,
     CapabilityRequirement, ConfiguredInstance, ConfiguredInstanceId, CredentialMechanism,
@@ -10,13 +12,22 @@ use swallowtail_core::{
     EntitlementState, ExecutionHostId, ExecutionLayer, InstanceOwnership, InstancePolicyId,
     InstanceRevision, InstanceTargetRef, ModelId, ModelRoute, ModelRouteId, ModelRouteRevision,
     OperationRequirements, OperationShape, PreflightContext, PreflightPlan, ProtocolFacadeId,
-    ProviderId, RuntimeReadiness, SessionAccessPolicy, SupportAuthority, preflight,
+    ProviderId, RuntimeReadiness, SessionAccessPolicy, SessionProviderStatePolicy,
+    SupportAuthority, preflight,
 };
 use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{
     BlockingWorkService, CredentialRef, CredentialService, EndpointRef, HostServices,
-    NetworkPolicyService, ScopedTaskService, TimeService,
+    NetworkPolicyService, OperationContent, PreparedAccessEvidence, RuntimeTurnId,
+    ScopedTaskService, TimeService, TurnRequest,
 };
+
+pub fn turn_request(turn_id: &str) -> TurnRequest {
+    TurnRequest::new(
+        RuntimeTurnId::new(turn_id).expect("turn id is valid"),
+        OperationContent::new("fixture input").expect("content is valid"),
+    )
+}
 
 pub struct DriverFixture {
     pub server: FixtureServer,
@@ -83,6 +94,25 @@ impl DriverFixture {
             }) as Arc<dyn CredentialService>)
     }
 
+    pub fn preparation_input(&self) -> XaiPreparationInput {
+        let access = xai_responses_access_profile(self.credential.clone());
+        let status = AccessStatus::new(
+            access.id().clone(),
+            CredentialState::Ready,
+            EntitlementState::Available,
+            EndpointAuthorization::Allowed,
+            RuntimeReadiness::Ready,
+            SupportAuthority::ProviderSupported,
+        );
+        XaiPreparationInput::new(
+            InstanceRevision::new("prepared-1").expect("revision is valid"),
+            self.host_id.clone(),
+            self.target.clone(),
+            access,
+            PreparedAccessEvidence::caller_asserted(status),
+        )
+    }
+
     pub fn plan(&self) -> PreflightPlan {
         let descriptor = xai_websocket_descriptor();
         let access_id = AccessProfileId::new("access.xai.public").expect("access id is valid");
@@ -143,6 +173,7 @@ impl DriverFixture {
         .with_host_services(host_services.clone())
         .with_capabilities(requirements)
         .with_session_access_policy(SessionAccessPolicy::resource_free())
+        .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited)
         .require_model_route();
         preflight(
             &PreflightContext::new(&descriptor, &instance, &access, &status, host_services)

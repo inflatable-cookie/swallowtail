@@ -1,7 +1,8 @@
 use swallowtail_core::{
-    InterfaceBehaviorRevision, InterfaceCompatibilityClaim, InterfaceCompatibilityClaimId,
-    InterfaceCompatibilityMatch, InterfaceSupportStatus, InterfaceVersion, InterfaceVersionAxis,
-    InterfaceVersionBinding, InterfaceVersionScheme, InterfaceVersionSegment, PreflightPlan,
+    InterfaceBehaviorRevision, InterfaceCompatibilityAssessment, InterfaceCompatibilityClaim,
+    InterfaceCompatibilityClaimId, InterfaceNewerVersionPosture, InterfaceSupportStatus,
+    InterfaceVersion, InterfaceVersionAxis, InterfaceVersionBinding, InterfaceVersionScheme,
+    InterfaceVersionSegment, PreflightPlan,
 };
 use swallowtail_runtime::RuntimeFailure;
 
@@ -14,7 +15,7 @@ const CODEX_EXEC_RETAINED_BOOLEAN_SEARCH_BEHAVIOR: &str =
     "codex.exec.jsonl-v1.retained-boolean-search";
 const CODEX_EXEC_RETAINED_SEARCH_MODE_BEHAVIOR: &str = "codex.exec.jsonl-v1.retained-search-mode";
 const CODEX_EXEC_EPHEMERAL_AMBIENT_BEHAVIOR: &str = "codex.exec.jsonl-v1.ephemeral-ambient";
-const CODEX_EXEC_BEHAVIOR: &str = "codex.exec.jsonl-v1";
+pub(crate) const CODEX_EXEC_BEHAVIOR: &str = "codex.exec.jsonl-v1";
 const CODEX_APP_SERVER_LEGACY_DEFAULT_BEHAVIOR: &str = "codex.app-server.v2.legacy-default-stdio";
 const CODEX_APP_SERVER_LEGACY_EXPLICIT_BEHAVIOR: &str = "codex.app-server.v2.legacy-explicit-stdio";
 pub(crate) const CODEX_APP_SERVER_BASE_BEHAVIOR: &str = "codex.app-server.v2.base";
@@ -73,6 +74,7 @@ pub fn codex_exec_claim() -> InterfaceCompatibilityClaim {
             .expect("static claim id is valid"),
         axis(),
         InterfaceVersionScheme::Semantic,
+        InterfaceNewerVersionPosture::AllowUnverified,
         [
             segment(
                 "0.80.0",
@@ -111,6 +113,7 @@ pub fn codex_app_server_claim() -> InterfaceCompatibilityClaim {
             .expect("static claim id is valid"),
         axis(),
         InterfaceVersionScheme::Semantic,
+        InterfaceNewerVersionPosture::AllowUnverified,
         [
             segment(
                 "0.80.0",
@@ -151,8 +154,12 @@ pub fn codex_app_server_claim() -> InterfaceCompatibilityClaim {
 pub(crate) fn classify_exec_plan(
     plan: &PreflightPlan,
 ) -> Result<CodexExecBehavior, RuntimeFailure> {
-    let matched = classify_plan(plan, &codex_exec_claim(), "exec")?;
-    match matched.behavior_revision().as_str() {
+    let assessment = classify_plan(plan, &codex_exec_claim(), "exec")?;
+    match assessment
+        .behavior_revision()
+        .expect("permitted assessment has behavior")
+        .as_str()
+    {
         CODEX_EXEC_RETAINED_BOOLEAN_SEARCH_BEHAVIOR => Ok(CodexExecBehavior::RetainedBooleanSearch),
         CODEX_EXEC_RETAINED_SEARCH_MODE_BEHAVIOR => Ok(CodexExecBehavior::RetainedSearchMode),
         CODEX_EXEC_EPHEMERAL_AMBIENT_BEHAVIOR => Ok(CodexExecBehavior::EphemeralAmbient),
@@ -167,8 +174,12 @@ pub(crate) fn classify_exec_plan(
 pub(crate) fn classify_app_server_plan(
     plan: &PreflightPlan,
 ) -> Result<CodexAppServerBehavior, RuntimeFailure> {
-    let matched = classify_plan(plan, &codex_app_server_claim(), "app_server")?;
-    match matched.behavior_revision().as_str() {
+    let assessment = classify_plan(plan, &codex_app_server_claim(), "app_server")?;
+    match assessment
+        .behavior_revision()
+        .expect("permitted assessment has behavior")
+        .as_str()
+    {
         CODEX_APP_SERVER_LEGACY_DEFAULT_BEHAVIOR => Ok(CodexAppServerBehavior::LegacyDefaultStdio),
         CODEX_APP_SERVER_LEGACY_EXPLICIT_BEHAVIOR => {
             Ok(CodexAppServerBehavior::LegacyExplicitStdio)
@@ -186,7 +197,7 @@ pub(crate) fn classify_plan(
     plan: &PreflightPlan,
     claim: &InterfaceCompatibilityClaim,
     diagnostic_prefix: &'static str,
-) -> Result<InterfaceCompatibilityMatch, RuntimeFailure> {
+) -> Result<InterfaceCompatibilityAssessment, RuntimeFailure> {
     let mut bindings = plan
         .interface_versions()
         .filter(|binding| binding.axis() == claim.axis());
@@ -202,12 +213,15 @@ pub(crate) fn classify_plan(
             "Codex plan contains more than one executable version",
         ));
     }
-    claim.classify(binding.version()).ok_or_else(|| {
-        super::exec::failure(
+    let assessment = claim.assess(binding.version());
+    if assessment.is_permitted() {
+        Ok(assessment)
+    } else {
+        Err(super::exec::failure(
             diagnostic_code(diagnostic_prefix, "version_incompatible"),
-            "Codex executable version is outside the qualified window",
-        )
-    })
+            "Codex executable version is incompatible with this driver",
+        ))
+    }
 }
 
 fn diagnostic_code(prefix: &'static str, suffix: &'static str) -> &'static str {

@@ -13,7 +13,8 @@ use swallowtail_core::{DriverRole, SessionProviderStatePolicy};
 use swallowtail_runtime::{
     CleanupOutcome, DriverRegistration, InteractiveSessionDriver, OpenSessionRequest,
     OperationContent, ProviderObservation, RequestId, RuntimeEvent, RuntimeEventKind,
-    RuntimeTurnId, TerminalOutcome, TerminalStatus, TurnHandle, TurnRequest,
+    RuntimeTurnId, SessionAccessPolicy, SessionPlanAgreement, TerminalOutcome, TerminalStatus,
+    TurnHandle, TurnRequest,
 };
 
 #[test]
@@ -147,8 +148,19 @@ fn open(
 }
 
 fn open_request(id: &str) -> OpenSessionRequest {
-    OpenSessionRequest::resource_free(RequestId::new(id).expect("request id"), None)
-        .with_provider_state_policy(SessionProviderStatePolicy::DurableConversationDeleteOnClose)
+    OpenSessionRequest::resource_free(
+        RequestId::new(id).expect("request id"),
+        None,
+        plan_agreement(),
+    )
+}
+
+fn plan_agreement() -> SessionPlanAgreement {
+    SessionPlanAgreement::explicit(
+        SessionAccessPolicy::resource_free(),
+        Some(SessionProviderStatePolicy::DurableConversationDeleteOnClose),
+        None,
+    )
 }
 
 fn turn_request(id: &str, content: &str) -> TurnRequest {

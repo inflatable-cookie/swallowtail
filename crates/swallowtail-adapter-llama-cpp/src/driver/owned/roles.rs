@@ -57,6 +57,7 @@ pub fn llama_cpp_owned_descriptor() -> DriverDescriptor {
             HostServiceKind::Network,
         ],
     )
+    .with_interface_compatibility(crate::llama_cpp_owned_runtime_claim())
 }
 
 impl ModelCatalogDriver for LlamaCppOwnedDriver {

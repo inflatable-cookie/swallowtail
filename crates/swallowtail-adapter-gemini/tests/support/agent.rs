@@ -25,6 +25,7 @@ struct SharedAgent {
     state: Mutex<AgentState>,
     changed: Condvar,
     scenario: Scenario,
+    version: String,
 }
 
 impl SharedAgent {
@@ -52,7 +53,7 @@ impl SharedAgent {
                         "protocolVersion": 1,
                         "agentCapabilities": {"loadSession": true},
                         "authMethods": [{"id": "gemini-api-key", "name": "Gemini API key"}],
-                        "agentInfo": {"name": "gemini-cli", "version": "0.51.0"}
+                        "agentInfo": {"name": "gemini-cli", "version": self.version}
                     }
                 }),
             ),

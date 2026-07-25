@@ -23,10 +23,11 @@ pub fn ollama_runtime_binding(version: &str) -> InterfaceVersionBinding {
 #[must_use]
 pub fn ollama_runtime_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
-        InterfaceCompatibilityClaimId::new("ollama.native-runtime-window-1")
+        InterfaceCompatibilityClaimId::new("ollama.native-runtime-window-2")
             .expect("static claim id is valid"),
         InterfaceVersionAxis::new(OLLAMA_RUNTIME_AXIS).expect("static version axis is valid"),
         InterfaceVersionScheme::Semantic,
+        swallowtail_core::InterfaceNewerVersionPosture::AllowUnverified,
         [InterfaceVersionSegment::new(
             InterfaceVersion::new(OLLAMA_BASELINE_VERSION).expect("baseline is valid"),
             InterfaceVersion::new(OLLAMA_LATEST_QUALIFIED_VERSION).expect("latest is valid"),
@@ -34,7 +35,7 @@ pub fn ollama_runtime_claim() -> InterfaceCompatibilityClaim {
                 .expect("static behavior revision is valid"),
             InterfaceSupportStatus::Maintained,
         )],
-        [],
+        [InterfaceVersion::new("0.32.2").expect("known exclusion is valid")],
     )
     .expect("static Ollama compatibility claim is valid")
 }
@@ -95,6 +96,10 @@ mod tests {
         for version in ["0.13.5", "0.18.0-rc.1", "0.32.2", "0.32.3-rc.0"] {
             assert!(!descriptor.supports_interface_version(&ollama_runtime_binding(version)));
         }
+        assert!(matches!(
+            descriptor.assess_interface_version(&ollama_runtime_binding("0.33.0")),
+            swallowtail_core::InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+        ));
     }
 
     #[test]
@@ -115,6 +120,10 @@ mod tests {
         swallowtail_testkit::assert_closed_semantic_compatibility_window(
             &ollama_runtime_claim(),
             &case,
+        );
+        swallowtail_testkit::assert_unverified_newer_execution(
+            &ollama_runtime_claim(),
+            &InterfaceVersion::new("0.33.0").unwrap(),
         );
     }
 }

@@ -6,6 +6,7 @@ pub enum SyntheticProfile {
     LongLivedRpcHarness,
     LongLivedAcpHarness,
     PersistentAcpHarness,
+    RemoteAcpHarness,
     AttachedNetworkHarness,
     HostedDirectApi,
     ProviderManagedRemoteHarness,
@@ -83,6 +84,10 @@ pub enum ConformanceAssertion {
     RuntimeManagedResidency,
     ClosedCompatibilityWindow,
     HarnessConfigurationExact,
+    RemoteAcpConnectionLifecycle,
+    RemoteAcpAffinityScoped,
+    RemoteAcpNoRecovery,
+    RemoteAcpVersionAxesSeparate,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -154,6 +159,11 @@ pub fn run_persistent_acp_profile() -> ConformanceReport {
 }
 
 #[must_use]
+pub fn run_remote_acp_harness_profile() -> ConformanceReport {
+    crate::profile_remote_acp::run()
+}
+
+#[must_use]
 pub fn run_hosted_direct_api_profile() -> ConformanceReport {
     crate::profile_hosted::run()
 }
@@ -210,6 +220,7 @@ pub fn run_all_synthetic_profiles() -> Vec<ConformanceReport> {
         run_long_lived_rpc_profile(),
         run_long_lived_acp_profile(),
         run_persistent_acp_profile(),
+        run_remote_acp_harness_profile(),
         run_attached_network_harness_profile(),
         run_hosted_direct_api_profile(),
         run_provider_managed_harness_profile(),

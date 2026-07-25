@@ -7,12 +7,12 @@ Swallowtail owns portable integration mechanisms. Applications retain their
 prompts, tools, authority, workflows, persistence, and product state.
 
 Status: foundation. The repository is in strict Northstar posture. The
-provider-neutral core, pure preflight, executor-neutral runtime, twelve synthetic
+provider-neutral core, pure preflight, executor-neutral runtime, thirteen synthetic
 conformance profiles, host-approved local process/endpoint/credential services,
-twenty-one production driver routes, including separate SDK-native Bedrock Runtime
+twenty-two production driver routes, including separate SDK-native Bedrock Runtime
 and control-plane routes, across Alibaba Model Studio, Anthropic, Bedrock,
-Codex, DeepSeek, Gemini, Kimi, llama.cpp, Ollama, OpenAI, OpenCode, Pi, Qwen,
-and xAI
+Claude Agent, Codex, DeepSeek, Gemini, Kimi, llama.cpp, Ollama, OpenAI,
+OpenCode, Pi, Qwen, and xAI
 are validated. Codex app-server supports both
 unchanged read-only sessions and one explicit host-resolved bounded workspace
 profile.
@@ -25,7 +25,33 @@ effigy doctor
 effigy test --plan
 ```
 
-Then read [docs/README.md](docs/README.md).
+Then read [docs/README.md](docs/README.md). Applications integrating Codex
+should start with the
+[prepared-integration guides](docs/guides/README.md). Multi-provider
+applications should start with the exact
+[22-route matrix](docs/guides/provider-route-matrix.md).
+Provider-wide prepared facades are the active stabilization lane. The shared
+evidence foundation, Codex typed bound operations, and Kimi Code ACP prepared
+facade are complete. Anthropic Models and Messages now supplies the first
+hosted-direct prepared facade. Ollama native supplies the attached-runtime
+proof. Claude Agent and Gemini CLI now add separate read-only stdio-ACP
+prepared paths. Pi RPC, Qwen headless, and OpenCode attached HTTP/SSE complete
+prepared coverage for all eight harness routes. Kimi Platform, DeepSeek,
+Alibaba Model Studio, and OpenAI background Responses now add distinct hosted
+direct and provider-state facades; specialized adapters retain their low-level
+production APIs. Separate xAI Responses WebSocket, OpenAI Realtime, and Gemini
+Live facades now retain their native text, audio, cancellation, invalidation,
+and rollover behavior. Bedrock Runtime and control-plane catalogue now add
+separate SDK-native facades with explicit region and credential-provider
+configuration. llama.cpp now completes all 22 prepared routes with distinct
+attached inference and owned ephemeral-serving paths. The exact cross-route
+matrix and unified integration guidance are complete. All 22 prepared routes
+now pass from extracted package artifacts, alongside the unchanged Nucleus and
+Soundcheck Codex proofs. One reproducible provider-wide `0.1.0` candidate is
+held while its parentless verification snapshot is replaced by a clean
+canonical-history candidate. Prior candidates remain superseded evidence.
+Roadmap g02.013 owns the provenance repair and packaged reacceptance. No
+external release state has changed.
 
 ## Current Direction
 
@@ -42,11 +68,12 @@ Then read [docs/README.md](docs/README.md).
 - local and remote execution hosts treated as equal topologies
 - Nucleus and Soundcheck as initial consumers, not Swallowtail authorities
 
-The twenty-one-crate Rust workspace contains `swallowtail-core`, `swallowtail-runtime`,
+The twenty-three-crate Rust workspace contains `swallowtail-core`, `swallowtail-runtime`,
 `swallowtail-testkit`, `swallowtail-host-local`, `swallowtail-protocol-acp`,
-`swallowtail-protocol-openai-chat`,
+`swallowtail-protocol-openai-chat`, `swallowtail-transport-acp-remote`,
 `swallowtail-adapter-alibaba-model-studio`,
-`swallowtail-adapter-codex`, `swallowtail-adapter-deepseek`, `swallowtail-adapter-opencode`,
+`swallowtail-adapter-claude-agent`, `swallowtail-adapter-codex`,
+`swallowtail-adapter-deepseek`, `swallowtail-adapter-opencode`,
 `swallowtail-adapter-anthropic`, `swallowtail-adapter-bedrock`, `swallowtail-adapter-gemini`,
 `swallowtail-adapter-kimi`, `swallowtail-adapter-kimi-platform`,
 `swallowtail-adapter-llama-cpp`, `swallowtail-adapter-ollama`,
@@ -61,9 +88,7 @@ without executing tools. Local and remote-authoritative fixtures prove
 host-bound open, resume, callbacks, interruption, failure, and joined cleanup.
 Soundcheck and Nucleus Agent Chat are accepted consumers. The bounded
 workspace-write runtime required by Nucleus task execution is complete without
-widening read-only chat. Provider expansion is now the active lane: refresh
-external evidence, promote missing network and credential contracts, then
-prove materially different harness and direct-inference transports. The shared
+widening read-only chat. Provider expansion is now the active lane. The shared
 hosted foundation and attached OpenCode HTTP/SSE proof are complete. The
 provider-supported Anthropic Models and Messages direct driver is complete.
 ACP v1 and Gemini CLI `0.51.0` authority, fixtures, bounded protocol transport,
@@ -297,8 +322,9 @@ usage/cache/finish/request evidence, cancellation, deadline, failure, and
 credential-last cleanup under both host identities. Full QA has a 489-test
 inventory: 486 pass and three gated probes remain ignored. Roadmap 037 and card
 105 close the coverage and compatibility-window checkpoint. Research 024
-confirms only Pi and DeepSeek publish descriptor claims, both as one-point
-windows; remote ACP is Draft. Contract 031 and roadmap 038 select attach-only
+confirmed only Pi and DeepSeek published descriptor claims, both as one-point
+windows; remote ACP was Draft at that checkpoint. Contract 031 and roadmap 038
+select attach-only
 Ollama native API as the first non-singleton compatibility proof. Stable
 `0.14.0` through `0.32.1` now drives a production attach-only catalogue and
 structured-run route with exact runtime discovery, installed and running model
@@ -336,5 +362,153 @@ execution. Both production drivers now select those private behavior segments
 only from an immutable exact executable-version binding. Legacy policy and
 capability mismatches fail before harness work; current isolation and
 experimental gates remain unchanged. Full six-month range conformance and
-roadmap closeout now pass. The next lane revalidates OpenCode, Gemini ACP, Kimi
-ACP, Qwen, and Pi before selecting the second installed-harness range proof.
+roadmap closeout now pass. Current release and schema evidence selects OpenCode
+HTTP as the second installed-harness range proof. Its candidate envelope is
+`1.14.48..=1.18.4`: 45 stable releases retain the selected six routes. Their
+recursively closed schemas produce 18 exact surfaces and 20 contiguous
+published segments. The descriptor publishes that closed claim. Exact
+instance, requirement, plan, health, and session bindings select only private
+frozen behavior revisions. Cross-topology conformance and full QA pass without
+changing the attached HTTP/SSE operation shape. The next lane is a fresh
+provider-coverage checkpoint. Qualified windows now mean guaranteed support,
+not a hard execution ceiling. Ordered Codex and OpenCode claims permit exact
+newer stable releases as visibly unverified and dispatch them through their
+latest qualified private behavior. They do not count those releases as
+supported. Prereleases, gaps, exclusions, older points, malformed versions,
+and runtime drift remain closed. Research 028 selects exact Kimi Code `0.28.1`
+and `0.29.0` as separate qualified ACP behavior segments. Contract 034 adds the
+narrow missing boundary for typed reasoning setup through version-qualified
+private harness options. Roadmap 043 owns the corpus, installed discovery,
+private dispatch, and cross-topology proof without a container or sandbox
+requirement. The typed negotiation records, exact `0.28.1`/`0.29.0` behavior
+corpus, host-approved installed discovery, private version dispatch,
+initialization corroboration, and confirmed new-session reasoning setup are
+complete. Stable newer releases remain executable but visibly unverified.
+Cross-topology conformance now proves baseline, latest, unverified-newer,
+dynamic-option rejection, and the unchanged persistent ACP lifecycle under
+both authoritative host identities. Full repository QA inventories 606 tests:
+602 pass and four gated probes remain ignored. Roadmap 043 is complete.
+Research 029 closes roadmap 044 and selects remote ACP after the Active
+transport RFD gained a maintained Rust HTTP transport crate. Contract 035
+keeps the proof provider-neutral, unauthenticated, opt-in experimental, and
+free of implicit recovery or transport fallback. Provider-neutral remote ACP
+connection, affinity, bound, and version records are now realized alongside
+the thirteenth conformance profile. Independent raw HTTP/SSE and WebSocket
+corpora freeze both lifecycle shapes, including connection-private cookie
+affinity, without depending on a production client. The reusable client is
+realized with
+explicit HTTP/2 SSE or WebSocket selection, bounded private cookies, frames,
+correlation, and streams, and host-owned joined runtime work. Card 135 owns
+the completed cross-topology matrix, maintained-server cross-check, redaction
+audit, and full closeout. Roadmap 045 and cards 133-135 are complete with 629
+tests inventoried. Research 030 kept g01 active at 47 roadmaps and selected
+Grok Build as the next
+maintained-range ACP harness proof. Research 031 now freezes the exact
+`0.2.0` and `0.2.111` artifacts and all 111 published `0.2.x` points, but
+qualifies no release. Direct `0.2.111 --no-auto-update --version` is the sole
+safe discovery candidate. Exact authentication behavior still needs
+activation-only evidence, and bundled guidance disproves the planned bounded
+read-only claim. The operator placed roadmap 047 on hold because no Grok
+account is available. Its evidence remains intact and its viable route stays an
+explicit ambient harness relay with separately opt-in sandboxing. Roadmap 048
+now selects Claude Agent ACP as the post-Grok proof. Research 032 fixes ACP v1
+stdio, qualified adapter range `0.53.0..=0.61.0` excluding unpublished
+`0.58.0`, Anthropic public-API-key access, `Ambient` configuration, and
+`AmbientHost` isolation. Exact Agent SDK `0.3.195..=0.3.217` and nested Claude
+Code `2.1.195..=2.1.217` evidence stays separate from the wrapper and ACP wire.
+The deterministic corpus passes without a live account or container. The
+separate production driver now observes the exact wrapper version, dispatches
+the four qualified behavior milestones, permits stable newer versions only as
+visible unverified executions, and runs the frozen read-only ACP session with
+joined deadline, cancellation, process, resource, and credential cleanup.
+Claude subscription login remains excluded because Swallowtail has no separate
+approval to offer claude.ai access. The unchanged long-lived ACP profile and
+adapter-local matrix now pass under local and remote-authoritative host
+topologies. Full QA inventories 658 tests: 654 pass and four gated probes remain
+ignored. Roadmap 048 is complete. Roadmap 049 and card 146 complete the
+49-roadmap g01 generation-disposition checkpoint. g01 is closed with 48
+completed roadmaps and the blocked Grok lane moved to the shared backlog.
+g02 now prioritizes API stabilization, release discipline, packaging, and
+consumer upgrade support. Its first milestone inventories the 23-crate package
+graph and current Cargo rules before promoting a release contract. No crates.io
+publication, tag, API 1.0 promise, or provider implementation is implied.
+Research 033 completes that inventory. The operator approved its package,
+registry, version, and MSRV recommendation. Spec 004 is archived, and Contract
+036 now governs all 23 public packages, coordinated pre-1.0 compatibility, the
+bounded MSRV policy, package evidence, and explicit human release authority.
+Card 003 now realizes those rules across every manifest and adds deterministic
+Effigy metadata, dependency, public-declaration, documentation, MSRV, content,
+and package-family gates. All 23 packages assemble from a clean isolated source
+snapshot and the extracted family compiles against the locked graph without
+publishing. Card 004 freezes one exact reproducible `0.1.0` candidate and
+completes isolated Nucleus and Soundcheck upgrade and rollback handoffs.
+Milestone g02.001 is complete. Registry preflight, staged publication, tags,
+pushes, releases, workflows, and consumer edits remain behind one explicit
+operator decision. Research 034 then found a release-blocking usability gap:
+Nucleus and Soundcheck compile while ordinary Codex integration still requires
+duplicated low-level preparation and can omit runtime-only bindings. Contract
+037 now promotes Spec 005's two-layer prepared integration boundary without
+weakening the low-level roles. Roadmaps g02.002-g02.006 sequence plan-derived
+requests, joined local host composition, separate Codex exec and app-server
+facades, consumer-owned Nucleus and Soundcheck simplification, and packaged
+runtime proof. The first `0.1.0` candidate is superseded with its evidence
+retained until a replacement closes that runway. The shared request,
+diagnostic, access-provenance, joined-task, local-service, and exact-target
+foundations and the Codex exact-target prepared factory are now complete.
+Separate prepared catalogue, read-only session, bounded-workspace session, and
+structured-exec profiles now pass deterministic local and remote-authoritative
+conformance with public usage and low-level escape-hatch guidance. Nucleus has
+completed prepared-facade adoption. Soundcheck's prepared catalogue and exec
+migration now passes exact-version preparation, normal health, 106 Rust tests,
+13 frontend tests, the locked app check, and QA. Packaged cross-consumer
+runtime proof also passes across a transient 23-package candidate without live
+credentials or provider calls. Spec 006 and revised Contract 037 now extend
+that normal-path requirement to all 22 production driver routes. The adapters
+will expose typed prepared operations by runtime family without a universal
+prompt API, provider router, hidden authority, or mandatory sandbox.
+Kimi Code ACP, Anthropic Messages, and Ollama native form the first
+cross-shape proof. Codex prepared catalogue, structured-run, session-open, and
+session-resume methods now delegate directly to the unchanged low-level roles,
+and Kimi Code ACP now adds exact prepared discovery plus bound new, load,
+resume, prompt, and interruption paths without a containment claim. Anthropic
+Messages now adds separate prepared catalogue and one-attempt inference paths
+with exact endpoint, API-key, route, output-bound, streaming, and cleanup
+truth. Ollama native now adds exact attached-runtime discovery, distinct
+installed and running observations, selected artifact evidence, explicit
+runtime-managed residency, and no server or model-management authority. The
+three-shape facade review accepts the common evidence and two-phase authoring
+pattern without flattening native operations. Claude Agent and Gemini CLI ACP
+now add exact executable preparation, visible configuration and version
+posture, plan-derived read-only sessions, and no implicit remote-ACP fallback.
+Pi RPC now adds exact installed discovery and a provider-suppressed ambient
+read-only prepared session while retaining native scheduling and UI relay.
+Qwen headless now adds exact installed discovery and one ambient structured
+run with explicit provider, model, stdin, stream-JSON, and native budgets.
+Later stable Pi, Qwen, and OpenCode releases remain executable as visible
+unverified-newer observations. OpenCode now adds exact attached-service
+preparation plus separate catalogue and read-only session paths without server
+lifecycle or remote-ACP fallback. Kimi Platform now adds separate catalogue and
+one-attempt K3 preparation while rejecting Membership and Kimi Code access.
+DeepSeek now adds separate catalogue and explicit consumer-owned tool
+continuation with private reasoning replay and visible cache acceptance.
+Alibaba Model Studio now adds exact regional workspace preparation with
+explicit durable retention and item-before-conversation deletion. OpenAI
+background Responses now adds exact public-API preparation, visible temporary
+retention, maximum-one cursor reattachment, bounded retrieval, native
+cancellation, and unchanged remote terminal truth. Anthropic Managed Agents
+now adds separate provider-hosted harness preparation with an operator-owned
+agent, driver-owned environment and session, authoritative history recovery,
+callbacks, interruption, and ordered delete-on-close. Realtime provider
+facades now add three separate prepared connection paths: xAI serial text with
+private continuation and billed ticks, OpenAI manual 24 kHz PCM with native
+response cancellation, and Gemini asymmetric PCM with one planned rollover.
+Bedrock SDK facades now add separate Runtime inference and control-plane
+catalogue preparation with exact region, SDK, service API, endpoint audience,
+access, and delegated credential-provider evidence. Catalogue results cannot
+select Runtime routes. llama.cpp now adds separate attached catalogue and
+inference preparation plus owned ephemeral serving. The attached path retains
+external-server ownership; the owned path couples an approved executable,
+exact GGUF artifact, route, loopback readiness, and ordered teardown. All 22
+production routes now have adapter-local prepared normal paths. The held
+replacement candidate returns only after route-matrix and provider-wide
+packaged evidence.

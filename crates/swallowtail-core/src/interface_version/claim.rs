@@ -1,8 +1,9 @@
 use super::error::InvalidInterfaceCompatibilityClaim;
 use super::ordering::{compare_versions, is_semantic_prerelease, validate_version};
 use super::{
-    InterfaceBehaviorRevision, InterfaceCompatibilityClaimId, InterfaceSupportStatus,
-    InterfaceVersion, InterfaceVersionAxis, InterfaceVersionScheme,
+    InterfaceBehaviorRevision, InterfaceCompatibilityAssessment, InterfaceCompatibilityClaimId,
+    InterfaceCompatibilityMatch, InterfaceNewerVersionPosture, InterfaceSupportStatus,
+    InterfaceUnverifiedNewer, InterfaceVersion, InterfaceVersionAxis, InterfaceVersionScheme,
 };
 use std::cmp::Ordering;
 use std::collections::BTreeSet;
@@ -67,30 +68,13 @@ impl InterfaceVersionSegment {
     }
 }
 
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub struct InterfaceCompatibilityMatch {
-    behavior_revision: InterfaceBehaviorRevision,
-    support_status: InterfaceSupportStatus,
-}
-
-impl InterfaceCompatibilityMatch {
-    #[must_use]
-    pub const fn behavior_revision(&self) -> &InterfaceBehaviorRevision {
-        &self.behavior_revision
-    }
-
-    #[must_use]
-    pub const fn support_status(&self) -> InterfaceSupportStatus {
-        self.support_status
-    }
-}
-
-/// One maintained compatibility window for one ordered interface axis.
+/// One qualified compatibility window for one interface axis.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct InterfaceCompatibilityClaim {
     id: InterfaceCompatibilityClaimId,
     axis: InterfaceVersionAxis,
     scheme: InterfaceVersionScheme,
+    newer_version_posture: InterfaceNewerVersionPosture,
     segments: Vec<InterfaceVersionSegment>,
     exclusions: BTreeSet<InterfaceVersion>,
 }
@@ -100,6 +84,7 @@ impl InterfaceCompatibilityClaim {
         id: InterfaceCompatibilityClaimId,
         axis: InterfaceVersionAxis,
         scheme: InterfaceVersionScheme,
+        newer_version_posture: InterfaceNewerVersionPosture,
         segments: impl IntoIterator<Item = InterfaceVersionSegment>,
         exclusions: impl IntoIterator<Item = InterfaceVersion>,
     ) -> Result<Self, InvalidInterfaceCompatibilityClaim> {
@@ -107,6 +92,7 @@ impl InterfaceCompatibilityClaim {
             id,
             axis,
             scheme,
+            newer_version_posture,
             segments: segments.into_iter().collect(),
             exclusions: exclusions.into_iter().collect(),
         };
@@ -127,6 +113,11 @@ impl InterfaceCompatibilityClaim {
     #[must_use]
     pub const fn scheme(&self) -> InterfaceVersionScheme {
         self.scheme
+    }
+
+    #[must_use]
+    pub const fn newer_version_posture(&self) -> InterfaceNewerVersionPosture {
+        self.newer_version_posture
     }
 
     #[must_use]
@@ -163,17 +154,21 @@ impl InterfaceCompatibilityClaim {
                 .segments
                 .iter()
                 .find(|segment| segment.minimum() == version && segment.maximum() == version)
-                .map(|segment| InterfaceCompatibilityMatch {
-                    behavior_revision: segment.behavior_revision.clone(),
-                    support_status: segment.support_status,
+                .map(|segment| {
+                    InterfaceCompatibilityMatch::new(
+                        segment.behavior_revision.clone(),
+                        segment.support_status,
+                    )
                 });
         }
         self.segments
             .iter()
             .find(|segment| segment_contains(self.scheme, segment, version))
-            .map(|segment| InterfaceCompatibilityMatch {
-                behavior_revision: segment.behavior_revision.clone(),
-                support_status: segment.support_status,
+            .map(|segment| {
+                InterfaceCompatibilityMatch::new(
+                    segment.behavior_revision.clone(),
+                    segment.support_status,
+                )
             })
     }
 
@@ -182,19 +177,46 @@ impl InterfaceCompatibilityClaim {
         self.classify(version).is_some()
     }
 
+    #[must_use]
+    pub fn assess(&self, version: &InterfaceVersion) -> InterfaceCompatibilityAssessment {
+        if self.exclusions.contains(version) || validate_version(self.scheme, version).is_err() {
+            return InterfaceCompatibilityAssessment::Incompatible;
+        }
+        if let Some(matched) = self.classify(version) {
+            return InterfaceCompatibilityAssessment::Qualified(matched);
+        }
+        if self.newer_version_posture != InterfaceNewerVersionPosture::AllowUnverified
+            || self.scheme == InterfaceVersionScheme::Opaque
+            || (self.scheme == InterfaceVersionScheme::Semantic && is_semantic_prerelease(version))
+            || !compare_versions(self.scheme, self.latest_qualified(), version)
+                .is_ok_and(|ordering| ordering == Ordering::Less)
+        {
+            return InterfaceCompatibilityAssessment::Incompatible;
+        }
+        let latest = self.segments.last().expect("validated claim has a segment");
+        InterfaceCompatibilityAssessment::UnverifiedNewer(InterfaceUnverifiedNewer::new(
+            version.clone(),
+            latest.maximum().clone(),
+            latest.behavior_revision().clone(),
+        ))
+    }
+
+    #[must_use]
+    pub fn permits(&self, version: &InterfaceVersion) -> bool {
+        self.assess(version).is_permitted()
+    }
+
     fn validate(&self) -> Result<(), InvalidInterfaceCompatibilityClaim> {
         self.validate_segments()?;
+        if self.scheme == InterfaceVersionScheme::Opaque
+            && self.newer_version_posture != InterfaceNewerVersionPosture::QualifiedOnly
+        {
+            return Err(InvalidInterfaceCompatibilityClaim::new(
+                "Opaque compatibility claims must remain qualified-only",
+            ));
+        }
         for exclusion in &self.exclusions {
             validate_version(self.scheme, exclusion)?;
-            if !self
-                .segments
-                .iter()
-                .any(|segment| segment_contains(self.scheme, segment, exclusion))
-            {
-                return Err(InvalidInterfaceCompatibilityClaim::new(
-                    "Excluded version must fall inside a compatibility segment",
-                ));
-            }
         }
         Ok(())
     }

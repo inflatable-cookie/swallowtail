@@ -4,7 +4,9 @@ mod tests {
         validate_initialize,
     };
     use serde_json::json;
-    use swallowtail_core::{DriverRole, ExecutionLayer, HostServiceKind, OperationShape};
+    use swallowtail_core::{
+        DriverRole, ExecutionLayer, HostServiceKind, InterfaceVersion, OperationShape,
+    };
     use swallowtail_runtime::{EnvironmentRef, ExecutableRef, WorkingResourceRef};
 
     #[test]
@@ -49,12 +51,13 @@ mod tests {
             "agentInfo": {"name": "gemini-cli", "version": "0.51.0"},
             "authMethods": [{"id": "gemini-api-key", "name": "Gemini API key"}]
         });
-        validate_initialize(&initialize).expect("pinned initialization is accepted");
+        let selected = InterfaceVersion::new("0.51.0").expect("valid fixture version");
+        validate_initialize(&initialize, &selected).expect("selected initialization is accepted");
         assert!(
             validate_initialize(&json!({
                 "agentInfo": {"name": "gemini-cli", "version": "0.52.0"},
                 "authMethods": [{"id": "gemini-api-key"}]
-            }))
+            }), &selected)
             .is_err()
         );
         assert_eq!(

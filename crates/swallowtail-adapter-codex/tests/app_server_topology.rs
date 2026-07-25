@@ -3,7 +3,7 @@ mod support;
 use futures_executor::block_on;
 use support::app_server::{AppServerMode, ScriptedAppServer};
 use support::topology::{driver, open_request, plan_for, request_id};
-use support::{host_services_for, session_resume_binding_for};
+use support::{app_server_session_agreement, host_services_for, session_resume_binding_for};
 use swallowtail_runtime::{
     CleanupOutcome, InteractiveSessionDriver, OperationContent, ResumeSessionRequest,
     RuntimeFailure, RuntimeTurnId, SessionAccessPolicy, TerminalStatus, TurnRequest,
@@ -54,19 +54,17 @@ fn local_and_remote_hosts_bind_open_resume_process_and_resource_authority() {
         let plan = plan_for(&topology, []);
         let (process, state) = ScriptedAppServer::new(AppServerMode::CompleteTurn);
         let services = host_services_for(topology.execution_host_id().clone(), process);
-        let mut resumed = block_on(
-            driver().resume_session(
-                plan,
-                ResumeSessionRequest::new(
-                    request_id("resume", &topology),
-                    binding.clone(),
-                    topology.working_resource().clone(),
-                    None,
-                )
-                .with_access_policy(SessionAccessPolicy::read_only()),
-                services.clone(),
+        let mut resumed = block_on(driver().resume_session(
+            plan,
+            ResumeSessionRequest::new(
+                request_id("resume", &topology),
+                binding.clone(),
+                topology.working_resource().clone(),
+                None,
+                app_server_session_agreement(SessionAccessPolicy::read_only()),
             ),
-        )
+            services.clone(),
+        ))
         .expect("session resumes on its bound host");
         assert_eq!(resumed.resume_binding(), Some(&binding));
         let resume = state
@@ -129,19 +127,17 @@ fn host_instance_and_provider_session_substitution_fail_at_the_boundary() {
     let remote_plan = plan_for(&remote, []);
     let (process, state) = ScriptedAppServer::new(AppServerMode::CompleteTurn);
     let failure = expect_failure(
-        block_on(
-            driver().resume_session(
-                remote_plan,
-                ResumeSessionRequest::new(
-                    request_id("wrong-binding", &remote),
-                    local_binding,
-                    remote.working_resource().clone(),
-                    None,
-                )
-                .with_access_policy(SessionAccessPolicy::read_only()),
-                host_services_for(remote.execution_host_id().clone(), process),
+        block_on(driver().resume_session(
+            remote_plan,
+            ResumeSessionRequest::new(
+                request_id("wrong-binding", &remote),
+                local_binding,
+                remote.working_resource().clone(),
+                None,
+                app_server_session_agreement(SessionAccessPolicy::read_only()),
             ),
-        ),
+            host_services_for(remote.execution_host_id().clone(), process),
+        )),
         "a session cannot move to another configured instance",
     );
     assert_eq!(
@@ -158,19 +154,17 @@ fn host_instance_and_provider_session_substitution_fail_at_the_boundary() {
     );
     let (process, state) = ScriptedAppServer::new(AppServerMode::SubstituteResume);
     let failure = expect_failure(
-        block_on(
-            driver().resume_session(
-                plan,
-                ResumeSessionRequest::new(
-                    request_id("provider-substitution", &local),
-                    binding,
-                    local.working_resource().clone(),
-                    None,
-                )
-                .with_access_policy(SessionAccessPolicy::read_only()),
-                host_services_for(local.execution_host_id().clone(), process),
+        block_on(driver().resume_session(
+            plan,
+            ResumeSessionRequest::new(
+                request_id("provider-substitution", &local),
+                binding,
+                local.working_resource().clone(),
+                None,
+                app_server_session_agreement(SessionAccessPolicy::read_only()),
             ),
-        ),
+            host_services_for(local.execution_host_id().clone(), process),
+        )),
         "provider session substitution must fail",
     );
     assert_eq!(

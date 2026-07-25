@@ -6,6 +6,33 @@ The project has not published a release.
 
 ## Unreleased
 
+### Release Candidate
+
+- prepared one non-published 23-package candidate at coordinated version
+  `0.1.0`, replacing the superseded compile-only candidate
+- declared Rust `1.93` for 22 packages and Rust `1.94.1` for the Bedrock
+  adapter; current-stable validation uses Rust `1.97.1`
+- added compatible `0.1.0` registry requirements to every internal normal
+  dependency while retaining workspace paths
+- added deterministic package metadata, public-declaration, documentation,
+  MSRV, content, checksum, source-bundle, reproducibility, all-route prepared-
+  facade, and isolated consumer runtime gates
+- classified `0.1.0` as the initial pre-1.0 public API and guaranteed-behavior
+  baseline; there is no prior published Swallowtail release
+- kept provider and harness version guarantees separate from the crate version
+
+### Changed
+
+- interactive session requests now require one explicit or plan-derived
+  agreement for access, provider state, and harness configuration; implicit
+  policy defaults and post-construction setters are removed before first
+  publication
+- replaced the superseded unreleased `0.1.0` declaration baseline across core,
+  runtime, local host, testkit, and all 16 adapters; the two protocol crates
+  and remote ACP transport retain their prior declaration hashes
+- made adapter-local preparation and typed bound operations the normal public
+  path for all 22 production routes while retaining low-level public roles
+
 ### Added
 
 - standalone strict-Northstar repository authority
@@ -27,12 +54,25 @@ The project has not published a release.
   idempotent cancellation
 - capability-scoped host-service ports, opaque portable inputs, redacted secret
   leases, and recording test fixtures
+- typed preparation stages and safe causal failures plus observed or
+  caller-asserted access provenance
 - composable conformance runners for one-shot CLI, long-lived RPC, hosted API,
   attached self-hosted, and owned self-hosted integration shapes
 - inspectable reports covering all 14 common Contract 011 assertions plus
   shape-specific process, session, and serving-lifecycle boundaries
 - `swallowtail-host-local` with host-approved executable, environment, and
   working-resource resolution
+- per-host joined scoped tasks, inspectable exact local service composition,
+  and explicit executable approval returning one opaque discovery target
+- Codex prepared discovery that binds one driver, host, opaque executable,
+  exact version assessment, access provenance, and configured-instance base
+  without selecting model or operation authority
+- separate Codex prepared catalogue, read-only session, bounded-workspace
+  session, and structured-exec values retaining exact evidence, inspectable
+  immutable plans, and matching runtime requests
+- deterministic local and remote-authoritative Codex prepared-facade
+  conformance plus public getting-started, explicit-limit, diagnostic, and
+  low-level escape-hatch guidance
 - bounded redacted process I/O, graceful EOF stop, explicit force-stop, exit
   records, and joined child/output cleanup
 - opaque default-redacted operation content and exact target/model preflight

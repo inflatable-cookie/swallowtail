@@ -4,15 +4,16 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
+readme.workspace = true
+publish.workspace = true
+rust-version.workspace = true
 description = "Host-approved local execution services for Swallowtail"
 
 [dependencies]
-sha2 = "0.10"
-swallowtail-core = { path = "../swallowtail-core" }
-swallowtail-runtime = { path = "../swallowtail-runtime" }
-
-[dev-dependencies]
 futures-executor = "0.3"
+sha2 = "0.10"
+swallowtail-core.workspace = true
+swallowtail-runtime.workspace = true
 
 [lints]
 workspace = true

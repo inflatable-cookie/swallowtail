@@ -53,8 +53,8 @@ fn validate_request(
     if deadline.is_some() {
         return Err(unsupported("session deadline"));
     }
-    if !options.is_empty() {
-        return Err(unsupported("session options"));
+    if options.developer_instructions().is_some() || options.tools().len() != 0 {
+        return Err(unsupported("non-reasoning session options"));
     }
     Ok(())
 }
@@ -108,10 +108,13 @@ fn require_capability(plan: &PreflightPlan, capability: Capability) -> Result<()
     }
 }
 
-fn validate_initialize(response: &Value) -> Result<(), RuntimeFailure> {
+fn validate_initialize(
+    response: &Value,
+    expected_version: &str,
+) -> Result<(), RuntimeFailure> {
     let info = response.get("agentInfo").ok_or_else(malformed)?;
     if info.get("name").and_then(Value::as_str) != Some("Kimi Code CLI")
-        || info.get("version").and_then(Value::as_str) != Some(KIMI_VERSION)
+        || info.get("version").and_then(Value::as_str) != Some(expected_version)
     {
         return Err(failure(
             "swallowtail.kimi.acp.agent_version_rejected",

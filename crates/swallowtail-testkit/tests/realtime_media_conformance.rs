@@ -8,6 +8,7 @@ fn realtime_media_profile_adds_contract_026_without_replacing_existing_profiles(
         SyntheticProfile::LongLivedRpcHarness,
         SyntheticProfile::LongLivedAcpHarness,
         SyntheticProfile::PersistentAcpHarness,
+        SyntheticProfile::RemoteAcpHarness,
         SyntheticProfile::AttachedNetworkHarness,
         SyntheticProfile::HostedDirectApi,
         SyntheticProfile::ProviderManagedRemoteHarness,

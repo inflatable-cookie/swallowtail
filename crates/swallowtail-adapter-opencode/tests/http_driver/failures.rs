@@ -17,11 +17,7 @@ fn provider_disconnect_and_unknown_event_remain_distinct_and_redacted() {
         let driver = OpenCodeHttpDriver::new();
         let mut session = block_on(driver.open_session(
             fixture.plan(DriverRole::InteractiveSession),
-            OpenSessionRequest::new(
-                RequestId::new("failure-session").expect("request id is valid"),
-                fixture.resource.clone(),
-                None,
-            ),
+            open_session_request("failure-session", fixture.resource.clone()),
             fixture.services(),
         ))
         .expect("session opens");
@@ -60,11 +56,7 @@ fn unsupported_session_options_fail_before_network_work() {
     let error = block_on(
         driver.open_session(
             fixture.plan(DriverRole::InteractiveSession),
-            OpenSessionRequest::new(
-                RequestId::new("unsupported-session").expect("request id is valid"),
-                fixture.resource.clone(),
-                None,
-            )
+            open_session_request("unsupported-session", fixture.resource.clone())
             .with_options(options),
             fixture.services(),
         ),
@@ -77,5 +69,4 @@ fn unsupported_session_options_fail_before_network_work() {
     );
     assert!(server.requests().is_empty());
 }
-
 

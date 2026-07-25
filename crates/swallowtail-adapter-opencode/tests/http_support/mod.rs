@@ -36,6 +36,10 @@ pub struct FixtureServer {
 
 impl FixtureServer {
     pub fn start(fixture: StreamFixture) -> Self {
+        Self::start_with_version(fixture, "1.14.48")
+    }
+
+    pub fn start_with_version(fixture: StreamFixture, server_version: &str) -> Self {
         let listener = TcpListener::bind("127.0.0.1:0").expect("fixture listener binds");
         listener
             .set_nonblocking(true)
@@ -46,6 +50,7 @@ impl FixtureServer {
         let stop = Arc::new(AtomicBool::new(false));
         let server_requests = Arc::clone(&requests);
         let server_stop = Arc::clone(&stop);
+        let server_version = Arc::new(server_version.to_owned());
         let thread = thread::spawn(move || {
             let aborted = Arc::new(AtomicBool::new(false));
             let mut handlers = Vec::new();
@@ -55,8 +60,9 @@ impl FixtureServer {
                         let requests = Arc::clone(&server_requests);
                         let stop = Arc::clone(&server_stop);
                         let aborted = Arc::clone(&aborted);
+                        let server_version = Arc::clone(&server_version);
                         handlers.push(thread::spawn(move || {
-                            handle(stream, fixture, requests, aborted, stop);
+                            handle(stream, fixture, requests, aborted, stop, &server_version);
                         }));
                     }
                     Err(error) if error.kind() == std::io::ErrorKind::WouldBlock => {
@@ -105,6 +111,7 @@ fn handle(
     requests: Arc<Mutex<Vec<String>>>,
     aborted: Arc<AtomicBool>,
     stop: Arc<AtomicBool>,
+    server_version: &str,
 ) {
     stream
         .set_read_timeout(Some(Duration::from_secs(2)))
@@ -120,7 +127,11 @@ fn handle(
         .split_once(' ')
         .map_or(target.as_str(), |(_, target)| target);
     if path.starts_with("/global/health") {
-        respond_json(&mut stream, 200, r#"{"healthy":true,"version":"1.14.48"}"#);
+        respond_json(
+            &mut stream,
+            200,
+            &serde_json::json!({"healthy": true, "version": server_version}).to_string(),
+        );
     } else if path.starts_with("/provider") {
         let fixture: serde_json::Value =
             serde_json::from_str(HTTP_SUCCESS).expect("fixture parses");
@@ -132,11 +143,9 @@ fn handle(
     } else if path.starts_with("/session?") {
         let fixture: serde_json::Value =
             serde_json::from_str(HTTP_SUCCESS).expect("fixture parses");
-        respond_json(
-            &mut stream,
-            200,
-            &fixture[2]["response"]["body"].to_string(),
-        );
+        let mut body = fixture[2]["response"]["body"].clone();
+        body["version"] = serde_json::Value::String(server_version.to_owned());
+        respond_json(&mut stream, 200, &body.to_string());
     } else if path.contains("/prompt_async?") {
         respond_empty(&mut stream, 204);
     } else if path.contains("/abort?") {

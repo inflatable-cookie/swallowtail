@@ -1,0 +1,6 @@
+{"direction":"client_to_agent","message":{"jsonrpc":"2.0","id":3,"method":"session/prompt","params":{"sessionId":"claude-agent-session-fixture","prompt":[{"type":"text","text":"Remain inside the selected read-tool policy."}]}}}
+{"direction":"agent_to_client","message":{"jsonrpc":"2.0","method":"session/update","params":{"sessionId":"claude-agent-session-fixture","update":{"sessionUpdate":"tool_call","toolCallId":"unexpected-tool-1","title":"Unexpected shell request","kind":"execute","status":"pending"}}}}
+{"direction":"agent_to_client","message":{"jsonrpc":"2.0","id":900,"method":"session/request_permission","params":{"sessionId":"claude-agent-session-fixture","toolCall":{"toolCallId":"unexpected-tool-1"},"options":[{"optionId":"allow-once","name":"Allow once","kind":"allow_once"},{"optionId":"reject-once","name":"Reject","kind":"reject_once"}]}}}
+{"direction":"client_to_agent","message":{"jsonrpc":"2.0","id":900,"result":{"outcome":{"outcome":"selected","optionId":"reject-once"}}}}
+{"direction":"client_to_agent","message":{"jsonrpc":"2.0","method":"session/cancel","params":{"sessionId":"claude-agent-session-fixture"}}}
+{"direction":"agent_to_client","message":{"jsonrpc":"2.0","id":3,"result":{"stopReason":"cancelled"}}}

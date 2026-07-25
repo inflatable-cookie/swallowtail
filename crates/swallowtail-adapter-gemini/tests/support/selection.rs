@@ -26,6 +26,8 @@ pub fn selection(host: ExecutionHostId) -> FixtureSelection {
             ],
         ),
     ]);
+    let version_binding = swallowtail_adapter_gemini::gemini_cli_acp_binding("0.51.0")
+        .expect("fixture version is valid");
     let instance = ConfiguredInstance::new(
         instance_id.clone(),
         InstanceRevision::new("fixture-revision").expect("valid revision"),
@@ -38,14 +40,9 @@ pub fn selection(host: ExecutionHostId) -> FixtureSelection {
         ProtocolFacadeId::new("acp-v1").expect("valid facade"),
         InstancePolicyId::new("gemini.fixture.isolated-plan").expect("valid policy"),
         capabilities.clone(),
-    );
-    let route = ModelRoute::new(
-        ModelRouteId::new("gemini.fixture.route").expect("valid route"),
-        ModelRouteRevision::new("fixture-route-revision").expect("valid route revision"),
-        instance_id,
-        ModelId::new("fixture-observed-model").expect("valid model"),
-        capabilities.clone(),
-    );
+    )
+    .with_interface_versions([version_binding.clone()])
+    .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient);
     let access = AccessProfile::new(
         access_id.clone(),
         CredentialMechanism::ApiKey,
@@ -84,8 +81,11 @@ pub fn selection(host: ExecutionHostId) -> FixtureSelection {
     .with_capabilities(capabilities.iter().map(|(capability, constraints)| {
         CapabilityRequirement::new(capability, constraints.iter().cloned())
     }))
+    .with_interface_versions([version_binding])
+    .with_harness_isolation(HarnessIsolation::AmbientHost)
+    .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient)
     .with_session_access_policy(SessionAccessPolicy::ambient_harness(ResourceAccess::Read))
-    .require_model_route();
+    .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited);
     let context = PreflightContext::new(
         &descriptor,
         &instance,
@@ -97,8 +97,7 @@ pub fn selection(host: ExecutionHostId) -> FixtureSelection {
             swallowtail_core::HostServiceKind::WorkingResource,
             swallowtail_core::HostServiceKind::WorkingResourceIo,
         ],
-    )
-    .with_model_route(&route);
+    );
     let plan = preflight(&context, &requirements).expect("Gemini fixture preflight succeeds");
     FixtureSelection {
         plan,

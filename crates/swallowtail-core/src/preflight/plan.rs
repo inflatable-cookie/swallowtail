@@ -5,9 +5,9 @@ use crate::{
     AccessProfileId, AdapterIdentity, AttachedModelObservation, ConfiguredInstanceId,
     CredentialMechanism, CredentialRef, EndpointAudience, ExecutionHostId,
     HarnessConfigurationPosture, HarnessRpcPolicy, InstanceOwnership, InstancePolicyId,
-    InstanceRevision, InstanceTargetRef, InterfaceCompatibilityMatch, InterfaceVersionBinding,
-    ModelId, ModelRoute, ModelRouteId, OperationRequirements, ProtocolFacadeId,
-    ProviderAgentBinding, ProviderId,
+    InstanceRevision, InstanceTargetRef, InterfaceCompatibilityAssessment,
+    InterfaceCompatibilityMatch, InterfaceVersionBinding, ModelId, ModelRoute, ModelRouteId,
+    OperationRequirements, ProtocolFacadeId, ProviderAgentBinding, ProviderId,
 };
 
 impl PreflightPlan {
@@ -82,6 +82,14 @@ impl PreflightPlan {
     }
 
     #[must_use]
+    pub fn assess_interface_version(
+        &self,
+        binding: &InterfaceVersionBinding,
+    ) -> InterfaceCompatibilityAssessment {
+        self.binding.driver.assess_interface_version(binding)
+    }
+
+    #[must_use]
     pub const fn harness_rpc_policy(&self) -> Option<&HarnessRpcPolicy> {
         self.binding.instance.harness_rpc_policy()
     }
@@ -94,6 +102,11 @@ impl PreflightPlan {
     #[must_use]
     pub const fn access_profile_id(&self) -> &AccessProfileId {
         self.binding.access_profile.id()
+    }
+
+    #[must_use]
+    pub const fn access_status(&self) -> &crate::AccessStatus {
+        &self.binding.access_status
     }
 
     #[must_use]

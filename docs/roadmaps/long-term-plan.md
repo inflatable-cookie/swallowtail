@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-23
+Updated: 2026-07-24
 
 ## Sequence
 
@@ -160,3 +160,21 @@ published.
 These stages normally become numbered roadmaps inside the active generation.
 They do not each create a generation. A generation rolls over near the 30-50
 roadmap range or through explicit operator-authorized restructuring.
+
+## g01 Disposition
+
+g01 reaches its intended boundary at 49 roadmaps. It has realized the
+foundation, two consumer adoptions, shared runtime and host boundaries,
+materially different harness and direct routes, SDK and ACP transports,
+self-hosted runtime shapes, compatibility ranges, and visible
+unverified-newer execution.
+
+The remaining Grok Build lane is deferred for unavailable delegated-
+authentication evidence. It did not justify roadmap 050 and now lives in the
+shared roadmap backlog.
+
+The operator closed g01 and selected API stabilization, release discipline,
+packaging, and consumer upgrade support as the primary g02 programme.
+Evidence-led provider breadth remains secondary. g02 begins by defining the
+public package, version, compatibility, MSRV, and release-authority boundary;
+no registry publication or API 1.0 promise is implied.

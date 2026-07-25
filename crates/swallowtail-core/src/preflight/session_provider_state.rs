@@ -1,6 +1,6 @@
 use super::{PreflightDimension, PreflightFailure};
 use crate::{
-    Capability, CapabilityConstraint, OperationRequirements, OperationShape,
+    Capability, CapabilityConstraint, DriverRole, OperationRequirements, OperationShape,
     OwnedRemoteResourceKind, SessionProviderStatePolicy,
 };
 
@@ -12,9 +12,14 @@ pub(super) fn validate_session_provider_state(
         requirements.session_provider_state_policy(),
     ) {
         (OperationShape::InteractiveSession, Some(policy)) => validate_policy(requirements, policy),
-        (OperationShape::InteractiveSession, None) => Err(failure(
-            "Interactive session provider-state policy is missing",
-        )),
+        (OperationShape::InteractiveSession, None)
+            if requirements.driver_role() != DriverRole::ModelCatalog =>
+        {
+            Err(failure(
+                "Interactive session provider-state policy is missing",
+            ))
+        }
+        (OperationShape::InteractiveSession, None) => Ok(()),
         (_, Some(_)) => Err(failure(
             "Session provider-state policy is bound to a non-interactive operation",
         )),

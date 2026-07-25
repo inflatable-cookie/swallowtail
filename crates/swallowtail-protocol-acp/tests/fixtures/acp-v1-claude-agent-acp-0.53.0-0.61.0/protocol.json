@@ -1,0 +1,105 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-07-24",
+  "identity": {
+    "integration_family": "claude-agent",
+    "driver": "claude-agent-acp-stdio",
+    "artifact": "@agentclientprotocol/claude-agent-acp",
+    "interface_axis": "claude-agent.acp-adapter",
+    "execution_layer": "harness_interaction",
+    "operation_shape": "interactive_session",
+    "transport": "acp_v1_stdio_ndjson",
+    "wire_version": 1
+  },
+  "qualification": {
+    "scheme": "semantic",
+    "candidate_baseline": "0.52.0",
+    "baseline": "0.53.0",
+    "latest_qualified": "0.61.0",
+    "exclusions": ["0.52.0", "0.58.0"],
+    "segments": [
+      {
+        "minimum": "0.53.0",
+        "maximum": "0.53.0",
+        "behavior_revision": "claude-agent.acp.baseline-v1"
+      },
+      {
+        "minimum": "0.54.0",
+        "maximum": "0.59.0",
+        "behavior_revision": "claude-agent.acp.session-config-v2"
+      },
+      {
+        "minimum": "0.60.0",
+        "maximum": "0.60.0",
+        "behavior_revision": "claude-agent.acp.provider-capability-v3"
+      },
+      {
+        "minimum": "0.61.0",
+        "maximum": "0.61.0",
+        "behavior_revision": "claude-agent.acp.steering-metadata-v4"
+      }
+    ],
+    "newer_version_posture": "allow_unverified",
+    "unverified_newer_behavior_revision": "claude-agent.acp.steering-metadata-v4"
+  },
+  "observation": {
+    "wrapper_argv": ["--version"],
+    "nested_binary_argv": ["--cli", "--version"],
+    "maximum_stdout_lines": 1,
+    "authenticating": false,
+    "provider_request": false,
+    "state_mutation": false,
+    "candidate_rejection": {
+      "version": "0.52.0",
+      "wrapper_probe_safe": true,
+      "nested_probe_safe": false,
+      "reason": "--cli --version is intercepted by the wrapper version handler"
+    }
+  },
+  "access": {
+    "mechanism": "api_key",
+    "endpoint_audience": "anthropic_public_api",
+    "metering": "provider_api_usage",
+    "support_authority": {
+      "adapter": "integration_maintainer",
+      "agent_sdk": "provider",
+      "api": "provider"
+    },
+    "account_required_at_use": true,
+    "account_required_for_default_tests": false,
+    "terminal_auth_advertised": false,
+    "authenticate_called": false,
+    "claude_subscription_supported": false,
+    "login_or_logout_supported": false,
+    "implicit_fallback": false
+  },
+  "configuration": {
+    "posture": "ambient",
+    "process_isolation": "ambient_host",
+    "host_environment_is_explicit": true,
+    "provider_settings_sources": ["user", "project", "local"],
+    "provider_native_tools": ["Read", "Glob", "Grep"],
+    "tool_policy_is_containment": false,
+    "sandbox_required": false
+  },
+  "session_subset": {
+    "initialize": true,
+    "new": true,
+    "prompt_text": true,
+    "exact_model_confirmation": true,
+    "reasoning_updates": true,
+    "read_tool_updates": true,
+    "usage_updates": true,
+    "permission_rejection": true,
+    "cancel": true,
+    "load_resume_list_fork_delete": false,
+    "writes_shell_web_subagents_terminals": false,
+    "client_mcp_elicitation_steering": false
+  },
+  "cleanup": {
+    "turn_cancel": "session/cancel",
+    "session_close": "close_stdin_then_join_owned_process",
+    "credential_release": "awaited",
+    "detached_tasks_allowed": false
+  }
+}

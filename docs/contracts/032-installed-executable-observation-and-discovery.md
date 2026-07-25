@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-23
+Updated: 2026-07-24
 
 ## Purpose
 
@@ -26,6 +26,11 @@ install locations, inspect unrelated package managers, install, update,
 downgrade, or substitute another executable. A renderer or remote client
 cannot create authority by supplying a path-like value.
 
+A host may resolve and approve the target through an explicit selection policy
+before this request is constructed. That prior host action is not discovery.
+It must yield exactly one opaque reference; discovery still performs no
+candidate search or substitution.
+
 The selected driver owns one fixed, bounded, non-authenticating version
 command and its parser. Provider-specific output syntax stays inside that
 adapter. The probe uses no credential, sign-in flow, model request, provider
@@ -38,8 +43,9 @@ A successful parse produces one safe installed-executable observation:
 - authoritative execution-host id
 - exact interface-version binding
 - exact compatibility-claim id used for classification
-- either the matching behavior revision and maintained or deprecated support
-  status, or an explicit incompatible classification
+- either the qualified behavior revision and maintained or deprecated support
+  status, an explicit unverified-newer forward-attempt classification, or an
+  explicit incompatible classification
 
 The observation carries no executable reference, path, argument, environment,
 stdout, stderr, token, manifest, credential, or provider payload. Exact
@@ -56,7 +62,8 @@ an explicit consumer or host configuration action outside discovery.
 Installed-executable discovery keeps these terminal states distinct:
 
 - absent: the approved candidate is unavailable
-- discovered: an exact compatible version was observed
+- discovered: an exact qualified or permitted unverified-newer version was
+  observed
 - incompatible: an exact version was observed but the selected claim rejects
   it
 - malformed: bounded output did not contain one valid exact version
@@ -66,8 +73,9 @@ Installed-executable discovery keeps these terminal states distinct:
 - cleanup failed: stop or process join did not complete cleanly
 
 Only discovered and incompatible outcomes carry an exact observation.
-Diagnostics are normalized and redacted. Raw process output never becomes a
-stable diagnostic.
+Discovery never relabels an unverified-newer point as qualified. Diagnostics
+are normalized and redacted. Raw process output never becomes a stable
+diagnostic.
 
 ## Lifecycle
 
@@ -110,7 +118,8 @@ Deterministic default QA proves:
 
 - only the exact opaque candidate reaches the process service
 - request, scope, axis, deadline, cancellation, and host identity are retained
-- exact compatible and incompatible versions remain separate from the claim
+- exact qualified, unverified-newer, and incompatible versions remain separate
+  from the claim
 - absent, malformed, timeout, cancellation, failure, and cleanup failure stay
   machine-distinct
 - process completion and host task cleanup are joined on every path

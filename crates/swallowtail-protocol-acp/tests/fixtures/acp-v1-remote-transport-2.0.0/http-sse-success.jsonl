@@ -1,0 +1,20 @@
+{"kind":"client_request","http_version":"2","method":"POST","path":"/acp","headers":{"content-type":"application/json"},"body":{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":1}}}
+{"kind":"server_response","status":200,"headers":{"content-type":"application/json","acp-connection-id":"connection-private","set-cookie":"affinity=opaque-cookie; Secure; HttpOnly"},"body":{"jsonrpc":"2.0","id":1,"result":{"protocolVersion":1,"connectionId":"connection-private","agentCapabilities":{"loadSession":false}}}}
+{"kind":"client_request","http_version":"2","method":"GET","path":"/acp","headers":{"accept":"text/event-stream","acp-connection-id":"connection-private","cookie":"affinity=opaque-cookie"}}
+{"kind":"server_stream_open","status":200,"scope":"connection","headers":{"content-type":"text/event-stream"}}
+{"kind":"client_request","http_version":"2","method":"POST","path":"/acp","headers":{"content-type":"application/json","acp-connection-id":"connection-private","cookie":"affinity=opaque-cookie"},"body":{"jsonrpc":"2.0","id":2,"method":"session/new","params":{"cwd":"/fixture/workspace","mcpServers":[]}}}
+{"kind":"server_response","status":202}
+{"kind":"sse_event","scope":"connection","body":{"jsonrpc":"2.0","id":2,"result":{"sessionId":"session-private"}}}
+{"kind":"client_request","http_version":"2","method":"GET","path":"/acp","headers":{"accept":"text/event-stream","acp-connection-id":"connection-private","acp-session-id":"session-private","cookie":"affinity=opaque-cookie"}}
+{"kind":"server_stream_open","status":200,"scope":"session","headers":{"content-type":"text/event-stream"}}
+{"kind":"client_request","http_version":"2","method":"POST","path":"/acp","headers":{"content-type":"application/json","acp-connection-id":"connection-private","acp-session-id":"session-private","cookie":"affinity=opaque-cookie"},"body":{"jsonrpc":"2.0","id":3,"method":"session/prompt","params":{"sessionId":"session-private","prompt":[{"type":"text","text":"fixture prompt"}]}}}
+{"kind":"server_response","status":202}
+{"kind":"sse_event","scope":"session","body":{"jsonrpc":"2.0","method":"session/update","params":{"sessionId":"session-private","update":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"fixture response"}}}}}
+{"kind":"sse_event","scope":"session","body":{"jsonrpc":"2.0","id":99,"method":"session/request_permission","params":{"sessionId":"session-private","toolCall":{"toolCallId":"tool-private","title":"fixture"}}}}
+{"kind":"client_request","http_version":"2","method":"POST","path":"/acp","headers":{"content-type":"application/json","acp-connection-id":"connection-private","acp-session-id":"session-private","cookie":"affinity=opaque-cookie"},"body":{"jsonrpc":"2.0","id":99,"result":{"outcome":{"outcome":"cancelled"}}}}
+{"kind":"server_response","status":202}
+{"kind":"sse_event","scope":"session","body":{"jsonrpc":"2.0","id":3,"result":{"stopReason":"end_turn"}}}
+{"kind":"client_request","http_version":"2","method":"POST","path":"/acp","headers":{"content-type":"application/json","acp-connection-id":"connection-private","acp-session-id":"session-private","cookie":"affinity=opaque-cookie"},"body":{"jsonrpc":"2.0","method":"session/cancel","params":{"sessionId":"session-private"}}}
+{"kind":"server_response","status":202}
+{"kind":"client_request","http_version":"2","method":"DELETE","path":"/acp","headers":{"acp-connection-id":"connection-private","cookie":"affinity=opaque-cookie"}}
+{"kind":"server_response","status":202,"connection_closed":true,"streams_closed":true}

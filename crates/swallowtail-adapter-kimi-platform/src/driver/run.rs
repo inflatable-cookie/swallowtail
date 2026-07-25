@@ -1,4 +1,7 @@
-use crate::protocol::{Event, MODEL_ID, MAXIMUM_OUTPUT_TOKENS, PROVIDER_ID, parse_events, provider_failure};
+use crate::protocol::{Event, parse_events, provider_failure};
+use crate::selection::{
+    KIMI_PLATFORM_MAXIMUM_OUTPUT_TOKENS, KIMI_PLATFORM_MODEL_ID, KIMI_PLATFORM_PROVIDER_ID,
+};
 use crate::transport::{StreamItem, Subscription};
 use std::sync::Mutex;
 use swallowtail_core::{
@@ -26,7 +29,12 @@ impl StructuredRunDriver for KimiPlatformDirectDriver {
             validate_run(&plan, &request, &services)?;
             let reasoning = request.policy().reasoning_mode().expect("validated reasoning");
             let maximum = request.maximum_output_tokens().expect("validated maximum").get();
-            let chat = Request::chat(MODEL_ID, request.content(), reasoning, maximum)?;
+            let chat = Request::chat(
+                KIMI_PLATFORM_MODEL_ID,
+                request.content(),
+                reasoning,
+                maximum,
+            )?;
             let scope = operation_scope("run", request.request_id().as_str())?;
             let mut access = AccessLeases::acquire(&plan, scope.clone(), &services).await?;
             let cancelled = Arc::new(AtomicBool::new(false));
@@ -121,8 +129,8 @@ fn validate_run(
 ) -> Result<(), RuntimeFailure> {
     if plan.requirements().driver_role() != DriverRole::StructuredRun
         || plan.requirements().operation_shape() != OperationShape::StructuredRun
-        || plan.model_id().map(|id| id.as_str()) != Some(MODEL_ID)
-        || plan.provider_id().map(|id| id.as_str()) != Some(PROVIDER_ID)
+        || plan.model_id().map(|id| id.as_str()) != Some(KIMI_PLATFORM_MODEL_ID)
+        || plan.provider_id().map(|id| id.as_str()) != Some(KIMI_PLATFORM_PROVIDER_ID)
     {
         return Err(failure(
             "swallowtail.kimi_platform.model_binding_rejected",
@@ -130,7 +138,7 @@ fn validate_run(
         ));
     }
     let maximum = request.maximum_output_tokens().map(std::num::NonZeroU64::get);
-    if maximum.is_none_or(|maximum| maximum > MAXIMUM_OUTPUT_TOKENS)
+    if maximum.is_none_or(|maximum| maximum > KIMI_PLATFORM_MAXIMUM_OUTPUT_TOKENS)
         || !has_capability(plan, Capability::OutputTokenLimit)
     {
         return Err(failure(

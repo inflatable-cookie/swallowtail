@@ -71,6 +71,18 @@ impl Fixture {
         self.services_with_time(self.thread.clone())
     }
 
+    pub fn host_id(&self) -> &ExecutionHostId {
+        &self.host_id
+    }
+
+    pub fn target(&self) -> &InstanceTargetRef {
+        &self.target
+    }
+
+    pub fn audience(&self) -> &EndpointAudience {
+        &self.audience
+    }
+
     pub fn services_with_join_failure(&self) -> HostServices {
         self.services_with_time(self.thread.clone().with_join_failure())
     }

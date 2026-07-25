@@ -2,7 +2,7 @@
 
 Status: promoted
 Owner: Tom
-Updated: 2026-07-21
+Updated: 2026-07-25
 
 ## Question
 
@@ -16,6 +16,14 @@ Official provider documentation, maintained-project documentation, current
 RFD status, and realized Swallowtail contracts were checked on 2026-07-21. No
 credential source, provider account, repository integration, local model, or
 live endpoint was used.
+
+The Managed Agents environment, session, event, tool, and reference pages were
+rechecked on 2026-07-25. The `managed-agents-2026-04-01` beta authority,
+separate agent/environment/session resources, `rescheduling` state,
+`user.interrupt`, persisted event flow, custom-tool result exchange, and
+session deletion rules remain current. New memory-store authority uses a
+different beta header and remains outside this proof. No contract or fixture
+delta was required.
 
 Candidates were compared on harness ownership, resource identity, retention,
 retry, event authority, callback behavior, cleanup, topology, access,

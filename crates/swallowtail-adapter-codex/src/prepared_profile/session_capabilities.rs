@@ -9,8 +9,6 @@ use swallowtail_core::{
 use swallowtail_runtime::{PreparationFailure, SchemaDocument, SessionOptions};
 
 const JSON_SCHEMA_MEDIA_TYPE: &str = "application/schema+json";
-const MAXIMUM_DYNAMIC_TOOLS: u32 = 4;
-const MAXIMUM_TOOL_SCHEMA_BYTES: u64 = 4096;
 
 pub(super) fn session_capabilities(
     kind: CodexPreparedSessionKind,
@@ -47,17 +45,15 @@ pub(super) fn session_capabilities(
 fn tool_capability(
     tools: Vec<&swallowtail_runtime::ToolDeclaration>,
 ) -> Result<CapabilityRequirement, PreparationFailure> {
-    if tools.len() > usize::try_from(MAXIMUM_DYNAMIC_TOOLS).unwrap_or(usize::MAX) {
-        return Err(failure(
+    let tool_count = u32::try_from(tools.len()).map_err(|_| {
+        failure(
             "swallowtail.codex.preparation.tool_limit",
-            "Codex prepared session declares too many dynamic tools",
-        ));
-    }
+            "Codex prepared session tool count cannot be represented",
+        )
+    })?;
     let mut names = BTreeSet::new();
-    let mut constraints = BTreeSet::from([
-        CapabilityConstraint::ToolMaximumCount(MAXIMUM_DYNAMIC_TOOLS),
-        CapabilityConstraint::ToolMaximumSchemaBytes(MAXIMUM_TOOL_SCHEMA_BYTES),
-    ]);
+    let mut maximum_schema_bytes = 0;
+    let mut constraints = BTreeSet::new();
     for tool in tools {
         if !names.insert(tool.name()) || tool.schema_media_type() != JSON_SCHEMA_MEDIA_TYPE {
             return Err(failure(
@@ -77,17 +73,22 @@ fn tool_capability(
                 "Codex prepared session tool schema is invalid",
             ));
         }
-        if u64::try_from(bytes.len()).unwrap_or(u64::MAX) > MAXIMUM_TOOL_SCHEMA_BYTES {
-            return Err(failure(
-                "swallowtail.codex.preparation.tool_schema_limit",
-                "Codex prepared session tool schema exceeds its supported bound",
-            ));
-        }
+        maximum_schema_bytes =
+            maximum_schema_bytes.max(u64::try_from(bytes.len()).map_err(|_| {
+                failure(
+                    "swallowtail.codex.preparation.tool_schema_limit",
+                    "Codex prepared session tool schema size cannot be represented",
+                )
+            })?);
         constraints.insert(
             CapabilityConstraint::tool_schema_dialect(tool.schema_dialect())
                 .expect("tool dialect is non-empty"),
         );
     }
+    constraints.insert(CapabilityConstraint::ToolMaximumCount(tool_count));
+    constraints.insert(CapabilityConstraint::ToolMaximumSchemaBytes(
+        maximum_schema_bytes,
+    ));
     Ok(CapabilityRequirement::new(
         Capability::ToolCalls,
         constraints,

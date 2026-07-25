@@ -13,11 +13,12 @@ use swallowtail_adapter_codex::{
     prepare_codex,
 };
 use swallowtail_core::{
-    AccessProfile, AccessProfileId, AccessStatus, Capability, ConfiguredInstanceId,
-    CredentialMechanism, CredentialState, DriverRole, EndpointAudience, EndpointAuthorization,
-    EntitlementMetering, EntitlementState, ExecutionHostId, ExternalNetworkPolicy,
-    ExternalSearchPolicy, HostServiceKind, InstanceRevision, InterfaceVersionAxis, ModelId,
-    ModelRouteId, ModelRouteRevision, ReasoningMode, RuntimeReadiness, SupportAuthority,
+    AccessProfile, AccessProfileId, AccessStatus, Capability, CapabilityConstraint,
+    ConfiguredInstanceId, CredentialMechanism, CredentialState, DriverRole, EndpointAudience,
+    EndpointAuthorization, EntitlementMetering, EntitlementState, ExecutionHostId,
+    ExternalNetworkPolicy, ExternalSearchPolicy, HostServiceKind, InstanceRevision,
+    InterfaceVersionAxis, ModelId, ModelRouteId, ModelRouteRevision, ReasoningMode,
+    RuntimeReadiness, SupportAuthority,
 };
 use swallowtail_runtime::{
     AttachmentDescriptor, AttachmentRef, AttachmentRole, BoxFuture, CleanupOutcome, Deadline,

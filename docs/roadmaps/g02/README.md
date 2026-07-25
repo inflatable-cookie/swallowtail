@@ -220,6 +220,11 @@ evidence-led provider work.
 - card 039 passes 20 packaged suites across all 22 production routes,
   Nucleus, Soundcheck, and the 89-test packaged Codex suite without credentials
   or provider calls
+- the final candidate source is
+  `f142d927767f49fe86f2737d822fecf182f52591`, with exact normal-history parent
+  `e9ead4d35fb7754962053417bf8328e646839b32`
+- the first normal-history rebuild is retained superseded because its packaged
+  README carried stale release-currentness wording
 - local `main` is ahead of origin only; the candidate source is not yet
   reachable from the canonical remote branch and no `v0.1.0` tag exists
 - later publication still requires the exact crates.io owner identity and

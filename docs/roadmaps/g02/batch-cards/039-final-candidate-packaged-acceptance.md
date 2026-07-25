@@ -60,6 +60,10 @@ The retained candidate passes 20 packaged prepared-facade suites across all 22
 production routes. Exact provider evidence is retained under
 `release-candidates/0.1.0/`.
 
+The candidate source is
+`f142d927767f49fe86f2737d822fecf182f52591`. Its package-manifest digest is
+`59f9541cffc97467bb0c7e39e005fcea1cb9c0ace485856f3f9cffd4440da6d4`.
+
 The isolated consumer proof passes Nucleus with 14 tests and two live probes
 ignored, Soundcheck with four tests and one installed probe ignored, and the
 full packaged Codex suite with 89 tests. The retained evidence names the exact
@@ -70,3 +74,6 @@ deadline while two complete package proofs contended for the machine. The
 isolated rerun completed that test in 0.15 seconds. The direct retained-
 candidate run completed it in 0.14 seconds. No provider credentials or calls
 were used.
+
+`effigy qa` passed. `effigy doctor` remains at the known structural-debt
+baseline: 19 findings, comprising 12 warnings and seven errors.

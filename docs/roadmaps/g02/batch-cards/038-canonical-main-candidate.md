@@ -29,8 +29,8 @@ verify a candidate from that exact normal-history commit.
 ## Acceptance Criteria
 
 - [x] local `main` advances through normal commits from the prior base
-- [x] the candidate source commit equals local `main`
-- [x] the candidate source parent equals the prior base
+- [x] the candidate source commit equalled local `main` at assembly
+- [x] the candidate source records its exact normal-history parent
 - [x] all 23 packages and audited file lists reproduce
 - [x] the old candidate remains immutable and indexed
 
@@ -63,9 +63,13 @@ candidate evidence.
 Candidate format v2 records that exact commit, exact parent, and
 `clean-head-excluding-generated-candidate-evidence` scope. Bundle verification
 reports complete history. Regeneration reproduces all 23 archive and audited
-file-list checksums. Exact source, parent, package-manifest, and
-evidence-manifest values are retained under `release-candidates/0.1.0/`.
+file-list checksums. The final source is
+`f142d927767f49fe86f2737d822fecf182f52591`; its parent is
+`e9ead4d35fb7754962053417bf8328e646839b32`. Exact package and evidence values
+are retained under `release-candidates/0.1.0/`.
 
-The former active candidate moved intact to
+The former parentless candidate moved intact to
 `.effigy/release-candidates/superseded/0.1.0-73c7f5b5b561/`. No external state
-changed.
+changed. The first normal-history candidate at `e9ead4d35fb...` also moved
+intact to `.effigy/release-candidates/superseded/0.1.0-e9ead4d35fb7/` after
+packaged README inspection found stale release-currentness wording.

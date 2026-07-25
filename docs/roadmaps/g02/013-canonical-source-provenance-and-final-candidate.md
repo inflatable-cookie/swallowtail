@@ -64,7 +64,11 @@ reproduces all 23 packages and audited file lists. Packaged proof passes 20
 suites across all 22 production routes, Nucleus, Soundcheck, and the full
 packaged Codex suite.
 
-The former parentless candidate is retained at
-`.effigy/release-candidates/superseded/0.1.0-73c7f5b5b561/`. No remote,
+The exact source is
+`f142d927767f49fe86f2737d822fecf182f52591`, with parent
+`e9ead4d35fb7754962053417bf8328e646839b32`. The former parentless candidate is
+retained at `.effigy/release-candidates/superseded/0.1.0-73c7f5b5b561/`; the
+first normal-history candidate is retained at
+`.effigy/release-candidates/superseded/0.1.0-e9ead4d35fb7/`. No remote,
 registry, tag, release, workflow, credential, provider, or consumer mutation
 occurred.

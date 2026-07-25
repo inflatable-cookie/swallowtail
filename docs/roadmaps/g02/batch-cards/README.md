@@ -40,6 +40,7 @@
 - `037-canonical-source-provenance-gate.md`
 - `038-canonical-main-candidate.md`
 - `039-final-candidate-packaged-acceptance.md`
+- `040-consumer-scale-proof-envelope.md`
 
 ## Superseded
 
@@ -52,8 +53,12 @@ None. Cross-generation deferred work lives in `docs/roadmaps/backlog/`.
 
 ## Ready
 
-None. Publication requires a new bounded operator authorization.
+None. The consumer-scale lane is paused at its authority and companion-roadmap
+gate.
 
 ## Planned
 
-None.
+- `041-nucleus-native-application-pilot.md`
+- `042-nucleus-sustained-workload-hardening.md`
+- `043-soundcheck-secondary-application-proof.md`
+- `044-hardened-candidate-refresh-and-release-reassessment.md`

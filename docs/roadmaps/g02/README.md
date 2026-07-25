@@ -29,6 +29,7 @@ evidence-led provider work.
 | Cover every remaining harness, hosted, realtime, SDK, and local-runtime route. | completed | Contracts 014-035, 037 | `g02.009`-`g02.011` |
 | Prove packaged provider-wide integration and replace the held candidate. | completed | Contracts 011, 036-037 | `g02.012` |
 | Replace synthetic candidate provenance with one canonical-history final candidate. | completed | Contract 036, release topology architecture | `g02.013` |
+| Prove the candidate through sustained normal-path consumer workloads and harden defects. | active | Contract 036, consumer runtime evidence | `g02.014` |
 
 ## Current Checkpoint
 
@@ -232,6 +233,16 @@ evidence-led provider work.
   GitHub release
 - roadmap g02.013 and cards 037-039 complete the accepted provenance repair,
   canonical local commit, candidate replacement, and packaged acceptance
+- publication is now held behind application-scale consumer proof
+- Nucleus is the primary long-lived harness proof; Soundcheck is the secondary
+  bounded structured-run proof
+- card 040 completes the read-only proof-envelope audit and fixes exact
+  Nucleus pilot, sustained, writable, and Soundcheck comparison workloads
+- the lane is paused before card 041: Nucleus needs app-scoped isolated state,
+  normal Agent Chat cancellation, proof deadline control, and a native proof
+  selector under a non-overlapping companion roadmap
+- live provider calls, workspace writes, and consumer mutations remain
+  separately gated
 
 ## Milestones
 
@@ -261,6 +272,8 @@ evidence-led provider work.
   — completed
 - [013 Canonical Source Provenance And Final Candidate](013-canonical-source-provenance-and-final-candidate.md)
   — completed
+- [014 Consumer-Scale Application Proof And Hardening](014-consumer-scale-application-proof-and-hardening.md)
+  — active, paused; card 040 complete, cards 041-044 planned
 
 ## Held Backlog
 
@@ -319,7 +332,13 @@ the active g02 queue.
   candidate to the operator
 - cards 037-039 replaced parentless provenance with one normal-history source
   commit, reproduced the 23-package candidate, passed all packaged facade and
-  consumer proofs, and returned the canonical candidate to publication
+  consumer proofs, and produced the canonical hardening baseline now held by
+  g02.014
+- card 040 completed the read-only consumer-scale envelope and current-state
+  audit
+- cards 041-043 own Nucleus pilot, Nucleus sustained hardening, and Soundcheck
+  secondary proof under consumer authority
+- card 044 owns candidate refresh and release-readiness reassessment
 - cards 024-026 own remaining harness facades
 - cards 027-030 own hosted direct and provider-state facades
 - cards 031-033 own realtime, SDK, and llama.cpp facades
@@ -329,7 +348,7 @@ the active g02 queue.
 
 ## Generation Boundary
 
-g02 is a long-lived generation with 13 roadmaps. It remains well below its
+g02 is a long-lived generation with 14 roadmaps. It remains well below its
 30-50-roadmap rollover range. Provider-wide facade work stabilizes the existing
 production routes; it does not add provider names or reopen their qualified
 protocol evidence.

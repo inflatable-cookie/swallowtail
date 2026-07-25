@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-24
+Updated: 2026-07-25
 
 ## Purpose
 
@@ -117,6 +117,29 @@ Nucleus callback, session-option, and host-topology boundary. Nucleus now uses
 the sibling Swallowtail workspace for local development; version pinning waits
 for versioned distribution. Both adoptions require a second pass through the
 prepared facade before replacement release-candidate evidence.
+
+## Application-Scale Gap
+
+Packaged fixtures prove the public integration mechanisms. They do not prove a
+working application across sustained provider use, process turnover, product
+persistence, callbacks, cancellation, recovery, or bounded workspace effects.
+
+The first publication therefore waits for a consumer-owned workload through a
+normal application entry point. Nucleus is the primary proof because it
+combines long-lived harness sessions, callbacks, app persistence, read-only
+chat, bounded workspace execution, interruption, and recovery. Soundcheck is
+the secondary proof because it exercises the materially different bounded
+structured-run path.
+
+The consumer owns workload meaning, prompts, test data, provider spend,
+workspace mutation, UI acceptance, and persisted product outcomes.
+Swallowtail owns safe adapter evidence, lifecycle truth, cleanup, diagnostics,
+fixture-first regressions, and corrected candidate artifacts.
+
+Scale is an accepted workload envelope, not an implicit concurrency target.
+Each proof records exact versions, repetitions, process/session turnover,
+allowed concurrency, state and cost bounds, failure cases, and stop
+conditions. Live calls and writes remain separately authorized.
 
 ## Common Boundary
 

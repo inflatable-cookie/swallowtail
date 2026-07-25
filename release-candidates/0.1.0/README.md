@@ -15,6 +15,9 @@ The files beside this README are generated from the retained candidate:
 
 Binary artifacts remain in `.effigy/release-candidates/0.1.0/`.
 
+This candidate is held for application-scale Nucleus and Soundcheck evidence.
+It must not be published from package and isolated-consumer proof alone.
+
 `effigy package:candidate:verify` rebuilds the package family from the retained
 source bundle and compares archive and file-list hashes.
 

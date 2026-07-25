@@ -48,11 +48,11 @@ attached inference and owned ephemeral-serving paths. The exact cross-route
 matrix and unified integration guidance are complete. All 22 prepared routes
 now pass from extracted package artifacts, alongside the Nucleus and
 Soundcheck Codex proofs. One reproducible provider-wide `0.1.0` candidate is
-ready for the publication decision; its exact canonical source, parent,
-artifacts, and validation digests are retained in the candidate evidence.
-Prior candidates remain superseded evidence. Publication still requires the
-exact crates.io owner identity and explicit authorization of each external
-mutation. No external release state has changed.
+retained as the application-hardening baseline; its exact canonical source,
+parent, artifacts, and validation digests are recorded in candidate evidence.
+Prior candidates remain superseded evidence. Publication is held until a
+working consumer passes an accepted sustained workload through its normal
+product path. No external release state has changed.
 
 ## Current Direction
 

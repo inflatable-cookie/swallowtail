@@ -12,14 +12,13 @@ shape.
 
 ## Next Task
 
-Return the canonical `0.1.0` candidate to the publication decision. The
-operator must name the exact crates.io owner username and explicitly authorize
-the desired bounded mutations: push the local canonical-history commits to
-`origin/main`, publish the 23 crates sequentially in the recorded three-stage
-order, create and push `v0.1.0` at candidate source commit
-recorded in `release-candidates/0.1.0/candidate.env`, and create the GitHub
-release. Workflow, owner-team, and consumer changes remain out of scope unless
-separately authorized.
+Obtain explicit Nucleus companion-lane authority after its current desktop work
+is checkpointed or confirmed non-overlapping. The companion must add an
+app-scoped isolated state root, normal Agent Chat cancellation, proof deadline
+control, and a native Effigy proof selector. Then approve or revise card 040's
+15-turn live pilot ceiling before card 041 starts. Do not make provider calls,
+edit either consumer, write a workspace, publish, push, tag, or release until
+the corresponding gate is explicit.
 
 ## Index
 

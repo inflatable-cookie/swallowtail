@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-24
+Updated: 2026-07-25
 
 ## Purpose
 
@@ -323,6 +323,32 @@ Nucleus and Soundcheck handoffs must name:
 A consumer edit, branch, commit, or release remains owned by that consumer and
 requires separate authorization.
 
+Deterministic package and isolated-consumer evidence is necessary but not
+sufficient for Swallowtail's first external release. Before publication, at
+least one operator-selected working application must exercise the candidate
+through its normal product entry point and a real authenticated harness or
+provider route.
+
+The consumer-owned proof plan must state:
+
+- exact application, Swallowtail, harness or provider, and model versions
+- route, access, topology, test data, provider-state, cost, and mutation bounds
+- repeated workload, lifecycle turnover, and any permitted concurrency
+- applicable cancellation, deadline, callback, restart, recovery, resume, and
+  bounded-write cases
+- safe diagnostics, usage, rate, cleanup, and persisted application evidence
+- the defect record, fixture-first regression coverage, and rerun result
+
+No universal operation count or concurrency level is implied. The exact scale
+budget belongs to the selected application and candidate and must be accepted
+before live work. Unsupported parallelism must not be introduced merely to
+claim scale.
+
+Live credentials, provider calls, workspace writes, and consumer mutations
+remain separately gated. A failed application-scale proof keeps the candidate
+unpublished. Swallowtail-owned defects must be reduced to deterministic
+fixtures before a corrected candidate can pass the same application scenario.
+
 ## Deterministic Preparation
 
 Credential-free package, API, documentation, MSRV, content, dependency-order,
@@ -393,6 +419,8 @@ checking external state first.
 - provider-interface ranges remain independent
 - package contents and metadata are reproducible and redacted
 - consumer upgrade and rollback evidence is exact
+- an operator-selected working application passes its accepted sustained
+  workload through the normal product path
 - release preparation is credential-free
 - active publication candidates retain canonical source history
 - every external release mutation remains human-approved

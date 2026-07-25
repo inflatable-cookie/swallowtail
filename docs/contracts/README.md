@@ -109,7 +109,8 @@ provider identity, scopes connection and affinity state, excludes
 authentication and implicit recovery, and requires explicit joined close.
 Contract 036 fixes the 23 public packages, coordinated pre-1.0 version,
 compatible internal requirements, three-stage publication order, bounded MSRV,
-package and consumer evidence, and explicit human authority for every external
+package and consumer evidence, one accepted application-scale consumer proof
+before first publication, and explicit human authority for every external
 release mutation. Crate versions remain separate from Contract 029 provider-
 interface ranges.
 Contract 037 requires an adapter-local prepared normal path for every

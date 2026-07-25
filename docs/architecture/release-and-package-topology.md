@@ -142,6 +142,12 @@ authority to:
 Each external mutation requires explicit human approval against an exact
 candidate.
 
+The first external release also requires the application-scale consumer
+evidence in Contract 036. Package reproducibility and isolated consumer tests
+cannot substitute for a sustained run through a normal application entry
+point. The selected consumer owns its workload and live-effect budget;
+Swallowtail owns adapter regressions and refreshed candidate evidence.
+
 Local package checks may copy tracked and untracked source into a deterministic
 root snapshot. A publishable candidate has a stricter source shape: clean
 non-root `HEAD`, preserved canonical ancestry, and a bundle that reproduces
@@ -184,3 +190,7 @@ shape with the final canonical-history candidate recorded in
 `release-candidates/0.1.0/candidate.env`. The candidate bundle preserves
 complete normal history and reproduces all 23 package archives plus audited
 file lists.
+
+Roadmap g02.014 holds that candidate while Nucleus and Soundcheck provide
+consumer-owned application evidence. No registry or release mutation is
+sequenced before that lane closes.

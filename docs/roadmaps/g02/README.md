@@ -256,6 +256,15 @@ evidence-led provider work.
   attempts total so the original workload can run across 3 clean launches
   without increasing model turns, provider threads, effects, or execution
   time
+- launch two exposed a second Swallowtail-owned facade defect before provider
+  turn work: prepared interactive sessions omitted their promised turn-deadline
+  time service
+- commit `a26b54f` binds time in the prepared session plan and adds a joined
+  deadline-bound regression; all 90 Codex and 19 deterministic Nucleus adapter
+  tests pass
+- card 041 is paused for a second narrow reset to 5 physical launches and
+  catalogue attempts total; the 15-turn, 6-thread, read-only, and cumulative
+  active-time ceilings remain unchanged
 - live provider calls, workspace writes, and consumer mutations remain
   separately gated
 

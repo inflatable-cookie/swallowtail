@@ -5,6 +5,7 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-07-26 Nucleus Native Pilot Second Defect](2026-07-26-nucleus-native-pilot-second-defect.md)
 - [2026-07-25 Nucleus Native Pilot First Defect](2026-07-25-nucleus-native-pilot-first-defect.md)
 - [2026-07-25 Nucleus Native Pilot Handoff](2026-07-25-nucleus-native-pilot-handoff.md)
 - [2026-07-25 Nucleus Native Proof Readiness](2026-07-25-nucleus-native-proof-readiness.md)

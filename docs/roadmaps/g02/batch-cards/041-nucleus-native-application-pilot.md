@@ -43,7 +43,7 @@ catalogue and Agent Chat path before sustained or writable work.
 - Nucleus runtime:
   `11d17810ed68e2b02173c3ae907b83f8db867b58`
 - Swallowtail runtime-code source:
-  `54fbbc2af4e1615bed67815037aa2bcd6cc91dcb`; original pilot source:
+  `a26b54f0c264abf1712c94db442e9cb0b4078208`; original pilot source:
   `e9ead4d35fb7754962053417bf8328e646839b32`
 - Codex: `0.145.0`, qualified latest, app-server v2 workspace-roots behavior
 - access: ChatGPT interactive OAuth and subscription allowance
@@ -100,6 +100,51 @@ The paused operator interval does not consume the 60-minute execution window.
 The window begins with the first post-repair catalogue attempt. The prior
 catalogue attempt remains counted in the four-attempt total.
 
+## Second Defect
+
+Post-repair physical launch two and catalogue attempt two revalidated the
+exact route, reasoning, audience, executable, fixture, and topology. Its first
+ordinary turn then failed before `turn/start` provider work:
+
+`swallowtail.codex.app_server.preflight_mismatch`
+
+The prepared session plan omitted `HostServiceKind::Time` while its normal
+consumer path attached a bounded turn deadline. Safe Nucleus evidence records
+one failed turn, zero active turns, and no unexpected terminal class. The
+provider session opened, then joined on app close. No provider model turn,
+callback, fixture write, or retained Nucleus child occurred.
+
+Swallowtail owns this facade defect. Commit `a26b54f` binds task, time, and
+process services in every prepared interactive-session plan and adds a
+deadline-bound prepared-session regression through joined turn and session
+close. All 90 Codex-adapter tests and all 19 deterministic Nucleus adapter
+tests pass.
+
+The approved envelope has now consumed:
+
+- 2 of 4 physical launches and catalogue attempts;
+- 1 of 15 turn attempts, terminal `failed`;
+- 1 of 3 permitted failed-scenario reruns; and
+- 1 of 6 joined provider-thread lifecycles.
+
+Live work is paused. Three clean launches now require one more physical launch
+and catalogue attempt than approved.
+
+## Second Required Reset
+
+Recommended:
+
+- authorize 5 physical launches and 5 catalogue attempts in total;
+- retain both failed launches as defect evidence;
+- execute the unchanged 12 planned outcomes across 3 clean launches;
+- count the joined failed provider session within the 6-thread ceiling, using
+  at most 5 further provider threads;
+- retain 15 turn attempts, 3 reruns, 3 live children, serial execution,
+  read-only effects, and 60 minutes of cumulative active execution time; and
+- exclude operator-paused time without resetting accumulated execution time.
+
+Make no further provider call before explicit approval.
+
 ## Acceptance Criteria
 
 - [ ] normal UI and server paths use the candidate
@@ -117,3 +162,4 @@ catalogue attempt remains counted in the four-attempt total.
 - current consumer changes overlap the proof path
 - cleanup, persistence, or provider truth becomes uncertain
 - a defect requires changing consumer product policy
+- the second one-launch, one-catalogue reset is not explicitly approved

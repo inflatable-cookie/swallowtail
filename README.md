@@ -522,6 +522,8 @@ sanitized evidence needed for the first pilot. Its exact source and pilot
 tuple are frozen. The first approved launch confirmed the exact model and
 ChatGPT audience, then stopped before provider-session or turn work on a
 Swallowtail prepared-tool bound. That defect is fixed with deterministic
-coverage. The pilot is paused for approval of one additional physical launch
-and catalogue attempt; its model-turn, provider-thread, effect, and time
-ceilings do not increase.
+coverage. The next launch exposed and fixed a second Swallowtail facade defect:
+prepared interactive sessions omitted the time service required by their
+promised turn deadlines. The pilot is paused for approval of a fifth physical
+launch and catalogue attempt. Its 15-turn, 6-thread, read-only, and cumulative
+active-time ceilings do not increase.

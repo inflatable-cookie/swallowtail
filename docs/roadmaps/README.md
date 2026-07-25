@@ -12,12 +12,13 @@ shape.
 
 ## Next Task
 
-Execute card 041's approved post-repair pilot: 4 physical launches and 4
-catalogue attempts total, including the retained failed launch, with the
-original workload across 3 clean launches. Keep the 15-turn, 6-thread,
-read-only, and 60-minute execution ceilings. Stop on tuple drift, uncertain
-cleanup, or another deterministic defect. Do not publish, push, tag, release,
-or write a workspace.
+Review the second-defect evidence in
+`docs/logs/2026-07-26-nucleus-native-pilot-second-defect.md`. Approve or reject
+card 041's reset to 5 physical launches and catalogue attempts total. The
+unchanged 12 planned outcomes must still fit within 15 turns, 6 joined
+provider threads including the failed session, read-only effects, and 60
+minutes of cumulative active execution. Make no further provider call before
+that decision. Do not publish, push, tag, release, or write a workspace.
 
 ## Index
 

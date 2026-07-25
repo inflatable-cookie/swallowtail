@@ -252,9 +252,9 @@ evidence-led provider work.
   Swallowtail-owned prepared-tool bound before session or turn work
 - commit `54fbbc2` replaces the invented 4 KiB ceiling with exact bounds from
   the consumer's bounded declarations; all 90 Codex-adapter tests pass
-- card 041 is paused for one narrow reset: 4 physical launches and catalogue
-  attempts total so the original workload can still run across 3 clean
-  launches without increasing model turns, provider threads, effects, or
+- card 041's narrow reset is approved: 4 physical launches and catalogue
+  attempts total so the original workload can run across 3 clean launches
+  without increasing model turns, provider threads, effects, or execution
   time
 - live provider calls, workspace writes, and consumer mutations remain
   separately gated

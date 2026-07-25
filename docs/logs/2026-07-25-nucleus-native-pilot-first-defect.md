@@ -69,5 +69,6 @@ Recommended reset:
 
 ## Next
 
-Approve or reject the narrow launch and catalogue reset. Card 041 remains
-active and paused.
+The operator approved the narrow launch and catalogue reset on 2026-07-26.
+Card 041 resumes with the paused interval excluded from its 60-minute
+execution window. The prior catalogue remains attempt one of four.

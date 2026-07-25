@@ -3,7 +3,7 @@
 Status: active, paused
 Owner: Tom
 Created: 2026-07-25
-Updated: 2026-07-25
+Updated: 2026-07-26
 Milestone: `../014-consumer-scale-application-proof-and-hardening.md`
 
 ## Objective
@@ -87,7 +87,7 @@ launch and catalogue attempt.
 
 ## Required Reset
 
-Recommended reset:
+Approved 2026-07-26:
 
 - retain the failed launch as pre-turn defect evidence;
 - authorize 4 physical launches and 4 catalogue attempts in total;
@@ -95,6 +95,10 @@ Recommended reset:
 - retain 12 planned turns, 15 maximum turns, 6 provider threads, 3 live
   children, read-only effects, and the original 60-minute ceiling; and
 - make no further provider call before explicit approval.
+
+The paused operator interval does not consume the 60-minute execution window.
+The window begins with the first post-repair catalogue attempt. The prior
+catalogue attempt remains counted in the four-attempt total.
 
 ## Acceptance Criteria
 
@@ -113,4 +117,3 @@ Recommended reset:
 - current consumer changes overlap the proof path
 - cleanup, persistence, or provider truth becomes uncertain
 - a defect requires changing consumer product policy
-- the required one-launch, one-catalogue reset is not explicitly approved

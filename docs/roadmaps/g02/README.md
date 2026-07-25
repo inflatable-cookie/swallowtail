@@ -241,6 +241,9 @@ evidence-led provider work.
 - the lane is paused before card 041: Nucleus needs app-scoped isolated state,
   normal Agent Chat cancellation, proof deadline control, and a native proof
   selector under a non-overlapping companion roadmap
+- Nucleus commit `962d1901` promotes that companion contract and plans g05
+  cards 007-010; implementation waits for overlapping sidebar card 006 to
+  close and checkpoint
 - live provider calls, workspace writes, and consumer mutations remain
   separately gated
 

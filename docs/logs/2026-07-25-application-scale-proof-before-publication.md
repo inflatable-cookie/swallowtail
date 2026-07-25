@@ -38,6 +38,7 @@ and workspace writes remain separately gated.
 - crates.io, branch push, tag, GitHub release, and workflow work: held
 - active candidate artifacts: unchanged regression baseline; not publishable
   because they predate this hold
+- Nucleus companion contract and roadmap: commit `962d1901`
 
 ## Audit Result
 
@@ -61,9 +62,24 @@ Card 040 fixes the recommendation:
 No consumer edit, provider call, credential read, workspace write, registry
 mutation, push, tag, or release occurred.
 
+## Companion Planning
+
+The operator authorized the Nucleus companion lane. Nucleus Spec 014 promoted
+the settled shape into Contracts 008, 010, and 030 plus roadmap g05.003:
+
+- `NUCLEUS_DESKTOP_DATA_ROOT` isolates database, snapshots, and UI config
+- normal Agent Chat gains cancellation outside its serialized service mutex
+- completed, cancelled, timed-out, and failed outcomes persist distinctly
+- a bounded proof deadline uses the production Swallowtail deadline path
+- Effigy launches and inspects the credential-free native proof profile
+
+Nucleus commit `962d1901` records the plan without touching the user's active
+code changes. Cards 007-009 remain planned because current sidebar card 006
+modifies the same Tauri, Agent Chat, and server files.
+
 ## Next Move
 
-After Nucleus's active desktop work is checkpointed or confirmed
-non-overlapping, authorize a companion roadmap for isolated state, normal chat
-cancellation, proof deadline control, and a native proof selector. Separately
-approve or revise the 15-turn live pilot ceiling before card 041.
+Complete and checkpoint Nucleus card 006, then execute Nucleus cards 007-009
+without credentials or provider calls. Card 010 returns the exact pilot.
+Separately approve or revise the 15-turn live ceiling before Swallowtail card
+041.

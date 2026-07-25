@@ -91,6 +91,8 @@ candidate evidence but cannot publish, push, tag, or release.
 
 Card 040 found that Nucleus needs an app-scoped isolated state root, normal
 Agent Chat cancellation, and a proof-only deadline control before the native
-pilot. The lane is paused until a Nucleus companion roadmap can make those
-consumer-owned changes without overlapping current work and the operator
-accepts the 15-turn pilot ceiling.
+pilot. Nucleus commit `962d1901` promotes those consumer-owned rules and plans
+g05 cards 007-010. The lane remains paused while Nucleus card 006 owns
+overlapping uncommitted Tauri, Agent Chat, and server changes. After that
+checkpoint, Nucleus cards 007-009 may execute credential-free. The operator
+must still accept the 15-turn pilot ceiling before any live call.

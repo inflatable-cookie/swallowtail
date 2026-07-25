@@ -12,13 +12,13 @@ shape.
 
 ## Next Task
 
-Obtain explicit Nucleus companion-lane authority after its current desktop work
-is checkpointed or confirmed non-overlapping. The companion must add an
-app-scoped isolated state root, normal Agent Chat cancellation, proof deadline
-control, and a native Effigy proof selector. Then approve or revise card 040's
-15-turn live pilot ceiling before card 041 starts. Do not make provider calls,
-edit either consumer, write a workspace, publish, push, tag, or release until
-the corresponding gate is explicit.
+Wait for Nucleus card 006's operator validation and checkpoint of the
+overlapping desktop changes. Then execute Nucleus g05 cards 007-009 as the
+credential-free companion batch: isolated desktop data, normal Agent Chat
+cancellation, exact terminal truth, bounded proof deadline, and native Effigy
+proof readiness. Return card 010 before any live call. Swallowtail card 041
+still requires separate approval of card 040's 15-turn pilot ceiling. Do not
+publish, push, tag, release, or write a workspace.
 
 ## Index
 

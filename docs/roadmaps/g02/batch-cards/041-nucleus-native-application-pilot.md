@@ -41,7 +41,7 @@ catalogue and Agent Chat path before sustained or writable work.
 ## Frozen Handoff
 
 - Nucleus runtime:
-  `2a6d72a8d3326cc70c6852f8fa86ff7f8ca995f2`
+  `11d17810ed68e2b02173c3ae907b83f8db867b58`
 - Swallowtail runtime-code source:
   `e9ead4d35fb7754962053417bf8328e646839b32`; pre-handoff checkpoint:
   `ea22603d5fc50545b0ef477187b3ab83a8ab785c`

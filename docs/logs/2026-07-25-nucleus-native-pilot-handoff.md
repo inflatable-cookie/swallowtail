@@ -10,7 +10,7 @@ Swallowtail card 041 is ready except for explicit live-effect approval.
 
 The fixed runtime tuple is:
 
-- Nucleus `2a6d72a8d3326cc70c6852f8fa86ff7f8ca995f2`
+- Nucleus `11d17810ed68e2b02173c3ae907b83f8db867b58`
 - Swallowtail runtime code
   `e9ead4d35fb7754962053417bf8328e646839b32`, with pre-handoff checkpoint
   `ea22603d5fc50545b0ef477187b3ab83a8ab785c`
@@ -41,6 +41,10 @@ publication, tag, or release mutation is authorized.
 The Nucleus desktop Rust library passes 56 tests, desktop checking reports zero
 errors, all 20 client tests pass, and both repositories pass documentation,
 Northstar, and diff checks.
+
+The first selector invocation found a Nucleus-only launcher defect before the
+desktop or provider started: Cargo could not choose between two binaries.
+Nucleus now declares `nucleus-desktop` as its default run target.
 
 ## Remaining Gate
 

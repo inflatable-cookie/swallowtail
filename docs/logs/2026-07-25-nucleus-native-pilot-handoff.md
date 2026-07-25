@@ -11,7 +11,9 @@ Swallowtail card 041 is ready except for explicit live-effect approval.
 The fixed runtime tuple is:
 
 - Nucleus `2a6d72a8d3326cc70c6852f8fa86ff7f8ca995f2`
-- Swallowtail `ea22603d5fc50545b0ef477187b3ab83a8ab785c`
+- Swallowtail runtime code
+  `e9ead4d35fb7754962053417bf8328e646839b32`, with pre-handoff checkpoint
+  `ea22603d5fc50545b0ef477187b3ab83a8ab785c`
 - Codex `0.145.0`, qualified latest, app-server v2 workspace-roots behavior
 - local macOS 26.5.2 arm64 host over stdio
 - ChatGPT interactive OAuth and subscription allowance

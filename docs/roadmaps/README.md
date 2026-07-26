@@ -12,12 +12,15 @@ shape.
 
 ## Next Task
 
-Keep card 043 paused before live execution. Soundcheck card 091 repaired the
-full consumed source tuple, default runner, stale schema artifact, and native
-schema-v50 fixture open. Obtain fresh operator approval for card 092's ceiling
-of 5 provider attempts, 1 native launch, 30 minutes, subscription effects, and
-host-approved external search. Make no provider call, publication, push, tag,
-or release before approval.
+Keep card 043 paused before live execution. Soundcheck
+`282fa21b8f65ac83a90a907941849bf8e52c2e3a` now keeps native proof startup
+at exactly 16 fixtures by suppressing host discovery only inside the validated
+proof profile. The rebuilt bundle executable SHA-256 is
+`60239f4c288ac940a6b0fa122bb01e5e675627fffd8dec5385bbd6d74e28bc00`.
+Obtain fresh operator approval for card 092's ceiling of 5 provider attempts,
+1 native launch, 30 minutes, subscription effects, and host-approved external
+search. Make no provider call, publication, push, tag, or release before
+approval.
 
 ## Index
 

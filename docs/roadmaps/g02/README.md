@@ -298,12 +298,17 @@ evidence-led provider work.
 - local `soundcheck-library` and Poodle path sources were dirty and omitted;
   cached app schema v48 rejected the fresh schema-v50 fixture
 - Soundcheck card 091 was reopened while M11 remained paused at card 087
-- Soundcheck runner repair `49dfc7e` and clean local sources now close the
-  tuple, runner, stale-cache, and native schema-v50 readiness gates
+- Soundcheck runner repair `49dfc7e` and clean local sources closed the tuple,
+  runner, stale-cache, and native schema-v50 readiness gates
 - deterministic seed, four screenshots, proof-only deadline, seven-field
   attempt evidence, guarded teardown, health, QA, 24 frontend tests, and
   176 Rust tests pass without provider effects
-- card 043 remains paused; repaired Soundcheck card 092 requires fresh live
+- the approved card 092 retry then stopped at zero provider attempts when
+  normal startup imported host plug-ins into the isolated fixture
+- Soundcheck `282fa21` now suppresses all three host-ingestion paths only in
+  the validated proof profile; a rebuilt native bundle retains exactly 16
+  fixtures, zero scan runs, zero helpers, and zero attempt evidence
+- card 043 remains paused; Soundcheck card 092 requires another fresh live
   approval and card 093 remains planned behind its review gate
 - Soundcheck primary research always carries bounded external-search
   authority, so the corrected 20-attempt envelope authorizes search for all
@@ -341,7 +346,7 @@ evidence-led provider work.
   — completed
 - [014 Consumer-Scale Application Proof And Hardening](014-consumer-scale-application-proof-and-hardening.md)
   — active; cards 040-042 and 045 complete, Soundcheck card 091 owns offline
-  readiness, card 043 paused before live proof, card 044 planned
+  readiness, card 043 paused before a fresh live proof, card 044 planned
 
 ## Held Backlog
 

@@ -53,6 +53,9 @@ parent, artifacts, and validation digests are recorded in candidate evidence.
 Prior candidates remain superseded evidence. Publication is held until a
 working consumer passes an accepted sustained workload through its normal
 product path. No external release state has changed.
+Soundcheck's secondary structured-run scale proof remains paused before live
+execution. Consumer source `282fa21` now retains its exact 16-product fixture
+under native startup; a fresh bounded live approval is still required.
 
 ## Current Direction
 

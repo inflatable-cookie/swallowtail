@@ -135,6 +135,34 @@ health, QA, 24 frontend tests, and 178 Rust tests pass.
 
 Card 043 remains paused only at the fresh live-effect approval gate.
 
+## Second Pilot Stop And Isolation Repair
+
+The operator approved the repaired Soundcheck card 092 envelope. The frozen
+tuple matched and the marked seed began with 16 products and zero attempt
+evidence.
+
+The one approved native launch stopped before assistant execution. Normal
+Soundcheck startup imported host plug-in state into the isolated database,
+growing it to 818 products and starting a scan helper. No provider request,
+search, credential exchange, or subscription effect occurred. The ledger
+remained empty and guarded teardown removed the root.
+
+Soundcheck `282fa21b8f65ac83a90a907941849bf8e52c2e3a` now suppresses
+hosted-product refresh, startup plug-in drift scanning, and host-scoped DAW
+inventory refresh only under the validated proof profile. Normal Soundcheck
+startup retains all three paths.
+
+The rebuilt bundle executable SHA-256 is
+`60239f4c288ac940a6b0fa122bb01e5e675627fffd8dec5385bbd6d74e28bc00`.
+A fresh offline native run retained exactly 16 products, zero hosted products,
+zero scan runs, zero helpers, and zero attempt evidence. Health, QA, 24
+frontend tests, and 178 Rust tests pass.
+
+Card 043 remains paused. The approved one-launch envelope was consumed by the
+stopped attempt. Another card 092 retry requires explicit approval of the same
+5-attempt, 1-launch, 30-minute, subscription-backed,
+host-approved-external-search envelope against the repaired source and bundle.
+
 ## Scope
 
 1. Use one approved fresh `SOUNDCHECK_LIBRARY_DB_PATH` and adjacent fixture

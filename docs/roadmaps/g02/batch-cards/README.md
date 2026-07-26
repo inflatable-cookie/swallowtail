@@ -41,6 +41,7 @@
 - `038-canonical-main-candidate.md`
 - `039-final-candidate-packaged-acceptance.md`
 - `040-consumer-scale-proof-envelope.md`
+- `041-nucleus-native-application-pilot.md`
 
 ## Superseded
 
@@ -53,11 +54,10 @@ None. Cross-generation deferred work lives in `docs/roadmaps/backlog/`.
 
 ## Active
 
-- `041-nucleus-native-application-pilot.md` — active; clean launches three and
-  four passed, final recovery-plus-deadline launch next
+None. Card 042 awaits its separate read-only live-envelope decision.
 
 ## Planned
 
-- `042-nucleus-sustained-workload-hardening.md`
+- `042-nucleus-sustained-workload-hardening.md` — approval-gated
 - `043-soundcheck-secondary-application-proof.md`
 - `044-hardened-candidate-refresh-and-release-reassessment.md`

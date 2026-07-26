@@ -30,7 +30,7 @@ should start with the
 [prepared-integration guides](docs/guides/README.md). Multi-provider
 applications should start with the exact
 [22-route matrix](docs/guides/provider-route-matrix.md).
-Provider-wide prepared facades are the active stabilization lane. The shared
+Consumer-scale application proof is the active stabilization lane. The shared
 evidence foundation, Codex typed bound operations, and Kimi Code ACP prepared
 facade are complete. Anthropic Models and Messages now supplies the first
 hosted-direct prepared facade. Ollama native supplies the attached-runtime
@@ -524,6 +524,10 @@ ChatGPT audience, then stopped before provider-session or turn work on a
 Swallowtail prepared-tool bound. That defect is fixed with deterministic
 coverage. The next launch exposed and fixed a second Swallowtail facade defect:
 prepared interactive sessions omitted the time service required by their
-promised turn deadlines. The pilot is paused for approval of a fifth physical
-launch and catalogue attempt. Its 15-turn, 6-thread, read-only, and cumulative
-active-time ceilings do not increase.
+promised turn deadlines. The repaired pilot then completed all 12 planned
+ordinary, callback, cancellation, restart-recovery, and deadline outcomes at
+the exact 15-attempt and 6-session ceiling, with joined cleanup and no fixture
+drift. Sustained read-only Nucleus work is now approval-gated. Exact provider
+rate, quota, usage, and billed-cost evidence remains unavailable on this
+subscription-backed path, so the proposed workload retains explicit turn and
+time ceilings. Writable proof remains separately gated.

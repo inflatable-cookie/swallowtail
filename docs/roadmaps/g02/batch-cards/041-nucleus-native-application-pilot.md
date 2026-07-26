@@ -1,6 +1,6 @@
 # 041 Nucleus Native Application Pilot
 
-Status: active
+Status: completed
 Owner: Tom
 Created: 2026-07-25
 Updated: 2026-07-26
@@ -194,15 +194,48 @@ Ten of 12 planned outcomes are complete. Final launch five owns 1
 post-restart recovery success and 1 controlled deadline in the sole remaining
 provider session.
 
+## Clean Launch Five And Closeout
+
+Physical launch five used the approved 30-second deadline and the final
+provider-session lifecycle. The persisted seeded-project conversation reopened
+with its history intact, then completed the recovery turn.
+
+Two oversized response or callback prompts completed early instead of reaching
+the deadline. They consumed the 2 remaining exact-scenario reruns without
+changing state. The final attempt ran a foreground 45-second no-op process in
+the read-only workspace. Nucleus reported `timed_out` at the 30-second bound.
+App close joined the session and interrupted process.
+
+Safe evidence for the clean proof state records 14 turns: 12 completed, 1
+cancelled, 1 timed out, and zero active, failed, or unexpected. Combined with
+the isolated earlier defect state, the approved envelope closed exactly at:
+
+- 5 physical launches and catalogue attempts;
+- 15 turn attempts;
+- 3 failed-scenario reruns;
+- 6 joined provider-thread lifecycles;
+- 12 of 12 planned outcomes; and
+- less than 60 minutes of cumulative active execution.
+
+No Nucleus or deadline process remained. The fixture commit and read-only
+permissions stayed unchanged. No stable evidence retained prompts, output,
+raw payloads, raw provider identifiers, credentials, or absolute user paths.
+
+Codex app-server supplied no stable rate, quota, usage, or billed-cost summary
+through this consumer path. The pilot therefore proves the accepted turn and
+time envelope, not exact subscription consumption. Card 042 must retain an
+operator-approved turn ceiling and treat provider-rate visibility as an
+explicit evidence gap.
+
 ## Acceptance Criteria
 
-- [ ] normal UI and server paths use the candidate
-- [ ] exact executable and compatibility classification remain visible
-- [ ] callbacks, cancellation, close, restart, and recovery retain truth
-- [ ] 12 planned attempts pass within the 15-attempt and 60-minute ceilings
-- [ ] no secret or raw provider payload enters stable evidence
-- [ ] all Swallowtail defects have fixture-ready reproductions
-- [ ] card 042 is ready only after pilot defects close
+- [x] normal UI and server paths use the candidate
+- [x] exact executable and compatibility classification remain visible
+- [x] callbacks, cancellation, close, restart, and recovery retain truth
+- [x] 12 planned attempts pass within the 15-attempt and 60-minute ceilings
+- [x] no secret or raw provider payload enters stable evidence
+- [x] all Swallowtail defects have fixture-ready reproductions
+- [x] card 042 is ready for its separate live-envelope decision
 
 ## Stop Conditions
 

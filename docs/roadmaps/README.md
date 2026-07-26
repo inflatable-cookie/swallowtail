@@ -12,12 +12,14 @@ shape.
 
 ## Next Task
 
-Execute card 041 final clean launch five with the 30-second proof deadline.
-Reopen one persisted session, prove 1 recovery success, then run 1 controlled
-read-only deadline scenario. Use no more than 2 exact-scenario reruns and stop
-at 15 total attempts, 6 joined provider threads, or 60 cumulative active
-minutes. Close and verify joined cleanup. Do not publish, push, tag, release,
-or write a workspace.
+Review card 041's completed native pilot evidence and approve or reject card
+042's read-only sustained Nucleus envelope: 50 planned turns, 55 attempts
+maximum, 5 launches, 10 provider sessions, 2 live children maximum, and 4
+hours. The exact Codex, ChatGPT subscription, model, fixture, topology, and
+no-fallback tuple stays fixed. Exact rate, quota, usage, and billed-cost
+evidence is unavailable, so turn and time ceilings remain the consumption
+control. Do not make another provider call, publish, push, tag, release, or
+write a workspace before that decision.
 
 ## Index
 

@@ -269,8 +269,13 @@ evidence-led provider work.
   normal cancellation across 2 joined sessions; safe evidence records 5
   completed, 1 cancelled, and no failed, timed-out, active, or unexpected turn
 - clean launch four completed the remaining 2 ordinary and 2 callback
-  successes across 2 joined sessions; 10 of 12 planned outcomes are complete
-  and the final recovery-plus-deadline launch remains
+  successes across 2 joined sessions, bringing the workload to 10 of 12
+  planned outcomes before the final launch
+- clean launch five proved persisted-session recovery and controlled deadline
+  interruption; card 041 closed at the exact 15-attempt, 6-session ceiling
+  with all 12 planned outcomes, joined cleanup, and no fixture drift
+- Codex supplied no stable rate, quota, usage, or billed-cost summary; card
+  042 is approval-gated on a turn-and-time-bounded read-only workload
 - live provider calls, workspace writes, and consumer mutations remain
   separately gated
 
@@ -303,8 +308,8 @@ evidence-led provider work.
 - [013 Canonical Source Provenance And Final Candidate](013-canonical-source-provenance-and-final-candidate.md)
   — completed
 - [014 Consumer-Scale Application Proof And Hardening](014-consumer-scale-application-proof-and-hardening.md)
-  — active; card 040 complete, card 041 active, cards
-  042-044 planned
+  — active; cards 040-041 complete, card 042 approval-gated, cards 043-044
+  planned
 
 ## Held Backlog
 
@@ -367,9 +372,9 @@ the active g02 queue.
   g02.014
 - card 040 completed the read-only consumer-scale envelope and current-state
   audit
-- card 041 confirmed its model and audience gate, reduced the first pre-turn
-  failure to a deterministic Swallowtail regression, and paused before a
-  changed live envelope
+- card 041 completed the exact native pilot after reducing 2 pre-provider
+  failures to deterministic Swallowtail regressions; all 12 planned outcomes
+  passed at the 15-attempt and 6-session ceiling
 - cards 041-043 own Nucleus pilot, Nucleus sustained hardening, and Soundcheck
   secondary proof under consumer authority
 - card 044 owns candidate refresh and release-readiness reassessment

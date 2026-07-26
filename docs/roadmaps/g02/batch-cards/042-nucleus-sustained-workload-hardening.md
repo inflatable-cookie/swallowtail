@@ -1,6 +1,6 @@
 # 042 Nucleus Sustained Workload Hardening
 
-Status: planned
+Status: planned, approval-gated
 Owner: Tom
 Created: 2026-07-25
 Milestone: `../014-consumer-scale-application-proof-and-hardening.md`
@@ -15,6 +15,27 @@ fixture-first, and replay until the exact envelope passes.
 - card 041 complete
 - exact operation, duration, spend, concurrency, and stop budgets accepted
 - disposable workspace and write authority approved separately when used
+
+## Approval Gate
+
+The next decision covers only the read-only sustained workload:
+
+- 50 planned turns, 55 attempts maximum;
+- 5 native launches, 4 restarts, and 10 provider sessions;
+- 35 ordinary turns, 10 inspections, 3 cancellations, and 2 deadlines;
+- 1 active turn, no more than 2 live provider children, and 4 hours maximum;
+- the exact card 041 Codex, ChatGPT subscription, model, fixture, topology, and
+  no-fallback tuple; and
+- no workspace, task, SCM, forge, proposal, provider-account, fixture, or Git
+  mutation.
+
+Codex supplied no stable rate, quota, usage, or billed-cost summary during card
+041. Approval therefore accepts a bounded subscription-backed workload whose
+consumption is controlled by turn and time ceilings rather than exact cost
+evidence.
+
+The 10 bounded task attempts remain excluded. They require a later disposable
+worktree and provider-write grant.
 
 ## Scope
 

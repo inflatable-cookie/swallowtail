@@ -6,15 +6,17 @@ bundles and `.crate` archives stay under `.effigy/release-candidates/`.
 Candidate evidence grants no publication, registry, tag, push, release,
 workflow, or consumer authority.
 
-The active candidate is held for application-scale consumer proof. It is a
-hardening baseline, not a publication-ready assertion.
-
-Its archives predate the hold. A later candidate refresh must replace them
-before any publication reassessment.
+The active candidate is the post-hardening local soak baseline. All package,
+route, isolated-consumer, and accepted application evidence passes. It is not
+a publication authorization.
 
 ## Candidates
 
-- `0.1.0/` — active non-published canonical-history 23-package candidate
+- `0.1.0/` — active non-published post-hardening 23-package candidate
+- `.effigy/release-candidates/superseded/0.1.0-5326e6f4b24d/` — superseded
+  technically passing rebuild with stale packaged currentness
+- `.effigy/release-candidates/superseded/0.1.0-f142d927767f/` — superseded
+  pre-hardening canonical-history candidate
 - `.effigy/release-candidates/superseded/0.1.0-6c0e8d9b5b05/` — superseded
   compile-only candidate
 - `.effigy/release-candidates/superseded/0.1.0-e68ab15b279d/` — superseded

@@ -5,6 +5,7 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-07-26 Post-Hardening Release Candidate](2026-07-26-post-hardening-release-candidate.md)
 - [2026-07-26 Layered Operation Proof Boundary](2026-07-26-layered-operation-proof-boundary.md)
 - [2026-07-26 Soundcheck Scale Workload Disposition](2026-07-26-soundcheck-scale-workload-disposition.md)
 - [2026-07-26 Soundcheck Fixture-Isolation Repair](2026-07-26-soundcheck-fixture-isolation-repair.md)

@@ -44,7 +44,7 @@ reassess release readiness without publishing.
 
 ## Change Classification
 
-The immediate `f142d927` baseline and corrected `5326e6f` candidate have
+The immediate `f142d927` baseline and corrected `f63a9a3` candidate have
 identical public declaration hashes across all 23 crates. No crate version or
 provider-interface claim changes.
 
@@ -57,8 +57,19 @@ The guaranteed-behavior delta is corrective:
 
 ## Evidence
 
-The exact source, parent, archive, bundle, provider, and consumer digests are
-retained in `release-candidates/0.1.0/` after the source freeze.
+The exact source is `f63a9a3653c7e17e795b06935b280a8fbbcf87cb`;
+its parent is `5326e6f4b24d7d05978b9bd4dc8407ccb3b9a565`.
+
+- package manifest:
+  `e2037b0c931b0ecf37a18491f5c233324f02417987baea00c9b322802edfbfad`
+- source bundle:
+  `19ade5f8fc51c988504f392610902a8495cc950466ba323cd41df66582dce1be`
+- evidence manifest:
+  `6ab674a25db82173b4105a92d38fa75d9000c14149c83449ed4266552c0f5ec3`
+- provider evidence:
+  `d6f58b0cc4ed4cfc1cd3a43d2f0513ce700956128685cad01c576d9c0a22f0b2`
+- consumer evidence:
+  `f2587c5aebe6b55d6442fed936b7453f6dea8d8b84f4c14cf71395d3ab47ee95`
 - 23 packages reproduce from the complete source bundle
 - 20 packaged facade suites cover all 22 production routes
 - Nucleus passes 15 deterministic tests; 2 installed/live probes stay ignored
@@ -70,6 +81,9 @@ retained in `release-candidates/0.1.0/` after the source freeze.
 
 The pre-hardening binary candidate is retained at
 `.effigy/release-candidates/superseded/0.1.0-f142d927767f/`.
+The intermediate `5326e6f4b24d` rebuild passed technical gates but packaged
+stale front-door wording. It is retained at
+`.effigy/release-candidates/superseded/0.1.0-5326e6f4b24d/`.
 
 ## Risks And Reassessment
 

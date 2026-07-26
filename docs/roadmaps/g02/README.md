@@ -281,7 +281,8 @@ evidence-led provider work.
 - Codex supplied no stable rate, quota, usage, or billed-cost summary; card
   042's first sustained tranche stopped after a shared native bundle identity
   routed UI control outside the isolated proof environment; 10 synthetic turns
-  reached normal Nucleus state and no further call or deletion is authorized
+  reached normal Nucleus state, those records are preserved, and an exact
+  bundle-path 60-turn reset is active
 - live provider calls, workspace writes, and consumer mutations remain
   separately gated
 
@@ -314,8 +315,8 @@ evidence-led provider work.
 - [013 Canonical Source Provenance And Final Candidate](013-canonical-source-provenance-and-final-candidate.md)
   — completed
 - [014 Consumer-Scale Application Proof And Hardening](014-consumer-scale-application-proof-and-hardening.md)
-  — active; cards 040-041 and 045 complete, card 042 operator-paused after a
-  state-boundary stop, cards 043-044 planned
+  — active; cards 040-041 and 045 complete, card 042 active under an exact
+  launch-target reset, cards 043-044 planned
 
 ## Held Backlog
 

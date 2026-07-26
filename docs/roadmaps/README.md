@@ -12,11 +12,12 @@ shape.
 
 ## Next Task
 
-Hold card 042 after its launch-target and normal-state boundary stop. Await an
-operator decision on the marked synthetic records, an exact isolated app
-target, and the proposed 60-turn, 7-launch, 12-session reset. Do not make
-another provider call, delete records, run the writable tranche, publish, push,
-tag, or release.
+Execute card 042's approved reset through one rebuilt debug bundle launched
+with the isolated proof environment and controlled by its full app path. Stop
+unless one exact PID has only the isolated database open before any turn.
+Preserve marked normal-state records. Stop at 60 provider turns, 7 launches,
+12 sessions, or 4 hours. Do not run the writable tranche, publish, push, tag,
+or release.
 
 ## Index
 

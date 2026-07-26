@@ -55,11 +55,9 @@ None. Cross-generation deferred work lives in `docs/roadmaps/backlog/`.
 
 ## Active
 
-None.
+- `042-nucleus-sustained-workload-hardening.md`
 
 ## Planned
 
-- `042-nucleus-sustained-workload-hardening.md` — operator-paused after launch
-  target and state-boundary stop
 - `043-soundcheck-secondary-application-proof.md`
 - `044-hardened-candidate-refresh-and-release-reassessment.md`

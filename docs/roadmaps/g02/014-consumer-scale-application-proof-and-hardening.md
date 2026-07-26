@@ -6,8 +6,8 @@ Owner: Tom
 Created: 2026-07-25
 Depends on: g02.013
 Contract refs: 009, 011-013, 029, 032-037
-Planning state: cards 040-041 and 045 completed; card 042 operator-paused after
-a launch-target and normal-state boundary stop; cards 043-044 planned
+Planning state: cards 040-041 and 045 completed; card 042 active under an
+explicit launch-target reset; cards 043-044 planned
 
 ## Problem
 
@@ -109,10 +109,12 @@ passed without fixture drift.
 Card 042's first sustained tranche stopped after Computer Use resolved
 Nucleus's shared bundle identity to a bundled app outside the proof
 environment. Ten synthetic turns reached normal Nucleus state while isolated
-proof evidence remained unchanged. No further provider call or record deletion
-is authorized. Resume needs an exact isolated app target and a fresh bounded
-reset decision. The writable tranche remains excluded pending a disposable
-worktree and provider-write grant. Before this run, Soundcheck
+proof evidence remained unchanged. The operator chose to preserve those marked
+records and approved a 60-turn, 7-launch, 12-session reset. The resumed path
+must use one rebuilt bundle, an environment-bound executable launch, full-path
+UI control, and a pre-turn PID/database proof. The writable tranche remains
+excluded pending a disposable worktree and provider-write grant. Before this
+run, Soundcheck
 exposed a non-zero Codex probe diagnostic gap through a host-selected wrapper.
 Card 045 closed the gap with status and bounded sanitized stderr. Executable
 selection remains host-owned.

@@ -1,6 +1,6 @@
 # 042 Nucleus Sustained Workload Hardening
 
-Status: paused
+Status: active
 Owner: Tom
 Created: 2026-07-25
 Milestone: `../014-consumer-scale-application-proof-and-hardening.md`
@@ -92,6 +92,14 @@ Resume requires:
    launches and catalogue selections, and 12 provider-session lifecycles while
    retaining the original 50 valid outcomes, serial execution, read-only
    effects, and 4-hour active-time ceiling
+
+Reset accepted: 2026-07-26. Preserve the marked synthetic normal-state records.
+Rebuild the exact committed debug bundle, launch its executable with the proof
+environment, and bind Computer Use to the full bundle path. Before any turn,
+prove one Nucleus PID and an open isolated database path. The accepted reset is
+60 provider turns, 7 launches and catalogue selections, 12 provider sessions,
+50 valid outcomes, serial execution, read-only effects, and 4 hours active
+time.
 
 ## Scope
 

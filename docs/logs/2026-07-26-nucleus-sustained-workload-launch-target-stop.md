@@ -51,3 +51,10 @@ records until the operator decides:
 3. whether to reset the ceiling to 60 provider turns, 7 launches and catalogue
    selections, and 12 provider sessions while retaining 50 valid read-only
    outcomes and the 4-hour active-time limit
+
+## Reset
+
+The operator chose to preserve the marked synthetic records and approved the
+proposed reset. Resume uses a rebuilt current debug bundle, an explicit
+environment-bound executable launch, and full app-path UI control. One exact
+PID must have only the isolated database open before the next turn.

@@ -62,8 +62,8 @@ to the fresh proof root.
 
 ## Next
 
-Wait for Soundcheck cards 088-090 to reach one clean checkpoint. Then freeze
-the exact source and runtime tuple and obtain consumer authority for one
-proof-readiness batch: deterministic seed, bounded deadline control, sanitized
-attempt ledger, and teardown. Ask for the corrected live envelope only after
-that deterministic support passes.
+Soundcheck reached a clean committed checkpoint at `7c135da`. The operator
+paused M11 and authorized temporary M12 card 091 for deterministic seed,
+bounded deadline control, sanitized attempt evidence, and teardown. That batch
+is offline. Ask for card 092's corrected live pilot only after the support
+passes.

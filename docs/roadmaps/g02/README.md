@@ -289,10 +289,17 @@ evidence-led provider work.
 - the complete reset stopped at its accepted 60-turn, 7-launch, and 12-session
   ceiling; card 043 awaits Soundcheck authority and its separate live-effect
   approval
-- card 043's read-only gate audit found active Soundcheck card 088 changes in
-  the exact assistant path plus missing deterministic data-seed, bounded
-  deadline, and safe attempt-ledger support; the card is paused until
-  Soundcheck cards 088-090 reach a clean checkpoint
+- card 043's read-only gate audit found active Soundcheck work in the exact
+  assistant path plus missing deterministic data-seed, bounded deadline, and
+  safe attempt-ledger support
+- Soundcheck product baseline `7c135da` is clean; proof-support source
+  `3566419` completed temporary M12 card 091 while M11 remains paused at card
+  087
+- deterministic seed, four screenshots, proof-only deadline, seven-field
+  attempt evidence, guarded teardown, health, QA, 24 frontend tests, and
+  176 Rust tests pass without provider effects
+- card 043 remains paused before live proof; Soundcheck cards 092-093 require
+  separate operator approval for provider, subscription, and search effects
 - Soundcheck primary research always carries bounded external-search
   authority, so the corrected 20-attempt envelope authorizes search for all
   16 primary attempts rather than claiming only 2 search-enabled workflows
@@ -328,7 +335,8 @@ evidence-led provider work.
 - [013 Canonical Source Provenance And Final Candidate](013-canonical-source-provenance-and-final-candidate.md)
   — completed
 - [014 Consumer-Scale Application Proof And Hardening](014-consumer-scale-application-proof-and-hardening.md)
-  — active; cards 040-042 and 045 complete, card 043 paused, card 044 planned
+  — active; cards 040-042 and 045 complete, Soundcheck card 091 owns offline
+  readiness, card 043 paused before live proof, card 044 planned
 
 ## Held Backlog
 

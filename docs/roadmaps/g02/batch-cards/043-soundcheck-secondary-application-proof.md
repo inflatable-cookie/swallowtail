@@ -13,9 +13,9 @@ structured-run product path.
 ## Entry Gates
 
 - [x] card 042 complete
-- [ ] current Soundcheck roadmap permits AI-runtime proof work
-- [ ] exact consumer source and proof tuple frozen
-- [ ] deterministic isolated data, deadline, and safe attempt-evidence
+- [x] current Soundcheck roadmap permits AI-runtime proof work
+- [x] exact consumer source and proof tuple frozen
+- [x] deterministic isolated data, deadline, and safe attempt-evidence
   mechanisms exist
 - [ ] exact 20-attempt provider ceiling plus screenshot, search, and test-data
   authority approved
@@ -73,6 +73,28 @@ and implement one bounded proof-readiness batch:
    approval
 
 This is consumer test support, not a Swallowtail product-policy surface.
+
+## Readiness Outcome
+
+Soundcheck card 091 is complete from product baseline `7c135da` with
+proof-support source `3566419a2e4abf7e83b629d4b7cd12ba33f8b84b`. Its
+opt-in proof profile binds one marked absolute root and exact adjacent
+database, preserves normal production deadlines, and permits only a bounded
+proof override. The deterministic seed creates all 16 workload records and 4
+non-sensitive screenshots.
+
+The attempt ledger contains only request correlation, operation kind, terminal
+class, elapsed milliseconds, search observation, attachment presence, and
+cleanup outcome. It rejects unknown fields, duplicate correlation, invalid
+classes, and more than 20 attempts. Guarded teardown passed.
+
+Soundcheck health, docs QA, 24 frontend tests, and 176 Rust tests pass.
+Swallowtail health and the complete offline QA suite pass. No provider call,
+search, credential access, or subscription effect occurred.
+
+The final entry gate remains open: operator approval for live effects. Start
+with Soundcheck card 092's smaller ceiling of 5 provider attempts, 1 native
+launch, and 30 minutes. Do not authorize the full envelope by implication.
 
 ## Scope
 

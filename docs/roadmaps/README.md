@@ -12,12 +12,12 @@ shape.
 
 ## Next Task
 
-Wait for Soundcheck cards 088-090 to reach one clean M11 checkpoint. Do not
-touch its active worktree. At that checkpoint, freeze the exact consumer tuple
-and obtain Soundcheck authority for card 043's isolated data seed, proof-only
-deadline, sanitized attempt ledger, fixture screenshots, and corrected
-20-attempt, 4-launch, 2-hour search-authorized envelope. Make no provider call,
-consumer mutation, publication, push, tag, or release before those gates pass.
+Keep card 043 paused before live execution. Soundcheck card 091's deterministic
+seed, proof-only deadline, sanitized attempt evidence, and teardown now pass.
+Obtain explicit operator approval for card 092's live pilot ceiling of
+5 provider attempts, 1 native launch, 30 minutes, subscription effects, and
+host-approved external search. Make no provider call, publication, push, tag,
+or release before approval.
 
 ## Index
 

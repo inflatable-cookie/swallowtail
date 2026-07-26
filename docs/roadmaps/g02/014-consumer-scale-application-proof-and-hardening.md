@@ -6,8 +6,8 @@ Owner: Tom
 Created: 2026-07-25
 Depends on: g02.013
 Contract refs: 009, 011-013, 029, 032-037
-Planning state: cards 040-042 and 045 completed; card 043 paused at its
-Soundcheck readiness gate; card 044 planned
+Planning state: cards 040-042 and 045 plus Soundcheck offline readiness card
+091 completed; card 043 remains paused before live proof; card 044 planned
 
 ## Problem
 
@@ -72,7 +72,8 @@ baseline.
 
 ### Batch 14.4 — Secondary Shape And Candidate Refresh
 
-- [ ] Execute card 043 after the active Soundcheck lane permits consumer work.
+- [x] Support Soundcheck card 091 offline.
+- [ ] Execute card 043 only after separate live-effect approval.
 - [ ] Execute card 044 after both application proofs pass.
 
 ## Acceptance Criteria
@@ -129,9 +130,12 @@ process leaked, and the full reset stopped at its accepted 60-turn, 7-launch,
 
 Card 043's gate audit found active Soundcheck M11 work in the exact assistant
 path and stopped without editing the consumer or calling the provider.
-Soundcheck cards 088-090 must reach a clean checkpoint first. The consumer
-then needs an approved deterministic assistant-data seed, proof-only deadline,
-and sanitized per-attempt ledger. Its corrected envelope authorizes search for
-all 16 primary research attempts, requires search progress in 2 cases, permits
-at most 4 secondary repair/ranking/companion attempts, and retains the exact
-20-attempt, 4-launch, and 2-hour ceilings.
+Soundcheck product baseline `7c135da` is clean; proof-support source `3566419`
+completed temporary M12 card 091's deterministic assistant-data seed,
+proof-only deadline, sanitized per-attempt evidence, and teardown. Soundcheck
+health, QA, 24 frontend tests, and 176 Rust tests pass without provider
+effects. The corrected live envelope still authorizes search for all 16
+primary research attempts,
+requires search progress in 2 cases, permits at most 4 secondary
+repair/ranking/companion attempts, and retains the exact 20-attempt, 4-launch,
+and 2-hour ceilings. It remains separately approval-gated.

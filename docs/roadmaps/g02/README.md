@@ -297,12 +297,14 @@ evidence-led provider work.
   incomplete tuple before provider execution
 - local `soundcheck-library` and Poodle path sources were dirty and omitted;
   cached app schema v48 rejected the fresh schema-v50 fixture
-- Soundcheck card 091 is reopened while M11 remains paused at card 087
+- Soundcheck card 091 was reopened while M11 remained paused at card 087
+- Soundcheck runner repair `49dfc7e` and clean local sources now close the
+  tuple, runner, stale-cache, and native schema-v50 readiness gates
 - deterministic seed, four screenshots, proof-only deadline, seven-field
   attempt evidence, guarded teardown, health, QA, 24 frontend tests, and
   176 Rust tests pass without provider effects
-- card 043 remains paused; Soundcheck cards 092-093 require clean transitive
-  source checkpoints, repaired offline readiness, and fresh live approval
+- card 043 remains paused; repaired Soundcheck card 092 requires fresh live
+  approval and card 093 remains planned behind its review gate
 - Soundcheck primary research always carries bounded external-search
   authority, so the corrected 20-attempt envelope authorizes search for all
   16 primary attempts rather than claiming only 2 search-enabled workflows

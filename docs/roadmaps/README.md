@@ -12,14 +12,12 @@ shape.
 
 ## Next Task
 
-Keep card 043 paused. Soundcheck card 092's first approved native launch
-stopped before provider execution: dirty local `soundcheck-library` and Poodle
-sources were omitted from the tuple, and cached app schema v48 rejected the
-schema-v50 fixture. Wait for clean committed dependency checkpoints. Then
-Soundcheck must reopen card 091, freeze the full local source graph, repair the
-normal Effigy launch target, and prove native fixture open offline. Make no
-provider call, publication, push, tag, or release before a fresh approved
-tuple and live envelope.
+Keep card 043 paused before live execution. Soundcheck card 091 repaired the
+full consumed source tuple, default runner, stale schema artifact, and native
+schema-v50 fixture open. Obtain fresh operator approval for card 092's ceiling
+of 5 provider attempts, 1 native launch, 30 minutes, subscription effects, and
+host-approved external search. Make no provider call, publication, push, tag,
+or release before approval.
 
 ## Index
 

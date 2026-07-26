@@ -145,3 +145,8 @@ before provider execution. The tuple omitted dirty local `soundcheck-library`
 and Poodle sources; cached app schema v48 rejected the newly seeded schema
 v50. Card 091 is reopened. The next live envelope remains gated behind clean
 dependency checkpoints and repaired offline native readiness.
+
+Soundcheck then closed those gates at runner-repair source `49dfc7e`,
+`soundcheck-library` `0cc339e`, scoped Poodle `666b985`, Signal `fe37838`, and
+unchanged Swallowtail runtime `a3fbc14`. Native schema-v50 fixture open and all
+offline validation pass. A fresh live approval remains required.

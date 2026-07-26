@@ -544,6 +544,8 @@ remains separately gated. The next lane is Soundcheck's bounded structured-run
 proof. Soundcheck's offline support passed, but the first approved native pilot
 launch stopped before provider execution. Its tuple omitted dirty local
 `soundcheck-library` and Poodle sources; cached app schema v48 rejected the
-fresh schema-v50 fixture. Soundcheck card 091 is reopened. Provider execution,
-subscription effects, and search remain gated behind clean dependency
-checkpoints, repaired native readiness, and a fresh approved envelope.
+fresh schema-v50 fixture. Soundcheck card 091 then froze the complete consumed
+source graph, selected the default app runner, cleared the stale dependency
+artifact, and proved native schema-v50 fixture open offline. Provider
+execution, subscription effects, and search remain gated behind a fresh
+approved envelope.

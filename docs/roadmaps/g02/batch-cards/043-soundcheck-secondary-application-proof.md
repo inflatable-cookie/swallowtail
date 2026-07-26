@@ -14,8 +14,8 @@ structured-run product path.
 
 - [x] card 042 complete
 - [x] current Soundcheck roadmap permits AI-runtime proof work
-- [ ] exact transitive consumer source and proof tuple frozen
-- [ ] deterministic isolated data opens through the native product path;
+- [x] exact transitive consumer source and proof tuple frozen
+- [x] deterministic isolated data opens through the native product path;
   deadline and safe attempt-evidence
   mechanisms exist
 - [ ] exact 20-attempt provider ceiling plus screenshot, search, and test-data
@@ -115,6 +115,25 @@ proof root. Soundcheck card 091 is reopened. Do not resume live proof until
 the dependency owners provide clean committed checkpoints, the full local
 source graph is frozen, the normal selector launches the intended app, the
 fixture opens natively offline, and the operator approves a fresh envelope.
+
+## Readiness Repair
+
+Soundcheck card 091 is complete again:
+
+- Soundcheck runner repair `49dfc7e`
+- `soundcheck-library` `0cc339e`
+- scoped Poodle Svelte components and tokens `666b985`
+- Signal `fe37838`
+- Swallowtail runtime `a3fbc14`
+
+Poodle's unrelated GPUI/Jetstream work is outside Soundcheck's consumed paths.
+A scoped cache clean removed the stale schema-v48 artifact. The normal Effigy
+selector then chose `soundcheck-app`; a fresh native bundle opened the
+schema-v50 fixture, completed library bootstrap, and entered normal startup
+scanning. Zero attempts reconciled and guarded teardown passed. Soundcheck
+health, QA, 24 frontend tests, and 178 Rust tests pass.
+
+Card 043 remains paused only at the fresh live-effect approval gate.
 
 ## Scope
 

@@ -19,6 +19,11 @@ Publishing now would turn normal application defects into first-release
 compatibility pressure. The candidate should instead be used as a hardening
 baseline.
 
+The later evidence correction keeps native application work narrow. Repeated
+transport and lifecycle claims belong in adapter or consumer backend scenario
+harnesses. A native authenticated run proves vertical wiring and current
+provider acceptance; the UI is not the default lifecycle harness.
+
 ## Goals
 
 - [x] Define an exact, bounded, consumer-owned scale envelope.
@@ -26,6 +31,7 @@ baseline.
 - [x] Fix Swallowtail defects fixture-first and replay the same workload.
 - [x] Retain Soundcheck's distinct structured-run integration and record the
       operator disposition of its repetitive synthetic scale workload.
+- [x] Separate deterministic scenario repetition from native vertical smoke.
 - [ ] Refresh the candidate only after application evidence closes.
 - [ ] Reassess release readiness without authorizing publication.
 
@@ -163,3 +169,10 @@ declined further repetition of the fixed agent-review workflow, and
 superseded card 043 without a live scale claim. Nucleus remains the accepted
 sustained application proof. Card 044 is ready for local candidate
 reassessment; publication remains separately prohibited.
+
+The follow-up boundary audit confirmed that Codex adapter fixtures already
+cover search events, attachments, schemas, cancellation, deadlines, process
+join, and cleanup. Contracts 011 and 036 now place repeated mechanism and
+consumer-mapping cases in purpose-built scenario harnesses. Future native
+proof is a thin vertical smoke unless product startup or persistence is the
+claim.

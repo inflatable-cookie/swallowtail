@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-25
+Updated: 2026-07-26
 
 ## Purpose
 
@@ -327,13 +327,17 @@ Deterministic package and isolated-consumer evidence is necessary but not
 sufficient for Swallowtail's first external release. Before publication, at
 least one operator-selected working application must exercise the candidate
 through its normal product entry point and a real authenticated harness or
-provider route.
+provider route. This is a vertical integration smoke, not the default
+repetition harness.
 
 The consumer-owned proof plan must state:
 
 - exact application, Swallowtail, harness or provider, and model versions
 - route, access, topology, test data, provider-state, cost, and mutation bounds
-- repeated workload, lifecycle turnover, and any permitted concurrency
+- which claims belong to adapter scenarios, consumer backend scenarios, and
+  the native or live smoke
+- repeated workload, lifecycle turnover, and any permitted concurrency at the
+  narrowest boundary that owns each claim
 - applicable cancellation, deadline, callback, restart, recovery, resume, and
   bounded-write cases
 - safe diagnostics, usage, rate, cleanup, and persisted application evidence
@@ -341,13 +345,18 @@ The consumer-owned proof plan must state:
 
 No universal operation count or concurrency level is implied. The exact scale
 budget belongs to the selected application and candidate and must be accepted
-before live work. Unsupported parallelism must not be introduced merely to
-claim scale.
+before live work. Repeated transport, cancellation, deadline, callback,
+attachment, search-event, and cleanup cases should run through deterministic
+adapter or consumer backend harnesses. They do not need repeated UI startup or
+provider calls unless the normal product lifecycle or current provider
+behavior is the claim. Unsupported parallelism must not be introduced merely
+to claim scale.
 
 Live credentials, provider calls, workspace writes, and consumer mutations
-remain separately gated. A failed application-scale proof keeps the candidate
-unpublished. Swallowtail-owned defects must be reduced to deterministic
-fixtures before a corrected candidate can pass the same application scenario.
+remain separately gated. A failed required scenario or vertical smoke keeps
+the candidate unpublished. Swallowtail-owned defects must be reduced to
+deterministic fixtures before a corrected candidate can pass the narrowest
+failed scenario and the affected vertical smoke.
 
 ## Deterministic Preparation
 
@@ -419,8 +428,10 @@ checking external state first.
 - provider-interface ranges remain independent
 - package contents and metadata are reproducible and redacted
 - consumer upgrade and rollback evidence is exact
-- an operator-selected working application passes its accepted sustained
-  workload through the normal product path
+- adapter and consumer scenario harnesses pass the repeated lifecycle claims
+  they own
+- an operator-selected working application passes an authenticated vertical
+  smoke through the normal product path
 - release preparation is credential-free
 - active publication candidates retain canonical source history
 - every external release mutation remains human-approved

@@ -13,10 +13,10 @@ shape.
 ## Next Task
 
 Execute ready card 044: refresh the local hardened candidate and reassess
-release readiness from deterministic package/consumer validation plus the
-accepted Nucleus scale evidence and retained Soundcheck integration evidence.
-Do not repeat live provider workloads. Do not publish, push, tag, create a
-release, or change registry state.
+release readiness from deterministic package, adapter-scenario, and consumer
+validation plus the accepted Nucleus vertical evidence and retained Soundcheck
+integration evidence. Do not repeat UI or live provider workloads. Do not
+publish, push, tag, create a release, or change registry state.
 
 ## Index
 

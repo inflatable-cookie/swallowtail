@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-24
+Updated: 2026-07-26
 
 ## Purpose
 
@@ -21,6 +21,42 @@ repositories, or real secrets.
 
 The testkit exposes reusable fixture profiles rather than one monolithic test
 harness. An adapter selects the profiles and optional capabilities it claims.
+
+## Operation Scenario Harnesses
+
+Repeated lifecycle and failure evidence belongs at the lowest public boundary
+that owns the behavior.
+
+An adapter-local scenario harness may compose:
+
+- the real prepared facade and public operation role
+- deterministic process, network, SDK, time, cancellation, and resource
+  fixtures
+- scripted provider protocol input
+- recording host services and reusable testkit assertions
+
+The adapter harness executes the real preparation, request derivation, event
+normalization, terminal outcome, and cleanup path. It does not require a
+provider account or a consumer application. `swallowtail-testkit` supplies
+provider-neutral fixtures and assertions; it does not become an executor or
+duplicate provider wire schemas.
+
+A consumer may separately build an internal harness around its backend
+command or service boundary. That harness preserves consumer-owned prompts,
+schemas, policy, validation, persistence, and result projection while
+injecting a deterministic Swallowtail operation executor. It may bypass UI
+startup, discovery scans, unrelated persistence, and other product machinery
+that does not own the behavior under test.
+
+Native application and live-provider checks prove only facts that deterministic
+harnesses cannot: final wiring, installed-interface selection, authentication,
+current protocol acceptance, and product projection. Repetition belongs in a
+native application only when the repeated product lifecycle is itself the
+claim. A UI is not the default load or lifecycle harness.
+
+Scenario harnesses remain role-specific. They do not create a universal
+operation API or flatten structured runs, interactive sessions, callbacks,
+direct inference, realtime connections, or serving lifecycles.
 
 ## Required Profiles
 

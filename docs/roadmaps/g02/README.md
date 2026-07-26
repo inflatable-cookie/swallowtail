@@ -233,7 +233,8 @@ evidence-led provider work.
   GitHub release
 - roadmap g02.013 and cards 037-039 complete the accepted provenance repair,
   canonical local commit, candidate replacement, and packaged acceptance
-- publication is now held behind application-scale consumer proof
+- publication remains held behind layered consumer evidence and a fresh
+  operator decision
 - Nucleus is the primary long-lived harness proof; Soundcheck is the secondary
   bounded structured-run proof
 - card 040 completes the read-only proof-envelope audit and fixes exact
@@ -310,8 +311,11 @@ evidence-led provider work.
 - the operator declined further repetition of Soundcheck's fixed agent-review
   workflow; card 043 and Soundcheck cards 092-093 are superseded without live
   scale acceptance claims
-- card 044 is ready to refresh local candidate evidence without repeating the
-  provider workloads or authorizing publication
+- Contracts 011 and 036 now put repeated lifecycle claims in adapter or
+  consumer backend scenario harnesses; native apps retain thin authenticated
+  vertical smoke
+- card 044 is ready to refresh local candidate evidence without repeating UI
+  or provider workloads or authorizing publication
 - Soundcheck primary research always carries bounded external-search
   authority, so the corrected 20-attempt envelope authorizes search for all
   16 primary attempts rather than claiming only 2 search-enabled workflows

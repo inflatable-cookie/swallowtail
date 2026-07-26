@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-25
+Updated: 2026-07-26
 Realization: roadmap g02.001 card 003
 
 ## Boundary
@@ -144,9 +144,12 @@ candidate.
 
 The first external release also requires the application-scale consumer
 evidence in Contract 036. Package reproducibility and isolated consumer tests
-cannot substitute for a sustained run through a normal application entry
-point. The selected consumer owns its workload and live-effect budget;
-Swallowtail owns adapter regressions and refreshed candidate evidence.
+cannot substitute for a real authenticated vertical smoke through a normal
+application entry point. Repeated lifecycle and failure cases belong in
+deterministic adapter or consumer backend scenario harnesses unless product
+startup or current provider behavior is the claim. The selected consumer owns
+its product scenarios and live-effect budget; Swallowtail owns adapter
+regressions and refreshed candidate evidence.
 
 Local package checks may copy tracked and untracked source into a deterministic
 root snapshot. A publishable candidate has a stricter source shape: clean

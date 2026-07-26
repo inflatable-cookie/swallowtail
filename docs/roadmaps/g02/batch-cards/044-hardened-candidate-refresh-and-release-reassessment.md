@@ -24,8 +24,8 @@ reassess release readiness without publishing.
    `0.1.0` baseline.
 2. Rebuild all 23 packages and all 22 packaged route proofs.
 3. Re-run deterministic packaged Nucleus and Soundcheck consumer proofs;
-   reconcile the accepted live application evidence without repeating the
-   provider workloads.
+   reconcile adapter, consumer-backend, and vertical-smoke evidence without
+   repeating UI or provider workloads.
 4. Supersede the current candidate without deleting it.
 5. Update release notes, compatibility risks, rollback, and currentness.
 6. Stop before push, publication, tag, GitHub release, workflow, or owner
@@ -34,7 +34,8 @@ reassess release readiness without publishing.
 ## Acceptance Criteria
 
 - [ ] exact corrected source, parent, archives, and evidence reproduce
-- [ ] package, provider-route, isolated-consumer, and application evidence pass
+- [ ] package, provider-route, isolated-consumer, scenario-harness, and
+      vertical-smoke evidence reconcile
 - [ ] remaining provider-auth, protocol, capability, topology, and scale risks
       are explicit
 - [ ] only one local candidate is active

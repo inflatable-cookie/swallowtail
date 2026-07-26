@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-25
+Updated: 2026-07-26
 
 ## Purpose
 
@@ -118,26 +118,41 @@ the sibling Swallowtail workspace for local development; version pinning waits
 for versioned distribution. Both adoptions require a second pass through the
 prepared facade before replacement release-candidate evidence.
 
-## Application-Scale Gap
+## Layered Application Evidence
 
 Packaged fixtures prove the public integration mechanisms. They do not prove a
 working application across sustained provider use, process turnover, product
 persistence, callbacks, cancellation, recovery, or bounded workspace effects.
 
-The first publication therefore waits for a consumer-owned workload through a
-normal application entry point. Nucleus is the primary proof because it
+Evidence is split by ownership:
+
+1. adapter-local deterministic scenarios prove preparation, transport,
+   normalized events, cancellation, deadlines, callbacks, materialization,
+   and joined cleanup
+2. consumer backend scenarios prove prompts, policy, validation, persistence,
+   and projection at the command or service boundary
+3. a small native and authenticated smoke proves final wiring, installed
+   target selection, access, current protocol acceptance, and UI projection
+
+Repetition runs at the first two layers. The native application is not the
+default load harness. Repeated native operations are justified only when app
+restart, product persistence, or another native lifecycle is itself the
+claim.
+
+Nucleus supplied the accepted first vertical and sustained evidence because it
 combines long-lived harness sessions, callbacks, app persistence, read-only
-chat, bounded workspace execution, interruption, and recovery. Soundcheck is
-the secondary proof because it exercises the materially different bounded
-structured-run path.
+chat, interruption, and recovery. Soundcheck supplies a materially different
+bounded structured-run integration and deterministic backend evidence. Its
+fixed agent-review workflow does not need repeated native provider calls to
+re-prove Swallowtail lifecycle mechanisms already covered below the UI.
 
 The consumer owns workload meaning, prompts, test data, provider spend,
 workspace mutation, UI acceptance, and persisted product outcomes.
 Swallowtail owns safe adapter evidence, lifecycle truth, cleanup, diagnostics,
 fixture-first regressions, and corrected candidate artifacts.
 
-Scale is an accepted workload envelope, not an implicit concurrency target.
-Each proof records exact versions, repetitions, process/session turnover,
+Scale is an accepted scenario envelope, not an implicit concurrency target.
+Each layer records exact versions, repetitions, process/session turnover,
 allowed concurrency, state and cost bounds, failure cases, and stop
 conditions. Live calls and writes remain separately authorized.
 

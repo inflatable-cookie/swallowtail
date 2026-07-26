@@ -112,8 +112,10 @@ Preparation failures expose a safe stage:
 - cleanup
 
 Stable formatting excludes raw executable paths, environments, operation
-payloads, credentials, and provider payloads. Keep `PreparationStage` and the
-safe diagnostic code when projecting failures into application errors.
+payloads, credentials, and provider payloads. A non-zero version probe keeps
+`swallowtail.codex.discovery_exit_failed` and may add its numeric status plus a
+bounded sanitized stderr excerpt. Keep `PreparationStage` and the safe
+diagnostic code when projecting failures into application errors.
 
 ## Low-Level Escape Hatch
 

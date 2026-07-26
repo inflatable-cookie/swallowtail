@@ -17,6 +17,7 @@ use swallowtail_runtime::{
 };
 
 const MAX_VERSION_OUTPUT_BYTES: usize = 128;
+const MAX_VERSION_STDERR_BYTES: usize = 1024;
 
 impl DiscoveryDriver for CodexExecDriver {
     fn discover(
@@ -121,7 +122,7 @@ async fn probe_process(
         Err(_) => return Ok(spawn_failed()),
     };
     if process.close_stdin().await.is_err() {
-        return Ok(stop_and_classify(process.as_ref(), exit_failed()).await);
+        return Ok(stop_and_classify(process.as_ref(), exit_failed(None, &[], false)).await);
     }
 
     let mut deadline = services
@@ -130,6 +131,8 @@ async fn probe_process(
         .wait_until(request.deadline());
     let mut cancelled = request.cancellation().wait_requested();
     let mut stdout = Vec::new();
+    let mut stderr = Vec::new();
+    let mut stderr_truncated = false;
     loop {
         match next_output(process.as_ref(), &mut deadline, &mut cancelled).await {
             ProbeSignal::Cancelled => {
@@ -155,6 +158,14 @@ async fn probe_process(
                 }
                 stdout.extend_from_slice(chunk.bytes());
             }
+            ProbeSignal::Output(Ok(Some(chunk)))
+                if chunk.stream() == ProcessOutputStream::Stderr =>
+            {
+                let remaining = MAX_VERSION_STDERR_BYTES.saturating_sub(stderr.len());
+                let copied = remaining.min(chunk.bytes().len());
+                stderr.extend_from_slice(&chunk.bytes()[..copied]);
+                stderr_truncated |= copied < chunk.bytes().len();
+            }
             ProbeSignal::Output(Ok(Some(_))) => {}
             ProbeSignal::Output(Ok(None)) => break,
         }
@@ -165,7 +176,7 @@ async fn probe_process(
         Err(_) => return Ok(outcome(DiscoveryStatus::CleanupFailed)),
     };
     if !exit.success() {
-        return Ok(exit_failed());
+        return Ok(exit_failed(exit.code(), &stderr, stderr_truncated));
     }
     let Some(binding) = parse_version(&stdout, claim.axis().clone()) else {
         return Ok(outcome(DiscoveryStatus::Malformed));

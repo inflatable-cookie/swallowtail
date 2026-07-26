@@ -42,6 +42,7 @@
 - `039-final-candidate-packaged-acceptance.md`
 - `040-consumer-scale-proof-envelope.md`
 - `041-nucleus-native-application-pilot.md`
+- `045-codex-discovery-exit-diagnostics.md`
 
 ## Superseded
 
@@ -54,10 +55,10 @@ None. Cross-generation deferred work lives in `docs/roadmaps/backlog/`.
 
 ## Active
 
-None. Card 042 awaits its separate read-only live-envelope decision.
+None.
 
 ## Planned
 
-- `042-nucleus-sustained-workload-hardening.md` — approval-gated
+- `042-nucleus-sustained-workload-hardening.md` — operator-paused
 - `043-soundcheck-secondary-application-proof.md`
 - `044-hardened-candidate-refresh-and-release-reassessment.md`

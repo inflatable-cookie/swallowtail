@@ -72,6 +72,44 @@ fn process_spawn_output_exit_and_cleanup_failures_keep_their_stages() {
 }
 
 #[test]
+fn nonzero_version_probe_exit_reports_status_and_sanitized_stderr() {
+    let stderr = format!(
+        "\u{1b}[31mcmux wrapper could not start Codex from /Users/private/bin \
+         token=private {}after-capture-bound\u{1b}[0m",
+        "detail ".repeat(200)
+    );
+    let (process, _) = FakeProcessService::failed_exit_with(126, stderr);
+    let fixture = fixture(CodexPreparedDriver::StructuredExec, "host.local", "codex");
+    let failure = block_on(prepare_codex(
+        fixture.input,
+        fixture.probe,
+        services(fixture.host, process),
+    ))
+    .expect_err("non-zero probe exit must not promote");
+    let diagnostic = failure.diagnostic().safe();
+
+    assert_eq!(failure.stage(), PreparationStage::ProcessExit);
+    assert_eq!(diagnostic.code(), "swallowtail.codex.discovery_exit_failed");
+    assert!(diagnostic.message().contains("status 126"));
+    assert!(
+        diagnostic
+            .message()
+            .contains("cmux wrapper could not start Codex")
+    );
+    assert!(diagnostic.message().contains("<path>"));
+    assert!(diagnostic.message().contains("<redacted>"));
+    assert!(diagnostic.message().contains("[stderr truncated]"));
+    for private in [
+        "/Users/private",
+        "token=private",
+        "after-capture-bound",
+        "\u{1b}",
+    ] {
+        assert!(!diagnostic.message().contains(private));
+    }
+}
+
+#[test]
 fn preparation_rejects_host_target_and_access_drift_before_starting_a_process() {
     let fixture = fixture(CodexPreparedDriver::StructuredExec, "host.local", "codex");
     let (process, state) = FakeProcessService::completed("codex-cli 0.145.0\n");

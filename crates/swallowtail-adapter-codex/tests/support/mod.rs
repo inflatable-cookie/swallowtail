@@ -92,6 +92,7 @@ pub struct FakeProcessService {
     read_failure: bool,
     cleanup_failure: bool,
     exit_success: bool,
+    exit_code: Option<i32>,
 }
 
 impl FakeProcessService {
@@ -105,19 +106,37 @@ impl FakeProcessService {
             false,
             false,
             true,
+            Some(0),
         )
     }
 
     pub fn held_open() -> (Arc<Self>, Arc<ProcessState>) {
-        Self::new([], true, false, false, true)
+        Self::new([], true, false, false, true, Some(0))
     }
 
     pub fn failed_exit() -> (Arc<Self>, Arc<ProcessState>) {
-        Self::new([], false, false, false, false)
+        Self::new([], false, false, false, false, Some(1))
+    }
+
+    pub fn failed_exit_with(
+        code: i32,
+        stderr: impl Into<Vec<u8>>,
+    ) -> (Arc<Self>, Arc<ProcessState>) {
+        Self::new(
+            [ProcessOutputChunk::new(
+                ProcessOutputStream::Stderr,
+                stderr.into(),
+            )],
+            false,
+            false,
+            false,
+            false,
+            Some(code),
+        )
     }
 
     pub fn failed_output(cleanup_failure: bool) -> (Arc<Self>, Arc<ProcessState>) {
-        Self::new([], false, true, cleanup_failure, true)
+        Self::new([], false, true, cleanup_failure, true, Some(0))
     }
 
     fn new(
@@ -126,6 +145,7 @@ impl FakeProcessService {
         read_failure: bool,
         cleanup_failure: bool,
         exit_success: bool,
+        exit_code: Option<i32>,
     ) -> (Arc<Self>, Arc<ProcessState>) {
         let state = Arc::new(ProcessState::default());
         (
@@ -136,6 +156,7 @@ impl FakeProcessService {
                 read_failure,
                 cleanup_failure,
                 exit_success,
+                exit_code,
             }),
             state,
         )
@@ -176,6 +197,7 @@ impl ProcessService for FakeProcessService {
             read_failure: self.read_failure,
             cleanup_failure: self.cleanup_failure,
             exit_success: self.exit_success,
+            exit_code: self.exit_code,
         };
         Box::pin(async move { Ok(Box::new(handle) as Box<dyn ProcessHandle>) })
     }
@@ -188,6 +210,7 @@ struct FakeProcessHandle {
     read_failure: bool,
     cleanup_failure: bool,
     exit_success: bool,
+    exit_code: Option<i32>,
 }
 
 impl ProcessHandle for FakeProcessHandle {
@@ -254,12 +277,8 @@ impl ProcessHandle for FakeProcessHandle {
     fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
         self.state.waited.store(true, Ordering::SeqCst);
         let exit_success = self.exit_success;
-        Box::pin(async move {
-            Ok(ProcessExit::new(
-                exit_success,
-                Some(i32::from(!exit_success)),
-            ))
-        })
+        let exit_code = self.exit_code;
+        Box::pin(async move { Ok(ProcessExit::new(exit_success, exit_code)) })
     }
 }
 

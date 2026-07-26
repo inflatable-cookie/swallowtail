@@ -23,6 +23,9 @@ The project has not published a release.
 
 ### Changed
 
+- Codex installed-version probe failures now retain their stable diagnostic
+  code while reporting numeric exit status and bounded sanitized stderr when
+  available
 - interactive session requests now require one explicit or plan-derived
   agreement for access, provider state, and harness configuration; implicit
   policy defaults and post-construction setters are removed before first

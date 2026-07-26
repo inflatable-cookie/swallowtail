@@ -12,14 +12,10 @@ shape.
 
 ## Next Task
 
-Review card 041's completed native pilot evidence and approve or reject card
-042's read-only sustained Nucleus envelope: 50 planned turns, 55 attempts
-maximum, 5 launches, 10 provider sessions, 2 live children maximum, and 4
-hours. The exact Codex, ChatGPT subscription, model, fixture, topology, and
-no-fallback tuple stays fixed. Exact rate, quota, usage, and billed-cost
-evidence is unavailable, so turn and time ceilings remain the consumption
-control. Do not make another provider call, publish, push, tag, release, or
-write a workspace before that decision.
+Hold card 042 in its operator-paused state and await operator direction for the
+next application-proof batch. Card 045 is complete. Do not resume sustained
+provider work implicitly, make a provider call, publish, push, tag, release, or
+write a workspace.
 
 ## Index
 

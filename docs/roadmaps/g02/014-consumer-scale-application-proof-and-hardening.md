@@ -6,7 +6,7 @@ Owner: Tom
 Created: 2026-07-25
 Depends on: g02.013
 Contract refs: 009, 011-013, 029, 032-037
-Planning state: cards 040-041 completed; card 042 planned and approval-gated;
+Planning state: cards 040-041 and 045 completed; card 042 operator-paused;
 cards 043-044 planned
 
 ## Problem
@@ -56,6 +56,12 @@ baseline.
 - [x] Prove version discovery, process turnover, cancellation, callbacks,
       persistence, and safe diagnostics.
 
+### Batch 14.2a — Codex Discovery Exit Diagnostics
+
+- [x] Execute card 045 while card 042 remains operator-paused.
+- [x] Preserve the stable discovery failure code and preparation stage.
+- [x] Add numeric status and bounded sanitized stderr without wrapper policy.
+
 ### Batch 14.3 — Sustained Nucleus Hardening
 
 - [ ] Execute card 042 after pilot defects close.
@@ -102,4 +108,7 @@ passed without fixture drift.
 
 Card 042 remains a separate live decision. Its read-only sustained envelope is
 ready for approval; its writable tranche remains excluded pending a disposable
-worktree and provider-write grant.
+worktree and provider-write grant. While that card was paused, Soundcheck
+exposed a non-zero Codex probe diagnostic gap through a host-selected wrapper.
+Card 045 closed the gap with status and bounded sanitized stderr. Executable
+selection remains host-owned.

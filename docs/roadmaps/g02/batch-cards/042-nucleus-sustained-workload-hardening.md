@@ -1,6 +1,6 @@
 # 042 Nucleus Sustained Workload Hardening
 
-Status: planned, approval-gated
+Status: paused
 Owner: Tom
 Created: 2026-07-25
 Milestone: `../014-consumer-scale-application-proof-and-hardening.md`
@@ -36,6 +36,9 @@ evidence.
 
 The 10 bounded task attempts remain excluded. They require a later disposable
 worktree and provider-write grant.
+
+Operator pause: 2026-07-26. Do not resume this card implicitly after the Codex
+discovery-diagnostics repair.
 
 ## Scope
 

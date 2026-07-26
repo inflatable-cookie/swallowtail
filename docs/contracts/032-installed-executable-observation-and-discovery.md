@@ -74,8 +74,11 @@ Installed-executable discovery keeps these terminal states distinct:
 
 Only discovered and incompatible outcomes carry an exact observation.
 Discovery never relabels an unverified-newer point as qualified. Diagnostics
-are normalized and redacted. Raw process output never becomes a stable
-diagnostic.
+are normalized and redacted. A non-zero exit diagnostic may retain the numeric
+exit status and one bounded adapter-sanitized stderr excerpt when available.
+Sanitization removes control sequences, normalizes whitespace, redacts
+path-, URL-, assignment-, credential-, email-, and long-token shapes, and
+marks truncation. Raw process output never becomes a stable diagnostic.
 
 ## Lifecycle
 
@@ -122,6 +125,8 @@ Deterministic default QA proves:
   from the claim
 - absent, malformed, timeout, cancellation, failure, and cleanup failure stay
   machine-distinct
+- non-zero exit diagnostics retain their stable code while exposing numeric
+  status and only bounded sanitized stderr
 - process completion and host task cleanup are joined on every path
 - local and remote-authoritative host identities do not substitute
 - formatting and diagnostics expose no executable value or raw output
@@ -137,5 +142,6 @@ Live installed-binary probes remain separately gated.
 - cancellation and deadline paths retain joined cleanup
 - provider-specific parsing stays in adapters
 - public records expose no path, raw output, environment, token, or payload
+- non-zero exit detail is useful without exposing raw stderr
 - discovery grants no configuration, authentication, route, or execution
   authority

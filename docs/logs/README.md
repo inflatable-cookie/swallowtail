@@ -5,6 +5,7 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-07-26 Codex Discovery Exit Diagnostics](2026-07-26-codex-discovery-exit-diagnostics.md)
 - [2026-07-26 Nucleus Native Pilot Second Defect](2026-07-26-nucleus-native-pilot-second-defect.md)
 - [2026-07-25 Nucleus Native Pilot First Defect](2026-07-25-nucleus-native-pilot-first-defect.md)
 - [2026-07-25 Nucleus Native Pilot Handoff](2026-07-25-nucleus-native-pilot-handoff.md)

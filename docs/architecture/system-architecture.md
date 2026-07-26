@@ -721,7 +721,9 @@ catalogue, and app-server interactive-session paths remain separate.
 Read-only and bounded-workspace profiles remain separate. Exact installed-
 version classification, local and remote-authoritative host identity,
 cancellation, deadlines, callbacks, and joined cleanup continue through the
-existing roles.
+existing roles. Non-zero installed-version probes retain their stable failure
+code while exposing numeric exit status and one bounded adapter-sanitized
+stderr excerpt; raw stderr remains private.
 
 The shared layer is realized: runtime owns plan-derived session agreement,
 staged safe failures, access provenance, and `PreparedOperationEvidence`.

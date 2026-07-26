@@ -1,6 +1,6 @@
 # 042 Nucleus Sustained Workload Hardening
 
-Status: active
+Status: paused
 Owner: Tom
 Created: 2026-07-25
 Milestone: `../014-consumer-scale-application-proof-and-hardening.md`
@@ -56,6 +56,42 @@ read-only envelope after Nucleus returned to a clean checkpoint.
 - fixture: exact read-only commit
   `04f7eb371e4e3ac0010a69d3f96052a7becbe43a`
 - state: isolated Nucleus proof root retained from card 041
+
+## Launch-Target Stop
+
+The first sustained launch stopped after 10 provider turns. Effigy launched the
+current dev executable with the isolated proof environment, but Computer Use
+resolved the shared `dev.nucleus.desktop` identity to the existing
+`target/debug/bundle/macos/Nucleus.app`. That bundle lacked the proof
+environment and used normal Nucleus state.
+
+Observed effects:
+
+- 9 synthetic turns completed and 1 was cancelled
+- the normal state contains 18 uniquely marked synthetic message records
+- isolated proof evidence stayed at the card 041 baseline of 14 turns
+- the read-only fixture remained unchanged
+- no Nucleus or Nucleus-owned Codex child remained after shutdown
+- no normal-state record was deleted or rewritten during cleanup
+
+A diagnostic SQLite query initially opened normal state in default CLI mode
+before the audit switched to `-readonly`; it checkpointed database metadata but
+added, removed, or changed no logical record.
+
+The failed tranche consumes 10 provider-turn attempts, 2 native launches and
+catalogue selections, and 2 provider-session lifecycles. It does not satisfy
+the sustained workload.
+
+Resume requires:
+
+1. an operator decision to preserve the clearly marked synthetic normal-state
+   records or authorize a separately planned recovery
+2. one exact launch and UI-control target that cannot resolve away from the
+   proof environment
+3. explicit reset approval for a maximum of 60 provider turns, 7 native
+   launches and catalogue selections, and 12 provider-session lifecycles while
+   retaining the original 50 valid outcomes, serial execution, read-only
+   effects, and 4-hour active-time ceiling
 
 ## Scope
 

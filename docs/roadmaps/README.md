@@ -12,10 +12,11 @@ shape.
 
 ## Next Task
 
-Execute the explicitly approved read-only card 042 envelope through Nucleus's
-normal native path. Stop at 50 planned turns, 55 attempts, five launches, ten
-provider sessions, or four hours. Do not run the writable tranche, publish,
-push, tag, release, or mutate the fixture or a workspace.
+Hold card 042 after its launch-target and normal-state boundary stop. Await an
+operator decision on the marked synthetic records, an exact isolated app
+target, and the proposed 60-turn, 7-launch, 12-session reset. Do not make
+another provider call, delete records, run the writable tranche, publish, push,
+tag, or release.
 
 ## Index
 

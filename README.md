@@ -527,10 +527,12 @@ prepared interactive sessions omitted the time service required by their
 promised turn deadlines. The repaired pilot then completed all 12 planned
 ordinary, callback, cancellation, restart-recovery, and deadline outcomes at
 the exact 15-attempt and 6-session ceiling, with joined cleanup and no fixture
-drift. Sustained read-only Nucleus work is explicitly approved and active.
-Exact provider rate, quota, usage, and billed-cost evidence remains unavailable
-on this subscription-backed path, so the workload retains explicit turn and
-time ceilings. Soundcheck then exposed an opaque
+drift. The first sustained read-only Nucleus tranche stopped after native UI
+control resolved a shared bundle identity outside the isolated proof
+environment. Ten marked synthetic turns reached normal Nucleus state; no
+further call or record deletion is authorized. Exact provider rate, quota,
+usage, and billed-cost evidence remains unavailable on this subscription-backed
+path. Soundcheck previously exposed an opaque
 non-zero Codex installed-version probe through a host-selected wrapper.
 Swallowtail now retains numeric status and bounded sanitized stderr under the
 stable discovery failure code without rejecting wrappers. Writable proof

@@ -262,7 +262,7 @@ evidence-led provider work.
 - commit `a26b54f` binds time in the prepared session plan and adds a joined
   deadline-bound regression; all 90 Codex and 19 deterministic Nucleus adapter
   tests pass
-- card 041 is paused for a second narrow reset to 5 physical launches and
+- card 041's second narrow reset is approved: 5 physical launches and
   catalogue attempts total; the 15-turn, 6-thread, read-only, and cumulative
   active-time ceilings remain unchanged
 - live provider calls, workspace writes, and consumer mutations remain
@@ -297,7 +297,7 @@ evidence-led provider work.
 - [013 Canonical Source Provenance And Final Candidate](013-canonical-source-provenance-and-final-candidate.md)
   — completed
 - [014 Consumer-Scale Application Proof And Hardening](014-consumer-scale-application-proof-and-hardening.md)
-  — active, paused; card 040 complete, card 041 active and paused, cards
+  — active; card 040 complete, card 041 active, cards
   042-044 planned
 
 ## Held Backlog

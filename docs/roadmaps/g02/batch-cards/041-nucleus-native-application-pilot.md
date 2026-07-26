@@ -1,6 +1,6 @@
 # 041 Nucleus Native Application Pilot
 
-Status: active, paused
+Status: active
 Owner: Tom
 Created: 2026-07-25
 Updated: 2026-07-26
@@ -132,7 +132,7 @@ and catalogue attempt than approved.
 
 ## Second Required Reset
 
-Recommended:
+Approved 2026-07-26:
 
 - authorize 5 physical launches and 5 catalogue attempts in total;
 - retain both failed launches as defect evidence;
@@ -143,7 +143,8 @@ Recommended:
   read-only effects, and 60 minutes of cumulative active execution time; and
 - exclude operator-paused time without resetting accumulated execution time.
 
-Make no further provider call before explicit approval.
+The next provider call begins clean launch three. The two failed launches
+remain counted as defect evidence.
 
 ## Acceptance Criteria
 
@@ -162,4 +163,4 @@ Make no further provider call before explicit approval.
 - current consumer changes overlap the proof path
 - cleanup, persistence, or provider truth becomes uncertain
 - a defect requires changing consumer product policy
-- the second one-launch, one-catalogue reset is not explicitly approved
+- a further live-envelope change is required

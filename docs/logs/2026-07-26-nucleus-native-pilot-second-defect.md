@@ -56,7 +56,7 @@ Consumed:
 - 1 joined provider-thread lifecycle;
 - zero provider model turns.
 
-Recommended reset:
+Approved reset:
 
 - permit 5 physical launches and 5 catalogue attempts total;
 - retain both failed launches as defect evidence;
@@ -70,5 +70,6 @@ Recommended reset:
 
 ## Next
 
-Approve or reject the second one-launch and one-catalogue reset. Card 041
-remains active and paused.
+Resume card 041 with clean launch three. Use the first ordinary turn as the
+repaired-path gate, then continue only while the frozen tuple and live
+envelope remain true.

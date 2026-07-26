@@ -12,13 +12,13 @@ shape.
 
 ## Next Task
 
-Review the second-defect evidence in
-`docs/logs/2026-07-26-nucleus-native-pilot-second-defect.md`. Approve or reject
-card 041's reset to 5 physical launches and catalogue attempts total. The
-unchanged 12 planned outcomes must still fit within 15 turns, 6 joined
-provider threads including the failed session, read-only effects, and 60
-minutes of cumulative active execution. Make no further provider call before
-that decision. Do not publish, push, tag, release, or write a workspace.
+Execute card 041's approved clean Nucleus pilot launches. Start with the first
+ordinary Agent Chat turn as the repaired-path gate, then complete the unchanged
+12 planned outcomes across 3 clean launches. Stay within 5 physical launches
+and catalogue attempts total, 15 turn attempts, 6 joined provider threads
+including the failed session, read-only effects, and 60 minutes of cumulative
+active execution. Stop on deterministic drift. Do not publish, push, tag,
+release, or write a workspace.
 
 ## Index
 

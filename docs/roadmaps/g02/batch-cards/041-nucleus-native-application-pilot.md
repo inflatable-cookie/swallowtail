@@ -172,6 +172,28 @@ Completed planned outcomes: 4 of 6 ordinary successes, 1 of 3 callback
 successes, and the sole cancellation. Clean launch four owns the remaining 2
 ordinary and 2 callback successes across no more than 2 provider sessions.
 
+## Clean Launch Four
+
+Physical launch four revalidated the frozen route and persisted history. It
+completed the remaining 2 ordinary turns and 2 bounded `task_ledger`
+inspections across 2 reopened sessions. The seeded-project session retained
+its prior conversation after restart.
+
+Safe post-close evidence for the clean proof state now records 10 turns: 9
+completed, 1 cancelled, and zero active, failed, timed out, or unexpected. No
+Nucleus process remained. The fixture stayed unchanged and read-only.
+
+Across the complete envelope, including the isolated earlier defect state:
+
+- 4 of 5 physical launches and catalogue attempts are consumed;
+- 11 of 15 turn attempts are consumed;
+- 1 of 3 failed-scenario reruns is consumed; and
+- 5 of 6 provider-thread lifecycles are joined.
+
+Ten of 12 planned outcomes are complete. Final launch five owns 1
+post-restart recovery success and 1 controlled deadline in the sole remaining
+provider session.
+
 ## Acceptance Criteria
 
 - [ ] normal UI and server paths use the candidate

@@ -268,6 +268,9 @@ evidence-led provider work.
 - clean launch three completed 4 ordinary turns, 1 bounded callback, and 1
   normal cancellation across 2 joined sessions; safe evidence records 5
   completed, 1 cancelled, and no failed, timed-out, active, or unexpected turn
+- clean launch four completed the remaining 2 ordinary and 2 callback
+  successes across 2 joined sessions; 10 of 12 planned outcomes are complete
+  and the final recovery-plus-deadline launch remains
 - live provider calls, workspace writes, and consumer mutations remain
   separately gated
 

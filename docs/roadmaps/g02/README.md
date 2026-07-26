@@ -287,8 +287,7 @@ evidence-led provider work.
   10 callback, 3 cancelled, and 2 timed out, with no failure, fallback,
   fixture drift, or leaked process
 - the complete reset stopped at its accepted 60-turn, 7-launch, and 12-session
-  ceiling; card 043 awaits Soundcheck authority and its separate live-effect
-  approval
+  ceiling; this remains the accepted sustained application proof
 - card 043's read-only gate audit found active Soundcheck work in the exact
   assistant path plus missing deterministic data-seed, bounded deadline, and
   safe attempt-ledger support
@@ -308,8 +307,11 @@ evidence-led provider work.
 - Soundcheck `282fa21` now suppresses all three host-ingestion paths only in
   the validated proof profile; a rebuilt native bundle retains exactly 16
   fixtures, zero scan runs, zero helpers, and zero attempt evidence
-- card 043 remains paused; Soundcheck card 092 requires another fresh live
-  approval and card 093 remains planned behind its review gate
+- the operator declined further repetition of Soundcheck's fixed agent-review
+  workflow; card 043 and Soundcheck cards 092-093 are superseded without live
+  scale acceptance claims
+- card 044 is ready to refresh local candidate evidence without repeating the
+  provider workloads or authorizing publication
 - Soundcheck primary research always carries bounded external-search
   authority, so the corrected 20-attempt envelope authorizes search for all
   16 primary attempts rather than claiming only 2 search-enabled workflows
@@ -346,7 +348,7 @@ evidence-led provider work.
   — completed
 - [014 Consumer-Scale Application Proof And Hardening](014-consumer-scale-application-proof-and-hardening.md)
   — active; cards 040-042 and 045 complete, Soundcheck card 091 owns offline
-  readiness, card 043 paused before a fresh live proof, card 044 planned
+  readiness, card 043 superseded by operator decision, card 044 ready
 
 ## Held Backlog
 
@@ -416,8 +418,8 @@ the active g02 queue.
   5 launches and 10 app-server lifecycles; the combined reset stopped at
   60 provider turns, 7 launches, and 12 sessions with no failed or unexpected
   isolated outcome
-- cards 041-043 own Nucleus pilot, Nucleus sustained hardening, and Soundcheck
-  secondary proof under consumer authority
+- cards 041-042 own the accepted Nucleus pilot and sustained hardening;
+  card 043 retains Soundcheck secondary-shape evidence but is superseded
 - card 044 owns candidate refresh and release-readiness reassessment
 - cards 024-026 own remaining harness facades
 - cards 027-030 own hosted direct and provider-state facades

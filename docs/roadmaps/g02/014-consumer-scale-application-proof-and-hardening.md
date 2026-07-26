@@ -6,8 +6,8 @@ Owner: Tom
 Created: 2026-07-25
 Depends on: g02.013
 Contract refs: 009, 011-013, 029, 032-037
-Planning state: cards 040-042 and 045 plus Soundcheck offline readiness card
-091 completed; card 043 remains paused before live proof; card 044 planned
+Planning state: cards 040-042 and 045 complete; card 043 superseded by operator
+scope decision after Soundcheck readiness and defect evidence; card 044 ready
 
 ## Problem
 
@@ -24,7 +24,8 @@ baseline.
 - [x] Define an exact, bounded, consumer-owned scale envelope.
 - [x] Prove Nucleus as the primary long-lived harness consumer.
 - [x] Fix Swallowtail defects fixture-first and replay the same workload.
-- [ ] Prove Soundcheck's materially different bounded structured-run path.
+- [x] Retain Soundcheck's distinct structured-run integration and record the
+      operator disposition of its repetitive synthetic scale workload.
 - [ ] Refresh the candidate only after application evidence closes.
 - [ ] Reassess release readiness without authorizing publication.
 
@@ -73,8 +74,9 @@ baseline.
 ### Batch 14.4 — Secondary Shape And Candidate Refresh
 
 - [x] Support Soundcheck card 091 offline.
-- [ ] Execute card 043 only after separate live-effect approval.
-- [ ] Execute card 044 after both application proofs pass.
+- [x] Disposition card 043 without claiming its unchecked live workload.
+- [ ] Execute card 044 from the accepted Nucleus scale evidence and retained
+      Soundcheck integration evidence.
 
 ## Acceptance Criteria
 
@@ -84,18 +86,20 @@ baseline.
       cost, diagnostics, usage, and cleanup evidence are recorded
 - [x] Nucleus callback, interruption, recovery, and bounded-write cases are
       covered where applicable
-- [ ] Soundcheck catalogue and structured-run behavior passes as a separate
-      operation shape
+- [x] Soundcheck catalogue and structured-run integration remain represented
+      as a separate operation shape; synthetic scale repetition is explicitly
+      declined rather than reported as passed
 - [x] every Swallowtail defect has a deterministic regression before rerun
 - [x] no consumer-owned behavior migrates into Swallowtail
 - [ ] publication remains a later explicit operator decision
 
 ## Decision Gates
 
-Card 040 makes no provider calls and edits no consumer. Cards 041-043 require
-consumer-repository authority plus exact live-effect authorization. Workspace
-writes need a separate disposable-resource grant. Card 044 may refresh local
-candidate evidence but cannot publish, push, tag, or release.
+Card 040 makes no provider calls and edits no consumer. Cards 041-042 required
+consumer-repository authority plus exact live-effect authorization. Card 043
+is superseded. Workspace writes need a separate disposable-resource grant.
+Card 044 may refresh local candidate evidence but cannot publish, push, tag,
+or release.
 
 Card 040 found that Nucleus needed an app-scoped isolated state root, normal
 Agent Chat cancellation, a proof-only deadline, and a disposable fixture
@@ -149,4 +153,13 @@ dependency checkpoints and repaired offline native readiness.
 Soundcheck then closed those gates at runner-repair source `49dfc7e`,
 `soundcheck-library` `0cc339e`, scoped Poodle `666b985`, Signal `fe37838`, and
 unchanged Swallowtail runtime `a3fbc14`. Native schema-v50 fixture open and all
-offline validation pass. A fresh live approval remains required.
+offline validation passed.
+
+The approved retry then found proof-fixture pollution before provider
+execution. Soundcheck `282fa21` now suppresses host discovery only inside its
+validated proof profile, and a rebuilt native bundle retains exactly 16
+fixtures offline. The operator accepted the readiness and defect evidence,
+declined further repetition of the fixed agent-review workflow, and
+superseded card 043 without a live scale claim. Nucleus remains the accepted
+sustained application proof. Card 044 is ready for local candidate
+reassessment; publication remains separately prohibited.

@@ -50,12 +50,12 @@ now pass from extracted package artifacts, alongside the Nucleus and
 Soundcheck Codex proofs. One reproducible provider-wide `0.1.0` candidate is
 retained as the application-hardening baseline; its exact canonical source,
 parent, artifacts, and validation digests are recorded in candidate evidence.
-Prior candidates remain superseded evidence. Publication is held until a
-working consumer passes an accepted sustained workload through its normal
-product path. No external release state has changed.
-Soundcheck's secondary structured-run scale proof remains paused before live
-execution. Consumer source `282fa21` now retains its exact 16-product fixture
-under native startup; a fresh bounded live approval is still required.
+Prior candidates remain superseded evidence. Nucleus has passed the accepted
+sustained workload through its normal product path. Publication remains
+operator-held while the local candidate is refreshed and reassessed; no
+external release state has changed. Soundcheck's repetitive secondary scale
+workload is explicitly superseded without a live acceptance claim. Its
+distinct structured-run integration and proof-isolation evidence remain.
 
 ## Current Direction
 

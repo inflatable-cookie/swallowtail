@@ -49,6 +49,8 @@
 
 - `016-replacement-release-candidate-and-handoffs.md` — not executed;
   replacement moved to card 036
+- `043-soundcheck-secondary-application-proof.md` — stopped after readiness
+  defects; remaining synthetic workload declined by operator
 
 ## Backlog
 
@@ -56,13 +58,12 @@ None. Cross-generation deferred work lives in `docs/roadmaps/backlog/`.
 
 ## Active
 
-None. Card 043 is paused until its consumer-readiness and live-effect gates
-pass.
+- `044-hardened-candidate-refresh-and-release-reassessment.md`
 
 ## Planned
 
-- `044-hardened-candidate-refresh-and-release-reassessment.md`
+None.
 
 ## Paused
 
-- `043-soundcheck-secondary-application-proof.md`
+None.

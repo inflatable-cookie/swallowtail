@@ -1,6 +1,6 @@
 # 043 Soundcheck Secondary Application Proof
 
-Status: paused
+Status: superseded
 Owner: Tom
 Created: 2026-07-25
 Milestone: `../014-consumer-scale-application-proof-and-hardening.md`
@@ -9,6 +9,15 @@ Milestone: `../014-consumer-scale-application-proof-and-hardening.md`
 
 Prove the hardened candidate through Soundcheck's normal catalogue and bounded
 structured-run product path.
+
+## Disposition
+
+Superseded by operator decision on 2026-07-26. Nucleus already supplies the
+accepted sustained application workload. Soundcheck retains distinct
+structured-run product evidence, deterministic proof support, and the two
+zero-provider readiness defects found by this card. The remaining repetitive
+agent-review workload is not required, and no unchecked live acceptance is
+claimed.
 
 ## Entry Gates
 
@@ -133,7 +142,8 @@ schema-v50 fixture, completed library bootstrap, and entered normal startup
 scanning. Zero attempts reconciled and guarded teardown passed. Soundcheck
 health, QA, 24 frontend tests, and 178 Rust tests pass.
 
-Card 043 remains paused only at the fresh live-effect approval gate.
+At that checkpoint, card 043 remained paused only at the fresh live-effect
+approval gate. The later disposition above supersedes that gate.
 
 ## Second Pilot Stop And Isolation Repair
 
@@ -158,10 +168,8 @@ A fresh offline native run retained exactly 16 products, zero hosted products,
 zero scan runs, zero helpers, and zero attempt evidence. Health, QA, 24
 frontend tests, and 178 Rust tests pass.
 
-Card 043 remains paused. The approved one-launch envelope was consumed by the
-stopped attempt. Another card 092 retry requires explicit approval of the same
-5-attempt, 1-launch, 30-minute, subscription-backed,
-host-approved-external-search envelope against the repaired source and bundle.
+The operator subsequently closed the remaining workload as low-value
+repetition. Card 043 is superseded without another provider attempt.
 
 ## Scope
 

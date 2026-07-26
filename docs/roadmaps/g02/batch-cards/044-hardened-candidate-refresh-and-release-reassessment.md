@@ -1,6 +1,6 @@
 # 044 Hardened Candidate Refresh And Release Reassessment
 
-Status: planned
+Status: ready
 Owner: Tom
 Created: 2026-07-25
 Milestone: `../014-consumer-scale-application-proof-and-hardening.md`
@@ -12,7 +12,9 @@ reassess release readiness without publishing.
 
 ## Entry Gates
 
-- cards 041-043 complete
+- cards 041-042 complete
+- card 043 explicitly superseded with its Soundcheck integration, readiness,
+  and defect evidence retained
 - all accepted Swallowtail defects closed or explicitly held
 - candidate source clean and in normal local history
 
@@ -21,7 +23,9 @@ reassess release readiness without publishing.
 1. Classify public API and guaranteed-behavior changes from the current
    `0.1.0` baseline.
 2. Rebuild all 23 packages and all 22 packaged route proofs.
-3. Re-run Nucleus, Soundcheck, and exact application workload evidence.
+3. Re-run deterministic packaged Nucleus and Soundcheck consumer proofs;
+   reconcile the accepted live application evidence without repeating the
+   provider workloads.
 4. Supersede the current candidate without deleting it.
 5. Update release notes, compatibility risks, rollback, and currentness.
 6. Stop before push, publication, tag, GitHub release, workflow, or owner

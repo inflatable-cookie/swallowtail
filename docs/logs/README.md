@@ -5,6 +5,7 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-07-26 Soundcheck Scale Workload Disposition](2026-07-26-soundcheck-scale-workload-disposition.md)
 - [2026-07-26 Soundcheck Fixture-Isolation Repair](2026-07-26-soundcheck-fixture-isolation-repair.md)
 - [2026-07-26 Soundcheck Proof Readiness Repair](2026-07-26-soundcheck-proof-readiness-repair.md)
 - [2026-07-26 Soundcheck Pilot Launch Stop](2026-07-26-soundcheck-pilot-launch-stop.md)

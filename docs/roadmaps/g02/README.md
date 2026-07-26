@@ -29,7 +29,7 @@ evidence-led provider work.
 | Cover every remaining harness, hosted, realtime, SDK, and local-runtime route. | completed | Contracts 014-035, 037 | `g02.009`-`g02.011` |
 | Prove packaged provider-wide integration and replace the held candidate. | completed | Contracts 011, 036-037 | `g02.012` |
 | Replace synthetic candidate provenance with one canonical-history final candidate. | completed | Contract 036, release topology architecture | `g02.013` |
-| Prove the candidate through sustained normal-path consumer workloads and harden defects. | active | Contract 036, consumer runtime evidence | `g02.014` |
+| Prove the candidate through sustained normal-path consumer workloads and harden defects. | completed | Contract 036, consumer runtime evidence | `g02.014` |
 
 ## Current Checkpoint
 
@@ -314,8 +314,8 @@ evidence-led provider work.
 - Contracts 011 and 036 now put repeated lifecycle claims in adapter or
   consumer backend scenario harnesses; native apps retain thin authenticated
   vertical smoke
-- card 044 is ready to refresh local candidate evidence without repeating UI
-  or provider workloads or authorizing publication
+- card 044 completed local candidate refresh without repeating UI or provider
+  workloads or authorizing publication
 - Soundcheck primary research always carries bounded external-search
   authority, so the corrected 20-attempt envelope authorizes search for all
   16 primary attempts rather than claiming only 2 search-enabled workflows
@@ -351,8 +351,8 @@ evidence-led provider work.
 - [013 Canonical Source Provenance And Final Candidate](013-canonical-source-provenance-and-final-candidate.md)
   — completed
 - [014 Consumer-Scale Application Proof And Hardening](014-consumer-scale-application-proof-and-hardening.md)
-  — active; cards 040-042 and 045 complete, Soundcheck card 091 owns offline
-  readiness, card 043 superseded by operator decision, card 044 ready
+  — completed; cards 040-042, 044, and 045 complete, card 043 superseded by
+  operator decision
 
 ## Held Backlog
 
@@ -424,7 +424,9 @@ the active g02 queue.
   isolated outcome
 - cards 041-042 own the accepted Nucleus pilot and sustained hardening;
   card 043 retains Soundcheck secondary-shape evidence but is superseded
-- card 044 owns candidate refresh and release-readiness reassessment
+- card 044 completed one reproducible post-hardening candidate; all 23
+  packages, 22 routes, both isolated consumers, and 93 packaged Codex tests
+  pass without live effects
 - cards 024-026 own remaining harness facades
 - cards 027-030 own hosted direct and provider-state facades
 - cards 031-033 own realtime, SDK, and llama.cpp facades

@@ -43,6 +43,7 @@
 - `040-consumer-scale-proof-envelope.md`
 - `041-nucleus-native-application-pilot.md`
 - `042-nucleus-sustained-workload-hardening.md`
+- `044-hardened-candidate-refresh-and-release-reassessment.md`
 - `045-codex-discovery-exit-diagnostics.md`
 
 ## Superseded
@@ -58,7 +59,7 @@ None. Cross-generation deferred work lives in `docs/roadmaps/backlog/`.
 
 ## Active
 
-- `044-hardened-candidate-refresh-and-release-reassessment.md`
+None.
 
 ## Planned
 

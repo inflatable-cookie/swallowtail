@@ -5,8 +5,8 @@ authorize registry, tag, push, GitHub release, workflow, or consumer mutations.
 
 ## Candidates
 
-- [0.1.0](0.1.0.md) — active non-published 23-package candidate, held for
-  application-scale consumer proof
+- [0.1.0](0.1.0.md) — active non-published post-hardening 23-package
+  consumer-soak candidate
 - [Nucleus 0.1.0 handoff](0.1.0-nucleus-handoff.md) — prepared app-server
   adoption
 - [Soundcheck 0.1.0 handoff](0.1.0-soundcheck-handoff.md) — prepared

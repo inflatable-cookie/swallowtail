@@ -194,6 +194,7 @@ shape with the final canonical-history candidate recorded in
 complete normal history and reproduces all 23 package archives plus audited
 file lists.
 
-Roadmap g02.014 holds that candidate while Nucleus and Soundcheck provide
-consumer-owned application evidence. No registry or release mutation is
-sequenced before that lane closes.
+Roadmap g02.014 accepted Nucleus application evidence, retained Soundcheck's
+distinct structured-run integration, and refreshed the candidate without
+registry or release mutation. The resulting candidate remains local for
+ordinary consumer soak.

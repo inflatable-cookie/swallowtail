@@ -1,13 +1,13 @@
 # 014 Consumer-Scale Application Proof And Hardening
 
-Status: active
+Status: completed
 Posture: strict-checkpoint-gated
 Owner: Tom
 Created: 2026-07-25
 Depends on: g02.013
 Contract refs: 009, 011-013, 029, 032-037
-Planning state: cards 040-042 and 045 complete; card 043 superseded by operator
-scope decision after Soundcheck readiness and defect evidence; card 044 ready
+Planning state: cards 040-042, 044, and 045 complete; card 043 superseded by
+operator scope decision after Soundcheck readiness and defect evidence
 
 ## Problem
 
@@ -32,8 +32,8 @@ provider acceptance; the UI is not the default lifecycle harness.
 - [x] Retain Soundcheck's distinct structured-run integration and record the
       operator disposition of its repetitive synthetic scale workload.
 - [x] Separate deterministic scenario repetition from native vertical smoke.
-- [ ] Refresh the candidate only after application evidence closes.
-- [ ] Reassess release readiness without authorizing publication.
+- [x] Refresh the candidate only after application evidence closes.
+- [x] Reassess release readiness without authorizing publication.
 
 ## Non-Goals
 
@@ -81,7 +81,7 @@ provider acceptance; the UI is not the default lifecycle harness.
 
 - [x] Support Soundcheck card 091 offline.
 - [x] Disposition card 043 without claiming its unchecked live workload.
-- [ ] Execute card 044 from the accepted Nucleus scale evidence and retained
+- [x] Execute card 044 from the accepted Nucleus scale evidence and retained
       Soundcheck integration evidence.
 
 ## Acceptance Criteria
@@ -97,7 +97,7 @@ provider acceptance; the UI is not the default lifecycle harness.
       declined rather than reported as passed
 - [x] every Swallowtail defect has a deterministic regression before rerun
 - [x] no consumer-owned behavior migrates into Swallowtail
-- [ ] publication remains a later explicit operator decision
+- [x] publication remains a later explicit operator decision
 
 ## Decision Gates
 
@@ -176,3 +176,9 @@ join, and cleanup. Contracts 011 and 036 now place repeated mechanism and
 consumer-mapping cases in purpose-built scenario harnesses. Future native
 proof is a thin vertical smoke unless product startup or persistence is the
 claim.
+
+Card 044 closes the milestone with one reproducible source, 23 package
+archives, all 22 packaged routes, isolated Nucleus and Soundcheck checks, and
+the 93-test packaged Codex suite. Exact retained evidence names the frozen
+source. No external release state changed. The candidate is technically
+coherent and remains local for continued consumer soak.

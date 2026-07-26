@@ -30,7 +30,7 @@ should start with the
 [prepared-integration guides](docs/guides/README.md). Multi-provider
 applications should start with the exact
 [22-route matrix](docs/guides/provider-route-matrix.md).
-Consumer-scale application proof is the active stabilization lane. The shared
+Consumer soak is the active stabilization lane. The shared
 evidence foundation, Codex typed bound operations, and Kimi Code ACP prepared
 facade are complete. Anthropic Models and Messages now supplies the first
 hosted-direct prepared facade. Ollama native supplies the attached-runtime
@@ -48,12 +48,12 @@ attached inference and owned ephemeral-serving paths. The exact cross-route
 matrix and unified integration guidance are complete. All 22 prepared routes
 now pass from extracted package artifacts, alongside the Nucleus and
 Soundcheck Codex proofs. One reproducible provider-wide `0.1.0` candidate is
-retained as the application-hardening baseline; its exact canonical source,
+retained as the post-hardening soak baseline; its exact canonical source,
 parent, artifacts, and validation digests are recorded in candidate evidence.
 Prior candidates remain superseded evidence. Nucleus has passed the accepted
 sustained workload through its normal product path. Publication remains
-operator-held while the local candidate is refreshed and reassessed; no
-external release state has changed. Soundcheck's repetitive secondary scale
+operator-held during continued working-application soak; no external release
+state has changed. Soundcheck's repetitive secondary scale
 workload is explicitly superseded without a live acceptance claim. Its
 distinct structured-run integration and proof-isolation evidence remain.
 

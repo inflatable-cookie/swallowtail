@@ -1,6 +1,6 @@
 # 042 Nucleus Sustained Workload Hardening
 
-Status: active
+Status: completed
 Owner: Tom
 Created: 2026-07-25
 Milestone: `../014-consumer-scale-application-proof-and-hardening.md`
@@ -103,29 +103,71 @@ time.
 
 ## Scope
 
-1. Run 50 Agent Chat attempts across 2 durable conversations, 5 native
+1. [x] Run 50 Agent Chat attempts across 2 durable conversations, 5 native
    launches, 4 restarts, and 10 app-server lifecycles.
-2. Complete 35 ordinary turns, 10 read-only callbacks, 3 cancellations, and 2
+2. [x] Complete 35 ordinary turns, 10 read-only callbacks, 3 cancellations, and 2
    controlled deadlines.
-3. Run one active turn at a time with no more than 2 live app-server children.
-4. Permit at most 5 exact-scenario reruns, 55 turns total, and 4 hours wall
+3. [x] Run one active turn at a time with no more than 2 live app-server children.
+4. [x] Permit at most 5 exact-scenario reruns, 55 turns total, and 4 hours wall
    time.
-5. Add exactly 10 bounded task attempts only under the separate disposable
-   worktree and provider-write grant in card 040.
-6. Preserve exact rate, usage, cleanup, failure, persistence, and safe
+5. [x] Keep the 10 bounded task attempts excluded because no disposable
+   worktree and provider-write grant was accepted.
+6. [x] Preserve exact rate, usage, cleanup, failure, persistence, and safe
    correlation evidence.
-7. Reduce Swallowtail failures to offline fixtures, fix, run repository QA,
-   then replay the failed application scenario.
+7. [x] Reduce Swallowtail failures to offline fixtures before replay. No new
+   Swallowtail failure appeared in the sustained reset.
+
+## Execution Evidence
+
+The accepted reset completed on 2026-07-26 through the rebuilt debug bundle:
+
+- bundle executable SHA-256
+  `a7be57b5741a5bff1c6e37878b3690c5534c6f4bcf55926b98df4391174b0092`
+- 5 valid launches, 4 restarts, 5 catalogue selections, and 10 app-server
+  lifecycles
+- 50 serial read-only turns across the 2 retained durable conversations
+- 35 ordinary completions, 10 read-only `task_ledger` completions,
+  3 cancellations, and 2 controlled deadlines
+- exact isolated evidence delta: 50 total, 45 completed, 3 cancelled,
+  2 timed out, 0 failed, and 0 unexpected
+- exact final isolated evidence: 64 total, 57 completed, 4 cancelled,
+  3 timed out, 0 failed, 0 active, and 0 unexpected
+- no more than 2 live app-server children; both joined application shutdown
+- unchanged fixture commit
+  `04f7eb371e4e3ac0010a69d3f96052a7becbe43a`
+
+Every launch used an environment-bound executable and full bundle-path UI
+target. Before its first turn, one exact Nucleus PID had only the isolated
+database open. The frozen Nucleus, Swallowtail, Codex, access, model, host,
+topology, and no-fallback tuple remained unchanged.
+
+Including the stopped tranche, the reset consumed exactly 60 provider-turn
+attempts, 7 launches and catalogue selections, and 12 provider sessions. The
+18 marked normal-state messages remain preserved. No workspace, task, SCM,
+forge, proposal, fixture, provider-account, Nucleus source, publication, push,
+tag, or release mutation occurred.
 
 ## Acceptance Criteria
 
-- [ ] the complete card 040 workload passes
-- [ ] 50 planned chat turns pass within the 55-turn and 4-hour ceilings
-- [ ] no detached task, leaked process, callback loss, or silent fallback
-- [ ] provider and application state reconcile after every planned failure
-- [ ] every Swallowtail fix has deterministic regression coverage
-- [ ] reruns use the same accepted envelope
-- [ ] unresolved capability, auth, topology, or version risks are explicit
+- [x] the approved read-only sustained workload from card 040 passes
+- [x] 50 planned chat turns pass within the 55-turn and 4-hour ceilings
+- [x] no detached task, leaked process, callback loss, or silent fallback
+- [x] provider and application state reconcile after every planned failure
+- [x] every preceding Swallowtail fix has deterministic regression coverage
+- [x] reruns use the same accepted envelope
+- [x] unresolved capability, auth, topology, or version risks are explicit
+
+## Remaining Risks
+
+- Codex exposes no stable rate, quota, usage, or billed-cost summary for this
+  ChatGPT subscription-backed route.
+- The proof covers Codex `0.145.0`, exact `gpt-5.4-mini`, local stdio, and the
+  frozen macOS host. It does not widen qualified version, model, access, or
+  topology support.
+- Bounded workspace-write execution remains unproved and separately gated.
+- The shared bundle identifier remains unsuitable as proof identity; the
+  accepted control is the exact environment-bound executable plus full app
+  path and PID/database check.
 
 ## Stop Conditions
 

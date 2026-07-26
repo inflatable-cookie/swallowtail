@@ -6,8 +6,7 @@ Owner: Tom
 Created: 2026-07-25
 Depends on: g02.013
 Contract refs: 009, 011-013, 029, 032-037
-Planning state: cards 040-041 and 045 completed; card 042 active under an
-explicit launch-target reset; cards 043-044 planned
+Planning state: cards 040-042 and 045 completed; cards 043-044 planned
 
 ## Problem
 
@@ -22,8 +21,8 @@ baseline.
 ## Goals
 
 - [x] Define an exact, bounded, consumer-owned scale envelope.
-- [ ] Prove Nucleus as the primary long-lived harness consumer.
-- [ ] Fix Swallowtail defects fixture-first and replay the same workload.
+- [x] Prove Nucleus as the primary long-lived harness consumer.
+- [x] Fix Swallowtail defects fixture-first and replay the same workload.
 - [ ] Prove Soundcheck's materially different bounded structured-run path.
 - [ ] Refresh the candidate only after application evidence closes.
 - [ ] Reassess release readiness without authorizing publication.
@@ -64,11 +63,11 @@ baseline.
 
 ### Batch 14.3 — Sustained Nucleus Hardening
 
-- [ ] Execute card 042 after pilot defects close.
-- [ ] Run the accepted repeated and mixed workload.
-- [ ] Add bounded disposable-workspace execution only under separate write
+- [x] Execute card 042 after pilot defects close.
+- [x] Run the accepted repeated and mixed workload.
+- [x] Keep bounded disposable-workspace execution behind separate write
       authorization.
-- [ ] Reduce every Swallowtail defect to deterministic regression evidence.
+- [x] Reduce every Swallowtail defect to deterministic regression evidence.
 
 ### Batch 14.4 — Secondary Shape And Candidate Refresh
 
@@ -77,16 +76,16 @@ baseline.
 
 ## Acceptance Criteria
 
-- [ ] at least one working consumer passes an accepted sustained workload
-- [ ] actual provider or harness access runs through the normal product path
-- [ ] exact versions, topology, access, repetitions, concurrency, effects,
+- [x] at least one working consumer passes an accepted sustained workload
+- [x] actual provider or harness access runs through the normal product path
+- [x] exact versions, topology, access, repetitions, concurrency, effects,
       cost, diagnostics, usage, and cleanup evidence are recorded
-- [ ] Nucleus callback, interruption, recovery, and bounded-write cases are
+- [x] Nucleus callback, interruption, recovery, and bounded-write cases are
       covered where applicable
 - [ ] Soundcheck catalogue and structured-run behavior passes as a separate
       operation shape
-- [ ] every Swallowtail defect has a deterministic regression before rerun
-- [ ] no consumer-owned behavior migrates into Swallowtail
+- [x] every Swallowtail defect has a deterministic regression before rerun
+- [x] no consumer-owned behavior migrates into Swallowtail
 - [ ] publication remains a later explicit operator decision
 
 ## Decision Gates
@@ -118,3 +117,15 @@ run, Soundcheck
 exposed a non-zero Codex probe diagnostic gap through a host-selected wrapper.
 Card 045 closed the gap with status and bounded sanitized stderr. Executable
 selection remains host-owned.
+
+The reset then completed all 50 valid turns across 5 native launches and 10
+app-server lifecycles: 35 ordinary completions, 10 read-only callbacks, 3
+cancellations, and 2 controlled deadlines. Isolated evidence moved from
+14 total turns to 64, ending with 57 completed, 4 cancelled, 3 timed out, and
+no failed, active, or unexpected turn. The exact fixture stayed clean, no
+process leaked, and the full reset stopped at its accepted 60-turn, 7-launch,
+12-session ceiling after including the invalid first tranche.
+
+Card 043 is next but remains planned. It needs current Soundcheck roadmap
+authority plus explicit approval of its fresh test database, screenshots,
+search-enabled workflows, and live-provider envelope.

@@ -5,6 +5,7 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-07-26 Nucleus Sustained Workload Closeout](2026-07-26-nucleus-sustained-workload-closeout.md)
 - [2026-07-26 Nucleus Sustained Workload Launch-Target Stop](2026-07-26-nucleus-sustained-workload-launch-target-stop.md)
 - [2026-07-26 Codex Discovery Exit Diagnostics](2026-07-26-codex-discovery-exit-diagnostics.md)
 - [2026-07-26 Nucleus Native Pilot Second Defect](2026-07-26-nucleus-native-pilot-second-defect.md)

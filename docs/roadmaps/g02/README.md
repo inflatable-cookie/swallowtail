@@ -281,8 +281,14 @@ evidence-led provider work.
 - Codex supplied no stable rate, quota, usage, or billed-cost summary; card
   042's first sustained tranche stopped after a shared native bundle identity
   routed UI control outside the isolated proof environment; 10 synthetic turns
-  reached normal Nucleus state, those records are preserved, and an exact
-  bundle-path 60-turn reset is active
+  reached normal Nucleus state and remain preserved
+- card 042's exact bundle-path reset then completed 50 valid serial read-only
+  turns across 5 launches and 10 app-server lifecycles: 35 ordinary,
+  10 callback, 3 cancelled, and 2 timed out, with no failure, fallback,
+  fixture drift, or leaked process
+- the complete reset stopped at its accepted 60-turn, 7-launch, and 12-session
+  ceiling; card 043 awaits Soundcheck authority and its separate live-effect
+  approval
 - live provider calls, workspace writes, and consumer mutations remain
   separately gated
 
@@ -315,8 +321,7 @@ evidence-led provider work.
 - [013 Canonical Source Provenance And Final Candidate](013-canonical-source-provenance-and-final-candidate.md)
   — completed
 - [014 Consumer-Scale Application Proof And Hardening](014-consumer-scale-application-proof-and-hardening.md)
-  — active; cards 040-041 and 045 complete, card 042 active under an exact
-  launch-target reset, cards 043-044 planned
+  — active; cards 040-042 and 045 complete, cards 043-044 planned
 
 ## Held Backlog
 
@@ -382,6 +387,10 @@ the active g02 queue.
 - card 041 completed the exact native pilot after reducing 2 pre-provider
   failures to deterministic Swallowtail regressions; all 12 planned outcomes
   passed at the 15-attempt and 6-session ceiling
+- card 042 completed the exact sustained reset with 50 valid outcomes across
+  5 launches and 10 app-server lifecycles; the combined reset stopped at
+  60 provider turns, 7 launches, and 12 sessions with no failed or unexpected
+  isolated outcome
 - cards 041-043 own Nucleus pilot, Nucleus sustained hardening, and Soundcheck
   secondary proof under consumer authority
 - card 044 owns candidate refresh and release-readiness reassessment

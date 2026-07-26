@@ -42,6 +42,7 @@
 - `039-final-candidate-packaged-acceptance.md`
 - `040-consumer-scale-proof-envelope.md`
 - `041-nucleus-native-application-pilot.md`
+- `042-nucleus-sustained-workload-hardening.md`
 - `045-codex-discovery-exit-diagnostics.md`
 
 ## Superseded
@@ -55,7 +56,7 @@ None. Cross-generation deferred work lives in `docs/roadmaps/backlog/`.
 
 ## Active
 
-- `042-nucleus-sustained-workload-hardening.md`
+None. Card 043 remains planned until its consumer and live-effect gates pass.
 
 ## Planned
 

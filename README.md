@@ -530,11 +530,15 @@ the exact 15-attempt and 6-session ceiling, with joined cleanup and no fixture
 drift. The first sustained read-only Nucleus tranche stopped after native UI
 control resolved a shared bundle identity outside the isolated proof
 environment. Ten marked synthetic turns reached normal Nucleus state and are
-preserved. An exact rebuilt-bundle reset is active under higher turn, launch,
-and session ceilings. Exact provider rate, quota, usage, and billed-cost
-evidence remains unavailable on this subscription-backed path. Soundcheck
-previously exposed an opaque
+preserved. The exact rebuilt-bundle reset then completed 50 valid serial turns
+across five launches and ten app-server lifecycles: 35 ordinary, 10 callback,
+3 cancelled, and 2 timed out. No isolated turn failed, no fallback or fixture
+drift occurred, and all provider children joined shutdown. The combined reset
+stopped at its accepted 60-turn, 7-launch, and 12-session ceiling. Exact
+provider rate, quota, usage, and billed-cost evidence remains unavailable on
+this subscription-backed path. Soundcheck previously exposed an opaque
 non-zero Codex installed-version probe through a host-selected wrapper.
 Swallowtail now retains numeric status and bounded sanitized stderr under the
 stable discovery failure code without rejecting wrappers. Writable proof
-remains separately gated.
+remains separately gated. The next lane is Soundcheck's bounded structured-run
+proof after its consumer and live-effect gates pass.

@@ -12,12 +12,11 @@ shape.
 
 ## Next Task
 
-Execute card 042's approved reset through one rebuilt debug bundle launched
-with the isolated proof environment and controlled by its full app path. Stop
-unless one exact PID has only the isolated database open before any turn.
-Preserve marked normal-state records. Stop at 60 provider turns, 7 launches,
-12 sessions, or 4 hours. Do not run the writable tranche, publish, push, tag,
-or release.
+Prepare card 043's Soundcheck proof gate. Confirm the current Soundcheck
+roadmap permits the work, then obtain explicit authority for its fresh test
+database, screenshots, search-enabled workflows, and exact 20-attempt,
+4-launch, 2-hour live-provider envelope. Do not make a provider call, mutate a
+consumer, publish, push, tag, or release before those gates pass.
 
 ## Index
 

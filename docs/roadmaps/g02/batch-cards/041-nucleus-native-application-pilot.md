@@ -146,6 +146,32 @@ Approved 2026-07-26:
 The next provider call begins clean launch three. The two failed launches
 remain counted as defect evidence.
 
+## Clean Launch Three
+
+Physical launch three revalidated the frozen route and completed its full
+planned tranche through the normal native UI:
+
+- 4 ordinary turns completed in one conversation;
+- 1 bounded `task_ledger` inspection completed against the seeded project;
+- 1 long-running read-only turn was cancelled through the normal Cancel
+  control in a second conversation; and
+- app close joined both provider sessions.
+
+Safe post-close evidence records 6 turns: 5 completed, 1 cancelled, zero
+active, failed, timed out, or unexpected. No Nucleus process remained. The
+fixture commit and read-only permissions remained unchanged.
+
+The live envelope has now consumed:
+
+- 3 of 5 physical launches and catalogue attempts;
+- 7 of 15 turn attempts, including the earlier failed turn;
+- 1 of 3 permitted failed-scenario reruns; and
+- 3 of 6 joined provider-thread lifecycles.
+
+Completed planned outcomes: 4 of 6 ordinary successes, 1 of 3 callback
+successes, and the sole cancellation. Clean launch four owns the remaining 2
+ordinary and 2 callback successes across no more than 2 provider sessions.
+
 ## Acceptance Criteria
 
 - [ ] normal UI and server paths use the candidate

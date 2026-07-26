@@ -265,6 +265,9 @@ evidence-led provider work.
 - card 041's second narrow reset is approved: 5 physical launches and
   catalogue attempts total; the 15-turn, 6-thread, read-only, and cumulative
   active-time ceilings remain unchanged
+- clean launch three completed 4 ordinary turns, 1 bounded callback, and 1
+  normal cancellation across 2 joined sessions; safe evidence records 5
+  completed, 1 cancelled, and no failed, timed-out, active, or unexpected turn
 - live provider calls, workspace writes, and consumer mutations remain
   separately gated
 

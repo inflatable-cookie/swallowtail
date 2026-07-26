@@ -53,8 +53,8 @@ None. Cross-generation deferred work lives in `docs/roadmaps/backlog/`.
 
 ## Active
 
-- `041-nucleus-native-application-pilot.md` — active; two pre-provider defects
-  fixed, second reset approved, clean native replay next
+- `041-nucleus-native-application-pilot.md` — active; clean launch three
+  passed, clean launch four next
 
 ## Planned
 

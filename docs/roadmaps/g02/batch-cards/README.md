@@ -56,9 +56,13 @@ None. Cross-generation deferred work lives in `docs/roadmaps/backlog/`.
 
 ## Active
 
-None. Card 043 remains planned until its consumer and live-effect gates pass.
+None. Card 043 is paused until its consumer-readiness and live-effect gates
+pass.
 
 ## Planned
 
-- `043-soundcheck-secondary-application-proof.md`
 - `044-hardened-candidate-refresh-and-release-reassessment.md`
+
+## Paused
+
+- `043-soundcheck-secondary-application-proof.md`

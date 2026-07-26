@@ -12,11 +12,12 @@ shape.
 
 ## Next Task
 
-Prepare card 043's Soundcheck proof gate. Confirm the current Soundcheck
-roadmap permits the work, then obtain explicit authority for its fresh test
-database, screenshots, search-enabled workflows, and exact 20-attempt,
-4-launch, 2-hour live-provider envelope. Do not make a provider call, mutate a
-consumer, publish, push, tag, or release before those gates pass.
+Wait for Soundcheck cards 088-090 to reach one clean M11 checkpoint. Do not
+touch its active worktree. At that checkpoint, freeze the exact consumer tuple
+and obtain Soundcheck authority for card 043's isolated data seed, proof-only
+deadline, sanitized attempt ledger, fixture screenshots, and corrected
+20-attempt, 4-launch, 2-hour search-authorized envelope. Make no provider call,
+consumer mutation, publication, push, tag, or release before those gates pass.
 
 ## Index
 

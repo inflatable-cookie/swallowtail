@@ -541,4 +541,8 @@ non-zero Codex installed-version probe through a host-selected wrapper.
 Swallowtail now retains numeric status and bounded sanitized stderr under the
 stable discovery failure code without rejecting wrappers. Writable proof
 remains separately gated. The next lane is Soundcheck's bounded structured-run
-proof after its consumer and live-effect gates pass.
+proof. Its gate audit stopped on active Soundcheck assistant-path work and
+missing deterministic isolated-data, bounded-deadline, and safe
+attempt-evidence support. The proof remains paused until the consumer reaches
+a clean checkpoint and separately authorizes that readiness work plus the
+corrected search-authorized live envelope.

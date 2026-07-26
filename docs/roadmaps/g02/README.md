@@ -289,6 +289,13 @@ evidence-led provider work.
 - the complete reset stopped at its accepted 60-turn, 7-launch, and 12-session
   ceiling; card 043 awaits Soundcheck authority and its separate live-effect
   approval
+- card 043's read-only gate audit found active Soundcheck card 088 changes in
+  the exact assistant path plus missing deterministic data-seed, bounded
+  deadline, and safe attempt-ledger support; the card is paused until
+  Soundcheck cards 088-090 reach a clean checkpoint
+- Soundcheck primary research always carries bounded external-search
+  authority, so the corrected 20-attempt envelope authorizes search for all
+  16 primary attempts rather than claiming only 2 search-enabled workflows
 - live provider calls, workspace writes, and consumer mutations remain
   separately gated
 
@@ -321,7 +328,7 @@ evidence-led provider work.
 - [013 Canonical Source Provenance And Final Candidate](013-canonical-source-provenance-and-final-candidate.md)
   — completed
 - [014 Consumer-Scale Application Proof And Hardening](014-consumer-scale-application-proof-and-hardening.md)
-  — active; cards 040-042 and 045 complete, cards 043-044 planned
+  — active; cards 040-042 and 045 complete, card 043 paused, card 044 planned
 
 ## Held Backlog
 

@@ -135,7 +135,13 @@ completed temporary M12 card 091's deterministic assistant-data seed,
 proof-only deadline, sanitized per-attempt evidence, and teardown. Soundcheck
 health, QA, 24 frontend tests, and 176 Rust tests pass without provider
 effects. The corrected live envelope still authorizes search for all 16
-primary research attempts,
-requires search progress in 2 cases, permits at most 4 secondary
+primary research attempts, requires search progress in 2 cases, permits at
+most 4 secondary
 repair/ranking/companion attempts, and retains the exact 20-attempt, 4-launch,
-and 2-hour ceilings. It remains separately approval-gated.
+and 2-hour ceilings.
+
+The first approved 5-attempt pilot consumed one native launch and stopped
+before provider execution. The tuple omitted dirty local `soundcheck-library`
+and Poodle sources; cached app schema v48 rejected the newly seeded schema
+v50. Card 091 is reopened. The next live envelope remains gated behind clean
+dependency checkpoints and repaired offline native readiness.

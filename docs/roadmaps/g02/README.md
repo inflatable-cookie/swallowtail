@@ -292,14 +292,17 @@ evidence-led provider work.
 - card 043's read-only gate audit found active Soundcheck work in the exact
   assistant path plus missing deterministic data-seed, bounded deadline, and
   safe attempt-ledger support
-- Soundcheck product baseline `7c135da` is clean; proof-support source
-  `3566419` completed temporary M12 card 091 while M11 remains paused at card
-  087
+- Soundcheck product baseline `7c135da` and proof-support source `3566419`
+  passed offline, but the first card 092 native launch invalidated the
+  incomplete tuple before provider execution
+- local `soundcheck-library` and Poodle path sources were dirty and omitted;
+  cached app schema v48 rejected the fresh schema-v50 fixture
+- Soundcheck card 091 is reopened while M11 remains paused at card 087
 - deterministic seed, four screenshots, proof-only deadline, seven-field
   attempt evidence, guarded teardown, health, QA, 24 frontend tests, and
   176 Rust tests pass without provider effects
-- card 043 remains paused before live proof; Soundcheck cards 092-093 require
-  separate operator approval for provider, subscription, and search effects
+- card 043 remains paused; Soundcheck cards 092-093 require clean transitive
+  source checkpoints, repaired offline readiness, and fresh live approval
 - Soundcheck primary research always carries bounded external-search
   authority, so the corrected 20-attempt envelope authorizes search for all
   16 primary attempts rather than claiming only 2 search-enabled workflows

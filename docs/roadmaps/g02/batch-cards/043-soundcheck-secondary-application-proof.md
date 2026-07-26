@@ -14,8 +14,9 @@ structured-run product path.
 
 - [x] card 042 complete
 - [x] current Soundcheck roadmap permits AI-runtime proof work
-- [x] exact consumer source and proof tuple frozen
-- [x] deterministic isolated data, deadline, and safe attempt-evidence
+- [ ] exact transitive consumer source and proof tuple frozen
+- [ ] deterministic isolated data opens through the native product path;
+  deadline and safe attempt-evidence
   mechanisms exist
 - [ ] exact 20-attempt provider ceiling plus screenshot, search, and test-data
   authority approved
@@ -95,6 +96,25 @@ search, credential access, or subscription effect occurred.
 The final entry gate remains open: operator approval for live effects. Start
 with Soundcheck card 092's smaller ceiling of 5 provider attempts, 1 native
 launch, and 30 minutes. Do not authorize the full envelope by implication.
+
+## First Pilot Stop
+
+The operator approved Soundcheck card 092's smaller envelope. Its first native
+launch stopped before assistant execution because the isolated fixture was
+schema v50 while the running app supported v48.
+
+The candidate tuple had omitted Soundcheck's local path dependencies.
+`soundcheck-library` had 51 worktree entries, including schema 49-50, and
+Poodle had 16. Signal and Swallowtail were clean. The newly added proof binary
+also made the normal Effigy development command ambiguous until the app binary
+was passed explicitly.
+
+No provider request, search, credential exchange, or subscription-backed model
+call occurred. The ledger remained empty and guarded teardown removed the
+proof root. Soundcheck card 091 is reopened. Do not resume live proof until
+the dependency owners provide clean committed checkpoints, the full local
+source graph is frozen, the normal selector launches the intended app, the
+fixture opens natively offline, and the operator approves a fresh envelope.
 
 ## Scope
 

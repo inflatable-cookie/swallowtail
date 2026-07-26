@@ -5,6 +5,7 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-07-26 Soundcheck Pilot Launch Stop](2026-07-26-soundcheck-pilot-launch-stop.md)
 - [2026-07-26 Soundcheck Proof Readiness Closeout](2026-07-26-soundcheck-proof-readiness-closeout.md)
 - [2026-07-26 Soundcheck Proof Gate Audit](2026-07-26-soundcheck-proof-gate-audit.md)
 - [2026-07-26 Nucleus Sustained Workload Closeout](2026-07-26-nucleus-sustained-workload-closeout.md)

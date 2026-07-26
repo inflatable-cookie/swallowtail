@@ -541,8 +541,9 @@ non-zero Codex installed-version probe through a host-selected wrapper.
 Swallowtail now retains numeric status and bounded sanitized stderr under the
 stable discovery failure code without rejecting wrappers. Writable proof
 remains separately gated. The next lane is Soundcheck's bounded structured-run
-proof. Soundcheck is clean at its committed checkpoint and temporary M12 card
-091 completed deterministic isolated data, bounded proof-only deadlines, safe
-attempt evidence, and teardown. The offline validation passes. Provider execution,
-subscription effects, and the corrected search-authorized live envelope remain
-separately approval-gated.
+proof. Soundcheck's offline support passed, but the first approved native pilot
+launch stopped before provider execution. Its tuple omitted dirty local
+`soundcheck-library` and Poodle sources; cached app schema v48 rejected the
+fresh schema-v50 fixture. Soundcheck card 091 is reopened. Provider execution,
+subscription effects, and search remain gated behind clean dependency
+checkpoints, repaired native readiness, and a fresh approved envelope.

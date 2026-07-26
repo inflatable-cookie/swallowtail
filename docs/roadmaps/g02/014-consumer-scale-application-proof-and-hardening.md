@@ -6,8 +6,8 @@ Owner: Tom
 Created: 2026-07-25
 Depends on: g02.013
 Contract refs: 009, 011-013, 029, 032-037
-Planning state: cards 040-041 and 045 completed; card 042 operator-paused;
-cards 043-044 planned
+Planning state: cards 040-041 and 045 completed; card 042 active and explicitly
+approved read-only; cards 043-044 planned
 
 ## Problem
 
@@ -106,9 +106,9 @@ Swallowtail regressions before replay. Ordinary turns, inspections,
 cancellation, restart recovery, deadline interruption, and joined cleanup
 passed without fixture drift.
 
-Card 042 remains a separate live decision. Its read-only sustained envelope is
-ready for approval; its writable tranche remains excluded pending a disposable
-worktree and provider-write grant. While that card was paused, Soundcheck
+Card 042's read-only sustained envelope is explicitly approved and active. Its
+writable tranche remains excluded pending a disposable worktree and
+provider-write grant. While that card was paused, Soundcheck
 exposed a non-zero Codex probe diagnostic gap through a host-selected wrapper.
 Card 045 closed the gap with status and bounded sanitized stderr. Executable
 selection remains host-owned.

@@ -12,10 +12,10 @@ shape.
 
 ## Next Task
 
-Hold card 042 in its operator-paused state and await operator direction for the
-next application-proof batch. Card 045 is complete. Do not resume sustained
-provider work implicitly, make a provider call, publish, push, tag, release, or
-write a workspace.
+Execute the explicitly approved read-only card 042 envelope through Nucleus's
+normal native path. Stop at 50 planned turns, 55 attempts, five launches, ten
+provider sessions, or four hours. Do not run the writable tranche, publish,
+push, tag, release, or mutate the fixture or a workspace.
 
 ## Index
 

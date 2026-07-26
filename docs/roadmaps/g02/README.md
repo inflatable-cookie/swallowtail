@@ -279,7 +279,8 @@ evidence-led provider work.
   sanitized stderr under the stable discovery failure code without adding
   wrapper policy
 - Codex supplied no stable rate, quota, usage, or billed-cost summary; card
-  042 is operator-paused despite its turn-and-time-bounded read-only envelope
+  042's turn-and-time-bounded read-only envelope is explicitly approved and
+  active
 - live provider calls, workspace writes, and consumer mutations remain
   separately gated
 
@@ -312,8 +313,8 @@ evidence-led provider work.
 - [013 Canonical Source Provenance And Final Candidate](013-canonical-source-provenance-and-final-candidate.md)
   — completed
 - [014 Consumer-Scale Application Proof And Hardening](014-consumer-scale-application-proof-and-hardening.md)
-  — active; cards 040-041 and 045 complete, card 042 operator-paused, cards
-  043-044 planned
+  — active; cards 040-041 and 045 complete, card 042 active and read-only,
+  cards 043-044 planned
 
 ## Held Backlog
 

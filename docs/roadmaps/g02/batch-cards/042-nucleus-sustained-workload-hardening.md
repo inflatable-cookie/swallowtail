@@ -1,6 +1,6 @@
 # 042 Nucleus Sustained Workload Hardening
 
-Status: paused
+Status: active
 Owner: Tom
 Created: 2026-07-25
 Milestone: `../014-consumer-scale-application-proof-and-hardening.md`
@@ -39,6 +39,23 @@ worktree and provider-write grant.
 
 Operator pause: 2026-07-26. Do not resume this card implicitly after the Codex
 discovery-diagnostics repair.
+
+Approval accepted: 2026-07-26. The operator explicitly approved the complete
+read-only envelope after Nucleus returned to a clean checkpoint.
+
+## Frozen Execution Tuple
+
+- Nucleus: `dd7952152f979511f82a9423b4e32590622e2f47`
+- Swallowtail: `a3fbc14b8a76bad074e8542223497c840cb73ffe`
+- Codex: `codex-cli 0.145.0`, direct target SHA-256
+  `1da3f4e0e96028b8a771814293c3033dafd1971f943f6c7e79b0897fe705f590`
+- host: macOS `26.5.2`, arm64, local authoritative
+- access: ChatGPT interactive OAuth and subscription allowance; no API-key
+  environment
+- route: exact `gpt-5.4-mini`, low reasoning, no fallback
+- fixture: exact read-only commit
+  `04f7eb371e4e3ac0010a69d3f96052a7becbe43a`
+- state: isolated Nucleus proof root retained from card 041
 
 ## Scope
 

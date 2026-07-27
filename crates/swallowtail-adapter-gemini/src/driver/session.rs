@@ -10,6 +10,7 @@ struct GeminiSessionHandle {
     runtime_id: RuntimeSessionId,
     provider_ref: SessionRef,
     provider_id: String,
+    model_options: Option<NegotiatedSessionModelOptions>,
     execution_host_id: swallowtail_core::ExecutionHostId,
     connection: Arc<AcpConnection>,
     cancellation: SessionCancellation,
@@ -31,6 +32,9 @@ impl InteractiveSessionHandle for GeminiSessionHandle {
     }
     fn resume_binding(&self) -> Option<&swallowtail_runtime::SessionResumeBinding> {
         None
+    }
+    fn negotiated_model_options(&self) -> Option<&NegotiatedSessionModelOptions> {
+        self.model_options.as_ref()
     }
 
     fn start_turn<'a>(

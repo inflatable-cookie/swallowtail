@@ -71,7 +71,17 @@ impl SharedAgent {
     }
 
     fn session_configuration(&self) -> Value {
-        let mut options = vec![json!({"id": "model", "currentValue": "kimi-coder"})];
+        let mut options = vec![json!({
+            "type": "select",
+            "id": "model",
+            "name": "Model",
+            "category": "model",
+            "currentValue": "kimi-coder",
+            "options": [
+                {"value": "kimi-coder", "name": "Kimi Coder"},
+                {"value": "kimi-alternate", "name": "Kimi Alternate"}
+            ]
+        })];
         match self.scenario {
             Scenario::ReasoningLegacySuccess | Scenario::ReasoningRejected => {
                 options.push(reasoning_option(&["off", "on"], "off"));

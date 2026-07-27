@@ -52,7 +52,10 @@ enforced isolation claim. Contract 018 governs owned ephemeral serving, now
 realized by the llama.cpp proof. Contract 019 governs in-process SDK drivers,
 explicit cloud-client configuration, and delegated SDK credentials. Contract
 020 keeps mutable catalogue observations separate from entitlement, runtime
-capability, and route selection. Contract 021 makes provider-managed background
+capability, and route selection; it also distinguishes standalone sources from
+session-negotiated options and records that the current common catalogue
+request has deadline but no independent cancellation control. Contract 021
+makes provider-managed background
 execution, required temporary retention, bounded stream reattachment, and
 remote cancellation truth explicit and opt-in. Contract 022 governs provider-
 hosted agent resources, durable retention, provider-managed recovery,

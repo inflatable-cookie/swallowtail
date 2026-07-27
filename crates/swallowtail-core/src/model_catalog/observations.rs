@@ -13,6 +13,7 @@ pub struct ModelCatalogObservations {
     provider_display_name: Option<String>,
     input_modalities: Option<BTreeSet<CatalogObservation<ModelModality>>>,
     output_modalities: Option<BTreeSet<CatalogObservation<ModelModality>>>,
+    reasoning_supported: Option<bool>,
     response_streaming_supported: Option<bool>,
     inference_types: Option<BTreeSet<CatalogObservation<ModelInferenceType>>>,
     customization_types: Option<BTreeSet<CatalogObservation<ModelCustomizationType>>>,
@@ -27,6 +28,7 @@ impl ModelCatalogObservations {
             provider_display_name: None,
             input_modalities: None,
             output_modalities: None,
+            reasoning_supported: None,
             response_streaming_supported: None,
             inference_types: None,
             customization_types: None,
@@ -60,6 +62,12 @@ impl ModelCatalogObservations {
         modalities: impl IntoIterator<Item = CatalogObservation<ModelModality>>,
     ) -> Self {
         self.output_modalities = Some(modalities.into_iter().collect());
+        self
+    }
+
+    #[must_use]
+    pub const fn with_reasoning_supported(mut self, supported: bool) -> Self {
+        self.reasoning_supported = Some(supported);
         self
     }
 
@@ -111,6 +119,11 @@ impl ModelCatalogObservations {
     #[must_use]
     pub const fn output_modalities(&self) -> Option<&BTreeSet<CatalogObservation<ModelModality>>> {
         self.output_modalities.as_ref()
+    }
+
+    #[must_use]
+    pub const fn reasoning_supported(&self) -> Option<bool> {
+        self.reasoning_supported
     }
 
     #[must_use]

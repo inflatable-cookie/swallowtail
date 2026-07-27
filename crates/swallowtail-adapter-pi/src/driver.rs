@@ -14,6 +14,7 @@ use swallowtail_runtime::{
     RuntimeSessionId, ScopeId, validate_session_resource_lease,
 };
 
+mod catalogue;
 mod descriptor;
 mod handle;
 mod launch;

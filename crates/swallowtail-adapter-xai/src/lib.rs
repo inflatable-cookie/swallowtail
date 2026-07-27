@@ -5,9 +5,11 @@
 
 #![forbid(unsafe_code)]
 
+mod catalogue;
 mod driver;
 mod failure;
 mod prepared;
+mod prepared_catalogue;
 mod prepared_profile;
 mod protocol;
 mod selection;
@@ -15,6 +17,10 @@ mod transport;
 
 pub use driver::{XaiWebSocketDriver, xai_websocket_descriptor};
 pub use prepared::{XaiPreparationInput, XaiPreparedIntegration, prepare_xai_responses_websocket};
+pub use prepared_catalogue::{
+    XaiModelsPreparationInput, XaiModelsPreparedIntegration, XaiModelsProfileInput,
+    XaiPreparedModels, prepare_xai_models,
+};
 pub use prepared_profile::{
     XaiModelSelection, XaiPreparedEvidence, XaiPreparedResponsesSession, XaiSessionProfileInput,
 };
@@ -30,3 +36,41 @@ pub const RESPONSES_WEBSOCKET_PATH: &str = "/v1/responses";
 
 /// Exact scale used by xAI's provider-authored billed-cost observation.
 pub const USD_TICKS_PER_USD: u64 = 10_000_000_000;
+
+pub const XAI_MODELS_ENDPOINT: &str = "https://api.x.ai";
+pub const XAI_MODELS_ENDPOINT_AUDIENCE: &str = XAI_RESPONSES_ENDPOINT_AUDIENCE;
+pub const XAI_MODELS_ACCESS_PROFILE_ID: &str = XAI_RESPONSES_ACCESS_PROFILE_ID;
+pub const XAI_MODELS_CONFIGURED_INSTANCE_ID: &str = "xai.public.language-models";
+pub const XAI_MODELS_FACADE_REVISION: &str = "xai-language-models-2026-07-27";
+
+#[must_use]
+pub fn xai_models_facade_binding() -> swallowtail_core::InterfaceVersionBinding {
+    swallowtail_core::InterfaceVersionBinding::new(
+        swallowtail_core::InterfaceVersionAxis::new("xai.models-facade")
+            .expect("static axis is valid"),
+        swallowtail_core::InterfaceVersion::new(XAI_MODELS_FACADE_REVISION)
+            .expect("static version is valid"),
+    )
+}
+
+#[must_use]
+pub fn xai_models_facade_claim() -> swallowtail_core::InterfaceCompatibilityClaim {
+    swallowtail_core::InterfaceCompatibilityClaim::new(
+        swallowtail_core::InterfaceCompatibilityClaimId::new("xai.models-window-1")
+            .expect("static claim id is valid"),
+        swallowtail_core::InterfaceVersionAxis::new("xai.models-facade")
+            .expect("static axis is valid"),
+        swallowtail_core::InterfaceVersionScheme::Opaque,
+        swallowtail_core::InterfaceNewerVersionPosture::QualifiedOnly,
+        [swallowtail_core::InterfaceVersionSegment::exact(
+            swallowtail_core::InterfaceVersion::new(XAI_MODELS_FACADE_REVISION)
+                .expect("static version is valid"),
+            swallowtail_core::InterfaceBehaviorRevision::new("xai-language-models-list-v1")
+                .expect("static behavior is valid"),
+            swallowtail_core::InterfaceSupportStatus::Maintained,
+        )],
+        [],
+    )
+    .expect("static claim is valid")
+}
+pub use catalogue::{XaiModelsDriver, xai_models_descriptor};

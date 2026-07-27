@@ -38,6 +38,18 @@ impl fmt::Debug for WireRequest {
 
 impl WireRequest {
     #[must_use]
+    pub(crate) fn deployable_models(page: u32, source: &str) -> Self {
+        Self {
+            method: Method::Get,
+            path: format!(
+                "/api/v1/deployments/models?page_no={page}&page_size=100&version=v1.0&model_source={source}"
+            ),
+            body: None,
+            session_cache: false,
+        }
+    }
+
+    #[must_use]
     pub fn create_conversation() -> Self {
         Self {
             method: Method::Post,

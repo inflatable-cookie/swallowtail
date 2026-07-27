@@ -47,7 +47,9 @@ spine:
   outcomes keep deletion truth per owned remote resource; interactive open,
   load, and resume requests carry one explicit or plan-derived agreement for
   access, provider state, and harness configuration; safe preparation failures
-  distinguish nine stages and access evidence retains observed or
+  distinguish nine stages, already-authorized sessions may expose bounded
+  immutable negotiated model options without becoming catalogue drivers, and
+  access evidence retains observed or
   caller-asserted provenance; a separate
   realtime-media role owns resource-free requests, redacted zeroized chunks,
   exact append/commit/output sequencing, transcripts, observations, response
@@ -94,7 +96,9 @@ spine:
   workspace-dedicated Conversations and Responses subset through one session-
   scoped host-approved endpoint and API-key lease; exact provider-state policy,
   serial HTTP/SSE turns, usage, cancellation uncertainty, inventory, item-before-
-  conversation deletion, and joined cleanup remain adapter-owned
+  conversation deletion, and joined cleanup remain adapter-owned; a separate
+  international control-plane driver lists bounded base and custom deployable
+  model candidates without claiming Conversations compatibility
 - `swallowtail-adapter-codex` depends on core and runtime and implements the
   read-only, ephemeral `codex exec` structured-run surface plus read-only and
   bounded-workspace app-server interactive sessions through runtime host ports
@@ -132,13 +136,17 @@ spine:
   bounded provider-neutral projection
 - `swallowtail-adapter-gemini` implements the pinned Gemini CLI `0.51.0`
   ambient-host interactive subset with Plan Mode and bounded read callbacks
-  over ACP v1 stdio; its separate Gemini Live production driver binds exact
+  over ACP v1 stdio and retains session-advertised model options as negotiated
+  evidence; a separate Developer API Models branch performs bounded paginated
+  discovery, while the Gemini Live production driver binds exact
   `v1beta` preview setup, asymmetric audio, manual activity, output, usage,
   latest private handle, one planned raw-WebSocket rollover, local-only
   interruption, and joined two-generation cleanup under both host identities
 - `swallowtail-adapter-kimi` implements the pinned Kimi Code `0.28.1`
   ambient-host interactive lifecycle with distinct new, load-with-replay, and
-  replay-free resume plus bounded write callbacks over ACP v1 stdio
+  replay-free resume plus bounded write callbacks over ACP v1 stdio and
+  session-negotiated model options; its separate local-server route exposes an
+  authenticated, route-free attached model catalogue
 - `swallowtail-adapter-kimi-platform` implements a separate public-platform
   API-key catalogue and exact `kimi-k3` direct route over host-approved HTTP/SSE;
   it shares only structural compatible-chat encoding and decoding with
@@ -146,7 +154,8 @@ spine:
 - `swallowtail-adapter-pi` implements the pinned Pi `0.80.10` restrictive
   ambient-host RPC subset over supervised strict-LF JSONL stdio with exact
   downstream provider/model routing, prompt, steering, follow-up, correlated
-  extension UI, native abort, deadlines, and joined credential-last cleanup
+  extension UI, native abort, deadlines, joined credential-last cleanup, and
+  a separate provider-suppressed `get_available_models` operation
 - `swallowtail-adapter-llama-cpp` implements attached llama.cpp build `9910`
   readiness, catalogue, and bounded Chat Completions direct inference without
   owning the model artifact or server; its exact request and text-only semantic
@@ -158,7 +167,8 @@ spine:
   installation, model acquisition, cloud access, unload, or server ownership
 - `swallowtail-adapter-xai` implements resource-free interactive direct
   inference over one host-approved Responses WebSocket with serial turns,
-  private continuation, exact billed cost, and connection-ending cancellation
+  private continuation, exact billed cost, and connection-ending cancellation;
+  a separate language-models driver exposes bounded hosted catalogue evidence
 - `swallowtail-adapter-openai` implements separate public-API drivers for
   background Responses and Realtime media. The background structured-run route
   owns explicit temporary retention, one create attempt, maximum-one cursor
@@ -168,14 +178,17 @@ spine:
   cancellation, bounded typed events, and credential-last joined cleanup. It
   passes the realtime-media profile under local and remote-authoritative host
   identities; transport loss, provider failure, protocol drift, and
-  cancellation uncertainty remain distinct
+  cancellation uncertainty remain distinct. A separate public Models branch
+  reports key-visible entries without inferring background or Realtime support
 - `swallowtail-adapter-qwen` implements the pinned Qwen Code `v0.19.11`
   headless structured-run route with exact read-only argv, text stdin, bounded
   stream JSON, typed usage, explicit native budgets, durable local retention,
   redacted terminal classifications, host deadline and cancellation, joined
   process cleanup, and `AmbientHost` isolation without a sandbox claim; the
   production driver passes the provider-neutral one-shot profile under local
-  and remote-authoritative host identities
+  and remote-authoritative host identities. Its separate safe-mode stream-JSON
+  control operation verifies and calls `get_available_models`, then closes and
+  joins the ephemeral child without opening a model session
 
 There is no global async executor, durable credential store, or consumer
 dependency. Concrete libcurl clients remain private to their adapters and run
@@ -682,6 +695,38 @@ expiry and late-response rejection, distinct provider/retry/disconnect/format
 failures, bounded prompt concurrency, redaction, and visible cleanup failure
 without weakening terminal provider truth.
 
+Research 042 corrects the original Pi tranche boundary. Exact Pi `0.80.10`
+already exposes `get_available_models`; the omission was Swallowtail scope, not
+an upstream limitation. The same prepared Pi installation now derives a
+separate route-free model-catalogue operation. It starts one
+provider-suppressed, tool-free, extension-free, offline, ephemeral RPC child,
+issues the bounded catalogue command, projects configured provider/model
+observations, including source-scoped reasoning-support evidence distinct from
+named reasoning modes, then joins the child and releases delegated access. It
+does not open a provider session, select a model, touch a working resource,
+refresh catalogues, or infer entitlement.
+
+ACP model selectors remain negotiated session evidence. Gemini and Kimi retain
+bounded immutable options advertised while opening, loading, or resuming an
+already-authorized session, while Claude Agent's selected subset echoes a
+caller-supplied allowlist. None is promoted to a standalone catalogue by
+creating a session solely for discovery. Kimi's separate local-server driver
+implements exact authenticated `GET /api/v1/models` discovery without
+refreshing providers, changing the default model, or widening ACP.
+
+Research 043 closes the remaining catalogue audit. Qwen Code `0.19.11` and
+`0.21.0` expose a stream-JSON `get_available_models` control request. Its
+prepared catalogue starts an ephemeral safe-mode child, verifies the
+advertised control capability, projects bounded model identity and
+context-window evidence, then joins cleanup; safe mode is not an operating-
+system sandbox claim. OpenAI, Gemini, and xAI expose separate hosted catalogue
+drivers with their own configured instance, endpoint, access, role, and plan.
+Alibaba Model Studio exposes a separate international deployment-candidate
+control-plane catalogue with bounded base and custom pagination. None of these
+catalogues constructs an inference route or implies compatibility with a
+provider's background, realtime, Live, WebSocket, Conversations, region,
+entitlement, or billing posture.
+
 The DeepSeek production boundary composes Contract 030 with common
 compatible-chat structure but keeps provider semantics private. Its opaque facade claim
 qualifies only `deepseek-openai-chat-2026-07-22`, exact endpoint
@@ -745,7 +790,7 @@ session, background run, managed agent, realtime media, SDK, attached runtime,
 and owned-serving operations remain separate types and methods. There is no
 generic prompt method.
 
-The current 22 production routes form six facade implementation families:
+The current 23 production routes form six facade implementation families:
 installed harness, attached harness network, hosted direct and provider-owned
 state, realtime connection, embedded SDK, and local model runtime. Family
 helpers may share host and preparation mechanics. They cannot select a
@@ -939,7 +984,7 @@ catalogue, then returns the owned handle. Stop joins the child, invalidates
 endpoint authority, and only then releases the artifact. Acquisition,
 persistent serving, and Monkey ownership remain outside Swallowtail.
 
-The provider-wide prepared contract is now realized across all 22 production
+The provider-wide prepared contract is now realized across all 23 production
 routes. The g02.008 cross-shape review accepted the common
 `PreparedOperationEvidence`, adapter-local evidence, two-phase construction,
 safe preparation stages, and typed low-level delegation without a new durable

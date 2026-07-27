@@ -49,5 +49,10 @@ separate explicit route.
 `request`, `evidence`, `low_level_driver`, and `into_parts` remain available
 for inspection and advanced use.
 
+After authorization and session creation, the returned handle may expose
+bounded `negotiated_model_options()`. These are the current and available
+models advertised by that exact ACP session. They are not a pre-session
+catalogue, cannot be caller-synthesized, and do not authorize another route.
+
 See the compile-tested
 [`prepared_gemini_acp` example](../../crates/swallowtail-adapter-gemini/examples/prepared_gemini_acp.rs).

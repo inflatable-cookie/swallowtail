@@ -2,9 +2,9 @@ use crate::{
     BoxEventStream, BoxFuture, BoxRealtimeMediaEventStream, CallbackExchange, CancellationControl,
     CleanupOutcome, DirectContinuationTurnRequest, DirectToolExchange, HarnessCommandResponse,
     HarnessScheduledMessage, HostServices, MediaChunk, MediaInputCommit,
-    ProviderSessionManagementBinding, RequestId, RuntimeFailure, RuntimeRunId, RuntimeSessionId,
-    RuntimeTurnId, ServingEndpointBinding, ServingInstanceId, SessionResumeBinding,
-    TerminalOutcome, TurnRequest,
+    NegotiatedSessionModelOptions, ProviderSessionManagementBinding, RequestId, RuntimeFailure,
+    RuntimeRunId, RuntimeSessionId, RuntimeTurnId, ServingEndpointBinding, ServingInstanceId,
+    SessionResumeBinding, TerminalOutcome, TurnRequest,
 };
 use swallowtail_core::{ExecutionHostId, InstanceOwnership, RunRef, SessionRef, TurnRef};
 
@@ -53,6 +53,12 @@ pub trait InteractiveSessionHandle: Send {
     fn provider_session_ref(&self) -> Option<&SessionRef>;
     fn resume_binding(&self) -> Option<&SessionResumeBinding>;
     fn management_binding(&self) -> Option<&ProviderSessionManagementBinding> {
+        None
+    }
+    /// Model selectors advertised while opening or attaching this session.
+    ///
+    /// This must not be treated as a side-effect-free pre-session catalogue.
+    fn negotiated_model_options(&self) -> Option<&NegotiatedSessionModelOptions> {
         None
     }
     fn start_turn<'a>(

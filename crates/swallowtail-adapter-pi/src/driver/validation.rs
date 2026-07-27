@@ -1,7 +1,7 @@
 use crate::DRIVER_ID;
 use crate::failure::{failure, unsupported};
 use swallowtail_core::{
-    CancellationScope, Capability, CapabilityConstraint, CredentialMechanism,
+    CancellationScope, Capability, CapabilityConstraint, CredentialMechanism, DriverRole,
     HarnessBackgroundAction, HarnessConfigurationPosture, HarnessConfigurationSource,
     HarnessIsolation, HostServiceKind, InstanceOwnership, PreflightPlan, ResourceAccess,
     ResourceRepresentation, SessionAccessPolicy, SessionProviderStatePolicy,
@@ -13,9 +13,80 @@ use swallowtail_runtime::{
 pub(super) const ACCESS_NAMESPACE: &str = "pi/delegated-harness-auth";
 pub(super) const ENDPOINT_AUDIENCE: &str = "pi-harness";
 
+pub(super) fn validate_catalogue(
+    plan: &PreflightPlan,
+    services: &HostServices,
+    credential: &swallowtail_core::CredentialRef,
+) -> Result<(), RuntimeFailure> {
+    validate_common(plan, services, credential)?;
+    if plan.requirements().driver_role() != DriverRole::ModelCatalog
+        || plan.provider_id().is_some()
+        || plan.model_id().is_some()
+        || plan.model_route_id().is_some()
+    {
+        return Err(plan_mismatch("catalogue operation"));
+    }
+    require_capability(plan, Capability::ModelCatalog)
+}
+
 pub(super) fn validate_open(
     plan: &PreflightPlan,
     request: &OpenSessionRequest,
+    services: &HostServices,
+    credential: &swallowtail_core::CredentialRef,
+) -> Result<(), RuntimeFailure> {
+    validate_common(plan, services, credential)?;
+    if plan.requirements().driver_role() != DriverRole::InteractiveSession {
+        return Err(plan_mismatch("driver role"));
+    }
+    if !plan
+        .requirements()
+        .host_services()
+        .any(|required| required == HostServiceKind::WorkingResource)
+        || services.working_resource().is_none()
+    {
+        return Err(plan_mismatch("host service"));
+    }
+    if plan.provider_id().is_none() || plan.model_id().is_none() || plan.model_route_id().is_none()
+    {
+        return Err(plan_mismatch("provider and model route"));
+    }
+    validate_session_plan_agreement(plan, request.plan_agreement())?;
+    if request.access_policy() != &SessionAccessPolicy::ambient_harness(ResourceAccess::Read)
+        || plan.requirements().harness_isolation() != Some(HarnessIsolation::AmbientHost)
+    {
+        return Err(plan_mismatch("ambient read access"));
+    }
+    if request.provider_state_policy() != Some(SessionProviderStatePolicy::Prohibited) {
+        return Err(unsupported("provider session persistence"));
+    }
+    if request.working_resource().is_none() {
+        return Err(unsupported("resource-free session"));
+    }
+    if !request.options().is_empty() {
+        return Err(unsupported("session options"));
+    }
+    require_capability(plan, Capability::InteractiveSession)?;
+    require_capability(plan, Capability::StreamingEvents)?;
+    require_constraint(
+        plan,
+        Capability::Interruption,
+        CapabilityConstraint::CancellationScope(CancellationScope::ActiveTurn),
+    )?;
+    require_constraint(
+        plan,
+        Capability::WorkingResource,
+        CapabilityConstraint::ResourceAccess(ResourceAccess::Read),
+    )?;
+    require_constraint(
+        plan,
+        Capability::WorkingResource,
+        CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
+    )
+}
+
+fn validate_common(
+    plan: &PreflightPlan,
     services: &HostServices,
     credential: &swallowtail_core::CredentialRef,
 ) -> Result<(), RuntimeFailure> {
@@ -28,10 +99,6 @@ pub(super) fn validate_open(
         (HostServiceKind::Task, services.task().is_some()),
         (HostServiceKind::Process, services.process().is_some()),
         (HostServiceKind::Credential, services.credential().is_some()),
-        (
-            HostServiceKind::WorkingResource,
-            services.working_resource().is_some(),
-        ),
         (HostServiceKind::Time, services.time().is_some()),
     ] {
         if !plan
@@ -55,10 +122,6 @@ pub(super) fn validate_open(
         || plan.endpoint_audience().as_str() != ENDPOINT_AUDIENCE
     {
         return Err(plan_mismatch("access profile"));
-    }
-    if plan.provider_id().is_none() || plan.model_id().is_none() || plan.model_route_id().is_none()
-    {
-        return Err(plan_mismatch("provider and model route"));
     }
     if plan.harness_configuration_posture() != Some(HarnessConfigurationPosture::ProviderSuppressed)
     {
@@ -95,38 +158,7 @@ pub(super) fn validate_open(
             return Err(plan_mismatch("disabled background action"));
         }
     }
-    validate_session_plan_agreement(plan, request.plan_agreement())?;
-    if request.access_policy() != &SessionAccessPolicy::ambient_harness(ResourceAccess::Read)
-        || plan.requirements().harness_isolation() != Some(HarnessIsolation::AmbientHost)
-    {
-        return Err(plan_mismatch("ambient read access"));
-    }
-    if request.provider_state_policy() != Some(SessionProviderStatePolicy::Prohibited) {
-        return Err(unsupported("provider session persistence"));
-    }
-    if request.working_resource().is_none() {
-        return Err(unsupported("resource-free session"));
-    }
-    if !request.options().is_empty() {
-        return Err(unsupported("session options"));
-    }
-    require_capability(plan, Capability::InteractiveSession)?;
-    require_capability(plan, Capability::StreamingEvents)?;
-    require_constraint(
-        plan,
-        Capability::Interruption,
-        CapabilityConstraint::CancellationScope(CancellationScope::ActiveTurn),
-    )?;
-    require_constraint(
-        plan,
-        Capability::WorkingResource,
-        CapabilityConstraint::ResourceAccess(ResourceAccess::Read),
-    )?;
-    require_constraint(
-        plan,
-        Capability::WorkingResource,
-        CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
-    )
+    Ok(())
 }
 
 pub(super) fn validate_turn(request: &TurnRequest) -> Result<(), RuntimeFailure> {

@@ -49,3 +49,5 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [039 OpenCode Session Deletion Range Evidence](039-opencode-session-deletion-range-evidence.md)
 - [040 Kimi Code Local Server Route Evidence](040-kimi-code-local-server-route-evidence.md)
 - [041 Kimi Local Server Interactive Revision Evidence](041-kimi-local-server-interactive-revision-evidence.md)
+- [042 Model Catalogue Coverage And Pi RPC Currentness](042-model-catalogue-coverage-and-pi-rpc-currentness.md)
+- [043 Model Catalogue No-Closure Audit](043-model-catalogue-no-closure-audit.md)

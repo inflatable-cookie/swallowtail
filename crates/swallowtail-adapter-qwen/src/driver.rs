@@ -26,6 +26,10 @@ impl QwenHeadlessDriver {
     pub const fn new(environment: EnvironmentRef) -> Self {
         Self { environment }
     }
+
+    pub(crate) const fn environment(&self) -> &EnvironmentRef {
+        &self.environment
+    }
 }
 
 #[must_use]
@@ -39,7 +43,11 @@ pub fn qwen_headless_descriptor() -> DriverDescriptor {
         IntegrationFamilyId::new("qwen-code").expect("static family id is valid"),
         TransportFamilyId::new("structured-cli-stream-json").expect("static transport id is valid"),
     )
-    .with_roles([DriverRole::Discovery, DriverRole::StructuredRun])
+    .with_roles([
+        DriverRole::Discovery,
+        DriverRole::StructuredRun,
+        DriverRole::ModelCatalog,
+    ])
     .with_execution_layers([ExecutionLayer::HarnessInteraction])
     .with_operation_shapes([OperationShape::StructuredRun])
     .with_required_host_services(
@@ -57,6 +65,10 @@ pub fn qwen_headless_descriptor() -> DriverDescriptor {
             HostServiceKind::Time,
             HostServiceKind::Process,
         ],
+    )
+    .with_required_host_services(
+        DriverRole::ModelCatalog,
+        [HostServiceKind::Process, HostServiceKind::Time],
     )
     .with_discovery_actions([swallowtail_core::DiscoveryAction::Probe])
     .with_interface_compatibility(crate::qwen_headless_claim())

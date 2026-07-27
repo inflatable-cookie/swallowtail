@@ -3,6 +3,7 @@
 #![forbid(unsafe_code)]
 
 mod callback;
+mod catalogue;
 mod connection;
 mod discovery;
 mod driver;
@@ -16,7 +17,8 @@ mod turn;
 pub use driver::{PiRpcDriver, pi_rpc_descriptor};
 pub use prepared::{PiPreparationInput, PiPreparationProbe, PiPreparedIntegration, prepare_pi_rpc};
 pub use prepared_profile::{
-    PiModelSelection, PiPreparedEvidence, PiPreparedSession, PiSessionProfileInput,
+    PiCatalogueProfileInput, PiModelSelection, PiPreparedCatalogue, PiPreparedEvidence,
+    PiPreparedSession, PiSessionProfileInput,
 };
 pub use selection::{
     PI_PACKAGE_AXIS, PI_PACKAGE_BASELINE_VERSION, PI_PACKAGE_LATEST_QUALIFIED_VERSION,

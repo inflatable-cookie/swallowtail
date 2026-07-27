@@ -17,6 +17,15 @@ pub(crate) struct Request {
 }
 
 impl Request {
+    pub(crate) fn models() -> Self {
+        Self {
+            method: Method::Get,
+            path: "/v1/models".to_owned(),
+            query: Vec::new(),
+            body: None,
+        }
+    }
+
     pub(crate) fn create(
         model: &str,
         content: &OperationContent,

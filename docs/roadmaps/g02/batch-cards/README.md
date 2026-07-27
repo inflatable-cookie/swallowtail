@@ -63,6 +63,11 @@
 - `063-kimi-cross-transport-binding-import-and-conformance.md`
 - `064-kimi-local-server-interactive-driver.md`
 - `065-kimi-local-server-acceptance-and-package-closeout.md`
+- `066-model-catalogue-coverage-research-and-contract.md`
+- `067-pi-rpc-model-catalogue.md`
+- `068-kimi-and-acp-model-evidence.md`
+- `069-hosted-provider-model-catalogues.md`
+- `070-model-catalogue-no-closure-audit.md`
 
 ## Superseded
 
@@ -77,7 +82,7 @@ None. Cross-generation deferred work lives in `docs/roadmaps/backlog/`.
 
 ## Active
 
-None. Awaiting operator review.
+None.
 
 ## Planned
 

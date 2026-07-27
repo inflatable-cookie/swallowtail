@@ -2875,6 +2875,7 @@ name = "swallowtail-adapter-gemini"
 version = "0.1.0"
 dependencies = [
  "base64",
+ "curl",
  "futures-channel",
  "futures-core",
  "futures-executor",
@@ -3038,6 +3039,7 @@ dependencies = [
 name = "swallowtail-adapter-xai"
 version = "0.1.0"
 dependencies = [
+ "curl",
  "futures-channel",
  "futures-core",
  "futures-executor",
@@ -3048,6 +3050,7 @@ dependencies = [
  "swallowtail-runtime",
  "swallowtail-testkit",
  "tungstenite 0.30.0",
+ "url",
 ]
 
 [[package]]

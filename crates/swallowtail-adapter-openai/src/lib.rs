@@ -5,9 +5,11 @@
 
 #![forbid(unsafe_code)]
 
+mod catalogue;
 mod driver;
 mod failure;
 mod prepared;
+mod prepared_catalogue;
 mod prepared_profile;
 mod prepared_realtime;
 mod prepared_realtime_profile;
@@ -22,6 +24,10 @@ pub use driver::{OpenAiBackgroundDriver, openai_background_descriptor};
 pub use prepared::{
     OpenAiBackgroundPreparationInput, OpenAiBackgroundPreparedIntegration,
     prepare_openai_background,
+};
+pub use prepared_catalogue::{
+    OpenAiModelsPreparationInput, OpenAiModelsPreparedIntegration, OpenAiModelsProfileInput,
+    OpenAiPreparedModels, prepare_openai_models,
 };
 pub use prepared_profile::{
     OpenAiBackgroundModelSelection, OpenAiBackgroundPreparedEvidence,
@@ -53,5 +59,42 @@ pub use selection::{
 
 pub(crate) const ENDPOINT_AUDIENCE: &str = OPENAI_BACKGROUND_ENDPOINT_AUDIENCE;
 pub(crate) const INTEGRATION_FAMILY: &str = "openai";
+pub const OPENAI_MODELS_ENDPOINT: &str = "https://api.openai.com";
+pub const OPENAI_MODELS_ENDPOINT_AUDIENCE: &str = "api.openai.com";
+pub const OPENAI_MODELS_ACCESS_PROFILE_ID: &str = "openai.public-api.api-key.payg";
+pub const OPENAI_MODELS_CONFIGURED_INSTANCE_ID: &str = "openai.public.models";
+pub const OPENAI_MODELS_FACADE_REVISION: &str = "openai-models-2026-07-27";
+
+#[must_use]
+pub fn openai_models_facade_binding() -> swallowtail_core::InterfaceVersionBinding {
+    swallowtail_core::InterfaceVersionBinding::new(
+        swallowtail_core::InterfaceVersionAxis::new("openai.models-facade")
+            .expect("static axis is valid"),
+        swallowtail_core::InterfaceVersion::new(OPENAI_MODELS_FACADE_REVISION)
+            .expect("static version is valid"),
+    )
+}
+
+#[must_use]
+pub fn openai_models_facade_claim() -> swallowtail_core::InterfaceCompatibilityClaim {
+    swallowtail_core::InterfaceCompatibilityClaim::new(
+        swallowtail_core::InterfaceCompatibilityClaimId::new("openai.models-window-1")
+            .expect("static claim id is valid"),
+        swallowtail_core::InterfaceVersionAxis::new("openai.models-facade")
+            .expect("static axis is valid"),
+        swallowtail_core::InterfaceVersionScheme::Opaque,
+        swallowtail_core::InterfaceNewerVersionPosture::QualifiedOnly,
+        [swallowtail_core::InterfaceVersionSegment::exact(
+            swallowtail_core::InterfaceVersion::new(OPENAI_MODELS_FACADE_REVISION)
+                .expect("static version is valid"),
+            swallowtail_core::InterfaceBehaviorRevision::new("openai-models-list-v1")
+                .expect("static behavior is valid"),
+            swallowtail_core::InterfaceSupportStatus::Maintained,
+        )],
+        [],
+    )
+    .expect("static claim is valid")
+}
 #[cfg(test)]
 pub(crate) const SUPPORT_AUTHORITY: &str = "provider-supported-public-api";
+pub use catalogue::{OpenAiModelsDriver, openai_models_descriptor};

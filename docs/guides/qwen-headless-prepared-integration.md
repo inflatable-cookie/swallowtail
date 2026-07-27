@@ -18,6 +18,12 @@ Preparation requires:
 Run preparation requires a request identity, provider, model route, model,
 prompt content, working-resource reference, and host deadline.
 
+Catalogue preparation requires the same approved executable, environment,
+access, and exact version evidence, plus a request identity and optional
+deadline. Call `prepare_qwen_catalogue`; the result is independent from
+`prepare_qwen_headless` and has no provider, model route, prompt, or working
+resource.
+
 Swallowtail does not choose the provider, model, prompt, account, workspace, or
 fallback route.
 
@@ -45,6 +51,12 @@ Qwen's `--safe-mode` and tool registry are provider behavior. They do not prove
 host sandboxing, filesystem containment, descendant-process isolation, or
 transcript deletion. The prepared path does not enable Qwen's separate
 `--sandbox` route.
+
+`QwenPreparedCatalogue::list_models` starts one ephemeral safe-mode
+stream-JSON process, initializes the control protocol, verifies
+`can_get_available_models`, calls `get_available_models`, projects bounded
+model identity, label, and context-window evidence, then closes and joins the
+child. It does not open a model session or claim OS sandboxing.
 
 `QwenPreparedRun::start_run` executes exactly one run. `plan`, `request`,
 `evidence`, `low_level_driver`, and `into_parts` remain available for

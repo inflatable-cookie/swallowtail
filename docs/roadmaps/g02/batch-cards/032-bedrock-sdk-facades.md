@@ -56,6 +56,18 @@ drivers.
 - warnings-denied lint, examples, Bedrock's `1.94.1` MSRV exception, current
   stable, docs, and public API declarations pass
 
+## Addendum — Composite Provider Facade
+
+Operator-authorized follow-up on 2026-07-27 adds `prepare_bedrock` as the
+provider-level normal entry point. It binds only the shared execution host and
+explicit `BedrockCloudClientConfig`.
+
+The returned typed facade exposes separate `runtime` and `catalogue` branches.
+Each branch still binds its own configured instance, target, access profile,
+evidence, descriptor, version axes, plan, and low-level driver. The original
+route-specific constructors remain public. No catalogue result selects an
+inference route and no route fallback was added.
+
 ## Auto-Continuation
 
 Yes. Continue to card 033.

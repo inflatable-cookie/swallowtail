@@ -21,10 +21,11 @@ pub use catalogue::{
 pub use driver::{BedrockDirectDriver, bedrock_direct_descriptor};
 pub use prepared::{
     BedrockCataloguePreparationInput, BedrockCataloguePreparedEvidence,
-    BedrockCataloguePreparedIntegration, BedrockCatalogueProfileInput, BedrockModelSelection,
-    BedrockPreparedCatalogue, BedrockPreparedInferenceAttempt, BedrockRuntimePreparationInput,
+    BedrockCataloguePreparedIntegration, BedrockCatalogueProfileInput, BedrockCatalogueRouteInput,
+    BedrockFacade, BedrockFacadePreparationInput, BedrockModelSelection, BedrockPreparedCatalogue,
+    BedrockPreparedInferenceAttempt, BedrockRuntimePreparationInput,
     BedrockRuntimePreparedEvidence, BedrockRuntimePreparedIntegration, BedrockRuntimeProfileInput,
-    prepare_bedrock_catalogue, prepare_bedrock_runtime,
+    BedrockRuntimeRouteInput, prepare_bedrock, prepare_bedrock_catalogue, prepare_bedrock_runtime,
 };
 pub use selection::{
     BEDROCK_CATALOGUE_ACCESS_PROFILE_ID, BEDROCK_CATALOGUE_FACADE_REVISION,

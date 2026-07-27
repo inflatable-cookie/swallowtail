@@ -15,7 +15,7 @@ use swallowtail_runtime::{
     RuntimeSessionId, ScopeId, TurnHandle, TurnRequest,
 };
 
-mod cleanup;
+pub(super) mod cleanup;
 
 pub(super) fn cleanup_failure(code: &'static str, message: &'static str) -> CleanupOutcome {
     CleanupOutcome::Failed(swallowtail_core::SafeDiagnostic::new(

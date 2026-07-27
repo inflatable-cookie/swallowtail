@@ -2,6 +2,32 @@ use swallowtail_core::{ModelId, ModelRouteId, ModelRouteRevision, ProviderId};
 use swallowtail_runtime::{Deadline, RequestId, SessionOptions, WorkingResourceRef};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+pub struct PiCatalogueProfileInput {
+    request_id: RequestId,
+    deadline: Option<Deadline>,
+}
+
+impl PiCatalogueProfileInput {
+    #[must_use]
+    pub const fn new(request_id: RequestId) -> Self {
+        Self {
+            request_id,
+            deadline: None,
+        }
+    }
+
+    #[must_use]
+    pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
+        self.deadline = Some(deadline);
+        self
+    }
+
+    pub(super) fn into_parts(self) -> (RequestId, Option<Deadline>) {
+        (self.request_id, self.deadline)
+    }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct PiModelSelection {
     route_id: ModelRouteId,
     route_revision: ModelRouteRevision,

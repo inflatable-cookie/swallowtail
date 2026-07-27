@@ -125,6 +125,7 @@ impl PendingAttachment {
         provider_ref: SessionRef,
         provider_id: String,
         binding: SessionResumeBinding,
+        model_options: Option<NegotiatedSessionModelOptions>,
         services: &HostServices,
     ) -> Result<KimiSessionHandle, RuntimeFailure> {
         let runtime_id = RuntimeSessionId::new(format!("kimi-acp:{}", request_id.as_str()))
@@ -136,6 +137,7 @@ impl PendingAttachment {
             provider_ref,
             provider_id,
             binding,
+            model_options,
             execution_host_id: services.execution_host_id().clone(),
             connection: Arc::clone(&self.connection),
             cancellation: SessionCancellation::new(Arc::clone(&self.connection)),

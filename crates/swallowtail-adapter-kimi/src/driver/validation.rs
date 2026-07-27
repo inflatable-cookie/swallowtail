@@ -139,13 +139,14 @@ fn validate_initialize(
 fn parse_session(
     response: &Value,
     model: &swallowtail_core::ModelId,
-) -> Result<String, RuntimeFailure> {
+) -> Result<(String, Option<NegotiatedSessionModelOptions>), RuntimeFailure> {
     validate_session_configuration(response, model)?;
-    response
+    let session_id = response
         .get("sessionId")
         .and_then(Value::as_str)
         .map(str::to_owned)
-        .ok_or_else(malformed)
+        .ok_or_else(malformed)?;
+    Ok((session_id, parse_model_options(response)?))
 }
 
 fn validate_session_configuration(
@@ -171,6 +172,44 @@ fn validate_session_configuration(
             "Kimi Code session model does not match the preflight route",
         ))
     }
+}
+
+fn parse_model_options(
+    response: &Value,
+) -> Result<Option<NegotiatedSessionModelOptions>, RuntimeFailure> {
+    let model = response
+        .get("configOptions")
+        .and_then(Value::as_array)
+        .and_then(|options| {
+            options
+                .iter()
+                .find(|option| option.get("id").and_then(Value::as_str) == Some("model"))
+        })
+        .ok_or_else(malformed)?;
+    let current = model
+        .get("currentValue")
+        .and_then(Value::as_str)
+        .ok_or_else(malformed)?;
+    let Some(options) = model.get("options") else {
+        return Ok(None);
+    };
+    let options = options.as_array().ok_or_else(malformed)?;
+    let options = options
+        .iter()
+        .map(|option| {
+            let option = option.as_object().ok_or_else(malformed)?;
+            let value = option
+                .get("value")
+                .and_then(Value::as_str)
+                .ok_or_else(malformed)?;
+            let display_name = option
+                .get("name")
+                .and_then(Value::as_str)
+                .map(str::to_owned);
+            NegotiatedSessionModelOption::new(value, display_name)
+        })
+        .collect::<Result<Vec<_>, _>>()?;
+    NegotiatedSessionModelOptions::new(current, options).map(Some)
 }
 
 fn validate_turn(request: &TurnRequest) -> Result<(), RuntimeFailure> {

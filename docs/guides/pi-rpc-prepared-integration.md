@@ -20,6 +20,10 @@ Session preparation requires a request identity, provider, model route, model,
 working-resource reference, optional session deadline, and empty
 `SessionOptions`.
 
+Catalogue preparation requires only a request identity and optional deadline.
+Call `PiPreparedIntegration::prepare_catalogue`; its plan has no provider,
+model route, prompt, session, or working resource.
+
 Swallowtail does not choose the provider, model, account, credential,
 workspace, or fallback route.
 
@@ -46,6 +50,11 @@ The prepared plan binds:
 `ProviderSuppressed` describes Pi configuration flags. It is not a sandbox or
 containment claim. The adapter does not add permission prompts or infer
 filesystem or process isolation.
+
+`PiPreparedCatalogue::list_models` starts one ephemeral provider-suppressed
+RPC child, calls `get_available_models`, projects bounded configured
+provider/model evidence, then closes and joins the child. It does not select or
+invoke a model.
 
 `PiPreparedSession::open_session` returns the unchanged interactive session
 handle. Prompt turns, steering, follow-up scheduling, UI callback relay,

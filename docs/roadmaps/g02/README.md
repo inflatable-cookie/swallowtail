@@ -36,6 +36,7 @@ evidence-led provider work.
 | Prove attached OpenCode session deletion across its maintained range. | completed | Contracts 014, 029, 038 | `g02.018` |
 | Complete provider-wide lifecycle acceptance and a Nucleus handoff. | paused | Contracts 036-038 | `g02.019` |
 | Add a separate Kimi local-server lifecycle and interactive route. | completed | Research 040-041, Contracts 029 and 038 | `g02.020` |
+| Expand source-scoped model catalogue coverage without hidden session creation. | completed | Research 042-043, Contract 020 | `g02.021` |
 
 ## Current Checkpoint
 
@@ -100,6 +101,23 @@ evidence-led provider work.
 - card 065 publishes the 23rd production route, exact Kimi route selection,
   four compile-tested examples, a bounded Nucleus handoff, and 21 Kimi
   local-server tests executed from extracted package artifacts
+- Research 042 and card 066 reclassify all thirteen catalogue `No` values:
+  six have ready upstream catalogue interfaces, two are session-negotiated,
+  two are not applicable, and three require separate interface evidence
+- card 067 adds Pi's route-free, tool-free `get_available_models` operation,
+  typed prepared catalogue facade, bounded source-scoped metadata, deadline,
+  failure, topology, and credential-last joined cleanup evidence without
+  selecting or invoking a model
+- card 068 adds exact Kimi local-server catalogue coverage and bounded
+  negotiated model options on already-authorized Gemini and Kimi ACP sessions
+- card 069 adds separate hosted OpenAI, Gemini, and xAI catalogue branches
+  plus Alibaba's deployment-candidate control-plane branch
+- Research 043 and card 070 correct the Qwen and Alibaba evidence gaps, add
+  Qwen safe-mode control discovery, and close the 21-row solution matrix at
+  16 `Yes`, two session-negotiated, two not-applicable, one caller-supplied,
+  and zero `No`
+- roadmap g02.021 is complete; every selected machine-readable model source
+  has a Swallowtail path without hidden session creation or route inference
 - roadmaps g02.016-g02.019 sequence Codex, ACP/Claude Agent, OpenCode,
   provider-wide acceptance, and the Nucleus handoff
 - all 23 manifests carry contract-complete metadata and crates.io publication
@@ -245,8 +263,8 @@ evidence-led provider work.
 - Gemini retains asymmetric PCM, local interruption truth, one planned
   provider rollover, and no retry or durable-resume claim
 - card 032 completes separate Bedrock Runtime and control-plane catalogue
-  prepared facades with exact region, SDK, service, access, and cloud-client
-  evidence
+  prepared routes with exact region, SDK, service, access, and cloud-client
+  evidence, then adds one provider-level facade over those typed branches
 - Runtime requires one explicit model route and provider; catalogue remains
   route-free and cannot infer invocation availability or entitlement
 - both paths require an explicit region and delegated credential provider;
@@ -543,7 +561,7 @@ the active g02 queue.
 
 ## Generation Boundary
 
-g02 is a long-lived generation with 20 roadmaps. It remains below its
+g02 is a long-lived generation with 21 roadmaps. It remains below its
 30-50-roadmap rollover range. Provider-wide facade work stabilizes the existing
 production routes. The provider-session lifecycle lane adds bounded management
 to applicable persistent-session routes without adding provider names,

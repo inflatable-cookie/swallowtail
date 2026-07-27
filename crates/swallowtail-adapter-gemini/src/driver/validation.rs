@@ -80,7 +80,12 @@ fn validate_initialize(
     Ok(())
 }
 
-fn parse_new_session(response: &Value) -> Result<String, RuntimeFailure> {
+struct OpenedSession {
+    provider_id: String,
+    model_options: Option<NegotiatedSessionModelOptions>,
+}
+
+fn parse_new_session(response: &Value) -> Result<OpenedSession, RuntimeFailure> {
     let session_id = response
         .get("sessionId")
         .and_then(Value::as_str)
@@ -96,5 +101,41 @@ fn parse_new_session(response: &Value) -> Result<String, RuntimeFailure> {
             "Gemini CLI did not open in read-only plan mode",
         ));
     }
-    Ok(session_id.to_owned())
+    Ok(OpenedSession {
+        provider_id: session_id.to_owned(),
+        model_options: parse_model_options(response)?,
+    })
+}
+
+fn parse_model_options(
+    response: &Value,
+) -> Result<Option<NegotiatedSessionModelOptions>, RuntimeFailure> {
+    let Some(models) = response.get("models") else {
+        return Ok(None);
+    };
+    let models = models.as_object().ok_or_else(malformed)?;
+    let Some(available) = models.get("availableModels") else {
+        return Ok(None);
+    };
+    let available = available.as_array().ok_or_else(malformed)?;
+    let current = models
+        .get("currentModelId")
+        .and_then(Value::as_str)
+        .ok_or_else(malformed)?;
+    let options = available
+        .iter()
+        .map(|model| {
+            let model = model.as_object().ok_or_else(malformed)?;
+            let value = model
+                .get("modelId")
+                .and_then(Value::as_str)
+                .ok_or_else(malformed)?;
+            let display_name = model
+                .get("name")
+                .and_then(Value::as_str)
+                .map(str::to_owned);
+            NegotiatedSessionModelOption::new(value, display_name)
+        })
+        .collect::<Result<Vec<_>, _>>()?;
+    NegotiatedSessionModelOptions::new(current, options).map(Some)
 }

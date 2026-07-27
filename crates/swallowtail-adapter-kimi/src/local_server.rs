@@ -1,3 +1,4 @@
+mod catalogue;
 mod descriptor;
 mod driver;
 mod interactive;
@@ -15,9 +16,10 @@ pub use interactive::{
 };
 pub use prepared::{
     KimiLocalServerAttachedInput, KimiLocalServerBindingImportInput,
-    KimiLocalServerBindingImportTarget, KimiLocalServerObservation, KimiLocalServerOwnedHandle,
-    KimiLocalServerOwnedInput, KimiLocalServerPreparationProbe, KimiLocalServerPreparedArchive,
-    KimiLocalServerPreparedBindingImport, KimiLocalServerPreparedIntegration,
+    KimiLocalServerBindingImportTarget, KimiLocalServerCatalogueInput, KimiLocalServerObservation,
+    KimiLocalServerOwnedHandle, KimiLocalServerOwnedInput, KimiLocalServerPreparationProbe,
+    KimiLocalServerPreparedArchive, KimiLocalServerPreparedBindingImport,
+    KimiLocalServerPreparedCatalogue, KimiLocalServerPreparedIntegration,
     KimiLocalServerPreparedRestore, KimiLocalServerSessionManagementInput,
     prepare_kimi_local_server_attached, start_kimi_local_server_owned,
 };

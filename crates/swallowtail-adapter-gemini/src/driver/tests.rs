@@ -60,14 +60,13 @@ mod tests {
             }), &selected)
             .is_err()
         );
-        assert_eq!(
-            parse_new_session(&json!({
+        let opened = parse_new_session(&json!({
                 "sessionId": "fixture-session",
                 "modes": {"currentModeId": "plan"}
             }))
-            .expect("plan session is accepted"),
-            "fixture-session"
-        );
+            .expect("plan session is accepted");
+        assert_eq!(opened.provider_id, "fixture-session");
+        assert!(opened.model_options.is_none());
         assert!(
             parse_new_session(&json!({
                 "sessionId": "fixture-session",

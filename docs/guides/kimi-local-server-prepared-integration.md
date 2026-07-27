@@ -12,6 +12,7 @@ path, provider load replay, or resume without local-server management.
 | normal installed Kimi agent session over stdio | `kimi-code.acp` |
 | load with provider replay | `kimi-code.acp` |
 | REST/WebSocket v2 streaming | `kimi-code.local-server` |
+| configured model catalogue | `kimi-code.local-server` |
 | explicit approval or structured-question callback exchange | `kimi-code.local-server` |
 | archive or restore an inactive provider session | `kimi-code.local-server` |
 | provider-session hard delete | neither route |
@@ -76,6 +77,15 @@ provider state.
 
 See the compile-tested
 [`interactive example`](../../crates/swallowtail-adapter-kimi/examples/prepared_local_server_interactive.rs).
+
+## Model Catalogue
+
+`prepare_catalogue` requires only a request identity, optional deadline, and
+explicit unverified-newer acceptance when applicable. `list_models` performs
+one authenticated `GET /api/v1/models` against the prepared attached or owned
+server and projects bounded configured aliases. It does not refresh providers,
+change Kimi's default model, open a session, or convert the local-server bearer
+into Kimi account authority.
 
 ## Archive And Restore
 

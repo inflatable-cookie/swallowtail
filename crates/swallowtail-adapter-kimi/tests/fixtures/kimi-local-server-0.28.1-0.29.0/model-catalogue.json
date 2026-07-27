@@ -1,0 +1,1 @@
+{"code":0,"msg":"success","data":{"items":[{"provider":"kimi","model":"k2","display_name":"Kimi K2","max_context_size":131072,"max_output_size":8192,"capabilities":["thinking"]},{"provider":"openai","model":"gpt4o","display_name":"GPT-4o","max_context_size":128000}]},"request_id":"fixture-model-catalogue"}

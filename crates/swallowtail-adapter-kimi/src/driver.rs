@@ -13,8 +13,9 @@ use swallowtail_core::{
 use swallowtail_runtime::{
     BoxEventStream, BoxFuture, CancellationAcknowledgement, CancellationControl, CleanupOutcome,
     CredentialLease, EnvironmentRef, ExecutableRef, HostServices, InteractiveSessionDriver,
-    InteractiveSessionHandle, JoinedTask, LoadSessionRequest, LoadedSession, OpenSessionRequest,
-    ProcessHandle, ProcessRequest, RequestId, ResourceLease, ResumeSessionRequest, RuntimeFailure,
+    InteractiveSessionHandle, JoinedTask, LoadSessionRequest, LoadedSession,
+    NegotiatedSessionModelOption, NegotiatedSessionModelOptions, OpenSessionRequest, ProcessHandle,
+    ProcessRequest, RequestId, ResourceLease, ResumeSessionRequest, RuntimeFailure,
     RuntimeSessionId, ScopeId, SessionLifecycleOperation, SessionResumeBinding, TerminalOutcome,
     TurnHandle, TurnRequest, prepare_negotiated_reasoning_setup, validate_session_access_plan,
     validate_session_plan_agreement, validate_session_resource_lease,
@@ -58,7 +59,7 @@ impl InteractiveSessionDriver for KimiAcpDriver {
                     .connection
                     .new_session(attachment.cwd.clone())
                     .await?;
-                let provider_id =
+                let (provider_id, model_options) =
                     parse_session(&response, plan.model_id().expect("validated model"))?;
                 attachment.connection.set_session_id(provider_id.clone())?;
                 if let Some(reasoning) = reasoning {
@@ -83,7 +84,14 @@ impl InteractiveSessionDriver for KimiAcpDriver {
                     working_resource,
                     access_policy,
                 );
-                attachment.take_session(request_id, provider_ref, provider_id, binding, &services)
+                attachment.take_session(
+                    request_id,
+                    provider_ref,
+                    provider_id,
+                    binding,
+                    model_options,
+                    &services,
+                )
             }
             .await;
             match opened {
@@ -156,11 +164,13 @@ impl InteractiveSessionDriver for KimiAcpDriver {
                     &response,
                     plan.model_id().expect("validated model"),
                 )?;
+                let model_options = parse_model_options(&response)?;
                 let session = attachment.take_session(
                     request.request_id().clone(),
                     provider_ref.clone(),
                     provider_ref.as_provider_value().to_owned(),
                     request.resume_binding().clone(),
+                    model_options,
                     &services,
                 )?;
                 Ok(LoadedSession::new(replay, Box::new(session)))
@@ -226,11 +236,13 @@ impl InteractiveSessionDriver for KimiAcpDriver {
                     &response,
                     plan.model_id().expect("validated model"),
                 )?;
+                let model_options = parse_model_options(&response)?;
                 attachment.take_session(
                     request.request_id().clone(),
                     provider_ref.clone(),
                     provider_ref.as_provider_value().to_owned(),
                     request.resume_binding().clone(),
+                    model_options,
                     &services,
                 )
             }

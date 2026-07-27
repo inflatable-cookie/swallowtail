@@ -16,7 +16,7 @@ pub(super) async fn release_resource(
     }
 }
 
-pub(super) async fn release_credential(
+pub(in crate::driver) async fn release_credential(
     lease: Option<CredentialLease>,
     services: &HostServices,
 ) -> CleanupOutcome {
@@ -30,7 +30,10 @@ pub(super) async fn release_credential(
     }
 }
 
-pub(super) fn merge_cleanup(left: CleanupOutcome, right: CleanupOutcome) -> CleanupOutcome {
+pub(in crate::driver) fn merge_cleanup(
+    left: CleanupOutcome,
+    right: CleanupOutcome,
+) -> CleanupOutcome {
     match (left, right) {
         (CleanupOutcome::Failed(error), _) | (_, CleanupOutcome::Failed(error)) => {
             CleanupOutcome::Failed(error)

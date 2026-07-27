@@ -5,10 +5,10 @@ mod local_server_lifecycle_support;
 use futures_executor::block_on;
 use local_server_lifecycle_support::{FixtureHost, FixtureServer};
 use swallowtail_adapter_kimi::{
-    KimiLocalServerAttachedInput, KimiLocalServerOwnedInput, KimiLocalServerPreparationProbe,
-    KimiLocalServerPreparedIntegration, KimiLocalServerSessionManagementInput, kimi_code_binding,
-    kimi_local_server_descriptor, prepare_kimi_local_server_attached,
-    start_kimi_local_server_owned,
+    KimiLocalServerAttachedInput, KimiLocalServerCatalogueInput, KimiLocalServerOwnedInput,
+    KimiLocalServerPreparationProbe, KimiLocalServerPreparedIntegration,
+    KimiLocalServerSessionManagementInput, kimi_code_binding, kimi_local_server_descriptor,
+    prepare_kimi_local_server_attached, start_kimi_local_server_owned,
 };
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessStatus, Capability, ConfiguredInstanceId,
@@ -107,6 +107,47 @@ fn attached_archive_and_restore_work_on_local_and_remote_authoritative_hosts() {
 }
 
 #[test]
+fn attached_catalogue_lists_configured_aliases_without_session_or_refresh() {
+    for version in ["0.28.1", "0.29.0"] {
+        let server = FixtureServer::start_with_version(version);
+        let host = FixtureHost::new(&server);
+        let execution_host = value(ExecutionHostId::new, "host.local");
+        let services = host.services(execution_host.clone(), false);
+        let prepared = block_on(prepare_kimi_local_server_attached(
+            attached_input_for_version(execution_host, version),
+            probe(),
+            services.clone(),
+        ))
+        .expect("attached Kimi prepares");
+        let catalogue = prepared
+            .prepare_catalogue(KimiLocalServerCatalogueInput::new(value(
+                RequestId::new,
+                "catalogue-request",
+            )))
+            .expect("catalogue prepares");
+        let models = block_on(catalogue.list_models(services)).expect("catalogue executes");
+        assert_eq!(
+            models
+                .iter()
+                .map(|model| model.id().as_str())
+                .collect::<Vec<_>>(),
+            ["k2", "gpt4o"]
+        );
+        assert_eq!(
+            models[0]
+                .metadata()
+                .catalog_observations()
+                .and_then(|observations| observations.reasoning_supported()),
+            Some(true)
+        );
+        assert!(server.requests().iter().any(|request| {
+            request.path == "/api/v1/models" && request.method == "GET" && request.authenticated
+        }));
+        assert_eq!(host.credential_releases(), 2);
+    }
+}
+
+#[test]
 fn owned_topology_uses_exact_safe_command_and_joins_only_its_child() {
     let server = FixtureServer::start();
     let host = FixtureHost::new(&server);
@@ -189,6 +230,13 @@ fn prepare_attached(
 }
 
 fn attached_input(execution_host: ExecutionHostId) -> KimiLocalServerAttachedInput {
+    attached_input_for_version(execution_host, "0.29.0")
+}
+
+fn attached_input_for_version(
+    execution_host: ExecutionHostId,
+    version: &str,
+) -> KimiLocalServerAttachedInput {
     let access_profile = access_profile();
     let access_evidence = PreparedAccessEvidence::observed(
         AccessStatus::new(
@@ -212,7 +260,7 @@ fn attached_input(execution_host: ExecutionHostId) -> KimiLocalServerAttachedInp
         access_profile,
         access_evidence,
         value(WorkingResourceRef::new, "fixture.kimi.state-root"),
-        kimi_code_binding("0.29.0").expect("qualified Kimi version binds"),
+        kimi_code_binding(version).expect("qualified Kimi version binds"),
     )
 }
 

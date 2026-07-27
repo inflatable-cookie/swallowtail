@@ -15,9 +15,22 @@ pub fn pi_rpc_descriptor() -> DriverDescriptor {
         IntegrationFamilyId::new("pi").expect("static family id is valid"),
         TransportFamilyId::new("strict-lf-jsonl-stdio").expect("static transport id is valid"),
     )
-    .with_roles([DriverRole::Discovery, DriverRole::InteractiveSession])
+    .with_roles([
+        DriverRole::Discovery,
+        DriverRole::ModelCatalog,
+        DriverRole::InteractiveSession,
+    ])
     .with_execution_layers([ExecutionLayer::HarnessInteraction])
     .with_operation_shapes([OperationShape::InteractiveSession])
+    .with_required_host_services(
+        DriverRole::ModelCatalog,
+        [
+            HostServiceKind::Task,
+            HostServiceKind::Process,
+            HostServiceKind::Credential,
+            HostServiceKind::Time,
+        ],
+    )
     .with_required_host_services(
         DriverRole::InteractiveSession,
         [

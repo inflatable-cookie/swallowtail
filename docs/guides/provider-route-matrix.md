@@ -5,6 +5,12 @@ Choose one row explicitly. Swallowtail does not select a provider, driver,
 model, target, endpoint, credential, billing arrangement, execution host, or
 fallback route.
 
+The companion
+[provider and feature CSV](provider-solution-feature-matrix.csv) groups
+complementary routes only where one public solution facade already exists,
+then compares runtime posture, version posture, and qualified feature coverage
+across all 23 routes.
+
 Every row has two public paths:
 
 1. the adapter-local prepared constructor and typed bound operation for normal
@@ -22,16 +28,16 @@ ACP adapters may compose instead of their stdio transport.
 | `codex.exec` | `swallowtail-adapter-codex`; `swallowtail.codex.exec` | structured run; structured CLI | approved executable and environment; caller-selected Codex profile plus matching evidence | `codex.cli`; ordered maintained/deprecated range with permitted unverified-newer stable points | `prepare_codex(StructuredExec)` → `prepare_structured_exec` → `start_run` | `CodexExecDriver`; `StructuredRunDriver` |
 | `codex.app-server` | `swallowtail-adapter-codex`; `swallowtail.codex.app-server` | catalogue, interactive session, and inactive provider-thread management; JSONL RPC stdio | approved executable and environment; caller-selected Codex profile plus matching evidence | `codex.cli`; independent app-server and lifecycle behavior segments with permitted visible unverified-newer points | `prepare_codex(AppServer)` → catalogue, session, archive, restore, or delete profile → its typed bound operation | `CodexAppServerDriver`; `ModelCatalogDriver`, `InteractiveSessionDriver`, and `ProviderSessionManagementDriver` |
 | `claude-agent.acp` | `swallowtail-adapter-claude-agent`; `swallowtail.claude-agent.acp` | interactive session and inactive provider-session delete; ACP v1 stdio | approved executable; provider-supported Anthropic public API-key pay-as-you-go profile | `claude-agent.acp-adapter`; maintained range plus permitted unverified-newer stable points | `prepare_claude_agent` → session or delete profile → `open_session` or `execute` | `ClaudeAgentAcpDriver`; `InteractiveSessionDriver` and `ProviderSessionManagementDriver` |
-| `gemini-cli.acp` | `swallowtail-adapter-gemini`; `swallowtail.gemini.acp` | interactive session; ACP v1 stdio | approved executable; provider-supported Gemini Developer API-key profile | `gemini-cli.acp-agent`; maintained release plus permitted unverified-newer stable points | `prepare_gemini_acp` → `prepare_session` → `open_session` | `GeminiAcpDriver`; `InteractiveSessionDriver` |
-| `kimi-code.acp` | `swallowtail-adapter-kimi`; `swallowtail.kimi.acp` | persistent interactive session; ACP v1 stdio | approved executable; delegated Kimi membership OAuth reference | `kimi-code.executable`; two qualified behavior points plus permitted unverified-newer stable points | `prepare_kimi` → `prepare_session` → `open_session`, `load_session`, or `resume_session` | `KimiAcpDriver`; `InteractiveSessionDriver` |
-| `pi.rpc` | `swallowtail-adapter-pi`; `swallowtail.pi.rpc` | interactive session; strict LF JSONL RPC stdio | approved executable; maintainer-supported `pi/delegated-harness-auth` profile | `pi.package`; maintained range plus permitted unverified-newer stable points | `prepare_pi_rpc` → `prepare_session` → `open_session` | `PiRpcDriver`; `InteractiveSessionDriver` |
-| `qwen.headless` | `swallowtail-adapter-qwen`; `swallowtail.qwen.headless` | structured run; structured CLI stream JSON | approved executable; maintainer-supported `qwen-code/delegated-harness-auth` profile | `qwen-code.package`; maintained range plus permitted unverified-newer stable points | `prepare_qwen_headless` → `prepare_run` → `start_run` | `QwenHeadlessDriver`; `StructuredRunDriver` |
+| `gemini-cli.acp` | `swallowtail-adapter-gemini`; `swallowtail.gemini.acp` | interactive session with negotiated model options; ACP v1 stdio | approved executable; provider-supported Gemini Developer API-key profile | `gemini-cli.acp-agent`; maintained release plus permitted unverified-newer stable points | `prepare_gemini_acp` → `prepare_session` → `open_session`; read options from the authorized handle | `GeminiAcpDriver`; `InteractiveSessionDriver` |
+| `kimi-code.acp` | `swallowtail-adapter-kimi`; `swallowtail.kimi.acp` | persistent interactive session with negotiated model options; ACP v1 stdio | approved executable; delegated Kimi membership OAuth reference | `kimi-code.executable`; two qualified behavior points plus permitted unverified-newer stable points | `prepare_kimi` → `prepare_session` → `open_session`, `load_session`, or `resume_session`; read options from the authorized handle | `KimiAcpDriver`; `InteractiveSessionDriver` |
+| `pi.rpc` | `swallowtail-adapter-pi`; `swallowtail.pi.rpc` | catalogue and interactive session; strict LF JSONL RPC stdio | approved executable; maintainer-supported `pi/delegated-harness-auth` profile | `pi.package`; maintained range plus permitted unverified-newer stable points | `prepare_pi_rpc` → `prepare_catalogue` or `prepare_session` → `list_models` or `open_session` | `PiRpcDriver`; `ModelCatalogDriver` and `InteractiveSessionDriver` |
+| `qwen.headless` | `swallowtail-adapter-qwen`; `swallowtail.qwen.headless` | catalogue and structured run; structured CLI stream JSON | approved executable; maintainer-supported `qwen-code/delegated-harness-auth` profile | `qwen-code.package`; maintained range plus permitted unverified-newer stable points | `prepare_qwen_catalogue` → `list_models`, or `prepare_qwen_headless` → `prepare_run` → `start_run` | `QwenHeadlessDriver`; `ModelCatalogDriver` and `StructuredRunDriver` |
 
 ## Attached Harness Network
 
 | Route | Crate and driver | Role and transport | Explicit target and access | Version axis | Prepared path | Low-level escape hatch |
 | --- | --- | --- | --- | --- | --- | --- |
-| `kimi-code.local-server` | `swallowtail-adapter-kimi`; `swallowtail.kimi.local-server` | interactive session and inactive provider-session archive/restore; local REST and WebSocket v2 | approved loopback server endpoint and opaque server-bearer lease; Kimi retains its separate harness account and configuration | `kimi-code.executable`; exact qualified `0.28.1` and `0.29.0` behavior points plus permitted visible unverified-newer points | `prepare_kimi_local_server_attached` or `start_kimi_local_server_owned` → session, archive, restore, or ACP-binding-import profile → its typed operation | `KimiLocalServerDriver`; `InteractiveSessionDriver` and `ProviderSessionManagementDriver` |
+| `kimi-code.local-server` | `swallowtail-adapter-kimi`; `swallowtail.kimi.local-server` | catalogue, interactive session, and inactive provider-session archive/restore; local REST and WebSocket v2 | approved loopback server endpoint and opaque server-bearer lease; Kimi retains its separate harness account and configuration | `kimi-code.executable`; exact qualified `0.28.1` and `0.29.0` behavior points plus permitted visible unverified-newer points | `prepare_kimi_local_server_attached` or `start_kimi_local_server_owned` → catalogue, session, archive, restore, or ACP-binding-import profile → its typed operation | `KimiLocalServerDriver`; `ModelCatalogDriver`, `InteractiveSessionDriver`, and `ProviderSessionManagementDriver` |
 | `opencode.http` | `swallowtail-adapter-opencode`; `swallowtail.opencode.http` | catalogue, interactive session, and inactive provider-session delete; HTTP/SSE | approved attached-server endpoint; maintainer-supported delegated-auth credential profile | `opencode.server`; closed maintained range plus permitted unverified-newer stable points | `prepare_opencode_attached` → catalogue, session, or delete profile → `list_models`, `open_session`, or `execute` | `OpenCodeHttpDriver`; `ModelCatalogDriver`, `InteractiveSessionDriver`, and `ProviderSessionManagementDriver` |
 
 ## Hosted Direct And Provider-Owned State
@@ -53,12 +59,31 @@ ACP adapters may compose instead of their stdio transport.
 | `openai.realtime` | `swallowtail-adapter-openai`; `swallowtail.openai.realtime` | realtime media session; WebSocket | approved public Realtime endpoint; OpenAI public API key and pay-as-you-go billing | `openai.realtime-facade`; exact opaque revision | `prepare_openai_realtime` → `prepare_realtime_session` → `open_session` | `OpenAiRealtimeDriver`; `RealtimeMediaSessionDriver` |
 | `gemini.live` | `swallowtail-adapter-gemini`; `swallowtail.gemini.live` | realtime media session; Gemini Live raw WebSocket | approved Gemini Live endpoint; project authorization API key | `gemini.live-facade`; exact opaque revision | `prepare_gemini_live` → `prepare_live_session` → `open_session` | `GeminiLiveDriver`; `RealtimeMediaSessionDriver` |
 
+## Auxiliary Hosted Catalogue Branches
+
+These branches report provider or control-plane inventory for existing
+solutions. They are not extra inference routes, and their results do not claim
+compatibility with the solution transport beside them.
+
+| Provider scope | Driver | Exact source and access | Prepared path |
+| --- | --- | --- | --- |
+| Alibaba Model Studio | `swallowtail.alibaba-model-studio.deployable-models` | international deployable-model control plane; general API key | `prepare_alibaba_deployable_models` → `prepare_catalogue` → `list_models` |
+| Gemini | `swallowtail.gemini.models` | Gemini Developer API `models.list`; project API key | `prepare_gemini_models` → `prepare_catalogue` → `list_models` |
+| OpenAI | `swallowtail.openai.models` | public Models API; OpenAI public API key | `prepare_openai_models` → `prepare_catalogue` → `list_models` |
+| xAI | `swallowtail.xai.models` | public language-models API; xAI public API key | `prepare_xai_models` → `prepare_catalogue` → `list_models` |
+
 ## Embedded SDK
 
 | Route | Crate and driver | Role and transport | Explicit target and access | Version axis | Prepared path | Low-level escape hatch |
 | --- | --- | --- | --- | --- | --- | --- |
-| `bedrock.runtime` | `swallowtail-adapter-bedrock`; `swallowtail.amazon-bedrock.direct` | structured run; Rust SDK EventStream | approved regional Runtime target and explicit `BedrockCloudClientConfig`; delegated cloud-provider identity | `amazon-bedrock.runtime-rust-sdk` plus `amazon-bedrock.runtime-service-api`; exact opaque revisions | `prepare_bedrock_runtime` → `prepare_inference_attempt` → `start_run` | `BedrockDirectDriver`; `StructuredRunDriver` |
-| `bedrock.catalogue` | `swallowtail-adapter-bedrock`; `swallowtail.amazon-bedrock.catalogue` | model catalogue; Rust SDK control plane | approved regional control-plane target and explicit `BedrockCloudClientConfig`; delegated cloud-provider identity | `amazon-bedrock.control-plane-rust-sdk` plus `amazon-bedrock.control-plane-service-api`; exact opaque revisions | `prepare_bedrock_catalogue` → `prepare_catalogue` → `list_models` | `BedrockCatalogueDriver`; `ModelCatalogDriver` |
+| `bedrock.runtime` | `swallowtail-adapter-bedrock`; `swallowtail.amazon-bedrock.direct` | structured run; Rust SDK EventStream | approved regional Runtime target and explicit `BedrockCloudClientConfig`; delegated cloud-provider identity | `amazon-bedrock.runtime-rust-sdk` plus `amazon-bedrock.runtime-service-api`; exact opaque revisions | `prepare_bedrock` → `runtime` → `prepare_inference_attempt` → `start_run` | `BedrockDirectDriver`; `StructuredRunDriver` |
+| `bedrock.catalogue` | `swallowtail-adapter-bedrock`; `swallowtail.amazon-bedrock.catalogue` | model catalogue; Rust SDK control plane | approved regional control-plane target and explicit `BedrockCloudClientConfig`; delegated cloud-provider identity | `amazon-bedrock.control-plane-rust-sdk` plus `amazon-bedrock.control-plane-service-api`; exact opaque revisions | `prepare_bedrock` → `catalogue` → `prepare_catalogue` → `list_models` | `BedrockCatalogueDriver`; `ModelCatalogDriver` |
+
+`prepare_bedrock` binds only the shared execution host, region, and explicit
+credential provider. Its typed `runtime` and `catalogue` branches still require
+separate configured-instance identity, target, access profile, evidence,
+descriptor, version axes, preflight plan, and low-level driver. The direct
+route-specific constructors remain available.
 
 ## Local Model Runtimes
 
@@ -194,7 +219,8 @@ All examples compile from their adapter crate's public API under
   [OpenAI](../../crates/swallowtail-adapter-openai/examples/prepared_realtime_session.rs), and
   [Gemini Live](../../crates/swallowtail-adapter-gemini/examples/prepared_live_session.rs)
 - Embedded SDK:
-  [Bedrock Runtime](../../crates/swallowtail-adapter-bedrock/examples/prepared_runtime.rs) and
+  [combined Bedrock facade](../../crates/swallowtail-adapter-bedrock/examples/prepared_bedrock.rs),
+  [Bedrock Runtime](../../crates/swallowtail-adapter-bedrock/examples/prepared_runtime.rs), and
   [Bedrock catalogue](../../crates/swallowtail-adapter-bedrock/examples/prepared_catalogue.rs)
 - Local runtimes:
   [Ollama](../../crates/swallowtail-adapter-ollama/examples/prepared_attached.rs),

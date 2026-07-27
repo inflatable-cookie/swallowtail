@@ -12,11 +12,10 @@ shape.
 
 ## Next Task
 
-Review completed
-[g02 card 065](g02/batch-cards/065-kimi-local-server-acceptance-and-package-closeout.md),
-then decide whether to authorize
-[g02 card 060](g02/batch-cards/060-nucleus-thread-lifecycle-adoption-handoff.md).
-No Swallowtail task is active pending that operator decision.
+Operator decision on
+[g02 card 060](g02/batch-cards/060-nucleus-thread-lifecycle-adoption-handoff.md):
+authorize the documentation-only Nucleus lifecycle handoff or select another
+lane. Do not auto-continue into consumer adoption.
 
 ## Index
 

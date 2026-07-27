@@ -22,12 +22,12 @@ fn local_server_and_acp_descriptors_cannot_substitute_for_each_other() {
     assert!(local.supports_operation_shape(OperationShape::ProviderSessionManagement));
     assert!(local.supports_role(DriverRole::ProviderSessionManagement));
     assert!(local.supports_role(DriverRole::InteractiveSession));
+    assert!(local.supports_role(DriverRole::ModelCatalog));
     assert!(acp.supports_role(DriverRole::InteractiveSession));
     assert!(!acp.supports_role(DriverRole::ProviderSessionManagement));
 
     for role in [
         DriverRole::Discovery,
-        DriverRole::ModelCatalog,
         DriverRole::StructuredRun,
         DriverRole::RealtimeMediaSession,
         DriverRole::ServingInstanceLifecycle,

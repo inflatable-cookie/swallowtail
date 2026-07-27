@@ -109,8 +109,8 @@ pub use installed_executable::{
 };
 pub use model_artifact::{ModelArtifactAccess, ModelArtifactLease, ModelArtifactService};
 pub use negotiated_session_options::{
-    EffectiveReasoningSetup, NegotiatedReasoningSetup, SessionLifecycleOperation,
-    prepare_negotiated_reasoning_setup,
+    EffectiveReasoningSetup, NegotiatedReasoningSetup, NegotiatedSessionModelOption,
+    NegotiatedSessionModelOptions, SessionLifecycleOperation, prepare_negotiated_reasoning_setup,
 };
 pub use network::{AuthorizedEndpoint, NetworkGrant, NetworkPolicyService};
 pub use operation_policy::{

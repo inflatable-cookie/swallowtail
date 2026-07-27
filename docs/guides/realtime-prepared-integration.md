@@ -12,6 +12,25 @@ They share provider-neutral prepared evidence. They do not share a connection
 constructor, turn method, cancellation claim, rollover policy, media format,
 or model-selection rule.
 
+## Provider Catalogue Branches
+
+Each provider exposes a separate catalogue preparation path:
+
+| Provider | Prepared constructor | Source |
+| --- | --- | --- |
+| xAI | `prepare_xai_models` | public `/v1/language-models` |
+| OpenAI | `prepare_openai_models` | public `/v1/models` |
+| Gemini | `prepare_gemini_models` | paginated Developer API `models.list` |
+
+Each branch requires its own configured-instance revision, approved public API
+endpoint, API-key access profile and evidence, execution host, request
+identity, and optional deadline. `prepare_catalogue` returns a typed operation
+whose `list_models` method performs bounded authenticated discovery.
+
+These are provider catalogue branches, not Realtime, Live, or Responses route
+capability probes. A listed id does not become an invocation route or prove
+transport support, entitlement, billing readiness, or request acceptance.
+
 ## xAI Responses WebSocket
 
 `prepare_xai_responses_websocket` binds one execution host, host-approved

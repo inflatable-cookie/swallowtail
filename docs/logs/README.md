@@ -5,6 +5,10 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-07-27 Model Catalogue No-Closure](2026-07-27-model-catalogue-no-closure.md)
+- [2026-07-27 Pi RPC Model Catalogue](2026-07-27-pi-rpc-model-catalogue.md)
+- [2026-07-27 Provider Solution Facade Alignment Audit](2026-07-27-provider-solution-facade-alignment-audit.md)
+- [2026-07-27 Bedrock Composite Provider Facade](2026-07-27-bedrock-composite-provider-facade.md)
 - [2026-07-27 Kimi Local Server Acceptance Closeout](2026-07-27-kimi-local-server-acceptance-closeout.md)
 - [2026-07-27 Kimi Local Server Interactive Driver](2026-07-27-kimi-local-server-interactive-driver.md)
 - [2026-07-27 Kimi Cross-Transport Binding Import](2026-07-27-kimi-cross-transport-binding-import.md)

@@ -31,6 +31,17 @@ fn new_prompt_write_and_cleanup_preserve_ambient_host_authority() {
         );
         assert_eq!(binding.working_resource(), &selected.resource);
         assert!(!format!("{binding:?}").contains("kimi-session-bound"));
+        let models = session
+            .negotiated_model_options()
+            .expect("session model options are retained");
+        assert_eq!(models.current_value(), "kimi-coder");
+        assert_eq!(
+            models
+                .options()
+                .map(|model| model.value())
+                .collect::<Vec<_>>(),
+            ["kimi-coder", "kimi-alternate"]
+        );
         let mut turn = block_on(session.start_turn(
             TurnRequest::new(
                 RuntimeTurnId::new("kimi-turn").expect("valid turn"),

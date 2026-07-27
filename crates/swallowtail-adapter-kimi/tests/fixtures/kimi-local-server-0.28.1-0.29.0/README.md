@@ -16,6 +16,7 @@ Selected source files are byte-identical between those commits:
 - `packages/kap-server/src/protocol/envelope.ts`
 - `packages/kap-server/src/protocol/error-codes.ts`
 - `packages/kap-server/src/protocol/rest-meta.ts`
+- `packages/kap-server/src/protocol/rest-modelCatalog.ts`
 - `packages/kap-server/src/protocol/rest-session.ts`
 - `packages/kap-server/src/protocol/ws-control.ts`
 - `packages/kap-server/src/middleware/auth.ts`
@@ -28,6 +29,12 @@ The selected HTTP surface has archive and restore actions. It has no session
 DELETE method. The source's deprecated `deleteSessionResponseSchema` is an
 alias of `archiveSessionResponseSchema`; it does not define a delete route or
 delete effect.
+
+The authenticated `GET /api/v1/models` route returns configured model aliases
+without refreshing providers or changing the default model. Current source
+checks at `0.29.1` and `0.29.2` retain this read-only route and response
+envelope; those versions remain visible unverified-newer rather than silently
+joining the guaranteed range.
 
 All `/api/*`, `/openapi.json`, `/asyncapi.json`, and WebSocket access is bearer
 protected. Only `GET /api/v1/healthz` is unauthenticated. No credential appears

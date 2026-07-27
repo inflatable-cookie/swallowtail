@@ -1,4 +1,7 @@
-use super::{SessionLifecycleOperation, prepare_from_requirements};
+use super::{
+    NegotiatedSessionModelOption, NegotiatedSessionModelOptions, SessionLifecycleOperation,
+    prepare_from_requirements,
+};
 use crate::SessionOptions;
 use swallowtail_core::{
     AccessProfileId, AccessRequirement, Capability, CapabilityConstraint, CapabilityRequirement,
@@ -123,6 +126,43 @@ fn load_resume_wrong_shape_and_effective_drift_reject() {
         error.diagnostic().code(),
         "swallowtail.negotiated_reasoning.effective_mismatch"
     );
+}
+
+#[test]
+fn negotiated_model_options_are_bounded_unique_and_include_current() {
+    let observed = NegotiatedSessionModelOptions::new(
+        "model-b",
+        [
+            NegotiatedSessionModelOption::new("model-a", Some("Model A".to_owned()))
+                .expect("option is valid"),
+            NegotiatedSessionModelOption::new("model-b", None).expect("option is valid"),
+        ],
+    )
+    .expect("model options are valid");
+    assert_eq!(observed.current_value(), "model-b");
+    assert_eq!(
+        observed
+            .options()
+            .map(NegotiatedSessionModelOption::value)
+            .collect::<Vec<_>>(),
+        ["model-a", "model-b"]
+    );
+
+    for rejected in [
+        NegotiatedSessionModelOptions::new(
+            "missing",
+            [NegotiatedSessionModelOption::new("model-a", None).expect("option is valid")],
+        ),
+        NegotiatedSessionModelOptions::new(
+            "model-a",
+            [
+                NegotiatedSessionModelOption::new("model-a", None).expect("option is valid"),
+                NegotiatedSessionModelOption::new("model-a", None).expect("option is valid"),
+            ],
+        ),
+    ] {
+        assert!(rejected.is_err());
+    }
 }
 
 fn requirements(

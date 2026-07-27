@@ -46,6 +46,17 @@ fn success_and_read_callbacks_preserve_local_and_remote_host_authority() {
                 .as_provider_value(),
             "fixture-session"
         );
+        let models = session
+            .negotiated_model_options()
+            .expect("session model options are retained");
+        assert_eq!(models.current_value(), "fixture-observed-model");
+        assert_eq!(
+            models
+                .options()
+                .map(|model| model.value())
+                .collect::<Vec<_>>(),
+            ["fixture-observed-model", "fixture-alternate-model"]
+        );
         let mut turn = block_on(session.start_turn(
             TurnRequest::new(
                 RuntimeTurnId::new("gemini-turn").expect("valid turn"),

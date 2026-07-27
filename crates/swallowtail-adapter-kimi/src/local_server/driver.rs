@@ -1,3 +1,4 @@
+mod catalogue;
 mod control;
 mod execution;
 mod response;

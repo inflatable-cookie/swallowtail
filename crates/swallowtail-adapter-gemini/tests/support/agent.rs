@@ -65,7 +65,19 @@ impl SharedAgent {
                     "result": {
                         "sessionId": "fixture-session",
                         "modes": {"currentModeId": "plan"},
-                        "models": {"currentModelId": "fixture-observed-model"}
+                        "models": {
+                            "currentModelId": "fixture-observed-model",
+                            "availableModels": [
+                                {
+                                    "modelId": "fixture-observed-model",
+                                    "name": "Fixture Observed Model"
+                                },
+                                {
+                                    "modelId": "fixture-alternate-model",
+                                    "name": "Fixture Alternate Model"
+                                }
+                            ]
+                        }
                     }
                 }),
             ),

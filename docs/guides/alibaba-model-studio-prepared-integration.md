@@ -25,6 +25,20 @@ Preparation performs no endpoint or credential work. Its result exposes the
 safe configured instance, access provenance, service set, and low-level driver
 escape hatch.
 
+## Deployable Model Catalogue
+
+`prepare_alibaba_deployable_models` is a separate international
+cloud-control-plane integration. It binds its own configured instance,
+`dashscope-intl.aliyuncs.com` endpoint audience, general API-key access
+profile, facade revision, and catalogue plan.
+
+Its `prepare_catalogue` and `list_models` path traverses bounded base and
+custom deployment-candidate pages and projects model names only. A returned
+candidate does not prove deployment, entitlement, Singapore workspace
+availability, Conversations compatibility, or successful invocation. The
+catalogue branch is not an endpoint, access, region, or model fallback for the
+conversation facade.
+
 ## Explicit Provider State
 
 `prepare_conversation` requires:

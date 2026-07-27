@@ -1,12 +1,14 @@
 use aws_credential_types::Credentials;
 use std::num::NonZeroU64;
 use swallowtail_adapter_bedrock::{
-    BedrockCataloguePreparationInput, BedrockCatalogueProfileInput, BedrockCloudClientConfig,
-    BedrockCredentialProvider, BedrockModelSelection, BedrockRegion,
-    BedrockRuntimePreparationInput, BedrockRuntimeProfileInput, CATALOGUE_SDK_CRATE,
+    BedrockCataloguePreparationInput, BedrockCatalogueProfileInput, BedrockCatalogueRouteInput,
+    BedrockCloudClientConfig, BedrockCredentialProvider, BedrockFacadePreparationInput,
+    BedrockModelSelection, BedrockRegion, BedrockRuntimePreparationInput,
+    BedrockRuntimeProfileInput, BedrockRuntimeRouteInput, CATALOGUE_SDK_CRATE,
     CATALOGUE_SDK_VERSION, CATALOGUE_SERVICE_API, SDK_CRATE, SDK_VERSION, SERVICE_API,
     bedrock_catalogue_access_profile, bedrock_catalogue_descriptor, bedrock_direct_descriptor,
-    bedrock_runtime_access_profile, prepare_bedrock_catalogue, prepare_bedrock_runtime,
+    bedrock_runtime_access_profile, prepare_bedrock, prepare_bedrock_catalogue,
+    prepare_bedrock_runtime,
 };
 use swallowtail_core::{
     AccessStatus, CredentialState, DriverRole, EndpointAuthorization, EntitlementState,
@@ -20,7 +22,7 @@ use swallowtail_testkit::{
 };
 
 #[test]
-fn runtime_and_catalogue_prepare_separate_sdk_operations_on_both_hosts() {
+fn composite_facade_prepares_separate_sdk_operations_on_both_hosts() {
     for topology in [
         ExecutionTopologyFixture::local(),
         ExecutionTopologyFixture::remote_authoritative(),
@@ -30,21 +32,30 @@ fn runtime_and_catalogue_prepare_separate_sdk_operations_on_both_hosts() {
             RecordingOutcome::Succeed,
         );
         let region = BedrockRegion::new("eu-west-2").expect("region is valid");
-        let runtime_access = bedrock_runtime_access_profile(credential("bedrock.runtime.identity"));
-        let runtime = prepare_bedrock_runtime(
-            BedrockRuntimePreparationInput::new(
-                topology.configured_instance_id().clone(),
-                InstanceRevision::new("runtime-1").expect("revision is valid"),
+        let bedrock = prepare_bedrock(
+            BedrockFacadePreparationInput::new(
                 topology.execution_host_id().clone(),
-                topology.instance_target().clone(),
-                runtime_access.clone(),
-                evidence(&runtime_access),
                 cloud_client(region.clone()),
             ),
             host.services(),
         )
-        .expect("runtime integration prepares");
-        let attempt = runtime
+        .expect("Bedrock facade prepares");
+        assert_eq!(bedrock.execution_host_id(), topology.execution_host_id());
+        assert_eq!(bedrock.region(), &region);
+
+        let runtime_access = bedrock_runtime_access_profile(credential("bedrock.runtime.identity"));
+        let attempt = bedrock
+            .runtime(
+                BedrockRuntimeRouteInput::new(
+                    topology.configured_instance_id().clone(),
+                    InstanceRevision::new("runtime-1").expect("revision is valid"),
+                    topology.instance_target().clone(),
+                    runtime_access.clone(),
+                    evidence(&runtime_access),
+                ),
+                host.services(),
+            )
+            .expect("runtime integration prepares")
             .prepare_inference_attempt(BedrockRuntimeProfileInput::new(
                 RequestId::new("bedrock-runtime-prepared").expect("request id is valid"),
                 BedrockModelSelection::new(
@@ -81,23 +92,22 @@ fn runtime_and_catalogue_prepare_separate_sdk_operations_on_both_hosts() {
 
         let catalogue_access =
             bedrock_catalogue_access_profile(credential("bedrock.catalogue.identity"));
-        let catalogue = prepare_bedrock_catalogue(
-            BedrockCataloguePreparationInput::new(
-                topology.configured_instance_id().clone(),
-                InstanceRevision::new("catalogue-1").expect("revision is valid"),
-                topology.execution_host_id().clone(),
-                topology.instance_target().clone(),
-                catalogue_access.clone(),
-                evidence(&catalogue_access),
-                cloud_client(region.clone()),
-            ),
-            host.services(),
-        )
-        .expect("catalogue integration prepares")
-        .prepare_catalogue(BedrockCatalogueProfileInput::new(
-            RequestId::new("bedrock-catalogue-prepared").expect("request id is valid"),
-        ))
-        .expect("catalogue operation prepares");
+        let catalogue = bedrock
+            .catalogue(
+                BedrockCatalogueRouteInput::new(
+                    topology.configured_instance_id().clone(),
+                    InstanceRevision::new("catalogue-1").expect("revision is valid"),
+                    topology.instance_target().clone(),
+                    catalogue_access.clone(),
+                    evidence(&catalogue_access),
+                ),
+                host.services(),
+            )
+            .expect("catalogue integration prepares")
+            .prepare_catalogue(BedrockCatalogueProfileInput::new(
+                RequestId::new("bedrock-catalogue-prepared").expect("request id is valid"),
+            ))
+            .expect("catalogue operation prepares");
 
         assert_eq!(
             catalogue.plan().requirements().driver_role(),
@@ -129,6 +139,31 @@ fn runtime_and_catalogue_prepare_separate_sdk_operations_on_both_hosts() {
         assert_eq!(host.count(RecordedHostCall::NetworkAuthorize), 0);
         assert_eq!(host.count(RecordedHostCall::CredentialAcquire), 0);
     }
+}
+
+#[test]
+fn composite_facade_rejects_a_different_execution_host() {
+    let topology = ExecutionTopologyFixture::local();
+    let other = ExecutionTopologyFixture::remote_authoritative();
+    let host = RecordingHostServices::for_host(
+        other.execution_host_id().clone(),
+        RecordingOutcome::Succeed,
+    );
+    let error = prepare_bedrock(
+        BedrockFacadePreparationInput::new(
+            topology.execution_host_id().clone(),
+            cloud_client(BedrockRegion::new("eu-west-2").expect("region is valid")),
+        ),
+        host.services(),
+    )
+    .expect_err("facade host drift must fail");
+
+    assert_eq!(
+        error.diagnostic().safe().code(),
+        "swallowtail.bedrock.facade.preparation.host_mismatch"
+    );
+    assert_eq!(host.count(RecordedHostCall::NetworkAuthorize), 0);
+    assert_eq!(host.count(RecordedHostCall::CredentialAcquire), 0);
 }
 
 #[test]

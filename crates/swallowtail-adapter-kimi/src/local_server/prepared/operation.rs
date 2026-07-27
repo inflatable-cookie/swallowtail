@@ -215,7 +215,7 @@ fn prepare_action(
     Ok((plan, request_id))
 }
 
-fn instance_with_capabilities(
+pub(super) fn instance_with_capabilities(
     prepared: &KimiLocalServerPreparedIntegration,
     capabilities: CapabilityProfile,
 ) -> ConfiguredInstance {

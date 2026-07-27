@@ -30,7 +30,11 @@ should start with the
 [prepared-integration guides](docs/guides/README.md). Multi-provider
 applications should start with the exact
 [23-route matrix](docs/guides/provider-route-matrix.md).
-Provider-session lifecycle is the active additive stabilization lane.
+Source-scoped model-catalogue expansion is complete: every selected
+machine-readable source has a Swallowtail path. The 21-solution feature matrix
+now reports 16 catalogue-capable solutions, two session-negotiated sources,
+two not-applicable operation shapes, one caller-supplied source, and no
+unexplained `No`.
 Consumer soak remains the held release baseline. Research 036 and Contract 038
 separate Nucleus-local thread archive and deletion from optional bound
 provider-session management. Kimi Code's documented foreground local
@@ -144,8 +148,9 @@ without executing tools. Local and remote-authoritative fixtures prove
 host-bound open, resume, callbacks, interruption, failure, and joined cleanup.
 Soundcheck and Nucleus Agent Chat are accepted consumers. The bounded
 workspace-write runtime required by Nucleus task execution is complete without
-widening read-only chat. Provider expansion is now the active lane. The shared
-hosted foundation and attached OpenCode HTTP/SSE proof are complete. The
+widening read-only chat. The planned provider-route and model-catalogue
+expansion is realized; the next lane is an operator decision. The shared hosted
+foundation and attached OpenCode HTTP/SSE proof are complete. The
 provider-supported Anthropic Models and Messages direct driver is complete.
 ACP v1 and Gemini CLI `0.51.0` authority, fixtures, bounded protocol transport,
 read-only filesystem callback, and production driver are realized. Shared
@@ -518,8 +523,9 @@ completed prepared-facade adoption. Soundcheck's prepared catalogue and exec
 migration now passes exact-version preparation, normal health, 106 Rust tests,
 13 frontend tests, the locked app check, and QA. Packaged cross-consumer
 runtime proof also passes across a transient 23-package candidate without live
-credentials or provider calls. Spec 006 and revised Contract 037 now extend
-that normal-path requirement to all 22 production driver routes. The adapters
+credentials or provider calls. Spec 006 and revised Contract 037 extended
+that normal-path requirement to the then-current 22 production driver routes.
+The adapters
 will expose typed prepared operations by runtime family without a universal
 prompt API, provider router, hidden authority, or mandatory sandbox.
 Kimi Code ACP, Anthropic Messages, and Ollama native form the first
@@ -567,13 +573,19 @@ access, and delegated credential-provider evidence. Catalogue results cannot
 select Runtime routes. llama.cpp now adds separate attached catalogue and
 inference preparation plus owned ephemeral serving. The attached path retains
 external-server ownership; the owned path couples an approved executable,
-exact GGUF artifact, route, loopback readiness, and ordered teardown. All 22
+exact GGUF artifact, route, loopback readiness, and ordered teardown. All 23
 production routes now have adapter-local prepared normal paths. The held
 replacement candidate returns only after route-matrix and provider-wide
 packaged evidence.
 
-Publication remains held after that candidate. The active lane is
-application-scale proof through normal consumer paths. Nucleus now has the
+Publication remains held after that candidate. Application-scale proof remains
+the release baseline. Source-scoped model-catalogue expansion is complete. Pi
+RPC and Qwen Code now ask the prepared harness for configured, auth-aware model
+catalogues through route-free operations without selecting or invoking a
+model. Kimi local server exposes its attached catalogue; Gemini and Kimi ACP
+retain model options only as authorized-session evidence. OpenAI, Gemini, xAI,
+and Alibaba expose separate hosted or control-plane catalogue branches without
+inferring inference-route compatibility. Nucleus now has the
 credential-free isolated profile, bounded deadline, native cancellation,
 terminal persistence, disposable fixture binding, Effigy selectors, and
 sanitized evidence needed for the first pilot. Its exact source and pilot

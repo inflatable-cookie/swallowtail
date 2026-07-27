@@ -3,6 +3,7 @@ set -euo pipefail
 
 route_matrix_repo_root=$(cd "$(dirname "$0")/.." && pwd)
 route_matrix_file="$route_matrix_repo_root/docs/guides/provider-route-matrix.md"
+feature_matrix_file="$route_matrix_repo_root/docs/guides/provider-solution-feature-matrix.csv"
 route_matrix_actual=$(mktemp)
 route_matrix_expected=$(mktemp)
 route_lifecycle_rows=$(mktemp)
@@ -131,4 +132,34 @@ EOF
 
 diff -u "$route_lifecycle_posture_expected" "$route_lifecycle_posture_actual"
 
-printf 'provider route and lifecycle matrices passed for 23 production routes\n'
+python3 - "$feature_matrix_file" <<'PY'
+import csv
+import sys
+from collections import Counter
+
+with open(sys.argv[1], newline="", encoding="utf-8") as feature_file:
+    rows = list(csv.DictReader(feature_file))
+
+if len(rows) != 21:
+    raise SystemExit("provider solution feature matrix must contain exactly 21 rows")
+
+providers = [row["provider"] for row in rows]
+if providers != sorted(providers, key=str.casefold):
+    raise SystemExit("provider solution feature matrix must be sorted by provider")
+
+expected = Counter(
+    {
+        "Yes": 16,
+        "Session-negotiated": 2,
+        "Not applicable": 2,
+        "Caller-supplied": 1,
+    }
+)
+actual = Counter(row["model_catalog"] for row in rows)
+if actual != expected:
+    raise SystemExit(
+        f"provider solution model_catalog dispositions changed: {dict(actual)}"
+    )
+PY
+
+printf 'provider route, lifecycle, and 21-solution feature matrices passed\n'

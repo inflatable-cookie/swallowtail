@@ -25,6 +25,10 @@ Session preparation requires:
 Swallowtail does not choose a model, account, credential, workspace, endpoint,
 or fallback route.
 
+Claude Agent's ACP model selector is constrained by the caller-supplied
+`availableModels` set. It is caller configuration, not provider discovery, so
+this route exposes no catalogue or negotiated-provider model list.
+
 ## Version Posture
 
 Discovery records the exact Claude Agent ACP wrapper version. Qualified

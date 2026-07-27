@@ -118,6 +118,35 @@ pub(super) fn requirements(
     .require_model_route()
 }
 
+pub(super) fn catalogue_requirements(
+    prepared: &PiPreparedIntegration,
+    capabilities: impl IntoIterator<Item = CapabilityRequirement>,
+) -> OperationRequirements {
+    OperationRequirements::new(
+        ExecutionLayer::HarnessInteraction,
+        OperationShape::InteractiveSession,
+        swallowtail_core::DriverRole::ModelCatalog,
+        prepared.instance().execution_host_id().clone(),
+        AccessRequirement::new(prepared.access_profile().id().clone())
+            .with_credential_states([CredentialState::Ready])
+            .with_entitlement_states([EntitlementState::Unknown])
+            .with_endpoint_authorizations([EndpointAuthorization::Allowed])
+            .with_runtime_readiness([RuntimeReadiness::Ready])
+            .with_support_authorities([prepared.access_profile().support_authority()]),
+    )
+    .with_ownership_modes([prepared.instance().ownership()])
+    .with_host_services([
+        HostServiceKind::Task,
+        HostServiceKind::Process,
+        HostServiceKind::Credential,
+        HostServiceKind::Time,
+    ])
+    .with_capabilities(capabilities)
+    .with_interface_versions([prepared.observation().version().clone()])
+    .with_harness_configuration_posture(HarnessConfigurationPosture::ProviderSuppressed)
+    .with_harness_rpc_policy(crate::prepared::instance::rpc_policy())
+}
+
 pub(super) fn build_plan(
     prepared: &PiPreparedIntegration,
     instance: &ConfiguredInstance,
@@ -133,6 +162,27 @@ pub(super) fn build_plan(
         prepared.available_host_services(),
     )
     .with_model_route(route);
+    preflight(&context, requirements).map_err(|error| {
+        PreparationFailure::new(
+            PreparationStage::Preflight,
+            Diagnostic::new(error.diagnostic().clone()),
+        )
+    })
+}
+
+pub(super) fn build_catalogue_plan(
+    prepared: &PiPreparedIntegration,
+    instance: &ConfiguredInstance,
+    requirements: &OperationRequirements,
+) -> Result<PreflightPlan, PreparationFailure> {
+    let descriptor = crate::pi_rpc_descriptor();
+    let context = PreflightContext::new(
+        &descriptor,
+        instance,
+        prepared.access_profile(),
+        prepared.access_evidence().status(),
+        prepared.available_host_services(),
+    );
     preflight(&context, requirements).map_err(|error| {
         PreparationFailure::new(
             PreparationStage::Preflight,

@@ -18,6 +18,7 @@ pub fn kimi_local_server_descriptor() -> DriverDescriptor {
         TransportFamilyId::new(TRANSPORT_ID).expect("static transport id is valid"),
     )
     .with_roles([
+        DriverRole::ModelCatalog,
         DriverRole::InteractiveSession,
         DriverRole::ProviderSessionManagement,
     ])
@@ -27,6 +28,15 @@ pub fn kimi_local_server_descriptor() -> DriverDescriptor {
         OperationShape::ProviderSessionManagement,
     ])
     .with_interface_compatibility(crate::kimi_local_server_claim())
+    .with_required_host_services(
+        DriverRole::ModelCatalog,
+        [
+            HostServiceKind::BlockingWork,
+            HostServiceKind::Time,
+            HostServiceKind::Network,
+            HostServiceKind::Credential,
+        ],
+    )
     .with_required_host_services(
         DriverRole::InteractiveSession,
         [

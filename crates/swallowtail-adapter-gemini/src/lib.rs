@@ -2,6 +2,7 @@
 
 #![forbid(unsafe_code)]
 
+mod catalogue;
 mod connection;
 mod discovery;
 mod driver;
@@ -10,6 +11,7 @@ mod live;
 mod live_protocol;
 mod live_selection;
 mod prepared;
+mod prepared_catalogue;
 mod prepared_live;
 mod prepared_live_profile;
 mod prepared_profile;
@@ -28,6 +30,10 @@ pub use live_selection::{
 pub use prepared::{
     GeminiPreparationInput, GeminiPreparationProbe, GeminiPreparedIntegration, prepare_gemini_acp,
 };
+pub use prepared_catalogue::{
+    GeminiModelsPreparationInput, GeminiModelsPreparedIntegration, GeminiModelsProfileInput,
+    GeminiPreparedModels, prepare_gemini_models,
+};
 pub use prepared_live::{
     GeminiLivePreparationInput, GeminiLivePreparedIntegration, prepare_gemini_live,
 };
@@ -42,3 +48,41 @@ pub use selection::{
     GEMINI_CLI_ACP_AXIS, GEMINI_CLI_ACP_BASELINE_VERSION, GEMINI_CLI_ACP_LATEST_QUALIFIED_VERSION,
     gemini_cli_acp_binding, gemini_cli_acp_claim,
 };
+
+pub const GEMINI_MODELS_ENDPOINT: &str = "https://generativelanguage.googleapis.com";
+pub const GEMINI_MODELS_ENDPOINT_AUDIENCE: &str = "generativelanguage.googleapis.com";
+pub const GEMINI_MODELS_ACCESS_PROFILE_ID: &str = GEMINI_LIVE_ACCESS_PROFILE_ID;
+pub const GEMINI_MODELS_CONFIGURED_INSTANCE_ID: &str = "gemini.public.models";
+pub const GEMINI_MODELS_FACADE_REVISION: &str = "google.generativelanguage.v1beta.models.list";
+
+#[must_use]
+pub fn gemini_models_facade_binding() -> swallowtail_core::InterfaceVersionBinding {
+    swallowtail_core::InterfaceVersionBinding::new(
+        swallowtail_core::InterfaceVersionAxis::new("gemini.models-facade")
+            .expect("static axis is valid"),
+        swallowtail_core::InterfaceVersion::new(GEMINI_MODELS_FACADE_REVISION)
+            .expect("static version is valid"),
+    )
+}
+
+#[must_use]
+pub fn gemini_models_facade_claim() -> swallowtail_core::InterfaceCompatibilityClaim {
+    swallowtail_core::InterfaceCompatibilityClaim::new(
+        swallowtail_core::InterfaceCompatibilityClaimId::new("gemini.models-window-1")
+            .expect("static claim id is valid"),
+        swallowtail_core::InterfaceVersionAxis::new("gemini.models-facade")
+            .expect("static axis is valid"),
+        swallowtail_core::InterfaceVersionScheme::Opaque,
+        swallowtail_core::InterfaceNewerVersionPosture::QualifiedOnly,
+        [swallowtail_core::InterfaceVersionSegment::exact(
+            swallowtail_core::InterfaceVersion::new(GEMINI_MODELS_FACADE_REVISION)
+                .expect("static version is valid"),
+            swallowtail_core::InterfaceBehaviorRevision::new("gemini-models-list-v1")
+                .expect("static behavior is valid"),
+            swallowtail_core::InterfaceSupportStatus::Maintained,
+        )],
+        [],
+    )
+    .expect("static claim is valid")
+}
+pub use catalogue::{GeminiModelsDriver, gemini_models_descriptor};

@@ -20,3 +20,21 @@ pub(super) fn arguments(provider: &str, model: &str) -> Vec<String> {
     .map(str::to_owned)
     .collect()
 }
+
+pub(super) fn catalogue_arguments() -> Vec<String> {
+    [
+        "--mode",
+        "rpc",
+        "--no-session",
+        "--offline",
+        "--no-tools",
+        "--no-extensions",
+        "--no-skills",
+        "--no-prompt-templates",
+        "--no-themes",
+        "--no-context-files",
+    ]
+    .into_iter()
+    .map(str::to_owned)
+    .collect()
+}

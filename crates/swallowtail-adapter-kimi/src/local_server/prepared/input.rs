@@ -98,6 +98,40 @@ pub struct KimiLocalServerSessionManagementInput {
     pub(super) allow_unverified_newer: bool,
 }
 
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct KimiLocalServerCatalogueInput {
+    request_id: RequestId,
+    deadline: Option<Deadline>,
+    allow_unverified_newer: bool,
+}
+
+impl KimiLocalServerCatalogueInput {
+    #[must_use]
+    pub const fn new(request_id: RequestId) -> Self {
+        Self {
+            request_id,
+            deadline: None,
+            allow_unverified_newer: false,
+        }
+    }
+
+    #[must_use]
+    pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
+        self.deadline = Some(deadline);
+        self
+    }
+
+    #[must_use]
+    pub const fn allow_unverified_newer(mut self) -> Self {
+        self.allow_unverified_newer = true;
+        self
+    }
+
+    pub(super) fn into_parts(self) -> (RequestId, Option<Deadline>, bool) {
+        (self.request_id, self.deadline, self.allow_unverified_newer)
+    }
+}
+
 /// Exact local-server route snapshot that must agree with the prepared target
 /// selected for a cross-transport import.
 #[derive(Clone, Debug, Eq, PartialEq)]

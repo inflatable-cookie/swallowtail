@@ -13,6 +13,68 @@ pub(super) fn respond(
         .ok_or_else(fixture_failure)?;
     let id = command.get("id").and_then(Value::as_str);
     match kind {
+        "get_available_models" => {
+            if matches!(scenario, Scenario::Hold) {
+                return Ok(());
+            }
+            if matches!(scenario, Scenario::Disconnect) {
+                state.stopped = true;
+                return Ok(());
+            }
+            let response_command = if matches!(scenario, Scenario::ResponseMismatch) {
+                "get_state"
+            } else {
+                "get_available_models"
+            };
+            let (success, data) = match scenario {
+                Scenario::ProviderFailure => (
+                    false,
+                    json!({"error": "fixture private provider catalogue error"}),
+                ),
+                Scenario::Malformed => (true, json!({"models": "invalid"})),
+                _ => (
+                    true,
+                    json!({
+                        "models": [
+                            {
+                                "id": "fixture-model",
+                                "name": "Fixture Model",
+                                "api": "anthropic-messages",
+                                "provider": "fixture-provider",
+                                "baseUrl": "https://fixture-private.invalid",
+                                "reasoning": true,
+                                "input": ["text", "image"],
+                                "contextWindow": 200000,
+                                "maxTokens": 8192,
+                                "cost": {"input": 1.0, "output": 2.0}
+                            },
+                            {
+                                "id": "fixture-text-model",
+                                "name": "Fixture Text Model",
+                                "api": "openai-completions",
+                                "provider": "fixture-provider",
+                                "baseUrl": "https://fixture-private.invalid",
+                                "reasoning": false,
+                                "input": ["text"],
+                                "contextWindow": 128000,
+                                "maxTokens": 4096,
+                                "cost": {"input": 0.0, "output": 0.0}
+                            }
+                        ]
+                    }),
+                ),
+            };
+            output(
+                state,
+                json!({
+                    "id": id,
+                    "type": "response",
+                    "command": response_command,
+                    "success": success,
+                    "data": data
+                }),
+            );
+        }
         "set_auto_retry"
         | "set_auto_compaction"
         | "set_steering_mode"

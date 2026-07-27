@@ -15,11 +15,12 @@ mod topology;
 #[path = "prepared/validation.rs"]
 mod validation;
 
+pub use catalogue::KimiLocalServerPreparedCatalogue;
 pub use import::KimiLocalServerPreparedBindingImport;
 pub use input::{
     KimiLocalServerAttachedInput, KimiLocalServerBindingImportInput,
-    KimiLocalServerBindingImportTarget, KimiLocalServerOwnedInput, KimiLocalServerPreparationProbe,
-    KimiLocalServerSessionManagementInput,
+    KimiLocalServerBindingImportTarget, KimiLocalServerCatalogueInput, KimiLocalServerOwnedInput,
+    KimiLocalServerPreparationProbe, KimiLocalServerSessionManagementInput,
 };
 pub(crate) use operation::lifecycle_capabilities;
 pub use operation::{KimiLocalServerPreparedArchive, KimiLocalServerPreparedRestore};
@@ -141,3 +142,5 @@ impl KimiLocalServerPreparedIntegration {
         super::KimiLocalServerDriver::new()
     }
 }
+#[path = "prepared/catalogue.rs"]
+mod catalogue;

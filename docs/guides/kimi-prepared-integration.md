@@ -76,6 +76,11 @@ cancellation control. Bounded filesystem writes and delegated authentication
 continue through host services; the adapter does not execute consumer tools or
 extract credentials.
 
+New, load, and resume handles may expose bounded
+`negotiated_model_options()` from Kimi's ACP model selector. The evidence
+exists only after that session is authorized. It is not the local-server model
+catalogue and does not create a hidden discovery session.
+
 `plan`, `request`, `evidence`, `low_level_driver`, derived load/resume request
 helpers, and `into_parts` remain available for diagnostics and advanced use.
 

@@ -13,8 +13,9 @@ use swallowtail_core::{
 use swallowtail_runtime::{
     BoxEventStream, BoxFuture, CancellationAcknowledgement, CancellationControl, CleanupOutcome,
     EnvironmentRef, ExecutableRef, HostServices, InteractiveSessionDriver,
-    InteractiveSessionHandle, JoinedTask, OpenSessionRequest, ProcessHandle, ProcessRequest,
-    RequestId, ResourceLease, ResumeSessionRequest, RuntimeFailure, RuntimeSessionId, ScopeId,
+    InteractiveSessionHandle, JoinedTask, NegotiatedSessionModelOption,
+    NegotiatedSessionModelOptions, OpenSessionRequest, ProcessHandle, ProcessRequest, RequestId,
+    ResourceLease, ResumeSessionRequest, RuntimeFailure, RuntimeSessionId, ScopeId,
     TerminalOutcome, TurnHandle, TurnRequest, validate_session_resource_lease,
 };
 
@@ -224,14 +225,15 @@ impl GeminiAcpDriver {
             parse_new_session(&response)
         }
         .await;
-        let provider_id = match opened {
-            Ok(provider_id) => provider_id,
+        let opened = match opened {
+            Ok(opened) => opened,
             Err(error) => {
                 connection.begin_close().await;
                 let _ = pump_task.join().await;
                 return Err((error, resource));
             }
         };
+        let provider_id = opened.provider_id;
         if let Err(error) = connection.set_session_id(provider_id.clone()) {
             connection.begin_close().await;
             let _ = pump_task.join().await;
@@ -254,6 +256,7 @@ impl GeminiAcpDriver {
             runtime_id,
             provider_ref,
             provider_id,
+            model_options: opened.model_options,
             execution_host_id: plan.execution_host_id().clone(),
             connection: Arc::clone(&connection),
             cancellation: SessionCancellation::new(connection),

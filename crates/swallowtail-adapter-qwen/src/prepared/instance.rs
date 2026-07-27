@@ -39,6 +39,7 @@ pub(super) fn configured_instance(
 
 pub(crate) fn run_capabilities() -> CapabilityProfile {
     CapabilityProfile::new([
+        CapabilityRequirement::new(Capability::ModelCatalog, []),
         CapabilityRequirement::new(Capability::StructuredRun, []),
         CapabilityRequirement::new(Capability::StreamingEvents, []),
         CapabilityRequirement::new(

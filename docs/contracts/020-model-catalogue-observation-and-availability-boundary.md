@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-21
+Updated: 2026-07-27
 
 ## Purpose
 
@@ -33,6 +33,51 @@ reported the entry. It does not prove:
 Consumers may use catalogue evidence in their own policy. Swallowtail does not
 make that decision while discovering models.
 
+## Catalogue Source And Timing
+
+A catalogue operation records one exact source class:
+
+- dedicated harness catalogue
+- attached harness or runtime inventory
+- hosted provider catalogue
+- cloud control plane
+
+The source class does not change the execution layer of later model work. A
+harness catalogue remains harness interaction. A hosted catalogue does not
+turn a harness route into direct inference. A control-plane observation does
+not become runtime authority.
+
+A dedicated harness catalogue may start one ephemeral provider-suppressed
+process when its protocol offers a discovery command independent from a
+provider session. It must disable session persistence, prompts, tools,
+extensions, project configuration, update actions, retry, and provider
+invocation. Process, task, time, configuration, and delegated-access work
+remain joined and bound to the prepared instance.
+
+Provider-suppressed execution may use a harness-native safe or non-interactive
+mode. It does not imply an operating-system sandbox. The reported set remains
+scoped to the exact executable, version, configuration, environment, and
+access posture used by that process.
+
+Model options advertised only by opening, loading, or updating a provider
+session are negotiated session evidence. They are not a standalone catalogue
+operation. A driver must not create durable provider state, accept retention,
+or require a working resource solely to populate a pre-session model picker.
+Consumers may receive those options from an already-authorized session through
+the session boundary. That optional evidence uses bounded immutable
+`NegotiatedSessionModelOptions`; callers cannot synthesize it, and its presence
+does not make the session driver a `ModelCatalogDriver`.
+
+A cloud control plane may report deployment candidates rather than models
+invocable through an existing inference route. The adapter must name that
+scope explicitly. Catalogue presence cannot imply deployment, entitlement,
+conversation, region, or transport compatibility.
+
+A serving-only lifecycle that returns an endpoint for another inference route
+has no independent catalogue responsibility. Its readiness checks may verify
+the selected served model without relabeling the serving operation as general
+model discovery.
+
 ## Identity Separation
 
 Model id, provider id, model route, provider resource reference, catalogue
@@ -50,6 +95,7 @@ providers without collapsing the gateway family into those providers.
 Provider-neutral model metadata may carry source-scoped observations for:
 
 - input and output modalities
+- provider-advertised reasoning support, distinct from named selectable modes
 - provider lifecycle status and timestamps
 - provider-advertised streaming behavior
 - inference or serving types
@@ -90,9 +136,9 @@ objects remain outside public metadata and diagnostics.
 ## Operation Lifecycle
 
 Catalogue pagination is operation-specific. A paginated provider traversal is
-bounded, cancellable, deadline-aware, fixed to one preflight binding, and
-distinct from inference retry. A non-paginated operation remains bounded by
-entry and field limits.
+bounded, deadline-aware, fixed to one preflight binding, and distinct from
+inference retry. A non-paginated operation remains bounded by entry and field
+limits.
 
 SDK retry, redirect, endpoint failover, adaptive delay, or hedging defaults do
 not widen one catalogue request. Unless an explicit later policy says
@@ -101,8 +147,11 @@ outer deadline covers client construction, credential resolution, every
 authorized request, response collection, projection, scoped work join, and
 credential release.
 
-Cancellation stops local work and joins owned work. It does not claim that a
-remote service failed to observe an already transmitted request.
+The current portable `ModelCatalogRequest` carries a host-monotonic deadline
+but no independent cancellation control. Dropping its future is not successful
+cancellation because joined cleanup cannot be inferred. A later common
+cancellation surface must define acknowledgement, cleanup, and remote-request
+truth before any catalogue driver claims consumer cancellation.
 
 ## Service And Access Separation
 
@@ -168,12 +217,33 @@ Deterministic generated-type fixtures must prove:
 - missing optional evidence remains unknown
 - invalid identities, structural drift, and overflow fail safely
 - catalogue presence does not construct or mutate a model route
-- cancellation, deadline, joined private work, and delegated credential
-  release
+- deadline, joined private work, and delegated credential release
 - endpoint, credential, raw SDK response, ARN, and provider payload redaction
 
 Default conformance uses no AWS credential, provider account, network request,
 Marketplace action, or paid inference.
+
+Dedicated harness catalogue conformance must additionally prove:
+
+- exact executable compatibility and provider-suppressed configuration
+- session persistence, prompts, tools, extensions, project resources, update,
+  retry, and provider inference stay disabled
+- bounded model count and field projection from one qualified command
+- command completion, process close, task join, and delegated credential
+  release under success, failure, deadline, and disconnect
+- provider ids remain separate from model ids and configured routes
+
+Hosted-provider and cloud-control-plane catalogue conformance must additionally
+prove:
+
+- its own driver descriptor, configured instance, operation role, endpoint
+  audience, access profile, facade binding, and immutable plan
+- shared provider identity or credential mechanism does not merge catalogue
+  and inference authority
+- a listed model does not imply compatibility with realtime, background,
+  WebSocket, conversation, deployment, or other inference branches
+- pagination, page count, response size, model count, and field projection
+  remain bounded
 
 ## Acceptance
 

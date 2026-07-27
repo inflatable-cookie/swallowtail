@@ -1,5 +1,7 @@
 #[path = "prepared/catalogue.rs"]
 mod catalogue;
+#[path = "prepared/facade.rs"]
+mod facade;
 #[path = "prepared/runtime.rs"]
 mod runtime;
 
@@ -7,6 +9,10 @@ pub use catalogue::{
     BedrockCataloguePreparationInput, BedrockCataloguePreparedEvidence,
     BedrockCataloguePreparedIntegration, BedrockCatalogueProfileInput, BedrockPreparedCatalogue,
     prepare_bedrock_catalogue,
+};
+pub use facade::{
+    BedrockCatalogueRouteInput, BedrockFacade, BedrockFacadePreparationInput,
+    BedrockRuntimeRouteInput, prepare_bedrock,
 };
 pub use runtime::{
     BedrockModelSelection, BedrockPreparedInferenceAttempt, BedrockRuntimePreparationInput,

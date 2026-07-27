@@ -200,6 +200,13 @@ fn response(
                 r#"{{"code":0,"msg":"success","data":{{"server_version":"{version}","capabilities":{{"websocket":true}},"dangerous_bypass_auth":false,"backend":"v2"}},"request_id":"fixture-meta"}}"#
             ),
         ),
+        ("GET", "/api/v1/models") => (
+            "200 OK",
+            include_str!(
+                "../fixtures/kimi-local-server-0.28.1-0.29.0/model-catalogue.json"
+            )
+            .to_owned(),
+        ),
         ("GET", "/api/v1/sessions/session-1") => (
             "200 OK",
             r#"{"code":0,"msg":"success","data":{"id":"session-1","archived":false},"request_id":"fixture-lookup"}"#.to_owned(),

@@ -10,12 +10,15 @@ fn source() -> IntegrationFamilyId {
 fn absent_observations_stay_unknown_and_false_stays_observed() {
     let unknown = ModelCatalogObservations::new(source());
     assert_eq!(unknown.input_modalities(), None);
+    assert_eq!(unknown.reasoning_supported(), None);
     assert_eq!(unknown.response_streaming_supported(), None);
 
     let observed = ModelCatalogObservations::new(source())
         .with_input_modalities([])
+        .with_reasoning_supported(false)
         .with_response_streaming_supported(false);
     assert!(observed.input_modalities().is_some_and(BTreeSet::is_empty));
+    assert_eq!(observed.reasoning_supported(), Some(false));
     assert_eq!(observed.response_streaming_supported(), Some(false));
 }
 

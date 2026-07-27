@@ -69,6 +69,7 @@ mod access;
 mod descriptor;
 mod handle;
 mod session;
+mod session_management;
 mod validation;
 
 pub use descriptor::claude_agent_acp_descriptor;

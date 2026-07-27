@@ -19,6 +19,7 @@ pub(crate) struct RpcConnection {
     pending: Mutex<BTreeMap<u64, ResponseSender>>,
     ignored_responses: Mutex<BTreeSet<u64>>,
     active_turn: Mutex<Option<Arc<ActiveTurn>>>,
+    lifecycle_notifications: Mutex<Vec<LifecycleNotification>>,
     closing: AtomicBool,
     session_cancelled: AtomicBool,
     closed: AtomicBool,
@@ -34,6 +35,7 @@ impl RpcConnection {
             pending: Mutex::new(BTreeMap::new()),
             ignored_responses: Mutex::new(BTreeSet::new()),
             active_turn: Mutex::new(None),
+            lifecycle_notifications: Mutex::new(Vec::new()),
             closing: AtomicBool::new(false),
             session_cancelled: AtomicBool::new(false),
             closed: AtomicBool::new(false),
@@ -67,8 +69,16 @@ impl RpcConnection {
         method: &str,
         params: Value,
     ) -> Result<Value, RuntimeFailure> {
+        self.dispatch_request(method, params).await?.await
+    }
+
+    pub(crate) async fn dispatch_request(
+        &self,
+        method: &str,
+        params: Value,
+    ) -> Result<ResponseFuture, RuntimeFailure> {
         let id = self.next_id.fetch_add(1, Ordering::SeqCst);
-        self.request_with_id(id, method, params).await
+        self.dispatch_request_with_id(id, method, params).await
     }
 
     async fn request_with_id(
@@ -77,6 +87,17 @@ impl RpcConnection {
         method: &str,
         params: Value,
     ) -> Result<Value, RuntimeFailure> {
+        self.dispatch_request_with_id(id, method, params)
+            .await?
+            .await
+    }
+
+    async fn dispatch_request_with_id(
+        &self,
+        id: u64,
+        method: &str,
+        params: Value,
+    ) -> Result<ResponseFuture, RuntimeFailure> {
         if self.closed.load(Ordering::SeqCst) {
             return Err(failure(
                 "swallowtail.codex.app_server.connection_closed",
@@ -96,7 +117,7 @@ impl RpcConnection {
                 .remove(&id);
             return Err(write_failure);
         }
-        response.await
+        Ok(response)
     }
 
     pub(crate) async fn notify(&self, method: &str, params: Value) -> Result<(), RuntimeFailure> {
@@ -202,6 +223,13 @@ impl RpcConnection {
                     "Codex app-server cleanup did not complete",
                 ))
             })
+    }
+
+    pub(crate) fn lifecycle_notifications(&self) -> Vec<LifecycleNotification> {
+        self.lifecycle_notifications
+            .lock()
+            .expect("lifecycle-notification lock poisoned")
+            .clone()
     }
 
     pub(crate) async fn pump(self: Arc<Self>) {
@@ -335,6 +363,11 @@ impl RpcConnection {
                     .await?;
                 self.clear_active_turn(&turn);
             }
+        } else if let Some(notification) = LifecycleNotification::from_message(method, &params) {
+            self.lifecycle_notifications
+                .lock()
+                .expect("lifecycle-notification lock poisoned")
+                .push(notification);
         }
         Ok(())
     }
@@ -457,7 +490,7 @@ impl ResponseSender {
     }
 }
 
-struct ResponseFuture(Arc<Mutex<ResponseState>>);
+pub(crate) struct ResponseFuture(Arc<Mutex<ResponseState>>);
 
 impl Future for ResponseFuture {
     type Output = Result<Value, RuntimeFailure>;
@@ -479,6 +512,31 @@ fn response_channel() -> (ResponseSender, ResponseFuture) {
         waiter: None,
     }));
     (ResponseSender(Arc::clone(&state)), ResponseFuture(state))
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) struct LifecycleNotification {
+    method: String,
+    thread_id: String,
+}
+
+impl LifecycleNotification {
+    fn from_message(method: &str, params: &Value) -> Option<Self> {
+        if !matches!(
+            method,
+            "thread/archived" | "thread/unarchived" | "thread/deleted"
+        ) {
+            return None;
+        }
+        Some(Self {
+            method: method.to_owned(),
+            thread_id: params.get("threadId")?.as_str()?.to_owned(),
+        })
+    }
+
+    pub(crate) fn matches(&self, method: &str, thread_id: &str) -> bool {
+        self.method == method && self.thread_id == thread_id
+    }
 }
 
 fn trim_newline(line: &[u8]) -> &[u8] {

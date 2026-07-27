@@ -22,11 +22,21 @@ pub(crate) struct Request {
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub(crate) enum Method {
+    Delete,
     Get,
     Post,
 }
 
 impl Request {
+    pub(crate) fn delete(path: impl Into<String>) -> Self {
+        Self {
+            method: Method::Delete,
+            path: path.into(),
+            query: Vec::new(),
+            body: None,
+        }
+    }
+
     pub(crate) fn get(path: impl Into<String>) -> Self {
         Self {
             method: Method::Get,
@@ -187,6 +197,39 @@ pub(crate) fn prompt(
 
 pub(crate) fn abort(session_id: &str, directory: &str) -> Request {
     Request::post(format!("/session/{session_id}/abort"), None).with_directory(directory)
+}
+
+pub(crate) fn session_delete(session_id: &str, directory: &str) -> Result<Request, RuntimeFailure> {
+    if session_id.is_empty()
+        || !session_id
+            .bytes()
+            .all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'_' | b'-' | b'.' | b'~'))
+    {
+        return Err(failure(
+            "swallowtail.opencode.session_invalid",
+            "OpenCode session identity is not a safe HTTP path segment",
+        ));
+    }
+    Ok(Request::delete(format!("/session/{session_id}")).with_directory(directory))
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(crate) enum SessionDeleteResponse {
+    Applied,
+    Rejected,
+    Unconfirmed,
+}
+
+pub(crate) fn classify_session_delete(response: &Response) -> SessionDeleteResponse {
+    if response.status == 200
+        && serde_json::from_slice::<bool>(&response.body).is_ok_and(|value| value)
+    {
+        SessionDeleteResponse::Applied
+    } else if (400..500).contains(&response.status) {
+        SessionDeleteResponse::Rejected
+    } else {
+        SessionDeleteResponse::Unconfirmed
+    }
 }
 
 pub(crate) fn require_no_content(response: &Response) -> Result<(), RuntimeFailure> {

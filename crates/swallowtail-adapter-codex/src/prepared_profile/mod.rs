@@ -1,15 +1,22 @@
+mod catalogue;
 mod exec;
 mod input;
+mod management;
 mod plan;
 mod session;
 mod session_capabilities;
 
 use swallowtail_runtime::{BoxFuture, InteractiveSessionHandle, RuntimeFailure};
 
+pub use catalogue::CodexPreparedCatalogue;
 pub use exec::CodexPreparedExec;
-pub use input::{CodexExecProfileInput, CodexModelSelection, CodexSessionProfileInput};
+pub use input::{
+    CodexExecProfileInput, CodexModelSelection, CodexSessionManagementInput,
+    CodexSessionProfileInput,
+};
+pub use management::{CodexPreparedArchive, CodexPreparedDelete, CodexPreparedRestore};
 pub use plan::CodexPreparedEvidence;
-pub use session::{CodexPreparedCatalogue, CodexPreparedSession};
+pub use session::CodexPreparedSession;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum CodexPreparedSessionKind {

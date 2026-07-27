@@ -47,15 +47,23 @@ pub fn codex_app_server_descriptor() -> DriverDescriptor {
         DriverRole::Discovery,
         DriverRole::ModelCatalog,
         DriverRole::InteractiveSession,
+        DriverRole::ProviderSessionManagement,
     ])
     .with_execution_layers([ExecutionLayer::HarnessInteraction])
-    .with_operation_shapes([OperationShape::InteractiveSession])
+    .with_operation_shapes([
+        OperationShape::InteractiveSession,
+        OperationShape::ProviderSessionManagement,
+    ])
     .with_required_host_services(
         DriverRole::ModelCatalog,
         [HostServiceKind::Task, HostServiceKind::Process],
     )
     .with_required_host_services(
         DriverRole::InteractiveSession,
+        [HostServiceKind::Task, HostServiceKind::Process],
+    )
+    .with_required_host_services(
+        DriverRole::ProviderSessionManagement,
         [HostServiceKind::Task, HostServiceKind::Process],
     )
     .with_required_host_services(
@@ -340,7 +348,7 @@ fn validate_app_server_plan(
 }
 
 impl CodexAppServerDriver {
-    fn validate_plan(
+    pub(crate) fn validate_plan(
         &self,
         plan: &PreflightPlan,
     ) -> Result<CodexAppServerBehavior, RuntimeFailure> {
@@ -362,6 +370,25 @@ impl CodexAppServerDriver {
         scope: ScopeId,
         working_resource: Option<WorkingResourceRef>,
         experimental_api: bool,
+        services: &HostServices,
+    ) -> Result<(Arc<RpcConnection>, Box<dyn JoinedTask>), RuntimeFailure> {
+        let (connection, task) = self
+            .spawn_connection(plan, behavior, scope, working_resource, services)
+            .await?;
+        if let Err(error) = connection.initialize(experimental_api).await {
+            let _ = connection.cancel_session().await;
+            let _ = task.join().await;
+            return Err(error);
+        }
+        Ok((connection, task))
+    }
+
+    pub(crate) async fn spawn_connection(
+        &self,
+        plan: &PreflightPlan,
+        behavior: CodexAppServerBehavior,
+        scope: ScopeId,
+        working_resource: Option<WorkingResourceRef>,
         services: &HostServices,
     ) -> Result<(Arc<RpcConnection>, Box<dyn JoinedTask>), RuntimeFailure> {
         services.require_execution_host(plan.execution_host_id())?;
@@ -401,11 +428,6 @@ impl CodexAppServerDriver {
                 return Err(error);
             }
         };
-        if let Err(error) = connection.initialize(experimental_api).await {
-            let _ = connection.cancel_session().await;
-            let _ = task.join().await;
-            return Err(error);
-        }
         Ok((connection, task))
     }
 
@@ -493,7 +515,7 @@ fn model_metadata(model: &Value) -> Result<ModelMetadata, RuntimeFailure> {
         .with_reasoning(reasoning))
 }
 
-async fn close_connection(
+pub(crate) async fn close_connection(
     connection: &Arc<RpcConnection>,
     task: Box<dyn JoinedTask>,
 ) -> CleanupOutcome {
@@ -530,7 +552,7 @@ fn unsupported(feature: &str) -> RuntimeFailure {
     )
 }
 
-fn scope(kind: &str, request_id: &RequestId) -> ScopeId {
+pub(crate) fn scope(kind: &str, request_id: &RequestId) -> ScopeId {
     ScopeId::new(format!("codex-app-server:{kind}:{}", request_id.as_str()))
         .expect("request id produces a valid scope id")
 }

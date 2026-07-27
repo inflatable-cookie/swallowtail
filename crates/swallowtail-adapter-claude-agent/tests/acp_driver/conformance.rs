@@ -154,6 +154,38 @@ fn terminal_auth_advertisement_fails_and_releases_both_leases() {
 }
 
 #[test]
+fn missing_delete_capability_stops_before_session_or_management_effects() {
+    let host_id = ExecutionHostId::new("fixture.host.lifecycle-drift").expect("valid host");
+    let selected = selection(host_id.clone(), "0.61.0");
+    let host = FixtureHost::new(Scenario::LifecycleDrift, "0.61.0");
+    let driver = ClaudeAgentAcpDriver::new(
+        EnvironmentRef::new("claude-agent.fixture.environment").expect("valid environment"),
+        selected.credential,
+    );
+    let error = match block_on(driver.open_session(
+        selected.plan,
+        open_request("lifecycle-drift-open", selected.resource),
+        host.services(host_id),
+    )) {
+        Ok(_) => panic!("missing negotiated deletion capability must fail"),
+        Err(error) => error,
+    };
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.claude_agent.acp.lifecycle_capability_drift"
+    );
+    let writes = host.writes();
+    assert!(!writes.iter().any(|message| {
+        matches!(
+            message.get("method").and_then(serde_json::Value::as_str),
+            Some("session/new" | "session/close" | "session/delete")
+        )
+    }));
+    assert_eq!(host.resource_releases(), 1);
+    assert_eq!(host.credential_releases(), 1);
+}
+
+#[test]
 fn newer_plan_stays_unverified_after_preflight() {
     let selected = selection(
         ExecutionHostId::new("fixture.host.newer").expect("valid host"),

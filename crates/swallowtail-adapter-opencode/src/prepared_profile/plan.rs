@@ -4,7 +4,7 @@ use swallowtail_core::{
     CredentialState, Diagnostic, DriverRole, EndpointAuthorization, EntitlementState,
     ExecutionLayer, HarnessConfigurationPosture, HarnessIsolation, ModelRoute,
     OperationRequirements, OperationShape, PreflightContext, PreflightPlan, ResourceAccess,
-    RuntimeReadiness, SessionAccessPolicy, SessionProviderStatePolicy, preflight,
+    RuntimeReadiness, SafeDiagnostic, SessionAccessPolicy, SessionProviderStatePolicy, preflight,
 };
 use swallowtail_runtime::{PreparationFailure, PreparationStage, PreparedOperationEvidence};
 
@@ -106,6 +106,32 @@ pub(super) fn requirements(
     }
 }
 
+pub(super) fn management_requirements(
+    prepared: &OpenCodePreparedIntegration,
+    capabilities: impl IntoIterator<Item = CapabilityRequirement>,
+) -> OperationRequirements {
+    let role = DriverRole::ProviderSessionManagement;
+    let descriptor = crate::opencode_http_descriptor();
+    OperationRequirements::new(
+        ExecutionLayer::HarnessInteraction,
+        OperationShape::ProviderSessionManagement,
+        role,
+        prepared.instance().execution_host_id().clone(),
+        AccessRequirement::new(prepared.access_profile().id().clone())
+            .with_credential_states([CredentialState::Ready])
+            .with_entitlement_states([EntitlementState::Available])
+            .with_endpoint_authorizations([EndpointAuthorization::Allowed])
+            .with_runtime_readiness([RuntimeReadiness::Ready])
+            .with_support_authorities([prepared.access_profile().support_authority()]),
+    )
+    .with_ownership_modes([prepared.instance().ownership()])
+    .with_host_services(descriptor.required_host_services(role))
+    .with_capabilities(capabilities)
+    .with_interface_versions([prepared.server().binding().clone()])
+    .with_harness_isolation(HarnessIsolation::AmbientHost)
+    .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient)
+}
+
 pub(super) fn build_plan(
     prepared: &OpenCodePreparedIntegration,
     instance: &ConfiguredInstance,
@@ -130,4 +156,11 @@ pub(super) fn build_plan(
             Diagnostic::new(error.diagnostic().clone()),
         )
     })
+}
+
+pub(super) fn failure(code: &'static str, message: &'static str) -> PreparationFailure {
+    PreparationFailure::new(
+        PreparationStage::Preflight,
+        Diagnostic::new(SafeDiagnostic::new(code, message)),
+    )
 }

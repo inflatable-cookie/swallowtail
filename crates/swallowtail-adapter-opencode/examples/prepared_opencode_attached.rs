@@ -1,9 +1,12 @@
 use swallowtail_adapter_opencode::{
     OpenCodeCatalogueProfileInput, OpenCodeModelSelection, OpenCodePreparedCatalogue,
-    OpenCodePreparedIntegration, OpenCodePreparedSession, OpenCodeSessionProfileInput,
+    OpenCodePreparedDelete, OpenCodePreparedIntegration, OpenCodePreparedSession,
+    OpenCodeSessionManagementInput, OpenCodeSessionProfileInput,
 };
 use swallowtail_core::{ModelId, ModelRouteId, ModelRouteRevision, ProviderId};
-use swallowtail_runtime::{PreparationFailure, RequestId, WorkingResourceRef};
+use swallowtail_runtime::{
+    PreparationFailure, ProviderSessionManagementBinding, RequestId, WorkingResourceRef,
+};
 
 pub fn catalogue(
     prepared: &OpenCodePreparedIntegration,
@@ -26,6 +29,14 @@ pub fn read_only_session(
         OpenCodeModelSelection::new(route_id, route_revision, provider_id, model_id),
         working_resource,
     ))
+}
+
+pub fn delete_inactive_session(
+    prepared: &OpenCodePreparedIntegration,
+    request_id: RequestId,
+    binding: ProviderSessionManagementBinding,
+) -> Result<OpenCodePreparedDelete, PreparationFailure> {
+    prepared.prepare_delete_session(OpenCodeSessionManagementInput::new(request_id, binding))
 }
 
 fn main() {}

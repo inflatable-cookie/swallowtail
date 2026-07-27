@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-24
+Updated: 2026-07-27
 
 ## Realized State
 
@@ -114,7 +114,10 @@ spine:
   `1.14.48..=1.18.4` model discovery and ambient-host interactive sessions with
   read-only tool permissions over host-approved HTTP and bounded SSE; exact
   stable newer releases may run as visibly unverified without extending
-  guaranteed support
+  guaranteed support; a separate 45-release deletion corpus freezes two
+  delete-schema revisions, recursive provider-defined descendants, missing-
+  target rejection, inactive-target requirements, and post-dispatch
+  uncertainty without yet advertising production deletion
 - `swallowtail-adapter-anthropic` implements provider-supported `2023-06-01`
   Models catalogue and Messages direct inference over host-approved HTTP/SSE;
   its separate `managed-agents-2026-04-01` remote-harness driver binds one
@@ -499,6 +502,11 @@ a separate provider id instead of forcing it into model identity.
 
 ACP v1 evidence now has a separate protocol package boundary. Wire version,
 schema artifact version, SDK version, and agent version remain distinct.
+The additive lifecycle corpus pins stable schema `v1.20.0` without rewriting
+the historical Gemini or Kimi pins. Independent close-only, delete-only,
+omitted, null, success, and error fixtures pass through the same bounded
+message codec used by stdio and explicit remote ACP. Portable delete truth
+remains history removal.
 Gemini CLI `0.51.0` is narrowed to new read-only sessions, text prompts,
 updates, native turn cancellation, permission cancellation, and bounded read
 callbacks. Authentication mutation, load/resume, mode or model switching, MCP
@@ -519,6 +527,33 @@ and remote-authoritative host identities exercise the same public driver seam.
 ACP prompt correlation is installed and written before its joined waiter task
 starts, so immediate cancellation cannot overtake the provider request. The
 installed `0.51.0` probe is separately gated and ignored by default.
+
+The Claude Agent lifecycle corpus separately freezes close and delete at every
+qualified behavior milestone plus the unpublished-package exclusion.
+Qualified close tears down only active in-memory resources and preserves
+history. Qualified delete tears down an active target when present, then uses
+the exact Agent SDK path that removes the primary local transcript and sibling
+session directory. That evidence supports provider-data deletion with
+provider-defined descendants, but no hard-erasure or Anthropic API service-data
+claim. Missing and repeated operations reject. Published `0.62.0` remains
+unverified-newer rather than extending the guaranteed range.
+
+The Claude Agent stdio driver now realizes the qualified mapping. Initialization
+requires independently advertised close and delete capabilities before session
+creation. Qualified handle cleanup sends native `session/close` as a separate
+leg before closing and joining the owned process; an unverified-newer session
+does not inherit that cleanup claim. Prepared sessions return an opaque
+management binding without adding load or resume. The separate prepared delete
+operation requires caller-asserted inactivity and explicit unverified-newer
+acceptance, starts one fresh scoped ACP process, and reports
+`ProviderDataDeleted` with `ProviderDefinedDescendants` only after an empty
+success response. It never reads provider state paths or extracts credentials.
+The completed portability matrix covers all qualified behavior segments, the
+unpublished exclusion, unverified-newer opt-in, effect-boundary failures, and
+credential-last cleanup. The real remote WebSocket ACP transport carries the
+same initialize and delete records under both host topologies. Remote failure
+has no process service, retry, reconnect, or stdio fallback. This proves
+transport portability without claiming an authenticated remote Claude route.
 
 The Kimi corpus and production adapter prove the maintained TypeScript successor's new, load, resume,
 replay, prompt, cancellation, write-callback, drift, auth-failure, and
@@ -911,6 +946,80 @@ safe preparation stages, and typed low-level delegation without a new durable
 rule. The prepared-facade authoring guide records that pattern. Roadmaps
 g02.009-g02.011 complete every remaining route. Roadmap g02.012 now owns the
 exact route matrix, packaged proof, and replacement candidate evidence.
+
+## Provider Session Management Boundary
+
+Contract 038 adds a provider-session management role above opaque persistent
+session bindings. The provider-neutral record, runtime role, and public
+cross-host conformance layers are realized. Codex app-server, Claude Agent
+stdio ACP, and OpenCode HTTP/SSE now implement the role; Claude lifecycle
+records also pass explicit remote-ACP transport conformance.
+
+`swallowtail-core` now owns independent archive, restore, delete, and native
+close capabilities plus typed action, lifecycle state, deletion strength,
+affected scope, effect truth, and exact interface compatibility evidence.
+`swallowtail-runtime` owns the redacted management binding. It requires an
+exact driver descriptor, configured instance, host target, access evidence,
+interface versions, management capability, origin, and optional resource
+scope; a raw provider reference is insufficient.
+
+`swallowtail-runtime` now exposes one immutable management plan, independent
+archive, restore, and delete request types, a low-level driver role, exact
+effect outcome, validation against host services and preflight evidence, and
+shared prepared evidence. Inactivity is caller-asserted; no active-session
+registry exists. Cancellation posture and deadlines are plan-bound, and
+after-dispatch uncertainty carries no confirmed deletion strength.
+
+`swallowtail-testkit` exposes composable local and remote-authoritative
+fixtures plus one reusable assertion pack. It covers action and deletion
+strength, qualified and unverified-newer execution, unsupported and
+incompatible routes, exact binding and plan drift, pre/post-dispatch
+cancellation and deadlines, uncertainty, and joined release ordering. Exact
+method mapping, version milestones, prepared operations, and provider truth
+remain in each adapter.
+
+Consumer thread archive, restore, deletion, persistence, and UI stay
+downstream. Runtime attachment close, provider-native active close, reversible
+archive, restore, history removal, provider data deletion, provider hard
+deletion, and driver-owned resource cleanup remain separate.
+
+The first common role targets one inactive bound provider session. It contains
+no global session registry, provider-history browser, arbitrary-id authority,
+implicit deletion, retry, or fallback. Codex app-server, Claude Agent ACP, and
+OpenCode HTTP/SSE are the first applicable implementations. Kimi and Gemini
+ACP retain explicit unsupported mappings until their selected routes qualify
+the methods. Other operation shapes remain consumer-local or keep their
+existing driver-owned cleanup.
+
+Research 040 and Contract 038 define a separate contracted
+`kimi-code.local-server` route inside `swallowtail-adapter-kimi`. It uses the
+provider-documented foreground `kimi web --no-open` process, local REST,
+WebSocket protocol version `2`, exact server metadata, and an opaque bearer
+credential lease. Attached and owned-foreground topologies remain distinct.
+The first implementation qualifies reversible archive and restore across exact
+Kimi Code `0.28.1` and `0.29.0` points; it does not qualify deletion or change
+the unsupported ACP mapping. Attached preparation preserves the external
+server. Owned preparation launches one approved foreground child on the
+approved loopback port and joins it on close. Both require exact metadata,
+state-root identity, and an opaque local bearer lease. Archive and restore
+cross one POST effect boundary without retry; delete fails before dispatch.
+
+The optional ACP-to-local-server management import is realized as two
+adapter-local opaque values. A prepared ACP session plus its matching resume
+binding issues source authority only when ACP preparation bound an opaque Kimi
+state root. Local-server preparation issues a target snapshot containing the
+exact configured instance, endpoint, access evidence, server observation, and
+state root. Side-effect-free import preflight requires exact release, host,
+state-root, target, lifecycle capability, and unverified-newer agreement.
+Execution performs one authenticated read-only target lookup. An exact
+unarchived result issues a new local-server archive/restore binding; it never
+widens ACP. Matching provider family or raw session identity is not authority.
+The later interactive tranche reuses the same route identity and transport
+without replacing ACP or adding a provider-neutral prompt facade.
+
+Roadmap g02.015 owns the completed shared foundation. Roadmaps g02.016-g02.019
+own the first provider realization and provider-wide acceptance. Roadmap
+g02.020 owns the additive Kimi local-server proof.
 
 ## Dependency Rules
 

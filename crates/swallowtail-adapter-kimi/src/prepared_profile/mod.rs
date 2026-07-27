@@ -1,9 +1,11 @@
+mod import;
 mod input;
 mod plan;
 mod session;
 
 use swallowtail_runtime::{BoxFuture, InteractiveSessionHandle, LoadedSession, RuntimeFailure};
 
+pub use import::KimiAcpSessionImportAuthority;
 pub use input::{KimiModelSelection, KimiSessionProfileInput};
 pub use plan::KimiPreparedEvidence;
 pub use session::KimiPreparedSession;

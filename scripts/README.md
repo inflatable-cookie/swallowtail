@@ -11,15 +11,18 @@ Release-preparation scripts:
 - `check-public-api.sh` — first-candidate public declaration baseline
 - `check-msrv.sh` — general floor, Bedrock floor, and current stable checks
 - `verify-packages-local.sh` — credential-free package assembly, content audit,
-  checksums, extraction, and patched local-workspace verification; an explicit
-  output retains one immutable candidate
+  checksums, extraction, patched local-workspace verification, and packaged
+  Kimi local-server protocol/lifecycle execution; an explicit output retains
+  one immutable candidate
 - `verify-release-candidate.sh` — checksum, source-bundle, and from-source
   package reproducibility
 - `verify-candidate-consumers.sh` — isolated Nucleus and Soundcheck prepared-
   runtime tests plus packaged Codex failure/lifecycle conformance against an
   explicit candidate
 - `verify-candidate-provider-facades.sh` — execute deterministic prepared
-  facade suites for all 22 production routes from one extracted candidate
+  facade suites for all 23 production routes from one extracted candidate
+- `verify-candidate-provider-lifecycle.sh` — execute the exact lifecycle
+  matrix and bound-management suites from one extracted candidate
 - `verify-packaged-consumer-runtime.sh` — assemble a transient candidate from
   the current source snapshot and run the credential-free cross-consumer
   runtime gate

@@ -21,6 +21,13 @@ pub enum AppServerMode {
     DisconnectTurn,
     MismatchedTurnSession,
     SubstituteResume,
+    LifecycleSuccess,
+    LifecycleReject,
+    LifecycleDisconnect,
+    LifecycleHold,
+    LifecycleMalformed,
+    LifecycleCleanupFailure,
+    LifecycleWrongNotification,
 }
 
 #[derive(Default)]
@@ -282,6 +289,56 @@ impl ScriptedAppServerHandle {
                     "result": {"thread": {"id": thread_id}}
                 }));
             }
+            (method @ ("thread/archive" | "thread/unarchive" | "thread/delete"), Some(id)) => {
+                if matches!(self.mode, AppServerMode::LifecycleDisconnect) {
+                    self.state.closed.store(true, Ordering::SeqCst);
+                    return;
+                }
+                if matches!(self.mode, AppServerMode::LifecycleHold) {
+                    return;
+                }
+                if matches!(self.mode, AppServerMode::LifecycleReject) {
+                    self.state.push(serde_json::json!({
+                        "id": id,
+                        "error": {"code": -32602, "message": "unknown thread"}
+                    }));
+                    return;
+                }
+                let thread_id = message["params"]["threadId"]
+                    .as_str()
+                    .expect("lifecycle request carries a thread id");
+                let result = if matches!(self.mode, AppServerMode::LifecycleMalformed) {
+                    serde_json::json!({"unexpected": true})
+                } else if method == "thread/unarchive" {
+                    serde_json::json!({"thread": {"id": thread_id}})
+                } else {
+                    serde_json::json!({})
+                };
+                self.state
+                    .push(serde_json::json!({"id": id, "result": result}));
+                let notification = match method {
+                    "thread/archive" => "thread/archived",
+                    "thread/unarchive" => "thread/unarchived",
+                    "thread/delete" => "thread/deleted",
+                    _ => unreachable!(),
+                };
+                let notification_thread =
+                    if matches!(self.mode, AppServerMode::LifecycleWrongNotification) {
+                        "thread-provider-unrelated"
+                    } else {
+                        thread_id
+                    };
+                self.state.push(serde_json::json!({
+                    "method": notification,
+                    "params": {"threadId": notification_thread}
+                }));
+                if method == "thread/delete" {
+                    self.state.push(serde_json::json!({
+                        "method": notification,
+                        "params": {"threadId": "thread-provider-descendant"}
+                    }));
+                }
+            }
             ("turn/start", Some(id)) => {
                 let thread_id = message["params"]["threadId"]
                     .as_str()
@@ -314,7 +371,14 @@ impl ScriptedAppServerHandle {
                     AppServerMode::HoldCatalog
                     | AppServerMode::HoldTurn
                     | AppServerMode::MismatchedTurnSession
-                    | AppServerMode::SubstituteResume => {}
+                    | AppServerMode::SubstituteResume
+                    | AppServerMode::LifecycleSuccess
+                    | AppServerMode::LifecycleReject
+                    | AppServerMode::LifecycleDisconnect
+                    | AppServerMode::LifecycleHold
+                    | AppServerMode::LifecycleMalformed
+                    | AppServerMode::LifecycleCleanupFailure
+                    | AppServerMode::LifecycleWrongNotification => {}
                     AppServerMode::RequestCallback => self.state.push(serde_json::json!({
                         "id": "callback-900",
                         "method": "item/commandExecution/requestApproval",
@@ -447,7 +511,17 @@ impl ProcessHandle for ScriptedAppServerHandle {
 
     fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
         self.state.closed.store(true, Ordering::SeqCst);
-        Box::pin(async { Ok(()) })
+        let fail = matches!(self.mode, AppServerMode::LifecycleCleanupFailure);
+        Box::pin(async move {
+            if fail {
+                Err(RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
+                    "swallowtail.codex.fixture_cleanup_failed",
+                    "fixture cleanup failed",
+                )))
+            } else {
+                Ok(())
+            }
+        })
     }
 
     fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {

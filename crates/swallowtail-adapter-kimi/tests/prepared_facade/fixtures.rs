@@ -15,7 +15,7 @@ use swallowtail_core::{
 use swallowtail_runtime::{
     Deadline, DiscoveryCancellation, EnvironmentRef, ExecutableRef, HostServices,
     InstalledExecutableTarget, MonotonicInstant, PreparedAccessEvidence, RequestId, ScopeId,
-    SessionOptions,
+    SessionOptions, WorkingResourceRef,
 };
 
 pub fn prepared(
@@ -31,7 +31,8 @@ pub fn prepared(
         EnvironmentRef::new("kimi.prepared.state").unwrap(),
         access_profile(),
         PreparedAccessEvidence::caller_asserted(access_status()),
-    );
+    )
+    .with_state_root(WorkingResourceRef::new("fixture.kimi.state-root").unwrap());
     let (process, _) = FakeProcessService::completed(&format!("{version}\n"));
     block_on(prepare_kimi(
         input,

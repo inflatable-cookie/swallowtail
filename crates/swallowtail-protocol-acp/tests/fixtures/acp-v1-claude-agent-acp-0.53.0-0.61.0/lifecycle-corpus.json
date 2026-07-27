@@ -1,0 +1,115 @@
+{
+  "evidence_checked": "2026-07-27",
+  "qualified_range": {
+    "baseline": "0.53.0",
+    "latest": "0.61.0",
+    "excluded_unpublished_package": "0.58.0",
+    "newer_observed": {
+      "version": "0.62.0",
+      "published_at": "2026-07-24T17:45:52.438Z",
+      "tag_commit": "53a0c36ce3b0b76929d11d8b9565e319da745608",
+      "qualification": "unverified_newer_not_range_evidence"
+    }
+  },
+  "protocol": {
+    "wire_version": 1,
+    "close_capability": "agentCapabilities.sessionCapabilities.close",
+    "delete_capability": "agentCapabilities.sessionCapabilities.delete",
+    "capabilities_independent": true,
+    "success_result": {}
+  },
+  "behavior": {
+    "close": {
+      "active": "interrupt_abort_dispose_remove_in_memory_return_empty",
+      "missing": "internal_error",
+      "persistent_history": "preserved",
+      "idempotent": false
+    },
+    "delete": {
+      "active": "teardown_then_sdk_delete",
+      "inactive": "sdk_delete",
+      "missing": "internal_error",
+      "repeated": "internal_error",
+      "idempotent": false,
+      "deletion_strength": "provider_data_deleted",
+      "affected_scope": "provider_defined_descendants",
+      "deleted_data": [
+        "primary_nonempty_session_jsonl",
+        "sibling_session_directory_recursively"
+      ],
+      "not_claimed": [
+        "secure_erasure",
+        "anthropic_api_service_data_deletion",
+        "account_analytics_deletion",
+        "backup_deletion"
+      ]
+    }
+  },
+  "milestones": [
+    {
+      "adapter": "0.53.0",
+      "tag_commit": "47fee477096f9edd4aeb994679658fb0914cc0c0",
+      "acp_sdk": "1.0.0",
+      "acp_sdk_archive_sha256": "0698e8c8673d30f04c5a889502c483cafacd67fab1477393fa829a5311bf053b",
+      "agent_sdk": "0.3.195",
+      "agent_sdk_archive_sha256": "01a0d3ab026d6197ad09bdefefbfc7a4ab41f3107efd887b825ff0e20b4ca60b",
+      "agent_source_sha256": "f2165a699d70d7764f8021931cb1bb2ce858988ba1d27634b4dbd1a472e94ea6",
+      "agent_tests_sha256": "7e148f4acd963cc8ba8e0aca2a615602d9fa10363d132c715aaeaf3e853c5f9c"
+    },
+    {
+      "adapter": "0.54.0",
+      "tag_commit": "71d93b3adac16baf0229bce9775a2bdf94a6d47c",
+      "acp_sdk": "1.1.0",
+      "acp_sdk_archive_sha256": "dcabd28b5f0a30b9bf774769abea935b061286617a7e3ae9868c5e0597bb8a43",
+      "agent_sdk": "0.3.197",
+      "agent_sdk_archive_sha256": "ca735bbf869a777ec5cc641be5faac8f4c0923a008aa1e09e6201284b1aca66c",
+      "agent_source_sha256": "b4867da6caa114b330f8c55c259371de9478136e86b97c9ab258a170b19904f6",
+      "agent_tests_sha256": "8d1f03124f77417f4789fc879a99c409b0f98eb1b51d56bd2eb34f936ee2635e"
+    },
+    {
+      "adapter": "0.58.0",
+      "tag_commit": "5144aabc525c3288b360fe90b35967289df2d736",
+      "publication": "excluded_unpublished_package",
+      "acp_sdk": "1.2.1",
+      "acp_sdk_archive_sha256": "d791b7a8df31deab3ad885a06b67e7ff5b4a490dbfbac9e8b325f401f5da8076",
+      "agent_sdk": "0.3.205",
+      "agent_sdk_archive_sha256": "c8fee0e4a780aea0b275dbbcabe42685309804db9e482dd2f0cca39338adef5a",
+      "agent_source_sha256": "0a0017f997586b700d1ec6110301bf63c5a4276f1940bd7c45c07758a8946c36",
+      "agent_tests_sha256": "30dad4f2e73a2534d9d749a1afd87a47711c2880ed07b5d7f15431459483eb87"
+    },
+    {
+      "adapter": "0.60.0",
+      "tag_commit": "0a88de2a83d017e0f5f6f429f7edea3700313f3a",
+      "acp_sdk": "1.2.1",
+      "acp_sdk_archive_sha256": "d791b7a8df31deab3ad885a06b67e7ff5b4a490dbfbac9e8b325f401f5da8076",
+      "agent_sdk": "0.3.215",
+      "agent_sdk_archive_sha256": "0a4e344d54ce792c76d8e6eecbecfa18f4e686155c659e33e5839a029bf679ea",
+      "agent_source_sha256": "48ee1e659d47cf2e4662b98ad2bd697598c4627a64689af3c4a51ff99c45a422",
+      "agent_tests_sha256": "631bf2a2a147f89e95896fc9430db48c886fc3740ebf06adc60c48199a52d031"
+    },
+    {
+      "adapter": "0.61.0",
+      "tag_commit": "c19bddcf7914259d6c15103a2d1580c7371e1d16",
+      "acp_sdk": "1.3.0",
+      "acp_sdk_archive_sha256": "0baf5b6be1842d00bf989c0211b7e44a15f88769d2fffd5036397ba249becc9f",
+      "agent_sdk": "0.3.217",
+      "agent_sdk_archive_sha256": "20363761b29724950b749ecbc5186c46e29f2a0330554ca309a9e7ff8d6e5799",
+      "agent_source_sha256": "7805f0931c2c3eb803bb5d6264d610efdac08b00afa4538fe2484623ecf4e885",
+      "agent_tests_sha256": "2dd462a54746a32c6fc51d2520ae7fb95d83dae490e60da33a8b6c0e6e25760b"
+    }
+  ],
+  "sdk_delete_implementation": {
+    "consistent_across_pinned_sdk_points": true,
+    "validates_uuid": true,
+    "searches_approved_claude_project_state": true,
+    "requires_nonempty_primary_jsonl": true,
+    "removes_primary_jsonl": true,
+    "removes_sibling_session_directory_recursively": true,
+    "missing_target_throws": true
+  },
+  "wire_error": {
+    "code": -32603,
+    "message": "Internal error",
+    "provider_details_are_private": true
+  }
+}

@@ -16,6 +16,8 @@ bash "$release_repo_root/scripts/verify-release-candidate.sh" \
   "$release_candidate"
 bash "$release_repo_root/scripts/verify-candidate-provider-facades.sh" \
   "$release_candidate"
+bash "$release_repo_root/scripts/verify-candidate-provider-lifecycle.sh" \
+  "$release_candidate"
 bash "$release_repo_root/scripts/verify-candidate-consumers.sh" \
   "$release_candidate"
 
@@ -28,6 +30,9 @@ printf 'packages_sha256_digest=%s\n' \
 cat "$release_candidate/provider-validation.env"
 printf 'provider_validation_sha256=%s\n' \
   "$(shasum -a 256 "$release_candidate/provider-validation.env" | awk '{ print $1 }')"
+cat "$release_candidate/lifecycle-validation.env"
+printf 'lifecycle_validation_sha256=%s\n' \
+  "$(shasum -a 256 "$release_candidate/lifecycle-validation.env" | awk '{ print $1 }')"
 cat "$release_candidate/consumer-validation.env"
 printf 'consumer_validation_sha256=%s\n' \
   "$(shasum -a 256 "$release_candidate/consumer-validation.env" | awk '{ print $1 }')"

@@ -1,17 +1,26 @@
 use super::*;
 
+#[path = "agent/lifecycle.rs"]
+mod lifecycle;
 mod process;
 
 pub(super) use process::FixtureProcessHandle;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[allow(dead_code)]
 pub enum Scenario {
     Success,
+    DeleteMissing,
+    DeleteProviderFailure,
+    DeleteDisconnect,
+    DeleteMalformed,
+    DeletePending,
     Permission,
     Cancellation,
     Disconnect,
     ModelDrift,
     AuthDrift,
+    LifecycleDrift,
     Version,
 }
 
@@ -74,6 +83,8 @@ impl SharedAgent {
             Some("session/new") => self.new_session(&mut state, id, &message),
             Some("session/prompt") => self.prompt(&mut state, id),
             Some("session/cancel") => self.cancel(&mut state),
+            Some("session/close") => self.close_session(&mut state, id),
+            Some("session/delete") => self.delete_session(&mut state, id),
             None if id == Some(701) => self.complete_read(&mut state, &message),
             None if id == Some(900) => self.permission_response(&message),
             _ => return Err(fixture_failure()),
@@ -86,8 +97,12 @@ impl SharedAgent {
         let version = semver::Version::parse(&self.version).map_err(|_| fixture_failure())?;
         let mut capabilities = json!({
             "_meta": {"claudeCode": {"promptQueueing": true}},
-            "promptCapabilities": {"image": true, "embeddedContext": true}
+            "promptCapabilities": {"image": true, "embeddedContext": true},
+            "sessionCapabilities": {"close": {}, "delete": {}}
         });
+        if self.scenario == Scenario::LifecycleDrift {
+            capabilities["sessionCapabilities"] = json!({"close": {}});
+        }
         if version >= semver::Version::new(0, 60, 0) {
             capabilities["providers"] = json!({});
         }
@@ -200,7 +215,15 @@ impl SharedAgent {
             }
             Scenario::Cancellation => {}
             Scenario::Disconnect => state.stopped = true,
-            Scenario::ModelDrift | Scenario::AuthDrift | Scenario::Version => {
+            Scenario::DeleteMissing
+            | Scenario::DeleteProviderFailure
+            | Scenario::DeleteDisconnect
+            | Scenario::DeleteMalformed
+            | Scenario::DeletePending
+            | Scenario::ModelDrift
+            | Scenario::AuthDrift
+            | Scenario::LifecycleDrift
+            | Scenario::Version => {
                 return Err(fixture_failure());
             }
         }

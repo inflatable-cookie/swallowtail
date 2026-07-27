@@ -33,6 +33,7 @@ pub enum HarnessIsolation {
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum ProviderApprovalPolicy {
     Never,
+    ConsumerMediated,
 }
 
 /// Permission for provider-side access beyond the selected provider route.
@@ -54,12 +55,14 @@ pub enum ExternalSearchPolicy {
 pub enum ProviderRequestHandling {
     Reject,
     ObserveAndStop,
+    Exchange,
 }
 
 /// Declares the provider extensions which may be observed without granting authority.
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
 pub struct ProviderRequestPolicy {
     observe_and_stop: BTreeSet<ExtensionNamespace>,
+    exchange: BTreeSet<ExtensionNamespace>,
 }
 
 impl ProviderRequestPolicy {
@@ -72,12 +75,25 @@ impl ProviderRequestPolicy {
     pub fn observe_and_stop(namespaces: impl IntoIterator<Item = ExtensionNamespace>) -> Self {
         Self {
             observe_and_stop: namespaces.into_iter().collect(),
+            exchange: BTreeSet::new(),
+        }
+    }
+
+    /// Declares provider-owned callbacks which the consumer may answer through
+    /// the bounded callback exchange.
+    #[must_use]
+    pub fn exchange(namespaces: impl IntoIterator<Item = ExtensionNamespace>) -> Self {
+        Self {
+            observe_and_stop: BTreeSet::new(),
+            exchange: namespaces.into_iter().collect(),
         }
     }
 
     #[must_use]
     pub fn handling_for(&self, namespace: &ExtensionNamespace) -> ProviderRequestHandling {
-        if self.observe_and_stop.contains(namespace) {
+        if self.exchange.contains(namespace) {
+            ProviderRequestHandling::Exchange
+        } else if self.observe_and_stop.contains(namespace) {
             ProviderRequestHandling::ObserveAndStop
         } else {
             ProviderRequestHandling::Reject
@@ -86,6 +102,10 @@ impl ProviderRequestPolicy {
 
     pub fn observed_extensions(&self) -> impl ExactSizeIterator<Item = &ExtensionNamespace> {
         self.observe_and_stop.iter()
+    }
+
+    pub fn exchanged_extensions(&self) -> impl ExactSizeIterator<Item = &ExtensionNamespace> {
+        self.exchange.iter()
     }
 }
 
@@ -170,6 +190,24 @@ impl SessionAccessPolicy {
             external_network: ExternalNetworkPolicy::AmbientHost,
             external_search: ExternalSearchPolicy::Disabled,
             provider_requests: ProviderRequestPolicy::reject_all(),
+        }
+    }
+
+    /// An ambient local harness whose declared provider callbacks are answered
+    /// only by the consumer through the correlated callback exchange.
+    #[must_use]
+    pub fn ambient_harness_with_consumer_mediated_requests(
+        resource_access: ResourceAccess,
+        exchanged_provider_requests: impl IntoIterator<Item = ExtensionNamespace>,
+    ) -> Self {
+        Self {
+            resource_access: Some(resource_access),
+            filesystem_boundary: None,
+            harness_isolation: Some(HarnessIsolation::AmbientHost),
+            approval_policy: ProviderApprovalPolicy::ConsumerMediated,
+            external_network: ExternalNetworkPolicy::AmbientHost,
+            external_search: ExternalSearchPolicy::Disabled,
+            provider_requests: ProviderRequestPolicy::exchange(exchanged_provider_requests),
         }
     }
 

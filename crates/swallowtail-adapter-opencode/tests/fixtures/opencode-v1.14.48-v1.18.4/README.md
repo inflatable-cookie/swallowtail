@@ -24,6 +24,28 @@ semantic-version segments. Separate segments preserve unpublished `1.15.8`,
 `1.16.1`, and cross-minor gaps. No syntactically possible but unpublished
 version is inferred into the candidate claim.
 
+`deletion.json` freezes `DELETE /session/{sessionID}` separately. The existing
+six-route execution claim therefore stays unchanged before the deletion
+driver exists. The delete operation plus its complete local-reference closure
+has two schema revisions:
+
+- `delete-01`: `1.14.48` through `1.15.5`
+- `delete-02`: `1.15.6` through `1.18.4`
+
+Eight semantic-version segments preserve unpublished patch and cross-minor
+gaps. Two runtime evidence revisions remain separate from schema shape.
+`1.14.48..=1.14.50` recursively deletes descendants without a provider busy
+guard or background-job cancellation. `1.14.51..=1.18.4` adds background-job
+cancellation but still has no busy guard. Swallowtail therefore keeps its
+inactive-target rule.
+
+Every tagged route returns `true` after successful provider-declared data
+deletion, returns `404` for a missing target, recursively deletes provider
+children, and uses the server's optional Basic authentication boundary.
+Provider data deletion is not a hard-erasure claim. A server error after
+dispatch leaves provider truth unconfirmed. Its body is not stable diagnostic
+evidence.
+
 The small health and session envelopes are synthetic. They contain no
 credential, endpoint, account, path, provider payload, model response, or user
 content.

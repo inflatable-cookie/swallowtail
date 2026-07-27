@@ -1,0 +1,1 @@
+{"type":"turn.ended","seq":12,"epoch":"fixture-epoch-private","session_id":"fixture-session-private","timestamp":"2026-07-27T00:00:05.000Z","payload":{"turnId":7,"reason":"completed","durationMs":25}}

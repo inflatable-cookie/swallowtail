@@ -9,7 +9,7 @@ prompts, tools, authority, workflows, persistence, and product state.
 Status: foundation. The repository is in strict Northstar posture. The
 provider-neutral core, pure preflight, executor-neutral runtime, thirteen synthetic
 conformance profiles, host-approved local process/endpoint/credential services,
-twenty-two production driver routes, including separate SDK-native Bedrock Runtime
+twenty-three production driver routes, including separate SDK-native Bedrock Runtime
 and control-plane routes, across Alibaba Model Studio, Anthropic, Bedrock,
 Claude Agent, Codex, DeepSeek, Gemini, Kimi, llama.cpp, Ollama, OpenAI,
 OpenCode, Pi, Qwen, and xAI
@@ -29,22 +29,30 @@ Then read [docs/README.md](docs/README.md). Applications integrating Codex
 should start with the
 [prepared-integration guides](docs/guides/README.md). Multi-provider
 applications should start with the exact
-[22-route matrix](docs/guides/provider-route-matrix.md).
-Consumer soak is the active stabilization lane. The shared
-evidence foundation, Codex typed bound operations, and Kimi Code ACP prepared
+[23-route matrix](docs/guides/provider-route-matrix.md).
+Provider-session lifecycle is the active additive stabilization lane.
+Consumer soak remains the held release baseline. Research 036 and Contract 038
+separate Nucleus-local thread archive and deletion from optional bound
+provider-session management. Kimi Code's documented foreground local
+REST/WebSocket server is now a separate production route: exact `0.28.1` and
+`0.29.0` expose interactive sessions, archive, and restore, but no hard-delete
+operation.
+The existing Kimi ACP route remains unchanged and unsupported for provider
+session management. The shared evidence foundation, Codex typed bound
+operations, and Kimi Code ACP prepared
 facade are complete. Anthropic Models and Messages now supplies the first
 hosted-direct prepared facade. Ollama native supplies the attached-runtime
 proof. Claude Agent and Gemini CLI now add separate read-only stdio-ACP
 prepared paths. Pi RPC, Qwen headless, and OpenCode attached HTTP/SSE complete
-prepared coverage for all eight harness routes. Kimi Platform, DeepSeek,
+the original eight harness routes; Kimi local server adds the ninth. Kimi Platform, DeepSeek,
 Alibaba Model Studio, and OpenAI background Responses now add distinct hosted
 direct and provider-state facades; specialized adapters retain their low-level
 production APIs. Separate xAI Responses WebSocket, OpenAI Realtime, and Gemini
 Live facades now retain their native text, audio, cancellation, invalidation,
 and rollover behavior. Bedrock Runtime and control-plane catalogue now add
 separate SDK-native facades with explicit region and credential-provider
-configuration. llama.cpp now completes all 22 prepared routes with distinct
-attached inference and owned ephemeral-serving paths. The exact cross-route
+configuration. llama.cpp completed the original 22-route prepared matrix with
+distinct attached inference and owned ephemeral-serving paths. The exact cross-route
 matrix and unified integration guidance are complete. All 22 prepared routes
 now pass from extracted package artifacts, alongside the Nucleus and
 Soundcheck Codex proofs. One reproducible provider-wide `0.1.0` candidate is
@@ -56,6 +64,50 @@ operator-held during continued working-application soak; no external release
 state has changed. Soundcheck's repetitive secondary scale
 workload is explicitly superseded without a live acceptance claim. Its
 distinct structured-run integration and proof-isolation evidence remain.
+The provider-neutral lifecycle records, opaque management binding, immutable
+plan, typed requests, low-level role, outcome, prepared evidence, and public
+cross-host conformance pack are now realized. Codex app-server now maps its
+qualified archive, restore, notification, best-effort descendant archive, and
+strict descendant hard-delete segments through separate low-level and prepared
+operations. Prepared new and resumed sessions return exact management
+authority; callers close the runtime handle before using it.
+The additive ACP v1 lifecycle corpus now pins stable schema `v1.20.0` and
+keeps generic delete at history-removal truth. Exact Claude Agent tagged
+evidence qualifies local harness-session data deletion with provider-defined
+descendants across `0.53.0..=0.61.0`; `0.62.0` remains unverified-newer.
+The Claude Agent stdio driver now negotiates independent lifecycle
+capabilities, sends qualified native close before connection cleanup, returns
+an opaque delete binding from prepared sessions, and exposes one explicit
+inactive-session delete operation with exact provider-data and descendant
+truth. Its full effect-boundary and cleanup matrix passes across the qualified
+range. The same lifecycle records pass the real explicit remote ACP transport
+under both host topologies without retry or stdio fallback. This is transport
+portability, not a production remote Claude claim. It claims neither load nor
+resume.
+Roadmaps g02.015-g02.019 sequence the shared management foundation, Codex
+archive/restore/delete, ACP and Claude Agent close/delete, OpenCode deletion,
+provider-wide classification, package proof, and a Nucleus handoff. Roadmap
+g02.020 sequences the separate Kimi local-server corpus, lifecycle driver,
+binding import, interactive route, and package closeout without a container.
+Codex
+remains the first provider-session effect implementation. Claude Agent
+portability is complete. Research 039 and card 055 freeze the full OpenCode
+deletion range. The bound driver and prepared facade now preserve exact
+endpoint, server-version, delegated-access, provider-data, descendant, and
+post-dispatch uncertainty truth. Its full maintained-range, topology, failure,
+cleanup, and regression closeout now passes. Provider-wide lifecycle
+classification is complete. Exact Kimi local-server protocol qualification is
+complete. Attached and owned-foreground lifecycle preparation, native
+archive/restore, effect truth, and joined owned-child cleanup now pass. Exact
+ACP-to-local-server import now requires typed source authority, exact target
+agreement, and one authenticated read-only lookup before issuing a separate
+archive/restore binding. The interactive local-server driver now covers exact
+REST prompt submission, WebSocket v2 events and cursors, callbacks,
+interruption, deadlines, disconnects, attached and owned topology, and joined
+cleanup. The 23-route matrix, four public examples, integration guide, and
+extracted-package proof are complete. Operator review is required before any
+Nucleus lifecycle handoff. The retained lifecycle candidate remains paused
+until the current source enters canonical history.
 
 ## Current Direction
 
@@ -491,7 +543,10 @@ run with explicit provider, model, stdin, stream-JSON, and native budgets.
 Later stable Pi, Qwen, and OpenCode releases remain executable as visible
 unverified-newer observations. OpenCode now adds exact attached-service
 preparation plus separate catalogue and read-only session paths without server
-lifecycle or remote-ACP fallback. Kimi Platform now adds separate catalogue and
+ownership or remote-ACP fallback. A prepared session also yields one opaque
+inactive-session delete binding; explicit deletion reports provider data
+deletion with provider-defined descendants and never implies hard erasure.
+Kimi Platform now adds separate catalogue and
 one-attempt K3 preparation while rejecting Membership and Kimi Code access.
 DeepSeek now adds separate catalogue and explicit consumer-owned tool
 continuation with private reasoning replay and visible cache acceptance.

@@ -1,19 +1,24 @@
 #![allow(dead_code)]
 
+#[path = "prepared_facade/session_management.rs"]
+mod session_management;
 mod support;
 
 use futures_executor::block_on;
 use support::{FixtureHost, Scenario};
 use swallowtail_adapter_claude_agent::{
     CLAUDE_AGENT_ACP_AXIS, ClaudeAgentModelSelection, ClaudeAgentPreparationInput,
-    ClaudeAgentPreparationProbe, ClaudeAgentSessionProfileInput, prepare_claude_agent,
+    ClaudeAgentPreparationProbe, ClaudeAgentSessionManagementInput, ClaudeAgentSessionProfileInput,
+    prepare_claude_agent,
 };
 use swallowtail_core::{
-    AccessProfile, AccessProfileId, AccessStatus, ConfiguredInstanceId, CredentialMechanism,
-    CredentialRef, CredentialState, EndpointAudience, EndpointAuthorization, EntitlementMetering,
-    EntitlementState, ExecutionHostId, HarnessConfigurationPosture, HarnessIsolation,
-    InstanceRevision, InterfaceVersionAxis, ModelId, ModelRouteId, ModelRouteRevision,
-    ResourceAccess, RuntimeReadiness, SessionAccessPolicy, SupportAuthority,
+    AccessProfile, AccessProfileId, AccessStatus, Capability, ConfiguredInstanceId,
+    CredentialMechanism, CredentialRef, CredentialState, EndpointAudience, EndpointAuthorization,
+    EntitlementMetering, EntitlementState, ExecutionHostId, HarnessConfigurationPosture,
+    HarnessIsolation, InstanceRevision, InterfaceVersionAxis, ModelId, ModelRouteId,
+    ModelRouteRevision, ProviderSessionAffectedScope, ProviderSessionDeletionStrength,
+    ProviderSessionEffectTruth, ResourceAccess, RuntimeReadiness, SessionAccessPolicy,
+    SupportAuthority,
 };
 use swallowtail_runtime::{
     CleanupOutcome, Deadline, DiscoveryCancellation, EnvironmentRef, ExecutableRef,
@@ -77,12 +82,59 @@ fn prepared_sessions_bind_version_access_model_and_ambient_read_policy() {
         );
 
         let operation_host = FixtureHost::new(Scenario::Success, "0.61.0");
-        let session = block_on(profile.open_session(operation_host.services(host_id)))
+        let session = block_on(profile.open_session(operation_host.services(host_id.clone())))
             .expect("prepared session opens");
+        let binding = session
+            .management_binding()
+            .expect("prepared session returns lifecycle binding")
+            .clone();
+        assert!(binding.supports(Capability::ProviderNativeSessionClose));
+        assert!(binding.supports(Capability::ProviderSessionDelete));
+        assert!(session.resume_binding().is_none());
         assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+        assert!(operation_host.writes().iter().any(|message| {
+            message.get("method").and_then(serde_json::Value::as_str) == Some("session/close")
+        }));
         assert_eq!(operation_host.credential_acquires(), 1);
         assert_eq!(operation_host.credential_releases(), 1);
         assert_eq!(operation_host.resource_releases(), 1);
+
+        let delete = prepared
+            .prepare_delete_session(ClaudeAgentSessionManagementInput::new(
+                RequestId::new(format!("claude-agent-delete-{host_value}"))
+                    .expect("valid delete request"),
+                binding,
+            ))
+            .expect("qualified Claude Agent delete prepares");
+        assert_prepared_operation_evidence_matches_plan(
+            delete.evidence().operation(),
+            delete.plan().preflight(),
+        );
+        let delete_host = FixtureHost::new(Scenario::Success, "0.61.0");
+        let outcome = block_on(delete.execute(delete_host.services(host_id)))
+            .expect("prepared Claude Agent delete executes");
+        assert_eq!(
+            outcome.effect().truth(),
+            ProviderSessionEffectTruth::Applied
+        );
+        assert_eq!(
+            outcome.effect().confirmed_deletion_strength(),
+            Some(ProviderSessionDeletionStrength::ProviderDataDeleted)
+        );
+        assert_eq!(
+            outcome.effect().affected_scope(),
+            Some(ProviderSessionAffectedScope::ProviderDefinedDescendants)
+        );
+        let writes = delete_host.writes();
+        assert!(writes.iter().any(|message| {
+            message.get("method").and_then(serde_json::Value::as_str) == Some("session/delete")
+        }));
+        assert!(!writes.iter().any(|message| {
+            message.get("method").and_then(serde_json::Value::as_str) == Some("session/new")
+        }));
+        assert_eq!(delete_host.credential_acquires(), 1);
+        assert_eq!(delete_host.credential_releases(), 1);
+        assert_eq!(delete_host.resource_releases(), 1);
     }
 }
 

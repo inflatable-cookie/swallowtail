@@ -106,8 +106,16 @@ the owning turn's cleanup contract.
 
 Tool calls are the only common callback kind in this contract. Other provider
 requests remain namespaced extensions and require a matching preflight
-namespace. A consumer may handle or explicitly reject a declared extension;
-Swallowtail never guesses its meaning.
+namespace. A declared extension has one exact handling mode:
+
+- reject
+- observe and stop without granting response authority
+- exchange through the correlated callback response port
+
+A consumer may handle or explicitly reject an exchangeable extension.
+Swallowtail never guesses its meaning. Provider-specific request and response
+helpers may live in an adapter while the common runtime keeps their bounded
+payloads opaque.
 
 An undeclared tool, undeclared extension namespace, malformed callback, or
 callback received by a driver without callback exchange fails the affected

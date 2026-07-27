@@ -91,6 +91,7 @@ pub enum ExecutionLayer {
 pub enum OperationShape {
     StructuredRun,
     InteractiveSession,
+    ProviderSessionManagement,
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
@@ -108,6 +109,7 @@ pub enum DriverRole {
     InteractiveSession,
     RealtimeMediaSession,
     ServingInstanceLifecycle,
+    ProviderSessionManagement,
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]

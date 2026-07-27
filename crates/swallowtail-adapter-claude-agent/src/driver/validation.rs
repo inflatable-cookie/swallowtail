@@ -1,6 +1,12 @@
 use super::*;
 use crate::selection::{ClaudeAgentBehavior, ClaudeAgentPlanSelection};
 
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(super) struct ClaudeAgentLifecycleCapabilities {
+    pub(super) close: bool,
+    pub(super) delete: bool,
+}
+
 pub(super) fn validate_plan(
     plan: &PreflightPlan,
     credential: &CredentialRef,
@@ -99,7 +105,7 @@ pub(super) fn validate_open(
 pub(super) fn validate_initialize(
     response: &Value,
     selected: &ClaudeAgentPlanSelection,
-) -> Result<(), RuntimeFailure> {
+) -> Result<ClaudeAgentLifecycleCapabilities, RuntimeFailure> {
     let info = response.get("agentInfo").ok_or_else(malformed)?;
     if info.get("name").and_then(Value::as_str) != Some("@agentclientprotocol/claude-agent-acp")
         || info.get("version").and_then(Value::as_str) != Some(selected.version().as_str())
@@ -131,14 +137,28 @@ pub(super) fn validate_initialize(
         ClaudeAgentBehavior::Baseline | ClaudeAgentBehavior::SessionConfig
             if providers || steering =>
         {
-            Err(capability_drift())
+            return Err(capability_drift());
         }
         ClaudeAgentBehavior::ProviderCapability if !providers || steering => {
-            Err(capability_drift())
+            return Err(capability_drift());
         }
-        ClaudeAgentBehavior::SteeringMetadata if !providers || !steering => Err(capability_drift()),
-        _ => Ok(()),
+        ClaudeAgentBehavior::SteeringMetadata if !providers || !steering => {
+            return Err(capability_drift());
+        }
+        _ => {}
     }
+    let session = capabilities.get("sessionCapabilities");
+    let lifecycle = ClaudeAgentLifecycleCapabilities {
+        close: advertised(session, "close"),
+        delete: advertised(session, "delete"),
+    };
+    if !lifecycle.close || !lifecycle.delete {
+        return Err(failure(
+            "swallowtail.claude_agent.acp.lifecycle_capability_drift",
+            "Claude Agent lifecycle capabilities do not match the qualified adapter behavior",
+        ));
+    }
+    Ok(lifecycle)
 }
 
 pub(super) fn parse_session(response: &Value, model: &str) -> Result<String, RuntimeFailure> {
@@ -194,4 +214,10 @@ fn capability_drift() -> RuntimeFailure {
         "swallowtail.claude_agent.acp.capability_drift",
         "Claude Agent capabilities do not match the selected behavior revision",
     )
+}
+
+fn advertised(session: Option<&Value>, capability: &str) -> bool {
+    session
+        .and_then(|session| session.get(capability))
+        .is_some_and(Value::is_object)
 }

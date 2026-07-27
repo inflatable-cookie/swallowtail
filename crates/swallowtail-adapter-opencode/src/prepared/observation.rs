@@ -26,4 +26,12 @@ impl OpenCodePreparedServerObservation {
     pub const fn compatibility(&self) -> &InterfaceCompatibilityAssessment {
         &self.compatibility
     }
+
+    #[must_use]
+    pub const fn is_qualified(&self) -> bool {
+        matches!(
+            self.compatibility,
+            InterfaceCompatibilityAssessment::Qualified(_)
+        )
+    }
 }

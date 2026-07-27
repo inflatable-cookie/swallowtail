@@ -1,0 +1,4 @@
+{"direction":"client_to_agent","message":{"jsonrpc":"2.0","id":3,"method":"session/close","params":{"sessionId":"fixture-missing"}}}
+{"direction":"agent_to_client","message":{"jsonrpc":"2.0","id":3,"error":{"code":-32603,"message":"Internal error","data":null}}}
+{"direction":"client_to_agent","message":{"jsonrpc":"2.0","id":4,"method":"session/delete","params":{"sessionId":"fixture-missing"}}}
+{"direction":"agent_to_client","message":{"jsonrpc":"2.0","id":4,"error":{"code":-32603,"message":"Internal error","data":null}}}

@@ -30,12 +30,78 @@ evidence-led provider work.
 | Prove packaged provider-wide integration and replace the held candidate. | completed | Contracts 011, 036-037 | `g02.012` |
 | Replace synthetic candidate provenance with one canonical-history final candidate. | completed | Contract 036, release topology architecture | `g02.013` |
 | Prove the candidate through sustained normal-path consumer workloads and harden defects. | completed | Contract 036, consumer runtime evidence | `g02.014` |
+| Separate consumer thread lifecycle from bound provider-session management. | completed | Research 036, Contract 038 | `g02.015` |
+| Prove Codex archive, restore, and deletion across its maintained range. | completed | Contracts 029, 038 | `g02.016` |
+| Refresh ACP close/delete and prove Claude Agent lifecycle. | completed | Contracts 015, 029, 038 | `g02.017` |
+| Prove attached OpenCode session deletion across its maintained range. | completed | Contracts 014, 029, 038 | `g02.018` |
+| Complete provider-wide lifecycle acceptance and a Nucleus handoff. | paused | Contracts 036-038 | `g02.019` |
+| Add a separate Kimi local-server lifecycle and interactive route. | completed | Research 040-041, Contracts 029 and 038 | `g02.020` |
 
 ## Current Checkpoint
 
 - g01 closed at 49 roadmaps after 48 completed milestones and one backlog move
 - 23 workspace crates share version `0.1.0`
 - no release has been published
+- Research 036 separates universal consumer-local thread lifecycle from
+  optional bound provider-session management
+- Contract 038 fixes inactive binding authority, independent archive, restore,
+  delete and native-close capabilities, exact deletion strength, version
+  posture, effect uncertainty, and consumer-owned destructive policy
+- roadmap g02.015 is complete; cards 046-048 realize records, runtime role,
+  and public cross-host conformance
+- Research 037 and cards 049-051 freeze five Codex lifecycle revisions across
+  the unchanged app-server range and complete the first production
+  provider-session effect mapping
+- Research 038 and card 052 pin stable ACP schema `v1.20.0`, preserve portable
+  history-only deletion truth, and qualify Claude harness-data deletion across
+  every supported lifecycle milestone
+- card 053 completes Claude Agent stdio native close, opaque binding, explicit
+  prepared deletion, exact provider-data truth, and unverified-newer gating
+- card 054 completes the production failure matrix, credential-last cleanup,
+  and explicit remote-ACP lifecycle portability without a remote Claude claim
+- Research 039 and card 055 freeze two delete-schema revisions, eight exact
+  published segments, two runtime evidence revisions, provider-data deletion
+  with provider-defined descendants, missing-target rejection, and
+  unverified-newer posture across all 45 qualified OpenCode releases
+- card 056 completes the bound OpenCode deletion role, exact prepared binding,
+  provider-data mapping, health drift gate, and joined uncertainty boundary
+- card 057 completes every exact deletion segment, local and
+  remote-authoritative execution, explicit unverified-newer acceptance,
+  destructive failure boundaries, joined cleanup, and full adapter regression
+- card 058 publishes and machine-checks the exact 22-route lifecycle matrix:
+  three supported routes, two explicitly unsupported ACP routes, and seventeen
+  not-applicable operation shapes
+- card 059's transient candidate passes reproducibility, 20 provider-facade
+  suites, 33 focused lifecycle tests, both consumer proofs, and 105 packaged
+  Codex tests; canonical retained-candidate replacement remains pending a
+  clean source commit
+- Research 040 corrects the Kimi Web authority assessment: exact `0.28.1` and
+  `0.29.0` expose a documented foreground REST/WebSocket server with OpenAPI,
+  AsyncAPI, bearer auth, exact metadata, archive, and restore
+- Contract 038 now keeps the planned `kimi-code.local-server` route distinct
+  from ACP, requires explicit cross-transport binding import, and qualifies no
+  Kimi deletion
+- roadmap g02.020 and cards 061-065 sequence the exact corpus, lifecycle
+  driver, binding import, interactive driver, and package closeout
+- card 061 freezes separate non-production local-server identity, exact
+  `0.28.1` and `0.29.0` compatibility, bounded REST/WebSocket v2 decoders,
+  error classification, metadata corroboration, no-delete proof, and exact
+  fixture provenance without live effects
+- card 062 realizes attached and owned-foreground authenticated preparation,
+  native archive/restore, before/after-effect truth, and joined owned-child
+  cleanup without a container or containment claim
+- card 063 realizes explicit ACP import authority, exact local-server target
+  agreement, authenticated read-only target lookup, and a new archive/restore
+  binding without widening ACP or accepting raw provider identity
+- card 064 realizes the separate prepared local-server interactive route,
+  exact REST prompt and WebSocket v2 lifecycle, explicit approval and question
+  callbacks, cursor and resynchronization truth, task-before-effect admission,
+  and joined attached and owned cleanup
+- card 065 publishes the 23rd production route, exact Kimi route selection,
+  four compile-tested examples, a bounded Nucleus handoff, and 21 Kimi
+  local-server tests executed from extracted package artifacts
+- roadmaps g02.016-g02.019 sequence Codex, ACP/Claude Agent, OpenCode,
+  provider-wide acceptance, and the Nucleus handoff
 - all 23 manifests carry contract-complete metadata and crates.io publication
   policy
 - all 46 internal normal dependency edges carry compatible registry
@@ -353,6 +419,18 @@ evidence-led provider work.
 - [014 Consumer-Scale Application Proof And Hardening](014-consumer-scale-application-proof-and-hardening.md)
   — completed; cards 040-042, 044, and 045 complete, card 043 superseded by
   operator decision
+- [015 Provider Session Management Foundation](015-provider-session-management-foundation.md)
+  — completed
+- [016 Codex Thread Lifecycle Proof](016-codex-thread-lifecycle-proof.md)
+  — completed
+- [017 ACP Lifecycle And Claude Agent Proof](017-acp-lifecycle-and-claude-agent-proof.md)
+  — completed
+- [018 OpenCode Session Deletion Proof](018-opencode-session-deletion-proof.md)
+  — completed
+- [019 Provider Session Lifecycle Acceptance And Handoff](019-provider-session-lifecycle-acceptance-and-handoff.md)
+  — paused; card 058 complete, card 059 waits for canonical source history
+- [020 Kimi Code Local Server Route](020-kimi-code-local-server-route.md)
+  — completed; cards 061-065 complete
 
 ## Held Backlog
 
@@ -427,6 +505,35 @@ the active g02 queue.
 - card 044 completed one reproducible post-hardening candidate; all 23
   packages, 22 routes, both isolated consumers, and 93 packaged Codex tests
   pass without live effects
+- card 045 completed bounded Codex non-zero discovery exit diagnostics
+- cards 046-048 completed provider-neutral session-management records, runtime
+  role, public fixtures, and deterministic conformance
+- cards 049-051 own Codex lifecycle range evidence, production mapping, and
+  closeout
+- card 049 qualifies archive from `0.80.0`, restore from `0.92.0`,
+  notifications from `0.104.0`, best-effort descendant archive from `0.123.0`,
+  and strict descendant hard delete from `0.140.0`
+- cards 050-051 complete the Codex low-level and prepared mapping, exact
+  response and notification truth, uncertainty, topology, and cleanup proof
+- cards 052-054 own ACP v1 lifecycle currentness and Claude Agent production
+  proof
+- card 052 completes the shared ACP close/delete corpus and exact Claude
+  lifecycle classification
+- card 053 completes the stdio production mapping; card 054 completes the
+  cross-transport and shared-conformance closeout
+- card 055 completes OpenCode deletion range evidence; cards 056-057 own the
+  production path and closeout
+- cards 058-060 own the exact provider-wide lifecycle matrix, packaged
+  acceptance, and Nucleus adoption handoff
+- cards 061-065 own the separate Kimi local-server corpus, lifecycle,
+  cross-transport binding import, interactive route, and acceptance
+- card 061 completes the exact local-server compatibility and selected
+  protocol corpus without registering a production role
+- card 062 completes the separate lifecycle role, attached and owned
+  preparation, archive/restore effect boundary, and topology cleanup proof
+- card 063 completes exact ACP-to-local-server import authority, target
+  lookup, mismatch closure, unverified-newer acceptance, and attached plus
+  owned lifecycle conformance
 - cards 024-026 own remaining harness facades
 - cards 027-030 own hosted direct and provider-state facades
 - cards 031-033 own realtime, SDK, and llama.cpp facades
@@ -436,7 +543,10 @@ the active g02 queue.
 
 ## Generation Boundary
 
-g02 is a long-lived generation with 14 roadmaps. It remains well below its
+g02 is a long-lived generation with 20 roadmaps. It remains below its
 30-50-roadmap rollover range. Provider-wide facade work stabilizes the existing
-production routes; it does not add provider names or reopen their qualified
-protocol evidence.
+production routes. The provider-session lifecycle lane adds bounded management
+to applicable persistent-session routes without adding provider names,
+consumer persistence, or implicit deletion. The Kimi local-server route adds a
+second driver under an existing integration family; it does not justify a
+generation rollover.

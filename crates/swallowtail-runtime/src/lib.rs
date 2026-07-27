@@ -35,6 +35,8 @@ mod prepared_operation;
 mod process_input;
 mod process_io;
 mod provider_observation;
+mod provider_session_management;
+mod provider_session_operation;
 mod realtime_media;
 mod registration;
 mod roles;
@@ -135,6 +137,16 @@ pub use provider_observation::{
     ProviderObservation, QuotaObservation, QuotaState, RateLimitKind, RateLimitObservation,
     TokenUsage,
 };
+pub use provider_session_management::{
+    InvalidProviderSessionManagementBinding, InvalidProviderSessionManagementBindingKind,
+    ProviderSessionManagementBinding,
+};
+pub use provider_session_operation::{
+    ArchiveProviderSessionRequest, DeleteProviderSessionRequest,
+    PreparedProviderSessionManagementEvidence, ProviderSessionManagementAgreement,
+    ProviderSessionManagementOutcome, ProviderSessionManagementPlan, RestoreProviderSessionRequest,
+    validate_provider_session_management_request,
+};
 pub use realtime_media::{
     MediaChunk, MediaInputCommit, MediaTranscript, OpenRealtimeMediaSessionRequest,
     RealtimeMediaEvent, RealtimeMediaEventKind, RealtimeMediaFailure, RealtimeMediaFailureKind,
@@ -144,8 +156,9 @@ pub use registration::{DriverRegistration, RegistrationFailure};
 pub use roles::{
     AttachServingRequest, DiscoveryDriver, DiscoveryRequest, InteractiveSessionDriver,
     LoadSessionRequest, LoadedSession, ModelCatalogDriver, ModelCatalogRequest, OpenSessionRequest,
-    RealtimeMediaSessionDriver, ResumeSessionRequest, ServingInstanceDriver, StartServingRequest,
-    StructuredRunDriver, StructuredRunRequest, TurnRequest,
+    ProviderSessionManagementDriver, RealtimeMediaSessionDriver, ResumeSessionRequest,
+    ServingInstanceDriver, StartServingRequest, StructuredRunDriver, StructuredRunRequest,
+    TurnRequest,
 };
 pub use schema::{SchemaDocument, StructuredOutputDescriptor};
 pub use secret::{CredentialLease, DelegatedCredential, SecretLease};
@@ -165,8 +178,13 @@ pub use swallowtail_core::{
     ModelArtifactDescriptor, ModelArtifactDigest, ModelArtifactFormat, ModelArtifactId,
     ModelArtifactRef, ModelArtifactRevision, OwnedRemoteResourceKind,
     PlannedConnectionRolloverPolicy, ProviderApprovalPolicy, ProviderInferenceCachePolicy,
-    ProviderRequestHandling, ProviderRequestPolicy, ResourceAccess, ResourceRepresentation,
-    SessionAccessPolicy, SessionProviderStatePolicy,
+    ProviderRequestHandling, ProviderRequestPolicy, ProviderSessionActivityEvidence,
+    ProviderSessionAffectedScope, ProviderSessionBindingOrigin, ProviderSessionCancellationPosture,
+    ProviderSessionDeletionStrength, ProviderSessionEffectTruth,
+    ProviderSessionInitialStateRequirement, ProviderSessionInterfaceCompatibility,
+    ProviderSessionLifecycleState, ProviderSessionManagementAction,
+    ProviderSessionManagementEffect, ResourceAccess, ResourceRepresentation, SessionAccessPolicy,
+    SessionProviderStatePolicy,
 };
 pub use time::{Deadline, DeadlineObservation, MonotonicInstant};
 pub use working_resource_io::{

@@ -2822,6 +2822,7 @@ dependencies = [
 name = "swallowtail-adapter-claude-agent"
 version = "0.1.0"
 dependencies = [
+ "async-tungstenite",
  "futures-channel",
  "futures-executor",
  "futures-util",
@@ -2831,6 +2832,8 @@ dependencies = [
  "swallowtail-protocol-acp",
  "swallowtail-runtime",
  "swallowtail-testkit",
+ "swallowtail-transport-acp-remote",
+ "tokio",
 ]
 
 [[package]]
@@ -2892,7 +2895,9 @@ dependencies = [
 name = "swallowtail-adapter-kimi"
 version = "0.1.0"
 dependencies = [
+ "curl",
  "futures-channel",
+ "futures-core",
  "futures-executor",
  "futures-util",
  "semver",
@@ -2901,6 +2906,8 @@ dependencies = [
  "swallowtail-protocol-acp",
  "swallowtail-runtime",
  "swallowtail-testkit",
+ "tungstenite 0.30.0",
+ "url",
 ]
 
 [[package]]

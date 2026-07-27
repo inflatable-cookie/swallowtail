@@ -152,14 +152,7 @@ release_verify_root="$release_tmp/extracted"
     printf '  "%s",\n' "$release_package"
   done
   printf ']\n\n[patch.crates-io]\n'
-  for release_package in \
-    swallowtail-core \
-    swallowtail-host-local \
-    swallowtail-protocol-acp \
-    swallowtail-protocol-openai-chat \
-    swallowtail-runtime \
-    swallowtail-testkit
-  do
+  for release_package in "${release_internal_patch_packages[@]}"; do
     printf '%s = { path = "%s" }\n' \
       "$release_package" "$release_package"
   done
@@ -171,6 +164,17 @@ cp "$release_source_root/Cargo.lock" "$release_verify_root/Cargo.lock"
   cd "$release_verify_root"
   cargo check --workspace --all-targets --locked
   cargo test --workspace --no-run --locked
+  for release_kimi_test in \
+    local_server_corpus \
+    local_server_lifecycle \
+    local_server_binding_import \
+    local_server_interactive
+  do
+    cargo test \
+      --package swallowtail-adapter-kimi \
+      --test "$release_kimi_test" \
+      --locked
+  done
 )
 
 if [[ -n "$release_candidate_output" ]]; then

@@ -17,6 +17,16 @@ impl PreflightPlan {
     }
 
     #[must_use]
+    pub const fn integration_family(&self) -> &crate::IntegrationFamilyId {
+        self.binding.driver.integration_family()
+    }
+
+    #[must_use]
+    pub const fn transport_family(&self) -> &crate::TransportFamilyId {
+        self.binding.driver.transport_family()
+    }
+
+    #[must_use]
     pub const fn instance_id(&self) -> &ConfiguredInstanceId {
         self.binding.instance.id()
     }

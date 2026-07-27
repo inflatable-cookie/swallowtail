@@ -17,8 +17,8 @@ pub use prepared::{
 };
 pub use prepared_profile::{
     OpenCodeCatalogueProfileInput, OpenCodeModelSelection, OpenCodePreparedCatalogue,
-    OpenCodePreparedEvidence, OpenCodePreparedSession, OpenCodePreparedSessionFuture,
-    OpenCodeSessionProfileInput,
+    OpenCodePreparedDelete, OpenCodePreparedEvidence, OpenCodePreparedSession,
+    OpenCodePreparedSessionFuture, OpenCodeSessionManagementInput, OpenCodeSessionProfileInput,
 };
 pub use selection::{
     OPENCODE_BASELINE_VERSION, OPENCODE_LATEST_QUALIFIED_VERSION, OPENCODE_SERVER_AXIS,

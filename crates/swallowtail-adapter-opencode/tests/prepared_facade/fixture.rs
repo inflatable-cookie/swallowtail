@@ -38,7 +38,15 @@ pub(super) struct PreparedFixture {
 
 impl PreparedFixture {
     pub(super) fn new(host_id: &str, version: &str) -> Self {
-        let server = FixtureServer::start_with_version(StreamFixture::Success, version);
+        Self::new_with_fixture(host_id, version, StreamFixture::Success)
+    }
+
+    pub(super) fn new_with_fixture(
+        host_id: &str,
+        version: &str,
+        stream_fixture: StreamFixture,
+    ) -> Self {
+        let server = FixtureServer::start_with_version(stream_fixture, version);
         let host_id = ExecutionHostId::new(host_id).unwrap();
         let target = InstanceTargetRef::new("opencode.prepared.endpoint").unwrap();
         let audience = EndpointAudience::new("opencode.prepared.server").unwrap();
@@ -130,6 +138,31 @@ impl PreparedFixture {
                 fail_release,
             }) as Arc<dyn CredentialService>)
             .with_working_resource(Arc::new(self.host.clone()) as Arc<dyn WorkingResourceService>)
+    }
+
+    pub(super) fn services_with_denied_network(&self) -> HostServices {
+        let thread = Arc::new(self.thread.clone());
+        let denied = LocalProcessHost::builder(LocalProcessLimits::default())
+            .approve_delegated_credential(
+                self.access
+                    .credential_reference()
+                    .expect("fixture access has credential")
+                    .clone(),
+                self.access.endpoint_audience().clone(),
+            )
+            .approve_working_resource(self.resource.clone(), std::env::temp_dir())
+            .build();
+        HostServices::new(self.host_id.clone())
+            .with_task(Arc::clone(&thread) as Arc<dyn ScopedTaskService>)
+            .with_blocking_work(Arc::clone(&thread) as Arc<dyn BlockingWorkService>)
+            .with_time(Arc::new(self.clock.clone()) as Arc<dyn TimeService>)
+            .with_network(Arc::new(denied.clone()) as Arc<dyn NetworkPolicyService>)
+            .with_credential(Arc::new(denied.clone()) as Arc<dyn CredentialService>)
+            .with_working_resource(Arc::new(denied) as Arc<dyn WorkingResourceService>)
+    }
+
+    pub(super) fn deadline_after(&self, duration: Duration) -> Deadline {
+        self.clock.deadline_after(duration)
     }
 
     pub(super) fn model(&self) -> OpenCodeModelSelection {

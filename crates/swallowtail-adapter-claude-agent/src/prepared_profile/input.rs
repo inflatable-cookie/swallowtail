@@ -1,5 +1,7 @@
 use swallowtail_core::{ModelId, ModelRouteId, ModelRouteRevision};
-use swallowtail_runtime::{RequestId, SessionOptions, WorkingResourceRef};
+use swallowtail_runtime::{
+    Deadline, ProviderSessionManagementBinding, RequestId, SessionOptions, WorkingResourceRef,
+};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ClaudeAgentModelSelection {
@@ -33,6 +35,54 @@ pub struct ClaudeAgentSessionProfileInput {
     model: ClaudeAgentModelSelection,
     working_resource: WorkingResourceRef,
     options: SessionOptions,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ClaudeAgentSessionManagementInput {
+    request_id: RequestId,
+    binding: ProviderSessionManagementBinding,
+    deadline: Option<Deadline>,
+    allow_unverified_newer: bool,
+}
+
+impl ClaudeAgentSessionManagementInput {
+    #[must_use]
+    pub const fn new(request_id: RequestId, binding: ProviderSessionManagementBinding) -> Self {
+        Self {
+            request_id,
+            binding,
+            deadline: None,
+            allow_unverified_newer: false,
+        }
+    }
+
+    #[must_use]
+    pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
+        self.deadline = Some(deadline);
+        self
+    }
+
+    #[must_use]
+    pub const fn allow_unverified_newer(mut self) -> Self {
+        self.allow_unverified_newer = true;
+        self
+    }
+
+    pub(super) fn into_parts(
+        self,
+    ) -> (
+        RequestId,
+        ProviderSessionManagementBinding,
+        Option<Deadline>,
+        bool,
+    ) {
+        (
+            self.request_id,
+            self.binding,
+            self.deadline,
+            self.allow_unverified_newer,
+        )
+    }
 }
 
 impl ClaudeAgentSessionProfileInput {

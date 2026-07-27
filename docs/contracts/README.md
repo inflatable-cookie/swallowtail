@@ -42,6 +42,7 @@ Contracts hold durable, testable rules.
 - [035 Remote ACP Connection Transport](035-remote-acp-connection-transport.md)
 - [036 Crate Release And Compatibility Boundary](036-crate-release-and-compatibility-boundary.md)
 - [037 Provider-Wide Prepared Integration And Bound Operations](037-prepared-consumer-integration.md)
+- [038 Provider Session Management And Consumer Thread Boundary](038-provider-session-management-and-consumer-thread-boundary.md)
 
 Contract 003 defines the provider-neutral record kernel. Contracts 004-016
 govern the realized runtime and current proof drivers. Contract 017 governs
@@ -120,3 +121,11 @@ authority, exposes safe staged diagnostics, and permits typed bound operations
 without flattening role lifecycle. It also preserves unverified-newer posture,
 joined per-host service composition, and provider-wide deterministic evidence
 before replacement candidate freeze.
+Contract 038 keeps consumer thread lifecycle separate from bound provider
+session management. It distinguishes attachment close, provider-native close,
+archive, restore, history removal, data deletion, hard deletion, and
+driver-owned cleanup; binds exact inactive targets; preserves version and
+capability truth; and requires explicit destructive authority and uncertainty.
+Its Kimi local-server addition keeps REST/WebSocket archive and restore
+separate from ACP, requires explicit cross-transport binding import, and
+qualifies no deletion.

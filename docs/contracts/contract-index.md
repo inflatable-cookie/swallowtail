@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-25
+Updated: 2026-07-26
 
 | Contract | Status | Scope |
 | --- | --- | --- |
@@ -43,3 +43,4 @@ Updated: 2026-07-25
 | [035 Remote ACP Connection Transport](035-remote-acp-connection-transport.md) | active | Experimental host-approved remote ACP over explicit HTTP/SSE or WebSocket with scoped affinity and no implicit recovery |
 | [036 Crate Release And Compatibility Boundary](036-crate-release-and-compatibility-boundary.md) | active | Public package topology, coordinated pre-1.0 compatibility, MSRV, package evidence, consumer handoffs, and human release authority |
 | [037 Provider-Wide Prepared Integration And Bound Operations](037-prepared-consumer-integration.md) | active | Adapter-local preparation and typed bound operations for every production driver, with plan derivation, access provenance, version truth, safe stages, joined host composition, and low-level escape hatch |
+| [038 Provider Session Management And Consumer Thread Boundary](038-provider-session-management-and-consumer-thread-boundary.md) | active | Consumer-local thread lifecycle versus bound provider archive, restore, delete, close, transport-specific binding import, deletion-strength, and uncertainty semantics |

@@ -43,22 +43,26 @@ credential, or changes host topology.
 | `prepare_catalogue` | app-server | request identity and optional deadline |
 | `prepare_read_only_session` | app-server | model route, model, working resource, instructions, reasoning, tools |
 | `prepare_bounded_workspace_session` | app-server | the same session inputs plus explicit writable-profile selection |
+| `prepare_archive_session` | app-server | request identity, inactive management binding, optional deadline, explicit unverified-newer acceptance |
+| `prepare_restore_session` | app-server | request identity, inactive management binding, optional deadline, explicit unverified-newer acceptance |
+| `prepare_delete_session` | app-server | request identity, inactive management binding, optional deadline, explicit unverified-newer acceptance |
 | `prepare_structured_exec` | exec | content, model route, model, working resource, network, search, reasoning, deadline, schema, attachment |
 
 Catalogue, interactive session, and structured run remain different runtime
 roles. Read-only and bounded workspace remain different methods. There is no
 generic prompt method.
 
-`CodexPreparedCatalogue`, `CodexPreparedSession`, and `CodexPreparedExec`
-retain:
+`CodexPreparedCatalogue`, `CodexPreparedSession`, the three lifecycle values,
+and `CodexPreparedExec` retain:
 
 - exact installed-version and compatibility evidence
 - access status and whether it was observed or caller-asserted
 - the expanded immutable `PreflightPlan`
 - the matching runtime request
 
-Use `evidence()`, `plan()`, and `request()` before effects. `into_parts()`
-transfers all three without discarding evidence.
+Use `evidence()`, `plan()`, and `request()` before effects. Catalogue, session,
+and exec values also provide `into_parts()`. Lifecycle values retain the
+prepared environment internally for their typed `execute` method.
 
 ## Bound Operations
 
@@ -70,10 +74,40 @@ Prepared profiles expose only the runtime role they implement:
 | `CodexPreparedExec` | `start_run(services)` |
 | `CodexPreparedSession` | `open_session(services)` |
 | `CodexPreparedSession` | `resume_session(request_id, binding, services)` |
+| `CodexPreparedArchive` | `execute(services)` |
+| `CodexPreparedRestore` | `execute(services)` |
+| `CodexPreparedDelete` | `execute(services)` |
 
 `resume_session` derives and validates the resume request before returning the
 runtime future. Unsupported dynamic-tool redeclaration therefore fails before
 provider effects.
+
+Applicable prepared app-server session handles expose
+`management_binding()`. Clone that opaque binding while the handle is
+available, close the handle, then pass the binding to one exact lifecycle
+preparation method. The binding carries the provider thread identity, exact
+driver, instance, host, target, access evidence, interface compatibility,
+working resource, origin, and supported lifecycle capabilities. A raw thread
+id cannot authorize management.
+
+Archive, restore, and delete do not resume or discover a session and never
+auto-close a runtime handle. The caller asserts that its attachment is
+inactive by choosing the lifecycle operation after close. A mismatched binding
+fails during preparation before app-server work.
+
+Codex lifecycle support remains version-specific:
+
+- archive starts at `0.80.0` and guarantees only the target
+- restore starts at `0.92.0`
+- matching archive and restore notifications are expected from `0.104.0`
+- best-effort descendant archive from `0.123.0` does not widen the guarantee
+- hard delete starts at `0.140.0` and reports provider-defined descendants
+
+Unknown and repeatedly fully deleted targets remain failures. Swallowtail does
+not turn them into already-absent success. A response lost after dispatch,
+post-dispatch cancellation or deadline, or a malformed success response
+returns unconfirmed effect truth. Cleanup and notification disagreement remain
+separate diagnostics.
 
 These methods clone the immutable plan and explicit request, construct the
 matching Codex low-level driver from the prepared environment reference, and
@@ -96,6 +130,9 @@ cancellation, deadlines, callbacks, terminal outcomes, or cleanup.
 - Qualified, deprecated, and unverified-newer executable observations remain
   visible. An unverified-newer version is permitted with mileage-may-vary
   evidence; it is not silently promoted into the guaranteed range.
+- Destructive lifecycle preparation requires
+  `CodexSessionManagementInput::allow_unverified_newer()` before an
+  unverified-newer executable may run.
 
 ## Failures
 
@@ -121,8 +158,9 @@ diagnostic code when projecting failures into application errors.
 
 The facade is additive. `CodexExecDriver`, `CodexAppServerDriver`, discovery,
 descriptors, claims, request records, preflight, and runtime handles remain
-public. Each prepared value also exposes `low_level_driver()` when an advanced
-consumer needs the exact selected Codex driver.
+public. Catalogue, session, and exec values also expose `low_level_driver()`
+when an advanced consumer needs the exact selected Codex driver. Lifecycle
+prepared values delegate to that same public driver's management role.
 
 Use those surfaces when a consumer has a legitimate operation profile that the
 named facade does not express. The consumer then owns exact configured-instance

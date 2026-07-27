@@ -159,6 +159,12 @@ an owned process-plus-network lifecycle and broad host filesystem surface
 without stronger support authority than ACP. Do not select it ahead of the
 provider's explicit integration protocol.
 
+Currentness note, 2026-07-27: Research 040 supersedes the authority conclusion,
+not the historical tranche ordering. Kimi Code now explicitly documents
+`kimi web` as a foreground REST plus WebSocket service with generated OpenAPI
+and AsyncAPI. That separate route is eligible for exact-version qualification;
+it does not widen ACP.
+
 ### Local Agent SDKs remain foreign-runtime bridges
 
 Claude Agent SDK and Cursor SDK expose rich local harness loops through Python

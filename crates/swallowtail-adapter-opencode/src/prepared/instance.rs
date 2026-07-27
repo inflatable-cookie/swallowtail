@@ -31,6 +31,7 @@ pub(crate) fn all_capabilities() -> CapabilityProfile {
         CapabilityRequirement::new(Capability::ModelCatalog, []),
         CapabilityRequirement::new(Capability::InteractiveSession, []),
         CapabilityRequirement::new(Capability::StreamingEvents, []),
+        CapabilityRequirement::new(Capability::ProviderSessionDelete, []),
         CapabilityRequirement::new(
             Capability::Interruption,
             [CapabilityConstraint::CancellationScope(

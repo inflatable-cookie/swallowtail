@@ -1,0 +1,250 @@
+{
+  "axis": "codex.cli",
+  "facade": "codex-app-server-v2",
+  "claim": "codex.app-server.lifecycle-window-1",
+  "qualified_range": "0.80.0..=0.145.0",
+  "evidence_checked_at": "2026-07-27",
+  "upstream_repository": "https://github.com/openai/codex",
+  "schema_generation_command": "cargo run --manifest-path codex-rs/Cargo.toml -p codex-app-server-protocol --bin export -- --out <output-dir>",
+  "aggregate_schema_order": ["ClientNotification.json", "ClientRequest.json", "ServerNotification.json", "ServerRequest.json"],
+  "method_boundaries": {
+    "thread/archive": {"present": "0.80.0", "prior": null},
+    "thread/unarchive": {"absent": "0.91.0", "present": "0.92.0"},
+    "thread/archived-notification": {"absent": "0.103.0", "present": "0.104.0"},
+    "thread/unarchived-notification": {"absent": "0.103.0", "present": "0.104.0"},
+    "best-effort-descendant-archive": {"absent": "0.122.0", "present": "0.123.0"},
+    "thread/delete": {"absent": "0.139.0", "present": "0.140.0"}
+  },
+  "segments": [
+    {
+      "range": "0.80.0..=0.81.0",
+      "behavior_revision": "codex.app-server.lifecycle.v1.archive-response",
+      "support": "deprecated",
+      "capabilities": ["archive"],
+      "notifications": [],
+      "archive_descendants": "none"
+    },
+    {
+      "range": "0.84.0..=0.91.0",
+      "behavior_revision": "codex.app-server.lifecycle.v1.archive-response",
+      "support": "deprecated",
+      "capabilities": ["archive"],
+      "notifications": [],
+      "archive_descendants": "none"
+    },
+    {
+      "range": "0.92.0..=0.103.0",
+      "behavior_revision": "codex.app-server.lifecycle.v1.archive-restore-response",
+      "support": "deprecated",
+      "capabilities": ["archive", "restore"],
+      "notifications": [],
+      "archive_descendants": "none"
+    },
+    {
+      "range": "0.104.0..=0.107.0",
+      "behavior_revision": "codex.app-server.lifecycle.v1.archive-restore-notifications",
+      "support": "deprecated",
+      "capabilities": ["archive", "restore"],
+      "notifications": ["thread/archived", "thread/unarchived"],
+      "archive_descendants": "none"
+    },
+    {
+      "range": "0.110.0..=0.122.0",
+      "behavior_revision": "codex.app-server.lifecycle.v1.archive-restore-notifications",
+      "support": "maintained",
+      "capabilities": ["archive", "restore"],
+      "notifications": ["thread/archived", "thread/unarchived"],
+      "archive_descendants": "none"
+    },
+    {
+      "range": "0.123.0..=0.139.0",
+      "behavior_revision": "codex.app-server.lifecycle.v1.best-effort-descendant-archive",
+      "support": "maintained",
+      "capabilities": ["archive", "restore"],
+      "notifications": ["thread/archived", "thread/unarchived"],
+      "archive_descendants": "best-effort"
+    },
+    {
+      "range": "0.140.0..=0.145.0",
+      "behavior_revision": "codex.app-server.lifecycle.v1.strict-descendant-hard-delete",
+      "support": "maintained",
+      "capabilities": ["archive", "restore", "delete"],
+      "notifications": ["thread/archived", "thread/unarchived", "thread/deleted"],
+      "archive_descendants": "best-effort"
+    }
+  ],
+  "wire_contract": {
+    "archive": {
+      "request": {"method": "thread/archive", "params": {"threadId": "<bound-thread-id>"}},
+      "response": {},
+      "guaranteed_scope": "target-only",
+      "materialized_unarchived_target": "applied",
+      "active_materialized_target": "provider-accepts-but-common-role-requires-inactive",
+      "fresh_unmaterialized_target": "error",
+      "already_archived_target": "error",
+      "missing_target": "error"
+    },
+    "restore": {
+      "request": {"method": "thread/unarchive", "params": {"threadId": "<bound-thread-id>"}},
+      "response": {"thread": "<restored-thread>"},
+      "guaranteed_scope": "target-only",
+      "archived_target": "applied",
+      "unarchived_target": "error",
+      "missing_target": "error",
+      "descendants": "not-restored"
+    },
+    "delete": {
+      "request": {"method": "thread/delete", "params": {"threadId": "<bound-thread-id>"}},
+      "response": {},
+      "strength": "provider-hard-deleted",
+      "guaranteed_scope": "provider-defined-descendants",
+      "order": "descendants-before-root",
+      "active_persisted_target": "applied",
+      "archived_target": "applied",
+      "live_persisted_target_without_rollout": "applied",
+      "ephemeral_target": "error",
+      "missing_rollout_after_validated_target": "tolerated",
+      "unknown_target": "error",
+      "repeated_fully_deleted_target": "error"
+    },
+    "cancellation": "before-dispatch-only"
+  },
+  "exclusions": [
+    {"range": "0.82.0..=0.83.0", "reason": "not-qualified-by-existing-app-server-claim"},
+    {"range": "0.108.0..=0.109.0", "reason": "source-tags-without-published-npm-releases"},
+    {"range": "0.146.0-alpha.4", "reason": "prerelease"}
+  ],
+  "unverified_newer": {
+    "example": "0.146.0",
+    "execution": "permitted-with-explicit-unverified-status",
+    "mapped_behavior_revision": "codex.app-server.lifecycle.v1.strict-descendant-hard-delete",
+    "guaranteed": false
+  },
+  "releases": [
+    {
+      "version": "0.80.0", "published_at": "2026-01-09T19:49:15.685Z",
+      "tag_commit": "f0679a6ab2563135e01cc922698cb54921a1719f",
+      "schema_authority": "source-generated",
+      "aggregate_schema_sha256": ["706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a", "44c8602121c5c4ee5d6559f75f6129f47a7a6769be864fbf4364c06235f57311", "df287882af1b36afa69fc7858eec483498f4047363676112cdf94a83623eb293", "989e5e3ab25e70a88298a14407f92a03e9321b6d656d3e904bd6098b56961a3d"]
+    },
+    {
+      "version": "0.81.0", "published_at": "2026-01-14T18:13:47.226Z",
+      "tag_commit": "7e7f828e2ce5d31a61d577bcabb517cca342f8ad",
+      "schema_authority": "source-generated",
+      "aggregate_schema_sha256": ["706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a", "5aae3d93613572a19f79ca3be46ffb62673d7d85b6d34e47a8e73c5750184809", "5e20279e9efef53ddc23f430502024f847b3a244bd1c018747014381785d5e06", "989e5e3ab25e70a88298a14407f92a03e9321b6d656d3e904bd6098b56961a3d"]
+    },
+    {
+      "version": "0.84.0", "published_at": "2026-01-15T01:30:11.748Z",
+      "tag_commit": "d67aa9eaa0c895b62926b6cf9e83f9535fd94d28",
+      "schema_authority": "source-generated",
+      "aggregate_schema_sha256": ["706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a", "a624d89f4b856deb84bd1a62fe03cf4c13f718ddac1706a1779c2c2e3ee99583", "0dbae47fa6b0ba317d2d9097565c7b9112960a420c1db6233e929f441e1e5ad5", "989e5e3ab25e70a88298a14407f92a03e9321b6d656d3e904bd6098b56961a3d"]
+    },
+    {
+      "version": "0.91.0", "published_at": "2026-01-25T17:34:45.939Z",
+      "tag_commit": "3684bc646e0f1123e76a90f03cfb1111358f1aa1",
+      "schema_authority": "source-generated",
+      "aggregate_schema_sha256": ["706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a", "9e339ed9374c551b6332e5f412d29ba2c87981b83f26f5991cfea5c8b3b2e421", "89a992ca804eb092912591b9a84231e72fad79bbca756712def9c8cb3d5cc6e9", "519612e113fc54bcbacd7edc0ad662f028a5867897de7090655a0f2daed2b714"]
+    },
+    {
+      "version": "0.92.0", "published_at": "2026-01-27T11:51:59.692Z",
+      "tag_commit": "a09055074e082d70e8b92795b0cec1e969a6aaf9",
+      "schema_authority": "source-generated",
+      "aggregate_schema_sha256": ["706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a", "748210527ff55113f5d4e46f70030af683ec7dc0baf5904c866e1b5ef646a962", "792c5276d2aa05637f0be725c729ea6861875e88f3fbf268d2fd10bfad57be5f", "a66368de04cea5a8da920568d1ed4eeff943d338f66a8caeb6c30a9452b456bc"]
+    },
+    {
+      "version": "0.94.0", "published_at": "2026-02-02T18:28:42.990Z",
+      "tag_commit": "dce99bc2595e58acc4d88a324f3ccab05cf5cd7d",
+      "schema_authority": "upstream-published",
+      "aggregate_schema_sha256": ["706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a", "aab5f78cd84f161ba2a665b871841528143b9ee1bc254315748deefe5bc21b70", "377f7e6897cfbf355fa75ee021aa41cb902b8d14e647936162dc0c0f9f0a7baf", "675c9e1494476fa7a16f0f414d9c52c491f13f0db63bd2ca60fbe129d8d7f8bb"]
+    },
+    {
+      "version": "0.99.0", "published_at": "2026-02-11T20:43:52.809Z",
+      "tag_commit": "ec9f76ce4f854c7d4f3c78c9b1bacbe128df286e",
+      "schema_authority": "upstream-published",
+      "aggregate_schema_sha256": ["706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a", "bf7bcb41f90a1ca13d14ea37955eae303df0d2a93dcc49977d46e98452725ede", "288d2bdb74993950261c306356919fece11333fefc7a39476c0e6ba16fa577bc", "0545fa54ffa76bc61b0e7f3daac68005bd7e0aaa8b7812757ad6a914f9372c7d"]
+    },
+    {
+      "version": "0.100.0", "published_at": "2026-02-12T18:30:51.007Z",
+      "tag_commit": "8272f9a71ee7364d8de992418103628f8a17eb6f",
+      "schema_authority": "upstream-published",
+      "aggregate_schema_sha256": ["706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a", "479ed1320e96f25658c4df0ab84c110da9daab55b59d15195b9e5b1327c46804", "54536e42e7a5af95a76078f22420ae5fedfb0e10e6660cdc6f8fafafb7139cc0", "0545fa54ffa76bc61b0e7f3daac68005bd7e0aaa8b7812757ad6a914f9372c7d"]
+    },
+    {
+      "version": "0.103.0", "published_at": "2026-02-17T23:03:50.048Z",
+      "tag_commit": "ff3d19f9022b154b9ab415f6ad128cd622608b1a",
+      "schema_authority": "upstream-published",
+      "aggregate_schema_sha256": ["706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a", "291812b4fdfc5da1d011be18a9ff480727cabaa1010544f0c846649aee4dcf3b", "902d8e2da9b598ed61a20a191963e6b7e8e42ff36f6c929e614e31632661bb59", "0545fa54ffa76bc61b0e7f3daac68005bd7e0aaa8b7812757ad6a914f9372c7d"]
+    },
+    {
+      "version": "0.104.0", "published_at": "2026-02-18T07:13:25.235Z",
+      "tag_commit": "74d1f7b2b3af383bd3605344f3c842b194fd1d70",
+      "schema_authority": "upstream-published",
+      "aggregate_schema_sha256": ["706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a", "5dd06ce3570bdb0c833a59227d7912c202818564062ed5c7a84adf7484290b8b", "0932378cde892211ca989d13688ba4131782e3fdd0da763424fc16f51d223338", "8227d19c7429f5f3b17d12bbd140e8627547a40622cb7f36a3e639fa1709be66"]
+    },
+    {
+      "version": "0.107.0", "published_at": "2026-03-02T18:00:55.212Z",
+      "tag_commit": "19f8797c0f62abecb347e817aac36d18c5fc554e",
+      "schema_authority": "upstream-published",
+      "aggregate_schema_sha256": ["706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a", "f90626c146c51fd68d37ff26c398b8b25f256bd403316bcb8074d422cafd8215", "fa9521623d41b448e24514c97e3386def9f16afb7d6e863fa93da85c82941808", "5e341bdd2b2062b04b49d013b18336d16d7d24fae018077f262185169258d4ad"]
+    },
+    {
+      "version": "0.110.0", "published_at": "2026-03-05T02:23:39.861Z",
+      "tag_commit": "77aabe4218ab7ddaf4b6d471887bda043a4c16e6",
+      "schema_authority": "upstream-published",
+      "aggregate_schema_sha256": ["706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a", "1b028bb334f22bb81b1079ba90c69a2d8e23fd17037bcac70a1ed1a4a566793e", "adecf41d2ac47a5b6f0fd4689181675b5e9a7338e1cc59a27244672167a3013c", "74f2b88ddd54fe3c756ed618b62b397359484e8fb04e837a8b2a25c53505e08f"]
+    },
+    {
+      "version": "0.122.0", "published_at": "2026-04-20T18:39:33.583Z",
+      "tag_commit": "230dcadee609fa99d6162fe1107457030e5270a7",
+      "schema_authority": "upstream-published",
+      "aggregate_schema_sha256": ["706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a", "82ebb3b20b7cba10acc44d7ae56360b36b4e184f8849a7603ade5907c708d27d", "2bb68ba1a71b479f4c572a96e35ed788b48d84a774ebd1071533aeb1a2bcc3e4", "0d06aaf40f5be2eeda43a34229aad4dc880439a3486f2de1b68f932fb0f87ec0"]
+    },
+    {
+      "version": "0.123.0", "published_at": "2026-04-23T01:27:03.972Z",
+      "tag_commit": "0785b66228dff87f891e291cb5686631865b6922",
+      "schema_authority": "upstream-published",
+      "aggregate_schema_sha256": ["706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a", "a06210d1cfff851139592629214aac8370b2f2e816efd883b7f92a82d040dedb", "126823f5fe090dbd91ef4e00ae095cb416d565e38a8e3183f5ef434136054de1", "5468bb4c9f4291e4f5d155a214e4307ff47d2e954f8040f8249c406bc4aa07e2"]
+    },
+    {
+      "version": "0.130.0", "published_at": "2026-05-08T23:12:58.744Z",
+      "tag_commit": "58573da43ab697e8b79f152c53df4b42230395a8",
+      "schema_authority": "upstream-published",
+      "aggregate_schema_sha256": ["706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a", "d1bf904e8e4d21100a896102ceecb0c9c3cb1194d0af22316ee7e052d6820af9", "06ee05c2a214a3713adce2ee6ff709f9255c157e87bceb482bb32df180a369b0", "a2c8aeb444f093e0784a53ed7e2b540387ca26f134f762436f4e85809fed648d"]
+    },
+    {
+      "version": "0.131.0", "published_at": "2026-05-18T18:08:19.710Z",
+      "tag_commit": "05eb8678451435cbc8d79c6d8254276289f2bdf1",
+      "schema_authority": "upstream-published",
+      "aggregate_schema_sha256": ["706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a", "2a3c9b035ca649cb299707a5950730b8aaf7d32d56f738b98afd0c711e7759e2", "18be636ed58db553575be04115b18444cc0b89b03221ca6eba9052cea25cad9a", "74aabb2f3e1f466910e260af21435e6fddec41f1019e163274ade2839cfb637d"]
+    },
+    {
+      "version": "0.139.0", "published_at": "2026-06-09T20:17:25.855Z",
+      "tag_commit": "a7dff904308535e965aee87680c1fc5ef1d19eec",
+      "schema_authority": "upstream-published",
+      "aggregate_schema_sha256": ["706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a", "0710eb53bc9eed339eaf98227c6d9b0d69592d156ce2b61f095d27ae8ffafbb3", "cda8130eb686ea0b5b9c5f17a2f6fa44fa9b51d576b6e25408622088baacc179", "c8ba789ac1d0bfeefbfa1d1c328e69129506d278f4e016abca72dab91ae9059a"]
+    },
+    {
+      "version": "0.140.0", "published_at": "2026-06-15T21:09:21.790Z",
+      "tag_commit": "6506579001c322927a3e4bd440563267a7ac6c1f",
+      "schema_authority": "upstream-published",
+      "aggregate_schema_sha256": ["706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a", "994f1eda5a35f28f534dd8190df1c207bee6ad7db7c3a224ecd555493469b2da", "579e6950843e6957b3310726bd923bfc60b935528b3cf2b287c6db6399809b29", "03c26b4242bdbb0082ad69b999d9a6a03d5b2ddc0d1c497ce4685b364c53a713"]
+    },
+    {
+      "version": "0.144.6", "published_at": "2026-07-18T13:54:50.572Z",
+      "tag_commit": "5d1fbf26c43abc65a203928b2e31561cb039e06d",
+      "schema_authority": "upstream-published",
+      "aggregate_schema_sha256": ["706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a", "a0d62d875a0d61c966ed81fbede5cb0b8813e73b79372b5bf76dc067f76d1ddf", "322148beced81b06eafa74011a91ace9c3ef2bad9757d3e0e6c72369c52251fb", "fc063273c71e6310f5a4c1449a607364fcd11b8bf4c998d71fb780016df7b3ad"]
+    },
+    {
+      "version": "0.145.0", "published_at": "2026-07-21T18:24:11.494Z",
+      "tag_commit": "25af12f7e61572b0bc18ddb1008be543b91519b0",
+      "schema_authority": "upstream-published",
+      "aggregate_schema_sha256": ["706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a", "38fe589aa6b10feda71994acea6ef0829e990ad0459c9f3732b33a4996a9bc52", "7b11f6661e44fda1e4a2376b61faa52145a7f593ea40c2de629699ae2e5aaa31", "27ce8a1fc4b9326911f7c42379ff9fa661eee70060a7a2af942813247625d887"]
+    }
+  ],
+  "current_main_observation": {
+    "commit": "95637f7056835fea66bdd0044414af480fc0fd74",
+    "observed_at": "2026-07-27",
+    "projected_into_qualified_range": false
+  }
+}

@@ -1,7 +1,8 @@
 use swallowtail_core::{
-    InterfaceBehaviorRevision, InterfaceCompatibilityClaim, InterfaceCompatibilityClaimId,
-    InterfaceNewerVersionPosture, InterfaceSupportStatus, InterfaceVersion, InterfaceVersionAxis,
-    InterfaceVersionBinding, InterfaceVersionScheme, InterfaceVersionSegment, PreflightPlan,
+    InterfaceBehaviorRevision, InterfaceCompatibilityAssessment, InterfaceCompatibilityClaim,
+    InterfaceCompatibilityClaimId, InterfaceNewerVersionPosture, InterfaceSupportStatus,
+    InterfaceVersion, InterfaceVersionAxis, InterfaceVersionBinding, InterfaceVersionScheme,
+    InterfaceVersionSegment, PreflightPlan,
 };
 use swallowtail_runtime::RuntimeFailure;
 
@@ -29,6 +30,7 @@ pub(crate) enum ClaudeAgentBehavior {
 pub(crate) struct ClaudeAgentPlanSelection {
     behavior: ClaudeAgentBehavior,
     version: InterfaceVersion,
+    qualified: bool,
 }
 
 impl ClaudeAgentPlanSelection {
@@ -38,6 +40,10 @@ impl ClaudeAgentPlanSelection {
 
     pub(crate) const fn version(&self) -> &InterfaceVersion {
         &self.version
+    }
+
+    pub(crate) const fn is_qualified(&self) -> bool {
+        self.qualified
     }
 }
 
@@ -103,6 +109,7 @@ pub(crate) fn select_claude_agent_plan(
             "Claude Agent ACP adapter version is incompatible with this driver",
         ));
     }
+    let qualified = matches!(assessment, InterfaceCompatibilityAssessment::Qualified(_));
     let behavior = match assessment
         .behavior_revision()
         .expect("permitted assessment has a behavior revision")
@@ -122,6 +129,7 @@ pub(crate) fn select_claude_agent_plan(
     Ok(ClaudeAgentPlanSelection {
         behavior,
         version: binding.version().clone(),
+        qualified,
     })
 }
 

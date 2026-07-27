@@ -18,6 +18,7 @@ mod selection;
 mod session;
 mod session_access;
 mod session_input;
+mod session_management;
 mod session_open;
 mod turn_state;
 
@@ -28,13 +29,15 @@ pub use prepared::{
     prepare_codex,
 };
 pub use prepared_profile::{
-    CodexExecProfileInput, CodexModelSelection, CodexPreparedCatalogue, CodexPreparedEvidence,
-    CodexPreparedExec, CodexPreparedSession, CodexPreparedSessionFuture, CodexPreparedSessionKind,
-    CodexSessionProfileInput,
+    CodexExecProfileInput, CodexModelSelection, CodexPreparedArchive, CodexPreparedCatalogue,
+    CodexPreparedDelete, CodexPreparedEvidence, CodexPreparedExec, CodexPreparedRestore,
+    CodexPreparedSession, CodexPreparedSessionFuture, CodexPreparedSessionKind,
+    CodexSessionManagementInput, CodexSessionProfileInput,
 };
 pub use selection::{
     CODEX_APP_SERVER_BASELINE_VERSION, CODEX_CLI_AXIS, CODEX_EXEC_BASELINE_VERSION,
-    CODEX_LATEST_QUALIFIED_VERSION, codex_app_server_claim, codex_cli_binding, codex_exec_claim,
+    CODEX_LATEST_QUALIFIED_VERSION, codex_app_server_claim, codex_app_server_lifecycle_claim,
+    codex_cli_binding, codex_exec_claim,
 };
 pub use session_access::{
     codex_approval_request_extension, codex_bounded_workspace_access_policy,

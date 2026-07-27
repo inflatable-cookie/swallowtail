@@ -53,6 +53,9 @@ fn perform_request(
     let mut easy = Easy::new();
     configure(&mut easy, &url, &cancelled)?;
     match request.method {
+        Method::Delete => {
+            easy.custom_request("DELETE").map_err(curl_failure)?;
+        }
         Method::Get => {}
         Method::Post => {
             easy.post(true).map_err(curl_failure)?;
@@ -169,5 +172,3 @@ fn curl_failure(_: curl::Error) -> RuntimeFailure {
         "OpenCode HTTP transport failed",
     )
 }
-
-

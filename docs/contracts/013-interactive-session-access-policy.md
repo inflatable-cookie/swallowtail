@@ -18,11 +18,11 @@ policy. Its dimensions are independent:
 - working-resource access through host services: `Read` or `ReadWrite`
 - filesystem boundary: absent, or the one host-resolved working-resource lease
 - harness isolation: `AmbientHost`, `ProviderEnforced`, or `HostEnforced`
-- provider approval posture: `Never` in the first implementation
+- provider approval posture: `Never`, or explicit `ConsumerMediated`
 - provider-side external network: ambient, denied, or separately host-approved
 - external search: disabled or separately enabled under Contract 009
-- unexpected provider-request handling: reject, or observe-and-stop for an
-  explicitly declared provider extension
+- unexpected provider-request handling: reject, observe-and-stop, or exchange
+  for an explicitly declared provider extension
 
 No boolean or preset may be the durable public contract. Named profiles may be
 convenience constructors only when their expanded policy remains inspectable
@@ -123,9 +123,13 @@ labelled with a remote host id is not remote execution.
 Approval posture and callback handling are separate:
 
 - posture `Never` tells the harness not to request approval
+- posture `ConsumerMediated` allows only declared provider approval callbacks
+  to be answered through Contract 012
 - a provider request that still arrives is an observation, not authorization
 - `observe-and-stop` is allowed only for declared, bounded, redacted provider
   extensions such as Codex approval or user input
+- `exchange` is allowed only for declared, bounded, redacted provider
+  extensions and grants response transport, not permission to choose a result
 - Swallowtail preserves provider request, session, and turn correlation
 - Swallowtail does not execute an approval, prompt the operator, fabricate a
   response, or translate the request into a common tool call
@@ -200,6 +204,15 @@ routes.
 
 Provider-specific fields stay inside the adapter. Common policy remains
 provider-neutral.
+
+For Kimi Code local server, ambient read-write execution remains explicit and
+unsandboxed. The default prepared session uses approval posture `Never` and
+rejects provider requests. A caller may instead opt into
+`ConsumerMediated` with the exact Kimi approval and question extension
+namespaces. Kimi `manual`, `auto`, and `yolo` permission modes remain
+provider-specific choices; Swallowtail does not infer or silently escalate
+between them. Approval and question bodies remain bounded adapter extensions,
+and the consumer owns every response decision.
 
 ## Identity And Redaction
 

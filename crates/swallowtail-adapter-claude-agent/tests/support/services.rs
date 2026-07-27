@@ -14,8 +14,10 @@ impl ProcessService for FixtureHost {
             environment_count: request.environment().len(),
             working_resource: request.working_resource().cloned(),
         });
-        let handle =
-            Box::new(FixtureProcessHandle(Arc::clone(&self.agent))) as Box<dyn ProcessHandle>;
+        let handle = Box::new(FixtureProcessHandle::new(
+            Arc::clone(&self.agent),
+            Arc::clone(&self.cleanup),
+        )) as Box<dyn ProcessHandle>;
         Box::pin(async move { Ok(handle) })
     }
 }
@@ -39,6 +41,10 @@ impl CredentialService for FixtureHost {
 
     fn release(&self, _lease: CredentialLease) -> BoxFuture<'static, CleanupOutcome> {
         self.credential_releases.fetch_add(1, Ordering::SeqCst);
+        self.cleanup
+            .lock()
+            .expect("fixture cleanup lock poisoned")
+            .push("credential_released");
         Box::pin(async { CleanupOutcome::Clean })
     }
 }
@@ -70,6 +76,10 @@ impl WorkingResourceService for FixtureHost {
 
     fn release(&self, _lease: ResourceLease) -> BoxFuture<'static, CleanupOutcome> {
         self.resource_releases.fetch_add(1, Ordering::SeqCst);
+        self.cleanup
+            .lock()
+            .expect("fixture cleanup lock poisoned")
+            .push("resource_released");
         Box::pin(async { CleanupOutcome::Clean })
     }
 }
@@ -114,11 +124,17 @@ impl JoinedTask for ThreadTask {
 
 pub(super) struct FixtureTime {
     immediate: bool,
+    deadline_after_waits: Option<usize>,
+    waits: AtomicUsize,
 }
 
 impl FixtureTime {
-    pub(super) const fn new(immediate: bool) -> Self {
-        Self { immediate }
+    pub(super) const fn new(immediate: bool, deadline_after_waits: Option<usize>) -> Self {
+        Self {
+            immediate,
+            deadline_after_waits,
+            waits: AtomicUsize::new(0),
+        }
     }
 }
 
@@ -128,7 +144,12 @@ impl TimeService for FixtureTime {
     }
 
     fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
-        if self.immediate {
+        let wait = self.waits.fetch_add(1, Ordering::SeqCst) + 1;
+        if self.immediate
+            || self
+                .deadline_after_waits
+                .is_some_and(|threshold| wait >= threshold)
+        {
             Box::pin(async move { DeadlineObservation::new(deadline, deadline.instant()) })
         } else {
             Box::pin(std::future::pending())

@@ -2,14 +2,16 @@ use super::fixture::PreparedFixture;
 use futures_executor::block_on;
 use std::sync::atomic::Ordering;
 use swallowtail_adapter_opencode::{
-    OpenCodeCatalogueProfileInput, OpenCodeSessionProfileInput, prepare_opencode_attached,
+    OpenCodeCatalogueProfileInput, OpenCodeSessionManagementInput, OpenCodeSessionProfileInput,
+    prepare_opencode_attached,
 };
 use swallowtail_core::{
     DriverRole, ExecutionHostId, HarnessConfigurationPosture, HarnessIsolation, InstanceOwnership,
-    InterfaceCompatibilityAssessment,
+    InterfaceCompatibilityAssessment, ProviderSessionDeletionStrength, ProviderSessionEffectTruth,
 };
 use swallowtail_runtime::{
-    CleanupOutcome, DiscoveryCancellation, HostServices, PreparationStage, RequestId,
+    CancellationControl, CleanupOutcome, DiscoveryCancellation, HostServices, PreparationStage,
+    RequestId,
 };
 use swallowtail_testkit::assert_prepared_operation_evidence_matches_plan;
 
@@ -169,4 +171,254 @@ fn preparation_cleanup_failure_stays_visible_after_successful_health() {
         "swallowtail.opencode.preparation.cleanup_failed"
     );
     assert_eq!(fixture.releases.load(Ordering::SeqCst), 1);
+}
+
+#[test]
+fn prepared_session_promotes_one_exact_inactive_delete_binding() {
+    let fixture = PreparedFixture::new("opencode.prepared.delete", "1.18.4");
+    let prepared = fixture.prepared();
+    let session = prepared
+        .prepare_session(OpenCodeSessionProfileInput::new(
+            RequestId::new("delete-session").unwrap(),
+            fixture.model(),
+            fixture.resource.clone(),
+        ))
+        .expect("session prepares");
+    let handle = block_on(session.open_session(fixture.services())).expect("session opens");
+    let binding = handle
+        .management_binding()
+        .expect("prepared session exposes management binding")
+        .clone();
+    assert_eq!(binding.working_resource(), Some(&fixture.resource));
+    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+
+    let delete = prepared
+        .prepare_delete_session(OpenCodeSessionManagementInput::new(
+            RequestId::new("delete-session-operation").unwrap(),
+            binding,
+        ))
+        .expect("delete prepares");
+    assert_eq!(
+        delete.plan().preflight().requirements().driver_role(),
+        DriverRole::ProviderSessionManagement
+    );
+    assert_prepared_operation_evidence_matches_plan(
+        delete.evidence().operation(),
+        delete.plan().preflight(),
+    );
+    let outcome = block_on(delete.execute(fixture.services())).expect("delete executes");
+    assert_eq!(
+        outcome.effect().truth(),
+        ProviderSessionEffectTruth::Applied
+    );
+    assert_eq!(
+        outcome.effect().confirmed_deletion_strength(),
+        Some(ProviderSessionDeletionStrength::ProviderDataDeleted)
+    );
+    assert_eq!(fixture.releases.load(Ordering::SeqCst), 3);
+    let requests = fixture.server.requests();
+    assert_eq!(
+        requests
+            .iter()
+            .filter(|request| request.starts_with("DELETE /session/ses_fixture?directory="))
+            .count(),
+        1
+    );
+}
+
+#[test]
+fn prepared_delete_rejects_route_drift_and_unverified_newer_by_default() {
+    let first = PreparedFixture::new("opencode.prepared.delete.first", "1.18.4");
+    let second = PreparedFixture::new("opencode.prepared.delete.second", "1.18.4");
+    let first_prepared = first.prepared();
+    let second_prepared = second.prepared();
+    let session = first_prepared
+        .prepare_session(OpenCodeSessionProfileInput::new(
+            RequestId::new("delete-drift-session").unwrap(),
+            first.model(),
+            first.resource.clone(),
+        ))
+        .expect("session prepares");
+    let handle = block_on(session.open_session(first.services())).expect("session opens");
+    let binding = handle.management_binding().unwrap().clone();
+    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    let error = second_prepared
+        .prepare_delete_session(OpenCodeSessionManagementInput::new(
+            RequestId::new("delete-drift").unwrap(),
+            binding,
+        ))
+        .expect_err("foreign binding rejects");
+    assert_eq!(
+        error.diagnostic().safe().code(),
+        "swallowtail.opencode.preparation.lifecycle_binding_mismatch"
+    );
+    assert!(
+        !second
+            .server
+            .requests()
+            .iter()
+            .any(|request| request.starts_with("DELETE "))
+    );
+
+    let newer = PreparedFixture::new("opencode.prepared.delete.newer", "1.18.5");
+    let newer_prepared = newer.prepared();
+    let session = newer_prepared
+        .prepare_session(OpenCodeSessionProfileInput::new(
+            RequestId::new("delete-newer-session").unwrap(),
+            newer.model(),
+            newer.resource.clone(),
+        ))
+        .expect("newer session prepares");
+    let handle = block_on(session.open_session(newer.services())).expect("newer session opens");
+    let binding = handle.management_binding().unwrap().clone();
+    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    let error = newer_prepared
+        .prepare_delete_session(OpenCodeSessionManagementInput::new(
+            RequestId::new("delete-newer").unwrap(),
+            binding.clone(),
+        ))
+        .expect_err("unverified newer deletion needs acceptance");
+    assert_eq!(
+        error.diagnostic().safe().code(),
+        "swallowtail.opencode.preparation.lifecycle_unverified_newer"
+    );
+    newer_prepared
+        .prepare_delete_session(
+            OpenCodeSessionManagementInput::new(
+                RequestId::new("delete-newer-accepted").unwrap(),
+                binding,
+            )
+            .allow_unverified_newer(),
+        )
+        .expect("explicit acceptance prepares");
+}
+
+#[test]
+fn post_dispatch_cancellation_is_joined_and_unconfirmed() {
+    let fixture = PreparedFixture::new_with_fixture(
+        "opencode.prepared.delete.cancel",
+        "1.18.4",
+        crate::http_support::StreamFixture::DeleteDelayed,
+    );
+    let prepared = fixture.prepared();
+    let session = prepared
+        .prepare_session(OpenCodeSessionProfileInput::new(
+            RequestId::new("delete-cancel-session").unwrap(),
+            fixture.model(),
+            fixture.resource.clone(),
+        ))
+        .expect("session prepares");
+    let handle = block_on(session.open_session(fixture.services())).expect("session opens");
+    let binding = handle.management_binding().unwrap().clone();
+    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    let delete = prepared
+        .prepare_delete_session(OpenCodeSessionManagementInput::new(
+            RequestId::new("delete-cancel").unwrap(),
+            binding,
+        ))
+        .expect("delete prepares");
+    let cancellation = std::sync::Arc::clone(delete.request().cancellation());
+    let requests = fixture.server.request_log();
+    let canceller = std::thread::spawn(move || {
+        while !requests
+            .lock()
+            .expect("request lock")
+            .iter()
+            .any(|request| request.starts_with("DELETE "))
+        {
+            std::thread::sleep(std::time::Duration::from_millis(1));
+        }
+        block_on(cancellation.request()).expect("cancellation requests");
+    });
+    let outcome = block_on(delete.execute(fixture.services())).expect("delete resolves");
+    canceller.join().expect("canceller joins");
+    assert_eq!(
+        outcome.effect().truth(),
+        ProviderSessionEffectTruth::UnconfirmedAfterEffect
+    );
+}
+
+#[test]
+fn provider_rejection_and_server_failure_preserve_effect_truth() {
+    for (suffix, stream_fixture, expected, code) in [
+        (
+            "missing",
+            crate::http_support::StreamFixture::DeleteMissing,
+            ProviderSessionEffectTruth::FailedBeforeEffect,
+            "swallowtail.opencode.lifecycle.delete_rejected",
+        ),
+        (
+            "server",
+            crate::http_support::StreamFixture::DeleteServerError,
+            ProviderSessionEffectTruth::UnconfirmedAfterEffect,
+            "swallowtail.opencode.lifecycle.delete_unconfirmed",
+        ),
+    ] {
+        let fixture = PreparedFixture::new_with_fixture(
+            &format!("opencode.prepared.delete.{suffix}"),
+            "1.18.4",
+            stream_fixture,
+        );
+        let prepared = fixture.prepared();
+        let session = prepared
+            .prepare_session(OpenCodeSessionProfileInput::new(
+                RequestId::new(format!("delete-{suffix}-session")).unwrap(),
+                fixture.model(),
+                fixture.resource.clone(),
+            ))
+            .expect("session prepares");
+        let handle = block_on(session.open_session(fixture.services())).expect("session opens");
+        let binding = handle.management_binding().unwrap().clone();
+        assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+        let delete = prepared
+            .prepare_delete_session(OpenCodeSessionManagementInput::new(
+                RequestId::new(format!("delete-{suffix}")).unwrap(),
+                binding,
+            ))
+            .expect("delete prepares");
+        let outcome = block_on(delete.execute(fixture.services())).expect("delete resolves");
+        assert_eq!(outcome.effect().truth(), expected);
+        assert_eq!(outcome.diagnostic().expect("diagnostic").code(), code);
+        let debug = format!("{outcome:?}");
+        assert!(!debug.contains("private missing-target detail"));
+        assert!(!debug.contains("private server detail"));
+    }
+}
+
+#[test]
+fn exact_server_version_drift_stops_before_delete_dispatch() {
+    let fixture = PreparedFixture::new_with_fixture(
+        "opencode.prepared.delete.health-drift",
+        "1.18.4",
+        crate::http_support::StreamFixture::DeleteHealthDrift,
+    );
+    let prepared = fixture.prepared();
+    let session = prepared
+        .prepare_session(OpenCodeSessionProfileInput::new(
+            RequestId::new("delete-health-drift-session").unwrap(),
+            fixture.model(),
+            fixture.resource.clone(),
+        ))
+        .expect("session prepares");
+    let handle = block_on(session.open_session(fixture.services())).expect("session opens");
+    let binding = handle.management_binding().unwrap().clone();
+    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    let delete = prepared
+        .prepare_delete_session(OpenCodeSessionManagementInput::new(
+            RequestId::new("delete-health-drift").unwrap(),
+            binding,
+        ))
+        .expect("delete prepares");
+    let error = block_on(delete.execute(fixture.services())).expect_err("version drift rejects");
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.opencode.version_mismatch"
+    );
+    assert!(
+        !fixture
+            .server
+            .requests()
+            .iter()
+            .any(|request| request.starts_with("DELETE "))
+    );
 }

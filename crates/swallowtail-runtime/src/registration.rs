@@ -1,6 +1,6 @@
 use crate::{
-    DiscoveryDriver, InteractiveSessionDriver, ModelCatalogDriver, RealtimeMediaSessionDriver,
-    ServingInstanceDriver, StructuredRunDriver,
+    DiscoveryDriver, InteractiveSessionDriver, ModelCatalogDriver, ProviderSessionManagementDriver,
+    RealtimeMediaSessionDriver, ServingInstanceDriver, StructuredRunDriver,
 };
 use std::error::Error;
 use std::fmt;
@@ -52,6 +52,7 @@ pub struct DriverRegistration {
     interactive_session: Option<Arc<dyn InteractiveSessionDriver>>,
     realtime_media_session: Option<Arc<dyn RealtimeMediaSessionDriver>>,
     serving_instance: Option<Arc<dyn ServingInstanceDriver>>,
+    provider_session_management: Option<Arc<dyn ProviderSessionManagementDriver>>,
 }
 
 impl DriverRegistration {
@@ -65,6 +66,7 @@ impl DriverRegistration {
             interactive_session: None,
             realtime_media_session: None,
             serving_instance: None,
+            provider_session_management: None,
         }
     }
 
@@ -122,6 +124,15 @@ impl DriverRegistration {
         Ok(self)
     }
 
+    pub fn with_provider_session_management(
+        mut self,
+        role: Arc<dyn ProviderSessionManagementDriver>,
+    ) -> Result<Self, RegistrationFailure> {
+        self.require_declared(DriverRole::ProviderSessionManagement)?;
+        self.provider_session_management = Some(role);
+        Ok(self)
+    }
+
     #[must_use]
     pub const fn descriptor(&self) -> &DriverDescriptor {
         &self.descriptor
@@ -155,6 +166,11 @@ impl DriverRegistration {
     #[must_use]
     pub fn realtime_media_session(&self) -> Option<&Arc<dyn RealtimeMediaSessionDriver>> {
         self.realtime_media_session.as_ref()
+    }
+
+    #[must_use]
+    pub fn provider_session_management(&self) -> Option<&Arc<dyn ProviderSessionManagementDriver>> {
+        self.provider_session_management.as_ref()
     }
 
     fn require_declared(&self, role: DriverRole) -> Result<(), RegistrationFailure> {

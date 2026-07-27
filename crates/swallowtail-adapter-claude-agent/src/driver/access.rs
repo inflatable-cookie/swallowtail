@@ -145,7 +145,7 @@ impl ClaudeAgentAcpDriver {
         };
         let opened = async {
             let initialized = pending.connection.initialize().await?;
-            validate_initialize(&initialized, &selected)?;
+            let lifecycle = validate_initialize(&initialized, &selected)?;
             let model = plan.model_id().expect("validated model").as_str();
             let response = pending.connection.new_session(cwd, model).await?;
             let provider_id = parse_session(&response, model)?;
@@ -156,6 +156,7 @@ impl ClaudeAgentAcpDriver {
                 provider_ref,
                 provider_id,
                 plan.execution_host_id().clone(),
+                lifecycle.close && selected.is_qualified(),
                 services,
             )
         }
@@ -177,6 +178,7 @@ impl PendingSession {
         provider_ref: SessionRef,
         provider_id: String,
         execution_host_id: swallowtail_core::ExecutionHostId,
+        native_close: bool,
         services: &HostServices,
     ) -> Result<ClaudeAgentSessionHandle, RuntimeFailure> {
         let runtime_id = RuntimeSessionId::new(format!("claude-agent-acp:{}", request_id.as_str()))
@@ -188,6 +190,7 @@ impl PendingSession {
             provider_ref,
             provider_id,
             execution_host_id,
+            native_close,
             connection: Arc::clone(&self.connection),
             cancellation: SessionCancellation::new(Arc::clone(&self.connection)),
             pump_task: self.pump_task.take(),

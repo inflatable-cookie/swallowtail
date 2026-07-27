@@ -185,6 +185,27 @@ fn cancellation_disconnect_drift_and_access_mismatch_fail_without_leaks() {
     assert_eq!(host.credential_acquires(), 0);
 }
 
+#[test]
+fn qualified_native_close_ends_active_work_without_deleting_history() {
+    let (host, mut session, services) = open(Scenario::Cancellation, "0.61.0", "native-close");
+    let mut turn = start(&mut *session, services, "native-close-turn");
+    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    let outcome = block_on(
+        turn.take_terminal_outcome()
+            .expect("terminal outcome exists"),
+    );
+    assert_eq!(outcome.status(), &TerminalStatus::Cancelled);
+    let writes = host.writes();
+    assert!(writes.iter().any(|message| {
+        message.get("method").and_then(serde_json::Value::as_str) == Some("session/close")
+    }));
+    assert!(!writes.iter().any(|message| {
+        message.get("method").and_then(serde_json::Value::as_str) == Some("session/delete")
+    }));
+    assert_eq!(host.resource_releases(), 1);
+    assert_eq!(host.credential_releases(), 1);
+}
+
 fn open(
     scenario: Scenario,
     version: &str,

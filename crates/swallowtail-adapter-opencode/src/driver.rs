@@ -1,7 +1,8 @@
 use crate::failure::{failure, unsupported};
 use crate::protocol::{
-    Event, Request, abort, parse_catalog, parse_event, parse_session_for_version, prompt,
-    require_abort_success, require_health_matches, require_no_content, session_create,
+    Event, Request, Response, SessionDeleteResponse, abort, classify_session_delete, parse_catalog,
+    parse_event, parse_session_for_version, prompt, require_abort_success, require_health_matches,
+    require_no_content, session_create, session_delete,
 };
 use crate::selection::{OpenCodePlanVersion, classify_plan, opencode_http_claim};
 use crate::transport::{CurlTransport, Subscription};
@@ -80,10 +81,17 @@ pub fn opencode_http_descriptor() -> DriverDescriptor {
         IntegrationFamilyId::new("opencode").expect("static family id is valid"),
         TransportFamilyId::new("http-sse").expect("static transport id is valid"),
     )
-    .with_roles([DriverRole::ModelCatalog, DriverRole::InteractiveSession])
+    .with_roles([
+        DriverRole::ModelCatalog,
+        DriverRole::InteractiveSession,
+        DriverRole::ProviderSessionManagement,
+    ])
     .with_interface_compatibility(opencode_http_claim())
     .with_execution_layers([ExecutionLayer::HarnessInteraction])
-    .with_operation_shapes([OperationShape::InteractiveSession])
+    .with_operation_shapes([
+        OperationShape::InteractiveSession,
+        OperationShape::ProviderSessionManagement,
+    ])
     .with_required_host_services(
         DriverRole::ModelCatalog,
         [
@@ -104,6 +112,17 @@ pub fn opencode_http_descriptor() -> DriverDescriptor {
             HostServiceKind::WorkingResource,
         ],
     )
+    .with_required_host_services(
+        DriverRole::ProviderSessionManagement,
+        [
+            HostServiceKind::Task,
+            HostServiceKind::BlockingWork,
+            HostServiceKind::Time,
+            HostServiceKind::Network,
+            HostServiceKind::Credential,
+            HostServiceKind::WorkingResource,
+        ],
+    )
 }
 
 include!("driver/roles.rs");
@@ -113,4 +132,5 @@ include!("driver/cancellation.rs");
 include!("driver/session.rs");
 include!("driver/turn.rs");
 include!("driver/lifecycle.rs");
+include!("driver/session_management.rs");
 include!("driver/tests.rs");

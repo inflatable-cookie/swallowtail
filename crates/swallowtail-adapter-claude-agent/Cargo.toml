@@ -18,9 +18,12 @@ swallowtail-protocol-acp.workspace = true
 swallowtail-runtime.workspace = true
 
 [dev-dependencies]
+async-tungstenite = { version = "=0.34.1", default-features = false, features = ["tokio-rustls-webpki-roots"] }
 futures-executor = "0.3"
 futures-util = "0.3"
 swallowtail-testkit.workspace = true
+swallowtail-transport-acp-remote.workspace = true
+tokio = { version = "1.52", default-features = false, features = ["macros", "net", "rt", "sync", "time"] }
 
 [lints]
 workspace = true

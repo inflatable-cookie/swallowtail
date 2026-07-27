@@ -1,5 +1,7 @@
 use swallowtail_core::{ModelId, ModelRouteId, ModelRouteRevision, ProviderId};
-use swallowtail_runtime::{Deadline, RequestId, WorkingResourceRef};
+use swallowtail_runtime::{
+    Deadline, ProviderSessionManagementBinding, RequestId, WorkingResourceRef,
+};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct OpenCodeCatalogueProfileInput {
@@ -67,6 +69,54 @@ pub struct OpenCodeSessionProfileInput {
     model: OpenCodeModelSelection,
     working_resource: WorkingResourceRef,
     deadline: Option<Deadline>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct OpenCodeSessionManagementInput {
+    request_id: RequestId,
+    binding: ProviderSessionManagementBinding,
+    deadline: Option<Deadline>,
+    allow_unverified_newer: bool,
+}
+
+impl OpenCodeSessionManagementInput {
+    #[must_use]
+    pub const fn new(request_id: RequestId, binding: ProviderSessionManagementBinding) -> Self {
+        Self {
+            request_id,
+            binding,
+            deadline: None,
+            allow_unverified_newer: false,
+        }
+    }
+
+    #[must_use]
+    pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
+        self.deadline = Some(deadline);
+        self
+    }
+
+    #[must_use]
+    pub const fn allow_unverified_newer(mut self) -> Self {
+        self.allow_unverified_newer = true;
+        self
+    }
+
+    pub(super) fn into_parts(
+        self,
+    ) -> (
+        RequestId,
+        ProviderSessionManagementBinding,
+        Option<Deadline>,
+        bool,
+    ) {
+        (
+            self.request_id,
+            self.binding,
+            self.deadline,
+            self.allow_unverified_newer,
+        )
+    }
 }
 
 impl OpenCodeSessionProfileInput {

@@ -4,8 +4,8 @@ use swallowtail_adapter_opencode::{
 use swallowtail_core::InterfaceVersion;
 use swallowtail_testkit::{
     ClosedSemanticWindowCase, ConformanceAssertion, SyntheticProfile,
-    assert_closed_semantic_compatibility_window, assert_unverified_newer_execution,
-    run_attached_network_harness_profile,
+    assert_closed_semantic_compatibility_window, assert_provider_session_management_contract,
+    assert_unverified_newer_execution, run_attached_network_harness_profile,
 };
 
 #[test]
@@ -53,6 +53,11 @@ fn provider_neutral_closed_window_assertion_covers_opencode_range() {
     ]);
     assert_closed_semantic_compatibility_window(&opencode_http_claim(), &case);
     assert_unverified_newer_execution(&opencode_http_claim(), &version("1.18.5"));
+}
+
+#[test]
+fn provider_neutral_management_contract_covers_opencode_delete_boundaries() {
+    assert_provider_session_management_contract();
 }
 
 fn version(value: &str) -> InterfaceVersion {

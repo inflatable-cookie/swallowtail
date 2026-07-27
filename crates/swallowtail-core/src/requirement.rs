@@ -23,6 +23,7 @@ pub enum CancellationScope {
     InteractiveSession,
     OwnedServingInstance,
     ActiveResponse,
+    ProviderSessionManagement,
 }
 
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]

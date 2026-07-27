@@ -39,14 +39,7 @@ git clone -q \
     printf '  "%s",\n' "$release_package"
   done
   printf ']\n\n[patch.crates-io]\n'
-  for release_package in \
-    swallowtail-core \
-    swallowtail-host-local \
-    swallowtail-protocol-acp \
-    swallowtail-protocol-openai-chat \
-    swallowtail-runtime \
-    swallowtail-testkit
-  do
+  for release_package in "${release_internal_patch_packages[@]}"; do
     printf '%s = { path = "%s" }\n' \
       "$release_package" "$release_package"
   done
@@ -66,6 +59,10 @@ provider_facade_suites=(
   "swallowtail-adapter-gemini|prepared_facade"
   "swallowtail-adapter-gemini|live_prepared_facade"
   "swallowtail-adapter-kimi|prepared_facade"
+  "swallowtail-adapter-kimi|local_server_corpus"
+  "swallowtail-adapter-kimi|local_server_lifecycle"
+  "swallowtail-adapter-kimi|local_server_binding_import"
+  "swallowtail-adapter-kimi|local_server_interactive"
   "swallowtail-adapter-kimi-platform|prepared_facade"
   "swallowtail-adapter-llama-cpp|prepared_facades"
   "swallowtail-adapter-ollama|prepared_facade"
@@ -93,6 +90,7 @@ provider_route_proofs=(
   "claude-agent.acp|swallowtail-adapter-claude-agent|prepared_facade"
   "gemini-cli.acp|swallowtail-adapter-gemini|prepared_facade"
   "kimi-code.acp|swallowtail-adapter-kimi|prepared_facade"
+  "kimi-code.local-server|swallowtail-adapter-kimi|local_server_interactive"
   "pi.rpc|swallowtail-adapter-pi|prepared_facade"
   "qwen.headless|swallowtail-adapter-qwen|prepared_facade"
   "opencode.http|swallowtail-adapter-opencode|prepared_facade"
@@ -112,7 +110,7 @@ provider_route_proofs=(
   "llama-cpp.owned|swallowtail-adapter-llama-cpp|prepared_facades"
 )
 
-test "${#provider_route_proofs[@]}" -eq 22
+test "${#provider_route_proofs[@]}" -eq 23
 
 release_provider_evidence="$release_tmp/provider-validation.env"
 {
@@ -148,4 +146,4 @@ else
 fi
 
 cat "$release_provider_evidence"
-printf 'packaged provider facade proof passed for 22 production routes\n'
+printf 'packaged provider facade proof passed for 23 production routes\n'

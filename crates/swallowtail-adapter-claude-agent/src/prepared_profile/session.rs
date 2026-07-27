@@ -5,15 +5,21 @@ use super::plan::{
 };
 use crate::prepared::instance::session_capabilities;
 use crate::{ClaudeAgentAcpDriver, ClaudeAgentPreparedIntegration};
-use swallowtail_core::{CapabilityRequirement, ModelRoute};
+use swallowtail_core::{
+    Capability, CapabilityProfile, CapabilityRequirement, ModelRoute, ProviderSessionBindingOrigin,
+};
 use swallowtail_runtime::{
-    HostServices, InteractiveSessionDriver, OpenSessionRequest, PreparationFailure, SessionOptions,
+    BoxFuture, CancellationControl, CleanupOutcome, DirectContinuationTurnRequest, HostServices,
+    InteractiveSessionDriver, InteractiveSessionHandle, OpenSessionRequest, PreparationFailure,
+    PreparedAccessEvidence, ProviderSessionManagementBinding, RuntimeFailure, SessionOptions,
+    SessionResumeBinding, TurnHandle, TurnRequest, WorkingResourceRef,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ClaudeAgentPreparedSession {
     evidence: ClaudeAgentPreparedEvidence,
     request: OpenSessionRequest,
+    management_instance: swallowtail_core::ConfiguredInstance,
 }
 
 impl ClaudeAgentPreparedSession {
@@ -41,7 +47,18 @@ impl ClaudeAgentPreparedSession {
         let driver = self.low_level_driver();
         let plan = self.plan().clone();
         let request = self.request.clone();
-        Box::pin(async move { driver.open_session(plan, request, services).await })
+        let management_instance = self.management_instance.clone();
+        let access = self.evidence.access().clone();
+        Box::pin(async move {
+            let handle = driver.open_session(plan, request.clone(), services).await?;
+            wrap_management_handle(
+                handle,
+                management_instance,
+                access,
+                request.working_resource().cloned(),
+            )
+            .await
+        })
     }
 
     #[must_use]
@@ -82,12 +99,104 @@ impl ClaudeAgentPreparedIntegration {
                     CapabilityRequirement::new(capability, constraints.iter().cloned())
                 }),
         );
-        let plan = build_plan(self, &instance, &route, &requirements)?;
+        let plan = build_plan(self, &instance, Some(&route), &requirements)?;
         let request = OpenSessionRequest::from_plan(&plan, request_id, working_resource, None)?;
         Ok(ClaudeAgentPreparedSession {
             evidence: ClaudeAgentPreparedEvidence::from_prepared(self, plan)?,
             request,
+            management_instance: lifecycle_management_instance(self),
         })
+    }
+}
+
+fn lifecycle_management_instance(
+    prepared: &ClaudeAgentPreparedIntegration,
+) -> swallowtail_core::ConfiguredInstance {
+    instance_with_capabilities(
+        prepared,
+        CapabilityProfile::new([
+            CapabilityRequirement::new(Capability::ProviderNativeSessionClose, []),
+            CapabilityRequirement::new(Capability::ProviderSessionDelete, []),
+        ]),
+    )
+}
+
+async fn wrap_management_handle(
+    handle: Box<dyn InteractiveSessionHandle>,
+    instance: swallowtail_core::ConfiguredInstance,
+    access: PreparedAccessEvidence,
+    working_resource: Option<WorkingResourceRef>,
+) -> Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure> {
+    let Some(provider_ref) = handle.provider_session_ref().cloned() else {
+        return Ok(handle);
+    };
+    match ProviderSessionManagementBinding::from_bound_session(
+        provider_ref,
+        &crate::claude_agent_acp_descriptor(),
+        &instance,
+        access,
+        working_resource,
+        ProviderSessionBindingOrigin::Created,
+    ) {
+        Ok(binding) => Ok(Box::new(ManagedClaudeAgentSessionHandle {
+            inner: handle,
+            binding,
+        })),
+        Err(error) => {
+            let _ = handle.close().await;
+            Err(RuntimeFailure::new(error.diagnostic().clone()))
+        }
+    }
+}
+
+struct ManagedClaudeAgentSessionHandle {
+    inner: Box<dyn InteractiveSessionHandle>,
+    binding: ProviderSessionManagementBinding,
+}
+
+impl InteractiveSessionHandle for ManagedClaudeAgentSessionHandle {
+    fn request_id(&self) -> &swallowtail_runtime::RequestId {
+        self.inner.request_id()
+    }
+
+    fn session_id(&self) -> &swallowtail_runtime::RuntimeSessionId {
+        self.inner.session_id()
+    }
+
+    fn provider_session_ref(&self) -> Option<&swallowtail_core::SessionRef> {
+        self.inner.provider_session_ref()
+    }
+
+    fn resume_binding(&self) -> Option<&SessionResumeBinding> {
+        None
+    }
+
+    fn management_binding(&self) -> Option<&ProviderSessionManagementBinding> {
+        Some(&self.binding)
+    }
+
+    fn start_turn<'a>(
+        &'a mut self,
+        request: TurnRequest,
+        services: HostServices,
+    ) -> BoxFuture<'a, Result<Box<dyn TurnHandle>, RuntimeFailure>> {
+        self.inner.start_turn(request, services)
+    }
+
+    fn start_direct_continuation_turn<'a>(
+        &'a mut self,
+        request: DirectContinuationTurnRequest,
+        services: HostServices,
+    ) -> BoxFuture<'a, Result<Box<dyn TurnHandle>, RuntimeFailure>> {
+        self.inner.start_direct_continuation_turn(request, services)
+    }
+
+    fn cancellation(&self) -> &dyn CancellationControl {
+        self.inner.cancellation()
+    }
+
+    fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome> {
+        self.inner.close()
     }
 }
 

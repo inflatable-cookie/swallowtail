@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-20
+Updated: 2026-07-27
 
 ## Purpose
 
@@ -34,6 +34,14 @@ The second-agent Kimi proof independently binds stable schema release
 `0.28.1`. Those artifact changes do not alter the negotiated wire version or
 the Gemini proof's historical pins. Contract 017 governs the later stable
 load, resume, replay, and write subset.
+
+The lifecycle refresh independently binds stable schema release
+`schema-v1.20.0`, source commit
+`5e89c71497fe07dd4ae633c181a17224f4a8956d`, and stable schema SHA-256
+`92c1dfcda10dd47e99127500a3763da2b471f9ac61e12b9bf0430c32cf953796`.
+The selected close/delete shape is unchanged from stable schema `1.18.0`
+through `1.20.0`. Historical adapter pins remain historical evidence. The
+wire version remains `1`.
 
 ## Transport And Framing
 
@@ -73,6 +81,33 @@ The ACP v1 baseline requires `session/new`, `session/prompt`,
 `session/cancel`, and `session/update`. Load, resume, list, delete, close,
 configuration, logout, richer prompt content, filesystem, terminal, and custom
 methods remain independently optional.
+
+## Stable Close And Delete
+
+`session/close` and `session/delete` use separate fields under
+`agentCapabilities.sessionCapabilities`.
+
+- `{}` advertises the exact method
+- omission or null means unsupported
+- a client must not dispatch an unsupported method
+- close support does not imply delete support
+- delete support does not imply close support
+
+Close cancels active work as if `session/cancel` had been called, frees the
+agent's active resources, and returns an empty result on success. It preserves
+durable history. The agent may reject a missing or inactive target.
+
+Delete removes the session from future `session/list` results and returns an
+empty result on success. ACP recommends silent success for an absent target,
+but does not require it. Load after delete and deletion of an active session
+remain implementation-defined. Portable deletion truth is `HistoryRemoved`;
+soft deletion, data deletion, hard deletion, descendants, idempotency, and
+missing-target behavior need exact adapter evidence under Contract 038.
+
+The stdio and explicit remote transports carry the same bounded
+`swallowtail_protocol_acp::Message` records. Physical framing, affinity,
+recovery, and fallback remain transport concerns. No lifecycle method can
+trigger implicit transport substitution.
 
 ## Session And Turn Lifecycle
 

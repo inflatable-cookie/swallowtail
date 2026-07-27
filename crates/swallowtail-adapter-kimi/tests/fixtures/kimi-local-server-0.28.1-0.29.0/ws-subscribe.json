@@ -1,0 +1,1 @@
+{"type":"subscribe","id":"fixture-request-private","payload":{"session_ids":["fixture-session-private"],"cursors":{"fixture-session-private":{"seq":7,"epoch":"fixture-epoch-private"}}}}

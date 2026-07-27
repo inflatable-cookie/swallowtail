@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-26
+Updated: 2026-07-27
 
 ## Generations
 
@@ -27,4 +27,10 @@ Soundcheck migration, and packaged consumer runtime proof. Roadmaps 007-014
 sequence provider-wide facade foundations, representative cross-shape proofs,
 all remaining production routes, packaged acceptance, replacement candidate
 evidence, canonical source provenance, and consumer hardening. No package
-publication, tag, or release mutation is implied.
+publication, tag, or release mutation is implied. Roadmaps 015-019 add
+provider-session management foundations, Codex archive/restore/delete,
+ACP/Claude Agent and OpenCode deletion proofs, provider-wide acceptance, and a
+Nucleus handoff without absorbing consumer thread state. Roadmap 020 adds the
+separate Kimi Code local REST/WebSocket route, reversible archive and restore,
+explicit ACP binding import, and interactive execution without claiming Kimi
+deletion or changing ACP.

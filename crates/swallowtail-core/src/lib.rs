@@ -24,6 +24,7 @@ mod planned_connection_rollover;
 mod preflight;
 mod provider_agent;
 mod provider_reference;
+mod provider_session_management;
 mod realtime_media;
 mod registration;
 mod remote_acp;
@@ -90,6 +91,13 @@ pub use preflight::{
 };
 pub use provider_agent::{ProviderAgentBinding, ProviderAgentId, ProviderAgentVersion};
 pub use provider_reference::{ProviderRequestRef, RunRef, SessionRef, TurnRef};
+pub use provider_session_management::{
+    ProviderSessionActivityEvidence, ProviderSessionAffectedScope, ProviderSessionBindingOrigin,
+    ProviderSessionCancellationPosture, ProviderSessionDeletionStrength,
+    ProviderSessionEffectTruth, ProviderSessionInitialStateRequirement,
+    ProviderSessionInterfaceCompatibility, ProviderSessionLifecycleState,
+    ProviderSessionManagementAction, ProviderSessionManagementEffect,
+};
 pub use realtime_media::{
     AudioEncoding, MediaDirection, MediaFormat, MediaKind, RealtimeMediaConfig,
     RealtimeMediaRequirements,

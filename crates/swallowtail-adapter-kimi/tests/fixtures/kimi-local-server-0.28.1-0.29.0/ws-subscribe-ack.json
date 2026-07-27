@@ -1,0 +1,1 @@
+{"type":"ack","id":"fixture-request-private","code":0,"msg":"success","payload":{"accepted":["fixture-session-private"],"not_found":[],"resync_required":[],"cursors":{"fixture-session-private":{"seq":9,"epoch":"fixture-epoch-private"}}}}

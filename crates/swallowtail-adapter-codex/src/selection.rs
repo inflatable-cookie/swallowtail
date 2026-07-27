@@ -6,6 +6,13 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::RuntimeFailure;
 
+mod lifecycle;
+
+pub use lifecycle::codex_app_server_lifecycle_claim;
+pub(crate) use lifecycle::{
+    CodexLifecycleAssessment, CodexLifecycleBehavior, classify_lifecycle_version,
+};
+
 pub const CODEX_CLI_AXIS: &str = "codex.cli";
 pub const CODEX_EXEC_BASELINE_VERSION: &str = "0.80.0";
 pub const CODEX_APP_SERVER_BASELINE_VERSION: &str = "0.80.0";

@@ -3,8 +3,8 @@ use swallowtail_core::{
     ReasoningMode,
 };
 use swallowtail_runtime::{
-    AttachmentDescriptor, Deadline, OperationContent, RequestId, SessionOptions,
-    StructuredOutputDescriptor, ToolDeclaration, WorkingResourceRef,
+    AttachmentDescriptor, Deadline, OperationContent, ProviderSessionManagementBinding, RequestId,
+    SessionOptions, StructuredOutputDescriptor, ToolDeclaration, WorkingResourceRef,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -48,6 +48,54 @@ pub struct CodexSessionProfileInput {
     working_resource: WorkingResourceRef,
     deadline: Option<Deadline>,
     options: SessionOptions,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct CodexSessionManagementInput {
+    request_id: RequestId,
+    binding: ProviderSessionManagementBinding,
+    deadline: Option<Deadline>,
+    allow_unverified_newer: bool,
+}
+
+impl CodexSessionManagementInput {
+    #[must_use]
+    pub const fn new(request_id: RequestId, binding: ProviderSessionManagementBinding) -> Self {
+        Self {
+            request_id,
+            binding,
+            deadline: None,
+            allow_unverified_newer: false,
+        }
+    }
+
+    #[must_use]
+    pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
+        self.deadline = Some(deadline);
+        self
+    }
+
+    #[must_use]
+    pub const fn allow_unverified_newer(mut self) -> Self {
+        self.allow_unverified_newer = true;
+        self
+    }
+
+    pub(crate) fn into_parts(
+        self,
+    ) -> (
+        RequestId,
+        ProviderSessionManagementBinding,
+        Option<Deadline>,
+        bool,
+    ) {
+        (
+            self.request_id,
+            self.binding,
+            self.deadline,
+            self.allow_unverified_newer,
+        )
+    }
 }
 
 impl CodexSessionProfileInput {

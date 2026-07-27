@@ -1,6 +1,7 @@
 use super::*;
 
 mod session;
+mod session_management;
 mod topology;
 mod workspace;
 

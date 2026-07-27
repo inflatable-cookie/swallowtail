@@ -1,13 +1,24 @@
 release_version=0.1.0
 
-release_patch_args=(
-  --config 'patch.crates-io.swallowtail-core.path="crates/swallowtail-core"'
-  --config 'patch.crates-io.swallowtail-host-local.path="crates/swallowtail-host-local"'
-  --config 'patch.crates-io.swallowtail-protocol-acp.path="crates/swallowtail-protocol-acp"'
-  --config 'patch.crates-io.swallowtail-protocol-openai-chat.path="crates/swallowtail-protocol-openai-chat"'
-  --config 'patch.crates-io.swallowtail-runtime.path="crates/swallowtail-runtime"'
-  --config 'patch.crates-io.swallowtail-testkit.path="crates/swallowtail-testkit"'
+release_internal_patch_packages=(
+  swallowtail-core
+  swallowtail-host-local
+  swallowtail-protocol-acp
+  swallowtail-protocol-openai-chat
+  swallowtail-runtime
+  swallowtail-testkit
+  swallowtail-transport-acp-remote
 )
+
+release_patch_args=()
+for release_internal_patch_package in \
+  "${release_internal_patch_packages[@]}"
+do
+  release_patch_args+=(
+    --config
+    "patch.crates-io.$release_internal_patch_package.path=\"crates/$release_internal_patch_package\""
+  )
+done
 
 release_stage_1=(
   swallowtail-core

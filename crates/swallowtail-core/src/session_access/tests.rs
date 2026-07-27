@@ -65,6 +65,35 @@ fn observed_provider_requests_are_explicit_and_default_to_reject() {
 }
 
 #[test]
+fn consumer_mediated_provider_requests_are_explicit_and_exact() {
+    let approval = ExtensionNamespace::new("example.approval").unwrap();
+    let question = ExtensionNamespace::new("example.question").unwrap();
+    let policy = SessionAccessPolicy::ambient_harness_with_consumer_mediated_requests(
+        ResourceAccess::ReadWrite,
+        [approval.clone(), question.clone()],
+    );
+
+    assert_eq!(
+        policy.approval_policy(),
+        ProviderApprovalPolicy::ConsumerMediated
+    );
+    assert_eq!(
+        policy.provider_requests().handling_for(&approval),
+        ProviderRequestHandling::Exchange
+    );
+    assert_eq!(
+        policy.provider_requests().handling_for(&question),
+        ProviderRequestHandling::Exchange
+    );
+    assert_eq!(
+        policy
+            .provider_requests()
+            .handling_for(&ExtensionNamespace::new("example.other").unwrap()),
+        ProviderRequestHandling::Reject
+    );
+}
+
+#[test]
 fn external_search_cannot_imply_network_authority() {
     let error = SessionAccessPolicy::new(
         ResourceAccess::Read,

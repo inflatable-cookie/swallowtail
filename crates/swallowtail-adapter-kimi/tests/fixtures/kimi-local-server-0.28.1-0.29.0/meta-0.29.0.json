@@ -1,0 +1,1 @@
+{"code":0,"msg":"success","data":{"server_version":"0.29.0","capabilities":{"websocket":true,"file_upload":true,"fs_query":true,"mcp":true,"tasks":true,"terminal":true},"server_id":"fixture-server-0290","started_at":"2026-07-27T00:00:00.000Z","open_in_apps":[],"dangerous_bypass_auth":false,"backend":"v2"},"request_id":"fixture-meta-0290"}

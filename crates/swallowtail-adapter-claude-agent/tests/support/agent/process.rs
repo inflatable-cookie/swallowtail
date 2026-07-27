@@ -1,10 +1,22 @@
 use super::*;
 
-pub(in crate::support) struct FixtureProcessHandle(pub(in crate::support) Arc<SharedAgent>);
+pub(in crate::support) struct FixtureProcessHandle {
+    agent: Arc<SharedAgent>,
+    cleanup: Arc<Mutex<Vec<&'static str>>>,
+}
+
+impl FixtureProcessHandle {
+    pub(in crate::support) fn new(
+        agent: Arc<SharedAgent>,
+        cleanup: Arc<Mutex<Vec<&'static str>>>,
+    ) -> Self {
+        Self { agent, cleanup }
+    }
+}
 
 impl ProcessHandle for FixtureProcessHandle {
     fn write_stdin(&self, chunk: ProcessInputChunk) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
-        let result = self.0.handle_write(chunk);
+        let result = self.agent.handle_write(chunk);
         Box::pin(async move { result })
     }
 
@@ -14,10 +26,14 @@ impl ProcessHandle for FixtureProcessHandle {
 
     fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
         Box::pin(async move {
-            let mut state = self.0.state.lock().expect("fixture agent lock poisoned");
+            let mut state = self
+                .agent
+                .state
+                .lock()
+                .expect("fixture agent lock poisoned");
             while state.output.is_empty() && !state.stopped {
                 state = self
-                    .0
+                    .agent
                     .changed
                     .wait(state)
                     .expect("fixture agent wait lock poisoned");
@@ -35,15 +51,23 @@ impl ProcessHandle for FixtureProcessHandle {
     }
 
     fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+        self.cleanup
+            .lock()
+            .expect("fixture cleanup lock poisoned")
+            .push("process_joined");
         Box::pin(async { Ok(ProcessExit::new(true, Some(0))) })
     }
 }
 
 impl FixtureProcessHandle {
     fn stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
-        let mut state = self.0.state.lock().expect("fixture agent lock poisoned");
+        let mut state = self
+            .agent
+            .state
+            .lock()
+            .expect("fixture agent lock poisoned");
         state.stopped = true;
-        self.0.changed.notify_all();
+        self.agent.changed.notify_all();
         Box::pin(async { Ok(()) })
     }
 }

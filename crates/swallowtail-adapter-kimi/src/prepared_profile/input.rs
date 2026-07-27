@@ -47,7 +47,7 @@ impl KimiSessionProfileInput {
         }
     }
 
-    pub(super) fn into_parts(
+    pub(crate) fn into_parts(
         self,
     ) -> (
         RequestId,
@@ -65,7 +65,7 @@ impl KimiSessionProfileInput {
 }
 
 impl KimiModelSelection {
-    pub(super) fn into_parts(self) -> (ModelRouteId, ModelRouteRevision, ModelId) {
+    pub(crate) fn into_parts(self) -> (ModelRouteId, ModelRouteRevision, ModelId) {
         (self.route_id, self.route_revision, self.model_id)
     }
 }

@@ -1,0 +1,1 @@
+{"openapi":"3.0.3","info":{"title":"Kimi Code API","version":"fixture"},"paths":{"/api/v1/healthz":{"get":{}},"/api/v1/meta":{"get":{}},"/api/v1/sessions":{"get":{},"post":{}},"/api/v1/sessions/{session_id}":{"get":{}},"/api/v1/sessions/{session_id}:archive":{"post":{}},"/api/v1/sessions/{session_id}:restore":{"post":{}}}}

@@ -2,7 +2,7 @@ use futures_channel::oneshot;
 use futures_executor::block_on;
 use std::io::{Read, Write};
 use std::net::{TcpListener, TcpStream};
-use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
 use std::thread::{self, JoinHandle};
 use std::time::{Duration, Instant};
@@ -18,13 +18,21 @@ const UNKNOWN: &str = include_str!("../fixtures/opencode-1.14.48/unknown-event.s
 const DISCONNECT: &str = include_str!("../fixtures/opencode-1.14.48/disconnect.sse");
 const ABORTED: &str = include_str!("../fixtures/opencode-1.14.48/aborted.sse");
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Eq, PartialEq)]
+#[allow(dead_code)]
 pub enum StreamFixture {
     Success,
     ProviderError,
     Unknown,
     Disconnect,
     WaitForAbort,
+    DeleteMissing,
+    DeleteUnauthorized,
+    DeleteServerError,
+    DeleteMalformedSuccess,
+    DeleteDisconnect,
+    DeleteDelayed,
+    DeleteHealthDrift,
 }
 
 pub struct FixtureServer {
@@ -53,17 +61,39 @@ impl FixtureServer {
         let server_version = Arc::new(server_version.to_owned());
         let thread = thread::spawn(move || {
             let aborted = Arc::new(AtomicBool::new(false));
+            let health_requests = Arc::new(AtomicUsize::new(0));
             let mut handlers = Vec::new();
             while !server_stop.load(Ordering::SeqCst) {
                 match listener.accept() {
                     Ok((stream, _)) => {
-                        let requests = Arc::clone(&server_requests);
-                        let stop = Arc::clone(&server_stop);
-                        let aborted = Arc::clone(&aborted);
-                        let server_version = Arc::clone(&server_version);
-                        handlers.push(thread::spawn(move || {
-                            handle(stream, fixture, requests, aborted, stop, &server_version);
-                        }));
+                        if fixture == StreamFixture::WaitForAbort {
+                            let requests = Arc::clone(&server_requests);
+                            let stop = Arc::clone(&server_stop);
+                            let aborted = Arc::clone(&aborted);
+                            let health_requests = Arc::clone(&health_requests);
+                            let server_version = Arc::clone(&server_version);
+                            handlers.push(thread::spawn(move || {
+                                handle(
+                                    stream,
+                                    fixture,
+                                    requests,
+                                    aborted,
+                                    health_requests,
+                                    stop,
+                                    &server_version,
+                                );
+                            }));
+                        } else {
+                            handle(
+                                stream,
+                                fixture,
+                                Arc::clone(&server_requests),
+                                Arc::clone(&aborted),
+                                Arc::clone(&health_requests),
+                                Arc::clone(&server_stop),
+                                &server_version,
+                            );
+                        }
                     }
                     Err(error) if error.kind() == std::io::ErrorKind::WouldBlock => {
                         thread::sleep(Duration::from_millis(1));
@@ -93,6 +123,11 @@ impl FixtureServer {
             .expect("fixture request lock poisoned")
             .clone()
     }
+
+    #[allow(dead_code)]
+    pub fn request_log(&self) -> Arc<Mutex<Vec<String>>> {
+        Arc::clone(&self.requests)
+    }
 }
 
 impl Drop for FixtureServer {
@@ -110,9 +145,13 @@ fn handle(
     fixture: StreamFixture,
     requests: Arc<Mutex<Vec<String>>>,
     aborted: Arc<AtomicBool>,
+    health_requests: Arc<AtomicUsize>,
     stop: Arc<AtomicBool>,
     server_version: &str,
 ) {
+    stream
+        .set_nonblocking(false)
+        .expect("accepted fixture stream is blocking");
     stream
         .set_read_timeout(Some(Duration::from_secs(2)))
         .expect("read timeout sets");
@@ -127,10 +166,17 @@ fn handle(
         .split_once(' ')
         .map_or(target.as_str(), |(_, target)| target);
     if path.starts_with("/global/health") {
+        let health_request = health_requests.fetch_add(1, Ordering::SeqCst);
+        let observed_version =
+            if matches!(fixture, StreamFixture::DeleteHealthDrift) && health_request >= 2 {
+                "1.18.5"
+            } else {
+                server_version
+            };
         respond_json(
             &mut stream,
             200,
-            &serde_json::json!({"healthy": true, "version": server_version}).to_string(),
+            &serde_json::json!({"healthy": true, "version": observed_version}).to_string(),
         );
     } else if path.starts_with("/provider") {
         let fixture: serde_json::Value =
@@ -146,6 +192,30 @@ fn handle(
         let mut body = fixture[2]["response"]["body"].clone();
         body["version"] = serde_json::Value::String(server_version.to_owned());
         respond_json(&mut stream, 200, &body.to_string());
+    } else if target.starts_with("DELETE ") && path.starts_with("/session/") {
+        match fixture {
+            StreamFixture::DeleteMissing => respond_json(
+                &mut stream,
+                404,
+                r#"{"error":"private missing-target detail"}"#,
+            ),
+            StreamFixture::DeleteUnauthorized => respond_json(
+                &mut stream,
+                401,
+                r#"{"error":"private authorization detail"}"#,
+            ),
+            StreamFixture::DeleteServerError => {
+                respond_json(&mut stream, 500, r#"{"error":"private server detail"}"#)
+            }
+            StreamFixture::DeleteMalformedSuccess => respond_json(&mut stream, 200, "false"),
+            StreamFixture::DeleteDisconnect => {}
+            StreamFixture::DeleteDelayed => {
+                thread::sleep(Duration::from_millis(100));
+                respond_json(&mut stream, 200, "true");
+            }
+            StreamFixture::DeleteHealthDrift => respond_json(&mut stream, 200, "true"),
+            _ => respond_json(&mut stream, 200, "true"),
+        }
     } else if path.contains("/prompt_async?") {
         respond_empty(&mut stream, 204);
     } else if path.contains("/abort?") {
@@ -216,7 +286,16 @@ fn respond_sse(
     )
     .expect("SSE headers write");
     match fixture {
-        StreamFixture::Success => stream.write_all(SUCCESS.as_bytes()).expect("SSE writes"),
+        StreamFixture::Success
+        | StreamFixture::DeleteMissing
+        | StreamFixture::DeleteUnauthorized
+        | StreamFixture::DeleteServerError
+        | StreamFixture::DeleteMalformedSuccess
+        | StreamFixture::DeleteDisconnect
+        | StreamFixture::DeleteDelayed
+        | StreamFixture::DeleteHealthDrift => {
+            stream.write_all(SUCCESS.as_bytes()).expect("SSE writes")
+        }
         StreamFixture::ProviderError => stream
             .write_all(PROVIDER_ERROR.as_bytes())
             .expect("SSE writes"),

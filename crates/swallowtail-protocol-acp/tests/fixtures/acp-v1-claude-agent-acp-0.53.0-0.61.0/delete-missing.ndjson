@@ -1,0 +1,2 @@
+{"direction":"client_to_agent","message":{"jsonrpc":"2.0","id":14,"method":"session/delete","params":{"sessionId":"55555555-5555-4555-8555-555555555555"}}}
+{"direction":"agent_to_client","message":{"jsonrpc":"2.0","id":14,"error":{"code":-32603,"message":"Internal error","data":{"details":"Session <provider-id> not found in any project directory"}}}}

@@ -183,14 +183,7 @@ CARGO_TARGET_DIR="$release_tmp/target/soundcheck" \
     printf '  "%s",\n' "$release_package"
   done
   printf ']\n\n[patch.crates-io]\n'
-  for release_package in \
-    swallowtail-core \
-    swallowtail-host-local \
-    swallowtail-protocol-acp \
-    swallowtail-protocol-openai-chat \
-    swallowtail-runtime \
-    swallowtail-testkit
-  do
+  for release_package in "${release_internal_patch_packages[@]}"; do
     printf '%s = { path = "%s" }\n' \
       "$release_package" "$release_package"
   done

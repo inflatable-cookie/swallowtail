@@ -34,11 +34,13 @@ use services::{FixtureTime, ThreadTaskService};
 pub struct FixtureHost {
     agent: Arc<SharedAgent>,
     process: Arc<Mutex<Option<ObservedProcess>>>,
+    cleanup: Arc<Mutex<Vec<&'static str>>>,
     reads: Arc<AtomicUsize>,
     resource_releases: Arc<AtomicUsize>,
     credential_acquires: Arc<AtomicUsize>,
     credential_releases: Arc<AtomicUsize>,
     immediate_deadline: bool,
+    deadline_after_waits: Option<usize>,
 }
 
 impl FixtureHost {
@@ -46,11 +48,13 @@ impl FixtureHost {
         Self {
             agent: SharedAgent::new(scenario, version),
             process: Arc::new(Mutex::new(None)),
+            cleanup: Arc::new(Mutex::new(Vec::new())),
             reads: Arc::new(AtomicUsize::new(0)),
             resource_releases: Arc::new(AtomicUsize::new(0)),
             credential_acquires: Arc::new(AtomicUsize::new(0)),
             credential_releases: Arc::new(AtomicUsize::new(0)),
             immediate_deadline: false,
+            deadline_after_waits: None,
         }
     }
 
@@ -59,10 +63,19 @@ impl FixtureHost {
         self
     }
 
+    #[allow(dead_code)]
+    pub fn with_deadline_after_waits(mut self, waits: usize) -> Self {
+        self.deadline_after_waits = Some(waits);
+        self
+    }
+
     pub fn services(&self, host: ExecutionHostId) -> HostServices {
         HostServices::new(host)
             .with_task(Arc::new(ThreadTaskService))
-            .with_time(Arc::new(FixtureTime::new(self.immediate_deadline)))
+            .with_time(Arc::new(FixtureTime::new(
+                self.immediate_deadline,
+                self.deadline_after_waits,
+            )))
             .with_process(Arc::new(self.clone()))
             .with_credential(Arc::new(self.clone()))
             .with_working_resource(Arc::new(self.clone()))
@@ -99,6 +112,19 @@ impl FixtureHost {
             .lock()
             .expect("fixture agent lock poisoned")
             .writes
+            .clone()
+    }
+
+    #[allow(dead_code)]
+    pub fn wait_for_write(&self, method: &str) {
+        self.agent.wait_for_method(method);
+    }
+
+    #[allow(dead_code)]
+    pub fn cleanup_events(&self) -> Vec<&'static str> {
+        self.cleanup
+            .lock()
+            .expect("fixture cleanup lock poisoned")
             .clone()
     }
 }

@@ -4,6 +4,8 @@ pub enum SessionProviderStatePolicy {
     /// The session may not create durable provider-owned conversation state.
     #[default]
     Prohibited,
+    /// Durable provider-owned session state survives runtime attachment close.
+    DurableProviderSessionPreserved,
     /// One driver-owned conversation may live until item-and-conversation deletion on close.
     DurableConversationDeleteOnClose,
 }
@@ -11,7 +13,10 @@ pub enum SessionProviderStatePolicy {
 impl SessionProviderStatePolicy {
     #[must_use]
     pub const fn permits_durable_conversation(self) -> bool {
-        matches!(self, Self::DurableConversationDeleteOnClose)
+        matches!(
+            self,
+            Self::DurableProviderSessionPreserved | Self::DurableConversationDeleteOnClose
+        )
     }
 
     #[must_use]
@@ -30,5 +35,8 @@ mod tests {
         let policy = SessionProviderStatePolicy::DurableConversationDeleteOnClose;
         assert!(policy.permits_durable_conversation());
         assert!(policy.requires_delete_on_close());
+        let preserved = SessionProviderStatePolicy::DurableProviderSessionPreserved;
+        assert!(preserved.permits_durable_conversation());
+        assert!(!preserved.requires_delete_on_close());
     }
 }

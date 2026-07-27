@@ -45,6 +45,24 @@
 - `042-nucleus-sustained-workload-hardening.md`
 - `044-hardened-candidate-refresh-and-release-reassessment.md`
 - `045-codex-discovery-exit-diagnostics.md`
+- `046-provider-session-management-records.md`
+- `047-provider-session-management-runtime-role.md`
+- `048-provider-session-management-conformance.md`
+- `049-codex-lifecycle-range-corpus.md`
+- `050-codex-thread-management-driver-and-facade.md`
+- `051-codex-thread-management-conformance-and-closeout.md`
+- `052-acp-v1-lifecycle-currentness-and-corpus.md`
+- `053-claude-agent-acp-session-management.md`
+- `054-claude-agent-lifecycle-portability-closeout.md`
+- `055-opencode-deletion-range-corpus.md`
+- `056-opencode-session-deletion-driver-and-facade.md`
+- `057-opencode-session-deletion-conformance-and-closeout.md`
+- `058-provider-wide-session-lifecycle-matrix.md`
+- `061-kimi-local-server-range-and-protocol-corpus.md`
+- `062-kimi-local-server-lifecycle-driver.md`
+- `063-kimi-cross-transport-binding-import-and-conformance.md`
+- `064-kimi-local-server-interactive-driver.md`
+- `065-kimi-local-server-acceptance-and-package-closeout.md`
 
 ## Superseded
 
@@ -59,12 +77,13 @@ None. Cross-generation deferred work lives in `docs/roadmaps/backlog/`.
 
 ## Active
 
-None.
+None. Awaiting operator review.
 
 ## Planned
 
-None.
+- `060-nucleus-thread-lifecycle-adoption-handoff.md`
 
 ## Paused
 
-None.
+- `059-packaged-provider-session-lifecycle-proof.md` — transient candidate
+  passes; retained replacement waits for canonical source history

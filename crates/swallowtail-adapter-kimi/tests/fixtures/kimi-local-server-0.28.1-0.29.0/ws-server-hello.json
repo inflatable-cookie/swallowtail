@@ -1,0 +1,1 @@
+{"type":"server_hello","timestamp":"2026-07-27T00:00:00.000Z","payload":{"ws_connection_id":"fixture-connection-private","protocol_version":2,"max_event_buffer_size":1000,"capabilities":{"event_batching":false,"compression":false}}}

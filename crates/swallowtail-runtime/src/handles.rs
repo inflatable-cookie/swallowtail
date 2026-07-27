@@ -1,9 +1,10 @@
 use crate::{
     BoxEventStream, BoxFuture, BoxRealtimeMediaEventStream, CallbackExchange, CancellationControl,
     CleanupOutcome, DirectContinuationTurnRequest, DirectToolExchange, HarnessCommandResponse,
-    HarnessScheduledMessage, HostServices, MediaChunk, MediaInputCommit, RequestId, RuntimeFailure,
-    RuntimeRunId, RuntimeSessionId, RuntimeTurnId, ServingEndpointBinding, ServingInstanceId,
-    SessionResumeBinding, TerminalOutcome, TurnRequest,
+    HarnessScheduledMessage, HostServices, MediaChunk, MediaInputCommit,
+    ProviderSessionManagementBinding, RequestId, RuntimeFailure, RuntimeRunId, RuntimeSessionId,
+    RuntimeTurnId, ServingEndpointBinding, ServingInstanceId, SessionResumeBinding,
+    TerminalOutcome, TurnRequest,
 };
 use swallowtail_core::{ExecutionHostId, InstanceOwnership, RunRef, SessionRef, TurnRef};
 
@@ -51,6 +52,9 @@ pub trait InteractiveSessionHandle: Send {
     fn session_id(&self) -> &RuntimeSessionId;
     fn provider_session_ref(&self) -> Option<&SessionRef>;
     fn resume_binding(&self) -> Option<&SessionResumeBinding>;
+    fn management_binding(&self) -> Option<&ProviderSessionManagementBinding> {
+        None
+    }
     fn start_turn<'a>(
         &'a mut self,
         request: TurnRequest,

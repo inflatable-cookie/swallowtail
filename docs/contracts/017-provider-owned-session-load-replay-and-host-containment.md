@@ -38,6 +38,12 @@ diagnostic, or supplied as an unbound string has no authority to attach.
 Consumers may persist an opaque binding, but Swallowtail does not provide a
 session database or infer consumer persistence policy.
 
+The preflight-bound provider-state policy distinguishes durable state
+preserved on runtime attachment close from driver-owned temporary state which
+must be deleted on close. Neither posture authorizes archive, restore, or
+delete. A persistent harness route cannot use `Prohibited` or delete-on-close
+as a stand-in for preserved provider state.
+
 ## New, Load, And Resume
 
 New, load, and resume remain separate lifecycle operations:
@@ -211,9 +217,10 @@ silently substitute OAuth, API keys, cloud identity, or another provider.
   order
 - provider completion never hides cleanup degradation or failure
 
-Deletion, retention, export, history compaction, and garbage collection of
-provider sessions remain provider or consumer policy and are not implied by
-close.
+Retention, export, history compaction, and garbage collection of provider
+sessions remain provider or consumer policy and are not implied by close.
+Contract 038 separately governs explicit user-directed archive, restore, and
+deletion of one bound inactive provider session.
 
 ## Conformance
 

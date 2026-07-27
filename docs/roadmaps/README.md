@@ -12,10 +12,11 @@ shape.
 
 ## Next Task
 
-Validate the active `0.1.0` candidate through continued ordinary Nucleus and
-Soundcheck soak use. Record concrete defects at the narrowest owning boundary
-and add deterministic regressions before repair. Do not create a synthetic UI
-workload or publish, push, tag, create a release, or change registry state.
+Review completed
+[g02 card 065](g02/batch-cards/065-kimi-local-server-acceptance-and-package-closeout.md),
+then decide whether to authorize
+[g02 card 060](g02/batch-cards/060-nucleus-thread-lifecycle-adoption-handoff.md).
+No Swallowtail task is active pending that operator decision.
 
 ## Index
 
@@ -24,7 +25,7 @@ workload or publish, push, tag, create a release, or change registry state.
 - `backlog/README.md` — deferred work and promotion gates
 - `g01/README.md` — completed foundation generation
 - `g02/README.md` — active stabilization, provider-wide facade, and release
-  runway
+  runway, including provider-session lifecycle
 
 ## Generation Shape
 

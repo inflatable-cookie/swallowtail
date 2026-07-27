@@ -43,6 +43,19 @@ fn validate_policy(
                 Ok(())
             }
         }
+        SessionProviderStatePolicy::DurableProviderSessionPreserved => {
+            if durable.is_none() {
+                Err(failure(
+                    "Durable provider session policy lacks retention capability",
+                ))
+            } else if deletion.is_some_and(has_conversation_deletion) {
+                Err(failure(
+                    "Preserved provider session policy conflicts with delete-on-close capability",
+                ))
+            } else {
+                Ok(())
+            }
+        }
         SessionProviderStatePolicy::DurableConversationDeleteOnClose => {
             if durable.is_none() {
                 return Err(failure(

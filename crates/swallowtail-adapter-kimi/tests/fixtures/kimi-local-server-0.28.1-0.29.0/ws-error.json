@@ -1,0 +1,1 @@
+{"type":"error","timestamp":"2026-07-27T00:00:04.000Z","payload":{"code":50001,"msg":"private socket failure","fatal":true,"request_id":"fixture-request-private","details":{"path":"/private/workspace"}}}

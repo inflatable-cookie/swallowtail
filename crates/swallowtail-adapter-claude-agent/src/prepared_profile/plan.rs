@@ -120,7 +120,7 @@ pub(super) fn requirements(
 pub(super) fn build_plan(
     prepared: &ClaudeAgentPreparedIntegration,
     instance: &ConfiguredInstance,
-    route: &ModelRoute,
+    route: Option<&ModelRoute>,
     requirements: &OperationRequirements,
 ) -> Result<PreflightPlan, PreparationFailure> {
     let descriptor = crate::claude_agent_acp_descriptor();
@@ -130,8 +130,11 @@ pub(super) fn build_plan(
         prepared.access_profile(),
         prepared.access_evidence().status(),
         prepared.available_host_services(),
-    )
-    .with_model_route(route);
+    );
+    let context = match route {
+        Some(route) => context.with_model_route(route),
+        None => context,
+    };
     preflight(&context, requirements).map_err(|error| {
         PreparationFailure::new(
             PreparationStage::Preflight,

@@ -1,3 +1,7 @@
+use super::lifecycle::{
+    ARCHIVE_BEHAVIOR, DESCENDANT_ARCHIVE_BEHAVIOR, HARD_DELETE_BEHAVIOR, NOTIFICATIONS_BEHAVIOR,
+    RESTORE_BEHAVIOR,
+};
 use super::*;
 use swallowtail_core::{InterfaceSupportStatus, InterfaceVersion};
 use swallowtail_testkit::{ClosedSemanticWindowCase, assert_closed_semantic_compatibility_window};
@@ -91,4 +95,74 @@ fn app_server_claim_dispatches_at_workspace_root_milestone() {
     ] {
         assert!(!claim.supports(codex_cli_binding(version).version()));
     }
+}
+
+#[test]
+fn app_server_lifecycle_claim_preserves_session_range_with_narrower_capabilities() {
+    let claim = codex_app_server_lifecycle_claim();
+    let cases = [
+        (
+            "0.80.0",
+            ARCHIVE_BEHAVIOR,
+            InterfaceSupportStatus::Deprecated,
+        ),
+        (
+            "0.91.0",
+            ARCHIVE_BEHAVIOR,
+            InterfaceSupportStatus::Deprecated,
+        ),
+        (
+            "0.92.0",
+            RESTORE_BEHAVIOR,
+            InterfaceSupportStatus::Deprecated,
+        ),
+        (
+            "0.104.0",
+            NOTIFICATIONS_BEHAVIOR,
+            InterfaceSupportStatus::Deprecated,
+        ),
+        (
+            "0.110.0",
+            NOTIFICATIONS_BEHAVIOR,
+            InterfaceSupportStatus::Maintained,
+        ),
+        (
+            "0.123.0",
+            DESCENDANT_ARCHIVE_BEHAVIOR,
+            InterfaceSupportStatus::Maintained,
+        ),
+        (
+            "0.140.0",
+            HARD_DELETE_BEHAVIOR,
+            InterfaceSupportStatus::Maintained,
+        ),
+        (
+            "0.145.0",
+            HARD_DELETE_BEHAVIOR,
+            InterfaceSupportStatus::Maintained,
+        ),
+    ];
+
+    for (version, behavior, status) in cases {
+        let matched = claim
+            .classify(codex_cli_binding(version).version())
+            .expect("qualified version has a lifecycle segment");
+        assert_eq!(matched.behavior_revision().as_str(), behavior);
+        assert_eq!(matched.support_status(), status);
+    }
+
+    for version in ["0.82.0", "0.83.0", "0.108.0", "0.109.0"] {
+        assert!(
+            codex_app_server_claim().supports(codex_cli_binding(version).version())
+                == claim.supports(codex_cli_binding(version).version())
+        );
+        assert!(!claim.supports(codex_cli_binding(version).version()));
+    }
+
+    let unverified = claim.assess(codex_cli_binding("0.146.0").version());
+    assert!(unverified.is_permitted());
+    assert_eq!(
+        unverified.behavior_revision().unwrap().as_str(),
+        HARD_DELETE_BEHAVIOR
+    );
 }

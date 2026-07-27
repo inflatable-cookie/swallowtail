@@ -44,6 +44,8 @@ mod profile_session_access;
 mod profile_shape;
 mod profiles;
 mod provider_conversation_fixture;
+mod provider_session_management_assertions;
+mod provider_session_management_fixture;
 mod realtime_media_fixture;
 mod recording_host;
 mod remote_acp_fixture;
@@ -90,6 +92,11 @@ pub use profiles::{
 };
 pub use provider_conversation_fixture::{
     ProviderConversationPreflightCase, ProviderConversationPreflightFixture,
+};
+pub use provider_session_management_assertions::assert_provider_session_management_contract;
+pub use provider_session_management_fixture::{
+    ProviderSessionManagementBindingDrift, ProviderSessionManagementFixture,
+    ProviderSessionManagementFixtureCase,
 };
 pub use realtime_media_fixture::{RealtimeMediaPreflightCase, RealtimeMediaPreflightFixture};
 pub use recording_host::{

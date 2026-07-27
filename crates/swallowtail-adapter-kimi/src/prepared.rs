@@ -13,7 +13,7 @@ use swallowtail_core::{
 use swallowtail_runtime::{
     Deadline, DiscoveryCancellation, DiscoveryDriver, EnvironmentRef, HostServices,
     InstalledExecutableDiscoveryRequest, InstalledExecutableTarget, PreparationFailure,
-    PreparationStage, PreparedAccessEvidence, RequestId, ScopeId,
+    PreparationStage, PreparedAccessEvidence, RequestId, ScopeId, WorkingResourceRef,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -25,6 +25,7 @@ pub struct KimiPreparationInput {
     environment: EnvironmentRef,
     access_profile: AccessProfile,
     access_evidence: PreparedAccessEvidence,
+    state_root: Option<WorkingResourceRef>,
 }
 
 impl KimiPreparationInput {
@@ -46,7 +47,16 @@ impl KimiPreparationInput {
             environment,
             access_profile,
             access_evidence,
+            state_root: None,
         }
+    }
+
+    /// Binds the opaque Kimi state root needed for later cross-transport
+    /// provider-session authority checks.
+    #[must_use]
+    pub fn with_state_root(mut self, state_root: WorkingResourceRef) -> Self {
+        self.state_root = Some(state_root);
+        self
     }
 }
 
@@ -83,6 +93,7 @@ pub struct KimiPreparedIntegration {
     access_profile: AccessProfile,
     access_evidence: PreparedAccessEvidence,
     instance: ConfiguredInstance,
+    state_root: Option<WorkingResourceRef>,
     available_host_services: BTreeSet<HostServiceKind>,
 }
 
@@ -115,6 +126,11 @@ impl KimiPreparedIntegration {
     #[must_use]
     pub const fn instance(&self) -> &ConfiguredInstance {
         &self.instance
+    }
+
+    #[must_use]
+    pub const fn state_root(&self) -> Option<&WorkingResourceRef> {
+        self.state_root.as_ref()
     }
 
     pub fn available_host_services(&self) -> impl ExactSizeIterator<Item = HostServiceKind> + '_ {
@@ -230,6 +246,7 @@ fn promote(
         access_profile: input.access_profile,
         access_evidence: input.access_evidence,
         instance,
+        state_root: input.state_root,
         available_host_services,
     })
 }

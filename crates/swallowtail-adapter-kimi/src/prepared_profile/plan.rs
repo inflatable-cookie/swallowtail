@@ -13,6 +13,7 @@ pub struct KimiPreparedEvidence {
     observation: swallowtail_core::InstalledExecutableObservation,
     environment: swallowtail_runtime::EnvironmentRef,
     credential: swallowtail_core::CredentialRef,
+    state_root: Option<swallowtail_runtime::WorkingResourceRef>,
     operation: PreparedOperationEvidence,
 }
 
@@ -29,6 +30,7 @@ impl KimiPreparedEvidence {
                 .credential_reference()
                 .expect("prepared Kimi access has one credential reference")
                 .clone(),
+            state_root: prepared.state_root().cloned(),
             operation: PreparedOperationEvidence::from_plan(
                 plan,
                 prepared.access_evidence().clone(),
@@ -49,6 +51,11 @@ impl KimiPreparedEvidence {
     #[must_use]
     pub const fn operation(&self) -> &PreparedOperationEvidence {
         &self.operation
+    }
+
+    #[must_use]
+    pub const fn state_root(&self) -> Option<&swallowtail_runtime::WorkingResourceRef> {
+        self.state_root.as_ref()
     }
 
     #[must_use]

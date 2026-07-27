@@ -100,6 +100,13 @@ fn session_resume_agreement_is_derived_and_unsupported_deadlines_fail_in_prepara
             .expect("bound resume prepares"),
     )
     .expect("bound resume opens");
+    assert_eq!(
+        handle
+            .management_binding()
+            .expect("prepared resume returns management authority")
+            .origin(),
+        swallowtail_core::ProviderSessionBindingOrigin::Resumed
+    );
     assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
     assert!(state.methods().contains(&"thread/resume".to_owned()));
     assert!(state.waited());

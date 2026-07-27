@@ -14,6 +14,7 @@ contracts or architecture.
 - [DeepSeek Prepared Integration](deepseek-prepared-integration.md)
 - [Gemini CLI Prepared Integration](gemini-cli-prepared-integration.md)
 - [Kimi Code Prepared Integration](kimi-prepared-integration.md)
+- [Kimi Local Server Prepared Integration](kimi-local-server-prepared-integration.md)
 - [Kimi Platform Prepared Integration](kimi-platform-prepared-integration.md)
 - [llama.cpp Prepared Integration](llama-cpp-prepared-integration.md)
 - [Ollama Attached Prepared Integration](ollama-attached-prepared-integration.md)

@@ -107,6 +107,20 @@ impl AcpConnection {
         .await
     }
 
+    pub(crate) async fn close_session(&self, session_id: &str) -> Result<(), RuntimeFailure> {
+        let response = self
+            .request("session/close", json!({"sessionId": session_id}))
+            .await?;
+        if response.as_object().is_some_and(serde_json::Map::is_empty) {
+            Ok(())
+        } else {
+            Err(failure(
+                "swallowtail.claude_agent.acp.close_malformed",
+                "Claude Agent returned a malformed ACP session-close response",
+            ))
+        }
+    }
+
     pub(crate) async fn request(
         &self,
         method: &'static str,
@@ -212,6 +226,10 @@ impl AcpConnection {
     pub(crate) async fn begin_close(&self) {
         let _ = self.process.close_stdin().await;
         let _ = self.process.request_stop().await;
+    }
+
+    pub(crate) fn is_closed(&self) -> bool {
+        self.closed.load(Ordering::SeqCst)
     }
 
     pub(crate) async fn cancel_session(&self) -> Result<(), RuntimeFailure> {

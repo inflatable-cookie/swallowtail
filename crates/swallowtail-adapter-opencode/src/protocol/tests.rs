@@ -1,8 +1,9 @@
 #[cfg(test)]
 mod tests {
     use super::{
-        Event, Response, SseDecoder, abort, observe_health, parse_catalog, parse_event,
-        parse_session_for_version, prompt, session_create,
+        Event, Response, SessionDeleteResponse, SseDecoder, abort, classify_session_delete,
+        observe_health, parse_catalog, parse_event, parse_session_for_version, prompt,
+        session_create, session_delete,
     };
     use crate::selection::opencode_server_binding;
     use swallowtail_core::InterfaceCompatibilityAssessment;
@@ -219,6 +220,53 @@ mod tests {
         let abort = abort("ses_fixture", "/workspace/fixture");
         assert_eq!(abort.path, "/session/ses_fixture/abort");
         assert!(abort.body.is_none());
+
+        let delete = session_delete("ses_fixture", "/workspace/fixture").expect("id is safe");
+        assert_eq!(delete.path, "/session/ses_fixture");
+        assert_eq!(
+            delete.query,
+            vec![("directory".to_owned(), "/workspace/fixture".to_owned())]
+        );
+        assert!(delete.body.is_none());
+        assert!(
+            session_delete("ses/unsafe", "/workspace/fixture").is_err(),
+            "provider identity cannot escape its path segment"
+        );
+    }
+
+    #[test]
+    fn delete_response_classification_never_trusts_provider_payloads() {
+        assert_eq!(
+            classify_session_delete(&Response {
+                status: 200,
+                body: b"true".to_vec(),
+            }),
+            SessionDeleteResponse::Applied
+        );
+        for status in [400, 401, 404] {
+            assert_eq!(
+                classify_session_delete(&Response {
+                    status,
+                    body: br#"{"private":"provider detail"}"#.to_vec(),
+                }),
+                SessionDeleteResponse::Rejected
+            );
+        }
+        for response in [
+            Response {
+                status: 200,
+                body: b"false".to_vec(),
+            },
+            Response {
+                status: 500,
+                body: br#"{"private":"provider detail"}"#.to_vec(),
+            },
+        ] {
+            assert_eq!(
+                classify_session_delete(&response),
+                SessionDeleteResponse::Unconfirmed
+            );
+        }
     }
 
     #[test]

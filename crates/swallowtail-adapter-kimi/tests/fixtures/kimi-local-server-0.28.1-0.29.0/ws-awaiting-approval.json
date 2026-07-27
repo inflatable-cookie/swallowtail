@@ -1,0 +1,1 @@
+{"type":"event.session.status_changed","seq":13,"epoch":"fixture-epoch-private","session_id":"fixture-session-private","timestamp":"2026-07-27T00:00:06.000Z","payload":{"status":"awaiting_approval","previous_status":"running","current_prompt_id":"fixture-prompt-private"}}

@@ -1,0 +1,2 @@
+{"direction":"client_to_agent","message":{"jsonrpc":"2.0","id":11,"method":"session/close","params":{"sessionId":"22222222-2222-4222-8222-222222222222"}}}
+{"direction":"agent_to_client","message":{"jsonrpc":"2.0","id":11,"error":{"code":-32603,"message":"Internal error","data":{"details":"Session not found"}}}}

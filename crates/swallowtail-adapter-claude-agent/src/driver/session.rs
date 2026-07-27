@@ -3,8 +3,11 @@ use crate::driver::access::{release_credential, release_resource};
 use crate::driver::handle::{ClaudeAgentTurnHandle, SessionCancellation, TurnCancellation};
 use crate::driver::validation::validate_turn;
 
+mod cleanup;
 mod deadline;
 
+pub(in crate::driver) use cleanup::{cleanup_failure, merge_cleanup};
+use cleanup::{close_provider_session, finish_cleanup, join_connection};
 use deadline::spawn_deadline;
 
 pub(super) type ActiveSlot = Arc<Mutex<Option<ActiveTask>>>;
@@ -21,6 +24,7 @@ pub(super) struct ClaudeAgentSessionHandle {
     pub(super) provider_ref: SessionRef,
     pub(super) provider_id: String,
     pub(super) execution_host_id: swallowtail_core::ExecutionHostId,
+    pub(super) native_close: bool,
     pub(super) connection: Arc<AcpConnection>,
     pub(super) cancellation: SessionCancellation,
     pub(super) pump_task: Option<Box<dyn JoinedTask>>,
@@ -157,37 +161,25 @@ impl InteractiveSessionHandle for ClaudeAgentSessionHandle {
 
     fn close(mut self: Box<Self>) -> BoxFuture<'static, CleanupOutcome> {
         Box::pin(async move {
-            let active = self
+            let mut active = self
                 .active
                 .lock()
                 .expect("ACP active-task lock poisoned")
                 .take();
-            if let Some(mut active) = active {
-                if !active.turn.is_finished() {
-                    active.turn.mark_cancelled();
-                    let _ = self
-                        .connection
-                        .notify("session/cancel", json!({"sessionId": self.provider_id}))
-                        .await;
-                }
-                self.connection.begin_close().await;
-                let _ = join_active(&mut active).await;
-            } else {
-                self.connection.begin_close().await;
+            if let Some(active) = active.as_mut()
+                && !active.turn.is_finished()
+            {
+                active.turn.mark_cancelled();
             }
-            let task = match self.pump_task.take() {
-                Some(task) => match task.join().await {
-                    Ok(()) => self.connection.cleanup_outcome(),
-                    Err(_) => cleanup_failure(
-                        "task_join_failed",
-                        "Claude Agent ACP protocol task did not join cleanly",
-                    ),
-                },
-                None => CleanupOutcome::NotApplicable,
-            };
-            let resource = release_resource(self.resource.take(), &self.services).await;
-            let credential = release_credential(self.credential.take(), &self.services).await;
-            merge_cleanup(merge_cleanup(task, resource), credential)
+            let native_close =
+                close_provider_session(&self.connection, &self.provider_id, self.native_close)
+                    .await;
+            self.connection.begin_close().await;
+            if let Some(active) = active.as_mut() {
+                let _ = join_active(active).await;
+            }
+            let task = join_connection(&mut self).await;
+            finish_cleanup(self, native_close, task).await
         })
     }
 }
@@ -218,27 +210,4 @@ pub(super) async fn join_active(active: &mut ActiveTask) -> Result<(), RuntimeFa
         task.join().await?;
     }
     Ok(())
-}
-
-pub(super) fn cleanup_failure(code: &'static str, message: &'static str) -> CleanupOutcome {
-    CleanupOutcome::Failed(swallowtail_core::SafeDiagnostic::new(
-        "swallowtail.claude_agent.acp.cleanup_failed",
-        format!("{message} ({code})"),
-    ))
-}
-
-pub(super) fn merge_cleanup(left: CleanupOutcome, right: CleanupOutcome) -> CleanupOutcome {
-    match (left, right) {
-        (CleanupOutcome::Failed(error), _) | (_, CleanupOutcome::Failed(error)) => {
-            CleanupOutcome::Failed(error)
-        }
-        (CleanupOutcome::Degraded(error), _) | (_, CleanupOutcome::Degraded(error)) => {
-            CleanupOutcome::Degraded(error)
-        }
-        (CleanupOutcome::Clean, CleanupOutcome::Clean | CleanupOutcome::NotApplicable)
-        | (CleanupOutcome::NotApplicable, CleanupOutcome::Clean) => CleanupOutcome::Clean,
-        (CleanupOutcome::NotApplicable, CleanupOutcome::NotApplicable) => {
-            CleanupOutcome::NotApplicable
-        }
-    }
 }

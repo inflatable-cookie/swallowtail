@@ -17,8 +17,9 @@ pub use prepared::{
     prepare_claude_agent,
 };
 pub use prepared_profile::{
-    ClaudeAgentModelSelection, ClaudeAgentPreparedEvidence, ClaudeAgentPreparedSession,
-    ClaudeAgentPreparedSessionFuture, ClaudeAgentSessionProfileInput,
+    ClaudeAgentModelSelection, ClaudeAgentPreparedDelete, ClaudeAgentPreparedEvidence,
+    ClaudeAgentPreparedSession, ClaudeAgentPreparedSessionFuture,
+    ClaudeAgentSessionManagementInput, ClaudeAgentSessionProfileInput,
 };
 pub use selection::{
     CLAUDE_AGENT_ACP_AXIS, CLAUDE_AGENT_ACP_BASELINE_VERSION,

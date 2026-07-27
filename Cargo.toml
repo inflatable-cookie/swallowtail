@@ -42,6 +42,7 @@ swallowtail-protocol-acp = { path = "crates/swallowtail-protocol-acp", version =
 swallowtail-protocol-openai-chat = { path = "crates/swallowtail-protocol-openai-chat", version = "0.1.0" }
 swallowtail-runtime = { path = "crates/swallowtail-runtime", version = "0.1.0" }
 swallowtail-testkit = { path = "crates/swallowtail-testkit", version = "0.1.0" }
+swallowtail-transport-acp-remote = { path = "crates/swallowtail-transport-acp-remote", version = "0.1.0" }
 
 [workspace.lints.rust]
 unsafe_code = "forbid"

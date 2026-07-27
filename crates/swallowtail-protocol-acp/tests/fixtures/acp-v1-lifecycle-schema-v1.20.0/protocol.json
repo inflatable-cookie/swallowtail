@@ -1,0 +1,53 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-07-27",
+  "protocol": {
+    "wire_version": 1,
+    "schema_artifact": "schema-v1.20.0",
+    "schema_source_commit": "5e89c71497fe07dd4ae633c181a17224f4a8956d",
+    "schema_sha256": "92c1dfcda10dd47e99127500a3763da2b471f9ac61e12b9bf0430c32cf953796",
+    "schema_1_18_through_1_20_lifecycle_shape_unchanged": true
+  },
+  "capabilities": {
+    "container": "agentCapabilities.sessionCapabilities",
+    "close": "close",
+    "delete": "delete",
+    "independent": true,
+    "supported_value": {},
+    "omitted_or_null": "unsupported",
+    "missing_capability": "must_not_dispatch"
+  },
+  "close": {
+    "method": "session/close",
+    "request_required_fields": ["sessionId"],
+    "success_result": {},
+    "active_work": "cancel_then_free_active_resources",
+    "durable_history": "not_deleted",
+    "missing_or_inactive_target": "agent_may_error"
+  },
+  "delete": {
+    "method": "session/delete",
+    "request_required_fields": ["sessionId"],
+    "success_result": {},
+    "portable_deletion_strength": "history_removed",
+    "already_absent": "should_succeed_silently",
+    "load_after_delete": "implementation_defined",
+    "active_target": "implementation_defined",
+    "soft_or_hard": "provider_specific"
+  },
+  "transport": {
+    "stdio": "bounded_ndjson",
+    "remote": ["http2_sse", "websocket"],
+    "shared_record": "swallowtail_protocol_acp.Message",
+    "implicit_fallback": false
+  },
+  "excluded": [
+    "acp_v2",
+    "session_list",
+    "session_import",
+    "session_fork",
+    "session_export",
+    "provider_deletion_strength",
+    "transport_recovery"
+  ]
+}

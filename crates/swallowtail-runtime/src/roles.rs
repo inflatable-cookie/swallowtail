@@ -1,11 +1,13 @@
 use crate::{
-    AttachedServingHandle, AttachmentDescriptor, BoxFuture, Deadline, HostServices,
-    InstalledExecutableDiscoveryRequest, InteractiveSessionHandle, ModelArtifactBinding,
-    OpenDirectContinuationSessionRequest, OpenRealtimeMediaSessionRequest, OperationContent,
-    OperationPolicy, OwnedServingHandle, PreparationFailure, RealtimeMediaSessionHandle, RequestId,
-    RunHandle, RuntimeFailure, RuntimeTurnId, ScopeId, ServingInstanceId, SessionAccessPolicy,
-    SessionOptions, SessionPlanAgreement, SessionReplayItem, SessionResumeBinding,
-    StructuredOutputDescriptor, ToolDeclaration, WorkingResourceRef,
+    ArchiveProviderSessionRequest, AttachedServingHandle, AttachmentDescriptor, BoxFuture,
+    Deadline, DeleteProviderSessionRequest, HostServices, InstalledExecutableDiscoveryRequest,
+    InteractiveSessionHandle, ModelArtifactBinding, OpenDirectContinuationSessionRequest,
+    OpenRealtimeMediaSessionRequest, OperationContent, OperationPolicy, OwnedServingHandle,
+    PreparationFailure, ProviderSessionManagementOutcome, ProviderSessionManagementPlan,
+    RealtimeMediaSessionHandle, RequestId, RestoreProviderSessionRequest, RunHandle,
+    RuntimeFailure, RuntimeTurnId, ScopeId, ServingInstanceId, SessionAccessPolicy, SessionOptions,
+    SessionPlanAgreement, SessionReplayItem, SessionResumeBinding, StructuredOutputDescriptor,
+    ToolDeclaration, WorkingResourceRef,
 };
 use std::num::NonZeroU64;
 use swallowtail_core::{
@@ -722,6 +724,33 @@ pub trait RealtimeMediaSessionDriver: Send + Sync {
         request: OpenRealtimeMediaSessionRequest,
         services: HostServices,
     ) -> BoxFuture<'_, Result<Box<dyn RealtimeMediaSessionHandle>, RuntimeFailure>>;
+}
+
+/// Low-level role for one explicitly bound inactive provider session.
+///
+/// Implementations must finish all scoped work and preserve uncertain
+/// after-dispatch truth before resolving the returned future.
+pub trait ProviderSessionManagementDriver: Send + Sync {
+    fn archive_session(
+        &self,
+        plan: ProviderSessionManagementPlan,
+        request: ArchiveProviderSessionRequest,
+        services: HostServices,
+    ) -> BoxFuture<'_, Result<ProviderSessionManagementOutcome, RuntimeFailure>>;
+
+    fn restore_session(
+        &self,
+        plan: ProviderSessionManagementPlan,
+        request: RestoreProviderSessionRequest,
+        services: HostServices,
+    ) -> BoxFuture<'_, Result<ProviderSessionManagementOutcome, RuntimeFailure>>;
+
+    fn delete_session(
+        &self,
+        plan: ProviderSessionManagementPlan,
+        request: DeleteProviderSessionRequest,
+        services: HostServices,
+    ) -> BoxFuture<'_, Result<ProviderSessionManagementOutcome, RuntimeFailure>>;
 }
 
 pub trait ServingInstanceDriver: Send + Sync {

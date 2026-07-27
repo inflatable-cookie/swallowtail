@@ -178,3 +178,32 @@ packaging, and consumer upgrade support as the primary g02 programme.
 Evidence-led provider breadth remains secondary. g02 begins by defining the
 public package, version, compatibility, MSRV, and release-authority boundary;
 no registry publication or API 1.0 promise is implied.
+
+Research 036 and Contract 038 open the next additive stabilization lane.
+Consumer thread archive, restore, and deletion remain downstream. Swallowtail
+adds only optional management of one inactive bound provider session.
+Roadmaps g02.015-g02.019 sequence the provider-neutral role, Codex
+archive/restore/delete, ACP and Claude Agent close/delete, OpenCode deletion,
+provider-wide package evidence, and a Nucleus adoption handoff. Provider
+history browsing, active-session management, implicit deletion, and publication
+remain outside the lane.
+
+Roadmaps g02.015-g02.017 are complete. Codex app-server proves exact
+inactive-session archive, restore, and hard-delete mapping. Claude Agent now
+proves qualified native close and provider-data deletion through production
+stdio plus the same lifecycle records over explicit remote ACP without
+fallback. Research 039 and card 055 qualify OpenCode provider-data deletion
+with provider-defined descendants across every exact
+`1.14.48..=1.18.4` release while preserving gaps and unverified-newer truth.
+Roadmap g02.018 is complete. Its bound driver, prepared facade, exact segment
+matrix, local and remote-authoritative host proof, failure boundary, and full
+regression suite pass. Roadmap g02.019 now owns provider-wide classification,
+packaged acceptance, and the Nucleus handoff. Its retained candidate gate is
+paused until the lifecycle source enters canonical history.
+
+Research 040 corrects the earlier Kimi Web authority assessment. Exact Kimi
+Code `0.28.1` and `0.29.0` document a foreground local REST/WebSocket server
+with OpenAPI, AsyncAPI, bearer authentication, exact metadata, reversible
+archive, and restore. Roadmap g02.020 adds that route separately from ACP.
+Deletion remains unsupported. Lifecycle lands before the larger interactive
+surface, and no container is required.

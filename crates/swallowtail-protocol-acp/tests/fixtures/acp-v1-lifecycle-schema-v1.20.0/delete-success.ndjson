@@ -1,0 +1,2 @@
+{"direction":"client_to_agent","message":{"jsonrpc":"2.0","id":2,"method":"session/delete","params":{"sessionId":"fixture-session"}}}
+{"direction":"agent_to_client","message":{"jsonrpc":"2.0","id":2,"result":{}}}

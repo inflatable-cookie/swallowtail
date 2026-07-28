@@ -34,11 +34,22 @@ fn validate_open(
 ) -> Result<(), RuntimeFailure> {
     require_services(services, true)?;
     swallowtail_runtime::validate_session_plan_agreement(plan, request.plan_agreement())?;
-    if request.access_policy()
-        != &SessionAccessPolicy::ambient_harness(swallowtail_core::ResourceAccess::Read)
-    {
+    let callbacks = provider_callbacks(plan)?;
+    let expected_access = if callbacks {
+        SessionAccessPolicy::ambient_harness_with_consumer_mediated_requests(
+            ResourceAccess::ReadWrite,
+            [
+                callback::permission_namespace(),
+                callback::question_namespace(),
+            ],
+        )
+    } else {
+        SessionAccessPolicy::ambient_harness(ResourceAccess::Read)
+    };
+    if request.access_policy() != &expected_access {
         return Err(unsupported("non-ambient read session access"));
     }
+    validate_attachment_plan(plan, services)?;
     if request.working_resource().is_none() {
         return Err(unsupported("a resource-free session"));
     }
@@ -48,14 +59,116 @@ fn validate_open(
     validate_deadline(request.deadline(), services)
 }
 
-fn validate_turn(request: &TurnRequest, services: &HostServices) -> Result<(), RuntimeFailure> {
-    if request.attachments().len() != 0 {
-        return Err(unsupported("turn attachments"));
-    }
+fn validate_turn(
+    request: &TurnRequest,
+    services: &HostServices,
+    image_attachments: bool,
+) -> Result<(), RuntimeFailure> {
+    validate_attachments(request.attachments(), services, image_attachments)?;
     if request.structured_output().is_some() {
         return Err(unsupported("structured turn output"));
     }
     validate_deadline(request.deadline(), services)
+}
+
+fn provider_callbacks(plan: &PreflightPlan) -> Result<bool, RuntimeFailure> {
+    let namespaces = plan
+        .requirements()
+        .extension_namespaces()
+        .collect::<Vec<_>>();
+    match namespaces.as_slice() {
+        [] => Ok(false),
+        [permission, question]
+            if **permission == callback::permission_namespace()
+                && **question == callback::question_namespace() =>
+        {
+            Ok(true)
+        }
+        _ => Err(failure(
+            "swallowtail.opencode.callback_plan_mismatch",
+            "OpenCode callback namespaces do not match the immutable plan",
+        )),
+    }
+}
+
+fn validate_attachment_plan(
+    plan: &PreflightPlan,
+    services: &HostServices,
+) -> Result<bool, RuntimeFailure> {
+    let Some(requirement) = plan
+        .requirements()
+        .capabilities()
+        .find(|required| required.capability() == Capability::Attachments)
+    else {
+        return Ok(false);
+    };
+    for constraint in [
+        CapabilityConstraint::attachment_media_type("image/png")
+            .expect("static media type is valid"),
+        CapabilityConstraint::AttachmentMaximumBytes(1024 * 1024),
+        CapabilityConstraint::AttachmentMaximumCount(1),
+    ] {
+        if !requirement
+            .constraints()
+            .any(|required| required == &constraint)
+        {
+            return Err(failure(
+                "swallowtail.opencode.attachment_plan_mismatch",
+                "OpenCode attachment constraints do not match the immutable plan",
+            ));
+        }
+    }
+    if requirement.constraints().count() != 3 {
+        return Err(failure(
+            "swallowtail.opencode.attachment_plan_mismatch",
+            "OpenCode attachment constraints do not match the immutable plan",
+        ));
+    }
+    if !plan
+        .requirements()
+        .host_services()
+        .any(|service| service == HostServiceKind::Attachment)
+        || services.attachment().is_none()
+    {
+        return Err(failure(
+            "swallowtail.opencode.attachment_service_missing",
+            "OpenCode attachment input requires its preflight-bound host service",
+        ));
+    }
+    Ok(true)
+}
+
+fn validate_attachments<'a>(
+    attachments: impl ExactSizeIterator<Item = &'a swallowtail_runtime::AttachmentDescriptor>,
+    services: &HostServices,
+    enabled: bool,
+) -> Result<(), RuntimeFailure> {
+    if (attachments.len() != 0) && !enabled {
+        return Err(failure(
+            "swallowtail.opencode.attachment_plan_mismatch",
+            "OpenCode turn attachment was not authorized by its session plan",
+        ));
+    }
+    if attachments.len() > 1 {
+        return Err(unsupported("more than one turn attachment"));
+    }
+    for attachment in attachments {
+        if attachment.media_type() != "image/png"
+            || attachment.role() != swallowtail_runtime::AttachmentRole::Input
+            || attachment
+                .known_length()
+                .is_some_and(|length| length > 1024 * 1024)
+        {
+            return Err(unsupported("non-PNG or oversized turn attachment"));
+        }
+    }
+    if enabled && services.attachment().is_none() {
+        return Err(failure(
+            "swallowtail.opencode.attachment_service_missing",
+            "OpenCode attachment input requires an attachment service",
+        ));
+    }
+    Ok(())
 }
 
 fn validate_deadline(
@@ -138,36 +251,43 @@ where
 }
 
 async fn reap_finished(active: &ActiveSlot) -> Result<(), RuntimeFailure> {
-    let task = {
+    let finished = {
         let mut state = active.lock().expect("active turn lock poisoned");
         if state
             .as_ref()
             .is_some_and(|turn| turn.terminal.load(Ordering::SeqCst))
         {
-            state.as_mut().and_then(|turn| turn.task.take())
+            state.take()
         } else {
             None
         }
     };
-    if let Some(task) = task {
-        task.join().await?;
-        *active.lock().expect("active turn lock poisoned") = None;
+    if let Some(mut turn) = finished {
+        if let Some(task) = turn.task.take() {
+            task.join().await?;
+        }
+        if matches!(turn.attachment.release().await, CleanupOutcome::Failed(_)) {
+            return Err(failure(
+                "swallowtail.opencode.attachment_cleanup_failed",
+                "OpenCode attachment cleanup failed",
+            ));
+        }
     }
     Ok(())
 }
 
 async fn join_active(active: &ActiveSlot) -> CleanupOutcome {
-    let task = active
-        .lock()
-        .expect("active turn lock poisoned")
-        .as_mut()
-        .and_then(|turn| turn.task.take());
-    let cleanup = match task {
-        Some(task) => cleanup_from_result(task.join().await),
+    let turn = active.lock().expect("active turn lock poisoned").take();
+    match turn {
+        Some(mut turn) => {
+            let task = match turn.task.take() {
+                Some(task) => cleanup_from_result(task.join().await),
+                None => CleanupOutcome::NotApplicable,
+            };
+            merge_cleanup(task, turn.attachment.release().await)
+        }
         None => CleanupOutcome::NotApplicable,
-    };
-    *active.lock().expect("active turn lock poisoned") = None;
-    cleanup
+    }
 }
 
 async fn close_active(active: &ActiveSlot) -> CleanupOutcome {

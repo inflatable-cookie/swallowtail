@@ -58,3 +58,5 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [048 Harness Usage-Evidence Currentness And Corpora](048-harness-usage-evidence-currentness-and-corpora.md)
 - [049 Generation-Control `No` Currentness And Tranche Selection](049-generation-control-no-currentness-and-tranche-selection.md)
 - [050 Input And Callback `No` Currentness And Tranche Selection](050-input-and-callback-no-currentness-and-tranche-selection.md)
+- [051 Session Continuity `No` Currentness And Tranche Selection](051-session-continuity-no-currentness-and-tranche-selection.md)
+- [052 Session Continuity Contract Fit And Corpora](052-session-continuity-contract-fit-and-corpora.md)

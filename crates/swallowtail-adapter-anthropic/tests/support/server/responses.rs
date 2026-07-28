@@ -16,15 +16,25 @@ fn respond(
         ("GET", "/v1/models?limit=2&after_id=claude-fixture-secondary") => {
             respond_json(stream, 200, PAGE_2)
         }
-        ("POST", "/v1/messages") if attempts.fetch_add(1, Ordering::SeqCst) == 0 => match fixture {
-            StreamFixture::WaitForCancel => respond_wait_for_cancel(stream),
-            _ => respond_sse(stream, stream_body(fixture)),
-        },
-        ("POST", "/v1/messages") => respond_json(
-            stream,
-            409,
-            r#"{"type":"error","error":{"type":"conflict_error","message":"fixture allows one inference attempt"}}"#,
-        ),
+        ("POST", "/v1/messages") => {
+            let attempt = attempts.fetch_add(1, Ordering::SeqCst);
+            match (fixture, attempt) {
+                (StreamFixture::WaitForCancel, 0) => respond_wait_for_cancel(stream),
+                (StreamFixture::ToolContinuation, 0) => {
+                    respond_sse(stream, &format!("{TOOL_USE}\n"))
+                }
+                (StreamFixture::ToolContinuation, 1 | 2) => respond_sse(stream, SUCCESS),
+                (StreamFixture::WebSearch, 0) => {
+                    respond_sse(stream, &format!("{WEB_SEARCH}\n"))
+                }
+                (_, 0) => respond_sse(stream, stream_body(fixture)),
+                _ => respond_json(
+                    stream,
+                    409,
+                    r#"{"type":"error","error":{"type":"conflict_error","message":"fixture allows one inference attempt"}}"#,
+                ),
+            }
+        }
         _ => respond_json(
             stream,
             404,
@@ -39,7 +49,9 @@ fn stream_body(fixture: StreamFixture) -> &'static str {
         StreamFixture::MidstreamError => MIDSTREAM_ERROR,
         StreamFixture::Unknown => UNKNOWN,
         StreamFixture::Disconnect => DISCONNECT,
-        StreamFixture::WaitForCancel => unreachable!(),
+        StreamFixture::WaitForCancel
+        | StreamFixture::ToolContinuation
+        | StreamFixture::WebSearch => unreachable!(),
     }
 }
 

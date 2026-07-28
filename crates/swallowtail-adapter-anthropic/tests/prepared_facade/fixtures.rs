@@ -13,9 +13,9 @@ use swallowtail_core::{
 };
 use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{
-    BlockingWorkService, CleanupOutcome, CredentialLease, CredentialService, EndpointRef,
-    HostServices, NetworkPolicyService, OperationContent, PreparedAccessEvidence, RequestId,
-    ScopedTaskService, TimeService,
+    AttachmentRef, AttachmentService, BlockingWorkService, CleanupOutcome, CredentialLease,
+    CredentialService, EndpointRef, HostServices, NetworkPolicyService, OperationContent,
+    PreparedAccessEvidence, RequestId, ScopedTaskService, TimeService,
 };
 
 pub struct PreparedFixture {
@@ -27,14 +27,30 @@ pub struct PreparedFixture {
     evidence: PreparedAccessEvidence,
     thread: ThreadServices,
     releases: Arc<std::sync::atomic::AtomicUsize>,
+    attachment_releases: Arc<std::sync::atomic::AtomicUsize>,
+    attachment_ref: AttachmentRef,
+    attachment_path: std::path::PathBuf,
 }
+
+static NEXT_ATTACHMENT: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
 
 impl PreparedFixture {
     pub fn new(host_id: ExecutionHostId) -> Self {
-        let server = FixtureServer::start();
+        Self::with_stream(host_id, crate::support::StreamFixture::Success)
+    }
+
+    pub fn with_stream(host_id: ExecutionHostId, stream: crate::support::StreamFixture) -> Self {
+        let server = FixtureServer::start_with(stream);
         let target = InstanceTargetRef::new("anthropic.prepared.endpoint").unwrap();
         let audience = EndpointAudience::new("api.anthropic.com").unwrap();
         let credential = CredentialRef::new("anthropic.prepared.key").unwrap();
+        let attachment_ref = AttachmentRef::new("anthropic.fixture.image").unwrap();
+        let attachment_path = std::env::temp_dir().join(format!(
+            "swallowtail-anthropic-{}-{}-fixture.png",
+            std::process::id(),
+            NEXT_ATTACHMENT.fetch_add(1, std::sync::atomic::Ordering::SeqCst)
+        ));
+        std::fs::write(&attachment_path, b"\x89PNG\r\n\x1a\n").expect("fixture image writes");
         let host = LocalProcessHost::builder(LocalProcessLimits::default())
             .approve_endpoint(
                 EndpointRef::from_instance_target(&target),
@@ -46,6 +62,7 @@ impl PreparedFixture {
                 audience.clone(),
                 b"fixture-secret".to_vec(),
             )
+            .approve_attachment(attachment_ref.clone(), &attachment_path)
             .build();
         let access = AccessProfile::new(
             AccessProfileId::new("anthropic.prepared.access").unwrap(),
@@ -72,6 +89,9 @@ impl PreparedFixture {
             evidence: PreparedAccessEvidence::caller_asserted(status),
             thread: ThreadServices::new(),
             releases: Arc::new(std::sync::atomic::AtomicUsize::new(0)),
+            attachment_releases: Arc::new(std::sync::atomic::AtomicUsize::new(0)),
+            attachment_ref,
+            attachment_path,
         }
     }
 
@@ -97,6 +117,10 @@ impl PreparedFixture {
             .with_blocking_work(Arc::clone(&thread) as Arc<dyn BlockingWorkService>)
             .with_time(thread as Arc<dyn TimeService>)
             .with_network(Arc::new(self.host.clone()) as Arc<dyn NetworkPolicyService>)
+            .with_attachment(Arc::new(TrackingAttachment {
+                inner: self.host.clone(),
+                releases: Arc::clone(&self.attachment_releases),
+            }) as Arc<dyn AttachmentService>)
             .with_credential(Arc::new(TrackingCredential {
                 inner: self.host.clone(),
                 releases: Arc::clone(&self.releases),
@@ -119,11 +143,57 @@ impl PreparedFixture {
     pub fn releases(&self) -> usize {
         self.releases.load(std::sync::atomic::Ordering::SeqCst)
     }
+
+    pub fn attachment_ref(&self) -> AttachmentRef {
+        self.attachment_ref.clone()
+    }
+
+    pub fn attachment_releases(&self) -> usize {
+        self.attachment_releases
+            .load(std::sync::atomic::Ordering::SeqCst)
+    }
+}
+
+impl Drop for PreparedFixture {
+    fn drop(&mut self) {
+        let _ = std::fs::remove_file(&self.attachment_path);
+    }
 }
 
 struct TrackingCredential {
     inner: LocalProcessHost,
     releases: Arc<std::sync::atomic::AtomicUsize>,
+}
+
+struct TrackingAttachment {
+    inner: LocalProcessHost,
+    releases: Arc<std::sync::atomic::AtomicUsize>,
+}
+
+impl AttachmentService for TrackingAttachment {
+    fn materialize_file(
+        &self,
+        scope: swallowtail_runtime::ScopeId,
+        descriptor: swallowtail_runtime::AttachmentDescriptor,
+    ) -> swallowtail_runtime::BoxFuture<
+        'static,
+        Result<swallowtail_runtime::AttachmentFileLease, swallowtail_runtime::RuntimeFailure>,
+    > {
+        self.inner.materialize_file(scope, descriptor)
+    }
+
+    fn release_file(
+        &self,
+        lease: swallowtail_runtime::AttachmentFileLease,
+    ) -> swallowtail_runtime::BoxFuture<'static, CleanupOutcome> {
+        let release = self.inner.release_file(lease);
+        let releases = Arc::clone(&self.releases);
+        Box::pin(async move {
+            let outcome = release.await;
+            releases.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+            outcome
+        })
+    }
 }
 
 impl CredentialService for TrackingCredential {

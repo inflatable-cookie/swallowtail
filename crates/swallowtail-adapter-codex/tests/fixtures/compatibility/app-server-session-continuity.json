@@ -1,0 +1,78 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-07-28",
+  "claim_id": "codex.app-server.session-continuity-window-1",
+  "axis": "codex.cli",
+  "facade": "codex-app-server-v2",
+  "qualified_range": {
+    "baseline": "0.80.0",
+    "latest": "0.145.0",
+    "excluded_gaps": ["0.82.0", "0.83.0", "0.108.0", "0.109.0"],
+    "newer_posture": "allow_unverified"
+  },
+  "selected_method": "thread/resume",
+  "segments": [
+    {"minimum":"0.80.0","maximum":"0.81.0","claim":"codex.app-server.legacy-default-stdio","resume_request":"history_response"},
+    {"minimum":"0.84.0","maximum":"0.99.0","claim":"codex.app-server.legacy-default-stdio","resume_request":"history_response"},
+    {"minimum":"0.100.0","maximum":"0.107.0","claim":"codex.app-server.legacy-explicit-stdio","resume_request":"history_response"},
+    {"minimum":"0.110.0","maximum":"0.128.0","claim":"codex.app-server.v2.base","resume_request":"history_response"},
+    {"minimum":"0.129.0","maximum":"0.130.0","claim":"codex.app-server.v2.base","resume_request":"exclude_turns"},
+    {"minimum":"0.131.0","maximum":"0.145.0","claim":"codex.app-server.v2.workspace-roots","resume_request":"exclude_turns"}
+  ],
+  "operations": {
+    "load": {
+      "request": {"method":"thread/resume","params":{"threadId":"thread-fixture"}},
+      "response_history": "result.thread.turns",
+      "replay_order": "array_order_before_ready",
+      "binding_check": "response_thread_id_exact",
+      "exclude_turns": false
+    },
+    "resume": {
+      "through_0_128": {
+        "request": {"method":"thread/resume","params":{"threadId":"thread-fixture"}},
+        "response_turns": "bounded_then_ignored",
+        "replay_phase": false
+      },
+      "from_0_129": {
+        "request": {"method":"thread/resume","params":{"threadId":"thread-fixture","excludeTurns":true}},
+        "experimental_api_required": true,
+        "replay_phase": false
+      }
+    }
+  },
+  "representative_load_response": {
+    "id": 4,
+    "result": {
+      "thread": {
+        "id": "thread-fixture",
+        "turns": [
+          {"id":"turn-1","items":[{"type":"userMessage","content":[{"type":"text","text":"Previous question."}]}]},
+          {"id":"turn-2","items":[{"type":"agentMessage","text":"Previous answer."}]}
+        ]
+      }
+    }
+  },
+  "limits": {
+    "maximum_response_bytes": 4194304,
+    "maximum_turns": 4096,
+    "maximum_items": 16384,
+    "overflow": "fail_without_usable_handle"
+  },
+  "failures": {
+    "wrong_thread": "fail_without_usable_handle",
+    "malformed_history": "fail_without_usable_handle",
+    "cancellation": "interrupt_request_then_join_connection",
+    "disconnect": "fail_without_usable_handle",
+    "diagnostic_redaction": ["session_id","transcript","raw_payload"]
+  },
+  "cleanup": {
+    "owned_process": "close_stdin_then_join",
+    "remote_authoritative": "join_host_owned_connection_work",
+    "detached_tasks_allowed": false
+  },
+  "source": {
+    "baseline": "https://github.com/openai/codex/blob/rust-v0.80.0/codex-rs/app-server-protocol/src/protocol/v2.rs",
+    "latest": "https://github.com/openai/codex/blob/rust-v0.145.0/codex-rs/app-server-protocol/src/protocol/v2.rs",
+    "exclude_turns_first": "https://github.com/openai/codex/blob/rust-v0.129.0/codex-rs/app-server-protocol/src/protocol/v2.rs"
+  }
+}

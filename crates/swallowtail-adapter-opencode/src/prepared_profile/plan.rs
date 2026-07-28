@@ -75,8 +75,14 @@ pub(super) fn requirements(
     prepared: &OpenCodePreparedIntegration,
     role: DriverRole,
     capabilities: impl IntoIterator<Item = CapabilityRequirement>,
+    image_attachments: bool,
+    provider_callbacks: bool,
 ) -> OperationRequirements {
     let descriptor = crate::opencode_http_descriptor();
+    let mut host_services = descriptor.required_host_services(role).collect::<Vec<_>>();
+    if image_attachments {
+        host_services.push(swallowtail_core::HostServiceKind::Attachment);
+    }
     let requirements = OperationRequirements::new(
         ExecutionLayer::HarnessInteraction,
         OperationShape::InteractiveSession,
@@ -90,15 +96,34 @@ pub(super) fn requirements(
             .with_support_authorities([prepared.access_profile().support_authority()]),
     )
     .with_ownership_modes([prepared.instance().ownership()])
-    .with_host_services(descriptor.required_host_services(role))
+    .with_host_services(host_services)
     .with_capabilities(capabilities)
     .with_interface_versions([prepared.server().binding().clone()])
     .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient);
 
     if role == DriverRole::InteractiveSession {
+        let namespaces = provider_callbacks
+            .then(|| {
+                [
+                    crate::driver::callback::permission_namespace(),
+                    crate::driver::callback::question_namespace(),
+                ]
+            })
+            .into_iter()
+            .flatten()
+            .collect::<Vec<_>>();
+        let access_policy = if provider_callbacks {
+            SessionAccessPolicy::ambient_harness_with_consumer_mediated_requests(
+                ResourceAccess::ReadWrite,
+                namespaces.clone(),
+            )
+        } else {
+            SessionAccessPolicy::ambient_harness(ResourceAccess::Read)
+        };
         requirements
+            .with_extension_namespaces(namespaces)
             .with_harness_isolation(HarnessIsolation::AmbientHost)
-            .with_session_access_policy(SessionAccessPolicy::ambient_harness(ResourceAccess::Read))
+            .with_session_access_policy(access_policy)
             .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited)
             .require_model_route()
     } else {
@@ -135,10 +160,16 @@ pub(super) fn management_requirements(
 pub(super) fn run_requirements(
     prepared: &OpenCodePreparedIntegration,
     capabilities: impl IntoIterator<Item = CapabilityRequirement>,
+    image_attachments: bool,
+    provider_callbacks: bool,
 ) -> OperationRequirements {
     let role = DriverRole::StructuredRun;
     let descriptor = crate::opencode_http_descriptor();
-    OperationRequirements::new(
+    let mut host_services = descriptor.required_host_services(role).collect::<Vec<_>>();
+    if image_attachments {
+        host_services.push(swallowtail_core::HostServiceKind::Attachment);
+    }
+    let requirements = OperationRequirements::new(
         ExecutionLayer::HarnessInteraction,
         OperationShape::StructuredRun,
         role,
@@ -151,12 +182,20 @@ pub(super) fn run_requirements(
             .with_support_authorities([prepared.access_profile().support_authority()]),
     )
     .with_ownership_modes([prepared.instance().ownership()])
-    .with_host_services(descriptor.required_host_services(role))
+    .with_host_services(host_services)
     .with_capabilities(capabilities)
     .with_interface_versions([prepared.server().binding().clone()])
     .with_harness_isolation(HarnessIsolation::AmbientHost)
     .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient)
-    .require_model_route()
+    .require_model_route();
+    if provider_callbacks {
+        requirements.with_extension_namespaces([
+            crate::driver::callback::permission_namespace(),
+            crate::driver::callback::question_namespace(),
+        ])
+    } else {
+        requirements
+    }
 }
 
 pub(super) fn build_plan(

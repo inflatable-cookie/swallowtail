@@ -2,12 +2,14 @@
 mod tests {
     use super::{
         Event, Response, SessionDeleteResponse, SseDecoder, abort, classify_session_delete,
-        observe_health, parse_catalog, parse_event, parse_session_for_version, prompt,
-        session_create, session_delete,
+        callback_response, observe_health, parse_catalog, parse_event, parse_session_for_version,
+        prompt, session_create, session_delete, PromptPayload, ProviderRequestKind,
     };
     use crate::selection::opencode_server_binding;
     use swallowtail_core::{InterfaceCompatibilityAssessment, ReasoningMode};
-    use swallowtail_runtime::{SchemaDocument, StructuredOutputDescriptor};
+    use swallowtail_runtime::{
+        CallbackPayload, CallbackResult, SchemaDocument, StructuredOutputDescriptor,
+    };
 
     const ROOT: &str = concat!(
         env!("CARGO_MANIFEST_DIR"),
@@ -227,7 +229,7 @@ mod tests {
 
     #[test]
     fn production_requests_match_the_frozen_route_and_permission_subset() {
-        let create = session_create("anthropic", "claude-sonnet", "/workspace/fixture");
+        let create = session_create("anthropic", "claude-sonnet", "/workspace/fixture", false);
         assert_eq!(create.path, "/session");
         assert_eq!(
             create.query,
@@ -249,9 +251,12 @@ mod tests {
             "anthropic",
             "claude-sonnet",
             "/workspace/fixture",
-            "private prompt",
-            None,
-            None,
+            PromptPayload {
+                content: "private prompt",
+                reasoning: None,
+                structured_output: None,
+                file: None,
+            },
         )
         .expect("prompt encodes");
         assert_eq!(prompt.path, "/session/ses_fixture/prompt_async");
@@ -296,9 +301,12 @@ mod tests {
             "fixture-provider",
             "fixture-model",
             "/workspace/fixture",
-            "Return one fixture result",
-            Some(&reasoning),
-            Some(&schema),
+            PromptPayload {
+                content: "Return one fixture result",
+                reasoning: Some(&reasoning),
+                structured_output: Some(&schema),
+                file: None,
+            },
         )
         .expect("generation controls encode");
         let actual: serde_json::Value =
@@ -310,6 +318,59 @@ mod tests {
         .expect("fixture reads"))
         .expect("fixture parses");
         assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn provider_callback_responses_preserve_one_shot_and_ordered_question_bounds() {
+        let once = callback_response(
+            "per_fixture",
+            ProviderRequestKind::Permission,
+            &CallbackResult::Success(
+                CallbackPayload::new(br#"{"reply":"once"}"#, 256).expect("payload is bounded"),
+            ),
+        )
+        .expect("one-shot response encodes");
+        assert_eq!(once.path, "/permission/per_fixture/reply");
+        assert_eq!(
+            serde_json::from_slice::<serde_json::Value>(once.body.as_ref().unwrap()).unwrap(),
+            serde_json::json!({"reply":"once"})
+        );
+        let persistent = callback_response(
+            "per_fixture",
+            ProviderRequestKind::Permission,
+            &CallbackResult::Success(
+                CallbackPayload::new(br#"{"reply":"always"}"#, 256).expect("payload is bounded"),
+            ),
+        )
+        .expect_err("persistent response rejects");
+        assert_eq!(
+            persistent.diagnostic().code(),
+            "swallowtail.opencode.callback_malformed"
+        );
+
+        let answers = callback_response(
+            "que_fixture",
+            ProviderRequestKind::Question { count: 1 },
+            &CallbackResult::Success(
+                CallbackPayload::new(br#"{"answers":[["Safe"]]}"#, 256)
+                    .expect("payload is bounded"),
+            ),
+        )
+        .expect("ordered answers encode");
+        assert_eq!(answers.path, "/question/que_fixture/reply");
+        let wrong_count = callback_response(
+            "que_fixture",
+            ProviderRequestKind::Question { count: 2 },
+            &CallbackResult::Success(
+                CallbackPayload::new(br#"{"answers":[["Safe"]]}"#, 256)
+                    .expect("payload is bounded"),
+            ),
+        )
+        .expect_err("answer count must match question count");
+        assert_eq!(
+            wrong_count.diagnostic().code(),
+            "swallowtail.opencode.callback_malformed"
+        );
     }
 
     #[test]
@@ -348,18 +409,17 @@ mod tests {
     }
 
     #[test]
-    fn foreign_events_are_quarantined_and_provider_requests_fail_closed() {
+    fn foreign_events_are_quarantined_and_provider_requests_are_typed() {
         let foreign = br#"{"id":"evt","type":"session.idle","properties":{"sessionID":"other"}}"#;
         assert_eq!(
             parse_event(foreign, "ses_fixture").expect("foreign event parses"),
             Event::Foreign
         );
-        let permission =
-            br#"{"id":"evt","type":"permission.asked","properties":{"sessionID":"ses_fixture"}}"#;
-        assert_eq!(
+        let permission = br#"{"id":"evt","type":"permission.asked","properties":{"id":"per_fixture","sessionID":"ses_fixture","permission":"edit","patterns":["src/**"],"metadata":{},"always":["*"]}}"#;
+        assert!(matches!(
             parse_event(permission, "ses_fixture").expect("permission parses"),
-            Event::StopAndAbort
-        );
+            Event::ProviderRequest(_)
+        ));
         let unknown =
             br#"{"id":"evt","type":"provider.future","properties":{"sessionID":"ses_fixture"}}"#;
         let error = parse_event(unknown, "ses_fixture").expect_err("unknown event fails");

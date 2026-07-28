@@ -29,6 +29,7 @@ pub enum StreamFixture {
     Disconnect,
     DuplicateUsage,
     MissingUsage,
+    InputCallbacks,
     WaitForAbort,
     DeleteMissing,
     DeleteUnauthorized,
@@ -44,6 +45,14 @@ pub struct FixtureServer {
     requests: Arc<Mutex<Vec<String>>>,
     stop: Arc<AtomicBool>,
     thread: Option<JoinHandle<()>>,
+}
+
+struct HandleState {
+    requests: Arc<Mutex<Vec<String>>>,
+    aborted: Arc<AtomicBool>,
+    callback_replies: Arc<AtomicUsize>,
+    health_requests: Arc<AtomicUsize>,
+    stop: Arc<AtomicBool>,
 }
 
 impl FixtureServer {
@@ -65,25 +74,33 @@ impl FixtureServer {
         let server_version = Arc::new(server_version.to_owned());
         let thread = thread::spawn(move || {
             let aborted = Arc::new(AtomicBool::new(false));
+            let callback_replies = Arc::new(AtomicUsize::new(0));
             let health_requests = Arc::new(AtomicUsize::new(0));
             let mut handlers = Vec::new();
             while !server_stop.load(Ordering::SeqCst) {
                 match listener.accept() {
                     Ok((stream, _)) => {
-                        if fixture == StreamFixture::WaitForAbort {
+                        if matches!(
+                            fixture,
+                            StreamFixture::WaitForAbort | StreamFixture::InputCallbacks
+                        ) {
                             let requests = Arc::clone(&server_requests);
                             let stop = Arc::clone(&server_stop);
                             let aborted = Arc::clone(&aborted);
                             let health_requests = Arc::clone(&health_requests);
+                            let callback_replies = Arc::clone(&callback_replies);
                             let server_version = Arc::clone(&server_version);
                             handlers.push(thread::spawn(move || {
                                 handle(
                                     stream,
                                     fixture,
-                                    requests,
-                                    aborted,
-                                    health_requests,
-                                    stop,
+                                    HandleState {
+                                        requests,
+                                        aborted,
+                                        callback_replies,
+                                        health_requests,
+                                        stop,
+                                    },
                                     &server_version,
                                 );
                             }));
@@ -91,10 +108,13 @@ impl FixtureServer {
                             handle(
                                 stream,
                                 fixture,
-                                Arc::clone(&server_requests),
-                                Arc::clone(&aborted),
-                                Arc::clone(&health_requests),
-                                Arc::clone(&server_stop),
+                                HandleState {
+                                    requests: Arc::clone(&server_requests),
+                                    aborted: Arc::clone(&aborted),
+                                    callback_replies: Arc::clone(&callback_replies),
+                                    health_requests: Arc::clone(&health_requests),
+                                    stop: Arc::clone(&server_stop),
+                                },
                                 &server_version,
                             );
                         }
@@ -144,28 +164,32 @@ impl Drop for FixtureServer {
     }
 }
 
-fn handle(
-    mut stream: TcpStream,
-    fixture: StreamFixture,
-    requests: Arc<Mutex<Vec<String>>>,
-    aborted: Arc<AtomicBool>,
-    health_requests: Arc<AtomicUsize>,
-    stop: Arc<AtomicBool>,
-    server_version: &str,
-) {
+fn handle(mut stream: TcpStream, fixture: StreamFixture, state: HandleState, server_version: &str) {
+    let HandleState {
+        requests,
+        aborted,
+        callback_replies,
+        health_requests,
+        stop,
+    } = state;
     stream
         .set_nonblocking(false)
         .expect("accepted fixture stream is blocking");
     stream
         .set_read_timeout(Some(Duration::from_secs(2)))
         .expect("read timeout sets");
-    let Some(target) = read_target(&mut stream) else {
+    let Some((target, body)) = read_request(&mut stream) else {
         return;
+    };
+    let recorded = if body.is_empty() {
+        target.clone()
+    } else {
+        format!("{target}\n{body}")
     };
     requests
         .lock()
         .expect("fixture request lock poisoned")
-        .push(target.clone());
+        .push(recorded);
     let path = target
         .split_once(' ')
         .map_or(target.as_str(), |(_, target)| target);
@@ -222,17 +246,23 @@ fn handle(
         }
     } else if path.contains("/prompt_async?") {
         respond_empty(&mut stream, 204);
+    } else if path.starts_with("/permission/per_fixture/reply?")
+        || path.starts_with("/question/que_fixture/reply?")
+        || path.starts_with("/question/que_fixture/reject?")
+    {
+        callback_replies.fetch_add(1, Ordering::SeqCst);
+        respond_json(&mut stream, 200, "true");
     } else if path.contains("/abort?") {
         aborted.store(true, Ordering::SeqCst);
         respond_json(&mut stream, 200, "true");
     } else if path.starts_with("/event?") {
-        respond_sse(&mut stream, fixture, &aborted, &stop);
+        respond_sse(&mut stream, fixture, &aborted, &callback_replies, &stop);
     } else {
         respond_json(&mut stream, 404, r#"{"error":"private fixture payload"}"#);
     }
 }
 
-fn read_target(stream: &mut TcpStream) -> Option<String> {
+fn read_request(stream: &mut TcpStream) -> Option<(String, String)> {
     let mut bytes = Vec::new();
     let mut chunk = [0_u8; 4096];
     loop {
@@ -256,7 +286,10 @@ fn read_target(stream: &mut TcpStream) -> Option<String> {
         if bytes.len() < header_end + 4 + length {
             continue;
         }
-        return headers.lines().next().map(str::to_owned);
+        let target = headers.lines().next()?.to_owned();
+        let body_start = header_end + 4;
+        let body = String::from_utf8_lossy(&bytes[body_start..body_start + length]).into_owned();
+        return Some((target, body));
     }
 }
 
@@ -282,6 +315,7 @@ fn respond_sse(
     stream: &mut TcpStream,
     fixture: StreamFixture,
     aborted: &AtomicBool,
+    callback_replies: &AtomicUsize,
     stop: &AtomicBool,
 ) {
     write!(
@@ -311,6 +345,33 @@ fn respond_sse(
         StreamFixture::MissingUsage => stream
             .write_all(MISSING_USAGE.as_bytes())
             .expect("SSE writes"),
+        StreamFixture::InputCallbacks => {
+            for (event, expected_replies) in [
+                (
+                    r#"{"id":"evt_permission_1","type":"permission.asked","properties":{"id":"per_fixture","sessionID":"ses_fixture","permission":"edit","patterns":["src/approved.rs"],"metadata":{},"always":["src/**"]}}"#,
+                    1,
+                ),
+                (
+                    r#"{"id":"evt_question_1","type":"question.asked","properties":{"id":"que_fixture","sessionID":"ses_fixture","questions":[{"question":"Choose a bounded mode.","header":"Mode","options":[{"label":"Safe","description":"Keep the operation read-only."},{"label":"Stop","description":"Reject the request."}],"multiple":false}]}}"#,
+                    2,
+                ),
+            ] {
+                if aborted.load(Ordering::SeqCst) || stop.load(Ordering::SeqCst) {
+                    break;
+                }
+                writeln!(stream, "data: {event}\n").expect("callback SSE writes");
+                stream.flush().expect("callback SSE flushes");
+                while callback_replies.load(Ordering::SeqCst) < expected_replies
+                    && !aborted.load(Ordering::SeqCst)
+                    && !stop.load(Ordering::SeqCst)
+                {
+                    thread::sleep(Duration::from_millis(1));
+                }
+            }
+            if !aborted.load(Ordering::SeqCst) && !stop.load(Ordering::SeqCst) {
+                stream.write_all(SUCCESS.as_bytes()).expect("SSE writes");
+            }
+        }
         StreamFixture::WaitForAbort => {
             stream
                 .write_all(

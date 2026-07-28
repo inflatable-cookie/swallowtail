@@ -33,6 +33,7 @@ pub(crate) fn all_capabilities() -> CapabilityProfile {
         CapabilityRequirement::new(Capability::StreamingEvents, []),
         CapabilityRequirement::new(Capability::UsageReporting, []),
         CapabilityRequirement::new(Capability::ProviderSessionDelete, []),
+        image_attachment_capability(),
         CapabilityRequirement::new(
             Capability::Interruption,
             [CapabilityConstraint::CancellationScope(
@@ -55,6 +56,7 @@ pub(crate) fn run_capabilities() -> CapabilityProfile {
         CapabilityRequirement::new(Capability::StreamingEvents, []),
         CapabilityRequirement::new(Capability::UsageReporting, []),
         CapabilityRequirement::new(Capability::ProviderTemporaryRetention, []),
+        image_attachment_capability(),
         CapabilityRequirement::new(
             Capability::OwnedRemoteResourceDeletion,
             [CapabilityConstraint::OwnedRemoteResource(
@@ -75,4 +77,16 @@ pub(crate) fn run_capabilities() -> CapabilityProfile {
             ],
         ),
     ])
+}
+
+pub(crate) fn image_attachment_capability() -> CapabilityRequirement {
+    CapabilityRequirement::new(
+        Capability::Attachments,
+        [
+            CapabilityConstraint::attachment_media_type("image/png")
+                .expect("static media type is valid"),
+            CapabilityConstraint::AttachmentMaximumBytes(1024 * 1024),
+            CapabilityConstraint::AttachmentMaximumCount(1),
+        ],
+    )
 }

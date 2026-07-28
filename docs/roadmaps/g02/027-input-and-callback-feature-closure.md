@@ -1,12 +1,12 @@
 # 027 Input And Callback Feature Closure
 
-Status: active
+Status: completed
 Owner: Tom
 Created: 2026-07-28
 Depends on: g02.026
 Vision tags: exact capabilities, consumer-mediated interaction, provider breadth
 Contract refs: 003, 005-016, 030, 037, 039-041
-Planning state: cards 088-089 completed; card 090 ready; card 091 planned
+Planning state: cards 088-091 completed
 
 Operator intervention: Figmatic production-workspace evidence selected Claude
 Agent ACP one-shot permission exchange as an urgent pre-audit conversion. Its
@@ -33,10 +33,10 @@ authority differences.
 - [x] Detect false negatives against realized prepared paths.
 - [x] Separate provider input, consumer tool exchange, approval or question
       callbacks, observed-and-stopped requests, and provider-owned search.
-- [ ] Promote only missing shared contracts needed by a selected tranche.
-- [ ] Implement a representative tranche across materially different
+- [x] Promote only missing shared contracts needed by a selected tranche.
+- [x] Implement a representative tranche across materially different
       transports.
-- [ ] Re-audit all 74 starting cells and retain honest absence.
+- [x] Re-audit all 74 starting cells and retain honest absence.
 
 ## Non-Goals
 
@@ -63,22 +63,22 @@ authority differences.
 
 ### Batch 27.3 — Representative Implementation
 
-- [ ] Execute card 090 only for contract-ready routes.
-- [ ] Keep callback admission, correlation, authority, and cleanup exact.
+- [x] Execute card 090 only for contract-ready routes.
+- [x] Keep callback admission, correlation, authority, and cleanup exact.
 
 ### Batch 27.4 — Matrix Closeout
 
-- [ ] Execute card 091.
-- [ ] Prove package truth and select the next retained feature family.
+- [x] Execute card 091.
+- [x] Prove package truth and select the next retained feature family.
 
 ## Acceptance Criteria
 
-- [ ] all 74 starting cells are classified exactly once
-- [ ] input transport and execution authority remain separate
-- [ ] callbacks never execute inside adapters
-- [ ] every changed cell maps to a public prepared path
-- [ ] version, access, and topology remain exact
-- [ ] machine counts and classification drift fail deterministically
+- [x] all 74 starting cells are classified exactly once
+- [x] input transport and execution authority remain separate
+- [x] callbacks never execute inside adapters
+- [x] every changed cell maps to a public prepared path
+- [x] version, access, and topology remain exact
+- [x] machine counts and classification drift fail deterministically
 
 ## Decision Gates
 
@@ -91,6 +91,5 @@ authority differences.
 
 ## Next Planning Checkpoint
 
-Card 090 implements the six selected cells across Pi, OpenCode, and Anthropic
-Messages. Card 091 retains provider-wide closeout and the next feature-family
-selection.
+Roadmap 028 and card 092 begin the 58-cell session-continuity audit. Load,
+resume, and native close remain distinct.

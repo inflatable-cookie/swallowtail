@@ -7,3 +7,5 @@ mod cases;
 mod deletion_conformance;
 #[path = "prepared_facade/fixture.rs"]
 mod fixture;
+#[path = "prepared_facade/input_callbacks.rs"]
+mod input_callbacks;

@@ -5,6 +5,8 @@ struct OpenCodeTurnHandle {
     cancellation: Arc<TurnCancellation>,
     terminal_flag: Arc<AtomicBool>,
     active: ActiveSlot,
+    callbacks: Option<swallowtail_runtime::CallbackExchange>,
+    attachment: input::SharedAttachment,
 }
 
 impl TurnHandle for OpenCodeTurnHandle {
@@ -20,6 +22,10 @@ impl TurnHandle for OpenCodeTurnHandle {
         self.events.take()
     }
 
+    fn take_callbacks(&mut self) -> Option<swallowtail_runtime::CallbackExchange> {
+        self.callbacks.take()
+    }
+
     fn cancellation(&self) -> &dyn CancellationControl {
         self.cancellation.as_ref()
     }
@@ -33,20 +39,36 @@ impl TurnHandle for OpenCodeTurnHandle {
             if !self.terminal_flag.load(Ordering::SeqCst) {
                 let _ = self.cancellation.request().await;
             }
-            join_active(&self.active).await
+            let active = join_active(&self.active).await;
+            merge_cleanup(active, self.attachment.release().await)
         })
     }
 }
 
-async fn pump_turn(
-    mut subscription: Subscription,
+struct TurnPump {
+    subscription: Subscription,
     deadline: Option<Deadline>,
     services: HostServices,
     cancellation: Arc<TurnCancellation>,
     events: swallowtail_runtime::RuntimeEventSender,
     terminal: swallowtail_runtime::TerminalOutcomeSender,
     terminal_flag: Arc<AtomicBool>,
-) {
+    callback_hub: Option<callback::CallbackHub>,
+    callback_operation: swallowtail_runtime::CallbackOperationId,
+}
+
+async fn pump_turn(pump: TurnPump) {
+    let TurnPump {
+        mut subscription,
+        deadline,
+        services,
+        cancellation,
+        events,
+        terminal,
+        terminal_flag,
+        callback_hub,
+        callback_operation,
+    } = pump;
     let mut deadline_wait =
         deadline.and_then(|deadline| services.time().map(|time| time.wait_until(deadline)));
     let mut sequence = 2;
@@ -180,15 +202,44 @@ async fn pump_turn(
                         CleanupOutcome::Clean,
                     );
                 }
-                Ok(Event::StopAndAbort) => {
-                    let abort = cancellation.request().await;
-                    break (
-                        TerminalStatus::RuntimeFailed(SafeDiagnostic::new(
-                            "swallowtail.opencode.provider_request_rejected",
-                            "OpenCode requested unsupported provider interaction",
-                        )),
-                        cleanup_from_result(abort.map(|_| ())),
-                    );
+                Ok(Event::ProviderRequest(provider)) => {
+                    let Some(callbacks) = &callback_hub else {
+                        let abort = cancellation.request().await;
+                        break (
+                            TerminalStatus::RuntimeFailed(SafeDiagnostic::new(
+                                "swallowtail.opencode.provider_request_rejected",
+                                "OpenCode requested unsupported provider interaction",
+                            )),
+                            cleanup_from_result(abort.map(|_| ())),
+                        );
+                    };
+                    match callbacks.enqueue(
+                        callback_operation.clone(),
+                        sequence,
+                        deadline,
+                        provider,
+                    ) {
+                        Ok(callback_id) => {
+                            if let Err(error) = events.send(RuntimeEvent::new(
+                                sequence,
+                                RuntimeEventKind::CallbackRequested(callback_id),
+                            )) {
+                                let abort = cancellation.request().await;
+                                break (
+                                    TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
+                                    cleanup_from_result(abort.map(|_| ())),
+                                );
+                            }
+                            sequence += 1;
+                        }
+                        Err(error) => {
+                            let abort = cancellation.request().await;
+                            break (
+                                TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
+                                cleanup_from_result(abort.map(|_| ())),
+                            );
+                        }
+                    }
                 }
                 Err(error) => {
                     let abort = cancellation.request().await;
@@ -201,6 +252,16 @@ async fn pump_turn(
         }
     };
     let stream_cleanup = cleanup_from_result(subscription.close().await);
+    if let Some(callbacks) = &callback_hub {
+        let reason = match &status.0 {
+            TerminalStatus::TimedOut => swallowtail_runtime::CallbackAbandonment::TimedOut,
+            TerminalStatus::Cancelled => {
+                swallowtail_runtime::CallbackAbandonment::TurnCancelled
+            }
+            _ => swallowtail_runtime::CallbackAbandonment::TurnTerminated,
+        };
+        callbacks.abandon(reason);
+    }
     let cleanup = merge_cleanup(status.1, stream_cleanup);
     if let Some(usage) = usage
         && let Err(error) = events.send(RuntimeEvent::new(

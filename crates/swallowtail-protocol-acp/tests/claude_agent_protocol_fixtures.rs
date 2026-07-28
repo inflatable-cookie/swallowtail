@@ -202,9 +202,17 @@ fn access_and_capability_exclusions_are_explicit_and_redacted() {
     assert_eq!(boundary["access"]["claude_subscription_supported"], false);
     assert_eq!(boundary["access"]["implicit_fallback"], false);
     assert_eq!(
-        boundary["session_subset"]["load_resume_list_fork_delete"],
-        false
+        boundary["session_subset"]["load"],
+        "corpus_qualified_not_realized"
     );
+    assert_eq!(
+        boundary["session_subset"]["resume"],
+        "corpus_qualified_not_realized"
+    );
+    assert_eq!(boundary["session_subset"]["close"], "realized");
+    assert_eq!(boundary["session_subset"]["delete"], "realized");
+    assert_eq!(boundary["session_subset"]["list"], "upstream_not_selected");
+    assert_eq!(boundary["session_subset"]["fork"], "upstream_not_selected");
     assert_eq!(
         boundary["session_subset"]["writes_shell_web_subagents_terminals"],
         false

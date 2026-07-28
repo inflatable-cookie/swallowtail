@@ -1,6 +1,7 @@
 use crate::http_support::{FixtureServer, StreamFixture, ThreadServices};
 use futures_channel::oneshot;
 use futures_executor::block_on;
+use std::path::PathBuf;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::thread;
@@ -17,10 +18,11 @@ use swallowtail_core::{
 };
 use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{
+    AttachmentDescriptor, AttachmentFileLease, AttachmentRef, AttachmentRole, AttachmentService,
     BlockingWorkService, BoxFuture, CleanupOutcome, CredentialLease, CredentialService, Deadline,
     DeadlineObservation, DiscoveryCancellation, EndpointRef, HostServices, MonotonicInstant,
-    NetworkPolicyService, PreparedAccessEvidence, ScopeId, ScopedTaskService, TimeService,
-    WorkingResourceRef, WorkingResourceService,
+    NetworkPolicyService, PreparedAccessEvidence, RuntimeFailure, ScopeId, ScopedTaskService,
+    TimeService, WorkingResourceRef, WorkingResourceService,
 };
 
 pub(super) struct PreparedFixture {
@@ -34,6 +36,9 @@ pub(super) struct PreparedFixture {
     thread: ThreadServices,
     clock: TestClock,
     pub(super) releases: Arc<AtomicUsize>,
+    attachment: AttachmentDescriptor,
+    attachment_path: PathBuf,
+    pub(super) attachment_releases: Arc<AtomicUsize>,
 }
 
 impl PreparedFixture {
@@ -52,6 +57,17 @@ impl PreparedFixture {
         let audience = EndpointAudience::new("opencode.prepared.server").unwrap();
         let credential = CredentialRef::new("opencode.prepared.delegated").unwrap();
         let resource = WorkingResourceRef::new("opencode.prepared.workspace").unwrap();
+        let attachment_ref = AttachmentRef::new("opencode.prepared.image").unwrap();
+        let attachment_path = std::env::temp_dir().join(format!(
+            "swallowtail-opencode-{}-{}.png",
+            std::process::id(),
+            host_id.as_str().replace(['.', ':'], "-")
+        ));
+        std::fs::write(&attachment_path, b"\x89PNG\r\n\x1a\n").expect("fixture image writes");
+        let attachment =
+            AttachmentDescriptor::new(attachment_ref.clone(), "image/png", AttachmentRole::Input)
+                .unwrap()
+                .with_known_length(8);
         let host = LocalProcessHost::builder(LocalProcessLimits::default())
             .approve_endpoint(
                 EndpointRef::from_instance_target(&target),
@@ -60,6 +76,7 @@ impl PreparedFixture {
             )
             .approve_delegated_credential(credential.clone(), audience.clone())
             .approve_working_resource(resource.clone(), std::env::temp_dir())
+            .approve_attachment(attachment_ref, &attachment_path)
             .build();
         let access = AccessProfile::new(
             AccessProfileId::new("opencode.prepared.access").unwrap(),
@@ -90,6 +107,9 @@ impl PreparedFixture {
             thread: ThreadServices::new(),
             clock: TestClock::new(),
             releases: Arc::new(AtomicUsize::new(0)),
+            attachment,
+            attachment_path,
+            attachment_releases: Arc::new(AtomicUsize::new(0)),
         }
     }
 
@@ -138,6 +158,10 @@ impl PreparedFixture {
                 fail_release,
             }) as Arc<dyn CredentialService>)
             .with_working_resource(Arc::new(self.host.clone()) as Arc<dyn WorkingResourceService>)
+            .with_attachment(Arc::new(TrackingAttachment {
+                inner: self.host.clone(),
+                releases: Arc::clone(&self.attachment_releases),
+            }) as Arc<dyn AttachmentService>)
     }
 
     pub(super) fn services_with_denied_network(&self) -> HostServices {
@@ -172,6 +196,16 @@ impl PreparedFixture {
             ProviderId::new("anthropic").unwrap(),
             ModelId::new("claude-sonnet").unwrap(),
         )
+    }
+
+    pub(super) fn attachment(&self) -> AttachmentDescriptor {
+        self.attachment.clone()
+    }
+}
+
+impl Drop for PreparedFixture {
+    fn drop(&mut self) {
+        let _ = std::fs::remove_file(&self.attachment_path);
     }
 }
 
@@ -223,6 +257,31 @@ struct TrackingCredential {
     inner: LocalProcessHost,
     releases: Arc<AtomicUsize>,
     fail_release: bool,
+}
+
+struct TrackingAttachment {
+    inner: LocalProcessHost,
+    releases: Arc<AtomicUsize>,
+}
+
+impl AttachmentService for TrackingAttachment {
+    fn materialize_file(
+        &self,
+        scope: ScopeId,
+        descriptor: AttachmentDescriptor,
+    ) -> BoxFuture<'static, Result<AttachmentFileLease, RuntimeFailure>> {
+        self.inner.materialize_file(scope, descriptor)
+    }
+
+    fn release_file(&self, lease: AttachmentFileLease) -> BoxFuture<'static, CleanupOutcome> {
+        let release = self.inner.release_file(lease);
+        let releases = Arc::clone(&self.releases);
+        Box::pin(async move {
+            let outcome = release.await;
+            releases.fetch_add(1, Ordering::SeqCst);
+            outcome
+        })
+    }
 }
 
 impl CredentialService for TrackingCredential {

@@ -7,6 +7,7 @@ struct TurnCancellation {
     transport: CurlTransport,
     stream_cancelled: Arc<AtomicBool>,
     requested: AtomicBool,
+    callbacks: Option<callback::CallbackHub>,
 }
 
 impl CancellationControl for TurnCancellation {
@@ -17,6 +18,9 @@ impl CancellationControl for TurnCancellation {
     fn request(&self) -> BoxFuture<'_, Result<CancellationAcknowledgement, RuntimeFailure>> {
         let already = self.requested.swap(true, Ordering::SeqCst);
         self.stream_cancelled.store(true, Ordering::SeqCst);
+        if let Some(callbacks) = &self.callbacks {
+            callbacks.abandon(swallowtail_runtime::CallbackAbandonment::TurnCancelled);
+        }
         Box::pin(async move {
             if already {
                 return Ok(CancellationAcknowledgement::AlreadyRequested);
@@ -36,5 +40,4 @@ impl CancellationControl for TurnCancellation {
         })
     }
 }
-
 

@@ -20,6 +20,7 @@ impl StructuredRunDriver for OpenCodeHttpDriver {
                 .open_run_session(&plan, &request, &services, &version)
                 .await?;
             let mut turn_request = TurnRequest::new(turn_id, request.content().clone());
+            turn_request = turn_request.with_attachments(request.attachments().cloned());
             if let Some(deadline) = request.deadline() {
                 turn_request = turn_request.with_deadline(deadline);
             }
@@ -41,6 +42,7 @@ impl StructuredRunDriver for OpenCodeHttpDriver {
                     ));
                 }
             };
+            let callbacks = turn.take_callbacks();
             let terminal = match turn.take_terminal_outcome() {
                 Some(terminal) => terminal,
                 None => {
@@ -126,6 +128,7 @@ impl StructuredRunDriver for OpenCodeHttpDriver {
                 request_id: request.request_id().clone(),
                 run_id,
                 events: Some(events),
+                callbacks,
                 terminal: Some(Box::pin(terminal)),
                 cancellation,
                 task,
@@ -166,7 +169,18 @@ impl OpenCodeHttpDriver {
         let working_resource = request
             .working_resource()
             .expect("validated OpenCode run resource");
-        let policy = SessionAccessPolicy::ambient_harness(ResourceAccess::Read);
+        let callback_enabled = provider_callbacks(plan)?;
+        let policy = if callback_enabled {
+            SessionAccessPolicy::ambient_harness_with_consumer_mediated_requests(
+                ResourceAccess::ReadWrite,
+                [
+                    callback::permission_namespace(),
+                    callback::question_namespace(),
+                ],
+            )
+        } else {
+            SessionAccessPolicy::ambient_harness(ResourceAccess::Read)
+        };
         let operation_scope = scope("run", request.request_id().as_str())?;
         let mut access = AccessLeases::acquire(
             plan,
@@ -180,6 +194,7 @@ impl OpenCodeHttpDriver {
             .clone()
             .expect("OpenCode run resource was acquired");
         let cancelled = Arc::new(AtomicBool::new(false));
+        let image_attachments = validate_attachment_plan(plan, services)?;
         let open = async {
             let health = complete_before_deadline(
                 self.transport.request(
@@ -201,7 +216,12 @@ impl OpenCodeHttpDriver {
                 self.transport.request(
                     operation_scope,
                     access.endpoint.clone(),
-                    session_create(provider_id.as_str(), model_id.as_str(), &directory),
+                    session_create(
+                        provider_id.as_str(),
+                        model_id.as_str(),
+                        &directory,
+                        callback_enabled,
+                    ),
                     services,
                     Arc::clone(&cancelled),
                 ),
@@ -254,6 +274,15 @@ impl OpenCodeHttpDriver {
             cancellation: SessionCancellation::new(active),
             reasoning_mode: request.policy().reasoning_mode().cloned(),
             structured_output: request.structured_output().cloned(),
+            image_attachments,
+            provider_callbacks: callback_enabled,
+            callback_run_id: Some(
+                RuntimeRunId::new(format!(
+                    "opencode:run:{}",
+                    request.request_id().as_str()
+                ))
+                .map_err(|_| invalid_run_identity())?,
+            ),
         })
     }
 }
@@ -292,6 +321,7 @@ struct OpenCodeRunHandle {
     request_id: RequestId,
     run_id: RuntimeRunId,
     events: Option<BoxEventStream>,
+    callbacks: Option<swallowtail_runtime::CallbackExchange>,
     terminal: Option<BoxFuture<'static, TerminalOutcome>>,
     cancellation: Arc<OpenCodeRunCancellation>,
     task: Box<dyn JoinedTask>,
@@ -312,6 +342,10 @@ impl RunHandle for OpenCodeRunHandle {
 
     fn take_events(&mut self) -> Option<BoxEventStream> {
         self.events.take()
+    }
+
+    fn take_callbacks(&mut self) -> Option<swallowtail_runtime::CallbackExchange> {
+        self.callbacks.take()
     }
 
     fn cancellation(&self) -> &dyn CancellationControl {
@@ -418,6 +452,9 @@ fn validate_run(
     services: &HostServices,
 ) -> Result<(), RuntimeFailure> {
     require_services(services, true)?;
+    let image_attachments = validate_attachment_plan(plan, services)?;
+    validate_attachments(request.attachments(), services, image_attachments)?;
+    let callbacks = provider_callbacks(plan)?;
     if plan.requirements().execution_layer() != ExecutionLayer::HarnessInteraction
         || plan.requirements().operation_shape() != OperationShape::StructuredRun
         || plan.requirements().driver_role() != DriverRole::StructuredRun
@@ -505,7 +542,11 @@ fn validate_run(
     require_run_constraint(
         plan,
         Capability::WorkingResource,
-        CapabilityConstraint::ResourceAccess(ResourceAccess::Read),
+        CapabilityConstraint::ResourceAccess(if callbacks {
+            ResourceAccess::ReadWrite
+        } else {
+            ResourceAccess::Read
+        }),
     )?;
     require_run_constraint(
         plan,
@@ -520,12 +561,9 @@ fn validate_run(
     if request.working_resource().is_none() {
         return Err(unsupported("a resource-free structured run"));
     }
-    if request.attachments().len() != 0
-        || request.tools().len() != 0
-        || request.maximum_output_tokens().is_some()
-    {
+    if request.tools().len() != 0 || request.maximum_output_tokens().is_some() {
         return Err(unsupported(
-            "structured-run attachments, consumer tools, or output-token limit",
+            "structured-run consumer tools or output-token limit",
         ));
     }
     let policy = request.policy();

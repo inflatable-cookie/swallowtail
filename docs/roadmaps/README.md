@@ -13,9 +13,9 @@ shape.
 ## Next Task
 
 Execute
-[g02 card 090](g02/batch-cards/090-input-and-callback-implementation-tranche.md):
-implement the six-cell Pi, OpenCode, and Anthropic Messages input/callback
-tranche against Contract 041 and the frozen offline corpora.
+[g02 card 094](g02/batch-cards/094-session-continuity-implementation-tranche.md):
+implement Codex app-server load, Claude Agent ACP load and resume, and OpenCode
+HTTP load and resume through existing prepared route identities.
 
 ## Index
 

@@ -1,0 +1,54 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-07-28",
+  "qualified_range": {
+    "baseline": "0.53.0",
+    "latest": "0.61.0",
+    "excluded_unpublished_package": "0.58.0",
+    "qualified_versions": ["0.53.0","0.54.0","0.54.1","0.55.0","0.56.0","0.57.0","0.58.1","0.59.0","0.60.0","0.61.0"]
+  },
+  "negotiation": {
+    "load": "agentCapabilities.loadSession",
+    "resume": "agentCapabilities.sessionCapabilities.resume",
+    "wire_version": 1
+  },
+  "binding": {
+    "identity": "opaque_session_id",
+    "agreement": ["sessionId","cwd","mcpServers"],
+    "mcp_servers": "order_insensitive_for_upstream_fingerprint_exact_values_preserved",
+    "mismatch": "fail_without_usable_handle"
+  },
+  "load": {
+    "method": "session/load",
+    "history_source": "ClaudeSDKClient.getSessionMessages",
+    "ordering": "source_order_notifications_awaited_before_response",
+    "replay_completion": "response_marks_ready_after_all_replay",
+    "post_response_updates": ["available_commands_update"]
+  },
+  "resume": {
+    "method": "session/resume",
+    "history_source": null,
+    "replay_phase": false,
+    "post_response_updates": ["available_commands_update"]
+  },
+  "limits": {
+    "maximum_frame_bytes": 65536,
+    "maximum_transcript_bytes": 262144,
+    "maximum_transcript_frames": 64,
+    "overflow": "fail_without_usable_handle"
+  },
+  "failure_and_cleanup": {
+    "cancellation": "session/cancel_active_turn_only",
+    "disconnect": "fail_without_usable_handle",
+    "close": "interrupt_abort_dispose_remove_in_memory",
+    "close_persistent_history": "preserved",
+    "owned_process": "close_stdin_then_join",
+    "credential_release": "awaited_last",
+    "detached_tasks_allowed": false,
+    "diagnostic_redaction": ["session_id","transcript","raw_payload"]
+  },
+  "source": {
+    "baseline": "https://github.com/agentclientprotocol/claude-agent-acp/blob/v0.53.0/src/acp-agent.ts",
+    "latest": "https://github.com/agentclientprotocol/claude-agent-acp/blob/v0.61.0/src/acp-agent.ts"
+  }
+}

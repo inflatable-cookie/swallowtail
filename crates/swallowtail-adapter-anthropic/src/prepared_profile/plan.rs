@@ -2,8 +2,9 @@ use crate::AnthropicPreparedIntegration;
 use swallowtail_core::{
     AccessRequirement, CapabilityProfile, CapabilityRequirement, ConfiguredInstance,
     CredentialState, Diagnostic, DriverRole, EndpointAuthorization, EntitlementState,
-    ExecutionLayer, ModelRoute, OperationRequirements, OperationShape, PreflightContext,
-    PreflightPlan, ProviderId, RuntimeReadiness, preflight,
+    ExecutionLayer, HostServiceKind, ModelRoute, OperationRequirements, OperationShape,
+    PreflightContext, PreflightPlan, ProviderId, RuntimeReadiness, SessionAccessPolicy,
+    SessionProviderStatePolicy, preflight,
 };
 use swallowtail_runtime::{PreparationFailure, PreparationStage, PreparedOperationEvidence};
 
@@ -81,11 +82,18 @@ pub(super) fn requirements(
     prepared: &AnthropicPreparedIntegration,
     role: DriverRole,
     capabilities: impl IntoIterator<Item = CapabilityRequirement>,
+    extra_host_services: impl IntoIterator<Item = HostServiceKind>,
 ) -> OperationRequirements {
     let descriptor = crate::anthropic_direct_descriptor();
-    OperationRequirements::new(
+    let mut host_services: Vec<_> = descriptor.required_host_services(role).collect();
+    host_services.extend(extra_host_services);
+    let mut requirements = OperationRequirements::new(
         ExecutionLayer::DirectModelInference,
-        OperationShape::StructuredRun,
+        if role == DriverRole::InteractiveSession {
+            OperationShape::InteractiveSession
+        } else {
+            OperationShape::StructuredRun
+        },
         role,
         prepared.instance().execution_host_id().clone(),
         AccessRequirement::new(prepared.access_profile().id().clone())
@@ -96,8 +104,14 @@ pub(super) fn requirements(
             .with_support_authorities([prepared.access_profile().support_authority()]),
     )
     .with_ownership_modes([prepared.instance().ownership()])
-    .with_host_services(descriptor.required_host_services(role))
-    .with_capabilities(capabilities)
+    .with_host_services(host_services)
+    .with_capabilities(capabilities);
+    if role == DriverRole::InteractiveSession {
+        requirements = requirements
+            .with_session_access_policy(SessionAccessPolicy::resource_free())
+            .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited);
+    }
+    requirements
 }
 
 pub(super) fn build_plan(

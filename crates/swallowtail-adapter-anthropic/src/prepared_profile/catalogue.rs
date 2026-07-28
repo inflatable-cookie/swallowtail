@@ -76,6 +76,7 @@ impl AnthropicPreparedIntegration {
             capabilities.iter().map(|(capability, constraints)| {
                 CapabilityRequirement::new(capability, constraints.iter().cloned())
             }),
+            [],
         );
         let plan = build_plan(self, &instance, None, &requirements)?;
         let (request_id, deadline) = input.into_parts();

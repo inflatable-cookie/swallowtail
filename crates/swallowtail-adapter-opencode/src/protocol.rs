@@ -6,6 +6,7 @@ use swallowtail_core::{
     IntegrationFamilyId, InterfaceVersionBinding, ModelCatalogEntry, ModelCatalogObservations,
     ModelId, ModelMetadata, ModelTokenLimits, ProviderId, ReasoningMetadata, ReasoningMode,
 };
+use swallowtail_runtime::{CallbackResult, StructuredOutputDescriptor};
 use swallowtail_runtime::{RuntimeFailure, TokenUsage};
 
 mod health;
@@ -179,14 +180,20 @@ pub(crate) fn parse_catalog(response: &Response) -> Result<Vec<ModelCatalogEntry
     Ok(entries)
 }
 
-pub(crate) fn session_create(provider_id: &str, model_id: &str, directory: &str) -> Request {
+pub(crate) fn session_create(
+    provider_id: &str,
+    model_id: &str,
+    directory: &str,
+    consumer_callbacks: bool,
+) -> Request {
+    let fallback_action = if consumer_callbacks { "ask" } else { "deny" };
     Request::post(
         "/session",
         Some(json!({
             "title": "Swallowtail session",
             "model": {"id": model_id, "providerID": provider_id},
             "permission": [
-                {"permission": "*", "pattern": "*", "action": "deny"},
+                {"permission": "*", "pattern": "*", "action": fallback_action},
                 {"permission": "read", "pattern": "*", "action": "allow"},
                 {"permission": "glob", "pattern": "*", "action": "allow"},
                 {"permission": "grep", "pattern": "*", "action": "allow"}
@@ -216,23 +223,39 @@ pub(crate) fn parse_session_for_version(
     Ok(session.id)
 }
 
+pub(crate) struct PromptPayload<'a> {
+    pub(crate) content: &'a str,
+    pub(crate) reasoning: Option<&'a ReasoningMode>,
+    pub(crate) structured_output: Option<&'a StructuredOutputDescriptor>,
+    pub(crate) file: Option<&'a crate::driver::input::FilePart>,
+}
+
 pub(crate) fn prompt(
     session_id: &str,
     provider_id: &str,
     model_id: &str,
     directory: &str,
-    content: &str,
-    reasoning: Option<&ReasoningMode>,
-    structured_output: Option<&swallowtail_runtime::StructuredOutputDescriptor>,
+    payload: PromptPayload<'_>,
 ) -> Result<Request, RuntimeFailure> {
     let mut body = json!({
         "model": {"providerID": provider_id, "modelID": model_id},
-        "parts": [{"type": "text", "text": content}]
+        "parts": [{"type": "text", "text": payload.content}]
     });
-    if let Some(reasoning) = reasoning {
+    if let Some(reasoning) = payload.reasoning {
         body["variant"] = json!(reasoning.as_str());
     }
-    if let Some(output) = structured_output {
+    if let Some(file) = payload.file {
+        body["parts"]
+            .as_array_mut()
+            .expect("prompt parts are an array")
+            .push(json!({
+                "type": "file",
+                "mime": file.media_type,
+                "filename": file.filename,
+                "url": file.data_url,
+            }));
+    }
+    if let Some(output) = payload.structured_output {
         let schema = match output.document() {
             swallowtail_runtime::SchemaDocument::Inline(bytes) => {
                 serde_json::from_slice::<Value>(bytes).map_err(|_| {
@@ -258,6 +281,112 @@ pub(crate) fn prompt(
     Ok(
         Request::post(format!("/session/{session_id}/prompt_async"), Some(body))
             .with_directory(directory),
+    )
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(crate) enum ProviderRequestKind {
+    Permission,
+    Question { count: usize },
+}
+
+#[derive(Debug, Eq, PartialEq)]
+pub(crate) struct PendingProviderRequest {
+    pub(crate) id: String,
+    pub(crate) kind: ProviderRequestKind,
+    pub(crate) payload: Vec<u8>,
+}
+
+pub(crate) fn callback_response(
+    provider_id: &str,
+    kind: ProviderRequestKind,
+    result: &CallbackResult,
+) -> Result<Request, RuntimeFailure> {
+    let id = safe_path_id(provider_id)?;
+    match kind {
+        ProviderRequestKind::Permission => {
+            let approved = match result {
+                CallbackResult::Failure { .. } => false,
+                CallbackResult::Success(payload) => {
+                    let value: Value = serde_json::from_slice(payload.as_bytes())
+                        .map_err(|_| callback_malformed())?;
+                    let object = value
+                        .as_object()
+                        .filter(|object| object.len() == 1)
+                        .ok_or_else(callback_malformed)?;
+                    match object.get("reply").and_then(Value::as_str) {
+                        Some("once") => true,
+                        Some("reject") => false,
+                        _ => return Err(callback_malformed()),
+                    }
+                }
+            };
+            let body = if approved {
+                json!({"reply": "once"})
+            } else {
+                json!({
+                    "reply": "reject",
+                    "message": "Consumer rejected the one-shot request."
+                })
+            };
+            Ok(Request::post(format!("/permission/{id}/reply"), Some(body)))
+        }
+        ProviderRequestKind::Question { count } => match result {
+            CallbackResult::Failure { .. } => {
+                Ok(Request::post(format!("/question/{id}/reject"), None))
+            }
+            CallbackResult::Success(payload) => {
+                let value: Value =
+                    serde_json::from_slice(payload.as_bytes()).map_err(|_| callback_malformed())?;
+                validate_answers(&value, count)?;
+                Ok(Request::post(format!("/question/{id}/reply"), Some(value)))
+            }
+        },
+    }
+}
+
+fn validate_answers(value: &Value, question_count: usize) -> Result<(), RuntimeFailure> {
+    let object = value
+        .as_object()
+        .filter(|object| object.len() == 1)
+        .ok_or_else(callback_malformed)?;
+    let answers = object
+        .get("answers")
+        .and_then(Value::as_array)
+        .filter(|answers| answers.len() == question_count)
+        .ok_or_else(callback_malformed)?;
+    for answer in answers {
+        let selections = answer
+            .as_array()
+            .filter(|selections| !selections.is_empty() && selections.len() <= 32)
+            .ok_or_else(callback_malformed)?;
+        if selections.iter().any(|selection| {
+            selection
+                .as_str()
+                .is_none_or(|selection| selection.is_empty() || selection.len() > 4096)
+        }) {
+            return Err(callback_malformed());
+        }
+    }
+    Ok(())
+}
+
+fn safe_path_id(value: &str) -> Result<&str, RuntimeFailure> {
+    if value.is_empty()
+        || !value
+            .bytes()
+            .all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'_' | b'-' | b'.' | b'~'))
+    {
+        Err(callback_malformed())
+    } else {
+        Ok(value)
+    }
+}
+
+fn callback_malformed() -> RuntimeFailure {
+    failure(
+        "swallowtail.opencode.callback_malformed",
+        "OpenCode callback response was malformed",
     )
 }
 

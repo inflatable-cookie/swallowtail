@@ -92,7 +92,12 @@
     "usage_updates": true,
     "permission_rejection": true,
     "cancel": true,
-    "load_resume_list_fork_delete": false,
+    "load": "corpus_qualified_not_realized",
+    "resume": "corpus_qualified_not_realized",
+    "close": "realized",
+    "delete": "realized",
+    "list": "upstream_not_selected",
+    "fork": "upstream_not_selected",
     "writes_shell_web_subagents_terminals": false,
     "client_mcp_elicitation_steering": false
   },

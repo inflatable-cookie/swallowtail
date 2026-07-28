@@ -80,7 +80,12 @@ impl AccessLeases {
                 .resolve(
                     scope,
                     reference.clone(),
-                    ResourceAccess::Read,
+                    policy.resource_access().ok_or_else(|| {
+                        failure(
+                            "swallowtail.opencode.resource_access_missing",
+                            "OpenCode working-resource policy requires explicit access",
+                        )
+                    })?,
                     ResourceRepresentation::Filesystem,
                 )
                 .await
@@ -128,5 +133,4 @@ impl AccessLeases {
         merge_cleanup(resource, credential)
     }
 }
-
 

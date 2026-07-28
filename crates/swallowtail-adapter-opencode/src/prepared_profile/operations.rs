@@ -1,6 +1,6 @@
 use super::input::{
-    OpenCodeCatalogueProfileInput, OpenCodeRunProfileInput, OpenCodeSessionManagementInput,
-    OpenCodeSessionProfileInput,
+    OpenCodeCatalogueProfileInput, OpenCodeRunProfileInput, OpenCodeRunProfileParts,
+    OpenCodeSessionManagementInput, OpenCodeSessionProfileInput,
 };
 use super::plan::{
     OpenCodePreparedEvidence, build_plan, failure, instance_with_capabilities,
@@ -13,10 +13,11 @@ use swallowtail_core::{
     ModelCatalogEntry, ModelRoute, PreflightPlan, ProviderId, ProviderSessionActivityEvidence,
     ProviderSessionAffectedScope, ProviderSessionBindingOrigin, ProviderSessionCancellationPosture,
     ProviderSessionDeletionStrength, ProviderSessionInitialStateRequirement,
-    ProviderSessionManagementAction, ReasoningMode, StructuredOutputEnforcement,
+    ProviderSessionManagementAction, ReasoningMode, ResourceAccess, ResourceRepresentation,
+    StructuredOutputEnforcement,
 };
 use swallowtail_runtime::{
-    BoxFuture, CancellationControl, CleanupOutcome, DeleteProviderSessionRequest,
+    AttachmentRole, BoxFuture, CancellationControl, CleanupOutcome, DeleteProviderSessionRequest,
     DirectContinuationTurnRequest, HostServices, InteractiveSessionDriver,
     InteractiveSessionHandle, ModelCatalogDriver, ModelCatalogRequest, OpenSessionRequest,
     OperationPolicy, PreparationFailure, PreparedAccessEvidence,
@@ -219,6 +220,8 @@ impl OpenCodePreparedIntegration {
             capabilities.iter().map(|(capability, constraints)| {
                 CapabilityRequirement::new(capability, constraints.iter().cloned())
             }),
+            false,
+            false,
         );
         let plan = build_plan(self, &instance, None, &requirements)?;
         let (request_id, deadline) = input.into_parts();
@@ -236,20 +239,24 @@ impl OpenCodePreparedIntegration {
         &self,
         input: OpenCodeSessionProfileInput,
     ) -> Result<OpenCodePreparedSession, PreparationFailure> {
-        let (request_id, model, working_resource, deadline) = input.into_parts();
+        let (request_id, model, working_resource, deadline, image_attachments, provider_callbacks) =
+            input.into_parts();
         let capabilities = crate::prepared::all_capabilities();
-        let session_capabilities = CapabilityProfile::new(
-            capabilities
-                .iter()
-                .filter(|(capability, _)| {
-                    !matches!(
-                        *capability,
-                        Capability::ModelCatalog | Capability::ProviderSessionDelete
-                    )
-                })
-                .map(|(capability, constraints)| {
-                    CapabilityRequirement::new(capability, constraints.iter().cloned())
-                }),
+        let session_capabilities = callback_resource_access(
+            CapabilityProfile::new(
+                capabilities
+                    .iter()
+                    .filter(|(capability, _)| {
+                        !matches!(
+                            *capability,
+                            Capability::ModelCatalog | Capability::ProviderSessionDelete
+                        ) && (image_attachments || *capability != Capability::Attachments)
+                    })
+                    .map(|(capability, constraints)| {
+                        CapabilityRequirement::new(capability, constraints.iter().cloned())
+                    }),
+            ),
+            provider_callbacks,
         );
         let instance = instance_with_capabilities(self, session_capabilities.clone());
         let (route_id, route_revision, provider_id, model_id, _) = model.into_parts();
@@ -269,6 +276,8 @@ impl OpenCodePreparedIntegration {
                 .map(|(capability, constraints)| {
                     CapabilityRequirement::new(capability, constraints.iter().cloned())
                 }),
+            image_attachments,
+            provider_callbacks,
         );
         let plan = build_plan(self, &instance, Some(&route), &requirements)?;
         let request = OpenSessionRequest::from_plan(&plan, request_id, working_resource, deadline)?;
@@ -283,8 +292,19 @@ impl OpenCodePreparedIntegration {
         &self,
         input: OpenCodeRunProfileInput,
     ) -> Result<OpenCodePreparedRun, PreparationFailure> {
-        let (request_id, model, content, working_resource, reasoning, structured_output, deadline) =
-            input.into_parts();
+        let OpenCodeRunProfileParts {
+            request_id,
+            model,
+            content,
+            working_resource,
+            reasoning,
+            structured_output,
+            deadline,
+            attachments,
+            provider_callbacks,
+        } = input.into_parts();
+        validate_attachments(&attachments)?;
+        let image_attachments = !attachments.is_empty();
         let (route_id, route_revision, provider_id, model_id, catalogue_entry) = model.into_parts();
         validate_generation_controls(
             &provider_id,
@@ -293,7 +313,14 @@ impl OpenCodePreparedIntegration {
             reasoning.as_ref(),
             structured_output.as_ref(),
         )?;
-        let capabilities = run_capabilities(reasoning.as_ref(), structured_output.as_ref());
+        let capabilities = callback_resource_access(
+            run_capabilities(
+                reasoning.as_ref(),
+                structured_output.as_ref(),
+                image_attachments,
+            ),
+            provider_callbacks,
+        );
         let instance = instance_with_capabilities(self, capabilities.clone());
         let route = ModelRoute::new(
             route_id,
@@ -308,6 +335,8 @@ impl OpenCodePreparedIntegration {
             capabilities.iter().map(|(capability, constraints)| {
                 CapabilityRequirement::new(capability, constraints.iter().cloned())
             }),
+            image_attachments,
+            provider_callbacks,
         );
         let plan = build_plan(self, &instance, Some(&route), &requirements)?;
         let mut policy = OperationPolicy::offline()
@@ -320,7 +349,8 @@ impl OpenCodePreparedIntegration {
             policy = policy.with_reasoning_mode(reasoning);
         }
         let mut request = StructuredRunRequest::new(request_id, content, policy)
-            .with_working_resource(working_resource);
+            .with_working_resource(working_resource)
+            .with_attachments(attachments);
         if let Some(output) = structured_output {
             request = request.with_structured_output(output);
         }
@@ -383,9 +413,11 @@ impl OpenCodePreparedIntegration {
 fn run_capabilities(
     reasoning: Option<&ReasoningMode>,
     structured_output: Option<&StructuredOutputDescriptor>,
+    image_attachments: bool,
 ) -> CapabilityProfile {
     let mut capabilities = crate::prepared::run_capabilities()
         .iter()
+        .filter(|(capability, _)| image_attachments || *capability != Capability::Attachments)
         .map(|(capability, constraints)| {
             CapabilityRequirement::new(capability, constraints.iter().cloned())
         })
@@ -408,6 +440,26 @@ fn run_capabilities(
         ));
     }
     CapabilityProfile::new(capabilities)
+}
+
+fn validate_attachments(
+    attachments: &[swallowtail_runtime::AttachmentDescriptor],
+) -> Result<(), PreparationFailure> {
+    if attachments.len() > 1
+        || attachments.iter().any(|attachment| {
+            attachment.media_type() != "image/png"
+                || attachment.role() != AttachmentRole::Input
+                || attachment
+                    .known_length()
+                    .is_some_and(|length| length > 1024 * 1024)
+        })
+    {
+        return Err(failure(
+            "swallowtail.opencode.preparation.attachments_unsupported",
+            "OpenCode supports one PNG attachment up to one MiB",
+        ));
+    }
+    Ok(())
 }
 
 fn validate_generation_controls(
@@ -465,6 +517,30 @@ fn validate_generation_controls(
         }
     }
     Ok(())
+}
+
+fn callback_resource_access(
+    capabilities: CapabilityProfile,
+    provider_callbacks: bool,
+) -> CapabilityProfile {
+    if !provider_callbacks {
+        return capabilities;
+    }
+    CapabilityProfile::new(capabilities.iter().map(|(capability, constraints)| {
+        if capability == Capability::WorkingResource {
+            CapabilityRequirement::new(
+                Capability::WorkingResource,
+                [
+                    CapabilityConstraint::ResourceAccess(ResourceAccess::ReadWrite),
+                    CapabilityConstraint::ResourceRepresentation(
+                        ResourceRepresentation::Filesystem,
+                    ),
+                ],
+            )
+        } else {
+            CapabilityRequirement::new(capability, constraints.iter().cloned())
+        }
+    }))
 }
 
 fn lifecycle_management_instance(

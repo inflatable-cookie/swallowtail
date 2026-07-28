@@ -2785,6 +2785,7 @@ dependencies = [
 name = "swallowtail-adapter-anthropic"
 version = "0.1.0"
 dependencies = [
+ "base64",
  "curl",
  "futures-channel",
  "futures-core",
@@ -2992,6 +2993,7 @@ dependencies = [
 name = "swallowtail-adapter-opencode"
 version = "0.1.0"
 dependencies = [
+ "base64",
  "curl",
  "futures-channel",
  "futures-core",

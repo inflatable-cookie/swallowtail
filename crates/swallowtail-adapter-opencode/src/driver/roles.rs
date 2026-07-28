@@ -71,6 +71,8 @@ impl InteractiveSessionDriver for OpenCodeHttpDriver {
             let version = Self::validate_plan(&plan)?;
             services.require_execution_host(plan.execution_host_id())?;
             validate_open(&plan, &request, &services)?;
+            let callback_enabled = provider_callbacks(&plan)?;
+            let image_attachments = validate_attachment_plan(&plan, &services)?;
             let provider_id = plan.provider_id().cloned().ok_or_else(|| {
                 failure(
                     "swallowtail.opencode.provider_missing",
@@ -126,7 +128,12 @@ impl InteractiveSessionDriver for OpenCodeHttpDriver {
                     self.transport.request(
                         scope,
                         access.endpoint.clone(),
-                        session_create(provider_id.as_str(), model_id.as_str(), &directory),
+                        session_create(
+                            provider_id.as_str(),
+                            model_id.as_str(),
+                            &directory,
+                            callback_enabled,
+                        ),
                         &services,
                         Arc::clone(&cancelled),
                     ),
@@ -191,6 +198,9 @@ impl InteractiveSessionDriver for OpenCodeHttpDriver {
                 cancellation,
                 reasoning_mode: None,
                 structured_output: None,
+                image_attachments,
+                provider_callbacks: callback_enabled,
+                callback_run_id: None,
             }) as Box<dyn InteractiveSessionHandle>)
         })
     }

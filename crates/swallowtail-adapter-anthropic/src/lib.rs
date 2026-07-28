@@ -38,4 +38,6 @@ pub use prepared_managed_profile::{
 pub use prepared_profile::{
     AnthropicCatalogueProfileInput, AnthropicInferenceAttemptInput, AnthropicModelSelection,
     AnthropicPreparedCatalogue, AnthropicPreparedEvidence, AnthropicPreparedInferenceAttempt,
+    AnthropicPreparedSession, AnthropicSessionProfileInput, AnthropicWebSearchInput,
+    anthropic_messages_continuation_config,
 };

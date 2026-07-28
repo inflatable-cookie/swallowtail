@@ -186,8 +186,8 @@ host-bound open, resume, callbacks, interruption, failure, and joined cleanup.
 Soundcheck and Nucleus Agent Chat are accepted consumers. The bounded
 workspace-write runtime required by Nucleus task execution is complete without
 widening read-only chat. The planned provider-route and model-catalogue
-expansion is realized. The current 22-solution feature matrix records 444
-`No` cells and 29 `Not applicable` cells after the first generation-control
+expansion is realized. The current 22-solution feature matrix records 437
+`No` cells and 29 `Not applicable` cells after the input/callback
 tranche. Every current `No` has a machine-checked evidence classification.
 Usage evidence has 19 `Yes`, one serving-only `Not applicable`, and two honest
 Kimi Code `No` cells. Each composite solution row records route ownership in
@@ -197,10 +197,20 @@ OpenCode. The 74-cell input/callback audit finds 45 actionable gaps, three
 held xAI cells, 25 exact route absences, and one realtime-media mismatch. Its
 first tranche selects Pi attachment input, OpenCode attachment plus
 permission/question exchange, and Anthropic Messages attachment, client-tool
-continuation, and provider-owned search. Contract 041 and nine offline corpus
-tests now fix that six-cell implementation boundary. Later cards retain session continuity,
-provider retention, retained execution,
-workspace/runtime, and realtime media on the runway. The shared hosted
+continuation, and provider-owned search. Pi, OpenCode, and Anthropic Messages
+now realize all six selected cells. Anthropic image and search stay on
+one-attempt structured inference; its consumer tool exchange uses a separate
+resource-free direct-continuation session. Contract 041 and deterministic
+offline fixtures fix the implementation boundary. The 58-cell
+session-continuity audit finds seven contract-ready load or resume cells, four
+retained hosted-session contract gaps, one upstream replay-ordering block, ten
+exact route absences, and 36 operation-shape mismatches. All 20 native-close
+cells remain honest `No`. The first tranche selects Codex app-server load,
+Claude Agent ACP load and resume, and OpenCode HTTP load and resume; exact
+maintained-range corpora now cover every selected version segment with no
+shared contract change. Production implementation is next. Provider retention,
+retained execution, workspace/runtime, and realtime media remain on the
+runway. The shared hosted
 foundation and attached OpenCode HTTP/SSE proof are complete. The
 provider-supported Anthropic Models and Messages direct driver is complete.
 ACP v1 and Gemini CLI `0.51.0` authority, fixtures, bounded protocol transport,

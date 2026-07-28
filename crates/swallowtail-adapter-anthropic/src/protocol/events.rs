@@ -4,14 +4,24 @@ use swallowtail_runtime::TokenUsage;
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) enum Event {
     MessageStart(TokenUsage),
-    ContentStart,
+    ContentStart(ContentBlock),
     OutputDelta(String),
+    InputJsonDelta(String),
+    Citation,
     ContentStop,
-    Usage(TokenUsage),
+    Usage(TokenUsage, String),
     MessageStop,
     Ping,
     ProviderFailed(ProviderErrorKind),
     Unknown,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) enum ContentBlock {
+    Text,
+    ToolUse { id: String, name: String },
+    SearchUse,
+    SearchResult,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -32,19 +42,16 @@ pub(crate) fn parse_event(frame: &SseFrame) -> Result<Event, RuntimeFailure> {
     }
     match frame.name.as_str() {
         "message_start" => Ok(Event::MessageStart(parse_usage(&value["message"]["usage"]))),
-        "content_block_start" => {
-            require_kind(&value["content_block"], "text")?;
-            Ok(Event::ContentStart)
-        }
-        "content_block_delta" => {
-            require_kind(&value["delta"], "text_delta")?;
-            value["delta"]["text"]
-                .as_str()
-                .map(|text| Event::OutputDelta(text.to_owned()))
-                .ok_or_else(|| protocol_failure("text delta"))
-        }
+        "content_block_start" => parse_content_start(&value["content_block"]),
+        "content_block_delta" => parse_content_delta(&value["delta"]),
         "content_block_stop" => Ok(Event::ContentStop),
-        "message_delta" => Ok(Event::Usage(parse_usage(&value["usage"]))),
+        "message_delta" => Ok(Event::Usage(
+            parse_usage(&value["usage"]),
+            value["delta"]["stop_reason"]
+                .as_str()
+                .ok_or_else(|| protocol_failure("message stop reason"))?
+                .to_owned(),
+        )),
         "message_stop" => Ok(Event::MessageStop),
         "ping" => Ok(Event::Ping),
         "error" => Ok(Event::ProviderFailed(classify_error(
@@ -52,6 +59,49 @@ pub(crate) fn parse_event(frame: &SseFrame) -> Result<Event, RuntimeFailure> {
         ))),
         _ => Ok(Event::Unknown),
     }
+}
+
+fn parse_content_start(value: &Value) -> Result<Event, RuntimeFailure> {
+    let block = match value["type"].as_str() {
+        Some("text") => ContentBlock::Text,
+        Some("tool_use") => ContentBlock::ToolUse {
+            id: required_string(value, "id", "tool-use id")?,
+            name: required_string(value, "name", "tool-use name")?,
+        },
+        Some("server_tool_use") if value["name"].as_str() == Some("web_search") => {
+            ContentBlock::SearchUse
+        }
+        Some("web_search_tool_result") => ContentBlock::SearchResult,
+        _ => return Err(protocol_failure("content-block semantics")),
+    };
+    Ok(Event::ContentStart(block))
+}
+
+fn parse_content_delta(value: &Value) -> Result<Event, RuntimeFailure> {
+    match value["type"].as_str() {
+        Some("text_delta") => value["text"]
+            .as_str()
+            .map(|text| Event::OutputDelta(text.to_owned()))
+            .ok_or_else(|| protocol_failure("text delta")),
+        Some("input_json_delta") => value["partial_json"]
+            .as_str()
+            .map(|text| Event::InputJsonDelta(text.to_owned()))
+            .ok_or_else(|| protocol_failure("tool input delta")),
+        Some("citations_delta") => Ok(Event::Citation),
+        _ => Err(protocol_failure("content delta semantics")),
+    }
+}
+
+fn required_string(
+    value: &Value,
+    field: &str,
+    subject: &str,
+) -> Result<String, RuntimeFailure> {
+    value[field]
+        .as_str()
+        .filter(|value| !value.trim().is_empty())
+        .map(str::to_owned)
+        .ok_or_else(|| protocol_failure(subject))
 }
 
 fn parse_usage(value: &Value) -> TokenUsage {
@@ -105,17 +155,6 @@ pub(crate) fn provider_failure(kind: ProviderErrorKind, operation: &str) -> Runt
         ProviderErrorKind::Other => ("swallowtail.anthropic.provider_failed", "failed"),
     };
     failure(code, format!("Anthropic {operation} {label}"))
-}
-
-fn require_kind(value: &Value, expected: &str) -> Result<(), RuntimeFailure> {
-    if value["type"].as_str() == Some(expected) {
-        Ok(())
-    } else {
-        Err(failure(
-            "swallowtail.anthropic.content_semantics_unknown",
-            "Anthropic emitted unsupported content semantics",
-        ))
-    }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

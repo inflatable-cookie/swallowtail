@@ -22,6 +22,13 @@ pub(crate) enum Method {
     Post,
 }
 
+#[derive(Clone)]
+pub(crate) struct ToolSpec {
+    pub(crate) name: String,
+    pub(crate) description: String,
+    pub(crate) input_schema: serde_json::Value,
+}
+
 impl Request {
     pub(crate) fn models(after: Option<&str>) -> Self {
         let mut query = vec![("limit".to_owned(), "2".to_owned())];
@@ -40,6 +47,8 @@ impl Request {
         model: &str,
         content: &OperationContent,
         maximum_output_tokens: u64,
+        image: Option<&str>,
+        search_domains: Option<&[String]>,
     ) -> Result<Self, RuntimeFailure> {
         let maximum = u32::try_from(maximum_output_tokens).map_err(|_| {
             failure(
@@ -47,13 +56,74 @@ impl Request {
                 "Anthropic maximum output tokens exceeded the supported request range",
             )
         })?;
+        let content = match image {
+            Some(image) => json!([
+                {
+                    "type": "image",
+                    "source": {
+                        "type": "base64",
+                        "media_type": "image/png",
+                        "data": image
+                    }
+                },
+                {"type": "text", "text": content.as_str()}
+            ]),
+            None => json!(content.as_str()),
+        };
+        let mut body = json!({
+            "model": model,
+            "max_tokens": maximum,
+            "messages": [{"role": "user", "content": content}],
+            "stream": true
+        });
+        if let Some(domains) = search_domains {
+            body["tools"] = json!([{
+                "type": "web_search_20250305",
+                "name": "web_search",
+                "max_uses": 2,
+                "allowed_domains": domains
+            }]);
+        }
+        let body = serde_json::to_vec(&body).expect("message request JSON serializes");
+        Ok(Self {
+            method: Method::Post,
+            path: "/v1/messages".to_owned(),
+            query: Vec::new(),
+            body: Some(body),
+        })
+    }
+
+    pub(crate) fn direct_message(
+        model: &str,
+        messages: serde_json::Value,
+        tools: &[ToolSpec],
+        maximum_output_tokens: u64,
+    ) -> Result<Self, RuntimeFailure> {
+        let maximum = u32::try_from(maximum_output_tokens).map_err(|_| {
+            failure(
+                "swallowtail.anthropic.output_limit_invalid",
+                "Anthropic maximum output tokens exceeded the supported request range",
+            )
+        })?;
+        let tools: Vec<_> = tools
+            .iter()
+            .map(|tool| {
+                json!({
+                    "name": tool.name,
+                    "description": tool.description,
+                    "input_schema": tool.input_schema
+                })
+            })
+            .collect();
         let body = serde_json::to_vec(&json!({
             "model": model,
             "max_tokens": maximum,
-            "messages": [{"role": "user", "content": content.as_str()}],
+            "messages": messages,
+            "tools": tools,
+            "tool_choice": {"type": "auto"},
             "stream": true
         }))
-        .expect("message request JSON serializes");
+        .expect("direct-continuation request JSON serializes");
         Ok(Self {
             method: Method::Post,
             path: "/v1/messages".to_owned(),

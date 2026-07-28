@@ -5,6 +5,11 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-07-28 Session Continuity Contract And Corpora](2026-07-28-session-continuity-contract-and-corpora.md)
+- [2026-07-28 Session Continuity Currentness And Tranche Selection](2026-07-28-session-continuity-currentness-and-tranche-selection.md)
+- [2026-07-28 Input/Callback Closeout And Session-Continuity Selection](2026-07-28-input-callback-closeout-and-session-continuity-selection.md)
+- [2026-07-28 Anthropic Input, Tool, And Search Exchange](2026-07-28-anthropic-input-tool-and-search-exchange.md)
+- [2026-07-28 OpenCode Input And Callback Exchange](2026-07-28-opencode-input-and-callback-exchange.md)
 - [2026-07-28 Pi RPC Attachment Input](2026-07-28-pi-rpc-attachment-input.md)
 - [2026-07-28 Input/Callback Contract And Corpora](2026-07-28-input-callback-contract-and-corpora.md)
 - [2026-07-28 Input And Callback `No` Currentness Audit](2026-07-28-input-and-callback-no-currentness-audit.md)

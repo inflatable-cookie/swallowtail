@@ -130,6 +130,42 @@ impl CallbackRequest {
         extension: ProviderExtension,
         maximum_bytes: usize,
     ) -> Result<Self, InputLimitExceeded> {
+        Self::extension_for(
+            callback_id,
+            CallbackOperationId::Turn(turn_id),
+            event_sequence,
+            deadline,
+            extension,
+            maximum_bytes,
+        )
+    }
+
+    pub fn run_extension(
+        callback_id: CallbackId,
+        run_id: RuntimeRunId,
+        event_sequence: u64,
+        deadline: Option<Deadline>,
+        extension: ProviderExtension,
+        maximum_bytes: usize,
+    ) -> Result<Self, InputLimitExceeded> {
+        Self::extension_for(
+            callback_id,
+            CallbackOperationId::Run(run_id),
+            event_sequence,
+            deadline,
+            extension,
+            maximum_bytes,
+        )
+    }
+
+    fn extension_for(
+        callback_id: CallbackId,
+        operation_id: CallbackOperationId,
+        event_sequence: u64,
+        deadline: Option<Deadline>,
+        extension: ProviderExtension,
+        maximum_bytes: usize,
+    ) -> Result<Self, InputLimitExceeded> {
         if extension.payload().len() > maximum_bytes {
             return Err(InputLimitExceeded::new(
                 "callback extension payload",
@@ -139,7 +175,7 @@ impl CallbackRequest {
         }
         Ok(Self {
             callback_id,
-            operation_id: CallbackOperationId::Turn(turn_id),
+            operation_id,
             event_sequence,
             deadline,
             provider_request_ref: None,

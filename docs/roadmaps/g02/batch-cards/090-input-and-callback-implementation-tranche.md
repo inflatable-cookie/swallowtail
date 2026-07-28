@@ -1,6 +1,6 @@
 # 090 Input And Callback Implementation Tranche
 
-Status: in progress
+Status: completed
 Owner: Tom
 Created: 2026-07-28
 Milestone: `../027-input-and-callback-feature-closure.md`
@@ -35,12 +35,12 @@ route identities.
 
 ## Acceptance Criteria
 
-- [ ] every changed matrix cell has a realized prepared operation
-- [ ] input and callback authority agree from request through completion
-- [ ] malformed and unsupported inputs fail deterministically
-- [ ] callbacks remain consumer-executed and exactly correlated
-- [ ] topology, cleanup, and version posture remain unchanged
-- [ ] package examples compile without live access
+- [x] every changed matrix cell has a realized prepared operation
+- [x] input and callback authority agree from request through completion
+- [x] malformed and unsupported inputs fail deterministically
+- [x] callbacks remain consumer-executed and exactly correlated
+- [x] topology, cleanup, and version posture remain unchanged
+- [x] package examples compile without live access
 
 ## Progress
 
@@ -50,16 +50,35 @@ route identities.
   across terminal, close, rejection, and session cleanup.
 - [x] Pi prepared coverage proves structured and interactive dispatch,
   redacted path handling, exact base64 wire content, and one release.
-- [ ] `opencode.http` attachments and approval-or-question exchange.
-- [ ] `anthropic.messages` attachments, consumer-tool continuation, and
+- [x] `opencode.http` attachments and approval-or-question exchange:
+  prepared structured runs and opt-in interactive sessions bind one PNG up to
+  one MiB plus exact `opencode/permission` and `opencode/question` exchanges.
+- [x] OpenCode permission replies expose only `once` or `reject`; ordered
+  question answers, run/turn correlation, duplicate and late rejection,
+  cancellation abandonment, and one attachment release are fixture-proven.
+- [x] `anthropic.messages` attachments, consumer-tool continuation, and
   provider-owned external search.
+- [x] Anthropic structured inference binds one operation-scoped PNG or exact
+  `web_search_20250305`; search retains provider execution, two-use bounds,
+  allowed domains, explicit provider network policy, and progress evidence.
+- [x] Anthropic consumer tools use a separate resource-free direct session:
+  one provider call pauses for one exact consumer result, that submission
+  authorizes one further request, and one later user turn remains bounded.
 
 ## Evidence
 
 - `cargo test -p swallowtail-adapter-pi --no-fail-fast`: 36 passed.
+- `cargo test -p swallowtail-adapter-opencode --no-fail-fast`: 74 passed,
+  one installed-server probe ignored.
+- `cargo test -p swallowtail-adapter-anthropic --no-fail-fast`: 50 passed.
+- `effigy lint:rust`: passed across the workspace.
+- `effigy check:examples`: passed.
+- `effigy qa:routes`: passed with 437 remaining `No` cells and 68 remaining
+  input/callback `No` cells.
 - No installed Pi, live credential, or provider request was used.
+- No installed OpenCode server, live credential, or provider request was used.
+- No live Anthropic credential or provider request was used.
 
 ## Auto-Continuation
 
-No. Complete the six-cell implementation and focused package evidence before
-card 091.
+Satisfied. Continue to card 091.

@@ -248,21 +248,21 @@ expected_no_counts = Counter(
     {
         "unverified_newer_allowed": 12,
         "structured_run": 2,
-        "interactive_session": 11,
+        "interactive_session": 10,
         "realtime_media_session": 19,
         "usage_evidence": 2,
         "billed_cost_evidence": 20,
         "output_token_limit": 13,
         "reasoning_selection": 11,
         "structured_output": 17,
-        "attachments": 19,
-        "consumer_tool_exchange": 18,
-        "approval_question_exchange": 16,
+        "attachments": 17,
+        "consumer_tool_exchange": 17,
+        "approval_question_exchange": 15,
         "load_session": 20,
         "resume_session": 18,
         "working_resource": 12,
         "bounded_workspace_text_write": 19,
-        "external_search": 20,
+        "external_search": 19,
         "retained_background_execution": 20,
         "stream_reattachment": 19,
         "provider_managed_recovery": 20,
@@ -291,8 +291,8 @@ if actual_no_counts != expected_no_counts:
     raise SystemExit(
         f"provider solution No inventory changed: {dict(actual_no_counts)}"
     )
-if len(no_cells) != 443 or len(no_cells) != len(set(no_cells)):
-    raise SystemExit("provider solution No inventory must contain 443 unique cells")
+if len(no_cells) != 437 or len(no_cells) != len(set(no_cells)):
+    raise SystemExit("provider solution No inventory must contain 437 unique cells")
 
 no_classification_overrides = {
     (
@@ -369,10 +369,7 @@ input_callback_classifications = {
     ("attachments", "anthropic.managed-agent"): "contract_or_corpus_required",
     ("approval_question_exchange", "anthropic.managed-agent"): "contract_or_corpus_required",
     ("external_search", "anthropic.managed-agent"): "contract_or_corpus_required",
-    ("attachments", "anthropic.messages"): "contract_or_corpus_required",
-    ("consumer_tool_exchange", "anthropic.messages"): "contract_or_corpus_required",
     ("approval_question_exchange", "anthropic.messages"): "upstream_unsupported",
-    ("external_search", "anthropic.messages"): "contract_or_corpus_required",
     ("consumer_tool_exchange", "pi.rpc"): "upstream_unsupported",
     ("external_search", "pi.rpc"): "upstream_unsupported",
     ("attachments", "deepseek.continuation"): "upstream_unsupported",
@@ -412,14 +409,72 @@ input_callback_classifications = {
     ("consumer_tool_exchange", "openai.background"): "upstream_unsupported",
     ("approval_question_exchange", "openai.background"): "upstream_unsupported",
     ("external_search", "openai.background"): "contract_or_corpus_required",
-    ("attachments", "opencode.http"): "ready_existing_contract",
     ("consumer_tool_exchange", "opencode.http"): "contract_or_corpus_required",
-    ("approval_question_exchange", "opencode.http"): "ready_existing_contract",
     ("external_search", "opencode.http"): "contract_or_corpus_required",
     ("attachments", "xai.responses-websocket"): "ready_operator_hold",
     ("consumer_tool_exchange", "xai.responses-websocket"): "ready_operator_hold",
     ("approval_question_exchange", "xai.responses-websocket"): "upstream_unsupported",
     ("external_search", "xai.responses-websocket"): "ready_operator_hold",
+}
+session_continuity_classifications = {
+    ("load_session", "qwen.headless"): "operation_shape_not_applicable",
+    ("resume_session", "qwen.headless"): "operation_shape_not_applicable",
+    ("native_session_close", "qwen.headless"): "operation_shape_not_applicable",
+    ("load_session", "alibaba.conversations"): "shared_contract_expansion_required",
+    ("resume_session", "alibaba.conversations"): "shared_contract_expansion_required",
+    ("native_session_close", "alibaba.conversations"): "upstream_unsupported",
+    ("load_session", "bedrock.catalogue; bedrock.runtime"): "operation_shape_not_applicable",
+    ("resume_session", "bedrock.catalogue; bedrock.runtime"): "operation_shape_not_applicable",
+    ("native_session_close", "bedrock.catalogue; bedrock.runtime"): "operation_shape_not_applicable",
+    ("load_session", "claude-agent.acp"): "ready_existing_contract",
+    ("resume_session", "claude-agent.acp"): "ready_existing_contract",
+    ("load_session", "claude-code.headless"): "operation_shape_not_applicable",
+    ("resume_session", "claude-code.headless"): "operation_shape_not_applicable",
+    ("native_session_close", "claude-code.headless"): "operation_shape_not_applicable",
+    ("load_session", "anthropic.managed-agent"): "shared_contract_expansion_required",
+    ("resume_session", "anthropic.managed-agent"): "shared_contract_expansion_required",
+    ("native_session_close", "anthropic.managed-agent"): "upstream_unsupported",
+    ("load_session", "anthropic.messages"): "operation_shape_not_applicable",
+    ("resume_session", "anthropic.messages"): "operation_shape_not_applicable",
+    ("native_session_close", "anthropic.messages"): "operation_shape_not_applicable",
+    ("load_session", "pi.rpc"): "ready_existing_contract",
+    ("resume_session", "pi.rpc"): "ready_existing_contract",
+    ("native_session_close", "pi.rpc"): "upstream_unsupported",
+    ("load_session", "deepseek.continuation"): "operation_shape_not_applicable",
+    ("resume_session", "deepseek.continuation"): "operation_shape_not_applicable",
+    ("native_session_close", "deepseek.continuation"): "operation_shape_not_applicable",
+    ("load_session", "gemini-cli.acp + gemini-cli.headless"): "upstream_ordering_blocked",
+    ("resume_session", "gemini-cli.acp + gemini-cli.headless"): "upstream_unsupported",
+    ("native_session_close", "gemini-cli.acp + gemini-cli.headless"): "upstream_unsupported",
+    ("load_session", "gemini.live"): "operation_shape_not_applicable",
+    ("resume_session", "gemini.live"): "operation_shape_not_applicable",
+    ("native_session_close", "gemini.live"): "operation_shape_not_applicable",
+    ("load_session", "llama-cpp.attached"): "operation_shape_not_applicable",
+    ("resume_session", "llama-cpp.attached"): "operation_shape_not_applicable",
+    ("native_session_close", "llama-cpp.attached"): "operation_shape_not_applicable",
+    ("native_session_close", "kimi-code.acp + kimi-code.headless"): "upstream_unsupported",
+    ("load_session", "kimi-code.local-server"): "upstream_unsupported",
+    ("native_session_close", "kimi-code.local-server"): "upstream_unsupported",
+    ("load_session", "kimi-platform.chat"): "operation_shape_not_applicable",
+    ("resume_session", "kimi-platform.chat"): "operation_shape_not_applicable",
+    ("native_session_close", "kimi-platform.chat"): "operation_shape_not_applicable",
+    ("load_session", "ollama.attached"): "operation_shape_not_applicable",
+    ("resume_session", "ollama.attached"): "operation_shape_not_applicable",
+    ("native_session_close", "ollama.attached"): "operation_shape_not_applicable",
+    ("load_session", "codex.app-server; codex.exec"): "ready_existing_contract",
+    ("native_session_close", "codex.app-server; codex.exec"): "upstream_unsupported",
+    ("load_session", "openai.realtime"): "operation_shape_not_applicable",
+    ("resume_session", "openai.realtime"): "operation_shape_not_applicable",
+    ("native_session_close", "openai.realtime"): "operation_shape_not_applicable",
+    ("load_session", "openai.background"): "operation_shape_not_applicable",
+    ("resume_session", "openai.background"): "operation_shape_not_applicable",
+    ("native_session_close", "openai.background"): "operation_shape_not_applicable",
+    ("load_session", "opencode.http"): "ready_existing_contract",
+    ("resume_session", "opencode.http"): "ready_existing_contract",
+    ("native_session_close", "opencode.http"): "upstream_unsupported",
+    ("load_session", "xai.responses-websocket"): "operation_shape_not_applicable",
+    ("resume_session", "xai.responses-websocket"): "operation_shape_not_applicable",
+    ("native_session_close", "xai.responses-websocket"): "operation_shape_not_applicable",
 }
 generation_control_no_cells = {
     (feature, row["route_id"])
@@ -443,10 +498,21 @@ input_callback_no_cells = {
     ]
     if row[feature] == "No"
 }
-if len(input_callback_no_cells) != 73:
-    raise SystemExit("input/callback inventory must contain exactly 73 No cells")
+if len(input_callback_no_cells) != 68:
+    raise SystemExit("input/callback inventory must contain exactly 68 No cells")
 if input_callback_no_cells != set(input_callback_classifications):
     raise SystemExit("input/callback No classifications changed")
+
+session_continuity_no_cells = {
+    (feature, row["route_id"])
+    for row in rows
+    for feature in ["load_session", "resume_session", "native_session_close"]
+    if row[feature] == "No"
+}
+if len(session_continuity_no_cells) != 58:
+    raise SystemExit("session-continuity inventory must contain exactly 58 No cells")
+if session_continuity_no_cells != set(session_continuity_classifications):
+    raise SystemExit("session-continuity No classifications changed")
 
 classification_counts = Counter()
 for row in rows:
@@ -458,18 +524,21 @@ for row in rows:
             cell,
             generation_control_classifications.get(cell)
             or input_callback_classifications.get(cell)
+            or session_continuity_classifications.get(cell)
             or "missing_shared_contract_or_currentness_evidence",
         )
         classification_counts[classification] += 1
 if classification_counts != Counter(
     {
-        "missing_shared_contract_or_currentness_evidence": 325,
-        "contract_or_corpus_required": 50,
-        "upstream_unsupported": 47,
-        "operation_shape_not_applicable": 6,
-        "ready_existing_contract": 4,
+        "missing_shared_contract_or_currentness_evidence": 266,
+        "contract_or_corpus_required": 47,
+        "upstream_unsupported": 57,
+        "operation_shape_not_applicable": 42,
+        "ready_existing_contract": 9,
         "ready_operator_hold": 6,
         "composite_partial_only": 5,
+        "shared_contract_expansion_required": 4,
+        "upstream_ordering_blocked": 1,
     }
 ):
     raise SystemExit(

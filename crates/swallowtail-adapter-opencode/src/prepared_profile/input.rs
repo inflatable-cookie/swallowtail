@@ -2,7 +2,7 @@ use swallowtail_core::{
     ModelCatalogEntry, ModelId, ModelRouteId, ModelRouteRevision, ProviderId, ReasoningMode,
 };
 use swallowtail_runtime::{
-    Deadline, OperationContent, ProviderSessionManagementBinding, RequestId,
+    AttachmentDescriptor, Deadline, OperationContent, ProviderSessionManagementBinding, RequestId,
     StructuredOutputDescriptor, WorkingResourceRef,
 };
 
@@ -89,6 +89,8 @@ pub struct OpenCodeSessionProfileInput {
     model: OpenCodeModelSelection,
     working_resource: WorkingResourceRef,
     deadline: Option<Deadline>,
+    image_attachments: bool,
+    provider_callbacks: bool,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -151,7 +153,21 @@ impl OpenCodeSessionProfileInput {
             model,
             working_resource,
             deadline: None,
+            image_attachments: false,
+            provider_callbacks: false,
         }
+    }
+
+    #[must_use]
+    pub const fn with_image_attachments(mut self) -> Self {
+        self.image_attachments = true;
+        self
+    }
+
+    #[must_use]
+    pub const fn with_provider_callbacks(mut self) -> Self {
+        self.provider_callbacks = true;
+        self
     }
 
     #[must_use]
@@ -167,12 +183,16 @@ impl OpenCodeSessionProfileInput {
         OpenCodeModelSelection,
         WorkingResourceRef,
         Option<Deadline>,
+        bool,
+        bool,
     ) {
         (
             self.request_id,
             self.model,
             self.working_resource,
             self.deadline,
+            self.image_attachments,
+            self.provider_callbacks,
         )
     }
 }
@@ -186,6 +206,20 @@ pub struct OpenCodeRunProfileInput {
     reasoning: Option<ReasoningMode>,
     structured_output: Option<StructuredOutputDescriptor>,
     deadline: Option<Deadline>,
+    attachments: Vec<AttachmentDescriptor>,
+    provider_callbacks: bool,
+}
+
+pub(super) struct OpenCodeRunProfileParts {
+    pub(super) request_id: RequestId,
+    pub(super) model: OpenCodeModelSelection,
+    pub(super) content: OperationContent,
+    pub(super) working_resource: WorkingResourceRef,
+    pub(super) reasoning: Option<ReasoningMode>,
+    pub(super) structured_output: Option<StructuredOutputDescriptor>,
+    pub(super) deadline: Option<Deadline>,
+    pub(super) attachments: Vec<AttachmentDescriptor>,
+    pub(super) provider_callbacks: bool,
 }
 
 impl OpenCodeRunProfileInput {
@@ -204,7 +238,24 @@ impl OpenCodeRunProfileInput {
             reasoning: None,
             structured_output: None,
             deadline: None,
+            attachments: Vec::new(),
+            provider_callbacks: false,
         }
+    }
+
+    #[must_use]
+    pub fn with_attachments(
+        mut self,
+        attachments: impl IntoIterator<Item = AttachmentDescriptor>,
+    ) -> Self {
+        self.attachments = attachments.into_iter().collect();
+        self
+    }
+
+    #[must_use]
+    pub const fn with_provider_callbacks(mut self) -> Self {
+        self.provider_callbacks = true;
+        self
     }
 
     #[must_use]
@@ -225,25 +276,17 @@ impl OpenCodeRunProfileInput {
         self
     }
 
-    pub(super) fn into_parts(
-        self,
-    ) -> (
-        RequestId,
-        OpenCodeModelSelection,
-        OperationContent,
-        WorkingResourceRef,
-        Option<ReasoningMode>,
-        Option<StructuredOutputDescriptor>,
-        Option<Deadline>,
-    ) {
-        (
-            self.request_id,
-            self.model,
-            self.content,
-            self.working_resource,
-            self.reasoning,
-            self.structured_output,
-            self.deadline,
-        )
+    pub(super) fn into_parts(self) -> OpenCodeRunProfileParts {
+        OpenCodeRunProfileParts {
+            request_id: self.request_id,
+            model: self.model,
+            content: self.content,
+            working_resource: self.working_resource,
+            reasoning: self.reasoning,
+            structured_output: self.structured_output,
+            deadline: self.deadline,
+            attachments: self.attachments,
+            provider_callbacks: self.provider_callbacks,
+        }
     }
 }

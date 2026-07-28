@@ -1,8 +1,8 @@
 use crate::failure::{failure, unsupported};
 use crate::protocol::{
-    Event, Request, Response, SessionDeleteResponse, abort, classify_session_delete, parse_catalog,
-    parse_event, parse_session_for_version, prompt, require_abort_success, require_health_matches,
-    require_no_content, session_create, session_delete,
+    Event, PromptPayload, Request, Response, SessionDeleteResponse, abort, classify_session_delete,
+    parse_catalog, parse_event, parse_session_for_version, prompt, require_abort_success,
+    require_health_matches, require_no_content, session_create, session_delete,
 };
 use crate::selection::{OpenCodePlanVersion, classify_plan, opencode_http_claim};
 use crate::transport::{CurlTransport, Subscription};
@@ -34,6 +34,9 @@ use swallowtail_runtime::{
 
 const DRIVER_ID: &str = "swallowtail.opencode.http";
 const EVENT_CAPACITY: usize = 64;
+
+pub(crate) mod callback;
+pub(crate) mod input;
 
 #[derive(Clone, Default)]
 pub struct OpenCodeHttpDriver {
@@ -99,6 +102,10 @@ pub fn opencode_http_descriptor() -> DriverDescriptor {
         OperationShape::InteractiveSession,
         OperationShape::StructuredRun,
         OperationShape::ProviderSessionManagement,
+    ])
+    .with_extension_namespaces([
+        callback::permission_namespace(),
+        callback::question_namespace(),
     ])
     .with_required_host_services(
         DriverRole::ModelCatalog,

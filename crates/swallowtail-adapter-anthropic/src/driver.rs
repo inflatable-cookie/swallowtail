@@ -57,9 +57,16 @@ pub fn anthropic_direct_descriptor() -> DriverDescriptor {
         IntegrationFamilyId::new("anthropic").expect("static family id is valid"),
         TransportFamilyId::new("http-sse").expect("static transport id is valid"),
     )
-    .with_roles([DriverRole::ModelCatalog, DriverRole::StructuredRun])
+    .with_roles([
+        DriverRole::ModelCatalog,
+        DriverRole::StructuredRun,
+        DriverRole::InteractiveSession,
+    ])
     .with_execution_layers([ExecutionLayer::DirectModelInference])
-    .with_operation_shapes([OperationShape::StructuredRun])
+    .with_operation_shapes([
+        OperationShape::StructuredRun,
+        OperationShape::InteractiveSession,
+    ])
     .with_required_host_services(
         DriverRole::ModelCatalog,
         [
@@ -71,6 +78,16 @@ pub fn anthropic_direct_descriptor() -> DriverDescriptor {
     )
     .with_required_host_services(
         DriverRole::StructuredRun,
+        [
+            HostServiceKind::Task,
+            HostServiceKind::BlockingWork,
+            HostServiceKind::Time,
+            HostServiceKind::Network,
+            HostServiceKind::Credential,
+        ],
+    )
+    .with_required_host_services(
+        DriverRole::InteractiveSession,
         [
             HostServiceKind::Task,
             HostServiceKind::BlockingWork,
@@ -91,7 +108,7 @@ impl ModelCatalogDriver for AnthropicDirectDriver {
         Box::pin(async move {
             Self::validate_plan(&plan)?;
             services.require_execution_host(plan.execution_host_id())?;
-            require_services(&services, false)?;
+            require_services(&services, false, false)?;
             let scope = operation_scope("catalog", request.request_id().as_str())?;
             let mut access = AccessLeases::acquire(&plan, scope.clone(), &services).await?;
             let cancelled = Arc::new(AtomicBool::new(false));
@@ -220,12 +237,17 @@ impl AccessLeases {
     }
 }
 
-fn require_services(services: &HostServices, run: bool) -> Result<(), RuntimeFailure> {
+fn require_services(
+    services: &HostServices,
+    run: bool,
+    attachment: bool,
+) -> Result<(), RuntimeFailure> {
     if services.blocking_work().is_none()
         || services.time().is_none()
         || services.network().is_none()
         || services.credential().is_none()
         || (run && services.task().is_none())
+        || (attachment && services.attachment().is_none())
     {
         Err(missing("required host"))
     } else {
@@ -250,5 +272,9 @@ fn operation_scope(kind: &str, id: &str) -> Result<ScopeId, RuntimeFailure> {
 }
 
 include!("driver/lifecycle.rs");
+#[path = "driver/input.rs"]
+mod input;
+#[path = "driver/session.rs"]
+mod session;
 include!("driver/run.rs");
 include!("driver/handle.rs");

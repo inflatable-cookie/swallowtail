@@ -12,6 +12,8 @@ const SUCCESS: &str = include_str!("../fixtures/anthropic-2023-06-01/success.sse
 const MIDSTREAM_ERROR: &str = include_str!("../fixtures/anthropic-2023-06-01/midstream-error.sse");
 const UNKNOWN: &str = include_str!("../fixtures/anthropic-2023-06-01/unknown-event.sse");
 const DISCONNECT: &str = include_str!("../fixtures/anthropic-2023-06-01/disconnect.sse");
+const TOOL_USE: &str = include_str!("../fixtures/anthropic-2023-06-01/tool-use.sse");
+const WEB_SEARCH: &str = include_str!("../fixtures/anthropic-2023-06-01/web-search.sse");
 #[derive(Clone, Copy)]
 pub enum StreamFixture {
     Success,
@@ -19,6 +21,8 @@ pub enum StreamFixture {
     Unknown,
     Disconnect,
     WaitForCancel,
+    ToolContinuation,
+    WebSearch,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

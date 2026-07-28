@@ -1,5 +1,6 @@
 use crate::protocol::{Event, parse_event, provider_failure};
 use crate::transport::{StreamItem, Subscription};
+use input::{SharedAttachment, prepare_image};
 use std::collections::BTreeMap;
 use std::sync::Mutex;
 use swallowtail_core::{ExternalNetworkPolicy, ExternalSearchPolicy, ProviderRequestRef};
@@ -18,21 +19,57 @@ impl StructuredRunDriver for AnthropicDirectDriver {
         request: StructuredRunRequest,
         services: HostServices,
     ) -> BoxFuture<'_, Result<Box<dyn RunHandle>, RuntimeFailure>> {
+        self.start_prepared_run(plan, request, None, services)
+    }
+}
+
+impl AnthropicDirectDriver {
+    pub(crate) fn start_prepared_run(
+        &self,
+        plan: PreflightPlan,
+        request: StructuredRunRequest,
+        search_domains: Option<Vec<String>>,
+        services: HostServices,
+    ) -> BoxFuture<'static, Result<Box<dyn RunHandle>, RuntimeFailure>> {
+        let driver = self.clone();
         Box::pin(async move {
             Self::validate_plan(&plan)?;
             services.require_execution_host(plan.execution_host_id())?;
-            require_services(&services, true)?;
-            validate_run(&plan, &request, &services)?;
+            require_services(&services, true, request.attachments().len() != 0)?;
+            validate_run(&plan, &request, &services, search_domains.as_deref())?;
             let model = plan.model_id().expect("validated model").as_str().to_owned();
             let maximum = request
                 .maximum_output_tokens()
                 .expect("validated maximum")
                 .get();
-            let message = Request::message(&model, request.content(), maximum)?;
             let scope = operation_scope("run", request.request_id().as_str())?;
+            let image = prepare_image(
+                request.attachments().next().cloned(),
+                &services,
+                scope.clone(),
+            )
+            .await?;
+            let attachment = image
+                .as_ref()
+                .map_or_else(SharedAttachment::default, |image| {
+                    image.materialization.clone()
+                });
+            let message = match Request::message(
+                &model,
+                request.content(),
+                maximum,
+                image.as_ref().map(|image| image.encoded.as_str()),
+                search_domains.as_deref(),
+            ) {
+                Ok(message) => message,
+                Err(error) => {
+                    let _ = attachment.release().await;
+                    return Err(error);
+                }
+            };
             let mut access = AccessLeases::acquire(&plan, scope.clone(), &services).await?;
             let cancelled = Arc::new(AtomicBool::new(false));
-            let subscription = match self.transport.subscribe(
+            let subscription = match driver.transport.subscribe(
                 scope.clone(),
                 access.endpoint.clone(),
                 access.secret()?.to_vec(),
@@ -43,6 +80,7 @@ impl StructuredRunDriver for AnthropicDirectDriver {
                 Ok(subscription) => subscription,
                 Err(error) => {
                     let _ = access.release(&services).await;
+                    let _ = attachment.release().await;
                     return Err(error);
                 }
             };
@@ -54,7 +92,7 @@ impl StructuredRunDriver for AnthropicDirectDriver {
                 .deadline()
                 .map(|deadline| services.time().expect("validated time").wait_until(deadline));
             let task_service = services.task().expect("validated task").clone();
-            let pending = Arc::new(Mutex::new(Some((subscription, access))));
+            let pending = Arc::new(Mutex::new(Some((subscription, access, attachment))));
             let run_services = services.clone();
             let task = task_service.spawn(
                 scope,
@@ -62,7 +100,7 @@ impl StructuredRunDriver for AnthropicDirectDriver {
                     let cancellation = Arc::clone(&cancellation);
                     let pending = Arc::clone(&pending);
                     async move {
-                        let (subscription, access) = pending
+                        let (subscription, access, attachment) = pending
                             .lock()
                             .expect("Anthropic pending work lock poisoned")
                             .take()
@@ -74,6 +112,10 @@ impl StructuredRunDriver for AnthropicDirectDriver {
                             event_sender.clone(),
                             cancellation,
                             deadline,
+                            PumpInputs {
+                                attachment,
+                                search_allowed: search_domains.is_some(),
+                            },
                         )
                         .await;
                         let _ = terminal_sender.complete(outcome);
@@ -91,8 +133,9 @@ impl StructuredRunDriver for AnthropicDirectDriver {
                             .expect("Anthropic pending work lock poisoned")
                             .take()
                     };
-                    if let Some((subscription, mut access)) = resources {
+                    if let Some((subscription, mut access, attachment)) = resources {
                         let _ = subscription.close().await;
+                        let _ = attachment.release().await;
                         let _ = access.release(&services).await;
                     }
                     return Err(error);
@@ -119,6 +162,7 @@ fn validate_run(
     plan: &PreflightPlan,
     request: &StructuredRunRequest,
     services: &HostServices,
+    search_domains: Option<&[String]>,
 ) -> Result<(), RuntimeFailure> {
     if plan.model_id().is_none()
         || plan.provider_id().is_some_and(|id| id.as_str() != PROVIDER_ID)
@@ -142,8 +186,18 @@ fn validate_run(
     if request.working_resource().is_some() {
         return Err(unsupported("a working resource"));
     }
-    if request.attachments().len() != 0 {
-        return Err(unsupported("attachments"));
+    let attachment_bound = has_capability(plan, Capability::Attachments);
+    if request.attachments().len() > 1
+        || attachment_bound != (request.attachments().len() != 0)
+        || request.attachments().any(|attachment| {
+            attachment.media_type() != "image/png"
+                || attachment.role() != swallowtail_runtime::AttachmentRole::Input
+                || attachment
+                    .known_length()
+                    .is_some_and(|length| length > 1024 * 1024)
+        })
+    {
+        return Err(unsupported("the requested attachment input"));
     }
     if request.tools().len() != 0 {
         return Err(unsupported("structured-run tools"));
@@ -151,9 +205,16 @@ fn validate_run(
     if request.structured_output().is_some() {
         return Err(unsupported("structured output"));
     }
+    let search_bound = has_capability(plan, Capability::ExternalSearch)
+        && has_capability(plan, Capability::ProviderExternalNetwork);
+    let search_requested = search_domains.is_some()
+        && request.policy().external_network() == ExternalNetworkPolicy::HostApproved
+        && request.policy().external_search() == ExternalSearchPolicy::Enabled;
     if request.policy().reasoning_mode().is_some()
-        || request.policy().external_network() != ExternalNetworkPolicy::Denied
-        || request.policy().external_search() != ExternalSearchPolicy::Disabled
+        || search_bound != search_requested
+        || (!search_requested
+            && (request.policy().external_network() != ExternalNetworkPolicy::Denied
+                || request.policy().external_search() != ExternalSearchPolicy::Disabled))
         || request.policy().provider_execution()
             != swallowtail_runtime::ProviderExecutionPolicy::Attached
         || request.policy().provider_retention()
@@ -176,6 +237,12 @@ fn validate_run(
         ));
     }
     Ok(())
+}
+
+fn has_capability(plan: &PreflightPlan, capability: Capability) -> bool {
+    plan.requirements()
+        .capabilities()
+        .any(|requirement| requirement.capability() == capability)
 }
 
 include!("pump.rs");

@@ -14,6 +14,9 @@ struct OpenCodeSessionHandle {
     cancellation: SessionCancellation,
     reasoning_mode: Option<swallowtail_core::ReasoningMode>,
     structured_output: Option<StructuredOutputDescriptor>,
+    image_attachments: bool,
+    provider_callbacks: bool,
+    callback_run_id: Option<swallowtail_runtime::RuntimeRunId>,
 }
 
 impl InteractiveSessionHandle for OpenCodeSessionHandle {
@@ -40,16 +43,8 @@ impl InteractiveSessionHandle for OpenCodeSessionHandle {
     ) -> BoxFuture<'a, Result<Box<dyn TurnHandle>, RuntimeFailure>> {
         Box::pin(async move {
             services.require_execution_host(self.resume_binding.execution_host_id())?;
-            validate_turn(&request, &services)?;
-            let prompt_request = prompt(
-                &self.provider_session_id,
-                self.provider_id.as_str(),
-                self.model_id.as_str(),
-                &self.directory,
-                request.content().as_str(),
-                self.reasoning_mode.as_ref(),
-                self.structured_output.as_ref(),
-            )?;
+            validate_turn(&request, &services, self.image_attachments)?;
+            let turn_scope = scope("turn", request.turn_id().as_str())?;
             if self.cancellation.requested.load(Ordering::SeqCst) {
                 return Err(failure(
                     "swallowtail.opencode.session_cancelled",
@@ -68,9 +63,35 @@ impl InteractiveSessionHandle for OpenCodeSessionHandle {
                     "OpenCode session already has an active turn",
                 ));
             }
+            let (event_sender, event_stream) = runtime_event_channel(EVENT_CAPACITY)?;
+            let (terminal_sender, terminal) = terminal_outcome_channel();
+            let terminal_flag = Arc::new(AtomicBool::new(false));
+            let (file, attachment) = input::prepare(
+                request.attachments().next().cloned(),
+                &services,
+                turn_scope.clone(),
+            )
+            .await?;
+            let prompt_request = match prompt(
+                &self.provider_session_id,
+                self.provider_id.as_str(),
+                self.model_id.as_str(),
+                &self.directory,
+                PromptPayload {
+                    content: request.content().as_str(),
+                    reasoning: self.reasoning_mode.as_ref(),
+                    structured_output: self.structured_output.as_ref(),
+                    file: file.as_ref(),
+                },
+            ) {
+                Ok(request) => request,
+                Err(error) => {
+                    let _ = attachment.release().await;
+                    return Err(error);
+                }
+            };
             let stream_cancelled = Arc::new(AtomicBool::new(false));
-            let turn_scope = scope("turn", request.turn_id().as_str())?;
-            let subscription = self
+            let subscription = match self
                 .transport
                 .subscribe(
                     turn_scope.clone(),
@@ -79,11 +100,33 @@ impl InteractiveSessionHandle for OpenCodeSessionHandle {
                     &services,
                     Arc::clone(&stream_cancelled),
                 )
-                .await?;
-            let (event_sender, event_stream) = runtime_event_channel(EVENT_CAPACITY)?;
-            event_sender.send(RuntimeEvent::new(1, RuntimeEventKind::Started))?;
-            let (terminal_sender, terminal) = terminal_outcome_channel();
-            let terminal_flag = Arc::new(AtomicBool::new(false));
+                .await
+            {
+                Ok(subscription) => subscription,
+                Err(error) => {
+                    let _ = attachment.release().await;
+                    return Err(error);
+                }
+            };
+            if let Err(error) =
+                event_sender.send(RuntimeEvent::new(1, RuntimeEventKind::Started))
+            {
+                drop(subscription);
+                let _ = attachment.release().await;
+                return Err(error);
+            }
+            let (callback_hub, callback_exchange) = if self.provider_callbacks {
+                let (hub, exchange) = callback::CallbackHub::new(
+                    turn_scope.clone(),
+                    self.directory.clone(),
+                    self.endpoint.clone(),
+                    services.clone(),
+                    self.transport.clone(),
+                );
+                (Some(hub), Some(exchange))
+            } else {
+                (None, None)
+            };
             let cancellation = Arc::new(TurnCancellation {
                 scope: turn_scope.clone(),
                 session_id: self.provider_session_id.clone(),
@@ -93,27 +136,45 @@ impl InteractiveSessionHandle for OpenCodeSessionHandle {
                 transport: self.transport.clone(),
                 stream_cancelled,
                 requested: AtomicBool::new(false),
+                callbacks: callback_hub.clone(),
             });
             let task_service = services.task().cloned().expect("validated task service");
             let pump_cancellation = Arc::clone(&cancellation);
             let pump_terminal = Arc::clone(&terminal_flag);
             let deadline = request.deadline();
+            let turn_id = request.turn_id().clone();
+            let callback_operation = self.callback_run_id.clone().map_or_else(
+                || swallowtail_runtime::CallbackOperationId::Turn(turn_id.clone()),
+                swallowtail_runtime::CallbackOperationId::Run,
+            );
             let pump_services = services.clone();
-            let task = task_service.spawn(
+            let pump_callback_hub = callback_hub.clone();
+            let task = match task_service.spawn(
                 turn_scope.clone(),
                 Box::pin(async move {
-                    pump_turn(
+                    pump_turn(TurnPump {
                         subscription,
                         deadline,
-                        pump_services,
-                        pump_cancellation,
-                        event_sender,
-                        terminal_sender,
-                        Arc::clone(&pump_terminal),
-                    )
+                        services: pump_services,
+                        cancellation: pump_cancellation,
+                        events: event_sender,
+                        terminal: terminal_sender,
+                        terminal_flag: Arc::clone(&pump_terminal),
+                        callback_hub: pump_callback_hub,
+                        callback_operation,
+                    })
                     .await;
                 }),
-            )?;
+            ) {
+                Ok(task) => task,
+                Err(error) => {
+                    if let Some(callback_hub) = callback_hub {
+                        callback_hub.abandon(swallowtail_runtime::CallbackAbandonment::Closed);
+                    }
+                    let _ = attachment.release().await;
+                    return Err(error);
+                }
+            };
             let prompt_response = self
                 .transport
                 .request(
@@ -131,20 +192,24 @@ impl InteractiveSessionHandle for OpenCodeSessionHandle {
             if let Err(error) = prompt_result {
                 let _ = cancellation.request().await;
                 let _ = task.join().await;
+                let _ = attachment.release().await;
                 return Err(error);
             }
             *self.active.lock().expect("active turn lock poisoned") = Some(ActiveTurn {
                 task: Some(task),
                 cancellation: Arc::clone(&cancellation),
                 terminal: Arc::clone(&terminal_flag),
+                attachment: attachment.clone(),
             });
             Ok(Box::new(OpenCodeTurnHandle {
-                runtime_id: request.turn_id().clone(),
+                runtime_id: turn_id,
                 events: Some(Box::pin(event_stream)),
                 terminal: Some(Box::pin(terminal)),
                 cancellation,
                 terminal_flag,
                 active: Arc::clone(&self.active),
+                callbacks: callback_exchange,
+                attachment,
             }) as Box<dyn TurnHandle>)
         })
     }

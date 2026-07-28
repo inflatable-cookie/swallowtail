@@ -10,6 +10,7 @@ rust-version.workspace = true
 description = "OpenCode harness drivers for Swallowtail"
 
 [dependencies]
+base64 = "0.22"
 curl = "0.4.50"
 futures-channel = "0.3"
 futures-core = "0.3"

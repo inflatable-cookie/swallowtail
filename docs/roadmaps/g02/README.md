@@ -39,6 +39,7 @@ evidence-led provider work.
 | Expand source-scoped model catalogue coverage without hidden session creation. | completed | Research 042-043, Contract 020 | `g02.021` |
 | Close useful structured-run gaps without flattening provider lifecycle. | completed | Research 044-046, Contract 039 | `g02.022`-`g02.024` |
 | Audit and close remaining provider feature-matrix `No` values in evidence-ranked families. | active | Research 003 and 042-046, Contracts 014-039 | `g02.025` onward |
+| Close session-continuity gaps without flattening replay, reattachment, or native close. | active | Contracts 009, 017, 038 | `g02.028` |
 
 ## Current Checkpoint
 
@@ -216,10 +217,28 @@ evidence-led provider work.
   OpenCode, and Anthropic Messages
 - the OpenCode corpus covers all 45 qualified releases through four exact
   input/callback surface revisions; nine focused corpus tests pass offline
-- card 090 is in progress: Pi RPC now realizes the first of six cells with one
-  bounded PNG across prepared structured and opt-in interactive prompts,
-  exact inline image dispatch, and joined attachment cleanup; OpenCode and
-  Anthropic remain on the same card; card 091 remains in bounds
+- card 090 is complete: Pi RPC realizes bounded PNG input; OpenCode realizes
+  bounded PNG input plus exact one-shot permission and ordered-question
+  exchange across prepared structured and opt-in interactive operations
+- Anthropic Messages realizes one bounded PNG input, explicit provider-owned
+  web search, and a separate resource-free consumer-tool continuation session
+- card 091 closes the 74-cell input/callback inventory with six realized
+  conversions and 68 retained `No` cells; the complete matrix has 437 `No`
+  and 29 `Not applicable` cells
+- all 970 workspace tests pass with four separately gated installed-provider
+  probes skipped; 23 APIs and package archives pass from the dirty snapshot
+- Research 051 and card 092 classify all 58 session-continuity gaps: seven
+  fit existing contracts, four require retained hosted-session contract
+  expansion, one is upstream-ordering-blocked, ten are exact route absences,
+  and 36 do not fit the reusable-session operation shape
+- all 20 native-close cells remain honest `No`; process exit, disconnect,
+  abort, archive, and deletion stay distinct
+- Research 052 and card 093 confirm no shared contract gap and freeze six
+  Codex continuity segments, all ten qualified Claude Agent ACP releases, and
+  seven OpenCode wire surfaces across twelve published segments
+- card 094 is ready to implement Codex app-server load, Claude Agent ACP load
+  and resume, and OpenCode HTTP load and resume; Pi RPC load and resume remain
+  the next contract-ready tranche
 - roadmaps g02.016-g02.019 sequence Codex, ACP/Claude Agent, OpenCode,
   provider-wide acceptance, and the Nucleus handoff
 - all 23 manifests carry contract-complete metadata and crates.io publication
@@ -565,7 +584,9 @@ evidence-led provider work.
 - [026 Generation-Control Feature Closure](026-generation-control-feature-closure.md)
   — completed; cards 084-087 complete
 - [027 Input And Callback Feature Closure](027-input-and-callback-feature-closure.md)
-  — active; cards 088-089 complete, card 090 ready, card 091 planned
+  — completed; cards 088-091 complete
+- [028 Session Continuity Feature Closure](028-session-continuity-feature-closure.md)
+  — active; cards 092-093 completed, card 094 ready, card 095 planned
 
 ## Held Backlog
 
@@ -689,8 +710,11 @@ is deferred until a consumer needs post-restart provider management.
 - cards 084-085 complete the 48-cell generation-control audit and selected
   contract; cards 086-087 complete implementation and closeout
 - cards 088-089 complete the 74-cell input/callback audit and selected
-  contract/corpus gate; cards 090-091 own the six-cell implementation and
-  closeout
+  contract/corpus gate; card 090 realizes the selected Pi, OpenCode, and
+  Anthropic Messages cells; card 091 completes re-audit and packaged closeout
+- cards 092-095 own currentness, contract/corpus, implementation, and closeout
+  for the 58-cell session-continuity family; card 093 found no shared contract
+  gap and completed the exact three-route corpus gate
 - cards 024-026 own remaining harness facades
 - cards 027-030 own hosted direct and provider-state facades
 - cards 031-033 own realtime, SDK, and llama.cpp facades
@@ -700,7 +724,7 @@ is deferred until a consumer needs post-restart provider management.
 
 ## Generation Boundary
 
-g02 is a long-lived generation with 27 roadmaps. It remains below its
+g02 is a long-lived generation with 28 roadmaps. It remains below its
 30-50-roadmap rollover range. Provider-wide facade work stabilizes the existing
 production routes. The provider-session lifecycle lane adds bounded management
 to applicable persistent-session routes without adding provider names,

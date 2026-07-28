@@ -2,6 +2,7 @@ struct ActiveTurn {
     task: Option<Box<dyn JoinedTask>>,
     cancellation: Arc<TurnCancellation>,
     terminal: Arc<AtomicBool>,
+    attachment: input::SharedAttachment,
 }
 
 type ActiveSlot = Arc<Mutex<Option<ActiveTurn>>>;
@@ -44,5 +45,4 @@ impl CancellationControl for SessionCancellation {
         })
     }
 }
-
 

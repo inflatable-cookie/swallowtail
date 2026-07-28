@@ -216,8 +216,10 @@ evidence-led provider work.
   OpenCode, and Anthropic Messages
 - the OpenCode corpus covers all 45 qualified releases through four exact
   input/callback surface revisions; nine focused corpus tests pass offline
-- card 090 is ready for the selected six-cell implementation; card 091
-  remains in bounds
+- card 090 is in progress: Pi RPC now realizes the first of six cells with one
+  bounded PNG across prepared structured and opt-in interactive prompts,
+  exact inline image dispatch, and joined attachment cleanup; OpenCode and
+  Anthropic remain on the same card; card 091 remains in bounds
 - roadmaps g02.016-g02.019 sequence Codex, ACP/Claude Agent, OpenCode,
   provider-wide acceptance, and the Nucleus handoff
 - all 23 manifests carry contract-complete metadata and crates.io publication

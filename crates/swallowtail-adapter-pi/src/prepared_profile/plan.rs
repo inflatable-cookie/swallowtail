@@ -87,7 +87,18 @@ pub(super) fn instance_with_capabilities(
 pub(super) fn requirements(
     prepared: &PiPreparedIntegration,
     capabilities: impl IntoIterator<Item = CapabilityRequirement>,
+    image_attachments: bool,
 ) -> OperationRequirements {
+    let mut host_services = vec![
+        HostServiceKind::Task,
+        HostServiceKind::Process,
+        HostServiceKind::Credential,
+        HostServiceKind::WorkingResource,
+        HostServiceKind::Time,
+    ];
+    if image_attachments {
+        host_services.extend([HostServiceKind::Attachment, HostServiceKind::BlockingWork]);
+    }
     OperationRequirements::new(
         ExecutionLayer::HarnessInteraction,
         OperationShape::InteractiveSession,
@@ -101,13 +112,7 @@ pub(super) fn requirements(
             .with_support_authorities([prepared.access_profile().support_authority()]),
     )
     .with_ownership_modes([prepared.instance().ownership()])
-    .with_host_services([
-        HostServiceKind::Task,
-        HostServiceKind::Process,
-        HostServiceKind::Credential,
-        HostServiceKind::WorkingResource,
-        HostServiceKind::Time,
-    ])
+    .with_host_services(host_services)
     .with_capabilities(capabilities)
     .with_interface_versions([prepared.observation().version().clone()])
     .with_harness_isolation(HarnessIsolation::AmbientHost)
@@ -121,7 +126,18 @@ pub(super) fn requirements(
 pub(super) fn run_requirements(
     prepared: &PiPreparedIntegration,
     capabilities: impl IntoIterator<Item = CapabilityRequirement>,
+    image_attachments: bool,
 ) -> OperationRequirements {
+    let mut host_services = vec![
+        HostServiceKind::Task,
+        HostServiceKind::Process,
+        HostServiceKind::Credential,
+        HostServiceKind::WorkingResource,
+        HostServiceKind::Time,
+    ];
+    if image_attachments {
+        host_services.extend([HostServiceKind::Attachment, HostServiceKind::BlockingWork]);
+    }
     OperationRequirements::new(
         ExecutionLayer::HarnessInteraction,
         OperationShape::StructuredRun,
@@ -135,13 +151,7 @@ pub(super) fn run_requirements(
             .with_support_authorities([prepared.access_profile().support_authority()]),
     )
     .with_ownership_modes([prepared.instance().ownership()])
-    .with_host_services([
-        HostServiceKind::Task,
-        HostServiceKind::Process,
-        HostServiceKind::Credential,
-        HostServiceKind::WorkingResource,
-        HostServiceKind::Time,
-    ])
+    .with_host_services(host_services)
     .with_capabilities(capabilities)
     .with_interface_versions([prepared.observation().version().clone()])
     .with_harness_isolation(HarnessIsolation::AmbientHost)

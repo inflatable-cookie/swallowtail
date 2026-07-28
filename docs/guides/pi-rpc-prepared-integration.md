@@ -72,6 +72,13 @@ working-resource, and credential work. Its policy prohibits provider
 retention. It exposes no provider run, reusable session, resume binding, or
 management binding.
 
+`PiRunProfileInput::with_attachments` accepts at most one `image/png`
+descriptor with a declared size no greater than one MiB.
+`PiSessionProfileInput::with_image_attachments` binds the same capability for
+later `TurnRequest` values. The host materializes the opaque reference; the
+driver reads the bounded file through host-approved blocking work, sends Pi's
+inline base64 image record, and releases the lease after provider work.
+
 The configured restrictive RPC policy remains visible in the immutable plan.
 Interactive steering and follow-up scheduling are not reclassified as
 structured-run operations.

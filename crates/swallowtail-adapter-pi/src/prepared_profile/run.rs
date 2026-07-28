@@ -63,8 +63,11 @@ impl PiPreparedIntegration {
         &self,
         input: PiRunProfileInput,
     ) -> Result<PiPreparedRun, PreparationFailure> {
-        let (request_id, model, content, working_resource, deadline) = input.into_parts();
-        let capabilities = run_capabilities();
+        let (request_id, model, content, working_resource, deadline, attachments) =
+            input.into_parts();
+        let image_attachments = !attachments.is_empty();
+        validate_attachments(&attachments)?;
+        let capabilities = run_capabilities(image_attachments);
         let instance = instance_with_capabilities(self, capabilities.clone());
         let (route_id, route_revision, provider_id, model_id) = model.into_parts();
         let route = ModelRoute::new(
@@ -77,9 +80,12 @@ impl PiPreparedIntegration {
         .with_provider_id(provider_id);
         let requirements = run_requirements(
             self,
-            run_capabilities().iter().map(|(capability, constraints)| {
-                CapabilityRequirement::new(capability, constraints.iter().cloned())
-            }),
+            run_capabilities(image_attachments)
+                .iter()
+                .map(|(capability, constraints)| {
+                    CapabilityRequirement::new(capability, constraints.iter().cloned())
+                }),
+            image_attachments,
         );
         let plan = build_plan(self, &instance, &route, &requirements)?;
         let policy = OperationPolicy::offline()
@@ -88,10 +94,30 @@ impl PiPreparedIntegration {
             .with_harness_configuration_posture(HarnessConfigurationPosture::ProviderSuppressed);
         let request = StructuredRunRequest::new(request_id, content, policy)
             .with_working_resource(working_resource)
-            .with_deadline(deadline);
+            .with_deadline(deadline)
+            .with_attachments(attachments);
         Ok(PiPreparedRun {
             evidence: PiPreparedEvidence::from_prepared(self, plan)?,
             request,
         })
     }
+}
+
+fn validate_attachments(
+    attachments: &[swallowtail_runtime::AttachmentDescriptor],
+) -> Result<(), PreparationFailure> {
+    if attachments.len() > 1
+        || attachments.iter().any(|attachment| {
+            attachment.media_type() != "image/png"
+                || attachment
+                    .known_length()
+                    .is_some_and(|length| length > 1024 * 1024)
+        })
+    {
+        return Err(super::plan::failure(
+            "swallowtail.pi.preparation.attachments_unsupported",
+            "Pi RPC supports one PNG attachment up to one MiB",
+        ));
+    }
+    Ok(())
 }

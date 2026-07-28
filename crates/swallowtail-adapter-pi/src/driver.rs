@@ -17,6 +17,7 @@ use swallowtail_runtime::{
 mod catalogue;
 mod descriptor;
 mod handle;
+mod input;
 mod launch;
 mod run;
 mod session;
@@ -236,6 +237,10 @@ impl PiRpcDriver {
             credential,
             active,
             completed_prompts: Arc::new(AtomicU32::new(0)),
+            image_attachments: plan
+                .requirements()
+                .capabilities()
+                .any(|required| required.capability() == swallowtail_core::Capability::Attachments),
         })
     }
 }

@@ -5,8 +5,10 @@ use std::sync::{Arc, Condvar, Mutex};
 use std::task::Waker;
 use swallowtail_core::ExecutionHostId;
 use swallowtail_runtime::{
-    BoxFuture, HostServices, ProcessExit, ProcessHandle, ProcessInputChunk, ProcessOutputChunk,
-    ProcessOutputStream, ProcessRequest, ProcessService, RuntimeFailure, ScopeId,
+    AttachmentDescriptor, AttachmentFileLease, AttachmentService, BlockingJob, BlockingWorkService,
+    BoxFuture, CleanupOutcome, HostServices, MaterializedFileRef, ProcessExit, ProcessHandle,
+    ProcessInputChunk, ProcessOutputChunk, ProcessOutputStream, ProcessRequest, ProcessService,
+    RuntimeFailure, ScopeId,
 };
 
 use self::script::respond;
@@ -36,6 +38,7 @@ pub enum CleanupEvent {
     ProcessWait,
     ResourceRelease,
     CredentialRelease,
+    AttachmentRelease,
 }
 
 #[derive(Clone)]
@@ -117,6 +120,51 @@ impl FixtureHost {
             .with_credential(Arc::new(self.clone()))
             .with_working_resource(Arc::new(self.clone()))
             .with_time(Arc::new(self.clone()))
+            .with_blocking_work(Arc::new(self.clone()))
+            .with_attachment(Arc::new(self.clone()))
+    }
+}
+
+impl BlockingWorkService for FixtureHost {
+    fn run(
+        &self,
+        _scope: ScopeId,
+        job: BlockingJob,
+    ) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+        Box::pin(async move { job() })
+    }
+}
+
+impl AttachmentService for FixtureHost {
+    fn materialize_file(
+        &self,
+        scope: ScopeId,
+        descriptor: AttachmentDescriptor,
+    ) -> BoxFuture<'static, Result<AttachmentFileLease, RuntimeFailure>> {
+        let path = std::env::temp_dir().join(format!(
+            "swallowtail-pi-{}-{}.png",
+            std::process::id(),
+            descriptor.reference().as_host_value()
+        ));
+        let result = std::fs::write(&path, b"\x89PNG\r\n\x1a\n").map_err(|_| fixture_failure());
+        Box::pin(async move {
+            result?;
+            Ok(AttachmentFileLease::operation_scoped(
+                scope,
+                descriptor.reference().clone(),
+                MaterializedFileRef::new(path.to_string_lossy()).map_err(|_| fixture_failure())?,
+            ))
+        })
+    }
+
+    fn release_file(&self, lease: AttachmentFileLease) -> BoxFuture<'static, CleanupOutcome> {
+        let _ = std::fs::remove_file(lease.file().as_driver_value());
+        self.shared
+            .cleanup
+            .lock()
+            .expect("Pi fixture cleanup lock poisoned")
+            .push(CleanupEvent::AttachmentRelease);
+        Box::pin(async { CleanupOutcome::Clean })
     }
 }
 

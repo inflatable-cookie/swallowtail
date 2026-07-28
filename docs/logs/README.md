@@ -5,6 +5,7 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-07-28 Pi RPC Attachment Input](2026-07-28-pi-rpc-attachment-input.md)
 - [2026-07-28 Input/Callback Contract And Corpora](2026-07-28-input-callback-contract-and-corpora.md)
 - [2026-07-28 Input And Callback `No` Currentness Audit](2026-07-28-input-and-callback-no-currentness-audit.md)
 - [2026-07-28 Claude Agent Consumer-Mediated Permission Selection](2026-07-28-claude-agent-consumer-mediated-permission-selection.md)

@@ -1,5 +1,6 @@
 use self::cleanup::{merge_cleanup, release_credential, release_resource};
-use super::handle::{PiTurnHandle, SessionCancellation};
+use super::handle::{PiTurnBinding, PiTurnHandle, SessionCancellation};
+use super::input::{SharedAttachmentMaterialization, prepare_attachment};
 use super::validation::validate_turn;
 use crate::connection::PiConnection;
 use crate::failure::failure;
@@ -29,6 +30,7 @@ pub(super) type ActiveSlot = Arc<Mutex<Option<ActiveTask>>>;
 pub(super) struct ActiveTask {
     pub(super) turn: Arc<ActiveTurn>,
     pub(super) deadline_task: Option<Box<dyn JoinedTask>>,
+    pub(super) attachment: SharedAttachmentMaterialization,
 }
 
 pub(super) struct PiSessionHandle {
@@ -43,6 +45,7 @@ pub(super) struct PiSessionHandle {
     pub(super) credential: Option<CredentialLease>,
     pub(super) active: ActiveSlot,
     pub(super) completed_prompts: Arc<AtomicU32>,
+    pub(super) image_attachments: bool,
 }
 
 impl InteractiveSessionHandle for PiSessionHandle {
@@ -69,7 +72,7 @@ impl InteractiveSessionHandle for PiSessionHandle {
     ) -> BoxFuture<'a, Result<Box<dyn TurnHandle>, RuntimeFailure>> {
         Box::pin(async move {
             services.require_execution_host(&self.execution_host_id)?;
-            validate_turn(&request)?;
+            validate_turn(&request, &services, self.image_attachments)?;
             reap_finished(&self.active).await?;
             if self.completed_prompts.load(Ordering::SeqCst) >= 2 {
                 return Err(failure(
@@ -93,6 +96,21 @@ impl InteractiveSessionHandle for PiSessionHandle {
                 Arc::clone(&self.completed_prompts),
                 Arc::downgrade(&self.connection),
             )?;
+            let turn_scope = ScopeId::new(format!("pi-rpc:turn:{}", request.turn_id().as_str()))
+                .map_err(|_| {
+                    failure(
+                        "swallowtail.pi.rpc.scope_invalid",
+                        "Pi RPC turn scope was invalid",
+                    )
+                })?;
+            let attachment =
+                prepare_attachment(request.attachments().next().cloned(), &services, turn_scope)
+                    .await?;
+            let materialization = attachment
+                .as_ref()
+                .map_or_else(SharedAttachmentMaterialization::default, |input| {
+                    input.materialization()
+                });
             self.connection.set_active_turn(Arc::clone(&turn))?;
             let deadline_task = spawn_deadline(
                 &services,
@@ -103,25 +121,31 @@ impl InteractiveSessionHandle for PiSessionHandle {
             *self.active.lock().expect("Pi active-task lock poisoned") = Some(ActiveTask {
                 turn: Arc::clone(&turn),
                 deadline_task: Some(deadline_task),
+                attachment: materialization.clone(),
             });
             let id = format!("prompt:{}", request.turn_id().as_str());
-            let response = self
-                .connection
-                .command(
-                    id.clone(),
-                    "prompt",
-                    json!({"id": id, "type": "prompt", "message": request.content().as_str()}),
-                )
-                .await;
+            let mut payload =
+                json!({"id": id, "type": "prompt", "message": request.content().as_str()});
+            if let Some(attachment) = attachment {
+                payload["images"] = json!([{
+                    "type": "image",
+                    "data": attachment.encoded(),
+                    "mimeType": "image/png"
+                }]);
+            }
+            let response = self.connection.command(id.clone(), "prompt", payload).await;
             match response {
                 Ok(response) if response.success => Ok(Box::new(PiTurnHandle::new(
                     request.turn_id().clone(),
                     events,
                     callbacks,
                     Box::pin(terminal),
-                    Arc::clone(&self.connection),
-                    turn,
-                    Arc::clone(&self.active),
+                    PiTurnBinding {
+                        connection: Arc::clone(&self.connection),
+                        turn,
+                        active: Arc::clone(&self.active),
+                        attachment: materialization,
+                    },
                 )) as Box<dyn TurnHandle>),
                 Ok(_) => {
                     turn.fail_connection(swallowtail_core::SafeDiagnostic::new(
@@ -129,6 +153,7 @@ impl InteractiveSessionHandle for PiSessionHandle {
                         "Pi RPC rejected the prompt before acceptance",
                     ));
                     self.connection.clear_active_turn(&turn);
+                    let _ = materialization.release().await;
                     Err(failure(
                         "swallowtail.pi.rpc.prompt_rejected",
                         "Pi RPC rejected the prompt before acceptance",
@@ -137,6 +162,7 @@ impl InteractiveSessionHandle for PiSessionHandle {
                 Err(error) => {
                     turn.fail_connection(error.diagnostic().clone());
                     self.connection.clear_active_turn(&turn);
+                    let _ = materialization.release().await;
                     Err(error)
                 }
             }
@@ -162,6 +188,7 @@ impl InteractiveSessionHandle for PiSessionHandle {
                 if let Some(task) = active.deadline_task.take() {
                     let _ = task.join().await;
                 }
+                let _ = active.attachment.release().await;
             } else {
                 self.connection.begin_close().await;
             }
@@ -242,8 +269,16 @@ async fn reap_finished(active: &ActiveSlot) -> Result<(), RuntimeFailure> {
             None
         }
     };
-    if let Some(task) = finished.and_then(|mut active| active.deadline_task.take()) {
-        task.join().await?;
+    if let Some(mut active) = finished {
+        if let Some(task) = active.deadline_task.take() {
+            task.join().await?;
+        }
+        if matches!(active.attachment.release().await, CleanupOutcome::Failed(_)) {
+            return Err(failure(
+                "swallowtail.pi.rpc.attachment_cleanup_failed",
+                "Pi RPC attachment cleanup failed",
+            ));
+        }
     }
     Ok(())
 }

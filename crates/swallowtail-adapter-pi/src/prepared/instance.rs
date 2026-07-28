@@ -33,15 +33,15 @@ pub(super) fn configured_instance(
         input.access_profile.support_authority(),
         ProtocolFacadeId::new("pi-rpc-strict-lf-v1").expect("static Pi facade is valid"),
         InstancePolicyId::new("pi-prepared-ambient-read").expect("static Pi policy is valid"),
-        session_capabilities(),
+        session_capabilities(false),
     )
     .with_interface_versions([observation.version().clone()])
     .with_harness_configuration_posture(HarnessConfigurationPosture::ProviderSuppressed)
     .with_harness_rpc_policy(rpc_policy()))
 }
 
-pub(crate) fn session_capabilities() -> CapabilityProfile {
-    CapabilityProfile::new([
+pub(crate) fn session_capabilities(image_attachments: bool) -> CapabilityProfile {
+    let mut capabilities = vec![
         CapabilityRequirement::new(Capability::InteractiveSession, []),
         CapabilityRequirement::new(Capability::StreamingEvents, []),
         CapabilityRequirement::new(Capability::UsageReporting, []),
@@ -58,11 +58,15 @@ pub(crate) fn session_capabilities() -> CapabilityProfile {
                 CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
             ],
         ),
-    ])
+    ];
+    if image_attachments {
+        capabilities.push(image_attachment_capability());
+    }
+    CapabilityProfile::new(capabilities)
 }
 
-pub(crate) fn run_capabilities() -> CapabilityProfile {
-    CapabilityProfile::new([
+pub(crate) fn run_capabilities(image_attachments: bool) -> CapabilityProfile {
+    let mut capabilities = vec![
         CapabilityRequirement::new(Capability::StructuredRun, []),
         CapabilityRequirement::new(Capability::StreamingEvents, []),
         CapabilityRequirement::new(Capability::UsageReporting, []),
@@ -79,7 +83,23 @@ pub(crate) fn run_capabilities() -> CapabilityProfile {
                 CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
             ],
         ),
-    ])
+    ];
+    if image_attachments {
+        capabilities.push(image_attachment_capability());
+    }
+    CapabilityProfile::new(capabilities)
+}
+
+pub(crate) fn image_attachment_capability() -> CapabilityRequirement {
+    CapabilityRequirement::new(
+        Capability::Attachments,
+        [
+            CapabilityConstraint::attachment_media_type("image/png")
+                .expect("static media type is valid"),
+            CapabilityConstraint::AttachmentMaximumBytes(1024 * 1024),
+            CapabilityConstraint::AttachmentMaximumCount(1),
+        ],
+    )
 }
 
 pub(crate) fn rpc_policy() -> HarnessRpcPolicy {

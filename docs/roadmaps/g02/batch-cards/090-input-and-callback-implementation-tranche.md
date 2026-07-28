@@ -1,6 +1,6 @@
 # 090 Input And Callback Implementation Tranche
 
-Status: ready
+Status: in progress
 Owner: Tom
 Created: 2026-07-28
 Milestone: `../027-input-and-callback-feature-closure.md`
@@ -41,6 +41,23 @@ route identities.
 - [ ] callbacks remain consumer-executed and exactly correlated
 - [ ] topology, cleanup, and version posture remain unchanged
 - [ ] package examples compile without live access
+
+## Progress
+
+- [x] `pi.rpc` attachments: prepared structured runs and opt-in interactive
+  sessions bind one PNG up to one MiB, require attachment plus blocking-work
+  services, encode exact inline RPC image input, and share one cleanup lease
+  across terminal, close, rejection, and session cleanup.
+- [x] Pi prepared coverage proves structured and interactive dispatch,
+  redacted path handling, exact base64 wire content, and one release.
+- [ ] `opencode.http` attachments and approval-or-question exchange.
+- [ ] `anthropic.messages` attachments, consumer-tool continuation, and
+  provider-owned external search.
+
+## Evidence
+
+- `cargo test -p swallowtail-adapter-pi --no-fail-fast`: 36 passed.
+- No installed Pi, live credential, or provider request was used.
 
 ## Auto-Continuation
 

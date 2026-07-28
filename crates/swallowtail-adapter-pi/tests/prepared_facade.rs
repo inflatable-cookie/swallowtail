@@ -18,10 +18,10 @@ use swallowtail_core::{
     ResourceAccess, RuntimeReadiness, SessionAccessPolicy, SupportAuthority,
 };
 use swallowtail_runtime::{
-    CleanupOutcome, Deadline, DiscoveryCancellation, EnvironmentRef, ExecutableRef,
-    InstalledExecutableTarget, MonotonicInstant, OperationContent, PreparedAccessEvidence,
-    ProviderRetentionPolicy, RequestId, ScopeId, SessionOptions, TerminalStatus,
-    WorkingResourceRef,
+    AttachmentDescriptor, AttachmentRef, AttachmentRole, CleanupOutcome, Deadline,
+    DiscoveryCancellation, EnvironmentRef, ExecutableRef, InstalledExecutableTarget,
+    MonotonicInstant, OperationContent, PreparedAccessEvidence, ProviderRetentionPolicy, RequestId,
+    RuntimeTurnId, ScopeId, SessionOptions, TerminalStatus, TurnRequest, WorkingResourceRef,
 };
 use swallowtail_testkit::assert_prepared_operation_evidence_matches_plan;
 
@@ -289,6 +289,137 @@ fn prepared_runs_preserve_the_one_prompt_rpc_projection_in_both_host_topologies(
         assert_eq!(outcome.cleanup(), &CleanupOutcome::Clean);
         assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
     }
+}
+
+#[test]
+fn prepared_sessions_and_runs_dispatch_one_bounded_png_and_release_it() {
+    let session_host_id =
+        ExecutionHostId::new("fixture.pi.attachment.session").expect("valid host");
+    let session_discovery = FixtureHost::version_probe("0.80.10");
+    let session_prepared = block_on(prepare_pi_rpc(
+        preparation_input(session_host_id.clone()),
+        probe(),
+        session_discovery.services(session_host_id.clone()),
+    ))
+    .expect("Pi prepares");
+    let session_profile = session_prepared
+        .prepare_session(
+            PiSessionProfileInput::new(
+                RequestId::new("pi-image-session").expect("valid request"),
+                model("pi.image.session.route"),
+                WorkingResourceRef::new("pi.image.workspace").expect("valid resource"),
+                SessionOptions::default(),
+            )
+            .with_image_attachments(),
+        )
+        .expect("image session prepares");
+    assert!(
+        session_profile
+            .plan()
+            .requirements()
+            .capabilities()
+            .any(|required| required.capability() == Capability::Attachments)
+    );
+    let session_host = FixtureHost::new(Scenario::Complete);
+    let services = session_host.services(session_host_id);
+    let mut session =
+        block_on(session_profile.open_session(services.clone())).expect("image session opens");
+    let mut turn = block_on(
+        session.start_turn(
+            TurnRequest::new(
+                RuntimeTurnId::new("pi-image-turn").expect("valid turn"),
+                OperationContent::new("inspect image").expect("valid content"),
+            )
+            .with_deadline(Deadline::at(MonotonicInstant::from_ticks(100_000)))
+            .with_attachments([image("pi.image.session")]),
+            services,
+        ),
+    )
+    .expect("image turn starts");
+    let terminal = turn
+        .take_terminal_outcome()
+        .expect("terminal outcome is available");
+    assert_eq!(block_on(terminal).status(), &TerminalStatus::Completed);
+    assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
+    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_prompt_image(&session_host);
+    assert_eq!(
+        session_host
+            .cleanup_events()
+            .iter()
+            .filter(|event| **event == support::CleanupEvent::AttachmentRelease)
+            .count(),
+        1
+    );
+
+    let run_host_id = ExecutionHostId::new("fixture.pi.attachment.run").expect("valid host");
+    let run_discovery = FixtureHost::version_probe("0.80.10");
+    let run_prepared = block_on(prepare_pi_rpc(
+        preparation_input(run_host_id.clone()),
+        probe(),
+        run_discovery.services(run_host_id.clone()),
+    ))
+    .expect("Pi prepares");
+    let run = run_prepared
+        .prepare_run(
+            PiRunProfileInput::new(
+                RequestId::new("pi-image-run").expect("valid request"),
+                model("pi.image.run.route"),
+                OperationContent::new("inspect image").expect("valid content"),
+                WorkingResourceRef::new("pi.image.workspace").expect("valid resource"),
+                Deadline::at(MonotonicInstant::from_ticks(100_000)),
+            )
+            .with_attachments([image("pi.image.run")]),
+        )
+        .expect("image run prepares");
+    let run_host = FixtureHost::new(Scenario::Complete);
+    let mut handle =
+        block_on(run.start_run(run_host.services(run_host_id))).expect("image run starts");
+    let terminal = handle
+        .take_terminal_outcome()
+        .expect("terminal outcome is available");
+    assert_eq!(block_on(terminal).status(), &TerminalStatus::Completed);
+    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    assert_prompt_image(&run_host);
+    assert_eq!(
+        run_host
+            .cleanup_events()
+            .iter()
+            .filter(|event| **event == support::CleanupEvent::AttachmentRelease)
+            .count(),
+        1
+    );
+}
+
+fn model(route: &str) -> PiModelSelection {
+    PiModelSelection::new(
+        ModelRouteId::new(route).expect("valid route"),
+        ModelRouteRevision::new("1").expect("valid route revision"),
+        ProviderId::new("fixture-provider").expect("valid provider"),
+        ModelId::new("fixture-model").expect("valid model"),
+    )
+}
+
+fn image(reference: &str) -> AttachmentDescriptor {
+    AttachmentDescriptor::new(
+        AttachmentRef::new(reference).expect("valid attachment"),
+        "image/png",
+        AttachmentRole::Input,
+    )
+    .expect("valid descriptor")
+    .with_known_length(8)
+}
+
+fn assert_prompt_image(host: &FixtureHost) {
+    let prompt = host
+        .inputs()
+        .into_iter()
+        .find(|input| input["type"] == "prompt")
+        .expect("prompt was dispatched");
+    assert_eq!(prompt["images"][0]["type"], "image");
+    assert_eq!(prompt["images"][0]["mimeType"], "image/png");
+    assert_eq!(prompt["images"][0]["data"], "iVBORw0KGgo=");
+    assert!(!prompt.to_string().contains("/tmp/"));
 }
 
 #[test]

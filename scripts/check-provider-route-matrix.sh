@@ -202,6 +202,13 @@ approval_by_route = {
 if approval_by_route.get("claude-agent.acp") != "Yes":
     raise SystemExit("Claude Agent consumer-mediated permission exchange is not realized")
 
+attachments_by_route = {
+    row["route_id"]: row["attachments"]
+    for row in rows
+}
+if attachments_by_route.get("pi.rpc") != "Yes":
+    raise SystemExit("Pi RPC attachment input is not realized")
+
 serving_not_applicable = {
     "interactive_session",
     "realtime_media_session",
@@ -248,7 +255,7 @@ expected_no_counts = Counter(
         "output_token_limit": 13,
         "reasoning_selection": 11,
         "structured_output": 17,
-        "attachments": 20,
+        "attachments": 19,
         "consumer_tool_exchange": 18,
         "approval_question_exchange": 16,
         "load_session": 20,
@@ -284,8 +291,8 @@ if actual_no_counts != expected_no_counts:
     raise SystemExit(
         f"provider solution No inventory changed: {dict(actual_no_counts)}"
     )
-if len(no_cells) != 444 or len(no_cells) != len(set(no_cells)):
-    raise SystemExit("provider solution No inventory must contain 444 unique cells")
+if len(no_cells) != 443 or len(no_cells) != len(set(no_cells)):
+    raise SystemExit("provider solution No inventory must contain 443 unique cells")
 
 no_classification_overrides = {
     (
@@ -366,7 +373,6 @@ input_callback_classifications = {
     ("consumer_tool_exchange", "anthropic.messages"): "contract_or_corpus_required",
     ("approval_question_exchange", "anthropic.messages"): "upstream_unsupported",
     ("external_search", "anthropic.messages"): "contract_or_corpus_required",
-    ("attachments", "pi.rpc"): "ready_existing_contract",
     ("consumer_tool_exchange", "pi.rpc"): "upstream_unsupported",
     ("external_search", "pi.rpc"): "upstream_unsupported",
     ("attachments", "deepseek.continuation"): "upstream_unsupported",
@@ -437,8 +443,8 @@ input_callback_no_cells = {
     ]
     if row[feature] == "No"
 }
-if len(input_callback_no_cells) != 74:
-    raise SystemExit("input/callback inventory must contain exactly 74 No cells")
+if len(input_callback_no_cells) != 73:
+    raise SystemExit("input/callback inventory must contain exactly 73 No cells")
 if input_callback_no_cells != set(input_callback_classifications):
     raise SystemExit("input/callback No classifications changed")
 
@@ -461,7 +467,7 @@ if classification_counts != Counter(
         "contract_or_corpus_required": 50,
         "upstream_unsupported": 47,
         "operation_shape_not_applicable": 6,
-        "ready_existing_contract": 5,
+        "ready_existing_contract": 4,
         "ready_operator_hold": 6,
         "composite_partial_only": 5,
     }

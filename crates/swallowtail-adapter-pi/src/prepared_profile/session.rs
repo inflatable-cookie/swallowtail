@@ -62,9 +62,10 @@ impl PiPreparedIntegration {
         &self,
         input: PiSessionProfileInput,
     ) -> Result<PiPreparedSession, PreparationFailure> {
-        let (request_id, model, working_resource, deadline, options) = input.into_parts();
+        let (request_id, model, working_resource, deadline, options, image_attachments) =
+            input.into_parts();
         validate_options(&options)?;
-        let capabilities = session_capabilities();
+        let capabilities = session_capabilities(image_attachments);
         let instance = instance_with_capabilities(self, capabilities.clone());
         let (route_id, route_revision, provider_id, model_id) = model.into_parts();
         let route = ModelRoute::new(
@@ -77,11 +78,12 @@ impl PiPreparedIntegration {
         .with_provider_id(provider_id);
         let requirements = requirements(
             self,
-            session_capabilities()
+            session_capabilities(image_attachments)
                 .iter()
                 .map(|(capability, constraints)| {
                     CapabilityRequirement::new(capability, constraints.iter().cloned())
                 }),
+            image_attachments,
         );
         let plan = build_plan(self, &instance, &route, &requirements)?;
         let request = OpenSessionRequest::from_plan(&plan, request_id, working_resource, deadline)?;

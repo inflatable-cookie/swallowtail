@@ -1,3 +1,4 @@
+use super::input::SharedAttachmentMaterialization;
 use super::session::{ActiveSlot, cleanup_failure};
 use crate::connection::PiConnection;
 use crate::failure::failure;
@@ -106,6 +107,14 @@ pub(super) struct PiTurnHandle {
     cancellation: TurnCancellation,
     connection: Arc<PiConnection>,
     active: ActiveSlot,
+    attachment: SharedAttachmentMaterialization,
+}
+
+pub(super) struct PiTurnBinding {
+    pub(super) connection: Arc<PiConnection>,
+    pub(super) turn: Arc<ActiveTurn>,
+    pub(super) active: ActiveSlot,
+    pub(super) attachment: SharedAttachmentMaterialization,
 }
 
 impl PiTurnHandle {
@@ -114,18 +123,17 @@ impl PiTurnHandle {
         events: BoxEventStream,
         callbacks: CallbackExchange,
         terminal: BoxFuture<'static, TerminalOutcome>,
-        connection: Arc<PiConnection>,
-        turn: Arc<ActiveTurn>,
-        active: ActiveSlot,
+        binding: PiTurnBinding,
     ) -> Self {
         Self {
             runtime_id,
             events: Some(events),
             callbacks: Some(callbacks),
             terminal: Some(terminal),
-            cancellation: TurnCancellation::new(Arc::clone(&connection), turn),
-            connection,
-            active,
+            cancellation: TurnCancellation::new(Arc::clone(&binding.connection), binding.turn),
+            connection: binding.connection,
+            active: binding.active,
+            attachment: binding.attachment,
         }
     }
 }
@@ -223,18 +231,20 @@ impl TurnHandle for PiTurnHandle {
                     None
                 }
             };
-            if let Some(task) = active.and_then(|mut active| active.deadline_task.take()) {
-                if task.join().await.is_err() {
-                    cleanup_failure(
-                        "turn_join_failed",
-                        "Pi RPC turn deadline task did not join cleanly",
-                    )
+            let task_cleanup =
+                if let Some(task) = active.and_then(|mut active| active.deadline_task.take()) {
+                    if task.join().await.is_err() {
+                        cleanup_failure(
+                            "turn_join_failed",
+                            "Pi RPC turn deadline task did not join cleanly",
+                        )
+                    } else {
+                        CleanupOutcome::NotApplicable
+                    }
                 } else {
                     CleanupOutcome::NotApplicable
-                }
-            } else {
-                CleanupOutcome::NotApplicable
-            }
+                };
+            super::session::cleanup::merge_cleanup(task_cleanup, self.attachment.release().await)
         })
     }
 }

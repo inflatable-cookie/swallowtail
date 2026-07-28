@@ -55,7 +55,8 @@ impl StructuredRunDriver for PiRpcDriver {
                 .start_session(plan, open_request, services.clone())
                 .await?;
             let turn_request = TurnRequest::new(turn_id, request.content().clone())
-                .with_deadline(request.deadline().expect("validated Pi run deadline"));
+                .with_deadline(request.deadline().expect("validated Pi run deadline"))
+                .with_attachments(request.attachments().cloned());
             let mut turn = match session.start_turn(turn_request, services.clone()).await {
                 Ok(turn) => turn,
                 Err(error) => {

@@ -1,6 +1,6 @@
 use swallowtail_core::{ModelId, ModelRouteId, ModelRouteRevision, ProviderId};
 use swallowtail_runtime::{
-    Deadline, OperationContent, RequestId, SessionOptions, WorkingResourceRef,
+    AttachmentDescriptor, Deadline, OperationContent, RequestId, SessionOptions, WorkingResourceRef,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -70,6 +70,7 @@ pub struct PiSessionProfileInput {
     working_resource: WorkingResourceRef,
     deadline: Option<Deadline>,
     options: SessionOptions,
+    image_attachments: bool,
 }
 
 impl PiSessionProfileInput {
@@ -86,12 +87,19 @@ impl PiSessionProfileInput {
             working_resource,
             deadline: None,
             options,
+            image_attachments: false,
         }
     }
 
     #[must_use]
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
+        self
+    }
+
+    #[must_use]
+    pub const fn with_image_attachments(mut self) -> Self {
+        self.image_attachments = true;
         self
     }
 
@@ -103,6 +111,7 @@ impl PiSessionProfileInput {
         WorkingResourceRef,
         Option<Deadline>,
         SessionOptions,
+        bool,
     ) {
         (
             self.request_id,
@@ -110,6 +119,7 @@ impl PiSessionProfileInput {
             self.working_resource,
             self.deadline,
             self.options,
+            self.image_attachments,
         )
     }
 }
@@ -121,6 +131,7 @@ pub struct PiRunProfileInput {
     content: OperationContent,
     working_resource: WorkingResourceRef,
     deadline: Deadline,
+    attachments: Vec<AttachmentDescriptor>,
 }
 
 impl PiRunProfileInput {
@@ -138,7 +149,17 @@ impl PiRunProfileInput {
             content,
             working_resource,
             deadline,
+            attachments: Vec::new(),
         }
+    }
+
+    #[must_use]
+    pub fn with_attachments(
+        mut self,
+        attachments: impl IntoIterator<Item = AttachmentDescriptor>,
+    ) -> Self {
+        self.attachments = attachments.into_iter().collect();
+        self
     }
 
     pub(super) fn into_parts(
@@ -149,6 +170,7 @@ impl PiRunProfileInput {
         OperationContent,
         WorkingResourceRef,
         Deadline,
+        Vec<AttachmentDescriptor>,
     ) {
         (
             self.request_id,
@@ -156,6 +178,7 @@ impl PiRunProfileInput {
             self.content,
             self.working_resource,
             self.deadline,
+            self.attachments,
         )
     }
 }

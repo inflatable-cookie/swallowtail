@@ -12,10 +12,9 @@ shape.
 
 ## Next Task
 
-Execute
-[g02 card 079](g02/batch-cards/079-structured-run-provider-wide-closeout.md):
-close provider-wide structured-run classifications, packaged proof, and
-front-door currentness.
+Return to the operator decision on
+[g02 card 060](g02/batch-cards/060-nucleus-thread-lifecycle-adoption-handoff.md):
+authorize, defer, or rescope Nucleus provider-session lifecycle adoption.
 
 ## Index
 

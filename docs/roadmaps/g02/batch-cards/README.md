@@ -76,6 +76,7 @@
 - `076-gemini-cli-headless-structured-route.md`
 - `077-kimi-0-29-2-currentness-and-corpora.md`
 - `078-kimi-headless-and-retained-local-structured-runs.md`
+- `079-structured-run-provider-wide-closeout.md`
 
 ## Superseded
 
@@ -90,7 +91,7 @@ None. Cross-generation deferred work lives in `docs/roadmaps/backlog/`.
 
 ## Ready
 
-- `079-structured-run-provider-wide-closeout.md`
+None.
 
 ## Planned
 

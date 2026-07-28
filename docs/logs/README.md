@@ -5,6 +5,7 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-07-28 Structured-Run Provider-Wide Closeout](2026-07-28-structured-run-provider-wide-closeout.md)
 - [2026-07-28 Kimi Structured Runs](2026-07-28-kimi-structured-runs.md)
 - [2026-07-28 Claude Agent Local Subscription Auth](2026-07-28-claude-agent-local-subscription-auth.md)
 - [2026-07-28 Kimi 0.29.2 Currentness And Corpora](2026-07-28-kimi-0-29-2-currentness-and-corpora.md)

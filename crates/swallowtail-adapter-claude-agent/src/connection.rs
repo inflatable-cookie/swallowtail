@@ -10,7 +10,7 @@ use std::sync::{Arc, Mutex};
 use std::task::{Context, Poll, Waker};
 use swallowtail_core::SafeDiagnostic;
 use swallowtail_protocol_acp::{
-    ACP_PROTOCOL_VERSION, Message, NdjsonDecoder, encode_error, encode_notification,
+    ACP_PROTOCOL_VERSION, FramingLimits, Message, NdjsonDecoder, encode_error, encode_notification,
     encode_request, encode_result,
 };
 use swallowtail_runtime::{
@@ -22,6 +22,10 @@ use self::response::{PendingResponse, ResponseSender, response_channel};
 
 const MAXIMUM_PENDING_REQUESTS: usize = 32;
 const MAXIMUM_READ_BYTES: usize = 1024 * 1024;
+const MAXIMUM_RECEIVED_FRAME_BYTES: usize = 4 * 1024 * 1024;
+const MAXIMUM_RECEIVE_BUFFER_BYTES: usize = 8 * 1024 * 1024;
+const RECEIVE_FRAMING_LIMITS: FramingLimits =
+    FramingLimits::new(MAXIMUM_RECEIVED_FRAME_BYTES, MAXIMUM_RECEIVE_BUFFER_BYTES);
 
 pub(crate) struct AcpConnection {
     process: Arc<dyn ProcessHandle>,

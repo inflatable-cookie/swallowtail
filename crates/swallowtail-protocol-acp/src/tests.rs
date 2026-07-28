@@ -1,5 +1,6 @@
 use super::{
-    Message, NdjsonDecoder, ProtocolErrorKind, decode_message, encode_message, encode_request,
+    DEFAULT_MAX_BUFFER_BYTES, DEFAULT_MAX_FRAME_BYTES, FramingLimits, Message, NdjsonDecoder,
+    ProtocolErrorKind, decode_message, encode_message, encode_request,
 };
 use serde_json::json;
 
@@ -34,6 +35,39 @@ fn decoder_rejects_incomplete_and_oversized_frames() {
         ProtocolErrorKind::IncompleteFrame
     );
     assert!(encode_request(1, "session/prompt", json!({"text": "x"})).is_ok());
+}
+
+#[test]
+fn configured_decoder_accepts_a_frame_above_the_shared_default() {
+    let mut frame = serde_json::to_vec(&json!({
+        "jsonrpc": "2.0",
+        "method": "session/update",
+        "params": {"payload": "x".repeat(DEFAULT_MAX_FRAME_BYTES)}
+    }))
+    .expect("fixture frame serializes");
+    frame.push(b'\n');
+
+    let mut default_decoder = NdjsonDecoder::default();
+    assert_eq!(
+        default_decoder
+            .push(&frame)
+            .expect_err("shared default remains bounded")
+            .kind(),
+        ProtocolErrorKind::FrameLimitExceeded
+    );
+
+    let mut configured_decoder = NdjsonDecoder::new(FramingLimits::new(
+        DEFAULT_MAX_BUFFER_BYTES,
+        DEFAULT_MAX_BUFFER_BYTES,
+    ));
+    assert_eq!(
+        configured_decoder
+            .push(&frame)
+            .expect("route-specific decoder accepts the frame")
+            .len(),
+        1
+    );
+    configured_decoder.finish().expect("complete input");
 }
 
 #[test]

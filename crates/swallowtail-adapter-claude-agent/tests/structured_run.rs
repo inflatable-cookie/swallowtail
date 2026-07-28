@@ -97,6 +97,32 @@ fn one_prompt_run_preserves_version_topology_retention_and_native_close() {
 }
 
 #[test]
+fn claude_bridge_tool_update_above_shared_frame_default_completes() {
+    let host_id = ExecutionHostId::new("fixture.run.large-tool-update").expect("host id");
+    let selected = run_selection(host_id.clone(), "0.63.0");
+    let host = FixtureHost::new(Scenario::LargeToolUpdate, "0.63.0");
+    let mut run = block_on(driver(selected.credential).start_run(
+        selected.plan,
+        request("run-large-tool-update", selected.resource, None),
+        host.services(host_id),
+    ))
+    .expect("structured run starts");
+
+    let (events, outcome) = complete(&mut run);
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    assert_eq!(
+        outcome.output().expect("output").as_str(),
+        "fixture response."
+    );
+    assert!(
+        events
+            .iter()
+            .any(|event| { event.kind() == &swallowtail_runtime::RuntimeEventKind::Progress })
+    );
+    assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
+}
+
+#[test]
 fn permission_stops_as_provider_request_without_auto_approval_or_callback() {
     let host_id = ExecutionHostId::new("fixture.run.permission").expect("host id");
     let selected = run_selection(host_id.clone(), "0.61.0");

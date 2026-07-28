@@ -1,6 +1,6 @@
 # 079 Structured-Run Provider-Wide Closeout
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-07-27
 Milestone: `../024-kimi-structured-coverage-and-matrix-closeout.md`
@@ -22,12 +22,12 @@ proof, and front-door currentness.
 
 ## Acceptance Criteria
 
-- [ ] every `Yes` has production code and deterministic conformance
-- [ ] no solution borrows execution capability from another facade
-- [ ] retained Kimi thread truth is visible
-- [ ] realtime and serving classifications remain exact
-- [ ] package artifacts execute prepared structured paths without publication
-- [ ] one next task remains
+- [x] every `Yes` has production code and deterministic conformance
+- [x] no solution borrows execution capability from another facade
+- [x] retained Kimi thread truth is visible
+- [x] realtime and serving classifications remain exact
+- [x] package artifacts execute prepared structured paths without publication
+- [x] one next task remains
 
 ## Validation
 
@@ -36,6 +36,23 @@ proof, and front-door currentness.
 - package facade proof
 - public API, docs, routes, formatting, and Clippy
 - `git diff --check`
+
+## Completion Evidence
+
+- 25 production routes map to 21 provider solutions.
+- Structured-run truth is 18 `Yes`, two realtime `No`, and one owned-serving
+  `Not applicable`.
+- Every `Yes` maps to a public prepared facade. Kimi ACP, headless, and local
+  server keep separate driver identities.
+- All 23 crates package locally. The extracted workspace compiles and executes
+  the closure-tranche structured suites without live credentials.
+- Full workspace tests, strict Clippy, Rustdoc, examples, API, route, docs,
+  formatting, and diff checks pass.
+- The public API baseline records the intentional additive structured-run
+  surface. No package was published.
+- `effigy doctor` remains red only on structural file-size debt: 66 findings,
+  including 16 errors. The structured tranche added findings and does not
+  claim a clean health baseline.
 
 ## Stop Conditions
 

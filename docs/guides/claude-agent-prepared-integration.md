@@ -70,6 +70,11 @@ ACP `available_commands_update` metadata is accepted whether it arrives
 immediately after session creation or during a prompt. It does not become a
 consumer tool or command capability.
 
+The Claude Agent route accepts one ACP receive frame up to 4 MiB and keeps at
+most 8 MiB in its receive decoder. This adapter-specific bound admits bridge
+tool-result updates that echo file content. The shared ACP default remains 64
+KiB per frame with a 256 KiB buffer; Gemini and Kimi retain that default.
+
 ## Execution Boundary
 
 Both prepared plans bind:

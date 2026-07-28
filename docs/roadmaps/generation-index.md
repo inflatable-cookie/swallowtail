@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-27
+Updated: 2026-07-28
 
 ## Generations
 
@@ -36,4 +36,5 @@ explicit ACP binding import, and interactive execution without claiming Kimi
 deletion or changing ACP. Roadmap 021 closes source-scoped model catalogue
 coverage. Roadmaps 022-024 add independently qualified direct, harness, and
 retained Kimi structured-run branches, then close the solution matrix without
-widening realtime media or owned serving.
+widening realtime media or owned serving. All three roadmaps are complete.
+The next task is the operator-held roadmap 019 consumer-adoption decision.

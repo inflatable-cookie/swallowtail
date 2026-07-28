@@ -84,7 +84,9 @@ distinct attached inference and owned ephemeral-serving paths. The later Kimi
 local-server route brought the previous total to 23; Gemini CLI headless was
 the 24th and Kimi Code headless is the 25th route. The exact cross-route matrix
 and unified integration guidance are current. Packaged structured proof
-remains inside the active provider-wide closeout lane. One reproducible provider-wide
+passes across all 23 local package archives: the extracted workspace compiles
+and executes the closure-tranche prepared structured suites without live
+credentials. One reproducible provider-wide
 `0.1.0` candidate is
 retained as the post-hardening soak baseline; its exact canonical source,
 parent, artifacts, and validation digests are recorded in candidate evidence.
@@ -135,7 +137,8 @@ archive/restore binding. The interactive local-server driver now covers exact
 REST prompt submission, WebSocket v2 events and cursors, callbacks,
 interruption, deadlines, disconnects, attached and owned topology, and joined
 cleanup. The 25-route matrix and current integration guide are complete. The
-23-route extracted-package lifecycle proof remains unchanged. Operator review is required before any
+provider-wide extracted-package structured proof and the earlier 23-route
+lifecycle proof pass. Operator review is required before any
 Nucleus lifecycle handoff. The retained lifecycle candidate remains paused
 until the current source enters canonical history.
 

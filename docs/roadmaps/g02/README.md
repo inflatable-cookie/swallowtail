@@ -37,7 +37,7 @@ evidence-led provider work.
 | Complete provider-wide lifecycle acceptance and a Nucleus handoff. | paused | Contracts 036-038 | `g02.019` |
 | Add a separate Kimi local-server lifecycle and interactive route. | completed | Research 040-041, Contracts 029 and 038 | `g02.020` |
 | Expand source-scoped model catalogue coverage without hidden session creation. | completed | Research 042-043, Contract 020 | `g02.021` |
-| Close useful structured-run gaps without flattening provider lifecycle. | active | Research 044-045, Contract 039 | `g02.022`-`g02.024` |
+| Close useful structured-run gaps without flattening provider lifecycle. | completed | Research 044-046, Contract 039 | `g02.022`-`g02.024` |
 
 ## Current Checkpoint
 
@@ -165,12 +165,13 @@ evidence-led provider work.
   roles, explicit ACP/headless selection through one installed facade, durable
   provider-state truth, exact callbacks and cancellation, and joined attached
   plus owned cleanup
-- the 25-route, 21-solution matrix now reports 18 structured `Yes` and three
-  `No`; card 079 is ready for the serving/realtime classification and packaged
-  closeout
-- roadmaps g02.022-g02.024 and cards 071-079 sequence direct, harness, Kimi,
-  matrix, and packaged closeout work; g02.022-g02.023 are complete and
-  g02.024 is active
+- card 079 closes the 25-route, 21-solution matrix at 18 structured `Yes`, two
+  realtime `No`, and one owned-serving `Not applicable`; every `Yes` maps to a
+  realized public prepared facade
+- all 23 local package archives assemble, the extracted workspace compiles,
+  and the closure-tranche structured suites execute without live credentials
+- roadmaps g02.022-g02.024 and cards 071-079 are complete; the sole next task
+  is the operator-held card 060 lifecycle-adoption decision
 - roadmaps g02.016-g02.019 sequence Codex, ACP/Claude Agent, OpenCode,
   provider-wide acceptance, and the Nucleus handoff
 - all 23 manifests carry contract-complete metadata and crates.io publication

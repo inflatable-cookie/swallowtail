@@ -1,12 +1,12 @@
 # 024 Kimi Structured Coverage And Matrix Closeout
 
-Status: active
+Status: completed
 Owner: Tom
 Created: 2026-07-27
 Depends on: g02.023
 Vision tags: Kimi currentness, harness interaction, provider retention
 Contract refs: 004-015, 017, 023, 029, 032-034, 037-039
-Planning state: cards 077-078 completed; card 079 ready
+Planning state: cards 077-079 completed
 
 ## Problem
 
@@ -24,7 +24,7 @@ unsupported by operator decision.
 - [x] Add a separately registered Kimi headless structured route.
 - [x] Add retained Kimi local-server structured execution.
 - [x] Preserve ACP and local-server transport, access, and lifecycle identity.
-- [ ] Close the solution matrix at 18 `Yes`, two realtime `No`, and one
+- [x] Close the solution matrix at 18 `Yes`, two realtime `No`, and one
       serving `Not applicable`.
 
 ## Non-Goals
@@ -47,7 +47,7 @@ unsupported by operator decision.
 
 ### Batch 24.3 — Provider-Wide Closeout
 
-- [ ] Execute card 079.
+- [x] Execute card 079.
 
 ## Acceptance Criteria
 
@@ -57,9 +57,9 @@ unsupported by operator decision.
 - [x] run close claims no archive or delete unless the exact operation performs
       it
 - [x] owned local-server mode joins the foreground child without a container
-- [ ] llama.cpp owned becomes `Not applicable`
-- [ ] Gemini Live and OpenAI Realtime remain `No`
-- [ ] package, route, docs, and focused conformance pass without live access
+- [x] llama.cpp owned becomes `Not applicable`
+- [x] Gemini Live and OpenAI Realtime remain `No`
+- [x] package, route, docs, and focused conformance pass without live access
 
 ## Decision Gates
 

@@ -10,6 +10,7 @@ pub(super) use process::FixtureProcessHandle;
 #[allow(dead_code)]
 pub enum Scenario {
     Success,
+    LargeToolUpdate,
     DeleteMissing,
     DeleteProviderFailure,
     DeleteDisconnect,
@@ -268,7 +269,7 @@ impl SharedAgent {
     fn prompt(&self, state: &mut AgentState, id: Option<u64>) -> Result<(), RuntimeFailure> {
         state.prompt_id = id;
         match self.scenario {
-            Scenario::Success => {
+            Scenario::Success | Scenario::LargeToolUpdate => {
                 for update in [
                     json!({"sessionUpdate": "available_commands_update", "availableCommands": []}),
                     json!({"sessionUpdate": "agent_thought_chunk", "content": {"type": "text", "text": "Inspecting."}}),
@@ -280,6 +281,20 @@ impl SharedAgent {
                         state,
                         json!({"jsonrpc": "2.0", "method": "session/update", "params": {
                             "sessionId": "claude-agent-session-fixture", "update": update
+                        }}),
+                    );
+                }
+                if self.scenario == Scenario::LargeToolUpdate {
+                    Self::enqueue(
+                        state,
+                        json!({"jsonrpc": "2.0", "method": "session/update", "params": {
+                            "sessionId": "claude-agent-session-fixture",
+                            "update": {
+                                "sessionUpdate": "tool_call_update",
+                                "toolCallId": "read-1",
+                                "status": "completed",
+                                "rawOutput": "x".repeat(136 * 1024)
+                            }
                         }}),
                     );
                 }

@@ -25,6 +25,7 @@ pub(super) struct ClaudeAgentSessionHandle {
     pub(super) provider_id: String,
     pub(super) execution_host_id: swallowtail_core::ExecutionHostId,
     pub(super) native_close: bool,
+    pub(super) provider_requests: swallowtail_core::ProviderRequestPolicy,
     pub(super) connection: Arc<AcpConnection>,
     pub(super) cancellation: SessionCancellation,
     pub(super) pump_task: Option<Box<dyn JoinedTask>>,
@@ -71,8 +72,13 @@ impl InteractiveSessionHandle for ClaudeAgentSessionHandle {
                     "Claude Agent session already has an active turn",
                 ));
             }
-            let (turn, events, terminal) =
-                ActiveTurn::new(request.turn_id().clone(), self.provider_id.clone())?;
+            let (turn, events, callbacks, terminal) = ActiveTurn::new(
+                request.turn_id().clone(),
+                self.provider_id.clone(),
+                request.deadline(),
+                &self.provider_requests,
+                Arc::downgrade(&self.connection),
+            )?;
             self.connection.set_active_turn(Arc::clone(&turn))?;
             let response = match self
                 .connection
@@ -140,6 +146,7 @@ impl InteractiveSessionHandle for ClaudeAgentSessionHandle {
             Ok(Box::new(ClaudeAgentTurnHandle {
                 runtime_id: request.turn_id().clone(),
                 events: Some(events),
+                callbacks,
                 terminal: Some(Box::pin(terminal)),
                 cancellation: TurnCancellation {
                     connection: Arc::clone(&self.connection),

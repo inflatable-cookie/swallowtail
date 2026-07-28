@@ -57,3 +57,4 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [047 Provider Feature `No` Inventory And Usage-Evidence Selection](047-provider-feature-no-inventory-and-usage-evidence-selection.md)
 - [048 Harness Usage-Evidence Currentness And Corpora](048-harness-usage-evidence-currentness-and-corpora.md)
 - [049 Generation-Control `No` Currentness And Tranche Selection](049-generation-control-no-currentness-and-tranche-selection.md)
+- [050 Input And Callback `No` Currentness And Tranche Selection](050-input-and-callback-no-currentness-and-tranche-selection.md)

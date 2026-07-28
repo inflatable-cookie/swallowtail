@@ -93,7 +93,7 @@ impl SharedAgent {
             Some("session/close") => self.close_session(&mut state, id),
             Some("session/delete") => self.delete_session(&mut state, id),
             None if id == Some(701) => self.complete_read(&mut state, &message),
-            None if id == Some(900) => self.permission_response(&message),
+            None if id == Some(900) => self.permission_response(&mut state, &message),
             _ => return Err(fixture_failure()),
         }?;
         self.changed.notify_all();
@@ -386,6 +386,7 @@ impl SharedAgent {
                         "toolCall": {"toolCallId": "shell-1"},
                         "options": [
                             {"optionId": "allow-once", "kind": "allow_once"},
+                            {"optionId": "allow-always", "kind": "allow_always"},
                             {"optionId": "reject-once", "kind": "reject_once"}
                         ]
                     }}),
@@ -435,10 +436,32 @@ impl SharedAgent {
         Ok(())
     }
 
-    fn permission_response(&self, message: &Value) -> Result<(), RuntimeFailure> {
+    fn permission_response(
+        &self,
+        state: &mut AgentState,
+        message: &Value,
+    ) -> Result<(), RuntimeFailure> {
         if message["result"]["outcome"]["outcome"] == "selected"
             && message["result"]["outcome"]["optionId"] == "reject-once"
         {
+            Ok(())
+        } else if message["result"]["outcome"]["outcome"] == "selected"
+            && message["result"]["outcome"]["optionId"] == "allow-once"
+        {
+            let id = state.prompt_id.take().ok_or_else(fixture_failure)?;
+            Self::enqueue(
+                state,
+                json!({"jsonrpc": "2.0", "id": id, "result": {
+                    "stopReason": "end_turn",
+                    "usage": {
+                        "inputTokens": 12,
+                        "outputTokens": 4,
+                        "cachedReadTokens": 3,
+                        "cachedWriteTokens": 2,
+                        "totalTokens": 21
+                    }
+                }}),
+            );
             Ok(())
         } else {
             Err(fixture_failure())

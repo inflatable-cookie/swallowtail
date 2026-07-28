@@ -71,7 +71,10 @@ and read-only interactive stdio-ACP prepared paths; Gemini CLI retains its
 read-only ACP path and adds a separate one-prompt headless path. Claude Agent
 keeps local subscription authentication and public API-key billing as separate
 explicit access profiles; the local default inherits approved process state
-without a credential lease. Claude Code headless adds a bridge-free,
+without a credential lease. Its structured run keeps unexpected-permission
+rejection as the default and adds an explicit consumer-mediated profile for
+bounded, exactly-once one-shot ACP permission selection. Claude Code headless
+adds a bridge-free,
 subscription-only `claude -p` path with read-only tools, usage, reasoning
 selection, and no session persistence. Pi RPC, Qwen headless, and OpenCode attached HTTP/SSE complete
 the original eight harness routes; Kimi local server adds the ninth. Kimi Platform, DeepSeek,
@@ -190,9 +193,13 @@ Usage evidence has 19 `Yes`, one serving-only `Not applicable`, and two honest
 Kimi Code `No` cells. Each composite solution row records route ownership in
 its notes where sibling routes contribute different capabilities. The first
 generation-control tranche realizes seven cells across OpenAI, Ollama, and
-OpenCode. The next matrix lane audits 74 attachment, consumer-tool,
-approval-or-question, and external-search gaps. Later cards retain session
-continuity, provider retention, retained execution,
+OpenCode. The 74-cell input/callback audit finds 45 actionable gaps, three
+held xAI cells, 25 exact route absences, and one realtime-media mismatch. Its
+first tranche selects Pi attachment input, OpenCode attachment plus
+permission/question exchange, and Anthropic Messages attachment, client-tool
+continuation, and provider-owned search. Contract 041 and nine offline corpus
+tests now fix that six-cell implementation boundary. Later cards retain session continuity,
+provider retention, retained execution,
 workspace/runtime, and realtime media on the runway. The shared hosted
 foundation and attached OpenCode HTTP/SSE proof are complete. The
 provider-supported Anthropic Models and Messages direct driver is complete.

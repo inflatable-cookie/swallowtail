@@ -21,9 +21,22 @@ request was made.
 
 The subset uses a Console API key in `x-api-key`. Workload Identity Federation,
 Claude subscription OAuth, cloud-platform facades, SDK retry behavior, beta
-headers, tools, recovery requests, and non-streaming Messages are excluded.
+headers, recovery requests, and non-streaming Messages are excluded.
 
 Unknown top-level SSE event types are ignored as provider-directed forward
 compatibility. Unknown content-block or delta semantics fail closed because
 ignoring them could corrupt output. Cancellation only closes local connection
 work; the API documents no cancel route for this request.
+
+The card 089 corpus adds four synthetic request records:
+
+- one bounded base64 `image/png` input
+- one declared client tool
+- one exact correlated tool-result continuation
+- provider-owned `web_search_20250305`
+
+Client-tool continuation remains a separate Contract 030 interactive role;
+the existing structured role stays one-attempt. Provider search requires
+explicit search and provider-network policy, exact model capability,
+organization enablement, and provider billing. No credential or authenticated
+request was used.

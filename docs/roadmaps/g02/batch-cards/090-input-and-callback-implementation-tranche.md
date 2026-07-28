@@ -1,6 +1,6 @@
 # 090 Input And Callback Implementation Tranche
 
-Status: planned
+Status: ready
 Owner: Tom
 Created: 2026-07-28
 Milestone: `../027-input-and-callback-feature-closure.md`
@@ -13,14 +13,25 @@ route identities.
 
 ## Scope
 
-1. Implement only routes selected by card 088 and frozen by card 089.
+1. Implement exactly six audited cells:
+   - `pi.rpc`: attachments
+   - `opencode.http`: attachments and approval-or-question exchange
+   - `anthropic.messages`: attachments, consumer-tool exchange, and external
+     search
 2. Keep each input or callback on its exact operation shape.
-3. Bind request, plan, dispatch, callback admission, response, and cleanup.
-4. Reject undeclared, mismatched, late, duplicate, or unsupported exchanges
+3. Add the adjacent Anthropic Messages interactive role required by Contract
+   030 client-tool continuation. Do not widen its existing one-attempt
+   structured role.
+4. Bind request, plan, attachment lease, dispatch, callback admission,
+   response, continuation attempt, search evidence, and cleanup.
+5. Cover Pi structured and interactive prompts, and OpenCode structured and
+   interactive turns, wherever the frozen route uses the same qualified wire
+   feature.
+6. Reject undeclared, mismatched, late, duplicate, or unsupported exchanges
    before they can become authority.
-5. Preserve cancellation, deadlines, topology, version posture, and redacted
+7. Preserve cancellation, deadlines, topology, version posture, and redacted
    diagnostics.
-6. Update matrix cells only after public prepared paths and conformance exist.
+8. Update matrix cells only after public prepared paths and conformance exist.
 
 ## Acceptance Criteria
 
@@ -33,4 +44,5 @@ route identities.
 
 ## Auto-Continuation
 
-No while planned. Card 089 must make the implementation envelope exact.
+No. Complete the six-cell implementation and focused package evidence before
+card 091.

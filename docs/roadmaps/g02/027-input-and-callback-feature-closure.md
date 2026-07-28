@@ -5,8 +5,13 @@ Owner: Tom
 Created: 2026-07-28
 Depends on: g02.026
 Vision tags: exact capabilities, consumer-mediated interaction, provider breadth
-Contract refs: 003, 005-016, 037, 039-040
-Planning state: card 088 ready; cards 089-091 planned
+Contract refs: 003, 005-016, 030, 037, 039-041
+Planning state: cards 088-089 completed; card 090 ready; card 091 planned
+
+Operator intervention: Figmatic production-workspace evidence selected Claude
+Agent ACP one-shot permission exchange as an urgent pre-audit conversion. Its
+qualified ACP corpus and Contracts 012-015 and 039 settle the boundary. This
+does not classify or complete the remaining 74-cell starting audit.
 
 ## Problem
 
@@ -23,10 +28,10 @@ authority differences.
 
 ## Goals
 
-- [ ] Revalidate every starting `No` against its exact route and maintained
+- [x] Revalidate every starting `No` against its exact route and maintained
       version posture.
-- [ ] Detect false negatives against realized prepared paths.
-- [ ] Separate provider input, consumer tool exchange, approval or question
+- [x] Detect false negatives against realized prepared paths.
+- [x] Separate provider input, consumer tool exchange, approval or question
       callbacks, observed-and-stopped requests, and provider-owned search.
 - [ ] Promote only missing shared contracts needed by a selected tranche.
 - [ ] Implement a representative tranche across materially different
@@ -46,15 +51,15 @@ authority differences.
 
 ### Batch 27.1 — Exact Currentness Audit
 
-- [ ] Execute card 088.
-- [ ] Classify all 74 starting cells by exact route, operation shape, and
+- [x] Execute card 088.
+- [x] Classify all 74 starting cells by exact route, operation shape, and
       authority.
-- [ ] Rank conversions by consumer value and architectural information.
+- [x] Rank conversions by consumer value and architectural information.
 
 ### Batch 27.2 — Contract And Corpus Gate
 
-- [ ] Execute card 089 only after the audit selects exact routes.
-- [ ] Promote narrow shared distinctions and freeze deterministic corpora.
+- [x] Execute card 089 only after the audit selects exact routes.
+- [x] Promote narrow shared distinctions and freeze deterministic corpora.
 
 ### Batch 27.3 — Representative Implementation
 
@@ -86,5 +91,6 @@ authority differences.
 
 ## Next Planning Checkpoint
 
-Card 088 performs the evidence audit. No provider implementation begins before
-its currentness and contract gate.
+Card 090 implements the six selected cells across Pi, OpenCode, and Anthropic
+Messages. Card 091 retains provider-wide closeout and the next feature-family
+selection.

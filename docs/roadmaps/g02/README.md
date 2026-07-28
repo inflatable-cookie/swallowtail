@@ -207,8 +207,17 @@ evidence-led provider work.
 - cards 086-087 realize those seven controls, close the 48-cell starting
   inventory at 41 retained generation-control `No` cells, and leave the whole
   audited matrix at 444 `No` and 29 `Not applicable`
-- roadmap g02.027 and cards 088-091 continue with the 74 attachment,
-  consumer-tool, approval-or-question, and external-search gaps
+- Research 050 and card 088 classify all 74 attachment, consumer-tool,
+  approval-or-question, and external-search gaps: 45 are actionable, three
+  xAI cells remain held, 25 are exact route absences, and one is realtime
+  media rather than an attachment
+- Contract 041 and card 089 freeze finite input, native versus provider-owned
+  tools, provider-request strength, and external-search authority across Pi,
+  OpenCode, and Anthropic Messages
+- the OpenCode corpus covers all 45 qualified releases through four exact
+  input/callback surface revisions; nine focused corpus tests pass offline
+- card 090 is ready for the selected six-cell implementation; card 091
+  remains in bounds
 - roadmaps g02.016-g02.019 sequence Codex, ACP/Claude Agent, OpenCode,
   provider-wide acceptance, and the Nucleus handoff
 - all 23 manifests carry contract-complete metadata and crates.io publication
@@ -554,7 +563,7 @@ evidence-led provider work.
 - [026 Generation-Control Feature Closure](026-generation-control-feature-closure.md)
   — completed; cards 084-087 complete
 - [027 Input And Callback Feature Closure](027-input-and-callback-feature-closure.md)
-  — active; card 088 ready, cards 089-091 planned
+  — active; cards 088-089 complete, card 090 ready, card 091 planned
 
 ## Held Backlog
 
@@ -677,8 +686,9 @@ is deferred until a consumer needs post-restart provider management.
   usage-evidence tranche; the post-Claude-Code matrix retained 451 `No` cells
 - cards 084-085 complete the 48-cell generation-control audit and selected
   contract; cards 086-087 complete implementation and closeout
-- cards 088-091 own the 74-cell input/callback audit, contract gate,
-  implementation tranche, and closeout
+- cards 088-089 complete the 74-cell input/callback audit and selected
+  contract/corpus gate; cards 090-091 own the six-cell implementation and
+  closeout
 - cards 024-026 own remaining harness facades
 - cards 027-030 own hosted direct and provider-state facades
 - cards 031-033 own realtime, SDK, and llama.cpp facades

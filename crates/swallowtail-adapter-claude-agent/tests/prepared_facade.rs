@@ -22,10 +22,10 @@ use swallowtail_core::{
     SessionAccessPolicy, SupportAuthority,
 };
 use swallowtail_runtime::{
-    CleanupOutcome, Deadline, DiscoveryCancellation, EnvironmentRef, ExecutableRef,
-    InstalledExecutableTarget, MonotonicInstant, OperationContent, PreparedAccessEvidence,
-    ProviderRetentionPolicy, RequestId, ScopeId, SessionOptions, TerminalStatus,
-    WorkingResourceRef,
+    CallbackPayload, CallbackResponse, CallbackResult, CleanupOutcome, Deadline,
+    DiscoveryCancellation, EnvironmentRef, ExecutableRef, InstalledExecutableTarget,
+    MonotonicInstant, OperationContent, PreparedAccessEvidence, ProviderRetentionPolicy, RequestId,
+    ScopeId, SessionOptions, TerminalStatus, WorkingResourceRef,
 };
 use swallowtail_testkit::assert_prepared_operation_evidence_matches_plan;
 
@@ -263,6 +263,7 @@ fn prepared_structured_run_binds_one_prompt_and_durable_retention_on_both_hosts(
         let mut run = block_on(profile.start_run(operation_host.services(host_id)))
             .expect("structured run starts");
         assert!(run.provider_run_ref().is_none());
+        assert!(run.take_callbacks().is_none());
         let mut events = run.take_events().expect("events");
         let terminal = run.take_terminal_outcome().expect("terminal");
         let outcome = block_on(async {
@@ -305,6 +306,136 @@ fn prepared_structured_run_binds_one_prompt_and_durable_retention_on_both_hosts(
         assert_eq!(operation_host.credential_releases(), 1);
         assert_eq!(operation_host.resource_releases(), 1);
     }
+}
+
+#[test]
+fn prepared_structured_run_opt_in_exposes_one_shot_permission_exchange() {
+    let host_id = ExecutionHostId::new("fixture.run.consumer-mediated").expect("valid host");
+    let preparation_host = FixtureHost::new(Scenario::Version, "0.61.0");
+    let prepared = block_on(prepare_claude_agent(
+        preparation_input(host_id.clone()),
+        probe(),
+        preparation_host.services(host_id.clone()),
+    ))
+    .expect("Claude Agent prepares");
+    let profile = prepared
+        .prepare_run(
+            ClaudeAgentRunProfileInput::new(
+                RequestId::new("claude-agent-consumer-mediated").expect("valid request"),
+                ClaudeAgentModelSelection::new(
+                    ModelRouteId::new("claude-agent.prepared.route").expect("valid route"),
+                    ModelRouteRevision::new("1").expect("valid route revision"),
+                    ModelId::new("claude-sonnet-4-6").expect("valid model"),
+                ),
+                OperationContent::new("request one provider permission").expect("valid prompt"),
+                WorkingResourceRef::new("claude-agent.prepared.workspace").expect("valid resource"),
+                Some(Deadline::at(MonotonicInstant::from_ticks(u64::MAX))),
+            )
+            .with_consumer_mediated_permissions(),
+        )
+        .expect("consumer-mediated run prepares");
+    assert_eq!(
+        profile
+            .plan()
+            .requirements()
+            .extension_namespaces()
+            .map(swallowtail_core::ExtensionNamespace::as_str)
+            .collect::<Vec<_>>(),
+        vec!["acp/session/request-permission"]
+    );
+
+    let operation_host = FixtureHost::new(Scenario::Permission, "0.61.0");
+    let mut run = block_on(profile.start_run(operation_host.services(host_id)))
+        .expect("structured run starts");
+    let mut callbacks = run.take_callbacks().expect("permission callbacks exist");
+    let mut requests = callbacks
+        .take_requests()
+        .expect("callback request stream exists");
+    let callback = block_on(requests.next())
+        .expect("permission callback arrives")
+        .expect("permission callback is valid");
+    let callback_id = callback.callback_id().clone();
+    let turn_id = callback.turn_id().expect("callback retains turn").clone();
+    assert_eq!(
+        callback.deadline(),
+        Some(Deadline::at(MonotonicInstant::from_ticks(u64::MAX)))
+    );
+    let swallowtail_runtime::CallbackRequestKind::Extension(extension) = callback.kind() else {
+        panic!("permission is a provider extension");
+    };
+    assert_eq!(
+        extension.namespace().as_str(),
+        "acp/session/request-permission"
+    );
+    let payload: serde_json::Value =
+        serde_json::from_slice(extension.payload()).expect("permission payload is JSON");
+    assert_eq!(payload["toolCall"]["toolCallId"], "shell-1");
+    assert_eq!(payload["options"].as_array().expect("options").len(), 2);
+
+    let responder = callbacks.responder();
+    assert!(
+        block_on(
+            responder.respond(CallbackResponse::new(
+                callback_id.clone(),
+                swallowtail_runtime::RuntimeTurnId::new("wrong-turn").expect("valid turn"),
+                CallbackResult::Success(
+                    CallbackPayload::new(br#"{"optionId":"allow-once"}"#, 256)
+                        .expect("selection is bounded"),
+                ),
+            ))
+        )
+        .is_err()
+    );
+    assert!(
+        block_on(
+            responder.respond(CallbackResponse::new(
+                callback_id.clone(),
+                turn_id.clone(),
+                CallbackResult::Success(
+                    CallbackPayload::new(br#"{"optionId":"allow-always"}"#, 256)
+                        .expect("selection is bounded"),
+                ),
+            ))
+        )
+        .is_err()
+    );
+    let selection = CallbackResponse::new(
+        callback_id.clone(),
+        turn_id,
+        CallbackResult::Success(
+            CallbackPayload::new(br#"{"optionId":"allow-once"}"#, 256)
+                .expect("selection is bounded"),
+        ),
+    );
+    block_on(responder.respond(selection.clone())).expect("permission selection is transported");
+    assert!(block_on(responder.respond(selection)).is_err());
+
+    let mut events = run.take_events().expect("events");
+    let terminal = run.take_terminal_outcome().expect("terminal");
+    let (observed, outcome) = block_on(async {
+        let mut observed = Vec::new();
+        while let Some(event) = events.next().await {
+            observed.push(event.expect("event succeeds"));
+        }
+        (observed, terminal.await)
+    });
+    assert!(observed.iter().any(|event| {
+        matches!(
+            event.kind(),
+            swallowtail_runtime::RuntimeEventKind::CallbackRequested(id)
+                if id == &callback_id
+        )
+    }));
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
+    let writes = operation_host.writes();
+    assert!(writes.iter().any(|message| {
+        message.get("id").and_then(serde_json::Value::as_u64) == Some(900)
+            && message["result"]["outcome"]["optionId"] == "allow-once"
+    }));
+    assert!(!writes.iter().any(|message| {
+        message.get("method").and_then(serde_json::Value::as_str) == Some("session/cancel")
+    }));
 }
 
 #[test]

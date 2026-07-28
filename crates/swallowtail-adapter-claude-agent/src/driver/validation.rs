@@ -12,6 +12,25 @@ pub(super) struct ClaudeAgentLifecycleCapabilities {
     pub(super) delete: bool,
 }
 
+pub(super) fn permission_handling(
+    plan: &PreflightPlan,
+) -> Result<crate::ClaudeAgentPermissionHandling, RuntimeFailure> {
+    let namespaces = plan
+        .requirements()
+        .extension_namespaces()
+        .collect::<Vec<_>>();
+    match namespaces.as_slice() {
+        [] => Ok(crate::ClaudeAgentPermissionHandling::RejectAndStop),
+        [namespace] if *namespace == &crate::claude_agent_permission_namespace() => {
+            Ok(crate::ClaudeAgentPermissionHandling::ConsumerMediated)
+        }
+        _ => Err(failure(
+            "swallowtail.claude_agent.acp.permission_profile_mismatch",
+            "Claude Agent permission handling does not match its immutable preflight plan",
+        )),
+    }
+}
+
 pub(super) fn validate_plan(
     plan: &PreflightPlan,
     credential: Option<&CredentialRef>,
@@ -140,6 +159,7 @@ pub(super) fn validate_run(
             "Claude Agent structured run does not match its preflight plan",
         ));
     }
+    let _ = permission_handling(plan)?;
     let mut required_services = vec![
         HostServiceKind::Task,
         HostServiceKind::Time,

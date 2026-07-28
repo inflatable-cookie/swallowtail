@@ -109,8 +109,9 @@ pub(super) fn requirements(
 pub(super) fn run_requirements(
     prepared: &ClaudeAgentPreparedIntegration,
     capabilities: impl IntoIterator<Item = CapabilityRequirement>,
+    permission_handling: super::ClaudeAgentPermissionHandling,
 ) -> OperationRequirements {
-    OperationRequirements::new(
+    let requirements = OperationRequirements::new(
         ExecutionLayer::HarnessInteraction,
         OperationShape::StructuredRun,
         swallowtail_core::DriverRole::StructuredRun,
@@ -123,7 +124,13 @@ pub(super) fn run_requirements(
     .with_interface_versions([prepared.observation().version().clone()])
     .with_harness_isolation(HarnessIsolation::AmbientHost)
     .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient)
-    .require_model_route()
+    .require_model_route();
+    match permission_handling {
+        super::ClaudeAgentPermissionHandling::RejectAndStop => requirements,
+        super::ClaudeAgentPermissionHandling::ConsumerMediated => {
+            requirements.with_extension_namespaces([crate::claude_agent_permission_namespace()])
+        }
+    }
 }
 
 pub(super) fn access_requirement(prepared: &ClaudeAgentPreparedIntegration) -> AccessRequirement {

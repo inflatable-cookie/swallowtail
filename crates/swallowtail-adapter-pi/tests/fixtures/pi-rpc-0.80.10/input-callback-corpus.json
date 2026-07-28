@@ -1,0 +1,45 @@
+{
+  "fixture_schema": 1,
+  "interface": "pi.package",
+  "version": "0.80.10",
+  "source_revision": "v0.80.10",
+  "attachment": {
+    "maximum_count": 1,
+    "maximum_bytes": 1048576,
+    "accepted_media": ["image/png"],
+    "representation": "base64_inline",
+    "command": {
+      "id": "req-image-1",
+      "type": "prompt",
+      "message": "Describe the approved image.",
+      "images": [
+        {
+          "type": "image",
+          "data": "iVBORw0KGgo=",
+          "mimeType": "image/png"
+        }
+      ]
+    }
+  },
+  "rejections": [
+    "missing_attachment_lease",
+    "attachment_count_exceeded",
+    "attachment_bytes_exceeded",
+    "media_type_unsupported",
+    "declared_length_mismatch",
+    "request_plan_mismatch"
+  ],
+  "cancellation": {
+    "command": {"type": "abort"},
+    "late_acceptance_is_success": false
+  },
+  "cleanup": [
+    "abandon_input",
+    "abort_active_rpc",
+    "close_stdio",
+    "join_process",
+    "release_attachment"
+  ],
+  "consumer_tools": "unsupported",
+  "external_search": "unsupported"
+}

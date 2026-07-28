@@ -1,5 +1,5 @@
 use super::session::merge_cleanup;
-use super::validation::{validate_plan, validate_run};
+use super::validation::{permission_handling, validate_plan, validate_run};
 use super::{ClaudeAgentAcpDriver, failure, malformed};
 use crate::connection::AcpConnection;
 use crate::turn::ActiveTurn;
@@ -28,6 +28,7 @@ impl StructuredRunDriver for ClaudeAgentAcpDriver {
         Box::pin(async move {
             let selected = validate_plan(&plan, self.credential.as_ref())?;
             validate_run(&plan, &request, &services)?;
+            let permission_handling = permission_handling(&plan)?;
             let reasoning = request.policy().reasoning_mode().cloned();
             if reasoning.is_some() && !selected.behavior().supports_config_options() {
                 return Err(super::unsupported(
@@ -38,14 +39,26 @@ impl StructuredRunDriver for ClaudeAgentAcpDriver {
                 .working_resource()
                 .expect("validated working resource")
                 .clone();
+            let access_policy = match permission_handling {
+                crate::ClaudeAgentPermissionHandling::RejectAndStop => {
+                    swallowtail_core::SessionAccessPolicy::ambient_harness(
+                        ResourceAccess::ReadWrite,
+                    )
+                }
+                crate::ClaudeAgentPermissionHandling::ConsumerMediated => {
+                    swallowtail_core::SessionAccessPolicy::
+                        ambient_harness_with_consumer_mediated_requests(
+                            ResourceAccess::ReadWrite,
+                            [crate::claude_agent_permission_namespace()],
+                        )
+                }
+            };
             let mut open_request = OpenSessionRequest::new(
                 request.request_id().clone(),
                 working_resource,
                 None,
                 SessionPlanAgreement::explicit(
-                    swallowtail_core::SessionAccessPolicy::ambient_harness(
-                        ResourceAccess::ReadWrite,
-                    ),
+                    access_policy,
                     Some(SessionProviderStatePolicy::Prohibited),
                     Some(HarnessConfigurationPosture::Ambient),
                 ),

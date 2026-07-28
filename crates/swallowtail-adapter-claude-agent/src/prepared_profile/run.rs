@@ -67,8 +67,15 @@ impl ClaudeAgentPreparedIntegration {
         &self,
         input: ClaudeAgentRunProfileInput,
     ) -> Result<ClaudeAgentPreparedRun, PreparationFailure> {
-        let (request_id, model, content, working_resource, deadline, reasoning) =
-            input.into_parts();
+        let (
+            request_id,
+            model,
+            content,
+            working_resource,
+            deadline,
+            reasoning,
+            permission_handling,
+        ) = input.into_parts();
         if reasoning
             .as_ref()
             .is_some_and(|mode| !REASONING_MODES.contains(&mode.as_str()))
@@ -86,6 +93,7 @@ impl ClaudeAgentPreparedIntegration {
         let requirements = run_requirements(
             self,
             operation_capabilities(&capabilities, reasoning.as_ref()),
+            permission_handling,
         );
         let (route_id, route_revision, model_id) = model.into_parts();
         let route = ModelRoute::new(

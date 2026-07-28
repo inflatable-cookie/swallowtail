@@ -195,6 +195,13 @@ for route in [
     if structured_by_route.get(route) != "Yes":
         raise SystemExit(f"Kimi structured solution is not realized: {route}")
 
+approval_by_route = {
+    row["route_id"]: row["approval_question_exchange"]
+    for row in rows
+}
+if approval_by_route.get("claude-agent.acp") != "Yes":
+    raise SystemExit("Claude Agent consumer-mediated permission exchange is not realized")
+
 serving_not_applicable = {
     "interactive_session",
     "realtime_media_session",
@@ -332,6 +339,82 @@ generation_control_classifications = {
     ("reasoning_selection", "xai.responses-websocket"): "ready_operator_hold",
     ("structured_output", "xai.responses-websocket"): "ready_operator_hold",
 }
+input_callback_classifications = {
+    ("attachments", "qwen.headless"): "upstream_unsupported",
+    ("consumer_tool_exchange", "qwen.headless"): "upstream_unsupported",
+    ("approval_question_exchange", "qwen.headless"): "upstream_unsupported",
+    ("external_search", "qwen.headless"): "upstream_unsupported",
+    ("attachments", "alibaba.conversations"): "contract_or_corpus_required",
+    ("consumer_tool_exchange", "alibaba.conversations"): "contract_or_corpus_required",
+    ("approval_question_exchange", "alibaba.conversations"): "upstream_unsupported",
+    ("external_search", "alibaba.conversations"): "contract_or_corpus_required",
+    ("attachments", "bedrock.catalogue; bedrock.runtime"): "contract_or_corpus_required",
+    ("consumer_tool_exchange", "bedrock.catalogue; bedrock.runtime"): "contract_or_corpus_required",
+    ("approval_question_exchange", "bedrock.catalogue; bedrock.runtime"): "upstream_unsupported",
+    ("external_search", "bedrock.catalogue; bedrock.runtime"): "upstream_unsupported",
+    ("attachments", "claude-agent.acp"): "contract_or_corpus_required",
+    ("consumer_tool_exchange", "claude-agent.acp"): "contract_or_corpus_required",
+    ("external_search", "claude-agent.acp"): "contract_or_corpus_required",
+    ("attachments", "claude-code.headless"): "contract_or_corpus_required",
+    ("consumer_tool_exchange", "claude-code.headless"): "contract_or_corpus_required",
+    ("approval_question_exchange", "claude-code.headless"): "contract_or_corpus_required",
+    ("external_search", "claude-code.headless"): "contract_or_corpus_required",
+    ("attachments", "anthropic.managed-agent"): "contract_or_corpus_required",
+    ("approval_question_exchange", "anthropic.managed-agent"): "contract_or_corpus_required",
+    ("external_search", "anthropic.managed-agent"): "contract_or_corpus_required",
+    ("attachments", "anthropic.messages"): "contract_or_corpus_required",
+    ("consumer_tool_exchange", "anthropic.messages"): "contract_or_corpus_required",
+    ("approval_question_exchange", "anthropic.messages"): "upstream_unsupported",
+    ("external_search", "anthropic.messages"): "contract_or_corpus_required",
+    ("attachments", "pi.rpc"): "ready_existing_contract",
+    ("consumer_tool_exchange", "pi.rpc"): "upstream_unsupported",
+    ("external_search", "pi.rpc"): "upstream_unsupported",
+    ("attachments", "deepseek.continuation"): "upstream_unsupported",
+    ("approval_question_exchange", "deepseek.continuation"): "upstream_unsupported",
+    ("external_search", "deepseek.continuation"): "upstream_unsupported",
+    ("attachments", "gemini-cli.acp + gemini-cli.headless"): "composite_partial_only",
+    ("consumer_tool_exchange", "gemini-cli.acp + gemini-cli.headless"): "composite_partial_only",
+    ("external_search", "gemini-cli.acp + gemini-cli.headless"): "contract_or_corpus_required",
+    ("attachments", "gemini.live"): "operation_shape_not_applicable",
+    ("consumer_tool_exchange", "gemini.live"): "contract_or_corpus_required",
+    ("approval_question_exchange", "gemini.live"): "upstream_unsupported",
+    ("external_search", "gemini.live"): "contract_or_corpus_required",
+    ("attachments", "llama-cpp.attached"): "contract_or_corpus_required",
+    ("consumer_tool_exchange", "llama-cpp.attached"): "contract_or_corpus_required",
+    ("approval_question_exchange", "llama-cpp.attached"): "upstream_unsupported",
+    ("external_search", "llama-cpp.attached"): "upstream_unsupported",
+    ("attachments", "kimi-code.acp + kimi-code.headless"): "composite_partial_only",
+    ("consumer_tool_exchange", "kimi-code.acp + kimi-code.headless"): "composite_partial_only",
+    ("approval_question_exchange", "kimi-code.acp + kimi-code.headless"): "composite_partial_only",
+    ("external_search", "kimi-code.acp + kimi-code.headless"): "contract_or_corpus_required",
+    ("attachments", "kimi-code.local-server"): "ready_existing_contract",
+    ("consumer_tool_exchange", "kimi-code.local-server"): "upstream_unsupported",
+    ("external_search", "kimi-code.local-server"): "contract_or_corpus_required",
+    ("attachments", "kimi-platform.chat"): "contract_or_corpus_required",
+    ("consumer_tool_exchange", "kimi-platform.chat"): "contract_or_corpus_required",
+    ("approval_question_exchange", "kimi-platform.chat"): "upstream_unsupported",
+    ("external_search", "kimi-platform.chat"): "contract_or_corpus_required",
+    ("attachments", "ollama.attached"): "contract_or_corpus_required",
+    ("consumer_tool_exchange", "ollama.attached"): "contract_or_corpus_required",
+    ("approval_question_exchange", "ollama.attached"): "upstream_unsupported",
+    ("external_search", "ollama.attached"): "upstream_unsupported",
+    ("attachments", "openai.realtime"): "contract_or_corpus_required",
+    ("consumer_tool_exchange", "openai.realtime"): "contract_or_corpus_required",
+    ("approval_question_exchange", "openai.realtime"): "upstream_unsupported",
+    ("external_search", "openai.realtime"): "upstream_unsupported",
+    ("attachments", "openai.background"): "contract_or_corpus_required",
+    ("consumer_tool_exchange", "openai.background"): "upstream_unsupported",
+    ("approval_question_exchange", "openai.background"): "upstream_unsupported",
+    ("external_search", "openai.background"): "contract_or_corpus_required",
+    ("attachments", "opencode.http"): "ready_existing_contract",
+    ("consumer_tool_exchange", "opencode.http"): "contract_or_corpus_required",
+    ("approval_question_exchange", "opencode.http"): "ready_existing_contract",
+    ("external_search", "opencode.http"): "contract_or_corpus_required",
+    ("attachments", "xai.responses-websocket"): "ready_operator_hold",
+    ("consumer_tool_exchange", "xai.responses-websocket"): "ready_operator_hold",
+    ("approval_question_exchange", "xai.responses-websocket"): "upstream_unsupported",
+    ("external_search", "xai.responses-websocket"): "ready_operator_hold",
+}
 generation_control_no_cells = {
     (feature, row["route_id"])
     for row in rows
@@ -343,6 +426,22 @@ if len(generation_control_no_cells) != 41:
 if generation_control_no_cells != set(generation_control_classifications):
     raise SystemExit("generation-control No classifications changed")
 
+input_callback_no_cells = {
+    (feature, row["route_id"])
+    for row in rows
+    for feature in [
+        "attachments",
+        "consumer_tool_exchange",
+        "approval_question_exchange",
+        "external_search",
+    ]
+    if row[feature] == "No"
+}
+if len(input_callback_no_cells) != 74:
+    raise SystemExit("input/callback inventory must contain exactly 74 No cells")
+if input_callback_no_cells != set(input_callback_classifications):
+    raise SystemExit("input/callback No classifications changed")
+
 classification_counts = Counter()
 for row in rows:
     for feature in audited_columns:
@@ -351,20 +450,20 @@ for row in rows:
         cell = (feature, row["route_id"])
         classification = no_classification_overrides.get(
             cell,
-            generation_control_classifications.get(
-                cell,
-                "missing_shared_contract_or_currentness_evidence",
-            ),
+            generation_control_classifications.get(cell)
+            or input_callback_classifications.get(cell)
+            or "missing_shared_contract_or_currentness_evidence",
         )
         classification_counts[classification] += 1
 if classification_counts != Counter(
     {
-        "missing_shared_contract_or_currentness_evidence": 399,
-        "contract_or_corpus_required": 14,
-        "upstream_unsupported": 22,
-        "operation_shape_not_applicable": 5,
-        "ready_existing_contract": 1,
-        "ready_operator_hold": 3,
+        "missing_shared_contract_or_currentness_evidence": 325,
+        "contract_or_corpus_required": 50,
+        "upstream_unsupported": 47,
+        "operation_shape_not_applicable": 6,
+        "ready_existing_contract": 5,
+        "ready_operator_hold": 6,
+        "composite_partial_only": 5,
     }
 ):
     raise SystemExit(

@@ -37,9 +37,10 @@ Structured-run preparation requires:
 - working-resource reference
 - optional deadline
 - optional reasoning effort
+- optional consumer-mediated one-shot permission exchange
 
 Swallowtail does not choose a model, account, credential, workspace, endpoint,
-or fallback route.
+permission result, or fallback route.
 
 Local subscription access means the approved ACP process inherits the selected
 environment and uses authentication already held by the local Claude
@@ -61,6 +62,45 @@ first prompt. Supported provider values are `default`, `low`, `medium`,
 
 These are caller selections, not provider discovery. The route exposes no
 standalone model catalogue.
+
+### Run Drain Contract
+
+After `start_run`, take the event stream and terminal outcome and poll them
+concurrently. Do not await the terminal outcome while leaving the event stream
+undrained. The stream is deliberately bounded and cannot discard semantic
+output, reasoning, or tool-progress events; an undrained long agentic run
+therefore fails with `swallowtail.event_buffer_rejected`. A consumer that does
+not surface events must still drain them and may ignore them only after they
+cross the runtime boundary.
+
+### ACP Permission Exchange
+
+The default prepared run rejects an unexpected permission once, cancels the
+turn, and reports `ProviderRequestObserved`. It exposes no callback exchange.
+
+Call `with_consumer_mediated_permissions` on
+`ClaudeAgentRunProfileInput` to opt into the exact
+`acp/session/request-permission` provider extension. The resulting
+`RunHandle::take_callbacks` returns one request stream and response port.
+Applications must drain callbacks concurrently with events and the terminal
+outcome.
+
+Each permission callback payload is bounded JSON containing `toolCall` and
+`options`. Only provider-offered `allow_once` and `reject_once` options are
+included. Respond with a success payload naming one offered option:
+
+```json
+{"optionId":"allow-once"}
+```
+
+A callback failure selects the offered one-shot rejection. Wrong-turn,
+unknown, duplicate, persistent, and unoffered selections fail without being
+sent. Response success confirms only ACP transport acceptance; the provider
+tool and terminal turn remain independently observable.
+
+The opt-in grants response transport, not approval authority. Figmatic or
+another consumer must apply its product policy or ask its operator before
+choosing an allow option. Swallowtail never chooses one.
 
 ## Claude Code Headless
 
@@ -157,6 +197,10 @@ read-write access, resolves a matching `ReadWrite` filesystem lease, exposes
 `Read`, `Glob`, `Grep`, `Edit`, and `Write`, and selects the advertised
 `acceptEdits` mode before its one prompt. It does not enable shell or broader
 provider tools.
+
+Consumer-mediated structured runs additionally bind the exact permission
+extension in their immutable plan. Runs without that namespace keep the
+default reject-and-stop behavior.
 
 Local subscription plans omit the credential host service. API-key plans
 require it. Both retain the exact `api.anthropic.com` audience and access

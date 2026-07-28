@@ -1,0 +1,66 @@
+{
+  "fixture_schema": 1,
+  "facade": "anthropic-2023-06-01",
+  "evidence_date": "2026-07-28",
+  "route": "POST /v1/messages",
+  "attachment": {
+    "maximum_count": 1,
+    "maximum_bytes": 1048576,
+    "accepted_media": ["image/png"],
+    "representation": "base64_source",
+    "model_capability_required": true
+  },
+  "client_tools": {
+    "operation_shape": "consumer_owned_direct_continuation",
+    "maximum_declared_tools": 8,
+    "maximum_returned_calls": 1,
+    "maximum_attempts": 3,
+    "maximum_argument_bytes": 65536,
+    "maximum_result_bytes": 65536,
+    "provider_private_continuation": "bounded_ephemeral",
+    "consumer_executes": true,
+    "implicit_next_attempt": false
+  },
+  "external_search": {
+    "tool_type": "web_search_20250305",
+    "tool_name": "web_search",
+    "maximum_uses": 2,
+    "execution_source": "provider",
+    "explicit_policy_required": true,
+    "provider_network_required": true,
+    "organization_enablement_required": true,
+    "model_capability_required": true,
+    "provider_billing_applies": true
+  },
+  "mixed_tool_rule": {
+    "client_tool_result_port_accepts_provider_search_result": false,
+    "execution_source_preserved_per_call": true
+  },
+  "rejections": [
+    "media_type_unsupported",
+    "attachment_bytes_exceeded",
+    "attachment_model_unsupported",
+    "undeclared_client_tool",
+    "tool_call_mismatch",
+    "duplicate_tool_result",
+    "late_tool_result",
+    "search_policy_disabled",
+    "provider_network_denied",
+    "search_model_unsupported",
+    "search_not_enabled_for_organization",
+    "search_tool_revision_drift"
+  ],
+  "cancellation": {
+    "active_request": "close_local_connection",
+    "remote_stop_confirmed": false,
+    "pending_tool_results": "abandoned"
+  },
+  "cleanup": [
+    "abandon_pending_tool_results",
+    "close_network_work",
+    "zeroize_private_continuation",
+    "join_tasks_and_timers",
+    "release_attachment",
+    "release_credential"
+  ]
+}

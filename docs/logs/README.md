@@ -5,6 +5,9 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-07-28 Input/Callback Contract And Corpora](2026-07-28-input-callback-contract-and-corpora.md)
+- [2026-07-28 Input And Callback `No` Currentness Audit](2026-07-28-input-and-callback-no-currentness-audit.md)
+- [2026-07-28 Claude Agent Consumer-Mediated Permission Selection](2026-07-28-claude-agent-consumer-mediated-permission-selection.md)
 - [2026-07-28 Generation-Control Tranche And Matrix Continuation](2026-07-28-generation-control-tranche-and-matrix-continuation.md)
 - [2026-07-28 Solution Feature Matrix Route Notes And Kimi Boundary](2026-07-28-solution-feature-matrix-route-notes-and-kimi-boundary.md)
 - [2026-07-28 Generation-Control Contract And Corpora](2026-07-28-generation-control-contract-and-corpora.md)

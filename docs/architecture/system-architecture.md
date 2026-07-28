@@ -448,6 +448,13 @@ authority and accepts no response: the adapter rejects the provider request,
 interrupts the turn, and terminates with `ProviderRequestObserved`. Undeclared,
 unknown, malformed, or mismatched callbacks remain explicit runtime failures.
 
+Claude Agent ACP structured runs retain the same reject-and-stop posture by
+default. An explicit prepared-run opt-in binds
+`acp/session/request-permission` in the immutable plan and installs the common
+callback exchange. The adapter exposes only bounded one-shot options and
+transports the consumer's exactly-once selection; it never selects approval or
+admits persistent permission changes.
+
 Interactive session requests now carry optional redacted developer
 instructions, an exact reasoning selection, and bounded tool declarations.
 Turn handles may expose a one-shot callback exchange with a bounded request

@@ -20,3 +20,9 @@ the fixture placeholders are not defaults.
 `usage-events.jsonl` freezes two disjoint assistant-message usage records and
 terminal settlement. Cost is retained only to prove that token usage and cost
 are separate fields.
+
+`input-callback-corpus.json` freezes exact `prompt.images` transport for one
+bounded `image/png` attachment. Its bytes are synthetic. It also freezes
+unsupported media, count, size, request-plan, cancellation, and cleanup
+outcomes. Pi extensions and skills remain ambient process configuration, not
+portable consumer tools or provider-owned search.

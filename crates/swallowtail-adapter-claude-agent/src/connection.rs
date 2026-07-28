@@ -231,6 +231,21 @@ impl AcpConnection {
         self.write(bytes).await
     }
 
+    pub(crate) async fn respond_permission(
+        &self,
+        id: Value,
+        option_id: &str,
+    ) -> Result<(), RuntimeFailure> {
+        self.write(
+            encode_result(
+                id,
+                json!({"outcome": {"outcome": "selected", "optionId": option_id}}),
+            )
+            .map_err(|_| protocol_failure())?,
+        )
+        .await
+    }
+
     pub(crate) fn set_session_id(&self, session_id: String) -> Result<(), RuntimeFailure> {
         let mut current = self.session_id.lock().expect("ACP session lock poisoned");
         if current.is_some() {

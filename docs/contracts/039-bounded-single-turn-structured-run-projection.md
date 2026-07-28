@@ -146,6 +146,12 @@ Routes that cannot complete safely without an unavailable approval or question
 exchange fail or stop according to their exact driver contract. They do not
 auto-approve silently.
 
+Claude Agent ACP keeps reject-and-stop as its default structured profile. Its
+opt-in consumer-mediated profile binds the exact permission extension in the
+immutable run plan and exposes only one-shot provider options through this
+callback projection. It does not grant the adapter or host authority to choose
+an approval.
+
 ## Retention
 
 `OperationPolicy::provider_retention` must match the exact route:

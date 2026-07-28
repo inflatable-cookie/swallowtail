@@ -1,6 +1,6 @@
 # 088 Input And Callback No Inventory And Currentness
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-07-28
 Milestone: `../027-input-and-callback-feature-closure.md`
@@ -29,12 +29,34 @@ external-search `No` before selecting implementation routes.
 
 ## Acceptance Criteria
 
-- [ ] all 74 starting cells are accounted for exactly once
-- [ ] every false negative cites a realized prepared path
-- [ ] every unstable upstream claim cites current authoritative evidence
-- [ ] callback and authority strength are not silently flattened
-- [ ] one contract-ready or contract-gated tranche is recommended
-- [ ] machine checks preserve counts and classifications
+- [x] all 74 starting cells are accounted for exactly once
+- [x] every false negative cites a realized prepared path
+- [x] every unstable upstream claim cites current authoritative evidence
+- [x] callback and authority strength are not silently flattened
+- [x] one contract-ready or contract-gated tranche is recommended
+- [x] machine checks preserve counts and classifications
+
+## Result
+
+Research 050 records:
+
+- 4 routes ready under existing portable contracts
+- 36 cells needing shared contract detail or exact route corpus
+- 5 composite-solution cells that can become only `Partial`
+- 3 xAI cells retained under the operator hold
+- 25 exact selected-route absences
+- 1 realtime-media input that is not an attachment
+- no realized matrix error
+
+Card 089 selects six cells:
+
+- Pi RPC attachment input
+- OpenCode HTTP attachment and approval-or-question exchange
+- Anthropic Messages attachment, consumer-tool exchange, and external search
+
+Anthropic tool exchange requires one adjacent interactive-session role under
+Contract 030. The selected tranche covers all four audited feature columns
+across three transports.
 
 ## Stop Conditions
 
@@ -45,5 +67,4 @@ external-search `No` before selecting implementation routes.
 
 ## Auto-Continuation
 
-Continue to card 089 only when the selected tranche and missing contracts are
-exact.
+Satisfied. Continue to card 089.

@@ -4,6 +4,13 @@ use swallowtail_runtime::{
     WorkingResourceRef,
 };
 
+#[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
+pub enum ClaudeAgentPermissionHandling {
+    #[default]
+    RejectAndStop,
+    ConsumerMediated,
+}
+
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ClaudeAgentModelSelection {
     route_id: ModelRouteId,
@@ -46,6 +53,7 @@ pub struct ClaudeAgentRunProfileInput {
     working_resource: WorkingResourceRef,
     deadline: Option<Deadline>,
     reasoning_mode: Option<ReasoningMode>,
+    permission_handling: ClaudeAgentPermissionHandling,
 }
 
 impl ClaudeAgentRunProfileInput {
@@ -64,12 +72,19 @@ impl ClaudeAgentRunProfileInput {
             working_resource,
             deadline,
             reasoning_mode: None,
+            permission_handling: ClaudeAgentPermissionHandling::RejectAndStop,
         }
     }
 
     #[must_use]
     pub fn with_reasoning_mode(mut self, reasoning_mode: ReasoningMode) -> Self {
         self.reasoning_mode = Some(reasoning_mode);
+        self
+    }
+
+    #[must_use]
+    pub const fn with_consumer_mediated_permissions(mut self) -> Self {
+        self.permission_handling = ClaudeAgentPermissionHandling::ConsumerMediated;
         self
     }
 
@@ -82,6 +97,7 @@ impl ClaudeAgentRunProfileInput {
         WorkingResourceRef,
         Option<Deadline>,
         Option<ReasoningMode>,
+        ClaudeAgentPermissionHandling,
     ) {
         (
             self.request_id,
@@ -90,6 +106,7 @@ impl ClaudeAgentRunProfileInput {
             self.working_resource,
             self.deadline,
             self.reasoning_mode,
+            self.permission_handling,
         )
     }
 }

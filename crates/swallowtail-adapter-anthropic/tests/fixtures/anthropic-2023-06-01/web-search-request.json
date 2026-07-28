@@ -1,0 +1,19 @@
+{
+  "model": "claude-fixture-search-capable",
+  "max_tokens": 64,
+  "messages": [
+    {
+      "role": "user",
+      "content": "Search for the bounded fixture fact."
+    }
+  ],
+  "tools": [
+    {
+      "type": "web_search_20250305",
+      "name": "web_search",
+      "max_uses": 2,
+      "allowed_domains": ["example.com"]
+    }
+  ],
+  "stream": true
+}

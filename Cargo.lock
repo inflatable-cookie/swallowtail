@@ -2824,6 +2824,7 @@ version = "0.1.0"
 dependencies = [
  "async-tungstenite",
  "futures-channel",
+ "futures-core",
  "futures-executor",
  "futures-util",
  "semver",

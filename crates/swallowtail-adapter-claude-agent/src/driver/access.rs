@@ -179,7 +179,7 @@ impl ClaudeAgentAcpDriver {
             }
             let provider_ref = SessionRef::new(&provider_id).map_err(|_| malformed())?;
             pending.take_handle(
-                request.request_id().clone(),
+                request,
                 provider_ref,
                 provider_id,
                 plan.execution_host_id().clone(),
@@ -201,13 +201,14 @@ impl ClaudeAgentAcpDriver {
 impl PendingSession {
     fn take_handle(
         &mut self,
-        request_id: RequestId,
+        request: &OpenSessionRequest,
         provider_ref: SessionRef,
         provider_id: String,
         execution_host_id: swallowtail_core::ExecutionHostId,
         native_close: bool,
         services: &HostServices,
     ) -> Result<ClaudeAgentSessionHandle, RuntimeFailure> {
+        let request_id = request.request_id().clone();
         let runtime_id = RuntimeSessionId::new(format!("claude-agent-acp:{}", request_id.as_str()))
             .map_err(|_| malformed())?;
         let active = Arc::new(Mutex::new(None));
@@ -218,6 +219,7 @@ impl PendingSession {
             provider_id,
             execution_host_id,
             native_close,
+            provider_requests: request.access_policy().provider_requests().clone(),
             connection: Arc::clone(&self.connection),
             cancellation: SessionCancellation::new(Arc::clone(&self.connection)),
             pump_task: self.pump_task.take(),

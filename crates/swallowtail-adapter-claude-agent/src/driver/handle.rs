@@ -63,6 +63,7 @@ impl CancellationControl for TurnCancellation {
 pub(super) struct ClaudeAgentTurnHandle {
     pub(super) runtime_id: swallowtail_runtime::RuntimeTurnId,
     pub(super) events: Option<BoxEventStream>,
+    pub(super) callbacks: Option<swallowtail_runtime::CallbackExchange>,
     pub(super) terminal: Option<BoxFuture<'static, TerminalOutcome>>,
     pub(super) cancellation: TurnCancellation,
     pub(super) active: ActiveSlot,
@@ -79,6 +80,10 @@ impl TurnHandle for ClaudeAgentTurnHandle {
 
     fn take_events(&mut self) -> Option<BoxEventStream> {
         self.events.take()
+    }
+
+    fn take_callbacks(&mut self) -> Option<swallowtail_runtime::CallbackExchange> {
+        self.callbacks.take()
     }
 
     fn cancellation(&self) -> &dyn CancellationControl {

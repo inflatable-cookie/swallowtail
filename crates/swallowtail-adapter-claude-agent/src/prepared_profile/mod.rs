@@ -7,8 +7,8 @@ mod session;
 use swallowtail_runtime::{BoxFuture, InteractiveSessionHandle, RuntimeFailure};
 
 pub use input::{
-    ClaudeAgentModelSelection, ClaudeAgentRunProfileInput, ClaudeAgentSessionManagementInput,
-    ClaudeAgentSessionProfileInput,
+    ClaudeAgentModelSelection, ClaudeAgentPermissionHandling, ClaudeAgentRunProfileInput,
+    ClaudeAgentSessionManagementInput, ClaudeAgentSessionProfileInput,
 };
 pub use management::ClaudeAgentPreparedDelete;
 pub use plan::ClaudeAgentPreparedEvidence;

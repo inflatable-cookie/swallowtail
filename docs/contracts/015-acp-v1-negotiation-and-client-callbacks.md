@@ -161,11 +161,12 @@ policy files.
 
 ## Permission Requests
 
-`session/request_permission` is an ACP client request, not a declared consumer
-tool callback under Contract 012.
+`session/request_permission` is an ACP client request, not a consumer tool
+callback. It may cross Contract 012 only as the exact
+`acp/session/request-permission` provider extension.
 
-The read-only profile never selects an allow option. When a permission request
-arrives, the driver:
+The default read-only and structured profiles never select an allow option.
+When a permission request arrives, the driver:
 
 1. bounds and correlates it to the active session, turn, and tool call
 2. exposes only a safe provider-request observation
@@ -175,6 +176,24 @@ arrives, the driver:
 
 No permission option persists provider configuration. Missing reject or cancel
 semantics cannot be replaced with fabricated approval.
+
+Claude Agent structured preparation may instead opt into one consumer-mediated
+profile. The immutable run plan then declares exactly
+`acp/session/request-permission`; absence of that namespace retains the default
+reject-and-stop behavior. The opt-in driver:
+
+1. validates session, turn, tool-call, provider-request, option, count, and
+   payload bounds
+2. exposes only offered `allow_once` and `reject_once` options through one
+   correlated provider-extension callback
+3. accepts exactly one consumer response naming an offered option
+4. translates consumer failure to the offered one-shot rejection
+5. abandons pending responses and applies native cancellation on turn
+   cancellation, timeout, failure, or close
+
+Persistent approval options are neither exposed nor selectable. Swallowtail
+does not choose an allow response. The response port confirms ACP transport
+acceptance, not tool execution or turn completion.
 
 ## Filesystem And Terminal Callbacks
 

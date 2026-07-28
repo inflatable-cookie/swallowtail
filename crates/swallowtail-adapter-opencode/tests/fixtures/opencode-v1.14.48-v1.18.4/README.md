@@ -58,6 +58,13 @@ per-operation output maximum. Card 086 realizes exact catalogue-gated model
 variants and zero-retry schema dispatch across the qualified range and visible
 unverified-newer execution.
 
+`input-callback-corpus.json` freezes file parts plus permission and question
+requests across all 45 qualified releases. Four exact closed-surface revisions
+capture response-error and message-id schema changes. The portable subset
+accepts only `once` or `reject`; upstream `always` remains visible but cannot
+be selected. File input uses bounded host-materialized bytes encoded as a data
+URL and grants no client path or arbitrary URL authority.
+
 The small health and session envelopes are synthetic. They contain no
 credential, endpoint, account, path, provider payload, model response, or user
 content.

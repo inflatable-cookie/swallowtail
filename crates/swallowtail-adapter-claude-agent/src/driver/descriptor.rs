@@ -61,5 +61,6 @@ pub fn claude_agent_acp_descriptor() -> DriverDescriptor {
         ],
     )
     .with_discovery_actions([swallowtail_core::DiscoveryAction::Probe])
+    .with_extension_namespaces([crate::claude_agent_permission_namespace()])
     .with_interface_compatibility(crate::claude_agent_acp_claim())
 }

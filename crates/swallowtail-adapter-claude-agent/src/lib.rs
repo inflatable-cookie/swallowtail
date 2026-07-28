@@ -14,6 +14,7 @@ mod connection;
 mod discovery;
 mod driver;
 mod failure;
+mod permission;
 mod prepared;
 mod prepared_code;
 mod prepared_profile;
@@ -27,6 +28,7 @@ pub use claude_code_selection::{
     claude_code_headless_claim,
 };
 pub use driver::{ClaudeAgentAcpDriver, claude_agent_acp_descriptor};
+pub use permission::claude_agent_permission_namespace;
 pub use prepared::{
     ClaudeAgentPreparationInput, ClaudeAgentPreparationProbe, ClaudeAgentPreparedIntegration,
     prepare_claude_agent,
@@ -37,9 +39,10 @@ pub use prepared_code::{
     ClaudeCodeRunProfileInput, prepare_claude_code_headless,
 };
 pub use prepared_profile::{
-    ClaudeAgentModelSelection, ClaudeAgentPreparedDelete, ClaudeAgentPreparedEvidence,
-    ClaudeAgentPreparedRun, ClaudeAgentPreparedSession, ClaudeAgentPreparedSessionFuture,
-    ClaudeAgentRunProfileInput, ClaudeAgentSessionManagementInput, ClaudeAgentSessionProfileInput,
+    ClaudeAgentModelSelection, ClaudeAgentPermissionHandling, ClaudeAgentPreparedDelete,
+    ClaudeAgentPreparedEvidence, ClaudeAgentPreparedRun, ClaudeAgentPreparedSession,
+    ClaudeAgentPreparedSessionFuture, ClaudeAgentRunProfileInput,
+    ClaudeAgentSessionManagementInput, ClaudeAgentSessionProfileInput,
 };
 pub use selection::{
     CLAUDE_AGENT_ACP_AXIS, CLAUDE_AGENT_ACP_BASELINE_VERSION,

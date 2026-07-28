@@ -1,0 +1,26 @@
+{
+  "model": "claude-fixture-primary",
+  "max_tokens": 64,
+  "messages": [
+    {
+      "role": "user",
+      "content": "Look up the approved fixture customer."
+    }
+  ],
+  "tools": [
+    {
+      "name": "lookup_customer",
+      "description": "Return the bounded fixture customer record.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "customer_id": {"type": "string"}
+        },
+        "required": ["customer_id"],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "tool_choice": {"type": "auto"},
+  "stream": true
+}

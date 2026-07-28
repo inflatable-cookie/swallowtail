@@ -1,11 +1,12 @@
-use super::OpenCodePreparedSessionFuture;
 use super::input::{
-    OpenCodeCatalogueProfileInput, OpenCodeSessionManagementInput, OpenCodeSessionProfileInput,
+    OpenCodeCatalogueProfileInput, OpenCodeRunProfileInput, OpenCodeSessionManagementInput,
+    OpenCodeSessionProfileInput,
 };
 use super::plan::{
     OpenCodePreparedEvidence, build_plan, failure, instance_with_capabilities,
-    management_requirements, requirements,
+    management_requirements, requirements, run_requirements,
 };
+use super::{OpenCodePreparedRunFuture, OpenCodePreparedSessionFuture};
 use crate::{OpenCodeHttpDriver, OpenCodePreparedIntegration};
 use swallowtail_core::{
     Capability, CapabilityProfile, CapabilityRequirement, DriverRole, ModelCatalogEntry,
@@ -18,11 +19,12 @@ use swallowtail_runtime::{
     BoxFuture, CancellationControl, CleanupOutcome, DeleteProviderSessionRequest,
     DirectContinuationTurnRequest, HostServices, InteractiveSessionDriver,
     InteractiveSessionHandle, ModelCatalogDriver, ModelCatalogRequest, OpenSessionRequest,
-    PreparationFailure, PreparedAccessEvidence, PreparedProviderSessionManagementEvidence,
+    OperationPolicy, PreparationFailure, PreparedAccessEvidence,
+    PreparedProviderSessionManagementEvidence, ProviderRetentionPolicy,
     ProviderSessionManagementAgreement, ProviderSessionManagementBinding,
     ProviderSessionManagementDriver, ProviderSessionManagementOutcome,
-    ProviderSessionManagementPlan, RuntimeFailure, SessionResumeBinding, TurnHandle, TurnRequest,
-    WorkingResourceRef,
+    ProviderSessionManagementPlan, RuntimeFailure, SessionResumeBinding, StructuredRunDriver,
+    StructuredRunRequest, TurnHandle, TurnRequest, WorkingResourceRef,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -74,6 +76,53 @@ pub struct OpenCodePreparedSession {
     evidence: OpenCodePreparedEvidence,
     request: OpenSessionRequest,
     management_instance: swallowtail_core::ConfiguredInstance,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct OpenCodePreparedRun {
+    evidence: OpenCodePreparedEvidence,
+    request: StructuredRunRequest,
+}
+
+impl OpenCodePreparedRun {
+    #[must_use]
+    pub const fn evidence(&self) -> &OpenCodePreparedEvidence {
+        &self.evidence
+    }
+
+    #[must_use]
+    pub const fn plan(&self) -> &PreflightPlan {
+        self.evidence.plan()
+    }
+
+    #[must_use]
+    pub const fn request(&self) -> &StructuredRunRequest {
+        &self.request
+    }
+
+    #[must_use]
+    pub fn low_level_driver(&self) -> OpenCodeHttpDriver {
+        OpenCodeHttpDriver::new()
+    }
+
+    pub fn start_run(&self, services: HostServices) -> OpenCodePreparedRunFuture {
+        let driver = self.low_level_driver();
+        let plan = self.plan().clone();
+        let request = self.request.clone();
+        Box::pin(async move { driver.start_run(plan, request, services).await })
+    }
+
+    #[must_use]
+    pub fn into_parts(
+        self,
+    ) -> (
+        OpenCodePreparedEvidence,
+        PreflightPlan,
+        StructuredRunRequest,
+    ) {
+        let plan = self.evidence.plan().clone();
+        (self.evidence, plan, self.request)
+    }
 }
 
 impl OpenCodePreparedSession {
@@ -226,6 +275,46 @@ impl OpenCodePreparedIntegration {
             evidence: OpenCodePreparedEvidence::from_prepared(self, plan)?,
             request,
             management_instance: lifecycle_management_instance(self),
+        })
+    }
+
+    pub fn prepare_run(
+        &self,
+        input: OpenCodeRunProfileInput,
+    ) -> Result<OpenCodePreparedRun, PreparationFailure> {
+        let (request_id, model, content, working_resource, deadline) = input.into_parts();
+        let capabilities = crate::prepared::run_capabilities();
+        let instance = instance_with_capabilities(self, capabilities.clone());
+        let (route_id, route_revision, provider_id, model_id) = model.into_parts();
+        let route = ModelRoute::new(
+            route_id,
+            route_revision,
+            self.instance().id().clone(),
+            model_id,
+            capabilities.clone(),
+        )
+        .with_provider_id(provider_id);
+        let requirements = run_requirements(
+            self,
+            capabilities.iter().map(|(capability, constraints)| {
+                CapabilityRequirement::new(capability, constraints.iter().cloned())
+            }),
+        );
+        let plan = build_plan(self, &instance, Some(&route), &requirements)?;
+        let policy = OperationPolicy::offline()
+            .with_provider_retention(ProviderRetentionPolicy::TemporaryAllowed)
+            .with_harness_isolation(swallowtail_core::HarnessIsolation::AmbientHost)
+            .with_harness_configuration_posture(
+                swallowtail_core::HarnessConfigurationPosture::Ambient,
+            );
+        let mut request = StructuredRunRequest::new(request_id, content, policy)
+            .with_working_resource(working_resource);
+        if let Some(deadline) = deadline {
+            request = request.with_deadline(deadline);
+        }
+        Ok(OpenCodePreparedRun {
+            evidence: OpenCodePreparedEvidence::from_prepared(self, plan)?,
+            request,
         })
     }
 

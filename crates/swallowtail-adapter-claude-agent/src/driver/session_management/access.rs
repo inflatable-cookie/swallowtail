@@ -24,41 +24,39 @@ pub(super) async fn open_management_connection(
         request_id.as_str()
     ))
     .map_err(|_| malformed())?;
-    let credential_service = services
-        .credential()
-        .cloned()
-        .expect("validated credential service");
-    let mut credential = Some(
-        credential_service
-            .acquire(
-                scope.clone(),
-                driver.credential.clone(),
-                plan.endpoint_audience().clone(),
-            )
-            .await?,
-    );
-    if !matches!(credential.as_ref(), Some(CredentialLease::Secret(_)))
-        || credential.as_ref().is_some_and(|lease| {
-            lease.scope() != &scope
-                || lease.reference() != &driver.credential
+    let mut credential = match driver.credential.as_ref() {
+        Some(reference) => {
+            let credential_service = services
+                .credential()
+                .cloned()
+                .expect("validated credential service");
+            let lease = credential_service
+                .acquire(
+                    scope.clone(),
+                    reference.clone(),
+                    plan.endpoint_audience().clone(),
+                )
+                .await?;
+            if !matches!(&lease, CredentialLease::Secret(_))
+                || lease.scope() != &scope
+                || lease.reference() != reference
                 || lease.audience() != plan.endpoint_audience()
-        })
-    {
-        let _ = credential_service
-            .release(credential.take().expect("credential was acquired"))
-            .await;
-        return Err(failure(
-            "swallowtail.claude_agent.lifecycle.credential_lease_rejected",
-            "Claude Agent deletion requires a matching API-key secret lease",
-        ));
-    }
+            {
+                let _ = credential_service.release(lease).await;
+                return Err(failure(
+                    "swallowtail.claude_agent.lifecycle.credential_lease_rejected",
+                    "Claude Agent deletion requires a matching API-key secret lease",
+                ));
+            }
+            Some(lease)
+        }
+        None => None,
+    };
 
     let working_resource = match agreement.binding().working_resource().cloned() {
         Some(resource) => resource,
         None => {
-            let _ = credential_service
-                .release(credential.take().expect("credential was acquired"))
-                .await;
+            let _ = release_credential(credential.take(), services).await;
             return Err(failure(
                 "swallowtail.claude_agent.lifecycle.resource_missing",
                 "Claude Agent deletion requires its bound working resource",
@@ -80,9 +78,7 @@ pub(super) async fn open_management_connection(
     {
         Ok(resource) => Some(resource),
         Err(error) => {
-            let _ = credential_service
-                .release(credential.take().expect("credential was acquired"))
-                .await;
+            let _ = release_credential(credential.take(), services).await;
             return Err(error);
         }
     };
@@ -96,9 +92,7 @@ pub(super) async fn open_management_connection(
         let _ = resource_service
             .release(resource.take().expect("resource was acquired"))
             .await;
-        let _ = credential_service
-            .release(credential.take().expect("credential was acquired"))
-            .await;
+        let _ = release_credential(credential.take(), services).await;
         return Err(failure(
             "swallowtail.claude_agent.lifecycle.resource_lease_rejected",
             "Claude Agent deletion requires its exact read-only filesystem lease",

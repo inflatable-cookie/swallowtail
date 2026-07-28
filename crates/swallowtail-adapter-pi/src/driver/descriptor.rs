@@ -19,9 +19,13 @@ pub fn pi_rpc_descriptor() -> DriverDescriptor {
         DriverRole::Discovery,
         DriverRole::ModelCatalog,
         DriverRole::InteractiveSession,
+        DriverRole::StructuredRun,
     ])
     .with_execution_layers([ExecutionLayer::HarnessInteraction])
-    .with_operation_shapes([OperationShape::InteractiveSession])
+    .with_operation_shapes([
+        OperationShape::InteractiveSession,
+        OperationShape::StructuredRun,
+    ])
     .with_required_host_services(
         DriverRole::ModelCatalog,
         [
@@ -33,6 +37,16 @@ pub fn pi_rpc_descriptor() -> DriverDescriptor {
     )
     .with_required_host_services(
         DriverRole::InteractiveSession,
+        [
+            HostServiceKind::Task,
+            HostServiceKind::Process,
+            HostServiceKind::Credential,
+            HostServiceKind::WorkingResource,
+            HostServiceKind::Time,
+        ],
+    )
+    .with_required_host_services(
+        DriverRole::StructuredRun,
         [
             HostServiceKind::Task,
             HostServiceKind::Process,

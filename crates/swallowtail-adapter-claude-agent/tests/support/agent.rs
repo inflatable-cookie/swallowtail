@@ -37,6 +37,9 @@ pub(super) struct AgentState {
     pub(super) output: VecDeque<ProcessOutputChunk>,
     pub(super) writes: Vec<Value>,
     prompt_id: Option<u64>,
+    requested_model: Option<String>,
+    current_model: Option<String>,
+    effort: Option<String>,
     stopped: bool,
 }
 
@@ -81,6 +84,7 @@ impl SharedAgent {
         match message.get("method").and_then(Value::as_str) {
             Some("initialize") => self.initialize(&mut state, id),
             Some("session/new") => self.new_session(&mut state, id, &message),
+            Some("session/set_config_option") => self.set_config(&mut state, id, &message),
             Some("session/prompt") => self.prompt(&mut state, id),
             Some("session/cancel") => self.cancel(&mut state),
             Some("session/close") => self.close_session(&mut state, id),
@@ -144,11 +148,21 @@ impl SharedAgent {
         {
             return Err(fixture_failure());
         }
-        let model = if self.scenario == Scenario::ModelDrift {
-            "default"
-        } else {
-            "claude-sonnet-4-6"
-        };
+        let requested_model =
+            message["params"]["_meta"]["claudeCode"]["options"]["settings"]["model"]
+                .as_str()
+                .ok_or_else(fixture_failure)?
+                .to_owned();
+        state.requested_model = Some(requested_model.clone());
+        let version = semver::Version::parse(&self.version).map_err(|_| fixture_failure())?;
+        let current_model =
+            if version >= semver::Version::new(0, 54, 0) || self.scenario == Scenario::ModelDrift {
+                "default".to_owned()
+            } else {
+                requested_model
+            };
+        state.current_model = Some(current_model);
+        let config_options = self.config_options(state)?;
         Self::enqueue(
             state,
             json!({
@@ -156,16 +170,99 @@ impl SharedAgent {
                 "id": id,
                 "result": {
                     "sessionId": "claude-agent-session-fixture",
-                    "configOptions": [{
-                        "type": "select",
-                        "id": "model",
-                        "currentValue": model,
-                        "options": [{"value": model, "name": model}]
-                    }]
+                    "configOptions": config_options
                 }
             }),
         );
+        Self::enqueue(
+            state,
+            json!({"jsonrpc": "2.0", "method": "session/update", "params": {
+                "sessionId": "claude-agent-session-fixture",
+                "update": {"sessionUpdate": "available_commands_update", "availableCommands": []}
+            }}),
+        );
         Ok(())
+    }
+
+    fn set_config(
+        &self,
+        state: &mut AgentState,
+        id: Option<u64>,
+        message: &Value,
+    ) -> Result<(), RuntimeFailure> {
+        let version = semver::Version::parse(&self.version).map_err(|_| fixture_failure())?;
+        if version < semver::Version::new(0, 54, 0)
+            || message["params"]["sessionId"] != "claude-agent-session-fixture"
+        {
+            return Err(fixture_failure());
+        }
+        let value = message["params"]["value"]
+            .as_str()
+            .ok_or_else(fixture_failure)?
+            .to_owned();
+        match message["params"]["configId"].as_str() {
+            Some("model") => {
+                if Some(value.as_str()) != state.requested_model.as_deref() {
+                    return Err(fixture_failure());
+                }
+                state.current_model = Some(if self.scenario == Scenario::ModelDrift {
+                    "default".to_owned()
+                } else {
+                    value
+                });
+            }
+            Some("effort")
+                if matches!(
+                    value.as_str(),
+                    "default" | "low" | "medium" | "high" | "xhigh" | "max"
+                ) =>
+            {
+                state.effort = Some(value);
+            }
+            _ => return Err(fixture_failure()),
+        }
+        let config_options = self.config_options(state)?;
+        Self::enqueue(
+            state,
+            json!({
+                "jsonrpc": "2.0",
+                "id": id,
+                "result": {"configOptions": config_options}
+            }),
+        );
+        Ok(())
+    }
+
+    fn config_options(&self, state: &AgentState) -> Result<Value, RuntimeFailure> {
+        let requested = state
+            .requested_model
+            .as_deref()
+            .ok_or_else(fixture_failure)?;
+        let current = state.current_model.as_deref().ok_or_else(fixture_failure)?;
+        let mut options = vec![json!({
+            "type": "select",
+            "id": "model",
+            "currentValue": current,
+            "options": [
+                {"value": "default", "name": "Default"},
+                {"value": requested, "name": requested}
+            ]
+        })];
+        let version = semver::Version::parse(&self.version).map_err(|_| fixture_failure())?;
+        if version >= semver::Version::new(0, 54, 0) {
+            let effort_options = ["default", "low", "medium", "high", "xhigh", "max"]
+                .into_iter()
+                .map(|value| json!({"value": value, "name": value}))
+                .collect::<Vec<_>>();
+            options.push(json!({
+                "type": "select",
+                "id": "effort",
+                "category": "thought_level",
+                "currentValue": state.effort.as_deref().unwrap_or("default"),
+                "options": effort_options
+            }));
+        }
+        Ok(Value::Array(options))
     }
 
     fn prompt(&self, state: &mut AgentState, id: Option<u64>) -> Result<(), RuntimeFailure> {
@@ -173,6 +270,7 @@ impl SharedAgent {
         match self.scenario {
             Scenario::Success => {
                 for update in [
+                    json!({"sessionUpdate": "available_commands_update", "availableCommands": []}),
                     json!({"sessionUpdate": "agent_thought_chunk", "content": {"type": "text", "text": "Inspecting."}}),
                     json!({"sessionUpdate": "tool_call", "toolCallId": "read-1", "kind": "read"}),
                     json!({"sessionUpdate": "usage_update", "used": 42, "size": 200000}),

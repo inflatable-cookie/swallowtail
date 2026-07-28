@@ -9,7 +9,8 @@ prompts, tools, authority, workflows, persistence, and product state.
 Status: foundation. The repository is in strict Northstar posture. The
 provider-neutral core, pure preflight, executor-neutral runtime, thirteen synthetic
 conformance profiles, host-approved local process/endpoint/credential services,
-twenty-three production driver routes, including separate SDK-native Bedrock Runtime
+twenty-five production driver routes, including separate Gemini and Kimi
+installed-harness routes plus SDK-native Bedrock Runtime
 and control-plane routes, across Alibaba Model Studio, Anthropic, Bedrock,
 Claude Agent, Codex, DeepSeek, Gemini, Kimi, llama.cpp, Ollama, OpenAI,
 OpenCode, Pi, Qwen, and xAI
@@ -29,12 +30,31 @@ Then read [docs/README.md](docs/README.md). Applications integrating Codex
 should start with the
 [prepared-integration guides](docs/guides/README.md). Multi-provider
 applications should start with the exact
-[23-route matrix](docs/guides/provider-route-matrix.md).
+[25-route matrix](docs/guides/provider-route-matrix.md).
 Source-scoped model-catalogue expansion is complete: every selected
 machine-readable source has a Swallowtail path. The 21-solution feature matrix
 now reports 16 catalogue-capable solutions, two session-negotiated sources,
 two not-applicable operation shapes, one caller-supplied source, and no
 unexplained `No`.
+Structured-run closure is at provider-wide acceptance. Research 044 and
+Contract 039 identify eight definite bounded branches plus one retained Kimi
+local-server branch.
+Alibaba and DeepSeek now expose independent one-request structured roles and
+prepared operations beside their unchanged stateful branches.
+Gemini CLI now exposes a separately qualified headless `stream-json` route
+across `0.51.0..=0.52.0`, selected explicitly beside ACP through one public
+Gemini CLI facade. It uses ambient plan-mode authority, retains its local
+transcript, and does not force sandboxing.
+The lane preserves provider-specific session, connection, callback, retention,
+cancellation, and cleanup truth; it does not add a universal prompt API.
+Kimi Code now exposes a separate default-engine headless route and a retained
+local-server structured role across exact `0.29.0..=0.29.2` evidence. One
+installed facade requires explicit ACP or headless selection. The local facade
+remains separate, requires `DurableAllowed`, and preserves provider threads
+without archive or delete claims.
+Gemini Live and OpenAI Realtime remain structured-run `No`. llama.cpp owned is
+serving-only and therefore `Not applicable`. The matrix reports 18 structured
+`Yes`, two `No`, and one `Not applicable`.
 Consumer soak remains the held release baseline. Research 036 and Contract 038
 separate Nucleus-local thread archive and deletion from optional bound
 provider-session management. Kimi Code's documented foreground local
@@ -46,8 +66,12 @@ session management. The shared evidence foundation, Codex typed bound
 operations, and Kimi Code ACP prepared
 facade are complete. Anthropic Models and Messages now supplies the first
 hosted-direct prepared facade. Ollama native supplies the attached-runtime
-proof. Claude Agent and Gemini CLI now add separate read-only stdio-ACP
-prepared paths. Pi RPC, Qwen headless, and OpenCode attached HTTP/SSE complete
+proof. Claude Agent now adds separate one-prompt structured and read-only
+interactive stdio-ACP prepared paths; Gemini CLI retains its read-only ACP
+path and adds a separate one-prompt headless path. Claude Agent keeps local
+subscription authentication and public API-key billing as separate explicit
+access profiles; the local default inherits approved process state without a
+credential lease. Pi RPC, Qwen headless, and OpenCode attached HTTP/SSE complete
 the original eight harness routes; Kimi local server adds the ninth. Kimi Platform, DeepSeek,
 Alibaba Model Studio, and OpenAI background Responses now add distinct hosted
 direct and provider-state facades; specialized adapters retain their low-level
@@ -56,10 +80,12 @@ Live facades now retain their native text, audio, cancellation, invalidation,
 and rollover behavior. Bedrock Runtime and control-plane catalogue now add
 separate SDK-native facades with explicit region and credential-provider
 configuration. llama.cpp completed the original 22-route prepared matrix with
-distinct attached inference and owned ephemeral-serving paths. The exact cross-route
-matrix and unified integration guidance are complete. All 22 prepared routes
-now pass from extracted package artifacts, alongside the Nucleus and
-Soundcheck Codex proofs. One reproducible provider-wide `0.1.0` candidate is
+distinct attached inference and owned ephemeral-serving paths. The later Kimi
+local-server route brought the previous total to 23; Gemini CLI headless was
+the 24th and Kimi Code headless is the 25th route. The exact cross-route matrix
+and unified integration guidance are current. Packaged structured proof
+remains inside the active provider-wide closeout lane. One reproducible provider-wide
+`0.1.0` candidate is
 retained as the post-hardening soak baseline; its exact canonical source,
 parent, artifacts, and validation digests are recorded in candidate evidence.
 Prior candidates remain superseded evidence. Nucleus has passed the accepted
@@ -108,8 +134,8 @@ agreement, and one authenticated read-only lookup before issuing a separate
 archive/restore binding. The interactive local-server driver now covers exact
 REST prompt submission, WebSocket v2 events and cursors, callbacks,
 interruption, deadlines, disconnects, attached and owned topology, and joined
-cleanup. The 23-route matrix, four public examples, integration guide, and
-extracted-package proof are complete. Operator review is required before any
+cleanup. The 25-route matrix and current integration guide are complete. The
+23-route extracted-package lifecycle proof remains unchanged. Operator review is required before any
 Nucleus lifecycle handoff. The retained lifecycle candidate remains paused
 until the current source enters canonical history.
 
@@ -160,14 +186,15 @@ self-hosted conformance proof are complete without model or server ownership.
 The post-tranche checkpoint selected xAI Responses WebSocket as the next proof.
 Contract 016 now governs resource-free direct sessions, connection-bound
 continuation and cleanup, and exact provider-billed-cost evidence. Deterministic
-xAI WebSocket fixtures freeze the exact upgrade/auth boundary, serial
-`store=false` turns, private continuation, exact billed ticks, failure,
-disconnect, and close behavior. The production session driver now holds one
-approved endpoint and credential lease across serial turns, emits exact billed-
-cost evidence, rejects parallel turns before a second frame, and invalidates
-the connection on cancellation, timeout, provider lifetime failure, or loss.
-Provider-neutral direct-session conformance is complete. The xAI proof passes
-under local and remote-authoritative hosts with 227 repository tests. Kimi Code
+xAI WebSocket fixtures freeze the exact upgrade/auth boundary, one-response
+structured execution, serial `store=false` turns, private continuation, exact
+billed ticks, failure, disconnect, and close behavior. The production driver
+now either opens one bounded response without exposing continuation or holds
+one approved endpoint and credential lease across serial interactive turns.
+Both roles emit exact billed-cost evidence and invalidate the connection on
+cancellation, timeout, provider lifetime failure, or loss. Provider-neutral
+direct-session and hosted-run conformance are complete under local and
+remote-authoritative hosts. Kimi Code
 `0.28.1` currentness is promoted in Research 006. Contract 017 now separates
 provider-owned load replay from resume, binds persistent sessions to their
 resource and access authority, and keeps write callbacks, tool approval,
@@ -555,9 +582,12 @@ deletion with provider-defined descendants and never implies hard erasure.
 Kimi Platform now adds separate catalogue and
 one-attempt K3 preparation while rejecting Membership and Kimi Code access.
 DeepSeek now adds separate catalogue and explicit consumer-owned tool
-continuation with private reasoning replay and visible cache acceptance.
+continuation with private reasoning replay and visible cache acceptance. Its
+separate structured branch sends one tool-free request with no reusable
+continuation.
 Alibaba Model Studio now adds exact regional workspace preparation with
-explicit durable retention and item-before-conversation deletion. OpenAI
+explicit durable retention and item-before-conversation deletion. Its
+structured branch sends one unstored response without a conversation. OpenAI
 background Responses now adds exact public-API preparation, visible temporary
 retention, maximum-one cursor reattachment, bounded retrieval, native
 cancellation, and unchanged remote terminal truth. Anthropic Managed Agents
@@ -573,7 +603,7 @@ access, and delegated credential-provider evidence. Catalogue results cannot
 select Runtime routes. llama.cpp now adds separate attached catalogue and
 inference preparation plus owned ephemeral serving. The attached path retains
 external-server ownership; the owned path couples an approved executable,
-exact GGUF artifact, route, loopback readiness, and ordered teardown. All 23
+exact GGUF artifact, route, loopback readiness, and ordered teardown. All 25
 production routes now have adapter-local prepared normal paths. The held
 replacement candidate returns only after route-matrix and provider-wide
 packaged evidence.

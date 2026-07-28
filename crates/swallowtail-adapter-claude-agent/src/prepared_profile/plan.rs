@@ -1,8 +1,8 @@
 use crate::ClaudeAgentPreparedIntegration;
 use swallowtail_core::{
     AccessRequirement, CapabilityProfile, CapabilityRequirement, ConfiguredInstance,
-    CredentialState, Diagnostic, EndpointAuthorization, EntitlementState, ExecutionLayer,
-    HarnessConfigurationPosture, HarnessIsolation, HostServiceKind, ModelRoute,
+    CredentialMechanism, CredentialState, Diagnostic, EndpointAuthorization, EntitlementState,
+    ExecutionLayer, HarnessConfigurationPosture, HarnessIsolation, HostServiceKind, ModelRoute,
     OperationRequirements, OperationShape, PreflightContext, PreflightPlan, ResourceAccess,
     RuntimeReadiness, SafeDiagnostic, SessionAccessPolicy, SessionProviderStatePolicy, preflight,
 };
@@ -12,7 +12,7 @@ use swallowtail_runtime::{PreparationFailure, PreparationStage, PreparedOperatio
 pub struct ClaudeAgentPreparedEvidence {
     observation: swallowtail_core::InstalledExecutableObservation,
     environment: swallowtail_runtime::EnvironmentRef,
-    credential: swallowtail_core::CredentialRef,
+    credential: Option<swallowtail_core::CredentialRef>,
     operation: PreparedOperationEvidence,
 }
 
@@ -24,11 +24,7 @@ impl ClaudeAgentPreparedEvidence {
         Ok(Self {
             observation: prepared.observation().clone(),
             environment: prepared.environment().clone(),
-            credential: prepared
-                .access_profile()
-                .credential_reference()
-                .expect("prepared Claude Agent access has one credential reference")
-                .clone(),
+            credential: prepared.access_profile().credential_reference().cloned(),
             operation: PreparedOperationEvidence::from_plan(
                 plan,
                 prepared.access_evidence().clone(),
@@ -57,7 +53,12 @@ impl ClaudeAgentPreparedEvidence {
     }
 
     pub(super) fn low_level_driver(&self) -> crate::ClaudeAgentAcpDriver {
-        crate::ClaudeAgentAcpDriver::new(self.environment.clone(), self.credential.clone())
+        match self.credential.as_ref() {
+            Some(credential) => {
+                crate::ClaudeAgentAcpDriver::new(self.environment.clone(), credential.clone())
+            }
+            None => crate::ClaudeAgentAcpDriver::with_local_auth(self.environment.clone()),
+        }
     }
 }
 
@@ -92,22 +93,10 @@ pub(super) fn requirements(
         OperationShape::InteractiveSession,
         swallowtail_core::DriverRole::InteractiveSession,
         prepared.instance().execution_host_id().clone(),
-        AccessRequirement::new(prepared.access_profile().id().clone())
-            .with_credential_states([CredentialState::Ready])
-            .with_entitlement_states([EntitlementState::Available])
-            .with_endpoint_authorizations([EndpointAuthorization::Allowed])
-            .with_runtime_readiness([RuntimeReadiness::Ready])
-            .with_support_authorities([prepared.access_profile().support_authority()]),
+        access_requirement(prepared),
     )
     .with_ownership_modes([prepared.instance().ownership()])
-    .with_host_services([
-        HostServiceKind::Task,
-        HostServiceKind::Time,
-        HostServiceKind::Process,
-        HostServiceKind::Credential,
-        HostServiceKind::WorkingResource,
-        HostServiceKind::WorkingResourceIo,
-    ])
+    .with_host_services(operation_host_services(prepared))
     .with_capabilities(capabilities)
     .with_interface_versions([prepared.observation().version().clone()])
     .with_harness_isolation(HarnessIsolation::AmbientHost)
@@ -115,6 +104,56 @@ pub(super) fn requirements(
     .with_session_access_policy(SessionAccessPolicy::ambient_harness(ResourceAccess::Read))
     .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited)
     .require_model_route()
+}
+
+pub(super) fn run_requirements(
+    prepared: &ClaudeAgentPreparedIntegration,
+    capabilities: impl IntoIterator<Item = CapabilityRequirement>,
+) -> OperationRequirements {
+    OperationRequirements::new(
+        ExecutionLayer::HarnessInteraction,
+        OperationShape::StructuredRun,
+        swallowtail_core::DriverRole::StructuredRun,
+        prepared.instance().execution_host_id().clone(),
+        access_requirement(prepared),
+    )
+    .with_ownership_modes([prepared.instance().ownership()])
+    .with_host_services(operation_host_services(prepared))
+    .with_capabilities(capabilities)
+    .with_interface_versions([prepared.observation().version().clone()])
+    .with_harness_isolation(HarnessIsolation::AmbientHost)
+    .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient)
+    .require_model_route()
+}
+
+pub(super) fn access_requirement(prepared: &ClaudeAgentPreparedIntegration) -> AccessRequirement {
+    let credential_state = match prepared.access_profile().credential_mechanism() {
+        CredentialMechanism::ApiKey => CredentialState::Ready,
+        CredentialMechanism::LocalUnauthenticated => CredentialState::NotRequired,
+        _ => unreachable!("Claude Agent preparation rejected the credential mechanism"),
+    };
+    AccessRequirement::new(prepared.access_profile().id().clone())
+        .with_credential_states([credential_state])
+        .with_entitlement_states([EntitlementState::Available])
+        .with_endpoint_authorizations([EndpointAuthorization::Allowed])
+        .with_runtime_readiness([RuntimeReadiness::Ready])
+        .with_support_authorities([prepared.access_profile().support_authority()])
+}
+
+pub(super) fn operation_host_services(
+    prepared: &ClaudeAgentPreparedIntegration,
+) -> Vec<HostServiceKind> {
+    let mut services = vec![
+        HostServiceKind::Task,
+        HostServiceKind::Time,
+        HostServiceKind::Process,
+        HostServiceKind::WorkingResource,
+        HostServiceKind::WorkingResourceIo,
+    ];
+    if prepared.access_profile().credential_mechanism() == &CredentialMechanism::ApiKey {
+        services.push(HostServiceKind::Credential);
+    }
+    services
 }
 
 pub(super) fn build_plan(

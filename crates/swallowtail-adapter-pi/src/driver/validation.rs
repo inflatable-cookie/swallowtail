@@ -2,12 +2,15 @@ use crate::DRIVER_ID;
 use crate::failure::{failure, unsupported};
 use swallowtail_core::{
     CancellationScope, Capability, CapabilityConstraint, CredentialMechanism, DriverRole,
-    HarnessBackgroundAction, HarnessConfigurationPosture, HarnessConfigurationSource,
-    HarnessIsolation, HostServiceKind, InstanceOwnership, PreflightPlan, ResourceAccess,
-    ResourceRepresentation, SessionAccessPolicy, SessionProviderStatePolicy,
+    ExecutionLayer, HarnessBackgroundAction, HarnessConfigurationPosture,
+    HarnessConfigurationSource, HarnessIsolation, HostServiceKind, InstanceOwnership,
+    OperationShape, PreflightPlan, ResourceAccess, ResourceRepresentation, SessionAccessPolicy,
+    SessionProviderStatePolicy,
 };
 use swallowtail_runtime::{
-    HostServices, OpenSessionRequest, RuntimeFailure, TurnRequest, validate_session_plan_agreement,
+    ExternalNetworkPolicy, ExternalSearchPolicy, HostServices, OpenSessionRequest,
+    ProviderExecutionPolicy, ProviderRecoveryPolicy, ProviderRetentionPolicy, RuntimeFailure,
+    StreamReattachmentPolicy, StructuredRunRequest, TurnRequest, validate_session_plan_agreement,
 };
 
 pub(super) const ACCESS_NAMESPACE: &str = "pi/delegated-harness-auth";
@@ -83,6 +86,90 @@ pub(super) fn validate_open(
         Capability::WorkingResource,
         CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
     )
+}
+
+pub(super) fn validate_run(
+    plan: &PreflightPlan,
+    request: &StructuredRunRequest,
+    services: &HostServices,
+    credential: &swallowtail_core::CredentialRef,
+) -> Result<(), RuntimeFailure> {
+    validate_common(plan, services, credential)?;
+    if plan.requirements().execution_layer() != ExecutionLayer::HarnessInteraction
+        || plan.requirements().operation_shape() != OperationShape::StructuredRun
+        || plan.requirements().driver_role() != DriverRole::StructuredRun
+        || plan.provider_id().is_none()
+        || plan.model_id().is_none()
+        || plan.model_route_id().is_none()
+    {
+        return Err(plan_mismatch("structured-run role and model route"));
+    }
+    if !plan
+        .requirements()
+        .host_services()
+        .any(|required| required == HostServiceKind::WorkingResource)
+        || services.working_resource().is_none()
+    {
+        return Err(plan_mismatch("working-resource host service"));
+    }
+    if request.working_resource().is_none() {
+        return Err(unsupported("resource-free structured run"));
+    }
+    if request.deadline().is_none() {
+        return Err(unsupported("structured run without a host deadline"));
+    }
+    if request.attachments().len() != 0
+        || request.tools().len() != 0
+        || request.structured_output().is_some()
+        || request.maximum_output_tokens().is_some()
+    {
+        return Err(unsupported(
+            "structured-run attachments, consumer tools, schema, or output-token limit",
+        ));
+    }
+    require_capability(plan, Capability::StructuredRun)?;
+    require_capability(plan, Capability::StreamingEvents)?;
+    require_constraint(
+        plan,
+        Capability::Interruption,
+        CapabilityConstraint::CancellationScope(CancellationScope::StructuredRun),
+    )?;
+    require_constraint(
+        plan,
+        Capability::WorkingResource,
+        CapabilityConstraint::ResourceAccess(ResourceAccess::Read),
+    )?;
+    require_constraint(
+        plan,
+        Capability::WorkingResource,
+        CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
+    )?;
+    let policy = request.policy();
+    if policy.external_network() != ExternalNetworkPolicy::Denied
+        || policy.external_search() != ExternalSearchPolicy::Disabled
+        || policy.reasoning_mode().is_some()
+        || policy.provider_execution() != ProviderExecutionPolicy::Attached
+        || policy.provider_retention() != ProviderRetentionPolicy::Prohibited
+        || policy.provider_recovery() != ProviderRecoveryPolicy::Prohibited
+        || policy.stream_reattachment() != StreamReattachmentPolicy::Disabled
+        || policy.harness_isolation() != Some(HarnessIsolation::AmbientHost)
+        || policy.harness_configuration_posture()
+            != Some(HarnessConfigurationPosture::ProviderSuppressed)
+    {
+        return Err(unsupported("structured-run lifecycle or inference policy"));
+    }
+    if services.time().expect("validated Pi time service").now()
+        >= request
+            .deadline()
+            .expect("validated Pi run deadline")
+            .instant()
+    {
+        return Err(failure(
+            "swallowtail.pi.rpc.run_deadline_elapsed",
+            "Pi RPC structured-run deadline elapsed before provider work",
+        ));
+    }
+    Ok(())
 }
 
 fn validate_common(

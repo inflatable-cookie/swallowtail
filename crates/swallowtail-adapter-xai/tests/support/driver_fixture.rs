@@ -114,10 +114,19 @@ impl DriverFixture {
     }
 
     pub fn plan(&self) -> PreflightPlan {
+        self.plan_for(swallowtail_core::DriverRole::InteractiveSession)
+    }
+
+    pub fn run_plan(&self) -> PreflightPlan {
+        self.plan_for(swallowtail_core::DriverRole::StructuredRun)
+    }
+
+    fn plan_for(&self, role: swallowtail_core::DriverRole) -> PreflightPlan {
         let descriptor = xai_websocket_descriptor();
         let access_id = AccessProfileId::new("access.xai.public").expect("access id is valid");
-        let requirements = capability_requirements();
-        let capabilities = CapabilityProfile::new(requirements.clone());
+        let mut all_requirements = capability_requirements();
+        all_requirements.extend(run_capability_requirements());
+        let capabilities = CapabilityProfile::new(all_requirements);
         let instance = ConfiguredInstance::new(
             ConfiguredInstanceId::new("xai.public.websocket").expect("instance id is valid"),
             InstanceRevision::new("1").expect("revision is valid"),
@@ -155,26 +164,39 @@ impl DriverFixture {
             RuntimeReadiness::Ready,
             SupportAuthority::ProviderSupported,
         );
-        let role = swallowtail_core::DriverRole::InteractiveSession;
         let host_services: Vec<_> = descriptor.required_host_services(role).collect();
-        let operation = OperationRequirements::new(
-            ExecutionLayer::DirectModelInference,
-            OperationShape::InteractiveSession,
-            role,
-            self.host_id.clone(),
-            AccessRequirement::new(access_id)
-                .with_credential_states([CredentialState::Ready])
-                .with_entitlement_states([EntitlementState::Available])
-                .with_endpoint_authorizations([EndpointAuthorization::Allowed])
-                .with_runtime_readiness([RuntimeReadiness::Ready])
-                .with_support_authorities([SupportAuthority::ProviderSupported]),
-        )
-        .with_ownership_modes([InstanceOwnership::ExternalAttached])
-        .with_host_services(host_services.clone())
-        .with_capabilities(requirements)
-        .with_session_access_policy(SessionAccessPolicy::resource_free())
-        .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited)
-        .require_model_route();
+        let access_requirement = AccessRequirement::new(access_id)
+            .with_credential_states([CredentialState::Ready])
+            .with_entitlement_states([EntitlementState::Available])
+            .with_endpoint_authorizations([EndpointAuthorization::Allowed])
+            .with_runtime_readiness([RuntimeReadiness::Ready])
+            .with_support_authorities([SupportAuthority::ProviderSupported]);
+        let operation = match role {
+            swallowtail_core::DriverRole::StructuredRun => OperationRequirements::new(
+                ExecutionLayer::DirectModelInference,
+                OperationShape::StructuredRun,
+                role,
+                self.host_id.clone(),
+                access_requirement,
+            )
+            .with_ownership_modes([InstanceOwnership::ExternalAttached])
+            .with_host_services(host_services.clone())
+            .with_capabilities(run_capability_requirements())
+            .require_model_route(),
+            _ => OperationRequirements::new(
+                ExecutionLayer::DirectModelInference,
+                OperationShape::InteractiveSession,
+                role,
+                self.host_id.clone(),
+                access_requirement,
+            )
+            .with_ownership_modes([InstanceOwnership::ExternalAttached])
+            .with_host_services(host_services.clone())
+            .with_capabilities(capability_requirements())
+            .with_session_access_policy(SessionAccessPolicy::resource_free())
+            .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited)
+            .require_model_route(),
+        };
         preflight(
             &PreflightContext::new(&descriptor, &instance, &access, &status, host_services)
                 .with_model_route(&route),
@@ -192,6 +214,21 @@ fn capability_requirements() -> Vec<CapabilityRequirement> {
             Capability::Interruption,
             [swallowtail_core::CapabilityConstraint::CancellationScope(
                 swallowtail_core::CancellationScope::ActiveTurn,
+            )],
+        ),
+        CapabilityRequirement::new(Capability::UsageReporting, []),
+        CapabilityRequirement::new(Capability::BilledCostReporting, []),
+    ]
+}
+
+fn run_capability_requirements() -> Vec<CapabilityRequirement> {
+    vec![
+        CapabilityRequirement::new(Capability::StructuredRun, []),
+        CapabilityRequirement::new(Capability::StreamingEvents, []),
+        CapabilityRequirement::new(
+            Capability::Interruption,
+            [swallowtail_core::CapabilityConstraint::CancellationScope(
+                swallowtail_core::CancellationScope::StructuredRun,
             )],
         ),
         CapabilityRequirement::new(Capability::UsageReporting, []),

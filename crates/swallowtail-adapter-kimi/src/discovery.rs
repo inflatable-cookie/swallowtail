@@ -2,7 +2,8 @@ use futures_channel::oneshot;
 use std::future::poll_fn;
 use std::task::Poll;
 use swallowtail_core::{
-    DiscoveryOutcome, DiscoveryStatus, InstalledExecutableObservation, SafeDiagnostic,
+    DiscoveryOutcome, DiscoveryStatus, InstalledExecutableObservation, InterfaceCompatibilityClaim,
+    SafeDiagnostic,
 };
 use swallowtail_runtime::{
     BoxFuture, DiscoveryDriver, DiscoveryRequest, HostServices,
@@ -34,16 +35,16 @@ impl DiscoveryDriver for KimiAcpDriver {
         request: InstalledExecutableDiscoveryRequest,
         services: HostServices,
     ) -> BoxFuture<'_, Result<DiscoveryOutcome, RuntimeFailure>> {
-        Box::pin(probe_joined(request, services))
+        Box::pin(probe_joined(request, services, kimi_acp_claim()))
     }
 }
 
-async fn probe_joined(
+pub(crate) async fn probe_joined(
     request: InstalledExecutableDiscoveryRequest,
     services: HostServices,
+    claim: InterfaceCompatibilityClaim,
 ) -> Result<DiscoveryOutcome, RuntimeFailure> {
     validate_installed_executable_discovery_services(&request, &services)?;
-    let claim = kimi_acp_claim();
     if request.target().version_axis() != claim.axis() {
         return Err(failure(
             "swallowtail.kimi.discovery_axis_mismatch",
@@ -63,7 +64,7 @@ async fn probe_joined(
     let task = match task_service.spawn(
         scope,
         Box::pin(async move {
-            let result = probe_process(request, services).await;
+            let result = probe_process(request, services, claim).await;
             let _ = sender.send(result);
         }),
     ) {
@@ -83,6 +84,7 @@ async fn probe_joined(
 async fn probe_process(
     request: InstalledExecutableDiscoveryRequest,
     services: HostServices,
+    claim: InterfaceCompatibilityClaim,
 ) -> Result<DiscoveryOutcome, RuntimeFailure> {
     let process = match services
         .process()
@@ -146,7 +148,7 @@ async fn probe_process(
     let observation = InstalledExecutableObservation::classify(
         request.execution_host_id().clone(),
         binding,
-        &kimi_acp_claim(),
+        &claim,
     )
     .map_err(|_| {
         failure(

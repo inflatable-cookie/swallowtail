@@ -9,8 +9,8 @@ mod probe;
 #[path = "prepared/validation.rs"]
 mod validation;
 
-pub(crate) use instance::all_capabilities;
 use instance::configured_instance;
+pub(crate) use instance::{all_capabilities, run_capabilities};
 pub use observation::OpenCodePreparedServerObservation;
 use std::collections::BTreeSet;
 use swallowtail_core::{

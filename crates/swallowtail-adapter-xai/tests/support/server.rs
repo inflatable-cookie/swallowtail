@@ -22,6 +22,7 @@ const CONNECTION_LIMIT: &str =
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum ServerScenario {
     Success,
+    OneResponse,
     Disconnect,
     WaitForClientClose,
     PreviousResponseNotFound,
@@ -85,6 +86,16 @@ impl FixtureServer {
                         .push(second);
                     send_events(&mut socket, SECOND_EVENTS);
                     let _ = socket.close(None);
+                }
+                ServerScenario::OneResponse => {
+                    let first = read_text(&mut socket);
+                    validate_turn(&first, false);
+                    server_frames
+                        .lock()
+                        .expect("frame lock available")
+                        .push(first);
+                    send_events(&mut socket, FIRST_EVENTS);
+                    let _ = socket.read();
                 }
                 ServerScenario::Disconnect => {
                     let first = read_text(&mut socket);

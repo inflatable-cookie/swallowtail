@@ -1,6 +1,6 @@
 use swallowtail_core::{ModelId, ModelRouteId, ModelRouteRevision, ProviderId};
 use swallowtail_runtime::{
-    Deadline, ProviderSessionManagementBinding, RequestId, WorkingResourceRef,
+    Deadline, OperationContent, ProviderSessionManagementBinding, RequestId, WorkingResourceRef,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -151,6 +151,57 @@ impl OpenCodeSessionProfileInput {
         (
             self.request_id,
             self.model,
+            self.working_resource,
+            self.deadline,
+        )
+    }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct OpenCodeRunProfileInput {
+    request_id: RequestId,
+    model: OpenCodeModelSelection,
+    content: OperationContent,
+    working_resource: WorkingResourceRef,
+    deadline: Option<Deadline>,
+}
+
+impl OpenCodeRunProfileInput {
+    #[must_use]
+    pub const fn new(
+        request_id: RequestId,
+        model: OpenCodeModelSelection,
+        content: OperationContent,
+        working_resource: WorkingResourceRef,
+    ) -> Self {
+        Self {
+            request_id,
+            model,
+            content,
+            working_resource,
+            deadline: None,
+        }
+    }
+
+    #[must_use]
+    pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
+        self.deadline = Some(deadline);
+        self
+    }
+
+    pub(super) fn into_parts(
+        self,
+    ) -> (
+        RequestId,
+        OpenCodeModelSelection,
+        OperationContent,
+        WorkingResourceRef,
+        Option<Deadline>,
+    ) {
+        (
+            self.request_id,
+            self.model,
+            self.content,
             self.working_resource,
             self.deadline,
         )

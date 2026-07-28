@@ -9,8 +9,9 @@ use discovery_support::DiscoveryHost;
 use futures_executor::block_on;
 use support::{FixtureHost, Scenario};
 use swallowtail_adapter_gemini::{
-    GEMINI_CLI_ACP_AXIS, GeminiPreparationInput, GeminiPreparationProbe, GeminiSessionProfileInput,
-    prepare_gemini_acp,
+    GEMINI_CLI_ACP_AXIS, GeminiCliPreparationInput, GeminiCliPreparationProbe,
+    GeminiCliPreparedDriver, GeminiCliPreparedIntegration, GeminiPreparationInput,
+    GeminiPreparationProbe, GeminiSessionProfileInput, prepare_gemini_acp, prepare_gemini_cli,
 };
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessStatus, ConfiguredInstanceId, CredentialMechanism,
@@ -25,6 +26,27 @@ use swallowtail_runtime::{
     SessionOptions, WorkingResourceRef,
 };
 use swallowtail_testkit::assert_prepared_operation_evidence_matches_plan;
+
+#[test]
+fn solution_facade_keeps_acp_selection_typed() {
+    let host_id = ExecutionHostId::new("fixture.prepared.cli-facade").expect("valid host");
+    let discovery_host = DiscoveryHost::new("0.51.0");
+    let selected = block_on(prepare_gemini_cli(
+        cli_preparation_input(host_id.clone()),
+        cli_probe(),
+        discovery_host.services(host_id),
+    ))
+    .expect("Gemini CLI ACP prepares through the solution facade");
+
+    assert_eq!(selected.driver(), GeminiCliPreparedDriver::Acp);
+    let GeminiCliPreparedIntegration::Acp(prepared) = selected else {
+        panic!("ACP selection remains typed");
+    };
+    assert_eq!(
+        prepared.observation().version().version().as_str(),
+        "0.51.0"
+    );
+}
 
 #[test]
 fn prepared_sessions_bind_version_access_and_observation_only_model_policy() {
@@ -161,6 +183,31 @@ fn preparation_input(host: ExecutionHostId) -> GeminiPreparationInput {
     )
 }
 
+fn cli_preparation_input(host: ExecutionHostId) -> GeminiCliPreparationInput {
+    GeminiCliPreparationInput::new(
+        GeminiCliPreparedDriver::Acp,
+        ConfiguredInstanceId::new("gemini.prepared").expect("valid instance"),
+        InstanceRevision::new("1").expect("valid revision"),
+        host,
+        InstalledExecutableTarget::new(
+            ExecutableRef::new("gemini.prepared.executable").expect("valid executable"),
+            InterfaceVersionAxis::new(GEMINI_CLI_ACP_AXIS).expect("valid axis"),
+        ),
+        EnvironmentRef::new("gemini.prepared.environment").expect("valid environment"),
+        AccessProfile::new(
+            AccessProfileId::new("gemini.prepared.access").expect("valid access"),
+            CredentialMechanism::ApiKey,
+            EntitlementMetering::PayAsYouGo,
+            EndpointAudience::new("gemini-developer-api").expect("valid audience"),
+            SupportAuthority::ProviderSupported,
+        )
+        .with_credential_reference(
+            CredentialRef::new("gemini.prepared.credential").expect("valid credential"),
+        ),
+        PreparedAccessEvidence::caller_asserted(access_status()),
+    )
+}
+
 fn access_status() -> AccessStatus {
     AccessStatus::new(
         AccessProfileId::new("gemini.prepared.access").expect("valid access"),
@@ -176,6 +223,15 @@ fn probe() -> GeminiPreparationProbe {
     GeminiPreparationProbe::new(
         RequestId::new("gemini-prepared-probe").expect("valid request"),
         ScopeId::new("gemini-prepared-probe").expect("valid scope"),
+        Deadline::at(MonotonicInstant::from_ticks(100)),
+        DiscoveryCancellation::new(),
+    )
+}
+
+fn cli_probe() -> GeminiCliPreparationProbe {
+    GeminiCliPreparationProbe::new(
+        RequestId::new("gemini-cli-prepared-probe").expect("valid request"),
+        ScopeId::new("gemini-cli-prepared-probe").expect("valid scope"),
         Deadline::at(MonotonicInstant::from_ticks(100)),
         DiscoveryCancellation::new(),
     )

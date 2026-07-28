@@ -22,6 +22,8 @@ fn qualified_and_unverified_versions_dispatch_one_reasoning_selection() {
             ("0.28.1", "on", Scenario::ReasoningLegacySuccess, true),
             ("0.29.0", "high", Scenario::ReasoningEffortSuccess, true),
             ("0.29.0", "on", Scenario::ReasoningEffortSuccess, true),
+            ("0.29.1", "high", Scenario::ReasoningEffort291Success, true),
+            ("0.29.2", "high", Scenario::ReasoningEffort292Success, true),
             ("0.30.0", "high", Scenario::ReasoningNewerSuccess, false),
         ] {
             let host_id = topology.execution_host_id().clone();

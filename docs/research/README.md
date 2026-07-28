@@ -51,3 +51,6 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [041 Kimi Local Server Interactive Revision Evidence](041-kimi-local-server-interactive-revision-evidence.md)
 - [042 Model Catalogue Coverage And Pi RPC Currentness](042-model-catalogue-coverage-and-pi-rpc-currentness.md)
 - [043 Model Catalogue No-Closure Audit](043-model-catalogue-no-closure-audit.md)
+- [044 Structured-Run No-Closure Audit](044-structured-run-no-closure-audit.md)
+- [045 Gemini CLI Headless Currentness And Corpus](045-gemini-cli-headless-currentness-and-corpus.md)
+- [046 Kimi Code 0.29.2 Currentness And Corpus](046-kimi-code-0-29-2-currentness-and-corpus.md)

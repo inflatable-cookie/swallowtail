@@ -12,10 +12,10 @@ shape.
 
 ## Next Task
 
-Operator decision on
-[g02 card 060](g02/batch-cards/060-nucleus-thread-lifecycle-adoption-handoff.md):
-authorize the documentation-only Nucleus lifecycle handoff or select another
-lane. Do not auto-continue into consumer adoption.
+Execute
+[g02 card 079](g02/batch-cards/079-structured-run-provider-wide-closeout.md):
+close provider-wide structured-run classifications, packaged proof, and
+front-door currentness.
 
 ## Index
 

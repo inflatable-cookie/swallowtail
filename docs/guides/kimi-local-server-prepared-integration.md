@@ -13,6 +13,7 @@ path, provider load replay, or resume without local-server management.
 | load with provider replay | `kimi-code.acp` |
 | REST/WebSocket v2 streaming | `kimi-code.local-server` |
 | configured model catalogue | `kimi-code.local-server` |
+| one retained prompt with explicit callback exchange | `kimi-code.local-server` structured run |
 | explicit approval or structured-question callback exchange | `kimi-code.local-server` |
 | archive or restore an inactive provider session | `kimi-code.local-server` |
 | provider-session hard delete | neither route |
@@ -77,6 +78,25 @@ provider state.
 
 See the compile-tested
 [`interactive example`](../../crates/swallowtail-adapter-kimi/examples/prepared_local_server_interactive.rs).
+
+## Retained Structured Run
+
+`prepare_run` requires an explicit model, prompt content, writable working
+resource, deadline, permission mode, and optional reasoning mode. It derives a
+`StructuredRun` plan; it does not expose an interactive-session plan or handle.
+
+The driver creates one operation-private Kimi session, submits one prompt,
+relays the same qualified events and manual approval or question callbacks,
+awaits one terminal outcome, then closes and joins local resources. The Kimi
+thread remains. `DurableAllowed` is mandatory. Close does not archive, delete,
+or expose reusable session-management authority.
+
+Attached topology preserves the external server. Owned topology joins the run
+before the caller may stop the foreground child. Neither path requires a
+container or claims a sandbox.
+
+See the compile-tested [structured-run
+example](../../crates/swallowtail-adapter-kimi/examples/prepared_local_server_structured.rs).
 
 ## Model Catalogue
 

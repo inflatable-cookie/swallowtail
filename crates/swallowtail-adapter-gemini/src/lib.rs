@@ -7,11 +7,19 @@ mod connection;
 mod discovery;
 mod driver;
 mod failure;
+mod headless;
+mod headless_command;
+mod headless_events;
+mod headless_handle;
+mod headless_pump;
+mod headless_validation;
 mod live;
 mod live_protocol;
 mod live_selection;
 mod prepared;
 mod prepared_catalogue;
+mod prepared_cli;
+mod prepared_headless;
 mod prepared_live;
 mod prepared_live_profile;
 mod prepared_profile;
@@ -19,6 +27,7 @@ mod selection;
 mod turn;
 
 pub use driver::{GeminiAcpDriver, gemini_acp_descriptor};
+pub use headless::{GeminiHeadlessDriver, gemini_headless_descriptor};
 pub use live::{GeminiLiveDriver, gemini_live_descriptor};
 pub use live_selection::{
     GEMINI_LIVE_ACCESS_PROFILE_ID, GEMINI_LIVE_CONFIGURED_INSTANCE_ID, GEMINI_LIVE_ENDPOINT,
@@ -34,6 +43,15 @@ pub use prepared_catalogue::{
     GeminiModelsPreparationInput, GeminiModelsPreparedIntegration, GeminiModelsProfileInput,
     GeminiPreparedModels, prepare_gemini_models,
 };
+pub use prepared_cli::{
+    GeminiCliPreparationInput, GeminiCliPreparationProbe, GeminiCliPreparedDriver,
+    GeminiCliPreparedIntegration, prepare_gemini_cli,
+};
+pub use prepared_headless::{
+    GeminiHeadlessModelSelection, GeminiHeadlessPreparationInput, GeminiHeadlessPreparationProbe,
+    GeminiHeadlessPreparedEvidence, GeminiHeadlessPreparedIntegration, GeminiHeadlessPreparedRun,
+    GeminiHeadlessRunProfileInput, prepare_gemini_headless,
+};
 pub use prepared_live::{
     GeminiLivePreparationInput, GeminiLivePreparedIntegration, prepare_gemini_live,
 };
@@ -46,7 +64,9 @@ pub use prepared_profile::{
 };
 pub use selection::{
     GEMINI_CLI_ACP_AXIS, GEMINI_CLI_ACP_BASELINE_VERSION, GEMINI_CLI_ACP_LATEST_QUALIFIED_VERSION,
-    gemini_cli_acp_binding, gemini_cli_acp_claim,
+    GEMINI_CLI_HEADLESS_AXIS, GEMINI_CLI_HEADLESS_BASELINE_VERSION,
+    GEMINI_CLI_HEADLESS_LATEST_QUALIFIED_VERSION, gemini_cli_acp_binding, gemini_cli_acp_claim,
+    gemini_cli_headless_binding, gemini_cli_headless_claim,
 };
 
 pub const GEMINI_MODELS_ENDPOINT: &str = "https://generativelanguage.googleapis.com";

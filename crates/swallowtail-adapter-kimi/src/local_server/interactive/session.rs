@@ -5,10 +5,8 @@ mod pump;
 #[path = "session/turn.rs"]
 mod turn;
 
-pub(super) use self::handle::{
-    ActiveSlot, ActiveTurn, KimiTurnHandle, SessionCancellation, TurnCancellation, close_active,
-    reap,
-};
+pub(in crate::local_server) use self::handle::{ActiveSlot, ActiveTurn, TurnCancellation};
+pub(super) use self::handle::{KimiTurnHandle, SessionCancellation, close_active, reap};
 use super::access::{SessionAccess, merge};
 use super::websocket::{Subscription, SubscriptionInput};
 use crate::failure::failure;
@@ -31,7 +29,7 @@ pub(super) struct CursorState {
     pub(super) epoch: Option<String>,
 }
 
-pub(super) struct KimiInteractiveSession {
+pub(in crate::local_server) struct KimiInteractiveSession {
     pub(super) request_id: RequestId,
     pub(super) runtime_id: RuntimeSessionId,
     pub(super) provider_ref: SessionRef,
@@ -45,7 +43,7 @@ pub(super) struct KimiInteractiveSession {
     pub(super) access: Option<SessionAccess>,
     pub(super) services: HostServices,
     pub(super) transport: CurlTransport,
-    pub(super) active: ActiveSlot,
+    pub(in crate::local_server) active: ActiveSlot,
     pub(super) cancellation: SessionCancellation,
 }
 

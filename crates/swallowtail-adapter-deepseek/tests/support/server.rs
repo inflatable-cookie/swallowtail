@@ -30,6 +30,8 @@ const DISCONNECT: &str = include_str!(concat!(
 #[derive(Clone, Copy)]
 pub enum ServerScenario {
     Success,
+    StructuredSuccess,
+    StructuredWait,
     ProviderError,
     DisconnectAfterTool,
     WaitAfterTool,
@@ -174,6 +176,14 @@ fn respond(
                     r#"{"error":{"type":"rate_limit_error","message":"raw secret detail"}}"#,
                     Some("provider-error-request"),
                 ),
+                (ServerScenario::StructuredSuccess, 1) => write_response(
+                    stream,
+                    200,
+                    "text/event-stream",
+                    FINAL_TWO,
+                    Some("structured-request"),
+                ),
+                (ServerScenario::StructuredWait, 1) => wait_for_stop(stream),
                 (_, 1) => write_response(stream, 200, "application/json", TOOL, Some("request-1")),
                 (ServerScenario::Success, 2) => write_response(
                     stream,

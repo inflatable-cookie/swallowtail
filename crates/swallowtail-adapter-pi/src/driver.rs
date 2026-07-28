@@ -18,6 +18,7 @@ mod catalogue;
 mod descriptor;
 mod handle;
 mod launch;
+mod run;
 mod session;
 mod startup;
 mod validation;

@@ -2,15 +2,93 @@ mod support;
 
 use futures_executor::block_on;
 use futures_util::StreamExt;
+use std::sync::Arc;
 use support::{DriverCall, DriverFixture, ServerScenario, turn_request};
-use swallowtail_adapter_xai::{USD_TICKS_PER_USD, XaiWebSocketDriver};
-use swallowtail_core::SessionAccessPolicy;
+use swallowtail_adapter_xai::{USD_TICKS_PER_USD, XaiWebSocketDriver, xai_websocket_descriptor};
+use swallowtail_core::{CancellationScope, SessionAccessPolicy};
 use swallowtail_runtime::{
-    CancellationAcknowledgement, CleanupOutcome, Currency, Deadline, InteractiveSessionDriver,
-    InteractiveSessionHandle, MonotonicInstant, OpenSessionRequest, ProviderObservation, RequestId,
-    RuntimeEvent, RuntimeEventKind, SessionPlanAgreement, TerminalOutcome, TerminalStatus,
-    TurnHandle, WorkingResourceRef,
+    CancellationAcknowledgement, CleanupOutcome, Currency, Deadline, DriverRegistration,
+    InteractiveSessionDriver, InteractiveSessionHandle, MonotonicInstant, OpenSessionRequest,
+    OperationContent, OperationPolicy, ProviderObservation, RequestId, RunHandle, RuntimeEvent,
+    RuntimeEventKind, SchemaDocument, SessionPlanAgreement, StructuredRunDriver,
+    StructuredRunRequest, TerminalOutcome, TerminalStatus, ToolDeclaration, TurnHandle,
+    WorkingResourceRef,
 };
+
+#[test]
+fn descriptor_registers_interactive_and_structured_roles_independently() {
+    let driver = Arc::new(XaiWebSocketDriver::new());
+    let registration = DriverRegistration::new(xai_websocket_descriptor())
+        .with_interactive_session(Arc::clone(&driver) as Arc<dyn InteractiveSessionDriver>)
+        .expect("interactive role registers")
+        .with_structured_run(driver as Arc<dyn StructuredRunDriver>)
+        .expect("structured role registers");
+    assert!(registration.interactive_session().is_some());
+    assert!(registration.structured_run().is_some());
+}
+
+#[test]
+fn one_response_run_closes_without_exposing_connection_continuation() {
+    let fixture = DriverFixture::new(ServerScenario::OneResponse);
+    let request = structured_request("one-response");
+    let mut run = block_on(XaiWebSocketDriver::new().start_run(
+        fixture.run_plan(),
+        request,
+        fixture.services(),
+    ))
+    .expect("structured run starts");
+    assert!(run.provider_run_ref().is_none());
+    assert_eq!(run.cancellation().scope(), CancellationScope::StructuredRun);
+    let (events, outcome) = complete_run(&mut run);
+    assert_completed(&outcome, "First response.");
+    assert_turn_evidence(&events, 125_000, "xai-structured:one-response");
+    assert_eq!(fixture.calls.count(DriverCall::CredentialRelease), 1);
+    assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
+    let frames = fixture.server.frames();
+    assert_eq!(frames.len(), 1);
+    assert!(frames[0].contains(r#""store":false"#));
+    assert!(!frames[0].contains("previous_response_id"));
+}
+
+#[test]
+fn structured_run_cancellation_closes_and_joins_the_connection() {
+    let fixture = DriverFixture::new(ServerScenario::WaitForClientClose);
+    let mut run = block_on(XaiWebSocketDriver::new().start_run(
+        fixture.run_plan(),
+        structured_request("cancel-run"),
+        fixture.services(),
+    ))
+    .expect("structured run starts");
+    fixture.server.wait_for_frames(1);
+    block_on(run.cancellation().request()).expect("cancellation requests");
+    let (_, outcome) = complete_run(&mut run);
+    assert_eq!(outcome.status(), &TerminalStatus::Cancelled);
+    assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
+    assert_eq!(fixture.calls.count(DriverCall::CredentialRelease), 1);
+}
+
+#[test]
+fn structured_run_tools_reject_before_connection_or_credential_effects() {
+    let fixture = DriverFixture::new(ServerScenario::OneResponse);
+    let request = structured_request("tool-run").with_tools([ToolDeclaration::new(
+        "unexpected_tool",
+        SchemaDocument::inline(br#"{"type":"object"}"#.to_vec(), 1_024).expect("schema"),
+        "application/schema+json",
+        "json-schema-2020-12",
+    )
+    .expect("tool")]);
+    let error = block_on(XaiWebSocketDriver::new().start_run(
+        fixture.run_plan(),
+        request,
+        fixture.services(),
+    ))
+    .err()
+    .expect("tools reject");
+    assert_eq!(error.diagnostic().code(), "swallowtail.xai.unsupported");
+    assert_eq!(fixture.calls.count(DriverCall::NetworkAuthorize), 0);
+    assert_eq!(fixture.calls.count(DriverCall::CredentialAcquire), 0);
+    assert!(fixture.server.frames().is_empty());
+}
 
 #[test]
 fn serial_session_streams_two_private_continuation_turns() {
@@ -219,6 +297,28 @@ fn complete_handle(
         (events, terminal.await)
     });
     (turn, events, outcome)
+}
+
+fn complete_run(run: &mut Box<dyn RunHandle>) -> (Vec<RuntimeEvent>, TerminalOutcome) {
+    let mut stream = run.take_events().expect("events are available");
+    let terminal = run
+        .take_terminal_outcome()
+        .expect("terminal outcome is available");
+    block_on(async {
+        let mut events = Vec::new();
+        while let Some(event) = stream.next().await {
+            events.push(event.expect("event succeeds"));
+        }
+        (events, terminal.await)
+    })
+}
+
+fn structured_request(id: &str) -> StructuredRunRequest {
+    StructuredRunRequest::new(
+        RequestId::new(id).expect("request id is valid"),
+        OperationContent::new("fixture input").expect("content is valid"),
+        OperationPolicy::offline(),
+    )
 }
 
 fn assert_completed(outcome: &TerminalOutcome, output: &str) {

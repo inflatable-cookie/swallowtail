@@ -164,6 +164,24 @@ cp "$release_source_root/Cargo.lock" "$release_verify_root/Cargo.lock"
   cd "$release_verify_root"
   cargo check --workspace --all-targets --locked
   cargo test --workspace --no-run --locked
+  for release_structured_suite in \
+    "swallowtail-adapter-alibaba-model-studio|prepared_facade" \
+    "swallowtail-adapter-claude-agent|structured_run" \
+    "swallowtail-adapter-deepseek|prepared_facade" \
+    "swallowtail-adapter-gemini|headless_structured_run" \
+    "swallowtail-adapter-kimi|headless_structured_run" \
+    "swallowtail-adapter-kimi|local_server_structured_run" \
+    "swallowtail-adapter-opencode|prepared_facade" \
+    "swallowtail-adapter-pi|structured_run" \
+    "swallowtail-adapter-xai|prepared_facade"
+  do
+    IFS='|' read -r release_structured_package release_structured_test \
+      <<< "$release_structured_suite"
+    cargo test \
+      --package "$release_structured_package" \
+      --test "$release_structured_test" \
+      --locked
+  done
   for release_kimi_test in \
     local_server_corpus \
     local_server_lifecycle \

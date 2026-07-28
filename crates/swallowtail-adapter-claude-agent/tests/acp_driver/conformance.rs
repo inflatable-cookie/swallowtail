@@ -14,7 +14,7 @@ use swallowtail_runtime::{EnvironmentRef, InteractiveSessionDriver};
 use swallowtail_testkit::{
     ClosedSemanticWindowCase, ConformanceAssertion, SyntheticProfile,
     assert_closed_semantic_compatibility_window, assert_unverified_newer_execution,
-    run_long_lived_acp_profile,
+    run_acp_single_turn_projection_assertions, run_long_lived_acp_profile,
 };
 
 #[test]
@@ -35,6 +35,26 @@ fn unchanged_long_lived_acp_profile_covers_the_portable_subset() {
         ConformanceAssertion::ProcessLifecycle,
         ConformanceAssertion::WorkingResourceCallback,
         ConformanceAssertion::HostTopologyPreserved,
+    ] {
+        assert!(report.covers(assertion), "missing {assertion:?}");
+    }
+}
+
+#[test]
+fn provider_neutral_acp_projection_keeps_retention_callbacks_and_close_exact() {
+    let report = run_acp_single_turn_projection_assertions();
+    assert_eq!(report.profile(), SyntheticProfile::LongLivedAcpHarness);
+    for assertion in [
+        ConformanceAssertion::PreflightBeforeSideEffects,
+        ConformanceAssertion::OrderedEvents,
+        ConformanceAssertion::SingleTerminalOutcome,
+        ConformanceAssertion::CancellationAndTimeoutDistinct,
+        ConformanceAssertion::CleanupRemainsVisible,
+        ConformanceAssertion::NoImplicitFallback,
+        ConformanceAssertion::SessionLifecycle,
+        ConformanceAssertion::CallbackExchange,
+        ConformanceAssertion::DurableRetentionExplicit,
+        ConformanceAssertion::NoTranscriptDeletionClaim,
     ] {
         assert!(report.covers(assertion), "missing {assertion:?}");
     }
@@ -70,7 +90,7 @@ fn both_topologies_bind_public_api_ambient_read_only_authority() {
     let session_services = descriptor
         .required_host_services(swallowtail_core::DriverRole::InteractiveSession)
         .collect::<Vec<_>>();
-    assert!(session_services.contains(&HostServiceKind::Credential));
+    assert!(!session_services.contains(&HostServiceKind::Credential));
     assert!(session_services.contains(&HostServiceKind::WorkingResourceIo));
     assert!(!session_services.contains(&HostServiceKind::Network));
 
@@ -80,6 +100,11 @@ fn both_topologies_bind_public_api_ambient_read_only_authority() {
         let plan = selected.plan;
         assert_eq!(plan.execution_host_id(), &host);
         assert_eq!(plan.credential_mechanism(), &CredentialMechanism::ApiKey);
+        assert!(
+            plan.requirements()
+                .host_services()
+                .any(|service| service == HostServiceKind::Credential)
+        );
         assert_eq!(plan.endpoint_audience().as_str(), "api.anthropic.com");
         assert_eq!(
             plan.model_id().expect("model is bound").as_str(),

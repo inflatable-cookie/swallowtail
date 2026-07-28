@@ -57,12 +57,15 @@ provider_facade_suites=(
   "swallowtail-adapter-codex|prepared_profiles"
   "swallowtail-adapter-deepseek|prepared_facade"
   "swallowtail-adapter-gemini|prepared_facade"
+  "swallowtail-adapter-gemini|headless_structured_run"
   "swallowtail-adapter-gemini|live_prepared_facade"
   "swallowtail-adapter-kimi|prepared_facade"
+  "swallowtail-adapter-kimi|headless_structured_run"
   "swallowtail-adapter-kimi|local_server_corpus"
   "swallowtail-adapter-kimi|local_server_lifecycle"
   "swallowtail-adapter-kimi|local_server_binding_import"
   "swallowtail-adapter-kimi|local_server_interactive"
+  "swallowtail-adapter-kimi|local_server_structured_run"
   "swallowtail-adapter-kimi-platform|prepared_facade"
   "swallowtail-adapter-llama-cpp|prepared_facades"
   "swallowtail-adapter-ollama|prepared_facade"
@@ -89,7 +92,9 @@ provider_route_proofs=(
   "codex.app-server|swallowtail-adapter-codex|prepared_profiles"
   "claude-agent.acp|swallowtail-adapter-claude-agent|prepared_facade"
   "gemini-cli.acp|swallowtail-adapter-gemini|prepared_facade"
+  "gemini-cli.headless|swallowtail-adapter-gemini|headless_structured_run"
   "kimi-code.acp|swallowtail-adapter-kimi|prepared_facade"
+  "kimi-code.headless|swallowtail-adapter-kimi|headless_structured_run"
   "kimi-code.local-server|swallowtail-adapter-kimi|local_server_interactive"
   "pi.rpc|swallowtail-adapter-pi|prepared_facade"
   "qwen.headless|swallowtail-adapter-qwen|prepared_facade"
@@ -110,7 +115,7 @@ provider_route_proofs=(
   "llama-cpp.owned|swallowtail-adapter-llama-cpp|prepared_facades"
 )
 
-test "${#provider_route_proofs[@]}" -eq 23
+test "${#provider_route_proofs[@]}" -eq 25
 
 release_provider_evidence="$release_tmp/provider-validation.env"
 {

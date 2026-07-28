@@ -15,7 +15,8 @@ use swallowtail_runtime::{
     CredentialLease, EnvironmentRef, ExecutableRef, HostServices, InteractiveSessionDriver,
     InteractiveSessionHandle, JoinedTask, OpenSessionRequest, ProcessHandle, ProcessRequest,
     RequestId, ResourceLease, ResumeSessionRequest, RuntimeFailure, RuntimeSessionId, ScopeId,
-    TerminalOutcome, TurnHandle, TurnRequest, validate_session_resource_lease,
+    SessionLifecycleOperation, TerminalOutcome, TurnHandle, TurnRequest,
+    prepare_negotiated_reasoning_setup, validate_session_resource_lease,
 };
 
 const DRIVER_ID: &str = "swallowtail.claude-agent.acp";
@@ -25,15 +26,25 @@ use self::validation::{validate_open, validate_plan};
 
 pub struct ClaudeAgentAcpDriver {
     environment: EnvironmentRef,
-    credential: CredentialRef,
+    credential: Option<CredentialRef>,
 }
 
 impl ClaudeAgentAcpDriver {
+    /// Uses one host-approved Anthropic API-key credential reference.
     #[must_use]
     pub const fn new(environment: EnvironmentRef, credential: CredentialRef) -> Self {
         Self {
             environment,
-            credential,
+            credential: Some(credential),
+        }
+    }
+
+    /// Uses authentication already held by the locally installed Claude harness.
+    #[must_use]
+    pub const fn with_local_auth(environment: EnvironmentRef) -> Self {
+        Self {
+            environment,
+            credential: None,
         }
     }
 }
@@ -46,10 +57,19 @@ impl InteractiveSessionDriver for ClaudeAgentAcpDriver {
         services: HostServices,
     ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
         Box::pin(async move {
-            let selected = validate_plan(&plan, &self.credential)?;
+            let selected = validate_plan(&plan, self.credential.as_ref())?;
+            let reasoning = prepare_negotiated_reasoning_setup(
+                &plan,
+                SessionLifecycleOperation::Open,
+                request.options(),
+            )?
+            .map(|setup| setup.requested().clone());
+            if reasoning.is_some() && !selected.behavior().supports_config_options() {
+                return Err(unsupported("reasoning selection for this adapter version"));
+            }
             validate_open(&plan, &request, &services)?;
             let session = self
-                .start_session(&plan, &request, &services, selected)
+                .start_session(&plan, &request, &services, selected, reasoning)
                 .await?;
             Ok(Box::new(session) as Box<dyn InteractiveSessionHandle>)
         })
@@ -66,8 +86,10 @@ impl InteractiveSessionDriver for ClaudeAgentAcpDriver {
 }
 
 mod access;
+mod config;
 mod descriptor;
 mod handle;
+mod run;
 mod session;
 mod session_management;
 mod validation;

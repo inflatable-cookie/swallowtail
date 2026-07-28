@@ -80,6 +80,7 @@ pub fn deepseek_v4_requirements(
         CapabilityRequirement::new(Capability::ToolCalls, []),
         CapabilityRequirement::new(Capability::UsageReporting, []),
         CapabilityRequirement::new(Capability::OutputTokenLimit, []),
+        CapabilityRequirement::new(Capability::ProviderManagedInferenceCache, []),
         CapabilityRequirement::new(
             Capability::Interruption,
             [CapabilityConstraint::CancellationScope(
@@ -115,6 +116,54 @@ pub fn deepseek_v4_requirements(
         ModelId::new(DEEPSEEK_MODEL_ID).unwrap(),
         config,
     ))
+    .with_interface_versions([deepseek_facade_binding()])
+    .require_model_route()
+}
+
+#[must_use]
+pub fn deepseek_v4_run_requirements(
+    execution_host_id: ExecutionHostId,
+    access_profile_id: AccessProfileId,
+) -> OperationRequirements {
+    OperationRequirements::new(
+        ExecutionLayer::DirectModelInference,
+        OperationShape::StructuredRun,
+        DriverRole::StructuredRun,
+        execution_host_id,
+        AccessRequirement::new(access_profile_id)
+            .with_credential_states([CredentialState::Ready])
+            .with_entitlement_states([EntitlementState::Available])
+            .with_endpoint_authorizations([EndpointAuthorization::Allowed])
+            .with_runtime_readiness([RuntimeReadiness::Ready])
+            .with_support_authorities([SupportAuthority::ProviderSupported]),
+    )
+    .with_ownership_modes([InstanceOwnership::ExternalAttached])
+    .with_host_services([
+        HostServiceKind::Task,
+        HostServiceKind::BlockingWork,
+        HostServiceKind::Time,
+        HostServiceKind::Network,
+        HostServiceKind::Credential,
+    ])
+    .with_capabilities([
+        CapabilityRequirement::new(Capability::StructuredRun, []),
+        CapabilityRequirement::new(Capability::StreamingEvents, []),
+        CapabilityRequirement::new(Capability::UsageReporting, []),
+        CapabilityRequirement::new(Capability::OutputTokenLimit, []),
+        CapabilityRequirement::new(Capability::ProviderManagedInferenceCache, []),
+        CapabilityRequirement::new(
+            Capability::ReasoningSelection,
+            [CapabilityConstraint::ReasoningMode(
+                swallowtail_core::ReasoningMode::new("high").expect("static mode is valid"),
+            )],
+        ),
+        CapabilityRequirement::new(
+            Capability::Interruption,
+            [CapabilityConstraint::CancellationScope(
+                CancellationScope::StructuredRun,
+            )],
+        ),
+    ])
     .with_interface_versions([deepseek_facade_binding()])
     .require_model_route()
 }

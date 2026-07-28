@@ -5,6 +5,15 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-07-28 Kimi Structured Runs](2026-07-28-kimi-structured-runs.md)
+- [2026-07-28 Claude Agent Local Subscription Auth](2026-07-28-claude-agent-local-subscription-auth.md)
+- [2026-07-28 Kimi 0.29.2 Currentness And Corpora](2026-07-28-kimi-0-29-2-currentness-and-corpora.md)
+- [2026-07-28 Gemini CLI Headless Structured Run](2026-07-28-gemini-cli-headless-structured-run.md)
+- [2026-07-28 Pi RPC And OpenCode Structured Runs](2026-07-28-pi-rpc-and-opencode-structured-runs.md)
+- [2026-07-27 Claude Agent ACP Structured Projection](2026-07-27-claude-agent-acp-structured-projection.md)
+- [2026-07-27 xAI One-Response Structured Run](2026-07-27-xai-one-response-structured-run.md)
+- [2026-07-27 Alibaba And DeepSeek Structured Runs](2026-07-27-alibaba-deepseek-structured-runs.md)
+- [2026-07-27 Structured-Run Closure Research And Roadmap](2026-07-27-structured-run-closure-research-and-roadmap.md)
 - [2026-07-27 Model Catalogue No-Closure](2026-07-27-model-catalogue-no-closure.md)
 - [2026-07-27 Pi RPC Model Catalogue](2026-07-27-pi-rpc-model-catalogue.md)
 - [2026-07-27 Provider Solution Facade Alignment Audit](2026-07-27-provider-solution-facade-alignment-audit.md)

@@ -19,12 +19,14 @@ pub fn kimi_local_server_descriptor() -> DriverDescriptor {
     )
     .with_roles([
         DriverRole::ModelCatalog,
+        DriverRole::StructuredRun,
         DriverRole::InteractiveSession,
         DriverRole::ProviderSessionManagement,
     ])
     .with_execution_layers([ExecutionLayer::HarnessInteraction])
     .with_operation_shapes([
         OperationShape::InteractiveSession,
+        OperationShape::StructuredRun,
         OperationShape::ProviderSessionManagement,
     ])
     .with_interface_compatibility(crate::kimi_local_server_claim())
@@ -35,6 +37,17 @@ pub fn kimi_local_server_descriptor() -> DriverDescriptor {
             HostServiceKind::Time,
             HostServiceKind::Network,
             HostServiceKind::Credential,
+        ],
+    )
+    .with_required_host_services(
+        DriverRole::StructuredRun,
+        [
+            HostServiceKind::Task,
+            HostServiceKind::BlockingWork,
+            HostServiceKind::Time,
+            HostServiceKind::Network,
+            HostServiceKind::Credential,
+            HostServiceKind::WorkingResource,
         ],
     )
     .with_required_host_services(

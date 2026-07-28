@@ -60,6 +60,11 @@ pub(super) fn serve(
             event(&mut socket, 1, None, "turn.started", r#"{"turnId":7}"#);
             complete_flow(&mut socket, 2);
         }
+        InteractiveScenario::GlobalNoise => {
+            foreign_global_event(&mut socket);
+            event(&mut socket, 1, None, "turn.started", r#"{"turnId":7}"#);
+            complete_flow(&mut socket, 2);
+        }
         InteractiveScenario::Approval => {
             waiting_flow(&mut socket, "awaiting_approval");
             await_callback(&callback_resolved);
@@ -75,6 +80,13 @@ pub(super) fn serve(
             cancel_response(&mut socket, 3);
         }
     }
+}
+
+fn foreign_global_event(socket: &mut WebSocket<TcpStream>) {
+    send_json(
+        socket,
+        r#"{"type":"event.session.created","seq":1,"timestamp":"now","session_id":"foreign-session","epoch":"foreign-epoch","payload":{"session":{"id":"foreign-session"}}}"#,
+    );
 }
 
 fn complete_flow(socket: &mut WebSocket<TcpStream>, first_seq: u64) {

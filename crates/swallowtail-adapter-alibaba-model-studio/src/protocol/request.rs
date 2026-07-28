@@ -80,6 +80,21 @@ impl WireRequest {
         })
     }
 
+    pub fn structured_response(input: &OperationContent) -> Result<Self, AlibabaProtocolFailure> {
+        Ok(Self {
+            method: Method::Post,
+            path: "/compatible-mode/v1/responses".to_owned(),
+            body: Some(json!({
+                "model": EXACT_MODEL_ID,
+                "input": input.as_str(),
+                "stream": true,
+                "store": false,
+                "reasoning": {"effort": "none"}
+            })),
+            session_cache: false,
+        })
+    }
+
     #[must_use]
     pub fn list_items(conversation: &ConversationRef) -> Self {
         Self {

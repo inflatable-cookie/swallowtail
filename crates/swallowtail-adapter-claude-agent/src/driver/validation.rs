@@ -1,5 +1,10 @@
 use super::*;
 use crate::selection::{ClaudeAgentBehavior, ClaudeAgentPlanSelection};
+use swallowtail_runtime::{
+    ExternalNetworkPolicy, ExternalSearchPolicy, ProviderExecutionPolicy, ProviderRecoveryPolicy,
+    ProviderRetentionPolicy, StreamReattachmentPolicy, StructuredRunRequest,
+    validate_harness_configuration_policy, validate_harness_isolation_policy,
+};
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub(super) struct ClaudeAgentLifecycleCapabilities {
@@ -9,7 +14,7 @@ pub(super) struct ClaudeAgentLifecycleCapabilities {
 
 pub(super) fn validate_plan(
     plan: &PreflightPlan,
-    credential: &CredentialRef,
+    credential: Option<&CredentialRef>,
 ) -> Result<ClaudeAgentPlanSelection, RuntimeFailure> {
     if plan.driver_identity().id().as_str() != DRIVER_ID {
         return Err(failure(
@@ -17,13 +22,24 @@ pub(super) fn validate_plan(
             "Preflight plan is bound to a different driver",
         ));
     }
-    if plan.credential_mechanism() != &CredentialMechanism::ApiKey
-        || plan.credential_reference() != Some(credential)
-        || plan.endpoint_audience().as_str() != ENDPOINT_AUDIENCE
-    {
+    let access_matches = match plan.credential_mechanism() {
+        CredentialMechanism::ApiKey => {
+            credential.is_some()
+                && plan.credential_reference() == credential
+                && plan
+                    .requirements()
+                    .host_services()
+                    .any(|service| service == HostServiceKind::Credential)
+        }
+        CredentialMechanism::LocalUnauthenticated => {
+            credential.is_none() && plan.credential_reference().is_none()
+        }
+        _ => false,
+    };
+    if !access_matches || plan.endpoint_audience().as_str() != ENDPOINT_AUDIENCE {
         return Err(failure(
             "swallowtail.claude_agent.acp.access_profile_rejected",
-            "Claude Agent ACP requires its configured Anthropic public-API key profile",
+            "Claude Agent ACP requires configured API-key access or local Claude authentication",
         ));
     }
     if plan.harness_configuration_posture() != Some(HarnessConfigurationPosture::Ambient) {
@@ -64,11 +80,6 @@ pub(super) fn validate_open(
             "Claude Agent ACP requires a process service",
         ),
         (
-            services.credential().is_some(),
-            "swallowtail.claude_agent.acp.credential_service_missing",
-            "Claude Agent ACP requires an API-key credential service",
-        ),
-        (
             services.working_resource().is_some(),
             "swallowtail.claude_agent.acp.resource_service_missing",
             "Claude Agent ACP requires a working-resource service",
@@ -83,6 +94,14 @@ pub(super) fn validate_open(
             return Err(failure(code, message));
         }
     }
+    if plan.credential_mechanism() == &CredentialMechanism::ApiKey
+        && services.credential().is_none()
+    {
+        return Err(failure(
+            "swallowtail.claude_agent.acp.credential_service_missing",
+            "Claude Agent ACP API-key access requires a credential service",
+        ));
+    }
     swallowtail_runtime::validate_session_plan_agreement(plan, request.plan_agreement())?;
     if request.access_policy() != &SessionAccessPolicy::ambient_harness(ResourceAccess::Read) {
         return Err(failure(
@@ -96,10 +115,170 @@ pub(super) fn validate_open(
     if request.deadline().is_some() {
         return Err(unsupported("session deadline"));
     }
-    if !request.options().is_empty() {
+    if request.options().developer_instructions().is_some() || request.options().tools().len() != 0
+    {
         return Err(unsupported("session options"));
     }
     Ok(())
+}
+
+pub(super) fn validate_run(
+    plan: &PreflightPlan,
+    request: &StructuredRunRequest,
+    services: &HostServices,
+) -> Result<(), RuntimeFailure> {
+    services.require_execution_host(plan.execution_host_id())?;
+    if plan.requirements().execution_layer() != ExecutionLayer::HarnessInteraction
+        || plan.requirements().operation_shape() != OperationShape::StructuredRun
+        || plan.requirements().driver_role() != DriverRole::StructuredRun
+        || plan.ownership() != swallowtail_core::InstanceOwnership::HostOwnedEphemeral
+        || plan.model_id().is_none()
+        || plan.model_route_id().is_none()
+    {
+        return Err(failure(
+            "swallowtail.claude_agent.acp.run_plan_mismatch",
+            "Claude Agent structured run does not match its preflight plan",
+        ));
+    }
+    let mut required_services = vec![
+        HostServiceKind::Task,
+        HostServiceKind::Time,
+        HostServiceKind::Process,
+        HostServiceKind::WorkingResource,
+        HostServiceKind::WorkingResourceIo,
+    ];
+    if plan.credential_mechanism() == &CredentialMechanism::ApiKey {
+        required_services.push(HostServiceKind::Credential);
+    }
+    for service in required_services {
+        if !plan
+            .requirements()
+            .host_services()
+            .any(|required| required == service)
+            || !services.available_kinds().contains(&service)
+        {
+            return Err(failure(
+                "swallowtail.claude_agent.acp.run_host_service_missing",
+                "Claude Agent structured run requires its preflight-bound host services",
+            ));
+        }
+    }
+    for capability in [
+        swallowtail_core::Capability::StructuredRun,
+        swallowtail_core::Capability::StreamingEvents,
+        swallowtail_core::Capability::WorkingResource,
+        swallowtail_core::Capability::ProviderDurableRetention,
+    ] {
+        if !plan
+            .requirements()
+            .capabilities()
+            .any(|required| required.capability() == capability)
+        {
+            return Err(failure(
+                "swallowtail.claude_agent.acp.run_capability_mismatch",
+                "Claude Agent structured-run capabilities do not match the preflight plan",
+            ));
+        }
+    }
+    let interruption = plan
+        .requirements()
+        .capabilities()
+        .find(|required| required.capability() == swallowtail_core::Capability::Interruption);
+    if interruption.is_none_or(|required| {
+        !required.constraints().any(|constraint| {
+            constraint
+                == &swallowtail_core::CapabilityConstraint::CancellationScope(
+                    CancellationScope::StructuredRun,
+                )
+        })
+    }) {
+        return Err(failure(
+            "swallowtail.claude_agent.acp.run_capability_mismatch",
+            "Claude Agent structured-run cancellation scope does not match the preflight plan",
+        ));
+    }
+    if request.working_resource().is_none() {
+        return Err(unsupported("a resource-free structured run"));
+    }
+    if request.attachments().len() != 0
+        || request.tools().len() != 0
+        || request.structured_output().is_some()
+        || request.maximum_output_tokens().is_some()
+    {
+        return Err(unsupported(
+            "structured-run attachments, consumer tools, schema, or output-token limit",
+        ));
+    }
+    let policy = request.policy();
+    validate_harness_isolation_policy(plan, policy).map_err(|_| {
+        failure(
+            "swallowtail.claude_agent.acp.run_isolation_mismatch",
+            "Claude Agent structured-run isolation does not match the preflight plan",
+        )
+    })?;
+    validate_harness_configuration_policy(plan, policy).map_err(|_| {
+        failure(
+            "swallowtail.claude_agent.acp.run_configuration_mismatch",
+            "Claude Agent structured-run configuration does not match the preflight plan",
+        )
+    })?;
+    validate_run_reasoning(plan, policy.reasoning_mode())?;
+    if policy.external_network() != ExternalNetworkPolicy::Denied
+        || policy.external_search() != ExternalSearchPolicy::Disabled
+        || policy.provider_execution() != ProviderExecutionPolicy::Attached
+        || policy.provider_retention() != ProviderRetentionPolicy::DurableAllowed
+        || policy.provider_recovery() != ProviderRecoveryPolicy::Prohibited
+        || policy.stream_reattachment() != StreamReattachmentPolicy::Disabled
+    {
+        return Err(unsupported("structured-run lifecycle or inference policy"));
+    }
+    if let Some(deadline) = request.deadline()
+        && services.time().expect("validated time").now() >= deadline.instant()
+    {
+        return Err(failure(
+            "swallowtail.claude_agent.acp.deadline_elapsed",
+            "Claude Agent run deadline elapsed before provider work",
+        ));
+    }
+    Ok(())
+}
+
+fn validate_run_reasoning(
+    plan: &PreflightPlan,
+    requested: Option<&swallowtail_core::ReasoningMode>,
+) -> Result<(), RuntimeFailure> {
+    let requirements = plan
+        .requirements()
+        .capabilities()
+        .filter(|requirement| {
+            requirement.capability() == swallowtail_core::Capability::ReasoningSelection
+        })
+        .collect::<Vec<_>>();
+    if requested.is_none() && requirements.is_empty() {
+        return Ok(());
+    }
+    let [requirement] = requirements.as_slice() else {
+        return Err(failure(
+            "swallowtail.claude_agent.acp.run_reasoning_mismatch",
+            "Claude Agent run reasoning does not match its preflight plan",
+        ));
+    };
+    let constraints = requirement.constraints().collect::<Vec<_>>();
+    let [swallowtail_core::CapabilityConstraint::ReasoningMode(planned)] = constraints.as_slice()
+    else {
+        return Err(failure(
+            "swallowtail.claude_agent.acp.run_reasoning_mismatch",
+            "Claude Agent run reasoning does not match its preflight plan",
+        ));
+    };
+    if requested == Some(planned) {
+        Ok(())
+    } else {
+        Err(failure(
+            "swallowtail.claude_agent.acp.run_reasoning_mismatch",
+            "Claude Agent run reasoning does not match its preflight plan",
+        ))
+    }
 }
 
 pub(super) fn validate_initialize(
@@ -159,31 +338,6 @@ pub(super) fn validate_initialize(
         ));
     }
     Ok(lifecycle)
-}
-
-pub(super) fn parse_session(response: &Value, model: &str) -> Result<String, RuntimeFailure> {
-    let configured = response
-        .get("configOptions")
-        .and_then(Value::as_array)
-        .and_then(|options| {
-            options
-                .iter()
-                .find(|option| option.get("id").and_then(Value::as_str) == Some("model"))
-        })
-        .and_then(|option| option.get("currentValue"))
-        .and_then(Value::as_str)
-        .ok_or_else(malformed)?;
-    if configured != model {
-        return Err(failure(
-            "swallowtail.claude_agent.acp.model_mismatch",
-            "Claude Agent session model does not match the preflight route",
-        ));
-    }
-    response
-        .get("sessionId")
-        .and_then(Value::as_str)
-        .map(str::to_owned)
-        .ok_or_else(malformed)
 }
 
 pub(super) fn validate_turn(

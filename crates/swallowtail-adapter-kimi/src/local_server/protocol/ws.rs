@@ -252,6 +252,11 @@ fn decode_event(
         | "agent.created"
         | "agent.disposed"
         | "event.session.work_changed"
+        | "event.session.created"
+        | "event.workspace.created"
+        | "event.workspace.updated"
+        | "event.workspace.deleted"
+        | "event.config.changed"
         | "session.meta.updated" => Ok(WsEvent::Progress),
         _ => Err(super::common::unsupported_event()),
     }

@@ -8,6 +8,8 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{PreparationFailure, PreparationStage};
 
+pub(crate) const REASONING_MODES: [&str; 6] = ["default", "low", "medium", "high", "xhigh", "max"];
+
 pub(super) fn configured_instance(
     input: &ClaudeAgentPreparationInput,
     observation: &InstalledExecutableObservation,
@@ -32,14 +34,16 @@ pub(super) fn configured_instance(
         ProtocolFacadeId::new("acp-v1").expect("static Claude Agent facade is valid"),
         InstancePolicyId::new("claude-agent-prepared-ambient")
             .expect("static Claude Agent policy is valid"),
-        session_capabilities(),
+        session_capabilities(crate::selection::version_supports_config_options(
+            observation.version().version(),
+        )),
     )
     .with_interface_versions([observation.version().clone()])
     .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient))
 }
 
-pub(crate) fn session_capabilities() -> CapabilityProfile {
-    CapabilityProfile::new([
+pub(crate) fn session_capabilities(reasoning: bool) -> CapabilityProfile {
+    let mut capabilities = vec![
         CapabilityRequirement::new(Capability::InteractiveSession, []),
         CapabilityRequirement::new(Capability::StreamingEvents, []),
         CapabilityRequirement::new(
@@ -55,5 +59,44 @@ pub(crate) fn session_capabilities() -> CapabilityProfile {
                 CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
             ],
         ),
-    ])
+    ];
+    add_reasoning_capability(&mut capabilities, reasoning);
+    CapabilityProfile::new(capabilities)
+}
+
+pub(crate) fn run_capabilities(reasoning: bool) -> CapabilityProfile {
+    let mut capabilities = vec![
+        CapabilityRequirement::new(Capability::StructuredRun, []),
+        CapabilityRequirement::new(Capability::StreamingEvents, []),
+        CapabilityRequirement::new(
+            Capability::Interruption,
+            [CapabilityConstraint::CancellationScope(
+                swallowtail_core::CancellationScope::StructuredRun,
+            )],
+        ),
+        CapabilityRequirement::new(
+            Capability::WorkingResource,
+            [
+                CapabilityConstraint::ResourceAccess(ResourceAccess::Read),
+                CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
+            ],
+        ),
+        CapabilityRequirement::new(Capability::ProviderDurableRetention, []),
+    ];
+    add_reasoning_capability(&mut capabilities, reasoning);
+    CapabilityProfile::new(capabilities)
+}
+
+fn add_reasoning_capability(capabilities: &mut Vec<CapabilityRequirement>, supported: bool) {
+    if supported {
+        capabilities.push(CapabilityRequirement::new(
+            Capability::ReasoningSelection,
+            REASONING_MODES.into_iter().map(|mode| {
+                CapabilityConstraint::ReasoningMode(
+                    swallowtail_core::ReasoningMode::new(mode)
+                        .expect("static Claude Agent reasoning mode is valid"),
+                )
+            }),
+        ));
+    }
 }

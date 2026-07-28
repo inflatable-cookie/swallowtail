@@ -90,6 +90,45 @@ fn both_qualified_releases_pass_the_selected_rest_corpus() {
 }
 
 #[test]
+fn later_release_metadata_and_global_event_delta_are_frozen() {
+    for (expected, fixture) in [
+        (
+            "0.29.1",
+            include_bytes!(concat!(
+                "../../../tests/fixtures/kimi-code-0.29.1-0.29.2/",
+                "meta-0.29.1.json"
+            ))
+            .as_slice(),
+        ),
+        (
+            "0.29.2",
+            include_bytes!(concat!(
+                "../../../tests/fixtures/kimi-code-0.29.1-0.29.2/",
+                "meta-0.29.2.json"
+            ))
+            .as_slice(),
+        ),
+    ] {
+        let metadata = decode_metadata(fixture).expect("later metadata decodes");
+        assert_eq!(metadata.version, expected);
+        let executable =
+            crate::kimi_code_binding(expected).expect("qualified executable version binds");
+        crate::local_server::selection::corroborate_versions(&executable, &metadata.version)
+            .expect("later server metadata corroborates the executable");
+    }
+
+    let WsFrame::Event(event) = decode_ws_frame(include_bytes!(concat!(
+        "../../../tests/fixtures/kimi-code-0.29.1-0.29.2/",
+        "ws-global-session-created.json"
+    )))
+    .expect("global event decodes") else {
+        panic!("global fixture must be an event");
+    };
+    assert_eq!(event.session_id, "foreign-session");
+    assert_eq!(event.event, WsEvent::Progress);
+}
+
+#[test]
 fn selected_rest_failures_are_classified_without_wire_detail() {
     for (status, fixture, expected) in [
         (

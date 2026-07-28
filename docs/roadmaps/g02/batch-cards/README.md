@@ -68,6 +68,14 @@
 - `068-kimi-and-acp-model-evidence.md`
 - `069-hosted-provider-model-catalogues.md`
 - `070-model-catalogue-no-closure-audit.md`
+- `071-structured-run-closure-research-and-contract.md`
+- `072-alibaba-and-deepseek-structured-runs.md`
+- `073-xai-one-response-structured-run.md`
+- `074-acp-structured-projection-and-claude-agent.md`
+- `075-pi-rpc-and-opencode-structured-runs.md`
+- `076-gemini-cli-headless-structured-route.md`
+- `077-kimi-0-29-2-currentness-and-corpora.md`
+- `078-kimi-headless-and-retained-local-structured-runs.md`
 
 ## Superseded
 
@@ -80,11 +88,15 @@
 
 None. Cross-generation deferred work lives in `docs/roadmaps/backlog/`.
 
-## Active
+## Ready
+
+- `079-structured-run-provider-wide-closeout.md`
+
+## Planned
 
 None.
 
-## Planned
+## Operator-Held
 
 - `060-nucleus-thread-lifecycle-adoption-handoff.md`
 

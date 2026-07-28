@@ -1,8 +1,9 @@
 use super::*;
 use crate::driver::handle::SessionCancellation;
 use crate::driver::session::{ClaudeAgentSessionHandle, cleanup_failure, merge_cleanup};
-use crate::driver::validation::{parse_session, validate_initialize};
+use crate::driver::validation::validate_initialize;
 use crate::selection::ClaudeAgentPlanSelection;
+use swallowtail_core::ReasoningMode;
 
 struct PendingSession {
     connection: Arc<AcpConnection>,
@@ -18,40 +19,41 @@ impl ClaudeAgentAcpDriver {
         request: &OpenSessionRequest,
         services: &HostServices,
         selected: ClaudeAgentPlanSelection,
+        reasoning: Option<ReasoningMode>,
     ) -> Result<ClaudeAgentSessionHandle, RuntimeFailure> {
         let scope = ScopeId::new(format!(
             "claude-agent-acp:session:{}",
             request.request_id().as_str()
         ))
         .map_err(|_| malformed())?;
-        let credential_service = services
-            .credential()
-            .cloned()
-            .expect("validated credential service");
-        let mut credential = Some(
-            credential_service
-                .acquire(
-                    scope.clone(),
-                    self.credential.clone(),
-                    plan.endpoint_audience().clone(),
-                )
-                .await?,
-        );
-        if !matches!(credential.as_ref(), Some(CredentialLease::Secret(_)))
-            || credential.as_ref().is_some_and(|lease| {
-                lease.scope() != &scope
-                    || lease.reference() != &self.credential
+        let mut credential = match self.credential.as_ref() {
+            Some(reference) => {
+                let credential_service = services
+                    .credential()
+                    .cloned()
+                    .expect("validated credential service");
+                let lease = credential_service
+                    .acquire(
+                        scope.clone(),
+                        reference.clone(),
+                        plan.endpoint_audience().clone(),
+                    )
+                    .await?;
+                if !matches!(&lease, CredentialLease::Secret(_))
+                    || lease.scope() != &scope
+                    || lease.reference() != reference
                     || lease.audience() != plan.endpoint_audience()
-            })
-        {
-            let _ = credential_service
-                .release(credential.take().expect("credential was acquired"))
-                .await;
-            return Err(failure(
-                "swallowtail.claude_agent.acp.credential_lease_rejected",
-                "Claude Agent ACP requires a matching API-key secret lease",
-            ));
-        }
+                {
+                    let _ = credential_service.release(lease).await;
+                    return Err(failure(
+                        "swallowtail.claude_agent.acp.credential_lease_rejected",
+                        "Claude Agent ACP requires a matching API-key secret lease",
+                    ));
+                }
+                Some(lease)
+            }
+            None => None,
+        };
 
         let resource_service = services
             .working_resource()
@@ -72,9 +74,7 @@ impl ClaudeAgentAcpDriver {
         {
             Ok(resource) => Some(resource),
             Err(error) => {
-                let _ = credential_service
-                    .release(credential.take().expect("credential was acquired"))
-                    .await;
+                let _ = release_credential(credential.take(), services).await;
                 return Err(error);
             }
         };
@@ -86,9 +86,7 @@ impl ClaudeAgentAcpDriver {
             let _ = resource_service
                 .release(resource.take().expect("resource was resolved"))
                 .await;
-            let _ = credential_service
-                .release(credential.take().expect("credential was acquired"))
-                .await;
+            let _ = release_credential(credential.take(), services).await;
             return Err(error);
         }
         let cwd = resource
@@ -148,8 +146,26 @@ impl ClaudeAgentAcpDriver {
             let lifecycle = validate_initialize(&initialized, &selected)?;
             let model = plan.model_id().expect("validated model").as_str();
             let response = pending.connection.new_session(cwd, model).await?;
-            let provider_id = parse_session(&response, model)?;
+            let provider_id = crate::driver::config::parse_session_id(&response)?;
             pending.connection.set_session_id(provider_id.clone())?;
+            if selected.behavior().supports_config_options() {
+                crate::driver::config::validate_model_option(&response)?;
+                let configured = pending
+                    .connection
+                    .set_config_option(&provider_id, "model", model)
+                    .await?;
+                crate::driver::config::confirm_model(&configured, model)?;
+                if let Some(reasoning) = reasoning.as_ref() {
+                    crate::driver::config::validate_reasoning_option(&configured, reasoning)?;
+                    let confirmed = pending
+                        .connection
+                        .set_config_option(&provider_id, "effort", reasoning.as_str())
+                        .await?;
+                    crate::driver::config::confirm_reasoning(&confirmed, reasoning)?;
+                }
+            } else {
+                crate::driver::config::validate_legacy_model(&response, model)?;
+            }
             let provider_ref = SessionRef::new(&provider_id).map_err(|_| malformed())?;
             pending.take_handle(
                 request.request_id().clone(),

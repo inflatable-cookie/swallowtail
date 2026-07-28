@@ -12,7 +12,19 @@ pub(crate) struct ToolSpec {
 }
 
 pub(crate) fn encode_initial(user: &str, tools: &[ToolSpec]) -> Result<Vec<u8>, ProtocolFailure> {
-    encode(vec![ChatMessage::new("user", user)], tools, false)
+    encode(vec![ChatMessage::new("user", user)], tools, false, 8_192)
+}
+
+pub(crate) fn encode_structured(
+    user: &str,
+    maximum_output_tokens: u64,
+) -> Result<Vec<u8>, ProtocolFailure> {
+    encode(
+        vec![ChatMessage::new("user", user)],
+        &[],
+        true,
+        maximum_output_tokens,
+    )
 }
 
 #[allow(clippy::too_many_arguments)]
@@ -47,6 +59,7 @@ pub(crate) fn encode_after_tool(
         vec![ChatMessage::new("user", user), assistant, result],
         tools,
         true,
+        8_192,
     )
 }
 
@@ -89,10 +102,11 @@ fn encode(
     messages: Vec<ChatMessage>,
     tools: &[ToolSpec],
     stream: bool,
+    maximum_output_tokens: u64,
 ) -> Result<Vec<u8>, ProtocolFailure> {
     let mut request = ChatRequest::new(DEEPSEEK_MODEL_ID, messages, stream, stream);
     for (name, value) in [
-        ("max_tokens", json!(8_192)),
+        ("max_tokens", json!(maximum_output_tokens)),
         ("reasoning_effort", json!("high")),
         ("thinking", json!({"type":"enabled"})),
         (

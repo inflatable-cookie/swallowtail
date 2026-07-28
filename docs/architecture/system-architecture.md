@@ -102,13 +102,13 @@ spine:
 - `swallowtail-adapter-codex` depends on core and runtime and implements the
   read-only, ephemeral `codex exec` structured-run surface plus read-only and
   bounded-workspace app-server interactive sessions through runtime host ports
-- `swallowtail-adapter-claude-agent` implements installed discovery and
-  read-only interactive sessions for Claude Agent ACP
+- `swallowtail-adapter-claude-agent` implements installed discovery,
+  one-prompt structured runs, and read-only interactive sessions for Claude Agent ACP
   `0.53.0..=0.61.0`, excluding `0.58.0`, over ACP v1 stdio; stable newer
-  versions remain visible and unverified, while exact public-API-key access,
-  model confirmation, ambient configuration, ambient-host isolation,
-  permission rejection, cancellation, deadlines, and joined cleanup stay
-  driver-owned
+  versions remain visible and unverified, while separate local-subscription
+  and public-API-key profiles, model confirmation, ambient configuration,
+  ambient-host isolation, permission rejection, cancellation, deadlines, and
+  joined cleanup stay driver-owned
 - `swallowtail-adapter-deepseek` implements the exact
   `deepseek-openai-chat-2026-07-22` V4 Pro locally continued session over
   host-approved HTTP/SSE, including authenticated catalogue, consumer-owned
@@ -137,16 +137,25 @@ spine:
 - `swallowtail-adapter-gemini` implements the pinned Gemini CLI `0.51.0`
   ambient-host interactive subset with Plan Mode and bounded read callbacks
   over ACP v1 stdio and retains session-advertised model options as negotiated
-  evidence; a separate Developer API Models branch performs bounded paginated
-  discovery, while the Gemini Live production driver binds exact
+  evidence; a separately qualified `0.51.0..=0.52.0` headless route sends one
+  prompt over stdin, consumes bounded `stream-json`, reports usage, requires
+  durable local transcript retention, and forces no sandbox; one public
+  Gemini CLI facade requires explicit ACP or headless selection. A separate
+  Developer API Models branch performs bounded paginated discovery, while the
+  Gemini Live production driver binds exact
   `v1beta` preview setup, asymmetric audio, manual activity, output, usage,
   latest private handle, one planned raw-WebSocket rollover, local-only
   interruption, and joined two-generation cleanup under both host identities
-- `swallowtail-adapter-kimi` implements the pinned Kimi Code `0.28.1`
-  ambient-host interactive lifecycle with distinct new, load-with-replay, and
-  replay-free resume plus bounded write callbacks over ACP v1 stdio and
-  session-negotiated model options; its separate local-server route exposes an
-  authenticated, route-free attached model catalogue
+- `swallowtail-adapter-kimi` implements exact Kimi Code `0.28.1` and
+  `0.29.0..=0.29.2` behavior segments. Its ACP route owns ambient-host
+  interactive new, load-with-replay, replay-free resume, bounded writes, and
+  negotiated model evidence. Its separate headless route owns one default-
+  engine stream-JSON prompt with durable provider retention and joined process
+  cleanup. One installed facade requires explicit ACP or headless selection.
+  The separate local-server route owns authenticated catalogue, retained
+  one-prompt structured execution, interactive callbacks, archive, restore,
+  attached topology, and an optional owned foreground child without a
+  container or sandbox claim
 - `swallowtail-adapter-kimi-platform` implements a separate public-platform
   API-key catalogue and exact `kimi-k3` direct route over host-approved HTTP/SSE;
   it shares only structural compatible-chat encoding and decoding with
@@ -165,10 +174,11 @@ spine:
   `0.14.0..=0.32.1`; exact runtime, installed and running model observations,
   NDJSON output, and inference-caused residency remain distinct, with no
   installation, model acquisition, cloud access, unload, or server ownership
-- `swallowtail-adapter-xai` implements resource-free interactive direct
-  inference over one host-approved Responses WebSocket with serial turns,
-  private continuation, exact billed cost, and connection-ending cancellation;
-  a separate language-models driver exposes bounded hosted catalogue evidence
+- `swallowtail-adapter-xai` implements resource-free direct inference over one
+  host-approved Responses WebSocket as either one bounded response without
+  continuation or serial interactive turns with private continuation; both
+  retain exact billed cost and connection-ending cancellation, while a
+  separate language-models driver exposes bounded hosted catalogue evidence
 - `swallowtail-adapter-openai` implements separate public-API drivers for
   background Responses and Realtime media. The background structured-run route
   owns explicit temporary retention, one create attempt, maximum-one cursor
@@ -264,10 +274,11 @@ Crate status:
   app-server model discovery and interactive sessions
 - `swallowtail-adapter-claude-agent` — realized for exact installed wrapper
   discovery and four private behavior revisions across the maintained ACP
-  range, plus one exact read-only new-session lifecycle with public-API-key
-  access, no-argument process launch, bounded read callbacks, permission
-  rejection, cancellation, deadlines, disconnect classification, and joined
-  resource- and credential-last cleanup
+  range, plus independent one-prompt structured and read-only interactive
+  roles with explicit local-subscription or public-API-key access, no-argument
+  process launch, bounded read callbacks, permission rejection, cancellation,
+  deadlines, disconnect classification, native close without deletion, and
+  joined resource plus optional credential cleanup
 - `swallowtail-adapter-deepseek` — realized for one exact opaque facade
   revision, V4 Pro catalogue and selection, buffered tool response, streaming
   finals, private continuation, cache usage, consumer-authorized attempts,
@@ -295,17 +306,23 @@ Crate status:
   its own instance, endpoint audience, region, access profile, delegated
   provider, deadline, one-attempt bound, observation projection, and joined
   private executor
-- `swallowtail-adapter-gemini` — realized for pinned initialization, isolated
-  API-key process state, Plan Mode new sessions, text prompts, ordered updates,
-  host-bounded reads, permission cancellation, active-turn cancellation, and
-  joined process close; a separate direct realtime-media driver binds exact
+- `swallowtail-adapter-gemini` — realized for pinned ACP initialization,
+  isolated API-key process state, Plan Mode new sessions, text prompts,
+  ordered updates, host-bounded reads, permission cancellation, active-turn
+  cancellation, and joined process close; its separate headless driver owns
+  exact installed discovery, one plan-mode structured run, native exit
+  mapping, deadline, cancellation, and joined child cleanup with explicit
+  ambient configuration and transcript retention; a separate direct
+  realtime-media driver binds exact
   Gemini Live preview identity, host-approved query-key raw WebSocket access,
   asymmetric PCM, manual activity, two serial turns, one private-handle
   planned rollover, local-only interruption, and joined credential-last close
 - `swallowtail-adapter-kimi` — realized for pinned initialization, isolated
   harness state, delegated membership auth, exact persistent bindings, new,
   load, ordered replay, resume, prompt, bounded text replacement, native turn
-  cancellation, disconnect, and joined process/resource/credential cleanup
+  cancellation, disconnect, and joined process/resource/credential cleanup;
+  separate headless and local-server structured roles preserve their exact
+  process versus REST/WebSocket lifecycle and durable-retention truth
 - `swallowtail-adapter-kimi-platform` — realized for one authenticated bounded
   catalogue and one exact K3 Chat Completions attempt with explicit
   `low`/`high`/`max` reasoning, positive output bound, ordered reasoning,
@@ -316,10 +333,12 @@ Crate status:
   route, model, and execution-host identity under local and remote-authoritative
   topology while catalogue observations imply no entitlement or invocation
   readiness
-- `swallowtail-adapter-xai` — realized for one exact API-key WebSocket route,
-  one active turn, private `store=false` continuation, ordered text and usage,
-  exact USD ticks, distinct provider failures, cancellation, deadline,
-  disconnect invalidation, and joined credential cleanup
+- `swallowtail-adapter-xai` — realized for one exact API-key WebSocket route
+  with independent structured and interactive roles: one structured
+  `store=false` response exposes no continuation, while interactive sessions
+  retain one active turn and private continuation; both preserve ordered text
+  and usage, exact USD ticks, distinct provider failures, cancellation,
+  deadline, disconnect invalidation, and joined credential cleanup
 - `swallowtail-adapter-openai` — realized under Contract 021 for one exact
   public-API Responses background structured run with API-key access, explicit
   model, output, deadline, retention, and reattachment policy, ordered SSE,
@@ -520,7 +539,7 @@ the historical Gemini or Kimi pins. Independent close-only, delete-only,
 omitted, null, success, and error fixtures pass through the same bounded
 message codec used by stdio and explicit remote ACP. Portable delete truth
 remains history removal.
-Gemini CLI `0.51.0` is narrowed to new read-only sessions, text prompts,
+Gemini CLI ACP `0.51.0` is narrowed to new read-only sessions, text prompts,
 updates, native turn cancellation, permission cancellation, and bounded read
 callbacks. Authentication mutation, load/resume, mode or model switching, MCP
 injection, writes, terminals, and native session close are not claimed.
@@ -736,8 +755,11 @@ later-turn reasoning continuation, cache hit/miss usage, status and provider-
 stream failure, cancellation uncertainty, deadline posture, disconnect, model
 mismatch, and unknown-field rejection. The separately registered driver uses
 host-approved endpoint and API-key leases for authenticated catalogue and
-completion requests. It pauses after the buffered tool call until the consumer
-submits the exact correlated result, then streams the authorized continuation.
+completion requests. Its independent structured role sends one streamed,
+tool-free request, exposes no session binding, and discards private reasoning
+continuation at terminal completion. Its interactive role pauses after the
+buffered tool call until the consumer submits the exact correlated result,
+then streams the authorized continuation.
 A later user turn replays bounded private history only into the same session,
 facade, route, model, and access binding. Local and remote-authoritative
 fixtures prove no provider request during tool wait, exact three-attempt
@@ -790,7 +812,7 @@ session, background run, managed agent, realtime media, SDK, attached runtime,
 and owned-serving operations remain separate types and methods. There is no
 generic prompt method.
 
-The current 23 production routes form six facade implementation families:
+The current 25 production routes form six facade implementation families:
 installed harness, attached harness network, hosted direct and provider-owned
 state, realtime connection, embedded SDK, and local model runtime. Family
 helpers may share host and preparation mechanics. They cannot select a
@@ -831,11 +853,12 @@ cancellation, deadlines, callbacks, terminal outcomes, and joined cleanup are
 unchanged. `low_level_driver`, `plan`, `request`, and `into_parts` preserve the
 advanced escape hatch and current consumer path. No new crate was needed.
 
-Kimi Code ACP is the second realized facade and first non-Codex proof. Its
-prepared installation discovers one host-approved executable and retains exact
-qualified or unverified-newer evidence, caller-supplied access provenance,
-isolated-state environment, target, host, and configured instance. Its prepared
-persistent-session profile derives ambient harness configuration,
+Kimi Code is the second realized facade and first non-Codex proof. Its
+installed facade requires explicit ACP or headless selection before discovery.
+Both branches retain their exact qualified or unverified-newer evidence,
+caller-supplied access provenance, isolated-state environment, target, host,
+and configured instance. The ACP persistent-session profile derives ambient
+harness configuration,
 `AmbientHost` isolation, read-write resource authority, prohibited
 Swallowtail-owned provider state, bounded writes, replay, resume,
 active-turn interruption, and optional reasoning into one inspectable plan.
@@ -844,6 +867,12 @@ interruption continue through its returned session and turn handles. Load
 returns provider replay; resume remains replay-free. Delegated credentials,
 write callbacks, local and remote-authoritative topology, and ordered joined
 cleanup remain unchanged. No sandbox or containment claim is introduced.
+The headless branch instead derives one structured plan with durable provider
+retention, starts the audited default print engine once, parses bounded
+stream-JSON, exposes no reusable session identity, and joins the child on every
+terminal path. Its prompt must occupy provider-required process arguments;
+stable diagnostics and debug output remain redacted, but host process-table
+visibility is not hidden.
 
 Anthropic Messages is the third realized facade and first hosted-direct proof.
 `prepare_anthropic_direct` binds one opaque host-approved endpoint target,
@@ -871,15 +900,17 @@ compatible tool fields.
 
 DeepSeek preparation accepts only the exact `https://api.deepseek.com` target,
 `api.deepseek.com` Open Platform API-key profile, dated OpenAI facade, and
-`deepseek-v4-pro` route. Catalogue stays route-free. Session preparation
-requires high reasoning, consumer-declared tools, and explicit acceptance of
-provider-managed cache without management authority. Opening returns the
-existing direct-continuation session. Each user turn authorizes its first
-attempt; only correlated tool-result submission authorizes another. Private
-reasoning replay, attempt bounds, cancellation, deadline, zeroization, and
-credential-last cleanup remain in the low-level driver. Shared JSON and SSE
-structure creates no cross-provider model, credential, lifecycle, or fallback
-path.
+`deepseek-v4-pro` route. Catalogue stays route-free. Run preparation requires
+high reasoning, an explicit output bound, and acceptance of unmanaged provider
+caching; it emits one tool-free request and retains no continuation. Session
+preparation requires high reasoning,
+consumer-declared tools, and explicit acceptance of provider-managed cache
+without management authority. Opening returns the existing direct-
+continuation session. Each user turn authorizes its first attempt; only
+correlated tool-result submission authorizes another. Private reasoning
+replay, attempt bounds, cancellation, deadline, zeroization, and credential-
+last cleanup remain in the low-level driver. Shared JSON and SSE structure
+creates no cross-provider model, credential, lifecycle, or fallback path.
 
 Alibaba Model Studio now adds a prepared provider-conversation surface over
 the existing Singapore workspace driver. Preparation binds the exact regional
@@ -888,6 +919,9 @@ host-approved workspace endpoint, route, model, and access provenance.
 Conversation preparation requires explicit durable-provider-retention and
 delete-on-close posture. Opening delegates provider conversation creation to
 the existing driver; returned session turns retain serial Responses semantics.
+The independent run preparation sends one `store=false` Responses request with
+no conversation or previous-response identity and prohibits provider
+retention.
 Close still joins active work, obtains a bounded item inventory, deletes every
 item, deletes the conversation separately, joins cleanup, then releases the
 credential. Provider conversation state remains distinct from consumer memory,
@@ -984,7 +1018,7 @@ catalogue, then returns the owned handle. Stop joins the child, invalidates
 endpoint authority, and only then releases the artifact. Acquisition,
 persistent serving, and Monkey ownership remain outside Swallowtail.
 
-The provider-wide prepared contract is now realized across all 23 production
+The provider-wide prepared contract is now realized across all 25 production
 routes. The g02.008 cross-shape review accepted the common
 `PreparedOperationEvidence`, adapter-local evidence, two-phase construction,
 safe preparation stages, and typed low-level delegation without a new durable
@@ -1041,11 +1075,13 @@ Research 040 and Contract 038 define a separate contracted
 provider-documented foreground `kimi web --no-open` process, local REST,
 WebSocket protocol version `2`, exact server metadata, and an opaque bearer
 credential lease. Attached and owned-foreground topologies remain distinct.
-The first implementation qualifies reversible archive and restore across exact
-Kimi Code `0.28.1` and `0.29.0` points; it does not qualify deletion or change
-the unsupported ACP mapping. Attached preparation preserves the external
-server. Owned preparation launches one approved foreground child on the
-approved loopback port and joins it on close. Both require exact metadata,
+The implementation qualifies reversible archive and restore across exact Kimi
+Code `0.28.1`, exact `0.29.0`, and the audited `0.29.1..=0.29.2` range. The
+later range has a separate behavior revision for global WebSocket event fan-out
+and filtered configured-model discovery. It does not qualify deletion or
+change the unsupported ACP mapping. Attached preparation preserves the
+external server. Owned preparation launches one approved foreground child on
+the approved loopback port and joins it on close. Both require exact metadata,
 state-root identity, and an opaque local bearer lease. Archive and restore
 cross one POST effect boundary without retry; delete fails before dispatch.
 
@@ -1062,9 +1098,16 @@ widens ACP. Matching provider family or raw session identity is not authority.
 The later interactive tranche reuses the same route identity and transport
 without replacing ACP or adding a provider-neutral prompt facade.
 
+The local-server route also registers `StructuredRun` independently. One
+operation creates a private retained session, submits one prompt, relays only
+qualified events and callback exchange, awaits terminal truth, and closes
+local resources. The structured plan carries no interactive-session policy or
+handle. `DurableAllowed` is mandatory; close claims no archive or deletion.
+
 Roadmap g02.015 owns the completed shared foundation. Roadmaps g02.016-g02.019
 own the first provider realization and provider-wide acceptance. Roadmap
-g02.020 owns the additive Kimi local-server proof.
+g02.020 owns the additive Kimi local-server proof. Research 046 and g02.024
+own the exact `0.29.2` currentness extension.
 
 ## Dependency Rules
 

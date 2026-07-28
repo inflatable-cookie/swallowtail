@@ -1,8 +1,9 @@
 use swallowtail_core::PreflightDimension;
 use swallowtail_testkit::{
     ConformanceAssertion, PreflightFixtureCase, SyntheticProfile,
-    assert_preflight_rejection_without_side_effects, run_all_synthetic_profiles,
-    run_harness_rpc_contract_assertions, run_structured_harness_native_boundary_assertions,
+    assert_preflight_rejection_without_side_effects, run_acp_single_turn_projection_assertions,
+    run_all_synthetic_profiles, run_harness_rpc_contract_assertions,
+    run_structured_harness_native_boundary_assertions,
 };
 
 const COMMON_ASSERTIONS: [ConformanceAssertion; 14] = [
@@ -115,6 +116,20 @@ fn rpc_assertion_pack_proves_scheduling_ui_policy_and_version_without_a_new_prof
         ConformanceAssertion::HarnessScheduling,
         ConformanceAssertion::CommandAcknowledgement,
         ConformanceAssertion::HarnessUiRelay,
+    ] {
+        assert!(report.covers(assertion), "missing {assertion:?}");
+    }
+}
+
+#[test]
+fn acp_projection_pack_proves_one_turn_retention_callback_and_close_boundaries() {
+    let report = run_acp_single_turn_projection_assertions();
+    assert_eq!(report.profile(), SyntheticProfile::LongLivedAcpHarness);
+    for assertion in [
+        ConformanceAssertion::SessionLifecycle,
+        ConformanceAssertion::CallbackExchange,
+        ConformanceAssertion::DurableRetentionExplicit,
+        ConformanceAssertion::NoTranscriptDeletionClaim,
     ] {
         assert!(report.covers(assertion), "missing {assertion:?}");
     }

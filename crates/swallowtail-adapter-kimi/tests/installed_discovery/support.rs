@@ -46,27 +46,50 @@ impl ProcessState {
     pub fn waited(&self) -> bool {
         self.waited.load(Ordering::SeqCst)
     }
+
+    pub fn force_stopped(&self) -> bool {
+        self.force_stopped.load(Ordering::SeqCst)
+    }
 }
 
 pub struct FakeProcessService {
     state: Arc<ProcessState>,
     output: Mutex<Option<VecDeque<ProcessOutputChunk>>>,
+    exit: ProcessExit,
+    hold_open: bool,
 }
 
 impl FakeProcessService {
     pub fn completed(output: &str) -> (Arc<Self>, Arc<ProcessState>) {
+        Self::with_exit(output, ProcessExit::new(true, Some(0)))
+    }
+
+    pub fn with_exit(output: &str, exit: ProcessExit) -> (Arc<Self>, Arc<ProcessState>) {
+        Self::new(output, exit, false)
+    }
+
+    pub fn held_open() -> (Arc<Self>, Arc<ProcessState>) {
+        Self::new("", ProcessExit::new(false, Some(130)), true)
+    }
+
+    fn new(output: &str, exit: ProcessExit, hold_open: bool) -> (Arc<Self>, Arc<ProcessState>) {
         let state = Arc::new(ProcessState::default());
+        let chunks = if output.is_empty() {
+            VecDeque::new()
+        } else {
+            [ProcessOutputChunk::new(
+                ProcessOutputStream::Stdout,
+                output.as_bytes().to_vec(),
+            )]
+            .into_iter()
+            .collect()
+        };
         (
             Arc::new(Self {
                 state: Arc::clone(&state),
-                output: Mutex::new(Some(
-                    [ProcessOutputChunk::new(
-                        ProcessOutputStream::Stdout,
-                        output.as_bytes().to_vec(),
-                    )]
-                    .into_iter()
-                    .collect(),
-                )),
+                output: Mutex::new(Some(chunks)),
+                exit,
+                hold_open,
             }),
             state,
         )
@@ -94,6 +117,8 @@ impl ProcessService for FakeProcessService {
         let handle = FakeProcessHandle {
             state: Arc::clone(&self.state),
             output: Mutex::new(output),
+            exit: self.exit,
+            hold_open: self.hold_open,
         };
         Box::pin(async move { Ok(Box::new(handle) as Box<dyn ProcessHandle>) })
     }
@@ -102,6 +127,8 @@ impl ProcessService for FakeProcessService {
 struct FakeProcessHandle {
     state: Arc<ProcessState>,
     output: Mutex<VecDeque<ProcessOutputChunk>>,
+    exit: ProcessExit,
+    hold_open: bool,
 }
 
 impl ProcessHandle for FakeProcessHandle {
@@ -115,8 +142,17 @@ impl ProcessHandle for FakeProcessHandle {
     }
 
     fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
-        let output = self.output.lock().expect("output lock").pop_front();
-        Box::pin(async move { Ok(output) })
+        Box::pin(async move {
+            loop {
+                if let Some(output) = self.output.lock().expect("output lock").pop_front() {
+                    return Ok(Some(output));
+                }
+                if !self.hold_open || self.state.force_stopped.load(Ordering::SeqCst) {
+                    return Ok(None);
+                }
+                std::thread::yield_now();
+            }
+        })
     }
 
     fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
@@ -131,7 +167,8 @@ impl ProcessHandle for FakeProcessHandle {
 
     fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
         self.state.waited.store(true, Ordering::SeqCst);
-        Box::pin(async { Ok(ProcessExit::new(true, Some(0))) })
+        let exit = self.exit;
+        Box::pin(async move { Ok(exit) })
     }
 }
 
@@ -177,9 +214,29 @@ impl TimeService for PendingTime {
     }
 }
 
+pub struct ImmediateTime;
+
+impl TimeService for ImmediateTime {
+    fn now(&self) -> MonotonicInstant {
+        MonotonicInstant::from_ticks(100)
+    }
+
+    fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
+        Box::pin(async move { DeadlineObservation::new(deadline, deadline.instant()) })
+    }
+}
+
 pub fn services(host: ExecutionHostId, process: Arc<dyn ProcessService>) -> HostServices {
+    services_with_time(host, process, Arc::new(PendingTime))
+}
+
+pub fn services_with_time(
+    host: ExecutionHostId,
+    process: Arc<dyn ProcessService>,
+    time: Arc<dyn TimeService>,
+) -> HostServices {
     HostServices::new(host)
         .with_task(Arc::new(ThreadTaskService))
-        .with_time(Arc::new(PendingTime))
+        .with_time(time)
         .with_process(process)
 }

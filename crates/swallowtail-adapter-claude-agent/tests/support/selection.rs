@@ -23,29 +23,22 @@ pub fn open_request(
 }
 
 pub fn selection(host: ExecutionHostId, version: &str) -> FixtureSelection {
+    selection_for_role(host, version, DriverRole::InteractiveSession)
+}
+
+#[allow(dead_code)]
+pub fn run_selection(host: ExecutionHostId, version: &str) -> FixtureSelection {
+    selection_for_role(host, version, DriverRole::StructuredRun)
+}
+
+fn selection_for_role(host: ExecutionHostId, version: &str, role: DriverRole) -> FixtureSelection {
     let descriptor = swallowtail_adapter_claude_agent::claude_agent_acp_descriptor();
     let credential = CredentialRef::new("claude-agent.fixture.api-key").expect("valid credential");
     let access_id =
         AccessProfileId::new("claude-agent.fixture.public-api").expect("valid access id");
     let instance_id =
         ConfiguredInstanceId::new("claude-agent.fixture.instance").expect("valid instance");
-    let capabilities = CapabilityProfile::new([
-        CapabilityRequirement::new(Capability::InteractiveSession, []),
-        CapabilityRequirement::new(Capability::StreamingEvents, []),
-        CapabilityRequirement::new(
-            Capability::Interruption,
-            [CapabilityConstraint::CancellationScope(
-                swallowtail_core::CancellationScope::ActiveTurn,
-            )],
-        ),
-        CapabilityRequirement::new(
-            Capability::WorkingResource,
-            [
-                CapabilityConstraint::ResourceAccess(ResourceAccess::Read),
-                CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
-            ],
-        ),
-    ]);
+    let capabilities = capabilities(role);
     let version_binding = swallowtail_adapter_claude_agent::claude_agent_acp_binding(version)
         .expect("fixture version is valid");
     let instance = ConfiguredInstance::new(
@@ -96,8 +89,11 @@ pub fn selection(host: ExecutionHostId, version: &str) -> FixtureSelection {
     ];
     let requirements = OperationRequirements::new(
         ExecutionLayer::HarnessInteraction,
-        OperationShape::InteractiveSession,
-        DriverRole::InteractiveSession,
+        match role {
+            DriverRole::StructuredRun => OperationShape::StructuredRun,
+            _ => OperationShape::InteractiveSession,
+        },
+        role,
         host,
         AccessRequirement::new(access_id)
             .with_credential_states([CredentialState::Ready])
@@ -114,9 +110,14 @@ pub fn selection(host: ExecutionHostId, version: &str) -> FixtureSelection {
     .with_interface_versions([version_binding])
     .with_harness_isolation(HarnessIsolation::AmbientHost)
     .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient)
-    .with_session_access_policy(SessionAccessPolicy::ambient_harness(ResourceAccess::Read))
-    .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited)
     .require_model_route();
+    let requirements = if role == DriverRole::InteractiveSession {
+        requirements
+            .with_session_access_policy(SessionAccessPolicy::ambient_harness(ResourceAccess::Read))
+            .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited)
+    } else {
+        requirements
+    };
     let context = PreflightContext::new(&descriptor, &instance, &access, &status, service_kinds)
         .with_model_route(&route);
     let plan = preflight(&context, &requirements).expect("fixture preflight succeeds");
@@ -126,4 +127,39 @@ pub fn selection(host: ExecutionHostId, version: &str) -> FixtureSelection {
         resource: WorkingResourceRef::new("claude-agent.fixture.workspace")
             .expect("valid resource"),
     }
+}
+
+fn capabilities(role: DriverRole) -> CapabilityProfile {
+    let cancellation = match role {
+        DriverRole::StructuredRun => swallowtail_core::CancellationScope::StructuredRun,
+        _ => swallowtail_core::CancellationScope::ActiveTurn,
+    };
+    let mut requirements = vec![
+        CapabilityRequirement::new(
+            match role {
+                DriverRole::StructuredRun => Capability::StructuredRun,
+                _ => Capability::InteractiveSession,
+            },
+            [],
+        ),
+        CapabilityRequirement::new(Capability::StreamingEvents, []),
+        CapabilityRequirement::new(
+            Capability::Interruption,
+            [CapabilityConstraint::CancellationScope(cancellation)],
+        ),
+        CapabilityRequirement::new(
+            Capability::WorkingResource,
+            [
+                CapabilityConstraint::ResourceAccess(ResourceAccess::Read),
+                CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
+            ],
+        ),
+    ];
+    if role == DriverRole::StructuredRun {
+        requirements.push(CapabilityRequirement::new(
+            Capability::ProviderDurableRetention,
+            [],
+        ));
+    }
+    CapabilityProfile::new(requirements)
 }

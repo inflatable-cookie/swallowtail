@@ -4,14 +4,15 @@ use futures_executor::block_on;
 use futures_util::StreamExt;
 use support::{DriverCall, DriverFixture, ServerScenario, turn_request};
 use swallowtail_adapter_xai::{
-    XaiModelSelection, XaiSessionProfileInput, prepare_xai_responses_websocket,
+    XaiModelSelection, XaiRunProfileInput, XaiSessionProfileInput, prepare_xai_responses_websocket,
 };
 use swallowtail_core::{
-    ExecutionHostId, InterfaceCompatibilityAssessment, ModelId, ModelRouteId, ModelRouteRevision,
+    DriverRole, ExecutionHostId, InterfaceCompatibilityAssessment, ModelId, ModelRouteId,
+    ModelRouteRevision,
 };
 use swallowtail_runtime::{
-    CleanupOutcome, InteractiveSessionHandle, ProviderObservation, RequestId, RuntimeEventKind,
-    TerminalStatus,
+    CleanupOutcome, InteractiveSessionHandle, OperationContent, ProviderObservation, RequestId,
+    RuntimeEventKind, TerminalStatus,
 };
 
 #[test]
@@ -81,6 +82,57 @@ fn prepared_xai_binding_drift_rejects_without_provider_effects() {
     assert_eq!(fixture.calls.count(DriverCall::NetworkAuthorize), 0);
     assert_eq!(fixture.calls.count(DriverCall::CredentialAcquire), 0);
     assert!(fixture.server.frames().is_empty());
+}
+
+#[test]
+fn prepared_one_response_run_preserves_topology_cost_and_cleanup_on_both_hosts() {
+    for host in ["host.local", "host.remote-authoritative"] {
+        let fixture = DriverFixture::for_host(
+            ServerScenario::OneResponse,
+            ExecutionHostId::new(host).expect("host id is valid"),
+        );
+        let prepared =
+            prepare_xai_responses_websocket(fixture.preparation_input(), &fixture.services())
+                .expect("xAI integration prepares");
+        let operation = prepared
+            .prepare_responses_run(XaiRunProfileInput::new(
+                RequestId::new(format!("prepared-run-{host}")).expect("request id is valid"),
+                model(),
+                OperationContent::new("one prepared response").expect("content is valid"),
+                None,
+            ))
+            .expect("xAI structured run prepares");
+        assert_eq!(operation.plan().execution_host_id().as_str(), host);
+        assert_eq!(
+            operation.plan().requirements().driver_role(),
+            DriverRole::StructuredRun
+        );
+        assert!(operation.request().working_resource().is_none());
+
+        let mut run = block_on(operation.start_run(fixture.services())).expect("run starts");
+        assert!(run.provider_run_ref().is_none());
+        let mut events = run.take_events().expect("events exist");
+        let terminal = run.take_terminal_outcome().expect("terminal exists");
+        let (events, outcome) = block_on(async {
+            let mut collected = Vec::new();
+            while let Some(event) = events.next().await {
+                collected.push(event.expect("event succeeds"));
+            }
+            (collected, terminal.await)
+        });
+        assert_eq!(outcome.status(), &TerminalStatus::Completed);
+        assert!(events.iter().any(|event| matches!(
+            event.kind(),
+            RuntimeEventKind::ProviderObservation(ProviderObservation::Usage(_))
+        )));
+        assert!(events.iter().any(|event| matches!(
+            event.kind(),
+            RuntimeEventKind::ProviderObservation(ProviderObservation::BilledCost(_))
+        )));
+        assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
+        assert_eq!(fixture.server.frames().len(), 1);
+        assert_eq!(fixture.calls.count(DriverCall::CredentialRelease), 1);
+    }
 }
 
 fn model() -> XaiModelSelection {

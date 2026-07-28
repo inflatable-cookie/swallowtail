@@ -33,10 +33,14 @@ pub fn alibaba_model_studio_descriptor() -> DriverDescriptor {
         id(IntegrationFamilyId::new, "alibaba-model-studio"),
         id(TransportFamilyId::new, "https-sse"),
     )
-    .with_roles([DriverRole::InteractiveSession])
+    .with_roles([DriverRole::InteractiveSession, DriverRole::StructuredRun])
     .with_execution_layers([ExecutionLayer::DirectModelInference])
-    .with_operation_shapes([OperationShape::InteractiveSession])
+    .with_operation_shapes([
+        OperationShape::InteractiveSession,
+        OperationShape::StructuredRun,
+    ])
     .with_required_host_services(DriverRole::InteractiveSession, host_services())
+    .with_required_host_services(DriverRole::StructuredRun, host_services())
 }
 
 #[must_use]
@@ -70,7 +74,7 @@ pub fn alibaba_model_studio_instance(host_id: ExecutionHostId) -> ConfiguredInst
         SupportAuthority::ProviderSupported,
         id(ProtocolFacadeId::new, "openai-conversations-responses"),
         id(InstancePolicyId::new, "alibaba-model-studio.sg.exact-route"),
-        CapabilityProfile::new(capabilities()),
+        CapabilityProfile::new(all_capabilities()),
     )
 }
 
@@ -81,7 +85,7 @@ pub fn alibaba_model_studio_route() -> ModelRoute {
         id(ModelRouteRevision::new, "fixture-1"),
         id(ConfiguredInstanceId::new, CONFIGURED_INSTANCE_ID),
         id(ModelId::new, EXACT_MODEL_ID),
-        CapabilityProfile::new(capabilities()),
+        CapabilityProfile::new(all_capabilities()),
     )
 }
 
@@ -110,10 +114,40 @@ pub fn alibaba_model_studio_requirements(host_id: ExecutionHostId) -> OperationR
     .require_model_route()
 }
 
+#[must_use]
+pub fn alibaba_model_studio_run_requirements(host_id: ExecutionHostId) -> OperationRequirements {
+    let access = AccessRequirement::new(id(AccessProfileId::new, ACCESS_PROFILE_ID))
+        .with_credential_states([CredentialState::Ready])
+        .with_entitlement_states([EntitlementState::Available])
+        .with_endpoint_authorizations([EndpointAuthorization::Allowed])
+        .with_runtime_readiness([RuntimeReadiness::Ready])
+        .with_support_authorities([SupportAuthority::ProviderSupported]);
+    OperationRequirements::new(
+        ExecutionLayer::DirectModelInference,
+        OperationShape::StructuredRun,
+        DriverRole::StructuredRun,
+        host_id,
+        access,
+    )
+    .with_ownership_modes([InstanceOwnership::ExternalAttached])
+    .with_host_services(host_services())
+    .with_capabilities(run_capabilities())
+    .require_model_route()
+}
+
 pub fn validate_alibaba_model_studio_plan(
     plan: &PreflightPlan,
 ) -> Result<(), AlibabaProtocolFailure> {
     let requirements = plan.requirements();
+    let interactive = requirements.driver_role() == DriverRole::InteractiveSession
+        && requirements.operation_shape() == OperationShape::InteractiveSession
+        && requirements.session_access_policy() == Some(&SessionAccessPolicy::resource_free())
+        && requirements.session_provider_state_policy()
+            == Some(SessionProviderStatePolicy::DurableConversationDeleteOnClose);
+    let structured = requirements.driver_role() == DriverRole::StructuredRun
+        && requirements.operation_shape() == OperationShape::StructuredRun
+        && requirements.session_access_policy().is_none()
+        && requirements.session_provider_state_policy().is_none();
     if plan.driver_identity().id().as_str() != DRIVER_ID
         || plan.instance_id().as_str() != CONFIGURED_INSTANCE_ID
         || plan.instance_target_ref()
@@ -127,10 +161,7 @@ pub fn validate_alibaba_model_studio_plan(
         || plan.model_route_id().map(ModelRouteId::as_str) != Some(MODEL_ROUTE_ID)
         || plan.model_id().map(ModelId::as_str) != Some(EXACT_MODEL_ID)
         || requirements.execution_layer() != ExecutionLayer::DirectModelInference
-        || requirements.operation_shape() != OperationShape::InteractiveSession
-        || requirements.session_access_policy() != Some(&SessionAccessPolicy::resource_free())
-        || requirements.session_provider_state_policy()
-            != Some(SessionProviderStatePolicy::DurableConversationDeleteOnClose)
+        || !(interactive || structured)
         || requirements
             .capabilities()
             .any(|requirement| requirement.capability() == Capability::Resume)
@@ -140,6 +171,24 @@ pub fn validate_alibaba_model_studio_plan(
         ));
     }
     Ok(())
+}
+
+fn run_capabilities() -> Vec<CapabilityRequirement> {
+    [
+        Capability::StructuredRun,
+        Capability::StreamingEvents,
+        Capability::UsageReporting,
+        Capability::Interruption,
+    ]
+    .into_iter()
+    .map(|capability| CapabilityRequirement::new(capability, []))
+    .collect()
+}
+
+fn all_capabilities() -> Vec<CapabilityRequirement> {
+    let mut requirements = capabilities();
+    requirements.extend(run_capabilities());
+    requirements
 }
 
 fn capabilities() -> Vec<CapabilityRequirement> {

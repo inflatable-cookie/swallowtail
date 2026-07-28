@@ -35,6 +35,7 @@ fn descriptor_is_a_distinct_exact_pi_rpc_driver() {
         "strict-lf-jsonl-stdio"
     );
     assert!(descriptor.supports_role(DriverRole::InteractiveSession));
+    assert!(descriptor.supports_role(DriverRole::StructuredRun));
     assert!(descriptor.supports_role(DriverRole::ModelCatalog));
 
     let axis = InterfaceVersionAxis::new("pi.package").expect("valid axis");

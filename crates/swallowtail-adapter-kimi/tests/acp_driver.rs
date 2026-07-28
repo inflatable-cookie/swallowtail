@@ -1,7 +1,7 @@
 mod support;
 
 use futures_executor::block_on;
-use support::{CleanupEvent, FixtureHost, Scenario, selection};
+use support::{CleanupEvent, FixtureHost, Scenario, selection, version_selection};
 use swallowtail_adapter_kimi::KimiAcpDriver;
 use swallowtail_core::{ExecutionHostId, ResourceAccess, SessionProviderStatePolicy, SessionRef};
 use swallowtail_runtime::{
@@ -12,65 +12,72 @@ use swallowtail_runtime::{
 };
 
 #[test]
-fn new_prompt_write_and_cleanup_preserve_ambient_host_authority() {
-    for host_id in topologies() {
-        let selected = selection(host_id.clone());
-        let host = FixtureHost::new(Scenario::Complete);
-        let services = host.services(host_id);
-        let driver = driver(selected.credential.clone());
-        let mut session = block_on(driver.open_session(
-            selected.plan,
-            open_request("kimi-open", selected.resource.clone()),
-            services.clone(),
-        ))
-        .expect("session opens");
-        let binding = session.resume_binding().expect("binding is available");
-        assert_eq!(
-            binding.access_policy(),
-            &SessionAccessPolicy::ambient_harness(ResourceAccess::ReadWrite)
-        );
-        assert_eq!(binding.working_resource(), &selected.resource);
-        assert!(!format!("{binding:?}").contains("kimi-session-bound"));
-        let models = session
-            .negotiated_model_options()
-            .expect("session model options are retained");
-        assert_eq!(models.current_value(), "kimi-coder");
-        assert_eq!(
-            models
-                .options()
-                .map(|model| model.value())
-                .collect::<Vec<_>>(),
-            ["kimi-coder", "kimi-alternate"]
-        );
-        let mut turn = block_on(session.start_turn(
-            TurnRequest::new(
-                RuntimeTurnId::new("kimi-turn").expect("valid turn"),
-                OperationContent::new("private fixture prompt").expect("valid prompt"),
-            ),
-            services,
-        ))
-        .expect("turn starts");
-        let outcome = block_on(
-            turn.take_terminal_outcome()
-                .expect("terminal outcome is available"),
-        );
-        assert_eq!(outcome.status(), &TerminalStatus::Completed);
-        assert_eq!(
-            outcome.output().expect("output is present").as_str(),
-            "Kimi fixture response."
-        );
-        assert_eq!(
-            host.resource_writes(),
-            [(
-                "src/generated.rs".to_owned(),
-                "pub fn generated() {}\n".to_owned()
-            )]
-        );
-        assert_eq!(host.process_arguments(), Some(vec!["acp".to_owned()]));
-        assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
-        assert_eq!(host.cleanup_counts(), (1, 1));
-        assert_eq!(host.cleanup_events(), joined_cleanup());
+fn qualified_versions_preserve_prompt_write_and_cleanup_authority() {
+    for (version, scenario) in [
+        ("0.28.1", Scenario::Complete),
+        ("0.29.0", Scenario::ReasoningEffortSuccess),
+        ("0.29.1", Scenario::ReasoningEffort291Success),
+        ("0.29.2", Scenario::ReasoningEffort292Success),
+    ] {
+        for host_id in topologies() {
+            let selected = version_selection(host_id.clone(), version);
+            let host = FixtureHost::new(scenario);
+            let services = host.services(host_id);
+            let driver = driver(selected.credential.clone());
+            let mut session = block_on(driver.open_session(
+                selected.plan,
+                open_request("kimi-open", selected.resource.clone()),
+                services.clone(),
+            ))
+            .expect("session opens");
+            let binding = session.resume_binding().expect("binding is available");
+            assert_eq!(
+                binding.access_policy(),
+                &SessionAccessPolicy::ambient_harness(ResourceAccess::ReadWrite)
+            );
+            assert_eq!(binding.working_resource(), &selected.resource);
+            assert!(!format!("{binding:?}").contains("kimi-session-bound"));
+            let models = session
+                .negotiated_model_options()
+                .expect("session model options are retained");
+            assert_eq!(models.current_value(), "kimi-coder");
+            assert_eq!(
+                models
+                    .options()
+                    .map(|model| model.value())
+                    .collect::<Vec<_>>(),
+                ["kimi-coder", "kimi-alternate"]
+            );
+            let mut turn = block_on(session.start_turn(
+                TurnRequest::new(
+                    RuntimeTurnId::new("kimi-turn").expect("valid turn"),
+                    OperationContent::new("private fixture prompt").expect("valid prompt"),
+                ),
+                services,
+            ))
+            .expect("turn starts");
+            let outcome = block_on(
+                turn.take_terminal_outcome()
+                    .expect("terminal outcome is available"),
+            );
+            assert_eq!(outcome.status(), &TerminalStatus::Completed);
+            assert_eq!(
+                outcome.output().expect("output is present").as_str(),
+                "Kimi fixture response."
+            );
+            assert_eq!(
+                host.resource_writes(),
+                [(
+                    "src/generated.rs".to_owned(),
+                    "pub fn generated() {}\n".to_owned()
+                )]
+            );
+            assert_eq!(host.process_arguments(), Some(vec!["acp".to_owned()]));
+            assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
+            assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+            assert_eq!(host.cleanup_counts(), (1, 1));
+            assert_eq!(host.cleanup_events(), joined_cleanup());
+        }
     }
 }
 

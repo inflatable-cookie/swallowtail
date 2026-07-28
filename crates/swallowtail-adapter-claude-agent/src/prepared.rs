@@ -7,9 +7,9 @@ use failure::{discovery_outcome_failure, discovery_runtime_failure, preparation_
 use instance::configured_instance;
 use std::collections::BTreeSet;
 use swallowtail_core::{
-    AccessProfile, ConfiguredInstance, ConfiguredInstanceId, CredentialMechanism, DiscoveryOutcome,
-    EntitlementMetering, ExecutionHostId, HostServiceKind, InstalledExecutableObservation,
-    InstanceRevision, SupportAuthority,
+    AccessProfile, ConfiguredInstance, ConfiguredInstanceId, CredentialMechanism, CredentialState,
+    DiscoveryOutcome, EntitlementMetering, ExecutionHostId, HostServiceKind,
+    InstalledExecutableObservation, InstanceRevision, SupportAuthority,
 };
 use swallowtail_runtime::{
     Deadline, DiscoveryCancellation, DiscoveryDriver, EnvironmentRef, HostServices,
@@ -126,13 +126,7 @@ impl ClaudeAgentPreparedIntegration {
 
     #[must_use]
     pub fn low_level_driver(&self) -> ClaudeAgentAcpDriver {
-        ClaudeAgentAcpDriver::new(
-            self.environment.clone(),
-            self.access_profile
-                .credential_reference()
-                .expect("prepared Claude Agent access has one credential reference")
-                .clone(),
-        )
+        driver_for_access(self.environment.clone(), &self.access_profile)
     }
 
     pub fn validate_execution_binding(
@@ -166,10 +160,7 @@ pub async fn prepare_claude_agent(
         probe.deadline,
         probe.cancellation,
     );
-    let driver = ClaudeAgentAcpDriver::new(
-        input.environment.clone(),
-        credential_reference(&input.access_profile)?.clone(),
-    );
+    let driver = driver_for_access(input.environment.clone(), &input.access_profile);
     let outcome = driver
         .discover_installed_executable(request, services)
         .await
@@ -185,21 +176,41 @@ fn validate_input(input: &ClaudeAgentPreparationInput) -> Result<(), Preparation
             "Claude Agent preparation target uses a different version axis",
         ));
     }
-    if input.access_profile.credential_mechanism() != &CredentialMechanism::ApiKey
-        || input.access_profile.entitlement_metering() != &EntitlementMetering::PayAsYouGo
-        || input.access_profile.endpoint_audience().as_str() != ENDPOINT_AUDIENCE
+    let expected_credential_state = match input.access_profile.credential_mechanism() {
+        CredentialMechanism::ApiKey
+            if input.access_profile.entitlement_metering() == &EntitlementMetering::PayAsYouGo
+                && input.access_profile.credential_reference().is_some() =>
+        {
+            CredentialState::Ready
+        }
+        CredentialMechanism::LocalUnauthenticated
+            if input.access_profile.entitlement_metering()
+                == &EntitlementMetering::SubscriptionAllowance
+                && input.access_profile.credential_reference().is_none() =>
+        {
+            CredentialState::NotRequired
+        }
+        _ => {
+            return Err(preparation_failure(
+                PreparationStage::AccessEvidence,
+                "swallowtail.claude_agent.preparation.access_profile_rejected",
+                "Claude Agent requires API-key billing or a locally authenticated subscription",
+            ));
+        }
+    };
+    if input.access_profile.endpoint_audience().as_str() != ENDPOINT_AUDIENCE
         || input.access_profile.support_authority()
             != SupportAuthority::IntegrationMaintainerSupported
     {
         return Err(preparation_failure(
             PreparationStage::AccessEvidence,
             "swallowtail.claude_agent.preparation.access_profile_rejected",
-            "Claude Agent requires its maintainer-supported Anthropic API-key profile",
+            "Claude Agent requires its maintainer-supported Anthropic access profile",
         ));
     }
-    let _ = credential_reference(&input.access_profile)?;
     let status = input.access_evidence.status();
     if status.profile_id() != input.access_profile.id()
+        || status.credential() != expected_credential_state
         || status.support_authority() != input.access_profile.support_authority()
     {
         return Err(preparation_failure(
@@ -242,14 +253,9 @@ fn promote(
     })
 }
 
-fn credential_reference(
-    profile: &AccessProfile,
-) -> Result<&swallowtail_core::CredentialRef, PreparationFailure> {
-    profile.credential_reference().ok_or_else(|| {
-        preparation_failure(
-            PreparationStage::AccessEvidence,
-            "swallowtail.claude_agent.preparation.credential_reference_missing",
-            "Claude Agent requires one Anthropic API-key credential reference",
-        )
-    })
+fn driver_for_access(environment: EnvironmentRef, profile: &AccessProfile) -> ClaudeAgentAcpDriver {
+    match profile.credential_reference() {
+        Some(credential) => ClaudeAgentAcpDriver::new(environment, credential.clone()),
+        None => ClaudeAgentAcpDriver::with_local_auth(environment),
+    }
 }

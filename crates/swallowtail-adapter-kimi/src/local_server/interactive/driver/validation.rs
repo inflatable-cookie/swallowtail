@@ -29,6 +29,21 @@ pub(super) fn validate_open(
     validate_deadline(request.deadline(), services)
 }
 
+pub(super) fn validate_projected_open(
+    driver: &super::super::super::KimiLocalServerDriver,
+    plan: &PreflightPlan,
+    request: &OpenSessionRequest,
+    services: &HostServices,
+) -> Result<(), RuntimeFailure> {
+    services.require_execution_host(plan.execution_host_id())?;
+    validate_driver_agreement(driver, request.plan_agreement(), request.options())?;
+    validate_services(services)?;
+    if request.working_resource().is_none() {
+        return Err(unsupported("resource-free session"));
+    }
+    validate_deadline(request.deadline(), services)
+}
+
 pub(super) fn validate_resume(
     driver: &super::super::super::KimiLocalServerDriver,
     plan: &PreflightPlan,
@@ -61,15 +76,30 @@ fn validate_common(
 ) -> Result<(), RuntimeFailure> {
     services.require_execution_host(plan.execution_host_id())?;
     validate_session_plan_agreement(plan, agreement)?;
+    validate_driver_agreement(driver, agreement, options)?;
+    validate_services(services)
+}
+
+fn validate_driver_agreement(
+    driver: &super::super::super::KimiLocalServerDriver,
+    agreement: &swallowtail_runtime::SessionPlanAgreement,
+    options: &swallowtail_runtime::SessionOptions,
+) -> Result<(), RuntimeFailure> {
     let expected = access_policy(driver.configuration()?.permission_mode());
     if agreement.access_policy() != &expected
         || agreement.provider_state_policy()
             != Some(swallowtail_core::SessionProviderStatePolicy::DurableProviderSessionPreserved)
+        || agreement.harness_configuration_posture()
+            != Some(swallowtail_core::HarnessConfigurationPosture::Ambient)
         || options.developer_instructions().is_some()
         || options.tools().len() != 0
     {
         return Err(binding_failure());
     }
+    Ok(())
+}
+
+fn validate_services(services: &HostServices) -> Result<(), RuntimeFailure> {
     for required in [
         swallowtail_core::HostServiceKind::Task,
         swallowtail_core::HostServiceKind::BlockingWork,

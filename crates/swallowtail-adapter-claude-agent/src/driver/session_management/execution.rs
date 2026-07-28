@@ -33,7 +33,7 @@ impl ClaudeAgentAcpDriver {
                 "Claude Agent management plan requests a different affected scope",
             ));
         }
-        let selected = validate_plan(plan.preflight(), &self.credential)?;
+        let selected = validate_plan(plan.preflight(), self.credential.as_ref())?;
         if cancelled_or_expired(agreement, cancellation, &services)? {
             return Ok(outcome(
                 agreement,

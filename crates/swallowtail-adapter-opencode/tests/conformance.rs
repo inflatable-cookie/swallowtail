@@ -6,6 +6,7 @@ use swallowtail_testkit::{
     ClosedSemanticWindowCase, ConformanceAssertion, SyntheticProfile,
     assert_closed_semantic_compatibility_window, assert_provider_session_management_contract,
     assert_unverified_newer_execution, run_attached_network_harness_profile,
+    run_structured_harness_native_boundary_assertions,
 };
 
 #[test]
@@ -58,6 +59,18 @@ fn provider_neutral_closed_window_assertion_covers_opencode_range() {
 #[test]
 fn provider_neutral_management_contract_covers_opencode_delete_boundaries() {
     assert_provider_session_management_contract();
+}
+
+#[test]
+fn provider_neutral_projection_pack_covers_opencode_temporary_session_deletion() {
+    let report = run_structured_harness_native_boundary_assertions();
+    for assertion in [
+        ConformanceAssertion::AmbientHarnessAuthority,
+        ConformanceAssertion::OwnedRemoteDeletionTruth,
+        ConformanceAssertion::NativeBudgetIndependent,
+    ] {
+        assert!(report.covers(assertion), "missing {assertion:?}");
+    }
 }
 
 fn version(value: &str) -> InterfaceVersion {

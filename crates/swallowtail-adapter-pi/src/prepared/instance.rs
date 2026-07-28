@@ -60,6 +60,26 @@ pub(crate) fn session_capabilities() -> CapabilityProfile {
     ])
 }
 
+pub(crate) fn run_capabilities() -> CapabilityProfile {
+    CapabilityProfile::new([
+        CapabilityRequirement::new(Capability::StructuredRun, []),
+        CapabilityRequirement::new(Capability::StreamingEvents, []),
+        CapabilityRequirement::new(
+            Capability::Interruption,
+            [CapabilityConstraint::CancellationScope(
+                swallowtail_core::CancellationScope::StructuredRun,
+            )],
+        ),
+        CapabilityRequirement::new(
+            Capability::WorkingResource,
+            [
+                CapabilityConstraint::ResourceAccess(ResourceAccess::Read),
+                CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
+            ],
+        ),
+    ])
+}
+
 pub(crate) fn rpc_policy() -> HarnessRpcPolicy {
     let one = NonZeroU32::new(1).expect("one is non-zero");
     HarnessRpcPolicy::restrictive(HarnessSchedulingBounds::new(

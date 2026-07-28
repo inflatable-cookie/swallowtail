@@ -8,12 +8,12 @@ use swallowtail_runtime::{
     CleanupOutcome, RuntimeFailure, RuntimeTurnId, TerminalOutcome, TurnHandle,
 };
 
-pub(in crate::local_server::interactive) type ActiveSlot = Arc<Mutex<Option<ActiveTurn>>>;
+pub(in crate::local_server) type ActiveSlot = Arc<Mutex<Option<ActiveTurn>>>;
 
-pub(in crate::local_server::interactive) struct ActiveTurn {
-    pub(super) task: Option<Box<dyn swallowtail_runtime::JoinedTask>>,
-    pub(super) cancellation: Arc<TurnCancellation>,
-    pub(super) terminal: Arc<AtomicBool>,
+pub(in crate::local_server) struct ActiveTurn {
+    pub(in crate::local_server) task: Option<Box<dyn swallowtail_runtime::JoinedTask>>,
+    pub(in crate::local_server) cancellation: Arc<TurnCancellation>,
+    pub(in crate::local_server) terminal: Arc<AtomicBool>,
 }
 
 pub(in crate::local_server::interactive) struct SessionCancellation {
@@ -56,7 +56,7 @@ impl CancellationControl for SessionCancellation {
     }
 }
 
-pub(in crate::local_server::interactive) struct TurnCancellation {
+pub(in crate::local_server) struct TurnCancellation {
     pub(super) control: SubscriptionControl,
     pub(super) session_id: String,
     pub(super) prompt_id: String,

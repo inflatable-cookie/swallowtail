@@ -5,6 +5,7 @@
 
 #![forbid(unsafe_code)]
 
+mod acp_projection_assertions;
 mod assertions;
 mod callback_fixture;
 mod direct_continuation_fixture;
@@ -79,7 +80,8 @@ pub(crate) use profile_common::assert_common_contract;
 pub(crate) use profile_fixture::ProfilePreflightFixture;
 pub use profile_provider_conversation::run_provider_conversation_boundary_assertions;
 pub use profiles::{
-    ConformanceAssertion, ConformanceReport, SyntheticProfile, run_all_synthetic_profiles,
+    ConformanceAssertion, ConformanceReport, SyntheticProfile,
+    run_acp_single_turn_projection_assertions, run_all_synthetic_profiles,
     run_attached_network_harness_profile, run_attached_runtime_boundary_assertions,
     run_attached_self_hosted_profile, run_connection_scoped_direct_session_profile,
     run_harness_configuration_boundary_assertions, run_harness_rpc_contract_assertions,

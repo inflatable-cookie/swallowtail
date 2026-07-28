@@ -22,7 +22,10 @@ impl SharedAgent {
             Scenario::ReasoningLegacySuccess => {
                 confirmation(id, &["off", "on"], requested_value(message)?)
             }
-            Scenario::ReasoningEffortSuccess | Scenario::ReasoningNewerSuccess => {
+            Scenario::ReasoningEffortSuccess
+            | Scenario::ReasoningEffort291Success
+            | Scenario::ReasoningEffort292Success
+            | Scenario::ReasoningNewerSuccess => {
                 let requested = requested_value(message)?;
                 let effective = if requested == "on" {
                     "medium"

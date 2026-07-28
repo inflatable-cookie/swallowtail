@@ -140,7 +140,8 @@ impl ActiveTurn {
                 | "plan"
                 | "usage_update"
                 | "config_option_update"
-                | "current_mode_update",
+                | "current_mode_update"
+                | "available_commands_update",
             ) => self.emit(RuntimeEventKind::Progress, None),
             _ => Err(failure(
                 "swallowtail.claude_agent.acp.update_unsupported",

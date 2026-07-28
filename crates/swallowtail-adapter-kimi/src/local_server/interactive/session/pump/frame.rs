@@ -31,7 +31,7 @@ pub(super) async fn apply_frame(
     match decode_ws_frame(frame)? {
         WsFrame::Event(envelope) => {
             if envelope.session_id != input.session_id {
-                return Err(protocol_failure());
+                return Ok(None);
             }
             if !apply_cursor(&input.cursor, &envelope)? {
                 return Ok(None);

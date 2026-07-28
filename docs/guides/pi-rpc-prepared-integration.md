@@ -20,6 +20,9 @@ Session preparation requires a request identity, provider, model route, model,
 working-resource reference, optional session deadline, and empty
 `SessionOptions`.
 
+Structured-run preparation requires a request identity, provider, model route,
+model, content, working-resource reference, and mandatory deadline.
+
 Catalogue preparation requires only a request identity and optional deadline.
 Call `PiPreparedIntegration::prepare_catalogue`; its plan has no provider,
 model route, prompt, session, or working resource.
@@ -61,6 +64,17 @@ handle. Prompt turns, steering, follow-up scheduling, UI callback relay,
 interruption, and joined cleanup remain on the existing session and turn
 interfaces. The facade does not copy those lifecycle rules into shared facade
 records.
+
+`PiPreparedRun::start_run` starts a separate `StructuredRun` operation. It
+launches one `--no-session` RPC child, sends one prompt, exposes Pi's bounded UI
+callback exchange, awaits `agent_end`, then joins the turn, process,
+working-resource, and credential work. Its policy prohibits provider
+retention. It exposes no provider run, reusable session, resume binding, or
+management binding.
+
+The configured restrictive RPC policy remains visible in the immutable plan.
+Interactive steering and follow-up scheduling are not reclassified as
+structured-run operations.
 
 `plan`, `request`, `evidence`, `low_level_driver`, and `into_parts` remain
 available for inspection and advanced use.

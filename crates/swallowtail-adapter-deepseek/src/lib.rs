@@ -19,10 +19,11 @@ pub use prepared::{
 };
 pub use prepared_profile::{
     DeepSeekCatalogueProfileInput, DeepSeekModelSelection, DeepSeekPreparedCatalogue,
-    DeepSeekPreparedEvidence, DeepSeekPreparedSession, DeepSeekSessionProfileInput,
+    DeepSeekPreparedEvidence, DeepSeekPreparedRun, DeepSeekPreparedSession,
+    DeepSeekRunProfileInput, DeepSeekSessionProfileInput,
 };
 pub use selection::{
     DEEPSEEK_ENDPOINT, DEEPSEEK_ENDPOINT_AUDIENCE, DEEPSEEK_FACADE_REVISION, DEEPSEEK_MODEL_ID,
     deepseek_facade_binding, deepseek_facade_claim, deepseek_v4_config, deepseek_v4_requirements,
-    validate_deepseek_request_plan,
+    deepseek_v4_run_requirements, validate_deepseek_request_plan,
 };

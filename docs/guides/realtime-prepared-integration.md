@@ -4,7 +4,7 @@ Swallowtail exposes three separate prepared connection surfaces:
 
 | Route | Prepared integration | Bound operation | Native shape |
 | --- | --- | --- | --- |
-| xAI Responses WebSocket | `XaiPreparedIntegration` | `XaiPreparedResponsesSession` | serial text turns with private continuation and billed cost |
+| xAI Responses WebSocket | `XaiPreparedIntegration` | `XaiPreparedResponsesRun`; `XaiPreparedResponsesSession` | one bounded response without continuation; serial text turns with private continuation and billed cost |
 | OpenAI Realtime | `OpenAiRealtimePreparedIntegration` | `OpenAiPreparedRealtimeSession` | manual PCM input, audio/transcript output, native response cancellation |
 | Gemini Live | `GeminiLivePreparedIntegration` | `GeminiPreparedLiveSession` | asymmetric PCM, local interruption, one provider-planned rollover |
 
@@ -42,6 +42,12 @@ and model identity. Swallowtail does not choose a Grok alias. The returned
 interactive session retains `store=false`, one active text turn, private
 connection-local continuation, provider usage and billed ticks, and
 credential-last joined cleanup.
+
+`prepare_responses_run` binds the same explicit route and access evidence to
+one resource-free structured operation. It opens one connection, sends one
+`store=false` `response.create` without a previous-response id, streams one
+terminal response, reports usage and billed cost, then closes and joins the
+connection. It exposes no provider run, session, or continuation binding.
 
 Cancellation, deadline, disconnect, provider failure, or connection lifetime
 end invalidates the whole session. There is no reconnect, replay, provider

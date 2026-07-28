@@ -1,14 +1,16 @@
 use super::ClaudeAgentPreparedDelete;
 use crate::ClaudeAgentPreparedIntegration;
 use crate::prepared_profile::input::ClaudeAgentSessionManagementInput;
-use crate::prepared_profile::plan::{build_plan, failure, instance_with_capabilities};
+use crate::prepared_profile::plan::{
+    access_requirement, build_plan, failure, instance_with_capabilities,
+};
 use swallowtail_core::{
-    AccessRequirement, Capability, CapabilityProfile, CapabilityRequirement, CredentialState,
-    DriverRole, EndpointAuthorization, EntitlementState, ExecutionLayer,
-    HarnessConfigurationPosture, HarnessIsolation, HostServiceKind, OperationRequirements,
-    OperationShape, ProviderSessionActivityEvidence, ProviderSessionAffectedScope,
-    ProviderSessionCancellationPosture, ProviderSessionDeletionStrength,
-    ProviderSessionInitialStateRequirement, ProviderSessionManagementAction, RuntimeReadiness,
+    Capability, CapabilityProfile, CapabilityRequirement, CredentialMechanism, DriverRole,
+    ExecutionLayer, HarnessConfigurationPosture, HarnessIsolation, HostServiceKind,
+    OperationRequirements, OperationShape, ProviderSessionActivityEvidence,
+    ProviderSessionAffectedScope, ProviderSessionCancellationPosture,
+    ProviderSessionDeletionStrength, ProviderSessionInitialStateRequirement,
+    ProviderSessionManagementAction,
 };
 use swallowtail_runtime::{
     DeleteProviderSessionRequest, PreparationFailure, PreparedProviderSessionManagementEvidence,
@@ -37,10 +39,12 @@ impl ClaudeAgentPreparedIntegration {
         let mut host_services = vec![
             HostServiceKind::Task,
             HostServiceKind::Process,
-            HostServiceKind::Credential,
             HostServiceKind::WorkingResource,
             HostServiceKind::WorkingResourceIo,
         ];
+        if self.access_profile().credential_mechanism() == &CredentialMechanism::ApiKey {
+            host_services.push(HostServiceKind::Credential);
+        }
         if deadline.is_some() {
             host_services.push(HostServiceKind::Time);
         }
@@ -81,22 +85,9 @@ impl ClaudeAgentPreparedIntegration {
         })?;
         Ok(ClaudeAgentPreparedDelete {
             environment: self.environment().clone(),
-            credential: self
-                .access_profile()
-                .credential_reference()
-                .expect("prepared Claude Agent access has one credential reference")
-                .clone(),
+            credential: self.access_profile().credential_reference().cloned(),
             evidence: PreparedProviderSessionManagementEvidence::from_plan(plan)?,
             request,
         })
     }
-}
-
-fn access_requirement(prepared: &ClaudeAgentPreparedIntegration) -> AccessRequirement {
-    AccessRequirement::new(prepared.access_profile().id().clone())
-        .with_credential_states([CredentialState::Ready])
-        .with_entitlement_states([EntitlementState::Available])
-        .with_endpoint_authorizations([EndpointAuthorization::Allowed])
-        .with_runtime_readiness([RuntimeReadiness::Ready])
-        .with_support_authorities([prepared.access_profile().support_authority()])
 }

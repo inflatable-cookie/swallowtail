@@ -82,6 +82,19 @@ impl FixtureHost {
             .with_working_resource_io(Arc::new(self.clone()))
     }
 
+    #[allow(dead_code)]
+    pub fn services_without_credential(&self, host: ExecutionHostId) -> HostServices {
+        HostServices::new(host)
+            .with_task(Arc::new(ThreadTaskService))
+            .with_time(Arc::new(FixtureTime::new(
+                self.immediate_deadline,
+                self.deadline_after_waits,
+            )))
+            .with_process(Arc::new(self.clone()))
+            .with_working_resource(Arc::new(self.clone()))
+            .with_working_resource_io(Arc::new(self.clone()))
+    }
+
     pub fn observed_process(&self) -> ObservedProcess {
         self.process
             .lock()

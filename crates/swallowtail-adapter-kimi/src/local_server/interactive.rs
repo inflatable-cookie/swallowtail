@@ -5,6 +5,9 @@ mod prepared;
 mod session;
 mod websocket;
 
+pub(in crate::local_server) use prepared::{access_policy, validate_revision_options};
+pub(in crate::local_server) use session::{KimiInteractiveSession, TurnCancellation};
+
 use swallowtail_core::ReasoningMode;
 use swallowtail_runtime::{
     BoxFuture, InteractiveSessionHandle, OperationContent, PreparationFailure, RequestId,

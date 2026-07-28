@@ -25,90 +25,92 @@ use swallowtail_runtime::{
 
 #[test]
 fn attached_archive_and_restore_work_on_local_and_remote_authoritative_hosts() {
-    for host_name in ["host.local", "host.remote-authoritative"] {
-        let server = FixtureServer::start();
-        let host = FixtureHost::new(&server);
-        let execution_host = value(ExecutionHostId::new, host_name);
-        let services = host.services(execution_host.clone(), false);
-        let prepared = prepare_attached(execution_host, services.clone());
-        let binding = binding(&prepared);
+    for version in ["0.28.1", "0.29.0", "0.29.1", "0.29.2"] {
+        for host_name in ["host.local", "host.remote-authoritative"] {
+            let server = FixtureServer::start_with_version(version);
+            let host = FixtureHost::new(&server);
+            let execution_host = value(ExecutionHostId::new, host_name);
+            let services = host.services(execution_host.clone(), false);
+            let prepared = prepare_attached_for_version(execution_host, version, services.clone());
+            let binding = binding(&prepared);
 
-        let archive = prepared
-            .prepare_archive_session(KimiLocalServerSessionManagementInput::new(
-                value(RequestId::new, "archive-request"),
-                binding.clone(),
-            ))
-            .expect("archive prepares");
-        let archived = block_on(archive.execute(services.clone())).expect("archive executes");
-        assert_eq!(
-            archived.effect().truth(),
-            ProviderSessionEffectTruth::Applied
-        );
+            let archive = prepared
+                .prepare_archive_session(KimiLocalServerSessionManagementInput::new(
+                    value(RequestId::new, "archive-request"),
+                    binding.clone(),
+                ))
+                .expect("archive prepares");
+            let archived = block_on(archive.execute(services.clone())).expect("archive executes");
+            assert_eq!(
+                archived.effect().truth(),
+                ProviderSessionEffectTruth::Applied
+            );
 
-        let restore = prepared
-            .prepare_restore_session(KimiLocalServerSessionManagementInput::new(
-                value(RequestId::new, "restore-request"),
-                binding,
-            ))
-            .expect("restore prepares");
-        let restored = block_on(restore.execute(services)).expect("restore executes");
-        assert_eq!(
-            restored.effect().truth(),
-            ProviderSessionEffectTruth::Applied
-        );
-        assert!(
-            !prepared
-                .instance()
-                .capabilities()
-                .supports(Capability::ProviderSessionDelete)
-        );
+            let restore = prepared
+                .prepare_restore_session(KimiLocalServerSessionManagementInput::new(
+                    value(RequestId::new, "restore-request"),
+                    binding,
+                ))
+                .expect("restore prepares");
+            let restored = block_on(restore.execute(services)).expect("restore executes");
+            assert_eq!(
+                restored.effect().truth(),
+                ProviderSessionEffectTruth::Applied
+            );
+            assert!(
+                !prepared
+                    .instance()
+                    .capabilities()
+                    .supports(Capability::ProviderSessionDelete)
+            );
 
-        let rejected = prepared
-            .prepare_archive_session(KimiLocalServerSessionManagementInput::new(
-                value(RequestId::new, "archive-missing"),
-                binding_for(&prepared, "missing-session"),
-            ))
-            .expect("missing-session archive prepares");
-        let rejected = block_on(
-            rejected.execute(host.services(value(ExecutionHostId::new, host_name), false)),
-        )
-        .expect("provider rejection returns effect truth");
-        assert_eq!(
-            rejected.effect().truth(),
-            ProviderSessionEffectTruth::FailedBeforeEffect
-        );
+            let rejected = prepared
+                .prepare_archive_session(KimiLocalServerSessionManagementInput::new(
+                    value(RequestId::new, "archive-missing"),
+                    binding_for(&prepared, "missing-session"),
+                ))
+                .expect("missing-session archive prepares");
+            let rejected = block_on(
+                rejected.execute(host.services(value(ExecutionHostId::new, host_name), false)),
+            )
+            .expect("provider rejection returns effect truth");
+            assert_eq!(
+                rejected.effect().truth(),
+                ProviderSessionEffectTruth::FailedBeforeEffect
+            );
 
-        let requests = server.requests();
-        assert_eq!(
-            requests
-                .iter()
-                .filter(|request| request.path == "/api/v1/healthz")
-                .count(),
-            1
-        );
-        assert!(
-            requests
-                .iter()
-                .any(|request| { request.path == "/api/v1/meta" && request.authenticated })
-        );
-        assert!(requests.iter().any(|request| {
-            request.path == "/api/v1/sessions/session-1:archive"
-                && request.method == "POST"
-                && request.authenticated
-        }));
-        assert!(requests.iter().any(|request| {
-            request.path == "/api/v1/sessions/session-1:restore"
-                && request.method == "POST"
-                && request.authenticated
-        }));
-        assert_eq!(host.credential_releases(), 4);
-        assert!(host.process_arguments().is_none());
+            let requests = server.requests();
+            assert_eq!(
+                requests
+                    .iter()
+                    .filter(|request| request.path == "/api/v1/healthz")
+                    .count(),
+                1
+            );
+            assert!(
+                requests
+                    .iter()
+                    .any(|request| { request.path == "/api/v1/meta" && request.authenticated })
+            );
+            assert!(requests.iter().any(|request| {
+                request.path == "/api/v1/sessions/session-1:archive"
+                    && request.method == "POST"
+                    && request.authenticated
+            }));
+            assert!(requests.iter().any(|request| {
+                request.path == "/api/v1/sessions/session-1:restore"
+                    && request.method == "POST"
+                    && request.authenticated
+            }));
+            assert_eq!(host.credential_releases(), 4);
+            assert!(host.process_arguments().is_none());
+        }
     }
 }
 
 #[test]
 fn attached_catalogue_lists_configured_aliases_without_session_or_refresh() {
-    for version in ["0.28.1", "0.29.0"] {
+    for version in ["0.28.1", "0.29.0", "0.29.1", "0.29.2"] {
         let server = FixtureServer::start_with_version(version);
         let host = FixtureHost::new(&server);
         let execution_host = value(ExecutionHostId::new, "host.local");
@@ -221,8 +223,16 @@ fn prepare_attached(
     execution_host: ExecutionHostId,
     services: HostServices,
 ) -> KimiLocalServerPreparedIntegration {
+    prepare_attached_for_version(execution_host, "0.29.0", services)
+}
+
+fn prepare_attached_for_version(
+    execution_host: ExecutionHostId,
+    version: &str,
+    services: HostServices,
+) -> KimiLocalServerPreparedIntegration {
     block_on(prepare_kimi_local_server_attached(
-        attached_input(execution_host),
+        attached_input_for_version(execution_host, version),
         probe(),
         services,
     ))

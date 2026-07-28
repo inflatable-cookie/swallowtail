@@ -11,12 +11,30 @@ use swallowtail_runtime::{
 };
 use swallowtail_testkit::{
     ConformanceAssertion, ExecutionTopologyFixture, SyntheticProfile, run_all_synthetic_profiles,
-    run_provider_conversation_boundary_assertions,
+    run_hosted_direct_api_profile, run_provider_conversation_boundary_assertions,
 };
 
 #[test]
 fn provider_neutral_conversation_assertions_remain_adapter_independent() {
     run_provider_conversation_boundary_assertions();
+}
+
+#[test]
+fn provider_neutral_hosted_profile_covers_the_structured_projection() {
+    let report = run_hosted_direct_api_profile();
+    for assertion in [
+        ConformanceAssertion::PreflightBeforeSideEffects,
+        ConformanceAssertion::OrderedEvents,
+        ConformanceAssertion::SingleTerminalOutcome,
+        ConformanceAssertion::CancellationAndTimeoutDistinct,
+        ConformanceAssertion::CleanupRemainsVisible,
+        ConformanceAssertion::HostedApiNeedsNoProcess,
+        ConformanceAssertion::HostedEndpointCredentialBinding,
+        ConformanceAssertion::DirectRunNoResource,
+        ConformanceAssertion::ProviderEvidenceSeparated,
+    ] {
+        assert!(report.covers(assertion), "missing {assertion:?}");
+    }
 }
 
 #[test]

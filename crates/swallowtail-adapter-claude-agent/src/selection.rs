@@ -47,6 +47,20 @@ impl ClaudeAgentPlanSelection {
     }
 }
 
+impl ClaudeAgentBehavior {
+    pub(crate) const fn supports_config_options(self) -> bool {
+        !matches!(self, Self::Baseline)
+    }
+}
+
+pub(crate) fn version_supports_config_options(version: &InterfaceVersion) -> bool {
+    claude_agent_acp_claim()
+        .assess(version)
+        .behavior_revision()
+        .and_then(behavior)
+        .is_some_and(ClaudeAgentBehavior::supports_config_options)
+}
+
 #[must_use]
 pub fn claude_agent_acp_binding(value: &str) -> Option<InterfaceVersionBinding> {
     if value.is_empty()
@@ -110,16 +124,12 @@ pub(crate) fn select_claude_agent_plan(
         ));
     }
     let qualified = matches!(assessment, InterfaceCompatibilityAssessment::Qualified(_));
-    let behavior = match assessment
+    let revision = assessment
         .behavior_revision()
-        .expect("permitted assessment has a behavior revision")
-        .as_str()
-    {
-        BASELINE_BEHAVIOR => ClaudeAgentBehavior::Baseline,
-        SESSION_CONFIG_BEHAVIOR => ClaudeAgentBehavior::SessionConfig,
-        PROVIDER_CAPABILITY_BEHAVIOR => ClaudeAgentBehavior::ProviderCapability,
-        STEERING_METADATA_BEHAVIOR => ClaudeAgentBehavior::SteeringMetadata,
-        _ => {
+        .expect("permitted assessment has a behavior revision");
+    let behavior = match behavior(revision) {
+        Some(behavior) => behavior,
+        None => {
             return Err(failure(
                 "swallowtail.claude_agent.acp.behavior_incompatible",
                 "Claude Agent ACP behavior is not mapped by this driver",
@@ -131,6 +141,16 @@ pub(crate) fn select_claude_agent_plan(
         version: binding.version().clone(),
         qualified,
     })
+}
+
+fn behavior(revision: &InterfaceBehaviorRevision) -> Option<ClaudeAgentBehavior> {
+    match revision.as_str() {
+        BASELINE_BEHAVIOR => Some(ClaudeAgentBehavior::Baseline),
+        SESSION_CONFIG_BEHAVIOR => Some(ClaudeAgentBehavior::SessionConfig),
+        PROVIDER_CAPABILITY_BEHAVIOR => Some(ClaudeAgentBehavior::ProviderCapability),
+        STEERING_METADATA_BEHAVIOR => Some(ClaudeAgentBehavior::SteeringMetadata),
+        _ => None,
+    }
 }
 
 fn axis() -> InterfaceVersionAxis {
@@ -154,7 +174,7 @@ fn segment(minimum: &str, maximum: &str, revision: &str) -> InterfaceVersionSegm
 mod tests {
     use super::{
         CLAUDE_AGENT_ACP_AXIS, STEERING_METADATA_BEHAVIOR, claude_agent_acp_binding,
-        claude_agent_acp_claim,
+        claude_agent_acp_claim, version_supports_config_options,
     };
     use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
 
@@ -199,6 +219,14 @@ mod tests {
         ] {
             assert!(claude_agent_acp_binding(rejected).is_none());
         }
+    }
+
+    #[test]
+    fn session_config_gate_preserves_legacy_baseline_and_newer_inheritance() {
+        assert!(!version_supports_config_options(&version("0.53.0")));
+        assert!(version_supports_config_options(&version("0.54.0")));
+        assert!(version_supports_config_options(&version("0.61.0")));
+        assert!(version_supports_config_options(&version("0.63.0")));
     }
 
     fn version(value: &str) -> InterfaceVersion {

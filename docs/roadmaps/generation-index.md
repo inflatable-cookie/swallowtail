@@ -33,4 +33,7 @@ ACP/Claude Agent and OpenCode deletion proofs, provider-wide acceptance, and a
 Nucleus handoff without absorbing consumer thread state. Roadmap 020 adds the
 separate Kimi Code local REST/WebSocket route, reversible archive and restore,
 explicit ACP binding import, and interactive execution without claiming Kimi
-deletion or changing ACP.
+deletion or changing ACP. Roadmap 021 closes source-scoped model catalogue
+coverage. Roadmaps 022-024 add independently qualified direct, harness, and
+retained Kimi structured-run branches, then close the solution matrix without
+widening realtime media or owned serving.

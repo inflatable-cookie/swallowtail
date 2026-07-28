@@ -1,5 +1,7 @@
 use swallowtail_core::{ModelId, ModelRouteId, ModelRouteRevision, ProviderId};
-use swallowtail_runtime::{Deadline, RequestId, SessionOptions, WorkingResourceRef};
+use swallowtail_runtime::{
+    Deadline, OperationContent, RequestId, SessionOptions, WorkingResourceRef,
+};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct PiCatalogueProfileInput {
@@ -108,6 +110,52 @@ impl PiSessionProfileInput {
             self.working_resource,
             self.deadline,
             self.options,
+        )
+    }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct PiRunProfileInput {
+    request_id: RequestId,
+    model: PiModelSelection,
+    content: OperationContent,
+    working_resource: WorkingResourceRef,
+    deadline: Deadline,
+}
+
+impl PiRunProfileInput {
+    #[must_use]
+    pub const fn new(
+        request_id: RequestId,
+        model: PiModelSelection,
+        content: OperationContent,
+        working_resource: WorkingResourceRef,
+        deadline: Deadline,
+    ) -> Self {
+        Self {
+            request_id,
+            model,
+            content,
+            working_resource,
+            deadline,
+        }
+    }
+
+    pub(super) fn into_parts(
+        self,
+    ) -> (
+        RequestId,
+        PiModelSelection,
+        OperationContent,
+        WorkingResourceRef,
+        Deadline,
+    ) {
+        (
+            self.request_id,
+            self.model,
+            self.content,
+            self.working_resource,
+            self.deadline,
         )
     }
 }

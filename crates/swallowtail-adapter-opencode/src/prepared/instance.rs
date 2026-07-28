@@ -47,3 +47,30 @@ pub(crate) fn all_capabilities() -> CapabilityProfile {
         ),
     ])
 }
+
+pub(crate) fn run_capabilities() -> CapabilityProfile {
+    CapabilityProfile::new([
+        CapabilityRequirement::new(Capability::StructuredRun, []),
+        CapabilityRequirement::new(Capability::StreamingEvents, []),
+        CapabilityRequirement::new(Capability::ProviderTemporaryRetention, []),
+        CapabilityRequirement::new(
+            Capability::OwnedRemoteResourceDeletion,
+            [CapabilityConstraint::OwnedRemoteResource(
+                swallowtail_core::OwnedRemoteResourceKind::Session,
+            )],
+        ),
+        CapabilityRequirement::new(
+            Capability::Interruption,
+            [CapabilityConstraint::CancellationScope(
+                swallowtail_core::CancellationScope::StructuredRun,
+            )],
+        ),
+        CapabilityRequirement::new(
+            Capability::WorkingResource,
+            [
+                CapabilityConstraint::ResourceAccess(ResourceAccess::Read),
+                CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
+            ],
+        ),
+    ])
+}

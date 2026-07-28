@@ -1,8 +1,9 @@
 # Kimi Code Prepared Integration
 
-Use the prepared facade for the normal Kimi Code ACP path. It discovers one
-host-approved executable, preserves its exact compatibility result, and
-derives the configured instance, preflight plan, access policy, and session
+Use the installed Kimi Code facade for ACP sessions or bounded headless runs.
+The caller selects `Acp` or `Headless` before discovery. The facade discovers
+one host-approved executable, preserves the route-specific compatibility
+result, and derives the configured instance, preflight plan, policy, and
 request echoes.
 
 ## Inputs That Stay Explicit
@@ -15,20 +16,22 @@ Preparation still requires:
 - one membership OAuth access profile and observed or caller-asserted evidence
 - caller-owned probe cancellation and deadline
 
-The session profile still requires the selected model route, working resource,
-and optional reasoning mode. Swallowtail does not select a model, workspace,
-account, credential, or fallback route.
+The selected operation still requires its model route, working resource,
+deadline, and supported options. Swallowtail does not select a model,
+workspace, account, credential, transport, or fallback route.
 
 ## Prepare The Installation
 
-Construct `KimiPreparationInput` and `KimiPreparationProbe`, then call
-`prepare_kimi`. The supplied host services must describe the same host that
-will execute the session and include the session services used by preflight.
-Only task, time, and process services are used by the version probe.
+Construct `KimiCodePreparationInput` with `KimiCodePreparedDriver::Acp` or
+`Headless`, add `KimiCodePreparationProbe`, then call `prepare_kimi_code`.
+The supplied host services must describe the same host that will execute the
+operation and include its preflight-bound services. Only task, time, and
+process services are used by the version probe.
 
-The result exposes the exact installed observation, access provenance,
-configured instance, approved target, and a low-level `KimiAcpDriver` escape
-hatch.
+The result is `KimiCodePreparedIntegration::Acp` or `Headless`. Each branch
+exposes the exact installed observation, access provenance, configured
+instance, approved target, and its low-level driver escape hatch. The older
+route-specific constructors remain available.
 
 ## Prepare One Persistent Session
 
@@ -86,3 +89,30 @@ helpers, and `into_parts` remain available for diagnostics and advanced use.
 
 See the compile-tested
 [`prepared_acp` example](../../crates/swallowtail-adapter-kimi/examples/prepared_acp.rs).
+
+## Prepare One Headless Run
+
+Select `Headless`, then create `KimiHeadlessRunInput` with an explicit model,
+prompt content, working resource, and deadline. `prepare_run` derives the
+immutable structured plan, mandatory `DurableAllowed` retention policy, and
+exact process request.
+The driver executes:
+
+```text
+kimi --model <alias> --prompt <content> --output-format stream-json
+```
+
+Kimi requires prompt content in the process arguments. Swallowtail redacts the
+arguments from stable diagnostics and `ProcessRequest` debug output, but the
+host operating system may still expose process arguments. Consumers that
+cannot accept that host boundary should use another route.
+
+The prepared route binds the audited default v1 print engine and rejects an
+environment that enables `KIMI_CODE_EXPERIMENTAL_FLAG`. It reports assistant,
+tool activity, retry, and terminal events without claiming consumer tool
+callbacks. Cancellation and deadline stop and join the child. Kimi may retain
+provider state, so the operation requires `DurableAllowed`; no reusable
+session, archive, restore, or delete authority escapes.
+
+See the compile-tested
+[`prepared_headless` example](../../crates/swallowtail-adapter-kimi/examples/prepared_headless.rs).

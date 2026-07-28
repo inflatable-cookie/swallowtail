@@ -1,17 +1,99 @@
 use super::fixtures::{
-    access_profile, preparation_services, prepared, probe, profile_input, target,
+    access_profile, access_status, preparation_services, prepared, probe, profile_input, target,
 };
 use crate::discovery_support::FakeProcessService;
 use crate::support::{FixtureHost, Scenario};
 use futures_executor::block_on;
-use swallowtail_adapter_kimi::{KimiPreparationInput, prepare_kimi};
+use swallowtail_adapter_kimi::{
+    KimiCodePreparationInput, KimiCodePreparationProbe, KimiCodePreparedDriver,
+    KimiCodePreparedIntegration, KimiPreparationInput, prepare_kimi, prepare_kimi_code,
+};
 use swallowtail_core::{
     AccessProfileId, AccessStatus, ConfiguredInstanceId, CredentialState, EndpointAuthorization,
     EntitlementState, ExecutionHostId, InstanceRevision, RuntimeReadiness, SupportAuthority,
 };
 use swallowtail_runtime::{
-    EnvironmentRef, PreparationStage, PreparedAccessEvidence, RequestId, SessionOptions,
+    Deadline, DiscoveryCancellation, EnvironmentRef, MonotonicInstant, PreparationStage,
+    PreparedAccessEvidence, RequestId, ScopeId, SessionOptions, WorkingResourceRef,
 };
+
+#[test]
+fn installed_solution_facade_keeps_acp_and_headless_selection_explicit() {
+    for driver in [
+        KimiCodePreparedDriver::Acp,
+        KimiCodePreparedDriver::Headless,
+    ] {
+        let suffix = match driver {
+            KimiCodePreparedDriver::Acp => "acp",
+            KimiCodePreparedDriver::Headless => "headless",
+        };
+        let host_id = ExecutionHostId::new(format!("fixture.kimi.code.{suffix}")).unwrap();
+        let operation_host = FixtureHost::new(Scenario::Complete);
+        let input = KimiCodePreparationInput::new(
+            driver,
+            ConfiguredInstanceId::new(format!("kimi.code.{suffix}")).unwrap(),
+            InstanceRevision::new("1").unwrap(),
+            host_id.clone(),
+            target(),
+            EnvironmentRef::new("kimi.code.environment").unwrap(),
+            access_profile(),
+            PreparedAccessEvidence::caller_asserted(access_status()),
+        );
+        let probe = KimiCodePreparationProbe::new(
+            RequestId::new(format!("kimi-code-probe-{suffix}")).unwrap(),
+            ScopeId::new(format!("kimi-code-probe-{suffix}")).unwrap(),
+            Deadline::at(MonotonicInstant::from_ticks(100)),
+            DiscoveryCancellation::new(),
+        );
+        let (process, _) = FakeProcessService::completed("0.29.2\n");
+        let prepared = block_on(prepare_kimi_code(
+            input,
+            probe,
+            preparation_services(&operation_host, host_id, process),
+        ))
+        .expect("selected Kimi Code route prepares");
+        assert_eq!(prepared.driver(), driver);
+        assert!(matches!(
+            (driver, prepared),
+            (
+                KimiCodePreparedDriver::Acp,
+                KimiCodePreparedIntegration::Acp(_)
+            ) | (
+                KimiCodePreparedDriver::Headless,
+                KimiCodePreparedIntegration::Headless(_)
+            )
+        ));
+    }
+
+    let host_id = ExecutionHostId::new("fixture.kimi.code.headless-state").unwrap();
+    let operation_host = FixtureHost::new(Scenario::Complete);
+    let input = KimiCodePreparationInput::new(
+        KimiCodePreparedDriver::Headless,
+        ConfiguredInstanceId::new("kimi.code.headless-state").unwrap(),
+        InstanceRevision::new("1").unwrap(),
+        host_id.clone(),
+        target(),
+        EnvironmentRef::new("kimi.code.environment").unwrap(),
+        access_profile(),
+        PreparedAccessEvidence::caller_asserted(access_status()),
+    )
+    .with_state_root(WorkingResourceRef::new("kimi.code.state-root").unwrap());
+    let probe = KimiCodePreparationProbe::new(
+        RequestId::new("kimi-code-headless-state").unwrap(),
+        ScopeId::new("kimi-code-headless-state").unwrap(),
+        Deadline::at(MonotonicInstant::from_ticks(100)),
+        DiscoveryCancellation::new(),
+    );
+    let (process, state) = FakeProcessService::completed("0.29.2\n");
+    let failure = block_on(prepare_kimi_code(
+        input,
+        probe,
+        preparation_services(&operation_host, host_id, process),
+    ))
+    .expect_err("headless route rejects reusable session-state authority");
+    assert_eq!(failure.stage(), PreparationStage::TargetSelection);
+    assert!(!state.started());
+}
 
 #[test]
 fn exact_newer_evidence_and_preparation_failures_remain_visible_before_effects() {

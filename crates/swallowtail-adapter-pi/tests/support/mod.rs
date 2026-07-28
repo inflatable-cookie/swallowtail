@@ -5,3 +5,5 @@ pub use host::{CleanupEvent, FixtureHost, Scenario};
 pub use selection::{
     FixtureSelection, open_request, selection, selection_for_topology, turn_request,
 };
+#[allow(unused_imports)]
+pub use selection::{run_request, run_selection_for_topology};

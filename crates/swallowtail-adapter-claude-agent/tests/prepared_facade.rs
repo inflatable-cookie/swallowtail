@@ -5,25 +5,27 @@ mod session_management;
 mod support;
 
 use futures_executor::block_on;
+use futures_util::StreamExt;
 use support::{FixtureHost, Scenario};
 use swallowtail_adapter_claude_agent::{
     CLAUDE_AGENT_ACP_AXIS, ClaudeAgentModelSelection, ClaudeAgentPreparationInput,
-    ClaudeAgentPreparationProbe, ClaudeAgentSessionManagementInput, ClaudeAgentSessionProfileInput,
-    prepare_claude_agent,
+    ClaudeAgentPreparationProbe, ClaudeAgentRunProfileInput, ClaudeAgentSessionManagementInput,
+    ClaudeAgentSessionProfileInput, prepare_claude_agent,
 };
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessStatus, Capability, ConfiguredInstanceId,
     CredentialMechanism, CredentialRef, CredentialState, EndpointAudience, EndpointAuthorization,
     EntitlementMetering, EntitlementState, ExecutionHostId, HarnessConfigurationPosture,
-    HarnessIsolation, InstanceRevision, InterfaceVersionAxis, ModelId, ModelRouteId,
-    ModelRouteRevision, ProviderSessionAffectedScope, ProviderSessionDeletionStrength,
-    ProviderSessionEffectTruth, ResourceAccess, RuntimeReadiness, SessionAccessPolicy,
-    SupportAuthority,
+    HarnessIsolation, HostServiceKind, InstanceRevision, InterfaceVersionAxis, ModelId,
+    ModelRouteId, ModelRouteRevision, ProviderSessionAffectedScope,
+    ProviderSessionDeletionStrength, ProviderSessionEffectTruth, ResourceAccess, RuntimeReadiness,
+    SessionAccessPolicy, SupportAuthority,
 };
 use swallowtail_runtime::{
     CleanupOutcome, Deadline, DiscoveryCancellation, EnvironmentRef, ExecutableRef,
-    InstalledExecutableTarget, MonotonicInstant, PreparedAccessEvidence, RequestId, ScopeId,
-    SessionOptions, WorkingResourceRef,
+    InstalledExecutableTarget, MonotonicInstant, OperationContent, PreparedAccessEvidence,
+    ProviderRetentionPolicy, RequestId, ScopeId, SessionOptions, TerminalStatus,
+    WorkingResourceRef,
 };
 use swallowtail_testkit::assert_prepared_operation_evidence_matches_plan;
 
@@ -47,7 +49,9 @@ fn prepared_sessions_bind_version_access_model_and_ambient_read_policy() {
                     ModelId::new("claude-sonnet-4-6").expect("valid model"),
                 ),
                 WorkingResourceRef::new("claude-agent.prepared.workspace").expect("valid resource"),
-                SessionOptions::default(),
+                SessionOptions::default().with_reasoning_mode(
+                    swallowtail_core::ReasoningMode::new("high").expect("valid reasoning mode"),
+                ),
             ))
             .expect("session profile prepares");
 
@@ -92,7 +96,20 @@ fn prepared_sessions_bind_version_access_model_and_ambient_read_policy() {
         assert!(binding.supports(Capability::ProviderSessionDelete));
         assert!(session.resume_binding().is_none());
         assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
-        assert!(operation_host.writes().iter().any(|message| {
+        let writes = operation_host.writes();
+        let config = writes
+            .iter()
+            .filter(|message| {
+                message.get("method").and_then(serde_json::Value::as_str)
+                    == Some("session/set_config_option")
+            })
+            .collect::<Vec<_>>();
+        assert_eq!(config.len(), 2);
+        assert_eq!(config[0]["params"]["configId"], "model");
+        assert_eq!(config[0]["params"]["value"], "claude-sonnet-4-6");
+        assert_eq!(config[1]["params"]["configId"], "effort");
+        assert_eq!(config[1]["params"]["value"], "high");
+        assert!(writes.iter().any(|message| {
             message.get("method").and_then(serde_json::Value::as_str) == Some("session/close")
         }));
         assert_eq!(operation_host.credential_acquires(), 1);
@@ -156,11 +173,222 @@ fn unsupported_options_fail_before_session_process_effects() {
             ModelId::new("claude-sonnet-4-6").expect("valid model"),
         ),
         WorkingResourceRef::new("claude-agent.prepared.workspace").expect("valid resource"),
-        SessionOptions::default().with_reasoning_mode(
-            swallowtail_core::ReasoningMode::new("high").expect("valid reasoning mode"),
+        SessionOptions::default().with_developer_instructions(
+            OperationContent::new("unsupported developer instruction").expect("valid content"),
         ),
     ));
     assert!(result.is_err());
+
+    let result = prepared.prepare_session(ClaudeAgentSessionProfileInput::new(
+        RequestId::new("claude-agent-unsupported-reasoning").expect("valid request"),
+        ClaudeAgentModelSelection::new(
+            ModelRouteId::new("claude-agent.prepared.route").expect("valid route"),
+            ModelRouteRevision::new("1").expect("valid route revision"),
+            ModelId::new("claude-sonnet-4-6").expect("valid model"),
+        ),
+        WorkingResourceRef::new("claude-agent.prepared.workspace").expect("valid resource"),
+        SessionOptions::default().with_reasoning_mode(
+            swallowtail_core::ReasoningMode::new("ultra").expect("valid reasoning mode"),
+        ),
+    ));
+    assert!(result.is_err());
+}
+
+#[test]
+fn prepared_structured_run_binds_one_prompt_and_durable_retention_on_both_hosts() {
+    for host_value in ["fixture.run.local", "fixture.run.remote-authoritative"] {
+        let host_id = ExecutionHostId::new(host_value).expect("valid host");
+        let preparation_host = FixtureHost::new(Scenario::Version, "0.61.0");
+        let prepared = block_on(prepare_claude_agent(
+            preparation_input(host_id.clone()),
+            probe(),
+            preparation_host.services(host_id.clone()),
+        ))
+        .expect("Claude Agent prepares");
+        let profile = prepared
+            .prepare_run(
+                ClaudeAgentRunProfileInput::new(
+                    RequestId::new(format!("claude-agent-run-{host_value}"))
+                        .expect("valid request"),
+                    ClaudeAgentModelSelection::new(
+                        ModelRouteId::new("claude-agent.prepared.route").expect("valid route"),
+                        ModelRouteRevision::new("1").expect("valid route revision"),
+                        ModelId::new("claude-sonnet-4-6").expect("valid model"),
+                    ),
+                    OperationContent::new("one private prepared prompt").expect("valid prompt"),
+                    WorkingResourceRef::new("claude-agent.prepared.workspace")
+                        .expect("valid resource"),
+                    None,
+                )
+                .with_reasoning_mode(
+                    swallowtail_core::ReasoningMode::new("high").expect("valid reasoning mode"),
+                ),
+            )
+            .expect("structured run prepares");
+        assert_eq!(
+            profile.plan().requirements().driver_role(),
+            swallowtail_core::DriverRole::StructuredRun
+        );
+        assert_eq!(
+            profile.request().policy().provider_retention(),
+            ProviderRetentionPolicy::DurableAllowed
+        );
+        assert_eq!(
+            profile
+                .request()
+                .policy()
+                .reasoning_mode()
+                .map(swallowtail_core::ReasoningMode::as_str),
+            Some("high")
+        );
+        assert_prepared_operation_evidence_matches_plan(
+            profile.evidence().operation(),
+            profile.plan(),
+        );
+
+        let operation_host = FixtureHost::new(Scenario::Success, "0.61.0");
+        let mut run = block_on(profile.start_run(operation_host.services(host_id)))
+            .expect("structured run starts");
+        assert!(run.provider_run_ref().is_none());
+        let mut events = run.take_events().expect("events");
+        let terminal = run.take_terminal_outcome().expect("terminal");
+        let outcome = block_on(async {
+            while let Some(event) = events.next().await {
+                event.expect("event succeeds");
+            }
+            terminal.await
+        });
+        assert_eq!(outcome.status(), &TerminalStatus::Completed);
+        assert_eq!(outcome.cleanup(), &CleanupOutcome::Clean);
+        assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
+        let writes = operation_host.writes();
+        let config = writes
+            .iter()
+            .filter(|message| {
+                message.get("method").and_then(serde_json::Value::as_str)
+                    == Some("session/set_config_option")
+            })
+            .collect::<Vec<_>>();
+        assert_eq!(config.len(), 2);
+        assert_eq!(config[0]["params"]["configId"], "model");
+        assert_eq!(config[1]["params"]["configId"], "effort");
+        assert_eq!(config[1]["params"]["value"], "high");
+        assert_eq!(
+            writes
+                .iter()
+                .filter(|message| {
+                    message.get("method").and_then(serde_json::Value::as_str)
+                        == Some("session/prompt")
+                })
+                .count(),
+            1
+        );
+        assert!(writes.iter().any(|message| {
+            message.get("method").and_then(serde_json::Value::as_str) == Some("session/close")
+        }));
+        assert!(!writes.iter().any(|message| {
+            message.get("method").and_then(serde_json::Value::as_str) == Some("session/delete")
+        }));
+        assert_eq!(operation_host.credential_releases(), 1);
+        assert_eq!(operation_host.resource_releases(), 1);
+    }
+}
+
+#[test]
+fn local_subscription_facade_inherits_harness_auth_without_a_credential_lease() {
+    let host_id = ExecutionHostId::new("fixture.run.local-subscription").expect("valid host");
+    let preparation_host = FixtureHost::new(Scenario::Version, "0.61.0");
+    let prepared = block_on(prepare_claude_agent(
+        local_preparation_input(host_id.clone()),
+        probe(),
+        preparation_host.services_without_credential(host_id.clone()),
+    ))
+    .expect("locally authenticated Claude Agent prepares");
+    let profile = prepared
+        .prepare_run(ClaudeAgentRunProfileInput::new(
+            RequestId::new("claude-agent-local-subscription-run").expect("valid request"),
+            ClaudeAgentModelSelection::new(
+                ModelRouteId::new("claude-agent.prepared.route").expect("valid route"),
+                ModelRouteRevision::new("1").expect("valid route revision"),
+                ModelId::new("claude-sonnet-4-6").expect("valid model"),
+            ),
+            OperationContent::new("use the local Claude subscription").expect("valid prompt"),
+            WorkingResourceRef::new("claude-agent.prepared.workspace").expect("valid resource"),
+            None,
+        ))
+        .expect("local subscription run prepares");
+
+    assert_eq!(
+        profile.plan().credential_mechanism(),
+        &CredentialMechanism::LocalUnauthenticated
+    );
+    assert!(profile.plan().credential_reference().is_none());
+    assert!(
+        !profile
+            .plan()
+            .requirements()
+            .host_services()
+            .any(|service| service == HostServiceKind::Credential)
+    );
+
+    let operation_host = FixtureHost::new(Scenario::Success, "0.61.0");
+    let mut run =
+        block_on(profile.start_run(operation_host.services_without_credential(host_id.clone())))
+            .expect("local subscription run starts");
+    let mut events = run.take_events().expect("events");
+    let terminal = run.take_terminal_outcome().expect("terminal");
+    let outcome = block_on(async {
+        while let Some(event) = events.next().await {
+            event.expect("event succeeds");
+        }
+        terminal.await
+    });
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
+    assert_eq!(operation_host.credential_acquires(), 0);
+    assert_eq!(operation_host.credential_releases(), 0);
+    assert_eq!(operation_host.observed_process().environment_count, 1);
+
+    let session_profile = prepared
+        .prepare_session(ClaudeAgentSessionProfileInput::new(
+            RequestId::new("claude-agent-local-subscription-session").expect("valid request"),
+            ClaudeAgentModelSelection::new(
+                ModelRouteId::new("claude-agent.prepared.route").expect("valid route"),
+                ModelRouteRevision::new("1").expect("valid route revision"),
+                ModelId::new("claude-sonnet-4-6").expect("valid model"),
+            ),
+            WorkingResourceRef::new("claude-agent.prepared.workspace").expect("valid resource"),
+            SessionOptions::default(),
+        ))
+        .expect("local subscription session prepares");
+    let session_host = FixtureHost::new(Scenario::Success, "0.61.0");
+    let session = block_on(
+        session_profile.open_session(session_host.services_without_credential(host_id.clone())),
+    )
+    .expect("local subscription session opens");
+    let binding = session
+        .management_binding()
+        .expect("session returns a management binding")
+        .clone();
+    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(session_host.credential_acquires(), 0);
+    assert_eq!(session_host.credential_releases(), 0);
+
+    let delete = prepared
+        .prepare_delete_session(ClaudeAgentSessionManagementInput::new(
+            RequestId::new("claude-agent-local-subscription-delete").expect("valid request"),
+            binding,
+        ))
+        .expect("local subscription delete prepares");
+    let delete_host = FixtureHost::new(Scenario::Success, "0.61.0");
+    let outcome = block_on(delete.execute(delete_host.services_without_credential(host_id)))
+        .expect("local subscription delete executes");
+    assert_eq!(
+        outcome.effect().truth(),
+        ProviderSessionEffectTruth::Applied
+    );
+    assert_eq!(delete_host.credential_acquires(), 0);
+    assert_eq!(delete_host.credential_releases(), 0);
 }
 
 fn preparation_input(host: ExecutionHostId) -> ClaudeAgentPreparationInput {
@@ -184,6 +412,36 @@ fn preparation_input(host: ExecutionHostId) -> ClaudeAgentPreparationInput {
             CredentialRef::new("claude-agent.prepared.credential").expect("valid credential"),
         ),
         PreparedAccessEvidence::caller_asserted(access_status()),
+    )
+}
+
+fn local_preparation_input(host: ExecutionHostId) -> ClaudeAgentPreparationInput {
+    let access_id =
+        AccessProfileId::new("claude-agent.prepared.local-access").expect("valid access");
+    ClaudeAgentPreparationInput::new(
+        ConfiguredInstanceId::new("claude-agent.prepared.local").expect("valid instance"),
+        InstanceRevision::new("1").expect("valid revision"),
+        host,
+        InstalledExecutableTarget::new(
+            ExecutableRef::new("claude-agent.prepared.executable").expect("valid executable"),
+            InterfaceVersionAxis::new(CLAUDE_AGENT_ACP_AXIS).expect("valid axis"),
+        ),
+        EnvironmentRef::new("claude-agent.prepared.environment").expect("valid environment"),
+        AccessProfile::new(
+            access_id.clone(),
+            CredentialMechanism::LocalUnauthenticated,
+            EntitlementMetering::SubscriptionAllowance,
+            EndpointAudience::new("api.anthropic.com").expect("valid audience"),
+            SupportAuthority::IntegrationMaintainerSupported,
+        ),
+        PreparedAccessEvidence::caller_asserted(AccessStatus::new(
+            access_id,
+            CredentialState::NotRequired,
+            EntitlementState::Available,
+            EndpointAuthorization::Allowed,
+            RuntimeReadiness::Ready,
+            SupportAuthority::IntegrationMaintainerSupported,
+        )),
     )
 }
 

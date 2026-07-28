@@ -10,8 +10,12 @@ use crate::failure::failure;
 pub const GEMINI_CLI_ACP_AXIS: &str = "gemini-cli.acp-agent";
 pub const GEMINI_CLI_ACP_BASELINE_VERSION: &str = "0.51.0";
 pub const GEMINI_CLI_ACP_LATEST_QUALIFIED_VERSION: &str = "0.51.0";
+pub const GEMINI_CLI_HEADLESS_AXIS: &str = "gemini-cli.headless-stream-json";
+pub const GEMINI_CLI_HEADLESS_BASELINE_VERSION: &str = "0.51.0";
+pub const GEMINI_CLI_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "0.52.0";
 
 const BASELINE_BEHAVIOR: &str = "gemini-cli.acp.v0.51.0";
+pub(crate) const HEADLESS_BEHAVIOR: &str = "gemini-cli.headless.stream-json.v1";
 const MAX_VERSION_BYTES: usize = 64;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -27,6 +31,15 @@ impl GeminiPlanSelection {
 
 #[must_use]
 pub fn gemini_cli_acp_binding(value: &str) -> Option<InterfaceVersionBinding> {
+    binding(GEMINI_CLI_ACP_AXIS, value)
+}
+
+#[must_use]
+pub fn gemini_cli_headless_binding(value: &str) -> Option<InterfaceVersionBinding> {
+    binding(GEMINI_CLI_HEADLESS_AXIS, value)
+}
+
+fn binding(axis_value: &str, value: &str) -> Option<InterfaceVersionBinding> {
     if value.is_empty()
         || value.len() > MAX_VERSION_BYTES
         || value.trim() != value
@@ -36,7 +49,7 @@ pub fn gemini_cli_acp_binding(value: &str) -> Option<InterfaceVersionBinding> {
         return None;
     }
     Some(InterfaceVersionBinding::new(
-        axis(),
+        InterfaceVersionAxis::new(axis_value).ok()?,
         InterfaceVersion::new(value).ok()?,
     ))
 }
@@ -61,7 +74,27 @@ pub fn gemini_cli_acp_claim() -> InterfaceCompatibilityClaim {
     .expect("static Gemini CLI compatibility claim is valid")
 }
 
-pub(crate) fn select_gemini_plan(
+#[must_use]
+pub fn gemini_cli_headless_claim() -> InterfaceCompatibilityClaim {
+    InterfaceCompatibilityClaim::new(
+        InterfaceCompatibilityClaimId::new("gemini-cli.headless.range-v1")
+            .expect("static Gemini CLI headless claim id is valid"),
+        headless_axis(),
+        InterfaceVersionScheme::Semantic,
+        InterfaceNewerVersionPosture::AllowUnverified,
+        [InterfaceVersionSegment::new(
+            version(GEMINI_CLI_HEADLESS_BASELINE_VERSION),
+            version(GEMINI_CLI_HEADLESS_LATEST_QUALIFIED_VERSION),
+            InterfaceBehaviorRevision::new(HEADLESS_BEHAVIOR)
+                .expect("static Gemini headless behavior revision is valid"),
+            InterfaceSupportStatus::Maintained,
+        )],
+        [],
+    )
+    .expect("static Gemini CLI headless compatibility claim is valid")
+}
+
+pub(crate) fn select_gemini_acp_plan(
     plan: &PreflightPlan,
 ) -> Result<GeminiPlanSelection, RuntimeFailure> {
     let claim = gemini_cli_acp_claim();
@@ -101,8 +134,53 @@ pub(crate) fn select_gemini_plan(
     })
 }
 
+pub(crate) fn select_gemini_headless_plan(
+    plan: &PreflightPlan,
+) -> Result<GeminiPlanSelection, RuntimeFailure> {
+    let claim = gemini_cli_headless_claim();
+    let mut bindings = plan
+        .interface_versions()
+        .filter(|binding| binding.axis() == claim.axis());
+    let binding = bindings.next().ok_or_else(|| {
+        failure(
+            "swallowtail.gemini.headless.version_missing",
+            "Gemini headless plan is missing its exact CLI version",
+        )
+    })?;
+    if bindings.next().is_some() {
+        return Err(failure(
+            "swallowtail.gemini.headless.version_ambiguous",
+            "Gemini headless plan contains more than one CLI version",
+        ));
+    }
+    let assessment = claim.assess(binding.version());
+    if assessment != plan.assess_interface_version(binding) || !assessment.is_permitted() {
+        return Err(failure(
+            "swallowtail.gemini.headless.version_incompatible",
+            "Gemini headless CLI version is incompatible with this driver",
+        ));
+    }
+    if assessment
+        .behavior_revision()
+        .is_none_or(|revision| revision.as_str() != HEADLESS_BEHAVIOR)
+    {
+        return Err(failure(
+            "swallowtail.gemini.headless.behavior_incompatible",
+            "Gemini headless behavior is not mapped by this driver",
+        ));
+    }
+    Ok(GeminiPlanSelection {
+        version: binding.version().clone(),
+    })
+}
+
 fn axis() -> InterfaceVersionAxis {
     InterfaceVersionAxis::new(GEMINI_CLI_ACP_AXIS).expect("static Gemini CLI axis is valid")
+}
+
+fn headless_axis() -> InterfaceVersionAxis {
+    InterfaceVersionAxis::new(GEMINI_CLI_HEADLESS_AXIS)
+        .expect("static Gemini CLI headless axis is valid")
 }
 
 fn version(value: &str) -> InterfaceVersion {
@@ -111,7 +189,10 @@ fn version(value: &str) -> InterfaceVersion {
 
 #[cfg(test)]
 mod tests {
-    use super::{GEMINI_CLI_ACP_AXIS, gemini_cli_acp_binding, gemini_cli_acp_claim};
+    use super::{
+        GEMINI_CLI_ACP_AXIS, GEMINI_CLI_HEADLESS_AXIS, gemini_cli_acp_binding,
+        gemini_cli_acp_claim, gemini_cli_headless_binding, gemini_cli_headless_claim,
+    };
     use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
 
     #[test]
@@ -124,6 +205,25 @@ mod tests {
             claim.assess(&version("0.52.0")),
             InterfaceCompatibilityAssessment::UnverifiedNewer(_)
         ));
+    }
+
+    #[test]
+    fn headless_range_qualifies_both_frozen_releases_and_allows_newer_visibility() {
+        let claim = gemini_cli_headless_claim();
+        assert!(claim.supports(&version("0.51.0")));
+        assert!(claim.supports(&version("0.52.0")));
+        assert!(!claim.permits(&version("0.50.0")));
+        assert!(matches!(
+            claim.assess(&version("0.53.0")),
+            InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+        ));
+        assert_eq!(
+            gemini_cli_headless_binding("0.52.0")
+                .expect("version binds")
+                .axis()
+                .as_str(),
+            GEMINI_CLI_HEADLESS_AXIS
+        );
     }
 
     #[test]

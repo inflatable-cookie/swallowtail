@@ -87,7 +87,7 @@ pub fn xai_responses_instance(
             InstancePolicyId::new,
             "xai-public-api-store-false-resource-free",
         ),
-        CapabilityProfile::new(capabilities()),
+        CapabilityProfile::new(all_capabilities()),
     )
     .with_interface_versions([xai_responses_facade_binding()])
 }
@@ -104,7 +104,7 @@ pub fn xai_responses_model_route(
         revision,
         instance_id,
         model_id,
-        CapabilityProfile::new(capabilities()),
+        CapabilityProfile::new(all_capabilities()),
     )
     .with_provider_id(id(ProviderId::new, "xai"))
 }
@@ -138,6 +138,33 @@ pub fn xai_responses_requirements(host: ExecutionHostId) -> OperationRequirement
     .require_model_route()
 }
 
+#[must_use]
+pub fn xai_responses_run_requirements(host: ExecutionHostId) -> OperationRequirements {
+    OperationRequirements::new(
+        ExecutionLayer::DirectModelInference,
+        OperationShape::StructuredRun,
+        DriverRole::StructuredRun,
+        host,
+        AccessRequirement::new(id(AccessProfileId::new, XAI_RESPONSES_ACCESS_PROFILE_ID))
+            .with_credential_states([CredentialState::Ready])
+            .with_entitlement_states([EntitlementState::Available])
+            .with_endpoint_authorizations([EndpointAuthorization::Allowed])
+            .with_runtime_readiness([RuntimeReadiness::Ready])
+            .with_support_authorities([SupportAuthority::ProviderSupported]),
+    )
+    .with_ownership_modes([InstanceOwnership::ExternalAttached])
+    .with_host_services([
+        HostServiceKind::Task,
+        HostServiceKind::BlockingWork,
+        HostServiceKind::Time,
+        HostServiceKind::Network,
+        HostServiceKind::Credential,
+    ])
+    .with_capabilities(run_capabilities())
+    .with_interface_versions([xai_responses_facade_binding()])
+    .require_model_route()
+}
+
 fn capabilities() -> Vec<CapabilityRequirement> {
     vec![
         CapabilityRequirement::new(Capability::InteractiveSession, []),
@@ -151,6 +178,27 @@ fn capabilities() -> Vec<CapabilityRequirement> {
         CapabilityRequirement::new(Capability::UsageReporting, []),
         CapabilityRequirement::new(Capability::BilledCostReporting, []),
     ]
+}
+
+fn run_capabilities() -> Vec<CapabilityRequirement> {
+    vec![
+        CapabilityRequirement::new(Capability::StructuredRun, []),
+        CapabilityRequirement::new(Capability::StreamingEvents, []),
+        CapabilityRequirement::new(
+            Capability::Interruption,
+            [CapabilityConstraint::CancellationScope(
+                CancellationScope::StructuredRun,
+            )],
+        ),
+        CapabilityRequirement::new(Capability::UsageReporting, []),
+        CapabilityRequirement::new(Capability::BilledCostReporting, []),
+    ]
+}
+
+fn all_capabilities() -> Vec<CapabilityRequirement> {
+    let mut requirements = capabilities();
+    requirements.extend(run_capabilities());
+    requirements
 }
 
 fn id<T, E>(constructor: impl FnOnce(String) -> Result<T, E>, value: &str) -> T

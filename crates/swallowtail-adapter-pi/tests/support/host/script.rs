@@ -139,6 +139,16 @@ pub(super) fn respond(
                     state,
                     json!({"type": "extension_error", "message": "fixture provider secret"}),
                 ),
+                Scenario::PromptUi => {
+                    output(
+                        state,
+                        json!({"type": "extension_ui_request", "id": "ui-dialog-run", "method": "select", "title": "fixture title", "options": ["Allow", "Block"], "timeout": 10000}),
+                    );
+                    output(
+                        state,
+                        json!({"type": "extension_ui_request", "id": "ui-display-run", "method": "notify", "message": "fixture notice"}),
+                    );
+                }
                 Scenario::RetryDrift => output(
                     state,
                     json!({"type": "auto_retry_start", "attempt": 1, "delayMs": 1}),

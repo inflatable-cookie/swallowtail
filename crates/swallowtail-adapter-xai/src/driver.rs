@@ -1,5 +1,6 @@
 mod access;
 mod lifecycle;
+mod run;
 mod session;
 mod turn;
 
@@ -52,11 +53,24 @@ pub fn xai_websocket_descriptor() -> DriverDescriptor {
         IntegrationFamilyId::new(PROVIDER_ID).expect("static family id is valid"),
         TransportFamilyId::new("responses-websocket").expect("static transport id is valid"),
     )
-    .with_roles([DriverRole::InteractiveSession])
+    .with_roles([DriverRole::InteractiveSession, DriverRole::StructuredRun])
     .with_execution_layers([ExecutionLayer::DirectModelInference])
-    .with_operation_shapes([OperationShape::InteractiveSession])
+    .with_operation_shapes([
+        OperationShape::InteractiveSession,
+        OperationShape::StructuredRun,
+    ])
     .with_required_host_services(
         DriverRole::InteractiveSession,
+        [
+            HostServiceKind::Task,
+            HostServiceKind::BlockingWork,
+            HostServiceKind::Time,
+            HostServiceKind::Network,
+            HostServiceKind::Credential,
+        ],
+    )
+    .with_required_host_services(
+        DriverRole::StructuredRun,
         [
             HostServiceKind::Task,
             HostServiceKind::BlockingWork,

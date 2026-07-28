@@ -14,6 +14,7 @@ pub(super) const EPOCH: &str = "fixture-epoch";
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum InteractiveScenario {
     Complete,
+    GlobalNoise,
     Approval,
     Question,
     UnexpectedApproval,

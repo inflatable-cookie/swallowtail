@@ -1,3 +1,4 @@
+#[allow(dead_code)]
 #[path = "installed_discovery/support.rs"]
 mod support;
 
@@ -19,7 +20,13 @@ fn exact_versions_probe_only_the_host_approved_target() {
         swallowtail_testkit::ExecutionTopologyFixture::local(),
         swallowtail_testkit::ExecutionTopologyFixture::remote_authoritative(),
     ] {
-        for (version, qualified) in [("0.28.1", true), ("0.29.0", true), ("0.30.0", false)] {
+        for (version, qualified) in [
+            ("0.28.1", true),
+            ("0.29.0", true),
+            ("0.29.1", true),
+            ("0.29.2", true),
+            ("0.30.0", false),
+        ] {
             let host = topology.execution_host_id().clone();
             let executable = ExecutableRef::from_instance_target(topology.instance_target());
             let (process, state) = FakeProcessService::completed(&format!("{version}\n"));
@@ -46,7 +53,7 @@ fn exact_versions_probe_only_the_host_approved_target() {
                 else {
                     panic!("newer stable version remains unverified");
                 };
-                assert_eq!(unverified.latest_qualified().as_str(), "0.29.0");
+                assert_eq!(unverified.latest_qualified().as_str(), "0.29.2");
             }
             let captured = state.request();
             assert_eq!(captured.executable, executable.as_host_value());

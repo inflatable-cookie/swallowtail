@@ -29,6 +29,20 @@ provenance, service set, and low-level driver.
 Catalogue presence remains source-scoped evidence. It does not prove balance,
 entitlement, capacity, cache state, or invocation success.
 
+## One-Request Structured Run
+
+`prepare_run` requires the exact V4 Pro route, explicit `high` reasoning, text
+content, a positive output-token limit, explicit acceptance of DeepSeek's
+unmanaged inference cache, and an optional host-monotonic deadline.
+`start_run` sends one streamed, tool-free Chat Completions request.
+
+The structured branch retains no reusable session or private continuation.
+Reasoning content needed to validate the provider stream remains adapter-
+private and is discarded at terminal completion. Tools, attachments,
+structured output, working resources, provider retention, background
+execution, recovery, and reattachment reject before endpoint or credential
+effects.
+
 ## Direct Tool Continuation
 
 `prepare_session` requires:

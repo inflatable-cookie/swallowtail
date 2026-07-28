@@ -13,6 +13,8 @@ pub enum Scenario {
     DisconnectPrompt,
     ReasoningLegacySuccess,
     ReasoningEffortSuccess,
+    ReasoningEffort291Success,
+    ReasoningEffort292Success,
     ReasoningNewerSuccess,
     ReasoningMissing,
     ReasoningAmbiguous,
@@ -30,6 +32,8 @@ impl Scenario {
             | Self::HoldPrompt
             | Self::DisconnectPrompt
             | Self::ReasoningLegacySuccess => "0.28.1",
+            Self::ReasoningEffort291Success => "0.29.1",
+            Self::ReasoningEffort292Success => "0.29.2",
             Self::ReasoningNewerSuccess => "0.30.0",
             _ => "0.29.0",
         }
@@ -87,6 +91,8 @@ impl SharedAgent {
                 options.push(reasoning_option(&["off", "on"], "off"));
             }
             Scenario::ReasoningEffortSuccess
+            | Scenario::ReasoningEffort291Success
+            | Scenario::ReasoningEffort292Success
             | Scenario::ReasoningNewerSuccess
             | Scenario::ReasoningConfirmationMissing
             | Scenario::ReasoningDrift => {
@@ -181,6 +187,8 @@ impl SharedAgent {
             Scenario::Complete
             | Scenario::ReasoningLegacySuccess
             | Scenario::ReasoningEffortSuccess
+            | Scenario::ReasoningEffort291Success
+            | Scenario::ReasoningEffort292Success
             | Scenario::ReasoningNewerSuccess => {
                 Self::enqueue(
                     state,

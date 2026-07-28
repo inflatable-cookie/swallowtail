@@ -1,6 +1,6 @@
 # Provider Route Matrix
 
-This is the integration front door for Swallowtail's 23 production routes.
+This is the integration front door for Swallowtail's 25 production routes.
 Choose one row explicitly. Swallowtail does not select a provider, driver,
 model, target, endpoint, credential, billing arrangement, execution host, or
 fallback route.
@@ -9,7 +9,7 @@ The companion
 [provider and feature CSV](provider-solution-feature-matrix.csv) groups
 complementary routes only where one public solution facade already exists,
 then compares runtime posture, version posture, and qualified feature coverage
-across all 23 routes.
+across all 25 routes.
 
 Every row has two public paths:
 
@@ -18,7 +18,7 @@ Every row has two public paths:
 2. the listed low-level driver and its provider-neutral runtime role for
    advanced composition
 
-Remote ACP is not a 24th route. It is an explicit transport that compatible
+Remote ACP is not an additional production route. It is an explicit transport that compatible
 ACP adapters may compose instead of their stdio transport.
 
 ## Installed Harnesses
@@ -27,18 +27,20 @@ ACP adapters may compose instead of their stdio transport.
 | --- | --- | --- | --- | --- | --- | --- |
 | `codex.exec` | `swallowtail-adapter-codex`; `swallowtail.codex.exec` | structured run; structured CLI | approved executable and environment; caller-selected Codex profile plus matching evidence | `codex.cli`; ordered maintained/deprecated range with permitted unverified-newer stable points | `prepare_codex(StructuredExec)` → `prepare_structured_exec` → `start_run` | `CodexExecDriver`; `StructuredRunDriver` |
 | `codex.app-server` | `swallowtail-adapter-codex`; `swallowtail.codex.app-server` | catalogue, interactive session, and inactive provider-thread management; JSONL RPC stdio | approved executable and environment; caller-selected Codex profile plus matching evidence | `codex.cli`; independent app-server and lifecycle behavior segments with permitted visible unverified-newer points | `prepare_codex(AppServer)` → catalogue, session, archive, restore, or delete profile → its typed bound operation | `CodexAppServerDriver`; `ModelCatalogDriver`, `InteractiveSessionDriver`, and `ProviderSessionManagementDriver` |
-| `claude-agent.acp` | `swallowtail-adapter-claude-agent`; `swallowtail.claude-agent.acp` | interactive session and inactive provider-session delete; ACP v1 stdio | approved executable; provider-supported Anthropic public API-key pay-as-you-go profile | `claude-agent.acp-adapter`; maintained range plus permitted unverified-newer stable points | `prepare_claude_agent` → session or delete profile → `open_session` or `execute` | `ClaudeAgentAcpDriver`; `InteractiveSessionDriver` and `ProviderSessionManagementDriver` |
+| `claude-agent.acp` | `swallowtail-adapter-claude-agent`; `swallowtail.claude-agent.acp` | one-prompt structured run, interactive session, reasoning selection, and inactive provider-session delete; ACP v1 stdio | approved executable and environment; maintainer-supported local Claude subscription auth by default, or explicit Anthropic public API-key pay-as-you-go access | `claude-agent.acp-adapter`; maintained range plus permitted unverified-newer stable points | `prepare_claude_agent` → run, session, or delete profile → `start_run`, `open_session`, or `execute` | `ClaudeAgentAcpDriver`; `StructuredRunDriver`, `InteractiveSessionDriver`, and `ProviderSessionManagementDriver` |
 | `gemini-cli.acp` | `swallowtail-adapter-gemini`; `swallowtail.gemini.acp` | interactive session with negotiated model options; ACP v1 stdio | approved executable; provider-supported Gemini Developer API-key profile | `gemini-cli.acp-agent`; maintained release plus permitted unverified-newer stable points | `prepare_gemini_acp` → `prepare_session` → `open_session`; read options from the authorized handle | `GeminiAcpDriver`; `InteractiveSessionDriver` |
-| `kimi-code.acp` | `swallowtail-adapter-kimi`; `swallowtail.kimi.acp` | persistent interactive session with negotiated model options; ACP v1 stdio | approved executable; delegated Kimi membership OAuth reference | `kimi-code.executable`; two qualified behavior points plus permitted unverified-newer stable points | `prepare_kimi` → `prepare_session` → `open_session`, `load_session`, or `resume_session`; read options from the authorized handle | `KimiAcpDriver`; `InteractiveSessionDriver` |
-| `pi.rpc` | `swallowtail-adapter-pi`; `swallowtail.pi.rpc` | catalogue and interactive session; strict LF JSONL RPC stdio | approved executable; maintainer-supported `pi/delegated-harness-auth` profile | `pi.package`; maintained range plus permitted unverified-newer stable points | `prepare_pi_rpc` → `prepare_catalogue` or `prepare_session` → `list_models` or `open_session` | `PiRpcDriver`; `ModelCatalogDriver` and `InteractiveSessionDriver` |
+| `gemini-cli.headless` | `swallowtail-adapter-gemini`; `swallowtail.gemini.headless` | one-prompt structured run with usage; stream-json stdio | approved executable and environment; provider-supported Gemini Developer API-key profile; explicit ambient harness configuration and durable transcript retention | `gemini-cli.headless-stream-json`; exact `0.51.0..=0.52.0` plus permitted unverified-newer stable points | `prepare_gemini_cli(Headless)` → `prepare_run` → `start_run` | `GeminiHeadlessDriver`; `StructuredRunDriver` |
+| `kimi-code.acp` | `swallowtail-adapter-kimi`; `swallowtail.kimi.acp` | persistent interactive session with negotiated model options; ACP v1 stdio | approved executable; delegated Kimi membership OAuth reference | `kimi-code.executable`; exact `0.28.1` plus qualified `0.29.0..=0.29.2`, then permitted unverified-newer stable points | `prepare_kimi_code(Acp)` → `prepare_session` → `open_session`, `load_session`, or `resume_session`; read options from the authorized handle | `KimiAcpDriver`; `InteractiveSessionDriver` |
+| `kimi-code.headless` | `swallowtail-adapter-kimi`; `swallowtail.kimi.headless` | one-prompt structured run; stream-json stdio | approved executable and audited default-engine environment; delegated Kimi membership OAuth reference; explicit ambient harness configuration and durable provider retention | `kimi-code.executable`; exact `0.29.0..=0.29.2`, then permitted unverified-newer stable points | `prepare_kimi_code(Headless)` → `prepare_run` → `start_run` | `KimiHeadlessDriver`; `StructuredRunDriver` |
+| `pi.rpc` | `swallowtail-adapter-pi`; `swallowtail.pi.rpc` | catalogue, one-prompt structured run, and interactive session; strict LF JSONL RPC stdio | approved executable; maintainer-supported `pi/delegated-harness-auth` profile | `pi.package`; maintained range plus permitted unverified-newer stable points | `prepare_pi_rpc` → catalogue, run, or session profile → `list_models`, `start_run`, or `open_session` | `PiRpcDriver`; `ModelCatalogDriver`, `StructuredRunDriver`, and `InteractiveSessionDriver` |
 | `qwen.headless` | `swallowtail-adapter-qwen`; `swallowtail.qwen.headless` | catalogue and structured run; structured CLI stream JSON | approved executable; maintainer-supported `qwen-code/delegated-harness-auth` profile | `qwen-code.package`; maintained range plus permitted unverified-newer stable points | `prepare_qwen_catalogue` → `list_models`, or `prepare_qwen_headless` → `prepare_run` → `start_run` | `QwenHeadlessDriver`; `ModelCatalogDriver` and `StructuredRunDriver` |
 
 ## Attached Harness Network
 
 | Route | Crate and driver | Role and transport | Explicit target and access | Version axis | Prepared path | Low-level escape hatch |
 | --- | --- | --- | --- | --- | --- | --- |
-| `kimi-code.local-server` | `swallowtail-adapter-kimi`; `swallowtail.kimi.local-server` | catalogue, interactive session, and inactive provider-session archive/restore; local REST and WebSocket v2 | approved loopback server endpoint and opaque server-bearer lease; Kimi retains its separate harness account and configuration | `kimi-code.executable`; exact qualified `0.28.1` and `0.29.0` behavior points plus permitted visible unverified-newer points | `prepare_kimi_local_server_attached` or `start_kimi_local_server_owned` → catalogue, session, archive, restore, or ACP-binding-import profile → its typed operation | `KimiLocalServerDriver`; `ModelCatalogDriver`, `InteractiveSessionDriver`, and `ProviderSessionManagementDriver` |
-| `opencode.http` | `swallowtail-adapter-opencode`; `swallowtail.opencode.http` | catalogue, interactive session, and inactive provider-session delete; HTTP/SSE | approved attached-server endpoint; maintainer-supported delegated-auth credential profile | `opencode.server`; closed maintained range plus permitted unverified-newer stable points | `prepare_opencode_attached` → catalogue, session, or delete profile → `list_models`, `open_session`, or `execute` | `OpenCodeHttpDriver`; `ModelCatalogDriver`, `InteractiveSessionDriver`, and `ProviderSessionManagementDriver` |
+| `kimi-code.local-server` | `swallowtail-adapter-kimi`; `swallowtail.kimi.local-server` | catalogue, retained one-prompt structured run, interactive session, and inactive provider-session archive/restore; local REST and WebSocket v2 | approved loopback server endpoint and opaque server-bearer lease; Kimi retains its separate harness account and configuration | `kimi-code.executable`; exact `0.28.1`, exact `0.29.0`, and qualified `0.29.1..=0.29.2` behavior milestones, then permitted visible unverified-newer points | `prepare_kimi_local_server_attached` or `start_kimi_local_server_owned` → catalogue, run, session, archive, restore, or ACP-binding-import profile → its typed operation | `KimiLocalServerDriver`; `ModelCatalogDriver`, `StructuredRunDriver`, `InteractiveSessionDriver`, and `ProviderSessionManagementDriver` |
+| `opencode.http` | `swallowtail-adapter-opencode`; `swallowtail.opencode.http` | catalogue, operation-private structured run, interactive session, and inactive provider-session delete; HTTP/SSE | approved attached-server endpoint; maintainer-supported delegated-auth credential profile | `opencode.server`; closed maintained range plus permitted unverified-newer stable points | `prepare_opencode_attached` → catalogue, run, session, or delete profile → `list_models`, `start_run`, `open_session`, or `execute` | `OpenCodeHttpDriver`; `ModelCatalogDriver`, `StructuredRunDriver`, `InteractiveSessionDriver`, and `ProviderSessionManagementDriver` |
 
 ## Hosted Direct And Provider-Owned State
 
@@ -46,8 +48,8 @@ ACP adapters may compose instead of their stdio transport.
 | --- | --- | --- | --- | --- | --- | --- |
 | `anthropic.messages` | `swallowtail-adapter-anthropic`; `swallowtail.anthropic.direct` | catalogue and structured run; HTTP/SSE | approved `api.anthropic.com` endpoint; provider-supported public API key and pay-as-you-go billing | no ordered axis; exact `anthropic-2023-06-01` facade | `prepare_anthropic_direct` → `prepare_catalogue` or `prepare_inference_attempt` → `list_models` or `start_run` | `AnthropicDirectDriver`; `ModelCatalogDriver` and `StructuredRunDriver` |
 | `kimi-platform.chat` | `swallowtail-adapter-kimi-platform`; `swallowtail.kimi-platform.direct-chat` | catalogue and structured run; HTTP/SSE | approved `api.moonshot.ai` endpoint; Platform API key and pay-as-you-go billing | no ordered axis; exact `kimi-platform-chat-2026-07-21` facade | `prepare_kimi_platform_direct` → `prepare_catalogue` or `prepare_inference_attempt` → `list_models` or `start_run` | `KimiPlatformDirectDriver`; `ModelCatalogDriver` and `StructuredRunDriver` |
-| `deepseek.continuation` | `swallowtail-adapter-deepseek`; `swallowtail.deepseek.direct` | catalogue and interactive direct continuation; OpenAI-compatible HTTP/SSE | exact `https://api.deepseek.com` target; Open Platform API key | `deepseek.openai-chat-facade`; exact opaque revision | `prepare_deepseek_direct` → `prepare_catalogue` or `prepare_session` → `list_models` or `open_session` | `DeepSeekDirectDriver`; `ModelCatalogDriver` and `InteractiveSessionDriver` |
-| `alibaba.conversations` | `swallowtail-adapter-alibaba-model-studio`; `swallowtail.alibaba-model-studio.conversations-responses` | interactive provider conversation; HTTPS/SSE | approved Singapore workspace endpoint; general API key and pay-as-you-go billing | no ordered axis; exact `openai-conversations-responses` facade | `prepare_alibaba_model_studio` → `prepare_conversation` → `open_session` | `AlibabaModelStudioDriver`; `InteractiveSessionDriver` |
+| `deepseek.continuation` | `swallowtail-adapter-deepseek`; `swallowtail.deepseek.direct` | catalogue, one-request structured run, and interactive direct continuation; OpenAI-compatible HTTP/SSE | exact `https://api.deepseek.com` target; Open Platform API key | `deepseek.openai-chat-facade`; exact opaque revision | `prepare_deepseek_direct` → catalogue, run, or session profile → `list_models`, `start_run`, or `open_session` | `DeepSeekDirectDriver`; `ModelCatalogDriver`, `StructuredRunDriver`, and `InteractiveSessionDriver` |
+| `alibaba.conversations` | `swallowtail-adapter-alibaba-model-studio`; `swallowtail.alibaba-model-studio.conversations-responses` | resource-free structured run and interactive provider conversation; HTTPS/SSE | approved Singapore workspace endpoint; general API key and pay-as-you-go billing | no ordered axis; exact `openai-conversations-responses` facade | `prepare_alibaba_model_studio` → run or conversation profile → `start_run` or `open_session` | `AlibabaModelStudioDriver`; `StructuredRunDriver` and `InteractiveSessionDriver` |
 | `openai.background` | `swallowtail-adapter-openai`; `swallowtail.openai.background` | retained structured run; HTTP/SSE background Responses | exact public API endpoint; public API key and pay-as-you-go billing | `openai.responses-background-facade`; exact opaque revision | `prepare_openai_background` → `prepare_background_run` → `start_run` | `OpenAiBackgroundDriver`; `StructuredRunDriver` |
 | `anthropic.managed-agent` | `swallowtail-adapter-anthropic`; `swallowtail.anthropic.managed-agent` | provider-hosted harness structured run; managed-agent HTTPS/SSE | approved first-party endpoint; public API key, pay-as-you-go billing, and operator-owned agent version | `anthropic.managed-agents-facade`; exact opaque revision | `prepare_anthropic_managed_agent` → `prepare_managed_run` → `start_run` | `AnthropicManagedAgentDriver`; `StructuredRunDriver` |
 
@@ -55,7 +57,7 @@ ACP adapters may compose instead of their stdio transport.
 
 | Route | Crate and driver | Role and transport | Explicit target and access | Version axis | Prepared path | Low-level escape hatch |
 | --- | --- | --- | --- | --- | --- | --- |
-| `xai.responses-websocket` | `swallowtail-adapter-xai`; `swallowtail.xai.websocket` | connection-scoped interactive session; Responses WebSocket | approved `/v1/responses` endpoint; xAI public API key and pay-as-you-go billing | `xai.responses-websocket-facade`; exact opaque revision | `prepare_xai_responses_websocket` → `prepare_responses_session` → `open_session` | `XaiWebSocketDriver`; `InteractiveSessionDriver` |
+| `xai.responses-websocket` | `swallowtail-adapter-xai`; `swallowtail.xai.websocket` | one-response structured run and connection-scoped interactive session; Responses WebSocket | approved `/v1/responses` endpoint; xAI public API key and pay-as-you-go billing | `xai.responses-websocket-facade`; exact opaque revision | `prepare_xai_responses_websocket` → run or session profile → `start_run` or `open_session` | `XaiWebSocketDriver`; `StructuredRunDriver` and `InteractiveSessionDriver` |
 | `openai.realtime` | `swallowtail-adapter-openai`; `swallowtail.openai.realtime` | realtime media session; WebSocket | approved public Realtime endpoint; OpenAI public API key and pay-as-you-go billing | `openai.realtime-facade`; exact opaque revision | `prepare_openai_realtime` → `prepare_realtime_session` → `open_session` | `OpenAiRealtimeDriver`; `RealtimeMediaSessionDriver` |
 | `gemini.live` | `swallowtail-adapter-gemini`; `swallowtail.gemini.live` | realtime media session; Gemini Live raw WebSocket | approved Gemini Live endpoint; project authorization API key | `gemini.live-facade`; exact opaque revision | `prepare_gemini_live` → `prepare_live_session` → `open_session` | `GeminiLiveDriver`; `RealtimeMediaSessionDriver` |
 
@@ -111,9 +113,11 @@ delete.
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `codex.exec` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | accepted `codex.cli` exec segments; no persistent-session claim | run and process cleanup only |
 | `codex.app-server` | `supported` | `yes` | `supported` | `supported` | `supported` | `ProviderHardDeleted` | qualified segments inside `0.80.0..=0.145.0`, excluding `0.82.0..=0.83.0` and `0.108.0..=0.109.0`: archive from `0.80.0`, restore from `0.92.0`, delete from `0.140.0`; later stable points may be visible `UnverifiedNewer` | attachment and process cleanup only; provider state is preserved |
-| `claude-agent.acp` | `supported` | `yes` | `unsupported` | `unsupported` | `supported` | `ProviderDataDeleted` | `0.53.0..=0.61.0`, excluding unpublished `0.58.0`; `0.62.0` is visible `UnverifiedNewer` | negotiated native close releases active resources; history is preserved |
+| `claude-agent.acp` | `supported` | `yes` | `unsupported` | `unsupported` | `supported` | `ProviderDataDeleted` | `0.53.0..=0.61.0`, excluding unpublished `0.58.0`; later stable releases are visible `UnverifiedNewer` | negotiated native close releases active resources; history is preserved |
 | `gemini-cli.acp` | `unsupported` | `no` | `unsupported` | `unsupported` | `unsupported` | `unsupported` | exact qualified `0.51.0`; later stable points may be visible `UnverifiedNewer`; selected ACP route advertises no close or delete | connection and process cleanup only; provider state is preserved |
+| `gemini-cli.headless` | `unsupported` | `no` | `unsupported` | `unsupported` | `unsupported` | `unsupported` | exact qualified `0.51.0..=0.52.0`; later stable points may be visible `UnverifiedNewer`; every run uses a distinct provider session identity | process and task cleanup only; the local Gemini transcript is preserved |
 | `kimi-code.acp` | `unsupported` | `no` | `unsupported` | `unsupported` | `unsupported` | `unsupported` | exact qualified `0.28.1` and `0.29.0`; later stable points may be visible `UnverifiedNewer`; selected ACP route advertises no close or delete | connection and process cleanup only; provider state is preserved |
+| `kimi-code.headless` | `unsupported` | `no` | `unsupported` | `unsupported` | `unsupported` | `unsupported` | exact qualified `0.29.0..=0.29.2`; later stable points may be visible `UnverifiedNewer`; each run may retain provider-owned session state without exposing its identity | process and task cleanup only; provider state is preserved |
 | `kimi-code.local-server` | `supported` | `yes` | `supported` | `supported` | `unsupported` | `unsupported` | exact qualified `0.28.1` and `0.29.0`; profile and disabled-tool controls require `0.29.0`; later stable points may be visible `UnverifiedNewer` | joins WebSocket and task work, releases the server-bearer lease, preserves provider state, and stops only an owned foreground child |
 | `pi.rpc` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | accepted `pi.package` segments; current RPC operation has no management binding | attachment and process cleanup only |
 | `qwen.headless` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | accepted `qwen-code.package` segments; current structured-run operation has no provider session | run and process cleanup only |
@@ -136,14 +140,18 @@ delete.
 
 ## Kimi Code Route Selection
 
-Kimi Code has two independent harness routes:
+Kimi Code has three independent harness routes:
 
 | Choice | Use it for | Transport and topology | Management |
 | --- | --- | --- | --- |
 | `kimi-code.acp` | the smallest installed-harness path, including provider load replay and resume | ACP v1 over an attached or owned stdio process | no archive, restore, or delete |
-| `kimi-code.local-server` | Web-style streaming, explicit approvals and questions, and native archive/restore | REST plus WebSocket v2 against an attached loopback server or a Swallowtail-owned foreground child | archive and restore after interactive handle close; no delete |
+| `kimi-code.headless` | one bounded prompt with the smallest consumer-facing operation shape | stream-JSON over one owned stdio process | durable provider state is explicit; no reusable session or management binding |
+| `kimi-code.local-server` | one retained structured prompt or a reusable Web-style session with explicit approvals and questions | REST plus WebSocket v2 against an attached loopback server or a Swallowtail-owned foreground child | archive and restore after interactive handle close; no delete |
 
-Neither route is an authority fallback for the other. Local-server preparation
+The installed `prepare_kimi_code` facade requires explicit `Acp` or `Headless`
+selection; it never infers one from the requested operation. Local-server
+topology and access are different enough to retain their own facade. No route
+is an authority fallback for another. Local-server preparation
 requires a host-approved loopback endpoint and opaque bearer lease. That bearer
 authenticates the local server; it is not a Kimi account credential, Platform
 API key, or transferable membership token. Kimi retains its own account and
@@ -197,13 +205,16 @@ All examples compile from their adapter crate's public API under
 - Installed harnesses:
   [Codex](../../crates/swallowtail-adapter-codex/examples/prepared_discovery.rs),
   [Claude Agent](../../crates/swallowtail-adapter-claude-agent/examples/prepared_claude_agent_acp.rs),
-  [Gemini CLI](../../crates/swallowtail-adapter-gemini/examples/prepared_gemini_acp.rs),
-  [Kimi Code](../../crates/swallowtail-adapter-kimi/examples/prepared_acp.rs),
+  [Gemini CLI ACP](../../crates/swallowtail-adapter-gemini/examples/prepared_gemini_acp.rs),
+  [Gemini CLI headless](../../crates/swallowtail-adapter-gemini/examples/prepared_gemini_headless.rs),
+  [Kimi Code ACP](../../crates/swallowtail-adapter-kimi/examples/prepared_acp.rs),
+  [Kimi Code headless](../../crates/swallowtail-adapter-kimi/examples/prepared_headless.rs),
   [Pi](../../crates/swallowtail-adapter-pi/examples/prepared_pi_rpc.rs), and
   [Qwen](../../crates/swallowtail-adapter-qwen/examples/prepared_qwen_headless.rs)
 - Attached harnesses:
   [OpenCode](../../crates/swallowtail-adapter-opencode/examples/prepared_opencode_attached.rs),
   [Kimi local server](../../crates/swallowtail-adapter-kimi/examples/prepared_local_server_attached.rs),
+  [Kimi retained structured run](../../crates/swallowtail-adapter-kimi/examples/prepared_local_server_structured.rs),
   [Kimi interactive session](../../crates/swallowtail-adapter-kimi/examples/prepared_local_server_interactive.rs),
   [Kimi owned lifecycle](../../crates/swallowtail-adapter-kimi/examples/prepared_local_server_owned_lifecycle.rs),
   and [Kimi ACP binding import](../../crates/swallowtail-adapter-kimi/examples/prepared_local_server_imported_management.rs)

@@ -71,6 +71,23 @@ remain operation-scoped on the existing low-level lifecycle. Resume remains
 unsupported. Closing a turn or session does not stop or dispose the attached
 OpenCode service.
 
+## Structured Run
+
+`prepare_run` requires a request identity, explicit provider and model route,
+content, working-resource reference, and optional deadline. It derives a
+separate `StructuredRun` plan with temporary provider retention and exact
+operation-owned session deletion.
+
+`OpenCodePreparedRun::start_run` creates one private provider session,
+subscribes to its exact SSE terminal stream, submits one prompt, closes the
+turn, deletes only that session, then releases the working-resource and
+credential leases. The terminal outcome reports session deletion as confirmed
+or unconfirmed independently from provider completion and cleanup.
+
+The run exposes no provider run, interactive handle, resume binding, or
+provider-session management binding. It never starts, stops, updates, or
+recovers the attached OpenCode server.
+
 ## Transport Separation
 
 OpenCode HTTP/SSE is a provider-specific harness interface. It is not ACP.

@@ -13,21 +13,32 @@ pub fn claude_agent_acp_descriptor() -> DriverDescriptor {
     )
     .with_roles([
         DriverRole::Discovery,
+        DriverRole::StructuredRun,
         DriverRole::InteractiveSession,
         DriverRole::ProviderSessionManagement,
     ])
     .with_execution_layers([ExecutionLayer::HarnessInteraction])
     .with_operation_shapes([
+        OperationShape::StructuredRun,
         OperationShape::InteractiveSession,
         OperationShape::ProviderSessionManagement,
     ])
+    .with_required_host_services(
+        DriverRole::StructuredRun,
+        [
+            HostServiceKind::Task,
+            HostServiceKind::Time,
+            HostServiceKind::Process,
+            HostServiceKind::WorkingResource,
+            HostServiceKind::WorkingResourceIo,
+        ],
+    )
     .with_required_host_services(
         DriverRole::InteractiveSession,
         [
             HostServiceKind::Task,
             HostServiceKind::Time,
             HostServiceKind::Process,
-            HostServiceKind::Credential,
             HostServiceKind::WorkingResource,
             HostServiceKind::WorkingResourceIo,
         ],
@@ -45,7 +56,6 @@ pub fn claude_agent_acp_descriptor() -> DriverDescriptor {
         [
             HostServiceKind::Task,
             HostServiceKind::Process,
-            HostServiceKind::Credential,
             HostServiceKind::WorkingResource,
             HostServiceKind::WorkingResourceIo,
         ],

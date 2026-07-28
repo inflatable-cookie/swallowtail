@@ -17,7 +17,7 @@ use swallowtail_runtime::{
 };
 use swallowtail_testkit::{
     ConformanceAssertion, ExecutionTopologyFixture, SyntheticProfile,
-    run_locally_continued_direct_session_profile,
+    run_hosted_direct_api_profile, run_locally_continued_direct_session_profile,
 };
 
 #[test]
@@ -46,6 +46,25 @@ fn provider_neutral_continuation_profile_covers_deepseek_boundaries() {
         ConformanceAssertion::PrivateContinuationBounded,
         ConformanceAssertion::ProviderCachePosture,
         ConformanceAssertion::RequestScopedLeaseLifecycle,
+    ] {
+        assert!(report.covers(assertion), "missing {assertion:?}");
+    }
+}
+
+#[test]
+fn provider_neutral_hosted_profile_covers_the_structured_projection() {
+    let report = run_hosted_direct_api_profile();
+    for assertion in [
+        ConformanceAssertion::PreflightBeforeSideEffects,
+        ConformanceAssertion::OrderedEvents,
+        ConformanceAssertion::SingleTerminalOutcome,
+        ConformanceAssertion::CancellationAndTimeoutDistinct,
+        ConformanceAssertion::CleanupRemainsVisible,
+        ConformanceAssertion::HostedApiNeedsNoProcess,
+        ConformanceAssertion::HostedEndpointCredentialBinding,
+        ConformanceAssertion::DirectRunNoResource,
+        ConformanceAssertion::DirectRunOutputBound,
+        ConformanceAssertion::ProviderEvidenceSeparated,
     ] {
         assert!(report.covers(assertion), "missing {assertion:?}");
     }

@@ -9,7 +9,8 @@ use futures_executor::block_on;
 use futures_util::StreamExt;
 use swallowtail_adapter_deepseek::{
     DEEPSEEK_ENDPOINT_AUDIENCE, DEEPSEEK_MODEL_ID, DeepSeekCatalogueProfileInput,
-    DeepSeekModelSelection, DeepSeekSessionProfileInput, prepare_deepseek_direct,
+    DeepSeekModelSelection, DeepSeekRunProfileInput, DeepSeekSessionProfileInput,
+    prepare_deepseek_direct,
 };
 use swallowtail_core::{
     DriverRole, ModelId, ModelRouteId, ModelRouteRevision, ProviderInferenceCachePolicy,
@@ -142,8 +143,64 @@ fn model_substitution_and_unaccepted_cache_posture_fail_before_effects() {
         failure.stage(),
         swallowtail_runtime::PreparationStage::Preflight
     );
+
+    let failure = prepared
+        .prepare_run(DeepSeekRunProfileInput::new(
+            RequestId::new("run-cache-not-accepted").expect("request id"),
+            model(DEEPSEEK_MODEL_ID),
+            OperationContent::new("must reject").expect("content"),
+            ReasoningMode::new("high").expect("reasoning"),
+            std::num::NonZeroU64::new(512).expect("maximum"),
+            ProviderInferenceCachePolicy::Prohibited,
+        ))
+        .expect_err("structured run cache posture must also be explicit");
+    assert_eq!(
+        failure.stage(),
+        swallowtail_runtime::PreparationStage::Preflight
+    );
     assert!(fixture.server.requests().is_empty());
     assert_eq!(fixture.releases(), 0);
+}
+
+#[test]
+fn one_request_structured_run_prepares_on_both_host_topologies() {
+    for topology in [
+        ExecutionTopologyFixture::local(),
+        ExecutionTopologyFixture::remote_authoritative(),
+    ] {
+        let fixture =
+            Fixture::with_topology_scenario(&topology, support::ServerScenario::StructuredSuccess);
+        let prepared = prepare_deepseek_direct(fixture.preparation_input(), &fixture.services())
+            .expect("DeepSeek integration prepares");
+        let run = prepared
+            .prepare_run(DeepSeekRunProfileInput::new(
+                RequestId::new("prepared-run").expect("request id"),
+                model(DEEPSEEK_MODEL_ID),
+                OperationContent::new("one prepared request").expect("content"),
+                ReasoningMode::new("high").expect("reasoning"),
+                std::num::NonZeroU64::new(512).expect("maximum"),
+                ProviderInferenceCachePolicy::AcceptedWithoutManagementAuthority,
+            ))
+            .expect("structured run prepares");
+        assert_eq!(
+            run.plan().requirements().driver_role(),
+            DriverRole::StructuredRun
+        );
+        assert_prepared_operation_evidence_matches_plan(run.evidence().operation(), run.plan());
+        let mut handle = block_on(run.start_run(fixture.services())).expect("run starts");
+        let mut events = handle.take_events().expect("events");
+        let terminal = handle.take_terminal_outcome().expect("terminal");
+        let outcome = block_on(async {
+            while let Some(event) = events.next().await {
+                event.expect("event succeeds");
+            }
+            terminal.await
+        });
+        assert_eq!(outcome.status(), &TerminalStatus::Completed);
+        assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+        assert_eq!(fixture.server.attempts(), 1);
+        assert_eq!(fixture.releases(), 1);
+    }
 }
 
 fn session_input(id: &str, model_id: &str) -> DeepSeekSessionProfileInput {

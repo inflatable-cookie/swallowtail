@@ -134,6 +134,11 @@ pub fn run_structured_harness_native_boundary_assertions() -> ConformanceReport 
 }
 
 #[must_use]
+pub fn run_acp_single_turn_projection_assertions() -> ConformanceReport {
+    crate::acp_projection_assertions::run()
+}
+
+#[must_use]
 pub fn run_long_lived_rpc_profile() -> ConformanceReport {
     crate::profile_rpc::run()
 }

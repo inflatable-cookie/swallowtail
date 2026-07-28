@@ -43,6 +43,7 @@ Contracts hold durable, testable rules.
 - [036 Crate Release And Compatibility Boundary](036-crate-release-and-compatibility-boundary.md)
 - [037 Provider-Wide Prepared Integration And Bound Operations](037-prepared-consumer-integration.md)
 - [038 Provider Session Management And Consumer Thread Boundary](038-provider-session-management-and-consumer-thread-boundary.md)
+- [039 Bounded Single-Turn Structured-Run Projection](039-bounded-single-turn-structured-run-projection.md)
 
 Contract 003 defines the provider-neutral record kernel. Contracts 004-016
 govern the realized runtime and current proof drivers. Contract 017 governs
@@ -132,3 +133,9 @@ capability truth; and requires explicit destructive authority and uncertainty.
 Its Kimi local-server addition keeps REST/WebSocket archive and restore
 separate from ACP, requires explicit cross-transport binding import, and
 qualifies no deletion.
+Contract 039 permits exact provider routes to project one operation-private
+session, connection, process, or provider resource into a bounded structured
+run. It requires independent role qualification, exact request support,
+explicit retention, one terminal outcome, and joined cleanup. Close never
+implies deletion; realtime media and serving lifecycle inherit no structured
+role.

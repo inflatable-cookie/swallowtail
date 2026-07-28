@@ -5,6 +5,7 @@ mod interactive;
 mod prepared;
 mod protocol;
 mod selection;
+mod structured;
 mod transport;
 
 pub use descriptor::kimi_local_server_descriptor;
@@ -27,3 +28,4 @@ pub use selection::{
     KIMI_LOCAL_SERVER_BASELINE_VERSION, KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION,
     kimi_local_server_claim,
 };
+pub use structured::{KimiLocalServerPreparedRun, KimiLocalServerRunInput};

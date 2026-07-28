@@ -1,0 +1,1 @@
+{"type":"event.session.created","seq":1,"timestamp":"2026-07-28T00:00:00.000Z","session_id":"foreign-session","epoch":"foreign-epoch","payload":{"session":{"id":"foreign-session"}}}

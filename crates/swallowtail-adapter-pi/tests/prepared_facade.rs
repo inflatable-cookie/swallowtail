@@ -3,10 +3,11 @@
 mod support;
 
 use futures_executor::block_on;
+use futures_util::StreamExt;
 use support::{FixtureHost, Scenario};
 use swallowtail_adapter_pi::{
     PI_PACKAGE_AXIS, PiCatalogueProfileInput, PiModelSelection, PiPreparationInput,
-    PiPreparationProbe, PiSessionProfileInput, prepare_pi_rpc,
+    PiPreparationProbe, PiRunProfileInput, PiSessionProfileInput, prepare_pi_rpc,
 };
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessStatus, Capability, ConfiguredInstanceId,
@@ -18,8 +19,9 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     CleanupOutcome, Deadline, DiscoveryCancellation, EnvironmentRef, ExecutableRef,
-    InstalledExecutableTarget, MonotonicInstant, PreparedAccessEvidence, RequestId, ScopeId,
-    SessionOptions, WorkingResourceRef,
+    InstalledExecutableTarget, MonotonicInstant, OperationContent, PreparedAccessEvidence,
+    ProviderRetentionPolicy, RequestId, ScopeId, SessionOptions, TerminalStatus,
+    WorkingResourceRef,
 };
 use swallowtail_testkit::assert_prepared_operation_evidence_matches_plan;
 
@@ -232,6 +234,60 @@ fn prepared_sessions_preserve_pi_rpc_policy_in_both_host_topologies() {
         let session = block_on(profile.open_session(operation.services(host_id)))
             .expect("prepared Pi session opens");
         assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    }
+}
+
+#[test]
+fn prepared_runs_preserve_the_one_prompt_rpc_projection_in_both_host_topologies() {
+    for host_value in ["fixture.pi.run.local", "fixture.pi.run.remote"] {
+        let host_id = ExecutionHostId::new(host_value).expect("valid host");
+        let discovery = FixtureHost::version_probe("0.80.10");
+        let prepared = block_on(prepare_pi_rpc(
+            preparation_input(host_id.clone()),
+            probe(),
+            discovery.services(host_id.clone()),
+        ))
+        .expect("Pi prepares");
+        let run = prepared
+            .prepare_run(PiRunProfileInput::new(
+                RequestId::new("pi-prepared-run").expect("valid request"),
+                PiModelSelection::new(
+                    ModelRouteId::new("pi.prepared.run.route").expect("valid route"),
+                    ModelRouteRevision::new("1").expect("valid route revision"),
+                    ProviderId::new("fixture-provider").expect("valid provider"),
+                    ModelId::new("fixture-model").expect("valid model"),
+                ),
+                OperationContent::new("fixture private prompt").expect("valid content"),
+                WorkingResourceRef::new("pi.prepared.workspace").expect("valid resource"),
+                Deadline::at(MonotonicInstant::from_ticks(100_000)),
+            ))
+            .expect("Pi run profile prepares");
+        assert_eq!(
+            run.plan().requirements().driver_role(),
+            swallowtail_core::DriverRole::StructuredRun
+        );
+        assert_eq!(
+            run.request().policy().provider_retention(),
+            ProviderRetentionPolicy::Prohibited
+        );
+        assert_prepared_operation_evidence_matches_plan(run.evidence().operation(), run.plan());
+
+        let operation = FixtureHost::new(Scenario::Complete);
+        let mut handle =
+            block_on(run.start_run(operation.services(host_id))).expect("prepared run starts");
+        let mut events = handle.take_events().expect("events are available");
+        let terminal = handle
+            .take_terminal_outcome()
+            .expect("terminal outcome is available");
+        let outcome = block_on(async {
+            while let Some(event) = events.next().await {
+                event.expect("runtime event succeeds");
+            }
+            terminal.await
+        });
+        assert_eq!(outcome.status(), &TerminalStatus::Completed);
+        assert_eq!(outcome.cleanup(), &CleanupOutcome::Clean);
+        assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
     }
 }
 

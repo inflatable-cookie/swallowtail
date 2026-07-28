@@ -1,5 +1,7 @@
 use crate::XaiPreparedIntegration;
-use swallowtail_core::{Diagnostic, ModelRoute, PreflightContext, PreflightPlan, preflight};
+use swallowtail_core::{
+    Diagnostic, ModelRoute, OperationRequirements, PreflightContext, PreflightPlan, preflight,
+};
 use swallowtail_runtime::{PreparationFailure, PreparationStage, PreparedOperationEvidence};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -52,6 +54,7 @@ pub(super) fn model_route(
 pub(super) fn build_plan(
     prepared: &XaiPreparedIntegration,
     route: &ModelRoute,
+    requirements: &OperationRequirements,
 ) -> Result<PreflightPlan, PreparationFailure> {
     preflight(
         &PreflightContext::new(
@@ -62,7 +65,7 @@ pub(super) fn build_plan(
             prepared.available_host_services(),
         )
         .with_model_route(route),
-        &crate::xai_responses_requirements(prepared.instance().execution_host_id().clone()),
+        requirements,
     )
     .map_err(|error| {
         PreparationFailure::new(

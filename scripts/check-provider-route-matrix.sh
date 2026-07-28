@@ -27,8 +27,10 @@ codex.app-server
 codex.exec
 deepseek.continuation
 gemini-cli.acp
+gemini-cli.headless
 gemini.live
 kimi-code.acp
+kimi-code.headless
 kimi-code.local-server
 kimi-platform.chat
 llama-cpp.attached
@@ -42,8 +44,8 @@ qwen.headless
 xai.responses-websocket
 EOF
 
-if [ "$(wc -l < "$route_matrix_actual" | tr -d ' ')" -ne 23 ]; then
-  printf 'provider route matrix must contain exactly 23 route rows\n' >&2
+if [ "$(wc -l < "$route_matrix_actual" | tr -d ' ')" -ne 25 ]; then
+  printf 'provider route matrix must contain exactly 25 route rows\n' >&2
   exit 1
 fi
 
@@ -63,8 +65,8 @@ sed -n \
 sed -n 's/^| `\([^`]*\)` |.*$/\1/p' "$route_lifecycle_rows" |
   LC_ALL=C sort > "$route_lifecycle_actual"
 
-if [ "$(wc -l < "$route_lifecycle_actual" | tr -d ' ')" -ne 23 ]; then
-  printf 'provider session lifecycle matrix must contain exactly 23 route rows\n' >&2
+if [ "$(wc -l < "$route_lifecycle_actual" | tr -d ' ')" -ne 25 ]; then
+  printf 'provider session lifecycle matrix must contain exactly 25 route rows\n' >&2
   exit 1
 fi
 
@@ -115,8 +117,10 @@ codex.app-server|supported|yes|supported|supported|supported|ProviderHardDeleted
 codex.exec|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
 deepseek.continuation|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
 gemini-cli.acp|unsupported|no|unsupported|unsupported|unsupported|unsupported
+gemini-cli.headless|unsupported|no|unsupported|unsupported|unsupported|unsupported
 gemini.live|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
 kimi-code.acp|unsupported|no|unsupported|unsupported|unsupported|unsupported
+kimi-code.headless|unsupported|no|unsupported|unsupported|unsupported|unsupported
 kimi-code.local-server|supported|yes|supported|supported|unsupported|unsupported
 kimi-platform.chat|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
 llama-cpp.attached|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
@@ -134,6 +138,7 @@ diff -u "$route_lifecycle_posture_expected" "$route_lifecycle_posture_actual"
 
 python3 - "$feature_matrix_file" <<'PY'
 import csv
+import re
 import sys
 from collections import Counter
 
@@ -160,6 +165,41 @@ if actual != expected:
     raise SystemExit(
         f"provider solution model_catalog dispositions changed: {dict(actual)}"
     )
+
+structured = Counter(row["structured_run"] for row in rows)
+if structured != Counter({"Yes": 18, "No": 2, "Not applicable": 1}):
+    raise SystemExit(
+        f"provider solution structured_run dispositions changed: {dict(structured)}"
+    )
+for row in rows:
+    if row["structured_run"] == "Yes" and row["prepared_facade"] != "Yes":
+        raise SystemExit(
+            f"structured solution lacks a prepared facade: {row['solution']}"
+        )
+
+structured_by_route = {
+    row["route_id"]: row["structured_run"]
+    for row in rows
+}
+for route in ["gemini.live", "openai.realtime"]:
+    if structured_by_route.get(route) != "No":
+        raise SystemExit(f"realtime route must remain structured No: {route}")
+if structured_by_route.get("llama-cpp.owned") != "Not applicable":
+    raise SystemExit("llama.cpp owned serving facade must remain structured Not applicable")
+for route in [
+    "kimi-code.acp + kimi-code.headless",
+    "kimi-code.local-server",
+]:
+    if structured_by_route.get(route) != "Yes":
+        raise SystemExit(f"Kimi structured solution is not realized: {route}")
+
+route_ids = [
+    route
+    for row in rows
+    for route in re.split(r"\s*(?:;|\+)\s*", row["route_id"])
+]
+if len(route_ids) != 25 or len(set(route_ids)) != 25:
+    raise SystemExit("provider solution matrix must cover 25 unique route identities")
 PY
 
 printf 'provider route, lifecycle, and 21-solution feature matrices passed\n'

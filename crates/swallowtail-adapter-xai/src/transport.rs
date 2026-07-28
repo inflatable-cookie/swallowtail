@@ -168,6 +168,21 @@ impl Connection {
         Ok(())
     }
 
+    pub(crate) fn run_one_response(
+        &self,
+        model: &str,
+        input: &str,
+        updates: mpsc::Sender<TurnUpdate>,
+    ) -> Result<(), RuntimeFailure> {
+        self.run_turn(
+            model,
+            input,
+            &Arc::new(Mutex::new(None)),
+            &Arc::new(AtomicBool::new(true)),
+            updates,
+        )
+    }
+
     pub(crate) fn close(&self) -> Result<(), RuntimeFailure> {
         let socket = self.socket.lock().expect("socket lock poisoned").take();
         if let Some(mut socket) = socket {

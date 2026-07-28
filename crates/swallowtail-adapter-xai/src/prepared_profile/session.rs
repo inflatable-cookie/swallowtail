@@ -58,7 +58,9 @@ impl XaiPreparedIntegration {
     ) -> Result<XaiPreparedResponsesSession, PreparationFailure> {
         let (request_id, model, deadline) = input.into_parts();
         let route = model_route(self, model);
-        let plan = build_plan(self, &route)?;
+        let requirements =
+            crate::xai_responses_requirements(self.instance().execution_host_id().clone());
+        let plan = build_plan(self, &route, &requirements)?;
         let request = OpenSessionRequest::resource_free_from_plan(&plan, request_id, deadline)?;
         Ok(XaiPreparedResponsesSession {
             evidence: XaiPreparedEvidence::from_prepared(self, plan)?,

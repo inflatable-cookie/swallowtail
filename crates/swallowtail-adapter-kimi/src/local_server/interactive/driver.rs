@@ -6,6 +6,7 @@ mod validation;
 use self::handle::build_handle;
 use self::validation::*;
 use super::access::SessionAccess;
+use super::session::KimiInteractiveSession;
 use crate::failure::failure;
 use crate::local_server::transport::{Request, session_path};
 use std::sync::Arc;
@@ -16,7 +17,7 @@ use swallowtail_runtime::{
 };
 
 impl super::super::KimiLocalServerDriver {
-    pub(super) fn configuration(
+    pub(in crate::local_server) fn configuration(
         &self,
     ) -> Result<&super::KimiLocalServerSessionConfiguration, RuntimeFailure> {
         self.session_configuration.as_ref().ok_or_else(|| {
@@ -35,13 +36,15 @@ impl super::super::KimiLocalServerDriver {
         management_instance: ConfiguredInstance,
         access_evidence: PreparedAccessEvidence,
     ) -> Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure> {
-        self.open_inner(
-            plan,
-            request,
-            services,
-            Some((management_instance, access_evidence)),
-        )
-        .await
+        Ok(Box::new(
+            self.open_inner(
+                plan,
+                request,
+                services,
+                Some((management_instance, access_evidence)),
+            )
+            .await?,
+        ))
     }
 
     pub(super) async fn resume_bound_session(
@@ -52,23 +55,46 @@ impl super::super::KimiLocalServerDriver {
         management_instance: ConfiguredInstance,
         access_evidence: PreparedAccessEvidence,
     ) -> Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure> {
-        self.resume_inner(
-            plan,
-            request,
-            services,
-            Some((management_instance, access_evidence)),
-        )
-        .await
+        Ok(Box::new(
+            self.resume_inner(
+                plan,
+                request,
+                services,
+                Some((management_instance, access_evidence)),
+            )
+            .await?,
+        ))
     }
 
-    async fn open_inner(
+    pub(in crate::local_server) async fn open_inner(
         &self,
         plan: PreflightPlan,
         request: OpenSessionRequest,
         services: HostServices,
         management: Option<(ConfiguredInstance, PreparedAccessEvidence)>,
-    ) -> Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure> {
+    ) -> Result<KimiInteractiveSession, RuntimeFailure> {
         validate_open(self, &plan, &request, &services)?;
+        self.open_validated(plan, request, services, management)
+            .await
+    }
+
+    pub(in crate::local_server) async fn open_structured_inner(
+        &self,
+        plan: PreflightPlan,
+        request: OpenSessionRequest,
+        services: HostServices,
+    ) -> Result<KimiInteractiveSession, RuntimeFailure> {
+        validate_projected_open(self, &plan, &request, &services)?;
+        self.open_validated(plan, request, services, None).await
+    }
+
+    async fn open_validated(
+        &self,
+        plan: PreflightPlan,
+        request: OpenSessionRequest,
+        services: HostServices,
+        management: Option<(ConfiguredInstance, PreparedAccessEvidence)>,
+    ) -> Result<KimiInteractiveSession, RuntimeFailure> {
         let scope = scope("session", request.request_id())?;
         let mut access = SessionAccess::acquire(
             &plan,
@@ -128,7 +154,7 @@ impl super::super::KimiLocalServerDriver {
         request: ResumeSessionRequest,
         services: HostServices,
         management: Option<(ConfiguredInstance, PreparedAccessEvidence)>,
-    ) -> Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure> {
+    ) -> Result<KimiInteractiveSession, RuntimeFailure> {
         validate_resume(self, &plan, &request, &services)?;
         let scope = scope("resume", request.request_id())?;
         let mut access = SessionAccess::acquire(
@@ -194,7 +220,12 @@ impl InteractiveSessionDriver for super::super::KimiLocalServerDriver {
         request: OpenSessionRequest,
         services: HostServices,
     ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
-        Box::pin(async move { self.open_inner(plan, request, services, None).await })
+        Box::pin(async move {
+            Ok(
+                Box::new(self.open_inner(plan, request, services, None).await?)
+                    as Box<dyn InteractiveSessionHandle>,
+            )
+        })
     }
 
     fn resume_session(
@@ -203,6 +234,11 @@ impl InteractiveSessionDriver for super::super::KimiLocalServerDriver {
         request: ResumeSessionRequest,
         services: HostServices,
     ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
-        Box::pin(async move { self.resume_inner(plan, request, services, None).await })
+        Box::pin(async move {
+            Ok(
+                Box::new(self.resume_inner(plan, request, services, None).await?)
+                    as Box<dyn InteractiveSessionHandle>,
+            )
+        })
     }
 }

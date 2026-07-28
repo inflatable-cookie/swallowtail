@@ -132,6 +132,33 @@ pub(super) fn management_requirements(
     .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient)
 }
 
+pub(super) fn run_requirements(
+    prepared: &OpenCodePreparedIntegration,
+    capabilities: impl IntoIterator<Item = CapabilityRequirement>,
+) -> OperationRequirements {
+    let role = DriverRole::StructuredRun;
+    let descriptor = crate::opencode_http_descriptor();
+    OperationRequirements::new(
+        ExecutionLayer::HarnessInteraction,
+        OperationShape::StructuredRun,
+        role,
+        prepared.instance().execution_host_id().clone(),
+        AccessRequirement::new(prepared.access_profile().id().clone())
+            .with_credential_states([CredentialState::Ready])
+            .with_entitlement_states([EntitlementState::Available])
+            .with_endpoint_authorizations([EndpointAuthorization::Allowed])
+            .with_runtime_readiness([RuntimeReadiness::Ready])
+            .with_support_authorities([prepared.access_profile().support_authority()]),
+    )
+    .with_ownership_modes([prepared.instance().ownership()])
+    .with_host_services(descriptor.required_host_services(role))
+    .with_capabilities(capabilities)
+    .with_interface_versions([prepared.server().binding().clone()])
+    .with_harness_isolation(HarnessIsolation::AmbientHost)
+    .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient)
+    .require_model_route()
+}
+
 pub(super) fn build_plan(
     prepared: &OpenCodePreparedIntegration,
     instance: &ConfiguredInstance,

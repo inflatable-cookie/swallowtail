@@ -4,6 +4,7 @@ use std::sync::{Arc, Mutex};
 use swallowtail_adapter_deepseek::{
     DEEPSEEK_ENDPOINT, DEEPSEEK_FACADE_REVISION, DEEPSEEK_MODEL_ID, DeepSeekPreparationInput,
     deepseek_direct_descriptor, deepseek_facade_binding, deepseek_v4_requirements,
+    deepseek_v4_run_requirements,
 };
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessRequirement, AccessStatus, Capability, CapabilityProfile,
@@ -49,7 +50,7 @@ impl Fixture {
         Self::with_topology_scenario(topology, ServerScenario::Success)
     }
 
-    fn with_topology_scenario(
+    pub fn with_topology_scenario(
         topology: &ExecutionTopologyFixture,
         scenario: ServerScenario,
     ) -> Self {
@@ -145,7 +146,10 @@ impl Fixture {
         let descriptor = deepseek_direct_descriptor();
         let session_requirements =
             deepseek_v4_requirements(self.host_id.clone(), self.access_id.clone());
+        let run_requirements =
+            deepseek_v4_run_requirements(self.host_id.clone(), self.access_id.clone());
         let mut capabilities: Vec<_> = session_requirements.capabilities().cloned().collect();
+        capabilities.extend(run_requirements.capabilities().cloned());
         capabilities.push(CapabilityRequirement::new(Capability::ModelCatalog, []));
         let profile = CapabilityProfile::new(capabilities.clone());
         let instance = ConfiguredInstance::new(
@@ -186,10 +190,10 @@ impl Fixture {
             RuntimeReadiness::Ready,
             SupportAuthority::ProviderSupported,
         );
-        let operation = if role == DriverRole::InteractiveSession {
-            session_requirements
-        } else {
-            OperationRequirements::new(
+        let operation = match role {
+            DriverRole::InteractiveSession => session_requirements,
+            DriverRole::StructuredRun => run_requirements,
+            _ => OperationRequirements::new(
                 ExecutionLayer::DirectModelInference,
                 OperationShape::InteractiveSession,
                 DriverRole::ModelCatalog,
@@ -198,15 +202,15 @@ impl Fixture {
             )
             .with_ownership_modes([InstanceOwnership::ExternalAttached])
             .with_host_services(descriptor.required_host_services(role))
-            .with_capabilities([CapabilityRequirement::new(Capability::ModelCatalog, [])])
+            .with_capabilities([CapabilityRequirement::new(Capability::ModelCatalog, [])]),
         };
         let host_services: Vec<_> = descriptor.required_host_services(role).collect();
         let context =
             PreflightContext::new(&descriptor, &instance, &access, &status, host_services);
-        if role == DriverRole::InteractiveSession {
-            preflight(&context.with_model_route(&route), &operation).expect("session preflight")
-        } else {
+        if role == DriverRole::ModelCatalog {
             preflight(&context, &operation).expect("catalogue preflight")
+        } else {
+            preflight(&context.with_model_route(&route), &operation).expect("route preflight")
         }
     }
 }

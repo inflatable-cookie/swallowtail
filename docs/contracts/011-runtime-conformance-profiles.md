@@ -73,6 +73,17 @@ scope. The same public profile must run against distinct local and remote-
 authoritative host identities without exposing paths or moving authority to a
 client.
 
+### Bounded Single-Turn Projection
+
+Proves one independently registered structured run over an exact direct,
+connection, ACP, RPC, or attached-server lifecycle. The operation owns any
+internal process, connection, session, conversation, or provider resource;
+executes one prompt or response; exposes ordered events and qualified
+callbacks; reaches one terminal outcome; and joins cleanup without returning a
+reusable session or connection binding. Provider retention must match the
+operation policy. Close does not imply deletion. Contract 039 governs this
+assertion pack.
+
 ### Persistent ACP Harness Extension
 
 Composes with the long-lived ACP baseline only for agents that advertise the

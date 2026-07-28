@@ -28,6 +28,7 @@ pub(super) struct TurnCancellation {
     closer: SocketCloser,
     chain_valid: Arc<AtomicBool>,
     reason: AtomicU8,
+    scope: CancellationScope,
 }
 
 impl TurnCancellation {
@@ -36,6 +37,16 @@ impl TurnCancellation {
             closer,
             chain_valid,
             reason: AtomicU8::new(0),
+            scope: CancellationScope::ActiveTurn,
+        }
+    }
+
+    pub(super) fn structured(closer: SocketCloser, chain_valid: Arc<AtomicBool>) -> Self {
+        Self {
+            closer,
+            chain_valid,
+            reason: AtomicU8::new(0),
+            scope: CancellationScope::StructuredRun,
         }
     }
 
@@ -74,7 +85,7 @@ impl TurnCancellation {
 
 impl CancellationControl for TurnCancellation {
     fn scope(&self) -> CancellationScope {
-        CancellationScope::ActiveTurn
+        self.scope
     }
 
     fn request(&self) -> BoxFuture<'_, Result<CancellationAcknowledgement, RuntimeFailure>> {

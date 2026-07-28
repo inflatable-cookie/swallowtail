@@ -7,9 +7,8 @@ use swallowtail_core::{
     ConfiguredInstance, PreflightPlan, ProviderSessionBindingOrigin, SessionRef,
 };
 use swallowtail_runtime::{
-    HostServices, InteractiveSessionHandle, PreparedAccessEvidence,
-    ProviderSessionManagementBinding, RequestId, RuntimeFailure, RuntimeSessionId,
-    SessionResumeBinding,
+    HostServices, PreparedAccessEvidence, ProviderSessionManagementBinding, RequestId,
+    RuntimeFailure, RuntimeSessionId, SessionResumeBinding,
 };
 
 #[allow(clippy::too_many_arguments)]
@@ -25,7 +24,7 @@ pub(super) fn build_handle(
     services: HostServices,
     management: Option<(ConfiguredInstance, PreparedAccessEvidence)>,
     origin: ProviderSessionBindingOrigin,
-) -> Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure> {
+) -> Result<KimiInteractiveSession, RuntimeFailure> {
     let provider_ref = SessionRef::new(&record.id).map_err(|_| protocol_failure())?;
     let resume = SessionResumeBinding::new(
         provider_ref.clone(),
@@ -54,7 +53,7 @@ pub(super) fn build_handle(
     let active = Arc::new(Mutex::new(None));
     let runtime_id = RuntimeSessionId::new(format!("kimi-local:{}", request_id.as_str()))
         .map_err(|_| protocol_failure())?;
-    Ok(Box::new(KimiInteractiveSession {
+    Ok(KimiInteractiveSession {
         request_id,
         runtime_id,
         provider_ref,
@@ -73,5 +72,5 @@ pub(super) fn build_handle(
         transport: driver.transport.clone(),
         active: Arc::clone(&active),
         cancellation: SessionCancellation::new(active),
-    }))
+    })
 }

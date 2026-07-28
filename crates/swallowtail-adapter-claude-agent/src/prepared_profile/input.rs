@@ -1,6 +1,7 @@
-use swallowtail_core::{ModelId, ModelRouteId, ModelRouteRevision};
+use swallowtail_core::{ModelId, ModelRouteId, ModelRouteRevision, ReasoningMode};
 use swallowtail_runtime::{
-    Deadline, ProviderSessionManagementBinding, RequestId, SessionOptions, WorkingResourceRef,
+    Deadline, OperationContent, ProviderSessionManagementBinding, RequestId, SessionOptions,
+    WorkingResourceRef,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -35,6 +36,62 @@ pub struct ClaudeAgentSessionProfileInput {
     model: ClaudeAgentModelSelection,
     working_resource: WorkingResourceRef,
     options: SessionOptions,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ClaudeAgentRunProfileInput {
+    request_id: RequestId,
+    model: ClaudeAgentModelSelection,
+    content: OperationContent,
+    working_resource: WorkingResourceRef,
+    deadline: Option<Deadline>,
+    reasoning_mode: Option<ReasoningMode>,
+}
+
+impl ClaudeAgentRunProfileInput {
+    #[must_use]
+    pub const fn new(
+        request_id: RequestId,
+        model: ClaudeAgentModelSelection,
+        content: OperationContent,
+        working_resource: WorkingResourceRef,
+        deadline: Option<Deadline>,
+    ) -> Self {
+        Self {
+            request_id,
+            model,
+            content,
+            working_resource,
+            deadline,
+            reasoning_mode: None,
+        }
+    }
+
+    #[must_use]
+    pub fn with_reasoning_mode(mut self, reasoning_mode: ReasoningMode) -> Self {
+        self.reasoning_mode = Some(reasoning_mode);
+        self
+    }
+
+    pub(super) fn into_parts(
+        self,
+    ) -> (
+        RequestId,
+        ClaudeAgentModelSelection,
+        OperationContent,
+        WorkingResourceRef,
+        Option<Deadline>,
+        Option<ReasoningMode>,
+    ) {
+        (
+            self.request_id,
+            self.model,
+            self.content,
+            self.working_resource,
+            self.deadline,
+            self.reasoning_mode,
+        )
+    }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

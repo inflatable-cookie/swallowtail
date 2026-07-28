@@ -37,3 +37,24 @@ fn revision_specific_options_require_the_qualified_milestone() {
         )
         .expect("model-declared reasoning effort remains explicit and permitted");
 }
+
+#[test]
+fn profile_and_tool_options_remain_available_across_later_milestones() {
+    for version in ["0.29.0", "0.29.1", "0.29.2"] {
+        let server =
+            InteractiveFixtureServer::start_with_version(InteractiveScenario::Complete, version);
+        let host = FixtureHost::for_endpoint(server.endpoint());
+        let execution_host = id(ExecutionHostId::new, &format!("fixture.kimi.{version}"));
+        let services = host.services(execution_host.clone(), false);
+        let prepared = prepare(execution_host, services, version);
+        let configuration =
+            KimiLocalServerSessionConfiguration::new(KimiLocalServerPermissionMode::Auto)
+                .with_profile("default")
+                .expect("profile value is valid")
+                .with_disabled_tools(["Bash".to_owned()])
+                .expect("tool value is valid");
+        prepared
+            .prepare_session(session_input("qualified-profile-tools", configuration))
+            .expect("later qualified revisions preserve profile and tool options");
+    }
+}

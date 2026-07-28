@@ -9,15 +9,17 @@ use swallowtail_runtime::RuntimeFailure;
 use crate::{KIMI_CODE_AXIS, failure::failure, kimi_code_binding};
 
 pub const KIMI_LOCAL_SERVER_BASELINE_VERSION: &str = "0.28.1";
-pub const KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION: &str = "0.29.0";
+pub const KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION: &str = "0.29.2";
 
 const REST_WS_V2_BASELINE_BEHAVIOR: &str = "kimi.local-server.rest-ws-v2-baseline";
 const REST_WS_V2_PROFILE_TOOLS_BEHAVIOR: &str = "kimi.local-server.rest-ws-v2-profile-tools";
+const REST_WS_V2_GLOBAL_EVENTS_BEHAVIOR: &str =
+    "kimi.local-server.rest-ws-v2-global-events-catalog-filter";
 
 #[must_use]
 pub fn kimi_local_server_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
-        InterfaceCompatibilityClaimId::new("kimi.local-server.executable-window-1")
+        InterfaceCompatibilityClaimId::new("kimi.local-server.executable-window-2")
             .expect("static Kimi local-server claim id is valid"),
         axis(),
         InterfaceVersionScheme::Semantic,
@@ -27,9 +29,11 @@ pub fn kimi_local_server_claim() -> InterfaceCompatibilityClaim {
                 KIMI_LOCAL_SERVER_BASELINE_VERSION,
                 REST_WS_V2_BASELINE_BEHAVIOR,
             ),
-            exact_segment(
+            exact_segment("0.29.0", REST_WS_V2_PROFILE_TOOLS_BEHAVIOR),
+            segment(
+                "0.29.1",
                 KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION,
-                REST_WS_V2_PROFILE_TOOLS_BEHAVIOR,
+                REST_WS_V2_GLOBAL_EVENTS_BEHAVIOR,
             ),
         ],
         [],
@@ -55,6 +59,15 @@ pub(super) fn corroborate_versions(
     Ok(assessment)
 }
 
+pub(super) fn supports_profile_tools(assessment: &InterfaceCompatibilityAssessment) -> bool {
+    assessment.behavior_revision().is_some_and(|revision| {
+        matches!(
+            revision.as_str(),
+            REST_WS_V2_PROFILE_TOOLS_BEHAVIOR | REST_WS_V2_GLOBAL_EVENTS_BEHAVIOR
+        )
+    })
+}
+
 fn version_failure() -> RuntimeFailure {
     failure(
         "swallowtail.kimi.local_server.version_incompatible",
@@ -70,6 +83,15 @@ fn exact_segment(value: &str, behavior: &str) -> InterfaceVersionSegment {
     )
 }
 
+fn segment(minimum: &str, maximum: &str, behavior: &str) -> InterfaceVersionSegment {
+    InterfaceVersionSegment::new(
+        InterfaceVersion::new(minimum).expect("static Kimi minimum version is valid"),
+        InterfaceVersion::new(maximum).expect("static Kimi maximum version is valid"),
+        InterfaceBehaviorRevision::new(behavior).expect("static Kimi behavior is valid"),
+        InterfaceSupportStatus::Maintained,
+    )
+}
+
 fn axis() -> InterfaceVersionAxis {
     InterfaceVersionAxis::new(KIMI_CODE_AXIS).expect("static Kimi axis is valid")
 }
@@ -78,8 +100,9 @@ fn axis() -> InterfaceVersionAxis {
 mod tests {
     use super::{
         KIMI_LOCAL_SERVER_BASELINE_VERSION, KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION,
-        REST_WS_V2_BASELINE_BEHAVIOR, REST_WS_V2_PROFILE_TOOLS_BEHAVIOR, corroborate_versions,
-        kimi_local_server_claim,
+        REST_WS_V2_BASELINE_BEHAVIOR, REST_WS_V2_GLOBAL_EVENTS_BEHAVIOR,
+        REST_WS_V2_PROFILE_TOOLS_BEHAVIOR, corroborate_versions, kimi_local_server_claim,
+        supports_profile_tools,
     };
     use crate::kimi_code_binding;
     use swallowtail_core::InterfaceCompatibilityAssessment;
@@ -95,11 +118,13 @@ mod tests {
             claim.latest_qualified().as_str(),
             KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION
         );
-        assert_eq!(claim.milestones().len(), 2);
+        assert_eq!(claim.milestones().len(), 3);
 
         for (qualified, behavior) in [
             ("0.28.1", REST_WS_V2_BASELINE_BEHAVIOR),
             ("0.29.0", REST_WS_V2_PROFILE_TOOLS_BEHAVIOR),
+            ("0.29.1", REST_WS_V2_GLOBAL_EVENTS_BEHAVIOR),
+            ("0.29.2", REST_WS_V2_GLOBAL_EVENTS_BEHAVIOR),
         ] {
             let binding = kimi_code_binding(qualified).expect("fixture version binds");
             let InterfaceCompatibilityAssessment::Qualified(matched) =
@@ -108,6 +133,10 @@ mod tests {
                 panic!("exact release must remain qualified");
             };
             assert_eq!(matched.behavior_revision().as_str(), behavior);
+            assert_eq!(
+                supports_profile_tools(&InterfaceCompatibilityAssessment::Qualified(matched)),
+                qualified != "0.28.1"
+            );
         }
 
         let newer = kimi_code_binding("0.30.0").expect("fixture version binds");

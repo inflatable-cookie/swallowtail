@@ -4,8 +4,8 @@ use futures_executor::block_on;
 use futures_util::StreamExt;
 use support::{DriverFixture, ServerScenario};
 use swallowtail_adapter_alibaba_model_studio::{
-    AlibabaConversationProfileInput, ENDPOINT_AUDIENCE, EXACT_MODEL_ID, MODEL_ROUTE_ID,
-    prepare_alibaba_model_studio,
+    AlibabaConversationProfileInput, AlibabaRunProfileInput, ENDPOINT_AUDIENCE, EXACT_MODEL_ID,
+    MODEL_ROUTE_ID, prepare_alibaba_model_studio,
 };
 use swallowtail_core::{
     EntitlementMetering, ExecutionHostId, InstanceTargetRef, ModelId, ModelRouteId,
@@ -98,6 +98,47 @@ fn exact_conversation_lifecycle_runs_on_both_host_topologies() {
                 "/compatible-mode/v1/conversations/conv_fixture_01"
             )
         );
+    }
+}
+
+#[test]
+fn resource_free_structured_run_prepares_on_both_host_topologies() {
+    for host_id in [
+        ExecutionHostId::new("alibaba.run.local").expect("host id"),
+        ExecutionHostId::new("alibaba.run.remote-authoritative").expect("host id"),
+    ] {
+        let fixture = DriverFixture::for_host(ServerScenario::Success, host_id);
+        let prepared =
+            prepare_alibaba_model_studio(fixture.preparation_input(), &fixture.services())
+                .expect("Alibaba integration prepares");
+        let run = prepared
+            .prepare_run(AlibabaRunProfileInput::new(
+                RequestId::new("prepared-run").expect("request id"),
+                ModelRouteId::new(MODEL_ROUTE_ID).expect("route id"),
+                ModelRouteRevision::new("2026-07-22").expect("route revision"),
+                ModelId::new(EXACT_MODEL_ID).expect("model"),
+                OperationContent::new("one prepared request").expect("content"),
+            ))
+            .expect("structured run prepares");
+        assert_eq!(
+            run.plan().requirements().driver_role(),
+            swallowtail_core::DriverRole::StructuredRun
+        );
+        assert_prepared_operation_evidence_matches_plan(run.evidence().operation(), run.plan());
+        let mut handle = block_on(run.start_run(fixture.services())).expect("run starts");
+        let mut events = handle.take_events().expect("events");
+        let terminal = handle.take_terminal_outcome().expect("terminal");
+        let outcome = block_on(async {
+            while let Some(event) = events.next().await {
+                event.expect("event succeeds");
+            }
+            terminal.await
+        });
+        assert_eq!(outcome.status(), &TerminalStatus::Completed);
+        assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+        assert_eq!(fixture.server.response_attempts(), 1);
+        assert_eq!(fixture.requests().len(), 1);
+        assert_eq!(fixture.releases(), 1);
     }
 }
 

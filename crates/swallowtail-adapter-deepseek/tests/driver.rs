@@ -9,15 +9,16 @@ use futures_executor::block_on;
 use futures_util::StreamExt;
 use std::sync::Arc;
 use swallowtail_adapter_deepseek::{
-    DeepSeekDirectDriver, deepseek_direct_descriptor, deepseek_v4_config,
+    DEEPSEEK_MODEL_ID, DeepSeekDirectDriver, deepseek_direct_descriptor, deepseek_v4_config,
 };
 use swallowtail_core::{DriverRole, ReasoningMode};
 use swallowtail_runtime::{
     CleanupOutcome, Deadline, DirectContinuationTurnRequest, DirectToolResult,
     DirectToolResultContent, DriverRegistration, InteractiveSessionDriver, ModelCatalogDriver,
     ModelCatalogRequest, MonotonicInstant, OpenDirectContinuationSessionRequest, OperationContent,
-    ProviderObservation, RequestId, RuntimeEvent, RuntimeEventKind, RuntimeTurnId, SchemaDocument,
-    SessionOptions, TerminalOutcome, TerminalStatus, ToolDeclaration, TurnHandle,
+    OperationPolicy, ProviderObservation, RequestId, RunHandle, RuntimeEvent, RuntimeEventKind,
+    RuntimeTurnId, SchemaDocument, SessionOptions, StructuredRunDriver, StructuredRunRequest,
+    TerminalOutcome, TerminalStatus, ToolDeclaration, TurnHandle,
 };
 
 const FIRST_PROMPT: &str = "What is the fixture weather in London?";
@@ -25,7 +26,7 @@ const SECOND_PROMPT: &str = "Summarise that in three words.";
 const TOOL_RESULT: &[u8] = br#"{"temperature_c":18,"condition":"clear"}"#;
 
 #[test]
-fn descriptor_registers_the_exact_catalogue_and_direct_session_roles() {
+fn descriptor_registers_the_exact_catalogue_session_and_structured_roles() {
     let descriptor = deepseek_direct_descriptor();
     assert_eq!(
         descriptor.identity().id().as_str(),
@@ -40,11 +41,113 @@ fn descriptor_registers_the_exact_catalogue_and_direct_session_roles() {
     let registration = DriverRegistration::new(descriptor)
         .with_model_catalog(Arc::clone(&driver) as Arc<dyn ModelCatalogDriver>)
         .expect("catalogue role registers")
-        .with_interactive_session(driver as Arc<dyn InteractiveSessionDriver>)
+        .with_interactive_session(Arc::clone(&driver) as Arc<dyn InteractiveSessionDriver>)
+        .expect("session role registers")
+        .with_structured_run(driver as Arc<dyn StructuredRunDriver>)
         .expect("session role registers");
     assert!(registration.model_catalog().is_some());
     assert!(registration.interactive_session().is_some());
-    assert!(registration.structured_run().is_none());
+    assert!(registration.structured_run().is_some());
+}
+
+#[test]
+fn one_request_structured_run_has_no_tools_or_private_continuation() {
+    let fixture = Fixture::with_scenario(support::ServerScenario::StructuredSuccess);
+    let request = StructuredRunRequest::new(
+        RequestId::new("structured-run").expect("request id"),
+        OperationContent::new("Answer once").expect("content"),
+        OperationPolicy::offline()
+            .with_reasoning_mode(ReasoningMode::new("high").expect("reasoning")),
+    )
+    .with_maximum_output_tokens(std::num::NonZeroU64::new(512).expect("maximum"));
+    let mut run = block_on(DeepSeekDirectDriver::new().start_run(
+        fixture.plan(DriverRole::StructuredRun),
+        request,
+        fixture.services(),
+    ))
+    .expect("run starts");
+    assert!(run.provider_run_ref().is_none());
+    let (events, outcome) = complete_run(&mut run);
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    assert_eq!(
+        outcome.output().expect("output").as_str(),
+        "London is 18 C and clear."
+    );
+    assert!(events.iter().any(|event| matches!(
+        event.kind(),
+        RuntimeEventKind::ProviderObservation(ProviderObservation::RequestCorrelation(_))
+    )));
+    assert!(events.iter().any(|event| matches!(
+        event.kind(),
+        RuntimeEventKind::ProviderObservation(ProviderObservation::Usage(_))
+    )));
+    assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
+    assert_eq!(fixture.server.attempts(), 1);
+    assert_eq!(fixture.releases(), 1);
+    assert_eq!(fixture.release_after_blocking(), [1]);
+
+    let requests = fixture.server.requests();
+    assert_eq!(requests.len(), 1);
+    let body: serde_json::Value = serde_json::from_slice(&requests[0].body).expect("request JSON");
+    assert_eq!(body["model"], DEEPSEEK_MODEL_ID);
+    assert_eq!(body["stream"], true);
+    assert_eq!(body["stream_options"]["include_usage"], true);
+    assert_eq!(body["max_tokens"], 512);
+    assert_eq!(body["messages"].as_array().expect("messages").len(), 1);
+    assert!(
+        body.get("tools")
+            .is_none_or(|tools| tools == &serde_json::json!([]))
+    );
+}
+
+#[test]
+fn structured_run_rejects_tools_before_network_access() {
+    let fixture = Fixture::with_scenario(support::ServerScenario::StructuredSuccess);
+    let request = StructuredRunRequest::new(
+        RequestId::new("tool-run").expect("request id"),
+        OperationContent::new("must reject").expect("content"),
+        OperationPolicy::offline()
+            .with_reasoning_mode(ReasoningMode::new("high").expect("reasoning")),
+    )
+    .with_maximum_output_tokens(std::num::NonZeroU64::new(512).expect("maximum"))
+    .with_tools([fixture_tool()]);
+    let error = block_on(DeepSeekDirectDriver::new().start_run(
+        fixture.plan(DriverRole::StructuredRun),
+        request,
+        fixture.services(),
+    ))
+    .err()
+    .expect("tools reject");
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.deepseek.unsupported"
+    );
+    assert!(fixture.server.requests().is_empty());
+    assert_eq!(fixture.releases(), 0);
+}
+
+#[test]
+fn structured_run_cancellation_is_terminal_and_joins_before_release() {
+    let fixture = Fixture::with_scenario(support::ServerScenario::StructuredWait);
+    let request = StructuredRunRequest::new(
+        RequestId::new("cancel-run").expect("request id"),
+        OperationContent::new("wait until cancelled").expect("content"),
+        OperationPolicy::offline()
+            .with_reasoning_mode(ReasoningMode::new("high").expect("reasoning")),
+    )
+    .with_maximum_output_tokens(std::num::NonZeroU64::new(512).expect("maximum"));
+    let mut run = block_on(DeepSeekDirectDriver::new().start_run(
+        fixture.plan(DriverRole::StructuredRun),
+        request,
+        fixture.services(),
+    ))
+    .expect("run starts");
+    block_on(run.cancellation().request()).expect("cancellation requests");
+    let (_, outcome) = complete_run(&mut run);
+    assert_eq!(outcome.status(), &TerminalStatus::Cancelled);
+    assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
+    assert_eq!(fixture.releases(), 1);
+    assert_eq!(fixture.release_after_blocking(), [1]);
 }
 
 #[test]
@@ -215,6 +318,18 @@ fn submit_fixture_result(turn: &mut Box<dyn TurnHandle>) {
 fn complete(turn: &mut Box<dyn TurnHandle>) -> (Vec<RuntimeEvent>, TerminalOutcome) {
     let mut events = turn.take_events().expect("event stream");
     let terminal = turn.take_terminal_outcome().expect("terminal outcome");
+    block_on(async {
+        let mut collected = Vec::new();
+        while let Some(event) = events.next().await {
+            collected.push(event.expect("valid event"));
+        }
+        (collected, terminal.await)
+    })
+}
+
+fn complete_run(run: &mut Box<dyn RunHandle>) -> (Vec<RuntimeEvent>, TerminalOutcome) {
+    let mut events = run.take_events().expect("event stream");
+    let terminal = run.take_terminal_outcome().expect("terminal outcome");
     block_on(async {
         let mut collected = Vec::new();
         while let Some(event) = events.next().await {

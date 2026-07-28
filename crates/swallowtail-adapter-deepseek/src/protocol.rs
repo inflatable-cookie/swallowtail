@@ -9,7 +9,9 @@ mod stream;
 
 pub(crate) use http::{HttpRequest, HttpResponse, Method, parse_models, require_success};
 pub(crate) use private::PrivateContinuation;
-pub(crate) use request::{ToolSpec, encode_after_tool, encode_initial, encode_later_user};
+pub(crate) use request::{
+    ToolSpec, encode_after_tool, encode_initial, encode_later_user, encode_structured,
+};
 pub(crate) use response::{
     ProviderFailureKind, ToolAttempt, Usage, classify_failure, parse_tool_attempt,
 };

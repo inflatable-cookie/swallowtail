@@ -178,6 +178,24 @@ mod tests {
     }
 
     #[test]
+    fn later_catalogue_fixture_keeps_the_selected_read_shape() {
+        let entries = decode_catalogue(
+            200,
+            include_bytes!(concat!(
+                "../../tests/fixtures/kimi-code-0.29.1-0.29.2/",
+                "model-catalogue.json"
+            )),
+        )
+        .expect("later catalogue parses");
+        assert_eq!(entries.len(), 2);
+        assert!(
+            entries
+                .iter()
+                .all(|entry| entry.id().as_str() != "secondary")
+        );
+    }
+
+    #[test]
     fn duplicate_aliases_and_unbounded_shapes_reject() {
         for body in [
             br#"{"code":0,"msg":"success","data":{"items":[{"provider":"a","model":"same","max_context_size":1},{"provider":"b","model":"same","max_context_size":1}]},"request_id":"fixture"}"#.as_slice(),

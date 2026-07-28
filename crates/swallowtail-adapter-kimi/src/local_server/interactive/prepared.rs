@@ -2,10 +2,8 @@ use super::{
     KimiLocalServerPermissionMode, KimiLocalServerPreparedSession,
     KimiLocalServerPreparedSessionFuture, KimiLocalServerSessionInput,
 };
+use crate::local_server::KimiLocalServerPreparedIntegration;
 use crate::local_server::prepared::lifecycle_capabilities;
-use crate::local_server::{
-    KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION, KimiLocalServerPreparedIntegration,
-};
 use swallowtail_core::{
     AccessRequirement, Capability, CapabilityConstraint, CapabilityProfile, CapabilityRequirement,
     CredentialState, Diagnostic, DriverRole, EndpointAuthorization, EntitlementState,
@@ -187,7 +185,9 @@ fn requirements(
     .require_model_route()
 }
 
-pub(super) fn access_policy(permission: KimiLocalServerPermissionMode) -> SessionAccessPolicy {
+pub(in crate::local_server) fn access_policy(
+    permission: KimiLocalServerPermissionMode,
+) -> SessionAccessPolicy {
     if permission == KimiLocalServerPermissionMode::Manual {
         SessionAccessPolicy::ambient_harness_with_consumer_mediated_requests(
             ResourceAccess::ReadWrite,
@@ -213,15 +213,14 @@ fn validate_options(
     Ok(())
 }
 
-fn validate_revision_options(
+pub(in crate::local_server) fn validate_revision_options(
     prepared: &KimiLocalServerPreparedIntegration,
     configuration: &super::KimiLocalServerSessionConfiguration,
 ) -> Result<(), PreparationFailure> {
     if configuration.profile().is_none() && configuration.disabled_tools().len() == 0 {
         return Ok(());
     }
-    let version = prepared.server().binding().version().as_str();
-    if version == KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION || !prepared.server().is_qualified() {
+    if super::super::selection::supports_profile_tools(prepared.server().compatibility()) {
         Ok(())
     } else {
         Err(failure(

@@ -3,7 +3,7 @@ use super::input::ClaudeAgentSessionProfileInput;
 use super::plan::{
     ClaudeAgentPreparedEvidence, build_plan, failure, instance_with_capabilities, requirements,
 };
-use crate::prepared::instance::session_capabilities;
+use crate::prepared::instance::{REASONING_MODES, session_capabilities};
 use crate::{ClaudeAgentAcpDriver, ClaudeAgentPreparedIntegration};
 use swallowtail_core::{
     Capability, CapabilityProfile, CapabilityRequirement, ModelRoute, ProviderSessionBindingOrigin,
@@ -81,8 +81,12 @@ impl ClaudeAgentPreparedIntegration {
     ) -> Result<ClaudeAgentPreparedSession, PreparationFailure> {
         let (request_id, model, working_resource, options) = input.into_parts();
         validate_options(&options)?;
-        let capabilities = session_capabilities();
+        let supports_reasoning = crate::selection::version_supports_config_options(
+            self.observation().version().version(),
+        );
+        let capabilities = session_capabilities(supports_reasoning);
         let instance = instance_with_capabilities(self, capabilities.clone());
+        let requirements = requirements(self, operation_capabilities(&capabilities, &options));
         let (route_id, route_revision, model_id) = model.into_parts();
         let route = ModelRoute::new(
             route_id,
@@ -91,16 +95,9 @@ impl ClaudeAgentPreparedIntegration {
             model_id,
             capabilities,
         );
-        let requirements = requirements(
-            self,
-            session_capabilities()
-                .iter()
-                .map(|(capability, constraints)| {
-                    CapabilityRequirement::new(capability, constraints.iter().cloned())
-                }),
-        );
         let plan = build_plan(self, &instance, Some(&route), &requirements)?;
-        let request = OpenSessionRequest::from_plan(&plan, request_id, working_resource, None)?;
+        let request = OpenSessionRequest::from_plan(&plan, request_id, working_resource, None)?
+            .with_options(options);
         Ok(ClaudeAgentPreparedSession {
             evidence: ClaudeAgentPreparedEvidence::from_prepared(self, plan)?,
             request,
@@ -201,11 +198,42 @@ impl InteractiveSessionHandle for ManagedClaudeAgentSessionHandle {
 }
 
 fn validate_options(options: &SessionOptions) -> Result<(), PreparationFailure> {
-    if !options.is_empty() {
+    if options.developer_instructions().is_some() || options.tools().len() != 0 {
         return Err(failure(
             "swallowtail.claude_agent.preparation.session_options_unsupported",
-            "Claude Agent ACP prepared sessions do not support portable session options",
+            "Claude Agent ACP prepared sessions support only the portable reasoning option",
+        ));
+    }
+    if options
+        .reasoning_mode()
+        .is_some_and(|mode| !REASONING_MODES.contains(&mode.as_str()))
+    {
+        return Err(failure(
+            "swallowtail.claude_agent.preparation.reasoning_mode_unsupported",
+            "Claude Agent ACP prepared session reasoning mode is unsupported",
         ));
     }
     Ok(())
+}
+
+fn operation_capabilities(
+    available: &CapabilityProfile,
+    options: &SessionOptions,
+) -> Vec<CapabilityRequirement> {
+    let mut capabilities = available
+        .iter()
+        .filter(|(capability, _)| *capability != Capability::ReasoningSelection)
+        .map(|(capability, constraints)| {
+            CapabilityRequirement::new(capability, constraints.iter().cloned())
+        })
+        .collect::<Vec<_>>();
+    if let Some(mode) = options.reasoning_mode() {
+        capabilities.push(CapabilityRequirement::new(
+            Capability::ReasoningSelection,
+            [swallowtail_core::CapabilityConstraint::ReasoningMode(
+                mode.clone(),
+            )],
+        ));
+    }
+    capabilities
 }

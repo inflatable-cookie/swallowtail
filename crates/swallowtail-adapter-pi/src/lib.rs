@@ -18,7 +18,7 @@ pub use driver::{PiRpcDriver, pi_rpc_descriptor};
 pub use prepared::{PiPreparationInput, PiPreparationProbe, PiPreparedIntegration, prepare_pi_rpc};
 pub use prepared_profile::{
     PiCatalogueProfileInput, PiModelSelection, PiPreparedCatalogue, PiPreparedEvidence,
-    PiPreparedSession, PiSessionProfileInput,
+    PiPreparedRun, PiPreparedSession, PiRunProfileInput, PiSessionProfileInput,
 };
 pub use selection::{
     PI_PACKAGE_AXIS, PI_PACKAGE_BASELINE_VERSION, PI_PACKAGE_LATEST_QUALIFIED_VERSION,

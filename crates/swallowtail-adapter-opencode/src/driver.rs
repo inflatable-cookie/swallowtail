@@ -11,19 +11,23 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use std::task::Poll;
 use swallowtail_core::{
-    AdapterId, AdapterIdentity, AdapterVersion, CancellationScope, CredentialMechanism,
-    DriverDescriptor, DriverRole, ExecutionLayer, HostServiceKind, IntegrationFamilyId,
-    ModelCatalogEntry, OperationShape, PreflightPlan, ProviderId, ResourceAccess,
-    ResourceRepresentation, SafeDiagnostic, SessionAccessPolicy, SessionRef, TransportFamilyId,
+    AdapterId, AdapterIdentity, AdapterVersion, CancellationScope, Capability,
+    CapabilityConstraint, CredentialMechanism, DriverDescriptor, DriverRole, ExecutionLayer,
+    HarnessConfigurationPosture, HarnessIsolation, HostServiceKind, InstanceOwnership,
+    IntegrationFamilyId, ModelCatalogEntry, OperationShape, OwnedRemoteResourceKind, PreflightPlan,
+    ProviderId, ResourceAccess, ResourceRepresentation, RunRef, SafeDiagnostic,
+    SessionAccessPolicy, SessionRef, TransportFamilyId,
 };
 use swallowtail_runtime::{
     BoxEventStream, BoxFuture, CancellationAcknowledgement, CancellationControl, CleanupOutcome,
     CredentialLease, Deadline, DeadlineObservation, EndpointRef, HostServices,
     InteractiveSessionDriver, InteractiveSessionHandle, JoinedTask, ModelCatalogDriver,
-    ModelCatalogRequest, OpenSessionRequest, RequestId, ResourceLease, ResumeSessionRequest,
-    RuntimeEvent, RuntimeEventKind, RuntimeFailure, RuntimeSessionId, RuntimeTurnId, ScopeId,
-    SessionResumeBinding, TerminalOutcome, TerminalStatus, TurnHandle, TurnRequest,
-    runtime_event_channel, terminal_outcome_channel, validate_session_resource_lease,
+    ModelCatalogRequest, OpenSessionRequest, ProviderExecutionPolicy, ProviderRecoveryPolicy,
+    ProviderRetentionPolicy, RemoteResourceDeletionOutcome, RequestId, ResourceLease,
+    ResumeSessionRequest, RunHandle, RuntimeEvent, RuntimeEventKind, RuntimeFailure, RuntimeRunId,
+    RuntimeSessionId, RuntimeTurnId, ScopeId, SessionResumeBinding, StreamReattachmentPolicy,
+    StructuredRunDriver, StructuredRunRequest, TerminalOutcome, TerminalStatus, TurnHandle,
+    TurnRequest, runtime_event_channel, terminal_outcome_channel, validate_session_resource_lease,
 };
 
 const DRIVER_ID: &str = "swallowtail.opencode.http";
@@ -84,12 +88,14 @@ pub fn opencode_http_descriptor() -> DriverDescriptor {
     .with_roles([
         DriverRole::ModelCatalog,
         DriverRole::InteractiveSession,
+        DriverRole::StructuredRun,
         DriverRole::ProviderSessionManagement,
     ])
     .with_interface_compatibility(opencode_http_claim())
     .with_execution_layers([ExecutionLayer::HarnessInteraction])
     .with_operation_shapes([
         OperationShape::InteractiveSession,
+        OperationShape::StructuredRun,
         OperationShape::ProviderSessionManagement,
     ])
     .with_required_host_services(
@@ -123,6 +129,17 @@ pub fn opencode_http_descriptor() -> DriverDescriptor {
             HostServiceKind::WorkingResource,
         ],
     )
+    .with_required_host_services(
+        DriverRole::StructuredRun,
+        [
+            HostServiceKind::Task,
+            HostServiceKind::BlockingWork,
+            HostServiceKind::Time,
+            HostServiceKind::Network,
+            HostServiceKind::Credential,
+            HostServiceKind::WorkingResource,
+        ],
+    )
 }
 
 include!("driver/roles.rs");
@@ -131,6 +148,7 @@ include!("driver/session_state.rs");
 include!("driver/cancellation.rs");
 include!("driver/session.rs");
 include!("driver/turn.rs");
+include!("driver/run.rs");
 include!("driver/lifecycle.rs");
 include!("driver/session_management.rs");
 include!("driver/tests.rs");

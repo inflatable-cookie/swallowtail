@@ -25,7 +25,7 @@ pub use prepared_catalogue::{
 };
 pub use prepared_profile::{
     AlibabaConversationProfileInput, AlibabaModelStudioPreparedConversation,
-    AlibabaModelStudioPreparedEvidence,
+    AlibabaModelStudioPreparedEvidence, AlibabaModelStudioPreparedRun, AlibabaRunProfileInput,
 };
 pub use protocol::{
     ConversationInventory, ConversationRef, DeletionConfirmation, DeletionKind, ItemRef, Method,
@@ -38,7 +38,7 @@ pub use selection::{
     MODEL_ROUTE_ID, REGION, WORKSPACE_ENDPOINT_TEMPLATE, alibaba_model_studio_access_profile,
     alibaba_model_studio_descriptor, alibaba_model_studio_instance,
     alibaba_model_studio_requirements, alibaba_model_studio_route,
-    validate_alibaba_model_studio_plan,
+    alibaba_model_studio_run_requirements, validate_alibaba_model_studio_plan,
 };
 
 pub const ALIBABA_DEPLOYABLE_MODELS_ENDPOINT: &str = "https://dashscope-intl.aliyuncs.com";

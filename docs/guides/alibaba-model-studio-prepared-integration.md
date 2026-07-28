@@ -53,6 +53,19 @@ The retention value is consumer-visible authority, not a constructor default.
 Preparation derives the resource-free session request and plan agreement from
 that exact selection.
 
+## Resource-Free Structured Run
+
+`prepare_run` binds the same exact workspace, route, and model but creates no
+provider conversation. It accepts text content and an optional host-monotonic
+deadline, then sends one streamed Responses request with `store=false`.
+`conversation` and `previous_response_id` are omitted.
+
+The run supports ordered text, usage, request correlation, cancellation, and
+joined credential-last cleanup. Provider retention is prohibited. Tools,
+attachments, structured output, reasoning overrides, output-token overrides,
+working resources, retries, and background execution reject before endpoint
+or credential effects.
+
 `open_session` creates one provider conversation and returns the normal
 `InteractiveSessionHandle`. Each `start_turn` sends one synchronous streaming
 Responses request against the same conversation. The first subset allows two
@@ -76,8 +89,8 @@ deletion. Cancellation and deadlines stop local transport but do not fabricate
 remote response cancellation or confirmed deletion when remote state is
 uncertain.
 
-`plan`, `request`, `evidence`, `low_level_driver`, and `into_parts` remain
-available for diagnostics and advanced use.
+Both prepared branches expose `plan`, `request`, `evidence`,
+`low_level_driver`, and `into_parts` for diagnostics and advanced use.
 
 See the compile-tested
 [`prepared_provider_conversation` example](../../crates/swallowtail-adapter-alibaba-model-studio/examples/prepared_provider_conversation.rs).

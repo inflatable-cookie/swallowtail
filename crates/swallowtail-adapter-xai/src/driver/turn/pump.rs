@@ -15,12 +15,12 @@ use swallowtail_runtime::{
     RuntimeTurnId, TerminalOutcome, TerminalStatus,
 };
 
-pub(super) struct PendingTurn {
-    pub(super) updates: mpsc::Receiver<TurnUpdate>,
-    pub(super) work: BoxFuture<'static, Result<(), RuntimeFailure>>,
+pub(in crate::driver) struct PendingTurn {
+    pub(in crate::driver) updates: mpsc::Receiver<TurnUpdate>,
+    pub(in crate::driver) work: BoxFuture<'static, Result<(), RuntimeFailure>>,
 }
 
-pub(super) async fn pump_turn(
+pub(in crate::driver) async fn pump_turn(
     mut pending: PendingTurn,
     events: swallowtail_runtime::RuntimeEventSender,
     cancellation: Arc<TurnCancellation>,

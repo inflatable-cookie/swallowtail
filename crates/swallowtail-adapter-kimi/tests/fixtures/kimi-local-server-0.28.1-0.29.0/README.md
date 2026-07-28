@@ -9,7 +9,7 @@ Exact source:
   commit `efacf0452d46f5dbd67499eabc053869495d5213`
 - `0.29.0`: annotated tag `03c34eefa49513e6216390a9773326077a37f414`,
   commit `8bf5bacba9e524c38fb808c0122070037ead25a8`
-- repository: `https://github.com/MoonshotAI/kimi-cli`
+- repository: `https://github.com/MoonshotAI/kimi-code`
 
 Selected source files are byte-identical between those commits:
 
@@ -31,10 +31,9 @@ alias of `archiveSessionResponseSchema`; it does not define a delete route or
 delete effect.
 
 The authenticated `GET /api/v1/models` route returns configured model aliases
-without refreshing providers or changing the default model. Current source
-checks at `0.29.1` and `0.29.2` retain this read-only route and response
-envelope; those versions remain visible unverified-newer rather than silently
-joining the guaranteed range.
+without refreshing providers or changing the default model. Research 046 and
+the separate `kimi-code-0.29.1-0.29.2` delta corpus qualify the later
+filtered-catalogue and global-event behavior without rewriting this baseline.
 
 All `/api/*`, `/openapi.json`, `/asyncapi.json`, and WebSocket access is bearer
 protected. Only `GET /api/v1/healthz` is unauthenticated. No credential appears

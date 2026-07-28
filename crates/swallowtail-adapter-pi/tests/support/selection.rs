@@ -14,8 +14,9 @@ use swallowtail_core::{
     SessionAccessPolicy, SessionProviderStatePolicy, SupportAuthority, preflight,
 };
 use swallowtail_runtime::{
-    Deadline, OpenSessionRequest, OperationContent, RequestId, RuntimeTurnId, SessionPlanAgreement,
-    TurnRequest, WorkingResourceRef,
+    Deadline, OpenSessionRequest, OperationContent, OperationPolicy, ProviderRetentionPolicy,
+    RequestId, RuntimeTurnId, SessionPlanAgreement, StructuredRunRequest, TurnRequest,
+    WorkingResourceRef,
 };
 use swallowtail_testkit::ExecutionTopologyFixture;
 
@@ -31,6 +32,7 @@ pub fn selection(host: ExecutionHostId) -> FixtureSelection {
         ConfiguredInstanceId::new("pi.fixture.instance").expect("valid instance"),
         InstanceTargetRef::new("pi.fixture.pinned-executable").expect("valid target"),
         WorkingResourceRef::new("pi.fixture.workspace").expect("valid resource"),
+        DriverRole::InteractiveSession,
     )
 }
 
@@ -40,6 +42,18 @@ pub fn selection_for_topology(topology: &ExecutionTopologyFixture) -> FixtureSel
         topology.configured_instance_id().clone(),
         topology.instance_target().clone(),
         topology.working_resource().clone(),
+        DriverRole::InteractiveSession,
+    )
+}
+
+#[allow(dead_code)]
+pub fn run_selection_for_topology(topology: &ExecutionTopologyFixture) -> FixtureSelection {
+    build_selection(
+        topology.execution_host_id().clone(),
+        topology.configured_instance_id().clone(),
+        topology.instance_target().clone(),
+        topology.working_resource().clone(),
+        DriverRole::StructuredRun,
     )
 }
 
@@ -48,11 +62,12 @@ fn build_selection(
     instance_id: ConfiguredInstanceId,
     instance_target: InstanceTargetRef,
     resource: WorkingResourceRef,
+    role: DriverRole,
 ) -> FixtureSelection {
     let descriptor = pi_rpc_descriptor();
     let credential = CredentialRef::new("pi.fixture.delegated-auth").expect("valid credential");
     let access_id = AccessProfileId::new("pi.fixture.harness-auth").expect("valid access id");
-    let capability_requirements = capabilities();
+    let capability_requirements = capabilities(role);
     let capabilities = CapabilityProfile::new(capability_requirements.clone());
     let version = InterfaceVersionBinding::new(
         InterfaceVersionAxis::new("pi.package").expect("valid axis"),
@@ -104,8 +119,12 @@ fn build_selection(
     let services = service_kinds();
     let requirements = OperationRequirements::new(
         ExecutionLayer::HarnessInteraction,
-        OperationShape::InteractiveSession,
-        DriverRole::InteractiveSession,
+        if role == DriverRole::StructuredRun {
+            OperationShape::StructuredRun
+        } else {
+            OperationShape::InteractiveSession
+        },
+        role,
         host,
         AccessRequirement::new(access_id)
             .with_credential_states([CredentialState::Ready])
@@ -119,11 +138,16 @@ fn build_selection(
     .with_capabilities(capability_requirements)
     .with_harness_isolation(HarnessIsolation::AmbientHost)
     .with_harness_configuration_posture(HarnessConfigurationPosture::ProviderSuppressed)
-    .with_session_access_policy(SessionAccessPolicy::ambient_harness(ResourceAccess::Read))
-    .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited)
     .with_interface_versions([version])
-    .with_harness_rpc_policy(rpc_policy)
     .require_model_route();
+    let requirements = if role == DriverRole::InteractiveSession {
+        requirements
+            .with_harness_rpc_policy(rpc_policy)
+            .with_session_access_policy(SessionAccessPolicy::ambient_harness(ResourceAccess::Read))
+            .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited)
+    } else {
+        requirements
+    };
     let plan = preflight(
         &PreflightContext::new(&descriptor, &instance, &access, &status, services)
             .with_model_route(&route),
@@ -135,6 +159,25 @@ fn build_selection(
         credential,
         resource,
     }
+}
+
+#[allow(dead_code)]
+pub fn run_request(
+    id: &str,
+    resource: WorkingResourceRef,
+    deadline: Deadline,
+) -> StructuredRunRequest {
+    let policy = OperationPolicy::offline()
+        .with_provider_retention(ProviderRetentionPolicy::Prohibited)
+        .with_harness_isolation(HarnessIsolation::AmbientHost)
+        .with_harness_configuration_posture(HarnessConfigurationPosture::ProviderSuppressed);
+    StructuredRunRequest::new(
+        RequestId::new(id).expect("valid request"),
+        OperationContent::new("fixture private prompt").expect("valid prompt"),
+        policy,
+    )
+    .with_working_resource(resource)
+    .with_deadline(deadline)
 }
 
 pub fn open_request(id: &str, resource: WorkingResourceRef) -> OpenSessionRequest {
@@ -178,14 +221,25 @@ fn rpc_policy() -> HarnessRpcPolicy {
     ))
 }
 
-fn capabilities() -> Vec<CapabilityRequirement> {
+fn capabilities(role: DriverRole) -> Vec<CapabilityRequirement> {
     vec![
-        CapabilityRequirement::new(Capability::InteractiveSession, []),
+        CapabilityRequirement::new(
+            if role == DriverRole::StructuredRun {
+                Capability::StructuredRun
+            } else {
+                Capability::InteractiveSession
+            },
+            [],
+        ),
         CapabilityRequirement::new(Capability::StreamingEvents, []),
         CapabilityRequirement::new(
             Capability::Interruption,
             [CapabilityConstraint::CancellationScope(
-                swallowtail_core::CancellationScope::ActiveTurn,
+                if role == DriverRole::StructuredRun {
+                    swallowtail_core::CancellationScope::StructuredRun
+                } else {
+                    swallowtail_core::CancellationScope::ActiveTurn
+                },
             )],
         ),
         CapabilityRequirement::new(

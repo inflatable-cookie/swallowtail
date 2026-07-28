@@ -41,18 +41,23 @@ impl AcpConnection {
 
     fn dispatch_notification(&self, method: &str, params: &Value) -> Result<(), RuntimeFailure> {
         match method {
-            "session/update" => self
-                .active_turn
-                .lock()
-                .expect("ACP active lock poisoned")
-                .clone()
-                .ok_or_else(|| {
-                    failure(
+            "session/update" => {
+                let active = self
+                    .active_turn
+                    .lock()
+                    .expect("ACP active lock poisoned")
+                    .clone();
+                match active {
+                    Some(active) => active.handle_update(params),
+                    None if session_update_kind(params) == Some("available_commands_update") => {
+                        Ok(())
+                    }
+                    None => Err(failure(
                         "swallowtail.claude_agent.acp.update_without_turn",
                         "Claude Agent updated a session without an active turn",
-                    )
-                })?
-                .handle_update(params),
+                    )),
+                }
+            }
             method if method.starts_with('_') => Ok(()),
             _ => Err(failure(
                 "swallowtail.claude_agent.acp.notification_unsupported",
@@ -173,6 +178,13 @@ impl AcpConnection {
             ))
         }
     }
+}
+
+fn session_update_kind(params: &Value) -> Option<&str> {
+    params
+        .get("update")?
+        .get("sessionUpdate")
+        .and_then(Value::as_str)
 }
 
 fn optional_usize(params: &Value, field: &str) -> Result<Option<usize>, RuntimeFailure> {

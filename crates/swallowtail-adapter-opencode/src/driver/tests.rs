@@ -16,10 +16,11 @@ mod tests {
         assert!(descriptor.supports_role(DriverRole::ModelCatalog));
         assert!(descriptor.supports_role(DriverRole::InteractiveSession));
         assert!(descriptor.supports_role(DriverRole::ProviderSessionManagement));
-        assert!(!descriptor.supports_role(DriverRole::StructuredRun));
+        assert!(descriptor.supports_role(DriverRole::StructuredRun));
         assert!(descriptor.supports_execution_layer(ExecutionLayer::HarnessInteraction));
         assert!(!descriptor.supports_execution_layer(ExecutionLayer::DirectModelInference));
         assert!(descriptor.supports_operation_shape(OperationShape::InteractiveSession));
+        assert!(descriptor.supports_operation_shape(OperationShape::StructuredRun));
         assert!(
             descriptor.supports_operation_shape(OperationShape::ProviderSessionManagement)
         );
@@ -27,6 +28,11 @@ mod tests {
             descriptor
                 .required_host_services(DriverRole::InteractiveSession)
                 .any(|service| service == HostServiceKind::BlockingWork)
+        );
+        assert!(
+            descriptor
+                .required_host_services(DriverRole::StructuredRun)
+                .any(|service| service == HostServiceKind::WorkingResource)
         );
         for version in [OPENCODE_BASELINE_VERSION, OPENCODE_LATEST_QUALIFIED_VERSION] {
             assert!(

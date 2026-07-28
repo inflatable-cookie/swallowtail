@@ -18,12 +18,14 @@ mod script;
 mod task_time;
 
 #[derive(Clone, Copy)]
+#[allow(dead_code)]
 pub enum Scenario {
     Complete,
     Disconnect,
     Hold,
     Malformed,
     ProviderFailure,
+    PromptUi,
     ResponseMismatch,
     RetryDrift,
     StateMismatch,

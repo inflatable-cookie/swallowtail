@@ -21,7 +21,7 @@ fn qualified_milestones_and_unverified_newer_use_one_exact_read_only_session_sha
         ("fixture.host.local", "local"),
         ("fixture.host.remote-authoritative", "remote-authoritative"),
     ] {
-        for version in ["0.53.0", "0.54.1", "0.60.0", "0.61.0", "0.62.0"] {
+        for version in ["0.53.0", "0.54.1", "0.60.0", "0.61.0", "0.62.0", "0.63.0"] {
             let host_id = ExecutionHostId::new(host_name).expect("valid host");
             let selected = selection(host_id.clone(), version);
             let host = FixtureHost::new(Scenario::Success, version);
@@ -84,6 +84,16 @@ fn qualified_milestones_and_unverified_newer_use_one_exact_read_only_session_sha
             assert!(process.arguments.is_empty());
             assert_eq!(process.environment_count, 1);
             assert_eq!(process.working_resource, Some(selected.resource));
+            let model_selections = host
+                .writes()
+                .iter()
+                .filter(|message| {
+                    message.get("method").and_then(serde_json::Value::as_str)
+                        == Some("session/set_config_option")
+                        && message["params"]["configId"] == "model"
+                })
+                .count();
+            assert_eq!(model_selections, usize::from(version != "0.53.0"));
             assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
             assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
             assert_eq!(host.resource_releases(), 1);

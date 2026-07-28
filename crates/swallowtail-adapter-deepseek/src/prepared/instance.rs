@@ -28,6 +28,14 @@ pub(crate) fn all_capabilities(input: &DeepSeekPreparationInput) -> CapabilityPr
         input.access_profile.id().clone(),
     );
     let mut capabilities: Vec<_> = requirements.capabilities().cloned().collect();
+    capabilities.extend(
+        crate::deepseek_v4_run_requirements(
+            input.execution_host_id.clone(),
+            input.access_profile.id().clone(),
+        )
+        .capabilities()
+        .cloned(),
+    );
     capabilities.push(CapabilityRequirement::new(Capability::ModelCatalog, []));
     CapabilityProfile::new(capabilities)
 }

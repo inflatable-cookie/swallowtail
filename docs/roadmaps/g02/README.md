@@ -37,6 +37,7 @@ evidence-led provider work.
 | Complete provider-wide lifecycle acceptance and a Nucleus handoff. | paused | Contracts 036-038 | `g02.019` |
 | Add a separate Kimi local-server lifecycle and interactive route. | completed | Research 040-041, Contracts 029 and 038 | `g02.020` |
 | Expand source-scoped model catalogue coverage without hidden session creation. | completed | Research 042-043, Contract 020 | `g02.021` |
+| Close useful structured-run gaps without flattening provider lifecycle. | active | Research 044-045, Contract 039 | `g02.022`-`g02.024` |
 
 ## Current Checkpoint
 
@@ -118,6 +119,58 @@ evidence-led provider work.
   and zero `No`
 - roadmap g02.021 is complete; every selected machine-readable model source
   has a Swallowtail path without hidden session creation or route inference
+- Research 044 reclassifies twelve structured-run gaps: eight definite
+  branches, one retained Kimi local-server branch, one not-applicable owned
+  serving route, and two realtime-media exclusions
+- Contract 039 permits independently qualified one-turn projection over exact
+  direct, connection, ACP, RPC, or attached-server lifecycles; retention,
+  callbacks, cancellation, terminal outcome, and cleanup remain exact
+- the operator accepts durable Kimi local-server thread retention without any
+  deletion claim
+- maintained Kimi Code `0.29.2` is newer than the current `0.29.0` guaranteed
+  ceiling and must be qualified before structured support extends the range
+- card 072 adds independent Alibaba and DeepSeek structured roles, prepared
+  operations, one-request fixtures, cancellation, topology, and matrix truth
+- card 073 adds an independent xAI structured role and prepared operation,
+  one `store=false` WebSocket response without continuation, exact usage and
+  billed-cost evidence, cancellation, joined cleanup, and both host topologies
+- card 074 adds the reusable ACP single-turn assertion pack and an independent
+  Claude Agent structured role with one operation-private session, explicit
+  durable transcript retention, qualified native close without deletion,
+  permission-stop truth, and full lifecycle and remote-ACP regression
+- card 075 adds independent Pi RPC and OpenCode HTTP structured roles and
+  prepared operations: Pi executes one callback-capable `--no-session` prompt
+  with prohibited retention, while OpenCode creates one temporary private
+  session and confirms its deletion after exact SSE terminal evidence without
+  claiming attached-server lifecycle authority
+- the shared structured-harness boundary pack now covers prohibited,
+  temporary-with-deletion, and durable-without-deletion retention truth; the
+  solution matrix reported 15 structured `Yes` and six `No`
+- Research 045 and card 076 qualify Gemini CLI headless
+  `0.51.0..=0.52.0`, add a separate stream-JSON structured driver and typed
+  prepared run, and preserve ACP as an independent interactive transport
+- Gemini CLI now has one public facade with explicit `Acp` or `Headless`
+  selection; sandbox remains optional, while durable local transcript
+  retention, native exits, cancellation, deadlines, and joined cleanup remain
+  visible
+- the 24-route, 21-solution matrix now reports 16 structured `Yes` and five
+  `No`; g02.023 and cards 074-076 are complete
+- Research 046 and card 077 qualify Kimi Code `0.29.1` and `0.29.2` through
+  exact tagged source, separate ACP and local-server behavior milestones,
+  bounded headless and server corpora, global-event tolerance, and 64
+  deterministic adapter tests
+- Kimi releases above `0.29.2` remain visible unverified-newer rather than
+  denied
+- card 078 adds separate Kimi headless and retained local-server structured
+  roles, explicit ACP/headless selection through one installed facade, durable
+  provider-state truth, exact callbacks and cancellation, and joined attached
+  plus owned cleanup
+- the 25-route, 21-solution matrix now reports 18 structured `Yes` and three
+  `No`; card 079 is ready for the serving/realtime classification and packaged
+  closeout
+- roadmaps g02.022-g02.024 and cards 071-079 sequence direct, harness, Kimi,
+  matrix, and packaged closeout work; g02.022-g02.023 are complete and
+  g02.024 is active
 - roadmaps g02.016-g02.019 sequence Codex, ACP/Claude Agent, OpenCode,
   provider-wide acceptance, and the Nucleus handoff
 - all 23 manifests carry contract-complete metadata and crates.io publication
@@ -552,6 +605,15 @@ the active g02 queue.
 - card 063 completes exact ACP-to-local-server import authority, target
   lookup, mismatch closure, unverified-newer acceptance, and attached plus
   owned lifecycle conformance
+- cards 064-065 complete Kimi local-server interactive execution and route
+  acceptance
+- cards 066-070 complete source-scoped model catalogue coverage
+- cards 071-073 complete the structured-run contract plus Alibaba, DeepSeek,
+  and xAI direct branches
+- cards 074-076 complete Claude ACP, Pi RPC, OpenCode HTTP, and Gemini CLI
+  headless structured branches
+- card 077 qualifies Kimi Code `0.29.2` and freezes the headless corpus for
+  card 078
 - cards 024-026 own remaining harness facades
 - cards 027-030 own hosted direct and provider-state facades
 - cards 031-033 own realtime, SDK, and llama.cpp facades
@@ -561,7 +623,7 @@ the active g02 queue.
 
 ## Generation Boundary
 
-g02 is a long-lived generation with 21 roadmaps. It remains below its
+g02 is a long-lived generation with 24 roadmaps. It remains below its
 30-50-roadmap rollover range. Provider-wide facade work stabilizes the existing
 production routes. The provider-session lifecycle lane adds bounded management
 to applicable persistent-session routes without adding provider names,

@@ -1,4 +1,4 @@
-mod pump;
+pub(super) mod pump;
 
 use self::pump::{PendingTurn, pump_turn};
 use super::lifecycle::{ActiveTurn, TurnCancellation, join_turn, reap_finished};

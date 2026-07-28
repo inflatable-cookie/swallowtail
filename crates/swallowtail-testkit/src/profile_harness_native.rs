@@ -2,11 +2,13 @@ use crate::{
     ConformanceAssertion, ConformanceReport, PreflightFixtureCase, RuntimePreflightFixture,
     SyntheticProfile,
 };
-use swallowtail_core::{HarnessIsolation, PreflightDimension, SafeDiagnostic};
+use swallowtail_core::{
+    HarnessIsolation, OwnedRemoteResourceKind, PreflightDimension, SafeDiagnostic,
+};
 use swallowtail_runtime::{
     CleanupOutcome, OperationPolicy, ProviderExecutionPolicy, ProviderRecoveryPolicy,
-    ProviderRetentionPolicy, StreamReattachmentPolicy, TerminalOutcome, TerminalStatus,
-    validate_harness_isolation_policy,
+    ProviderRetentionPolicy, RemoteResourceDeletionOutcome, StreamReattachmentPolicy,
+    TerminalOutcome, TerminalStatus, validate_harness_isolation_policy,
 };
 
 pub(crate) fn run() -> ConformanceReport {
@@ -14,9 +16,10 @@ pub(crate) fn run() -> ConformanceReport {
     assert_isolation_binding();
     report.record(ConformanceAssertion::AmbientHarnessAuthority);
 
-    assert_retention_without_deletion();
+    assert_retention_and_deletion_truth();
     report.record(ConformanceAssertion::DurableRetentionExplicit);
     report.record(ConformanceAssertion::NoTranscriptDeletionClaim);
+    report.record(ConformanceAssertion::OwnedRemoteDeletionTruth);
 
     assert_native_and_host_causes_are_distinct();
     report.record(ConformanceAssertion::NativeBudgetIndependent);
@@ -51,29 +54,56 @@ fn assert_isolation_binding() {
     assert_eq!(direct.provider_side_effect_count(), 0);
 }
 
-fn assert_retention_without_deletion() {
-    let policy = OperationPolicy::offline()
+fn assert_retention_and_deletion_truth() {
+    let durable = OperationPolicy::offline()
         .with_provider_retention(ProviderRetentionPolicy::DurableAllowed)
         .with_harness_isolation(HarnessIsolation::AmbientHost);
     assert_eq!(
-        policy.provider_execution(),
+        durable.provider_execution(),
         ProviderExecutionPolicy::Attached
     );
     assert_eq!(
-        policy.provider_retention(),
+        durable.provider_retention(),
         ProviderRetentionPolicy::DurableAllowed
     );
     assert_eq!(
-        policy.provider_recovery(),
+        durable.provider_recovery(),
         ProviderRecoveryPolicy::Prohibited
     );
     assert_eq!(
-        policy.stream_reattachment(),
+        durable.stream_reattachment(),
         StreamReattachmentPolicy::Disabled
     );
 
-    let exited = TerminalOutcome::new(TerminalStatus::Completed, CleanupOutcome::Clean);
-    assert_eq!(exited.remote_resource_deletions().count(), 0);
+    let preserved = TerminalOutcome::new(TerminalStatus::Completed, CleanupOutcome::Clean);
+    assert_eq!(preserved.remote_resource_deletions().count(), 0);
+
+    let prohibited = OperationPolicy::offline()
+        .with_provider_retention(ProviderRetentionPolicy::Prohibited)
+        .with_harness_isolation(HarnessIsolation::AmbientHost);
+    assert_eq!(
+        prohibited.provider_retention(),
+        ProviderRetentionPolicy::Prohibited
+    );
+    let ephemeral = TerminalOutcome::new(TerminalStatus::Completed, CleanupOutcome::Clean);
+    assert_eq!(ephemeral.remote_resource_deletions().count(), 0);
+
+    let temporary = OperationPolicy::offline()
+        .with_provider_retention(ProviderRetentionPolicy::TemporaryAllowed)
+        .with_harness_isolation(HarnessIsolation::AmbientHost);
+    assert_eq!(
+        temporary.provider_retention(),
+        ProviderRetentionPolicy::TemporaryAllowed
+    );
+    let deleted = TerminalOutcome::new(TerminalStatus::Completed, CleanupOutcome::Clean)
+        .with_remote_resource_deletion(
+            OwnedRemoteResourceKind::Session,
+            RemoteResourceDeletionOutcome::Confirmed,
+        );
+    assert_eq!(
+        deleted.remote_resource_deletion(OwnedRemoteResourceKind::Session),
+        Some(RemoteResourceDeletionOutcome::Confirmed)
+    );
 }
 
 fn assert_native_and_host_causes_are_distinct() {

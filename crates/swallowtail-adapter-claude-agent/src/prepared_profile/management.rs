@@ -11,7 +11,7 @@ mod preparation;
 #[derive(Clone, Debug)]
 pub struct ClaudeAgentPreparedDelete {
     environment: EnvironmentRef,
-    credential: swallowtail_core::CredentialRef,
+    credential: Option<swallowtail_core::CredentialRef>,
     evidence: PreparedProviderSessionManagementEvidence,
     request: DeleteProviderSessionRequest,
 }
@@ -36,7 +36,12 @@ impl ClaudeAgentPreparedDelete {
         &self,
         services: HostServices,
     ) -> BoxFuture<'static, Result<ProviderSessionManagementOutcome, RuntimeFailure>> {
-        let driver = ClaudeAgentAcpDriver::new(self.environment.clone(), self.credential.clone());
+        let driver = match self.credential.as_ref() {
+            Some(credential) => {
+                ClaudeAgentAcpDriver::new(self.environment.clone(), credential.clone())
+            }
+            None => ClaudeAgentAcpDriver::with_local_auth(self.environment.clone()),
+        };
         let plan = self.plan().clone();
         let request = self.request.clone();
         Box::pin(async move { driver.delete_session(plan, request, services).await })

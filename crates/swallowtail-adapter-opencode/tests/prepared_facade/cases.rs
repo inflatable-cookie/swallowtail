@@ -1,17 +1,21 @@
 use super::fixture::PreparedFixture;
 use futures_executor::block_on;
+use futures_util::StreamExt;
+use std::num::NonZeroU64;
 use std::sync::atomic::Ordering;
 use swallowtail_adapter_opencode::{
-    OpenCodeCatalogueProfileInput, OpenCodeSessionManagementInput, OpenCodeSessionProfileInput,
-    prepare_opencode_attached,
+    OpenCodeCatalogueProfileInput, OpenCodeRunProfileInput, OpenCodeSessionManagementInput,
+    OpenCodeSessionProfileInput, prepare_opencode_attached,
 };
 use swallowtail_core::{
     DriverRole, ExecutionHostId, HarnessConfigurationPosture, HarnessIsolation, InstanceOwnership,
-    InterfaceCompatibilityAssessment, ProviderSessionDeletionStrength, ProviderSessionEffectTruth,
+    InterfaceCompatibilityAssessment, OwnedRemoteResourceKind, ProviderSessionDeletionStrength,
+    ProviderSessionEffectTruth,
 };
 use swallowtail_runtime::{
-    CancellationControl, CleanupOutcome, DiscoveryCancellation, HostServices, PreparationStage,
-    RequestId,
+    CancellationControl, CleanupOutcome, DiscoveryCancellation, HostServices, OperationContent,
+    PreparationStage, ProviderRetentionPolicy, RemoteResourceDeletionOutcome, RequestId,
+    StructuredRunDriver, TerminalStatus,
 };
 use swallowtail_testkit::assert_prepared_operation_evidence_matches_plan;
 
@@ -95,6 +99,180 @@ fn prepared_catalogue_and_session_stay_separate_on_both_host_topologies() {
                 || request.contains("/config")
         }));
     }
+}
+
+#[test]
+fn prepared_structured_run_is_private_and_deletes_its_session_on_both_host_topologies() {
+    for host_id in ["opencode.run.local", "opencode.run.remote-authoritative"] {
+        let fixture = PreparedFixture::new(host_id, "1.18.4");
+        let prepared = fixture.prepared();
+        let run = prepared
+            .prepare_run(OpenCodeRunProfileInput::new(
+                RequestId::new("prepared-run").unwrap(),
+                fixture.model(),
+                OperationContent::new("fixture private prompt").unwrap(),
+                fixture.resource.clone(),
+            ))
+            .expect("structured run prepares");
+        assert_eq!(
+            run.plan().requirements().driver_role(),
+            DriverRole::StructuredRun
+        );
+        assert_eq!(
+            run.request().policy().provider_retention(),
+            ProviderRetentionPolicy::TemporaryAllowed
+        );
+        assert_prepared_operation_evidence_matches_plan(run.evidence().operation(), run.plan());
+
+        let mut handle = block_on(run.start_run(fixture.services())).expect("run starts");
+        assert!(handle.provider_run_ref().is_none());
+        assert_eq!(
+            handle.cancellation().scope(),
+            swallowtail_core::CancellationScope::StructuredRun
+        );
+        let mut events = handle.take_events().expect("events are available");
+        let terminal = handle
+            .take_terminal_outcome()
+            .expect("terminal outcome is available");
+        let outcome = block_on(async {
+            while let Some(event) = events.next().await {
+                event.expect("runtime event succeeds");
+            }
+            terminal.await
+        });
+        assert_eq!(outcome.status(), &TerminalStatus::Completed);
+        assert_eq!(outcome.cleanup(), &CleanupOutcome::Clean);
+        assert_eq!(
+            outcome.remote_resource_deletion(OwnedRemoteResourceKind::Session),
+            Some(RemoteResourceDeletionOutcome::Confirmed)
+        );
+        assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+        assert_eq!(fixture.releases.load(Ordering::SeqCst), 2);
+
+        let requests = fixture.server.requests();
+        assert_eq!(
+            requests
+                .iter()
+                .filter(|request| request.starts_with("POST /session?directory="))
+                .count(),
+            1
+        );
+        assert_eq!(
+            requests
+                .iter()
+                .filter(|request| request.contains("/prompt_async?directory="))
+                .count(),
+            1
+        );
+        assert_eq!(
+            requests
+                .iter()
+                .filter(|request| request.starts_with("DELETE /session/ses_fixture?directory="))
+                .count(),
+            1
+        );
+        let prompt = requests
+            .iter()
+            .position(|request| request.contains("/prompt_async?directory="))
+            .expect("prompt request observed");
+        let delete = requests
+            .iter()
+            .position(|request| request.starts_with("DELETE /session/ses_fixture?directory="))
+            .expect("delete request observed");
+        assert!(prompt < delete);
+    }
+}
+
+#[test]
+fn structured_run_disconnect_and_delete_failure_remain_separate() {
+    for (suffix, stream_fixture, terminal_code, deletion, cleanup_code) in [
+        (
+            "disconnect",
+            crate::http_support::StreamFixture::Disconnect,
+            Some("swallowtail.opencode.sse_disconnected"),
+            RemoteResourceDeletionOutcome::Confirmed,
+            None,
+        ),
+        (
+            "delete-unconfirmed",
+            crate::http_support::StreamFixture::DeleteMalformedSuccess,
+            None,
+            RemoteResourceDeletionOutcome::Unconfirmed,
+            Some("swallowtail.opencode.run_delete_unconfirmed"),
+        ),
+    ] {
+        let fixture = PreparedFixture::new_with_fixture(
+            &format!("opencode.run.{suffix}"),
+            "1.18.4",
+            stream_fixture,
+        );
+        let prepared = fixture.prepared();
+        let run = prepared
+            .prepare_run(OpenCodeRunProfileInput::new(
+                RequestId::new(format!("run-{suffix}")).unwrap(),
+                fixture.model(),
+                OperationContent::new("fixture private prompt").unwrap(),
+                fixture.resource.clone(),
+            ))
+            .expect("structured run prepares");
+        let mut handle = block_on(run.start_run(fixture.services())).expect("run starts");
+        let outcome = block_on(
+            handle
+                .take_terminal_outcome()
+                .expect("terminal outcome is available"),
+        );
+        match terminal_code {
+            Some(code) => match outcome.status() {
+                TerminalStatus::RuntimeFailed(diagnostic) => assert_eq!(diagnostic.code(), code),
+                status => panic!("expected runtime failure, got {status:?}"),
+            },
+            None => assert_eq!(outcome.status(), &TerminalStatus::Completed),
+        }
+        assert_eq!(
+            outcome.remote_resource_deletion(OwnedRemoteResourceKind::Session),
+            Some(deletion)
+        );
+        match cleanup_code {
+            Some(code) => match outcome.cleanup() {
+                CleanupOutcome::Failed(diagnostic) => assert_eq!(diagnostic.code(), code),
+                cleanup => panic!("expected failed cleanup, got {cleanup:?}"),
+            },
+            None => assert_eq!(outcome.cleanup(), &CleanupOutcome::Clean),
+        }
+        assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    }
+}
+
+#[test]
+fn unsupported_structured_input_stops_before_opencode_network_effects() {
+    let fixture = PreparedFixture::new("opencode.run.unsupported", "1.18.4");
+    let prepared = fixture.prepared();
+    let run = prepared
+        .prepare_run(OpenCodeRunProfileInput::new(
+            RequestId::new("run-unsupported").unwrap(),
+            fixture.model(),
+            OperationContent::new("fixture private prompt").unwrap(),
+            fixture.resource.clone(),
+        ))
+        .expect("structured run prepares");
+    let request_count = fixture.server.requests().len();
+    let (_, plan, request) = run.into_parts();
+    let request =
+        request.with_maximum_output_tokens(NonZeroU64::new(8).expect("non-zero token limit"));
+    let error = block_on(
+        swallowtail_adapter_opencode::OpenCodeHttpDriver::new().start_run(
+            plan,
+            request,
+            fixture.services(),
+        ),
+    )
+    .err()
+    .expect("unsupported run fails");
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.opencode.unsupported"
+    );
+    assert_eq!(fixture.server.requests().len(), request_count);
 }
 
 #[test]

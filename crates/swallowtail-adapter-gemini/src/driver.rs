@@ -66,7 +66,7 @@ impl GeminiAcpDriver {
                 "Gemini ACP requires explicit ambient-host isolation posture",
             ));
         }
-        crate::selection::select_gemini_plan(plan)
+        crate::selection::select_gemini_acp_plan(plan)
     }
 }
 

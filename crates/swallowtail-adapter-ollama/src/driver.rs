@@ -11,9 +11,9 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use std::task::Poll;
 use swallowtail_core::{
-    AttachedModelObservation, AttachedModelObservationScope, Capability, CredentialMechanism,
-    ExternalNetworkPolicy, ExternalSearchPolicy, InstanceOwnership, ModelCatalogEntry, ModelId,
-    ModelMetadata, PreflightPlan,
+    AttachedModelObservation, AttachedModelObservationScope, Capability, CapabilityConstraint,
+    CredentialMechanism, ExternalNetworkPolicy, ExternalSearchPolicy, InstanceOwnership,
+    ModelCatalogEntry, ModelId, ModelMetadata, PreflightPlan, StructuredOutputEnforcement,
 };
 use swallowtail_runtime::{
     BoxFuture, CleanupOutcome, Deadline, DeadlineObservation, EndpointRef, HostServices,

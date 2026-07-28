@@ -4,7 +4,8 @@ use super::{
 };
 use crate::{ENDPOINT_AUDIENCE, INTEGRATION_FAMILY, SUPPORT_AUTHORITY};
 use serde_json::Value;
-use swallowtail_runtime::OperationContent;
+use swallowtail_core::ReasoningMode;
+use swallowtail_runtime::{OperationContent, SchemaDocument, StructuredOutputDescriptor};
 
 const ROOT: &str = "../../tests/fixtures/openai-responses-2026-07-21";
 const INITIAL: &[u8] =
@@ -15,7 +16,8 @@ const REATTACHED: &[u8] =
 #[test]
 fn create_and_management_requests_match_the_frozen_public_api_shape() {
     let content = OperationContent::new("Say hello").expect("content is valid");
-    let create = Request::create("gpt-5.6", &content, 64).expect("create request is valid");
+    let create =
+        Request::create("gpt-5.6", &content, 64, None, None).expect("create request is valid");
     let expected: Value = serde_json::from_slice(include_bytes!(
         "../../tests/fixtures/openai-responses-2026-07-21/create-request.json"
     ))
@@ -48,6 +50,33 @@ fn create_and_management_requests_match_the_frozen_public_api_shape() {
     assert_eq!(cancel.path, "/v1/responses/resp_fixture_123/cancel");
     assert!(cancel.body.is_none());
     assert!(Request::cancel("../credential").is_err());
+}
+
+#[test]
+fn generation_controls_match_the_frozen_responses_shape() {
+    let content = OperationContent::new("Return one fixture result").expect("content is valid");
+    let schema = StructuredOutputDescriptor::new(
+        SchemaDocument::inline(
+            br#"{"type":"object","properties":{"result":{"type":"string"}},"required":["result"],"additionalProperties":false}"#,
+            4096,
+        )
+        .expect("schema is bounded"),
+        "application/schema+json",
+        "json-schema-2020-12",
+    )
+    .expect("schema descriptor is valid");
+    let reasoning = ReasoningMode::new("high").expect("reasoning is valid");
+    let request = Request::create("gpt-5.6", &content, 64, Some(&reasoning), Some(&schema))
+        .expect("generation controls encode");
+    let expected: Value = serde_json::from_slice(include_bytes!(
+        "../../tests/fixtures/openai-responses-2026-07-21/generation-controls-request.json"
+    ))
+    .expect("fixture is JSON");
+    assert_eq!(
+        serde_json::from_slice::<Value>(request.body.as_ref().expect("request has body"))
+            .expect("request body is JSON"),
+        expected
+    );
 }
 
 #[test]

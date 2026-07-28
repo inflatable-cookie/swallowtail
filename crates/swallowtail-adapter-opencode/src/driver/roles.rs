@@ -189,6 +189,8 @@ impl InteractiveSessionDriver for OpenCodeHttpDriver {
                 access: Some(access),
                 active,
                 cancellation,
+                reasoning_mode: None,
+                structured_output: None,
             }) as Box<dyn InteractiveSessionHandle>)
         })
     }

@@ -252,6 +252,8 @@ impl OpenCodeHttpDriver {
             access: Some(access),
             active: Arc::clone(&active),
             cancellation: SessionCancellation::new(active),
+            reasoning_mode: request.policy().reasoning_mode().cloned(),
+            structured_output: request.structured_output().cloned(),
         })
     }
 }
@@ -472,6 +474,34 @@ fn validate_run(
         Capability::Interruption,
         CapabilityConstraint::CancellationScope(CancellationScope::StructuredRun),
     )?;
+    let reasoning_constraints = request
+        .policy()
+        .reasoning_mode()
+        .map(|mode| vec![CapabilityConstraint::ReasoningMode(mode.clone())])
+        .unwrap_or_default();
+    require_optional_run_control(
+        plan,
+        Capability::ReasoningSelection,
+        reasoning_constraints,
+        request.policy().reasoning_mode().is_some(),
+    )?;
+    let structured_constraints = request
+        .structured_output()
+        .map(|output| {
+            vec![
+                CapabilityConstraint::SchemaDialect(output.dialect().to_owned()),
+                CapabilityConstraint::StructuredOutputEnforcement(
+                    StructuredOutputEnforcement::HarnessValidated,
+                ),
+            ]
+        })
+        .unwrap_or_default();
+    require_optional_run_control(
+        plan,
+        Capability::StructuredOutput,
+        structured_constraints,
+        request.structured_output().is_some(),
+    )?;
     require_run_constraint(
         plan,
         Capability::WorkingResource,
@@ -492,17 +522,15 @@ fn validate_run(
     }
     if request.attachments().len() != 0
         || request.tools().len() != 0
-        || request.structured_output().is_some()
         || request.maximum_output_tokens().is_some()
     {
         return Err(unsupported(
-            "structured-run attachments, consumer tools, schema, or output-token limit",
+            "structured-run attachments, consumer tools, or output-token limit",
         ));
     }
     let policy = request.policy();
     if policy.external_network() != swallowtail_runtime::ExternalNetworkPolicy::Denied
         || policy.external_search() != swallowtail_runtime::ExternalSearchPolicy::Disabled
-        || policy.reasoning_mode().is_some()
         || policy.provider_execution() != ProviderExecutionPolicy::Attached
         || policy.provider_retention() != ProviderRetentionPolicy::TemporaryAllowed
         || policy.provider_recovery() != ProviderRecoveryPolicy::Prohibited
@@ -513,6 +541,33 @@ fn validate_run(
         return Err(unsupported("structured-run lifecycle or inference policy"));
     }
     validate_deadline(request.deadline(), services)
+}
+
+fn require_optional_run_control(
+    plan: &PreflightPlan,
+    capability: Capability,
+    constraints: impl IntoIterator<Item = CapabilityConstraint>,
+    expected: bool,
+) -> Result<(), RuntimeFailure> {
+    let expected_constraints = constraints.into_iter().collect::<BTreeSet<_>>();
+    let actual = plan
+        .requirements()
+        .capabilities()
+        .find(|required| required.capability() == capability);
+    match actual {
+        Some(required)
+            if expected
+                && required.constraints().cloned().collect::<BTreeSet<_>>()
+                    == expected_constraints =>
+        {
+            Ok(())
+        }
+        None if !expected => Ok(()),
+        _ => Err(failure(
+            "swallowtail.opencode.run_capability_mismatch",
+            "OpenCode generation controls do not match the preflight plan",
+        )),
+    }
 }
 
 fn require_run_constraint(

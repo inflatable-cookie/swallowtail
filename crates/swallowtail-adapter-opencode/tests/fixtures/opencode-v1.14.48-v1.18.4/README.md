@@ -54,8 +54,9 @@ from token usage.
 `generation-controls-prompt-request.json` freezes the exact prompt `variant`
 and harness-owned JSON Schema format present at both range boundaries.
 OpenCode owns schema validation and retry; the route exposes no stable
-per-operation output maximum. The file is contract evidence for card 085, not
-a realized adapter claim.
+per-operation output maximum. Card 086 realizes exact catalogue-gated model
+variants and zero-retry schema dispatch across the qualified range and visible
+unverified-newer execution.
 
 The small health and session envelopes are synthetic. They contain no
 credential, endpoint, account, path, provider payload, model response, or user

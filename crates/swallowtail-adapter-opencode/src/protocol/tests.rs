@@ -6,7 +6,8 @@ mod tests {
         session_create, session_delete,
     };
     use crate::selection::opencode_server_binding;
-    use swallowtail_core::InterfaceCompatibilityAssessment;
+    use swallowtail_core::{InterfaceCompatibilityAssessment, ReasoningMode};
+    use swallowtail_runtime::{SchemaDocument, StructuredOutputDescriptor};
 
     const ROOT: &str = concat!(
         env!("CARGO_MANIFEST_DIR"),
@@ -45,6 +46,19 @@ mod tests {
                 .expect("limits")
                 .maximum_input_tokens(),
             Some(190_000)
+        );
+        assert!(models[0]
+            .metadata()
+            .reasoning()
+            .expect("reasoning evidence exists")
+            .supports(&ReasoningMode::new("high").expect("mode is valid")));
+        assert_eq!(
+            models[0]
+                .metadata()
+                .catalog_observations()
+                .expect("catalogue observations exist")
+                .tool_calling_supported(),
+            Some(true)
         );
     }
 
@@ -236,7 +250,10 @@ mod tests {
             "claude-sonnet",
             "/workspace/fixture",
             "private prompt",
-        );
+            None,
+            None,
+        )
+        .expect("prompt encodes");
         assert_eq!(prompt.path, "/session/ses_fixture/prompt_async");
         let body: serde_json::Value =
             serde_json::from_slice(prompt.body.as_ref().expect("prompt has body"))
@@ -259,6 +276,40 @@ mod tests {
             session_delete("ses/unsafe", "/workspace/fixture").is_err(),
             "provider identity cannot escape its path segment"
         );
+    }
+
+    #[test]
+    fn generation_controls_match_the_frozen_prompt_shape() {
+        let schema = StructuredOutputDescriptor::new(
+            SchemaDocument::inline(
+                br#"{"type":"object","properties":{"result":{"type":"string"}},"required":["result"],"additionalProperties":false}"#,
+                4096,
+            )
+            .expect("schema is bounded"),
+            "application/schema+json",
+            "json-schema-2020-12",
+        )
+        .expect("schema descriptor is valid");
+        let reasoning = ReasoningMode::new("high").expect("reasoning is valid");
+        let request = prompt(
+            "ses_fixture",
+            "fixture-provider",
+            "fixture-model",
+            "/workspace/fixture",
+            "Return one fixture result",
+            Some(&reasoning),
+            Some(&schema),
+        )
+        .expect("generation controls encode");
+        let actual: serde_json::Value =
+            serde_json::from_slice(request.body.as_ref().expect("prompt has body"))
+                .expect("prompt body is JSON");
+        let expected: serde_json::Value = serde_json::from_str(&std::fs::read_to_string(format!(
+            "{RANGE_ROOT}/generation-controls-prompt-request.json"
+        ))
+        .expect("fixture reads"))
+        .expect("fixture parses");
+        assert_eq!(actual, expected);
     }
 
     #[test]

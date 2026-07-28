@@ -192,11 +192,11 @@ evidence-led provider work.
   and exact prepared capability claims
 - card 083 proves all 23 packages from the dirty source snapshot and closes
   the workspace at 935 passing tests with four intentional skips
-- the later Claude Code headless solution changes the current live inventory:
-  the 22-solution matrix now has 451 `No`, 29 `Not applicable`, and only two
+- the later Claude Code headless solution changes the live inventory; the
+  solution-level matrix then had 451 `No`, 29 `Not applicable`, and only two
   usage `No` cells, both Kimi
-- roadmap g02.026 and cards 084-087 keep the matrix programme moving through
-  48 generation-control gaps
+- roadmap g02.026 and cards 084-087 close the 48 starting
+  generation-control gaps through one representative tranche
 - Research 049 and card 084 classify all 48 gaps: 25 are plausible
   conversions, 20 are exact upstream absences, and three managed-agent cells
   belong to the agent-version operation shape
@@ -204,6 +204,11 @@ evidence-led provider work.
   xAI remains operator-held and the broader matrix runway remains explicit
 - Contract 040 and card 085 freeze exact application and enforcement truth
   plus offline request corpora for all seven selected controls
+- cards 086-087 realize those seven controls, close the 48-cell starting
+  inventory at 41 retained generation-control `No` cells, and leave the whole
+  audited matrix at 444 `No` and 29 `Not applicable`
+- roadmap g02.027 and cards 088-091 continue with the 74 attachment,
+  consumer-tool, approval-or-question, and external-search gaps
 - roadmaps g02.016-g02.019 sequence Codex, ACP/Claude Agent, OpenCode,
   provider-wide acceptance, and the Nucleus handoff
 - all 23 manifests carry contract-complete metadata and crates.io publication
@@ -547,7 +552,9 @@ evidence-led provider work.
 - [025 Provider Feature Matrix No-Closure Programme](025-provider-feature-matrix-no-closure-programme.md)
   — completed; cards 080-083 complete
 - [026 Generation-Control Feature Closure](026-generation-control-feature-closure.md)
-  — active; cards 084-085 complete, card 086 ready, card 087 planned
+  — completed; cards 084-087 complete
+- [027 Input And Callback Feature Closure](027-input-and-callback-feature-closure.md)
+  — active; card 088 ready, cards 089-091 planned
 
 ## Held Backlog
 
@@ -667,10 +674,11 @@ is deferred until a consumer needs post-restart provider management.
 - card 060 completes the bounded Nucleus lifecycle handoff without consumer
   edits; card 059 remains paused at retained-candidate provenance
 - cards 080-083 complete the historical CSV-aware audit and first
-  usage-evidence tranche; the current post-Claude-Code matrix retains 451
-  `No` cells
+  usage-evidence tranche; the post-Claude-Code matrix retained 451 `No` cells
 - cards 084-085 complete the 48-cell generation-control audit and selected
-  contract; cards 086-087 own implementation and closeout
+  contract; cards 086-087 complete implementation and closeout
+- cards 088-091 own the 74-cell input/callback audit, contract gate,
+  implementation tranche, and closeout
 - cards 024-026 own remaining harness facades
 - cards 027-030 own hosted direct and provider-state facades
 - cards 031-033 own realtime, SDK, and llama.cpp facades
@@ -680,7 +688,7 @@ is deferred until a consumer needs post-restart provider management.
 
 ## Generation Boundary
 
-g02 is a long-lived generation with 26 roadmaps. It remains below its
+g02 is a long-lived generation with 27 roadmaps. It remains below its
 30-50-roadmap rollover range. Provider-wide facade work stabilizes the existing
 production routes. The provider-session lifecycle lane adds bounded management
 to applicable persistent-session routes without adding provider names,

@@ -20,6 +20,7 @@ pub use prepared_profile::{
     OllamaModelSelection, OllamaPreparedEvidence, OllamaPreparedInferenceAttempt,
     OllamaPreparedInventory,
 };
+pub use protocol::OllamaModelCapability;
 pub use selection::{
     OLLAMA_BASELINE_VERSION, OLLAMA_LATEST_QUALIFIED_VERSION, OLLAMA_NATIVE_FACADE,
     ollama_native_descriptor, ollama_runtime_binding, ollama_runtime_claim,

@@ -177,7 +177,10 @@ fn capability_requirements() -> Vec<CapabilityRequirement> {
         CapabilityRequirement::new(Capability::StructuredRun, []),
         CapabilityRequirement::new(Capability::StreamingEvents, []),
         CapabilityRequirement::new(Capability::UsageReporting, []),
-        CapabilityRequirement::new(Capability::OutputTokenLimit, []),
+        CapabilityRequirement::new(
+            Capability::OutputTokenLimit,
+            [CapabilityConstraint::OutputTokenMaximum(64)],
+        ),
         CapabilityRequirement::new(Capability::ProviderBackgroundExecution, []),
         CapabilityRequirement::new(Capability::ProviderTemporaryRetention, []),
         CapabilityRequirement::new(

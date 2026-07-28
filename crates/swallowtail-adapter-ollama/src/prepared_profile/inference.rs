@@ -5,12 +5,13 @@ use super::plan::{
 use crate::prepared::failure;
 use crate::{OllamaNativeAttachedDriver, OllamaPreparedIntegration};
 use swallowtail_core::{
-    AttachedRuntimeResidency, Capability, CapabilityProfile, CapabilityRequirement, DriverRole,
-    PreflightPlan,
+    AttachedRuntimeResidency, Capability, CapabilityConstraint, CapabilityProfile,
+    CapabilityRequirement, DriverRole, PreflightPlan, ReasoningMode, StructuredOutputEnforcement,
 };
 use swallowtail_runtime::{
     BoxFuture, HostServices, OperationPolicy, PreparationFailure, PreparationStage, RunHandle,
-    RuntimeFailure, StructuredRunDriver, StructuredRunRequest,
+    RuntimeFailure, SchemaDocument, StructuredOutputDescriptor, StructuredRunDriver,
+    StructuredRunRequest,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -62,7 +63,8 @@ impl OllamaPreparedIntegration {
         &self,
         input: OllamaInferenceAttemptInput,
     ) -> Result<OllamaPreparedInferenceAttempt, PreparationFailure> {
-        let (request_id, content, maximum, deadline) = input.into_parts();
+        let (request_id, content, maximum, reasoning, structured_output, deadline) =
+            input.into_parts();
         if maximum.get() > u64::from(u32::MAX) {
             return Err(failure(
                 PreparationStage::Preflight,
@@ -70,7 +72,17 @@ impl OllamaPreparedIntegration {
                 "Ollama maximum output tokens exceed the supported request range",
             ));
         }
-        let capability_requirements = inference_capabilities();
+        if let Some(reasoning) = reasoning.as_ref() {
+            validate_reasoning(self, reasoning)?;
+        }
+        if let Some(output) = structured_output.as_ref() {
+            validate_structured_output(output)?;
+        }
+        let capability_requirements = inference_capabilities(
+            maximum.get(),
+            reasoning.as_ref(),
+            structured_output.as_ref(),
+        );
         let capabilities = CapabilityProfile::new(capability_requirements.clone());
         let instance = instance_with_capabilities(self, capabilities.clone());
         let route = model_route(self, self.model_selection().clone(), capabilities);
@@ -81,10 +93,16 @@ impl OllamaPreparedIntegration {
             capability_requirements,
         );
         let plan = build_plan(self, &instance, &route, &requirements)?;
-        let policy = OperationPolicy::offline()
+        let mut policy = OperationPolicy::offline()
             .with_attached_runtime_residency(AttachedRuntimeResidency::RuntimeManaged);
+        if let Some(reasoning) = reasoning {
+            policy = policy.with_reasoning_mode(reasoning);
+        }
         let mut request = StructuredRunRequest::new(request_id, content, policy)
             .with_maximum_output_tokens(maximum);
+        if let Some(output) = structured_output {
+            request = request.with_structured_output(output);
+        }
         if let Some(deadline) = deadline {
             request = request.with_deadline(deadline);
         }
@@ -95,14 +113,77 @@ impl OllamaPreparedIntegration {
     }
 }
 
-fn inference_capabilities() -> Vec<CapabilityRequirement> {
-    [
-        Capability::StructuredRun,
-        Capability::StreamingEvents,
-        Capability::UsageReporting,
-        Capability::OutputTokenLimit,
-    ]
-    .into_iter()
-    .map(|capability| CapabilityRequirement::new(capability, []))
-    .collect()
+fn inference_capabilities(
+    maximum: u64,
+    reasoning: Option<&ReasoningMode>,
+    structured_output: Option<&StructuredOutputDescriptor>,
+) -> Vec<CapabilityRequirement> {
+    let mut capabilities = vec![
+        CapabilityRequirement::new(Capability::StructuredRun, []),
+        CapabilityRequirement::new(Capability::StreamingEvents, []),
+        CapabilityRequirement::new(Capability::UsageReporting, []),
+        CapabilityRequirement::new(
+            Capability::OutputTokenLimit,
+            [CapabilityConstraint::OutputTokenMaximum(maximum)],
+        ),
+    ];
+    if let Some(reasoning) = reasoning {
+        capabilities.push(CapabilityRequirement::new(
+            Capability::ReasoningSelection,
+            [CapabilityConstraint::ReasoningMode(reasoning.clone())],
+        ));
+    }
+    if let Some(output) = structured_output {
+        capabilities.push(CapabilityRequirement::new(
+            Capability::StructuredOutput,
+            [
+                CapabilityConstraint::SchemaDialect(output.dialect().to_owned()),
+                CapabilityConstraint::StructuredOutputEnforcement(
+                    StructuredOutputEnforcement::ProviderNative,
+                ),
+            ],
+        ));
+    }
+    capabilities
+}
+
+fn validate_reasoning(
+    prepared: &OllamaPreparedIntegration,
+    reasoning: &ReasoningMode,
+) -> Result<(), PreparationFailure> {
+    if prepared
+        .runtime()
+        .selected_model_supports(crate::OllamaModelCapability::Thinking)
+        && matches!(reasoning.as_str(), "off" | "low" | "medium" | "high")
+    {
+        Ok(())
+    } else {
+        Err(failure(
+            PreparationStage::Preflight,
+            "swallowtail.ollama.preparation.reasoning_unsupported",
+            "The selected Ollama model does not support the exact requested reasoning mode",
+        ))
+    }
+}
+
+fn validate_structured_output(
+    output: &StructuredOutputDescriptor,
+) -> Result<(), PreparationFailure> {
+    let valid_document = match output.document() {
+        SchemaDocument::Inline(bytes) => serde_json::from_slice::<serde_json::Value>(bytes)
+            .is_ok_and(|schema| schema.is_object()),
+        SchemaDocument::Reference(_) => false,
+    };
+    if output.media_type() == "application/schema+json"
+        && output.dialect() == "json-schema-2020-12"
+        && valid_document
+    {
+        Ok(())
+    } else {
+        Err(failure(
+            PreparationStage::Preflight,
+            "swallowtail.ollama.preparation.schema_unsupported",
+            "Ollama structured output requires one inline JSON Schema 2020-12 object",
+        ))
+    }
 }

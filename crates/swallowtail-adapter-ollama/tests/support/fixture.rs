@@ -7,13 +7,13 @@ use swallowtail_adapter_ollama::{
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessRequirement, AccessStatus, AttachedModelObservation,
     AttachedModelObservationScope, AttachedModelTag, AttachedRuntimeRequirements,
-    AttachedRuntimeResidency, Capability, CapabilityProfile, CapabilityRequirement,
-    CatalogTimestamp, ConfiguredInstance, ConfiguredInstanceId, CredentialMechanism,
-    CredentialState, DriverRole, EndpointAudience, EndpointAuthorization, EntitlementMetering,
-    EntitlementState, ExecutionHostId, ExecutionLayer, InstanceOwnership, InstancePolicyId,
-    InstanceRevision, InstanceTargetRef, ModelId, ModelManifestDigest, ModelRoute, ModelRouteId,
-    ModelRouteRevision, OperationRequirements, OperationShape, PreflightContext, ProtocolFacadeId,
-    RuntimeReadiness, SupportAuthority, preflight,
+    AttachedRuntimeResidency, Capability, CapabilityConstraint, CapabilityProfile,
+    CapabilityRequirement, CatalogTimestamp, ConfiguredInstance, ConfiguredInstanceId,
+    CredentialMechanism, CredentialState, DriverRole, EndpointAudience, EndpointAuthorization,
+    EntitlementMetering, EntitlementState, ExecutionHostId, ExecutionLayer, InstanceOwnership,
+    InstancePolicyId, InstanceRevision, InstanceTargetRef, ModelId, ModelManifestDigest,
+    ModelRoute, ModelRouteId, ModelRouteRevision, OperationRequirements, OperationShape,
+    PreflightContext, ProtocolFacadeId, RuntimeReadiness, SupportAuthority, preflight,
 };
 use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{
@@ -192,7 +192,10 @@ fn capability_requirements(role: DriverRole) -> Vec<CapabilityRequirement> {
             CapabilityRequirement::new(Capability::StructuredRun, []),
             CapabilityRequirement::new(Capability::StreamingEvents, []),
             CapabilityRequirement::new(Capability::UsageReporting, []),
-            CapabilityRequirement::new(Capability::OutputTokenLimit, []),
+            CapabilityRequirement::new(
+                Capability::OutputTokenLimit,
+                [CapabilityConstraint::OutputTokenMaximum(8)],
+            ),
         ]
     }
 }

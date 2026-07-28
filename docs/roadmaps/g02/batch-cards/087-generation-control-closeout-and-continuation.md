@@ -1,6 +1,6 @@
 # 087 Generation-Control Closeout And Continuation
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-07-28
 Milestone: `../026-generation-control-feature-closure.md`
@@ -21,12 +21,27 @@ evidence-ranked feature family.
 
 ## Acceptance Criteria
 
-- [ ] matrix and realized capabilities agree
-- [ ] package paths execute without live access
-- [ ] exact counts are machine-enforced
-- [ ] honest absence remains visible
-- [ ] one next feature-family task or operator decision remains
+- [x] matrix and realized capabilities agree
+- [x] package paths execute without live access
+- [x] exact counts are machine-enforced
+- [x] honest absence remains visible
+- [x] one next feature-family task or operator decision remains
+
+## Result
+
+- The 48-cell starting inventory closes with seven realized conversions and
+  41 retained generation-control `No` cells: 13 output limits, 11 reasoning
+  selections, and 17 structured-output paths.
+- The whole audited matrix now contains 444 `No` and 29 `Not applicable`
+  cells. Machine checks retain exact cell identities and classifications.
+- Twenty starting generation-control cells remain exact upstream absences,
+  three xAI cells remain operator-held, and three managed-agent cells remain
+  operation-shape mismatches.
+- All 23 crate APIs, workspace examples, and lint pass. Of the 954 workspace
+  tests, 950 pass and four installed-provider probes remain separately gated.
+- Roadmap 027 and card 088 continue with the 74 current input/callback `No`
+  cells.
 
 ## Auto-Continuation
 
-No while planned.
+Satisfied. Continue to card 088.

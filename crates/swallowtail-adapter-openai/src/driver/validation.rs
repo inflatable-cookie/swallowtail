@@ -2,6 +2,7 @@ use crate::failure::unsupported;
 use std::num::NonZeroU32;
 use swallowtail_core::{
     CancellationScope, CapabilityConstraint, ExternalNetworkPolicy, ExternalSearchPolicy,
+    StructuredOutputEnforcement,
 };
 use swallowtail_runtime::{
     ProviderExecutionPolicy, ProviderRecoveryPolicy, ProviderRetentionPolicy,
@@ -48,6 +49,8 @@ fn validate_run(
         Capability::ProviderTemporaryRetention,
         Capability::StreamReattachment,
         Capability::Interruption,
+        Capability::ReasoningSelection,
+        Capability::StructuredOutput,
     ];
     if plan
         .requirements()
@@ -59,13 +62,33 @@ fn validate_run(
             "OpenAI background requirements included an unsupported capability",
         ));
     }
+    let maximum = CapabilityConstraint::OutputTokenMaximum(
+        request
+            .maximum_output_tokens()
+            .expect("validated output maximum")
+            .get(),
+    );
     let reattachment = CapabilityConstraint::ReattachmentMaximumCount(1);
     let cancellation = CapabilityConstraint::CancellationScope(CancellationScope::StructuredRun);
     if !plan.requirements().capabilities().all(|requirement| {
         let constraints: Vec<_> = requirement.constraints().collect();
         match requirement.capability() {
+            Capability::OutputTokenLimit => constraints == [&maximum],
             Capability::StreamReattachment => constraints == [&reattachment],
             Capability::Interruption => constraints == [&cancellation],
+            Capability::ReasoningSelection => request.policy().reasoning_mode().is_some_and(
+                |reasoning| {
+                    constraints
+                        == [&CapabilityConstraint::ReasoningMode(reasoning.clone())]
+                },
+            ),
+            Capability::StructuredOutput => request.structured_output().is_some_and(|output| {
+                let dialect = CapabilityConstraint::SchemaDialect(output.dialect().to_owned());
+                let enforcement = CapabilityConstraint::StructuredOutputEnforcement(
+                    StructuredOutputEnforcement::ProviderNative,
+                );
+                constraints == [&dialect, &enforcement] || constraints == [&enforcement, &dialect]
+            }),
             _ => constraints.is_empty(),
         }
     }) {
@@ -95,11 +118,15 @@ fn validate_run(
     if request.tools().len() != 0 {
         return Err(unsupported("structured-run tools"));
     }
-    if request.structured_output().is_some() {
-        return Err(unsupported("structured output"));
+    if request.policy().reasoning_mode().is_some() != requires(plan, Capability::ReasoningSelection)
+        || request.structured_output().is_some() != requires(plan, Capability::StructuredOutput)
+    {
+        return Err(failure(
+            "swallowtail.openai.generation_control_mismatch",
+            "OpenAI background generation controls did not match the preflight plan",
+        ));
     }
-    if request.policy().reasoning_mode().is_some()
-        || request.policy().external_network() != ExternalNetworkPolicy::Denied
+    if request.policy().external_network() != ExternalNetworkPolicy::Denied
         || request.policy().external_search() != ExternalSearchPolicy::Disabled
         || request.policy().provider_execution() != ProviderExecutionPolicy::Background
         || request.policy().provider_retention() != ProviderRetentionPolicy::TemporaryAllowed

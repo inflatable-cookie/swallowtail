@@ -16,11 +16,14 @@ use swallowtail_adapter_openai::{
     OPENAI_BACKGROUND_MODEL_ROUTE_ID, OpenAiBackgroundModelSelection,
     OpenAiBackgroundRunProfileInput, prepare_openai_background,
 };
-use swallowtail_core::{ModelId, ModelRouteId, ModelRouteRevision};
+use swallowtail_core::{
+    Capability, CapabilityConstraint, ModelId, ModelRouteId, ModelRouteRevision, ReasoningMode,
+    StructuredOutputEnforcement,
+};
 use swallowtail_runtime::{
     CleanupOutcome, Deadline, MonotonicInstant, OperationContent, ProviderCancellationOutcome,
     ProviderExecutionPolicy, ProviderObservation, ProviderRetentionPolicy, RequestId,
-    StreamReattachmentPolicy, TerminalStatus,
+    SchemaDocument, StreamReattachmentPolicy, StructuredOutputDescriptor, TerminalStatus,
 };
 
 #[test]
@@ -184,6 +187,56 @@ fn prepared_policy_and_route_drift_fail_before_endpoint_or_credential_effects() 
     assert_eq!(fixture.releases(), 0);
 }
 
+#[test]
+fn prepared_background_generation_controls_are_exact_and_fail_before_effects() {
+    let fixture = Fixture::new(ServerMode::Success, "host.local", TimeMode::Pending);
+    let prepared = prepare_openai_background(fixture.preparation_input(), &fixture.services())
+        .expect("OpenAI background integration prepares");
+    let reasoning = ReasoningMode::new("high").expect("reasoning is valid");
+    let run = prepared
+        .prepare_background_run(
+            profile("prepared-controls")
+                .with_reasoning_mode(reasoning.clone())
+                .with_structured_output(schema()),
+        )
+        .expect("generation controls prepare");
+    assert_eq!(run.request().policy().reasoning_mode(), Some(&reasoning));
+    assert!(run.request().structured_output().is_some());
+    assert!(run.plan().requirements().capabilities().any(|requirement| {
+        requirement.capability() == Capability::OutputTokenLimit
+            && requirement
+                .constraints()
+                .eq([&CapabilityConstraint::OutputTokenMaximum(64)])
+    }));
+    assert!(run.plan().requirements().capabilities().any(|requirement| {
+        requirement.capability() == Capability::ReasoningSelection
+            && requirement
+                .constraints()
+                .eq([&CapabilityConstraint::ReasoningMode(reasoning.clone())])
+    }));
+    assert!(run.plan().requirements().capabilities().any(|requirement| {
+        requirement.capability() == Capability::StructuredOutput
+            && requirement.constraints().any(|constraint| {
+                constraint
+                    == &CapabilityConstraint::StructuredOutputEnforcement(
+                        StructuredOutputEnforcement::ProviderNative,
+                    )
+            })
+    }));
+
+    let unsupported = profile("prepared-controls-unsupported")
+        .with_reasoning_mode(ReasoningMode::new("ultra").expect("mode is syntactically valid"));
+    let error = prepared
+        .prepare_background_run(unsupported)
+        .expect_err("unsupported reasoning fails");
+    assert_eq!(
+        error.diagnostic().safe().code(),
+        "swallowtail.openai.preparation.reasoning_unsupported"
+    );
+    assert!(fixture.server.requests().is_empty());
+    assert_eq!(fixture.releases(), 0);
+}
+
 fn profile(id: &str) -> OpenAiBackgroundRunProfileInput {
     OpenAiBackgroundRunProfileInput::background_with_temporary_retention_and_one_reattachment(
         RequestId::new(id).expect("request id is valid"),
@@ -223,6 +276,19 @@ fn selection(route: &str, model: &str) -> OpenAiBackgroundModelSelection {
 
 fn reattachment() -> StreamReattachmentPolicy {
     StreamReattachmentPolicy::Bounded(NonZeroU32::new(1).expect("one is non-zero"))
+}
+
+fn schema() -> StructuredOutputDescriptor {
+    StructuredOutputDescriptor::new(
+        SchemaDocument::inline(
+            br#"{"type":"object","properties":{"result":{"type":"string"}},"required":["result"],"additionalProperties":false}"#,
+            4096,
+        )
+        .expect("schema is bounded"),
+        "application/schema+json",
+        "json-schema-2020-12",
+    )
+    .expect("schema descriptor is valid")
 }
 
 fn complete(

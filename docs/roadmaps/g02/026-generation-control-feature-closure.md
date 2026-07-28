@@ -1,16 +1,16 @@
 # 026 Generation-Control Feature Closure
 
-Status: active
+Status: completed
 Owner: Tom
 Created: 2026-07-28
 Depends on: g02.025
 Vision tags: exact capabilities, provider breadth, safe generation control
 Contract refs: 003, 005-016, 020, 037, 039-040
-Planning state: cards 084-085 complete; card 086 ready; card 087 planned
+Planning state: cards 084-087 complete
 
 ## Problem
 
-The current matrix has 48 generation-control `No` cells:
+The starting matrix has 48 generation-control `No` cells:
 
 - 14 output-token-limit gaps
 - 14 reasoning-selection gaps
@@ -22,15 +22,15 @@ one from another.
 
 ## Goals
 
-- [ ] Revalidate every generation-control `No` against current qualified
+- [x] Revalidate every generation-control `No` against current qualified
       provider or maintained-project evidence.
-- [ ] Detect false negatives against realized prepared paths.
-- [ ] Separate hard provider limits, effort or mode selection, native schema
+- [x] Detect false negatives against realized prepared paths.
+- [x] Separate hard provider limits, effort or mode selection, native schema
       enforcement, prompt-only conventions, and consumer post-validation.
-- [ ] Promote only the smallest missing shared contracts.
-- [ ] Implement a representative high-value tranche through existing route
+- [x] Promote only the smallest missing shared contracts.
+- [x] Implement a representative high-value tranche through existing route
       identities.
-- [ ] Re-audit all 48 cells and retain honest absence.
+- [x] Re-audit all 48 cells and retain honest absence.
 
 ## Non-Goals
 
@@ -57,23 +57,23 @@ one from another.
 
 ### Batch 26.3 — Representative Implementation
 
-- [ ] Execute card 086 only for contract-ready routes.
-- [ ] Keep each provider's unsupported and negotiated behavior visible.
+- [x] Execute card 086 only for contract-ready routes.
+- [x] Keep each provider's unsupported and negotiated behavior visible.
 
 ### Batch 26.4 — Matrix Closeout
 
-- [ ] Execute card 087.
-- [ ] Prove package truth and select the next feature family from the retained
+- [x] Execute card 087.
+- [x] Prove package truth and select the next feature family from the retained
       matrix runway.
 
 ## Acceptance Criteria
 
-- [ ] all 48 starting cells have current evidence classifications
-- [ ] native enforcement and consumer conventions remain distinct
-- [ ] every changed cell maps to a public prepared path
-- [ ] version and access authority remain exact
-- [ ] machine counts and classification drift fail deterministically
-- [ ] one next family remains explicit
+- [x] all 48 starting cells have current evidence classifications
+- [x] native enforcement and consumer conventions remain distinct
+- [x] every changed cell maps to a public prepared path
+- [x] version and access authority remain exact
+- [x] machine counts and classification drift fail deterministically
+- [x] one next family remains explicit
 
 ## Decision Gates
 
@@ -85,5 +85,5 @@ one from another.
 
 ## Next Planning Checkpoint
 
-Card 086 implements the seven selected OpenAI, Ollama, and OpenCode cells. Do
-not roll to g03.
+Roadmap 027 and card 088 begin the input/callback feature-family audit. Do not
+roll to g03.

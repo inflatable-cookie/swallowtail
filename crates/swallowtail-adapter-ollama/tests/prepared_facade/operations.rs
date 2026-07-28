@@ -3,9 +3,12 @@ use crate::support::Fixture;
 use futures_executor::block_on;
 use futures_util::StreamExt;
 use swallowtail_core::{
-    AttachedRuntimeResidency, ExecutionHostId, HostServiceKind, InstanceOwnership,
+    AttachedRuntimeResidency, Capability, CapabilityConstraint, ExecutionHostId, HostServiceKind,
+    InstanceOwnership, ReasoningMode, StructuredOutputEnforcement,
 };
-use swallowtail_runtime::{CleanupOutcome, TerminalStatus};
+use swallowtail_runtime::{
+    CleanupOutcome, SchemaDocument, StructuredOutputDescriptor, TerminalStatus,
+};
 use swallowtail_testkit::assert_prepared_operation_evidence_matches_plan;
 
 #[test]
@@ -92,4 +95,80 @@ fn prepared_inventory_and_inference_preserve_external_runtime_truth() {
             &ExecutionHostId::new(host).unwrap()
         );
     }
+}
+
+#[test]
+fn prepared_generation_controls_require_model_evidence_and_exact_constraints() {
+    let fixture = Fixture::new();
+    let prepared = prepared(&fixture);
+    assert!(
+        prepared
+            .runtime()
+            .selected_model_supports(swallowtail_adapter_ollama::OllamaModelCapability::Thinking)
+    );
+
+    for mode in ["off", "low", "medium", "high"] {
+        let attempt = prepared
+            .prepare_inference_attempt(
+                attempt_input(&format!("prepared-{mode}"))
+                    .with_reasoning_mode(ReasoningMode::new(mode).expect("mode is valid"))
+                    .with_structured_output(schema()),
+            )
+            .expect("qualified generation controls prepare");
+        assert!(
+            attempt
+                .plan()
+                .requirements()
+                .capabilities()
+                .any(|requirement| {
+                    requirement.capability() == Capability::ReasoningSelection
+                        && requirement.constraints().any(|constraint| {
+                            constraint
+                                == &CapabilityConstraint::ReasoningMode(
+                                    ReasoningMode::new(mode).expect("mode is valid"),
+                                )
+                        })
+                })
+        );
+        assert!(
+            attempt
+                .plan()
+                .requirements()
+                .capabilities()
+                .any(|requirement| {
+                    requirement.capability() == Capability::StructuredOutput
+                        && requirement.constraints().any(|constraint| {
+                            constraint
+                                == &CapabilityConstraint::StructuredOutputEnforcement(
+                                    StructuredOutputEnforcement::ProviderNative,
+                                )
+                        })
+                })
+        );
+    }
+
+    let error =
+        prepared
+            .prepare_inference_attempt(attempt_input("prepared-unsupported").with_reasoning_mode(
+                ReasoningMode::new("max").expect("mode is syntactically valid"),
+            ))
+            .expect_err("unsupported mode fails");
+    assert_eq!(
+        error.diagnostic().safe().code(),
+        "swallowtail.ollama.preparation.reasoning_unsupported"
+    );
+    assert_eq!(fixture.server.inference_attempts(), 0);
+}
+
+fn schema() -> StructuredOutputDescriptor {
+    StructuredOutputDescriptor::new(
+        SchemaDocument::inline(
+            br#"{"type":"object","properties":{"result":{"type":"string"}},"required":["result"],"additionalProperties":false}"#,
+            4096,
+        )
+        .expect("schema is bounded"),
+        "application/schema+json",
+        "json-schema-2020-12",
+    )
+    .expect("schema descriptor is valid")
 }

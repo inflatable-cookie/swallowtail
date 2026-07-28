@@ -24,7 +24,10 @@ fn client_events_match_the_frozen_manual_audio_subset() {
     )
     .expect("chunk is valid");
     let actual = [
-        ClientEvent::SessionUpdate.to_json(),
+        ClientEvent::SessionUpdate {
+            maximum_output_tokens: None,
+        }
+        .to_json(),
         ClientEvent::InputAudioAppend {
             event_id: "input-append-1",
             chunk: &chunk,

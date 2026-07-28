@@ -17,4 +17,5 @@ historical evidence.
 ## Items
 
 - [Grok Build Maintained ACP Range](grok-build-maintained-acp-range.md)
+- [Python Kimi CLI Headless Route](python-kimi-cli-headless-route.md)
 - [Provider-Session Management Binding Persistence](provider-session-management-binding-persistence.md)

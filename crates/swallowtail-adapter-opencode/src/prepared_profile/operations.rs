@@ -9,11 +9,11 @@ use super::plan::{
 use super::{OpenCodePreparedRunFuture, OpenCodePreparedSessionFuture};
 use crate::{OpenCodeHttpDriver, OpenCodePreparedIntegration};
 use swallowtail_core::{
-    Capability, CapabilityProfile, CapabilityRequirement, DriverRole, ModelCatalogEntry,
-    ModelRoute, PreflightPlan, ProviderSessionActivityEvidence, ProviderSessionAffectedScope,
-    ProviderSessionBindingOrigin, ProviderSessionCancellationPosture,
+    Capability, CapabilityConstraint, CapabilityProfile, CapabilityRequirement, DriverRole,
+    ModelCatalogEntry, ModelRoute, PreflightPlan, ProviderId, ProviderSessionActivityEvidence,
+    ProviderSessionAffectedScope, ProviderSessionBindingOrigin, ProviderSessionCancellationPosture,
     ProviderSessionDeletionStrength, ProviderSessionInitialStateRequirement,
-    ProviderSessionManagementAction,
+    ProviderSessionManagementAction, ReasoningMode, StructuredOutputEnforcement,
 };
 use swallowtail_runtime::{
     BoxFuture, CancellationControl, CleanupOutcome, DeleteProviderSessionRequest,
@@ -23,8 +23,9 @@ use swallowtail_runtime::{
     PreparedProviderSessionManagementEvidence, ProviderRetentionPolicy,
     ProviderSessionManagementAgreement, ProviderSessionManagementBinding,
     ProviderSessionManagementDriver, ProviderSessionManagementOutcome,
-    ProviderSessionManagementPlan, RuntimeFailure, SessionResumeBinding, StructuredRunDriver,
-    StructuredRunRequest, TurnHandle, TurnRequest, WorkingResourceRef,
+    ProviderSessionManagementPlan, RuntimeFailure, SchemaDocument, SessionResumeBinding,
+    StructuredOutputDescriptor, StructuredRunDriver, StructuredRunRequest, TurnHandle, TurnRequest,
+    WorkingResourceRef,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -251,7 +252,7 @@ impl OpenCodePreparedIntegration {
                 }),
         );
         let instance = instance_with_capabilities(self, session_capabilities.clone());
-        let (route_id, route_revision, provider_id, model_id) = model.into_parts();
+        let (route_id, route_revision, provider_id, model_id, _) = model.into_parts();
         let route = ModelRoute::new(
             route_id,
             route_revision,
@@ -282,10 +283,18 @@ impl OpenCodePreparedIntegration {
         &self,
         input: OpenCodeRunProfileInput,
     ) -> Result<OpenCodePreparedRun, PreparationFailure> {
-        let (request_id, model, content, working_resource, deadline) = input.into_parts();
-        let capabilities = crate::prepared::run_capabilities();
+        let (request_id, model, content, working_resource, reasoning, structured_output, deadline) =
+            input.into_parts();
+        let (route_id, route_revision, provider_id, model_id, catalogue_entry) = model.into_parts();
+        validate_generation_controls(
+            &provider_id,
+            &model_id,
+            catalogue_entry.as_ref(),
+            reasoning.as_ref(),
+            structured_output.as_ref(),
+        )?;
+        let capabilities = run_capabilities(reasoning.as_ref(), structured_output.as_ref());
         let instance = instance_with_capabilities(self, capabilities.clone());
-        let (route_id, route_revision, provider_id, model_id) = model.into_parts();
         let route = ModelRoute::new(
             route_id,
             route_revision,
@@ -301,14 +310,20 @@ impl OpenCodePreparedIntegration {
             }),
         );
         let plan = build_plan(self, &instance, Some(&route), &requirements)?;
-        let policy = OperationPolicy::offline()
+        let mut policy = OperationPolicy::offline()
             .with_provider_retention(ProviderRetentionPolicy::TemporaryAllowed)
             .with_harness_isolation(swallowtail_core::HarnessIsolation::AmbientHost)
             .with_harness_configuration_posture(
                 swallowtail_core::HarnessConfigurationPosture::Ambient,
             );
+        if let Some(reasoning) = reasoning {
+            policy = policy.with_reasoning_mode(reasoning);
+        }
         let mut request = StructuredRunRequest::new(request_id, content, policy)
             .with_working_resource(working_resource);
+        if let Some(output) = structured_output {
+            request = request.with_structured_output(output);
+        }
         if let Some(deadline) = deadline {
             request = request.with_deadline(deadline);
         }
@@ -363,6 +378,93 @@ impl OpenCodePreparedIntegration {
             request,
         })
     }
+}
+
+fn run_capabilities(
+    reasoning: Option<&ReasoningMode>,
+    structured_output: Option<&StructuredOutputDescriptor>,
+) -> CapabilityProfile {
+    let mut capabilities = crate::prepared::run_capabilities()
+        .iter()
+        .map(|(capability, constraints)| {
+            CapabilityRequirement::new(capability, constraints.iter().cloned())
+        })
+        .collect::<Vec<_>>();
+    if let Some(reasoning) = reasoning {
+        capabilities.push(CapabilityRequirement::new(
+            Capability::ReasoningSelection,
+            [CapabilityConstraint::ReasoningMode(reasoning.clone())],
+        ));
+    }
+    if let Some(output) = structured_output {
+        capabilities.push(CapabilityRequirement::new(
+            Capability::StructuredOutput,
+            [
+                CapabilityConstraint::SchemaDialect(output.dialect().to_owned()),
+                CapabilityConstraint::StructuredOutputEnforcement(
+                    StructuredOutputEnforcement::HarnessValidated,
+                ),
+            ],
+        ));
+    }
+    CapabilityProfile::new(capabilities)
+}
+
+fn validate_generation_controls(
+    provider_id: &ProviderId,
+    model_id: &swallowtail_core::ModelId,
+    catalogue_entry: Option<&ModelCatalogEntry>,
+    reasoning: Option<&ReasoningMode>,
+    structured_output: Option<&StructuredOutputDescriptor>,
+) -> Result<(), PreparationFailure> {
+    if reasoning.is_none() && structured_output.is_none() {
+        return Ok(());
+    }
+    let entry = catalogue_entry.ok_or_else(|| {
+        failure(
+            "swallowtail.opencode.preparation.catalogue_evidence_missing",
+            "OpenCode generation controls require exact selected-model catalogue evidence",
+        )
+    })?;
+    if entry.provider_id() != Some(provider_id) || entry.id() != model_id {
+        return Err(failure(
+            "swallowtail.opencode.preparation.catalogue_evidence_mismatch",
+            "OpenCode generation-control catalogue evidence does not match the selected model",
+        ));
+    }
+    if let Some(reasoning) = reasoning
+        && entry
+            .metadata()
+            .reasoning()
+            .is_none_or(|metadata| !metadata.supports(reasoning))
+    {
+        return Err(failure(
+            "swallowtail.opencode.preparation.reasoning_unsupported",
+            "The selected OpenCode model does not expose the exact requested reasoning variant",
+        ));
+    }
+    if let Some(output) = structured_output {
+        let tool_calling = entry
+            .metadata()
+            .catalog_observations()
+            .and_then(|observations| observations.tool_calling_supported());
+        let valid_document = match output.document() {
+            SchemaDocument::Inline(bytes) => serde_json::from_slice::<serde_json::Value>(bytes)
+                .is_ok_and(|schema| schema.is_object()),
+            SchemaDocument::Reference(_) => false,
+        };
+        if tool_calling != Some(true)
+            || output.media_type() != "application/schema+json"
+            || output.dialect() != "json-schema-2020-12"
+            || !valid_document
+        {
+            return Err(failure(
+                "swallowtail.opencode.preparation.schema_unsupported",
+                "OpenCode structured output requires tool-capable model evidence and one inline JSON Schema 2020-12 object",
+            ));
+        }
+    }
+    Ok(())
 }
 
 fn lifecycle_management_instance(

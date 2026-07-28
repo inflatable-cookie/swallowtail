@@ -8,7 +8,9 @@ use std::num::NonZeroU64;
 use swallowtail_adapter_openai::{
     OpenAiRealtimeSessionProfileInput, openai_realtime_media_config, prepare_openai_realtime,
 };
-use swallowtail_core::{PlannedConnectionRolloverPolicy, RealtimeMediaConfig};
+use swallowtail_core::{
+    Capability, CapabilityConstraint, PlannedConnectionRolloverPolicy, RealtimeMediaConfig,
+};
 use swallowtail_runtime::{CleanupOutcome, RequestId, TerminalStatus};
 
 #[test]
@@ -85,4 +87,64 @@ fn openai_realtime_config_and_rollover_drift_fail_before_access() {
     assert_eq!(fixture.calls.count(Call::NetworkAuthorize), 0);
     assert_eq!(fixture.calls.count(Call::CredentialAcquire), 0);
     assert!(fixture.server.frames().is_empty());
+}
+
+#[test]
+fn prepared_realtime_output_maximum_is_planned_and_dispatched_exactly() {
+    let fixture = RealtimeFixture::new(RealtimeScenario::TwoTurns, TimeMode::Pending);
+    let prepared = prepare_openai_realtime(fixture.preparation_input(), &fixture.services())
+        .expect("OpenAI Realtime integration prepares");
+    let maximum = NonZeroU64::new(512).expect("maximum is non-zero");
+    let operation = prepared
+        .prepare_realtime_session(
+            OpenAiRealtimeSessionProfileInput::manual_pcm_two_turns(
+                RequestId::new("prepared-output-limit").expect("request id is valid"),
+                None,
+            )
+            .with_maximum_output_tokens(maximum),
+        )
+        .expect("output maximum prepares");
+    assert_eq!(operation.request().maximum_output_tokens(), Some(maximum));
+    assert!(
+        operation
+            .plan()
+            .requirements()
+            .capabilities()
+            .any(|requirement| {
+                requirement.capability() == Capability::OutputTokenLimit
+                    && requirement
+                        .constraints()
+                        .eq([&CapabilityConstraint::OutputTokenMaximum(512)])
+            })
+    );
+    let mut session = block_on(operation.open_session(fixture.services())).expect("session opens");
+    let update: serde_json::Value =
+        serde_json::from_str(&fixture.server.frames()[0]).expect("session update is JSON");
+    assert_eq!(update["session"]["max_output_tokens"], 512);
+    for turn in 1..=2 {
+        let response = start_turn(
+            &mut session,
+            &fixture,
+            &format!("prepared-output-limit-stream-{turn}"),
+            turn,
+        );
+        let (response, _, outcome) = complete(response);
+        assert_eq!(outcome.status(), &TerminalStatus::Completed);
+        assert_eq!(block_on(response.close()), CleanupOutcome::Clean);
+    }
+    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+
+    let error = prepared
+        .prepare_realtime_session(
+            OpenAiRealtimeSessionProfileInput::manual_pcm_two_turns(
+                RequestId::new("prepared-output-limit-invalid").expect("request id is valid"),
+                None,
+            )
+            .with_maximum_output_tokens(NonZeroU64::new(4097).expect("maximum is non-zero")),
+        )
+        .expect_err("out-of-range maximum fails");
+    assert_eq!(
+        error.diagnostic().safe().code(),
+        "swallowtail.openai.realtime_preparation.output_limit_invalid"
+    );
 }

@@ -1,9 +1,11 @@
-use super::fixtures::{inventory_input, preparation_input, prepared, probe};
+use super::fixtures::{attempt_input, inventory_input, preparation_input, prepared, probe};
 use crate::support::{Fixture, FixtureServer, StreamFixture, VersionFixture};
 use futures_executor::block_on;
 use swallowtail_adapter_ollama::prepare_ollama_attached;
-use swallowtail_core::{InstanceTargetRef, InterfaceCompatibilityAssessment};
-use swallowtail_runtime::{CancellationControl, DiscoveryCancellation, PreparationStage};
+use swallowtail_core::{InstanceTargetRef, InterfaceCompatibilityAssessment, ReasoningMode};
+use swallowtail_runtime::{
+    CancellationControl, CleanupOutcome, DiscoveryCancellation, PreparationStage, TerminalStatus,
+};
 
 #[test]
 fn exact_stable_newer_is_visible_while_known_exclusion_stays_closed() {
@@ -33,6 +35,19 @@ fn exact_stable_newer_is_visible_while_known_exclusion_stays_closed() {
         .expect("unverified newer plan prepares");
     block_on(inventory.observe_inventory(newer.services()))
         .expect("unverified newer executes through qualified behavior");
+    let attempt = prepared
+        .prepare_inference_attempt(
+            attempt_input("newer-reasoning")
+                .with_reasoning_mode(ReasoningMode::new("high").expect("mode is valid")),
+        )
+        .expect("unverified newer control uses the latest qualified mapping");
+    let mut run = block_on(attempt.start_run(newer.services())).expect("run starts");
+    let outcome = block_on(
+        run.take_terminal_outcome()
+            .expect("terminal outcome is available"),
+    );
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
 
     let excluded = Fixture::with_server(FixtureServer::start_with(
         VersionFixture::Excluded,

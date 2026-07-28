@@ -60,7 +60,8 @@ impl RealtimeMediaSessionDriver for OpenAiRealtimeDriver {
                 }
             };
             let mut updates = worker.take_updates().expect("new worker owns updates");
-            let configured = configure(&worker, &mut updates).await;
+            let configured =
+                configure(&worker, &mut updates, request.maximum_output_tokens()).await;
             if let Err(error) = configured {
                 let _ = worker.close().await;
                 let _ = worker_work.await;
@@ -107,9 +108,17 @@ impl RealtimeMediaSessionDriver for OpenAiRealtimeDriver {
 async fn configure(
     worker: &WorkerHandle,
     updates: &mut mpsc::Receiver<WorkerUpdate>,
+    maximum_output_tokens: Option<std::num::NonZeroU64>,
 ) -> Result<(), RuntimeFailure> {
     expect_session(update(updates).await?)?;
-    worker.send(ClientEvent::SessionUpdate.to_json()).await?;
+    worker
+        .send(
+            ClientEvent::SessionUpdate {
+                maximum_output_tokens,
+            }
+            .to_json(),
+        )
+        .await?;
     expect_session(update(updates).await?)
 }
 

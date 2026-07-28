@@ -12,6 +12,8 @@ struct OpenCodeSessionHandle {
     access: Option<AccessLeases>,
     active: ActiveSlot,
     cancellation: SessionCancellation,
+    reasoning_mode: Option<swallowtail_core::ReasoningMode>,
+    structured_output: Option<StructuredOutputDescriptor>,
 }
 
 impl InteractiveSessionHandle for OpenCodeSessionHandle {
@@ -39,6 +41,15 @@ impl InteractiveSessionHandle for OpenCodeSessionHandle {
         Box::pin(async move {
             services.require_execution_host(self.resume_binding.execution_host_id())?;
             validate_turn(&request, &services)?;
+            let prompt_request = prompt(
+                &self.provider_session_id,
+                self.provider_id.as_str(),
+                self.model_id.as_str(),
+                &self.directory,
+                request.content().as_str(),
+                self.reasoning_mode.as_ref(),
+                self.structured_output.as_ref(),
+            )?;
             if self.cancellation.requested.load(Ordering::SeqCst) {
                 return Err(failure(
                     "swallowtail.opencode.session_cancelled",
@@ -108,13 +119,7 @@ impl InteractiveSessionHandle for OpenCodeSessionHandle {
                 .request(
                     turn_scope.clone(),
                     self.endpoint.clone(),
-                    prompt(
-                        &self.provider_session_id,
-                        self.provider_id.as_str(),
-                        self.model_id.as_str(),
-                        &self.directory,
-                        request.content().as_str(),
-                    ),
+                    prompt_request,
                     &services,
                     Arc::new(AtomicBool::new(false)),
                 )
@@ -159,5 +164,3 @@ impl InteractiveSessionHandle for OpenCodeSessionHandle {
         })
     }
 }
-
-

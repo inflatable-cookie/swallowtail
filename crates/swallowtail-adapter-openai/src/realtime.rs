@@ -76,6 +76,19 @@ impl OpenAiRealtimeDriver {
         if interruption.constraints().collect::<Vec<_>>() != [&cancellation] {
             return Err(rejected("cancellation scope is not ActiveResponse"));
         }
+        let output_requirement = plan
+            .requirements()
+            .capabilities()
+            .find(|requirement| requirement.capability() == Capability::OutputTokenLimit);
+        match (request.maximum_output_tokens(), output_requirement) {
+            (Some(maximum), Some(requirement))
+                if maximum.get() <= 4096
+                    && requirement
+                        .constraints()
+                        .eq([&CapabilityConstraint::OutputTokenMaximum(maximum.get())]) => {}
+            (None, None) => {}
+            _ => return Err(rejected("output maximum differs from preflight")),
+        }
         if request.config() != &realtime_config()
             || plan
                 .requirements()
@@ -159,6 +172,9 @@ fn rejected(reason: &'static str) -> RuntimeFailure {
             }
             "media format or bounds differ from preflight" => {
                 "OpenAI Realtime media format or bounds differ from preflight"
+            }
+            "output maximum differs from preflight" => {
+                "OpenAI Realtime output maximum differs from preflight"
             }
             _ => "OpenAI Realtime required host services are unavailable",
         },

@@ -84,6 +84,12 @@
 - `083-provider-feature-tranche-closeout-and-continuation.md`
 - `084-generation-control-no-inventory-and-currentness.md`
 - `085-generation-control-contract-and-corpora.md`
+- `086-generation-control-implementation-tranche.md`
+- `087-generation-control-closeout-and-continuation.md`
+- `088-input-and-callback-no-inventory-and-currentness.md`
+- `089-input-and-callback-contract-and-corpora.md`
+- `090-input-and-callback-implementation-tranche.md`
+- `091-input-and-callback-closeout-and-continuation.md`
 
 ## Superseded
 
@@ -98,11 +104,13 @@ None. Cross-generation deferred work lives in `docs/roadmaps/backlog/`.
 
 ## Ready
 
-- `086-generation-control-implementation-tranche.md`
+- `088-input-and-callback-no-inventory-and-currentness.md`
 
 ## Planned
 
-- `087-generation-control-closeout-and-continuation.md`
+- `089-input-and-callback-contract-and-corpora.md`
+- `090-input-and-callback-implementation-tranche.md`
+- `091-input-and-callback-closeout-and-continuation.md`
 
 ## Operator-Held
 

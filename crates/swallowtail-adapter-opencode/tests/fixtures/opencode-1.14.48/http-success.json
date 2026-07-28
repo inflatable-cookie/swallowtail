@@ -39,6 +39,11 @@
                   "output": {"text": true, "audio": false, "image": false, "video": false, "pdf": false},
                   "interleaved": false
                 },
+                "variants": {
+                  "low": {},
+                  "medium": {},
+                  "high": {}
+                },
                 "cost": {"input": 0, "output": 0, "cache": {"read": 0, "write": 0}},
                 "limit": {"context": 200000, "input": 190000, "output": 10000},
                 "status": "active",

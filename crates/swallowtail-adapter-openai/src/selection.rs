@@ -113,7 +113,10 @@ pub fn openai_background_model_route(
 }
 
 #[must_use]
-pub fn openai_background_requirements(host: ExecutionHostId) -> OperationRequirements {
+pub fn openai_background_requirements(
+    host: ExecutionHostId,
+    capabilities: impl IntoIterator<Item = CapabilityRequirement>,
+) -> OperationRequirements {
     OperationRequirements::new(
         ExecutionLayer::DirectModelInference,
         OperationShape::StructuredRun,
@@ -137,7 +140,7 @@ pub fn openai_background_requirements(host: ExecutionHostId) -> OperationRequire
         HostServiceKind::Network,
         HostServiceKind::Credential,
     ])
-    .with_capabilities(openai_background_capabilities())
+    .with_capabilities(capabilities)
     .with_interface_versions([openai_background_facade_binding()])
     .require_model_route()
 }

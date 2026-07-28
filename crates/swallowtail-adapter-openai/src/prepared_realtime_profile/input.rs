@@ -1,3 +1,4 @@
+use std::num::NonZeroU64;
 use swallowtail_core::{PlannedConnectionRolloverPolicy, RealtimeMediaConfig};
 use swallowtail_runtime::{Deadline, RequestId};
 
@@ -7,6 +8,7 @@ pub struct OpenAiRealtimeSessionProfileInput {
     config: RealtimeMediaConfig,
     deadline: Option<Deadline>,
     rollover: PlannedConnectionRolloverPolicy,
+    maximum_output_tokens: Option<NonZeroU64>,
 }
 
 impl OpenAiRealtimeSessionProfileInput {
@@ -22,7 +24,14 @@ impl OpenAiRealtimeSessionProfileInput {
             config,
             deadline,
             rollover,
+            maximum_output_tokens: None,
         }
+    }
+
+    #[must_use]
+    pub const fn with_maximum_output_tokens(mut self, maximum: NonZeroU64) -> Self {
+        self.maximum_output_tokens = Some(maximum);
+        self
     }
 
     #[must_use]
@@ -42,7 +51,14 @@ impl OpenAiRealtimeSessionProfileInput {
         RealtimeMediaConfig,
         Option<Deadline>,
         PlannedConnectionRolloverPolicy,
+        Option<NonZeroU64>,
     ) {
-        (self.request_id, self.config, self.deadline, self.rollover)
+        (
+            self.request_id,
+            self.config,
+            self.deadline,
+            self.rollover,
+            self.maximum_output_tokens,
+        )
     }
 }

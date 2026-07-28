@@ -4,6 +4,7 @@ use super::{
 };
 use crate::selection::{ollama_runtime_binding, ollama_runtime_claim};
 use serde::Deserialize;
+use std::collections::BTreeSet;
 use swallowtail_core::{
     AttachedModelObservation, AttachedModelObservationScope, AttachedModelTag, CatalogTimestamp,
     ConfiguredInstanceId, ExecutionHostId, InterfaceVersionBinding, ModelManifestDigest,
@@ -16,6 +17,38 @@ pub struct ObservationBinding {
     pub execution_host_id: ExecutionHostId,
     pub runtime_version: InterfaceVersionBinding,
     pub observed_at: CatalogTimestamp,
+}
+
+#[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+pub enum OllamaModelCapability {
+    Completion,
+    Thinking,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct SelectedModelDetail {
+    observation: AttachedModelObservation,
+    capabilities: BTreeSet<OllamaModelCapability>,
+}
+
+impl SelectedModelDetail {
+    #[must_use]
+    pub const fn observation(&self) -> &AttachedModelObservation {
+        &self.observation
+    }
+
+    pub fn capabilities(&self) -> impl ExactSizeIterator<Item = OllamaModelCapability> + '_ {
+        self.capabilities.iter().copied()
+    }
+
+    #[must_use]
+    pub fn supports(&self, capability: OllamaModelCapability) -> bool {
+        self.capabilities.contains(&capability)
+    }
+
+    pub(crate) fn into_parts(self) -> (AttachedModelObservation, BTreeSet<OllamaModelCapability>) {
+        (self.observation, self.capabilities)
+    }
 }
 
 pub fn parse_version(response: &Response) -> Result<InterfaceVersionBinding, RuntimeFailure> {
@@ -57,10 +90,19 @@ pub fn parse_model_detail(
     binding: &ObservationBinding,
     model_tag: AttachedModelTag,
     manifest_digest: ModelManifestDigest,
-) -> Result<AttachedModelObservation, RuntimeFailure> {
+) -> Result<SelectedModelDetail, RuntimeFailure> {
     require_success(response, "model detail")?;
     let detail: ShowResponse = bounded_json(&response.body, "model detail")?;
-    if detail.capabilities != ["completion"]
+    let capabilities = detail
+        .capabilities
+        .into_iter()
+        .map(|capability| match capability.as_str() {
+            "completion" => Ok(OllamaModelCapability::Completion),
+            "thinking" => Ok(OllamaModelCapability::Thinking),
+            _ => Err(unsupported_semantics()),
+        })
+        .collect::<Result<BTreeSet<_>, _>>()?;
+    if !capabilities.contains(&OllamaModelCapability::Completion)
         || detail.details.format != "gguf"
         || detail.details.family.trim().is_empty()
         || detail.remote_model.is_some()
@@ -68,12 +110,15 @@ pub fn parse_model_detail(
     {
         return Err(unsupported_semantics());
     }
-    Ok(observation(
-        AttachedModelObservationScope::SelectedModelDetail,
-        binding,
-        model_tag,
-        manifest_digest,
-    ))
+    Ok(SelectedModelDetail {
+        observation: observation(
+            AttachedModelObservationScope::SelectedModelDetail,
+            binding,
+            model_tag,
+            manifest_digest,
+        ),
+        capabilities,
+    })
 }
 
 fn inventory_observation(

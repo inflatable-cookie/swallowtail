@@ -24,7 +24,13 @@ impl StructuredRunDriver for OpenAiBackgroundDriver {
                 .maximum_output_tokens()
                 .expect("validated output bound")
                 .get();
-            let create = Request::create(&model, request.content(), maximum)?;
+            let create = Request::create(
+                &model,
+                request.content(),
+                maximum,
+                request.policy().reasoning_mode(),
+                request.structured_output(),
+            )?;
             let scope = operation_scope(request.request_id().as_str())?;
             let mut access = AccessLeases::acquire(&plan, scope.clone(), &services).await?;
             let connection = Arc::new(AtomicBool::new(false));

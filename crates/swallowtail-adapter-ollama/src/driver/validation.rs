@@ -26,6 +26,46 @@ fn validate_run(
             "Ollama run requires a preflight-bound maximum output-token input",
         ));
     }
+    let maximum = request
+        .maximum_output_tokens()
+        .expect("validated output maximum")
+        .get();
+    require_control(
+        plan,
+        Capability::OutputTokenLimit,
+        [
+            CapabilityConstraint::OutputTokenMaximum(maximum),
+        ],
+        true,
+    )?;
+    let reasoning_constraints = request
+        .policy()
+        .reasoning_mode()
+        .map(|mode| vec![CapabilityConstraint::ReasoningMode(mode.clone())])
+        .unwrap_or_default();
+    require_control(
+        plan,
+        Capability::ReasoningSelection,
+        reasoning_constraints,
+        request.policy().reasoning_mode().is_some(),
+    )?;
+    let structured_constraints = request
+        .structured_output()
+        .map(|output| {
+            vec![
+                CapabilityConstraint::SchemaDialect(output.dialect().to_owned()),
+                CapabilityConstraint::StructuredOutputEnforcement(
+                    StructuredOutputEnforcement::ProviderNative,
+                ),
+            ]
+        })
+        .unwrap_or_default();
+    require_control(
+        plan,
+        Capability::StructuredOutput,
+        structured_constraints,
+        request.structured_output().is_some(),
+    )?;
     validate_attached_runtime_residency_policy(plan, request.policy())
         .map_err(|error| RuntimeFailure::new(error.diagnostic().clone()))?;
     if request.working_resource().is_some() {
@@ -37,11 +77,7 @@ fn validate_run(
     if request.tools().len() != 0 {
         return Err(unsupported("structured-run tools"));
     }
-    if request.structured_output().is_some() {
-        return Err(unsupported("structured output"));
-    }
-    if request.policy().reasoning_mode().is_some()
-        || request.policy().external_network() != ExternalNetworkPolicy::Denied
+    if request.policy().external_network() != ExternalNetworkPolicy::Denied
         || request.policy().external_search() != ExternalSearchPolicy::Disabled
         || request.policy().provider_execution() != ProviderExecutionPolicy::Attached
         || request.policy().provider_retention() != ProviderRetentionPolicy::Prohibited
@@ -62,4 +98,31 @@ fn validate_run(
         ));
     }
     Ok(())
+}
+
+fn require_control(
+    plan: &PreflightPlan,
+    capability: Capability,
+    constraints: impl IntoIterator<Item = CapabilityConstraint>,
+    expected: bool,
+) -> Result<(), RuntimeFailure> {
+    let expected_constraints = constraints.into_iter().collect::<std::collections::BTreeSet<_>>();
+    let actual = plan
+        .requirements()
+        .capabilities()
+        .find(|required| required.capability() == capability);
+    match actual {
+        Some(required)
+            if expected
+                && required.constraints().cloned().collect::<std::collections::BTreeSet<_>>()
+                    == expected_constraints =>
+        {
+            Ok(())
+        }
+        None if !expected => Ok(()),
+        _ => Err(failure(
+            "swallowtail.ollama.generation_control_mismatch",
+            "Ollama generation controls did not match the preflight plan",
+        )),
+    }
 }

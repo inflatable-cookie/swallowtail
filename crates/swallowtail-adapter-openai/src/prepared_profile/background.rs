@@ -1,13 +1,19 @@
 use super::input::OpenAiBackgroundRunProfileInput;
-use super::plan::{OpenAiBackgroundPreparedEvidence, build_plan, model_route};
+use super::plan::{
+    OpenAiBackgroundPreparedEvidence, build_plan, instance_with_capabilities, model_route,
+};
 use crate::prepared::failure;
 use crate::{OpenAiBackgroundDriver, OpenAiBackgroundPreparedIntegration};
 use std::num::NonZeroU32;
-use swallowtail_core::PreflightPlan;
+use swallowtail_core::{
+    CancellationScope, Capability, CapabilityConstraint, CapabilityProfile, CapabilityRequirement,
+    PreflightPlan, ReasoningMode, StructuredOutputEnforcement,
+};
 use swallowtail_runtime::{
     BoxFuture, HostServices, OperationPolicy, PreparationFailure, PreparationStage,
-    ProviderExecutionPolicy, ProviderRetentionPolicy, RunHandle, RuntimeFailure,
-    StreamReattachmentPolicy, StructuredRunDriver, StructuredRunRequest,
+    ProviderExecutionPolicy, ProviderRetentionPolicy, RunHandle, RuntimeFailure, SchemaDocument,
+    StreamReattachmentPolicy, StructuredOutputDescriptor, StructuredRunDriver,
+    StructuredRunRequest,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -70,6 +76,8 @@ impl OpenAiBackgroundPreparedIntegration {
             model,
             content,
             maximum,
+            reasoning,
+            structured_output,
             deadline,
             provider_execution,
             provider_retention,
@@ -98,7 +106,27 @@ impl OpenAiBackgroundPreparedIntegration {
                 "OpenAI background preparation permits exactly one stream reattachment",
             ));
         }
-        let route = model_route(self, model);
+        if maximum.get() > u64::from(u32::MAX) {
+            return Err(failure(
+                PreparationStage::Preflight,
+                "swallowtail.openai.preparation.output_limit_invalid",
+                "OpenAI maximum output tokens exceed the supported request range",
+            ));
+        }
+        if let Some(reasoning) = reasoning.as_ref() {
+            validate_reasoning(reasoning)?;
+        }
+        if let Some(output) = structured_output.as_ref() {
+            validate_structured_output(output)?;
+        }
+        let capability_requirements = run_capabilities(
+            maximum.get(),
+            reasoning.as_ref(),
+            structured_output.as_ref(),
+        );
+        let capabilities = CapabilityProfile::new(capability_requirements.clone());
+        let instance = instance_with_capabilities(self, capabilities.clone());
+        let route = model_route(self, model, capabilities);
         if route.id().as_str() != crate::OPENAI_BACKGROUND_MODEL_ROUTE_ID
             || route.model_id().as_str() != crate::OPENAI_BACKGROUND_MODEL_ID
         {
@@ -108,17 +136,106 @@ impl OpenAiBackgroundPreparedIntegration {
                 "OpenAI background preparation requires the exact GPT-5.6 route",
             ));
         }
-        let plan = build_plan(self, &route)?;
-        let policy = OperationPolicy::offline()
+        let plan = build_plan(self, &instance, &route, capability_requirements)?;
+        let mut policy = OperationPolicy::offline()
             .with_provider_execution(provider_execution)
             .with_provider_retention(provider_retention)
             .with_stream_reattachment(stream_reattachment);
-        let request = StructuredRunRequest::new(request_id, content, policy)
+        if let Some(reasoning) = reasoning {
+            policy = policy.with_reasoning_mode(reasoning);
+        }
+        let mut request = StructuredRunRequest::new(request_id, content, policy)
             .with_maximum_output_tokens(maximum)
             .with_deadline(deadline);
+        if let Some(output) = structured_output {
+            request = request.with_structured_output(output);
+        }
         Ok(OpenAiPreparedBackgroundRun {
             evidence: OpenAiBackgroundPreparedEvidence::from_prepared(self, plan)?,
             request,
         })
+    }
+}
+
+fn run_capabilities(
+    maximum: u64,
+    reasoning: Option<&ReasoningMode>,
+    structured_output: Option<&StructuredOutputDescriptor>,
+) -> Vec<CapabilityRequirement> {
+    let mut capabilities = vec![
+        CapabilityRequirement::new(Capability::StructuredRun, []),
+        CapabilityRequirement::new(Capability::StreamingEvents, []),
+        CapabilityRequirement::new(Capability::UsageReporting, []),
+        CapabilityRequirement::new(
+            Capability::OutputTokenLimit,
+            [CapabilityConstraint::OutputTokenMaximum(maximum)],
+        ),
+        CapabilityRequirement::new(Capability::ProviderBackgroundExecution, []),
+        CapabilityRequirement::new(Capability::ProviderTemporaryRetention, []),
+        CapabilityRequirement::new(
+            Capability::StreamReattachment,
+            [CapabilityConstraint::ReattachmentMaximumCount(1)],
+        ),
+        CapabilityRequirement::new(
+            Capability::Interruption,
+            [CapabilityConstraint::CancellationScope(
+                CancellationScope::StructuredRun,
+            )],
+        ),
+    ];
+    if let Some(reasoning) = reasoning {
+        capabilities.push(CapabilityRequirement::new(
+            Capability::ReasoningSelection,
+            [CapabilityConstraint::ReasoningMode(reasoning.clone())],
+        ));
+    }
+    if let Some(output) = structured_output {
+        capabilities.push(CapabilityRequirement::new(
+            Capability::StructuredOutput,
+            [
+                CapabilityConstraint::SchemaDialect(output.dialect().to_owned()),
+                CapabilityConstraint::StructuredOutputEnforcement(
+                    StructuredOutputEnforcement::ProviderNative,
+                ),
+            ],
+        ));
+    }
+    capabilities
+}
+
+fn validate_reasoning(reasoning: &ReasoningMode) -> Result<(), PreparationFailure> {
+    if matches!(
+        reasoning.as_str(),
+        "none" | "minimal" | "low" | "medium" | "high" | "xhigh" | "max"
+    ) {
+        Ok(())
+    } else {
+        Err(failure(
+            PreparationStage::Preflight,
+            "swallowtail.openai.preparation.reasoning_unsupported",
+            "OpenAI background reasoning selection is unsupported for the exact GPT-5.6 route",
+        ))
+    }
+}
+
+fn validate_structured_output(
+    output: &StructuredOutputDescriptor,
+) -> Result<(), PreparationFailure> {
+    let valid_document = match output.document() {
+        SchemaDocument::Inline(bytes) => serde_json::from_slice::<serde_json::Value>(bytes)
+            .is_ok_and(|schema| schema.is_object()),
+        SchemaDocument::Reference(_) => false,
+    };
+    if output.media_type() == "application/schema+json"
+        && output.dialect() == "json-schema-2020-12"
+        && valid_document
+    {
+        Ok(())
+    } else {
+        Err(failure(
+            PreparationStage::Preflight,
+            "swallowtail.openai.preparation.schema_unsupported",
+            "OpenAI background structured output requires one inline JSON Schema 2020-12 object",
+        ))
     }
 }

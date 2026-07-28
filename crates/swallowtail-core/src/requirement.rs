@@ -26,6 +26,12 @@ pub enum CancellationScope {
     ProviderSessionManagement,
 }
 
+#[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+pub enum StructuredOutputEnforcement {
+    ProviderNative,
+    HarnessValidated,
+}
+
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct NamedCapabilityConstraint {
     namespace: ExtensionNamespace,
@@ -62,6 +68,7 @@ pub enum CapabilityConstraint {
     AttachmentMaximumBytes(u64),
     AttachmentMaximumCount(u32),
     SchemaDialect(String),
+    StructuredOutputEnforcement(StructuredOutputEnforcement),
     ToolSchemaDialect(String),
     ToolMaximumSchemaBytes(u64),
     ToolMaximumCount(u32),

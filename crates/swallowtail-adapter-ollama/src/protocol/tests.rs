@@ -22,8 +22,9 @@ use super::*;
 use serde_json::Value;
 use swallowtail_core::{
     AttachedModelObservationScope, AttachedModelTag, CatalogTimestamp, ConfiguredInstanceId,
-    ExecutionHostId, InterfaceVersion, ModelManifestDigest,
+    ExecutionHostId, InterfaceVersion, ModelManifestDigest, ReasoningMode,
 };
+use swallowtail_runtime::{SchemaDocument, StructuredOutputDescriptor};
 
 const ROOT: &str = "../../tests/fixtures/ollama-native-v0.14.0-v0.32.1";
 const PROTOCOL: &str = fixture_text!("protocol.json");
@@ -100,10 +101,11 @@ fn selected_detail_uses_prior_digest_and_rejects_cloud_or_non_text_semantics() {
     let detail = parse_model_detail(&response(200, SHOW), &binding, model_tag(), digest())
         .expect("selected detail parses");
     assert_eq!(
-        detail.scope(),
+        detail.observation().scope(),
         AttachedModelObservationScope::SelectedModelDetail
     );
-    assert_eq!(detail.manifest_digest().unwrap(), &digest());
+    assert_eq!(detail.observation().manifest_digest().unwrap(), &digest());
+    assert!(detail.supports(super::OllamaModelCapability::Thinking));
 
     let error = parse_inventory(
         &response(200, TAGS_CLOUD_DRIFT),
@@ -127,10 +129,38 @@ fn native_requests_contain_only_the_selected_text_subset() {
         Request::show("fixture-model:8b").unwrap().body.unwrap(),
         fixture_text!("show-request.json"),
     );
-    let chat = Request::chat("fixture-model:8b", "Fixture prompt", 8).expect("chat encodes");
+    let chat =
+        Request::chat("fixture-model:8b", "Fixture prompt", 8, None, None).expect("chat encodes");
     assert_eq!(chat.path, "/api/chat");
     assert_json_eq(chat.body.unwrap(), fixture_text!("chat-request.json"));
-    assert!(Request::chat("fixture-model:8b", "Fixture prompt", 0).is_err());
+    assert!(Request::chat("fixture-model:8b", "Fixture prompt", 0, None, None).is_err());
+}
+
+#[test]
+fn generation_controls_match_the_frozen_native_chat_shape() {
+    let schema = StructuredOutputDescriptor::new(
+        SchemaDocument::inline(
+            br#"{"type":"object","properties":{"result":{"type":"string"}},"required":["result"],"additionalProperties":false}"#,
+            4096,
+        )
+        .expect("schema is bounded"),
+        "application/schema+json",
+        "json-schema-2020-12",
+    )
+    .expect("schema descriptor is valid");
+    let reasoning = ReasoningMode::new("high").expect("reasoning is valid");
+    let request = Request::chat(
+        "fixture-model:8b",
+        "Return one fixture result",
+        64,
+        Some(&reasoning),
+        Some(&schema),
+    )
+    .expect("generation controls encode");
+    assert_json_eq(
+        request.body.expect("request has body"),
+        fixture_text!("generation-controls-chat-request.json"),
+    );
 }
 
 #[test]

@@ -1,12 +1,16 @@
 use crate::failure::failure;
 use serde::Deserialize;
-use swallowtail_runtime::RuntimeFailure;
+use swallowtail_core::ReasoningMode;
+use swallowtail_runtime::{RuntimeFailure, SchemaDocument, StructuredOutputDescriptor};
 
 mod catalog;
 mod chat;
 mod ndjson;
 
-pub use catalog::{ObservationBinding, parse_inventory, parse_model_detail, parse_version};
+pub use catalog::{
+    ObservationBinding, OllamaModelCapability, SelectedModelDetail, parse_inventory,
+    parse_model_detail, parse_version,
+};
 pub use chat::{ChatDecoder, NativeEvent};
 
 const MAX_CATALOG_MODELS: usize = 256;
@@ -51,6 +55,8 @@ impl Request {
         model: &str,
         content: &str,
         maximum_output_tokens: u64,
+        reasoning: Option<&ReasoningMode>,
+        structured_output: Option<&StructuredOutputDescriptor>,
     ) -> Result<Self, RuntimeFailure> {
         let maximum = u32::try_from(maximum_output_tokens)
             .ok()
@@ -61,20 +67,33 @@ impl Request {
                     "Ollama maximum output tokens exceeded the supported request range",
                 )
             })?;
-        encode_json(
-            "/api/chat",
-            &serde_json::json!({
-                "model": model,
-                "messages": [{
-                    "role": "user",
-                    "content": content
-                }],
-                "stream": true,
-                "options": {
-                    "num_predict": maximum
+        let mut request = serde_json::json!({
+            "model": model,
+            "messages": [{
+                "role": "user",
+                "content": content
+            }],
+            "stream": true,
+            "options": {
+                "num_predict": maximum
+            }
+        });
+        if let Some(reasoning) = reasoning {
+            request["think"] = match reasoning.as_str() {
+                "off" => serde_json::Value::Bool(false),
+                value => serde_json::Value::String(value.to_owned()),
+            };
+        }
+        if let Some(output) = structured_output {
+            request["format"] = match output.document() {
+                SchemaDocument::Inline(bytes) => serde_json::from_slice(bytes)
+                    .map_err(|_| protocol_failure("structured-output schema"))?,
+                SchemaDocument::Reference(_) => {
+                    return Err(protocol_failure("structured-output schema"));
                 }
-            }),
-        )
+            };
+        }
+        encode_json("/api/chat", &request)
     }
 
     const fn get(path: &'static str) -> Self {

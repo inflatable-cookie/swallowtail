@@ -115,6 +115,7 @@ pub use remote_resource::OwnedRemoteResourceKind;
 pub use requirement::{
     AccessRequirement, CancellationScope, CapabilityConstraint, CapabilityProfile,
     CapabilityRequirement, NamedCapabilityConstraint, OperationRequirements,
+    StructuredOutputEnforcement,
 };
 pub use runtime_identity::{
     AccessProfileId, ConfiguredInstanceId, CredentialRef, DriverRole, EndpointAudience,

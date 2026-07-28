@@ -1,6 +1,6 @@
 # 086 Generation-Control Implementation Tranche
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-07-28
 Milestone: `../026-generation-control-feature-closure.md`
@@ -37,17 +37,24 @@ or consumer adoption in this card.
 
 ## Acceptance Criteria
 
-- [ ] every changed matrix cell has a realized prepared operation
-- [ ] request, plan, dispatch, and observed evidence agree
-- [ ] malformed and unsupported inputs fail deterministically
-- [ ] topology, cleanup, and version posture remain unchanged
-- [ ] package examples compile without live access
+- [x] every changed matrix cell has a realized prepared operation
+- [x] request, plan, dispatch, and observed evidence agree
+- [x] malformed and unsupported inputs fail deterministically
+- [x] topology, cleanup, and version posture remain unchanged
+- [x] package examples compile without live access
+
+## Result
+
+- OpenAI background exposes exact GPT-5.6 reasoning and provider-native inline
+  JSON Schema; Realtime exposes an exact 1-4096 session output maximum.
+- Ollama attached binds `off`, `low`, `medium`, or `high` reasoning and native
+  inline JSON Schema to selected-model capability evidence.
+- OpenCode binds exact catalogue variants and tool capability to reasoning and
+  zero-retry harness-validated schema output.
+- Exact request constraints reach the preflight plan and wire request. Missing
+  evidence, unsupported values, and request-plan drift stop before effects.
+- Seven matrix cells changed from `No` to `Yes`.
 
 ## Auto-Continuation
 
-Continue to card 087 only after all seven cells have public prepared paths and
-focused plus workspace validation passes.
-
-## Auto-Continuation
-
-No while planned. Card 085 must make the implementation envelope exact.
+Satisfied. Continue to card 087.

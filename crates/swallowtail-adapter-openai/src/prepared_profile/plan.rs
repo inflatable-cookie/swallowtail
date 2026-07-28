@@ -1,6 +1,7 @@
 use crate::OpenAiBackgroundPreparedIntegration;
 use swallowtail_core::{
-    Diagnostic, ModelRoute, PreflightContext, PreflightPlan, ProviderId, preflight,
+    CapabilityProfile, CapabilityRequirement, ConfiguredInstance, Diagnostic, ModelRoute,
+    PreflightContext, PreflightPlan, ProviderId, preflight,
 };
 use swallowtail_runtime::{PreparationFailure, PreparationStage, PreparedOperationEvidence};
 
@@ -41,6 +42,7 @@ impl OpenAiBackgroundPreparedEvidence {
 pub(super) fn model_route(
     prepared: &OpenAiBackgroundPreparedIntegration,
     selection: super::OpenAiBackgroundModelSelection,
+    capabilities: CapabilityProfile,
 ) -> ModelRoute {
     let (route_id, route_revision, model_id) = selection.into_parts();
     ModelRoute::new(
@@ -48,22 +50,47 @@ pub(super) fn model_route(
         route_revision,
         prepared.instance().id().clone(),
         model_id,
-        prepared.instance().capabilities().clone(),
+        capabilities,
     )
     .with_provider_id(ProviderId::new("openai").expect("static OpenAI provider identity is valid"))
 }
 
+pub(super) fn instance_with_capabilities(
+    prepared: &OpenAiBackgroundPreparedIntegration,
+    capabilities: CapabilityProfile,
+) -> ConfiguredInstance {
+    let base = prepared.instance();
+    ConfiguredInstance::new(
+        base.id().clone(),
+        base.revision().clone(),
+        base.driver_id().clone(),
+        base.execution_host_id().clone(),
+        base.target_reference().clone(),
+        base.ownership(),
+        base.access_profile_id().clone(),
+        base.support_authority(),
+        base.protocol_facade_id().clone(),
+        base.policy_id().clone(),
+        capabilities,
+    )
+    .with_interface_versions(base.interface_versions().cloned())
+}
+
 pub(super) fn build_plan(
     prepared: &OpenAiBackgroundPreparedIntegration,
+    instance: &ConfiguredInstance,
     route: &ModelRoute,
+    capabilities: impl IntoIterator<Item = CapabilityRequirement>,
 ) -> Result<PreflightPlan, PreparationFailure> {
     let descriptor = crate::openai_background_descriptor();
-    let requirements =
-        crate::openai_background_requirements(prepared.instance().execution_host_id().clone());
+    let requirements = crate::openai_background_requirements(
+        prepared.instance().execution_host_id().clone(),
+        capabilities,
+    );
     preflight(
         &PreflightContext::new(
             &descriptor,
-            prepared.instance(),
+            instance,
             prepared.access_profile(),
             prepared.access_evidence().status(),
             prepared.available_host_services(),

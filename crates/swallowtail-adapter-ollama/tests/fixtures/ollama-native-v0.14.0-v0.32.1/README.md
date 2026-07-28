@@ -34,5 +34,5 @@ user, credential, endpoint, account, or live inference response.
 Every tagged boundary retains `ChatRequest.format` and `ChatRequest.think`.
 `generation-controls-chat-request.json` freezes a positive output maximum,
 exact reasoning value, and provider-native schema request. Model support still
-requires exact prepared capability evidence. The file is contract evidence
-for card 085, not a realized adapter claim.
+requires exact prepared capability evidence. Card 086 realizes the prepared
+mapping across the qualified range and visible unverified-newer execution.

@@ -1,6 +1,6 @@
 use std::num::NonZeroU64;
-use swallowtail_core::{ModelId, ModelRouteId, ModelRouteRevision};
-use swallowtail_runtime::{Deadline, OperationContent, RequestId};
+use swallowtail_core::{ModelId, ModelRouteId, ModelRouteRevision, ReasoningMode};
+use swallowtail_runtime::{Deadline, OperationContent, RequestId, StructuredOutputDescriptor};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct OllamaModelSelection {
@@ -59,6 +59,8 @@ pub struct OllamaInferenceAttemptInput {
     request_id: RequestId,
     content: OperationContent,
     maximum_output_tokens: NonZeroU64,
+    reasoning: Option<ReasoningMode>,
+    structured_output: Option<StructuredOutputDescriptor>,
     deadline: Option<Deadline>,
 }
 
@@ -73,6 +75,8 @@ impl OllamaInferenceAttemptInput {
             request_id,
             content,
             maximum_output_tokens,
+            reasoning: None,
+            structured_output: None,
             deadline: None,
         }
     }
@@ -83,11 +87,34 @@ impl OllamaInferenceAttemptInput {
         self
     }
 
-    pub(super) fn into_parts(self) -> (RequestId, OperationContent, NonZeroU64, Option<Deadline>) {
+    #[must_use]
+    pub fn with_reasoning_mode(mut self, reasoning: ReasoningMode) -> Self {
+        self.reasoning = Some(reasoning);
+        self
+    }
+
+    #[must_use]
+    pub fn with_structured_output(mut self, output: StructuredOutputDescriptor) -> Self {
+        self.structured_output = Some(output);
+        self
+    }
+
+    pub(super) fn into_parts(
+        self,
+    ) -> (
+        RequestId,
+        OperationContent,
+        NonZeroU64,
+        Option<ReasoningMode>,
+        Option<StructuredOutputDescriptor>,
+        Option<Deadline>,
+    ) {
         (
             self.request_id,
             self.content,
             self.maximum_output_tokens,
+            self.reasoning,
+            self.structured_output,
             self.deadline,
         )
     }

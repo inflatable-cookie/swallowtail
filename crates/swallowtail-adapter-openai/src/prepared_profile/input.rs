@@ -1,9 +1,22 @@
 use std::num::{NonZeroU32, NonZeroU64};
-use swallowtail_core::{ModelId, ModelRouteId, ModelRouteRevision};
+use swallowtail_core::{ModelId, ModelRouteId, ModelRouteRevision, ReasoningMode};
 use swallowtail_runtime::{
     Deadline, OperationContent, ProviderExecutionPolicy, ProviderRetentionPolicy, RequestId,
-    StreamReattachmentPolicy,
+    StreamReattachmentPolicy, StructuredOutputDescriptor,
 };
+
+type OpenAiBackgroundRunParts = (
+    RequestId,
+    OpenAiBackgroundModelSelection,
+    OperationContent,
+    NonZeroU64,
+    Option<ReasoningMode>,
+    Option<StructuredOutputDescriptor>,
+    Deadline,
+    ProviderExecutionPolicy,
+    ProviderRetentionPolicy,
+    StreamReattachmentPolicy,
+);
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct OpenAiBackgroundModelSelection {
@@ -37,6 +50,8 @@ pub struct OpenAiBackgroundRunProfileInput {
     model: OpenAiBackgroundModelSelection,
     content: OperationContent,
     maximum_output_tokens: NonZeroU64,
+    reasoning: Option<ReasoningMode>,
+    structured_output: Option<StructuredOutputDescriptor>,
     deadline: Deadline,
     provider_execution: ProviderExecutionPolicy,
     provider_retention: ProviderRetentionPolicy,
@@ -61,6 +76,8 @@ impl OpenAiBackgroundRunProfileInput {
             model,
             content,
             maximum_output_tokens,
+            reasoning: None,
+            structured_output: None,
             deadline,
             provider_execution,
             provider_retention,
@@ -88,23 +105,26 @@ impl OpenAiBackgroundRunProfileInput {
         )
     }
 
-    pub(super) fn into_parts(
-        self,
-    ) -> (
-        RequestId,
-        OpenAiBackgroundModelSelection,
-        OperationContent,
-        NonZeroU64,
-        Deadline,
-        ProviderExecutionPolicy,
-        ProviderRetentionPolicy,
-        StreamReattachmentPolicy,
-    ) {
+    #[must_use]
+    pub fn with_reasoning_mode(mut self, reasoning: ReasoningMode) -> Self {
+        self.reasoning = Some(reasoning);
+        self
+    }
+
+    #[must_use]
+    pub fn with_structured_output(mut self, output: StructuredOutputDescriptor) -> Self {
+        self.structured_output = Some(output);
+        self
+    }
+
+    pub(super) fn into_parts(self) -> OpenAiBackgroundRunParts {
         (
             self.request_id,
             self.model,
             self.content,
             self.maximum_output_tokens,
+            self.reasoning,
+            self.structured_output,
             self.deadline,
             self.provider_execution,
             self.provider_retention,

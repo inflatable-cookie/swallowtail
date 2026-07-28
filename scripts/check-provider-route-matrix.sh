@@ -238,9 +238,9 @@ expected_no_counts = Counter(
         "realtime_media_session": 19,
         "usage_evidence": 2,
         "billed_cost_evidence": 20,
-        "output_token_limit": 14,
-        "reasoning_selection": 14,
-        "structured_output": 20,
+        "output_token_limit": 13,
+        "reasoning_selection": 11,
+        "structured_output": 17,
         "attachments": 20,
         "consumer_tool_exchange": 18,
         "approval_question_exchange": 16,
@@ -277,8 +277,8 @@ if actual_no_counts != expected_no_counts:
     raise SystemExit(
         f"provider solution No inventory changed: {dict(actual_no_counts)}"
     )
-if len(no_cells) != 451 or len(no_cells) != len(set(no_cells)):
-    raise SystemExit("provider solution No inventory must contain 451 unique cells")
+if len(no_cells) != 444 or len(no_cells) != len(set(no_cells)):
+    raise SystemExit("provider solution No inventory must contain 444 unique cells")
 
 no_classification_overrides = {
     (
@@ -324,17 +324,10 @@ generation_control_classifications = {
     ("output_token_limit", "kimi-code.local-server"): "upstream_unsupported",
     ("structured_output", "kimi-code.local-server"): "upstream_unsupported",
     ("structured_output", "kimi-platform.chat"): "upstream_unsupported",
-    ("reasoning_selection", "ollama.attached"): "contract_or_corpus_required",
-    ("structured_output", "ollama.attached"): "contract_or_corpus_required",
     ("output_token_limit", "codex.app-server; codex.exec"): "upstream_unsupported",
-    ("output_token_limit", "openai.realtime"): "ready_existing_contract",
     ("reasoning_selection", "openai.realtime"): "upstream_unsupported",
     ("structured_output", "openai.realtime"): "upstream_unsupported",
-    ("reasoning_selection", "openai.background"): "ready_existing_contract",
-    ("structured_output", "openai.background"): "ready_existing_contract",
     ("output_token_limit", "opencode.http"): "upstream_unsupported",
-    ("reasoning_selection", "opencode.http"): "contract_or_corpus_required",
-    ("structured_output", "opencode.http"): "contract_or_corpus_required",
     ("output_token_limit", "xai.responses-websocket"): "ready_operator_hold",
     ("reasoning_selection", "xai.responses-websocket"): "ready_operator_hold",
     ("structured_output", "xai.responses-websocket"): "ready_operator_hold",
@@ -345,8 +338,8 @@ generation_control_no_cells = {
     for feature in ["output_token_limit", "reasoning_selection", "structured_output"]
     if row[feature] == "No"
 }
-if len(generation_control_no_cells) != 48:
-    raise SystemExit("generation-control inventory must contain exactly 48 No cells")
+if len(generation_control_no_cells) != 41:
+    raise SystemExit("generation-control inventory must contain exactly 41 No cells")
 if generation_control_no_cells != set(generation_control_classifications):
     raise SystemExit("generation-control No classifications changed")
 
@@ -367,10 +360,10 @@ for row in rows:
 if classification_counts != Counter(
     {
         "missing_shared_contract_or_currentness_evidence": 399,
-        "contract_or_corpus_required": 18,
+        "contract_or_corpus_required": 14,
         "upstream_unsupported": 22,
         "operation_shape_not_applicable": 5,
-        "ready_existing_contract": 4,
+        "ready_existing_contract": 1,
         "ready_operator_hold": 3,
     }
 ):

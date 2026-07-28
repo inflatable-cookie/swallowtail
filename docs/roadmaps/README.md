@@ -13,9 +13,9 @@ shape.
 ## Next Task
 
 Execute
-[g02 card 086](g02/batch-cards/086-generation-control-implementation-tranche.md):
-implement seven prepared generation-control paths across OpenAI, Ollama, and
-OpenCode.
+[g02 card 088](g02/batch-cards/088-input-and-callback-no-inventory-and-currentness.md):
+audit all 74 attachment, consumer-tool, approval-or-question, and
+external-search `No` cells against exact current route evidence.
 
 ## Index
 

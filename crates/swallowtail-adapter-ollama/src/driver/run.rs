@@ -19,7 +19,13 @@ impl StructuredRunDriver for OllamaNativeAttachedDriver {
                 .maximum_output_tokens()
                 .expect("validated maximum")
                 .get();
-            let chat = Request::chat(&model, request.content().as_str(), maximum)?;
+            let chat = Request::chat(
+                &model,
+                request.content().as_str(),
+                maximum,
+                request.policy().reasoning_mode(),
+                request.structured_output(),
+            )?;
             let scope = operation_scope("run", request.request_id().as_str())?;
             let endpoint = authorize_endpoint(&plan, scope.clone(), &services).await?;
             let cancelled = Arc::new(AtomicBool::new(false));

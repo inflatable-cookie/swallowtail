@@ -3,8 +3,8 @@ use serde::Deserialize;
 use serde_json::{Map, Value, json};
 use std::collections::BTreeMap;
 use swallowtail_core::{
-    InterfaceVersionBinding, ModelCatalogEntry, ModelId, ModelMetadata, ModelTokenLimits,
-    ProviderId,
+    IntegrationFamilyId, InterfaceVersionBinding, ModelCatalogEntry, ModelCatalogObservations,
+    ModelId, ModelMetadata, ModelTokenLimits, ProviderId, ReasoningMetadata, ReasoningMode,
 };
 use swallowtail_runtime::{RuntimeFailure, TokenUsage};
 
@@ -86,6 +86,15 @@ struct ProviderModel {
     id: String,
     name: Option<String>,
     limit: Option<ModelLimit>,
+    capabilities: ModelCapabilities,
+    #[serde(default)]
+    variants: BTreeMap<String, Value>,
+}
+
+#[derive(Deserialize)]
+struct ModelCapabilities {
+    reasoning: bool,
+    toolcall: bool,
 }
 
 #[derive(Clone, Copy, Deserialize)]
@@ -133,6 +142,35 @@ pub(crate) fn parse_catalog(response: &Response) -> Result<Vec<ModelCatalogEntry
                 metadata =
                     metadata.with_token_limits(ModelTokenLimits::new(limit.input, limit.output));
             }
+            let modes = model
+                .variants
+                .keys()
+                .map(|mode| {
+                    ReasoningMode::new(mode.clone()).map_err(|_| {
+                        failure(
+                            "swallowtail.opencode.catalog_invalid",
+                            "OpenCode returned an invalid reasoning variant",
+                        )
+                    })
+                })
+                .collect::<Result<Vec<_>, _>>()?;
+            if !model.capabilities.reasoning && !modes.is_empty() {
+                return Err(failure(
+                    "swallowtail.opencode.catalog_invalid",
+                    "OpenCode returned inconsistent reasoning capability evidence",
+                ));
+            }
+            if model.capabilities.reasoning {
+                metadata = metadata.with_reasoning(ReasoningMetadata::new(modes, None));
+            }
+            metadata = metadata.with_catalog_observations(
+                ModelCatalogObservations::new(
+                    IntegrationFamilyId::new("opencode")
+                        .expect("static OpenCode integration family is valid"),
+                )
+                .with_reasoning_supported(model.capabilities.reasoning)
+                .with_tool_calling_supported(model.capabilities.toolcall),
+            );
             entries.push(
                 ModelCatalogEntry::new(model_id, metadata).with_provider_id(provider_id.clone()),
             );
@@ -184,15 +222,43 @@ pub(crate) fn prompt(
     model_id: &str,
     directory: &str,
     content: &str,
-) -> Request {
-    Request::post(
-        format!("/session/{session_id}/prompt_async"),
-        Some(json!({
-            "model": {"providerID": provider_id, "modelID": model_id},
-            "parts": [{"type": "text", "text": content}]
-        })),
+    reasoning: Option<&ReasoningMode>,
+    structured_output: Option<&swallowtail_runtime::StructuredOutputDescriptor>,
+) -> Result<Request, RuntimeFailure> {
+    let mut body = json!({
+        "model": {"providerID": provider_id, "modelID": model_id},
+        "parts": [{"type": "text", "text": content}]
+    });
+    if let Some(reasoning) = reasoning {
+        body["variant"] = json!(reasoning.as_str());
+    }
+    if let Some(output) = structured_output {
+        let schema = match output.document() {
+            swallowtail_runtime::SchemaDocument::Inline(bytes) => {
+                serde_json::from_slice::<Value>(bytes).map_err(|_| {
+                    failure(
+                        "swallowtail.opencode.schema_invalid",
+                        "OpenCode structured-output schema could not be encoded",
+                    )
+                })?
+            }
+            swallowtail_runtime::SchemaDocument::Reference(_) => {
+                return Err(failure(
+                    "swallowtail.opencode.schema_invalid",
+                    "OpenCode structured-output schema could not be encoded",
+                ));
+            }
+        };
+        body["format"] = json!({
+            "type": "json_schema",
+            "schema": schema,
+            "retryCount": 0
+        });
+    }
+    Ok(
+        Request::post(format!("/session/{session_id}/prompt_async"), Some(body))
+            .with_directory(directory),
     )
-    .with_directory(directory)
 }
 
 pub(crate) fn abort(session_id: &str, directory: &str) -> Request {

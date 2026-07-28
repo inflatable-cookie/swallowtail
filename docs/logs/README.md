@@ -5,6 +5,8 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-07-28 Generation-Control Tranche And Matrix Continuation](2026-07-28-generation-control-tranche-and-matrix-continuation.md)
+- [2026-07-28 Solution Feature Matrix Route Notes And Kimi Boundary](2026-07-28-solution-feature-matrix-route-notes-and-kimi-boundary.md)
 - [2026-07-28 Generation-Control Contract And Corpora](2026-07-28-generation-control-contract-and-corpora.md)
 - [2026-07-28 Generation-Control `No` Currentness Audit](2026-07-28-generation-control-no-currentness-audit.md)
 - [2026-07-28 Usage-Evidence Closeout And Generation Controls](2026-07-28-usage-evidence-closeout-and-generation-controls.md)

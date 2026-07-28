@@ -126,6 +126,10 @@ support follows the qualified baseline, milestones, exclusions, and latest
 point. An allowed unverified-newer attempt uses the latest qualified mapping
 without extending the guarantee.
 
+Another executable or distribution is not a newer segment merely because it
+shares a command name or provider branding. It requires its own identity,
+version axis, preparation evidence, and route qualification.
+
 Unknown model capability never becomes support. Unsupported combinations fail
 before provider work when knowable at preflight. Provider rejection after
 dispatch remains a provider failure, not a fallback trigger.

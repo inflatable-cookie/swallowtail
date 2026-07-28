@@ -1,6 +1,9 @@
 use crate::failure::failure;
-use serde_json::json;
-use swallowtail_runtime::{OperationContent, RuntimeFailure};
+use serde_json::{Value, json};
+use swallowtail_core::ReasoningMode;
+use swallowtail_runtime::{
+    OperationContent, RuntimeFailure, SchemaDocument, StructuredOutputDescriptor,
+};
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub(crate) enum Method {
@@ -30,6 +33,8 @@ impl Request {
         model: &str,
         content: &OperationContent,
         maximum_output_tokens: u64,
+        reasoning: Option<&ReasoningMode>,
+        structured_output: Option<&StructuredOutputDescriptor>,
     ) -> Result<Self, RuntimeFailure> {
         let maximum = u32::try_from(maximum_output_tokens).map_err(|_| {
             failure(
@@ -37,7 +42,7 @@ impl Request {
                 "OpenAI maximum output tokens exceeded the supported request range",
             )
         })?;
-        let body = serde_json::to_vec(&json!({
+        let mut request = json!({
             "model": model,
             "input": [{
                 "role": "user",
@@ -47,8 +52,27 @@ impl Request {
             "stream": true,
             "store": false,
             "max_output_tokens": maximum
-        }))
-        .expect("create request JSON serializes");
+        });
+        if let Some(reasoning) = reasoning {
+            request["reasoning"] = json!({"effort": reasoning.as_str()});
+        }
+        if let Some(output) = structured_output {
+            let schema = match output.document() {
+                SchemaDocument::Inline(bytes) => {
+                    serde_json::from_slice::<Value>(bytes).map_err(|_| invalid_schema())?
+                }
+                SchemaDocument::Reference(_) => return Err(invalid_schema()),
+            };
+            request["text"] = json!({
+                "format": {
+                    "type": "json_schema",
+                    "name": "swallowtail_response",
+                    "strict": true,
+                    "schema": schema
+                }
+            });
+        }
+        let body = serde_json::to_vec(&request).expect("create request JSON serializes");
         Ok(Self {
             method: Method::Post,
             path: "/v1/responses".to_owned(),
@@ -94,6 +118,13 @@ impl Request {
                 .iter()
                 .any(|(key, value)| key == "stream" && value == "true")
     }
+}
+
+fn invalid_schema() -> RuntimeFailure {
+    failure(
+        "swallowtail.openai.schema_invalid",
+        "OpenAI structured-output schema could not be encoded",
+    )
 }
 
 fn response_path(response_id: &str) -> Result<String, RuntimeFailure> {

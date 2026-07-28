@@ -14,7 +14,7 @@
   "text": {
     "format": {
       "type": "json_schema",
-      "name": "swallowtail_fixture_result",
+      "name": "swallowtail_response",
       "strict": true,
       "schema": {
         "type": "object",

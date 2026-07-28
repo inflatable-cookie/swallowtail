@@ -124,7 +124,10 @@ pub fn openai_realtime_model_route(
 }
 
 #[must_use]
-pub fn openai_realtime_requirements(host: ExecutionHostId) -> OperationRequirements {
+pub fn openai_realtime_requirements(
+    host: ExecutionHostId,
+    capabilities: impl IntoIterator<Item = CapabilityRequirement>,
+) -> OperationRequirements {
     OperationRequirements::new(
         ExecutionLayer::DirectModelInference,
         OperationShape::InteractiveSession,
@@ -145,7 +148,7 @@ pub fn openai_realtime_requirements(host: ExecutionHostId) -> OperationRequireme
         HostServiceKind::Network,
         HostServiceKind::Credential,
     ])
-    .with_capabilities(capabilities())
+    .with_capabilities(capabilities)
     .with_interface_versions([openai_realtime_facade_binding()])
     .with_session_access_policy(SessionAccessPolicy::resource_free())
     .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited)

@@ -183,16 +183,16 @@ host-bound open, resume, callbacks, interruption, failure, and joined cleanup.
 Soundcheck and Nucleus Agent Chat are accepted consumers. The bounded
 workspace-write runtime required by Nucleus task execution is complete without
 widening read-only chat. The planned provider-route and model-catalogue
-expansion is realized. The current 22-solution feature matrix records 451
-`No` cells and 29 `Not applicable` cells after the serving-only correction and
-the later Claude Code headless addition. Every current `No` has a
-machine-checked evidence classification. Usage evidence now has 19 `Yes`, one
-serving-only `Not applicable`, and two honest Kimi Code `No` cells. Claude
-Agent ACP, Pi RPC, and OpenCode emit exact cumulative typed usage through
-their prepared paths. The next family is generation controls:
-output-token limit, reasoning selection, then structured output. Later cards retain
-input/callbacks,
-input/callbacks, session continuity, provider retention, retained execution,
+expansion is realized. The current 22-solution feature matrix records 444
+`No` cells and 29 `Not applicable` cells after the first generation-control
+tranche. Every current `No` has a machine-checked evidence classification.
+Usage evidence has 19 `Yes`, one serving-only `Not applicable`, and two honest
+Kimi Code `No` cells. Each composite solution row records route ownership in
+its notes where sibling routes contribute different capabilities. The first
+generation-control tranche realizes seven cells across OpenAI, Ollama, and
+OpenCode. The next matrix lane audits 74 attachment, consumer-tool,
+approval-or-question, and external-search gaps. Later cards retain session
+continuity, provider retention, retained execution,
 workspace/runtime, and realtime media on the runway. The shared hosted
 foundation and attached OpenCode HTTP/SSE proof are complete. The
 provider-supported Anthropic Models and Messages direct driver is complete.

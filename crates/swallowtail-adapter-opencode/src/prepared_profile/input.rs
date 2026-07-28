@@ -1,6 +1,9 @@
-use swallowtail_core::{ModelId, ModelRouteId, ModelRouteRevision, ProviderId};
+use swallowtail_core::{
+    ModelCatalogEntry, ModelId, ModelRouteId, ModelRouteRevision, ProviderId, ReasoningMode,
+};
 use swallowtail_runtime::{
-    Deadline, OperationContent, ProviderSessionManagementBinding, RequestId, WorkingResourceRef,
+    Deadline, OperationContent, ProviderSessionManagementBinding, RequestId,
+    StructuredOutputDescriptor, WorkingResourceRef,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -35,6 +38,7 @@ pub struct OpenCodeModelSelection {
     route_revision: ModelRouteRevision,
     provider_id: ProviderId,
     model_id: ModelId,
+    catalogue_entry: Option<ModelCatalogEntry>,
 }
 
 impl OpenCodeModelSelection {
@@ -50,15 +54,31 @@ impl OpenCodeModelSelection {
             route_revision,
             provider_id,
             model_id,
+            catalogue_entry: None,
         }
     }
 
-    pub(super) fn into_parts(self) -> (ModelRouteId, ModelRouteRevision, ProviderId, ModelId) {
+    #[must_use]
+    pub fn with_catalogue_entry(mut self, entry: ModelCatalogEntry) -> Self {
+        self.catalogue_entry = Some(entry);
+        self
+    }
+
+    pub(super) fn into_parts(
+        self,
+    ) -> (
+        ModelRouteId,
+        ModelRouteRevision,
+        ProviderId,
+        ModelId,
+        Option<ModelCatalogEntry>,
+    ) {
         (
             self.route_id,
             self.route_revision,
             self.provider_id,
             self.model_id,
+            self.catalogue_entry,
         )
     }
 }
@@ -163,6 +183,8 @@ pub struct OpenCodeRunProfileInput {
     model: OpenCodeModelSelection,
     content: OperationContent,
     working_resource: WorkingResourceRef,
+    reasoning: Option<ReasoningMode>,
+    structured_output: Option<StructuredOutputDescriptor>,
     deadline: Option<Deadline>,
 }
 
@@ -179,6 +201,8 @@ impl OpenCodeRunProfileInput {
             model,
             content,
             working_resource,
+            reasoning: None,
+            structured_output: None,
             deadline: None,
         }
     }
@@ -189,6 +213,18 @@ impl OpenCodeRunProfileInput {
         self
     }
 
+    #[must_use]
+    pub fn with_reasoning_mode(mut self, reasoning: ReasoningMode) -> Self {
+        self.reasoning = Some(reasoning);
+        self
+    }
+
+    #[must_use]
+    pub fn with_structured_output(mut self, output: StructuredOutputDescriptor) -> Self {
+        self.structured_output = Some(output);
+        self
+    }
+
     pub(super) fn into_parts(
         self,
     ) -> (
@@ -196,6 +232,8 @@ impl OpenCodeRunProfileInput {
         OpenCodeModelSelection,
         OperationContent,
         WorkingResourceRef,
+        Option<ReasoningMode>,
+        Option<StructuredOutputDescriptor>,
         Option<Deadline>,
     ) {
         (
@@ -203,6 +241,8 @@ impl OpenCodeRunProfileInput {
             self.model,
             self.content,
             self.working_resource,
+            self.reasoning,
+            self.structured_output,
             self.deadline,
         )
     }

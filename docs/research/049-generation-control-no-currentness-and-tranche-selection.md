@@ -6,7 +6,7 @@ Date: 2026-07-28
 
 ## Question
 
-Which of the 48 current output-limit, reasoning-selection, and
+Which of the 48 starting output-limit, reasoning-selection, and
 structured-output `No` cells can the selected route actually support? Which
 first implementation tranche gives useful transport coverage without
 overclaiming enforcement?
@@ -24,10 +24,9 @@ Evidence was accessed 2026-07-28.
 - used no executable, account, credential, provider request, container, or
   model server
 
-The realized adapters reject every audited control currently marked `No`.
-There are no matrix false negatives. The cells below are implementation or
-honest-absence classifications, so the canonical matrix does not change in
-this card.
+The realized adapters rejected every audited control marked `No` at the start
+of this audit. There were no matrix false negatives. The cells below are
+implementation or honest-absence classifications.
 
 ## Dispositions
 
@@ -59,14 +58,14 @@ part of the 48-cell audit.
 | `anthropic.messages` | — | `C` | `C` | Messages supports model-specific effort and `output_config.format` |
 | `pi.rpc` | `U` | `C` | `U` | Exact `0.80.10` confirms `set_thinking_level`; catalogue `maxTokens` is observation, not caller control |
 | `deepseek.continuation` | — | — | `U` | `json_object` plus prompt instruction is not schema enforcement |
-| `gemini-cli.acp + gemini-cli.headless` | `C` | `C` | `U` | Exact `0.51.0..=0.52.0` model configuration maps to SDK output and thinking controls; JSON output is only a CLI envelope |
+| `gemini-cli.acp + gemini-cli.headless` | `C` | `C` | `U` | Exact `0.51.0..=0.52.0` model configuration maps to SDK output and thinking controls; neither branch has a qualified operation-private mapping, and JSON output is only a CLI envelope |
 | `gemini.live` | `R` | `C` | `U` | Live supports `maxOutputTokens` and model-specific `thinkingConfig`; response schemas are explicitly unsupported |
 | `llama-cpp.attached` | — | `C` | `C` | Exact `f5525f7e7` supports request thinking controls and schema-constrained `response_format` |
-| `kimi-code.acp + kimi-code.headless` | `U` | — | `U` | Exact `0.29.2` exposes neither control on the selected Kimi route |
+| `kimi-code.acp + kimi-code.headless` | `U` | — | `U` | Exact `0.29.2` ACP exposes the solution's reasoning selection but no output maximum or structured-output channel; current TypeScript headless exposes none of the three controls |
 | `kimi-code.local-server` | `U` | — | `U` | Catalogue output size is observation; local requests expose neither control |
 | `kimi-platform.chat` | — | — | `U` | No native schema-enforcement evidence for the selected Chat facade |
 | `ollama.attached` | — | `C` | `C` | Chat `think` and `format` are model-dependent and need qualified range segments |
-| `codex.exec + codex.app-server` | `U` | — | — | Qualified Codex surfaces expose effort and exec output schema, but no caller generation maximum |
+| `codex.app-server; codex.exec` | `U` | — | — | Both qualified Codex branches expose effort; exec owns output schema; neither exposes a caller generation maximum |
 | `openai.realtime` | `R` | `U` | `U` | Realtime exposes `max_output_tokens`; selected session shape exposes no reasoning or response-schema control |
 | `openai.background` | — | `R` | `R` | Responses accepts reasoning effort and JSON-schema text format |
 | `opencode.http` | `U` | `C` | `C` | Exact `1.14.48..=1.18.4` prompt input has `variant` and schema `format`; no stable per-operation output maximum |
@@ -95,6 +94,18 @@ bind an exact model/version mapping and reject unsupported values. A provider
 clamp, ignored value, or unconfirmed harness update cannot become the
 requested effective mode.
 
+### Kimi executable boundary
+
+The current `kimi-code.headless` route is the TypeScript
+`@moonshot-ai/kimi-code` executable. Exact `0.29.2` and current main accept
+model, prompt, and output-format inputs but no headless thinking input.
+
+Moonshot's older Python `kimi-cli` line added `--thinking` in `0.51` and now
+documents `--thinking` plus `--no-thinking`. That is a different repository,
+distribution, implementation, and semantic surface. It cannot become a
+`kimi-code.executable` compatibility milestone. Supporting it would require a
+separate executable identity and route qualification.
+
 ### Structured output
 
 Three enforcement sources are materially different:
@@ -121,6 +132,10 @@ upgrade prompt conventions or make consumer acceptance implicit.
 - [Gemini CLI `0.51.0` model configuration](https://github.com/google-gemini/gemini-cli/blob/v0.51.0/docs/cli/generation-settings.md)
 - [Gemini CLI `0.52.0` model configuration](https://github.com/google-gemini/gemini-cli/blob/v0.52.0/docs/cli/generation-settings.md)
 - [Gemini CLI headless automation](https://geminicli.com/docs/cli/tutorials/automation/)
+- [Kimi Code `0.29.2` CLI options](https://github.com/MoonshotAI/kimi-code/blob/%40moonshot-ai%2Fkimi-code%400.29.2/apps/kimi-code/src/cli/options.ts)
+- [Kimi Code current CLI options](https://github.com/MoonshotAI/kimi-code/blob/main/apps/kimi-code/src/cli/options.ts)
+- [Python Kimi CLI command reference](https://moonshotai.github.io/kimi-cli/en/reference/kimi-command.html)
+- [Python Kimi CLI changelog](https://moonshotai.github.io/kimi-cli/en/release-notes/changelog.html)
 - [OpenCode `1.14.48` OpenAPI](https://github.com/anomalyco/opencode/blob/v1.14.48/packages/sdk/openapi.json)
 - [OpenCode `1.18.4` OpenAPI](https://github.com/anomalyco/opencode/blob/v1.18.4/packages/sdk/openapi.json)
 

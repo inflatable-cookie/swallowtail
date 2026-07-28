@@ -1,9 +1,12 @@
 use base64::Engine;
 use serde_json::{Value, json};
+use std::num::NonZeroU64;
 use swallowtail_runtime::MediaChunk;
 
 pub(crate) enum ClientEvent<'a> {
-    SessionUpdate,
+    SessionUpdate {
+        maximum_output_tokens: Option<NonZeroU64>,
+    },
     InputAudioAppend {
         event_id: &'a str,
         chunk: &'a MediaChunk,
@@ -23,26 +26,34 @@ pub(crate) enum ClientEvent<'a> {
 impl ClientEvent<'_> {
     pub(crate) fn to_json(&self) -> Value {
         match self {
-            Self::SessionUpdate => json!({
-                "event_id": "session-config-1",
-                "type": "session.update",
-                "session": {
-                    "type": "realtime",
-                    "model": "gpt-realtime-2.1",
-                    "output_modalities": ["audio"],
-                    "audio": {
-                        "input": {
-                            "format": {"type": "audio/pcm", "rate": 24000},
-                            "turn_detection": null
+            Self::SessionUpdate {
+                maximum_output_tokens,
+            } => {
+                let mut event = json!({
+                    "event_id": "session-config-1",
+                    "type": "session.update",
+                    "session": {
+                        "type": "realtime",
+                        "model": "gpt-realtime-2.1",
+                        "output_modalities": ["audio"],
+                        "audio": {
+                            "input": {
+                                "format": {"type": "audio/pcm", "rate": 24000},
+                                "turn_detection": null
+                            },
+                            "output": {
+                                "format": {"type": "audio/pcm", "rate": 24000},
+                                "voice": "marin"
+                            }
                         },
-                        "output": {
-                            "format": {"type": "audio/pcm", "rate": 24000},
-                            "voice": "marin"
-                        }
-                    },
-                    "tools": []
+                        "tools": []
+                    }
+                });
+                if let Some(maximum) = maximum_output_tokens {
+                    event["session"]["max_output_tokens"] = json!(maximum.get());
                 }
-            }),
+                event
+            }
             Self::InputAudioAppend { event_id, chunk } => json!({
                 "event_id": event_id,
                 "type": "input_audio_buffer.append",

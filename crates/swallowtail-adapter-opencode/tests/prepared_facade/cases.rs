@@ -8,14 +8,15 @@ use swallowtail_adapter_opencode::{
     OpenCodeSessionProfileInput, prepare_opencode_attached,
 };
 use swallowtail_core::{
-    DriverRole, ExecutionHostId, HarnessConfigurationPosture, HarnessIsolation, InstanceOwnership,
-    InterfaceCompatibilityAssessment, OwnedRemoteResourceKind, ProviderSessionDeletionStrength,
-    ProviderSessionEffectTruth,
+    Capability, CapabilityConstraint, DriverRole, ExecutionHostId, HarnessConfigurationPosture,
+    HarnessIsolation, InstanceOwnership, InterfaceCompatibilityAssessment, OwnedRemoteResourceKind,
+    ProviderSessionDeletionStrength, ProviderSessionEffectTruth, ReasoningMode,
+    StructuredOutputEnforcement,
 };
 use swallowtail_runtime::{
     CancellationControl, CleanupOutcome, DiscoveryCancellation, HostServices, OperationContent,
     PreparationStage, ProviderRetentionPolicy, RemoteResourceDeletionOutcome, RequestId,
-    StructuredRunDriver, TerminalStatus,
+    SchemaDocument, StructuredOutputDescriptor, StructuredRunDriver, TerminalStatus,
 };
 use swallowtail_testkit::assert_prepared_operation_evidence_matches_plan;
 
@@ -184,6 +185,82 @@ fn prepared_structured_run_is_private_and_deletes_its_session_on_both_host_topol
 }
 
 #[test]
+fn prepared_generation_controls_use_exact_catalogue_evidence_and_zero_retry_dispatch() {
+    for (host_id, version) in [
+        ("opencode.controls.local", "1.18.4"),
+        ("opencode.controls.remote-authoritative", "1.18.5"),
+    ] {
+        let fixture = PreparedFixture::new(host_id, version);
+        let prepared = fixture.prepared();
+        let mut models = block_on(
+            prepared
+                .prepare_catalogue(OpenCodeCatalogueProfileInput::new(
+                    RequestId::new(format!("controls-catalogue-{host_id}"))
+                        .expect("request id is valid"),
+                ))
+                .expect("catalogue prepares")
+                .list_models(fixture.services()),
+        )
+        .expect("catalogue succeeds");
+        let reasoning = ReasoningMode::new("high").expect("reasoning is valid");
+        let run = prepared
+            .prepare_run(
+                OpenCodeRunProfileInput::new(
+                    RequestId::new(format!("controls-run-{host_id}")).expect("request id is valid"),
+                    fixture.model().with_catalogue_entry(models.remove(0)),
+                    OperationContent::new("Return one fixture result").expect("content is valid"),
+                    fixture.resource.clone(),
+                )
+                .with_reasoning_mode(reasoning.clone())
+                .with_structured_output(schema()),
+            )
+            .expect("generation controls prepare");
+        assert!(run.plan().requirements().capabilities().any(|requirement| {
+            requirement.capability() == Capability::ReasoningSelection
+                && requirement
+                    .constraints()
+                    .eq([&CapabilityConstraint::ReasoningMode(reasoning.clone())])
+        }));
+        assert!(run.plan().requirements().capabilities().any(|requirement| {
+            requirement.capability() == Capability::StructuredOutput
+                && requirement.constraints().any(|constraint| {
+                    constraint
+                        == &CapabilityConstraint::StructuredOutputEnforcement(
+                            StructuredOutputEnforcement::HarnessValidated,
+                        )
+                })
+        }));
+        let mut handle = block_on(run.start_run(fixture.services())).expect("run starts");
+        let outcome = block_on(
+            handle
+                .take_terminal_outcome()
+                .expect("terminal outcome exists"),
+        );
+        assert_eq!(outcome.status(), &TerminalStatus::Completed);
+        assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+
+        let request_count = fixture.server.requests().len();
+        let error = prepared
+            .prepare_run(
+                OpenCodeRunProfileInput::new(
+                    RequestId::new(format!("controls-missing-{host_id}"))
+                        .expect("request id is valid"),
+                    fixture.model(),
+                    OperationContent::new("No catalogue evidence").expect("content is valid"),
+                    fixture.resource.clone(),
+                )
+                .with_reasoning_mode(reasoning.clone()),
+            )
+            .expect_err("missing catalogue evidence fails");
+        assert_eq!(
+            error.diagnostic().safe().code(),
+            "swallowtail.opencode.preparation.catalogue_evidence_missing"
+        );
+        assert_eq!(fixture.server.requests().len(), request_count);
+    }
+}
+
+#[test]
 fn structured_run_disconnect_and_delete_failure_remain_separate() {
     for (suffix, stream_fixture, terminal_code, deletion, cleanup_code) in [
         (
@@ -273,6 +350,19 @@ fn unsupported_structured_input_stops_before_opencode_network_effects() {
         "swallowtail.opencode.unsupported"
     );
     assert_eq!(fixture.server.requests().len(), request_count);
+}
+
+fn schema() -> StructuredOutputDescriptor {
+    StructuredOutputDescriptor::new(
+        SchemaDocument::inline(
+            br#"{"type":"object","properties":{"result":{"type":"string"}},"required":["result"],"additionalProperties":false}"#,
+            4096,
+        )
+        .expect("schema is bounded"),
+        "application/schema+json",
+        "json-schema-2020-12",
+    )
+    .expect("schema descriptor is valid")
 }
 
 #[test]

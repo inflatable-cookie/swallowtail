@@ -17,7 +17,7 @@ use swallowtail_core::{
     HarnessConfigurationPosture, HarnessIsolation, HostServiceKind, InstanceOwnership,
     IntegrationFamilyId, ModelCatalogEntry, OperationShape, OwnedRemoteResourceKind, PreflightPlan,
     ProviderId, ResourceAccess, ResourceRepresentation, RunRef, SafeDiagnostic,
-    SessionAccessPolicy, SessionRef, TransportFamilyId,
+    SessionAccessPolicy, SessionRef, StructuredOutputEnforcement, TransportFamilyId,
 };
 use swallowtail_runtime::{
     BoxEventStream, BoxFuture, CancellationAcknowledgement, CancellationControl, CleanupOutcome,
@@ -27,8 +27,9 @@ use swallowtail_runtime::{
     ProviderRetentionPolicy, RemoteResourceDeletionOutcome, RequestId, ResourceLease,
     ResumeSessionRequest, RunHandle, RuntimeEvent, RuntimeEventKind, RuntimeFailure, RuntimeRunId,
     RuntimeSessionId, RuntimeTurnId, ScopeId, SessionResumeBinding, StreamReattachmentPolicy,
-    StructuredRunDriver, StructuredRunRequest, TerminalOutcome, TerminalStatus, TurnHandle,
-    TurnRequest, runtime_event_channel, terminal_outcome_channel, validate_session_resource_lease,
+    StructuredOutputDescriptor, StructuredRunDriver, StructuredRunRequest, TerminalOutcome,
+    TerminalStatus, TurnHandle, TurnRequest, runtime_event_channel, terminal_outcome_channel,
+    validate_session_resource_lease,
 };
 
 const DRIVER_ID: &str = "swallowtail.opencode.http";

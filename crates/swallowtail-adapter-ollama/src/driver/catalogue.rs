@@ -123,7 +123,7 @@ impl OllamaNativeAttachedDriver {
         Ok(ObservedCatalogue {
             installed,
             running,
-            detail,
+            detail: detail.observation().clone(),
         })
     }
 }

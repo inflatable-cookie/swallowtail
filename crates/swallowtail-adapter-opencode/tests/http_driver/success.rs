@@ -50,6 +50,17 @@ fn catalogue_and_read_only_session_run_against_the_frozen_http_fixture() {
     assert_eq!(observed.0[0], RuntimeEventKind::Started);
     assert!(observed.0.contains(&RuntimeEventKind::OutputDelta));
     assert!(observed.0.contains(&RuntimeEventKind::OutputAvailable));
+    assert!(observed.0.iter().any(|kind| {
+        matches!(
+            kind,
+            RuntimeEventKind::ProviderObservation(ProviderObservation::Usage(usage))
+                if usage.input_tokens() == Some(20)
+                    && usage.output_tokens() == Some(10)
+                    && usage.reasoning_tokens() == Some(3)
+                    && usage.cache_read_input_tokens() == Some(4)
+                    && usage.cache_write_input_tokens() == Some(1)
+        )
+    }));
     assert!(matches!(
         block_on(turn.close()),
         swallowtail_runtime::CleanupOutcome::Clean
@@ -79,4 +90,3 @@ fn catalogue_and_read_only_session_run_against_the_frozen_http_fixture() {
             || request.contains("/config")
     }));
 }
-

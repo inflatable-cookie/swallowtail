@@ -57,9 +57,10 @@ impl SharedAgent {
                     }
                 }),
             ),
-            Some("session/new") => Self::enqueue(
-                &mut state,
-                json!({
+            Some("session/new") => {
+                Self::enqueue(
+                    &mut state,
+                    json!({
                     "jsonrpc": "2.0",
                     "id": id,
                     "result": {
@@ -79,12 +80,15 @@ impl SharedAgent {
                             ]
                         }
                     }
-                }),
-            ),
+                    }),
+                );
+                enqueue_session_metadata(&mut state);
+            }
             Some("session/prompt") => {
                 state.prompt_id = id;
                 match self.scenario {
                     Scenario::Success => {
+                        enqueue_session_metadata(&mut state);
                         Self::enqueue(
                             &mut state,
                             json!({
@@ -185,6 +189,23 @@ impl SharedAgent {
         }
         self.changed.notify_all();
         Ok(())
+    }
+}
+
+fn enqueue_session_metadata(state: &mut AgentState) {
+    for update in [
+        json!({"sessionUpdate": "available_commands_update", "availableCommands": []}),
+        json!({"sessionUpdate": "config_option_update", "configOptions": []}),
+        json!({"sessionUpdate": "current_mode_update", "currentModeId": "plan"}),
+    ] {
+        SharedAgent::enqueue(
+            state,
+            json!({
+                "jsonrpc": "2.0",
+                "method": "session/update",
+                "params": {"sessionId": "fixture-session", "update": update}
+            }),
+        );
     }
 }
 

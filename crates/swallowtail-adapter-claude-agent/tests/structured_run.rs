@@ -13,9 +13,9 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     CleanupOutcome, DriverRegistration, EnvironmentRef, InteractiveSessionDriver, MonotonicInstant,
-    OperationContent, OperationPolicy, ProviderRetentionPolicy, RequestId, RunHandle, RuntimeEvent,
-    SchemaDocument, StructuredRunDriver, StructuredRunRequest, TerminalOutcome, TerminalStatus,
-    ToolDeclaration,
+    OperationContent, OperationPolicy, ProviderObservation, ProviderRetentionPolicy, RequestId,
+    RunHandle, RuntimeEvent, RuntimeEventKind, SchemaDocument, StructuredRunDriver,
+    StructuredRunRequest, TerminalOutcome, TerminalStatus, ToolDeclaration,
 };
 
 #[test]
@@ -66,9 +66,35 @@ fn one_prompt_run_preserves_version_topology_retention_and_native_close() {
             assert!(events.iter().any(|event| {
                 event.kind() == &swallowtail_runtime::RuntimeEventKind::OutputDelta
             }));
+            assert!(events.iter().any(|event| {
+                matches!(
+                    event.kind(),
+                    RuntimeEventKind::ProviderObservation(ProviderObservation::Usage(usage))
+                        if usage.input_tokens() == Some(12)
+                            && usage.output_tokens() == Some(4)
+                            && usage.reasoning_tokens().is_none()
+                            && usage.cache_read_input_tokens() == Some(3)
+                            && usage.cache_write_input_tokens() == Some(2)
+                )
+            }));
             assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
 
             let writes = host.writes();
+            let new_session = writes
+                .iter()
+                .find(|message| {
+                    message.get("method").and_then(serde_json::Value::as_str) == Some("session/new")
+                })
+                .expect("session creation is written");
+            assert_eq!(
+                new_session["params"]["_meta"]["claudeCode"]["options"]["tools"],
+                serde_json::json!(["Read", "Glob", "Grep", "Edit", "Write"])
+            );
+            assert!(writes.iter().any(|message| {
+                message.get("method").and_then(serde_json::Value::as_str)
+                    == Some("session/set_mode")
+                    && message["params"]["modeId"] == "acceptEdits"
+            }));
             assert_eq!(
                 writes
                     .iter()
@@ -119,6 +145,35 @@ fn claude_bridge_tool_update_above_shared_frame_default_completes() {
             .iter()
             .any(|event| { event.kind() == &swallowtail_runtime::RuntimeEventKind::Progress })
     );
+    assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
+}
+
+#[test]
+fn malformed_prompt_usage_fails_closed_without_emitting_usage() {
+    let host_id = ExecutionHostId::new("fixture.run.malformed-usage").expect("host id");
+    let selected = run_selection(host_id.clone(), "0.61.0");
+    let host = FixtureHost::new(Scenario::MalformedUsage, "0.61.0");
+    let mut run = block_on(driver(selected.credential).start_run(
+        selected.plan,
+        request("run-malformed-usage", selected.resource, None),
+        host.services(host_id),
+    ))
+    .expect("structured run starts");
+
+    let (events, outcome) = complete(&mut run);
+    let TerminalStatus::RuntimeFailed(diagnostic) = outcome.status() else {
+        panic!("malformed usage must fail: {:?}", outcome.status());
+    };
+    assert_eq!(
+        diagnostic.code(),
+        "swallowtail.claude_agent.acp.malformed_response"
+    );
+    assert!(!events.iter().any(|event| {
+        matches!(
+            event.kind(),
+            RuntimeEventKind::ProviderObservation(ProviderObservation::Usage(_))
+        )
+    }));
     assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
 }
 

@@ -10,6 +10,14 @@ fn provider_disconnect_and_unknown_event_remain_distinct_and_redacted() {
             "swallowtail.opencode.sse_disconnected",
         ),
         (StreamFixture::Unknown, "swallowtail.opencode.event_unknown"),
+        (
+            StreamFixture::DuplicateUsage,
+            "swallowtail.opencode.usage_duplicate",
+        ),
+        (
+            StreamFixture::MissingUsage,
+            "swallowtail.opencode.usage_missing",
+        ),
     ];
     for (stream, expected) in cases {
         let server = FixtureServer::start(stream);
@@ -69,4 +77,3 @@ fn unsupported_session_options_fail_before_network_work() {
     );
     assert!(server.requests().is_empty());
 }
-

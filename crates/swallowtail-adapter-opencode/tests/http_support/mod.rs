@@ -17,6 +17,8 @@ const PROVIDER_ERROR: &str = include_str!("../fixtures/opencode-1.14.48/provider
 const UNKNOWN: &str = include_str!("../fixtures/opencode-1.14.48/unknown-event.sse");
 const DISCONNECT: &str = include_str!("../fixtures/opencode-1.14.48/disconnect.sse");
 const ABORTED: &str = include_str!("../fixtures/opencode-1.14.48/aborted.sse");
+const DUPLICATE_USAGE: &str = include_str!("../fixtures/opencode-1.14.48/duplicate-usage.sse");
+const MISSING_USAGE: &str = include_str!("../fixtures/opencode-1.14.48/missing-usage.sse");
 
 #[derive(Clone, Copy, Eq, PartialEq)]
 #[allow(dead_code)]
@@ -25,6 +27,8 @@ pub enum StreamFixture {
     ProviderError,
     Unknown,
     Disconnect,
+    DuplicateUsage,
+    MissingUsage,
     WaitForAbort,
     DeleteMissing,
     DeleteUnauthorized,
@@ -301,6 +305,12 @@ fn respond_sse(
             .expect("SSE writes"),
         StreamFixture::Unknown => stream.write_all(UNKNOWN.as_bytes()).expect("SSE writes"),
         StreamFixture::Disconnect => stream.write_all(DISCONNECT.as_bytes()).expect("SSE writes"),
+        StreamFixture::DuplicateUsage => stream
+            .write_all(DUPLICATE_USAGE.as_bytes())
+            .expect("SSE writes"),
+        StreamFixture::MissingUsage => stream
+            .write_all(MISSING_USAGE.as_bytes())
+            .expect("SSE writes"),
         StreamFixture::WaitForAbort => {
             stream
                 .write_all(

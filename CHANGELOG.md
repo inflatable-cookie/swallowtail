@@ -23,6 +23,11 @@ The project has not published a release.
 
 ### Changed
 
+- Claude Agent ACP structured runs now require an ambient read-write working-
+  resource lease, expose `Edit` and `Write` beside the read tools, and select
+  `acceptEdits`; turn-less command, configuration, and mode updates remain
+  valid session metadata while interactive sessions retain their exact read-
+  only profile
 - Codex installed-version probe failures now retain their stable diagnostic
   code while reporting numeric exit status and bounded sanitized stderr when
   available
@@ -34,10 +39,16 @@ The project has not published a release.
   runtime, local host, testkit, and all 16 adapters; the two protocol crates
   and remote ACP transport retain their prior declaration hashes
 - made adapter-local preparation and typed bound operations the normal public
-  path for all 22 production routes while retaining low-level public roles
+  path for all 26 production routes while retaining low-level public roles
 
 ### Added
 
+- a native read-only `claude -p` structured-run route using local Claude
+  subscription auth, explicit model and effort, bounded stream JSON, usage,
+  cancellation, deadlines, and disabled session persistence
+- a pinned repo-local `@agentclientprotocol/claude-agent-acp` sidecar with
+  Effigy bootstrap and version-probe tasks, removing global-install reliance
+  for Swallowtail development
 - standalone strict-Northstar repository authority
 - initial vision, architecture, contracts, specs, and generation roadmap
 - `swallowtail-core` provider-neutral identity, capability, model, reference,

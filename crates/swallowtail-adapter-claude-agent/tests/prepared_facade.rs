@@ -13,11 +13,11 @@ use swallowtail_adapter_claude_agent::{
     ClaudeAgentSessionProfileInput, prepare_claude_agent,
 };
 use swallowtail_core::{
-    AccessProfile, AccessProfileId, AccessStatus, Capability, ConfiguredInstanceId,
-    CredentialMechanism, CredentialRef, CredentialState, EndpointAudience, EndpointAuthorization,
-    EntitlementMetering, EntitlementState, ExecutionHostId, HarnessConfigurationPosture,
-    HarnessIsolation, HostServiceKind, InstanceRevision, InterfaceVersionAxis, ModelId,
-    ModelRouteId, ModelRouteRevision, ProviderSessionAffectedScope,
+    AccessProfile, AccessProfileId, AccessStatus, Capability, CapabilityConstraint,
+    ConfiguredInstanceId, CredentialMechanism, CredentialRef, CredentialState, EndpointAudience,
+    EndpointAuthorization, EntitlementMetering, EntitlementState, ExecutionHostId,
+    HarnessConfigurationPosture, HarnessIsolation, HostServiceKind, InstanceRevision,
+    InterfaceVersionAxis, ModelId, ModelRouteId, ModelRouteRevision, ProviderSessionAffectedScope,
     ProviderSessionDeletionStrength, ProviderSessionEffectTruth, ResourceAccess, RuntimeReadiness,
     SessionAccessPolicy, SupportAuthority,
 };
@@ -228,6 +228,19 @@ fn prepared_structured_run_binds_one_prompt_and_durable_retention_on_both_hosts(
         assert_eq!(
             profile.plan().requirements().driver_role(),
             swallowtail_core::DriverRole::StructuredRun
+        );
+        assert!(
+            profile
+                .plan()
+                .requirements()
+                .capabilities()
+                .any(|required| {
+                    required.capability() == Capability::WorkingResource
+                        && required.constraints().any(|constraint| {
+                            constraint
+                                == &CapabilityConstraint::ResourceAccess(ResourceAccess::ReadWrite)
+                        })
+                })
         );
         assert_eq!(
             profile.request().policy().provider_retention(),

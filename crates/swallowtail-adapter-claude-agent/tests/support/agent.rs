@@ -11,6 +11,7 @@ pub(super) use process::FixtureProcessHandle;
 pub enum Scenario {
     Success,
     LargeToolUpdate,
+    MalformedUsage,
     DeleteMissing,
     DeleteProviderFailure,
     DeleteDisconnect,
@@ -85,6 +86,7 @@ impl SharedAgent {
         match message.get("method").and_then(Value::as_str) {
             Some("initialize") => self.initialize(&mut state, id),
             Some("session/new") => self.new_session(&mut state, id, &message),
+            Some("session/set_mode") => self.set_mode(&mut state, id, &message),
             Some("session/set_config_option") => self.set_config(&mut state, id, &message),
             Some("session/prompt") => self.prompt(&mut state, id),
             Some("session/cancel") => self.cancel(&mut state),
@@ -144,8 +146,9 @@ impl SharedAgent {
         id: Option<u64>,
         message: &Value,
     ) -> Result<(), RuntimeFailure> {
-        if message["params"]["_meta"]["claudeCode"]["options"]["tools"]
-            != json!(["Read", "Glob", "Grep"])
+        let tools = &message["params"]["_meta"]["claudeCode"]["options"]["tools"];
+        if tools != &json!(["Read", "Glob", "Grep"])
+            && tools != &json!(["Read", "Glob", "Grep", "Edit", "Write"])
         {
             return Err(fixture_failure());
         }
@@ -171,6 +174,13 @@ impl SharedAgent {
                 "id": id,
                 "result": {
                     "sessionId": "claude-agent-session-fixture",
+                    "modes": {
+                        "currentModeId": "default",
+                        "availableModes": [
+                            {"id": "default", "name": "Default"},
+                            {"id": "acceptEdits", "name": "Accept Edits"}
+                        ]
+                    },
                     "configOptions": config_options
                 }
             }),
@@ -182,6 +192,48 @@ impl SharedAgent {
                 "update": {"sessionUpdate": "available_commands_update", "availableCommands": []}
             }}),
         );
+        Self::enqueue(
+            state,
+            json!({"jsonrpc": "2.0", "method": "session/update", "params": {
+                "sessionId": "claude-agent-session-fixture",
+                "update": {
+                    "sessionUpdate": "config_option_update",
+                    "configOptions": config_options
+                }
+            }}),
+        );
+        Self::enqueue(
+            state,
+            json!({"jsonrpc": "2.0", "method": "session/update", "params": {
+                "sessionId": "claude-agent-session-fixture",
+                "update": {
+                    "sessionUpdate": "current_mode_update",
+                    "currentModeId": "default"
+                }
+            }}),
+        );
+        Ok(())
+    }
+
+    fn set_mode(
+        &self,
+        state: &mut AgentState,
+        id: Option<u64>,
+        message: &Value,
+    ) -> Result<(), RuntimeFailure> {
+        if message["params"]["sessionId"] != "claude-agent-session-fixture"
+            || message["params"]["modeId"] != "acceptEdits"
+        {
+            return Err(fixture_failure());
+        }
+        Self::enqueue(
+            state,
+            json!({"jsonrpc": "2.0", "method": "session/update", "params": {
+                "sessionId": "claude-agent-session-fixture",
+                "update": {"sessionUpdate": "current_mode_update", "currentModeId": "acceptEdits"}
+            }}),
+        );
+        Self::enqueue(state, json!({"jsonrpc": "2.0", "id": id, "result": {}}));
         Ok(())
     }
 
@@ -223,6 +275,16 @@ impl SharedAgent {
             _ => return Err(fixture_failure()),
         }
         let config_options = self.config_options(state)?;
+        Self::enqueue(
+            state,
+            json!({"jsonrpc": "2.0", "method": "session/update", "params": {
+                "sessionId": "claude-agent-session-fixture",
+                "update": {
+                    "sessionUpdate": "config_option_update",
+                    "configOptions": config_options
+                }
+            }}),
+        );
         Self::enqueue(
             state,
             json!({
@@ -269,9 +331,12 @@ impl SharedAgent {
     fn prompt(&self, state: &mut AgentState, id: Option<u64>) -> Result<(), RuntimeFailure> {
         state.prompt_id = id;
         match self.scenario {
-            Scenario::Success | Scenario::LargeToolUpdate => {
+            Scenario::Success | Scenario::LargeToolUpdate | Scenario::MalformedUsage => {
+                let config_options = self.config_options(state)?;
                 for update in [
                     json!({"sessionUpdate": "available_commands_update", "availableCommands": []}),
+                    json!({"sessionUpdate": "config_option_update", "configOptions": config_options}),
+                    json!({"sessionUpdate": "current_mode_update", "currentModeId": "acceptEdits"}),
                     json!({"sessionUpdate": "agent_thought_chunk", "content": {"type": "text", "text": "Inspecting."}}),
                     json!({"sessionUpdate": "tool_call", "toolCallId": "read-1", "kind": "read"}),
                     json!({"sessionUpdate": "usage_update", "used": 42, "size": 200000}),
@@ -348,9 +413,23 @@ impl SharedAgent {
             return Err(fixture_failure());
         }
         if let Some(id) = state.prompt_id.take() {
+            let total_tokens = if self.scenario == Scenario::MalformedUsage {
+                22
+            } else {
+                21
+            };
             Self::enqueue(
                 state,
-                json!({"jsonrpc": "2.0", "id": id, "result": {"stopReason": "end_turn"}}),
+                json!({"jsonrpc": "2.0", "id": id, "result": {
+                    "stopReason": "end_turn",
+                    "usage": {
+                        "inputTokens": 12,
+                        "outputTokens": 4,
+                        "cachedReadTokens": 3,
+                        "cachedWriteTokens": 2,
+                        "totalTokens": total_tokens
+                    }
+                }}),
             );
         }
         Ok(())
@@ -370,7 +449,16 @@ impl SharedAgent {
         if let Some(id) = state.prompt_id.take() {
             Self::enqueue(
                 state,
-                json!({"jsonrpc": "2.0", "id": id, "result": {"stopReason": "cancelled"}}),
+                json!({"jsonrpc": "2.0", "id": id, "result": {
+                    "stopReason": "cancelled",
+                    "usage": {
+                        "inputTokens": 0,
+                        "outputTokens": 0,
+                        "cachedReadTokens": 0,
+                        "cachedWriteTokens": 0,
+                        "totalTokens": 0
+                    }
+                }}),
             );
         }
         Ok(())

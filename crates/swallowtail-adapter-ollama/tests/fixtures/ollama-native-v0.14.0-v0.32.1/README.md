@@ -30,3 +30,9 @@ Current official endpoint documentation was checked on 2026-07-23:
 
 The corpus is synthetic and contains no model, manifest, path, prompt from a
 user, credential, endpoint, account, or live inference response.
+
+Every tagged boundary retains `ChatRequest.format` and `ChatRequest.think`.
+`generation-controls-chat-request.json` freezes a positive output maximum,
+exact reasoning value, and provider-native schema request. Model support still
+requires exact prepared capability evidence. The file is contract evidence
+for card 085, not a realized adapter claim.

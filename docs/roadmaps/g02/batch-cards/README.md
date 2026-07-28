@@ -58,6 +58,7 @@
 - `056-opencode-session-deletion-driver-and-facade.md`
 - `057-opencode-session-deletion-conformance-and-closeout.md`
 - `058-provider-wide-session-lifecycle-matrix.md`
+- `060-nucleus-thread-lifecycle-adoption-handoff.md`
 - `061-kimi-local-server-range-and-protocol-corpus.md`
 - `062-kimi-local-server-lifecycle-driver.md`
 - `063-kimi-cross-transport-binding-import-and-conformance.md`
@@ -77,6 +78,12 @@
 - `077-kimi-0-29-2-currentness-and-corpora.md`
 - `078-kimi-headless-and-retained-local-structured-runs.md`
 - `079-structured-run-provider-wide-closeout.md`
+- `080-provider-feature-no-inventory-and-integrity.md`
+- `081-first-feature-family-currentness-and-contract.md`
+- `082-first-feature-family-implementation-tranche.md`
+- `083-provider-feature-tranche-closeout-and-continuation.md`
+- `084-generation-control-no-inventory-and-currentness.md`
+- `085-generation-control-contract-and-corpora.md`
 
 ## Superseded
 
@@ -91,15 +98,15 @@ None. Cross-generation deferred work lives in `docs/roadmaps/backlog/`.
 
 ## Ready
 
-None.
+- `086-generation-control-implementation-tranche.md`
 
 ## Planned
 
-None.
+- `087-generation-control-closeout-and-continuation.md`
 
 ## Operator-Held
 
-- `060-nucleus-thread-lifecycle-adoption-handoff.md`
+None.
 
 ## Paused
 

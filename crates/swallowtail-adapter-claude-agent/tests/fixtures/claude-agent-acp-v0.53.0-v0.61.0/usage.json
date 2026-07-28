@@ -1,0 +1,33 @@
+{
+  "fixture_schema": 1,
+  "qualified_versions": [
+    "0.53.0",
+    "0.54.0",
+    "0.55.0",
+    "0.56.0",
+    "0.57.0",
+    "0.58.1",
+    "0.59.0",
+    "0.60.0",
+    "0.61.0"
+  ],
+  "prompt_response": {
+    "stopReason": "end_turn",
+    "usage": {
+      "inputTokens": 12,
+      "outputTokens": 4,
+      "cachedReadTokens": 3,
+      "cachedWriteTokens": 2,
+      "totalTokens": 21
+    }
+  },
+  "context_update": {
+    "sessionUpdate": "usage_update",
+    "used": 42,
+    "size": 200000,
+    "cost": {
+      "amount": 0.01,
+      "currency": "USD"
+    }
+  }
+}

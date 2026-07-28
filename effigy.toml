@@ -52,6 +52,8 @@ allowlist_file = "docs/policy/vision-next-task-verbs.txt"
 "qa:routes" = "bash scripts/check-provider-route-matrix.sh"
 "probe:opencode-installed" = "cargo test -p swallowtail-adapter-opencode --test installed_probe -- --ignored --exact installed_opencode_health_and_schema_match_the_frozen_subset"
 "probe:kimi-installed" = "cargo test -p swallowtail-adapter-kimi --test installed_probe -- --ignored --exact pinned_kimi_code_cli_is_installed_when_live_probe_is_enabled"
+"bootstrap:claude-agent-acp" = "npm ci --ignore-scripts"
+"probe:claude-agent-acp-managed" = "./node_modules/.bin/claude-agent-acp --version"
 
 "package:metadata" = "bash scripts/check-package-metadata.sh"
 "package:api" = "bash scripts/check-public-api.sh"

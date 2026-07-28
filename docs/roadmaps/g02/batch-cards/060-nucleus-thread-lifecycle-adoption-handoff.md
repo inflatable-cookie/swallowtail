@@ -1,6 +1,6 @@
 # 060 Nucleus Thread Lifecycle Adoption Handoff
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-07-26
 Milestone: `../019-provider-session-lifecycle-acceptance-and-handoff.md`
@@ -33,12 +33,12 @@ optional provider-session management separate.
 
 ## Acceptance Criteria
 
-- [ ] Nucleus can implement local-only lifecycle for every route
-- [ ] provider deletion is optional, explicit, and capability-gated
-- [ ] local success never hides provider failure or uncertainty
-- [ ] ACP history removal is presented no stronger than proven
-- [ ] Kimi, Gemini, and not-applicable routes have honest local-only behavior
-- [ ] consumer confirmation, persistence, UI, and retry policy remain in
+- [x] Nucleus can implement local-only lifecycle for every route
+- [x] provider deletion is optional, explicit, and capability-gated
+- [x] local success never hides provider failure or uncertainty
+- [x] ACP history removal is presented no stronger than proven
+- [x] Kimi, Gemini, and not-applicable routes have honest local-only behavior
+- [x] consumer confirmation, persistence, UI, and retry policy remain in
       Nucleus
 
 ## Validation
@@ -59,3 +59,23 @@ optional provider-session management separate.
 
 No. Stop for separate Nucleus planning and edit authority.
 
+## Outcome
+
+The
+[Nucleus lifecycle handoff](../../../releases/0.1.0-nucleus-provider-session-lifecycle-handoff.md)
+defines separate local and provider actions, exact supported routes, inactive
+handle ordering, partial success, effect uncertainty, version posture,
+compile-checked examples, and rollback. Nucleus was not edited.
+
+The current public management binding has no stable persistence codec. Initial
+adoption is same-process only. Missing bindings and post-restart actions stay
+local-only; durable export and import is deferred as separate contract work.
+
+## Validation Evidence
+
+- all workspace examples compile
+- public API baseline passes for 23 crates
+- provider route, lifecycle, and feature matrices pass
+- Northstar and docs checks pass
+- formatting and `git diff --check` pass
+- `effigy doctor` remains red only on the recorded 66 file-size findings

@@ -44,6 +44,7 @@ Contracts hold durable, testable rules.
 - [037 Provider-Wide Prepared Integration And Bound Operations](037-prepared-consumer-integration.md)
 - [038 Provider Session Management And Consumer Thread Boundary](038-provider-session-management-and-consumer-thread-boundary.md)
 - [039 Bounded Single-Turn Structured-Run Projection](039-bounded-single-turn-structured-run-projection.md)
+- [040 Generation-Control Application And Enforcement](040-generation-control-application-and-enforcement.md)
 
 Contract 003 defines the provider-neutral record kernel. Contracts 004-016
 govern the realized runtime and current proof drivers. Contract 017 governs
@@ -139,3 +140,7 @@ run. It requires independent role qualification, exact request support,
 explicit retention, one terminal outcome, and joined cleanup. Close never
 implies deletion; realtime media and serving lifecycle inherit no structured
 role.
+Contract 040 keeps requested, planned, dispatched, accepted, effective, and
+observed generation controls separate. It binds exact output maxima, reasoning
+mappings, schema dialects, enforcement source, model capability, and version
+milestones without prompt emulation, silent clamp, or fallback.

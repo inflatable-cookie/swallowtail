@@ -10,8 +10,9 @@ use std::sync::{Arc, Mutex};
 use std::task::{Context, Poll, Waker};
 use swallowtail_core::SafeDiagnostic;
 use swallowtail_protocol_acp::{
-    ACP_PROTOCOL_VERSION, Message, NdjsonDecoder, encode_error, encode_notification,
-    encode_request, encode_result,
+    ACP_PROTOCOL_VERSION, DEFAULT_MAX_BUFFER_BYTES, DEFAULT_MAX_FRAME_BYTES, FramingLimits,
+    Message, NdjsonDecoder, encode_error, encode_notification, encode_request, encode_result,
+    is_session_scoped_metadata_update,
 };
 use swallowtail_runtime::{
     CleanupOutcome, ProcessHandle, ProcessInputChunk, ProcessOutputStream, ResourceLease,
@@ -20,6 +21,8 @@ use swallowtail_runtime::{
 
 const MAXIMUM_PENDING_REQUESTS: usize = 32;
 const MAXIMUM_READ_BYTES: usize = 1024 * 1024;
+const RECEIVE_FRAMING_LIMITS: FramingLimits =
+    FramingLimits::new(DEFAULT_MAX_FRAME_BYTES, DEFAULT_MAX_BUFFER_BYTES);
 
 pub(crate) struct AcpConnection {
     process: Arc<dyn ProcessHandle>,
@@ -227,3 +230,20 @@ include!("connection_dispatch.rs");
 include!("connection_pump.rs");
 
 include!("connection_response.rs");
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn receive_framing_profile_is_explicit() {
+        assert_eq!(
+            RECEIVE_FRAMING_LIMITS.maximum_frame_bytes(),
+            DEFAULT_MAX_FRAME_BYTES
+        );
+        assert_eq!(
+            RECEIVE_FRAMING_LIMITS.maximum_buffer_bytes(),
+            DEFAULT_MAX_BUFFER_BYTES
+        );
+    }
+}

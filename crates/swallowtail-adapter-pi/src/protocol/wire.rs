@@ -1,5 +1,6 @@
 use super::{PiRpcProtocolFailure, PiRpcProtocolFailureKind, PiRpcRecordKind};
 use serde_json::Value;
+use swallowtail_runtime::TokenUsage;
 
 mod ui;
 
@@ -73,6 +74,7 @@ pub(crate) enum PiAgentEvent {
     Settled,
     OutputDelta(String),
     ReasoningDelta(String),
+    Usage(TokenUsage),
     Progress,
     ProviderFailed,
     RetryObserved,
@@ -142,15 +144,7 @@ fn decode_event(kind: &str, value: &Value) -> Result<PiAgentEvent, PiRpcProtocol
         "agent_start" => Ok(PiAgentEvent::Started),
         "agent_settled" => Ok(PiAgentEvent::Settled),
         "message_update" => decode_message_update(value),
-        "message_end"
-            if value
-                .get("message")
-                .and_then(|message| message.get("stopReason"))
-                .and_then(Value::as_str)
-                == Some("error") =>
-        {
-            Ok(PiAgentEvent::ProviderFailed)
-        }
+        "message_end" => decode_message_end(value),
         "agent_end" if value.get("willRetry").and_then(Value::as_bool) == Some(true) => {
             Ok(PiAgentEvent::RetryObserved)
         }
@@ -159,7 +153,6 @@ fn decode_event(kind: &str, value: &Value) -> Result<PiAgentEvent, PiRpcProtocol
         | "turn_start"
         | "turn_end"
         | "message_start"
-        | "message_end"
         | "tool_execution_start"
         | "tool_execution_update"
         | "tool_execution_end"
@@ -167,6 +160,29 @@ fn decode_event(kind: &str, value: &Value) -> Result<PiAgentEvent, PiRpcProtocol
         "extension_error" => Ok(PiAgentEvent::ProviderFailed),
         _ => Err(failure(PiRpcProtocolFailureKind::UnknownRecord)),
     }
+}
+
+fn decode_message_end(value: &Value) -> Result<PiAgentEvent, PiRpcProtocolFailure> {
+    let message = value
+        .get("message")
+        .ok_or_else(|| failure(PiRpcProtocolFailureKind::UnknownRecord))?;
+    if message.get("role").and_then(Value::as_str) != Some("assistant") {
+        return Ok(PiAgentEvent::Progress);
+    }
+    if message.get("stopReason").and_then(Value::as_str) == Some("error") {
+        return Ok(PiAgentEvent::ProviderFailed);
+    }
+    let usage = message
+        .get("usage")
+        .ok_or_else(|| failure(PiRpcProtocolFailureKind::UnknownRecord))?;
+    let input = required_u64(usage, "input")?;
+    let output = required_u64(usage, "output")?;
+    let cache_read = required_u64(usage, "cacheRead")?;
+    let cache_write = required_u64(usage, "cacheWrite")?;
+    Ok(PiAgentEvent::Usage(
+        TokenUsage::new(Some(input), Some(output))
+            .with_cache_tokens(Some(cache_read), Some(cache_write)),
+    ))
 }
 
 fn decode_message_update(value: &Value) -> Result<PiAgentEvent, PiRpcProtocolFailure> {
@@ -200,6 +216,13 @@ fn required_text<'a>(
         .and_then(Value::as_str)
         .filter(|value| !value.is_empty())
         .ok_or_else(|| failure(kind))
+}
+
+fn required_u64(value: &Value, field: &str) -> Result<u64, PiRpcProtocolFailure> {
+    value
+        .get(field)
+        .and_then(Value::as_u64)
+        .ok_or_else(|| failure(PiRpcProtocolFailureKind::UnknownRecord))
 }
 
 fn failure(kind: PiRpcProtocolFailureKind) -> PiRpcProtocolFailure {

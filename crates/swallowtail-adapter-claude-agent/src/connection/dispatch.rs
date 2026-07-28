@@ -49,9 +49,7 @@ impl AcpConnection {
                     .clone();
                 match active {
                     Some(active) => active.handle_update(params),
-                    None if session_update_kind(params) == Some("available_commands_update") => {
-                        Ok(())
-                    }
+                    None if is_session_scoped_metadata_update(params) => Ok(()),
                     None => Err(failure(
                         "swallowtail.claude_agent.acp.update_without_turn",
                         "Claude Agent updated a session without an active turn",
@@ -178,13 +176,6 @@ impl AcpConnection {
             ))
         }
     }
-}
-
-fn session_update_kind(params: &Value) -> Option<&str> {
-    params
-        .get("update")?
-        .get("sessionUpdate")
-        .and_then(Value::as_str)
 }
 
 fn optional_usize(params: &Value, field: &str) -> Result<Option<usize>, RuntimeFailure> {

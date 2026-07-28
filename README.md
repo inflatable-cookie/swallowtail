@@ -9,7 +9,7 @@ prompts, tools, authority, workflows, persistence, and product state.
 Status: foundation. The repository is in strict Northstar posture. The
 provider-neutral core, pure preflight, executor-neutral runtime, thirteen synthetic
 conformance profiles, host-approved local process/endpoint/credential services,
-twenty-five production driver routes, including separate Gemini and Kimi
+twenty-six production driver routes, including separate Claude Code, Gemini, and Kimi
 installed-harness routes plus SDK-native Bedrock Runtime
 and control-plane routes, across Alibaba Model Studio, Anthropic, Bedrock,
 Claude Agent, Codex, DeepSeek, Gemini, Kimi, llama.cpp, Ollama, OpenAI,
@@ -30,11 +30,11 @@ Then read [docs/README.md](docs/README.md). Applications integrating Codex
 should start with the
 [prepared-integration guides](docs/guides/README.md). Multi-provider
 applications should start with the exact
-[25-route matrix](docs/guides/provider-route-matrix.md).
+[26-route matrix](docs/guides/provider-route-matrix.md).
 Source-scoped model-catalogue expansion is complete: every selected
-machine-readable source has a Swallowtail path. The 21-solution feature matrix
+machine-readable source has a Swallowtail path. The 22-solution feature matrix
 now reports 16 catalogue-capable solutions, two session-negotiated sources,
-two not-applicable operation shapes, one caller-supplied source, and no
+two not-applicable operation shapes, two caller-supplied sources, and no
 unexplained `No`.
 Structured-run closure is at provider-wide acceptance. Research 044 and
 Contract 039 identify eight definite bounded branches plus one retained Kimi
@@ -53,7 +53,7 @@ installed facade requires explicit ACP or headless selection. The local facade
 remains separate, requires `DurableAllowed`, and preserves provider threads
 without archive or delete claims.
 Gemini Live and OpenAI Realtime remain structured-run `No`. llama.cpp owned is
-serving-only and therefore `Not applicable`. The matrix reports 18 structured
+serving-only and therefore `Not applicable`. The matrix reports 19 structured
 `Yes`, two `No`, and one `Not applicable`.
 Consumer soak remains the held release baseline. Research 036 and Contract 038
 separate Nucleus-local thread archive and deletion from optional bound
@@ -66,12 +66,14 @@ session management. The shared evidence foundation, Codex typed bound
 operations, and Kimi Code ACP prepared
 facade are complete. Anthropic Models and Messages now supplies the first
 hosted-direct prepared facade. Ollama native supplies the attached-runtime
-proof. Claude Agent now adds separate one-prompt structured and read-only
-interactive stdio-ACP prepared paths; Gemini CLI retains its read-only ACP
-path and adds a separate one-prompt headless path. Claude Agent keeps local
-subscription authentication and public API-key billing as separate explicit
-access profiles; the local default inherits approved process state without a
-credential lease. Pi RPC, Qwen headless, and OpenCode attached HTTP/SSE complete
+proof. Claude Agent now adds separate ambient read-write one-prompt structured
+and read-only interactive stdio-ACP prepared paths; Gemini CLI retains its
+read-only ACP path and adds a separate one-prompt headless path. Claude Agent
+keeps local subscription authentication and public API-key billing as separate
+explicit access profiles; the local default inherits approved process state
+without a credential lease. Claude Code headless adds a bridge-free,
+subscription-only `claude -p` path with read-only tools, usage, reasoning
+selection, and no session persistence. Pi RPC, Qwen headless, and OpenCode attached HTTP/SSE complete
 the original eight harness routes; Kimi local server adds the ninth. Kimi Platform, DeepSeek,
 Alibaba Model Studio, and OpenAI background Responses now add distinct hosted
 direct and provider-state facades; specialized adapters retain their low-level
@@ -82,7 +84,8 @@ separate SDK-native facades with explicit region and credential-provider
 configuration. llama.cpp completed the original 22-route prepared matrix with
 distinct attached inference and owned ephemeral-serving paths. The later Kimi
 local-server route brought the previous total to 23; Gemini CLI headless was
-the 24th and Kimi Code headless is the 25th route. The exact cross-route matrix
+the 24th, Kimi Code headless the 25th, and Claude Code headless is the 26th
+route. The exact cross-route matrix
 and unified integration guidance are current. Packaged structured proof
 passes across all 23 local package archives: the extracted workspace compiles
 and executes the closure-tranche prepared structured suites without live
@@ -138,8 +141,10 @@ REST prompt submission, WebSocket v2 events and cursors, callbacks,
 interruption, deadlines, disconnects, attached and owned topology, and joined
 cleanup. The 25-route matrix and current integration guide are complete. The
 provider-wide extracted-package structured proof and the earlier 23-route
-lifecycle proof pass. Operator review is required before any
-Nucleus lifecycle handoff. The retained lifecycle candidate remains paused
+lifecycle proof pass. A bounded Nucleus lifecycle handoff now keeps universal
+local thread actions separate from optional provider operations. Current
+management bindings are same-process only because no stable persistence codec
+is exposed. The retained lifecycle candidate remains paused
 until the current source enters canonical history.
 
 ## Current Direction
@@ -178,7 +183,17 @@ host-bound open, resume, callbacks, interruption, failure, and joined cleanup.
 Soundcheck and Nucleus Agent Chat are accepted consumers. The bounded
 workspace-write runtime required by Nucleus task execution is complete without
 widening read-only chat. The planned provider-route and model-catalogue
-expansion is realized; the next lane is an operator decision. The shared hosted
+expansion is realized. The current 22-solution feature matrix records 451
+`No` cells and 29 `Not applicable` cells after the serving-only correction and
+the later Claude Code headless addition. Every current `No` has a
+machine-checked evidence classification. Usage evidence now has 19 `Yes`, one
+serving-only `Not applicable`, and two honest Kimi Code `No` cells. Claude
+Agent ACP, Pi RPC, and OpenCode emit exact cumulative typed usage through
+their prepared paths. The next family is generation controls:
+output-token limit, reasoning selection, then structured output. Later cards retain
+input/callbacks,
+input/callbacks, session continuity, provider retention, retained execution,
+workspace/runtime, and realtime media on the runway. The shared hosted
 foundation and attached OpenCode HTTP/SSE proof are complete. The
 provider-supported Anthropic Models and Messages direct driver is complete.
 ACP v1 and Gemini CLI `0.51.0` authority, fixtures, bounded protocol transport,

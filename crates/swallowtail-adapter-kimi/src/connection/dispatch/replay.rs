@@ -42,12 +42,13 @@ fn replay_item(
 }
 
 fn passive_update(kind: &str) -> Result<(), RuntimeFailure> {
-    match kind {
-        "available_commands_update" | "config_option_update" | "current_mode_update" => Ok(()),
-        _ => Err(failure(
+    if is_session_scoped_metadata_update_kind(kind) {
+        Ok(())
+    } else {
+        Err(failure(
             "swallowtail.kimi.acp.update_without_turn",
             "Kimi Code updated a session outside an allowed lifecycle phase",
-        )),
+        ))
     }
 }
 

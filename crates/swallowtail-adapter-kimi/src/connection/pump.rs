@@ -1,6 +1,6 @@
 impl AcpConnection {
     pub(crate) async fn pump(self: Arc<Self>) {
-        let mut decoder = NdjsonDecoder::default();
+        let mut decoder = NdjsonDecoder::new(RECEIVE_FRAMING_LIMITS);
         let mut transport_failure = None;
         loop {
             match self.process.read_output().await {

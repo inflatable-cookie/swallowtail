@@ -52,6 +52,7 @@ provider_facade_suites=(
   "swallowtail-adapter-anthropic|prepared_facade"
   "swallowtail-adapter-anthropic|managed_prepared_facade"
   "swallowtail-adapter-bedrock|prepared_facade"
+  "swallowtail-adapter-claude-agent|claude_code_structured_run"
   "swallowtail-adapter-claude-agent|prepared_facade"
   "swallowtail-adapter-codex|prepared"
   "swallowtail-adapter-codex|prepared_profiles"
@@ -91,6 +92,7 @@ provider_route_proofs=(
   "codex.exec|swallowtail-adapter-codex|prepared_profiles"
   "codex.app-server|swallowtail-adapter-codex|prepared_profiles"
   "claude-agent.acp|swallowtail-adapter-claude-agent|prepared_facade"
+  "claude-code.headless|swallowtail-adapter-claude-agent|claude_code_structured_run"
   "gemini-cli.acp|swallowtail-adapter-gemini|prepared_facade"
   "gemini-cli.headless|swallowtail-adapter-gemini|headless_structured_run"
   "kimi-code.acp|swallowtail-adapter-kimi|prepared_facade"
@@ -115,7 +117,7 @@ provider_route_proofs=(
   "llama-cpp.owned|swallowtail-adapter-llama-cpp|prepared_facades"
 )
 
-test "${#provider_route_proofs[@]}" -eq 25
+test "${#provider_route_proofs[@]}" -eq 26
 
 release_provider_evidence="$release_tmp/provider-validation.env"
 {

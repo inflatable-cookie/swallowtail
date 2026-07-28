@@ -126,6 +126,8 @@ fn ordered_success_stream_is_correlated_and_terminal() {
             "session.status",
             "message.part.delta",
             "message.part.updated",
+            "message.part.updated",
+            "message.part.updated",
             "session.status",
             "session.idle"
         ]
@@ -135,8 +137,8 @@ fn ordered_success_stream_is_correlated_and_terminal() {
             .iter()
             .all(|event| session_id(event) == Some("ses_fixture"))
     );
-    assert_eq!(decide(&events[4]), EventDecision::Completed);
-    assert_eq!(decide(&events[5]), EventDecision::Completed);
+    assert_eq!(decide(&events[6]), EventDecision::Completed);
+    assert_eq!(decide(&events[7]), EventDecision::Completed);
 }
 
 #[test]

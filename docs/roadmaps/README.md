@@ -12,9 +12,10 @@ shape.
 
 ## Next Task
 
-Return to the operator decision on
-[g02 card 060](g02/batch-cards/060-nucleus-thread-lifecycle-adoption-handoff.md):
-authorize, defer, or rescope Nucleus provider-session lifecycle adoption.
+Execute
+[g02 card 086](g02/batch-cards/086-generation-control-implementation-tranche.md):
+implement seven prepared generation-control paths across OpenAI, Ollama, and
+OpenCode.
 
 ## Index
 

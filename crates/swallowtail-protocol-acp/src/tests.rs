@@ -1,6 +1,7 @@
 use super::{
     DEFAULT_MAX_BUFFER_BYTES, DEFAULT_MAX_FRAME_BYTES, FramingLimits, Message, NdjsonDecoder,
     ProtocolErrorKind, decode_message, encode_message, encode_request,
+    is_session_scoped_metadata_update, is_session_scoped_metadata_update_kind,
 };
 use serde_json::json;
 
@@ -68,6 +69,32 @@ fn configured_decoder_accepts_a_frame_above_the_shared_default() {
         1
     );
     configured_decoder.finish().expect("complete input");
+}
+
+#[test]
+fn session_scoped_metadata_updates_are_classified_without_flattening_unknown_kinds() {
+    for kind in [
+        "available_commands_update",
+        "config_option_update",
+        "current_mode_update",
+    ] {
+        assert!(is_session_scoped_metadata_update_kind(kind));
+        assert!(is_session_scoped_metadata_update(&json!({
+            "sessionId": "fixture-session",
+            "update": {"sessionUpdate": kind}
+        })));
+    }
+
+    assert!(!is_session_scoped_metadata_update_kind(
+        "agent_message_chunk"
+    ));
+    assert!(!is_session_scoped_metadata_update(&json!({
+        "update": {"sessionUpdate": "unknown_update"}
+    })));
+    assert!(!is_session_scoped_metadata_update(&json!({
+        "update": {"sessionUpdate": 1}
+    })));
+    assert!(!is_session_scoped_metadata_update(&json!({})));
 }
 
 #[test]

@@ -10,8 +10,8 @@ use swallowtail_adapter_pi::PiRpcDriver;
 use swallowtail_core::{CancellationScope, DriverRole};
 use swallowtail_runtime::{
     CallbackPayload, CallbackRequestKind, CallbackResponse, CallbackResult, CleanupOutcome,
-    Deadline, EnvironmentRef, MonotonicInstant, ProviderRetentionPolicy, StructuredRunDriver,
-    TerminalStatus,
+    Deadline, EnvironmentRef, MonotonicInstant, ProviderObservation, ProviderRetentionPolicy,
+    RuntimeEventKind, StructuredRunDriver, TerminalStatus,
 };
 use swallowtail_testkit::{
     ConformanceAssertion, ExecutionTopologyFixture,
@@ -99,14 +99,26 @@ fn one_rpc_prompt_projects_as_a_private_structured_run_on_both_host_topologies()
         let terminal = handle
             .take_terminal_outcome()
             .expect("terminal outcome is available");
-        let outcome = block_on(async {
+        let (observed, outcome) = block_on(async {
+            let mut observed = Vec::new();
             while let Some(event) = events.next().await {
-                event.expect("runtime event succeeds");
+                observed.push(event.expect("runtime event succeeds").kind().clone());
             }
-            terminal.await
+            (observed, terminal.await)
         });
         assert_eq!(outcome.status(), &TerminalStatus::Completed);
         assert_eq!(outcome.cleanup(), &CleanupOutcome::Clean);
+        assert!(observed.iter().any(|kind| {
+            matches!(
+                kind,
+                RuntimeEventKind::ProviderObservation(ProviderObservation::Usage(usage))
+                    if usage.input_tokens() == Some(20)
+                        && usage.output_tokens() == Some(10)
+                        && usage.reasoning_tokens().is_none()
+                        && usage.cache_read_input_tokens() == Some(4)
+                        && usage.cache_write_input_tokens() == Some(2)
+            )
+        }));
         assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
         assert_eq!(
             fixture.cleanup_events(),

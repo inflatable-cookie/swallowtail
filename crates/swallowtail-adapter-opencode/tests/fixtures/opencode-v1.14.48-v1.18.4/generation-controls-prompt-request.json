@@ -1,0 +1,23 @@
+{
+  "model": {
+    "providerID": "fixture-provider",
+    "modelID": "fixture-model"
+  },
+  "variant": "high",
+  "format": {
+    "type": "json_schema",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "result": {"type": "string"}
+      },
+      "required": ["result"],
+      "additionalProperties": false
+    },
+    "retryCount": 0
+  },
+  "parts": [{
+    "type": "text",
+    "text": "Return one fixture result"
+  }]
+}

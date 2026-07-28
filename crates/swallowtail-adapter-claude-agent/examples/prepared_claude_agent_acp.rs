@@ -1,11 +1,13 @@
 #![allow(dead_code)]
 
 use swallowtail_adapter_claude_agent::{
-    ClaudeAgentPreparationInput, ClaudeAgentPreparationProbe, ClaudeAgentPreparedIntegration,
-    ClaudeAgentPreparedSession, ClaudeAgentSessionProfileInput, prepare_claude_agent,
+    ClaudeAgentPreparationInput, ClaudeAgentPreparationProbe, ClaudeAgentPreparedDelete,
+    ClaudeAgentPreparedIntegration, ClaudeAgentPreparedSession, ClaudeAgentSessionManagementInput,
+    ClaudeAgentSessionProfileInput, prepare_claude_agent,
 };
 use swallowtail_runtime::{
-    CleanupOutcome, HostServices, OperationContent, PreparationFailure, RuntimeFailure,
+    CleanupOutcome, HostServices, OperationContent, PreparationFailure,
+    ProviderSessionManagementBinding, ProviderSessionManagementOutcome, RequestId, RuntimeFailure,
     RuntimeTurnId, TerminalOutcome, TurnRequest,
 };
 
@@ -40,6 +42,21 @@ async fn open_and_prompt(
         .await;
     let _ = turn.close().await;
     Ok((outcome, session.close().await))
+}
+
+fn prepare_delete(
+    prepared: &ClaudeAgentPreparedIntegration,
+    request_id: RequestId,
+    binding: ProviderSessionManagementBinding,
+) -> Result<ClaudeAgentPreparedDelete, PreparationFailure> {
+    prepared.prepare_delete_session(ClaudeAgentSessionManagementInput::new(request_id, binding))
+}
+
+async fn execute_delete(
+    prepared: &ClaudeAgentPreparedDelete,
+    services: HostServices,
+) -> Result<ProviderSessionManagementOutcome, RuntimeFailure> {
+    prepared.execute(services).await
 }
 
 fn main() {}

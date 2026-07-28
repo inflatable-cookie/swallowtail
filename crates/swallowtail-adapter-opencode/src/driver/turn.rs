@@ -51,7 +51,9 @@ async fn pump_turn(
         deadline.and_then(|deadline| services.time().map(|time| time.wait_until(deadline)));
     let mut sequence = 2;
     let mut output = None;
-    let status = loop {
+    let mut usage: Option<swallowtail_runtime::TokenUsage> = None;
+    let mut usage_part_ids = BTreeSet::new();
+    let mut status = loop {
         match next_signal(&mut subscription, &mut deadline_wait).await {
             TurnSignal::Deadline => {
                 let abort = cancellation.request().await;
@@ -128,7 +130,46 @@ async fn pump_turn(
                         sequence += 1;
                     }
                 }
-                Ok(Event::Idle) => break (TerminalStatus::Completed, CleanupOutcome::Clean),
+                Ok(Event::Usage(part_id, observed)) => {
+                    if !usage_part_ids.insert(part_id) {
+                        let abort = cancellation.request().await;
+                        break (
+                            TerminalStatus::RuntimeFailed(SafeDiagnostic::new(
+                                "swallowtail.opencode.usage_duplicate",
+                                "OpenCode repeated one token-usage record",
+                            )),
+                            cleanup_from_result(abort.map(|_| ())),
+                        );
+                    }
+                    usage = match usage {
+                        Some(current) => match current.checked_add_disjoint(observed) {
+                            Some(total) => Some(total),
+                            None => {
+                                let abort = cancellation.request().await;
+                                break (
+                                    TerminalStatus::RuntimeFailed(SafeDiagnostic::new(
+                                        "swallowtail.opencode.usage_overflow",
+                                        "OpenCode token usage exceeded the supported range",
+                                    )),
+                                    cleanup_from_result(abort.map(|_| ())),
+                                );
+                            }
+                        },
+                        None => Some(observed),
+                    };
+                }
+                Ok(Event::Idle) if usage.is_some() => {
+                    break (TerminalStatus::Completed, CleanupOutcome::Clean);
+                }
+                Ok(Event::Idle) => {
+                    break (
+                        TerminalStatus::RuntimeFailed(SafeDiagnostic::new(
+                            "swallowtail.opencode.usage_missing",
+                            "OpenCode completed without required token usage",
+                        )),
+                        CleanupOutcome::Clean,
+                    );
+                }
                 Ok(Event::Cancelled) => break (TerminalStatus::Cancelled, CleanupOutcome::Clean),
                 Ok(Event::ProviderFailed) => {
                     break (
@@ -161,6 +202,16 @@ async fn pump_turn(
     };
     let stream_cleanup = cleanup_from_result(subscription.close().await);
     let cleanup = merge_cleanup(status.1, stream_cleanup);
+    if let Some(usage) = usage
+        && let Err(error) = events.send(RuntimeEvent::new(
+            sequence,
+            RuntimeEventKind::ProviderObservation(
+                swallowtail_runtime::ProviderObservation::Usage(usage),
+            ),
+        ))
+    {
+        status.0 = TerminalStatus::RuntimeFailed(error.diagnostic().clone());
+    }
     events.mark_terminal();
     let mut outcome = TerminalOutcome::new(status.0, cleanup);
     if let Some(output) = output {
@@ -169,5 +220,3 @@ async fn pump_turn(
     let _ = terminal.complete(outcome);
     terminal_flag.store(true, Ordering::SeqCst);
 }
-
-

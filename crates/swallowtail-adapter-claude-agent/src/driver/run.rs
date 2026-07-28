@@ -43,7 +43,9 @@ impl StructuredRunDriver for ClaudeAgentAcpDriver {
                 working_resource,
                 None,
                 SessionPlanAgreement::explicit(
-                    swallowtail_core::SessionAccessPolicy::ambient_harness(ResourceAccess::Read),
+                    swallowtail_core::SessionAccessPolicy::ambient_harness(
+                        ResourceAccess::ReadWrite,
+                    ),
                     Some(SessionProviderStatePolicy::Prohibited),
                     Some(HarnessConfigurationPosture::Ambient),
                 ),

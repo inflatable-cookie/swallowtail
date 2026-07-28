@@ -198,6 +198,15 @@ requests, and bounded read callbacks remain exact provider and host policies,
 but they do not constrain every direct filesystem or child-process path in the
 Gemini CLI process.
 
+Claude Agent ACP keeps two distinct ambient profiles. Interactive sessions
+retain `ResourceAccess::Read` and the exact `Read`, `Glob`, and `Grep` tool
+set. A structured conversion run requires `ResourceAccess::ReadWrite`, adds
+only `Edit` and `Write`, verifies the session advertises `acceptEdits`, and
+selects that mode before its one prompt. The resolved working resource becomes
+the process working directory and lease authority, but `AmbientHost` still
+makes it a location rather than a containment boundary. Unexpected permission
+requests remain rejected and stop the run.
+
 Attached session close owns local HTTP/SSE work only. It does not call OpenCode
 instance dispose, authentication, configuration, share, or server lifecycle
 routes.

@@ -31,6 +31,7 @@ pub(crate) fn all_capabilities() -> CapabilityProfile {
         CapabilityRequirement::new(Capability::ModelCatalog, []),
         CapabilityRequirement::new(Capability::InteractiveSession, []),
         CapabilityRequirement::new(Capability::StreamingEvents, []),
+        CapabilityRequirement::new(Capability::UsageReporting, []),
         CapabilityRequirement::new(Capability::ProviderSessionDelete, []),
         CapabilityRequirement::new(
             Capability::Interruption,
@@ -52,6 +53,7 @@ pub(crate) fn run_capabilities() -> CapabilityProfile {
     CapabilityProfile::new([
         CapabilityRequirement::new(Capability::StructuredRun, []),
         CapabilityRequirement::new(Capability::StreamingEvents, []),
+        CapabilityRequirement::new(Capability::UsageReporting, []),
         CapabilityRequirement::new(Capability::ProviderTemporaryRetention, []),
         CapabilityRequirement::new(
             Capability::OwnedRemoteResourceDeletion,

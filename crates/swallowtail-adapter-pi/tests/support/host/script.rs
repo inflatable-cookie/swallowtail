@@ -176,6 +176,62 @@ pub(super) fn respond(
 fn settled(state: &mut ProcessState) {
     output(
         state,
+        json!({
+            "type": "message_end",
+            "message": {
+                "role": "assistant",
+                "content": [],
+                "api": "anthropic-messages",
+                "provider": "fixture-provider",
+                "model": "fixture-model",
+                "usage": {
+                    "input": 12,
+                    "output": 4,
+                    "cacheRead": 3,
+                    "cacheWrite": 2,
+                    "cost": {
+                        "input": 0.001,
+                        "output": 0.002,
+                        "cacheRead": 0.0001,
+                        "cacheWrite": 0.0002,
+                        "total": 0.0033
+                    }
+                },
+                "stopReason": "stop",
+                "timestamp": 1
+            }
+        }),
+    );
+    output(
+        state,
+        json!({
+            "type": "message_end",
+            "message": {
+                "role": "assistant",
+                "content": [],
+                "api": "anthropic-messages",
+                "provider": "fixture-provider",
+                "model": "fixture-model",
+                "usage": {
+                    "input": 8,
+                    "output": 6,
+                    "cacheRead": 1,
+                    "cacheWrite": 0,
+                    "cost": {
+                        "input": 0.001,
+                        "output": 0.003,
+                        "cacheRead": 0.0001,
+                        "cacheWrite": 0.0,
+                        "total": 0.0041
+                    }
+                },
+                "stopReason": "stop",
+                "timestamp": 2
+            }
+        }),
+    );
+    output(
+        state,
         json!({"type": "agent_end", "messages": [], "willRetry": false}),
     );
     output(state, json!({"type": "agent_settled"}));

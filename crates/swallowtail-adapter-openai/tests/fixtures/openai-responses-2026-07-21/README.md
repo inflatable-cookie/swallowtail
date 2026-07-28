@@ -17,3 +17,7 @@ Response ids, request ids, content, usage, and rate values are synthetic.
 Default tests use no OpenAI credential, account, external request, or paid
 inference. ChatGPT, Codex, subscription OAuth, community OAuth, tools, search,
 files, conversations, webhooks, Batch API, retry, and fallback are excluded.
+
+`generation-controls-request.json` freezes exact reasoning effort and
+provider-native JSON Schema fields beside the existing positive output bound.
+It is contract evidence for card 085, not a realized adapter claim.

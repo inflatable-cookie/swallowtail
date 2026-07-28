@@ -1,0 +1,29 @@
+{
+  "model": "gpt-5.6",
+  "input": [{
+    "role": "user",
+    "content": [{"type": "input_text", "text": "Return one fixture result"}]
+  }],
+  "background": true,
+  "stream": true,
+  "store": false,
+  "max_output_tokens": 64,
+  "reasoning": {
+    "effort": "high"
+  },
+  "text": {
+    "format": {
+      "type": "json_schema",
+      "name": "swallowtail_fixture_result",
+      "strict": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "result": {"type": "string"}
+        },
+        "required": ["result"],
+        "additionalProperties": false
+      }
+    }
+  }
+}

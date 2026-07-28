@@ -11,8 +11,8 @@ use std::task::{Context, Poll, Waker};
 use swallowtail_runtime::{
     BoxEventStream, CallbackAbandonment, CallbackExchange, CleanupOutcome, OperationContent,
     RuntimeEvent, RuntimeEventKind, RuntimeFailure, RuntimeTurnId, TerminalOutcome,
-    TerminalOutcomeFuture, TerminalOutcomeSender, TerminalStatus, runtime_event_channel,
-    terminal_outcome_channel,
+    TerminalOutcomeFuture, TerminalOutcomeSender, TerminalStatus, TokenUsage,
+    runtime_event_channel, terminal_outcome_channel,
 };
 
 mod scheduling;
@@ -54,6 +54,7 @@ pub(crate) struct ActiveTurn {
     callbacks: CallbackHub,
     sequence: AtomicU64,
     output: Mutex<String>,
+    usage: Mutex<Option<TokenUsage>>,
     ui_ids: Mutex<BTreeSet<String>>,
     steering_scheduled: AtomicBool,
     follow_up_scheduled: AtomicBool,
@@ -90,6 +91,7 @@ impl ActiveTurn {
                 callbacks,
                 sequence: AtomicU64::new(1),
                 output: Mutex::new(String::new()),
+                usage: Mutex::new(None),
                 ui_ids: Mutex::new(BTreeSet::new()),
                 steering_scheduled: AtomicBool::new(false),
                 follow_up_scheduled: AtomicBool::new(false),
@@ -130,6 +132,7 @@ impl ActiveTurn {
             PiAgentEvent::ReasoningDelta(delta) => {
                 self.content_event(RuntimeEventKind::ReasoningProgress, delta)
             }
+            PiAgentEvent::Usage(usage) => self.add_usage(usage),
             PiAgentEvent::ProviderFailed => {
                 self.finish(TerminalStatus::ProviderFailed(
                     swallowtail_core::SafeDiagnostic::new(
@@ -157,7 +160,17 @@ impl ActiveTurn {
                     self.completed_prompts.fetch_add(1, Ordering::SeqCst);
                     TerminalStatus::Completed
                 };
-                self.finish(status);
+                let usage = *self.usage.lock().expect("Pi usage lock poisoned");
+                if matches!(status, TerminalStatus::Completed) && usage.is_none() {
+                    self.finish(TerminalStatus::RuntimeFailed(
+                        swallowtail_core::SafeDiagnostic::new(
+                            "swallowtail.pi.rpc.usage_missing",
+                            "Pi RPC completed without required token usage",
+                        ),
+                    ));
+                } else {
+                    self.finish_with_usage(status, usage);
+                }
                 Ok(())
             }
         }
@@ -204,6 +217,20 @@ impl ActiveTurn {
             .send(RuntimeEvent::new(sequence, RuntimeEventKind::Progress))
     }
 
+    fn add_usage(&self, usage: TokenUsage) -> Result<(), RuntimeFailure> {
+        let mut aggregate = self.usage.lock().expect("Pi usage lock poisoned");
+        *aggregate = Some(match *aggregate {
+            Some(current) => current.checked_add_disjoint(usage).ok_or_else(|| {
+                failure(
+                    "swallowtail.pi.rpc.usage_overflow",
+                    "Pi RPC token usage exceeded the supported range",
+                )
+            })?,
+            None => usage,
+        });
+        Ok(())
+    }
+
     fn content_event(&self, kind: RuntimeEventKind, value: String) -> Result<(), RuntimeFailure> {
         let content = OperationContent::new(value).map_err(|_| malformed_ui_sequence())?;
         let sequence = self.next_sequence();
@@ -216,6 +243,10 @@ impl ActiveTurn {
     }
 
     fn finish(&self, status: TerminalStatus) {
+        self.finish_with_usage(status, None);
+    }
+
+    fn finish_with_usage(&self, status: TerminalStatus, usage: Option<TokenUsage>) {
         if self.finished.swap(true, Ordering::SeqCst) {
             return;
         }
@@ -230,6 +261,15 @@ impl ActiveTurn {
                     content,
                 ));
             }
+        }
+        if let Some(usage) = usage {
+            let sequence = self.sequence.fetch_add(1, Ordering::SeqCst);
+            let _ = self.events.send(RuntimeEvent::new(
+                sequence,
+                RuntimeEventKind::ProviderObservation(
+                    swallowtail_runtime::ProviderObservation::Usage(usage),
+                ),
+            ));
         }
         self.events.mark_terminal();
         let mut outcome = TerminalOutcome::new(status, CleanupOutcome::NotApplicable);

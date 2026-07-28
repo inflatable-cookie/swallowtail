@@ -1,6 +1,6 @@
 # Provider Route Matrix
 
-This is the integration front door for Swallowtail's 25 production routes.
+This is the integration front door for Swallowtail's 26 production routes.
 Choose one row explicitly. Swallowtail does not select a provider, driver,
 model, target, endpoint, credential, billing arrangement, execution host, or
 fallback route.
@@ -9,7 +9,7 @@ The companion
 [provider and feature CSV](provider-solution-feature-matrix.csv) groups
 complementary routes only where one public solution facade already exists,
 then compares runtime posture, version posture, and qualified feature coverage
-across all 25 routes.
+across all 26 routes.
 
 Every row has two public paths:
 
@@ -27,7 +27,8 @@ ACP adapters may compose instead of their stdio transport.
 | --- | --- | --- | --- | --- | --- | --- |
 | `codex.exec` | `swallowtail-adapter-codex`; `swallowtail.codex.exec` | structured run; structured CLI | approved executable and environment; caller-selected Codex profile plus matching evidence | `codex.cli`; ordered maintained/deprecated range with permitted unverified-newer stable points | `prepare_codex(StructuredExec)` → `prepare_structured_exec` → `start_run` | `CodexExecDriver`; `StructuredRunDriver` |
 | `codex.app-server` | `swallowtail-adapter-codex`; `swallowtail.codex.app-server` | catalogue, interactive session, and inactive provider-thread management; JSONL RPC stdio | approved executable and environment; caller-selected Codex profile plus matching evidence | `codex.cli`; independent app-server and lifecycle behavior segments with permitted visible unverified-newer points | `prepare_codex(AppServer)` → catalogue, session, archive, restore, or delete profile → its typed bound operation | `CodexAppServerDriver`; `ModelCatalogDriver`, `InteractiveSessionDriver`, and `ProviderSessionManagementDriver` |
-| `claude-agent.acp` | `swallowtail-adapter-claude-agent`; `swallowtail.claude-agent.acp` | one-prompt structured run, interactive session, reasoning selection, and inactive provider-session delete; ACP v1 stdio | approved executable and environment; maintainer-supported local Claude subscription auth by default, or explicit Anthropic public API-key pay-as-you-go access | `claude-agent.acp-adapter`; maintained range plus permitted unverified-newer stable points | `prepare_claude_agent` → run, session, or delete profile → `start_run`, `open_session`, or `execute` | `ClaudeAgentAcpDriver`; `StructuredRunDriver`, `InteractiveSessionDriver`, and `ProviderSessionManagementDriver` |
+| `claude-agent.acp` | `swallowtail-adapter-claude-agent`; `swallowtail.claude-agent.acp` | ambient read-write one-prompt structured run, read-only interactive session, reasoning selection, and inactive provider-session delete; ACP v1 stdio | approved executable and environment; maintainer-supported local Claude subscription auth by default, or explicit Anthropic public API-key pay-as-you-go access | `claude-agent.acp-adapter`; maintained range plus permitted unverified-newer stable points | `prepare_claude_agent` → run, session, or delete profile → `start_run`, `open_session`, or `execute` | `ClaudeAgentAcpDriver`; `StructuredRunDriver`, `InteractiveSessionDriver`, and `ProviderSessionManagementDriver` |
+| `claude-code.headless` | `swallowtail-adapter-claude-agent`; `swallowtail.claude-code.headless` | read-only one-prompt structured run with usage and reasoning selection; Claude Code stream JSON over stdio | approved `claude` executable and environment; provider-supported local Claude subscription access; explicit ambient harness configuration with no session persistence | `claude-code.headless-stream-json`; exact `2.1.220` plus permitted unverified-newer stable points | `prepare_claude_code_headless` → `prepare_run` → `start_run` | `ClaudeCodeHeadlessDriver`; `StructuredRunDriver` |
 | `gemini-cli.acp` | `swallowtail-adapter-gemini`; `swallowtail.gemini.acp` | interactive session with negotiated model options; ACP v1 stdio | approved executable; provider-supported Gemini Developer API-key profile | `gemini-cli.acp-agent`; maintained release plus permitted unverified-newer stable points | `prepare_gemini_acp` → `prepare_session` → `open_session`; read options from the authorized handle | `GeminiAcpDriver`; `InteractiveSessionDriver` |
 | `gemini-cli.headless` | `swallowtail-adapter-gemini`; `swallowtail.gemini.headless` | one-prompt structured run with usage; stream-json stdio | approved executable and environment; provider-supported Gemini Developer API-key profile; explicit ambient harness configuration and durable transcript retention | `gemini-cli.headless-stream-json`; exact `0.51.0..=0.52.0` plus permitted unverified-newer stable points | `prepare_gemini_cli(Headless)` → `prepare_run` → `start_run` | `GeminiHeadlessDriver`; `StructuredRunDriver` |
 | `kimi-code.acp` | `swallowtail-adapter-kimi`; `swallowtail.kimi.acp` | persistent interactive session with negotiated model options; ACP v1 stdio | approved executable; delegated Kimi membership OAuth reference | `kimi-code.executable`; exact `0.28.1` plus qualified `0.29.0..=0.29.2`, then permitted unverified-newer stable points | `prepare_kimi_code(Acp)` → `prepare_session` → `open_session`, `load_session`, or `resume_session`; read options from the authorized handle | `KimiAcpDriver`; `InteractiveSessionDriver` |
@@ -114,6 +115,7 @@ delete.
 | `codex.exec` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | accepted `codex.cli` exec segments; no persistent-session claim | run and process cleanup only |
 | `codex.app-server` | `supported` | `yes` | `supported` | `supported` | `supported` | `ProviderHardDeleted` | qualified segments inside `0.80.0..=0.145.0`, excluding `0.82.0..=0.83.0` and `0.108.0..=0.109.0`: archive from `0.80.0`, restore from `0.92.0`, delete from `0.140.0`; later stable points may be visible `UnverifiedNewer` | attachment and process cleanup only; provider state is preserved |
 | `claude-agent.acp` | `supported` | `yes` | `unsupported` | `unsupported` | `supported` | `ProviderDataDeleted` | `0.53.0..=0.61.0`, excluding unpublished `0.58.0`; later stable releases are visible `UnverifiedNewer` | negotiated native close releases active resources; history is preserved |
+| `claude-code.headless` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | exact qualified `2.1.220`; later stable releases may be visible `UnverifiedNewer`; every run disables session persistence | process and task cleanup only; no provider session is retained |
 | `gemini-cli.acp` | `unsupported` | `no` | `unsupported` | `unsupported` | `unsupported` | `unsupported` | exact qualified `0.51.0`; later stable points may be visible `UnverifiedNewer`; selected ACP route advertises no close or delete | connection and process cleanup only; provider state is preserved |
 | `gemini-cli.headless` | `unsupported` | `no` | `unsupported` | `unsupported` | `unsupported` | `unsupported` | exact qualified `0.51.0..=0.52.0`; later stable points may be visible `UnverifiedNewer`; every run uses a distinct provider session identity | process and task cleanup only; the local Gemini transcript is preserved |
 | `kimi-code.acp` | `unsupported` | `no` | `unsupported` | `unsupported` | `unsupported` | `unsupported` | exact qualified `0.28.1` and `0.29.0`; later stable points may be visible `UnverifiedNewer`; selected ACP route advertises no close or delete | connection and process cleanup only; provider state is preserved |
@@ -205,6 +207,7 @@ All examples compile from their adapter crate's public API under
 - Installed harnesses:
   [Codex](../../crates/swallowtail-adapter-codex/examples/prepared_discovery.rs),
   [Claude Agent](../../crates/swallowtail-adapter-claude-agent/examples/prepared_claude_agent_acp.rs),
+  [Claude Code headless](../../crates/swallowtail-adapter-claude-agent/examples/prepared_claude_code_headless.rs),
   [Gemini CLI ACP](../../crates/swallowtail-adapter-gemini/examples/prepared_gemini_acp.rs),
   [Gemini CLI headless](../../crates/swallowtail-adapter-gemini/examples/prepared_gemini_headless.rs),
   [Kimi Code ACP](../../crates/swallowtail-adapter-kimi/examples/prepared_acp.rs),

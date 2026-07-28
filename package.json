@@ -1,0 +1,12 @@
+{
+  "name": "swallowtail-provider-sidecars",
+  "private": true,
+  "description": "Repo-local provider sidecars used by Swallowtail development and live probes",
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "npm@11.17.0",
+  "dependencies": {
+    "@agentclientprotocol/claude-agent-acp": "0.63.0"
+  }
+}

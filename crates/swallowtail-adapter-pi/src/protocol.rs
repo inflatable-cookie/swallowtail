@@ -143,6 +143,22 @@ mod tests {
     }
 
     #[test]
+    fn malformed_usage_components_fail_closed() {
+        for bytes in [
+            br#"{"type":"message_end","message":{"role":"assistant","usage":{"input":-1,"output":1,"cacheRead":0,"cacheWrite":0},"stopReason":"stop"}}"#.as_slice(),
+            br#"{"type":"message_end","message":{"role":"assistant","usage":{"input":1.5,"output":1,"cacheRead":0,"cacheWrite":0},"stopReason":"stop"}}"#.as_slice(),
+            br#"{"type":"message_end","message":{"role":"assistant","usage":{"input":1,"output":1,"cacheRead":0},"stopReason":"stop"}}"#.as_slice(),
+        ] {
+            let mut record = bytes.to_vec();
+            record.push(b'\n');
+            assert_eq!(
+                decode_records(&record).expect_err("usage rejects").kind(),
+                PiRpcProtocolFailureKind::UnknownRecord
+            );
+        }
+    }
+
+    #[test]
     fn metadata_and_outbound_commands_are_valid_json_without_private_values() {
         let protocol: serde_json::Value = serde_json::from_str(include_str!(
             "../tests/fixtures/pi-rpc-0.80.10/protocol.json"

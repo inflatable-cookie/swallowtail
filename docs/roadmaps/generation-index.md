@@ -37,4 +37,7 @@ deletion or changing ACP. Roadmap 021 closes source-scoped model catalogue
 coverage. Roadmaps 022-024 add independently qualified direct, harness, and
 retained Kimi structured-run branches, then close the solution matrix without
 widening realtime media or owned serving. All three roadmaps are complete.
-The next task is the operator-held roadmap 019 consumer-adoption decision.
+Roadmap 025 begins the provider feature-matrix `No`-closure programme with an
+exact inventory before another implementation lane. Roadmap 026 continues that
+programme through output-token limits, reasoning selection, and structured
+output without rolling the generation.

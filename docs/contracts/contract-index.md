@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-27
+Updated: 2026-07-28
 
 | Contract | Status | Scope |
 | --- | --- | --- |
@@ -45,3 +45,4 @@ Updated: 2026-07-27
 | [037 Provider-Wide Prepared Integration And Bound Operations](037-prepared-consumer-integration.md) | active | Adapter-local preparation and typed bound operations for every production driver, with plan derivation, access provenance, version truth, safe stages, joined host composition, and low-level escape hatch |
 | [038 Provider Session Management And Consumer Thread Boundary](038-provider-session-management-and-consumer-thread-boundary.md) | active | Consumer-local thread lifecycle versus bound provider archive, restore, delete, close, transport-specific binding import, deletion-strength, and uncertainty semantics |
 | [039 Bounded Single-Turn Structured-Run Projection](039-bounded-single-turn-structured-run-projection.md) | active | Independently qualified one-turn structured operations over exact direct, connection, ACP, RPC, or attached-server lifecycles with explicit retention and joined cleanup |
+| [040 Generation-Control Application And Enforcement](040-generation-control-application-and-enforcement.md) | active | Exact output maximum, reasoning mapping, schema enforcement source, model capability, version milestone, and application-state truth |

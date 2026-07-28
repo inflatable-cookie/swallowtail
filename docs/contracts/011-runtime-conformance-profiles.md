@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-26
+Updated: 2026-07-28
 
 ## Purpose
 
@@ -72,6 +72,13 @@ steering, active-turn cancellation, close, resume constraints, and joined task
 scope. The same public profile must run against distinct local and remote-
 authoritative host identities without exposing paths or moving authority to a
 client.
+
+An ACP route additionally proves that standard session-scoped metadata
+updates (`available_commands_update`, `config_option_update`, and
+`current_mode_update`) are accepted before and during a turn without becoming
+consumer output. Unknown session updates fail explicitly. Each stdio ACP route
+binds and tests explicit receive frame and buffer limits; a shared transport
+default is not route evidence when the agent may emit larger frames.
 
 ### Bounded Single-Turn Projection
 
@@ -172,6 +179,14 @@ Every applicable profile asserts:
 - endpoint and credential grants cannot cross operation scope or audience
 - credential release is awaited after connection cleanup
 - cumulative usage does not become repeated-attempt usage
+- one emitted `ProviderObservation::Usage` is a cumulative snapshot for its
+  operation at that event boundary
+- provider usage records that are already cumulative replace the prior
+  snapshot; disjoint step or message records may be summed once into the
+  operation snapshot
+- mixed, ambiguous, malformed, or overflowing usage composition fails closed
+  instead of guessing; context occupancy, billed cost, rate, quota, and token
+  limits never enter the token-usage aggregate
 - rate, quota, billing, and retry evidence remain separate
 - a provider error inside a successful stream cannot complete successfully
 - each locally continued inference attempt requires explicit authorization

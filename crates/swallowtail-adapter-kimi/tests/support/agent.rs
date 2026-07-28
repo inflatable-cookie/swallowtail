@@ -131,11 +131,12 @@ impl SharedAgent {
                 let mut result = self.session_configuration();
                 result["sessionId"] = Value::String("kimi-session-bound".to_owned());
                 Self::enqueue(&mut state, Self::response(id, result));
+                enqueue_session_metadata(&mut state);
             }
             Some("session/load") => self.load(&mut state, id),
             Some("session/resume") => {
                 Self::enqueue(&mut state, Self::response(id, self.session_configuration()));
-                Self::enqueue(&mut state, passive_update());
+                enqueue_session_metadata(&mut state);
             }
             Some("session/set_config_option") => self.set_reasoning(&mut state, id, &message)?,
             Some("session/prompt") => self.prompt(&mut state, id)?,
@@ -178,7 +179,7 @@ impl SharedAgent {
             );
         }
         Self::enqueue(state, Self::response(id, self.session_configuration()));
-        Self::enqueue(state, passive_update());
+        enqueue_session_metadata(state);
     }
 
     fn prompt(&self, state: &mut AgentState, id: Option<u64>) -> Result<(), RuntimeFailure> {
@@ -190,6 +191,7 @@ impl SharedAgent {
             | Scenario::ReasoningEffort291Success
             | Scenario::ReasoningEffort292Success
             | Scenario::ReasoningNewerSuccess => {
+                enqueue_session_metadata(state);
                 Self::enqueue(
                     state,
                     json!({"jsonrpc": "2.0", "method": "session/update", "params": {
@@ -212,11 +214,21 @@ impl SharedAgent {
     }
 }
 
-fn passive_update() -> Value {
-    json!({"jsonrpc": "2.0", "method": "session/update", "params": {
-        "sessionId": "kimi-session-bound",
-        "update": {"sessionUpdate": "available_commands_update", "availableCommands": []}
-    }})
+fn enqueue_session_metadata(state: &mut AgentState) {
+    for update in [
+        json!({"sessionUpdate": "available_commands_update", "availableCommands": []}),
+        json!({"sessionUpdate": "config_option_update", "configOptions": []}),
+        json!({"sessionUpdate": "current_mode_update", "currentModeId": "default"}),
+    ] {
+        SharedAgent::enqueue(
+            state,
+            json!({
+                "jsonrpc": "2.0",
+                "method": "session/update",
+                "params": {"sessionId": "kimi-session-bound", "update": update}
+            }),
+        );
+    }
 }
 
 include!("agent/reasoning.rs");

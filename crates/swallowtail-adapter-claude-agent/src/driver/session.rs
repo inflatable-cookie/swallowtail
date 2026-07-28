@@ -103,10 +103,7 @@ impl InteractiveSessionHandle for ClaudeAgentSessionHandle {
                 prompt_scope,
                 Box::pin(async move {
                     match response.await {
-                        Ok(response) => match response.get("stopReason").and_then(Value::as_str) {
-                            Some(reason) => prompt_turn.finish_prompt(reason),
-                            None => prompt_turn.fail(&malformed()),
-                        },
+                        Ok(response) => prompt_turn.finish_prompt(&response),
                         Err(error) => prompt_turn.fail(&error),
                     }
                     connection.clear_active_turn(&prompt_turn);

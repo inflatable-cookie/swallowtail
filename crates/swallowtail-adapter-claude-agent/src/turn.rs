@@ -6,7 +6,8 @@ use swallowtail_core::{ExtensionNamespace, ProviderRequestRef};
 use swallowtail_runtime::{
     BoxEventStream, CleanupOutcome, OperationContent, ProviderRequestObservation, RuntimeEvent,
     RuntimeEventKind, RuntimeFailure, RuntimeTurnId, TerminalOutcome, TerminalOutcomeFuture,
-    TerminalOutcomeSender, TerminalStatus, runtime_event_channel, terminal_outcome_channel,
+    TerminalOutcomeSender, TerminalStatus, TokenUsage, runtime_event_channel,
+    terminal_outcome_channel,
 };
 
 const EVENT_CAPACITY: usize = 128;
@@ -150,7 +151,21 @@ impl ActiveTurn {
         }
     }
 
-    pub(crate) fn finish_prompt(&self, stop_reason: &str) {
+    pub(crate) fn finish_prompt(&self, response: &Value) {
+        let stop_reason = match response.get("stopReason").and_then(Value::as_str) {
+            Some(stop_reason) => stop_reason,
+            None => {
+                self.fail(&malformed());
+                return;
+            }
+        };
+        let usage = match prompt_usage(response) {
+            Ok(usage) => usage,
+            Err(error) => {
+                self.fail(&error);
+                return;
+            }
+        };
         let status = if let Some(observation) = self
             .provider_observation
             .lock()
@@ -180,7 +195,7 @@ impl ActiveTurn {
                 ),
             }
         };
-        self.finish(status);
+        self.finish_with_usage(status, usage);
     }
 
     pub(crate) fn fail(&self, error: &RuntimeFailure) {
@@ -188,6 +203,14 @@ impl ActiveTurn {
     }
 
     fn finish(&self, status: TerminalStatus) {
+        self.finish_internal(status, None);
+    }
+
+    fn finish_with_usage(&self, status: TerminalStatus, usage: TokenUsage) {
+        self.finish_internal(status, Some(usage));
+    }
+
+    fn finish_internal(&self, status: TerminalStatus, usage: Option<TokenUsage>) {
         if self.finished.swap(true, Ordering::SeqCst) {
             return;
         }
@@ -200,6 +223,14 @@ impl ActiveTurn {
         if let Ok(content) = OperationContent::new(output) {
             let _ = self.emit(RuntimeEventKind::OutputAvailable, Some(content.clone()));
             outcome = outcome.with_output(content);
+        }
+        if let Some(usage) = usage {
+            let _ = self.emit(
+                RuntimeEventKind::ProviderObservation(
+                    swallowtail_runtime::ProviderObservation::Usage(usage),
+                ),
+                None,
+            );
         }
         self.events.mark_terminal();
         let _ = self.terminal.complete(outcome);
@@ -237,6 +268,40 @@ impl ActiveTurn {
             None => RuntimeEvent::new(sequence, kind),
         })
     }
+}
+
+fn prompt_usage(response: &Value) -> Result<TokenUsage, RuntimeFailure> {
+    let usage = response.get("usage").ok_or_else(malformed)?;
+    let input = usage
+        .get("inputTokens")
+        .and_then(Value::as_u64)
+        .ok_or_else(malformed)?;
+    let output = usage
+        .get("outputTokens")
+        .and_then(Value::as_u64)
+        .ok_or_else(malformed)?;
+    let cache_read = usage
+        .get("cachedReadTokens")
+        .and_then(Value::as_u64)
+        .ok_or_else(malformed)?;
+    let cache_write = usage
+        .get("cachedWriteTokens")
+        .and_then(Value::as_u64)
+        .ok_or_else(malformed)?;
+    let total = usage
+        .get("totalTokens")
+        .and_then(Value::as_u64)
+        .ok_or_else(malformed)?;
+    let calculated = input
+        .checked_add(output)
+        .and_then(|value| value.checked_add(cache_read))
+        .and_then(|value| value.checked_add(cache_write))
+        .ok_or_else(malformed)?;
+    if calculated != total {
+        return Err(malformed());
+    }
+    Ok(TokenUsage::new(Some(input), Some(output))
+        .with_cache_tokens(Some(cache_read), Some(cache_write)))
 }
 
 fn text_content(update: &Value) -> Result<&str, RuntimeFailure> {

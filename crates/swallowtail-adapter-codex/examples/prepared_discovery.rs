@@ -1,7 +1,8 @@
 use swallowtail_adapter_codex::{
     CodexExecProfileInput, CodexModelSelection, CodexPreparationInput, CodexPreparationProbe,
-    CodexPreparedCatalogue, CodexPreparedDriver, CodexPreparedExec, CodexPreparedIntegration,
-    CodexPreparedSession, CodexSessionProfileInput, prepare_codex,
+    CodexPreparedArchive, CodexPreparedCatalogue, CodexPreparedDelete, CodexPreparedDriver,
+    CodexPreparedExec, CodexPreparedIntegration, CodexPreparedRestore, CodexPreparedSession,
+    CodexSessionManagementInput, CodexSessionProfileInput, prepare_codex,
 };
 use swallowtail_core::{
     AccessProfile, AccessStatus, ConfiguredInstanceId, ExecutionHostId, ExternalNetworkPolicy,
@@ -11,7 +12,8 @@ use swallowtail_core::{
 use swallowtail_runtime::{
     Deadline, DiscoveryCancellation, EnvironmentRef, HostServices, InstalledExecutableTarget,
     InteractiveSessionHandle, OperationContent, PreparationFailure, PreparedAccessEvidence,
-    RequestId, RunHandle, RuntimeFailure, ScopeId, SessionOptions, WorkingResourceRef,
+    ProviderSessionManagementBinding, ProviderSessionManagementOutcome, RequestId, RunHandle,
+    RuntimeFailure, ScopeId, SessionOptions, WorkingResourceRef,
 };
 
 async fn prepare_installed_codex(
@@ -92,6 +94,37 @@ async fn start_exec(
     exec.start_run(services).await
 }
 
+fn prepare_archive(
+    prepared: &CodexPreparedIntegration,
+    request_id: RequestId,
+    binding: ProviderSessionManagementBinding,
+) -> Result<CodexPreparedArchive, PreparationFailure> {
+    prepared.prepare_archive_session(CodexSessionManagementInput::new(request_id, binding))
+}
+
+fn prepare_restore(
+    prepared: &CodexPreparedIntegration,
+    request_id: RequestId,
+    binding: ProviderSessionManagementBinding,
+) -> Result<CodexPreparedRestore, PreparationFailure> {
+    prepared.prepare_restore_session(CodexSessionManagementInput::new(request_id, binding))
+}
+
+fn prepare_delete(
+    prepared: &CodexPreparedIntegration,
+    request_id: RequestId,
+    binding: ProviderSessionManagementBinding,
+) -> Result<CodexPreparedDelete, PreparationFailure> {
+    prepared.prepare_delete_session(CodexSessionManagementInput::new(request_id, binding))
+}
+
+async fn execute_archive(
+    prepared: &CodexPreparedArchive,
+    services: HostServices,
+) -> Result<ProviderSessionManagementOutcome, RuntimeFailure> {
+    prepared.execute(services).await
+}
+
 fn main() {
     let _ = prepare_installed_codex;
     let _ = prepare_read_only_session;
@@ -99,6 +132,10 @@ fn main() {
     let _ = list_models;
     let _ = open_session;
     let _ = start_exec;
+    let _ = prepare_archive;
+    let _ = prepare_restore;
+    let _ = prepare_delete;
+    let _ = execute_archive;
     let _ = CodexModelSelection::new(
         ModelRouteId::new("codex-route").expect("route id is valid"),
         ModelRouteRevision::new("1").expect("route revision is valid"),

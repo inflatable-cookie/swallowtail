@@ -123,6 +123,14 @@ history deletion. Process exit does not imply transcript deletion.
 The run keeps harness interaction as its execution layer. It does not become
 direct model inference because the consumer submits only one prompt.
 
+The Claude Agent ACP projection is an ambient read-write conversion profile,
+separate from its read-only interactive profile. Its immutable plan requires a
+filesystem working resource with `ResourceAccess::ReadWrite`. Session creation
+enables exactly `Read`, `Glob`, `Grep`, `Edit`, and `Write`; the driver then
+requires and selects the provider's `acceptEdits` mode before the prompt.
+Neither the working directory nor that provider mode creates a bounded
+filesystem-containment claim under `AmbientHost`.
+
 ## Callback Projection
 
 When the exact route supports consumer callbacks, `RunHandle::take_callbacks`
@@ -229,4 +237,3 @@ close, deletion or non-deletion, connection, and process behavior.
 - unsupported request features fail before effects
 - realtime media and serving lifecycle do not inherit structured execution
 - no provider, model, access, transport, or fallback choice is implicit
-

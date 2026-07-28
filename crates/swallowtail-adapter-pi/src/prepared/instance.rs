@@ -44,6 +44,7 @@ pub(crate) fn session_capabilities() -> CapabilityProfile {
     CapabilityProfile::new([
         CapabilityRequirement::new(Capability::InteractiveSession, []),
         CapabilityRequirement::new(Capability::StreamingEvents, []),
+        CapabilityRequirement::new(Capability::UsageReporting, []),
         CapabilityRequirement::new(
             Capability::Interruption,
             [CapabilityConstraint::CancellationScope(
@@ -64,6 +65,7 @@ pub(crate) fn run_capabilities() -> CapabilityProfile {
     CapabilityProfile::new([
         CapabilityRequirement::new(Capability::StructuredRun, []),
         CapabilityRequirement::new(Capability::StreamingEvents, []),
+        CapabilityRequirement::new(Capability::UsageReporting, []),
         CapabilityRequirement::new(
             Capability::Interruption,
             [CapabilityConstraint::CancellationScope(

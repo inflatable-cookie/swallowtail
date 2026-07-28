@@ -6,7 +6,7 @@ use swallowtail_core::{
     InterfaceVersionBinding, ModelCatalogEntry, ModelId, ModelMetadata, ModelTokenLimits,
     ProviderId,
 };
-use swallowtail_runtime::RuntimeFailure;
+use swallowtail_runtime::{RuntimeFailure, TokenUsage};
 
 mod health;
 pub(crate) use health::observe_health;

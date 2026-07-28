@@ -5,6 +5,14 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-07-28 Generation-Control Contract And Corpora](2026-07-28-generation-control-contract-and-corpora.md)
+- [2026-07-28 Generation-Control `No` Currentness Audit](2026-07-28-generation-control-no-currentness-audit.md)
+- [2026-07-28 Usage-Evidence Closeout And Generation Controls](2026-07-28-usage-evidence-closeout-and-generation-controls.md)
+- [2026-07-28 Harness Usage-Evidence Implementation](2026-07-28-harness-usage-evidence-implementation.md)
+- [2026-07-28 Harness Usage-Evidence Contract And Corpora](2026-07-28-harness-usage-evidence-contract-and-corpora.md)
+- [2026-07-28 Provider Feature `No` Inventory And Usage Selection](2026-07-28-provider-feature-no-inventory-and-usage-selection.md)
+- [2026-07-28 Claude Agent Structured Write Authority](2026-07-28-claude-agent-structured-write-authority.md)
+- [2026-07-28 Nucleus Provider-Session Lifecycle Handoff](2026-07-28-nucleus-provider-session-lifecycle-handoff.md)
 - [2026-07-28 Structured-Run Provider-Wide Closeout](2026-07-28-structured-run-provider-wide-closeout.md)
 - [2026-07-28 Kimi Structured Runs](2026-07-28-kimi-structured-runs.md)
 - [2026-07-28 Claude Agent Local Subscription Auth](2026-07-28-claude-agent-local-subscription-auth.md)

@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-27
+Updated: 2026-07-28
 
 ## Realized State
 
@@ -33,7 +33,10 @@ spine:
   unauthenticated access remains distinct from local topology
 - `swallowtail-runtime` depends on core plus `futures-core` and `zeroize` and owns
   executor-neutral dynamic roles, lifecycle handles, bounded events, terminal
-  outcomes, explicit operation policy, typed usage/rate/quota observations,
+  outcomes, explicit operation policy, typed usage/rate/quota observations;
+  usage is one cumulative operation snapshot at each emitted boundary,
+  replacing provider-cumulative records or summing disjoint provider
+  components once while keeping context occupancy and billed cost separate;
   scope- and audience-bound endpoint/credential ports, scoped
   materialization leases, read-only model-artifact leases, scoped owned-serving
   endpoint publication, a distinct working-resource callback I/O port, and
@@ -103,8 +106,9 @@ spine:
   read-only, ephemeral `codex exec` structured-run surface plus read-only and
   bounded-workspace app-server interactive sessions through runtime host ports
 - `swallowtail-adapter-claude-agent` implements installed discovery,
-  one-prompt structured runs, and read-only interactive sessions for Claude Agent ACP
-  `0.53.0..=0.61.0`, excluding `0.58.0`, over ACP v1 stdio; stable newer
+  ambient read-write one-prompt structured runs and read-only interactive
+  sessions for Claude Agent ACP `0.53.0..=0.61.0`, excluding `0.58.0`, over
+  ACP v1 stdio; stable newer
   versions remain visible and unverified, while separate local-subscription
   and public-API-key profiles, model confirmation, ambient configuration,
   ambient-host isolation, permission rejection, cancellation, deadlines, and
@@ -274,11 +278,12 @@ Crate status:
   app-server model discovery and interactive sessions
 - `swallowtail-adapter-claude-agent` — realized for exact installed wrapper
   discovery and four private behavior revisions across the maintained ACP
-  range, plus independent one-prompt structured and read-only interactive
-  roles with explicit local-subscription or public-API-key access, no-argument
-  process launch, bounded read callbacks, permission rejection, cancellation,
-  deadlines, disconnect classification, native close without deletion, and
-  joined resource plus optional credential cleanup
+  range, plus independent ambient read-write one-prompt structured and
+  read-only interactive roles with explicit local-subscription or public-API-
+  key access, no-argument process launch, bounded read callbacks, explicit
+  structured-run edit acceptance, unexpected-permission rejection,
+  cancellation, deadlines, disconnect classification, native close without
+  deletion, and joined resource plus optional credential cleanup
 - `swallowtail-adapter-deepseek` — realized for one exact opaque facade
   revision, V4 Pro catalogue and selection, buffered tool response, streaming
   finals, private continuation, cache usage, consumer-authorized attempts,
@@ -812,7 +817,7 @@ session, background run, managed agent, realtime media, SDK, attached runtime,
 and owned-serving operations remain separate types and methods. There is no
 generic prompt method.
 
-The current 25 production routes form six facade implementation families:
+The current 26 production routes form six facade implementation families:
 installed harness, attached harness network, hosted direct and provider-owned
 state, realtime connection, embedded SDK, and local model runtime. Family
 helpers may share host and preparation mechanics. They cannot select a
@@ -1018,7 +1023,7 @@ catalogue, then returns the owned handle. Stop joins the child, invalidates
 endpoint authority, and only then releases the artifact. Acquisition,
 persistent serving, and Monkey ownership remain outside Swallowtail.
 
-The provider-wide prepared contract is now realized across all 25 production
+The provider-wide prepared contract is now realized across all 26 production
 routes. The g02.008 cross-shape review accepted the common
 `PreparedOperationEvidence`, adapter-local evidence, two-phase construction,
 safe preparation stages, and typed low-level delegation without a new durable

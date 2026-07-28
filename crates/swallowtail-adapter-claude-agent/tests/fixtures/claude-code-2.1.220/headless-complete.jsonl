@@ -1,0 +1,5 @@
+{"type":"system","subtype":"hook_started","session_id":"fixture-session"}
+{"type":"system","subtype":"hook_response","session_id":"fixture-session"}
+{"type":"system","subtype":"init","session_id":"fixture-session","model":"claude-opus-5","permissionMode":"plan","claude_code_version":"2.1.220","cwd":"/fixture","tools":["Read","Glob","Grep"],"mcp_servers":[]}
+{"type":"assistant","message":{"id":"msg_fixture","type":"message","role":"assistant","model":"claude-opus-5","content":[{"type":"text","text":"fixture result"}],"stop_reason":"end_turn","usage":{"input_tokens":12,"output_tokens":3}},"parent_tool_use_id":null,"uuid":"assistant-fixture","session_id":"fixture-session"}
+{"type":"result","subtype":"success","is_error":false,"result":"fixture result","usage":{"input_tokens":12,"output_tokens":3,"cache_read_input_tokens":4,"cache_creation_input_tokens":1},"session_id":"fixture-session"}

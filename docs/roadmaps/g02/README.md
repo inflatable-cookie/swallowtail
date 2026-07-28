@@ -38,6 +38,7 @@ evidence-led provider work.
 | Add a separate Kimi local-server lifecycle and interactive route. | completed | Research 040-041, Contracts 029 and 038 | `g02.020` |
 | Expand source-scoped model catalogue coverage without hidden session creation. | completed | Research 042-043, Contract 020 | `g02.021` |
 | Close useful structured-run gaps without flattening provider lifecycle. | completed | Research 044-046, Contract 039 | `g02.022`-`g02.024` |
+| Audit and close remaining provider feature-matrix `No` values in evidence-ranked families. | active | Research 003 and 042-046, Contracts 014-039 | `g02.025` onward |
 
 ## Current Checkpoint
 
@@ -171,7 +172,38 @@ evidence-led provider work.
 - all 23 local package archives assemble, the extracted workspace compiles,
   and the closure-tranche structured suites execute without live credentials
 - roadmaps g02.022-g02.024 and cards 071-079 are complete; the sole next task
-  is the operator-held card 060 lifecycle-adoption decision
+  was the operator-held card 060 lifecycle-adoption decision
+- card 060 now publishes a bounded Nucleus lifecycle handoff: local lifecycle
+  stays universal, provider actions stay optional and capability-gated, and
+  partial outcomes remain separate
+- provider management bindings currently have no stable persistence codec;
+  initial consumer adoption is same-process only and durable export/import is
+  deferred
+- card 080 reduces the exact CSV-aware inventory from 458 to 432 `No` cells by
+  correcting 26 serving-only llama.cpp cells to `Not applicable`
+- Research 047 classifies every current `No`; usage evidence is first, with
+  Claude Agent ACP, Pi RPC, and OpenCode ready and both Kimi surfaces retained
+  as honest upstream absence
+- card 081 freezes Claude, Pi, and OpenCode usage corpora, proves the full
+  existing version windows, and promotes cumulative replacement plus disjoint
+  aggregation
+- card 082 implements the three prepared usage paths, including optional
+  reasoning tokens, disjoint aggregation, malformed and duplicate rejection,
+  and exact prepared capability claims
+- card 083 proves all 23 packages from the dirty source snapshot and closes
+  the workspace at 935 passing tests with four intentional skips
+- the later Claude Code headless solution changes the current live inventory:
+  the 22-solution matrix now has 451 `No`, 29 `Not applicable`, and only two
+  usage `No` cells, both Kimi
+- roadmap g02.026 and cards 084-087 keep the matrix programme moving through
+  48 generation-control gaps
+- Research 049 and card 084 classify all 48 gaps: 25 are plausible
+  conversions, 20 are exact upstream absences, and three managed-agent cells
+  belong to the agent-version operation shape
+- card 085 selects seven conversions across OpenAI, Ollama, and OpenCode;
+  xAI remains operator-held and the broader matrix runway remains explicit
+- Contract 040 and card 085 freeze exact application and enforcement truth
+  plus offline request corpora for all seven selected controls
 - roadmaps g02.016-g02.019 sequence Codex, ACP/Claude Agent, OpenCode,
   provider-wide acceptance, and the Nucleus handoff
 - all 23 manifests carry contract-complete metadata and crates.io publication
@@ -500,15 +532,30 @@ evidence-led provider work.
 - [018 OpenCode Session Deletion Proof](018-opencode-session-deletion-proof.md)
   — completed
 - [019 Provider Session Lifecycle Acceptance And Handoff](019-provider-session-lifecycle-acceptance-and-handoff.md)
-  — paused; card 058 complete, card 059 waits for canonical source history
+  — paused; cards 058 and 060 complete, card 059 waits for canonical source
+  history
 - [020 Kimi Code Local Server Route](020-kimi-code-local-server-route.md)
   — completed; cards 061-065 complete
+- [021 Model Catalogue Coverage](021-model-catalogue-coverage.md)
+  — completed; cards 066-070 complete
+- [022 Structured Run Projection And Direct Coverage](022-structured-run-projection-and-direct-coverage.md)
+  — completed; cards 071-073 complete
+- [023 Installed And Attached Harness Structured Coverage](023-installed-and-attached-harness-structured-coverage.md)
+  — completed; cards 074-076 complete
+- [024 Kimi Structured Coverage And Matrix Closeout](024-kimi-structured-coverage-and-matrix-closeout.md)
+  — completed; cards 077-079 complete
+- [025 Provider Feature Matrix No-Closure Programme](025-provider-feature-matrix-no-closure-programme.md)
+  — completed; cards 080-083 complete
+- [026 Generation-Control Feature Closure](026-generation-control-feature-closure.md)
+  — active; cards 084-085 complete, card 086 ready, card 087 planned
 
 ## Held Backlog
 
 The [Grok Build maintained ACP range](../backlog/grok-build-maintained-acp-range.md)
 is deferred behind its exact authentication evidence gate. It is not part of
-the active g02 queue.
+the active g02 queue. Durable
+[provider-session management binding persistence](../backlog/provider-session-management-binding-persistence.md)
+is deferred until a consumer needs post-restart provider management.
 
 ## Batch Shape
 
@@ -615,16 +662,25 @@ the active g02 queue.
   headless structured branches
 - card 077 qualifies Kimi Code `0.29.2` and freezes the headless corpus for
   card 078
+- cards 078-079 complete Kimi structured coverage and provider-wide
+  structured-run closeout
+- card 060 completes the bounded Nucleus lifecycle handoff without consumer
+  edits; card 059 remains paused at retained-candidate provenance
+- cards 080-083 complete the historical CSV-aware audit and first
+  usage-evidence tranche; the current post-Claude-Code matrix retains 451
+  `No` cells
+- cards 084-085 complete the 48-cell generation-control audit and selected
+  contract; cards 086-087 own implementation and closeout
 - cards 024-026 own remaining harness facades
 - cards 027-030 own hosted direct and provider-state facades
 - cards 031-033 own realtime, SDK, and llama.cpp facades
 - cards 034-036 own route guidance, packaged proof, and candidate return
 - cards 011-014 own separately authorized Nucleus and Soundcheck migrations
-- no further consumer repository edits are in the facade implementation lane
+- no consumer repository edits are in the matrix implementation lane
 
 ## Generation Boundary
 
-g02 is a long-lived generation with 24 roadmaps. It remains below its
+g02 is a long-lived generation with 26 roadmaps. It remains below its
 30-50-roadmap rollover range. Provider-wide facade work stabilizes the existing
 production routes. The provider-session lifecycle lane adds bounded management
 to applicable persistent-session routes without adding provider names,

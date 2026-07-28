@@ -150,7 +150,10 @@ fn capabilities(role: DriverRole) -> CapabilityProfile {
         CapabilityRequirement::new(
             Capability::WorkingResource,
             [
-                CapabilityConstraint::ResourceAccess(ResourceAccess::Read),
+                CapabilityConstraint::ResourceAccess(match role {
+                    DriverRole::StructuredRun => ResourceAccess::ReadWrite,
+                    _ => ResourceAccess::Read,
+                }),
                 CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
             ],
         ),

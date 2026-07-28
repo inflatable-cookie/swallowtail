@@ -4,6 +4,7 @@ pub(crate) enum Event {
     Busy,
     OutputDelta(String),
     OutputSnapshot(String),
+    Usage(String, TokenUsage),
     Idle,
     Cancelled,
     ProviderFailed,
@@ -108,21 +109,68 @@ fn parse_part(properties: &Map<String, Value>) -> Result<Event, RuntimeFailure> 
                 "OpenCode message part was invalid",
             )
         })?;
-    if part.get("type").and_then(Value::as_str) != Some("text") {
-        return Err(failure(
+    match part.get("type").and_then(Value::as_str) {
+        Some("text") => part
+            .get("text")
+            .and_then(Value::as_str)
+            .map(|text| Event::OutputSnapshot(text.to_owned()))
+            .ok_or_else(|| {
+                failure(
+                    "swallowtail.opencode.event_invalid",
+                    "OpenCode text part was invalid",
+                )
+            }),
+        Some("step-finish") => {
+            let part_id = part
+                .get("id")
+                .and_then(Value::as_str)
+                .filter(|value| !value.is_empty())
+                .ok_or_else(invalid_usage)?;
+            parse_usage(part).map(|usage| Event::Usage(part_id.to_owned(), usage))
+        }
+        _ => Err(failure(
             "swallowtail.opencode.event_unknown",
             "OpenCode emitted an unsupported message part",
-        ));
+        )),
     }
-    part.get("text")
-        .and_then(Value::as_str)
-        .map(|text| Event::OutputSnapshot(text.to_owned()))
-        .ok_or_else(|| {
-            failure(
-                "swallowtail.opencode.event_invalid",
-                "OpenCode text part was invalid",
-            )
-        })
+}
+
+fn parse_usage(part: &Map<String, Value>) -> Result<TokenUsage, RuntimeFailure> {
+    let tokens = part
+        .get("tokens")
+        .and_then(Value::as_object)
+        .ok_or_else(invalid_usage)?;
+    let cache = tokens
+        .get("cache")
+        .and_then(Value::as_object)
+        .ok_or_else(invalid_usage)?;
+    Ok(TokenUsage::new(
+        required_usage(tokens, "input")?,
+        required_usage(tokens, "output")?,
+    )
+    .with_reasoning_tokens(required_usage(tokens, "reasoning")?)
+    .with_cache_tokens(
+        required_usage(cache, "read")?,
+        required_usage(cache, "write")?,
+    ))
+}
+
+fn required_usage(
+    value: &Map<String, Value>,
+    field: &str,
+) -> Result<Option<u64>, RuntimeFailure> {
+    value
+        .get(field)
+        .and_then(Value::as_u64)
+        .map(Some)
+        .ok_or_else(invalid_usage)
+}
+
+fn invalid_usage() -> RuntimeFailure {
+    failure(
+        "swallowtail.opencode.event_invalid",
+        "OpenCode token usage was invalid",
+    )
 }
 
 fn parse_error(properties: &Map<String, Value>) -> Result<Event, RuntimeFailure> {
@@ -215,5 +263,3 @@ fn frame_data(frame: &[u8]) -> Result<Option<Vec<u8>>, RuntimeFailure> {
     }
     Ok((!data.is_empty()).then_some(data))
 }
-
-

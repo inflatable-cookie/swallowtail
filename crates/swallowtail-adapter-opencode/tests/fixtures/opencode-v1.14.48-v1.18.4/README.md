@@ -46,6 +46,17 @@ Provider data deletion is not a hard-erasure claim. A server error after
 dispatch leaves provider truth unconfirmed. Its body is not stable diagnostic
 evidence.
 
+`usage.sse` freezes two disjoint `step-finish` parts followed by session idle.
+The required input, output, reasoning, cache-read, cache-write, and cost shape
+is present at both `1.14.48` and `1.18.4` boundaries. Cost remains separate
+from token usage.
+
+`generation-controls-prompt-request.json` freezes the exact prompt `variant`
+and harness-owned JSON Schema format present at both range boundaries.
+OpenCode owns schema validation and retry; the route exposes no stable
+per-operation output maximum. The file is contract evidence for card 085, not
+a realized adapter claim.
+
 The small health and session envelopes are synthetic. They contain no
 credential, endpoint, account, path, provider payload, model response, or user
 content.

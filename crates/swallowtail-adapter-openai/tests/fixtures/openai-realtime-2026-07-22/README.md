@@ -11,3 +11,8 @@ sendable.
 It contains JSON events only. No credential, endpoint client, WebSocket,
 device, paid request, raw provider capture, or live account state is present.
 Fixture identifiers and PCM bytes are synthetic.
+
+`generation-controls-session-update.json` freezes the session-scoped positive
+output maximum. Realtime reasoning and response-schema controls remain
+unsupported on this selected route. The file is contract evidence for card
+085, not a realized adapter claim.

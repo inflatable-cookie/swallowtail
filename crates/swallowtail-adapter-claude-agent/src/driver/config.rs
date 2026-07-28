@@ -7,6 +7,7 @@ use super::{failure, malformed};
 const MODEL_CONFIG_ID: &str = "model";
 const EFFORT_CONFIG_ID: &str = "effort";
 const THOUGHT_LEVEL_CATEGORY: &str = "thought_level";
+const WRITE_MODE_ID: &str = "acceptEdits";
 
 pub(super) fn parse_session_id(response: &Value) -> Result<String, RuntimeFailure> {
     response
@@ -78,6 +79,25 @@ pub(super) fn confirm_reasoning(
         "swallowtail.claude_agent.acp.reasoning_mismatch",
         "Claude Agent reasoning confirmation does not match the requested mode",
     )
+}
+
+pub(super) fn validate_write_mode(response: &Value) -> Result<(), RuntimeFailure> {
+    let modes = response
+        .get("modes")
+        .and_then(|modes| modes.get("availableModes"))
+        .and_then(Value::as_array)
+        .ok_or_else(malformed)?;
+    if modes
+        .iter()
+        .any(|mode| mode.get("id").and_then(Value::as_str) == Some(WRITE_MODE_ID))
+    {
+        Ok(())
+    } else {
+        Err(failure(
+            "swallowtail.claude_agent.acp.write_mode_unsupported",
+            "Claude Agent session does not advertise the required edit-acceptance mode",
+        ))
+    }
 }
 
 fn confirm_value(

@@ -15,6 +15,25 @@ pub const ACP_PROTOCOL_VERSION: u64 = 1;
 pub const DEFAULT_MAX_FRAME_BYTES: usize = 64 * 1024;
 pub const DEFAULT_MAX_BUFFER_BYTES: usize = 256 * 1024;
 
+/// Returns whether an ACP session-update kind carries session-scoped metadata.
+#[must_use]
+pub fn is_session_scoped_metadata_update_kind(kind: &str) -> bool {
+    matches!(
+        kind,
+        "available_commands_update" | "config_option_update" | "current_mode_update"
+    )
+}
+
+/// Returns whether ACP session-update parameters carry session-scoped metadata.
+#[must_use]
+pub fn is_session_scoped_metadata_update(params: &Value) -> bool {
+    params
+        .get("update")
+        .and_then(|update| update.get("sessionUpdate"))
+        .and_then(Value::as_str)
+        .is_some_and(is_session_scoped_metadata_update_kind)
+}
+
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct FramingLimits {
     maximum_frame_bytes: usize,

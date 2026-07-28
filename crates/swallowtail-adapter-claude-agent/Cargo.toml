@@ -7,7 +7,7 @@ repository.workspace = true
 readme.workspace = true
 publish.workspace = true
 rust-version.workspace = true
-description = "Claude Agent ACP harness driver for Swallowtail"
+description = "Claude Agent ACP and Claude Code headless harness drivers for Swallowtail"
 
 [dependencies]
 futures-channel = "0.3"

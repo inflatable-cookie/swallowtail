@@ -12,6 +12,7 @@ use swallowtail_core::{AccessProfileId, ModelRouteId, ProviderRequestRef};
 pub struct TokenUsage {
     input_tokens: Option<u64>,
     output_tokens: Option<u64>,
+    reasoning_tokens: Option<u64>,
     cache_read_input_tokens: Option<u64>,
     cache_write_input_tokens: Option<u64>,
     cache_miss_input_tokens: Option<u64>,
@@ -23,6 +24,7 @@ impl TokenUsage {
         Self {
             input_tokens,
             output_tokens,
+            reasoning_tokens: None,
             cache_read_input_tokens: None,
             cache_write_input_tokens: None,
             cache_miss_input_tokens: None,
@@ -51,6 +53,17 @@ impl TokenUsage {
     }
 
     #[must_use]
+    pub const fn with_reasoning_tokens(mut self, reasoning_tokens: Option<u64>) -> Self {
+        self.reasoning_tokens = reasoning_tokens;
+        self
+    }
+
+    #[must_use]
+    pub const fn reasoning_tokens(&self) -> Option<u64> {
+        self.reasoning_tokens
+    }
+
+    #[must_use]
     pub const fn cache_read_input_tokens(&self) -> Option<u64> {
         self.cache_read_input_tokens
     }
@@ -69,6 +82,36 @@ impl TokenUsage {
     #[must_use]
     pub const fn cache_miss_input_tokens(&self) -> Option<u64> {
         self.cache_miss_input_tokens
+    }
+
+    /// Adds usage records known to describe disjoint provider work.
+    #[must_use]
+    pub fn checked_add_disjoint(self, other: Self) -> Option<Self> {
+        Some(Self {
+            input_tokens: checked_add_optional(self.input_tokens, other.input_tokens)?,
+            output_tokens: checked_add_optional(self.output_tokens, other.output_tokens)?,
+            reasoning_tokens: checked_add_optional(self.reasoning_tokens, other.reasoning_tokens)?,
+            cache_read_input_tokens: checked_add_optional(
+                self.cache_read_input_tokens,
+                other.cache_read_input_tokens,
+            )?,
+            cache_write_input_tokens: checked_add_optional(
+                self.cache_write_input_tokens,
+                other.cache_write_input_tokens,
+            )?,
+            cache_miss_input_tokens: checked_add_optional(
+                self.cache_miss_input_tokens,
+                other.cache_miss_input_tokens,
+            )?,
+        })
+    }
+}
+
+fn checked_add_optional(left: Option<u64>, right: Option<u64>) -> Option<Option<u64>> {
+    match (left, right) {
+        (Some(left), Some(right)) => left.checked_add(right).map(Some),
+        (Some(value), None) | (None, Some(value)) => Some(Some(value)),
+        (None, None) => Some(None),
     }
 }
 

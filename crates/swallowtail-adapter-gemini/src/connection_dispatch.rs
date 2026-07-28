@@ -39,18 +39,21 @@ impl AcpConnection {
 
     fn dispatch_notification(&self, method: &str, params: &Value) -> Result<(), RuntimeFailure> {
         match method {
-            "session/update" => self
-                .active_turn
-                .lock()
-                .expect("ACP active lock poisoned")
-                .clone()
-                .ok_or_else(|| {
-                    failure(
+            "session/update" => {
+                let active = self
+                    .active_turn
+                    .lock()
+                    .expect("ACP active lock poisoned")
+                    .clone();
+                match active {
+                    Some(active) => active.handle_update(params),
+                    None if is_session_scoped_metadata_update(params) => Ok(()),
+                    None => Err(failure(
                         "swallowtail.gemini.acp.update_without_turn",
                         "Gemini CLI updated a session without an active turn",
-                    )
-                })?
-                .handle_update(params),
+                    )),
+                }
+            }
             "session/cancel" => Err(failure(
                 "swallowtail.gemini.acp.agent_cancel_unsupported",
                 "Gemini CLI sent an unsupported client cancellation notification",

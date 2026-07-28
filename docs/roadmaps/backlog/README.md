@@ -17,3 +17,4 @@ historical evidence.
 ## Items
 
 - [Grok Build Maintained ACP Range](grok-build-maintained-acp-range.md)
+- [Provider-Session Management Binding Persistence](provider-session-management-binding-persistence.md)

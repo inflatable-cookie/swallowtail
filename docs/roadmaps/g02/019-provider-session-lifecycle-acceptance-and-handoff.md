@@ -6,8 +6,8 @@ Created: 2026-07-26
 Depends on: g02.016, g02.017, and g02.018
 Vision tags: provider-wide facade, explicit unsupported routes, Nucleus handoff
 Contract refs: 005-011, 017, 029, 036-038
-Planning state: card 058 completed; card 059 paused at canonical-source gate;
-card 060 planned
+Planning state: cards 058 and 060 completed; card 059 paused at
+canonical-source gate
 
 ## Problem
 
@@ -18,9 +18,9 @@ unsupported, or not-applicable lifecycle posture before Nucleus adoption.
 ## Goals
 
 - [x] Classify all 22 production routes without fabricating lifecycle support.
-- [ ] Publish prepared management guidance and package-level conformance.
+- [x] Publish prepared management guidance and package-level conformance.
 - [ ] Preserve candidate and release evidence without publishing.
-- [ ] Produce a bounded Nucleus adoption handoff under consumer authority.
+- [x] Produce a bounded Nucleus adoption handoff under consumer authority.
 
 ## Execution Plan
 
@@ -34,18 +34,19 @@ unsupported, or not-applicable lifecycle posture before Nucleus adoption.
 
 ### Batch 19.3 — Consumer Handoff
 
-- [ ] Execute card 060 after packaged acceptance passes.
+- [x] Execute card 060 after transient packaged acceptance passed and the
+      operator authorized the handoff before retained-candidate replacement.
 
 ## Acceptance Criteria
 
-- [ ] every production route appears once with supported, unsupported, or
+- [x] every production route appears once with supported, unsupported, or
       not-applicable management posture
-- [ ] Kimi and Gemini ACP remain explicit unsupported without private-route
+- [x] Kimi and Gemini ACP remain explicit unsupported without private-route
       substitution
-- [ ] existing driver-owned cleanup remains distinct
-- [ ] package artifacts prove every supported operation and unsupported stop
-- [ ] Nucleus receives separate local and provider action/outcome guidance
-- [ ] no Nucleus edit, provider call, publication, push, tag, or release occurs
+- [x] existing driver-owned cleanup remains distinct
+- [x] package artifacts prove every supported operation and unsupported stop
+- [x] Nucleus receives separate local and provider action/outcome guidance
+- [x] no Nucleus edit, provider call, publication, push, tag, or release occurs
 
 ## Decision Gate
 

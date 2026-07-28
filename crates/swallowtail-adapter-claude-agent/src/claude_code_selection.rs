@@ -1,0 +1,138 @@
+use swallowtail_core::{
+    InterfaceBehaviorRevision, InterfaceCompatibilityClaim, InterfaceCompatibilityClaimId,
+    InterfaceNewerVersionPosture, InterfaceSupportStatus, InterfaceVersion, InterfaceVersionAxis,
+    InterfaceVersionBinding, InterfaceVersionScheme, InterfaceVersionSegment, PreflightPlan,
+};
+use swallowtail_runtime::RuntimeFailure;
+
+use crate::failure::failure;
+
+pub const CLAUDE_CODE_HEADLESS_AXIS: &str = "claude-code.headless-stream-json";
+pub const CLAUDE_CODE_HEADLESS_BASELINE_VERSION: &str = "2.1.220";
+pub const CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "2.1.220";
+
+const HEADLESS_BEHAVIOR: &str = "claude-code.headless.stream-json.v1";
+const MAX_VERSION_BYTES: usize = 64;
+
+#[must_use]
+pub fn claude_code_headless_binding(value: &str) -> Option<InterfaceVersionBinding> {
+    if value.is_empty()
+        || value.len() > MAX_VERSION_BYTES
+        || value.trim() != value
+        || value.chars().any(char::is_control)
+        || semver::Version::parse(value).is_err()
+    {
+        return None;
+    }
+    Some(InterfaceVersionBinding::new(
+        axis(),
+        InterfaceVersion::new(value).ok()?,
+    ))
+}
+
+#[must_use]
+pub fn claude_code_headless_claim() -> InterfaceCompatibilityClaim {
+    InterfaceCompatibilityClaim::new(
+        InterfaceCompatibilityClaimId::new("claude-code.headless.range-v1")
+            .expect("static Claude Code claim id is valid"),
+        axis(),
+        InterfaceVersionScheme::Semantic,
+        InterfaceNewerVersionPosture::AllowUnverified,
+        [InterfaceVersionSegment::new(
+            version(CLAUDE_CODE_HEADLESS_BASELINE_VERSION),
+            version(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION),
+            InterfaceBehaviorRevision::new(HEADLESS_BEHAVIOR)
+                .expect("static Claude Code behavior revision is valid"),
+            InterfaceSupportStatus::Maintained,
+        )],
+        [],
+    )
+    .expect("static Claude Code compatibility claim is valid")
+}
+
+pub(crate) fn select_claude_code_headless_plan(plan: &PreflightPlan) -> Result<(), RuntimeFailure> {
+    let claim = claude_code_headless_claim();
+    let mut bindings = plan
+        .interface_versions()
+        .filter(|binding| binding.axis() == claim.axis());
+    let binding = bindings.next().ok_or_else(|| {
+        failure(
+            "swallowtail.claude_code.headless.version_missing",
+            "Claude Code headless plan is missing its exact CLI version",
+        )
+    })?;
+    if bindings.next().is_some() {
+        return Err(failure(
+            "swallowtail.claude_code.headless.version_ambiguous",
+            "Claude Code headless plan contains more than one CLI version",
+        ));
+    }
+    let assessment = claim.assess(binding.version());
+    if assessment != plan.assess_interface_version(binding) || !assessment.is_permitted() {
+        return Err(failure(
+            "swallowtail.claude_code.headless.version_incompatible",
+            "Claude Code headless CLI version is incompatible with this driver",
+        ));
+    }
+    if assessment
+        .behavior_revision()
+        .is_none_or(|revision| revision.as_str() != HEADLESS_BEHAVIOR)
+    {
+        return Err(failure(
+            "swallowtail.claude_code.headless.behavior_incompatible",
+            "Claude Code headless behavior is not mapped by this driver",
+        ));
+    }
+    Ok(())
+}
+
+fn axis() -> InterfaceVersionAxis {
+    InterfaceVersionAxis::new(CLAUDE_CODE_HEADLESS_AXIS).expect("static Claude Code axis is valid")
+}
+
+fn version(value: &str) -> InterfaceVersion {
+    InterfaceVersion::new(value).expect("static Claude Code version is valid")
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{
+        CLAUDE_CODE_HEADLESS_AXIS, claude_code_headless_binding, claude_code_headless_claim,
+    };
+    use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
+
+    #[test]
+    fn exact_release_is_qualified_and_newer_stable_is_visible() {
+        let claim = claude_code_headless_claim();
+        assert!(claim.supports(&version("2.1.220")));
+        assert!(!claim.permits(&version("2.1.219")));
+        assert!(matches!(
+            claim.assess(&version("2.1.221")),
+            InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+        ));
+        assert_eq!(
+            claude_code_headless_binding("2.1.220")
+                .expect("version binds")
+                .axis()
+                .as_str(),
+            CLAUDE_CODE_HEADLESS_AXIS
+        );
+    }
+
+    #[test]
+    fn binding_rejects_decorated_or_invalid_versions() {
+        for rejected in [
+            "",
+            " 2.1.220",
+            "2.1.220 (Claude Code)",
+            "2.1.220 extra",
+            "latest",
+        ] {
+            assert!(claude_code_headless_binding(rejected).is_none());
+        }
+    }
+
+    fn version(value: &str) -> InterfaceVersion {
+        InterfaceVersion::new(value).expect("fixture version is valid")
+    }
+}

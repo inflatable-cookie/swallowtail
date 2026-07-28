@@ -8,10 +8,10 @@ use std::pin::Pin;
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
 use std::task::{Context, Poll, Waker};
-use swallowtail_core::SafeDiagnostic;
+use swallowtail_core::{ResourceAccess, SafeDiagnostic};
 use swallowtail_protocol_acp::{
     ACP_PROTOCOL_VERSION, FramingLimits, Message, NdjsonDecoder, encode_error, encode_notification,
-    encode_request, encode_result,
+    encode_request, encode_result, is_session_scoped_metadata_update,
 };
 use swallowtail_runtime::{
     CleanupOutcome, ProcessHandle, ProcessInputChunk, ProcessOutputStream, ResourceLease,
@@ -90,6 +90,10 @@ impl AcpConnection {
         cwd: String,
         model: &str,
     ) -> Result<Value, RuntimeFailure> {
+        let tools = match self.resource.access() {
+            ResourceAccess::Read => json!(["Read", "Glob", "Grep"]),
+            ResourceAccess::ReadWrite => json!(["Read", "Glob", "Grep", "Edit", "Write"]),
+        };
         self.request(
             "session/new",
             json!({
@@ -98,7 +102,7 @@ impl AcpConnection {
                 "_meta": {
                     "claudeCode": {
                         "options": {
-                            "tools": ["Read", "Glob", "Grep"],
+                            "tools": tools,
                             "settings": {
                                 "model": model,
                                 "availableModels": [model]
@@ -109,6 +113,27 @@ impl AcpConnection {
             }),
         )
         .await
+    }
+
+    pub(crate) async fn set_session_mode(
+        &self,
+        session_id: &str,
+        mode_id: &'static str,
+    ) -> Result<(), RuntimeFailure> {
+        let response = self
+            .request(
+                "session/set_mode",
+                json!({"sessionId": session_id, "modeId": mode_id}),
+            )
+            .await?;
+        if response.as_object().is_some_and(serde_json::Map::is_empty) {
+            Ok(())
+        } else {
+            Err(failure(
+                "swallowtail.claude_agent.acp.mode_malformed",
+                "Claude Agent returned a malformed session-mode response",
+            ))
+        }
     }
 
     pub(crate) async fn close_session(&self, session_id: &str) -> Result<(), RuntimeFailure> {
@@ -283,3 +308,21 @@ impl AcpConnection {
 mod dispatch;
 mod pump;
 mod response;
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn receive_framing_profile_covers_observed_large_tool_updates() {
+        assert_eq!(
+            RECEIVE_FRAMING_LIMITS.maximum_frame_bytes(),
+            4 * 1024 * 1024
+        );
+        assert_eq!(
+            RECEIVE_FRAMING_LIMITS.maximum_buffer_bytes(),
+            8 * 1024 * 1024
+        );
+        assert!(RECEIVE_FRAMING_LIMITS.maximum_frame_bytes() > 135_553);
+    }
+}

@@ -6,6 +6,7 @@ use crate::protocol::{
 };
 use crate::selection::{OpenCodePlanVersion, classify_plan, opencode_http_claim};
 use crate::transport::{CurlTransport, Subscription};
+use std::collections::BTreeSet;
 use std::future::{Future, poll_fn};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};

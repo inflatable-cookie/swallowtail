@@ -160,6 +160,33 @@ mod tests {
         );
         assert!(events.contains(&Event::OutputDelta("hello".to_owned())));
         assert!(events.contains(&Event::OutputSnapshot("hello world".to_owned())));
+        let usage = events
+            .iter()
+            .filter_map(|event| match event {
+                Event::Usage(part_id, usage) => Some((part_id.as_str(), usage)),
+                _ => None,
+            })
+            .collect::<Vec<_>>();
+        assert_eq!(usage.len(), 2);
+        assert_eq!(usage[0].0, "prt_usage");
+        assert_eq!(usage[0].1.input_tokens(), Some(12));
+        assert_eq!(usage[0].1.output_tokens(), Some(4));
+        assert_eq!(usage[0].1.reasoning_tokens(), Some(2));
+        assert_eq!(usage[0].1.cache_read_input_tokens(), Some(3));
+        assert_eq!(usage[0].1.cache_write_input_tokens(), Some(1));
+    }
+
+    #[test]
+    fn malformed_usage_components_and_identity_fail_closed() {
+        for frame in [
+            br#"{"type":"message.part.updated","properties":{"sessionID":"ses_fixture","part":{"id":"","type":"step-finish","tokens":{"input":1,"output":1,"reasoning":1,"cache":{"read":0,"write":0}}}}}"#.as_slice(),
+            br#"{"type":"message.part.updated","properties":{"sessionID":"ses_fixture","part":{"id":"part","type":"step-finish","tokens":{"input":-1,"output":1,"reasoning":1,"cache":{"read":0,"write":0}}}}}"#.as_slice(),
+            br#"{"type":"message.part.updated","properties":{"sessionID":"ses_fixture","part":{"id":"part","type":"step-finish","tokens":{"input":1.5,"output":1,"reasoning":1,"cache":{"read":0,"write":0}}}}}"#.as_slice(),
+            br#"{"type":"message.part.updated","properties":{"sessionID":"ses_fixture","part":{"id":"part","type":"step-finish","tokens":{"input":1,"output":1,"cache":{"read":0,"write":0}}}}}"#.as_slice(),
+        ] {
+            let error = parse_event(frame, "ses_fixture").expect_err("usage rejects");
+            assert_eq!(error.diagnostic().code(), "swallowtail.opencode.event_invalid");
+        }
     }
 
     #[test]

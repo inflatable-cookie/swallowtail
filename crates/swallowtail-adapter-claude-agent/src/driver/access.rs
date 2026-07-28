@@ -63,11 +63,15 @@ impl ClaudeAgentAcpDriver {
             .working_resource()
             .expect("validated working resource")
             .clone();
+        let resource_access = request
+            .access_policy()
+            .resource_access()
+            .expect("validated working-resource access");
         let mut resource = match resource_service
             .resolve(
                 scope.clone(),
                 working_resource.clone(),
-                ResourceAccess::Read,
+                resource_access,
                 ResourceRepresentation::Filesystem,
             )
             .await
@@ -165,6 +169,13 @@ impl ClaudeAgentAcpDriver {
                 }
             } else {
                 crate::driver::config::validate_legacy_model(&response, model)?;
+            }
+            if resource_access == ResourceAccess::ReadWrite {
+                crate::driver::config::validate_write_mode(&response)?;
+                pending
+                    .connection
+                    .set_session_mode(&provider_id, "acceptEdits")
+                    .await?;
             }
             let provider_ref = SessionRef::new(&provider_id).map_err(|_| malformed())?;
             pending.take_handle(

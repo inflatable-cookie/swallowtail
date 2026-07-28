@@ -180,6 +180,23 @@ pub(super) fn validate_run(
             ));
         }
     }
+    let working_resource = plan
+        .requirements()
+        .capabilities()
+        .find(|required| required.capability() == swallowtail_core::Capability::WorkingResource);
+    if working_resource.is_none_or(|required| {
+        !required.constraints().any(|constraint| {
+            constraint
+                == &swallowtail_core::CapabilityConstraint::ResourceAccess(
+                    ResourceAccess::ReadWrite,
+                )
+        })
+    }) {
+        return Err(failure(
+            "swallowtail.claude_agent.acp.run_capability_mismatch",
+            "Claude Agent structured-run write access does not match the preflight plan",
+        ));
+    }
     let interruption = plan
         .requirements()
         .capabilities()

@@ -1,0 +1,90 @@
+mod process;
+mod task;
+mod time;
+
+pub use process::{FakeProcessService, ObservedProcessRequest};
+pub use task::TaskState;
+pub use time::{ImmediateTimeService, PendingTimeService};
+
+use std::sync::Arc;
+use swallowtail_adapter_claude_agent::{
+    CLAUDE_CODE_HEADLESS_AXIS, ClaudeCodePreparationInput, ClaudeCodePreparationProbe,
+};
+use swallowtail_core::{
+    AccessProfile, AccessProfileId, AccessStatus, ConfiguredInstanceId, CredentialMechanism,
+    CredentialState, EndpointAudience, EndpointAuthorization, EntitlementMetering,
+    EntitlementState, ExecutionHostId, InstanceRevision, InterfaceVersionAxis, RuntimeReadiness,
+    SupportAuthority,
+};
+use swallowtail_runtime::{
+    Deadline, DiscoveryCancellation, EnvironmentRef, ExecutableRef, HostServices,
+    InstalledExecutableTarget, MonotonicInstant, PreparedAccessEvidence, ProcessService, RequestId,
+    ScopeId, TimeService,
+};
+
+pub fn host_services(
+    host: ExecutionHostId,
+    process: Arc<dyn ProcessService>,
+    time: Arc<dyn TimeService>,
+) -> (HostServices, Arc<TaskState>) {
+    let task = Arc::new(TaskState::default());
+    let services = HostServices::new(host)
+        .with_task(Arc::new(task::ThreadTaskService::new(Arc::clone(&task))))
+        .with_process(process)
+        .with_time(time);
+    (services, task)
+}
+
+pub fn preparation_input(host: ExecutionHostId) -> ClaudeCodePreparationInput {
+    let access = access_profile();
+    ClaudeCodePreparationInput::new(
+        ConfiguredInstanceId::new("claude-code.headless.fixture").expect("instance is valid"),
+        InstanceRevision::new("1").expect("revision is valid"),
+        host,
+        InstalledExecutableTarget::new(
+            ExecutableRef::new("claude.fixture.executable").expect("executable is valid"),
+            InterfaceVersionAxis::new(CLAUDE_CODE_HEADLESS_AXIS).expect("axis is valid"),
+        ),
+        EnvironmentRef::new("claude.fixture.local-subscription-environment")
+            .expect("environment is valid"),
+        access.clone(),
+        PreparedAccessEvidence::caller_asserted(access_status(&access)),
+    )
+}
+
+pub fn preparation_probe() -> ClaudeCodePreparationProbe {
+    ClaudeCodePreparationProbe::new(
+        RequestId::new("claude-code-preparation").expect("request is valid"),
+        ScopeId::new("claude-code-preparation").expect("scope is valid"),
+        Deadline::at(MonotonicInstant::from_ticks(1_000)),
+        DiscoveryCancellation::new(),
+    )
+}
+
+pub fn access_profile() -> AccessProfile {
+    AccessProfile::new(
+        AccessProfileId::new("claude-code.local-subscription").expect("access id is valid"),
+        CredentialMechanism::LocalUnauthenticated,
+        EntitlementMetering::SubscriptionAllowance,
+        EndpointAudience::new("anthropic-claude-code").expect("audience is valid"),
+        SupportAuthority::ProviderSupported,
+    )
+}
+
+fn access_status(access: &AccessProfile) -> AccessStatus {
+    AccessStatus::new(
+        access.id().clone(),
+        CredentialState::NotRequired,
+        EntitlementState::Available,
+        EndpointAuthorization::Allowed,
+        RuntimeReadiness::Ready,
+        SupportAuthority::ProviderSupported,
+    )
+}
+
+pub fn fixture(name: &str) -> String {
+    let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("tests/fixtures/claude-code-2.1.220")
+        .join(name);
+    std::fs::read_to_string(path).unwrap_or_else(|error| panic!("failed to read {name}: {error}"))
+}

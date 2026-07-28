@@ -46,6 +46,7 @@ pub(crate) fn session_capabilities(reasoning: bool) -> CapabilityProfile {
     let mut capabilities = vec![
         CapabilityRequirement::new(Capability::InteractiveSession, []),
         CapabilityRequirement::new(Capability::StreamingEvents, []),
+        CapabilityRequirement::new(Capability::UsageReporting, []),
         CapabilityRequirement::new(
             Capability::Interruption,
             [CapabilityConstraint::CancellationScope(
@@ -68,6 +69,7 @@ pub(crate) fn run_capabilities(reasoning: bool) -> CapabilityProfile {
     let mut capabilities = vec![
         CapabilityRequirement::new(Capability::StructuredRun, []),
         CapabilityRequirement::new(Capability::StreamingEvents, []),
+        CapabilityRequirement::new(Capability::UsageReporting, []),
         CapabilityRequirement::new(
             Capability::Interruption,
             [CapabilityConstraint::CancellationScope(
@@ -77,7 +79,7 @@ pub(crate) fn run_capabilities(reasoning: bool) -> CapabilityProfile {
         CapabilityRequirement::new(
             Capability::WorkingResource,
             [
-                CapabilityConstraint::ResourceAccess(ResourceAccess::Read),
+                CapabilityConstraint::ResourceAccess(ResourceAccess::ReadWrite),
                 CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
             ],
         ),

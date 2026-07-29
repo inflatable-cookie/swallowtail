@@ -12,10 +12,11 @@ shape.
 
 ## Next Task
 
-Operator decision: choose one exact machine-classified feature gap for the
-next g02 roadmap, or explicitly resume a paused lane. The feature-matrix
-completion programme is closed, and no remaining provider implementation is
-selected by default.
+Execute
+[g02 card 119](g02/batch-cards/119-observable-activity-runtime-records.md):
+add provider-neutral observable activity records to the existing runtime
+event stream, with exact lifecycle, bounds, correlation, and redacted
+formatting.
 
 ## Index
 

@@ -70,3 +70,4 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [060 Runtime Ownership And Rollover `No` Currentness And Negative Closeout](060-runtime-ownership-and-rollover-no-currentness-and-negative-closeout.md)
 - [061 Residual Feature Matrix `No` Currentness And Tranche Selection](061-residual-feature-matrix-no-currentness-and-tranche-selection.md)
 - [062 Qwen And Ollama Interactive Contract Fit And Corpora](062-qwen-and-ollama-interactive-contract-fit-and-corpora.md)
+- [063 Observable Agent Activity And T3 Code Reference](063-observable-agent-activity-and-t3-code-reference.md)

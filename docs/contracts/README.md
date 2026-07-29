@@ -48,6 +48,7 @@ Contracts hold durable, testable rules.
 - [041 Input, Callback, And Provider-Tool Admission](041-input-callback-and-provider-tool-admission.md)
 - [042 Harness-Managed Recovery And Active-Turn Reattachment](042-harness-managed-recovery-and-active-turn-reattachment.md)
 - [043 Turn-Scoped Interactive Continuity](043-turn-scoped-interactive-continuity.md)
+- [044 Observable Agent Activity And Disclosure](044-observable-agent-activity-and-disclosure.md)
 
 Contract 003 defines the provider-neutral record kernel. Contracts 004-016
 govern the realized runtime and current proof drivers. Contract 017 governs
@@ -160,3 +161,9 @@ Contract 043 keeps one-child-per-turn harness continuation separate from
 consumer-owned transactional transcript replay. Private continuation cannot
 mint public load or resume; failed-turn commit, cancellation, bounds, provider
 state, attached-service preservation, and joined cleanup remain exact.
+Contract 044 adds operation-local observable activity identity, exact
+lifecycle and disclosure fidelity, typed content streams, tool and request
+correlation, provider-visible reasoning summaries, and bounded unknown-event
+truth. Existing run and turn streams remain the transport. Consumers retain
+message and activity persistence, grouping, collapsed presentation, and
+transcript policy.

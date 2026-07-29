@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-28
+Updated: 2026-07-29
 
 ## Realized State
 
@@ -61,6 +61,14 @@ spine:
   direct-session requests, explicit attempt authorization, bounded redacted
   tool-call/result records, and private-continuation binding metadata that
   never carries provider reasoning bytes
+- observable agent activity remains on the existing run and turn event
+  streams; the portable layer owns operation-local activity identity, exact
+  lifecycle and disclosure fidelity, typed assistant, reasoning-summary,
+  plan, command, file, and tool content streams, request correlation, bounded
+  namespaced unknowns, and redacted formatting; adapters retain raw provider
+  envelopes and exact version mapping, while consumers retain durable message
+  and activity projections, transcript policy, grouping, and collapsed
+  presentation
 - `swallowtail-testkit` depends on core and runtime and owns deterministic
   Contract 003, Contract 008, runtime-skeleton, and Contract 011 cross-shape
   fixtures and assertions, including distinct local and remote-authoritative

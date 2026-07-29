@@ -46,6 +46,7 @@ evidence-led provider work.
 | Audit and close working-resource and bounded-write matrix gaps. | completed | Contracts 009-010, 013, 015, 017, 037 | `g02.032` |
 | Audit and close owned-runtime lifecycle and planned-rollover matrix gaps. | completed | Research 060, Contracts 004, 009, 018, 026-027, 031 | `g02.033` |
 | Classify the residual feature-matrix inventory and close or re-scope the programme. | completed | Contracts 004, 009, 011, 016, 026, 029, 037, 043 | `g02.034` |
+| Expose provider-visible agent activity through exact route profiles and prepared facades. | active | Research 063, Contract 044 | `g02.035`-`g02.040` |
 
 ## Current Checkpoint
 
@@ -289,8 +290,15 @@ evidence-led provider work.
 - Contract 043, Research 062, and card 116 separate Qwen restarted-harness
   continuation from Ollama transactional transcript replay and freeze both
   exact offline corpora
-- card 117 is ready for the selected Qwen headless and Ollama attached
-  interactive profiles; card 118 remains planned
+- cards 117-118 realize the selected Qwen and Ollama interactive profiles,
+  close the final 61-cell inventory, and stop the feature-matrix programme
+- Research 063 and Contract 044 promote the next operator-selected lane:
+  operation-local observable activity identity, lifecycle, disclosure,
+  content streams, route fidelity, and consumer projection ownership
+- roadmaps g02.035-g02.040 and cards 119-137 sequence the common kernel,
+  Codex, ACP, remaining harnesses, direct-inference truth, provider-wide
+  package evidence, and a consumer handoff
+- card 119 is the sole ready task
 - roadmaps g02.016-g02.019 sequence Codex, ACP/Claude Agent, OpenCode,
   provider-wide acceptance, and the Nucleus handoff
 - all 23 manifests carry contract-complete metadata and crates.io publication
@@ -652,7 +660,19 @@ evidence-led provider work.
   — completed; cards 111 and 114 complete, cards 112-113 superseded by the
   negative tranche
 - [034 Residual Feature Matrix Truth And Programme Checkpoint](034-residual-feature-matrix-truth-and-programme-checkpoint.md)
-  — active; cards 115-116 complete, card 117 ready, card 118 planned
+  — completed; cards 115-118 complete
+- [035 Observable Agent Activity Kernel](035-observable-agent-activity-kernel.md)
+  — active; card 119 ready, cards 120-121 planned
+- [036 Codex Observable Activity Fidelity](036-codex-observable-activity-fidelity.md)
+  — planned; cards 122-124 planned
+- [037 ACP Observable Agent Activity](037-acp-observable-agent-activity.md)
+  — planned; cards 125-127 planned
+- [038 Non-ACP Harness Activity Coverage](038-non-acp-harness-activity-coverage.md)
+  — planned; cards 128-131 planned
+- [039 Direct Inference Activity Truth](039-direct-inference-activity-truth.md)
+  — planned; cards 132-134 planned
+- [040 Provider-Wide Activity Acceptance And Consumer Handoff](040-provider-wide-activity-acceptance-and-consumer-handoff.md)
+  — planned; cards 135-137 planned
 
 ## Held Backlog
 
@@ -831,7 +851,19 @@ is deferred until a consumer needs post-restart provider management.
   `Caller-supplied`, and two `Session-negotiated`
 - all 23 extracted package archives, the complete workspace, docs, route,
   metadata, example, and public-API gates pass; the feature-matrix completion
-  programme is closed with no provider implementation selected by default
+  programme closed with no provider implementation selected at that
+  checkpoint
+- cards 119-121 own the common observable-activity records, exact prepared
+  route profile, and provider-neutral conformance
+- cards 122-124 own Codex range evidence, app-server lifecycle fidelity, and
+  completion-oriented exec mapping
+- cards 125-127 own ACP currentness, shared bounded activity decoding, and
+  Claude Agent, Gemini CLI, and Kimi Code conformance
+- cards 128-131 own all remaining production harness route activity
+- cards 132-134 own direct-inference applicability, exact text activity, and
+  realtime or serving boundaries
+- cards 135-137 own the provider-wide activity matrix, extracted-package
+  proof, and bounded Nucleus and Soundcheck handoffs
 - cards 024-026 own remaining harness facades
 - cards 027-030 own hosted direct and provider-state facades
 - cards 031-033 own realtime, SDK, and llama.cpp facades
@@ -841,10 +873,12 @@ is deferred until a consumer needs post-restart provider management.
 
 ## Generation Boundary
 
-g02 is a long-lived generation with 34 roadmaps. It remains within its
+g02 is a long-lived generation with 40 roadmaps. It remains within its
 30-50-roadmap range. Provider-wide facade work stabilizes the existing
 production routes. The provider-session lifecycle lane adds bounded management
 to applicable persistent-session routes without adding provider names,
 consumer persistence, or implicit deletion. The Kimi local-server route adds a
 second driver under an existing integration family; it does not justify a
-generation rollover.
+generation rollover. Observable activity enriches existing route events and
+prepared evidence without adding provider identities, a global event bus,
+consumer persistence, or product UI.

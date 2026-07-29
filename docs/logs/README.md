@@ -5,6 +5,7 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-07-29 Observable Agent Activity Roadmap Compilation](2026-07-29-observable-agent-activity-roadmap-compilation.md)
 - [2026-07-29 Residual Feature Matrix Programme Closeout](2026-07-29-residual-feature-matrix-programme-closeout.md)
 - [2026-07-29 Qwen And Ollama Interactive Implementation](2026-07-29-qwen-and-ollama-interactive-implementation.md)
 - [2026-07-29 Qwen And Ollama Interactive Contract And Corpora](2026-07-29-qwen-and-ollama-interactive-contract-and-corpora.md)

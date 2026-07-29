@@ -202,7 +202,14 @@ state, versus bounded transactional Ollama transcript replay over independent
 attached-runtime requests. Neither route gains public resume,
 provider-session management, server ownership, media, or billed-cost
 authority. Remaining gaps are evidence-labelled backlog, not implicit support
-or a selected implementation queue.
+or an implicit provider queue. The next selected lane is provider-visible
+observable agent activity. Research 063 and Contract 044 keep the existing
+run and turn event streams, add exact activity identity, lifecycle,
+disclosure, content, and route-profile truth, and leave durable messages,
+work-log persistence, grouping, and collapsed chat presentation in consumer
+applications. Roadmaps g02.035-g02.040 sequence the common kernel, Codex, ACP,
+remaining harnesses, direct-inference truth, package acceptance, and the
+Nucleus/Soundcheck handoff.
 Usage evidence has 19 `Yes`, one serving-only `Not applicable`, and two honest
 Kimi Code `No` cells. Each composite solution row records route ownership in
 its notes where sibling routes contribute different capabilities. The first

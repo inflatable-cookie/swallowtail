@@ -17,10 +17,12 @@ use swallowtail_protocol_acp::{
 use swallowtail_runtime::{
     CleanupOutcome, ProcessHandle, ProcessInputChunk, ProcessOutputStream, ResourceLease,
     RuntimeFailure, WorkingResourceIoService, WorkingResourceLocator, WorkingResourceReadRequest,
+    WorkingResourceText, WorkingResourceWriteRequest,
 };
 
 const MAXIMUM_PENDING_REQUESTS: usize = 32;
 const MAXIMUM_READ_BYTES: usize = 1024 * 1024;
+const MAXIMUM_WRITE_BYTES: usize = 1024 * 1024;
 const RECEIVE_FRAMING_LIMITS: FramingLimits =
     FramingLimits::new(DEFAULT_MAX_FRAME_BYTES, DEFAULT_MAX_BUFFER_BYTES);
 
@@ -28,6 +30,7 @@ pub(crate) struct AcpConnection {
     process: Arc<dyn ProcessHandle>,
     resource: ResourceLease,
     resource_io: Arc<dyn WorkingResourceIoService>,
+    write_enabled: bool,
     next_id: AtomicU64,
     pending: Mutex<BTreeMap<u64, ResponseSender>>,
     session_id: Mutex<Option<String>>,
@@ -43,11 +46,13 @@ impl AcpConnection {
         process: Arc<dyn ProcessHandle>,
         resource: ResourceLease,
         resource_io: Arc<dyn WorkingResourceIoService>,
+        write_enabled: bool,
     ) -> Arc<Self> {
         Arc::new(Self {
             process,
             resource,
             resource_io,
+            write_enabled,
             next_id: AtomicU64::new(1),
             pending: Mutex::new(BTreeMap::new()),
             session_id: Mutex::new(None),
@@ -67,7 +72,10 @@ impl AcpConnection {
                 json!({
                     "protocolVersion": ACP_PROTOCOL_VERSION,
                     "clientCapabilities": {
-                        "fs": {"readTextFile": true, "writeTextFile": false}
+                        "fs": {
+                            "readTextFile": true,
+                            "writeTextFile": self.write_enabled
+                        }
                     },
                     "clientInfo": {
                         "name": "swallowtail",

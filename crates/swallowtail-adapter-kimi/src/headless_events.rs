@@ -17,6 +17,7 @@ pub(crate) struct KimiHeadlessEventParser {
     output: String,
     final_output: Option<OperationContent>,
     terminal_seen: bool,
+    last_retry: Option<(u64, u64, u64)>,
 }
 
 impl KimiHeadlessEventParser {
@@ -28,6 +29,7 @@ impl KimiHeadlessEventParser {
             output: String::new(),
             final_output: None,
             terminal_seen: false,
+            last_retry: None,
         }
     }
 
@@ -120,6 +122,20 @@ impl KimiHeadlessEventParser {
                         return Err(malformed_stream());
                     }
                 }
+                let failed = payload["failed_attempt"].as_u64().expect("validated");
+                let next = payload["next_attempt"].as_u64().expect("validated");
+                let maximum = payload["max_attempts"].as_u64().expect("validated");
+                if failed == 0
+                    || next != failed.saturating_add(1)
+                    || next > maximum
+                    || self
+                        .last_retry
+                        .is_some_and(|(_, previous_next, previous_maximum)| {
+                            failed != previous_next || maximum != previous_maximum
+                        })
+                {
+                    return Err(malformed_stream());
+                }
                 if !non_empty_string(payload, "error_name")
                     || !non_empty_string(payload, "error_message")
                     || payload
@@ -128,6 +144,7 @@ impl KimiHeadlessEventParser {
                 {
                     return Err(malformed_stream());
                 }
+                self.last_retry = Some((failed, next, maximum));
                 Ok(vec![self.event(RuntimeEventKind::Progress)])
             }
             Some("session.resume_hint") => {

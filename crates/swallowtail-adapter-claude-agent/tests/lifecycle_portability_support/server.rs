@@ -86,7 +86,8 @@ pub async fn spawn(disconnect_on_delete: bool) -> (String, tokio::task::JoinHand
                                 "version": "0.61.0"
                             },
                             "agentCapabilities": {
-                                "sessionCapabilities": {"close": {}, "delete": {}}
+                                "loadSession": true,
+                                "sessionCapabilities": {"close": {}, "delete": {}, "resume": {}}
                             },
                             "authMethods": []
                         })

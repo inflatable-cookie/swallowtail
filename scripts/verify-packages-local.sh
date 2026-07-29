@@ -166,8 +166,11 @@ cp "$release_source_root/Cargo.lock" "$release_verify_root/Cargo.lock"
   cargo test --workspace --no-run --locked
   for release_structured_suite in \
     "swallowtail-adapter-alibaba-model-studio|prepared_facade" \
+    "swallowtail-adapter-claude-agent|prepared_facade" \
     "swallowtail-adapter-claude-agent|structured_run" \
+    "swallowtail-adapter-codex|prepared_profiles" \
     "swallowtail-adapter-deepseek|prepared_facade" \
+    "swallowtail-adapter-gemini|prepared_facade" \
     "swallowtail-adapter-gemini|headless_structured_run" \
     "swallowtail-adapter-kimi|headless_structured_run" \
     "swallowtail-adapter-kimi|local_server_structured_run" \

@@ -3,6 +3,7 @@
 pub enum OwnedRemoteResourceKind {
     Environment,
     Session,
+    Response,
     Conversation,
     ConversationItems,
 }

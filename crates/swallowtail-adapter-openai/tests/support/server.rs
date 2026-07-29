@@ -28,6 +28,9 @@ pub enum ServerMode {
     CancelUnconfirmed,
     DisconnectBeforeIdentity,
     ProviderFailed,
+    DeleteMismatch,
+    DeleteFalse,
+    DeleteNotFound,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -182,6 +185,29 @@ fn respond(
                 write_response(stream, 500, "application/json", "{}");
             }
             _ => write_response(stream, 200, "application/json", CANCELLED),
+        },
+        ("DELETE", "/v1/responses/resp_fixture_123") => match mode {
+            ServerMode::DeleteMismatch => write_response(
+                stream,
+                200,
+                "application/json",
+                r#"{"id":"resp_other","object":"response","deleted":true}"#,
+            ),
+            ServerMode::DeleteFalse => write_response(
+                stream,
+                200,
+                "application/json",
+                r#"{"id":"resp_fixture_123","object":"response","deleted":false}"#,
+            ),
+            ServerMode::DeleteNotFound => {
+                write_response(stream, 404, "application/json", r#"{"error":"private"}"#)
+            }
+            _ => write_response(
+                stream,
+                200,
+                "application/json",
+                r#"{"id":"resp_fixture_123","object":"response","deleted":true}"#,
+            ),
         },
         _ => write_response(stream, 404, "application/json", "{}"),
     }

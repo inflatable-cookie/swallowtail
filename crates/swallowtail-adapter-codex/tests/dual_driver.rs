@@ -74,7 +74,11 @@ fn registrations_share_a_family_without_flattening_roles_or_transports() {
     );
     assert_eq!(
         session_capabilities,
-        BTreeSet::from([Capability::InteractiveSession])
+        BTreeSet::from([
+            Capability::InteractiveSession,
+            Capability::LoadSession,
+            Capability::Resume,
+        ])
     );
     assert!(!session_capabilities.contains(&Capability::StructuredOutput));
 }

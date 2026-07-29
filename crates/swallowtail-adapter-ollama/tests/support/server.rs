@@ -16,6 +16,12 @@ const MALFORMED: &str =
     include_str!("../fixtures/ollama-native-v0.14.0-v0.32.1/chat-malformed.ndjson");
 const DISCONNECT: &str =
     include_str!("../fixtures/ollama-native-v0.14.0-v0.32.1/chat-disconnect.ndjson");
+const INTERACTIVE_TURN_1: &str =
+    include_str!("../fixtures/ollama-native-v0.14.0-v0.32.1/interactive-turn-1-success.ndjson");
+const INTERACTIVE_TURN_2: &str =
+    include_str!("../fixtures/ollama-native-v0.14.0-v0.32.1/interactive-turn-2-success.ndjson");
+const INTERACTIVE_ERROR: &str =
+    include_str!("../fixtures/ollama-native-v0.14.0-v0.32.1/interactive-turn-2-error.ndjson");
 
 #[derive(Clone, Copy)]
 pub enum VersionFixture {
@@ -33,11 +39,14 @@ pub enum StreamFixture {
     Malformed,
     Disconnect,
     WaitForCancel,
+    InteractiveSequence,
+    InteractiveFailureThenSuccess,
 }
 
 pub struct FixtureServer {
     endpoint: String,
     targets: Arc<Mutex<Vec<String>>>,
+    bodies: Arc<Mutex<Vec<Vec<u8>>>>,
     inference_attempts: Arc<AtomicUsize>,
     version_requests: Arc<AtomicUsize>,
     stop: Arc<AtomicBool>,
@@ -53,10 +62,12 @@ impl FixtureServer {
         let listener = TcpListener::bind("127.0.0.1:0").expect("fixture listener binds");
         let endpoint = format!("http://{}", listener.local_addr().expect("address exists"));
         let targets = Arc::new(Mutex::new(Vec::new()));
+        let bodies = Arc::new(Mutex::new(Vec::new()));
         let inference_attempts = Arc::new(AtomicUsize::new(0));
         let version_requests = Arc::new(AtomicUsize::new(0));
         let stop = Arc::new(AtomicBool::new(false));
         let server_targets = Arc::clone(&targets);
+        let server_bodies = Arc::clone(&bodies);
         let server_attempts = Arc::clone(&inference_attempts);
         let server_versions = Arc::clone(&version_requests);
         let server_stop = Arc::clone(&stop);
@@ -73,6 +84,12 @@ impl FixtureServer {
                         .lock()
                         .expect("target lock is available")
                         .push(request.target.clone());
+                    if request.method == "POST" && request.target == "/api/chat" {
+                        server_bodies
+                            .lock()
+                            .expect("body lock is available")
+                            .push(request.body.clone());
+                    }
                     respond(
                         &mut stream,
                         &request,
@@ -87,6 +104,7 @@ impl FixtureServer {
         Self {
             endpoint,
             targets,
+            bodies,
             inference_attempts,
             version_requests,
             stop,
@@ -107,6 +125,10 @@ impl FixtureServer {
 
     pub fn inference_attempts(&self) -> usize {
         self.inference_attempts.load(Ordering::SeqCst)
+    }
+
+    pub fn inference_bodies(&self) -> Vec<Vec<u8>> {
+        self.bodies.lock().expect("body lock is available").clone()
     }
 
     pub fn version_requests(&self) -> usize {
@@ -141,6 +163,7 @@ impl Drop for FixtureServer {
 struct FixtureRequest {
     method: String,
     target: String,
+    body: Vec<u8>,
 }
 
 fn read_request(stream: &mut TcpStream) -> Option<FixtureRequest> {
@@ -167,7 +190,11 @@ fn read_request(stream: &mut TcpStream) -> Option<FixtureRequest> {
         if bytes.len() < end + 4 + length {
             continue;
         }
-        return Some(FixtureRequest { method, target });
+        return Some(FixtureRequest {
+            method,
+            target,
+            body: bytes[end + 4..end + 4 + length].to_vec(),
+        });
     }
 }
 
@@ -196,7 +223,7 @@ fn respond(
         ("GET", "/api/ps") => respond_with(stream, 200, "application/json", RUNNING),
         ("POST", "/api/show") => respond_with(stream, 200, "application/json", SHOW),
         ("POST", "/api/chat") => {
-            attempts.fetch_add(1, Ordering::SeqCst);
+            let attempt = attempts.fetch_add(1, Ordering::SeqCst);
             match stream_fixture {
                 StreamFixture::Success => {
                     respond_with(stream, 200, "application/x-ndjson", SUCCESS)
@@ -211,6 +238,26 @@ fn respond(
                     respond_with(stream, 200, "application/x-ndjson", DISCONNECT)
                 }
                 StreamFixture::WaitForCancel => respond_wait_for_cancel(stream),
+                StreamFixture::InteractiveSequence => respond_with(
+                    stream,
+                    200,
+                    "application/x-ndjson",
+                    if attempt == 0 {
+                        INTERACTIVE_TURN_1
+                    } else {
+                        INTERACTIVE_TURN_2
+                    },
+                ),
+                StreamFixture::InteractiveFailureThenSuccess => respond_with(
+                    stream,
+                    200,
+                    "application/x-ndjson",
+                    match attempt {
+                        0 => INTERACTIVE_TURN_1,
+                        1 => INTERACTIVE_ERROR,
+                        _ => INTERACTIVE_TURN_2,
+                    },
+                ),
             }
         }
         _ => respond_with(

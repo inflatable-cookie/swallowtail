@@ -24,8 +24,8 @@ use swallowtail_core::{
 use swallowtail_runtime::{
     CallbackPayload, CallbackResponse, CallbackResult, CancellationAcknowledgement, CleanupOutcome,
     Deadline, MonotonicInstant, OperationContent, OperationPolicy, ProviderCancellationOutcome,
-    ProviderRetentionPolicy, RequestId, StructuredRunDriver, StructuredRunRequest, TerminalOutcome,
-    TerminalStatus, WorkingResourceRef,
+    ProviderRecoveryPolicy, ProviderRetentionPolicy, RequestId, StreamReattachmentPolicy,
+    StructuredRunDriver, StructuredRunRequest, TerminalOutcome, TerminalStatus, WorkingResourceRef,
 };
 use swallowtail_testkit::{
     ExecutionTopologyFixture, assert_prepared_operation_evidence_matches_plan,
@@ -63,6 +63,10 @@ fn attached_run_completes_once_and_preserves_provider_session_in_both_topologies
             assert_eq!(
                 profile.request().policy().provider_retention(),
                 ProviderRetentionPolicy::DurableAllowed
+            );
+            assert_eq!(
+                profile.request().policy().provider_recovery(),
+                ProviderRecoveryPolicy::ManagedAllowed
             );
             assert_prepared_operation_evidence_matches_plan(profile.evidence(), profile.plan());
 
@@ -108,6 +112,67 @@ fn attached_run_completes_once_and_preserves_provider_session_in_both_topologies
                 );
             }
         }
+    }
+}
+
+#[test]
+fn managed_retry_and_one_cursor_reattachment_preserve_one_prompt() {
+    for (scenario, reattach) in [
+        (InteractiveScenario::Retry, false),
+        (InteractiveScenario::Reattach, true),
+    ] {
+        let server = InteractiveFixtureServer::start_with_version(scenario, "0.29.2");
+        let host = FixtureHost::for_endpoint(server.endpoint());
+        let execution_host = id(ExecutionHostId::new, "fixture.kimi.retained");
+        let services = host.services(execution_host.clone(), false);
+        let prepared = prepare(execution_host, services.clone(), "0.29.2");
+        let mut input = run_input("retained", KimiLocalServerPermissionMode::Auto);
+        if reattach {
+            input = input.with_one_stream_reattachment();
+        }
+        let profile = prepared.prepare_run(input).expect("run prepares");
+        assert_eq!(
+            profile.request().policy().provider_recovery(),
+            ProviderRecoveryPolicy::ManagedAllowed
+        );
+        assert_eq!(
+            profile.request().policy().stream_reattachment(),
+            if reattach {
+                StreamReattachmentPolicy::Bounded(
+                    std::num::NonZeroU32::new(1).expect("one is non-zero"),
+                )
+            } else {
+                StreamReattachmentPolicy::Disabled
+            }
+        );
+        let mut run = block_on(profile.start_run(services)).expect("run starts");
+        let events = block_on(
+            run.take_events()
+                .expect("events are available")
+                .collect::<Vec<_>>(),
+        );
+        assert!(events.iter().all(Result::is_ok));
+        let outcome = block_on(
+            run.take_terminal_outcome()
+                .expect("terminal outcome is available"),
+        );
+        assert_eq!(outcome.status(), &TerminalStatus::Completed);
+        assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
+        let requests = server.requests();
+        assert_eq!(
+            requests
+                .iter()
+                .filter(|request| request.contains("/prompts"))
+                .count(),
+            1
+        );
+        assert_eq!(
+            requests
+                .iter()
+                .filter(|request| request.starts_with("WS /api/v1/ws"))
+                .count(),
+            if reattach { 2 } else { 1 }
+        );
     }
 }
 
@@ -316,4 +381,5 @@ fn run_input(id_value: &str, permission: KimiLocalServerPermissionMode) -> KimiL
         Deadline::at(MonotonicInstant::from_ticks(100)),
         KimiLocalServerSessionConfiguration::new(permission),
     )
+    .accept_managed_recovery()
 }

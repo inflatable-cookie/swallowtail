@@ -142,8 +142,6 @@ fn both_topologies_bind_public_api_ambient_read_only_authority() {
             .collect::<Vec<_>>();
         for unavailable in [
             Capability::WorkingResourceTextWrite,
-            Capability::LoadSession,
-            Capability::Resume,
             Capability::ToolCalls,
             Capability::ProviderExternalNetwork,
             Capability::ExternalSearch,

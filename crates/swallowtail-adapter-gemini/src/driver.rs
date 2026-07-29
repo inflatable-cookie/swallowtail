@@ -125,6 +125,7 @@ impl InteractiveSessionDriver for GeminiAcpDriver {
                 .working_resource()
                 .cloned()
                 .expect("validated working-resource service");
+            let resource_access = session_resource_access(&plan)?;
             let resource = resource_service
                 .resolve(
                     scope.clone(),
@@ -132,7 +133,7 @@ impl InteractiveSessionDriver for GeminiAcpDriver {
                         .working_resource()
                         .expect("validated resource")
                         .clone(),
-                    ResourceAccess::Read,
+                    resource_access,
                     ResourceRepresentation::Filesystem,
                 )
                 .await?;
@@ -186,6 +187,8 @@ impl GeminiAcpDriver {
             .process()
             .cloned()
             .expect("validated process service");
+        let resource_access =
+            session_resource_access(plan).map_err(|error| (error, resource.clone()))?;
         let process_request = gemini_process_request(
             ExecutableRef::from_instance_target(plan.instance_target_ref()),
             self.isolated_environment.clone(),
@@ -193,6 +196,7 @@ impl GeminiAcpDriver {
                 .working_resource()
                 .expect("validated resource")
                 .clone(),
+            resource_access,
         );
         let process: Arc<dyn ProcessHandle> =
             match process_service.start(scope.clone(), process_request).await {
@@ -203,7 +207,12 @@ impl GeminiAcpDriver {
             .working_resource_io()
             .cloned()
             .expect("validated working-resource I/O service");
-        let connection = AcpConnection::new(Arc::clone(&process), resource.clone(), resource_io);
+        let connection = AcpConnection::new(
+            Arc::clone(&process),
+            resource.clone(),
+            resource_io,
+            resource_access == ResourceAccess::ReadWrite,
+        );
         let pump_connection = Arc::clone(&connection);
         let task_service = services.task().cloned().expect("validated task service");
         let pump_task = match task_service
@@ -222,7 +231,7 @@ impl GeminiAcpDriver {
             let response = connection
                 .request("session/new", json!({"cwd": cwd, "mcpServers": []}))
                 .await?;
-            parse_new_session(&response)
+            parse_new_session(&response, resource_access)
         }
         .await;
         let opened = match opened {
@@ -263,6 +272,7 @@ impl GeminiAcpDriver {
             pump_task: Some(pump_task),
             services: services.clone(),
             resource: Some(resource),
+            expected_mode: provider_mode_id(resource_access),
             active,
         })
     }
@@ -277,15 +287,39 @@ fn gemini_process_request(
     executable: ExecutableRef,
     environment: EnvironmentRef,
     resource: swallowtail_runtime::WorkingResourceRef,
+    resource_access: ResourceAccess,
 ) -> ProcessRequest {
+    let approval_mode = match resource_access {
+        ResourceAccess::Read => "plan",
+        ResourceAccess::ReadWrite => "auto_edit",
+    };
     ProcessRequest::new(executable)
         .with_arguments([
             "--acp".to_owned(),
             "--approval-mode".to_owned(),
-            "plan".to_owned(),
+            approval_mode.to_owned(),
         ])
         .with_environment([environment])
         .with_working_resource(resource)
+}
+
+fn provider_mode_id(resource_access: ResourceAccess) -> &'static str {
+    match resource_access {
+        ResourceAccess::Read => "plan",
+        ResourceAccess::ReadWrite => "autoEdit",
+    }
+}
+
+fn session_resource_access(plan: &PreflightPlan) -> Result<ResourceAccess, RuntimeFailure> {
+    plan.requirements()
+        .session_access_policy()
+        .and_then(SessionAccessPolicy::resource_access)
+        .ok_or_else(|| {
+            failure(
+                "swallowtail.gemini.acp.resource_access_missing",
+                "Gemini ACP requires explicit working-resource access",
+            )
+        })
 }
 
 #[cfg(test)]

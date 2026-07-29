@@ -21,9 +21,9 @@ use swallowtail_core::{
 use swallowtail_runtime::{
     CancellationAcknowledgement, CleanupOutcome, Deadline, DiscoveryCancellation, EnvironmentRef,
     ExecutableRef, InstalledExecutableTarget, MonotonicInstant, OperationContent,
-    PreparedAccessEvidence, ProcessExit, ProviderRetentionPolicy, RequestId, RuntimeEvent,
-    RuntimeEventKind, ScopeId, StructuredRunDriver, TerminalOutcome, TerminalStatus,
-    WorkingResourceRef,
+    PreparedAccessEvidence, ProcessExit, ProviderRecoveryPolicy, ProviderRetentionPolicy,
+    RequestId, RuntimeEvent, RuntimeEventKind, ScopeId, StructuredRunDriver, TerminalOutcome,
+    TerminalStatus, WorkingResourceRef,
 };
 use swallowtail_testkit::{
     ConformanceAssertion, ExecutionTopologyFixture, SyntheticProfile,
@@ -50,6 +50,10 @@ fn prepared_route_executes_exact_argv_and_bounded_corpus_in_both_topologies() {
         assert_eq!(
             base_profile.request().policy().provider_retention(),
             ProviderRetentionPolicy::DurableAllowed
+        );
+        assert_eq!(
+            base_profile.request().policy().provider_recovery(),
+            ProviderRecoveryPolicy::ManagedAllowed
         );
         assert_prepared_operation_evidence_matches_plan(
             base_profile.evidence().operation(),
@@ -338,17 +342,20 @@ fn profile(
     id: &str,
 ) -> swallowtail_adapter_kimi::KimiHeadlessPreparedRun {
     prepared
-        .prepare_run(KimiHeadlessRunInput::new(
-            RequestId::new(format!("kimi-headless-{id}")).expect("request is valid"),
-            KimiModelSelection::new(
-                ModelRouteId::new(format!("kimi.headless.{id}")).expect("route is valid"),
-                ModelRouteRevision::new("1").expect("route revision is valid"),
-                ModelId::new("kimi-coder").expect("model is valid"),
-            ),
-            OperationContent::new("private Kimi fixture prompt").expect("content is valid"),
-            resource,
-            Deadline::at(MonotonicInstant::from_ticks(1000)),
-        ))
+        .prepare_run(
+            KimiHeadlessRunInput::new(
+                RequestId::new(format!("kimi-headless-{id}")).expect("request is valid"),
+                KimiModelSelection::new(
+                    ModelRouteId::new(format!("kimi.headless.{id}")).expect("route is valid"),
+                    ModelRouteRevision::new("1").expect("route revision is valid"),
+                    ModelId::new("kimi-coder").expect("model is valid"),
+                ),
+                OperationContent::new("private Kimi fixture prompt").expect("content is valid"),
+                resource,
+                Deadline::at(MonotonicInstant::from_ticks(1000)),
+            )
+            .accept_managed_recovery(),
+        )
         .expect("run prepares")
 }
 

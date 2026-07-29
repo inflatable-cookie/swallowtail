@@ -34,3 +34,11 @@ The source defines exit codes `41`, `42`, `44`, `52`, `53`, `54`, `55`, and
 `130` for authentication, input, sandbox, configuration, turn-limit, tool,
 trust, and cancellation failures. Generic non-zero exits remain provider
 failures.
+
+`retention.json` freezes the separate stored-transcript delete role. The four
+selected deletion source files are byte-identical at both qualified tags.
+Delete-process exit and success text are not authoritative: the provider can
+exit zero after rejection, and its storage helper catches some unlink errors.
+The portable result is therefore `HistoryRemoved` only after one bounded
+`--list-sessions` reconciliation proves the exact bound id absent. Provider
+output may include the first user message and never enters stable diagnostics.

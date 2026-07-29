@@ -29,7 +29,7 @@ impl SharedAgent {
                     "code": -32603, "message": "private provider failure"
                 }}),
             ),
-            Scenario::DeleteDisconnect => state.stopped = true,
+            Scenario::DeleteDisconnect | Scenario::RunDeleteDisconnect => state.stopped = true,
             Scenario::DeleteMalformed => Self::enqueue(
                 state,
                 json!({"jsonrpc": "2.0", "id": id, "result": {"unexpected": true}}),

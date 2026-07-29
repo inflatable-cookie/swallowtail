@@ -1,5 +1,5 @@
 use crate::failure::failure;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use swallowtail_core::ReasoningMode;
 use swallowtail_runtime::{RuntimeFailure, SchemaDocument, StructuredOutputDescriptor};
 
@@ -27,6 +27,28 @@ pub struct Request {
 pub enum Method {
     Get,
     Post,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize)]
+pub(crate) struct ChatMessage {
+    role: &'static str,
+    content: String,
+}
+
+impl ChatMessage {
+    pub(crate) fn user(content: impl Into<String>) -> Self {
+        Self {
+            role: "user",
+            content: content.into(),
+        }
+    }
+
+    pub(crate) fn assistant(content: impl Into<String>) -> Self {
+        Self {
+            role: "assistant",
+            content: content.into(),
+        }
+    }
 }
 
 impl Request {
@@ -58,6 +80,31 @@ impl Request {
         reasoning: Option<&ReasoningMode>,
         structured_output: Option<&StructuredOutputDescriptor>,
     ) -> Result<Self, RuntimeFailure> {
+        let messages = [ChatMessage::user(content)];
+        Self::chat_with_messages(
+            model,
+            &messages,
+            maximum_output_tokens,
+            reasoning,
+            structured_output,
+        )
+    }
+
+    pub(crate) fn chat_history(
+        model: &str,
+        messages: &[ChatMessage],
+        maximum_output_tokens: u64,
+    ) -> Result<Self, RuntimeFailure> {
+        Self::chat_with_messages(model, messages, maximum_output_tokens, None, None)
+    }
+
+    fn chat_with_messages(
+        model: &str,
+        messages: &[ChatMessage],
+        maximum_output_tokens: u64,
+        reasoning: Option<&ReasoningMode>,
+        structured_output: Option<&StructuredOutputDescriptor>,
+    ) -> Result<Self, RuntimeFailure> {
         let maximum = u32::try_from(maximum_output_tokens)
             .ok()
             .filter(|maximum| *maximum > 0)
@@ -69,10 +116,7 @@ impl Request {
             })?;
         let mut request = serde_json::json!({
             "model": model,
-            "messages": [{
-                "role": "user",
-                "content": content
-            }],
+            "messages": messages,
             "stream": true,
             "options": {
                 "num_predict": maximum

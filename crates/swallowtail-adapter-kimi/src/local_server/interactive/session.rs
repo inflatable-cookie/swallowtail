@@ -132,7 +132,7 @@ impl InteractiveSessionHandle for KimiInteractiveSession {
             let prompt_cancelled = Arc::new(AtomicBool::new(false));
             let prompt = turn::before_turn_deadline(
                 transport.request(
-                    scope,
+                    scope.clone(),
                     endpoint.clone(),
                     prompt_request,
                     Some(secret.copy()),
@@ -174,13 +174,14 @@ impl InteractiveSessionHandle for KimiInteractiveSession {
                 }
             };
             let cancellation = Arc::new(TurnCancellation {
-                control,
+                control: Mutex::new(control),
                 session_id: self.provider_session_id.clone(),
                 prompt_id: prompt.id,
                 requested: AtomicBool::new(false),
             });
             let pump_input = pump::PumpInput {
-                subscription,
+                subscription: Some(subscription),
+                scope: scope.clone(),
                 session_id: self.provider_session_id.clone(),
                 runtime_turn_id: request.turn_id().clone(),
                 deadline: request.deadline(),
@@ -194,9 +195,12 @@ impl InteractiveSessionHandle for KimiInteractiveSession {
                 events: event_sender,
                 terminal: terminal_sender,
                 terminal_flag: Arc::clone(&terminal_flag),
+                remaining_reattachments: self.configuration.maximum_reattachments(),
             };
             if let Err(input) = pump_sender.send(pump_input) {
-                let _ = input.subscription.close().await;
+                if let Some(subscription) = input.subscription {
+                    let _ = subscription.close().await;
+                }
                 let error = failure(
                     "swallowtail.kimi.local_server.task_start_failed",
                     "Kimi local-server turn task did not accept provider work",

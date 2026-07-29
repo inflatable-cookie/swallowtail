@@ -66,10 +66,16 @@ fn configure(
         })
         .map_err(curl_failure)?;
     easy.http_headers(headers).map_err(curl_failure)?;
-    if request.method == Method::Post {
-        easy.post(true).map_err(curl_failure)?;
-        easy.post_fields_copy(request.body.as_deref().unwrap_or_default())
-            .map_err(curl_failure)?;
+    match request.method {
+        Method::Delete => {
+            easy.custom_request("DELETE").map_err(curl_failure)?;
+        }
+        Method::Get => {}
+        Method::Post => {
+            easy.post(true).map_err(curl_failure)?;
+            easy.post_fields_copy(request.body.as_deref().unwrap_or_default())
+                .map_err(curl_failure)?;
+        }
     }
     Ok(())
 }

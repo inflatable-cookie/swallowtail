@@ -17,13 +17,14 @@ use swallowtail_adapter_openai::{
     OpenAiBackgroundRunProfileInput, prepare_openai_background,
 };
 use swallowtail_core::{
-    Capability, CapabilityConstraint, ModelId, ModelRouteId, ModelRouteRevision, ReasoningMode,
-    StructuredOutputEnforcement,
+    Capability, CapabilityConstraint, ModelId, ModelRouteId, ModelRouteRevision,
+    OwnedRemoteResourceKind, ReasoningMode, StructuredOutputEnforcement,
 };
 use swallowtail_runtime::{
     CleanupOutcome, Deadline, MonotonicInstant, OperationContent, ProviderCancellationOutcome,
-    ProviderExecutionPolicy, ProviderObservation, ProviderRetentionPolicy, RequestId,
-    SchemaDocument, StreamReattachmentPolicy, StructuredOutputDescriptor, TerminalStatus,
+    ProviderExecutionPolicy, ProviderObservation, ProviderRetentionPolicy,
+    RemoteResourceDeletionOutcome, RequestId, SchemaDocument, StreamReattachmentPolicy,
+    StructuredOutputDescriptor, TerminalStatus,
 };
 
 #[test]
@@ -65,6 +66,10 @@ fn prepared_background_run_preserves_one_attempt_and_one_reattachment_on_both_ho
 
         let (run, events, outcome) = complete(run.start_run(fixture.services()));
         assert_eq!(outcome.status(), &TerminalStatus::Completed);
+        assert_eq!(
+            outcome.remote_resource_deletion(OwnedRemoteResourceKind::Response),
+            Some(RemoteResourceDeletionOutcome::Confirmed)
+        );
         assert_eq!(outcome.output().expect("output exists").as_str(), "Hello");
         assert!(events.iter().any(|event| matches!(
             event.kind(),
@@ -89,6 +94,7 @@ fn prepared_background_run_preserves_one_attempt_and_one_reattachment_on_both_ho
             [
                 "/v1/responses",
                 "/v1/responses/resp_fixture_123?stream=true&starting_after=3",
+                "/v1/responses/resp_fixture_123",
             ]
         );
         assert_eq!(fixture.server.inference_attempts(), 1);

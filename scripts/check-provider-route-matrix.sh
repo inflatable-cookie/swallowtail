@@ -119,7 +119,7 @@ codex.app-server|supported|yes|supported|supported|supported|ProviderHardDeleted
 codex.exec|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
 deepseek.continuation|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
 gemini-cli.acp|unsupported|no|unsupported|unsupported|unsupported|unsupported
-gemini-cli.headless|unsupported|no|unsupported|unsupported|unsupported|unsupported
+gemini-cli.headless|supported|yes|unsupported|unsupported|supported|HistoryRemoved
 gemini.live|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
 kimi-code.acp|unsupported|no|unsupported|unsupported|unsupported|unsupported
 kimi-code.headless|unsupported|no|unsupported|unsupported|unsupported|unsupported
@@ -246,33 +246,31 @@ for feature in serving_not_applicable:
 
 expected_no_counts = Counter(
     {
-        "unverified_newer_allowed": 12,
+        "unverified_newer_allowed": 2,
         "structured_run": 2,
-        "interactive_session": 10,
-        "realtime_media_session": 19,
+        "interactive_session": 5,
+        "realtime_media_session": 3,
         "usage_evidence": 2,
-        "billed_cost_evidence": 20,
+        "billed_cost_evidence": 15,
         "output_token_limit": 13,
         "reasoning_selection": 11,
         "structured_output": 17,
         "attachments": 17,
         "consumer_tool_exchange": 17,
         "approval_question_exchange": 15,
-        "load_session": 20,
-        "resume_session": 18,
-        "working_resource": 12,
-        "bounded_workspace_text_write": 19,
+        "load_session": 17,
+        "resume_session": 16,
+        "bounded_workspace_text_write": 6,
         "external_search": 19,
-        "retained_background_execution": 20,
-        "stream_reattachment": 19,
-        "provider_managed_recovery": 20,
-        "provider_session_archive": 19,
-        "provider_session_restore": 19,
-        "provider_session_delete": 18,
+        "retained_background_execution": 5,
+        "stream_reattachment": 3,
+        "provider_managed_recovery": 16,
+        "provider_session_archive": 4,
+        "provider_session_restore": 4,
+        "provider_session_delete": 2,
         "native_session_close": 20,
-        "owned_remote_resource_cleanup": 19,
-        "owned_runtime_lifecycle": 20,
-        "planned_connection_rollover": 20,
+        "owned_remote_resource_cleanup": 2,
+        "planned_connection_rollover": 1,
     }
 )
 actual_no_counts = Counter()
@@ -287,12 +285,28 @@ for row in rows:
         if row[feature] == "No":
             actual_no_counts[feature] += 1
             no_cells.append((row["provider"], row["solution"], feature))
+audited_value_counts = Counter(
+    row[feature] for row in rows for feature in audited_columns
+)
+if audited_value_counts != Counter(
+    {
+        "Yes": 202,
+        "No": 234,
+        "Not applicable": 216,
+        "Partial": 4,
+        "Caller-supplied": 2,
+        "Session-negotiated": 2,
+    }
+):
+    raise SystemExit(
+        f"provider solution disposition counts changed: {dict(audited_value_counts)}"
+    )
 if actual_no_counts != expected_no_counts:
     raise SystemExit(
         f"provider solution No inventory changed: {dict(actual_no_counts)}"
     )
-if len(no_cells) != 437 or len(no_cells) != len(set(no_cells)):
-    raise SystemExit("provider solution No inventory must contain 437 unique cells")
+if len(no_cells) != 234 or len(no_cells) != len(set(no_cells)):
+    raise SystemExit("provider solution No inventory must contain 234 unique cells")
 
 no_classification_overrides = {
     (
@@ -426,8 +440,6 @@ session_continuity_classifications = {
     ("load_session", "bedrock.catalogue; bedrock.runtime"): "operation_shape_not_applicable",
     ("resume_session", "bedrock.catalogue; bedrock.runtime"): "operation_shape_not_applicable",
     ("native_session_close", "bedrock.catalogue; bedrock.runtime"): "operation_shape_not_applicable",
-    ("load_session", "claude-agent.acp"): "ready_existing_contract",
-    ("resume_session", "claude-agent.acp"): "ready_existing_contract",
     ("load_session", "claude-code.headless"): "operation_shape_not_applicable",
     ("resume_session", "claude-code.headless"): "operation_shape_not_applicable",
     ("native_session_close", "claude-code.headless"): "operation_shape_not_applicable",
@@ -461,7 +473,6 @@ session_continuity_classifications = {
     ("load_session", "ollama.attached"): "operation_shape_not_applicable",
     ("resume_session", "ollama.attached"): "operation_shape_not_applicable",
     ("native_session_close", "ollama.attached"): "operation_shape_not_applicable",
-    ("load_session", "codex.app-server; codex.exec"): "ready_existing_contract",
     ("native_session_close", "codex.app-server; codex.exec"): "upstream_unsupported",
     ("load_session", "openai.realtime"): "operation_shape_not_applicable",
     ("resume_session", "openai.realtime"): "operation_shape_not_applicable",
@@ -469,13 +480,575 @@ session_continuity_classifications = {
     ("load_session", "openai.background"): "operation_shape_not_applicable",
     ("resume_session", "openai.background"): "operation_shape_not_applicable",
     ("native_session_close", "openai.background"): "operation_shape_not_applicable",
-    ("load_session", "opencode.http"): "ready_existing_contract",
-    ("resume_session", "opencode.http"): "ready_existing_contract",
     ("native_session_close", "opencode.http"): "upstream_unsupported",
     ("load_session", "xai.responses-websocket"): "operation_shape_not_applicable",
     ("resume_session", "xai.responses-websocket"): "operation_shape_not_applicable",
     ("native_session_close", "xai.responses-websocket"): "operation_shape_not_applicable",
 }
+provider_retention_not_applicable = {
+    "qwen.headless",
+    "alibaba.conversations",
+    "bedrock.catalogue; bedrock.runtime",
+    "claude-code.headless",
+    "anthropic.managed-agent",
+    "anthropic.messages",
+    "pi.rpc",
+    "deepseek.continuation",
+    "gemini.live",
+    "llama-cpp.attached",
+    "kimi-platform.chat",
+    "ollama.attached",
+    "openai.realtime",
+    "xai.responses-websocket",
+}
+provider_session_not_applicable = provider_retention_not_applicable | {
+    "openai.background",
+}
+owned_cleanup_not_applicable = (
+    provider_retention_not_applicable
+    - {"alibaba.conversations", "anthropic.managed-agent"}
+) | {"codex.app-server; codex.exec"}
+provider_retention_classifications = {}
+for feature in ["provider_session_archive", "provider_session_restore"]:
+    for route in provider_session_not_applicable:
+        provider_retention_classifications[(feature, route)] = (
+            "operation_shape_not_applicable"
+        )
+    for route in [
+        "claude-agent.acp",
+        "gemini-cli.acp + gemini-cli.headless",
+        "kimi-code.acp + kimi-code.headless",
+        "opencode.http",
+    ]:
+        provider_retention_classifications[(feature, route)] = "upstream_unsupported"
+for route in provider_session_not_applicable:
+    provider_retention_classifications[("provider_session_delete", route)] = (
+        "operation_shape_not_applicable"
+    )
+for route in [
+    "kimi-code.acp + kimi-code.headless",
+    "kimi-code.local-server",
+]:
+    provider_retention_classifications[("provider_session_delete", route)] = (
+        "upstream_unsupported"
+    )
+provider_retention_classifications[
+    ("provider_session_delete", "gemini-cli.acp + gemini-cli.headless")
+] = "separate_transport_and_corpus_required"
+for route in owned_cleanup_not_applicable:
+    provider_retention_classifications[("owned_remote_resource_cleanup", route)] = (
+        "operation_shape_not_applicable"
+    )
+for route in [
+    "kimi-code.acp + kimi-code.headless",
+    "kimi-code.local-server",
+]:
+    provider_retention_classifications[("owned_remote_resource_cleanup", route)] = (
+        "upstream_unsupported"
+    )
+provider_retention_classifications[
+    ("owned_remote_resource_cleanup", "gemini-cli.acp + gemini-cli.headless")
+] = "separate_transport_and_corpus_required"
+provider_retention_classifications[
+    ("owned_remote_resource_cleanup", "claude-agent.acp")
+] = "ready_existing_contract"
+provider_retention_classifications[
+    ("owned_remote_resource_cleanup", "openai.background")
+] = "shared_contract_and_corpus_required"
+provider_retention_classifications[
+    ("owned_remote_resource_cleanup", "opencode.http")
+] = "realized_matrix_false_negative"
+
+retained_execution_classifications = {
+    ("retained_background_execution", "qwen.headless"): "operation_shape_not_applicable",
+    ("stream_reattachment", "qwen.headless"): "operation_shape_not_applicable",
+    ("provider_managed_recovery", "qwen.headless"): "upstream_unsupported",
+    ("retained_background_execution", "alibaba.conversations"): "upstream_unsupported",
+    ("stream_reattachment", "alibaba.conversations"): "operation_shape_not_applicable",
+    ("provider_managed_recovery", "alibaba.conversations"): "upstream_unsupported",
+    ("retained_background_execution", "bedrock.catalogue; bedrock.runtime"): "separate_route_and_contract_required",
+    ("stream_reattachment", "bedrock.catalogue; bedrock.runtime"): "upstream_unsupported",
+    ("provider_managed_recovery", "bedrock.catalogue; bedrock.runtime"): "upstream_unsupported",
+    ("retained_background_execution", "claude-agent.acp"): "operation_shape_not_applicable",
+    ("stream_reattachment", "claude-agent.acp"): "operation_shape_not_applicable",
+    ("provider_managed_recovery", "claude-agent.acp"): "upstream_unsupported",
+    ("retained_background_execution", "claude-code.headless"): "operation_shape_not_applicable",
+    ("stream_reattachment", "claude-code.headless"): "operation_shape_not_applicable",
+    ("provider_managed_recovery", "claude-code.headless"): "upstream_unsupported",
+    ("retained_background_execution", "anthropic.managed-agent"): "operation_shape_not_applicable",
+    ("retained_background_execution", "anthropic.messages"): "separate_route_and_contract_required",
+    ("stream_reattachment", "anthropic.messages"): "operation_shape_not_applicable",
+    ("provider_managed_recovery", "anthropic.messages"): "upstream_unsupported",
+    ("retained_background_execution", "pi.rpc"): "operation_shape_not_applicable",
+    ("stream_reattachment", "pi.rpc"): "operation_shape_not_applicable",
+    ("provider_managed_recovery", "pi.rpc"): "upstream_unsupported",
+    ("retained_background_execution", "deepseek.continuation"): "upstream_unsupported",
+    ("stream_reattachment", "deepseek.continuation"): "operation_shape_not_applicable",
+    ("provider_managed_recovery", "deepseek.continuation"): "upstream_unsupported",
+    ("retained_background_execution", "gemini-cli.acp + gemini-cli.headless"): "operation_shape_not_applicable",
+    ("stream_reattachment", "gemini-cli.acp + gemini-cli.headless"): "operation_shape_not_applicable",
+    ("provider_managed_recovery", "gemini-cli.acp + gemini-cli.headless"): "upstream_unsupported",
+    ("retained_background_execution", "gemini.live"): "operation_shape_not_applicable",
+    ("stream_reattachment", "gemini.live"): "upstream_unsupported",
+    ("provider_managed_recovery", "gemini.live"): "upstream_unsupported",
+    ("retained_background_execution", "llama-cpp.attached"): "operation_shape_not_applicable",
+    ("stream_reattachment", "llama-cpp.attached"): "operation_shape_not_applicable",
+    ("provider_managed_recovery", "llama-cpp.attached"): "operation_shape_not_applicable",
+    ("retained_background_execution", "kimi-code.acp + kimi-code.headless"): "operation_shape_not_applicable",
+    ("stream_reattachment", "kimi-code.acp + kimi-code.headless"): "operation_shape_not_applicable",
+    ("provider_managed_recovery", "kimi-code.acp + kimi-code.headless"): "shared_contract_and_corpus_required",
+    ("retained_background_execution", "kimi-code.local-server"): "operation_shape_not_applicable",
+    ("stream_reattachment", "kimi-code.local-server"): "shared_contract_and_corpus_required",
+    ("provider_managed_recovery", "kimi-code.local-server"): "shared_contract_and_corpus_required",
+    ("retained_background_execution", "kimi-platform.chat"): "upstream_unsupported",
+    ("stream_reattachment", "kimi-platform.chat"): "operation_shape_not_applicable",
+    ("provider_managed_recovery", "kimi-platform.chat"): "upstream_unsupported",
+    ("retained_background_execution", "ollama.attached"): "operation_shape_not_applicable",
+    ("stream_reattachment", "ollama.attached"): "operation_shape_not_applicable",
+    ("provider_managed_recovery", "ollama.attached"): "operation_shape_not_applicable",
+    ("retained_background_execution", "codex.app-server; codex.exec"): "operation_shape_not_applicable",
+    ("stream_reattachment", "codex.app-server; codex.exec"): "operation_shape_not_applicable",
+    ("provider_managed_recovery", "codex.app-server; codex.exec"): "upstream_unsupported",
+    ("retained_background_execution", "openai.realtime"): "operation_shape_not_applicable",
+    ("stream_reattachment", "openai.realtime"): "operation_shape_not_applicable",
+    ("provider_managed_recovery", "openai.realtime"): "upstream_unsupported",
+    ("provider_managed_recovery", "openai.background"): "upstream_unsupported",
+    ("retained_background_execution", "opencode.http"): "operation_shape_not_applicable",
+    ("stream_reattachment", "opencode.http"): "upstream_unsupported",
+    ("provider_managed_recovery", "opencode.http"): "upstream_unsupported",
+    ("retained_background_execution", "xai.responses-websocket"): "operation_shape_not_applicable",
+    ("stream_reattachment", "xai.responses-websocket"): "operation_shape_not_applicable",
+    ("provider_managed_recovery", "xai.responses-websocket"): "upstream_unsupported",
+}
+
+working_resource_write_classifications = {
+    ("bounded_workspace_text_write", "qwen.headless"): "upstream_unsupported",
+    ("working_resource", "alibaba.conversations"): "operation_shape_not_applicable",
+    ("bounded_workspace_text_write", "alibaba.conversations"): "operation_shape_not_applicable",
+    ("working_resource", "bedrock.catalogue; bedrock.runtime"): "operation_shape_not_applicable",
+    ("bounded_workspace_text_write", "bedrock.catalogue; bedrock.runtime"): "operation_shape_not_applicable",
+    ("bounded_workspace_text_write", "claude-agent.acp"): "upstream_unsupported",
+    ("bounded_workspace_text_write", "claude-code.headless"): "upstream_unsupported",
+    ("working_resource", "anthropic.managed-agent"): "operation_shape_not_applicable",
+    ("bounded_workspace_text_write", "anthropic.managed-agent"): "operation_shape_not_applicable",
+    ("working_resource", "anthropic.messages"): "operation_shape_not_applicable",
+    ("bounded_workspace_text_write", "anthropic.messages"): "operation_shape_not_applicable",
+    ("bounded_workspace_text_write", "pi.rpc"): "upstream_unsupported",
+    ("working_resource", "deepseek.continuation"): "operation_shape_not_applicable",
+    ("bounded_workspace_text_write", "deepseek.continuation"): "operation_shape_not_applicable",
+    ("bounded_workspace_text_write", "gemini-cli.acp + gemini-cli.headless"): "contract_or_corpus_required",
+    ("working_resource", "gemini.live"): "operation_shape_not_applicable",
+    ("bounded_workspace_text_write", "gemini.live"): "operation_shape_not_applicable",
+    ("working_resource", "llama-cpp.attached"): "operation_shape_not_applicable",
+    ("bounded_workspace_text_write", "llama-cpp.attached"): "operation_shape_not_applicable",
+    ("bounded_workspace_text_write", "kimi-code.local-server"): "upstream_unsupported",
+    ("working_resource", "kimi-platform.chat"): "operation_shape_not_applicable",
+    ("bounded_workspace_text_write", "kimi-platform.chat"): "operation_shape_not_applicable",
+    ("working_resource", "ollama.attached"): "operation_shape_not_applicable",
+    ("bounded_workspace_text_write", "ollama.attached"): "operation_shape_not_applicable",
+    ("working_resource", "openai.realtime"): "operation_shape_not_applicable",
+    ("bounded_workspace_text_write", "openai.realtime"): "operation_shape_not_applicable",
+    ("working_resource", "openai.background"): "operation_shape_not_applicable",
+    ("bounded_workspace_text_write", "openai.background"): "operation_shape_not_applicable",
+    ("bounded_workspace_text_write", "opencode.http"): "upstream_unsupported",
+    ("working_resource", "xai.responses-websocket"): "operation_shape_not_applicable",
+    ("bounded_workspace_text_write", "xai.responses-websocket"): "operation_shape_not_applicable",
+}
+
+owned_runtime_not_applicable = {
+    "qwen.headless",
+    "alibaba.conversations",
+    "bedrock.catalogue; bedrock.runtime",
+    "claude-agent.acp",
+    "claude-code.headless",
+    "anthropic.managed-agent",
+    "anthropic.messages",
+    "pi.rpc",
+    "deepseek.continuation",
+    "gemini-cli.acp + gemini-cli.headless",
+    "gemini.live",
+    "llama-cpp.attached",
+    "kimi-code.acp + kimi-code.headless",
+    "kimi-platform.chat",
+    "ollama.attached",
+    "codex.app-server; codex.exec",
+    "openai.realtime",
+    "openai.background",
+    "opencode.http",
+    "xai.responses-websocket",
+}
+rollover_not_applicable = {
+    "qwen.headless",
+    "alibaba.conversations",
+    "bedrock.catalogue; bedrock.runtime",
+    "claude-agent.acp",
+    "claude-code.headless",
+    "anthropic.managed-agent",
+    "anthropic.messages",
+    "pi.rpc",
+    "deepseek.continuation",
+    "gemini-cli.acp + gemini-cli.headless",
+    "llama-cpp.attached",
+    "kimi-code.acp + kimi-code.headless",
+    "kimi-code.local-server",
+    "kimi-platform.chat",
+    "ollama.attached",
+    "codex.app-server; codex.exec",
+    "openai.background",
+    "opencode.http",
+    "xai.responses-websocket",
+}
+runtime_rollover_classifications = {
+    **{
+        ("owned_runtime_lifecycle", route): "operation_shape_not_applicable"
+        for route in owned_runtime_not_applicable
+    },
+    **{
+        ("planned_connection_rollover", route): "operation_shape_not_applicable"
+        for route in rollover_not_applicable
+    },
+    (
+        "planned_connection_rollover",
+        "openai.realtime",
+    ): "selected_surface_absence",
+}
+
+residual_interface_not_runtime_ordered = {
+    ("unverified_newer_allowed", route)
+    for route in {
+        "alibaba.conversations",
+        "bedrock.catalogue; bedrock.runtime",
+        "anthropic.managed-agent",
+        "anthropic.messages",
+        "deepseek.continuation",
+        "gemini.live",
+        "kimi-platform.chat",
+        "openai.realtime",
+        "openai.background",
+        "xai.responses-websocket",
+    }
+}
+residual_contract_or_corpus = {
+    ("interactive_session", "qwen.headless"),
+    ("interactive_session", "bedrock.catalogue; bedrock.runtime"),
+    ("interactive_session", "claude-code.headless"),
+    ("interactive_session", "anthropic.managed-agent"),
+    ("unverified_newer_allowed", "llama-cpp.attached"),
+    ("interactive_session", "llama-cpp.attached"),
+    ("unverified_newer_allowed", "llama-cpp.owned"),
+    ("interactive_session", "kimi-platform.chat"),
+    ("interactive_session", "ollama.attached"),
+}
+residual_operation_not_applicable = {
+    ("interactive_session", route)
+    for route in {
+        "gemini.live",
+        "openai.realtime",
+        "openai.background",
+    }
+} | {
+    ("realtime_media_session", route)
+    for route in {
+        "qwen.headless",
+        "claude-agent.acp",
+        "claude-code.headless",
+        "anthropic.managed-agent",
+        "anthropic.messages",
+        "pi.rpc",
+        "deepseek.continuation",
+        "gemini-cli.acp + gemini-cli.headless",
+        "llama-cpp.attached",
+        "kimi-code.acp + kimi-code.headless",
+        "kimi-code.local-server",
+        "kimi-platform.chat",
+        "ollama.attached",
+        "codex.app-server; codex.exec",
+        "openai.background",
+        "opencode.http",
+    }
+}
+residual_separate_route = {
+    ("realtime_media_session", "alibaba.conversations"),
+    ("realtime_media_session", "bedrock.catalogue; bedrock.runtime"),
+    ("realtime_media_session", "xai.responses-websocket"),
+}
+residual_no_provider_billing = {
+    ("billed_cost_evidence", route)
+    for route in {
+        "claude-code.headless",
+        "llama-cpp.attached",
+        "kimi-code.acp + kimi-code.headless",
+        "kimi-code.local-server",
+        "ollama.attached",
+    }
+}
+residual_selected_surface_absence = {
+    ("billed_cost_evidence", route)
+    for route in {
+        "qwen.headless",
+        "alibaba.conversations",
+        "bedrock.catalogue; bedrock.runtime",
+        "anthropic.managed-agent",
+        "anthropic.messages",
+        "deepseek.continuation",
+        "gemini-cli.acp + gemini-cli.headless",
+        "gemini.live",
+        "kimi-platform.chat",
+        "codex.app-server; codex.exec",
+        "openai.realtime",
+        "openai.background",
+    }
+}
+residual_non_authoritative_cost = {
+    ("billed_cost_evidence", route)
+    for route in {
+        "claude-agent.acp",
+        "pi.rpc",
+        "opencode.http",
+    }
+}
+residual_feature_classifications = {
+    **{
+        cell: "interface_axis_not_runtime_ordered"
+        for cell in residual_interface_not_runtime_ordered
+    },
+    **{
+        cell: "contract_or_corpus_required"
+        for cell in residual_contract_or_corpus
+    },
+    **{
+        cell: "operation_shape_not_applicable"
+        for cell in residual_operation_not_applicable
+    },
+    **{
+        cell: "separate_route_and_contract_required"
+        for cell in residual_separate_route
+    },
+    **{
+        cell: "no_provider_billing_boundary"
+        for cell in residual_no_provider_billing
+    },
+    **{
+        cell: "selected_surface_absence"
+        for cell in residual_selected_surface_absence
+    },
+    **{
+        cell: "non_authoritative_cost_evidence"
+        for cell in residual_non_authoritative_cost
+    },
+}
+if len(residual_feature_classifications) != 61:
+    raise SystemExit("residual feature starting inventory must contain exactly 61 cells")
+if Counter(residual_feature_classifications.values()) != Counter(
+    {
+        "interface_axis_not_runtime_ordered": 10,
+        "contract_or_corpus_required": 9,
+        "operation_shape_not_applicable": 19,
+        "separate_route_and_contract_required": 3,
+        "no_provider_billing_boundary": 5,
+        "selected_surface_absence": 12,
+        "non_authoritative_cost_evidence": 3,
+    }
+):
+    raise SystemExit("residual feature classification counts changed")
+residual_feature_values = {
+    (feature, row["route_id"]): row[feature]
+    for row in rows
+    for feature in [
+        "unverified_newer_allowed",
+        "interactive_session",
+        "realtime_media_session",
+        "billed_cost_evidence",
+    ]
+}
+residual_not_applicable = {
+    "interface_axis_not_runtime_ordered",
+    "operation_shape_not_applicable",
+    "no_provider_billing_boundary",
+}
+for cell, classification in residual_feature_classifications.items():
+    expected_value = (
+        "Yes"
+        if cell
+        in {
+            ("interactive_session", "qwen.headless"),
+            ("interactive_session", "ollama.attached"),
+        }
+        else "Not applicable"
+        if classification in residual_not_applicable
+        else "No"
+    )
+    if residual_feature_values.get(cell) != expected_value:
+        raise SystemExit(
+            f"residual feature final disposition changed: {cell} expected {expected_value}"
+        )
+if Counter(
+    residual_feature_values[cell] for cell in residual_feature_classifications
+) != Counter({"Not applicable": 34, "No": 25, "Yes": 2}):
+    raise SystemExit("residual feature final counts changed")
+
+provider_retention_values = {
+    (feature, row["route_id"]): row[feature]
+    for row in rows
+    for feature in [
+        "provider_session_archive",
+        "provider_session_restore",
+        "provider_session_delete",
+        "owned_remote_resource_cleanup",
+    ]
+}
+if len(provider_retention_classifications) != 75:
+    raise SystemExit("provider-retention starting inventory must contain 75 cells")
+if Counter(provider_retention_classifications.values()) != Counter(
+    {
+        "operation_shape_not_applicable": 58,
+        "upstream_unsupported": 12,
+        "separate_transport_and_corpus_required": 2,
+        "realized_matrix_false_negative": 1,
+        "ready_existing_contract": 1,
+        "shared_contract_and_corpus_required": 1,
+    }
+):
+    raise SystemExit("provider-retention classification counts changed")
+provider_retention_expected_values = {
+    "operation_shape_not_applicable": "Not applicable",
+    "upstream_unsupported": "No",
+    "separate_transport_and_corpus_required": "Yes",
+    "realized_matrix_false_negative": "Yes",
+    "ready_existing_contract": "Yes",
+    "shared_contract_and_corpus_required": "Yes",
+}
+for cell, classification in provider_retention_classifications.items():
+    expected_value = provider_retention_expected_values[classification]
+    if provider_retention_values.get(cell) != expected_value:
+        raise SystemExit(
+            "provider-retention final disposition changed: "
+            f"{cell} expected {expected_value}"
+        )
+provider_retention_final_counts = Counter(
+    provider_retention_values[cell] for cell in provider_retention_classifications
+)
+if provider_retention_final_counts != Counter(
+    {"Not applicable": 58, "No": 12, "Yes": 5}
+):
+    raise SystemExit(
+        "provider-retention final counts changed: "
+        f"{dict(provider_retention_final_counts)}"
+    )
+
+retained_execution_values = {
+    (feature, row["route_id"]): row[feature]
+    for row in rows
+    for feature in [
+        "retained_background_execution",
+        "stream_reattachment",
+        "provider_managed_recovery",
+    ]
+}
+if len(retained_execution_classifications) != 59:
+    raise SystemExit("retained-execution starting inventory must contain exactly 59 cells")
+if Counter(retained_execution_classifications.values()) != Counter(
+    {
+        "operation_shape_not_applicable": 32,
+        "upstream_unsupported": 22,
+        "separate_route_and_contract_required": 2,
+        "shared_contract_and_corpus_required": 3,
+    }
+):
+    raise SystemExit("retained-execution classification counts changed")
+retained_execution_realized = {
+    ("provider_managed_recovery", "kimi-code.acp + kimi-code.headless"): "Partial",
+    ("stream_reattachment", "kimi-code.local-server"): "Yes",
+    ("provider_managed_recovery", "kimi-code.local-server"): "Yes",
+}
+for cell, classification in retained_execution_classifications.items():
+    expected = retained_execution_realized.get(
+        cell,
+        "Not applicable"
+        if classification == "operation_shape_not_applicable"
+        else "No",
+    )
+    if retained_execution_values.get(cell) != expected:
+        raise SystemExit(
+            f"retained-execution final disposition changed: {cell} expected {expected}"
+        )
+retained_execution_final_counts = Counter(
+    retained_execution_values[cell] for cell in retained_execution_classifications
+)
+if retained_execution_final_counts != Counter(
+    {"Not applicable": 32, "No": 24, "Yes": 2, "Partial": 1}
+):
+    raise SystemExit(
+        "retained-execution final counts changed: "
+        f"{dict(retained_execution_final_counts)}"
+    )
+
+working_resource_write_values = {
+    (feature, row["route_id"]): row[feature]
+    for row in rows
+    for feature in ["working_resource", "bounded_workspace_text_write"]
+}
+if len(working_resource_write_classifications) != 31:
+    raise SystemExit("working-resource/write starting inventory must contain exactly 31 cells")
+if Counter(working_resource_write_classifications.values()) != Counter(
+    {
+        "operation_shape_not_applicable": 24,
+        "upstream_unsupported": 6,
+        "contract_or_corpus_required": 1,
+    }
+):
+    raise SystemExit("working-resource/write classification counts changed")
+working_resource_write_expected = {
+    "operation_shape_not_applicable": "Not applicable",
+    "upstream_unsupported": "No",
+    "contract_or_corpus_required": "Yes",
+}
+for cell, classification in working_resource_write_classifications.items():
+    expected = working_resource_write_expected[classification]
+    if working_resource_write_values.get(cell) != expected:
+        raise SystemExit(
+            f"working-resource/write final disposition changed: {cell} expected {expected}"
+        )
+if Counter(
+    working_resource_write_values[cell]
+    for cell in working_resource_write_classifications
+) != Counter({"Not applicable": 24, "No": 6, "Yes": 1}):
+    raise SystemExit("working-resource/write final counts changed")
+
+runtime_rollover_values = {
+    (feature, row["route_id"]): row[feature]
+    for row in rows
+    for feature in [
+        "owned_runtime_lifecycle",
+        "planned_connection_rollover",
+    ]
+}
+if len(runtime_rollover_classifications) != 40:
+    raise SystemExit("runtime-ownership/rollover inventory must contain exactly 40 cells")
+if Counter(runtime_rollover_classifications.values()) != Counter(
+    {
+        "operation_shape_not_applicable": 39,
+        "selected_surface_absence": 1,
+    }
+):
+    raise SystemExit("runtime-ownership/rollover classification counts changed")
+for cell, classification in runtime_rollover_classifications.items():
+    expected = (
+        "Not applicable"
+        if classification == "operation_shape_not_applicable"
+        else "No"
+    )
+    if runtime_rollover_values.get(cell) != expected:
+        raise SystemExit(
+            "runtime-ownership/rollover final disposition changed: "
+            f"{cell} expected {expected}"
+        )
+if Counter(
+    runtime_rollover_values[cell]
+    for cell in runtime_rollover_classifications
+) != Counter({"Not applicable": 39, "No": 1}):
+    raise SystemExit("runtime-ownership/rollover final counts changed")
+
 generation_control_no_cells = {
     (feature, row["route_id"])
     for row in rows
@@ -509,8 +1082,8 @@ session_continuity_no_cells = {
     for feature in ["load_session", "resume_session", "native_session_close"]
     if row[feature] == "No"
 }
-if len(session_continuity_no_cells) != 58:
-    raise SystemExit("session-continuity inventory must contain exactly 58 No cells")
+if len(session_continuity_no_cells) != 53:
+    raise SystemExit("session-continuity inventory must contain exactly 53 No cells")
 if session_continuity_no_cells != set(session_continuity_classifications):
     raise SystemExit("session-continuity No classifications changed")
 
@@ -525,20 +1098,27 @@ for row in rows:
             generation_control_classifications.get(cell)
             or input_callback_classifications.get(cell)
             or session_continuity_classifications.get(cell)
+            or provider_retention_classifications.get(cell)
+            or retained_execution_classifications.get(cell)
+            or working_resource_write_classifications.get(cell)
+            or runtime_rollover_classifications.get(cell)
+            or residual_feature_classifications.get(cell)
             or "missing_shared_contract_or_currentness_evidence",
         )
         classification_counts[classification] += 1
 if classification_counts != Counter(
     {
-        "missing_shared_contract_or_currentness_evidence": 266,
-        "contract_or_corpus_required": 47,
-        "upstream_unsupported": 57,
+        "contract_or_corpus_required": 54,
+        "upstream_unsupported": 97,
         "operation_shape_not_applicable": 42,
-        "ready_existing_contract": 9,
+        "ready_existing_contract": 4,
         "ready_operator_hold": 6,
         "composite_partial_only": 5,
         "shared_contract_expansion_required": 4,
         "upstream_ordering_blocked": 1,
+        "separate_route_and_contract_required": 5,
+        "selected_surface_absence": 13,
+        "non_authoritative_cost_evidence": 3,
     }
 ):
     raise SystemExit(

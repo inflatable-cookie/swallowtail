@@ -1,8 +1,9 @@
 use crate::failure::{failure, unsupported};
 use crate::protocol::{
     Event, PromptPayload, Request, Response, SessionDeleteResponse, abort, classify_session_delete,
-    parse_catalog, parse_event, parse_session_for_version, prompt, require_abort_success,
-    require_health_matches, require_no_content, session_create, session_delete,
+    parse_catalog, parse_event, parse_session_for_version, project_session_messages, prompt,
+    require_abort_success, require_existing_session, require_health_matches, require_no_content,
+    session_create, session_delete, session_get, session_messages,
 };
 use crate::selection::{OpenCodePlanVersion, classify_plan, opencode_http_claim};
 use crate::transport::{CurlTransport, Subscription};
@@ -22,18 +23,22 @@ use swallowtail_core::{
 use swallowtail_runtime::{
     BoxEventStream, BoxFuture, CancellationAcknowledgement, CancellationControl, CleanupOutcome,
     CredentialLease, Deadline, DeadlineObservation, EndpointRef, HostServices,
-    InteractiveSessionDriver, InteractiveSessionHandle, JoinedTask, ModelCatalogDriver,
-    ModelCatalogRequest, OpenSessionRequest, ProviderExecutionPolicy, ProviderRecoveryPolicy,
-    ProviderRetentionPolicy, RemoteResourceDeletionOutcome, RequestId, ResourceLease,
-    ResumeSessionRequest, RunHandle, RuntimeEvent, RuntimeEventKind, RuntimeFailure, RuntimeRunId,
-    RuntimeSessionId, RuntimeTurnId, ScopeId, SessionResumeBinding, StreamReattachmentPolicy,
-    StructuredOutputDescriptor, StructuredRunDriver, StructuredRunRequest, TerminalOutcome,
-    TerminalStatus, TurnHandle, TurnRequest, runtime_event_channel, terminal_outcome_channel,
-    validate_session_resource_lease,
+    InteractiveSessionDriver, InteractiveSessionHandle, JoinedTask, LoadSessionRequest,
+    LoadedSession, ModelCatalogDriver, ModelCatalogRequest, OpenSessionRequest,
+    ProviderExecutionPolicy, ProviderRecoveryPolicy, ProviderRetentionPolicy,
+    RemoteResourceDeletionOutcome, RequestId, ResourceLease, ResumeSessionRequest, RunHandle,
+    RuntimeEvent, RuntimeEventKind, RuntimeFailure, RuntimeRunId, RuntimeSessionId, RuntimeTurnId,
+    ScopeId, SessionResumeBinding, StreamReattachmentPolicy, StructuredOutputDescriptor,
+    StructuredRunDriver, StructuredRunRequest, TerminalOutcome, TerminalStatus, TurnHandle,
+    TurnRequest, runtime_event_channel, terminal_outcome_channel, validate_session_resource_lease,
 };
 
 const DRIVER_ID: &str = "swallowtail.opencode.http";
 const EVENT_CAPACITY: usize = 64;
+const CONTINUITY_PAGE_LIMIT: usize = 100;
+const CONTINUITY_MAXIMUM_PAGES: usize = 64;
+pub(crate) const CONTINUITY_MAXIMUM_ITEMS: usize = 4096;
+pub(crate) const CONTINUITY_MAXIMUM_BYTES: usize = 4 * 1024 * 1024;
 
 pub(crate) mod callback;
 pub(crate) mod input;

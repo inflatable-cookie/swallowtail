@@ -18,6 +18,7 @@ pub struct KimiHeadlessRunInput {
     content: OperationContent,
     working_resource: WorkingResourceRef,
     deadline: Deadline,
+    managed_recovery_accepted: bool,
 }
 
 impl KimiHeadlessRunInput {
@@ -35,7 +36,14 @@ impl KimiHeadlessRunInput {
             content,
             working_resource,
             deadline,
+            managed_recovery_accepted: false,
         }
+    }
+
+    #[must_use]
+    pub const fn accept_managed_recovery(mut self) -> Self {
+        self.managed_recovery_accepted = true;
+        self
     }
 }
 
@@ -135,6 +143,15 @@ impl KimiHeadlessPreparedIntegration {
         &self,
         input: KimiHeadlessRunInput,
     ) -> Result<KimiHeadlessPreparedRun, PreparationFailure> {
+        if !input.managed_recovery_accepted {
+            return Err(PreparationFailure::new(
+                swallowtail_runtime::PreparationStage::Preflight,
+                swallowtail_core::Diagnostic::new(swallowtail_core::SafeDiagnostic::new(
+                    "swallowtail.kimi.headless.preparation.recovery_agreement_required",
+                    "Kimi headless requires explicit managed-recovery acceptance",
+                )),
+            ));
+        }
         let capabilities = run_capabilities();
         let instance = instance_with_capabilities(self, capabilities.clone());
         let (route_id, route_revision, model_id) = input.model.into_parts();
@@ -154,6 +171,7 @@ impl KimiHeadlessPreparedIntegration {
         let plan = build_plan(self, &instance, &route, &requirements)?;
         let policy = OperationPolicy::offline()
             .with_provider_retention(ProviderRetentionPolicy::DurableAllowed)
+            .with_provider_recovery(swallowtail_runtime::ProviderRecoveryPolicy::ManagedAllowed)
             .with_harness_isolation(swallowtail_core::HarnessIsolation::AmbientHost)
             .with_harness_configuration_posture(
                 swallowtail_core::HarnessConfigurationPosture::Ambient,

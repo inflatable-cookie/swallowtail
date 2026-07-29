@@ -21,6 +21,12 @@ v0.19.11 does not promise a terminal stream-JSON result for those paths. The
 terminal-observation fixture therefore keeps exit truth separate from parsed
 provider events.
 
+`interactive-session.json` adds the separate interactive profile. It freezes
+one owned child per turn, exact private `--resume` continuation after the
+first successful provider session id, and invalidation after any uncertain
+turn. It does not qualify public load or resume. The three interactive JSONL
+files cover first-turn identity, continued identity, and mismatch rejection.
+
 The synthetic values `fixture-private-workspace`,
 `fixture-provider-secret-never-diagnose`, and `fixture-private-prompt` exist
 only to prove public diagnostics do not copy raw provider content. No real

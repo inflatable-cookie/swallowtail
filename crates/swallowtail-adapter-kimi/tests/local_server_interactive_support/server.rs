@@ -12,6 +12,7 @@ pub(super) const SESSION: &str = "interactive-session";
 pub(super) const EPOCH: &str = "fixture-epoch";
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[allow(dead_code)]
 pub enum InteractiveScenario {
     Complete,
     GlobalNoise,
@@ -21,6 +22,8 @@ pub enum InteractiveScenario {
     Cancel,
     Resync,
     Disconnect,
+    Retry,
+    Reattach,
 }
 
 pub struct InteractiveFixtureServer {

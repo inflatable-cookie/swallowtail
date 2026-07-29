@@ -1,6 +1,7 @@
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum Scenario {
     Success,
+    UnexpectedWrite,
     Permission,
     Cancellation,
     Disconnect,
@@ -18,6 +19,7 @@ struct AgentState {
     output: VecDeque<ProcessOutputChunk>,
     writes: Vec<Value>,
     prompt_id: Option<u64>,
+    write_enabled: bool,
     stopped: bool,
 }
 
@@ -44,9 +46,14 @@ impl SharedAgent {
         state.writes.push(message.clone());
         let id = message.get("id").and_then(Value::as_u64);
         match message.get("method").and_then(Value::as_str) {
-            Some("initialize") => Self::enqueue(
-                &mut state,
-                json!({
+            Some("initialize") => {
+                state.write_enabled = message["params"]["clientCapabilities"]["fs"]
+                    ["writeTextFile"]
+                    .as_bool()
+                    .unwrap_or(false);
+                Self::enqueue(
+                    &mut state,
+                    json!({
                     "jsonrpc": "2.0",
                     "id": id,
                     "result": {
@@ -56,8 +63,14 @@ impl SharedAgent {
                         "agentInfo": {"name": "gemini-cli", "version": self.version}
                     }
                 }),
-            ),
+                );
+            }
             Some("session/new") => {
+                let mode = if state.write_enabled {
+                    "autoEdit"
+                } else {
+                    "plan"
+                };
                 Self::enqueue(
                     &mut state,
                     json!({
@@ -65,7 +78,7 @@ impl SharedAgent {
                     "id": id,
                     "result": {
                         "sessionId": "fixture-session",
-                        "modes": {"currentModeId": "plan"},
+                        "modes": {"currentModeId": mode},
                         "models": {
                             "currentModelId": "fixture-observed-model",
                             "availableModels": [
@@ -82,13 +95,18 @@ impl SharedAgent {
                     }
                     }),
                 );
-                enqueue_session_metadata(&mut state);
+                enqueue_session_metadata(&mut state, mode);
             }
             Some("session/prompt") => {
                 state.prompt_id = id;
                 match self.scenario {
                     Scenario::Success => {
-                        enqueue_session_metadata(&mut state);
+                        let mode = if state.write_enabled {
+                            "autoEdit"
+                        } else {
+                            "plan"
+                        };
+                        enqueue_session_metadata(&mut state, mode);
                         Self::enqueue(
                             &mut state,
                             json!({
@@ -103,9 +121,24 @@ impl SharedAgent {
                                 }
                             }),
                         );
-                        Self::enqueue(
-                            &mut state,
-                            json!({
+                        if state.write_enabled {
+                            Self::enqueue(
+                                &mut state,
+                                json!({
+                                    "jsonrpc": "2.0",
+                                    "id": 702,
+                                    "method": "fs/write_text_file",
+                                    "params": {
+                                        "sessionId": "fixture-session",
+                                        "path": "/private/fixture/src/lib.rs",
+                                        "content": "fixture replacement"
+                                    }
+                                }),
+                            );
+                        } else {
+                            Self::enqueue(
+                                &mut state,
+                                json!({
                                 "jsonrpc": "2.0",
                                 "id": 701,
                                 "method": "fs/read_text_file",
@@ -116,8 +149,22 @@ impl SharedAgent {
                                     "limit": 32
                                 }
                             }),
-                        );
+                            );
+                        }
                     }
+                    Scenario::UnexpectedWrite => Self::enqueue(
+                        &mut state,
+                        json!({
+                            "jsonrpc": "2.0",
+                            "id": 702,
+                            "method": "fs/write_text_file",
+                            "params": {
+                                "sessionId": "fixture-session",
+                                "path": "/private/fixture/src/lib.rs",
+                                "content": "fixture replacement"
+                            }
+                        }),
+                    ),
                     Scenario::Permission => Self::enqueue(
                         &mut state,
                         json!({
@@ -184,6 +231,35 @@ impl SharedAgent {
                     );
                 }
             }
+            None if id == Some(702) => {
+                if !message.get("result").is_some_and(Value::is_null) {
+                    return Err(fixture_failure());
+                }
+                Self::enqueue(
+                    &mut state,
+                    json!({
+                        "jsonrpc": "2.0",
+                        "method": "session/update",
+                        "params": {
+                            "sessionId": "fixture-session",
+                            "update": {
+                                "sessionUpdate": "agent_message_chunk",
+                                "content": {"type": "text", "text": "response."}
+                            }
+                        }
+                    }),
+                );
+                if let Some(prompt_id) = state.prompt_id.take() {
+                    Self::enqueue(
+                        &mut state,
+                        json!({
+                            "jsonrpc": "2.0",
+                            "id": prompt_id,
+                            "result": {"stopReason": "end_turn"}
+                        }),
+                    );
+                }
+            }
             None if id == Some(900) => {}
             _ => return Err(fixture_failure()),
         }
@@ -192,11 +268,11 @@ impl SharedAgent {
     }
 }
 
-fn enqueue_session_metadata(state: &mut AgentState) {
+fn enqueue_session_metadata(state: &mut AgentState, mode: &str) {
     for update in [
         json!({"sessionUpdate": "available_commands_update", "availableCommands": []}),
         json!({"sessionUpdate": "config_option_update", "configOptions": []}),
-        json!({"sessionUpdate": "current_mode_update", "currentModeId": "plan"}),
+        json!({"sessionUpdate": "current_mode_update", "currentModeId": mode}),
     ] {
         SharedAgent::enqueue(
             state,

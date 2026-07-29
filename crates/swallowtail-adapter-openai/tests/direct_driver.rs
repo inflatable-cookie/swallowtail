@@ -12,11 +12,12 @@ use server::ServerMode;
 use services::TimeMode;
 use std::num::{NonZeroU32, NonZeroU64};
 use swallowtail_adapter_openai::{OpenAiBackgroundDriver, openai_background_descriptor};
+use swallowtail_core::OwnedRemoteResourceKind;
 use swallowtail_runtime::{
     CleanupOutcome, Deadline, MonotonicInstant, OperationContent, OperationPolicy,
     ProviderCancellationOutcome, ProviderExecutionPolicy, ProviderObservation,
-    ProviderRetentionPolicy, RequestId, StreamReattachmentPolicy, StructuredRunDriver,
-    StructuredRunRequest, TerminalStatus,
+    ProviderRetentionPolicy, RemoteResourceDeletionOutcome, RequestId, StreamReattachmentPolicy,
+    StructuredRunDriver, StructuredRunRequest, TerminalStatus,
 };
 
 #[test]
@@ -61,6 +62,10 @@ fn one_create_and_one_reattachment_complete_in_both_host_topologies() {
         let fixture = Fixture::new(ServerMode::Success, host, TimeMode::Pending);
         let (run, events, outcome) = complete(&fixture, "success");
         assert_eq!(outcome.status(), &TerminalStatus::Completed);
+        assert_eq!(
+            outcome.remote_resource_deletion(OwnedRemoteResourceKind::Response),
+            Some(RemoteResourceDeletionOutcome::Confirmed)
+        );
         assert_eq!(outcome.output().expect("output exists").as_str(), "Hello");
         assert!(run.provider_run_ref().is_some());
         assert!(events.iter().any(|event| matches!(
@@ -86,6 +91,7 @@ fn one_create_and_one_reattachment_complete_in_both_host_topologies() {
             targets[1],
             "/v1/responses/resp_fixture_123?stream=true&starting_after=3"
         );
+        assert_eq!(targets[2], "/v1/responses/resp_fixture_123");
         assert_eq!(fixture.server.inference_attempts(), 1);
         assert_eq!(fixture.releases(), 1);
         assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
@@ -101,6 +107,10 @@ fn provider_failure_after_reattachment_is_terminal_and_redacted() {
         TerminalStatus::ProviderFailed(_)
     ));
     assert!(!format!("{:?}", outcome.status()).contains("synthetic-private-message"));
+    assert_eq!(
+        outcome.remote_resource_deletion(OwnedRemoteResourceKind::Response),
+        Some(RemoteResourceDeletionOutcome::Confirmed)
+    );
     assert_eq!(fixture.server.inference_attempts(), 1);
     assert_eq!(fixture.releases(), 1);
     assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
@@ -137,7 +147,54 @@ fn native_cancel_preserves_confirmed_raced_and_unconfirmed_truth() {
         let outcome = block_on(terminal);
         assert_eq!(outcome.status(), &status);
         assert_eq!(outcome.provider_cancellation(), Some(cancellation));
+        let expected_deletion = if mode == ServerMode::CancelUnconfirmed {
+            RemoteResourceDeletionOutcome::Unconfirmed
+        } else {
+            RemoteResourceDeletionOutcome::Confirmed
+        };
+        assert_eq!(
+            outcome.remote_resource_deletion(OwnedRemoteResourceKind::Response),
+            Some(expected_deletion)
+        );
+        assert_eq!(
+            fixture
+                .server
+                .requests()
+                .iter()
+                .filter(|request| request.method == "DELETE")
+                .count(),
+            usize::from(mode != ServerMode::CancelUnconfirmed)
+        );
         assert_eq!(fixture.server.inference_attempts(), 1);
+        assert_eq!(fixture.releases(), 1);
+        assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
+    }
+}
+
+#[test]
+fn response_delete_mismatch_false_and_not_found_remain_unconfirmed() {
+    for mode in [
+        ServerMode::DeleteMismatch,
+        ServerMode::DeleteFalse,
+        ServerMode::DeleteNotFound,
+    ] {
+        let fixture = Fixture::new(mode, "host.local", TimeMode::Pending);
+        let (run, _events, outcome) = complete(&fixture, "delete-unconfirmed");
+        assert_eq!(outcome.status(), &TerminalStatus::Completed);
+        assert_eq!(
+            outcome.remote_resource_deletion(OwnedRemoteResourceKind::Response),
+            Some(RemoteResourceDeletionOutcome::Unconfirmed)
+        );
+        assert!(matches!(outcome.cleanup(), CleanupOutcome::Degraded(_)));
+        assert_eq!(
+            fixture
+                .server
+                .requests()
+                .iter()
+                .filter(|request| request.method == "DELETE")
+                .count(),
+            1
+        );
         assert_eq!(fixture.releases(), 1);
         assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
     }

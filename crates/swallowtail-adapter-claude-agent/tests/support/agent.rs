@@ -15,6 +15,7 @@ pub enum Scenario {
     DeleteMissing,
     DeleteProviderFailure,
     DeleteDisconnect,
+    RunDeleteDisconnect,
     DeleteMalformed,
     DeletePending,
     Permission,
@@ -86,6 +87,8 @@ impl SharedAgent {
         match message.get("method").and_then(Value::as_str) {
             Some("initialize") => self.initialize(&mut state, id),
             Some("session/new") => self.new_session(&mut state, id, &message),
+            Some("session/load") => self.attach_session(&mut state, id, &message, true),
+            Some("session/resume") => self.attach_session(&mut state, id, &message, false),
             Some("session/set_mode") => self.set_mode(&mut state, id, &message),
             Some("session/set_config_option") => self.set_config(&mut state, id, &message),
             Some("session/prompt") => self.prompt(&mut state, id),
@@ -105,10 +108,11 @@ impl SharedAgent {
         let mut capabilities = json!({
             "_meta": {"claudeCode": {"promptQueueing": true}},
             "promptCapabilities": {"image": true, "embeddedContext": true},
-            "sessionCapabilities": {"close": {}, "delete": {}}
+            "loadSession": true,
+            "sessionCapabilities": {"close": {}, "delete": {}, "resume": {}}
         });
         if self.scenario == Scenario::LifecycleDrift {
-            capabilities["sessionCapabilities"] = json!({"close": {}});
+            capabilities["sessionCapabilities"] = json!({"close": {}, "resume": {}});
         }
         if version >= semver::Version::new(0, 60, 0) {
             capabilities["providers"] = json!({});
@@ -210,6 +214,52 @@ impl SharedAgent {
                     "sessionUpdate": "current_mode_update",
                     "currentModeId": "default"
                 }
+            }}),
+        );
+        Ok(())
+    }
+
+    fn attach_session(
+        &self,
+        state: &mut AgentState,
+        id: Option<u64>,
+        message: &Value,
+        load: bool,
+    ) -> Result<(), RuntimeFailure> {
+        if message["params"]["sessionId"] != "claude-agent-session-fixture"
+            || message["params"]["mcpServers"] != json!([])
+        {
+            return Err(fixture_failure());
+        }
+        state.requested_model = Some("claude-sonnet-4-6".to_owned());
+        state.current_model = Some("claude-sonnet-4-6".to_owned());
+        let config_options = self.config_options(state)?;
+        if load {
+            for update in [
+                json!({"sessionUpdate":"user_message_chunk","content":{"type":"text","text":"Earlier question."}}),
+                json!({"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"Earlier answer."}}),
+            ] {
+                Self::enqueue(
+                    state,
+                    json!({"jsonrpc":"2.0","method":"session/update","params":{
+                        "sessionId":"claude-agent-session-fixture",
+                        "update":update
+                    }}),
+                );
+            }
+        }
+        Self::enqueue(
+            state,
+            json!({"jsonrpc":"2.0","id":id,"result":{
+                "sessionId":"claude-agent-session-fixture",
+                "configOptions":config_options
+            }}),
+        );
+        Self::enqueue(
+            state,
+            json!({"jsonrpc":"2.0","method":"session/update","params":{
+                "sessionId":"claude-agent-session-fixture",
+                "update":{"sessionUpdate":"available_commands_update","availableCommands":[]}
             }}),
         );
         Ok(())
@@ -331,7 +381,10 @@ impl SharedAgent {
     fn prompt(&self, state: &mut AgentState, id: Option<u64>) -> Result<(), RuntimeFailure> {
         state.prompt_id = id;
         match self.scenario {
-            Scenario::Success | Scenario::LargeToolUpdate | Scenario::MalformedUsage => {
+            Scenario::Success
+            | Scenario::LargeToolUpdate
+            | Scenario::MalformedUsage
+            | Scenario::RunDeleteDisconnect => {
                 let config_options = self.config_options(state)?;
                 for update in [
                     json!({"sessionUpdate": "available_commands_update", "availableCommands": []}),

@@ -1,4 +1,5 @@
 use crate::failure::failure;
+use std::num::NonZeroU32;
 use swallowtail_core::{
     CancellationScope, Capability, CapabilityConstraint, DriverRole, ExecutionLayer,
     HarnessConfigurationPosture, HarnessIsolation, HostServiceKind, OperationShape, PreflightPlan,
@@ -16,7 +17,7 @@ pub(super) fn validate(
     request: &StructuredRunRequest,
     services: &HostServices,
 ) -> Result<(), RuntimeFailure> {
-    driver.configuration()?;
+    let configuration = driver.configuration()?;
     if plan.driver_identity().id() != crate::kimi_local_server_descriptor().identity().id()
         || plan.requirements().execution_layer() != ExecutionLayer::HarnessInteraction
         || plan.requirements().operation_shape() != OperationShape::StructuredRun
@@ -70,8 +71,16 @@ pub(super) fn validate(
     }
     if request.policy().provider_execution() != ProviderExecutionPolicy::Attached
         || request.policy().provider_retention() != ProviderRetentionPolicy::DurableAllowed
-        || request.policy().provider_recovery() != ProviderRecoveryPolicy::Prohibited
-        || request.policy().stream_reattachment() != StreamReattachmentPolicy::Disabled
+        || request.policy().provider_recovery() != ProviderRecoveryPolicy::ManagedAllowed
+        || !configuration.managed_recovery()
+        || request.policy().stream_reattachment()
+            != match configuration.maximum_reattachments() {
+                0 => StreamReattachmentPolicy::Disabled,
+                1 => {
+                    StreamReattachmentPolicy::Bounded(NonZeroU32::new(1).expect("one is non-zero"))
+                }
+                _ => return Err(unsupported("stream reattachment maximum")),
+            }
     {
         return Err(unsupported("provider lifecycle policy"));
     }
@@ -103,6 +112,14 @@ pub(super) fn validate(
     require_capability(plan, Capability::StructuredRun)?;
     require_capability(plan, Capability::StreamingEvents)?;
     require_capability(plan, Capability::ProviderDurableRetention)?;
+    require_capability(plan, Capability::ProviderManagedRecovery)?;
+    if configuration.maximum_reattachments() == 1 {
+        require_constraint(
+            plan,
+            Capability::StreamReattachment,
+            CapabilityConstraint::ReattachmentMaximumCount(1),
+        )?;
+    }
     require_constraint(
         plan,
         Capability::Interruption,

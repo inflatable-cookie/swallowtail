@@ -42,6 +42,7 @@ pub(super) fn run_capabilities() -> CapabilityProfile {
         CapabilityRequirement::new(Capability::StructuredRun, []),
         CapabilityRequirement::new(Capability::StreamingEvents, []),
         CapabilityRequirement::new(Capability::ProviderDurableRetention, []),
+        CapabilityRequirement::new(Capability::ProviderManagedRecovery, []),
         CapabilityRequirement::new(
             Capability::Interruption,
             [CapabilityConstraint::CancellationScope(

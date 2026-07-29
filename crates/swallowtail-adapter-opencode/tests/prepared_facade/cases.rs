@@ -88,9 +88,64 @@ fn prepared_catalogue_and_session_stay_separate_on_both_host_topologies() {
             handle.provider_session_ref().unwrap().as_provider_value(),
             "ses_fixture"
         );
-        assert!(handle.resume_binding().is_some());
+        let binding = handle
+            .resume_binding()
+            .expect("prepared session returns a continuity binding")
+            .clone();
         assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
         assert_eq!(fixture.releases.load(Ordering::SeqCst), 3);
+
+        let loaded = block_on(
+            session
+                .load_session(
+                    RequestId::new("prepared-load").unwrap(),
+                    binding.clone(),
+                    fixture.services(),
+                )
+                .expect("prepared load derives"),
+        )
+        .expect("prepared session loads");
+        assert_eq!(
+            loaded
+                .replay()
+                .filter_map(|item| item.content().map(OperationContent::as_str))
+                .collect::<Vec<_>>(),
+            [
+                "Earlier question.",
+                "Earlier answer.",
+                "Later question.",
+                "Later answer."
+            ]
+        );
+        let (_, loaded_handle) = loaded.into_parts();
+        assert_eq!(
+            loaded_handle
+                .management_binding()
+                .expect("loaded session returns management authority")
+                .origin(),
+            swallowtail_core::ProviderSessionBindingOrigin::Loaded
+        );
+        assert_eq!(block_on(loaded_handle.close()), CleanupOutcome::Clean);
+
+        let resumed = block_on(
+            session
+                .resume_session(
+                    RequestId::new("prepared-resume").unwrap(),
+                    binding,
+                    fixture.services(),
+                )
+                .expect("prepared resume derives"),
+        )
+        .expect("prepared session resumes");
+        assert_eq!(
+            resumed
+                .management_binding()
+                .expect("resumed session returns management authority")
+                .origin(),
+            swallowtail_core::ProviderSessionBindingOrigin::Resumed
+        );
+        assert_eq!(block_on(resumed.close()), CleanupOutcome::Clean);
+        assert_eq!(fixture.releases.load(Ordering::SeqCst), 5);
 
         let requests = fixture.server.requests();
         assert!(!requests.iter().any(|request| {

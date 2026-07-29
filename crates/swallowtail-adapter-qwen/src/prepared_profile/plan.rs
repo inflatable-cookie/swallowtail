@@ -79,12 +79,14 @@ pub(super) fn instance_with_capabilities(
 
 pub(super) fn requirements(
     prepared: &QwenPreparedIntegration,
+    operation_shape: OperationShape,
+    role: swallowtail_core::DriverRole,
     capabilities: impl IntoIterator<Item = CapabilityRequirement>,
 ) -> OperationRequirements {
     OperationRequirements::new(
         ExecutionLayer::HarnessInteraction,
-        OperationShape::StructuredRun,
-        swallowtail_core::DriverRole::StructuredRun,
+        operation_shape,
+        role,
         prepared.instance().execution_host_id().clone(),
         AccessRequirement::new(prepared.access_profile().id().clone())
             .with_credential_states([CredentialState::Ready])

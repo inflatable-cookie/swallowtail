@@ -5,6 +5,20 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-07-29 Residual Feature Matrix Programme Closeout](2026-07-29-residual-feature-matrix-programme-closeout.md)
+- [2026-07-29 Qwen And Ollama Interactive Implementation](2026-07-29-qwen-and-ollama-interactive-implementation.md)
+- [2026-07-29 Qwen And Ollama Interactive Contract And Corpora](2026-07-29-qwen-and-ollama-interactive-contract-and-corpora.md)
+- [2026-07-29 Residual Feature Matrix Currentness Audit](2026-07-29-residual-feature-matrix-currentness-audit.md)
+- [2026-07-28 Runtime Ownership And Rollover Negative Closeout](2026-07-28-runtime-ownership-and-rollover-negative-closeout.md)
+- [2026-07-28 Working Resource And Bounded Write Closeout](2026-07-28-working-resource-and-bounded-write-closeout.md)
+- [2026-07-28 Retained Execution Closeout And Resource Selection](2026-07-28-retained-execution-closeout-and-resource-selection.md)
+- [2026-07-28 Kimi Managed Recovery And Reattachment](2026-07-28-kimi-managed-recovery-and-reattachment.md)
+- [2026-07-28 Retained Execution Audit And Corpus Gate](2026-07-28-retained-execution-audit-and-corpus-gate.md)
+- [2026-07-28 Provider Retention Implementation And Closeout](2026-07-28-provider-retention-implementation-and-closeout.md)
+- [2026-07-28 Provider Retention Audit And Corpus Gate](2026-07-28-provider-retention-audit-and-corpus-gate.md)
+- [2026-07-28 Pi RPC Session Continuity Resource Gate](2026-07-28-pi-rpc-session-continuity-resource-gate.md)
+- [2026-07-28 Session Continuity Closeout And Pi Selection](2026-07-28-session-continuity-closeout-and-pi-selection.md)
+- [2026-07-28 Session Continuity Implementation Tranche](2026-07-28-session-continuity-implementation-tranche.md)
 - [2026-07-28 Session Continuity Contract And Corpora](2026-07-28-session-continuity-contract-and-corpora.md)
 - [2026-07-28 Session Continuity Currentness And Tranche Selection](2026-07-28-session-continuity-currentness-and-tranche-selection.md)
 - [2026-07-28 Input/Callback Closeout And Session-Continuity Selection](2026-07-28-input-callback-closeout-and-session-continuity-selection.md)

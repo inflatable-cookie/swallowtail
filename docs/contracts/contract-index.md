@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-28
+Updated: 2026-07-29
 
 | Contract | Status | Scope |
 | --- | --- | --- |
@@ -47,3 +47,5 @@ Updated: 2026-07-28
 | [039 Bounded Single-Turn Structured-Run Projection](039-bounded-single-turn-structured-run-projection.md) | active | Independently qualified one-turn structured operations over exact direct, connection, ACP, RPC, or attached-server lifecycles with explicit retention and joined cleanup |
 | [040 Generation-Control Application And Enforcement](040-generation-control-application-and-enforcement.md) | active | Exact output maximum, reasoning mapping, schema enforcement source, model capability, version milestone, and application-state truth |
 | [041 Input, Callback, And Provider-Tool Admission](041-input-callback-and-provider-tool-admission.md) | active | Finite attachment admission, native versus provider-owned tools, approval or question strength, external-search authority, and cleanup |
+| [042 Harness-Managed Recovery And Active-Turn Reattachment](042-harness-managed-recovery-and-active-turn-reattachment.md) | active | Explicit harness retry acceptance, same-turn cursor reattachment, no prompt replay, uncertainty, and joined cleanup |
+| [043 Turn-Scoped Interactive Continuity](043-turn-scoped-interactive-continuity.md) | active | Restarted harness continuation versus consumer-owned transactional transcript replay across turn-scoped provider work |

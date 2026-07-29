@@ -51,12 +51,28 @@ pub fn ollama_native_descriptor() -> DriverDescriptor {
         IntegrationFamilyId::new("ollama").expect("static family id is valid"),
         TransportFamilyId::new("http-ndjson-native").expect("static transport id is valid"),
     )
-    .with_roles([DriverRole::ModelCatalog, DriverRole::StructuredRun])
+    .with_roles([
+        DriverRole::ModelCatalog,
+        DriverRole::StructuredRun,
+        DriverRole::InteractiveSession,
+    ])
     .with_execution_layers([ExecutionLayer::DirectModelInference])
-    .with_operation_shapes([OperationShape::StructuredRun])
+    .with_operation_shapes([
+        OperationShape::StructuredRun,
+        OperationShape::InteractiveSession,
+    ])
     .with_required_host_services(
         DriverRole::ModelCatalog,
         [
+            HostServiceKind::BlockingWork,
+            HostServiceKind::Time,
+            HostServiceKind::Network,
+        ],
+    )
+    .with_required_host_services(
+        DriverRole::InteractiveSession,
+        [
+            HostServiceKind::Task,
             HostServiceKind::BlockingWork,
             HostServiceKind::Time,
             HostServiceKind::Network,
@@ -84,6 +100,7 @@ mod tests {
         let descriptor = ollama_native_descriptor();
         assert!(descriptor.supports_role(DriverRole::ModelCatalog));
         assert!(descriptor.supports_role(DriverRole::StructuredRun));
+        assert!(descriptor.supports_role(DriverRole::InteractiveSession));
         for version in ["0.14.0", "0.18.0", "0.30.0", "0.32.1"] {
             assert_eq!(
                 descriptor

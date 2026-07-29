@@ -51,7 +51,7 @@ pub(crate) fn validate(
     }
     if request.policy().provider_execution() != ProviderExecutionPolicy::Attached
         || request.policy().provider_retention() != ProviderRetentionPolicy::DurableAllowed
-        || request.policy().provider_recovery() != ProviderRecoveryPolicy::Prohibited
+        || request.policy().provider_recovery() != ProviderRecoveryPolicy::ManagedAllowed
         || request.policy().stream_reattachment() != StreamReattachmentPolicy::Disabled
     {
         return Err(unsupported("provider lifecycle policy"));
@@ -79,6 +79,7 @@ pub(crate) fn validate(
     require_capability(plan, Capability::StructuredRun)?;
     require_capability(plan, Capability::StreamingEvents)?;
     require_capability(plan, Capability::ProviderDurableRetention)?;
+    require_capability(plan, Capability::ProviderManagedRecovery)?;
     require_constraint(
         plan,
         Capability::Interruption,

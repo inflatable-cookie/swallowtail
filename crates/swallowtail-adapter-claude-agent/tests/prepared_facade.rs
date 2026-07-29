@@ -17,15 +17,16 @@ use swallowtail_core::{
     ConfiguredInstanceId, CredentialMechanism, CredentialRef, CredentialState, EndpointAudience,
     EndpointAuthorization, EntitlementMetering, EntitlementState, ExecutionHostId,
     HarnessConfigurationPosture, HarnessIsolation, HostServiceKind, InstanceRevision,
-    InterfaceVersionAxis, ModelId, ModelRouteId, ModelRouteRevision, ProviderSessionAffectedScope,
-    ProviderSessionDeletionStrength, ProviderSessionEffectTruth, ResourceAccess, RuntimeReadiness,
-    SessionAccessPolicy, SupportAuthority,
+    InterfaceVersionAxis, ModelId, ModelRouteId, ModelRouteRevision, OwnedRemoteResourceKind,
+    ProviderSessionAffectedScope, ProviderSessionDeletionStrength, ProviderSessionEffectTruth,
+    ResourceAccess, RuntimeReadiness, SessionAccessPolicy, SupportAuthority,
 };
 use swallowtail_runtime::{
     CallbackPayload, CallbackResponse, CallbackResult, CleanupOutcome, Deadline,
     DiscoveryCancellation, EnvironmentRef, ExecutableRef, InstalledExecutableTarget,
-    MonotonicInstant, OperationContent, PreparedAccessEvidence, ProviderRetentionPolicy, RequestId,
-    ScopeId, SessionOptions, TerminalStatus, WorkingResourceRef,
+    MonotonicInstant, OperationContent, PreparedAccessEvidence, ProviderRetentionPolicy,
+    RemoteResourceDeletionOutcome, RequestId, ScopeId, SessionOptions, TerminalStatus,
+    WorkingResourceRef,
 };
 use swallowtail_testkit::assert_prepared_operation_evidence_matches_plan;
 
@@ -94,7 +95,7 @@ fn prepared_sessions_bind_version_access_model_and_ambient_read_policy() {
             .clone();
         assert!(binding.supports(Capability::ProviderNativeSessionClose));
         assert!(binding.supports(Capability::ProviderSessionDelete));
-        assert!(session.resume_binding().is_none());
+        assert!(session.resume_binding().is_some());
         assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
         let writes = operation_host.writes();
         let config = writes
@@ -153,6 +154,87 @@ fn prepared_sessions_bind_version_access_model_and_ambient_read_policy() {
         assert_eq!(delete_host.credential_releases(), 1);
         assert_eq!(delete_host.resource_releases(), 1);
     }
+}
+
+#[test]
+fn prepared_session_load_and_resume_preserve_replay_and_attachment_truth() {
+    let host_id = ExecutionHostId::new("fixture.prepared.continuity").expect("valid host");
+    let preparation_host = FixtureHost::new(Scenario::Version, "0.61.0");
+    let prepared = block_on(prepare_claude_agent(
+        preparation_input(host_id.clone()),
+        probe(),
+        preparation_host.services(host_id.clone()),
+    ))
+    .expect("Claude Agent prepares");
+    let profile = prepared
+        .prepare_session(ClaudeAgentSessionProfileInput::new(
+            RequestId::new("claude-agent-continuity-open").expect("valid request"),
+            ClaudeAgentModelSelection::new(
+                ModelRouteId::new("claude-agent.prepared.route").expect("valid route"),
+                ModelRouteRevision::new("1").expect("valid route revision"),
+                ModelId::new("claude-sonnet-4-6").expect("valid model"),
+            ),
+            WorkingResourceRef::new("claude-agent.prepared.workspace").expect("valid resource"),
+            SessionOptions::default(),
+        ))
+        .expect("session profile prepares");
+
+    let open_host = FixtureHost::new(Scenario::Success, "0.61.0");
+    let opened = block_on(profile.open_session(open_host.services(host_id.clone())))
+        .expect("prepared session opens");
+    let binding = opened
+        .resume_binding()
+        .expect("prepared session returns resume binding")
+        .clone();
+    assert_eq!(block_on(opened.close()), CleanupOutcome::Clean);
+
+    let load_host = FixtureHost::new(Scenario::Success, "0.61.0");
+    let loaded = block_on(
+        profile
+            .load_session(
+                RequestId::new("claude-agent-continuity-load").expect("valid request"),
+                binding.clone(),
+                load_host.services(host_id.clone()),
+            )
+            .expect("prepared load operation derives"),
+    )
+    .expect("prepared session loads");
+    assert_eq!(
+        loaded
+            .replay()
+            .map(swallowtail_runtime::SessionReplayItem::sequence)
+            .collect::<Vec<_>>(),
+        [0, 1]
+    );
+    let (_, loaded_handle) = loaded.into_parts();
+    assert_eq!(
+        loaded_handle
+            .management_binding()
+            .expect("loaded session returns management authority")
+            .origin(),
+        swallowtail_core::ProviderSessionBindingOrigin::Loaded
+    );
+    assert_eq!(block_on(loaded_handle.close()), CleanupOutcome::Clean);
+
+    let resume_host = FixtureHost::new(Scenario::Success, "0.61.0");
+    let resumed = block_on(
+        profile
+            .resume_session(
+                RequestId::new("claude-agent-continuity-resume").expect("valid request"),
+                binding,
+                resume_host.services(host_id),
+            )
+            .expect("prepared resume operation derives"),
+    )
+    .expect("prepared session resumes");
+    assert_eq!(
+        resumed
+            .management_binding()
+            .expect("resumed session returns management authority")
+            .origin(),
+        swallowtail_core::ProviderSessionBindingOrigin::Resumed
+    );
+    assert_eq!(block_on(resumed.close()), CleanupOutcome::Clean);
 }
 
 #[test]
@@ -303,6 +385,107 @@ fn prepared_structured_run_binds_one_prompt_and_durable_retention_on_both_hosts(
         assert!(!writes.iter().any(|message| {
             message.get("method").and_then(serde_json::Value::as_str) == Some("session/delete")
         }));
+        assert_eq!(operation_host.credential_releases(), 1);
+        assert_eq!(operation_host.resource_releases(), 1);
+    }
+}
+
+#[test]
+fn prepared_structured_run_can_opt_into_operation_owned_session_cleanup() {
+    for scenario in [
+        Scenario::Success,
+        Scenario::Cancellation,
+        Scenario::RunDeleteDisconnect,
+    ] {
+        let host_id = ExecutionHostId::new("fixture.run.owned-cleanup").expect("valid host");
+        let preparation_host = FixtureHost::new(Scenario::Version, "0.61.0");
+        let prepared = block_on(prepare_claude_agent(
+            preparation_input(host_id.clone()),
+            probe(),
+            preparation_host.services(host_id.clone()),
+        ))
+        .expect("Claude Agent prepares");
+        let profile = prepared
+            .prepare_run(
+                ClaudeAgentRunProfileInput::new(
+                    RequestId::new("claude-agent-owned-cleanup").expect("valid request"),
+                    ClaudeAgentModelSelection::new(
+                        ModelRouteId::new("claude-agent.prepared.route").expect("valid route"),
+                        ModelRouteRevision::new("1").expect("valid route revision"),
+                        ModelId::new("claude-sonnet-4-6").expect("valid model"),
+                    ),
+                    OperationContent::new("one temporary prompt").expect("valid prompt"),
+                    WorkingResourceRef::new("claude-agent.prepared.workspace")
+                        .expect("valid resource"),
+                    None,
+                )
+                .with_owned_session_cleanup(),
+            )
+            .expect("temporary structured run prepares");
+        assert_eq!(
+            profile.request().policy().provider_retention(),
+            ProviderRetentionPolicy::TemporaryAllowed
+        );
+        assert!(
+            profile
+                .plan()
+                .requirements()
+                .capabilities()
+                .any(|required| {
+                    required.capability() == Capability::OwnedRemoteResourceDeletion
+                        && required
+                            .constraints()
+                            .eq([&CapabilityConstraint::OwnedRemoteResource(
+                                OwnedRemoteResourceKind::Session,
+                            )])
+                })
+        );
+
+        let operation_host = FixtureHost::new(scenario, "0.61.0");
+        let mut run = block_on(profile.start_run(operation_host.services(host_id.clone())))
+            .expect("temporary structured run starts");
+        if scenario == Scenario::Cancellation {
+            block_on(run.cancellation().request()).expect("run cancellation is accepted");
+        }
+        let mut events = run.take_events().expect("events");
+        let terminal = run.take_terminal_outcome().expect("terminal");
+        let outcome = block_on(async {
+            while let Some(event) = events.next().await {
+                event.expect("event succeeds");
+            }
+            terminal.await
+        });
+        assert_eq!(
+            outcome.status(),
+            if scenario == Scenario::Cancellation {
+                &TerminalStatus::Cancelled
+            } else {
+                &TerminalStatus::Completed
+            }
+        );
+        assert_eq!(
+            outcome.remote_resource_deletion(OwnedRemoteResourceKind::Session),
+            Some(if scenario == Scenario::RunDeleteDisconnect {
+                RemoteResourceDeletionOutcome::Unconfirmed
+            } else {
+                RemoteResourceDeletionOutcome::Confirmed
+            })
+        );
+        assert_eq!(
+            matches!(outcome.cleanup(), CleanupOutcome::Degraded(_)),
+            scenario == Scenario::RunDeleteDisconnect
+        );
+        assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
+        let writes = operation_host.writes();
+        let close = writes
+            .iter()
+            .position(|message| message["method"] == "session/close")
+            .expect("native close dispatched");
+        let delete = writes
+            .iter()
+            .position(|message| message["method"] == "session/delete")
+            .expect("owned delete dispatched");
+        assert!(close < delete);
         assert_eq!(operation_host.credential_releases(), 1);
         assert_eq!(operation_host.resource_releases(), 1);
     }

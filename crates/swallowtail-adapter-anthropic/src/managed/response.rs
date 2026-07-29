@@ -178,7 +178,9 @@ pub(crate) fn parse_deletion(
     let expected_type = match kind {
         OwnedRemoteResourceKind::Environment => "environment_deleted",
         OwnedRemoteResourceKind::Session => "session_deleted",
-        OwnedRemoteResourceKind::Conversation | OwnedRemoteResourceKind::ConversationItems => {
+        OwnedRemoteResourceKind::Response
+        | OwnedRemoteResourceKind::Conversation
+        | OwnedRemoteResourceKind::ConversationItems => {
             return Err(protocol_failure("unsupported deletion resource"));
         }
     };

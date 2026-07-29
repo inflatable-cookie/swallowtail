@@ -44,6 +44,52 @@ pub struct QwenRunProfileInput {
     deadline: Deadline,
 }
 
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct QwenSessionProfileInput {
+    request_id: RequestId,
+    model: QwenModelSelection,
+    working_resource: WorkingResourceRef,
+    deadline: Option<Deadline>,
+}
+
+impl QwenSessionProfileInput {
+    #[must_use]
+    pub const fn new(
+        request_id: RequestId,
+        model: QwenModelSelection,
+        working_resource: WorkingResourceRef,
+    ) -> Self {
+        Self {
+            request_id,
+            model,
+            working_resource,
+            deadline: None,
+        }
+    }
+
+    #[must_use]
+    pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
+        self.deadline = Some(deadline);
+        self
+    }
+
+    pub(super) fn into_parts(
+        self,
+    ) -> (
+        RequestId,
+        QwenModelSelection,
+        WorkingResourceRef,
+        Option<Deadline>,
+    ) {
+        (
+            self.request_id,
+            self.model,
+            self.working_resource,
+            self.deadline,
+        )
+    }
+}
+
 impl QwenRunProfileInput {
     #[must_use]
     pub const fn new(

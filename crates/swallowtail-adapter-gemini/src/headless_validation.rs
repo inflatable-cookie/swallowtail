@@ -53,8 +53,14 @@ pub(crate) fn validate(
     {
         return Err(plan_mismatch("ambient harness authority"));
     }
+    let owned_transcript_cleanup = owns_transcript_cleanup(plan)?;
     if request.policy().provider_execution() != ProviderExecutionPolicy::Attached
-        || request.policy().provider_retention() != ProviderRetentionPolicy::DurableAllowed
+        || request.policy().provider_retention()
+            != if owned_transcript_cleanup {
+                ProviderRetentionPolicy::TemporaryAllowed
+            } else {
+                ProviderRetentionPolicy::DurableAllowed
+            }
         || request.policy().provider_recovery() != ProviderRecoveryPolicy::Prohibited
         || request.policy().stream_reattachment() != StreamReattachmentPolicy::Disabled
     {
@@ -83,7 +89,6 @@ pub(crate) fn validate(
     require_capability(plan, Capability::StructuredRun)?;
     require_capability(plan, Capability::StreamingEvents)?;
     require_capability(plan, Capability::UsageReporting)?;
-    require_capability(plan, Capability::ProviderDurableRetention)?;
     require_constraint(
         plan,
         Capability::Interruption,
@@ -99,6 +104,33 @@ pub(crate) fn validate(
         Capability::WorkingResource,
         CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
     )
+}
+
+pub(crate) fn owns_transcript_cleanup(plan: &PreflightPlan) -> Result<bool, RuntimeFailure> {
+    let durable = plan
+        .requirements()
+        .capabilities()
+        .any(|required| required.capability() == Capability::ProviderDurableRetention);
+    let temporary = plan
+        .requirements()
+        .capabilities()
+        .any(|required| required.capability() == Capability::ProviderTemporaryRetention);
+    let deletion = plan
+        .requirements()
+        .capabilities()
+        .find(|required| required.capability() == Capability::OwnedRemoteResourceDeletion);
+    let exact_deletion = deletion.is_some_and(|required| {
+        required
+            .constraints()
+            .eq([&CapabilityConstraint::OwnedRemoteResource(
+                swallowtail_core::OwnedRemoteResourceKind::Session,
+            )])
+    });
+    match (durable, temporary, deletion.is_some(), exact_deletion) {
+        (true, false, false, false) => Ok(false),
+        (false, true, true, true) => Ok(true),
+        _ => Err(plan_mismatch("retention and transcript cleanup capability")),
+    }
 }
 
 fn require_service(

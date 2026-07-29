@@ -7,7 +7,7 @@ mod task;
 mod time;
 
 pub use preflight::{cli_preparation_input, cli_probe, plan_for, request_for};
-pub use process::FakeProcessService;
+pub use process::{FakeProcessService, ScriptedProcessService};
 pub use run::{assert_redacted, assert_status_code, cancelled, completed, driver, timed_out};
 pub use task::TaskState;
 pub use time::{ImmediateTimeService, PendingTimeService};

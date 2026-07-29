@@ -74,6 +74,7 @@ impl AcpConnection {
     ) -> Result<(), RuntimeFailure> {
         match method {
             "fs/read_text_file" => self.read_text(id, params).await,
+            "fs/write_text_file" if self.write_enabled => self.write_text(id, params).await,
             "session/request_permission" => self.reject_permission(id, params).await,
             method if method.starts_with('_') => {
                 self.write(
@@ -92,6 +93,32 @@ impl AcpConnection {
                 ))
             }
         }
+    }
+
+    async fn write_text(&self, id: Value, params: &Value) -> Result<(), RuntimeFailure> {
+        self.verify_session(params)?;
+        let locator = params
+            .get("path")
+            .and_then(Value::as_str)
+            .ok_or_else(malformed)
+            .and_then(|value| WorkingResourceLocator::new(value).map_err(|_| malformed()))?;
+        let content = params
+            .get("content")
+            .and_then(Value::as_str)
+            .ok_or_else(malformed)?;
+        let content = WorkingResourceText::new(
+            content.to_owned(),
+            NonZeroUsize::new(MAXIMUM_WRITE_BYTES).expect("static limit is non-zero"),
+        )
+        .map_err(|_| malformed())?;
+        self.resource_io
+            .write_text(
+                &self.resource,
+                WorkingResourceWriteRequest::new(locator, content),
+            )
+            .await?;
+        self.write(encode_result(id, Value::Null).map_err(|_| protocol_failure())?)
+            .await
     }
 
     async fn read_text(&self, id: Value, params: &Value) -> Result<(), RuntimeFailure> {

@@ -103,4 +103,34 @@ fn later_currentness_corpus_is_bounded_valid_and_exactly_provenanced() {
     ] {
         assert!(provenance.contains(exact));
     }
+
+    let retained: serde_json::Value = serde_json::from_str(include_str!(
+        "fixtures/kimi-code-0.29.1-0.29.2/retained-execution.json"
+    ))
+    .expect("retained-execution corpus is JSON");
+    assert_eq!(
+        retained["managed_recovery"]["policy"]["prohibited"],
+        "reject_before_effects"
+    );
+    assert_eq!(
+        retained["local_server_reattachment"]["maximum"]
+            .as_u64()
+            .expect("maximum is numeric"),
+        1
+    );
+    assert_eq!(
+        retained["local_server_reattachment"]["last_accepted_cursor"]["seq"],
+        11
+    );
+    assert_eq!(
+        retained["local_server_reattachment"]["first_new_event"]["seq"],
+        12
+    );
+    assert!(
+        retained["local_server_reattachment"]["forbidden_dispatch"]
+            .as_array()
+            .expect("forbidden dispatch is bounded")
+            .iter()
+            .any(|value| value == "prompt_submit")
+    );
 }

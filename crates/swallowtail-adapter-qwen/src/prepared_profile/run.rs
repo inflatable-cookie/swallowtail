@@ -79,6 +79,8 @@ impl QwenPreparedIntegration {
         .with_provider_id(provider_id);
         let requirements = requirements(
             self,
+            swallowtail_core::OperationShape::StructuredRun,
+            swallowtail_core::DriverRole::StructuredRun,
             run_capabilities().iter().map(|(capability, constraints)| {
                 CapabilityRequirement::new(capability, constraints.iter().cloned())
             }),

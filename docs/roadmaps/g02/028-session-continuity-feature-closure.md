@@ -1,12 +1,12 @@
 # 028 Session Continuity Feature Closure
 
-Status: active
+Status: completed
 Owner: Tom
 Created: 2026-07-28
 Depends on: g02.027
 Vision tags: exact lifecycle, provider breadth, persistent sessions
 Contract refs: 003, 005, 009, 012, 015, 017, 038
-Planning state: cards 092-093 completed; card 094 ready; card 095 planned
+Planning state: cards 092-095 completed
 
 ## Problem
 
@@ -29,9 +29,9 @@ close flag would erase those differences.
 - [x] Keep load replay, replay-free resume, native close, local teardown,
       archive, deletion, and direct private continuation separate.
 - [x] Confirm no missing shared contract is needed by the selected tranche.
-- [ ] Implement a representative tranche across materially different
+- [x] Implement a representative tranche across materially different
       lifecycle shapes.
-- [ ] Re-audit all 58 starting cells and retain honest absence.
+- [x] Re-audit all 58 starting cells and retain honest absence.
 
 ## Non-Goals
 
@@ -61,24 +61,24 @@ close flag would erase those differences.
 
 ### Batch 28.3 — Representative Implementation
 
-- [ ] Execute card 094 only for contract-ready routes.
-- [ ] Keep replay, attachment, cancellation, provider-state, and cleanup truth
+- [x] Execute card 094 only for contract-ready routes.
+- [x] Keep replay, attachment, cancellation, provider-state, and cleanup truth
       exact.
 
 ### Batch 28.4 — Matrix Closeout
 
-- [ ] Execute card 095.
-- [ ] Prove package truth and select provider retention next unless the audit
-      changes the evidence-ranked runway.
+- [x] Execute card 095.
+- [x] Prove package truth and select Pi RPC continuity next from the retained
+      evidence-ranked runway.
 
 ## Acceptance Criteria
 
 - [x] all 58 starting cells are classified exactly once
 - [x] load and resume remain distinct
 - [x] native close never implies archive or deletion
-- [ ] every changed cell maps to a public prepared path
-- [ ] version, access, topology, and provider-state authority remain exact
-- [ ] machine counts and classification drift fail deterministically
+- [x] every changed cell maps to a public prepared path
+- [x] version, access, topology, and provider-state authority remain exact
+- [x] machine counts and classification drift fail deterministically
 
 ## Decision Gates
 
@@ -92,7 +92,6 @@ close flag would erase those differences.
 
 ## Next Planning Checkpoint
 
-Card 094 implements Codex app-server load, Claude Agent ACP load and resume,
-and OpenCode HTTP load and resume through their existing prepared identities.
-The exact card 093 corpora and Contracts 009, 017, and 038 bound the work. Stay
-in g02.
+Roadmap 029 and card 096 begin the Pi RPC load/resume continuation. The
+remaining four hosted-session opportunities stay behind a separate retained
+provider-session contract gate. Stay in g02.

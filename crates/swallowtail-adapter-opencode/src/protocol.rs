@@ -61,12 +61,18 @@ impl Request {
             .push(("directory".to_owned(), directory.to_owned()));
         self
     }
+
+    pub(crate) fn with_query(mut self, key: &str, value: impl Into<String>) -> Self {
+        self.query.push((key.to_owned(), value.into()));
+        self
+    }
 }
 
 #[derive(Debug)]
 pub(crate) struct Response {
     pub status: u32,
     pub body: Vec<u8>,
+    pub next_cursor: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -221,6 +227,164 @@ pub(crate) fn parse_session_for_version(
         ));
     }
     Ok(session.id)
+}
+
+pub(crate) fn session_get(session_id: &str, directory: &str) -> Request {
+    Request::get(format!("/session/{session_id}")).with_directory(directory)
+}
+
+pub(crate) fn require_existing_session(
+    response: &Response,
+    expected_version: &InterfaceVersionBinding,
+    expected_session: &str,
+) -> Result<(), RuntimeFailure> {
+    let observed = parse_session_for_version(response, expected_version)?;
+    if observed == expected_session {
+        Ok(())
+    } else {
+        Err(failure(
+            "swallowtail.opencode.session_binding_mismatch",
+            "OpenCode attached a different provider session",
+        ))
+    }
+}
+
+pub(crate) fn session_messages(
+    session_id: &str,
+    directory: &str,
+    limit: usize,
+    before: Option<&str>,
+) -> Request {
+    let request = Request::get(format!("/session/{session_id}/message"))
+        .with_directory(directory)
+        .with_query("limit", limit.to_string());
+    match before {
+        Some(before) => request.with_query("before", before),
+        None => request,
+    }
+}
+
+pub(crate) fn project_session_messages(
+    response: &Response,
+    session: &swallowtail_core::SessionRef,
+    sequence: &mut u64,
+) -> Result<Vec<swallowtail_runtime::SessionReplayItem>, RuntimeFailure> {
+    require_success(response, "session messages request")?;
+    let messages: Vec<Value> = parse_json(&response.body, "session messages response")?;
+    let mut replay = Vec::new();
+    for message in messages {
+        let info = message.get("info").ok_or_else(|| {
+            failure(
+                "swallowtail.opencode.replay_malformed",
+                "OpenCode returned malformed session history",
+            )
+        })?;
+        if info.get("sessionID").and_then(Value::as_str) != Some(session.as_provider_value()) {
+            return Err(failure(
+                "swallowtail.opencode.replay_session_mismatch",
+                "OpenCode returned history for a different provider session",
+            ));
+        }
+        let role = info
+            .get("role")
+            .and_then(Value::as_str)
+            .filter(|role| matches!(*role, "user" | "assistant"))
+            .ok_or_else(|| {
+                failure(
+                    "swallowtail.opencode.replay_malformed",
+                    "OpenCode returned malformed session history",
+                )
+            })?;
+        let parts = message
+            .get("parts")
+            .and_then(Value::as_array)
+            .ok_or_else(|| {
+                failure(
+                    "swallowtail.opencode.replay_malformed",
+                    "OpenCode returned malformed session history",
+                )
+            })?;
+        if parts.is_empty() {
+            replay.push(swallowtail_runtime::SessionReplayItem::new(
+                session.clone(),
+                next_sequence(sequence)?,
+                swallowtail_runtime::SessionReplayKind::Configuration,
+            ));
+        }
+        for part in parts {
+            if part.get("sessionID").and_then(Value::as_str) != Some(session.as_provider_value()) {
+                return Err(failure(
+                    "swallowtail.opencode.replay_session_mismatch",
+                    "OpenCode returned history for a different provider session",
+                ));
+            }
+            let part_type = part.get("type").and_then(Value::as_str).ok_or_else(|| {
+                failure(
+                    "swallowtail.opencode.replay_malformed",
+                    "OpenCode returned malformed session history",
+                )
+            })?;
+            let replay_kind = match (part_type, role) {
+                ("text", "user") => swallowtail_runtime::SessionReplayKind::UserMessage,
+                ("text", "assistant") => swallowtail_runtime::SessionReplayKind::AgentMessage,
+                ("reasoning", _) => swallowtail_runtime::SessionReplayKind::AgentReasoning,
+                ("tool", _)
+                    if part
+                        .get("state")
+                        .and_then(|state| state.get("status"))
+                        .and_then(Value::as_str)
+                        .is_some_and(|status| matches!(status, "completed" | "error")) =>
+                {
+                    swallowtail_runtime::SessionReplayKind::ToolCallUpdate
+                }
+                ("tool", _) => swallowtail_runtime::SessionReplayKind::ToolCall,
+                ("patch" | "snapshot", _) => swallowtail_runtime::SessionReplayKind::ToolCallUpdate,
+                ("subtask", _) => swallowtail_runtime::SessionReplayKind::ToolCall,
+                ("step-start" | "step-finish" | "agent" | "retry" | "compaction" | "file", _) => {
+                    swallowtail_runtime::SessionReplayKind::Configuration
+                }
+                _ => {
+                    return Err(failure(
+                        "swallowtail.opencode.replay_unsupported",
+                        "OpenCode returned unsupported session history",
+                    ));
+                }
+            };
+            let item = match part.get("text") {
+                Some(Value::String(text)) if !text.is_empty() => {
+                    swallowtail_runtime::SessionReplayItem::with_content(
+                        session.clone(),
+                        next_sequence(sequence)?,
+                        replay_kind,
+                        swallowtail_runtime::OperationContent::new(text).map_err(|_| {
+                            failure(
+                                "swallowtail.opencode.replay_malformed",
+                                "OpenCode returned malformed session history",
+                            )
+                        })?,
+                    )
+                }
+                _ => swallowtail_runtime::SessionReplayItem::new(
+                    session.clone(),
+                    next_sequence(sequence)?,
+                    replay_kind,
+                ),
+            };
+            replay.push(item);
+        }
+    }
+    Ok(replay)
+}
+
+fn next_sequence(sequence: &mut u64) -> Result<u64, RuntimeFailure> {
+    let current = *sequence;
+    *sequence = sequence.checked_add(1).ok_or_else(|| {
+        failure(
+            "swallowtail.opencode.replay_limit_exceeded",
+            "OpenCode session history exceeded the adapter limit",
+        )
+    })?;
+    Ok(current)
 }
 
 pub(crate) struct PromptPayload<'a> {

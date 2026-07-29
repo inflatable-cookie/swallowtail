@@ -89,6 +89,7 @@ impl OllamaPreparedIntegration {
         let requirements = requirements(
             self,
             &route,
+            swallowtail_core::OperationShape::StructuredRun,
             DriverRole::StructuredRun,
             capability_requirements,
         );

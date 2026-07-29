@@ -104,6 +104,18 @@ fn app_server_plan_for_policy(
         Capability::InteractiveSession
     };
     let mut capability_requirements = vec![CapabilityRequirement::new(capability, [])];
+    if role == DriverRole::InteractiveSession {
+        capability_requirements.extend([
+            CapabilityRequirement::new(
+                Capability::LoadSession,
+                [
+                    swallowtail_core::CapabilityConstraint::ReplayMaximumItems(16_384),
+                    swallowtail_core::CapabilityConstraint::ReplayMaximumBytes(4 * 1024 * 1024),
+                ],
+            ),
+            CapabilityRequirement::new(Capability::Resume, []),
+        ]);
+    }
     capability_requirements.extend(optional_capabilities);
     let mut host_services = vec![HostServiceKind::Task, HostServiceKind::Process];
     host_services.extend(optional_host_services);

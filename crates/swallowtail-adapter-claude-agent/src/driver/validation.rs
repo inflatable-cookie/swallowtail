@@ -10,6 +10,8 @@ use swallowtail_runtime::{
 pub(super) struct ClaudeAgentLifecycleCapabilities {
     pub(super) close: bool,
     pub(super) delete: bool,
+    pub(super) load: bool,
+    pub(super) resume: bool,
 }
 
 pub(super) fn permission_handling(
@@ -187,7 +189,6 @@ pub(super) fn validate_run(
         swallowtail_core::Capability::StructuredRun,
         swallowtail_core::Capability::StreamingEvents,
         swallowtail_core::Capability::WorkingResource,
-        swallowtail_core::Capability::ProviderDurableRetention,
     ] {
         if !plan
             .requirements()
@@ -200,6 +201,7 @@ pub(super) fn validate_run(
             ));
         }
     }
+    let owned_session_cleanup = run_owns_session_cleanup(plan)?;
     let working_resource = plan
         .requirements()
         .capabilities()
@@ -263,7 +265,12 @@ pub(super) fn validate_run(
     if policy.external_network() != ExternalNetworkPolicy::Denied
         || policy.external_search() != ExternalSearchPolicy::Disabled
         || policy.provider_execution() != ProviderExecutionPolicy::Attached
-        || policy.provider_retention() != ProviderRetentionPolicy::DurableAllowed
+        || policy.provider_retention()
+            != if owned_session_cleanup {
+                ProviderRetentionPolicy::TemporaryAllowed
+            } else {
+                ProviderRetentionPolicy::DurableAllowed
+            }
         || policy.provider_recovery() != ProviderRecoveryPolicy::Prohibited
         || policy.stream_reattachment() != StreamReattachmentPolicy::Disabled
     {
@@ -278,6 +285,41 @@ pub(super) fn validate_run(
         ));
     }
     Ok(())
+}
+
+pub(super) fn run_owns_session_cleanup(plan: &PreflightPlan) -> Result<bool, RuntimeFailure> {
+    let has = |capability| {
+        plan.requirements()
+            .capabilities()
+            .any(|required| required.capability() == capability)
+    };
+    let durable = has(swallowtail_core::Capability::ProviderDurableRetention);
+    let temporary = has(swallowtail_core::Capability::ProviderTemporaryRetention);
+    let native_close = has(swallowtail_core::Capability::ProviderNativeSessionClose);
+    let deletion = plan.requirements().capabilities().find(|required| {
+        required.capability() == swallowtail_core::Capability::OwnedRemoteResourceDeletion
+    });
+    let exact_deletion = deletion.is_some_and(|required| {
+        required.constraints().eq([
+            &swallowtail_core::CapabilityConstraint::OwnedRemoteResource(
+                swallowtail_core::OwnedRemoteResourceKind::Session,
+            ),
+        ])
+    });
+    match (
+        durable,
+        temporary,
+        native_close,
+        deletion.is_some(),
+        exact_deletion,
+    ) {
+        (true, false, false, false, false) => Ok(false),
+        (false, true, true, true, true) => Ok(true),
+        _ => Err(failure(
+            "swallowtail.claude_agent.acp.run_retention_mismatch",
+            "Claude Agent structured-run retention and cleanup capabilities do not match",
+        )),
+    }
 }
 
 fn validate_run_reasoning(
@@ -367,14 +409,72 @@ pub(super) fn validate_initialize(
     let lifecycle = ClaudeAgentLifecycleCapabilities {
         close: advertised(session, "close"),
         delete: advertised(session, "delete"),
+        load: capabilities.get("loadSession").and_then(Value::as_bool) == Some(true),
+        resume: advertised(session, "resume"),
     };
-    if !lifecycle.close || !lifecycle.delete {
+    if !lifecycle.close || !lifecycle.delete || !lifecycle.load || !lifecycle.resume {
         return Err(failure(
             "swallowtail.claude_agent.acp.lifecycle_capability_drift",
             "Claude Agent lifecycle capabilities do not match the qualified adapter behavior",
         ));
     }
     Ok(lifecycle)
+}
+
+pub(super) fn validate_attachment(
+    plan: &PreflightPlan,
+    binding: &swallowtail_runtime::SessionResumeBinding,
+    working_resource: &swallowtail_runtime::WorkingResourceRef,
+    access_policy: &SessionAccessPolicy,
+    deadline: Option<swallowtail_runtime::Deadline>,
+    options: &swallowtail_runtime::SessionOptions,
+    services: &HostServices,
+) -> Result<(), RuntimeFailure> {
+    services.require_execution_host(plan.execution_host_id())?;
+    for service in [
+        HostServiceKind::Task,
+        HostServiceKind::Time,
+        HostServiceKind::Process,
+        HostServiceKind::WorkingResource,
+        HostServiceKind::WorkingResourceIo,
+    ] {
+        if !services.available_kinds().contains(&service) {
+            return Err(failure(
+                "swallowtail.claude_agent.acp.attachment_service_missing",
+                "Claude Agent ACP attachment requires its preflight-bound host services",
+            ));
+        }
+    }
+    if plan.credential_mechanism() == &CredentialMechanism::ApiKey
+        && services.credential().is_none()
+    {
+        return Err(failure(
+            "swallowtail.claude_agent.acp.credential_service_missing",
+            "Claude Agent ACP API-key access requires a credential service",
+        ));
+    }
+    if !binding.matches_attachment(plan, working_resource, access_policy) {
+        return Err(failure(
+            "swallowtail.claude_agent.acp.session_binding_mismatch",
+            "Claude Agent ACP session binding does not match the requested attachment",
+        ));
+    }
+    if access_policy != &SessionAccessPolicy::ambient_harness(ResourceAccess::Read) {
+        return Err(failure(
+            "swallowtail.claude_agent.acp.access_policy_rejected",
+            "Claude Agent ACP requires explicit ambient read-only access",
+        ));
+    }
+    if deadline.is_some() {
+        return Err(unsupported("session deadline"));
+    }
+    if options.developer_instructions().is_some()
+        || options.reasoning_mode().is_some()
+        || options.tools().len() != 0
+    {
+        return Err(unsupported("attachment session options"));
+    }
+    Ok(())
 }
 
 pub(super) fn validate_turn(

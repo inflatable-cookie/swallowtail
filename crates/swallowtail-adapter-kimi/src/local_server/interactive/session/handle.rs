@@ -57,7 +57,7 @@ impl CancellationControl for SessionCancellation {
 }
 
 pub(in crate::local_server) struct TurnCancellation {
-    pub(super) control: SubscriptionControl,
+    pub(super) control: Mutex<SubscriptionControl>,
     pub(super) session_id: String,
     pub(super) prompt_id: String,
     pub(super) requested: AtomicBool,
@@ -74,9 +74,12 @@ impl CancellationControl for TurnCancellation {
             if already {
                 return Ok(CancellationAcknowledgement::AlreadyRequested);
             }
-            self.control
-                .abort(&self.session_id, &self.prompt_id)
-                .await?;
+            let control = self
+                .control
+                .lock()
+                .expect("subscription control lock poisoned")
+                .clone();
+            control.abort(&self.session_id, &self.prompt_id).await?;
             Ok(CancellationAcknowledgement::Requested)
         })
     }

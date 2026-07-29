@@ -86,6 +86,7 @@ pub(super) fn instance_with_capabilities(
 pub(super) fn requirements(
     prepared: &GeminiPreparedIntegration,
     capabilities: impl IntoIterator<Item = CapabilityRequirement>,
+    resource_access: ResourceAccess,
 ) -> OperationRequirements {
     OperationRequirements::new(
         ExecutionLayer::HarnessInteraction,
@@ -110,7 +111,7 @@ pub(super) fn requirements(
     .with_interface_versions([prepared.observation().version().clone()])
     .with_harness_isolation(HarnessIsolation::AmbientHost)
     .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient)
-    .with_session_access_policy(SessionAccessPolicy::ambient_harness(ResourceAccess::Read))
+    .with_session_access_policy(SessionAccessPolicy::ambient_harness(resource_access))
     .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited)
 }
 

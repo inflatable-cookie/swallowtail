@@ -13,3 +13,7 @@ Sources accessed 2026-07-28:
 
 No fixture contains provider output, credentials, account data, or raw error
 payloads.
+
+`owned-cleanup.json` reuses the qualified native-close and provider-data-delete
+mapping for a separate opt-in temporary-retention structured profile. The
+durable structured profile remains deletion-free.

@@ -48,6 +48,14 @@ pub(crate) fn session_capabilities(reasoning: bool) -> CapabilityProfile {
         CapabilityRequirement::new(Capability::StreamingEvents, []),
         CapabilityRequirement::new(Capability::UsageReporting, []),
         CapabilityRequirement::new(
+            Capability::LoadSession,
+            [
+                CapabilityConstraint::ReplayMaximumItems(crate::MAXIMUM_REPLAY_ITEMS as u32),
+                CapabilityConstraint::ReplayMaximumBytes(crate::MAXIMUM_REPLAY_BYTES as u64),
+            ],
+        ),
+        CapabilityRequirement::new(Capability::Resume, []),
+        CapabilityRequirement::new(
             Capability::Interruption,
             [CapabilityConstraint::CancellationScope(
                 swallowtail_core::CancellationScope::ActiveTurn,

@@ -1,6 +1,6 @@
 # 094 Session Continuity Implementation Tranche
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-07-28
 Milestone: `../028-session-continuity-feature-closure.md`
@@ -47,15 +47,31 @@ hosted-session contract branch exists.
 
 ## Acceptance Criteria
 
-- [ ] all five matrix cells map to public prepared operations
-- [ ] load returns bounded ordered replay before readiness
-- [ ] resume returns no replay phase
-- [ ] exact binding mismatch fails without a usable handle
-- [ ] every guaranteed version segment is exercised
-- [ ] cancellation, overflow, disconnect, and cleanup are joined
-- [ ] diagnostics expose no session id, transcript, or raw payload
-- [ ] no archive, restore, delete, native-close, or server-stop claim widens
+- [x] all five matrix cells map to public prepared operations
+- [x] load returns bounded ordered replay before readiness
+- [x] resume returns no replay phase
+- [x] exact binding mismatch fails without a usable handle
+- [x] every guaranteed version segment is exercised
+- [x] cancellation, overflow, disconnect, and cleanup are joined
+- [x] diagnostics expose no session id, transcript, or raw payload
+- [x] no archive, restore, delete, native-close, or server-stop claim widens
+
+## Evidence
+
+- Codex app-server loads bounded `thread.turns`; resume requests
+  `excludeTurns: true` from `0.129.0` and bounds then ignores older returned
+  turns.
+- Claude Agent ACP loads replay before readiness and resumes without replay
+  across all ten qualified releases.
+- OpenCode pages attached-session messages under fixed page, item, and byte
+  limits; load restores oldest-first and resume performs no history request.
+- All five operations execute through public prepared profiles. Exact
+  management-binding origins remain `Loaded` or `Resumed`.
+- Focused corpora, prepared-facade tests, all three adapter suites, and the
+  full workspace suite pass without live access.
+- The solution matrix moves five cells from `No` to `Yes`: three load and two
+  resume. It now contains 432 `No` cells; session continuity contains 53.
 
 ## Auto-Continuation
 
-Continue only when all five prepared paths and focused conformance pass.
+Satisfied. Card 095 is ready.

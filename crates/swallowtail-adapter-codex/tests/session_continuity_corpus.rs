@@ -1,5 +1,7 @@
 use semver::Version;
 
+mod support;
+
 const CORPUS: &str = include_str!("fixtures/compatibility/app-server-session-continuity.json");
 
 fn version(value: &serde_json::Value, field: &str) -> Version {
@@ -110,5 +112,88 @@ fn continuity_failures_are_bounded_joined_and_safe() {
         "thread-provider-private",
     ] {
         assert!(!CORPUS.contains(forbidden), "fixture leaked {forbidden}");
+    }
+}
+
+#[test]
+fn all_six_segments_expose_bounded_load_and_range_aware_resume() {
+    use futures_executor::block_on;
+    use support::app_server::{AppServerMode, ScriptedAppServer};
+    use support::{
+        app_server_plan_for_version, app_server_session_agreement, host_services,
+        session_resume_binding, working_resource,
+    };
+    use swallowtail_adapter_codex::CodexAppServerDriver;
+    use swallowtail_core::{
+        ConfiguredInstanceId, DriverRole, ExecutionHostId, InstanceTargetRef, SessionAccessPolicy,
+    };
+    use swallowtail_runtime::{
+        CleanupOutcome, EnvironmentRef, InteractiveSessionDriver, LoadSessionRequest, RequestId,
+        ResumeSessionRequest,
+    };
+
+    for version in [
+        "0.80.0", "0.84.0", "0.100.0", "0.110.0", "0.129.0", "0.131.0",
+    ] {
+        let plan = app_server_plan_for_version(
+            DriverRole::InteractiveSession,
+            ExecutionHostId::new("host.local").unwrap(),
+            ConfiguredInstanceId::new(format!("codex.continuity.{version}")).unwrap(),
+            InstanceTargetRef::new("codex-app-server-executable").unwrap(),
+            version,
+            [],
+            [],
+        );
+        let binding = session_resume_binding(&plan, "thread-provider-existing");
+        let driver = CodexAppServerDriver::new(EnvironmentRef::new("codex.fixture").unwrap());
+        let (process, _) = ScriptedAppServer::new(AppServerMode::CompleteTurn);
+        let loaded = block_on(driver.load_session(
+            plan.clone(),
+            LoadSessionRequest::new(
+                RequestId::new(format!("load-{version}")).unwrap(),
+                binding.clone(),
+                working_resource(),
+                None,
+                app_server_session_agreement(SessionAccessPolicy::read_only()),
+            ),
+            host_services(process),
+        ))
+        .expect("session loads");
+        assert_eq!(
+            loaded
+                .replay()
+                .filter_map(|item| item.content().map(|content| content.as_str()))
+                .collect::<Vec<_>>(),
+            ["Earlier question.", "Earlier answer."]
+        );
+        let (_, handle) = loaded.into_parts();
+        assert_eq!(handle.resume_binding(), Some(&binding));
+        assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+
+        let (process, state) = ScriptedAppServer::new(AppServerMode::CompleteTurn);
+        let resumed = block_on(driver.resume_session(
+            plan,
+            ResumeSessionRequest::new(
+                RequestId::new(format!("resume-{version}")).unwrap(),
+                binding,
+                working_resource(),
+                None,
+                app_server_session_agreement(SessionAccessPolicy::read_only()),
+            ),
+            host_services(process),
+        ))
+        .expect("session resumes");
+        let request = state
+            .messages()
+            .into_iter()
+            .find(|message| message["method"] == "thread/resume")
+            .expect("resume request");
+        assert_eq!(
+            request["params"]
+                .get("excludeTurns")
+                .and_then(serde_json::Value::as_bool),
+            (Version::parse(version).unwrap() >= Version::new(0, 129, 0)).then_some(true)
+        );
+        assert_eq!(block_on(resumed.close()), CleanupOutcome::Clean);
     }
 }

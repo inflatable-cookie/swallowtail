@@ -1,8 +1,8 @@
-use super::ClaudeAgentPreparedSessionFuture;
 use super::input::ClaudeAgentSessionProfileInput;
 use super::plan::{
     ClaudeAgentPreparedEvidence, build_plan, failure, instance_with_capabilities, requirements,
 };
+use super::{ClaudeAgentPreparedSessionFuture, ClaudeAgentPreparedSessionLoadFuture};
 use crate::prepared::instance::{REASONING_MODES, session_capabilities};
 use crate::{ClaudeAgentAcpDriver, ClaudeAgentPreparedIntegration};
 use swallowtail_core::{
@@ -10,8 +10,9 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     BoxFuture, CancellationControl, CleanupOutcome, DirectContinuationTurnRequest, HostServices,
-    InteractiveSessionDriver, InteractiveSessionHandle, OpenSessionRequest, PreparationFailure,
-    PreparedAccessEvidence, ProviderSessionManagementBinding, RuntimeFailure, SessionOptions,
+    InteractiveSessionDriver, InteractiveSessionHandle, LoadSessionRequest, LoadedSession,
+    OpenSessionRequest, PreparationFailure, PreparedAccessEvidence,
+    ProviderSessionManagementBinding, ResumeSessionRequest, RuntimeFailure, SessionOptions,
     SessionResumeBinding, TurnHandle, TurnRequest, WorkingResourceRef,
 };
 
@@ -56,9 +57,98 @@ impl ClaudeAgentPreparedSession {
                 management_instance,
                 access,
                 request.working_resource().cloned(),
+                ProviderSessionBindingOrigin::Created,
             )
             .await
         })
+    }
+
+    pub fn load_request(
+        &self,
+        request_id: swallowtail_runtime::RequestId,
+        binding: SessionResumeBinding,
+    ) -> Result<LoadSessionRequest, PreparationFailure> {
+        reject_attachment_reasoning(self.request.options())?;
+        LoadSessionRequest::from_plan(
+            self.plan(),
+            request_id,
+            binding,
+            self.request
+                .working_resource()
+                .expect("prepared Claude Agent session binds a working resource")
+                .clone(),
+            None,
+        )
+    }
+
+    pub fn load_session(
+        &self,
+        request_id: swallowtail_runtime::RequestId,
+        binding: SessionResumeBinding,
+        services: HostServices,
+    ) -> Result<ClaudeAgentPreparedSessionLoadFuture, PreparationFailure> {
+        let driver = self.low_level_driver();
+        let plan = self.plan().clone();
+        let request = self.load_request(request_id, binding)?;
+        let instance = self.management_instance.clone();
+        let access = self.evidence.access().clone();
+        Ok(Box::pin(async move {
+            let loaded = driver.load_session(plan, request.clone(), services).await?;
+            let (replay, handle) = loaded.into_parts();
+            let handle = wrap_management_handle(
+                handle,
+                instance,
+                access,
+                Some(request.working_resource().clone()),
+                ProviderSessionBindingOrigin::Loaded,
+            )
+            .await?;
+            Ok(LoadedSession::new(replay, handle))
+        }))
+    }
+
+    pub fn resume_request(
+        &self,
+        request_id: swallowtail_runtime::RequestId,
+        binding: SessionResumeBinding,
+    ) -> Result<ResumeSessionRequest, PreparationFailure> {
+        reject_attachment_reasoning(self.request.options())?;
+        ResumeSessionRequest::from_plan(
+            self.plan(),
+            request_id,
+            binding,
+            self.request
+                .working_resource()
+                .expect("prepared Claude Agent session binds a working resource")
+                .clone(),
+            None,
+        )
+    }
+
+    pub fn resume_session(
+        &self,
+        request_id: swallowtail_runtime::RequestId,
+        binding: SessionResumeBinding,
+        services: HostServices,
+    ) -> Result<ClaudeAgentPreparedSessionFuture, PreparationFailure> {
+        let driver = self.low_level_driver();
+        let plan = self.plan().clone();
+        let request = self.resume_request(request_id, binding)?;
+        let instance = self.management_instance.clone();
+        let access = self.evidence.access().clone();
+        Ok(Box::pin(async move {
+            let handle = driver
+                .resume_session(plan, request.clone(), services)
+                .await?;
+            wrap_management_handle(
+                handle,
+                instance,
+                access,
+                Some(request.working_resource().clone()),
+                ProviderSessionBindingOrigin::Resumed,
+            )
+            .await
+        }))
     }
 
     #[must_use]
@@ -123,6 +213,7 @@ async fn wrap_management_handle(
     instance: swallowtail_core::ConfiguredInstance,
     access: PreparedAccessEvidence,
     working_resource: Option<WorkingResourceRef>,
+    origin: ProviderSessionBindingOrigin,
 ) -> Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure> {
     let Some(provider_ref) = handle.provider_session_ref().cloned() else {
         return Ok(handle);
@@ -133,7 +224,7 @@ async fn wrap_management_handle(
         &instance,
         access,
         working_resource,
-        ProviderSessionBindingOrigin::Created,
+        origin,
     ) {
         Ok(binding) => Ok(Box::new(ManagedClaudeAgentSessionHandle {
             inner: handle,
@@ -165,7 +256,7 @@ impl InteractiveSessionHandle for ManagedClaudeAgentSessionHandle {
     }
 
     fn resume_binding(&self) -> Option<&SessionResumeBinding> {
-        None
+        self.inner.resume_binding()
     }
 
     fn management_binding(&self) -> Option<&ProviderSessionManagementBinding> {
@@ -214,6 +305,17 @@ fn validate_options(options: &SessionOptions) -> Result<(), PreparationFailure> 
         ));
     }
     Ok(())
+}
+
+fn reject_attachment_reasoning(options: &SessionOptions) -> Result<(), PreparationFailure> {
+    if options.reasoning_mode().is_some() {
+        Err(failure(
+            "swallowtail.claude_agent.preparation.attachment_reasoning_unsupported",
+            "Claude Agent load and resume cannot redeclare reasoning selection",
+        ))
+    } else {
+        Ok(())
+    }
 }
 
 fn operation_capabilities(

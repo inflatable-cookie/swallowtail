@@ -41,6 +41,8 @@ pub struct KimiLocalServerSessionConfiguration {
     permission_mode: KimiLocalServerPermissionMode,
     profile: Option<String>,
     disabled_tools: Vec<String>,
+    managed_recovery: bool,
+    maximum_reattachments: u32,
 }
 
 impl KimiLocalServerSessionConfiguration {
@@ -50,6 +52,8 @@ impl KimiLocalServerSessionConfiguration {
             permission_mode,
             profile: None,
             disabled_tools: Vec::new(),
+            managed_recovery: false,
+            maximum_reattachments: 0,
         }
     }
 
@@ -89,6 +93,24 @@ impl KimiLocalServerSessionConfiguration {
 
     pub fn disabled_tools(&self) -> impl ExactSizeIterator<Item = &str> {
         self.disabled_tools.iter().map(String::as_str)
+    }
+
+    pub(in crate::local_server) const fn with_structured_lifecycle(
+        mut self,
+        managed_recovery: bool,
+        maximum_reattachments: u32,
+    ) -> Self {
+        self.managed_recovery = managed_recovery;
+        self.maximum_reattachments = maximum_reattachments;
+        self
+    }
+
+    pub(in crate::local_server) const fn managed_recovery(&self) -> bool {
+        self.managed_recovery
+    }
+
+    pub(in crate::local_server) const fn maximum_reattachments(&self) -> u32 {
+        self.maximum_reattachments
     }
 }
 

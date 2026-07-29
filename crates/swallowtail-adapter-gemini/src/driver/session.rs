@@ -17,6 +17,7 @@ struct GeminiSessionHandle {
     pump_task: Option<Box<dyn JoinedTask>>,
     services: HostServices,
     resource: Option<ResourceLease>,
+    expected_mode: &'static str,
     active: ActiveSlot,
 }
 
@@ -57,8 +58,11 @@ impl InteractiveSessionHandle for GeminiSessionHandle {
                     "Gemini CLI session already has an active turn",
                 ));
             }
-            let (turn, events, terminal) =
-                ActiveTurn::new(request.turn_id().clone(), self.provider_id.clone())?;
+            let (turn, events, terminal) = ActiveTurn::new(
+                request.turn_id().clone(),
+                self.provider_id.clone(),
+                self.expected_mode,
+            )?;
             self.connection.set_active_turn(Arc::clone(&turn))?;
             let connection = Arc::clone(&self.connection);
             let prompt_turn = Arc::clone(&turn);

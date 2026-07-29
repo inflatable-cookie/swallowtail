@@ -4,7 +4,7 @@ use super::plan::{
     model_route, require_driver, requirements,
 };
 use super::session_capabilities::{behavior_revision, session_capabilities};
-use super::{CodexPreparedSessionFuture, CodexPreparedSessionKind};
+use super::{CodexPreparedSessionFuture, CodexPreparedSessionKind, CodexPreparedSessionLoadFuture};
 use crate::selection::CODEX_APP_SERVER_WORKSPACE_BEHAVIOR;
 use crate::{
     CodexAppServerDriver, CodexPreparedDriver, CodexPreparedIntegration,
@@ -15,8 +15,8 @@ use swallowtail_core::{
     PreflightPlan, ProviderSessionBindingOrigin, SessionProviderStatePolicy,
 };
 use swallowtail_runtime::{
-    HostServices, InteractiveSessionDriver, OpenSessionRequest, PreparationFailure,
-    SessionResumeBinding,
+    HostServices, InteractiveSessionDriver, LoadSessionRequest, OpenSessionRequest,
+    PreparationFailure, SessionResumeBinding,
 };
 
 #[path = "session/management_handle.rs"]
@@ -104,6 +104,56 @@ impl CodexPreparedSession {
             self.request.deadline(),
         )?
         .with_options(self.request.options().clone()))
+    }
+
+    pub fn load_request(
+        &self,
+        request_id: swallowtail_runtime::RequestId,
+        binding: SessionResumeBinding,
+    ) -> Result<LoadSessionRequest, PreparationFailure> {
+        if self.request.options().tools().len() != 0 {
+            return Err(failure(
+                "swallowtail.codex.preparation.load_tools_unsupported",
+                "Codex loaded sessions cannot redeclare dynamic tools",
+            ));
+        }
+        Ok(LoadSessionRequest::from_plan(
+            self.plan(),
+            request_id,
+            binding,
+            self.request
+                .working_resource()
+                .expect("prepared Codex session binds a working resource")
+                .clone(),
+            self.request.deadline(),
+        )?
+        .with_options(self.request.options().clone()))
+    }
+
+    pub fn load_session(
+        &self,
+        request_id: swallowtail_runtime::RequestId,
+        binding: SessionResumeBinding,
+        services: HostServices,
+    ) -> Result<CodexPreparedSessionLoadFuture, PreparationFailure> {
+        let driver = self.low_level_driver();
+        let plan = self.plan().clone();
+        let request = self.load_request(request_id, binding)?;
+        let management_instance = self.management_instance.clone();
+        let access = self.evidence.access().clone();
+        Ok(Box::pin(async move {
+            let loaded = driver.load_session(plan, request.clone(), services).await?;
+            let (replay, handle) = loaded.into_parts();
+            let handle = wrap_management_handle(
+                handle,
+                management_instance,
+                access,
+                Some(request.working_resource().clone()),
+                ProviderSessionBindingOrigin::Loaded,
+            )
+            .await?;
+            Ok(swallowtail_runtime::LoadedSession::new(replay, handle))
+        }))
     }
 
     pub fn resume_session(

@@ -14,6 +14,38 @@ pub(super) async fn close_provider_session(
     }
 }
 
+pub(super) async fn delete_owned_provider_session(
+    connection: &AcpConnection,
+    provider_id: &str,
+    negotiated_and_qualified: bool,
+) -> (
+    swallowtail_runtime::RemoteResourceDeletionOutcome,
+    CleanupOutcome,
+) {
+    if !negotiated_and_qualified || connection.is_closed() {
+        return (
+            swallowtail_runtime::RemoteResourceDeletionOutcome::Unconfirmed,
+            CleanupOutcome::Degraded(swallowtail_core::SafeDiagnostic::new(
+                "swallowtail.claude_agent.acp.owned_session_deletion_unconfirmed",
+                "Claude Agent operation-owned session deletion could not be confirmed",
+            )),
+        );
+    }
+    match connection.delete_session(provider_id).await {
+        Ok(()) => (
+            swallowtail_runtime::RemoteResourceDeletionOutcome::Confirmed,
+            CleanupOutcome::Clean,
+        ),
+        Err(_) => (
+            swallowtail_runtime::RemoteResourceDeletionOutcome::Unconfirmed,
+            CleanupOutcome::Degraded(swallowtail_core::SafeDiagnostic::new(
+                "swallowtail.claude_agent.acp.owned_session_deletion_unconfirmed",
+                "Claude Agent operation-owned session deletion could not be confirmed",
+            )),
+        ),
+    }
+}
+
 pub(super) async fn join_connection(session: &mut ClaudeAgentSessionHandle) -> CleanupOutcome {
     match session.pump_task.take() {
         Some(task) => match task.join().await {

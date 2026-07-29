@@ -38,8 +38,14 @@ evidence-led provider work.
 | Add a separate Kimi local-server lifecycle and interactive route. | completed | Research 040-041, Contracts 029 and 038 | `g02.020` |
 | Expand source-scoped model catalogue coverage without hidden session creation. | completed | Research 042-043, Contract 020 | `g02.021` |
 | Close useful structured-run gaps without flattening provider lifecycle. | completed | Research 044-046, Contract 039 | `g02.022`-`g02.024` |
-| Audit and close remaining provider feature-matrix `No` values in evidence-ranked families. | active | Research 003 and 042-046, Contracts 014-039 | `g02.025` onward |
-| Close session-continuity gaps without flattening replay, reattachment, or native close. | active | Contracts 009, 017, 038 | `g02.028` |
+| Audit and close remaining provider feature-matrix `No` values in evidence-ranked families. | completed | Research 003 and 042-046, Contracts 014-043 | `g02.025`-`g02.034` |
+| Close the first session-continuity tranche without flattening replay, reattachment, or native close. | completed | Research 051-052, Contracts 009, 017, 038 | `g02.028` |
+| Revalidate the remaining Pi RPC load and resume cells. | paused | Research 053, Contracts 009, 017, 038 | `g02.029` |
+| Audit and close provider-retention matrix gaps. | completed | Research 036 and 054-055, Contracts 021 and 038-039 | `g02.030` |
+| Audit and close retained-execution and recovery matrix gaps. | completed | Contracts 009, 021-022, 042 | `g02.031` |
+| Audit and close working-resource and bounded-write matrix gaps. | completed | Contracts 009-010, 013, 015, 017, 037 | `g02.032` |
+| Audit and close owned-runtime lifecycle and planned-rollover matrix gaps. | completed | Research 060, Contracts 004, 009, 018, 026-027, 031 | `g02.033` |
+| Classify the residual feature-matrix inventory and close or re-scope the programme. | completed | Contracts 004, 009, 011, 016, 026, 029, 037, 043 | `g02.034` |
 
 ## Current Checkpoint
 
@@ -236,9 +242,55 @@ evidence-led provider work.
 - Research 052 and card 093 confirm no shared contract gap and freeze six
   Codex continuity segments, all ten qualified Claude Agent ACP releases, and
   seven OpenCode wire surfaces across twelve published segments
-- card 094 is ready to implement Codex app-server load, Claude Agent ACP load
-  and resume, and OpenCode HTTP load and resume; Pi RPC load and resume remain
-  the next contract-ready tranche
+- card 094 implements Codex app-server load, Claude Agent ACP load and resume,
+  and OpenCode HTTP load and resume through public prepared operations
+- bounded ordered replay, replay-free resume, exact binding, all guaranteed
+  version segments, safe failure, and joined cleanup pass across the three
+  adapters and the full workspace; no retention or lifecycle claim widens
+- the session-continuity checkpoint converted five cells and left 432 matrix
+  `No` cells; session continuity fell from 58 to 53 `No` cells
+- card 095 closes the 58-cell starting inventory at five conversions and 53
+  retained `No` cells: 17 load, 16 resume, and 20 native close
+- all 23 dirty-snapshot packages assemble; the extracted workspace compiles
+  and packaged Codex, Claude Agent, and OpenCode continuity facades pass
+- Research 053 and card 096 revalidate Pi `0.80.10` through current `0.82.1`
+  and correct the two remaining ready classifications: public session
+  attachment accepts the cwd stored in provider state and cannot preserve the
+  host-leased working resource
+- roadmap g02.029 and cards 097-098 are paused without changing the existing
+  ephemeral Pi profile; a maintained cwd-bound attachment interface is the
+  exact unpause condition
+- roadmap g02.030 closes the 75 provider-retention cells at 58
+  `Not applicable`, five `Yes`, and twelve retained `No`
+- roadmap g02.031 closes the 59 retained-execution and recovery cells at 32
+  `Not applicable`, 24 retained `No`, two `Yes`, and one `Partial`
+- the retained-execution checkpoint left 334 `No` and 119 `Not applicable`
+  cells before the resource/write tranche
+- Research 058 and card 107 classify all 31 working-resource and bounded-write
+  cells: 24 are non-applicable, six are exact selected-surface absences, and
+  one Gemini ACP profile is selected
+- Research 059 and card 108 freeze exact Gemini CLI `0.51.0` read-write ACP
+  negotiation, callback, failure, and cleanup evidence without a sandbox or
+  containment claim
+- card 109 realizes the explicit prepared bounded-write profile, keeps the
+  existing read-only profile unchanged, and passes focused ACP and prepared
+  facade conformance
+- card 110 closes the resource/write family at 24 `Not applicable`, one
+  `Yes`, and six `No`; the full matrix now has 309 `No` and 143
+  `Not applicable` cells
+- Research 060 and cards 111/114 close the 40-cell runtime-ownership and
+  planned-rollover family at 39 `Not applicable` and one retained OpenAI
+  Realtime `No`; cards 112-113 are superseded because no implementation
+  candidate exists
+- Research 061 and card 115 classify the final 61 unaudited cells: 34 become
+  `Not applicable`, nine require contract or corpus work, three require
+  separate realtime routes, and fifteen retain exact billed-cost `No` values
+- the full matrix now has 236 `No` and 216 `Not applicable` cells
+- Contract 043, Research 062, and card 116 separate Qwen restarted-harness
+  continuation from Ollama transactional transcript replay and freeze both
+  exact offline corpora
+- card 117 is ready for the selected Qwen headless and Ollama attached
+  interactive profiles; card 118 remains planned
 - roadmaps g02.016-g02.019 sequence Codex, ACP/Claude Agent, OpenCode,
   provider-wide acceptance, and the Nucleus handoff
 - all 23 manifests carry contract-complete metadata and crates.io publication
@@ -586,7 +638,21 @@ evidence-led provider work.
 - [027 Input And Callback Feature Closure](027-input-and-callback-feature-closure.md)
   — completed; cards 088-091 complete
 - [028 Session Continuity Feature Closure](028-session-continuity-feature-closure.md)
-  — active; cards 092-093 completed, card 094 ready, card 095 planned
+  — completed; cards 092-095 complete
+- [029 Pi RPC Session Continuity](029-pi-rpc-session-continuity.md)
+  — paused; card 096 complete, cards 097-098 paused behind the public Pi
+  resource-binding gate
+- [030 Provider Retention Feature Closure](030-provider-retention-feature-closure.md)
+  — completed; cards 099-102 complete
+- [031 Retained Execution And Recovery Feature Closure](031-retained-execution-and-recovery-feature-closure.md)
+  — completed; cards 103-106 complete
+- [032 Working Resource And Workspace Authority Feature Closure](032-working-resource-and-workspace-authority-feature-closure.md)
+  — completed; cards 107-110 complete
+- [033 Runtime Ownership And Connection Rollover Feature Closure](033-runtime-ownership-and-connection-rollover-feature-closure.md)
+  — completed; cards 111 and 114 complete, cards 112-113 superseded by the
+  negative tranche
+- [034 Residual Feature Matrix Truth And Programme Checkpoint](034-residual-feature-matrix-truth-and-programme-checkpoint.md)
+  — active; cards 115-116 complete, card 117 ready, card 118 planned
 
 ## Held Backlog
 
@@ -714,7 +780,58 @@ is deferred until a consumer needs post-restart provider management.
   Anthropic Messages cells; card 091 completes re-audit and packaged closeout
 - cards 092-095 own currentness, contract/corpus, implementation, and closeout
   for the 58-cell session-continuity family; card 093 found no shared contract
-  gap and completed the exact three-route corpus gate
+  gap and completed the exact three-route corpus gate; card 094 realizes all
+  five selected prepared operations; card 095 closes package proof and selects
+  Pi RPC load and resume
+- card 096 closes Pi RPC currentness at an exact public-interface gate:
+  provider state can redirect cwd away from the host lease; cards 097-098 are
+  paused
+- card 099 classifies all 75 provider-retention `No` cells: 58 are
+  non-applicable, twelve are exact absences, OpenCode is a realized false
+  negative, and four runtime cells are selected
+- card 100 promotes exact Gemini CLI transcript deletion, optional Claude
+  session cleanup, and OpenAI background-response cleanup contracts and
+  freezes their offline corpora
+- card 101 realizes Gemini bound history removal and opt-in cleanup, Claude
+  Agent opt-in cleanup, and OpenAI background-response cleanup
+- card 102 converts 58 operation-shape cells to `Not applicable`, converts
+  five realized cells to `Yes`, retains twelve exact `No` cells, and selects
+  retained execution and recovery next
+- card 103 classifies all 59 retained-execution and recovery `No` cells: 32
+  are non-applicable, 22 are exact selected-surface absences, two require
+  separate routes, and three require a shared contract
+- card 104 promotes Contract 042 and the exact Kimi retry and cursor corpus;
+  card 105 realizes explicit headless and local-server managed recovery plus
+  maximum-one local-server active-turn reattachment
+- card 106 closes retained execution, refreshes the intentional Kimi API
+  baseline, and selects resource and write authority next
+- cards 107-108 classify the 31-cell resource/write inventory and select the
+  exact Gemini ACP `0.51.0` bounded text-write callback profile; existing
+  contracts are sufficient and the offline corpus is frozen
+- card 109 realizes the separate read/write prepared profile, exact ACP
+  capability and mode agreement, host callback dispatch, negative
+  unnegotiated-write evidence, and unchanged ambient authority
+- card 110 completes package proof, converts 24 non-applicable cells and one
+  Gemini capability, retains six exact absences, and selects runtime ownership
+  plus planned rollover next
+- card 111 classifies all 40 ownership and rollover cells; card 114 converts
+  39 category errors to `Not applicable`, retains one exact OpenAI Realtime
+  absence, and supersedes cards 112-113
+- card 115 classifies the final 61 cells, corrects 34 category errors, retains
+  27 exact gaps, and selects Qwen headless plus Ollama attached interactive
+  sessions
+- card 116 settles the two selected continuity ownership shapes and freezes
+  exact Qwen `0.19.11` plus Ollama `0.14.0..=0.32.1` corpora
+- card 117 realizes separate Qwen private harness-retained continuation and
+  Ollama consumer-owned transcript replay, converts only those two
+  interactive cells, and leaves public resume, media, and billed cost absent
+- card 118 closes the starting 61 cells at two `Yes`, 25 `No`, and 34
+  `Not applicable`; the complete 660-cell feature region now holds 202 `Yes`,
+  234 classified `No`, 216 `Not applicable`, four `Partial`, two
+  `Caller-supplied`, and two `Session-negotiated`
+- all 23 extracted package archives, the complete workspace, docs, route,
+  metadata, example, and public-API gates pass; the feature-matrix completion
+  programme is closed with no provider implementation selected by default
 - cards 024-026 own remaining harness facades
 - cards 027-030 own hosted direct and provider-state facades
 - cards 031-033 own realtime, SDK, and llama.cpp facades
@@ -724,8 +841,8 @@ is deferred until a consumer needs post-restart provider management.
 
 ## Generation Boundary
 
-g02 is a long-lived generation with 28 roadmaps. It remains below its
-30-50-roadmap rollover range. Provider-wide facade work stabilizes the existing
+g02 is a long-lived generation with 34 roadmaps. It remains within its
+30-50-roadmap range. Provider-wide facade work stabilizes the existing
 production routes. The provider-session lifecycle lane adds bounded management
 to applicable persistent-session routes without adding provider names,
 consumer persistence, or implicit deletion. The Kimi local-server route adds a

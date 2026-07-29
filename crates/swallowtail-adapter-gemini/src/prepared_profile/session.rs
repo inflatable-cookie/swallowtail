@@ -5,7 +5,10 @@ use super::plan::{
 };
 use crate::prepared::instance::session_capabilities;
 use crate::{GeminiAcpDriver, GeminiPreparedIntegration};
-use swallowtail_core::CapabilityRequirement;
+use swallowtail_core::{
+    Capability, CapabilityConstraint, CapabilityProfile, CapabilityRequirement, ResourceAccess,
+    ResourceRepresentation,
+};
 use swallowtail_runtime::{
     HostServices, InteractiveSessionDriver, OpenSessionRequest, PreparationFailure, SessionOptions,
 };
@@ -62,17 +65,18 @@ impl GeminiPreparedIntegration {
         &self,
         input: GeminiSessionProfileInput,
     ) -> Result<GeminiPreparedSession, PreparationFailure> {
-        let (request_id, working_resource, options) = input.into_parts();
+        let (request_id, working_resource, options, resource_access) = input.into_parts();
         validate_options(&options)?;
-        let capabilities = session_capabilities();
+        let capabilities = session_capabilities_for(resource_access);
         let instance = instance_with_capabilities(self, capabilities);
         let requirements = requirements(
             self,
-            session_capabilities()
+            session_capabilities_for(resource_access)
                 .iter()
                 .map(|(capability, constraints)| {
                     CapabilityRequirement::new(capability, constraints.iter().cloned())
                 }),
+            resource_access,
         );
         let plan = build_plan(self, &instance, &requirements)?;
         let request = OpenSessionRequest::from_plan(&plan, request_id, working_resource, None)?;
@@ -81,6 +85,24 @@ impl GeminiPreparedIntegration {
             request,
         })
     }
+}
+
+fn session_capabilities_for(resource_access: ResourceAccess) -> CapabilityProfile {
+    let mut capabilities = session_capabilities()
+        .iter()
+        .filter(|(capability, _)| capability != &Capability::WorkingResource)
+        .map(|(capability, constraints)| {
+            CapabilityRequirement::new(capability, constraints.iter().cloned())
+        })
+        .collect::<Vec<_>>();
+    capabilities.push(CapabilityRequirement::new(
+        Capability::WorkingResource,
+        [
+            CapabilityConstraint::ResourceAccess(resource_access),
+            CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
+        ],
+    ));
+    CapabilityProfile::new(capabilities)
 }
 
 fn validate_options(options: &SessionOptions) -> Result<(), PreparationFailure> {

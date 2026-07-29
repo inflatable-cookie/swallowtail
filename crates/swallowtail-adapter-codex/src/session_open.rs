@@ -2,12 +2,13 @@ use crate::rpc::{RpcConnection, failure};
 use crate::session::CodexSessionHandle;
 use crate::session_access::CodexSessionAccess;
 use crate::session_input::CodexSessionInput;
+use crate::session_replay::{project_thread_history, validate_thread_history_bounds};
 use serde_json::Value;
 use std::sync::Arc;
 use swallowtail_core::{PreflightPlan, SessionRef};
 use swallowtail_runtime::{
-    InteractiveSessionHandle, JoinedTask, RequestId, RuntimeFailure, RuntimeSessionId,
-    SessionResumeBinding,
+    InteractiveSessionHandle, JoinedTask, LoadedSession, RequestId, RuntimeFailure,
+    RuntimeSessionId, SessionResumeBinding,
 };
 
 pub(crate) struct PendingSessionOpen {
@@ -51,6 +52,10 @@ impl PendingSessionOpen {
                 return Err(error);
             }
         };
+        if let Err(error) = validate_thread_history_bounds(&response) {
+            self.abort().await;
+            return Err(error);
+        }
         let provider_id = response
             .get("thread")
             .and_then(|thread| thread.get("id"))
@@ -100,6 +105,39 @@ impl PendingSessionOpen {
             runtime,
             self.access,
         )))
+    }
+
+    pub(crate) async fn finish_loaded(
+        self,
+        plan: &PreflightPlan,
+        response: Result<Value, RuntimeFailure>,
+        expected_provider_id: &str,
+    ) -> Result<LoadedSession, RuntimeFailure> {
+        let response = match response {
+            Ok(response) => response,
+            Err(error) => {
+                self.abort().await;
+                return Err(error);
+            }
+        };
+        let session = match SessionRef::new(expected_provider_id) {
+            Ok(session) => session,
+            Err(_) => {
+                self.abort().await;
+                return Err(malformed_response());
+            }
+        };
+        let replay = match project_thread_history(&response, &session) {
+            Ok(replay) => replay,
+            Err(error) => {
+                self.abort().await;
+                return Err(error);
+            }
+        };
+        let handle = self
+            .finish(plan, Ok(response), Some(expected_provider_id))
+            .await?;
+        Ok(LoadedSession::new(replay, handle))
     }
 
     async fn abort(self) {

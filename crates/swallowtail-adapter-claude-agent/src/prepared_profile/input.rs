@@ -11,6 +11,13 @@ pub enum ClaudeAgentPermissionHandling {
     ConsumerMediated,
 }
 
+#[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
+pub enum ClaudeAgentRunRetention {
+    #[default]
+    Durable,
+    TemporaryWithOwnedSessionCleanup,
+}
+
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ClaudeAgentModelSelection {
     route_id: ModelRouteId,
@@ -54,6 +61,7 @@ pub struct ClaudeAgentRunProfileInput {
     deadline: Option<Deadline>,
     reasoning_mode: Option<ReasoningMode>,
     permission_handling: ClaudeAgentPermissionHandling,
+    retention: ClaudeAgentRunRetention,
 }
 
 impl ClaudeAgentRunProfileInput {
@@ -73,6 +81,7 @@ impl ClaudeAgentRunProfileInput {
             deadline,
             reasoning_mode: None,
             permission_handling: ClaudeAgentPermissionHandling::RejectAndStop,
+            retention: ClaudeAgentRunRetention::Durable,
         }
     }
 
@@ -88,6 +97,12 @@ impl ClaudeAgentRunProfileInput {
         self
     }
 
+    #[must_use]
+    pub const fn with_owned_session_cleanup(mut self) -> Self {
+        self.retention = ClaudeAgentRunRetention::TemporaryWithOwnedSessionCleanup;
+        self
+    }
+
     pub(super) fn into_parts(
         self,
     ) -> (
@@ -98,6 +113,7 @@ impl ClaudeAgentRunProfileInput {
         Option<Deadline>,
         Option<ReasoningMode>,
         ClaudeAgentPermissionHandling,
+        ClaudeAgentRunRetention,
     ) {
         (
             self.request_id,
@@ -107,6 +123,7 @@ impl ClaudeAgentRunProfileInput {
             self.deadline,
             self.reasoning_mode,
             self.permission_handling,
+            self.retention,
         )
     }
 }

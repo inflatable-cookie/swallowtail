@@ -1,7 +1,7 @@
 use crate::failure::failure;
 use crate::headless_command::arguments;
 use crate::headless_handle::{GeminiHeadlessCancellation, GeminiHeadlessRunHandle};
-use crate::headless_pump::{cleanup_failed_start, pump};
+use crate::headless_pump::{TranscriptCleanup, cleanup_failed_start, pump};
 use std::sync::Arc;
 use swallowtail_core::{
     AdapterId, AdapterIdentity, AdapterVersion, CredentialMechanism, CredentialRef,
@@ -19,8 +19,8 @@ pub(crate) const DRIVER_ID: &str = "swallowtail.gemini.headless";
 const EVENT_CAPACITY: usize = 4098;
 
 pub struct GeminiHeadlessDriver {
-    environment: EnvironmentRef,
-    credential: CredentialRef,
+    pub(crate) environment: EnvironmentRef,
+    pub(crate) credential: CredentialRef,
 }
 
 impl GeminiHeadlessDriver {
@@ -44,9 +44,16 @@ pub fn gemini_headless_descriptor() -> DriverDescriptor {
         IntegrationFamilyId::new("gemini-cli").expect("static family id is valid"),
         TransportFamilyId::new("gemini-stream-json-stdio").expect("static transport id is valid"),
     )
-    .with_roles([DriverRole::Discovery, DriverRole::StructuredRun])
+    .with_roles([
+        DriverRole::Discovery,
+        DriverRole::StructuredRun,
+        DriverRole::ProviderSessionManagement,
+    ])
     .with_execution_layers([ExecutionLayer::HarnessInteraction])
-    .with_operation_shapes([OperationShape::StructuredRun])
+    .with_operation_shapes([
+        OperationShape::StructuredRun,
+        OperationShape::ProviderSessionManagement,
+    ])
     .with_required_host_services(
         DriverRole::StructuredRun,
         [
@@ -61,6 +68,14 @@ pub fn gemini_headless_descriptor() -> DriverDescriptor {
             HostServiceKind::Task,
             HostServiceKind::Time,
             HostServiceKind::Process,
+        ],
+    )
+    .with_required_host_services(
+        DriverRole::ProviderSessionManagement,
+        [
+            HostServiceKind::Task,
+            HostServiceKind::Process,
+            HostServiceKind::Time,
         ],
     )
     .with_discovery_actions([swallowtail_core::DiscoveryAction::Probe])
@@ -86,6 +101,7 @@ impl GeminiHeadlessDriver {
         services: HostServices,
     ) -> Result<Box<dyn RunHandle>, RuntimeFailure> {
         crate::headless_validation::validate(&plan, &request, &services, &self.credential)?;
+        let owned_transcript_cleanup = crate::headless_validation::owns_transcript_cleanup(&plan)?;
         let task_service = services
             .task()
             .cloned()
@@ -123,10 +139,10 @@ impl GeminiHeadlessDriver {
             })?;
         let (event_sender, event_stream) = runtime_event_channel(EVENT_CAPACITY)?;
         let executable = ExecutableRef::from_instance_target(plan.instance_target_ref());
-        let process_request = ProcessRequest::new(executable)
+        let process_request = ProcessRequest::new(executable.clone())
             .with_arguments(arguments(&model, &provider_id))
             .with_environment([self.environment.clone()])
-            .with_working_resource(working_resource);
+            .with_working_resource(working_resource.clone());
         let process: Arc<dyn ProcessHandle> = Arc::from(
             process_service
                 .start(scope.clone(), process_request)
@@ -136,13 +152,15 @@ impl GeminiHeadlessDriver {
             cleanup_failed_start(process.as_ref()).await;
             return Err(error);
         }
-        let deadline = time_service.wait_until(deadline);
+        let run_deadline = time_service.wait_until(deadline);
+        let cleanup_deadline = time_service.wait_until(deadline);
         if let Err(error) = event_sender.send(RuntimeEvent::new(0, RuntimeEventKind::Started)) {
             cleanup_failed_start(process.as_ref()).await;
             return Err(error);
         }
         let (terminal_sender, terminal_future) = terminal_outcome_channel();
         let cancellation = Arc::new(GeminiHeadlessCancellation::new(Arc::clone(&process)));
+        let cleanup_environment = self.environment.clone();
         let task = task_service.spawn(
             scope,
             Box::pin({
@@ -153,9 +171,17 @@ impl GeminiHeadlessDriver {
                         process,
                         event_sender.clone(),
                         cancellation,
-                        deadline,
+                        run_deadline,
                         model,
-                        provider_id,
+                        provider_id.clone(),
+                        owned_transcript_cleanup.then_some(TranscriptCleanup {
+                            process_service,
+                            executable,
+                            environment: cleanup_environment,
+                            working_resource,
+                            session_id: provider_id,
+                            deadline: cleanup_deadline,
+                        }),
                     )
                     .await;
                     let _ = terminal_sender.complete(outcome);
@@ -207,7 +233,7 @@ async fn write_prompt(
     })
 }
 
-fn provider_session_id(request_id: &swallowtail_runtime::RequestId) -> String {
+pub(crate) fn provider_session_id(request_id: &swallowtail_runtime::RequestId) -> String {
     use std::fmt::Write;
 
     let mut value = String::from("swallowtail-");

@@ -12,10 +12,10 @@ shape.
 
 ## Next Task
 
-Execute
-[g02 card 094](g02/batch-cards/094-session-continuity-implementation-tranche.md):
-implement Codex app-server load, Claude Agent ACP load and resume, and OpenCode
-HTTP load and resume through existing prepared route identities.
+Operator decision: choose one exact machine-classified feature gap for the
+next g02 roadmap, or explicitly resume a paused lane. The feature-matrix
+completion programme is closed, and no remaining provider implementation is
+selected by default.
 
 ## Index
 

@@ -30,6 +30,7 @@ fn validate_run(
         Capability::OutputTokenLimit,
         Capability::ProviderBackgroundExecution,
         Capability::ProviderTemporaryRetention,
+        Capability::OwnedRemoteResourceDeletion,
         Capability::StreamReattachment,
         Capability::Interruption,
     ] {
@@ -47,6 +48,7 @@ fn validate_run(
         Capability::OutputTokenLimit,
         Capability::ProviderBackgroundExecution,
         Capability::ProviderTemporaryRetention,
+        Capability::OwnedRemoteResourceDeletion,
         Capability::StreamReattachment,
         Capability::Interruption,
         Capability::ReasoningSelection,
@@ -70,12 +72,16 @@ fn validate_run(
     );
     let reattachment = CapabilityConstraint::ReattachmentMaximumCount(1);
     let cancellation = CapabilityConstraint::CancellationScope(CancellationScope::StructuredRun);
+    let response_deletion = CapabilityConstraint::OwnedRemoteResource(
+        swallowtail_core::OwnedRemoteResourceKind::Response,
+    );
     if !plan.requirements().capabilities().all(|requirement| {
         let constraints: Vec<_> = requirement.constraints().collect();
         match requirement.capability() {
             Capability::OutputTokenLimit => constraints == [&maximum],
             Capability::StreamReattachment => constraints == [&reattachment],
             Capability::Interruption => constraints == [&cancellation],
+            Capability::OwnedRemoteResourceDeletion => constraints == [&response_deletion],
             Capability::ReasoningSelection => request.policy().reasoning_mode().is_some_and(
                 |reasoning| {
                     constraints

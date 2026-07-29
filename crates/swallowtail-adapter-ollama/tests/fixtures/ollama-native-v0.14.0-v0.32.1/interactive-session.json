@@ -1,0 +1,82 @@
+{
+  "fixture_schema": "swallowtail.ollama.attached-interactive.v1",
+  "claim_id": "ollama.native-runtime-window-2",
+  "behavior_revision": "ollama.native-text-v1",
+  "qualification_points": [
+    {
+      "version": "0.14.0",
+      "commit": "02a24015968d612b418448b73cffaa1b0652d161"
+    },
+    {
+      "version": "0.18.0",
+      "commit": "3980c0217d27e05a441808a446e7ee5ea7e04256"
+    },
+    {
+      "version": "0.30.0",
+      "commit": "2c71d8d7ca6edbc9bdc1a312f71ce3b079c0fe56"
+    },
+    {
+      "version": "0.32.1",
+      "commit": "30c390384e20333b67cadab60da5bcb669407f01"
+    }
+  ],
+  "excluded_versions": [
+    "0.32.2"
+  ],
+  "route": {
+    "execution_layer": "direct_model_inference",
+    "operation_shape": "interactive_session",
+    "continuity_owner": "swallowtail_private_transcript",
+    "turn_transport": "one_streaming_http_request_per_turn",
+    "endpoint": "required_exact_preflight_binding",
+    "model_route": "required_exact_preflight_binding",
+    "provider_state_policy": "prohibited",
+    "working_resource": false
+  },
+  "bounds": {
+    "maximum_turns": 24,
+    "maximum_messages": 48,
+    "maximum_private_history_bytes": 1048576,
+    "maximum_request_bytes": 1048576,
+    "maximum_stream_records_per_turn": 4096,
+    "maximum_line_bytes": 1048576,
+    "maximum_output_tokens_per_turn": 8
+  },
+  "transaction": {
+    "request_messages": "committed_history_plus_candidate_user",
+    "success_commit": "candidate_user_plus_complete_assistant",
+    "provider_failure_commit": "unchanged",
+    "protocol_failure_commit": "unchanged",
+    "disconnect_commit": "unchanged",
+    "cancellation_commit": "unchanged",
+    "deadline_commit": "unchanged",
+    "automatic_retry": false
+  },
+  "capabilities": {
+    "interactive_session": true,
+    "streaming_events": true,
+    "usage_evidence": true,
+    "public_load_session": false,
+    "public_resume_session": false,
+    "provider_session_reference": false,
+    "native_session_close": false,
+    "consumer_tool_exchange": false,
+    "attachments": false,
+    "realtime_media": false,
+    "billed_cost": false,
+    "owned_runtime_lifecycle": false
+  },
+  "cleanup": {
+    "private_transcript_cleared": true,
+    "attached_runtime_stopped": false,
+    "model_unloaded": false,
+    "runtime_managed_residency_preserved": true
+  },
+  "fixtures": {
+    "turn_1_request": "interactive-turn-1-request.json",
+    "turn_1_success": "interactive-turn-1-success.ndjson",
+    "turn_2_request": "interactive-turn-2-request.json",
+    "turn_2_success": "interactive-turn-2-success.ndjson",
+    "turn_2_error": "interactive-turn-2-error.ndjson"
+  }
+}

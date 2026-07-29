@@ -2,9 +2,9 @@ mod support;
 
 use futures_executor::block_on;
 use futures_util::StreamExt;
-use support::{FixtureHost, Scenario, selection};
+use support::{FixtureHost, Scenario, selection, selection_with_access};
 use swallowtail_adapter_gemini::GeminiAcpDriver;
-use swallowtail_core::{ExecutionHostId, ProviderRequestHandling};
+use swallowtail_core::{ExecutionHostId, ProviderRequestHandling, ResourceAccess};
 use swallowtail_runtime::{
     CleanupOutcome, InteractiveSessionDriver, OpenSessionRequest, OperationContent, RequestId,
     RuntimeEventKind, RuntimeTurnId, SessionPlanAgreement, TerminalStatus, TurnRequest,
@@ -98,6 +98,72 @@ fn success_and_read_callbacks_preserve_local_and_remote_host_authority() {
         assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
         assert_eq!(host.releases(), 1);
     }
+}
+
+#[test]
+fn bounded_write_profile_negotiates_and_dispatches_one_host_text_write() {
+    let host_id = ExecutionHostId::new("fixture.host.write").expect("valid host id");
+    let selected = selection_with_access(host_id.clone(), ResourceAccess::ReadWrite);
+    let host = FixtureHost::new(Scenario::Success);
+    let services = host.services(host_id);
+    let driver = GeminiAcpDriver::new(
+        swallowtail_runtime::EnvironmentRef::new("gemini.fixture.isolated")
+            .expect("valid environment"),
+        selected.credential,
+    );
+    let mut session = block_on(driver.open_session(
+        selected.plan,
+        OpenSessionRequest::new(
+            RequestId::new("gemini-write-open").expect("valid request"),
+            selected.resource.clone(),
+            None,
+            SessionPlanAgreement::explicit(
+                swallowtail_core::SessionAccessPolicy::ambient_harness(ResourceAccess::ReadWrite),
+                Some(swallowtail_core::SessionProviderStatePolicy::Prohibited),
+                Some(swallowtail_core::HarnessConfigurationPosture::Ambient),
+            ),
+        ),
+        services.clone(),
+    ))
+    .expect("write session opens");
+    let mut turn = start(&mut *session, services, "write-turn");
+    let outcome = block_on(
+        turn.take_terminal_outcome()
+            .expect("terminal outcome is available"),
+    );
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    assert_eq!(host.resource_writes(), 1);
+    assert_eq!(host.reads(), 0);
+    let observed = host.observed_process();
+    assert_eq!(
+        observed.arguments,
+        ["--acp", "--approval-mode", "auto_edit"]
+    );
+    assert!(host.writes().iter().any(|message| {
+        message["method"] == "initialize"
+            && message["params"]["clientCapabilities"]["fs"]["writeTextFile"] == true
+    }));
+    assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
+    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(host.releases(), 1);
+}
+
+#[test]
+fn read_profile_rejects_an_unnegotiated_write_before_host_mutation() {
+    let (host, mut session, services) = open(Scenario::UnexpectedWrite, "unexpected-write");
+    let mut turn = start(&mut *session, services, "unexpected-write-turn");
+    let outcome = block_on(
+        turn.take_terminal_outcome()
+            .expect("terminal outcome is available"),
+    );
+    assert!(matches!(outcome.status(), TerminalStatus::RuntimeFailed(_)));
+    assert_eq!(host.resource_writes(), 0);
+    assert!(host.writes().iter().any(|message| {
+        message.get("id").and_then(serde_json::Value::as_u64) == Some(702)
+            && message["error"]["code"] == -32601
+    }));
+    assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
+    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
 }
 
 #[test]

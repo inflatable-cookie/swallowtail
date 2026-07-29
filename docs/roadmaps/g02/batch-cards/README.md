@@ -88,6 +88,31 @@
 - `087-generation-control-closeout-and-continuation.md`
 - `088-input-and-callback-no-inventory-and-currentness.md`
 - `089-input-and-callback-contract-and-corpora.md`
+- `090-input-and-callback-implementation-tranche.md`
+- `091-input-and-callback-closeout-and-continuation.md`
+- `092-session-continuity-no-inventory-and-currentness.md`
+- `093-session-continuity-contract-and-corpora.md`
+- `094-session-continuity-implementation-tranche.md`
+- `095-session-continuity-closeout-and-continuation.md`
+- `096-pi-rpc-session-continuity-currentness-and-corpus.md`
+- `099-provider-retention-no-inventory-and-currentness.md`
+- `100-provider-retention-contract-and-corpora.md`
+- `101-provider-retention-implementation-tranche.md`
+- `102-provider-retention-closeout-and-continuation.md`
+- `103-retained-execution-no-inventory-and-currentness.md`
+- `104-retained-execution-contract-and-corpora.md`
+- `105-retained-execution-implementation-tranche.md`
+- `106-retained-execution-closeout-and-continuation.md`
+- `107-working-resource-and-write-no-inventory.md`
+- `108-working-resource-and-write-contract-and-corpora.md`
+- `109-working-resource-and-write-implementation-tranche.md`
+- `110-working-resource-and-write-closeout.md`
+- `111-runtime-ownership-and-rollover-no-inventory.md`
+- `114-runtime-ownership-and-rollover-closeout.md`
+- `115-residual-feature-matrix-no-inventory.md`
+- `116-residual-feature-contract-and-corpora.md`
+- `117-residual-feature-implementation-tranche.md`
+- `118-residual-feature-matrix-programme-closeout.md`
 
 ## Superseded
 
@@ -95,6 +120,10 @@
   replacement moved to card 036
 - `043-soundcheck-secondary-application-proof.md` — stopped after readiness
   defects; remaining synthetic workload declined by operator
+- `112-runtime-ownership-and-rollover-contract-and-corpora.md` — negative
+  audit selected no contract or corpus candidate
+- `113-runtime-ownership-and-rollover-implementation-tranche.md` — negative
+  audit selected no implementation candidate
 
 ## Backlog
 
@@ -102,11 +131,7 @@ None. Cross-generation deferred work lives in `docs/roadmaps/backlog/`.
 
 ## Ready
 
-- `090-input-and-callback-implementation-tranche.md`
-
-## Planned
-
-- `091-input-and-callback-closeout-and-continuation.md`
+None.
 
 ## Operator-Held
 
@@ -116,3 +141,6 @@ None.
 
 - `059-packaged-provider-session-lifecycle-proof.md` — transient candidate
   passes; retained replacement waits for canonical source history
+- `097-pi-rpc-session-continuity-implementation.md` — waits for a maintained
+  public Pi cwd-bound attachment surface
+- `098-pi-rpc-session-continuity-closeout.md` — depends on paused card 097

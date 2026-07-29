@@ -3,7 +3,7 @@ mod frame;
 
 use super::super::access::SecretMaterial;
 use super::super::callbacks::CallbackHub;
-use super::super::websocket::Subscription;
+use super::super::websocket::{Subscription, SubscriptionInput};
 use super::{CursorState, TurnCancellation};
 use crate::local_server::protocol::TurnEndReason;
 use crate::local_server::transport::CurlTransport;
@@ -19,7 +19,8 @@ use swallowtail_runtime::{
 };
 
 pub(super) struct PumpInput {
-    pub(super) subscription: Subscription,
+    pub(super) subscription: Option<Subscription>,
+    pub(super) scope: swallowtail_runtime::ScopeId,
     pub(super) session_id: String,
     pub(super) runtime_turn_id: RuntimeTurnId,
     pub(super) deadline: Option<Deadline>,
@@ -33,6 +34,7 @@ pub(super) struct PumpInput {
     pub(super) events: swallowtail_runtime::RuntimeEventSender,
     pub(super) terminal: TerminalOutcomeSender,
     pub(super) terminal_flag: Arc<AtomicBool>,
+    pub(super) remaining_reattachments: u32,
 }
 
 enum Signal {
@@ -50,9 +52,15 @@ pub(super) async fn run(mut input: PumpInput) {
     let mut output = String::new();
     let mut reasoning_len = 0usize;
     let mut provider_turn = None;
+    let mut recovery = None;
     let mut provider_cancellation = None;
     let (status, operation_cleanup) = loop {
-        match next_signal(&mut input.subscription, &mut deadline).await {
+        match next_signal(
+            input.subscription.as_mut().expect("active subscription"),
+            &mut deadline,
+        )
+        .await
+        {
             Signal::Deadline => {
                 let cleanup = cleanup_from_result(input.cancellation.request().await.map(|_| ()));
                 break (TerminalStatus::TimedOut, cleanup);
@@ -60,6 +68,9 @@ pub(super) async fn run(mut input: PumpInput) {
             Signal::Closed => {
                 if input.cancellation.requested.load(Ordering::SeqCst) {
                     break (TerminalStatus::Cancelled, CleanupOutcome::Clean);
+                }
+                if reattach(&mut input).await.is_ok() {
+                    continue;
                 }
                 break (
                     TerminalStatus::RuntimeFailed(disconnected().diagnostic().clone()),
@@ -69,6 +80,9 @@ pub(super) async fn run(mut input: PumpInput) {
             Signal::Failure(error) => {
                 if input.cancellation.requested.load(Ordering::SeqCst) {
                     break (TerminalStatus::Cancelled, CleanupOutcome::Clean);
+                }
+                if reattach(&mut input).await.is_ok() {
+                    continue;
                 }
                 break (
                     TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
@@ -83,6 +97,7 @@ pub(super) async fn run(mut input: PumpInput) {
                     &mut output,
                     &mut reasoning_len,
                     &mut provider_turn,
+                    &mut recovery,
                 )
                 .await;
                 match result {
@@ -125,7 +140,10 @@ pub(super) async fn run(mut input: PumpInput) {
             _ => CallbackAbandonment::TurnTerminated,
         });
     }
-    let stream_cleanup = cleanup_from_result(input.subscription.close().await);
+    let stream_cleanup = match input.subscription.take() {
+        Some(subscription) => cleanup_from_result(subscription.close().await),
+        None => CleanupOutcome::NotApplicable,
+    };
     let cleanup = super::super::access::merge(operation_cleanup, stream_cleanup);
     input.events.mark_terminal();
     let mut outcome = TerminalOutcome::new(status, cleanup);
@@ -137,6 +155,41 @@ pub(super) async fn run(mut input: PumpInput) {
     }
     let _ = input.terminal.complete(outcome);
     input.terminal_flag.store(true, Ordering::SeqCst);
+}
+
+async fn reattach(input: &mut PumpInput) -> Result<(), RuntimeFailure> {
+    if input.remaining_reattachments == 0 {
+        return Err(disconnected());
+    }
+    input.remaining_reattachments -= 1;
+    if let Some(subscription) = input.subscription.take() {
+        subscription.close().await?;
+    }
+    let secret = input.secret.upgrade().ok_or_else(disconnected)?;
+    let (cursor_seq, cursor_epoch) = {
+        let cursor = input.cursor.lock().expect("cursor lock poisoned");
+        (cursor.seq, cursor.epoch.clone())
+    };
+    let subscription = Subscription::open(
+        SubscriptionInput {
+            scope: input.scope.clone(),
+            endpoint: input.endpoint.clone(),
+            secret: secret.copy(),
+            session_id: input.session_id.clone(),
+            cursor_seq,
+            cursor_epoch,
+            deadline: input.deadline,
+        },
+        &input.services,
+    )
+    .await?;
+    *input
+        .cancellation
+        .control
+        .lock()
+        .expect("subscription control lock poisoned") = subscription.control();
+    input.subscription = Some(subscription);
+    Ok(())
 }
 
 async fn next_signal(

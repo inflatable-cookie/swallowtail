@@ -46,6 +46,8 @@ Contracts hold durable, testable rules.
 - [039 Bounded Single-Turn Structured-Run Projection](039-bounded-single-turn-structured-run-projection.md)
 - [040 Generation-Control Application And Enforcement](040-generation-control-application-and-enforcement.md)
 - [041 Input, Callback, And Provider-Tool Admission](041-input-callback-and-provider-tool-admission.md)
+- [042 Harness-Managed Recovery And Active-Turn Reattachment](042-harness-managed-recovery-and-active-turn-reattachment.md)
+- [043 Turn-Scoped Interactive Continuity](043-turn-scoped-interactive-continuity.md)
 
 Contract 003 defines the provider-neutral record kernel. Contracts 004-016
 govern the realized runtime and current proof drivers. Contract 017 governs
@@ -149,3 +151,12 @@ Contract 041 keeps finite attachments, native consumer tools, provider-owned
 tools, approval or question extensions, and external search separate. It binds
 exact input representation, callback strength, direct continuation, search
 authority, model/version evidence, and joined cleanup.
+Contract 042 keeps harness-managed retry, Swallowtail attempts, consumer
+retry, active turns, stream attachments, transport connections, and session
+resume separate. It requires explicit recovery and bounded reattachment
+agreements, exact cursor continuity, no prompt replay, safe uncertainty, and
+joined cleanup.
+Contract 043 keeps one-child-per-turn harness continuation separate from
+consumer-owned transactional transcript replay. Private continuation cannot
+mint public load or resume; failed-turn commit, cancellation, bounds, provider
+state, attached-service preservation, and joined cleanup remain exact.

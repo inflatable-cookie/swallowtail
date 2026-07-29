@@ -3,6 +3,7 @@ use crate::selection::{CodexAppServerBehavior, classify_app_server_plan, codex_a
 use crate::session_access::{CodexSessionAccess, codex_provider_request_extensions};
 use crate::session_input::CodexSessionInput;
 use crate::session_open::PendingSessionOpen;
+use crate::session_replay::{MAXIMUM_REPLAY_BYTES, MAXIMUM_REPLAY_ITEMS};
 use serde_json::Value;
 use std::future::poll_fn;
 use std::sync::Arc;
@@ -15,9 +16,9 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     BoxFuture, CleanupOutcome, EnvironmentRef, ExecutableRef, HostServices,
-    InteractiveSessionDriver, InteractiveSessionHandle, JoinedTask, ModelCatalogDriver,
-    ModelCatalogRequest, OpenSessionRequest, ProcessHandle, ProcessRequest, RequestId,
-    ResumeSessionRequest, RuntimeFailure, ScopeId, WorkingResourceRef,
+    InteractiveSessionDriver, InteractiveSessionHandle, JoinedTask, LoadSessionRequest,
+    LoadedSession, ModelCatalogDriver, ModelCatalogRequest, OpenSessionRequest, ProcessHandle,
+    ProcessRequest, RequestId, ResumeSessionRequest, RuntimeFailure, ScopeId, WorkingResourceRef,
     validate_session_plan_agreement,
 };
 
@@ -218,19 +219,25 @@ impl InteractiveSessionDriver for CodexAppServerDriver {
         })
     }
 
-    fn resume_session(
+    fn load_session(
         &self,
         plan: PreflightPlan,
-        request: ResumeSessionRequest,
+        request: LoadSessionRequest,
         services: HostServices,
-    ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
+    ) -> BoxFuture<'_, Result<LoadedSession, RuntimeFailure>> {
         Box::pin(async move {
             validate_session_deadline(request.deadline().is_some())?;
             validate_session_plan_agreement(&plan, request.plan_agreement())?;
+            require_continuity_capabilities(&plan, Capability::LoadSession)?;
             let behavior = self.validate_plan(&plan)?;
             validate_workspace_behavior(&behavior, request.access_policy())?;
             let session_input = CodexSessionInput::for_resume(&plan, request.options())?;
-            validate_resume_binding(&plan, &request)?;
+            validate_attachment_binding(
+                &plan,
+                request.resume_binding(),
+                request.working_resource(),
+                request.access_policy(),
+            )?;
             let deadline_planned = plan
                 .requirements()
                 .host_services()
@@ -241,7 +248,7 @@ impl InteractiveSessionDriver for CodexAppServerDriver {
                     "Codex app-server session requires a preflight-bound model",
                 )
             })?;
-            let scope = scope("resume", request.request_id());
+            let scope = scope("load", request.request_id());
             let access = CodexSessionAccess::prepare(
                 &plan,
                 request.access_policy(),
@@ -272,6 +279,90 @@ impl InteractiveSessionDriver for CodexAppServerDriver {
                 "threadId": request.provider_session_ref().as_provider_value(),
                 "model": model.as_str()
             });
+            access.apply_thread(&mut params);
+            session_input.apply_resume(&mut params);
+            let response = connection.request("thread/resume", params).await;
+            PendingSessionOpen::new(
+                request.request_id().clone(),
+                connection,
+                task,
+                session_input,
+                deadline_planned,
+                access,
+            )
+            .finish_loaded(
+                &plan,
+                response,
+                request.provider_session_ref().as_provider_value(),
+            )
+            .await
+        })
+    }
+
+    fn resume_session(
+        &self,
+        plan: PreflightPlan,
+        request: ResumeSessionRequest,
+        services: HostServices,
+    ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
+        Box::pin(async move {
+            validate_session_deadline(request.deadline().is_some())?;
+            validate_session_plan_agreement(&plan, request.plan_agreement())?;
+            let behavior = self.validate_plan(&plan)?;
+            validate_workspace_behavior(&behavior, request.access_policy())?;
+            let session_input = CodexSessionInput::for_resume(&plan, request.options())?;
+            require_continuity_capabilities(&plan, Capability::Resume)?;
+            validate_attachment_binding(
+                &plan,
+                request.resume_binding(),
+                request.working_resource(),
+                request.access_policy(),
+            )?;
+            let deadline_planned = plan
+                .requirements()
+                .host_services()
+                .any(|service| service == HostServiceKind::Time);
+            let model = plan.model_id().ok_or_else(|| {
+                failure(
+                    "swallowtail.codex.app_server.model_missing",
+                    "Codex app-server session requires a preflight-bound model",
+                )
+            })?;
+            let scope = scope("resume", request.request_id());
+            let access = CodexSessionAccess::prepare(
+                &plan,
+                request.access_policy(),
+                request.working_resource(),
+                scope.clone(),
+                &services,
+            )
+            .await?;
+            let exclude_turns = supports_exclude_turns(&plan)?;
+            let experimental_api = access.requires_experimental_api() || exclude_turns;
+            let connection = self
+                .start_connection(
+                    &plan,
+                    behavior,
+                    scope,
+                    Some(access.working_resource().clone()),
+                    experimental_api,
+                    &services,
+                )
+                .await;
+            let (connection, task) = match connection {
+                Ok(connection) => connection,
+                Err(error) => {
+                    let _ = access.release().await;
+                    return Err(error);
+                }
+            };
+            let mut params = serde_json::json!({
+                "threadId": request.provider_session_ref().as_provider_value(),
+                "model": model.as_str()
+            });
+            if exclude_turns {
+                params["excludeTurns"] = Value::Bool(true);
+            }
             access.apply_thread(&mut params);
             session_input.apply_resume(&mut params);
             let response = connection.request("thread/resume", params).await;
@@ -466,15 +557,13 @@ impl CodexAppServerDriver {
     }
 }
 
-fn validate_resume_binding(
+fn validate_attachment_binding(
     plan: &PreflightPlan,
-    request: &ResumeSessionRequest,
+    binding: &swallowtail_runtime::SessionResumeBinding,
+    working_resource: &WorkingResourceRef,
+    access_policy: &swallowtail_core::SessionAccessPolicy,
 ) -> Result<(), RuntimeFailure> {
-    if request.resume_binding().matches_attachment(
-        plan,
-        request.working_resource(),
-        request.access_policy(),
-    ) {
+    if binding.matches_attachment(plan, working_resource, access_policy) {
         Ok(())
     } else {
         Err(failure(
@@ -482,6 +571,51 @@ fn validate_resume_binding(
             "Codex app-server resume binding does not match the preflight plan",
         ))
     }
+}
+
+fn require_continuity_capabilities(
+    plan: &PreflightPlan,
+    capability: Capability,
+) -> Result<(), RuntimeFailure> {
+    let requirement = plan
+        .requirements()
+        .capabilities()
+        .find(|requirement| requirement.capability() == capability)
+        .ok_or_else(|| {
+            failure(
+                "swallowtail.codex.app_server.continuity_capability_mismatch",
+                "Codex app-server continuity capability does not match its preflight plan",
+            )
+        })?;
+    if capability == Capability::LoadSession
+        && (!requirement.constraints().any(|constraint| {
+            constraint == &CapabilityConstraint::ReplayMaximumItems(MAXIMUM_REPLAY_ITEMS as u32)
+        }) || !requirement.constraints().any(|constraint| {
+            constraint == &CapabilityConstraint::ReplayMaximumBytes(MAXIMUM_REPLAY_BYTES as u64)
+        }))
+    {
+        return Err(failure(
+            "swallowtail.codex.app_server.continuity_capability_mismatch",
+            "Codex app-server continuity bounds do not match its preflight plan",
+        ));
+    }
+    Ok(())
+}
+
+fn supports_exclude_turns(plan: &PreflightPlan) -> Result<bool, RuntimeFailure> {
+    let binding = plan.interface_versions().next().ok_or_else(|| {
+        failure(
+            "swallowtail.codex.app_server.version_missing",
+            "Codex app-server continuity requires an exact executable version",
+        )
+    })?;
+    let version = semver::Version::parse(binding.version().as_str()).map_err(|_| {
+        failure(
+            "swallowtail.codex.app_server.version_malformed",
+            "Codex app-server continuity version is malformed",
+        )
+    })?;
+    Ok(version >= semver::Version::new(0, 129, 0))
 }
 
 fn model_metadata(model: &Value) -> Result<ModelMetadata, RuntimeFailure> {

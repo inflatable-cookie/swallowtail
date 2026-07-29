@@ -18,7 +18,7 @@ pub use prepared::{
 pub use prepared_profile::{
     OllamaInferenceAttemptInput, OllamaInventoryProfileInput, OllamaInventorySnapshot,
     OllamaModelSelection, OllamaPreparedEvidence, OllamaPreparedInferenceAttempt,
-    OllamaPreparedInventory,
+    OllamaPreparedInventory, OllamaPreparedSession, OllamaSessionProfileInput,
 };
 pub use protocol::OllamaModelCapability;
 pub use selection::{

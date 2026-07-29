@@ -4,7 +4,7 @@ mod sse;
 
 pub(crate) use request::{Method, Request};
 pub(crate) use response::{
-    BackgroundStatus, Response, ResponseSnapshot, parse_snapshot, require_success,
+    BackgroundStatus, Response, ResponseSnapshot, parse_deletion, parse_snapshot, require_success,
 };
 #[cfg(test)]
 pub(crate) use response::{ProviderFailureKind, parse_failure};

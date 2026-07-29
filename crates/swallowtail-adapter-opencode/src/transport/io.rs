@@ -72,10 +72,44 @@ fn perform_request(
         }
     }
     let mut body = Vec::new();
+    let mut next_cursor = None;
+    let malformed_cursor = Arc::new(AtomicBool::new(false));
     let overflow = Arc::new(AtomicBool::new(false));
     {
         let callback_overflow = Arc::clone(&overflow);
+        let callback_malformed_cursor = Arc::clone(&malformed_cursor);
         let mut transfer = easy.transfer();
+        transfer
+            .header_function(|header| {
+                let Some(separator) = header.iter().position(|byte| *byte == b':') else {
+                    return true;
+                };
+                let (name, value) = header.split_at(separator);
+                let value = &value[1..];
+                if !name.eq_ignore_ascii_case(b"x-next-cursor") {
+                    return true;
+                }
+                let value = value
+                    .iter()
+                    .copied()
+                    .skip_while(u8::is_ascii_whitespace)
+                    .take_while(|byte| !matches!(*byte, b'\r' | b'\n'))
+                    .collect::<Vec<_>>();
+                if value.is_empty()
+                    || value.len() > 4096
+                    || !value.iter().all(|byte| byte.is_ascii_graphic())
+                    || next_cursor.is_some()
+                {
+                    callback_malformed_cursor.store(true, Ordering::SeqCst);
+                } else {
+                    next_cursor = String::from_utf8(value).ok();
+                    if next_cursor.is_none() {
+                        callback_malformed_cursor.store(true, Ordering::SeqCst);
+                    }
+                }
+                true
+            })
+            .map_err(curl_failure)?;
         transfer
             .write_function(|chunk| {
                 if body.len().saturating_add(chunk.len()) > RESPONSE_LIMIT {
@@ -93,6 +127,12 @@ fn perform_request(
                 "OpenCode HTTP response exceeded the bounded input limit",
             ));
         }
+        if malformed_cursor.load(Ordering::SeqCst) {
+            return Err(failure(
+                "swallowtail.opencode.pagination_cursor_invalid",
+                "OpenCode returned an invalid pagination cursor",
+            ));
+        }
         if cancelled.load(Ordering::SeqCst) {
             return Err(failure(
                 "swallowtail.opencode.request_cancelled",
@@ -102,7 +142,11 @@ fn perform_request(
         result.map_err(curl_failure)?;
     }
     let status = easy.response_code().map_err(curl_failure)?;
-    Ok(Response { status, body })
+    Ok(Response {
+        status,
+        body,
+        next_cursor,
+    })
 }
 
 fn perform_sse(

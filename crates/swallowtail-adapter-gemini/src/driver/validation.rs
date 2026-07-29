@@ -30,12 +30,11 @@ fn validate_open(
         }
     }
     swallowtail_runtime::validate_session_plan_agreement(plan, request.plan_agreement())?;
-    if request.access_policy()
-        != &SessionAccessPolicy::ambient_harness(swallowtail_core::ResourceAccess::Read)
-    {
+    let resource_access = session_resource_access(plan)?;
+    if request.access_policy() != &SessionAccessPolicy::ambient_harness(resource_access) {
         return Err(failure(
             "swallowtail.gemini.acp.access_policy_rejected",
-            "Gemini ACP first proof requires explicit ambient read access",
+            "Gemini ACP requires exact ambient working-resource access",
         ));
     }
     if request.working_resource().is_none() {
@@ -85,7 +84,10 @@ struct OpenedSession {
     model_options: Option<NegotiatedSessionModelOptions>,
 }
 
-fn parse_new_session(response: &Value) -> Result<OpenedSession, RuntimeFailure> {
+fn parse_new_session(
+    response: &Value,
+    resource_access: swallowtail_core::ResourceAccess,
+) -> Result<OpenedSession, RuntimeFailure> {
     let session_id = response
         .get("sessionId")
         .and_then(Value::as_str)
@@ -95,10 +97,11 @@ fn parse_new_session(response: &Value) -> Result<OpenedSession, RuntimeFailure> 
         .and_then(|modes| modes.get("currentModeId"))
         .and_then(Value::as_str)
         .ok_or_else(malformed)?;
-    if mode != "plan" {
+    let expected_mode = provider_mode_id(resource_access);
+    if mode != expected_mode {
         return Err(failure(
             "swallowtail.gemini.acp.mode_rejected",
-            "Gemini CLI did not open in read-only plan mode",
+            "Gemini CLI did not open in the preflight-bound access mode",
         ));
     }
     Ok(OpenedSession {

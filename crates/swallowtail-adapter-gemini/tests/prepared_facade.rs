@@ -159,6 +159,62 @@ fn unsupported_options_fail_before_session_process_effects() {
     assert!(operation_host.writes().is_empty());
 }
 
+#[test]
+fn bounded_write_profile_derives_exact_capability_policy_and_invocation() {
+    let host_id = ExecutionHostId::new("fixture.prepared.write").expect("valid host");
+    let operation_host = FixtureHost::new(Scenario::Success);
+    let operation_services = operation_host.services(host_id.clone());
+    let discovery_host = DiscoveryHost::new("0.51.0");
+    let preparation_services = discovery_host
+        .services(host_id.clone())
+        .with_working_resource(
+            operation_services
+                .working_resource()
+                .expect("resource service")
+                .clone(),
+        )
+        .with_working_resource_io(
+            operation_services
+                .working_resource_io()
+                .expect("resource I/O service")
+                .clone(),
+        );
+    let prepared = block_on(prepare_gemini_acp(
+        preparation_input(host_id),
+        probe(),
+        preparation_services,
+    ))
+    .expect("Gemini ACP prepares");
+    let profile = prepared
+        .prepare_session(GeminiSessionProfileInput::bounded_write(
+            RequestId::new("gemini-prepared-write").expect("valid request"),
+            WorkingResourceRef::new("gemini.prepared.workspace").expect("valid resource"),
+            SessionOptions::default(),
+        ))
+        .expect("bounded write profile prepares");
+
+    assert_eq!(
+        profile.request().access_policy(),
+        &SessionAccessPolicy::ambient_harness(ResourceAccess::ReadWrite)
+    );
+    assert_eq!(
+        profile
+            .plan()
+            .requirements()
+            .session_access_policy()
+            .and_then(SessionAccessPolicy::resource_access),
+        Some(ResourceAccess::ReadWrite)
+    );
+    assert_prepared_operation_evidence_matches_plan(profile.evidence().operation(), profile.plan());
+
+    let session = block_on(profile.open_session(operation_services)).expect("write profile opens");
+    assert_eq!(
+        operation_host.observed_process().arguments,
+        ["--acp", "--approval-mode", "auto_edit"]
+    );
+    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+}
+
 fn preparation_input(host: ExecutionHostId) -> GeminiPreparationInput {
     GeminiPreparationInput::new(
         ConfiguredInstanceId::new("gemini.prepared").expect("valid instance"),

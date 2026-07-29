@@ -90,6 +90,36 @@ fn session_resume_agreement_is_derived_and_unsupported_deadlines_fail_in_prepara
         profile.request().harness_configuration_posture()
     );
     let (process, state) = ScriptedAppServer::new(AppServerMode::CompleteTurn);
+    let loaded = block_on(
+        profile
+            .load_session(
+                RequestId::new("bound-load").unwrap(),
+                binding.clone(),
+                support::host_services(process),
+            )
+            .expect("bound load prepares"),
+    )
+    .expect("bound load opens");
+    assert_eq!(
+        loaded
+            .replay()
+            .filter_map(|item| item.content().map(|content| content.as_str()))
+            .collect::<Vec<_>>(),
+        ["Earlier question.", "Earlier answer."]
+    );
+    let (_, loaded_handle) = loaded.into_parts();
+    assert_eq!(
+        loaded_handle
+            .management_binding()
+            .expect("prepared load returns management authority")
+            .origin(),
+        swallowtail_core::ProviderSessionBindingOrigin::Loaded
+    );
+    assert_eq!(block_on(loaded_handle.close()), CleanupOutcome::Clean);
+    assert!(state.methods().contains(&"thread/resume".to_owned()));
+    assert!(state.waited());
+
+    let (process, state) = ScriptedAppServer::new(AppServerMode::CompleteTurn);
     let handle = block_on(
         profile
             .resume_session(

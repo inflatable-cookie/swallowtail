@@ -20,6 +20,7 @@ use swallowtail_runtime::{
     ProcessInputChunk, ProcessOutputChunk, ProcessOutputStream, ProcessRequest, ProcessService,
     ResourceLease, RuntimeFailure, ScopeId, ScopedTaskService, WorkingResourceIoService,
     WorkingResourceReadRequest, WorkingResourceRef, WorkingResourceService, WorkingResourceText,
+    WorkingResourceWriteRequest,
 };
 
 include!("agent.rs");
@@ -28,6 +29,7 @@ pub struct FixtureHost {
     agent: Arc<SharedAgent>,
     process: Arc<Mutex<Option<ObservedProcess>>>,
     reads: Arc<AtomicUsize>,
+    resource_writes: Arc<AtomicUsize>,
     releases: Arc<AtomicUsize>,
 }
 
@@ -46,6 +48,7 @@ impl FixtureHost {
             }),
             process: Arc::new(Mutex::new(None)),
             reads: Arc::new(AtomicUsize::new(0)),
+            resource_writes: Arc::new(AtomicUsize::new(0)),
             releases: Arc::new(AtomicUsize::new(0)),
         }
     }
@@ -72,6 +75,10 @@ impl FixtureHost {
 
     pub fn releases(&self) -> usize {
         self.releases.load(Ordering::SeqCst)
+    }
+
+    pub fn resource_writes(&self) -> usize {
+        self.resource_writes.load(Ordering::SeqCst)
     }
 
     pub fn writes(&self) -> Vec<Value> {
@@ -145,6 +152,21 @@ impl WorkingResourceIoService for FixtureHost {
         let content = WorkingResourceText::new("fixture file".to_owned(), request.maximum_bytes())
             .map_err(|_| fixture_failure());
         Box::pin(async move { content })
+    }
+
+    fn write_text(
+        &self,
+        lease: &ResourceLease,
+        request: WorkingResourceWriteRequest,
+    ) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+        if lease.access() != ResourceAccess::ReadWrite
+            || request.locator().as_host_value() != "/private/fixture/src/lib.rs"
+            || request.content().as_driver_value() != "fixture replacement"
+        {
+            return Box::pin(async { Err(fixture_failure()) });
+        }
+        self.resource_writes.fetch_add(1, Ordering::SeqCst);
+        Box::pin(async { Ok(()) })
     }
 }
 

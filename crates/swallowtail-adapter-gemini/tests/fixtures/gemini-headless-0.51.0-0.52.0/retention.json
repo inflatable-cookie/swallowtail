@@ -1,0 +1,84 @@
+{
+  "fixture_schema": 1,
+  "claim_id": "gemini-cli.stored-transcript-delete-window-1",
+  "axis": "gemini-cli.headless-stream-json",
+  "baseline": "0.51.0",
+  "latest_qualified": "0.52.0",
+  "driver_role": "provider_session_management",
+  "action": "delete",
+  "deletion_strength": "history_removed",
+  "affected_scope": "provider_defined_descendants",
+  "command": ["--delete-session", "<BOUND_SESSION_ID>"],
+  "reconciliation_command": ["--list-sessions"],
+  "source_releases": [
+    {
+      "version": "0.51.0",
+      "commit": "8d951de3855750d5f8219d65ae22524b606133b6"
+    },
+    {
+      "version": "0.52.0",
+      "commit": "d14583b926769bd98f807cdc6b1ca50e91ae26ec"
+    }
+  ],
+  "source_sha256": {
+    "packages/cli/src/utils/sessions.ts": "fa8a3ab8ce762cd4b714362d843bdd73e73f0894f0480778fcdf2254a507af50",
+    "packages/core/src/utils/sessionOperations.ts": "21ac4a3153dd94770a7d0cd87480cfece9c6c1777e520b3eef12b702be03f24b",
+    "packages/cli/src/gemini.tsx": "1ac297b1af4cca39f358fc5c90c18059e275c4c393cfba152f73215e03ead828",
+    "packages/cli/src/config/config.ts": "5100bcd48f798d04b9463bd72680af7202f331de566321b1c29f5f8710c2c44c"
+  },
+  "cases": [
+    {
+      "id": "delete_then_absent",
+      "delete_exit": 0,
+      "delete_stdout": "Deleted session 1: <REDACTED_PROVIDER_TEXT>",
+      "delete_stderr": "",
+      "reconcile_exit": 0,
+      "reconcile_contains_bound_id": false,
+      "effect": "applied"
+    },
+    {
+      "id": "already_absent",
+      "delete_exit": 0,
+      "delete_stdout": "",
+      "delete_stderr": "Invalid session identifier <REDACTED>",
+      "reconcile_exit": 0,
+      "reconcile_contains_bound_id": false,
+      "effect": "already_absent"
+    },
+    {
+      "id": "provider_rejected_active",
+      "delete_exit": 0,
+      "delete_stdout": "",
+      "delete_stderr": "Cannot delete the current active session.",
+      "reconcile_exit": 0,
+      "reconcile_contains_bound_id": true,
+      "effect": "failed_before_effect"
+    },
+    {
+      "id": "success_text_but_still_present",
+      "delete_exit": 0,
+      "delete_stdout": "Deleted session 1: <REDACTED_PROVIDER_TEXT>",
+      "delete_stderr": "",
+      "reconcile_exit": 0,
+      "reconcile_contains_bound_id": true,
+      "effect": "unconfirmed_after_effect"
+    },
+    {
+      "id": "reconciliation_failed",
+      "delete_exit": 0,
+      "delete_stdout": "Deleted session 1: <REDACTED_PROVIDER_TEXT>",
+      "delete_stderr": "",
+      "reconcile_exit": 1,
+      "reconcile_contains_bound_id": null,
+      "effect": "unconfirmed_after_effect"
+    }
+  ],
+  "diagnostic_exclusions": [
+    "session_id",
+    "working_resource_path",
+    "first_user_message",
+    "provider_stdout",
+    "provider_stderr",
+    "environment"
+  ]
+}

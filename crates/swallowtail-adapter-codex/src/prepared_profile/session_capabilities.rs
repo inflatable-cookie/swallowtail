@@ -21,10 +21,21 @@ pub(super) fn session_capabilities(
     ),
     PreparationFailure,
 > {
-    let mut capabilities = vec![CapabilityRequirement::new(
-        Capability::InteractiveSession,
-        [],
-    )];
+    let mut capabilities = vec![
+        CapabilityRequirement::new(Capability::InteractiveSession, []),
+        CapabilityRequirement::new(
+            Capability::LoadSession,
+            [
+                CapabilityConstraint::ReplayMaximumItems(
+                    crate::session_replay::MAXIMUM_REPLAY_ITEMS as u32,
+                ),
+                CapabilityConstraint::ReplayMaximumBytes(
+                    crate::session_replay::MAXIMUM_REPLAY_BYTES as u64,
+                ),
+            ],
+        ),
+        CapabilityRequirement::new(Capability::Resume, []),
+    ];
     if let Some(mode) = options.reasoning_mode() {
         capabilities.push(CapabilityRequirement::new(
             Capability::ReasoningSelection,

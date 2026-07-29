@@ -144,7 +144,7 @@ async fn retrieve_snapshot(
 fn management_terminal(snapshot: ResponseSnapshot, local: Option<LocalStop>) -> FinalState {
     match snapshot.status {
         BackgroundStatus::Cancelled => {
-            let mut state = FinalState::new(match local {
+            let mut state = FinalState::provider_terminal(match local {
                 Some(LocalStop::TimedOut) => TerminalStatus::TimedOut,
                 _ => TerminalStatus::Cancelled,
             });
@@ -153,7 +153,7 @@ fn management_terminal(snapshot: ResponseSnapshot, local: Option<LocalStop>) -> 
             state
         }
         BackgroundStatus::Completed => {
-            let mut state = FinalState::new(match local {
+            let mut state = FinalState::provider_terminal(match local {
                 Some(LocalStop::TimedOut) => TerminalStatus::TimedOut,
                 _ => TerminalStatus::Completed,
             });
@@ -164,11 +164,11 @@ fn management_terminal(snapshot: ResponseSnapshot, local: Option<LocalStop>) -> 
             state.usage = snapshot.usage;
             state
         }
-        BackgroundStatus::Incomplete => FinalState::new(provider_status(failure(
+        BackgroundStatus::Incomplete => FinalState::provider_terminal(provider_status(failure(
             "swallowtail.openai.response_incomplete",
             "OpenAI background response was incomplete",
         ))),
-        BackgroundStatus::Failed => FinalState::new(provider_status(failure(
+        BackgroundStatus::Failed => FinalState::provider_terminal(provider_status(failure(
             "swallowtail.openai.response_failed",
             "OpenAI background response failed",
         ))),

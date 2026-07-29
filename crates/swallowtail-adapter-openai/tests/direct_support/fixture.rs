@@ -184,6 +184,12 @@ fn capability_requirements() -> Vec<CapabilityRequirement> {
         CapabilityRequirement::new(Capability::ProviderBackgroundExecution, []),
         CapabilityRequirement::new(Capability::ProviderTemporaryRetention, []),
         CapabilityRequirement::new(
+            Capability::OwnedRemoteResourceDeletion,
+            [CapabilityConstraint::OwnedRemoteResource(
+                swallowtail_core::OwnedRemoteResourceKind::Response,
+            )],
+        ),
+        CapabilityRequirement::new(
             Capability::StreamReattachment,
             [CapabilityConstraint::ReattachmentMaximumCount(1)],
         ),

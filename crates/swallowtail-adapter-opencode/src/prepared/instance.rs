@@ -30,6 +30,18 @@ pub(crate) fn all_capabilities() -> CapabilityProfile {
     CapabilityProfile::new([
         CapabilityRequirement::new(Capability::ModelCatalog, []),
         CapabilityRequirement::new(Capability::InteractiveSession, []),
+        CapabilityRequirement::new(
+            Capability::LoadSession,
+            [
+                CapabilityConstraint::ReplayMaximumItems(
+                    crate::driver::CONTINUITY_MAXIMUM_ITEMS as u32,
+                ),
+                CapabilityConstraint::ReplayMaximumBytes(
+                    crate::driver::CONTINUITY_MAXIMUM_BYTES as u64,
+                ),
+            ],
+        ),
+        CapabilityRequirement::new(Capability::Resume, []),
         CapabilityRequirement::new(Capability::StreamingEvents, []),
         CapabilityRequirement::new(Capability::UsageReporting, []),
         CapabilityRequirement::new(Capability::ProviderSessionDelete, []),

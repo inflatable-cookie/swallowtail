@@ -55,10 +55,10 @@ impl StructuredRunDriver for OllamaNativeAttachedDriver {
                 .map(|deadline| services.time().expect("validated time").wait_until(deadline));
             let pending = Arc::new(Mutex::new(Some(subscription)));
             let task_service = services.task().expect("validated task").clone();
+            let task_cancelled = Arc::clone(&cancelled);
             let task = task_service.spawn(
                 scope,
                 Box::pin({
-                    let cancellation = Arc::clone(&cancellation);
                     let pending = Arc::clone(&pending);
                     async move {
                         let subscription = pending
@@ -66,9 +66,13 @@ impl StructuredRunDriver for OllamaNativeAttachedDriver {
                             .expect("Ollama pending work lock poisoned")
                             .take()
                             .expect("Ollama pending work is available");
-                        let outcome =
-                            pump_run(subscription, event_sender.clone(), cancellation, deadline)
-                                .await;
+                        let outcome = pump_run(
+                            subscription,
+                            event_sender.clone(),
+                            task_cancelled,
+                            deadline,
+                        )
+                        .await;
                         let _ = terminal_sender.complete(outcome);
                         event_sender.mark_terminal();
                     }

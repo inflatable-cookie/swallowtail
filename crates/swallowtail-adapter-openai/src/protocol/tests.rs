@@ -1,6 +1,6 @@
 use super::{
     BackgroundStatus, BackgroundStream, Method, ProviderEvent, ProviderFailureKind, Request,
-    SseDecoder, parse_failure, parse_snapshot,
+    SseDecoder, parse_deletion, parse_failure, parse_snapshot,
 };
 use crate::{ENDPOINT_AUDIENCE, INTEGRATION_FAMILY, SUPPORT_AUTHORITY};
 use serde_json::Value;
@@ -50,6 +50,29 @@ fn create_and_management_requests_match_the_frozen_public_api_shape() {
     assert_eq!(cancel.path, "/v1/responses/resp_fixture_123/cancel");
     assert!(cancel.body.is_none());
     assert!(Request::cancel("../credential").is_err());
+
+    let delete = Request::delete("resp_fixture_123").expect("id is valid");
+    assert_eq!(delete.method, Method::Delete);
+    assert_eq!(delete.path, "/v1/responses/resp_fixture_123");
+    assert!(delete.query.is_empty());
+    assert!(delete.body.is_none());
+    assert!(Request::delete("../credential").is_err());
+}
+
+#[test]
+fn response_deletion_requires_a_typed_acknowledgement() {
+    let deletion =
+        parse_deletion(br#"{"id":"resp_fixture_123","object":"response","deleted":true}"#)
+            .expect("deletion acknowledgement parses");
+    assert_eq!(deletion.response_id, "resp_fixture_123");
+    assert!(deletion.deleted);
+    assert!(
+        parse_deletion(br#"{"id":"resp_fixture_123","object":"response","deleted":false}"#).is_ok()
+    );
+    assert!(
+        parse_deletion(br#"{"id":"resp_fixture_123","object":"conversation","deleted":true}"#)
+            .is_err()
+    );
 }
 
 #[test]

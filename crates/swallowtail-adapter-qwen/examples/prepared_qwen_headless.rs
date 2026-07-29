@@ -2,10 +2,11 @@
 
 use swallowtail_adapter_qwen::{
     QwenPreparationInput, QwenPreparationProbe, QwenPreparedIntegration, QwenPreparedRun,
-    QwenRunProfileInput, prepare_qwen_headless,
+    QwenPreparedSession, QwenRunProfileInput, QwenSessionProfileInput, prepare_qwen_headless,
 };
 use swallowtail_runtime::{
-    CleanupOutcome, HostServices, PreparationFailure, RuntimeFailure, TerminalOutcome,
+    CleanupOutcome, HostServices, InteractiveSessionHandle, PreparationFailure, RuntimeFailure,
+    TerminalOutcome,
 };
 
 async fn prepare_installation(
@@ -21,6 +22,20 @@ fn prepare_run(
     input: QwenRunProfileInput,
 ) -> Result<QwenPreparedRun, PreparationFailure> {
     integration.prepare_run(input)
+}
+
+fn prepare_session(
+    integration: &QwenPreparedIntegration,
+    input: QwenSessionProfileInput,
+) -> Result<QwenPreparedSession, PreparationFailure> {
+    integration.prepare_session(input)
+}
+
+async fn open_session(
+    prepared: &QwenPreparedSession,
+    services: HostServices,
+) -> Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure> {
+    prepared.open_session(services).await
 }
 
 async fn execute(

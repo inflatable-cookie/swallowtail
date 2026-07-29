@@ -27,6 +27,7 @@ pub(super) async fn apply_frame(
     output: &mut String,
     reasoning_len: &mut usize,
     provider_turn: &mut Option<u64>,
+    recovery: &mut Option<(u64, u64, u64)>,
 ) -> Result<Option<TurnEndReason>, RuntimeFailure> {
     match decode_ws_frame(frame)? {
         WsFrame::Event(envelope) => {
@@ -66,6 +67,30 @@ pub(super) async fn apply_frame(
                         )?;
                     }
                     return Ok(Some(reason));
+                }
+                WsEvent::Retrying {
+                    turn_id,
+                    step,
+                    failed_attempt,
+                    next_attempt,
+                    max_attempts,
+                } => {
+                    bind_turn(provider_turn, turn_id)?;
+                    if failed_attempt == 0
+                        || next_attempt != failed_attempt.saturating_add(1)
+                        || next_attempt > max_attempts
+                        || recovery.is_some_and(
+                            |(previous_step, previous_next, previous_maximum)| {
+                                step != previous_step
+                                    || failed_attempt != previous_next
+                                    || max_attempts != previous_maximum
+                            },
+                        )
+                    {
+                        return Err(protocol_failure());
+                    }
+                    *recovery = Some((step, next_attempt, max_attempts));
+                    emit(input, sequence, RuntimeEventKind::Progress, None)?;
                 }
                 WsEvent::AwaitingApproval => {
                     enqueue_pending(

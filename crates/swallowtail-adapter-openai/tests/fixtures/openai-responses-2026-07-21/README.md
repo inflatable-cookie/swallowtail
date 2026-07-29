@@ -21,3 +21,10 @@ files, conversations, webhooks, Batch API, retry, and fallback are excluded.
 `generation-controls-request.json` freezes exact reasoning effort and
 provider-native JSON Schema fields beside the existing positive output bound.
 It is contract evidence for card 085, not a realized adapter claim.
+
+`response-delete.json` freezes one terminal
+`DELETE /v1/responses/{response_id}` attempt. Confirmed cleanup requires the
+exact id and `deleted=true`. Missing identity, active or unconfirmed remote
+state, 404, transport loss, mismatched id, or malformed acknowledgement remains
+unconfirmed. Deletion joins before credential release and never substitutes
+for native cancellation.

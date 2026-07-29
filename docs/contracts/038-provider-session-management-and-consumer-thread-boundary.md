@@ -3,7 +3,7 @@
 Status: active
 Owner: Tom
 Created: 2026-07-26
-Updated: 2026-07-27
+Updated: 2026-07-28
 
 ## Purpose
 
@@ -70,10 +70,13 @@ Management requires an opaque durable binding containing:
 The management binding is independent from load or resume support. A session
 may be manageable without being resumable.
 
-A binding may be returned by new, load, or resume, or imported through a later
-explicit consumer-authorized flow. A raw provider id, list result, diagnostic,
-provider payload, or copied string is not a management binding and grants no
-authority.
+A binding may be returned by new, load, or resume, imported through a later
+explicit consumer-authorized flow, or returned after one successful structured
+run that created the exact durable provider session. A structured-run binding
+is unavailable before terminal completion, is take-once, and is never returned
+for failed, cancelled, timed-out, or temporary-cleanup runs. A raw provider id,
+list result, diagnostic, provider payload, or copied string is not a management
+binding and grants no authority.
 
 Bindings remain opaque and safely redacted. They contain no credential,
 account, prompt, transcript, endpoint secret, or raw provider payload.
@@ -275,6 +278,43 @@ copied binding is insufficient. Import grants only the capabilities of the new
 route. It does not grant load, resume, archive, restore, or delete authority to
 ACP.
 
+### Gemini CLI Stored Transcript
+
+Gemini CLI ACP and headless remain separate transports. ACP does not advertise
+ACP `session/delete`. The installed executable exposes a separate
+`--delete-session <identifier>` control across the qualified
+`0.51.0..=0.52.0` headless range.
+
+The first Gemini management binding may be issued only after successful
+terminal completion for a transcript whose session id was selected by that
+Swallowtail headless run. `RunHandle::take_management_binding` returns it at
+most once. It binds:
+
+- the exact Gemini executable observation and compatibility assessment
+- the headless driver and stored-transcript management role
+- execution host and approved executable target
+- exact working resource and project-scoped storage identity
+- the Swallowtail-selected opaque session id
+
+An ACP session id, list index, list output, copied string, filesystem path, or
+arbitrary CLI argument is not a management binding. Cross-transport ACP import
+is outside this claim. The opt-in temporary-cleanup profile never returns a
+management binding.
+
+The route qualifies only `HistoryRemoved`. The provider command prints a
+success line after its storage helper returns, but storage cleanup catches
+some local unlink failures. Swallowtail must therefore run one bounded
+read-only `--list-sessions` reconciliation after the delete process joins and
+confirm that the exact bound session id is absent. Process exit or the success
+line alone is insufficient. The command's stdout may contain the first user
+message and must never enter stable diagnostics.
+
+The exact route has no archive or restore claim. It requires an inactive
+target. A target still present after the command is not deleted. Cancellation,
+deadline, process loss, malformed output, or failed reconciliation after
+dispatch leaves history-removal truth unconfirmed. No retry or direct
+filesystem deletion is permitted.
+
 ## Destructive Authority
 
 Swallowtail does not decide whether deletion should occur. The consumer:
@@ -334,11 +374,11 @@ The first applicable route set is:
 - Claude Agent ACP
 - OpenCode HTTP/SSE
 
-Kimi Code local server becomes a separate applicable archive/restore route
-after its exact driver and conformance proof. Kimi Code ACP and Gemini CLI ACP
-remain explicit unsupported mappings until those selected ACP routes advertise
-and qualify an action. The local-server route cannot change the ACP
-classification.
+Kimi Code local server is a separate applicable archive/restore route. Gemini
+CLI stored-transcript management is a separate installed-executable route;
+it does not change the unsupported Gemini ACP mapping. Kimi Code ACP remains
+unsupported. The local-server and installed management routes cannot change
+their ACP classifications.
 
 Codex exec, Pi RPC, Qwen headless, direct one-attempt and locally continued
 inference, realtime sessions, catalogues, SDK inference, and attached or owned

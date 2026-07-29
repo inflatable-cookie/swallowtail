@@ -9,13 +9,19 @@ use swallowtail_runtime::{
 pub(crate) struct QwenProcessCancellation {
     process: Arc<dyn ProcessHandle>,
     requested: AtomicBool,
+    scope: CancellationScope,
 }
 
 impl QwenProcessCancellation {
     pub(crate) fn new(process: Arc<dyn ProcessHandle>) -> Self {
+        Self::with_scope(process, CancellationScope::StructuredRun)
+    }
+
+    pub(crate) fn with_scope(process: Arc<dyn ProcessHandle>, scope: CancellationScope) -> Self {
         Self {
             process,
             requested: AtomicBool::new(false),
+            scope,
         }
     }
 
@@ -26,7 +32,7 @@ impl QwenProcessCancellation {
 
 impl CancellationControl for QwenProcessCancellation {
     fn scope(&self) -> CancellationScope {
-        CancellationScope::StructuredRun
+        self.scope
     }
 
     fn request(&self) -> BoxFuture<'_, Result<CancellationAcknowledgement, RuntimeFailure>> {

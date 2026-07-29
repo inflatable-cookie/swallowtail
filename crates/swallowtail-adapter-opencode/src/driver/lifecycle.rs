@@ -59,6 +59,73 @@ fn validate_open(
     validate_deadline(request.deadline(), services)
 }
 
+pub(super) struct AttachmentValidation<'a> {
+    binding: &'a SessionResumeBinding,
+    working_resource: &'a swallowtail_runtime::WorkingResourceRef,
+    access_policy: &'a SessionAccessPolicy,
+    deadline: Option<Deadline>,
+    options: &'a swallowtail_runtime::SessionOptions,
+    agreement: &'a swallowtail_runtime::SessionPlanAgreement,
+}
+
+impl<'a> AttachmentValidation<'a> {
+    pub(super) fn new(
+        binding: &'a SessionResumeBinding,
+        working_resource: &'a swallowtail_runtime::WorkingResourceRef,
+        access_policy: &'a SessionAccessPolicy,
+        deadline: Option<Deadline>,
+        options: &'a swallowtail_runtime::SessionOptions,
+        agreement: &'a swallowtail_runtime::SessionPlanAgreement,
+    ) -> Self {
+        Self {
+            binding,
+            working_resource,
+            access_policy,
+            deadline,
+            options,
+            agreement,
+        }
+    }
+}
+
+fn validate_attachment_request(
+    plan: &PreflightPlan,
+    request: AttachmentValidation<'_>,
+    services: &HostServices,
+) -> Result<(bool, bool), RuntimeFailure> {
+    require_services(services, true)?;
+    swallowtail_runtime::validate_session_plan_agreement(plan, request.agreement)?;
+    if !request
+        .binding
+        .matches_attachment(plan, request.working_resource, request.access_policy)
+    {
+        return Err(failure(
+            "swallowtail.opencode.session_binding_mismatch",
+            "OpenCode session binding does not match the requested attachment",
+        ));
+    }
+    let callbacks = provider_callbacks(plan)?;
+    let expected_access = if callbacks {
+        SessionAccessPolicy::ambient_harness_with_consumer_mediated_requests(
+            ResourceAccess::ReadWrite,
+            [
+                callback::permission_namespace(),
+                callback::question_namespace(),
+            ],
+        )
+    } else {
+        SessionAccessPolicy::ambient_harness(ResourceAccess::Read)
+    };
+    if request.access_policy != &expected_access {
+        return Err(unsupported("non-ambient attachment access"));
+    }
+    if !request.options.is_empty() {
+        return Err(unsupported("non-default attachment options"));
+    }
+    validate_deadline(request.deadline, services)?;
+    Ok((callbacks, validate_attachment_plan(plan, services)?))
+}
+
 fn validate_turn(
     request: &TurnRequest,
     services: &HostServices,

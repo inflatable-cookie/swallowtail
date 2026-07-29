@@ -1,5 +1,10 @@
-use crate::protocol::{BackgroundStatus, ResponseSnapshot, parse_snapshot, require_success};
-use swallowtail_runtime::{ProviderCancellationOutcome, TerminalStatus, TokenUsage};
+use crate::protocol::{
+    BackgroundStatus, ResponseSnapshot, parse_deletion, parse_snapshot, require_success,
+};
+use swallowtail_core::OwnedRemoteResourceKind;
+use swallowtail_runtime::{
+    ProviderCancellationOutcome, RemoteResourceDeletionOutcome, TerminalStatus, TokenUsage,
+};
 
 #[allow(clippy::too_many_arguments)]
 async fn pump_run(
@@ -145,8 +150,23 @@ async fn pump_run(
             )),
         );
     }
+    let (response_deletion, deletion_cleanup) = delete_response(
+        &transport,
+        &scope,
+        &response_id,
+        final_state.provider_terminal_known,
+        &endpoint,
+        &credential,
+        &services,
+    )
+    .await;
+    cleanup = merge_cleanup(cleanup, deletion_cleanup);
     cleanup = merge_cleanup(cleanup, access.release(&services).await);
     let mut outcome = TerminalOutcome::new(final_state.status, cleanup);
+    outcome = outcome.with_remote_resource_deletion(
+        OwnedRemoteResourceKind::Response,
+        response_deletion,
+    );
     if let Some(cancellation) = final_state.cancellation {
         outcome = outcome.with_provider_cancellation(cancellation);
     }
@@ -167,6 +187,7 @@ enum AttachmentExit {
 
 struct FinalState {
     status: TerminalStatus,
+    provider_terminal_known: bool,
     cancellation: Option<ProviderCancellationOutcome>,
     output: Option<String>,
     usage: Option<TokenUsage>,
@@ -176,10 +197,67 @@ impl FinalState {
     fn new(status: TerminalStatus) -> Self {
         Self {
             status,
+            provider_terminal_known: false,
             cancellation: None,
             output: None,
             usage: None,
         }
+    }
+
+    fn provider_terminal(status: TerminalStatus) -> Self {
+        Self {
+            provider_terminal_known: true,
+            ..Self::new(status)
+        }
+    }
+}
+
+async fn delete_response(
+    transport: &CurlTransport,
+    scope: &ScopeId,
+    response_id: &str,
+    provider_terminal_known: bool,
+    endpoint: &str,
+    credential: &SecretMaterial,
+    services: &HostServices,
+) -> (RemoteResourceDeletionOutcome, CleanupOutcome) {
+    let degraded = || {
+        CleanupOutcome::Degraded(swallowtail_core::SafeDiagnostic::new(
+            "swallowtail.openai.response_deletion_unconfirmed",
+            "OpenAI response deletion could not be confirmed",
+        ))
+    };
+    if !provider_terminal_known {
+        return (RemoteResourceDeletionOutcome::Unconfirmed, degraded());
+    }
+    let result = async {
+        let response = transport
+            .request(
+                scope.clone(),
+                endpoint.to_owned(),
+                credential.0.clone(),
+                Request::delete(response_id)?,
+                services,
+                Arc::new(AtomicBool::new(false)),
+            )
+            .await?;
+        require_success(&response)?;
+        let deletion = parse_deletion(&response.body)?;
+        if deletion.response_id != response_id || !deletion.deleted {
+            return Err(failure(
+                "swallowtail.openai.response_deletion_mismatch",
+                "OpenAI response deletion acknowledgement did not match the active response",
+            ));
+        }
+        Ok(())
+    }
+    .await;
+    match result {
+        Ok(()) => (
+            RemoteResourceDeletionOutcome::Confirmed,
+            CleanupOutcome::Clean,
+        ),
+        Err(_) => (RemoteResourceDeletionOutcome::Unconfirmed, degraded()),
     }
 }
 

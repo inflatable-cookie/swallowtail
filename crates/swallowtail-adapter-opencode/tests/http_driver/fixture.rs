@@ -64,7 +64,19 @@ impl Fixture {
         } else {
             Capability::InteractiveSession
         };
-        let capability_requirements = vec![CapabilityRequirement::new(capability, [])];
+        let mut capability_requirements = vec![CapabilityRequirement::new(capability, [])];
+        if role == DriverRole::InteractiveSession {
+            capability_requirements.extend([
+                CapabilityRequirement::new(
+                    Capability::LoadSession,
+                    [
+                        swallowtail_core::CapabilityConstraint::ReplayMaximumItems(4096),
+                        swallowtail_core::CapabilityConstraint::ReplayMaximumBytes(4 * 1024 * 1024),
+                    ],
+                ),
+                CapabilityRequirement::new(Capability::Resume, []),
+            ]);
+        }
         let capabilities = CapabilityProfile::new(capability_requirements.clone());
         let versions: Vec<_> = versions
             .iter()

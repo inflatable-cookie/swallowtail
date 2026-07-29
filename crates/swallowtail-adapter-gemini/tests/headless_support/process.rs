@@ -64,6 +64,55 @@ pub struct FakeProcessService {
     hold_open: bool,
 }
 
+pub struct ScriptedProcessService {
+    scripts: Mutex<VecDeque<ProcessScript>>,
+}
+
+struct ProcessScript {
+    state: Arc<ProcessState>,
+    output: VecDeque<ProcessOutputChunk>,
+    exit: ProcessExit,
+}
+
+impl ScriptedProcessService {
+    pub fn new(
+        scripts: impl IntoIterator<Item = (String, String, ProcessExit)>,
+    ) -> (Arc<Self>, Vec<Arc<ProcessState>>) {
+        let mut states = Vec::new();
+        let scripts = scripts
+            .into_iter()
+            .map(|(stdout, stderr, exit)| {
+                let state = Arc::new(ProcessState::default());
+                states.push(Arc::clone(&state));
+                let mut output = VecDeque::new();
+                if !stdout.is_empty() {
+                    output.push_back(ProcessOutputChunk::new(
+                        ProcessOutputStream::Stdout,
+                        stdout.into_bytes(),
+                    ));
+                }
+                if !stderr.is_empty() {
+                    output.push_back(ProcessOutputChunk::new(
+                        ProcessOutputStream::Stderr,
+                        stderr.into_bytes(),
+                    ));
+                }
+                ProcessScript {
+                    state,
+                    output,
+                    exit,
+                }
+            })
+            .collect();
+        (
+            Arc::new(Self {
+                scripts: Mutex::new(scripts),
+            }),
+            states,
+        )
+    }
+}
+
 impl FakeProcessService {
     pub fn completed(jsonl: &str) -> (Arc<Self>, Arc<ProcessState>) {
         Self::with_exit(jsonl, ProcessExit::new(true, Some(0)))
@@ -137,6 +186,48 @@ impl ProcessService for FakeProcessService {
             hold_open: self.hold_open,
         };
         Box::pin(async move { Ok(Box::new(handle) as Box<dyn ProcessHandle>) })
+    }
+}
+
+impl ProcessService for ScriptedProcessService {
+    fn start(
+        &self,
+        _scope: ScopeId,
+        request: ProcessRequest,
+    ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+        let script = self
+            .scripts
+            .lock()
+            .expect("script lock is available")
+            .pop_front()
+            .expect("one scripted process remains");
+        *script
+            .state
+            .request
+            .lock()
+            .expect("request lock is available") = Some(observed(request));
+        Box::pin(async move {
+            Ok(Box::new(FakeProcessHandle {
+                state: script.state,
+                output: Mutex::new(script.output),
+                exit: script.exit,
+                hold_open: false,
+            }) as Box<dyn ProcessHandle>)
+        })
+    }
+}
+
+fn observed(request: ProcessRequest) -> ObservedProcessRequest {
+    ObservedProcessRequest {
+        executable: request.executable().as_host_value().to_owned(),
+        arguments: request.arguments().map(str::to_owned).collect(),
+        environments: request
+            .environment()
+            .map(|value| value.as_host_value().to_owned())
+            .collect(),
+        working_resource: request
+            .working_resource()
+            .map(|value| value.as_host_value().to_owned()),
     }
 }
 

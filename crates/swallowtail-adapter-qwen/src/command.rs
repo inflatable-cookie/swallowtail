@@ -27,3 +27,9 @@ pub(crate) fn arguments(model: &ModelId) -> Vec<String> {
     .map(str::to_owned)
     .collect()
 }
+
+pub(crate) fn resumed_arguments(model: &ModelId, session_id: &str) -> Vec<String> {
+    let mut arguments = arguments(model);
+    arguments.extend(["--resume".to_owned(), session_id.to_owned()]);
+    arguments
+}

@@ -16,6 +16,9 @@ pub trait RunHandle: Send {
     fn take_callbacks(&mut self) -> Option<CallbackExchange> {
         None
     }
+    fn take_management_binding(&mut self) -> Option<ProviderSessionManagementBinding> {
+        None
+    }
     fn cancellation(&self) -> &dyn CancellationControl;
     fn take_terminal_outcome(&mut self) -> Option<BoxFuture<'static, TerminalOutcome>>;
     fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome>;

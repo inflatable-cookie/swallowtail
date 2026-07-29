@@ -5,6 +5,13 @@ pub struct FixtureSelection {
 }
 
 pub fn selection(host: ExecutionHostId) -> FixtureSelection {
+    selection_with_access(host, ResourceAccess::Read)
+}
+
+pub fn selection_with_access(
+    host: ExecutionHostId,
+    resource_access: ResourceAccess,
+) -> FixtureSelection {
     let descriptor = swallowtail_adapter_gemini::gemini_acp_descriptor();
     let credential = CredentialRef::new("gemini.fixture.credential").expect("valid credential");
     let access_id = AccessProfileId::new("gemini.fixture.api-key").expect("valid access id");
@@ -21,7 +28,7 @@ pub fn selection(host: ExecutionHostId) -> FixtureSelection {
         CapabilityRequirement::new(
             Capability::WorkingResource,
             [
-                CapabilityConstraint::ResourceAccess(ResourceAccess::Read),
+                CapabilityConstraint::ResourceAccess(resource_access),
                 CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
             ],
         ),
@@ -84,7 +91,7 @@ pub fn selection(host: ExecutionHostId) -> FixtureSelection {
     .with_interface_versions([version_binding])
     .with_harness_isolation(HarnessIsolation::AmbientHost)
     .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient)
-    .with_session_access_policy(SessionAccessPolicy::ambient_harness(ResourceAccess::Read))
+    .with_session_access_policy(SessionAccessPolicy::ambient_harness(resource_access))
     .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited);
     let context = PreflightContext::new(
         &descriptor,

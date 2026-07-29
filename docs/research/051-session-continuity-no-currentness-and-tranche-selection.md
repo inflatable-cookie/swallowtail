@@ -4,6 +4,10 @@ Status: promoted
 Owner: Tom
 Date: 2026-07-28
 
+Pi correction: Research 053 supersedes the two Pi `R` classifications. Public
+Pi attachment cannot preserve the host-leased working resource, so those cells
+are binding-blocked. The matrix values remain `No`.
+
 ## Question
 
 Which of the 58 starting load-session, resume-session, and

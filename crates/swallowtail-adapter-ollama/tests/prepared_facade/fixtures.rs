@@ -5,7 +5,7 @@ use std::time::Duration;
 use swallowtail_adapter_ollama::{
     OllamaInferenceAttemptInput, OllamaInventoryProfileInput, OllamaModelSelection,
     OllamaPreparationInput, OllamaPreparationProbe, OllamaPreparedIntegration,
-    prepare_ollama_attached,
+    OllamaSessionProfileInput, prepare_ollama_attached,
 };
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessStatus, AttachedModelTag, ConfiguredInstanceId,
@@ -88,4 +88,8 @@ pub fn attempt_input(id: &str) -> OllamaInferenceAttemptInput {
         OperationContent::new("prepared Ollama prompt").unwrap(),
         NonZeroU64::new(8).unwrap(),
     )
+}
+
+pub fn session_input(id: &str) -> OllamaSessionProfileInput {
+    OllamaSessionProfileInput::new(RequestId::new(id).unwrap())
 }

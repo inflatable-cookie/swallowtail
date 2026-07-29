@@ -46,10 +46,22 @@ pub fn qwen_headless_descriptor() -> DriverDescriptor {
     .with_roles([
         DriverRole::Discovery,
         DriverRole::StructuredRun,
+        DriverRole::InteractiveSession,
         DriverRole::ModelCatalog,
     ])
     .with_execution_layers([ExecutionLayer::HarnessInteraction])
-    .with_operation_shapes([OperationShape::StructuredRun])
+    .with_operation_shapes([
+        OperationShape::StructuredRun,
+        OperationShape::InteractiveSession,
+    ])
+    .with_required_host_services(
+        DriverRole::InteractiveSession,
+        [
+            HostServiceKind::Task,
+            HostServiceKind::Process,
+            HostServiceKind::Time,
+        ],
+    )
     .with_required_host_services(
         DriverRole::StructuredRun,
         [
@@ -127,7 +139,7 @@ impl QwenHeadlessDriver {
                 .start(scope.clone(), process_request)
                 .await?,
         );
-        if let Err(error) = write_prompt(process.as_ref(), &request).await {
+        if let Err(error) = write_prompt(process.as_ref(), request.content()).await {
             cleanup_failed_start(process.as_ref()).await;
             return Err(error);
         }
@@ -171,14 +183,12 @@ impl QwenHeadlessDriver {
     }
 }
 
-async fn write_prompt(
+pub(crate) async fn write_prompt(
     process: &dyn ProcessHandle,
-    request: &StructuredRunRequest,
+    content: &swallowtail_runtime::OperationContent,
 ) -> Result<(), RuntimeFailure> {
     process
-        .write_stdin(ProcessInputChunk::new(
-            request.content().as_str().as_bytes().to_vec(),
-        ))
+        .write_stdin(ProcessInputChunk::new(content.as_str().as_bytes().to_vec()))
         .await?;
     process.close_stdin().await.map_err(|_| {
         failure(

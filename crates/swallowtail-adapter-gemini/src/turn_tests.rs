@@ -9,6 +9,7 @@ mod tests {
         let (turn, _events, terminal) = ActiveTurn::new(
             RuntimeTurnId::new("turn-fixture").expect("valid turn"),
             "session-fixture".to_owned(),
+            "plan",
         )
         .expect("turn opens");
         turn.handle_update(&json!({
@@ -40,6 +41,7 @@ mod tests {
         let (turn, _events, terminal) = ActiveTurn::new(
             RuntimeTurnId::new("turn-permission").expect("valid turn"),
             "session-fixture".to_owned(),
+            "plan",
         )
         .expect("turn opens");
         turn.observe_permission(&json!(900))

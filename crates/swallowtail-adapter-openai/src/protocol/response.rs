@@ -48,6 +48,12 @@ pub(crate) struct ResponseSnapshot {
     pub usage: Option<TokenUsage>,
 }
 
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) struct ResponseDeletion {
+    pub response_id: String,
+    pub deleted: bool,
+}
+
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub(crate) enum ProviderFailureKind {
     Authentication,
@@ -61,6 +67,22 @@ pub(crate) enum ProviderFailureKind {
 pub(crate) fn parse_snapshot(bytes: &[u8]) -> Result<ResponseSnapshot, RuntimeFailure> {
     let value: Value = serde_json::from_slice(bytes).map_err(|_| malformed())?;
     parse_snapshot_value(&value)
+}
+
+pub(crate) fn parse_deletion(bytes: &[u8]) -> Result<ResponseDeletion, RuntimeFailure> {
+    let value: Value = serde_json::from_slice(bytes).map_err(|_| malformed())?;
+    let response_id = string(&value, "/id")?.to_owned();
+    if !response_id.starts_with("resp_") || string(&value, "/object")? != "response" {
+        return Err(malformed());
+    }
+    let deleted = value
+        .get("deleted")
+        .and_then(Value::as_bool)
+        .ok_or_else(malformed)?;
+    Ok(ResponseDeletion {
+        response_id,
+        deleted,
+    })
 }
 
 pub(crate) fn parse_snapshot_value(value: &Value) -> Result<ResponseSnapshot, RuntimeFailure> {

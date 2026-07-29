@@ -6,7 +6,7 @@ mod plan;
 mod session;
 mod session_capabilities;
 
-use swallowtail_runtime::{BoxFuture, InteractiveSessionHandle, RuntimeFailure};
+use swallowtail_runtime::{BoxFuture, InteractiveSessionHandle, LoadedSession, RuntimeFailure};
 
 pub use catalogue::CodexPreparedCatalogue;
 pub use exec::CodexPreparedExec;
@@ -26,3 +26,4 @@ pub enum CodexPreparedSessionKind {
 
 pub type CodexPreparedSessionFuture =
     BoxFuture<'static, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>>;
+pub type CodexPreparedSessionLoadFuture = BoxFuture<'static, Result<LoadedSession, RuntimeFailure>>;

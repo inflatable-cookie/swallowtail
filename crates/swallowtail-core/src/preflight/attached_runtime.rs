@@ -12,11 +12,14 @@ pub(super) fn validate_attached_runtime(
         return Ok(());
     };
     if requirements.execution_layer() != ExecutionLayer::DirectModelInference
-        || requirements.operation_shape() != OperationShape::StructuredRun
+        || !matches!(
+            requirements.operation_shape(),
+            OperationShape::StructuredRun | OperationShape::InteractiveSession
+        )
         || context.instance.ownership() != InstanceOwnership::ExternalAttached
     {
         return Err(failure(
-            "Attached-runtime requirements need structured direct inference against an external attached instance",
+            "Attached-runtime requirements need structured or interactive direct inference against an external attached instance",
         ));
     }
     let Some(route) = context.model_route else {

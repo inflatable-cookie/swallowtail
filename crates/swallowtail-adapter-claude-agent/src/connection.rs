@@ -8,14 +8,15 @@ use std::pin::Pin;
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
 use std::task::{Context, Poll, Waker};
-use swallowtail_core::{ResourceAccess, SafeDiagnostic};
+use swallowtail_core::{ResourceAccess, SafeDiagnostic, SessionRef};
 use swallowtail_protocol_acp::{
     ACP_PROTOCOL_VERSION, FramingLimits, Message, NdjsonDecoder, encode_error, encode_notification,
-    encode_request, encode_result, is_session_scoped_metadata_update,
+    encode_request, encode_result, is_session_scoped_metadata_update_kind,
 };
 use swallowtail_runtime::{
-    CleanupOutcome, ProcessHandle, ProcessInputChunk, ProcessOutputStream, ResourceLease,
-    RuntimeFailure, WorkingResourceIoService, WorkingResourceLocator, WorkingResourceReadRequest,
+    CleanupOutcome, OperationContent, ProcessHandle, ProcessInputChunk, ProcessOutputStream,
+    ResourceLease, RuntimeFailure, SessionReplayItem, SessionReplayKind, WorkingResourceIoService,
+    WorkingResourceLocator, WorkingResourceReadRequest,
 };
 
 use self::response::{PendingResponse, ResponseSender, response_channel};
@@ -27,6 +28,21 @@ const MAXIMUM_RECEIVE_BUFFER_BYTES: usize = 8 * 1024 * 1024;
 const RECEIVE_FRAMING_LIMITS: FramingLimits =
     FramingLimits::new(MAXIMUM_RECEIVED_FRAME_BYTES, MAXIMUM_RECEIVE_BUFFER_BYTES);
 
+enum AttachPhase {
+    Loading {
+        response_id: u64,
+        session: SessionRef,
+        response_seen: bool,
+        bytes: usize,
+        replay: Vec<SessionReplayItem>,
+    },
+    Resuming {
+        response_id: u64,
+        session: SessionRef,
+        response_seen: bool,
+    },
+}
+
 pub(crate) struct AcpConnection {
     process: Arc<dyn ProcessHandle>,
     resource: ResourceLease,
@@ -34,6 +50,7 @@ pub(crate) struct AcpConnection {
     next_id: AtomicU64,
     pending: Mutex<BTreeMap<u64, ResponseSender>>,
     session_id: Mutex<Option<String>>,
+    phase: Mutex<Option<AttachPhase>>,
     active_turn: Mutex<Option<Arc<ActiveTurn>>>,
     closed: AtomicBool,
     cleanup: Mutex<Option<CleanupOutcome>>,
@@ -52,6 +69,7 @@ impl AcpConnection {
             next_id: AtomicU64::new(1),
             pending: Mutex::new(BTreeMap::new()),
             session_id: Mutex::new(None),
+            phase: Mutex::new(None),
             active_turn: Mutex::new(None),
             closed: AtomicBool::new(false),
             cleanup: Mutex::new(None),
@@ -150,6 +168,20 @@ impl AcpConnection {
         }
     }
 
+    pub(crate) async fn delete_session(&self, session_id: &str) -> Result<(), RuntimeFailure> {
+        let response = self
+            .request("session/delete", json!({"sessionId": session_id}))
+            .await?;
+        if response.as_object().is_some_and(serde_json::Map::is_empty) {
+            Ok(())
+        } else {
+            Err(failure(
+                "swallowtail.claude_agent.acp.delete_malformed",
+                "Claude Agent returned a malformed ACP session-delete response",
+            ))
+        }
+    }
+
     pub(crate) async fn set_config_option(
         &self,
         session_id: &str,
@@ -189,7 +221,7 @@ impl AcpConnection {
         self.begin_request_with_id(id, method, params).await?.await
     }
 
-    async fn begin_request_with_id(
+    pub(crate) async fn begin_request_with_id(
         &self,
         id: u64,
         method: &'static str,
@@ -320,6 +352,7 @@ impl AcpConnection {
     }
 }
 
+mod attachment;
 mod dispatch;
 mod pump;
 mod response;

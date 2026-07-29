@@ -15,6 +15,7 @@ const MAXIMUM_OUTPUT_BYTES: usize = 4 * 1024 * 1024;
 pub(crate) struct ActiveTurn {
     runtime_id: RuntimeTurnId,
     session_id: String,
+    expected_mode: &'static str,
     events: swallowtail_runtime::RuntimeEventSender,
     terminal: TerminalOutcomeSender,
     sequence: AtomicU64,
@@ -28,6 +29,7 @@ impl ActiveTurn {
     pub(crate) fn new(
         runtime_id: RuntimeTurnId,
         session_id: String,
+        expected_mode: &'static str,
     ) -> Result<(Arc<Self>, BoxEventStream, TerminalOutcomeFuture), RuntimeFailure> {
         let (events, stream) = runtime_event_channel(EVENT_CAPACITY)?;
         events.send(RuntimeEvent::new(0, RuntimeEventKind::Started))?;
@@ -36,6 +38,7 @@ impl ActiveTurn {
             Arc::new(Self {
                 runtime_id,
                 session_id,
+                expected_mode,
                 events,
                 terminal,
                 sequence: AtomicU64::new(1),
@@ -125,10 +128,10 @@ impl ActiveTurn {
                     .or_else(|| update.get("modeId"))
                     .and_then(Value::as_str)
                     .ok_or_else(malformed)?;
-                if mode != "plan" {
+                if mode != self.expected_mode {
                     return Err(failure(
                         "swallowtail.gemini.acp.mode_widened",
-                        "Gemini CLI changed the read-only session mode",
+                        "Gemini CLI changed the preflight-bound session mode",
                     ));
                 }
                 self.emit(RuntimeEventKind::Progress, None)

@@ -46,10 +46,28 @@ pub(crate) struct WsEventEnvelope {
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) enum WsEvent {
-    TurnStarted { turn_id: u64 },
-    AssistantDelta { turn_id: u64, delta: String },
-    ThinkingDelta { turn_id: u64, delta: String },
-    TurnEnded { turn_id: u64, reason: TurnEndReason },
+    TurnStarted {
+        turn_id: u64,
+    },
+    AssistantDelta {
+        turn_id: u64,
+        delta: String,
+    },
+    ThinkingDelta {
+        turn_id: u64,
+        delta: String,
+    },
+    TurnEnded {
+        turn_id: u64,
+        reason: TurnEndReason,
+    },
+    Retrying {
+        turn_id: u64,
+        step: u64,
+        failed_attempt: u64,
+        next_attempt: u64,
+        max_attempts: u64,
+    },
     AwaitingApproval,
     AwaitingQuestion,
     SessionAborted,
@@ -238,9 +256,15 @@ fn decode_event(
             Ok(WsEvent::Warning)
         }
         "error" => Ok(WsEvent::ProviderError),
+        "turn.step.retrying" => Ok(WsEvent::Retrying {
+            turn_id: required_u64(payload, "turnId")?,
+            step: required_u64(payload, "step")?,
+            failed_attempt: required_u64(payload, "failedAttempt")?,
+            next_attempt: required_u64(payload, "nextAttempt")?,
+            max_attempts: required_u64(payload, "maxAttempts")?,
+        }),
         "turn.step.started"
         | "turn.step.completed"
-        | "turn.step.retrying"
         | "turn.step.interrupted"
         | "tool.call.delta"
         | "tool.call.started"

@@ -284,9 +284,27 @@ impl ScriptedAppServerHandle {
                 } else {
                     message["params"]["threadId"].clone()
                 };
+                let turns = if message["params"]["excludeTurns"] == true {
+                    serde_json::Value::Null
+                } else {
+                    serde_json::json!([
+                        {"id":"turn-1","items":[
+                            {"type":"userMessage","id":"item-1","clientId":null,"content":[
+                                {"type":"text","text":"Earlier question."}
+                            ]}
+                        ]},
+                        {"id":"turn-2","items":[
+                            {"type":"agentMessage","id":"item-2","text":"Earlier answer."}
+                        ]}
+                    ])
+                };
+                let mut thread = serde_json::json!({"id": thread_id});
+                if !turns.is_null() {
+                    thread["turns"] = turns;
+                }
                 self.state.push(serde_json::json!({
                     "id": id,
-                    "result": {"thread": {"id": thread_id}}
+                    "result": {"thread": thread}
                 }));
             }
             (method @ ("thread/archive" | "thread/unarchive" | "thread/delete"), Some(id)) => {

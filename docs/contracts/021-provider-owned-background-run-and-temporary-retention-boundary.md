@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-21
+Updated: 2026-07-28
 
 ## Purpose
 
@@ -122,6 +122,23 @@ and closes owned network work, joins every scoped task, then releases the
 credential lease. Clean local cleanup does not prove remote cancellation.
 Remote work may remain unconfirmed after every local task has joined.
 
+An exact provider may expose deletion of the operation-owned response after a
+valid provider response reference is known. This is remote-resource cleanup,
+not provider-session management. The common resource kind is `Response`.
+
+The first OpenAI proof sends at most one
+`DELETE /v1/responses/{response_id}` after provider terminal state is known.
+It reports confirmed deletion only when the exact response id is returned with
+`deleted=true`. A missing response id, active or unconfirmed provider state,
+404, 5xx, disconnect, cancellation, malformed acknowledgement, or mismatched
+id cannot become confirmed deletion. No delete retry, polling loop, or
+delete-as-cancel mapping is permitted.
+
+The delete request and all local transport work join before credential
+release. A failed or unavailable deletion does not change the inference
+terminal status; it records unconfirmed remote-resource deletion and degraded
+cleanup. Drop sends no delete request.
+
 No global executor, detached poller, reader, timer, callback, credential task,
 or cleanup task is permitted.
 
@@ -135,6 +152,8 @@ The first proof binds:
 - streaming retrieval with `stream=true` and
   `starting_after=<sequence_number>` for one reattachment
 - `POST /v1/responses/{response_id}/cancel` for native cancellation
+- `DELETE /v1/responses/{response_id}` for one terminal response-cleanup
+  attempt
 - public API-key access, API billing, the exact `api.openai.com` audience, and
   provider support authority
 - one exact configured model and positive maximum-output-token bound
@@ -151,7 +170,7 @@ default QA.
 
 Deterministic dated fixtures and loopback HTTP/SSE tests must prove:
 
-- exact create, retrieve, reattach, and cancel request shapes
+- exact create, retrieve, reattach, cancel, and terminal delete request shapes
 - no endpoint or credential effect before successful policy validation
 - separate provider reference, provider cursor, runtime run, attachment, HTTP
   request, and common event identities
@@ -164,6 +183,8 @@ Deterministic dated fixtures and loopback HTTP/SSE tests must prove:
 - endpoint, credential, provider id, cursor, content, header, and payload
   redaction
 - joined network and task cleanup before credential release
+- response deletion after terminal truth, with confirmed and unconfirmed
+  outcomes
 
 Default QA uses no credential, provider account, external request, or paid
 inference. Live authentication remains separately gated.

@@ -6,6 +6,7 @@ mod tests {
     use serde_json::json;
     use swallowtail_core::{
         DriverRole, ExecutionLayer, HostServiceKind, InterfaceVersion, OperationShape,
+        ResourceAccess,
     };
     use swallowtail_runtime::{EnvironmentRef, ExecutableRef, WorkingResourceRef};
 
@@ -35,6 +36,7 @@ mod tests {
             ExecutableRef::new("gemini.pinned").expect("valid executable"),
             environment.clone(),
             resource.clone(),
+            ResourceAccess::Read,
         );
         assert_eq!(
             request.arguments().collect::<Vec<_>>(),
@@ -63,7 +65,7 @@ mod tests {
         let opened = parse_new_session(&json!({
                 "sessionId": "fixture-session",
                 "modes": {"currentModeId": "plan"}
-            }))
+            }), ResourceAccess::Read)
             .expect("plan session is accepted");
         assert_eq!(opened.provider_id, "fixture-session");
         assert!(opened.model_options.is_none());
@@ -71,8 +73,16 @@ mod tests {
             parse_new_session(&json!({
                 "sessionId": "fixture-session",
                 "modes": {"currentModeId": "yolo"}
-            }))
+            }), ResourceAccess::Read)
             .is_err()
         );
+        parse_new_session(
+            &json!({
+                "sessionId": "fixture-write-session",
+                "modes": {"currentModeId": "autoEdit"}
+            }),
+            ResourceAccess::ReadWrite,
+        )
+        .expect("auto-edit write session is accepted");
     }
 }

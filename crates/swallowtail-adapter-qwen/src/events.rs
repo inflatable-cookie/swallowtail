@@ -16,6 +16,7 @@ const MAXIMUM_EVENT_COUNT: usize = 4096;
 
 pub(crate) struct QwenEventParser {
     model: ModelId,
+    expected_session_id: Option<String>,
     pending: Vec<u8>,
     sequence: u64,
     event_count: usize,
@@ -27,9 +28,13 @@ pub(crate) struct QwenEventParser {
 }
 
 impl QwenEventParser {
-    pub(crate) fn new(model: ModelId) -> Self {
+    pub(crate) fn with_expected_session(
+        model: ModelId,
+        expected_session_id: Option<String>,
+    ) -> Self {
         Self {
             model,
+            expected_session_id,
             pending: Vec::new(),
             sequence: 1,
             event_count: 0,
@@ -57,7 +62,9 @@ impl QwenEventParser {
         Ok(events)
     }
 
-    pub(crate) fn finish(mut self) -> Result<(Vec<RuntimeEvent>, ParsedTerminal), RuntimeFailure> {
+    pub(crate) fn finish(
+        mut self,
+    ) -> Result<(Vec<RuntimeEvent>, ParsedTerminal, Option<String>), RuntimeFailure> {
         let mut events = Vec::new();
         if !self.pending.is_empty() {
             let line = std::mem::take(&mut self.pending);
@@ -66,6 +73,7 @@ impl QwenEventParser {
         Ok((
             events,
             ParsedTerminal::new(self.final_output, self.provider_failure, self.terminal_seen),
+            self.session_id,
         ))
     }
 
@@ -113,6 +121,13 @@ impl QwenEventParser {
                 return Err(malformed_stream());
             }
             let session_id = session_id(payload)?.to_owned();
+            if self
+                .expected_session_id
+                .as_deref()
+                .is_some_and(|expected| expected != session_id)
+            {
+                return Err(malformed_stream());
+            }
             self.session_id = Some(session_id);
             Ok(Vec::new())
         } else {

@@ -1,4 +1,5 @@
 use super::super::KimiLocalServerPreparedIntegration;
+use std::num::NonZeroU32;
 use swallowtail_core::{
     AccessRequirement, Capability, CapabilityConstraint, CapabilityProfile, CapabilityRequirement,
     ConfiguredInstance, CredentialState, Diagnostic, DriverRole, EndpointAuthorization,
@@ -8,8 +9,9 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     BoxFuture, Deadline, HostServices, OperationContent, OperationPolicy, PreparationFailure,
-    PreparationStage, PreparedOperationEvidence, ProviderRetentionPolicy, RequestId, RunHandle,
-    RuntimeFailure, StructuredRunDriver, StructuredRunRequest, WorkingResourceRef,
+    PreparationStage, PreparedOperationEvidence, ProviderRecoveryPolicy, ProviderRetentionPolicy,
+    RequestId, RunHandle, RuntimeFailure, StreamReattachmentPolicy, StructuredRunDriver,
+    StructuredRunRequest, WorkingResourceRef,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -22,6 +24,8 @@ pub struct KimiLocalServerRunInput {
     reasoning: Option<ReasoningMode>,
     configuration: super::super::KimiLocalServerSessionConfiguration,
     allow_unverified_newer: bool,
+    managed_recovery_accepted: bool,
+    stream_reattachment: StreamReattachmentPolicy,
 }
 
 impl KimiLocalServerRunInput {
@@ -43,6 +47,8 @@ impl KimiLocalServerRunInput {
             reasoning: None,
             configuration,
             allow_unverified_newer: false,
+            managed_recovery_accepted: false,
+            stream_reattachment: StreamReattachmentPolicy::Disabled,
         }
     }
 
@@ -55,6 +61,19 @@ impl KimiLocalServerRunInput {
     #[must_use]
     pub const fn allow_unverified_newer(mut self) -> Self {
         self.allow_unverified_newer = true;
+        self
+    }
+
+    #[must_use]
+    pub const fn accept_managed_recovery(mut self) -> Self {
+        self.managed_recovery_accepted = true;
+        self
+    }
+
+    #[must_use]
+    pub const fn with_one_stream_reattachment(mut self) -> Self {
+        self.stream_reattachment =
+            StreamReattachmentPolicy::Bounded(NonZeroU32::new(1).expect("one is non-zero"));
         self
     }
 }
@@ -114,8 +133,14 @@ impl KimiLocalServerPreparedIntegration {
                 "Newer unverified Kimi local-server runs require explicit acceptance",
             ));
         }
+        if !input.managed_recovery_accepted {
+            return Err(failure(
+                "swallowtail.kimi.local_server.preparation.recovery_agreement_required",
+                "Kimi local-server runs require explicit managed-recovery acceptance",
+            ));
+        }
         super::super::interactive::validate_revision_options(self, &input.configuration)?;
-        let capabilities = run_capabilities(input.reasoning.as_ref());
+        let capabilities = run_capabilities(input.reasoning.as_ref(), input.stream_reattachment);
         let instance = instance_with_capabilities(self, capabilities.clone());
         let (route_id, route_revision, model_id) = input.model.into_parts();
         let route = ModelRoute::new(
@@ -143,6 +168,8 @@ impl KimiLocalServerPreparedIntegration {
         })?;
         let mut policy = OperationPolicy::offline()
             .with_provider_retention(ProviderRetentionPolicy::DurableAllowed)
+            .with_provider_recovery(ProviderRecoveryPolicy::ManagedAllowed)
+            .with_stream_reattachment(input.stream_reattachment)
             .with_harness_isolation(HarnessIsolation::AmbientHost)
             .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient);
         if let Some(reasoning) = input.reasoning {
@@ -154,16 +181,26 @@ impl KimiLocalServerPreparedIntegration {
         Ok(KimiLocalServerPreparedRun {
             evidence: PreparedOperationEvidence::from_plan(plan, self.access_evidence().clone())?,
             request,
-            configuration: input.configuration,
+            configuration: input.configuration.with_structured_lifecycle(
+                true,
+                match input.stream_reattachment {
+                    StreamReattachmentPolicy::Bounded(value) => value.get(),
+                    StreamReattachmentPolicy::Disabled => 0,
+                },
+            ),
         })
     }
 }
 
-fn run_capabilities(reasoning: Option<&ReasoningMode>) -> CapabilityProfile {
+fn run_capabilities(
+    reasoning: Option<&ReasoningMode>,
+    stream_reattachment: StreamReattachmentPolicy,
+) -> CapabilityProfile {
     let mut capabilities = vec![
         CapabilityRequirement::new(Capability::StructuredRun, []),
         CapabilityRequirement::new(Capability::StreamingEvents, []),
         CapabilityRequirement::new(Capability::ProviderDurableRetention, []),
+        CapabilityRequirement::new(Capability::ProviderManagedRecovery, []),
         CapabilityRequirement::new(
             Capability::Interruption,
             [CapabilityConstraint::CancellationScope(
@@ -182,6 +219,14 @@ fn run_capabilities(reasoning: Option<&ReasoningMode>) -> CapabilityProfile {
         capabilities.push(CapabilityRequirement::new(
             Capability::ReasoningSelection,
             [CapabilityConstraint::ReasoningMode(reasoning.clone())],
+        ));
+    }
+    if let StreamReattachmentPolicy::Bounded(maximum) = stream_reattachment {
+        capabilities.push(CapabilityRequirement::new(
+            Capability::StreamReattachment,
+            [CapabilityConstraint::ReattachmentMaximumCount(
+                maximum.get(),
+            )],
         ));
     }
     CapabilityProfile::new(capabilities)

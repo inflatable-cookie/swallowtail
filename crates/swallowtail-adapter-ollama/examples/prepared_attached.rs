@@ -4,10 +4,12 @@ use futures_util::StreamExt;
 use swallowtail_adapter_ollama::{
     OllamaInferenceAttemptInput, OllamaInventoryProfileInput, OllamaInventorySnapshot,
     OllamaPreparationInput, OllamaPreparationProbe, OllamaPreparedInferenceAttempt,
-    OllamaPreparedIntegration, OllamaPreparedInventory, prepare_ollama_attached,
+    OllamaPreparedIntegration, OllamaPreparedInventory, OllamaPreparedSession,
+    OllamaSessionProfileInput, prepare_ollama_attached,
 };
 use swallowtail_runtime::{
-    CleanupOutcome, HostServices, PreparationFailure, RuntimeFailure, TerminalOutcome,
+    CleanupOutcome, HostServices, InteractiveSessionHandle, PreparationFailure, RuntimeFailure,
+    TerminalOutcome,
 };
 
 async fn prepare_runtime(
@@ -37,6 +39,20 @@ fn prepare_attempt(
     input: OllamaInferenceAttemptInput,
 ) -> Result<OllamaPreparedInferenceAttempt, PreparationFailure> {
     runtime.prepare_inference_attempt(input)
+}
+
+fn prepare_session(
+    runtime: &OllamaPreparedIntegration,
+    input: OllamaSessionProfileInput,
+) -> Result<OllamaPreparedSession, PreparationFailure> {
+    runtime.prepare_session(input)
+}
+
+async fn open_session(
+    prepared: &OllamaPreparedSession,
+    services: HostServices,
+) -> Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure> {
+    prepared.open_session(services).await
 }
 
 async fn execute_one_attempt(

@@ -174,7 +174,7 @@ fn plan_mismatch(dimension: &str) -> RuntimeFailure {
     )
 }
 
-fn unsupported(feature: &str) -> RuntimeFailure {
+pub(crate) fn unsupported(feature: &str) -> RuntimeFailure {
     failure(
         "swallowtail.qwen.headless.unsupported_input",
         format!("Qwen headless does not support {feature}"),

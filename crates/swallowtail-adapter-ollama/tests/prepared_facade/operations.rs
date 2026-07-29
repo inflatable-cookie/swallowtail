@@ -1,5 +1,5 @@
-use super::fixtures::{attempt_input, inventory_input, prepared};
-use crate::support::Fixture;
+use super::fixtures::{attempt_input, inventory_input, prepared, session_input};
+use crate::support::{Fixture, FixtureServer, StreamFixture, VersionFixture};
 use futures_executor::block_on;
 use futures_util::StreamExt;
 use swallowtail_core::{
@@ -7,7 +7,8 @@ use swallowtail_core::{
     InstanceOwnership, ReasoningMode, StructuredOutputEnforcement,
 };
 use swallowtail_runtime::{
-    CleanupOutcome, SchemaDocument, StructuredOutputDescriptor, TerminalStatus,
+    CleanupOutcome, OperationContent, RuntimeTurnId, SchemaDocument, StructuredOutputDescriptor,
+    TerminalStatus, TurnRequest,
 };
 use swallowtail_testkit::assert_prepared_operation_evidence_matches_plan;
 
@@ -95,6 +96,118 @@ fn prepared_inventory_and_inference_preserve_external_runtime_truth() {
             &ExecutionHostId::new(host).unwrap()
         );
     }
+}
+
+#[test]
+fn prepared_session_replays_only_cleanly_committed_history() {
+    let fixture = Fixture::with_server(FixtureServer::start_with(
+        VersionFixture::Expected,
+        StreamFixture::InteractiveSequence,
+    ));
+    let prepared = prepared(&fixture);
+    let profile = prepared
+        .prepare_session(session_input("ollama-session"))
+        .expect("session prepares");
+    assert_prepared_operation_evidence_matches_plan(profile.evidence().operation(), profile.plan());
+    let services = fixture.services();
+    let mut session = block_on(profile.open_session(services.clone())).expect("session opens");
+    assert!(session.provider_session_ref().is_none());
+    assert!(session.resume_binding().is_none());
+
+    for (id, content) in [
+        ("ollama-turn-1", "First fixture turn"),
+        ("ollama-turn-2", "Second fixture turn"),
+    ] {
+        let mut turn = block_on(session.start_turn(
+            TurnRequest::new(
+                RuntimeTurnId::new(id).expect("valid turn"),
+                OperationContent::new(content).expect("valid content"),
+            ),
+            services.clone(),
+        ))
+        .expect("turn starts");
+        let outcome = block_on(
+            turn.take_terminal_outcome()
+                .expect("terminal outcome is available"),
+        );
+        assert_eq!(outcome.status(), &TerminalStatus::Completed);
+        assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
+    }
+
+    let bodies = fixture.server.inference_bodies();
+    assert_eq!(bodies.len(), 2);
+    let first: serde_json::Value = serde_json::from_slice(&bodies[0]).expect("first body is JSON");
+    let second: serde_json::Value =
+        serde_json::from_slice(&bodies[1]).expect("second body is JSON");
+    assert_eq!(
+        first,
+        serde_json::from_str::<serde_json::Value>(include_str!(
+            "../fixtures/ollama-native-v0.14.0-v0.32.1/interactive-turn-1-request.json"
+        ))
+        .expect("first fixture request is JSON")
+    );
+    assert_eq!(
+        second,
+        serde_json::from_str::<serde_json::Value>(include_str!(
+            "../fixtures/ollama-native-v0.14.0-v0.32.1/interactive-turn-2-request.json"
+        ))
+        .expect("second fixture request is JSON")
+    );
+    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert!(fixture.server.is_reachable());
+}
+
+#[test]
+fn failed_ollama_turn_does_not_mutate_the_private_transcript() {
+    let fixture = Fixture::with_server(FixtureServer::start_with(
+        VersionFixture::Expected,
+        StreamFixture::InteractiveFailureThenSuccess,
+    ));
+    let prepared = prepared(&fixture);
+    let profile = prepared
+        .prepare_session(session_input("ollama-transaction"))
+        .expect("session prepares");
+    let services = fixture.services();
+    let mut session = block_on(profile.open_session(services.clone())).expect("session opens");
+    for (index, content, expected) in [
+        (1, "First fixture turn", TerminalStatus::Completed),
+        (
+            2,
+            "failed fixture turn",
+            TerminalStatus::ProviderFailed(swallowtail_core::SafeDiagnostic::new(
+                "swallowtail.ollama.stream_failed",
+                "Ollama reported a stream failure",
+            )),
+        ),
+        (3, "retry fixture turn", TerminalStatus::Completed),
+    ] {
+        let mut turn = block_on(session.start_turn(
+            TurnRequest::new(
+                RuntimeTurnId::new(format!("ollama-transaction-{index}")).expect("valid turn"),
+                OperationContent::new(content).expect("valid content"),
+            ),
+            services.clone(),
+        ))
+        .expect("turn starts");
+        let outcome = block_on(
+            turn.take_terminal_outcome()
+                .expect("terminal outcome is available"),
+        );
+        assert_eq!(outcome.status(), &expected);
+        assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
+    }
+    let bodies = fixture.server.inference_bodies();
+    let retry: serde_json::Value =
+        serde_json::from_slice(&bodies[2]).expect("retry request is JSON");
+    let messages = retry["messages"]
+        .as_array()
+        .expect("retry messages are an array");
+    assert_eq!(messages.len(), 3);
+    assert_eq!(messages[0]["content"], "First fixture turn");
+    assert_eq!(messages[1]["content"], "First answer");
+    assert_eq!(messages[2]["content"], "retry fixture turn");
+    assert!(!retry.to_string().contains("partial must not commit"));
+    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
 }
 
 #[test]

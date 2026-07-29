@@ -10,7 +10,7 @@ use preparation::{
 };
 pub use profile::{
     GeminiHeadlessModelSelection, GeminiHeadlessPreparedEvidence, GeminiHeadlessPreparedRun,
-    GeminiHeadlessRunProfileInput,
+    GeminiHeadlessRunProfileInput, GeminiHeadlessRunRetention,
 };
 
 use std::collections::BTreeSet;

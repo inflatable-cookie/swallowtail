@@ -31,10 +31,16 @@ mod tests {
         observe_health(&Response {
             status: 200,
             body: health,
+            next_cursor: None,
         })
         .expect("health parses");
         let body = serde_json::to_vec(&responses[1]["response"]["body"]).expect("serializes");
-        let models = parse_catalog(&Response { status: 200, body }).expect("catalogue parses");
+        let models = parse_catalog(&Response {
+            status: 200,
+            body,
+            next_cursor: None,
+        })
+        .expect("catalogue parses");
         assert_eq!(
             models[0].provider_id().expect("provider").as_str(),
             "anthropic"
@@ -135,6 +141,7 @@ mod tests {
         let unpublished = observe_health(&Response {
             status: 200,
             body: br#"{"healthy":true,"version":"1.15.8"}"#.to_vec(),
+            next_cursor: None,
         })
         .expect_err("unpublished semantic gap rejects");
         assert_eq!(
@@ -379,6 +386,7 @@ mod tests {
             classify_session_delete(&Response {
                 status: 200,
                 body: b"true".to_vec(),
+                next_cursor: None,
             }),
             SessionDeleteResponse::Applied
         );
@@ -387,6 +395,7 @@ mod tests {
                 classify_session_delete(&Response {
                     status,
                     body: br#"{"private":"provider detail"}"#.to_vec(),
+                    next_cursor: None,
                 }),
                 SessionDeleteResponse::Rejected
             );
@@ -395,10 +404,12 @@ mod tests {
             Response {
                 status: 200,
                 body: b"false".to_vec(),
+                next_cursor: None,
             },
             Response {
                 status: 500,
                 body: br#"{"private":"provider detail"}"#.to_vec(),
+                next_cursor: None,
             },
         ] {
             assert_eq!(
@@ -433,6 +444,7 @@ mod tests {
         Response {
             status: 200,
             body: std::fs::read(format!("{RANGE_ROOT}/{name}")).expect("range fixture reads"),
+            next_cursor: None,
         }
     }
 }

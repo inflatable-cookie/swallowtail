@@ -16,13 +16,31 @@ pub(crate) async fn pump(
     deadline: BoxFuture<'static, DeadlineObservation>,
     model: ModelId,
 ) -> TerminalOutcome {
-    let mut parser = QwenEventParser::new(model);
+    pump_with_session(process, events, cancellation, deadline, model, None)
+        .await
+        .outcome
+}
+
+pub(crate) struct QwenPumpResult {
+    pub(crate) outcome: TerminalOutcome,
+    pub(crate) session_id: Option<String>,
+}
+
+pub(crate) async fn pump_with_session(
+    process: Arc<dyn ProcessHandle>,
+    events: RuntimeEventSender,
+    cancellation: Arc<QwenProcessCancellation>,
+    deadline: BoxFuture<'static, DeadlineObservation>,
+    model: ModelId,
+    expected_session_id: Option<String>,
+) -> QwenPumpResult {
+    let mut parser = QwenEventParser::with_expected_session(model, expected_session_id);
     let mut deadline = Some(deadline);
     loop {
         match next_output(process.as_ref(), cancellation.as_ref(), &mut deadline).await {
             NextOutput::Deadline => {
                 let cleanup = force_cleanup(process.as_ref()).await;
-                return TerminalOutcome::new(TerminalStatus::TimedOut, cleanup);
+                return result(TerminalOutcome::new(TerminalStatus::TimedOut, cleanup));
             }
             NextOutput::Process(Ok(Some(chunk)))
                 if chunk.stream() == ProcessOutputStream::Stdout =>
@@ -31,15 +49,15 @@ pub(crate) async fn pump(
                     Ok(parsed) => {
                         if send_all(&events, parsed).is_err() {
                             let cleanup = force_cleanup(process.as_ref()).await;
-                            return event_delivery_failed(cleanup);
+                            return result(event_delivery_failed(cleanup));
                         }
                     }
                     Err(failure) => {
                         let cleanup = force_cleanup(process.as_ref()).await;
-                        return TerminalOutcome::new(
+                        return result(TerminalOutcome::new(
                             TerminalStatus::RuntimeFailed(failure.diagnostic().clone()),
                             cleanup,
-                        );
+                        ));
                     }
                 }
             }
@@ -47,37 +65,50 @@ pub(crate) async fn pump(
             NextOutput::Process(Ok(None)) => break,
             NextOutput::Process(Err(failure)) => {
                 let cleanup = force_cleanup(process.as_ref()).await;
-                return TerminalOutcome::new(
+                return result(TerminalOutcome::new(
                     TerminalStatus::HostFailed(failure.diagnostic().clone()),
                     cleanup,
-                );
+                ));
             }
         }
     }
 
     let exit = process.wait().await;
     if cancellation.is_requested() {
-        return TerminalOutcome::new(TerminalStatus::Cancelled, cleanup_from_wait(&exit));
+        return result(TerminalOutcome::new(
+            TerminalStatus::Cancelled,
+            cleanup_from_wait(&exit),
+        ));
     }
     match (parser.finish(), exit) {
-        (Ok((trailing, parsed)), Ok(exit)) => {
+        (Ok((trailing, parsed, session_id)), Ok(exit)) => {
             if send_all(&events, trailing).is_err() {
-                event_delivery_failed(CleanupOutcome::Clean)
+                result(event_delivery_failed(CleanupOutcome::Clean))
             } else {
-                parsed.outcome(exit)
+                QwenPumpResult {
+                    outcome: parsed.outcome(exit),
+                    session_id,
+                }
             }
         }
-        (Err(failure), exit) => TerminalOutcome::new(
+        (Err(failure), exit) => result(TerminalOutcome::new(
             TerminalStatus::RuntimeFailed(failure.diagnostic().clone()),
             cleanup_from_wait(&exit),
-        ),
-        (_, Err(_)) => TerminalOutcome::new(
+        )),
+        (_, Err(_)) => result(TerminalOutcome::new(
             TerminalStatus::HostFailed(SafeDiagnostic::new(
                 "swallowtail.qwen.headless.process_wait_failed",
                 "Qwen headless process wait failed",
             )),
             process_cleanup_failed(),
-        ),
+        )),
+    }
+}
+
+fn result(outcome: TerminalOutcome) -> QwenPumpResult {
+    QwenPumpResult {
+        outcome,
+        session_id: None,
     }
 }
 

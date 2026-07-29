@@ -20,3 +20,11 @@ pub(crate) fn arguments(model: &ModelId, session_id: &str) -> Vec<String> {
     .map(str::to_owned)
     .collect()
 }
+
+pub(crate) fn delete_session_arguments(session_id: &str) -> Vec<String> {
+    vec!["--delete-session".to_owned(), session_id.to_owned()]
+}
+
+pub(crate) fn list_sessions_arguments() -> Vec<String> {
+    vec!["--list-sessions".to_owned()]
+}

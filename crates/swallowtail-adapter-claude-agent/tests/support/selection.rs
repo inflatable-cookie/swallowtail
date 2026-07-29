@@ -158,6 +158,18 @@ fn capabilities(role: DriverRole) -> CapabilityProfile {
             ],
         ),
     ];
+    if role == DriverRole::InteractiveSession {
+        requirements.extend([
+            CapabilityRequirement::new(
+                Capability::LoadSession,
+                [
+                    CapabilityConstraint::ReplayMaximumItems(64),
+                    CapabilityConstraint::ReplayMaximumBytes(256 * 1024),
+                ],
+            ),
+            CapabilityRequirement::new(Capability::Resume, []),
+        ]);
+    }
     if role == DriverRole::StructuredRun {
         requirements.push(CapabilityRequirement::new(
             Capability::ProviderDurableRetention,

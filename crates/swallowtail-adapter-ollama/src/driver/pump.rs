@@ -3,7 +3,7 @@ use crate::protocol::NativeEvent;
 async fn pump_run(
     mut subscription: Subscription,
     events: swallowtail_runtime::RuntimeEventSender,
-    cancellation: Arc<RunCancellation>,
+    cancellation: Arc<AtomicBool>,
     mut deadline: Option<BoxFuture<'static, DeadlineObservation>>,
 ) -> TerminalOutcome {
     let mut sequence = 1;
@@ -12,17 +12,19 @@ async fn pump_run(
     let status = loop {
         match next_run_signal(&mut subscription, &mut deadline).await {
             RunSignal::Deadline => {
-                cancellation.cancelled.store(true, Ordering::SeqCst);
+                cancellation.store(true, Ordering::SeqCst);
                 break TerminalStatus::TimedOut;
             }
-            RunSignal::Closed if cancellation.is_requested() => break TerminalStatus::Cancelled,
+            RunSignal::Closed if cancellation.load(Ordering::SeqCst) => {
+                break TerminalStatus::Cancelled;
+            }
             RunSignal::Closed => {
                 break provider_status(failure(
                     "swallowtail.ollama.stream_disconnected",
                     "Ollama stream closed before completion",
                 ));
             }
-            RunSignal::Item(Err(_)) if cancellation.is_requested() => {
+            RunSignal::Item(Err(_)) if cancellation.load(Ordering::SeqCst) => {
                 break TerminalStatus::Cancelled;
             }
             RunSignal::Item(Err(error)) => break provider_status(error),

@@ -51,6 +51,21 @@ pub(super) fn serve(
     );
     match scenario {
         InteractiveScenario::Disconnect => {}
+        InteractiveScenario::Reattach => {
+            let connection_count = requests
+                .lock()
+                .expect("request lock is not poisoned")
+                .iter()
+                .filter(|request| request.starts_with("WS /api/v1/ws"))
+                .count();
+            if connection_count == 1 {
+                event(&mut socket, 1, None, "turn.started", r#"{"turnId":7}"#);
+            } else if subscribe.contains(r#""seq":1"#)
+                && subscribe.contains(r#""epoch":"fixture-epoch""#)
+            {
+                complete_flow(&mut socket, 2);
+            }
+        }
         InteractiveScenario::Resync => send_json(
             &mut socket,
             r#"{"type":"resync_required","payload":{"session_id":"interactive-session","reason":"buffer_overflow","current_seq":9}}"#,
@@ -59,6 +74,17 @@ pub(super) fn serve(
         InteractiveScenario::Complete => {
             event(&mut socket, 1, None, "turn.started", r#"{"turnId":7}"#);
             complete_flow(&mut socket, 2);
+        }
+        InteractiveScenario::Retry => {
+            event(&mut socket, 1, None, "turn.started", r#"{"turnId":7}"#);
+            event(
+                &mut socket,
+                2,
+                None,
+                "turn.step.retrying",
+                r#"{"turnId":7,"step":1,"failedAttempt":1,"nextAttempt":2,"maxAttempts":3,"delayMs":100,"errorName":"FixtureError","errorMessage":"private fixture error","statusCode":429}"#,
+            );
+            complete_flow(&mut socket, 3);
         }
         InteractiveScenario::GlobalNoise => {
             foreign_global_event(&mut socket);

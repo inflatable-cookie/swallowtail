@@ -726,6 +726,16 @@ expiry and late-response rejection, distinct provider/retry/disconnect/format
 failures, bounded prompt concurrency, redaction, and visible cleanup failure
 without weakening terminal provider truth.
 
+Pi provider-session continuity remains outside the production descriptor.
+Research 053 checks every stable point from `0.80.10` through `0.82.1`.
+Public RPC session switching recreates runtime services from the cwd stored in
+the session file, checks only that the directory exists, and exposes no
+effective cwd for host-resource corroboration. The current ephemeral profile
+therefore stays provider-state prohibited. Load and resume remain paused until
+a maintained public Pi interface can bind attachment to the exact
+host-leased working resource; ambient execution does not weaken that identity
+rule.
+
 Research 042 corrects the original Pi tranche boundary. Exact Pi `0.80.10`
 already exposes `get_available_models`; the omission was Swallowtail scope, not
 an upstream limitation. The same prepared Pi installation now derives a
@@ -1120,6 +1130,48 @@ Roadmap g02.015 owns the completed shared foundation. Roadmaps g02.016-g02.019
 own the first provider realization and provider-wide acceptance. Roadmap
 g02.020 owns the additive Kimi local-server proof. Research 046 and g02.024
 own the exact `0.29.2` currentness extension.
+
+## Realized Provider-Retention Closure Tranche
+
+Research 054-055 and Contracts 021, 038-039 define the realized
+provider-retention tranche.
+
+- Gemini CLI stored-transcript management is a separate installed-executable
+  role across `0.51.0..=0.52.0`. A successful durable headless run can return
+  one take-once bound management capability after terminal completion.
+  Deletion uses the exact bound id, joins the delete process, performs one
+  bounded `--list-sessions` reconciliation, and reports only
+  `HistoryRemoved`; Gemini ACP remains unsupported.
+- Gemini CLI and Claude Agent expose separate opt-in temporary-retention
+  structured profiles. Each deletes only the operation-private transcript or
+  session, records deletion truth separately from inference truth, and leaves
+  its existing durable profile unchanged.
+- OpenAI background Responses perform at most one terminal response-delete
+  attempt before credential release and report the operation-owned `Response`
+  resource separately from inference status.
+
+Focused exact-range fixtures cover completion, cancellation, deadline,
+rejection, acknowledgement loss, mismatched deletion, retained-history
+reconciliation, and joined cleanup. OpenCode structured cleanup was already
+realized; card 102 owns its stale matrix correction and package-wide closeout.
+
+## Realized Kimi Recovery And Reattachment
+
+Research 056-057 and Contract 042 define the realized Kimi harness lifecycle
+repair.
+
+Kimi headless and local-server structured preparation now require explicit
+managed-recovery acceptance before effects. Their qualified retry records are
+validated as ordered provider evidence. Swallowtail performs no retry and
+exposes no provider error text.
+
+Kimi local-server structured runs may separately opt into one active-turn
+WebSocket replacement. The replacement retains the same session, prompt,
+turn, runtime, endpoint, credential lease, model, deadline, and
+`{seq, epoch}` cursor. It submits no prompt or session creation. The failed
+attachment joins, cancellation control follows the replacement socket, and
+the final attachment joins before access release. ACP and interactive-session
+preparation inherit no capability.
 
 ## Dependency Rules
 

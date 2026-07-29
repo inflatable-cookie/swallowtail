@@ -23,6 +23,8 @@ use swallowtail_runtime::{
     terminal_outcome_channel,
 };
 
+mod session;
+
 const EVENT_CAPACITY: usize = 64;
 
 #[derive(Clone, Default)]

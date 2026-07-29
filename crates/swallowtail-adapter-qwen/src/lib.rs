@@ -15,6 +15,7 @@ mod prepared_catalogue;
 mod prepared_profile;
 mod pump;
 mod selection;
+mod session;
 mod validation;
 
 pub use driver::{QwenHeadlessDriver, qwen_headless_descriptor};
@@ -25,7 +26,8 @@ pub use prepared_catalogue::{
     QwenCatalogueProfileInput, QwenPreparedCatalogue, prepare_qwen_catalogue,
 };
 pub use prepared_profile::{
-    QwenModelSelection, QwenPreparedEvidence, QwenPreparedRun, QwenRunProfileInput,
+    QwenModelSelection, QwenPreparedEvidence, QwenPreparedRun, QwenPreparedSession,
+    QwenRunProfileInput, QwenSessionProfileInput,
 };
 pub use selection::{
     QWEN_CODE_AXIS, QWEN_CODE_BASELINE_VERSION, QWEN_CODE_LATEST_QUALIFIED_VERSION,

@@ -1,0 +1,56 @@
+{
+  "fixture_schema": 1,
+  "claim_id": "claude-agent.acp.operation-private-session-cleanup-1",
+  "axis": "claude-agent.acp-adapter",
+  "qualified_range": "0.53.0..=0.61.0 excluding 0.58.0",
+  "resource": "session",
+  "profile": {
+    "retention": "temporary_allowed",
+    "native_close": true,
+    "owned_remote_resource_deletion": true
+  },
+  "ordering": [
+    "terminal_prompt",
+    "native_session_close",
+    "provider_session_delete",
+    "join_process_and_protocol_work",
+    "release_working_resource_and_access"
+  ],
+  "cases": [
+    {
+      "id": "completed_and_deleted",
+      "terminal": "completed",
+      "delete_acknowledged": true,
+      "deletion": "confirmed",
+      "cleanup": "clean"
+    },
+    {
+      "id": "cancelled_after_session_created_and_deleted",
+      "terminal": "cancelled",
+      "delete_acknowledged": true,
+      "deletion": "confirmed",
+      "cleanup": "clean"
+    },
+    {
+      "id": "delete_response_lost",
+      "terminal": "completed",
+      "delete_acknowledged": null,
+      "deletion": "unconfirmed",
+      "cleanup": "degraded"
+    },
+    {
+      "id": "cancelled_before_session_created",
+      "terminal": "cancelled",
+      "delete_acknowledged": null,
+      "deletion": "not_applicable",
+      "cleanup": "clean"
+    },
+    {
+      "id": "durable_profile_preserved",
+      "terminal": "completed",
+      "delete_dispatched": false,
+      "deletion": "not_applicable",
+      "cleanup": "clean"
+    }
+  ]
+}

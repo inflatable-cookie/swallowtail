@@ -20,6 +20,7 @@ mod session_access;
 mod session_input;
 mod session_management;
 mod session_open;
+mod session_replay;
 mod turn_state;
 
 pub use app_server::{CodexAppServerDriver, codex_app_server_descriptor};
@@ -32,7 +33,7 @@ pub use prepared_profile::{
     CodexExecProfileInput, CodexModelSelection, CodexPreparedArchive, CodexPreparedCatalogue,
     CodexPreparedDelete, CodexPreparedEvidence, CodexPreparedExec, CodexPreparedRestore,
     CodexPreparedSession, CodexPreparedSessionFuture, CodexPreparedSessionKind,
-    CodexSessionManagementInput, CodexSessionProfileInput,
+    CodexPreparedSessionLoadFuture, CodexSessionManagementInput, CodexSessionProfileInput,
 };
 pub use selection::{
     CODEX_APP_SERVER_BASELINE_VERSION, CODEX_CLI_AXIS, CODEX_EXEC_BASELINE_VERSION,

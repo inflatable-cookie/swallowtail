@@ -7,6 +7,7 @@ use swallowtail_runtime::{
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub(crate) enum Method {
+    Delete,
     Get,
     Post,
 }
@@ -106,6 +107,15 @@ impl Request {
         Ok(Self {
             method: Method::Post,
             path: format!("{}/cancel", response_path(response_id)?),
+            query: Vec::new(),
+            body: None,
+        })
+    }
+
+    pub(crate) fn delete(response_id: &str) -> Result<Self, RuntimeFailure> {
+        Ok(Self {
+            method: Method::Delete,
+            path: response_path(response_id)?,
             query: Vec::new(),
             body: None,
         })

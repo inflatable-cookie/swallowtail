@@ -1,11 +1,12 @@
-use super::input::ClaudeAgentRunProfileInput;
+use super::input::{ClaudeAgentRunProfileInput, ClaudeAgentRunRetention};
 use super::plan::{
     ClaudeAgentPreparedEvidence, build_plan, instance_with_capabilities, run_requirements,
 };
 use crate::prepared::instance::{REASONING_MODES, run_capabilities};
 use crate::{ClaudeAgentAcpDriver, ClaudeAgentPreparedIntegration};
 use swallowtail_core::{
-    CapabilityRequirement, HarnessConfigurationPosture, HarnessIsolation, ModelRoute,
+    Capability, CapabilityConstraint, CapabilityProfile, CapabilityRequirement,
+    HarnessConfigurationPosture, HarnessIsolation, ModelRoute, OwnedRemoteResourceKind,
 };
 use swallowtail_runtime::{
     BoxFuture, HostServices, OperationPolicy, PreparationFailure, ProviderRetentionPolicy,
@@ -75,6 +76,7 @@ impl ClaudeAgentPreparedIntegration {
             deadline,
             reasoning,
             permission_handling,
+            retention,
         ) = input.into_parts();
         if reasoning
             .as_ref()
@@ -88,13 +90,12 @@ impl ClaudeAgentPreparedIntegration {
         let supports_reasoning = crate::selection::version_supports_config_options(
             self.observation().version().version(),
         );
-        let capabilities = run_capabilities(supports_reasoning);
+        let available = run_capabilities(supports_reasoning);
+        let mut operation_capabilities = operation_capabilities(&available, reasoning.as_ref());
+        apply_retention(&mut operation_capabilities, retention);
+        let capabilities = CapabilityProfile::new(operation_capabilities.clone());
         let instance = instance_with_capabilities(self, capabilities.clone());
-        let requirements = run_requirements(
-            self,
-            operation_capabilities(&capabilities, reasoning.as_ref()),
-            permission_handling,
-        );
+        let requirements = run_requirements(self, operation_capabilities, permission_handling);
         let (route_id, route_revision, model_id) = model.into_parts();
         let route = ModelRoute::new(
             route_id,
@@ -104,8 +105,14 @@ impl ClaudeAgentPreparedIntegration {
             capabilities,
         );
         let plan = build_plan(self, &instance, Some(&route), &requirements)?;
+        let provider_retention = match retention {
+            ClaudeAgentRunRetention::Durable => ProviderRetentionPolicy::DurableAllowed,
+            ClaudeAgentRunRetention::TemporaryWithOwnedSessionCleanup => {
+                ProviderRetentionPolicy::TemporaryAllowed
+            }
+        };
         let mut policy = OperationPolicy::offline()
-            .with_provider_retention(ProviderRetentionPolicy::DurableAllowed)
+            .with_provider_retention(provider_retention)
             .with_harness_isolation(HarnessIsolation::AmbientHost)
             .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient);
         if let Some(reasoning) = reasoning {
@@ -120,6 +127,36 @@ impl ClaudeAgentPreparedIntegration {
             evidence: ClaudeAgentPreparedEvidence::from_prepared(self, plan)?,
             request,
         })
+    }
+}
+
+fn apply_retention(
+    capabilities: &mut Vec<CapabilityRequirement>,
+    retention: ClaudeAgentRunRetention,
+) {
+    capabilities
+        .retain(|requirement| requirement.capability() != Capability::ProviderDurableRetention);
+    match retention {
+        ClaudeAgentRunRetention::Durable => capabilities.push(CapabilityRequirement::new(
+            Capability::ProviderDurableRetention,
+            [],
+        )),
+        ClaudeAgentRunRetention::TemporaryWithOwnedSessionCleanup => {
+            capabilities.push(CapabilityRequirement::new(
+                Capability::ProviderTemporaryRetention,
+                [],
+            ));
+            capabilities.push(CapabilityRequirement::new(
+                Capability::ProviderNativeSessionClose,
+                [],
+            ));
+            capabilities.push(CapabilityRequirement::new(
+                Capability::OwnedRemoteResourceDeletion,
+                [CapabilityConstraint::OwnedRemoteResource(
+                    OwnedRemoteResourceKind::Session,
+                )],
+            ));
+        }
     }
 }
 

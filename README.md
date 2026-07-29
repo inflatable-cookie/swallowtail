@@ -88,7 +88,11 @@ configuration. llama.cpp completed the original 22-route prepared matrix with
 distinct attached inference and owned ephemeral-serving paths. The later Kimi
 local-server route brought the previous total to 23; Gemini CLI headless was
 the 24th, Kimi Code headless the 25th, and Claude Code headless is the 26th
-route. The exact cross-route matrix
+route. Qwen headless also exposes turn-scoped interactive continuation through
+one joined child per turn and a private exact resume ID. Ollama attached
+exposes a separate bounded interactive profile using transactional
+consumer-owned transcript replay; it creates no provider session and leaves
+the attached runtime running. The exact cross-route matrix
 and unified integration guidance are current. Packaged structured proof
 passes across all 23 local package archives: the extracted workspace compiles
 and executes the closure-tranche prepared structured suites without live
@@ -120,8 +124,8 @@ inactive-session delete operation with exact provider-data and descendant
 truth. Its full effect-boundary and cleanup matrix passes across the qualified
 range. The same lifecycle records pass the real explicit remote ACP transport
 under both host topologies without retry or stdio fallback. This is transport
-portability, not a production remote Claude claim. It claims neither load nor
-resume.
+portability, not a production remote Claude claim. Claude Agent ACP now also
+implements exact load and replay-free resume across the qualified range.
 Roadmaps g02.015-g02.019 sequence the shared management foundation, Codex
 archive/restore/delete, ACP and Claude Agent close/delete, OpenCode deletion,
 provider-wide classification, package proof, and a Nucleus handoff. Roadmap
@@ -186,9 +190,19 @@ host-bound open, resume, callbacks, interruption, failure, and joined cleanup.
 Soundcheck and Nucleus Agent Chat are accepted consumers. The bounded
 workspace-write runtime required by Nucleus task execution is complete without
 widening read-only chat. The planned provider-route and model-catalogue
-expansion is realized. The current 22-solution feature matrix records 437
-`No` cells and 29 `Not applicable` cells after the input/callback
-tranche. Every current `No` has a machine-checked evidence classification.
+expansion is realized. The feature-matrix completion programme is closed. Its
+final 660-cell audited
+region contains 202 `Yes`, 234 machine-classified `No`, 216
+`Not applicable`, four `Partial`, two `Caller-supplied`, and two
+`Session-negotiated` cells. The starting 61-cell residual inventory closes at
+two `Yes`, 25 `No`, and 34 `Not applicable`. Qwen headless and Ollama attached
+now realize the selected interactive proof pair under Contract 043 and
+Research 062: one owned Qwen child per turn against private harness-retained
+state, versus bounded transactional Ollama transcript replay over independent
+attached-runtime requests. Neither route gains public resume,
+provider-session management, server ownership, media, or billed-cost
+authority. Remaining gaps are evidence-labelled backlog, not implicit support
+or a selected implementation queue.
 Usage evidence has 19 `Yes`, one serving-only `Not applicable`, and two honest
 Kimi Code `No` cells. Each composite solution row records route ownership in
 its notes where sibling routes contribute different capabilities. The first
@@ -202,16 +216,25 @@ now realize all six selected cells. Anthropic image and search stay on
 one-attempt structured inference; its consumer tool exchange uses a separate
 resource-free direct-continuation session. Contract 041 and deterministic
 offline fixtures fix the implementation boundary. The 58-cell
-session-continuity audit finds seven contract-ready load or resume cells, four
-retained hosted-session contract gaps, one upstream replay-ordering block, ten
-exact route absences, and 36 operation-shape mismatches. All 20 native-close
-cells remain honest `No`. The first tranche selects Codex app-server load,
-Claude Agent ACP load and resume, and OpenCode HTTP load and resume; exact
-maintained-range corpora now cover every selected version segment with no
-shared contract change. Production implementation is next. Provider retention,
-retained execution, workspace/runtime, and realtime media remain on the
-runway. The shared hosted
-foundation and attached OpenCode HTTP/SSE proof are complete. The
+session-continuity audit produced five realized load or resume cells, four
+retained hosted-session contract gaps, three upstream or resource-binding
+blocks, ten exact route absences, and 36 operation-shape mismatches. All 20 native-close
+cells remain honest `No`. The first tranche realizes Codex app-server load,
+Claude Agent ACP load and resume, and OpenCode HTTP load and resume through
+public prepared operations. Exact maintained-range corpora and production
+tests cover every selected version segment with no shared contract change.
+The closeout and dirty-snapshot package proof pass. Pi RPC load and resume stay
+`No`: through current `0.82.1`, public attachment can replace the host-leased
+working resource with the cwd stored in provider state. Provider retention
+closes at 58 `Not applicable`, five realized `Yes`, and twelve exact
+selected-surface `No` cells. The 59-cell retained-execution audit selects an
+exact Kimi integrity tranche: explicit harness retry acceptance and
+maximum-one local-server cursor reattachment. Contract 042, the offline
+corpus, production Kimi paths, matrix, and package closeout are complete. The
+next 31-cell family audits working-resource selection and bounded workspace
+text writes without conflating either with containment. Runtime and realtime
+media remain on the runway. The
+shared hosted foundation and attached OpenCode HTTP/SSE proof are complete. The
 provider-supported Anthropic Models and Messages direct driver is complete.
 ACP v1 and Gemini CLI `0.51.0` authority, fixtures, bounded protocol transport,
 read-only filesystem callback, and production driver are realized. Shared

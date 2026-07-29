@@ -1,0 +1,79 @@
+{
+  "fixture_schema": "swallowtail.qwen.headless-interactive.v1",
+  "source": {
+    "version": "0.19.11",
+    "commit": "f22cf5009ee3eb26b5c5de2eca6e1f1d0ffee0ad",
+    "behavior_revision": "qwen.headless-restarted-session-v1",
+    "source_sha256": {
+      "packages/cli/src/config/config.ts": "e5decf24a473bd1095d1184c5092c45159222184eca9fe52a186f76e14af1ea4",
+      "packages/core/src/services/sessionService.ts": "b6c7a63b5856e20ca53e0b612e0a2c8e95a1869c9948069a1034c3b83ffd4788",
+      "packages/cli/src/nonInteractive/session.ts": "9a907a77c28bd0738ba64e5bf40168a2651d882cb46c9510dd20c1f64ea3753c"
+    }
+  },
+  "route": {
+    "execution_layer": "harness_interaction",
+    "operation_shape": "interactive_session",
+    "continuity_owner": "harness_retained_project_transcript",
+    "turn_transport": "one_owned_child_per_turn",
+    "working_resource": "required_exact_preflight_binding",
+    "provider_state_policy": "durable_provider_session_preserved"
+  },
+  "invocation": {
+    "base_profile": "protocol.json",
+    "first_turn_additional_arguments": [],
+    "continued_turn_additional_arguments": [
+      "--resume",
+      "{exact_provider_session_id}"
+    ],
+    "forbidden_arguments": [
+      "--continue",
+      "--fork-session",
+      "--session-id",
+      "--sandbox"
+    ],
+    "prompt_transport": "stdin_text",
+    "provider_reference_source": "stream_session_id",
+    "provider_reference_must_match_every_event": true
+  },
+  "bounds": {
+    "maximum_turns": 24,
+    "maximum_stream_records_per_turn": 4096,
+    "maximum_line_bytes": 1048576
+  },
+  "commit": {
+    "completed_clean_turn_reusable": true,
+    "provider_failure_invalidates_session": true,
+    "protocol_failure_invalidates_session": true,
+    "provider_reference_mismatch_invalidates_session": true,
+    "cancellation_invalidates_session": true,
+    "deadline_invalidates_session": true,
+    "cleanup_uncertainty_invalidates_session": true
+  },
+  "capabilities": {
+    "interactive_session": true,
+    "streaming_events": true,
+    "usage_evidence": true,
+    "public_load_session": false,
+    "public_resume_session": false,
+    "provider_session_archive": false,
+    "provider_session_restore": false,
+    "provider_session_delete": false,
+    "native_session_close": false,
+    "consumer_tool_exchange": false,
+    "workspace_write": false,
+    "external_search": false,
+    "sandbox_or_containment": false,
+    "realtime_media": false,
+    "billed_cost": false
+  },
+  "cleanup": {
+    "turn_child_joined_before_next_turn": true,
+    "session_close_preserves_provider_state": true,
+    "session_close_deletes_provider_state": false
+  },
+  "fixtures": {
+    "first_turn": "interactive-first-turn.jsonl",
+    "continued_turn": "interactive-continued-turn.jsonl",
+    "session_mismatch": "interactive-session-mismatch.jsonl"
+  }
+}

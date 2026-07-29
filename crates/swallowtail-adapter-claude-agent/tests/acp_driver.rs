@@ -11,8 +11,9 @@ use support::{FixtureHost, Scenario};
 use swallowtail_adapter_claude_agent::ClaudeAgentAcpDriver;
 use swallowtail_core::ExecutionHostId;
 use swallowtail_runtime::{
-    CleanupOutcome, EnvironmentRef, InteractiveSessionDriver, OperationContent, RuntimeEventKind,
-    RuntimeTurnId, TerminalStatus, TurnRequest,
+    CleanupOutcome, EnvironmentRef, InteractiveSessionDriver, LoadSessionRequest, OperationContent,
+    RequestId, ResumeSessionRequest, RuntimeEventKind, RuntimeTurnId, SessionResumeBinding,
+    TerminalStatus, TurnRequest,
 };
 
 #[test]
@@ -99,6 +100,76 @@ fn qualified_milestones_and_unverified_newer_use_one_exact_read_only_session_sha
             assert_eq!(host.resource_releases(), 1);
             assert_eq!(host.credential_releases(), 1);
         }
+    }
+}
+
+#[test]
+fn qualified_versions_load_ordered_replay_and_resume_without_replay() {
+    for version in [
+        "0.53.0", "0.54.0", "0.54.1", "0.55.0", "0.56.0", "0.57.0", "0.58.1", "0.59.0", "0.60.0",
+        "0.61.0",
+    ] {
+        let host_id =
+            ExecutionHostId::new(format!("fixture.host.continuity-{version}")).expect("valid host");
+        let selected = selection(host_id.clone(), version);
+        let binding = SessionResumeBinding::new(
+            swallowtail_core::SessionRef::new("claude-agent-session-fixture").unwrap(),
+            selected.plan.instance_id().clone(),
+            selected.plan.execution_host_id().clone(),
+            selected.plan.model_route_id().unwrap().clone(),
+            selected.plan.model_id().unwrap().clone(),
+            selected.resource.clone(),
+            swallowtail_core::SessionAccessPolicy::ambient_harness(
+                swallowtail_core::ResourceAccess::Read,
+            ),
+        );
+        let host = FixtureHost::new(Scenario::Success, version);
+        let services = host.services(host_id.clone());
+        let driver = driver(selected.credential);
+        let loaded = block_on(
+            driver.load_session(
+                selected.plan.clone(),
+                LoadSessionRequest::from_plan(
+                    &selected.plan,
+                    RequestId::new(format!("load-{version}")).unwrap(),
+                    binding.clone(),
+                    selected.resource.clone(),
+                    None,
+                )
+                .unwrap(),
+                services.clone(),
+            ),
+        )
+        .expect("session loads");
+        assert_eq!(
+            loaded
+                .replay()
+                .map(swallowtail_runtime::SessionReplayItem::sequence)
+                .collect::<Vec<_>>(),
+            [0, 1]
+        );
+        let (_, handle) = loaded.into_parts();
+        assert_eq!(handle.resume_binding(), Some(&binding));
+        assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+
+        let resume_host = FixtureHost::new(Scenario::Success, version);
+        let resumed = block_on(
+            driver.resume_session(
+                selected.plan.clone(),
+                ResumeSessionRequest::from_plan(
+                    &selected.plan,
+                    RequestId::new(format!("resume-{version}")).unwrap(),
+                    binding.clone(),
+                    selected.resource,
+                    None,
+                )
+                .unwrap(),
+                resume_host.services(host_id),
+            ),
+        )
+        .expect("session resumes");
+        assert_eq!(resumed.resume_binding(), Some(&binding));
+        assert_eq!(block_on(resumed.close()), CleanupOutcome::Clean);
     }
 }
 

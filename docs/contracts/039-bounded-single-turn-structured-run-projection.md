@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-27
+Updated: 2026-07-28
 
 ## Purpose
 
@@ -30,8 +30,11 @@ operation-private process, connection, session, conversation, or owned remote
 resource when the exact driver contract requires it.
 
 Internal lifecycle steps do not become consumer session authority. The run
-exposes no reusable interactive handle, resume binding, provider-session
-management binding, or silent continuation.
+exposes no reusable interactive handle, resume binding, or silent
+continuation. An exact durable harness route may return one take-once
+provider-session management binding after successful terminal completion when
+Contract 038 independently qualifies its origin and actions. That binding does
+not make the structured run resumable or interactive.
 
 ## Independent Role Qualification
 
@@ -123,6 +126,12 @@ history deletion. Process exit does not imply transcript deletion.
 The run keeps harness interaction as its execution layer. It does not become
 direct model inference because the consumer submits only one prompt.
 
+Provider-managed recovery and active-turn stream reattachment remain
+prohibited unless the exact route independently satisfies Contract 042.
+Neither durable session retention nor asynchronous prompt acceptance supplies
+that authority. A qualified reattachment submits no second prompt and creates
+no replacement session or turn.
+
 The Claude Agent ACP projection is an ambient read-write conversion profile,
 separate from its read-only interactive profile. Its immutable plan requires a
 filesystem working resource with `ResourceAccess::ReadWrite`. Session creation
@@ -167,6 +176,30 @@ Kimi local-server structured runs require `DurableAllowed`. Closing the run
 does not delete the created Kimi thread. Archive is reported only when the
 exact operation sends and confirms the native archive effect.
 
+An exact harness route may expose two separate named structured profiles:
+
+- durable retention without operation-owned deletion
+- temporary retention with qualified operation-owned deletion
+
+The temporary profile is opt-in. Its immutable plan must require
+`ProviderTemporaryRetention` and
+`OwnedRemoteResourceDeletion` for the exact resource kind. It may delete only
+the operation-private session or transcript created by that run. It cannot
+delete a consumer-selected persistent session, relabel close as deletion, or
+change the durable profile.
+
+Claude Agent ACP may qualify temporary cleanup by sending its exact native
+close, then its already-qualified provider-data delete for the
+operation-private session. Gemini CLI headless may qualify temporary cleanup
+by joining the run process, invoking the separately qualified stored-
+transcript delete role, and reconciling exact history absence. Gemini ACP
+cannot borrow that CLI capability.
+
+A successful durable Gemini CLI headless run may expose the take-once
+management binding qualified by Contract 038. It is unavailable before
+terminal completion. Failed, cancelled, timed-out, and temporary-cleanup runs
+return no binding. A raw provider run reference remains insufficient.
+
 ## Cancellation, Deadline, And Cleanup
 
 Cancellation and deadline target the active provider turn or response first,
@@ -180,6 +213,13 @@ Every terminal path:
 - joins all owned work
 - releases working resources, endpoints, and credentials in their contracted
   order
+
+When a profile promises operation-owned deletion, the deletion attempt joins
+before access and working-resource release. Terminal inference status and
+deletion truth remain separate. Confirmed deletion records the exact owned
+resource; failed or incomplete reconciliation records unconfirmed deletion
+and degraded cleanup. Drop performs no provider deletion and cannot report
+cleanup success.
 
 Cancellation acknowledgement remains distinct from terminal cancellation.
 Provider completion remains distinct from cleanup success. A cleanup failure
@@ -225,7 +265,9 @@ The projection assertion pack proves:
 - ordered events, callbacks, usage, and terminal outcome
 - cancellation and deadline invalidation
 - explicit retention agreement
-- no reusable session, connection, or management binding escape
+- no reusable session or connection escape
+- any post-run management binding is exact, independently qualified,
+  take-once, and terminal-success-only
 - joined cleanup under local and remote-authoritative host identities
 - safe diagnostics without prompts, outputs, payloads, credentials, paths, or
   raw provider errors

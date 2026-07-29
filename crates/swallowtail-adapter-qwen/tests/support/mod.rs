@@ -8,7 +8,7 @@ mod time;
 #[allow(unused_imports)]
 pub use preflight::{plan, plan_for, request, request_for, working_resource};
 #[allow(unused_imports)]
-pub use process::{FakeProcessService, ProcessState};
+pub use process::{FakeProcessService, ProcessState, ScriptedProcessService};
 pub use task::TaskState;
 pub use time::{ImmediateTimeService, PendingTimeService};
 

@@ -87,6 +87,7 @@ pub(super) fn model_route(
 pub(super) fn requirements(
     prepared: &OllamaPreparedIntegration,
     route: &ModelRoute,
+    operation_shape: OperationShape,
     role: DriverRole,
     capabilities: impl IntoIterator<Item = CapabilityRequirement>,
 ) -> OperationRequirements {
@@ -94,7 +95,7 @@ pub(super) fn requirements(
     let detail = prepared.runtime().selected_detail();
     OperationRequirements::new(
         ExecutionLayer::DirectModelInference,
-        OperationShape::StructuredRun,
+        operation_shape,
         role,
         prepared.instance().execution_host_id().clone(),
         AccessRequirement::new(prepared.access_profile().id().clone())

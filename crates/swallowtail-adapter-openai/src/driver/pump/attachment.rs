@@ -108,26 +108,26 @@ fn stream_terminal(
             if snapshot.output_text.as_deref() == Some(output)
                 && output_done == Some(output) =>
         {
-            let mut state = FinalState::new(TerminalStatus::Completed);
+            let mut state = FinalState::provider_terminal(TerminalStatus::Completed);
             state.output = snapshot.output_text;
             state.usage = snapshot.usage;
             state
         }
-        BackgroundStatus::Completed => FinalState::new(provider_status(failure(
+        BackgroundStatus::Completed => FinalState::provider_terminal(provider_status(failure(
             "swallowtail.openai.output_mismatch",
             "OpenAI completed output did not match ordered stream output",
         ))),
         BackgroundStatus::Cancelled => {
-            let mut state = FinalState::new(TerminalStatus::Cancelled);
+            let mut state = FinalState::provider_terminal(TerminalStatus::Cancelled);
             state.cancellation = Some(ProviderCancellationOutcome::Confirmed);
             state.usage = snapshot.usage;
             state
         }
-        BackgroundStatus::Incomplete => FinalState::new(provider_status(failure(
+        BackgroundStatus::Incomplete => FinalState::provider_terminal(provider_status(failure(
             "swallowtail.openai.response_incomplete",
             "OpenAI background response was incomplete",
         ))),
-        BackgroundStatus::Failed => FinalState::new(provider_status(failure(
+        BackgroundStatus::Failed => FinalState::provider_terminal(provider_status(failure(
             "swallowtail.openai.response_failed",
             "OpenAI background response failed",
         ))),

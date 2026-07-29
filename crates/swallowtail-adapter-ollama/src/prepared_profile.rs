@@ -6,8 +6,14 @@ mod input;
 mod inventory;
 #[path = "prepared_profile/plan.rs"]
 mod plan;
+#[path = "prepared_profile/session.rs"]
+mod session;
 
 pub use inference::OllamaPreparedInferenceAttempt;
-pub use input::{OllamaInferenceAttemptInput, OllamaInventoryProfileInput, OllamaModelSelection};
+pub use input::{
+    OllamaInferenceAttemptInput, OllamaInventoryProfileInput, OllamaModelSelection,
+    OllamaSessionProfileInput,
+};
 pub use inventory::{OllamaInventorySnapshot, OllamaPreparedInventory};
 pub use plan::OllamaPreparedEvidence;
+pub use session::OllamaPreparedSession;

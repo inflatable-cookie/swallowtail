@@ -220,6 +220,28 @@ fn handle(mut stream: TcpStream, fixture: StreamFixture, state: HandleState, ser
         let mut body = fixture[2]["response"]["body"].clone();
         body["version"] = serde_json::Value::String(server_version.to_owned());
         respond_json(&mut stream, 200, &body.to_string());
+    } else if target.starts_with("GET ") && path.starts_with("/session/ses_fixture/message?") {
+        if path.contains("before=") {
+            respond_json(
+                &mut stream,
+                200,
+                &message_page(&[("msg_1", "Earlier question."), ("msg_2", "Earlier answer.")])
+                    .to_string(),
+            );
+        } else {
+            respond_json_with_cursor(
+                &mut stream,
+                &message_page(&[("msg_3", "Later question."), ("msg_4", "Later answer.")])
+                    .to_string(),
+                "cursor-older",
+            );
+        }
+    } else if target.starts_with("GET ") && path.starts_with("/session/ses_fixture?") {
+        respond_json(
+            &mut stream,
+            200,
+            &serde_json::json!({"id":"ses_fixture","version":server_version}).to_string(),
+        );
     } else if target.starts_with("DELETE ") && path.starts_with("/session/") {
         match fixture {
             StreamFixture::DeleteMissing => respond_json(
@@ -262,6 +284,28 @@ fn handle(mut stream: TcpStream, fixture: StreamFixture, state: HandleState, ser
     }
 }
 
+fn message_page(messages: &[(&str, &str)]) -> serde_json::Value {
+    serde_json::Value::Array(
+        messages
+            .iter()
+            .enumerate()
+            .map(|(index, (id, text))| {
+                let role = if index % 2 == 0 { "user" } else { "assistant" };
+                serde_json::json!({
+                    "info":{"id":id,"sessionID":"ses_fixture","role":role},
+                    "parts":[{
+                        "id":format!("prt_{id}"),
+                        "messageID":id,
+                        "sessionID":"ses_fixture",
+                        "type":"text",
+                        "text":text
+                    }]
+                })
+            })
+            .collect(),
+    )
+}
+
 fn read_request(stream: &mut TcpStream) -> Option<(String, String)> {
     let mut bytes = Vec::new();
     let mut chunk = [0_u8; 4096];
@@ -298,6 +342,15 @@ fn respond_json(stream: &mut TcpStream, status: u16, body: &str) {
     write!(
         stream,
         "HTTP/1.1 {status} {reason}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}",
+        body.len()
+    )
+    .expect("fixture response writes");
+}
+
+fn respond_json_with_cursor(stream: &mut TcpStream, body: &str, cursor: &str) {
+    write!(
+        stream,
+        "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nX-Next-Cursor: {cursor}\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}",
         body.len()
     )
     .expect("fixture response writes");

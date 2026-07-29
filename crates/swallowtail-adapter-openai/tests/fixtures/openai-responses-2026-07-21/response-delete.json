@@ -1,0 +1,73 @@
+{
+  "fixture_schema": 1,
+  "claim_id": "openai.responses-background.owned-response-delete-1",
+  "facade_revision": "openai-responses-background-2026-07-21",
+  "openapi_version": "2.3.0",
+  "resource": "response",
+  "request": {
+    "method": "DELETE",
+    "path": "/v1/responses/resp_fixture_123"
+  },
+  "cases": [
+    {
+      "id": "terminal_response_deleted",
+      "provider_terminal_known": true,
+      "status": 200,
+      "body": {
+        "id": "resp_fixture_123",
+        "object": "response",
+        "deleted": true
+      },
+      "deletion": "confirmed",
+      "cleanup": "clean"
+    },
+    {
+      "id": "mismatched_response",
+      "provider_terminal_known": true,
+      "status": 200,
+      "body": {
+        "id": "resp_other",
+        "object": "response",
+        "deleted": true
+      },
+      "deletion": "unconfirmed",
+      "cleanup": "degraded"
+    },
+    {
+      "id": "false_acknowledgement",
+      "provider_terminal_known": true,
+      "status": 200,
+      "body": {
+        "id": "resp_fixture_123",
+        "object": "response",
+        "deleted": false
+      },
+      "deletion": "unconfirmed",
+      "cleanup": "degraded"
+    },
+    {
+      "id": "not_found",
+      "provider_terminal_known": true,
+      "status": 404,
+      "body": {
+        "error": "<REDACTED_PROVIDER_ERROR>"
+      },
+      "deletion": "unconfirmed",
+      "cleanup": "degraded"
+    },
+    {
+      "id": "remote_state_unconfirmed",
+      "provider_terminal_known": false,
+      "delete_dispatched": false,
+      "deletion": "unconfirmed",
+      "cleanup": "degraded"
+    }
+  ],
+  "ordering": [
+    "close_active_stream",
+    "establish_provider_terminal_truth",
+    "delete_response_once",
+    "join_delete_transport",
+    "release_credential"
+  ]
+}

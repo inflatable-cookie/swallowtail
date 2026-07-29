@@ -7,7 +7,9 @@ mod cleanup;
 mod deadline;
 
 pub(in crate::driver) use cleanup::{cleanup_failure, merge_cleanup};
-use cleanup::{close_provider_session, finish_cleanup, join_connection};
+use cleanup::{
+    close_provider_session, delete_owned_provider_session, finish_cleanup, join_connection,
+};
 use deadline::spawn_deadline;
 
 pub(super) type ActiveSlot = Arc<Mutex<Option<ActiveTask>>>;
@@ -23,8 +25,10 @@ pub(super) struct ClaudeAgentSessionHandle {
     pub(super) runtime_id: RuntimeSessionId,
     pub(super) provider_ref: SessionRef,
     pub(super) provider_id: String,
+    pub(super) binding: swallowtail_runtime::SessionResumeBinding,
     pub(super) execution_host_id: swallowtail_core::ExecutionHostId,
     pub(super) native_close: bool,
+    pub(super) native_delete: bool,
     pub(super) provider_requests: swallowtail_core::ProviderRequestPolicy,
     pub(super) connection: Arc<AcpConnection>,
     pub(super) cancellation: SessionCancellation,
@@ -33,6 +37,48 @@ pub(super) struct ClaudeAgentSessionHandle {
     pub(super) resource: Option<ResourceLease>,
     pub(super) credential: Option<CredentialLease>,
     pub(super) active: ActiveSlot,
+}
+
+impl ClaudeAgentSessionHandle {
+    pub(super) async fn close_with_owned_cleanup(
+        mut self: Box<Self>,
+        owned_cleanup: bool,
+    ) -> (
+        CleanupOutcome,
+        Option<swallowtail_runtime::RemoteResourceDeletionOutcome>,
+    ) {
+        let mut active = self
+            .active
+            .lock()
+            .expect("ACP active-task lock poisoned")
+            .take();
+        if let Some(active) = active.as_mut()
+            && !active.turn.is_finished()
+        {
+            active.turn.mark_cancelled();
+        }
+        let native_close =
+            close_provider_session(&self.connection, &self.provider_id, self.native_close).await;
+        let (deletion, deletion_cleanup) = if owned_cleanup {
+            let (outcome, cleanup) = delete_owned_provider_session(
+                &self.connection,
+                &self.provider_id,
+                self.native_delete,
+            )
+            .await;
+            (Some(outcome), cleanup)
+        } else {
+            (None, CleanupOutcome::NotApplicable)
+        };
+        self.connection.begin_close().await;
+        if let Some(active) = active.as_mut() {
+            let _ = join_active(active).await;
+        }
+        let task = join_connection(&mut self).await;
+        let cleanup =
+            finish_cleanup(self, merge_cleanup(native_close, deletion_cleanup), task).await;
+        (cleanup, deletion)
+    }
 }
 
 impl InteractiveSessionHandle for ClaudeAgentSessionHandle {
@@ -49,7 +95,7 @@ impl InteractiveSessionHandle for ClaudeAgentSessionHandle {
     }
 
     fn resume_binding(&self) -> Option<&swallowtail_runtime::SessionResumeBinding> {
-        None
+        Some(&self.binding)
     }
 
     fn start_turn<'a>(
@@ -163,28 +209,8 @@ impl InteractiveSessionHandle for ClaudeAgentSessionHandle {
         &self.cancellation
     }
 
-    fn close(mut self: Box<Self>) -> BoxFuture<'static, CleanupOutcome> {
-        Box::pin(async move {
-            let mut active = self
-                .active
-                .lock()
-                .expect("ACP active-task lock poisoned")
-                .take();
-            if let Some(active) = active.as_mut()
-                && !active.turn.is_finished()
-            {
-                active.turn.mark_cancelled();
-            }
-            let native_close =
-                close_provider_session(&self.connection, &self.provider_id, self.native_close)
-                    .await;
-            self.connection.begin_close().await;
-            if let Some(active) = active.as_mut() {
-                let _ = join_active(active).await;
-            }
-            let task = join_connection(&mut self).await;
-            finish_cleanup(self, native_close, task).await
-        })
+    fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome> {
+        Box::pin(async move { self.close_with_owned_cleanup(false).await.0 })
     }
 }
 

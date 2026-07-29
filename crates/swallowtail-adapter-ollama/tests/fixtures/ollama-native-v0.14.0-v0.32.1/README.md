@@ -36,3 +36,9 @@ Every tagged boundary retains `ChatRequest.format` and `ChatRequest.think`.
 exact reasoning value, and provider-native schema request. Model support still
 requires exact prepared capability evidence. Card 086 realizes the prepared
 mapping across the qualified range and visible unverified-newer execution.
+
+`interactive-session.json` freezes a separate resource-free interactive
+profile across the same four qualification points. The turn fixtures prove
+ordered committed-history replay, complete-response commit, and unchanged
+history after partial provider failure. Session close clears private history
+without stopping the attached runtime or unloading its model.

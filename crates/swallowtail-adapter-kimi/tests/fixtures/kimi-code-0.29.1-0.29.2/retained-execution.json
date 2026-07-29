@@ -1,0 +1,107 @@
+{
+  "qualified_versions": {
+    "headless": ["0.29.0", "0.29.1", "0.29.2"],
+    "local_server": ["0.28.1", "0.29.0", "0.29.1", "0.29.2"]
+  },
+  "managed_recovery": {
+    "policy": {
+      "prohibited": "reject_before_effects",
+      "managed_allowed": "accept_exact_selected_role"
+    },
+    "retry": {
+      "failed_attempt": 1,
+      "next_attempt": 2,
+      "max_attempts": 3,
+      "delay_ms": 100,
+      "status_code": 429
+    },
+    "reject": [
+      "missing_attempt",
+      "decreasing_attempt",
+      "next_attempt_above_maximum",
+      "contradictory_duplicate",
+      "foreign_turn",
+      "malformed_status"
+    ],
+    "stable_diagnostic_excludes": [
+      "error_name",
+      "error_message",
+      "raw_payload",
+      "session_id",
+      "prompt_id",
+      "credential",
+      "endpoint"
+    ]
+  },
+  "local_server_reattachment": {
+    "maximum": 1,
+    "identity": {
+      "session_id": "fixture-session-private",
+      "prompt_id": "fixture-prompt-private",
+      "turn_id": 7
+    },
+    "last_accepted_cursor": {
+      "seq": 11,
+      "epoch": "fixture-epoch-private"
+    },
+    "subscribe": {
+      "type": "subscribe",
+      "id": "swallowtail-subscribe",
+      "payload": {
+        "session_ids": ["fixture-session-private"],
+        "cursors": {
+          "fixture-session-private": {
+            "seq": 11,
+            "epoch": "fixture-epoch-private"
+          }
+        }
+      }
+    },
+    "ack": {
+      "type": "ack",
+      "id": "swallowtail-subscribe",
+      "code": 0,
+      "payload": {
+        "accepted": ["fixture-session-private"],
+        "not_found": [],
+        "resync_required": [],
+        "cursors": {
+          "fixture-session-private": {
+            "seq": 11,
+            "epoch": "fixture-epoch-private"
+          }
+        }
+      }
+    },
+    "first_new_event": {
+      "type": "turn.ended",
+      "seq": 12,
+      "epoch": "fixture-epoch-private",
+      "session_id": "fixture-session-private",
+      "payload": {
+        "turnId": 7,
+        "reason": "completed",
+        "durationMs": 25
+      }
+    },
+    "reject": [
+      "disconnect_before_prompt_id",
+      "foreign_session_ack",
+      "missing_acceptance",
+      "resync_required",
+      "cursor_gap",
+      "epoch_change",
+      "foreign_turn",
+      "malformed_ack",
+      "second_disconnect"
+    ],
+    "forbidden_dispatch": [
+      "prompt_submit",
+      "session_create",
+      "callback_reply",
+      "model_change",
+      "route_change",
+      "credential_reacquire"
+    ]
+  }
+}

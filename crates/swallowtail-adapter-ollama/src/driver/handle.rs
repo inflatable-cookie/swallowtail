@@ -5,21 +5,29 @@ use swallowtail_runtime::{
 
 struct RunCancellation {
     cancelled: Arc<AtomicBool>,
+    scope: CancellationScope,
 }
 
 impl RunCancellation {
     fn new(cancelled: Arc<AtomicBool>) -> Self {
-        Self { cancelled }
+        Self {
+            cancelled,
+            scope: CancellationScope::StructuredRun,
+        }
     }
 
-    fn is_requested(&self) -> bool {
-        self.cancelled.load(Ordering::SeqCst)
+    fn active_turn(cancelled: Arc<AtomicBool>) -> Self {
+        Self {
+            cancelled,
+            scope: CancellationScope::ActiveTurn,
+        }
     }
+
 }
 
 impl CancellationControl for RunCancellation {
     fn scope(&self) -> CancellationScope {
-        CancellationScope::StructuredRun
+        self.scope
     }
 
     fn request(&self) -> BoxFuture<'_, Result<CancellationAcknowledgement, RuntimeFailure>> {

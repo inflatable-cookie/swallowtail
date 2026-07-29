@@ -35,6 +35,12 @@ without refreshing providers or changing the default model. Research 046 and
 the separate `kimi-code-0.29.1-0.29.2` delta corpus qualify the later
 filtered-catalogue and global-event behavior without rewriting this baseline.
 
+`activity.jsonl` freezes the common qualified turn, step, thought, tool, and
+subagent lifecycle. The exact event schema has two segments: `0.28.1` omits
+only `agent.created` and `agent.disposed`; `0.29.0..=0.29.2` adds them without
+changing the common activity fixture. Unknown and malformed socket records
+freeze the namespace-or-fail boundary.
+
 All `/api/*`, `/openapi.json`, `/asyncapi.json`, and WebSocket access is bearer
 protected. Only `GET /api/v1/healthz` is unauthenticated. No credential appears
 in this corpus.

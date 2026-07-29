@@ -5,6 +5,16 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-07-29 Non-ACP Harness Activity Inventory](2026-07-29-non-acp-harness-activity-inventory.md)
+- [2026-07-29 ACP Adapter Activity Conformance](2026-07-29-acp-adapter-activity-conformance.md)
+- [2026-07-29 Shared ACP Activity Projection](2026-07-29-shared-acp-activity-projection.md)
+- [2026-07-29 ACP Activity Currentness And Corpus](2026-07-29-acp-activity-currentness-and-corpus.md)
+- [2026-07-29 Codex Exec Activity And Fidelity Closeout](2026-07-29-codex-exec-activity-closeout.md)
+- [2026-07-29 Codex App-Server Activity Projection](2026-07-29-codex-app-server-activity-projection.md)
+- [2026-07-29 Codex Activity Range Corpus](2026-07-29-codex-activity-range-corpus.md)
+- [2026-07-29 Observable Activity Common Conformance](2026-07-29-observable-activity-common-conformance.md)
+- [2026-07-29 Observable Activity Prepared Evidence](2026-07-29-observable-activity-prepared-evidence.md)
+- [2026-07-29 Observable Activity Runtime Kernel](2026-07-29-observable-activity-runtime-kernel.md)
 - [2026-07-29 Observable Agent Activity Roadmap Compilation](2026-07-29-observable-agent-activity-roadmap-compilation.md)
 - [2026-07-29 Residual Feature Matrix Programme Closeout](2026-07-29-residual-feature-matrix-programme-closeout.md)
 - [2026-07-29 Qwen And Ollama Interactive Implementation](2026-07-29-qwen-and-ollama-interactive-implementation.md)

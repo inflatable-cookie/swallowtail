@@ -1,5 +1,6 @@
 use super::*;
 
+mod exec_activity;
 mod session;
 mod session_management;
 mod topology;
@@ -50,6 +51,8 @@ fn structured_exec_derives_expanded_capabilities_policy_and_request() {
         Capability::Attachments,
         Capability::StructuredOutput,
         Capability::ExternalSearch,
+        Capability::StreamingEvents,
+        Capability::ObservableActivity,
     ] {
         assert!(
             profile

@@ -1,3 +1,4 @@
+use super::activity_profile::exec_activity_profile;
 use super::input::{CodexExecProfileInput, CodexExecProfileParts};
 use super::plan::{
     CodexPreparedEvidence, build_plan, descriptor, failure, instance_with_capabilities,
@@ -68,7 +69,14 @@ impl CodexPreparedIntegration {
     ) -> Result<CodexPreparedExec, PreparationFailure> {
         require_driver(self, CodexPreparedDriver::StructuredExec)?;
         let parts = input.into_parts();
-        let (capability_requirements, host_services) = exec_requirements(&parts)?;
+        let (mut capability_requirements, host_services) = exec_requirements(&parts)?;
+        let activity_profile = exec_activity_profile(self)?;
+        capability_requirements.extend([
+            CapabilityRequirement::new(Capability::StreamingEvents, []),
+            activity_profile
+                .capability_requirement()
+                .expect("available Codex exec activity has a capability requirement"),
+        ]);
         let capabilities = CapabilityProfile::new(capability_requirements.clone());
         let instance = instance_with_capabilities(self, capabilities.clone());
         let route = model_route(
@@ -116,7 +124,11 @@ impl CodexPreparedIntegration {
             request = request.with_structured_output(output);
         }
         Ok(CodexPreparedExec {
-            evidence: CodexPreparedEvidence::from_prepared(self, plan)?,
+            evidence: CodexPreparedEvidence::from_prepared_with_activity_profile(
+                self,
+                plan,
+                activity_profile,
+            )?,
             request,
         })
     }

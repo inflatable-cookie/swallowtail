@@ -1,0 +1,14 @@
+data: {"type":"message.part.updated","properties":{"part":{"id":"reasoning-fixture","sessionID":"session-fixture","messageID":"message-fixture","type":"reasoning","text":"fixture display thought","time":{"start":1}},"delta":"fixture display thought"}}
+
+data: {"type":"message.part.updated","properties":{"part":{"id":"text-fixture","sessionID":"session-fixture","messageID":"message-fixture","type":"text","text":"checking fixture","time":{"start":2}},"delta":"checking fixture"}}
+
+data: {"type":"message.part.updated","properties":{"part":{"id":"tool-fixture","sessionID":"session-fixture","messageID":"message-fixture","type":"tool","callID":"call-fixture","tool":"read","state":{"status":"pending","input":{},"raw":"fixture-private-raw"}}}}
+
+data: {"type":"message.part.updated","properties":{"part":{"id":"tool-fixture","sessionID":"session-fixture","messageID":"message-fixture","type":"tool","callID":"call-fixture","tool":"read","state":{"status":"running","input":{},"title":"Read fixture","time":{"start":3}}}}}
+
+data: {"type":"message.part.updated","properties":{"part":{"id":"tool-fixture","sessionID":"session-fixture","messageID":"message-fixture","type":"tool","callID":"call-fixture","tool":"read","state":{"status":"completed","input":{},"output":"fixture-private-output","title":"Read fixture","metadata":{},"time":{"start":3,"end":4}}}}}
+
+data: {"type":"message.part.updated","properties":{"part":{"id":"step-fixture","sessionID":"session-fixture","messageID":"message-fixture","type":"step-finish","reason":"stop","cost":0.001,"tokens":{"input":10,"output":2,"reasoning":1,"cache":{"read":0,"write":0}}}}}
+
+data: {"type":"session.idle","properties":{"sessionID":"session-fixture"}}
+

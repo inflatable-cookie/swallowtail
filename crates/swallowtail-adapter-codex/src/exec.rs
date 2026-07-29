@@ -1,3 +1,4 @@
+use crate::exec_events::ExecEventParser;
 use crate::exec_handle::{CodexExecRunHandle, ProcessCancellation};
 use crate::exec_input::{SharedExecMaterializations, prepare};
 use crate::exec_pump::{cleanup_failed_start, pump};
@@ -110,6 +111,9 @@ impl CodexExecDriver {
         })?;
         let scope = ScopeId::new(format!("codex-exec:{}", request.request_id().as_str()))
             .expect("request id produces a non-empty scope id");
+        let run_id = RuntimeRunId::new(format!("codex-exec:{}", request.request_id().as_str()))
+            .expect("request id produces a non-empty run id");
+        let parser = ExecEventParser::for_plan(run_id.clone(), &plan)?;
         let (event_sender, event_stream) = runtime_event_channel(EVENT_CAPACITY)?;
         let prepared = prepare(&plan, &request, &services, &scope, model, behavior).await?;
         let (arguments, materializations) = prepared.into_parts();
@@ -159,6 +163,7 @@ impl CodexExecDriver {
                         cancellation,
                         deadline,
                         materializations,
+                        parser,
                     )
                     .await;
                     let _ = terminal_sender.complete(outcome);
@@ -174,8 +179,6 @@ impl CodexExecDriver {
                 return Err(error);
             }
         };
-        let run_id = RuntimeRunId::new(format!("codex-exec:{}", request.request_id().as_str()))
-            .expect("request id produces a non-empty run id");
         Ok(Box::new(CodexExecRunHandle::new(
             request.request_id().clone(),
             run_id,

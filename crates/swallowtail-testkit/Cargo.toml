@@ -14,5 +14,8 @@ futures-core = "0.3"
 swallowtail-core.workspace = true
 swallowtail-runtime.workspace = true
 
+[dev-dependencies]
+serde_json = "1"
+
 [lints]
 workspace = true

@@ -1,6 +1,6 @@
 # 128 Non-ACP Harness Activity Inventory And Corpora
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-07-29
 Milestone: `../038-non-acp-harness-activity-coverage.md`
@@ -39,13 +39,13 @@ corpora before implementation.
 
 ## Acceptance Criteria
 
-- [ ] every remaining production harness route is accounted for
-- [ ] every unstable claim cites current authoritative evidence
-- [ ] all guaranteed version segments have exact corpus coverage or a stop
+- [x] every remaining production harness route is accounted for
+- [x] every unstable claim cites current authoritative evidence
+- [x] all guaranteed version segments have exact corpus coverage or a stop
       gate
-- [ ] harness-owned and consumer-owned tool activity remain separate
-- [ ] exact absences remain visible
-- [ ] implementation order is evidence-backed
+- [x] harness-owned and consumer-owned tool activity remain separate
+- [x] exact absences remain visible
+- [x] implementation order is evidence-backed
 
 ## Validation
 
@@ -63,3 +63,16 @@ corpora before implementation.
 Continue to card 129 only for the exact contract-ready HTTP, server, RPC, and
 managed-agent routes selected by the inventory.
 
+## Completion Evidence
+
+- Research 066 accounts for all eight routes and records exact currentness,
+  lifecycle, disclosure, correlation, ownership, unknown posture, and absence.
+- Contract 044 now binds activity-affecting partial and preview options into
+  immutable prepared route profiles.
+- The testkit inventory plus adapter-local fixtures freeze native lifecycle,
+  completion-only, partial, unknown, malformed, and failure cases.
+- OpenCode's 45 qualified releases, exact `1.14.51` gap, and Kimi's two
+  local-server event-schema segments are machine-checked.
+- Focused corpus tests: 4 passed.
+- `effigy qa:docs` and `effigy check:rust` passed.
+- Card 129 is ready. Cards 130-137 remain in bounds.

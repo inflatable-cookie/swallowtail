@@ -1,0 +1,75 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-07-29",
+  "axis": "kimi-code.executable",
+  "transport": "acp_v1_stdio_ndjson",
+  "wire_version": 1,
+  "qualified_segments": [
+    {
+      "range": "0.28.1",
+      "tag_commit": "efacf0452d46f5dbd67499eabc053869495d5213",
+      "acp_adapter": "0.3.4",
+      "acp_sdk": "0.23.0",
+      "stable_schema": "schema-v1.19.1",
+      "events_map_sha256": "5da50fef089b5b0bd250f5bc1eca4a9f8f3f706362bef6581ac53ba42be43a08",
+      "revision": "legacy-reasoning-activity"
+    },
+    {
+      "range": "0.29.0..=0.29.2",
+      "tag_commit": "8bf5bacba9e524c38fb808c0122070037ead25a8",
+      "acp_adapter": "0.3.5",
+      "acp_sdk": "0.23.0",
+      "stable_schema": "schema-v1.19.1",
+      "events_map_sha256": "5da50fef089b5b0bd250f5bc1eca4a9f8f3f706362bef6581ac53ba42be43a08",
+      "revision": "declared-effort-activity",
+      "later_release_commits": {
+        "0.29.1": "f4c3967a417a539372eadab6c809d27b8a14c005",
+        "0.29.2": "8a45f10eddbb35c317047e82e567cdb59a220b4f"
+      }
+    }
+  ],
+  "current_external_release": {
+    "version": "0.30.0",
+    "published_at": "2026-07-29T03:39:09Z",
+    "tag_commit": "16c7189bd54a42fae65b1bbafd0843420523f797",
+    "events_map_sha256": "5da50fef089b5b0bd250f5bc1eca4a9f8f3f706362bef6581ac53ba42be43a08",
+    "classification": "unverified-newer",
+    "profile": "0.29.2-guarantee",
+    "activity_source_delta": "none",
+    "full_harness_qualification": false
+  },
+  "emitted_updates": [
+    "agent_message_chunk",
+    "agent_thought_chunk",
+    "available_commands_update",
+    "config_option_update",
+    "plan",
+    "tool_call",
+    "tool_call_update"
+  ],
+  "not_emitted_by_qualified_source": [
+    "current_mode_update",
+    "session_info_update",
+    "usage_update",
+    "user_message_chunk"
+  ],
+  "provider_specific": {
+    "tool_identity": "turnId:toolCallId",
+    "tool_delta_before_start": "lazy-create-pending-then-update-in-progress",
+    "tool_content": "replacement",
+    "tool_kind": "heuristic-provider-mapping",
+    "plan_source": "structured-todo-list-display",
+    "plan_semantics": "authoritative-full-replacement",
+    "commands": "deterministic-empty-unless-upper-layer-supplies",
+    "config": "authoritative-full-replacement"
+  },
+  "disclosure": {
+    "thought": "provider_display_content",
+    "typed_tool_content": "provider_display_content",
+    "rawInput": "excluded",
+    "rawOutput": "excluded",
+    "permission": "separate_callback_exchange",
+    "completion": "separate_prompt_response",
+    "unknown": "bounded_namespaced_or_fail_closed"
+  }
+}

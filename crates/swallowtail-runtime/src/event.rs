@@ -1,5 +1,6 @@
 use crate::{
-    CallbackId, DirectToolCallId, HarnessUiDisplay, OperationContent, ProviderObservation,
+    ActivityObservation, CallbackId, DirectToolCallId, HarnessUiDisplay, OperationContent,
+    ProviderObservation,
 };
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -20,6 +21,7 @@ pub enum RuntimeEventKind {
     OutputAvailable,
     CallbackRequested(CallbackId),
     DirectToolCallAvailable(DirectToolCallId),
+    Activity(ActivityObservation),
     ProviderObservation(ProviderObservation),
     HarnessUiDisplay(HarnessUiDisplay),
 }
@@ -37,6 +39,7 @@ impl RuntimeEventKind {
             | Self::OutputAvailable
             | Self::CallbackRequested(_)
             | Self::DirectToolCallAvailable(_)
+            | Self::Activity(_)
             | Self::ProviderObservation(_) => EventDelivery::Semantic,
             Self::HarnessUiDisplay(_) => EventDelivery::Semantic,
         }

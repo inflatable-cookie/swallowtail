@@ -18,6 +18,7 @@ contracts or architecture.
 - [Kimi Platform Prepared Integration](kimi-platform-prepared-integration.md)
 - [llama.cpp Prepared Integration](llama-cpp-prepared-integration.md)
 - [Ollama Attached Prepared Integration](ollama-attached-prepared-integration.md)
+- [Observable Activity](observable-activity.md)
 - [OpenAI Background Prepared Integration](openai-background-prepared-integration.md)
 - [OpenCode Attached Prepared Integration](opencode-attached-prepared-integration.md)
 - [Pi RPC Prepared Integration](pi-rpc-prepared-integration.md)

@@ -30,6 +30,10 @@ pub fn assert_prepared_operation_evidence_matches_plan(
     assert!(evidence.matches_plan(plan));
     assert_eq!(evidence.binding().driver_identity(), plan.driver_identity());
     assert_eq!(
+        evidence.binding().transport_family(),
+        plan.transport_family()
+    );
+    assert_eq!(
         evidence.binding().driver_role(),
         plan.requirements().driver_role()
     );

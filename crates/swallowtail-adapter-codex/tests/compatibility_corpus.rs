@@ -52,10 +52,8 @@ fn exec_corpus_freezes_baseline_checkpoints_and_rejections() {
             other => panic!("unexpected classification {other}"),
         }
     }
-    assert_eq!(
-        strings(&corpus["synthetic_rejections"]),
-        ["not-a-version", "0.146.0"]
-    );
+    assert_eq!(strings(&corpus["synthetic_rejections"]), ["not-a-version"]);
+    assert_unverified_newer(&corpus);
 }
 
 #[test]
@@ -151,11 +149,11 @@ fn app_server_corpus_keeps_stable_experimental_and_milestones_separate() {
             "0.107.0",
             "0.108.0",
             "0.109.0",
-            "0.146.0",
             "0.146.0-alpha.4",
             "not-a-version",
         ])
     );
+    assert_unverified_newer(&corpus);
 }
 
 #[test]
@@ -242,6 +240,23 @@ fn assert_exact_evidence(release: &Value) {
             assert_sha256(&release[key]);
         }
     }
+}
+
+fn assert_unverified_newer(corpus: &Value) {
+    let release = &corpus["unverified_newer"];
+    assert_eq!(release["version"], "0.146.0");
+    assert_eq!(
+        release["execution"],
+        "permitted-with-explicit-unverified-status"
+    );
+    assert_eq!(release["guaranteed"], false);
+    assert_eq!(
+        release["tag_commit"]
+            .as_str()
+            .expect("tag commit is text")
+            .len(),
+        40
+    );
 }
 
 fn assert_sha256(value: &Value) {

@@ -1,0 +1,12 @@
+{"type":"turn.started","seq":20,"epoch":"fixture-epoch","session_id":"fixture-session","timestamp":"2026-07-29T00:00:00.000Z","payload":{"turnId":7,"origin":{"kind":"user"}}}
+{"type":"turn.step.started","seq":21,"epoch":"fixture-epoch","session_id":"fixture-session","timestamp":"2026-07-29T00:00:00.001Z","payload":{"turnId":7,"step":1,"stepId":"step-fixture"}}
+{"type":"thinking.delta","seq":22,"volatile":true,"offset":0,"session_id":"fixture-session","timestamp":"2026-07-29T00:00:00.002Z","payload":{"turnId":7,"delta":"fixture display thought"}}
+{"type":"assistant.delta","seq":23,"volatile":true,"offset":0,"session_id":"fixture-session","timestamp":"2026-07-29T00:00:00.003Z","payload":{"turnId":7,"delta":"checking fixture"}}
+{"type":"tool.call.started","seq":24,"epoch":"fixture-epoch","session_id":"fixture-session","timestamp":"2026-07-29T00:00:00.004Z","payload":{"turnId":7,"toolCallId":"tool-fixture","name":"ReadFile","args":{"path":"fixture-private-path"},"description":"read fixture"}}
+{"type":"tool.progress","seq":25,"epoch":"fixture-epoch","session_id":"fixture-session","timestamp":"2026-07-29T00:00:00.005Z","payload":{"turnId":7,"toolCallId":"tool-fixture","update":{"content":"fixture-private-progress"}}}
+{"type":"tool.result","seq":26,"epoch":"fixture-epoch","session_id":"fixture-session","timestamp":"2026-07-29T00:00:00.006Z","payload":{"turnId":7,"toolCallId":"tool-fixture","output":"fixture-private-output","isError":false}}
+{"type":"turn.step.completed","seq":27,"epoch":"fixture-epoch","session_id":"fixture-session","timestamp":"2026-07-29T00:00:00.007Z","payload":{"turnId":7,"step":1,"stepId":"step-fixture","finishReason":"tool_calls"}}
+{"type":"subagent.spawned","seq":28,"epoch":"fixture-epoch","session_id":"fixture-session","timestamp":"2026-07-29T00:00:00.008Z","payload":{"subagentId":"agent-fixture","subagentName":"fixture","parentToolCallId":"tool-fixture","runInBackground":false}}
+{"type":"subagent.started","seq":29,"epoch":"fixture-epoch","session_id":"fixture-session","timestamp":"2026-07-29T00:00:00.009Z","payload":{"subagentId":"agent-fixture"}}
+{"type":"subagent.completed","seq":30,"epoch":"fixture-epoch","session_id":"fixture-session","timestamp":"2026-07-29T00:00:00.010Z","payload":{"subagentId":"agent-fixture","resultSummary":"fixture-private-summary"}}
+{"type":"turn.ended","seq":31,"epoch":"fixture-epoch","session_id":"fixture-session","timestamp":"2026-07-29T00:00:00.011Z","payload":{"turnId":7,"reason":"completed","durationMs":25}}

@@ -33,6 +33,23 @@ impl CodexPreparedEvidence {
         })
     }
 
+    pub(crate) fn from_prepared_with_activity_profile(
+        prepared: &CodexPreparedIntegration,
+        plan: PreflightPlan,
+        profile: swallowtail_core::ObservableActivityProfile,
+    ) -> Result<Self, PreparationFailure> {
+        Ok(Self {
+            observation: prepared.observation().clone(),
+            environment: prepared.environment().clone(),
+            operation:
+                swallowtail_runtime::PreparedOperationEvidence::from_plan_with_activity_profile(
+                    plan,
+                    prepared.access_evidence().clone(),
+                    profile,
+                )?,
+        })
+    }
+
     #[must_use]
     pub const fn observation(&self) -> &swallowtail_core::InstalledExecutableObservation {
         &self.observation

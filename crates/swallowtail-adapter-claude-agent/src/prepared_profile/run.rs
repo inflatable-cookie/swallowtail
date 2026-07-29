@@ -90,7 +90,8 @@ impl ClaudeAgentPreparedIntegration {
         let supports_reasoning = crate::selection::version_supports_config_options(
             self.observation().version().version(),
         );
-        let available = run_capabilities(supports_reasoning);
+        let activity_profile = super::activity_profile::activity_profile(self)?;
+        let available = with_activity(run_capabilities(supports_reasoning), &activity_profile);
         let mut operation_capabilities = operation_capabilities(&available, reasoning.as_ref());
         apply_retention(&mut operation_capabilities, retention);
         let capabilities = CapabilityProfile::new(operation_capabilities.clone());
@@ -124,10 +125,28 @@ impl ClaudeAgentPreparedIntegration {
             request = request.with_deadline(deadline);
         }
         Ok(ClaudeAgentPreparedRun {
-            evidence: ClaudeAgentPreparedEvidence::from_prepared(self, plan)?,
+            evidence: ClaudeAgentPreparedEvidence::from_prepared(self, plan, activity_profile)?,
             request,
         })
     }
+}
+
+fn with_activity(
+    capabilities: CapabilityProfile,
+    activity: &swallowtail_core::ObservableActivityProfile,
+) -> CapabilityProfile {
+    let mut requirements = capabilities
+        .iter()
+        .map(|(capability, constraints)| {
+            CapabilityRequirement::new(capability, constraints.iter().cloned())
+        })
+        .collect::<Vec<_>>();
+    requirements.push(
+        activity
+            .capability_requirement()
+            .expect("prepared Claude Agent activity is available"),
+    );
+    CapabilityProfile::new(requirements)
 }
 
 fn apply_retention(

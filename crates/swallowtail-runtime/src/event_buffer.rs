@@ -1,3 +1,4 @@
+use crate::activity::{ActivityLifecycleTracker, ActivityTransitionFailure};
 use crate::{EventDelivery, RuntimeEvent, RuntimeEventKind};
 use std::collections::VecDeque;
 use std::error::Error;
@@ -12,6 +13,12 @@ pub enum EventBufferFailureKind {
     NonMonotonicSequence,
     SemanticOverflow,
     LateEvent,
+    ActivityEnvelopeInvalid,
+    ActivityIdentityConflict,
+    ActivityPhaseRegression,
+    ActivityStatusRegression,
+    DuplicateActivityCompletion,
+    ActivityAfterCompletion,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -55,6 +62,7 @@ pub struct OrderedEventBuffer {
     last_sequence: Option<u64>,
     started: bool,
     terminal: bool,
+    activities: ActivityLifecycleTracker,
     quarantined_late_events: Vec<RuntimeEvent>,
 }
 
@@ -72,6 +80,7 @@ impl OrderedEventBuffer {
             last_sequence: None,
             started: false,
             terminal: false,
+            activities: ActivityLifecycleTracker::default(),
             quarantined_late_events: Vec::new(),
         })
     }
@@ -85,23 +94,15 @@ impl OrderedEventBuffer {
             ));
         }
         self.validate_order(&event)?;
+        let replacement = self.coalescible_replacement(&event)?;
+        self.validate_activity(&event)?;
 
-        if self.events.len() == self.capacity {
-            if event.delivery() == EventDelivery::Coalescible {
-                if let Some(index) = self
-                    .events
-                    .iter()
-                    .rposition(|buffered| buffered.delivery() == EventDelivery::Coalescible)
-                {
-                    self.events.remove(index);
-                } else {
-                    return Err(Self::semantic_overflow());
-                }
-            } else {
-                return Err(Self::semantic_overflow());
-            }
+        if let Some(index) = replacement {
+            self.events.remove(index);
         }
-
+        if matches!(event.kind(), RuntimeEventKind::Started) {
+            self.started = true;
+        }
         self.last_sequence = Some(event.sequence());
         self.events.push_back(event);
         Ok(())
@@ -130,7 +131,7 @@ impl OrderedEventBuffer {
         self.quarantined_late_events.iter()
     }
 
-    fn validate_order(&mut self, event: &RuntimeEvent) -> Result<(), EventBufferFailure> {
+    fn validate_order(&self, event: &RuntimeEvent) -> Result<(), EventBufferFailure> {
         match (event.kind(), self.started) {
             (RuntimeEventKind::Started, true) => {
                 return Err(EventBufferFailure::new(
@@ -138,7 +139,7 @@ impl OrderedEventBuffer {
                     "Operation emitted more than one start event",
                 ));
             }
-            (RuntimeEventKind::Started, false) => self.started = true,
+            (RuntimeEventKind::Started, false) => {}
             (_, false) => {
                 return Err(EventBufferFailure::new(
                     EventBufferFailureKind::MissingStart,
@@ -159,89 +160,77 @@ impl OrderedEventBuffer {
         Ok(())
     }
 
+    fn coalescible_replacement(
+        &self,
+        event: &RuntimeEvent,
+    ) -> Result<Option<usize>, EventBufferFailure> {
+        if self.events.len() < self.capacity {
+            return Ok(None);
+        }
+        if event.delivery() != EventDelivery::Coalescible {
+            return Err(Self::semantic_overflow());
+        }
+        self.events
+            .iter()
+            .rposition(|buffered| buffered.delivery() == EventDelivery::Coalescible)
+            .map(Some)
+            .ok_or_else(Self::semantic_overflow)
+    }
+
     fn semantic_overflow() -> EventBufferFailure {
         EventBufferFailure::new(
             EventBufferFailureKind::SemanticOverflow,
             "Event buffer cannot discard a semantic event",
         )
     }
+
+    fn validate_activity(&mut self, event: &RuntimeEvent) -> Result<(), EventBufferFailure> {
+        let RuntimeEventKind::Activity(observation) = event.kind() else {
+            return Ok(());
+        };
+        if event.content().is_some() {
+            return Err(EventBufferFailure::new(
+                EventBufferFailureKind::ActivityEnvelopeInvalid,
+                "Activity event cannot carry legacy operation content",
+            ));
+        }
+
+        self.activities
+            .observe(observation)
+            .map_err(activity_transition_failure)
+    }
+}
+
+fn activity_transition_failure(failure: ActivityTransitionFailure) -> EventBufferFailure {
+    let (kind, message) = match failure {
+        ActivityTransitionFailure::IdentityConflict => (
+            EventBufferFailureKind::ActivityIdentityConflict,
+            "Activity identity changed within one operation",
+        ),
+        ActivityTransitionFailure::PhaseRegression => (
+            EventBufferFailureKind::ActivityPhaseRegression,
+            "Activity start arrived after an earlier observation",
+        ),
+        ActivityTransitionFailure::StatusRegression => (
+            EventBufferFailureKind::ActivityStatusRegression,
+            "Activity status regressed",
+        ),
+        ActivityTransitionFailure::DuplicateCompletion => (
+            EventBufferFailureKind::DuplicateActivityCompletion,
+            "Activity emitted more than one completion",
+        ),
+        ActivityTransitionFailure::AfterCompletion => (
+            EventBufferFailureKind::ActivityAfterCompletion,
+            "Activity emitted an observation after completion",
+        ),
+    };
+    EventBufferFailure::new(kind, message)
 }
 
 #[cfg(test)]
-mod tests {
-    use super::{EventBufferFailureKind, OrderedEventBuffer};
-    use crate::{RuntimeEvent, RuntimeEventKind};
+#[path = "event_buffer/tests.rs"]
+mod tests;
 
-    #[test]
-    fn start_and_sequence_order_are_enforced() {
-        let mut buffer = OrderedEventBuffer::new(3).expect("capacity is valid");
-        let missing_start = buffer
-            .push(RuntimeEvent::new(1, RuntimeEventKind::Progress))
-            .expect_err("progress before start must fail");
-        assert_eq!(missing_start.kind(), EventBufferFailureKind::MissingStart);
-
-        buffer
-            .push(RuntimeEvent::new(1, RuntimeEventKind::Started))
-            .expect("start is valid");
-        let duplicate = buffer
-            .push(RuntimeEvent::new(2, RuntimeEventKind::Started))
-            .expect_err("duplicate start must fail");
-        assert_eq!(duplicate.kind(), EventBufferFailureKind::DuplicateStart);
-    }
-
-    #[test]
-    fn only_coalescible_events_can_be_replaced() {
-        let mut buffer = OrderedEventBuffer::new(2).expect("capacity is valid");
-        buffer
-            .push(RuntimeEvent::new(1, RuntimeEventKind::Started))
-            .expect("start is valid");
-        buffer
-            .push(RuntimeEvent::new(2, RuntimeEventKind::ProgressSnapshot))
-            .expect("snapshot is valid");
-        buffer
-            .push(RuntimeEvent::new(3, RuntimeEventKind::ProgressSnapshot))
-            .expect("new snapshot replaces the old snapshot");
-
-        assert_eq!(buffer.len(), 2);
-        assert_eq!(
-            buffer.pop_front().expect("start remains").kind(),
-            &RuntimeEventKind::Started
-        );
-        assert_eq!(
-            buffer
-                .pop_front()
-                .expect("latest snapshot remains")
-                .sequence(),
-            3
-        );
-    }
-
-    #[test]
-    fn semantic_overflow_fails_instead_of_dropping() {
-        let mut buffer = OrderedEventBuffer::new(1).expect("capacity is valid");
-        buffer
-            .push(RuntimeEvent::new(1, RuntimeEventKind::Started))
-            .expect("start is valid");
-        let failure = buffer
-            .push(RuntimeEvent::new(2, RuntimeEventKind::OutputAvailable))
-            .expect_err("semantic overflow must fail");
-
-        assert_eq!(failure.kind(), EventBufferFailureKind::SemanticOverflow);
-        assert_eq!(buffer.len(), 1);
-    }
-
-    #[test]
-    fn late_events_are_quarantined() {
-        let mut buffer = OrderedEventBuffer::new(2).expect("capacity is valid");
-        buffer
-            .push(RuntimeEvent::new(1, RuntimeEventKind::Started))
-            .expect("start is valid");
-        buffer.mark_terminal();
-        let failure = buffer
-            .push(RuntimeEvent::new(2, RuntimeEventKind::OutputAvailable))
-            .expect_err("late event must fail");
-
-        assert_eq!(failure.kind(), EventBufferFailureKind::LateEvent);
-        assert_eq!(buffer.quarantined_late_events().count(), 1);
-    }
-}
+#[cfg(test)]
+#[path = "event_buffer/activity_tests.rs"]
+mod activity_tests;

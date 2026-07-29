@@ -1,6 +1,7 @@
 use crate::{
-    ConformanceAssertion, ConformanceReport, ContractKernelFixture, PreflightFixtureCase,
-    ProfilePreflightFixture, RecordedHostCall, RecordingHostServices, SyntheticProfile,
+    ConformanceAssertion, ConformanceReport, ContractKernelFixture, ObservableActivityFixtureCase,
+    ObservableActivityTraceFixture, PreflightFixtureCase, ProfilePreflightFixture,
+    RecordedHostCall, RecordingHostServices, SyntheticProfile,
     assert_changed_revision_invalidates_plan, assert_extension_policies,
     assert_preflight_rejection_without_side_effects, assert_successful_preflight_binding,
     poll_immediate,
@@ -104,19 +105,18 @@ fn assert_rejections_precede_effects() {
 }
 
 fn assert_event_order() {
-    let (sender, mut stream) = runtime_event_channel(3).expect("capacity is valid");
-    sender
-        .send(RuntimeEvent::new(1, RuntimeEventKind::Started))
-        .expect("start is accepted");
-    sender
-        .send(RuntimeEvent::new(2, RuntimeEventKind::Progress))
-        .expect("progress is accepted");
-    sender
-        .send(RuntimeEvent::new(3, RuntimeEventKind::OutputAvailable))
-        .expect("output is accepted");
+    let fixture =
+        ObservableActivityTraceFixture::for_case(ObservableActivityFixtureCase::CompleteLifecycle);
+    let (sender, mut stream) =
+        runtime_event_channel(fixture.events().len()).expect("capacity is valid");
+    for event in fixture.events() {
+        sender
+            .send(event.clone())
+            .expect("canonical activity event is accepted");
+    }
     sender.mark_terminal();
 
-    let sequences: Vec<_> = (0..3)
+    let sequences: Vec<_> = (0..fixture.events().len())
         .map(|_| {
             poll_stream_item(&mut stream)
                 .expect("stream contains an event")
@@ -124,7 +124,7 @@ fn assert_event_order() {
                 .sequence()
         })
         .collect();
-    assert_eq!(sequences, [1, 2, 3]);
+    assert_eq!(sequences, [1, 2, 3, 4]);
     assert!(poll_stream_item(&mut stream).is_none());
 }
 

@@ -20,6 +20,7 @@ impl GeminiPreparedEvidence {
     pub(super) fn from_prepared(
         prepared: &GeminiPreparedIntegration,
         plan: PreflightPlan,
+        activity_profile: swallowtail_core::ObservableActivityProfile,
     ) -> Result<Self, PreparationFailure> {
         Ok(Self {
             observation: prepared.observation().clone(),
@@ -29,9 +30,10 @@ impl GeminiPreparedEvidence {
                 .credential_reference()
                 .expect("prepared Gemini access has one credential reference")
                 .clone(),
-            operation: PreparedOperationEvidence::from_plan(
+            operation: PreparedOperationEvidence::from_plan_with_activity_profile(
                 plan,
                 prepared.access_evidence().clone(),
+                activity_profile,
             )?,
         })
     }

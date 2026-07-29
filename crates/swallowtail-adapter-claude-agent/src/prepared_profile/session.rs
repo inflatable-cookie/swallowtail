@@ -174,7 +174,9 @@ impl ClaudeAgentPreparedIntegration {
         let supports_reasoning = crate::selection::version_supports_config_options(
             self.observation().version().version(),
         );
-        let capabilities = session_capabilities(supports_reasoning);
+        let activity_profile = super::activity_profile::activity_profile(self)?;
+        let capabilities =
+            with_activity(session_capabilities(supports_reasoning), &activity_profile);
         let instance = instance_with_capabilities(self, capabilities.clone());
         let requirements = requirements(self, operation_capabilities(&capabilities, &options));
         let (route_id, route_revision, model_id) = model.into_parts();
@@ -189,11 +191,29 @@ impl ClaudeAgentPreparedIntegration {
         let request = OpenSessionRequest::from_plan(&plan, request_id, working_resource, None)?
             .with_options(options);
         Ok(ClaudeAgentPreparedSession {
-            evidence: ClaudeAgentPreparedEvidence::from_prepared(self, plan)?,
+            evidence: ClaudeAgentPreparedEvidence::from_prepared(self, plan, activity_profile)?,
             request,
             management_instance: lifecycle_management_instance(self),
         })
     }
+}
+
+fn with_activity(
+    capabilities: CapabilityProfile,
+    activity: &swallowtail_core::ObservableActivityProfile,
+) -> CapabilityProfile {
+    let mut requirements = capabilities
+        .iter()
+        .map(|(capability, constraints)| {
+            CapabilityRequirement::new(capability, constraints.iter().cloned())
+        })
+        .collect::<Vec<_>>();
+    requirements.push(
+        activity
+            .capability_requirement()
+            .expect("prepared Claude Agent activity is available"),
+    );
+    CapabilityProfile::new(requirements)
 }
 
 fn lifecycle_management_instance(

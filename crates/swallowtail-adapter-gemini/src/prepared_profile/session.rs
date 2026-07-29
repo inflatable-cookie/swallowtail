@@ -67,27 +67,29 @@ impl GeminiPreparedIntegration {
     ) -> Result<GeminiPreparedSession, PreparationFailure> {
         let (request_id, working_resource, options, resource_access) = input.into_parts();
         validate_options(&options)?;
-        let capabilities = session_capabilities_for(resource_access);
-        let instance = instance_with_capabilities(self, capabilities);
+        let activity_profile = super::activity_profile::activity_profile(self)?;
+        let capabilities = session_capabilities_for(resource_access, &activity_profile);
+        let instance = instance_with_capabilities(self, capabilities.clone());
         let requirements = requirements(
             self,
-            session_capabilities_for(resource_access)
-                .iter()
-                .map(|(capability, constraints)| {
-                    CapabilityRequirement::new(capability, constraints.iter().cloned())
-                }),
+            capabilities.iter().map(|(capability, constraints)| {
+                CapabilityRequirement::new(capability, constraints.iter().cloned())
+            }),
             resource_access,
         );
         let plan = build_plan(self, &instance, &requirements)?;
         let request = OpenSessionRequest::from_plan(&plan, request_id, working_resource, None)?;
         Ok(GeminiPreparedSession {
-            evidence: GeminiPreparedEvidence::from_prepared(self, plan)?,
+            evidence: GeminiPreparedEvidence::from_prepared(self, plan, activity_profile)?,
             request,
         })
     }
 }
 
-fn session_capabilities_for(resource_access: ResourceAccess) -> CapabilityProfile {
+fn session_capabilities_for(
+    resource_access: ResourceAccess,
+    activity: &swallowtail_core::ObservableActivityProfile,
+) -> CapabilityProfile {
     let mut capabilities = session_capabilities()
         .iter()
         .filter(|(capability, _)| capability != &Capability::WorkingResource)
@@ -102,6 +104,11 @@ fn session_capabilities_for(resource_access: ResourceAccess) -> CapabilityProfil
             CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
         ],
     ));
+    capabilities.push(
+        activity
+            .capability_requirement()
+            .expect("prepared Gemini activity is available"),
+    );
     CapabilityProfile::new(capabilities)
 }
 

@@ -1,3 +1,4 @@
+mod activity_profile;
 mod input;
 mod management;
 mod plan;

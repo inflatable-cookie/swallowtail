@@ -143,6 +143,11 @@ assistant messages retain separate identities and phases. Final operation
 output remains explicit even when it is also the completed final assistant
 message.
 
+When a qualified older interface supplies an assistant item without classifying
+it as commentary or final answer, the adapter retains a provider-unspecified
+assistant phase with identity-only disclosure. It does not guess a content
+stream or finality.
+
 Content is bounded operation data, not a safe diagnostic. Default `Debug`,
 `Display`, diagnostics, preparation evidence, and provider observations redact
 it. Consumers must treat it as potentially sensitive task data.
@@ -162,6 +167,11 @@ Observable activity may carry:
 
 It must not duplicate raw callback bodies, credential material, authorization
 headers, endpoint secrets, or an uninterpreted provider envelope.
+
+Standardized field names do not make uninterpreted content safe. ACP
+`rawInput`, `rawOutput`, and untyped `_meta` remain excluded unless the exact
+adapter qualifies and maps a bounded typed subset. ACP tool content
+collections are replacement snapshots, not append-only deltas.
 
 Harness-owned tools may be observed without becoming consumer-executed tools.
 Consumer-executed tools may be correlated without granting the harness
@@ -184,6 +194,15 @@ It does not expose:
 The portable kind is `ReasoningSummary`, never a claim of complete reasoning.
 A provider-visible thought chunk may map to this kind only when the qualified
 interface defines it as client-display content.
+
+ACP `agent_thought_chunk` is a client-facing display channel, but the shared
+protocol decoder does not decide its portable activity kind. An exact adapter
+must distinguish readable model thought from provider use of the same channel
+for warnings or other display text.
+
+ACP plans are authoritative full replacements. ACP mode, command,
+configuration, session-info, and usage updates retain their existing typed
+metadata or evidence roles and do not become agent activity.
 
 ## Disclosure Strength
 
@@ -212,6 +231,8 @@ streaming events exposes an immutable activity profile derived from:
 - operation shape
 - selected transport
 - observed interface version and compatibility segment
+- selected interface options that change emitted activity, including explicit
+  partial-message or preview-event flags
 - activity kinds
 - lifecycle fidelity
 - content stream kinds
@@ -221,6 +242,9 @@ streaming events exposes an immutable activity profile derived from:
 
 Preparation requires no consumer enumeration of native provider event names.
 The profile is evidence, not a request to make unsupported events appear.
+An opt-in partial or preview stream is a different prepared behavior profile.
+A route that does not select the required option cannot claim its lifecycle or
+disclosure merely because the installed interface can emit it.
 
 A consumer may require exact activity constraints before effects. Missing
 constraints fail at preflight. A consumer may also accept a thinner profile
@@ -289,6 +313,7 @@ Deterministic fixtures prove:
 - tool, callback, request, and result correlation
 - command, file, plan, task, hook, and subagent detail where claimed
 - exact route activity profile and preflight requirements
+- option-dependent partial and preview fidelity
 - completion-only and unavailable fidelity
 - unknown semantic event preservation or safe failure
 - unverified-newer admission without profile widening

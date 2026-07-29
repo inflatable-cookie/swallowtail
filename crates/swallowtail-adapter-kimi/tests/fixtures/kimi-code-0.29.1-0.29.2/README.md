@@ -38,6 +38,10 @@ resume hint. The selected headless route does not set
 `KIMI_CODE_EXPERIMENTAL_FLAG`; experimental v2 print behavior remains outside
 the guarantee.
 
+Headless activity is completion-only. The unknown, malformed, and provider
+failure files complete the deterministic activity failure corpus. Resume hints
+remain metadata, not activity.
+
 `retained-execution.json` freezes the Contract 042 policy and failure matrix
 for explicit Kimi managed recovery and maximum-one local-server active-turn
 reattachment. It reuses the exact qualified retry event and WebSocket v2

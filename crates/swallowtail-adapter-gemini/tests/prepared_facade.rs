@@ -7,6 +7,7 @@ mod support;
 
 use discovery_support::DiscoveryHost;
 use futures_executor::block_on;
+use futures_util::StreamExt;
 use support::{FixtureHost, Scenario};
 use swallowtail_adapter_gemini::{
     GEMINI_CLI_ACP_AXIS, GeminiCliPreparationInput, GeminiCliPreparationProbe,
@@ -22,10 +23,13 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     CleanupOutcome, Deadline, DiscoveryCancellation, EnvironmentRef, ExecutableRef,
-    InstalledExecutableTarget, MonotonicInstant, PreparedAccessEvidence, RequestId, ScopeId,
-    SessionOptions, WorkingResourceRef,
+    InstalledExecutableTarget, MonotonicInstant, OperationContent, PreparedAccessEvidence,
+    RequestId, RuntimeTurnId, ScopeId, SessionOptions, TerminalStatus, TurnRequest,
+    WorkingResourceRef,
 };
-use swallowtail_testkit::assert_prepared_operation_evidence_matches_plan;
+use swallowtail_testkit::{
+    assert_observable_activity_trace, assert_prepared_operation_evidence_matches_plan,
+};
 
 #[test]
 fn solution_facade_keeps_acp_selection_typed() {
@@ -114,9 +118,30 @@ fn prepared_sessions_bind_version_access_and_observation_only_model_policy() {
             profile.evidence().operation(),
             profile.plan(),
         );
+        let activity_profile = profile.evidence().operation().observable_activity().clone();
 
-        let session =
+        let mut session =
             block_on(profile.open_session(operation_services)).expect("prepared session opens");
+        let mut turn = block_on(session.start_turn(
+            TurnRequest::new(
+                RuntimeTurnId::new("gemini-prepared-turn").expect("valid turn"),
+                OperationContent::new("private prepared prompt").expect("valid prompt"),
+            ),
+            operation_host.services(host_id),
+        ))
+        .expect("prepared turn starts");
+        let outcome = block_on(turn.take_terminal_outcome().expect("terminal outcome"));
+        assert_eq!(outcome.status(), &TerminalStatus::Completed);
+        let mut events = turn.take_events().expect("events");
+        let events = block_on(async move {
+            let mut observed = Vec::new();
+            while let Some(event) = events.next().await {
+                observed.push(event.expect("event succeeds"));
+            }
+            observed
+        });
+        assert_observable_activity_trace(&activity_profile, &events);
+        assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
         assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
         assert_eq!(operation_host.releases(), 1);
     }

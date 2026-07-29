@@ -1,8 +1,10 @@
+use crate::exec_activity::ExecActivityProjection;
+use semver::Version;
 use serde_json::Value;
 use swallowtail_core::SafeDiagnostic;
 use swallowtail_runtime::{
     CleanupOutcome, OperationContent, ProviderObservation, RuntimeEvent, RuntimeEventKind,
-    RuntimeFailure, TerminalOutcome, TerminalStatus, TokenUsage,
+    RuntimeFailure, RuntimeRunId, TerminalOutcome, TerminalStatus, TokenUsage,
 };
 
 pub(crate) struct ExecEventParser {
@@ -11,16 +13,31 @@ pub(crate) struct ExecEventParser {
     final_output: Option<OperationContent>,
     provider_failure: Option<SafeDiagnostic>,
     completed: bool,
+    activity: ExecActivityProjection,
 }
 
 impl ExecEventParser {
-    pub(crate) fn new() -> Self {
+    pub(crate) fn for_plan(
+        run_id: RuntimeRunId,
+        plan: &swallowtail_core::PreflightPlan,
+    ) -> Result<Self, RuntimeFailure> {
+        let binding = plan
+            .interface_versions()
+            .find(|binding| binding.axis().as_str() == crate::CODEX_CLI_AXIS)
+            .ok_or_else(malformed_stream)?;
+        let observed =
+            Version::parse(binding.version().as_str()).map_err(|_| malformed_stream())?;
+        Ok(Self::new(run_id, observed.min(Version::new(0, 145, 0))))
+    }
+
+    pub(crate) fn new(run_id: RuntimeRunId, qualified_version: Version) -> Self {
         Self {
             pending: Vec::new(),
             sequence: 1,
             final_output: None,
             provider_failure: None,
             completed: false,
+            activity: ExecActivityProjection::new(run_id, qualified_version),
         }
     }
 
@@ -29,9 +46,7 @@ impl ExecEventParser {
         let mut events = Vec::new();
         while let Some(newline) = self.pending.iter().position(|byte| *byte == b'\n') {
             let line: Vec<_> = self.pending.drain(..=newline).collect();
-            if let Some(event) = self.parse_line(trim_newline(&line))? {
-                events.push(event);
-            }
+            events.extend(self.parse_line(trim_newline(&line))?);
         }
         Ok(events)
     }
@@ -40,9 +55,7 @@ impl ExecEventParser {
         let mut events = Vec::new();
         if !self.pending.is_empty() {
             let line = std::mem::take(&mut self.pending);
-            if let Some(event) = self.parse_line(&line)? {
-                events.push(event);
-            }
+            events.extend(self.parse_line(&line)?);
         }
         Ok((
             events,
@@ -54,9 +67,9 @@ impl ExecEventParser {
         ))
     }
 
-    fn parse_line(&mut self, line: &[u8]) -> Result<Option<RuntimeEvent>, RuntimeFailure> {
+    fn parse_line(&mut self, line: &[u8]) -> Result<Vec<RuntimeEvent>, RuntimeFailure> {
         if line.iter().all(u8::is_ascii_whitespace) {
-            return Ok(None);
+            return Ok(Vec::new());
         }
         let payload: Value = serde_json::from_slice(line).map_err(|_| malformed_stream())?;
         let event_type = payload
@@ -64,28 +77,37 @@ impl ExecEventParser {
             .and_then(Value::as_str)
             .ok_or_else(malformed_stream)?;
 
-        match event_type {
+        let activity = self
+            .activity
+            .project(event_type, &payload)?
+            .into_iter()
+            .map(|observation| self.event(RuntimeEventKind::Activity(observation)))
+            .collect::<Vec<_>>();
+        let legacy = match event_type {
             "turn.completed" => {
                 self.completed = true;
-                Ok(token_usage(&payload).map(|usage| {
+                token_usage(&payload).map(|usage| {
                     self.event(RuntimeEventKind::ProviderObservation(
                         ProviderObservation::Usage(usage),
                     ))
-                }))
+                })
             }
             "turn.failed" | "error" => {
                 self.provider_failure = Some(SafeDiagnostic::new(
                     "swallowtail.codex.exec.provider_failed",
                     "Codex exec reported a provider failure",
                 ));
-                Ok(None)
+                None
             }
             "item.completed" => {
                 let item = payload.get("item").ok_or_else(malformed_stream)?;
-                self.parse_item(item)
+                self.parse_legacy_item(item)?
             }
-            _ => Ok(Some(self.event(RuntimeEventKind::Progress))),
-        }
+            "item.started" | "item.updated" => None,
+            "thread.started" | "turn.started" => Some(self.event(RuntimeEventKind::Progress)),
+            _ => None,
+        };
+        Ok(activity.into_iter().chain(legacy).collect())
     }
 
     fn event(&mut self, kind: RuntimeEventKind) -> RuntimeEvent {
@@ -100,7 +122,7 @@ impl ExecEventParser {
         RuntimeEvent::with_content(sequence, kind, content)
     }
 
-    fn parse_item(&mut self, item: &Value) -> Result<Option<RuntimeEvent>, RuntimeFailure> {
+    fn parse_legacy_item(&mut self, item: &Value) -> Result<Option<RuntimeEvent>, RuntimeFailure> {
         match item.get("type").and_then(Value::as_str) {
             Some("web_search") => {
                 let query = item
@@ -189,7 +211,7 @@ fn trim_newline(line: &[u8]) -> &[u8] {
     line.strip_suffix(b"\r").unwrap_or(line)
 }
 
-fn malformed_stream() -> RuntimeFailure {
+pub(crate) fn malformed_stream() -> RuntimeFailure {
     RuntimeFailure::new(SafeDiagnostic::new(
         "swallowtail.codex.exec.malformed_jsonl",
         "Codex exec returned malformed structured output",

@@ -19,7 +19,7 @@ use swallowtail_testkit::{RecordedHostCall, RecordingHostServices};
 const COMPLETED_JSONL: &str = concat!(
     "{\"type\":\"thread.started\",\"thread_id\":\"private-thread\"}\n",
     "{\"type\":\"turn.started\"}\n",
-    "{\"type\":\"item.completed\",\"item\":{\"type\":\"agent_message\",\"text\":\"finished\"}}\n",
+    "{\"type\":\"item.completed\",\"item\":{\"id\":\"message-1\",\"type\":\"agent_message\",\"text\":\"finished\"}}\n",
     "{\"type\":\"turn.completed\"}\n"
 );
 

@@ -18,6 +18,7 @@ const MAXIMUM_OUTPUT_BYTES: usize = 4 * 1024 * 1024;
 mod finished;
 
 use finished::{FinishedSignal, TurnFinishedFuture};
+use swallowtail_protocol_acp::{AcpContentBlock, AcpMessageRole, AcpSessionUpdate};
 
 pub(crate) struct ActiveTurn {
     runtime_id: RuntimeTurnId,
@@ -26,6 +27,7 @@ pub(crate) struct ActiveTurn {
     terminal: TerminalOutcomeSender,
     sequence: AtomicU64,
     output: Mutex<String>,
+    activity: Mutex<crate::acp_activity::AcpActivityProjection>,
     deadline: Option<Deadline>,
     permission_callbacks: Option<crate::permission::PermissionCallbackHub>,
     provider_observation: Mutex<Option<ProviderRequestObservation>>,
@@ -67,12 +69,13 @@ impl ActiveTurn {
             };
         Ok((
             Arc::new(Self {
-                runtime_id,
+                runtime_id: runtime_id.clone(),
                 session_id,
                 events,
                 terminal,
                 sequence: AtomicU64::new(1),
                 output: Mutex::new(String::new()),
+                activity: Mutex::new(crate::acp_activity::AcpActivityProjection::new(runtime_id)),
                 deadline,
                 permission_callbacks,
                 provider_observation: Mutex::new(None),
@@ -178,36 +181,46 @@ impl ActiveTurn {
     }
 
     pub(crate) fn handle_update(&self, params: &Value) -> Result<(), RuntimeFailure> {
-        if params.get("sessionId").and_then(Value::as_str) != Some(&self.session_id) {
+        let decoded =
+            swallowtail_protocol_acp::decode_session_update(params).map_err(|_| malformed())?;
+        if decoded.session_id.as_str() != self.session_id {
             return Err(failure(
                 "swallowtail.claude_agent.acp.session_mismatch",
                 "Claude Agent update does not match the active session",
             ));
         }
-        let update = params.get("update").ok_or_else(malformed)?;
-        match update.get("sessionUpdate").and_then(Value::as_str) {
-            Some("agent_message_chunk") => {
-                let text = text_content(update)?;
+        match &decoded.update {
+            AcpSessionUpdate::Message(message) if message.role == AcpMessageRole::Agent => {
+                let text = text_content(&message.content)?;
                 self.append_output(text)?;
-                self.emit_content(RuntimeEventKind::OutputDelta, text)
+                self.emit_content(RuntimeEventKind::OutputDelta, text)?;
             }
-            Some("agent_thought_chunk") => {
-                self.emit_content(RuntimeEventKind::ReasoningProgress, text_content(update)?)
+            AcpSessionUpdate::Message(message) if message.role == AcpMessageRole::Thought => {
+                self.emit_content(
+                    RuntimeEventKind::ReasoningProgress,
+                    text_content(&message.content)?,
+                )?;
             }
-            Some(
-                "tool_call"
-                | "tool_call_update"
-                | "plan"
-                | "usage_update"
-                | "config_option_update"
-                | "current_mode_update"
-                | "available_commands_update",
-            ) => self.emit(RuntimeEventKind::Progress, None),
-            _ => Err(failure(
-                "swallowtail.claude_agent.acp.update_unsupported",
-                "Claude Agent returned an unsupported ACP session update",
-            )),
+            AcpSessionUpdate::Message(_)
+            | AcpSessionUpdate::AvailableCommands(_)
+            | AcpSessionUpdate::CurrentMode(_)
+            | AcpSessionUpdate::ConfigOptions(_)
+            | AcpSessionUpdate::SessionInfo { .. }
+            | AcpSessionUpdate::Usage(_) => self.emit(RuntimeEventKind::Progress, None)?,
+            AcpSessionUpdate::ToolCall(_)
+            | AcpSessionUpdate::ToolCallUpdate(_)
+            | AcpSessionUpdate::Plan(_)
+            | AcpSessionUpdate::Unknown { .. } => {}
         }
+        let observations = self
+            .activity
+            .lock()
+            .expect("turn activity lock poisoned")
+            .project(&decoded.update)?;
+        for observation in observations {
+            self.emit(RuntimeEventKind::Activity(observation), None)?;
+        }
+        Ok(())
     }
 
     pub(crate) fn finish_prompt(&self, response: &Value) {
@@ -275,6 +288,16 @@ impl ActiveTurn {
         }
         if let Some(callbacks) = self.permission_callbacks.as_ref() {
             callbacks.abandon(CallbackAbandonment::TurnTerminated);
+        }
+        if let Ok(observations) = self
+            .activity
+            .lock()
+            .expect("turn activity lock poisoned")
+            .complete(&status)
+        {
+            for observation in observations {
+                let _ = self.emit(RuntimeEventKind::Activity(observation), None);
+            }
         }
         let output = self
             .output
@@ -366,11 +389,9 @@ fn prompt_usage(response: &Value) -> Result<TokenUsage, RuntimeFailure> {
         .with_cache_tokens(Some(cache_read), Some(cache_write)))
 }
 
-fn text_content(update: &Value) -> Result<&str, RuntimeFailure> {
-    update
-        .get("content")
-        .filter(|content| content.get("type").and_then(Value::as_str) == Some("text"))
-        .and_then(|content| content.get("text"))
-        .and_then(Value::as_str)
-        .ok_or_else(malformed)
+fn text_content(content: &AcpContentBlock) -> Result<&str, RuntimeFailure> {
+    match content {
+        AcpContentBlock::Text(text) => Ok(text.as_str()),
+        _ => Err(malformed()),
+    }
 }

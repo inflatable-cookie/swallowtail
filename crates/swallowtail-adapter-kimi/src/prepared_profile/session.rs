@@ -6,7 +6,8 @@ use super::{KimiPreparedSessionFuture, KimiPreparedSessionLoadFuture};
 use crate::prepared::instance::session_capabilities;
 use crate::{KimiAcpDriver, KimiPreparedIntegration};
 use swallowtail_core::{
-    Capability, CapabilityConstraint, CapabilityRequirement, ModelRoute, ReasoningMode,
+    Capability, CapabilityConstraint, CapabilityProfile, CapabilityRequirement, ModelRoute,
+    ReasoningMode,
 };
 use swallowtail_runtime::{
     HostServices, InteractiveSessionDriver, LoadSessionRequest, OpenSessionRequest,
@@ -131,7 +132,8 @@ impl KimiPreparedIntegration {
     ) -> Result<KimiPreparedSession, PreparationFailure> {
         let (request_id, model, working_resource, options) = input.into_parts();
         validate_options(&options)?;
-        let capabilities = session_capabilities();
+        let activity_profile = super::activity_profile::activity_profile(self)?;
+        let capabilities = with_activity(session_capabilities(), &activity_profile);
         let instance = instance_with_capabilities(self, capabilities.clone());
         let (route_id, route_revision, model_id) = model.into_parts();
         let route = ModelRoute::new(
@@ -139,21 +141,24 @@ impl KimiPreparedIntegration {
             route_revision,
             self.instance().id().clone(),
             model_id,
-            capabilities,
+            capabilities.clone(),
         );
-        let requirements = requirements(self, operation_capabilities(&options));
+        let requirements = requirements(self, operation_capabilities(&capabilities, &options));
         let plan = build_plan(self, &instance, &route, &requirements)?;
         let request = OpenSessionRequest::from_plan(&plan, request_id, working_resource, None)?
             .with_options(options);
         Ok(KimiPreparedSession {
-            evidence: KimiPreparedEvidence::from_prepared(self, plan)?,
+            evidence: KimiPreparedEvidence::from_prepared(self, plan, activity_profile)?,
             request,
         })
     }
 }
 
-fn operation_capabilities(options: &SessionOptions) -> Vec<CapabilityRequirement> {
-    let mut capabilities = session_capabilities()
+fn operation_capabilities(
+    available: &CapabilityProfile,
+    options: &SessionOptions,
+) -> Vec<CapabilityRequirement> {
+    let mut capabilities = available
         .iter()
         .filter(|(capability, _)| *capability != Capability::ReasoningSelection)
         .map(|(capability, constraints)| {
@@ -167,6 +172,24 @@ fn operation_capabilities(options: &SessionOptions) -> Vec<CapabilityRequirement
         ));
     }
     capabilities
+}
+
+fn with_activity(
+    capabilities: CapabilityProfile,
+    activity: &swallowtail_core::ObservableActivityProfile,
+) -> CapabilityProfile {
+    let mut requirements = capabilities
+        .iter()
+        .map(|(capability, constraints)| {
+            CapabilityRequirement::new(capability, constraints.iter().cloned())
+        })
+        .collect::<Vec<_>>();
+    requirements.push(
+        activity
+            .capability_requirement()
+            .expect("prepared Kimi activity is available"),
+    );
+    CapabilityProfile::new(requirements)
 }
 
 fn validate_options(options: &SessionOptions) -> Result<(), PreparationFailure> {

@@ -26,3 +26,7 @@ Persisted events are authoritative. `event_start` and `event_delta` are
 negative drift fixtures only. The current API reference's `user.interrupt`
 shape governs; an older curl example that used `interrupt` is excluded.
 
+`activity.sse` freezes persisted assistant, identity-only thinking, built-in
+tool, MCP tool, custom tool, and status records. Built-in and MCP execution is
+provider-owned. Custom tool use remains a consumer callback. The fixture does
+not enable or infer best-effort preview lifecycle.

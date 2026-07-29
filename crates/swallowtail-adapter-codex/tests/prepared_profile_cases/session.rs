@@ -1,5 +1,8 @@
 use super::*;
 
+#[path = "session/activity.rs"]
+mod activity;
+
 #[test]
 fn prepared_session_derives_tool_bounds_from_bounded_declarations() {
     let prepared_app = prepared(

@@ -12,3 +12,9 @@ and optional effort, and `--no-session-persistence`.
 
 Fixtures retain only structural provider evidence. Prompts, tool results,
 provider errors, credentials, and local paths are synthetic.
+
+The selected command does not pass `--include-partial-messages`.
+`headless-complete.jsonl` and `headless-tools.jsonl` are therefore
+completion-only activity evidence. The unknown and malformed fixtures freeze
+safe post-init namespace handling versus fail-closed framing without changing
+production decoding in card 128.

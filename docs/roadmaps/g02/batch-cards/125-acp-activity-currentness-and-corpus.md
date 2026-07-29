@@ -1,6 +1,6 @@
 # 125 ACP Activity Currentness And Corpus
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-07-29
 Milestone: `../037-acp-observable-agent-activity.md`
@@ -31,13 +31,13 @@ Kimi Code behavior milestones before shared projection.
 
 ## Acceptance Criteria
 
-- [ ] current ACP authority and exact schema version are recorded
-- [ ] every guaranteed harness segment has fixture provenance
-- [ ] thought chunks are classified as provider-visible display content or
+- [x] current ACP authority and exact schema version are recorded
+- [x] every guaranteed harness segment has fixture provenance
+- [x] thought chunks are classified as provider-visible display content or
       excluded
-- [ ] tool and plan lifecycle semantics are explicit
-- [ ] stdio and remote transport identity remain separate
-- [ ] unknown and malformed updates have deterministic outcomes
+- [x] tool and plan lifecycle semantics are explicit
+- [x] stdio and remote transport identity remain separate
+- [x] unknown and malformed updates have deterministic outcomes
 
 ## Validation
 
@@ -56,3 +56,28 @@ Kimi Code behavior milestones before shared projection.
 Continue to card 126 only after the shared and provider-specific corpus is
 complete.
 
+## Result
+
+- Pinned ACP v1 stable schema `v1.20.0`, schema package `1.6.0`, Rust core
+  SDK `2.0.0`, and remote transport SDK `2.0.0` as separate authority axes.
+- Froze shared stable-schema activity, malformed, stdio, and remote fixtures.
+- Froze exact Claude Agent, Gemini CLI, and Kimi Code activity corpora across
+  every guaranteed segment. Current newer releases remain permitted but
+  unverified.
+- Kept ACP thought classification in adapters: it may become a reasoning
+  summary, warning, another display activity, or an exclusion.
+- Recorded tool partial-update, plan replacement, raw-field exclusion, and
+  session-metadata boundaries in Contract 044.
+- Made no production, provider, authentication, or live transport change.
+
+## Validation Evidence
+
+- shared ACP activity corpus: 4 passed
+- Claude Agent activity corpus: 2 passed
+- Gemini CLI activity corpus: 2 passed
+- Kimi Code activity corpus: 2 passed
+- complete `swallowtail-protocol-acp` suite: 74 passed
+- remote ACP transport suite: 8 passed
+- Rust compile, lint, formatting, docs, and Northstar gates passed
+- all 23 local packages and the extracted workspace passed
+- `effigy doctor` remained at the known 111 structural findings

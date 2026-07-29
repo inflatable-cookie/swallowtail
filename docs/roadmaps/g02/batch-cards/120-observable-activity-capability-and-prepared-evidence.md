@@ -1,6 +1,6 @@
 # 120 Observable Activity Capability And Prepared Evidence
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-07-29
 Milestone: `../035-observable-agent-activity-kernel.md`
@@ -36,13 +36,28 @@ configuration burden or another operation facade.
 
 ## Acceptance Criteria
 
-- [ ] a prepared consumer can inspect route fidelity without starting work
-- [ ] a consumer may require exact activity constraints before effects
-- [ ] thinner profiles remain usable without silent promotion
-- [ ] the profile is derived from driver, operation, transport, and version
-- [ ] unverified-newer evidence cannot widen a guaranteed profile
-- [ ] prepared APIs require no per-provider event configuration
-- [ ] low-level roles remain available
+- [x] a prepared consumer can inspect route fidelity without starting work
+- [x] a consumer may require exact activity constraints before effects
+- [x] thinner profiles remain usable without silent promotion
+- [x] the profile is derived from driver, operation, transport, and version
+- [x] unverified-newer evidence cannot widen a guaranteed profile
+- [x] prepared APIs require no per-provider event configuration
+- [x] low-level roles remain available
+
+## Result
+
+- Added `ObservableActivity` beside unchanged binary `StreamingEvents`.
+- Added exact activity kind, lifecycle, content-stream, disclosure,
+  correlation, unknown-event, and interface-behavior profile evidence.
+- Rich lifecycle and disclosure profiles satisfy explicitly thinner
+  requirements without changing the inspected maximum fidelity.
+- Prepared operation evidence now retains transport identity and one immutable
+  available, unavailable, or not-applicable activity profile.
+- Available profiles must match immutable preflight capability evidence and
+  the qualified interface behavior revision.
+- Unverified-newer interfaces inherit the latest qualified behavior revision;
+  they cannot select a wider profile from the observed version.
+- Existing adapters require no migration and claim no activity semantics yet.
 
 ## Validation
 
@@ -59,5 +74,5 @@ configuration burden or another operation facade.
 
 ## Auto-Continuation
 
-Continue to card 121 after capability, preparation, and public-API checks pass.
-
+Continue to card 121. Capability, preparation, workspace, and public-API checks
+pass.

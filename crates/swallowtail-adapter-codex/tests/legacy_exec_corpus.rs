@@ -108,7 +108,7 @@ fn legacy_exec_corpus_freezes_every_behavior_segment() {
 }
 
 #[test]
-fn legacy_corpora_reject_unpublished_and_unknown_points_without_private_payload() {
+fn legacy_corpora_reject_invalid_points_and_permit_unverified_newer_without_private_payload() {
     for corpus in [json(EXEC_RELEASES), json(APP_SERVER_RELEASES)] {
         assert_eq!(
             strings(&corpus["diagnostic_fields"]),
@@ -122,15 +122,14 @@ fn legacy_corpora_reject_unpublished_and_unknown_points_without_private_payload(
             .collect();
         assert_eq!(
             rejected,
-            BTreeSet::from([
-                "0.82.0",
-                "0.83.0",
-                "0.108.0",
-                "0.109.0",
-                "0.146.0",
-                "not-a-version"
-            ])
+            BTreeSet::from(["0.82.0", "0.83.0", "0.108.0", "0.109.0", "not-a-version"])
         );
+        assert_eq!(corpus["unverified_newer"]["version"], "0.146.0");
+        assert_eq!(
+            corpus["unverified_newer"]["execution"],
+            "permitted-with-explicit-unverified-status"
+        );
+        assert_eq!(corpus["unverified_newer"]["guaranteed"], false);
         assert_no_private_fields(&corpus);
         let serialized = serde_json::to_string(&corpus).expect("corpus serializes");
         for private_fragment in ["/Users/", "Bearer ", "sk-", "private payload"] {

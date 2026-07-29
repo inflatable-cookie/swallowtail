@@ -13,10 +13,10 @@ shape.
 ## Next Task
 
 Execute
-[g02 card 119](g02/batch-cards/119-observable-activity-runtime-records.md):
-add provider-neutral observable activity records to the existing runtime
-event stream, with exact lifecycle, bounds, correlation, and redacted
-formatting.
+[g02 card 129](g02/batch-cards/129-http-server-and-rpc-harness-activity.md):
+map exact observable activity for Pi RPC, Kimi local server, OpenCode
+HTTP/SSE, and Anthropic Managed Agents in the evidence-ranked order fixed by
+Research 066.
 
 ## Index
 

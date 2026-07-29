@@ -3,6 +3,7 @@ use serde_json::Value;
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
 use swallowtail_core::{ExtensionNamespace, ProviderRequestRef};
+use swallowtail_protocol_acp::{AcpMessageRole, AcpSessionUpdate};
 use swallowtail_runtime::{
     BoxEventStream, CleanupOutcome, OperationContent, ProviderRequestObservation, RuntimeEvent,
     RuntimeEventKind, RuntimeFailure, RuntimeTurnId, TerminalOutcome, TerminalOutcomeFuture,
@@ -12,6 +13,10 @@ use swallowtail_runtime::{
 const EVENT_CAPACITY: usize = 128;
 const MAXIMUM_OUTPUT_BYTES: usize = 4 * 1024 * 1024;
 
+mod content;
+
+use content::text_content;
+
 pub(crate) struct ActiveTurn {
     runtime_id: RuntimeTurnId,
     session_id: String,
@@ -20,6 +25,7 @@ pub(crate) struct ActiveTurn {
     terminal: TerminalOutcomeSender,
     sequence: AtomicU64,
     output: Mutex<String>,
+    activity: Mutex<crate::acp_activity::AcpActivityProjection>,
     provider_observation: Mutex<Option<ProviderRequestObservation>>,
     cancelled: AtomicBool,
     finished: AtomicBool,
@@ -36,13 +42,14 @@ impl ActiveTurn {
         let (terminal, future) = terminal_outcome_channel();
         Ok((
             Arc::new(Self {
-                runtime_id,
+                runtime_id: runtime_id.clone(),
                 session_id,
                 expected_mode,
                 events,
                 terminal,
                 sequence: AtomicU64::new(1),
                 output: Mutex::new(String::new()),
+                activity: Mutex::new(crate::acp_activity::AcpActivityProjection::new(runtime_id)),
                 provider_observation: Mutex::new(None),
                 cancelled: AtomicBool::new(false),
                 finished: AtomicBool::new(false),
@@ -101,46 +108,49 @@ impl ActiveTurn {
     }
 
     pub(crate) fn handle_update(&self, params: &Value) -> Result<(), RuntimeFailure> {
-        self.verify_session(params)?;
-        let update = params.get("update").ok_or_else(malformed)?;
-        match update.get("sessionUpdate").and_then(Value::as_str) {
-            Some("agent_message_chunk") => {
-                let text = text_content(update)?;
+        let decoded =
+            swallowtail_protocol_acp::decode_session_update(params).map_err(|_| malformed())?;
+        self.verify_session(decoded.session_id.as_str())?;
+        match &decoded.update {
+            AcpSessionUpdate::Message(message) if message.role == AcpMessageRole::Agent => {
+                let text = text_content(&message.content)?;
                 self.append_output(text)?;
-                self.emit_content(RuntimeEventKind::OutputDelta, text)
+                self.emit_content(RuntimeEventKind::OutputDelta, text)?;
             }
-            Some("agent_thought_chunk") => {
-                let text = text_content(update)?;
-                self.emit_content(RuntimeEventKind::ReasoningProgress, text)
+            AcpSessionUpdate::Message(message) if message.role == AcpMessageRole::Thought => {
+                self.emit_content(
+                    RuntimeEventKind::ReasoningProgress,
+                    text_content(&message.content)?,
+                )?;
             }
-            Some(
-                "tool_call"
-                | "tool_call_update"
-                | "plan"
-                | "user_message_chunk"
-                | "available_commands_update"
-                | "config_option_update"
-                | "usage_update",
-            ) => self.emit(RuntimeEventKind::Progress, None),
-            Some("current_mode_update") => {
-                let mode = update
-                    .get("currentModeId")
-                    .or_else(|| update.get("modeId"))
-                    .and_then(Value::as_str)
-                    .ok_or_else(malformed)?;
-                if mode != self.expected_mode {
+            AcpSessionUpdate::CurrentMode(mode) => {
+                if mode.as_str() != self.expected_mode {
                     return Err(failure(
                         "swallowtail.gemini.acp.mode_widened",
                         "Gemini CLI changed the preflight-bound session mode",
                     ));
                 }
-                self.emit(RuntimeEventKind::Progress, None)
+                self.emit(RuntimeEventKind::Progress, None)?;
             }
-            _ => Err(failure(
-                "swallowtail.gemini.acp.update_unsupported",
-                "Gemini CLI returned an unsupported ACP session update",
-            )),
+            AcpSessionUpdate::Message(_)
+            | AcpSessionUpdate::Plan(_)
+            | AcpSessionUpdate::AvailableCommands(_)
+            | AcpSessionUpdate::ConfigOptions(_)
+            | AcpSessionUpdate::SessionInfo { .. }
+            | AcpSessionUpdate::Usage(_) => self.emit(RuntimeEventKind::Progress, None)?,
+            AcpSessionUpdate::ToolCall(_)
+            | AcpSessionUpdate::ToolCallUpdate(_)
+            | AcpSessionUpdate::Unknown { .. } => {}
         }
+        let observations = self
+            .activity
+            .lock()
+            .expect("turn activity lock poisoned")
+            .project(&decoded.update)?;
+        for observation in observations {
+            self.emit(RuntimeEventKind::Activity(observation), None)?;
+        }
+        Ok(())
     }
 
     pub(crate) fn finish_prompt(&self, stop_reason: &str) {
@@ -182,6 +192,16 @@ impl ActiveTurn {
     fn finish(&self, status: TerminalStatus) {
         if self.finished.swap(true, Ordering::SeqCst) {
             return;
+        }
+        if let Ok(observations) = self
+            .activity
+            .lock()
+            .expect("turn activity lock poisoned")
+            .complete(&status)
+        {
+            for observation in observations {
+                let _ = self.emit(RuntimeEventKind::Activity(observation), None);
+            }
         }
         let output = self
             .output
@@ -230,8 +250,8 @@ impl ActiveTurn {
         self.events.send(event)
     }
 
-    fn verify_session(&self, params: &Value) -> Result<(), RuntimeFailure> {
-        if params.get("sessionId").and_then(Value::as_str) == Some(&self.session_id) {
+    fn verify_session(&self, session_id: &str) -> Result<(), RuntimeFailure> {
+        if session_id == self.session_id {
             Ok(())
         } else {
             Err(failure(
@@ -240,20 +260,6 @@ impl ActiveTurn {
             ))
         }
     }
-}
-
-fn text_content(update: &Value) -> Result<&str, RuntimeFailure> {
-    let content = update.get("content").ok_or_else(malformed)?;
-    if content.get("type").and_then(Value::as_str) != Some("text") {
-        return Err(failure(
-            "swallowtail.gemini.acp.content_unsupported",
-            "Gemini CLI returned unsupported ACP content",
-        ));
-    }
-    content
-        .get("text")
-        .and_then(Value::as_str)
-        .ok_or_else(malformed)
 }
 
 #[cfg(test)]

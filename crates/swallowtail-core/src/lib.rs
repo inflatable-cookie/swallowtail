@@ -20,6 +20,7 @@ mod interface_version;
 mod model;
 mod model_artifact;
 mod model_catalog;
+mod observable_activity;
 mod planned_connection_rollover;
 mod preflight;
 mod provider_agent;
@@ -84,13 +85,21 @@ pub use model_catalog::{
     ModelCustomizationType, ModelInferenceType, ModelLifecycleObservation, ModelLifecycleStatus,
     ModelLifecycleTransition, ModelModality, ProviderCatalogValue,
 };
+pub use observable_activity::{
+    ActivityContentStream, ActivityCorrelationKind, ActivityDisclosure, ActivityInterfaceBasis,
+    ActivityKindClass, ActivityKindProfile, ActivityLifecycleFidelity, ActivityUnknownEventPosture,
+    InvalidObservableActivityProfile, ObservableActivityAvailability, ObservableActivityProfile,
+};
 pub use planned_connection_rollover::PlannedConnectionRolloverPolicy;
 pub use preflight::{
     PreflightContext, PreflightDimension, PreflightFailure, PreflightPlan, StalePreflightPlan,
     preflight,
 };
 pub use provider_agent::{ProviderAgentBinding, ProviderAgentId, ProviderAgentVersion};
-pub use provider_reference::{ProviderRequestRef, RunRef, SessionRef, TurnRef};
+pub use provider_reference::{
+    InvalidProviderActivityRef, ProviderActivityRef, ProviderRequestRef, RunRef, SessionRef,
+    TurnRef,
+};
 pub use provider_session_management::{
     ProviderSessionActivityEvidence, ProviderSessionAffectedScope, ProviderSessionBindingOrigin,
     ProviderSessionCancellationPosture, ProviderSessionDeletionStrength,

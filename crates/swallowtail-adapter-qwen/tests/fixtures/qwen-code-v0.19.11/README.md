@@ -27,6 +27,11 @@ first successful provider session id, and invalidation after any uncertain
 turn. It does not qualify public load or resume. The three interactive JSONL
 files cover first-turn identity, continued identity, and mismatch rejection.
 
+`activity-tools.jsonl` freezes the selected
+`--include-partial-messages` lifecycle for one tool content block: message and
+block start, input delta, block and message stop, completed assistant, then
+terminal result.
+
 The synthetic values `fixture-private-workspace`,
 `fixture-provider-secret-never-diagnose`, and `fixture-private-prompt` exist
 only to prove public diagnostics do not copy raw provider content. No real

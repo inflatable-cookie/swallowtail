@@ -5,6 +5,7 @@
 
 #![forbid(unsafe_code)]
 
+mod activity;
 mod async_types;
 mod attachment;
 mod callback;
@@ -53,6 +54,12 @@ mod session_replay;
 mod time;
 mod working_resource_io;
 
+pub use activity::{
+    ActivityAssistantPhase, ActivityContent, ActivityContentChangeKind, ActivityContentStream,
+    ActivityContentUpdate, ActivityCorrelation, ActivityDisclosure, ActivityId, ActivityKind,
+    ActivityLifecyclePhase, ActivityNamespace, ActivityObservation, ActivityOperationId,
+    ActivityStatus, InvalidActivityRecord,
+};
 pub use async_types::{
     BoxCallbackStream, BoxDirectToolCallStream, BoxEventStream, BoxFuture,
     BoxRealtimeMediaEventStream,
@@ -173,11 +180,14 @@ pub use session_plan_agreement::{SessionPlanAgreement, validate_session_plan_agr
 pub use session_provider_state::validate_session_provider_state_plan;
 pub use session_replay::{SessionReplayItem, SessionReplayKind};
 pub use swallowtail_core::{
-    AttachedRuntimeResidency, CredentialRef, ExternalNetworkPolicy, ExternalSearchPolicy,
-    FilesystemBoundary, HarnessIsolation, IncompatibleSessionAccessPolicy, ModelArtifactBinding,
-    ModelArtifactDescriptor, ModelArtifactDigest, ModelArtifactFormat, ModelArtifactId,
-    ModelArtifactRef, ModelArtifactRevision, OwnedRemoteResourceKind,
-    PlannedConnectionRolloverPolicy, ProviderApprovalPolicy, ProviderInferenceCachePolicy,
+    ActivityCorrelationKind, ActivityInterfaceBasis, ActivityKindClass, ActivityKindProfile,
+    ActivityLifecycleFidelity, ActivityUnknownEventPosture, AttachedRuntimeResidency,
+    CredentialRef, ExternalNetworkPolicy, ExternalSearchPolicy, FilesystemBoundary,
+    HarnessIsolation, IncompatibleSessionAccessPolicy, InvalidObservableActivityProfile,
+    ModelArtifactBinding, ModelArtifactDescriptor, ModelArtifactDigest, ModelArtifactFormat,
+    ModelArtifactId, ModelArtifactRef, ModelArtifactRevision, ObservableActivityAvailability,
+    ObservableActivityProfile, OwnedRemoteResourceKind, PlannedConnectionRolloverPolicy,
+    ProviderActivityRef, ProviderApprovalPolicy, ProviderInferenceCachePolicy,
     ProviderRequestHandling, ProviderRequestPolicy, ProviderSessionActivityEvidence,
     ProviderSessionAffectedScope, ProviderSessionBindingOrigin, ProviderSessionCancellationPosture,
     ProviderSessionDeletionStrength, ProviderSessionEffectTruth,

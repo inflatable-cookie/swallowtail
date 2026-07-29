@@ -1,6 +1,7 @@
 use super::fixtures::{joined_cleanup, prepared, profile_input};
 use crate::support::{FixtureHost, Scenario};
 use futures_executor::block_on;
+use futures_util::StreamExt;
 use swallowtail_core::{
     ExecutionHostId, HarnessConfigurationPosture, HarnessIsolation, ResourceAccess,
     SessionAccessPolicy,
@@ -9,7 +10,9 @@ use swallowtail_runtime::{
     CleanupOutcome, OperationContent, RequestId, RuntimeTurnId, SessionOptions, TerminalStatus,
     TurnRequest,
 };
-use swallowtail_testkit::assert_prepared_operation_evidence_matches_plan;
+use swallowtail_testkit::{
+    assert_observable_activity_trace, assert_prepared_operation_evidence_matches_plan,
+};
 
 #[test]
 fn prepared_new_prompt_write_and_interruption_preserve_explicit_ambient_authority() {
@@ -46,6 +49,7 @@ fn prepared_new_prompt_write_and_interruption_preserve_explicit_ambient_authorit
             profile.evidence().operation(),
             profile.plan(),
         );
+        let activity_profile = profile.evidence().operation().observable_activity().clone();
         assert_eq!(
             profile
                 .evidence()
@@ -69,6 +73,15 @@ fn prepared_new_prompt_write_and_interruption_preserve_explicit_ambient_authorit
         .expect("prepared prompt starts");
         let outcome = block_on(turn.take_terminal_outcome().expect("terminal outcome"));
         assert_eq!(outcome.status(), &TerminalStatus::Completed);
+        let mut events = turn.take_events().expect("events");
+        let events = block_on(async move {
+            let mut observed = Vec::new();
+            while let Some(event) = events.next().await {
+                observed.push(event.expect("event succeeds"));
+            }
+            observed
+        });
+        assert_observable_activity_trace(&activity_profile, &events);
         assert_eq!(
             host.resource_writes(),
             [(

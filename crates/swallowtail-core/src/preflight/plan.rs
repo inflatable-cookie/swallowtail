@@ -2,8 +2,8 @@ use super::{
     PlanBinding, PreflightContext, PreflightPlan, StalePreflightPlan, validation::validate,
 };
 use crate::{
-    AccessProfileId, AdapterIdentity, AttachedModelObservation, ConfiguredInstanceId,
-    CredentialMechanism, CredentialRef, EndpointAudience, ExecutionHostId,
+    AccessProfileId, AdapterIdentity, AttachedModelObservation, CapabilityRequirement,
+    ConfiguredInstanceId, CredentialMechanism, CredentialRef, EndpointAudience, ExecutionHostId,
     HarnessConfigurationPosture, HarnessRpcPolicy, InstanceOwnership, InstancePolicyId,
     InstanceRevision, InstanceTargetRef, InterfaceCompatibilityAssessment,
     InterfaceCompatibilityMatch, InterfaceVersionBinding, ModelId, ModelRoute, ModelRouteId,
@@ -149,6 +149,17 @@ impl PreflightPlan {
         &self.requirements
     }
 
+    /// Checks one exact capability claim against every bound capability scope.
+    #[must_use]
+    pub fn supports_capability_requirement(&self, requirement: &CapabilityRequirement) -> bool {
+        profile_supports(self.binding.instance.capabilities(), requirement)
+            && self
+                .binding
+                .model_route
+                .as_ref()
+                .is_none_or(|route| profile_supports(route.capabilities(), requirement))
+    }
+
     /// Rejects execution if a material preflight binding changed.
     pub fn validate_current(
         &self,
@@ -162,4 +173,14 @@ impl PreflightPlan {
             Err(StalePreflightPlan::binding_changed())
         }
     }
+}
+
+fn profile_supports(
+    profile: &crate::CapabilityProfile,
+    requirement: &CapabilityRequirement,
+) -> bool {
+    profile.supports(requirement.capability())
+        && requirement
+            .constraints()
+            .all(|constraint| profile.supports_constraint(requirement.capability(), constraint))
 }

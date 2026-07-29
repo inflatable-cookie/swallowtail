@@ -355,6 +355,7 @@ impl SharedAgent {
         let mut options = vec![json!({
             "type": "select",
             "id": "model",
+            "name": "Model",
             "currentValue": current,
             "options": [
                 {"value": "default", "name": "Default"},
@@ -370,6 +371,7 @@ impl SharedAgent {
             options.push(json!({
                 "type": "select",
                 "id": "effort",
+                "name": "Effort",
                 "category": "thought_level",
                 "currentValue": state.effort.as_deref().unwrap_or("default"),
                 "options": effort_options
@@ -391,7 +393,7 @@ impl SharedAgent {
                     json!({"sessionUpdate": "config_option_update", "configOptions": config_options}),
                     json!({"sessionUpdate": "current_mode_update", "currentModeId": "acceptEdits"}),
                     json!({"sessionUpdate": "agent_thought_chunk", "content": {"type": "text", "text": "Inspecting."}}),
-                    json!({"sessionUpdate": "tool_call", "toolCallId": "read-1", "kind": "read"}),
+                    json!({"sessionUpdate": "tool_call", "toolCallId": "read-1", "title": "Read fixture", "kind": "read"}),
                     json!({"sessionUpdate": "usage_update", "used": 42, "size": 200000}),
                     json!({"sessionUpdate": "agent_message_chunk", "content": {"type": "text", "text": "fixture response."}}),
                 ] {
@@ -429,7 +431,7 @@ impl SharedAgent {
                     state,
                     json!({"jsonrpc": "2.0", "method": "session/update", "params": {
                         "sessionId": "claude-agent-session-fixture",
-                        "update": {"sessionUpdate": "tool_call", "toolCallId": "shell-1", "kind": "execute"}
+                        "update": {"sessionUpdate": "tool_call", "toolCallId": "shell-1", "title": "Run command", "kind": "execute"}
                     }}),
                 );
                 Self::enqueue(

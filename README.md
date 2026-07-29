@@ -31,6 +31,8 @@ should start with the
 [prepared-integration guides](docs/guides/README.md). Multi-provider
 applications should start with the exact
 [26-route matrix](docs/guides/provider-route-matrix.md).
+Applications rendering provider-visible work should use the
+[observable-activity guide](docs/guides/observable-activity.md).
 Source-scoped model-catalogue expansion is complete: every selected
 machine-readable source has a Swallowtail path. The 22-solution feature matrix
 now reports 16 catalogue-capable solutions, two session-negotiated sources,
@@ -202,14 +204,47 @@ state, versus bounded transactional Ollama transcript replay over independent
 attached-runtime requests. Neither route gains public resume,
 provider-session management, server ownership, media, or billed-cost
 authority. Remaining gaps are evidence-labelled backlog, not implicit support
-or an implicit provider queue. The next selected lane is provider-visible
+or an implicit provider queue. The selected lane is provider-visible
 observable agent activity. Research 063 and Contract 044 keep the existing
-run and turn event streams, add exact activity identity, lifecycle,
-disclosure, content, and route-profile truth, and leave durable messages,
-work-log persistence, grouping, and collapsed chat presentation in consumer
-applications. Roadmaps g02.035-g02.040 sequence the common kernel, Codex, ACP,
-remaining harnesses, direct-inference truth, package acceptance, and the
-Nucleus/Soundcheck handoff.
+run and turn event streams and leave durable messages, work-log persistence,
+grouping, and collapsed chat presentation in consumer applications. The
+runtime now carries bounded, redacted activity identity, lifecycle,
+disclosure, content, and correlation through one semantic event variant.
+Prepared operations now expose exact available, unavailable, or
+not-applicable activity profiles derived from transport and qualified
+interface behavior. Richer profiles satisfy explicitly thinner requirements;
+unverified-newer interfaces cannot widen the last qualified guarantee. Common
+provider-neutral conformance now covers every lifecycle fidelity, assistant
+and reasoning-summary content, callback and direct-tool correlation, unknown
+semantic activity, bounds, redaction, and failure ordering on that same
+stream. No provider adapter gains a positive activity claim from the common
+kernel. Research 064 now freezes exact Codex app-server and exec activity
+milestones through qualified `0.145.0`; stable `0.146.0` remains permitted
+unverified newer without widening the guarantee. Codex app-server prepared
+sessions now expose exact item lifecycle, bounded display content, tool and
+request correlation, and safe unknown activity. Codex exec now exposes its
+separate completion-oriented assistant, reasoning, command, file, MCP, search,
+task, warning, collaboration, and unknown activity profile without claiming
+app-server lifecycle. Roadmap g02.036 is complete. Research 065 now pins ACP
+stable schema `v1.20.0` and exact Claude Agent, Gemini CLI, and Kimi Code
+activity corpora while retaining newer releases as permitted but unverified.
+Shared bounded ACP projection now preserves typed deltas, replacement
+snapshots, tool terminal state, usage, modes, commands, configuration, session
+information, and safe unknown namespaces without raw JSON or provider policy.
+Claude Agent, Gemini CLI, and Kimi Code now map that protocol truth through
+exact prepared activity profiles without changing transport, access,
+callbacks, continuity, or cleanup. Plans and provider-owned tools retain real
+activity lifecycle; readable thought display stays distinct from Gemini
+operational warnings; metadata remains evidence rather than manufactured
+activity. Permitted newer harnesses inherit the last qualified profile.
+Roadmap g02.037 is complete. Research 066 now accounts for all eight remaining
+non-ACP production harness routes and freezes their native-lifecycle,
+partial-message, completion-only, unknown, malformed, and failure evidence.
+Prepared profiles bind partial and preview options as well as interface
+versions. OpenCode's exact `1.14.51` thinning and Kimi's two local-server
+schema segments remain visible; current newer releases remain permitted but
+unverified. The next batch maps Pi RPC, Kimi local server, OpenCode HTTP/SSE,
+and Managed Agents before the separate headless batch.
 Usage evidence has 19 `Yes`, one serving-only `Not applicable`, and two honest
 Kimi Code `No` cells. Each composite solution row records route ownership in
 its notes where sibling routes contribute different capabilities. The first

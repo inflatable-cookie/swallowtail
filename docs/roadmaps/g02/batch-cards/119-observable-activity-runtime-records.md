@@ -1,6 +1,6 @@
 # 119 Observable Activity Runtime Records
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-07-29
 Milestone: `../035-observable-agent-activity-kernel.md`
@@ -34,15 +34,32 @@ existing runtime event stream.
 
 ## Acceptance Criteria
 
-- [ ] activity identity is exact within one run or turn
-- [ ] complete and completion-only lifecycles are representable
-- [ ] content deltas name one activity and one stream
-- [ ] reasoning uses summary terminology only
-- [ ] callback and direct-tool correlation does not duplicate opaque bodies
-- [ ] semantic activity is never coalescible
-- [ ] malformed lifecycle transitions fail with safe diagnostics
-- [ ] `Debug` and `Display` reveal no activity content or provider reference
-- [ ] existing runtime lifecycle tests remain green
+- [x] activity identity is exact within one run or turn
+- [x] complete and completion-only lifecycles are representable
+- [x] content deltas name one activity and one stream
+- [x] reasoning uses summary terminology only
+- [x] callback and direct-tool correlation does not duplicate opaque bodies
+- [x] semantic activity is never coalescible
+- [x] malformed lifecycle transitions fail with safe diagnostics
+- [x] `Debug` and `Display` reveal no activity content or provider reference
+- [x] existing runtime lifecycle tests remain green
+
+## Result
+
+- Added bounded runtime activity ids, namespaced unknown kinds, and opaque
+  provider activity references.
+- Added exact run or turn ownership, lifecycle phase, status, assistant phase,
+  disclosure, content stream, delta or replacement-snapshot, and correlation
+  records.
+- Added one semantic `RuntimeEventKind::Activity` variant on the existing
+  ordered event stream.
+- The ordered buffer now rejects identity drift, repeated starts, status
+  regression, repeated completion, post-completion observations, and legacy
+  content duplication with safe diagnostics.
+- Existing callback, direct-tool, output, provider-observation, terminal,
+  cancellation, deadline, and cleanup surfaces are unchanged.
+- Core and runtime focused tests pass. The complete Rust workspace compiles
+  against the new event variant.
 
 ## Validation
 
@@ -59,5 +76,4 @@ existing runtime event stream.
 
 ## Auto-Continuation
 
-Continue to card 120 only after focused core and runtime validation passes.
-
+Continue to card 120. Focused validation passes.

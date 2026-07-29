@@ -10,6 +10,7 @@ pub enum Capability {
     InteractiveSession,
     StructuredRun,
     StreamingEvents,
+    ObservableActivity,
     ToolCalls,
     Interruption,
     LoadSession,

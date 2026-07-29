@@ -259,6 +259,13 @@
       }
     }
   ],
+  "unverified_newer": {
+    "version": "0.146.0",
+    "published_at": "2026-07-29T01:45:57.696Z",
+    "tag_commit": "e363b08c9175ac1cbe5893615dd2cb9ddf95043b",
+    "execution": "permitted-with-explicit-unverified-status",
+    "guaranteed": false
+  },
   "rejections": [
     {
       "version": "0.82.0",
@@ -279,10 +286,6 @@
       "version": "0.109.0",
       "tag_commit": "37133fb8455766068008b8453a1da1dacae4274c",
       "rejection_reason": "source-tag-without-published-npm-release"
-    },
-    {
-      "version": "0.146.0",
-      "rejection_reason": "unknown-newer"
     },
     {
       "version": "not-a-version",

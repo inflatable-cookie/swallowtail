@@ -1,3 +1,4 @@
+use crate::app_server_activity::AppServerActivityProjection;
 use crate::callback_exchange::CallbackHub;
 use crate::rpc::RpcConnection;
 use crate::rpc::failure;
@@ -50,6 +51,7 @@ pub(crate) struct ActiveTurn {
     deadline: Option<Deadline>,
     declared_tools: BTreeSet<String>,
     provider_requests: swallowtail_core::ProviderRequestPolicy,
+    activity: Mutex<AppServerActivityProjection>,
     callbacks: CallbackHub,
     events: swallowtail_runtime::RuntimeEventSender,
     terminal: TerminalOutcomeSender,
@@ -85,6 +87,7 @@ impl ActiveTurn {
         let (callbacks, exchange) = CallbackHub::new(connection);
         Ok((
             Arc::new(Self {
+                activity: Mutex::new(AppServerActivityProjection::new(runtime_id.clone())),
                 runtime_id,
                 provider_thread_id,
                 provider_id: Mutex::new(None),
@@ -201,12 +204,25 @@ impl ActiveTurn {
             payload,
         )
         .map_err(|_| malformed_notification())?;
+        let provider_request_ref =
+            ProviderRequestRef::new(provider_request_value(&provider_request_id))
+                .map_err(|_| malformed_notification())?;
         self.callbacks
-            .enqueue(request, provider_request_id, provider_call_id)?;
+            .enqueue(request, provider_request_id, provider_call_id.clone())?;
+        let request_activity = {
+            let mut activity = self.activity.lock().expect("activity lock poisoned");
+            activity.register_callback(&provider_call_id, callback_id.clone());
+            activity.provider_request_started(
+                provider_request_ref,
+                Some(&provider_call_id),
+                "dynamicTool",
+            )?
+        };
         self.events.send(RuntimeEvent::new(
             sequence,
             RuntimeEventKind::CallbackRequested(callback_id),
-        ))
+        ))?;
+        self.emit(RuntimeEventKind::Activity(request_activity), None)
     }
 
     pub(crate) fn handle_provider_request(
@@ -256,6 +272,16 @@ impl ActiveTurn {
             sequence,
             RuntimeEventKind::CallbackRequested(callback_id.clone()),
         ))?;
+        let request_activity = self
+            .activity
+            .lock()
+            .expect("activity lock poisoned")
+            .provider_request_started(
+                provider_request_ref.clone(),
+                params.get("itemId").and_then(Value::as_str),
+                namespace.as_str(),
+            )?;
+        self.emit(RuntimeEventKind::Activity(request_activity), None)?;
         Ok(ProviderRequestObservation::new(
             callback_id,
             namespace,
@@ -268,6 +294,29 @@ impl ActiveTurn {
         method: &str,
         params: &Value,
     ) -> Result<(), RuntimeFailure> {
+        let activities = if activity_notification(method) {
+            if method == "serverRequest/resolved" {
+                let thread_id = required_text(params, "threadId")?;
+                if thread_id != self.provider_thread_id {
+                    return Err(failure(
+                        "swallowtail.codex.app_server.session_id_mismatch",
+                        "Codex app-server event belongs to a different provider session",
+                    ));
+                }
+            } else {
+                self.verify_activity_owner(params)?;
+            }
+            self.activity
+                .lock()
+                .expect("activity lock poisoned")
+                .project_notification(method, params)?
+        } else {
+            Vec::new()
+        };
+        let emitted_activity = !activities.is_empty();
+        for observation in activities {
+            self.emit(RuntimeEventKind::Activity(observation), None)?;
+        }
         match method {
             "turn/started" => {
                 self.verify_turn(params)?;
@@ -303,7 +352,11 @@ impl ActiveTurn {
                         Err(_) => Err(malformed_notification()),
                     }
                 } else {
-                    self.emit(RuntimeEventKind::Progress, None)
+                    if emitted_activity {
+                        Ok(())
+                    } else {
+                        self.emit(RuntimeEventKind::Progress, None)
+                    }
                 }
             }
             "turn/completed" => {
@@ -340,8 +393,21 @@ impl ActiveTurn {
                 );
                 Ok(())
             }
+            _ if emitted_activity => Ok(()),
             _ => self.emit(RuntimeEventKind::ProgressSnapshot, None),
         }
+    }
+
+    fn verify_activity_owner(&self, params: &Value) -> Result<(), RuntimeFailure> {
+        let thread_id = required_text(params, "threadId")?;
+        if thread_id != self.provider_thread_id {
+            return Err(failure(
+                "swallowtail.codex.app_server.session_id_mismatch",
+                "Codex app-server event belongs to a different provider session",
+            ));
+        }
+        let turn_id = required_text(params, "turnId")?;
+        self.set_provider_id(turn_id)
     }
 
     fn verify_turn(&self, params: &Value) -> Result<(), RuntimeFailure> {
@@ -438,6 +504,19 @@ fn provider_request_value(value: &Value) -> String {
         .as_str()
         .map(str::to_owned)
         .unwrap_or_else(|| value.to_string())
+}
+
+fn activity_notification(method: &str) -> bool {
+    method.starts_with("item/")
+        || matches!(
+            method,
+            "turn/plan/updated"
+                | "turn/diff/updated"
+                | "thread/compacted"
+                | "hook/started"
+                | "hook/completed"
+                | "serverRequest/resolved"
+        )
 }
 
 fn required_text<'a>(value: &'a Value, field: &str) -> Result<&'a str, RuntimeFailure> {

@@ -1,6 +1,6 @@
 # 126 Shared ACP Activity Projection
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-07-29
 Milestone: `../037-acp-observable-agent-activity.md`
@@ -31,12 +31,12 @@ or runtime policy in the protocol crate.
 
 ## Acceptance Criteria
 
-- [ ] shared decoding loses no qualified semantic update
-- [ ] the protocol crate imports no runtime or provider adapter
-- [ ] unknown semantic updates retain a bounded namespace and no raw payload
-- [ ] replacement and delta semantics remain distinct
-- [ ] oversize or contradictory input fails safely
-- [ ] existing framing and remote transport tests remain green
+- [x] shared decoding loses no qualified semantic update
+- [x] the protocol crate imports no runtime or provider adapter
+- [x] unknown semantic updates retain a bounded namespace and no raw payload
+- [x] replacement and delta semantics remain distinct
+- [x] oversize or contradictory input fails safely
+- [x] existing framing and remote transport tests remain green
 
 ## Validation
 
@@ -54,3 +54,23 @@ or runtime policy in the protocol crate.
 
 Continue to card 127 after shared protocol conformance passes.
 
+## Result
+
+- Added typed bounded records for every selected stable ACP session update and
+  content shape.
+- Preserved delta, replacement, current-value, evidence, and terminal
+  semantics explicitly.
+- Excluded raw input, raw output, metadata payloads, and uninterpreted JSON
+  from the public records.
+- Added configurable aggregate, collection, and identifier limits with exact
+  malformed and contradictory-input outcomes.
+- Kept provider identity, access, model, callback execution, runtime activity,
+  and transport policy outside the protocol crate.
+
+## Validation Evidence
+
+- `cargo test -p swallowtail-protocol-acp` — 78 passed
+- `cargo test -p swallowtail-transport-acp-remote` — 8 passed
+- `cargo clippy -p swallowtail-protocol-acp --all-targets -- -D warnings`
+- repository gates recorded in
+  `../../../logs/2026-07-29-shared-acp-activity-projection.md`

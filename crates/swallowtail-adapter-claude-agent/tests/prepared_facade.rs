@@ -28,7 +28,9 @@ use swallowtail_runtime::{
     RemoteResourceDeletionOutcome, RequestId, ScopeId, SessionOptions, TerminalStatus,
     WorkingResourceRef,
 };
-use swallowtail_testkit::assert_prepared_operation_evidence_matches_plan;
+use swallowtail_testkit::{
+    assert_observable_activity_trace, assert_prepared_operation_evidence_matches_plan,
+};
 
 #[test]
 fn prepared_sessions_bind_version_access_model_and_ambient_read_policy() {
@@ -85,7 +87,6 @@ fn prepared_sessions_bind_version_access_model_and_ambient_read_policy() {
             profile.evidence().operation(),
             profile.plan(),
         );
-
         let operation_host = FixtureHost::new(Scenario::Success, "0.61.0");
         let session = block_on(profile.open_session(operation_host.services(host_id.clone())))
             .expect("prepared session opens");
@@ -340,6 +341,7 @@ fn prepared_structured_run_binds_one_prompt_and_durable_retention_on_both_hosts(
             profile.evidence().operation(),
             profile.plan(),
         );
+        let activity_profile = profile.evidence().operation().observable_activity().clone();
 
         let operation_host = FixtureHost::new(Scenario::Success, "0.61.0");
         let mut run = block_on(profile.start_run(operation_host.services(host_id)))
@@ -348,12 +350,14 @@ fn prepared_structured_run_binds_one_prompt_and_durable_retention_on_both_hosts(
         assert!(run.take_callbacks().is_none());
         let mut events = run.take_events().expect("events");
         let terminal = run.take_terminal_outcome().expect("terminal");
-        let outcome = block_on(async {
+        let (observed_events, outcome) = block_on(async {
+            let mut observed_events = Vec::new();
             while let Some(event) = events.next().await {
-                event.expect("event succeeds");
+                observed_events.push(event.expect("event succeeds"));
             }
-            terminal.await
+            (observed_events, terminal.await)
         });
+        assert_observable_activity_trace(&activity_profile, &observed_events);
         assert_eq!(outcome.status(), &TerminalStatus::Completed);
         assert_eq!(outcome.cleanup(), &CleanupOutcome::Clean);
         assert_eq!(block_on(run.close()), CleanupOutcome::Clean);

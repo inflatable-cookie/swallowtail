@@ -1,0 +1,2 @@
+{"transport":"streamable_http_sse","body":{"jsonrpc":"2.0","method":"session/update","params":{"sessionId":"session-fixture","update":{"sessionUpdate":"tool_call","toolCallId":"tool-transport","title":"Transport fixture","kind":"other","status":"in_progress"}}}}
+{"transport":"websocket","body":{"jsonrpc":"2.0","method":"session/update","params":{"sessionId":"session-fixture","update":{"sessionUpdate":"tool_call_update","toolCallId":"tool-transport","status":"completed"}}}}

@@ -5,6 +5,10 @@ use crate::capability::Capability;
 use crate::diagnostic::{ValueRequired, required_text};
 use crate::event::ExtensionNamespace;
 use crate::model::ReasoningMode;
+use crate::observable_activity::{
+    ActivityContentStream, ActivityCorrelationKind, ActivityDisclosure, ActivityKindClass,
+    ActivityLifecycleFidelity, ActivityUnknownEventPosture,
+};
 use crate::realtime_media::{MediaDirection, MediaFormat};
 use crate::remote_resource::OwnedRemoteResourceKind;
 use crate::runtime_identity::AccessProfileId;
@@ -94,6 +98,12 @@ pub enum CapabilityConstraint {
     PrivateHistoryMaximumBytes(u64),
     StreamRecordMaximumCount(u32),
     OutputTokenMaximum(u64),
+    ObservableActivityKind(ActivityKindClass),
+    ObservableActivityLifecycle(ActivityKindClass, ActivityLifecycleFidelity),
+    ObservableActivityContentStream(ActivityKindClass, ActivityContentStream),
+    ObservableActivityDisclosure(ActivityKindClass, ActivityDisclosure),
+    ObservableActivityCorrelation(ActivityKindClass, ActivityCorrelationKind),
+    ObservableActivityUnknownEventPosture(ActivityUnknownEventPosture),
     Named(NamedCapabilityConstraint),
 }
 

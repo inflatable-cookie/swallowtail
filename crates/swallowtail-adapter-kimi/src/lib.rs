@@ -2,6 +2,7 @@
 
 #![forbid(unsafe_code)]
 
+mod acp_activity;
 mod connection;
 mod discovery;
 mod driver;

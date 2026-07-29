@@ -1,12 +1,12 @@
 # 037 ACP Observable Agent Activity
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-07-29
 Depends on: g02.036
 Vision tags: ACP, protocol reuse, installed harnesses
 Contract refs: 009, 011-012, 015, 017, 029, 035, 037, 044
-Planning state: cards 125-127 planned
+Planning state: cards 125-127 completed
 
 ## Problem
 
@@ -23,12 +23,12 @@ session behavior.
 
 ## Goals
 
-- [ ] Revalidate the maintained ACP schema and each selected harness range.
-- [ ] Freeze shared message, thought, plan, tool, usage, mode, and unknown
+- [x] Revalidate the maintained ACP schema and each selected harness range.
+- [x] Freeze shared message, thought, plan, tool, usage, mode, and unknown
       update corpora.
-- [ ] Add bounded protocol classification without runtime or provider policy.
-- [ ] Map exact activity profiles in Claude Agent, Gemini CLI, and Kimi Code.
-- [ ] Preserve stdio and explicit remote ACP transport identity.
+- [x] Add bounded protocol classification without runtime or provider policy.
+- [x] Map exact activity profiles in Claude Agent, Gemini CLI, and Kimi Code.
+- [x] Preserve stdio and explicit remote ACP transport identity.
 
 ## Non-Goals
 
@@ -42,31 +42,32 @@ session behavior.
 
 ### Batch 37.1 — ACP Currentness And Corpus
 
-- [ ] Execute card 125.
-- [ ] Pin current schema authority and exact harness behavior milestones.
-- [ ] Freeze deterministic shared and provider-specific deltas.
+- [x] Execute card 125.
+- [x] Pin current schema authority and exact harness behavior milestones.
+- [x] Freeze deterministic shared and provider-specific deltas.
 
 ### Batch 37.2 — Shared Projection Records
 
-- [ ] Execute card 126.
-- [ ] Decode bounded ACP activity updates in the protocol boundary.
-- [ ] Keep provider access, activity profile, and runtime emission in adapters.
+- [x] Execute card 126.
+- [x] Decode bounded ACP activity updates in the protocol boundary.
+- [x] Keep provider access, activity profile, and runtime emission in adapters.
 
 ### Batch 37.3 — Adapter Conformance
 
-- [ ] Execute card 127.
-- [ ] Prove Claude Agent, Gemini CLI, and Kimi Code mappings across their exact
+- [x] Execute card 127.
+- [x] Prove Claude Agent, Gemini CLI, and Kimi Code mappings across their exact
       ranges and both supported host topologies.
 
 ## Acceptance Criteria
 
-- [ ] tool calls and plans no longer become empty progress
-- [ ] provider-visible thought chunks become reasoning summaries only
-- [ ] shared protocol parsing creates no provider identity
-- [ ] provider-specific capability and mode differences remain visible
-- [ ] remote ACP adds no implicit authentication, fallback, or recovery
-- [ ] exact schema and harness version milestones are enforced
-- [ ] full ACP lifecycle, callback, continuity, and cleanup regressions pass
+- [x] tool calls and plans no longer become empty progress
+- [x] provider-visible thought chunks are classified by exact adapters as
+      reasoning summaries, warnings, other display activity, or exclusions
+- [x] shared protocol parsing creates no provider identity
+- [x] provider-specific capability and mode differences remain visible
+- [x] remote ACP adds no implicit authentication, fallback, or recovery
+- [x] exact schema and harness version milestones are enforced
+- [x] full ACP lifecycle, callback, continuity, and cleanup regressions pass
 
 ## Decision Gates
 
@@ -77,6 +78,5 @@ session behavior.
 
 ## Next Planning Checkpoint
 
-After card 127, inventory the non-ACP harness routes against the realized
-Codex and ACP profiles before starting g02.038.
-
+Roadmap g02.037 is closed. Card 128 starts the non-ACP harness inventory
+against the realized Codex and ACP profiles.

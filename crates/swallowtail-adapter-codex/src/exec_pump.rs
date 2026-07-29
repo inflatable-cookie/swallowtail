@@ -16,8 +16,9 @@ pub(crate) async fn pump(
     cancellation: Arc<ProcessCancellation>,
     mut deadline: Option<BoxFuture<'static, DeadlineObservation>>,
     materializations: SharedExecMaterializations,
+    parser: ExecEventParser,
 ) -> TerminalOutcome {
-    let outcome = pump_process(&process, &events, &cancellation, &mut deadline).await;
+    let outcome = pump_process(&process, &events, &cancellation, &mut deadline, parser).await;
     with_cleanup(outcome, materializations.release().await)
 }
 
@@ -26,8 +27,8 @@ async fn pump_process(
     events: &RuntimeEventSender,
     cancellation: &Arc<ProcessCancellation>,
     deadline: &mut Option<BoxFuture<'static, DeadlineObservation>>,
+    mut parser: ExecEventParser,
 ) -> TerminalOutcome {
-    let mut parser = ExecEventParser::new();
     loop {
         match next_output(process.as_ref(), cancellation, deadline).await {
             NextOutput::Deadline => {

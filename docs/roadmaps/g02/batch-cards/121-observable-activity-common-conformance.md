@@ -1,6 +1,6 @@
 # 121 Observable Activity Common Conformance
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-07-29
 Milestone: `../035-observable-agent-activity-kernel.md`
@@ -37,22 +37,43 @@ provider mappings begin.
 
 ## Acceptance Criteria
 
-- [ ] all lifecycle fidelity levels have reusable assertions
-- [ ] unknown semantic activity cannot become empty progress
-- [ ] output and final assistant activity remain correlated but distinct
-- [ ] callbacks and tool activity remain independently testable
-- [ ] every workspace crate compiles
-- [ ] docs and public API describe one existing-stream design
-- [ ] no adapter gains an unproved positive activity profile
+- [x] all lifecycle fidelity levels have reusable assertions
+- [x] unknown semantic activity cannot become empty progress
+- [x] output and final assistant activity remain correlated but distinct
+- [x] callbacks and tool activity remain independently testable
+- [x] every workspace crate compiles
+- [x] docs and public API describe one existing-stream design
+- [x] no adapter gains an unproved positive activity profile
+
+## Result
+
+- Added reusable prepared-profile plus runtime-trace fixtures for every common
+  lifecycle, availability, assistant, reasoning, unknown, callback, and
+  direct-tool case.
+- Added one adapter-facing trace assertion over the existing `RuntimeEvent`
+  stream.
+- Required activity observations to remain within exact lifecycle, content,
+  disclosure, correlation, unknown-event, and exchange-identity claims.
+- Proved final assistant activity and terminal output as correlated task data
+  on distinct events.
+- Migrated the common ordered-event fixture to carry semantic activity without
+  changing any provider adapter profile.
+- Added public one-stream integration guidance.
+- Kept all production adapters on their existing unavailable or
+  not-applicable activity profiles.
 
 ## Validation
 
-- `cargo test -p swallowtail-testkit`
+- `cargo test -p swallowtail-core` — 54 passed
+- `cargo test -p swallowtail-testkit` — 67 passed
 - `effigy format:check`
-- `effigy check:rust`
+- `effigy check:rust` — every workspace crate and target compiled
 - `effigy lint:rust`
 - `effigy qa:docs`
-- `effigy package:api`
+- `effigy qa:northstar`
+- `effigy package:api` — 23 public-API baselines passed after the intentional
+  additive testkit refresh
+- `effigy doctor` — unchanged 111 findings: 83 warnings and 28 errors
 
 ## Stop Conditions
 
@@ -61,6 +82,5 @@ provider mappings begin.
 
 ## Auto-Continuation
 
-Continue to card 122 only after g02.035 closes and the Codex evidence lane
-remains current.
-
+Continue to card 122. Roadmap g02.035 is closed and the Codex evidence lane
+remains the selected next proof.

@@ -1,12 +1,12 @@
 # 038 Non-ACP Harness Activity Coverage
 
-Status: planned
+Status: active
 Owner: Tom
 Created: 2026-07-29
 Depends on: g02.037
 Vision tags: harness breadth, HTTP, RPC, headless streams
 Contract refs: 009, 011-012, 022-023, 028-029, 037, 039, 042-044
-Planning state: cards 128-131 planned
+Planning state: card 128 complete; card 129 ready; cards 130-131 planned
 
 ## Problem
 
@@ -40,10 +40,10 @@ profiles rather than manufacturing a common agent loop.
 
 ### Batch 38.1 — Exact Harness Inventory
 
-- [ ] Execute card 128.
-- [ ] Audit OpenCode, Pi, Kimi local server, Anthropic Managed Agents, Claude
+- [x] Execute card 128.
+- [x] Audit OpenCode, Pi, Kimi local server, Anthropic Managed Agents, Claude
       Code headless, Gemini headless, Kimi headless, and Qwen headless.
-- [ ] Freeze selected lifecycle, detail, unknown, and failure fixtures.
+- [x] Freeze selected lifecycle, detail, unknown, and failure fixtures.
 
 ### Batch 38.2 — HTTP, Server, And RPC Projection
 
@@ -82,4 +82,3 @@ profiles rather than manufacturing a common agent loop.
 
 After card 131, freeze the complete harness result and audit direct inference
 for applicable activity without borrowing harness semantics.
-

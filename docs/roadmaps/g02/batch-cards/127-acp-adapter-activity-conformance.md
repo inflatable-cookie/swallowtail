@@ -1,6 +1,6 @@
 # 127 ACP Adapter Activity Conformance
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-07-29
 Milestone: `../037-acp-observable-agent-activity.md`
@@ -31,13 +31,13 @@ prepared operations and close the shared protocol lane.
 
 ## Acceptance Criteria
 
-- [ ] tool and plan updates no longer become empty progress
-- [ ] message and thought chunks have stable activity ownership
-- [ ] each adapter exposes its exact profile
-- [ ] no provider identity comes from the transport
-- [ ] cancellation, deadlines, callbacks, continuity, and cleanup remain exact
-- [ ] all guaranteed interface segments pass offline
-- [ ] unverified-newer admission does not widen activity fidelity
+- [x] tool and plan updates no longer become empty progress
+- [x] message and thought chunks have stable activity ownership
+- [x] each adapter exposes its exact profile
+- [x] no provider identity comes from the transport
+- [x] cancellation, deadlines, callbacks, continuity, and cleanup remain exact
+- [x] all guaranteed interface segments pass offline
+- [x] unverified-newer admission does not widen activity fidelity
 
 ## Validation
 
@@ -57,3 +57,21 @@ prepared operations and close the shared protocol lane.
 
 Continue to card 128 only after roadmap g02.037 closes.
 
+## Completion Evidence
+
+- Claude Agent, Gemini CLI, and Kimi Code use the shared bounded ACP decoder,
+  then make adapter-owned message, thought, plan, tool, warning, metadata, and
+  unknown-event decisions.
+- Prepared session and run routes publish exact activity profiles bound to
+  the qualified behavior revision. Permitted newer versions inherit the last
+  qualified profile.
+- Existing output, reasoning, permission, callback, cancellation, continuity,
+  retention, access, and joined cleanup paths remain separate.
+- Adapter projection tests pass for all three routes. ACP driver suites pass
+  at 13, 6, and 5 tests. Prepared facade suites pass at 12, 4, and 5 tests,
+  including activity-trace conformance.
+- `effigy format:check`, `effigy check:rust`, and `effigy package:api` pass.
+- Two standalone corpus binaries and the standalone remote-transport test
+  were compiled but stopped before test startup by a macOS provenance hold.
+  The same exact corpora are exercised by decoder and adapter tests; local
+  and remote-authoritative adapter topology suites pass.

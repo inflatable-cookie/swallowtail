@@ -1,0 +1,217 @@
+use super::validation::{validate_assistant_phase, validate_content, validate_phase_status};
+use super::{ActivityContentUpdate, ActivityId, ActivityNamespace, InvalidActivityRecord};
+use crate::{CallbackId, DirectToolCallId, RuntimeRunId, RuntimeTurnId};
+use std::fmt;
+use swallowtail_core::{
+    ActivityDisclosure, ActivityKindClass, ProviderActivityRef, ProviderRequestRef,
+};
+
+#[derive(Clone, Debug, Eq, Hash, PartialEq)]
+pub enum ActivityOperationId {
+    Run(RuntimeRunId),
+    Turn(RuntimeTurnId),
+}
+
+#[derive(Clone, Debug, Eq, Hash, PartialEq)]
+pub enum ActivityKind {
+    AssistantMessage,
+    ReasoningSummary,
+    Plan,
+    CommandExecution,
+    FileChange,
+    ProviderOwnedTool,
+    ConsumerOwnedTool,
+    ExternalSearch,
+    ImageView,
+    SubagentOrCollaboration,
+    ReviewTransition,
+    ContextCompaction,
+    Task,
+    Hook,
+    WarningOrError,
+    Unknown(ActivityNamespace),
+}
+
+impl ActivityKind {
+    #[must_use]
+    pub const fn class(&self) -> ActivityKindClass {
+        match self {
+            Self::AssistantMessage => ActivityKindClass::AssistantMessage,
+            Self::ReasoningSummary => ActivityKindClass::ReasoningSummary,
+            Self::Plan => ActivityKindClass::Plan,
+            Self::CommandExecution => ActivityKindClass::CommandExecution,
+            Self::FileChange => ActivityKindClass::FileChange,
+            Self::ProviderOwnedTool => ActivityKindClass::ProviderOwnedTool,
+            Self::ConsumerOwnedTool => ActivityKindClass::ConsumerOwnedTool,
+            Self::ExternalSearch => ActivityKindClass::ExternalSearch,
+            Self::ImageView => ActivityKindClass::ImageView,
+            Self::SubagentOrCollaboration => ActivityKindClass::SubagentOrCollaboration,
+            Self::ReviewTransition => ActivityKindClass::ReviewTransition,
+            Self::ContextCompaction => ActivityKindClass::ContextCompaction,
+            Self::Task => ActivityKindClass::Task,
+            Self::Hook => ActivityKindClass::Hook,
+            Self::WarningOrError => ActivityKindClass::WarningOrError,
+            Self::Unknown(_) => ActivityKindClass::Unknown,
+        }
+    }
+}
+
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+pub enum ActivityLifecyclePhase {
+    Started,
+    Updated,
+    Completed,
+}
+
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+pub enum ActivityStatus {
+    Pending,
+    InProgress,
+    Completed,
+    Failed,
+    Cancelled,
+}
+
+impl ActivityStatus {
+    #[must_use]
+    pub const fn is_terminal(self) -> bool {
+        matches!(self, Self::Completed | Self::Failed | Self::Cancelled)
+    }
+}
+
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+pub enum ActivityAssistantPhase {
+    ProviderUnspecified,
+    Intermediate,
+    Final,
+}
+
+#[derive(Clone, Debug, Eq, Hash, PartialEq)]
+pub enum ActivityCorrelation {
+    Callback(CallbackId),
+    DirectToolCall(DirectToolCallId),
+    ProviderRequest(ProviderRequestRef),
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ActivityObservation {
+    activity_id: ActivityId,
+    operation_id: ActivityOperationId,
+    provider_activity_ref: Option<ProviderActivityRef>,
+    kind: ActivityKind,
+    phase: ActivityLifecyclePhase,
+    status: ActivityStatus,
+    assistant_phase: Option<ActivityAssistantPhase>,
+    disclosure: ActivityDisclosure,
+    correlation: Option<ActivityCorrelation>,
+    content: Option<ActivityContentUpdate>,
+}
+
+impl ActivityObservation {
+    pub fn new(
+        activity_id: ActivityId,
+        operation_id: ActivityOperationId,
+        kind: ActivityKind,
+        phase: ActivityLifecyclePhase,
+        status: ActivityStatus,
+        assistant_phase: Option<ActivityAssistantPhase>,
+        disclosure: ActivityDisclosure,
+    ) -> Result<Self, InvalidActivityRecord> {
+        validate_phase_status(phase, status)?;
+        validate_assistant_phase(&kind, assistant_phase)?;
+        if disclosure == ActivityDisclosure::Unavailable {
+            return Err(InvalidActivityRecord::new(
+                "Unavailable activity disclosure cannot produce an observation",
+            ));
+        }
+        Ok(Self {
+            activity_id,
+            operation_id,
+            provider_activity_ref: None,
+            kind,
+            phase,
+            status,
+            assistant_phase,
+            disclosure,
+            correlation: None,
+            content: None,
+        })
+    }
+
+    #[must_use]
+    pub fn with_provider_activity_ref(mut self, reference: ProviderActivityRef) -> Self {
+        self.provider_activity_ref = Some(reference);
+        self
+    }
+
+    #[must_use]
+    pub fn with_correlation(mut self, correlation: ActivityCorrelation) -> Self {
+        self.correlation = Some(correlation);
+        self
+    }
+
+    pub fn with_content(
+        mut self,
+        content: ActivityContentUpdate,
+    ) -> Result<Self, InvalidActivityRecord> {
+        validate_content(&self, &content)?;
+        self.content = Some(content);
+        Ok(self)
+    }
+
+    #[must_use]
+    pub const fn activity_id(&self) -> &ActivityId {
+        &self.activity_id
+    }
+
+    #[must_use]
+    pub const fn operation_id(&self) -> &ActivityOperationId {
+        &self.operation_id
+    }
+
+    #[must_use]
+    pub const fn provider_activity_ref(&self) -> Option<&ProviderActivityRef> {
+        self.provider_activity_ref.as_ref()
+    }
+
+    #[must_use]
+    pub const fn kind(&self) -> &ActivityKind {
+        &self.kind
+    }
+
+    #[must_use]
+    pub const fn phase(&self) -> ActivityLifecyclePhase {
+        self.phase
+    }
+
+    #[must_use]
+    pub const fn status(&self) -> ActivityStatus {
+        self.status
+    }
+
+    #[must_use]
+    pub const fn assistant_phase(&self) -> Option<ActivityAssistantPhase> {
+        self.assistant_phase
+    }
+
+    #[must_use]
+    pub const fn disclosure(&self) -> ActivityDisclosure {
+        self.disclosure
+    }
+
+    #[must_use]
+    pub const fn correlation(&self) -> Option<&ActivityCorrelation> {
+        self.correlation.as_ref()
+    }
+
+    #[must_use]
+    pub const fn content(&self) -> Option<&ActivityContentUpdate> {
+        self.content.as_ref()
+    }
+}
+
+impl fmt::Display for ActivityObservation {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter.write_str("<redacted activity observation>")
+    }
+}

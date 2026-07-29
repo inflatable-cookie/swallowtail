@@ -14,6 +14,8 @@ mod installed_executable_assertions;
 mod interface_compatibility_assertions;
 mod managed_harness_fixture;
 mod negotiated_reasoning_assertions;
+mod observable_activity_assertions;
+mod observable_activity_fixture;
 mod preflight_assertions;
 mod preflight_fixture;
 mod prepared_integration_assertions;
@@ -67,6 +69,12 @@ pub use interface_compatibility_assertions::{
 };
 pub use managed_harness_fixture::{ManagedHarnessPreflightCase, ManagedHarnessPreflightFixture};
 pub use negotiated_reasoning_assertions::assert_negotiated_reasoning_setup_contract;
+pub use observable_activity_assertions::{
+    assert_observable_activity_contract, assert_observable_activity_trace,
+};
+pub use observable_activity_fixture::{
+    ObservableActivityFixtureCase, ObservableActivityTraceFixture,
+};
 pub use preflight_assertions::{
     assert_changed_revision_invalidates_plan, assert_preflight_rejection_without_side_effects,
     assert_successful_preflight_binding,

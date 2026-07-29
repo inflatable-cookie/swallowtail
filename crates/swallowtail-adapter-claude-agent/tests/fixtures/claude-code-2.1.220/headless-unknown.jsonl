@@ -1,0 +1,3 @@
+{"type":"system","subtype":"init","session_id":"fixture-session","model":"claude-opus-5","permissionMode":"plan","claude_code_version":"2.1.220","cwd":"/fixture","tools":[],"mcp_servers":[]}
+{"type":"future_activity","uuid":"future-fixture","session_id":"fixture-session","payload":{"private":"fixture-private-value"}}
+{"type":"result","subtype":"success","is_error":false,"result":"fixture complete","usage":{"input_tokens":1,"output_tokens":1},"session_id":"fixture-session"}

@@ -13,12 +13,13 @@ use swallowtail_adapter_codex::{
     prepare_codex,
 };
 use swallowtail_core::{
-    AccessProfile, AccessProfileId, AccessStatus, Capability, CapabilityConstraint,
-    ConfiguredInstanceId, CredentialMechanism, CredentialState, DriverRole, EndpointAudience,
-    EndpointAuthorization, EntitlementMetering, EntitlementState, ExecutionHostId,
-    ExternalNetworkPolicy, ExternalSearchPolicy, HostServiceKind, InstanceRevision,
-    InterfaceVersionAxis, ModelId, ModelRouteId, ModelRouteRevision, ReasoningMode,
-    RuntimeReadiness, SupportAuthority,
+    AccessProfile, AccessProfileId, AccessStatus, ActivityContentStream, ActivityDisclosure,
+    ActivityKindClass, ActivityLifecycleFidelity, ActivityUnknownEventPosture, Capability,
+    CapabilityConstraint, ConfiguredInstanceId, CredentialMechanism, CredentialState, DriverRole,
+    EndpointAudience, EndpointAuthorization, EntitlementMetering, EntitlementState,
+    ExecutionHostId, ExternalNetworkPolicy, ExternalSearchPolicy, HostServiceKind,
+    InstanceRevision, InterfaceVersionAxis, ModelId, ModelRouteId, ModelRouteRevision,
+    ObservableActivityAvailability, ReasoningMode, RuntimeReadiness, SupportAuthority,
 };
 use swallowtail_runtime::{
     AttachmentDescriptor, AttachmentRef, AttachmentRole, BoxFuture, CleanupOutcome, Deadline,
@@ -32,7 +33,7 @@ use swallowtail_testkit::RecordingHostServices;
 const COMPLETED_JSONL: &str = concat!(
     "{\"type\":\"thread.started\",\"thread_id\":\"private-thread\"}\n",
     "{\"type\":\"turn.started\"}\n",
-    "{\"type\":\"item.completed\",\"item\":{\"type\":\"agent_message\",\"text\":\"finished\"}}\n",
+    "{\"type\":\"item.completed\",\"item\":{\"id\":\"message-1\",\"type\":\"agent_message\",\"text\":\"finished\"}}\n",
     "{\"type\":\"turn.completed\"}\n"
 );
 

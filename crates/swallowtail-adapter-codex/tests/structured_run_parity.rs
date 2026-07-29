@@ -24,8 +24,8 @@ use swallowtail_testkit::{RecordedHostCall, RecordingHostServices};
 const STRUCTURED_JSONL: &str = concat!(
     "{\"type\":\"thread.started\",\"thread_id\":\"private-thread\"}\n",
     "{\"type\":\"turn.started\"}\n",
-    "{\"type\":\"item.started\",\"item\":{\"type\":\"web_search\"}}\n",
-    "{\"type\":\"item.completed\",\"item\":{\"type\":\"agent_message\",\"text\":\"{\\\"label\\\":\\\"example\\\"}\"}}\n",
+    "{\"type\":\"item.started\",\"item\":{\"id\":\"search-1\",\"type\":\"web_search\",\"query\":\"official docs\"}}\n",
+    "{\"type\":\"item.completed\",\"item\":{\"id\":\"message-1\",\"type\":\"agent_message\",\"text\":\"{\\\"label\\\":\\\"example\\\"}\"}}\n",
     "{\"type\":\"turn.completed\"}\n"
 );
 

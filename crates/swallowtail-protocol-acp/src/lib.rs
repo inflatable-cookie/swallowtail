@@ -6,8 +6,18 @@ use serde_json::{Value, json};
 use std::error::Error;
 use std::fmt;
 
+mod activity;
 mod message;
 
+pub use activity::{
+    AcpBoundedText, AcpCommand, AcpConfigCategory, AcpConfigChoice, AcpConfigChoices,
+    AcpConfigGroup, AcpConfigKind, AcpConfigOption, AcpContentBlock, AcpCost, AcpMessageChunk,
+    AcpMessageRole, AcpOptionalUpdate, AcpPlanEntry, AcpPlanEntryPriority, AcpPlanEntryStatus,
+    AcpSessionUpdate, AcpSessionUpdateSemantics, AcpToolCall, AcpToolCallContent,
+    AcpToolCallLocation, AcpToolCallStatus, AcpToolCallUpdate, AcpToolKind, AcpUsage,
+    ActivityDecodeError, ActivityDecodeErrorKind, ActivityDecodeLimits, DecodedSessionUpdate,
+    decode_session_update, decode_session_update_with_limits,
+};
 pub use message::{decode_message, encode_message};
 
 /// Stable ACP wire protocol version supported by this transport.

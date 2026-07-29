@@ -3,9 +3,11 @@
 #![forbid(unsafe_code)]
 
 mod app_server;
+mod app_server_activity;
 mod callback_exchange;
 mod discovery;
 mod exec;
+mod exec_activity;
 mod exec_events;
 mod exec_handle;
 mod exec_input;

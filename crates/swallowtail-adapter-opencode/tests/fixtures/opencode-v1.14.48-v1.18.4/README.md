@@ -69,6 +69,12 @@ The small health and session envelopes are synthetic. They contain no
 credential, endpoint, account, path, provider payload, model response, or user
 content.
 
+`activity-rich.sse` freezes message, reasoning, tool-state, and step lifecycle
+from the selected event schema. `activity-gap-1.14.51.sse` freezes the exact
+`1.14.51` segment: text delta and session close remain available, but typed
+tool and reasoning part replacement do not. The existing 45-release
+compatibility manifest is the version-coverage authority for both fixtures.
+
 Sources:
 
 - <https://github.com/anomalyco/opencode/releases>

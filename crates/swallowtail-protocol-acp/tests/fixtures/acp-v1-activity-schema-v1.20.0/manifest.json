@@ -1,0 +1,102 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-07-29",
+  "protocol": {
+    "wire_version": 1,
+    "schema_artifact": "schema-v1.20.0",
+    "schema_source_commit": "5e89c71497fe07dd4ae633c181a17224f4a8956d",
+    "schema_sha256": "92c1dfcda10dd47e99127500a3763da2b471f9ac61e12b9bf0430c32cf953796",
+    "schema_meta_sha256": "e0bf36f8123b2544b499174197fdc371ec49a1b4572a35114513d56492741599",
+    "stable_schema_only": true
+  },
+  "sdk": {
+    "schema_package": "agent-client-protocol-schema",
+    "schema_package_version": "1.6.0",
+    "core_package": "agent-client-protocol",
+    "core_package_version": "2.0.0",
+    "remote_transport_package": "agent-client-protocol-http",
+    "remote_transport_package_version": "2.0.0",
+    "draft_v2_enabled": false
+  },
+  "session_updates": {
+    "agent_message_chunk": {
+      "semantics": "content_delta",
+      "message_id": "optional_opaque",
+      "portable_role": "assistant_message_candidate"
+    },
+    "agent_thought_chunk": {
+      "semantics": "client_display_content_delta",
+      "message_id": "optional_opaque",
+      "portable_role": "adapter_classified_reasoning_summary_or_display_activity"
+    },
+    "tool_call": {
+      "semantics": "create",
+      "identity": "required_toolCallId",
+      "portable_role": "tool_activity_candidate"
+    },
+    "tool_call_update": {
+      "semantics": "partial_field_update_with_collection_replacement",
+      "identity": "required_toolCallId",
+      "portable_role": "tool_activity_candidate"
+    },
+    "plan": {
+      "semantics": "authoritative_full_replacement",
+      "identity": "session_scoped_runtime_minted",
+      "portable_role": "plan_activity_candidate"
+    },
+    "available_commands_update": {
+      "semantics": "authoritative_full_replacement",
+      "portable_role": "session_metadata_not_agent_activity"
+    },
+    "current_mode_update": {
+      "semantics": "authoritative_current_value",
+      "portable_role": "session_metadata_not_agent_activity"
+    },
+    "config_option_update": {
+      "semantics": "authoritative_full_replacement",
+      "portable_role": "session_metadata_not_agent_activity"
+    },
+    "session_info_update": {
+      "semantics": "partial_metadata_update",
+      "portable_role": "session_metadata_not_agent_activity"
+    },
+    "usage_update": {
+      "semantics": "authoritative_session_evidence",
+      "portable_role": "typed_usage_evidence_not_agent_activity"
+    },
+    "user_message_chunk": {
+      "semantics": "content_delta",
+      "portable_role": "consumer_transcript_not_agent_activity"
+    }
+  },
+  "separate_exchanges": {
+    "session/request_permission": "callback_or_provider_request_not_tool_completion",
+    "session/prompt_response": "terminal_stop_truth_not_activity_completion"
+  },
+  "disclosure": {
+    "provider_display": [
+      "typed-content-blocks",
+      "tool-title-kind-status-content-and-locations",
+      "plan-entry-content-status-and-priority"
+    ],
+    "excluded": [
+      "rawInput",
+      "rawOutput",
+      "_meta-unless-adapter-exactly-types-it",
+      "raw-provider-envelope",
+      "credential-or-authorization-material"
+    ]
+  },
+  "transport_identity": {
+    "stdio": "acp_v1_stdio_ndjson",
+    "remote_http": "acp_v1_streamable_http_sse",
+    "remote_websocket": "acp_v1_websocket",
+    "semantic_payload_shared": true,
+    "transport_fallback": false
+  },
+  "unknown_posture": {
+    "safe_nonempty_discriminator": "bounded_namespaced_unknown",
+    "missing_or_unsafe_discriminator": "fail_closed",
+    "raw_payload_exposed": false
+  }
+}

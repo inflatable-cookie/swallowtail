@@ -298,7 +298,63 @@ evidence-led provider work.
 - roadmaps g02.035-g02.040 and cards 119-137 sequence the common kernel,
   Codex, ACP, remaining harnesses, direct-inference truth, provider-wide
   package evidence, and a consumer handoff
-- card 119 is the sole ready task
+- card 119 adds bounded and redacted activity identity, lifecycle, content,
+  disclosure, correlation, and one semantic variant on the existing ordered
+  runtime stream
+- the ordered buffer rejects activity identity drift, lifecycle regression,
+  repeated completion, and post-completion observations without exposing
+  activity data in diagnostics
+- card 120 adds separate observable-activity capability truth, exact route
+  profiles, prepared transport and interface-behavior evidence, thinner
+  requirement matching, and failure-before-effects non-promotion
+- unverified-newer routes inherit the last qualified behavior revision and
+  cannot widen activity fidelity from newly observed fields
+- card 121 completes reusable existing-stream activity conformance, including
+  exact lifecycle, assistant, reasoning-summary, unknown, callback,
+  direct-tool, bounds, redaction, and unverified-newer assertions
+- roadmap g02.035 is closed without granting any provider adapter a positive
+  activity profile
+- Research 064 and card 122 freeze exact Codex app-server and exec activity
+  segments through qualified `0.145.0`, retain stable `0.146.0` as permitted
+  unverified newer, and separate readable reasoning summaries from excluded
+  raw reasoning
+- the app-server corpus records core `0.80.0` lifecycle plus exact later
+  message-phase, plan, dynamic-tool, request-resolution, hook, patch,
+  timestamp, and subagent milestones; exec retains its distinct per-kind
+  lifecycle truth
+- card 123 maps qualified app-server activity into stable operation-local
+  identity, native lifecycle, bounded content, exact callback and request
+  correlation, safe unknowns, and immutable prepared route profiles
+- card 124 maps exec's distinct completion-only, start/completion, and
+  replacement-update item truth without fabricating app-server lifecycle
+- prepared exec retains final output and usage semantics while exposing exact
+  assistant, reasoning-summary, command, file, MCP, search, task, warning,
+  collaboration, and namespaced unknown activity
+- roadmap g02.036 is complete; both Codex transports preserve stable
+  `0.146.0` as permitted unverified newer on the `0.145.0` guarantee
+- Research 065 and card 125 pin ACP stable schema `v1.20.0`, separate
+  protocol and transport SDK axes, and exact Claude Agent, Gemini CLI, and
+  Kimi Code activity corpora
+- Claude Agent `0.62.0..=0.63.0`, Gemini CLI `0.53.0`, and Kimi Code `0.30.0`
+  remain permitted unverified newer on their last qualified guarantees
+- card 126 adds bounded typed shared ACP session-update decoding without raw
+  JSON, provider identity, runtime policy, or transport flattening
+- card 127 maps exact Claude Agent, Gemini CLI, and Kimi Code activity into
+  stable operation-local identity, typed lifecycle, bounded provider display,
+  plan replacements, provider-owned tools, Gemini warning classification,
+  and namespaced unknowns
+- prepared ACP profiles bind the exact qualified behavior revision; permitted
+  newer harnesses inherit the last guarantee without widening fidelity
+- roadmap g02.037 is complete
+- Research 066 and card 128 account for all eight remaining production
+  non-ACP harness routes and freeze native-lifecycle, partial, completion-only,
+  unknown, malformed, and failure corpora
+- route profiles now bind selected partial or preview options; executable
+  capability alone cannot widen activity fidelity
+- OpenCode retains an exact thin `1.14.51` segment, Kimi retains separate
+  `0.28.1` and `0.29.x` event-schema evidence, and current newer releases
+  remain permitted but unverified
+- card 129 is the sole ready task
 - roadmaps g02.016-g02.019 sequence Codex, ACP/Claude Agent, OpenCode,
   provider-wide acceptance, and the Nucleus handoff
 - all 23 manifests carry contract-complete metadata and crates.io publication
@@ -662,13 +718,13 @@ evidence-led provider work.
 - [034 Residual Feature Matrix Truth And Programme Checkpoint](034-residual-feature-matrix-truth-and-programme-checkpoint.md)
   — completed; cards 115-118 complete
 - [035 Observable Agent Activity Kernel](035-observable-agent-activity-kernel.md)
-  — active; card 119 ready, cards 120-121 planned
+  — completed; cards 119-121 complete
 - [036 Codex Observable Activity Fidelity](036-codex-observable-activity-fidelity.md)
-  — planned; cards 122-124 planned
+  — completed; cards 122-124 complete
 - [037 ACP Observable Agent Activity](037-acp-observable-agent-activity.md)
-  — planned; cards 125-127 planned
+  — completed; cards 125-127 complete
 - [038 Non-ACP Harness Activity Coverage](038-non-acp-harness-activity-coverage.md)
-  — planned; cards 128-131 planned
+  — active; card 128 complete, card 129 ready, cards 130-131 planned
 - [039 Direct Inference Activity Truth](039-direct-inference-activity-truth.md)
   — planned; cards 132-134 planned
 - [040 Provider-Wide Activity Acceptance And Consumer Handoff](040-provider-wide-activity-acceptance-and-consumer-handoff.md)
@@ -853,13 +909,16 @@ is deferred until a consumer needs post-restart provider management.
   metadata, example, and public-API gates pass; the feature-matrix completion
   programme closed with no provider implementation selected at that
   checkpoint
-- cards 119-121 own the common observable-activity records, exact prepared
-  route profile, and provider-neutral conformance
+- cards 119-121 complete the common observable-activity records, ordered
+  lifecycle enforcement, exact prepared route profile, qualified
+  behavior-revision binding, and reusable provider-neutral conformance
 - cards 122-124 own Codex range evidence, app-server lifecycle fidelity, and
   completion-oriented exec mapping
-- cards 125-127 own ACP currentness, shared bounded activity decoding, and
-  Claude Agent, Gemini CLI, and Kimi Code conformance
-- cards 128-131 own all remaining production harness route activity
+- cards 125-126 complete ACP currentness, exact harness corpora, and shared
+  bounded activity decoding; card 127 completes exact Claude Agent, Gemini
+  CLI, and Kimi Code profiles, emission, and conformance
+- card 128 completes the exact eight-route non-ACP harness inventory and
+  corpus freeze; cards 129-131 own projection and closeout
 - cards 132-134 own direct-inference applicability, exact text activity, and
   realtime or serving boundaries
 - cards 135-137 own the provider-wide activity matrix, extracted-package

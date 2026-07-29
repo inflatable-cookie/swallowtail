@@ -1,0 +1,27 @@
+event: session.status_running
+data: {"id":"event-activity-1","type":"session.status_running","processed_at":"2026-07-29T00:00:00Z"}
+
+event: agent.thinking
+data: {"id":"event-activity-2","type":"agent.thinking","processed_at":"2026-07-29T00:00:01Z","thread_id":"thread-fixture"}
+
+event: agent.message
+data: {"id":"event-activity-3","type":"agent.message","processed_at":"2026-07-29T00:00:02Z","thread_id":"thread-fixture","content":[{"type":"text","text":"checking fixture"}]}
+
+event: agent.tool_use
+data: {"id":"event-activity-4","type":"agent.tool_use","processed_at":"2026-07-29T00:00:03Z","thread_id":"thread-fixture","tool_use_id":"tool-provider-fixture","name":"computer","input":{"path":"fixture-private-path"}}
+
+event: agent.tool_result
+data: {"id":"event-activity-5","type":"agent.tool_result","processed_at":"2026-07-29T00:00:04Z","thread_id":"thread-fixture","tool_use_id":"tool-provider-fixture","content":[{"type":"text","text":"fixture-private-result"}],"is_error":false}
+
+event: agent.mcp_tool_use
+data: {"id":"event-activity-6","type":"agent.mcp_tool_use","processed_at":"2026-07-29T00:00:05Z","thread_id":"thread-fixture","tool_use_id":"tool-mcp-fixture","name":"fixture_mcp","server_name":"fixture-server","input":{}}
+
+event: agent.mcp_tool_result
+data: {"id":"event-activity-7","type":"agent.mcp_tool_result","processed_at":"2026-07-29T00:00:06Z","thread_id":"thread-fixture","tool_use_id":"tool-mcp-fixture","content":[{"type":"text","text":"fixture-private-mcp-result"}],"is_error":false}
+
+event: agent.custom_tool_use
+data: {"id":"event-activity-8","type":"agent.custom_tool_use","processed_at":"2026-07-29T00:00:07Z","thread_id":"thread-fixture","custom_tool_use_id":"tool-consumer-fixture","name":"fixture_callback","input":{"value":"fixture-private-input"}}
+
+event: session.status_waiting_for_input
+data: {"id":"event-activity-9","type":"session.status_waiting_for_input","processed_at":"2026-07-29T00:00:08Z"}
+

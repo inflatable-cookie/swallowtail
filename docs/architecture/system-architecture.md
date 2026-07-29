@@ -78,7 +78,11 @@ spine:
   packs plus an eleventh realtime-media direct-session profile, a twelfth
   locally continued direct-session profile, a thirteenth remote ACP harness
   profile, and a separate planned-rollover assertion pack over the unchanged
-  realtime profile
+  realtime profile. A separate non-ACP harness activity inventory owns
+  provider-free checks over exact OpenCode SSE, Pi RPC, Kimi WebSocket,
+  Managed Agents persisted-event, and four headless corpora; it records route
+  options, lifecycle, disclosure, correlation, ownership, unknown posture,
+  and exact absences without changing adapter behavior
 - `swallowtail-host-local` depends on core and runtime and implements concrete
   host-approved local process, endpoint, credential, materialization, and
   monotonic deadline behavior behind capability-scoped runtime ports; it also
@@ -86,13 +90,15 @@ spine:
   composition, and explicit executable approval returning one opaque discovery
   target
 - `swallowtail-protocol-acp` is the provider-neutral ACP wire boundary; it owns
-  bounded v1 NDJSON framing and message classification plus a fixture corpus
-  pinned independently to Gemini CLI `0.51.0`/schema `v1.19.0` and Kimi Code
-  `0.28.1`/schema `v1.19.1`; the Kimi corpus also freezes exact annotated-tag,
-  source-commit, arm64 executable, isolated-state, and upgrade-gate evidence;
-  a separate raw remote-transport corpus freezes HTTP/SSE and WebSocket
-  lifecycle behavior against wire version 1, the Active transport RFD, and SDK
-  `2.0.0` without depending on a production client
+  bounded v1 NDJSON framing, message classification, and typed bounded
+  session-update decoding. The decoder preserves message and thought deltas,
+  plan and tool replacement snapshots, tool terminal state, usage, mode,
+  command, configuration, session information, and bounded unknown namespaces
+  without exposing raw JSON or deciding provider/runtime policy. Its corpora
+  pin stable schema `v1.20.0` separately from exact Claude Agent, Gemini CLI,
+  and Kimi Code ranges. A separate raw remote-transport corpus freezes
+  HTTP/SSE and WebSocket lifecycle behavior against wire version 1, the Active
+  transport RFD, and SDK `2.0.0` without depending on a production client
 - `swallowtail-transport-acp-remote` depends on core, runtime, and the ACP
   protocol boundary; it keeps exact SDK, Tokio, HTTP/2, SSE, WebSocket, TLS,
   cookie, and transport errors private while exposing one operation-scoped
@@ -255,8 +261,9 @@ Crate status:
 - `swallowtail-runtime` — realized under Contracts 008-010, 012, and 026 with
   only core, `futures-core`, and `zeroize` dependencies
 - `swallowtail-protocol-acp` — realized for bounded ACP v1 NDJSON framing,
-  request/notification/response classification, safe error responses, and
-  independent raw HTTP/SSE plus WebSocket remote-transport fixtures
+  request/notification/response classification, safe error responses,
+  independent raw HTTP/SSE plus WebSocket remote-transport fixtures, and exact
+  stable-schema activity corpora without provider or runtime projection
 - `swallowtail-transport-acp-remote` — realized under Contract 035 with
   explicit HTTP/2 SSE or WebSocket selection, bounded connection-private
   cookies, frames, streams, request/callback correlation, initialize-version

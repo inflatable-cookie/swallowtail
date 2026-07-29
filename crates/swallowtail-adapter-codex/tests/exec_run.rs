@@ -11,9 +11,10 @@ use swallowtail_core::{
     Capability, CapabilityConstraint, CapabilityRequirement, HostServiceKind, ReasoningMode,
 };
 use swallowtail_runtime::{
-    AttachmentDescriptor, AttachmentRef, AttachmentRole, CancellationAcknowledgement, Deadline,
-    EnvironmentRef, ExternalNetworkPolicy, ExternalSearchPolicy, MonotonicInstant,
-    OperationContent, OperationPolicy, RequestId, SchemaDocument, StructuredOutputDescriptor,
+    ActivityAssistantPhase, ActivityKind, ActivityLifecyclePhase, AttachmentDescriptor,
+    AttachmentRef, AttachmentRole, CancellationAcknowledgement, Deadline, EnvironmentRef,
+    ExternalNetworkPolicy, ExternalSearchPolicy, MonotonicInstant, OperationContent,
+    OperationPolicy, RequestId, RuntimeEventKind, SchemaDocument, StructuredOutputDescriptor,
     StructuredRunDriver, StructuredRunRequest, TerminalStatus,
 };
 use swallowtail_testkit::{RecordedHostCall, RecordingHostServices};
@@ -21,7 +22,7 @@ use swallowtail_testkit::{RecordedHostCall, RecordingHostServices};
 const COMPLETED_JSONL: &str = concat!(
     "{\"type\":\"thread.started\",\"thread_id\":\"private-thread\"}\n",
     "{\"type\":\"turn.started\"}\n",
-    "{\"type\":\"item.completed\",\"item\":{\"type\":\"agent_message\",\"text\":\"finished\"}}\n",
+    "{\"type\":\"item.completed\",\"item\":{\"id\":\"message-1\",\"type\":\"agent_message\",\"text\":\"finished\"}}\n",
     "{\"type\":\"turn.completed\"}\n"
 );
 
@@ -53,6 +54,21 @@ fn structured_run_translates_request_and_normalizes_jsonl() {
     let cleanup = block_on(handle.close());
 
     assert!(events.iter().all(Result::is_ok));
+    let activities = events
+        .iter()
+        .filter_map(|event| match event.as_ref().ok()?.kind() {
+            RuntimeEventKind::Activity(activity) => Some(activity),
+            _ => None,
+        })
+        .collect::<Vec<_>>();
+    assert_eq!(activities.len(), 1);
+    assert_eq!(activities[0].kind(), &ActivityKind::AssistantMessage);
+    assert_eq!(
+        activities[0].assistant_phase(),
+        Some(ActivityAssistantPhase::Final)
+    );
+    assert_eq!(activities[0].phase(), ActivityLifecyclePhase::Completed);
+    assert!(activities[0].provider_activity_ref().is_some());
     assert_eq!(terminal.status(), &TerminalStatus::Completed);
     assert_eq!(
         terminal.output().map(|content| content.as_str()),

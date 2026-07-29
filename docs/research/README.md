@@ -71,3 +71,6 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [061 Residual Feature Matrix `No` Currentness And Tranche Selection](061-residual-feature-matrix-no-currentness-and-tranche-selection.md)
 - [062 Qwen And Ollama Interactive Contract Fit And Corpora](062-qwen-and-ollama-interactive-contract-fit-and-corpora.md)
 - [063 Observable Agent Activity And T3 Code Reference](063-observable-agent-activity-and-t3-code-reference.md)
+- [064 Codex Observable Activity Range Evidence](064-codex-observable-activity-range-evidence.md)
+- [065 ACP Observable Activity Currentness And Corpus](065-acp-observable-activity-currentness-and-corpus.md)
+- [066 Non-ACP Harness Activity Inventory And Corpus](066-non-acp-harness-activity-inventory-and-corpus.md)

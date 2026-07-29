@@ -2,6 +2,7 @@ use crate::failure::{failure, malformed};
 use serde_json::Value;
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
+use swallowtail_protocol_acp::{AcpContentBlock, AcpMessageRole, AcpSessionUpdate};
 use swallowtail_runtime::{
     BoxEventStream, CleanupOutcome, OperationContent, RuntimeEvent, RuntimeEventKind,
     RuntimeFailure, RuntimeTurnId, TerminalOutcome, TerminalOutcomeFuture, TerminalOutcomeSender,
@@ -17,13 +18,14 @@ pub(crate) struct ActiveTurn {
     terminal: TerminalOutcomeSender,
     sequence: AtomicU64,
     output: Mutex<String>,
+    activity: Mutex<crate::acp_activity::AcpActivityProjection>,
     cancelled: AtomicBool,
     finished: AtomicBool,
 }
 
 impl ActiveTurn {
     pub(crate) fn new(
-        _runtime_id: RuntimeTurnId,
+        runtime_id: RuntimeTurnId,
         session_id: String,
     ) -> Result<(Arc<Self>, BoxEventStream, TerminalOutcomeFuture), RuntimeFailure> {
         let (events, stream) = runtime_event_channel(EVENT_CAPACITY)?;
@@ -36,6 +38,7 @@ impl ActiveTurn {
                 terminal,
                 sequence: AtomicU64::new(1),
                 output: Mutex::new(String::new()),
+                activity: Mutex::new(crate::acp_activity::AcpActivityProjection::new(runtime_id)),
                 cancelled: AtomicBool::new(false),
                 finished: AtomicBool::new(false),
             }),
@@ -53,37 +56,46 @@ impl ActiveTurn {
     }
 
     pub(crate) fn handle_update(&self, params: &Value) -> Result<(), RuntimeFailure> {
-        if params.get("sessionId").and_then(Value::as_str) != Some(&self.session_id) {
+        let decoded =
+            swallowtail_protocol_acp::decode_session_update(params).map_err(|_| malformed())?;
+        if decoded.session_id.as_str() != self.session_id {
             return Err(failure(
                 "swallowtail.kimi.acp.session_mismatch",
                 "Kimi Code update does not match the bound session",
             ));
         }
-        let update = params.get("update").ok_or_else(malformed)?;
-        match update.get("sessionUpdate").and_then(Value::as_str) {
-            Some("agent_message_chunk") => {
-                let text = text_content(update)?;
+        match &decoded.update {
+            AcpSessionUpdate::Message(message) if message.role == AcpMessageRole::Agent => {
+                let text = text_content(&message.content)?;
                 self.append_output(text)?;
-                self.emit_content(RuntimeEventKind::OutputDelta, text)
+                self.emit_content(RuntimeEventKind::OutputDelta, text)?;
             }
-            Some("agent_thought_chunk") => {
-                self.emit_content(RuntimeEventKind::ReasoningProgress, text_content(update)?)
+            AcpSessionUpdate::Message(message) if message.role == AcpMessageRole::Thought => {
+                self.emit_content(
+                    RuntimeEventKind::ReasoningProgress,
+                    text_content(&message.content)?,
+                )?;
             }
-            Some(
-                "tool_call"
-                | "tool_call_update"
-                | "plan"
-                | "user_message_chunk"
-                | "available_commands_update"
-                | "config_option_update"
-                | "current_mode_update"
-                | "usage_update",
-            ) => self.emit(RuntimeEventKind::Progress, None),
-            _ => Err(failure(
-                "swallowtail.kimi.acp.update_unsupported",
-                "Kimi Code returned an unsupported ACP session update",
-            )),
+            AcpSessionUpdate::Message(_)
+            | AcpSessionUpdate::AvailableCommands(_)
+            | AcpSessionUpdate::CurrentMode(_)
+            | AcpSessionUpdate::ConfigOptions(_)
+            | AcpSessionUpdate::SessionInfo { .. }
+            | AcpSessionUpdate::Usage(_) => self.emit(RuntimeEventKind::Progress, None)?,
+            AcpSessionUpdate::ToolCall(_)
+            | AcpSessionUpdate::ToolCallUpdate(_)
+            | AcpSessionUpdate::Plan(_)
+            | AcpSessionUpdate::Unknown { .. } => {}
         }
+        let observations = self
+            .activity
+            .lock()
+            .expect("turn activity lock poisoned")
+            .project(&decoded.update)?;
+        for observation in observations {
+            self.emit(RuntimeEventKind::Activity(observation), None)?;
+        }
+        Ok(())
     }
 
     pub(crate) fn finish_prompt(&self, stop_reason: &str) {
@@ -115,6 +127,16 @@ impl ActiveTurn {
     fn finish(&self, status: TerminalStatus) {
         if self.finished.swap(true, Ordering::SeqCst) {
             return;
+        }
+        if let Ok(observations) = self
+            .activity
+            .lock()
+            .expect("turn activity lock poisoned")
+            .complete(&status)
+        {
+            for observation in observations {
+                let _ = self.emit(RuntimeEventKind::Activity(observation), None);
+            }
         }
         let output = self
             .output
@@ -163,11 +185,9 @@ impl ActiveTurn {
     }
 }
 
-fn text_content(update: &Value) -> Result<&str, RuntimeFailure> {
-    update
-        .get("content")
-        .filter(|content| content.get("type").and_then(Value::as_str) == Some("text"))
-        .and_then(|content| content.get("text"))
-        .and_then(Value::as_str)
-        .ok_or_else(malformed)
+fn text_content(content: &AcpContentBlock) -> Result<&str, RuntimeFailure> {
+    match content {
+        AcpContentBlock::Text(text) => Ok(text.as_str()),
+        _ => Err(malformed()),
+    }
 }

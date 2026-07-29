@@ -1,0 +1,62 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-07-29",
+  "axis": "gemini-cli.acp-agent",
+  "transport": "acp_v1_stdio_ndjson",
+  "wire_version": 1,
+  "qualified_segments": [
+    {
+      "range": "0.51.0",
+      "tag_commit": "8d951de3855750d5f8219d65ae22524b606133b6",
+      "acp_sdk": "0.16.1",
+      "stable_schema": "schema-v1.19.0",
+      "session_source_sha256": "6c477fa56ad3fc8a8a683a0bd9fae6233e5fbbf4143a8b8cb21bc8de15e34c23",
+      "utils_source_sha256": "3683efd817485ca2772429864d211fbfe4ff0ac48342d445bd616743c1c693bd",
+      "revision": "gemini-cli.acp.v0.51.0"
+    }
+  ],
+  "current_external_release": {
+    "version": "0.53.0",
+    "published_at": "2026-07-28T21:45:42Z",
+    "tag_commit": "decc0b46c6e11f8cad90710dcfb38fc3cdb24a96",
+    "session_source_sha256": "6c477fa56ad3fc8a8a683a0bd9fae6233e5fbbf4143a8b8cb21bc8de15e34c23",
+    "classification": "unverified-newer",
+    "profile": "0.51.0-guarantee",
+    "activity_source_delta": "none",
+    "full_harness_qualification": false
+  },
+  "emitted_updates": [
+    "agent_message_chunk",
+    "agent_thought_chunk",
+    "available_commands_update",
+    "tool_call",
+    "tool_call_update",
+    "user_message_chunk"
+  ],
+  "not_emitted_by_qualified_source": [
+    "config_option_update",
+    "current_mode_update",
+    "plan",
+    "session_info_update",
+    "usage_update"
+  ],
+  "provider_specific": {
+    "thought_sources": [
+      "model-thought-subject-and-description",
+      "adapter-operational-warning"
+    ],
+    "mode_change_signal": "assistant-message-[MODE_UPDATE]-text",
+    "tool_content": [
+      "typed-text",
+      "typed-diff",
+      "typed-location"
+    ],
+    "raw_tool_fields": "not-emitted"
+  },
+  "disclosure": {
+    "thought": "provider_display_content_requiring_adapter_classification",
+    "permission": "separate_provider_request_and_cancel",
+    "completion": "separate_prompt_response",
+    "unknown": "bounded_namespaced_or_fail_closed"
+  }
+}

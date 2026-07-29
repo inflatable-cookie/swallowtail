@@ -21,7 +21,7 @@ use swallowtail_runtime::{
 
 const COMPLETED_JSONL: &str = concat!(
     "{\"type\":\"turn.started\"}\n",
-    "{\"type\":\"item.completed\",\"item\":{\"type\":\"agent_message\",\"text\":\"done\"}}\n",
+    "{\"type\":\"item.completed\",\"item\":{\"id\":\"message-1\",\"type\":\"agent_message\",\"text\":\"done\"}}\n",
     "{\"type\":\"turn.completed\"}\n"
 );
 

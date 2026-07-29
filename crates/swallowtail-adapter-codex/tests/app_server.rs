@@ -13,8 +13,8 @@ use swallowtail_core::{
     ReasoningMode,
 };
 use swallowtail_runtime::{
-    CallbackPayload, CallbackRequestKind, CallbackResponse, CallbackResult,
-    CancellationAcknowledgement, CleanupOutcome, Deadline, EnvironmentRef,
+    ActivityAssistantPhase, ActivityKind, CallbackPayload, CallbackRequestKind, CallbackResponse,
+    CallbackResult, CancellationAcknowledgement, CleanupOutcome, Deadline, EnvironmentRef,
     InteractiveSessionDriver, ModelCatalogDriver, ModelCatalogRequest, MonotonicInstant,
     OperationContent, RequestId, RuntimeEventKind, RuntimeTurnId, SchemaDocument,
     SessionAccessPolicy, SessionOptions, SessionPlanAgreement, SessionResumeBinding,
@@ -250,6 +250,20 @@ fn session_turn_streams_output_and_preserves_provider_ids() {
         event
             .as_ref()
             .is_ok_and(|event| event.kind() == &RuntimeEventKind::OutputDelta)
+    }));
+    let activities = events
+        .iter()
+        .filter_map(|event| match event.as_ref().ok()?.kind() {
+            RuntimeEventKind::Activity(activity) => Some(activity),
+            _ => None,
+        })
+        .collect::<Vec<_>>();
+    assert!(activities.iter().any(|activity| {
+        matches!(activity.kind(), ActivityKind::AssistantMessage)
+            && activity.assistant_phase() == Some(ActivityAssistantPhase::ProviderUnspecified)
+            && activity
+                .provider_activity_ref()
+                .is_some_and(|reference| reference.as_provider_value() == "item-1")
     }));
     assert_eq!(terminal.status(), &TerminalStatus::Completed);
     assert_eq!(

@@ -1,6 +1,6 @@
 # 123 Codex App-Server Activity Projection
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-07-29
 Milestone: `../036-codex-observable-activity-fidelity.md`
@@ -35,14 +35,45 @@ activity.
 
 ## Acceptance Criteria
 
-- [ ] non-message completed items no longer become empty progress
-- [ ] every delta has exact item ownership
-- [ ] completed items remain authoritative
-- [ ] approval and tool completion remain separate
-- [ ] file changes use current diff truth, not deprecated output emulation
-- [ ] unknown semantic additions remain visible without raw payload
-- [ ] every maintained version segment passes
-- [ ] read-only and bounded-workspace facades remain distinct
+- [x] non-message completed items no longer become empty progress
+- [x] every delta has exact item ownership
+- [x] completed items remain authoritative
+- [x] approval and tool completion remain separate
+- [x] file changes use current diff truth, not deprecated output emulation
+- [x] unknown semantic additions remain visible without raw payload
+- [x] every maintained version segment passes
+- [x] read-only and bounded-workspace facades remain distinct
+
+## Result
+
+- Added a dedicated Codex app-server projector for stable item lifecycle,
+  assistant phases, readable reasoning summaries, plans, commands, file
+  changes, MCP and dynamic tools, search, images, collaboration, review,
+  compaction, hooks, provider requests, and bounded namespaced unknowns.
+- Preserved command text, cwd, bounded output, exit status, duration, and file
+  diffs as redacted-by-default operation content.
+- Added separate callback-correlated consumer-tool activity and
+  provider-request-correlated request activity. Approval/request lifecycle
+  does not stand in for tool completion.
+- Kept raw reasoning deltas and reasoning content out of portable activity.
+- Added `ProviderUnspecified` assistant phase for older qualified messages.
+  It carries identity-only disclosure rather than guessed commentary or
+  final-answer content.
+- Prepared read-only and bounded-workspace sessions now require ordered
+  streaming and publish an exact immutable app-server activity profile.
+- Stable `0.146.0` inherits the `0.145.0` profile without widening it.
+
+## Validation Evidence
+
+- Codex activity projector unit tests — 3 passed
+- Codex app-server integration tests — 15 passed
+- Codex prepared facade tests — 19 passed
+- runtime activity and event-buffer tests — 14 passed
+- complete Codex adapter suite — 120 passed
+- `effigy check:rust`
+- `effigy lint:rust`
+- `effigy package:api`
+- `effigy doctor` — unchanged 111 findings: 83 warnings and 28 errors
 
 ## Validation
 
@@ -59,4 +90,3 @@ activity.
 ## Auto-Continuation
 
 Continue to card 124 after app-server range and facade conformance passes.
-

@@ -2,13 +2,19 @@ use crate::{PreparationFailure, PreparationStage, PreparedAccessEvidence};
 use swallowtail_core::{
     AdapterIdentity, ConfiguredInstanceId, Diagnostic, DriverRole, ExecutionHostId, ExecutionLayer,
     InstanceRevision, InstanceTargetRef, InterfaceCompatibilityAssessment, InterfaceVersionBinding,
-    OperationShape, PreflightPlan, ProtocolFacadeId, SafeDiagnostic,
+    ObservableActivityProfile, OperationShape, PreflightPlan, ProtocolFacadeId, SafeDiagnostic,
+    TransportFamilyId,
 };
+
+mod activity_profile;
+
+use activity_profile::prepare_activity_profile;
 
 /// Safe identity evidence shared by every adapter-local prepared operation.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct PreparedOperationBinding {
     driver_identity: AdapterIdentity,
+    transport_family: TransportFamilyId,
     driver_role: DriverRole,
     execution_layer: ExecutionLayer,
     operation_shape: OperationShape,
@@ -23,6 +29,7 @@ impl PreparedOperationBinding {
     fn from_plan(plan: &PreflightPlan) -> Self {
         Self {
             driver_identity: plan.driver_identity().clone(),
+            transport_family: plan.transport_family().clone(),
             driver_role: plan.requirements().driver_role(),
             execution_layer: plan.requirements().execution_layer(),
             operation_shape: plan.requirements().operation_shape(),
@@ -37,6 +44,11 @@ impl PreparedOperationBinding {
     #[must_use]
     pub const fn driver_identity(&self) -> &AdapterIdentity {
         &self.driver_identity
+    }
+
+    #[must_use]
+    pub const fn transport_family(&self) -> &TransportFamilyId {
+        &self.transport_family
     }
 
     #[must_use]
@@ -117,12 +129,29 @@ pub struct PreparedOperationEvidence {
     plan: PreflightPlan,
     access: PreparedAccessEvidence,
     interface_compatibility: Vec<PreparedInterfaceCompatibility>,
+    observable_activity: ObservableActivityProfile,
 }
 
 impl PreparedOperationEvidence {
     pub fn from_plan(
         plan: PreflightPlan,
         access: PreparedAccessEvidence,
+    ) -> Result<Self, PreparationFailure> {
+        Self::prepare(plan, access, None)
+    }
+
+    pub fn from_plan_with_activity_profile(
+        plan: PreflightPlan,
+        access: PreparedAccessEvidence,
+        observable_activity: ObservableActivityProfile,
+    ) -> Result<Self, PreparationFailure> {
+        Self::prepare(plan, access, Some(observable_activity))
+    }
+
+    fn prepare(
+        plan: PreflightPlan,
+        access: PreparedAccessEvidence,
+        supplied_activity: Option<ObservableActivityProfile>,
     ) -> Result<Self, PreparationFailure> {
         if access.status() != plan.access_status() {
             return Err(PreparationFailure::new(
@@ -138,12 +167,15 @@ impl PreparedOperationEvidence {
             .interface_versions()
             .cloned()
             .map(|binding| PreparedInterfaceCompatibility::from_plan(&plan, binding))
-            .collect();
+            .collect::<Vec<_>>();
+        let observable_activity =
+            prepare_activity_profile(&plan, &binding, &interface_compatibility, supplied_activity)?;
         Ok(Self {
             binding,
             plan,
             access,
             interface_compatibility,
+            observable_activity,
         })
     }
 
@@ -169,6 +201,11 @@ impl PreparedOperationEvidence {
     }
 
     #[must_use]
+    pub const fn observable_activity(&self) -> &ObservableActivityProfile {
+        &self.observable_activity
+    }
+
+    #[must_use]
     pub fn matches_plan(&self, plan: &PreflightPlan) -> bool {
         self.plan == *plan
     }
@@ -178,3 +215,7 @@ impl PreparedOperationEvidence {
         self.plan
     }
 }
+
+#[cfg(test)]
+#[path = "prepared_operation/tests.rs"]
+mod tests;

@@ -1,0 +1,8 @@
+{"case":"missing-session","message":{"jsonrpc":"2.0","method":"session/update","params":{"update":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"unsafe"}}}},"expected_error":"session_id_missing"}
+{"case":"missing-discriminator","message":{"jsonrpc":"2.0","method":"session/update","params":{"sessionId":"session-fixture","update":{"content":{"type":"text","text":"unsafe"}}}},"expected_error":"update_kind_missing"}
+{"case":"empty-discriminator","message":{"jsonrpc":"2.0","method":"session/update","params":{"sessionId":"session-fixture","update":{"sessionUpdate":""}}},"expected_error":"update_kind_invalid"}
+{"case":"message-content-missing","message":{"jsonrpc":"2.0","method":"session/update","params":{"sessionId":"session-fixture","update":{"sessionUpdate":"agent_message_chunk"}}},"expected_error":"content_invalid"}
+{"case":"tool-id-missing","message":{"jsonrpc":"2.0","method":"session/update","params":{"sessionId":"session-fixture","update":{"sessionUpdate":"tool_call","title":"unsafe"}}},"expected_error":"tool_identity_missing"}
+{"case":"tool-status-invalid","message":{"jsonrpc":"2.0","method":"session/update","params":{"sessionId":"session-fixture","update":{"sessionUpdate":"tool_call_update","toolCallId":"tool-fixture","status":"future-terminal"}}},"expected_error":"tool_status_invalid"}
+{"case":"plan-entries-missing","message":{"jsonrpc":"2.0","method":"session/update","params":{"sessionId":"session-fixture","update":{"sessionUpdate":"plan"}}},"expected_error":"plan_entries_invalid"}
+{"case":"usage-negative","message":{"jsonrpc":"2.0","method":"session/update","params":{"sessionId":"session-fixture","update":{"sessionUpdate":"usage_update","used":-1,"size":200000}}},"expected_error":"usage_invalid"}

@@ -12,9 +12,8 @@ shape.
 
 ## Next Task
 
-Reassess the next g02 product or provider milestone after concurrent
-subagent-topology work closes. Warning-only reduction and publication remain
-deferred.
+Reassess Nucleus child-work adoption authorization at the g02 product
+checkpoint. No consumer edit is implicit.
 
 ## Index
 

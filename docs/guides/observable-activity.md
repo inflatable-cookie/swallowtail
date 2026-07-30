@@ -103,6 +103,51 @@ qualifies one. Whole-turn cancellation and messages to the main agent are not
 substitutes. See
 [Contract 045](../contracts/045-subagent-topology-observation-and-control.md).
 
+Use `SubagentDirectoryProjection` when an application needs current
+operation-local picker or tree state without repeating graph semantics:
+
+```rust
+let mut directory =
+    SubagentDirectoryProjection::new(operation_id.clone(), 256)?;
+
+while let Some(event) = events.next().await {
+    let event = event?;
+    let Some(delta) = directory.observe_event(&event)? else {
+        continue;
+    };
+
+    match delta.actor() {
+        ActivityActor::Primary => route_to_main_transcript(&event),
+        ActivityActor::Subagent(id) => route_to_child_transcript(id, &event),
+    }
+
+    for change in delta.changes() {
+        let current = directory
+            .get(change.id())
+            .expect("a directory change names retained state");
+        update_picker_entry(change.kind(), current);
+    }
+}
+```
+
+The directory retains children in first-observed order. `operation_children()`,
+`children_of()`, and `unknown_parent()` expose grouping without choosing a UI.
+Later snapshots replace earlier snapshots in full. Known child actors or
+referenced parents produce unknown identity-only placeholders until richer
+truth arrives.
+
+Create one directory per runtime operation. Snapshot omission does not remove
+or complete a child. `Unknown` parent and status remain explicit until later
+qualified evidence replaces them. A terminal operation stops further
+projection for that operation; it does not invent terminal child status where
+the route emitted none. The consumer may then freeze, persist, or discard its
+directory under product policy.
+
+The caller chooses a positive maximum child count. Capacity exhaustion rejects
+that projection update atomically; it does not invalidate the provider event
+or fail the running operation. The directory retains no transcript and has no
+selection, persistence, or child-control method.
+
 Only provider-intended readable summaries use `ReasoningSummary`. Hidden
 reasoning, provider-private continuation state, and raw provider envelopes are
 not portable activity.
@@ -212,7 +257,8 @@ It never converts an unknown semantic event into empty generic progress.
 
 Permitted unverified-newer execution retains the last qualified activity
 profile. Newly observed fields do not widen the guarantee until evidence
-promotes a new behavior milestone.
+promotes a new behavior milestone. The same rule applies to child identity,
+parentage, metadata, attribution, and provider collaboration actions.
 
 ## Conformance
 

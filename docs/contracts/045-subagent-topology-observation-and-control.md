@@ -23,6 +23,7 @@ The following are independent:
 - child parent relation
 - activity actor
 - child lifecycle snapshot
+- transient operation-local directory projection
 - provider-owned collaboration action
 - operator-issued child control
 - whole-turn cancellation
@@ -72,6 +73,25 @@ Omission carries no deletion or completion meaning. Consumers may retain the
 latest snapshot until terminal operation truth or a later snapshot replaces
 it.
 
+The runtime may project those ordered observations into one transient
+operation-local directory. The projection:
+
+- takes one explicit positive child bound before observation
+- rejects activity from another operation without changing its state
+- retains children in first-observed order
+- replaces one child's full snapshot when later truth differs
+- emits added or replaced changes only
+- returns the exact activity actor for downstream transcript routing
+- retains terminal children until the projection is dropped
+
+An attributed child or referenced parent with no snapshot may create an
+identity-only placeholder with unknown parent and status. This preserves known
+topology without inventing metadata. Later provider truth replaces the
+placeholder.
+
+Capacity exhaustion is a local projection failure. It does not invalidate the
+provider event, fail the operation, or authorize silent eviction.
+
 ## Activity Attribution
 
 An adapter marks an activity as child-authored only when the selected wire
@@ -103,8 +123,9 @@ child lifecycle without exposing collaboration actions.
 
 ## Operator Inspection And Control
 
-Live activity snapshots are the current portable inspection surface. Consumer
-persistence may make the graph browseable after the operation ends.
+Live activity snapshots and the transient directory projection are the current
+portable inspection surfaces. Consumer persistence may make the graph
+browseable after the operation ends.
 
 A future provider-native directory or history reader is a separate bound
 inspection role. It must define:
@@ -188,8 +209,8 @@ Consumers own:
 - consumer record retention and deletion
 
 Swallowtail owns exact portable identity, topology evidence, lifecycle,
-attribution, bounds, redaction, ordered delivery, route fidelity, and any
-future bound provider control role.
+attribution, bounds, redaction, ordered delivery, the bounded transient
+directory reducer, route fidelity, and any future bound provider control role.
 
 ## Conformance
 
@@ -202,6 +223,10 @@ Deterministic fixtures prove:
 - bounded label, description, model, reasoning, background, and origin detail
 - exact observable collaboration actions
 - unknown parent and status without invented truth
+- first-observed directory order and exact snapshot replacement
+- identity-only actor and referenced-parent placeholders
+- operation mismatch and capacity rejection without partial mutation
+- exact activity-actor routing in each directory delta
 - profile constraints for each fidelity tier and action
 - duplicate and oversized snapshot rejection
 - redacted formatting

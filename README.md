@@ -21,9 +21,12 @@ profile.
 Current g02 structural stabilization and validation-latency work are complete.
 The accepted stabilization baseline removed all five critical and 28 high
 findings. Four affected archives now compile through one extracted target in
-five seconds, down from 22.4 seconds through separate targets. Concurrent Kimi
-activity work currently adds one doctor error and 143 warnings outside that
-accepted baseline. Warning-only reduction remains deferred.
+five seconds, down from 22.4 seconds through separate targets. Kimi
+child-activity projection is split on its native lifecycle seam; Doctor is
+warning-only at 144 findings. Roadmap g02.047 now owns exact provider-wide
+topology truth, package proof, and consumer handoff; all three batches are
+complete. Nucleus adoption remains separately authorized. Warning-only
+reduction remains deferred.
 
 ## Start Here
 

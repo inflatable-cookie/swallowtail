@@ -1292,6 +1292,12 @@ failure lifecycle. Other selected routes retain ordinary provider-tool
 activity because their wires do not expose qualified child topology.
 
 Consumers can build a browseable live or durable tree from ordered activity.
+The runtime also provides one bounded operation-local directory reducer. It
+retains first-observed child order, applies exact snapshot replacement,
+materializes identity-only placeholders for known actors or referenced
+parents, and returns the activity actor with each change set. It stores no
+transcript, selection, presentation, or provider authority.
+
 No selected route currently exposes a direct operator child-control handle.
 Whole-turn interruption, main-turn steering, provider-session deletion, and
 observed harness collaboration actions do not substitute for targeted child

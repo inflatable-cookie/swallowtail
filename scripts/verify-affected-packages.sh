@@ -82,39 +82,24 @@ then
   exit 1
 fi
 
-validation_workspace="$validation_tmp/extracted/Cargo.toml"
-{
-  printf '[workspace]\nresolver = "3"\nmembers = [\n'
-  for validation_package in "${validation_packages[@]}"; do
-    printf '  "%s",\n' "$validation_package"
-  done
-  printf ']\n\n[patch.crates-io]\n'
-  for validation_internal_package in \
-    "${release_internal_patch_packages[@]}"
-  do
-    if validation_package_selected "$validation_internal_package"; then
-      validation_internal_path=$validation_internal_package
-    else
-      validation_internal_path="$validation_repo_root/crates/$validation_internal_package"
-    fi
-    printf '%s = { path = "%s" }\n' \
-      "$validation_internal_package" "$validation_internal_path"
-  done
-} > "$validation_workspace"
+for validation_package in "${validation_packages[@]}"; do
+  validation_package_root="$validation_tmp/extracted/$validation_package"
+  validation_manifest="$validation_package_root/Cargo.toml"
+  cp "$validation_repo_root/Cargo.lock" "$validation_package_root/Cargo.lock"
 
-cp "$validation_repo_root/Cargo.lock" "$validation_tmp/extracted/Cargo.lock"
+  cargo generate-lockfile \
+    --manifest-path "$validation_manifest" \
+    --offline \
+    "${validation_patch_args[@]}"
 
-cargo generate-lockfile \
-  --manifest-path "$validation_workspace" \
-  --offline
-
-CARGO_TARGET_DIR="$validation_tmp/compile-target" \
-  cargo check \
-    --manifest-path "$validation_workspace" \
-    --workspace \
-    --all-targets \
-    --locked \
-    --offline
+  CARGO_TARGET_DIR="$validation_tmp/compile-target" \
+    cargo check \
+      --manifest-path "$validation_manifest" \
+      --all-targets \
+      --locked \
+      --offline \
+      "${validation_patch_args[@]}"
+done
 
 printf 'affected package proof passed for %s package(s) in %s seconds\n' \
   "${#validation_packages[@]}" "$((SECONDS - validation_started))"

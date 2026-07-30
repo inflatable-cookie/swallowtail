@@ -45,6 +45,11 @@ HEADERS = [
     "tasks",
     "hooks",
     "subagents",
+    "subagent_observation",
+    "subagent_parentage",
+    "child_activity_attribution",
+    "provider_collaboration_actions",
+    "operator_control",
     "lifecycle_fidelity",
     "disclosure_fidelity",
     "unknown_event_posture",
@@ -72,6 +77,13 @@ LIFECYCLE_COLUMNS = {
     "provider_tool_lifecycle",
     "consumer_tool_lifecycle",
     "lifecycle_fidelity",
+}
+TOPOLOGY_COLUMNS = {
+    "subagent_observation",
+    "subagent_parentage",
+    "child_activity_attribution",
+    "provider_collaboration_actions",
+    "operator_control",
 }
 
 ALLOWED = {
@@ -124,13 +136,77 @@ ALLOWED = {
         "profile-dependent",
         "not-applicable",
     },
+    "subagent_observation": {
+        "identity-lifecycle",
+        "parent-and-metadata",
+        "attributed-activity",
+        "profile-dependent",
+        "unavailable",
+        "not-applicable",
+    },
+    "subagent_parentage": {
+        "unknown",
+        "operation",
+        "nested-and-operation",
+        "profile-dependent",
+        "unavailable",
+        "not-applicable",
+    },
+    "child_activity_attribution": {
+        "available",
+        "profile-dependent",
+        "unavailable",
+        "not-applicable",
+    },
+    "provider_collaboration_actions": {
+        "spawn-send-resume-wait-close",
+        "profile-dependent",
+        "unavailable",
+        "not-applicable",
+    },
+    "operator_control": {
+        "unavailable",
+        "not-applicable",
+    },
 }
 
 PROFILE_COLUMNS = (
     CONTENT_COLUMNS
     | LIFECYCLE_COLUMNS
+    | TOPOLOGY_COLUMNS
     | {"tool_correlation", "disclosure_fidelity", "unknown_event_posture"}
 )
+
+POSITIVE_TOPOLOGY = {
+    ("codex.app-server", "interactive-session"): {
+        "subagent_observation": "profile-dependent",
+        "subagent_parentage": "profile-dependent",
+        "child_activity_attribution": "profile-dependent",
+        "provider_collaboration_actions": "profile-dependent",
+        "operator_control": "unavailable",
+    },
+    ("codex.exec", "structured-run"): {
+        "subagent_observation": "profile-dependent",
+        "subagent_parentage": "profile-dependent",
+        "child_activity_attribution": "unavailable",
+        "provider_collaboration_actions": "profile-dependent",
+        "operator_control": "unavailable",
+    },
+    ("kimi-code.local-server", "interactive-session"): {
+        "subagent_observation": "parent-and-metadata",
+        "subagent_parentage": "operation",
+        "child_activity_attribution": "unavailable",
+        "provider_collaboration_actions": "unavailable",
+        "operator_control": "unavailable",
+    },
+    ("kimi-code.local-server", "structured-run"): {
+        "subagent_observation": "parent-and-metadata",
+        "subagent_parentage": "operation",
+        "child_activity_attribution": "unavailable",
+        "provider_collaboration_actions": "unavailable",
+        "operator_control": "unavailable",
+    },
+}
 
 
 def load_json(path: Path) -> dict:
@@ -290,10 +366,30 @@ def main() -> None:
             if not row["evidence_ref"]:
                 raise SystemExit(f"{key} has an unavailable cell without exact evidence")
 
+        expected_topology = POSITIVE_TOPOLOGY.get(key)
+        if expected_topology is None:
+            disposition = (
+                "not-applicable"
+                if row["activity_profile"] == "not-applicable"
+                else "unavailable"
+            )
+            expected_topology = {
+                column: disposition for column in TOPOLOGY_COLUMNS
+            }
+        actual_topology = {
+            column: row[column] for column in TOPOLOGY_COLUMNS
+        }
+        if actual_topology != expected_topology:
+            raise SystemExit(
+                f"{key} child-topology truth changed: "
+                f"expected={expected_topology}, actual={actual_topology}"
+            )
+
     print(
         "provider activity matrix passed: "
         "57 operations, 34 available, 23 not-applicable, "
-        "27 production routes, 4 auxiliary catalogues"
+        "27 production routes, 4 auxiliary catalogues, "
+        "4 topology-capable operations, 0 operator-control operations"
     )
 
 

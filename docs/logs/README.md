@@ -5,6 +5,10 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-07-30 Subagent Topology Consumer Handoff](2026-07-30-subagent-topology-consumer-handoff.md)
+- [2026-07-30 Subagent Topology Route And Package Acceptance](2026-07-30-subagent-topology-route-and-package-acceptance.md)
+- [2026-07-30 Subagent Topology Kernel Acceptance](2026-07-30-subagent-topology-kernel-acceptance.md)
+- [2026-07-30 Subagent Topology Roadmap Recovery](2026-07-30-subagent-topology-roadmap-recovery.md)
 - [2026-07-30 Validation Latency Closeout](2026-07-30-validation-latency-closeout.md)
 - [2026-07-30 Focused Validation Selectors](2026-07-30-focused-validation-selectors.md)
 - [2026-07-30 Validation Runtime Inventory](2026-07-30-validation-runtime-inventory.md)

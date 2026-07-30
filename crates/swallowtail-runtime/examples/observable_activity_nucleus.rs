@@ -3,6 +3,7 @@ use swallowtail_runtime::{
     ActivityCorrelation, ActivityId, ActivityKindClass, ActivityLifecycleFidelity,
     ActivityLifecyclePhase, ActivityOperationId, ActivityStatus, ObservableActivityAvailability,
     PreparedOperationEvidence, RuntimeEvent, RuntimeEventKind, SubagentControlActionKind,
+    SubagentDirectoryDelta, SubagentDirectoryFailure, SubagentDirectoryProjection,
     SubagentSnapshot,
 };
 
@@ -28,12 +29,14 @@ pub enum ChatProjection<'a> {
     AssistantMessage {
         operation_id: &'a ActivityOperationId,
         activity_id: &'a ActivityId,
+        actor: &'a ActivityActor,
         assistant_phase: ActivityAssistantPhase,
         lifecycle: ActivityLifecyclePhase,
         status: ActivityStatus,
         change: Option<ActivityContentChangeKind>,
         stream: Option<ActivityContentStream>,
         content: Option<&'a str>,
+        directory: SubagentDirectoryDelta,
     },
     WorkActivity {
         operation_id: &'a ActivityOperationId,
@@ -49,6 +52,7 @@ pub enum ChatProjection<'a> {
         content: Option<&'a str>,
         subagents: Vec<&'a SubagentSnapshot>,
         subagent_control: Option<SubagentControlActionKind>,
+        directory: SubagentDirectoryDelta,
     },
     FinalOutput {
         content: Option<&'a str>,
@@ -56,45 +60,73 @@ pub enum ChatProjection<'a> {
     Ignore,
 }
 
-pub fn project_event(event: &RuntimeEvent) -> ChatProjection<'_> {
-    match event.kind() {
-        RuntimeEventKind::Activity(activity) => {
-            let content = activity.content();
-            if activity.kind().class() == ActivityKindClass::AssistantMessage {
-                ChatProjection::AssistantMessage {
-                    operation_id: activity.operation_id(),
-                    activity_id: activity.activity_id(),
-                    assistant_phase: activity
-                        .assistant_phase()
-                        .expect("validated assistant activity has an exact phase"),
-                    lifecycle: activity.phase(),
-                    status: activity.status(),
-                    change: content.map(|value| value.change()),
-                    stream: content.map(|value| value.stream()),
-                    content: content.map(|value| value.content().as_str()),
-                }
-            } else {
-                ChatProjection::WorkActivity {
-                    operation_id: activity.operation_id(),
-                    activity_id: activity.activity_id(),
-                    actor: activity.actor(),
-                    kind: activity.kind().class(),
-                    lifecycle: activity.phase(),
-                    status: activity.status(),
-                    label: activity.label().map(|value| value.as_str()),
-                    correlation: activity.correlation(),
-                    change: content.map(|value| value.change()),
-                    stream: content.map(|value| value.stream()),
-                    content: content.map(|value| value.content().as_str()),
-                    subagents: activity.subagents().collect(),
-                    subagent_control: activity.subagent_control(),
+/// Operation-local reducer suitable for a main-thread/child-thread picker.
+pub struct AgentChatProjection {
+    directory: SubagentDirectoryProjection,
+}
+
+impl AgentChatProjection {
+    pub fn new(
+        operation_id: ActivityOperationId,
+        maximum_subagents: usize,
+    ) -> Result<Self, SubagentDirectoryFailure> {
+        Ok(Self {
+            directory: SubagentDirectoryProjection::new(operation_id, maximum_subagents)?,
+        })
+    }
+
+    pub const fn directory(&self) -> &SubagentDirectoryProjection {
+        &self.directory
+    }
+
+    pub fn project_event<'a>(
+        &mut self,
+        event: &'a RuntimeEvent,
+    ) -> Result<ChatProjection<'a>, SubagentDirectoryFailure> {
+        let directory = self.directory.observe_event(event)?;
+        Ok(match event.kind() {
+            RuntimeEventKind::Activity(activity) => {
+                let content = activity.content();
+                let directory = directory.expect("activity event produces a directory delta");
+                if activity.kind().class() == ActivityKindClass::AssistantMessage {
+                    ChatProjection::AssistantMessage {
+                        operation_id: activity.operation_id(),
+                        activity_id: activity.activity_id(),
+                        actor: activity.actor(),
+                        assistant_phase: activity
+                            .assistant_phase()
+                            .expect("validated assistant activity has an exact phase"),
+                        lifecycle: activity.phase(),
+                        status: activity.status(),
+                        change: content.map(|value| value.change()),
+                        stream: content.map(|value| value.stream()),
+                        content: content.map(|value| value.content().as_str()),
+                        directory,
+                    }
+                } else {
+                    ChatProjection::WorkActivity {
+                        operation_id: activity.operation_id(),
+                        activity_id: activity.activity_id(),
+                        actor: activity.actor(),
+                        kind: activity.kind().class(),
+                        lifecycle: activity.phase(),
+                        status: activity.status(),
+                        label: activity.label().map(|value| value.as_str()),
+                        correlation: activity.correlation(),
+                        change: content.map(|value| value.change()),
+                        stream: content.map(|value| value.stream()),
+                        content: content.map(|value| value.content().as_str()),
+                        subagents: activity.subagents().collect(),
+                        subagent_control: activity.subagent_control(),
+                        directory,
+                    }
                 }
             }
-        }
-        RuntimeEventKind::OutputAvailable => ChatProjection::FinalOutput {
-            content: event.content().map(|value| value.as_str()),
-        },
-        _ => ChatProjection::Ignore,
+            RuntimeEventKind::OutputAvailable => ChatProjection::FinalOutput {
+                content: event.content().map(|value| value.as_str()),
+            },
+            _ => ChatProjection::Ignore,
+        })
     }
 }
 

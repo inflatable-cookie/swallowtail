@@ -153,6 +153,9 @@
 - `156-validation-runtime-inventory-and-budgets.md`
 - `157-focused-validation-selectors-and-package-proof.md`
 - `158-validation-latency-acceptance-and-guidance.md`
+- `159-subagent-topology-structural-and-kernel-acceptance.md`
+- `160-subagent-topology-route-matrix-and-package-proof.md`
+- `161-subagent-topology-guidance-and-consumer-handoff.md`
 
 ## Superseded
 

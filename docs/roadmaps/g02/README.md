@@ -53,6 +53,7 @@ evidence-led provider work.
 | Maintain current Codex and OpenCode installed support windows as one batched tranche. | completed | Research 071, Contracts 029, 032, 036-040, 044 | `g02.044` |
 | Remove error-level structural debt without changing public or provider behavior. | completed | Contract 001, AGENTS module rules, Effigy structural scan | `g02.045` |
 | Reduce normal development validation latency without weakening milestone or release proof. | completed | Contract 001, Effigy task graph, operator latency feedback | `g02.046` |
+| Accept provider-owned child-work topology and hand exact projection truth to consumers. | completed | Research 072, Contracts 044-045 | `g02.047` |
 
 ## Current Checkpoint
 
@@ -783,6 +784,8 @@ evidence-led provider work.
   — completed; cards 150-155 complete
 - [046 Validation Latency And Proof Routing](046-validation-latency-and-proof-routing.md)
   — completed; cards 156-158 complete
+- [047 Subagent Topology Acceptance And Consumer Handoff](047-subagent-topology-acceptance-and-consumer-handoff.md)
+  — completed; cards 159-161 complete
 
 ## Held Backlog
 
@@ -1054,6 +1057,21 @@ is deferred until a consumer needs post-restart provider management.
   archives compile through one extracted target in five seconds versus 22.4
   seconds through separate targets; concurrent Kimi activity work leaves one
   doctor error outside this lane
+- Research 072 and Contract 045 promote exact child identity, parentage,
+  lifecycle, attribution, provider collaboration actions, and the direct
+  operator-control boundary; roadmap g02.047 recovers the concurrently landed
+  implementation into structural, route-truth, package, and consumer
+  acceptance
+- card 159 moves Kimi native child lifecycle mapping into one private module;
+  370 focused tests plus clippy pass and Doctor returns to 144 warnings with
+  zero errors
+- card 160 adds five exact topology and control columns to all 57 activity
+  rows; four operations claim qualified topology, none claims direct control,
+  and four independent archives compile through one shared target in eight
+  seconds
+- card 161 publishes exact operation-local directory semantics and a bounded
+  Nucleus child-work handoff; the public reducer example compiles without any
+  consumer edit
 - cards 024-026 own remaining harness facades
 - cards 027-030 own hosted direct and provider-state facades
 - cards 031-033 own realtime, SDK, and llama.cpp facades
@@ -1063,13 +1081,13 @@ is deferred until a consumer needs post-restart provider management.
 
 ## Next
 
-Reassess the next g02 product or provider milestone after concurrent
-subagent-topology work closes. Warning-only reduction and publication remain
+Reassess Nucleus child-work adoption authorization at the g02 product
+checkpoint. Publication and provider-session binding persistence remain
 deferred.
 
 ## Generation Boundary
 
-g02 is a long-lived generation with 46 roadmaps. It remains within its
+g02 is a long-lived generation with 47 roadmaps. It remains within its
 30-50-roadmap range. Provider-wide facade work stabilizes the existing
 production routes. The provider-session lifecycle lane adds bounded management
 to applicable persistent-session routes without adding provider names,

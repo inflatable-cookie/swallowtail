@@ -52,6 +52,7 @@ mod session_options;
 mod session_plan_agreement;
 mod session_provider_state;
 mod session_replay;
+mod subagent_directory;
 mod time;
 mod working_resource_io;
 
@@ -188,6 +189,10 @@ pub use session_options::{SessionOptions, ToolDeclaration};
 pub use session_plan_agreement::{SessionPlanAgreement, validate_session_plan_agreement};
 pub use session_provider_state::validate_session_provider_state_plan;
 pub use session_replay::{SessionReplayItem, SessionReplayKind};
+pub use subagent_directory::{
+    SubagentDirectoryChange, SubagentDirectoryChangeKind, SubagentDirectoryDelta,
+    SubagentDirectoryFailure, SubagentDirectoryFailureKind, SubagentDirectoryProjection,
+};
 pub use swallowtail_core::{
     ActivityCorrelationKind, ActivityInterfaceBasis, ActivityKindClass, ActivityKindProfile,
     ActivityLifecycleFidelity, ActivityUnknownEventPosture, AttachedRuntimeResidency,

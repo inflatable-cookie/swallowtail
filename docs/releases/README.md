@@ -12,7 +12,8 @@ authorize registry, tag, push, GitHub release, workflow, or consumer mutations.
 - [Nucleus provider-session lifecycle handoff](0.1.0-nucleus-provider-session-lifecycle-handoff.md)
   — separate local and optional provider lifecycle adoption
 - [Nucleus observable-activity handoff](0.1.0-nucleus-observable-activity-handoff.md)
-  — separate durable message and collapsible work projections
+  — separate durable message, collapsible work, and child-navigation
+  projections
 - [Soundcheck 0.1.0 handoff](0.1.0-soundcheck-handoff.md) — prepared
   app-server catalogue and structured-exec adoption
 - [Soundcheck observable-activity handoff](0.1.0-soundcheck-observable-activity-handoff.md)

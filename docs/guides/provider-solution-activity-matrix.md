@@ -7,13 +7,13 @@ It is a compiled consumer reference. The exact
 `PreparedOperationEvidence::observable_activity()` returned for a prepared
 operation remains the runtime source of truth.
 
-The inventory contains 55 route-operation rows:
+The inventory contains 57 route-operation rows:
 
-- 32 ordinary structured-run or interactive-session profiles with
+- 34 ordinary structured-run or interactive-session profiles with
   `available` activity
 - 23 catalogue, inventory, provider-session-management, realtime-media, or
   serving operations where ordinary agent activity is `not-applicable`
-- all 26 production route identities
+- all 27 production route identities
 - four auxiliary hosted catalogue identities
 
 There is no unexplained whole-operation `unavailable` result. An
@@ -66,6 +66,39 @@ Current positive projections are Codex app-server plan updates, Codex exec
 todo-list items, and ACP plan updates from Claude Agent, Kimi Code, and Grok
 Build. Other routes retain their existing plan or task activity without
 parsing opaque display text into a checklist.
+
+## Child Topology And Control
+
+The broad `subagents` column says whether the operation exposes subagent or
+collaboration activity at all. Five exact columns preserve the stronger
+Contract 045 distinctions:
+
+- `subagent_observation` — identity and lifecycle, parent plus metadata,
+  attributed child activity, profile-dependent, unavailable, or not applicable
+- `subagent_parentage` — unknown, operation root, nested and operation,
+  profile-dependent, unavailable, or not applicable
+- `child_activity_attribution` — whether ordinary activity can name a stable
+  child actor
+- `provider_collaboration_actions` — visible spawn, send-input, resume, wait,
+  and close actions performed by the harness or main agent
+- `operator_control` — direct consumer-issued control through a bound
+  Swallowtail role
+
+Four operation rows expose qualified topology:
+
+- Codex app-server interactive sessions are version-profile-dependent and can
+  expose parentage, metadata, child-authored activity, and visible
+  collaboration actions
+- Codex exec structured runs expose version-profile-dependent parentage,
+  metadata, and visible collaboration actions but no durable child activity
+  inspection channel
+- Kimi local-server interactive and structured operations expose child
+  identity, operation parent, metadata, and lifecycle
+
+No current operation exposes direct operator child control. Visible Codex
+collaboration actions describe provider-owned behavior; they are not command
+methods. Generic Task, agent, or delegate tool names remain `unavailable`
+unless the selected wire supplies stable child identity and lifecycle.
 
 ## Lifecycle And Correlation Values
 
@@ -121,9 +154,11 @@ redaction, or audience. Consumers should:
 3. apply delta or replacement semantics from the typed content update
 4. replace a sidebar checklist on each typed task-list snapshot; an empty
    snapshot clears it
-5. keep callback and direct-tool bodies on their typed exchanges
-6. keep final operation output distinct from final-assistant activity
-7. render identity-only and namespaced-unknown activity conservatively
+5. replace repeated child snapshots by operation-local child id without
+   treating omission as deletion
+6. keep callback and direct-tool bodies on their typed exchanges
+7. keep final operation output distinct from final-assistant activity
+8. render identity-only and namespaced-unknown activity conservatively
 
 Transcript persistence, retries in the UI, collapsed tool groups, display
 labels, and thread ownership remain consumer concerns. A consumer may discard

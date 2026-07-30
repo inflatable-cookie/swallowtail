@@ -10,6 +10,7 @@ use swallowtail_runtime::{
 };
 
 pub(super) mod profile;
+mod subagent;
 
 const MAXIMUM_ACTIVITY_CONTENT_BYTES: usize = 64 * 1024;
 

@@ -1,5 +1,13 @@
 # g02 Batch Cards
 
+## Active
+
+None.
+
+## Ready
+
+None.
+
 ## Completed
 
 - `001-release-and-package-evidence.md`
@@ -156,6 +164,9 @@
 - `159-subagent-topology-structural-and-kernel-acceptance.md`
 - `160-subagent-topology-route-matrix-and-package-proof.md`
 - `161-subagent-topology-guidance-and-consumer-handoff.md`
+- `162-claude-form-elicitation-evidence-contract-and-corpus.md`
+- `163-claude-typed-user-input-exchange.md`
+- `164-claude-form-elicitation-acceptance-and-closeout.md`
 
 ## Superseded
 
@@ -174,10 +185,6 @@
 ## Backlog
 
 None. Cross-generation deferred work lives in `docs/roadmaps/backlog/`.
-
-## Ready
-
-None.
 
 ## Planned
 

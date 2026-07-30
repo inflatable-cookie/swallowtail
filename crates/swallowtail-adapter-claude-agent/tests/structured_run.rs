@@ -54,7 +54,7 @@ fn one_prompt_run_preserves_version_topology_retention_and_native_close() {
             ))
             .expect("structured run starts");
             assert!(run.provider_run_ref().is_none());
-            assert!(run.take_callbacks().is_none());
+            assert!(run.take_callbacks().is_some());
             assert_eq!(run.cancellation().scope(), CancellationScope::StructuredRun);
             let (events, outcome) = complete(&mut run);
             assert_eq!(outcome.status(), &TerminalStatus::Completed);
@@ -188,7 +188,7 @@ fn permission_stops_as_provider_request_without_auto_approval_or_callback() {
         host.services(host_id),
     ))
     .expect("structured run starts");
-    assert!(run.take_callbacks().is_none());
+    assert!(run.take_callbacks().is_some());
     let (_, outcome) = complete(&mut run);
     assert!(matches!(
         outcome.status(),

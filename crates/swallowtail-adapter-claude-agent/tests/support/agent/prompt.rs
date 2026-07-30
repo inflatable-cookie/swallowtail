@@ -111,6 +111,49 @@ impl SharedAgent {
                     }}),
                 );
             }
+            Scenario::Elicitation => {
+                Self::enqueue(
+                    state,
+                    json!({"jsonrpc": "2.0", "id": 901, "method": "elicitation/create", "params": {
+                        "mode": "form",
+                        "sessionId": "claude-agent-session-fixture",
+                        "toolCallId": "ask-1",
+                        "message": "Which component should be used?",
+                        "requestedSchema": {
+                            "type": "object",
+                            "properties": {
+                                "question_0": {
+                                    "type": "string",
+                                    "title": "Component",
+                                    "oneOf": [
+                                        {
+                                            "const": "Card",
+                                            "title": "Card",
+                                            "description": "Use the card."
+                                        },
+                                        {
+                                            "const": "Panel",
+                                            "title": "Panel",
+                                            "description": "Use the panel."
+                                        }
+                                    ]
+                                },
+                                "question_0_custom": {
+                                    "type": "string",
+                                    "title": "Other",
+                                    "description": "Type your own answer instead of choosing an option above (optional).",
+                                    "_meta": {
+                                        "_askUserQuestionCustomAnswer": {
+                                            "questionId": "question_0",
+                                            "isCustomAnswer": true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }}),
+                );
+            }
             Scenario::Cancellation => {}
             Scenario::Disconnect => state.stopped = true,
             Scenario::DeleteMissing
@@ -185,6 +228,31 @@ impl SharedAgent {
         } else {
             Err(fixture_failure())
         }
+    }
+
+    fn elicitation_response(
+        &self,
+        state: &mut AgentState,
+        message: &Value,
+    ) -> Result<(), RuntimeFailure> {
+        if message["result"] != json!({"action": "accept", "content": {"question_0": "Panel"}}) {
+            return Err(fixture_failure());
+        }
+        let id = state.prompt_id.take().ok_or_else(fixture_failure)?;
+        Self::enqueue(
+            state,
+            json!({"jsonrpc": "2.0", "id": id, "result": {
+                "stopReason": "end_turn",
+                "usage": {
+                    "inputTokens": 12,
+                    "outputTokens": 4,
+                    "cachedReadTokens": 3,
+                    "cachedWriteTokens": 2,
+                    "totalTokens": 21
+                }
+            }}),
+        );
+        Ok(())
     }
 
     fn cancel(&self, state: &mut AgentState) -> Result<(), RuntimeFailure> {

@@ -225,6 +225,42 @@ Persistent approval options are neither exposed nor selectable. Swallowtail
 does not choose an allow response. The response port confirms ACP transport
 acceptance, not tool execution or turn completion.
 
+## Form Elicitation
+
+ACP form elicitation is an unstable capability inside wire protocol `1`.
+Support requires exact schema-artifact and agent evidence. The client
+advertises `clientCapabilities.elicitation.form = {}` and handles
+`elicitation/create`. This grants no URL, browser, credential, MCP,
+provider-tool, model-switch, or persistent configuration authority.
+
+Claude Agent ACP `0.53.0..=0.61.0`, excluding `0.58.0`, qualifies one common
+typed subset. Stable newer wrappers inherit it only as unverified behavior
+under Contract 029. The driver accepts only choice forms that map losslessly
+to Contract 012:
+
+- one to four ordered indexed questions
+- single or multiple choice with two to four stable options
+- qualified legacy or current option-description encoding
+- one paired optional free-text `Other` field
+- skipped answers
+
+The client callback exchange exists whenever form capability is advertised.
+The adapter validates session, active turn, JSON-RPC request, field identity,
+schema, count, size, and response exactly once. `HarnessUserInputResponse`
+becomes `accept` content using the original field ids. Consumer failure becomes
+`decline`. Cancellation and terminal completion abandon the pending exchange
+before joined cleanup.
+
+Numeric, boolean, constrained-text, secret, URL, preview-bearing, unknown, or
+otherwise richer forms do not enter the common callback type. They are
+declined, not flattened. Advertising form support does not imply that an MCP
+form or Claude refusal-fallback dialog is accepted.
+
+ACP `_meta` remains private and exact. The Claude bridge does not preserve an
+arbitrary request or question context. Swallowtail does not parse one from
+prose or invent one. Recognizing the qualified option-description and
+custom-answer markers grants no general metadata interpretation.
+
 ## Filesystem And Terminal Callbacks
 
 Client filesystem and terminal methods are execution-host callbacks. They are

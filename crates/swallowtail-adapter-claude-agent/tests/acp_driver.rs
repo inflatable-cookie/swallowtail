@@ -177,7 +177,7 @@ fn qualified_versions_load_ordered_replay_and_resume_without_replay() {
 fn permission_is_rejected_then_cancelled_and_never_becomes_a_consumer_callback() {
     let (host, mut session, services) = open(Scenario::Permission, "0.61.0", "permission");
     let mut turn = start(&mut *session, services, "permission-turn");
-    assert!(turn.take_callbacks().is_none());
+    assert!(turn.take_callbacks().is_some());
     let outcome = block_on(
         turn.take_terminal_outcome()
             .expect("terminal outcome exists"),

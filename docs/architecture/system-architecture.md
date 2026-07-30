@@ -300,7 +300,8 @@ Crate status:
   discovery and four private behavior revisions across the maintained ACP
   range, plus independent ambient read-write one-prompt structured and
   read-only interactive roles with explicit local-subscription or public-API-
-  key access, no-argument process launch, bounded read callbacks, explicit
+  key access, no-argument process launch, bounded read callbacks, typed
+  choice-and-Other form elicitation with richer-form decline, explicit
   structured-run edit acceptance, unexpected-permission rejection,
   cancellation, deadlines, disconnect classification, native close without
   deletion, and joined resource plus optional credential cleanup

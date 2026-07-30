@@ -178,3 +178,6 @@ Contract 015 now permits exact, one-shot activation of an already authorized
 harness credential after ACP initialization. The first mapping is Grok Build
 `0.2.114` `cached_token`; login, account or mechanism switching, API-key
 fallback, and provider-private response metadata remain excluded.
+It also qualifies unstable ACP form negotiation for the Claude choice-and-
+Other subset. Richer forms are declined; URL authority and invented context
+remain absent.

@@ -84,7 +84,8 @@ impl AcpConnection {
                 json!({
                     "protocolVersion": ACP_PROTOCOL_VERSION,
                     "clientCapabilities": {
-                        "fs": {"readTextFile": true, "writeTextFile": false}
+                        "fs": {"readTextFile": true, "writeTextFile": false},
+                        "elicitation": {"form": {}}
                     },
                     "clientInfo": {
                         "name": "swallowtail",
@@ -276,6 +277,15 @@ impl AcpConnection {
             .map_err(|_| protocol_failure())?,
         )
         .await
+    }
+
+    pub(crate) async fn respond_elicitation(
+        &self,
+        id: Value,
+        response: Value,
+    ) -> Result<(), RuntimeFailure> {
+        self.write(encode_result(id, response).map_err(|_| protocol_failure())?)
+            .await
     }
 
     pub(crate) fn set_session_id(&self, session_id: String) -> Result<(), RuntimeFailure> {

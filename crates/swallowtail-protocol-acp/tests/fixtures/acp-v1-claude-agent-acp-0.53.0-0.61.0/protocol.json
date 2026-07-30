@@ -91,6 +91,7 @@
     "read_tool_updates": true,
     "usage_updates": true,
     "permission_rejection": true,
+    "form_elicitation": "typed_choice_and_other_subset",
     "cancel": true,
     "load": "corpus_qualified_not_realized",
     "resume": "corpus_qualified_not_realized",
@@ -99,7 +100,8 @@
     "list": "upstream_not_selected",
     "fork": "upstream_not_selected",
     "writes_shell_web_subagents_terminals": false,
-    "client_mcp_elicitation_steering": false
+    "client_mcp_elicitation": false,
+    "client_steering": false
   },
   "cleanup": {
     "turn_cancel": "session/cancel",

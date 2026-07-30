@@ -8,10 +8,14 @@ use std::sync::{Arc, Mutex, Weak};
 use std::task::{Context, Poll, Waker};
 use swallowtail_core::{ExtensionNamespace, ProviderExtension, ProviderRequestRef};
 use swallowtail_runtime::{
-    BoxCallbackStream, BoxFuture, CallbackAbandonment, CallbackExchange, CallbackId,
-    CallbackOperationId, CallbackRequest, CallbackResponder, CallbackResponse, CallbackResult,
-    Deadline, RuntimeFailure, RuntimeTurnId,
+    BoxCallbackStream, CallbackAbandonment, CallbackExchange, CallbackId, CallbackOperationId,
+    CallbackRequest, CallbackResponder, Deadline, HarnessUserInputRequest, RuntimeFailure,
+    RuntimeTurnId,
 };
+
+mod response;
+
+use response::PermissionCallbackResponder;
 
 const PERMISSION_NAMESPACE: &str = "acp/session/request-permission";
 const CALLBACK_CAPACITY: usize = 16;
@@ -23,27 +27,38 @@ pub fn claude_agent_permission_namespace() -> ExtensionNamespace {
     ExtensionNamespace::new(PERMISSION_NAMESPACE).expect("static namespace is valid")
 }
 
-struct PendingPermission {
+enum PendingKind {
+    Permission {
+        options: BTreeSet<String>,
+        reject_option_id: String,
+    },
+    UserInput(HarnessUserInputRequest),
+}
+
+struct PendingCallback {
     provider_id: Value,
     operation_id: CallbackOperationId,
-    options: BTreeSet<String>,
-    reject_option_id: String,
+    kind: PendingKind,
 }
 
 struct State {
     requests: VecDeque<CallbackRequest>,
-    pending: BTreeMap<CallbackId, PendingPermission>,
+    pending: BTreeMap<CallbackId, PendingCallback>,
     provider_ids: BTreeSet<String>,
     closed: bool,
     waiter: Option<Waker>,
 }
 
-pub(crate) struct PermissionCallbackHub {
+pub(crate) struct CallbackHub {
     state: Arc<Mutex<State>>,
+    exchanges_permissions: bool,
 }
 
-impl PermissionCallbackHub {
-    pub(crate) fn new(connection: Weak<AcpConnection>) -> (Self, CallbackExchange) {
+impl CallbackHub {
+    pub(crate) fn new(
+        connection: Weak<AcpConnection>,
+        exchanges_permissions: bool,
+    ) -> (Self, CallbackExchange) {
         let state = Arc::new(Mutex::new(State {
             requests: VecDeque::new(),
             pending: BTreeMap::new(),
@@ -58,10 +73,20 @@ impl PermissionCallbackHub {
             state: Arc::clone(&state),
             connection,
         });
-        (Self { state }, CallbackExchange::new(requests, responder))
+        (
+            Self {
+                state,
+                exchanges_permissions,
+            },
+            CallbackExchange::new(requests, responder),
+        )
     }
 
-    pub(crate) fn enqueue(
+    pub(crate) const fn exchanges_permissions(&self) -> bool {
+        self.exchanges_permissions
+    }
+
+    pub(crate) fn enqueue_permission(
         &self,
         turn_id: &RuntimeTurnId,
         event_sequence: u64,
@@ -160,14 +185,68 @@ impl PermissionCallbackHub {
         }
         state.pending.insert(
             callback_id.clone(),
-            PendingPermission {
+            PendingCallback {
                 provider_id: provider_id.clone(),
                 operation_id: CallbackOperationId::Turn(turn_id.clone()),
-                options: accepted,
-                reject_option_id,
+                kind: PendingKind::Permission {
+                    options: accepted,
+                    reject_option_id,
+                },
             },
         );
         state.requests.push_back(request);
+        wake(&mut state);
+        Ok(callback_id)
+    }
+
+    pub(crate) fn enqueue_user_input(
+        &self,
+        turn_id: &RuntimeTurnId,
+        event_sequence: u64,
+        deadline: Option<Deadline>,
+        provider_id: &Value,
+        request: HarnessUserInputRequest,
+    ) -> Result<CallbackId, RuntimeFailure> {
+        let provider_key = provider_request_key(provider_id)?;
+        let provider_ref =
+            ProviderRequestRef::new(format!("acp:{provider_key}")).map_err(|_| malformed())?;
+        let callback_id =
+            CallbackId::new(format!("{}:elicitation:{event_sequence}", turn_id.as_str()))
+                .map_err(|_| malformed())?;
+        let callback = CallbackRequest::harness_user_input(
+            callback_id.clone(),
+            turn_id.clone(),
+            event_sequence,
+            deadline,
+            request.clone(),
+        )
+        .with_provider_request_ref(provider_ref);
+
+        let mut state = self.state.lock().expect("callback lock poisoned");
+        if state.closed {
+            return Err(closed());
+        }
+        if state.pending.len() >= CALLBACK_CAPACITY || state.requests.len() >= CALLBACK_CAPACITY {
+            return Err(failure(
+                "swallowtail.claude_agent.acp.callback_capacity",
+                "Claude Agent callback capacity was exceeded",
+            ));
+        }
+        if !state.provider_ids.insert(provider_key) {
+            return Err(failure(
+                "swallowtail.claude_agent.acp.callback_provider_id_reused",
+                "Claude Agent reused a callback request id",
+            ));
+        }
+        state.pending.insert(
+            callback_id.clone(),
+            PendingCallback {
+                provider_id: provider_id.clone(),
+                operation_id: CallbackOperationId::Turn(turn_id.clone()),
+                kind: PendingKind::UserInput(request),
+            },
+        );
+        state.requests.push_back(callback);
         wake(&mut state);
         Ok(callback_id)
     }
@@ -207,83 +286,6 @@ impl Stream for PermissionCallbackStream {
     }
 }
 
-struct PermissionCallbackResponder {
-    state: Arc<Mutex<State>>,
-    connection: Weak<AcpConnection>,
-}
-
-impl CallbackResponder for PermissionCallbackResponder {
-    fn respond(&self, response: CallbackResponse) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
-        let state = Arc::clone(&self.state);
-        let connection = self.connection.clone();
-        Box::pin(async move {
-            let (provider_id, option_id) = claim_response(&state, &response)?;
-            let connection = connection.upgrade().ok_or_else(closed)?;
-            connection.respond_permission(provider_id, &option_id).await
-        })
-    }
-}
-
-fn claim_response(
-    state: &Arc<Mutex<State>>,
-    response: &CallbackResponse,
-) -> Result<(Value, String), RuntimeFailure> {
-    let mut state = state.lock().expect("permission callback lock poisoned");
-    if state.closed {
-        return Err(closed());
-    }
-    let pending = state.pending.get(response.callback_id()).ok_or_else(|| {
-        failure(
-            "swallowtail.claude_agent.acp.permission_callback_unknown_or_duplicate",
-            "Claude Agent permission response is unknown or was already used",
-        )
-    })?;
-    if &pending.operation_id != response.operation_id() {
-        return Err(failure(
-            "swallowtail.claude_agent.acp.permission_callback_turn_mismatch",
-            "Claude Agent permission response belongs to a different turn",
-        ));
-    }
-    let option_id = match response.result() {
-        CallbackResult::Failure { .. } => pending.reject_option_id.clone(),
-        CallbackResult::Success(payload) => selected_option(payload, pending)?,
-        CallbackResult::UserInput(_) => {
-            return Err(failure(
-                "swallowtail.claude_agent.acp.permission_callback_result_invalid",
-                "Claude Agent permission callback received a user-input response",
-            ));
-        }
-    };
-    let pending = state
-        .pending
-        .remove(response.callback_id())
-        .expect("validated permission remains pending");
-    Ok((pending.provider_id, option_id))
-}
-
-fn selected_option(
-    payload: &swallowtail_runtime::CallbackPayload,
-    pending: &PendingPermission,
-) -> Result<String, RuntimeFailure> {
-    let value: Value = serde_json::from_slice(payload.as_bytes()).map_err(|_| malformed())?;
-    let object = value
-        .as_object()
-        .filter(|object| object.len() == 1)
-        .ok_or_else(malformed)?;
-    let option_id = object
-        .get("optionId")
-        .and_then(Value::as_str)
-        .ok_or_else(malformed)?;
-    if pending.options.contains(option_id) {
-        Ok(option_id.to_owned())
-    } else {
-        Err(failure(
-            "swallowtail.claude_agent.acp.permission_option_unoffered",
-            "Claude Agent permission response selected an unavailable option",
-        ))
-    }
-}
-
 fn provider_request_key(value: &Value) -> Result<String, RuntimeFailure> {
     match value {
         Value::String(value) if !value.is_empty() => Ok(format!("string:{value}")),
@@ -303,45 +305,4 @@ fn closed() -> RuntimeFailure {
         "swallowtail.claude_agent.acp.permission_callback_closed",
         "Claude Agent permission callback exchange is closed",
     )
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use swallowtail_runtime::{CallbackFailureKind, CallbackId};
-
-    #[test]
-    fn consumer_failure_claims_the_offered_one_shot_rejection_once() {
-        let callback_id = CallbackId::new("permission-callback").expect("valid callback");
-        let turn_id = RuntimeTurnId::new("permission-turn").expect("valid turn");
-        let state = Arc::new(Mutex::new(State {
-            requests: VecDeque::new(),
-            pending: BTreeMap::from([(
-                callback_id.clone(),
-                PendingPermission {
-                    provider_id: json!(900),
-                    operation_id: CallbackOperationId::Turn(turn_id.clone()),
-                    options: BTreeSet::from(["allow-once".to_owned(), "reject-once".to_owned()]),
-                    reject_option_id: "reject-once".to_owned(),
-                },
-            )]),
-            provider_ids: BTreeSet::from(["number:900".to_owned()]),
-            closed: false,
-            waiter: None,
-        }));
-        let response = CallbackResponse::new(
-            callback_id,
-            turn_id,
-            CallbackResult::Failure {
-                kind: CallbackFailureKind::ConsumerFailed,
-                detail: None,
-            },
-        );
-
-        let (provider_id, option_id) =
-            claim_response(&state, &response).expect("failure maps to rejection");
-        assert_eq!(provider_id, json!(900));
-        assert_eq!(option_id, "reject-once");
-        assert!(claim_response(&state, &response).is_err());
-    }
 }

@@ -12,8 +12,8 @@ shape.
 
 ## Next Task
 
-Reassess Nucleus child-work adoption authorization at the g02 product
-checkpoint. No consumer edit is implicit.
+Reassess Nucleus adoption authorization for the completed child-work and
+Claude typed user-input handoffs. No consumer edit is implicit.
 
 ## Index
 

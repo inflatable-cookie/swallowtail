@@ -24,10 +24,11 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     CallbackPayload, CallbackResponse, CallbackResult, CleanupOutcome, Deadline,
-    DiscoveryCancellation, EnvironmentRef, ExecutableRef, InstalledExecutableTarget,
-    MonotonicInstant, OperationContent, PreparedAccessEvidence, ProviderRetentionPolicy,
-    RemoteResourceDeletionOutcome, RequestId, RuntimeTurnId, ScopeId, SessionOptions,
-    TerminalStatus, TurnRequest, WorkingResourceRef,
+    DiscoveryCancellation, EnvironmentRef, ExecutableRef, HarnessQuestionId,
+    HarnessQuestionOptionId, HarnessUserInputAnswer, HarnessUserInputResponse,
+    InstalledExecutableTarget, MonotonicInstant, OperationContent, PreparedAccessEvidence,
+    ProviderRetentionPolicy, RemoteResourceDeletionOutcome, RequestId, RuntimeTurnId, ScopeId,
+    SessionOptions, TerminalStatus, TurnRequest, WorkingResourceRef,
 };
 use swallowtail_testkit::{
     assert_observable_activity_trace, assert_prepared_operation_evidence_matches_plan,

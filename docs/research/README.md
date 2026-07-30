@@ -80,3 +80,4 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [070 Grok Build 0.2.114 Authenticated ACP Qualification](070-grok-build-0-2-114-authenticated-acp-qualification.md)
 - [071 Installed Harness Range Maintenance Selection](071-installed-harness-range-maintenance-selection.md)
 - [072 Subagent Topology, Observation, And Control Evidence](072-subagent-topology-observation-and-control-evidence.md)
+- [073 Claude Agent ACP Form Elicitation](073-claude-agent-acp-form-elicitation.md)

@@ -29,7 +29,7 @@ pub(crate) struct ActiveTurn {
     output: Mutex<String>,
     activity: Mutex<crate::acp_activity::AcpActivityProjection>,
     deadline: Option<Deadline>,
-    permission_callbacks: Option<crate::permission::PermissionCallbackHub>,
+    callbacks: crate::permission::CallbackHub,
     provider_observation: Mutex<Option<ProviderRequestObservation>>,
     cancelled: AtomicBool,
     timed_out: AtomicBool,
@@ -56,17 +56,12 @@ impl ActiveTurn {
         let (events, stream) = runtime_event_channel(EVENT_CAPACITY)?;
         events.send(RuntimeEvent::new(0, RuntimeEventKind::Started))?;
         let (terminal, future) = terminal_outcome_channel();
-        let (permission_callbacks, callback_exchange) =
-            match provider_requests.handling_for(&crate::claude_agent_permission_namespace()) {
-                ProviderRequestHandling::Exchange => {
-                    let (callbacks, exchange) =
-                        crate::permission::PermissionCallbackHub::new(connection);
-                    (Some(callbacks), Some(exchange))
-                }
-                ProviderRequestHandling::Reject | ProviderRequestHandling::ObserveAndStop => {
-                    (None, None)
-                }
-            };
+        let exchanges_permissions = matches!(
+            provider_requests.handling_for(&crate::claude_agent_permission_namespace()),
+            ProviderRequestHandling::Exchange
+        );
+        let (callbacks, callback_exchange) =
+            crate::permission::CallbackHub::new(connection, exchanges_permissions);
         Ok((
             Arc::new(Self {
                 runtime_id: runtime_id.clone(),
@@ -77,7 +72,7 @@ impl ActiveTurn {
                 output: Mutex::new(String::new()),
                 activity: Mutex::new(crate::acp_activity::AcpActivityProjection::new(runtime_id)),
                 deadline,
-                permission_callbacks,
+                callbacks,
                 provider_observation: Mutex::new(None),
                 cancelled: AtomicBool::new(false),
                 timed_out: AtomicBool::new(false),
@@ -85,7 +80,7 @@ impl ActiveTurn {
                 finish_signal: FinishedSignal::new(),
             }),
             Box::pin(stream),
-            callback_exchange,
+            Some(callback_exchange),
             future,
         ))
     }
@@ -108,9 +103,7 @@ impl ActiveTurn {
 
     pub(crate) fn mark_cancelled(&self) {
         self.cancelled.store(true, Ordering::SeqCst);
-        if let Some(callbacks) = self.permission_callbacks.as_ref() {
-            callbacks.abandon(CallbackAbandonment::TurnCancelled);
-        }
+        self.callbacks.abandon(CallbackAbandonment::TurnCancelled);
     }
 
     pub(crate) fn timeout(&self) {
@@ -154,7 +147,7 @@ impl ActiveTurn {
     }
 
     pub(crate) const fn exchanges_permissions(&self) -> bool {
-        self.permission_callbacks.is_some()
+        self.callbacks.exchanges_permissions()
     }
 
     pub(crate) fn exchange_permission(
@@ -163,17 +156,32 @@ impl ActiveTurn {
         params: &Value,
     ) -> Result<(), RuntimeFailure> {
         let sequence = self.sequence.fetch_add(1, Ordering::SeqCst);
-        let callback_id = self
-            .permission_callbacks
-            .as_ref()
-            .ok_or_else(malformed)?
-            .enqueue(
-                &self.runtime_id,
-                sequence,
-                self.deadline,
-                provider_request_id,
-                params,
-            )?;
+        let callback_id = self.callbacks.enqueue_permission(
+            &self.runtime_id,
+            sequence,
+            self.deadline,
+            provider_request_id,
+            params,
+        )?;
+        self.events.send(RuntimeEvent::new(
+            sequence,
+            RuntimeEventKind::CallbackRequested(callback_id),
+        ))
+    }
+
+    pub(crate) fn exchange_user_input(
+        &self,
+        provider_request_id: &Value,
+        request: swallowtail_runtime::HarnessUserInputRequest,
+    ) -> Result<(), RuntimeFailure> {
+        let sequence = self.sequence.fetch_add(1, Ordering::SeqCst);
+        let callback_id = self.callbacks.enqueue_user_input(
+            &self.runtime_id,
+            sequence,
+            self.deadline,
+            provider_request_id,
+            request,
+        )?;
         self.events.send(RuntimeEvent::new(
             sequence,
             RuntimeEventKind::CallbackRequested(callback_id),
@@ -286,9 +294,7 @@ impl ActiveTurn {
         if self.finished.swap(true, Ordering::SeqCst) {
             return;
         }
-        if let Some(callbacks) = self.permission_callbacks.as_ref() {
-            callbacks.abandon(CallbackAbandonment::TurnTerminated);
-        }
+        self.callbacks.abandon(CallbackAbandonment::TurnTerminated);
         if let Ok(observations) = self
             .activity
             .lock()

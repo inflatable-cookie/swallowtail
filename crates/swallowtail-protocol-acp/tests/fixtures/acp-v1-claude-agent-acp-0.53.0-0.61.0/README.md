@@ -22,12 +22,14 @@ The corpus freezes four private behavior revisions:
 
 The portable subset stays the same across those revisions: initialize, new
 session, exact model confirmation, text prompt, read-tool updates, usage,
-permission rejection, cancellation, failure, disconnect, and process close.
+typed choice-and-Other form elicitation, permission rejection, cancellation,
+failure, disconnect, and process close.
 
 The first access profile is one host-approved Anthropic public-API key.
 Fixtures contain no credential. Terminal auth, Claude subscription login,
 logout, gateways, provider switching, persistent sessions, writes, Bash, web
-tools, subagents, terminals, MCP, elicitation, steering, and sandbox claims are
-not supported.
+tools, subagents, terminals, arbitrary MCP elicitation, steering, and sandbox
+claims are not supported. Form capability is limited to schemas that map
+losslessly onto typed harness user input. Richer forms are declined.
 
 These are normalized independent fixtures, not captured user traffic.

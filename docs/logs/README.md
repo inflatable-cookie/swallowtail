@@ -5,6 +5,7 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-07-30 Claude Agent Form Elicitation Closeout](2026-07-30-claude-agent-form-elicitation-closeout.md)
 - [2026-07-30 Subagent Topology Consumer Handoff](2026-07-30-subagent-topology-consumer-handoff.md)
 - [2026-07-30 Subagent Topology Route And Package Acceptance](2026-07-30-subagent-topology-route-and-package-acceptance.md)
 - [2026-07-30 Subagent Topology Kernel Acceptance](2026-07-30-subagent-topology-kernel-acceptance.md)

@@ -54,6 +54,7 @@ evidence-led provider work.
 | Remove error-level structural debt without changing public or provider behavior. | completed | Contract 001, AGENTS module rules, Effigy structural scan | `g02.045` |
 | Reduce normal development validation latency without weakening milestone or release proof. | completed | Contract 001, Effigy task graph, operator latency feedback | `g02.046` |
 | Accept provider-owned child-work topology and hand exact projection truth to consumers. | completed | Research 072, Contracts 044-045 | `g02.047` |
+| Expose Claude form elicitation through typed harness user input. | completed | Research 073, Contracts 012, 015, 041 | `g02.048` |
 
 ## Current Checkpoint
 
@@ -786,6 +787,8 @@ evidence-led provider work.
   — completed; cards 156-158 complete
 - [047 Subagent Topology Acceptance And Consumer Handoff](047-subagent-topology-acceptance-and-consumer-handoff.md)
   — completed; cards 159-161 complete
+- [048 Claude Agent Form Elicitation](048-claude-agent-form-elicitation.md)
+  — completed; cards 162-164 complete
 
 ## Held Backlog
 
@@ -1072,6 +1075,13 @@ is deferred until a consumer needs post-restart provider management.
 - card 161 publishes exact operation-local directory semantics and a bounded
   Nucleus child-work handoff; the public reducer example compiles without any
   consumer edit
+- card 162 freezes current ACP form capability, method, bridge revisions, and
+  the end-to-end absence of arbitrary question context
+- card 163 advertises form elicitation and maps the exact lossless Claude
+  choice subset through typed, exactly-once callback exchange
+- card 164 accepts focused and packaged behavior, updates provider-wide truth,
+  and retains richer forms, previews, and consumer presentation as explicit
+  gaps
 - cards 024-026 own remaining harness facades
 - cards 027-030 own hosted direct and provider-state facades
 - cards 031-033 own realtime, SDK, and llama.cpp facades
@@ -1081,13 +1091,13 @@ is deferred until a consumer needs post-restart provider management.
 
 ## Next
 
-Reassess Nucleus child-work adoption authorization at the g02 product
-checkpoint. Publication and provider-session binding persistence remain
-deferred.
+Reassess Nucleus adoption authorization for the completed child-work and
+Claude typed user-input handoffs. Publication and provider-session binding
+persistence remain deferred.
 
 ## Generation Boundary
 
-g02 is a long-lived generation with 47 roadmaps. It remains within its
+g02 is a long-lived generation with 48 roadmaps. It remains within its
 30-50-roadmap range. Provider-wide facade work stabilizes the existing
 production routes. The provider-session lifecycle lane adds bounded management
 to applicable persistent-session routes without adding provider names,

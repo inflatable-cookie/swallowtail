@@ -19,6 +19,7 @@ pub enum Scenario {
     DeleteMalformed,
     DeletePending,
     Permission,
+    Elicitation,
     Cancellation,
     Disconnect,
     ModelDrift,

@@ -146,6 +146,7 @@ impl AcpConnection {
         match method {
             "fs/read_text_file" => self.read_text(id, params).await,
             "session/request_permission" => self.handle_permission(id, params).await,
+            "elicitation/create" => self.handle_elicitation(id, params).await,
             method if method.starts_with('_') => {
                 self.write(
                     encode_error(id, -32601, "Method not found").map_err(|_| protocol_failure())?,
@@ -239,6 +240,31 @@ impl AcpConnection {
         .await?;
         self.notify("session/cancel", json!({"sessionId": turn.session_id()}))
             .await
+    }
+
+    async fn handle_elicitation(&self, id: Value, params: &Value) -> Result<(), RuntimeFailure> {
+        self.verify_session(params)?;
+        let turn = self
+            .active_turn
+            .lock()
+            .expect("ACP active lock poisoned")
+            .clone()
+            .ok_or_else(|| {
+                failure(
+                    "swallowtail.claude_agent.acp.elicitation_without_turn",
+                    "Claude Agent requested user input without an active turn",
+                )
+            })?;
+        match crate::elicitation::request(params)? {
+            Some(request) => turn.exchange_user_input(&id, request),
+            None => {
+                self.write(
+                    encode_result(id, crate::elicitation::declined_response())
+                        .map_err(|_| protocol_failure())?,
+                )
+                .await
+            }
+        }
     }
 
     fn verify_session(&self, params: &Value) -> Result<(), RuntimeFailure> {

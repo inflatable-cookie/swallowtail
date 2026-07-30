@@ -1,4 +1,123 @@
 #[test]
+fn prepared_session_advertises_and_exchanges_form_elicitation_as_typed_user_input() {
+    let host_id = ExecutionHostId::new("fixture.session.elicitation").expect("valid host");
+    let preparation_host = FixtureHost::new(Scenario::Version, "0.61.0");
+    let prepared = block_on(prepare_claude_agent(
+        preparation_input(host_id.clone()),
+        probe(),
+        preparation_host.services(host_id.clone()),
+    ))
+    .expect("Claude Agent prepares");
+    let profile = prepared
+        .prepare_session(ClaudeAgentSessionProfileInput::new(
+            RequestId::new("claude-agent-session-elicitation").expect("valid request"),
+            ClaudeAgentModelSelection::new(
+                ModelRouteId::new("claude-agent.prepared.route").expect("valid route"),
+                ModelRouteRevision::new("1").expect("valid route revision"),
+                ModelId::new("claude-sonnet-4-6").expect("valid model"),
+            ),
+            WorkingResourceRef::new("claude-agent.prepared.workspace").expect("valid resource"),
+            SessionOptions::default(),
+        ))
+        .expect("session prepares");
+
+    let operation_host = FixtureHost::new(Scenario::Elicitation, "0.61.0");
+    let services = operation_host.services(host_id);
+    let mut session =
+        block_on(profile.open_session(services.clone())).expect("prepared session opens");
+    let mut turn = block_on(session.start_turn(
+        TurnRequest::new(
+            RuntimeTurnId::new("claude-agent-session-elicitation-turn").expect("valid turn"),
+            OperationContent::new("ask which component to use").expect("valid prompt"),
+        ),
+        services,
+    ))
+    .expect("session turn starts");
+    let mut callbacks = turn.take_callbacks().expect("user-input callbacks exist");
+    let mut requests = callbacks
+        .take_requests()
+        .expect("callback request stream exists");
+    let callback = block_on(requests.next())
+        .expect("elicitation callback arrives")
+        .expect("elicitation callback is valid");
+    let swallowtail_runtime::CallbackRequestKind::HarnessUserInput(request) = callback.kind()
+    else {
+        panic!("elicitation is typed harness user input");
+    };
+    let question = request.questions().next().expect("question");
+    assert_eq!(question.id().as_str(), "question_0");
+    assert_eq!(question.header().as_str(), "Component");
+    assert_eq!(question.prompt().as_str(), "Which component should be used?");
+    assert_eq!(question.options().len(), 2);
+    assert_eq!(
+        callback
+            .provider_request_ref()
+            .expect("provider request correlation")
+            .as_provider_value(),
+        "acp:number:901"
+    );
+    let response = HarnessUserInputResponse::new(
+        [HarnessUserInputAnswer::selected(
+            HarnessQuestionId::new("question_0").expect("valid question"),
+            [HarnessQuestionOptionId::new("Panel").expect("valid option")],
+            None,
+        )],
+        4,
+        1024,
+    )
+    .expect("valid response");
+    let translated = CallbackResponse::for_request(
+        &callback,
+        CallbackResult::UserInput(response),
+    );
+    let responder = callbacks.responder();
+    block_on(responder.respond(translated.clone())).expect("typed response is transported");
+    assert!(block_on(responder.respond(translated)).is_err());
+
+    let mut events = turn.take_events().expect("events exist");
+    let terminal = turn
+        .take_terminal_outcome()
+        .expect("terminal outcome exists");
+    let (observed, outcome) = block_on(async {
+        let mut observed = Vec::new();
+        while let Some(event) = events.next().await {
+            observed.push(event.expect("event succeeds"));
+        }
+        (observed, terminal.await)
+    });
+    assert!(observed.iter().any(|event| {
+        matches!(
+            event.kind(),
+            swallowtail_runtime::RuntimeEventKind::CallbackRequested(id)
+                if id == callback.callback_id()
+        )
+    }));
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
+    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+
+    let writes = operation_host.writes();
+    let initialize = writes
+        .iter()
+        .find(|message| {
+            message.get("method").and_then(serde_json::Value::as_str) == Some("initialize")
+        })
+        .expect("initialize request");
+    assert_eq!(
+        initialize["params"]["clientCapabilities"]["elicitation"]["form"],
+        serde_json::json!({})
+    );
+    assert!(writes.iter().any(|message| {
+        message.get("id").and_then(serde_json::Value::as_u64) == Some(901)
+            && message["result"]
+                == serde_json::json!({
+                    "action": "accept",
+                    "content": {"question_0": "Panel"}
+                })
+    }));
+}
+
+#[test]
 fn prepared_session_opt_in_exposes_one_shot_permission_exchange() {
     let host_id = ExecutionHostId::new("fixture.session.consumer-mediated").expect("valid host");
     let preparation_host = FixtureHost::new(Scenario::Version, "0.61.0");
@@ -262,4 +381,3 @@ fn prepared_structured_run_opt_in_exposes_one_shot_permission_exchange() {
         message.get("method").and_then(serde_json::Value::as_str) == Some("session/cancel")
     }));
 }
-

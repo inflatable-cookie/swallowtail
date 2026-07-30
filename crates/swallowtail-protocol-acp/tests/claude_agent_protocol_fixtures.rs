@@ -24,6 +24,8 @@ const PROMPT_SUCCESS: &str =
     include_str!("fixtures/acp-v1-claude-agent-acp-0.53.0-0.61.0/prompt-success.ndjson");
 const PERMISSION_CANCEL: &str =
     include_str!("fixtures/acp-v1-claude-agent-acp-0.53.0-0.61.0/permission-cancel.ndjson");
+const FORM_ELICITATION: &str =
+    include_str!("fixtures/acp-v1-claude-agent-acp-0.53.0-0.61.0/form-elicitation.ndjson");
 const MODEL_DRIFT: &str =
     include_str!("fixtures/acp-v1-claude-agent-acp-0.53.0-0.61.0/model-drift.ndjson");
 const ACCESS_FAILURE: &str =
@@ -52,6 +54,10 @@ fn initialization_keeps_additive_capability_milestones_private() {
                 .is_none()
         );
         assert_eq!(
+            frames[0].message()["params"]["clientCapabilities"]["elicitation"]["form"],
+            serde_json::json!({})
+        );
+        assert_eq!(
             frames[1].message()["result"]["agentInfo"]["version"],
             version
         );
@@ -72,6 +78,23 @@ fn initialization_keeps_additive_capability_milestones_private() {
             steering
         );
     }
+}
+
+#[test]
+fn form_elicitation_preserves_typed_choice_and_answer_field_identity() {
+    let frames = parse_transcript(FORM_ELICITATION).expect("elicitation transcript parses");
+    assert_eq!(methods(&frames), ["elicitation/create"]);
+    assert_eq!(frames[0].direction(), Direction::AgentToClient);
+    assert_eq!(frames[1].direction(), Direction::ClientToAgent);
+    assert_eq!(frames[0].id(), frames[1].id());
+    assert_eq!(
+        frames[0].message()["params"]["requestedSchema"]["properties"]["question_0"]["title"],
+        "Component"
+    );
+    assert_eq!(
+        frames[1].message()["result"],
+        serde_json::json!({"action": "accept", "content": {"question_0": "Panel"}})
+    );
 }
 
 #[test]
@@ -218,9 +241,10 @@ fn access_and_capability_exclusions_are_explicit_and_redacted() {
         boundary["session_subset"]["writes_shell_web_subagents_terminals"],
         false
     );
+    assert_eq!(boundary["session_subset"]["client_mcp_elicitation"], false);
     assert_eq!(
-        boundary["session_subset"]["client_mcp_elicitation_steering"],
-        false
+        boundary["session_subset"]["form_elicitation"],
+        "typed_choice_and_other_subset"
     );
 
     for fixture in [
@@ -232,6 +256,7 @@ fn access_and_capability_exclusions_are_explicit_and_redacted() {
         NEW_SESSION,
         PROMPT_SUCCESS,
         PERMISSION_CANCEL,
+        FORM_ELICITATION,
         MODEL_DRIFT,
         ACCESS_FAILURE,
         DISCONNECT,

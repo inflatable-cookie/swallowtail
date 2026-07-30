@@ -42,6 +42,7 @@ impl SharedAgent {
             Some("session/delete") => self.delete_session(&mut state, id),
             None if id == Some(701) => self.complete_read(&mut state, &message),
             None if id == Some(900) => self.permission_response(&mut state, &message),
+            None if id == Some(901) => self.elicitation_response(&mut state, &message),
             _ => return Err(fixture_failure()),
         }?;
         self.changed.notify_all();

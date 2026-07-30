@@ -115,6 +115,14 @@ the qualified subset. It never widens one-shot permission into a persistent
 rule, invents an option missing from the provider request, or flattens a
 provider question that the common model cannot represent losslessly.
 
+Opaque provider or consumer context is not inferred from header, prompt,
+description, option label, tool id, or prose. A common context field requires
+one exact end-to-end source and preservation proof. ACP `_meta` availability
+alone is insufficient. The first Claude form route has no such proof:
+claude-agent-acp does not forward arbitrary `AskUserQuestion` metadata or
+question context. Option preview is separate presentation content and keeps
+that form outside the qualified common subset.
+
 The callback record preserves runtime operation, turn, provider request id,
 callback id, deadline, and either the exact provider namespace and bounded
 payload or the typed question schema. The response repeats the exact

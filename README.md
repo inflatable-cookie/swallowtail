@@ -18,15 +18,16 @@ are validated. Codex app-server supports both
 unchanged read-only sessions and one explicit host-resolved bounded workspace
 profile.
 
-Current g02 structural stabilization and validation-latency work are complete.
-The accepted stabilization baseline removed all five critical and 28 high
-findings. Four affected archives now compile through one extracted target in
-five seconds, down from 22.4 seconds through separate targets. Kimi
-child-activity projection is split on its native lifecycle seam; Doctor is
-warning-only at 144 findings. Roadmap g02.047 now owns exact provider-wide
-topology truth, package proof, and consumer handoff; all three batches are
-complete. Nucleus adoption remains separately authorized. Warning-only
-reduction remains deferred.
+Current g02 structural stabilization, validation-latency, child-work topology,
+and Claude form-elicitation work are complete. The accepted stabilization
+baseline removed all five critical and 28 high findings. Four affected
+archives now compile through one extracted target in five seconds, down from
+22.4 seconds through separate targets. Kimi child-activity projection is split
+on its native lifecycle seam. Claude Agent now projects its exact portable
+choice-form subset through typed harness user input. Doctor is warning-only at
+147 findings. Roadmaps g02.047-g02.048 own the completed topology and
+elicitation handoffs. Nucleus adoption remains separately authorized.
+Warning-only reduction remains deferred.
 
 ## Start Here
 
@@ -147,7 +148,9 @@ truth. Its full effect-boundary and cleanup matrix passes across the qualified
 range. The same lifecycle records pass the real explicit remote ACP transport
 under both host topologies without retry or stdio fallback. This is transport
 portability, not a production remote Claude claim. Claude Agent ACP now also
-implements exact load and replay-free resume across the qualified range.
+implements exact load, replay-free resume, and lossless choice-form
+elicitation across the qualified range. Richer forms and option previews are
+declined; arbitrary consumer context does not cross the bridge.
 Roadmaps g02.015-g02.019 sequence the shared management foundation, Codex
 archive/restore/delete, ACP and Claude Agent close/delete, OpenCode deletion,
 provider-wide classification, package proof, and a Nucleus handoff. Roadmap

@@ -15,6 +15,7 @@ mod claude_code_validation;
 mod connection;
 mod discovery;
 mod driver;
+mod elicitation;
 mod failure;
 mod permission;
 mod prepared;

@@ -68,7 +68,7 @@ fn prepared_structured_run_binds_one_prompt_and_durable_retention_on_both_hosts(
         let mut run = block_on(profile.start_run(operation_host.services(host_id)))
             .expect("structured run starts");
         assert!(run.provider_run_ref().is_none());
-        assert!(run.take_callbacks().is_none());
+        assert!(run.take_callbacks().is_some());
         let mut events = run.take_events().expect("events");
         let terminal = run.take_terminal_outcome().expect("terminal");
         let (observed_events, outcome) = block_on(async {
@@ -215,4 +215,3 @@ fn prepared_structured_run_can_opt_into_operation_owned_session_cleanup() {
         assert_eq!(operation_host.resource_releases(), 1);
     }
 }
-

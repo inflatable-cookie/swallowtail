@@ -9,6 +9,11 @@ recorder, or consumer-specific facade.
 Every prepared ordinary structured run or interactive turn exposes an
 `ObservableActivityProfile` through `PreparedOperationEvidence`.
 
+The
+[provider-solution activity matrix](provider-solution-activity-matrix.md)
+compiles every production route and operation shape into one consumer-facing
+inventory. It does not replace exact prepared evidence.
+
 The profile reports:
 
 - `Available` with exact per-kind lifecycle, content, disclosure, and
@@ -156,9 +161,10 @@ remain separate evidence.
 
 The machine-checked applicability inventory lives in
 `direct-activity-applicability.json`. Adapter conformance checks the positive
-profiles against decoded runtime traces. Catalogue, inventory, realtime-media,
-and serving-only operation roles remain `NotApplicable` pending the dedicated
-card 134 closeout.
+profiles against decoded runtime traces. Adapter prepared-facade conformance
+also checks all 13 catalogue, inventory, realtime-media, and serving-only
+operations as `NotApplicable`. Realtime media events remain on their dedicated
+session surfaces.
 
 ## Unknown And Newer Events
 

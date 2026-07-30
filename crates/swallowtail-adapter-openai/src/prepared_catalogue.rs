@@ -147,6 +147,11 @@ impl OpenAiModelsPreparedIntegration {
 
 impl OpenAiPreparedModels {
     #[must_use]
+    pub const fn evidence(&self) -> &PreparedOperationEvidence {
+        &self.evidence
+    }
+
+    #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }

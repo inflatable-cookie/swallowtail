@@ -11,7 +11,8 @@ use swallowtail_runtime::{
     TerminalStatus, TurnRequest,
 };
 use swallowtail_testkit::{
-    assert_observable_activity_trace, assert_prepared_operation_evidence_matches_plan,
+    assert_observable_activity_not_applicable, assert_observable_activity_trace,
+    assert_prepared_operation_evidence_matches_plan,
 };
 
 #[test]
@@ -56,6 +57,7 @@ fn prepared_inventory_and_inference_preserve_external_runtime_truth() {
             inventory.evidence().operation(),
             inventory.plan(),
         );
+        assert_observable_activity_not_applicable(inventory.evidence().operation());
         assert_eq!(
             inventory.plan().model_id().unwrap().as_str(),
             "ollama.fixture.model"

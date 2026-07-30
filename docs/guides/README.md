@@ -23,6 +23,8 @@ contracts or architecture.
 - [OpenCode Attached Prepared Integration](opencode-attached-prepared-integration.md)
 - [Pi RPC Prepared Integration](pi-rpc-prepared-integration.md)
 - [Prepared Facade Authoring](prepared-facade-authoring.md)
+- [Provider Solution Activity Matrix](provider-solution-activity-matrix.md)
+- [Provider Solution Activity Matrix CSV](provider-solution-activity-matrix.csv)
 - [Provider Solution Feature Matrix](provider-solution-feature-matrix.csv)
 - [Provider Route Matrix](provider-route-matrix.md)
 - [Qwen Headless Prepared Integration](qwen-headless-prepared-integration.md)

@@ -9,6 +9,7 @@ use swallowtail_adapter_gemini::{
 };
 use swallowtail_core::{PlannedConnectionRolloverPolicy, RealtimeMediaConfig};
 use swallowtail_runtime::{CleanupOutcome, RequestId, TerminalStatus};
+use swallowtail_testkit::assert_observable_activity_not_applicable;
 
 #[test]
 fn prepared_gemini_live_preserves_rollover_and_cleanup_on_both_hosts() {
@@ -29,6 +30,7 @@ fn prepared_gemini_live_preserves_rollover_and_cleanup_on_both_hosts() {
             operation.request().planned_connection_rollover(),
             gemini_live_rollover_policy()
         );
+        assert_observable_activity_not_applicable(operation.evidence().operation());
 
         let mut session =
             block_on(operation.open_session(fixture.services())).expect("session opens");

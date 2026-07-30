@@ -1,13 +1,13 @@
 # 039 Direct Inference Activity Truth
 
-Status: active
+Status: completed
 Owner: Tom
 Created: 2026-07-29
 Depends on: g02.038
 Vision tags: direct inference, attached runtimes, operation truth
 Contract refs: 006, 009, 014, 016, 019, 021-022, 024-027, 030-031, 037,
   039-041, 044
-Planning state: cards 132-133 completed; card 134 ready
+Planning state: cards 132-134 completed
 
 ## Problem
 
@@ -27,8 +27,8 @@ direct APIs look like agent harnesses.
       catalogue, and serving route.
 - [x] Map provider-supplied assistant, reasoning-summary, and tool activity.
 - [x] Correlate direct tool continuation without exposing private continuation.
-- [ ] Keep realtime-media lifecycle and transcripts separate.
-- [ ] Mark catalogue and serving-only operations not applicable.
+- [x] Keep realtime-media lifecycle and transcripts separate.
+- [x] Mark catalogue and serving-only operations not applicable.
 
 ## Non-Goals
 
@@ -55,20 +55,20 @@ direct APIs look like agent harnesses.
 
 ### Batch 39.3 — Realtime And Negative Closeout
 
-- [ ] Execute card 134.
-- [ ] Prove the realtime boundary and catalogue or serving
+- [x] Execute card 134.
+- [x] Prove the realtime boundary and catalogue or serving
       non-applicability.
-- [ ] Run full direct-route regression and package-facing checks.
+- [x] Run full direct-route regression and package-facing checks.
 
 ## Acceptance Criteria
 
-- [ ] every production direct route has an exact activity profile
-- [ ] direct inference never claims harness work
-- [ ] provider and consumer tool ownership remain distinct
-- [ ] private reasoning continuation never becomes display content
-- [ ] realtime transcripts retain their dedicated lifecycle
-- [ ] catalogue and serving-only routes expose no fake activity
-- [ ] attached runtime ownership and residency remain unchanged
+- [x] every production direct route has an exact activity profile
+- [x] direct inference never claims harness work
+- [x] provider and consumer tool ownership remain distinct
+- [x] private reasoning continuation never becomes display content
+- [x] realtime transcripts retain their dedicated lifecycle
+- [x] catalogue and serving-only routes expose no fake activity
+- [x] attached runtime ownership and residency remain unchanged
 
 ## Decision Gates
 
@@ -81,5 +81,5 @@ direct APIs look like agent harnesses.
 
 ## Next Planning Checkpoint
 
-After card 134, review the provider-wide matrix for unexplained gaps before
-starting package acceptance and the consumer handoff.
+Roadmap g02.040 owns the provider-wide matrix, extracted-package acceptance,
+and consumer handoff. Card 135 is ready.

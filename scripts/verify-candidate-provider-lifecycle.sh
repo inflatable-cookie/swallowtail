@@ -65,6 +65,7 @@ done | LC_ALL=C sort > "$release_management_adapters_actual"
 cat <<'EOF' > "$release_management_adapters_expected"
 swallowtail-adapter-claude-agent
 swallowtail-adapter-codex
+swallowtail-adapter-gemini
 swallowtail-adapter-kimi
 swallowtail-adapter-opencode
 EOF
@@ -80,6 +81,7 @@ release_lifecycle_suites=(
   "swallowtail-adapter-claude-agent|acp_driver|missing_delete_capability_stops_before_session_or_management_effects"
   "swallowtail-adapter-claude-agent|prepared_facade|session_management"
   "swallowtail-adapter-claude-agent|lifecycle_portability|"
+  "swallowtail-adapter-gemini|headless_structured_run|"
   "swallowtail-adapter-opencode|deletion_range|"
   "swallowtail-adapter-opencode|conformance|provider_neutral_management_contract_covers_opencode_delete_boundaries"
   "swallowtail-adapter-opencode|prepared_facade|deletion"
@@ -123,10 +125,10 @@ sed -n \
     }
   ' > "$release_lifecycle_rows"
 
-test "$(wc -l < "$release_lifecycle_rows" | tr -d ' ')" -eq 23
-test "$(rg -c ' posture=supported ' "$release_lifecycle_rows")" -eq 4
-test "$(rg -c ' posture=unsupported ' "$release_lifecycle_rows")" -eq 2
-test "$(rg -c ' posture=not-applicable ' "$release_lifecycle_rows")" -eq 17
+test "$(wc -l < "$release_lifecycle_rows" | tr -d ' ')" -eq 26
+test "$(rg -c ' posture=supported ' "$release_lifecycle_rows")" -eq 5
+test "$(rg -c ' posture=unsupported ' "$release_lifecycle_rows")" -eq 3
+test "$(rg -c ' posture=not-applicable ' "$release_lifecycle_rows")" -eq 18
 
 release_lifecycle_evidence="$release_tmp/lifecycle-validation.env"
 {
@@ -137,10 +139,10 @@ release_lifecycle_evidence="$release_tmp/lifecycle-validation.env"
   printf 'candidate_packages_sha256=%s\n' \
     "$(shasum -a 256 "$release_candidate/packages.sha256" | awk '{ print $1 }')"
   printf 'suite_count=%s\n' "${#release_lifecycle_suites[@]}"
-  printf 'management_adapter_count=4\n'
-  printf 'supported_route_count=4\n'
-  printf 'unsupported_route_count=2\n'
-  printf 'not_applicable_route_count=17\n'
+  printf 'management_adapter_count=5\n'
+  printf 'supported_route_count=5\n'
+  printf 'unsupported_route_count=3\n'
+  printf 'not_applicable_route_count=18\n'
   cat "$release_lifecycle_rows"
   printf 'live_credentials=absent\n'
   printf 'provider_calls=none\n'
@@ -160,4 +162,4 @@ else
 fi
 
 cat "$release_lifecycle_evidence"
-printf 'packaged provider lifecycle proof passed for 23 production routes\n'
+printf 'packaged provider lifecycle proof passed for 26 production routes\n'

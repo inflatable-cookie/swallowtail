@@ -5,6 +5,9 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-07-30 Packaged Provider-Wide Activity Proof](2026-07-30-packaged-provider-wide-activity-proof.md)
+- [2026-07-30 Provider Solution Activity Matrix](2026-07-30-provider-solution-activity-matrix.md)
+- [2026-07-30 Realtime And Non-Applicable Activity Closeout](2026-07-30-realtime-and-non-applicable-activity-closeout.md)
 - [2026-07-29 Text Direct-Inference Activity Projection](2026-07-29-text-direct-inference-activity-projection.md)
 - [2026-07-29 Direct Activity Applicability And Corpus](2026-07-29-direct-activity-applicability-and-corpus.md)
 - [2026-07-29 Provider-Wide Harness Activity Closeout](2026-07-29-provider-wide-harness-activity-closeout.md)

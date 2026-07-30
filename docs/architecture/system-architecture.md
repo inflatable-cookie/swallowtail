@@ -1257,8 +1257,11 @@ ownership remain independent evidence. Attached llama.cpp therefore reports
 assistant activity without claiming server ownership.
 
 Catalogue, inventory, realtime-media, and serving-only roles remain
-`NotApplicable` to ordinary observable activity. Their final negative and
-dedicated-media conformance belongs to card 134.
+`NotApplicable` to ordinary observable activity. All 13 classified operations
+are checked through actual prepared evidence. OpenAI Realtime and Gemini Live
+retain their dedicated audio, transcript, commit, interruption, response, and
+rollover surfaces. Attached inference does not gain server ownership, and
+owned llama.cpp serving does not gain agent activity.
 
 ## Dependency Rules
 

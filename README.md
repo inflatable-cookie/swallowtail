@@ -262,8 +262,11 @@ Current upstream additions do not widen qualified routes. All 14 selected
 text-operation profiles now expose exact prepared activity and ordered runtime
 events across nine direct or attached routes. Assistant final output remains
 separate; provider and consumer tool ownership remains exact; no route claims
-harness work. Card 134 is the sole ready task and closes the realtime,
-catalogue, inventory, serving, and attached-runtime negative boundaries.
+harness work. All 13 catalogue, inventory, realtime-media, and serving
+operations now prove `NotApplicable` through prepared evidence. OpenAI
+Realtime and Gemini Live retain dedicated media lifecycle; attached runtime
+and owned serving authority remain unchanged. Card 135 is the sole ready task:
+publish the provider-solution activity matrix and consumer guidance.
 Usage evidence has 19 `Yes`, one serving-only `Not applicable`, and two honest
 Kimi Code `No` cells. Each composite solution row records route ownership in
 its notes where sibling routes contribute different capabilities. The first

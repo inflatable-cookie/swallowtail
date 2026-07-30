@@ -18,7 +18,7 @@ use swallowtail_core::{
 use swallowtail_runtime::{CredentialRef, OperationContent, PreparedAccessEvidence, RequestId};
 use swallowtail_testkit::{
     ExecutionTopologyFixture, RecordedHostCall, RecordingHostServices, RecordingOutcome,
-    assert_prepared_operation_evidence_matches_plan,
+    assert_observable_activity_not_applicable, assert_prepared_operation_evidence_matches_plan,
 };
 
 #[test]
@@ -131,6 +131,7 @@ fn composite_facade_prepares_separate_sdk_operations_on_both_hosts() {
             catalogue.evidence().operation(),
             catalogue.plan(),
         );
+        assert_observable_activity_not_applicable(catalogue.evidence().operation());
 
         assert_ne!(
             attempt.plan().driver_identity(),

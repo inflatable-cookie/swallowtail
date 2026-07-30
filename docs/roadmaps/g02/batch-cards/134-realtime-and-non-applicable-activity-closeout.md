@@ -1,6 +1,6 @@
 # 134 Realtime And Non-Applicable Activity Closeout
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-07-29
 Milestone: `../039-direct-inference-activity-truth.md`
@@ -32,12 +32,12 @@ events, catalogue operations, and serving lifecycle.
 
 ## Acceptance Criteria
 
-- [ ] realtime response lifecycle remains exact
-- [ ] shared activity appears only where independently qualified
-- [ ] catalogue and serving-only profiles are not applicable
-- [ ] attached runtime ownership remains unchanged
-- [ ] no fake agent work appears on direct routes
-- [ ] every direct-route classification is machine-checkable
+- [x] realtime response lifecycle remains exact
+- [x] shared activity appears only where independently qualified
+- [x] catalogue and serving-only profiles are not applicable
+- [x] attached runtime ownership remains unchanged
+- [x] no fake agent work appears on direct routes
+- [x] every direct-route classification is machine-checkable
 
 ## Validation
 
@@ -57,3 +57,17 @@ events, catalogue operations, and serving lifecycle.
 ## Auto-Continuation
 
 Continue to card 135 only after roadmap g02.039 closes.
+
+## Outcome
+
+- one provider-neutral assertion now rejects ordinary activity on prepared
+  non-agent operation roles
+- all thirteen classified catalogue, inventory, realtime-media, and serving
+  operations prove `NotApplicable` through their actual prepared evidence
+- the four auxiliary catalogue facades now expose immutable prepared evidence
+  like their route-local peers
+- OpenAI Realtime and Gemini Live keep media, transcript, commit,
+  interruption, response, and rollover events on their dedicated surfaces
+- attached Ollama and llama.cpp retain external runtime ownership; owned
+  llama.cpp serving remains a separate lifecycle role
+- roadmap g02.039 is complete; cards 135-137 remain in bounds

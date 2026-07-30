@@ -368,7 +368,24 @@ evidence-led provider work.
 - card 133 projects all 14 selected text-operation profiles through exact
   prepared evidence and ordered activity events
 - Kimi client-visible thought updates are exposed while DeepSeek and xAI
-  private continuation remains excluded; card 134 is the sole ready task
+  private continuation remains excluded
+- card 134 machine-checks all 13 non-applicable prepared operations, keeps
+  OpenAI Realtime and Gemini Live on their dedicated media lifecycles, and
+  retains attached-runtime and owned-serving boundaries
+- card 135 publishes one 55-row activity inventory with 32 available and 23
+  not-applicable route operations, exact prepared and conformance links, and
+  consumer-owned safe projection guidance
+- route QA checks all 26 production routes plus four auxiliary catalogue
+  identities without flattening lifecycle, disclosure, or version-dependent
+  profiles
+- card 136 proves all 23 extracted archives, 35 packaged facade suites, all 26
+  production routes, ten representative activity profiles, and isolated
+  Nucleus and Soundcheck compatibility without release mutation
+- packaged lifecycle evidence now includes Gemini headless management: 14
+  suites, five management adapters, five supported routes, three unsupported,
+  and eighteen not applicable
+- roadmap g02.039 is complete; roadmap g02.040 is active and card 137 is the
+  sole ready task
 - roadmaps g02.016-g02.019 sequence Codex, ACP/Claude Agent, OpenCode,
   provider-wide acceptance, and the Nucleus handoff
 - all 23 manifests carry contract-complete metadata and crates.io publication
@@ -740,9 +757,9 @@ evidence-led provider work.
 - [038 Non-ACP Harness Activity Coverage](038-non-acp-harness-activity-coverage.md)
   — completed; cards 128-131 complete
 - [039 Direct Inference Activity Truth](039-direct-inference-activity-truth.md)
-  — active; cards 132-133 complete, card 134 ready
+  — completed; cards 132-134 complete
 - [040 Provider-Wide Activity Acceptance And Consumer Handoff](040-provider-wide-activity-acceptance-and-consumer-handoff.md)
-  — planned; cards 135-137 planned
+  — active; cards 135-136 complete, card 137 ready
 
 ## Held Backlog
 
@@ -935,8 +952,8 @@ is deferred until a consumer needs post-restart provider management.
   corpus freeze; card 129 completes HTTP, server, WebSocket, RPC, and managed
   projection; card 130 completes headless projection; card 131 closes all 13
   harness routes through 18 public prepared-operation profiles
-- cards 132-134 own direct-inference applicability, exact text activity, and
-  realtime or serving boundaries
+- cards 132-134 complete direct-inference applicability, exact text activity,
+  and realtime or serving boundaries
 - cards 135-137 own the provider-wide activity matrix, extracted-package
   proof, and bounded Nucleus and Soundcheck handoffs
 - cards 024-026 own remaining harness facades

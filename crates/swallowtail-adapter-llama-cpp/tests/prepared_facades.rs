@@ -24,7 +24,9 @@ use swallowtail_runtime::{
     CleanupOutcome, Deadline, MonotonicInstant, OperationContent, PreparedAccessEvidence,
     RequestId, ScopeId, ServingInstanceId, TerminalStatus,
 };
-use swallowtail_testkit::assert_observable_activity_trace;
+use swallowtail_testkit::{
+    assert_observable_activity_not_applicable, assert_observable_activity_trace,
+};
 
 const STARTUP_SUCCESS: &str =
     include_str!("fixtures/llama-cpp-b10069-owned/startup-success.stderr");
@@ -55,6 +57,7 @@ fn attached_facade_binds_catalogue_and_inference_without_stop_authority() {
                 RequestId::new(format!("catalogue-{host}")).unwrap(),
             ))
             .expect("catalogue prepares");
+        assert_observable_activity_not_applicable(catalogue.evidence().operation());
         let models = block_on(catalogue.list_models(services.clone())).expect("catalogue succeeds");
         assert_eq!(models[0].id().as_str(), "swallowtail-fixture-stories260k");
 
@@ -152,6 +155,7 @@ fn owned_facade_returns_only_after_readiness_and_preserves_cleanup_order() {
                 Deadline::at(MonotonicInstant::from_ticks(10_000)),
             )
             .expect("serving start prepares");
+        assert_observable_activity_not_applicable(start.evidence().operation());
         assert_eq!(start.evidence().artifact(), &fixture.artifact());
         assert_eq!(start.request().artifact(), prepared.artifact());
         let handle = block_on(start.start(services)).expect("ready handle is returned");

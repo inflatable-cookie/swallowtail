@@ -1,6 +1,9 @@
 use crate::{ObservableActivityFixtureCase, ObservableActivityTraceFixture};
-use swallowtail_core::ObservableActivityProfile;
-use swallowtail_runtime::RuntimeEvent;
+use swallowtail_core::{
+    Capability, DriverRole, ObservableActivityAvailability, ObservableActivityProfile,
+    OperationShape,
+};
+use swallowtail_runtime::{PreparedOperationEvidence, RuntimeEvent};
 
 mod contract;
 mod evidence;
@@ -14,6 +17,36 @@ pub fn assert_observable_activity_trace(
     if let Err(message) = trace::validate(profile, events) {
         panic!("observable activity trace is not conformant: {message}");
     }
+}
+
+/// Asserts that a prepared non-agent operation cannot advertise ordinary activity.
+pub fn assert_observable_activity_not_applicable(evidence: &PreparedOperationEvidence) {
+    let profile = evidence.observable_activity();
+    assert_eq!(
+        profile.availability(),
+        ObservableActivityAvailability::NotApplicable
+    );
+    assert_eq!(profile.interface_basis().count(), 0);
+    assert_eq!(profile.kinds().count(), 0);
+    assert!(profile.capability_requirement().is_none());
+    assert!(
+        !evidence
+            .plan()
+            .requirements()
+            .capabilities()
+            .any(|requirement| requirement.capability() == Capability::ObservableActivity)
+    );
+    assert!(!matches!(
+        (
+            evidence.binding().operation_shape(),
+            evidence.binding().driver_role()
+        ),
+        (OperationShape::StructuredRun, DriverRole::StructuredRun)
+            | (
+                OperationShape::InteractiveSession,
+                DriverRole::InteractiveSession
+            )
+    ));
 }
 
 /// Runs the provider-neutral observable-activity conformance pack.

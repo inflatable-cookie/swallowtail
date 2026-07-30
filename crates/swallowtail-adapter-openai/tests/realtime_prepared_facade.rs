@@ -12,6 +12,7 @@ use swallowtail_core::{
     Capability, CapabilityConstraint, PlannedConnectionRolloverPolicy, RealtimeMediaConfig,
 };
 use swallowtail_runtime::{CleanupOutcome, RequestId, TerminalStatus};
+use swallowtail_testkit::assert_observable_activity_not_applicable;
 
 #[test]
 fn prepared_openai_realtime_preserves_two_turn_media_and_cleanup_on_both_hosts() {
@@ -35,6 +36,7 @@ fn prepared_openai_realtime_preserves_two_turn_media_and_cleanup_on_both_hosts()
             operation.request().planned_connection_rollover(),
             PlannedConnectionRolloverPolicy::Disabled
         );
+        assert_observable_activity_not_applicable(operation.evidence().operation());
 
         let mut session =
             block_on(operation.open_session(fixture.services())).expect("session opens");

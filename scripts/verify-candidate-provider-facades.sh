@@ -48,6 +48,10 @@ git clone -q \
 cp "$release_candidate_source/Cargo.lock" "$release_packages_root/Cargo.lock"
 
 provider_facade_suites=(
+  "swallowtail-testkit|observable_activity_conformance"
+  "swallowtail-testkit|provider_wide_harness_activity"
+  "swallowtail-testkit|direct_activity_applicability_corpus"
+  "swallowtail-adapter-alibaba-model-studio|catalogue_activity"
   "swallowtail-adapter-alibaba-model-studio|prepared_facade"
   "swallowtail-adapter-anthropic|prepared_facade"
   "swallowtail-adapter-anthropic|managed_prepared_facade"
@@ -58,6 +62,7 @@ provider_facade_suites=(
   "swallowtail-adapter-codex|prepared_profiles"
   "swallowtail-adapter-deepseek|prepared_facade"
   "swallowtail-adapter-gemini|prepared_facade"
+  "swallowtail-adapter-gemini|catalogue_activity"
   "swallowtail-adapter-gemini|headless_structured_run"
   "swallowtail-adapter-gemini|live_prepared_facade"
   "swallowtail-adapter-kimi|prepared_facade"
@@ -71,10 +76,12 @@ provider_facade_suites=(
   "swallowtail-adapter-llama-cpp|prepared_facades"
   "swallowtail-adapter-ollama|prepared_facade"
   "swallowtail-adapter-openai|prepared_facade"
+  "swallowtail-adapter-openai|catalogue_activity"
   "swallowtail-adapter-openai|realtime_prepared_facade"
   "swallowtail-adapter-opencode|prepared_facade"
   "swallowtail-adapter-pi|prepared_facade"
   "swallowtail-adapter-qwen|prepared_facade"
+  "swallowtail-adapter-xai|catalogue_activity"
   "swallowtail-adapter-xai|prepared_facade"
 )
 
@@ -119,9 +126,22 @@ provider_route_proofs=(
 
 test "${#provider_route_proofs[@]}" -eq 26
 
+provider_activity_proofs=(
+  "rich-codex-lifecycle|swallowtail-adapter-codex|prepared_profiles"
+  "shared-acp-lifecycle|swallowtail-adapter-claude-agent|prepared_facade"
+  "non-acp-harness-lifecycle|swallowtail-adapter-qwen|prepared_facade"
+  "completion-only-headless|swallowtail-adapter-gemini|headless_structured_run"
+  "direct-tool-lifecycle|swallowtail-adapter-anthropic|prepared_facade"
+  "direct-reasoning-summary|swallowtail-adapter-kimi-platform|prepared_facade"
+  "realtime-separation|swallowtail-adapter-openai|realtime_prepared_facade"
+  "catalogue-not-applicable|swallowtail-adapter-openai|catalogue_activity"
+  "serving-not-applicable|swallowtail-adapter-llama-cpp|prepared_facades"
+  "unverified-newer-preservation|swallowtail-adapter-codex|prepared_profiles"
+)
+
 release_provider_evidence="$release_tmp/provider-validation.env"
 {
-  printf 'format=swallowtail.provider-facade-candidate-validation.v1\n'
+  printf 'format=swallowtail.provider-facade-candidate-validation.v2\n'
   printf 'version=%s\n' "$release_version"
   printf 'candidate_source_commit=%s\n' \
     "$(sed -n 's/^source_commit=//p' "$release_candidate/candidate.env")"
@@ -129,11 +149,18 @@ release_provider_evidence="$release_tmp/provider-validation.env"
     "$(shasum -a 256 "$release_candidate/packages.sha256" | awk '{ print $1 }')"
   printf 'suite_count=%s\n' "${#provider_facade_suites[@]}"
   printf 'route_count=%s\n' "${#provider_route_proofs[@]}"
+  printf 'activity_proof_count=%s\n' "${#provider_activity_proofs[@]}"
   for provider_route_proof in "${provider_route_proofs[@]}"; do
     IFS='|' read -r provider_route provider_package provider_test \
       <<< "$provider_route_proof"
     printf 'route=%s package=%s test=%s\n' \
       "$provider_route" "$provider_package" "$provider_test"
+  done
+  for provider_activity_proof in "${provider_activity_proofs[@]}"; do
+    IFS='|' read -r provider_profile provider_package provider_test \
+      <<< "$provider_activity_proof"
+    printf 'activity_profile=%s package=%s test=%s\n' \
+      "$provider_profile" "$provider_package" "$provider_test"
   done
   printf 'live_credentials=absent\n'
   printf 'provider_calls=none\n'
@@ -153,4 +180,4 @@ else
 fi
 
 cat "$release_provider_evidence"
-printf 'packaged provider facade proof passed for 23 production routes\n'
+printf 'packaged provider facade proof passed for 26 production routes and 10 activity profiles\n'

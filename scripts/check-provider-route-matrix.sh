@@ -1134,4 +1134,6 @@ if len(route_ids) != 26 or len(set(route_ids)) != 26:
     raise SystemExit("provider solution matrix must cover 26 unique route identities")
 PY
 
-printf 'provider route, lifecycle, and 22-solution feature matrices passed\n'
+python3 "$route_matrix_repo_root/scripts/check-provider-activity-matrix.py"
+
+printf 'provider route, lifecycle, 22-solution feature, and activity matrices passed\n'

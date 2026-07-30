@@ -18,8 +18,8 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{CleanupOutcome, OperationContent, RequestId, TerminalStatus};
 use swallowtail_testkit::{
-    ExecutionTopologyFixture, assert_observable_activity_trace,
-    assert_prepared_operation_evidence_matches_plan,
+    ExecutionTopologyFixture, assert_observable_activity_not_applicable,
+    assert_observable_activity_trace, assert_prepared_operation_evidence_matches_plan,
 };
 
 #[test]
@@ -51,6 +51,7 @@ fn catalogue_and_exact_k3_attempt_remain_separate_on_both_host_topologies() {
             catalogue.evidence().operation(),
             catalogue.plan(),
         );
+        assert_observable_activity_not_applicable(catalogue.evidence().operation());
         let models =
             block_on(catalogue.list_models(fixture.services())).expect("catalogue succeeds");
         assert_eq!(models.len(), 1);

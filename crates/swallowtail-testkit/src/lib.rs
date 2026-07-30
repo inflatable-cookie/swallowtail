@@ -70,7 +70,8 @@ pub use interface_compatibility_assertions::{
 pub use managed_harness_fixture::{ManagedHarnessPreflightCase, ManagedHarnessPreflightFixture};
 pub use negotiated_reasoning_assertions::assert_negotiated_reasoning_setup_contract;
 pub use observable_activity_assertions::{
-    assert_observable_activity_contract, assert_observable_activity_trace,
+    assert_observable_activity_contract, assert_observable_activity_not_applicable,
+    assert_observable_activity_trace,
 };
 pub use observable_activity_fixture::{
     ObservableActivityFixtureCase, ObservableActivityTraceFixture,

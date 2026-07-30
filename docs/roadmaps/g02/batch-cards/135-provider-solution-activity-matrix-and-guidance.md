@@ -1,6 +1,6 @@
 # 135 Provider Solution Activity Matrix And Guidance
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-07-29
 Milestone: `../040-provider-wide-activity-acceptance-and-consumer-handoff.md`
@@ -39,12 +39,12 @@ consumer guidance.
 
 ## Acceptance Criteria
 
-- [ ] every production solution is represented
-- [ ] every activity column has explicit semantics
-- [ ] lifecycle and disclosure strength are not flattened to yes/no
-- [ ] no positive cell requires provider-native parsing downstream
-- [ ] no negative cell silently means unknown research
-- [ ] matrix and route identities are machine-checked
+- [x] every production solution is represented
+- [x] every activity column has explicit semantics
+- [x] lifecycle and disclosure strength are not flattened to yes/no
+- [x] no positive cell requires provider-native parsing downstream
+- [x] no negative cell silently means unknown research
+- [x] matrix and route identities are machine-checked
 
 ## Validation
 
@@ -58,7 +58,17 @@ consumer guidance.
 - Stop if one value cannot distinguish unavailable from not applicable.
 - Do not publish a positive cell without a prepared facade proof.
 
+## Evidence
+
+- `docs/guides/provider-solution-activity-matrix.csv` records 55 exact
+  route-operation rows: 32 available and 23 not applicable.
+- `docs/guides/provider-solution-activity-matrix.md` defines every value and
+  the safe projection, sensitive-content, and consumer-ownership boundary.
+- `scripts/check-provider-activity-matrix.py` checks row identity, order,
+  vocabulary, counts, production and auxiliary route coverage, prepared
+  entries, conformance tests, and exact inventory references.
+- `effigy qa:routes`, `effigy qa:docs`, and `effigy package:api` pass.
+
 ## Auto-Continuation
 
 Continue to card 136 after the matrix and public guidance pass.
-

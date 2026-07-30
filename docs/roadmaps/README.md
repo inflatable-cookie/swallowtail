@@ -13,9 +13,9 @@ shape.
 ## Next Task
 
 Execute
-[g02 card 134](g02/batch-cards/134-realtime-and-non-applicable-activity-closeout.md):
-prove the boundary between ordinary observable activity, realtime-media
-events, catalogue operations, and serving lifecycle.
+[g02 card 137](g02/batch-cards/137-observable-activity-consumer-handoff.md):
+produce bounded Nucleus and Soundcheck observable-activity handoffs without
+editing either consumer repository.
 
 ## Index
 

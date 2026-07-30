@@ -146,6 +146,11 @@ impl GeminiModelsPreparedIntegration {
 
 impl GeminiPreparedModels {
     #[must_use]
+    pub const fn evidence(&self) -> &PreparedOperationEvidence {
+        &self.evidence
+    }
+
+    #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }

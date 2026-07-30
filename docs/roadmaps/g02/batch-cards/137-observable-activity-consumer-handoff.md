@@ -1,6 +1,6 @@
 # 137 Observable Activity Consumer Handoff
 
-Status: planned
+Status: ready
 Owner: Tom
 Created: 2026-07-29
 Milestone: `../040-provider-wide-activity-acceptance-and-consumer-handoff.md`
@@ -61,4 +61,3 @@ consumer persistence and presentation downstream.
 
 No. This card closes the programme and returns the Nucleus adoption decision
 to the operator.
-

@@ -5,7 +5,8 @@ use swallowtail_adapter_anthropic::AnthropicCatalogueProfileInput;
 use swallowtail_core::{Capability, DriverRole, ExecutionHostId};
 use swallowtail_runtime::{CleanupOutcome, RequestId, TerminalStatus};
 use swallowtail_testkit::{
-    assert_observable_activity_trace, assert_prepared_operation_evidence_matches_plan,
+    assert_observable_activity_not_applicable, assert_observable_activity_trace,
+    assert_prepared_operation_evidence_matches_plan,
 };
 
 #[test]
@@ -30,6 +31,7 @@ fn catalogue_and_one_attempt_remain_separate_on_both_host_topologies() {
             catalogue.evidence().operation(),
             catalogue.plan(),
         );
+        assert_observable_activity_not_applicable(catalogue.evidence().operation());
         let models =
             block_on(catalogue.list_models(fixture.services())).expect("catalogue succeeds");
         assert_eq!(models.len(), 3);

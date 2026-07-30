@@ -148,6 +148,11 @@
 - `151-critical-file-decomposition.md`
 - `152-codex-and-opencode-module-decomposition.md`
 - `153-runtime-and-stateful-harness-decomposition.md`
+- `154-remaining-adapter-decomposition.md`
+- `155-structural-health-acceptance-and-closeout.md`
+- `156-validation-runtime-inventory-and-budgets.md`
+- `157-focused-validation-selectors-and-package-proof.md`
+- `158-validation-latency-acceptance-and-guidance.md`
 
 ## Superseded
 
@@ -169,11 +174,11 @@ None. Cross-generation deferred work lives in `docs/roadmaps/backlog/`.
 
 ## Ready
 
-- `154-remaining-adapter-decomposition.md`
+None.
 
 ## Planned
 
-- `155-structural-health-acceptance-and-closeout.md`
+None.
 
 ## Operator-Held
 

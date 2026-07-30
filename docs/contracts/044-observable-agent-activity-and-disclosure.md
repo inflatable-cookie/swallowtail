@@ -282,6 +282,7 @@ streaming events exposes an immutable activity profile derived from:
 - disclosure strength
 - correlation support
 - typed task-list replacement support by activity kind
+- exact child-work observation and provider collaboration-action fidelity
 - unknown-event posture
 
 Preparation requires no consumer enumeration of native provider event names.
@@ -368,3 +369,6 @@ Deterministic fixtures prove:
 
 No live authentication, paid inference, installed harness, attached runtime,
 or provider effect runs in default conformance.
+
+Contract 045 defines the child-work graph, attribution, and operator-control
+boundary carried by subagent or collaboration activity.

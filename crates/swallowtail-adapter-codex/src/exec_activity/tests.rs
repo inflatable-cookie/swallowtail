@@ -2,7 +2,8 @@ use super::ExecActivityProjection;
 use semver::Version;
 use serde_json::Value;
 use swallowtail_runtime::{
-    ActivityAssistantPhase, ActivityKind, ActivityLifecyclePhase, RuntimeRunId,
+    ActivityActor, ActivityAssistantPhase, ActivityKind, ActivityLifecyclePhase, RuntimeRunId,
+    SubagentControlActionKind, SubagentParent, SubagentStatus,
 };
 
 const CORPUS: &str = include_str!("../../tests/fixtures/activity/exec.jsonl");
@@ -89,6 +90,78 @@ fn mcp_label_stays_separate_from_result_payload() {
     }));
     assert!(tool[0].content().is_none());
     assert_eq!(tool[1].content().unwrap().content().as_str(), "done");
+}
+
+#[test]
+fn collaboration_keeps_child_topology_and_spawn_configuration() {
+    let collaboration = project(
+        case(&cases(), "collaboration-lifecycle"),
+        Version::new(0, 145, 0),
+    )
+    .unwrap();
+    let started = &collaboration[0];
+    let child = started.subagents().next().unwrap();
+    assert_eq!(started.actor(), &ActivityActor::Primary);
+    assert_eq!(
+        started.subagent_control(),
+        Some(SubagentControlActionKind::Spawn)
+    );
+    assert_eq!(child.parent(), &SubagentParent::Operation);
+    assert_eq!(child.status(), SubagentStatus::Pending);
+    assert_eq!(child.description().unwrap().as_str(), "Inspect");
+    assert_eq!(child.model().unwrap().as_str(), "gpt-fixture");
+    assert_eq!(child.reasoning().unwrap().as_str(), "high");
+    assert_eq!(
+        collaboration[1].subagents().next().unwrap().status(),
+        SubagentStatus::Completed
+    );
+}
+
+#[test]
+fn every_exec_collaboration_action_is_typed() {
+    let mut projection = projector(Version::new(0, 145, 0));
+    projection
+        .project(
+            "thread.started",
+            &serde_json::json!({"type": "thread.started", "thread_id": "thread-fixture"}),
+        )
+        .unwrap();
+    for (tool, expected) in [
+        ("send_input", SubagentControlActionKind::SendInput),
+        ("resume_agent", SubagentControlActionKind::Resume),
+        ("wait", SubagentControlActionKind::Wait),
+        ("close_agent", SubagentControlActionKind::Close),
+    ] {
+        let observations = projection
+            .project(
+                "item.completed",
+                &serde_json::json!({
+                    "type": "item.completed",
+                    "item": {
+                        "id": format!("control-{tool}"),
+                        "type": "collab_tool_call",
+                        "tool": tool,
+                        "sender_thread_id": "thread-parent",
+                        "receiver_thread_ids": ["thread-child"],
+                        "prompt": "Continue",
+                        "agents_states": {
+                            "thread-child": {"status": "running", "message": null}
+                        },
+                        "status": "completed"
+                    }
+                }),
+            )
+            .unwrap();
+        assert_eq!(observations[0].subagent_control(), Some(expected));
+        assert!(matches!(
+            observations[0].actor(),
+            ActivityActor::Subagent(_)
+        ));
+        assert!(matches!(
+            observations[0].subagents().next().unwrap().parent(),
+            SubagentParent::Subagent(_)
+        ));
+    }
 }
 
 #[test]

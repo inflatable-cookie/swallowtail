@@ -3,6 +3,7 @@ mod extension;
 mod item;
 mod projection;
 mod request;
+mod subagent;
 
 use crate::turn_state::malformed_notification;
 use item::ItemIdentity;
@@ -27,6 +28,37 @@ pub(crate) struct AppServerActivityProjection {
 pub(super) struct ActivitySource<'a> {
     identity_key: &'a str,
     provider_ref: Option<&'a str>,
+}
+
+struct ObservationDetail {
+    correlation: Option<ActivityCorrelation>,
+    content: Option<swallowtail_runtime::ActivityContentUpdate>,
+    subagent: subagent::SubagentProjection,
+}
+
+impl ObservationDetail {
+    const fn primary(
+        correlation: Option<ActivityCorrelation>,
+        content: Option<swallowtail_runtime::ActivityContentUpdate>,
+    ) -> Self {
+        Self {
+            correlation,
+            content,
+            subagent: subagent::SubagentProjection::primary(),
+        }
+    }
+
+    const fn with_subagent(
+        correlation: Option<ActivityCorrelation>,
+        content: Option<swallowtail_runtime::ActivityContentUpdate>,
+        subagent: subagent::SubagentProjection,
+    ) -> Self {
+        Self {
+            correlation,
+            content,
+            subagent,
+        }
+    }
 }
 
 impl<'a> ActivitySource<'a> {
@@ -57,8 +89,7 @@ impl AppServerActivityProjection {
         identity: ItemIdentity,
         phase: ActivityLifecyclePhase,
         status: ActivityStatus,
-        correlation: Option<ActivityCorrelation>,
-        content: Option<swallowtail_runtime::ActivityContentUpdate>,
+        detail: ObservationDetail,
     ) -> Result<ActivityObservation, RuntimeFailure> {
         let activity_id = self.activity_id(&format!("item:{}", source.identity_key))?;
         let label = self.labels.get(source.identity_key).cloned();
@@ -77,7 +108,7 @@ impl AppServerActivityProjection {
                 ProviderActivityRef::new(provider_ref).map_err(|_| malformed_notification())?,
             );
         }
-        if let Some(correlation) = correlation {
+        if let Some(correlation) = detail.correlation {
             observation = observation.with_correlation(correlation);
         }
         if let Some(label) = label {
@@ -85,9 +116,20 @@ impl AppServerActivityProjection {
                 .with_label(label)
                 .map_err(|_| malformed_notification())?;
         }
-        if let Some(content) = content {
+        if let Some(content) = detail.content {
             observation = observation
                 .with_content(content)
+                .map_err(|_| malformed_notification())?;
+        }
+        observation = observation.with_actor(detail.subagent.actor);
+        if !detail.subagent.snapshots.is_empty() {
+            observation = observation
+                .with_subagents(detail.subagent.snapshots)
+                .map_err(|_| malformed_notification())?;
+        }
+        if let Some(action) = detail.subagent.control {
+            observation = observation
+                .with_subagent_control(action)
                 .map_err(|_| malformed_notification())?;
         }
         Ok(observation)

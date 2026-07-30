@@ -95,9 +95,12 @@ pub(crate) enum WsEvent {
     SubagentSpawned {
         subagent_id: String,
         name: String,
+        parent_tool_call_id: String,
+        background: bool,
     },
     SubagentUpdated {
         subagent_id: String,
+        suspended: bool,
     },
     SubagentEnded {
         subagent_id: String,

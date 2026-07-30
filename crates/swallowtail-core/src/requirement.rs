@@ -8,7 +8,8 @@ use crate::harness_mode::HarnessMode;
 use crate::model::ReasoningMode;
 use crate::observable_activity::{
     ActivityContentStream, ActivityCorrelationKind, ActivityDisclosure, ActivityKindClass,
-    ActivityLifecycleFidelity, ActivityUnknownEventPosture,
+    ActivityLifecycleFidelity, ActivityUnknownEventPosture, SubagentControlActionKind,
+    SubagentObservationFidelity,
 };
 use crate::realtime_media::{MediaDirection, MediaFormat};
 use crate::remote_resource::OwnedRemoteResourceKind;
@@ -106,6 +107,8 @@ pub enum CapabilityConstraint {
     ObservableActivityDisclosure(ActivityKindClass, ActivityDisclosure),
     ObservableActivityCorrelation(ActivityKindClass, ActivityCorrelationKind),
     ObservableActivityTaskListSnapshots(ActivityKindClass),
+    ObservableSubagentObservation(SubagentObservationFidelity),
+    ObservableSubagentControlAction(SubagentControlActionKind),
     ObservableActivityUnknownEventPosture(ActivityUnknownEventPosture),
     Named(NamedCapabilityConstraint),
 }

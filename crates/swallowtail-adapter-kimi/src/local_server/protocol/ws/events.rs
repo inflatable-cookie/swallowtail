@@ -63,9 +63,15 @@ fn decode_event(
         "subagent.spawned" => Ok(WsEvent::SubagentSpawned {
             subagent_id: required_string(payload, "subagentId")?.to_owned(),
             name: required_string(payload, "subagentName")?.to_owned(),
+            parent_tool_call_id: required_string(payload, "parentToolCallId")?.to_owned(),
+            background: payload
+                .get("runInBackground")
+                .and_then(Value::as_bool)
+                .ok_or_else(malformed)?,
         }),
         "subagent.started" | "subagent.suspended" => Ok(WsEvent::SubagentUpdated {
             subagent_id: required_string(payload, "subagentId")?.to_owned(),
+            suspended: event_type == "subagent.suspended",
         }),
         "subagent.completed" | "subagent.failed" => Ok(WsEvent::SubagentEnded {
             subagent_id: required_string(payload, "subagentId")?.to_owned(),

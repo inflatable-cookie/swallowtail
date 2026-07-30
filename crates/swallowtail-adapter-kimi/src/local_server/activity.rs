@@ -6,7 +6,7 @@ use swallowtail_runtime::{
     ActivityAssistantPhase, ActivityContent, ActivityContentChangeKind, ActivityContentUpdate,
     ActivityId, ActivityKind, ActivityLabel, ActivityLifecyclePhase, ActivityNamespace,
     ActivityObservation, ActivityOperationId, ActivityStatus, OperationContent, RuntimeFailure,
-    RuntimeTurnId,
+    RuntimeTurnId, SubagentSnapshot,
 };
 
 pub(super) mod profile;
@@ -34,6 +34,7 @@ struct OpenActivity {
     assistant_phase: Option<ActivityAssistantPhase>,
     disclosure: ActivityDisclosure,
     label: Option<ActivityLabel>,
+    subagent: Option<SubagentSnapshot>,
 }
 
 include!("activity/projection.rs");
@@ -68,6 +69,17 @@ fn terminal_status(failed: bool) -> ActivityStatus {
         ActivityStatus::Failed
     } else {
         ActivityStatus::Completed
+    }
+}
+
+fn subagent_terminal_status(status: ActivityStatus) -> swallowtail_runtime::SubagentStatus {
+    match status {
+        ActivityStatus::Completed => swallowtail_runtime::SubagentStatus::Completed,
+        ActivityStatus::Failed => swallowtail_runtime::SubagentStatus::Failed,
+        ActivityStatus::Cancelled => swallowtail_runtime::SubagentStatus::Interrupted,
+        ActivityStatus::Pending | ActivityStatus::InProgress => {
+            swallowtail_runtime::SubagentStatus::Unknown
+        }
     }
 }
 

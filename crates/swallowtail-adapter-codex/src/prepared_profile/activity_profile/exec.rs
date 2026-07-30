@@ -4,7 +4,8 @@ use semver::Version;
 use swallowtail_core::{
     ActivityContentStream, ActivityDisclosure, ActivityInterfaceBasis, ActivityKindClass,
     ActivityKindProfile, ActivityLifecycleFidelity, ActivityUnknownEventPosture,
-    InstalledExecutableCompatibility, ObservableActivityProfile,
+    InstalledExecutableCompatibility, ObservableActivityProfile, SubagentControlActionKind,
+    SubagentObservationFidelity,
 };
 use swallowtail_runtime::PreparationFailure;
 
@@ -39,12 +40,25 @@ pub(super) fn exec_activity_profile(
     )];
     let mut kinds = baseline_profiles()?;
     if qualified >= Version::new(0, 92, 0) {
-        kinds.push(profile(
-            ActivityKindClass::SubagentOrCollaboration,
-            ActivityLifecycleFidelity::CompleteLifecycle,
-            [ActivityContentStream::NormalizedSummary],
-            ActivityDisclosure::AdapterNormalizedSummary,
-        )?);
+        kinds.push(
+            profile(
+                ActivityKindClass::SubagentOrCollaboration,
+                ActivityLifecycleFidelity::CompleteLifecycle,
+                [ActivityContentStream::NormalizedSummary],
+                ActivityDisclosure::AdapterNormalizedSummary,
+            )?
+            .with_subagent_observation(SubagentObservationFidelity::ParentAndMetadata)
+            .and_then(|profile| {
+                profile.with_subagent_control_actions([
+                    SubagentControlActionKind::Spawn,
+                    SubagentControlActionKind::SendInput,
+                    SubagentControlActionKind::Resume,
+                    SubagentControlActionKind::Wait,
+                    SubagentControlActionKind::Close,
+                ])
+            })
+            .map_err(|_| invalid_profile())?,
+        );
     }
     ObservableActivityProfile::available(
         basis,

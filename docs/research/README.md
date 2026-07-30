@@ -79,3 +79,4 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [069 Kimi Code 0.31 Local-Server Qualification](069-kimi-code-0-31-local-server-qualification.md)
 - [070 Grok Build 0.2.114 Authenticated ACP Qualification](070-grok-build-0-2-114-authenticated-acp-qualification.md)
 - [071 Installed Harness Range Maintenance Selection](071-installed-harness-range-maintenance-selection.md)
+- [072 Subagent Topology, Observation, And Control Evidence](072-subagent-topology-observation-and-control-evidence.md)

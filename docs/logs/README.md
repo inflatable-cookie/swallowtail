@@ -5,6 +5,11 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-07-30 Validation Latency Closeout](2026-07-30-validation-latency-closeout.md)
+- [2026-07-30 Focused Validation Selectors](2026-07-30-focused-validation-selectors.md)
+- [2026-07-30 Validation Runtime Inventory](2026-07-30-validation-runtime-inventory.md)
+- [2026-07-30 Structural Health Acceptance](2026-07-30-structural-health-acceptance.md)
+- [2026-07-30 Remaining Adapter Decomposition](2026-07-30-remaining-adapter-decomposition.md)
 - [2026-07-30 Runtime And Stateful Harness Decomposition](2026-07-30-runtime-stateful-harness-decomposition.md)
 - [2026-07-30 Codex And OpenCode Module Decomposition](2026-07-30-codex-opencode-module-decomposition.md)
 - [2026-07-30 Critical File Decomposition](2026-07-30-critical-file-decomposition.md)

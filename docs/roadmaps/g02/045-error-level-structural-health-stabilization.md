@@ -1,12 +1,12 @@
 # 045 Error-Level Structural Health Stabilization
 
-Status: in progress
+Status: completed
 Owner: Tom
 Created: 2026-07-30
 Depends on: g02.044
 Vision tags: maintainability, package isolation, validation discipline
 Contract refs: 001, 036-037, 044
-Planning state: cards 150-153 completed; card 154 ready; card 155 planned
+Planning state: cards 150-155 completed
 
 ## Problem
 
@@ -31,8 +31,8 @@ latency work as explicit later decisions.
 - [x] remove all five critical findings
 - [x] remove the remaining Codex and OpenCode error findings
 - [x] remove shared-runtime and stateful-harness adapter error findings
-- [ ] remove remaining direct-adapter error findings
-- [ ] close with zero error-level structural findings and passing health
+- [x] remove remaining direct-adapter error findings
+- [x] close with zero error-level structural findings and passing health
 
 ## Non-Goals
 
@@ -72,29 +72,29 @@ latency work as explicit later decisions.
 
 ### Batch 45.5 — Remaining Adapters
 
-- [ ] Execute card 154.
-- [ ] split Pi, Alibaba, DeepSeek, and xAI error files
-- [ ] split the residual provider-route matrix high fragment
-- [ ] retain route-local inference and callback behavior
+- [x] Execute card 154.
+- [x] split Pi, Alibaba, DeepSeek, and xAI error files
+- [x] split the residual provider-route matrix high fragment
+- [x] retain route-local inference and callback behavior
 
 ### Batch 45.6 — Acceptance
 
-- [ ] Execute card 155.
-- [ ] prove zero error-level structural findings
-- [ ] run focused packages, workspace check, public-API, route, docs, and
+- [x] Execute card 155.
+- [x] prove zero error-level structural findings
+- [x] run focused packages, workspace check, public-API, route, docs, and
   package gates
-- [ ] record warning posture and select the next stabilization checkpoint
+- [x] record warning posture and select the next stabilization checkpoint
 
 ## Acceptance Criteria
 
-- [ ] doctor health passes
-- [ ] doctor reports zero error-level oversized-file findings
-- [ ] no warning-level finding is promoted to error
-- [ ] public declaration hashes remain unchanged unless separately justified
-- [ ] provider route, lifecycle, feature, and activity matrices remain exact
-- [ ] focused package tests and warnings-denied clippy pass per batch
-- [ ] no live provider effect, consumer edit, or publication occurs
-- [ ] one clear next task remains
+- [x] doctor health passes
+- [x] doctor reports zero error-level oversized-file findings
+- [x] no warning-level finding is promoted to error
+- [x] public declaration hashes remain unchanged unless separately justified
+- [x] provider route, lifecycle, feature, and activity matrices remain exact
+- [x] focused package tests and warnings-denied clippy pass per batch
+- [x] no live provider effect, consumer edit, or publication occurs
+- [x] one clear next task remains
 
 ## Decision Gates
 
@@ -107,5 +107,5 @@ latency work as explicit later decisions.
 
 ## Next Planning Checkpoint
 
-After card 155, choose between warning-level structural reduction,
-validation-latency work, or a newly unblocked feature lane.
+Roadmap g02.046 owns validation-latency work. Warning-only structural
+reduction remains deferred.

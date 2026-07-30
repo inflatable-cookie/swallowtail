@@ -39,6 +39,16 @@ fn prepared_exec_profiles_follow_exact_lifecycle_and_do_not_widen_newer_versions
                 .is_some(),
             collaboration
         );
+        if collaboration {
+            let subagents = profile
+                .kind(ActivityKindClass::SubagentOrCollaboration)
+                .unwrap();
+            assert_eq!(
+                subagents.subagent_observation(),
+                Some(SubagentObservationFidelity::ParentAndMetadata)
+            );
+            assert_eq!(subagents.subagent_control_actions().count(), 5);
+        }
         for kind in [
             ActivityKindClass::AssistantMessage,
             ActivityKindClass::ReasoningSummary,

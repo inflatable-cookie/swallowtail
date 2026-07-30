@@ -1,5 +1,6 @@
 use super::{
-    ActivitySource, AppServerActivityProjection, content, item::ItemIdentity, required_text,
+    ActivitySource, AppServerActivityProjection, ObservationDetail, content, item::ItemIdentity,
+    required_text,
 };
 use crate::turn_state::malformed_notification;
 use serde_json::Value;
@@ -31,8 +32,7 @@ impl AppServerActivityProjection {
             ),
             phase,
             status,
-            None,
-            content::hook_summary(run, phase)?,
+            ObservationDetail::primary(None, content::hook_summary(run, phase)?),
         )?])
     }
 

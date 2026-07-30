@@ -1,7 +1,7 @@
 use super::{
     ActivityContentStream, ActivityDisclosure, ActivityKindClass, ActivityKindProfile,
     ActivityLifecycleFidelity, ActivityUnknownEventPosture, ObservableActivityAvailability,
-    ObservableActivityProfile,
+    ObservableActivityProfile, SubagentControlActionKind, SubagentObservationFidelity,
 };
 use crate::{CapabilityConstraint, CapabilityRequirement};
 
@@ -110,6 +110,48 @@ fn task_list_snapshot_support_is_an_exact_activity_constraint() {
             .kind(ActivityKindClass::Plan)
             .unwrap()
             .task_list_snapshots()
+    );
+}
+
+#[test]
+fn subagent_topology_and_visible_control_actions_are_exact_constraints() {
+    let subagents = ActivityKindProfile::new(
+        ActivityKindClass::SubagentOrCollaboration,
+        ActivityLifecycleFidelity::CompleteLifecycle,
+        [ActivityContentStream::NormalizedSummary],
+        ActivityDisclosure::AdapterNormalizedSummary,
+        [],
+    )
+    .unwrap()
+    .with_subagent_observation(SubagentObservationFidelity::AttributedActivity)
+    .unwrap()
+    .with_subagent_control_actions([
+        SubagentControlActionKind::Spawn,
+        SubagentControlActionKind::SendInput,
+    ])
+    .unwrap();
+    let profile = ObservableActivityProfile::available(
+        [],
+        [subagents],
+        ActivityUnknownEventPosture::FailClosed,
+    )
+    .unwrap();
+
+    assert!(profile.supports(&CapabilityRequirement::new(
+        crate::Capability::ObservableActivity,
+        [
+            CapabilityConstraint::ObservableSubagentObservation(
+                SubagentObservationFidelity::ParentAndMetadata,
+            ),
+            CapabilityConstraint::ObservableSubagentControlAction(
+                SubagentControlActionKind::SendInput,
+            ),
+        ],
+    )));
+    assert!(
+        assistant_profile()
+            .with_subagent_observation(SubagentObservationFidelity::IdentityAndLifecycle)
+            .is_err()
     );
 }
 

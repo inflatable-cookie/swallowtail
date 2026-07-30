@@ -1,5 +1,6 @@
 use super::{
-    ActivitySource, AppServerActivityProjection, content, item::ItemIdentity, required_text,
+    ActivitySource, AppServerActivityProjection, ObservationDetail, content, item::ItemIdentity,
+    required_text,
 };
 use crate::turn_state::malformed_notification;
 use serde_json::Value;
@@ -111,7 +112,8 @@ impl AppServerActivityProjection {
     ) -> Result<Vec<ActivityObservation>, RuntimeFailure> {
         let item = params.get("item").ok_or_else(malformed_notification)?;
         let provider_id = required_text(item, "id")?;
-        let projection = super::item::item_projection(item, phase)?;
+        let owner_thread_id = params.get("threadId").and_then(Value::as_str);
+        let projection = super::item::item_projection(item, phase, owner_thread_id)?;
         if let Some(existing) = self.items.get(provider_id) {
             if existing != &projection.identity {
                 return Err(malformed_notification());
@@ -129,8 +131,7 @@ impl AppServerActivityProjection {
             projection.identity,
             phase,
             projection.status,
-            correlation,
-            projection.content,
+            ObservationDetail::with_subagent(correlation, projection.content, projection.subagent),
         )?])
     }
 
@@ -156,8 +157,7 @@ impl AppServerActivityProjection {
             identity,
             ActivityLifecyclePhase::Updated,
             ActivityStatus::InProgress,
-            correlation,
-            content,
+            ObservationDetail::primary(correlation, content),
         )?])
     }
 
@@ -193,8 +193,7 @@ impl AppServerActivityProjection {
             identity,
             ActivityLifecyclePhase::Updated,
             ActivityStatus::InProgress,
-            correlation,
-            content,
+            ObservationDetail::primary(correlation, content),
         )?])
     }
 
@@ -210,8 +209,7 @@ impl AppServerActivityProjection {
             ItemIdentity::new(kind, None, disclosure),
             ActivityLifecyclePhase::Updated,
             ActivityStatus::InProgress,
-            None,
-            content,
+            ObservationDetail::primary(None, content),
         )?])
     }
 
@@ -229,8 +227,7 @@ impl AppServerActivityProjection {
                 ),
                 ActivityLifecyclePhase::Updated,
                 ActivityStatus::InProgress,
-                None,
-                content::plan_snapshot(params)?,
+                ObservationDetail::primary(None, content::plan_snapshot(params)?),
             )?
             .with_task_list(content::task_list_snapshot(params)?)
             .map_err(|_| malformed_notification())?;
@@ -250,8 +247,7 @@ impl AppServerActivityProjection {
             ItemIdentity::new(kind, None, disclosure),
             ActivityLifecyclePhase::Completed,
             ActivityStatus::Completed,
-            None,
-            content,
+            ObservationDetail::primary(None, content),
         )?])
     }
 }

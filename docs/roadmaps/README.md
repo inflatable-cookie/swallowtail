@@ -12,9 +12,9 @@ shape.
 
 ## Next Task
 
-Execute g02 card 154: remove the six remaining adapter findings and the
-residual provider-route matrix high fragment with unchanged inference,
-callback, catalogue, and matrix behavior.
+Reassess the next g02 product or provider milestone after concurrent
+subagent-topology work closes. Warning-only reduction and publication remain
+deferred.
 
 ## Index
 

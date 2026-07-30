@@ -4,7 +4,8 @@ use semver::Version;
 use swallowtail_core::{
     ActivityContentStream, ActivityCorrelationKind, ActivityDisclosure, ActivityInterfaceBasis,
     ActivityKindClass, ActivityKindProfile, ActivityLifecycleFidelity, ActivityUnknownEventPosture,
-    InstalledExecutableCompatibility, ObservableActivityProfile,
+    InstalledExecutableCompatibility, ObservableActivityProfile, SubagentControlActionKind,
+    SubagentObservationFidelity,
 };
 use swallowtail_runtime::PreparationFailure;
 
@@ -39,13 +40,31 @@ pub(super) fn app_server_activity_profile(
     )];
     let mut kinds = baseline_profiles(&qualified)?;
     if qualified >= Version::new(0, 85, 0) {
-        kinds.push(profile(
-            ActivityKindClass::SubagentOrCollaboration,
-            ActivityLifecycleFidelity::CompleteLifecycle,
-            [ActivityContentStream::NormalizedSummary],
-            ActivityDisclosure::AdapterNormalizedSummary,
-            [],
-        )?);
+        kinds.push(
+            profile(
+                ActivityKindClass::SubagentOrCollaboration,
+                ActivityLifecycleFidelity::CompleteLifecycle,
+                [ActivityContentStream::NormalizedSummary],
+                ActivityDisclosure::AdapterNormalizedSummary,
+                [],
+            )?
+            .with_subagent_observation(SubagentObservationFidelity::AttributedActivity)
+            .and_then(|profile| {
+                profile.with_subagent_control_actions([
+                    SubagentControlActionKind::Spawn,
+                    SubagentControlActionKind::SendInput,
+                    SubagentControlActionKind::Resume,
+                    SubagentControlActionKind::Wait,
+                    SubagentControlActionKind::Close,
+                ])
+            })
+            .map_err(|_| {
+                failure(
+                    "swallowtail.codex.preparation.activity_profile_invalid",
+                    "Codex app-server subagent activity profile could not be derived",
+                )
+            })?,
+        );
     }
     if qualified >= Version::new(0, 106, 0) {
         kinds.push(profile(

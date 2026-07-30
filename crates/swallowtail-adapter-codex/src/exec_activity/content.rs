@@ -20,12 +20,14 @@ pub(super) struct ItemProjection {
     pub(super) status: ActivityStatus,
     pub(super) label: Option<ActivityLabel>,
     pub(super) content: Option<ActivityContentUpdate>,
+    pub(super) subagent: super::subagent::SubagentProjection,
 }
 
 pub(super) fn item_projection(
     item: &Value,
     phase: ActivityLifecyclePhase,
     version: &Version,
+    owner_thread_id: Option<&str>,
 ) -> Result<ItemProjection, RuntimeFailure> {
     let item_type = required_text(item, "type")?;
     let (identity, content, allowed) = match item_type {
@@ -93,11 +95,19 @@ pub(super) fn item_projection(
             .and_then(|(server, tool)| ActivityLabel::new(format!("{server}.{tool}")).ok()),
         _ => None,
     };
+    let subagent = if item_type == "collab_tool_call"
+        && matches!(&identity.kind, ActivityKind::SubagentOrCollaboration)
+    {
+        super::subagent::collaboration(item, owner_thread_id)?
+    } else {
+        super::subagent::SubagentProjection::primary()
+    };
     Ok(ItemProjection {
         identity,
         status: item_status(item, phase)?,
         label,
         content,
+        subagent,
     })
 }
 

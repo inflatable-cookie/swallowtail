@@ -49,6 +49,7 @@ Contracts hold durable, testable rules.
 - [042 Harness-Managed Recovery And Active-Turn Reattachment](042-harness-managed-recovery-and-active-turn-reattachment.md)
 - [043 Turn-Scoped Interactive Continuity](043-turn-scoped-interactive-continuity.md)
 - [044 Observable Agent Activity And Disclosure](044-observable-agent-activity-and-disclosure.md)
+- [045 Subagent Topology, Observation, And Control](045-subagent-topology-observation-and-control.md)
 
 Contract 003 defines the provider-neutral record kernel. Contracts 004-016
 govern the realized runtime and current proof drivers. Contract 017 governs
@@ -167,6 +168,11 @@ correlation, provider-visible reasoning summaries, typed task-list replacement
 snapshots, and bounded unknown-event truth. Existing run and turn streams
 remain the transport. Consumers retain message and activity persistence,
 grouping, collapsed presentation, and transcript policy.
+Contract 045 adds bounded provider-owned child-work snapshots, parent
+topology, child activity attribution, and typed provider collaboration
+actions. It keeps visible harness actions separate from operator authority;
+whole-turn cancellation and main-turn messaging cannot stand in for targeted
+child control.
 
 Contract 015 now permits exact, one-shot activation of an already authorized
 harness credential after ACP initialization. The first mapping is Grok Build

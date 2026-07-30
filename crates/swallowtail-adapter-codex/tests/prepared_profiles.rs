@@ -20,7 +20,8 @@ use swallowtail_core::{
     EndpointAudience, EndpointAuthorization, EntitlementMetering, EntitlementState,
     ExecutionHostId, ExternalNetworkPolicy, ExternalSearchPolicy, HarnessMode, HostServiceKind,
     InstanceRevision, InterfaceVersionAxis, ModelId, ModelRouteId, ModelRouteRevision,
-    ObservableActivityAvailability, ReasoningMode, RuntimeReadiness, SupportAuthority,
+    ObservableActivityAvailability, ReasoningMode, RuntimeReadiness, SubagentObservationFidelity,
+    SupportAuthority,
 };
 use swallowtail_runtime::{
     AttachmentDescriptor, AttachmentRef, AttachmentRole, BoxFuture, CleanupOutcome, Deadline,

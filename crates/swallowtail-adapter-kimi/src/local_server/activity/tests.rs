@@ -27,10 +27,31 @@ fn frozen_cursor_order_projects_steps_tools_and_subagents_without_raw_results() 
             && item.label().is_some()
             && item.content().is_none()
     }));
-    assert!(observations.iter().any(|item| {
-        item.kind() == &ActivityKind::SubagentOrCollaboration
-            && item.phase() == ActivityLifecyclePhase::Completed
-    }));
+    let completed_subagent = observations
+        .iter()
+        .find(|item| {
+            item.kind() == &ActivityKind::SubagentOrCollaboration
+                && item.phase() == ActivityLifecyclePhase::Completed
+        })
+        .expect("subagent completion is visible");
+    let child = completed_subagent
+        .subagents()
+        .next()
+        .expect("child snapshot");
+    assert_eq!(
+        child.status(),
+        swallowtail_runtime::SubagentStatus::Completed
+    );
+    assert_eq!(
+        child.parent(),
+        &swallowtail_runtime::SubagentParent::Operation
+    );
+    assert_eq!(child.label().unwrap().as_str(), "fixture");
+    assert_eq!(child.background(), Some(false));
+    assert_eq!(
+        child.originating_activity().unwrap().as_provider_value(),
+        "tool-fixture"
+    );
     assert!(observations.iter().any(|item| {
         item.kind() == &ActivityKind::Task && item.phase() == ActivityLifecyclePhase::Completed
     }));
@@ -64,5 +85,31 @@ fn richer_0_31_subagent_status_remains_non_rendered_progress() {
             .project(&event.event)
             .expect("status projects")
             .is_empty()
+    );
+}
+
+#[test]
+fn suspended_subagent_is_waiting_without_completing_its_activity() {
+    let mut projection =
+        KimiLocalActivityProjection::new(RuntimeTurnId::new("kimi-waiting-fixture").unwrap());
+    projection
+        .project(&crate::local_server::protocol::WsEvent::SubagentSpawned {
+            subagent_id: "child".to_owned(),
+            name: "research".to_owned(),
+            parent_tool_call_id: "tool".to_owned(),
+            background: true,
+        })
+        .unwrap();
+    let waiting = projection
+        .project(&crate::local_server::protocol::WsEvent::SubagentUpdated {
+            subagent_id: "child".to_owned(),
+            suspended: true,
+        })
+        .unwrap();
+
+    assert_eq!(waiting[0].phase(), ActivityLifecyclePhase::Updated);
+    assert_eq!(
+        waiting[0].subagents().next().unwrap().status(),
+        swallowtail_runtime::SubagentStatus::Waiting
     );
 }

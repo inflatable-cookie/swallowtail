@@ -51,7 +51,8 @@ evidence-led provider work.
 | Qualify the Kimi `0.31.0` local-server status milestone and installed route. | completed | Research 069, Contracts 029, 032, 037-038, 042, 044 | `g02.042` |
 | Add one maintained Grok Build ACP route with exact delegated authentication. | completed | Research 070, Contracts 014-015, 023, 029, 032-034, 037, 039, 044 | `g02.043` |
 | Maintain current Codex and OpenCode installed support windows as one batched tranche. | completed | Research 071, Contracts 029, 032, 036-040, 044 | `g02.044` |
-| Remove error-level structural debt without changing public or provider behavior. | in progress | Contract 001, AGENTS module rules, Effigy structural scan | `g02.045` |
+| Remove error-level structural debt without changing public or provider behavior. | completed | Contract 001, AGENTS module rules, Effigy structural scan | `g02.045` |
+| Reduce normal development validation latency without weakening milestone or release proof. | completed | Contract 001, Effigy task graph, operator latency feedback | `g02.046` |
 
 ## Current Checkpoint
 
@@ -779,7 +780,9 @@ evidence-led provider work.
 - [044 Installed Harness Range Maintenance](044-installed-harness-range-maintenance.md)
   — completed; cards 146-149 complete
 - [045 Error-Level Structural Health Stabilization](045-error-level-structural-health-stabilization.md)
-  — in progress; cards 150-153 complete, card 154 ready, card 155 planned
+  — completed; cards 150-155 complete
+- [046 Validation Latency And Proof Routing](046-validation-latency-and-proof-routing.md)
+  — completed; cards 156-158 complete
 
 ## Held Backlog
 
@@ -1033,6 +1036,24 @@ is deferred until a consumer needs post-restart provider management.
 - card 153 removes all ten runtime, Claude Agent, Gemini, and Kimi high
   findings; 168 focused tests, warnings-denied lint, and the unchanged
   public-API baseline pass, leaving seven high errors
+- card 154 removes the final seven high findings across Pi, Alibaba,
+  DeepSeek, xAI, and provider-route validation; 112 focused tests,
+  warnings-denied lint, exact route matrices, and the unchanged public-API
+  baseline pass, leaving doctor warning-only at 142 findings
+- card 155 closes error-level stabilization through workspace, metadata,
+  public-API, route, docs, doctor, and four affected extracted-package gates;
+  all pass with zero errors and no external effect
+- card 156 classifies every validation selector by evidence tier and owner,
+  records historical runtime variance through 56.3 minutes, freezes explicit
+  focused and affected-package budgets, and leaves all validation behavior
+  unchanged
+- card 157 adds exact-package focused and affected-archive selectors; Pi and
+  xAI pass 64 focused tests plus clippy in four seconds and independently
+  packaged shared-target compilation in five seconds
+- card 158 accepts the focused paths: four independently assembled adapter
+  archives compile through one extracted target in five seconds versus 22.4
+  seconds through separate targets; concurrent Kimi activity work leaves one
+  doctor error outside this lane
 - cards 024-026 own remaining harness facades
 - cards 027-030 own hosted direct and provider-state facades
 - cards 031-033 own realtime, SDK, and llama.cpp facades
@@ -1042,13 +1063,13 @@ is deferred until a consumer needs post-restart provider management.
 
 ## Next
 
-Execute card 154: remove the six remaining adapter findings and the residual
-provider-route matrix high fragment with unchanged inference, callback,
-catalogue, and matrix behavior.
+Reassess the next g02 product or provider milestone after concurrent
+subagent-topology work closes. Warning-only reduction and publication remain
+deferred.
 
 ## Generation Boundary
 
-g02 is a long-lived generation with 44 roadmaps. It remains within its
+g02 is a long-lived generation with 46 roadmaps. It remains within its
 30-50-roadmap range. Provider-wide facade work stabilizes the existing
 production routes. The provider-session lifecycle lane adds bounded management
 to applicable persistent-session routes without adding provider names,

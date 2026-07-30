@@ -69,6 +69,40 @@ not part of activity identity or a content stream. Tool payload remains in
 `content()`; consumers should not parse its first line as a label. Applications
 still own their final presentation labels and may replace the provider value.
 
+## Project Child Work
+
+`actor()` distinguishes primary activity from activity attributed to one
+known child. `subagents()` carries bounded replacement snapshots for children
+affected by a collaboration observation:
+
+```rust
+for child in activity.subagents() {
+    let id = child.id();
+    let parent = child.parent();
+    let status = child.status();
+    let label = child.label();
+    let task = child.description();
+    // Replace this child's consumer-owned graph node.
+}
+
+if let Some(action) = activity.subagent_control() {
+    // The harness performed spawn/send/resume/wait/close.
+    // This is observation, not operator authority.
+}
+```
+
+Codex app-server, Codex exec, and Kimi local-server are the current positive
+routes. They retain exact differences: app-server adds child-activity
+attribution, exec exposes collaboration records without a durable inspection
+channel, and Kimi exposes native spawn-to-terminal lifecycle including
+suspension.
+
+Consumers build and persist the browseable tree. Swallowtail exposes no direct
+operator child-control handle yet because none of the selected routes
+qualifies one. Whole-turn cancellation and messages to the main agent are not
+substitutes. See
+[Contract 045](../contracts/045-subagent-topology-observation-and-control.md).
+
 Only provider-intended readable summaries use `ReasoningSummary`. Hidden
 reasoning, provider-private continuation state, and raw provider envelopes are
 not portable activity.

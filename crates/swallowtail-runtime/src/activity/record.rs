@@ -1,3 +1,4 @@
+use super::subagent::{ActivityActor, SubagentSnapshot, validate_subagents};
 use super::validation::{validate_assistant_phase, validate_content, validate_phase_status};
 use super::{
     ActivityContentUpdate, ActivityId, ActivityLabel, ActivityNamespace, InvalidActivityRecord,
@@ -7,6 +8,7 @@ use crate::{CallbackId, DirectToolCallId, RuntimeRunId, RuntimeTurnId};
 use std::fmt;
 use swallowtail_core::{
     ActivityDisclosure, ActivityKindClass, ProviderActivityRef, ProviderRequestRef,
+    SubagentControlActionKind,
 };
 
 #[derive(Clone, Debug, Eq, Hash, PartialEq)]
@@ -110,6 +112,9 @@ pub struct ActivityObservation {
     label: Option<ActivityLabel>,
     content: Option<ActivityContentUpdate>,
     task_list: Option<TaskListSnapshot>,
+    actor: ActivityActor,
+    subagents: Vec<SubagentSnapshot>,
+    subagent_control: Option<SubagentControlActionKind>,
 }
 
 impl ActivityObservation {
@@ -142,6 +147,9 @@ impl ActivityObservation {
             label: None,
             content: None,
             task_list: None,
+            actor: ActivityActor::Primary,
+            subagents: Vec::new(),
+            subagent_control: None,
         })
     }
 
@@ -178,6 +186,40 @@ impl ActivityObservation {
     ) -> Result<Self, InvalidActivityRecord> {
         super::validation::validate_task_list(&self)?;
         self.task_list = Some(task_list);
+        Ok(self)
+    }
+
+    #[must_use]
+    pub fn with_actor(mut self, actor: ActivityActor) -> Self {
+        self.actor = actor;
+        self
+    }
+
+    pub fn with_subagents(
+        mut self,
+        subagents: impl IntoIterator<Item = SubagentSnapshot>,
+    ) -> Result<Self, InvalidActivityRecord> {
+        if !matches!(self.kind, ActivityKind::SubagentOrCollaboration) {
+            return Err(InvalidActivityRecord::new(
+                "Subagent snapshots require subagent or collaboration activity",
+            ));
+        }
+        let subagents = subagents.into_iter().collect::<Vec<_>>();
+        validate_subagents(&subagents)?;
+        self.subagents = subagents;
+        Ok(self)
+    }
+
+    pub fn with_subagent_control(
+        mut self,
+        action: SubagentControlActionKind,
+    ) -> Result<Self, InvalidActivityRecord> {
+        if !matches!(self.kind, ActivityKind::SubagentOrCollaboration) {
+            return Err(InvalidActivityRecord::new(
+                "Subagent control observations require subagent or collaboration activity",
+            ));
+        }
+        self.subagent_control = Some(action);
         Ok(self)
     }
 
@@ -239,6 +281,20 @@ impl ActivityObservation {
     #[must_use]
     pub const fn task_list(&self) -> Option<&TaskListSnapshot> {
         self.task_list.as_ref()
+    }
+
+    #[must_use]
+    pub const fn actor(&self) -> &ActivityActor {
+        &self.actor
+    }
+
+    pub fn subagents(&self) -> impl ExactSizeIterator<Item = &SubagentSnapshot> {
+        self.subagents.iter()
+    }
+
+    #[must_use]
+    pub const fn subagent_control(&self) -> Option<SubagentControlActionKind> {
+        self.subagent_control
     }
 }
 

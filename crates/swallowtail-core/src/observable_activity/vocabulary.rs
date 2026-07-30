@@ -65,6 +65,27 @@ pub enum ActivityUnknownEventPosture {
     FailClosed,
 }
 
+/// Maximum portable child-work detail exposed by one route.
+#[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+pub enum SubagentObservationFidelity {
+    IdentityAndLifecycle,
+    ParentAndMetadata,
+    AttributedActivity,
+}
+
+/// Provider-owned collaborative action visible on the activity stream.
+///
+/// These values describe what the harness did. They do not grant the consumer
+/// authority to perform the action.
+#[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+pub enum SubagentControlActionKind {
+    Spawn,
+    SendInput,
+    Resume,
+    Wait,
+    Close,
+}
+
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum ObservableActivityAvailability {
     NotApplicable,

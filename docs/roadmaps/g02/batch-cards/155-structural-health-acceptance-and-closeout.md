@@ -1,6 +1,6 @@
 # 155 Structural Health Acceptance And Closeout
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-07-30
 Milestone: `../045-error-level-structural-health-stabilization.md`
@@ -20,13 +20,13 @@ truth evidence.
 
 ## Acceptance Criteria
 
-- [ ] doctor health passes
-- [ ] doctor reports zero error-level structural findings
-- [ ] focused changed-package tests and clippy pass
-- [ ] workspace all-target check passes
-- [ ] public-API, route, docs, and affected-package gates pass
-- [ ] no provider effect, consumer edit, or publication ran
-- [ ] one clear next task remains
+- [x] doctor health passes
+- [x] doctor reports zero error-level structural findings
+- [x] focused changed-package tests and clippy pass
+- [x] workspace all-target check passes
+- [x] public-API, route, docs, and affected-package gates pass
+- [x] no provider effect, consumer edit, or publication ran
+- [x] one clear next task remains
 
 ## Validation
 
@@ -49,3 +49,18 @@ truth evidence.
 ## Auto-Continuation
 
 No. Return to the g02 stabilization checkpoint.
+
+## Evidence
+
+- Doctor passes with 142 warning findings and zero errors. No warning was
+  promoted to error.
+- The changed Pi, Alibaba Model Studio, DeepSeek, and xAI packages pass 112
+  focused tests and warnings-denied clippy.
+- Workspace all-target check, package metadata, public-API, route matrices,
+  docs QA, formatting, Python syntax, and diff checks pass.
+- All four affected adapter archives assemble and pass extracted all-target
+  compilation against local unpublished Swallowtail dependencies.
+- No provider request, consumer edit, candidate replacement, publication, or
+  other external effect ran.
+- Validation latency is the next stabilization checkpoint. Warning-only
+  reduction remains deferred.

@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-29
+Updated: 2026-07-30
 
 | Contract | Status | Scope |
 | --- | --- | --- |
@@ -50,3 +50,4 @@ Updated: 2026-07-29
 | [042 Harness-Managed Recovery And Active-Turn Reattachment](042-harness-managed-recovery-and-active-turn-reattachment.md) | active | Explicit harness retry acceptance, same-turn cursor reattachment, no prompt replay, uncertainty, and joined cleanup |
 | [043 Turn-Scoped Interactive Continuity](043-turn-scoped-interactive-continuity.md) | active | Restarted harness continuation versus consumer-owned transactional transcript replay across turn-scoped provider work |
 | [044 Observable Agent Activity And Disclosure](044-observable-agent-activity-and-disclosure.md) | active | Ordered activity identity, lifecycle, disclosure, content streams, route fidelity, and consumer projection ownership |
+| [045 Subagent Topology, Observation, And Control](045-subagent-topology-observation-and-control.md) | active | Child-work graph identity, parentage, lifecycle, attribution, provider collaboration actions, and direct-control qualification |

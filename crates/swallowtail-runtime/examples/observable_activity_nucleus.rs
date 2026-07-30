@@ -1,8 +1,9 @@
 use swallowtail_runtime::{
-    ActivityAssistantPhase, ActivityContentChangeKind, ActivityContentStream, ActivityCorrelation,
-    ActivityId, ActivityKindClass, ActivityLifecycleFidelity, ActivityLifecyclePhase,
-    ActivityOperationId, ActivityStatus, ObservableActivityAvailability, PreparedOperationEvidence,
-    RuntimeEvent, RuntimeEventKind,
+    ActivityActor, ActivityAssistantPhase, ActivityContentChangeKind, ActivityContentStream,
+    ActivityCorrelation, ActivityId, ActivityKindClass, ActivityLifecycleFidelity,
+    ActivityLifecyclePhase, ActivityOperationId, ActivityStatus, ObservableActivityAvailability,
+    PreparedOperationEvidence, RuntimeEvent, RuntimeEventKind, SubagentControlActionKind,
+    SubagentSnapshot,
 };
 
 /// The route truth Nucleus inspects before starting provider effects.
@@ -37,6 +38,7 @@ pub enum ChatProjection<'a> {
     WorkActivity {
         operation_id: &'a ActivityOperationId,
         activity_id: &'a ActivityId,
+        actor: &'a ActivityActor,
         kind: ActivityKindClass,
         lifecycle: ActivityLifecyclePhase,
         status: ActivityStatus,
@@ -45,6 +47,8 @@ pub enum ChatProjection<'a> {
         change: Option<ActivityContentChangeKind>,
         stream: Option<ActivityContentStream>,
         content: Option<&'a str>,
+        subagents: Vec<&'a SubagentSnapshot>,
+        subagent_control: Option<SubagentControlActionKind>,
     },
     FinalOutput {
         content: Option<&'a str>,
@@ -73,6 +77,7 @@ pub fn project_event(event: &RuntimeEvent) -> ChatProjection<'_> {
                 ChatProjection::WorkActivity {
                     operation_id: activity.operation_id(),
                     activity_id: activity.activity_id(),
+                    actor: activity.actor(),
                     kind: activity.kind().class(),
                     lifecycle: activity.phase(),
                     status: activity.status(),
@@ -81,6 +86,8 @@ pub fn project_event(event: &RuntimeEvent) -> ChatProjection<'_> {
                     change: content.map(|value| value.change()),
                     stream: content.map(|value| value.stream()),
                     content: content.map(|value| value.content().as_str()),
+                    subagents: activity.subagents().collect(),
+                    subagent_control: activity.subagent_control(),
                 }
             }
         }

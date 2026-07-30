@@ -87,22 +87,23 @@ impl KimiLocalActivityProjection {
             }
             WsEvent::SubagentSpawned {
                 subagent_id,
-                name: _,
-            } => self.started(
-                subagent_id.clone(),
-                Some(subagent_id),
-                ActivityKind::SubagentOrCollaboration,
-                ActivityDisclosure::IdentityAndLifecycleOnly,
-                ActivityBucket::Subagent,
-                None,
+                name,
+                parent_tool_call_id,
+                background,
+            } => self.subagent_started(
+                subagent_id,
+                name,
+                parent_tool_call_id,
+                *background,
             ),
-            WsEvent::SubagentUpdated { subagent_id } => {
-                self.updated(subagent_id, ActivityBucket::Subagent)
-            }
+            WsEvent::SubagentUpdated {
+                subagent_id,
+                suspended,
+            } => self.subagent_updated(subagent_id, *suspended),
             WsEvent::SubagentEnded {
                 subagent_id,
                 failed,
-            } => self.ended(subagent_id, *failed, ActivityBucket::Subagent),
+            } => self.subagent_ended(subagent_id, *failed),
             WsEvent::CompactionStarted => {
                 if self.compaction.is_some() {
                     return Err(activity_drift());
@@ -188,7 +189,10 @@ impl KimiLocalActivityProjection {
             open.push(activity);
         }
         open.into_iter()
-            .map(|activity| {
+            .map(|mut activity| {
+                if let Some(snapshot) = activity.subagent.take() {
+                    activity.subagent = Some(snapshot.with_status(subagent_terminal_status(status)));
+                }
                 self.observation(&activity, ActivityLifecyclePhase::Completed, status, None)
             })
             .collect()
@@ -244,6 +248,93 @@ impl KimiLocalActivityProjection {
             &activity,
             ActivityLifecyclePhase::Started,
             ActivityStatus::InProgress,
+            None,
+        )?])
+    }
+
+    fn subagent_started(
+        &mut self,
+        subagent_id: &str,
+        name: &str,
+        parent_tool_call_id: &str,
+        background: bool,
+    ) -> Result<Vec<ActivityObservation>, RuntimeFailure> {
+        if self.subagents.contains_key(subagent_id) {
+            return Err(activity_drift());
+        }
+        let mut activity = self.open(
+            ActivityBucket::Subagent.label(),
+            Some(subagent_id),
+            ActivityKind::SubagentOrCollaboration,
+            None,
+            ActivityDisclosure::IdentityAndLifecycleOnly,
+        )?;
+        activity.subagent = Some(
+            swallowtail_runtime::SubagentSnapshot::new(
+                swallowtail_runtime::SubagentId::new(subagent_id)
+                    .map_err(|_| activity_drift())?,
+                swallowtail_runtime::SubagentParent::Operation,
+                swallowtail_runtime::SubagentStatus::Pending,
+            )
+            .with_label(ActivityLabel::new(name).map_err(|_| activity_drift())?)
+            .with_background(background)
+            .with_originating_activity(
+                ProviderActivityRef::new(parent_tool_call_id).map_err(|_| activity_drift())?,
+            ),
+        );
+        self.subagents
+            .insert(subagent_id.to_owned(), activity.clone());
+        Ok(vec![self.observation(
+            &activity,
+            ActivityLifecyclePhase::Started,
+            ActivityStatus::InProgress,
+            None,
+        )?])
+    }
+
+    fn subagent_updated(
+        &mut self,
+        subagent_id: &str,
+        suspended: bool,
+    ) -> Result<Vec<ActivityObservation>, RuntimeFailure> {
+        let activity = self
+            .subagents
+            .get_mut(subagent_id)
+            .ok_or_else(activity_drift)?;
+        let snapshot = activity.subagent.take().ok_or_else(activity_drift)?;
+        activity.subagent = Some(snapshot.with_status(if suspended {
+            swallowtail_runtime::SubagentStatus::Waiting
+        } else {
+            swallowtail_runtime::SubagentStatus::Running
+        }));
+        let activity = activity.clone();
+        Ok(vec![self.observation(
+            &activity,
+            ActivityLifecyclePhase::Updated,
+            ActivityStatus::InProgress,
+            None,
+        )?])
+    }
+
+    fn subagent_ended(
+        &mut self,
+        subagent_id: &str,
+        failed: bool,
+    ) -> Result<Vec<ActivityObservation>, RuntimeFailure> {
+        let mut activity = self
+            .subagents
+            .remove(subagent_id)
+            .ok_or_else(activity_drift)?;
+        let snapshot = activity.subagent.take().ok_or_else(activity_drift)?;
+        activity.subagent = Some(snapshot.with_status(if failed {
+            swallowtail_runtime::SubagentStatus::Failed
+        } else {
+            swallowtail_runtime::SubagentStatus::Completed
+        }));
+        Ok(vec![self.observation(
+            &activity,
+            ActivityLifecyclePhase::Completed,
+            terminal_status(failed),
             None,
         )?])
     }
@@ -344,6 +435,7 @@ impl KimiLocalActivityProjection {
             assistant_phase,
             disclosure,
             label: None,
+            subagent: None,
         })
     }
 
@@ -375,6 +467,11 @@ impl KimiLocalActivityProjection {
         if let Some(content) = content {
             observation = observation
                 .with_content(content)
+                .map_err(|_| activity_drift())?;
+        }
+        if let Some(snapshot) = activity.subagent.clone() {
+            observation = observation
+                .with_subagents([snapshot])
                 .map_err(|_| activity_drift())?;
         }
         Ok(observation)

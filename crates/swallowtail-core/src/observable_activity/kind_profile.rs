@@ -1,6 +1,7 @@
 use super::{
     ActivityContentStream, ActivityCorrelationKind, ActivityDisclosure, ActivityKindClass,
-    ActivityLifecycleFidelity, InvalidObservableActivityProfile,
+    ActivityLifecycleFidelity, InvalidObservableActivityProfile, SubagentControlActionKind,
+    SubagentObservationFidelity,
 };
 use crate::CapabilityConstraint;
 use std::collections::BTreeSet;
@@ -14,6 +15,8 @@ pub struct ActivityKindProfile {
     disclosure: ActivityDisclosure,
     correlations: BTreeSet<ActivityCorrelationKind>,
     task_list_snapshots: bool,
+    subagent_observation: Option<SubagentObservationFidelity>,
+    subagent_control_actions: BTreeSet<SubagentControlActionKind>,
 }
 
 impl ActivityKindProfile {
@@ -31,6 +34,8 @@ impl ActivityKindProfile {
             disclosure,
             correlations: correlations.into_iter().collect(),
             task_list_snapshots: false,
+            subagent_observation: None,
+            subagent_control_actions: BTreeSet::new(),
         };
         profile.validate()?;
         Ok(profile)
@@ -70,6 +75,35 @@ impl ActivityKindProfile {
         self.task_list_snapshots
     }
 
+    pub fn with_subagent_observation(
+        mut self,
+        fidelity: SubagentObservationFidelity,
+    ) -> Result<Self, InvalidObservableActivityProfile> {
+        self.subagent_observation = Some(fidelity);
+        self.validate()?;
+        Ok(self)
+    }
+
+    pub fn with_subagent_control_actions(
+        mut self,
+        actions: impl IntoIterator<Item = SubagentControlActionKind>,
+    ) -> Result<Self, InvalidObservableActivityProfile> {
+        self.subagent_control_actions = actions.into_iter().collect();
+        self.validate()?;
+        Ok(self)
+    }
+
+    #[must_use]
+    pub const fn subagent_observation(&self) -> Option<SubagentObservationFidelity> {
+        self.subagent_observation
+    }
+
+    pub fn subagent_control_actions(
+        &self,
+    ) -> impl ExactSizeIterator<Item = SubagentControlActionKind> + '_ {
+        self.subagent_control_actions.iter().copied()
+    }
+
     pub(super) fn capability_constraints(&self) -> BTreeSet<CapabilityConstraint> {
         let mut constraints =
             BTreeSet::from([CapabilityConstraint::ObservableActivityKind(self.kind)]);
@@ -98,6 +132,18 @@ impl ActivityKindProfile {
         if self.task_list_snapshots {
             constraints.insert(CapabilityConstraint::ObservableActivityTaskListSnapshots(
                 self.kind,
+            ));
+        }
+        if let Some(fidelity) = self.subagent_observation {
+            for satisfied in satisfied_subagent_constraints(fidelity) {
+                constraints.insert(CapabilityConstraint::ObservableSubagentObservation(
+                    *satisfied,
+                ));
+            }
+        }
+        for action in &self.subagent_control_actions {
+            constraints.insert(CapabilityConstraint::ObservableSubagentControlAction(
+                *action,
             ));
         }
         constraints
@@ -154,7 +200,33 @@ impl ActivityKindProfile {
                 "Task-list snapshots require plan or task activity",
             ));
         }
+        if (self.subagent_observation.is_some() || !self.subagent_control_actions.is_empty())
+            && self.kind != ActivityKindClass::SubagentOrCollaboration
+        {
+            return Err(InvalidObservableActivityProfile::new(
+                "Subagent detail requires subagent or collaboration activity",
+            ));
+        }
         Ok(())
+    }
+}
+
+fn satisfied_subagent_constraints(
+    fidelity: SubagentObservationFidelity,
+) -> &'static [SubagentObservationFidelity] {
+    match fidelity {
+        SubagentObservationFidelity::AttributedActivity => &[
+            SubagentObservationFidelity::AttributedActivity,
+            SubagentObservationFidelity::ParentAndMetadata,
+            SubagentObservationFidelity::IdentityAndLifecycle,
+        ],
+        SubagentObservationFidelity::ParentAndMetadata => &[
+            SubagentObservationFidelity::ParentAndMetadata,
+            SubagentObservationFidelity::IdentityAndLifecycle,
+        ],
+        SubagentObservationFidelity::IdentityAndLifecycle => {
+            &[SubagentObservationFidelity::IdentityAndLifecycle]
+        }
     }
 }
 

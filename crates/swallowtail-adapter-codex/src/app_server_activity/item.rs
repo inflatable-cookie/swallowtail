@@ -33,11 +33,13 @@ pub(super) struct ItemProjection {
     pub(super) status: ActivityStatus,
     pub(super) label: Option<ActivityLabel>,
     pub(super) content: Option<swallowtail_runtime::ActivityContentUpdate>,
+    pub(super) subagent: super::subagent::SubagentProjection,
 }
 
 pub(super) fn item_projection(
     item: &Value,
     phase: ActivityLifecyclePhase,
+    owner_thread_id: Option<&str>,
 ) -> Result<ItemProjection, RuntimeFailure> {
     let item_type = item
         .get("type")
@@ -135,11 +137,20 @@ pub(super) fn item_projection(
             .and_then(|tool| ActivityLabel::new(tool).ok()),
         _ => None,
     };
+    let subagent = match item_type {
+        "collabAgentToolCall" => super::subagent::collaboration(
+            item,
+            owner_thread_id.ok_or_else(malformed_notification)?,
+        )?,
+        "subAgentActivity" => super::subagent::activity(item)?,
+        _ => super::subagent::SubagentProjection::primary(),
+    };
     Ok(ItemProjection {
         identity,
         status,
         label,
         content,
+        subagent,
     })
 }
 

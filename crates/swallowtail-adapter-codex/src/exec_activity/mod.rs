@@ -1,4 +1,5 @@
 mod content;
+mod subagent;
 
 use crate::exec_events::malformed_stream;
 use semver::Version;
@@ -23,6 +24,7 @@ pub(crate) struct ExecActivityProjection {
     qualified_version: Version,
     identities: HashMap<String, ItemIdentity>,
     labels: HashMap<String, ActivityLabel>,
+    provider_thread_id: Option<String>,
     next_minted_id: u64,
 }
 
@@ -33,6 +35,7 @@ impl ExecActivityProjection {
             qualified_version,
             identities: HashMap::new(),
             labels: HashMap::new(),
+            provider_thread_id: None,
             next_minted_id: 0,
         }
     }
@@ -52,9 +55,15 @@ impl ExecActivityProjection {
             return Ok(vec![self.project_item(payload, phase)?]);
         }
         match event_type {
-            "thread.started" | "turn.started" | "turn.completed" | "turn.failed" | "error" => {
+            "thread.started" => {
+                self.provider_thread_id = payload
+                    .get("thread_id")
+                    .and_then(Value::as_str)
+                    .filter(|value| !value.trim().is_empty())
+                    .map(str::to_owned);
                 Ok(Vec::new())
             }
+            "turn.started" | "turn.completed" | "turn.failed" | "error" => Ok(Vec::new()),
             unknown => Ok(vec![self.project_unknown_event(unknown)?]),
         }
     }
@@ -66,7 +75,12 @@ impl ExecActivityProjection {
     ) -> Result<ActivityObservation, RuntimeFailure> {
         let item = payload.get("item").ok_or_else(malformed_stream)?;
         let provider_id = required_text(item, "id")?;
-        let projection = content::item_projection(item, phase, &self.qualified_version)?;
+        let projection = content::item_projection(
+            item,
+            phase,
+            &self.qualified_version,
+            self.provider_thread_id.as_deref(),
+        )?;
         if let Some(existing) = self.identities.get(provider_id) {
             if existing != &projection.identity {
                 return Err(malformed_stream());
@@ -106,6 +120,17 @@ impl ExecActivityProjection {
         if item.get("type").and_then(Value::as_str) == Some("todo_list") {
             observation = observation
                 .with_task_list(content::task_list_snapshot(item)?)
+                .map_err(|_| malformed_stream())?;
+        }
+        observation = observation.with_actor(projection.subagent.actor);
+        if !projection.subagent.snapshots.is_empty() {
+            observation = observation
+                .with_subagents(projection.subagent.snapshots)
+                .map_err(|_| malformed_stream())?;
+        }
+        if let Some(action) = projection.subagent.control {
+            observation = observation
+                .with_subagent_control(action)
                 .map_err(|_| malformed_stream())?;
         }
         Ok(observation)

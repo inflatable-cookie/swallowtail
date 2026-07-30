@@ -10,8 +10,9 @@ use swallowtail_adapter_kimi::{
     KimiLocalServerSessionConfiguration, KimiModelSelection, start_kimi_local_server_owned,
 };
 use swallowtail_core::{
-    DriverRole, ExecutionHostId, InstanceTargetRef, ModelId, ModelRouteId, ModelRouteRevision,
-    ObservableActivityAvailability, OperationShape, ReasoningMode,
+    ActivityKindClass, DriverRole, ExecutionHostId, InstanceTargetRef, ModelId, ModelRouteId,
+    ModelRouteRevision, ObservableActivityAvailability, OperationShape, ReasoningMode,
+    SubagentObservationFidelity,
 };
 use swallowtail_runtime::{
     CallbackPayload, CallbackResponse, CallbackResult, CancellationAcknowledgement, CleanupOutcome,
@@ -64,6 +65,15 @@ fn attached_run_completes_once_and_preserves_provider_session_in_both_topologies
             assert_eq!(
                 profile.evidence().observable_activity().availability(),
                 ObservableActivityAvailability::Available
+            );
+            assert_eq!(
+                profile
+                    .evidence()
+                    .observable_activity()
+                    .kind(ActivityKindClass::SubagentOrCollaboration)
+                    .unwrap()
+                    .subagent_observation(),
+                Some(SubagentObservationFidelity::ParentAndMetadata)
             );
 
             let mut run = block_on(profile.start_run(services)).expect("structured run starts");

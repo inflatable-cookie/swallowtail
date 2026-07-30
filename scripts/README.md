@@ -4,6 +4,19 @@ Keep repository automation small and explicit. Prefer Effigy tasks for normal
 routing. Add scripts only when a task needs reusable logic that does not belong
 in application code.
 
+Normal validation scripts:
+
+- `validate-focused-packages.sh` — one nextest invocation and one
+  warnings-denied all-target clippy invocation for one to four explicit
+  workspace packages
+- `verify-affected-packages.sh` — independently assemble and inspect one to
+  four explicit package archives, then compile them through one shared
+  extracted target
+- `validation/package-scope.sh` — shared exact package argument validation
+- `validation/archive.sh` — shared archive member, manifest, and content audit
+- `tests/validation-selectors.sh` — deterministic plan and argument failure
+  coverage for the focused selectors
+
 Release-preparation scripts:
 
 - `check-package-metadata.sh` — Contract 036 metadata, package set, MSRV, and

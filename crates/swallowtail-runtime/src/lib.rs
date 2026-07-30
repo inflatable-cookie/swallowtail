@@ -56,11 +56,12 @@ mod time;
 mod working_resource_io;
 
 pub use activity::{
-    ActivityAssistantPhase, ActivityContent, ActivityContentChangeKind, ActivityContentStream,
-    ActivityContentUpdate, ActivityCorrelation, ActivityDisclosure, ActivityId, ActivityKind,
-    ActivityLabel, ActivityLifecyclePhase, ActivityNamespace, ActivityObservation,
-    ActivityOperationId, ActivityStatus, InvalidActivityRecord, TaskListItem, TaskListItemPriority,
-    TaskListItemStatus, TaskListSnapshot,
+    ActivityActor, ActivityAssistantPhase, ActivityContent, ActivityContentChangeKind,
+    ActivityContentStream, ActivityContentUpdate, ActivityCorrelation, ActivityDisclosure,
+    ActivityId, ActivityKind, ActivityLabel, ActivityLifecyclePhase, ActivityNamespace,
+    ActivityObservation, ActivityOperationId, ActivityStatus, InvalidActivityRecord,
+    SubagentControlActionKind, SubagentId, SubagentParent, SubagentSnapshot, SubagentStatus,
+    TaskListItem, TaskListItemPriority, TaskListItemStatus, TaskListSnapshot,
 };
 pub use async_types::{
     BoxCallbackStream, BoxDirectToolCallStream, BoxEventStream, BoxFuture,

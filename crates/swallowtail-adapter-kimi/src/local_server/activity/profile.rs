@@ -2,7 +2,7 @@ use crate::local_server::KimiLocalServerPreparedIntegration;
 use swallowtail_core::{
     ActivityContentStream, ActivityDisclosure, ActivityInterfaceBasis, ActivityKindClass,
     ActivityKindProfile, ActivityLifecycleFidelity, ActivityUnknownEventPosture, CapabilityProfile,
-    CapabilityRequirement, ObservableActivityProfile,
+    CapabilityRequirement, ObservableActivityProfile, SubagentObservationFidelity,
 };
 use swallowtail_runtime::{PreparationFailure, PreparationStage};
 
@@ -56,7 +56,9 @@ pub(in crate::local_server) fn activity_profile(
                 ActivityLifecycleFidelity::CompleteLifecycle,
                 [],
                 ActivityDisclosure::IdentityAndLifecycleOnly,
-            )?,
+            )?
+            .with_subagent_observation(SubagentObservationFidelity::ParentAndMetadata)
+            .map_err(|_| profile_failure())?,
             kind(
                 ActivityKindClass::ContextCompaction,
                 ActivityLifecycleFidelity::CompleteLifecycle,

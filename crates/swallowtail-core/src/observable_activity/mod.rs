@@ -9,7 +9,7 @@ pub use route_profile::ObservableActivityProfile;
 pub use vocabulary::{
     ActivityContentStream, ActivityCorrelationKind, ActivityDisclosure, ActivityInterfaceBasis,
     ActivityKindClass, ActivityLifecycleFidelity, ActivityUnknownEventPosture,
-    ObservableActivityAvailability,
+    ObservableActivityAvailability, SubagentControlActionKind, SubagentObservationFidelity,
 };
 
 #[cfg(test)]

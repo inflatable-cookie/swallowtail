@@ -1271,6 +1271,32 @@ retain their dedicated audio, transcript, commit, interruption, response, and
 rollover surfaces. Attached inference does not gain server ownership, and
 owned llama.cpp serving does not gain agent activity.
 
+## Realized Subagent Topology Observation
+
+Research 072 and Contract 045 lift qualified child work out of flat activity
+labels without adding consumer UI or persistence.
+
+Every activity observation names a primary or child actor. Subagent and
+collaboration observations may carry bounded child snapshots with
+operation-local identity, parent, lifecycle status, label, task description,
+model, reasoning mode, background posture, and originating provider activity.
+Provider-owned spawn, send-input, resume, wait, and close actions remain
+separate typed observations and grant no consumer authority.
+
+Codex app-server realizes parent and child thread identity, spawn metadata,
+child state, collaboration actions, and child-activity attribution. Codex exec
+realizes the same collaboration topology without durable inspection.
+Kimi local-server realizes native child identity, main-operation parent,
+originating tool, background posture, and spawn, run, suspend, completion, or
+failure lifecycle. Other selected routes retain ordinary provider-tool
+activity because their wires do not expose qualified child topology.
+
+Consumers can build a browseable live or durable tree from ordered activity.
+No selected route currently exposes a direct operator child-control handle.
+Whole-turn interruption, main-turn steering, provider-session deletion, and
+observed harness collaboration actions do not substitute for targeted child
+control.
+
 ## Dependency Rules
 
 - consumers depend toward Swallowtail; Swallowtail never depends on consumers

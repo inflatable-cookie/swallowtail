@@ -91,6 +91,7 @@ pub use observable_activity::{
     ActivityContentStream, ActivityCorrelationKind, ActivityDisclosure, ActivityInterfaceBasis,
     ActivityKindClass, ActivityKindProfile, ActivityLifecycleFidelity, ActivityUnknownEventPosture,
     InvalidObservableActivityProfile, ObservableActivityAvailability, ObservableActivityProfile,
+    SubagentControlActionKind, SubagentObservationFidelity,
 };
 pub use planned_connection_rollover::PlannedConnectionRolloverPolicy;
 pub use preflight::{

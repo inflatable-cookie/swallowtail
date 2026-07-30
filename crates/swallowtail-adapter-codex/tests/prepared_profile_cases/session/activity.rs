@@ -43,6 +43,16 @@ fn prepared_app_server_profiles_follow_activity_milestones_without_widening_newe
                 .is_some(),
             collaboration
         );
+        if collaboration {
+            let subagents = profile
+                .kind(ActivityKindClass::SubagentOrCollaboration)
+                .unwrap();
+            assert_eq!(
+                subagents.subagent_observation(),
+                Some(SubagentObservationFidelity::AttributedActivity)
+            );
+            assert_eq!(subagents.subagent_control_actions().count(), 5);
+        }
         assert_eq!(
             profile.kind(ActivityKindClass::ConsumerOwnedTool).is_some(),
             consumer_tool

@@ -18,11 +18,12 @@ are validated. Codex app-server supports both
 unchanged read-only sessions and one explicit host-resolved bounded workspace
 profile.
 
-Current g02 stabilization has removed the five critical findings plus every
-Codex, OpenCode, runtime, Claude Agent, Gemini, and Kimi error-level finding.
-Seven high findings remain across direct adapters and provider-route matrix
-validation. Warning-only reduction and validation-latency changes remain
-separate later decisions.
+Current g02 structural stabilization and validation-latency work are complete.
+The accepted stabilization baseline removed all five critical and 28 high
+findings. Four affected archives now compile through one extracted target in
+five seconds, down from 22.4 seconds through separate targets. Concurrent Kimi
+activity work currently adds one doctor error and 143 warnings outside that
+accepted baseline. Warning-only reduction remains deferred.
 
 ## Start Here
 

@@ -60,6 +60,20 @@ Work in meaningful batches. Inspect the ready card and nearby runway before
 editing. Group related cards when one validation round can cover them. Stop and
 re-scope if work becomes atomic churn.
 
+## Validation Tier Rule
+
+Use explicit package scope for normal batch feedback:
+
+```sh
+effigy validate:focused swallowtail-adapter-codex
+effigy package:verify-affected swallowtail-adapter-codex
+```
+
+Both selectors accept one to four exact workspace package names. Do not infer
+scope from changed files. Run broad `qa`, workspace tests, package checks,
+candidate checks, consumer checks, MSRV checks, or live probes only when the
+accepting card names that evidence tier.
+
 ## Roadmap Generation Rule
 
 A roadmap generation is a long planning container, normally holding 30-50

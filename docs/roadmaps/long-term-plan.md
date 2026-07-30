@@ -179,6 +179,11 @@ Evidence-led provider breadth remains secondary. g02 begins by defining the
 public package, version, compatibility, MSRV, and release-authority boundary;
 no registry publication or API 1.0 promise is implied.
 
+Registry publication was later removed from the active runway. Local package
+and compatibility evidence continues, but publication does not return as a
+ready, paused, or backlog item. A future lane requires a new operator decision
+after months of working-application usage evidence.
+
 Research 036 and Contract 038 open the next additive stabilization lane.
 Consumer thread archive, restore, and deletion remain downstream. Swallowtail
 adds only optional management of one inactive bound provider session.
@@ -194,7 +199,7 @@ proves qualified native close and provider-data deletion through production
 stdio plus the same lifecycle records over explicit remote ACP without
 fallback. Research 039 and card 055 qualify OpenCode provider-data deletion
 with provider-defined descendants across every exact
-`1.14.48..=1.18.4` release while preserving gaps and unverified-newer truth.
+`1.14.48..=1.18.10` release while preserving gaps and unverified-newer truth.
 Roadmap g02.018 is complete. Its bound driver, prepared facade, exact segment
 matrix, local and remote-authoritative host proof, failure boundary, and full
 regression suite pass. Roadmap g02.019 now owns provider-wide classification,

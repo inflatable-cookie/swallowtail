@@ -58,18 +58,20 @@ fn local_server_claim_is_separate_and_forward_permissive() {
             .as_str()
     );
 
-    for exact in ["0.28.1", "0.29.0", "0.29.1", "0.29.2"] {
+    for exact in ["0.28.1", "0.29.0", "0.29.1", "0.29.2", "0.30.0", "0.31.0"] {
         let binding = kimi_code_binding(exact).expect("exact version binds");
         assert!(matches!(
             claim.assess(binding.version()),
             InterfaceCompatibilityAssessment::Qualified(_)
         ));
     }
-    let newer = kimi_code_binding("0.30.0").expect("newer version binds");
-    assert!(matches!(
-        claim.assess(newer.version()),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-    ));
+    for version in ["0.32.0", "1.0.0"] {
+        let newer = kimi_code_binding(version).expect("newer version binds");
+        assert!(matches!(
+            claim.assess(newer.version()),
+            InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+        ));
+    }
 }
 
 #[test]
@@ -100,6 +102,33 @@ fn later_currentness_corpus_is_bounded_valid_and_exactly_provenanced() {
         "57503c7c4d854f2c66ea32e10cba28b2c5715e9c",
         "8a45f10eddbb35c317047e82e567cdb59a220b4f",
         "458380a0eb0a2248b79735c3ed48b3f632ad5de6",
+        "16c7189bd54a42fae65b1bbafd0843420523f797",
+        "bc28e9d802fbec29395a7aed85e880679a050145",
+        "0e2f35238db066a13b53ad2cfff11bdff2f76724",
+    ] {
+        assert!(provenance.contains(exact));
+    }
+
+    let range: serde_json::Value = serde_json::from_str(include_str!(
+        "fixtures/kimi-code-0.30.0-0.31.0/installed-range.json"
+    ))
+    .expect("installed range corpus is JSON");
+    assert_eq!(range["acp"]["latest_qualified"], "0.31.0");
+    assert_eq!(range["headless"]["latest_qualified"], "0.31.0");
+    assert_eq!(range["local_server"]["latest_qualified"], "0.31.0");
+    assert_eq!(
+        range["local_server"]["0.32.0_classification"],
+        "unverified-newer"
+    );
+    let status = include_str!("fixtures/kimi-local-server-0.31.0/subagent-status.jsonl");
+    assert_eq!(status.lines().count(), 1);
+    assert!(status.len() <= 4_096);
+    let provenance = include_str!("fixtures/kimi-local-server-0.31.0/README.md");
+    for exact in [
+        "bc28e9d802fbec29395a7aed85e880679a050145",
+        "44634aa54e11f6d67e7807edf77bdfe19b3b99aa",
+        "c1d6ebe8c7c00feeed031a322cf8258aad83ab17",
+        "8d1771db07347c3a8b9216f1911d02fdcc81e464",
     ] {
         assert!(provenance.contains(exact));
     }

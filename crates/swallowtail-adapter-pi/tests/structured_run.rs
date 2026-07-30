@@ -5,7 +5,10 @@ mod support;
 use futures_executor::block_on;
 use futures_util::StreamExt;
 use std::num::NonZeroU64;
-use support::{CleanupEvent, FixtureHost, Scenario, run_request, run_selection_for_topology};
+use support::{
+    CleanupEvent, FixtureHost, Scenario, allow_user_input_result, run_request,
+    run_selection_for_topology,
+};
 use swallowtail_adapter_pi::PiRpcDriver;
 use swallowtail_core::{CancellationScope, DriverRole};
 use swallowtail_runtime::{
@@ -205,14 +208,12 @@ fn structured_run_relays_the_qualified_pi_ui_callback() {
         .expect("callback is valid");
     assert!(matches!(
         callback.kind(),
-        CallbackRequestKind::HarnessUiDialog(_)
+        CallbackRequestKind::HarnessUserInput(_)
     ));
     block_on(callbacks.responder().respond(CallbackResponse::new(
         callback.callback_id().clone(),
         callback.turn_id().expect("callback turn").clone(),
-        CallbackResult::Success(
-            CallbackPayload::new(b"Allow".to_vec(), 64).expect("bounded callback result"),
-        ),
+        allow_user_input_result(&callback),
     )))
     .expect("callback response relays");
     let outcome = block_on(

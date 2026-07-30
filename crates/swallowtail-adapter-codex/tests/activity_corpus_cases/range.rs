@@ -6,15 +6,15 @@ fn range_freezes_separate_app_server_and_exec_schema_segments() {
     let range = json(RANGE);
     assert_eq!(range["axis"], "codex.cli");
     assert_eq!(range["facade"], "codex-app-server-v2");
-    assert_eq!(range["qualified_upper"], "0.145.0");
+    assert_eq!(range["qualified_upper"], "0.146.0");
     assert_eq!(range["current_external_release"]["version"], "0.146.0");
     assert_eq!(
         range["current_external_release"]["classification"],
-        "unverified-newer"
+        "qualified-current"
     );
     assert_eq!(
         range["current_external_release"]["execution"],
-        "permitted-without-profile-widening"
+        "guaranteed-with-exact-profile"
     );
 
     assert_segments(
@@ -40,6 +40,7 @@ fn range_freezes_separate_app_server_and_exec_schema_segments() {
             "sleep-unknown-item",
             "mcp-app-context-additive",
             "extension-backed-search-item",
+            "plugin-command-action-and-deferred-search-additive",
         ],
     );
     assert_segments(
@@ -50,6 +51,7 @@ fn range_freezes_separate_app_server_and_exec_schema_segments() {
             "jsonl-reasoning-usage-additive",
             "jsonl-mcp-meta-additive",
             "jsonl-cache-write-usage-additive",
+            "jsonl-deferred-search-query",
         ],
     );
 }

@@ -1,0 +1,117 @@
+{
+  "fixture_schema": 1,
+  "interface": "opencode.server",
+  "baseline": "1.14.48",
+  "latest_qualified": "1.18.10",
+  "qualified_release_count": 51,
+  "surface_segments": [
+    {
+      "minimum": "1.14.48",
+      "maximum": "1.15.5",
+      "sha256": "a1e957cbaf7ce7b3af97cc5c1ee38467e7f49f6039d4ee5c3c8bb0e5e66d530d"
+    },
+    {
+      "minimum": "1.15.6",
+      "maximum": "1.15.7",
+      "sha256": "47312ed1e80c5b321c65ba1e5d1c4ded746cebe8d35ab2507ea0d2c768cddd48"
+    },
+    {
+      "minimum": "1.15.9",
+      "maximum": "1.15.13",
+      "sha256": "bb44a348579a6f29d52bbaeddc9512c2d98b42df984cfba75fe310156ec12424"
+    },
+    {
+      "minimum": "1.16.0",
+      "maximum": "1.18.10",
+      "sha256": "adb7a50444a1711454cb6d28d70262d9575f067da97bd0d9740612b07f025e44"
+    }
+  ],
+  "attachment": {
+    "maximum_count": 1,
+    "maximum_bytes": 1048576,
+    "accepted_media": ["image/png"],
+    "part": {
+      "type": "file",
+      "mime": "image/png",
+      "filename": "approved-image.png",
+      "url": "data:image/png;base64,iVBORw0KGgo="
+    }
+  },
+  "permission": {
+    "namespace": "opencode/permission",
+    "event": {
+      "id": "evt_permission_1",
+      "type": "permission.asked",
+      "properties": {
+        "id": "per_fixture",
+        "sessionID": "ses_fixture",
+        "permission": "edit",
+        "patterns": ["src/approved.rs"],
+        "metadata": {},
+        "always": ["src/**"]
+      }
+    },
+    "reply_path": "/permission/per_fixture/reply",
+    "allowed_replies": ["once", "reject"],
+    "once_body": {"reply": "once"},
+    "reject_body": {
+      "reply": "reject",
+      "message": "Consumer rejected the one-shot request."
+    },
+    "persistent_reply": "unsupported"
+  },
+  "question": {
+    "namespace": "opencode/question",
+    "event": {
+      "id": "evt_question_1",
+      "type": "question.asked",
+      "properties": {
+        "id": "que_fixture",
+        "sessionID": "ses_fixture",
+        "questions": [
+          {
+            "question": "Choose a bounded mode.",
+            "header": "Mode",
+            "options": [
+              {
+                "label": "Safe",
+                "description": "Keep the operation read-only."
+              },
+              {
+                "label": "Stop",
+                "description": "Reject the request."
+              }
+            ],
+            "multiple": false
+          }
+        ]
+      }
+    },
+    "reply_path": "/question/que_fixture/reply",
+    "reply_body": {"answers": [["Safe"]]},
+    "reject_path": "/question/que_fixture/reject"
+  },
+  "response_failures": [
+    "unknown_provider_request",
+    "wrong_session",
+    "wrong_turn",
+    "wrong_callback",
+    "duplicate_response",
+    "late_response",
+    "payload_too_large",
+    "provider_request_not_found"
+  ],
+  "cancellation": {
+    "action": "session_abort",
+    "pending_responses": "abandoned"
+  },
+  "cleanup": [
+    "abandon_provider_requests",
+    "abort_active_session",
+    "close_sse",
+    "join_http_and_tasks",
+    "release_attachment"
+  ],
+  "consumer_tools": "separate_mcp_bridge_required",
+  "external_search": "separate_provider_tool_qualification_required"
+}

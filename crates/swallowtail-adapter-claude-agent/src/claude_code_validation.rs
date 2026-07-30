@@ -70,6 +70,14 @@ pub(crate) fn validate(
             CapabilityConstraint::ReasoningMode(reasoning.clone()),
         )?;
     }
+    if request.policy().harness_mode() != Some(swallowtail_core::HarnessMode::Plan) {
+        return Err(plan_mismatch("plan mode"));
+    }
+    require_constraint(
+        plan,
+        Capability::HarnessModeSelection,
+        CapabilityConstraint::HarnessMode(swallowtail_core::HarnessMode::Plan),
+    )?;
     if request.working_resource().is_none() || request.deadline().is_none() {
         return Err(unsupported("missing working resource or host deadline"));
     }

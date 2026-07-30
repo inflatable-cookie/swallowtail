@@ -11,7 +11,8 @@ mod support;
 use futures_executor::block_on;
 use futures_util::StreamExt;
 use support::{
-    CleanupEvent, FixtureHost, FixtureSelection, Scenario, open_request, selection, turn_request,
+    CleanupEvent, FixtureHost, FixtureSelection, Scenario, allow_user_input_result, open_request,
+    selection, turn_request,
 };
 use swallowtail_adapter_pi::{PiRpcDriver, pi_rpc_descriptor};
 use swallowtail_core::{
@@ -19,10 +20,9 @@ use swallowtail_core::{
     InterfaceVersionAxis, InterfaceVersionBinding,
 };
 use swallowtail_runtime::{
-    CallbackPayload, CallbackRequestKind, CallbackResponse, CallbackResult, CleanupOutcome,
-    Deadline, EnvironmentRef, HarnessCommandAcknowledgement, HarnessCommandId,
-    HarnessScheduledMessage, InteractiveSessionDriver, MonotonicInstant, OperationContent,
-    RuntimeEventKind, TerminalStatus,
+    CallbackRequestKind, CallbackResponse, CleanupOutcome, Deadline, EnvironmentRef,
+    HarnessCommandAcknowledgement, HarnessCommandId, HarnessScheduledMessage,
+    InteractiveSessionDriver, MonotonicInstant, OperationContent, RuntimeEventKind, TerminalStatus,
 };
 
 #[test]
@@ -130,14 +130,12 @@ fn restrictive_session_relays_scheduling_ui_and_joined_cleanup() {
         .expect("UI callback is valid");
     assert!(matches!(
         callback.kind(),
-        CallbackRequestKind::HarnessUiDialog(_)
+        CallbackRequestKind::HarnessUserInput(_)
     ));
     block_on(callbacks.responder().respond(CallbackResponse::new(
         callback.callback_id().clone(),
         callback.turn_id().expect("callback turn").clone(),
-        CallbackResult::Success(
-            CallbackPayload::new(b"Allow".to_vec(), 64).expect("bounded callback payload"),
-        ),
+        allow_user_input_result(&callback),
     )))
     .expect("UI callback response is relayed");
 

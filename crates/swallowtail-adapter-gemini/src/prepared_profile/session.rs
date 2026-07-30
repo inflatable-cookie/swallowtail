@@ -66,9 +66,9 @@ impl GeminiPreparedIntegration {
         input: GeminiSessionProfileInput,
     ) -> Result<GeminiPreparedSession, PreparationFailure> {
         let (request_id, working_resource, options, resource_access) = input.into_parts();
-        validate_options(&options)?;
+        validate_options(&options, resource_access)?;
         let activity_profile = super::activity_profile::activity_profile(self)?;
-        let capabilities = session_capabilities_for(resource_access, &activity_profile);
+        let capabilities = session_capabilities_for(resource_access, &options, &activity_profile);
         let instance = instance_with_capabilities(self, capabilities.clone());
         let requirements = requirements(
             self,
@@ -78,7 +78,8 @@ impl GeminiPreparedIntegration {
             resource_access,
         );
         let plan = build_plan(self, &instance, &requirements)?;
-        let request = OpenSessionRequest::from_plan(&plan, request_id, working_resource, None)?;
+        let request = OpenSessionRequest::from_plan(&plan, request_id, working_resource, None)?
+            .with_options(options);
         Ok(GeminiPreparedSession {
             evidence: GeminiPreparedEvidence::from_prepared(self, plan, activity_profile)?,
             request,
@@ -88,11 +89,17 @@ impl GeminiPreparedIntegration {
 
 fn session_capabilities_for(
     resource_access: ResourceAccess,
+    options: &SessionOptions,
     activity: &swallowtail_core::ObservableActivityProfile,
 ) -> CapabilityProfile {
     let mut capabilities = session_capabilities()
         .iter()
-        .filter(|(capability, _)| capability != &Capability::WorkingResource)
+        .filter(|(capability, _)| {
+            !matches!(
+                capability,
+                Capability::WorkingResource | Capability::HarnessModeSelection
+            )
+        })
         .map(|(capability, constraints)| {
             CapabilityRequirement::new(capability, constraints.iter().cloned())
         })
@@ -104,6 +111,12 @@ fn session_capabilities_for(
             CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
         ],
     ));
+    if let Some(mode) = options.harness_mode() {
+        capabilities.push(CapabilityRequirement::new(
+            Capability::HarnessModeSelection,
+            [CapabilityConstraint::HarnessMode(mode)],
+        ));
+    }
     capabilities.push(
         activity
             .capability_requirement()
@@ -112,11 +125,26 @@ fn session_capabilities_for(
     CapabilityProfile::new(capabilities)
 }
 
-fn validate_options(options: &SessionOptions) -> Result<(), PreparationFailure> {
-    if !options.is_empty() {
+fn validate_options(
+    options: &SessionOptions,
+    resource_access: ResourceAccess,
+) -> Result<(), PreparationFailure> {
+    if options.developer_instructions().is_some()
+        || options.reasoning_mode().is_some()
+        || options.tools().len() != 0
+    {
         return Err(failure(
             "swallowtail.gemini.preparation.session_options_unsupported",
-            "Gemini ACP prepared sessions do not support portable session options",
+            "Gemini ACP prepared sessions support only the portable plan mode option",
+        ));
+    }
+    if options.harness_mode().is_some()
+        && (options.harness_mode() != Some(swallowtail_core::HarnessMode::Plan)
+            || resource_access != ResourceAccess::Read)
+    {
+        return Err(failure(
+            "swallowtail.gemini.preparation.harness_mode_unsupported",
+            "Gemini ACP plan mode requires the read-only session posture",
         ));
     }
     Ok(())

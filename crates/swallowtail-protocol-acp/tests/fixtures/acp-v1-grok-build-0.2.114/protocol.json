@@ -1,0 +1,64 @@
+{
+  "accessed": "2026-07-30",
+  "release": {
+    "package_version": "0.2.114",
+    "executable_version": "0.2.114",
+    "source_revision": "0c785038798",
+    "channel": "stable",
+    "wire_version": 1,
+    "bundled_acp_sdk": null,
+    "bundled_acp_schema": null
+  },
+  "artifacts": {
+    "launcher_tarball_sha256": "53915a8067f264804e61d7c5f6c776d82be3d45e9bad1c03de79072d06799775",
+    "platform_tarball_sha256": "de2d205c517c9fdc900146dad1a1a837cb7e696d65813c81075c3d77a2146c93",
+    "compressed_binary_sha256": "3417664a234bd8e149dc81c8249708410d65e4e6761ac7de97c6dd9478816d8e",
+    "executable_sha256": "e715f57f9018a1737c1a64ef1cb260ac2a5045dfa6a1a0e1c7a7cbe193a083b2",
+    "codesign_team": "5Y6N3AJ54S",
+    "codesign_identifier": "xai-grok-pager"
+  },
+  "version_observation": {
+    "argv": ["--no-auto-update", "--version"],
+    "stdout": "grok 0.2.114 (0c785038798) [stable]",
+    "state_files_created": 0,
+    "safe_for_contract_032": true
+  },
+  "invocation": {
+    "direct_executable_argv": ["--no-auto-update", "agent", "stdio"],
+    "npm_launcher_is_not_a_discovery_target": true
+  },
+  "authentication": {
+    "advertised_with_existing_credential": ["cached_token", "grok.com"],
+    "default_method": "cached_token",
+    "selected_method": "cached_token",
+    "headless": true,
+    "authentication_succeeded": true,
+    "credential_file_changed": false,
+    "provider_private_response_metadata_discarded": true,
+    "login_or_api_key_fallback": false,
+    "qualified": true
+  },
+  "state": {
+    "session_new_succeeded": true,
+    "empty_durable_session_created": true,
+    "provider_bookkeeping_changed": true,
+    "credential_state_changed": false,
+    "retention": "durable_local"
+  },
+  "configuration": {
+    "posture": "ambient",
+    "harness_isolation": "ambient_host",
+    "sandbox_selected": false,
+    "bounded_read_only_claim": false
+  },
+  "model": {
+    "current": "grok-4.5",
+    "reasoning_efforts": ["low", "medium", "high"]
+  },
+  "qualification": {
+    "guaranteed_baseline": "0.2.114",
+    "latest_qualified": "0.2.114",
+    "unverified_newer_allowed": true,
+    "prerelease_allowed": false
+  }
+}

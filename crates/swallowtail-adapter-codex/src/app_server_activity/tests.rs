@@ -31,7 +31,7 @@ fn qualified_corpus_projects_rich_items_without_raw_reasoning() {
         "task-list",
         "item-timestamps",
         "namespaced-unknown-item",
-        "unverified-newer-additive",
+        "qualified-current-additive",
     ] {
         let observations = project(case(&cases, name)).expect("qualified case projects");
         assert!(!observations.is_empty(), "{name} produced no activity");

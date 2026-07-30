@@ -5,10 +5,11 @@ use serde_json::{Value, json};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use swallowtail_core::{
-    AdapterId, AdapterIdentity, AdapterVersion, CancellationScope, CredentialMechanism,
-    CredentialRef, DriverDescriptor, DriverRole, ExecutionLayer, HarnessConfigurationPosture,
-    HarnessIsolation, HostServiceKind, IntegrationFamilyId, OperationShape, PreflightPlan,
-    ResourceAccess, ResourceRepresentation, SessionAccessPolicy, SessionRef, TransportFamilyId,
+    AdapterId, AdapterIdentity, AdapterVersion, CancellationScope, Capability,
+    CapabilityConstraint, CredentialMechanism, CredentialRef, DriverDescriptor, DriverRole,
+    ExecutionLayer, HarnessConfigurationPosture, HarnessIsolation, HostServiceKind,
+    IntegrationFamilyId, OperationShape, PreflightPlan, ResourceAccess, ResourceRepresentation,
+    SessionAccessPolicy, SessionRef, TransportFamilyId,
 };
 use swallowtail_runtime::{
     BoxEventStream, BoxFuture, CancellationAcknowledgement, CancellationControl, CleanupOutcome,

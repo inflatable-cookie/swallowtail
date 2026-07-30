@@ -101,6 +101,20 @@
       "exact_absences": ["assistant provider identity", "tool progress", "readable reasoning"]
     },
     {
+      "id": "grok-build.acp",
+      "driver": "swallowtail.grok-build.acp",
+      "transport": "acp-v1-stdio",
+      "qualified": "0.2.114",
+      "prepared_profiles": [
+        {"operation": "structured-run", "availability": "available"},
+        {"operation": "interactive-session", "availability": "available"}
+      ],
+      "unavailable_operations": [],
+      "not_applicable_operations": [],
+      "unknown_posture": "preserve-namespaced",
+      "exact_absences": ["hidden reasoning", "consumer tool exchange", "raw provider payload"]
+    },
+    {
       "id": "kimi-code.acp",
       "driver": "swallowtail.kimi.acp",
       "transport": "acp-v1-stdio",

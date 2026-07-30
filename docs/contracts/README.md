@@ -117,7 +117,7 @@ Contract 035 adds an opt-in experimental remote ACP transport over one exact
 host-approved HTTP/SSE or WebSocket endpoint. It keeps transport separate from
 provider identity, scopes connection and affinity state, excludes
 authentication and implicit recovery, and requires explicit joined close.
-Contract 036 fixes the 23 public packages, coordinated pre-1.0 version,
+Contract 036 fixes the 24 public packages, coordinated pre-1.0 version,
 compatible internal requirements, three-stage publication order, bounded MSRV,
 package and consumer evidence, one accepted application-scale consumer proof
 before first publication, and explicit human authority for every external
@@ -167,3 +167,8 @@ correlation, provider-visible reasoning summaries, and bounded unknown-event
 truth. Existing run and turn streams remain the transport. Consumers retain
 message and activity persistence, grouping, collapsed presentation, and
 transcript policy.
+
+Contract 015 now permits exact, one-shot activation of an already authorized
+harness credential after ACP initialization. The first mapping is Grok Build
+`0.2.114` `cached_token`; login, account or mechanism switching, API-key
+fallback, and provider-private response metadata remain excluded.

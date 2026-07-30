@@ -165,6 +165,12 @@ fn requirements(
     capabilities: CapabilityProfile,
     access_policy: SessionAccessPolicy,
 ) -> OperationRequirements {
+    let extension_namespaces = access_policy
+        .provider_requests()
+        .observed_extensions()
+        .chain(access_policy.provider_requests().exchanged_extensions())
+        .cloned()
+        .collect::<Vec<_>>();
     OperationRequirements::new(
         ExecutionLayer::HarnessInteraction,
         OperationShape::InteractiveSession,
@@ -188,6 +194,7 @@ fn requirements(
     .with_interface_versions([prepared.server().binding().clone()])
     .with_harness_isolation(HarnessIsolation::AmbientHost)
     .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient)
+    .with_extension_namespaces(extension_namespaces)
     .with_session_access_policy(access_policy)
     .with_session_provider_state_policy(SessionProviderStatePolicy::DurableProviderSessionPreserved)
     .require_model_route()

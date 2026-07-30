@@ -50,6 +50,7 @@ pub struct ClaudeAgentSessionProfileInput {
     model: ClaudeAgentModelSelection,
     working_resource: WorkingResourceRef,
     options: SessionOptions,
+    permission_handling: ClaudeAgentPermissionHandling,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -189,7 +190,14 @@ impl ClaudeAgentSessionProfileInput {
             model,
             working_resource,
             options,
+            permission_handling: ClaudeAgentPermissionHandling::RejectAndStop,
         }
+    }
+
+    #[must_use]
+    pub const fn with_consumer_mediated_permissions(mut self) -> Self {
+        self.permission_handling = ClaudeAgentPermissionHandling::ConsumerMediated;
+        self
     }
 
     pub(super) fn into_parts(
@@ -199,12 +207,14 @@ impl ClaudeAgentSessionProfileInput {
         ClaudeAgentModelSelection,
         WorkingResourceRef,
         SessionOptions,
+        ClaudeAgentPermissionHandling,
     ) {
         (
             self.request_id,
             self.model,
             self.working_resource,
             self.options,
+            self.permission_handling,
         )
     }
 }

@@ -1,0 +1,57 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-07-30",
+  "releases": {
+    "0.30.0": {
+      "commit": "16c7189bd54a42fae65b1bbafd0843420523f797",
+      "tree": "109a9e75b6f9ba9e3b9243734d5ad09c20e4b373"
+    },
+    "0.31.0": {
+      "commit": "bc28e9d802fbec29395a7aed85e880679a050145",
+      "tree": "44634aa54e11f6d67e7807edf77bdfe19b3b99aa"
+    }
+  },
+  "acp": {
+    "claim": "kimi.acp.executable-window-3",
+    "latest_qualified": "0.31.0",
+    "behavior": "kimi.acp.reasoning.declared-effort-v2",
+    "events_map_blob": "0448f2eb9cb111755c5b0855f5ec72bf4d6bcd4c",
+    "sdk": "0.23.0",
+    "live_proof": [
+      "initialize",
+      "session/new",
+      "session/prompt",
+      "end_turn"
+    ]
+  },
+  "headless": {
+    "claim": "kimi.headless.executable-window-2",
+    "latest_qualified": "0.31.0",
+    "behavior": "kimi.headless.stream-json.v1",
+    "renderer_blob": "0e2f35238db066a13b53ad2cfff11bdff2f76724",
+    "live_proof": [
+      "assistant",
+      "session.resume_hint",
+      "successful_exit"
+    ]
+  },
+  "local_server": {
+    "claim": "kimi.local-server.executable-window-3",
+    "latest_qualified": "0.31.0",
+    "behavior": "kimi.local-server.rest-ws-v2-full-subagent-status",
+    "0.32.0_classification": "unverified-newer",
+    "broadcaster_blob": "c1d6ebe8c7c00feeed031a322cf8258aad83ab17",
+    "delta": "subagent_status_projection"
+  },
+  "live_evidence_excludes": [
+    "credential",
+    "account_identity",
+    "raw_provider_payload",
+    "session_id",
+    "tool",
+    "callback",
+    "workspace_write",
+    "destructive_action",
+    "local_server_inference"
+  ]
+}

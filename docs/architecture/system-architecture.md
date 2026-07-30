@@ -2,11 +2,11 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-29
+Updated: 2026-07-30
 
 ## Realized State
 
-Swallowtail has a twenty-three-crate Rust workspace plus its strict Northstar authority
+Swallowtail has a twenty-four-crate Rust workspace plus its strict Northstar authority
 spine:
 
 - `swallowtail-core` owns pure provider-neutral contract records, including
@@ -133,10 +133,10 @@ spine:
   tool exchange, private reasoning continuation, and joined credential-last
   cleanup
 - `swallowtail-adapter-opencode` implements version-bound OpenCode
-  `1.14.48..=1.18.4` model discovery and ambient-host interactive sessions with
+  `1.14.48..=1.18.10` model discovery and ambient-host interactive sessions with
   read-only tool permissions over host-approved HTTP and bounded SSE; exact
   stable newer releases may run as visibly unverified without extending
-  guaranteed support; a separate 45-release deletion corpus freezes two
+  guaranteed support; a separate 51-release deletion corpus freezes two
   delete-schema revisions, recursive provider-defined descendants, missing-
   target rejection, inactive-target requirements, and post-dispatch
   uncertainty without yet advertising production deletion
@@ -165,7 +165,7 @@ spine:
   latest private handle, one planned raw-WebSocket rollover, local-only
   interruption, and joined two-generation cleanup under both host identities
 - `swallowtail-adapter-kimi` implements exact Kimi Code `0.28.1` and
-  `0.29.0..=0.29.2` behavior segments. Its ACP route owns ambient-host
+  route-specific `0.29.0..=0.31.0` behavior segments. Its ACP route owns ambient-host
   interactive new, load-with-replay, replay-free resume, bounded writes, and
   negotiated model evidence. Its separate headless route owns one default-
   engine stream-JSON prompt with durable provider retention and joined process
@@ -197,6 +197,11 @@ spine:
   continuation or serial interactive turns with private continuation; both
   retain exact billed cost and connection-ending cancellation, while a
   separate language-models driver exposes bounded hosted catalogue evidence
+- `swallowtail-adapter-grok` currently realizes exact installed Grok Build
+  `0.2.114` discovery, signed source-revision binding, delegated subscription
+  access preparation, ambient configuration, durable-retention capability,
+  and visible later-stable unverified posture; ACP session execution remains
+  the active g02.043 implementation batch
 - `swallowtail-adapter-openai` implements separate public-API drivers for
   background Responses and Realtime media. The background structured-run route
   owns explicit temporary retention, one create attempt, maximum-one cursor
@@ -243,7 +248,7 @@ remote ACP operations -> swallowtail-transport-acp-remote -> core/runtime/protoc
 ```
 
 The active public release topology is recorded in
-`release-and-package-topology.md` and governed by Contract 036. All 23
+`release-and-package-topology.md` and governed by Contract 036. All 24
 workspace libraries are separately consumable public packages under one
 coordinated pre-1.0 version. The three-stage publication order is core plus
 protocols, then runtime, then support, transport, and adapters. Current
@@ -669,13 +674,13 @@ latest-qualified boundary is an explicit later-release change. No open-ended
 `latest` value participates in routing.
 
 The OpenCode HTTP adapter has a closed qualified server-version boundary.
-Tagged OpenAPI evidence for 45 stable releases from `1.14.48` through
-`1.18.4` closes six selected operations through every transitive local schema
+Tagged OpenAPI evidence for 51 stable releases from `1.14.48` through
+`1.18.10` closes six selected operations through every transitive local schema
 reference. Eighteen closed surfaces map to 20 contiguous segments so
 unpublished patches and cross-minor synthetic versions remain unsupported.
 The production descriptor publishes the `opencode.server` claim. Configured
 instances, requirements, and immutable plans must bind one matching exact
-release. Stable exact releases above `1.18.4` may execute as unverified through
+release. Stable exact releases above `1.18.10` may execute as unverified through
 surface 18 without widening the qualified range. `GET /global/health` produces
 only that safe binding and three-way assessment; no endpoint, credential, raw
 payload, configured instance, or execution authority enters the observation.
@@ -1113,9 +1118,12 @@ provider-documented foreground `kimi web --no-open` process, local REST,
 WebSocket protocol version `2`, exact server metadata, and an opaque bearer
 credential lease. Attached and owned-foreground topologies remain distinct.
 The implementation qualifies reversible archive and restore across exact Kimi
-Code `0.28.1`, exact `0.29.0`, and the audited `0.29.1..=0.29.2` range. The
-later range has a separate behavior revision for global WebSocket event fan-out
-and filtered configured-model discovery. It does not qualify deletion or
+Code `0.28.1`, exact `0.29.0`, `0.29.1..=0.30.0`, and exact `0.31.0`. The
+middle range has a separate behavior revision for global WebSocket event
+fan-out and filtered configured-model discovery. Exact `0.31.0` adds full
+subagent status snapshots and derived-model display aliases; Swallowtail keeps
+those records as non-rendered progress and derives portable subagent activity
+from dedicated lifecycle events. The route does not qualify deletion or
 change the unsupported ACP mapping. Attached preparation preserves the
 external server. Owned preparation launches one approved foreground child on
 the approved loopback port and joins it on close. Both require exact metadata,

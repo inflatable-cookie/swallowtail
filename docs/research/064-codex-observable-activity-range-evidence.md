@@ -210,3 +210,12 @@ No contract change is required before card 123.
 - classified current `0.146.0` as permitted unverified newer
 - confirmed Contract 044 is sufficient
 - made card 123 ready for production app-server projection
+
+## Later Qualification
+
+Roadmap g02.044 rechecked the exact stable `0.146.0` distribution on
+2026-07-30 and promoted it into both guaranteed Codex ranges. The additive
+command-action fields and deferred exec search query now form the exact
+`0.146.0` activity revision. Operation, access, lifecycle, disclosure,
+prerelease rejection, and existing range gaps did not change. Stable
+`0.147.0` is retained as a synthetic unverified-newer classification point.

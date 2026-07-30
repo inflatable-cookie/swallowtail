@@ -23,6 +23,10 @@ The project has not published a release.
 
 ### Changed
 
+- extended guaranteed Codex exec and app-server support through exact
+  `0.146.0`, and OpenCode HTTP/SSE support through all 51 published stable
+  releases ending at `1.18.10`; later stable points remain visible
+  unverified newer where the driver permits them
 - Claude Agent ACP structured runs now require an ambient read-write working-
   resource lease, expose `Edit` and `Write` beside the read tools, and select
   `acceptEdits`; turn-less command, configuration, and mode updates remain
@@ -39,10 +43,20 @@ The project has not published a release.
   runtime, local host, testkit, and all 16 adapters; the two protocol crates
   and remote ACP transport retain their prior declaration hashes
 - made adapter-local preparation and typed bound operations the normal public
-  path for all 26 production routes while retaining low-level public roles
+  path for all 27 production routes while retaining low-level public roles
 
 ### Added
 
+- provider-neutral `HarnessMode::Plan` selection with exact preflight binding
+  across Codex app-server, Claude Agent ACP, Gemini ACP read-only sessions, and
+  the fixed-plan Claude Code headless route
+- an exact Grok Build `0.2.114` ACP route with installed discovery, delegated
+  `cached_token` activation, session-negotiated model options, separate
+  structured and interactive prepared operations, provider-visible activity,
+  native cancellation, deadlines, durable provider-owned session retention,
+  and joined host cleanup
+- consumer-mediated Claude Agent ACP interactive sessions, selected once on
+  `ClaudeAgentSessionProfileInput` and inherited by every session turn
 - a native read-only `claude -p` structured-run route using local Claude
   subscription auth, explicit model and effort, bounded stream JSON, usage,
   cancellation, deadlines, and disabled session persistence

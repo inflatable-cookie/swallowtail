@@ -2,8 +2,10 @@ use super::{ActiveTurn, MAXIMUM_DIALOG_BYTES, MAXIMUM_DIALOG_OPTIONS, malformed_
 use crate::failure::failure;
 use crate::protocol::{PiUiDialog, PiUiDialogMethod, PiUiDisplay, PiUiDisplayKind};
 use swallowtail_runtime::{
-    CallbackId, CallbackRequest, Deadline, HarnessUiDialog, HarnessUiDialogKind, HarnessUiDisplay,
-    HarnessUiDisplayKind, OperationContent, RuntimeEvent, RuntimeEventKind, RuntimeFailure,
+    CallbackId, CallbackRequest, Deadline, HarnessQuestionId, HarnessQuestionOptionId,
+    HarnessUiDisplay, HarnessUiDisplayKind, HarnessUserInputChoiceMode, HarnessUserInputOption,
+    HarnessUserInputQuestion, HarnessUserInputQuestionKind, HarnessUserInputRequest,
+    OperationContent, RuntimeEvent, RuntimeEventKind, RuntimeFailure,
 };
 
 pub(crate) struct CallbackTimer {
@@ -19,38 +21,74 @@ impl ActiveTurn {
     ) -> Result<Option<CallbackTimer>, RuntimeFailure> {
         self.claim_ui_id(&dialog.id)?;
         let callback_id = CallbackId::new(&dialog.id).map_err(|_| malformed_ui())?;
-        let kind = match dialog.method {
-            PiUiDialogMethod::Select => HarnessUiDialogKind::Select,
-            PiUiDialogMethod::Confirm => HarnessUiDialogKind::Confirm,
-            PiUiDialogMethod::Input | PiUiDialogMethod::Editor => HarnessUiDialogKind::Input,
+        let question_id = HarnessQuestionId::new(format!("{}:question", dialog.id))
+            .map_err(|_| malformed_ui())?;
+        let header = OperationContent::new(dialog.title).map_err(|_| malformed_ui())?;
+        let prompt = dialog
+            .prompt
+            .map(OperationContent::new)
+            .transpose()
+            .map_err(|_| malformed_ui())?
+            .unwrap_or_else(|| header.clone());
+        let (kind, options) = match dialog.method {
+            PiUiDialogMethod::Confirm => (
+                HarnessUserInputQuestionKind::Choice {
+                    mode: HarnessUserInputChoiceMode::Single,
+                    allow_other: false,
+                },
+                [("true", "Yes"), ("false", "No")]
+                    .into_iter()
+                    .map(|(id, label)| {
+                        Ok(HarnessUserInputOption::new(
+                            HarnessQuestionOptionId::new(id).map_err(|_| malformed_ui())?,
+                            OperationContent::new(label).map_err(|_| malformed_ui())?,
+                            None,
+                        ))
+                    })
+                    .collect::<Result<Vec<_>, RuntimeFailure>>()?,
+            ),
+            PiUiDialogMethod::Select => (
+                HarnessUserInputQuestionKind::Choice {
+                    mode: HarnessUserInputChoiceMode::Single,
+                    allow_other: false,
+                },
+                dialog
+                    .options
+                    .into_iter()
+                    .map(|option| {
+                        Ok(HarnessUserInputOption::new(
+                            HarnessQuestionOptionId::new(&option).map_err(|_| malformed_ui())?,
+                            OperationContent::new(option).map_err(|_| malformed_ui())?,
+                            None,
+                        ))
+                    })
+                    .collect::<Result<Vec<_>, RuntimeFailure>>()?,
+            ),
+            PiUiDialogMethod::Input | PiUiDialogMethod::Editor => (
+                HarnessUserInputQuestionKind::Text { secret: false },
+                Vec::new(),
+            ),
         };
-        let ui = HarnessUiDialog::new(
-            kind,
-            OperationContent::new(dialog.title).map_err(|_| malformed_ui())?,
-            dialog
-                .prompt
-                .map(OperationContent::new)
-                .transpose()
-                .map_err(|_| malformed_ui())?,
-            dialog
-                .options
-                .into_iter()
-                .map(OperationContent::new)
-                .collect::<Result<Vec<_>, _>>()
-                .map_err(|_| malformed_ui())?,
+        let question = HarnessUserInputQuestion::new(question_id, header, prompt, kind, options)
+            .map_err(|_| malformed_ui())?;
+        let ui = HarnessUserInputRequest::new(
+            [question],
+            None,
+            1,
             MAXIMUM_DIALOG_OPTIONS,
             MAXIMUM_DIALOG_BYTES,
         )
         .map_err(|_| malformed_ui())?;
         let sequence = self.next_sequence();
-        let request = CallbackRequest::harness_ui_dialog(
+        let request = CallbackRequest::harness_user_input(
             callback_id.clone(),
             self.runtime_id.clone(),
             sequence,
             deadline,
-            ui,
+            ui.clone(),
         );
-        self.callbacks.enqueue(request, dialog.id, dialog.method)?;
+        self.callbacks
+            .enqueue(request, dialog.id, dialog.method, ui)?;
         self.events.send(RuntimeEvent::new(
             sequence,
             RuntimeEventKind::CallbackRequested(callback_id.clone()),

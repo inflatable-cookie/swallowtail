@@ -41,6 +41,7 @@ release_stage_3=(
   swallowtail-adapter-codex
   swallowtail-adapter-deepseek
   swallowtail-adapter-gemini
+  swallowtail-adapter-grok
   swallowtail-adapter-kimi
   swallowtail-adapter-kimi-platform
   swallowtail-adapter-llama-cpp

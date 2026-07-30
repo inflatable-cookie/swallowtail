@@ -12,7 +12,9 @@ fn exec_corpus_freezes_baseline_checkpoints_and_rejections() {
     assert_eq!(corpus["axis"], "codex.cli");
     assert_eq!(
         strings(&corpus["candidate_versions"]),
-        ["0.122.0", "0.130.0", "0.140.0", "0.144.6", "0.145.0"]
+        [
+            "0.122.0", "0.130.0", "0.140.0", "0.144.6", "0.145.0", "0.146.0"
+        ]
     );
     let required_argv = string_set(&corpus["required_argv"]);
     for required in [
@@ -63,7 +65,7 @@ fn app_server_corpus_keeps_stable_experimental_and_milestones_separate() {
     assert_eq!(
         strings(&corpus["candidate_versions"]),
         [
-            "0.110.0", "0.120.0", "0.131.0", "0.140.0", "0.144.6", "0.145.0"
+            "0.110.0", "0.120.0", "0.131.0", "0.140.0", "0.144.6", "0.145.0", "0.146.0"
         ]
     );
     let methods = string_set(&corpus["stable_methods"]);
@@ -115,7 +117,10 @@ fn app_server_corpus_keeps_stable_experimental_and_milestones_separate() {
         let version = release["version"].as_str().expect("version is text");
         let fields = string_set(&release["experimental_thread_fields"]);
         assert!(fields.contains("dynamicTools"));
-        if matches!(version, "0.131.0" | "0.140.0" | "0.144.6" | "0.145.0") {
+        if matches!(
+            version,
+            "0.131.0" | "0.140.0" | "0.144.6" | "0.145.0" | "0.146.0"
+        ) {
             assert_eq!(release["runtime_workspace_roots"], true);
             assert!(fields.contains("runtimeWorkspaceRoots"));
             assert_eq!(
@@ -127,7 +132,7 @@ fn app_server_corpus_keeps_stable_experimental_and_milestones_separate() {
             assert!(!fields.contains("runtimeWorkspaceRoots"));
             assert_eq!(release["behavior_revision"], "codex.app-server.v2.base");
         }
-        if matches!(version, "0.144.6" | "0.145.0") {
+        if matches!(version, "0.144.6" | "0.145.0" | "0.146.0") {
             assert_eq!(release["allow_provider_model_fallback"], true);
             assert!(fields.contains("allowProviderModelFallback"));
         } else {
@@ -244,19 +249,13 @@ fn assert_exact_evidence(release: &Value) {
 
 fn assert_unverified_newer(corpus: &Value) {
     let release = &corpus["unverified_newer"];
-    assert_eq!(release["version"], "0.146.0");
+    assert_eq!(release["version"], "0.147.0");
     assert_eq!(
         release["execution"],
         "permitted-with-explicit-unverified-status"
     );
     assert_eq!(release["guaranteed"], false);
-    assert_eq!(
-        release["tag_commit"]
-            .as_str()
-            .expect("tag commit is text")
-            .len(),
-        40
-    );
+    assert_eq!(release["evidence"], "synthetic-later-stable-classification");
 }
 
 fn assert_sha256(value: &Value) {

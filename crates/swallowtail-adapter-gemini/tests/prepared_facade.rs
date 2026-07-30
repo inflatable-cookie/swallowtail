@@ -12,11 +12,11 @@ use swallowtail_adapter_gemini::{
     GeminiPreparationProbe, GeminiSessionProfileInput, prepare_gemini_acp, prepare_gemini_cli,
 };
 use swallowtail_core::{
-    AccessProfile, AccessProfileId, AccessStatus, ConfiguredInstanceId, CredentialMechanism,
-    CredentialRef, CredentialState, EndpointAudience, EndpointAuthorization, EntitlementMetering,
-    EntitlementState, ExecutionHostId, HarnessConfigurationPosture, HarnessIsolation,
-    InstanceRevision, InterfaceVersionAxis, ResourceAccess, RuntimeReadiness, SessionAccessPolicy,
-    SupportAuthority,
+    AccessProfile, AccessProfileId, AccessStatus, Capability, CapabilityConstraint,
+    ConfiguredInstanceId, CredentialMechanism, CredentialRef, CredentialState, EndpointAudience,
+    EndpointAuthorization, EntitlementMetering, EntitlementState, ExecutionHostId,
+    HarnessConfigurationPosture, HarnessIsolation, HarnessMode, InstanceRevision,
+    InterfaceVersionAxis, ResourceAccess, RuntimeReadiness, SessionAccessPolicy, SupportAuthority,
 };
 use swallowtail_runtime::{
     CleanupOutcome, Deadline, DiscoveryCancellation, EnvironmentRef, ExecutableRef,
@@ -83,7 +83,7 @@ fn prepared_sessions_bind_version_access_and_observation_only_model_policy() {
             .prepare_session(GeminiSessionProfileInput::new(
                 RequestId::new("gemini-prepared-open").expect("valid request"),
                 WorkingResourceRef::new("gemini.prepared.workspace").expect("valid resource"),
-                SessionOptions::default(),
+                SessionOptions::default().with_harness_mode(HarnessMode::Plan),
             ))
             .expect("session profile prepares");
 
@@ -108,6 +108,22 @@ fn prepared_sessions_bind_version_access_and_observation_only_model_policy() {
         assert_eq!(
             profile.request().access_policy(),
             &SessionAccessPolicy::ambient_harness(ResourceAccess::Read)
+        );
+        assert_eq!(
+            profile.request().options().harness_mode(),
+            Some(HarnessMode::Plan)
+        );
+        assert!(
+            profile
+                .plan()
+                .requirements()
+                .capabilities()
+                .any(|requirement| {
+                    requirement.capability() == Capability::HarnessModeSelection
+                        && requirement.constraints().any(|constraint| {
+                            constraint == &CapabilityConstraint::HarnessMode(HarnessMode::Plan)
+                        })
+                })
         );
         assert!(profile.plan().model_route_id().is_none());
         assert!(profile.plan().model_id().is_none());

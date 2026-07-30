@@ -2,7 +2,8 @@ use crate::rpc::failure;
 use serde_json::Value;
 use std::collections::BTreeSet;
 use swallowtail_core::{
-    Capability, CapabilityConstraint, CapabilityRequirement, PreflightPlan, ProviderRequestPolicy,
+    Capability, CapabilityConstraint, CapabilityRequirement, HarnessMode, PreflightPlan,
+    ProviderRequestPolicy,
 };
 use swallowtail_runtime::{RuntimeFailure, SchemaDocument, SessionOptions, ToolDeclaration};
 
@@ -11,12 +12,14 @@ const JSON_SCHEMA_MEDIA_TYPE: &str = "application/schema+json";
 pub(crate) struct CodexSessionInput {
     developer_instructions: Option<String>,
     reasoning_effort: Option<String>,
+    collaboration_mode: Option<Value>,
     dynamic_tools: Vec<Value>,
     declared_tools: BTreeSet<String>,
 }
 
 pub(crate) struct CodexSessionRuntime {
     pub(crate) reasoning_effort: Option<String>,
+    pub(crate) collaboration_mode: Option<Value>,
     pub(crate) declared_tools: BTreeSet<String>,
     pub(crate) deadline_planned: bool,
     pub(crate) turn_sandbox_policy: Option<Value>,
@@ -52,11 +55,18 @@ impl CodexSessionInput {
         )?;
         validate_feature_binding(
             plan,
+            options.harness_mode().is_some(),
+            Capability::HarnessModeSelection,
+            "harness mode selection",
+        )?;
+        validate_feature_binding(
+            plan,
             !tools.is_empty(),
             Capability::ToolCalls,
             "dynamic tools",
         )?;
         validate_reasoning(plan, options)?;
+        validate_harness_mode(plan, options)?;
         validate_tools(plan, &tools)?;
         if !allows_tools && !tools.is_empty() {
             return Err(unsupported(
@@ -75,13 +85,27 @@ impl CodexSessionInput {
             })
             .collect::<Result<Vec<_>, _>>()?;
 
+        let developer_instructions = options
+            .developer_instructions()
+            .map(|content| content.as_str().to_owned());
+        let reasoning_effort = options
+            .reasoning_mode()
+            .map(|mode| mode.as_str().to_owned());
+        let collaboration_mode = options.harness_mode().map(|mode| {
+            debug_assert_eq!(mode, HarnessMode::Plan);
+            serde_json::json!({
+                "mode": "plan",
+                "settings": {
+                    "model": plan.model_id().expect("validated model route").as_str(),
+                    "reasoning_effort": reasoning_effort,
+                    "developer_instructions": developer_instructions,
+                }
+            })
+        });
         Ok(Self {
-            developer_instructions: options
-                .developer_instructions()
-                .map(|content| content.as_str().to_owned()),
-            reasoning_effort: options
-                .reasoning_mode()
-                .map(|mode| mode.as_str().to_owned()),
+            developer_instructions,
+            reasoning_effort,
+            collaboration_mode,
             dynamic_tools,
             declared_tools,
         })
@@ -118,7 +142,7 @@ impl CodexSessionInput {
     }
 
     pub(crate) fn requires_experimental_api(&self) -> bool {
-        !self.dynamic_tools.is_empty()
+        !self.dynamic_tools.is_empty() || self.collaboration_mode.is_some()
     }
 
     pub(crate) fn into_runtime(
@@ -129,11 +153,32 @@ impl CodexSessionInput {
     ) -> CodexSessionRuntime {
         CodexSessionRuntime {
             reasoning_effort: self.reasoning_effort,
+            collaboration_mode: self.collaboration_mode,
             declared_tools: self.declared_tools,
             deadline_planned,
             turn_sandbox_policy,
             provider_requests,
         }
+    }
+}
+
+fn validate_harness_mode(
+    plan: &PreflightPlan,
+    options: &SessionOptions,
+) -> Result<(), RuntimeFailure> {
+    let Some(mode) = options.harness_mode() else {
+        return Ok(());
+    };
+    let requirement = capability_requirement(plan, Capability::HarnessModeSelection)
+        .expect("feature binding was validated");
+    if mode == HarnessMode::Plan
+        && requirement.constraints().any(|constraint| {
+            matches!(constraint, CapabilityConstraint::HarnessMode(value) if *value == mode)
+        })
+    {
+        Ok(())
+    } else {
+        Err(plan_mismatch("harness mode"))
     }
 }
 

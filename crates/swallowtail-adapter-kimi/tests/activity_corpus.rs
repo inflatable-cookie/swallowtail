@@ -1,8 +1,8 @@
 use serde_json::Value;
 use std::collections::BTreeSet;
 
-const RANGE: &str = include_str!("fixtures/kimi-code-acp-v0.28.1-v0.29.2/activity-range.json");
-const ACTIVITY: &str = include_str!("fixtures/kimi-code-acp-v0.28.1-v0.29.2/activity.jsonl");
+const RANGE: &str = include_str!("fixtures/kimi-code-acp-v0.28.1-v0.31.0/activity-range.json");
+const ACTIVITY: &str = include_str!("fixtures/kimi-code-acp-v0.28.1-v0.31.0/activity.jsonl");
 
 #[test]
 fn every_qualified_kimi_acp_segment_has_exact_activity_provenance() {
@@ -12,24 +12,28 @@ fn every_qualified_kimi_acp_segment_has_exact_activity_provenance() {
         .expect("segments are an array");
     assert_eq!(segments.len(), 2);
     assert_eq!(segments[0]["range"], "0.28.1");
-    assert_eq!(segments[1]["range"], "0.29.0..=0.29.2");
+    assert_eq!(segments[1]["range"], "0.29.0..=0.31.0");
     for segment in segments {
         assert_eq!(segment["stable_schema"], "schema-v1.19.1");
         assert_sha(segment, "tag_commit", 40);
         assert_sha(segment, "events_map_sha256", 64);
     }
-    assert_eq!(range["current_external_release"]["version"], "0.30.0");
+    assert_eq!(range["current_external_release"]["version"], "0.31.0");
     assert_eq!(
         range["current_external_release"]["classification"],
-        "unverified-newer"
+        "qualified"
     );
     assert_eq!(
         range["current_external_release"]["profile"],
-        "0.29.2-guarantee"
+        "0.31.0-guarantee"
     );
     assert_eq!(
         range["current_external_release"]["activity_source_delta"],
         "none"
+    );
+    assert_eq!(
+        range["later_stable_posture"]["classification"],
+        "unverified-newer"
     );
 }
 

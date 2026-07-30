@@ -7,7 +7,8 @@ use swallowtail_adapter_opencode::{OpenCodeRunProfileInput, OpenCodeSessionProfi
 use swallowtail_core::{Capability, ResourceAccess};
 use swallowtail_runtime::{
     AttachmentDescriptor, AttachmentRole, CallbackFailureKind, CallbackPayload, CallbackRequest,
-    CallbackRequestKind, CallbackResponse, CallbackResult, CleanupOutcome, OperationContent,
+    CallbackRequestKind, CallbackResponse, CallbackResult, CleanupOutcome, HarnessQuestionId,
+    HarnessQuestionOptionId, HarnessUserInputAnswer, HarnessUserInputResponse, OperationContent,
     RequestId, RuntimeTurnId, TerminalStatus, TurnRequest,
 };
 
@@ -15,7 +16,7 @@ use swallowtail_runtime::{
 fn prepared_session_dispatches_one_image_and_correlated_permission_and_question_responses() {
     let fixture = PreparedFixture::new_with_fixture(
         "opencode.input-callback.session",
-        "1.18.4",
+        "1.18.10",
         StreamFixture::InputCallbacks,
     );
     let prepared = fixture.prepared();
@@ -103,14 +104,28 @@ fn prepared_session_dispatches_one_image_and_correlated_permission_and_question_
     );
 
     let question = next_callback(&mut requests);
-    assert_extension(&question, "opencode/question", "questions");
-    block_on(responder.respond(CallbackResponse::new(
-        question.callback_id().clone(),
-        turn_id,
-        CallbackResult::Success(
-            CallbackPayload::new(br#"{"answers":[["Safe"]]}"#, 256).expect("answers are bounded"),
-        ),
-    )))
+    let CallbackRequestKind::HarnessUserInput(user_input) = question.kind() else {
+        panic!("question is typed user input");
+    };
+    assert_eq!(user_input.questions().len(), 1);
+    block_on(
+        responder.respond(CallbackResponse::new(
+            question.callback_id().clone(),
+            turn_id,
+            CallbackResult::UserInput(
+                HarnessUserInputResponse::new(
+                    [HarnessUserInputAnswer::selected(
+                        HarnessQuestionId::new("question-0").unwrap(),
+                        [HarnessQuestionOptionId::new("Safe").unwrap()],
+                        None,
+                    )],
+                    1,
+                    256,
+                )
+                .unwrap(),
+            ),
+        )),
+    )
     .expect("ordered answer is accepted");
 
     let outcome = block_on(
@@ -149,7 +164,7 @@ fn prepared_session_dispatches_one_image_and_correlated_permission_and_question_
 fn prepared_run_uses_run_correlation_and_reject_paths_without_persistent_authority() {
     let fixture = PreparedFixture::new_with_fixture(
         "opencode.input-callback.run",
-        "1.18.4",
+        "1.18.10",
         StreamFixture::InputCallbacks,
     );
     let prepared = fixture.prepared();
@@ -238,7 +253,7 @@ fn prepared_run_uses_run_correlation_and_reject_paths_without_persistent_authori
 fn cancellation_abandons_pending_callbacks_before_attachment_cleanup() {
     let fixture = PreparedFixture::new_with_fixture(
         "opencode.input-callback.cancel",
-        "1.18.4",
+        "1.18.10",
         StreamFixture::InputCallbacks,
     );
     let prepared = fixture.prepared();
@@ -304,7 +319,7 @@ fn cancellation_abandons_pending_callbacks_before_attachment_cleanup() {
 
 #[test]
 fn unsupported_attachment_shape_rejects_during_preparation() {
-    let fixture = PreparedFixture::new("opencode.input.invalid", "1.18.4");
+    let fixture = PreparedFixture::new("opencode.input.invalid", "1.18.10");
     let prepared = fixture.prepared();
     let attachment = fixture.attachment();
     let context = AttachmentDescriptor::new(
@@ -335,7 +350,7 @@ fn unsupported_attachment_shape_rejects_during_preparation() {
 
 #[test]
 fn cancelled_session_rejects_before_attachment_materialization() {
-    let fixture = PreparedFixture::new("opencode.input.cancelled-session", "1.18.4");
+    let fixture = PreparedFixture::new("opencode.input.cancelled-session", "1.18.10");
     let prepared = fixture.prepared();
     let profile = prepared
         .prepare_session(

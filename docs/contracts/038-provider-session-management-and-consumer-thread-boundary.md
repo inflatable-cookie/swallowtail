@@ -214,7 +214,7 @@ not extend the guaranteed range.
 
 ### OpenCode HTTP/SSE
 
-The qualified attached OpenCode `1.14.48..=1.18.4` range exposes
+The qualified attached OpenCode `1.14.48..=1.18.10` range exposes
 `DELETE /session/{sessionID}` at every supported point. Exact tagged schema,
 handler, removal-core, middleware, and test evidence qualifies:
 
@@ -236,7 +236,7 @@ target to be inactive across the full range.
 This classification covers OpenCode-declared session, message, history, and
 provider-defined descendant data. It does not claim secure erasure, deletion
 of provider API service data, account analytics, logs, or backups, or
-ownership of the attached server. Stable releases newer than `1.18.4` remain
+ownership of the attached server. Stable releases newer than `1.18.10` remain
 visible and unverified under Contract 029; they do not extend the guaranteed
 range.
 

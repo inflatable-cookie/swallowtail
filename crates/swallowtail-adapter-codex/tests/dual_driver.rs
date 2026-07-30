@@ -130,7 +130,7 @@ fn selected_profiles_keep_identical_common_assertions() {
 
 #[test]
 fn both_codex_transports_keep_newer_execution_outside_qualified_support() {
-    let version = codex_cli_binding("0.146.0");
+    let version = codex_cli_binding("0.147.0");
     assert_unverified_newer_execution(&codex_exec_claim(), version.version());
     assert_unverified_newer_execution(&codex_app_server_claim(), version.version());
 }

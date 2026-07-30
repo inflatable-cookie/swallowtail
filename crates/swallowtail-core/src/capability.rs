@@ -18,6 +18,7 @@ pub enum Capability {
     StructuredOutput,
     Attachments,
     ReasoningSelection,
+    HarnessModeSelection,
     WorkingResource,
     WorkingResourceTextWrite,
     ProviderExternalNetwork,

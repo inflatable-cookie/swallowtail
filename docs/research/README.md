@@ -75,3 +75,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [065 ACP Observable Activity Currentness And Corpus](065-acp-observable-activity-currentness-and-corpus.md)
 - [066 Non-ACP Harness Activity Inventory And Corpus](066-non-acp-harness-activity-inventory-and-corpus.md)
 - [067 Direct Activity Applicability And Corpus](067-direct-activity-applicability-and-corpus.md)
+- [068 Kimi Code 0.31 Currentness And Live Evidence](068-kimi-code-0-31-currentness-and-live-evidence.md)
+- [069 Kimi Code 0.31 Local-Server Qualification](069-kimi-code-0-31-local-server-qualification.md)
+- [070 Grok Build 0.2.114 Authenticated ACP Qualification](070-grok-build-0-2-114-authenticated-acp-qualification.md)
+- [071 Installed Harness Range Maintenance Selection](071-installed-harness-range-maintenance-selection.md)

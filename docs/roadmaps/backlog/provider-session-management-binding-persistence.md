@@ -3,6 +3,9 @@
 Status: deferred
 Source: g02 card 060
 
+The operator confirmed this deferral on 2026-07-30. Same-process bindings are
+sufficient for current consumers.
+
 ## Gap
 
 `ProviderSessionManagementBinding` is opaque and cloneable but has no stable

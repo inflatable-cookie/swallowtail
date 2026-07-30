@@ -1,0 +1,28 @@
+{
+  "accessed": "2026-07-30",
+  "launcher_package": "@xai-official/grok",
+  "platform_package": "@xai-official/grok-darwin-arm64",
+  "publication": {
+    "last_published": "0.2.116",
+    "launcher_latest": "0.2.114",
+    "launcher_alpha": "0.2.116",
+    "platform_latest": "0.1.220",
+    "platform_alpha": "0.2.116",
+    "acp_registry": "0.2.116"
+  },
+  "inspected_releases": ["0.2.0", "0.2.111", "0.2.114"],
+  "qualification": {
+    "segments": [
+      {
+        "first": "0.2.114",
+        "last": "0.2.114",
+        "behavior": "grok-build-acp-v0.2.114-cached-token"
+      }
+    ],
+    "qualified_releases": ["0.2.114"],
+    "historical_incompatible": ["0.2.0", "0.2.111"],
+    "uninspected_older": ["0.2.112", "0.2.113"],
+    "unverified_newer_allowed": true,
+    "prerelease_allowed": false
+  }
+}

@@ -30,7 +30,7 @@ fn app_server_corpus_covers_rich_activity_and_disclosure_boundaries() {
         "task-list",
         "item-timestamps",
         "namespaced-unknown-item",
-        "unverified-newer-additive",
+        "qualified-current-additive",
         "malformed-item",
         "foreign-item",
     ] {
@@ -54,8 +54,8 @@ fn app_server_corpus_covers_rich_activity_and_disclosure_boundaries() {
     );
     assert_eq!(methods(replacement).len(), 1);
 
-    let newer = case(&cases, "unverified-newer-additive");
-    assert_eq!(newer["expected"]["profile"], "0.145.0-guarantee");
+    let newer = case(&cases, "qualified-current-additive");
+    assert_eq!(newer["expected"]["profile"], "0.146.0-guarantee");
 }
 
 #[test]

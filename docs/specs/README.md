@@ -5,7 +5,7 @@ architecture, contracts, roadmaps, or logs.
 
 ## Active Specs
 
-- [003 Delegated ACP Authentication Activation](003-delegated-acp-authentication-activation.md)
+None.
 
 ## Promoted Specs
 
@@ -17,6 +17,7 @@ architecture, contracts, roadmaps, or logs.
 - [004 Release Package And Compatibility Boundary](archive/004-release-package-and-compatibility-boundary.md)
 - [005 Prepared Consumer Integration](archive/005-prepared-consumer-integration.md)
 - [006 Provider-Wide Prepared And Bound Facades](archive/006-provider-wide-prepared-and-bound-facades.md)
+- [003 Delegated ACP Authentication Activation](archive/003-delegated-acp-authentication-activation.md)
 
 ## Support
 

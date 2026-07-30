@@ -48,6 +48,12 @@ pub(super) fn run_capabilities() -> CapabilityProfile {
         CapabilityRequirement::new(Capability::StreamingEvents, []),
         CapabilityRequirement::new(Capability::UsageReporting, []),
         CapabilityRequirement::new(
+            Capability::HarnessModeSelection,
+            [CapabilityConstraint::HarnessMode(
+                swallowtail_core::HarnessMode::Plan,
+            )],
+        ),
+        CapabilityRequirement::new(
             Capability::ReasoningSelection,
             REASONING_MODES.into_iter().map(|mode| {
                 CapabilityConstraint::ReasoningMode(

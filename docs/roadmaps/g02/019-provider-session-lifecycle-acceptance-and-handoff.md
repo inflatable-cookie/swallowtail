@@ -1,13 +1,13 @@
 # 019 Provider Session Lifecycle Acceptance And Handoff
 
-Status: paused
+Status: completed
 Owner: Tom
 Created: 2026-07-26
 Depends on: g02.016, g02.017, and g02.018
 Vision tags: provider-wide facade, explicit unsupported routes, Nucleus handoff
 Contract refs: 005-011, 017, 029, 036-038
-Planning state: cards 058 and 060 completed; card 059 paused at
-canonical-source gate
+Planning state: cards 058 and 060 completed; card 059 superseded by the
+broader packaged lifecycle evidence in card 136
 
 ## Problem
 
@@ -19,7 +19,7 @@ unsupported, or not-applicable lifecycle posture before Nucleus adoption.
 
 - [x] Classify all 22 production routes without fabricating lifecycle support.
 - [x] Publish prepared management guidance and package-level conformance.
-- [ ] Preserve candidate and release evidence without publishing.
+- [x] Preserve package and release evidence without publishing.
 - [x] Produce a bounded Nucleus adoption handoff under consumer authority.
 
 ## Execution Plan
@@ -30,7 +30,9 @@ unsupported, or not-applicable lifecycle posture before Nucleus adoption.
 
 ### Batch 19.2 — Packaged Acceptance
 
-- [ ] Execute card 059 after the matrix and facade surface are exact.
+- [x] Preserve card 059's transient lifecycle evidence and use card 136's
+      later, broader extracted-package proof instead of refreshing a retained
+      publication candidate.
 
 ### Batch 19.3 — Consumer Handoff
 
@@ -58,3 +60,10 @@ archive/delete UX requires separate consumer-repository authority.
 After Nucleus adoption evidence, reassess whether provider history browsing,
 binding import, export, or active-session management has enough product value
 for another contract. None is implied by this lane.
+
+## Closeout
+
+The provider-wide lifecycle matrix, packaged behavior, and Nucleus handoff are
+complete. Card 059's candidate-refresh tail is superseded. Registry
+publication is outside the active roadmap until the operator explicitly
+reopens it after months of consumer usage evidence.

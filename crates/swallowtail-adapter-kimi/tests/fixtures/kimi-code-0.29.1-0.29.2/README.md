@@ -32,6 +32,17 @@ broadcast to every established WebSocket connection. Swallowtail ignores
 foreign-session global traffic and retains its subscribed session stream.
 `0.29.2` keeps that selected behavior.
 
+Research 068 extends only the installed ACP and headless guarantees through
+`0.31.0`. Exact `0.30.0`, commit
+`16c7189bd54a42fae65b1bbafd0843420523f797`, retains all selected blobs.
+Exact `0.31.0`, commit
+`bc28e9d802fbec29395a7aed85e880679a050145`, retains JSONL renderer blob
+`0e2f35238db066a13b53ad2cfff11bdff2f76724` and byte-identical ACP protocol
+source. The companion `kimi-code-0.30.0-0.31.0/installed-range.json` records
+the later source and live-proof boundary. Research 069 and the separate
+`kimi-local-server-0.31.0` corpus qualify the changed local-server status
+projection through `0.31.0`.
+
 The JSONL fixtures are bounded projections of upstream renderer test cases.
 They include assistant output, tool exchange, retry metadata, and the durable
 resume hint. The selected headless route does not set

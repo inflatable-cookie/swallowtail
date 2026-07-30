@@ -5,6 +5,19 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-07-30 Codex And OpenCode Module Decomposition](2026-07-30-codex-opencode-module-decomposition.md)
+- [2026-07-30 Critical File Decomposition](2026-07-30-critical-file-decomposition.md)
+- [2026-07-30 Structural Health Stabilization Selection](2026-07-30-structural-health-stabilization-selection.md)
+- [2026-07-30 Installed Range Maintenance Closeout](2026-07-30-installed-range-maintenance-closeout.md)
+- [2026-07-30 OpenCode 1.18.10 Range Extension](2026-07-30-opencode-1-18-10-range-extension.md)
+- [2026-07-30 Codex 0.146 Range Extension](2026-07-30-codex-0-146-range-extension.md)
+- [2026-07-30 Installed Range Maintenance Selection](2026-07-30-installed-range-maintenance-selection.md)
+- [2026-07-30 Grok Structured Conformance And Closeout](2026-07-30-grok-structured-conformance-and-closeout.md)
+- [2026-07-30 Grok Authentication Gate And Discovery Start](2026-07-30-grok-authentication-gate-and-discovery-start.md)
+- [2026-07-30 Grok ACP Driver And Prepared Facade](2026-07-30-grok-acp-driver-and-prepared-facade.md)
+- [2026-07-30 Kimi Local-Server 0.31 Guarantee](2026-07-30-kimi-local-server-0-31-guarantee.md)
+- [2026-07-30 Kimi Code 0.31 Range And Live Closeout](2026-07-30-kimi-code-0-31-range-and-live-closeout.md)
+- [2026-07-30 Publication Lane Closure And Paused-Item Disposition](2026-07-30-publication-lane-closure-and-paused-item-disposition.md)
 - [2026-07-30 Observable-Activity Consumer Handoffs](2026-07-30-observable-activity-consumer-handoffs.md)
 - [2026-07-30 Packaged Provider-Wide Activity Proof](2026-07-30-packaged-provider-wide-activity-proof.md)
 - [2026-07-30 Provider Solution Activity Matrix](2026-07-30-provider-solution-activity-matrix.md)

@@ -1,5 +1,5 @@
 const CONTINUITY_CORPUS: &str =
-    include_str!("../fixtures/opencode-v1.14.48-v1.18.4/session-continuity.json");
+    include_str!("../fixtures/opencode-v1.14.48-v1.18.10/session-continuity.json");
 
 #[test]
 fn every_continuity_segment_loads_oldest_first_and_resumes_without_history() {

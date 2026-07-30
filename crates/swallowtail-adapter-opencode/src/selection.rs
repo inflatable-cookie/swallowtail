@@ -8,7 +8,7 @@ use swallowtail_runtime::RuntimeFailure;
 
 pub const OPENCODE_SERVER_AXIS: &str = "opencode.server";
 pub const OPENCODE_BASELINE_VERSION: &str = "1.14.48";
-pub const OPENCODE_LATEST_QUALIFIED_VERSION: &str = "1.18.4";
+pub const OPENCODE_LATEST_QUALIFIED_VERSION: &str = "1.18.10";
 const MAX_SERVER_VERSION_BYTES: usize = 64;
 
 #[must_use]

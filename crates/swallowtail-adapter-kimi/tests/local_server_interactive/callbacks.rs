@@ -7,6 +7,7 @@ use swallowtail_adapter_kimi::KimiLocalServerPermissionMode;
 use swallowtail_core::ExecutionHostId;
 use swallowtail_runtime::{
     CallbackPayload, CallbackRequestKind, CallbackResponse, CallbackResult, CleanupOutcome,
+    HarnessQuestionId, HarnessQuestionOptionId, HarnessUserInputAnswer, HarnessUserInputResponse,
     OperationContent, RuntimeTurnId, TerminalStatus, TurnRequest,
 };
 
@@ -47,13 +48,58 @@ fn manual_approval_and_question_are_explicit_callback_exchanges() {
         let request = block_on(requests.next())
             .expect("callback arrives")
             .expect("callback is valid");
-        assert!(matches!(request.kind(), CallbackRequestKind::Extension(_)));
+        let result = match scenario {
+            InteractiveScenario::Question => {
+                assert!(matches!(
+                    request.kind(),
+                    CallbackRequestKind::HarnessUserInput(_)
+                ));
+                let invalid = CallbackResult::UserInput(
+                    HarnessUserInputResponse::new(
+                        [HarnessUserInputAnswer::selected(
+                            HarnessQuestionId::new("q1").unwrap(),
+                            [HarnessQuestionOptionId::new("not-offered").unwrap()],
+                            None,
+                        )],
+                        4,
+                        512,
+                    )
+                    .unwrap(),
+                );
+                let failure = block_on(callbacks.responder().respond(CallbackResponse::new(
+                    request.callback_id().clone(),
+                    turn_id.clone(),
+                    invalid,
+                )))
+                .expect_err("an unoffered option is rejected");
+                assert_eq!(
+                    failure.diagnostic().code(),
+                    "swallowtail.kimi.local_server.callback_malformed"
+                );
+                CallbackResult::UserInput(
+                    HarnessUserInputResponse::new(
+                        [HarnessUserInputAnswer::selected(
+                            HarnessQuestionId::new("q1").unwrap(),
+                            [HarnessQuestionOptionId::new("yes").unwrap()],
+                            None,
+                        )],
+                        4,
+                        512,
+                    )
+                    .unwrap(),
+                )
+            }
+            _ => {
+                assert!(matches!(request.kind(), CallbackRequestKind::Extension(_)));
+                CallbackResult::Success(
+                    CallbackPayload::new(response.to_vec(), 512).expect("response is bounded"),
+                )
+            }
+        };
         block_on(callbacks.responder().respond(CallbackResponse::new(
             request.callback_id().clone(),
             turn_id,
-            CallbackResult::Success(
-                CallbackPayload::new(response.to_vec(), 512).expect("response is bounded"),
-            ),
+            result,
         )))
         .expect("callback response is accepted");
         let outcome = block_on(

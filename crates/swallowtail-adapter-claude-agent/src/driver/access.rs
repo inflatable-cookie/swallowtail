@@ -3,7 +3,7 @@ use crate::driver::handle::SessionCancellation;
 use crate::driver::session::{ClaudeAgentSessionHandle, cleanup_failure, merge_cleanup};
 use crate::driver::validation::validate_initialize;
 use crate::selection::ClaudeAgentPlanSelection;
-use swallowtail_core::ReasoningMode;
+use swallowtail_core::{HarnessMode, ReasoningMode};
 
 pub(super) struct PendingSession {
     pub(super) connection: Arc<AcpConnection>,
@@ -74,6 +74,14 @@ impl ClaudeAgentAcpDriver {
                         .set_config_option(&provider_id, "effort", reasoning.as_str())
                         .await?;
                     crate::driver::config::confirm_reasoning(&confirmed, reasoning)?;
+                }
+                if request.options().harness_mode() == Some(HarnessMode::Plan) {
+                    crate::driver::config::validate_plan_mode_option(&configured)?;
+                    let confirmed = pending
+                        .connection
+                        .set_config_option(&provider_id, "mode", "plan")
+                        .await?;
+                    crate::driver::config::confirm_plan_mode(&confirmed)?;
                 }
             } else {
                 crate::driver::config::validate_legacy_model(&response, model)?;

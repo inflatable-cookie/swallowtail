@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-24
+Updated: 2026-07-30
 
 ## Purpose
 
@@ -16,18 +16,25 @@ The consumer continues to use the typed `SessionOptions` boundary from
 Contract 012. A driver may translate only an option already represented by a
 portable capability and exact preflight constraint.
 
-The first negotiated option is reasoning mode:
+The first negotiated options are reasoning mode and plan mode:
 
 - the immutable plan contains `ReasoningSelection` and the exact requested
   `ReasoningMode`
 - the configured model route remains unchanged
 - provider option ids, labels, categories, ordering, and raw values remain
   adapter-private
-- provider model, agent mode, permission mode, tool policy, and arbitrary
-  configuration are not implied
+- `HarnessMode::Plan` requires `HarnessModeSelection` with the exact mode
+- permission mode, tool policy, and arbitrary configuration are not implied
 
 No common string-to-string option map is introduced. A provider option without
 one exact portable mapping is observation only.
+
+Plan mode is a behavioral posture, not a synonym for read-only access. A route
+may map it through a session option, ACP mode, per-turn collaboration field, or
+fixed process argument only when the qualified behavior is equivalent. The
+adapter retains a session selection and applies it on every turn when the
+provider field is turn-scoped. Changing mode after readiness requires a later
+explicit operation.
 
 ## Capability And Version Gate
 
@@ -54,8 +61,8 @@ provider session. For a lifecycle that claims negotiated selection:
 
 1. create or attach through the already-authorized operation
 2. receive one bounded option snapshot
-3. identify the one adapter-private option mapped to the requested portable
-   value
+3. identify the one adapter-private option or mode mapped to the requested
+   portable value
 4. require the exact requested value to be selectable
 5. send one correlated provider option-selection request
 6. require a response or update that confirms the effective value
@@ -83,8 +90,8 @@ mutation of an arbitrary previously persisted session.
 
 ## Observation And Updates
 
-The runtime may expose the effective portable reasoning mode as typed evidence.
-It does not expose raw provider option snapshots.
+The runtime may expose the effective portable reasoning or harness mode as
+typed evidence. It does not expose raw provider option snapshots.
 
 Later provider option updates:
 
@@ -93,21 +100,22 @@ Later provider option updates:
 - cannot silently change the consumer-selected value
 - cannot trigger model switching or capability widening
 
-Changing reasoning after readiness needs a later explicit runtime operation.
-The first boundary configures setup only.
+Changing reasoning or harness mode after readiness needs a later explicit
+runtime operation. The first boundary configures setup only.
 
 ## Isolation And Access
 
-Negotiated options do not imply sandboxing, filesystem containment, permission
-approval, credential authority, provider sign-in, configuration-file
-authority, or model access. Harness isolation remains the separately selected
-posture from Contracts 017 and 023.
+Negotiated options, including plan mode, do not imply sandboxing, filesystem
+containment, permission approval, credential authority, provider sign-in,
+configuration-file authority, or model access. Harness isolation remains the
+separately selected posture from Contracts 017 and 023.
 
 ## Conformance
 
 Deterministic fixtures prove:
 
 - exact portable selection and preflight agreement
+- plan-mode retention across every turn when the provider field is turn-scoped
 - version-specific boolean and multi-level provider mappings
 - option omission, ambiguity, unsupported value, malformed shape, rejected
   selection, missing confirmation, and effective-value mismatch
@@ -122,7 +130,7 @@ Deterministic fixtures prove:
 
 ## Acceptance
 
-- portable typed options remain the public boundary
+- portable typed reasoning and harness-mode options remain the public boundary
 - provider configuration channels remain adapter-private
 - exact version behavior gates every negotiated mapping
 - the selected model route cannot change

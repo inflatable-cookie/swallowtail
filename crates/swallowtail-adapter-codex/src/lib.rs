@@ -24,6 +24,7 @@ mod session_management;
 mod session_open;
 mod session_replay;
 mod turn_state;
+mod user_input;
 
 pub use app_server::{CodexAppServerDriver, codex_app_server_descriptor};
 pub use exec::{CodexExecDriver, codex_exec_descriptor};

@@ -1,0 +1,313 @@
+use futures_executor::block_on;
+use std::collections::VecDeque;
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::{Arc, Mutex};
+use std::thread::{self, JoinHandle};
+use swallowtail_core::{
+    CredentialRef, EndpointAudience, ExecutionHostId, ResourceAccess, ResourceRepresentation,
+};
+use swallowtail_runtime::{
+    BoxFuture, CleanupOutcome, CredentialLease, CredentialService, Deadline, DeadlineObservation,
+    HostServices, JoinedTask, MonotonicInstant, ProcessExit, ProcessHandle, ProcessInputChunk,
+    ProcessOutputChunk, ProcessOutputStream, ProcessRequest, ProcessService, ResourceLease,
+    RuntimeFailure, ScopeId, ScopedTaskService, TimeService, WorkingResourceIoService,
+    WorkingResourceReadRequest, WorkingResourceRef, WorkingResourceService, WorkingResourceText,
+    WorkingResourceWriteRequest,
+};
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ObservedProcessRequest {
+    pub executable: String,
+    pub arguments: Vec<String>,
+    pub environments: Vec<String>,
+    pub working_resource: Option<String>,
+}
+
+#[derive(Default)]
+pub struct ProcessState {
+    request: Mutex<Option<ObservedProcessRequest>>,
+    stdin_closed: AtomicBool,
+    force_stopped: AtomicBool,
+    waited: AtomicBool,
+}
+
+impl ProcessState {
+    pub fn started(&self) -> bool {
+        self.request.lock().expect("request lock").is_some()
+    }
+
+    pub fn request(&self) -> ObservedProcessRequest {
+        self.request
+            .lock()
+            .expect("request lock")
+            .clone()
+            .expect("process request captured")
+    }
+
+    pub fn stdin_closed(&self) -> bool {
+        self.stdin_closed.load(Ordering::SeqCst)
+    }
+
+    pub fn waited(&self) -> bool {
+        self.waited.load(Ordering::SeqCst)
+    }
+
+    pub fn force_stopped(&self) -> bool {
+        self.force_stopped.load(Ordering::SeqCst)
+    }
+}
+
+pub struct FakeProcessService {
+    state: Arc<ProcessState>,
+    output: Mutex<Option<VecDeque<ProcessOutputChunk>>>,
+    exit: ProcessExit,
+    hold_open: bool,
+}
+
+impl FakeProcessService {
+    pub fn completed(output: &str) -> (Arc<Self>, Arc<ProcessState>) {
+        Self::new(output, ProcessExit::new(true, Some(0)), false)
+    }
+
+    pub fn held_open() -> (Arc<Self>, Arc<ProcessState>) {
+        Self::new("", ProcessExit::new(false, Some(130)), true)
+    }
+
+    fn new(output: &str, exit: ProcessExit, hold_open: bool) -> (Arc<Self>, Arc<ProcessState>) {
+        let state = Arc::new(ProcessState::default());
+        let chunks = if output.is_empty() {
+            VecDeque::new()
+        } else {
+            [ProcessOutputChunk::new(
+                ProcessOutputStream::Stdout,
+                output.as_bytes().to_vec(),
+            )]
+            .into_iter()
+            .collect()
+        };
+        (
+            Arc::new(Self {
+                state: Arc::clone(&state),
+                output: Mutex::new(Some(chunks)),
+                exit,
+                hold_open,
+            }),
+            state,
+        )
+    }
+}
+
+impl ProcessService for FakeProcessService {
+    fn start(
+        &self,
+        _scope: ScopeId,
+        request: ProcessRequest,
+    ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+        *self.state.request.lock().expect("request lock") = Some(ObservedProcessRequest {
+            executable: request.executable().as_host_value().to_owned(),
+            arguments: request.arguments().map(str::to_owned).collect(),
+            environments: request
+                .environment()
+                .map(|value| value.as_host_value().to_owned())
+                .collect(),
+            working_resource: request
+                .working_resource()
+                .map(|value| value.as_host_value().to_owned()),
+        });
+        let output = self.output.lock().expect("output lock").take().unwrap();
+        let handle = FakeProcessHandle {
+            state: Arc::clone(&self.state),
+            output: Mutex::new(output),
+            exit: self.exit,
+            hold_open: self.hold_open,
+        };
+        Box::pin(async move { Ok(Box::new(handle) as Box<dyn ProcessHandle>) })
+    }
+}
+
+struct FakeProcessHandle {
+    state: Arc<ProcessState>,
+    output: Mutex<VecDeque<ProcessOutputChunk>>,
+    exit: ProcessExit,
+    hold_open: bool,
+}
+
+impl ProcessHandle for FakeProcessHandle {
+    fn write_stdin(&self, _chunk: ProcessInputChunk) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+        Box::pin(async { Ok(()) })
+    }
+
+    fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+        self.state.stdin_closed.store(true, Ordering::SeqCst);
+        Box::pin(async { Ok(()) })
+    }
+
+    fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+        Box::pin(async move {
+            loop {
+                if let Some(output) = self.output.lock().expect("output lock").pop_front() {
+                    return Ok(Some(output));
+                }
+                if !self.hold_open || self.state.force_stopped.load(Ordering::SeqCst) {
+                    return Ok(None);
+                }
+                std::thread::yield_now();
+            }
+        })
+    }
+
+    fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+        self.state.stdin_closed.store(true, Ordering::SeqCst);
+        Box::pin(async { Ok(()) })
+    }
+
+    fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+        self.state.force_stopped.store(true, Ordering::SeqCst);
+        Box::pin(async { Ok(()) })
+    }
+
+    fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+        self.state.waited.store(true, Ordering::SeqCst);
+        let exit = self.exit;
+        Box::pin(async move { Ok(exit) })
+    }
+}
+
+struct ThreadTaskService;
+struct ThreadTask(Mutex<Option<JoinHandle<()>>>);
+
+impl ScopedTaskService for ThreadTaskService {
+    fn spawn(
+        &self,
+        _scope: ScopeId,
+        task: BoxFuture<'static, ()>,
+    ) -> Result<Box<dyn JoinedTask>, RuntimeFailure> {
+        Ok(Box::new(ThreadTask(Mutex::new(Some(thread::spawn(
+            move || block_on(task),
+        ))))))
+    }
+}
+
+impl JoinedTask for ThreadTask {
+    fn join(self: Box<Self>) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+        Box::pin(async move {
+            self.0
+                .lock()
+                .expect("task lock")
+                .take()
+                .expect("task joins once")
+                .join()
+                .expect("fixture task does not panic");
+            Ok(())
+        })
+    }
+}
+
+struct PendingTime;
+
+impl TimeService for PendingTime {
+    fn now(&self) -> MonotonicInstant {
+        MonotonicInstant::from_ticks(0)
+    }
+
+    fn wait_until(&self, _deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
+        Box::pin(std::future::pending())
+    }
+}
+
+pub struct ImmediateTime;
+
+impl TimeService for ImmediateTime {
+    fn now(&self) -> MonotonicInstant {
+        MonotonicInstant::from_ticks(100)
+    }
+
+    fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
+        Box::pin(async move { DeadlineObservation::new(deadline, deadline.instant()) })
+    }
+}
+
+pub fn services(host: ExecutionHostId, process: Arc<dyn ProcessService>) -> HostServices {
+    services_with_time(host, process, Arc::new(PendingTime))
+}
+
+pub fn services_with_time(
+    host: ExecutionHostId,
+    process: Arc<dyn ProcessService>,
+    time: Arc<dyn TimeService>,
+) -> HostServices {
+    HostServices::new(host)
+        .with_task(Arc::new(ThreadTaskService))
+        .with_time(time)
+        .with_process(process)
+        .with_credential(Arc::new(UnavailableHostService))
+        .with_working_resource(Arc::new(UnavailableHostService))
+        .with_working_resource_io(Arc::new(UnavailableHostService))
+}
+
+struct UnavailableHostService;
+
+impl CredentialService for UnavailableHostService {
+    fn acquire(
+        &self,
+        _scope: ScopeId,
+        _reference: CredentialRef,
+        _audience: EndpointAudience,
+    ) -> BoxFuture<'static, Result<CredentialLease, RuntimeFailure>> {
+        Box::pin(async { Err(unavailable()) })
+    }
+
+    fn release(&self, _lease: CredentialLease) -> BoxFuture<'static, CleanupOutcome> {
+        Box::pin(async { CleanupOutcome::NotApplicable })
+    }
+}
+
+impl WorkingResourceService for UnavailableHostService {
+    fn resolve(
+        &self,
+        _scope: ScopeId,
+        _reference: WorkingResourceRef,
+        _access: ResourceAccess,
+        _representation: ResourceRepresentation,
+    ) -> BoxFuture<'static, Result<ResourceLease, RuntimeFailure>> {
+        Box::pin(async { Err(unavailable()) })
+    }
+
+    fn create_temporary(
+        &self,
+        _scope: ScopeId,
+        _access: ResourceAccess,
+        _representation: ResourceRepresentation,
+    ) -> BoxFuture<'static, Result<ResourceLease, RuntimeFailure>> {
+        Box::pin(async { Err(unavailable()) })
+    }
+
+    fn release(&self, _lease: ResourceLease) -> BoxFuture<'static, CleanupOutcome> {
+        Box::pin(async { CleanupOutcome::NotApplicable })
+    }
+}
+
+impl WorkingResourceIoService for UnavailableHostService {
+    fn read_text(
+        &self,
+        _lease: &ResourceLease,
+        _request: WorkingResourceReadRequest,
+    ) -> BoxFuture<'static, Result<WorkingResourceText, RuntimeFailure>> {
+        Box::pin(async { Err(unavailable()) })
+    }
+
+    fn write_text(
+        &self,
+        _lease: &ResourceLease,
+        _request: WorkingResourceWriteRequest,
+    ) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+        Box::pin(async { Err(unavailable()) })
+    }
+}
+
+fn unavailable() -> RuntimeFailure {
+    RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
+        "fixture.grok.unavailable",
+        "Fixture service is unavailable",
+    ))
+}

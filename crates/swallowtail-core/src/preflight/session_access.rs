@@ -126,13 +126,17 @@ fn validate_provider_requests(
     requirements: &OperationRequirements,
     policy: &SessionAccessPolicy,
 ) -> Result<(), PreflightFailure> {
-    for namespace in policy.provider_requests().observed_extensions() {
+    for namespace in policy
+        .provider_requests()
+        .observed_extensions()
+        .chain(policy.provider_requests().exchanged_extensions())
+    {
         if !requirements
             .extension_namespaces()
             .any(|required| required == namespace)
         {
             return Err(failure(format!(
-                "Observed provider request extension '{}' is not preflight-bound",
+                "Provider request extension '{}' is not preflight-bound",
                 namespace.as_str()
             )));
         }

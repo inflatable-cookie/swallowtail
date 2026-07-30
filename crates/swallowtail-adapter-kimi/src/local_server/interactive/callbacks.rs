@@ -14,7 +14,10 @@ use std::task::{Context, Poll, Waker};
 use swallowtail_core::{ExtensionNamespace, ProviderExtension, ProviderRequestRef};
 use swallowtail_runtime::{
     BoxCallbackStream, CallbackAbandonment, CallbackExchange, CallbackId, CallbackOperationId,
-    CallbackRequest, CallbackResponder, HostServices, RuntimeFailure, RuntimeTurnId, ScopeId,
+    CallbackRequest, CallbackResponder, HarnessQuestionId, HarnessQuestionOptionId,
+    HarnessUserInputChoiceMode, HarnessUserInputOption, HarnessUserInputQuestion,
+    HarnessUserInputQuestionKind, HarnessUserInputRequest, HostServices, OperationContent,
+    RuntimeFailure, RuntimeTurnId, ScopeId,
 };
 
 const CALLBACK_CAPACITY: usize = 32;
@@ -22,11 +25,11 @@ const CALLBACK_BYTES: usize = 256 * 1024;
 const APPROVAL_NAMESPACE: &str = "kimi.local-server/approval-v1";
 const QUESTION_NAMESPACE: &str = "kimi.local-server/question-v1";
 
-pub(super) fn approval_namespace() -> ExtensionNamespace {
+pub(in crate::local_server) fn approval_namespace() -> ExtensionNamespace {
     ExtensionNamespace::new(APPROVAL_NAMESPACE).expect("static namespace is valid")
 }
 
-pub(super) fn question_namespace() -> ExtensionNamespace {
+pub(in crate::local_server) fn question_namespace() -> ExtensionNamespace {
     ExtensionNamespace::new(QUESTION_NAMESPACE).expect("static namespace is valid")
 }
 
@@ -40,6 +43,7 @@ struct PendingCallback {
     operation_id: CallbackOperationId,
     provider_id: String,
     kind: ProviderCallbackKind,
+    user_input: Option<HarnessUserInputRequest>,
 }
 
 struct State {
@@ -120,15 +124,28 @@ impl CallbackHub {
             ProviderCallbackKind::Question => question_namespace(),
         };
         let provider_ref = ProviderRequestRef::new(&provider.id).map_err(|_| malformed())?;
-        let request = CallbackRequest::extension(
-            callback_id.clone(),
-            turn_id.clone(),
-            event_sequence,
-            deadline,
-            ProviderExtension::new(namespace, provider.payload),
-            CALLBACK_BYTES,
-        )
-        .map_err(|_| malformed())?
+        let user_input = match kind {
+            ProviderCallbackKind::Approval => None,
+            ProviderCallbackKind::Question => Some(question_request(&provider.payload)?),
+        };
+        let request = match &user_input {
+            Some(user_input) => CallbackRequest::harness_user_input(
+                callback_id.clone(),
+                turn_id.clone(),
+                event_sequence,
+                deadline,
+                user_input.clone(),
+            ),
+            None => CallbackRequest::extension(
+                callback_id.clone(),
+                turn_id.clone(),
+                event_sequence,
+                deadline,
+                ProviderExtension::new(namespace, provider.payload),
+                CALLBACK_BYTES,
+            )
+            .map_err(|_| malformed())?,
+        }
         .with_provider_request_ref(provider_ref);
         state.pending.insert(
             callback_id.clone(),
@@ -136,6 +153,7 @@ impl CallbackHub {
                 operation_id: CallbackOperationId::Turn(turn_id.clone()),
                 provider_id: provider.id,
                 kind,
+                user_input,
             },
         );
         state.requests.push_back(request);
@@ -183,6 +201,61 @@ fn malformed() -> RuntimeFailure {
         "swallowtail.kimi.local_server.callback_malformed",
         "Kimi local-server callback data is malformed",
     )
+}
+
+fn question_request(payload: &[u8]) -> Result<HarnessUserInputRequest, RuntimeFailure> {
+    let value: serde_json::Value = serde_json::from_slice(payload).map_err(|_| malformed())?;
+    let questions = value
+        .get("questions")
+        .and_then(serde_json::Value::as_array)
+        .ok_or_else(malformed)?
+        .iter()
+        .map(|question| {
+            let question = question.as_object().ok_or_else(malformed)?;
+            let id = question
+                .get("id")
+                .and_then(serde_json::Value::as_str)
+                .ok_or_else(malformed)?;
+            let prompt = question
+                .get("question")
+                .and_then(serde_json::Value::as_str)
+                .ok_or_else(malformed)?;
+            let options = question
+                .get("options")
+                .and_then(serde_json::Value::as_array)
+                .ok_or_else(malformed)?
+                .iter()
+                .map(|option| {
+                    let option = option.as_object().ok_or_else(malformed)?;
+                    let id = option
+                        .get("id")
+                        .and_then(serde_json::Value::as_str)
+                        .ok_or_else(malformed)?;
+                    let label = option
+                        .get("label")
+                        .and_then(serde_json::Value::as_str)
+                        .ok_or_else(malformed)?;
+                    Ok(HarnessUserInputOption::new(
+                        HarnessQuestionOptionId::new(id).map_err(|_| malformed())?,
+                        OperationContent::new(label).map_err(|_| malformed())?,
+                        None,
+                    ))
+                })
+                .collect::<Result<Vec<_>, RuntimeFailure>>()?;
+            HarnessUserInputQuestion::new(
+                HarnessQuestionId::new(id).map_err(|_| malformed())?,
+                OperationContent::new(prompt).map_err(|_| malformed())?,
+                OperationContent::new(prompt).map_err(|_| malformed())?,
+                HarnessUserInputQuestionKind::Choice {
+                    mode: HarnessUserInputChoiceMode::Single,
+                    allow_other: false,
+                },
+                options,
+            )
+            .map_err(|_| malformed())
+        })
+        .collect::<Result<Vec<_>, _>>()?;
+    HarnessUserInputRequest::new(questions, None, 4, 4, CALLBACK_BYTES).map_err(|_| malformed())
 }
 
 fn closed() -> RuntimeFailure {

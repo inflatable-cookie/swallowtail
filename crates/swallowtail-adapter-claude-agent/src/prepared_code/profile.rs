@@ -233,6 +233,7 @@ impl ClaudeCodePreparedIntegration {
         let plan = build_plan(self, &instance, &route, &requirements)?;
         let mut policy = OperationPolicy::offline()
             .with_provider_retention(ProviderRetentionPolicy::Prohibited)
+            .with_harness_mode(swallowtail_core::HarnessMode::Plan)
             .with_harness_isolation(HarnessIsolation::AmbientHost)
             .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient);
         if let Some(reasoning) = reasoning {

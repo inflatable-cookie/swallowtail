@@ -89,8 +89,9 @@ pub(super) fn instance_with_capabilities(
 pub(super) fn requirements(
     prepared: &ClaudeAgentPreparedIntegration,
     capabilities: impl IntoIterator<Item = CapabilityRequirement>,
+    permission_handling: super::ClaudeAgentPermissionHandling,
 ) -> OperationRequirements {
-    OperationRequirements::new(
+    let requirements = OperationRequirements::new(
         ExecutionLayer::HarnessInteraction,
         OperationShape::InteractiveSession,
         swallowtail_core::DriverRole::InteractiveSession,
@@ -103,9 +104,20 @@ pub(super) fn requirements(
     .with_interface_versions([prepared.observation().version().clone()])
     .with_harness_isolation(HarnessIsolation::AmbientHost)
     .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient)
-    .with_session_access_policy(SessionAccessPolicy::ambient_harness(ResourceAccess::Read))
     .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited)
-    .require_model_route()
+    .require_model_route();
+    match permission_handling {
+        super::ClaudeAgentPermissionHandling::RejectAndStop => requirements
+            .with_session_access_policy(SessionAccessPolicy::ambient_harness(ResourceAccess::Read)),
+        super::ClaudeAgentPermissionHandling::ConsumerMediated => requirements
+            .with_extension_namespaces([crate::claude_agent_permission_namespace()])
+            .with_session_access_policy(
+                SessionAccessPolicy::ambient_harness_with_consumer_mediated_requests(
+                    ResourceAccess::Read,
+                    [crate::claude_agent_permission_namespace()],
+                ),
+            ),
+    }
 }
 
 pub(super) fn run_requirements(

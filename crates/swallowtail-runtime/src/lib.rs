@@ -18,6 +18,7 @@ mod event_channel;
 mod failure;
 mod handles;
 mod harness_rpc;
+mod harness_user_input;
 mod host_reference;
 mod host_registry;
 mod host_traits;
@@ -92,7 +93,12 @@ pub use handles::{
 };
 pub use harness_rpc::{
     HarnessCommandAcknowledgement, HarnessCommandResponse, HarnessScheduledMessage,
-    HarnessUiDialog, HarnessUiDialogKind, HarnessUiDisplay, HarnessUiDisplayKind,
+    HarnessUiDisplay, HarnessUiDisplayKind,
+};
+pub use harness_user_input::{
+    HarnessUserInputAnswer, HarnessUserInputChoiceMode, HarnessUserInputInvalid,
+    HarnessUserInputOption, HarnessUserInputQuestion, HarnessUserInputQuestionKind,
+    HarnessUserInputRequest, HarnessUserInputResponse,
 };
 pub use host_reference::{
     AttachmentRef, EndpointRef, EnvironmentRef, ExecutableRef, MaterializedFileRef,
@@ -106,8 +112,9 @@ pub use host_traits::{
 };
 pub use identity::{
     AccessEvidenceSourceId, CallbackId, DirectInferenceAttemptId, DirectToolCallId,
-    HarnessCommandId, MediaStreamId, RequestId, RuntimeIdentityRequired, RuntimeRunId,
-    RuntimeSessionId, RuntimeTurnId, ScopeId, ServingInstanceId,
+    HarnessCommandId, HarnessQuestionId, HarnessQuestionOptionId, MediaStreamId, RequestId,
+    RuntimeIdentityRequired, RuntimeRunId, RuntimeSessionId, RuntimeTurnId, ScopeId,
+    ServingInstanceId,
 };
 pub use input::{InputLimitExceeded, InputValueRequired};
 pub use installed_executable::{

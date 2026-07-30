@@ -5,8 +5,8 @@ authorize registry, tag, push, GitHub release, workflow, or consumer mutations.
 
 ## Candidates
 
-- [0.1.0](0.1.0.md) — active non-published post-hardening 23-package
-  consumer-soak candidate
+- [0.1.0](0.1.0.md) — retained non-published post-hardening 23-package
+  compatibility snapshot
 - [Nucleus 0.1.0 handoff](0.1.0-nucleus-handoff.md) — prepared app-server
   adoption
 - [Nucleus provider-session lifecycle handoff](0.1.0-nucleus-provider-session-lifecycle-handoff.md)
@@ -21,3 +21,7 @@ authorize registry, tag, push, GitHub release, workflow, or consumer mutations.
 The earlier compile-only, provisional, and parentless provider-wide candidates
 remain frozen as superseded evidence. No candidate grants publication
 authority.
+
+There is no active publication lane. Registry work may return only through a
+new operator-authorized roadmap after months of working-application usage
+evidence.

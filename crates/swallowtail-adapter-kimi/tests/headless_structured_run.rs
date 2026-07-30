@@ -307,7 +307,7 @@ fn execute(
 
 fn prepared(host: ExecutionHostId) -> KimiHeadlessPreparedIntegration {
     let access = access_profile();
-    let (process, state) = FakeProcessService::completed("0.29.2\n");
+    let (process, state) = FakeProcessService::completed("0.31.0\n");
     let prepared = block_on(prepare_kimi_headless(
         KimiHeadlessPreparationInput::new(
             ConfiguredInstanceId::new("kimi.headless.fixture").expect("instance is valid"),
@@ -334,7 +334,7 @@ fn prepared(host: ExecutionHostId) -> KimiHeadlessPreparedIntegration {
     assert_eq!(state.request().arguments, ["--version"]);
     assert_eq!(
         prepared.observation().version().version().as_str(),
-        "0.29.2"
+        "0.31.0"
     );
     prepared
 }

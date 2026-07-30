@@ -1,12 +1,12 @@
 {
   "fixture_schema": 1,
-  "evidence_checked": "2026-07-28",
+  "evidence_checked": "2026-07-30",
   "claim_id": "codex.app-server.session-continuity-window-1",
   "axis": "codex.cli",
   "facade": "codex-app-server-v2",
   "qualified_range": {
     "baseline": "0.80.0",
-    "latest": "0.145.0",
+    "latest": "0.146.0",
     "excluded_gaps": ["0.82.0", "0.83.0", "0.108.0", "0.109.0"],
     "newer_posture": "allow_unverified"
   },
@@ -17,7 +17,7 @@
     {"minimum":"0.100.0","maximum":"0.107.0","claim":"codex.app-server.legacy-explicit-stdio","resume_request":"history_response"},
     {"minimum":"0.110.0","maximum":"0.128.0","claim":"codex.app-server.v2.base","resume_request":"history_response"},
     {"minimum":"0.129.0","maximum":"0.130.0","claim":"codex.app-server.v2.base","resume_request":"exclude_turns"},
-    {"minimum":"0.131.0","maximum":"0.145.0","claim":"codex.app-server.v2.workspace-roots","resume_request":"exclude_turns"}
+    {"minimum":"0.131.0","maximum":"0.146.0","claim":"codex.app-server.v2.workspace-roots","resume_request":"exclude_turns"}
   ],
   "operations": {
     "load": {
@@ -72,7 +72,7 @@
   },
   "source": {
     "baseline": "https://github.com/openai/codex/blob/rust-v0.80.0/codex-rs/app-server-protocol/src/protocol/v2.rs",
-    "latest": "https://github.com/openai/codex/blob/rust-v0.145.0/codex-rs/app-server-protocol/src/protocol/v2.rs",
+    "latest": "https://github.com/openai/codex/blob/rust-v0.146.0/codex-rs/app-server-protocol/src/protocol/v2.rs",
     "exclude_turns_first": "https://github.com/openai/codex/blob/rust-v0.129.0/codex-rs/app-server-protocol/src/protocol/v2.rs"
   }
 }

@@ -7,6 +7,7 @@ members = [
   "crates/swallowtail-adapter-codex",
   "crates/swallowtail-adapter-deepseek",
   "crates/swallowtail-adapter-gemini",
+  "crates/swallowtail-adapter-grok",
   "crates/swallowtail-adapter-kimi",
   "crates/swallowtail-adapter-kimi-platform",
   "crates/swallowtail-adapter-llama-cpp",

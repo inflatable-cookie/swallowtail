@@ -1,0 +1,39 @@
+[package]
+name = "swallowtail-adapter-grok"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+readme.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+description = "Grok Build ACP harness driver for Swallowtail"
+autotests = false
+
+[lib]
+doctest = false
+
+[dependencies]
+futures-channel = "0.3"
+futures-core = "0.3"
+semver = "1"
+serde_json = "1"
+swallowtail-core.workspace = true
+swallowtail-protocol-acp.workspace = true
+swallowtail-runtime.workspace = true
+
+[dev-dependencies]
+futures-executor = "0.3"
+futures-util = "0.3"
+swallowtail-testkit.workspace = true
+
+[lints]
+workspace = true
+
+[[test]]
+name = "discovery_suite"
+path = "tests/discovery_suite.rs"
+
+[[test]]
+name = "acp_suite"
+path = "tests/acp_suite.rs"

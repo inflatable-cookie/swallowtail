@@ -1,6 +1,6 @@
 use serde_json::Value;
 
-const USAGE_EVENTS: &str = include_str!("fixtures/opencode-v1.14.48-v1.18.4/usage.sse");
+const USAGE_EVENTS: &str = include_str!("fixtures/opencode-v1.14.48-v1.18.10/usage.sse");
 
 #[test]
 fn qualified_step_finish_parts_expose_disjoint_usage_components() {

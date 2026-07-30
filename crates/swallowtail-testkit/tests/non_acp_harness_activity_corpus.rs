@@ -3,13 +3,13 @@ use std::collections::BTreeSet;
 
 const INVENTORY: &str = include_str!("fixtures/non-acp-harness-activity.json");
 const OPENCODE_COMPATIBILITY: &str = include_str!(
-    "../../swallowtail-adapter-opencode/tests/fixtures/opencode-v1.14.48-v1.18.4/compatibility.json"
+    "../../swallowtail-adapter-opencode/tests/fixtures/opencode-v1.14.48-v1.18.10/compatibility.json"
 );
 const OPENCODE_RICH: &str = include_str!(
-    "../../swallowtail-adapter-opencode/tests/fixtures/opencode-v1.14.48-v1.18.4/activity-rich.sse"
+    "../../swallowtail-adapter-opencode/tests/fixtures/opencode-v1.14.48-v1.18.10/activity-rich.sse"
 );
 const OPENCODE_GAP: &str = include_str!(
-    "../../swallowtail-adapter-opencode/tests/fixtures/opencode-v1.14.48-v1.18.4/activity-gap-1.14.51.sse"
+    "../../swallowtail-adapter-opencode/tests/fixtures/opencode-v1.14.48-v1.18.10/activity-gap-1.14.51.sse"
 );
 const PI_ACTIVITY: &str =
     include_str!("../../swallowtail-adapter-pi/tests/fixtures/pi-rpc-0.80.10/activity.jsonl");
@@ -243,7 +243,7 @@ fn exact_opencode_release_window_and_malformed_cases_are_machine_checked() {
             .as_array()
             .expect("release array")
             .len(),
-        45
+        51
     );
     assert_eq!(
         compatibility["surface_revisions"]

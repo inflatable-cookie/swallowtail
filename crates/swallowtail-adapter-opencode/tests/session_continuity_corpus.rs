@@ -1,8 +1,9 @@
 use semver::Version;
 use std::collections::BTreeMap;
 
-const EXECUTION: &str = include_str!("fixtures/opencode-v1.14.48-v1.18.4/compatibility.json");
-const CONTINUITY: &str = include_str!("fixtures/opencode-v1.14.48-v1.18.4/session-continuity.json");
+const EXECUTION: &str = include_str!("fixtures/opencode-v1.14.48-v1.18.10/compatibility.json");
+const CONTINUITY: &str =
+    include_str!("fixtures/opencode-v1.14.48-v1.18.10/session-continuity.json");
 
 fn version(value: &serde_json::Value, field: &str) -> Version {
     Version::parse(value[field].as_str().expect("version field is text"))
@@ -16,7 +17,7 @@ fn every_qualified_release_maps_to_one_continuity_segment() {
         serde_json::from_str(CONTINUITY).expect("continuity corpus");
     let releases = execution["releases"].as_array().expect("releases");
     let segments = continuity["segments"].as_array().expect("segments");
-    assert_eq!(releases.len(), 45);
+    assert_eq!(releases.len(), 51);
     assert_eq!(segments.len(), 12);
     assert_eq!(continuity["baseline"], execution["baseline"]);
     assert_eq!(

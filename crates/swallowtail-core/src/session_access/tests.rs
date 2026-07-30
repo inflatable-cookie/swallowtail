@@ -65,6 +65,25 @@ fn observed_provider_requests_are_explicit_and_default_to_reject() {
 }
 
 #[test]
+fn observed_and_exchanged_provider_requests_remain_distinct() {
+    let approval = ExtensionNamespace::new("example/approval").unwrap();
+    let question = ExtensionNamespace::new("example/question").unwrap();
+    let policy =
+        ProviderRequestPolicy::observe_and_exchange([approval.clone()], [question.clone()]);
+
+    assert_eq!(
+        policy.handling_for(&approval),
+        ProviderRequestHandling::ObserveAndStop
+    );
+    assert_eq!(
+        policy.handling_for(&question),
+        ProviderRequestHandling::Exchange
+    );
+    assert_eq!(policy.observed_extensions().len(), 1);
+    assert_eq!(policy.exchanged_extensions().len(), 1);
+}
+
+#[test]
 fn consumer_mediated_provider_requests_are_explicit_and_exact() {
     let approval = ExtensionNamespace::new("example.approval").unwrap();
     let question = ExtensionNamespace::new("example.question").unwrap();

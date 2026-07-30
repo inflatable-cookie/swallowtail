@@ -1,0 +1,216 @@
+#[test]
+fn callback_wait_ends_when_the_host_deadline_is_observed() {
+    let (process, state) = ScriptedAppServer::new(AppServerMode::HoldDynamicToolCall);
+    let recording = RecordingHostServices::default();
+    let services = host_services_with(process, &recording, [HostServiceKind::Time]);
+    let mut session = block_on(
+        driver().open_session(
+            app_server_plan_with(
+                DriverRole::InteractiveSession,
+                [reasoning_capability(), tool_capability()],
+                [HostServiceKind::Time],
+            ),
+            read_only_open_request(
+                RequestId::new("session-timeout-tool").expect("request id is valid"),
+                working_resource(),
+                None,
+            )
+            .with_options(session_options("task_ledger")),
+            services.clone(),
+        ),
+    )
+    .expect("deadline-capable session opens");
+    let mut turn = block_on(
+        session.start_turn(
+            TurnRequest::new(
+                RuntimeTurnId::new("turn-timeout-tool").expect("turn id is valid"),
+                OperationContent::new("wait for tool").expect("content is valid"),
+            )
+            .with_deadline(Deadline::at(MonotonicInstant::from_ticks(50))),
+            services,
+        ),
+    )
+    .expect("turn starts");
+    let mut callbacks = turn.take_callbacks().expect("callback exchange exists");
+    let mut requests = callbacks.take_requests().expect("request stream exists");
+    let terminal = block_on(
+        turn.take_terminal_outcome()
+            .expect("terminal outcome is available"),
+    );
+
+    assert_eq!(terminal.status(), &TerminalStatus::TimedOut);
+    assert!(block_on(requests.next()).is_none());
+    assert!(state.methods().contains(&"turn/interrupt".to_owned()));
+    assert!(state.messages().iter().any(|message| {
+        message.get("id").and_then(serde_json::Value::as_str) == Some("callback-900")
+            && message.get("error").is_some()
+    }));
+    assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
+    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+}
+
+#[test]
+fn whole_session_cancellation_force_stops_and_joins() {
+    let (process, state) = ScriptedAppServer::new(AppServerMode::HoldTurn);
+    let session = block_on(driver().open_session(
+        app_server_plan(DriverRole::InteractiveSession),
+        read_only_open_request(
+            RequestId::new("session-cancel").expect("request id is valid"),
+            working_resource(),
+            None,
+        ),
+        host_services(process),
+    ))
+    .expect("session opens");
+    assert_eq!(
+        block_on(session.cancellation().request()).expect("session cancellation succeeds"),
+        CancellationAcknowledgement::Requested
+    );
+    assert_eq!(
+        block_on(session.cancellation().request()).expect("repeat cancellation succeeds"),
+        CancellationAcknowledgement::AlreadyRequested
+    );
+    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert!(state.forced());
+    assert!(state.waited());
+}
+
+#[test]
+fn unsupported_server_request_fails_instead_of_hanging() {
+    let (process, state) = ScriptedAppServer::new(AppServerMode::RequestCallback);
+    let services = host_services(process);
+    let mut session = block_on(driver().open_session(
+        app_server_plan(DriverRole::InteractiveSession),
+        read_only_open_request(
+            RequestId::new("session-callback").expect("request id is valid"),
+            working_resource(),
+            None,
+        ),
+        services.clone(),
+    ))
+    .expect("session opens");
+    let mut turn = block_on(session.start_turn(
+        TurnRequest::new(
+            RuntimeTurnId::new("turn-callback").expect("turn id is valid"),
+            OperationContent::new("trigger callback").expect("content is valid"),
+        ),
+        services,
+    ))
+    .expect("turn response remains correlated");
+    let terminal = block_on(
+        turn.take_terminal_outcome()
+            .expect("terminal outcome is available"),
+    );
+
+    assert!(matches!(
+        terminal.status(),
+        TerminalStatus::RuntimeFailed(_)
+    ));
+    assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
+    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert!(state.forced());
+    assert!(state.waited());
+}
+
+#[test]
+fn unsupported_session_input_fails_before_process_start() {
+    let (process, state) = ScriptedAppServer::new(AppServerMode::CompleteTurn);
+    let result = block_on(driver().open_session(
+        app_server_plan(DriverRole::InteractiveSession),
+        read_only_open_request(
+            RequestId::new("session-deadline").expect("request id is valid"),
+            working_resource(),
+            Some(Deadline::at(MonotonicInstant::from_ticks(10))),
+        ),
+        host_services(process),
+    ));
+
+    assert!(result.is_err());
+    assert!(!state.started());
+}
+
+#[test]
+fn session_options_without_matching_preflight_fail_before_process_start() {
+    let (process, state) = ScriptedAppServer::new(AppServerMode::CompleteTurn);
+    let request = read_only_open_request(
+        RequestId::new("session-options").expect("request id is valid"),
+        working_resource(),
+        None,
+    )
+    .with_options(
+        SessionOptions::default()
+            .with_reasoning_mode(ReasoningMode::new("low").expect("reasoning mode is valid")),
+    );
+    let result = block_on(driver().open_session(
+        app_server_plan(DriverRole::InteractiveSession),
+        request,
+        host_services(process),
+    ));
+
+    assert!(result.is_err());
+    assert!(!state.started());
+}
+
+#[test]
+fn resumed_dynamic_tools_fail_before_process_start_when_schema_cannot_redeclare_them() {
+    let (process, state) = ScriptedAppServer::new(AppServerMode::CompleteTurn);
+    let plan = app_server_plan_with(
+        DriverRole::InteractiveSession,
+        [reasoning_capability(), tool_capability()],
+        [],
+    );
+    let binding = session_resume_binding(&plan, "thread-provider-existing");
+    let result = block_on(
+        driver().resume_session(
+            plan,
+            read_only_resume_request(
+                RequestId::new("resume-tools").expect("request id is valid"),
+                binding,
+                working_resource(),
+                None,
+            )
+            .with_options(session_options("task_ledger")),
+            host_services(process),
+        ),
+    );
+
+    assert!(result.is_err());
+    assert!(!state.started());
+}
+
+#[test]
+fn structured_output_is_rejected_before_turn_provider_work() {
+    let (process, state) = ScriptedAppServer::new(AppServerMode::CompleteTurn);
+    let services = host_services(process);
+    let mut session = block_on(driver().open_session(
+        app_server_plan(DriverRole::InteractiveSession),
+        read_only_open_request(
+            RequestId::new("session-structured-output").expect("request id is valid"),
+            working_resource(),
+            None,
+        ),
+        services.clone(),
+    ))
+    .expect("session opens");
+    let methods_before_turn = state.methods();
+    let schema = StructuredOutputDescriptor::new(
+        SchemaDocument::inline(b"{}".to_vec(), 16).expect("schema is within bound"),
+        "application/schema+json",
+        "json-schema-2020-12",
+    )
+    .expect("schema descriptor is valid");
+    let result = block_on(
+        session.start_turn(
+            TurnRequest::new(
+                RuntimeTurnId::new("turn-structured-output").expect("turn id is valid"),
+                OperationContent::new("return structured output").expect("content is valid"),
+            )
+            .with_structured_output(schema),
+            services,
+        ),
+    );
+
+    assert!(result.is_err());
+    assert_eq!(state.methods(), methods_before_turn);
+    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+}

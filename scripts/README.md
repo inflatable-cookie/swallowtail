@@ -29,7 +29,7 @@ Release-preparation scripts:
 - `verify-packaged-provider-runtime.sh` — assemble one transient candidate,
   reproduce it from its source bundle, run all packaged provider-facade
   suites, then reuse it for the unchanged Nucleus and Soundcheck runtime proof
-- `release-package-set.sh` — one ordered 23-package and current-consumer set
+- `release-package-set.sh` — one ordered 24-package and current-consumer set
 
 These scripts do not upload, tag, push, read release credentials, change
 owners, create releases, or edit consumers.

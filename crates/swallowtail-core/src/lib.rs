@@ -12,6 +12,7 @@ mod diagnostic;
 mod direct_continuation;
 mod event;
 mod harness_configuration;
+mod harness_mode;
 mod harness_rpc;
 mod identity;
 mod installed_executable;
@@ -55,6 +56,7 @@ pub use event::{
     ProviderExtension,
 };
 pub use harness_configuration::HarnessConfigurationPosture;
+pub use harness_mode::HarnessMode;
 pub use harness_rpc::{
     HarnessBackgroundAction, HarnessConfigurationSource, HarnessMessageClass, HarnessRpcPolicy,
     HarnessSchedulingBounds,

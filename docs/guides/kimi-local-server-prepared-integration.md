@@ -71,6 +71,11 @@ through the callback exchange. The consumer owns authorization and response
 policy. `Auto` and `Yolo` do not silently elevate an unexpected callback;
 undeclared provider interaction fails visibly.
 
+Structured questions use the common typed harness user-input request and
+response. Manual approvals remain the exact
+`kimi.local-server/approval-v1` provider extension. Both preserve the provider
+request id and exactly-once callback correlation.
+
 Cancellation sends Kimi's native WebSocket abort. Deadlines, provider
 cancellation, transport loss, resynchronization, and runtime failure remain
 distinct. Turn and session close join local work. Session close preserves

@@ -4,8 +4,8 @@ use swallowtail_adapter_opencode::{opencode_http_claim, opencode_server_binding}
 use swallowtail_core::InterfaceCompatibilityAssessment;
 
 const EXECUTION_CORPUS: &str =
-    include_str!("fixtures/opencode-v1.14.48-v1.18.4/compatibility.json");
-const DELETION_CORPUS: &str = include_str!("fixtures/opencode-v1.14.48-v1.18.4/deletion.json");
+    include_str!("fixtures/opencode-v1.14.48-v1.18.10/compatibility.json");
+const DELETION_CORPUS: &str = include_str!("fixtures/opencode-v1.14.48-v1.18.10/deletion.json");
 
 fn version(value: &serde_json::Value, field: &str) -> Version {
     Version::parse(value[field].as_str().expect("version field is a string"))
@@ -38,7 +38,7 @@ fn deletion_closure_covers_the_unchanged_qualified_release_set() {
 
     assert_eq!(deletion["baseline"], execution["baseline"]);
     assert_eq!(deletion["latest_qualified"], execution["latest_qualified"]);
-    assert_eq!(deletion_releases.len(), 45);
+    assert_eq!(deletion_releases.len(), 51);
     assert_eq!(deletion_releases.len(), execution_releases.len());
     assert_eq!(
         execution["selected_routes"]

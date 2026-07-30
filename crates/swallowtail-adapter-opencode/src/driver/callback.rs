@@ -1,5 +1,7 @@
 use crate::failure::failure;
-use crate::protocol::{PendingProviderRequest, ProviderRequestKind, callback_response};
+use crate::protocol::{
+    PendingProviderRequest, ProviderRequestKind, callback_response, question_request,
+};
 use crate::transport::CurlTransport;
 use futures_core::Stream;
 use std::collections::{BTreeMap, BTreeSet, VecDeque};
@@ -29,6 +31,7 @@ struct Pending {
     provider_id: String,
     kind: ProviderRequestKind,
     operation_id: CallbackOperationId,
+    user_input: Option<swallowtail_runtime::HarnessUserInputRequest>,
 }
 
 struct State {
@@ -115,26 +118,48 @@ impl CallbackHub {
             ProviderRequestKind::Question { .. } => question_namespace(),
         };
         let provider_ref = ProviderRequestRef::new(&provider.id).map_err(|_| malformed())?;
-        let extension = ProviderExtension::new(namespace, provider.payload);
-        let request = match &operation_id {
-            CallbackOperationId::Turn(turn_id) => CallbackRequest::extension(
+        let user_input = match provider.kind {
+            ProviderRequestKind::Permission => None,
+            ProviderRequestKind::Question { .. } => Some(question_request(&provider.payload)?),
+        };
+        let request = match (&operation_id, &user_input) {
+            (CallbackOperationId::Turn(turn_id), Some(user_input)) => {
+                CallbackRequest::harness_user_input(
+                    callback_id.clone(),
+                    turn_id.clone(),
+                    sequence,
+                    deadline,
+                    user_input.clone(),
+                )
+            }
+            (CallbackOperationId::Run(run_id), Some(user_input)) => {
+                CallbackRequest::run_harness_user_input(
+                    callback_id.clone(),
+                    run_id.clone(),
+                    sequence,
+                    deadline,
+                    user_input.clone(),
+                )
+            }
+            (CallbackOperationId::Turn(turn_id), None) => CallbackRequest::extension(
                 callback_id.clone(),
                 turn_id.clone(),
                 sequence,
                 deadline,
-                extension,
+                ProviderExtension::new(namespace, provider.payload),
                 CALLBACK_BYTES,
-            ),
-            CallbackOperationId::Run(run_id) => CallbackRequest::run_extension(
+            )
+            .map_err(|_| malformed())?,
+            (CallbackOperationId::Run(run_id), None) => CallbackRequest::run_extension(
                 callback_id.clone(),
                 run_id.clone(),
                 sequence,
                 deadline,
-                extension,
+                ProviderExtension::new(namespace, provider.payload),
                 CALLBACK_BYTES,
-            ),
+            )
+            .map_err(|_| malformed())?,
         }
-        .map_err(|_| malformed())?
         .with_provider_request_ref(provider_ref);
         state.pending.insert(
             callback_id.clone(),
@@ -142,6 +167,7 @@ impl CallbackHub {
                 provider_id: provider.id,
                 kind: provider.kind,
                 operation_id,
+                user_input,
             },
         );
         state.requests.push_back(request);
@@ -178,9 +204,13 @@ impl CallbackResponder for ResponseContext {
                         "OpenCode callback response belongs to another operation",
                     ));
                 }
-                let request =
-                    callback_response(&pending.provider_id, pending.kind, response.result())?
-                        .with_directory(&self.directory);
+                let request = callback_response(
+                    &pending.provider_id,
+                    pending.kind,
+                    pending.user_input.as_ref(),
+                    response.result(),
+                )?
+                .with_directory(&self.directory);
                 state
                     .pending
                     .remove(response.callback_id())

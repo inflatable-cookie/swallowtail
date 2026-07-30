@@ -15,6 +15,8 @@ pub enum Scenario {
     ReasoningEffortSuccess,
     ReasoningEffort291Success,
     ReasoningEffort292Success,
+    ReasoningEffort300Success,
+    ReasoningEffort310Success,
     ReasoningNewerSuccess,
     ReasoningMissing,
     ReasoningAmbiguous,
@@ -34,7 +36,9 @@ impl Scenario {
             | Self::ReasoningLegacySuccess => "0.28.1",
             Self::ReasoningEffort291Success => "0.29.1",
             Self::ReasoningEffort292Success => "0.29.2",
-            Self::ReasoningNewerSuccess => "0.30.0",
+            Self::ReasoningEffort300Success => "0.30.0",
+            Self::ReasoningEffort310Success => "0.31.0",
+            Self::ReasoningNewerSuccess => "0.32.0",
             _ => "0.29.0",
         }
     }
@@ -93,6 +97,8 @@ impl SharedAgent {
             Scenario::ReasoningEffortSuccess
             | Scenario::ReasoningEffort291Success
             | Scenario::ReasoningEffort292Success
+            | Scenario::ReasoningEffort300Success
+            | Scenario::ReasoningEffort310Success
             | Scenario::ReasoningNewerSuccess
             | Scenario::ReasoningConfirmationMissing
             | Scenario::ReasoningDrift => {
@@ -190,6 +196,8 @@ impl SharedAgent {
             | Scenario::ReasoningEffortSuccess
             | Scenario::ReasoningEffort291Success
             | Scenario::ReasoningEffort292Success
+            | Scenario::ReasoningEffort300Success
+            | Scenario::ReasoningEffort310Success
             | Scenario::ReasoningNewerSuccess => {
                 enqueue_session_metadata(state);
                 Self::enqueue(

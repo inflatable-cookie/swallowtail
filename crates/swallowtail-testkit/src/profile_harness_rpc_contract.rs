@@ -11,9 +11,11 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     CallbackAbandonment, CallbackId, CallbackRequest, CallbackWaitState, Deadline, EventDelivery,
-    HarnessCommandAcknowledgement, HarnessCommandId, HarnessCommandResponse, HarnessUiDialog,
-    HarnessUiDialogKind, HarnessUiDisplay, HarnessUiDisplayKind, MonotonicInstant,
-    OperationContent, RuntimeEvent, RuntimeEventKind, RuntimeTurnId,
+    HarnessCommandAcknowledgement, HarnessCommandId, HarnessCommandResponse, HarnessQuestionId,
+    HarnessQuestionOptionId, HarnessUiDisplay, HarnessUiDisplayKind, HarnessUserInputChoiceMode,
+    HarnessUserInputOption, HarnessUserInputQuestion, HarnessUserInputQuestionKind,
+    HarnessUserInputRequest, MonotonicInstant, OperationContent, RuntimeEvent, RuntimeEventKind,
+    RuntimeTurnId,
 };
 
 pub(crate) fn run() -> ConformanceReport {
@@ -184,21 +186,28 @@ fn assert_scheduling_contract() {
 }
 
 fn assert_ui_relay_contract() {
-    let dialog = HarnessUiDialog::new(
-        HarnessUiDialogKind::Select,
+    let question = HarnessUserInputQuestion::new(
+        HarnessQuestionId::new("fixture-question").unwrap(),
         OperationContent::new("private title").unwrap(),
-        Some(OperationContent::new("private prompt").unwrap()),
-        [OperationContent::new("private option").unwrap()],
-        4,
-        128,
+        OperationContent::new("private prompt").unwrap(),
+        HarnessUserInputQuestionKind::Choice {
+            mode: HarnessUserInputChoiceMode::Single,
+            allow_other: false,
+        },
+        [HarnessUserInputOption::new(
+            HarnessQuestionOptionId::new("private-option").unwrap(),
+            OperationContent::new("private option").unwrap(),
+            None,
+        )],
     )
     .unwrap();
-    let request = CallbackRequest::harness_ui_dialog(
+    let user_input = HarnessUserInputRequest::new([question], None, 1, 4, 128).unwrap();
+    let request = CallbackRequest::harness_user_input(
         CallbackId::new("fixture-ui-callback").unwrap(),
         RuntimeTurnId::new("fixture-ui-turn").unwrap(),
         4,
         Some(Deadline::at(MonotonicInstant::from_ticks(40))),
-        dialog,
+        user_input,
     );
     let mut exchange = CallbackExchangeFixture::new(request);
     exchange

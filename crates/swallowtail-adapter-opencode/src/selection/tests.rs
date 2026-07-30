@@ -8,7 +8,7 @@ use swallowtail_core::{
 };
 
 const CORPUS: &str =
-    include_str!("../../tests/fixtures/opencode-v1.14.48-v1.18.4/compatibility.json");
+    include_str!("../../tests/fixtures/opencode-v1.14.48-v1.18.10/compatibility.json");
 
 #[test]
 fn claim_matches_every_frozen_release_and_surface() {
@@ -27,7 +27,7 @@ fn claim_matches_every_frozen_release_and_surface() {
     );
 
     let releases = fixture["releases"].as_array().expect("release array");
-    assert_eq!(releases.len(), 45);
+    assert_eq!(releases.len(), 51);
     let mut versions = BTreeSet::new();
     for release in releases {
         let version = release["version"].as_str().expect("release version");
@@ -56,6 +56,25 @@ fn claim_matches_every_frozen_release_and_surface() {
             64
         );
     }
+    let release = |version: &str| {
+        releases
+            .iter()
+            .find(|release| release["version"] == version)
+            .expect("exact release is frozen")
+    };
+    assert_eq!(
+        release("1.18.8")["artifact_delta"],
+        "unselected-oauth-callback-optional-iss"
+    );
+    assert_eq!(
+        release("1.18.9")["artifact_delta"],
+        "unselected-oauth-callback-optional-iss-reverted"
+    );
+    assert_eq!(release("1.18.8")["surface"], release("1.18.10")["surface"]);
+    assert_ne!(
+        release("1.18.8")["openapi_sha256"],
+        release("1.18.10")["openapi_sha256"]
+    );
 }
 
 #[test]
@@ -70,12 +89,13 @@ fn claim_preserves_unpublished_and_outer_gaps() {
         "1.16.3",
         "1.17.21",
         "1.18.4-rc.1",
+        "1.18.11-rc.1",
     ] {
         let binding = opencode_server_binding(rejected).expect("rejection is safe");
         assert!(!claim.supports(binding.version()), "{rejected} passed");
         assert!(!claim.permits(binding.version()), "{rejected} permitted");
     }
-    let newer = opencode_server_binding("1.18.5").expect("newer version is safe");
+    let newer = opencode_server_binding("1.18.11").expect("newer version is safe");
     assert!(!claim.supports(newer.version()));
     assert!(claim.permits(newer.version()));
     let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
@@ -84,12 +104,12 @@ fn claim_preserves_unpublished_and_outer_gaps() {
         panic!("newer stable version must remain unverified");
     };
     assert_eq!(unverified.version(), newer.version());
-    assert_eq!(unverified.latest_qualified().as_str(), "1.18.4");
+    assert_eq!(unverified.latest_qualified().as_str(), "1.18.10");
     assert_eq!(
         unverified.behavior_revision().as_str(),
         "opencode.http-sse.surface-18"
     );
-    for malformed in ["", " current", "current ", "current", "1.18.4\n"] {
+    for malformed in ["", " current", "current ", "current", "1.18.10\n"] {
         assert!(opencode_server_binding(malformed).is_none());
     }
     assert!(opencode_server_binding(&"1".repeat(65)).is_none());

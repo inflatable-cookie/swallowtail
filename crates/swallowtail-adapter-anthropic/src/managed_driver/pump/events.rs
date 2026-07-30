@@ -22,11 +22,7 @@ fn apply_event(
         return Ok(EventAction::Continue);
     }
     for observation in activity.project(event)? {
-        emit(
-            events,
-            sequence,
-            RuntimeEventKind::Activity(observation),
-        )?;
+        emit(events, sequence, RuntimeEventKind::Activity(observation))?;
     }
     match event.kind() {
         ManagedEventKind::Running
@@ -173,6 +169,10 @@ fn callback_content(result: CallbackResult) -> Result<OperationContent, RuntimeF
                     "Anthropic Managed Agents callback result was not valid bounded text",
                 )
             }),
+        CallbackResult::UserInput(_) => Err(failure(
+            "swallowtail.anthropic.managed.callback_result_invalid",
+            "Anthropic Managed Agents tool callback received a user-input response",
+        )),
         CallbackResult::Failure { kind, .. } => Err(failure(
             "swallowtail.anthropic.managed.callback_consumer_failed",
             match kind {

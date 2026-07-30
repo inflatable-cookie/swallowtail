@@ -1,5 +1,5 @@
 use crate::{InputValueRequired, OperationContent, SchemaDocument};
-use swallowtail_core::ReasoningMode;
+use swallowtail_core::{HarnessMode, ReasoningMode};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ToolDeclaration {
@@ -65,6 +65,7 @@ impl ToolDeclaration {
 pub struct SessionOptions {
     developer_instructions: Option<OperationContent>,
     reasoning_mode: Option<ReasoningMode>,
+    harness_mode: Option<HarnessMode>,
     tools: Vec<ToolDeclaration>,
 }
 
@@ -73,6 +74,7 @@ impl SessionOptions {
     pub fn is_empty(&self) -> bool {
         self.developer_instructions.is_none()
             && self.reasoning_mode.is_none()
+            && self.harness_mode.is_none()
             && self.tools.is_empty()
     }
 
@@ -85,6 +87,12 @@ impl SessionOptions {
     #[must_use]
     pub fn with_reasoning_mode(mut self, reasoning_mode: ReasoningMode) -> Self {
         self.reasoning_mode = Some(reasoning_mode);
+        self
+    }
+
+    #[must_use]
+    pub const fn with_harness_mode(mut self, harness_mode: HarnessMode) -> Self {
+        self.harness_mode = Some(harness_mode);
         self
     }
 
@@ -104,6 +112,11 @@ impl SessionOptions {
         self.reasoning_mode.as_ref()
     }
 
+    #[must_use]
+    pub const fn harness_mode(&self) -> Option<HarnessMode> {
+        self.harness_mode
+    }
+
     pub fn tools(&self) -> impl ExactSizeIterator<Item = &ToolDeclaration> {
         self.tools.iter()
     }
@@ -113,7 +126,7 @@ impl SessionOptions {
 mod tests {
     use super::{SessionOptions, ToolDeclaration};
     use crate::{OperationContent, SchemaDocument};
-    use swallowtail_core::ReasoningMode;
+    use swallowtail_core::{HarnessMode, ReasoningMode};
 
     #[test]
     fn session_options_keep_consumer_content_redacted() {
@@ -131,6 +144,7 @@ mod tests {
                 OperationContent::new("private instructions").expect("valid"),
             )
             .with_reasoning_mode(ReasoningMode::new("low").expect("valid"))
+            .with_harness_mode(HarnessMode::Plan)
             .with_tools([tool]);
 
         let rendered = format!("{options:?}");
@@ -138,6 +152,7 @@ mod tests {
         assert!(!rendered.contains("private tool description"));
         assert!(!rendered.contains("\"type\""));
         assert_eq!(options.tools().len(), 1);
+        assert_eq!(options.harness_mode(), Some(HarnessMode::Plan));
     }
 
     #[test]

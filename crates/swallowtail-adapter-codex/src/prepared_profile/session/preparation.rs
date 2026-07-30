@@ -6,12 +6,11 @@ use crate::prepared_profile::plan::{
     CodexPreparedEvidence, build_plan, descriptor, failure, instance_with_capabilities,
     model_route, require_driver, requirements,
 };
-use crate::prepared_profile::session_capabilities::{behavior_revision, session_capabilities};
-use crate::selection::CODEX_APP_SERVER_WORKSPACE_BEHAVIOR;
-use crate::{
-    CodexPreparedDriver, CodexPreparedIntegration, codex_bounded_workspace_access_policy,
-    codex_bounded_workspace_capability,
+use crate::prepared_profile::session_capabilities::{
+    behavior_revision, session_capabilities, supports_harness_mode,
 };
+use crate::selection::CODEX_APP_SERVER_WORKSPACE_BEHAVIOR;
+use crate::{CodexPreparedDriver, CodexPreparedIntegration, codex_bounded_workspace_capability};
 use swallowtail_core::{
     Capability, CapabilityProfile, CapabilityRequirement, DriverRole, HarnessConfigurationPosture,
     HostServiceKind, OperationShape, SessionProviderStatePolicy,
@@ -32,15 +31,22 @@ pub(super) fn prepare_session(
             "Prepared Codex version does not support bounded workspace roots",
         ));
     }
-    let (request_id, model, working_resource, deadline, options) = input.into_parts();
+    let (request_id, model, working_resource, deadline, options, user_input_exchange) =
+        input.into_parts();
     if deadline.is_some() {
         return Err(failure(
             "swallowtail.codex.preparation.session_deadline_unsupported",
             "Codex app-server sessions do not support an operation deadline",
         ));
     }
+    if options.harness_mode().is_some() && !supports_harness_mode(prepared) {
+        return Err(failure(
+            "swallowtail.codex.preparation.harness_mode_unsupported",
+            "Prepared Codex version does not support harness mode selection",
+        ));
+    }
     let (mut capability_requirements, mut extension_namespaces, access_policy) =
-        session_capabilities(kind, &options)?;
+        session_capabilities(kind, &options, user_input_exchange)?;
     let activity_profile = app_server_activity_profile(prepared)?;
     capability_requirements.extend([
         CapabilityRequirement::new(Capability::StreamingEvents, []),
@@ -50,13 +56,14 @@ pub(super) fn prepare_session(
     ]);
     if kind == CodexPreparedSessionKind::BoundedWorkspace {
         capability_requirements.push(codex_bounded_workspace_capability());
-        extension_namespaces.extend(
-            codex_bounded_workspace_access_policy()
-                .provider_requests()
-                .observed_extensions()
-                .cloned(),
-        );
     }
+    extension_namespaces.extend(
+        access_policy
+            .provider_requests()
+            .observed_extensions()
+            .chain(access_policy.provider_requests().exchanged_extensions())
+            .cloned(),
+    );
     let capabilities = CapabilityProfile::new(capability_requirements.clone());
     let instance = instance_with_capabilities(prepared, capabilities.clone());
     let route = model_route(

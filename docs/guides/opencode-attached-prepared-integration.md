@@ -32,7 +32,7 @@ the low-level driver escape hatch.
 
 ## Version Posture
 
-The guaranteed server window remains `1.14.48` through `1.18.4` across the
+The guaranteed server window remains `1.14.48` through `1.18.10` across the
 qualified release segments and exact exclusions. A later exact stable release
 may proceed as visibly unverified through the latest qualified behavior. It
 does not expand guaranteed support.
@@ -71,6 +71,12 @@ remain operation-scoped on the existing low-level lifecycle. Resume remains
 unsupported. Closing a turn or session does not stop or dispose the attached
 OpenCode service.
 
+`OpenCodeSessionProfileInput::with_provider_callbacks()` enables the qualified
+callback subset. Ordered OpenCode questions project into common typed harness
+user input. Permission requests remain exact OpenCode extensions because
+their one-shot authorization semantics are provider-specific. The consumer
+answers both through the same correlated callback exchange.
+
 ## Structured Run
 
 `prepare_run` requires a request identity, explicit provider and model route,
@@ -87,6 +93,9 @@ or unconfirmed independently from provider completion and cleanup.
 The run exposes no provider run, interactive handle, resume binding, or
 provider-session management binding. It never starts, stops, updates, or
 recovers the attached OpenCode server.
+
+`OpenCodeRunProfileInput::with_provider_callbacks()` enables the same typed
+question and provider-specific permission subset for the structured run.
 
 ## Transport Separation
 

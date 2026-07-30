@@ -3,7 +3,8 @@ use std::fmt;
 use std::num::NonZeroU32;
 use swallowtail_core::{
     AttachedRuntimeResidency, ExternalNetworkPolicy, ExternalSearchPolicy,
-    HarnessConfigurationPosture, HarnessIsolation, PreflightPlan, ReasoningMode, SafeDiagnostic,
+    HarnessConfigurationPosture, HarnessIsolation, HarnessMode, PreflightPlan, ReasoningMode,
+    SafeDiagnostic,
 };
 
 mod harness_configuration;
@@ -16,6 +17,7 @@ pub struct OperationPolicy {
     external_network: ExternalNetworkPolicy,
     external_search: ExternalSearchPolicy,
     reasoning_mode: Option<ReasoningMode>,
+    harness_mode: Option<HarnessMode>,
     provider_execution: ProviderExecutionPolicy,
     provider_retention: ProviderRetentionPolicy,
     provider_recovery: ProviderRecoveryPolicy,
@@ -71,6 +73,7 @@ impl OperationPolicy {
             external_network,
             external_search,
             reasoning_mode: None,
+            harness_mode: None,
             provider_execution: ProviderExecutionPolicy::Attached,
             provider_retention: ProviderRetentionPolicy::Prohibited,
             provider_recovery: ProviderRecoveryPolicy::Prohibited,
@@ -93,6 +96,12 @@ impl OperationPolicy {
     #[must_use]
     pub fn with_reasoning_mode(mut self, reasoning_mode: ReasoningMode) -> Self {
         self.reasoning_mode = Some(reasoning_mode);
+        self
+    }
+
+    #[must_use]
+    pub const fn with_harness_mode(mut self, harness_mode: HarnessMode) -> Self {
+        self.harness_mode = Some(harness_mode);
         self
     }
 
@@ -157,6 +166,11 @@ impl OperationPolicy {
     #[must_use]
     pub const fn reasoning_mode(&self) -> Option<&ReasoningMode> {
         self.reasoning_mode.as_ref()
+    }
+
+    #[must_use]
+    pub const fn harness_mode(&self) -> Option<HarnessMode> {
+        self.harness_mode
     }
 
     #[must_use]

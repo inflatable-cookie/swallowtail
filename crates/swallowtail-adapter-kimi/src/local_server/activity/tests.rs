@@ -38,3 +38,31 @@ fn frozen_cursor_order_projects_steps_tools_and_subagents_without_raw_results() 
     assert!(!rendered.contains("fixture-private-output"));
     assert!(!rendered.contains("fixture-private-summary"));
 }
+
+#[test]
+fn richer_0_31_subagent_status_remains_non_rendered_progress() {
+    let mut projection = KimiLocalActivityProjection::new(
+        RuntimeTurnId::new("kimi-status-fixture").expect("turn id"),
+    );
+    let fixture = include_str!(concat!(
+        "../../../tests/fixtures/kimi-local-server-0.31.0/",
+        "subagent-status.jsonl"
+    ));
+    let lines = fixture.lines().collect::<Vec<_>>();
+    assert_eq!(lines.len(), 1);
+
+    let WsFrame::Event(event) = decode_ws_frame(lines[0].as_bytes()).expect("status event decodes")
+    else {
+        panic!("status fixture must contain one event");
+    };
+    assert_eq!(
+        event.event,
+        crate::local_server::protocol::WsEvent::Progress
+    );
+    assert!(
+        projection
+            .project(&event.event)
+            .expect("status projects")
+            .is_empty()
+    );
+}

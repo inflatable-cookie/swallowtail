@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-22
+Updated: 2026-07-30
 
 ## Purpose
 
@@ -52,10 +52,13 @@ fails without silently dropping or reclassifying a message.
 Harness extension UI is callback transport, not consumer tool execution or
 provider authorization.
 
-Dialog requests carry one bounded correlation id, declared method, safe title
-or prompt metadata, bounded options where applicable, and an optional provider
-timeout. The consumer may answer, cancel, or abandon through the existing
-callback exchange. A late answer cannot revive an expired request.
+User-input requests carry one bounded correlation id, declared method,
+ordered questions with stable ids, safe header and prompt metadata, bounded
+options where applicable, and an optional provider auto-resolution timeout.
+Questions may request single choice, multiple choice, free text, optional
+other input, or secret text. The consumer may answer, skip, cancel, or abandon
+through the existing callback exchange. Answers repeat the question and
+option ids. A late answer cannot revive an expired request.
 
 Display-only requests may update a title, status, widget, notification, or
 editor suggestion without expecting a response. The driver emits bounded
@@ -138,8 +141,8 @@ Deterministic fixtures must prove:
 - prompt rejection while busy
 - steering before the next model call and follow-up after all current work
 - command acknowledgement distinct from operation completion
-- dialog response, cancellation, timeout, late response, and display-only UI
-  behavior
+- typed question response, skipped answer, cancellation, timeout, late
+  response, and display-only UI behavior
 - automatic retry and excluded customization stay disabled
 - read-intent tools create no containment claim
 - native abort, cancellation, deadline, disconnect, process failure, and

@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-27
+Updated: 2026-07-30
 
 ## Purpose
 
@@ -152,6 +152,34 @@ store, proxy, model, or policy fallback is allowed. Missing or rejected access
 fails the session; advertised authentication methods do not trigger retry or
 route selection.
 
+### Delegated credential activation
+
+An adapter may call ACP `authenticate` only to activate one already authorized
+harness-owned credential when all of these are preflight-bound:
+
+- exact driver behavior revision and executable version
+- configured access profile, credential mechanism, entitlement, and endpoint
+  audience
+- one adapter-private authentication method
+- whether provider-owned refresh of the same credential mechanism is allowed
+
+Initialization must advertise the exact method for the current state. The
+adapter sends it once, after initialization and before session allocation.
+Missing, renamed, ambiguous, interactive, rejected, or mechanism-changing
+behavior fails attachment and joins owned work.
+
+Activation grants no login, logout, account switch, credential extraction,
+browser or device flow, terminal action, external helper, API key, endpoint,
+billing, or authentication-method fallback. Provider-private response metadata
+is ignored. It cannot change public access evidence or enter stable
+diagnostics.
+
+The first qualified mapping is Grok Build `0.2.114` with pre-existing
+subscription OAuth, adapter-private `cached_token`, and
+`_meta.headless = true`. Provider-owned refresh of that same delegated OAuth
+mechanism is allowed. `grok.com`, `xai.api_key`, and every other advertised or
+configured mechanism remain excluded.
+
 Gemini CLI Plan Mode alone is not sufficient access policy because it permits
 some search and can inherit higher-tier policies. The first configured
 instance requires a host-approved isolated Gemini state root whose policy
@@ -177,10 +205,12 @@ When a permission request arrives, the driver:
 No permission option persists provider configuration. Missing reject or cancel
 semantics cannot be replaced with fabricated approval.
 
-Claude Agent structured preparation may instead opt into one consumer-mediated
-profile. The immutable run plan then declares exactly
-`acp/session/request-permission`; absence of that namespace retains the default
-reject-and-stop behavior. The opt-in driver:
+Claude Agent structured-run or interactive-session preparation may instead opt
+into one consumer-mediated profile. The immutable operation plan then declares
+exactly `acp/session/request-permission`; absence of that namespace retains the
+default reject-and-stop behavior. An interactive selection applies to the
+whole prepared session, including load and resume, rather than changing per
+turn. The opt-in driver:
 
 1. validates session, turn, tool-call, provider-request, option, count, and
    payload bounds

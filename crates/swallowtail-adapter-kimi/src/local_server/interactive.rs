@@ -5,6 +5,7 @@ mod prepared;
 mod session;
 mod websocket;
 
+pub(in crate::local_server) use callbacks::{approval_namespace, question_namespace};
 pub(in crate::local_server) use prepared::{access_policy, validate_revision_options};
 pub(in crate::local_server) use session::{KimiInteractiveSession, TurnCancellation};
 

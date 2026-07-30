@@ -169,16 +169,21 @@ impl ClaudeAgentPreparedIntegration {
         &self,
         input: ClaudeAgentSessionProfileInput,
     ) -> Result<ClaudeAgentPreparedSession, PreparationFailure> {
-        let (request_id, model, working_resource, options) = input.into_parts();
-        validate_options(&options)?;
+        let (request_id, model, working_resource, options, permission_handling) =
+            input.into_parts();
         let supports_reasoning = crate::selection::version_supports_config_options(
             self.observation().version().version(),
         );
+        validate_options(&options, supports_reasoning)?;
         let activity_profile = super::activity_profile::activity_profile(self)?;
         let capabilities =
             with_activity(session_capabilities(supports_reasoning), &activity_profile);
         let instance = instance_with_capabilities(self, capabilities.clone());
-        let requirements = requirements(self, operation_capabilities(&capabilities, &options));
+        let requirements = requirements(
+            self,
+            operation_capabilities(&capabilities, &options),
+            permission_handling,
+        );
         let (route_id, route_revision, model_id) = model.into_parts();
         let route = ModelRoute::new(
             route_id,
@@ -308,7 +313,10 @@ impl InteractiveSessionHandle for ManagedClaudeAgentSessionHandle {
     }
 }
 
-fn validate_options(options: &SessionOptions) -> Result<(), PreparationFailure> {
+fn validate_options(
+    options: &SessionOptions,
+    supports_config_options: bool,
+) -> Result<(), PreparationFailure> {
     if options.developer_instructions().is_some() || options.tools().len() != 0 {
         return Err(failure(
             "swallowtail.claude_agent.preparation.session_options_unsupported",
@@ -322,6 +330,12 @@ fn validate_options(options: &SessionOptions) -> Result<(), PreparationFailure> 
         return Err(failure(
             "swallowtail.claude_agent.preparation.reasoning_mode_unsupported",
             "Claude Agent ACP prepared session reasoning mode is unsupported",
+        ));
+    }
+    if options.harness_mode().is_some() && !supports_config_options {
+        return Err(failure(
+            "swallowtail.claude_agent.preparation.harness_mode_unsupported",
+            "Claude Agent ACP prepared session harness mode is unsupported",
         ));
     }
     Ok(())
@@ -344,7 +358,12 @@ fn operation_capabilities(
 ) -> Vec<CapabilityRequirement> {
     let mut capabilities = available
         .iter()
-        .filter(|(capability, _)| *capability != Capability::ReasoningSelection)
+        .filter(|(capability, _)| {
+            !matches!(
+                capability,
+                Capability::ReasoningSelection | Capability::HarnessModeSelection
+            )
+        })
         .map(|(capability, constraints)| {
             CapabilityRequirement::new(capability, constraints.iter().cloned())
         })
@@ -355,6 +374,12 @@ fn operation_capabilities(
             [swallowtail_core::CapabilityConstraint::ReasoningMode(
                 mode.clone(),
             )],
+        ));
+    }
+    if let Some(mode) = options.harness_mode() {
+        capabilities.push(CapabilityRequirement::new(
+            Capability::HarnessModeSelection,
+            [swallowtail_core::CapabilityConstraint::HarnessMode(mode)],
         ));
     }
     capabilities

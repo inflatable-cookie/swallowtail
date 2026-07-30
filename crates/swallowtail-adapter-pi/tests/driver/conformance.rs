@@ -1,5 +1,6 @@
 use crate::support::{
-    CleanupEvent, FixtureHost, Scenario, open_request, selection_for_topology, turn_request,
+    CleanupEvent, FixtureHost, Scenario, allow_user_input_result, open_request,
+    selection_for_topology, turn_request,
 };
 use futures_executor::block_on;
 use futures_util::StreamExt;
@@ -83,15 +84,13 @@ fn production_scheduling_and_ui_preserve_both_host_topologies() {
             .expect("callback is valid");
         assert!(matches!(
             callback.kind(),
-            CallbackRequestKind::HarnessUiDialog(_)
+            CallbackRequestKind::HarnessUserInput(_)
         ));
         assert_eq!(callback.deadline(), Some(deadline(10_000)));
         block_on(callbacks.responder().respond(CallbackResponse::new(
             callback.callback_id().clone(),
             callback.turn_id().expect("callback turn").clone(),
-            CallbackResult::Success(
-                CallbackPayload::new(b"Allow".to_vec(), 64).expect("bounded result"),
-            ),
+            allow_user_input_result(&callback),
         )))
         .expect("callback response relays");
 

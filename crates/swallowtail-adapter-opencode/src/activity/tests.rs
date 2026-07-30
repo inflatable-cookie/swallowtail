@@ -4,7 +4,7 @@ use crate::protocol::{SseDecoder, parse_event};
 #[test]
 fn frozen_rich_sse_projects_reasoning_tool_and_step_completion() {
     let bytes = include_bytes!(concat!(
-        "../../tests/fixtures/opencode-v1.14.48-v1.18.4/",
+        "../../tests/fixtures/opencode-v1.14.48-v1.18.10/",
         "activity-rich.sse"
     ));
     let mut decoder = SseDecoder::default();
@@ -39,7 +39,7 @@ fn frozen_rich_sse_projects_reasoning_tool_and_step_completion() {
 #[test]
 fn frozen_gap_sse_exposes_only_operation_local_assistant_updates() {
     let bytes = include_bytes!(concat!(
-        "../../tests/fixtures/opencode-v1.14.48-v1.18.4/",
+        "../../tests/fixtures/opencode-v1.14.48-v1.18.10/",
         "activity-gap-1.14.51.sse"
     ));
     let mut decoder = SseDecoder::default();

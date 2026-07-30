@@ -11,7 +11,7 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{CleanupOutcome, RequestId};
 
-const DELETION_CORPUS: &str = include_str!("../fixtures/opencode-v1.14.48-v1.18.4/deletion.json");
+const DELETION_CORPUS: &str = include_str!("../fixtures/opencode-v1.14.48-v1.18.10/deletion.json");
 
 #[test]
 fn every_qualified_delete_segment_and_latest_point_execute_exactly_once() {
@@ -71,9 +71,13 @@ fn every_qualified_delete_segment_and_latest_point_execute_exactly_once() {
 #[test]
 fn local_remote_and_explicit_unverified_newer_execution_preserve_truth() {
     let cases = [
-        ("opencode.delete.host.local", "1.18.4", false),
-        ("opencode.delete.host.remote-authoritative", "1.18.4", false),
-        ("opencode.delete.host.newer", "1.18.5", true),
+        ("opencode.delete.host.local", "1.18.10", false),
+        (
+            "opencode.delete.host.remote-authoritative",
+            "1.18.10",
+            false,
+        ),
+        ("opencode.delete.host.newer", "1.18.11", true),
     ];
     let fixtures: Vec<_> = cases
         .iter()

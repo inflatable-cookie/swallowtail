@@ -25,6 +25,8 @@ impl SharedAgent {
             Scenario::ReasoningEffortSuccess
             | Scenario::ReasoningEffort291Success
             | Scenario::ReasoningEffort292Success
+            | Scenario::ReasoningEffort300Success
+            | Scenario::ReasoningEffort310Success
             | Scenario::ReasoningNewerSuccess => {
                 let requested = requested_value(message)?;
                 let effective = if requested == "on" {

@@ -75,79 +75,6 @@ impl HarnessScheduledMessage {
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub enum HarnessUiDialogKind {
-    Confirm,
-    Select,
-    Input,
-}
-
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub struct HarnessUiDialog {
-    kind: HarnessUiDialogKind,
-    title: OperationContent,
-    prompt: Option<OperationContent>,
-    options: Vec<OperationContent>,
-}
-
-impl HarnessUiDialog {
-    pub fn new(
-        kind: HarnessUiDialogKind,
-        title: OperationContent,
-        prompt: Option<OperationContent>,
-        options: impl IntoIterator<Item = OperationContent>,
-        maximum_options: usize,
-        maximum_bytes: usize,
-    ) -> Result<Self, InputLimitExceeded> {
-        let options: Vec<_> = options.into_iter().collect();
-        if options.len() > maximum_options {
-            return Err(InputLimitExceeded::new(
-                "harness UI dialog options",
-                maximum_options,
-                options.len(),
-            ));
-        }
-        let actual = title.byte_len()
-            + prompt.as_ref().map_or(0, OperationContent::byte_len)
-            + options
-                .iter()
-                .map(OperationContent::byte_len)
-                .sum::<usize>();
-        if actual > maximum_bytes {
-            return Err(InputLimitExceeded::new(
-                "harness UI dialog",
-                maximum_bytes,
-                actual,
-            ));
-        }
-        Ok(Self {
-            kind,
-            title,
-            prompt,
-            options,
-        })
-    }
-
-    #[must_use]
-    pub const fn kind(&self) -> HarnessUiDialogKind {
-        self.kind
-    }
-
-    #[must_use]
-    pub const fn title(&self) -> &OperationContent {
-        &self.title
-    }
-
-    #[must_use]
-    pub const fn prompt(&self) -> Option<&OperationContent> {
-        self.prompt.as_ref()
-    }
-
-    pub fn options(&self) -> impl ExactSizeIterator<Item = &OperationContent> {
-        self.options.iter()
-    }
-}
-
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum HarnessUiDisplayKind {
     Title,
     Status,
@@ -192,8 +119,8 @@ impl HarnessUiDisplay {
 #[cfg(test)]
 mod tests {
     use super::{
-        HarnessCommandAcknowledgement, HarnessCommandResponse, HarnessUiDialog,
-        HarnessUiDialogKind, HarnessUiDisplay, HarnessUiDisplayKind,
+        HarnessCommandAcknowledgement, HarnessCommandResponse, HarnessUiDisplay,
+        HarnessUiDisplayKind,
     };
     use crate::{HarnessCommandId, OperationContent};
 
@@ -213,15 +140,6 @@ mod tests {
 
     #[test]
     fn ui_records_are_bounded_and_redacted() {
-        let dialog = HarnessUiDialog::new(
-            HarnessUiDialogKind::Select,
-            OperationContent::new("private title").unwrap(),
-            None,
-            [OperationContent::new("private option").unwrap()],
-            2,
-            64,
-        )
-        .unwrap();
         let display = HarnessUiDisplay::new(
             HarnessUiDisplayKind::Status,
             OperationContent::new("private status").unwrap(),
@@ -229,8 +147,6 @@ mod tests {
         )
         .unwrap();
 
-        assert_eq!(dialog.options().len(), 1);
-        assert!(!format!("{dialog:?}").contains("private"));
         assert!(!format!("{display:?}").contains("private"));
     }
 }

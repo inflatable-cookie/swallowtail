@@ -79,8 +79,8 @@ The first task-execution profile expands to:
 - provider-side network denied
 - external search disabled
 - no consumer product-tool declarations
-- Codex approval and user-input requests declared only as provider extensions
-  that may be observed and stop the turn
+- Codex approval and user-input namespaces declared only for explicit
+  observe-and-stop or exchange handling
 - one explicit host-monotonic turn deadline
 
 Observing an approval or user-input request does not grant authority, answer
@@ -129,7 +129,9 @@ Approval posture and callback handling are separate:
 - `observe-and-stop` is allowed only for declared, bounded, redacted provider
   extensions such as Codex approval or user input
 - `exchange` is allowed only for declared, bounded, redacted provider
-  extensions and grants response transport, not permission to choose a result
+  requests and grants response transport, not permission to choose a result;
+  a losslessly representable question may use Contract 012's typed common
+  user-input record
 - Swallowtail preserves provider request, session, and turn correlation
 - Swallowtail does not execute an approval, prompt the operator, fabricate a
   response, or translate the request into a common tool call
@@ -204,8 +206,11 @@ set. A structured conversion run requires `ResourceAccess::ReadWrite`, adds
 only `Edit` and `Write`, verifies the session advertises `acceptEdits`, and
 selects that mode before its one prompt. The resolved working resource becomes
 the process working directory and lease authority, but `AmbientHost` still
-makes it a location rather than a containment boundary. Unexpected permission
-requests remain rejected and stop the run.
+makes it a location rather than a containment boundary. Both operation shapes
+reject and stop on unexpected permission requests by default. Either may
+explicitly bind `ConsumerMediated` approval and the exact
+`acp/session/request-permission` exchange; an interactive selection is frozen
+for the session and inherited by every turn.
 
 Attached session close owns local HTTP/SSE work only. It does not call OpenCode
 instance dispose, authentication, configuration, share, or server lifecycle
@@ -217,11 +222,12 @@ provider-neutral.
 For Kimi Code local server, ambient read-write execution remains explicit and
 unsandboxed. The default prepared session uses approval posture `Never` and
 rejects provider requests. A caller may instead opt into
-`ConsumerMediated` with the exact Kimi approval and question extension
+`ConsumerMediated` with the exact Kimi approval and question request
 namespaces. Kimi `manual`, `auto`, and `yolo` permission modes remain
 provider-specific choices; Swallowtail does not infer or silently escalate
-between them. Approval and question bodies remain bounded adapter extensions,
-and the consumer owns every response decision.
+between them. Approval bodies remain bounded adapter extensions. Questions
+project into the typed common user-input record only when lossless. The
+consumer owns every response decision.
 
 ## Identity And Redaction
 
@@ -236,7 +242,7 @@ stderr, or credentials.
 
 ## Acceptance
 
-- read-only sessions retain their existing exact request shape
+- default read-only sessions retain their existing exact request shape
 - ambient harness execution is valid, explicit, and never described as a
   bounded filesystem profile
 - provider- and host-enforced isolation are opt-in exact capabilities

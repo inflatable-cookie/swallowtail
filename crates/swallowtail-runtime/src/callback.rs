@@ -1,6 +1,6 @@
 use crate::{
-    BoxCallbackStream, BoxFuture, CallbackId, Deadline, HarnessUiDialog, InputLimitExceeded,
-    RuntimeFailure, RuntimeRunId, RuntimeTurnId,
+    BoxCallbackStream, BoxFuture, CallbackId, Deadline, HarnessUserInputResponse,
+    InputLimitExceeded, RuntimeFailure, RuntimeRunId, RuntimeTurnId,
 };
 use std::fmt;
 use std::sync::Arc;
@@ -20,6 +20,7 @@ pub enum CallbackFailureKind {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum CallbackResult {
     Success(CallbackPayload),
+    UserInput(HarnessUserInputResponse),
     Failure {
         kind: CallbackFailureKind,
         detail: Option<CallbackPayload>,
@@ -34,6 +35,15 @@ pub struct CallbackResponse {
 }
 
 impl CallbackResponse {
+    #[must_use]
+    pub fn for_request(request: &CallbackRequest, result: CallbackResult) -> Self {
+        Self {
+            callback_id: request.callback_id().clone(),
+            operation_id: request.operation_id().clone(),
+            result,
+        }
+    }
+
     #[must_use]
     pub const fn new(
         callback_id: CallbackId,
@@ -137,8 +147,10 @@ impl CallbackExchange {
 
 #[cfg(test)]
 mod tests {
-    use super::{CallbackPayload, CallbackRequest, CallbackRequestKind};
-    use crate::{CallbackId, RuntimeTurnId};
+    use super::{
+        CallbackPayload, CallbackRequest, CallbackRequestKind, CallbackResponse, CallbackResult,
+    };
+    use crate::{CallbackId, CallbackOperationId, RuntimeRunId, RuntimeTurnId};
 
     #[test]
     fn callback_records_are_bounded_correlated_and_redacted() {
@@ -162,5 +174,28 @@ mod tests {
         assert!(!rendered.contains("turn-private"));
         assert!(!rendered.contains("private\":true"));
         assert!(CallbackPayload::new(vec![0; 5], 4).is_err());
+    }
+
+    #[test]
+    fn response_can_copy_run_correlation_from_its_request() {
+        let request = CallbackRequest::run_tool_call(
+            CallbackId::new("callback-private").unwrap(),
+            RuntimeRunId::new("run-private").unwrap(),
+            4,
+            None,
+            "task_ledger",
+            CallbackPayload::new(Vec::new(), 0).unwrap(),
+        )
+        .unwrap();
+        let response = CallbackResponse::for_request(
+            &request,
+            CallbackResult::Success(CallbackPayload::new(Vec::new(), 0).unwrap()),
+        );
+
+        assert_eq!(response.callback_id(), request.callback_id());
+        assert!(matches!(
+            response.operation_id(),
+            CallbackOperationId::Run(run_id) if run_id == request.run_id().unwrap()
+        ));
     }
 }

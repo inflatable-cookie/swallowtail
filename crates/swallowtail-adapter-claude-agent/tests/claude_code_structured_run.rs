@@ -12,8 +12,8 @@ use swallowtail_adapter_claude_agent::{
     ClaudeCodeRunProfileInput, prepare_claude_code_headless,
 };
 use swallowtail_core::{
-    HarnessConfigurationPosture, HarnessIsolation, ModelId, ModelRouteId, ModelRouteRevision,
-    ObservableActivityAvailability, ReasoningMode,
+    Capability, CapabilityConstraint, HarnessConfigurationPosture, HarnessIsolation, HarnessMode,
+    ModelId, ModelRouteId, ModelRouteRevision, ObservableActivityAvailability, ReasoningMode,
 };
 use swallowtail_runtime::{
     CancellationAcknowledgement, CleanupOutcome, Deadline, MonotonicInstant, OperationContent,
@@ -50,6 +50,22 @@ fn prepared_route_executes_exact_local_subscription_invocation_in_both_topologie
         assert_eq!(
             profile.request().policy().provider_retention(),
             ProviderRetentionPolicy::Prohibited
+        );
+        assert_eq!(
+            profile.request().policy().harness_mode(),
+            Some(HarnessMode::Plan)
+        );
+        assert!(
+            profile
+                .plan()
+                .requirements()
+                .capabilities()
+                .any(|requirement| {
+                    requirement.capability() == Capability::HarnessModeSelection
+                        && requirement.constraints().any(|constraint| {
+                            constraint == &CapabilityConstraint::HarnessMode(HarnessMode::Plan)
+                        })
+                })
         );
         assert_prepared_operation_evidence_matches_plan(
             profile.evidence().operation(),

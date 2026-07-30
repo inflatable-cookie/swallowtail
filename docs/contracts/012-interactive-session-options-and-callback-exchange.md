@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-19
+Updated: 2026-07-30
 
 ## Purpose
 
@@ -16,6 +16,7 @@ An open or resumed interactive session may carry:
 
 - optional opaque developer instructions
 - one optional exact reasoning mode
+- one optional exact harness mode
 - zero or more bounded tool declarations
 
 The selected model route remains part of the successful preflight plan. A
@@ -26,6 +27,12 @@ capability.
 Catalog reasoning metadata is evidence only. A selected reasoning mode must be
 present as an exact `ReasoningSelection` constraint in the plan. It is never
 silently filled from catalog or provider defaults.
+
+The first portable harness mode is `HarnessMode::Plan`. A selected mode must
+be present as an exact `HarnessModeSelection` constraint in the plan. It
+constrains harness behavior only: it grants no filesystem, network, tool,
+permission, credential, or isolation authority. Absence means the qualified
+route default, not `Plan`.
 
 Each tool declaration contains a consumer-owned name, optional description,
 and bounded input-schema transport data. Swallowtail and its drivers may
@@ -48,16 +55,24 @@ Every callback request contains:
 - the owning runtime turn id
 - the matching turn-event sequence
 - an optional host-monotonic deadline
-- either a declared tool call or a namespaced provider extension
+- either a declared tool call, portable harness user input, or a namespaced
+  provider extension
 
 Tool-call arguments and callback result bodies are bounded opaque bytes and
 redacted by default. Provider wire envelopes remain adapter-private.
 
 A callback response repeats the callback and owning turn ids and carries
-either a bounded success body or an explicit failure kind. Failure kinds
-distinguish unknown declarations, unsupported callback kinds, consumer
-execution failure, cancellation, and timeout. Optional provider-facing detail
-remains bounded and redacted.
+either a bounded success body, a typed harness user-input response, or an
+explicit failure kind. Failure kinds distinguish unknown declarations,
+unsupported callback kinds, consumer execution failure, cancellation, and
+timeout. Optional provider-facing detail remains bounded and redacted.
+
+A portable user-input request contains ordered bounded questions with stable
+question and option ids. It can represent single choice, multiple choice,
+free text, an optional other value, secret text, and optional provider
+auto-resolution timing. The response uses the same stable ids and carries
+selected options, text, skipped answers, or a callback failure. Drivers
+validate cardinality and membership before provider translation.
 
 Callback ids are distinct from request, run, session, turn, provider, product,
 task, and receipt ids. Runtime identities and callback bodies do not reveal
@@ -104,18 +119,20 @@ the owning turn's cleanup contract.
 
 ## Extensions And Unsupported Requests
 
-Tool calls are the only common callback kind in this contract. Other provider
-requests remain namespaced extensions and require a matching preflight
-namespace. A declared extension has one exact handling mode:
+Tool calls and losslessly representable harness user-input requests are common
+callback kinds. Approval, permission, and any question schema that cannot be
+represented without losing provider semantics remain namespaced extensions
+and require a matching preflight namespace. A declared extension has one exact
+handling mode:
 
 - reject
 - observe and stop without granting response authority
 - exchange through the correlated callback response port
 
-A consumer may handle or explicitly reject an exchangeable extension.
-Swallowtail never guesses its meaning. Provider-specific request and response
-helpers may live in an adapter while the common runtime keeps their bounded
-payloads opaque.
+A consumer may answer common user input, handle an exchangeable extension, or
+explicitly reject either through callback failure. Swallowtail never guesses
+provider meaning. Provider-specific request and response helpers may live in
+an adapter while the common runtime keeps extension payloads opaque.
 
 An undeclared tool, undeclared extension namespace, malformed callback, or
 callback received by a driver without callback exchange fails the affected
@@ -137,7 +154,7 @@ runtime, testkit, host, or adapter crates.
 
 ## Acceptance
 
-- exact session options are checked against preflight
+- exact session options, including harness mode, are checked against preflight
 - declarations and callback payloads are bounded and redacted
 - callback request and event ordering is deterministic
 - mismatched, duplicate, late, unknown, and unsupported callbacks fail

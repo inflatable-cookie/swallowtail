@@ -1,0 +1,465 @@
+import csv
+import re
+import sys
+from collections import Counter
+
+with open(sys.argv[1], newline="", encoding="utf-8") as feature_file:
+    rows = list(csv.DictReader(feature_file))
+
+if len(rows) != 23:
+    raise SystemExit("provider solution feature matrix must contain exactly 23 rows")
+
+providers = [row["provider"] for row in rows]
+if providers != sorted(providers, key=str.casefold):
+    raise SystemExit("provider solution feature matrix must be sorted by provider")
+
+expected = Counter(
+    {
+        "Yes": 16,
+        "Session-negotiated": 3,
+        "Not applicable": 2,
+        "Caller-supplied": 2,
+    }
+)
+actual = Counter(row["model_catalog"] for row in rows)
+if actual != expected:
+    raise SystemExit(
+        f"provider solution model_catalog dispositions changed: {dict(actual)}"
+    )
+
+structured = Counter(row["structured_run"] for row in rows)
+if structured != Counter({"Yes": 20, "No": 2, "Not applicable": 1}):
+    raise SystemExit(
+        f"provider solution structured_run dispositions changed: {dict(structured)}"
+    )
+for row in rows:
+    if row["structured_run"] == "Yes" and row["prepared_facade"] != "Yes":
+        raise SystemExit(
+            f"structured solution lacks a prepared facade: {row['solution']}"
+        )
+
+structured_by_route = {
+    row["route_id"]: row["structured_run"]
+    for row in rows
+}
+for route in ["gemini.live", "openai.realtime"]:
+    if structured_by_route.get(route) != "No":
+        raise SystemExit(f"realtime route must remain structured No: {route}")
+if structured_by_route.get("llama-cpp.owned") != "Not applicable":
+    raise SystemExit("llama.cpp owned serving facade must remain structured Not applicable")
+for route in [
+    "kimi-code.acp + kimi-code.headless",
+    "kimi-code.local-server",
+]:
+    if structured_by_route.get(route) != "Yes":
+        raise SystemExit(f"Kimi structured solution is not realized: {route}")
+
+permission_by_route = {
+    row["route_id"]: row["permission_exchange"]
+    for row in rows
+}
+if permission_by_route.get("claude-agent.acp") != "Yes":
+    raise SystemExit("Claude Agent consumer-mediated permission exchange is not realized")
+
+question_by_route = {
+    row["route_id"]: row["question_exchange"]
+    for row in rows
+}
+for route in ["pi.rpc", "kimi-code.local-server", "codex.app-server; codex.exec", "opencode.http"]:
+    if question_by_route.get(route) != "Yes":
+        raise SystemExit(f"typed question exchange is not realized: {route}")
+
+attachments_by_route = {
+    row["route_id"]: row["attachments"]
+    for row in rows
+}
+if attachments_by_route.get("pi.rpc") != "Yes":
+    raise SystemExit("Pi RPC attachment input is not realized")
+
+serving_not_applicable = {
+    "interactive_session",
+    "realtime_media_session",
+    "streaming_events",
+    "usage_evidence",
+    "billed_cost_evidence",
+    "output_token_limit",
+    "reasoning_selection",
+    "structured_output",
+    "attachments",
+    "consumer_tool_exchange",
+    "permission_exchange",
+    "question_exchange",
+    "cancellation_or_interruption",
+    "load_session",
+    "resume_session",
+    "working_resource",
+    "bounded_workspace_text_write",
+    "external_search",
+    "retained_background_execution",
+    "stream_reattachment",
+    "provider_managed_recovery",
+    "provider_session_archive",
+    "provider_session_restore",
+    "provider_session_delete",
+    "native_session_close",
+    "owned_remote_resource_cleanup",
+    "planned_connection_rollover",
+}
+serving = next(row for row in rows if row["route_id"] == "llama-cpp.owned")
+for feature in serving_not_applicable:
+    if serving[feature] != "Not applicable":
+        raise SystemExit(
+            f"llama.cpp owned serving feature must remain Not applicable: {feature}"
+        )
+
+expected_no_counts = Counter(
+    {
+        "unverified_newer_allowed": 2,
+        "structured_run": 2,
+        "interactive_session": 5,
+        "realtime_media_session": 3,
+        "usage_evidence": 3,
+        "billed_cost_evidence": 16,
+        "output_token_limit": 14,
+        "reasoning_selection": 12,
+        "structured_output": 18,
+        "attachments": 18,
+        "consumer_tool_exchange": 18,
+        "permission_exchange": 19,
+        "question_exchange": 18,
+        "load_session": 18,
+        "resume_session": 17,
+        "bounded_workspace_text_write": 7,
+        "external_search": 20,
+        "retained_background_execution": 5,
+        "stream_reattachment": 3,
+        "provider_managed_recovery": 17,
+        "provider_session_archive": 5,
+        "provider_session_restore": 5,
+        "provider_session_delete": 3,
+        "native_session_close": 21,
+        "owned_remote_resource_cleanup": 3,
+        "planned_connection_rollover": 1,
+    }
+)
+actual_no_counts = Counter()
+no_cells = []
+matrix_columns = list(rows[0])
+audited_columns = matrix_columns[
+    matrix_columns.index("unverified_newer_allowed")
+    : matrix_columns.index("planned_connection_rollover") + 1
+]
+for row in rows:
+    for feature in audited_columns:
+        if row[feature] == "No":
+            actual_no_counts[feature] += 1
+            no_cells.append((row["provider"], row["solution"], feature))
+audited_value_counts = Counter(
+    row[feature] for row in rows for feature in audited_columns
+)
+if audited_value_counts != Counter(
+    {
+        "Yes": 211,
+        "No": 273,
+        "Not applicable": 222,
+        "Partial": 2,
+        "Caller-supplied": 2,
+        "Session-negotiated": 3,
+    }
+):
+    raise SystemExit(
+        f"provider solution disposition counts changed: {dict(audited_value_counts)}"
+    )
+if actual_no_counts != expected_no_counts:
+    raise SystemExit(
+        f"provider solution No inventory changed: {dict(actual_no_counts)}"
+    )
+if len(no_cells) != 273 or len(no_cells) != len(set(no_cells)):
+    raise SystemExit("provider solution No inventory must contain 273 unique cells")
+
+no_classification_overrides = {
+    (
+        "usage_evidence",
+        "kimi-code.acp + kimi-code.headless",
+    ): "upstream_unsupported",
+    ("usage_evidence", "kimi-code.local-server"): "upstream_unsupported",
+    ("usage_evidence", "grok-build.acp"): "contract_or_corpus_required",
+    ("structured_run", "gemini.live"): "operation_shape_not_applicable",
+    ("structured_run", "openai.realtime"): "operation_shape_not_applicable",
+}
+generation_control_classifications = {
+    ("output_token_limit", "qwen.headless"): "contract_or_corpus_required",
+    ("reasoning_selection", "qwen.headless"): "contract_or_corpus_required",
+    ("structured_output", "qwen.headless"): "contract_or_corpus_required",
+    ("output_token_limit", "alibaba.conversations"): "upstream_unsupported",
+    ("reasoning_selection", "alibaba.conversations"): "contract_or_corpus_required",
+    ("structured_output", "alibaba.conversations"): "upstream_unsupported",
+    ("reasoning_selection", "bedrock.catalogue; bedrock.runtime"): "contract_or_corpus_required",
+    ("structured_output", "bedrock.catalogue; bedrock.runtime"): "contract_or_corpus_required",
+    ("output_token_limit", "claude-agent.acp"): "upstream_unsupported",
+    ("structured_output", "claude-agent.acp"): "upstream_unsupported",
+    ("output_token_limit", "claude-code.headless"): "upstream_unsupported",
+    ("structured_output", "claude-code.headless"): "upstream_unsupported",
+    ("output_token_limit", "anthropic.managed-agent"): "operation_shape_not_applicable",
+    ("reasoning_selection", "anthropic.managed-agent"): "operation_shape_not_applicable",
+    ("structured_output", "anthropic.managed-agent"): "operation_shape_not_applicable",
+    ("reasoning_selection", "anthropic.messages"): "contract_or_corpus_required",
+    ("structured_output", "anthropic.messages"): "contract_or_corpus_required",
+    ("output_token_limit", "pi.rpc"): "upstream_unsupported",
+    ("reasoning_selection", "pi.rpc"): "contract_or_corpus_required",
+    ("structured_output", "pi.rpc"): "upstream_unsupported",
+    ("structured_output", "deepseek.continuation"): "upstream_unsupported",
+    ("output_token_limit", "gemini-cli.acp + gemini-cli.headless"): "contract_or_corpus_required",
+    ("reasoning_selection", "gemini-cli.acp + gemini-cli.headless"): "contract_or_corpus_required",
+    ("structured_output", "gemini-cli.acp + gemini-cli.headless"): "upstream_unsupported",
+    ("output_token_limit", "gemini.live"): "ready_existing_contract",
+    ("reasoning_selection", "gemini.live"): "contract_or_corpus_required",
+    ("structured_output", "gemini.live"): "upstream_unsupported",
+    ("reasoning_selection", "llama-cpp.attached"): "contract_or_corpus_required",
+    ("structured_output", "llama-cpp.attached"): "contract_or_corpus_required",
+    ("output_token_limit", "kimi-code.acp + kimi-code.headless"): "upstream_unsupported",
+    ("structured_output", "kimi-code.acp + kimi-code.headless"): "upstream_unsupported",
+    ("output_token_limit", "kimi-code.local-server"): "upstream_unsupported",
+    ("structured_output", "kimi-code.local-server"): "upstream_unsupported",
+    ("structured_output", "kimi-platform.chat"): "upstream_unsupported",
+    ("output_token_limit", "codex.app-server; codex.exec"): "upstream_unsupported",
+    ("reasoning_selection", "openai.realtime"): "upstream_unsupported",
+    ("structured_output", "openai.realtime"): "upstream_unsupported",
+    ("output_token_limit", "opencode.http"): "upstream_unsupported",
+    ("output_token_limit", "xai.responses-websocket"): "ready_operator_hold",
+    ("reasoning_selection", "xai.responses-websocket"): "ready_operator_hold",
+    ("structured_output", "xai.responses-websocket"): "ready_operator_hold",
+    ("output_token_limit", "grok-build.acp"): "upstream_unsupported",
+    ("reasoning_selection", "grok-build.acp"): "contract_or_corpus_required",
+    ("structured_output", "grok-build.acp"): "upstream_unsupported",
+}
+input_callback_classifications = {
+    ("attachments", "qwen.headless"): "upstream_unsupported",
+    ("consumer_tool_exchange", "qwen.headless"): "upstream_unsupported",
+    ("permission_exchange", "qwen.headless"): "upstream_unsupported",
+    ("external_search", "qwen.headless"): "upstream_unsupported",
+    ("attachments", "alibaba.conversations"): "contract_or_corpus_required",
+    ("consumer_tool_exchange", "alibaba.conversations"): "contract_or_corpus_required",
+    ("permission_exchange", "alibaba.conversations"): "upstream_unsupported",
+    ("external_search", "alibaba.conversations"): "contract_or_corpus_required",
+    ("attachments", "bedrock.catalogue; bedrock.runtime"): "contract_or_corpus_required",
+    ("consumer_tool_exchange", "bedrock.catalogue; bedrock.runtime"): "contract_or_corpus_required",
+    ("permission_exchange", "bedrock.catalogue; bedrock.runtime"): "upstream_unsupported",
+    ("external_search", "bedrock.catalogue; bedrock.runtime"): "upstream_unsupported",
+    ("attachments", "claude-agent.acp"): "contract_or_corpus_required",
+    ("consumer_tool_exchange", "claude-agent.acp"): "contract_or_corpus_required",
+    ("external_search", "claude-agent.acp"): "contract_or_corpus_required",
+    ("attachments", "claude-code.headless"): "contract_or_corpus_required",
+    ("consumer_tool_exchange", "claude-code.headless"): "contract_or_corpus_required",
+    ("permission_exchange", "claude-code.headless"): "contract_or_corpus_required",
+    ("external_search", "claude-code.headless"): "contract_or_corpus_required",
+    ("attachments", "anthropic.managed-agent"): "contract_or_corpus_required",
+    ("permission_exchange", "anthropic.managed-agent"): "contract_or_corpus_required",
+    ("external_search", "anthropic.managed-agent"): "contract_or_corpus_required",
+    ("permission_exchange", "anthropic.messages"): "upstream_unsupported",
+    ("consumer_tool_exchange", "pi.rpc"): "upstream_unsupported",
+    ("permission_exchange", "pi.rpc"): "operation_shape_not_applicable",
+    ("external_search", "pi.rpc"): "upstream_unsupported",
+    ("attachments", "deepseek.continuation"): "upstream_unsupported",
+    ("permission_exchange", "deepseek.continuation"): "upstream_unsupported",
+    ("external_search", "deepseek.continuation"): "upstream_unsupported",
+    ("attachments", "gemini-cli.acp + gemini-cli.headless"): "composite_partial_only",
+    ("consumer_tool_exchange", "gemini-cli.acp + gemini-cli.headless"): "composite_partial_only",
+    ("permission_exchange", "gemini-cli.acp + gemini-cli.headless"): "contract_or_corpus_required",
+    ("external_search", "gemini-cli.acp + gemini-cli.headless"): "contract_or_corpus_required",
+    ("attachments", "gemini.live"): "operation_shape_not_applicable",
+    ("consumer_tool_exchange", "gemini.live"): "contract_or_corpus_required",
+    ("permission_exchange", "gemini.live"): "upstream_unsupported",
+    ("external_search", "gemini.live"): "contract_or_corpus_required",
+    ("attachments", "llama-cpp.attached"): "contract_or_corpus_required",
+    ("consumer_tool_exchange", "llama-cpp.attached"): "contract_or_corpus_required",
+    ("permission_exchange", "llama-cpp.attached"): "upstream_unsupported",
+    ("external_search", "llama-cpp.attached"): "upstream_unsupported",
+    ("attachments", "kimi-code.acp + kimi-code.headless"): "composite_partial_only",
+    ("consumer_tool_exchange", "kimi-code.acp + kimi-code.headless"): "composite_partial_only",
+    ("permission_exchange", "kimi-code.acp + kimi-code.headless"): "composite_partial_only",
+    ("external_search", "kimi-code.acp + kimi-code.headless"): "contract_or_corpus_required",
+    ("attachments", "kimi-code.local-server"): "ready_existing_contract",
+    ("consumer_tool_exchange", "kimi-code.local-server"): "upstream_unsupported",
+    ("external_search", "kimi-code.local-server"): "contract_or_corpus_required",
+    ("attachments", "kimi-platform.chat"): "contract_or_corpus_required",
+    ("consumer_tool_exchange", "kimi-platform.chat"): "contract_or_corpus_required",
+    ("permission_exchange", "kimi-platform.chat"): "upstream_unsupported",
+    ("external_search", "kimi-platform.chat"): "contract_or_corpus_required",
+    ("attachments", "ollama.attached"): "contract_or_corpus_required",
+    ("consumer_tool_exchange", "ollama.attached"): "contract_or_corpus_required",
+    ("permission_exchange", "ollama.attached"): "upstream_unsupported",
+    ("external_search", "ollama.attached"): "upstream_unsupported",
+    ("attachments", "openai.realtime"): "contract_or_corpus_required",
+    ("consumer_tool_exchange", "openai.realtime"): "contract_or_corpus_required",
+    ("permission_exchange", "openai.realtime"): "upstream_unsupported",
+    ("external_search", "openai.realtime"): "upstream_unsupported",
+    ("attachments", "openai.background"): "contract_or_corpus_required",
+    ("consumer_tool_exchange", "openai.background"): "upstream_unsupported",
+    ("permission_exchange", "openai.background"): "upstream_unsupported",
+    ("external_search", "openai.background"): "contract_or_corpus_required",
+    ("permission_exchange", "codex.app-server; codex.exec"): "contract_or_corpus_required",
+    ("consumer_tool_exchange", "opencode.http"): "contract_or_corpus_required",
+    ("external_search", "opencode.http"): "contract_or_corpus_required",
+    ("attachments", "xai.responses-websocket"): "ready_operator_hold",
+    ("consumer_tool_exchange", "xai.responses-websocket"): "ready_operator_hold",
+    ("permission_exchange", "xai.responses-websocket"): "upstream_unsupported",
+    ("external_search", "xai.responses-websocket"): "ready_operator_hold",
+    ("attachments", "grok-build.acp"): "contract_or_corpus_required",
+    ("consumer_tool_exchange", "grok-build.acp"): "upstream_unsupported",
+    ("permission_exchange", "grok-build.acp"): "upstream_unsupported",
+    ("external_search", "grok-build.acp"): "contract_or_corpus_required",
+    ("question_exchange", "qwen.headless"): "upstream_unsupported",
+    ("question_exchange", "alibaba.conversations"): "upstream_unsupported",
+    ("question_exchange", "bedrock.catalogue; bedrock.runtime"): "upstream_unsupported",
+    ("question_exchange", "claude-agent.acp"): "upstream_unsupported",
+    ("question_exchange", "claude-code.headless"): "contract_or_corpus_required",
+    ("question_exchange", "anthropic.managed-agent"): "contract_or_corpus_required",
+    ("question_exchange", "anthropic.messages"): "upstream_unsupported",
+    ("question_exchange", "deepseek.continuation"): "upstream_unsupported",
+    ("question_exchange", "gemini-cli.acp + gemini-cli.headless"): "contract_or_corpus_required",
+    ("question_exchange", "gemini.live"): "upstream_unsupported",
+    ("question_exchange", "llama-cpp.attached"): "upstream_unsupported",
+    ("question_exchange", "kimi-code.acp + kimi-code.headless"): "composite_partial_only",
+    ("question_exchange", "kimi-platform.chat"): "upstream_unsupported",
+    ("question_exchange", "ollama.attached"): "upstream_unsupported",
+    ("question_exchange", "openai.realtime"): "upstream_unsupported",
+    ("question_exchange", "openai.background"): "upstream_unsupported",
+    ("question_exchange", "xai.responses-websocket"): "upstream_unsupported",
+    ("question_exchange", "grok-build.acp"): "upstream_unsupported",
+}
+session_continuity_classifications = {
+    ("load_session", "qwen.headless"): "operation_shape_not_applicable",
+    ("resume_session", "qwen.headless"): "operation_shape_not_applicable",
+    ("native_session_close", "qwen.headless"): "operation_shape_not_applicable",
+    ("load_session", "alibaba.conversations"): "shared_contract_expansion_required",
+    ("resume_session", "alibaba.conversations"): "shared_contract_expansion_required",
+    ("native_session_close", "alibaba.conversations"): "upstream_unsupported",
+    ("load_session", "bedrock.catalogue; bedrock.runtime"): "operation_shape_not_applicable",
+    ("resume_session", "bedrock.catalogue; bedrock.runtime"): "operation_shape_not_applicable",
+    ("native_session_close", "bedrock.catalogue; bedrock.runtime"): "operation_shape_not_applicable",
+    ("load_session", "claude-code.headless"): "operation_shape_not_applicable",
+    ("resume_session", "claude-code.headless"): "operation_shape_not_applicable",
+    ("native_session_close", "claude-code.headless"): "operation_shape_not_applicable",
+    ("load_session", "anthropic.managed-agent"): "shared_contract_expansion_required",
+    ("resume_session", "anthropic.managed-agent"): "shared_contract_expansion_required",
+    ("native_session_close", "anthropic.managed-agent"): "upstream_unsupported",
+    ("load_session", "anthropic.messages"): "operation_shape_not_applicable",
+    ("resume_session", "anthropic.messages"): "operation_shape_not_applicable",
+    ("native_session_close", "anthropic.messages"): "operation_shape_not_applicable",
+    ("load_session", "pi.rpc"): "ready_existing_contract",
+    ("resume_session", "pi.rpc"): "ready_existing_contract",
+    ("native_session_close", "pi.rpc"): "upstream_unsupported",
+    ("load_session", "deepseek.continuation"): "operation_shape_not_applicable",
+    ("resume_session", "deepseek.continuation"): "operation_shape_not_applicable",
+    ("native_session_close", "deepseek.continuation"): "operation_shape_not_applicable",
+    ("load_session", "gemini-cli.acp + gemini-cli.headless"): "upstream_ordering_blocked",
+    ("resume_session", "gemini-cli.acp + gemini-cli.headless"): "upstream_unsupported",
+    ("native_session_close", "gemini-cli.acp + gemini-cli.headless"): "upstream_unsupported",
+    ("load_session", "gemini.live"): "operation_shape_not_applicable",
+    ("resume_session", "gemini.live"): "operation_shape_not_applicable",
+    ("native_session_close", "gemini.live"): "operation_shape_not_applicable",
+    ("load_session", "llama-cpp.attached"): "operation_shape_not_applicable",
+    ("resume_session", "llama-cpp.attached"): "operation_shape_not_applicable",
+    ("native_session_close", "llama-cpp.attached"): "operation_shape_not_applicable",
+    ("native_session_close", "kimi-code.acp + kimi-code.headless"): "upstream_unsupported",
+    ("load_session", "kimi-code.local-server"): "upstream_unsupported",
+    ("native_session_close", "kimi-code.local-server"): "upstream_unsupported",
+    ("load_session", "kimi-platform.chat"): "operation_shape_not_applicable",
+    ("resume_session", "kimi-platform.chat"): "operation_shape_not_applicable",
+    ("native_session_close", "kimi-platform.chat"): "operation_shape_not_applicable",
+    ("load_session", "ollama.attached"): "operation_shape_not_applicable",
+    ("resume_session", "ollama.attached"): "operation_shape_not_applicable",
+    ("native_session_close", "ollama.attached"): "operation_shape_not_applicable",
+    ("native_session_close", "codex.app-server; codex.exec"): "upstream_unsupported",
+    ("load_session", "openai.realtime"): "operation_shape_not_applicable",
+    ("resume_session", "openai.realtime"): "operation_shape_not_applicable",
+    ("native_session_close", "openai.realtime"): "operation_shape_not_applicable",
+    ("load_session", "openai.background"): "operation_shape_not_applicable",
+    ("resume_session", "openai.background"): "operation_shape_not_applicable",
+    ("native_session_close", "openai.background"): "operation_shape_not_applicable",
+    ("native_session_close", "opencode.http"): "upstream_unsupported",
+    ("load_session", "xai.responses-websocket"): "operation_shape_not_applicable",
+    ("resume_session", "xai.responses-websocket"): "operation_shape_not_applicable",
+    ("native_session_close", "xai.responses-websocket"): "operation_shape_not_applicable",
+    ("load_session", "grok-build.acp"): "contract_or_corpus_required",
+    ("resume_session", "grok-build.acp"): "contract_or_corpus_required",
+    ("native_session_close", "grok-build.acp"): "upstream_unsupported",
+}
+provider_retention_not_applicable = {
+    "qwen.headless",
+    "alibaba.conversations",
+    "bedrock.catalogue; bedrock.runtime",
+    "claude-code.headless",
+    "anthropic.managed-agent",
+    "anthropic.messages",
+    "pi.rpc",
+    "deepseek.continuation",
+    "gemini.live",
+    "llama-cpp.attached",
+    "kimi-platform.chat",
+    "ollama.attached",
+    "openai.realtime",
+    "xai.responses-websocket",
+}
+provider_session_not_applicable = provider_retention_not_applicable | {
+    "openai.background",
+}
+owned_cleanup_not_applicable = (
+    provider_retention_not_applicable
+    - {"alibaba.conversations", "anthropic.managed-agent"}
+) | {"codex.app-server; codex.exec"}
+provider_retention_classifications = {}
+for feature in ["provider_session_archive", "provider_session_restore"]:
+    for route in provider_session_not_applicable:
+        provider_retention_classifications[(feature, route)] = (
+            "operation_shape_not_applicable"
+        )
+    for route in [
+        "claude-agent.acp",
+        "gemini-cli.acp + gemini-cli.headless",
+        "grok-build.acp",
+        "kimi-code.acp + kimi-code.headless",
+        "opencode.http",
+    ]:
+        provider_retention_classifications[(feature, route)] = "upstream_unsupported"
+for route in provider_session_not_applicable:
+    provider_retention_classifications[("provider_session_delete", route)] = (
+        "operation_shape_not_applicable"
+    )
+for route in [
+    "grok-build.acp",
+    "kimi-code.acp + kimi-code.headless",
+    "kimi-code.local-server",
+]:
+    provider_retention_classifications[("provider_session_delete", route)] = (
+        "upstream_unsupported"
+    )
+provider_retention_classifications[
+    ("provider_session_delete", "gemini-cli.acp + gemini-cli.headless")
+] = "separate_transport_and_corpus_required"
+for route in owned_cleanup_not_applicable:
+    provider_retention_classifications[("owned_remote_resource_cleanup", route)] = (
+        "operation_shape_not_applicable"
+    )
+for route in [
+    "grok-build.acp",
+    "kimi-code.acp + kimi-code.headless",
+    "kimi-code.local-server",
+]:
+    provider_retention_classifications[("owned_remote_resource_cleanup", route)] = (
+        "upstream_unsupported"
+    )
+provider_retention_classifications[
+    ("owned_remote_resource_cleanup", "gemini-cli.acp + gemini-cli.headless")
+] = "separate_transport_and_corpus_required"
+provider_retention_classifications[
+    ("owned_remote_resource_cleanup", "claude-agent.acp")
+] = "ready_existing_contract"
+provider_retention_classifications[
+    ("owned_remote_resource_cleanup", "openai.background")
+] = "shared_contract_and_corpus_required"
+provider_retention_classifications[
+    ("owned_remote_resource_cleanup", "opencode.http")
+] = "realized_matrix_false_negative"
+

@@ -273,7 +273,7 @@ fn declared_approval_and_user_input_requests_are_observed_then_stop() {
         let extension = match request.kind() {
             CallbackRequestKind::Extension(extension) => extension,
             CallbackRequestKind::ToolCall { .. } => panic!("expected a provider extension"),
-            CallbackRequestKind::HarnessUiDialog(_) => {
+            CallbackRequestKind::HarnessUserInput(_) => {
                 panic!("expected a provider extension")
             }
         };

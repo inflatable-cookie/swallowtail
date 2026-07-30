@@ -65,6 +65,11 @@ interruption, and joined cleanup remain on the existing session and turn
 interfaces. The facade does not copy those lifecycle rules into shared facade
 records.
 
+Pi `confirm`, `select`, `input`, and `editor` requests project into the common
+typed harness user-input callback. Stable runtime question and option ids
+correlate the response; Pi display-only UI stays a separate observation.
+These prompts ask for user input. They do not grant provider permissions.
+
 `PiPreparedRun::start_run` starts a separate `StructuredRun` operation. It
 launches one `--no-session` RPC child, sends one prompt, exposes Pi's bounded UI
 callback exchange, awaits `agent_end`, then joins the turn, process,

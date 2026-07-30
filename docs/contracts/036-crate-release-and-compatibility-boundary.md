@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-26
+Updated: 2026-07-30
 
 ## Purpose
 
@@ -14,7 +14,7 @@ provider, harness, SDK, protocol, service, and runtime-interface versions.
 
 ## Public Package Set
 
-All 23 current workspace libraries are public packages.
+All 24 current workspace libraries are public packages.
 
 Foundations:
 
@@ -41,6 +41,7 @@ Opt-in adapters:
 - `swallowtail-adapter-codex`
 - `swallowtail-adapter-deepseek`
 - `swallowtail-adapter-gemini`
+- `swallowtail-adapter-grok`
 - `swallowtail-adapter-kimi`
 - `swallowtail-adapter-kimi-platform`
 - `swallowtail-adapter-llama-cpp`
@@ -52,8 +53,10 @@ Opt-in adapters:
 - `swallowtail-adapter-xai`
 
 There is no umbrella crate or intentionally unpublished implementation crate
-in this package set. A future package addition, removal, merge, or private role
-requires architecture and contract review before manifest work.
+in this package set. `swallowtail-adapter-grok` was added after exact
+authenticated Grok Build evidence and the g02.043 architecture and contract
+review. A future package addition, removal, merge, or private role requires the
+same review before manifest work.
 
 Every package remains separately consumable. Publishing one grants no
 authority to use another, install a harness, acquire a model, start a server,
@@ -421,7 +424,7 @@ checking external state first.
 
 ## Acceptance
 
-- all 23 packages remain public and separately consumable
+- all 24 packages remain public and separately consumable
 - dependency direction and publication order are exact
 - pre-1.0 patch compatibility and breaking minor changes are distinct
 - MSRV is explicit, bounded, tested, and separate from unverified execution

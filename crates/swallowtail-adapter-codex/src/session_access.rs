@@ -173,7 +173,7 @@ impl CodexSessionAccess {
             || self
                 .provider_requests
                 .handling_for(&codex_user_input_request_extension())
-                == ProviderRequestHandling::ObserveAndStop
+                != ProviderRequestHandling::Reject
     }
 
     pub(crate) const fn working_resource(&self) -> &WorkingResourceRef {
@@ -198,7 +198,10 @@ impl CodexSessionAccess {
 
 fn validate_provider_requests(policy: &ProviderRequestPolicy) -> Result<(), RuntimeFailure> {
     let supported = codex_provider_request_extensions();
-    for namespace in policy.observed_extensions() {
+    for namespace in policy
+        .observed_extensions()
+        .chain(policy.exchanged_extensions())
+    {
         if !supported.iter().any(|value| value == namespace) {
             return Err(unsupported("provider request extension"));
         }

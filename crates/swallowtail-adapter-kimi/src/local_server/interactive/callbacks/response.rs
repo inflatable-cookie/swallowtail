@@ -1,4 +1,4 @@
-use super::{PendingCallback, ProviderCallbackKind, State, closed, malformed};
+use super::{ProviderCallbackKind, State, closed, malformed};
 use crate::failure::failure;
 use crate::local_server::interactive::access::SecretMaterial;
 use crate::local_server::protocol::{decode_callback_resolution, decode_question_dismissal};
@@ -22,12 +22,9 @@ pub(super) struct ResponseContext {
 impl CallbackResponder for ResponseContext {
     fn respond(&self, response: CallbackResponse) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
         Box::pin(async move {
-            let pending = claim(&self.state, &response)?;
             let secret = self.secret.upgrade().ok_or_else(closed)?;
             let base = session_path(&self.provider_session_id)?;
-            let segment = provider_segment(&pending.provider_id)?;
-            let (request, dismiss) =
-                request_for_response(base, segment, pending.kind, response.result())?;
+            let (request, dismiss) = claim(&self.state, &response, base)?;
             let reply = self
                 .transport
                 .request(
@@ -54,7 +51,8 @@ impl CallbackResponder for ResponseContext {
 fn claim(
     state: &Arc<Mutex<State>>,
     response: &CallbackResponse,
-) -> Result<PendingCallback, RuntimeFailure> {
+    base: String,
+) -> Result<(Request, bool), RuntimeFailure> {
     let mut state = state.lock().expect("callback state lock poisoned");
     if state.closed {
         return Err(closed());
@@ -71,16 +69,26 @@ fn claim(
             "Kimi callback response belongs to a different turn",
         ));
     }
-    Ok(state
+    let segment = provider_segment(&pending.provider_id)?;
+    let request = request_for_response(
+        base,
+        segment,
+        pending.kind,
+        pending.user_input.as_ref(),
+        response.result(),
+    )?;
+    state
         .pending
         .remove(response.callback_id())
-        .expect("validated callback remains pending"))
+        .expect("validated callback remains pending");
+    Ok(request)
 }
 
 fn request_for_response(
     base: String,
     provider_id: String,
     kind: ProviderCallbackKind,
+    user_input: Option<&swallowtail_runtime::HarnessUserInputRequest>,
     result: &CallbackResult,
 ) -> Result<(Request, bool), RuntimeFailure> {
     match (kind, result) {
@@ -94,16 +102,16 @@ fn request_for_response(
                 false,
             ))
         }
-        (ProviderCallbackKind::Question, CallbackResult::Success(payload)) => {
-            validate_question_response(payload)?;
+        (ProviderCallbackKind::Question, CallbackResult::Success(_)) => Err(malformed()),
+        (ProviderCallbackKind::Question, CallbackResult::UserInput(response)) => {
+            let user_input = user_input.ok_or_else(malformed)?;
+            let body = typed_question_response(user_input, response)?;
             Ok((
-                Request::post_json(
-                    format!("{base}/questions/{provider_id}"),
-                    payload.as_bytes().to_vec(),
-                ),
+                Request::post_json(format!("{base}/questions/{provider_id}"), body),
                 false,
             ))
         }
+        (ProviderCallbackKind::Approval, CallbackResult::UserInput(_)) => Err(malformed()),
         (ProviderCallbackKind::Approval, CallbackResult::Failure { .. }) => Ok((
             Request::post_json(
                 format!("{base}/approvals/{provider_id}"),
@@ -118,6 +126,34 @@ fn request_for_response(
     }
 }
 
+fn typed_question_response(
+    request: &swallowtail_runtime::HarnessUserInputRequest,
+    response: &swallowtail_runtime::HarnessUserInputResponse,
+) -> Result<Vec<u8>, RuntimeFailure> {
+    if !request.accepts(response) {
+        return Err(malformed());
+    }
+    let answers = response
+        .answers()
+        .map(|answer| {
+            let value = if answer.is_skipped() {
+                serde_json::json!({"kind": "skipped"})
+            } else if answer.text().is_some() {
+                return Err(malformed());
+            } else {
+                let mut selected = answer.selected_options();
+                let option = selected.next().ok_or_else(malformed)?;
+                if selected.next().is_some() {
+                    return Err(malformed());
+                }
+                serde_json::json!({"kind": "single", "option_id": option.as_str()})
+            };
+            Ok((answer.question_id().as_str().to_owned(), value))
+        })
+        .collect::<Result<serde_json::Map<String, serde_json::Value>, RuntimeFailure>>()?;
+    serde_json::to_vec(&serde_json::json!({"answers": answers})).map_err(|_| malformed())
+}
+
 fn validate_approval_response(payload: &CallbackPayload) -> Result<(), RuntimeFailure> {
     let value: serde_json::Value =
         serde_json::from_slice(payload.as_bytes()).map_err(|_| malformed())?;
@@ -130,29 +166,6 @@ fn validate_approval_response(payload: &CallbackPayload) -> Result<(), RuntimeFa
         .is_some_and(|scope| scope.as_str() != Some("session"))
     {
         return Err(malformed());
-    }
-    Ok(())
-}
-
-fn validate_question_response(payload: &CallbackPayload) -> Result<(), RuntimeFailure> {
-    let value: serde_json::Value =
-        serde_json::from_slice(payload.as_bytes()).map_err(|_| malformed())?;
-    let answers = value
-        .as_object()
-        .and_then(|object| object.get("answers"))
-        .and_then(serde_json::Value::as_object)
-        .ok_or_else(malformed)?;
-    if answers.is_empty() || answers.len() > 4 {
-        return Err(malformed());
-    }
-    for answer in answers.values() {
-        let answer = answer.as_object().ok_or_else(malformed)?;
-        if !matches!(
-            answer.get("kind").and_then(serde_json::Value::as_str),
-            Some("single" | "multi" | "other" | "multi_with_other" | "skipped")
-        ) {
-            return Err(malformed());
-        }
     }
     Ok(())
 }

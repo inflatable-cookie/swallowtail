@@ -102,3 +102,15 @@ fn attached_runtime_residency_is_absent_until_explicitly_accepted() {
         Some(AttachedRuntimeResidency::RuntimeManaged)
     );
 }
+
+#[test]
+fn harness_mode_is_absent_until_explicitly_selected() {
+    let ordinary = OperationPolicy::offline();
+    assert_eq!(ordinary.harness_mode(), None);
+
+    let planned = ordinary.with_harness_mode(swallowtail_core::HarnessMode::Plan);
+    assert_eq!(
+        planned.harness_mode(),
+        Some(swallowtail_core::HarnessMode::Plan)
+    );
+}

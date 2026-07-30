@@ -16,6 +16,17 @@ historical evidence.
 
 ## Items
 
-- [Grok Build Maintained ACP Range](grok-build-maintained-acp-range.md)
-- [Python Kimi CLI Headless Route](python-kimi-cli-headless-route.md)
 - [Provider-Session Management Binding Persistence](provider-session-management-binding-persistence.md)
+
+## Completed
+
+- [Grok Build Maintained ACP Range](grok-build-maintained-acp-range.md) —
+  promoted into g02.043; exact `0.2.114` discovery, access, interactive,
+  structured, conformance, and package acceptance are complete
+
+## Declined
+
+- [Python Kimi CLI Headless Route](python-kimi-cli-headless-route.md) —
+  maintained native Kimi Code already supplies the required authenticated ACP
+  and stream-JSON headless routes; reopen only on a concrete missing
+  capability

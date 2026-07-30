@@ -16,7 +16,7 @@ pub(crate) use lifecycle::{
 pub const CODEX_CLI_AXIS: &str = "codex.cli";
 pub const CODEX_EXEC_BASELINE_VERSION: &str = "0.80.0";
 pub const CODEX_APP_SERVER_BASELINE_VERSION: &str = "0.80.0";
-pub const CODEX_LATEST_QUALIFIED_VERSION: &str = "0.145.0";
+pub const CODEX_LATEST_QUALIFIED_VERSION: &str = "0.146.0";
 pub(crate) const CODEX_APP_SERVER_WORKSPACE_ROOTS_VERSION: &str = "0.131.0";
 const CODEX_EXEC_RETAINED_BOOLEAN_SEARCH_BEHAVIOR: &str =
     "codex.exec.jsonl-v1.retained-boolean-search";

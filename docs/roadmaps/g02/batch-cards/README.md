@@ -132,6 +132,21 @@
 - `135-provider-solution-activity-matrix-and-guidance.md`
 - `136-packaged-provider-wide-activity-proof.md`
 - `137-observable-activity-consumer-handoff.md`
+- `138-kimi-0-31-currentness-and-live-evidence.md`
+- `139-kimi-0-31-range-extension-and-closeout.md`
+- `140-kimi-local-server-0-31-evidence-and-corpus.md`
+- `141-kimi-local-server-0-31-range-and-closeout.md`
+- `142-grok-authenticated-evidence-and-contract.md`
+- `143-grok-installed-discovery-and-dispatch.md`
+- `144-grok-acp-driver-and-prepared-facade.md`
+- `145-grok-structured-conformance-and-closeout.md`
+- `146-installed-range-currentness-and-corpus.md`
+- `147-codex-0-146-range-extension.md`
+- `148-opencode-1-18-10-range-extension.md`
+- `149-installed-range-maintenance-closeout.md`
+- `150-structural-health-inventory-and-seams.md`
+- `151-critical-file-decomposition.md`
+- `152-codex-and-opencode-module-decomposition.md`
 
 ## Superseded
 
@@ -139,6 +154,9 @@
   replacement moved to card 036
 - `043-soundcheck-secondary-application-proof.md` — stopped after readiness
   defects; remaining synthetic workload declined by operator
+- `059-packaged-provider-session-lifecycle-proof.md` — transient lifecycle
+  proof remains valid; later card 136 supplied broader packaged evidence and
+  retained-candidate refresh left the active runway
 - `112-runtime-ownership-and-rollover-contract-and-corpora.md` — negative
   audit selected no contract or corpus candidate
 - `113-runtime-ownership-and-rollover-implementation-tranche.md` — negative
@@ -150,11 +168,12 @@ None. Cross-generation deferred work lives in `docs/roadmaps/backlog/`.
 
 ## Ready
 
-None.
+- `153-runtime-and-stateful-harness-decomposition.md`
 
 ## Planned
 
-None.
+- `154-remaining-adapter-decomposition.md`
+- `155-structural-health-acceptance-and-closeout.md`
 
 ## Operator-Held
 
@@ -162,8 +181,6 @@ None.
 
 ## Paused
 
-- `059-packaged-provider-session-lifecycle-proof.md` — transient candidate
-  passes; retained replacement waits for canonical source history
 - `097-pi-rpc-session-continuity-implementation.md` — waits for a maintained
   public Pi cwd-bound attachment surface
 - `098-pi-rpc-session-continuity-closeout.md` — depends on paused card 097

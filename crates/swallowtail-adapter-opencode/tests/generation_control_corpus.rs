@@ -3,7 +3,7 @@ use serde_json::Value;
 #[test]
 fn qualified_range_fixture_keeps_variant_and_harness_schema_distinct() {
     let request: Value = serde_json::from_str(include_str!(
-        "fixtures/opencode-v1.14.48-v1.18.4/generation-controls-prompt-request.json"
+        "fixtures/opencode-v1.14.48-v1.18.10/generation-controls-prompt-request.json"
     ))
     .expect("fixture parses");
 

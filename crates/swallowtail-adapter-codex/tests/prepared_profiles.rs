@@ -18,13 +18,14 @@ use swallowtail_core::{
     ActivityKindClass, ActivityLifecycleFidelity, ActivityUnknownEventPosture, Capability,
     CapabilityConstraint, ConfiguredInstanceId, CredentialMechanism, CredentialState, DriverRole,
     EndpointAudience, EndpointAuthorization, EntitlementMetering, EntitlementState,
-    ExecutionHostId, ExternalNetworkPolicy, ExternalSearchPolicy, HostServiceKind,
+    ExecutionHostId, ExternalNetworkPolicy, ExternalSearchPolicy, HarnessMode, HostServiceKind,
     InstanceRevision, InterfaceVersionAxis, ModelId, ModelRouteId, ModelRouteRevision,
     ObservableActivityAvailability, ReasoningMode, RuntimeReadiness, SupportAuthority,
 };
 use swallowtail_runtime::{
     AttachmentDescriptor, AttachmentRef, AttachmentRole, BoxFuture, CleanupOutcome, Deadline,
-    DeadlineObservation, DiscoveryCancellation, EnvironmentRef, ExecutableRef,
+    DeadlineObservation, DiscoveryCancellation, EnvironmentRef, ExecutableRef, HarnessQuestionId,
+    HarnessQuestionOptionId, HarnessUserInputAnswer, HarnessUserInputResponse,
     InstalledExecutableTarget, MonotonicInstant, OperationContent, PreparationStage,
     PreparedAccessEvidence, ProviderRetentionPolicy, RequestId, RuntimeTurnId, SchemaDocument,
     SessionOptions, StructuredOutputDescriptor, TimeService, ToolDeclaration, TurnRequest,

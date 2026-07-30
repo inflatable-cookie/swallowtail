@@ -247,6 +247,12 @@ fn claim_response(
     let option_id = match response.result() {
         CallbackResult::Failure { .. } => pending.reject_option_id.clone(),
         CallbackResult::Success(payload) => selected_option(payload, pending)?,
+        CallbackResult::UserInput(_) => {
+            return Err(failure(
+                "swallowtail.claude_agent.acp.permission_callback_result_invalid",
+                "Claude Agent permission callback received a user-input response",
+            ));
+        }
     };
     let pending = state
         .pending

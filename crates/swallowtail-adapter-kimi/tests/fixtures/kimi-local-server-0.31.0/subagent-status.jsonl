@@ -1,0 +1,1 @@
+{"type":"agent.status.updated","seq":40,"volatile":true,"offset":0,"session_id":"fixture-session","timestamp":"2026-07-30T00:00:00.000Z","payload":{"agentId":"agent-fixture","usage":{"total":{"inputOther":1,"output":2,"inputCacheRead":0,"inputCacheCreation":0}},"contextTokens":10,"maxContextTokens":128000,"model":"fixture-display-model"}}

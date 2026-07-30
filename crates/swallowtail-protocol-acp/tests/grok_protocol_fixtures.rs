@@ -14,6 +14,12 @@ const LATEST_INITIALIZE: &str =
     include_str!("fixtures/acp-v1-grok-build-0.2.111/initialize.ndjson");
 const LATEST_AUTH_REQUIRED: &str =
     include_str!("fixtures/acp-v1-grok-build-0.2.111/auth-required.ndjson");
+const QUALIFIED_RANGE: &str =
+    include_str!("fixtures/acp-v1-grok-build-range-2026-07-30/release-corpus.json");
+const QUALIFIED_PROTOCOL: &str = include_str!("fixtures/acp-v1-grok-build-0.2.114/protocol.json");
+const QUALIFIED_INITIALIZE: &str =
+    include_str!("fixtures/acp-v1-grok-build-0.2.114/initialize.ndjson");
+const QUALIFIED_ACTIVATE: &str = include_str!("fixtures/acp-v1-grok-build-0.2.114/activate.ndjson");
 
 #[test]
 fn release_snapshot_has_two_exact_runs_and_no_qualified_range() {
@@ -190,6 +196,87 @@ fn current_auth_and_permission_evidence_stops_production_qualification() {
 }
 
 #[test]
+fn exact_authenticated_release_defines_one_qualified_segment() {
+    let range = parse_json(QUALIFIED_RANGE);
+    let protocol = parse_json(QUALIFIED_PROTOCOL);
+
+    assert_eq!(
+        range["qualification"]["qualified_releases"],
+        serde_json::json!(["0.2.114"])
+    );
+    assert_eq!(
+        range["qualification"]["segments"].as_array().unwrap().len(),
+        1
+    );
+    assert_eq!(
+        range["qualification"]["uninspected_older"],
+        serde_json::json!(["0.2.112", "0.2.113"])
+    );
+    assert_eq!(range["qualification"]["unverified_newer_allowed"], true);
+    assert_eq!(range["qualification"]["prerelease_allowed"], false);
+    assert_eq!(protocol["qualification"]["guaranteed_baseline"], "0.2.114");
+    assert_eq!(protocol["qualification"]["latest_qualified"], "0.2.114");
+}
+
+#[test]
+fn qualified_release_activates_only_the_existing_cached_token() {
+    let initialize = parse_transcript(QUALIFIED_INITIALIZE).expect("initialize parses");
+    let activate = parse_transcript(QUALIFIED_ACTIVATE).expect("activation parses");
+    let protocol = parse_json(QUALIFIED_PROTOCOL);
+
+    assert_eq!(methods(&initialize), ["initialize"]);
+    assert_eq!(
+        initialize[1].message()["result"]["_meta"]["agentVersion"],
+        "0.2.114"
+    );
+    assert_eq!(
+        initialize[1].message()["result"]["_meta"]["defaultAuthMethodId"],
+        "cached_token"
+    );
+    let auth_methods = initialize[1].message()["result"]["authMethods"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|method| method["id"].as_str().unwrap())
+        .collect::<Vec<_>>();
+    assert_eq!(auth_methods, ["cached_token", "grok.com"]);
+
+    assert_eq!(methods(&activate), ["authenticate"]);
+    assert_eq!(activate[0].message()["params"]["methodId"], "cached_token");
+    assert_eq!(activate[0].message()["params"]["_meta"]["headless"], true);
+    assert_eq!(activate[1].message()["result"], serde_json::json!({}));
+
+    assert_eq!(protocol["authentication"]["credential_file_changed"], false);
+    assert_eq!(
+        protocol["authentication"]["provider_private_response_metadata_discarded"],
+        true
+    );
+    assert_eq!(
+        protocol["authentication"]["login_or_api_key_fallback"],
+        false
+    );
+}
+
+#[test]
+fn qualified_artifact_matches_the_installed_signed_executable() {
+    let protocol = parse_json(QUALIFIED_PROTOCOL);
+    assert_eq!(protocol["release"]["source_revision"], "0c785038798");
+    assert_eq!(protocol["release"]["channel"], "stable");
+    assert_eq!(
+        protocol["artifacts"]["executable_sha256"],
+        "e715f57f9018a1737c1a64ef1cb260ac2a5045dfa6a1a0e1c7a7cbe193a083b2"
+    );
+    assert_eq!(
+        protocol["version_observation"]["stdout"],
+        "grok 0.2.114 (0c785038798) [stable]"
+    );
+    assert_eq!(
+        protocol["invocation"]["direct_executable_argv"],
+        serde_json::json!(["--no-auto-update", "agent", "stdio"])
+    );
+}
+
+#[test]
 fn normalized_corpus_contains_no_host_or_credential_material() {
     for fixture in [
         RANGE,
@@ -199,11 +286,18 @@ fn normalized_corpus_contains_no_host_or_credential_material() {
         LATEST_PROTOCOL,
         LATEST_INITIALIZE,
         LATEST_AUTH_REQUIRED,
+        QUALIFIED_RANGE,
+        QUALIFIED_PROTOCOL,
+        QUALIFIED_INITIALIZE,
+        QUALIFIED_ACTIVATE,
     ] {
         for forbidden in [
             "Toms-MacBook-Pro",
             "/Users/",
             "auth.json",
+            "@inflatablecookie",
+            "team_id",
+            "subscription_tier",
             "XAI_API_KEY=",
             "Bearer ",
             "xai-secret-",

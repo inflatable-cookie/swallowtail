@@ -96,7 +96,7 @@ idle. All three precede the terminal outcome.
 
 - `swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-acp-v0.53.0-v0.61.0/`
 - `swallowtail-adapter-pi/tests/fixtures/pi-rpc-0.80.10/usage-events.jsonl`
-- `swallowtail-adapter-opencode/tests/fixtures/opencode-v1.14.48-v1.18.4/usage.sse`
+- `swallowtail-adapter-opencode/tests/fixtures/opencode-v1.14.48-v1.18.10/usage.sse`
 
 Focused tests prove the qualified version set, disjoint component sums,
 context separation, and terminal boundary records.
@@ -118,4 +118,3 @@ with usage evidence.
 - Contract 011 owns cumulative replacement and disjoint aggregation.
 - Architecture records the realized runtime rule.
 - Card 082 can implement three exact adapter paths without new product policy.
-

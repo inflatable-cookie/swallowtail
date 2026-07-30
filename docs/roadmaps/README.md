@@ -12,11 +12,9 @@ shape.
 
 ## Next Task
 
-Operator decision: use the completed
-[Nucleus](../releases/0.1.0-nucleus-observable-activity-handoff.md) or
-[Soundcheck](../releases/0.1.0-soundcheck-observable-activity-handoff.md)
-handoff to authorize a consumer adoption lane, or select another g02
-stabilization target. No consumer repository edit is implicitly authorized.
+Execute g02 card 153: remove the runtime, Claude Agent, Gemini, and Kimi
+error-level findings through private module extraction with unchanged public
+declarations and cross-transport behavior.
 
 ## Index
 

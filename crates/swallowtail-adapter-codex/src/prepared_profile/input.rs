@@ -48,6 +48,7 @@ pub struct CodexSessionProfileInput {
     working_resource: WorkingResourceRef,
     deadline: Option<Deadline>,
     options: SessionOptions,
+    user_input_exchange: bool,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -113,7 +114,14 @@ impl CodexSessionProfileInput {
             working_resource,
             deadline,
             options,
+            user_input_exchange: false,
         }
+    }
+
+    #[must_use]
+    pub const fn with_user_input_exchange(mut self) -> Self {
+        self.user_input_exchange = true;
+        self
     }
 
     pub(crate) fn into_parts(
@@ -124,6 +132,7 @@ impl CodexSessionProfileInput {
         WorkingResourceRef,
         Option<Deadline>,
         SessionOptions,
+        bool,
     ) {
         (
             self.request_id,
@@ -131,6 +140,7 @@ impl CodexSessionProfileInput {
             self.working_resource,
             self.deadline,
             self.options,
+            self.user_input_exchange,
         )
     }
 }

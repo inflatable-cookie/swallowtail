@@ -43,6 +43,7 @@ pub(super) struct AgentState {
     requested_model: Option<String>,
     current_model: Option<String>,
     effort: Option<String>,
+    mode: Option<String>,
     stopped: bool,
 }
 
@@ -322,6 +323,9 @@ impl SharedAgent {
             {
                 state.effort = Some(value);
             }
+            Some("mode") if value == "plan" => {
+                state.mode = Some(value);
+            }
             _ => return Err(fixture_failure()),
         }
         let config_options = self.config_options(state)?;
@@ -364,6 +368,17 @@ impl SharedAgent {
         })];
         let version = semver::Version::parse(&self.version).map_err(|_| fixture_failure())?;
         if version >= semver::Version::new(0, 54, 0) {
+            options.push(json!({
+                "type": "select",
+                "id": "mode",
+                "name": "Mode",
+                "category": "mode",
+                "currentValue": state.mode.as_deref().unwrap_or("default"),
+                "options": [
+                    {"value": "default", "name": "Default"},
+                    {"value": "plan", "name": "Plan"}
+                ]
+            }));
             let effort_options = ["default", "low", "medium", "high", "xhigh", "max"]
                 .into_iter()
                 .map(|value| json!({"value": value, "name": value}))

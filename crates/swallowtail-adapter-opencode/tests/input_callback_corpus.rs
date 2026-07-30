@@ -1,8 +1,8 @@
 use serde_json::{Value, json};
 
 const INPUT_CALLBACK: &str =
-    include_str!("fixtures/opencode-v1.14.48-v1.18.4/input-callback-corpus.json");
-const COMPATIBILITY: &str = include_str!("fixtures/opencode-v1.14.48-v1.18.4/compatibility.json");
+    include_str!("fixtures/opencode-v1.14.48-v1.18.10/input-callback-corpus.json");
+const COMPATIBILITY: &str = include_str!("fixtures/opencode-v1.14.48-v1.18.10/compatibility.json");
 
 fn version_tuple(version: &str) -> (u32, u32, u32) {
     let mut parts = version.split('.').map(|part| {
@@ -27,8 +27,8 @@ fn every_qualified_release_maps_to_one_input_callback_surface() {
         .as_array()
         .expect("releases are an array");
 
-    assert_eq!(releases.len(), 45);
-    assert_eq!(corpus["qualified_release_count"], 45);
+    assert_eq!(releases.len(), 51);
+    assert_eq!(corpus["qualified_release_count"], 51);
     for release in releases {
         let version = version_tuple(
             release["version"]

@@ -41,7 +41,7 @@ credential, or changes host topology.
 | Prepared path | Driver | Consumer choices |
 | --- | --- | --- |
 | `prepare_catalogue` | app-server | request identity and optional deadline |
-| `prepare_read_only_session` | app-server | model route, model, working resource, instructions, reasoning, tools |
+| `prepare_read_only_session` | app-server | model route, model, working resource, instructions, reasoning, plan mode, tools, optional typed user-input exchange |
 | `prepare_bounded_workspace_session` | app-server | the same session inputs plus explicit writable-profile selection |
 | `prepare_archive_session` | app-server | request identity, inactive management binding, optional deadline, explicit unverified-newer acceptance |
 | `prepare_restore_session` | app-server | request identity, inactive management binding, optional deadline, explicit unverified-newer acceptance |
@@ -120,6 +120,14 @@ cancellation, deadlines, callbacks, terminal outcomes, or cleanup.
   route selection.
 - App-server dynamic tools are consumer declarations. Swallowtail transports
   callbacks but never executes the tools.
+- `CodexSessionProfileInput::with_user_input_exchange()` opts a session into
+  app-server question callbacks. Each turn can expose ordered typed questions
+  and accepts correlated typed answers. It does not enable approval requests.
+- `SessionOptions::with_harness_mode(HarnessMode::Plan)` opts the whole
+  app-server session into Codex plan mode. The adapter retains the choice and
+  sends the exact collaboration-mode preset on every turn. This is qualified
+  from Codex `0.88.0`; older prepared versions reject it before provider work.
+  It does not change the session access policy or grant approval authority.
 - Dynamic tools cannot be redeclared on Codex resume.
 - App-server session-open deadlines are currently unsupported and fail during
   preparation. Turn deadlines remain available on `TurnRequest`.

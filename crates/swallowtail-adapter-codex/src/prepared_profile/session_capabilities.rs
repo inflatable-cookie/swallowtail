@@ -1,18 +1,23 @@
 use super::CodexPreparedSessionKind;
 use super::plan::failure;
-use crate::{CodexPreparedIntegration, codex_bounded_workspace_access_policy};
+use crate::{
+    CodexPreparedIntegration, codex_approval_request_extension,
+    codex_bounded_workspace_access_policy, codex_user_input_request_extension,
+};
 use std::collections::BTreeSet;
 use swallowtail_core::{
     Capability, CapabilityConstraint, CapabilityRequirement, InstalledExecutableCompatibility,
-    SessionAccessPolicy,
+    ProviderRequestPolicy, SessionAccessPolicy,
 };
 use swallowtail_runtime::{PreparationFailure, SchemaDocument, SessionOptions};
 
 const JSON_SCHEMA_MEDIA_TYPE: &str = "application/schema+json";
+const PLAN_MODE_MINIMUM_VERSION: semver::Version = semver::Version::new(0, 88, 0);
 
 pub(super) fn session_capabilities(
     kind: CodexPreparedSessionKind,
     options: &SessionOptions,
+    user_input_exchange: bool,
 ) -> Result<
     (
         Vec<CapabilityRequirement>,
@@ -42,14 +47,34 @@ pub(super) fn session_capabilities(
             [CapabilityConstraint::reasoning_mode(mode.clone())],
         ));
     }
+    if let Some(mode) = options.harness_mode() {
+        capabilities.push(CapabilityRequirement::new(
+            Capability::HarnessModeSelection,
+            [CapabilityConstraint::harness_mode(mode)],
+        ));
+    }
     let tools = options.tools().collect::<Vec<_>>();
     if !tools.is_empty() {
         capabilities.push(tool_capability(tools)?);
     }
-    let access_policy = match kind {
+    let mut access_policy = match kind {
         CodexPreparedSessionKind::ReadOnly => SessionAccessPolicy::read_only(),
         CodexPreparedSessionKind::BoundedWorkspace => codex_bounded_workspace_access_policy(),
     };
+    if user_input_exchange {
+        let provider_requests = match kind {
+            CodexPreparedSessionKind::ReadOnly => {
+                ProviderRequestPolicy::exchange([codex_user_input_request_extension()])
+            }
+            CodexPreparedSessionKind::BoundedWorkspace => {
+                ProviderRequestPolicy::observe_and_exchange(
+                    [codex_approval_request_extension()],
+                    [codex_user_input_request_extension()],
+                )
+            }
+        };
+        access_policy = access_policy.with_provider_requests(provider_requests);
+    }
     Ok((capabilities, BTreeSet::new(), access_policy))
 }
 
@@ -116,4 +141,10 @@ pub(super) fn behavior_revision(prepared: &CodexPreparedIntegration) -> Option<&
         }
         InstalledExecutableCompatibility::Incompatible => None,
     }
+}
+
+pub(super) fn supports_harness_mode(prepared: &CodexPreparedIntegration) -> bool {
+    prepared.observation().is_permitted()
+        && semver::Version::parse(prepared.observation().version().version().as_str())
+            .is_ok_and(|version| version >= PLAN_MODE_MINIMUM_VERSION)
 }

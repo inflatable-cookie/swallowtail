@@ -1,12 +1,16 @@
 # Python Kimi CLI Headless Route
 
-Status: deferred
+Status: declined
 Owner: Tom
 
 ## Question
 
 Should Swallowtail add Moonshot's Python `kimi-cli` as a separate installed
 harness route?
+
+Decision: no. Research 068 proves that maintained native Kimi Code `0.31.0`
+already supplies authenticated ACP and stream-JSON headless execution. The
+operator does not need another Kimi distribution while that route works.
 
 ## Evidence
 
@@ -17,10 +21,11 @@ harness route?
 - The repositories, distributions, implementations, version axes, and
   reasoning semantics differ.
 
-## Promotion Gate
+## Reopen Gate
 
-Operator approval is required to add a twenty-seventh production route.
-Promotion must then qualify:
+Reopen only when a concrete consumer need cannot be met by Kimi Code ACP,
+headless, or local-server routes and the operator approves another production
+route. Promotion must then qualify:
 
 - executable identity, discovery, and version binding
 - supported authentication and local state

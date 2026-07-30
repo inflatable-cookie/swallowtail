@@ -2895,6 +2895,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "swallowtail-adapter-grok"
+version = "0.1.0"
+dependencies = [
+ "futures-channel",
+ "futures-core",
+ "futures-executor",
+ "futures-util",
+ "semver",
+ "serde_json",
+ "swallowtail-core",
+ "swallowtail-protocol-acp",
+ "swallowtail-runtime",
+ "swallowtail-testkit",
+]
+
+[[package]]
 name = "swallowtail-adapter-kimi"
 version = "0.1.0"
 dependencies = [

@@ -4,6 +4,7 @@ use crate::access::{
 use crate::capability::Capability;
 use crate::diagnostic::{ValueRequired, required_text};
 use crate::event::ExtensionNamespace;
+use crate::harness_mode::HarnessMode;
 use crate::model::ReasoningMode;
 use crate::observable_activity::{
     ActivityContentStream, ActivityCorrelationKind, ActivityDisclosure, ActivityKindClass,
@@ -77,6 +78,7 @@ pub enum CapabilityConstraint {
     ToolMaximumSchemaBytes(u64),
     ToolMaximumCount(u32),
     ReasoningMode(ReasoningMode),
+    HarnessMode(HarnessMode),
     ResourceAccess(ResourceAccess),
     ResourceRepresentation(ResourceRepresentation),
     WorkingResourceMaximumBytes(u64),
@@ -123,6 +125,11 @@ impl CapabilityConstraint {
     #[must_use]
     pub const fn reasoning_mode(value: ReasoningMode) -> Self {
         Self::ReasoningMode(value)
+    }
+
+    #[must_use]
+    pub const fn harness_mode(value: HarnessMode) -> Self {
+        Self::HarnessMode(value)
     }
 }
 

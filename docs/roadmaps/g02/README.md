@@ -34,7 +34,7 @@ evidence-led provider work.
 | Prove Codex archive, restore, and deletion across its maintained range. | completed | Contracts 029, 038 | `g02.016` |
 | Refresh ACP close/delete and prove Claude Agent lifecycle. | completed | Contracts 015, 029, 038 | `g02.017` |
 | Prove attached OpenCode session deletion across its maintained range. | completed | Contracts 014, 029, 038 | `g02.018` |
-| Complete provider-wide lifecycle acceptance and a Nucleus handoff. | paused | Contracts 036-038 | `g02.019` |
+| Complete provider-wide lifecycle acceptance and a Nucleus handoff. | completed | Contracts 036-038 | `g02.019` |
 | Add a separate Kimi local-server lifecycle and interactive route. | completed | Research 040-041, Contracts 029 and 038 | `g02.020` |
 | Expand source-scoped model catalogue coverage without hidden session creation. | completed | Research 042-043, Contract 020 | `g02.021` |
 | Close useful structured-run gaps without flattening provider lifecycle. | completed | Research 044-046, Contract 039 | `g02.022`-`g02.024` |
@@ -47,11 +47,16 @@ evidence-led provider work.
 | Audit and close owned-runtime lifecycle and planned-rollover matrix gaps. | completed | Research 060, Contracts 004, 009, 018, 026-027, 031 | `g02.033` |
 | Classify the residual feature-matrix inventory and close or re-scope the programme. | completed | Contracts 004, 009, 011, 016, 026, 029, 037, 043 | `g02.034` |
 | Expose provider-visible agent activity through exact route profiles and prepared facades. | completed | Research 063, Contract 044 | `g02.035`-`g02.040` |
+| Qualify current Kimi ACP and headless ranges with live account evidence. | completed | Research 068, Contracts 011, 036-037, 044 | `g02.041` |
+| Qualify the Kimi `0.31.0` local-server status milestone and installed route. | completed | Research 069, Contracts 029, 032, 037-038, 042, 044 | `g02.042` |
+| Add one maintained Grok Build ACP route with exact delegated authentication. | completed | Research 070, Contracts 014-015, 023, 029, 032-034, 037, 039, 044 | `g02.043` |
+| Maintain current Codex and OpenCode installed support windows as one batched tranche. | completed | Research 071, Contracts 029, 032, 036-040, 044 | `g02.044` |
+| Remove error-level structural debt without changing public or provider behavior. | in progress | Contract 001, AGENTS module rules, Effigy structural scan | `g02.045` |
 
 ## Current Checkpoint
 
 - g01 closed at 49 roadmaps after 48 completed milestones and one backlog move
-- 23 workspace crates share version `0.1.0`
+- 24 workspace crates share version `0.1.0`
 - no release has been published
 - Research 036 separates universal consumer-local thread lifecycle from
   optional bound provider-session management
@@ -82,10 +87,10 @@ evidence-led provider work.
 - card 058 publishes and machine-checks the exact 22-route lifecycle matrix:
   three supported routes, two explicitly unsupported ACP routes, and seventeen
   not-applicable operation shapes
-- card 059's transient candidate passes reproducibility, 20 provider-facade
+- card 059's transient candidate passed reproducibility, 20 provider-facade
   suites, 33 focused lifecycle tests, both consumer proofs, and 105 packaged
-  Codex tests; canonical retained-candidate replacement remains pending a
-  clean source commit
+  Codex tests; card 136 later supplied broader packaged lifecycle evidence,
+  so retained-candidate refresh is superseded
 - Research 040 corrects the Kimi Web authority assessment: exact `0.28.1` and
   `0.29.0` expose a documented foreground REST/WebSocket server with OpenAPI,
   AsyncAPI, bearer auth, exact metadata, archive, and restore
@@ -566,8 +571,8 @@ evidence-led provider work.
   runtime evidence remains green
 - the superseded compile-only, provisional, and parentless provider-wide
   candidates remain retained as immutable historical evidence
-- publication remains blocked; no registry, tag, push, release, or workflow
-  mutation occurred
+- registry publication is outside the active roadmap; no registry, tag, push,
+  release, or workflow mutation occurred
 - the publication reassessment rechecked all 23 exact crates.io names as
   absent but unreserved, verified the complete candidate source bundle, and
   found no local or remote `v0.1.0` tag
@@ -585,13 +590,13 @@ evidence-led provider work.
   README carried stale release-currentness wording
 - local `main` is ahead of origin only; the candidate source is not yet
   reachable from the canonical remote branch and no `v0.1.0` tag exists
-- later publication still requires the exact crates.io owner identity and
-  separate approval of the desired main push, staged uploads, tag push, and
-  GitHub release
+- any future publication requires a newly authorized roadmap after months of
+  consumer usage evidence, including fresh registry identity, staged upload,
+  tag, and release decisions
 - roadmap g02.013 and cards 037-039 complete the accepted provenance repair,
   canonical local commit, candidate replacement, and packaged acceptance
-- publication remains held behind layered consumer evidence and a fresh
-  operator decision
+- publication is closed as active work; the retained snapshot remains local
+  evidence, not a pending release
 - Nucleus is the primary long-lived harness proof; Soundcheck is the secondary
   bounded structured-run proof
 - card 040 completes the read-only proof-envelope audit and fixes exact
@@ -719,8 +724,8 @@ evidence-led provider work.
 - [018 OpenCode Session Deletion Proof](018-opencode-session-deletion-proof.md)
   — completed
 - [019 Provider Session Lifecycle Acceptance And Handoff](019-provider-session-lifecycle-acceptance-and-handoff.md)
-  — paused; cards 058 and 060 complete, card 059 waits for canonical source
-  history
+  — completed; cards 058 and 060 complete, card 059 superseded by card 136's
+  broader packaged lifecycle evidence
 - [020 Kimi Code Local Server Route](020-kimi-code-local-server-route.md)
   — completed; cards 061-065 complete
 - [021 Model Catalogue Coverage](021-model-catalogue-coverage.md)
@@ -765,12 +770,21 @@ evidence-led provider work.
   — completed; cards 132-134 complete
 - [040 Provider-Wide Activity Acceptance And Consumer Handoff](040-provider-wide-activity-acceptance-and-consumer-handoff.md)
   — completed; cards 135-137 complete
+- [041 Kimi Code 0.31 Range And Live Proof](041-kimi-code-0-31-range-and-live-proof.md)
+  — completed; cards 138-139 complete
+- [042 Kimi Code 0.31 Local-Server Guarantee](042-kimi-code-0-31-local-server-guarantee.md)
+  — completed; cards 140-141 complete
+- [043 Grok Build Maintained ACP Route](043-grok-build-maintained-acp-route.md)
+  — completed; cards 142-145 complete
+- [044 Installed Harness Range Maintenance](044-installed-harness-range-maintenance.md)
+  — completed; cards 146-149 complete
+- [045 Error-Level Structural Health Stabilization](045-error-level-structural-health-stabilization.md)
+  — in progress; cards 150-152 complete, card 153 ready, cards 154-155 planned
 
 ## Held Backlog
 
 The [Grok Build maintained ACP range](../backlog/grok-build-maintained-acp-range.md)
-is deferred behind its exact authentication evidence gate. It is not part of
-the active g02 queue. Durable
+is completed through g02.043. Durable
 [provider-session management binding persistence](../backlog/provider-session-management-binding-persistence.md)
 is deferred until a consumer needs post-restart provider management.
 
@@ -882,7 +896,8 @@ is deferred until a consumer needs post-restart provider management.
 - cards 078-079 complete Kimi structured coverage and provider-wide
   structured-run closeout
 - card 060 completes the bounded Nucleus lifecycle handoff without consumer
-  edits; card 059 remains paused at retained-candidate provenance
+  edits; card 059's retained-candidate tail is superseded by card 136's
+  broader package proof and the publication-lane closure
 - cards 080-083 complete the historical CSV-aware audit and first
   usage-evidence tranche; the post-Claude-Code matrix retained 451 `No` cells
 - cards 084-085 complete the 48-cell generation-control audit and selected
@@ -961,6 +976,60 @@ is deferred until a consumer needs post-restart provider management.
   and realtime or serving boundaries
 - cards 135-137 own the provider-wide activity matrix, extracted-package
   proof, and bounded Nucleus and Soundcheck handoffs
+- Research 068 and card 138 compare signed Kimi Code `0.30.0` and `0.31.0`,
+  prove authenticated headless and ACP fixed-output turns on installed
+  `0.31.0`, select ACP and headless range extension, and keep the changed
+  local-server broadcaster unverified
+- card 139 advances the ACP and headless claim identities, guarantees both
+  installed routes through `0.31.0`, retains local-server `0.29.2`, closes
+  Python Kimi, and leaves Grok plus provider-session binding persistence under
+  their explicit gates
+- Research 069 and cards 140-141 classify and sequence the separate
+  local-server `0.31.0` broadcaster milestone
+- cards 140-141 freeze the full subagent-status payload as non-rendered
+  progress, advance the local-server claim through `0.31.0`, and prove
+  installed bearer-protected metadata and catalogue access
+- Research 070 and card 142 qualify exact Grok Build `0.2.114`, promote the
+  one-shot `cached_token` activation boundary into Contract 015, archive Spec
+  003, and freeze sanitized signed-artifact plus ACP evidence
+- Grok Build `0.2.114` created one expected durable empty local session during
+  the no-prompt live gate; its existing authentication file was unchanged
+- cards 143-145 own Grok discovery, interactive ACP execution, structured
+  projection, conformance, package acceptance, and closeout
+- card 143 completes exact stable-channel discovery, source-revision
+  enforcement, qualified versus unverified-newer dispatch, both authoritative
+  host topologies, and prepared configured-instance promotion
+- card 144 completes exact ACP process dispatch, one-shot cached-token
+  activation, durable local session attachment, bounded turns, portable
+  activity, provider-request stop, cancellation, and joined credential plus
+  resource cleanup through low-level and prepared paths
+- card 145 completes the separate structured projection, exact and
+  unverified-newer cross-host conformance, 27-route and 23-solution public
+  truth, 24-package gates, and independently compiled Grok archive
+- Research 071 and card 146 compare installed and stable range posture, retain
+  Grok, Kimi, and Claude unchanged, and select Codex `0.146.0` plus OpenCode
+  `1.18.5..=1.18.10` as one contract-ready maintenance tranche
+- card 147 qualifies Codex exec and app-server through exact `0.146.0` across
+  execution, lifecycle, continuity, activity, discovery, and prepared
+  evidence while retaining the old baselines, gaps, prerelease rejection, and
+  later-stable unverified posture
+- card 148 qualifies all 51 exact OpenCode releases through `1.18.10` across
+  HTTP/SSE, lifecycle, deletion, continuity, callback, usage,
+  generation-control, activity, discovery, and prepared evidence; `1.18.8`'s
+  unrelated OAuth callback delta does not create a dispatch milestone
+- card 149 closes both range extensions through focused cross-host proof,
+  independently assembled and compiled adapter archives, shared activity
+  conformance, package metadata, public-API, route, release, and front-door
+  truth without provider or consumer effects
+- card 150 freezes 33 error-level structural findings across 23 source files,
+  nine test files, and one script; five critical files lead the bounded
+  decomposition sequence
+- card 151 removes all five critical findings through private source
+  extraction; focused adapter tests, warnings-denied lint, and the unchanged
+  57-operation route matrix pass, leaving 29 high errors and no critical file
+- card 152 removes all five Codex and seven OpenCode high findings; 211 focused
+  package tests, warnings-denied lint, and the unchanged 24-crate public-API
+  baseline pass, leaving 17 high errors
 - cards 024-026 own remaining harness facades
 - cards 027-030 own hosted direct and provider-state facades
 - cards 031-033 own realtime, SDK, and llama.cpp facades
@@ -968,9 +1037,15 @@ is deferred until a consumer needs post-restart provider management.
 - cards 011-014 own separately authorized Nucleus and Soundcheck migrations
 - no consumer repository edits are in the matrix implementation lane
 
+## Next
+
+Execute card 153: remove the runtime, Claude Agent, Gemini, and Kimi
+error-level findings through private module extraction with unchanged public
+declarations and cross-transport behavior.
+
 ## Generation Boundary
 
-g02 is a long-lived generation with 40 roadmaps. It remains within its
+g02 is a long-lived generation with 44 roadmaps. It remains within its
 30-50-roadmap range. Provider-wide facade work stabilizes the existing
 production routes. The provider-session lifecycle lane adds bounded management
 to applicable persistent-session routes without adding provider names,

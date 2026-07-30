@@ -62,7 +62,7 @@ fn descriptors_publish_independent_closed_claims_on_one_observed_axis() {
                 .support_status(),
             InterfaceSupportStatus::Maintained
         );
-        let newer = codex_cli_binding("0.146.0");
+        let newer = codex_cli_binding("0.147.0");
         assert!(!claim.supports(newer.version()));
         assert!(claim.permits(newer.version()));
         let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
@@ -71,7 +71,7 @@ fn descriptors_publish_independent_closed_claims_on_one_observed_axis() {
             panic!("newer stable Codex version must remain unverified");
         };
         assert_eq!(unverified.version(), newer.version());
-        assert_eq!(unverified.latest_qualified().as_str(), "0.145.0");
+        assert_eq!(unverified.latest_qualified().as_str(), "0.146.0");
     }
 }
 

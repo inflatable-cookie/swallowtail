@@ -3,6 +3,7 @@
 Status: active
 Owner: Tom
 Created: 2026-07-28
+Updated: 2026-07-30
 
 ## Purpose
 
@@ -15,11 +16,13 @@ network API.
 
 ## Independent Features
 
-The four portable features remain independent:
+The five portable features remain independent:
 
 - `Attachments` transports finite consumer-approved operation input
 - `ToolCalls` transports declared consumer tool calls and exact results
-- namespaced provider extensions transport exact approval or question requests
+- typed harness user input transports losslessly representable questions
+- namespaced provider extensions transport exact approval and richer
+  provider-specific request semantics
 - `ExternalSearch` enables one qualified provider-owned search tool
 
 Support for one does not imply another. Provider branding, compatible JSON,
@@ -93,8 +96,10 @@ because both appear in one response.
 
 ## Approval And Question Requests
 
-Approval and question requests are namespaced provider extensions under
-Contract 012. They are not consumer tools.
+Approval and permission requests are namespaced provider extensions under
+Contract 012. Losslessly representable questions use the common typed harness
+user-input callback. Richer question schemas remain namespaced provider
+extensions. Neither is a consumer tool.
 
 Every exact extension declares one handling strength:
 
@@ -102,16 +107,19 @@ Every exact extension declares one handling strength:
 - observe and stop
 - exchange a one-shot response
 
-One-shot permission, persistent permission, single-choice question,
-multi-choice question, free text, rejection, and cancellation remain distinct
-provider semantics. A driver exposes only the qualified subset. It never
-widens one-shot permission into a persistent rule or invents an option missing
-from the provider request.
+One-shot permission and persistent permission remain distinct provider
+semantics. The common question model preserves ordered stable ids,
+single-choice, multi-choice, free text, optional other input, secret text,
+skipped answers, and optional auto-resolution timing. A driver exposes only
+the qualified subset. It never widens one-shot permission into a persistent
+rule, invents an option missing from the provider request, or flattens a
+provider question that the common model cannot represent losslessly.
 
-The callback record preserves provider namespace, runtime operation, turn,
-provider request id, offered options or question schema, callback id,
-deadline, and bounded payload. The response repeats the exact correlation and
-is accepted once.
+The callback record preserves runtime operation, turn, provider request id,
+callback id, deadline, and either the exact provider namespace and bounded
+payload or the typed question schema. The response repeats the exact
+correlation and is accepted once. Typed answers are checked against the
+offered question and option ids before translation.
 
 The consumer chooses the response. Swallowtail transports it. Transport
 acceptance does not prove provider action, tool execution, turn completion, or
@@ -173,7 +181,7 @@ separate host-scoped configuration contract permits it.
 The first implementation covers:
 
 - Pi RPC `0.80.10` image attachment input
-- OpenCode HTTP `1.14.48..=1.18.4` file-part input plus one-shot permission
+- OpenCode HTTP `1.14.48..=1.18.10` file-part input plus one-shot permission
   and question exchange
 - Anthropic Messages `2023-06-01` image input, client-tool continuation under
   Contract 030, and provider-owned web search
@@ -213,8 +221,8 @@ Deterministic fixtures prove:
 - attachment media, representation, count, size, dispatch, and release
 - native client versus provider-owned tool execution source
 - explicit further-attempt authorization for direct tool results
-- provider extension namespace, options, ordered questions, correlation, and
-  one-shot response strength
+- provider extension namespace, typed question ids and options, correlation,
+  and one-shot response strength
 - duplicate, late, foreign, malformed, cancelled, and timed-out responses
 - explicit provider search policy, tool revision, model and account rejection,
   citations, usage, and billing separation

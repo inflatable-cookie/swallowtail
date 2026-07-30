@@ -90,6 +90,17 @@ impl ProviderRequestPolicy {
     }
 
     #[must_use]
+    pub fn observe_and_exchange(
+        observed: impl IntoIterator<Item = ExtensionNamespace>,
+        exchanged: impl IntoIterator<Item = ExtensionNamespace>,
+    ) -> Self {
+        Self {
+            observe_and_stop: observed.into_iter().collect(),
+            exchange: exchanged.into_iter().collect(),
+        }
+    }
+
+    #[must_use]
     pub fn handling_for(&self, namespace: &ExtensionNamespace) -> ProviderRequestHandling {
         if self.exchange.contains(namespace) {
             ProviderRequestHandling::Exchange
@@ -225,6 +236,12 @@ impl SessionAccessPolicy {
             ProviderRequestPolicy::observe_and_stop(observed_provider_requests),
         )
         .expect("bounded workspace session access policy is internally valid")
+    }
+
+    #[must_use]
+    pub fn with_provider_requests(mut self, provider_requests: ProviderRequestPolicy) -> Self {
+        self.provider_requests = provider_requests;
+        self
     }
 
     #[must_use]

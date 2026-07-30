@@ -51,7 +51,7 @@ pub enum CallbackRequestKind {
         arguments: CallbackPayload,
     },
     Extension(ProviderExtension),
-    HarnessUiDialog(HarnessUiDialog),
+    HarnessUserInput(crate::HarnessUserInputRequest),
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -184,12 +184,12 @@ impl CallbackRequest {
     }
 
     #[must_use]
-    pub fn harness_ui_dialog(
+    pub fn harness_user_input(
         callback_id: CallbackId,
         turn_id: RuntimeTurnId,
         event_sequence: u64,
         deadline: Option<Deadline>,
-        dialog: HarnessUiDialog,
+        request: crate::HarnessUserInputRequest,
     ) -> Self {
         Self {
             callback_id,
@@ -197,7 +197,25 @@ impl CallbackRequest {
             event_sequence,
             deadline,
             provider_request_ref: None,
-            kind: CallbackRequestKind::HarnessUiDialog(dialog),
+            kind: CallbackRequestKind::HarnessUserInput(request),
+        }
+    }
+
+    #[must_use]
+    pub fn run_harness_user_input(
+        callback_id: CallbackId,
+        run_id: RuntimeRunId,
+        event_sequence: u64,
+        deadline: Option<Deadline>,
+        request: crate::HarnessUserInputRequest,
+    ) -> Self {
+        Self {
+            callback_id,
+            operation_id: CallbackOperationId::Run(run_id),
+            event_sequence,
+            deadline,
+            provider_request_ref: None,
+            kind: CallbackRequestKind::HarnessUserInput(request),
         }
     }
 

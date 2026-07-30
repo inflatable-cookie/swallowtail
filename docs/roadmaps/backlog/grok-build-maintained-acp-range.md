@@ -1,7 +1,7 @@
 # Backlog: Grok Build Maintained ACP Range
 
-Status: backlog
-Priority: deferred
+Status: completed through g02.043
+Priority: closed
 Estimated effort: one evidence gate plus four implementation batches
 Source: `g01.047`
 
@@ -13,8 +13,9 @@ the artifact's advertised method can activate an existing Grok subscription
 credential without opening sign-in, changing mechanism, or selecting another
 billing route.
 
-The operator has no Grok account for the required activation-only probe. No
-release is qualified.
+The operator provisioned an authenticated current Grok installation on
+2026-07-30. Exact `0.2.114` passed the activation-only gate and is now the sole
+qualified release.
 
 ## Preserved Evidence
 
@@ -24,7 +25,7 @@ release is qualified.
 - [card 139 discovery and dispatch](../g01/batch-cards/139-grok-installed-discovery-and-dispatch.md)
 - [card 140 production driver](../g01/batch-cards/140-grok-acp-production-driver.md)
 - [card 141 conformance](../g01/batch-cards/141-grok-range-conformance-and-closeout.md)
-- [provisional Spec 003](../../specs/003-delegated-acp-authentication-activation.md)
+- [archived Spec 003](../../specs/archive/003-delegated-acp-authentication-activation.md)
 
 ## Proposed Approach
 
@@ -50,14 +51,23 @@ One of:
 Promotion also requires a currentness refresh because Grok releases and
 authentication behavior change frequently.
 
+## Promotion Result
+
+- Research 070 freezes exact installed, artifact, registry, authentication, and
+  state evidence.
+- Contract 015 now permits exact activation of one existing delegated harness
+  credential.
+- Spec 003 is promoted and archived.
+- Roadmap g02.043 and cards 142-145 replace the held g01 execution plan.
+
 ## Success Criteria
 
-- [ ] one exact release is qualified without inferring compatibility from
+- [x] one exact release is qualified without inferring compatibility from
       package semver
-- [ ] activation remains machine-distinct from login and mechanism switching
-- [ ] no API-key, endpoint, billing, model, or provider fallback occurs
-- [ ] permissions remain distinct from isolation and containment
-- [ ] production mapping passes local and remote-authoritative conformance
+- [x] activation remains machine-distinct from login and mechanism switching
+- [x] no API-key, endpoint, billing, model, or provider fallback occurs
+- [x] permissions remain distinct from isolation and containment
+- [x] production mapping passes local and remote-authoritative conformance
 
 ## Risks
 

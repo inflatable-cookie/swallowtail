@@ -42,6 +42,12 @@ pub(crate) fn session_capabilities() -> CapabilityProfile {
         CapabilityRequirement::new(Capability::InteractiveSession, []),
         CapabilityRequirement::new(Capability::StreamingEvents, []),
         CapabilityRequirement::new(
+            Capability::HarnessModeSelection,
+            [CapabilityConstraint::HarnessMode(
+                swallowtail_core::HarnessMode::Plan,
+            )],
+        ),
+        CapabilityRequirement::new(
             Capability::Interruption,
             [CapabilityConstraint::CancellationScope(
                 swallowtail_core::CancellationScope::ActiveTurn,

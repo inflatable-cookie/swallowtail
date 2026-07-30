@@ -29,7 +29,7 @@ fn attached_run_completes_once_and_preserves_provider_session_in_both_topologies
         ExecutionTopologyFixture::local(),
         ExecutionTopologyFixture::remote_authoritative(),
     ] {
-        for version in ["0.29.1", "0.29.2"] {
+        for version in ["0.29.1", "0.29.2", "0.30.0", "0.31.0"] {
             let server = InteractiveFixtureServer::start_with_version(
                 InteractiveScenario::Complete,
                 version,
@@ -200,14 +200,30 @@ fn manual_approval_and_question_callbacks_remain_explicit() {
         let callback = block_on(requests.next())
             .expect("callback arrives")
             .expect("callback is valid");
+        let result = if matches!(scenario, InteractiveScenario::Question) {
+            CallbackResult::UserInput(
+                swallowtail_runtime::HarnessUserInputResponse::new(
+                    [swallowtail_runtime::HarnessUserInputAnswer::selected(
+                        swallowtail_runtime::HarnessQuestionId::new("q1").unwrap(),
+                        [swallowtail_runtime::HarnessQuestionOptionId::new("yes").unwrap()],
+                        None,
+                    )],
+                    4,
+                    512,
+                )
+                .unwrap(),
+            )
+        } else {
+            CallbackResult::Success(
+                CallbackPayload::new(response.to_vec(), 512).expect("payload is bounded"),
+            )
+        };
         block_on(
             callbacks.responder().respond(CallbackResponse::new(
                 callback.callback_id().clone(),
                 swallowtail_runtime::RuntimeTurnId::new("kimi-local:run:callback")
                     .expect("turn id is valid"),
-                CallbackResult::Success(
-                    CallbackPayload::new(response.to_vec(), 512).expect("payload is bounded"),
-                ),
+                result,
             )),
         )
         .expect("callback response succeeds");

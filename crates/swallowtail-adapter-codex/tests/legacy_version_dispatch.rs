@@ -26,7 +26,7 @@ const COMPLETED_JSONL: &str = concat!(
 );
 
 #[test]
-fn exec_runs_at_every_qualified_point_and_one_unverified_newer_version() {
+fn exec_runs_at_every_qualified_point() {
     for version in [
         "0.80.0", "0.81.0", "0.84.0", "0.94.0", "0.98.0", "0.99.0", "0.100.0", "0.110.0",
         "0.121.0", "0.122.0", "0.130.0", "0.140.0", "0.144.6", "0.145.0", "0.146.0",
@@ -49,7 +49,7 @@ fn exec_runs_at_every_qualified_point_and_one_unverified_newer_version() {
 }
 
 #[test]
-fn app_server_catalogue_runs_at_every_qualified_point_and_one_unverified_newer_version() {
+fn app_server_catalogue_runs_at_every_qualified_point() {
     for version in [
         "0.80.0", "0.81.0", "0.84.0", "0.94.0", "0.99.0", "0.100.0", "0.107.0", "0.110.0",
         "0.120.0", "0.130.0", "0.131.0", "0.140.0", "0.144.6", "0.145.0", "0.146.0",

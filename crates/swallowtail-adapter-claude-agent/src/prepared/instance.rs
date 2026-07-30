@@ -70,6 +70,14 @@ pub(crate) fn session_capabilities(reasoning: bool) -> CapabilityProfile {
         ),
     ];
     add_reasoning_capability(&mut capabilities, reasoning);
+    if reasoning {
+        capabilities.push(CapabilityRequirement::new(
+            Capability::HarnessModeSelection,
+            [CapabilityConstraint::HarnessMode(
+                swallowtail_core::HarnessMode::Plan,
+            )],
+        ));
+    }
     CapabilityProfile::new(capabilities)
 }
 

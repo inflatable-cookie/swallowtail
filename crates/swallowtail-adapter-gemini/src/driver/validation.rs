@@ -43,8 +43,32 @@ fn validate_open(
     if request.deadline().is_some() {
         return Err(unsupported("session deadline"));
     }
-    if !request.options().is_empty() {
-        return Err(unsupported("session options"));
+    if request.options().developer_instructions().is_some()
+        || request.options().reasoning_mode().is_some()
+        || request.options().tools().len() != 0
+    {
+        return Err(unsupported("session options other than plan mode"));
+    }
+    let requested_mode = request.options().harness_mode();
+    let planned_mode = plan
+        .requirements()
+        .capabilities()
+        .find(|requirement| requirement.capability() == Capability::HarnessModeSelection)
+        .and_then(|requirement| {
+            requirement.constraints().find_map(|constraint| match constraint {
+                CapabilityConstraint::HarnessMode(mode) => Some(*mode),
+                _ => None,
+            })
+        });
+    if requested_mode != planned_mode
+        || requested_mode.is_some()
+            && (requested_mode != Some(swallowtail_core::HarnessMode::Plan)
+                || resource_access != ResourceAccess::Read)
+    {
+        return Err(failure(
+            "swallowtail.gemini.acp.harness_mode_mismatch",
+            "Gemini ACP harness mode does not match the preflight-bound read-only posture",
+        ));
     }
     Ok(())
 }

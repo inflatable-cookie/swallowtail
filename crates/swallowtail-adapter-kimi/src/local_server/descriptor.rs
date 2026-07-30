@@ -30,6 +30,10 @@ pub fn kimi_local_server_descriptor() -> DriverDescriptor {
         OperationShape::ProviderSessionManagement,
     ])
     .with_interface_compatibility(crate::kimi_local_server_claim())
+    .with_extension_namespaces([
+        super::interactive::approval_namespace(),
+        super::interactive::question_namespace(),
+    ])
     .with_required_host_services(
         DriverRole::ModelCatalog,
         [

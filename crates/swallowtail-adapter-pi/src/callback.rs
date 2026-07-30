@@ -10,7 +10,7 @@ use std::task::{Context, Poll, Waker};
 use swallowtail_runtime::{
     BoxCallbackStream, BoxFuture, CallbackAbandonment, CallbackExchange, CallbackId,
     CallbackOperationId, CallbackRequest, CallbackResponder, CallbackResponse, CallbackResult,
-    RuntimeFailure,
+    HarnessUserInputRequest, RuntimeFailure,
 };
 
 mod deadline;
@@ -23,6 +23,7 @@ struct PendingCallback {
     provider_id: String,
     operation_id: CallbackOperationId,
     method: PiUiDialogMethod,
+    user_input: HarnessUserInputRequest,
     waiter: Option<Waker>,
 }
 
@@ -64,6 +65,7 @@ impl CallbackHub {
         request: CallbackRequest,
         provider_id: String,
         method: PiUiDialogMethod,
+        user_input: HarnessUserInputRequest,
     ) -> Result<(), RuntimeFailure> {
         let mut state = self.state.lock().expect("Pi callback lock poisoned");
         if state.closed {
@@ -87,6 +89,7 @@ impl CallbackHub {
                 provider_id,
                 operation_id: request.operation_id().clone(),
                 method,
+                user_input,
                 waiter: None,
             },
         );
@@ -193,28 +196,66 @@ fn callback_value(
             "id": pending.provider_id,
             "cancelled": true
         })),
-        CallbackResult::Success(payload) => {
-            let text = std::str::from_utf8(payload.as_bytes()).map_err(|_| {
-                failure(
-                    "swallowtail.pi.rpc.callback_result_not_utf8",
-                    "Pi RPC callback result was not valid UTF-8",
-                )
-            })?;
+        CallbackResult::UserInput(response) => {
+            if !pending.user_input.accepts(response) {
+                return Err(failure(
+                    "swallowtail.pi.rpc.callback_result_invalid",
+                    "Pi RPC user-input response did not match the pending dialog",
+                ));
+            }
+            let answer = response
+                .answers()
+                .next()
+                .expect("validated response has one answer");
             match pending.method {
                 PiUiDialogMethod::Confirm => {
-                    let confirmed = text.parse::<bool>().map_err(|_| {
-                        failure(
-                            "swallowtail.pi.rpc.callback_confirmation_invalid",
-                            "Pi RPC confirmation callback was not boolean",
-                        )
-                    })?;
+                    let confirmed = answer
+                        .selected_options()
+                        .next()
+                        .map(|id| id.as_str())
+                        .ok_or_else(|| {
+                            failure(
+                                "swallowtail.pi.rpc.callback_confirmation_invalid",
+                                "Pi RPC confirmation callback did not select an option",
+                            )
+                        })?
+                        .parse::<bool>()
+                        .map_err(|_| {
+                            failure(
+                                "swallowtail.pi.rpc.callback_confirmation_invalid",
+                                "Pi RPC confirmation callback was not boolean",
+                            )
+                        })?;
                     Ok(json!({
                         "type": "extension_ui_response",
                         "id": pending.provider_id,
                         "confirmed": confirmed
                     }))
                 }
-                PiUiDialogMethod::Select | PiUiDialogMethod::Input | PiUiDialogMethod::Editor => {
+                PiUiDialogMethod::Select => {
+                    let text = answer
+                        .selected_options()
+                        .next()
+                        .map(|id| id.as_str())
+                        .ok_or_else(|| {
+                            failure(
+                                "swallowtail.pi.rpc.callback_selection_invalid",
+                                "Pi RPC selection callback did not select an option",
+                            )
+                        })?;
+                    Ok(json!({
+                        "type": "extension_ui_response",
+                        "id": pending.provider_id,
+                        "value": text
+                    }))
+                }
+                PiUiDialogMethod::Input | PiUiDialogMethod::Editor => {
+                    let text = answer.text().map(|text| text.as_str()).ok_or_else(|| {
+                        failure(
+                            "swallowtail.pi.rpc.callback_input_invalid",
+                            "Pi RPC input callback did not contain text",
+                        )
+                    })?;
                     Ok(json!({
                         "type": "extension_ui_response",
                         "id": pending.provider_id,
@@ -223,6 +264,10 @@ fn callback_value(
                 }
             }
         }
+        CallbackResult::Success(_) => Err(failure(
+            "swallowtail.pi.rpc.callback_result_kind_mismatch",
+            "Pi RPC UI callback requires a typed user-input response",
+        )),
     }
 }
 

@@ -6,8 +6,11 @@ use super::{failure, malformed};
 
 const MODEL_CONFIG_ID: &str = "model";
 const EFFORT_CONFIG_ID: &str = "effort";
+const MODE_CONFIG_ID: &str = "mode";
 const THOUGHT_LEVEL_CATEGORY: &str = "thought_level";
+const MODE_CATEGORY: &str = "mode";
 const WRITE_MODE_ID: &str = "acceptEdits";
+const PLAN_MODE_ID: &str = "plan";
 
 pub(super) fn parse_session_id(response: &Value) -> Result<String, RuntimeFailure> {
     response
@@ -81,6 +84,34 @@ pub(super) fn confirm_reasoning(
     )
 }
 
+pub(super) fn validate_plan_mode_option(response: &Value) -> Result<(), RuntimeFailure> {
+    let option = select_option(response, MODE_CONFIG_ID, Some(MODE_CATEGORY))?;
+    if option
+        .get("options")
+        .and_then(Value::as_array)
+        .ok_or_else(malformed)?
+        .iter()
+        .any(|candidate| candidate.get("value").and_then(Value::as_str) == Some(PLAN_MODE_ID))
+    {
+        Ok(())
+    } else {
+        Err(failure(
+            "swallowtail.claude_agent.acp.harness_mode_unsupported",
+            "Claude Agent does not advertise the requested harness mode",
+        ))
+    }
+}
+
+pub(super) fn confirm_plan_mode(response: &Value) -> Result<(), RuntimeFailure> {
+    confirm_value(
+        response,
+        MODE_CONFIG_ID,
+        PLAN_MODE_ID,
+        "swallowtail.claude_agent.acp.harness_mode_mismatch",
+        "Claude Agent harness-mode confirmation does not match the requested mode",
+    )
+}
+
 pub(super) fn validate_write_mode(response: &Value) -> Result<(), RuntimeFailure> {
     let modes = response
         .get("modes")
@@ -110,7 +141,11 @@ fn confirm_value(
     let option = select_option(
         response,
         config_id,
-        (config_id == EFFORT_CONFIG_ID).then_some(THOUGHT_LEVEL_CATEGORY),
+        match config_id {
+            EFFORT_CONFIG_ID => Some(THOUGHT_LEVEL_CATEGORY),
+            MODE_CONFIG_ID => Some(MODE_CATEGORY),
+            _ => None,
+        },
     )?;
     if option.get("currentValue").and_then(Value::as_str) == Some(expected) {
         Ok(())

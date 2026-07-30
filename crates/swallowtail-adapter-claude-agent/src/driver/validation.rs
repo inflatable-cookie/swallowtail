@@ -33,6 +33,20 @@ pub(super) fn permission_handling(
     }
 }
 
+fn session_access_policy(plan: &PreflightPlan) -> Result<SessionAccessPolicy, RuntimeFailure> {
+    Ok(match permission_handling(plan)? {
+        crate::ClaudeAgentPermissionHandling::RejectAndStop => {
+            SessionAccessPolicy::ambient_harness(ResourceAccess::Read)
+        }
+        crate::ClaudeAgentPermissionHandling::ConsumerMediated => {
+            SessionAccessPolicy::ambient_harness_with_consumer_mediated_requests(
+                ResourceAccess::Read,
+                [crate::claude_agent_permission_namespace()],
+            )
+        }
+    })
+}
+
 pub(super) fn validate_plan(
     plan: &PreflightPlan,
     credential: Option<&CredentialRef>,
@@ -124,10 +138,10 @@ pub(super) fn validate_open(
         ));
     }
     swallowtail_runtime::validate_session_plan_agreement(plan, request.plan_agreement())?;
-    if request.access_policy() != &SessionAccessPolicy::ambient_harness(ResourceAccess::Read) {
+    if request.access_policy() != &session_access_policy(plan)? {
         return Err(failure(
             "swallowtail.claude_agent.acp.access_policy_rejected",
-            "Claude Agent ACP requires explicit ambient read-only access",
+            "Claude Agent ACP requires its preflight-bound ambient read-only access policy",
         ));
     }
     if request.working_resource().is_none() {
@@ -139,6 +153,25 @@ pub(super) fn validate_open(
     if request.options().developer_instructions().is_some() || request.options().tools().len() != 0
     {
         return Err(unsupported("session options"));
+    }
+    let requested_mode = request.options().harness_mode();
+    let planned_mode = plan
+        .requirements()
+        .capabilities()
+        .find(|requirement| requirement.capability() == Capability::HarnessModeSelection)
+        .and_then(|requirement| {
+            requirement
+                .constraints()
+                .find_map(|constraint| match constraint {
+                    CapabilityConstraint::HarnessMode(mode) => Some(*mode),
+                    _ => None,
+                })
+        });
+    if requested_mode != planned_mode {
+        return Err(failure(
+            "swallowtail.claude_agent.acp.harness_mode_mismatch",
+            "Claude Agent session harness mode does not match its preflight plan",
+        ));
     }
     Ok(())
 }
@@ -459,10 +492,10 @@ pub(super) fn validate_attachment(
             "Claude Agent ACP session binding does not match the requested attachment",
         ));
     }
-    if access_policy != &SessionAccessPolicy::ambient_harness(ResourceAccess::Read) {
+    if access_policy != &session_access_policy(plan)? {
         return Err(failure(
             "swallowtail.claude_agent.acp.access_policy_rejected",
-            "Claude Agent ACP requires explicit ambient read-only access",
+            "Claude Agent ACP requires its preflight-bound ambient read-only access policy",
         ));
     }
     if deadline.is_some() {

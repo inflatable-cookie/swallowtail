@@ -15,6 +15,9 @@ swallowtail-adapter-deepseek	swallowtail-runtime	^0.1.0
 swallowtail-adapter-gemini	swallowtail-core	^0.1.0
 swallowtail-adapter-gemini	swallowtail-protocol-acp	^0.1.0
 swallowtail-adapter-gemini	swallowtail-runtime	^0.1.0
+swallowtail-adapter-grok	swallowtail-core	^0.1.0
+swallowtail-adapter-grok	swallowtail-protocol-acp	^0.1.0
+swallowtail-adapter-grok	swallowtail-runtime	^0.1.0
 swallowtail-adapter-kimi	swallowtail-core	^0.1.0
 swallowtail-adapter-kimi	swallowtail-protocol-acp	^0.1.0
 swallowtail-adapter-kimi	swallowtail-runtime	^0.1.0

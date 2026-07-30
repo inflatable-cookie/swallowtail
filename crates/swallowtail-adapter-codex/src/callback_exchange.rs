@@ -8,7 +8,7 @@ use std::task::{Context, Poll, Waker};
 use swallowtail_runtime::{
     BoxCallbackStream, BoxFuture, CallbackAbandonment, CallbackExchange, CallbackFailureKind,
     CallbackId, CallbackOperationId, CallbackRequest, CallbackResponder, CallbackResponse,
-    CallbackResult, RuntimeFailure,
+    CallbackResult, HarnessUserInputRequest, RuntimeFailure,
 };
 
 const CALLBACK_CAPACITY: usize = 64;
@@ -16,6 +16,12 @@ const CALLBACK_CAPACITY: usize = 64;
 struct PendingCallback {
     provider_request_id: Value,
     operation_id: CallbackOperationId,
+    kind: PendingCallbackKind,
+}
+
+enum PendingCallbackKind {
+    DynamicTool,
+    UserInput(HarnessUserInputRequest),
 }
 
 struct CallbackState {
@@ -51,7 +57,7 @@ impl CallbackHub {
         (Self { state }, CallbackExchange::new(stream, responder))
     }
 
-    pub(crate) fn enqueue(
+    pub(crate) fn enqueue_tool(
         &self,
         request: CallbackRequest,
         provider_request_id: Value,
@@ -78,6 +84,43 @@ impl CallbackHub {
             PendingCallback {
                 provider_request_id,
                 operation_id: request.operation_id().clone(),
+                kind: PendingCallbackKind::DynamicTool,
+            },
+        );
+        state.requests.push_back(request);
+        wake(&mut state);
+        Ok(())
+    }
+
+    pub(crate) fn enqueue_user_input(
+        &self,
+        request: CallbackRequest,
+        provider_request_id: Value,
+        provider_call_id: String,
+        user_input: HarnessUserInputRequest,
+    ) -> Result<(), RuntimeFailure> {
+        let mut state = self.state.lock().expect("callback state lock poisoned");
+        if state.closed {
+            return Err(callback_closed());
+        }
+        if !state.provider_call_ids.insert(provider_call_id) {
+            return Err(failure(
+                "swallowtail.codex.app_server.callback_provider_id_reused",
+                "Codex app-server reused a user-input item id",
+            ));
+        }
+        if state.pending.len() >= CALLBACK_CAPACITY || state.requests.len() >= CALLBACK_CAPACITY {
+            return Err(failure(
+                "swallowtail.codex.app_server.callback_capacity_exceeded",
+                "Codex app-server exceeded the bounded callback capacity",
+            ));
+        }
+        state.pending.insert(
+            request.callback_id().clone(),
+            PendingCallback {
+                provider_request_id,
+                operation_id: request.operation_id().clone(),
+                kind: PendingCallbackKind::UserInput(user_input),
             },
         );
         state.requests.push_back(request);
@@ -157,11 +200,10 @@ impl CallbackResponder for CodexCallbackResponder {
         let state = Arc::clone(&self.state);
         let connection = self.connection.clone();
         Box::pin(async move {
-            let pending = claim_response(&state, &response)?;
+            let (provider_request_id, result, invalid_success) = claim_response(&state, &response)?;
             let connection = connection.upgrade().ok_or_else(callback_closed)?;
-            let (result, invalid_success) = provider_result(response.result());
             connection
-                .respond_server_request(pending.provider_request_id, result)
+                .respond_server_request(provider_request_id, result)
                 .await?;
             if invalid_success {
                 Err(failure(
@@ -178,7 +220,7 @@ impl CallbackResponder for CodexCallbackResponder {
 fn claim_response(
     state: &Arc<Mutex<CallbackState>>,
     response: &CallbackResponse,
-) -> Result<PendingCallback, RuntimeFailure> {
+) -> Result<(Value, Value, bool), RuntimeFailure> {
     let mut state = state.lock().expect("callback state lock poisoned");
     if state.closed {
         return Err(callback_closed());
@@ -195,28 +237,43 @@ fn claim_response(
             "Callback response belongs to a different turn",
         ));
     }
-    Ok(state
+    let provider_request_id = pending.provider_request_id.clone();
+    let (result, invalid_success) = provider_result(&pending.kind, response.result())?;
+    state
         .pending
         .remove(response.callback_id())
-        .expect("validated callback remains pending"))
+        .expect("validated callback remains pending");
+    Ok((provider_request_id, result, invalid_success))
 }
 
-fn provider_result(result: &CallbackResult) -> (Value, bool) {
-    match result {
-        CallbackResult::Success(payload) => match std::str::from_utf8(payload.as_bytes()) {
-            Ok(text) => (dynamic_tool_result(true, text), false),
-            Err(_) => (
-                dynamic_tool_result(false, "Callback result was not valid text"),
-                true,
-            ),
-        },
-        CallbackResult::Failure { kind, detail } => {
-            let detail = detail
-                .as_ref()
-                .and_then(|value| std::str::from_utf8(value.as_bytes()).ok())
-                .unwrap_or_else(|| callback_failure_text(*kind));
-            (dynamic_tool_result(false, detail), false)
+fn provider_result(
+    pending: &PendingCallbackKind,
+    result: &CallbackResult,
+) -> Result<(Value, bool), RuntimeFailure> {
+    match pending {
+        PendingCallbackKind::UserInput(request) => {
+            Ok((crate::user_input::response(request, result)?, false))
         }
+        PendingCallbackKind::DynamicTool => match result {
+            CallbackResult::Success(payload) => match std::str::from_utf8(payload.as_bytes()) {
+                Ok(text) => Ok((dynamic_tool_result(true, text), false)),
+                Err(_) => Ok((
+                    dynamic_tool_result(false, "Callback result was not valid text"),
+                    true,
+                )),
+            },
+            CallbackResult::UserInput(_) => Err(failure(
+                "swallowtail.codex.app_server.callback_result_kind_mismatch",
+                "Codex dynamic tool callback received a user-input response",
+            )),
+            CallbackResult::Failure { kind, detail } => {
+                let detail = detail
+                    .as_ref()
+                    .and_then(|value| std::str::from_utf8(value.as_bytes()).ok())
+                    .unwrap_or_else(|| callback_failure_text(*kind));
+                Ok((dynamic_tool_result(false, detail), false))
+            }
+        },
     }
 }
 
@@ -252,17 +309,22 @@ fn wake(state: &mut CallbackState) {
 
 #[cfg(test)]
 mod tests {
-    use super::provider_result;
+    use super::{PendingCallbackKind, provider_result};
     use swallowtail_runtime::{CallbackFailureKind, CallbackPayload, CallbackResult};
 
     #[test]
     fn consumer_failure_becomes_a_provider_tool_failure() {
-        let (result, invalid) = provider_result(&CallbackResult::Failure {
-            kind: CallbackFailureKind::ConsumerFailed,
-            detail: Some(
-                CallbackPayload::new(b"bounded failure".to_vec(), 64).expect("payload is bounded"),
-            ),
-        });
+        let (result, invalid) = provider_result(
+            &PendingCallbackKind::DynamicTool,
+            &CallbackResult::Failure {
+                kind: CallbackFailureKind::ConsumerFailed,
+                detail: Some(
+                    CallbackPayload::new(b"bounded failure".to_vec(), 64)
+                        .expect("payload is bounded"),
+                ),
+            },
+        )
+        .unwrap();
 
         assert!(!invalid);
         assert_eq!(result["success"], false);
@@ -271,9 +333,13 @@ mod tests {
 
     #[test]
     fn non_text_success_is_rejected_without_forwarding_raw_bytes() {
-        let (result, invalid) = provider_result(&CallbackResult::Success(
-            CallbackPayload::new(vec![0xff], 1).expect("payload is bounded"),
-        ));
+        let (result, invalid) = provider_result(
+            &PendingCallbackKind::DynamicTool,
+            &CallbackResult::Success(
+                CallbackPayload::new(vec![0xff], 1).expect("payload is bounded"),
+            ),
+        )
+        .unwrap();
 
         assert!(invalid);
         assert_eq!(result["success"], false);

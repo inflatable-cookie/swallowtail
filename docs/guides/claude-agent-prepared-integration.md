@@ -28,6 +28,8 @@ Session preparation requires:
 - caller-selected model route and model
 - working-resource reference
 - optional reasoning effort in `SessionOptions`
+- optional `HarnessMode::Plan` in `SessionOptions`
+- optional session-wide consumer-mediated one-shot permission exchange
 
 Structured-run preparation requires:
 
@@ -60,6 +62,12 @@ model-specific `effort` option and requires exact confirmation before the
 first prompt. Supported provider values are `default`, `low`, `medium`,
 `high`, `xhigh`, and `max`; a given model may advertise only a subset.
 
+It also applies optional `HarnessMode::Plan` through the advertised `mode`
+config option and requires exact confirmation before readiness. Plan mode is
+session setup: load and resume do not redeclare it, and changing mode requires
+a new prepared session. It does not alter the read-only access policy or
+permission handling.
+
 These are caller selections, not provider discovery. The route exposes no
 standalone model catalogue.
 
@@ -75,15 +83,19 @@ cross the runtime boundary.
 
 ### ACP Permission Exchange
 
-The default prepared run rejects an unexpected permission once, cancels the
-turn, and reports `ProviderRequestObserved`. It exposes no callback exchange.
+The default prepared run or session rejects an unexpected permission once,
+cancels the turn, and reports `ProviderRequestObserved`. It exposes no callback
+exchange.
 
 Call `with_consumer_mediated_permissions` on
-`ClaudeAgentRunProfileInput` to opt into the exact
-`acp/session/request-permission` provider extension. The resulting
-`RunHandle::take_callbacks` returns one request stream and response port.
-Applications must drain callbacks concurrently with events and the terminal
-outcome.
+`ClaudeAgentRunProfileInput` or `ClaudeAgentSessionProfileInput` to opt into
+the exact `acp/session/request-permission` provider extension. A run exposes
+the exchange through `RunHandle::take_callbacks`; each session turn exposes it
+through `TurnHandle::take_callbacks`. Applications must drain callbacks
+concurrently with events and the terminal outcome.
+
+Session mediation is fixed by the prepared session plan and applies to open,
+load, resume, and every turn. It is not a per-turn switch.
 
 Each permission callback payload is bounded JSON containing `toolCall` and
 `options`. Only provider-offered `allow_once` and `reject_once` options are
@@ -135,9 +147,10 @@ environment keeps this route subscription-only.
 The headless route is read-only, disables session persistence, emits bounded
 stream-JSON output and usage, supports `default`, `low`, `medium`, `high`,
 `xhigh`, and `max` reasoning selections, and requires the initialized and
-assistant model to match the caller selection. It currently qualifies exact
-Claude Code `2.1.220`; later stable versions remain visible
-`UnverifiedNewer`.
+assistant model to match the caller selection. Its fixed `HarnessMode::Plan`
+posture is present in both operation policy and immutable preflight
+capabilities. It currently qualifies exact Claude Code `2.1.220`; later stable
+versions remain visible `UnverifiedNewer`.
 
 See the compile-tested
 [`prepared_claude_code_headless` example](../../crates/swallowtail-adapter-claude-agent/examples/prepared_claude_code_headless.rs).
@@ -198,8 +211,8 @@ read-write access, resolves a matching `ReadWrite` filesystem lease, exposes
 `acceptEdits` mode before its one prompt. It does not enable shell or broader
 provider tools.
 
-Consumer-mediated structured runs additionally bind the exact permission
-extension in their immutable plan. Runs without that namespace keep the
+Consumer-mediated runs and sessions additionally bind the exact permission
+extension in their immutable plan. Operations without that namespace keep the
 default reject-and-stop behavior.
 
 Local subscription plans omit the credential host service. API-key plans

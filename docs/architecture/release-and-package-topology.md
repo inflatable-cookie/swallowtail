@@ -2,12 +2,12 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-26
-Realization: roadmap g02.001 card 003
+Updated: 2026-07-30
+Realization: roadmap g02.001 card 003; g02.043 card 143
 
 ## Boundary
 
-Swallowtail's current 23 Rust library crates form one public package family.
+Swallowtail's current 24 Rust library crates form one public package family.
 Each crate remains separately consumable. There is no umbrella package,
 internal release tool, or private implementation crate in the accepted set.
 
@@ -44,6 +44,7 @@ rules governed by Contract 036.
 - `swallowtail-adapter-codex`
 - `swallowtail-adapter-deepseek`
 - `swallowtail-adapter-gemini`
+- `swallowtail-adapter-grok`
 - `swallowtail-adapter-kimi`
 - `swallowtail-adapter-kimi-platform`
 - `swallowtail-adapter-llama-cpp`
@@ -80,7 +81,7 @@ stage 3
   compatible-chat adapters -> core, runtime, protocol-openai-chat
 ```
 
-The ACP adapters are Claude Agent, Gemini, and Kimi. The compatible-chat
+The ACP adapters are Claude Agent, Gemini, Grok, and Kimi. The compatible-chat
 adapters are DeepSeek, Kimi Platform, and llama.cpp.
 
 Crates within one stage have no normal internal edge between them. Development
@@ -198,3 +199,9 @@ Roadmap g02.014 accepted Nucleus application evidence, retained Soundcheck's
 distinct structured-run integration, and refreshed the candidate without
 registry or release mutation. The resulting candidate remains local for
 ordinary consumer soak.
+
+Roadmap g02.043 adds `swallowtail-adapter-grok` as the 24th public package
+after exact authenticated route evidence. The retained unpublished candidate
+remains the historical 23-package artifact. The Grok package independently
+assembles and compiles from its archive; no 24-package replacement candidate
+is planned while registry publication remains closed.

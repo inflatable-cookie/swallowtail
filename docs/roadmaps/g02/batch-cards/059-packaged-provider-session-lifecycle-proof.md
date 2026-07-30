@@ -1,9 +1,9 @@
 # 059 Packaged Provider Session Lifecycle Proof
 
-Status: paused
+Status: superseded
 Owner: Tom
 Created: 2026-07-26
-Updated: 2026-07-27
+Updated: 2026-07-30
 Milestone: `../019-provider-session-lifecycle-acceptance-and-handoff.md`
 
 ## Objective
@@ -55,7 +55,8 @@ extracted package artifacts, then refresh the held local soak baseline.
 
 ## Auto-Continuation
 
-Yes after card 058. Continue to card 060 only after the local candidate passes.
+No. The later provider-wide package proof superseded retained-candidate
+replacement.
 
 ## Checkpoint
 
@@ -88,7 +89,18 @@ Transient evidence passed:
 - packaged Codex: 105 tests passed
 - no credential or provider call occurred
 
-The transient snapshot does not supersede the held candidate. Card 059 remains
-paused until the current Swallowtail work is committed to canonical history
-and the same gate can retain and verify the replacement at
-`.effigy/release-candidates/0.1.0`.
+## Disposition
+
+Card 136 later assembled all 23 package archives, compiled the extracted
+workspace, and executed 14 packaged lifecycle suites across all five
+management adapters. That broader proof preserves the behavior evidence this
+card sought.
+
+The only unclosed criterion here was refreshing the retained `0.1.0`
+publication candidate from newer canonical history. Registry publication is
+no longer part of the active Swallowtail runway: the operator requires months
+of working-application evidence before reopening it. Repeating the large
+candidate gate after every additive change would not improve that evidence.
+
+The transient checkpoint remains valid historical evidence. Card 059 is
+superseded by card 136 and no candidate replacement is queued.

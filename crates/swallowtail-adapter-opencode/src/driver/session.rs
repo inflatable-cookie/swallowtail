@@ -143,6 +143,7 @@ impl InteractiveSessionHandle for OpenCodeSessionHandle {
             let pump_terminal = Arc::clone(&terminal_flag);
             let deadline = request.deadline();
             let turn_id = request.turn_id().clone();
+            let pump_turn_id = turn_id.clone();
             let callback_operation = self.callback_run_id.clone().map_or_else(
                 || swallowtail_runtime::CallbackOperationId::Turn(turn_id.clone()),
                 swallowtail_runtime::CallbackOperationId::Run,
@@ -153,6 +154,7 @@ impl InteractiveSessionHandle for OpenCodeSessionHandle {
                 turn_scope.clone(),
                 Box::pin(async move {
                     pump_turn(TurnPump {
+                        turn_id: pump_turn_id,
                         subscription,
                         deadline,
                         services: pump_services,

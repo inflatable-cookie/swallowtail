@@ -19,13 +19,15 @@ impl QwenPreparedEvidence {
     pub(super) fn from_prepared(
         prepared: &QwenPreparedIntegration,
         plan: PreflightPlan,
+        activity_profile: swallowtail_core::ObservableActivityProfile,
     ) -> Result<Self, PreparationFailure> {
         Ok(Self {
             observation: prepared.observation().clone(),
             environment: prepared.environment().clone(),
-            operation: PreparedOperationEvidence::from_plan(
+            operation: PreparedOperationEvidence::from_plan_with_activity_profile(
                 plan,
                 prepared.access_evidence().clone(),
+                activity_profile,
             )?,
         })
     }
@@ -43,6 +45,11 @@ impl QwenPreparedEvidence {
     #[must_use]
     pub const fn operation(&self) -> &PreparedOperationEvidence {
         &self.operation
+    }
+
+    #[must_use]
+    pub const fn observable_activity(&self) -> &swallowtail_core::ObservableActivityProfile {
+        self.operation.observable_activity()
     }
 
     #[must_use]

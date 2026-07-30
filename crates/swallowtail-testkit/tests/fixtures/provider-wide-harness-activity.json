@@ -1,0 +1,186 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-07-29",
+  "contract": "044-observable-agent-activity-and-disclosure",
+  "source_inventories": [
+    "064-codex-observable-activity-range-evidence",
+    "065-acp-observable-activity-currentness-and-corpus",
+    "066-non-acp-harness-observable-activity-inventory"
+  ],
+  "routes": [
+    {
+      "id": "anthropic.managed-agent",
+      "driver": "swallowtail.anthropic.managed-agent",
+      "transport": "https-sse",
+      "qualified": "managed-agents-2026-04-01 beta",
+      "prepared_profiles": [
+        {"operation": "structured-run", "availability": "available"}
+      ],
+      "unavailable_operations": [],
+      "not_applicable_operations": [],
+      "unknown_posture": "preserve-namespaced",
+      "exact_absences": ["preview deltas", "readable thinking", "custom-tool execution activity"]
+    },
+    {
+      "id": "claude-agent.acp",
+      "driver": "swallowtail.claude-agent.acp",
+      "transport": "acp-v1-stdio",
+      "qualified": "0.53.0..=0.61.0 excluding unpublished 0.58.0",
+      "prepared_profiles": [
+        {"operation": "structured-run", "availability": "available"},
+        {"operation": "interactive-session", "availability": "available"}
+      ],
+      "unavailable_operations": [],
+      "not_applicable_operations": ["provider-session-management"],
+      "unknown_posture": "preserve-namespaced",
+      "exact_absences": ["hidden reasoning", "raw tool input", "raw tool output"]
+    },
+    {
+      "id": "claude-code.headless",
+      "driver": "swallowtail.claude-code.headless",
+      "transport": "strict-lf-jsonl-stdio",
+      "qualified": "2.1.220",
+      "prepared_profiles": [
+        {"operation": "structured-run", "availability": "available"}
+      ],
+      "unavailable_operations": [],
+      "not_applicable_operations": [],
+      "unknown_posture": "preserve-namespaced",
+      "exact_absences": ["started activity", "updated activity", "readable reasoning"]
+    },
+    {
+      "id": "codex.app-server",
+      "driver": "swallowtail.codex.app-server",
+      "transport": "jsonl-rpc-stdio",
+      "qualified": "0.80.0..=0.145.0 with published exclusions and behavior segments",
+      "prepared_profiles": [
+        {"operation": "interactive-session", "availability": "available"}
+      ],
+      "unavailable_operations": [],
+      "not_applicable_operations": ["model-catalogue", "provider-session-management"],
+      "unknown_posture": "preserve-namespaced",
+      "exact_absences": ["provider-unspecified older assistant display", "hidden reasoning", "raw provider payload"]
+    },
+    {
+      "id": "codex.exec",
+      "driver": "swallowtail.codex.exec",
+      "transport": "structured-cli",
+      "qualified": "0.80.0..=0.145.0 with published exclusions and behavior segments",
+      "prepared_profiles": [
+        {"operation": "structured-run", "availability": "available"}
+      ],
+      "unavailable_operations": [],
+      "not_applicable_operations": [],
+      "unknown_posture": "preserve-namespaced",
+      "exact_absences": ["app-server item lifecycle", "dynamic-tool activity", "review activity"]
+    },
+    {
+      "id": "gemini-cli.acp",
+      "driver": "swallowtail.gemini.acp",
+      "transport": "acp-v1-stdio",
+      "qualified": "0.51.0",
+      "prepared_profiles": [
+        {"operation": "interactive-session", "availability": "available"}
+      ],
+      "unavailable_operations": [],
+      "not_applicable_operations": [],
+      "unknown_posture": "preserve-namespaced",
+      "exact_absences": ["readable reasoning in warning chunks", "raw tool input", "raw tool output"]
+    },
+    {
+      "id": "gemini-cli.headless",
+      "driver": "swallowtail.gemini.headless",
+      "transport": "strict-lf-jsonl-stdio",
+      "qualified": "0.51.0..=0.52.0",
+      "prepared_profiles": [
+        {"operation": "structured-run", "availability": "available"}
+      ],
+      "unavailable_operations": [],
+      "not_applicable_operations": ["provider-session-management"],
+      "unknown_posture": "preserve-namespaced",
+      "exact_absences": ["assistant provider identity", "tool progress", "readable reasoning"]
+    },
+    {
+      "id": "kimi-code.acp",
+      "driver": "swallowtail.kimi.acp",
+      "transport": "acp-v1-stdio",
+      "qualified": "0.28.1 and 0.29.0..=0.29.2",
+      "prepared_profiles": [
+        {"operation": "interactive-session", "availability": "available"}
+      ],
+      "unavailable_operations": [],
+      "not_applicable_operations": [],
+      "unknown_posture": "preserve-namespaced",
+      "exact_absences": ["raw tool input", "raw tool output", "provider-session management activity"]
+    },
+    {
+      "id": "kimi-code.headless",
+      "driver": "swallowtail.kimi.headless",
+      "transport": "strict-lf-jsonl-stdio",
+      "qualified": "0.29.0..=0.29.2",
+      "prepared_profiles": [
+        {"operation": "structured-run", "availability": "available"}
+      ],
+      "unavailable_operations": [],
+      "not_applicable_operations": [],
+      "unknown_posture": "preserve-namespaced",
+      "exact_absences": ["started activity", "updated activity", "readable reasoning", "resume prose activity"]
+    },
+    {
+      "id": "kimi-code.local-server",
+      "driver": "swallowtail.kimi.local-server",
+      "transport": "http-websocket-v2",
+      "qualified": "0.28.1 and 0.29.0..=0.29.2",
+      "prepared_profiles": [
+        {"operation": "structured-run", "availability": "available"},
+        {"operation": "interactive-session", "availability": "available"}
+      ],
+      "unavailable_operations": [],
+      "not_applicable_operations": ["model-catalogue", "provider-session-management"],
+      "unknown_posture": "preserve-namespaced",
+      "exact_absences": ["assistant provider item identity beyond turn and offset", "hidden reasoning", "callback-as-tool activity"]
+    },
+    {
+      "id": "opencode.http",
+      "driver": "swallowtail.opencode.http",
+      "transport": "http-sse",
+      "qualified": "1.14.48..=1.18.4 with published gaps excluded",
+      "prepared_profiles": [
+        {"operation": "structured-run", "availability": "available"},
+        {"operation": "interactive-session", "availability": "available"}
+      ],
+      "unavailable_operations": [],
+      "not_applicable_operations": ["model-catalogue", "provider-session-management"],
+      "unknown_posture": "preserve-namespaced",
+      "exact_absences": ["1.14.51 tool activity", "1.14.51 reasoning activity", "callback-as-tool activity"]
+    },
+    {
+      "id": "pi.rpc",
+      "driver": "swallowtail.pi.rpc",
+      "transport": "strict-lf-jsonl-stdio",
+      "qualified": "0.80.10",
+      "prepared_profiles": [
+        {"operation": "structured-run", "availability": "available"},
+        {"operation": "interactive-session", "availability": "available"}
+      ],
+      "unavailable_operations": [],
+      "not_applicable_operations": ["model-catalogue"],
+      "unknown_posture": "preserve-namespaced",
+      "exact_absences": ["bash execution updates", "summarization retry activity", "durable non-tool provider identity"]
+    },
+    {
+      "id": "qwen.headless",
+      "driver": "swallowtail.qwen.headless",
+      "transport": "strict-lf-jsonl-stdio",
+      "qualified": "0.19.11",
+      "prepared_profiles": [
+        {"operation": "structured-run", "availability": "available"},
+        {"operation": "interactive-session", "availability": "available"}
+      ],
+      "unavailable_operations": [],
+      "not_applicable_operations": ["model-catalogue"],
+      "unknown_posture": "preserve-namespaced",
+      "exact_absences": ["public provider-session management", "hidden reasoning", "raw tool input and result"]
+    }
+  ]
+}

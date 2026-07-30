@@ -1,5 +1,7 @@
 use super::validation::{validate_assistant_phase, validate_content, validate_phase_status};
-use super::{ActivityContentUpdate, ActivityId, ActivityNamespace, InvalidActivityRecord};
+use super::{
+    ActivityContentUpdate, ActivityId, ActivityLabel, ActivityNamespace, InvalidActivityRecord,
+};
 use crate::{CallbackId, DirectToolCallId, RuntimeRunId, RuntimeTurnId};
 use std::fmt;
 use swallowtail_core::{
@@ -104,6 +106,7 @@ pub struct ActivityObservation {
     assistant_phase: Option<ActivityAssistantPhase>,
     disclosure: ActivityDisclosure,
     correlation: Option<ActivityCorrelation>,
+    label: Option<ActivityLabel>,
     content: Option<ActivityContentUpdate>,
 }
 
@@ -134,6 +137,7 @@ impl ActivityObservation {
             assistant_phase,
             disclosure,
             correlation: None,
+            label: None,
             content: None,
         })
     }
@@ -156,6 +160,12 @@ impl ActivityObservation {
     ) -> Result<Self, InvalidActivityRecord> {
         validate_content(&self, &content)?;
         self.content = Some(content);
+        Ok(self)
+    }
+
+    pub fn with_label(mut self, label: ActivityLabel) -> Result<Self, InvalidActivityRecord> {
+        super::validation::validate_label(&self)?;
+        self.label = Some(label);
         Ok(self)
     }
 
@@ -202,6 +212,11 @@ impl ActivityObservation {
     #[must_use]
     pub const fn correlation(&self) -> Option<&ActivityCorrelation> {
         self.correlation.as_ref()
+    }
+
+    #[must_use]
+    pub const fn label(&self) -> Option<&ActivityLabel> {
+        self.label.as_ref()
     }
 
     #[must_use]

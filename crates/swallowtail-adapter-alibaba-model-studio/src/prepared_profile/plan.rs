@@ -14,11 +14,13 @@ impl AlibabaModelStudioPreparedEvidence {
     pub(super) fn from_prepared(
         prepared: &AlibabaModelStudioPreparedIntegration,
         plan: PreflightPlan,
+        activity_profile: swallowtail_core::ObservableActivityProfile,
     ) -> Result<Self, PreparationFailure> {
         Ok(Self {
-            operation: PreparedOperationEvidence::from_plan(
+            operation: PreparedOperationEvidence::from_plan_with_activity_profile(
                 plan,
                 prepared.access_evidence().clone(),
+                activity_profile,
             )?,
         })
     }
@@ -34,6 +36,11 @@ impl AlibabaModelStudioPreparedEvidence {
     }
 
     #[must_use]
+    pub const fn observable_activity(&self) -> &swallowtail_core::ObservableActivityProfile {
+        self.operation.observable_activity()
+    }
+
+    #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.operation.plan()
     }
@@ -44,14 +51,36 @@ pub(super) fn model_route(
     route_id: ModelRouteId,
     route_revision: ModelRouteRevision,
     model_id: ModelId,
+    capabilities: swallowtail_core::CapabilityProfile,
 ) -> ModelRoute {
     ModelRoute::new(
         route_id,
         route_revision,
         prepared.instance().id().clone(),
         model_id,
-        prepared.instance().capabilities().clone(),
+        capabilities,
     )
+}
+
+pub(super) fn instance_with_capabilities(
+    prepared: &AlibabaModelStudioPreparedIntegration,
+    capabilities: swallowtail_core::CapabilityProfile,
+) -> ConfiguredInstance {
+    let base = prepared.instance();
+    ConfiguredInstance::new(
+        base.id().clone(),
+        base.revision().clone(),
+        base.driver_id().clone(),
+        base.execution_host_id().clone(),
+        base.target_reference().clone(),
+        base.ownership(),
+        base.access_profile_id().clone(),
+        base.support_authority(),
+        base.protocol_facade_id().clone(),
+        base.policy_id().clone(),
+        capabilities,
+    )
+    .with_interface_versions(base.interface_versions().cloned())
 }
 
 pub(super) fn build_plan(

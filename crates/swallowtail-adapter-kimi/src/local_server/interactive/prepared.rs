@@ -85,7 +85,11 @@ impl KimiLocalServerPreparedIntegration {
         validate_options(&options)?;
         validate_revision_options(self, &configuration)?;
 
-        let capabilities = session_capabilities(&options);
+        let activity_profile = super::super::activity::profile::activity_profile(self)?;
+        let capabilities = super::super::activity::profile::with_activity(
+            session_capabilities(&options),
+            &activity_profile,
+        );
         let instance = instance_with_capabilities(self, capabilities.clone());
         let (route_id, route_revision, model_id) = model.into_parts();
         let route = ModelRoute::new(
@@ -115,7 +119,11 @@ impl KimiLocalServerPreparedIntegration {
         let request = OpenSessionRequest::from_plan(&plan, request_id, working_resource, deadline)?
             .with_options(options);
         Ok(KimiLocalServerPreparedSession {
-            evidence: PreparedOperationEvidence::from_plan(plan, self.access_evidence().clone())?,
+            evidence: PreparedOperationEvidence::from_plan_with_activity_profile(
+                plan,
+                self.access_evidence().clone(),
+                activity_profile,
+            )?,
             request,
             configuration,
             management_instance: instance_with_capabilities(self, lifecycle_capabilities()),

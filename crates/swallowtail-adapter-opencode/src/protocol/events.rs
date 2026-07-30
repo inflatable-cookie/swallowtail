@@ -2,14 +2,42 @@
 pub(crate) enum Event {
     Connected,
     Busy,
-    OutputDelta(String),
-    OutputSnapshot(String),
+    OutputDelta {
+        message_id: String,
+        part_id: String,
+        text: String,
+    },
+    OutputSnapshot {
+        message_id: String,
+        part_id: String,
+        text: String,
+    },
+    ReasoningSnapshot {
+        message_id: String,
+        part_id: String,
+        text: String,
+    },
+    ToolState {
+        part_id: String,
+        call_id: String,
+        name: String,
+        status: ToolStatus,
+    },
     Usage(String, TokenUsage),
     Idle,
     Cancelled,
     ProviderFailed,
     ProviderRequest(PendingProviderRequest),
+    Unknown(String),
     Foreign,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(crate) enum ToolStatus {
+    Pending,
+    Running,
+    Completed,
+    Failed,
 }
 
 pub(crate) fn parse_event(data: &[u8], session_id: &str) -> Result<Event, RuntimeFailure> {
@@ -35,23 +63,24 @@ pub(crate) fn parse_event(data: &[u8], session_id: &str) -> Result<Event, Runtim
     if kind == "server.connected" {
         return Ok(Event::Connected);
     }
-    if !matches!(
-        kind,
-        "session.status"
-            | "session.idle"
-            | "message.part.delta"
-            | "message.part.updated"
-            | "session.error"
-            | "permission.asked"
-            | "question.asked"
-    ) {
+    let observed_session = properties
+        .get("sessionID")
+        .and_then(Value::as_str)
+        .or_else(|| {
+            properties
+                .get("part")
+                .and_then(Value::as_object)
+                .and_then(|part| part.get("sessionID"))
+                .and_then(Value::as_str)
+        });
+    if observed_session.is_some_and(|observed| observed != session_id) {
+        return Ok(Event::Foreign);
+    }
+    if observed_session.is_none() {
         return Err(failure(
             "swallowtail.opencode.event_unknown",
-            "OpenCode emitted an unsupported event type",
+            "OpenCode emitted an uncorrelated event type",
         ));
-    }
-    if properties.get("sessionID").and_then(Value::as_str) != Some(session_id) {
-        return Ok(Event::Foreign);
     }
     match kind {
         "session.status" => parse_status(properties),
@@ -61,7 +90,7 @@ pub(crate) fn parse_event(data: &[u8], session_id: &str) -> Result<Event, Runtim
         "session.error" => parse_error(properties),
         "permission.asked" => parse_permission(properties),
         "question.asked" => parse_question(properties),
-        _ => unreachable!("event kind was checked before correlation"),
+        _ => Ok(Event::Unknown(kind.to_owned())),
     }
 }
 
@@ -197,10 +226,16 @@ fn parse_delta(properties: &Map<String, Value>) -> Result<Event, RuntimeFailure>
             "OpenCode emitted an unsupported message delta",
         ));
     }
+    let message_id = required_identity(properties, "messageID")?;
+    let part_id = required_identity(properties, "partID")?;
     properties
         .get("delta")
         .and_then(Value::as_str)
-        .map(|delta| Event::OutputDelta(delta.to_owned()))
+        .map(|delta| Event::OutputDelta {
+            message_id,
+            part_id,
+            text: delta.to_owned(),
+        })
         .ok_or_else(|| {
             failure(
                 "swallowtail.opencode.event_invalid",
@@ -220,16 +255,71 @@ fn parse_part(properties: &Map<String, Value>) -> Result<Event, RuntimeFailure> 
             )
         })?;
     match part.get("type").and_then(Value::as_str) {
-        Some("text") => part
-            .get("text")
-            .and_then(Value::as_str)
-            .map(|text| Event::OutputSnapshot(text.to_owned()))
-            .ok_or_else(|| {
-                failure(
-                    "swallowtail.opencode.event_invalid",
-                    "OpenCode text part was invalid",
-                )
-            }),
+        Some("text") => {
+            let message_id = required_identity(part, "messageID")?;
+            let part_id = required_identity(part, "id")?;
+            part.get("text")
+                .and_then(Value::as_str)
+                .map(|text| Event::OutputSnapshot {
+                    message_id,
+                    part_id,
+                    text: text.to_owned(),
+                })
+                .ok_or_else(|| {
+                    failure(
+                        "swallowtail.opencode.event_invalid",
+                        "OpenCode text part was invalid",
+                    )
+                })
+        }
+        Some("reasoning") => {
+            let message_id = required_identity(part, "messageID")?;
+            let part_id = required_identity(part, "id")?;
+            let text = properties
+                .get("delta")
+                .or_else(|| part.get("text"))
+                .and_then(Value::as_str)
+                .ok_or_else(|| {
+                    failure(
+                        "swallowtail.opencode.event_invalid",
+                        "OpenCode reasoning part was invalid",
+                    )
+                })?;
+            Ok(Event::ReasoningSnapshot {
+                message_id,
+                part_id,
+                text: text.to_owned(),
+            })
+        }
+        Some("tool") => {
+            let part_id = required_identity(part, "id")?;
+            let call_id = required_identity(part, "callID")?;
+            let name = required_identity(part, "tool")?;
+            let status = part
+                .get("state")
+                .and_then(Value::as_object)
+                .and_then(|state| state.get("status"))
+                .and_then(Value::as_str)
+                .and_then(|status| match status {
+                    "pending" => Some(ToolStatus::Pending),
+                    "running" => Some(ToolStatus::Running),
+                    "completed" => Some(ToolStatus::Completed),
+                    "error" => Some(ToolStatus::Failed),
+                    _ => None,
+                })
+                .ok_or_else(|| {
+                    failure(
+                        "swallowtail.opencode.event_invalid",
+                        "OpenCode tool state was invalid",
+                    )
+                })?;
+            Ok(Event::ToolState {
+                part_id,
+                call_id,
+                name,
+                status,
+            })
+        }
         Some("step-finish") => {
             let part_id = part
                 .get("id")
@@ -238,11 +328,35 @@ fn parse_part(properties: &Map<String, Value>) -> Result<Event, RuntimeFailure> 
                 .ok_or_else(invalid_usage)?;
             parse_usage(part).map(|usage| Event::Usage(part_id.to_owned(), usage))
         }
-        _ => Err(failure(
+        Some(kind) => {
+            required_identity(part, "id")?;
+            Ok(Event::Unknown(format!("message.part.updated.{kind}")))
+        }
+        None => Err(failure(
             "swallowtail.opencode.event_unknown",
             "OpenCode emitted an unsupported message part",
         )),
     }
+}
+
+fn required_identity(value: &Map<String, Value>, field: &str) -> Result<String, RuntimeFailure> {
+    value
+        .get(field)
+        .and_then(Value::as_str)
+        .filter(|value| {
+            !value.is_empty()
+                && value.len() <= 1024
+                && value.bytes().all(|byte| {
+                    byte.is_ascii_alphanumeric() || matches!(byte, b'_' | b'-' | b'.' | b'~')
+                })
+        })
+        .map(str::to_owned)
+        .ok_or_else(|| {
+            failure(
+                "swallowtail.opencode.event_invalid",
+                "OpenCode event identity was invalid",
+            )
+        })
 }
 
 fn parse_usage(part: &Map<String, Value>) -> Result<TokenUsage, RuntimeFailure> {

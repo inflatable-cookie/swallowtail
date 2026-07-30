@@ -5,6 +5,7 @@ struct FinalAttemptFlow<'a> {
     deadline:
         &'a mut swallowtail_runtime::BoxFuture<'static, swallowtail_runtime::DeadlineObservation>,
     cancellation: &'a TurnCancellation,
+    activity: &'a crate::activity::DeepSeekActivityProjection,
 }
 
 async fn run_final_attempt(
@@ -43,8 +44,14 @@ async fn run_final_attempt(
                     TurnFailure::Provider(protocol(error), CleanupOutcome::Clean)
                 })?;
                 for update in updates {
-                    emit_update(flow.events, flow.sequence, attempt.attempt_id(), update)
-                        .map_err(runtime_failure)?;
+                    emit_update(
+                        flow.events,
+                        flow.sequence,
+                        attempt.attempt_id(),
+                        flow.activity,
+                        update,
+                    )
+                    .map_err(runtime_failure)?;
                 }
             }
             StreamSignal::Item(Err(error)) => {

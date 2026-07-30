@@ -3,6 +3,7 @@ mod plan;
 
 use super::GeminiHeadlessPreparedIntegration;
 use super::instance::run_capabilities;
+use crate::headless_activity::profile::{activity_profile, with_activity};
 use plan::{build_plan, instance_with_capabilities, requirements};
 use std::sync::{Arc, Mutex};
 use swallowtail_core::{
@@ -127,6 +128,7 @@ impl GeminiHeadlessPreparedEvidence {
     fn from_prepared(
         prepared: &GeminiHeadlessPreparedIntegration,
         plan: PreflightPlan,
+        activity_profile: swallowtail_core::ObservableActivityProfile,
     ) -> Result<Self, PreparationFailure> {
         Ok(Self {
             observation: prepared.observation().clone(),
@@ -136,9 +138,10 @@ impl GeminiHeadlessPreparedEvidence {
                 .credential_reference()
                 .expect("prepared Gemini headless access has one credential reference")
                 .clone(),
-            operation: PreparedOperationEvidence::from_plan(
+            operation: PreparedOperationEvidence::from_plan_with_activity_profile(
                 plan,
                 prepared.access_evidence().clone(),
+                activity_profile,
             )?,
         })
     }
@@ -156,6 +159,11 @@ impl GeminiHeadlessPreparedEvidence {
     #[must_use]
     pub const fn operation(&self) -> &PreparedOperationEvidence {
         &self.operation
+    }
+
+    #[must_use]
+    pub const fn observable_activity(&self) -> &swallowtail_core::ObservableActivityProfile {
+        self.operation.observable_activity()
     }
 
     #[must_use]
@@ -230,7 +238,8 @@ impl GeminiHeadlessPreparedIntegration {
     ) -> Result<GeminiHeadlessPreparedRun, PreparationFailure> {
         let (request_id, model, content, working_resource, deadline, retention) =
             input.into_parts();
-        let capabilities = run_capabilities_for(retention);
+        let activity = activity_profile(self)?;
+        let capabilities = with_activity(run_capabilities_for(retention), &activity);
         let instance = instance_with_capabilities(self, capabilities.clone());
         let (route_id, route_revision, provider_id, model_id) = model.into_parts();
         let route = ModelRoute::new(
@@ -267,7 +276,7 @@ impl GeminiHeadlessPreparedIntegration {
             .with_working_resource(working_resource)
             .with_deadline(deadline);
         Ok(GeminiHeadlessPreparedRun {
-            evidence: GeminiHeadlessPreparedEvidence::from_prepared(self, plan)?,
+            evidence: GeminiHeadlessPreparedEvidence::from_prepared(self, plan, activity)?,
             request,
             management_binding,
         })

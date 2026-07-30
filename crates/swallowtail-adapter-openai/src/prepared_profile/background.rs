@@ -124,7 +124,17 @@ impl OpenAiBackgroundPreparedIntegration {
             reasoning.as_ref(),
             structured_output.as_ref(),
         );
-        let capabilities = CapabilityProfile::new(capability_requirements.clone());
+        let activity = crate::activity::profile::activity_profile();
+        let capabilities = crate::activity::profile::with_activity(
+            CapabilityProfile::new(capability_requirements),
+            &activity,
+        );
+        let capability_requirements = capabilities
+            .iter()
+            .map(|(capability, constraints)| {
+                CapabilityRequirement::new(capability, constraints.iter().cloned())
+            })
+            .collect::<Vec<_>>();
         let instance = instance_with_capabilities(self, capabilities.clone());
         let route = model_route(self, model, capabilities);
         if route.id().as_str() != crate::OPENAI_BACKGROUND_MODEL_ROUTE_ID
@@ -151,7 +161,7 @@ impl OpenAiBackgroundPreparedIntegration {
             request = request.with_structured_output(output);
         }
         Ok(OpenAiPreparedBackgroundRun {
-            evidence: OpenAiBackgroundPreparedEvidence::from_prepared(self, plan)?,
+            evidence: OpenAiBackgroundPreparedEvidence::from_prepared(self, plan, activity)?,
             request,
         })
     }

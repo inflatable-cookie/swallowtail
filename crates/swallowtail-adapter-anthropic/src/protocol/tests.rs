@@ -21,7 +21,7 @@ mod tests {
             .iter()
             .map(|frame| parse_event(frame).expect("event parses"))
             .collect();
-        assert!(matches!(events[0], Event::MessageStart(_)));
+        assert!(matches!(events[0], Event::MessageStart { .. }));
         assert!(matches!(events[3], Event::OutputDelta(ref text) if text == "Hello"));
         assert!(matches!(events[6], Event::Usage(usage, _) if usage.output_tokens() == Some(3)));
         assert_eq!(events.last(), Some(&Event::MessageStop));

@@ -9,10 +9,10 @@ use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 use swallowtail_core::{CancellationScope, TurnRef};
 use swallowtail_runtime::{
-    BoxEventStream, BoxFuture, CancellationControl, CleanupOutcome, ExecutableRef, HostServices,
-    ProcessHandle, ProcessRequest, RuntimeEvent, RuntimeEventKind, RuntimeFailure, RuntimeTurnId,
-    ScopeId, TerminalOutcome, TerminalStatus, TurnHandle, TurnRequest, runtime_event_channel,
-    terminal_outcome_channel,
+    ActivityOperationId, BoxEventStream, BoxFuture, CancellationControl, CleanupOutcome,
+    ExecutableRef, HostServices, ProcessHandle, ProcessRequest, RuntimeEvent, RuntimeEventKind,
+    RuntimeFailure, RuntimeTurnId, ScopeId, TerminalOutcome, TerminalStatus, TurnHandle,
+    TurnRequest, runtime_event_channel, terminal_outcome_channel,
 };
 
 const EVENT_CAPACITY: usize = 4098;
@@ -119,6 +119,7 @@ impl QwenSessionHandle {
         let task_process = Arc::clone(&process);
         let model = self.model.clone();
         let task_expected = expected_session.clone();
+        let task_turn_id = request.turn_id().clone();
         let task = self.services.task().expect("validated Qwen task").spawn(
             scope,
             Box::pin(async move {
@@ -129,6 +130,7 @@ impl QwenSessionHandle {
                     deadline,
                     model,
                     task_expected,
+                    ActivityOperationId::Turn(task_turn_id),
                 )
                 .await;
                 {

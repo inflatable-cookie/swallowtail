@@ -2,8 +2,12 @@
 mod terminal;
 
 use crate::failure::failure;
+use crate::headless_activity::KimiHeadlessActivityProjection;
 use serde_json::Value;
-use swallowtail_runtime::{OperationContent, RuntimeEvent, RuntimeEventKind, RuntimeFailure};
+use swallowtail_runtime::{
+    ActivityObservation, ActivityOperationId, OperationContent, RuntimeEvent, RuntimeEventKind,
+    RuntimeFailure,
+};
 use terminal::ParsedTerminal;
 
 const MAXIMUM_LINE_BYTES: usize = 1024 * 1024;
@@ -18,10 +22,11 @@ pub(crate) struct KimiHeadlessEventParser {
     final_output: Option<OperationContent>,
     terminal_seen: bool,
     last_retry: Option<(u64, u64, u64)>,
+    activity: KimiHeadlessActivityProjection,
 }
 
 impl KimiHeadlessEventParser {
-    pub(crate) const fn new() -> Self {
+    pub(crate) fn new(operation_id: ActivityOperationId) -> Self {
         Self {
             pending: Vec::new(),
             sequence: 1,
@@ -30,6 +35,7 @@ impl KimiHeadlessEventParser {
             final_output: None,
             terminal_seen: false,
             last_retry: None,
+            activity: KimiHeadlessActivityProjection::new(operation_id),
         }
     }
 
@@ -77,6 +83,10 @@ impl KimiHeadlessEventParser {
             Some("assistant") => self.parse_assistant(&payload),
             Some("tool") => self.parse_tool(&payload),
             Some("meta") => self.parse_meta(&payload),
+            Some(role) if !role.trim().is_empty() => {
+                let activity = self.activity.unknown(&format!("role.{role}"))?;
+                Ok(self.activity_events(activity))
+            }
             _ => Err(malformed_stream()),
         }
     }
@@ -86,8 +96,9 @@ impl KimiHeadlessEventParser {
         let tools = payload
             .get("tool_calls")
             .map(validate_tool_calls)
-            .transpose()?;
-        if content.is_none() && tools != Some(true) {
+            .transpose()?
+            .unwrap_or_default();
+        if content.is_none() && tools.is_empty() {
             return Err(malformed_stream());
         }
         let mut events = Vec::new();
@@ -101,9 +112,8 @@ impl KimiHeadlessEventParser {
                 OperationContent::new(content).map_err(|_| malformed_stream())?,
             ));
         }
-        if tools == Some(true) {
-            events.push(self.event(RuntimeEventKind::Progress));
-        }
+        let activity = self.activity.assistant(content, &tools)?;
+        events.extend(self.activity_events(activity));
         Ok(events)
     }
 
@@ -111,7 +121,9 @@ impl KimiHeadlessEventParser {
         if !non_empty_string(payload, "tool_call_id") || !non_empty_string(payload, "content") {
             return Err(malformed_stream());
         }
-        Ok(vec![self.event(RuntimeEventKind::Progress)])
+        let tool_id = payload["tool_call_id"].as_str().expect("validated");
+        let activity = self.activity.tool_result(tool_id)?;
+        Ok(self.activity_events(activity))
     }
 
     fn parse_meta(&mut self, payload: &Value) -> Result<Vec<RuntimeEvent>, RuntimeFailure> {
@@ -145,7 +157,8 @@ impl KimiHeadlessEventParser {
                     return Err(malformed_stream());
                 }
                 self.last_retry = Some((failed, next, maximum));
-                Ok(vec![self.event(RuntimeEventKind::Progress)])
+                let activity = self.activity.retry()?;
+                Ok(self.activity_events(activity))
             }
             Some("session.resume_hint") => {
                 if !non_empty_string(payload, "session_id")
@@ -154,6 +167,7 @@ impl KimiHeadlessEventParser {
                 {
                     return Err(malformed_stream());
                 }
+                self.activity.ensure_idle()?;
                 self.terminal_seen = true;
                 let mut events = Vec::new();
                 if !self.output.is_empty() {
@@ -163,6 +177,10 @@ impl KimiHeadlessEventParser {
                     events.push(self.event_with(RuntimeEventKind::OutputAvailable, output));
                 }
                 Ok(events)
+            }
+            Some(event_type) if !event_type.trim().is_empty() => {
+                let activity = self.activity.unknown(event_type)?;
+                Ok(self.activity_events(activity))
             }
             _ => Err(malformed_stream()),
         }
@@ -179,9 +197,19 @@ impl KimiHeadlessEventParser {
         self.sequence += 1;
         RuntimeEvent::with_content(sequence, kind, content)
     }
+
+    fn activity_events(
+        &mut self,
+        observations: impl IntoIterator<Item = ActivityObservation>,
+    ) -> Vec<RuntimeEvent> {
+        observations
+            .into_iter()
+            .map(|observation| self.event(RuntimeEventKind::Activity(observation)))
+            .collect()
+    }
 }
 
-fn validate_tool_calls(value: &Value) -> Result<bool, RuntimeFailure> {
+fn validate_tool_calls(value: &Value) -> Result<Vec<(String, String)>, RuntimeFailure> {
     let calls = value.as_array().ok_or_else(malformed_stream)?;
     if calls.is_empty()
         || calls.iter().any(|call| {
@@ -194,7 +222,18 @@ fn validate_tool_calls(value: &Value) -> Result<bool, RuntimeFailure> {
     {
         Err(malformed_stream())
     } else {
-        Ok(true)
+        calls
+            .iter()
+            .map(|call| {
+                Ok((
+                    call["id"].as_str().expect("validated").to_owned(),
+                    call["function"]["name"]
+                        .as_str()
+                        .expect("validated")
+                        .to_owned(),
+                ))
+            })
+            .collect()
     }
 }
 

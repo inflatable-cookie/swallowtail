@@ -25,6 +25,20 @@ impl KimiPlatformPreparedEvidence {
         })
     }
 
+    pub(super) fn from_prepared_with_activity(
+        prepared: &KimiPlatformPreparedIntegration,
+        plan: PreflightPlan,
+        activity_profile: swallowtail_core::ObservableActivityProfile,
+    ) -> Result<Self, PreparationFailure> {
+        Ok(Self {
+            operation: PreparedOperationEvidence::from_plan_with_activity_profile(
+                plan,
+                prepared.access_evidence().clone(),
+                activity_profile,
+            )?,
+        })
+    }
+
     #[must_use]
     pub const fn access(&self) -> &swallowtail_runtime::PreparedAccessEvidence {
         self.operation.access()
@@ -33,6 +47,11 @@ impl KimiPlatformPreparedEvidence {
     #[must_use]
     pub const fn operation(&self) -> &PreparedOperationEvidence {
         &self.operation
+    }
+
+    #[must_use]
+    pub const fn observable_activity(&self) -> &swallowtail_core::ObservableActivityProfile {
+        self.operation.observable_activity()
     }
 
     #[must_use]
@@ -59,6 +78,7 @@ pub(super) fn instance_with_capabilities(
         base.policy_id().clone(),
         capabilities,
     )
+    .with_interface_versions(base.interface_versions().cloned())
 }
 
 pub(super) fn model_route(

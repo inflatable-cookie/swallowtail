@@ -1,6 +1,6 @@
 # 134 Realtime And Non-Applicable Activity Closeout
 
-Status: planned
+Status: ready
 Owner: Tom
 Created: 2026-07-29
 Milestone: `../039-direct-inference-activity-truth.md`
@@ -57,4 +57,3 @@ events, catalogue operations, and serving lifecycle.
 ## Auto-Continuation
 
 Continue to card 135 only after roadmap g02.039 closes.
-

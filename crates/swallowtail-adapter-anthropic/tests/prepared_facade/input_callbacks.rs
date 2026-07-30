@@ -13,6 +13,7 @@ use swallowtail_runtime::{
     DirectToolResult, DirectToolResultContent, MonotonicInstant, OperationContent, RequestId,
     RuntimeTurnId, SchemaDocument, TerminalStatus, ToolDeclaration,
 };
+use swallowtail_testkit::assert_observable_activity_trace;
 
 #[test]
 fn prepared_image_and_search_runs_bind_exact_wire_and_cleanup() {
@@ -64,6 +65,7 @@ fn prepared_image_and_search_runs_bind_exact_wire_and_cleanup() {
         Capability::ProviderExternalNetwork
     ));
     let search_events = complete(search_run.start_run(search_fixture.services()));
+    assert_observable_activity_trace(search_run.evidence().observable_activity(), &search_events);
     assert!(search_events.iter().any(|event| matches!(
         event.kind(),
         swallowtail_runtime::RuntimeEventKind::ExternalSearchProgress
@@ -108,6 +110,7 @@ fn prepared_direct_session_waits_for_exact_consumer_result_and_allows_later_turn
         session.plan(),
         Capability::DirectToolContinuation
     ));
+    let activity_profile = session.evidence().observable_activity().clone();
     let mut session = block_on(session.open_session(fixture.services())).expect("session opens");
     let mut turn = block_on(session.start_direct_continuation_turn(
         DirectContinuationTurnRequest::new(
@@ -125,7 +128,8 @@ fn prepared_direct_session_waits_for_exact_consumer_result_and_allows_later_turn
     let mut events = turn.take_events().expect("event stream exists");
     let terminal = turn.take_terminal_outcome().expect("terminal exists");
     let submitter = exchange.submitter();
-    let outcome = block_on(async {
+    let (collected, outcome) = block_on(async {
+        let mut collected = Vec::new();
         let call = match calls.next().await {
             Some(Ok(call)) => call,
             other => {
@@ -148,10 +152,11 @@ fn prepared_direct_session_waits_for_exact_consumer_result_and_allows_later_turn
             .expect("exact tool result continues");
         assert!(submitter.submit(Vec::new()).await.is_err());
         while let Some(event) = events.next().await {
-            event.expect("event succeeds");
+            collected.push(event.expect("event succeeds"));
         }
-        terminal.await
+        (collected, terminal.await)
     });
+    assert_observable_activity_trace(&activity_profile, &collected);
     assert_eq!(outcome.status(), &TerminalStatus::Completed);
     assert_eq!(fixture.server.inference_attempts(), 2);
     assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
@@ -168,12 +173,14 @@ fn prepared_direct_session_waits_for_exact_consumer_result_and_allows_later_turn
     assert!(later.take_direct_tool_exchange().is_none());
     let mut events = later.take_events().unwrap();
     let terminal = later.take_terminal_outcome().unwrap();
-    let outcome = block_on(async {
+    let (collected, outcome) = block_on(async {
+        let mut collected = Vec::new();
         while let Some(event) = events.next().await {
-            event.unwrap();
+            collected.push(event.unwrap());
         }
-        terminal.await
+        (collected, terminal.await)
     });
+    assert_observable_activity_trace(&activity_profile, &collected);
     assert_eq!(outcome.status(), &TerminalStatus::Completed);
     assert_eq!(fixture.server.inference_attempts(), 3);
     assert_eq!(block_on(later.close()), CleanupOutcome::Clean);

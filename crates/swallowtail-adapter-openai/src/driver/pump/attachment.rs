@@ -10,6 +10,7 @@ async fn pump_attachment(
     deadline: &mut Option<
         swallowtail_runtime::BoxFuture<'static, swallowtail_runtime::DeadlineObservation>,
     >,
+    activity: &crate::activity::OpenAiBackgroundActivityProjection,
 ) -> AttachmentExit {
     loop {
         if cancellation.is_requested() {
@@ -65,12 +66,24 @@ async fn pump_attachment(
                     }
                     ProviderEvent::OutputDelta(delta) => {
                         output.push_str(&delta);
-                        if let Err(error) = emit_content(
+                        if let Err(error) = emit(
+                            events,
+                            sequence,
+                            RuntimeEventKind::Activity(match activity.delta(&delta) {
+                                Ok(observation) => observation,
+                                Err(error) => {
+                                    return AttachmentExit::Terminal(FinalState::new(
+                                        TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
+                                    ));
+                                }
+                            }),
+                        )
+                        .and_then(|_| emit_content(
                             events,
                             sequence,
                             RuntimeEventKind::OutputDelta,
                             delta,
-                        ) {
+                        )) {
                             return AttachmentExit::Terminal(FinalState::new(
                                 TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
                             ));

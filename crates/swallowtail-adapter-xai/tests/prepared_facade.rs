@@ -14,6 +14,7 @@ use swallowtail_runtime::{
     CleanupOutcome, InteractiveSessionHandle, OperationContent, ProviderObservation, RequestId,
     RuntimeEventKind, TerminalStatus,
 };
+use swallowtail_testkit::assert_observable_activity_trace;
 
 #[test]
 fn prepared_xai_session_preserves_serial_continuation_cost_and_cleanup_on_both_hosts() {
@@ -49,6 +50,7 @@ fn prepared_xai_session_preserves_serial_continuation_cost_and_cleanup_on_both_h
             block_on(operation.open_session(fixture.services())).expect("session opens");
         for (turn, expected_cost) in [("turn-1", 125_000), ("turn-2", 175_000)] {
             let events = complete_turn(&mut session, &fixture, turn);
+            assert_observable_activity_trace(operation.evidence().observable_activity(), &events);
             let cost = events
                 .iter()
                 .find_map(|event| match event.kind() {
@@ -120,6 +122,7 @@ fn prepared_one_response_run_preserves_topology_cost_and_cleanup_on_both_hosts()
             }
             (collected, terminal.await)
         });
+        assert_observable_activity_trace(operation.evidence().observable_activity(), &events);
         assert_eq!(outcome.status(), &TerminalStatus::Completed);
         assert!(events.iter().any(|event| matches!(
             event.kind(),

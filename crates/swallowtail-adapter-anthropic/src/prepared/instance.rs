@@ -14,10 +14,12 @@ pub(super) fn configured_instance(input: &AnthropicPreparationInput) -> Configur
         InstanceOwnership::ExternalAttached,
         input.access_profile.id().clone(),
         input.access_profile.support_authority(),
-        ProtocolFacadeId::new("anthropic-2023-06-01").expect("static Anthropic facade is valid"),
+        ProtocolFacadeId::new(crate::ANTHROPIC_MESSAGES_FACADE_REVISION)
+            .expect("static Anthropic facade is valid"),
         InstancePolicyId::new("public-api-key").expect("static Anthropic policy is valid"),
         all_capabilities(),
     )
+    .with_interface_versions([crate::anthropic_messages_facade_binding()])
 }
 
 pub(crate) fn all_capabilities() -> CapabilityProfile {

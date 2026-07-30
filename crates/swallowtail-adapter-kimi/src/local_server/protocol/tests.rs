@@ -345,16 +345,17 @@ fn selected_interactive_events_preserve_turn_and_terminal_meaning() {
 }
 
 #[test]
-fn unknown_semantic_event_fails_without_exposing_payload() {
-    let failure = decode_ws_frame(
+fn bounded_unknown_semantic_event_preserves_only_its_namespace() {
+    let event = decode_ws_frame(
         br#"{"type":"future.private","seq":11,"epoch":"fixture-epoch","session_id":"fixture-session","timestamp":"2026-07-27T00:00:02.000Z","payload":{"secret":"private"}}"#,
     )
-    .expect_err("unknown event must fail");
-    assert_eq!(
-        failure.diagnostic().code(),
-        "swallowtail.kimi.local_server.event_unsupported"
-    );
-    assert!(!format!("{failure:?}").contains("private"));
+    .expect("bounded unknown event decodes");
+    let WsFrame::Event(event) = event else {
+        panic!("unknown semantic record must remain an event");
+    };
+    assert_eq!(event.event, WsEvent::Unknown("future.private".to_owned()));
+    let rendered = format!("{event:?}");
+    assert!(!rendered.contains("\"secret\""));
 }
 
 #[test]

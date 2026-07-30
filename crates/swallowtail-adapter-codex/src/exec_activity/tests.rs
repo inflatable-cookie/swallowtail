@@ -76,6 +76,22 @@ fn deferred_search_query_attaches_content_at_completion() {
 }
 
 #[test]
+fn mcp_label_stays_separate_from_result_payload() {
+    let tool = project(
+        case(&cases(), "mcp-tool-lifecycle"),
+        Version::new(0, 145, 0),
+    )
+    .expect("MCP lifecycle projects");
+    assert!(tool.iter().all(|observation| {
+        observation
+            .label()
+            .is_some_and(|label| label.as_str() == "fixture.read")
+    }));
+    assert!(tool[0].content().is_none());
+    assert_eq!(tool[1].content().unwrap().content().as_str(), "done");
+}
+
+#[test]
 fn command_todo_and_unknown_events_keep_their_distinct_truth() {
     let cases = cases();
     let command = project(case(&cases, "command-lifecycle"), Version::new(0, 80, 0)).unwrap();

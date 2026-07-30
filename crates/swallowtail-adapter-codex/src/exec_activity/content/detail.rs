@@ -43,11 +43,7 @@ pub(super) fn mcp_tool(
     item: &Value,
     phase: ActivityLifecyclePhase,
 ) -> Result<Option<ActivityContentUpdate>, RuntimeFailure> {
-    let mut lines = vec![format!(
-        "{}.{}",
-        required_text(item, "server")?,
-        required_text(item, "tool")?
-    )];
+    let mut lines = Vec::new();
     if phase == ActivityLifecyclePhase::Completed {
         if let Some(contents) = item.pointer("/result/content").and_then(Value::as_array) {
             for entry in contents {

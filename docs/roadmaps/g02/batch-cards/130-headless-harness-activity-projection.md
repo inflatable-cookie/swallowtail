@@ -1,6 +1,6 @@
 # 130 Headless Harness Activity Projection
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-07-29
 Milestone: `../038-non-acp-harness-activity-coverage.md`
@@ -32,12 +32,12 @@ Code, and Qwen Code headless routes.
 
 ## Acceptance Criteria
 
-- [ ] tool-bearing records no longer become empty progress where qualified
-- [ ] completion-only sources remain explicitly thinner
-- [ ] provider-visible reasoning remains summary-only
-- [ ] structured and interactive projections remain separate roles
-- [ ] exact versions and unverified-newer posture remain unchanged
-- [ ] every child process and stream remains joined
+- [x] tool-bearing records no longer become empty progress where qualified
+- [x] completion-only sources remain explicitly thinner
+- [x] provider-visible reasoning remains summary-only
+- [x] structured and interactive projections remain separate roles
+- [x] exact versions and unverified-newer posture remain unchanged
+- [x] every child process and stream remains joined
 
 ## Validation
 
@@ -56,3 +56,25 @@ Code, and Qwen Code headless routes.
 
 Continue to card 131 after all selected headless mappings pass.
 
+## Completion Evidence
+
+- Qwen Code enables its qualified partial-message stream and projects exact
+  message, text, readable-thinking, and provider-tool lifecycle for structured
+  runs and private turn-scoped continuation. Raw partial tool input and result
+  bodies remain excluded.
+- Gemini CLI projects assistant deltas on one operation-local identity and
+  completion-only correlated tool-use and tool-result records. Parameters,
+  results, and provider error bodies remain excluded.
+- Claude Code preserves its qualified completion-only surface. End-turn
+  assistant display, provider-tool identity, and correlated result status are
+  visible without claiming partial messages or readable reasoning.
+- Kimi Code projects completion-only assistant and correlated provider-tool
+  records. Retry metadata and safe future records remain bounded namespaced
+  activity; resume hints remain session metadata.
+- Every prepared route publishes an exact observable-activity profile bound
+  to its qualified behavior revision. Permitted newer versions inherit the
+  last guarantee without widening it.
+- Complete Qwen, Gemini, Claude Agent, and Kimi adapter suites pass. Rust
+  check, lint, public-API, and formatting gates pass.
+- No executable, credential, account, model request, paid inference, or
+  consumer repository was used.

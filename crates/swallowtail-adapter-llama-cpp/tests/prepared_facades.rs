@@ -24,6 +24,7 @@ use swallowtail_runtime::{
     CleanupOutcome, Deadline, MonotonicInstant, OperationContent, PreparedAccessEvidence,
     RequestId, ScopeId, ServingInstanceId, TerminalStatus,
 };
+use swallowtail_testkit::assert_observable_activity_trace;
 
 const STARTUP_SUCCESS: &str =
     include_str!("fixtures/llama-cpp-b10069-owned/startup-success.stderr");
@@ -68,7 +69,14 @@ fn attached_facade_binds_catalogue_and_inference_without_stop_authority() {
         let mut run = block_on(attempt.start_run(services)).expect("run starts");
         let mut events = run.take_events().expect("events are available");
         let terminal = run.take_terminal_outcome().expect("terminal is available");
-        block_on(async { while events.next().await.is_some() {} });
+        let collected = block_on(async {
+            let mut collected = Vec::new();
+            while let Some(event) = events.next().await {
+                collected.push(event.expect("event succeeds"));
+            }
+            collected
+        });
+        assert_observable_activity_trace(attempt.evidence().observable_activity(), &collected);
         assert_eq!(block_on(terminal).status(), &TerminalStatus::Completed);
         assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
         assert!(fixture.server.is_reachable());

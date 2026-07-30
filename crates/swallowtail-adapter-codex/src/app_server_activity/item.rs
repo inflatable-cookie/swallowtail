@@ -3,7 +3,7 @@ use crate::turn_state::malformed_notification;
 use serde_json::Value;
 use swallowtail_core::ActivityDisclosure;
 use swallowtail_runtime::{
-    ActivityAssistantPhase, ActivityKind, ActivityLifecyclePhase, ActivityNamespace,
+    ActivityAssistantPhase, ActivityKind, ActivityLabel, ActivityLifecyclePhase, ActivityNamespace,
     ActivityStatus, RuntimeFailure,
 };
 
@@ -31,6 +31,7 @@ impl ItemIdentity {
 pub(super) struct ItemProjection {
     pub(super) identity: ItemIdentity,
     pub(super) status: ActivityStatus,
+    pub(super) label: Option<ActivityLabel>,
     pub(super) content: Option<swallowtail_runtime::ActivityContentUpdate>,
 }
 
@@ -122,9 +123,22 @@ pub(super) fn item_projection(
             None,
         ),
     };
+    let label = match item_type {
+        "mcpToolCall" => item
+            .get("server")
+            .and_then(Value::as_str)
+            .zip(item.get("tool").and_then(Value::as_str))
+            .and_then(|(server, tool)| ActivityLabel::new(format!("{server}.{tool}")).ok()),
+        "dynamicToolCall" => item
+            .get("tool")
+            .and_then(Value::as_str)
+            .and_then(|tool| ActivityLabel::new(tool).ok()),
+        _ => None,
+    };
     Ok(ItemProjection {
         identity,
         status,
+        label,
         content,
     })
 }

@@ -28,6 +28,21 @@ impl OpenCodePreparedEvidence {
         })
     }
 
+    pub(super) fn from_prepared_with_activity(
+        prepared: &OpenCodePreparedIntegration,
+        plan: PreflightPlan,
+        activity_profile: swallowtail_core::ObservableActivityProfile,
+    ) -> Result<Self, PreparationFailure> {
+        Ok(Self {
+            server: prepared.server().clone(),
+            operation: PreparedOperationEvidence::from_plan_with_activity_profile(
+                plan,
+                prepared.access_evidence().clone(),
+                activity_profile,
+            )?,
+        })
+    }
+
     #[must_use]
     pub const fn server(&self) -> &crate::OpenCodePreparedServerObservation {
         &self.server

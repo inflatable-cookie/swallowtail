@@ -85,6 +85,7 @@ impl StructuredRunDriver for AlibabaModelStudioDriver {
             let (terminal_sender, terminal) = terminal_outcome_channel();
             let pending = Arc::new(Mutex::new(Some((subscription, access))));
             let task_pending = Arc::clone(&pending);
+            let activity_run_id = run_id.clone();
             let task = services.task().expect("validated task").spawn(
                 scope,
                 Box::pin({
@@ -103,6 +104,7 @@ impl StructuredRunDriver for AlibabaModelStudioDriver {
                             events.clone(),
                             cancellation,
                             deadline,
+                            activity_run_id,
                         )
                         .await;
                         events.mark_terminal();
@@ -281,10 +283,14 @@ async fn pump_run(
     events: swallowtail_runtime::RuntimeEventSender,
     cancellation: Arc<RunCancellation>,
     mut deadline: Option<BoxFuture<'static, DeadlineObservation>>,
+    run_id: RuntimeRunId,
 ) -> TerminalOutcome {
     let mut provider = ResponseStream::default();
     let mut sequence = 1;
     let mut output = None;
+    let mut activity = crate::activity::AlibabaActivityProjection::new(
+        swallowtail_runtime::ActivityOperationId::Run(run_id),
+    );
     let status = loop {
         match next_signal(&mut subscription, &mut deadline).await {
             Signal::Deadline => {
@@ -334,7 +340,33 @@ async fn pump_run(
                         break TerminalStatus::RuntimeFailed(error.diagnostic().clone());
                     }
                 }
-                Ok(ProviderEvent::TextDelta(content)) => {
+                Ok(ProviderEvent::AssistantStarted(item)) => {
+                    if let Err(error) = emit(
+                        &events,
+                        &mut sequence,
+                        RuntimeEventKind::Activity(match activity.started(&item) {
+                            Ok(observation) => observation,
+                            Err(error) => {
+                                break TerminalStatus::RuntimeFailed(error.diagnostic().clone());
+                            }
+                        }),
+                    ) {
+                        break TerminalStatus::RuntimeFailed(error.diagnostic().clone());
+                    }
+                }
+                Ok(ProviderEvent::TextDelta { item, content }) => {
+                    if let Err(error) = emit(
+                        &events,
+                        &mut sequence,
+                        RuntimeEventKind::Activity(match activity.delta(&item, content.as_str()) {
+                            Ok(observation) => observation,
+                            Err(error) => {
+                                break TerminalStatus::RuntimeFailed(error.diagnostic().clone());
+                            }
+                        }),
+                    ) {
+                        break TerminalStatus::RuntimeFailed(error.diagnostic().clone());
+                    }
                     if let Err(error) = events.send(RuntimeEvent::with_content(
                         sequence,
                         RuntimeEventKind::OutputDelta,
@@ -344,12 +376,29 @@ async fn pump_run(
                     }
                     sequence += 1;
                 }
-                Ok(ProviderEvent::TextDone(_)) => {}
+                Ok(ProviderEvent::TextDone { .. }) => {}
                 Ok(ProviderEvent::Completed {
+                    item,
                     output: completed,
                     usage,
                     ..
                 }) => {
+                    if let Err(error) = emit(
+                        &events,
+                        &mut sequence,
+                        RuntimeEventKind::Activity(
+                            match activity.completed(&item, completed.as_str()) {
+                                Ok(observation) => observation,
+                                Err(error) => {
+                                    break TerminalStatus::RuntimeFailed(
+                                        error.diagnostic().clone(),
+                                    );
+                                }
+                            },
+                        ),
+                    ) {
+                        break TerminalStatus::RuntimeFailed(error.diagnostic().clone());
+                    }
                     if let Err(error) = events.send(RuntimeEvent::with_content(
                         sequence,
                         RuntimeEventKind::OutputAvailable,

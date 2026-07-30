@@ -41,6 +41,17 @@ impl StructuredRunDriver for LlamaCppAttachedDriver {
             )?;
             let (event_sender, event_stream) = runtime_event_channel(EVENT_CAPACITY)?;
             event_sender.send(RuntimeEvent::new(0, RuntimeEventKind::Started))?;
+            let run_id = RuntimeRunId::new(format!(
+                "{}:{}",
+                self.run_id_prefix,
+                request.request_id().as_str()
+            ))
+            .map_err(|_| {
+                failure(
+                    "swallowtail.llama_cpp.run_id_invalid",
+                    "llama.cpp runtime run id was invalid",
+                )
+            })?;
             let (terminal_sender, terminal_future) = terminal_outcome_channel();
             let cancellation = Arc::new(RunCancellation::new(Arc::clone(&cancelled)));
             let deadline = request.deadline().map(|deadline| {
@@ -51,6 +62,7 @@ impl StructuredRunDriver for LlamaCppAttachedDriver {
             });
             let pending = Arc::new(Mutex::new(Some(subscription)));
             let task_service = services.task().expect("validated task").clone();
+            let activity_run_id = run_id.clone();
             let task = task_service.spawn(
                 scope,
                 Box::pin({
@@ -62,9 +74,14 @@ impl StructuredRunDriver for LlamaCppAttachedDriver {
                             .expect("llama.cpp pending work lock poisoned")
                             .take()
                             .expect("llama.cpp pending work is available");
-                        let outcome =
-                            pump_run(subscription, event_sender.clone(), cancellation, deadline)
-                                .await;
+                        let outcome = pump_run(
+                            subscription,
+                            event_sender.clone(),
+                            cancellation,
+                            deadline,
+                            swallowtail_runtime::ActivityOperationId::Run(activity_run_id),
+                        )
+                        .await;
                         let _ = terminal_sender.complete(outcome);
                         event_sender.mark_terminal();
                     }
@@ -84,17 +101,6 @@ impl StructuredRunDriver for LlamaCppAttachedDriver {
                     return Err(error);
                 }
             };
-            let run_id = RuntimeRunId::new(format!(
-                "{}:{}",
-                self.run_id_prefix,
-                request.request_id().as_str()
-            ))
-            .map_err(|_| {
-                failure(
-                    "swallowtail.llama_cpp.run_id_invalid",
-                    "llama.cpp runtime run id was invalid",
-                )
-            })?;
             Ok(Box::new(LlamaCppRunHandle::new(
                 request.request_id().clone(),
                 run_id,

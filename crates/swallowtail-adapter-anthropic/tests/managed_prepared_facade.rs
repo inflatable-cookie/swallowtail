@@ -9,18 +9,18 @@ use swallowtail_adapter_anthropic::{
     ANTHROPIC_MANAGED_ACCESS_PROFILE_ID, ANTHROPIC_MANAGED_FACADE_REVISION,
     AnthropicManagedAgentRunInput, AnthropicManagedModelSelection,
     AnthropicManagedPreparationInput, anthropic_managed_agent_descriptor,
-    prepare_anthropic_managed_agent,
+    anthropic_managed_requirements, prepare_anthropic_managed_agent,
 };
 use swallowtail_core::{
-    AccessProfile, AccessProfileId, AccessRequirement, AccessStatus, Capability,
-    CapabilityConstraint, CapabilityProfile, CapabilityRequirement, ConfiguredInstance,
-    ConfiguredInstanceId, CredentialMechanism, CredentialState, DriverRole, EndpointAudience,
-    EndpointAuthorization, EntitlementMetering, EntitlementState, ExecutionHostId, ExecutionLayer,
-    InstanceOwnership, InstancePolicyId, InstanceRevision, InstanceTargetRef,
-    InterfaceCompatibilityAssessment, ModelId, ModelRoute, ModelRouteId, ModelRouteRevision,
-    OperationRequirements, OperationShape, OwnedRemoteResourceKind, PreflightContext,
-    ProtocolFacadeId, ProviderAgentBinding, ProviderAgentId, ProviderAgentVersion, ProviderId,
-    RuntimeReadiness, SupportAuthority, preflight,
+    AccessProfile, AccessProfileId, AccessRequirement, AccessStatus, CapabilityProfile,
+    CapabilityRequirement, ConfiguredInstance, ConfiguredInstanceId, CredentialMechanism,
+    CredentialState, DriverRole, EndpointAudience, EndpointAuthorization, EntitlementMetering,
+    EntitlementState, ExecutionHostId, ExecutionLayer, InstanceOwnership, InstancePolicyId,
+    InstanceRevision, InstanceTargetRef, InterfaceCompatibilityAssessment, ModelId, ModelRoute,
+    ModelRouteId, ModelRouteRevision, ObservableActivityAvailability, OperationRequirements,
+    OperationShape, OwnedRemoteResourceKind, PreflightContext, ProtocolFacadeId,
+    ProviderAgentBinding, ProviderAgentId, ProviderAgentVersion, ProviderId, RuntimeReadiness,
+    SupportAuthority, preflight,
 };
 use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{
@@ -93,6 +93,13 @@ fn prepared_managed_run_preserves_resources_recovery_and_cleanup_on_both_hosts()
             compatibility[0].assessment(),
             InterfaceCompatibilityAssessment::Qualified(_)
         ));
+        assert_eq!(
+            run.evidence()
+                .operation()
+                .observable_activity()
+                .availability(),
+            ObservableActivityAvailability::Available
+        );
 
         let (run, events, outcome) = complete_prepared(run.start_run(fixture.services()));
         assert_eq!(outcome.status(), &TerminalStatus::Completed);

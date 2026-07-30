@@ -243,8 +243,27 @@ partial-message, completion-only, unknown, malformed, and failure evidence.
 Prepared profiles bind partial and preview options as well as interface
 versions. OpenCode's exact `1.14.51` thinning and Kimi's two local-server
 schema segments remain visible; current newer releases remain permitted but
-unverified. The next batch maps Pi RPC, Kimi local server, OpenCode HTTP/SSE,
-and Managed Agents before the separate headless batch.
+unverified. Pi RPC, Kimi local server, OpenCode HTTP/SSE, and Managed Agents
+now project exact route-native activity through their prepared facades.
+Callbacks, recovery, reattachment, retention, server ownership, and cleanup
+remain separate. Claude Code, Gemini CLI, Kimi Code, and Qwen Code headless
+now add exact completion-only, delta, partial-message, reasoning-summary,
+provider-tool, retry, and namespaced-unknown fidelity where their selected
+machine-readable streams support it. Terminal prose remains excluded. The
+provider-wide harness inventory now machine-checks 13 canonical routes and 18
+ordinary prepared-operation profiles. Every run and session profile is
+available through public prepared evidence; catalogue and provider-session
+management boundaries remain explicitly not applicable where absent. Research
+067 now classifies all 13 non-harness production routes, 14 positive
+text-operation profiles, and 13 not-applicable catalogue, inventory,
+realtime, and serving operations. Kimi K3 client-visible thought updates are
+selected while DeepSeek and xAI private continuation remains excluded.
+Current upstream additions do not widen qualified routes. All 14 selected
+text-operation profiles now expose exact prepared activity and ordered runtime
+events across nine direct or attached routes. Assistant final output remains
+separate; provider and consumer tool ownership remains exact; no route claims
+harness work. Card 134 is the sole ready task and closes the realtime,
+catalogue, inventory, serving, and attached-runtime negative boundaries.
 Usage evidence has 19 `Yes`, one serving-only `Not applicable`, and two honest
 Kimi Code `No` cells. Each composite solution row records route ownership in
 its notes where sibling routes contribute different capabilities. The first

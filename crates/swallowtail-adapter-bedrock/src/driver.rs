@@ -140,6 +140,14 @@ impl StructuredRunDriver for BedrockDirectDriver {
                     as BlockingJob;
             let (events_sender, event_stream) = runtime_event_channel(EVENT_CAPACITY)?;
             events_sender.send(RuntimeEvent::new(0, RuntimeEventKind::Started))?;
+            let run_id =
+                RuntimeRunId::new(format!("bedrock-direct:{}", request.request_id().as_str()))
+                    .map_err(|_| {
+                        failure(
+                            "swallowtail.bedrock.run_id_invalid",
+                            "Bedrock Runtime run id was invalid",
+                        )
+                    })?;
             let (terminal_sender, terminal_future) = terminal_outcome_channel();
             let deadline = request
                 .deadline()
@@ -149,6 +157,7 @@ impl StructuredRunDriver for BedrockDirectDriver {
             let pending = Arc::new(Mutex::new(Some(PendingRun { access, job })));
             let task_pending = Arc::clone(&pending);
             let task_scope = scope.clone();
+            let activity_run_id = run_id.clone();
             let task = services.task().expect("validated").spawn(
                 scope,
                 Box::pin(async move {
@@ -166,10 +175,13 @@ impl StructuredRunDriver for BedrockDirectDriver {
                         update_receiver,
                         blocking,
                         &mut access,
-                        run_services,
-                        events_sender.clone(),
-                        run_cancellation,
-                        deadline,
+                        RunPumpContext {
+                            services: run_services,
+                            events: events_sender.clone(),
+                            cancellation: run_cancellation,
+                            deadline,
+                            run_id: activity_run_id,
+                        },
                     )
                     .await;
                     let _ = terminal_sender.complete(outcome);
@@ -190,14 +202,6 @@ impl StructuredRunDriver for BedrockDirectDriver {
                     return Err(error);
                 }
             };
-            let run_id =
-                RuntimeRunId::new(format!("bedrock-direct:{}", request.request_id().as_str()))
-                    .map_err(|_| {
-                        failure(
-                            "swallowtail.bedrock.run_id_invalid",
-                            "Bedrock Runtime run id was invalid",
-                        )
-                    })?;
             Ok(Box::new(BedrockRunHandle {
                 request_id: request.request_id().clone(),
                 run_id,

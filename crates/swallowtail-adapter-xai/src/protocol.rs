@@ -38,7 +38,13 @@ pub(crate) enum ProviderFailure {
 
 pub(crate) enum TurnUpdate {
     None,
-    Delta(String),
+    Started {
+        response_id: String,
+    },
+    Delta {
+        response_id: String,
+        content: String,
+    },
     Complete {
         continuation: String,
         output: String,
@@ -53,6 +59,7 @@ pub(crate) struct TurnState {
     response_id: Option<String>,
     output: String,
     text_done: Option<String>,
+    item_id: Option<String>,
     phase: Phase,
 }
 
@@ -93,7 +100,12 @@ impl TurnState {
         }
         self.response_id = Some(string(value, "/response/id")?.to_owned());
         self.phase = Phase::Created;
-        Ok(TurnUpdate::None)
+        Ok(TurnUpdate::Started {
+            response_id: self
+                .response_id
+                .clone()
+                .expect("created response identity exists"),
+        })
     }
 
     fn in_progress(&mut self, value: &Value) -> Result<TurnUpdate, RuntimeFailure> {
@@ -111,8 +123,16 @@ impl TurnState {
             return Err(order_failure());
         }
         let delta = string(value, "/delta")?.to_owned();
+        let item_id = string(value, "/item_id")?;
+        self.correlate_item(item_id)?;
         self.output.push_str(&delta);
-        Ok(TurnUpdate::Delta(delta))
+        Ok(TurnUpdate::Delta {
+            response_id: self
+                .response_id
+                .clone()
+                .expect("streaming response identity exists"),
+            content: delta,
+        })
     }
 
     fn text_done(&mut self, value: &Value) -> Result<TurnUpdate, RuntimeFailure> {
@@ -120,6 +140,7 @@ impl TurnState {
         if self.phase != Phase::Streaming || self.text_done.is_some() {
             return Err(order_failure());
         }
+        self.correlate_item(string(value, "/item_id")?)?;
         self.text_done = Some(string(value, "/text")?.to_owned());
         Ok(TurnUpdate::None)
     }
@@ -130,7 +151,8 @@ impl TurnState {
         if self.phase != Phase::Streaming {
             return Err(order_failure());
         }
-        let output = completed_output(value)?;
+        let (item_id, output) = completed_output(value)?;
+        self.correlate_item(&item_id)?;
         if self.text_done.as_deref() != Some(output.as_str()) || self.output != output {
             return Err(failure(
                 "swallowtail.xai.output_mismatch",
@@ -162,6 +184,20 @@ impl TurnState {
             ))
         }
     }
+
+    fn correlate_item(&mut self, item_id: &str) -> Result<(), RuntimeFailure> {
+        match self.item_id.as_deref() {
+            Some(active) if active == item_id => Ok(()),
+            Some(_) => Err(failure(
+                "swallowtail.xai.item_correlation_failed",
+                "xAI WebSocket text event did not match the active output item",
+            )),
+            None => {
+                self.item_id = Some(item_id.to_owned());
+                Ok(())
+            }
+        }
+    }
 }
 
 fn provider_failure(value: &Value) -> Result<TurnUpdate, RuntimeFailure> {
@@ -173,7 +209,7 @@ fn provider_failure(value: &Value) -> Result<TurnUpdate, RuntimeFailure> {
     Ok(TurnUpdate::ProviderFailed(failure))
 }
 
-fn completed_output(value: &Value) -> Result<String, RuntimeFailure> {
+fn completed_output(value: &Value) -> Result<(String, String), RuntimeFailure> {
     let output = value
         .pointer("/response/output")
         .and_then(Value::as_array)
@@ -191,7 +227,10 @@ fn completed_output(value: &Value) -> Result<String, RuntimeFailure> {
     if content.len() != 1 || string(&content[0], "/type")? != "output_text" {
         return Err(malformed());
     }
-    Ok(string(&content[0], "/text")?.to_owned())
+    Ok((
+        string(&output[0], "/id")?.to_owned(),
+        string(&content[0], "/text")?.to_owned(),
+    ))
 }
 
 fn string<'a>(value: &'a Value, pointer: &str) -> Result<&'a str, RuntimeFailure> {

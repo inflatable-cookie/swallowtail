@@ -1,6 +1,6 @@
 # 132 Direct Activity Applicability And Corpora
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-07-29
 Milestone: `../039-direct-inference-activity-truth.md`
@@ -33,12 +33,12 @@ catalogue, and serving production route before changing mappings.
 
 ## Acceptance Criteria
 
-- [ ] every production solution and operation is accounted for
-- [ ] supported, unavailable, and not applicable remain distinct
-- [ ] direct tool ownership is exact
-- [ ] private continuation is not display content
-- [ ] realtime-media lifecycle remains separate
-- [ ] every selected mapping has current authoritative evidence
+- [x] every production solution and operation is accounted for
+- [x] supported, unavailable, and not applicable remain distinct
+- [x] direct tool ownership is exact
+- [x] private continuation is not display content
+- [x] realtime-media lifecycle remains separate
+- [x] every selected mapping has current authoritative evidence
 
 ## Validation
 
@@ -57,3 +57,20 @@ catalogue, and serving production route before changing mappings.
 
 Continue to card 133 only for exact contract-ready text direct mappings.
 
+## Completion Evidence
+
+- Research 067 revalidates all 13 non-harness production routes against
+  current official or maintained evidence and their exact qualified subsets
+- the machine corpus records 14 positive text-operation profiles and 13
+  not-applicable catalogue, inventory, realtime, and serving operations
+- Anthropic provider web search remains distinct from consumer-executed
+  Anthropic and DeepSeek tools
+- Kimi K3 client-visible thought updates are selected; DeepSeek and xAI
+  private continuation remains excluded
+- current Alibaba, Anthropic, Ollama, llama.cpp, Gemini Live, and OpenAI
+  Realtime richness does not widen the qualified route automatically
+- existing positive, unavailable, unknown, malformed, and failure corpora are
+  referenced directly; Bedrock retains typed SDK fixtures
+- Contracts 026, 030, and 044 are sufficient; no contract delta is required
+- no credential, provider call, paid inference, model download, attached
+  runtime, executable, or consumer repository was used

@@ -391,6 +391,9 @@ async fn run_turn(
     cancellation: Arc<TurnCancellation>,
 ) -> TerminalOutcome {
     let mut sequence = 1;
+    let activity = crate::activity::AnthropicActivityProjection::new(
+        swallowtail_runtime::ActivityOperationId::Turn(work.request.turn_id().clone()),
+    );
     let mut deadline = context
         .services
         .time()
@@ -405,6 +408,7 @@ async fn run_turn(
         &mut sequence,
         &mut deadline,
         &cancellation,
+        &activity,
     )
     .await;
     let result = match result {
@@ -548,6 +552,7 @@ async fn run_turn(
                             &mut sequence,
                             &mut deadline,
                             &cancellation,
+                            &activity,
                         )
                         .await
                     }
@@ -644,6 +649,7 @@ async fn run_attempt(
     sequence: &mut u64,
     deadline: &mut BoxFuture<'static, swallowtail_runtime::DeadlineObservation>,
     cancellation: &TurnCancellation,
+    activity: &crate::activity::AnthropicActivityProjection,
 ) -> Result<AttemptOutcome, TurnFailure> {
     let mut subscription = context
         .transport
@@ -684,7 +690,7 @@ async fn run_attempt(
                 let event = parse_event(&frame)
                     .map_err(|error| TurnFailure::Provider(error, CleanupOutcome::Clean))?;
                 parser
-                    .apply(event, events, sequence)
+                    .apply(event, events, sequence, activity)
                     .map_err(|error| TurnFailure::Provider(error, CleanupOutcome::Clean))?;
             }
             StreamSignal::Item(Err(error)) => {
@@ -718,6 +724,8 @@ struct AttemptParser {
     attempt_id: swallowtail_runtime::DirectInferenceAttemptId,
     maximum_arguments: usize,
     started: bool,
+    message_id: Option<String>,
+    assistant_phase: Option<swallowtail_runtime::ActivityAssistantPhase>,
     active: Option<ContentBlock>,
     tool_id: Option<String>,
     tool_name: Option<String>,
@@ -736,6 +744,8 @@ impl AttemptParser {
             attempt_id,
             maximum_arguments,
             started: false,
+            message_id: None,
+            assistant_phase: None,
             active: None,
             tool_id: None,
             tool_name: None,
@@ -751,20 +761,62 @@ impl AttemptParser {
         event: Event,
         events: &RuntimeEventSender,
         sequence: &mut u64,
+        activity: &crate::activity::AnthropicActivityProjection,
     ) -> Result<(), RuntimeFailure> {
         match event {
             Event::Unknown => Ok(()),
             Event::Ping => emit(events, sequence, RuntimeEventKind::Keepalive),
-            Event::MessageStart(usage) if !self.started => {
+            Event::MessageStart { id, usage } if !self.started => {
                 self.started = true;
+                self.message_id = Some(id);
                 emit_attempt_usage(events, sequence, &self.attempt_id, usage)
             }
             Event::ContentStart(block) if self.started && self.active.is_none() => {
                 if let ContentBlock::ToolUse { id, name } = &block {
                     self.tool_id = Some(id.clone());
                     self.tool_name = Some(name.clone());
+                    self.assistant_phase =
+                        Some(swallowtail_runtime::ActivityAssistantPhase::Intermediate);
+                    let call_id = DirectToolCallId::new(id.clone()).map_err(|_| {
+                        failure(
+                            "swallowtail.anthropic.tool_call_invalid",
+                            "Anthropic tool call identity was invalid",
+                        )
+                    })?;
+                    emit(
+                        events,
+                        sequence,
+                        RuntimeEventKind::Activity(activity.assistant_started(
+                            crate::activity::attempt_assistant_id(&self.attempt_id)?,
+                            self.message_id.as_deref().expect("message identity exists"),
+                            swallowtail_runtime::ActivityAssistantPhase::Intermediate,
+                        )?),
+                    )?;
+                    emit(
+                        events,
+                        sequence,
+                        RuntimeEventKind::Activity(activity.consumer_tool(
+                            &call_id,
+                            swallowtail_runtime::ActivityLifecyclePhase::Started,
+                            swallowtail_runtime::ActivityStatus::Pending,
+                        )?),
+                    )?;
+                } else if block == ContentBlock::Text {
+                    self.assistant_phase = Some(swallowtail_runtime::ActivityAssistantPhase::Final);
+                    emit(
+                        events,
+                        sequence,
+                        RuntimeEventKind::Activity(activity.assistant_started(
+                            crate::activity::attempt_assistant_id(&self.attempt_id)?,
+                            self.message_id.as_deref().expect("message identity exists"),
+                            swallowtail_runtime::ActivityAssistantPhase::Final,
+                        )?),
+                    )?;
                 }
-                if matches!(block, ContentBlock::SearchUse | ContentBlock::SearchResult) {
+                if matches!(
+                    block,
+                    ContentBlock::SearchUse { .. } | ContentBlock::SearchResult { .. }
+                ) {
                     return Err(failure(
                         "swallowtail.anthropic.provider_tool_unexpected",
                         "Anthropic provider-owned search appeared in a consumer-tool session",
@@ -775,6 +827,16 @@ impl AttemptParser {
             }
             Event::OutputDelta(delta) if self.active == Some(ContentBlock::Text) => {
                 self.output.push_str(&delta);
+                emit(
+                    events,
+                    sequence,
+                    RuntimeEventKind::Activity(activity.assistant_delta(
+                        crate::activity::attempt_assistant_id(&self.attempt_id)?,
+                        self.message_id.as_deref().expect("message identity exists"),
+                        swallowtail_runtime::ActivityAssistantPhase::Final,
+                        &delta,
+                    )?),
+                )?;
                 emit_content(events, sequence, RuntimeEventKind::OutputDelta, delta)
             }
             Event::InputJsonDelta(delta)
@@ -787,9 +849,48 @@ impl AttemptParser {
                     ));
                 }
                 self.arguments.push_str(&delta);
+                let call_id =
+                    DirectToolCallId::new(self.tool_id.clone().expect("tool identity exists"))
+                        .map_err(|_| {
+                            failure(
+                                "swallowtail.anthropic.tool_call_invalid",
+                                "Anthropic tool call identity was invalid",
+                            )
+                        })?;
+                emit(
+                    events,
+                    sequence,
+                    RuntimeEventKind::Activity(activity.consumer_tool(
+                        &call_id,
+                        swallowtail_runtime::ActivityLifecyclePhase::Updated,
+                        swallowtail_runtime::ActivityStatus::InProgress,
+                    )?),
+                )?;
                 Ok(())
             }
-            Event::ContentStop if self.active.take().is_some() => Ok(()),
+            Event::ContentStop if self.active.is_some() => {
+                if matches!(self.active, Some(ContentBlock::ToolUse { .. })) {
+                    let call_id =
+                        DirectToolCallId::new(self.tool_id.clone().expect("tool identity exists"))
+                            .map_err(|_| {
+                                failure(
+                                    "swallowtail.anthropic.tool_call_invalid",
+                                    "Anthropic tool call identity was invalid",
+                                )
+                            })?;
+                    emit(
+                        events,
+                        sequence,
+                        RuntimeEventKind::Activity(activity.consumer_tool(
+                            &call_id,
+                            swallowtail_runtime::ActivityLifecyclePhase::Completed,
+                            swallowtail_runtime::ActivityStatus::Completed,
+                        )?),
+                    )?;
+                }
+                self.active.take();
+                Ok(())
+            }
             Event::Usage(usage, reason) if self.active.is_none() => {
                 self.stop_reason = Some(reason.clone());
                 emit_attempt_usage(events, sequence, &self.attempt_id, usage)?;
@@ -815,6 +916,32 @@ impl AttemptParser {
                 )
             }
             Event::MessageStop if self.stop_reason.is_some() => {
+                let phase = self.assistant_phase.ok_or_else(|| {
+                    failure(
+                        "swallowtail.anthropic.activity_invalid",
+                        "Anthropic message completed without a qualified assistant phase",
+                    )
+                })?;
+                let output = (phase == swallowtail_runtime::ActivityAssistantPhase::Final)
+                    .then_some(self.output.as_str());
+                emit(
+                    events,
+                    sequence,
+                    RuntimeEventKind::Activity(activity.assistant_completed(
+                        crate::activity::attempt_assistant_id(&self.attempt_id)?,
+                        self.message_id.as_deref().expect("message identity exists"),
+                        phase,
+                        output,
+                    )?),
+                )?;
+                if let Some(output) = output {
+                    emit_content(
+                        events,
+                        sequence,
+                        RuntimeEventKind::OutputAvailable,
+                        output.to_owned(),
+                    )?;
+                }
                 self.stopped = true;
                 Ok(())
             }

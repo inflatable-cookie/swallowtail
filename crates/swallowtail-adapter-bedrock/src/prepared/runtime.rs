@@ -12,8 +12,8 @@ use super::{failure, validate_execution_binding, validate_preparation};
 use crate::{BedrockCredentialProvider, BedrockDirectDriver, BedrockDriverBinding, BedrockRegion};
 use std::collections::BTreeSet;
 use swallowtail_core::{
-    AccessProfile, ConfiguredInstance, Diagnostic, ExecutionHostId, HostServiceKind,
-    InstanceTargetRef, PreflightContext, PreflightPlan, preflight,
+    AccessProfile, CapabilityRequirement, ConfiguredInstance, Diagnostic, ExecutionHostId,
+    HostServiceKind, InstanceTargetRef, PreflightContext, PreflightPlan, preflight,
 };
 use swallowtail_runtime::{
     BoxFuture, HostServices, OperationPolicy, PreparationFailure, PreparationStage,
@@ -112,21 +112,31 @@ impl BedrockRuntimePreparedIntegration {
             ));
         }
         let (route_id, route_revision, model_id, provider_id) = model.into_parts();
-        let route = crate::selection::runtime_model_route(
-            self.instance.id().clone(),
+        let activity = crate::activity::profile::activity_profile();
+        let capabilities = crate::activity::profile::with_activity(
+            self.instance.capabilities().clone(),
+            &activity,
+        );
+        let route = swallowtail_core::ModelRoute::new(
             route_id,
             route_revision,
+            self.instance.id().clone(),
             model_id,
-            provider_id,
-        );
+            capabilities.clone(),
+        )
+        .with_provider_id(provider_id);
         let requirements = crate::selection::runtime_requirements(
             self.instance.execution_host_id().clone(),
             self.access.id().clone(),
-        );
+        )
+        .with_capabilities(capabilities.iter().map(|(capability, constraints)| {
+            CapabilityRequirement::new(capability, constraints.iter().cloned())
+        }));
+        let instance = instance_with_capabilities(&self.instance, capabilities);
         let plan = preflight(
             &PreflightContext::new(
                 &crate::bedrock_direct_descriptor(),
-                &self.instance,
+                &instance,
                 &self.access,
                 self.evidence.status(),
                 self.available_host_services(),
@@ -142,11 +152,31 @@ impl BedrockRuntimePreparedIntegration {
             request = request.with_deadline(deadline);
         }
         Ok(BedrockPreparedInferenceAttempt {
-            evidence: BedrockRuntimePreparedEvidence::new(self, plan)?,
+            evidence: BedrockRuntimePreparedEvidence::new_with_activity(self, plan, activity)?,
             request,
             driver: self.low_level_driver(),
         })
     }
+}
+
+fn instance_with_capabilities(
+    base: &ConfiguredInstance,
+    capabilities: swallowtail_core::CapabilityProfile,
+) -> ConfiguredInstance {
+    ConfiguredInstance::new(
+        base.id().clone(),
+        base.revision().clone(),
+        base.driver_id().clone(),
+        base.execution_host_id().clone(),
+        base.target_reference().clone(),
+        base.ownership(),
+        base.access_profile_id().clone(),
+        base.support_authority(),
+        base.protocol_facade_id().clone(),
+        base.policy_id().clone(),
+        capabilities,
+    )
+    .with_interface_versions(base.interface_versions().cloned())
 }
 
 pub fn prepare_bedrock_runtime(

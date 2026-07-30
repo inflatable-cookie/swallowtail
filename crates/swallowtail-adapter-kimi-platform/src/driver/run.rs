@@ -54,6 +54,14 @@ impl StructuredRunDriver for KimiPlatformDirectDriver {
             };
             let (event_sender, event_stream) = runtime_event_channel(EVENT_CAPACITY)?;
             event_sender.send(RuntimeEvent::new(0, RuntimeEventKind::Started))?;
+            let run_id = RuntimeRunId::new(format!(
+                "kimi-platform-direct:{}",
+                request.request_id().as_str()
+            ))
+            .map_err(|_| failure(
+                "swallowtail.kimi_platform.run_id_invalid",
+                "Kimi Platform runtime run id was invalid",
+            ))?;
             let (terminal_sender, terminal_future) = terminal_outcome_channel();
             let cancellation = Arc::new(RunCancellation::new(Arc::clone(&cancelled)));
             let deadline = request
@@ -62,6 +70,7 @@ impl StructuredRunDriver for KimiPlatformDirectDriver {
             let task_service = services.task().expect("validated task").clone();
             let pending = Arc::new(Mutex::new(Some((subscription, access))));
             let run_services = services.clone();
+            let activity_run_id = run_id.clone();
             let task = task_service.spawn(
                 scope,
                 Box::pin({
@@ -80,6 +89,7 @@ impl StructuredRunDriver for KimiPlatformDirectDriver {
                             event_sender.clone(),
                             cancellation,
                             deadline,
+                            activity_run_id,
                         )
                         .await;
                         let _ = terminal_sender.complete(outcome);
@@ -102,14 +112,6 @@ impl StructuredRunDriver for KimiPlatformDirectDriver {
                     return Err(error);
                 }
             };
-            let run_id = RuntimeRunId::new(format!(
-                "kimi-platform-direct:{}",
-                request.request_id().as_str()
-            ))
-            .map_err(|_| failure(
-                "swallowtail.kimi_platform.run_id_invalid",
-                "Kimi Platform runtime run id was invalid",
-            ))?;
             Ok(Box::new(KimiPlatformRunHandle::new(
                 request.request_id().clone(),
                 run_id,

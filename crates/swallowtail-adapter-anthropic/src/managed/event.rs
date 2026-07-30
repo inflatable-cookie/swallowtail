@@ -18,11 +18,15 @@ pub(crate) enum ManagedEventKind {
     Running,
     Rescheduled,
     Message(OperationContent),
+    Thinking,
+    ProviderToolUse { tool_use_id: String, name: String },
+    ProviderToolResult { tool_use_id: String, failed: bool },
     CustomToolUse { name: String, input: Value },
     Idle(IdleReason),
     Terminated,
     ProviderError,
     Observed,
+    Unknown(String),
 }
 
 #[derive(Clone, Eq, PartialEq)]
@@ -149,6 +153,18 @@ fn parse_value(value: Value) -> Result<ManagedEvent, RuntimeFailure> {
         "session.status_terminated" => ManagedEventKind::Terminated,
         "session.error" => ManagedEventKind::ProviderError,
         "agent.message" => ManagedEventKind::Message(parse_message(&value)?),
+        "agent.thinking" => ManagedEventKind::Thinking,
+        "agent.tool_use" | "agent.mcp_tool_use" => ManagedEventKind::ProviderToolUse {
+            tool_use_id: text(&value, "/tool_use_id", "provider tool identity")?,
+            name: text(&value, "/name", "provider tool name")?,
+        },
+        "agent.tool_result" | "agent.mcp_tool_result" => ManagedEventKind::ProviderToolResult {
+            tool_use_id: text(&value, "/tool_use_id", "provider tool identity")?,
+            failed: value
+                .get("is_error")
+                .and_then(Value::as_bool)
+                .ok_or_else(|| protocol_failure("provider tool status"))?,
+        },
         "agent.custom_tool_use" => ManagedEventKind::CustomToolUse {
             name: text(&value, "/name", "custom tool name")?,
             input: value
@@ -156,12 +172,17 @@ fn parse_value(value: Value) -> Result<ManagedEvent, RuntimeFailure> {
                 .cloned()
                 .ok_or_else(|| protocol_failure("custom tool input"))?,
         },
-        "agent.thinking"
-        | "span.model_request_start"
+        "span.model_request_start"
         | "span.model_request_end"
         | "user.message"
         | "user.interrupt"
         | "user.custom_tool_result" => ManagedEventKind::Observed,
+        _ if event_type.starts_with("agent.")
+            || event_type.starts_with("session.")
+            || event_type.starts_with("span.") =>
+        {
+            ManagedEventKind::Unknown(event_type.clone())
+        }
         _ => return Err(protocol_failure("unsupported event type")),
     };
     Ok(ManagedEvent {

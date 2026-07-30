@@ -1,6 +1,6 @@
 # 131 Provider-Wide Harness Activity Closeout
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-07-29
 Milestone: `../038-non-acp-harness-activity-coverage.md`
@@ -29,12 +29,12 @@ Close observable-activity coverage across every production harness route.
 
 ## Acceptance Criteria
 
-- [ ] every production harness route has one exact profile
-- [ ] no profile relies on consumer provider parsing
-- [ ] no unknown semantic event silently disappears
-- [ ] version milestones and unverified-newer behavior are explicit
-- [ ] all harness packages and public APIs compile
-- [ ] exact gaps remain evidence-labelled
+- [x] every production harness route has one exact profile
+- [x] no profile relies on consumer provider parsing
+- [x] no unknown semantic event silently disappears
+- [x] version milestones and unverified-newer behavior are explicit
+- [x] all harness packages and public APIs compile
+- [x] exact gaps remain evidence-labelled
 
 ## Validation
 
@@ -55,3 +55,19 @@ Close observable-activity coverage across every production harness route.
 
 Continue to card 132 only after roadmap g02.038 closes.
 
+## Completion Evidence
+
+- the machine-checked inventory accounts for 13 canonical production harness
+  routes and 18 positive ordinary prepared-operation profiles
+- every structured-run and interactive-session profile is available through
+  public prepared evidence; there is no unexplained whole-profile gap
+- catalogue and provider-session-management operations retain exact
+  not-applicable classifications where the route does not expose those roles
+- provider-specific adapter tests assert the public prepared profile without
+  asking consumers to decode provider events
+- the public guide records exact route fidelity, thinness, and non-ordinary
+  operation boundaries
+- the complete workspace regression and required formatting, Rust, docs,
+  route, and public-API gates pass
+- no live credential, executable, account, model request, paid inference, or
+  consumer repository was used

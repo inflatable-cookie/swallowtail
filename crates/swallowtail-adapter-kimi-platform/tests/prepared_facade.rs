@@ -18,7 +18,8 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{CleanupOutcome, OperationContent, RequestId, TerminalStatus};
 use swallowtail_testkit::{
-    ExecutionTopologyFixture, assert_prepared_operation_evidence_matches_plan,
+    ExecutionTopologyFixture, assert_observable_activity_trace,
+    assert_prepared_operation_evidence_matches_plan,
 };
 
 #[test]
@@ -92,12 +93,14 @@ fn catalogue_and_exact_k3_attempt_remain_separate_on_both_host_topologies() {
             block_on(attempt.start_run(fixture.services())).expect("prepared attempt starts");
         let mut events = run.take_events().expect("events");
         let terminal = run.take_terminal_outcome().expect("terminal");
-        let outcome = block_on(async {
+        let (collected, outcome) = block_on(async {
+            let mut collected = Vec::new();
             while let Some(event) = events.next().await {
-                event.expect("event succeeds");
+                collected.push(event.expect("event succeeds"));
             }
-            terminal.await
+            (collected, terminal.await)
         });
+        assert_observable_activity_trace(attempt.evidence().observable_activity(), &collected);
         assert_eq!(outcome.status(), &TerminalStatus::Completed);
         assert_eq!(fixture.server.attempts(), 1);
         assert_eq!(fixture.releases(), 2);

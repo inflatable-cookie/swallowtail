@@ -173,6 +173,11 @@ pub struct KimiLocalServerPreparedSession {
 
 impl KimiLocalServerPreparedSession {
     #[must_use]
+    pub const fn evidence(&self) -> &swallowtail_runtime::PreparedOperationEvidence {
+        &self.evidence
+    }
+
+    #[must_use]
     pub const fn plan(&self) -> &swallowtail_core::PreflightPlan {
         self.evidence.plan()
     }

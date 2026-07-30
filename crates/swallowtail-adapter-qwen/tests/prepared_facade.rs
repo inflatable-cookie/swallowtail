@@ -15,7 +15,8 @@ use swallowtail_core::{
     CredentialState, EndpointAudience, EndpointAuthorization, EntitlementMetering,
     EntitlementState, ExecutionHostId, ExtensionNamespace, HarnessConfigurationPosture,
     HarnessIsolation, InstalledExecutableCompatibility, InstanceRevision, InterfaceVersionAxis,
-    ModelId, ModelRouteId, ModelRouteRevision, ProviderId, RuntimeReadiness, SupportAuthority,
+    ModelId, ModelRouteId, ModelRouteRevision, ObservableActivityAvailability, ProviderId,
+    RuntimeReadiness, SupportAuthority,
 };
 use swallowtail_runtime::{
     CleanupOutcome, Deadline, DiscoveryCancellation, EnvironmentRef, ExecutableRef,
@@ -74,6 +75,10 @@ fn prepared_runs_preserve_qwen_stdin_budgets_and_ambient_truth_in_both_topologie
         assert_prepared_operation_evidence_matches_plan(
             profile.evidence().operation(),
             profile.plan(),
+        );
+        assert_eq!(
+            profile.evidence().observable_activity().availability(),
+            ObservableActivityAvailability::Available
         );
 
         let (operation_process, operation_state) = FakeProcessService::completed(include_str!(
@@ -136,6 +141,10 @@ fn prepared_session_uses_only_the_exact_private_resume_id_on_later_turns() {
         ))
         .expect("Qwen session prepares");
     assert_prepared_operation_evidence_matches_plan(profile.evidence().operation(), profile.plan());
+    assert_eq!(
+        profile.evidence().observable_activity().availability(),
+        ObservableActivityAvailability::Available
+    );
 
     let (process, states) = ScriptedProcessService::completed(&[
         include_str!("fixtures/qwen-code-v0.19.11/interactive-first-turn.jsonl"),
@@ -291,6 +300,10 @@ fn prepared_catalogue_uses_qwen_control_protocol_and_joins_the_ephemeral_process
             .with_deadline(Deadline::at(MonotonicInstant::from_ticks(1_000))),
     )
     .expect("catalogue prepares");
+    assert_eq!(
+        catalogue.evidence().observable_activity().availability(),
+        ObservableActivityAvailability::NotApplicable
+    );
     let output = concat!(
         "{\"type\":\"control_response\",\"response\":{\"subtype\":\"success\",\"request_id\":\"swallowtail-initialize\",\"response\":{\"subtype\":\"initialize\",\"session_id\":\"fixture\",\"capabilities\":{\"can_get_available_models\":true}}}}\n",
         "{\"type\":\"control_response\",\"response\":{\"subtype\":\"success\",\"request_id\":\"swallowtail-models\",\"response\":{\"subtype\":\"get_available_models\",\"models\":[{\"id\":\"qwen-fixture\",\"label\":\"Qwen Fixture\",\"contextWindowSize\":131072}]}}}\n"

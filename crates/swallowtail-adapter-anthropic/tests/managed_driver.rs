@@ -6,18 +6,17 @@ use std::num::NonZeroU32;
 use std::sync::Arc;
 use support::{ManagedFixtureServer, ManagedStreamFixture, ThreadServices};
 use swallowtail_adapter_anthropic::{
-    AnthropicManagedAgentDriver, anthropic_managed_agent_descriptor,
+    AnthropicManagedAgentDriver, anthropic_managed_agent_descriptor, anthropic_managed_requirements,
 };
 use swallowtail_core::{
-    AccessProfile, AccessProfileId, AccessRequirement, AccessStatus, Capability,
-    CapabilityConstraint, CapabilityProfile, CapabilityRequirement, ConfiguredInstance,
-    ConfiguredInstanceId, CredentialMechanism, CredentialState, DriverRole, EndpointAudience,
-    EndpointAuthorization, EntitlementMetering, EntitlementState, ExecutionHostId, ExecutionLayer,
-    InstanceOwnership, InstancePolicyId, InstanceRevision, InstanceTargetRef, ModelId, ModelRoute,
-    ModelRouteId, ModelRouteRevision, OperationRequirements, OperationShape,
-    OwnedRemoteResourceKind, PreflightContext, ProtocolFacadeId, ProviderAgentBinding,
-    ProviderAgentId, ProviderAgentVersion, ProviderId, RuntimeReadiness, SupportAuthority,
-    preflight,
+    AccessProfile, AccessProfileId, AccessRequirement, AccessStatus, CapabilityProfile,
+    CapabilityRequirement, ConfiguredInstance, ConfiguredInstanceId, CredentialMechanism,
+    CredentialState, DriverRole, EndpointAudience, EndpointAuthorization, EntitlementMetering,
+    EntitlementState, ExecutionHostId, ExecutionLayer, InstanceOwnership, InstancePolicyId,
+    InstanceRevision, InstanceTargetRef, ModelId, ModelRoute, ModelRouteId, ModelRouteRevision,
+    OperationRequirements, OperationShape, OwnedRemoteResourceKind, PreflightContext,
+    ProtocolFacadeId, ProviderAgentBinding, ProviderAgentId, ProviderAgentVersion, ProviderId,
+    RuntimeReadiness, SupportAuthority, preflight,
 };
 use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{

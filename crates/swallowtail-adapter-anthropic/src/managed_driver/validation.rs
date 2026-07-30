@@ -27,6 +27,7 @@ fn validate_run(
         Capability::OwnedRemoteResourceDeletion,
         Capability::Interruption,
         Capability::StreamReattachment,
+        Capability::ObservableActivity,
     ];
     if required.into_iter().any(|capability| !requires(plan, capability))
         || plan
@@ -93,6 +94,9 @@ fn validate_constraints(plan: &PreflightPlan) -> Result<(), RuntimeFailure> {
     ];
     let interruption = CapabilityConstraint::CancellationScope(CancellationScope::StructuredRun);
     let reattachment = CapabilityConstraint::ReattachmentMaximumCount(1);
+    let activity = crate::managed_activity::profile::activity_profile()
+        .capability_requirement()
+        .expect("managed activity is available");
     let valid = plan.requirements().capabilities().all(|requirement| {
         let constraints: Vec<_> = requirement.constraints().collect();
         match requirement.capability() {
@@ -102,6 +106,9 @@ fn validate_constraints(plan: &PreflightPlan) -> Result<(), RuntimeFailure> {
             }
             Capability::Interruption => constraints == [&interruption],
             Capability::StreamReattachment => constraints == [&reattachment],
+            Capability::ObservableActivity => {
+                constraints == activity.constraints().collect::<Vec<_>>()
+            }
             _ => constraints.is_empty(),
         }
     });

@@ -3,6 +3,7 @@ mod plan;
 
 use super::KimiHeadlessPreparedIntegration;
 use super::instance::run_capabilities;
+use crate::headless_activity::profile::{activity_profile, with_activity};
 use plan::{build_plan, instance_with_capabilities, requirements};
 use swallowtail_core::{CapabilityRequirement, ModelRoute, PreflightPlan};
 use swallowtail_runtime::{
@@ -59,6 +60,7 @@ impl KimiHeadlessPreparedEvidence {
     fn from_prepared(
         prepared: &KimiHeadlessPreparedIntegration,
         plan: PreflightPlan,
+        activity_profile: swallowtail_core::ObservableActivityProfile,
     ) -> Result<Self, PreparationFailure> {
         Ok(Self {
             observation: prepared.observation().clone(),
@@ -68,9 +70,10 @@ impl KimiHeadlessPreparedEvidence {
                 .credential_reference()
                 .expect("prepared Kimi headless access has one credential")
                 .clone(),
-            operation: PreparedOperationEvidence::from_plan(
+            operation: PreparedOperationEvidence::from_plan_with_activity_profile(
                 plan,
                 prepared.access_evidence().clone(),
+                activity_profile,
             )?,
         })
     }
@@ -88,6 +91,11 @@ impl KimiHeadlessPreparedEvidence {
     #[must_use]
     pub const fn operation(&self) -> &PreparedOperationEvidence {
         &self.operation
+    }
+
+    #[must_use]
+    pub const fn observable_activity(&self) -> &swallowtail_core::ObservableActivityProfile {
+        self.operation.observable_activity()
     }
 
     #[must_use]
@@ -152,7 +160,8 @@ impl KimiHeadlessPreparedIntegration {
                 )),
             ));
         }
-        let capabilities = run_capabilities();
+        let activity = activity_profile(self)?;
+        let capabilities = with_activity(run_capabilities(), &activity);
         let instance = instance_with_capabilities(self, capabilities.clone());
         let (route_id, route_revision, model_id) = input.model.into_parts();
         let route = ModelRoute::new(
@@ -160,11 +169,11 @@ impl KimiHeadlessPreparedIntegration {
             route_revision,
             self.instance().id().clone(),
             model_id,
-            capabilities,
+            capabilities.clone(),
         );
         let requirements = requirements(
             self,
-            run_capabilities().iter().map(|(capability, constraints)| {
+            capabilities.iter().map(|(capability, constraints)| {
                 CapabilityRequirement::new(capability, constraints.iter().cloned())
             }),
         );
@@ -180,7 +189,7 @@ impl KimiHeadlessPreparedIntegration {
             .with_working_resource(input.working_resource)
             .with_deadline(input.deadline);
         Ok(KimiHeadlessPreparedRun {
-            evidence: KimiHeadlessPreparedEvidence::from_prepared(self, plan)?,
+            evidence: KimiHeadlessPreparedEvidence::from_prepared(self, plan, activity)?,
             request,
         })
     }

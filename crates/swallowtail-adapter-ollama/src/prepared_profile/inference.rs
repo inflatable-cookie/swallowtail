@@ -83,7 +83,17 @@ impl OllamaPreparedIntegration {
             reasoning.as_ref(),
             structured_output.as_ref(),
         );
-        let capabilities = CapabilityProfile::new(capability_requirements.clone());
+        let activity = crate::activity::profile::activity_profile(self);
+        let capabilities = crate::activity::profile::with_activity(
+            CapabilityProfile::new(capability_requirements),
+            &activity,
+        );
+        let capability_requirements = capabilities
+            .iter()
+            .map(|(capability, constraints)| {
+                CapabilityRequirement::new(capability, constraints.iter().cloned())
+            })
+            .collect::<Vec<_>>();
         let instance = instance_with_capabilities(self, capabilities.clone());
         let route = model_route(self, self.model_selection().clone(), capabilities);
         let requirements = requirements(
@@ -108,7 +118,7 @@ impl OllamaPreparedIntegration {
             request = request.with_deadline(deadline);
         }
         Ok(OllamaPreparedInferenceAttempt {
-            evidence: OllamaPreparedEvidence::from_prepared(self, plan)?,
+            evidence: OllamaPreparedEvidence::from_prepared_with_activity(self, plan, activity)?,
             request,
         })
     }

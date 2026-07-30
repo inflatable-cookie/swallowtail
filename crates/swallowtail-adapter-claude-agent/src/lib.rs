@@ -4,6 +4,7 @@
 
 mod acp_activity;
 mod claude_code;
+mod claude_code_activity;
 mod claude_code_command;
 mod claude_code_discovery;
 mod claude_code_events;

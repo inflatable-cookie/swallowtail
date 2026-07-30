@@ -1,7 +1,8 @@
 use super::input::XaiRunProfileInput;
-use super::plan::{XaiPreparedEvidence, build_plan, model_route};
+use super::plan::{XaiPreparedEvidence, build_plan, instance_with_capabilities, model_route};
 use crate::{XaiPreparedIntegration, XaiWebSocketDriver};
 use swallowtail_core::PreflightPlan;
+use swallowtail_core::{CapabilityProfile, CapabilityRequirement};
 use swallowtail_runtime::{
     BoxFuture, HostServices, OperationPolicy, PreparationFailure, RunHandle, RuntimeFailure,
     StructuredRunDriver, StructuredRunRequest,
@@ -57,17 +58,28 @@ impl XaiPreparedIntegration {
         input: XaiRunProfileInput,
     ) -> Result<XaiPreparedResponsesRun, PreparationFailure> {
         let (request_id, model, content, deadline) = input.into_parts();
-        let route = model_route(self, model);
-        let requirements =
+        let activity = crate::activity::profile::activity_profile();
+        let base_requirements =
             crate::xai_responses_run_requirements(self.instance().execution_host_id().clone());
-        let plan = build_plan(self, &route, &requirements)?;
+        let capabilities = crate::activity::profile::with_activity(
+            CapabilityProfile::new(base_requirements.capabilities().cloned()),
+            &activity,
+        );
+        let requirements = base_requirements.with_capabilities(capabilities.iter().map(
+            |(capability, constraints)| {
+                CapabilityRequirement::new(capability, constraints.iter().cloned())
+            },
+        ));
+        let instance = instance_with_capabilities(self, capabilities.clone());
+        let route = model_route(self, model, capabilities);
+        let plan = build_plan(self, &instance, &route, &requirements)?;
         let mut request =
             StructuredRunRequest::new(request_id, content, OperationPolicy::offline());
         if let Some(deadline) = deadline {
             request = request.with_deadline(deadline);
         }
         Ok(XaiPreparedResponsesRun {
-            evidence: XaiPreparedEvidence::from_prepared(self, plan)?,
+            evidence: XaiPreparedEvidence::from_prepared(self, plan, activity)?,
             request,
         })
     }

@@ -18,6 +18,7 @@ async fn pump_attachment(
     events: &swallowtail_runtime::RuntimeEventSender,
     sequence: &mut u64,
     run_id: &RuntimeRunId,
+    activity: &mut crate::managed_activity::ManagedActivityProjection,
     callbacks: &ManagedCallbackHub,
     live: &mut Vec<ManagedEvent>,
     processed: &mut BTreeSet<String>,
@@ -70,6 +71,7 @@ async fn pump_attachment(
                     live.push(event.clone());
                     match apply_event(
                         &event,
+                        activity,
                         events,
                         sequence,
                         run_id,

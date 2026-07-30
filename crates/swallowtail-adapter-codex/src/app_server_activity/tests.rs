@@ -88,6 +88,25 @@ fn malformed_items_fail_and_completed_items_are_authoritative() {
 }
 
 #[test]
+fn tool_labels_stay_separate_from_progress_and_result_payloads() {
+    let observations = project(case(&cases(), "mcp-tool")).expect("MCP case projects");
+    assert!(observations.iter().all(|observation| {
+        observation
+            .label()
+            .is_some_and(|label| label.as_str() == "fixture.read")
+    }));
+    assert!(observations[0].content().is_none());
+    assert_eq!(
+        observations[1].content().unwrap().content().as_str(),
+        "Reading"
+    );
+    assert_eq!(
+        observations[2].content().unwrap().content().as_str(),
+        "done"
+    );
+}
+
+#[test]
 fn callbacks_and_provider_requests_remain_separate_correlations() {
     let mut projection = projector();
     let callback = CallbackId::new("callback-1").unwrap();
@@ -119,6 +138,8 @@ fn callbacks_and_provider_requests_remain_separate_correlations() {
         tool[0].correlation(),
         Some(&ActivityCorrelation::Callback(callback))
     );
+    assert_eq!(tool[0].label().unwrap().as_str(), "fixture_tool");
+    assert!(tool[0].content().is_none());
 
     let resolved = serde_json::json!({"requestId": "request-1"});
     let resolution = projection

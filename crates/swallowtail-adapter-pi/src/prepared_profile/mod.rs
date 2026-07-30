@@ -1,3 +1,4 @@
+mod activity_profile;
 mod catalogue;
 mod input;
 mod plan;

@@ -5,8 +5,9 @@ use std::sync::Arc;
 use std::task::Poll;
 use swallowtail_core::SafeDiagnostic;
 use swallowtail_runtime::{
-    BoxFuture, CleanupOutcome, DeadlineObservation, ProcessHandle, ProcessOutputChunk,
-    ProcessOutputStream, RuntimeEventSender, RuntimeFailure, TerminalOutcome, TerminalStatus,
+    ActivityOperationId, BoxFuture, CleanupOutcome, DeadlineObservation, ProcessHandle,
+    ProcessOutputChunk, ProcessOutputStream, RuntimeEventSender, RuntimeFailure, TerminalOutcome,
+    TerminalStatus,
 };
 
 pub(crate) async fn pump(
@@ -14,8 +15,9 @@ pub(crate) async fn pump(
     events: RuntimeEventSender,
     cancellation: Arc<KimiHeadlessCancellation>,
     deadline: BoxFuture<'static, DeadlineObservation>,
+    operation_id: ActivityOperationId,
 ) -> TerminalOutcome {
-    let mut parser = KimiHeadlessEventParser::new();
+    let mut parser = KimiHeadlessEventParser::new(operation_id);
     let mut deadline = Some(deadline);
     loop {
         match next_output(process.as_ref(), cancellation.as_ref(), &mut deadline).await {

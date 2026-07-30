@@ -53,6 +53,7 @@ fn validate_run(
         Capability::Interruption,
         Capability::ReasoningSelection,
         Capability::StructuredOutput,
+        Capability::ObservableActivity,
     ];
     if plan
         .requirements()
@@ -95,6 +96,7 @@ fn validate_run(
                 );
                 constraints == [&dialect, &enforcement] || constraints == [&enforcement, &dialect]
             }),
+            Capability::ObservableActivity => true,
             _ => constraints.is_empty(),
         }
     }) {

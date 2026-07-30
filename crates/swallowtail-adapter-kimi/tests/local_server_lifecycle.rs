@@ -14,8 +14,8 @@ use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessStatus, Capability, ConfiguredInstanceId,
     CredentialMechanism, CredentialRef, CredentialState, EndpointAudience, EndpointAuthorization,
     EntitlementMetering, EntitlementState, ExecutionHostId, ExtensionNamespace, InstanceRevision,
-    InstanceTargetRef, ProviderSessionBindingOrigin, ProviderSessionEffectTruth, RuntimeReadiness,
-    SessionRef, SupportAuthority,
+    InstanceTargetRef, ObservableActivityAvailability, ProviderSessionBindingOrigin,
+    ProviderSessionEffectTruth, RuntimeReadiness, SessionRef, SupportAuthority,
 };
 use swallowtail_runtime::{
     AccessEvidenceSourceId, CleanupOutcome, Deadline, DiscoveryCancellation, HostServices,
@@ -127,6 +127,10 @@ fn attached_catalogue_lists_configured_aliases_without_session_or_refresh() {
                 "catalogue-request",
             )))
             .expect("catalogue prepares");
+        assert_eq!(
+            catalogue.evidence().observable_activity().availability(),
+            ObservableActivityAvailability::NotApplicable
+        );
         let models = block_on(catalogue.list_models(services)).expect("catalogue executes");
         assert_eq!(
             models

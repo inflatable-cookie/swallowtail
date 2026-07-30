@@ -13,7 +13,7 @@ use swallowtail_adapter_claude_agent::{
 };
 use swallowtail_core::{
     HarnessConfigurationPosture, HarnessIsolation, ModelId, ModelRouteId, ModelRouteRevision,
-    ReasoningMode,
+    ObservableActivityAvailability, ReasoningMode,
 };
 use swallowtail_runtime::{
     CancellationAcknowledgement, CleanupOutcome, Deadline, MonotonicInstant, OperationContent,
@@ -54,6 +54,10 @@ fn prepared_route_executes_exact_local_subscription_invocation_in_both_topologie
         assert_prepared_operation_evidence_matches_plan(
             profile.evidence().operation(),
             profile.plan(),
+        );
+        assert_eq!(
+            profile.evidence().observable_activity().availability(),
+            ObservableActivityAvailability::Available
         );
 
         let evidence = execute(
@@ -149,12 +153,11 @@ fn tool_progress_provider_failure_and_malformed_stream_remain_distinct() {
         ProcessExit::new(true, Some(0)),
     );
     assert_eq!(tools.outcome.status(), &TerminalStatus::Completed);
-    assert!(
-        tools
-            .events
-            .iter()
-            .any(|event| event.kind() == &RuntimeEventKind::Progress)
-    );
+    assert!(tools.events.iter().any(|event| matches!(
+        event.kind(),
+        RuntimeEventKind::Activity(activity)
+            if activity.kind() == &swallowtail_runtime::ActivityKind::ProviderOwnedTool
+    )));
     assert!(!format!("{:?}", tools.events).contains("private fixture file content"));
 
     let provider = execute(

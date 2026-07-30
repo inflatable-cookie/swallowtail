@@ -10,7 +10,9 @@ use swallowtail_runtime::{
     CleanupOutcome, OperationContent, RuntimeTurnId, SchemaDocument, StructuredOutputDescriptor,
     TerminalStatus, TurnRequest,
 };
-use swallowtail_testkit::assert_prepared_operation_evidence_matches_plan;
+use swallowtail_testkit::{
+    assert_observable_activity_trace, assert_prepared_operation_evidence_matches_plan,
+};
 
 #[test]
 fn prepared_inventory_and_inference_preserve_external_runtime_truth() {
@@ -81,12 +83,14 @@ fn prepared_inventory_and_inference_preserve_external_runtime_truth() {
             block_on(attempt.start_run(fixture.services())).expect("prepared inference starts");
         let mut events = run.take_events().expect("events exist");
         let terminal = run.take_terminal_outcome().expect("terminal exists");
-        let outcome = block_on(async {
+        let (collected, outcome) = block_on(async {
+            let mut collected = Vec::new();
             while let Some(event) = events.next().await {
-                event.expect("event succeeds");
+                collected.push(event.expect("event succeeds"));
             }
-            terminal.await
+            (collected, terminal.await)
         });
+        assert_observable_activity_trace(attempt.evidence().observable_activity(), &collected);
         assert_eq!(outcome.status(), &TerminalStatus::Completed);
         assert_eq!(fixture.server.inference_attempts(), 1);
         assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
@@ -110,6 +114,7 @@ fn prepared_session_replays_only_cleanly_committed_history() {
         .expect("session prepares");
     assert_prepared_operation_evidence_matches_plan(profile.evidence().operation(), profile.plan());
     let services = fixture.services();
+    let activity_profile = profile.evidence().observable_activity().clone();
     let mut session = block_on(profile.open_session(services.clone())).expect("session opens");
     assert!(session.provider_session_ref().is_none());
     assert!(session.resume_binding().is_none());
@@ -126,10 +131,18 @@ fn prepared_session_replays_only_cleanly_committed_history() {
             services.clone(),
         ))
         .expect("turn starts");
-        let outcome = block_on(
-            turn.take_terminal_outcome()
-                .expect("terminal outcome is available"),
-        );
+        let mut events = turn.take_events().expect("events are available");
+        let terminal = turn
+            .take_terminal_outcome()
+            .expect("terminal outcome is available");
+        let (collected, outcome) = block_on(async {
+            let mut collected = Vec::new();
+            while let Some(event) = events.next().await {
+                collected.push(event.expect("event succeeds"));
+            }
+            (collected, terminal.await)
+        });
+        assert_observable_activity_trace(&activity_profile, &collected);
         assert_eq!(outcome.status(), &TerminalStatus::Completed);
         assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
     }

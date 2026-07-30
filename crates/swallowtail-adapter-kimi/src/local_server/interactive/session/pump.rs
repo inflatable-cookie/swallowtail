@@ -5,6 +5,7 @@ use super::super::access::SecretMaterial;
 use super::super::callbacks::CallbackHub;
 use super::super::websocket::{Subscription, SubscriptionInput};
 use super::{CursorState, TurnCancellation};
+use crate::local_server::activity::KimiLocalActivityProjection;
 use crate::local_server::protocol::TurnEndReason;
 use crate::local_server::transport::CurlTransport;
 use std::future::poll_fn;
@@ -53,6 +54,7 @@ pub(super) async fn run(mut input: PumpInput) {
     let mut reasoning_len = 0usize;
     let mut provider_turn = None;
     let mut recovery = None;
+    let mut activity = KimiLocalActivityProjection::new(input.runtime_turn_id.clone());
     let mut provider_cancellation = None;
     let (status, operation_cleanup) = loop {
         match next_signal(
@@ -98,6 +100,7 @@ pub(super) async fn run(mut input: PumpInput) {
                     &mut reasoning_len,
                     &mut provider_turn,
                     &mut recovery,
+                    &mut activity,
                 )
                 .await;
                 match result {
@@ -133,6 +136,31 @@ pub(super) async fn run(mut input: PumpInput) {
             }
         }
     };
+    let activity_status = match &status {
+        TerminalStatus::Completed => swallowtail_runtime::ActivityStatus::Completed,
+        TerminalStatus::Cancelled | TerminalStatus::TimedOut => {
+            swallowtail_runtime::ActivityStatus::Cancelled
+        }
+        TerminalStatus::ProviderFailed(_)
+        | TerminalStatus::HostFailed(_)
+        | TerminalStatus::RuntimeFailed(_)
+        | TerminalStatus::ProviderRequestObserved(_) => swallowtail_runtime::ActivityStatus::Failed,
+    };
+    if let Ok(observations) = activity.complete(activity_status) {
+        for observation in observations {
+            if input
+                .events
+                .send(swallowtail_runtime::RuntimeEvent::new(
+                    sequence,
+                    swallowtail_runtime::RuntimeEventKind::Activity(observation),
+                ))
+                .is_err()
+            {
+                break;
+            }
+            sequence += 1;
+        }
+    }
     if let Some(callbacks) = &input.callbacks {
         callbacks.abandon(match status {
             TerminalStatus::Cancelled => CallbackAbandonment::TurnCancelled,

@@ -7,6 +7,7 @@ enum EventAction {
 #[allow(clippy::too_many_arguments)]
 fn apply_event(
     event: &ManagedEvent,
+    activity: &mut crate::managed_activity::ManagedActivityProjection,
     events: &swallowtail_runtime::RuntimeEventSender,
     sequence: &mut u64,
     run_id: &RuntimeRunId,
@@ -20,10 +21,21 @@ fn apply_event(
     if !processed.insert(event.id().to_owned()) {
         return Ok(EventAction::Continue);
     }
+    for observation in activity.project(event)? {
+        emit(
+            events,
+            sequence,
+            RuntimeEventKind::Activity(observation),
+        )?;
+    }
     match event.kind() {
         ManagedEventKind::Running
         | ManagedEventKind::Rescheduled
-        | ManagedEventKind::Observed => Ok(EventAction::Continue),
+        | ManagedEventKind::Thinking
+        | ManagedEventKind::ProviderToolUse { .. }
+        | ManagedEventKind::ProviderToolResult { .. }
+        | ManagedEventKind::Observed
+        | ManagedEventKind::Unknown(_) => Ok(EventAction::Continue),
         ManagedEventKind::Message(content) => {
             output.push_str(content.as_str());
             emit_content(

@@ -2,9 +2,11 @@
 //!
 #![forbid(unsafe_code)]
 
+mod activity;
 mod driver;
 mod failure;
 mod managed;
+mod managed_activity;
 mod managed_driver;
 mod managed_selection;
 mod managed_transport;
@@ -13,6 +15,7 @@ mod prepared_managed;
 mod prepared_managed_profile;
 mod prepared_profile;
 mod protocol;
+mod selection;
 mod transport;
 
 pub use driver::{AnthropicDirectDriver, anthropic_direct_descriptor};
@@ -40,4 +43,8 @@ pub use prepared_profile::{
     AnthropicPreparedCatalogue, AnthropicPreparedEvidence, AnthropicPreparedInferenceAttempt,
     AnthropicPreparedSession, AnthropicSessionProfileInput, AnthropicWebSearchInput,
     anthropic_messages_continuation_config,
+};
+pub use selection::{
+    ANTHROPIC_MESSAGES_FACADE_REVISION, anthropic_messages_facade_binding,
+    anthropic_messages_facade_claim,
 };

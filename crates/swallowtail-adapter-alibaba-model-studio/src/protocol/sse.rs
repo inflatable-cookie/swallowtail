@@ -9,11 +9,19 @@ include!("sse/decoder.rs");
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum ProviderEvent {
     Created(ResponseRef),
+    AssistantStarted(String),
     Progress(String),
-    TextDelta(OperationContent),
-    TextDone(OperationContent),
+    TextDelta {
+        item: String,
+        content: OperationContent,
+    },
+    TextDone {
+        item: String,
+        content: OperationContent,
+    },
     Completed {
         response: ResponseRef,
+        item: String,
         output: OperationContent,
         usage: TokenUsage,
     },
@@ -25,6 +33,7 @@ pub struct ResponseStream {
     response: Option<ResponseRef>,
     last_sequence: Option<u64>,
     output: String,
+    item: Option<String>,
     output_done: bool,
     terminal: bool,
 }
@@ -53,24 +62,32 @@ impl ResponseStream {
         let event = match frame.name() {
             "response.created" => self.created(&value)?,
             "response.in_progress"
-            | "response.output_item.added"
             | "response.content_part.added"
             | "response.content_part.done"
             | "response.output_item.done" => ProviderEvent::Progress(frame.name().to_owned()),
+            "response.output_item.added" => self.assistant_started(&value)?,
             "response.output_text.delta" => {
                 let delta = text(&value, "/delta")?;
+                let item = self.require_item(text(&value, "/item_id")?)?.to_owned();
                 self.output.push_str(delta);
-                ProviderEvent::TextDelta(content(delta)?)
+                ProviderEvent::TextDelta {
+                    item,
+                    content: content(delta)?,
+                }
             }
             "response.output_text.done" => {
                 let done = text(&value, "/text")?;
+                let item = self.require_item(text(&value, "/item_id")?)?.to_owned();
                 if done != self.output {
                     return Err(AlibabaProtocolFailure::invalid(
                         "completed output agreement",
                     ));
                 }
                 self.output_done = true;
-                ProviderEvent::TextDone(content(done)?)
+                ProviderEvent::TextDone {
+                    item,
+                    content: content(done)?,
+                }
             }
             "response.completed" => self.completed(&value)?,
             name if name.starts_with("response.reasoning_") => {
@@ -87,6 +104,31 @@ impl ResponseStream {
         };
         self.last_sequence = Some(sequence);
         Ok(event)
+    }
+
+    fn assistant_started(
+        &mut self,
+        value: &Value,
+    ) -> Result<ProviderEvent, AlibabaProtocolFailure> {
+        if self.item.is_some()
+            || text(value, "/item/type")? != "message"
+            || text(value, "/item/role")? != "assistant"
+            || text(value, "/item/status")? != "in_progress"
+        {
+            return Err(AlibabaProtocolFailure::invalid("assistant output item"));
+        }
+        let item = text(value, "/item/id")?.to_owned();
+        self.item = Some(item.clone());
+        Ok(ProviderEvent::AssistantStarted(item))
+    }
+
+    fn require_item<'a>(&'a self, item: &str) -> Result<&'a str, AlibabaProtocolFailure> {
+        match self.item.as_deref() {
+            Some(expected) if expected == item => Ok(expected),
+            _ => Err(AlibabaProtocolFailure::invalid(
+                "assistant output item correlation",
+            )),
+        }
     }
 
     fn created(&mut self, value: &Value) -> Result<ProviderEvent, AlibabaProtocolFailure> {
@@ -106,7 +148,9 @@ impl ResponseStream {
             return Err(AlibabaProtocolFailure::invalid("response completion"));
         }
         let response_id = text(value, "/response/id")?;
+        let item = text(value, "/response/output/0/id")?;
         if self.response.as_ref().map(ResponseRef::as_str) != Some(response_id)
+            || self.require_item(item).is_err()
             || text(value, "/response/model")? != EXACT_MODEL_ID
             || text(value, "/response/output/0/type")? != "message"
             || text(value, "/response/output/0/content/0/type")? != "output_text"
@@ -145,6 +189,7 @@ impl ResponseStream {
         self.terminal = true;
         Ok(ProviderEvent::Completed {
             response,
+            item: item.to_owned(),
             output: content(&self.output)?,
             usage,
         })

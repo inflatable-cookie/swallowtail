@@ -18,6 +18,7 @@ pub const WORKSPACE_ENDPOINT_TEMPLATE: &str =
 pub const ENDPOINT_AUDIENCE: &str = "model-studio.workspace.ap-southeast-1";
 pub const EXACT_MODEL_ID: &str = "qwen3.7-plus-2026-05-26";
 pub const ACCESS_PROFILE_ID: &str = "alibaba-model-studio.sg.workspace.api-key.payg";
+pub const FACADE_REVISION: &str = "model-studio-2026-07-22";
 
 const DRIVER_ID: &str = "swallowtail.alibaba-model-studio.conversations-responses";
 pub const CONFIGURED_INSTANCE_ID: &str = "alibaba-model-studio.sg.workspace-dedicated";
@@ -33,6 +34,7 @@ pub fn alibaba_model_studio_descriptor() -> DriverDescriptor {
         id(IntegrationFamilyId::new, "alibaba-model-studio"),
         id(TransportFamilyId::new, "https-sse"),
     )
+    .with_interface_compatibility(alibaba_model_studio_facade_claim())
     .with_roles([DriverRole::InteractiveSession, DriverRole::StructuredRun])
     .with_execution_layers([ExecutionLayer::DirectModelInference])
     .with_operation_shapes([
@@ -72,10 +74,44 @@ pub fn alibaba_model_studio_instance(host_id: ExecutionHostId) -> ConfiguredInst
         InstanceOwnership::ExternalAttached,
         id(AccessProfileId::new, ACCESS_PROFILE_ID),
         SupportAuthority::ProviderSupported,
-        id(ProtocolFacadeId::new, "openai-conversations-responses"),
+        id(ProtocolFacadeId::new, FACADE_REVISION),
         id(InstancePolicyId::new, "alibaba-model-studio.sg.exact-route"),
         CapabilityProfile::new(all_capabilities()),
     )
+    .with_interface_versions([alibaba_model_studio_facade_binding()])
+}
+
+#[must_use]
+pub fn alibaba_model_studio_facade_binding() -> swallowtail_core::InterfaceVersionBinding {
+    swallowtail_core::InterfaceVersionBinding::new(
+        swallowtail_core::InterfaceVersionAxis::new("alibaba-model-studio.responses-facade")
+            .expect("static Alibaba interface axis is valid"),
+        swallowtail_core::InterfaceVersion::new(FACADE_REVISION)
+            .expect("static Alibaba facade revision is valid"),
+    )
+}
+
+#[must_use]
+pub fn alibaba_model_studio_facade_claim() -> swallowtail_core::InterfaceCompatibilityClaim {
+    swallowtail_core::InterfaceCompatibilityClaim::new(
+        swallowtail_core::InterfaceCompatibilityClaimId::new(
+            "alibaba-model-studio-responses-window-1",
+        )
+        .expect("static Alibaba compatibility claim is valid"),
+        swallowtail_core::InterfaceVersionAxis::new("alibaba-model-studio.responses-facade")
+            .expect("static Alibaba interface axis is valid"),
+        swallowtail_core::InterfaceVersionScheme::Opaque,
+        swallowtail_core::InterfaceNewerVersionPosture::QualifiedOnly,
+        [swallowtail_core::InterfaceVersionSegment::exact(
+            swallowtail_core::InterfaceVersion::new(FACADE_REVISION)
+                .expect("static Alibaba facade revision is valid"),
+            swallowtail_core::InterfaceBehaviorRevision::new("alibaba-responses-text-v1")
+                .expect("static Alibaba behavior revision is valid"),
+            swallowtail_core::InterfaceSupportStatus::Maintained,
+        )],
+        [],
+    )
+    .expect("static Alibaba compatibility claim is valid")
 }
 
 #[must_use]

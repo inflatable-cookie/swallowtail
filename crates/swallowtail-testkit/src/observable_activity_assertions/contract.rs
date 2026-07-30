@@ -11,6 +11,7 @@ use swallowtail_runtime::{
 
 pub(super) fn assert_details() {
     assert_lifecycle_fidelity_is_exact();
+    assert_labels_refine_without_becoming_identity();
     assert_available_profile_does_not_require_occurrence();
     assert_unknown_activity_is_semantic_or_rejected();
     assert_output_and_final_assistant_are_distinct();
@@ -18,6 +19,23 @@ pub(super) fn assert_details() {
     evidence::assert_unverified_newer_profile_is_not_widened();
     evidence::assert_bounds_and_redaction();
     assert_ordering_failures();
+}
+
+fn assert_labels_refine_without_becoming_identity() {
+    let fixture = ObservableActivityTraceFixture::for_case(
+        ObservableActivityFixtureCase::UpdateAndCompletion,
+    );
+    let labels = fixture
+        .events()
+        .iter()
+        .filter_map(|event| match event.kind() {
+            RuntimeEventKind::Activity(activity) => activity.label().map(|label| label.as_str()),
+            _ => None,
+        })
+        .collect::<Vec<_>>();
+    assert_eq!(labels, ["Inspect", "Inspect portable contract"]);
+    trace::validate(fixture.profile(), fixture.events())
+        .expect("label refinement is not an activity identity conflict");
 }
 
 fn assert_available_profile_does_not_require_occurrence() {

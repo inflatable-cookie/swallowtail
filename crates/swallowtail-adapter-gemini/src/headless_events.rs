@@ -1,4 +1,5 @@
 use crate::failure::failure;
+use crate::headless_activity::GeminiHeadlessActivityProjection;
 #[path = "headless_events/terminal.rs"]
 mod terminal;
 #[path = "headless_events/usage.rs"]
@@ -6,7 +7,8 @@ mod usage;
 use serde_json::Value;
 use swallowtail_core::{ModelId, SafeDiagnostic};
 use swallowtail_runtime::{
-    OperationContent, ProviderObservation, RuntimeEvent, RuntimeEventKind, RuntimeFailure,
+    ActivityObservation, ActivityOperationId, ActivityStatus, OperationContent,
+    ProviderObservation, RuntimeEvent, RuntimeEventKind, RuntimeFailure,
 };
 use terminal::ParsedTerminal;
 use usage::token_usage;
@@ -26,10 +28,15 @@ pub(crate) struct GeminiHeadlessEventParser {
     provider_failure: Option<SafeDiagnostic>,
     init_seen: bool,
     terminal_seen: bool,
+    activity: GeminiHeadlessActivityProjection,
 }
 
 impl GeminiHeadlessEventParser {
-    pub(crate) fn new(model: ModelId, session_id: String) -> Self {
+    pub(crate) fn new(
+        model: ModelId,
+        session_id: String,
+        operation_id: ActivityOperationId,
+    ) -> Self {
         Self {
             model,
             session_id,
@@ -41,6 +48,7 @@ impl GeminiHeadlessEventParser {
             provider_failure: None,
             init_seen: false,
             terminal_seen: false,
+            activity: GeminiHeadlessActivityProjection::new(operation_id),
         }
     }
 
@@ -100,7 +108,11 @@ impl GeminiHeadlessEventParser {
             "tool_result" => self.parse_tool_result(&payload),
             "error" => self.parse_error(&payload),
             "result" => self.parse_result(&payload),
-            _ => Ok(vec![self.event(RuntimeEventKind::Progress)]),
+            _ => {
+                self.require_init()?;
+                let activity = self.activity.unknown(event_type)?;
+                Ok(self.activity_events(activity))
+            }
         }
     }
 
@@ -133,27 +145,36 @@ impl GeminiHeadlessEventParser {
             return Err(malformed_stream());
         }
         if role == "user" || content.is_empty() {
-            return Ok(vec![self.event(RuntimeEventKind::Progress)]);
+            return Ok(Vec::new());
         }
         if self.output.len().saturating_add(content.len()) > MAXIMUM_OUTPUT_BYTES {
             return Err(stream_limit());
         }
         self.output.push_str(content);
         let content = OperationContent::new(content).map_err(|_| malformed_stream())?;
-        Ok(vec![
-            self.event_with(RuntimeEventKind::OutputDelta, content),
-        ])
+        let activity = self.activity.assistant_delta(content.as_str())?;
+        let mut events = vec![self.event_with(RuntimeEventKind::OutputDelta, content)];
+        events.extend(self.activity_events(activity));
+        Ok(events)
     }
 
     fn parse_tool_use(&mut self, payload: &Value) -> Result<Vec<RuntimeEvent>, RuntimeFailure> {
         self.require_init()?;
-        if !non_empty_string(payload, "tool_name")
-            || !non_empty_string(payload, "tool_id")
-            || !payload.get("parameters").is_some_and(Value::is_object)
-        {
+        let name = payload
+            .get("tool_name")
+            .and_then(Value::as_str)
+            .filter(|value| !value.is_empty())
+            .ok_or_else(malformed_stream)?;
+        let tool_id = payload
+            .get("tool_id")
+            .and_then(Value::as_str)
+            .filter(|value| !value.is_empty())
+            .ok_or_else(malformed_stream)?;
+        if !payload.get("parameters").is_some_and(Value::is_object) {
             return Err(malformed_stream());
         }
-        Ok(vec![self.event(RuntimeEventKind::Progress)])
+        let activity = self.activity.tool_use(tool_id, name)?;
+        Ok(self.activity_events(activity))
     }
 
     fn parse_tool_result(&mut self, payload: &Value) -> Result<Vec<RuntimeEvent>, RuntimeFailure> {
@@ -162,10 +183,16 @@ impl GeminiHeadlessEventParser {
             .get("status")
             .and_then(Value::as_str)
             .ok_or_else(malformed_stream)?;
-        if !non_empty_string(payload, "tool_id") || !matches!(status, "success" | "error") {
+        let tool_id = payload
+            .get("tool_id")
+            .and_then(Value::as_str)
+            .filter(|value| !value.is_empty())
+            .ok_or_else(malformed_stream)?;
+        if !matches!(status, "success" | "error") {
             return Err(malformed_stream());
         }
-        Ok(vec![self.event(RuntimeEventKind::Progress)])
+        let activity = self.activity.tool_result(tool_id, status == "error")?;
+        Ok(self.activity_events(activity))
     }
 
     fn parse_error(&mut self, payload: &Value) -> Result<Vec<RuntimeEvent>, RuntimeFailure> {
@@ -177,7 +204,8 @@ impl GeminiHeadlessEventParser {
         if !matches!(severity, "warning" | "error") || !non_empty_string(payload, "message") {
             return Err(malformed_stream());
         }
-        Ok(vec![self.event(RuntimeEventKind::Progress)])
+        let activity = self.activity.warning()?;
+        Ok(self.activity_events(activity))
     }
 
     fn parse_result(&mut self, payload: &Value) -> Result<Vec<RuntimeEvent>, RuntimeFailure> {
@@ -200,8 +228,13 @@ impl GeminiHeadlessEventParser {
                 "Gemini headless reported a provider execution failure",
             ));
         }
+        let activity = self.activity.complete(if status == "error" {
+            ActivityStatus::Failed
+        } else {
+            ActivityStatus::Completed
+        })?;
         self.terminal_seen = true;
-        let mut events = Vec::new();
+        let mut events = self.activity_events(activity);
         if !self.output.is_empty() {
             let output = OperationContent::new(std::mem::take(&mut self.output))
                 .map_err(|_| malformed_stream())?;
@@ -232,6 +265,16 @@ impl GeminiHeadlessEventParser {
         let sequence = self.sequence;
         self.sequence += 1;
         RuntimeEvent::with_content(sequence, kind, content)
+    }
+
+    fn activity_events(
+        &mut self,
+        observations: impl IntoIterator<Item = ActivityObservation>,
+    ) -> Vec<RuntimeEvent> {
+        observations
+            .into_iter()
+            .map(|observation| self.event(RuntimeEventKind::Activity(observation)))
+            .collect()
     }
 }
 

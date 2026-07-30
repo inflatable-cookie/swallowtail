@@ -18,4 +18,5 @@ pub(super) fn configured_instance(
         base.policy_id().clone(),
         base.capabilities().clone(),
     )
+    .with_interface_versions(base.interface_versions().cloned())
 }

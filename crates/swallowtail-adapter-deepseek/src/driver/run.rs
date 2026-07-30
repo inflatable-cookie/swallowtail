@@ -85,6 +85,7 @@ impl StructuredRunDriver for DeepSeekDirectDriver {
             let (terminal_sender, terminal) = terminal_outcome_channel();
             let pending = Arc::new(Mutex::new(Some((subscription, access))));
             let task_pending = Arc::clone(&pending);
+            let activity_run_id = run_id.clone();
             let task = services.task().expect("validated task").spawn(
                 scope,
                 Box::pin({
@@ -103,6 +104,7 @@ impl StructuredRunDriver for DeepSeekDirectDriver {
                             events.clone(),
                             cancellation,
                             deadline,
+                            swallowtail_runtime::ActivityOperationId::Run(activity_run_id),
                         )
                         .await;
                         events.mark_terminal();
@@ -306,10 +308,12 @@ async fn pump_run(
     events: swallowtail_runtime::RuntimeEventSender,
     cancellation: Arc<RunCancellation>,
     mut deadline: Option<BoxFuture<'static, DeadlineObservation>>,
+    activity_operation_id: swallowtail_runtime::ActivityOperationId,
 ) -> TerminalOutcome {
     let mut parser = FinalStreamParser::new(&deepseek_v4_config());
     let mut sequence = 1;
     let mut output = None;
+    let activity = crate::activity::DeepSeekActivityProjection::new(activity_operation_id);
     let status = 'pump: loop {
         match next_signal(&mut subscription, &mut deadline).await {
             Signal::Deadline => {
@@ -330,6 +334,19 @@ async fn pump_run(
                             ));
                         }
                     };
+                    let completed = match activity.assistant_completed(content.as_str()) {
+                        Ok(completed) => completed,
+                        Err(error) => {
+                            break TerminalStatus::RuntimeFailed(error.diagnostic().clone());
+                        }
+                    };
+                    if let Err(error) = events.send(RuntimeEvent::new(
+                        sequence,
+                        RuntimeEventKind::Activity(completed),
+                    )) {
+                        break TerminalStatus::RuntimeFailed(error.diagnostic().clone());
+                    }
+                    sequence += 1;
                     if let Err(error) = events.send(RuntimeEvent::with_content(
                         sequence,
                         RuntimeEventKind::OutputAvailable,
@@ -358,7 +375,9 @@ async fn pump_run(
                     Err(error) => break TerminalStatus::ProviderFailed(error.diagnostic().clone()),
                     Ok(updates) => {
                         for update in updates {
-                            if let Err(error) = emit_update(&events, &mut sequence, update) {
+                            if let Err(error) =
+                                emit_update(&events, &mut sequence, &activity, update)
+                            {
                                 break 'pump TerminalStatus::RuntimeFailed(
                                     error.diagnostic().clone(),
                                 );
@@ -405,6 +424,7 @@ fn emit_request(
 fn emit_update(
     events: &swallowtail_runtime::RuntimeEventSender,
     sequence: &mut u64,
+    activity: &crate::activity::DeepSeekActivityProjection,
     update: FinalStreamUpdate,
 ) -> Result<(), RuntimeFailure> {
     match update {
@@ -415,6 +435,11 @@ fn emit_update(
                     "DeepSeek emitted invalid output content",
                 )
             })?;
+            events.send(RuntimeEvent::new(
+                *sequence,
+                RuntimeEventKind::Activity(activity.assistant_delta(content.as_str())?),
+            ))?;
+            *sequence += 1;
             events.send(RuntimeEvent::with_content(
                 *sequence,
                 RuntimeEventKind::OutputDelta,

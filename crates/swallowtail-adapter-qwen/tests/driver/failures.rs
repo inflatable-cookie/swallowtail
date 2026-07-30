@@ -7,11 +7,11 @@ fn unknown_events_are_observed_without_exposing_provider_payloads() {
 
     assert_eq!(terminal.status(), &TerminalStatus::Completed);
     assert_eq!(cleanup, CleanupOutcome::Clean);
-    assert!(
-        events
-            .iter()
-            .any(|event| event.kind() == &RuntimeEventKind::Progress)
-    );
+    assert!(events.iter().any(|event| matches!(
+        event.kind(),
+        RuntimeEventKind::Activity(activity)
+            if matches!(activity.kind(), swallowtail_runtime::ActivityKind::Unknown(_))
+    )));
     let public = format!("{events:?}{terminal:?}");
     assert!(!public.contains("fixture-provider-secret-never-diagnose"));
     assert!(!public.contains("fixture-private-prompt"));

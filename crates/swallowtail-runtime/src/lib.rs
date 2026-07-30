@@ -57,8 +57,8 @@ mod working_resource_io;
 pub use activity::{
     ActivityAssistantPhase, ActivityContent, ActivityContentChangeKind, ActivityContentStream,
     ActivityContentUpdate, ActivityCorrelation, ActivityDisclosure, ActivityId, ActivityKind,
-    ActivityLifecyclePhase, ActivityNamespace, ActivityObservation, ActivityOperationId,
-    ActivityStatus, InvalidActivityRecord,
+    ActivityLabel, ActivityLifecyclePhase, ActivityNamespace, ActivityObservation,
+    ActivityOperationId, ActivityStatus, InvalidActivityRecord,
 };
 pub use async_types::{
     BoxCallbackStream, BoxDirectToolCallStream, BoxEventStream, BoxFuture,

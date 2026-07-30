@@ -16,10 +16,14 @@ pub(super) async fn pump_turn(
     events: swallowtail_runtime::RuntimeEventSender,
     cancellation: Arc<TurnCancellation>,
     mut deadline: Option<BoxFuture<'static, DeadlineObservation>>,
+    turn_id: swallowtail_runtime::RuntimeTurnId,
 ) -> TerminalOutcome {
     let mut provider = ResponseStream::default();
     let mut sequence = 1;
     let mut completed_output = None;
+    let mut activity = crate::activity::AlibabaActivityProjection::new(
+        swallowtail_runtime::ActivityOperationId::Turn(turn_id),
+    );
     loop {
         match next_signal(&mut subscription, &mut deadline).await {
             Signal::Deadline => {
@@ -94,7 +98,41 @@ pub(super) async fn pump_turn(
                         return runtime_failure(error.diagnostic().clone());
                     }
                 }
-                Ok(ProviderEvent::TextDelta(content)) => {
+                Ok(ProviderEvent::AssistantStarted(item)) => {
+                    if let Err(error) = emit(
+                        &events,
+                        &mut sequence,
+                        RuntimeEventKind::Activity(match activity.started(&item) {
+                            Ok(observation) => observation,
+                            Err(error) => {
+                                cancellation.fail_remote_uncertain();
+                                let _ = subscription.close().await;
+                                return runtime_failure(error.diagnostic().clone());
+                            }
+                        }),
+                    ) {
+                        cancellation.fail_remote_uncertain();
+                        let _ = subscription.close().await;
+                        return runtime_failure(error.diagnostic().clone());
+                    }
+                }
+                Ok(ProviderEvent::TextDelta { item, content }) => {
+                    if let Err(error) = emit(
+                        &events,
+                        &mut sequence,
+                        RuntimeEventKind::Activity(match activity.delta(&item, content.as_str()) {
+                            Ok(observation) => observation,
+                            Err(error) => {
+                                cancellation.fail_remote_uncertain();
+                                let _ = subscription.close().await;
+                                return runtime_failure(error.diagnostic().clone());
+                            }
+                        }),
+                    ) {
+                        cancellation.fail_remote_uncertain();
+                        let _ = subscription.close().await;
+                        return runtime_failure(error.diagnostic().clone());
+                    }
                     if let Err(error) = emit_content(
                         &events,
                         &mut sequence,
@@ -106,8 +144,31 @@ pub(super) async fn pump_turn(
                         return runtime_failure(error.diagnostic().clone());
                     }
                 }
-                Ok(ProviderEvent::TextDone(_)) => {}
-                Ok(ProviderEvent::Completed { output, usage, .. }) => {
+                Ok(ProviderEvent::TextDone { .. }) => {}
+                Ok(ProviderEvent::Completed {
+                    item,
+                    output,
+                    usage,
+                    ..
+                }) => {
+                    if let Err(error) = emit(
+                        &events,
+                        &mut sequence,
+                        RuntimeEventKind::Activity(
+                            match activity.completed(&item, output.as_str()) {
+                                Ok(observation) => observation,
+                                Err(error) => {
+                                    cancellation.fail_remote_uncertain();
+                                    let _ = subscription.close().await;
+                                    return runtime_failure(error.diagnostic().clone());
+                                }
+                            },
+                        ),
+                    ) {
+                        cancellation.fail_remote_uncertain();
+                        let _ = subscription.close().await;
+                        return runtime_failure(error.diagnostic().clone());
+                    }
                     for kind in [
                         RuntimeEventKind::OutputAvailable,
                         RuntimeEventKind::ProviderObservation(ProviderObservation::Usage(usage)),

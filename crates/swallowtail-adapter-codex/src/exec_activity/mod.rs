@@ -6,8 +6,9 @@ use serde_json::Value;
 use std::collections::HashMap;
 use swallowtail_core::{ActivityDisclosure, ProviderActivityRef};
 use swallowtail_runtime::{
-    ActivityAssistantPhase, ActivityId, ActivityKind, ActivityLifecyclePhase, ActivityNamespace,
-    ActivityObservation, ActivityOperationId, ActivityStatus, RuntimeFailure, RuntimeRunId,
+    ActivityAssistantPhase, ActivityId, ActivityKind, ActivityLabel, ActivityLifecyclePhase,
+    ActivityNamespace, ActivityObservation, ActivityOperationId, ActivityStatus, RuntimeFailure,
+    RuntimeRunId,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -21,6 +22,7 @@ pub(crate) struct ExecActivityProjection {
     operation_id: ActivityOperationId,
     qualified_version: Version,
     identities: HashMap<String, ItemIdentity>,
+    labels: HashMap<String, ActivityLabel>,
     next_minted_id: u64,
 }
 
@@ -30,6 +32,7 @@ impl ExecActivityProjection {
             operation_id: ActivityOperationId::Run(run_id),
             qualified_version,
             identities: HashMap::new(),
+            labels: HashMap::new(),
             next_minted_id: 0,
         }
     }
@@ -72,6 +75,9 @@ impl ExecActivityProjection {
             self.identities
                 .insert(provider_id.to_owned(), projection.identity.clone());
         }
+        if let Some(label) = projection.label {
+            self.labels.insert(provider_id.to_owned(), label);
+        }
         let activity_id = ActivityId::new(format!("codex-exec:item:{provider_id}"))
             .map_err(|_| malformed_stream())?;
         let mut observation = ActivityObservation::new(
@@ -87,6 +93,11 @@ impl ExecActivityProjection {
         .with_provider_activity_ref(
             ProviderActivityRef::new(provider_id).map_err(|_| malformed_stream())?,
         );
+        if let Some(label) = self.labels.get(provider_id).cloned() {
+            observation = observation
+                .with_label(label)
+                .map_err(|_| malformed_stream())?;
+        }
         if let Some(content) = projection.content {
             observation = observation
                 .with_content(content)

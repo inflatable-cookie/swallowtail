@@ -90,7 +90,17 @@ impl AnthropicPreparedIntegration {
         }
         let capability_requirements =
             inference_capabilities(!attachments.is_empty(), search_domains.is_some());
-        let capabilities = CapabilityProfile::new(capability_requirements.clone());
+        let activity = crate::activity::profile::structured_profile(search_domains.is_some());
+        let capabilities = crate::activity::profile::with_activity(
+            CapabilityProfile::new(capability_requirements),
+            &activity,
+        );
+        let capability_requirements = capabilities
+            .iter()
+            .map(|(capability, constraints)| {
+                CapabilityRequirement::new(capability, constraints.iter().cloned())
+            })
+            .collect::<Vec<_>>();
         let instance = instance_with_capabilities(self, capabilities.clone());
         let route = model_route(self, model, capabilities);
         let requirements = requirements(
@@ -117,7 +127,7 @@ impl AnthropicPreparedIntegration {
             request = request.with_deadline(deadline);
         }
         Ok(AnthropicPreparedInferenceAttempt {
-            evidence: AnthropicPreparedEvidence::from_prepared(self, plan)?,
+            evidence: AnthropicPreparedEvidence::from_prepared_with_activity(self, plan, activity)?,
             request,
             search_domains,
         })

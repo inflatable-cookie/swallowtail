@@ -2,6 +2,7 @@
 
 #![forbid(unsafe_code)]
 
+mod activity;
 mod driver;
 mod failure;
 mod prepared;

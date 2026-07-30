@@ -9,9 +9,9 @@ use swallowtail_core::{
     IntegrationFamilyId, OperationShape, PreflightPlan, TransportFamilyId,
 };
 use swallowtail_runtime::{
-    BoxFuture, EnvironmentRef, ExecutableRef, HostServices, ProcessHandle, ProcessInputChunk,
-    ProcessRequest, RunHandle, RuntimeEvent, RuntimeEventKind, RuntimeFailure, RuntimeRunId,
-    ScopeId, StructuredRunDriver, StructuredRunRequest, runtime_event_channel,
+    ActivityOperationId, BoxFuture, EnvironmentRef, ExecutableRef, HostServices, ProcessHandle,
+    ProcessInputChunk, ProcessRequest, RunHandle, RuntimeEvent, RuntimeEventKind, RuntimeFailure,
+    RuntimeRunId, ScopeId, StructuredRunDriver, StructuredRunRequest, runtime_event_channel,
     terminal_outcome_channel,
 };
 
@@ -105,6 +105,16 @@ impl ClaudeCodeHeadlessDriver {
             .cloned()
             .expect("validated working resource is present");
         let deadline = request.deadline().expect("validated deadline is present");
+        let run_id = RuntimeRunId::new(format!(
+            "claude-code-headless:{}",
+            request.request_id().as_str()
+        ))
+        .map_err(|_| {
+            failure(
+                "swallowtail.claude_code.headless.run_id_invalid",
+                "Claude Code headless runtime run identity was invalid",
+            )
+        })?;
         let scope = ScopeId::new(format!(
             "claude-code-headless:{}",
             request.request_id().as_str()
@@ -142,9 +152,17 @@ impl ClaudeCodeHeadlessDriver {
             Box::pin({
                 let cancellation = Arc::clone(&cancellation);
                 let process = Arc::clone(&process);
+                let operation_id = ActivityOperationId::Run(run_id.clone());
                 async move {
-                    let outcome =
-                        pump(process, event_sender.clone(), cancellation, deadline, model).await;
+                    let outcome = pump(
+                        process,
+                        event_sender.clone(),
+                        cancellation,
+                        deadline,
+                        model,
+                        operation_id,
+                    )
+                    .await;
                     let _ = terminal_sender.complete(outcome);
                     event_sender.mark_terminal();
                 }
@@ -157,16 +175,6 @@ impl ClaudeCodeHeadlessDriver {
                 return Err(error);
             }
         };
-        let run_id = RuntimeRunId::new(format!(
-            "claude-code-headless:{}",
-            request.request_id().as_str()
-        ))
-        .map_err(|_| {
-            failure(
-                "swallowtail.claude_code.headless.run_id_invalid",
-                "Claude Code headless runtime run identity was invalid",
-            )
-        })?;
         Ok(Box::new(ClaudeCodeRunHandle::new(
             request.request_id().clone(),
             run_id,

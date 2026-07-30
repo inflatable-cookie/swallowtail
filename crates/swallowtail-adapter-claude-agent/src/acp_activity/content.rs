@@ -16,11 +16,10 @@ pub(super) fn text_content(content: &AcpContentBlock) -> Result<&str, RuntimeFai
 }
 
 pub(super) fn tool_content(
-    title: &str,
     content: &[AcpToolCallContent],
     change: ActivityContentChangeKind,
 ) -> Result<Option<ActivityContentUpdate>, RuntimeFailure> {
-    let mut display = title.trim().to_owned();
+    let mut display = String::new();
     for item in content {
         let text = match item {
             AcpToolCallContent::Content(AcpContentBlock::Text(text)) => text.as_str(),
@@ -40,6 +39,7 @@ pub(super) fn content_update(
     change: ActivityContentChangeKind,
     stream: ActivityContentStream,
 ) -> Result<Option<ActivityContentUpdate>, RuntimeFailure> {
+    let text = bounded_content(text);
     if text.trim().is_empty() {
         return Ok(None);
     }
@@ -49,6 +49,14 @@ pub(super) fn content_update(
     )
     .map_err(|_| malformed())?;
     Ok(Some(ActivityContentUpdate::new(change, stream, content)))
+}
+
+fn bounded_content(text: &str) -> &str {
+    let mut end = text.len().min(MAXIMUM_ACTIVITY_CONTENT_BYTES);
+    while !text.is_char_boundary(end) {
+        end -= 1;
+    }
+    &text[..end]
 }
 
 pub(super) fn tool_status(status: AcpToolCallStatus) -> ActivityStatus {

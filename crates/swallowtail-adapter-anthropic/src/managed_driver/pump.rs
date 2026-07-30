@@ -43,12 +43,14 @@ async fn pump_managed_run(
     let mut pending_tools = BTreeSet::new();
     let mut output = String::new();
     let mut recovered = false;
-    let final_state = 'run: loop {
+    let mut activity = crate::managed_activity::ManagedActivityProjection::new(run_id.clone());
+    let mut final_state = 'run: loop {
         let exit = pump_attachment(
             &mut subscription,
             &events,
             &mut sequence,
             &run_id,
+            &mut activity,
             &callbacks,
             &mut live,
             &mut processed,
@@ -133,6 +135,7 @@ async fn pump_managed_run(
                     &events,
                     &mut sequence,
                     &run_id,
+                    &mut activity,
                     &callbacks,
                     &live,
                     &mut processed,
@@ -213,6 +216,32 @@ async fn pump_managed_run(
             }
         }
     };
+
+    let activity_status = match &final_state.status {
+        TerminalStatus::Completed => swallowtail_runtime::ActivityStatus::Completed,
+        TerminalStatus::Cancelled | TerminalStatus::TimedOut => {
+            swallowtail_runtime::ActivityStatus::Cancelled
+        }
+        TerminalStatus::ProviderRequestObserved(_)
+        | TerminalStatus::ProviderFailed(_)
+        | TerminalStatus::HostFailed(_)
+        | TerminalStatus::RuntimeFailed(_) => swallowtail_runtime::ActivityStatus::Failed,
+    };
+    match activity.complete(activity_status) {
+        Ok(observations) => {
+            for observation in observations {
+                if let Err(error) = emit(
+                    &events,
+                    &mut sequence,
+                    RuntimeEventKind::Activity(observation),
+                ) {
+                    final_state.status = provider_status(error);
+                    break;
+                }
+            }
+        }
+        Err(error) => final_state.status = provider_status(error),
+    }
 
     finish_managed_run(
         &transport,

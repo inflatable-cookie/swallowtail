@@ -8,7 +8,8 @@ use swallowtail_adapter_kimi::{
     KimiLocalServerSessionManagementInput, start_kimi_local_server_owned,
 };
 use swallowtail_core::{
-    ExecutionHostId, InstanceTargetRef, ProviderSessionBindingOrigin, ProviderSessionEffectTruth,
+    ExecutionHostId, InstanceTargetRef, ObservableActivityAvailability,
+    ProviderSessionBindingOrigin, ProviderSessionEffectTruth,
 };
 use swallowtail_runtime::{CleanupOutcome, RequestId, TerminalStatus};
 
@@ -54,6 +55,10 @@ fn attached_prepared_session_streams_and_preserves_exact_bindings() {
     let services = host.services(execution_host.clone(), false);
     let prepared = prepare(execution_host, services.clone(), "0.29.0");
     let profile = session_profile(&prepared, KimiLocalServerPermissionMode::Manual, "complete");
+    assert_eq!(
+        profile.evidence().observable_activity().availability(),
+        ObservableActivityAvailability::Available
+    );
     let mut session = block_on(profile.open_session(services.clone())).expect("session opens");
 
     assert_eq!(

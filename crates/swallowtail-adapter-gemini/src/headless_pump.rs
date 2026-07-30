@@ -5,10 +5,10 @@ use std::sync::Arc;
 use std::task::Poll;
 use swallowtail_core::{ModelId, OwnedRemoteResourceKind, SafeDiagnostic};
 use swallowtail_runtime::{
-    BoxFuture, CleanupOutcome, DeadlineObservation, EnvironmentRef, ExecutableRef, ProcessHandle,
-    ProcessOutputChunk, ProcessOutputStream, ProcessRequest, ProcessService,
-    RemoteResourceDeletionOutcome, RuntimeEventSender, RuntimeFailure, ScopeId, TerminalOutcome,
-    TerminalStatus, WorkingResourceRef,
+    ActivityOperationId, BoxFuture, CleanupOutcome, DeadlineObservation, EnvironmentRef,
+    ExecutableRef, ProcessHandle, ProcessOutputChunk, ProcessOutputStream, ProcessRequest,
+    ProcessService, RemoteResourceDeletionOutcome, RuntimeEventSender, RuntimeFailure, ScopeId,
+    TerminalOutcome, TerminalStatus, WorkingResourceRef,
 };
 
 const MANAGEMENT_OUTPUT_LIMIT: usize = 64 * 1024;
@@ -22,16 +22,21 @@ pub(crate) struct TranscriptCleanup {
     pub(crate) deadline: BoxFuture<'static, DeadlineObservation>,
 }
 
+pub(crate) struct HeadlessProjection {
+    pub(crate) model: ModelId,
+    pub(crate) session_id: String,
+    pub(crate) operation_id: ActivityOperationId,
+}
+
 pub(crate) async fn pump(
     process: Arc<dyn ProcessHandle>,
     events: RuntimeEventSender,
     cancellation: Arc<GeminiHeadlessCancellation>,
     deadline: BoxFuture<'static, DeadlineObservation>,
-    model: ModelId,
-    session_id: String,
+    projection: HeadlessProjection,
     cleanup: Option<TranscriptCleanup>,
 ) -> TerminalOutcome {
-    let outcome = pump_run(process, events, cancellation, deadline, model, session_id).await;
+    let outcome = pump_run(process, events, cancellation, deadline, projection).await;
     let Some(cleanup) = cleanup else {
         return outcome;
     };
@@ -45,10 +50,13 @@ async fn pump_run(
     events: RuntimeEventSender,
     cancellation: Arc<GeminiHeadlessCancellation>,
     deadline: BoxFuture<'static, DeadlineObservation>,
-    model: ModelId,
-    session_id: String,
+    projection: HeadlessProjection,
 ) -> TerminalOutcome {
-    let mut parser = GeminiHeadlessEventParser::new(model, session_id);
+    let mut parser = GeminiHeadlessEventParser::new(
+        projection.model,
+        projection.session_id,
+        projection.operation_id,
+    );
     let mut deadline = Some(deadline);
     loop {
         match next_output(process.as_ref(), cancellation.as_ref(), &mut deadline).await {

@@ -14,8 +14,9 @@ use swallowtail_core::{
     CredentialMechanism, CredentialRef, CredentialState, EndpointAudience, EndpointAuthorization,
     EntitlementMetering, EntitlementState, ExecutionHostId, ExtensionNamespace,
     HarnessConfigurationPosture, HarnessIsolation, InstalledExecutableCompatibility,
-    InstanceRevision, InterfaceVersionAxis, ModelId, ModelRouteId, ModelRouteRevision, ProviderId,
-    ResourceAccess, RuntimeReadiness, SessionAccessPolicy, SupportAuthority,
+    InstanceRevision, InterfaceVersionAxis, ModelId, ModelRouteId, ModelRouteRevision,
+    ObservableActivityAvailability, ProviderId, ResourceAccess, RuntimeReadiness,
+    SessionAccessPolicy, SupportAuthority,
 };
 use swallowtail_runtime::{
     AttachmentDescriptor, AttachmentRef, AttachmentRole, CleanupOutcome, Deadline,
@@ -62,6 +63,14 @@ fn prepared_catalogues_ask_pi_for_configured_models_without_selecting_one() {
         assert_prepared_operation_evidence_matches_plan(
             profile.evidence().operation(),
             profile.plan(),
+        );
+        assert_eq!(
+            profile
+                .evidence()
+                .operation()
+                .observable_activity()
+                .availability(),
+            ObservableActivityAvailability::NotApplicable
         );
 
         let operation = FixtureHost::new(Scenario::Complete);
@@ -229,6 +238,14 @@ fn prepared_sessions_preserve_pi_rpc_policy_in_both_host_topologies() {
             profile.evidence().operation(),
             profile.plan(),
         );
+        assert_eq!(
+            profile
+                .evidence()
+                .operation()
+                .observable_activity()
+                .availability(),
+            ObservableActivityAvailability::Available
+        );
 
         let operation = FixtureHost::new(Scenario::Complete);
         let session = block_on(profile.open_session(operation.services(host_id)))
@@ -271,6 +288,13 @@ fn prepared_runs_preserve_the_one_prompt_rpc_projection_in_both_host_topologies(
             ProviderRetentionPolicy::Prohibited
         );
         assert_prepared_operation_evidence_matches_plan(run.evidence().operation(), run.plan());
+        assert_eq!(
+            run.evidence()
+                .operation()
+                .observable_activity()
+                .availability(),
+            ObservableActivityAvailability::Available
+        );
 
         let operation = FixtureHost::new(Scenario::Complete);
         let mut handle =

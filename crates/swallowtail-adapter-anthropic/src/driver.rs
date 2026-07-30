@@ -96,6 +96,7 @@ pub fn anthropic_direct_descriptor() -> DriverDescriptor {
             HostServiceKind::Credential,
         ],
     )
+    .with_interface_compatibility(crate::anthropic_messages_facade_claim())
 }
 
 impl ModelCatalogDriver for AnthropicDirectDriver {

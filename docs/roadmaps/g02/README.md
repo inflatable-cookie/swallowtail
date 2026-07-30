@@ -354,7 +354,21 @@ evidence-led provider work.
 - OpenCode retains an exact thin `1.14.51` segment, Kimi retains separate
   `0.28.1` and `0.29.x` event-schema evidence, and current newer releases
   remain permitted but unverified
-- card 129 is the sole ready task
+- card 129 maps Pi RPC, Kimi local server, OpenCode HTTP/SSE, and Managed
+  Agents through exact prepared profiles without changing callbacks,
+  recovery, retention, reattachment, server ownership, or cleanup
+- card 130 maps the four headless routes without manufacturing lifecycle from
+  terminal prose
+- card 131 machine-checks 13 production harness routes and 18 ordinary
+  prepared-operation profiles, with no unexplained unavailable run or session
+- roadmap g02.038 is complete
+- Research 067 and card 132 classify all 13 non-harness production routes,
+  14 positive text-operation profiles, and 13 not-applicable catalogue,
+  inventory, realtime, and serving operations
+- card 133 projects all 14 selected text-operation profiles through exact
+  prepared evidence and ordered activity events
+- Kimi client-visible thought updates are exposed while DeepSeek and xAI
+  private continuation remains excluded; card 134 is the sole ready task
 - roadmaps g02.016-g02.019 sequence Codex, ACP/Claude Agent, OpenCode,
   provider-wide acceptance, and the Nucleus handoff
 - all 23 manifests carry contract-complete metadata and crates.io publication
@@ -724,9 +738,9 @@ evidence-led provider work.
 - [037 ACP Observable Agent Activity](037-acp-observable-agent-activity.md)
   — completed; cards 125-127 complete
 - [038 Non-ACP Harness Activity Coverage](038-non-acp-harness-activity-coverage.md)
-  — active; card 128 complete, card 129 ready, cards 130-131 planned
+  — completed; cards 128-131 complete
 - [039 Direct Inference Activity Truth](039-direct-inference-activity-truth.md)
-  — planned; cards 132-134 planned
+  — active; cards 132-133 complete, card 134 ready
 - [040 Provider-Wide Activity Acceptance And Consumer Handoff](040-provider-wide-activity-acceptance-and-consumer-handoff.md)
   — planned; cards 135-137 planned
 
@@ -918,7 +932,9 @@ is deferred until a consumer needs post-restart provider management.
   bounded activity decoding; card 127 completes exact Claude Agent, Gemini
   CLI, and Kimi Code profiles, emission, and conformance
 - card 128 completes the exact eight-route non-ACP harness inventory and
-  corpus freeze; cards 129-131 own projection and closeout
+  corpus freeze; card 129 completes HTTP, server, WebSocket, RPC, and managed
+  projection; card 130 completes headless projection; card 131 closes all 13
+  harness routes through 18 public prepared-operation profiles
 - cards 132-134 own direct-inference applicability, exact text activity, and
   realtime or serving boundaries
 - cards 135-137 own the provider-wide activity matrix, extracted-package

@@ -1,5 +1,6 @@
 use super::input::QwenSessionProfileInput;
 use super::plan::{QwenPreparedEvidence, build_plan, instance_with_capabilities, requirements};
+use crate::activity::profile::{activity_profile, with_activity};
 use crate::{QwenHeadlessDriver, QwenPreparedIntegration};
 use swallowtail_core::{
     CancellationScope, Capability, CapabilityConstraint, CapabilityProfile, CapabilityRequirement,
@@ -66,8 +67,14 @@ impl QwenPreparedIntegration {
         input: QwenSessionProfileInput,
     ) -> Result<QwenPreparedSession, PreparationFailure> {
         let (request_id, model, working_resource, deadline) = input.into_parts();
-        let capability_requirements = session_capabilities();
-        let capabilities = CapabilityProfile::new(capability_requirements.clone());
+        let activity = activity_profile(self)?;
+        let capabilities = with_activity(CapabilityProfile::new(session_capabilities()), &activity);
+        let capability_requirements = capabilities
+            .iter()
+            .map(|(capability, constraints)| {
+                CapabilityRequirement::new(capability, constraints.iter().cloned())
+            })
+            .collect::<Vec<_>>();
         let instance = instance_with_capabilities(self, capabilities.clone());
         let (route_id, route_revision, provider_id, model_id) = model.into_parts();
         let route = ModelRoute::new(
@@ -91,7 +98,7 @@ impl QwenPreparedIntegration {
         let plan = build_plan(self, &instance, &route, &requirements)?;
         let request = OpenSessionRequest::from_plan(&plan, request_id, working_resource, deadline)?;
         Ok(QwenPreparedSession {
-            evidence: QwenPreparedEvidence::from_prepared(self, plan)?,
+            evidence: QwenPreparedEvidence::from_prepared(self, plan, activity)?,
             request,
         })
     }

@@ -331,21 +331,25 @@ impl OpenCodePreparedIntegration {
         let (request_id, model, working_resource, deadline, image_attachments, provider_callbacks) =
             input.into_parts();
         let capabilities = crate::prepared::all_capabilities();
-        let session_capabilities = callback_resource_access(
-            CapabilityProfile::new(
-                capabilities
-                    .iter()
-                    .filter(|(capability, _)| {
-                        !matches!(
-                            *capability,
-                            Capability::ModelCatalog | Capability::ProviderSessionDelete
-                        ) && (image_attachments || *capability != Capability::Attachments)
-                    })
-                    .map(|(capability, constraints)| {
-                        CapabilityRequirement::new(capability, constraints.iter().cloned())
-                    }),
+        let activity_profile = crate::activity::profile::activity_profile(self)?;
+        let session_capabilities = crate::activity::profile::with_activity(
+            callback_resource_access(
+                CapabilityProfile::new(
+                    capabilities
+                        .iter()
+                        .filter(|(capability, _)| {
+                            !matches!(
+                                *capability,
+                                Capability::ModelCatalog | Capability::ProviderSessionDelete
+                            ) && (image_attachments || *capability != Capability::Attachments)
+                        })
+                        .map(|(capability, constraints)| {
+                            CapabilityRequirement::new(capability, constraints.iter().cloned())
+                        }),
+                ),
+                provider_callbacks,
             ),
-            provider_callbacks,
+            &activity_profile,
         );
         let instance = instance_with_capabilities(self, session_capabilities.clone());
         let (route_id, route_revision, provider_id, model_id, _) = model.into_parts();
@@ -371,7 +375,11 @@ impl OpenCodePreparedIntegration {
         let plan = build_plan(self, &instance, Some(&route), &requirements)?;
         let request = OpenSessionRequest::from_plan(&plan, request_id, working_resource, deadline)?;
         Ok(OpenCodePreparedSession {
-            evidence: OpenCodePreparedEvidence::from_prepared(self, plan)?,
+            evidence: OpenCodePreparedEvidence::from_prepared_with_activity(
+                self,
+                plan,
+                activity_profile,
+            )?,
             request,
             management_instance: lifecycle_management_instance(self),
         })
@@ -402,13 +410,17 @@ impl OpenCodePreparedIntegration {
             reasoning.as_ref(),
             structured_output.as_ref(),
         )?;
-        let capabilities = callback_resource_access(
-            run_capabilities(
-                reasoning.as_ref(),
-                structured_output.as_ref(),
-                image_attachments,
+        let activity_profile = crate::activity::profile::activity_profile(self)?;
+        let capabilities = crate::activity::profile::with_activity(
+            callback_resource_access(
+                run_capabilities(
+                    reasoning.as_ref(),
+                    structured_output.as_ref(),
+                    image_attachments,
+                ),
+                provider_callbacks,
             ),
-            provider_callbacks,
+            &activity_profile,
         );
         let instance = instance_with_capabilities(self, capabilities.clone());
         let route = ModelRoute::new(
@@ -447,7 +459,11 @@ impl OpenCodePreparedIntegration {
             request = request.with_deadline(deadline);
         }
         Ok(OpenCodePreparedRun {
-            evidence: OpenCodePreparedEvidence::from_prepared(self, plan)?,
+            evidence: OpenCodePreparedEvidence::from_prepared_with_activity(
+                self,
+                plan,
+                activity_profile,
+            )?,
             request,
         })
     }

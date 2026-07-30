@@ -74,7 +74,7 @@ fn respond_sse(stream: &mut TcpStream, body: &str) {
 fn respond_wait_for_cancel(stream: &mut TcpStream) {
     write!(
         stream,
-        "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nrequest-id: req_fixture_cancel\r\nConnection: close\r\n\r\nevent: message_start\ndata: {{\"type\":\"message_start\",\"message\":{{\"usage\":{{\"input_tokens\":1,\"output_tokens\":1}}}}}}\n\n"
+        "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nrequest-id: req_fixture_cancel\r\nConnection: close\r\n\r\nevent: message_start\ndata: {{\"type\":\"message_start\",\"message\":{{\"id\":\"msg_fixture_cancel\",\"usage\":{{\"input_tokens\":1,\"output_tokens\":1}}}}}}\n\n"
     )
     .expect("waiting stream starts");
     for _ in 0..2_000 {

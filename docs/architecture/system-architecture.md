@@ -63,12 +63,12 @@ spine:
   never carries provider reasoning bytes
 - observable agent activity remains on the existing run and turn event
   streams; the portable layer owns operation-local activity identity, exact
-  lifecycle and disclosure fidelity, typed assistant, reasoning-summary,
-  plan, command, file, and tool content streams, request correlation, bounded
-  namespaced unknowns, and redacted formatting; adapters retain raw provider
-  envelopes and exact version mapping, while consumers retain durable message
-  and activity projections, transcript policy, grouping, and collapsed
-  presentation
+  lifecycle and disclosure fidelity, bounded mutable provider labels, typed
+  assistant, reasoning-summary, plan, command, file, and tool content streams,
+  request correlation, bounded namespaced unknowns, and redacted formatting;
+  adapters retain raw provider envelopes and exact version mapping, while
+  consumers retain durable message and activity projections, transcript
+  policy, grouping, and collapsed presentation
 - `swallowtail-testkit` depends on core and runtime and owns deterministic
   Contract 003, Contract 008, runtime-skeleton, and Contract 011 cross-shape
   fixtures and assertions, including distinct local and remote-authoritative
@@ -1187,6 +1187,78 @@ turn, runtime, endpoint, credential lease, model, deadline, and
 attachment joins, cancellation control follows the replacement socket, and
 the final attachment joins before access release. ACP and interactive-session
 preparation inherit no capability.
+
+## Realized Non-ACP Harness Activity
+
+Research 066 and roadmap g02.038 bind activity fidelity to exact transport,
+option, interface version, and behavior revision rather than harness identity
+alone.
+
+- Pi RPC projects native message, readable thinking, provider-owned tool, and
+  compaction lifecycle on the existing turn stream. UI callbacks remain a
+  separate exchange.
+- Kimi local server projects accepted WebSocket events only after cursor
+  admission. Step, tool, shell, subagent, task, compaction, recovery, callback,
+  and reattachment truth remain distinct.
+- OpenCode projects correlated HTTP/SSE message, reasoning, tool, step,
+  warning, and namespaced unknown activity. Exact `1.14.51` remains a thinner
+  profile with no manufactured reasoning or tool lifecycle.
+- Anthropic Managed Agents projects authoritative persisted completions only
+  after event deduplication. Provider and MCP tools are provider-owned;
+  custom tools remain consumer callback exchange.
+- Qwen Code headless enables its qualified partial-message option and maps
+  message, display-text, readable-thinking, and provider-tool lifecycle for
+  structured runs and private turn-scoped continuation.
+- Gemini CLI headless maps assistant deltas and completion-only correlated
+  tool records. Claude Code headless retains completion-only assistant and
+  tool fidelity because its selected command omits partial messages.
+- Kimi Code headless maps completion-only assistant and correlated tool
+  records. Retry metadata is namespaced activity; resume hints remain session
+  metadata and never become activity.
+
+Adapters expose bounded display content and stable activity identity, never
+raw provider envelopes, tool arguments, tool results, error bodies, or hidden
+reasoning. Permitted newer versions inherit the last qualified profile without
+widening it. Consumers still own durable projection, grouping, collapse state,
+and presentation.
+
+Card 131 closes the harness layer with a machine-checked inventory of 13
+canonical production routes and 18 structured-run or interactive-session
+profiles. Every positive profile is observable through its public prepared
+operation. Catalogue and provider-session-management roles remain explicitly
+not applicable where the route does not expose them. There is no unexplained
+whole-run or whole-turn activity gap, and no consumer needs to parse provider
+records to discover route fidelity.
+
+## Realized Text Direct-Inference Activity
+
+Research 067 and roadmap g02.039 classify activity by exact route and
+operation role. Card 133 realizes all 14 selected ordinary text-operation
+profiles across Anthropic Messages, Kimi Platform, DeepSeek, Alibaba Model
+Studio, OpenAI background Responses, xAI Responses, Amazon Bedrock Runtime,
+attached Ollama, and attached llama.cpp.
+
+Each adapter exposes its exact `ObservableActivityProfile` through prepared
+operation evidence and emits activity on the existing ordered run or turn
+stream. Assistant content uses final-answer disclosure even when delivered as
+streaming updates. Final operation output stays a separate event.
+
+Anthropic provider web search remains provider-owned. Anthropic and DeepSeek
+consumer tools remain consumer-owned, correlate with the existing direct-tool
+exchange, and disclose identity and lifecycle rather than duplicated tool
+bodies. Kimi Platform exposes its qualified client-visible thought text as a
+reasoning summary. DeepSeek private continuation and xAI encrypted thinking
+remain excluded.
+
+Direct routes do not gain harness plans, commands, file changes, tasks, hooks,
+subagents, or tool execution. Usage, billed cost, request correlation, rate,
+quota, cache, retention, recovery, cleanup, model residency, and runtime
+ownership remain independent evidence. Attached llama.cpp therefore reports
+assistant activity without claiming server ownership.
+
+Catalogue, inventory, realtime-media, and serving-only roles remain
+`NotApplicable` to ordinary observable activity. Their final negative and
+dedicated-media conformance belongs to card 134.
 
 ## Dependency Rules
 

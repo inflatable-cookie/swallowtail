@@ -1,4 +1,3 @@
-use crate::DEFAULT_MAX_FRAME_BYTES;
 use serde_json::Value;
 use std::error::Error;
 use std::fmt;
@@ -24,6 +23,9 @@ pub use tool_record::{
     AcpToolKind,
 };
 
+// Semantic decoding must accept every update the widest qualified ACP receive
+// envelope can deliver. Transport framing remains independently configurable.
+const DEFAULT_MAX_ACTIVITY_UPDATE_BYTES: usize = 4 * 1024 * 1024;
 const DEFAULT_MAX_ACTIVITY_COLLECTION_ITEMS: usize = 256;
 const DEFAULT_MAX_ACTIVITY_IDENTIFIER_BYTES: usize = 512;
 
@@ -67,7 +69,7 @@ impl ActivityDecodeLimits {
 impl Default for ActivityDecodeLimits {
     fn default() -> Self {
         Self::new(
-            DEFAULT_MAX_FRAME_BYTES,
+            DEFAULT_MAX_ACTIVITY_UPDATE_BYTES,
             DEFAULT_MAX_ACTIVITY_COLLECTION_ITEMS,
             DEFAULT_MAX_ACTIVITY_IDENTIFIER_BYTES,
         )

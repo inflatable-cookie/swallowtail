@@ -2,7 +2,9 @@ use super::input::DeepSeekSessionProfileInput;
 use super::plan::{DeepSeekPreparedEvidence, build_plan, instance_with_capabilities, model_route};
 use crate::prepared::failure;
 use crate::{DeepSeekDirectDriver, DeepSeekPreparedIntegration};
-use swallowtail_core::{CapabilityProfile, PreflightPlan, ProviderInferenceCachePolicy};
+use swallowtail_core::{
+    CapabilityProfile, CapabilityRequirement, PreflightPlan, ProviderInferenceCachePolicy,
+};
 use swallowtail_runtime::{
     BoxFuture, HostServices, InteractiveSessionDriver, InteractiveSessionHandle,
     OpenDirectContinuationSessionRequest, PreparationFailure, PreparationStage, RuntimeFailure,
@@ -87,11 +89,20 @@ impl DeepSeekPreparedIntegration {
                 "DeepSeek direct continuation requires high reasoning and one to eight declared tools",
             ));
         }
-        let requirements = crate::deepseek_v4_requirements(
+        let activity = crate::activity::profile::activity_profile(true);
+        let base_requirements = crate::deepseek_v4_requirements(
             self.instance().execution_host_id().clone(),
             self.access_profile().id().clone(),
         );
-        let capabilities = CapabilityProfile::new(requirements.capabilities().cloned());
+        let capabilities = crate::activity::profile::with_activity(
+            CapabilityProfile::new(base_requirements.capabilities().cloned()),
+            &activity,
+        );
+        let requirements = base_requirements.with_capabilities(capabilities.iter().map(
+            |(capability, constraints)| {
+                CapabilityRequirement::new(capability, constraints.iter().cloned())
+            },
+        ));
         let instance = instance_with_capabilities(self, capabilities.clone());
         let route = model_route(self, model, capabilities);
         if route.model_id().as_str() != crate::DEEPSEEK_MODEL_ID {
@@ -112,7 +123,7 @@ impl DeepSeekPreparedIntegration {
             )
         })?;
         Ok(DeepSeekPreparedSession {
-            evidence: DeepSeekPreparedEvidence::from_prepared(self, plan)?,
+            evidence: DeepSeekPreparedEvidence::from_prepared_with_activity(self, plan, activity)?,
             request,
         })
     }

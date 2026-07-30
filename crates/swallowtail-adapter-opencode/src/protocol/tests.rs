@@ -181,8 +181,16 @@ mod tests {
             events.iter().filter(|event| **event == Event::Idle).count(),
             2
         );
-        assert!(events.contains(&Event::OutputDelta("hello".to_owned())));
-        assert!(events.contains(&Event::OutputSnapshot("hello world".to_owned())));
+        assert!(events.contains(&Event::OutputDelta {
+            message_id: "msg_fixture".to_owned(),
+            part_id: "prt_fixture".to_owned(),
+            text: "hello".to_owned(),
+        }));
+        assert!(events.contains(&Event::OutputSnapshot {
+            message_id: "msg_fixture".to_owned(),
+            part_id: "prt_fixture".to_owned(),
+            text: "hello world".to_owned(),
+        }));
         let usage = events
             .iter()
             .filter_map(|event| match event {
@@ -433,10 +441,9 @@ mod tests {
         ));
         let unknown =
             br#"{"id":"evt","type":"provider.future","properties":{"sessionID":"ses_fixture"}}"#;
-        let error = parse_event(unknown, "ses_fixture").expect_err("unknown event fails");
         assert_eq!(
-            error.diagnostic().code(),
-            "swallowtail.opencode.event_unknown"
+            parse_event(unknown, "ses_fixture").expect("correlated unknown is preserved"),
+            Event::Unknown("provider.future".to_owned())
         );
     }
 

@@ -1,7 +1,7 @@
 use crate::failure::failure;
 use crate::headless_command::arguments;
 use crate::headless_handle::{GeminiHeadlessCancellation, GeminiHeadlessRunHandle};
-use crate::headless_pump::{TranscriptCleanup, cleanup_failed_start, pump};
+use crate::headless_pump::{HeadlessProjection, TranscriptCleanup, cleanup_failed_start, pump};
 use std::sync::Arc;
 use swallowtail_core::{
     AdapterId, AdapterIdentity, AdapterVersion, CredentialMechanism, CredentialRef,
@@ -9,9 +9,9 @@ use swallowtail_core::{
     HostServiceKind, IntegrationFamilyId, OperationShape, PreflightPlan, RunRef, TransportFamilyId,
 };
 use swallowtail_runtime::{
-    BoxFuture, EnvironmentRef, ExecutableRef, HostServices, ProcessHandle, ProcessInputChunk,
-    ProcessRequest, RunHandle, RuntimeEvent, RuntimeEventKind, RuntimeFailure, RuntimeRunId,
-    ScopeId, StructuredRunDriver, StructuredRunRequest, runtime_event_channel,
+    ActivityOperationId, BoxFuture, EnvironmentRef, ExecutableRef, HostServices, ProcessHandle,
+    ProcessInputChunk, ProcessRequest, RunHandle, RuntimeEvent, RuntimeEventKind, RuntimeFailure,
+    RuntimeRunId, ScopeId, StructuredRunDriver, StructuredRunRequest, runtime_event_channel,
     terminal_outcome_channel,
 };
 
@@ -123,6 +123,14 @@ impl GeminiHeadlessDriver {
             .cloned()
             .expect("validated working resource is present");
         let deadline = request.deadline().expect("validated deadline is present");
+        let run_id =
+            RuntimeRunId::new(format!("gemini-headless:{}", request.request_id().as_str()))
+                .map_err(|_| {
+                    failure(
+                        "swallowtail.gemini.headless.run_id_invalid",
+                        "Gemini headless runtime run identity was invalid",
+                    )
+                })?;
         let provider_id = provider_session_id(request.request_id());
         let provider_run_ref = RunRef::new(&provider_id).map_err(|_| {
             failure(
@@ -166,14 +174,18 @@ impl GeminiHeadlessDriver {
             Box::pin({
                 let cancellation = Arc::clone(&cancellation);
                 let process = Arc::clone(&process);
+                let operation_id = ActivityOperationId::Run(run_id.clone());
                 async move {
                     let outcome = pump(
                         process,
                         event_sender.clone(),
                         cancellation,
                         run_deadline,
-                        model,
-                        provider_id.clone(),
+                        HeadlessProjection {
+                            model,
+                            session_id: provider_id.clone(),
+                            operation_id,
+                        },
                         owned_transcript_cleanup.then_some(TranscriptCleanup {
                             process_service,
                             executable,
@@ -196,14 +208,6 @@ impl GeminiHeadlessDriver {
                 return Err(error);
             }
         };
-        let run_id =
-            RuntimeRunId::new(format!("gemini-headless:{}", request.request_id().as_str()))
-                .map_err(|_| {
-                    failure(
-                        "swallowtail.gemini.headless.run_id_invalid",
-                        "Gemini headless runtime run identity was invalid",
-                    )
-                })?;
         Ok(Box::new(GeminiHeadlessRunHandle::new(
             request.request_id().clone(),
             run_id,

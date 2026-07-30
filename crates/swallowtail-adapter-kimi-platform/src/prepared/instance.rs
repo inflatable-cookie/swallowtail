@@ -23,6 +23,7 @@ pub(super) fn configured_instance(input: &KimiPlatformPreparationInput) -> Confi
             .expect("static Kimi Platform policy is valid"),
         all_capabilities(),
     )
+    .with_interface_versions([crate::kimi_platform_facade_binding()])
 }
 
 pub(crate) fn all_capabilities() -> CapabilityProfile {

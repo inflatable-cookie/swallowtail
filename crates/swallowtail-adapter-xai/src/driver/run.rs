@@ -1,6 +1,6 @@
 use super::access::AccessLeases;
 use super::lifecycle::{TurnCancellation, cleanup_from_result, merge_cleanup};
-use super::turn::pump::{PendingTurn, pump_turn};
+use super::turn::pump::{PendingTurn, TurnObservationContext, pump_turn};
 use super::{PROVIDER_ID, XaiWebSocketDriver};
 use crate::failure::{failure, unsupported};
 use crate::transport::Connection;
@@ -103,6 +103,7 @@ impl StructuredRunDriver for XaiWebSocketDriver {
             let (terminal_sender, terminal) = terminal_outcome_channel();
             let task_pending = Arc::clone(&pending);
             let task_scope = scope.clone();
+            let activity_run_id = run_id.clone();
             let task = services.task().expect("validated task").spawn(
                 scope.clone(),
                 Box::pin({
@@ -119,9 +120,13 @@ impl StructuredRunDriver for XaiWebSocketDriver {
                             events.clone(),
                             cancellation,
                             deadline,
-                            billed_turn_id,
-                            model_route_id,
-                            access_profile_id,
+                            TurnObservationContext {
+                                turn_id: billed_turn_id,
+                                activity_operation_id:
+                                    swallowtail_runtime::ActivityOperationId::Run(activity_run_id),
+                                model_route_id,
+                                access_profile_id,
+                            },
                         )
                         .await;
                         let outcome = finish_run(

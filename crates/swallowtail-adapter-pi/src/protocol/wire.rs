@@ -72,9 +72,28 @@ pub(crate) struct PiRpcResponse {
 pub(crate) enum PiAgentEvent {
     Started,
     Settled,
+    MessageStarted,
+    MessageEnded(Option<TokenUsage>),
     OutputDelta(String),
+    ReasoningStarted,
     ReasoningDelta(String),
-    Usage(TokenUsage),
+    ReasoningEnded,
+    ToolStarted {
+        call_id: String,
+        name: String,
+    },
+    ToolUpdated {
+        call_id: String,
+        name: String,
+    },
+    ToolEnded {
+        call_id: String,
+        name: String,
+        failed: bool,
+    },
+    CompactionStarted,
+    CompactionEnded,
+    Unknown(String),
     Progress,
     ProviderFailed,
     RetryObserved,
@@ -143,22 +162,23 @@ fn decode_event(kind: &str, value: &Value) -> Result<PiAgentEvent, PiRpcProtocol
     match kind {
         "agent_start" => Ok(PiAgentEvent::Started),
         "agent_settled" => Ok(PiAgentEvent::Settled),
+        "message_start" => decode_message_start(value),
         "message_update" => decode_message_update(value),
         "message_end" => decode_message_end(value),
+        "tool_execution_start" => decode_tool(value, ToolPhase::Started),
+        "tool_execution_update" => decode_tool(value, ToolPhase::Updated),
+        "tool_execution_end" => decode_tool(value, ToolPhase::Ended),
+        "auto_compaction_start" => Ok(PiAgentEvent::CompactionStarted),
+        "auto_compaction_end" => Ok(PiAgentEvent::CompactionEnded),
         "agent_end" if value.get("willRetry").and_then(Value::as_bool) == Some(true) => {
             Ok(PiAgentEvent::RetryObserved)
         }
         "auto_retry_start" | "auto_retry_end" => Ok(PiAgentEvent::RetryObserved),
-        "agent_end"
-        | "turn_start"
-        | "turn_end"
-        | "message_start"
-        | "tool_execution_start"
-        | "tool_execution_update"
-        | "tool_execution_end"
-        | "queue_update" => Ok(PiAgentEvent::Progress),
+        "agent_end" | "turn_start" | "turn_end" | "queue_update" => Ok(PiAgentEvent::Progress),
         "extension_error" => Ok(PiAgentEvent::ProviderFailed),
-        _ => Err(failure(PiRpcProtocolFailureKind::UnknownRecord)),
+        _ => bounded_namespace(kind)
+            .map(PiAgentEvent::Unknown)
+            .ok_or_else(|| failure(PiRpcProtocolFailureKind::UnknownRecord)),
     }
 }
 
@@ -172,17 +192,29 @@ fn decode_message_end(value: &Value) -> Result<PiAgentEvent, PiRpcProtocolFailur
     if message.get("stopReason").and_then(Value::as_str) == Some("error") {
         return Ok(PiAgentEvent::ProviderFailed);
     }
-    let usage = message
-        .get("usage")
-        .ok_or_else(|| failure(PiRpcProtocolFailureKind::UnknownRecord))?;
+    let usage = message.get("usage");
+    let Some(usage) = usage else {
+        return Ok(PiAgentEvent::MessageEnded(None));
+    };
     let input = required_u64(usage, "input")?;
     let output = required_u64(usage, "output")?;
     let cache_read = required_u64(usage, "cacheRead")?;
     let cache_write = required_u64(usage, "cacheWrite")?;
-    Ok(PiAgentEvent::Usage(
+    Ok(PiAgentEvent::MessageEnded(Some(
         TokenUsage::new(Some(input), Some(output))
             .with_cache_tokens(Some(cache_read), Some(cache_write)),
-    ))
+    )))
+}
+
+fn decode_message_start(value: &Value) -> Result<PiAgentEvent, PiRpcProtocolFailure> {
+    let message = value
+        .get("message")
+        .ok_or_else(|| failure(PiRpcProtocolFailureKind::UnknownRecord))?;
+    if message.get("role").and_then(Value::as_str) == Some("assistant") {
+        Ok(PiAgentEvent::MessageStarted)
+    } else {
+        Ok(PiAgentEvent::Progress)
+    }
 }
 
 fn decode_message_update(value: &Value) -> Result<PiAgentEvent, PiRpcProtocolFailure> {
@@ -198,11 +230,44 @@ fn decode_message_update(value: &Value) -> Result<PiAgentEvent, PiRpcProtocolFai
             required_text(event, "delta", PiRpcProtocolFailureKind::UnknownRecord)
                 .map(|delta| PiAgentEvent::ReasoningDelta(delta.to_owned()))
         }
+        Some("thinking_start") => Ok(PiAgentEvent::ReasoningStarted),
+        Some("thinking_end") => Ok(PiAgentEvent::ReasoningEnded),
         Some(
-            "start" | "text_start" | "text_end" | "thinking_start" | "thinking_end"
-            | "toolcall_start" | "toolcall_delta" | "toolcall_end" | "done" | "error",
+            "start" | "text_start" | "text_end" | "toolcall_start" | "toolcall_delta"
+            | "toolcall_end" | "done" | "error",
         ) => Ok(PiAgentEvent::Progress),
         _ => Err(failure(PiRpcProtocolFailureKind::UnknownRecord)),
+    }
+}
+
+#[derive(Clone, Copy)]
+enum ToolPhase {
+    Started,
+    Updated,
+    Ended,
+}
+
+fn decode_tool(value: &Value, phase: ToolPhase) -> Result<PiAgentEvent, PiRpcProtocolFailure> {
+    let call_id =
+        required_text(value, "toolCallId", PiRpcProtocolFailureKind::UnknownRecord)?.to_owned();
+    let name =
+        required_text(value, "toolName", PiRpcProtocolFailureKind::UnknownRecord)?.to_owned();
+    Ok(match phase {
+        ToolPhase::Started => PiAgentEvent::ToolStarted { call_id, name },
+        ToolPhase::Updated => PiAgentEvent::ToolUpdated { call_id, name },
+        ToolPhase::Ended => PiAgentEvent::ToolEnded {
+            call_id,
+            name,
+            failed: value.get("isError").and_then(Value::as_bool) == Some(true),
+        },
+    })
+}
+
+fn bounded_namespace(value: &str) -> Option<String> {
+    if value.is_empty() || value.len() > 96 || value.chars().any(char::is_control) {
+        None
+    } else {
+        Some(value.to_owned())
     }
 }
 

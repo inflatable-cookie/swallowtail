@@ -5,7 +5,7 @@ use serde_json::Value;
 use swallowtail_core::ActivityDisclosure;
 use swallowtail_runtime::{
     ActivityAssistantPhase, ActivityContentStream, ActivityContentUpdate, ActivityKind,
-    ActivityLifecyclePhase, ActivityNamespace, ActivityStatus, RuntimeFailure,
+    ActivityLabel, ActivityLifecyclePhase, ActivityNamespace, ActivityStatus, RuntimeFailure,
 };
 
 mod detail;
@@ -17,6 +17,7 @@ use detail::{
 pub(super) struct ItemProjection {
     pub(super) identity: ItemIdentity,
     pub(super) status: ActivityStatus,
+    pub(super) label: Option<ActivityLabel>,
     pub(super) content: Option<ActivityContentUpdate>,
 }
 
@@ -83,9 +84,18 @@ pub(super) fn item_projection(
     if !allowed {
         return Err(malformed_stream());
     }
+    let label = match item_type {
+        "mcp_tool_call" => item
+            .get("server")
+            .and_then(Value::as_str)
+            .zip(item.get("tool").and_then(Value::as_str))
+            .and_then(|(server, tool)| ActivityLabel::new(format!("{server}.{tool}")).ok()),
+        _ => None,
+    };
     Ok(ItemProjection {
         identity,
         status: item_status(item, phase)?,
+        label,
         content,
     })
 }

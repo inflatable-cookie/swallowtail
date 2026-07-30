@@ -26,6 +26,20 @@ impl AnthropicPreparedEvidence {
         })
     }
 
+    pub(super) fn from_prepared_with_activity(
+        prepared: &AnthropicPreparedIntegration,
+        plan: PreflightPlan,
+        activity_profile: swallowtail_core::ObservableActivityProfile,
+    ) -> Result<Self, PreparationFailure> {
+        Ok(Self {
+            operation: PreparedOperationEvidence::from_plan_with_activity_profile(
+                plan,
+                prepared.access_evidence().clone(),
+                activity_profile,
+            )?,
+        })
+    }
+
     #[must_use]
     pub const fn access(&self) -> &swallowtail_runtime::PreparedAccessEvidence {
         self.operation.access()
@@ -34,6 +48,11 @@ impl AnthropicPreparedEvidence {
     #[must_use]
     pub const fn operation(&self) -> &PreparedOperationEvidence {
         &self.operation
+    }
+
+    #[must_use]
+    pub const fn observable_activity(&self) -> &swallowtail_core::ObservableActivityProfile {
+        self.operation.observable_activity()
     }
 
     #[must_use]
@@ -60,6 +79,7 @@ pub(super) fn instance_with_capabilities(
         base.policy_id().clone(),
         capabilities,
     )
+    .with_interface_versions(base.interface_versions().cloned())
 }
 
 pub(super) fn model_route(
@@ -106,6 +126,8 @@ pub(super) fn requirements(
     .with_ownership_modes([prepared.instance().ownership()])
     .with_host_services(host_services)
     .with_capabilities(capabilities);
+    requirements =
+        requirements.with_interface_versions([crate::anthropic_messages_facade_binding()]);
     if role == DriverRole::InteractiveSession {
         requirements = requirements
             .with_session_access_policy(SessionAccessPolicy::resource_free())

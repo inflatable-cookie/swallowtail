@@ -46,6 +46,7 @@ impl TurnHandle for OpenCodeTurnHandle {
 }
 
 struct TurnPump {
+    turn_id: RuntimeTurnId,
     subscription: Subscription,
     deadline: Option<Deadline>,
     services: HostServices,
@@ -59,6 +60,7 @@ struct TurnPump {
 
 async fn pump_turn(pump: TurnPump) {
     let TurnPump {
+        turn_id,
         mut subscription,
         deadline,
         services,
@@ -75,6 +77,7 @@ async fn pump_turn(pump: TurnPump) {
     let mut output = None;
     let mut usage: Option<swallowtail_runtime::TokenUsage> = None;
     let mut usage_part_ids = BTreeSet::new();
+    let mut activity = crate::activity::OpenCodeActivityProjection::new(turn_id);
     let mut status = loop {
         match next_signal(&mut subscription, &mut deadline_wait).await {
             TurnSignal::Deadline => {
@@ -105,7 +108,9 @@ async fn pump_turn(pump: TurnPump) {
                     CleanupOutcome::Clean,
                 );
             }
-            TurnSignal::Data(data) => match parse_event(&data, &cancellation.session_id) {
+            TurnSignal::Data(data) => match parse_event(&data, &cancellation.session_id).and_then(
+                |event| project_event(&mut activity, &events, &mut sequence, event),
+            ) {
                 Ok(Event::Connected | Event::Foreign) => {}
                 Ok(Event::Busy) => {
                     if let Err(error) =
@@ -119,7 +124,7 @@ async fn pump_turn(pump: TurnPump) {
                     }
                     sequence += 1;
                 }
-                Ok(Event::OutputDelta(text)) => {
+                Ok(Event::OutputDelta { text, .. }) => {
                     if let Ok(content) = swallowtail_runtime::OperationContent::new(text) {
                         if let Err(error) = events.send(RuntimeEvent::with_content(
                             sequence,
@@ -135,7 +140,7 @@ async fn pump_turn(pump: TurnPump) {
                         sequence += 1;
                     }
                 }
-                Ok(Event::OutputSnapshot(text)) => {
+                Ok(Event::OutputSnapshot { text, .. }) => {
                     if let Ok(content) = swallowtail_runtime::OperationContent::new(text) {
                         output = Some(content.clone());
                         if let Err(error) = events.send(RuntimeEvent::with_content(
@@ -152,6 +157,23 @@ async fn pump_turn(pump: TurnPump) {
                         sequence += 1;
                     }
                 }
+                Ok(Event::ReasoningSnapshot { text, .. }) => {
+                    if let Ok(content) = swallowtail_runtime::OperationContent::new(text) {
+                        if let Err(error) = events.send(RuntimeEvent::with_content(
+                            sequence,
+                            RuntimeEventKind::ReasoningProgress,
+                            content,
+                        )) {
+                            let abort = cancellation.request().await;
+                            break (
+                                TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
+                                cleanup_from_result(abort.map(|_| ())),
+                            );
+                        }
+                        sequence += 1;
+                    }
+                }
+                Ok(Event::ToolState { .. } | Event::Unknown(_)) => {}
                 Ok(Event::Usage(part_id, observed)) => {
                     if !usage_part_ids.insert(part_id) {
                         let abort = cancellation.request().await;
@@ -263,6 +285,33 @@ async fn pump_turn(pump: TurnPump) {
         callbacks.abandon(reason);
     }
     let cleanup = merge_cleanup(status.1, stream_cleanup);
+    let activity_status = match &status.0 {
+        TerminalStatus::Completed => swallowtail_runtime::ActivityStatus::Completed,
+        TerminalStatus::Cancelled | TerminalStatus::TimedOut => {
+            swallowtail_runtime::ActivityStatus::Cancelled
+        }
+        TerminalStatus::ProviderRequestObserved(_)
+        | TerminalStatus::ProviderFailed(_)
+        | TerminalStatus::HostFailed(_)
+        | TerminalStatus::RuntimeFailed(_) => swallowtail_runtime::ActivityStatus::Failed,
+    };
+    match activity.complete(activity_status) {
+        Ok(observations) => {
+            for observation in observations {
+                if let Err(error) = events.send(RuntimeEvent::new(
+                    sequence,
+                    RuntimeEventKind::Activity(observation),
+                )) {
+                    status.0 = TerminalStatus::RuntimeFailed(error.diagnostic().clone());
+                    break;
+                }
+                sequence += 1;
+            }
+        }
+        Err(error) => {
+            status.0 = TerminalStatus::RuntimeFailed(error.diagnostic().clone());
+        }
+    }
     if let Some(usage) = usage
         && let Err(error) = events.send(RuntimeEvent::new(
             sequence,
@@ -280,4 +329,20 @@ async fn pump_turn(pump: TurnPump) {
     }
     let _ = terminal.complete(outcome);
     terminal_flag.store(true, Ordering::SeqCst);
+}
+
+fn project_event(
+    activity: &mut crate::activity::OpenCodeActivityProjection,
+    events: &swallowtail_runtime::RuntimeEventSender,
+    sequence: &mut u64,
+    event: Event,
+) -> Result<Event, RuntimeFailure> {
+    for observation in activity.project(&event)? {
+        events.send(RuntimeEvent::new(
+            *sequence,
+            RuntimeEventKind::Activity(observation),
+        ))?;
+        *sequence += 1;
+    }
+    Ok(event)
 }

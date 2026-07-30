@@ -1,0 +1,477 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-07-29",
+  "contract": "044-observable-agent-activity-and-disclosure",
+  "route_count": 13,
+  "ordinary_text_profile_count": 14,
+  "not_applicable_operation_count": 13,
+  "routes": [
+    {
+      "id": "anthropic.messages",
+      "driver": "swallowtail.anthropic.direct",
+      "transport": "https-sse",
+      "qualified": "anthropic-2023-06-01",
+      "ordinary_profiles": [
+        {
+          "operation": "structured-run",
+          "applicability": "available",
+          "assistant_message": "available",
+          "reasoning_summary": "unavailable",
+          "provider_tool": "available-with-explicit-web-search",
+          "consumer_tool": "not-applicable",
+          "lifecycle": "message and content-block start-delta-stop",
+          "correlation": "message id, content index, server tool-use id",
+          "ownership": "web search is provider-owned",
+          "disclosure": "assistant text and bounded provider-tool display only"
+        },
+        {
+          "operation": "interactive-session",
+          "applicability": "available",
+          "assistant_message": "available",
+          "reasoning_summary": "unavailable",
+          "provider_tool": "not-applicable",
+          "consumer_tool": "available",
+          "lifecycle": "message and content-block start-delta-stop; tool call completes before callback wait",
+          "correlation": "message id, content index, tool-use id",
+          "ownership": "declared client tool is consumer-owned and consumer-executed",
+          "disclosure": "assistant text plus bounded tool identity and correlated arguments"
+        }
+      ],
+      "non_activity_operations": [
+        {
+          "operation": "model-catalogue",
+          "applicability": "not-applicable",
+          "reason": "catalogue observations are not agent activity"
+        }
+      ],
+      "reasoning_boundary": "current API supports summarized thinking, but the qualified route does not request it",
+      "fixtures": {
+        "positive": "swallowtail-adapter-anthropic/tests/fixtures/anthropic-2023-06-01/success.sse",
+        "tool": "swallowtail-adapter-anthropic/tests/fixtures/anthropic-2023-06-01/tool-use.sse",
+        "provider_tool": "swallowtail-adapter-anthropic/tests/fixtures/anthropic-2023-06-01/web-search.sse",
+        "unknown": "swallowtail-adapter-anthropic/tests/fixtures/anthropic-2023-06-01/unknown-event.sse",
+        "malformed": "swallowtail-adapter-anthropic/tests/fixtures/anthropic-2023-06-01/disconnect.sse",
+        "failure": "swallowtail-adapter-anthropic/tests/fixtures/anthropic-2023-06-01/midstream-error.sse"
+      }
+    },
+    {
+      "id": "kimi-platform.chat",
+      "driver": "swallowtail.kimi-platform.direct-chat",
+      "transport": "https-sse",
+      "qualified": "kimi-platform-chat-2026-07-21",
+      "ordinary_profiles": [
+        {
+          "operation": "structured-run",
+          "applicability": "available",
+          "assistant_message": "available",
+          "reasoning_summary": "available",
+          "provider_tool": "unavailable",
+          "consumer_tool": "unavailable",
+          "lifecycle": "operation-local reasoning and assistant deltas followed by completion",
+          "correlation": "operation-local stream identity",
+          "ownership": "no tool route is qualified",
+          "disclosure": "provider-returned K3 thought updates map as bounded reasoning-summary display, never complete reasoning"
+        }
+      ],
+      "non_activity_operations": [
+        {
+          "operation": "model-catalogue",
+          "applicability": "not-applicable",
+          "reason": "catalogue observations are not agent activity"
+        }
+      ],
+      "reasoning_boundary": "reasoning_content is provider-returned client-visible progress; it is not private replay state",
+      "fixtures": {
+        "positive": "swallowtail-protocol-openai-chat/tests/fixtures/kimi-platform-k3-2026-07-21/success.sse",
+        "unavailable": "swallowtail-protocol-openai-chat/tests/fixtures/kimi-platform-k3-2026-07-21/protocol.json",
+        "unknown": "swallowtail-protocol-openai-chat/tests/fixtures/kimi-platform-k3-2026-07-21/unknown.sse",
+        "malformed": "swallowtail-protocol-openai-chat/tests/fixtures/kimi-platform-k3-2026-07-21/disconnect.sse",
+        "failure": "swallowtail-protocol-openai-chat/tests/fixtures/kimi-platform-k3-2026-07-21/errors.json"
+      }
+    },
+    {
+      "id": "deepseek.continuation",
+      "driver": "swallowtail.deepseek.direct",
+      "transport": "https-sse",
+      "qualified": "deepseek-openai-chat-2026-07-22",
+      "ordinary_profiles": [
+        {
+          "operation": "structured-run",
+          "applicability": "available",
+          "assistant_message": "available",
+          "reasoning_summary": "unavailable",
+          "provider_tool": "not-applicable",
+          "consumer_tool": "not-applicable",
+          "lifecycle": "operation-local assistant deltas followed by completion",
+          "correlation": "operation-local stream identity",
+          "ownership": "no tool continuation occurs in the one-request profile",
+          "disclosure": "assistant text only"
+        },
+        {
+          "operation": "interactive-session",
+          "applicability": "available",
+          "assistant_message": "available",
+          "reasoning_summary": "unavailable",
+          "provider_tool": "not-applicable",
+          "consumer_tool": "available",
+          "lifecycle": "completed buffered tool call followed by streamed assistant completion",
+          "correlation": "tool-call id and session-local provider attempt",
+          "ownership": "declared function is consumer-owned and consumer-executed",
+          "disclosure": "assistant text plus bounded tool identity and correlated arguments"
+        }
+      ],
+      "non_activity_operations": [
+        {
+          "operation": "model-catalogue",
+          "applicability": "not-applicable",
+          "reason": "catalogue observations are not agent activity"
+        }
+      ],
+      "reasoning_boundary": "reasoning_content is adapter-private continuation required for exact replay",
+      "fixtures": {
+        "positive": "swallowtail-adapter-deepseek/tests/fixtures/deepseek-openai-chat-2026-07-22/attempt-2-final.sse",
+        "tool": "swallowtail-adapter-deepseek/tests/fixtures/deepseek-openai-chat-2026-07-22/attempt-1-tool-response.json",
+        "unavailable": "swallowtail-adapter-deepseek/tests/fixtures/deepseek-openai-chat-2026-07-22/protocol.json",
+        "unknown": "swallowtail-adapter-deepseek/tests/fixtures/deepseek-openai-chat-2026-07-22/unknown.sse",
+        "malformed": "swallowtail-adapter-deepseek/tests/fixtures/deepseek-openai-chat-2026-07-22/tool-response-drift.json",
+        "failure": "swallowtail-adapter-deepseek/tests/fixtures/deepseek-openai-chat-2026-07-22/provider-error.sse"
+      }
+    },
+    {
+      "id": "alibaba.conversations",
+      "driver": "swallowtail.alibaba-model-studio.conversations-responses",
+      "transport": "https-sse",
+      "qualified": "model-studio-2026-07-22",
+      "ordinary_profiles": [
+        {
+          "operation": "structured-run",
+          "applicability": "available",
+          "assistant_message": "available",
+          "reasoning_summary": "unavailable",
+          "provider_tool": "unavailable",
+          "consumer_tool": "unavailable",
+          "lifecycle": "response, output-item, content-part, and text start-delta-done",
+          "correlation": "response id, output item id, output and content indexes",
+          "ownership": "qualified request disables every tool",
+          "disclosure": "assistant text only"
+        },
+        {
+          "operation": "interactive-session",
+          "applicability": "available",
+          "assistant_message": "available",
+          "reasoning_summary": "unavailable",
+          "provider_tool": "unavailable",
+          "consumer_tool": "unavailable",
+          "lifecycle": "one native assistant item lifecycle per provider-conversation turn",
+          "correlation": "conversation id, response id, output item id, turn",
+          "ownership": "qualified request disables every tool",
+          "disclosure": "assistant text only"
+        }
+      ],
+      "non_activity_operations": [],
+      "reasoning_boundary": "qualified request fixes reasoning.effort=none; current richer Responses events do not widen it",
+      "fixtures": {
+        "positive": "swallowtail-adapter-alibaba-model-studio/tests/fixtures/model-studio-2026-07-22/success.sse",
+        "unavailable": "swallowtail-adapter-alibaba-model-studio/tests/fixtures/model-studio-2026-07-22/reasoning.sse",
+        "unknown": "swallowtail-adapter-alibaba-model-studio/tests/fixtures/model-studio-2026-07-22/unknown.sse",
+        "malformed": "swallowtail-adapter-alibaba-model-studio/tests/fixtures/model-studio-2026-07-22/sequence-drift.sse",
+        "failure": "swallowtail-adapter-alibaba-model-studio/tests/fixtures/model-studio-2026-07-22/provider-error.json"
+      }
+    },
+    {
+      "id": "openai.background",
+      "driver": "swallowtail.openai.background",
+      "transport": "https-sse-with-reattachment",
+      "qualified": "openai-responses-background-2026-07-21",
+      "ordinary_profiles": [
+        {
+          "operation": "structured-run",
+          "applicability": "available",
+          "assistant_message": "available",
+          "reasoning_summary": "unavailable",
+          "provider_tool": "unavailable",
+          "consumer_tool": "unavailable",
+          "lifecycle": "response queued-in-progress, text delta-done, response completed across at most one reattachment",
+          "correlation": "response id and sequence number; assistant identity is response-local",
+          "ownership": "qualified route excludes tools",
+          "disclosure": "assistant text only"
+        }
+      ],
+      "non_activity_operations": [],
+      "reasoning_boundary": "reasoning effort does not request or qualify a readable summary",
+      "fixtures": {
+        "positive": "swallowtail-adapter-openai/tests/fixtures/openai-responses-2026-07-21/initial-stream.sse",
+        "continuation": "swallowtail-adapter-openai/tests/fixtures/openai-responses-2026-07-21/reattached-stream.sse",
+        "unavailable": "swallowtail-adapter-openai/tests/fixtures/openai-responses-2026-07-21/generation-controls-request.json",
+        "unknown": "swallowtail-adapter-openai/tests/fixtures/openai-responses-2026-07-21/unknown-event.sse",
+        "malformed": "swallowtail-adapter-openai/tests/fixtures/openai-responses-2026-07-21/malformed-disconnect.sse",
+        "failure": "swallowtail-adapter-openai/tests/fixtures/openai-responses-2026-07-21/failed-stream.sse"
+      }
+    },
+    {
+      "id": "xai.responses-websocket",
+      "driver": "swallowtail.xai.websocket",
+      "transport": "responses-websocket",
+      "qualified": "xai-responses-websocket-2026-04-23",
+      "ordinary_profiles": [
+        {
+          "operation": "structured-run",
+          "applicability": "available",
+          "assistant_message": "available",
+          "reasoning_summary": "unavailable",
+          "provider_tool": "unavailable",
+          "consumer_tool": "unavailable",
+          "lifecycle": "response created-in-progress, text delta-done, response completed",
+          "correlation": "response id, item id, output and content indexes",
+          "ownership": "qualified route sends no tools",
+          "disclosure": "assistant text only"
+        },
+        {
+          "operation": "interactive-session",
+          "applicability": "available",
+          "assistant_message": "available",
+          "reasoning_summary": "unavailable",
+          "provider_tool": "unavailable",
+          "consumer_tool": "unavailable",
+          "lifecycle": "one native assistant item lifecycle per serial response",
+          "correlation": "response id, item id, output and content indexes",
+          "ownership": "qualified route sends no tools",
+          "disclosure": "assistant text only"
+        }
+      ],
+      "non_activity_operations": [],
+      "reasoning_boundary": "encrypted thinking is private continuation material, not display content",
+      "fixtures": {
+        "positive": "swallowtail-adapter-xai/tests/fixtures/xai-responses-websocket-2026-04-23/first-turn-events.ndjson",
+        "unavailable": "swallowtail-adapter-xai/tests/fixtures/xai-responses-websocket-2026-04-23/protocol.json",
+        "unknown": "swallowtail-adapter-xai/tests/fixtures/xai-responses-websocket-2026-04-23/unknown-event.json",
+        "malformed": "swallowtail-adapter-xai/tests/fixtures/xai-responses-websocket-2026-04-23/previous-response-not-found.json",
+        "failure": "swallowtail-adapter-xai/tests/fixtures/xai-responses-websocket-2026-04-23/connection-limit.json"
+      }
+    },
+    {
+      "id": "openai.realtime",
+      "driver": "swallowtail.openai.realtime",
+      "transport": "realtime-websocket",
+      "qualified": "openai-realtime-2026-07-22",
+      "ordinary_profiles": [],
+      "non_activity_operations": [
+        {
+          "operation": "realtime-media-session",
+          "applicability": "not-applicable",
+          "reason": "audio, transcript, input commit, interruption, and response lifecycle remain Contract 026 media events; selected route has no tools"
+        }
+      ],
+      "reasoning_boundary": "selected route exposes no ordinary readable reasoning channel",
+      "fixtures": {
+        "positive": "swallowtail-adapter-openai/tests/fixtures/openai-realtime-2026-07-22/success-events.jsonl",
+        "unknown": "swallowtail-adapter-openai/tests/fixtures/openai-realtime-2026-07-22/unknown-event.json",
+        "malformed": "swallowtail-adapter-openai/tests/fixtures/openai-realtime-2026-07-22/malformed-event.json",
+        "failure": "swallowtail-adapter-openai/tests/fixtures/openai-realtime-2026-07-22/provider-error.json"
+      }
+    },
+    {
+      "id": "gemini.live",
+      "driver": "swallowtail.gemini.live",
+      "transport": "realtime-websocket",
+      "qualified": "gemini-live-preview-2026-07-22",
+      "ordinary_profiles": [],
+      "non_activity_operations": [
+        {
+          "operation": "realtime-media-session",
+          "applicability": "not-applicable",
+          "reason": "audio, transcript, activity commit, rollover, and response lifecycle remain Contract 026 media events; selected route has no tools"
+        }
+      ],
+      "reasoning_boundary": "selected route exposes no ordinary readable reasoning channel",
+      "fixtures": {
+        "positive": "swallowtail-adapter-gemini/tests/fixtures/gemini-live-2026-07-22/server-audio.json",
+        "unknown": "swallowtail-adapter-gemini/tests/fixtures/gemini-live-2026-07-22/server-unknown.json",
+        "malformed": "swallowtail-adapter-gemini/tests/fixtures/gemini-live-2026-07-22/server-malformed.json",
+        "failure": "swallowtail-adapter-gemini/tests/fixtures/gemini-live-2026-07-22/server-failure.json"
+      }
+    },
+    {
+      "id": "bedrock.runtime",
+      "driver": "swallowtail.amazon-bedrock.direct",
+      "transport": "rust-sdk-eventstream",
+      "qualified": "aws-sdk-bedrockruntime-1.136.0",
+      "ordinary_profiles": [
+        {
+          "operation": "structured-run",
+          "applicability": "available",
+          "assistant_message": "available",
+          "reasoning_summary": "unavailable",
+          "provider_tool": "unavailable",
+          "consumer_tool": "unavailable",
+          "lifecycle": "message start, text deltas, content stop, message stop",
+          "correlation": "operation-local message and content-block order",
+          "ownership": "qualified SDK subset rejects tool semantics",
+          "disclosure": "assistant text only"
+        }
+      ],
+      "non_activity_operations": [],
+      "reasoning_boundary": "qualified decoder rejects ReasoningContent, ToolUse, and ToolResult variants",
+      "fixtures": {
+        "positive": "swallowtail-adapter-bedrock/tests/sdk_fixtures.rs#typed_sdk_success_stream_preserves_text_stop_and_usage_order",
+        "unavailable": "swallowtail-adapter-bedrock/tests/sdk_fixtures.rs#unknown_and_unsupported_sdk_semantics_fail_closed",
+        "unknown": "swallowtail-adapter-bedrock/tests/sdk_fixtures.rs#unknown_and_unsupported_sdk_semantics_fail_closed",
+        "malformed": "swallowtail-adapter-bedrock/tests/sdk_fixtures.rs#missing_fields_and_order_drift_fail_closed",
+        "failure": "swallowtail-adapter-bedrock/tests/sdk_fixtures.rs#provider_failures_are_classified_without_preserving_raw_messages"
+      }
+    },
+    {
+      "id": "bedrock.catalogue",
+      "driver": "swallowtail.amazon-bedrock.catalogue",
+      "transport": "rust-sdk-control-plane",
+      "qualified": "aws-sdk-bedrock-1.148.0",
+      "ordinary_profiles": [],
+      "non_activity_operations": [
+        {
+          "operation": "model-catalogue",
+          "applicability": "not-applicable",
+          "reason": "catalogue observations are not agent activity"
+        }
+      ],
+      "reasoning_boundary": "no inference occurs",
+      "fixtures": {
+        "positive": "swallowtail-adapter-bedrock/tests/fixtures/bedrock-control-plane-1.148.0/protocol.json"
+      }
+    },
+    {
+      "id": "ollama.attached",
+      "driver": "swallowtail.ollama.native-attached",
+      "transport": "http-ndjson",
+      "qualified": "ollama 0.14.0..=0.32.1 native-text-v1",
+      "ordinary_profiles": [
+        {
+          "operation": "structured-run",
+          "applicability": "available",
+          "assistant_message": "available",
+          "reasoning_summary": "unavailable",
+          "provider_tool": "unavailable",
+          "consumer_tool": "unavailable",
+          "lifecycle": "operation-local assistant deltas followed by terminal chat record",
+          "correlation": "operation-local stream identity",
+          "ownership": "qualified behavior segment excludes tools",
+          "disclosure": "assistant text only"
+        },
+        {
+          "operation": "interactive-session",
+          "applicability": "available",
+          "assistant_message": "available",
+          "reasoning_summary": "unavailable",
+          "provider_tool": "unavailable",
+          "consumer_tool": "unavailable",
+          "lifecycle": "one operation-local assistant lifecycle per committed transcript-replay turn",
+          "correlation": "session turn plus operation-local stream identity",
+          "ownership": "qualified behavior segment excludes tools",
+          "disclosure": "assistant text only"
+        }
+      ],
+      "non_activity_operations": [
+        {
+          "operation": "model-inventory",
+          "applicability": "not-applicable",
+          "reason": "installed and resident model observations are not agent activity"
+        }
+      ],
+      "reasoning_boundary": "current native API can emit thinking, but native-text-v1 rejects it across the guaranteed range",
+      "fixtures": {
+        "positive": "swallowtail-adapter-ollama/tests/fixtures/ollama-native-v0.14.0-v0.32.1/chat-success.ndjson",
+        "unavailable": "swallowtail-adapter-ollama/tests/fixtures/ollama-native-v0.14.0-v0.32.1/chat-unsupported.ndjson",
+        "unknown": "swallowtail-adapter-ollama/tests/fixtures/ollama-native-v0.14.0-v0.32.1/chat-unsupported.ndjson",
+        "malformed": "swallowtail-adapter-ollama/tests/fixtures/ollama-native-v0.14.0-v0.32.1/chat-malformed.ndjson",
+        "failure": "swallowtail-adapter-ollama/tests/fixtures/ollama-native-v0.14.0-v0.32.1/chat-error.ndjson"
+      }
+    },
+    {
+      "id": "llama-cpp.attached",
+      "driver": "swallowtail.llama-cpp.attached-openai-chat",
+      "transport": "http-sse",
+      "qualified": "llama.cpp b9910 openai-chat",
+      "ordinary_profiles": [
+        {
+          "operation": "structured-run",
+          "applicability": "available",
+          "assistant_message": "available",
+          "reasoning_summary": "unavailable",
+          "provider_tool": "unavailable",
+          "consumer_tool": "unavailable",
+          "lifecycle": "operation-local assistant deltas followed by terminal usage",
+          "correlation": "operation-local stream identity",
+          "ownership": "qualified deployment disables parsed reasoning and exposes no tools",
+          "disclosure": "assistant text only"
+        }
+      ],
+      "non_activity_operations": [
+        {
+          "operation": "model-catalogue",
+          "applicability": "not-applicable",
+          "reason": "catalogue observations are not agent activity"
+        }
+      ],
+      "reasoning_boundary": "current server supports reasoning and tools, but the exact b9910 deployment fixes reasoning-format none and text-only semantics",
+      "fixtures": {
+        "positive": "swallowtail-adapter-llama-cpp/tests/fixtures/llama-cpp-b9910-openai-chat/success.sse",
+        "unavailable": "swallowtail-adapter-llama-cpp/tests/fixtures/llama-cpp-b9910-openai-chat/unsupported-semantics.sse",
+        "unknown": "swallowtail-adapter-llama-cpp/tests/fixtures/llama-cpp-b9910-openai-chat/unsupported-semantics.sse",
+        "malformed": "swallowtail-adapter-llama-cpp/tests/fixtures/llama-cpp-b9910-openai-chat/disconnect.sse",
+        "failure": "swallowtail-adapter-llama-cpp/tests/fixtures/llama-cpp-b9910-openai-chat/midstream-error.sse"
+      }
+    },
+    {
+      "id": "llama-cpp.owned",
+      "driver": "swallowtail.llama-cpp.owned-b10069-openai-chat",
+      "transport": "process-plus-http",
+      "qualified": "llama.cpp b10069 owned serving",
+      "ordinary_profiles": [],
+      "non_activity_operations": [
+        {
+          "operation": "serving-lifecycle",
+          "applicability": "not-applicable",
+          "reason": "server readiness and stop evidence are not agent activity"
+        }
+      ],
+      "reasoning_boundary": "serving lifecycle performs no inference",
+      "fixtures": {
+        "positive": "swallowtail-adapter-llama-cpp/tests/fixtures/llama-cpp-b10069-owned/startup-success.stderr",
+        "malformed": "swallowtail-adapter-llama-cpp/tests/fixtures/llama-cpp-b10069-owned/startup-malformed.stderr",
+        "failure": "swallowtail-adapter-llama-cpp/tests/fixtures/llama-cpp-b10069-owned/startup-duplicate.stderr"
+      }
+    }
+  ],
+  "auxiliary_catalogues": [
+    {
+      "id": "alibaba.deployable-models",
+      "applicability": "not-applicable",
+      "reason": "catalogue observations are not agent activity"
+    },
+    {
+      "id": "gemini.models",
+      "applicability": "not-applicable",
+      "reason": "catalogue observations are not agent activity"
+    },
+    {
+      "id": "openai.models",
+      "applicability": "not-applicable",
+      "reason": "catalogue observations are not agent activity"
+    },
+    {
+      "id": "xai.models",
+      "applicability": "not-applicable",
+      "reason": "catalogue observations are not agent activity"
+    }
+  ],
+  "selected_text_mapping_order": [
+    "alibaba.conversations",
+    "anthropic.messages",
+    "deepseek.continuation",
+    "kimi-platform.chat",
+    "openai.background",
+    "xai.responses-websocket",
+    "bedrock.runtime",
+    "ollama.attached",
+    "llama-cpp.attached"
+  ]
+}

@@ -3,7 +3,7 @@ use swallowtail_runtime::TokenUsage;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) enum Event {
-    MessageStart(TokenUsage),
+    MessageStart { id: String, usage: TokenUsage },
     ContentStart(ContentBlock),
     OutputDelta(String),
     InputJsonDelta(String),
@@ -20,8 +20,8 @@ pub(crate) enum Event {
 pub(crate) enum ContentBlock {
     Text,
     ToolUse { id: String, name: String },
-    SearchUse,
-    SearchResult,
+    SearchUse { id: String },
+    SearchResult { tool_use_id: String },
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -41,7 +41,10 @@ pub(crate) fn parse_event(frame: &SseFrame) -> Result<Event, RuntimeFailure> {
         return Err(protocol_failure("stream event type"));
     }
     match frame.name.as_str() {
-        "message_start" => Ok(Event::MessageStart(parse_usage(&value["message"]["usage"]))),
+        "message_start" => Ok(Event::MessageStart {
+            id: required_string(&value["message"], "id", "message id")?,
+            usage: parse_usage(&value["message"]["usage"]),
+        }),
         "content_block_start" => parse_content_start(&value["content_block"]),
         "content_block_delta" => parse_content_delta(&value["delta"]),
         "content_block_stop" => Ok(Event::ContentStop),
@@ -69,9 +72,13 @@ fn parse_content_start(value: &Value) -> Result<Event, RuntimeFailure> {
             name: required_string(value, "name", "tool-use name")?,
         },
         Some("server_tool_use") if value["name"].as_str() == Some("web_search") => {
-            ContentBlock::SearchUse
+            ContentBlock::SearchUse {
+                id: required_string(value, "id", "server tool-use id")?,
+            }
         }
-        Some("web_search_tool_result") => ContentBlock::SearchResult,
+        Some("web_search_tool_result") => ContentBlock::SearchResult {
+            tool_use_id: required_string(value, "tool_use_id", "search result tool-use id")?,
+        },
         _ => return Err(protocol_failure("content-block semantics")),
     };
     Ok(Event::ContentStart(block))

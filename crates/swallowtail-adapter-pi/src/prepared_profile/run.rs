@@ -67,7 +67,11 @@ impl PiPreparedIntegration {
             input.into_parts();
         let image_attachments = !attachments.is_empty();
         validate_attachments(&attachments)?;
-        let capabilities = run_capabilities(image_attachments);
+        let activity_profile = super::activity_profile::activity_profile(self)?;
+        let capabilities = super::activity_profile::with_activity(
+            run_capabilities(image_attachments),
+            &activity_profile,
+        );
         let instance = instance_with_capabilities(self, capabilities.clone());
         let (route_id, route_revision, provider_id, model_id) = model.into_parts();
         let route = ModelRoute::new(
@@ -75,16 +79,14 @@ impl PiPreparedIntegration {
             route_revision,
             self.instance().id().clone(),
             model_id,
-            capabilities,
+            capabilities.clone(),
         )
         .with_provider_id(provider_id);
         let requirements = run_requirements(
             self,
-            run_capabilities(image_attachments)
-                .iter()
-                .map(|(capability, constraints)| {
-                    CapabilityRequirement::new(capability, constraints.iter().cloned())
-                }),
+            capabilities.iter().map(|(capability, constraints)| {
+                CapabilityRequirement::new(capability, constraints.iter().cloned())
+            }),
             image_attachments,
         );
         let plan = build_plan(self, &instance, &route, &requirements)?;
@@ -97,7 +99,11 @@ impl PiPreparedIntegration {
             .with_deadline(deadline)
             .with_attachments(attachments);
         Ok(PiPreparedRun {
-            evidence: PiPreparedEvidence::from_prepared(self, plan)?,
+            evidence: PiPreparedEvidence::from_prepared_with_activity(
+                self,
+                plan,
+                activity_profile,
+            )?,
             request,
         })
     }

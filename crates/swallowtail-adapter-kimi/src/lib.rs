@@ -8,6 +8,7 @@ mod discovery;
 mod driver;
 mod failure;
 mod headless;
+mod headless_activity;
 mod headless_command;
 mod headless_events;
 mod headless_handle;

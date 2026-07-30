@@ -1,8 +1,10 @@
 use super::input::AlibabaRunProfileInput;
-use super::plan::{AlibabaModelStudioPreparedEvidence, build_plan, model_route};
+use super::plan::{
+    AlibabaModelStudioPreparedEvidence, build_plan, instance_with_capabilities, model_route,
+};
 use crate::prepared::failure;
 use crate::{AlibabaModelStudioDriver, AlibabaModelStudioPreparedIntegration};
-use swallowtail_core::PreflightPlan;
+use swallowtail_core::{CapabilityProfile, CapabilityRequirement, PreflightPlan};
 use swallowtail_runtime::{
     BoxFuture, HostServices, OperationPolicy, PreparationFailure, PreparationStage, RunHandle,
     RuntimeFailure, StructuredRunDriver, StructuredRunRequest,
@@ -73,18 +75,29 @@ impl AlibabaModelStudioPreparedIntegration {
                 "Alibaba Model Studio preparation requires the exact Singapore Qwen route",
             ));
         }
-        let requirements = crate::alibaba_model_studio_run_requirements(
+        let activity = crate::activity::profile::activity_profile();
+        let base_requirements = crate::alibaba_model_studio_run_requirements(
             self.instance().execution_host_id().clone(),
         );
-        let route = model_route(self, route_id, route_revision, model_id);
-        let plan = build_plan(self, self.instance(), &route, &requirements)?;
+        let capabilities = crate::activity::profile::with_activity(
+            CapabilityProfile::new(base_requirements.capabilities().cloned()),
+            &activity,
+        );
+        let requirements = base_requirements.with_capabilities(capabilities.iter().map(
+            |(capability, constraints)| {
+                CapabilityRequirement::new(capability, constraints.iter().cloned())
+            },
+        ));
+        let instance = instance_with_capabilities(self, capabilities.clone());
+        let route = model_route(self, route_id, route_revision, model_id, capabilities);
+        let plan = build_plan(self, &instance, &route, &requirements)?;
         let mut request =
             StructuredRunRequest::new(request_id, content, OperationPolicy::offline());
         if let Some(deadline) = deadline {
             request = request.with_deadline(deadline);
         }
         Ok(AlibabaModelStudioPreparedRun {
-            evidence: AlibabaModelStudioPreparedEvidence::from_prepared(self, plan)?,
+            evidence: AlibabaModelStudioPreparedEvidence::from_prepared(self, plan, activity)?,
             request,
         })
     }

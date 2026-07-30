@@ -65,7 +65,11 @@ impl PiPreparedIntegration {
         let (request_id, model, working_resource, deadline, options, image_attachments) =
             input.into_parts();
         validate_options(&options)?;
-        let capabilities = session_capabilities(image_attachments);
+        let activity_profile = super::activity_profile::activity_profile(self)?;
+        let capabilities = super::activity_profile::with_activity(
+            session_capabilities(image_attachments),
+            &activity_profile,
+        );
         let instance = instance_with_capabilities(self, capabilities.clone());
         let (route_id, route_revision, provider_id, model_id) = model.into_parts();
         let route = ModelRoute::new(
@@ -73,22 +77,24 @@ impl PiPreparedIntegration {
             route_revision,
             self.instance().id().clone(),
             model_id,
-            capabilities,
+            capabilities.clone(),
         )
         .with_provider_id(provider_id);
         let requirements = requirements(
             self,
-            session_capabilities(image_attachments)
-                .iter()
-                .map(|(capability, constraints)| {
-                    CapabilityRequirement::new(capability, constraints.iter().cloned())
-                }),
+            capabilities.iter().map(|(capability, constraints)| {
+                CapabilityRequirement::new(capability, constraints.iter().cloned())
+            }),
             image_attachments,
         );
         let plan = build_plan(self, &instance, &route, &requirements)?;
         let request = OpenSessionRequest::from_plan(&plan, request_id, working_resource, deadline)?;
         Ok(PiPreparedSession {
-            evidence: PiPreparedEvidence::from_prepared(self, plan)?,
+            evidence: PiPreparedEvidence::from_prepared_with_activity(
+                self,
+                plan,
+                activity_profile,
+            )?,
             request,
         })
     }

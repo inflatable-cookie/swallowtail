@@ -6,6 +6,7 @@ use self::cursor::{
 };
 use super::PumpInput;
 use crate::failure::failure;
+use crate::local_server::activity::KimiLocalActivityProjection;
 use crate::local_server::interactive::callbacks::ProviderCallbackKind;
 use crate::local_server::interactive::websocket::resync_failure;
 use crate::local_server::protocol::{
@@ -28,6 +29,7 @@ pub(super) async fn apply_frame(
     reasoning_len: &mut usize,
     provider_turn: &mut Option<u64>,
     recovery: &mut Option<(u64, u64, u64)>,
+    activity: &mut KimiLocalActivityProjection,
 ) -> Result<Option<TurnEndReason>, RuntimeFailure> {
     match decode_ws_frame(frame)? {
         WsFrame::Event(envelope) => {
@@ -36,6 +38,14 @@ pub(super) async fn apply_frame(
             }
             if !apply_cursor(&input.cursor, &envelope)? {
                 return Ok(None);
+            }
+            for observation in activity.project(&envelope.event)? {
+                emit(
+                    input,
+                    sequence,
+                    RuntimeEventKind::Activity(observation),
+                    None,
+                )?;
             }
             match envelope.event {
                 WsEvent::TurnStarted { turn_id } => {
@@ -111,6 +121,24 @@ pub(super) async fn apply_frame(
                     .await?;
                 }
                 WsEvent::SessionAborted => return Ok(Some(TurnEndReason::Cancelled)),
+                WsEvent::StepStarted { turn_id, .. }
+                | WsEvent::StepEnded { turn_id, .. }
+                | WsEvent::ToolStarted { turn_id, .. }
+                | WsEvent::ToolUpdated { turn_id, .. }
+                | WsEvent::ToolEnded { turn_id, .. } => {
+                    bind_turn(provider_turn, turn_id)?;
+                }
+                WsEvent::ShellStarted { .. }
+                | WsEvent::ShellUpdated { .. }
+                | WsEvent::ShellEnded { .. }
+                | WsEvent::SubagentSpawned { .. }
+                | WsEvent::SubagentUpdated { .. }
+                | WsEvent::SubagentEnded { .. }
+                | WsEvent::CompactionStarted
+                | WsEvent::CompactionEnded { .. }
+                | WsEvent::TaskStarted { .. }
+                | WsEvent::TaskEnded { .. }
+                | WsEvent::Unknown(_) => {}
                 WsEvent::Warning | WsEvent::Progress => {
                     emit(input, sequence, RuntimeEventKind::Progress, None)?;
                 }

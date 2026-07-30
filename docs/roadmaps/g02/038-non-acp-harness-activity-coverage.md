@@ -1,12 +1,12 @@
 # 038 Non-ACP Harness Activity Coverage
 
-Status: active
+Status: completed
 Owner: Tom
 Created: 2026-07-29
 Depends on: g02.037
 Vision tags: harness breadth, HTTP, RPC, headless streams
 Contract refs: 009, 011-012, 022-023, 028-029, 037, 039, 042-044
-Planning state: card 128 complete; card 129 ready; cards 130-131 planned
+Planning state: cards 128-131 complete
 
 ## Problem
 
@@ -22,11 +22,11 @@ profiles rather than manufacturing a common agent loop.
 
 ## Goals
 
-- [ ] Classify every non-ACP harness activity surface.
-- [ ] Freeze exact version and protocol corpora before mapping.
-- [ ] Map HTTP, SSE, WebSocket, RPC, JSON, and JSONL activity honestly.
-- [ ] Preserve harness-owned versus consumer-owned tool execution.
-- [ ] Publish a complete harness-route activity matrix.
+- [x] Classify every non-ACP harness activity surface.
+- [x] Freeze exact version and protocol corpora before mapping.
+- [x] Map HTTP, SSE, WebSocket, RPC, JSON, and JSONL activity honestly.
+- [x] Preserve harness-owned versus consumer-owned tool execution.
+- [x] Publish a complete harness-route activity matrix.
 
 ## Non-Goals
 
@@ -47,28 +47,28 @@ profiles rather than manufacturing a common agent loop.
 
 ### Batch 38.2 — HTTP, Server, And RPC Projection
 
-- [ ] Execute card 129.
-- [ ] Map OpenCode, Pi, Kimi local server, and Managed Agents.
+- [x] Execute card 129.
+- [x] Map OpenCode, Pi, Kimi local server, and Managed Agents.
 
 ### Batch 38.3 — Headless Stream Projection
 
-- [ ] Execute card 130.
-- [ ] Map Claude Code, Gemini, Kimi, and Qwen completion and tool evidence.
+- [x] Execute card 130.
+- [x] Map Claude Code, Gemini, Kimi, and Qwen completion and tool evidence.
 
 ### Batch 38.4 — Harness Closeout
 
-- [ ] Execute card 131.
-- [ ] Machine-check every production harness route and package-facing facade.
+- [x] Execute card 131.
+- [x] Machine-check every production harness route and package-facing facade.
 
 ## Acceptance Criteria
 
-- [ ] every production harness route has an exact activity profile
-- [ ] no absent lifecycle phase is invented
-- [ ] headless completion-only routes remain completion-only
-- [ ] callbacks and harness-owned tools remain distinct
-- [ ] recovery, reattachment, and activity updates remain distinct
-- [ ] unknown semantic records are visible or fail safely
-- [ ] all guaranteed route versions have deterministic evidence
+- [x] every production harness route has an exact activity profile
+- [x] no absent lifecycle phase is invented
+- [x] headless completion-only routes remain completion-only
+- [x] callbacks and harness-owned tools remain distinct
+- [x] recovery, reattachment, and activity updates remain distinct
+- [x] unknown semantic records are visible or fail safely
+- [x] all guaranteed route versions have deterministic evidence
 
 ## Decision Gates
 

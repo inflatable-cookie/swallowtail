@@ -10,12 +10,17 @@ pub struct BedrockRuntimePreparedEvidence {
 }
 
 impl BedrockRuntimePreparedEvidence {
-    pub(super) fn new(
+    pub(super) fn new_with_activity(
         prepared: &BedrockRuntimePreparedIntegration,
         plan: PreflightPlan,
+        activity_profile: swallowtail_core::ObservableActivityProfile,
     ) -> Result<Self, PreparationFailure> {
         Ok(Self {
-            operation: PreparedOperationEvidence::from_plan(plan, prepared.evidence.clone())?,
+            operation: PreparedOperationEvidence::from_plan_with_activity_profile(
+                plan,
+                prepared.evidence.clone(),
+                activity_profile,
+            )?,
             region: prepared.region.clone(),
         })
     }
@@ -23,6 +28,11 @@ impl BedrockRuntimePreparedEvidence {
     #[must_use]
     pub const fn operation(&self) -> &PreparedOperationEvidence {
         &self.operation
+    }
+
+    #[must_use]
+    pub const fn observable_activity(&self) -> &swallowtail_core::ObservableActivityProfile {
+        self.operation.observable_activity()
     }
 
     #[must_use]

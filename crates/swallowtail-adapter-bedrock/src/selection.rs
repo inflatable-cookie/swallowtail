@@ -12,9 +12,8 @@ use swallowtail_core::{
     CapabilityRequirement, ConfiguredInstance, ConfiguredInstanceId, CredentialMechanism,
     CredentialRef, CredentialState, DriverRole, EndpointAudience, EndpointAuthorization,
     EntitlementMetering, EntitlementState, ExecutionHostId, ExecutionLayer, HostServiceKind,
-    InstanceOwnership, InstancePolicyId, InstanceRevision, InstanceTargetRef, ModelId, ModelRoute,
-    ModelRouteId, ModelRouteRevision, OperationRequirements, OperationShape, ProtocolFacadeId,
-    ProviderId, RuntimeReadiness, SupportAuthority,
+    InstanceOwnership, InstancePolicyId, InstanceRevision, InstanceTargetRef,
+    OperationRequirements, OperationShape, ProtocolFacadeId, RuntimeReadiness, SupportAuthority,
 };
 
 pub const BEDROCK_RUNTIME_ENDPOINT_AUDIENCE: &str = "bedrock-runtime";
@@ -93,23 +92,6 @@ pub(crate) fn catalogue_instance(
         CapabilityProfile::new(catalogue_capabilities()),
     )
     .with_interface_versions(bedrock_catalogue_interface_bindings())
-}
-
-pub(crate) fn runtime_model_route(
-    instance: ConfiguredInstanceId,
-    route: ModelRouteId,
-    revision: ModelRouteRevision,
-    model: ModelId,
-    provider: ProviderId,
-) -> ModelRoute {
-    ModelRoute::new(
-        route,
-        revision,
-        instance,
-        model,
-        CapabilityProfile::new(runtime_capabilities()),
-    )
-    .with_provider_id(provider)
 }
 
 pub(crate) fn runtime_requirements(

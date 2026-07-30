@@ -94,6 +94,17 @@ impl AnthropicDirectDriver {
             let task_service = services.task().expect("validated task").clone();
             let pending = Arc::new(Mutex::new(Some((subscription, access, attachment))));
             let run_services = services.clone();
+            let run_id = RuntimeRunId::new(format!(
+                "anthropic-direct:{}",
+                request.request_id().as_str()
+            ))
+            .map_err(|_| {
+                failure(
+                    "swallowtail.anthropic.run_id_invalid",
+                    "Anthropic runtime run id was invalid",
+                )
+            })?;
+            let activity_run_id = run_id.clone();
             let task = task_service.spawn(
                 scope,
                 Box::pin({
@@ -115,6 +126,8 @@ impl AnthropicDirectDriver {
                             PumpInputs {
                                 attachment,
                                 search_allowed: search_domains.is_some(),
+                                activity_operation_id:
+                                    swallowtail_runtime::ActivityOperationId::Run(activity_run_id),
                             },
                         )
                         .await;
@@ -141,11 +154,6 @@ impl AnthropicDirectDriver {
                     return Err(error);
                 }
             };
-            let run_id = RuntimeRunId::new(format!(
-                "anthropic-direct:{}",
-                request.request_id().as_str()
-            ))
-            .map_err(|_| failure("swallowtail.anthropic.run_id_invalid", "Anthropic runtime run id was invalid"))?;
             Ok(Box::new(AnthropicRunHandle::new(
                 request.request_id().clone(),
                 run_id,

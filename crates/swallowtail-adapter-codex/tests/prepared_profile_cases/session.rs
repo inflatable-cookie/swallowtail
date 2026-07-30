@@ -186,6 +186,14 @@ fn prepared_profile_keeps_exact_version_and_access_provenance_visible() {
         profile.plan(),
     );
     assert_eq!(
+        profile
+            .evidence()
+            .operation()
+            .observable_activity()
+            .availability(),
+        swallowtail_core::ObservableActivityAvailability::NotApplicable
+    );
+    assert_eq!(
         profile.evidence().operation().binding().driver_role(),
         DriverRole::ModelCatalog
     );

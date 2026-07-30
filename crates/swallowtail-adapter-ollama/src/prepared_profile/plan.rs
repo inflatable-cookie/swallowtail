@@ -27,6 +27,21 @@ impl OllamaPreparedEvidence {
         })
     }
 
+    pub(super) fn from_prepared_with_activity(
+        prepared: &OllamaPreparedIntegration,
+        plan: PreflightPlan,
+        activity_profile: swallowtail_core::ObservableActivityProfile,
+    ) -> Result<Self, PreparationFailure> {
+        Ok(Self {
+            runtime: prepared.runtime().clone(),
+            operation: PreparedOperationEvidence::from_plan_with_activity_profile(
+                plan,
+                prepared.access_evidence().clone(),
+                activity_profile,
+            )?,
+        })
+    }
+
     #[must_use]
     pub const fn runtime(&self) -> &crate::OllamaPreparedRuntimeObservation {
         &self.runtime
@@ -40,6 +55,11 @@ impl OllamaPreparedEvidence {
     #[must_use]
     pub const fn operation(&self) -> &PreparedOperationEvidence {
         &self.operation
+    }
+
+    #[must_use]
+    pub const fn observable_activity(&self) -> &swallowtail_core::ObservableActivityProfile {
+        self.operation.observable_activity()
     }
 
     #[must_use]

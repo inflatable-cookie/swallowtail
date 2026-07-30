@@ -5,10 +5,12 @@ async fn pump_run(
     events: swallowtail_runtime::RuntimeEventSender,
     cancellation: Arc<AtomicBool>,
     mut deadline: Option<BoxFuture<'static, DeadlineObservation>>,
+    operation_id: swallowtail_runtime::ActivityOperationId,
 ) -> TerminalOutcome {
     let mut sequence = 1;
     let mut output = String::new();
     let mut state = StreamState::Streaming;
+    let mut activity = crate::activity::OllamaActivityProjection::new(operation_id);
     let status = loop {
         match next_run_signal(&mut subscription, &mut deadline).await {
             RunSignal::Deadline => {
@@ -41,6 +43,22 @@ async fn pump_run(
                             "Ollama completed without text output",
                         ));
                     }
+                    if let Err(error) = emit(
+                        &events,
+                        &mut sequence,
+                        RuntimeEventKind::Activity(
+                            match activity.completed(&output) {
+                                Ok(observation) => observation,
+                                Err(error) => {
+                                    break TerminalStatus::RuntimeFailed(
+                                        error.diagnostic().clone(),
+                                    );
+                                }
+                            },
+                        ),
+                    ) {
+                        break TerminalStatus::RuntimeFailed(error.diagnostic().clone());
+                    }
                     let content =
                         OperationContent::new(output.clone()).expect("output is non-empty");
                     let event = RuntimeEvent::with_content(
@@ -54,6 +72,22 @@ async fn pump_run(
                     break TerminalStatus::Completed;
                 }
                 Ok(Applied::Delta(delta)) => {
+                    if let Err(error) = emit(
+                        &events,
+                        &mut sequence,
+                        RuntimeEventKind::Activity(
+                            match activity.delta(&delta) {
+                                Ok(observation) => observation,
+                                Err(error) => {
+                                    break TerminalStatus::RuntimeFailed(
+                                        error.diagnostic().clone(),
+                                    );
+                                }
+                            },
+                        ),
+                    ) {
+                        break TerminalStatus::RuntimeFailed(error.diagnostic().clone());
+                    }
                     let content = OperationContent::new(delta).expect("delta is non-empty");
                     let event = RuntimeEvent::with_content(
                         sequence,

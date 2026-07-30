@@ -5,8 +5,9 @@ use std::sync::Arc;
 use std::task::Poll;
 use swallowtail_core::{ModelId, SafeDiagnostic};
 use swallowtail_runtime::{
-    BoxFuture, CleanupOutcome, DeadlineObservation, ProcessHandle, ProcessOutputChunk,
-    ProcessOutputStream, RuntimeEventSender, RuntimeFailure, TerminalOutcome, TerminalStatus,
+    ActivityOperationId, BoxFuture, CleanupOutcome, DeadlineObservation, ProcessHandle,
+    ProcessOutputChunk, ProcessOutputStream, RuntimeEventSender, RuntimeFailure, TerminalOutcome,
+    TerminalStatus,
 };
 
 pub(crate) async fn pump(
@@ -15,10 +16,19 @@ pub(crate) async fn pump(
     cancellation: Arc<QwenProcessCancellation>,
     deadline: BoxFuture<'static, DeadlineObservation>,
     model: ModelId,
+    operation_id: ActivityOperationId,
 ) -> TerminalOutcome {
-    pump_with_session(process, events, cancellation, deadline, model, None)
-        .await
-        .outcome
+    pump_with_session(
+        process,
+        events,
+        cancellation,
+        deadline,
+        model,
+        None,
+        operation_id,
+    )
+    .await
+    .outcome
 }
 
 pub(crate) struct QwenPumpResult {
@@ -33,8 +43,10 @@ pub(crate) async fn pump_with_session(
     deadline: BoxFuture<'static, DeadlineObservation>,
     model: ModelId,
     expected_session_id: Option<String>,
+    operation_id: ActivityOperationId,
 ) -> QwenPumpResult {
-    let mut parser = QwenEventParser::with_expected_session(model, expected_session_id);
+    let mut parser =
+        QwenEventParser::with_expected_session(model, expected_session_id, operation_id);
     let mut deadline = Some(deadline);
     loop {
         match next_output(process.as_ref(), cancellation.as_ref(), &mut deadline).await {

@@ -99,6 +99,11 @@ fn validate_observations(
         if !disclosure_permitted(profile.disclosure(), observation.disclosure()) {
             return Err("activity disclosure exceeded the prepared route profile");
         }
+        if observation.label().is_some()
+            && observation.disclosure() == ActivityDisclosure::IdentityAndLifecycleOnly
+        {
+            return Err("activity label exceeded identity-only disclosure");
+        }
         if let Some(content) = observation.content()
             && !profile
                 .content_streams()

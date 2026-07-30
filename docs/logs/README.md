@@ -5,6 +5,11 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-07-29 Text Direct-Inference Activity Projection](2026-07-29-text-direct-inference-activity-projection.md)
+- [2026-07-29 Direct Activity Applicability And Corpus](2026-07-29-direct-activity-applicability-and-corpus.md)
+- [2026-07-29 Provider-Wide Harness Activity Closeout](2026-07-29-provider-wide-harness-activity-closeout.md)
+- [2026-07-29 Headless Harness Activity Projection](2026-07-29-headless-harness-activity-projection.md)
+- [2026-07-29 HTTP, Server, And RPC Harness Activity](2026-07-29-http-server-rpc-harness-activity.md)
 - [2026-07-29 Non-ACP Harness Activity Inventory](2026-07-29-non-acp-harness-activity-inventory.md)
 - [2026-07-29 ACP Adapter Activity Conformance](2026-07-29-acp-adapter-activity-conformance.md)
 - [2026-07-29 Shared ACP Activity Projection](2026-07-29-shared-acp-activity-projection.md)

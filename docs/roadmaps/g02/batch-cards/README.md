@@ -123,6 +123,11 @@
 - `126-shared-acp-activity-projection.md`
 - `127-acp-adapter-activity-conformance.md`
 - `128-non-acp-harness-activity-inventory-and-corpora.md`
+- `129-http-server-and-rpc-harness-activity.md`
+- `130-headless-harness-activity-projection.md`
+- `131-provider-wide-harness-activity-closeout.md`
+- `132-direct-activity-applicability-and-corpora.md`
+- `133-text-direct-inference-activity-projection.md`
 
 ## Superseded
 
@@ -141,15 +146,10 @@ None. Cross-generation deferred work lives in `docs/roadmaps/backlog/`.
 
 ## Ready
 
-- `129-http-server-and-rpc-harness-activity.md`
+- `134-realtime-and-non-applicable-activity-closeout.md`
 
 ## Planned
 
-- `130-headless-harness-activity-projection.md`
-- `131-provider-wide-harness-activity-closeout.md`
-- `132-direct-activity-applicability-and-corpora.md`
-- `133-text-direct-inference-activity-projection.md`
-- `134-realtime-and-non-applicable-activity-closeout.md`
 - `135-provider-solution-activity-matrix-and-guidance.md`
 - `136-packaged-provider-wide-activity-proof.md`
 - `137-observable-activity-consumer-handoff.md`

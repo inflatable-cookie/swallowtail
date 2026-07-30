@@ -57,11 +57,28 @@ pub(super) fn emit_update(
     events: &RuntimeEventSender,
     sequence: &mut u64,
     attempt_id: &DirectInferenceAttemptId,
+    activity: &crate::activity::DeepSeekActivityProjection,
     update: FinalStreamUpdate,
 ) -> Result<(), RuntimeFailure> {
     match update {
         FinalStreamUpdate::Output(delta) => {
-            emit_content(events, sequence, RuntimeEventKind::OutputDelta, delta)
+            let content = OperationContent::new(delta).map_err(|_| {
+                failure(
+                    "swallowtail.deepseek.output_invalid",
+                    "DeepSeek emitted empty output content",
+                )
+            })?;
+            emit(
+                events,
+                sequence,
+                RuntimeEventKind::Activity(activity.assistant_delta(content.as_str())?),
+            )?;
+            emit_content(
+                events,
+                sequence,
+                RuntimeEventKind::OutputDelta,
+                content.as_str().to_owned(),
+            )
         }
         FinalStreamUpdate::Usage(usage) => emit_usage(events, sequence, attempt_id, usage),
         FinalStreamUpdate::Finished(reason) => {

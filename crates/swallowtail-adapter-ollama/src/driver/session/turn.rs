@@ -101,6 +101,7 @@ impl OllamaSessionHandle {
         let terminal_flag = Arc::new(AtomicBool::new(false));
         let task_terminal = Arc::clone(&terminal_flag);
         let (terminal_sender, terminal_future) = terminal_outcome_channel();
+        let activity_turn_id = request.turn_id().clone();
         let task = self
             .services
             .task()
@@ -121,6 +122,7 @@ impl OllamaSessionHandle {
                             event_sender.clone(),
                             cancelled,
                             deadline,
+                            swallowtail_runtime::ActivityOperationId::Turn(activity_turn_id),
                         )
                         .await;
                         let completion = if matches!(

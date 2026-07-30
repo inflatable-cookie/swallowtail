@@ -1,13 +1,13 @@
 # 039 Direct Inference Activity Truth
 
-Status: planned
+Status: active
 Owner: Tom
 Created: 2026-07-29
 Depends on: g02.038
 Vision tags: direct inference, attached runtimes, operation truth
 Contract refs: 006, 009, 014, 016, 019, 021-022, 024-027, 030-031, 037,
   039-041, 044
-Planning state: cards 132-134 planned
+Planning state: cards 132-133 completed; card 134 ready
 
 ## Problem
 
@@ -23,10 +23,10 @@ direct APIs look like agent harnesses.
 
 ## Goals
 
-- [ ] Classify activity applicability for every direct, attached, realtime,
+- [x] Classify activity applicability for every direct, attached, realtime,
       catalogue, and serving route.
-- [ ] Map provider-supplied assistant, reasoning-summary, and tool activity.
-- [ ] Correlate direct tool continuation without exposing private continuation.
+- [x] Map provider-supplied assistant, reasoning-summary, and tool activity.
+- [x] Correlate direct tool continuation without exposing private continuation.
 - [ ] Keep realtime-media lifecycle and transcripts separate.
 - [ ] Mark catalogue and serving-only operations not applicable.
 
@@ -42,15 +42,15 @@ direct APIs look like agent harnesses.
 
 ### Batch 39.1 — Applicability And Corpora
 
-- [ ] Execute card 132.
-- [ ] Revalidate exact hosted, direct, attached, and realtime surfaces.
-- [ ] Classify every activity kind as supported, unavailable, or not
+- [x] Execute card 132.
+- [x] Revalidate exact hosted, direct, attached, and realtime surfaces.
+- [x] Classify every activity kind as supported, unavailable, or not
       applicable.
 
 ### Batch 39.2 — Text Direct Projection
 
-- [ ] Execute card 133.
-- [ ] Add missing assistant, reasoning-summary, provider-tool, and
+- [x] Execute card 133.
+- [x] Add missing assistant, reasoning-summary, provider-tool, and
       consumer-tool mappings only where documented.
 
 ### Batch 39.3 — Realtime And Negative Closeout
@@ -83,4 +83,3 @@ direct APIs look like agent harnesses.
 
 After card 134, review the provider-wide matrix for unexplained gaps before
 starting package acceptance and the consumer handoff.
-

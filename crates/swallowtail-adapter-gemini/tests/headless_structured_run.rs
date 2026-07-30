@@ -13,7 +13,8 @@ use swallowtail_adapter_gemini::{
 };
 use swallowtail_core::{
     Capability, DriverRole, HarnessConfigurationPosture, HarnessIsolation, ModelId, ModelRouteId,
-    ModelRouteRevision, OwnedRemoteResourceKind, ProviderId, ProviderSessionEffectTruth,
+    ModelRouteRevision, ObservableActivityAvailability, OwnedRemoteResourceKind, ProviderId,
+    ProviderSessionEffectTruth,
 };
 use swallowtail_runtime::{
     CancellationControl, CleanupOutcome, Deadline, MonotonicInstant, OperationContent, ProcessExit,
@@ -61,12 +62,11 @@ fn production_route_preserves_cli_and_host_truth_in_both_topologies() {
             "gemini-unknown",
         );
         assert_eq!(unknown.outcome.status(), &TerminalStatus::Completed);
-        assert!(
-            unknown
-                .events
-                .iter()
-                .any(|event| event.kind() == &RuntimeEventKind::Progress)
-        );
+        assert!(unknown.events.iter().any(|event| matches!(
+            event.kind(),
+            RuntimeEventKind::Activity(activity)
+                if matches!(activity.kind(), swallowtail_runtime::ActivityKind::Unknown(_))
+        )));
         assert_redacted(&unknown.events, &unknown.outcome);
 
         let provider = completed(
@@ -203,6 +203,10 @@ fn prepared_facade_discovers_exact_version_and_starts_a_bound_run() {
         assert_prepared_operation_evidence_matches_plan(
             profile.evidence().operation(),
             profile.plan(),
+        );
+        assert_eq!(
+            profile.evidence().observable_activity().availability(),
+            ObservableActivityAvailability::Available
         );
 
         let output = fixture("success.jsonl", "gemini-prepared-run");

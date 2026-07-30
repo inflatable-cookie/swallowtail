@@ -15,9 +15,10 @@ impl AnthropicManagedPreparedEvidence {
         plan: PreflightPlan,
     ) -> Result<Self, PreparationFailure> {
         Ok(Self {
-            operation: PreparedOperationEvidence::from_plan(
+            operation: PreparedOperationEvidence::from_plan_with_activity_profile(
                 plan,
                 prepared.access_evidence().clone(),
+                crate::managed_activity::profile::activity_profile(),
             )?,
         })
     }

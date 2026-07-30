@@ -4,7 +4,9 @@ use futures_util::StreamExt;
 use swallowtail_adapter_anthropic::AnthropicCatalogueProfileInput;
 use swallowtail_core::{Capability, DriverRole, ExecutionHostId};
 use swallowtail_runtime::{CleanupOutcome, RequestId, TerminalStatus};
-use swallowtail_testkit::assert_prepared_operation_evidence_matches_plan;
+use swallowtail_testkit::{
+    assert_observable_activity_trace, assert_prepared_operation_evidence_matches_plan,
+};
 
 #[test]
 fn catalogue_and_one_attempt_remain_separate_on_both_host_topologies() {
@@ -60,12 +62,14 @@ fn catalogue_and_one_attempt_remain_separate_on_both_host_topologies() {
             block_on(attempt.start_run(fixture.services())).expect("prepared attempt starts");
         let mut events = run.take_events().expect("event stream exists");
         let terminal = run.take_terminal_outcome().expect("terminal exists");
-        let outcome = block_on(async {
+        let (collected, outcome) = block_on(async {
+            let mut collected = Vec::new();
             while let Some(event) = events.next().await {
-                event.expect("event succeeds");
+                collected.push(event.expect("event succeeds"));
             }
-            terminal.await
+            (collected, terminal.await)
         });
+        assert_observable_activity_trace(attempt.evidence().observable_activity(), &collected);
         assert_eq!(outcome.status(), &TerminalStatus::Completed);
         assert_eq!(fixture.server.inference_attempts(), 1);
         assert_eq!(fixture.releases(), 2);

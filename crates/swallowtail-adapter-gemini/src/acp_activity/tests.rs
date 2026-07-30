@@ -77,6 +77,44 @@ fn translation_mismatch_keeps_first_portable_identity() {
     );
 }
 
+#[test]
+fn noncanonical_tool_lifecycles_degrade_without_failure() {
+    let mut projection =
+        AcpActivityProjection::new(RuntimeTurnId::new("gemini-tool-lifecycle-turn").unwrap());
+    let updates = [
+        json!({"sessionUpdate":"tool_call","toolCallId":"direct","title":"Finished","kind":"other","status":"completed","content":[]}),
+        json!({"sessionUpdate":"tool_call_update","toolCallId":"orphan","title":"Suppressed","status":"completed","content":[]}),
+        json!({"sessionUpdate":"tool_call_update","toolCallId":"dropped","status":"in_progress"}),
+        json!({"sessionUpdate":"tool_call","toolCallId":"repeated","title":"Placeholder","kind":"other","status":"pending","content":[]}),
+        json!({"sessionUpdate":"tool_call","toolCallId":"repeated","title":"Read","kind":"read","status":"in_progress","content":[]}),
+        json!({"sessionUpdate":"tool_call_update","toolCallId":"repeated","status":"completed","content":[]}),
+        json!({"sessionUpdate":"tool_call_update","toolCallId":"repeated","status":"completed","content":[]}),
+    ];
+
+    let observations = project_all(&mut projection, &updates);
+    assert_eq!(
+        observations
+            .iter()
+            .map(ActivityObservation::phase)
+            .collect::<Vec<_>>(),
+        [
+            ActivityLifecyclePhase::Started,
+            ActivityLifecyclePhase::Completed,
+            ActivityLifecyclePhase::Started,
+            ActivityLifecyclePhase::Completed,
+            ActivityLifecyclePhase::Started,
+            ActivityLifecyclePhase::Updated,
+            ActivityLifecyclePhase::Completed,
+        ]
+    );
+    assert_eq!(observations[0].status(), ActivityStatus::InProgress);
+    assert_eq!(observations[1].status(), ActivityStatus::Completed);
+    assert_eq!(observations[0].activity_id(), observations[1].activity_id());
+    assert_eq!(observations[2].activity_id(), observations[3].activity_id());
+    assert_eq!(observations[4].activity_id(), observations[5].activity_id());
+    assert_eq!(observations[5].activity_id(), observations[6].activity_id());
+}
+
 fn project_all(
     projection: &mut AcpActivityProjection,
     updates: &[Value],

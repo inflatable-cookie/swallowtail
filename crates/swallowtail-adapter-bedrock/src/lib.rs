@@ -2,6 +2,7 @@
 
 #![forbid(unsafe_code)]
 
+mod activity;
 mod binding;
 mod catalogue;
 mod driver;

@@ -2,6 +2,7 @@
 
 #![forbid(unsafe_code)]
 
+mod activity;
 mod driver;
 mod failure;
 mod prepared;
@@ -21,5 +22,6 @@ pub use prepared_profile::{
 };
 pub use selection::{
     KIMI_PLATFORM_ENDPOINT, KIMI_PLATFORM_ENDPOINT_AUDIENCE, KIMI_PLATFORM_FACADE_REVISION,
-    KIMI_PLATFORM_MODEL_ID, KIMI_PLATFORM_PROVIDER_ID,
+    KIMI_PLATFORM_MODEL_ID, KIMI_PLATFORM_PROVIDER_ID, kimi_platform_facade_binding,
+    kimi_platform_facade_claim,
 };

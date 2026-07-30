@@ -10,9 +10,7 @@ pub(in crate::app_server_activity) fn mcp_tool(
     item: &Value,
     lifecycle: ActivityLifecyclePhase,
 ) -> Result<Option<ActivityContentUpdate>, RuntimeFailure> {
-    let server = required_text(item, "server")?;
-    let tool = required_text(item, "tool")?;
-    let mut lines = vec![format!("{server}.{tool}")];
+    let mut lines = Vec::new();
     if lifecycle == ActivityLifecyclePhase::Completed {
         if let Some(contents) = item.pointer("/result/content").and_then(Value::as_array) {
             for entry in contents {
@@ -36,7 +34,7 @@ pub(in crate::app_server_activity) fn dynamic_tool(
     item: &Value,
     lifecycle: ActivityLifecyclePhase,
 ) -> Result<Option<ActivityContentUpdate>, RuntimeFailure> {
-    let mut lines = vec![required_text(item, "tool")?.to_owned()];
+    let mut lines = Vec::new();
     if lifecycle == ActivityLifecyclePhase::Completed
         && let Some(contents) = item.get("contentItems").and_then(Value::as_array)
     {

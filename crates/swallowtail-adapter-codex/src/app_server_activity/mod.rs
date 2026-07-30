@@ -10,7 +10,7 @@ use serde_json::Value;
 use std::collections::HashMap;
 use swallowtail_core::ProviderActivityRef;
 use swallowtail_runtime::{
-    ActivityCorrelation, ActivityId, ActivityLifecyclePhase, ActivityNamespace,
+    ActivityCorrelation, ActivityId, ActivityLabel, ActivityLifecyclePhase, ActivityNamespace,
     ActivityObservation, ActivityOperationId, ActivityStatus, RuntimeFailure, RuntimeTurnId,
 };
 
@@ -18,6 +18,7 @@ pub(crate) struct AppServerActivityProjection {
     operation_id: ActivityOperationId,
     identities: HashMap<String, ActivityId>,
     items: HashMap<String, ItemIdentity>,
+    labels: HashMap<String, ActivityLabel>,
     correlations: HashMap<String, ActivityCorrelation>,
     requests: HashMap<String, RequestIdentity>,
     next_minted_id: u64,
@@ -43,6 +44,7 @@ impl AppServerActivityProjection {
             operation_id: ActivityOperationId::Turn(turn_id),
             identities: HashMap::new(),
             items: HashMap::new(),
+            labels: HashMap::new(),
             correlations: HashMap::new(),
             requests: HashMap::new(),
             next_minted_id: 0,
@@ -59,6 +61,7 @@ impl AppServerActivityProjection {
         content: Option<swallowtail_runtime::ActivityContentUpdate>,
     ) -> Result<ActivityObservation, RuntimeFailure> {
         let activity_id = self.activity_id(&format!("item:{}", source.identity_key))?;
+        let label = self.labels.get(source.identity_key).cloned();
         let mut observation = ActivityObservation::new(
             activity_id,
             self.operation_id.clone(),
@@ -76,6 +79,11 @@ impl AppServerActivityProjection {
         }
         if let Some(correlation) = correlation {
             observation = observation.with_correlation(correlation);
+        }
+        if let Some(label) = label {
+            observation = observation
+                .with_label(label)
+                .map_err(|_| malformed_notification())?;
         }
         if let Some(content) = content {
             observation = observation

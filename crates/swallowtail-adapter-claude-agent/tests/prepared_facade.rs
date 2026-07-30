@@ -17,9 +17,10 @@ use swallowtail_core::{
     ConfiguredInstanceId, CredentialMechanism, CredentialRef, CredentialState, EndpointAudience,
     EndpointAuthorization, EntitlementMetering, EntitlementState, ExecutionHostId,
     HarnessConfigurationPosture, HarnessIsolation, HostServiceKind, InstanceRevision,
-    InterfaceVersionAxis, ModelId, ModelRouteId, ModelRouteRevision, OwnedRemoteResourceKind,
-    ProviderSessionAffectedScope, ProviderSessionDeletionStrength, ProviderSessionEffectTruth,
-    ResourceAccess, RuntimeReadiness, SessionAccessPolicy, SupportAuthority,
+    InterfaceVersionAxis, ModelId, ModelRouteId, ModelRouteRevision,
+    ObservableActivityAvailability, OwnedRemoteResourceKind, ProviderSessionAffectedScope,
+    ProviderSessionDeletionStrength, ProviderSessionEffectTruth, ResourceAccess, RuntimeReadiness,
+    SessionAccessPolicy, SupportAuthority,
 };
 use swallowtail_runtime::{
     CallbackPayload, CallbackResponse, CallbackResult, CleanupOutcome, Deadline,
@@ -86,6 +87,14 @@ fn prepared_sessions_bind_version_access_model_and_ambient_read_policy() {
         assert_prepared_operation_evidence_matches_plan(
             profile.evidence().operation(),
             profile.plan(),
+        );
+        assert_eq!(
+            profile
+                .evidence()
+                .operation()
+                .observable_activity()
+                .availability(),
+            ObservableActivityAvailability::Available
         );
         let operation_host = FixtureHost::new(Scenario::Success, "0.61.0");
         let session = block_on(profile.open_session(operation_host.services(host_id.clone())))

@@ -1,8 +1,13 @@
 use super::input::AlibabaConversationProfileInput;
-use super::plan::{AlibabaModelStudioPreparedEvidence, build_plan, model_route};
+use super::plan::{
+    AlibabaModelStudioPreparedEvidence, build_plan, instance_with_capabilities, model_route,
+};
 use crate::prepared::failure;
 use crate::{AlibabaModelStudioDriver, AlibabaModelStudioPreparedIntegration};
-use swallowtail_core::{PreflightPlan, SessionAccessPolicy, SessionProviderStatePolicy};
+use swallowtail_core::{
+    CapabilityProfile, CapabilityRequirement, PreflightPlan, SessionAccessPolicy,
+    SessionProviderStatePolicy,
+};
 use swallowtail_runtime::{
     BoxFuture, HostServices, InteractiveSessionDriver, InteractiveSessionHandle,
     OpenSessionRequest, PreparationFailure, PreparationStage, RuntimeFailure, SessionPlanAgreement,
@@ -80,10 +85,21 @@ impl AlibabaModelStudioPreparedIntegration {
                 "Alibaba Model Studio conversation retention and delete-on-close must be explicit",
             ));
         }
-        let requirements =
+        let activity = crate::activity::profile::activity_profile();
+        let base_requirements =
             crate::alibaba_model_studio_requirements(self.instance().execution_host_id().clone());
-        let route = model_route(self, route_id, route_revision, model_id);
-        let plan = build_plan(self, self.instance(), &route, &requirements)?;
+        let capabilities = crate::activity::profile::with_activity(
+            CapabilityProfile::new(base_requirements.capabilities().cloned()),
+            &activity,
+        );
+        let requirements = base_requirements.with_capabilities(capabilities.iter().map(
+            |(capability, constraints)| {
+                CapabilityRequirement::new(capability, constraints.iter().cloned())
+            },
+        ));
+        let instance = instance_with_capabilities(self, capabilities.clone());
+        let route = model_route(self, route_id, route_revision, model_id, capabilities);
+        let plan = build_plan(self, &instance, &route, &requirements)?;
         let agreement = SessionPlanAgreement::explicit(
             SessionAccessPolicy::resource_free(),
             Some(provider_state),
@@ -91,7 +107,7 @@ impl AlibabaModelStudioPreparedIntegration {
         );
         let request = OpenSessionRequest::resource_free(request_id, deadline, agreement);
         Ok(AlibabaModelStudioPreparedConversation {
-            evidence: AlibabaModelStudioPreparedEvidence::from_prepared(self, plan)?,
+            evidence: AlibabaModelStudioPreparedEvidence::from_prepared(self, plan, activity)?,
             request,
         })
     }

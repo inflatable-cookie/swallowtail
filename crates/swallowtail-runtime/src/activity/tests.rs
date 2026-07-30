@@ -1,8 +1,8 @@
 use super::{
     ActivityAssistantPhase, ActivityContent, ActivityContentChangeKind, ActivityContentStream,
     ActivityContentUpdate, ActivityCorrelation, ActivityDisclosure, ActivityId, ActivityKind,
-    ActivityLifecyclePhase, ActivityNamespace, ActivityObservation, ActivityOperationId,
-    ActivityStatus,
+    ActivityLabel, ActivityLifecyclePhase, ActivityNamespace, ActivityObservation,
+    ActivityOperationId, ActivityStatus,
 };
 use crate::{
     CallbackId, DirectToolCallId, EventDelivery, OperationContent, RuntimeEventKind, RuntimeRunId,
@@ -17,6 +17,7 @@ fn run_id() -> ActivityOperationId {
 fn identities_and_content_are_bounded_and_redacted() {
     let id = ActivityId::new("private-activity").expect("activity id is valid");
     let namespace = ActivityNamespace::new("provider.private-kind").expect("namespace is valid");
+    let label = ActivityLabel::new("Read File").expect("label is valid");
     let content = ActivityContent::new(
         OperationContent::new("private visible task content").expect("content is valid"),
         64,
@@ -26,12 +27,16 @@ fn identities_and_content_are_bounded_and_redacted() {
     assert_eq!(id.as_str(), "private-activity");
     assert_eq!(namespace.as_str(), "provider.private-kind");
     assert_eq!(content.as_str(), "private visible task content");
+    assert_eq!(label.as_str(), "Read File");
     assert!(!format!("{id:?}").contains(id.as_str()));
     assert!(!id.to_string().contains(id.as_str()));
     assert!(!format!("{content:?}").contains(content.as_str()));
     assert!(!content.to_string().contains(content.as_str()));
+    assert!(!format!("{label:?}").contains(label.as_str()));
+    assert!(!label.to_string().contains(label.as_str()));
     assert!(ActivityId::new("x".repeat(257)).is_err());
     assert!(ActivityNamespace::new("x".repeat(129)).is_err());
+    assert!(ActivityLabel::new("x".repeat(513)).is_err());
     assert!(ActivityContent::new(OperationContent::new("private").unwrap(), 3).is_err());
 }
 
@@ -53,6 +58,8 @@ fn completion_only_and_correlations_are_representable_without_raw_bodies() {
     .with_correlation(ActivityCorrelation::Callback(
         CallbackId::new("private-callback").unwrap(),
     ))
+    .with_label(ActivityLabel::new("Private tool label").unwrap())
+    .unwrap()
     .with_content(ActivityContentUpdate::new(
         ActivityContentChangeKind::ReplacementSnapshot,
         ActivityContentStream::ProviderToolDisplay,
@@ -69,6 +76,11 @@ fn completion_only_and_correlations_are_representable_without_raw_bodies() {
     assert!(!rendered.contains("provider/private/item"));
     assert!(!rendered.contains("private-callback"));
     assert!(!rendered.contains("private provider display"));
+    assert!(!rendered.contains("Private tool label"));
+    assert_eq!(
+        observation.label().map(ActivityLabel::as_str),
+        Some("Private tool label")
+    );
     assert!(!observation.to_string().contains("private"));
 
     let request = ActivityCorrelation::ProviderRequest(
@@ -179,6 +191,20 @@ fn malformed_phase_disclosure_and_assistant_claims_fail() {
             None,
             ActivityDisclosure::Unavailable,
         )
+        .is_err()
+    );
+    assert!(
+        ActivityObservation::new(
+            ActivityId::new("identity-only-label").unwrap(),
+            run_id(),
+            ActivityKind::Task,
+            ActivityLifecyclePhase::Completed,
+            ActivityStatus::Completed,
+            None,
+            ActivityDisclosure::IdentityAndLifecycleOnly,
+        )
+        .unwrap()
+        .with_label(ActivityLabel::new("Not disclosed").unwrap())
         .is_err()
     );
 }

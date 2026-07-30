@@ -36,6 +36,27 @@ impl PiPreparedEvidence {
         })
     }
 
+    pub(super) fn from_prepared_with_activity(
+        prepared: &PiPreparedIntegration,
+        plan: PreflightPlan,
+        activity_profile: swallowtail_core::ObservableActivityProfile,
+    ) -> Result<Self, PreparationFailure> {
+        Ok(Self {
+            observation: prepared.observation().clone(),
+            environment: prepared.environment().clone(),
+            credential: prepared
+                .access_profile()
+                .credential_reference()
+                .expect("prepared Pi access has one credential reference")
+                .clone(),
+            operation: PreparedOperationEvidence::from_plan_with_activity_profile(
+                plan,
+                prepared.access_evidence().clone(),
+                activity_profile,
+            )?,
+        })
+    }
+
     #[must_use]
     pub const fn observation(&self) -> &swallowtail_core::InstalledExecutableObservation {
         &self.observation

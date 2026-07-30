@@ -9,10 +9,11 @@ use swallowtail_core::{
     TransportFamilyId,
 };
 use swallowtail_runtime::{
-    BoxFuture, DiscoveryDriver, DiscoveryRequest, EnvironmentRef, ExecutableRef, HostServices,
-    InstalledExecutableDiscoveryRequest, ProcessHandle, ProcessRequest, RunHandle, RuntimeEvent,
-    RuntimeEventKind, RuntimeFailure, RuntimeRunId, ScopeId, StructuredRunDriver,
-    StructuredRunRequest, runtime_event_channel, terminal_outcome_channel,
+    ActivityOperationId, BoxFuture, DiscoveryDriver, DiscoveryRequest, EnvironmentRef,
+    ExecutableRef, HostServices, InstalledExecutableDiscoveryRequest, ProcessHandle,
+    ProcessRequest, RunHandle, RuntimeEvent, RuntimeEventKind, RuntimeFailure, RuntimeRunId,
+    ScopeId, StructuredRunDriver, StructuredRunRequest, runtime_event_channel,
+    terminal_outcome_channel,
 };
 
 pub(crate) const DRIVER_ID: &str = "swallowtail.kimi.headless";
@@ -125,6 +126,13 @@ impl KimiHeadlessDriver {
             .cloned()
             .expect("validated working resource");
         let deadline = request.deadline().expect("validated deadline");
+        let run_id = RuntimeRunId::new(format!("kimi-headless:{}", request.request_id().as_str()))
+            .map_err(|_| {
+                failure(
+                    "swallowtail.kimi.headless.run_id_invalid",
+                    "Kimi headless runtime run identity was invalid",
+                )
+            })?;
         let scope = ScopeId::new(format!("kimi-headless:{}", request.request_id().as_str()))
             .map_err(|_| {
                 failure(
@@ -160,8 +168,16 @@ impl KimiHeadlessDriver {
             Box::pin({
                 let cancellation = Arc::clone(&cancellation);
                 let process = Arc::clone(&process);
+                let operation_id = ActivityOperationId::Run(run_id.clone());
                 async move {
-                    let outcome = pump(process, event_sender.clone(), cancellation, deadline).await;
+                    let outcome = pump(
+                        process,
+                        event_sender.clone(),
+                        cancellation,
+                        deadline,
+                        operation_id,
+                    )
+                    .await;
                     let _ = terminal_sender.complete(outcome);
                     event_sender.mark_terminal();
                 }
@@ -174,13 +190,6 @@ impl KimiHeadlessDriver {
                 return Err(error);
             }
         };
-        let run_id = RuntimeRunId::new(format!("kimi-headless:{}", request.request_id().as_str()))
-            .map_err(|_| {
-                failure(
-                    "swallowtail.kimi.headless.run_id_invalid",
-                    "Kimi headless runtime run identity was invalid",
-                )
-            })?;
         Ok(Box::new(KimiHeadlessRunHandle::new(
             request.request_id().clone(),
             run_id,

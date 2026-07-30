@@ -21,6 +21,7 @@ async fn pump_run(
     mut deadline: Option<
         swallowtail_runtime::BoxFuture<'static, swallowtail_runtime::DeadlineObservation>,
     >,
+    activity: crate::activity::OpenAiBackgroundActivityProjection,
 ) -> TerminalOutcome {
     let endpoint = access.endpoint.clone();
     let credential = SecretMaterial(
@@ -33,7 +34,7 @@ async fn pump_run(
     let mut output_done = None;
     let mut reattached = false;
     let mut cleanup = CleanupOutcome::NotApplicable;
-    let final_state = loop {
+    let mut final_state = loop {
         let exit = pump_attachment(
             &mut subscription,
             &mut stream,
@@ -43,6 +44,7 @@ async fn pump_run(
             &mut sequence,
             &cancellation,
             &mut deadline,
+            &activity,
         )
         .await;
         cleanup = merge_cleanup(cleanup, cleanup_result(subscription.close().await));
@@ -131,6 +133,22 @@ async fn pump_run(
                     "OpenAI final provider evidence could not be delivered",
                 )),
             );
+        }
+    }
+    if let Some(content) = final_state.output.as_ref() {
+        let result = activity.completed(content).and_then(|observation| {
+            emit(
+                &events,
+                &mut sequence,
+                RuntimeEventKind::Activity(observation),
+            )
+        });
+        if let Err(error) = result {
+            cleanup = merge_cleanup(
+                cleanup,
+                CleanupOutcome::Degraded(error.diagnostic().clone()),
+            );
+            final_state.status = TerminalStatus::RuntimeFailed(error.diagnostic().clone());
         }
     }
     if let Some(content) = final_state.output.as_ref()

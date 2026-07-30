@@ -19,7 +19,7 @@ use swallowtail_adapter_kimi::{
 };
 use swallowtail_core::{
     DriverRole, ExecutionHostId, InstanceTargetRef, ModelId, ModelRouteId, ModelRouteRevision,
-    OperationShape, ReasoningMode,
+    ObservableActivityAvailability, OperationShape, ReasoningMode,
 };
 use swallowtail_runtime::{
     CallbackPayload, CallbackResponse, CallbackResult, CancellationAcknowledgement, CleanupOutcome,
@@ -69,6 +69,10 @@ fn attached_run_completes_once_and_preserves_provider_session_in_both_topologies
                 ProviderRecoveryPolicy::ManagedAllowed
             );
             assert_prepared_operation_evidence_matches_plan(profile.evidence(), profile.plan());
+            assert_eq!(
+                profile.evidence().observable_activity().availability(),
+                ObservableActivityAvailability::Available
+            );
 
             let mut run = block_on(profile.start_run(services)).expect("structured run starts");
             assert!(run.provider_run_ref().is_none());

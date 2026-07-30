@@ -56,6 +56,7 @@ Each portable activity has:
 - one runtime run or turn owner
 - the event sequence of each observation
 - one activity kind
+- an optional bounded provider-intended display label
 - optional opaque provider item reference
 - optional callback, request, or direct-tool correlation
 
@@ -65,6 +66,14 @@ formatting, and never accepted as cross-route authority.
 
 An adapter may mint a runtime activity id when the provider supplies no stable
 item id. Minting identity does not invent provider lifecycle or continuity.
+
+The display label is not activity identity and may refine during one native
+item's lifecycle. When a later update omits it, an adapter that observed an
+earlier label carries the latest non-empty value forward. Labels are bounded,
+redacted by default, and permitted only within provider-display or
+adapter-summary disclosure. They are never reconstructed from activity
+content. Consumers may replace them with product presentation, but do not
+split payload content to recover a provider label.
 
 ## Activity Kinds
 
@@ -150,7 +159,11 @@ stream or finality.
 
 Content is bounded operation data, not a safe diagnostic. Default `Debug`,
 `Display`, diagnostics, preparation evidence, and provider observations redact
-it. Consumers must treat it as potentially sensitive task data.
+it. Consumers must treat it as potentially sensitive task data. An adapter
+truncates qualified display content at its declared activity-content bound on a
+valid text boundary. Oversized display content does not make an otherwise
+well-formed provider update malformed. Transport frame bounds remain separate
+from activity-content bounds.
 
 ## Tool And Request Correlation
 
@@ -215,8 +228,9 @@ strength:
 - unavailable
 
 The profile is a maximum, not a promise that every activity contains content.
-No route upgrades itself from summary to provider content because a newer
-unverified event happens to contain more fields.
+The same applies to optional labels. No route upgrades itself from summary to
+provider content because a newer unverified event happens to contain more
+fields.
 
 Raw provider envelopes remain adapter-private. Provider extensions may be
 used internally for round-trip behavior but are not a stable transcript or

@@ -125,6 +125,9 @@ impl AppServerActivityProjection {
             self.items
                 .insert(provider_id.to_owned(), projection.identity.clone());
         }
+        if let Some(label) = projection.label {
+            self.labels.insert(provider_id.to_owned(), label);
+        }
         let correlation = self.correlations.get(provider_id).cloned();
         Ok(vec![self.observation(
             ActivitySource::new(provider_id, Some(provider_id)),

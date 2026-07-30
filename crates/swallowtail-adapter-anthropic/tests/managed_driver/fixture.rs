@@ -115,7 +115,7 @@ impl Fixture {
     fn plan(&self) -> swallowtail_core::PreflightPlan {
         let descriptor = anthropic_managed_agent_descriptor();
         let access_id = AccessProfileId::new("access.anthropic-managed").expect("access id valid");
-        let requirements = managed_capabilities();
+        let requirements = managed_capabilities(self.host_id.clone());
         let capabilities = CapabilityProfile::new(requirements.clone());
         let instance = ConfiguredInstance::new(
             self.instance_id.clone(),
@@ -219,37 +219,14 @@ impl CredentialService for TrackingCredential {
 }
 
 #[allow(dead_code)]
-fn managed_capabilities() -> Vec<CapabilityRequirement> {
-    vec![
-        CapabilityRequirement::new(Capability::StructuredRun, []),
-        CapabilityRequirement::new(Capability::StreamingEvents, []),
-        CapabilityRequirement::new(
-            Capability::ToolCalls,
-            [
-                CapabilityConstraint::ToolSchemaDialect("json-schema-2020-12".to_owned()),
-                CapabilityConstraint::ToolMaximumSchemaBytes(16_384),
-                CapabilityConstraint::ToolMaximumCount(8),
-            ],
-        ),
-        CapabilityRequirement::new(Capability::UsageReporting, []),
-        CapabilityRequirement::new(Capability::ProviderDurableRetention, []),
-        CapabilityRequirement::new(Capability::ProviderManagedRecovery, []),
-        CapabilityRequirement::new(
-            Capability::OwnedRemoteResourceDeletion,
-            [
-                CapabilityConstraint::OwnedRemoteResource(OwnedRemoteResourceKind::Environment),
-                CapabilityConstraint::OwnedRemoteResource(OwnedRemoteResourceKind::Session),
-            ],
-        ),
-        CapabilityRequirement::new(
-            Capability::Interruption,
-            [CapabilityConstraint::CancellationScope(
-                swallowtail_core::CancellationScope::StructuredRun,
-            )],
-        ),
-        CapabilityRequirement::new(
-            Capability::StreamReattachment,
-            [CapabilityConstraint::ReattachmentMaximumCount(1)],
-        ),
-    ]
+fn managed_capabilities(host: ExecutionHostId) -> Vec<CapabilityRequirement> {
+    anthropic_managed_requirements(host)
+        .capabilities()
+        .map(|requirement| {
+            CapabilityRequirement::new(
+                requirement.capability(),
+                requirement.constraints().cloned(),
+            )
+        })
+        .collect()
 }

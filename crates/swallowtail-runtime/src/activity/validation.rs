@@ -90,3 +90,17 @@ pub(super) fn validate_content(
     }
     Ok(())
 }
+
+pub(super) fn validate_label(
+    observation: &ActivityObservation,
+) -> Result<(), InvalidActivityRecord> {
+    if matches!(
+        observation.disclosure(),
+        ActivityDisclosure::IdentityAndLifecycleOnly | ActivityDisclosure::Unavailable
+    ) {
+        return Err(InvalidActivityRecord::new(
+            "Activity disclosure does not permit a display label",
+        ));
+    }
+    Ok(())
+}

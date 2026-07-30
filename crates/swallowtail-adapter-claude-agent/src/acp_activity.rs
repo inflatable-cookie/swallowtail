@@ -1,10 +1,10 @@
 use crate::failure::malformed;
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 use swallowtail_core::{ActivityContentStream, ActivityDisclosure, ProviderActivityRef};
 use swallowtail_protocol_acp::{AcpMessageChunk, AcpMessageRole, AcpPlanEntry, AcpSessionUpdate};
 use swallowtail_runtime::{
     ActivityAssistantPhase, ActivityContentChangeKind, ActivityContentUpdate, ActivityId,
-    ActivityKind, ActivityLifecyclePhase, ActivityNamespace, ActivityObservation,
+    ActivityKind, ActivityLabel, ActivityLifecyclePhase, ActivityNamespace, ActivityObservation,
     ActivityOperationId, ActivityStatus, RuntimeFailure, RuntimeTurnId, TerminalStatus,
 };
 
@@ -16,6 +16,7 @@ use content::{content_update, terminal_activity_status, text_content};
 pub(crate) struct AcpActivityProjection {
     operation_id: ActivityOperationId,
     open: BTreeMap<String, OpenActivity>,
+    closed: BTreeSet<String>,
     next_minted_id: u64,
 }
 
@@ -27,6 +28,7 @@ struct OpenActivity {
     assistant_phase: Option<ActivityAssistantPhase>,
     disclosure: ActivityDisclosure,
     status: ActivityStatus,
+    label: Option<ActivityLabel>,
 }
 
 impl AcpActivityProjection {
@@ -34,6 +36,7 @@ impl AcpActivityProjection {
         Self {
             operation_id: ActivityOperationId::Turn(turn_id),
             open: BTreeMap::new(),
+            closed: BTreeSet::new(),
             next_minted_id: 0,
         }
     }
@@ -155,6 +158,7 @@ impl AcpActivityProjection {
             assistant_phase: None,
             disclosure: ActivityDisclosure::IdentityAndLifecycleOnly,
             status: ActivityStatus::Completed,
+            label: None,
         };
         Ok(vec![self.observation(
             &activity,
@@ -194,6 +198,7 @@ impl AcpActivityProjection {
             assistant_phase,
             disclosure,
             status,
+            label: None,
         };
         self.open.insert(key.to_owned(), activity.clone());
         Ok(activity)
@@ -218,6 +223,9 @@ impl AcpActivityProjection {
         .map_err(|_| malformed())?;
         if let Some(provider_ref) = activity.provider_ref.clone() {
             observation = observation.with_provider_activity_ref(provider_ref);
+        }
+        if let Some(label) = activity.label.clone() {
+            observation = observation.with_label(label).map_err(|_| malformed())?;
         }
         if let Some(content) = content {
             observation = observation.with_content(content).map_err(|_| malformed())?;

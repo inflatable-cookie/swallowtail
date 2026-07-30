@@ -81,6 +81,9 @@ pub(super) async fn run_turn(
     cancellation: Arc<TurnCancellation>,
 ) -> TerminalOutcome {
     let mut sequence = 1;
+    let activity = crate::activity::DeepSeekActivityProjection::new(
+        swallowtail_runtime::ActivityOperationId::Turn(work.request.turn_id().clone()),
+    );
     let mut deadline = context
         .services
         .time()
@@ -94,6 +97,7 @@ pub(super) async fn run_turn(
             &mut sequence,
             &mut deadline,
             &cancellation,
+            &activity,
         )
         .await
     } else {
@@ -107,6 +111,7 @@ pub(super) async fn run_turn(
                 sequence: &mut sequence,
                 deadline: &mut deadline,
                 cancellation: &cancellation,
+                activity: &activity,
             },
         )
         .await
@@ -126,6 +131,7 @@ pub(super) async fn run_turn(
                 &mut context,
                 &events,
                 &mut sequence,
+                &activity,
             ) {
                 cancellation.fail_session();
                 invalidate(&context);
@@ -171,6 +177,7 @@ fn complete_success(
     context: &mut TurnContext,
     events: &RuntimeEventSender,
     sequence: &mut u64,
+    activity: &crate::activity::DeepSeekActivityProjection,
 ) -> Result<(), RuntimeFailure> {
     if !matches!(
         final_attempt.finish_reason.as_str(),
@@ -186,6 +193,11 @@ fn complete_success(
             "DeepSeek final attempt evidence was inconsistent",
         ));
     }
+    emit(
+        events,
+        sequence,
+        RuntimeEventKind::Activity(activity.assistant_completed(&final_attempt.output)?),
+    )?;
     emit_output(events, sequence, &final_attempt.output)?;
     let final_attempt_id = if user_attempt.ordinal().get() == 1 {
         DirectInferenceAttemptId::new("attempt-2").expect("static attempt id is valid")

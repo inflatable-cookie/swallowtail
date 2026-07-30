@@ -4,6 +4,7 @@
 
 #![forbid(unsafe_code)]
 
+mod activity;
 mod catalogue;
 mod command;
 mod discovery;

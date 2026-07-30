@@ -3,6 +3,14 @@ enum PumpSignal {
     Deadline,
 }
 
+struct RunPumpContext {
+    services: HostServices,
+    events: swallowtail_runtime::RuntimeEventSender,
+    cancellation: Arc<RunCancellation>,
+    deadline: Option<BoxFuture<'static, DeadlineObservation>>,
+    run_id: RuntimeRunId,
+}
+
 async fn next_signal(
     updates: &mut Pin<Box<dyn Stream<Item = Result<StreamUpdate, RuntimeFailure>> + Send>>,
     deadline: &mut Option<BoxFuture<'static, DeadlineObservation>>,
@@ -22,17 +30,24 @@ async fn pump_run(
     updates: mpsc::Receiver<Result<StreamUpdate, RuntimeFailure>>,
     blocking: BoxFuture<'static, Result<(), RuntimeFailure>>,
     access: &mut AccessLease,
-    services: HostServices,
-    events: swallowtail_runtime::RuntimeEventSender,
-    cancellation: Arc<RunCancellation>,
-    mut deadline: Option<BoxFuture<'static, DeadlineObservation>>,
+    context: RunPumpContext,
 ) -> TerminalOutcome {
+    let RunPumpContext {
+        services,
+        events,
+        cancellation,
+        mut deadline,
+        run_id,
+    } = context;
     let mut updates: Pin<Box<dyn Stream<Item = Result<StreamUpdate, RuntimeFailure>> + Send>> = Box::pin(updates);
     let mut sequence = 1;
     let mut output = String::new();
     let mut usage_seen = false;
     let mut timed_out = false;
     let mut stream_failure = None;
+    let mut activity = crate::activity::BedrockActivityProjection::new(
+        swallowtail_runtime::ActivityOperationId::Run(run_id),
+    );
     loop {
         match next_signal(&mut updates, &mut deadline).await {
             PumpSignal::Deadline => {
@@ -46,6 +61,22 @@ async fn pump_run(
             }
             PumpSignal::Update(Some(Ok(StreamUpdate::TextDelta(delta)))) => {
                 output.push_str(&delta);
+                if let Err(error) = events.send(RuntimeEvent::new(
+                    sequence,
+                    RuntimeEventKind::Activity(match activity.delta(&delta) {
+                        Ok(observation) => observation,
+                        Err(error) => {
+                            stream_failure = Some(error);
+                            cancellation.request_signal();
+                            break;
+                        }
+                    }),
+                )) {
+                    stream_failure = Some(error);
+                    cancellation.request_signal();
+                    break;
+                }
+                sequence += 1;
                 match OperationContent::new(delta) {
                     Ok(content) => {
                         if let Err(error) = events.send(RuntimeEvent::with_content(sequence, RuntimeEventKind::OutputDelta, content)) {
@@ -71,8 +102,66 @@ async fn pump_run(
                     break;
                 }
                 sequence += 1;
+                if !output.is_empty() {
+                    let content = OperationContent::new(output.clone())
+                        .expect("non-empty Bedrock output is valid");
+                    if let Err(error) = events.send(RuntimeEvent::with_content(
+                        sequence,
+                        RuntimeEventKind::OutputAvailable,
+                        content,
+                    )) {
+                        stream_failure = Some(error);
+                        cancellation.request_signal();
+                        break;
+                    }
+                    sequence += 1;
+                }
             }
-            PumpSignal::Update(Some(Ok(_))) => {}
+            PumpSignal::Update(Some(Ok(StreamUpdate::MessageStarted))) => {
+                if let Err(error) = events.send(RuntimeEvent::new(
+                    sequence,
+                    RuntimeEventKind::Activity(match activity.started() {
+                        Ok(observation) => observation,
+                        Err(error) => {
+                            stream_failure = Some(error);
+                            cancellation.request_signal();
+                            break;
+                        }
+                    }),
+                )) {
+                    stream_failure = Some(error);
+                    cancellation.request_signal();
+                    break;
+                }
+                sequence += 1;
+            }
+            PumpSignal::Update(Some(Ok(StreamUpdate::MessageStopped(_)))) => {
+                if output.is_empty() {
+                    stream_failure = Some(failure(
+                        "swallowtail.bedrock.empty_output",
+                        "Bedrock Runtime completed without output",
+                    ));
+                    cancellation.request_signal();
+                    break;
+                }
+                if let Err(error) = events.send(RuntimeEvent::new(
+                    sequence,
+                    RuntimeEventKind::Activity(match activity.completed(&output) {
+                        Ok(observation) => observation,
+                        Err(error) => {
+                            stream_failure = Some(error);
+                            cancellation.request_signal();
+                            break;
+                        }
+                    }),
+                )) {
+                    stream_failure = Some(error);
+                    cancellation.request_signal();
+                    break;
+                }
+                sequence += 1;
+            }
+            PumpSignal::Update(Some(Ok(StreamUpdate::ContentBlockStopped))) => {}
             PumpSignal::Update(None) => break,
         }
     }

@@ -140,7 +140,11 @@ impl KimiLocalServerPreparedIntegration {
             ));
         }
         super::super::interactive::validate_revision_options(self, &input.configuration)?;
-        let capabilities = run_capabilities(input.reasoning.as_ref(), input.stream_reattachment);
+        let activity_profile = super::super::activity::profile::activity_profile(self)?;
+        let capabilities = super::super::activity::profile::with_activity(
+            run_capabilities(input.reasoning.as_ref(), input.stream_reattachment),
+            &activity_profile,
+        );
         let instance = instance_with_capabilities(self, capabilities.clone());
         let (route_id, route_revision, model_id) = input.model.into_parts();
         let route = ModelRoute::new(
@@ -179,7 +183,11 @@ impl KimiLocalServerPreparedIntegration {
             .with_working_resource(input.working_resource)
             .with_deadline(input.deadline);
         Ok(KimiLocalServerPreparedRun {
-            evidence: PreparedOperationEvidence::from_plan(plan, self.access_evidence().clone())?,
+            evidence: PreparedOperationEvidence::from_plan_with_activity_profile(
+                plan,
+                self.access_evidence().clone(),
+                activity_profile,
+            )?,
             request,
             configuration: input.configuration.with_structured_lifecycle(
                 true,

@@ -144,7 +144,7 @@ pub fn anthropic_managed_requirements(host: ExecutionHostId) -> OperationRequire
 }
 
 fn anthropic_managed_capabilities() -> Vec<CapabilityRequirement> {
-    vec![
+    let mut capabilities = vec![
         CapabilityRequirement::new(Capability::StructuredRun, []),
         CapabilityRequirement::new(Capability::StreamingEvents, []),
         CapabilityRequirement::new(
@@ -175,7 +175,13 @@ fn anthropic_managed_capabilities() -> Vec<CapabilityRequirement> {
             Capability::StreamReattachment,
             [CapabilityConstraint::ReattachmentMaximumCount(1)],
         ),
-    ]
+    ];
+    capabilities.push(
+        crate::managed_activity::profile::activity_profile()
+            .capability_requirement()
+            .expect("managed-agent activity is available"),
+    );
+    capabilities
 }
 
 fn id<T, E>(constructor: impl FnOnce(String) -> Result<T, E>, value: &str) -> T

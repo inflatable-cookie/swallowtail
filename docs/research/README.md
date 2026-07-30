@@ -74,3 +74,4 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [064 Codex Observable Activity Range Evidence](064-codex-observable-activity-range-evidence.md)
 - [065 ACP Observable Activity Currentness And Corpus](065-acp-observable-activity-currentness-and-corpus.md)
 - [066 Non-ACP Harness Activity Inventory And Corpus](066-non-acp-harness-activity-inventory-and-corpus.md)
+- [067 Direct Activity Applicability And Corpus](067-direct-activity-applicability-and-corpus.md)

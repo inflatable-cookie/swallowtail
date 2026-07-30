@@ -20,16 +20,23 @@ pub(in crate::driver) struct PendingTurn {
     pub(in crate::driver) work: BoxFuture<'static, Result<(), RuntimeFailure>>,
 }
 
+pub(in crate::driver) struct TurnObservationContext {
+    pub(in crate::driver) turn_id: RuntimeTurnId,
+    pub(in crate::driver) activity_operation_id: swallowtail_runtime::ActivityOperationId,
+    pub(in crate::driver) model_route_id: ModelRouteId,
+    pub(in crate::driver) access_profile_id: AccessProfileId,
+}
+
 pub(in crate::driver) async fn pump_turn(
     mut pending: PendingTurn,
     events: swallowtail_runtime::RuntimeEventSender,
     cancellation: Arc<TurnCancellation>,
     mut deadline: Option<BoxFuture<'static, DeadlineObservation>>,
-    turn_id: RuntimeTurnId,
-    model_route_id: ModelRouteId,
-    access_profile_id: AccessProfileId,
+    observation_context: TurnObservationContext,
 ) -> TerminalOutcome {
     let mut sequence = 1;
+    let mut activity =
+        crate::activity::XaiActivityProjection::new(observation_context.activity_operation_id);
     loop {
         match next_signal(&mut pending, &mut deadline).await {
             TurnSignal::Deadline => {
@@ -62,11 +69,51 @@ pub(in crate::driver) async fn pump_turn(
                 );
             }
             TurnSignal::Update(TurnUpdate::None) => {}
-            TurnSignal::Update(TurnUpdate::Delta(delta)) => {
+            TurnSignal::Update(TurnUpdate::Started { response_id }) => {
+                let observation = match activity.started(&response_id) {
+                    Ok(observation) => observation,
+                    Err(error) => {
+                        cancellation.abort();
+                        let _ = pending.work.await;
+                        return finish(&cancellation, runtime_failure(error.diagnostic().clone()));
+                    }
+                };
+                if let Err(error) = events.send(RuntimeEvent::new(
+                    sequence,
+                    RuntimeEventKind::Activity(observation),
+                )) {
+                    cancellation.abort();
+                    let _ = pending.work.await;
+                    return finish(&cancellation, runtime_failure(error.diagnostic().clone()));
+                }
+                sequence += 1;
+            }
+            TurnSignal::Update(TurnUpdate::Delta {
+                response_id,
+                content: delta,
+                ..
+            }) => {
                 let content = match OperationContent::new(delta) {
                     Ok(content) => content,
                     Err(_) => continue,
                 };
+                let observation = match activity.delta(&response_id, content.as_str()) {
+                    Ok(observation) => observation,
+                    Err(error) => {
+                        cancellation.abort();
+                        let _ = pending.work.await;
+                        return finish(&cancellation, runtime_failure(error.diagnostic().clone()));
+                    }
+                };
+                if let Err(error) = events.send(RuntimeEvent::new(
+                    sequence,
+                    RuntimeEventKind::Activity(observation),
+                )) {
+                    cancellation.abort();
+                    let _ = pending.work.await;
+                    return finish(&cancellation, runtime_failure(error.diagnostic().clone()));
+                }
+                sequence += 1;
                 if let Err(error) = events.send(RuntimeEvent::with_content(
                     sequence,
                     RuntimeEventKind::OutputDelta,
@@ -86,12 +133,30 @@ pub(in crate::driver) async fn pump_turn(
                 return finish(&cancellation, outcome);
             }
             TurnSignal::Update(TurnUpdate::Complete {
+                continuation,
                 output,
                 usage,
                 cost_in_usd_ticks,
                 ..
             }) => {
                 let output = OperationContent::new(output).expect("completed output is non-empty");
+                let observation = match activity.completed(&continuation, output.as_str()) {
+                    Ok(observation) => observation,
+                    Err(error) => {
+                        cancellation.abort();
+                        let _ = pending.work.await;
+                        return finish(&cancellation, runtime_failure(error.diagnostic().clone()));
+                    }
+                };
+                if let Err(error) = events.send(RuntimeEvent::new(
+                    sequence,
+                    RuntimeEventKind::Activity(observation),
+                )) {
+                    cancellation.abort();
+                    let _ = pending.work.await;
+                    return finish(&cancellation, runtime_failure(error.diagnostic().clone()));
+                }
+                sequence += 1;
                 let observations = [
                     RuntimeEventKind::OutputAvailable,
                     RuntimeEventKind::ProviderObservation(ProviderObservation::Usage(usage)),
@@ -100,9 +165,9 @@ pub(in crate::driver) async fn pump_turn(
                             cost_in_usd_ticks,
                             Currency::Usd,
                             NonZeroU64::new(USD_TICKS_PER_USD).expect("USD tick scale is nonzero"),
-                            turn_id.clone(),
-                            model_route_id.clone(),
-                            access_profile_id.clone(),
+                            observation_context.turn_id.clone(),
+                            observation_context.model_route_id.clone(),
+                            observation_context.access_profile_id.clone(),
                             NonZeroU64::new(1).expect("one provider attempt is nonzero"),
                         ),
                     )),

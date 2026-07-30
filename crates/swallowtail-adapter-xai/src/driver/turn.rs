@@ -1,6 +1,6 @@
 pub(super) mod pump;
 
-use self::pump::{PendingTurn, pump_turn};
+use self::pump::{PendingTurn, TurnObservationContext, pump_turn};
 use super::lifecycle::{ActiveTurn, TurnCancellation, join_turn, reap_finished};
 use super::session::XaiSessionHandle;
 use crate::failure::{failure, unsupported};
@@ -109,9 +109,14 @@ impl XaiSessionHandle {
                     events.clone(),
                     Arc::clone(&task_cancellation),
                     deadline.map(|deadline| time.wait_until(deadline)),
-                    turn_id,
-                    model_route_id,
-                    access_profile_id,
+                    TurnObservationContext {
+                        turn_id: turn_id.clone(),
+                        activity_operation_id: swallowtail_runtime::ActivityOperationId::Turn(
+                            turn_id,
+                        ),
+                        model_route_id,
+                        access_profile_id,
+                    },
                 )
                 .await;
                 events.mark_terminal();

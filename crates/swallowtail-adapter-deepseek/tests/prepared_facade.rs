@@ -22,7 +22,8 @@ use swallowtail_runtime::{
     SchemaDocument, TerminalStatus, ToolDeclaration,
 };
 use swallowtail_testkit::{
-    ExecutionTopologyFixture, assert_prepared_operation_evidence_matches_plan,
+    ExecutionTopologyFixture, assert_observable_activity_trace,
+    assert_prepared_operation_evidence_matches_plan,
 };
 
 #[test]
@@ -102,12 +103,17 @@ fn catalogue_and_consumer_authorized_continuation_run_on_both_host_topologies() 
         .expect("correlated result explicitly authorizes attempt two");
         let mut events = turn.take_events().expect("events");
         let terminal = turn.take_terminal_outcome().expect("terminal");
-        let outcome = block_on(async {
+        let (collected, outcome) = block_on(async {
+            let mut collected = Vec::new();
             while let Some(event) = events.next().await {
-                event.expect("event succeeds");
+                collected.push(event.expect("event succeeds"));
             }
-            terminal.await
+            (collected, terminal.await)
         });
+        assert_observable_activity_trace(
+            prepared_session.evidence().observable_activity(),
+            &collected,
+        );
         assert_eq!(outcome.status(), &TerminalStatus::Completed);
         assert_eq!(fixture.server.attempts(), 2);
         assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
@@ -190,12 +196,14 @@ fn one_request_structured_run_prepares_on_both_host_topologies() {
         let mut handle = block_on(run.start_run(fixture.services())).expect("run starts");
         let mut events = handle.take_events().expect("events");
         let terminal = handle.take_terminal_outcome().expect("terminal");
-        let outcome = block_on(async {
+        let (collected, outcome) = block_on(async {
+            let mut collected = Vec::new();
             while let Some(event) = events.next().await {
-                event.expect("event succeeds");
+                collected.push(event.expect("event succeeds"));
             }
-            terminal.await
+            (collected, terminal.await)
         });
+        assert_observable_activity_trace(run.evidence().observable_activity(), &collected);
         assert_eq!(outcome.status(), &TerminalStatus::Completed);
         assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
         assert_eq!(fixture.server.attempts(), 1);

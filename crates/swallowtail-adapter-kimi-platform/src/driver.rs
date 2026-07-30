@@ -61,6 +61,7 @@ pub fn kimi_platform_direct_descriptor() -> DriverDescriptor {
         IntegrationFamilyId::new("kimi-platform").expect("static family id is valid"),
         TransportFamilyId::new("http-sse").expect("static transport id is valid"),
     )
+    .with_interface_compatibility(crate::kimi_platform_facade_claim())
     .with_roles([DriverRole::ModelCatalog, DriverRole::StructuredRun])
     .with_execution_layers([ExecutionLayer::DirectModelInference])
     .with_operation_shapes([OperationShape::StructuredRun])

@@ -1,6 +1,6 @@
 # 133 Text Direct Inference Activity Projection
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-07-29
 Milestone: `../039-direct-inference-activity-truth.md`
@@ -31,12 +31,12 @@ direct-inference routes without fabricating harness work.
 
 ## Acceptance Criteria
 
-- [ ] all selected direct mappings match frozen corpora
-- [ ] provider and consumer tool ownership remain distinct
-- [ ] reasoning summaries exclude private continuation
-- [ ] assistant activity and final output remain explicit
-- [ ] no direct route claims harness lifecycle
-- [ ] all route access, retention, cancellation, and cleanup tests remain green
+- [x] all selected direct mappings match frozen corpora
+- [x] provider and consumer tool ownership remain distinct
+- [x] reasoning summaries exclude private continuation
+- [x] assistant activity and final output remain explicit
+- [x] no direct route claims harness lifecycle
+- [x] all route access, retention, cancellation, and cleanup tests remain green
 
 ## Validation
 
@@ -55,3 +55,23 @@ direct-inference routes without fabricating harness work.
 
 Continue to card 134 after every selected text route passes.
 
+## Outcome
+
+Completed 2026-07-29.
+
+- all 14 selected text-operation profiles expose exact prepared activity
+  evidence
+- Alibaba Model Studio, Anthropic Messages, Amazon Bedrock Runtime,
+  DeepSeek, Kimi Platform, OpenAI background Responses, xAI Responses,
+  Ollama, and attached llama.cpp project assistant activity on their existing
+  event streams
+- Kimi Platform alone exposes its qualified client-visible thought text as
+  reasoning-summary activity; DeepSeek reasoning continuation and xAI
+  encrypted thinking remain private
+- Anthropic web search remains provider-owned; Anthropic and DeepSeek direct
+  tools remain consumer-owned and correlate with their existing exchanges
+- final assistant text uses `FinalAnswerText`; `OutputAvailable` remains a
+  separate operation event
+- deterministic selected-route fixtures passed without live credentials,
+  paid inference, model downloads, or consumer changes
+- the full workspace test selector and all package-facing quality gates pass

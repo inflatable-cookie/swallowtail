@@ -3,11 +3,13 @@ mod terminal;
 #[path = "claude_code_events/usage.rs"]
 mod usage;
 
+use crate::claude_code_activity::ClaudeCodeActivityProjection;
 use crate::failure::failure;
 use serde_json::Value;
 use swallowtail_core::{ModelId, SafeDiagnostic};
 use swallowtail_runtime::{
-    OperationContent, ProviderObservation, RuntimeEvent, RuntimeEventKind, RuntimeFailure,
+    ActivityObservation, ActivityOperationId, OperationContent, ProviderObservation, RuntimeEvent,
+    RuntimeEventKind, RuntimeFailure,
 };
 use terminal::ParsedTerminal;
 use usage::token_usage;
@@ -27,10 +29,11 @@ pub(crate) struct ClaudeCodeEventParser {
     provider_failure: Option<SafeDiagnostic>,
     init_seen: bool,
     terminal_seen: bool,
+    activity: ClaudeCodeActivityProjection,
 }
 
 impl ClaudeCodeEventParser {
-    pub(crate) fn new(model: ModelId) -> Self {
+    pub(crate) fn new(model: ModelId, operation_id: ActivityOperationId) -> Self {
         Self {
             model,
             session_id: None,
@@ -42,6 +45,7 @@ impl ClaudeCodeEventParser {
             provider_failure: None,
             init_seen: false,
             terminal_seen: false,
+            activity: ClaudeCodeActivityProjection::new(operation_id),
         }
     }
 
@@ -104,10 +108,14 @@ impl ClaudeCodeEventParser {
                 self.parse_pre_init_hook(&payload)
             }
             Some("assistant") => self.parse_assistant(&payload),
+            Some("user") => self.parse_user(&payload),
             Some("result") => self.parse_result(&payload),
-            Some(_) => {
+            Some(event_type) => {
                 self.require_session(&payload)?;
-                Ok(vec![self.event(RuntimeEventKind::Progress)])
+                let activity = self
+                    .activity
+                    .unknown(event_type, payload.get("uuid").and_then(Value::as_str))?;
+                Ok(self.activity_events(activity))
             }
             None => Err(malformed_stream()),
         }
@@ -143,14 +151,24 @@ impl ClaudeCodeEventParser {
             return Err(malformed_stream());
         }
         self.session_id = Some(session_id.to_owned());
-        Ok(vec![self.event(RuntimeEventKind::Progress)])
+        let subtype = payload
+            .get("subtype")
+            .and_then(Value::as_str)
+            .ok_or_else(malformed_stream)?;
+        let activity = self.activity.unknown(
+            &format!("pre-init.{subtype}"),
+            payload.get("uuid").and_then(Value::as_str),
+        )?;
+        Ok(self.activity_events(activity))
     }
 
     fn parse_assistant(&mut self, payload: &Value) -> Result<Vec<RuntimeEvent>, RuntimeFailure> {
         self.require_session(payload)?;
-        if let Some(error) = payload.get("error").and_then(Value::as_str)
-            && !error.is_empty()
-        {
+        let failed = payload
+            .get("error")
+            .and_then(Value::as_str)
+            .is_some_and(|error| !error.is_empty());
+        if failed {
             self.provider_failure = Some(SafeDiagnostic::new(
                 "swallowtail.claude_code.headless.provider_failed",
                 "Claude Code reported a provider execution failure",
@@ -180,11 +198,18 @@ impl ClaudeCodeEventParser {
                 }
                 let content = OperationContent::new(text).map_err(|_| malformed_stream())?;
                 events.push(self.event_with(RuntimeEventKind::OutputDelta, content));
-            } else {
-                events.push(self.event(RuntimeEventKind::Progress));
             }
         }
+        let activity = self.activity.assistant(message, failed)?;
+        events.extend(self.activity_events(activity));
         Ok(events)
+    }
+
+    fn parse_user(&mut self, payload: &Value) -> Result<Vec<RuntimeEvent>, RuntimeFailure> {
+        self.require_session(payload)?;
+        let message = payload.get("message").ok_or_else(malformed_stream)?;
+        let activity = self.activity.tool_results(message)?;
+        Ok(self.activity_events(activity))
     }
 
     fn parse_result(&mut self, payload: &Value) -> Result<Vec<RuntimeEvent>, RuntimeFailure> {
@@ -214,6 +239,7 @@ impl ClaudeCodeEventParser {
                 "Claude Code reported a provider execution failure",
             ));
         }
+        self.activity.ensure_idle()?;
         self.terminal_seen = true;
         let mut events = Vec::new();
         if let Some(output) = self.final_output.clone() {
@@ -245,6 +271,16 @@ impl ClaudeCodeEventParser {
         let sequence = self.sequence;
         self.sequence += 1;
         RuntimeEvent::with_content(sequence, kind, content)
+    }
+
+    fn activity_events(
+        &mut self,
+        observations: impl IntoIterator<Item = ActivityObservation>,
+    ) -> Vec<RuntimeEvent> {
+        observations
+            .into_iter()
+            .map(|observation| self.event(RuntimeEventKind::Activity(observation)))
+            .collect()
     }
 }
 

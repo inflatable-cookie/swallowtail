@@ -3,6 +3,7 @@ mod plan;
 
 use super::ClaudeCodePreparedIntegration;
 use super::instance::{REASONING_MODES, run_capabilities};
+use crate::claude_code_activity::profile::{activity_profile, with_activity};
 use plan::{build_plan, instance_with_capabilities, requirements};
 use swallowtail_core::{
     CapabilityRequirement, HarnessConfigurationPosture, HarnessIsolation, ModelId, ModelRoute,
@@ -107,13 +108,15 @@ impl ClaudeCodePreparedEvidence {
     fn from_prepared(
         prepared: &ClaudeCodePreparedIntegration,
         plan: PreflightPlan,
+        activity_profile: swallowtail_core::ObservableActivityProfile,
     ) -> Result<Self, PreparationFailure> {
         Ok(Self {
             observation: prepared.observation().clone(),
             environment: prepared.environment().clone(),
-            operation: PreparedOperationEvidence::from_plan(
+            operation: PreparedOperationEvidence::from_plan_with_activity_profile(
                 plan,
                 prepared.access_evidence().clone(),
+                activity_profile,
             )?,
         })
     }
@@ -131,6 +134,11 @@ impl ClaudeCodePreparedEvidence {
     #[must_use]
     pub const fn operation(&self) -> &PreparedOperationEvidence {
         &self.operation
+    }
+
+    #[must_use]
+    pub const fn observable_activity(&self) -> &swallowtail_core::ObservableActivityProfile {
+        self.operation.observable_activity()
     }
 
     #[must_use]
@@ -209,7 +217,8 @@ impl ClaudeCodePreparedIntegration {
                 "Claude Code prepared run reasoning mode is unsupported",
             ));
         }
-        let capabilities = run_capabilities();
+        let activity = activity_profile(self)?;
+        let capabilities = with_activity(run_capabilities(), &activity);
         let instance = instance_with_capabilities(self, capabilities.clone());
         let operation_capabilities = operation_capabilities(&capabilities, reasoning.as_ref());
         let requirements = requirements(self, operation_capabilities);
@@ -233,7 +242,7 @@ impl ClaudeCodePreparedIntegration {
             .with_working_resource(working_resource)
             .with_deadline(deadline);
         Ok(ClaudeCodePreparedRun {
-            evidence: ClaudeCodePreparedEvidence::from_prepared(self, plan)?,
+            evidence: ClaudeCodePreparedEvidence::from_prepared(self, plan, activity)?,
             request,
         })
     }

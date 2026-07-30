@@ -101,7 +101,17 @@ impl AnthropicPreparedIntegration {
             ),
         ];
         capabilities.extend(config.capability_requirements());
-        let profile = CapabilityProfile::new(capabilities.clone());
+        let activity = crate::activity::profile::session_profile();
+        let profile = crate::activity::profile::with_activity(
+            CapabilityProfile::new(capabilities),
+            &activity,
+        );
+        let capabilities = profile
+            .iter()
+            .map(|(capability, constraints)| {
+                CapabilityRequirement::new(capability, constraints.iter().cloned())
+            })
+            .collect::<Vec<_>>();
         let instance = instance_with_capabilities(self, profile.clone());
         let route = model_route(self, model, profile);
         let requirements = requirements(self, DriverRole::InteractiveSession, capabilities, [])
@@ -122,7 +132,7 @@ impl AnthropicPreparedIntegration {
             },
         )?;
         Ok(AnthropicPreparedSession {
-            evidence: AnthropicPreparedEvidence::from_prepared(self, plan)?,
+            evidence: AnthropicPreparedEvidence::from_prepared_with_activity(self, plan, activity)?,
             request,
         })
     }

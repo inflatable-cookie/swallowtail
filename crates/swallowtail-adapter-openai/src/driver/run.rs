@@ -82,6 +82,15 @@ impl StructuredRunDriver for OpenAiBackgroundDriver {
                 request.request_id().as_str()
             ))
             .expect("validated request identity makes a valid runtime run identity");
+            let activity = crate::activity::OpenAiBackgroundActivityProjection::new(
+                swallowtail_runtime::ActivityOperationId::Run(run_id.clone()),
+                response_id.clone(),
+            );
+            emit(
+                &event_sender,
+                &mut sequence,
+                RuntimeEventKind::Activity(activity.started()?),
+            )?;
             let (terminal_sender, terminal_future) = terminal_outcome_channel();
             let pending = Arc::new(Mutex::new(Some((subscription, access))));
             let task_service = services.task().expect("validated task").clone();
@@ -109,6 +118,7 @@ impl StructuredRunDriver for OpenAiBackgroundDriver {
                         sequence,
                         task_cancellation,
                         deadline,
+                        activity,
                     )
                     .await;
                     let _ = terminal_sender.complete(outcome);

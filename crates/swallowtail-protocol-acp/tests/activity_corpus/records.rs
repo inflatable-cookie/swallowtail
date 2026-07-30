@@ -2,7 +2,7 @@ use serde_json::Value;
 use swallowtail_protocol_acp::{
     AcpContentBlock, AcpMessageRole, AcpOptionalUpdate, AcpSessionUpdate,
     AcpSessionUpdateSemantics, AcpToolCallContent, ActivityDecodeErrorKind, ActivityDecodeLimits,
-    decode_session_update, decode_session_update_with_limits,
+    DEFAULT_MAX_FRAME_BYTES, decode_session_update, decode_session_update_with_limits,
 };
 
 const UPDATES: &str = include_str!("../fixtures/acp-v1-activity-schema-v1.20.0/updates.jsonl");
@@ -115,6 +115,32 @@ fn typed_content_config_and_additive_fields_decode_without_raw_json() {
         panic!("config replacement retained");
     };
     assert_eq!(options.len(), 2);
+}
+
+#[test]
+fn default_activity_decode_is_independent_of_the_transport_frame_limit() {
+    let file_content = "x".repeat(41 * 1024);
+    let params = serde_json::json!({
+        "sessionId": "session-fixture",
+        "update": {
+            "sessionUpdate": "tool_call_update",
+            "toolCallId": "tool-fixture",
+            "title": "Read",
+            "status": "completed",
+            "content": [{
+                "type": "content",
+                "content": {"type": "text", "text": file_content}
+            }],
+            "rawOutput": file_content
+        }
+    });
+    assert!(serde_json::to_vec(&params).unwrap().len() > DEFAULT_MAX_FRAME_BYTES);
+
+    let decoded = decode_session_update(&params).expect("large delivered update decodes");
+    assert!(matches!(
+        decoded.update,
+        AcpSessionUpdate::ToolCallUpdate(_)
+    ));
 }
 
 #[test]

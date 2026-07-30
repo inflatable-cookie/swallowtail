@@ -5,10 +5,14 @@ async fn pump_run(
     events: swallowtail_runtime::RuntimeEventSender,
     cancellation: Arc<RunCancellation>,
     mut deadline: Option<BoxFuture<'static, DeadlineObservation>>,
+    run_id: RuntimeRunId,
 ) -> TerminalOutcome {
     let mut sequence = 1;
     let mut output = String::new();
     let mut state = StreamState::Start;
+    let mut activity = crate::activity::KimiPlatformActivityProjection::new(
+        swallowtail_runtime::ActivityOperationId::Run(run_id),
+    );
     let status = loop {
         match next_run_signal(&mut subscription, &mut deadline).await {
             RunSignal::Deadline => {
@@ -30,6 +34,16 @@ async fn pump_run(
                     for event in parsed {
                         match apply_event(event, &mut state, &mut output) {
                             Ok(Applied::None) => {}
+                            Ok(Applied::RoleStart) => {
+                                if let Err(error) = emit_activity(
+                                    &events,
+                                    &mut sequence,
+                                    activity.assistant_started(),
+                                ) {
+                                    terminal = Some(TerminalStatus::RuntimeFailed(error.diagnostic().clone()));
+                                    break;
+                                }
+                            }
                             Ok(Applied::Usage(usage)) => {
                                 let kind = RuntimeEventKind::ProviderObservation(
                                     ProviderObservation::Usage(usage),
@@ -40,29 +54,54 @@ async fn pump_run(
                                 }
                             }
                             Ok(Applied::Reasoning(delta)) => {
-                                if let Err(error) = emit_content(
+                                if let Err(error) = emit_activity(
+                                    &events,
+                                    &mut sequence,
+                                    activity.reasoning_delta(&delta),
+                                ).and_then(|_| emit_content(
                                     &events,
                                     &mut sequence,
                                     RuntimeEventKind::ReasoningProgress,
                                     delta,
-                                ) {
+                                )) {
                                     terminal = Some(TerminalStatus::RuntimeFailed(error.diagnostic().clone()));
                                     break;
                                 }
                             }
                             Ok(Applied::Output(delta)) => {
-                                if let Err(error) = emit_content(
+                                let result = match activity.reasoning_completed() {
+                                    Ok(Some(observation)) => emit_activity(
+                                        &events,
+                                        &mut sequence,
+                                        Ok(observation),
+                                    ),
+                                    Ok(None) => Ok(()),
+                                    Err(error) => Err(error),
+                                }
+                                .and_then(|_| emit_activity(
+                                    &events,
+                                    &mut sequence,
+                                    activity.assistant_delta(&delta),
+                                ))
+                                .and_then(|_| emit_content(
                                     &events,
                                     &mut sequence,
                                     RuntimeEventKind::OutputDelta,
                                     delta,
-                                ) {
+                                ));
+                                if let Err(error) = result {
                                     terminal = Some(TerminalStatus::RuntimeFailed(error.diagnostic().clone()));
                                     break;
                                 }
                             }
                             Ok(Applied::Complete) => {
-                                if let Err(error) = emit_output(&events, &mut sequence, &output) {
+                                let result = emit_activity(
+                                    &events,
+                                    &mut sequence,
+                                    activity.assistant_completed(&output),
+                                )
+                                .and_then(|_| emit_output(&events, &mut sequence, &output));
+                                if let Err(error) = result {
                                     terminal = Some(TerminalStatus::RuntimeFailed(error.diagnostic().clone()));
                                 } else {
                                     terminal = Some(TerminalStatus::Completed);
@@ -94,7 +133,14 @@ async fn pump_run(
 #[derive(Clone, Copy)]
 enum StreamState { Start, Role, Reasoning, Output, Finished, Usage, Complete }
 
-enum Applied { None, Reasoning(String), Output(String), Usage(TokenUsage), Complete }
+enum Applied {
+    None,
+    RoleStart,
+    Reasoning(String),
+    Output(String),
+    Usage(TokenUsage),
+    Complete,
+}
 
 fn apply_event(
     event: Event,
@@ -102,7 +148,7 @@ fn apply_event(
     output: &mut String,
 ) -> Result<Applied, RuntimeFailure> {
     match (event, *state) {
-        (Event::RoleStart, StreamState::Start) => { *state = StreamState::Role; Ok(Applied::None) }
+        (Event::RoleStart, StreamState::Start) => { *state = StreamState::Role; Ok(Applied::RoleStart) }
         (Event::ReasoningDelta(delta), StreamState::Start | StreamState::Role | StreamState::Reasoning) if !delta.is_empty() => {
             *state = StreamState::Reasoning;
             Ok(Applied::Reasoning(delta))
@@ -157,6 +203,18 @@ fn emit(
     events.send(RuntimeEvent::new(*sequence, kind))?;
     *sequence += 1;
     Ok(())
+}
+
+fn emit_activity(
+    events: &swallowtail_runtime::RuntimeEventSender,
+    sequence: &mut u64,
+    observation: Result<swallowtail_runtime::ActivityObservation, RuntimeFailure>,
+) -> Result<(), RuntimeFailure> {
+    emit(
+        events,
+        sequence,
+        RuntimeEventKind::Activity(observation?),
+    )
 }
 
 fn provider_status(error: RuntimeFailure) -> TerminalStatus {

@@ -1,7 +1,8 @@
 use super::input::XaiSessionProfileInput;
-use super::plan::{XaiPreparedEvidence, build_plan, model_route};
+use super::plan::{XaiPreparedEvidence, build_plan, instance_with_capabilities, model_route};
 use crate::{XaiPreparedIntegration, XaiWebSocketDriver};
 use swallowtail_core::PreflightPlan;
+use swallowtail_core::{CapabilityProfile, CapabilityRequirement};
 use swallowtail_runtime::{
     BoxFuture, HostServices, InteractiveSessionDriver, InteractiveSessionHandle,
     OpenSessionRequest, PreparationFailure, RuntimeFailure,
@@ -57,13 +58,24 @@ impl XaiPreparedIntegration {
         input: XaiSessionProfileInput,
     ) -> Result<XaiPreparedResponsesSession, PreparationFailure> {
         let (request_id, model, deadline) = input.into_parts();
-        let route = model_route(self, model);
-        let requirements =
+        let activity = crate::activity::profile::activity_profile();
+        let base_requirements =
             crate::xai_responses_requirements(self.instance().execution_host_id().clone());
-        let plan = build_plan(self, &route, &requirements)?;
+        let capabilities = crate::activity::profile::with_activity(
+            CapabilityProfile::new(base_requirements.capabilities().cloned()),
+            &activity,
+        );
+        let requirements = base_requirements.with_capabilities(capabilities.iter().map(
+            |(capability, constraints)| {
+                CapabilityRequirement::new(capability, constraints.iter().cloned())
+            },
+        ));
+        let instance = instance_with_capabilities(self, capabilities.clone());
+        let route = model_route(self, model, capabilities);
+        let plan = build_plan(self, &instance, &route, &requirements)?;
         let request = OpenSessionRequest::resource_free_from_plan(&plan, request_id, deadline)?;
         Ok(XaiPreparedResponsesSession {
-            evidence: XaiPreparedEvidence::from_prepared(self, plan)?,
+            evidence: XaiPreparedEvidence::from_prepared(self, plan, activity)?,
             request,
         })
     }

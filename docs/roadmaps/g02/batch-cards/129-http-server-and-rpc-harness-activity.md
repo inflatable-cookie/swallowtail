@@ -1,6 +1,6 @@
 # 129 HTTP, Server, And RPC Harness Activity
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-07-29
 Milestone: `../038-non-acp-harness-activity-coverage.md`
@@ -37,13 +37,13 @@ WebSocket, RPC, and managed-agent harness routes.
 
 ## Acceptance Criteria
 
-- [ ] every selected event has exact activity ownership
-- [ ] UI relay and model activity remain distinct
-- [ ] recovery and reattachment do not duplicate activity
-- [ ] authoritative persisted events retain exact provider ordering
-- [ ] callbacks and provider-owned tools remain separate
-- [ ] every profile matches the frozen corpus
-- [ ] focused adapter regressions pass
+- [x] every selected event has exact activity ownership
+- [x] UI relay and model activity remain distinct
+- [x] recovery and reattachment do not duplicate activity
+- [x] authoritative persisted events retain exact provider ordering
+- [x] callbacks and provider-owned tools remain separate
+- [x] every profile matches the frozen corpus
+- [x] focused adapter regressions pass
 
 ## Validation
 
@@ -60,3 +60,24 @@ WebSocket, RPC, and managed-agent harness routes.
 ## Auto-Continuation
 
 Continue to card 130 after every selected route passes focused conformance.
+
+## Completion Evidence
+
+- Pi RPC projects message, readable thinking, provider-owned tool, compaction,
+  warning, and namespaced unknown activity on the existing turn stream. UI
+  callbacks remain separate.
+- Kimi local server projects accepted WebSocket events only after durable
+  cursor admission. Step, message, thought, tool, shell, subagent, task,
+  compaction, retry, warning, and unknown truth retain exact route identity.
+- OpenCode projects correlated SSE message, reasoning, tool, step, warning,
+  and unknown activity. Exact `1.14.51` remains intentionally thin.
+- Managed Agents projects authoritative persisted completions after event
+  deduplication. Provider and MCP tools remain provider-owned; custom tools
+  remain callback exchange.
+- Every prepared route publishes an exact observable-activity profile bound
+  to its qualified behavior revision. Permitted newer versions inherit the
+  last guarantee without widening fidelity.
+- Complete Pi, Kimi, OpenCode, and Anthropic adapter suites pass. Rust check,
+  lint, public-API, formatting, and docs gates pass.
+- No executable, credential, account, server, model request, or paid inference
+  was used.

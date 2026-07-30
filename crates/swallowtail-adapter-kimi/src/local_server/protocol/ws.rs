@@ -57,6 +57,63 @@ pub(crate) enum WsEvent {
         turn_id: u64,
         delta: String,
     },
+    StepStarted {
+        turn_id: u64,
+        step: u64,
+        step_id: Option<String>,
+    },
+    StepEnded {
+        turn_id: u64,
+        step: u64,
+        step_id: Option<String>,
+        failed: bool,
+    },
+    ToolStarted {
+        turn_id: u64,
+        call_id: String,
+        name: String,
+    },
+    ToolUpdated {
+        turn_id: u64,
+        call_id: String,
+    },
+    ToolEnded {
+        turn_id: u64,
+        call_id: String,
+        failed: bool,
+    },
+    ShellStarted {
+        command_id: String,
+    },
+    ShellUpdated {
+        command_id: String,
+    },
+    ShellEnded {
+        command_id: String,
+        failed: bool,
+    },
+    SubagentSpawned {
+        subagent_id: String,
+        name: String,
+    },
+    SubagentUpdated {
+        subagent_id: String,
+    },
+    SubagentEnded {
+        subagent_id: String,
+        failed: bool,
+    },
+    CompactionStarted,
+    CompactionEnded {
+        failed: bool,
+    },
+    TaskStarted {
+        task_id: String,
+    },
+    TaskEnded {
+        task_id: String,
+        failed: bool,
+    },
     TurnEnded {
         turn_id: u64,
         reason: TurnEndReason,
@@ -73,6 +130,7 @@ pub(crate) enum WsEvent {
     SessionAborted,
     Progress,
     Warning,
+    Unknown(String),
     ProviderError,
 }
 
@@ -231,6 +289,68 @@ fn decode_event(
                 .ok_or_else(malformed)?
                 .to_owned(),
         }),
+        "turn.step.started" => Ok(WsEvent::StepStarted {
+            turn_id: required_u64(payload, "turnId")?,
+            step: required_u64(payload, "step")?,
+            step_id: optional_string(payload, "stepId")?,
+        }),
+        "turn.step.completed" | "turn.step.interrupted" => Ok(WsEvent::StepEnded {
+            turn_id: required_u64(payload, "turnId")?,
+            step: required_u64(payload, "step")?,
+            step_id: optional_string(payload, "stepId")?,
+            failed: event_type == "turn.step.interrupted",
+        }),
+        "tool.call.delta" | "tool.progress" => Ok(WsEvent::ToolUpdated {
+            turn_id: required_u64(payload, "turnId")?,
+            call_id: required_string(payload, "toolCallId")?.to_owned(),
+        }),
+        "tool.call.started" => Ok(WsEvent::ToolStarted {
+            turn_id: required_u64(payload, "turnId")?,
+            call_id: required_string(payload, "toolCallId")?.to_owned(),
+            name: required_string(payload, "name")?.to_owned(),
+        }),
+        "tool.result" => Ok(WsEvent::ToolEnded {
+            turn_id: required_u64(payload, "turnId")?,
+            call_id: required_string(payload, "toolCallId")?.to_owned(),
+            failed: optional_bool(payload, "isError")?.unwrap_or(false),
+        }),
+        "shell.started" => Ok(WsEvent::ShellStarted {
+            command_id: required_string(payload, "commandId")?.to_owned(),
+        }),
+        "shell.output" => Ok(WsEvent::ShellUpdated {
+            command_id: required_string(payload, "commandId")?.to_owned(),
+        }),
+        "shell.completed" => Ok(WsEvent::ShellEnded {
+            command_id: required_string(payload, "commandId")?.to_owned(),
+            failed: payload
+                .get("isError")
+                .and_then(Value::as_bool)
+                .ok_or_else(malformed)?,
+        }),
+        "subagent.spawned" => Ok(WsEvent::SubagentSpawned {
+            subagent_id: required_string(payload, "subagentId")?.to_owned(),
+            name: required_string(payload, "subagentName")?.to_owned(),
+        }),
+        "subagent.started" | "subagent.suspended" => Ok(WsEvent::SubagentUpdated {
+            subagent_id: required_string(payload, "subagentId")?.to_owned(),
+        }),
+        "subagent.completed" | "subagent.failed" => Ok(WsEvent::SubagentEnded {
+            subagent_id: required_string(payload, "subagentId")?.to_owned(),
+            failed: event_type == "subagent.failed",
+        }),
+        "compaction.started" => Ok(WsEvent::CompactionStarted),
+        "compaction.completed" | "compaction.blocked" | "compaction.cancelled" => {
+            Ok(WsEvent::CompactionEnded {
+                failed: event_type != "compaction.completed",
+            })
+        }
+        "task.started" | "background.task.started" => Ok(WsEvent::TaskStarted {
+            task_id: task_id(payload)?,
+        }),
+        "task.terminated" | "background.task.terminated" => Ok(WsEvent::TaskEnded {
+            task_id: task_id(payload)?,
+            failed: task_failed(payload)?,
+        }),
         "turn.ended" => Ok(WsEvent::TurnEnded {
             turn_id: required_u64(payload, "turnId")?,
             reason: match required_string(payload, "reason")? {
@@ -263,16 +383,7 @@ fn decode_event(
             next_attempt: required_u64(payload, "nextAttempt")?,
             max_attempts: required_u64(payload, "maxAttempts")?,
         }),
-        "turn.step.started"
-        | "turn.step.completed"
-        | "turn.step.interrupted"
-        | "tool.call.delta"
-        | "tool.call.started"
-        | "tool.progress"
-        | "shell.output"
-        | "shell.started"
-        | "shell.completed"
-        | "agent.status.updated"
+        "agent.status.updated"
         | "agent.created"
         | "agent.disposed"
         | "event.session.work_changed"
@@ -282,8 +393,48 @@ fn decode_event(
         | "event.workspace.deleted"
         | "event.config.changed"
         | "session.meta.updated" => Ok(WsEvent::Progress),
-        _ => Err(super::common::unsupported_event()),
+        _ => Ok(WsEvent::Unknown(event_type.to_owned())),
     }
+}
+
+fn optional_string(
+    object: &serde_json::Map<String, Value>,
+    field: &str,
+) -> Result<Option<String>, RuntimeFailure> {
+    match object.get(field) {
+        Some(value) => value
+            .as_str()
+            .map(|value| Some(value.to_owned()))
+            .ok_or_else(malformed),
+        None => Ok(None),
+    }
+}
+
+fn optional_bool(
+    object: &serde_json::Map<String, Value>,
+    field: &str,
+) -> Result<Option<bool>, RuntimeFailure> {
+    match object.get(field) {
+        Some(value) => value.as_bool().map(Some).ok_or_else(malformed),
+        None => Ok(None),
+    }
+}
+
+fn task_info(
+    payload: &serde_json::Map<String, Value>,
+) -> Result<&serde_json::Map<String, Value>, RuntimeFailure> {
+    required_object(payload, "info")
+}
+
+fn task_id(payload: &serde_json::Map<String, Value>) -> Result<String, RuntimeFailure> {
+    Ok(required_string(task_info(payload)?, "taskId")?.to_owned())
+}
+
+fn task_failed(payload: &serde_json::Map<String, Value>) -> Result<bool, RuntimeFailure> {
+    Ok(matches!(
+        required_string(task_info(payload)?, "status")?,
+        "failed" | "timed_out" | "killed" | "lost"
+    ))
 }
 
 pub(crate) const fn classify_ws_close(code: u16) -> WsCloseKind {

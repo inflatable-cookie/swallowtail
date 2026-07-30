@@ -26,6 +26,7 @@ use swallowtail_runtime::{
     RemoteResourceDeletionOutcome, RequestId, SchemaDocument, StreamReattachmentPolicy,
     StructuredOutputDescriptor, TerminalStatus,
 };
+use swallowtail_testkit::assert_observable_activity_trace;
 
 #[test]
 fn prepared_background_run_preserves_one_attempt_and_one_reattachment_on_both_hosts() {
@@ -64,7 +65,9 @@ fn prepared_background_run_preserves_one_attempt_and_one_reattachment_on_both_ho
             swallowtail_core::InterfaceCompatibilityAssessment::Qualified(_)
         ));
 
+        let activity_profile = run.evidence().observable_activity().clone();
         let (run, events, outcome) = complete(run.start_run(fixture.services()));
+        assert_observable_activity_trace(&activity_profile, &events);
         assert_eq!(outcome.status(), &TerminalStatus::Completed);
         assert_eq!(
             outcome.remote_resource_deletion(OwnedRemoteResourceKind::Response),

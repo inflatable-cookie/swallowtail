@@ -13,8 +13,8 @@ use super::{preflight_failure, validate_preparation};
 use crate::LlamaCppAttachedDriver;
 use std::collections::BTreeSet;
 use swallowtail_core::{
-    AccessProfile, ConfiguredInstance, DriverRole, HostServiceKind, ModelCatalogEntry,
-    PreflightContext, PreflightPlan, preflight,
+    AccessProfile, CapabilityRequirement, ConfiguredInstance, DriverRole, HostServiceKind,
+    ModelCatalogEntry, PreflightContext, PreflightPlan, preflight,
 };
 use swallowtail_runtime::{
     BoxFuture, HostServices, ModelCatalogDriver, ModelCatalogRequest, OperationPolicy,
@@ -103,24 +103,38 @@ impl LlamaCppAttachedPreparedIntegration {
     ) -> Result<LlamaCppPreparedInferenceAttempt, PreparationFailure> {
         let (request_id, selection, content, maximum, deadline) = input.into_parts();
         let (route_id, route_revision, model_id) = selection.into_parts();
-        let capabilities = crate::selection::attached_capabilities(DriverRole::StructuredRun);
+        let activity = crate::activity::profile::activity_profile();
+        let capabilities = crate::activity::profile::with_activity(
+            swallowtail_core::CapabilityProfile::new(crate::selection::attached_capabilities(
+                DriverRole::StructuredRun,
+            )),
+            &activity,
+        );
+        let capability_requirements = capabilities
+            .iter()
+            .map(|(capability, constraints)| {
+                CapabilityRequirement::new(capability, constraints.iter().cloned())
+            })
+            .collect::<Vec<_>>();
         let route = crate::selection::model_route(
             self.instance.id().clone(),
             route_id,
             route_revision,
             model_id,
-            capabilities,
+            capability_requirements.clone(),
         );
         let requirements = crate::selection::attached_requirements(
             self.instance.execution_host_id().clone(),
             self.access.id().clone(),
             DriverRole::StructuredRun,
         )
+        .with_capabilities(capability_requirements)
         .require_model_route();
+        let instance = instance_with_capabilities(&self.instance, capabilities);
         let plan = preflight(
             &PreflightContext::new(
                 &crate::llama_cpp_attached_descriptor(),
-                &self.instance,
+                &instance,
                 &self.access,
                 self.evidence.status(),
                 self.available_host_services(),
@@ -136,11 +150,31 @@ impl LlamaCppAttachedPreparedIntegration {
             request = request.with_deadline(deadline);
         }
         Ok(LlamaCppPreparedInferenceAttempt {
-            evidence: LlamaCppAttachedPreparedEvidence::new(self, plan)?,
+            evidence: LlamaCppAttachedPreparedEvidence::new_with_activity(self, plan, activity)?,
             request,
             driver: self.low_level_driver(),
         })
     }
+}
+
+fn instance_with_capabilities(
+    base: &ConfiguredInstance,
+    capabilities: swallowtail_core::CapabilityProfile,
+) -> ConfiguredInstance {
+    ConfiguredInstance::new(
+        base.id().clone(),
+        base.revision().clone(),
+        base.driver_id().clone(),
+        base.execution_host_id().clone(),
+        base.target_reference().clone(),
+        base.ownership(),
+        base.access_profile_id().clone(),
+        base.support_authority(),
+        base.protocol_facade_id().clone(),
+        base.policy_id().clone(),
+        capabilities,
+    )
+    .with_interface_versions(base.interface_versions().cloned())
 }
 
 pub fn prepare_llama_cpp_attached(

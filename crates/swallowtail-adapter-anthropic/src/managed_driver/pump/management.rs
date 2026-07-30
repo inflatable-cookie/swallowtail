@@ -31,6 +31,7 @@ async fn reconcile_history(
     events: &swallowtail_runtime::RuntimeEventSender,
     sequence: &mut u64,
     run_id: &RuntimeRunId,
+    activity: &mut crate::managed_activity::ManagedActivityProjection,
     callbacks: &ManagedCallbackHub,
     live: &[ManagedEvent],
     processed: &mut BTreeSet<String>,
@@ -56,6 +57,7 @@ async fn reconcile_history(
     for event in reconciled {
         match apply_event(
             &event,
+            activity,
             events,
             sequence,
             run_id,

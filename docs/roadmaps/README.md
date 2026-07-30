@@ -13,10 +13,9 @@ shape.
 ## Next Task
 
 Execute
-[g02 card 129](g02/batch-cards/129-http-server-and-rpc-harness-activity.md):
-map exact observable activity for Pi RPC, Kimi local server, OpenCode
-HTTP/SSE, and Anthropic Managed Agents in the evidence-ranked order fixed by
-Research 066.
+[g02 card 134](g02/batch-cards/134-realtime-and-non-applicable-activity-closeout.md):
+prove the boundary between ordinary observable activity, realtime-media
+events, catalogue operations, and serving lifecycle.
 
 ## Index
 

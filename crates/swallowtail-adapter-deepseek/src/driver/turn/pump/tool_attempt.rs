@@ -10,6 +10,7 @@ pub(super) async fn run_tool_turn(
         swallowtail_runtime::DeadlineObservation,
     >,
     cancellation: &TurnCancellation,
+    activity: &crate::activity::DeepSeekActivityProjection,
 ) -> Result<(FinalAttempt, CleanupOutcome), TurnFailure> {
     let response = wait_work(
         context.transport.request(
@@ -91,6 +92,10 @@ pub(super) async fn run_tool_turn(
         .authorize_tool_results(&results)
         .map_err(runtime_failure)?;
     let result = results.first().expect("exact result exists");
+    let observation = activity
+        .tool_completed(call.call_id())
+        .map_err(runtime_failure)?;
+    emit(events, sequence, RuntimeEventKind::Activity(observation)).map_err(runtime_failure)?;
     context
         .history
         .lock()
@@ -108,6 +113,7 @@ pub(super) async fn run_tool_turn(
             sequence,
             deadline,
             cancellation,
+            activity,
         },
     )
     .await

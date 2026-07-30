@@ -5,6 +5,7 @@
 
 #![forbid(unsafe_code)]
 
+mod activity;
 mod catalogue;
 mod driver;
 mod failure;

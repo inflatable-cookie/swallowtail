@@ -117,15 +117,18 @@ mod tests {
     }
 
     #[test]
-    fn malformed_unknown_partial_and_invalid_ui_fail_closed() {
+    fn safe_unknown_is_preserved_while_malformed_partial_and_invalid_ui_fail_closed() {
+        assert_eq!(
+            decode_records(include_bytes!(
+                "../tests/fixtures/pi-rpc-0.80.10/unknown.jsonl"
+            ))
+            .expect("bounded unknown event decodes"),
+            [PiRpcRecordKind::AgentEvent]
+        );
         for (bytes, expected) in [
             (
                 include_bytes!("../tests/fixtures/pi-rpc-0.80.10/malformed.jsonl").as_slice(),
                 PiRpcProtocolFailureKind::MalformedJson,
-            ),
-            (
-                include_bytes!("../tests/fixtures/pi-rpc-0.80.10/unknown.jsonl").as_slice(),
-                PiRpcProtocolFailureKind::UnknownRecord,
             ),
             (
                 &include_bytes!("../tests/fixtures/pi-rpc-0.80.10/disconnect.jsonl")

@@ -5,8 +5,9 @@ use std::sync::Arc;
 use std::task::Poll;
 use swallowtail_core::{ModelId, SafeDiagnostic};
 use swallowtail_runtime::{
-    BoxFuture, CleanupOutcome, DeadlineObservation, ProcessHandle, ProcessOutputChunk,
-    ProcessOutputStream, RuntimeEventSender, RuntimeFailure, TerminalOutcome, TerminalStatus,
+    ActivityOperationId, BoxFuture, CleanupOutcome, DeadlineObservation, ProcessHandle,
+    ProcessOutputChunk, ProcessOutputStream, RuntimeEventSender, RuntimeFailure, TerminalOutcome,
+    TerminalStatus,
 };
 
 pub(crate) async fn pump(
@@ -15,8 +16,9 @@ pub(crate) async fn pump(
     cancellation: Arc<ClaudeCodeCancellation>,
     deadline: BoxFuture<'static, DeadlineObservation>,
     model: ModelId,
+    operation_id: ActivityOperationId,
 ) -> TerminalOutcome {
-    let mut parser = ClaudeCodeEventParser::new(model);
+    let mut parser = ClaudeCodeEventParser::new(model, operation_id);
     let mut deadline = Some(deadline);
     loop {
         match next_output(process.as_ref(), cancellation.as_ref(), &mut deadline).await {

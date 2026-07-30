@@ -16,7 +16,7 @@ use swallowtail_core::{
     CredentialRef, CredentialState, EndpointAudience, EndpointAuthorization, EntitlementMetering,
     EntitlementState, ExecutionHostId, HarnessConfigurationPosture, HarnessIsolation,
     InstanceRevision, InterfaceVersionAxis, ModelId, ModelRouteId, ModelRouteRevision,
-    RuntimeReadiness, SupportAuthority,
+    ObservableActivityAvailability, RuntimeReadiness, SupportAuthority,
 };
 use swallowtail_runtime::{
     CancellationAcknowledgement, CleanupOutcome, Deadline, DiscoveryCancellation, EnvironmentRef,
@@ -58,6 +58,10 @@ fn prepared_route_executes_exact_argv_and_bounded_corpus_in_both_topologies() {
         assert_prepared_operation_evidence_matches_plan(
             base_profile.evidence().operation(),
             base_profile.plan(),
+        );
+        assert_eq!(
+            base_profile.evidence().observable_activity().availability(),
+            ObservableActivityAvailability::Available
         );
 
         let evidence = execute(
@@ -110,12 +114,12 @@ fn prepared_route_executes_exact_argv_and_bounded_corpus_in_both_topologies() {
             tools.outcome.output().map(OperationContent::as_str),
             Some("checkingdone")
         );
-        assert!(
-            tools
-                .events
-                .iter()
-                .any(|event| event.kind() == &RuntimeEventKind::Progress)
-        );
+        assert!(tools.events.iter().any(|event| matches!(
+            event.kind(),
+            RuntimeEventKind::Activity(activity)
+                if activity.kind()
+                    == &swallowtail_runtime::ActivityKind::ProviderOwnedTool
+        )));
 
         let retry = execute(
             &profile(&prepared, topology.working_resource().clone(), "retry"),

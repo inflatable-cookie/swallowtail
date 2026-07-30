@@ -1,5 +1,6 @@
 use super::input::QwenRunProfileInput;
 use super::plan::{QwenPreparedEvidence, build_plan, instance_with_capabilities, requirements};
+use crate::activity::profile::{activity_profile, with_activity};
 use crate::prepared::instance::run_capabilities;
 use crate::{QwenHeadlessDriver, QwenPreparedIntegration};
 use swallowtail_core::{
@@ -66,7 +67,8 @@ impl QwenPreparedIntegration {
         input: QwenRunProfileInput,
     ) -> Result<QwenPreparedRun, PreparationFailure> {
         let (request_id, model, content, working_resource, deadline) = input.into_parts();
-        let capabilities = run_capabilities();
+        let activity = activity_profile(self)?;
+        let capabilities = with_activity(run_capabilities(), &activity);
         let instance = instance_with_capabilities(self, capabilities.clone());
         let (route_id, route_revision, provider_id, model_id) = model.into_parts();
         let route = ModelRoute::new(
@@ -74,14 +76,14 @@ impl QwenPreparedIntegration {
             route_revision,
             self.instance().id().clone(),
             model_id,
-            capabilities,
+            capabilities.clone(),
         )
         .with_provider_id(provider_id);
         let requirements = requirements(
             self,
             swallowtail_core::OperationShape::StructuredRun,
             swallowtail_core::DriverRole::StructuredRun,
-            run_capabilities().iter().map(|(capability, constraints)| {
+            capabilities.iter().map(|(capability, constraints)| {
                 CapabilityRequirement::new(capability, constraints.iter().cloned())
             }),
         );
@@ -94,7 +96,7 @@ impl QwenPreparedIntegration {
             .with_working_resource(working_resource)
             .with_deadline(deadline);
         Ok(QwenPreparedRun {
-            evidence: QwenPreparedEvidence::from_prepared(self, plan)?,
+            evidence: QwenPreparedEvidence::from_prepared(self, plan, activity)?,
             request,
         })
     }

@@ -3,10 +3,12 @@ async fn pump_run(
     events: swallowtail_runtime::RuntimeEventSender,
     cancellation: Arc<RunCancellation>,
     mut deadline: Option<BoxFuture<'static, DeadlineObservation>>,
+    operation_id: swallowtail_runtime::ActivityOperationId,
 ) -> TerminalOutcome {
     let mut sequence = 1;
     let mut output = String::new();
     let mut state = StreamState::Start;
+    let mut activity = crate::activity::LlamaCppActivityProjection::new(operation_id);
     let status = loop {
         match next_run_signal(&mut subscription, &mut deadline).await {
             RunSignal::Deadline => {
@@ -26,6 +28,22 @@ async fn pump_run(
                 Err(error) => break provider_status(error),
                 Ok(event) => match apply_event(event, &mut state, &mut output) {
                     Ok(Applied::None) => {}
+                    Ok(Applied::Started) => {
+                        if let Err(error) = emit(
+                            &events,
+                            &mut sequence,
+                            RuntimeEventKind::Activity(match activity.started() {
+                                Ok(observation) => observation,
+                                Err(error) => {
+                                    break TerminalStatus::RuntimeFailed(
+                                        error.diagnostic().clone(),
+                                    );
+                                }
+                            }),
+                        ) {
+                            break TerminalStatus::RuntimeFailed(error.diagnostic().clone());
+                        }
+                    }
                     Ok(Applied::Usage(usage)) => {
                         let kind = RuntimeEventKind::ProviderObservation(
                             ProviderObservation::Usage(usage),
@@ -35,6 +53,20 @@ async fn pump_run(
                         }
                     }
                     Ok(Applied::Delta(delta)) => {
+                        if let Err(error) = emit(
+                            &events,
+                            &mut sequence,
+                            RuntimeEventKind::Activity(match activity.delta(&delta) {
+                                Ok(observation) => observation,
+                                Err(error) => {
+                                    break TerminalStatus::RuntimeFailed(
+                                        error.diagnostic().clone(),
+                                    );
+                                }
+                            }),
+                        ) {
+                            break TerminalStatus::RuntimeFailed(error.diagnostic().clone());
+                        }
                         let content = OperationContent::new(delta).expect("delta is non-empty");
                         let event = RuntimeEvent::with_content(
                             sequence,
@@ -52,6 +84,20 @@ async fn pump_run(
                                 "swallowtail.llama_cpp.output_missing",
                                 "llama.cpp completed without text output",
                             ));
+                        }
+                        if let Err(error) = emit(
+                            &events,
+                            &mut sequence,
+                            RuntimeEventKind::Activity(match activity.completed(&output) {
+                                Ok(observation) => observation,
+                                Err(error) => {
+                                    break TerminalStatus::RuntimeFailed(
+                                        error.diagnostic().clone(),
+                                    );
+                                }
+                            }),
+                        ) {
+                            break TerminalStatus::RuntimeFailed(error.diagnostic().clone());
                         }
                         let content = OperationContent::new(output.clone())
                             .expect("output is non-empty");
@@ -90,6 +136,7 @@ enum StreamState {
 }
 
 enum Applied {
+    Started,
     None,
     Usage(TokenUsage),
     Delta(String),
@@ -104,7 +151,7 @@ fn apply_event(
     match (event, &*state) {
         (Event::RoleStart, StreamState::Start) => {
             *state = StreamState::Streaming;
-            Ok(Applied::None)
+            Ok(Applied::Started)
         }
         (Event::OutputDelta(delta), StreamState::Streaming) if !delta.is_empty() => {
             output.push_str(&delta);

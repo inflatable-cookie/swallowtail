@@ -9,9 +9,9 @@ use swallowtail_adapter_opencode::{
 };
 use swallowtail_core::{
     Capability, CapabilityConstraint, DriverRole, ExecutionHostId, HarnessConfigurationPosture,
-    HarnessIsolation, InstanceOwnership, InterfaceCompatibilityAssessment, OwnedRemoteResourceKind,
-    ProviderSessionDeletionStrength, ProviderSessionEffectTruth, ReasoningMode,
-    StructuredOutputEnforcement,
+    HarnessIsolation, InstanceOwnership, InterfaceCompatibilityAssessment,
+    ObservableActivityAvailability, OwnedRemoteResourceKind, ProviderSessionDeletionStrength,
+    ProviderSessionEffectTruth, ReasoningMode, StructuredOutputEnforcement,
 };
 use swallowtail_runtime::{
     CancellationControl, CleanupOutcome, DiscoveryCancellation, HostServices, OperationContent,
@@ -54,6 +54,14 @@ fn prepared_catalogue_and_session_stay_separate_on_both_host_topologies() {
             catalogue.evidence().operation(),
             catalogue.plan(),
         );
+        assert_eq!(
+            catalogue
+                .evidence()
+                .operation()
+                .observable_activity()
+                .availability(),
+            ObservableActivityAvailability::NotApplicable
+        );
         let models =
             block_on(catalogue.list_models(fixture.services())).expect("catalogue succeeds");
         assert_eq!(models.len(), 1);
@@ -82,6 +90,14 @@ fn prepared_catalogue_and_session_stay_separate_on_both_host_topologies() {
         assert_prepared_operation_evidence_matches_plan(
             session.evidence().operation(),
             session.plan(),
+        );
+        assert_eq!(
+            session
+                .evidence()
+                .operation()
+                .observable_activity()
+                .availability(),
+            ObservableActivityAvailability::Available
         );
         let handle = block_on(session.open_session(fixture.services())).expect("session opens");
         assert_eq!(
@@ -179,6 +195,13 @@ fn prepared_structured_run_is_private_and_deletes_its_session_on_both_host_topol
             ProviderRetentionPolicy::TemporaryAllowed
         );
         assert_prepared_operation_evidence_matches_plan(run.evidence().operation(), run.plan());
+        assert_eq!(
+            run.evidence()
+                .operation()
+                .observable_activity()
+                .availability(),
+            ObservableActivityAvailability::Available
+        );
 
         let mut handle = block_on(run.start_run(fixture.services())).expect("run starts");
         assert!(handle.provider_run_ref().is_none());

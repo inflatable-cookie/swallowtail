@@ -84,7 +84,17 @@ impl KimiPlatformPreparedIntegration {
             ));
         }
         let capability_requirements = inference_capabilities(&reasoning);
-        let capabilities = CapabilityProfile::new(capability_requirements.clone());
+        let activity = crate::activity::profile::activity_profile();
+        let capabilities = crate::activity::profile::with_activity(
+            CapabilityProfile::new(capability_requirements),
+            &activity,
+        );
+        let capability_requirements = capabilities
+            .iter()
+            .map(|(capability, constraints)| {
+                CapabilityRequirement::new(capability, constraints.iter().cloned())
+            })
+            .collect::<Vec<_>>();
         let instance = instance_with_capabilities(self, capabilities.clone());
         let route = model_route(self, model, capabilities);
         if route.model_id().as_str() != crate::KIMI_PLATFORM_MODEL_ID {
@@ -107,7 +117,9 @@ impl KimiPlatformPreparedIntegration {
             request = request.with_deadline(deadline);
         }
         Ok(KimiPlatformPreparedInferenceAttempt {
-            evidence: KimiPlatformPreparedEvidence::from_prepared(self, plan)?,
+            evidence: KimiPlatformPreparedEvidence::from_prepared_with_activity(
+                self, plan, activity,
+            )?,
             request,
         })
     }

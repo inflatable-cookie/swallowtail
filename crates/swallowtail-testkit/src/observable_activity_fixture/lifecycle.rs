@@ -1,6 +1,7 @@
 use super::ObservableActivityTraceFixture;
 use super::support::{
     activity_id, content, event, kind_profile, observation, provider_ref, trace, with_content,
+    with_label,
 };
 use swallowtail_core::{
     ActivityContentStream, ActivityDisclosure, ActivityKindClass, ActivityLifecycleFidelity,
@@ -76,13 +77,16 @@ pub(super) fn update_and_completion() -> ObservableActivityTraceFixture {
             event(
                 2,
                 with_content(
-                    observation(
-                        id.clone(),
-                        ActivityKind::Plan,
-                        ActivityLifecyclePhase::Updated,
-                        ActivityStatus::InProgress,
-                        None,
-                        ActivityDisclosure::ProviderDisplayContent,
+                    with_label(
+                        observation(
+                            id.clone(),
+                            ActivityKind::Plan,
+                            ActivityLifecyclePhase::Updated,
+                            ActivityStatus::InProgress,
+                            None,
+                            ActivityDisclosure::ProviderDisplayContent,
+                        ),
+                        "Inspect",
                     ),
                     ActivityContentStream::PlanText,
                     "Inspect the portable contract",
@@ -91,13 +95,16 @@ pub(super) fn update_and_completion() -> ObservableActivityTraceFixture {
             event(
                 3,
                 with_content(
-                    observation(
-                        id,
-                        ActivityKind::Plan,
-                        ActivityLifecyclePhase::Completed,
-                        ActivityStatus::Completed,
-                        None,
-                        ActivityDisclosure::ProviderDisplayContent,
+                    with_label(
+                        observation(
+                            id,
+                            ActivityKind::Plan,
+                            ActivityLifecyclePhase::Completed,
+                            ActivityStatus::Completed,
+                            None,
+                            ActivityDisclosure::ProviderDisplayContent,
+                        ),
+                        "Inspect portable contract",
                     ),
                     ActivityContentStream::PlanText,
                     "Portable contract inspected",

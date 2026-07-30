@@ -6,8 +6,9 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     ActivityAssistantPhase, ActivityContent, ActivityContentChangeKind, ActivityContentUpdate,
-    ActivityId, ActivityKind, ActivityLifecyclePhase, ActivityObservation, ActivityOperationId,
-    ActivityStatus, OperationContent, RuntimeEvent, RuntimeEventKind, RuntimeRunId,
+    ActivityId, ActivityKind, ActivityLabel, ActivityLifecyclePhase, ActivityObservation,
+    ActivityOperationId, ActivityStatus, OperationContent, RuntimeEvent, RuntimeEventKind,
+    RuntimeRunId,
 };
 
 const CONTENT_LIMIT: usize = 1_024;
@@ -88,6 +89,12 @@ pub(super) fn with_content(
                 .expect("canonical activity content is bounded"),
         ))
         .expect("canonical activity content matches its observation")
+}
+
+pub(super) fn with_label(observation: ActivityObservation, value: &str) -> ActivityObservation {
+    observation
+        .with_label(ActivityLabel::new(value).expect("canonical activity label is bounded"))
+        .expect("canonical activity disclosure permits its label")
 }
 
 pub(super) fn event(sequence: u64, observation: ActivityObservation) -> RuntimeEvent {

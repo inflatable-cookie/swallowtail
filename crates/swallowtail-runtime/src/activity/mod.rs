@@ -4,6 +4,7 @@ mod identity;
 mod label;
 mod lifecycle;
 mod record;
+mod task_list;
 mod validation;
 
 pub use content::{
@@ -18,6 +19,7 @@ pub use record::{
     ActivityObservation, ActivityOperationId, ActivityStatus,
 };
 pub use swallowtail_core::ActivityDisclosure;
+pub use task_list::{TaskListItem, TaskListItemPriority, TaskListItemStatus, TaskListSnapshot};
 
 #[cfg(test)]
 mod tests;

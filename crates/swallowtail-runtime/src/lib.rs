@@ -59,7 +59,8 @@ pub use activity::{
     ActivityAssistantPhase, ActivityContent, ActivityContentChangeKind, ActivityContentStream,
     ActivityContentUpdate, ActivityCorrelation, ActivityDisclosure, ActivityId, ActivityKind,
     ActivityLabel, ActivityLifecyclePhase, ActivityNamespace, ActivityObservation,
-    ActivityOperationId, ActivityStatus, InvalidActivityRecord,
+    ActivityOperationId, ActivityStatus, InvalidActivityRecord, TaskListItem, TaskListItemPriority,
+    TaskListItemStatus, TaskListSnapshot,
 };
 pub use async_types::{
     BoxCallbackStream, BoxDirectToolCallStream, BoxEventStream, BoxFuture,

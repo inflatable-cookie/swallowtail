@@ -3,7 +3,8 @@ use crate::exec_events::malformed_stream;
 use serde_json::Value;
 use swallowtail_runtime::{
     ActivityContent, ActivityContentChangeKind, ActivityContentStream, ActivityContentUpdate,
-    ActivityLifecyclePhase, OperationContent, RuntimeFailure,
+    ActivityLifecyclePhase, OperationContent, RuntimeFailure, TaskListItem, TaskListItemStatus,
+    TaskListSnapshot,
 };
 
 const MAX_ACTIVITY_CONTENT_BYTES: usize = 1_048_576;
@@ -130,6 +131,32 @@ pub(super) fn todo_list(item: &Value) -> Result<Option<ActivityContentUpdate>, R
         })
         .collect::<Result<Vec<_>, RuntimeFailure>>()?;
     normalized_text(&lines.join("\n"))
+}
+
+pub(super) fn task_list_snapshot(item: &Value) -> Result<TaskListSnapshot, RuntimeFailure> {
+    let items = item
+        .get("items")
+        .and_then(Value::as_array)
+        .ok_or_else(malformed_stream)?
+        .iter()
+        .map(|entry| {
+            let status = if entry
+                .get("completed")
+                .and_then(Value::as_bool)
+                .ok_or_else(malformed_stream)?
+            {
+                TaskListItemStatus::Completed
+            } else {
+                TaskListItemStatus::Pending
+            };
+            Ok(TaskListItem::new(
+                OperationContent::new(required_text(entry, "text")?)
+                    .map_err(|_| malformed_stream())?,
+                status,
+            ))
+        })
+        .collect::<Result<Vec<_>, RuntimeFailure>>()?;
+    TaskListSnapshot::new(items, 256, MAX_ACTIVITY_CONTENT_BYTES).map_err(|_| malformed_stream())
 }
 
 pub(super) fn text(

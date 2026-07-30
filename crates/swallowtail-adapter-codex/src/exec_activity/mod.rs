@@ -103,6 +103,11 @@ impl ExecActivityProjection {
                 .with_content(content)
                 .map_err(|_| malformed_stream())?;
         }
+        if item.get("type").and_then(Value::as_str) == Some("todo_list") {
+            observation = observation
+                .with_task_list(content::task_list_snapshot(item)?)
+                .map_err(|_| malformed_stream())?;
+        }
         Ok(observation)
     }
 

@@ -92,7 +92,7 @@ fn baseline_profiles() -> Result<Vec<ActivityKindProfile>, PreparationFailure> {
             [ActivityContentStream::ProviderToolDisplay],
             ActivityDisclosure::ProviderDisplayContent,
         )?,
-        profile(
+        task_list_profile(
             ActivityKindClass::Task,
             ActivityLifecycleFidelity::CompleteLifecycle,
             [ActivityContentStream::NormalizedSummary],
@@ -120,6 +120,17 @@ fn profile(
     disclosure: ActivityDisclosure,
 ) -> Result<ActivityKindProfile, PreparationFailure> {
     ActivityKindProfile::new(kind, lifecycle, streams, disclosure, [])
+        .map_err(|_| invalid_profile())
+}
+
+fn task_list_profile(
+    kind: ActivityKindClass,
+    lifecycle: ActivityLifecycleFidelity,
+    streams: impl IntoIterator<Item = ActivityContentStream>,
+    disclosure: ActivityDisclosure,
+) -> Result<ActivityKindProfile, PreparationFailure> {
+    profile(kind, lifecycle, streams, disclosure)?
+        .with_task_list_snapshots()
         .map_err(|_| invalid_profile())
 }
 

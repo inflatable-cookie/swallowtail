@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-29
+Updated: 2026-07-30
 
 ## Purpose
 
@@ -134,6 +134,35 @@ Provider-authoritative replacement snapshots may replace earlier state only
 when the exact interface documents that behavior. Deltas and replacement
 snapshots remain distinct.
 
+## Task-List Snapshots
+
+A plan or task activity may carry one typed task-list replacement snapshot in
+addition to readable activity content. This is the portable sidebar surface;
+it is not plan-mode state and does not grant Swallowtail task execution or
+persistence authority.
+
+Each snapshot contains an ordered bounded collection of:
+
+- non-empty task content
+- pending, in-progress, or completed status
+- optional high, medium, or low provider priority
+
+The owning activity id is the list identity. Individual items have no portable
+identity because current qualified interfaces do not consistently supply one.
+Consumers replace the whole displayed list on every snapshot and may use
+position and content only as presentation hints, not durable identity.
+
+An empty snapshot authoritatively clears the list. Omission means no task-list
+observation; it does not clear prior state. Snapshots may originate from plan
+updates, todo tools, or another exact structured task source, but only
+`Plan` and `Task` activity may carry them. Free-form plan text, tool display
+content, and labels are never parsed to manufacture a list.
+
+Task content is bounded operation data and redacted by default. Status and
+priority are portable metadata. A prepared kind profile explicitly declares
+task-list snapshot support; ordinary plan or task activity alone does not
+imply it.
+
 ## Content Streams
 
 Portable activity content distinguishes:
@@ -252,6 +281,7 @@ streaming events exposes an immutable activity profile derived from:
 - content stream kinds
 - disclosure strength
 - correlation support
+- typed task-list replacement support by activity kind
 - unknown-event posture
 
 Preparation requires no consumer enumeration of native provider event names.
@@ -326,6 +356,7 @@ Deterministic fixtures prove:
 - reasoning-summary disclosure without hidden reasoning
 - tool, callback, request, and result correlation
 - command, file, plan, task, hook, and subagent detail where claimed
+- typed task-list replacement, clearing, bounds, status, and priority
 - exact route activity profile and preflight requirements
 - option-dependent partial and preview fidelity
 - completion-only and unavailable fidelity

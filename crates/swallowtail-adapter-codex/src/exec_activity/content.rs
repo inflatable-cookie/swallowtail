@@ -6,6 +6,7 @@ use swallowtail_core::ActivityDisclosure;
 use swallowtail_runtime::{
     ActivityAssistantPhase, ActivityContentStream, ActivityContentUpdate, ActivityKind,
     ActivityLabel, ActivityLifecyclePhase, ActivityNamespace, ActivityStatus, RuntimeFailure,
+    TaskListSnapshot,
 };
 
 mod detail;
@@ -98,6 +99,10 @@ pub(super) fn item_projection(
         label,
         content,
     })
+}
+
+pub(super) fn task_list_snapshot(item: &Value) -> Result<TaskListSnapshot, RuntimeFailure> {
+    detail::task_list_snapshot(item)
 }
 
 fn item_status(

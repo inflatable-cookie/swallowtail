@@ -38,6 +38,23 @@ fn exact_attachment_activates_once_runs_activity_and_joins_owned_leases() {
             .count()
             >= 5
     );
+    let plan = events
+        .iter()
+        .find_map(|event| match event.kind() {
+            RuntimeEventKind::Activity(activity) => activity.task_list(),
+            _ => None,
+        })
+        .expect("ACP plan carries a typed task-list replacement");
+    let task = plan.items().next().expect("fixture task");
+    assert_eq!(task.content().as_str(), "Inspect fixture");
+    assert_eq!(
+        task.status(),
+        swallowtail_runtime::TaskListItemStatus::InProgress
+    );
+    assert_eq!(
+        task.priority(),
+        Some(swallowtail_runtime::TaskListItemPriority::Medium)
+    );
     assert!(!format!("{events:?}").contains("private fixture prompt"));
     assert!(!format!("{outcome:?}").contains("Fixture response"));
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);

@@ -118,7 +118,7 @@ fn baseline_profiles(version: &Version) -> Result<Vec<ActivityKindProfile>, Prep
             ActivityDisclosure::ProviderDisplayContent,
             [],
         )?,
-        profile(
+        task_list_profile(
             ActivityKindClass::Plan,
             plan_lifecycle,
             [ActivityContentStream::PlanText],
@@ -197,4 +197,21 @@ fn profile(
             "Codex app-server activity profile could not be derived",
         )
     })
+}
+
+fn task_list_profile(
+    kind: ActivityKindClass,
+    lifecycle: ActivityLifecycleFidelity,
+    streams: impl IntoIterator<Item = ActivityContentStream>,
+    disclosure: ActivityDisclosure,
+    correlations: impl IntoIterator<Item = ActivityCorrelationKind>,
+) -> Result<ActivityKindProfile, PreparationFailure> {
+    profile(kind, lifecycle, streams, disclosure, correlations)?
+        .with_task_list_snapshots()
+        .map_err(|_| {
+            failure(
+                "swallowtail.codex.preparation.activity_profile_invalid",
+                "Codex app-server activity profile could not be derived",
+            )
+        })
 }

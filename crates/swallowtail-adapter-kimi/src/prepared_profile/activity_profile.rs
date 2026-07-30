@@ -42,7 +42,7 @@ pub(super) fn activity_profile(
                 [ActivityContentStream::ReasoningSummaryText],
                 ActivityDisclosure::ProviderDisplayContent,
             )?,
-            kind(
+            task_list_kind(
                 ActivityKindClass::Plan,
                 ActivityLifecycleFidelity::UpdateAndCompletion,
                 [ActivityContentStream::PlanText],
@@ -83,4 +83,20 @@ fn kind(
             "Kimi Code activity profile could not be derived",
         )
     })
+}
+
+fn task_list_kind(
+    class: ActivityKindClass,
+    lifecycle: ActivityLifecycleFidelity,
+    streams: impl IntoIterator<Item = ActivityContentStream>,
+    disclosure: ActivityDisclosure,
+) -> Result<ActivityKindProfile, PreparationFailure> {
+    kind(class, lifecycle, streams, disclosure)?
+        .with_task_list_snapshots()
+        .map_err(|_| {
+            failure(
+                "swallowtail.kimi.preparation.activity_profile_invalid",
+                "Kimi Code activity profile could not be derived",
+            )
+        })
 }

@@ -18,10 +18,11 @@ are validated. Codex app-server supports both
 unchanged read-only sessions and one explicit host-resolved bounded workspace
 profile.
 
-Current g02 stabilization has removed the five critical findings and every
-Codex and OpenCode error-level finding. Seventeen high findings remain across
-runtime, stateful harness, and direct-adapter files. Warning-only reduction and
-validation-latency changes remain separate later decisions.
+Current g02 stabilization has removed the five critical findings plus every
+Codex, OpenCode, runtime, Claude Agent, Gemini, and Kimi error-level finding.
+Seven high findings remain across direct adapters and provider-route matrix
+validation. Warning-only reduction and validation-latency changes remain
+separate later decisions.
 
 ## Start Here
 

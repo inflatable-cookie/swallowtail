@@ -31,6 +31,15 @@ fn exact_acp_activity_maps_without_raw_payloads() {
     );
     assert_eq!(observations[3].phase(), ActivityLifecyclePhase::Started);
     assert_eq!(observations[4].phase(), ActivityLifecyclePhase::Completed);
+    let task = observations[2]
+        .task_list()
+        .expect("ACP plan carries a typed task-list replacement")
+        .items()
+        .next()
+        .unwrap();
+    assert_eq!(task.content().as_str(), "Inspect");
+    assert_eq!(task.status(), TaskListItemStatus::InProgress);
+    assert_eq!(task.priority(), Some(TaskListItemPriority::High));
     assert_eq!(
         projection
             .complete(&TerminalStatus::Completed)

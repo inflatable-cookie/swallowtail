@@ -5,6 +5,7 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-07-30 Runtime And Stateful Harness Decomposition](2026-07-30-runtime-stateful-harness-decomposition.md)
 - [2026-07-30 Codex And OpenCode Module Decomposition](2026-07-30-codex-opencode-module-decomposition.md)
 - [2026-07-30 Critical File Decomposition](2026-07-30-critical-file-decomposition.md)
 - [2026-07-30 Structural Health Stabilization Selection](2026-07-30-structural-health-stabilization-selection.md)

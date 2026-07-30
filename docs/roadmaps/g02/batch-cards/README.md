@@ -147,6 +147,7 @@
 - `150-structural-health-inventory-and-seams.md`
 - `151-critical-file-decomposition.md`
 - `152-codex-and-opencode-module-decomposition.md`
+- `153-runtime-and-stateful-harness-decomposition.md`
 
 ## Superseded
 
@@ -168,11 +169,10 @@ None. Cross-generation deferred work lives in `docs/roadmaps/backlog/`.
 
 ## Ready
 
-- `153-runtime-and-stateful-harness-decomposition.md`
+- `154-remaining-adapter-decomposition.md`
 
 ## Planned
 
-- `154-remaining-adapter-decomposition.md`
 - `155-structural-health-acceptance-and-closeout.md`
 
 ## Operator-Held

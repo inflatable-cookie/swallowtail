@@ -6,7 +6,9 @@ use swallowtail_core::{
     ActivityLifecycleFidelity, ActivityUnknownEventPosture, ObservableActivityProfile,
 };
 use swallowtail_runtime::{
-    ActivityKind, EventBufferFailureKind, OrderedEventBuffer, RuntimeEvent, RuntimeEventKind,
+    ActivityId, ActivityKind, ActivityLifecyclePhase, ActivityObservation, ActivityOperationId,
+    ActivityStatus, EventBufferFailureKind, OperationContent, OrderedEventBuffer, RuntimeEvent,
+    RuntimeEventKind, RuntimeRunId, TaskListItem, TaskListItemStatus, TaskListSnapshot,
 };
 
 pub(super) fn assert_details() {
@@ -16,9 +18,62 @@ pub(super) fn assert_details() {
     assert_unknown_activity_is_semantic_or_rejected();
     assert_output_and_final_assistant_are_distinct();
     assert_correlations_remain_separate_exchanges();
+    assert_task_lists_require_an_exact_profile_claim();
     evidence::assert_unverified_newer_profile_is_not_widened();
     evidence::assert_bounds_and_redaction();
     assert_ordering_failures();
+}
+
+fn assert_task_lists_require_an_exact_profile_claim() {
+    let observation = ActivityObservation::new(
+        ActivityId::new("task-list").unwrap(),
+        ActivityOperationId::Run(RuntimeRunId::new("task-list-run").unwrap()),
+        ActivityKind::Plan,
+        ActivityLifecyclePhase::Completed,
+        ActivityStatus::Completed,
+        None,
+        ActivityDisclosure::ProviderDisplayContent,
+    )
+    .unwrap()
+    .with_task_list(
+        TaskListSnapshot::new(
+            [TaskListItem::new(
+                OperationContent::new("Inspect").unwrap(),
+                TaskListItemStatus::InProgress,
+            )],
+            4,
+            64,
+        )
+        .unwrap(),
+    )
+    .unwrap();
+    let events = [
+        RuntimeEvent::new(1, RuntimeEventKind::Started),
+        RuntimeEvent::new(2, RuntimeEventKind::Activity(observation)),
+    ];
+    let plan = ActivityKindProfile::new(
+        ActivityKindClass::Plan,
+        ActivityLifecycleFidelity::CompletionOnly,
+        [],
+        ActivityDisclosure::ProviderDisplayContent,
+        [],
+    )
+    .unwrap();
+    let unclaimed = ObservableActivityProfile::available(
+        [],
+        [plan.clone()],
+        ActivityUnknownEventPosture::FailClosed,
+    )
+    .unwrap();
+    assert!(trace::validate(&unclaimed, &events).is_err());
+
+    let claimed = ObservableActivityProfile::available(
+        [],
+        [plan.with_task_list_snapshots().unwrap()],
+        ActivityUnknownEventPosture::FailClosed,
+    )
+    .unwrap();
+    trace::validate(&claimed, &events).expect("claimed task-list snapshot is conformant");
 }
 
 fn assert_labels_refine_without_becoming_identity() {

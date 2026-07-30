@@ -1,11 +1,15 @@
 use crate::failure::malformed;
 use std::collections::{BTreeMap, BTreeSet};
 use swallowtail_core::{ActivityContentStream, ActivityDisclosure, ProviderActivityRef};
-use swallowtail_protocol_acp::{AcpMessageChunk, AcpMessageRole, AcpPlanEntry, AcpSessionUpdate};
+use swallowtail_protocol_acp::{
+    AcpMessageChunk, AcpMessageRole, AcpPlanEntry, AcpPlanEntryPriority, AcpPlanEntryStatus,
+    AcpSessionUpdate,
+};
 use swallowtail_runtime::{
     ActivityAssistantPhase, ActivityContentChangeKind, ActivityContentUpdate, ActivityId,
     ActivityKind, ActivityLabel, ActivityLifecyclePhase, ActivityNamespace, ActivityObservation,
-    ActivityOperationId, ActivityStatus, RuntimeFailure, RuntimeTurnId, TerminalStatus,
+    ActivityOperationId, ActivityStatus, OperationContent, RuntimeFailure, RuntimeTurnId,
+    TaskListItem, TaskListItemPriority, TaskListItemStatus, TaskListSnapshot, TerminalStatus,
 };
 
 mod content;
@@ -133,16 +137,20 @@ impl AcpActivityProjection {
             .map(|entry| entry.content.as_str())
             .collect::<Vec<_>>()
             .join("\n");
-        Ok(vec![self.observation(
-            &activity,
-            ActivityLifecyclePhase::Updated,
-            ActivityStatus::InProgress,
-            content_update(
-                &display,
-                ActivityContentChangeKind::ReplacementSnapshot,
-                ActivityContentStream::PlanText,
-            )?,
-        )?])
+        let observation = self
+            .observation(
+                &activity,
+                ActivityLifecyclePhase::Updated,
+                ActivityStatus::InProgress,
+                content_update(
+                    &display,
+                    ActivityContentChangeKind::ReplacementSnapshot,
+                    ActivityContentStream::PlanText,
+                )?,
+            )?
+            .with_task_list(task_list(entries)?)
+            .map_err(|_| malformed())?;
+        Ok(vec![observation])
     }
 
     fn unknown(&mut self, namespace: &str) -> Result<Vec<ActivityObservation>, RuntimeFailure> {
@@ -232,6 +240,30 @@ impl AcpActivityProjection {
         }
         Ok(observation)
     }
+}
+
+fn task_list(entries: &[AcpPlanEntry]) -> Result<TaskListSnapshot, RuntimeFailure> {
+    let items = entries
+        .iter()
+        .map(|entry| {
+            let status = match entry.status {
+                AcpPlanEntryStatus::Pending => TaskListItemStatus::Pending,
+                AcpPlanEntryStatus::InProgress => TaskListItemStatus::InProgress,
+                AcpPlanEntryStatus::Completed => TaskListItemStatus::Completed,
+            };
+            let priority = match entry.priority {
+                AcpPlanEntryPriority::High => TaskListItemPriority::High,
+                AcpPlanEntryPriority::Medium => TaskListItemPriority::Medium,
+                AcpPlanEntryPriority::Low => TaskListItemPriority::Low,
+            };
+            Ok(TaskListItem::new(
+                OperationContent::new(entry.content.as_str()).map_err(|_| malformed())?,
+                status,
+            )
+            .with_priority(priority))
+        })
+        .collect::<Result<Vec<_>, RuntimeFailure>>()?;
+    TaskListSnapshot::new(items, 256, 4 * 1024 * 1024).map_err(|_| malformed())
 }
 
 #[cfg(test)]

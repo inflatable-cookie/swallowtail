@@ -13,6 +13,7 @@ pub struct ActivityKindProfile {
     content_streams: BTreeSet<ActivityContentStream>,
     disclosure: ActivityDisclosure,
     correlations: BTreeSet<ActivityCorrelationKind>,
+    task_list_snapshots: bool,
 }
 
 impl ActivityKindProfile {
@@ -29,6 +30,7 @@ impl ActivityKindProfile {
             content_streams: content_streams.into_iter().collect(),
             disclosure,
             correlations: correlations.into_iter().collect(),
+            task_list_snapshots: false,
         };
         profile.validate()?;
         Ok(profile)
@@ -57,6 +59,17 @@ impl ActivityKindProfile {
         self.correlations.iter().copied()
     }
 
+    pub fn with_task_list_snapshots(mut self) -> Result<Self, InvalidObservableActivityProfile> {
+        self.task_list_snapshots = true;
+        self.validate()?;
+        Ok(self)
+    }
+
+    #[must_use]
+    pub const fn task_list_snapshots(&self) -> bool {
+        self.task_list_snapshots
+    }
+
     pub(super) fn capability_constraints(&self) -> BTreeSet<CapabilityConstraint> {
         let mut constraints =
             BTreeSet::from([CapabilityConstraint::ObservableActivityKind(self.kind)]);
@@ -80,6 +93,11 @@ impl ActivityKindProfile {
             constraints.insert(CapabilityConstraint::ObservableActivityCorrelation(
                 self.kind,
                 *correlation,
+            ));
+        }
+        if self.task_list_snapshots {
+            constraints.insert(CapabilityConstraint::ObservableActivityTaskListSnapshots(
+                self.kind,
             ));
         }
         constraints
@@ -127,6 +145,13 @@ impl ActivityKindProfile {
         {
             return Err(InvalidObservableActivityProfile::new(
                 "Activity content stream does not match its activity kind",
+            ));
+        }
+        if self.task_list_snapshots
+            && !matches!(self.kind, ActivityKindClass::Plan | ActivityKindClass::Task)
+        {
+            return Err(InvalidObservableActivityProfile::new(
+                "Task-list snapshots require plan or task activity",
             ));
         }
         Ok(())

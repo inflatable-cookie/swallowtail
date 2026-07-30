@@ -6,7 +6,7 @@ Created: 2026-07-30
 Depends on: g02.044
 Vision tags: maintainability, package isolation, validation discipline
 Contract refs: 001, 036-037, 044
-Planning state: cards 150-152 completed; card 153 ready; cards 154-155 planned
+Planning state: cards 150-153 completed; card 154 ready; card 155 planned
 
 ## Problem
 
@@ -30,7 +30,7 @@ latency work as explicit later decisions.
 - [x] freeze the exact error-level inventory and private module seams
 - [x] remove all five critical findings
 - [x] remove the remaining Codex and OpenCode error findings
-- [ ] remove shared-runtime and stateful-harness adapter error findings
+- [x] remove shared-runtime and stateful-harness adapter error findings
 - [ ] remove remaining direct-adapter error findings
 - [ ] close with zero error-level structural findings and passing health
 
@@ -66,14 +66,15 @@ latency work as explicit later decisions.
 
 ### Batch 45.4 — Runtime And Stateful Harnesses
 
-- [ ] Execute card 153.
-- [ ] split runtime, Claude Agent, Gemini, and Kimi error files
-- [ ] retain public declarations and cross-transport semantics
+- [x] Execute card 153.
+- [x] split runtime, Claude Agent, Gemini, and Kimi error files
+- [x] retain public declarations and cross-transport semantics
 
 ### Batch 45.5 — Remaining Adapters
 
 - [ ] Execute card 154.
 - [ ] split Pi, Alibaba, DeepSeek, and xAI error files
+- [ ] split the residual provider-route matrix high fragment
 - [ ] retain route-local inference and callback behavior
 
 ### Batch 45.6 — Acceptance

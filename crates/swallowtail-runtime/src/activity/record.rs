@@ -1,6 +1,7 @@
 use super::validation::{validate_assistant_phase, validate_content, validate_phase_status};
 use super::{
     ActivityContentUpdate, ActivityId, ActivityLabel, ActivityNamespace, InvalidActivityRecord,
+    TaskListSnapshot,
 };
 use crate::{CallbackId, DirectToolCallId, RuntimeRunId, RuntimeTurnId};
 use std::fmt;
@@ -108,6 +109,7 @@ pub struct ActivityObservation {
     correlation: Option<ActivityCorrelation>,
     label: Option<ActivityLabel>,
     content: Option<ActivityContentUpdate>,
+    task_list: Option<TaskListSnapshot>,
 }
 
 impl ActivityObservation {
@@ -139,6 +141,7 @@ impl ActivityObservation {
             correlation: None,
             label: None,
             content: None,
+            task_list: None,
         })
     }
 
@@ -166,6 +169,15 @@ impl ActivityObservation {
     pub fn with_label(mut self, label: ActivityLabel) -> Result<Self, InvalidActivityRecord> {
         super::validation::validate_label(&self)?;
         self.label = Some(label);
+        Ok(self)
+    }
+
+    pub fn with_task_list(
+        mut self,
+        task_list: TaskListSnapshot,
+    ) -> Result<Self, InvalidActivityRecord> {
+        super::validation::validate_task_list(&self)?;
+        self.task_list = Some(task_list);
         Ok(self)
     }
 
@@ -222,6 +234,11 @@ impl ActivityObservation {
     #[must_use]
     pub const fn content(&self) -> Option<&ActivityContentUpdate> {
         self.content.as_ref()
+    }
+
+    #[must_use]
+    pub const fn task_list(&self) -> Option<&TaskListSnapshot> {
+        self.task_list.as_ref()
     }
 }
 

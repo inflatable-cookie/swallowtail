@@ -2,7 +2,8 @@ use crate::turn_state::malformed_notification;
 use serde_json::Value;
 use swallowtail_runtime::{
     ActivityAssistantPhase, ActivityContent, ActivityContentChangeKind, ActivityContentStream,
-    ActivityContentUpdate, ActivityLifecyclePhase, OperationContent, RuntimeFailure,
+    ActivityContentUpdate, ActivityLifecyclePhase, OperationContent, RuntimeFailure, TaskListItem,
+    TaskListItemStatus, TaskListSnapshot,
 };
 
 mod detail;
@@ -116,6 +117,30 @@ pub(super) fn plan_snapshot(
         ActivityContentStream::PlanText,
         ActivityContentChangeKind::ReplacementSnapshot,
     )
+}
+
+pub(super) fn task_list_snapshot(params: &Value) -> Result<TaskListSnapshot, RuntimeFailure> {
+    let items = params
+        .get("plan")
+        .and_then(Value::as_array)
+        .ok_or_else(malformed_notification)?
+        .iter()
+        .map(|entry| {
+            let status = match required_text(entry, "status")? {
+                "pending" => TaskListItemStatus::Pending,
+                "inProgress" => TaskListItemStatus::InProgress,
+                "completed" => TaskListItemStatus::Completed,
+                _ => return Err(malformed_notification()),
+            };
+            Ok(TaskListItem::new(
+                OperationContent::new(required_text(entry, "step")?)
+                    .map_err(|_| malformed_notification())?,
+                status,
+            ))
+        })
+        .collect::<Result<Vec<_>, RuntimeFailure>>()?;
+    TaskListSnapshot::new(items, 256, MAX_ACTIVITY_CONTENT_BYTES)
+        .map_err(|_| malformed_notification())
 }
 
 pub(super) fn command(

@@ -56,6 +56,17 @@ and results remain on their existing typed exchanges. An
 `identity-lifecycle` tool cell must not be upgraded by parsing a provider
 label or native envelope.
 
+`plan` and `tasks` continue to describe the broad activity kind and disclosure
+level. Some exact profiles additionally advertise typed task-list replacement
+snapshots through
+`ObservableActivityTaskListSnapshots(ActivityKindClass::Plan | Task)`.
+This avoids adding another matrix column dominated by permanent negative
+cells. Inspect the prepared profile when a sidebar checklist is mandatory.
+Current positive projections are Codex app-server plan updates, Codex exec
+todo-list items, and ACP plan updates from Claude Agent, Kimi Code, and Grok
+Build. Other routes retain their existing plan or task activity without
+parsing opaque display text into a checklist.
+
 ## Lifecycle And Correlation Values
 
 Tool lifecycle and `lifecycle_fidelity` use:
@@ -108,9 +119,11 @@ redaction, or audience. Consumers should:
 1. preserve runtime event order
 2. project activity by operation identity and `activity_id`
 3. apply delta or replacement semantics from the typed content update
-4. keep callback and direct-tool bodies on their typed exchanges
-5. keep final operation output distinct from final-assistant activity
-6. render identity-only and namespaced-unknown activity conservatively
+4. replace a sidebar checklist on each typed task-list snapshot; an empty
+   snapshot clears it
+5. keep callback and direct-tool bodies on their typed exchanges
+6. keep final operation output distinct from final-assistant activity
+7. render identity-only and namespaced-unknown activity conservatively
 
 Transcript persistence, retries in the UI, collapsed tool groups, display
 labels, and thread ownership remain consumer concerns. A consumer may discard

@@ -111,6 +111,9 @@ fn validate_observations(
         {
             return Err("activity content stream exceeded the prepared route profile");
         }
+        if observation.task_list().is_some() && !profile.task_list_snapshots() {
+            return Err("task-list snapshot exceeded the prepared route profile");
+        }
         if let Some(correlation) = observation.correlation() {
             let kind = correlation_kind(correlation);
             if !profile.correlations().any(|supported| supported == kind) {

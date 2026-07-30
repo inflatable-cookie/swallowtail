@@ -105,6 +105,7 @@ pub enum CapabilityConstraint {
     ObservableActivityContentStream(ActivityKindClass, ActivityContentStream),
     ObservableActivityDisclosure(ActivityKindClass, ActivityDisclosure),
     ObservableActivityCorrelation(ActivityKindClass, ActivityCorrelationKind),
+    ObservableActivityTaskListSnapshots(ActivityKindClass),
     ObservableActivityUnknownEventPosture(ActivityUnknownEventPosture),
     Named(NamedCapabilityConstraint),
 }

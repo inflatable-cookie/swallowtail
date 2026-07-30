@@ -149,7 +149,7 @@ fn activity_profile(
                 [ActivityContentStream::ReasoningSummaryText],
                 ActivityDisclosure::ProviderDisplayContent,
             )?,
-            kind(
+            task_list_kind(
                 ActivityKindClass::Plan,
                 ActivityLifecycleFidelity::UpdateAndCompletion,
                 [ActivityContentStream::PlanText],
@@ -190,6 +190,22 @@ fn kind(
             "Grok activity profile could not be derived",
         )
     })
+}
+
+fn task_list_kind(
+    class: ActivityKindClass,
+    lifecycle: ActivityLifecycleFidelity,
+    streams: impl IntoIterator<Item = ActivityContentStream>,
+    disclosure: ActivityDisclosure,
+) -> Result<ActivityKindProfile, PreparationFailure> {
+    kind(class, lifecycle, streams, disclosure)?
+        .with_task_list_snapshots()
+        .map_err(|_| {
+            preparation_failure(
+                "swallowtail.grok.preparation.activity_profile_invalid",
+                "Grok activity profile could not be derived",
+            )
+        })
 }
 
 fn with_activity(

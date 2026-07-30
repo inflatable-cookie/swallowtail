@@ -779,7 +779,7 @@ evidence-led provider work.
 - [044 Installed Harness Range Maintenance](044-installed-harness-range-maintenance.md)
   — completed; cards 146-149 complete
 - [045 Error-Level Structural Health Stabilization](045-error-level-structural-health-stabilization.md)
-  — in progress; cards 150-152 complete, card 153 ready, cards 154-155 planned
+  — in progress; cards 150-153 complete, card 154 ready, card 155 planned
 
 ## Held Backlog
 
@@ -1030,6 +1030,9 @@ is deferred until a consumer needs post-restart provider management.
 - card 152 removes all five Codex and seven OpenCode high findings; 211 focused
   package tests, warnings-denied lint, and the unchanged 24-crate public-API
   baseline pass, leaving 17 high errors
+- card 153 removes all ten runtime, Claude Agent, Gemini, and Kimi high
+  findings; 168 focused tests, warnings-denied lint, and the unchanged
+  public-API baseline pass, leaving seven high errors
 - cards 024-026 own remaining harness facades
 - cards 027-030 own hosted direct and provider-state facades
 - cards 031-033 own realtime, SDK, and llama.cpp facades
@@ -1039,9 +1042,9 @@ is deferred until a consumer needs post-restart provider management.
 
 ## Next
 
-Execute card 153: remove the runtime, Claude Agent, Gemini, and Kimi
-error-level findings through private module extraction with unchanged public
-declarations and cross-transport behavior.
+Execute card 154: remove the six remaining adapter findings and the residual
+provider-route matrix high fragment with unchanged inference, callback,
+catalogue, and matrix behavior.
 
 ## Generation Boundary
 

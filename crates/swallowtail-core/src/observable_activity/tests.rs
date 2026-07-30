@@ -72,6 +72,45 @@ fn unavailable_and_malformed_profiles_do_not_promote_fidelity() {
         )
         .is_err()
     );
+    assert!(
+        assistant_profile()
+            .with_task_list_snapshots()
+            .expect_err("assistant activity cannot claim task-list snapshots")
+            .diagnostic()
+            .code()
+            .contains("observable_activity")
+    );
+}
+
+#[test]
+fn task_list_snapshot_support_is_an_exact_activity_constraint() {
+    let plan = ActivityKindProfile::new(
+        ActivityKindClass::Plan,
+        ActivityLifecycleFidelity::UpdateAndCompletion,
+        [ActivityContentStream::PlanText],
+        ActivityDisclosure::ProviderDisplayContent,
+        [],
+    )
+    .unwrap()
+    .with_task_list_snapshots()
+    .unwrap();
+    let profile =
+        ObservableActivityProfile::available([], [plan], ActivityUnknownEventPosture::FailClosed)
+            .unwrap();
+    let requirement = CapabilityRequirement::new(
+        crate::Capability::ObservableActivity,
+        [CapabilityConstraint::ObservableActivityTaskListSnapshots(
+            ActivityKindClass::Plan,
+        )],
+    );
+
+    assert!(profile.supports(&requirement));
+    assert!(
+        profile
+            .kind(ActivityKindClass::Plan)
+            .unwrap()
+            .task_list_snapshots()
+    );
 }
 
 #[test]

@@ -77,12 +77,7 @@ impl AppServerActivityProjection {
                     ActivityContentChangeKind::ReplacementSnapshot,
                 )?,
             ),
-            "turn/plan/updated" => self.project_turn_snapshot(
-                "turn-plan",
-                ActivityKind::Plan,
-                ActivityDisclosure::ProviderDisplayContent,
-                content::plan_snapshot(params)?,
-            ),
+            "turn/plan/updated" => self.project_plan_snapshot(params),
             "turn/diff/updated" => self.project_turn_snapshot(
                 "turn-diff",
                 ActivityKind::FileChange,
@@ -218,6 +213,28 @@ impl AppServerActivityProjection {
             None,
             content,
         )?])
+    }
+
+    fn project_plan_snapshot(
+        &mut self,
+        params: &Value,
+    ) -> Result<Vec<ActivityObservation>, RuntimeFailure> {
+        let observation = self
+            .observation(
+                ActivitySource::new("turn-plan", None),
+                ItemIdentity::new(
+                    ActivityKind::Plan,
+                    None,
+                    ActivityDisclosure::ProviderDisplayContent,
+                ),
+                ActivityLifecyclePhase::Updated,
+                ActivityStatus::InProgress,
+                None,
+                content::plan_snapshot(params)?,
+            )?
+            .with_task_list(content::task_list_snapshot(params)?)
+            .map_err(|_| malformed_notification())?;
+        Ok(vec![observation])
     }
 
     fn project_completion(

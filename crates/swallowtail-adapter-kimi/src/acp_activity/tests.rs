@@ -33,6 +33,15 @@ fn exact_kimi_lazy_tools_and_plan_replacements_are_projected() {
     );
     assert_eq!(observations[2].phase(), ActivityLifecyclePhase::Started);
     assert_eq!(observations[4].phase(), ActivityLifecyclePhase::Completed);
+    let task = observations[5]
+        .task_list()
+        .expect("ACP plan carries a typed task-list replacement")
+        .items()
+        .next()
+        .unwrap();
+    assert_eq!(task.content().as_str(), "Inspect");
+    assert_eq!(task.status(), TaskListItemStatus::Completed);
+    assert_eq!(task.priority(), Some(TaskListItemPriority::Medium));
     assert_eq!(
         projection
             .complete(&TerminalStatus::Completed)

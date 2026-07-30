@@ -121,6 +121,16 @@ fn command_todo_and_unknown_events_keep_their_distinct_truth() {
             .as_str()
             .contains("[ ] Test")
     );
+    let tasks = todo[1].task_list().unwrap().items().collect::<Vec<_>>();
+    assert_eq!(tasks[0].content().as_str(), "Inspect");
+    assert_eq!(
+        tasks[0].status(),
+        swallowtail_runtime::TaskListItemStatus::Completed
+    );
+    assert_eq!(
+        tasks[1].status(),
+        swallowtail_runtime::TaskListItemStatus::Pending
+    );
 
     let unknown = project(case(&cases, "additive-event"), Version::new(0, 145, 0)).unwrap();
     assert!(matches!(unknown[0].kind(), ActivityKind::Unknown(_)));

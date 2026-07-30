@@ -163,10 +163,10 @@ mint public load or resume; failed-turn commit, cancellation, bounds, provider
 state, attached-service preservation, and joined cleanup remain exact.
 Contract 044 adds operation-local observable activity identity, exact
 lifecycle and disclosure fidelity, typed content streams, tool and request
-correlation, provider-visible reasoning summaries, and bounded unknown-event
-truth. Existing run and turn streams remain the transport. Consumers retain
-message and activity persistence, grouping, collapsed presentation, and
-transcript policy.
+correlation, provider-visible reasoning summaries, typed task-list replacement
+snapshots, and bounded unknown-event truth. Existing run and turn streams
+remain the transport. Consumers retain message and activity persistence,
+grouping, collapsed presentation, and transcript policy.
 
 Contract 015 now permits exact, one-shot activation of an already authorized
 harness credential after ACP initialization. The first mapping is Grok Build

@@ -104,3 +104,14 @@ pub(super) fn validate_label(
     }
     Ok(())
 }
+
+pub(super) fn validate_task_list(
+    observation: &ActivityObservation,
+) -> Result<(), InvalidActivityRecord> {
+    if !matches!(observation.kind(), ActivityKind::Plan | ActivityKind::Task) {
+        return Err(InvalidActivityRecord::new(
+            "Task-list snapshots require plan or task activity",
+        ));
+    }
+    Ok(())
+}

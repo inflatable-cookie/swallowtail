@@ -88,6 +88,44 @@ fn malformed_items_fail_and_completed_items_are_authoritative() {
 }
 
 #[test]
+fn plan_updates_carry_typed_authoritative_task_lists() {
+    let observations = project(case(&cases(), "plan-replacement")).unwrap();
+    assert_eq!(observations.len(), 2);
+    let first = observations[0].task_list().unwrap();
+    let first_items = first.items().collect::<Vec<_>>();
+    assert_eq!(first_items[0].content().as_str(), "Inspect");
+    assert_eq!(
+        first_items[0].status(),
+        swallowtail_runtime::TaskListItemStatus::InProgress
+    );
+    assert_eq!(
+        first_items[1].status(),
+        swallowtail_runtime::TaskListItemStatus::Pending
+    );
+
+    let revised = observations[1].task_list().unwrap();
+    let revised_items = revised.items().collect::<Vec<_>>();
+    assert_eq!(
+        revised_items[0].status(),
+        swallowtail_runtime::TaskListItemStatus::Completed
+    );
+    assert_eq!(revised_items[1].content().as_str(), "Implement safely");
+
+    let cleared = projector()
+        .project_notification(
+            "turn/plan/updated",
+            &serde_json::json!({
+                "threadId": "thread-fixture",
+                "turnId": "turn-fixture",
+                "plan": []
+            }),
+        )
+        .unwrap();
+    assert!(cleared[0].content().is_none());
+    assert!(cleared[0].task_list().unwrap().is_empty());
+}
+
+#[test]
 fn tool_labels_stay_separate_from_progress_and_result_payloads() {
     let observations = project(case(&cases(), "mcp-tool")).expect("MCP case projects");
     assert!(observations.iter().all(|observation| {

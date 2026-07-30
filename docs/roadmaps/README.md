@@ -12,9 +12,9 @@ shape.
 
 ## Next Task
 
-Execute g02 card 153: remove the runtime, Claude Agent, Gemini, and Kimi
-error-level findings through private module extraction with unchanged public
-declarations and cross-transport behavior.
+Execute g02 card 154: remove the six remaining adapter findings and the
+residual provider-route matrix high fragment with unchanged inference,
+callback, catalogue, and matrix behavior.
 
 ## Index
 

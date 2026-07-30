@@ -1,19 +1,5 @@
-use crate::{
-    ArchiveProviderSessionRequest, AttachedServingHandle, AttachmentDescriptor, BoxFuture,
-    Deadline, DeleteProviderSessionRequest, HostServices, InstalledExecutableDiscoveryRequest,
-    InteractiveSessionHandle, ModelArtifactBinding, OpenDirectContinuationSessionRequest,
-    OpenRealtimeMediaSessionRequest, OperationContent, OperationPolicy, OwnedServingHandle,
-    PreparationFailure, ProviderSessionManagementOutcome, ProviderSessionManagementPlan,
-    RealtimeMediaSessionHandle, RequestId, RestoreProviderSessionRequest, RunHandle,
-    RuntimeFailure, RuntimeTurnId, ScopeId, ServingInstanceId, SessionAccessPolicy, SessionOptions,
-    SessionPlanAgreement, SessionReplayItem, SessionResumeBinding, StructuredOutputDescriptor,
-    ToolDeclaration, WorkingResourceRef,
-};
-use std::num::NonZeroU64;
-use swallowtail_core::{
-    DiscoveryOutcome, ExecutionHostId, HarnessConfigurationPosture, ModelCatalogEntry,
-    PreflightPlan, SessionProviderStatePolicy, SessionRef,
-};
+#![allow(unused_mut)]
+include!("roles/imports.rs");
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct DiscoveryRequest {
@@ -21,14 +7,12 @@ pub struct DiscoveryRequest {
 }
 
 impl DiscoveryRequest {
-    #[must_use]
     pub const fn new(execution_host_id: ExecutionHostId) -> Self {
-        Self { execution_host_id }
+        Self::new_inner(execution_host_id)
     }
 
-    #[must_use]
     pub const fn execution_host_id(&self) -> &ExecutionHostId {
-        &self.execution_host_id
+        self.execution_host_id_inner()
     }
 }
 
@@ -39,182 +23,118 @@ pub struct ModelCatalogRequest {
 }
 
 impl ModelCatalogRequest {
-    #[must_use]
     pub const fn new(request_id: RequestId) -> Self {
-        Self {
-            request_id,
-            deadline: None,
-        }
+        Self::new_inner(request_id)
     }
 
-    #[must_use]
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
-        self.deadline = Some(deadline);
-        self
+        self.with_deadline_inner(deadline)
     }
 
-    #[must_use]
     pub const fn request_id(&self) -> &RequestId {
-        &self.request_id
+        self.request_id_inner()
     }
 
-    #[must_use]
     pub const fn deadline(&self) -> Option<Deadline> {
-        self.deadline
+        self.deadline_inner()
     }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct StructuredRunRequest {
-    request_id: RequestId,
-    content: OperationContent,
-    working_resource: Option<WorkingResourceRef>,
-    policy: OperationPolicy,
-    deadline: Option<Deadline>,
-    attachments: Vec<AttachmentDescriptor>,
-    tools: Vec<ToolDeclaration>,
-    structured_output: Option<StructuredOutputDescriptor>,
-    maximum_output_tokens: Option<NonZeroU64>,
+    state: StructuredRunRequestState,
 }
 
 impl StructuredRunRequest {
-    #[must_use]
     pub fn new(request_id: RequestId, content: OperationContent, policy: OperationPolicy) -> Self {
-        Self {
-            request_id,
-            content,
-            working_resource: None,
-            policy,
-            deadline: None,
-            attachments: Vec::new(),
-            tools: Vec::new(),
-            structured_output: None,
-            maximum_output_tokens: None,
-        }
+        Self::new_inner(request_id, content, policy)
     }
 
-    #[must_use]
     pub fn with_working_resource(mut self, working_resource: WorkingResourceRef) -> Self {
-        self.working_resource = Some(working_resource);
-        self
+        self.with_working_resource_inner(working_resource)
     }
 
-    #[must_use]
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
-        self.deadline = Some(deadline);
-        self
+        self.with_deadline_inner(deadline)
     }
 
-    #[must_use]
     pub fn with_attachments(
         mut self,
         attachments: impl IntoIterator<Item = AttachmentDescriptor>,
     ) -> Self {
-        self.attachments = attachments.into_iter().collect();
-        self
+        self.with_attachments_inner(attachments)
     }
 
-    #[must_use]
     pub fn with_tools(mut self, tools: impl IntoIterator<Item = ToolDeclaration>) -> Self {
-        self.tools = tools.into_iter().collect();
-        self
+        self.with_tools_inner(tools)
     }
 
-    #[must_use]
     pub fn with_structured_output(mut self, output: StructuredOutputDescriptor) -> Self {
-        self.structured_output = Some(output);
-        self
+        self.with_structured_output_inner(output)
     }
 
-    #[must_use]
     pub const fn with_maximum_output_tokens(mut self, maximum: NonZeroU64) -> Self {
-        self.maximum_output_tokens = Some(maximum);
-        self
+        self.with_maximum_output_tokens_inner(maximum)
     }
 
-    #[must_use]
     pub const fn request_id(&self) -> &RequestId {
-        &self.request_id
+        self.request_id_inner()
     }
 
-    #[must_use]
     pub const fn content(&self) -> &OperationContent {
-        &self.content
+        self.content_inner()
     }
 
-    #[must_use]
     pub const fn working_resource(&self) -> Option<&WorkingResourceRef> {
-        self.working_resource.as_ref()
+        self.working_resource_inner()
     }
 
-    #[must_use]
     pub const fn policy(&self) -> &OperationPolicy {
-        &self.policy
+        self.policy_inner()
     }
 
-    #[must_use]
     pub const fn deadline(&self) -> Option<Deadline> {
-        self.deadline
+        self.deadline_inner()
     }
 
     pub fn attachments(&self) -> impl ExactSizeIterator<Item = &AttachmentDescriptor> {
-        self.attachments.iter()
+        self.attachments_inner()
     }
 
     pub fn tools(&self) -> impl ExactSizeIterator<Item = &ToolDeclaration> {
-        self.tools.iter()
+        self.tools_inner()
     }
 
-    #[must_use]
     pub const fn structured_output(&self) -> Option<&StructuredOutputDescriptor> {
-        self.structured_output.as_ref()
+        self.structured_output_inner()
     }
 
-    #[must_use]
     pub const fn maximum_output_tokens(&self) -> Option<NonZeroU64> {
-        self.maximum_output_tokens
+        self.maximum_output_tokens_inner()
     }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct OpenSessionRequest {
-    request_id: RequestId,
-    working_resource: Option<WorkingResourceRef>,
-    deadline: Option<Deadline>,
-    options: SessionOptions,
-    plan_agreement: SessionPlanAgreement,
+    state: OpenSessionRequestState,
 }
 
 impl OpenSessionRequest {
-    #[must_use]
     pub fn new(
         request_id: RequestId,
         working_resource: WorkingResourceRef,
         deadline: Option<Deadline>,
         plan_agreement: SessionPlanAgreement,
     ) -> Self {
-        Self {
-            request_id,
-            working_resource: Some(working_resource),
-            deadline,
-            options: SessionOptions::default(),
-            plan_agreement,
-        }
+        Self::new_inner(request_id, working_resource, deadline, plan_agreement)
     }
 
-    #[must_use]
     pub fn resource_free(
         request_id: RequestId,
         deadline: Option<Deadline>,
         plan_agreement: SessionPlanAgreement,
     ) -> Self {
-        Self {
-            request_id,
-            working_resource: None,
-            deadline,
-            options: SessionOptions::default(),
-            plan_agreement,
-        }
+        Self::resource_free_inner(request_id, deadline, plan_agreement)
     }
 
     pub fn from_plan(
@@ -223,12 +143,7 @@ impl OpenSessionRequest {
         working_resource: WorkingResourceRef,
         deadline: Option<Deadline>,
     ) -> Result<Self, PreparationFailure> {
-        Ok(Self::new(
-            request_id,
-            working_resource,
-            deadline,
-            SessionPlanAgreement::from_plan(plan)?,
-        ))
+        Self::from_plan_inner(plan, request_id, working_resource, deadline)
     }
 
     pub fn resource_free_from_plan(
@@ -236,82 +151,57 @@ impl OpenSessionRequest {
         request_id: RequestId,
         deadline: Option<Deadline>,
     ) -> Result<Self, PreparationFailure> {
-        Ok(Self::resource_free(
-            request_id,
-            deadline,
-            SessionPlanAgreement::from_plan(plan)?,
-        ))
+        Self::resource_free_from_plan_inner(plan, request_id, deadline)
     }
 
-    #[must_use]
     pub fn with_options(mut self, options: SessionOptions) -> Self {
-        self.options = options;
-        self
+        self.with_options_inner(options)
     }
 
-    #[must_use]
     pub const fn request_id(&self) -> &RequestId {
-        &self.request_id
+        self.request_id_inner()
     }
 
-    #[must_use]
     pub const fn working_resource(&self) -> Option<&WorkingResourceRef> {
-        self.working_resource.as_ref()
+        self.working_resource_inner()
     }
 
-    #[must_use]
     pub const fn deadline(&self) -> Option<Deadline> {
-        self.deadline
+        self.deadline_inner()
     }
 
-    #[must_use]
     pub const fn options(&self) -> &SessionOptions {
-        &self.options
+        self.options_inner()
     }
 
-    #[must_use]
     pub const fn access_policy(&self) -> &SessionAccessPolicy {
-        self.plan_agreement.access_policy()
+        self.access_policy_inner()
     }
 
-    #[must_use]
     pub const fn provider_state_policy(&self) -> Option<SessionProviderStatePolicy> {
-        self.plan_agreement.provider_state_policy()
+        self.provider_state_policy_inner()
     }
 
-    #[must_use]
     pub const fn harness_configuration_posture(&self) -> Option<HarnessConfigurationPosture> {
-        self.plan_agreement.harness_configuration_posture()
+        self.harness_configuration_posture_inner()
     }
 
-    #[must_use]
     pub const fn plan_agreement(&self) -> &SessionPlanAgreement {
-        &self.plan_agreement
+        self.plan_agreement_inner()
     }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ResumeSessionRequest {
-    request_id: RequestId,
-    binding: SessionResumeBinding,
-    working_resource: WorkingResourceRef,
-    deadline: Option<Deadline>,
-    options: SessionOptions,
-    plan_agreement: SessionPlanAgreement,
+    state: ResumeSessionRequestState,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct LoadSessionRequest {
-    request_id: RequestId,
-    binding: SessionResumeBinding,
-    working_resource: WorkingResourceRef,
-    deadline: Option<Deadline>,
-    options: SessionOptions,
-    plan_agreement: SessionPlanAgreement,
+    state: LoadSessionRequestState,
 }
 
 impl LoadSessionRequest {
-    #[must_use]
     pub fn new(
         request_id: RequestId,
         binding: SessionResumeBinding,
@@ -319,14 +209,13 @@ impl LoadSessionRequest {
         deadline: Option<Deadline>,
         plan_agreement: SessionPlanAgreement,
     ) -> Self {
-        Self {
+        Self::new_inner(
             request_id,
             binding,
             working_resource,
             deadline,
-            options: SessionOptions::default(),
             plan_agreement,
-        }
+        )
     }
 
     pub fn from_plan(
@@ -336,86 +225,73 @@ impl LoadSessionRequest {
         working_resource: WorkingResourceRef,
         deadline: Option<Deadline>,
     ) -> Result<Self, PreparationFailure> {
-        Ok(Self::new(
-            request_id,
-            binding,
-            working_resource,
-            deadline,
-            SessionPlanAgreement::from_plan(plan)?,
-        ))
+        Self::from_plan_inner(plan, request_id, binding, working_resource, deadline)
     }
 
-    #[must_use]
     pub fn with_options(mut self, options: SessionOptions) -> Self {
-        self.options = options;
-        self
+        self.with_options_inner(options)
     }
 
-    #[must_use]
     pub const fn request_id(&self) -> &RequestId {
-        &self.request_id
+        self.request_id_inner()
     }
-    #[must_use]
+
     pub const fn provider_session_ref(&self) -> &SessionRef {
-        self.binding.provider_session_ref()
+        self.provider_session_ref_inner()
     }
-    #[must_use]
+
     pub const fn resume_binding(&self) -> &SessionResumeBinding {
-        &self.binding
+        self.resume_binding_inner()
     }
-    #[must_use]
+
     pub const fn working_resource(&self) -> &WorkingResourceRef {
-        &self.working_resource
+        self.working_resource_inner()
     }
-    #[must_use]
+
     pub const fn deadline(&self) -> Option<Deadline> {
-        self.deadline
+        self.deadline_inner()
     }
-    #[must_use]
+
     pub const fn options(&self) -> &SessionOptions {
-        &self.options
+        self.options_inner()
     }
-    #[must_use]
+
     pub const fn access_policy(&self) -> &SessionAccessPolicy {
-        self.plan_agreement.access_policy()
+        self.access_policy_inner()
     }
-    #[must_use]
+
     pub const fn provider_state_policy(&self) -> Option<SessionProviderStatePolicy> {
-        self.plan_agreement.provider_state_policy()
+        self.provider_state_policy_inner()
     }
-    #[must_use]
+
     pub const fn harness_configuration_posture(&self) -> Option<HarnessConfigurationPosture> {
-        self.plan_agreement.harness_configuration_posture()
+        self.harness_configuration_posture_inner()
     }
-    #[must_use]
+
     pub const fn plan_agreement(&self) -> &SessionPlanAgreement {
-        &self.plan_agreement
+        self.plan_agreement_inner()
     }
 }
 
 pub struct LoadedSession {
-    replay: Vec<SessionReplayItem>,
-    session: Box<dyn InteractiveSessionHandle>,
+    state: LoadedSessionState,
 }
 
 impl LoadedSession {
-    #[must_use]
     pub fn new(replay: Vec<SessionReplayItem>, session: Box<dyn InteractiveSessionHandle>) -> Self {
-        Self { replay, session }
+        Self::new_inner(replay, session)
     }
 
     pub fn replay(&self) -> impl ExactSizeIterator<Item = &SessionReplayItem> {
-        self.replay.iter()
+        self.replay_inner()
     }
 
-    #[must_use]
     pub fn into_parts(self) -> (Vec<SessionReplayItem>, Box<dyn InteractiveSessionHandle>) {
-        (self.replay, self.session)
+        self.into_parts_inner()
     }
 }
 
 impl ResumeSessionRequest {
-    #[must_use]
     pub fn new(
         request_id: RequestId,
         binding: SessionResumeBinding,
@@ -423,14 +299,13 @@ impl ResumeSessionRequest {
         deadline: Option<Deadline>,
         plan_agreement: SessionPlanAgreement,
     ) -> Self {
-        Self {
+        Self::new_inner(
             request_id,
             binding,
             working_resource,
             deadline,
-            options: SessionOptions::default(),
             plan_agreement,
-        }
+        )
     }
 
     pub fn from_plan(
@@ -440,133 +315,97 @@ impl ResumeSessionRequest {
         working_resource: WorkingResourceRef,
         deadline: Option<Deadline>,
     ) -> Result<Self, PreparationFailure> {
-        Ok(Self::new(
-            request_id,
-            binding,
-            working_resource,
-            deadline,
-            SessionPlanAgreement::from_plan(plan)?,
-        ))
+        Self::from_plan_inner(plan, request_id, binding, working_resource, deadline)
     }
 
-    #[must_use]
     pub fn with_options(mut self, options: SessionOptions) -> Self {
-        self.options = options;
-        self
+        self.with_options_inner(options)
     }
 
-    #[must_use]
     pub const fn request_id(&self) -> &RequestId {
-        &self.request_id
+        self.request_id_inner()
     }
 
-    #[must_use]
     pub const fn provider_session_ref(&self) -> &SessionRef {
-        self.binding.provider_session_ref()
+        self.provider_session_ref_inner()
     }
 
-    #[must_use]
     pub const fn resume_binding(&self) -> &SessionResumeBinding {
-        &self.binding
+        self.resume_binding_inner()
     }
 
-    #[must_use]
     pub const fn working_resource(&self) -> &WorkingResourceRef {
-        &self.working_resource
+        self.working_resource_inner()
     }
 
-    #[must_use]
     pub const fn deadline(&self) -> Option<Deadline> {
-        self.deadline
+        self.deadline_inner()
     }
 
-    #[must_use]
     pub const fn options(&self) -> &SessionOptions {
-        &self.options
+        self.options_inner()
     }
 
-    #[must_use]
     pub const fn access_policy(&self) -> &SessionAccessPolicy {
-        self.plan_agreement.access_policy()
+        self.access_policy_inner()
     }
-    #[must_use]
+
     pub const fn provider_state_policy(&self) -> Option<SessionProviderStatePolicy> {
-        self.plan_agreement.provider_state_policy()
+        self.provider_state_policy_inner()
     }
-    #[must_use]
+
     pub const fn harness_configuration_posture(&self) -> Option<HarnessConfigurationPosture> {
-        self.plan_agreement.harness_configuration_posture()
+        self.harness_configuration_posture_inner()
     }
-    #[must_use]
+
     pub const fn plan_agreement(&self) -> &SessionPlanAgreement {
-        &self.plan_agreement
+        self.plan_agreement_inner()
     }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct TurnRequest {
-    turn_id: RuntimeTurnId,
-    content: OperationContent,
-    deadline: Option<Deadline>,
-    attachments: Vec<AttachmentDescriptor>,
-    structured_output: Option<StructuredOutputDescriptor>,
+    state: TurnRequestState,
 }
 
 impl TurnRequest {
-    #[must_use]
     pub fn new(turn_id: RuntimeTurnId, content: OperationContent) -> Self {
-        Self {
-            turn_id,
-            content,
-            deadline: None,
-            attachments: Vec::new(),
-            structured_output: None,
-        }
+        Self::new_inner(turn_id, content)
     }
 
-    #[must_use]
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
-        self.deadline = Some(deadline);
-        self
+        self.with_deadline_inner(deadline)
     }
 
-    #[must_use]
     pub fn with_attachments(
         mut self,
         attachments: impl IntoIterator<Item = AttachmentDescriptor>,
     ) -> Self {
-        self.attachments = attachments.into_iter().collect();
-        self
+        self.with_attachments_inner(attachments)
     }
 
-    #[must_use]
     pub fn with_structured_output(mut self, output: StructuredOutputDescriptor) -> Self {
-        self.structured_output = Some(output);
-        self
+        self.with_structured_output_inner(output)
     }
 
-    #[must_use]
     pub const fn turn_id(&self) -> &RuntimeTurnId {
-        &self.turn_id
+        self.turn_id_inner()
     }
 
-    #[must_use]
     pub const fn content(&self) -> &OperationContent {
-        &self.content
+        self.content_inner()
     }
 
-    #[must_use]
     pub const fn deadline(&self) -> Option<Deadline> {
-        self.deadline
+        self.deadline_inner()
     }
 
     pub fn attachments(&self) -> impl ExactSizeIterator<Item = &AttachmentDescriptor> {
-        self.attachments.iter()
+        self.attachments_inner()
     }
 
-    #[must_use]
     pub const fn structured_output(&self) -> Option<&StructuredOutputDescriptor> {
-        self.structured_output.as_ref()
+        self.structured_output_inner()
     }
 }
 
@@ -576,154 +415,77 @@ pub struct AttachServingRequest {
 }
 
 impl AttachServingRequest {
-    #[must_use]
     pub const fn new(serving_instance_id: ServingInstanceId) -> Self {
-        Self {
-            serving_instance_id,
-        }
+        Self::new_inner(serving_instance_id)
     }
 
-    #[must_use]
     pub const fn serving_instance_id(&self) -> &ServingInstanceId {
-        &self.serving_instance_id
+        self.serving_instance_id_inner()
     }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct StartServingRequest {
-    scope: ScopeId,
-    serving_instance_id: ServingInstanceId,
-    artifact: ModelArtifactBinding,
-    deadline: Deadline,
+    state: StartServingRequestState,
 }
 
 impl StartServingRequest {
-    #[must_use]
     pub const fn new(
         scope: ScopeId,
         serving_instance_id: ServingInstanceId,
         artifact: ModelArtifactBinding,
         deadline: Deadline,
     ) -> Self {
-        Self {
-            scope,
-            serving_instance_id,
-            artifact,
-            deadline,
-        }
+        Self::new_inner(scope, serving_instance_id, artifact, deadline)
     }
 
-    #[must_use]
     pub const fn scope(&self) -> &ScopeId {
-        &self.scope
+        self.scope_inner()
     }
 
-    #[must_use]
     pub const fn serving_instance_id(&self) -> &ServingInstanceId {
-        &self.serving_instance_id
+        self.serving_instance_id_inner()
     }
 
-    #[must_use]
     pub const fn artifact(&self) -> &ModelArtifactBinding {
-        &self.artifact
+        self.artifact_inner()
     }
 
-    #[must_use]
     pub const fn deadline(&self) -> Deadline {
-        self.deadline
+        self.deadline_inner()
     }
 }
 
-pub trait DiscoveryDriver: Send + Sync {
-    fn discover(
-        &self,
-        request: DiscoveryRequest,
-        services: HostServices,
-    ) -> BoxFuture<'_, Result<Vec<DiscoveryOutcome>, RuntimeFailure>>;
+include!("roles/requests/basic.rs");
+include!("roles/requests/sessions.rs");
+include!("roles/requests/turn_and_serving.rs");
 
-    fn discover_installed_executable(
-        &self,
-        _request: InstalledExecutableDiscoveryRequest,
-        _services: HostServices,
-    ) -> BoxFuture<'_, Result<DiscoveryOutcome, RuntimeFailure>> {
-        Box::pin(async {
-            Err(RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
-                "swallowtail.installed_executable.discovery_unsupported",
-                "Driver does not support installed executable discovery",
-            )))
-        })
-    }
+include!("roles/drivers/discovery.rs");
+include!("roles/drivers/catalogue.rs");
+include!("roles/drivers/structured_run.rs");
+include!("roles/drivers/interactive_session.rs");
+include!("roles/drivers/realtime.rs");
+include!("roles/drivers/provider_session_management.rs");
+include!("roles/drivers/serving.rs");
+
+pub trait DiscoveryDriver: Send + Sync {
+    discovery_driver_items!();
 }
 
 pub trait ModelCatalogDriver: Send + Sync {
-    fn list_models(
-        &self,
-        plan: PreflightPlan,
-        request: ModelCatalogRequest,
-        services: HostServices,
-    ) -> BoxFuture<'_, Result<Vec<ModelCatalogEntry>, RuntimeFailure>>;
+    catalogue_driver_items!();
 }
 
 pub trait StructuredRunDriver: Send + Sync {
-    fn start_run(
-        &self,
-        plan: PreflightPlan,
-        request: StructuredRunRequest,
-        services: HostServices,
-    ) -> BoxFuture<'_, Result<Box<dyn RunHandle>, RuntimeFailure>>;
+    structured_run_driver_items!();
 }
 
 pub trait InteractiveSessionDriver: Send + Sync {
-    fn open_session(
-        &self,
-        plan: PreflightPlan,
-        request: OpenSessionRequest,
-        services: HostServices,
-    ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>>;
-
-    fn resume_session(
-        &self,
-        plan: PreflightPlan,
-        request: ResumeSessionRequest,
-        services: HostServices,
-    ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>>;
-
-    fn load_session(
-        &self,
-        _plan: PreflightPlan,
-        _request: LoadSessionRequest,
-        _services: HostServices,
-    ) -> BoxFuture<'_, Result<LoadedSession, RuntimeFailure>> {
-        Box::pin(async {
-            Err(RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
-                "swallowtail.session_load_unsupported",
-                "Driver does not support provider session load",
-            )))
-        })
-    }
-
-    fn open_direct_continuation_session(
-        &self,
-        _plan: PreflightPlan,
-        _request: OpenDirectContinuationSessionRequest,
-        _services: HostServices,
-    ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
-        Box::pin(async {
-            Err(RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
-                "swallowtail.direct_continuation.unsupported",
-                "Driver does not support locally continued direct sessions",
-            )))
-        })
-    }
+    interactive_session_driver_items!();
 }
 
 pub trait RealtimeMediaSessionDriver: Send + Sync {
-    fn open_realtime_media_session(
-        &self,
-        plan: PreflightPlan,
-        request: OpenRealtimeMediaSessionRequest,
-        services: HostServices,
-    ) -> BoxFuture<'_, Result<Box<dyn RealtimeMediaSessionHandle>, RuntimeFailure>>;
+    realtime_driver_items!();
 }
 
 /// Low-level role for one explicitly bound inactive provider session.
@@ -731,40 +493,9 @@ pub trait RealtimeMediaSessionDriver: Send + Sync {
 /// Implementations must finish all scoped work and preserve uncertain
 /// after-dispatch truth before resolving the returned future.
 pub trait ProviderSessionManagementDriver: Send + Sync {
-    fn archive_session(
-        &self,
-        plan: ProviderSessionManagementPlan,
-        request: ArchiveProviderSessionRequest,
-        services: HostServices,
-    ) -> BoxFuture<'_, Result<ProviderSessionManagementOutcome, RuntimeFailure>>;
-
-    fn restore_session(
-        &self,
-        plan: ProviderSessionManagementPlan,
-        request: RestoreProviderSessionRequest,
-        services: HostServices,
-    ) -> BoxFuture<'_, Result<ProviderSessionManagementOutcome, RuntimeFailure>>;
-
-    fn delete_session(
-        &self,
-        plan: ProviderSessionManagementPlan,
-        request: DeleteProviderSessionRequest,
-        services: HostServices,
-    ) -> BoxFuture<'_, Result<ProviderSessionManagementOutcome, RuntimeFailure>>;
+    provider_session_management_driver_items!();
 }
 
 pub trait ServingInstanceDriver: Send + Sync {
-    fn attach(
-        &self,
-        plan: PreflightPlan,
-        request: AttachServingRequest,
-        services: HostServices,
-    ) -> BoxFuture<'_, Result<Box<dyn AttachedServingHandle>, RuntimeFailure>>;
-
-    fn start(
-        &self,
-        plan: PreflightPlan,
-        request: StartServingRequest,
-        services: HostServices,
-    ) -> BoxFuture<'_, Result<Box<dyn OwnedServingHandle>, RuntimeFailure>>;
+    serving_driver_items!();
 }

@@ -8,6 +8,13 @@ readme.workspace = true
 publish.workspace = true
 rust-version.workspace = true
 description = "Gemini harness drivers for Swallowtail"
+autotests = false
+
+[features]
+live-probes = []
+
+[lib]
+doctest = false
 
 [dependencies]
 base64 = "0.22"
@@ -31,3 +38,20 @@ swallowtail-testkit.workspace = true
 
 [lints]
 workspace = true
+
+[[test]]
+name = "live_installed_probe"
+path = "tests/live_installed_probe.rs"
+required-features = ["live-probes"]
+
+[[test]]
+name = "prepared_facade"
+path = "tests/acp_suite.rs"
+
+[[test]]
+name = "headless_structured_run"
+path = "tests/headless_suite.rs"
+
+[[test]]
+name = "live_prepared_facade"
+path = "tests/live_suite.rs"

@@ -1,4 +1,4 @@
-mod support;
+use crate::support;
 
 #[path = "kimi_protocol_fixtures/authority.rs"]
 mod authority;

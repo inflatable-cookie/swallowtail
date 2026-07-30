@@ -1,6 +1,6 @@
 use semver::Version;
 
-mod support;
+use crate::support;
 
 const CORPUS: &str = include_str!("fixtures/compatibility/app-server-session-continuity.json");
 

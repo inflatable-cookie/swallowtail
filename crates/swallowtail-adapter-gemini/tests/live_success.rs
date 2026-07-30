@@ -1,4 +1,4 @@
-mod live_support;
+use crate::live_support;
 
 use futures_executor::block_on;
 use live_support::{

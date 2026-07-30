@@ -1,4 +1,4 @@
-mod support;
+use crate::support;
 
 use futures_executor::block_on;
 use support::{CleanupEvent, FixtureHost, Scenario, reasoning_selection};

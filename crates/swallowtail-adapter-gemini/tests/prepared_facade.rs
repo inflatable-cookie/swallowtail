@@ -1,9 +1,6 @@
 #![allow(dead_code)]
 
-#[path = "support/discovery.rs"]
-mod discovery_support;
-
-mod support;
+use crate::{discovery_support, support};
 
 use discovery_support::DiscoveryHost;
 use futures_executor::block_on;

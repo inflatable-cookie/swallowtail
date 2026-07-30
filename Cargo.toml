@@ -46,3 +46,6 @@ swallowtail-transport-acp-remote = { path = "crates/swallowtail-transport-acp-re
 
 [workspace.lints.rust]
 unsafe_code = "forbid"
+
+[profile.test]
+debug = 0

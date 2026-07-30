@@ -8,6 +8,10 @@ readme.workspace = true
 publish.workspace = true
 rust-version.workspace = true
 description = "ACP protocol transport for Swallowtail"
+autotests = false
+
+[lib]
+doctest = false
 
 [dependencies]
 serde_json = "1"
@@ -18,3 +22,11 @@ swallowtail-core.workspace = true
 
 [lints]
 workspace = true
+
+[[test]]
+name = "protocol_fixtures"
+path = "tests/protocol_suite.rs"
+
+[[test]]
+name = "remote_transport_fixtures"
+path = "tests/transport_suite.rs"

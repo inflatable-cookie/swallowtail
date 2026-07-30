@@ -1,6 +1,7 @@
+#[path = "claude_agent_releases/mod.rs"]
 mod claude_agent_releases;
-mod claude_agent_support;
-mod support;
+
+use crate::{claude_agent_support, support};
 
 use claude_agent_support::current_model;
 use serde_json::Value;

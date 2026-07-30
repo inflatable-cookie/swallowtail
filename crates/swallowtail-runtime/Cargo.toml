@@ -9,6 +9,9 @@ publish.workspace = true
 rust-version.workspace = true
 description = "Executor-neutral runtime contracts for Swallowtail drivers and hosts"
 
+[lib]
+doctest = false
+
 [dependencies]
 futures-core = "0.3"
 swallowtail-core.workspace = true

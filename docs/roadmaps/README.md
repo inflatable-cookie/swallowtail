@@ -12,10 +12,11 @@ shape.
 
 ## Next Task
 
-Execute
-[g02 card 137](g02/batch-cards/137-observable-activity-consumer-handoff.md):
-produce bounded Nucleus and Soundcheck observable-activity handoffs without
-editing either consumer repository.
+Operator decision: use the completed
+[Nucleus](../releases/0.1.0-nucleus-observable-activity-handoff.md) or
+[Soundcheck](../releases/0.1.0-soundcheck-observable-activity-handoff.md)
+handoff to authorize a consumer adoption lane, or select another g02
+stabilization target. No consumer repository edit is implicitly authorized.
 
 ## Index
 

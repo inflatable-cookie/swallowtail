@@ -9,6 +9,9 @@ publish.workspace = true
 rust-version.workspace = true
 description = "Host-approved local execution services for Swallowtail"
 
+[lib]
+doctest = false
+
 [dependencies]
 futures-executor = "0.3"
 sha2 = "0.10"

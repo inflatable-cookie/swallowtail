@@ -8,6 +8,13 @@ readme.workspace = true
 publish.workspace = true
 rust-version.workspace = true
 description = "Kimi Code harness drivers for Swallowtail"
+autotests = false
+
+[features]
+live-probes = []
+
+[lib]
+doctest = false
 
 [dependencies]
 curl = "0.4.50"
@@ -28,3 +35,20 @@ swallowtail-testkit.workspace = true
 
 [lints]
 workspace = true
+
+[[test]]
+name = "live_installed_probe"
+path = "tests/live_installed_probe.rs"
+required-features = ["live-probes"]
+
+[[test]]
+name = "prepared_facade"
+path = "tests/acp_suite.rs"
+
+[[test]]
+name = "headless_structured_run"
+path = "tests/headless_suite.rs"
+
+[[test]]
+name = "local_server_interactive"
+path = "tests/local_suite.rs"

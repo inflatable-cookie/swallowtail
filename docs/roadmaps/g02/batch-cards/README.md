@@ -131,6 +131,7 @@
 - `134-realtime-and-non-applicable-activity-closeout.md`
 - `135-provider-solution-activity-matrix-and-guidance.md`
 - `136-packaged-provider-wide-activity-proof.md`
+- `137-observable-activity-consumer-handoff.md`
 
 ## Superseded
 
@@ -149,7 +150,7 @@ None. Cross-generation deferred work lives in `docs/roadmaps/backlog/`.
 
 ## Ready
 
-- `137-observable-activity-consumer-handoff.md`
+None.
 
 ## Planned
 

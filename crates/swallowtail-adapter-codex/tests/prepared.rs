@@ -1,5 +1,6 @@
+#[path = "prepared_cases/mod.rs"]
 mod prepared_cases;
-mod support;
+use crate::support;
 
 use futures_executor::block_on;
 use std::sync::Arc;

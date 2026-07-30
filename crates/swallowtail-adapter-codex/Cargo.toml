@@ -8,6 +8,10 @@ readme.workspace = true
 publish.workspace = true
 rust-version.workspace = true
 description = "Codex harness drivers for Swallowtail"
+autotests = false
+
+[lib]
+doctest = false
 
 [dependencies]
 futures-channel = "0.3"
@@ -25,3 +29,15 @@ swallowtail-testkit.workspace = true
 
 [lints]
 workspace = true
+
+[[test]]
+name = "activity_corpus"
+path = "tests/activity_suite.rs"
+
+[[test]]
+name = "app_server"
+path = "tests/app_server_suite.rs"
+
+[[test]]
+name = "prepared_profiles"
+path = "tests/exec_suite.rs"

@@ -1,6 +1,6 @@
 # 137 Observable Activity Consumer Handoff
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-07-29
 Milestone: `../040-provider-wide-activity-acceptance-and-consumer-handoff.md`
@@ -37,13 +37,13 @@ consumer persistence and presentation downstream.
 
 ## Acceptance Criteria
 
-- [ ] the handoff uses only public prepared and runtime APIs
-- [ ] Nucleus owns durable messages, activities, grouping, and collapse
-- [ ] Soundcheck can ignore rich activity without losing final output
-- [ ] no consumer must switch on provider-native event names
-- [ ] reasoning disclosure language is exact
-- [ ] provider-specific gaps remain visible
-- [ ] one explicit next task remains
+- [x] the handoff uses only public prepared and runtime APIs
+- [x] Nucleus owns durable messages, activities, grouping, and collapse
+- [x] Soundcheck can ignore rich activity without losing final output
+- [x] no consumer must switch on provider-native event names
+- [x] reasoning disclosure language is exact
+- [x] provider-specific gaps remain visible
+- [x] one explicit next task remains
 
 ## Validation
 
@@ -61,3 +61,17 @@ consumer persistence and presentation downstream.
 
 No. This card closes the programme and returns the Nucleus adoption decision
 to the operator.
+
+## Evidence
+
+- [Nucleus observable-activity handoff](../../../releases/0.1.0-nucleus-observable-activity-handoff.md)
+- [Soundcheck observable-activity handoff](../../../releases/0.1.0-soundcheck-observable-activity-handoff.md)
+- [Nucleus public projection example](../../../../crates/swallowtail-runtime/examples/observable_activity_nucleus.rs)
+- [Soundcheck public projection example](../../../../crates/swallowtail-runtime/examples/observable_activity_soundcheck.rs)
+- both focused examples compile through public `swallowtail-runtime` APIs
+- no consumer repository, provider route, release state, or public library API
+  changed
+- card 136's immediately preceding `effigy package:api` result remains
+  applicable because card 137 changes examples and documentation only
+- the operator decision is next: authorize a consumer adoption lane or select
+  another g02 stabilization target

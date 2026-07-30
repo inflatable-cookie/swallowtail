@@ -6,10 +6,5 @@ mod compatibility;
 mod completion;
 #[path = "local_server_interactive/failures.rs"]
 mod failures;
-#[path = "local_server_interactive/fixture.rs"]
-mod fixture;
-#[path = "local_server_interactive_support/mod.rs"]
-mod interactive_support;
-#[allow(dead_code)]
-#[path = "local_server_lifecycle_support/mod.rs"]
-mod lifecycle_support;
+
+use crate::fixture;

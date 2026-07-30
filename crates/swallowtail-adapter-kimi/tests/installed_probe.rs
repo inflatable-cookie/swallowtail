@@ -1,6 +1,4 @@
-#[allow(dead_code)]
-#[path = "installed_discovery/support.rs"]
-mod support;
+use crate::discovery_support as support;
 
 use futures_executor::block_on;
 use support::{FakeProcessService, services};
@@ -107,28 +105,6 @@ fn incompatible_malformed_and_precancelled_observations_stay_distinct_and_safe()
     .expect("cancelled discovery completes");
     assert_eq!(cancelled.status(), DiscoveryStatus::Cancelled);
     assert!(!state.started());
-}
-
-#[test]
-#[ignore = "requires SWALLOWTAIL_LIVE_KIMI_ACP=1 and an installed Kimi Code CLI"]
-fn pinned_kimi_code_cli_is_installed_when_live_probe_is_enabled() {
-    assert_eq!(
-        std::env::var("SWALLOWTAIL_LIVE_KIMI_ACP").as_deref(),
-        Ok("1"),
-        "live Kimi probe requires an explicit gate"
-    );
-    let output = std::process::Command::new("kimi")
-        .arg("--version")
-        .output()
-        .expect("Kimi Code CLI is installed");
-    assert!(output.status.success(), "Kimi version probe succeeds");
-    let version = String::from_utf8(output.stdout).expect("version output is UTF-8");
-    let binding = swallowtail_adapter_kimi::kimi_code_binding(version.trim())
-        .expect("Kimi emits one semantic version");
-    assert!(
-        kimi_acp_claim().permits(binding.version()),
-        "installed stable Kimi remains qualified or visibly unverified newer"
-    );
 }
 
 fn request(

@@ -9,6 +9,9 @@ publish.workspace = true
 rust-version.workspace = true
 description = "Anthropic direct-inference drivers for Swallowtail"
 
+[lib]
+doctest = false
+
 [dependencies]
 base64 = "0.22"
 curl = "0.4.50"

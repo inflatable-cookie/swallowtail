@@ -75,19 +75,16 @@ diff -u \
   "$release_management_adapters_actual"
 
 release_lifecycle_suites=(
-  "swallowtail-testkit|provider_session_management|"
-  "swallowtail-adapter-codex|lifecycle_compatibility_corpus|"
+  "swallowtail-testkit|conformance_profiles|provider_session_management"
+  "swallowtail-adapter-codex|activity_corpus|lifecycle_compatibility_corpus"
   "swallowtail-adapter-codex|prepared_profiles|session_management"
   "swallowtail-adapter-claude-agent|acp_driver|missing_delete_capability_stops_before_session_or_management_effects"
   "swallowtail-adapter-claude-agent|prepared_facade|session_management"
   "swallowtail-adapter-claude-agent|lifecycle_portability|"
   "swallowtail-adapter-gemini|headless_structured_run|"
-  "swallowtail-adapter-opencode|deletion_range|"
-  "swallowtail-adapter-opencode|conformance|provider_neutral_management_contract_covers_opencode_delete_boundaries"
+  "swallowtail-adapter-opencode|prepared_facade|deletion_range"
+  "swallowtail-adapter-opencode|prepared_facade|provider_neutral_management_contract_covers_opencode_delete_boundaries"
   "swallowtail-adapter-opencode|prepared_facade|deletion"
-  "swallowtail-adapter-kimi|local_server_corpus|"
-  "swallowtail-adapter-kimi|local_server_lifecycle|"
-  "swallowtail-adapter-kimi|local_server_binding_import|"
   "swallowtail-adapter-kimi|local_server_interactive|"
 )
 

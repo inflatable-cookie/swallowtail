@@ -1,5 +1,6 @@
+#[path = "prepared_profile_cases/mod.rs"]
 mod prepared_profile_cases;
-mod support;
+use crate::support;
 
 use futures_executor::block_on;
 use support::app_server::{AppServerMode, ScriptedAppServer};

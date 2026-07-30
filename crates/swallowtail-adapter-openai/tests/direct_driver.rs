@@ -1,9 +1,4 @@
-#[path = "direct_support/fixture.rs"]
-mod fixture;
-#[path = "support/server.rs"]
-mod server;
-#[path = "support/services.rs"]
-mod services;
+use crate::{fixture, server, services};
 
 use fixture::Fixture;
 use futures_executor::block_on;

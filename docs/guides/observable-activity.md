@@ -204,5 +204,10 @@ bounds, profile truth, and redacted formatting. The application owns
 persistence, grouping, collapsed tool rows, presentation labels, review state,
 retention, deletion, and UI.
 
+Bounded application handoffs:
+
+- [Nucleus observable activity](../releases/0.1.0-nucleus-observable-activity-handoff.md)
+- [Soundcheck observable activity](../releases/0.1.0-soundcheck-observable-activity-handoff.md)
+
 See [Contract 044](../contracts/044-observable-agent-activity-and-disclosure.md)
 for the durable boundary.

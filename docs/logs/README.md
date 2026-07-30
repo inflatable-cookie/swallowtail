@@ -5,6 +5,7 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-07-30 Observable-Activity Consumer Handoffs](2026-07-30-observable-activity-consumer-handoffs.md)
 - [2026-07-30 Packaged Provider-Wide Activity Proof](2026-07-30-packaged-provider-wide-activity-proof.md)
 - [2026-07-30 Provider Solution Activity Matrix](2026-07-30-provider-solution-activity-matrix.md)
 - [2026-07-30 Realtime And Non-Applicable Activity Closeout](2026-07-30-realtime-and-non-applicable-activity-closeout.md)

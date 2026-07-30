@@ -9,6 +9,9 @@ publish.workspace = true
 rust-version.workspace = true
 description = "Alibaba Model Studio direct-inference drivers for Swallowtail"
 
+[lib]
+doctest = false
+
 [dependencies]
 curl = "0.4.50"
 futures-channel = "0.3"

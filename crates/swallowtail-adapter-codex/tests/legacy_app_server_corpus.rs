@@ -1,4 +1,4 @@
-mod legacy_corpus_support;
+use crate::legacy_corpus_support;
 
 use legacy_corpus_support::{
     APP_SERVER_RELEASES, assert_release_evidence, assert_sha256, json, release_versions,

@@ -1,4 +1,4 @@
-mod realtime_support;
+use crate::realtime_support;
 
 use futures_executor::block_on;
 use futures_util::StreamExt;

@@ -48,10 +48,12 @@ allowlist_file = "docs/policy/vision-next-task-verbs.txt"
 "check:rust" = "cargo check --workspace --all-targets"
 "check:examples" = "cargo check --workspace --examples --locked"
 "lint:rust" = "cargo clippy --workspace --all-targets -- -D warnings"
-"test:rust" = "cargo test --workspace"
+"test:rust" = "cargo nextest run"
 "qa:routes" = "bash scripts/check-provider-route-matrix.sh"
-"probe:opencode-installed" = "cargo test -p swallowtail-adapter-opencode --test installed_probe -- --ignored --exact installed_opencode_health_and_schema_match_the_frozen_subset"
-"probe:kimi-installed" = "cargo test -p swallowtail-adapter-kimi --test installed_probe -- --ignored --exact pinned_kimi_code_cli_is_installed_when_live_probe_is_enabled"
+"probe:gemini-installed" = "cargo test -p swallowtail-adapter-gemini --features live-probes --test live_installed_probe -- --ignored --exact gemini_cli_is_installed_when_live_probe_is_enabled"
+"probe:opencode-installed" = "cargo test -p swallowtail-adapter-opencode --features live-probes --test installed_probe -- --ignored --exact installed_opencode_health_and_schema_match_the_frozen_subset"
+"probe:kimi-installed" = "cargo test -p swallowtail-adapter-kimi --features live-probes --test live_installed_probe -- --ignored --exact pinned_kimi_code_cli_is_installed_when_live_probe_is_enabled"
+"probe:ollama-installed" = "cargo test -p swallowtail-adapter-ollama --features live-probes --test installed_probe -- --ignored --exact installed_runtime_exposes_qualified_version_and_local_catalogue"
 "bootstrap:claude-agent-acp" = "npm ci --ignore-scripts"
 "probe:claude-agent-acp-managed" = "./node_modules/.bin/claude-agent-acp --version"
 
@@ -77,7 +79,6 @@ allowlist_file = "docs/policy/vision-next-task-verbs.txt"
   { task = "qa:northstar" },
   { task = "qa:routes" },
   { task = "format:check" },
-  { task = "check:rust" },
   { task = "lint:rust" },
   { task = "test:rust" },
 ]

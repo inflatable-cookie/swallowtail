@@ -1,6 +1,7 @@
 #[path = "local_server_lifecycle/cancellation.rs"]
 mod cancellation;
-mod local_server_lifecycle_support;
+
+use crate::lifecycle_support as local_server_lifecycle_support;
 
 use futures_executor::block_on;
 use local_server_lifecycle_support::{FixtureHost, FixtureServer};

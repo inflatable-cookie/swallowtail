@@ -1,12 +1,4 @@
-#[allow(dead_code)]
-#[path = "local_server_interactive/fixture.rs"]
-mod fixture;
-#[allow(dead_code)]
-#[path = "local_server_interactive_support/mod.rs"]
-mod interactive_support;
-#[allow(dead_code)]
-#[path = "local_server_lifecycle_support/mod.rs"]
-mod lifecycle_support;
+use crate::{fixture, interactive_support, lifecycle_support};
 
 use fixture::{attached_input, id, prepare, probe};
 use futures_executor::block_on;

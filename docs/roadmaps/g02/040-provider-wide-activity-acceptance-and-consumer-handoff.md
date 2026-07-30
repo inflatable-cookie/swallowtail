@@ -1,12 +1,12 @@
 # 040 Provider-Wide Activity Acceptance And Consumer Handoff
 
-Status: active
+Status: completed
 Owner: Tom
 Created: 2026-07-29
 Depends on: g02.039
 Vision tags: provider-wide acceptance, package evidence, consumer adoption
 Contract refs: 009, 011-012, 029, 036-037, 044
-Planning state: cards 135-136 completed; card 137 ready
+Planning state: cards 135-137 completed
 
 ## Problem
 
@@ -25,9 +25,9 @@ surface ready for application-scale Nucleus adoption.
 - [x] Prove every positive cell through a public prepared path.
 - [x] Prove all local package archives and selected extracted-package paths.
 - [x] Document a minimal consumer projection pattern.
-- [ ] Produce bounded Nucleus and Soundcheck adoption handoffs without editing
+- [x] Produce bounded Nucleus and Soundcheck adoption handoffs without editing
       either consumer.
-- [ ] Leave exact gaps and one next task.
+- [x] Leave exact gaps and one next task.
 
 ## Non-Goals
 
@@ -53,11 +53,11 @@ surface ready for application-scale Nucleus adoption.
 
 ### Batch 40.3 — Consumer Handoff
 
-- [ ] Execute card 137.
-- [ ] Specify the Nucleus message/activity projection and collapsed-work
+- [x] Execute card 137.
+- [x] Specify the Nucleus message/activity projection and collapsed-work
       ownership boundary.
-- [ ] Specify Soundcheck's bounded structured-run use.
-- [ ] Close or re-scope the programme.
+- [x] Specify Soundcheck's bounded structured-run use.
+- [x] Close or re-scope the programme.
 
 ## Acceptance Criteria
 
@@ -65,7 +65,7 @@ surface ready for application-scale Nucleus adoption.
 - [x] no `Yes` depends on raw provider parsing in a consumer
 - [x] no `No` silently means unresearched
 - [x] package proof covers all positive public facades
-- [ ] consumer guidance requires no native provider event switch
+- [x] consumer guidance requires no native provider event switch
 - [x] UI grouping and persistence remain downstream
 - [x] release mutation remains held
 
@@ -78,6 +78,6 @@ surface ready for application-scale Nucleus adoption.
 
 ## Next Planning Checkpoint
 
-Card 137 decides whether the next task is an explicitly authorized Nucleus
-adoption lane, focused defect hardening, or an exact evidence-gated provider
-gap.
+The observable-activity programme is complete. The operator now decides
+whether to authorize Nucleus or Soundcheck repository adoption or select
+another g02 stabilization target. No consumer card is implicitly ready.

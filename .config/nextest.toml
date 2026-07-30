@@ -1,0 +1,3 @@
+[profile.default]
+final-status-level = "fail"
+status-level = "fail"

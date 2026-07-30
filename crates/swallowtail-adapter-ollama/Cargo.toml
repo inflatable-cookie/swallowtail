@@ -9,6 +9,12 @@ publish.workspace = true
 rust-version.workspace = true
 description = "Ollama native attached-runtime adapter for Swallowtail"
 
+[features]
+live-probes = []
+
+[lib]
+doctest = false
+
 [dependencies]
 curl = "0.4.50"
 futures-channel = "0.3"
@@ -27,3 +33,8 @@ swallowtail-testkit.workspace = true
 
 [lints]
 workspace = true
+
+[[test]]
+name = "installed_probe"
+path = "tests/installed_probe.rs"
+required-features = ["live-probes"]

@@ -9,6 +9,9 @@ publish.workspace = true
 rust-version.workspace = true
 description = "Provider-neutral contract vocabulary for Swallowtail"
 
+[lib]
+doctest = false
+
 [dependencies]
 semver = "1"
 

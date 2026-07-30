@@ -1,6 +1,5 @@
 #[allow(dead_code)]
-#[path = "installed_discovery/support.rs"]
-mod support;
+use crate::discovery_support as support;
 
 use futures_executor::block_on;
 use futures_util::StreamExt;

@@ -1,4 +1,4 @@
-mod headless_support;
+use crate::headless_support;
 
 use futures_executor::block_on;
 use headless_support::{

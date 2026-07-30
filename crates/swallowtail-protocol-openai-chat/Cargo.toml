@@ -9,6 +9,9 @@ publish.workspace = true
 rust-version.workspace = true
 description = "Bounded OpenAI-compatible Chat Completions wire codec for Swallowtail"
 
+[lib]
+doctest = false
+
 [dependencies]
 serde_json = "1"
 

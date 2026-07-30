@@ -1,4 +1,4 @@
-mod support;
+use crate::support;
 
 use serde_json::Value;
 use support::{Direction, methods, parse_json, parse_transcript};

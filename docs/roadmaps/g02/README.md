@@ -46,7 +46,7 @@ evidence-led provider work.
 | Audit and close working-resource and bounded-write matrix gaps. | completed | Contracts 009-010, 013, 015, 017, 037 | `g02.032` |
 | Audit and close owned-runtime lifecycle and planned-rollover matrix gaps. | completed | Research 060, Contracts 004, 009, 018, 026-027, 031 | `g02.033` |
 | Classify the residual feature-matrix inventory and close or re-scope the programme. | completed | Contracts 004, 009, 011, 016, 026, 029, 037, 043 | `g02.034` |
-| Expose provider-visible agent activity through exact route profiles and prepared facades. | active | Research 063, Contract 044 | `g02.035`-`g02.040` |
+| Expose provider-visible agent activity through exact route profiles and prepared facades. | completed | Research 063, Contract 044 | `g02.035`-`g02.040` |
 
 ## Current Checkpoint
 
@@ -384,8 +384,13 @@ evidence-led provider work.
 - packaged lifecycle evidence now includes Gemini headless management: 14
   suites, five management adapters, five supported routes, three unsupported,
   and eighteen not applicable
-- roadmap g02.039 is complete; roadmap g02.040 is active and card 137 is the
-  sole ready task
+- card 137 publishes separate bounded Nucleus and Soundcheck activity
+  handoffs plus two compile-checked public runtime projection examples
+- Nucleus retains separate durable message and work projections, grouping,
+  collapse, thread lifecycle, authorization, retention, analytics, and UI
+- Soundcheck may ignore all activity without losing final structured output
+- roadmaps g02.039 and g02.040 are complete; consumer repository adoption now
+  requires an operator decision and no numbered card is ready
 - roadmaps g02.016-g02.019 sequence Codex, ACP/Claude Agent, OpenCode,
   provider-wide acceptance, and the Nucleus handoff
 - all 23 manifests carry contract-complete metadata and crates.io publication
@@ -759,7 +764,7 @@ evidence-led provider work.
 - [039 Direct Inference Activity Truth](039-direct-inference-activity-truth.md)
   — completed; cards 132-134 complete
 - [040 Provider-Wide Activity Acceptance And Consumer Handoff](040-provider-wide-activity-acceptance-and-consumer-handoff.md)
-  — active; cards 135-136 complete, card 137 ready
+  — completed; cards 135-137 complete
 
 ## Held Backlog
 

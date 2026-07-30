@@ -173,7 +173,7 @@ cp "$release_source_root/Cargo.lock" "$release_verify_root/Cargo.lock"
     "swallowtail-adapter-gemini|prepared_facade" \
     "swallowtail-adapter-gemini|headless_structured_run" \
     "swallowtail-adapter-kimi|headless_structured_run" \
-    "swallowtail-adapter-kimi|local_server_structured_run" \
+    "swallowtail-adapter-kimi|local_server_interactive" \
     "swallowtail-adapter-opencode|prepared_facade" \
     "swallowtail-adapter-pi|structured_run" \
     "swallowtail-adapter-xai|prepared_facade"
@@ -183,17 +183,6 @@ cp "$release_source_root/Cargo.lock" "$release_verify_root/Cargo.lock"
     cargo test \
       --package "$release_structured_package" \
       --test "$release_structured_test" \
-      --locked
-  done
-  for release_kimi_test in \
-    local_server_corpus \
-    local_server_lifecycle \
-    local_server_binding_import \
-    local_server_interactive
-  do
-    cargo test \
-      --package swallowtail-adapter-kimi \
-      --test "$release_kimi_test" \
       --locked
   done
 )

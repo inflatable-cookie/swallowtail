@@ -9,6 +9,9 @@ publish.workspace = true
 rust-version.workspace = true
 description = "Remote ACP HTTP/SSE and WebSocket client transport for Swallowtail"
 
+[lib]
+doctest = false
+
 [dependencies]
 agent-client-protocol = "=2.0.0"
 async-tungstenite = { version = "=0.34.1", default-features = false, features = ["tokio-rustls-webpki-roots"] }

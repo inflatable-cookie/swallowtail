@@ -2,19 +2,11 @@
 mod authority;
 #[path = "local_server_binding_import/control.rs"]
 mod control;
-#[allow(dead_code)]
-#[path = "installed_discovery/support.rs"]
-mod discovery_support;
-#[allow(dead_code)]
-#[path = "prepared_facade/fixtures.rs"]
-mod fixtures;
 #[path = "local_server_binding_import/identity.rs"]
 mod identity;
-#[allow(dead_code)]
-#[path = "local_server_lifecycle_support/mod.rs"]
-mod local_support;
-#[path = "support/mod.rs"]
-mod support;
+
+use crate::lifecycle_support as local_support;
+use crate::{discovery_support, fixtures, support};
 
 use discovery_support::FakeProcessService;
 use futures_executor::block_on;

@@ -9,6 +9,9 @@ publish.workspace = true
 rust-version.workspace = true
 description = "llama.cpp serving-runtime drivers for Swallowtail"
 
+[lib]
+doctest = false
+
 [dependencies]
 curl = "0.4.50"
 futures-channel = "0.3"

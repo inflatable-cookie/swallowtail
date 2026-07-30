@@ -9,6 +9,9 @@ publish.workspace = true
 rust-version.workspace = true
 description = "Claude Agent ACP and Claude Code headless harness drivers for Swallowtail"
 
+[lib]
+doctest = false
+
 [dependencies]
 futures-channel = "0.3"
 futures-core = "0.3"

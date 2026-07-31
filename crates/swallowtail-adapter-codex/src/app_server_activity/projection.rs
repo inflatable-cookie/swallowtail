@@ -7,10 +7,37 @@ use serde_json::Value;
 use swallowtail_core::ActivityDisclosure;
 use swallowtail_runtime::{
     ActivityAssistantPhase, ActivityContentChangeKind, ActivityContentStream, ActivityKind,
-    ActivityLifecyclePhase, ActivityObservation, ActivityStatus, RuntimeFailure,
+    ActivityLifecyclePhase, ActivityObservation, ActivityStatus, RuntimeFailure, SubagentId,
+    SubagentStatus,
 };
 
 impl AppServerActivityProjection {
+    pub(crate) fn project_child_turn_lifecycle(
+        &mut self,
+        child: SubagentId,
+        provider_turn_id: &str,
+        phase: ActivityLifecyclePhase,
+        status: ActivityStatus,
+        child_status: SubagentStatus,
+    ) -> Result<ActivityObservation, RuntimeFailure> {
+        let source_key = format!("child-turn:{}:{provider_turn_id}", child.as_str());
+        self.observation(
+            ActivitySource::new(&source_key, Some(provider_turn_id)),
+            ItemIdentity::new(
+                ActivityKind::SubagentOrCollaboration,
+                None,
+                ActivityDisclosure::IdentityAndLifecycleOnly,
+            ),
+            phase,
+            status,
+            ObservationDetail::with_subagent(
+                None,
+                None,
+                super::subagent::SubagentProjection::lifecycle(child, child_status),
+            ),
+        )
+    }
+
     pub(crate) fn project_notification(
         &mut self,
         method: &str,

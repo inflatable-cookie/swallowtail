@@ -22,6 +22,18 @@ impl SubagentProjection {
             control: None,
         }
     }
+
+    pub(super) fn lifecycle(child: SubagentId, status: SubagentStatus) -> Self {
+        Self {
+            actor: ActivityActor::Subagent(child.clone()),
+            snapshots: vec![SubagentSnapshot::new(
+                child,
+                SubagentParent::Unknown,
+                status,
+            )],
+            control: None,
+        }
+    }
 }
 
 pub(super) fn collaboration(

@@ -111,12 +111,21 @@ the set only after an earlier qualified topology observation establishes its
 exact id for that operation. A child-owned envelope is then attributed to that
 child even when the activity item carries no separate child field.
 
-Admission is activity-only. It does not authorize callbacks, provider
-requests, terminal events, root-turn output, provider-session operations, or
-direct child control. Unknown, stale, and cross-operation ids fail closed. The
-set is cleared at operation termination and is never imported by a later run,
-turn, resumed session, or consumer. Missing parent evidence remains
-`Unknown`; admission does not invent parentage.
+Admission covers ordinary child activity and, only where the qualified wire
+reuses root lifecycle methods for child work, the exact child-local turn start
+and completion envelopes. The adapter retains the child-local turn id beside
+the admitted child and requires subsequent child activity to match it. Child
+lifecycle is emitted as attributed observation; it never sets or replaces the
+root provider turn id and never completes or fails the root operation.
+
+Admission does not authorize callbacks, provider requests, root terminal
+events, root-turn output, provider-session operations, or direct child
+control. Unknown, stale, cross-operation, mismatched child-turn, and
+post-operation ids fail closed. Child errors remain observational and cannot
+be promoted to root failure. The admission and child-turn state are cleared at
+operation termination and are never imported by a later run, turn, resumed
+session, or consumer. Missing parent evidence remains `Unknown`; admission
+does not invent parentage.
 
 ## Provider-Owned Collaboration Actions
 
@@ -199,7 +208,7 @@ directory, history, steering, interruption, or close authority.
 
 | Route | Realized portable detail |
 | --- | --- |
-| Codex app-server | parent and child thread identity, bounded spawn metadata and child state, visible collaboration action, child activity attribution |
+| Codex app-server | parent and child thread identity, bounded spawn metadata and child state, visible collaboration action, child-local turn lifecycle, child activity attribution |
 | Codex exec | parent and child thread identity, bounded spawn metadata and child state, visible collaboration action |
 | Kimi local-server | child identity, main-operation parent, name, background posture, originating tool correlation, and full lifecycle including waiting |
 
@@ -245,9 +254,10 @@ Deterministic fixtures prove:
 - redacted formatting
 - no direct-control claim from observed provider actions
 - root and previously established child-owned activity envelope admission
+- child-local start, activity, and completion ordering without root mutation
 - unknown, stale, and cross-operation child-envelope rejection
-- operation-terminal child-admission cleanup without widening callback, turn,
-  terminal, or provider-session ownership
+- operation-terminal child-admission and child-turn cleanup without widening
+  callback, root-turn, terminal, or provider-session ownership
 
 No live authentication, paid inference, installed harness, or provider effect
 runs in default conformance.

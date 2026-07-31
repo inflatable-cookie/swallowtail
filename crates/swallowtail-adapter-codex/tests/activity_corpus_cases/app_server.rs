@@ -20,6 +20,7 @@ fn app_server_corpus_covers_rich_activity_and_disclosure_boundaries() {
         "dynamic-tool",
         "collaboration",
         "child-owned-envelope",
+        "child-turn-lifecycle",
         "subagent-activity",
         "search-image-review",
         "compaction-replacement",
@@ -65,6 +66,34 @@ fn app_server_corpus_covers_rich_activity_and_disclosure_boundaries() {
     assert_eq!(
         case(&cases, "child-owned-envelope")["messages"][1]["params"]["threadId"],
         "thread-child"
+    );
+    let child_lifecycle = case(&cases, "child-turn-lifecycle");
+    let child_lifecycle_methods = child_lifecycle["messages"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|message| message["method"].as_str().unwrap())
+        .collect::<Vec<_>>();
+    assert_eq!(
+        child_lifecycle_methods,
+        [
+            "item/completed",
+            "turn/started",
+            "item/completed",
+            "turn/completed"
+        ]
+    );
+    assert_eq!(
+        child_lifecycle["messages"][1]["params"]["threadId"],
+        "thread-child"
+    );
+    assert_eq!(
+        child_lifecycle["messages"][1]["params"]["turn"]["id"],
+        "turn-child"
+    );
+    assert_eq!(
+        child_lifecycle["messages"][3]["params"]["turn"]["id"],
+        "turn-child"
     );
 }
 

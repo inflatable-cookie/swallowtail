@@ -4,7 +4,7 @@ use crate::rpc::RpcConnection;
 use crate::rpc::failure;
 use crate::session_access::provider_request_namespace;
 use serde_json::Value;
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 use std::future::Future;
 use std::pin::Pin;
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
@@ -60,6 +60,7 @@ pub(crate) struct ActiveTurn {
     provider_requests: swallowtail_core::ProviderRequestPolicy,
     activity: Mutex<AppServerActivityProjection>,
     admitted_child_threads: Mutex<BTreeSet<String>>,
+    active_child_turns: Mutex<BTreeMap<String, String>>,
     callbacks: CallbackHub,
     events: swallowtail_runtime::RuntimeEventSender,
     terminal: TerminalOutcomeSender,
@@ -102,6 +103,7 @@ impl ActiveTurn {
                 runtime_id,
                 provider_thread_id,
                 admitted_child_threads: Mutex::new(BTreeSet::new()),
+                active_child_turns: Mutex::new(BTreeMap::new()),
                 provider_id: Mutex::new(None),
                 deadline,
                 declared_tools,
@@ -182,6 +184,11 @@ impl ActiveTurn {
         method: &str,
         params: &Value,
     ) -> Result<(), RuntimeFailure> {
+        if matches!(method, "turn/started" | "turn/completed")
+            && let Some(child) = self.verify_child_lifecycle_owner(params)?
+        {
+            return self.handle_child_lifecycle(method, params, child);
+        }
         let mut activity_owner = None;
         let activities = if activity_notification(method) {
             if method == "serverRequest/resolved" {
@@ -297,6 +304,11 @@ impl ActiveTurn {
                 Ok(())
             }
             "error" => {
+                if let Some(child) = self.verify_child_lifecycle_owner(params)? {
+                    self.verify_child_turn(&child, required_text(params, "turnId")?)?;
+                    return self.emit(RuntimeEventKind::ProgressSnapshot, None);
+                }
+                self.verify_turn(params)?;
                 self.finish(
                     TerminalStatus::ProviderFailed(swallowtail_core::SafeDiagnostic::new(
                         "swallowtail.codex.app_server.provider_error",
@@ -313,24 +325,148 @@ impl ActiveTurn {
 
     fn verify_activity_owner(&self, params: &Value) -> Result<Option<SubagentId>, RuntimeFailure> {
         let thread_id = required_text(params, "threadId")?;
-        let owner = if thread_id == self.provider_thread_id {
-            None
+        let turn_id = required_text(params, "turnId")?;
+        if thread_id == self.provider_thread_id {
+            self.set_provider_id(turn_id)?;
+            Ok(None)
         } else if self
             .admitted_child_threads
             .lock()
             .expect("admitted child threads lock poisoned")
             .contains(thread_id)
         {
-            Some(SubagentId::new(thread_id).map_err(|_| malformed_notification())?)
+            let child = SubagentId::new(thread_id).map_err(|_| malformed_notification())?;
+            self.verify_child_turn(&child, turn_id)?;
+            Ok(Some(child))
         } else {
-            return Err(failure(
+            Err(failure(
                 "swallowtail.codex.app_server.session_id_mismatch",
                 "Codex app-server event belongs to a different provider session",
-            ));
+            ))
+        }
+    }
+
+    fn verify_child_lifecycle_owner(
+        &self,
+        params: &Value,
+    ) -> Result<Option<SubagentId>, RuntimeFailure> {
+        let thread_id = required_text(params, "threadId")?;
+        if thread_id == self.provider_thread_id {
+            return Ok(None);
+        }
+        if self.is_finished() {
+            return Err(child_lifecycle_after_terminal());
+        }
+        if self
+            .admitted_child_threads
+            .lock()
+            .expect("admitted child threads lock poisoned")
+            .contains(thread_id)
+        {
+            return SubagentId::new(thread_id)
+                .map(Some)
+                .map_err(|_| malformed_notification());
+        }
+        Err(failure(
+            "swallowtail.codex.app_server.lifecycle_owner_mismatch",
+            "Codex app-server lifecycle belongs to an unknown operation thread",
+        ))
+    }
+
+    fn handle_child_lifecycle(
+        &self,
+        method: &str,
+        params: &Value,
+        child: SubagentId,
+    ) -> Result<(), RuntimeFailure> {
+        let turn = params.get("turn").ok_or_else(malformed_notification)?;
+        let provider_turn_id = required_text(turn, "id")?;
+        let provider_status = required_text(turn, "status")?;
+        let (phase, status, child_status) = match (method, provider_status) {
+            ("turn/started", "inProgress") => (
+                ActivityLifecyclePhase::Started,
+                ActivityStatus::InProgress,
+                swallowtail_runtime::SubagentStatus::Running,
+            ),
+            ("turn/completed", "completed") => (
+                ActivityLifecyclePhase::Completed,
+                ActivityStatus::Completed,
+                swallowtail_runtime::SubagentStatus::Completed,
+            ),
+            ("turn/completed", "failed") => (
+                ActivityLifecyclePhase::Completed,
+                ActivityStatus::Failed,
+                swallowtail_runtime::SubagentStatus::Failed,
+            ),
+            ("turn/completed", "interrupted") => (
+                ActivityLifecyclePhase::Completed,
+                ActivityStatus::Cancelled,
+                swallowtail_runtime::SubagentStatus::Interrupted,
+            ),
+            _ => return Err(malformed_notification()),
         };
-        let turn_id = required_text(params, "turnId")?;
-        self.set_provider_id(turn_id)?;
-        Ok(owner)
+
+        match phase {
+            ActivityLifecyclePhase::Started => {
+                let mut turns = self
+                    .active_child_turns
+                    .lock()
+                    .expect("active child turns lock poisoned");
+                if self.is_finished() {
+                    return Err(child_lifecycle_after_terminal());
+                }
+                if turns.contains_key(child.as_str()) {
+                    return Err(child_turn_mismatch());
+                }
+                turns.insert(child.as_str().to_owned(), provider_turn_id.to_owned());
+            }
+            ActivityLifecyclePhase::Completed => {
+                self.verify_child_turn(&child, provider_turn_id)?;
+            }
+            ActivityLifecyclePhase::Updated => unreachable!("child lifecycle has no update phase"),
+        }
+
+        let observation = self
+            .activity
+            .lock()
+            .expect("activity lock poisoned")
+            .project_child_turn_lifecycle(
+                child.clone(),
+                provider_turn_id,
+                phase,
+                status,
+                child_status,
+            )?;
+        self.emit(RuntimeEventKind::Activity(observation), None)?;
+
+        if phase == ActivityLifecyclePhase::Completed {
+            self.active_child_turns
+                .lock()
+                .expect("active child turns lock poisoned")
+                .remove(child.as_str());
+        }
+        Ok(())
+    }
+
+    fn verify_child_turn(
+        &self,
+        child: &SubagentId,
+        provider_turn_id: &str,
+    ) -> Result<(), RuntimeFailure> {
+        if self.is_finished() {
+            return Err(child_lifecycle_after_terminal());
+        }
+        if self
+            .active_child_turns
+            .lock()
+            .expect("active child turns lock poisoned")
+            .get(child.as_str())
+            .is_some_and(|active| active == provider_turn_id)
+        {
+            Ok(())
+        } else {
+            Err(child_turn_mismatch())
+        }
     }
 
     fn admit_spawned_children(
@@ -370,11 +506,7 @@ impl ActiveTurn {
     }
 
     fn verify_turn(&self, params: &Value) -> Result<(), RuntimeFailure> {
-        if params
-            .get("threadId")
-            .and_then(Value::as_str)
-            .is_some_and(|thread_id| thread_id != self.provider_thread_id)
-        {
+        if required_text(params, "threadId")? != self.provider_thread_id {
             return Err(failure(
                 "swallowtail.codex.app_server.session_id_mismatch",
                 "Codex app-server event belongs to a different provider session",
@@ -423,6 +555,10 @@ impl ActiveTurn {
         self.admitted_child_threads
             .lock()
             .expect("admitted child threads lock poisoned")
+            .clear();
+        self.active_child_turns
+            .lock()
+            .expect("active child turns lock poisoned")
             .clear();
         let abandonment = match &status {
             TerminalStatus::Cancelled => CallbackAbandonment::TurnCancelled,
@@ -504,5 +640,19 @@ pub(crate) fn malformed_notification() -> RuntimeFailure {
     failure(
         "swallowtail.codex.app_server.malformed_notification",
         "Codex app-server returned a malformed notification",
+    )
+}
+
+fn child_turn_mismatch() -> RuntimeFailure {
+    failure(
+        "swallowtail.codex.app_server.child_turn_id_mismatch",
+        "Codex app-server child activity does not match its active child turn",
+    )
+}
+
+fn child_lifecycle_after_terminal() -> RuntimeFailure {
+    failure(
+        "swallowtail.codex.app_server.child_lifecycle_after_terminal",
+        "Codex app-server emitted child lifecycle after operation termination",
     )
 }

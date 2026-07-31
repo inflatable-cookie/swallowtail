@@ -25,6 +25,7 @@ fn qualified_corpus_projects_rich_items_without_raw_reasoning() {
         "mcp-tool",
         "collaboration",
         "child-owned-envelope",
+        "child-turn-lifecycle",
         "subagent-activity",
         "search-image-review",
         "compaction-replacement",

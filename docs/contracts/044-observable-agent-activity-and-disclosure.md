@@ -66,10 +66,17 @@ formatting, and never accepted as cross-route authority.
 
 An ordinary activity envelope may be owned by the root provider thread or by
 an exact child thread established earlier in the same operation through
-qualified topology evidence. Child ownership changes activity attribution
-only. It does not satisfy root turn, terminal, callback, provider-request, or
-provider-session ownership checks. Unknown, stale, and cross-operation thread
-ids fail closed.
+qualified topology evidence. A qualified provider may also emit child-local
+turn start and completion envelopes through the same methods used for the root
+turn. Those lifecycle envelopes are observable child activity only. They bind
+subsequent child activity to an exact child-local turn id without setting or
+replacing the root provider turn id.
+
+Child ownership and lifecycle change activity attribution only. They do not
+satisfy root terminal, callback, provider-request, provider-session, or direct
+child-control ownership checks. A child completion or failure cannot complete
+or fail the root operation. Unknown, stale, cross-operation, and
+post-operation thread ids fail closed.
 
 An adapter may mint a runtime activity id when the provider supplies no stable
 item id. Minting identity does not invent provider lifecycle or continuity.
@@ -366,6 +373,7 @@ Deterministic fixtures prove:
 - monotonic event and per-activity lifecycle ordering
 - stable activity identity and exact owner
 - root or previously admitted operation-local child envelope ownership
+- exact child-local turn lifecycle without root turn or terminal mutation
 - no synthetic lifecycle phases
 - separate intermediate and final assistant content
 - reasoning-summary disclosure without hidden reasoning

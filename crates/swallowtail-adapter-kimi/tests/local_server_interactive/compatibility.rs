@@ -40,7 +40,7 @@ fn revision_specific_options_require_the_qualified_milestone() {
 
 #[test]
 fn profile_and_tool_options_remain_available_across_later_milestones() {
-    for version in ["0.29.0", "0.29.1", "0.29.2", "0.30.0", "0.31.0"] {
+    for version in ["0.29.0", "0.29.1", "0.29.2", "0.30.0", "0.31.0", "0.31.1"] {
         let server =
             InteractiveFixtureServer::start_with_version(InteractiveScenario::Complete, version);
         let host = FixtureHost::for_endpoint(server.endpoint());

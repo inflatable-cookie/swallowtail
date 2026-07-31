@@ -31,12 +31,12 @@ fn release_corpus_freezes_every_candidate_point_and_gap() {
 }
 
 #[test]
-fn compatibility_claim_uses_four_milestones_and_allows_visible_newer_execution() {
+fn compatibility_claim_uses_six_milestones_and_allows_visible_newer_execution() {
     let claim = compatibility_claim();
 
     assert_eq!(claim.baseline().as_str(), "0.53.0");
-    assert_eq!(claim.latest_qualified().as_str(), "0.61.0");
-    assert_eq!(claim.milestones().len(), 4);
+    assert_eq!(claim.latest_qualified().as_str(), "0.64.0");
+    assert_eq!(claim.milestones().len(), 6);
     assert_eq!(claim.exclusions().len(), 2);
 
     for (candidate, behavior) in [
@@ -46,6 +46,9 @@ fn compatibility_claim_uses_four_milestones_and_allows_visible_newer_execution()
         ("0.59.0", "claude-agent.acp.session-config-v2"),
         ("0.60.0", "claude-agent.acp.provider-capability-v3"),
         ("0.61.0", "claude-agent.acp.steering-metadata-v4"),
+        ("0.62.0", "claude-agent.acp.steering-metadata-v4"),
+        ("0.63.0", "claude-agent.acp.tool-subagent-correlation-v5"),
+        ("0.64.0", "claude-agent.acp.host-steering-form-marker-v6"),
     ] {
         let InterfaceCompatibilityAssessment::Qualified(matched) =
             claim.assess(&version(candidate))
@@ -62,15 +65,15 @@ fn compatibility_claim_uses_four_milestones_and_allows_visible_newer_execution()
         );
     }
 
-    let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) = claim.assess(&version("0.62.0"))
+    let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) = claim.assess(&version("0.65.0"))
     else {
         panic!("stable newer release must be permitted as unverified");
     };
-    assert_eq!(newer.version().as_str(), "0.62.0");
-    assert_eq!(newer.latest_qualified().as_str(), "0.61.0");
+    assert_eq!(newer.version().as_str(), "0.65.0");
+    assert_eq!(newer.latest_qualified().as_str(), "0.64.0");
     assert_eq!(
         newer.behavior_revision().as_str(),
-        "claude-agent.acp.steering-metadata-v4"
+        "claude-agent.acp.host-steering-form-marker-v6"
     );
 }
 

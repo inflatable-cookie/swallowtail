@@ -1,0 +1,10 @@
+{"direction":"client_to_agent","message":{"jsonrpc":"2.0","id":1,"method":"session/new","params":{"cwd":"/workspace","mcpServers":[]}}}
+{"direction":"agent_to_client","message":{"jsonrpc":"2.0","id":1,"result":{"sessionId":"cursor-fixture-session"}}}
+{"direction":"client_to_agent","message":{"jsonrpc":"2.0","id":2,"method":"session/prompt","params":{"sessionId":"cursor-fixture-session","prompt":[{"type":"text","text":"fixture prompt"}]}}}
+{"direction":"agent_to_client","message":{"jsonrpc":"2.0","method":"session/update","params":{"sessionId":"cursor-fixture-session","update":{"sessionUpdate":"agent_thought_chunk","content":{"type":"text","text":"Fixture reasoning summary."}}}}}
+{"direction":"agent_to_client","message":{"jsonrpc":"2.0","method":"session/update","params":{"sessionId":"cursor-fixture-session","update":{"sessionUpdate":"plan","entries":[{"content":"Inspect fixture","priority":"medium","status":"in_progress"}]}}}}
+{"direction":"agent_to_client","message":{"jsonrpc":"2.0","method":"session/update","params":{"sessionId":"cursor-fixture-session","update":{"sessionUpdate":"tool_call","toolCallId":"fixture-tool","title":"Inspect","status":"pending","rawInput":{"private":"omitted by projection"}}}}}
+{"direction":"agent_to_client","message":{"jsonrpc":"2.0","method":"session/update","params":{"sessionId":"cursor-fixture-session","update":{"sessionUpdate":"tool_call_update","toolCallId":"fixture-tool","status":"completed","content":[{"type":"content","content":{"type":"text","text":"Fixture display output."}}],"rawOutput":{"private":"omitted by projection"}}}}}
+{"direction":"agent_to_client","message":{"jsonrpc":"2.0","method":"session/update","params":{"sessionId":"cursor-fixture-session","update":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"Fixture response."}}}}}
+{"direction":"agent_to_client","message":{"jsonrpc":"2.0","id":2,"result":{"stopReason":"end_turn"}}}
+{"direction":"client_to_agent","message":{"jsonrpc":"2.0","method":"session/cancel","params":{"sessionId":"cursor-fixture-session"}}}

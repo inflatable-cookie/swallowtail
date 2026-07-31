@@ -16,6 +16,7 @@ pub struct ObservedProcess {
     pub executable: String,
     pub arguments: Vec<String>,
     pub environments: Vec<String>,
+    pub working_resource: Option<String>,
 }
 
 pub struct FixtureHost {
@@ -38,6 +39,21 @@ impl FixtureHost {
             process: Arc::new(FixtureProcessService {
                 outputs: Mutex::new(Some(outputs.into_iter().collect())),
                 exit,
+                hold_open: false,
+                state: Arc::clone(&process_state),
+            }),
+            process_state,
+            joined: Arc::new(AtomicBool::new(false)),
+        }
+    }
+
+    pub fn held_open() -> Self {
+        let process_state = Arc::new(ProcessState::default());
+        Self {
+            process: Arc::new(FixtureProcessService {
+                outputs: Mutex::new(Some(VecDeque::new())),
+                exit: ProcessExit::new(false, Some(130)),
+                hold_open: true,
                 state: Arc::clone(&process_state),
             }),
             process_state,
@@ -46,11 +62,19 @@ impl FixtureHost {
     }
 
     pub fn services(&self, host: ExecutionHostId) -> HostServices {
+        self.services_with_time(host, Arc::new(PendingTime))
+    }
+
+    pub fn services_with_time(
+        &self,
+        host: ExecutionHostId,
+        time: Arc<dyn TimeService>,
+    ) -> HostServices {
         HostServices::new(host)
             .with_task(Arc::new(ThreadTaskService {
                 joined: Arc::clone(&self.joined),
             }))
-            .with_time(Arc::new(PendingTime))
+            .with_time(time)
             .with_process(self.process.clone())
     }
 
@@ -82,11 +106,24 @@ impl FixtureHost {
     pub fn joined(&self) -> bool {
         self.joined.load(Ordering::SeqCst)
     }
+
+    pub fn stdin(&self) -> Vec<u8> {
+        self.process_state
+            .stdin
+            .lock()
+            .expect("fixture stdin lock is available")
+            .clone()
+    }
+
+    pub fn force_stopped(&self) -> bool {
+        self.process_state.force_stopped.load(Ordering::SeqCst)
+    }
 }
 
 struct FixtureProcessService {
     outputs: Mutex<Option<VecDeque<ProcessOutputChunk>>>,
     exit: ProcessExit,
+    hold_open: bool,
     state: Arc<ProcessState>,
 }
 
@@ -94,6 +131,8 @@ struct FixtureProcessService {
 struct ProcessState {
     observed: Mutex<Option<ObservedProcess>>,
     stdin_closed: AtomicBool,
+    stdin: Mutex<Vec<u8>>,
+    force_stopped: AtomicBool,
     waited: AtomicBool,
 }
 
@@ -114,6 +153,9 @@ impl ProcessService for FixtureProcessService {
                 .environment()
                 .map(|value| value.as_host_value().to_owned())
                 .collect(),
+            working_resource: request
+                .working_resource()
+                .map(|value| value.as_host_value().to_owned()),
         });
         let outputs = self
             .outputs
@@ -124,6 +166,7 @@ impl ProcessService for FixtureProcessService {
         let handle = FixtureProcessHandle {
             outputs: Mutex::new(outputs),
             exit: self.exit,
+            hold_open: self.hold_open,
             state: Arc::clone(&self.state),
         };
         Box::pin(async move { Ok(Box::new(handle) as Box<dyn ProcessHandle>) })
@@ -133,11 +176,17 @@ impl ProcessService for FixtureProcessService {
 struct FixtureProcessHandle {
     outputs: Mutex<VecDeque<ProcessOutputChunk>>,
     exit: ProcessExit,
+    hold_open: bool,
     state: Arc<ProcessState>,
 }
 
 impl ProcessHandle for FixtureProcessHandle {
-    fn write_stdin(&self, _chunk: ProcessInputChunk) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+    fn write_stdin(&self, chunk: ProcessInputChunk) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+        self.state
+            .stdin
+            .lock()
+            .expect("fixture stdin lock is available")
+            .extend_from_slice(chunk.bytes());
         Box::pin(async { Ok(()) })
     }
 
@@ -147,12 +196,22 @@ impl ProcessHandle for FixtureProcessHandle {
     }
 
     fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
-        let output = self
-            .outputs
-            .lock()
-            .expect("fixture output lock is available")
-            .pop_front();
-        Box::pin(async move { Ok(output) })
+        Box::pin(async move {
+            loop {
+                if let Some(output) = self
+                    .outputs
+                    .lock()
+                    .expect("fixture output lock is available")
+                    .pop_front()
+                {
+                    return Ok(Some(output));
+                }
+                if !self.hold_open || self.state.force_stopped.load(Ordering::SeqCst) {
+                    return Ok(None);
+                }
+                std::thread::yield_now();
+            }
+        })
     }
 
     fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
@@ -161,6 +220,7 @@ impl ProcessHandle for FixtureProcessHandle {
     }
 
     fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+        self.state.force_stopped.store(true, Ordering::SeqCst);
         Box::pin(async { Ok(()) })
     }
 
@@ -213,5 +273,17 @@ impl TimeService for PendingTime {
 
     fn wait_until(&self, _deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
         Box::pin(std::future::pending())
+    }
+}
+
+pub struct ImmediateTime;
+
+impl TimeService for ImmediateTime {
+    fn now(&self) -> MonotonicInstant {
+        MonotonicInstant::from_ticks(1_000)
+    }
+
+    fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
+        Box::pin(async move { DeadlineObservation::new(deadline, deadline.instant()) })
     }
 }

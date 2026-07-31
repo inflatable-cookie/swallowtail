@@ -335,9 +335,56 @@ fn prepared_catalogue_uses_qwen_control_protocol_and_joins_the_ephemeral_process
 }
 
 #[test]
+fn latest_qualified_qwen_binds_its_exact_runtime_stream_version() {
+    let host_id = ExecutionHostId::new("fixture.qwen.prepared.latest").expect("valid host");
+    let (process, _) = FakeProcessService::completed("0.21.2\n");
+    let (services, _) = host_services_for(host_id.clone(), process, Arc::new(PendingTimeService));
+    let prepared = block_on(prepare_qwen_headless(
+        preparation_input(host_id.clone()),
+        probe(),
+        services,
+    ))
+    .expect("latest Qwen prepares");
+    let InstalledExecutableCompatibility::Qualified(assessment) =
+        prepared.observation().compatibility()
+    else {
+        panic!("latest Qwen must be qualified");
+    };
+    assert_eq!(
+        assessment.behavior_revision().as_str(),
+        "qwen-code.headless.v0.21.0-catalogue-filter"
+    );
+
+    let profile = prepared
+        .prepare_run(QwenRunProfileInput::new(
+            RequestId::new("qwen-latest-run").expect("valid request"),
+            QwenModelSelection::new(
+                ModelRouteId::new("qwen.latest.route").expect("valid route"),
+                ModelRouteRevision::new("1").expect("valid route revision"),
+                ProviderId::new("alibaba-modelstudio").expect("valid provider"),
+                ModelId::new("qwen3-coder-plus").expect("valid model"),
+            ),
+            OperationContent::new("latest private prompt").expect("valid prompt"),
+            WorkingResourceRef::new("qwen.latest.workspace").expect("valid resource"),
+            Deadline::at(MonotonicInstant::from_ticks(1_000)),
+        ))
+        .expect("latest run profile prepares");
+    let output = include_str!("fixtures/qwen-code-v0.19.11/success.jsonl").replace(
+        "\"qwen_code_version\":\"0.19.11\"",
+        "\"qwen_code_version\":\"0.21.2\"",
+    );
+    let (process, _) = FakeProcessService::completed(&output);
+    let (services, _) = host_services_for(host_id, process, Arc::new(PendingTimeService));
+    let mut run = block_on(profile.start_run(services)).expect("latest run starts");
+    let terminal = block_on(run.take_terminal_outcome().expect("terminal is available"));
+    assert_eq!(terminal.status(), &TerminalStatus::Completed);
+    assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
+}
+
+#[test]
 fn later_stable_qwen_is_visible_and_executable_as_unverified_newer() {
     let host_id = ExecutionHostId::new("fixture.qwen.prepared.newer").expect("valid host");
-    let (process, _) = FakeProcessService::completed("0.20.1\n");
+    let (process, _) = FakeProcessService::completed("0.21.3\n");
     let (services, _) = host_services_for(host_id.clone(), process, Arc::new(PendingTimeService));
     let prepared = block_on(prepare_qwen_headless(
         preparation_input(host_id),

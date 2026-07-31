@@ -1,9 +1,10 @@
 #[path = "local_process/support.rs"]
 mod support;
 
+use std::ffi::OsString;
 use support::*;
 use swallowtail_core::InterfaceVersionAxis;
-use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits};
+use swallowtail_host_local::{LocalExecutableLaunch, LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{
     CleanupOutcome, InstalledExecutableTarget, ProcessInputChunk, ProcessOutputStream,
     ProcessRequest, ResourceAccess, ResourceRepresentation, WorkingResourceService,
@@ -108,6 +109,126 @@ fn installed_version_probe_uses_only_the_explicit_approved_target_and_joins() {
     );
 
     std::fs::remove_dir_all(resource_directory).expect("fixture resource is removed");
+}
+
+#[test]
+fn interpreted_launch_orders_prefix_and_driver_arguments_under_one_limit() {
+    let executable = executable_ref();
+    let launch =
+        LocalExecutableLaunch::new(std::env::current_exe().expect("test executable is available"))
+            .with_prefix_arguments([OsString::from("--exact")])
+            .with_bootstrap_environment(fixture_environment("version"));
+    let formatting = format!("{launch:?}");
+    assert!(formatting.contains("prefix_argument_count: 1"));
+    assert!(formatting.contains("bootstrap_environment_count: 2"));
+    assert!(!formatting.contains("stderr-secret"));
+    assert!(!formatting.contains("local_process"));
+
+    let (builder, target) =
+        LocalProcessHost::builder(LocalProcessLimits::new(3, 1024, 64, 1024, 1024))
+            .approve_installed_executable_launch(
+                executable.clone(),
+                InterfaceVersionAxis::new("fixture.interpreted.package")
+                    .expect("fixture axis is valid"),
+                launch,
+            );
+    let host = builder.build();
+    assert_eq!(target.executable(), &executable);
+    assert!(!format!("{target:?}").contains("local_process"));
+    let process = start(
+        &host,
+        ProcessRequest::new(target.executable().clone()).with_arguments([
+            "support::process_fixture".to_owned(),
+            "--nocapture".to_owned(),
+        ]),
+    )
+    .expect("interpreted fixture starts");
+    let (stdout, stderr) = collect_output(process.as_ref()).expect("fixture output is bounded");
+    assert!(stderr.is_empty());
+    assert!(String::from_utf8_lossy(&stdout).contains("fixture-harness 1.2.0"));
+    assert!(block_on(process.wait()).expect("fixture joins").success());
+
+    let limited = LocalProcessHost::builder(LocalProcessLimits::new(2, 1024, 64, 64, 64))
+        .approve_executable_launch(
+            executable.clone(),
+            LocalExecutableLaunch::new(
+                std::env::current_exe().expect("test executable is available"),
+            )
+            .with_prefix_arguments([OsString::from("--exact")]),
+        )
+        .build();
+    assert_failure_code(
+        start(
+            &limited,
+            ProcessRequest::new(executable).with_arguments([
+                "support::process_fixture".to_owned(),
+                "--nocapture".to_owned(),
+            ]),
+        ),
+        "swallowtail.local_process.argument_limit_exceeded",
+    );
+}
+
+#[test]
+fn explicit_request_environment_overrides_bounded_bootstrap_environment() {
+    let executable = executable_ref();
+    let environment = environment_ref();
+    let launch =
+        LocalExecutableLaunch::new(std::env::current_exe().expect("test executable is available"))
+            .with_prefix_arguments(fixture_arguments().map(OsString::from))
+            .with_bootstrap_environment(fixture_environment("overflow"));
+    let host = LocalProcessHost::builder(LocalProcessLimits::default())
+        .approve_executable_launch(executable.clone(), launch)
+        .approve_environment(environment.clone(), fixture_environment("version"))
+        .build();
+    let process = start(
+        &host,
+        ProcessRequest::new(executable).with_environment([environment]),
+    )
+    .expect("fixture starts with composed environment");
+    let (stdout, stderr) = collect_output(process.as_ref()).expect("fixture output is bounded");
+    assert!(stderr.is_empty());
+    assert!(String::from_utf8_lossy(&stdout).contains("fixture-harness 1.2.0"));
+    assert!(block_on(process.wait()).expect("fixture joins").success());
+
+    let oversized = (0..33).map(|index| {
+        (
+            OsString::from(format!("SWALLOWTAIL_BOOTSTRAP_{index}")),
+            OsString::from("value"),
+        )
+    });
+    let executable = executable_ref();
+    let host = LocalProcessHost::builder(LocalProcessLimits::default())
+        .approve_executable_launch(
+            executable.clone(),
+            LocalExecutableLaunch::new(
+                std::env::current_exe().expect("test executable is available"),
+            )
+            .with_bootstrap_environment(oversized),
+        )
+        .build();
+    assert_failure_code(
+        start(&host, ProcessRequest::new(executable)),
+        "swallowtail.local_process.bootstrap_environment_limit_exceeded",
+    );
+
+    let executable = executable_ref();
+    let host = LocalProcessHost::builder(LocalProcessLimits::default())
+        .approve_executable_launch(
+            executable.clone(),
+            LocalExecutableLaunch::new(
+                std::env::current_exe().expect("test executable is available"),
+            )
+            .with_bootstrap_environment([(
+                OsString::from("SWALLOWTAIL_BOOTSTRAP_VALUE"),
+                OsString::from("x".repeat(16 * 1024 + 1)),
+            )]),
+        )
+        .build();
+    assert_failure_code(
+        start(&host, ProcessRequest::new(executable)),
+        "swallowtail.local_process.bootstrap_environment_limit_exceeded",
+    );
 }
 
 #[test]

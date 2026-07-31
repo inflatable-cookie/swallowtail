@@ -20,6 +20,7 @@ fn qualified_versions_preserve_prompt_write_and_cleanup_authority() {
         ("0.29.2", Scenario::ReasoningEffort292Success),
         ("0.30.0", Scenario::ReasoningEffort300Success),
         ("0.31.0", Scenario::ReasoningEffort310Success),
+        ("0.31.1", Scenario::ReasoningEffort311Success),
     ] {
         for host_id in topologies() {
             let selected = version_selection(host_id.clone(), version);

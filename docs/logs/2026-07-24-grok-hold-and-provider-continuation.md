@@ -45,7 +45,7 @@ exact route. They cannot authorize implementation early.
 - `effigy doctor` — unchanged inherited 19 oversized-file findings:
   12 warnings and 7 errors
 
-## Next Task
+## Recorded Next Step
 
 Execute card 142 and stop for operator input if current evidence leaves the
 leading provider or transport choice ambiguous.

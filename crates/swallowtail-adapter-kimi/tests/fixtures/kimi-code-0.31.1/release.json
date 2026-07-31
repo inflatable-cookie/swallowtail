@@ -1,0 +1,78 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-07-31",
+  "release": {
+    "version": "0.31.1",
+    "annotated_tag": "69f0400a504518d2d6665933c6a9b2beddd6398d",
+    "commit": "6b56c11697771fe596099b38bafae539820309a4",
+    "tree": "a4ea9a07cd0371eabbc4769065a148a204d63db0",
+    "npm_integrity": "sha512-Hyly4EjzemSjla479jC47h+K98wNvRKOqGwu6mBncI/MlIafqEByUXeGl/9+DsOKdiE6fQTxkxiAcgusBay56Q==",
+    "darwin_arm64_zip_sha256": "f6bd417babbce6db6222417451808011e318b7a80e5d0fb53592167874376704",
+    "signer": "Beijing Moonshot Technology Co., Ltd",
+    "team_id": "2J9472RW75"
+  },
+  "acp": {
+    "claim": "kimi.acp.executable-window-4",
+    "package_version": "0.3.6",
+    "sdk_version": "0.23.0",
+    "tree_0_31_0": "3a5b6ad6b6242946e015126f022693f889991c68",
+    "tree_0_31_1": "ee38fac4799b3b6e9726d2813363ea9e595939a8",
+    "events_map_blob": "0448f2eb9cb111755c5b0855f5ec72bf4d6bcd4c",
+    "events_map_sha256": "5da50fef089b5b0bd250f5bc1eca4a9f8f3f706362bef6581ac53ba42be43a08",
+    "server_blob_0_31_0": "a9ef407beeb5bd27dff33308c1d1c87284d22e84",
+    "server_blob_0_31_1": "6707fd4cae43708cd2e9aeeb0eb01a4659c18d85",
+    "selected_delta": "comment-only-v2-mcp-boundary-note",
+    "initialize": {
+      "protocol_version": 1,
+      "agent_version": "0.31.1",
+      "capability_keys": [
+        "loadSession",
+        "mcpCapabilities",
+        "promptCapabilities",
+        "sessionCapabilities"
+      ],
+      "auth_method_count": 1,
+      "stderr_bytes": 0
+    },
+    "behavior": "kimi.acp.reasoning.declared-effort-v2"
+  },
+  "headless": {
+    "claim": "kimi.headless.executable-window-3",
+    "renderer_blob_0_31_0": "0e2f35238db066a13b53ad2cfff11bdff2f76724",
+    "renderer_blob_0_31_1": "0e2f35238db066a13b53ad2cfff11bdff2f76724",
+    "ordinary_shell_blob_0_31_0": "220aa749ff28c3dc19210716aabd92f507425fb9",
+    "ordinary_shell_blob_0_31_1": "84ad5897bb72d4c5888d7a3eab04c9610012fbda",
+    "experimental_v2_selected": false,
+    "behavior": "kimi.headless.stream-json.v1"
+  },
+  "local_server": {
+    "claim": "kimi.local-server.executable-window-4",
+    "bearer_middleware_blob": "96add593c6ed5c146268d36cd381170917a33851",
+    "rest_metadata_blob": "090712e27eff0c1616d015f20c52a69270d5d8e6",
+    "rest_prompt_blob": "88aebc496c439969a9b6c9015e962f57086c6e16",
+    "ws_control_blob": "4fef9de57a8467d7c492d1546ca3c7efeb58515b",
+    "model_catalogue_blob": "9327ef3505257b16e226006cf5654f8efcc67ae3",
+    "event_schema_blob_0_31_0": "79de1337cab4346c399aa3dc098e0f8849a21678",
+    "event_schema_blob_0_31_1": "7ce003fe61cd0d0490d1b66ac04e69895d1cf549",
+    "session_routes_blob_0_31_0": "1623004e092c0291afbe4b93315aceac6316eeee",
+    "session_routes_blob_0_31_1": "ce666c946cb61435dee25400f5019b1f2c2ed553",
+    "broadcaster_blob_0_31_0": "c1d6ebe8c7c00feeed031a322cf8258aad83ab17",
+    "broadcaster_blob_0_31_1": "e49fca40fd140278f96834813f21329f4cbf19e5",
+    "selected_delta": [
+      "optional-turn-interrupt-reason",
+      "workspace-scoped-session-lookup",
+      "stable-provider-model-refresh"
+    ],
+    "behavior": "kimi.local-server.rest-ws-v2-refresh-stable"
+  },
+  "production_ceiling_during_corpus": "0.31.0",
+  "live_evidence_excludes": [
+    "installation",
+    "update",
+    "authentication",
+    "session_creation",
+    "provider_prompt",
+    "workspace_write",
+    "durable_mutation"
+  ]
+}

@@ -3,6 +3,7 @@ use std::collections::BTreeSet;
 
 const RANGE: &str = include_str!("fixtures/kimi-code-acp-v0.28.1-v0.31.0/activity-range.json");
 const ACTIVITY: &str = include_str!("fixtures/kimi-code-acp-v0.28.1-v0.31.0/activity.jsonl");
+const RELEASE_0_31_1: &str = include_str!("fixtures/kimi-code-0.31.1/release.json");
 
 #[test]
 fn every_qualified_kimi_acp_segment_has_exact_activity_provenance() {
@@ -34,6 +35,18 @@ fn every_qualified_kimi_acp_segment_has_exact_activity_provenance() {
     assert_eq!(
         range["later_stable_posture"]["classification"],
         "unverified-newer"
+    );
+
+    let release: Value =
+        serde_json::from_str(RELEASE_0_31_1).expect("0.31.1 release fixture is valid JSON");
+    assert_eq!(release["release"]["version"], "0.31.1");
+    assert_eq!(
+        release["acp"]["events_map_sha256"],
+        segments[1]["events_map_sha256"]
+    );
+    assert_eq!(
+        release["acp"]["behavior"],
+        "kimi.acp.reasoning.declared-effort-v2"
     );
 }
 

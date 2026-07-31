@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-30
+Updated: 2026-07-31
 
 | Contract | Status | Scope |
 | --- | --- | --- |
@@ -15,7 +15,7 @@ Updated: 2026-07-30
 | [007 Model Artifact and Serving Boundary](007-model-artifact-and-serving-boundary.md) | active | Artifact, serving runtime, deployment, facade, and route separation |
 | [008 Runtime Registration and Preflight](008-runtime-registration-and-preflight.md) | active | Driver roles, configured instances, access state, requirements, and side-effect-free preflight |
 | [009 Async Operation Lifecycle](009-async-operation-lifecycle.md) | active | Object-safe async roles, scoped handles, events, cancellation, terminal outcomes, and cleanup |
-| [010 Execution Host Services and Inputs](010-execution-host-services-and-inputs.md) | active | Capability-scoped host authority, credentials, resources, attachments, schemas, and diagnostics |
+| [010 Execution Host Services and Inputs](010-execution-host-services-and-inputs.md) | active | Capability-scoped host authority, executable launch recipes, credentials, resources, attachments, schemas, and diagnostics |
 | [011 Runtime Conformance Profiles](011-runtime-conformance-profiles.md) | active | Deterministic cross-shape runtime proof profiles and assertions |
 | [012 Interactive Session Options and Callback Exchange](012-interactive-session-options-and-callback-exchange.md) | active | Session instructions, reasoning selection, tool declarations, and correlated callback lifecycle |
 | [013 Interactive Session Access Policy](013-interactive-session-access-policy.md) | active | Independent resource, isolation, filesystem, approval, network, provider-request, deadline, and cleanup policy for interactive sessions |
@@ -37,7 +37,7 @@ Updated: 2026-07-30
 | [029 Interface Version Qualification And Compatibility](029-interface-version-qualification-and-compatibility.md) | active | Exact runtime bindings and maintained baseline, milestone, deprecation, and exclusion windows |
 | [030 Consumer-Owned Direct Tool Continuation](030-consumer-owned-direct-tool-continuation.md) | active | Explicit direct-inference attempts around consumer tools with private ephemeral provider continuation |
 | [031 Attached Native Runtime Version And Residency](031-attached-native-runtime-version-and-residency.md) | active | Attach-only runtime version, installed/running catalogue, and inference-caused residency truth |
-| [032 Installed Executable Observation And Discovery](032-installed-executable-observation-and-discovery.md) | active | Explicit host-approved executable targets, exact version classification, and bounded joined discovery |
+| [032 Installed Executable Observation And Discovery](032-installed-executable-observation-and-discovery.md) | active | Explicit native or interpreted host-approved executable targets, exact version classification, and bounded joined discovery |
 | [033 Harness Configuration Posture](033-harness-configuration-posture.md) | active | Exact ambient, provider-suppressed, or host-scoped harness configuration independent from isolation and access |
 | [034 Negotiated Harness Session Options](034-negotiated-harness-session-options.md) | active | Version-qualified mapping of typed portable session options through private harness configuration channels |
 | [035 Remote ACP Connection Transport](035-remote-acp-connection-transport.md) | active | Experimental host-approved remote ACP over explicit HTTP/SSE or WebSocket with scoped affinity and no implicit recovery |

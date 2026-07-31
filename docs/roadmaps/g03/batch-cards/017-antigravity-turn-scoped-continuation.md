@@ -1,6 +1,6 @@
 # 017 Antigravity Turn-Scoped Continuation
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-07-31
 Milestone: `../006-antigravity-personal-harness-foundation.md`
@@ -23,12 +23,12 @@ turn-scoped lifecycle without ambient latest-session selection.
 
 ## Acceptance Criteria
 
-- [ ] continuation never selects ambient latest provider state
-- [ ] provider conversation identity remains opaque and redacted
-- [ ] each turn has independent cancellation and one terminal outcome
-- [ ] missing or stale bindings fail without fallback
-- [ ] retention truth is explicit and provider-specific
-- [ ] turn-scoped continuation conformance passes deterministically
+- [x] continuation never selects ambient latest provider state
+- [x] provider conversation identity remains opaque and redacted
+- [x] each turn has independent cancellation and one terminal outcome
+- [x] missing or stale bindings fail without fallback
+- [x] retention truth is explicit and provider-specific
+- [x] turn-scoped continuation conformance passes deterministically
 
 ## Validation
 
@@ -45,5 +45,22 @@ turn-scoped lifecycle without ambient latest-session selection.
 
 ## Auto-Continuation
 
-Yes. Continue to card 018 after continuation conformance passes.
+Completed. Continue to card 018.
 
+## Result
+
+Research 080 qualifies exact-id restarted continuation for `agy` `1.1.9`.
+The headless driver now exposes a separate interactive-session role whose first
+turn starts without a selector and whose later turns use only
+`--conversation <exact-id>`. It never selects ambient `--continue`.
+
+Each turn owns and joins one child process. A completed clean first turn
+commits its bounded conversation id privately. Later streams must repeat that
+identity. Missing or changed identity, failure, cancellation, deadline, or
+uncertain cleanup invalidates the runtime handle without retry or fresh-session
+fallback. No provider-session reference, resume binding, management role, or
+storage path becomes public.
+
+Focused validation passed 27 tests across four binaries plus warnings-denied
+checking in two seconds. No live provider conversation, account mutation,
+credential read, consumer edit, broad workspace suite, or publication ran.

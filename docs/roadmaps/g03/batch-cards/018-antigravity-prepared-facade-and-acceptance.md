@@ -1,6 +1,6 @@
 # 018 Antigravity Prepared Facade And Acceptance
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-07-31
 Milestone: `../006-antigravity-personal-harness-foundation.md`
@@ -24,13 +24,13 @@ through one prepared facade and close the route through focused acceptance.
 
 ## Acceptance Criteria
 
-- [ ] prepared use is simple without implicit route or access fallback
-- [ ] personal and enterprise profiles remain separate
-- [ ] unsupported interactive and management surfaces remain absent
-- [ ] public matrices match exact production truth
-- [ ] focused and package evidence passes
-- [ ] no live prompt, consumer edit, provider mutation, or publication runs
-- [ ] one explicit g03 next checkpoint remains
+- [x] prepared use is simple without implicit route or access fallback
+- [x] personal and enterprise profiles remain separate
+- [x] unsupported interactive and management surfaces remain absent
+- [x] public matrices match exact production truth
+- [x] focused and package evidence passes
+- [x] no live prompt, consumer edit, provider mutation, or publication runs
+- [x] one explicit g03 next checkpoint remains
 
 ## Validation
 
@@ -50,5 +50,26 @@ through one prepared facade and close the route through focused acceptance.
 
 ## Auto-Continuation
 
-No. Return to the g03 checkpoint for Qwen and paused Claude reassessment.
+Completed. Return to the g03 checkpoint for Qwen and paused Claude
+reassessment.
 
+## Result
+
+`prepare_antigravity` now requires explicit `Catalogue`, `Headless`, or
+`Continuation` selection. Typed profiles preserve the exact model, resource
+authority, optional effort, provider-native JSON Schema, ambient or optional
+provider sandbox, durable state, and private exact conversation identity. No
+route, model, access, permission, sandbox, or ambient-session fallback is
+selected.
+
+The public inventory now contains 32 production routes across 25 solution
+rows. Antigravity contributes separate catalogue and headless identities; the
+headless route owns structured runs and turn-scoped continuation without
+claiming TUI callbacks, public load/resume, or provider-session management.
+Gemini identities, access profiles, and guarantees are unchanged.
+
+Focused validation passed 29 tests across five binaries plus warnings-denied
+checking in two seconds. Route and activity matrices passed with 63 operation
+rows. The 44-file extracted package assembled and compiled in three seconds.
+No live prompt, provider mutation, credential read, consumer edit, broad
+workspace suite, or publication ran.

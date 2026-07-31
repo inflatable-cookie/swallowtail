@@ -1,6 +1,6 @@
 # 014 Cursor Prepared Facade And Acceptance
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-07-31
 Milestone: `../005-cursor-installed-dual-route-foundation.md`
@@ -24,13 +24,13 @@ the adapter through focused conformance, package, and public-truth evidence.
 
 ## Acceptance Criteria
 
-- [ ] a consumer can prepare Cursor without reconstructing low-level plans
-- [ ] route selection remains explicit and type-safe
-- [ ] unsupported surfaces remain absent rather than flattened
-- [ ] public guide and matrix cells match exact production behavior
-- [ ] focused and affected-package validation passes
-- [ ] no live prompt, consumer edit, candidate replacement, or publication runs
-- [ ] Antigravity card 015 becomes the sole ready next task
+- [x] a consumer can prepare Cursor without reconstructing low-level plans
+- [x] route selection remains explicit and type-safe
+- [x] unsupported surfaces remain absent rather than flattened
+- [x] public guide and matrix cells match exact production behavior
+- [x] focused and affected-package validation passes
+- [x] no live prompt, consumer edit, candidate replacement, or publication runs
+- [x] Antigravity card 015 becomes the sole ready next task
 
 ## Validation
 
@@ -50,5 +50,24 @@ the adapter through focused conformance, package, and public-truth evidence.
 
 ## Auto-Continuation
 
-Yes. Continue to card 015 after roadmap g03.005 closes cleanly.
+Completed. Continue to card 015.
 
+## Result
+
+`prepare_cursor` requires explicit `Catalogue`, `Acp`, or `Headless` selection
+and returns a route-specific prepared integration type. Catalogue preparation
+binds no model. ACP preparation binds an ambient read-write durable session.
+Headless preparation requires an explicit model and read-only or read-write
+workspace authority. Each typed operation exposes immutable prepared evidence
+and its unchanged low-level driver.
+
+The route guide now contains 30 technical routes. The feature matrix contains
+24 provider solutions and combines Cursor's complementary roles behind the one
+facade without flattening their transports. The activity matrix contains 60
+route-operation rows.
+
+Focused ACP-and-Cursor validation passed 119 tests across eight binaries plus
+warnings-denied checking. Both affected packages assembled and compiled from
+their extracted archives in four seconds. Route, lifecycle, feature, and
+activity matrix checks pass. No live Cursor prompt, consumer edit, candidate
+replacement, or publication ran.

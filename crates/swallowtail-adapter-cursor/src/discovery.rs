@@ -3,12 +3,15 @@ use std::future::poll_fn;
 use std::task::Poll;
 use swallowtail_core::{DiscoveryOutcome, DiscoveryStatus, InstalledExecutableObservation};
 use swallowtail_runtime::{
-    BoxFuture, DiscoveryDriver, DiscoveryRequest, HostServices,
+    BoxFuture, DiscoveryDriver, DiscoveryRequest, EnvironmentRef, HostServices,
     InstalledExecutableDiscoveryRequest, ProcessHandle, ProcessOutputStream, ProcessRequest,
     RuntimeFailure, validate_installed_executable_discovery_services,
 };
 
-use crate::{CursorCatalogueDriver, cursor_agent_release_binding, cursor_catalogue_claim};
+use crate::{
+    CursorCatalogueDriver, CursorHeadlessDriver, cursor_acp_claim, cursor_agent_release_binding,
+    cursor_catalogue_claim, cursor_headless_claim,
+};
 
 mod outcome;
 
@@ -16,6 +19,24 @@ use outcome::{exit_failed, outcome, staged_outcome};
 
 const MAX_VERSION_OUTPUT_BYTES: usize = 64;
 const MAX_VERSION_STDERR_BYTES: usize = 1_024;
+
+pub struct CursorAcpDriver {
+    ambient_environment: EnvironmentRef,
+}
+
+impl CursorAcpDriver {
+    #[must_use]
+    pub const fn new(ambient_environment: EnvironmentRef) -> Self {
+        Self {
+            ambient_environment,
+        }
+    }
+
+    #[must_use]
+    pub const fn ambient_environment(&self) -> &EnvironmentRef {
+        &self.ambient_environment
+    }
+}
 
 impl DiscoveryDriver for CursorCatalogueDriver {
     fn discover(
@@ -36,16 +57,62 @@ impl DiscoveryDriver for CursorCatalogueDriver {
         request: InstalledExecutableDiscoveryRequest,
         services: HostServices,
     ) -> BoxFuture<'_, Result<DiscoveryOutcome, RuntimeFailure>> {
-        Box::pin(probe_joined(request, services))
+        Box::pin(probe_joined(request, services, cursor_catalogue_claim()))
+    }
+}
+
+impl DiscoveryDriver for CursorAcpDriver {
+    fn discover(
+        &self,
+        _request: DiscoveryRequest,
+        _services: HostServices,
+    ) -> BoxFuture<'_, Result<Vec<DiscoveryOutcome>, RuntimeFailure>> {
+        Box::pin(async {
+            Err(crate::failure::failure(
+                "swallowtail.cursor.discovery_target_required",
+                "Cursor discovery requires one explicit host-approved executable target",
+            ))
+        })
+    }
+
+    fn discover_installed_executable(
+        &self,
+        request: InstalledExecutableDiscoveryRequest,
+        services: HostServices,
+    ) -> BoxFuture<'_, Result<DiscoveryOutcome, RuntimeFailure>> {
+        Box::pin(probe_joined(request, services, cursor_acp_claim()))
+    }
+}
+
+impl DiscoveryDriver for CursorHeadlessDriver {
+    fn discover(
+        &self,
+        _request: DiscoveryRequest,
+        _services: HostServices,
+    ) -> BoxFuture<'_, Result<Vec<DiscoveryOutcome>, RuntimeFailure>> {
+        Box::pin(async {
+            Err(crate::failure::failure(
+                "swallowtail.cursor.discovery_target_required",
+                "Cursor discovery requires one explicit host-approved executable target",
+            ))
+        })
+    }
+
+    fn discover_installed_executable(
+        &self,
+        request: InstalledExecutableDiscoveryRequest,
+        services: HostServices,
+    ) -> BoxFuture<'_, Result<DiscoveryOutcome, RuntimeFailure>> {
+        Box::pin(probe_joined(request, services, cursor_headless_claim()))
     }
 }
 
 async fn probe_joined(
     request: InstalledExecutableDiscoveryRequest,
     services: HostServices,
+    claim: swallowtail_core::InterfaceCompatibilityClaim,
 ) -> Result<DiscoveryOutcome, RuntimeFailure> {
     validate_installed_executable_discovery_services(&request, &services)?;
-    let claim = cursor_catalogue_claim();
     if request.target().version_axis() != claim.axis() {
         return Err(crate::failure::failure(
             "swallowtail.cursor.discovery_axis_mismatch",
@@ -64,7 +131,7 @@ async fn probe_joined(
     let task = match task_service.spawn(
         scope,
         Box::pin(async move {
-            let result = probe_process(request, services).await;
+            let result = probe_process(request, services, claim).await;
             let _ = sender.send(result);
         }),
     ) {
@@ -84,6 +151,7 @@ async fn probe_joined(
 async fn probe_process(
     request: InstalledExecutableDiscoveryRequest,
     services: HostServices,
+    claim: swallowtail_core::InterfaceCompatibilityClaim,
 ) -> Result<DiscoveryOutcome, RuntimeFailure> {
     let process = match services
         .process()
@@ -170,7 +238,7 @@ async fn probe_process(
     let observation = InstalledExecutableObservation::classify(
         request.execution_host_id().clone(),
         binding,
-        &cursor_catalogue_claim(),
+        &claim,
     )
     .map_err(|_| {
         crate::failure::failure(

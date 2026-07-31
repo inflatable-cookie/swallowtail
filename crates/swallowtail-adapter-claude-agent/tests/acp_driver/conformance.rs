@@ -72,16 +72,18 @@ fn qualified_range_and_unverified_newer_keep_distinct_support_truth() {
         version("0.54.1"),
         version("0.59.0"),
         version("0.60.0"),
+        version("0.62.0"),
+        version("0.63.0"),
     ])
     .with_rejected([
         version("0.52.0"),
         version("0.58.0"),
         version("0.61.0-rc.1"),
-        version("0.62.0"),
+        version("0.65.0"),
     ]);
     assert_closed_semantic_compatibility_window(&claim, &case);
-    assert_unverified_newer_execution(&claim, &version("0.62.0"));
-    assert_eq!(claim.milestones().len(), 4);
+    assert_unverified_newer_execution(&claim, &version("0.65.0"));
+    assert_eq!(claim.milestones().len(), 6);
 }
 
 #[test]
@@ -212,7 +214,7 @@ fn missing_delete_capability_stops_before_session_or_management_effects() {
 fn newer_plan_stays_unverified_after_preflight() {
     let selected = selection(
         ExecutionHostId::new("fixture.host.newer").expect("valid host"),
-        "0.62.0",
+        "0.65.0",
     );
     let binding = selected
         .plan

@@ -25,6 +25,11 @@ fn provider_retry_disconnect_and_protocol_failures_remain_distinct_in_both_topol
                 false,
             ),
             (
+                Scenario::SummarizationRetryDrift,
+                "swallowtail.pi.rpc.retry_policy_drift",
+                false,
+            ),
+            (
                 Scenario::Disconnect,
                 "swallowtail.pi.rpc.connection_ended",
                 false,

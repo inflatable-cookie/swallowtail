@@ -15,8 +15,12 @@ use crate::failure::failure;
 use crate::{grok_build_acp_binding, grok_build_acp_claim};
 
 const MAX_VERSION_OUTPUT_BYTES: usize = 96;
-const QUALIFIED_VERSION: &str = "0.2.114";
-const QUALIFIED_SOURCE_REVISION: &str = "0c785038798";
+const QUALIFIED_SOURCE_REVISIONS: [(&str, &str); 4] = [
+    ("0.2.114", "0c785038798"),
+    ("0.2.115", "dd16b5eb7d50"),
+    ("0.2.116", "99b387d2cc0e"),
+    ("0.2.117", "f1c06093089f"),
+];
 
 pub struct GrokAcpDriver {
     ambient_environment: EnvironmentRef,
@@ -236,10 +240,16 @@ fn parse_version(output: &[u8]) -> Option<swallowtail_core::InterfaceVersionBind
     {
         return None;
     }
-    if version == QUALIFIED_VERSION && revision != QUALIFIED_SOURCE_REVISION {
+    if qualified_source_revision(version).is_some_and(|expected| revision != expected) {
         return None;
     }
     grok_build_acp_binding(version)
+}
+
+fn qualified_source_revision(version: &str) -> Option<&'static str> {
+    QUALIFIED_SOURCE_REVISIONS
+        .iter()
+        .find_map(|(candidate, revision)| (*candidate == version).then_some(*revision))
 }
 
 fn outcome(status: DiscoveryStatus) -> DiscoveryOutcome {
@@ -270,23 +280,27 @@ mod tests {
     use super::parse_version;
 
     #[test]
-    fn parser_requires_stable_channel_and_exact_qualified_revision() {
-        assert_eq!(
-            parse_version(b"grok 0.2.114 (0c785038798) [stable]\n")
-                .expect("exact release parses")
-                .version()
-                .as_str(),
-            "0.2.114"
-        );
-        assert_eq!(
-            parse_version(b"grok 0.2.115 (123456789abc) [stable]\n")
-                .expect("later stable release parses")
-                .version()
-                .as_str(),
-            "0.2.115"
-        );
+    fn parser_requires_stable_channel_and_every_exact_qualified_revision() {
+        for (output, version) in [
+            ("grok 0.2.114 (0c785038798) [stable]\n", "0.2.114"),
+            ("grok 0.2.115 (dd16b5eb7d50) [stable]\n", "0.2.115"),
+            ("grok 0.2.116 (99b387d2cc0e) [stable]\n", "0.2.116"),
+            ("grok 0.2.117 (f1c06093089f) [stable]\n", "0.2.117"),
+            ("grok 0.2.118 (123456789abc) [stable]\n", "0.2.118"),
+        ] {
+            assert_eq!(
+                parse_version(output.as_bytes())
+                    .expect("exact release parses")
+                    .version()
+                    .as_str(),
+                version
+            );
+        }
         for output in [
             b"grok 0.2.114 (wrongsource) [stable]\n".as_slice(),
+            b"grok 0.2.115 (0c785038798) [stable]\n".as_slice(),
+            b"grok 0.2.116 (dd16b5eb7d50) [stable]\n".as_slice(),
+            b"grok 0.2.117 (99b387d2cc0e) [stable]\n".as_slice(),
             b"grok 0.2.114 (0c785038798) [alpha]\n".as_slice(),
             b"grok 0.2.114 (0c785038798)\n".as_slice(),
             b"0.2.114\n".as_slice(),

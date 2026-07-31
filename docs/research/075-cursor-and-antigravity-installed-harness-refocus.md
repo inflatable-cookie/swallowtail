@@ -68,9 +68,10 @@ point are separate exact artifacts. Calendar dates do not make different build
 hashes safely orderable as one continuous compatibility range.
 
 Cursor's documented headless event stream includes initialization, user and
-assistant messages, tool-call state, and a terminal result. Print mode does not
-expose thinking events. Swallowtail must not synthesize reasoning activity from
-ordinary assistant text.
+assistant messages, tool-call state, and a terminal result. Research 077 later
+corrected this selection-stage assumption from exact installed source: plain
+stream JSON also emits explicit thinking deltas and completion. Swallowtail
+must project only those exact events, never infer reasoning from assistant text.
 
 Cursor has also published a beta Agent SDK and cloud-agent APIs. They are not
 selected for the first tranche. The installed CLI already proves the relevant
@@ -174,7 +175,7 @@ creating a session.
 | maintained ACP registry | version `2026.07.23`, build `2026.07.23-e383d2b`; darwin-arm64 archive SHA-256 `f2eb2585...bbf2` | downloaded and inspected, not executed; behavior is not borrowed from the installed point |
 | installed ACP initialize | wire v1; load and list advertised; image prompt input; HTTP/SSE MCP; `cursor_login` auth | capability advertisement is observation only until route-specific transcripts prove use |
 | installed catalogue | 193 normalized entries; SHA-256 `e3cffea5...8585` | auth-aware and temporally dynamic; no listed-model invocation guarantee |
-| installed help plus official output reference | `text`, `json`, `stream-json`; system, user, assistant, tool-call, and result events; partial assistant deltas optional | successful streams end in result; failed streams may end early and diagnose on stderr; thinking is suppressed |
+| installed help plus official output reference | `text`, `json`, `stream-json`; system, user, assistant, tool-call, and result events; partial assistant deltas optional | successful streams end in result; failed streams may end early and diagnose on stderr; later exact-source correction is in Research 077 |
 
 The exact initialize probe advertised `loadSession` and session listing. Those
 fields do not justify production load or list claims. No `session/new`, load,

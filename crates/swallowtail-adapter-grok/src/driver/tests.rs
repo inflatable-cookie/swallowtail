@@ -2,7 +2,7 @@ use super::{EXPECTED_MODEL, validate_initialize};
 use serde_json::json;
 use swallowtail_core::InterfaceVersion;
 
-fn initialize() -> serde_json::Value {
+fn initialize(version: &str) -> serde_json::Value {
     json!({
         "protocolVersion": 1,
         "agentCapabilities": {
@@ -15,7 +15,7 @@ fn initialize() -> serde_json::Value {
         ],
         "_meta": {
             "defaultAuthMethodId": "cached_token",
-            "agentVersion": "0.2.114",
+            "agentVersion": version,
             "modelState": {
                 "currentModelId": "grok-4.5",
                 "availableModels": [
@@ -27,15 +27,17 @@ fn initialize() -> serde_json::Value {
 }
 
 #[test]
-fn exact_initialize_binds_version_access_capabilities_and_model() {
-    let options = validate_initialize(
-        &initialize(),
-        &InterfaceVersion::new("0.2.114").expect("version"),
-        EXPECTED_MODEL,
-    )
-    .expect("qualified initialize");
-    assert_eq!(options.current_value(), "grok-4.5");
-    assert_eq!(options.options().count(), 1);
+fn exact_initialize_binds_both_behavior_segments() {
+    for version in ["0.2.114", "0.2.117"] {
+        let options = validate_initialize(
+            &initialize(version),
+            &InterfaceVersion::new(version).expect("version"),
+            EXPECTED_MODEL,
+        )
+        .expect("qualified initialize");
+        assert_eq!(options.current_value(), "grok-4.5");
+        assert_eq!(options.options().count(), 1);
+    }
 }
 
 #[test]
@@ -48,7 +50,7 @@ fn initialize_drift_fails_without_exposing_provider_payload() {
             "cached_token_unavailable",
         ),
     ] {
-        let mut response = initialize();
+        let mut response = initialize("0.2.114");
         response["_meta"][field] = json!(value);
         let error = validate_initialize(
             &response,
@@ -60,7 +62,7 @@ fn initialize_drift_fails_without_exposing_provider_payload() {
         assert!(!format!("{error:?}").contains("grok.com"));
     }
 
-    let mut response = initialize();
+    let mut response = initialize("0.2.114");
     response["_meta"]["modelState"]["currentModelId"] = json!("private-unexpected-model");
     let error = validate_initialize(
         &response,

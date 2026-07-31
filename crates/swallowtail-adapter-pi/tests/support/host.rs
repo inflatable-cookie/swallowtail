@@ -30,6 +30,7 @@ pub enum Scenario {
     PromptUi,
     ResponseMismatch,
     RetryDrift,
+    SummarizationRetryDrift,
     StateMismatch,
 }
 

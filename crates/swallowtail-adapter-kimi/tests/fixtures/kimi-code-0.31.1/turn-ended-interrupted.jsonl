@@ -1,0 +1,1 @@
+{"type":"turn.ended","seq":41,"epoch":"fixture-epoch","session_id":"fixture-session","timestamp":"2026-07-31T00:00:00.000Z","payload":{"turnId":8,"reason":"cancelled","durationMs":20,"interruptReason":"user_cancelled"}}

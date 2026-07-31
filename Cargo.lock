@@ -2801,6 +2801,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "swallowtail-adapter-antigravity"
+version = "0.1.0"
+dependencies = [
+ "futures-channel",
+ "futures-executor",
+ "futures-util",
+ "semver",
+ "serde_json",
+ "swallowtail-core",
+ "swallowtail-runtime",
+ "swallowtail-testkit",
+]
+
+[[package]]
 name = "swallowtail-adapter-bedrock"
 version = "0.1.0"
 dependencies = [
@@ -2859,8 +2873,12 @@ version = "0.1.0"
 dependencies = [
  "futures-channel",
  "futures-executor",
+ "futures-util",
+ "serde_json",
  "swallowtail-core",
+ "swallowtail-protocol-acp",
  "swallowtail-runtime",
+ "swallowtail-testkit",
 ]
 
 [[package]]
@@ -2915,6 +2933,7 @@ dependencies = [
  "semver",
  "serde_json",
  "swallowtail-core",
+ "swallowtail-host-local",
  "swallowtail-protocol-acp",
  "swallowtail-runtime",
  "swallowtail-testkit",
@@ -3047,6 +3066,7 @@ dependencies = [
  "semver",
  "serde_json",
  "swallowtail-core",
+ "swallowtail-host-local",
  "swallowtail-runtime",
  "swallowtail-testkit",
 ]

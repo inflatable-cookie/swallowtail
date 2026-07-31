@@ -2,6 +2,7 @@
 members = [
   "crates/swallowtail-adapter-alibaba-model-studio",
   "crates/swallowtail-adapter-anthropic",
+  "crates/swallowtail-adapter-antigravity",
   "crates/swallowtail-adapter-bedrock",
   "crates/swallowtail-adapter-claude-agent",
   "crates/swallowtail-adapter-codex",

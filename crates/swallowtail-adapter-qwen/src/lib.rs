@@ -1,6 +1,6 @@
 //! Qwen Code harness integration for Swallowtail.
 //!
-//! The production driver implements the pinned read-only headless subset.
+//! The production driver implements the maintained read-only headless subset.
 
 #![forbid(unsafe_code)]
 

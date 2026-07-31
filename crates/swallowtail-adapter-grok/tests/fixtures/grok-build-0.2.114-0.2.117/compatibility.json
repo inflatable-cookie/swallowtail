@@ -1,0 +1,95 @@
+{
+  "axis": "grok-build.executable",
+  "baseline": "0.2.114",
+  "candidate_latest_qualified": "0.2.117",
+  "newer_version_posture": "allow_unverified",
+  "selected_transport": "acp-v1-stdio",
+  "selected_command": [
+    "--no-auto-update",
+    "agent",
+    "stdio"
+  ],
+  "selected_access": {
+    "credential_mechanism": "interactive_oauth",
+    "activation_method": "cached_token",
+    "endpoint_audience": "grok-build.subscription",
+    "metering": "subscription_allowance"
+  },
+  "selected_absences": [
+    "direct_task_control",
+    "direct_subagent_control",
+    "api_key_fallback",
+    "interactive_login_fallback",
+    "implicit_sandbox"
+  ],
+  "stable_versions": [
+    {
+      "version": "0.2.114",
+      "source_revision": "0c785038798",
+      "launcher_npm_integrity": "sha512-8eeyj6o0hQqzG5vr26CVixy1Fm3BkLhZzOnS7JXKVGuELpyw7N9MuVSs/xJyDUDdUYWhlsDnu+wMXWLiqj7XPg==",
+      "platform_npm_integrity": "sha512-ZTvkr+5vwQ7LomzBnWMflgLZB2qVmhdFEt6by4EIdEO4DYTa9VQ4HZftkgxDQkf3sF8NxgDSE3jVYViWjiNDew==",
+      "platform_tar_sha256": "de2d205c517c9fdc900146dad1a1a837cb7e696d65813c81075c3d77a2146c93",
+      "executable_sha256": "e715f57f9018a1737c1a64ef1cb260ac2a5045dfa6a1a0e1c7a7cbe193a083b2",
+      "classification": "qualified_baseline",
+      "candidate_behavior_revision": "grok-build.acp-v1.cached-token-activation-v1",
+      "acp_protocol_version": 1,
+      "load_session": true,
+      "auth_methods": ["cached_token", "grok.com"],
+      "default_auth_method": "cached_token",
+      "models": ["grok-4.5"],
+      "efforts": ["high", "medium", "low"],
+      "acp_task_control_revision": 1
+    },
+    {
+      "version": "0.2.115",
+      "source_revision": "dd16b5eb7d50",
+      "launcher_npm_integrity": "sha512-a0dPB7EWUSXbzpkcktS4LBIYSDBAQ9IRRCb9AfKPkIyby12PX/n2KGPADSApgV4eVx56T7j3Vxp15qtScOBJtg==",
+      "platform_npm_integrity": "sha512-GLfvstn4t2YOgzUBCsKTIj6Ni5jITURDS77KfHefZz6coodjWWKC5enJTQJ8ckbM0F58EpecamA+jhFEzGwcGA==",
+      "platform_tar_sha256": "11987bffe9980199877e67b9714f37fd360656d0ae0dc2222cea67d24da1a294",
+      "executable_sha256": "32e6a2a7beabd480a299db9955f860bd47e46d40ed0c06552fab7347615da4ca",
+      "classification": "compatible_existing_behavior",
+      "candidate_behavior_revision": "grok-build.acp-v1.cached-token-activation-v1",
+      "acp_protocol_version": 1,
+      "load_session": true,
+      "auth_methods": ["cached_token", "grok.com"],
+      "default_auth_method": "cached_token",
+      "models": ["grok-4.5"],
+      "efforts": ["high", "medium", "low"],
+      "acp_task_control_revision": 1
+    },
+    {
+      "version": "0.2.116",
+      "source_revision": "99b387d2cc0e",
+      "launcher_npm_integrity": "sha512-iDwdLRc9tC0sKa+o5nQ8w0YXjEkn5qzpkD4Bh3mOL48IYHbxBEyyxYQKRcQ05k1xmapzpN1RlTOB03lylMLf/w==",
+      "platform_npm_integrity": "sha512-5rpikw0PlSzOspi9EfhB3ekYxYrurXQDQ3P70DVhlVXMaWarFUtkcXZKexZvGoOcK3RqNBg/QUjGj0B8yHtg+A==",
+      "platform_tar_sha256": "64cb8ef863452a6be8af1ef5ba3a7864288930ff6e16bf7faa14c442d42c0d7e",
+      "executable_sha256": "7b54fde201cfe7c753bd6f6f8e9ee4bb7d4d9b5a04568c26a80a622d69f9d463",
+      "classification": "compatible_existing_behavior",
+      "candidate_behavior_revision": "grok-build.acp-v1.cached-token-activation-v1",
+      "acp_protocol_version": 1,
+      "load_session": true,
+      "auth_methods": ["cached_token", "grok.com"],
+      "default_auth_method": "cached_token",
+      "models": ["grok-4.5"],
+      "efforts": ["high", "medium", "low"],
+      "acp_task_control_revision": 1
+    },
+    {
+      "version": "0.2.117",
+      "source_revision": "f1c06093089f",
+      "launcher_npm_integrity": "sha512-OR7hJiGe1ZFRLqQdBv2G4R9g6rnMtqUgfCdjoJFIThL0gjYemXXqJizZKMwSdSPhwCn0QOdbDRW9LyWgKzq0Hw==",
+      "platform_npm_integrity": "sha512-PhAcE6G3BMat2nZ3BNonZRNaatH+48ssKilrjZ7HsTd4wU4YuZEx4VcTl/XrkjKqYanMPIxJg6RQHwE6RDnjmw==",
+      "platform_tar_sha256": "c187041aa6d584a50916f268c6b6705928b7a0542e207a19812014578e303726",
+      "executable_sha256": "03de738b8ccd40569a18905ddafe004226eff3343b8423a172477b2767e721d2",
+      "classification": "task_control_milestone",
+      "candidate_behavior_revision": "grok-build.acp-v1.cached-token-task-control-v2",
+      "acp_protocol_version": 1,
+      "load_session": true,
+      "auth_methods": ["cached_token", "grok.com"],
+      "default_auth_method": "cached_token",
+      "models": ["grok-4.5"],
+      "efforts": ["high", "medium", "low"],
+      "acp_task_control_revision": 2
+    }
+  ]
+}

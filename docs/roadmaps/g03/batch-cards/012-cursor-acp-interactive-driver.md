@@ -1,6 +1,6 @@
 # 012 Cursor ACP Interactive Driver
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-07-31
 Milestone: `../005-cursor-installed-dual-route-foundation.md`
@@ -25,13 +25,13 @@ driver with exact negotiated capabilities.
 
 ## Acceptance Criteria
 
-- [ ] ACP v1 negotiation is exact and capability-gated
-- [ ] session and turn lifecycle are joined and cancellable
-- [ ] activity correlation is stable without raw provider payloads
-- [ ] access and ambient configuration remain explicit in preflight
-- [ ] unsupported lifecycle and callback operations fail predictably
-- [ ] local and remote-authoritative fixtures agree
-- [ ] focused Cursor and shared ACP validation passes
+- [x] ACP v1 negotiation is exact and capability-gated
+- [x] session and turn lifecycle are joined and cancellable
+- [x] activity correlation is stable without raw provider payloads
+- [x] access and ambient configuration remain explicit in preflight
+- [x] unsupported lifecycle and callback operations fail predictably
+- [x] local and remote-authoritative fixtures agree
+- [x] focused Cursor and shared ACP validation passes
 
 ## Validation
 
@@ -47,5 +47,19 @@ driver with exact negotiated capabilities.
 
 ## Auto-Continuation
 
-Yes. Continue to card 013 after focused ACP validation passes.
+Completed. Continue to card 013.
 
+## Result
+
+Research 076 qualifies the installed `2026.07.01-41b2de7` ACP interactive
+surface from exact initialize evidence and source-derived normalized protocol
+fixtures. `CursorAcpDriver` now owns new sessions, text turns, assistant,
+thought, tool, and plan activity, cancellation, optional turn deadlines,
+provider-request observation, and joined process/resource cleanup.
+
+The driver sends no authentication or model-selection request. Load, list,
+resume, delete, image input, consumer MCP, and callback exchange remain
+unclaimed. Raw provider tool input and output are not projected.
+
+Focused validation passed for `swallowtail-protocol-acp` and
+`swallowtail-adapter-cursor`; no live Cursor prompt ran.

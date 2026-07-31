@@ -153,6 +153,10 @@ pub(super) fn respond(
                     state,
                     json!({"type": "auto_retry_start", "attempt": 1, "delayMs": 1}),
                 ),
+                Scenario::SummarizationRetryDrift => output(
+                    state,
+                    json!({"type": "summarization_retry_attempt_start", "source": "compaction", "reason": "threshold"}),
+                ),
                 Scenario::Hold | Scenario::ResponseMismatch | Scenario::StateMismatch => {}
             }
         }

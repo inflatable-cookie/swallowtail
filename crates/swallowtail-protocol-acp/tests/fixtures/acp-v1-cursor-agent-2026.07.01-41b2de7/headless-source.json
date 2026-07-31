@@ -1,0 +1,60 @@
+{
+  "capture_kind": "installed-source-derived-normalized-corpus",
+  "captured": "2026-07-31",
+  "installed_version": "2026.07.01-41b2de7",
+  "live_provider_run_created": false,
+  "live_prompt_sent": false,
+  "artifacts": [
+    {
+      "path": "dist/3479.index.js",
+      "sha256": "ac4050a1cd5c798979f890d21c4abc2faf074f6ac3586036090ad87f36191811",
+      "sources": [
+        "./src/commands/run-agent.ts",
+        "./src/utils/output-format.ts",
+        "./src/utils/build-prompt.ts"
+      ]
+    }
+  ],
+  "selected_invocation": {
+    "arguments": [
+      "--print",
+      "--output-format",
+      "stream-json",
+      "--model",
+      "{model_id}",
+      "--trust"
+    ],
+    "read_only_suffix": ["--mode", "plan"],
+    "prompt_channel": "stdin_then_close",
+    "partial_output_selected": false,
+    "sandbox_selected": false,
+    "force_selected": false,
+    "yolo_selected": false
+  },
+  "qualified_events": {
+    "system": ["init"],
+    "assistant": ["message.content.text"],
+    "thinking": ["delta", "completed"],
+    "tool_call": ["started", "completed"],
+    "result": ["success"]
+  },
+  "correlation": ["session_id", "call_id", "request_id"],
+  "usage_fields": [
+    "inputTokens",
+    "outputTokens",
+    "cacheReadTokens",
+    "cacheWriteTokens"
+  ],
+  "privacy": {
+    "tool_arguments_projected": false,
+    "tool_results_projected": false,
+    "stderr_projected": false
+  },
+  "not_claimed": [
+    "partial_assistant_output",
+    "json_schema_output",
+    "stream_cancellation_event",
+    "provider_failure_terminal_event",
+    "optional_sandbox"
+  ]
+}

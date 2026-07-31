@@ -1,6 +1,6 @@
 {
   "fixture_schema": 1,
-  "evidence_checked": "2026-07-29",
+  "evidence_checked": "2026-07-31",
   "axis": "claude-agent.acp-adapter",
   "transport": "acp_v1_stdio_ndjson",
   "wire_version": 1,
@@ -33,13 +33,31 @@
       "revision": "provider-capability-display"
     },
     {
-      "range": "0.61.0",
+      "range": "0.61.0..=0.62.0",
       "introduced_by": "0.61.0",
       "tag_commit": "c19bddcf7914259d6c15103a2d1580c7371e1d16",
       "acp_sdk": "1.3.0",
       "stable_schema": "schema-v1.18.0",
       "source_sha256": "7805f0931c2c3eb803bb5d6264d610efdac08b00afa4538fe2484623ecf4e885",
       "revision": "steering-and-tool-metadata-display"
+    },
+    {
+      "range": "0.63.0",
+      "introduced_by": "0.63.0",
+      "tag_commit": "15979bba7907484ee22111cdc33b79b0bdcd452d",
+      "acp_sdk": "1.3.0",
+      "stable_schema": "schema-v1.20.0",
+      "source_sha256": "f086c2951a2fb1fb0d20b950f37f2e424b192ae46ecef5fdd3e31e456a211600",
+      "revision": "tool-and-subagent-correlation-display"
+    },
+    {
+      "range": "0.64.0",
+      "introduced_by": "0.64.0",
+      "tag_commit": "e56f344691a56c07e5dae2ebeb6ad2a6416f8c9d",
+      "acp_sdk": "1.3.0",
+      "stable_schema": "schema-v1.20.0",
+      "source_sha256": "015da3493f842bbe9b064acf3bc8833bd5fe11bdd6dbaf7c159a870fcd1124b0",
+      "revision": "host-steering-option-and-form-marker-display"
     }
   ],
   "current_external_releases": [
@@ -48,17 +66,25 @@
       "published_at": "2026-07-24T17:45:09Z",
       "tag_commit": "53a0c36ce3b0b76929d11d8b9565e319da745608",
       "source_sha256": "7805f0931c2c3eb803bb5d6264d610efdac08b00afa4538fe2484623ecf4e885",
-      "classification": "unverified-newer",
-      "profile": "0.61.0-guarantee"
+      "classification": "qualified",
+      "profile": "0.64.0-guarantee"
     },
     {
       "version": "0.63.0",
       "published_at": "2026-07-27T14:16:46Z",
       "tag_commit": "15979bba7907484ee22111cdc33b79b0bdcd452d",
       "source_sha256": "e157103ea8f9747aecf9102ecb017c53bfbf2955d31b23ff633449e34df335d1",
-      "classification": "unverified-newer",
-      "profile": "0.61.0-guarantee",
+      "classification": "qualified",
+      "profile": "0.64.0-guarantee",
       "activity_delta": "tool-progress-and-denial-correlation-changed"
+    },
+    {
+      "version": "0.64.0",
+      "tag_commit": "e56f344691a56c07e5dae2ebeb6ad2a6416f8c9d",
+      "source_sha256": "015da3493f842bbe9b064acf3bc8833bd5fe11bdd6dbaf7c159a870fcd1124b0",
+      "classification": "qualified",
+      "profile": "0.64.0-guarantee",
+      "activity_delta": "optional-steering-and-form-marker-only"
     }
   ],
   "emitted_updates": [

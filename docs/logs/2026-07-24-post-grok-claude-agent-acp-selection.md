@@ -73,7 +73,7 @@ exact artifacts expose a composite-version, access, or lifecycle gap.
 - `effigy doctor` — unchanged inherited 19 oversized-file findings:
   12 warnings and 7 errors
 
-## Next Task
+## Recorded Next Step
 
 Execute card 143. Qualify or split the Claude Agent ACP candidate range and
 freeze the deterministic public-API-key ACP corpus before production code.

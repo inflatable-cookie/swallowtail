@@ -1,0 +1,88 @@
+{
+  "axis": "claude-agent.acp-wrapper",
+  "prior_latest_qualified": "0.61.0",
+  "candidate_latest_qualified": "0.64.0",
+  "newer_version_posture": "allow_unverified",
+  "access_posture": {
+    "local_subscription": "integration_maintainer_supported",
+    "public_api_key": "provider_supported",
+    "profiles_remain_separate": true
+  },
+  "selected_absences": [
+    "nested_transcript_capability",
+    "host_owned_steering_fallback"
+  ],
+  "stable_versions": [
+    {
+      "version": "0.61.0",
+      "commit": "c19bddcf7914259d6c15103a2d1580c7371e1d16",
+      "acp_sdk": "1.3.0",
+      "agent_sdk": "0.3.217",
+      "tarball_sha256": "bb410d53e2d13591da5ebcaf09ae055d166ffefb27b7172988650cd62ef4ebd3",
+      "package_json_sha256": "be16421fa58472d12f3579375e25e6eef4093c33b44002f23881575aa17f8895",
+      "acp_agent_sha256": "052c2ddfcbff35cee0efdede54d76e8ecddf3653768267290237cb101d280d03",
+      "elicitation_sha256": "ec2c7aad8d846c1bc4b363d361552bf45650d278b20e7a53e8878bfdd257cac2",
+      "tools_sha256": "d17fe6641b6f4e94367c7096d84612bfb07aeab81f5ca35d12b214a5313f6ac9",
+      "classification": "prior_production_ceiling",
+      "candidate_behavior_revision": "claude-agent.acp.steering-metadata-v4",
+      "selected_output_matches_prior": false,
+      "tool_subagent_correlation": false,
+      "host_steering_option": false,
+      "custom_answer_form_marker": false
+    },
+    {
+      "version": "0.62.0",
+      "commit": "53a0c36ce3b0b76929d11d8b9565e319da745608",
+      "npm_integrity": "sha512-8QRNmyk5Cfy4XVREeg5KCPoCDtmYS0xALY9WqI640PfopLMpeUzMByXbzLkBLbD819zB67DBhLG5ta98uOEPKg==",
+      "acp_sdk": "1.3.0",
+      "agent_sdk": "0.3.219",
+      "tarball_sha256": "ad8a7e9257abd7eed8d9e3f85f875d82f2eefbdfb8b0011845e6a5f6d590a1f5",
+      "package_json_sha256": "81c9c7019c2b711d01fc8a4ad52a6478180c360dd2d696695bae2c8e4484fd81",
+      "acp_agent_sha256": "052c2ddfcbff35cee0efdede54d76e8ecddf3653768267290237cb101d280d03",
+      "elicitation_sha256": "ec2c7aad8d846c1bc4b363d361552bf45650d278b20e7a53e8878bfdd257cac2",
+      "tools_sha256": "d17fe6641b6f4e94367c7096d84612bfb07aeab81f5ca35d12b214a5313f6ac9",
+      "classification": "selected_source_unchanged",
+      "candidate_behavior_revision": "claude-agent.acp.steering-metadata-v4",
+      "selected_output_matches_prior": true,
+      "tool_subagent_correlation": false,
+      "host_steering_option": false,
+      "custom_answer_form_marker": false
+    },
+    {
+      "version": "0.63.0",
+      "commit": "15979bba7907484ee22111cdc33b79b0bdcd452d",
+      "npm_integrity": "sha512-/Ylytz6KPGkih1sZd2sJAmWIGMh59T+FCJhlsfW9zpB1Lrg0/Njgk/7TplRfX2f7dELx0FeN+SBG+Uju12XwlA==",
+      "acp_sdk": "1.3.0",
+      "agent_sdk": "0.3.220",
+      "tarball_sha256": "524c62960928c3c2d9b97db5ed14c2823575b333b9ce0d4c42973652c30b26a2",
+      "package_json_sha256": "9cd5b6e2b46482890202251a24c3f23e3ef043791c326cc71b5b183157e64541",
+      "acp_agent_sha256": "f086c2951a2fb1fb0d20b950f37f2e424b192ae46ecef5fdd3e31e456a211600",
+      "elicitation_sha256": "ec2c7aad8d846c1bc4b363d361552bf45650d278b20e7a53e8878bfdd257cac2",
+      "tools_sha256": "5572febec9be484eb02d9ad204f6f2e91874b340722ad06a66ff21422f347068",
+      "classification": "private_tool_subagent_milestone",
+      "candidate_behavior_revision": "claude-agent.acp.tool-subagent-correlation-v5",
+      "selected_output_matches_prior": false,
+      "tool_subagent_correlation": true,
+      "host_steering_option": false,
+      "custom_answer_form_marker": false
+    },
+    {
+      "version": "0.64.0",
+      "commit": "e56f344691a56c07e5dae2ebeb6ad2a6416f8c9d",
+      "npm_integrity": "sha512-yGa/LiHhFK7/GRoFjXCKFxFPH0lep1o7VMCZSk2/DEbwU+W+j3Rn3dTLSzZwCtywaElkQmoHaYHauBpemZNp2w==",
+      "acp_sdk": "1.3.0",
+      "agent_sdk": "0.3.220",
+      "tarball_sha256": "a62019ef561a189ad5397b194f52a223157324f0dbfcba944856c95faa771324",
+      "package_json_sha256": "14c8d7c611802c90ce932837412be7bb63ca002a479125e1b1e31347bdc80d39",
+      "acp_agent_sha256": "015da3493f842bbe9b064acf3bc8833bd5fe11bdd6dbaf7c159a870fcd1124b0",
+      "elicitation_sha256": "d40be7d05a0ca9f65621a54fd61aa1a903875d5afcd95051c1f86b561abdd095",
+      "tools_sha256": "5572febec9be484eb02d9ad204f6f2e91874b340722ad06a66ff21422f347068",
+      "classification": "private_steering_and_form_milestone",
+      "candidate_behavior_revision": "claude-agent.acp.host-steering-form-marker-v6",
+      "selected_output_matches_prior": false,
+      "tool_subagent_correlation": true,
+      "host_steering_option": true,
+      "custom_answer_form_marker": true
+    }
+  ]
+}

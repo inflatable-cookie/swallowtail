@@ -7,13 +7,13 @@ It is a compiled consumer reference. The exact
 `PreparedOperationEvidence::observable_activity()` returned for a prepared
 operation remains the runtime source of truth.
 
-The inventory contains 57 route-operation rows:
+The inventory contains 60 route-operation rows:
 
-- 34 ordinary structured-run or interactive-session profiles with
+- 36 ordinary structured-run or interactive-session profiles with
   `available` activity
-- 23 catalogue, inventory, provider-session-management, realtime-media, or
+- 24 catalogue, inventory, provider-session-management, realtime-media, or
   serving operations where ordinary agent activity is `not-applicable`
-- all 27 production route identities
+- all 30 production route identities
 - four auxiliary hosted catalogue identities
 
 There is no unexplained whole-operation `unavailable` result. An
@@ -63,8 +63,8 @@ snapshots through
 This avoids adding another matrix column dominated by permanent negative
 cells. Inspect the prepared profile when a sidebar checklist is mandatory.
 Current positive projections are Codex app-server plan updates, Codex exec
-todo-list items, and ACP plan updates from Claude Agent, Kimi Code, and Grok
-Build. Other routes retain their existing plan or task activity without
+todo-list items, and ACP plan updates from Claude Agent, Cursor, Kimi Code, and
+Grok Build. Other routes retain their existing plan or task activity without
 parsing opaque display text into a checklist.
 
 ## Child Topology And Control

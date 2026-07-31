@@ -1,6 +1,6 @@
 # 013 Cursor Headless Structured Driver
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-07-31
 Milestone: `../005-cursor-installed-dual-route-foundation.md`
@@ -20,18 +20,18 @@ explicit model, authority, activity, usage, and cleanup behavior.
    Cursor controls.
 4. Implement output schema where the exact corpus proves it, plus cancellation,
    deadlines, and joined process cleanup.
-5. Keep optional Cursor sandboxing separate and never synthesize thinking
-   events suppressed by print mode.
+5. Keep optional Cursor sandboxing separate and project only exact
+   provider-disclosed thinking events.
 
 ## Acceptance Criteria
 
-- [ ] the headless route is distinct from ACP
-- [ ] model and authority selection are explicit with no fallback
-- [ ] streamed tool and result activity is ordered and correlated
-- [ ] usage and errors remain typed, bounded, and sanitized
-- [ ] optional sandboxing is not required by the ambient profile
-- [ ] no thinking activity is invented
-- [ ] focused structured-run and activity conformance passes
+- [x] the headless route is distinct from ACP
+- [x] model and authority selection are explicit with no fallback
+- [x] streamed tool and result activity is ordered and correlated
+- [x] usage and errors remain typed, bounded, and sanitized
+- [x] optional sandboxing is not required by the ambient profile
+- [x] no thinking activity is invented
+- [x] focused structured-run and activity conformance passes
 
 ## Validation
 
@@ -48,5 +48,23 @@ explicit model, authority, activity, usage, and cleanup behavior.
 
 ## Auto-Continuation
 
-Yes. Continue to card 014 after focused headless validation passes.
+Completed. Continue to card 014.
 
+## Result
+
+Research 077 corrects the earlier print-mode assumption from exact installed
+source: plain `stream-json` emits provider-disclosed thinking deltas and a
+completion marker. `CursorHeadlessDriver` now projects those exact deltas,
+assistant output, correlated tool lifecycle, terminal result, and usage while
+keeping raw tool payloads and stderr private.
+
+Read-only runs add `--mode plan`; explicit read-write runs omit that mode.
+Both send the prompt through stdin and select neither force flags, optional
+sandboxing, nor partial-output duplication. Non-zero exit, incomplete stream,
+malformed stream, cancellation, deadline, local and remote-authoritative
+topology, and joined cleanup are deterministic.
+
+`effigy validate:focused swallowtail-protocol-acp swallowtail-adapter-cursor`
+passed 116 tests across seven binaries plus warnings-denied checking. The
+Cursor-only subset contains 27 tests across four binaries. No live Cursor
+prompt ran.

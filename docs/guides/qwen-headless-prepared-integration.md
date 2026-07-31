@@ -29,10 +29,12 @@ fallback route.
 
 ## Version Posture
 
-Qwen Code 0.19.11 is the qualified headless baseline. Discovery records the
-exact installed version from `qwen --version`. A later stable release is
-admitted as unverified, remains visible in evidence, and uses the latest
-qualified behavior mapping. Older or prerelease versions do not prepare.
+Qwen Code `0.19.11` is the qualified headless baseline. Maintained segments are
+`0.19.11..=0.20.1` and `0.21.0..=0.21.2`; the second records Qwen's image-only
+catalogue filter. Discovery records the exact installed version from
+`qwen --version`. A later stable release is admitted as unverified, remains
+visible in evidence, and uses the latest qualified behavior mapping. The
+unpublished `0.20.2` gap, older versions, and prereleases do not prepare.
 
 ## Execution Boundary
 

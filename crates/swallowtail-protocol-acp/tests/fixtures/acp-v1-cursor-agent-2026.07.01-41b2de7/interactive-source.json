@@ -1,0 +1,49 @@
+{
+  "evidence_checked": "2026-07-31",
+  "capture_kind": "installed-source-derived-normalized-corpus",
+  "live_provider_session_created": false,
+  "live_prompt_sent": false,
+  "artifacts": [
+    {
+      "file": "5721.index.js",
+      "sha256": "0332efbd33814b900e00b52753eb2b9d4ab0fa022dc264c162d2b4f535bda48f",
+      "modules": [
+        "./src/acp/cursor-acp-agent.ts",
+        "./src/acp/agent-session.ts"
+      ]
+    },
+    {
+      "file": "8096.index.js",
+      "sha256": "139cb9c33b3464c2763044ab82b79a599ab197a27c5691dd6fce86d00f6557d5",
+      "modules": ["ACP SDK connection and schema dispatch"]
+    }
+  ],
+  "qualified_methods": [
+    "initialize",
+    "session/new",
+    "session/prompt",
+    "session/cancel",
+    "session/update"
+  ],
+  "qualified_updates": [
+    "agent_message_chunk",
+    "agent_thought_chunk",
+    "tool_call",
+    "tool_call_update",
+    "plan",
+    "available_commands_update"
+  ],
+  "qualified_stop_reasons": ["end_turn", "cancelled"],
+  "not_claimed": [
+    "authenticate",
+    "session/load",
+    "session/list",
+    "session/resume",
+    "session/delete",
+    "consumer_mcp",
+    "model_selection",
+    "callback_exchange",
+    "image_prompt"
+  ],
+  "private_fields_not_projected": ["rawInput", "rawOutput"]
+}

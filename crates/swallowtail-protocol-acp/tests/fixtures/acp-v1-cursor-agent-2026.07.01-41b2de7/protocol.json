@@ -41,7 +41,11 @@
     "delimiter": "newline",
     "initialize_only_live_probe": true,
     "session_created": false,
-    "prompt_sent": false
+    "prompt_sent": false,
+    "interactive_source_inspected": true,
+    "interactive_corpus": "interactive-derived.ndjson",
+    "headless_source_inspected": true,
+    "headless_corpus": "headless-derived.jsonl"
   },
   "capabilities": {
     "load_session_advertised": true,
@@ -51,7 +55,16 @@
     "prompt_embedded_context": false,
     "mcp_http": true,
     "mcp_sse": true,
-    "claimed_before_route_corpus": []
+    "claimed_before_route_corpus": [],
+    "claimed_after_route_corpus": [
+      "interactive_session",
+      "text_prompt",
+      "streaming_assistant",
+      "streaming_thought",
+      "tool_activity",
+      "plan_activity",
+      "active_turn_cancellation"
+    ]
   },
   "access": {
     "advertised_auth_methods": ["cursor_login"],
@@ -82,7 +95,7 @@
     "partial_output_flag": "--stream-partial-output",
     "modes": ["plan", "ask"],
     "explicit_model": true,
-    "documented_event_types": ["system", "user", "assistant", "tool_call", "result"],
+    "documented_event_types": ["system", "user", "assistant", "thinking", "tool_call", "result"],
     "system_fields": ["apiKeySource", "cwd", "session_id", "model", "permissionMode"],
     "message_fields": ["message.role", "message.content", "session_id"],
     "tool_subtypes": ["started", "completed"],
@@ -92,17 +105,19 @@
     "success_terminal_required": true,
     "failure_may_end_without_terminal": true,
     "failure_diagnostic_channel": "stderr",
-    "token_usage_fields": [],
+    "token_usage_fields": ["inputTokens", "outputTokens", "cacheReadTokens", "cacheWriteTokens"],
     "cancellation_stream_event": null,
     "json_schema_output_flag": null,
-    "thinking_events_suppressed": true,
+    "thinking_events_suppressed": false,
+    "thinking_subtypes": ["delta", "completed"],
     "provider_tool_arguments_and_results_private": true,
     "resume_and_continue_documented_not_claimed": true,
     "optional_sandbox": true,
     "dangerous_force_flags_selected": false
   },
   "qualification": {
-    "production_claim_created": false,
+    "production_claim_created": true,
+    "production_claim_scope": "installed ACP interactive and headless structured routes",
     "continuous_calendar_range_allowed": false,
     "installed_and_registry_artifacts_share_behavior": "unproven",
     "unverified_newer_policy": "allow_visible"

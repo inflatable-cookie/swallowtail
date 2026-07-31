@@ -1,4 +1,8 @@
 retained_execution_classifications = {
+    ("retained_background_execution", "antigravity.catalogue + antigravity.headless"): "operation_shape_not_applicable",
+    ("stream_reattachment", "antigravity.catalogue + antigravity.headless"): "operation_shape_not_applicable",
+    ("provider_managed_recovery", "antigravity.catalogue + antigravity.headless"): "upstream_unsupported",
+    ("provider_managed_recovery", "cursor-agent.catalogue + cursor-agent.acp + cursor-agent.headless"): "upstream_unsupported",
     ("retained_background_execution", "qwen.headless"): "operation_shape_not_applicable",
     ("stream_reattachment", "qwen.headless"): "operation_shape_not_applicable",
     ("provider_managed_recovery", "qwen.headless"): "upstream_unsupported",
@@ -99,6 +103,8 @@ working_resource_write_classifications = {
 }
 
 owned_runtime_not_applicable = {
+    "antigravity.catalogue + antigravity.headless",
+    "cursor-agent.catalogue + cursor-agent.acp + cursor-agent.headless",
     "qwen.headless",
     "alibaba.conversations",
     "bedrock.catalogue; bedrock.runtime",
@@ -122,6 +128,8 @@ owned_runtime_not_applicable = {
     "xai.responses-websocket",
 }
 rollover_not_applicable = {
+    "antigravity.catalogue + antigravity.headless",
+    "cursor-agent.catalogue + cursor-agent.acp + cursor-agent.headless",
     "qwen.headless",
     "alibaba.conversations",
     "bedrock.catalogue; bedrock.runtime",
@@ -194,6 +202,7 @@ residual_operation_not_applicable = {
 } | {
     ("realtime_media_session", route)
     for route in {
+        "antigravity.catalogue + antigravity.headless",
         "qwen.headless",
         "claude-agent.acp",
         "claude-code.headless",
@@ -231,6 +240,7 @@ residual_no_provider_billing = {
 residual_selected_surface_absence = {
     ("billed_cost_evidence", route)
     for route in {
+        "antigravity.catalogue + antigravity.headless",
         "qwen.headless",
         "alibaba.conversations",
         "bedrock.catalogue; bedrock.runtime",
@@ -243,6 +253,7 @@ residual_selected_surface_absence = {
         "codex.app-server; codex.exec",
         "openai.realtime",
         "openai.background",
+        "cursor-agent.catalogue + cursor-agent.acp + cursor-agent.headless",
     }
 }
 residual_non_authoritative_cost = {

@@ -1,13 +1,12 @@
 # 005 Cursor Installed Dual-Route Foundation
 
-Status: active
+Status: completed
 Owner: Tom
 Created: 2026-07-31
 Depends on: g03.001
 Vision tags: harness breadth, shared protocols, structured execution, prepared integration
 Contract refs: 005-006, 011, 015, 020, 023, 029, 032-033, 037, 039, 041, 043-045
-Planning state: cards 010-011 completed; card 012 ready after active card 019;
-cards 013-014 planned
+Planning state: cards 010-014 completed
 
 ## Problem
 
@@ -32,12 +31,12 @@ headless roles explicit and simple for consumers.
 
 - [x] freeze exact installed and registry artifacts before support claims
 - [x] add one Cursor integration family and focused adapter crate
-- [ ] expose separate catalogue, ACP, and headless driver identities
-- [ ] provide one `prepare_cursor` facade with explicit route selection
+- [x] expose separate catalogue, ACP, and headless driver identities
+- [x] provide one `prepare_cursor` facade with explicit route selection
 - [x] preserve delegated local authentication without credential extraction
-- [ ] project only exact observed capabilities, activity, usage, and lifecycle
-- [ ] keep optional provider sandboxing separate from ambient-host baseline
-- [ ] accept through focused conformance and extracted-package evidence
+- [x] project only exact observed capabilities, activity, usage, and lifecycle
+- [x] keep optional provider sandboxing separate from ambient-host baseline
+- [x] accept through focused conformance and extracted-package evidence
 
 ## Non-Goals
 
@@ -69,30 +68,30 @@ headless roles explicit and simple for consumers.
 
 ### Batch 5.3 — Separate Execution Drivers
 
-- [ ] Execute card 012 for ACP interactive sessions.
-- [ ] Execute card 013 for provider-specific headless structured runs.
-- [ ] keep lifecycle, streaming, authority, and activity claims route-local
+- [x] Execute card 012 for ACP interactive sessions.
+- [x] Execute card 013 for provider-specific headless structured runs.
+- [x] keep lifecycle, streaming, authority, and activity claims route-local
 
 ### Batch 5.4 — Prepared Facade And Acceptance
 
-- [ ] Execute card 014.
-- [ ] expose explicit prepared operations through one Cursor facade
-- [ ] reconcile public route and feature truth
-- [ ] validate focused crates and extracted packages without a live prompt
+- [x] Execute card 014.
+- [x] expose explicit prepared operations through one Cursor facade
+- [x] reconcile public route and feature truth
+- [x] validate focused crates and extracted packages without a live prompt
 
 ## Acceptance Criteria
 
-- [ ] `cursor-agent` discovery cannot silently select Grok's `agent` command
-- [ ] exact executable points have explicit qualified or unverified posture
-- [ ] model catalogue does not claim model invocability
-- [ ] ACP and headless sessions retain distinct transports and operation shapes
-- [ ] headless output projects available tool, assistant, usage, and result
+- [x] `cursor-agent` discovery cannot silently select Grok's `agent` command
+- [x] exact executable points have explicit qualified or unverified posture
+- [x] model catalogue does not claim model invocability
+- [x] ACP and headless sessions retain distinct transports and operation shapes
+- [x] headless output projects available tool, assistant, usage, and result
   evidence without invented thinking
-- [ ] local delegated authentication remains provider-owned
-- [ ] ambient host and optional provider sandbox profiles remain distinct
-- [ ] `prepare_cursor` is simple without hiding route selection
-- [ ] deterministic, cross-host, focused, and package evidence passes
-- [ ] no provider prompt, account mutation, consumer edit, or publication runs
+- [x] local delegated authentication remains provider-owned
+- [x] ambient host and optional provider sandbox profiles remain distinct
+- [x] `prepare_cursor` is simple without hiding route selection
+- [x] deterministic, cross-host, focused, and package evidence passes
+- [x] no provider prompt, account mutation, consumer edit, or publication runs
 
 ## Decision Gates
 

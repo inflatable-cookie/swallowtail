@@ -61,6 +61,7 @@ fn parse(input: &str) -> Vec<swallowtail_runtime::RuntimeEvent> {
         ActivityOperationId::Run(RuntimeRunId::new("qwen-activity-fixture").expect("valid run id"));
     let mut parser = QwenEventParser::with_expected_session(
         swallowtail_core::ModelId::new("qwen3-coder-plus").expect("valid model"),
+        swallowtail_core::InterfaceVersion::new("0.19.11").expect("valid version"),
         None,
         operation_id,
     );

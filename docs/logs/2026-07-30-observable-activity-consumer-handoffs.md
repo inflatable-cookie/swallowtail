@@ -55,7 +55,7 @@ Roadmaps g02.035-g02.040 and cards 119-137 are complete. The observable-agent-
 activity programme has no unexplained prepared-profile gap and no implicit
 provider or consumer queue.
 
-## Next Task
+## Recorded Next Step
 
 The operator decides whether to authorize Nucleus or Soundcheck observable-
 activity adoption or select another g02 stabilization target. No numbered card

@@ -178,6 +178,20 @@ PROFILE_COLUMNS = (
 )
 
 POSITIVE_TOPOLOGY = {
+    ("antigravity.headless", "interactive-session"): {
+        "subagent_observation": "identity-lifecycle",
+        "subagent_parentage": "operation",
+        "child_activity_attribution": "unavailable",
+        "provider_collaboration_actions": "unavailable",
+        "operator_control": "unavailable",
+    },
+    ("antigravity.headless", "structured-run"): {
+        "subagent_observation": "identity-lifecycle",
+        "subagent_parentage": "operation",
+        "child_activity_attribution": "unavailable",
+        "provider_collaboration_actions": "unavailable",
+        "operator_control": "unavailable",
+    },
     ("codex.app-server", "interactive-session"): {
         "subagent_observation": "profile-dependent",
         "subagent_parentage": "profile-dependent",
@@ -282,10 +296,10 @@ def main() -> None:
             f"missing={missing}, extra={extra}, changed={changed}"
         )
 
-    if len(rows) != 57:
-        raise SystemExit("provider activity matrix must contain exactly 57 rows")
+    if len(rows) != 63:
+        raise SystemExit("provider activity matrix must contain exactly 63 rows")
     counts = Counter(row["activity_profile"] for row in rows)
-    if counts != Counter({"available": 34, "not-applicable": 23}):
+    if counts != Counter({"available": 38, "not-applicable": 25}):
         raise SystemExit(
             f"provider activity dispositions changed: {dict(counts)}"
         )
@@ -387,9 +401,9 @@ def main() -> None:
 
     print(
         "provider activity matrix passed: "
-        "57 operations, 34 available, 23 not-applicable, "
-        "27 production routes, 4 auxiliary catalogues, "
-        "4 topology-capable operations, 0 operator-control operations"
+        "63 operations, 38 available, 25 not-applicable, "
+        "32 production routes, 4 auxiliary catalogues, "
+        "6 topology-capable operations, 0 operator-control operations"
     )
 
 

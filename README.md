@@ -9,10 +9,10 @@ prompts, tools, authority, workflows, persistence, and product state.
 Status: compatibility maintenance. The repository is in strict Northstar posture. The
 provider-neutral core, pure preflight, executor-neutral runtime, thirteen synthetic
 conformance profiles, host-approved local process/endpoint/credential services,
-twenty-seven production driver routes, including separate Claude Code, Gemini, Grok, and Kimi
+32 production driver routes, including separate Antigravity, Claude Code, Cursor, Gemini, Grok, and Kimi
 installed-harness routes plus SDK-native Bedrock Runtime
 and control-plane routes, across Alibaba Model Studio, Anthropic, Bedrock,
-Claude Agent, Codex, DeepSeek, Gemini, Grok, Kimi, llama.cpp, Ollama, OpenAI,
+Claude Agent, Codex, Cursor, DeepSeek, Gemini, Grok, Kimi, llama.cpp, Ollama, OpenAI,
 OpenCode, Pi, Qwen, and xAI
 are validated. Codex app-server supports both
 unchanged read-only sessions and one explicit host-resolved bounded workspace
@@ -21,21 +21,35 @@ profile.
 g02 structural stabilization, validation-latency, child-work topology, and
 Claude form-elicitation work are complete. g03 now owns compatibility
 maintenance, consumer-proven hardening, and the next installed-harness routes.
-Cursor is the active high-priority lane with separate catalogue, ACP, and
-headless roles planned behind one facade. Antigravity follows as Google's
-personal-account harness. Existing Gemini support remains, while further
-Gemini range qualification is paused. The accepted stabilization
+Cursor's separate catalogue, ACP interactive, and headless structured roles
+now sit behind one explicit prepared facade. Antigravity's exact `1.1.9`
+catalogue, structured-run, and exact-id continuation roles now sit behind a
+second explicit three-operation facade. Existing Gemini support remains, while
+further Gemini range qualification is deferred without an implied return date.
+The accepted stabilization
 baseline removed all five critical and 28 high findings. Four affected
 archives now compile through one extracted target in five seconds, down from
 22.4 seconds through separate targets. Kimi child-activity projection is split
 on its native lifecycle seam. Claude Agent now projects its exact portable
-choice-form subset through typed harness user input. Doctor reports 147
-oversized-file findings, including two errors; they remain known structural
+choice-form subset through typed harness user input. Doctor reports 173
+oversized-file findings, including six errors; they remain known structural
 debt outside this provider batch. Roadmaps g02.047-g02.048 own the completed topology and
 elicitation handoffs; g02.049 closes the generation. Nucleus adoption is
 delegated to the Nucleus repository and does not govern Swallowtail's active
-lane. Roadmap g03.005 owns the active Cursor foundation; g03.006 holds the
-planned Antigravity continuation.
+lane. Roadmaps g03.005-g03.006 and g03.009 are complete. Qwen Code now carries
+maintained `0.19.11..=0.20.1` and `0.21.0..=0.21.2` segments with exact
+installed `0.21.2` proof. Claude Agent ACP now carries six maintained behavior
+segments through exact `0.64.0`; further Gemini range work remains deferred.
+Pi RPC now carries six exact maintained points from baseline
+`0.80.10` through installed/current `0.83.0`. The local host now represents
+native and interpreted executables through one redacted host-private launch
+recipe while preserving `env_clear()`. Exact installed Pi discovery passes
+through an exact Node-plus-script recipe without adapter PATH search or a
+provider prompt.
+
+Roadmap g03.015 is complete. The managed local Claude Agent wrapper is exact
+`0.63.0`; the separately accepted current artifact is exact `0.64.0`. Neither
+qualification opts into nested transcripts or host-owned steering fallback.
 
 ## Start Here
 
@@ -49,23 +63,23 @@ Then read [docs/README.md](docs/README.md). Applications integrating Codex
 should start with the
 [prepared-integration guides](docs/guides/README.md). Multi-provider
 applications should start with the exact
-[27-route matrix](docs/guides/provider-route-matrix.md).
+[32-route matrix](docs/guides/provider-route-matrix.md).
 Applications rendering provider-visible work should use the
 [observable-activity guide](docs/guides/observable-activity.md).
 Source-scoped model-catalogue expansion is complete: every selected
-machine-readable source has a Swallowtail path. The 23-solution feature matrix
-now reports 16 catalogue-capable solutions, three session-negotiated sources,
+machine-readable source has a Swallowtail path. The 25-solution feature matrix
+now reports 18 catalogue-capable solutions, three session-negotiated sources,
 two not-applicable operation shapes, two caller-supplied sources, and no
 unexplained `No`.
 Structured-run closure is at provider-wide acceptance. Research 044 and
 Contract 039 identify eight definite bounded branches plus one retained Kimi
 local-server branch.
-The Grok lane now has exact `0.2.114` installed discovery plus separate
+The Grok lane now maintains exact `0.2.114..=0.2.117` installed discovery plus separate
 prepared ambient ACP session and structured-run operations with one-shot
 cached-token activation, durable provider-owned local retention, observable
 activity, cancellation, deadlines, and joined host leases. Exact local and
-remote-authoritative fixtures pass without a live Grok prompt. Later stable
-versions remain visible unverified newer.
+remote-authoritative fixtures and installed `0.2.117` discovery pass without a
+live Grok prompt. Later stable versions remain visible unverified newer.
 Alibaba and DeepSeek now expose independent one-request structured roles and
 prepared operations beside their unchanged stateful branches.
 Gemini CLI now exposes a separately qualified headless `stream-json` route
@@ -75,12 +89,12 @@ transcript, and does not force sandboxing.
 The lane preserves provider-specific session, connection, callback, retention,
 cancellation, and cleanup truth; it does not add a universal prompt API.
 Kimi Code now exposes a separate default-engine headless route through
-qualified `0.29.0..=0.31.0` evidence and a retained local-server structured
-role through `0.31.0`. One installed facade requires explicit ACP or headless
+qualified `0.29.0..=0.31.1` evidence and a retained local-server structured
+role through `0.31.1`. One installed facade requires explicit ACP or headless
 selection. The local facade remains separate, requires `DurableAllowed`, and
 preserves provider threads without archive or delete claims.
 Gemini Live and OpenAI Realtime remain structured-run `No`. llama.cpp owned is
-serving-only and therefore `Not applicable`. The matrix reports 20 structured
+serving-only and therefore `Not applicable`. The matrix reports 22 structured
 `Yes`, two `No`, and one `Not applicable`.
 Consumer soak remains the held release baseline. Research 036 and Contract 038
 separate Nucleus-local thread archive and deletion from optional bound
@@ -147,7 +161,8 @@ authority; callers close the runtime handle before using it.
 The additive ACP v1 lifecycle corpus now pins stable schema `v1.20.0` and
 keeps generic delete at history-removal truth. Exact Claude Agent tagged
 evidence qualifies local harness-session data deletion with provider-defined
-descendants across `0.53.0..=0.61.0`; `0.62.0` remains unverified-newer.
+descendants across `0.53.0..=0.64.0`, excluding `0.58.0`; later stable releases
+remain visible and unverified.
 The Claude Agent stdio driver now negotiates independent lifecycle
 capabilities, sends qualified native close before connection cleanup, returns
 an opaque delete binding from prepared sessions, and exposes one explicit
@@ -179,7 +194,7 @@ agreement, and one authenticated read-only lookup before issuing a separate
 archive/restore binding. The interactive local-server driver now covers exact
 REST prompt submission, WebSocket v2 events and cursors, callbacks,
 interruption, deadlines, disconnects, attached and owned topology, and joined
-cleanup. The 25-route matrix and current integration guide are complete. The
+cleanup. The 32-route matrix and current integration guide are complete. The
 provider-wide extracted-package structured proof and the earlier 23-route
 lifecycle proof pass. A bounded Nucleus lifecycle handoff now keeps universal
 local thread actions separate from optional provider operations. Current
@@ -202,10 +217,11 @@ until the current source enters canonical history.
 - local and remote execution hosts treated as equal topologies
 - Nucleus and Soundcheck as initial consumers, not Swallowtail authorities
 
-The twenty-five-crate Rust workspace contains `swallowtail-core`, `swallowtail-runtime`,
+The twenty-six-crate Rust workspace contains `swallowtail-core`, `swallowtail-runtime`,
 `swallowtail-testkit`, `swallowtail-host-local`, `swallowtail-protocol-acp`,
 `swallowtail-protocol-openai-chat`, `swallowtail-transport-acp-remote`,
 `swallowtail-adapter-alibaba-model-studio`,
+`swallowtail-adapter-antigravity`,
 `swallowtail-adapter-claude-agent`, `swallowtail-adapter-codex`,
 `swallowtail-adapter-cursor`,
 `swallowtail-adapter-deepseek`, `swallowtail-adapter-opencode`,
@@ -226,8 +242,8 @@ Soundcheck and Nucleus Agent Chat are accepted consumers. The bounded
 workspace-write runtime required by Nucleus task execution is complete without
 widening read-only chat. The planned provider-route and model-catalogue
 expansion is realized. The feature-matrix completion programme is closed. Its
-current 713-cell audited region contains 212 `Yes`, 272 machine-classified
-`No`, 222 `Not applicable`, two `Partial`, two `Caller-supplied`, and three
+current 744-cell audited region contains 221 `Yes`, 288 machine-classified
+`No`, 228 `Not applicable`, two `Partial`, two `Caller-supplied`, and three
 `Session-negotiated` cells. The starting 61-cell residual inventory closes at
 two `Yes`, 25 `No`, and 34 `Not applicable`. Qwen headless and Ollama attached
 now realize the selected interactive proof pair under Contract 043 and
@@ -633,9 +649,11 @@ Cross-topology conformance now proves baseline, latest, unverified-newer,
 dynamic-option rejection, and the unchanged persistent ACP lifecycle under
 both authoritative host identities. Full repository QA inventories 606 tests:
 602 pass and four gated probes remain ignored. Roadmap 043 is complete.
-Research 068 later extends the unchanged declared-effort ACP and stream-JSON
-headless guarantees through signed and live-proven `0.31.0`; the changed local
-WebSocket broadcaster retains its independent `0.29.2` ceiling.
+Research 068 extends the declared-effort ACP and stream-JSON headless
+guarantees through `0.31.0`; Research 069 qualifies the independent local
+server through the same release. Research 086 extends all three routes through
+official `0.31.1`, retaining ACP and headless behavior while adding one exact
+local-server refresh-stable milestone.
 Research 029 closes roadmap 044 and selects remote ACP after the Active
 transport RFD gained a maintained Rust HTTP transport crate. Contract 035
 keeps the proof provider-neutral, unauthenticated, opt-in experimental, and
@@ -732,9 +750,10 @@ posture, plan-derived read-only sessions, and no implicit remote-ACP fallback.
 Pi RPC now adds exact installed discovery and a provider-suppressed ambient
 read-only prepared session while retaining native scheduling and UI relay.
 Qwen headless now adds exact installed discovery and one ambient structured
-run with explicit provider, model, stdin, stream-JSON, and native budgets.
-Later stable Pi, Qwen, and OpenCode releases remain executable as visible
-unverified-newer observations. OpenCode now adds exact attached-service
+run with explicit provider, model, stdin, stream-JSON, and native budgets. Its
+maintained package segments now span `0.19.11..=0.20.1` and
+`0.21.0..=0.21.2`. Later stable Pi, Qwen, and OpenCode releases remain
+executable as visible unverified-newer observations. OpenCode now adds exact attached-service
 preparation plus separate catalogue and read-only session paths without server
 ownership or remote-ACP fallback. A prepared session also yields one opaque
 inactive-session delete binding; explicit deletion reports provider data

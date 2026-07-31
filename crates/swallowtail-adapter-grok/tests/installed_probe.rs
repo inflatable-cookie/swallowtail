@@ -28,7 +28,10 @@ fn exact_and_unverified_versions_probe_only_the_approved_target_on_both_topologi
     ] {
         for (output, version, qualified) in [
             ("grok 0.2.114 (0c785038798) [stable]\n", "0.2.114", true),
-            ("grok 0.2.115 (123456789abc) [stable]\n", "0.2.115", false),
+            ("grok 0.2.115 (dd16b5eb7d50) [stable]\n", "0.2.115", true),
+            ("grok 0.2.116 (99b387d2cc0e) [stable]\n", "0.2.116", true),
+            ("grok 0.2.117 (f1c06093089f) [stable]\n", "0.2.117", true),
+            ("grok 0.2.118 (123456789abc) [stable]\n", "0.2.118", false),
         ] {
             let host = topology.execution_host_id().clone();
             let executable = ExecutableRef::from_instance_target(topology.instance_target());
@@ -56,7 +59,7 @@ fn exact_and_unverified_versions_probe_only_the_approved_target_on_both_topologi
                 else {
                     panic!("later stable version remains unverified");
                 };
-                assert_eq!(unverified.latest_qualified().as_str(), "0.2.114");
+                assert_eq!(unverified.latest_qualified().as_str(), "0.2.117");
             }
             let captured = state.request();
             assert_eq!(captured.executable, executable.as_host_value());
@@ -166,7 +169,7 @@ fn prepared_discovery_binds_exact_instance_access_and_ambient_posture() {
             Deadline::at(MonotonicInstant::from_ticks(100)),
             DiscoveryCancellation::new(),
         );
-        let (process, _) = FakeProcessService::completed("grok 0.2.114 (0c785038798) [stable]\n");
+        let (process, _) = FakeProcessService::completed("grok 0.2.117 (f1c06093089f) [stable]\n");
         let prepared = block_on(prepare_grok_build(
             input,
             probe,
@@ -194,7 +197,7 @@ fn prepared_discovery_binds_exact_instance_access_and_ambient_posture() {
                 .expect("version")
                 .version()
                 .as_str(),
-            "0.2.114"
+            "0.2.117"
         );
         prepared
             .validate_execution_binding(&host, &target)

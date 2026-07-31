@@ -10,10 +10,13 @@ use crate::failure::failure;
 pub const CURSOR_AGENT_AUTOMATIC_EXECUTABLE_NAME: &str = "cursor-agent";
 pub const CURSOR_AGENT_RELEASE_AXIS: &str = "cursor-agent.release-date";
 pub const CURSOR_AGENT_BASELINE_VERSION: &str = "2026-07-01";
-pub const CURSOR_AGENT_LATEST_QUALIFIED_VERSION: &str = "2026-07-01";
-pub const CURSOR_AGENT_LATEST_QUALIFIED_BUILD_REVISION: &str = "41b2de7";
+pub const CURSOR_AGENT_BASELINE_BUILD_REVISION: &str = "41b2de7";
+pub const CURSOR_AGENT_LATEST_QUALIFIED_VERSION: &str = "2026-07-23";
+pub const CURSOR_AGENT_LATEST_QUALIFIED_BUILD_REVISION: &str = "e383d2b";
 
 pub(crate) const CURSOR_CATALOGUE_BEHAVIOR: &str = "cursor-agent.catalogue.calendar-release-v1";
+pub(crate) const CURSOR_ACP_BEHAVIOR: &str = "cursor-agent.acp-v1.interactive-v1";
+pub(crate) const CURSOR_HEADLESS_BEHAVIOR: &str = "cursor-agent.stream-json.structured-v1";
 
 const RAW_VERSION_BYTES: usize = 18;
 const BUILD_REVISION_BYTES: usize = 7;
@@ -52,10 +55,10 @@ pub fn cursor_agent_release_binding(value: &str) -> Option<InterfaceVersionBindi
     {
         return None;
     }
-    if date == CURSOR_AGENT_LATEST_QUALIFIED_VERSION
-        && build != CURSOR_AGENT_LATEST_QUALIFIED_BUILD_REVISION
-    {
-        return None;
+    for (qualified_date, qualified_build) in qualified_release_builds() {
+        if date == qualified_date && build != qualified_build {
+            return None;
+        }
     }
     let version = InterfaceVersion::new(date).ok()?;
     Some(InterfaceVersionBinding::new(axis(), version))
@@ -77,20 +80,112 @@ const fn valid_calendar_date(year: u16, month: u8, day: u8) -> bool {
 #[must_use]
 pub fn cursor_catalogue_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
-        InterfaceCompatibilityClaimId::new("cursor-agent.catalogue.release-window-1")
+        InterfaceCompatibilityClaimId::new("cursor-agent.catalogue.release-window-2")
             .expect("static Cursor claim id is valid"),
         axis(),
         InterfaceVersionScheme::CalendarDate,
         InterfaceNewerVersionPosture::AllowUnverified,
-        [InterfaceVersionSegment::exact(
-            version(CURSOR_AGENT_LATEST_QUALIFIED_VERSION),
-            InterfaceBehaviorRevision::new(CURSOR_CATALOGUE_BEHAVIOR)
-                .expect("static Cursor behavior is valid"),
-            InterfaceSupportStatus::Maintained,
-        )],
+        exact_milestones(CURSOR_CATALOGUE_BEHAVIOR),
         [],
     )
     .expect("static Cursor compatibility claim is valid")
+}
+
+#[must_use]
+pub fn cursor_acp_claim() -> InterfaceCompatibilityClaim {
+    InterfaceCompatibilityClaim::new(
+        InterfaceCompatibilityClaimId::new("cursor-agent.acp.release-window-2")
+            .expect("static Cursor ACP claim id is valid"),
+        axis(),
+        InterfaceVersionScheme::CalendarDate,
+        InterfaceNewerVersionPosture::AllowUnverified,
+        exact_milestones(CURSOR_ACP_BEHAVIOR),
+        [],
+    )
+    .expect("static Cursor ACP compatibility claim is valid")
+}
+
+#[must_use]
+pub fn cursor_headless_claim() -> InterfaceCompatibilityClaim {
+    InterfaceCompatibilityClaim::new(
+        InterfaceCompatibilityClaimId::new("cursor-agent.headless.release-window-2")
+            .expect("static Cursor headless claim id is valid"),
+        axis(),
+        InterfaceVersionScheme::CalendarDate,
+        InterfaceNewerVersionPosture::AllowUnverified,
+        exact_milestones(CURSOR_HEADLESS_BEHAVIOR),
+        [],
+    )
+    .expect("static Cursor headless compatibility claim is valid")
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(crate) struct CursorPlanSelection;
+
+pub(crate) fn select_cursor_acp_plan(
+    plan: &PreflightPlan,
+) -> Result<CursorPlanSelection, RuntimeFailure> {
+    let claim = cursor_acp_claim();
+    let mut bindings = plan
+        .interface_versions()
+        .filter(|binding| binding.axis() == claim.axis());
+    let binding = bindings.next().ok_or_else(|| {
+        failure(
+            "swallowtail.cursor.acp.version_missing",
+            "Cursor ACP plan is missing its exact release version",
+        )
+    })?;
+    if bindings.next().is_some() {
+        return Err(failure(
+            "swallowtail.cursor.acp.version_ambiguous",
+            "Cursor ACP plan contains more than one release version",
+        ));
+    }
+    let assessment = claim.assess(binding.version());
+    if assessment != plan.assess_interface_version(binding)
+        || !assessment.is_permitted()
+        || assessment
+            .behavior_revision()
+            .is_none_or(|revision| revision.as_str() != CURSOR_ACP_BEHAVIOR)
+    {
+        return Err(failure(
+            "swallowtail.cursor.acp.version_incompatible",
+            "Cursor release version is incompatible with the ACP driver",
+        ));
+    }
+    Ok(CursorPlanSelection)
+}
+
+pub(crate) fn validate_cursor_headless_plan(plan: &PreflightPlan) -> Result<(), RuntimeFailure> {
+    let claim = cursor_headless_claim();
+    let mut bindings = plan
+        .interface_versions()
+        .filter(|binding| binding.axis() == claim.axis());
+    let binding = bindings.next().ok_or_else(|| {
+        failure(
+            "swallowtail.cursor.headless.version_missing",
+            "Cursor headless plan is missing its exact release version",
+        )
+    })?;
+    if bindings.next().is_some() {
+        return Err(failure(
+            "swallowtail.cursor.headless.version_ambiguous",
+            "Cursor headless plan contains more than one release version",
+        ));
+    }
+    let assessment = claim.assess(binding.version());
+    if assessment != plan.assess_interface_version(binding)
+        || !assessment.is_permitted()
+        || assessment
+            .behavior_revision()
+            .is_none_or(|revision| revision.as_str() != CURSOR_HEADLESS_BEHAVIOR)
+    {
+        return Err(failure(
+            "swallowtail.cursor.headless.version_incompatible",
+            "Cursor release version is incompatible with the headless driver",
+        ));
+    }
+    Ok(())
 }
 
 pub(crate) fn validate_cursor_catalogue_plan(plan: &PreflightPlan) -> Result<(), RuntimeFailure> {
@@ -130,26 +225,73 @@ fn axis() -> InterfaceVersionAxis {
         .expect("static Cursor release axis is valid")
 }
 
+const fn qualified_release_builds() -> [(&'static str, &'static str); 2] {
+    [
+        (
+            CURSOR_AGENT_BASELINE_VERSION,
+            CURSOR_AGENT_BASELINE_BUILD_REVISION,
+        ),
+        (
+            CURSOR_AGENT_LATEST_QUALIFIED_VERSION,
+            CURSOR_AGENT_LATEST_QUALIFIED_BUILD_REVISION,
+        ),
+    ]
+}
+
+fn exact_milestones(behavior: &str) -> [InterfaceVersionSegment; 2] {
+    [
+        InterfaceVersionSegment::exact(
+            version(CURSOR_AGENT_BASELINE_VERSION),
+            InterfaceBehaviorRevision::new(behavior).expect("static Cursor behavior is valid"),
+            InterfaceSupportStatus::Maintained,
+        ),
+        InterfaceVersionSegment::exact(
+            version(CURSOR_AGENT_LATEST_QUALIFIED_VERSION),
+            InterfaceBehaviorRevision::new(behavior).expect("static Cursor behavior is valid"),
+            InterfaceSupportStatus::Maintained,
+        ),
+    ]
+}
+
 fn version(value: &str) -> InterfaceVersion {
     InterfaceVersion::new(value).expect("static Cursor release version is valid")
 }
 
 #[cfg(test)]
 mod tests {
-    use super::{CURSOR_AGENT_RELEASE_AXIS, cursor_agent_release_binding, cursor_catalogue_claim};
+    use super::{
+        CURSOR_AGENT_RELEASE_AXIS, cursor_acp_claim, cursor_agent_release_binding,
+        cursor_catalogue_claim, cursor_headless_claim,
+    };
     use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
 
     #[test]
-    fn exact_release_is_qualified_and_later_dates_are_unverified() {
+    fn exact_releases_are_qualified_without_inferring_the_calendar_gap() {
         let claim = cursor_catalogue_claim();
         assert!(claim.supports(&version("2026-07-01")));
+        assert!(claim.supports(&version("2026-07-23")));
         assert!(!claim.permits(&version("2026-06-30")));
+        assert!(!claim.permits(&version("2026-07-15")));
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("2026-07-23"))
+            claim.assess(&version("2026-07-24"))
         else {
             panic!("later Cursor release remains visibly unverified");
         };
-        assert_eq!(newer.latest_qualified().as_str(), "2026-07-01");
+        assert_eq!(newer.latest_qualified().as_str(), "2026-07-23");
+    }
+
+    #[test]
+    fn acp_and_catalogue_keep_distinct_behavior_claims() {
+        let acp = cursor_acp_claim();
+        let catalogue = cursor_catalogue_claim();
+        let headless = cursor_headless_claim();
+        assert_ne!(acp.id(), catalogue.id());
+        assert_ne!(headless.id(), catalogue.id());
+        assert_ne!(headless.id(), acp.id());
+        assert_ne!(
+            acp.assess(&version("2026-07-01")).behavior_revision(),
+            catalogue.assess(&version("2026-07-01")).behavior_revision()
+        );
     }
 
     #[test]
@@ -168,6 +310,7 @@ mod tests {
             "2026-07-01-41b2de7",
             "2026.07.01-41B2DE7",
             "2026.07.01-deadbee",
+            "2026.07.23-deadbee",
             "2026.07.01-41b2de",
             "2026.02.30-41b2de7",
             " 2026.07.01-41b2de7",

@@ -74,7 +74,7 @@ pushes, workflow edits, and consumer repository changes remain unauthorized.
 - `effigy doctor` — unchanged inherited 19 findings: 12 warnings, seven errors
 - `git diff --check` — passed
 
-## Next Task
+## Recorded Next Step
 
 Execute g02 card 001. Produce Research 033 and provisional Spec 004, then stop
 for operator input if package set, version model, MSRV, or release authority

@@ -1,6 +1,6 @@
 # Backlog: Grok Build Maintained ACP Range
 
-Status: completed through g02.043
+Status: completed through g02.043 and g03.012
 Priority: closed
 Estimated effort: one evidence gate plus four implementation batches
 Source: `g01.047`
@@ -14,8 +14,9 @@ credential without opening sign-in, changing mechanism, or selecting another
 billing route.
 
 The operator provisioned an authenticated current Grok installation on
-2026-07-30. Exact `0.2.114` passed the activation-only gate and is now the sole
-qualified release.
+2026-07-30. Exact `0.2.114` passed the activation-only gate. Roadmap g03.012
+later extends the maintained range through installed exact `0.2.117` with a
+separate private task-control behavior revision.
 
 ## Preserved Evidence
 
@@ -59,6 +60,8 @@ authentication behavior change frequently.
   credential.
 - Spec 003 is promoted and archived.
 - Roadmap g02.043 and cards 142-145 replace the held g01 execution plan.
+- Research 085 and roadmap g03.012 maintain exact `0.2.114..=0.2.117` without
+  widening access or task-control authority.
 
 ## Success Criteria
 

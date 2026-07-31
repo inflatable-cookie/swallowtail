@@ -9,6 +9,10 @@ no_classification_overrides = {
     ("structured_run", "openai.realtime"): "operation_shape_not_applicable",
 }
 generation_control_classifications = {
+    ("output_token_limit", "antigravity.catalogue + antigravity.headless"): "upstream_unsupported",
+    ("output_token_limit", "cursor-agent.catalogue + cursor-agent.acp + cursor-agent.headless"): "upstream_unsupported",
+    ("reasoning_selection", "cursor-agent.catalogue + cursor-agent.acp + cursor-agent.headless"): "contract_or_corpus_required",
+    ("structured_output", "cursor-agent.catalogue + cursor-agent.acp + cursor-agent.headless"): "upstream_unsupported",
     ("output_token_limit", "qwen.headless"): "contract_or_corpus_required",
     ("reasoning_selection", "qwen.headless"): "contract_or_corpus_required",
     ("structured_output", "qwen.headless"): "contract_or_corpus_required",
@@ -55,6 +59,16 @@ generation_control_classifications = {
     ("structured_output", "grok-build.acp"): "upstream_unsupported",
 }
 input_callback_classifications = {
+    ("attachments", "antigravity.catalogue + antigravity.headless"): "upstream_unsupported",
+    ("consumer_tool_exchange", "antigravity.catalogue + antigravity.headless"): "upstream_unsupported",
+    ("permission_exchange", "antigravity.catalogue + antigravity.headless"): "upstream_unsupported",
+    ("question_exchange", "antigravity.catalogue + antigravity.headless"): "upstream_unsupported",
+    ("external_search", "antigravity.catalogue + antigravity.headless"): "upstream_unsupported",
+    ("attachments", "cursor-agent.catalogue + cursor-agent.acp + cursor-agent.headless"): "contract_or_corpus_required",
+    ("consumer_tool_exchange", "cursor-agent.catalogue + cursor-agent.acp + cursor-agent.headless"): "upstream_unsupported",
+    ("permission_exchange", "cursor-agent.catalogue + cursor-agent.acp + cursor-agent.headless"): "contract_or_corpus_required",
+    ("external_search", "cursor-agent.catalogue + cursor-agent.acp + cursor-agent.headless"): "contract_or_corpus_required",
+    ("question_exchange", "cursor-agent.catalogue + cursor-agent.acp + cursor-agent.headless"): "contract_or_corpus_required",
     ("attachments", "qwen.headless"): "upstream_unsupported",
     ("consumer_tool_exchange", "qwen.headless"): "upstream_unsupported",
     ("permission_exchange", "qwen.headless"): "upstream_unsupported",
@@ -149,6 +163,12 @@ input_callback_classifications = {
     ("question_exchange", "grok-build.acp"): "upstream_unsupported",
 }
 session_continuity_classifications = {
+    ("load_session", "antigravity.catalogue + antigravity.headless"): "operation_shape_not_applicable",
+    ("resume_session", "antigravity.catalogue + antigravity.headless"): "operation_shape_not_applicable",
+    ("native_session_close", "antigravity.catalogue + antigravity.headless"): "upstream_unsupported",
+    ("load_session", "cursor-agent.catalogue + cursor-agent.acp + cursor-agent.headless"): "contract_or_corpus_required",
+    ("resume_session", "cursor-agent.catalogue + cursor-agent.acp + cursor-agent.headless"): "contract_or_corpus_required",
+    ("native_session_close", "cursor-agent.catalogue + cursor-agent.acp + cursor-agent.headless"): "upstream_unsupported",
     ("load_session", "qwen.headless"): "operation_shape_not_applicable",
     ("resume_session", "qwen.headless"): "operation_shape_not_applicable",
     ("native_session_close", "qwen.headless"): "operation_shape_not_applicable",
@@ -228,7 +248,11 @@ provider_session_not_applicable = provider_retention_not_applicable | {
 owned_cleanup_not_applicable = (
     provider_retention_not_applicable
     - {"alibaba.conversations", "anthropic.managed-agent"}
-) | {"codex.app-server; codex.exec"}
+) | {
+    "antigravity.catalogue + antigravity.headless",
+    "codex.app-server; codex.exec",
+    "cursor-agent.catalogue + cursor-agent.acp + cursor-agent.headless",
+}
 provider_retention_classifications = {}
 for feature in ["provider_session_archive", "provider_session_restore"]:
     for route in provider_session_not_applicable:
@@ -236,11 +260,13 @@ for feature in ["provider_session_archive", "provider_session_restore"]:
             "operation_shape_not_applicable"
         )
     for route in [
+        "antigravity.catalogue + antigravity.headless",
         "claude-agent.acp",
         "gemini-cli.acp + gemini-cli.headless",
         "grok-build.acp",
         "kimi-code.acp + kimi-code.headless",
         "opencode.http",
+        "cursor-agent.catalogue + cursor-agent.acp + cursor-agent.headless",
     ]:
         provider_retention_classifications[(feature, route)] = "upstream_unsupported"
 for route in provider_session_not_applicable:
@@ -248,9 +274,11 @@ for route in provider_session_not_applicable:
         "operation_shape_not_applicable"
     )
 for route in [
+    "antigravity.catalogue + antigravity.headless",
     "grok-build.acp",
     "kimi-code.acp + kimi-code.headless",
     "kimi-code.local-server",
+    "cursor-agent.catalogue + cursor-agent.acp + cursor-agent.headless",
 ]:
     provider_retention_classifications[("provider_session_delete", route)] = (
         "upstream_unsupported"

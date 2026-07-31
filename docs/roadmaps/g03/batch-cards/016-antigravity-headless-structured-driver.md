@@ -1,6 +1,6 @@
 # 016 Antigravity Headless Structured Driver
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-07-31
 Milestone: `../006-antigravity-personal-harness-foundation.md`
@@ -22,14 +22,14 @@ structured-run driver with exact model, schema, permission, and activity truth.
 
 ## Acceptance Criteria
 
-- [ ] one run has one exact terminal result
-- [ ] invalid model selection remains a typed visible failure
-- [ ] schema-constrained output and stream activity remain distinct evidence
-- [ ] tool and subagent payloads are bounded and safely mapped
-- [ ] usage fields retain exact provider semantics
-- [ ] permission-required tools are not auto-approved
-- [ ] sandboxing remains explicit and optional
-- [ ] focused structured and activity conformance passes
+- [x] one run has one exact terminal result
+- [x] invalid model selection remains a typed visible failure
+- [x] schema-constrained output and stream activity remain distinct evidence
+- [x] tool and subagent payloads are bounded and safely mapped
+- [x] usage fields retain exact provider semantics
+- [x] permission-required tools are not auto-approved
+- [x] sandboxing remains explicit and optional
+- [x] focused structured and activity conformance passes
 
 ## Validation
 
@@ -46,5 +46,24 @@ structured-run driver with exact model, schema, permission, and activity truth.
 
 ## Auto-Continuation
 
-Yes. Continue to card 017 after focused structured validation passes.
+Completed. Continue to card 017.
 
+## Result
+
+Research 079 qualifies exact `agy` `1.1.9` headless stream JSON from official
+documentation, the installed help surface, and deterministic synthetic
+fixtures. The separate `swallowtail.antigravity.headless` driver binds one
+explicit model and resource, supports optional low/medium/high effort and
+bounded inline JSON Schema, and preserves ambient versus provider-enforced
+isolation without selecting dangerous permission bypass.
+
+The bounded event pump validates exact init identity and request-review mode,
+projects assistant, tool, completion-only subagent, usage, and terminal
+evidence, and rejects missing or duplicate terminal results. Tool arguments,
+tool output, provider stderr, workspace paths, prompt text, and subagent URIs
+remain outside stable events and diagnostics. Cancellation, deadlines, process
+exit, event delivery, and joined cleanup remain distinct outcomes.
+
+Focused validation passed 22 tests across three binaries plus warnings-denied
+checking in one second. No live prompt, login mutation, credential read,
+consumer edit, broad workspace suite, or publication ran.

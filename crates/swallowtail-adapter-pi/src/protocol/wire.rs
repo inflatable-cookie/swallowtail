@@ -173,7 +173,11 @@ fn decode_event(kind: &str, value: &Value) -> Result<PiAgentEvent, PiRpcProtocol
         "agent_end" if value.get("willRetry").and_then(Value::as_bool) == Some(true) => {
             Ok(PiAgentEvent::RetryObserved)
         }
-        "auto_retry_start" | "auto_retry_end" => Ok(PiAgentEvent::RetryObserved),
+        "auto_retry_start"
+        | "auto_retry_end"
+        | "summarization_retry_scheduled"
+        | "summarization_retry_attempt_start"
+        | "summarization_retry_finished" => Ok(PiAgentEvent::RetryObserved),
         "agent_end" | "turn_start" | "turn_end" | "queue_update" => Ok(PiAgentEvent::Progress),
         "extension_error" => Ok(PiAgentEvent::ProviderFailed),
         _ => bounded_namespace(kind)

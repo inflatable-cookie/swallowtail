@@ -9,7 +9,7 @@ pub fn compatibility_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
         valid(
             InterfaceCompatibilityClaimId::new,
-            "claude-agent.acp.range-v1",
+            "claude-agent.acp.range-v2",
         ),
         valid(InterfaceVersionAxis::new, "claude-agent.acp-adapter"),
         InterfaceVersionScheme::Semantic,
@@ -22,7 +22,17 @@ pub fn compatibility_claim() -> InterfaceCompatibilityClaim {
                 "0.60.0",
                 "claude-agent.acp.provider-capability-v3",
             ),
-            segment("0.61.0", "0.61.0", "claude-agent.acp.steering-metadata-v4"),
+            segment("0.61.0", "0.62.0", "claude-agent.acp.steering-metadata-v4"),
+            segment(
+                "0.63.0",
+                "0.63.0",
+                "claude-agent.acp.tool-subagent-correlation-v5",
+            ),
+            segment(
+                "0.64.0",
+                "0.64.0",
+                "claude-agent.acp.host-steering-form-marker-v6",
+            ),
         ],
         [version("0.52.0"), version("0.58.0")],
     )

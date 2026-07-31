@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-24
+Updated: 2026-07-31
 
 ## Purpose
 
@@ -30,6 +30,18 @@ A host may resolve and approve the target through an explicit selection policy
 before this request is constructed. That prior host action is not discovery.
 It must yield exactly one opaque reference; discovery still performs no
 candidate search or substitution.
+
+The selected opaque reference may resolve to a Contract 010 host-private launch
+recipe. The recipe binds one exact program, bounded immutable prefix arguments,
+and optional bounded launcher bootstrap environment before discovery begins.
+The adapter's fixed version arguments are appended after the prefix. Discovery
+still receives one target, cannot inspect the recipe, and cannot search for an
+interpreter, script, package-manager layout, or fallback executable.
+
+The observed version remains the harness interface version produced by the
+selected script or package entrypoint. The interpreter is launch machinery,
+not a second discovery candidate or the subject of the observation. A native
+executable is the same target shape with no prefix or bootstrap environment.
 
 The selected driver owns one fixed, bounded, non-authenticating version
 command and its parser. Provider-specific output syntax stays inside that
@@ -120,6 +132,9 @@ explicitly without changing existing discovery behavior.
 Deterministic default QA proves:
 
 - only the exact opaque candidate reaches the process service
+- native and interpreted target fixtures retain the exact opaque candidate
+- immutable launcher prefix arguments precede the fixed version command and
+  participate in the same host bounds
 - request, scope, axis, deadline, cancellation, and host identity are retained
 - exact qualified, unverified-newer, and incompatible versions remain separate
   from the claim
@@ -137,6 +152,8 @@ Live installed-binary probes remain separately gated.
 ## Acceptance
 
 - installed discovery never performs ambient executable search or fallback
+- interpreted discovery does not inherit ambient `PATH` or expose its launch
+  recipe
 - exact observations and maintained windows remain independent
 - remote-authoritative hosts execute their own probes
 - cancellation and deadline paths retain joined cleanup

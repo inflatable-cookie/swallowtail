@@ -3,7 +3,7 @@ use super::lifecycle::{ActiveTurn, join_turn, reap_finished};
 use crate::command::{arguments, resumed_arguments};
 use crate::driver::write_prompt;
 use crate::handle::QwenProcessCancellation;
-use crate::pump::{cleanup_failed_start, pump_with_session};
+use crate::pump::{QwenPumpContext, cleanup_failed_start, pump_with_session};
 use crate::validation::{failure, unsupported};
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -118,6 +118,7 @@ impl QwenSessionHandle {
         let task_terminal = Arc::clone(&terminal_flag);
         let task_process = Arc::clone(&process);
         let model = self.model.clone();
+        let expected_version = self.expected_version.clone();
         let task_expected = expected_session.clone();
         let task_turn_id = request.turn_id().clone();
         let task = self.services.task().expect("validated Qwen task").spawn(
@@ -128,9 +129,12 @@ impl QwenSessionHandle {
                     event_sender.clone(),
                     task_cancellation,
                     deadline,
-                    model,
-                    task_expected,
-                    ActivityOperationId::Turn(task_turn_id),
+                    QwenPumpContext::new(
+                        model,
+                        expected_version,
+                        task_expected,
+                        ActivityOperationId::Turn(task_turn_id),
+                    ),
                 )
                 .await;
                 {

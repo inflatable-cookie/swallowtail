@@ -26,6 +26,4 @@ pub use selection::{
     pi_package_binding, pi_rpc_claim,
 };
 
-pub const PINNED_PI_VERSION: &str = "0.80.10";
-
 const DRIVER_ID: &str = "swallowtail.pi.rpc";

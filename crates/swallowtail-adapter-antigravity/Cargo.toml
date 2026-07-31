@@ -1,0 +1,45 @@
+[package]
+name = "swallowtail-adapter-antigravity"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+readme.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+description = "Antigravity CLI harness drivers for Swallowtail"
+autotests = false
+
+[lib]
+doctest = false
+
+[dependencies]
+futures-channel = "0.3"
+semver = "1"
+serde_json = "1"
+swallowtail-core.workspace = true
+swallowtail-runtime.workspace = true
+
+[dev-dependencies]
+futures-executor = "0.3"
+futures-util = "0.3"
+swallowtail-testkit.workspace = true
+
+[lints]
+workspace = true
+
+[[test]]
+name = "foundation"
+path = "tests/foundation.rs"
+
+[[test]]
+name = "headless_suite"
+path = "tests/headless_suite.rs"
+
+[[test]]
+name = "continuation_suite"
+path = "tests/continuation_suite.rs"
+
+[[test]]
+name = "prepared_suite"
+path = "tests/prepared_suite.rs"

@@ -9,7 +9,7 @@ use swallowtail_runtime::RuntimeFailure;
 use crate::{KIMI_CODE_AXIS, failure::failure, kimi_code_binding};
 
 pub const KIMI_LOCAL_SERVER_BASELINE_VERSION: &str = "0.28.1";
-pub const KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION: &str = "0.31.0";
+pub const KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION: &str = "0.31.1";
 
 const REST_WS_V2_BASELINE_BEHAVIOR: &str = "kimi.local-server.rest-ws-v2-baseline";
 const REST_WS_V2_PROFILE_TOOLS_BEHAVIOR: &str = "kimi.local-server.rest-ws-v2-profile-tools";
@@ -17,11 +17,12 @@ const REST_WS_V2_GLOBAL_EVENTS_BEHAVIOR: &str =
     "kimi.local-server.rest-ws-v2-global-events-catalog-filter";
 const REST_WS_V2_SUBAGENT_STATUS_BEHAVIOR: &str =
     "kimi.local-server.rest-ws-v2-full-subagent-status";
+const REST_WS_V2_REFRESH_STABLE_BEHAVIOR: &str = "kimi.local-server.rest-ws-v2-refresh-stable";
 
 #[must_use]
 pub fn kimi_local_server_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
-        InterfaceCompatibilityClaimId::new("kimi.local-server.executable-window-3")
+        InterfaceCompatibilityClaimId::new("kimi.local-server.executable-window-4")
             .expect("static Kimi local-server claim id is valid"),
         axis(),
         InterfaceVersionScheme::Semantic,
@@ -33,9 +34,10 @@ pub fn kimi_local_server_claim() -> InterfaceCompatibilityClaim {
             ),
             exact_segment("0.29.0", REST_WS_V2_PROFILE_TOOLS_BEHAVIOR),
             segment("0.29.1", "0.30.0", REST_WS_V2_GLOBAL_EVENTS_BEHAVIOR),
+            exact_segment("0.31.0", REST_WS_V2_SUBAGENT_STATUS_BEHAVIOR),
             exact_segment(
                 KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION,
-                REST_WS_V2_SUBAGENT_STATUS_BEHAVIOR,
+                REST_WS_V2_REFRESH_STABLE_BEHAVIOR,
             ),
         ],
         [],
@@ -68,6 +70,7 @@ pub(super) fn supports_profile_tools(assessment: &InterfaceCompatibilityAssessme
             REST_WS_V2_PROFILE_TOOLS_BEHAVIOR
                 | REST_WS_V2_GLOBAL_EVENTS_BEHAVIOR
                 | REST_WS_V2_SUBAGENT_STATUS_BEHAVIOR
+                | REST_WS_V2_REFRESH_STABLE_BEHAVIOR
         )
     })
 }
@@ -105,8 +108,9 @@ mod tests {
     use super::{
         KIMI_LOCAL_SERVER_BASELINE_VERSION, KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION,
         REST_WS_V2_BASELINE_BEHAVIOR, REST_WS_V2_GLOBAL_EVENTS_BEHAVIOR,
-        REST_WS_V2_PROFILE_TOOLS_BEHAVIOR, REST_WS_V2_SUBAGENT_STATUS_BEHAVIOR,
-        corroborate_versions, kimi_local_server_claim, supports_profile_tools,
+        REST_WS_V2_PROFILE_TOOLS_BEHAVIOR, REST_WS_V2_REFRESH_STABLE_BEHAVIOR,
+        REST_WS_V2_SUBAGENT_STATUS_BEHAVIOR, corroborate_versions, kimi_local_server_claim,
+        supports_profile_tools,
     };
     use crate::kimi_code_binding;
     use swallowtail_core::InterfaceCompatibilityAssessment;
@@ -122,7 +126,7 @@ mod tests {
             claim.latest_qualified().as_str(),
             KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION
         );
-        assert_eq!(claim.milestones().len(), 4);
+        assert_eq!(claim.milestones().len(), 5);
 
         for (qualified, behavior) in [
             ("0.28.1", REST_WS_V2_BASELINE_BEHAVIOR),
@@ -131,6 +135,7 @@ mod tests {
             ("0.29.2", REST_WS_V2_GLOBAL_EVENTS_BEHAVIOR),
             ("0.30.0", REST_WS_V2_GLOBAL_EVENTS_BEHAVIOR),
             ("0.31.0", REST_WS_V2_SUBAGENT_STATUS_BEHAVIOR),
+            ("0.31.1", REST_WS_V2_REFRESH_STABLE_BEHAVIOR),
         ] {
             let binding = kimi_code_binding(qualified).expect("fixture version binds");
             let InterfaceCompatibilityAssessment::Qualified(matched) =

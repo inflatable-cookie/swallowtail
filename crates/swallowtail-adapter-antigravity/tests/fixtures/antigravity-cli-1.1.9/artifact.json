@@ -1,0 +1,11 @@
+{
+  "artifact": "agy",
+  "observed_version": "1.1.9",
+  "platform": "darwin-arm64",
+  "sha256": "a27bff8d7c47fe5407e6740f14ecef73e86fb65ec73fec77b0765f8849024383",
+  "signature_authority": "Developer ID Application: Google LLC (EQHXZ8M8AV)",
+  "source_commit": "03e095ac3619462ecd0928f3f5470387dbda6a00",
+  "source_tags": ["1.1.8", "1.1.9"],
+  "qualified_tag": "1.1.9",
+  "capture_date": "2026-07-31"
+}

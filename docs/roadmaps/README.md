@@ -13,9 +13,9 @@ shape.
 
 ## Next Task
 
-Execute [g03 card 012](g03/batch-cards/012-cursor-acp-interactive-driver.md).
-Implement the Cursor first-party ACP interactive driver from card 010's frozen
-corpus without widening its route, access, or lifecycle claims.
+Run the g03 prepared-facade usability reassessment against current Nucleus and
+Soundcheck adoption evidence. Identify portable integration friction before
+compiling the next bounded milestone.
 
 ## Index
 

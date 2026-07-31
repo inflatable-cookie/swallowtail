@@ -9,6 +9,9 @@ publish.workspace = true
 rust-version.workspace = true
 description = "Qwen Code harness drivers for Swallowtail"
 
+[features]
+live-probes = []
+
 [lib]
 doctest = false
 
@@ -26,3 +29,8 @@ swallowtail-testkit.workspace = true
 
 [lints]
 workspace = true
+
+[[test]]
+name = "live_installed_probe"
+path = "tests/live_installed_probe.rs"
+required-features = ["live-probes"]

@@ -10,6 +10,9 @@ rust-version.workspace = true
 description = "Grok Build ACP harness driver for Swallowtail"
 autotests = false
 
+[features]
+live-probes = []
+
 [lib]
 doctest = false
 
@@ -25,6 +28,7 @@ swallowtail-runtime.workspace = true
 [dev-dependencies]
 futures-executor = "0.3"
 futures-util = "0.3"
+swallowtail-host-local.workspace = true
 swallowtail-testkit.workspace = true
 
 [lints]
@@ -37,3 +41,12 @@ path = "tests/discovery_suite.rs"
 [[test]]
 name = "acp_suite"
 path = "tests/acp_suite.rs"
+
+[[test]]
+name = "compatibility_corpus"
+path = "tests/compatibility_corpus.rs"
+
+[[test]]
+name = "live_installed_probe"
+path = "tests/live_installed_probe.rs"
+required-features = ["live-probes"]

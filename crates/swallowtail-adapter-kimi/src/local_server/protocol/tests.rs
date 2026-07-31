@@ -345,6 +345,24 @@ fn selected_interactive_events_preserve_turn_and_terminal_meaning() {
 }
 
 #[test]
+fn optional_0_31_1_interrupt_reason_does_not_replace_terminal_reason() {
+    let fixture = include_bytes!(concat!(
+        "../../../tests/fixtures/kimi-code-0.31.1/",
+        "turn-ended-interrupted.jsonl"
+    ));
+    let WsFrame::Event(envelope) = decode_ws_frame(fixture).expect("0.31.1 event decodes") else {
+        panic!("fixture must be an event");
+    };
+    assert_eq!(
+        envelope.event,
+        WsEvent::TurnEnded {
+            turn_id: 8,
+            reason: TurnEndReason::Cancelled,
+        }
+    );
+}
+
+#[test]
 fn bounded_unknown_semantic_event_preserves_only_its_namespace() {
     let event = decode_ws_frame(
         br#"{"type":"future.private","seq":11,"epoch":"fixture-epoch","session_id":"fixture-session","timestamp":"2026-07-27T00:00:02.000Z","payload":{"secret":"private"}}"#,

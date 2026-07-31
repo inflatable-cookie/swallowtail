@@ -11,12 +11,14 @@ use crate::failure::failure;
 
 pub const GROK_BUILD_ACP_AXIS: &str = "grok-build.executable";
 pub const GROK_BUILD_ACP_BASELINE_VERSION: &str = "0.2.114";
-pub const GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION: &str = "0.2.114";
+pub const GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION: &str = "0.2.117";
 pub const GROK_BUILD_SUBSCRIPTION_ACCESS_PROFILE_ID: &str =
     "grok-build.subscription.delegated-oauth";
 pub const GROK_BUILD_SUBSCRIPTION_AUDIENCE: &str = "grok-build.subscription";
 
 pub(crate) const GROK_BUILD_ACP_BEHAVIOR: &str = "grok-build.acp-v1.cached-token-activation-v1";
+pub(crate) const GROK_BUILD_ACP_TASK_CONTROL_BEHAVIOR: &str =
+    "grok-build.acp-v1.cached-token-task-control-v2";
 const MAX_VERSION_BYTES: usize = 64;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -66,16 +68,24 @@ pub fn grok_build_acp_binding(value: &str) -> Option<InterfaceVersionBinding> {
 #[must_use]
 pub fn grok_build_acp_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
-        InterfaceCompatibilityClaimId::new("grok-build.acp.executable-window-1")
+        InterfaceCompatibilityClaimId::new("grok-build.acp.executable-window-2")
             .expect("static Grok claim id is valid"),
         axis(),
         InterfaceVersionScheme::Semantic,
         InterfaceNewerVersionPosture::AllowUnverified,
-        [InterfaceVersionSegment::exact(
-            version(GROK_BUILD_ACP_BASELINE_VERSION),
-            behavior(GROK_BUILD_ACP_BEHAVIOR),
-            InterfaceSupportStatus::Maintained,
-        )],
+        [
+            InterfaceVersionSegment::new(
+                version(GROK_BUILD_ACP_BASELINE_VERSION),
+                version("0.2.116"),
+                behavior(GROK_BUILD_ACP_BEHAVIOR),
+                InterfaceSupportStatus::Maintained,
+            ),
+            InterfaceVersionSegment::exact(
+                version(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION),
+                behavior(GROK_BUILD_ACP_TASK_CONTROL_BEHAVIOR),
+                InterfaceSupportStatus::Maintained,
+            ),
+        ],
         [],
     )
     .expect("static Grok compatibility claim is valid")
@@ -107,10 +117,12 @@ pub(crate) fn select_grok_acp_plan(
             "Grok Build executable version is incompatible with this driver",
         ));
     }
-    if assessment
-        .behavior_revision()
-        .is_none_or(|revision| revision.as_str() != GROK_BUILD_ACP_BEHAVIOR)
-    {
+    if assessment.behavior_revision().is_none_or(|revision| {
+        !matches!(
+            revision.as_str(),
+            GROK_BUILD_ACP_BEHAVIOR | GROK_BUILD_ACP_TASK_CONTROL_BEHAVIOR
+        )
+    }) {
         return Err(failure(
             "swallowtail.grok.acp.behavior_incompatible",
             "Grok Build ACP behavior is not mapped by this driver",
@@ -136,23 +148,44 @@ fn behavior(value: &str) -> InterfaceBehaviorRevision {
 #[cfg(test)]
 mod tests {
     use super::{
-        GROK_BUILD_ACP_AXIS, GROK_BUILD_ACP_BEHAVIOR, grok_build_acp_binding, grok_build_acp_claim,
+        GROK_BUILD_ACP_AXIS, GROK_BUILD_ACP_BEHAVIOR, GROK_BUILD_ACP_TASK_CONTROL_BEHAVIOR,
+        grok_build_acp_binding, grok_build_acp_claim,
     };
     use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
 
     #[test]
-    fn exact_release_is_qualified_and_later_stable_is_unverified() {
+    fn both_segments_are_qualified_and_later_stable_is_unverified() {
         let claim = grok_build_acp_claim();
-        assert!(claim.supports(&version("0.2.114")));
+        for candidate in ["0.2.114", "0.2.115", "0.2.116", "0.2.117"] {
+            assert!(claim.supports(&version(candidate)), "missing {candidate}");
+        }
+        for (candidate, behavior) in [
+            ("0.2.114", GROK_BUILD_ACP_BEHAVIOR),
+            ("0.2.115", GROK_BUILD_ACP_BEHAVIOR),
+            ("0.2.116", GROK_BUILD_ACP_BEHAVIOR),
+            ("0.2.117", GROK_BUILD_ACP_TASK_CONTROL_BEHAVIOR),
+        ] {
+            assert_eq!(
+                claim
+                    .assess(&version(candidate))
+                    .behavior_revision()
+                    .unwrap()
+                    .as_str(),
+                behavior
+            );
+        }
         for rejected in ["0.2.0", "0.2.111", "0.2.112", "0.2.113", "0.2.114-alpha.1"] {
             assert!(!claim.permits(&version(rejected)));
         }
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("0.2.115"))
+            claim.assess(&version("0.2.118"))
         else {
             panic!("later stable release remains unverified");
         };
-        assert_eq!(newer.behavior_revision().as_str(), GROK_BUILD_ACP_BEHAVIOR);
+        assert_eq!(
+            newer.behavior_revision().as_str(),
+            GROK_BUILD_ACP_TASK_CONTROL_BEHAVIOR
+        );
     }
 
     #[test]

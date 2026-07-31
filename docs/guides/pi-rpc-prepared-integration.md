@@ -32,10 +32,20 @@ workspace, or fallback route.
 
 ## Version Posture
 
-Pi 0.80.10 is the qualified strict-LF RPC baseline. Discovery records the exact
-installed version. A later stable release is admitted as unverified, remains
-visible in evidence, and uses the latest qualified behavior mapping. Older or
-prerelease versions do not prepare.
+Pi `0.80.10` is the qualified strict-LF RPC baseline. Exact published
+`0.81.0`, `0.81.1`, `0.82.0`, `0.82.1`, and `0.83.0` are also maintained with
+their own behavior milestones. Discovery records the exact installed version.
+A later stable release is admitted as unverified, remains visible in evidence,
+and uses the latest qualified behavior mapping. Unpublished gaps, older points,
+and prereleases do not prepare.
+
+The installed npm form may use an interpreted launcher such as
+`#!/usr/bin/env node`. `swallowtail-host-local` represents that shape through
+`LocalExecutableLaunch`: host selection fixes the exact interpreter, script
+prefix, and any bounded bootstrap environment before approving the unchanged
+opaque executable target. Ambient environment remains cleared. The Pi adapter
+does not search PATH, inspect npm layouts, or substitute a launcher. Exact
+installed `0.83.0` discovery is proven through this path.
 
 ## Execution Boundary
 

@@ -121,7 +121,7 @@ spine:
   bounded-workspace app-server interactive sessions through runtime host ports
 - `swallowtail-adapter-claude-agent` implements installed discovery,
   ambient read-write one-prompt structured runs and read-only interactive
-  sessions for Claude Agent ACP `0.53.0..=0.61.0`, excluding `0.58.0`, over
+  sessions for Claude Agent ACP `0.53.0..=0.64.0`, excluding `0.58.0`, over
   ACP v1 stdio; stable newer
   versions remain visible and unverified, while separate local-subscription
   and public-API-key profiles, model confirmation, ambient configuration,
@@ -165,7 +165,7 @@ spine:
   latest private handle, one planned raw-WebSocket rollover, local-only
   interruption, and joined two-generation cleanup under both host identities
 - `swallowtail-adapter-kimi` implements exact Kimi Code `0.28.1` and
-  route-specific `0.29.0..=0.31.0` behavior segments. Its ACP route owns ambient-host
+  route-specific `0.29.0..=0.31.1` behavior segments. Its ACP route owns ambient-host
   interactive new, load-with-replay, replay-free resume, bounded writes, and
   negotiated model evidence. Its separate headless route owns one default-
   engine stream-JSON prompt with durable provider retention and joined process
@@ -178,7 +178,8 @@ spine:
   API-key catalogue and exact `kimi-k3` direct route over host-approved HTTP/SSE;
   it shares only structural compatible-chat encoding and decoding with
   llama.cpp and owns its access, reasoning, error, usage, and lifecycle mapping
-- `swallowtail-adapter-pi` implements the pinned Pi `0.80.10` restrictive
+- `swallowtail-adapter-pi` implements maintained Pi
+  `0.80.10`, `0.81.0`, `0.81.1`, `0.82.0`, `0.82.1`, and `0.83.0` restrictive
   ambient-host RPC subset over supervised strict-LF JSONL stdio with exact
   downstream provider/model routing, prompt, steering, follow-up, correlated
   extension UI, native abort, deadlines, joined credential-last cleanup, and
@@ -197,11 +198,44 @@ spine:
   continuation or serial interactive turns with private continuation; both
   retain exact billed cost and connection-ending cancellation, while a
   separate language-models driver exposes bounded hosted catalogue evidence
-- `swallowtail-adapter-grok` currently realizes exact installed Grok Build
-  `0.2.114` discovery, signed source-revision binding, delegated subscription
-  access preparation, ambient configuration, durable-retention capability,
-  and visible later-stable unverified posture; ACP session execution remains
-  the active g02.043 implementation batch
+- `swallowtail-adapter-grok` realizes maintained installed Grok Build
+  `0.2.114..=0.2.117` discovery with exact source-revision binding, delegated
+  subscription access preparation, ambient configuration, durable-retention
+  capability, structured and interactive ACP execution, and visible
+  later-stable unverified posture; exact `0.2.117` carries a distinct private
+  task-control behavior revision without adding public task-control authority
+- `swallowtail-adapter-cursor` realizes exact Cursor Agent milestones
+  `2026.07.01-41b2de7` and `2026.07.23-e383d2b` through three separate routes:
+  authenticated catalogue,
+  ACP v1 interactive sessions, and headless stream-JSON structured runs. The
+  headless route binds an explicit model and workspace authority, sends prompts
+  on stdin, uses plan mode for read-only execution, projects exact assistant,
+  thinking, correlated tool, usage, and terminal evidence, and joins every
+  cancellation, deadline, success, or failure path. Both qualified calendar
+  dates retain exact opaque build gates; the gap is not inferred and later
+  dates remain visibly unverified. Raw tool payloads and stderr remain private;
+  force flags, implicit sandboxing, and partial-output duplication are not
+  selected
+- `swallowtail-adapter-antigravity` begins Google's separate personal-account
+  harness family with exact Google-signed `agy` `1.1.9` discovery and an
+  authenticated `agy models` catalogue plus a separate headless stream-JSON
+  structured driver. The access profile represents
+  provider-owned local Google Sign-In without credential extraction. Catalogue
+  entries preserve only opaque model identity and do not imply entitlement or
+  invocability. The official `1.1.8` documentation tag and installed `1.1.9`
+  tag share one source commit; only the observed `1.1.9` artifact is qualified.
+  Headless runs bind exact model, read or write authority, optional provider
+  sandboxing, optional effort, optional inline JSON Schema, request-review
+  permission mode, typed activity and usage, cancellation, deadline, and
+  joined cleanup. The same driver exposes a separate ambient read-intent
+  interactive role for restarted turn-scoped continuity: the first turn
+  captures one private conversation id, later turns select only exact
+  `--conversation`, and every child joins before another starts. Ambient
+  `--continue`, public load/resume, and provider-session management remain
+  absent. Dangerous permission bypass is never selected. Gemini and enterprise
+  project access remain separate. `prepare_antigravity` exposes explicit
+  catalogue, headless-run, and exact-continuation branches without selecting a
+  route or authority fallback
 - `swallowtail-adapter-openai` implements separate public-API drivers for
   background Responses and Realtime media. The background structured-run route
   owns explicit temporary retention, one create attempt, maximum-one cursor
@@ -213,15 +247,17 @@ spine:
   identities; transport loss, provider failure, protocol drift, and
   cancellation uncertainty remain distinct. A separate public Models branch
   reports key-visible entries without inferring background or Realtime support
-- `swallowtail-adapter-qwen` implements the pinned Qwen Code `v0.19.11`
-  headless structured-run route with exact read-only argv, text stdin, bounded
+- `swallowtail-adapter-qwen` implements maintained Qwen Code
+  `0.19.11..=0.20.1` and `0.21.0..=0.21.2` headless behavior segments with
+  exact read-only argv, text stdin, bounded
   stream JSON, typed usage, explicit native budgets, durable local retention,
   redacted terminal classifications, host deadline and cancellation, joined
   process cleanup, and `AmbientHost` isolation without a sandbox claim; the
   production driver passes the provider-neutral one-shot profile under local
   and remote-authoritative host identities. Its separate safe-mode stream-JSON
   control operation verifies and calls `get_available_models`, then closes and
-  joins the ephemeral child without opening a model session
+  joins the ephemeral child without opening a model session. The `0.21.0`
+  segment records upstream filtering of image-only catalogue entries
 
 There is no global async executor, durable credential store, or consumer
 dependency. Concrete libcurl clients remain private to their adapters and run
@@ -297,7 +333,7 @@ Crate status:
 - `swallowtail-adapter-codex` — realized for bounded exec runs plus local stdio
   app-server model discovery and interactive sessions
 - `swallowtail-adapter-claude-agent` — realized for exact installed wrapper
-  discovery and four private behavior revisions across the maintained ACP
+  discovery and six private behavior revisions across the maintained ACP
   range, plus independent ambient read-write one-prompt structured and
   read-only interactive roles with explicit local-subscription or public-API-
   key access, no-argument process launch, bounded read callbacks, typed
@@ -593,15 +629,18 @@ ACP prompt correlation is installed and written before its joined waiter task
 starts, so immediate cancellation cannot overtake the provider request. The
 installed `0.51.0` probe is separately gated and ignored by default.
 
-The Claude Agent lifecycle corpus separately freezes close and delete at every
-qualified behavior milestone plus the unpublished-package exclusion.
+The original Claude Agent lifecycle corpus freezes close and delete through
+`0.61.0` plus the unpublished-package exclusion. Exact source deltas and
+adapter conformance carry that unchanged mapping through the newer private
+`0.62.0`, `0.63.0`, and `0.64.0` behavior milestones.
 Qualified close tears down only active in-memory resources and preserves
 history. Qualified delete tears down an active target when present, then uses
 the exact Agent SDK path that removes the primary local transcript and sibling
 session directory. That evidence supports provider-data deletion with
 provider-defined descendants, but no hard-erasure or Anthropic API service-data
-claim. Missing and repeated operations reject. Published `0.62.0` remains
-unverified-newer rather than extending the guaranteed range.
+claim. Exact `0.62.0` retains the `0.61.0` behavior; exact `0.63.0` and
+`0.64.0` add private behavior revisions without changing deletion truth.
+Later stable versions remain visible and unverified.
 
 The Claude Agent stdio driver now realizes the qualified mapping. Initialization
 requires independently advertised close and delete capabilities before session
@@ -713,6 +752,17 @@ remote-authoritative identities, exact classification, redaction, terminal
 state separation, and process join without installing or invoking a provider
 harness.
 
+The opaque executable target may resolve to a host-private launch recipe for
+interpreted installed harnesses. One recipe fixes the exact program, immutable
+bounded prefix arguments, and optional bounded bootstrap environment before an
+operation starts. The local host clears ambient environment, applies bootstrap
+values, appends driver arguments after the prefix, then applies any explicit
+request environment. Drivers and stable records never receive the program,
+script path, prefix, or bootstrap values. Native binaries are the zero-prefix
+case. This keeps npm, Python, Ruby, JVM, and similar launch mechanics in host
+policy without adding PATH search, provider-specific launcher logic, or
+executable fallback to adapters.
+
 Harness configuration posture is now a separate provider-neutral preflight
 boundary. Configured instances, operation requirements, immutable plans, and
 runtime request policy distinguish explicit ambient configuration from an
@@ -724,7 +774,14 @@ configuration lease and capability-scoped service are contracted. Absent
 posture remains unmigrated state, not an ambient alias; no posture falls back
 to another.
 
-The Pi RPC records compose with the existing long-lived RPC profile. One
+The Pi RPC records compose with the existing long-lived RPC profile. Exact
+published points from baseline `0.80.10` through `0.83.0` now form five
+maintained behavior segments. They retain strict-LF framing while separately
+recording thinking-level and nested-usage evidence, summarization-retry events,
+direct-bash correlation, and the later direct-bash extension hook. Swallowtail
+does not expose direct bash or extensions, and retry evidence still fails under
+the disabled-retry policy. Later stable points remain visible unverified;
+unpublished gaps and prereleases remain incompatible. One
 restrictive policy binds one active operation, two completed prompts, one
 pending steering message, one pending follow-up, no ambient customization, no
 update, telemetry, package, or automatic-retry action, and explicit
@@ -748,7 +805,8 @@ failures, bounded prompt concurrency, redaction, and visible cleanup failure
 without weakening terminal provider truth.
 
 Pi provider-session continuity remains outside the production descriptor.
-Research 053 checks every stable point from `0.80.10` through `0.82.1`.
+Research 053 plus the g03.010 range corpus check every stable point from
+`0.80.10` through `0.83.0`.
 Public RPC session switching recreates runtime services from the cwd stored in
 the session file, checks only that the directory exists, and exposes no
 effective cwd for host-resource corroboration. The current ephemeral profile
@@ -855,7 +913,7 @@ session, background run, managed agent, realtime media, SDK, attached runtime,
 and owned-serving operations remain separate types and methods. There is no
 generic prompt method.
 
-The current 26 production routes form six facade implementation families:
+The current 30 production routes form six facade implementation families:
 installed harness, attached harness network, hosted direct and provider-owned
 state, realtime connection, embedded SDK, and local model runtime. Family
 helpers may share host and preparation mechanics. They cannot select a
@@ -895,6 +953,17 @@ request, and host services to the existing runtime role. Preflight, topology,
 cancellation, deadlines, callbacks, terminal outcomes, and joined cleanup are
 unchanged. `low_level_driver`, `plan`, `request`, and `into_parts` preserve the
 advanced escape hatch and current consumer path. No new crate was needed.
+
+Cursor now uses the same provider-wide prepared foundation without sharing a
+transport. `prepare_cursor` requires an explicit `Catalogue`, `Acp`, or
+`Headless` branch before executable discovery and returns a route-specific
+prepared integration type. Catalogue binds no model route. ACP binds one
+ambient read-write durable session without model selection. Headless requires
+an explicit model plus read-only or read-write resource authority for one
+durable structured run. Each operation retains exact driver, transport,
+facade, access, host, target, release assessment, and observable-activity
+evidence. The facade adds no fallback, generic prompt method, credential
+extraction, sandbox assumption, or provider-session management claim.
 
 Kimi Code is the second realized facade and first non-Codex proof. Its
 installed facade requires explicit ACP or headless selection before discovery.
@@ -1119,12 +1188,15 @@ provider-documented foreground `kimi web --no-open` process, local REST,
 WebSocket protocol version `2`, exact server metadata, and an opaque bearer
 credential lease. Attached and owned-foreground topologies remain distinct.
 The implementation qualifies reversible archive and restore across exact Kimi
-Code `0.28.1`, exact `0.29.0`, `0.29.1..=0.30.0`, and exact `0.31.0`. The
+Code `0.28.1`, exact `0.29.0`, `0.29.1..=0.30.0`, exact `0.31.0`, and exact
+`0.31.1`. The
 middle range has a separate behavior revision for global WebSocket event
 fan-out and filtered configured-model discovery. Exact `0.31.0` adds full
-subagent status snapshots and derived-model display aliases; Swallowtail keeps
-those records as non-rendered progress and derives portable subagent activity
-from dedicated lifecycle events. The route does not qualify deletion or
+subagent status snapshots and derived-model display aliases. Exact `0.31.1`
+uses workspace-scoped session lookup, stabilizes provider-model refresh, and
+may add optional turn-interruption detail. Swallowtail keeps status records as
+non-rendered progress, retains required terminal reason as authority, and
+derives portable subagent activity from dedicated lifecycle events. The route does not qualify deletion or
 change the unsupported ACP mapping. Attached preparation preserves the
 external server. Owned preparation launches one approved foreground child on
 the approved loopback port and joins it on close. Both require exact metadata,

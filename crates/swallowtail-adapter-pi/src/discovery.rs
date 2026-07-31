@@ -227,13 +227,15 @@ mod tests {
 
     #[test]
     fn parser_accepts_only_bare_pi_semver() {
-        assert_eq!(
-            parse_version(b"0.80.10\n")
-                .expect("version parses")
-                .version()
-                .as_str(),
-            "0.80.10"
-        );
+        for candidate in ["0.80.10", "0.83.0"] {
+            assert_eq!(
+                parse_version(format!("{candidate}\n").as_bytes())
+                    .expect("version parses")
+                    .version()
+                    .as_str(),
+                candidate
+            );
+        }
         for output in [
             b"pi 0.80.10".as_slice(),
             b"0.80.10 extra".as_slice(),

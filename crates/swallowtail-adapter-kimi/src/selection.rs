@@ -9,9 +9,9 @@ use crate::failure::failure;
 
 pub const KIMI_CODE_AXIS: &str = "kimi-code.executable";
 pub const KIMI_CODE_BASELINE_VERSION: &str = "0.28.1";
-pub const KIMI_CODE_LATEST_QUALIFIED_VERSION: &str = "0.31.0";
+pub const KIMI_CODE_LATEST_QUALIFIED_VERSION: &str = "0.31.1";
 pub const KIMI_HEADLESS_BASELINE_VERSION: &str = "0.29.0";
-pub const KIMI_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "0.31.0";
+pub const KIMI_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "0.31.1";
 
 const LEGACY_REASONING_BEHAVIOR: &str = "kimi.acp.reasoning.legacy-select-v1";
 const DECLARED_EFFORT_BEHAVIOR: &str = "kimi.acp.reasoning.declared-effort-v2";
@@ -59,7 +59,7 @@ pub fn kimi_code_binding(value: &str) -> Option<InterfaceVersionBinding> {
 #[must_use]
 pub fn kimi_acp_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
-        InterfaceCompatibilityClaimId::new("kimi.acp.executable-window-3")
+        InterfaceCompatibilityClaimId::new("kimi.acp.executable-window-4")
             .expect("static Kimi claim id is valid"),
         axis(),
         InterfaceVersionScheme::Semantic,
@@ -85,7 +85,7 @@ pub fn kimi_acp_claim() -> InterfaceCompatibilityClaim {
 #[must_use]
 pub fn kimi_headless_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
-        InterfaceCompatibilityClaimId::new("kimi.headless.executable-window-2")
+        InterfaceCompatibilityClaimId::new("kimi.headless.executable-window-3")
             .expect("static Kimi headless claim id is valid"),
         axis(),
         InterfaceVersionScheme::Semantic,
@@ -215,9 +215,9 @@ mod tests {
         assert_eq!(segments.len(), 2);
         assert_eq!(segments[0].minimum(), segments[0].maximum());
         assert_eq!(segments[1].minimum().as_str(), "0.29.0");
-        assert_eq!(segments[1].maximum().as_str(), "0.31.0");
+        assert_eq!(segments[1].maximum().as_str(), "0.31.1");
         assert!(claim.supports(&version("0.28.1")));
-        for qualified in ["0.29.0", "0.29.1", "0.29.2", "0.30.0", "0.31.0"] {
+        for qualified in ["0.29.0", "0.29.1", "0.29.2", "0.30.0", "0.31.0", "0.31.1"] {
             assert!(claim.supports(&version(qualified)));
         }
         for rejected in ["0.28.0", "0.28.2", "0.29.0-rc.1", "invalid"] {
@@ -250,7 +250,7 @@ mod tests {
     fn headless_claim_starts_at_the_audited_default_runner() {
         let claim = kimi_headless_claim();
         assert!(!claim.permits(&version("0.28.1")));
-        for qualified in ["0.29.0", "0.29.1", "0.29.2", "0.30.0", "0.31.0"] {
+        for qualified in ["0.29.0", "0.29.1", "0.29.2", "0.30.0", "0.31.0", "0.31.1"] {
             assert!(claim.supports(&version(qualified)));
         }
         assert!(matches!(
@@ -269,6 +269,7 @@ mod tests {
             ("0.29.2", true, KimiAcpBehavior::DeclaredEffort),
             ("0.30.0", true, KimiAcpBehavior::DeclaredEffort),
             ("0.31.0", true, KimiAcpBehavior::DeclaredEffort),
+            ("0.31.1", true, KimiAcpBehavior::DeclaredEffort),
             ("0.32.0", false, KimiAcpBehavior::DeclaredEffort),
         ] {
             let observation = InstalledExecutableObservation::classify(

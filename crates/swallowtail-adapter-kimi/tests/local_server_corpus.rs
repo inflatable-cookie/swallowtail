@@ -58,7 +58,9 @@ fn local_server_claim_is_separate_and_forward_permissive() {
             .as_str()
     );
 
-    for exact in ["0.28.1", "0.29.0", "0.29.1", "0.29.2", "0.30.0", "0.31.0"] {
+    for exact in [
+        "0.28.1", "0.29.0", "0.29.1", "0.29.2", "0.30.0", "0.31.0", "0.31.1",
+    ] {
         let binding = kimi_code_binding(exact).expect("exact version binds");
         assert!(matches!(
             claim.assess(binding.version()),
@@ -162,4 +164,61 @@ fn later_currentness_corpus_is_bounded_valid_and_exactly_provenanced() {
             .iter()
             .any(|value| value == "prompt_submit")
     );
+}
+
+#[test]
+fn exact_0_31_1_corpus_binds_route_deltas_to_expanded_claims() {
+    let release: serde_json::Value =
+        serde_json::from_str(include_str!("fixtures/kimi-code-0.31.1/release.json"))
+            .expect("0.31.1 release corpus is JSON");
+    assert_eq!(release["release"]["version"], "0.31.1");
+    assert_eq!(release["production_ceiling_during_corpus"], "0.31.0");
+    assert_eq!(
+        release["acp"]["events_map_blob"],
+        "0448f2eb9cb111755c5b0855f5ec72bf4d6bcd4c"
+    );
+    assert_eq!(
+        release["headless"]["renderer_blob_0_31_0"],
+        release["headless"]["renderer_blob_0_31_1"]
+    );
+    assert_eq!(release["headless"]["experimental_v2_selected"], false);
+    assert_eq!(
+        release["local_server"]["behavior"],
+        "kimi.local-server.rest-ws-v2-refresh-stable"
+    );
+    assert_eq!(
+        kimi_acp_descriptor()
+            .interface_compatibility(
+                &swallowtail_core::InterfaceVersionAxis::new(KIMI_CODE_AXIS).expect("valid axis"),
+            )
+            .expect("ACP claim exists")
+            .latest_qualified()
+            .as_str(),
+        "0.31.1"
+    );
+    assert_eq!(
+        kimi_headless_descriptor()
+            .interface_compatibility(
+                &swallowtail_core::InterfaceVersionAxis::new(KIMI_CODE_AXIS).expect("valid axis"),
+            )
+            .expect("headless claim exists")
+            .latest_qualified()
+            .as_str(),
+        "0.31.1"
+    );
+    assert_eq!(
+        kimi_local_server_claim().latest_qualified().as_str(),
+        "0.31.1"
+    );
+
+    let provenance = include_str!("fixtures/kimi-code-0.31.1/README.md");
+    for exact in [
+        "69f0400a504518d2d6665933c6a9b2beddd6398d",
+        "6b56c11697771fe596099b38bafae539820309a4",
+        "a4ea9a07cd0371eabbc4769065a148a204d63db0",
+        "f6bd417babbce6db6222417451808011e318b7a80e5d0fb53592167874376704",
+    ] {
+        assert!(include_str!("fixtures/kimi-code-0.31.1/release.json").contains(exact));
+    }
+    assert!(provenance.contains("installed `0.31.0` executable was not"));
 }

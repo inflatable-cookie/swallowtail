@@ -1,13 +1,13 @@
 # 007 ACP Range Maintenance Acceptance
 
-Status: paused
+Status: superseded
 Owner: Tom
 Created: 2026-07-31
 Milestone: `../002-claude-and-gemini-acp-range-maintenance.md`
 Depends on: cards 005-006
 
-Paused: 2026-07-31 with roadmap g03.002. No acceptance work is required while
-the underlying range extensions remain paused.
+Superseded. Claude receives standalone acceptance on card 041; Gemini is
+deferred outside the active generation queue.
 
 ## Goal
 

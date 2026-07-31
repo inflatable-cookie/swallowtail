@@ -9,6 +9,9 @@ publish.workspace = true
 rust-version.workspace = true
 description = "Pi RPC adapter for Swallowtail"
 
+[features]
+live-probes = []
+
 [lib]
 doctest = false
 
@@ -24,7 +27,13 @@ swallowtail-runtime.workspace = true
 [dev-dependencies]
 futures-executor = "0.3"
 futures-util = "0.3"
+swallowtail-host-local.workspace = true
 swallowtail-testkit.workspace = true
 
 [lints]
 workspace = true
+
+[[test]]
+name = "live_installed_probe"
+path = "tests/live_installed_probe.rs"
+required-features = ["live-probes"]

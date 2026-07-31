@@ -27,6 +27,7 @@ pub(super) struct QwenSessionHandle {
     request_id: RequestId,
     runtime_id: RuntimeSessionId,
     pub(super) model: swallowtail_core::ModelId,
+    pub(super) expected_version: swallowtail_core::InterfaceVersion,
     pub(super) working_resource: swallowtail_runtime::WorkingResourceRef,
     pub(super) services: HostServices,
     pub(super) state: Arc<Mutex<SessionState>>,
@@ -44,7 +45,7 @@ impl InteractiveSessionDriver for QwenHeadlessDriver {
         services: HostServices,
     ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
         Box::pin(async move {
-            validate_open(&plan, &request, &services)?;
+            let selection = validate_open(&plan, &request, &services)?;
             let active = Arc::new(Mutex::new(None));
             let state = Arc::new(Mutex::new(SessionState {
                 provider_session_id: None,
@@ -70,6 +71,7 @@ impl InteractiveSessionDriver for QwenHeadlessDriver {
                     .model_id()
                     .cloned()
                     .expect("validated Qwen model is present"),
+                expected_version: selection.version().clone(),
                 working_resource: request
                     .working_resource()
                     .cloned()
@@ -138,7 +140,7 @@ fn validate_open(
     plan: &PreflightPlan,
     request: &OpenSessionRequest,
     services: &HostServices,
-) -> Result<(), RuntimeFailure> {
+) -> Result<crate::selection::QwenPlanSelection, RuntimeFailure> {
     if plan.driver_identity().id().as_str() != DRIVER_ID
         || plan.ownership() != InstanceOwnership::HostOwnedEphemeral
     {
@@ -163,7 +165,7 @@ fn validate_open(
             "Qwen interactive session endpoint audience did not match",
         ));
     }
-    crate::selection::validate_qwen_plan_version(plan)?;
+    let selection = crate::selection::validate_qwen_plan_version(plan)?;
     services.require_execution_host(plan.execution_host_id())?;
     if services.task().is_none() || services.process().is_none() || services.time().is_none() {
         return Err(failure(
@@ -239,5 +241,5 @@ fn validate_open(
             "Qwen session deadline elapsed before opening",
         ));
     }
-    Ok(())
+    Ok(selection)
 }

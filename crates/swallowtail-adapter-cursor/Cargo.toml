@@ -15,11 +15,15 @@ doctest = false
 
 [dependencies]
 futures-channel = "0.3"
+serde_json = "1"
 swallowtail-core.workspace = true
+swallowtail-protocol-acp.workspace = true
 swallowtail-runtime.workspace = true
 
 [dev-dependencies]
 futures-executor = "0.3"
+futures-util = "0.3"
+swallowtail-testkit.workspace = true
 
 [lints]
 workspace = true
@@ -27,3 +31,19 @@ workspace = true
 [[test]]
 name = "foundation"
 path = "tests/foundation.rs"
+
+[[test]]
+name = "acp_suite"
+path = "tests/acp_suite.rs"
+
+[[test]]
+name = "headless_suite"
+path = "tests/headless_suite.rs"
+
+[[test]]
+name = "prepared_suite"
+path = "tests/prepared_suite.rs"
+
+[[test]]
+name = "compatibility_corpus"
+path = "tests/compatibility_corpus.rs"

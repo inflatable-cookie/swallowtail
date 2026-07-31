@@ -17,11 +17,11 @@ pub(crate) fn validate(
     plan: &PreflightPlan,
     request: &StructuredRunRequest,
     services: &HostServices,
-) -> Result<(), RuntimeFailure> {
+) -> Result<crate::selection::QwenPlanSelection, RuntimeFailure> {
     if plan.driver_identity().id().as_str() != DRIVER_ID {
         return Err(plan_mismatch("driver"));
     }
-    crate::selection::validate_qwen_plan_version(plan)?;
+    let selection = crate::selection::validate_qwen_plan_version(plan)?;
     services.require_execution_host(plan.execution_host_id())?;
     require_service(
         plan,
@@ -116,7 +116,8 @@ pub(crate) fn validate(
         plan,
         Capability::WorkingResource,
         CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
-    )
+    )?;
+    Ok(selection)
 }
 
 fn require_service(

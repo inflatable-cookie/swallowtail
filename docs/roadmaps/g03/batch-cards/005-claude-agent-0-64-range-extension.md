@@ -1,13 +1,12 @@
 # 005 Claude Agent 0.64 Range Extension
 
-Status: paused
+Status: superseded
 Owner: Tom
 Created: 2026-07-31
 Milestone: `../002-claude-and-gemini-acp-range-maintenance.md`
 Depends on: card 004
 
-Paused: 2026-07-31 with the coupled Claude/Gemini tranche. Recompile Claude
-independently before resuming.
+Superseded by standalone Claude cards 039-041.
 
 ## Goal
 

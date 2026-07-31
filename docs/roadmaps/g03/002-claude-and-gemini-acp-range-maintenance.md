@@ -1,12 +1,12 @@
 # 002 Claude And Gemini ACP Range Maintenance
 
-Status: paused
+Status: superseded
 Owner: Tom
 Created: 2026-07-31
 Depends on: g03.001
 Vision tags: maintained compatibility, installed harnesses, consumer stability
 Contract refs: 011, 015, 020, 029, 032, 037-045
-Planning state: cards 004-007 paused by operator refocus
+Planning state: superseded by g03.015 and the Gemini deferred backlog item
 
 ## Problem
 
@@ -48,7 +48,7 @@ extension without moving either baseline.
 - consumer repository edits, candidate replacement, or publication
 - provider, model, endpoint, credential, or transport fallback
 
-## Pause Decision — 2026-07-31
+## Supersession Decision — 2026-07-31
 
 The operator paused further Gemini qualification after its installed API-key
 route authenticated but returned no prompt response. Google has moved personal
@@ -57,10 +57,11 @@ exact guarantees remain production truth; only the proposed `0.53.0` extension
 is paused.
 
 This roadmap coupled Claude and Gemini into one shared-ACP acceptance tranche.
-Cards 004-007 therefore pause together without discarding their source
-evidence. Claude `0.62.0..=0.64.0` maintenance can be recompiled as an
-independent tranche when it regains priority. No Claude or Gemini support has
-been removed.
+That coupling is now removed. Claude `0.62.0..=0.64.0` maintenance moves to
+standalone roadmap g03.015. Gemini's proposed `0.53.0` extension moves to the
+deferred backlog because Antigravity now owns the active personal-Google
+harness lane and no near-term Gemini revisit is implied. No existing Claude or
+Gemini support is removed.
 
 ## Execution Plan
 
@@ -119,7 +120,5 @@ been removed.
 
 ## Next Planning Checkpoint
 
-Resume only after an explicit operator decision to qualify Gemini's enterprise
-or paid API-key posture, or to extract Claude maintenance into its own tranche.
-Research 075 and roadmaps g03.005-g03.006 now own the active Cursor and
-Antigravity sequence.
+Superseded. Continue Claude through g03.015. Promote Gemini only through its
+backlog evidence gate.

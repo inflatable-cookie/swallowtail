@@ -17,6 +17,8 @@ sed '/<!-- provider-session-lifecycle-matrix:start -->/,$d' "$route_matrix_file"
   LC_ALL=C sort > "$route_matrix_actual"
 
 cat <<'EOF' | LC_ALL=C sort > "$route_matrix_expected"
+antigravity.catalogue
+antigravity.headless
 alibaba.conversations
 anthropic.managed-agent
 anthropic.messages
@@ -26,6 +28,9 @@ claude-agent.acp
 claude-code.headless
 codex.app-server
 codex.exec
+cursor-agent.acp
+cursor-agent.catalogue
+cursor-agent.headless
 deepseek.continuation
 gemini-cli.acp
 gemini-cli.headless
@@ -46,8 +51,8 @@ qwen.headless
 xai.responses-websocket
 EOF
 
-if [ "$(wc -l < "$route_matrix_actual" | tr -d ' ')" -ne 27 ]; then
-  printf 'provider route matrix must contain exactly 27 route rows\n' >&2
+if [ "$(wc -l < "$route_matrix_actual" | tr -d ' ')" -ne 32 ]; then
+  printf 'provider route matrix must contain exactly 32 route rows\n' >&2
   exit 1
 fi
 
@@ -67,8 +72,8 @@ sed -n \
 sed -n 's/^| `\([^`]*\)` |.*$/\1/p' "$route_lifecycle_rows" |
   LC_ALL=C sort > "$route_lifecycle_actual"
 
-if [ "$(wc -l < "$route_lifecycle_actual" | tr -d ' ')" -ne 27 ]; then
-  printf 'provider session lifecycle matrix must contain exactly 27 route rows\n' >&2
+if [ "$(wc -l < "$route_lifecycle_actual" | tr -d ' ')" -ne 32 ]; then
+  printf 'provider session lifecycle matrix must contain exactly 32 route rows\n' >&2
   exit 1
 fi
 
@@ -109,6 +114,8 @@ awk -F '|' '
 ' "$route_lifecycle_rows" | LC_ALL=C sort > "$route_lifecycle_posture_actual"
 
 cat <<'EOF' | LC_ALL=C sort > "$route_lifecycle_posture_expected"
+antigravity.catalogue|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
+antigravity.headless|unsupported|no|unsupported|unsupported|unsupported|unsupported
 alibaba.conversations|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
 anthropic.managed-agent|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
 anthropic.messages|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
@@ -118,6 +125,9 @@ claude-agent.acp|supported|yes|unsupported|unsupported|supported|ProviderDataDel
 claude-code.headless|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
 codex.app-server|supported|yes|supported|supported|supported|ProviderHardDeleted
 codex.exec|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
+cursor-agent.acp|unsupported|no|unsupported|unsupported|unsupported|unsupported
+cursor-agent.catalogue|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
+cursor-agent.headless|unsupported|no|unsupported|unsupported|unsupported|unsupported
 deepseek.continuation|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
 gemini-cli.acp|unsupported|no|unsupported|unsupported|unsupported|unsupported
 gemini-cli.headless|supported|yes|unsupported|unsupported|supported|HistoryRemoved
@@ -146,4 +156,4 @@ python3 "$route_matrix_repo_root/scripts/provider_route_matrix/validate.py" \
 
 python3 "$route_matrix_repo_root/scripts/check-provider-activity-matrix.py"
 
-printf 'provider route, lifecycle, 23-solution feature, and activity matrices passed\n'
+printf 'provider route, lifecycle, 25-solution feature, and activity matrices passed\n'

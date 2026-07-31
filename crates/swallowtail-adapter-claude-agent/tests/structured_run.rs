@@ -38,7 +38,9 @@ fn descriptor_registers_structured_and_interactive_roles_independently() {
 #[test]
 fn one_prompt_run_preserves_version_topology_retention_and_native_close() {
     for host_name in ["fixture.run.local", "fixture.run.remote-authoritative"] {
-        for version in ["0.53.0", "0.54.1", "0.60.0", "0.61.0", "0.62.0", "0.63.0"] {
+        for version in [
+            "0.53.0", "0.54.1", "0.60.0", "0.61.0", "0.62.0", "0.63.0", "0.64.0",
+        ] {
             let host_id = ExecutionHostId::new(host_name).expect("host id");
             let selected = run_selection(host_id.clone(), version);
             let host = FixtureHost::new(Scenario::Success, version);
@@ -105,13 +107,9 @@ fn one_prompt_run_preserves_version_topology_retention_and_native_close() {
                     .count(),
                 1
             );
-            assert_eq!(
-                writes.iter().any(|message| {
-                    message.get("method").and_then(serde_json::Value::as_str)
-                        == Some("session/close")
-                }),
-                !matches!(version, "0.62.0" | "0.63.0")
-            );
+            assert!(writes.iter().any(|message| {
+                message.get("method").and_then(serde_json::Value::as_str) == Some("session/close")
+            }));
             assert!(!writes.iter().any(|message| {
                 message.get("method").and_then(serde_json::Value::as_str) == Some("session/delete")
             }));

@@ -10,6 +10,7 @@ mod attachment;
 mod child;
 mod credential;
 mod deadline;
+mod executable_launch;
 mod host;
 mod hosted;
 mod installed_target;
@@ -27,6 +28,7 @@ mod task;
 mod working_resource;
 mod working_resource_io;
 
+pub use executable_launch::LocalExecutableLaunch;
 pub use host::{LocalProcessHost, LocalProcessHostBuilder};
 pub use limits::{LocalMaterializationLimits, LocalProcessLimits};
 pub use services::LocalHostServices;

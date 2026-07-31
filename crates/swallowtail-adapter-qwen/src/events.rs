@@ -1,4 +1,3 @@
-use crate::PINNED_QWEN_CODE_VERSION;
 use crate::activity::QwenActivityProjection;
 use crate::validation::failure;
 mod terminal;
@@ -7,7 +6,7 @@ mod value;
 use self::terminal::ParsedTerminal;
 use self::value::{session_id, token_usage};
 use serde_json::Value;
-use swallowtail_core::{ModelId, SafeDiagnostic};
+use swallowtail_core::{InterfaceVersion, ModelId, SafeDiagnostic};
 use swallowtail_runtime::{
     ActivityObservation, ActivityOperationId, OperationContent, ProviderObservation, RuntimeEvent,
     RuntimeEventKind, RuntimeFailure,
@@ -18,6 +17,7 @@ const MAXIMUM_EVENT_COUNT: usize = 4096;
 
 pub(crate) struct QwenEventParser {
     model: ModelId,
+    expected_version: InterfaceVersion,
     expected_session_id: Option<String>,
     pending: Vec<u8>,
     sequence: u64,
@@ -33,11 +33,13 @@ pub(crate) struct QwenEventParser {
 impl QwenEventParser {
     pub(crate) fn with_expected_session(
         model: ModelId,
+        expected_version: InterfaceVersion,
         expected_session_id: Option<String>,
         operation_id: ActivityOperationId,
     ) -> Self {
         Self {
             model,
+            expected_version,
             expected_session_id,
             pending: Vec::new(),
             sequence: 1,
@@ -123,7 +125,7 @@ impl QwenEventParser {
                 || payload.get("model").and_then(Value::as_str) != Some(self.model.as_str())
                 || payload.get("permission_mode").and_then(Value::as_str) != Some("default")
                 || payload.get("qwen_code_version").and_then(Value::as_str)
-                    != Some(PINNED_QWEN_CODE_VERSION)
+                    != Some(self.expected_version.as_str())
             {
                 return Err(malformed_stream());
             }

@@ -1,0 +1,102 @@
+{
+  "axis": "qwen-code.package",
+  "baseline": "0.19.11",
+  "candidate_latest_qualified": "0.21.2",
+  "newer_version_posture": "allow_unverified",
+  "selected_flags": [
+    "--safe-mode",
+    "--approval-mode",
+    "--core-tools",
+    "--exclude-tools",
+    "--max-wall-time",
+    "--max-tool-calls",
+    "--max-session-turns",
+    "--include-partial-messages",
+    "--input-format",
+    "--output-format",
+    "--resume"
+  ],
+  "selected_read_tools": [
+    "read_file",
+    "grep_search",
+    "glob",
+    "list_directory",
+    "lsp"
+  ],
+  "selected_controls": [
+    "can_get_available_models",
+    "get_available_models"
+  ],
+  "stable_versions": [
+    {
+      "version": "0.19.11",
+      "commit": "f22cf5009ee3eb26b5c5de2eca6e1f1d0ffee0ad",
+      "npm_integrity": "sha512-Hf7p/J7dsE0JSP/vG3m8x+/7Yx0Ufc2UZLaTVHnohQoikZ3QWiXT4hMYjTrAO7fPTvGpqrkWqOp7Vq2fEfMtTA==",
+      "classification": "qualified_baseline",
+      "candidate_behavior_revision": "qwen-code.headless.v0.19.11",
+      "stream_types_blob": "6c7eb0d366f36ba0965fcf6b2fe7c840691f7e71",
+      "catalogue_controller_blob": "5f83dd99da05f042345c7dcf6cbf550c92563831",
+      "catalogue_image_only_filter": false
+    },
+    {
+      "version": "0.19.12",
+      "commit": "8dd575cc71601f61fdaaa2d0b2ca6b1527c5335c",
+      "npm_integrity": "sha512-r13/LK6GOtAAFOc52OptliXxkNF/2fN0hifoC82BELdcItkjmOzEZlTDQ7tLEf8XEAvai/LPHePYQoJqChEV0Q==",
+      "classification": "compatible_existing_behavior",
+      "candidate_behavior_revision": "qwen-code.headless.v0.19.11",
+      "stream_types_blob": "6c7eb0d366f36ba0965fcf6b2fe7c840691f7e71",
+      "catalogue_controller_blob": "5f83dd99da05f042345c7dcf6cbf550c92563831",
+      "catalogue_image_only_filter": false
+    },
+    {
+      "version": "0.20.0",
+      "commit": "92fda5603e84ef62a1b29bf6faf4f6a8124a2bf7",
+      "npm_integrity": "sha512-Dm7A5enckn2pzXkauQJ5StKVZEaId8lbxNK5k/sXyJumiFVpi/Y/8X+ntIbBOcMH9QIwaZFAf4tnuPwT9vnOFg==",
+      "classification": "compatible_existing_behavior",
+      "candidate_behavior_revision": "qwen-code.headless.v0.19.11",
+      "stream_types_blob": "6c7eb0d366f36ba0965fcf6b2fe7c840691f7e71",
+      "catalogue_controller_blob": "5f83dd99da05f042345c7dcf6cbf550c92563831",
+      "catalogue_image_only_filter": false
+    },
+    {
+      "version": "0.20.1",
+      "commit": "305b049100606fa093a14b5cd849bff3be16e31a",
+      "npm_integrity": "sha512-KKCOwUw+u6s9NVXBcSzOtnHvWrFiHu4fBPlWk066ZGOlEd2x23q6u0f7jIq5N7PlsQuRYKFPtrVc21RLbf0vpA==",
+      "classification": "compatible_existing_behavior",
+      "candidate_behavior_revision": "qwen-code.headless.v0.19.11",
+      "stream_types_blob": "6c7eb0d366f36ba0965fcf6b2fe7c840691f7e71",
+      "catalogue_controller_blob": "5f83dd99da05f042345c7dcf6cbf550c92563831",
+      "catalogue_image_only_filter": false
+    },
+    {
+      "version": "0.21.0",
+      "commit": "5610eb405212f807a482214ddd28a259da7855d3",
+      "npm_integrity": "sha512-h4t8crH1WTKS4I3uolOQGTzvGu7iW9DuqIegaq+v8yRXTyTkNV7k74AARHPWYh5DJL1ZY/ZCDsOuPsNhaLlnog==",
+      "classification": "compatible_catalogue_filter_milestone",
+      "candidate_behavior_revision": "qwen-code.headless.v0.21.0-catalogue-filter",
+      "stream_types_blob": "6c7eb0d366f36ba0965fcf6b2fe7c840691f7e71",
+      "catalogue_controller_blob": "7b3994d78a1cddd61c202e332707e748b908fb65",
+      "catalogue_image_only_filter": true
+    },
+    {
+      "version": "0.21.1",
+      "commit": "41b4ee8373fb4aa324925e69e0515ca72959ec5b",
+      "npm_integrity": "sha512-UTBegRxy3Sy5PbxyVjezHb/pNp24qxrgUnq8V0cNrnlldkvI8iB3/4N3akwhEI3nAFC3Lu1cNPxIV/gIK9L3uw==",
+      "classification": "compatible_catalogue_filter_milestone",
+      "candidate_behavior_revision": "qwen-code.headless.v0.21.0-catalogue-filter",
+      "stream_types_blob": "6c7eb0d366f36ba0965fcf6b2fe7c840691f7e71",
+      "catalogue_controller_blob": "7b3994d78a1cddd61c202e332707e748b908fb65",
+      "catalogue_image_only_filter": true
+    },
+    {
+      "version": "0.21.2",
+      "commit": "456fc9b02d7ed69357dd87db8fe4bcd7e2e55ac1",
+      "npm_integrity": "sha512-7XgYqIs7CN2EtLi4diwT5gOy6MKmaIrglNq1+VSZZtbFwh1t2IrqMcyCBhKCskVy9xs6Xh5UEUCEC57fsjojeA==",
+      "classification": "compatible_catalogue_filter_milestone",
+      "candidate_behavior_revision": "qwen-code.headless.v0.21.0-catalogue-filter",
+      "stream_types_blob": "6c7eb0d366f36ba0965fcf6b2fe7c840691f7e71",
+      "catalogue_controller_blob": "7b3994d78a1cddd61c202e332707e748b908fb65",
+      "catalogue_image_only_filter": true
+    }
+  ]
+}

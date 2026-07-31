@@ -25,6 +25,7 @@ fn exact_versions_probe_only_the_host_approved_target() {
             ("0.29.2", true),
             ("0.30.0", true),
             ("0.31.0", true),
+            ("0.31.1", true),
             ("0.32.0", false),
         ] {
             let host = topology.execution_host_id().clone();
@@ -53,7 +54,7 @@ fn exact_versions_probe_only_the_host_approved_target() {
                 else {
                     panic!("newer stable version remains unverified");
                 };
-                assert_eq!(unverified.latest_qualified().as_str(), "0.31.0");
+                assert_eq!(unverified.latest_qualified().as_str(), "0.31.1");
             }
             let captured = state.request();
             assert_eq!(captured.executable, executable.as_host_value());

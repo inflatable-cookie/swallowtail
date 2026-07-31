@@ -1,5 +1,9 @@
 use crate::child::LocalProcessHandle;
 use crate::credential::LocalCredentialLeaseState;
+use crate::executable_launch::{
+    LocalExecutableLaunch, MAXIMUM_BOOTSTRAP_ENVIRONMENT_BINDINGS,
+    MAXIMUM_BOOTSTRAP_ENVIRONMENT_BYTES,
+};
 use crate::hosted::{LocalCredentialApproval, LocalEndpointApproval};
 use crate::limits::{LocalMaterializationLimits, LocalProcessLimits};
 use crate::materialization::LocalMaterializationState;
@@ -23,7 +27,7 @@ type EnvironmentValues = Vec<(OsString, OsString)>;
 
 #[derive(Default)]
 pub(crate) struct LocalApprovals {
-    pub(crate) executables: HashMap<ExecutableRef, PathBuf>,
+    pub(crate) executables: HashMap<ExecutableRef, LocalExecutableLaunch>,
     pub(crate) environments: HashMap<EnvironmentRef, EnvironmentValues>,
     pub(crate) working_resources: HashMap<WorkingResourceRef, PathBuf>,
     pub(crate) attachments: HashMap<AttachmentRef, PathBuf>,
@@ -48,7 +52,21 @@ impl LocalProcessHostBuilder {
         reference: ExecutableRef,
         path: impl Into<PathBuf>,
     ) -> Self {
-        self.approvals.executables.insert(reference, path.into());
+        self.approvals
+            .executables
+            .insert(reference, LocalExecutableLaunch::new(path));
+        self
+    }
+
+    /// Approves one exact native or interpreted launch behind an opaque
+    /// executable reference.
+    #[must_use]
+    pub fn approve_executable_launch(
+        mut self,
+        reference: ExecutableRef,
+        launch: LocalExecutableLaunch,
+    ) -> Self {
+        self.approvals.executables.insert(reference, launch);
         self
     }
 
@@ -145,7 +163,7 @@ impl LocalProcessHost {
         request: ProcessRequest,
     ) -> Result<Box<dyn ProcessHandle>, RuntimeFailure> {
         self.validate_arguments(&request)?;
-        let executable = self
+        let launch = self
             .approvals
             .executables
             .get(request.executable())
@@ -155,13 +173,16 @@ impl LocalProcessHost {
                     "Local executable reference is not approved",
                 )
             })?;
-        let mut command = Command::new(executable);
+        self.validate_launch(launch, &request)?;
+        let mut command = Command::new(launch.program());
         command
+            .args(launch.prefix_arguments())
             .args(request.arguments())
             .env_clear()
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
             .stderr(Stdio::piped());
+        command.envs(launch.bootstrap_environment().iter().cloned());
         self.apply_environment(&mut command, &request)?;
         self.apply_working_resource(&mut command, scope, &request)?;
         let mut child = command.spawn().map_err(|_| {
@@ -211,6 +232,52 @@ impl LocalProcessHost {
         } else {
             Ok(())
         }
+    }
+
+    fn validate_launch(
+        &self,
+        launch: &LocalExecutableLaunch,
+        request: &ProcessRequest,
+    ) -> Result<(), RuntimeFailure> {
+        let count = launch
+            .prefix_arguments()
+            .len()
+            .saturating_add(request.arguments().len());
+        let prefix_bytes = launch
+            .prefix_arguments()
+            .iter()
+            .map(|argument| argument.as_os_str().as_encoded_bytes().len())
+            .fold(0usize, usize::saturating_add);
+        let argument_bytes = request
+            .arguments()
+            .map(str::len)
+            .fold(prefix_bytes, usize::saturating_add);
+        if count > self.limits.arguments() || argument_bytes > self.limits.argument_bytes() {
+            return Err(failure(
+                "swallowtail.local_process.argument_limit_exceeded",
+                "Local process arguments exceeded host-approved limits",
+            ));
+        }
+
+        let environment = launch.bootstrap_environment();
+        let environment_bytes = environment
+            .iter()
+            .map(|(name, value)| {
+                name.as_os_str()
+                    .as_encoded_bytes()
+                    .len()
+                    .saturating_add(value.as_os_str().as_encoded_bytes().len())
+            })
+            .fold(0usize, usize::saturating_add);
+        if environment.len() > MAXIMUM_BOOTSTRAP_ENVIRONMENT_BINDINGS
+            || environment_bytes > MAXIMUM_BOOTSTRAP_ENVIRONMENT_BYTES
+        {
+            return Err(failure(
+                "swallowtail.local_process.bootstrap_environment_limit_exceeded",
+                "Local process bootstrap environment exceeded host-approved limits",
+            ));
+        }
+        Ok(())
     }
 
     fn apply_environment(

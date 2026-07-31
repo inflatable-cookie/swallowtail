@@ -1,0 +1,9 @@
+{"type":"system","subtype":"init","apiKeySource":"login","cwd":"/fixture/workspace","session_id":"fixture-session","model":"fixture-model","permissionMode":"default"}
+{"type":"user","session_id":"fixture-session","message":{"role":"user","content":[{"type":"text","text":"private fixture prompt"}]}}
+{"type":"thinking","subtype":"delta","session_id":"fixture-session","text":"Inspecting the bounded fixture."}
+{"type":"thinking","subtype":"completed","session_id":"fixture-session"}
+{"type":"assistant","session_id":"fixture-session","message":{"role":"assistant","content":[{"type":"text","text":"Part "}]}}
+{"type":"tool_call","subtype":"started","session_id":"fixture-session","call_id":"fixture-call-1","tool_call":{"readToolCall":{"args":{"path":"private-fixture-path"}}}}
+{"type":"tool_call","subtype":"completed","session_id":"fixture-session","call_id":"fixture-call-1","tool_call":{"readToolCall":{"result":{"content":"private-provider-tool-result"}}}}
+{"type":"assistant","session_id":"fixture-session","message":{"role":"assistant","content":[{"type":"text","text":"done."}]}}
+{"type":"result","subtype":"success","duration_ms":120,"duration_api_ms":80,"is_error":false,"result":"Part done.","session_id":"fixture-session","request_id":"fixture-request","usage":{"inputTokens":12,"outputTokens":3,"cacheReadTokens":2,"cacheWriteTokens":1}}

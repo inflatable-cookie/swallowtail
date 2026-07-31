@@ -51,7 +51,7 @@ remain untouched by the proof.
 `effigy doctor` still reports the known 19 oversized-file findings: seven
 errors and 12 warnings. The category and count are unchanged.
 
-## Next Task
+## Recorded Next Step
 
 Card 016 is ready to replace the held unpublished candidate and its handoffs
 from one validated prepared-facade source snapshot. Publication remains a

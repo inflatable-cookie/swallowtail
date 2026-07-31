@@ -3,7 +3,7 @@ use crate::handle::QwenProcessCancellation;
 use std::future::poll_fn;
 use std::sync::Arc;
 use std::task::Poll;
-use swallowtail_core::{ModelId, SafeDiagnostic};
+use swallowtail_core::{InterfaceVersion, ModelId, SafeDiagnostic};
 use swallowtail_runtime::{
     ActivityOperationId, BoxFuture, CleanupOutcome, DeadlineObservation, ProcessHandle,
     ProcessOutputChunk, ProcessOutputStream, RuntimeEventSender, RuntimeFailure, TerminalOutcome,
@@ -16,6 +16,7 @@ pub(crate) async fn pump(
     cancellation: Arc<QwenProcessCancellation>,
     deadline: BoxFuture<'static, DeadlineObservation>,
     model: ModelId,
+    expected_version: InterfaceVersion,
     operation_id: ActivityOperationId,
 ) -> TerminalOutcome {
     pump_with_session(
@@ -23,9 +24,7 @@ pub(crate) async fn pump(
         events,
         cancellation,
         deadline,
-        model,
-        None,
-        operation_id,
+        QwenPumpContext::new(model, expected_version, None, operation_id),
     )
     .await
     .outcome
@@ -36,17 +35,42 @@ pub(crate) struct QwenPumpResult {
     pub(crate) session_id: Option<String>,
 }
 
+pub(crate) struct QwenPumpContext {
+    model: ModelId,
+    expected_version: InterfaceVersion,
+    expected_session_id: Option<String>,
+    operation_id: ActivityOperationId,
+}
+
+impl QwenPumpContext {
+    pub(crate) const fn new(
+        model: ModelId,
+        expected_version: InterfaceVersion,
+        expected_session_id: Option<String>,
+        operation_id: ActivityOperationId,
+    ) -> Self {
+        Self {
+            model,
+            expected_version,
+            expected_session_id,
+            operation_id,
+        }
+    }
+}
+
 pub(crate) async fn pump_with_session(
     process: Arc<dyn ProcessHandle>,
     events: RuntimeEventSender,
     cancellation: Arc<QwenProcessCancellation>,
     deadline: BoxFuture<'static, DeadlineObservation>,
-    model: ModelId,
-    expected_session_id: Option<String>,
-    operation_id: ActivityOperationId,
+    context: QwenPumpContext,
 ) -> QwenPumpResult {
-    let mut parser =
-        QwenEventParser::with_expected_session(model, expected_session_id, operation_id);
+    let mut parser = QwenEventParser::with_expected_session(
+        context.model,
+        context.expected_version,
+        context.expected_session_id,
+        context.operation_id,
+    );
     let mut deadline = Some(deadline);
     loop {
         match next_output(process.as_ref(), cancellation.as_ref(), &mut deadline).await {

@@ -9,6 +9,31 @@
   ],
   "routes": [
     {
+      "id": "antigravity.catalogue",
+      "driver": "swallowtail.antigravity.catalogue",
+      "transport": "antigravity-cli-models-stdio",
+      "qualified": "1.1.9",
+      "prepared_profiles": [],
+      "unavailable_operations": [],
+      "not_applicable_operations": ["model-catalogue"],
+      "unknown_posture": "preserve-namespaced",
+      "exact_absences": ["ordinary agent activity"]
+    },
+    {
+      "id": "antigravity.headless",
+      "driver": "swallowtail.antigravity.headless",
+      "transport": "antigravity-stream-json-stdio",
+      "qualified": "1.1.9",
+      "prepared_profiles": [
+        {"operation": "structured-run", "availability": "available"},
+        {"operation": "interactive-session", "availability": "available"}
+      ],
+      "unavailable_operations": [],
+      "not_applicable_operations": [],
+      "unknown_posture": "preserve-namespaced",
+      "exact_absences": ["raw tool input", "raw tool output", "subagent workspace and log URIs"]
+    },
+    {
       "id": "anthropic.managed-agent",
       "driver": "swallowtail.anthropic.managed-agent",
       "transport": "https-sse",
@@ -73,6 +98,43 @@
       "not_applicable_operations": [],
       "unknown_posture": "preserve-namespaced",
       "exact_absences": ["app-server item lifecycle", "dynamic-tool activity", "review activity"]
+    },
+    {
+      "id": "cursor-agent.catalogue",
+      "driver": "swallowtail.cursor-agent.catalogue",
+      "transport": "cursor-cli-models-stdio",
+      "qualified": "2026.07.01-41b2de7",
+      "prepared_profiles": [],
+      "unavailable_operations": [],
+      "not_applicable_operations": ["model-catalogue"],
+      "unknown_posture": "preserve-namespaced",
+      "exact_absences": ["ordinary agent activity"]
+    },
+    {
+      "id": "cursor-agent.acp",
+      "driver": "swallowtail.cursor-agent.acp",
+      "transport": "acp-v1-stdio",
+      "qualified": "2026.07.01-41b2de7",
+      "prepared_profiles": [
+        {"operation": "interactive-session", "availability": "available"}
+      ],
+      "unavailable_operations": [],
+      "not_applicable_operations": [],
+      "unknown_posture": "preserve-namespaced",
+      "exact_absences": ["raw tool input", "raw tool output", "child topology"]
+    },
+    {
+      "id": "cursor-agent.headless",
+      "driver": "swallowtail.cursor-agent.headless",
+      "transport": "cursor-stream-json-stdio",
+      "qualified": "2026.07.01-41b2de7",
+      "prepared_profiles": [
+        {"operation": "structured-run", "availability": "available"}
+      ],
+      "unavailable_operations": [],
+      "not_applicable_operations": [],
+      "unknown_posture": "preserve-namespaced",
+      "exact_absences": ["raw tool input", "raw tool output", "child topology"]
     },
     {
       "id": "gemini-cli.acp",
@@ -186,7 +248,7 @@
       "id": "qwen.headless",
       "driver": "swallowtail.qwen.headless",
       "transport": "strict-lf-jsonl-stdio",
-      "qualified": "0.19.11",
+      "qualified": "0.19.11..=0.20.1; 0.21.0..=0.21.2",
       "prepared_profiles": [
         {"operation": "structured-run", "availability": "available"},
         {"operation": "interactive-session", "availability": "available"}

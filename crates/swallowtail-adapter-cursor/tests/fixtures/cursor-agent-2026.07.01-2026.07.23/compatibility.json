@@ -1,0 +1,61 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-07-31",
+  "qualified_releases": [
+    {
+      "version": "2026.07.01-41b2de7",
+      "release_date": "2026-07-01",
+      "build_revision": "41b2de7",
+      "source": "installed-provider-artifact",
+      "artifact_kind": "installed-launcher",
+      "artifact_sha256": "eed61c5224668c9236334c4c68936a16aecc37374b592f59e31eb50433817831",
+      "runtime_index_sha256": "b974679f9f421360ac6f063ba54d5032b75230a58f28fc5c3017de5ff481f230",
+      "acp_chunk_sha256": "0332efbd33814b900e00b52753eb2b9d4ab0fa022dc264c162d2b4f535bda48f",
+      "headless_chunk_sha256": "ac4050a1cd5c798979f890d21c4abc2faf074f6ac3586036090ad87f36191811"
+    },
+    {
+      "version": "2026.07.23-e383d2b",
+      "release_date": "2026-07-23",
+      "build_revision": "e383d2b",
+      "source": "official-acp-registry-artifact",
+      "artifact_kind": "darwin-arm64-archive",
+      "artifact_sha256": "f2eb25851f2079dcdf0558a816e06c402d187abfca93255d35167020439ebbf2",
+      "runtime_index_sha256": "39a3fbb76b3382d2ffa82f6a158f292ae4fe0ba06162795dcbbacde325ca9853",
+      "acp_chunk_sha256": "7cebbaa556244f35fc1f45c281c6b8959c05ba5c163e20b7de96cf9e22fb79e9",
+      "headless_chunk_sha256": "2425bf4c64731e6f40f11a67ad5eb85155104609a3beaef4bf53f459c5412aa6"
+    }
+  ],
+  "catalogue": {
+    "argv": ["models"],
+    "command_surface_unchanged": true,
+    "model_invocability_claimed": false
+  },
+  "acp": {
+    "argv": ["acp"],
+    "protocol_version": 1,
+    "auth_methods": ["cursor_login"],
+    "selected_capabilities_unchanged": true,
+    "agent_info": null,
+    "stderr_bytes": 0,
+    "agent_session_module_sha256": "98e53baf6c9a2a17d1e881d983bce1326d7390193ddc57fe3b591d3818cfd027",
+    "selected_delta": "internal-disabled-web-search-guard",
+    "behavior": "cursor-agent.acp-v1.interactive-v1"
+  },
+  "headless": {
+    "output_formats": ["text", "json", "stream-json"],
+    "output_format_module_sha256": "4f2855b20ba50c7dc987a7fffd35e515aca8258f3532ebdc4fc2de6409a39994",
+    "output_format_module_identical": true,
+    "prompt_builder_module_sha256": "c2261ea3179258e54833fa562008d93f39708ffac71baaa25015e48297458dce",
+    "prompt_builder_module_identical": true,
+    "behavior": "cursor-agent.stream-json.structured-v1"
+  },
+  "unselected_additions": [
+    "auto-review",
+    "private-cloud-worker",
+    "create-chat"
+  ],
+  "calendar_gap_inferred": false,
+  "provider_prompt_sent": false,
+  "authenticated_catalogue_called": false,
+  "provider_state_mutated": false
+}

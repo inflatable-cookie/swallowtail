@@ -9,10 +9,22 @@ use crate::validation::failure;
 
 pub const QWEN_CODE_AXIS: &str = "qwen-code.package";
 pub const QWEN_CODE_BASELINE_VERSION: &str = "0.19.11";
-pub const QWEN_CODE_LATEST_QUALIFIED_VERSION: &str = "0.19.11";
+pub const QWEN_CODE_LATEST_QUALIFIED_VERSION: &str = "0.21.2";
 
-const HEADLESS_BEHAVIOR: &str = "qwen-code.headless.v0.19.11";
+const BASELINE_BEHAVIOR: &str = "qwen-code.headless.v0.19.11";
+const CATALOGUE_FILTER_BEHAVIOR: &str = "qwen-code.headless.v0.21.0-catalogue-filter";
 const MAX_VERSION_BYTES: usize = 64;
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) struct QwenPlanSelection {
+    version: InterfaceVersion,
+}
+
+impl QwenPlanSelection {
+    pub(crate) const fn version(&self) -> &InterfaceVersion {
+        &self.version
+    }
+}
 
 #[must_use]
 pub fn qwen_code_binding(value: &str) -> Option<InterfaceVersionBinding> {
@@ -33,23 +45,35 @@ pub fn qwen_code_binding(value: &str) -> Option<InterfaceVersionBinding> {
 #[must_use]
 pub fn qwen_headless_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
-        InterfaceCompatibilityClaimId::new("qwen-code.headless.package-window-1")
+        InterfaceCompatibilityClaimId::new("qwen-code.headless.package-window-2")
             .expect("static Qwen claim id is valid"),
         axis(),
         InterfaceVersionScheme::Semantic,
         InterfaceNewerVersionPosture::AllowUnverified,
-        [InterfaceVersionSegment::exact(
-            version(QWEN_CODE_LATEST_QUALIFIED_VERSION),
-            InterfaceBehaviorRevision::new(HEADLESS_BEHAVIOR)
-                .expect("static Qwen behavior revision is valid"),
-            InterfaceSupportStatus::Maintained,
-        )],
+        [
+            InterfaceVersionSegment::new(
+                version(QWEN_CODE_BASELINE_VERSION),
+                version("0.20.1"),
+                InterfaceBehaviorRevision::new(BASELINE_BEHAVIOR)
+                    .expect("static Qwen behavior revision is valid"),
+                InterfaceSupportStatus::Maintained,
+            ),
+            InterfaceVersionSegment::new(
+                version("0.21.0"),
+                version(QWEN_CODE_LATEST_QUALIFIED_VERSION),
+                InterfaceBehaviorRevision::new(CATALOGUE_FILTER_BEHAVIOR)
+                    .expect("static Qwen behavior revision is valid"),
+                InterfaceSupportStatus::Maintained,
+            ),
+        ],
         [],
     )
     .expect("static Qwen compatibility claim is valid")
 }
 
-pub(crate) fn validate_qwen_plan_version(plan: &PreflightPlan) -> Result<(), RuntimeFailure> {
+pub(crate) fn validate_qwen_plan_version(
+    plan: &PreflightPlan,
+) -> Result<QwenPlanSelection, RuntimeFailure> {
     let claim = qwen_headless_claim();
     let mut bindings = plan
         .interface_versions()
@@ -69,16 +93,21 @@ pub(crate) fn validate_qwen_plan_version(plan: &PreflightPlan) -> Result<(), Run
     let assessment = claim.assess(binding.version());
     if assessment != plan.assess_interface_version(binding)
         || !assessment.is_permitted()
-        || assessment
-            .behavior_revision()
-            .is_none_or(|revision| revision.as_str() != HEADLESS_BEHAVIOR)
+        || assessment.behavior_revision().is_none_or(|revision| {
+            !matches!(
+                revision.as_str(),
+                BASELINE_BEHAVIOR | CATALOGUE_FILTER_BEHAVIOR
+            )
+        })
     {
         return Err(failure(
             "swallowtail.qwen.headless.version_incompatible",
             "Qwen headless executable version is incompatible with this driver",
         ));
     }
-    Ok(())
+    Ok(QwenPlanSelection {
+        version: binding.version().clone(),
+    })
 }
 
 fn axis() -> InterfaceVersionAxis {
@@ -95,24 +124,45 @@ mod tests {
     use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
 
     #[test]
-    fn claim_keeps_newer_stable_versions_executable_but_unverified() {
+    fn claim_qualifies_both_segments_and_keeps_later_stable_unverified() {
         let claim = qwen_headless_claim();
-        assert!(claim.supports(&version("0.19.11")));
+        for candidate in [
+            "0.19.11", "0.19.12", "0.20.0", "0.20.1", "0.21.0", "0.21.1", "0.21.2",
+        ] {
+            assert!(claim.supports(&version(candidate)));
+        }
+        assert_eq!(
+            claim
+                .assess(&version("0.20.1"))
+                .behavior_revision()
+                .unwrap()
+                .as_str(),
+            "qwen-code.headless.v0.19.11"
+        );
+        assert_eq!(
+            claim
+                .assess(&version("0.21.0"))
+                .behavior_revision()
+                .unwrap()
+                .as_str(),
+            "qwen-code.headless.v0.21.0-catalogue-filter"
+        );
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("0.20.1"))
+            claim.assess(&version("0.21.3"))
         else {
             panic!("later stable Qwen remains unverified");
         };
         assert_eq!(
             newer.behavior_revision().as_str(),
-            "qwen-code.headless.v0.19.11"
+            "qwen-code.headless.v0.21.0-catalogue-filter"
         );
-        assert!(!claim.permits(&version("0.20.1-rc.1")));
+        assert!(!claim.permits(&version("0.21.3-rc.1")));
     }
 
     #[test]
     fn binding_accepts_only_one_bare_semver() {
         assert!(qwen_code_binding("0.19.11").is_some());
+        assert!(qwen_code_binding("0.21.2").is_some());
         for value in ["", " 0.19.11", "qwen 0.19.11", "latest"] {
             assert!(qwen_code_binding(value).is_none());
         }

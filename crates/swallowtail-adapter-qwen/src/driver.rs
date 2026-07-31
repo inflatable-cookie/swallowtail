@@ -104,7 +104,7 @@ impl QwenHeadlessDriver {
         request: StructuredRunRequest,
         services: HostServices,
     ) -> Result<Box<dyn RunHandle>, RuntimeFailure> {
-        validate(&plan, &request, &services)?;
+        let selection = validate(&plan, &request, &services)?;
         let task_service = services
             .task()
             .cloned()
@@ -121,6 +121,7 @@ impl QwenHeadlessDriver {
             .model_id()
             .cloned()
             .expect("validated model binding is present");
+        let expected_version = selection.version().clone();
         let working_resource = request
             .working_resource()
             .cloned()
@@ -165,6 +166,7 @@ impl QwenHeadlessDriver {
                         cancellation,
                         deadline,
                         model,
+                        expected_version,
                         operation_id,
                     )
                     .await;

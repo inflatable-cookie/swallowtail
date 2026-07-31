@@ -10,12 +10,14 @@ use crate::failure::failure;
 
 pub const CLAUDE_AGENT_ACP_AXIS: &str = "claude-agent.acp-adapter";
 pub const CLAUDE_AGENT_ACP_BASELINE_VERSION: &str = "0.53.0";
-pub const CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION: &str = "0.61.0";
+pub const CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION: &str = "0.64.0";
 
 const BASELINE_BEHAVIOR: &str = "claude-agent.acp.baseline-v1";
 const SESSION_CONFIG_BEHAVIOR: &str = "claude-agent.acp.session-config-v2";
 const PROVIDER_CAPABILITY_BEHAVIOR: &str = "claude-agent.acp.provider-capability-v3";
 const STEERING_METADATA_BEHAVIOR: &str = "claude-agent.acp.steering-metadata-v4";
+const TOOL_SUBAGENT_CORRELATION_BEHAVIOR: &str = "claude-agent.acp.tool-subagent-correlation-v5";
+const HOST_STEERING_FORM_MARKER_BEHAVIOR: &str = "claude-agent.acp.host-steering-form-marker-v6";
 const MAX_VERSION_BYTES: usize = 64;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -24,6 +26,8 @@ pub(crate) enum ClaudeAgentBehavior {
     SessionConfig,
     ProviderCapability,
     SteeringMetadata,
+    ToolSubagentCorrelation,
+    HostSteeringFormMarker,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -80,7 +84,7 @@ pub fn claude_agent_acp_binding(value: &str) -> Option<InterfaceVersionBinding> 
 #[must_use]
 pub fn claude_agent_acp_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
-        InterfaceCompatibilityClaimId::new("claude-agent.acp.range-v1")
+        InterfaceCompatibilityClaimId::new("claude-agent.acp.range-v2")
             .expect("static Claude Agent claim id is valid"),
         axis(),
         InterfaceVersionScheme::Semantic,
@@ -89,7 +93,9 @@ pub fn claude_agent_acp_claim() -> InterfaceCompatibilityClaim {
             segment("0.53.0", "0.53.0", BASELINE_BEHAVIOR),
             segment("0.54.0", "0.59.0", SESSION_CONFIG_BEHAVIOR),
             segment("0.60.0", "0.60.0", PROVIDER_CAPABILITY_BEHAVIOR),
-            segment("0.61.0", "0.61.0", STEERING_METADATA_BEHAVIOR),
+            segment("0.61.0", "0.62.0", STEERING_METADATA_BEHAVIOR),
+            segment("0.63.0", "0.63.0", TOOL_SUBAGENT_CORRELATION_BEHAVIOR),
+            segment("0.64.0", "0.64.0", HOST_STEERING_FORM_MARKER_BEHAVIOR),
         ],
         [version("0.52.0"), version("0.58.0")],
     )
@@ -149,6 +155,8 @@ fn behavior(revision: &InterfaceBehaviorRevision) -> Option<ClaudeAgentBehavior>
         SESSION_CONFIG_BEHAVIOR => Some(ClaudeAgentBehavior::SessionConfig),
         PROVIDER_CAPABILITY_BEHAVIOR => Some(ClaudeAgentBehavior::ProviderCapability),
         STEERING_METADATA_BEHAVIOR => Some(ClaudeAgentBehavior::SteeringMetadata),
+        TOOL_SUBAGENT_CORRELATION_BEHAVIOR => Some(ClaudeAgentBehavior::ToolSubagentCorrelation),
+        HOST_STEERING_FORM_MARKER_BEHAVIOR => Some(ClaudeAgentBehavior::HostSteeringFormMarker),
         _ => None,
     }
 }
@@ -173,31 +181,33 @@ fn segment(minimum: &str, maximum: &str, revision: &str) -> InterfaceVersionSegm
 #[cfg(test)]
 mod tests {
     use super::{
-        CLAUDE_AGENT_ACP_AXIS, STEERING_METADATA_BEHAVIOR, claude_agent_acp_binding,
+        CLAUDE_AGENT_ACP_AXIS, HOST_STEERING_FORM_MARKER_BEHAVIOR, claude_agent_acp_binding,
         claude_agent_acp_claim, version_supports_config_options,
     };
     use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
 
     #[test]
-    fn claim_preserves_four_milestones_exclusions_and_visible_newer_execution() {
+    fn claim_preserves_six_milestones_exclusions_and_visible_newer_execution() {
         let claim = claude_agent_acp_claim();
         assert_eq!(claim.baseline().as_str(), "0.53.0");
-        assert_eq!(claim.latest_qualified().as_str(), "0.61.0");
-        assert_eq!(claim.milestones().len(), 4);
-        for qualified in ["0.53.0", "0.54.1", "0.58.1", "0.59.0", "0.61.0"] {
+        assert_eq!(claim.latest_qualified().as_str(), "0.64.0");
+        assert_eq!(claim.milestones().len(), 6);
+        for qualified in [
+            "0.53.0", "0.54.1", "0.58.1", "0.59.0", "0.61.0", "0.62.0", "0.63.0", "0.64.0",
+        ] {
             assert!(claim.supports(&version(qualified)));
         }
         for incompatible in ["0.52.0", "0.58.0", "0.61.0-rc.1", "invalid"] {
             assert!(!claim.permits(&version(incompatible)));
         }
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("0.62.0"))
+            claim.assess(&version("0.65.0"))
         else {
             panic!("newer stable version remains unverified");
         };
         assert_eq!(
             newer.behavior_revision().as_str(),
-            STEERING_METADATA_BEHAVIOR
+            HOST_STEERING_FORM_MARKER_BEHAVIOR
         );
     }
 

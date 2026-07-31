@@ -30,15 +30,62 @@ fn assert_prompt_image(host: &FixtureHost) {
 }
 
 #[test]
-fn later_stable_pi_is_visible_and_executable_as_unverified_newer() {
+fn latest_pi_is_qualified_and_later_stable_remains_unverified() {
     let host_id = ExecutionHostId::new("fixture.pi.prepared.newer").expect("valid host");
-    let discovery = FixtureHost::version_probe("0.81.1");
+    let discovery = FixtureHost::version_probe("0.83.0");
     let prepared = block_on(prepare_pi_rpc(
         preparation_input(host_id.clone()),
         probe(),
         discovery.services(host_id),
     ))
-    .expect("newer Pi remains executable");
+    .expect("latest Pi prepares");
+    let InstalledExecutableCompatibility::Qualified(assessment) =
+        prepared.observation().compatibility()
+    else {
+        panic!("latest Pi is qualified");
+    };
+    assert_eq!(
+        assessment.behavior_revision().as_str(),
+        "pi.rpc.strict-lf-v0.83.0-bash-extension-hook"
+    );
+    let run = prepared
+        .prepare_run(PiRunProfileInput::new(
+            RequestId::new("pi-latest-run").expect("valid request"),
+            model("pi.latest.route"),
+            OperationContent::new("latest private prompt").expect("valid content"),
+            WorkingResourceRef::new("pi.latest.workspace").expect("valid resource"),
+            Deadline::at(MonotonicInstant::from_ticks(1_000)),
+        ))
+        .expect("latest run profile prepares");
+    assert_eq!(
+        run.plan()
+            .interface_versions()
+            .next()
+            .expect("exact version is planned")
+            .version()
+            .as_str(),
+        "0.83.0"
+    );
+    let basis = run
+        .evidence()
+        .operation()
+        .observable_activity()
+        .interface_basis()
+        .next()
+        .expect("activity basis is available");
+    assert_eq!(
+        basis.behavior_revision().as_str(),
+        "pi.rpc.strict-lf-v0.83.0-bash-extension-hook"
+    );
+
+    let host_id = ExecutionHostId::new("fixture.pi.prepared.later").expect("valid host");
+    let discovery = FixtureHost::version_probe("0.83.1");
+    let prepared = block_on(prepare_pi_rpc(
+        preparation_input(host_id.clone()),
+        probe(),
+        discovery.services(host_id),
+    ))
+    .expect("later Pi remains executable");
     assert!(matches!(
         prepared.observation().compatibility(),
         InstalledExecutableCompatibility::UnverifiedNewer(_)

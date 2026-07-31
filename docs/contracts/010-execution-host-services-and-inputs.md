@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-23
+Updated: 2026-07-31
 
 ## Purpose
 
@@ -74,6 +74,28 @@ Executable selection and host approval may occur before installed discovery.
 That host action produces one opaque approved target. It does not change
 Contract 032: the discovery role receives one target and performs no ambient
 search or fallback.
+
+One executable reference may resolve to either one native program or one
+host-private launch recipe. A launch recipe contains:
+
+- one exact interpreter or native program
+- bounded immutable prefix arguments, such as one exact script path
+- optional bounded bootstrap environment owned by the execution host
+
+The host appends driver-supplied process arguments after the immutable prefix.
+It clears ambient environment, applies bootstrap values first, then applies
+explicit environment references carried by the process request. The composed
+argument vector remains subject to the same host limits as a native launch.
+Bootstrap environment is only launcher authority. It cannot carry credentials,
+provider configuration, model selection, working-resource authority, or
+consumer prompt content.
+
+The recipe remains behind the opaque executable reference. Stable records,
+default formatting, events, and diagnostics expose no program, script path,
+prefix argument, or bootstrap value. A process host does not invoke a shell,
+search `PATH` at execution time, infer a provider-specific launcher inside an
+adapter, or substitute another recipe after a request begins. Native execution
+is the zero-prefix, empty-bootstrap case.
 
 Renderer or remote-client data cannot establish authority by naming an
 executable path, environment variable, or working directory. Process output is
@@ -235,6 +257,9 @@ billing, support authority, privacy posture, ownership, or topology.
 - a one-shot CLI fails preflight without process service
 - delegated harness authentication does not require secret extraction
 - raw paths and secrets are absent from portable requests and diagnostics
+- native and interpreted launches both clear ambient environment
+- immutable launcher prefix arguments participate in host argument limits
+- launcher recipes expose no program, path, prefix, or bootstrap value
 - attachment and temporary-resource cleanup remains operation-scoped
 - consumer-resource cleanup remains consumer-owned
 - materialized host paths remain redacted and are available only through

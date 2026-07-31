@@ -6,7 +6,7 @@ mod conformance;
 #[test]
 fn unverified_newer_delete_requires_explicit_acceptance_and_close_is_not_promoted() {
     let host_id = ExecutionHostId::new("fixture.prepared.unverified").expect("valid host");
-    let preparation_host = FixtureHost::new(Scenario::Version, "0.62.0");
+    let preparation_host = FixtureHost::new(Scenario::Version, "0.65.0");
     let prepared = block_on(prepare_claude_agent(
         preparation_input(host_id.clone()),
         probe(),
@@ -26,7 +26,7 @@ fn unverified_newer_delete_requires_explicit_acceptance_and_close_is_not_promote
             SessionOptions::default(),
         ))
         .expect("unverified session profile prepares");
-    let session_host = FixtureHost::new(Scenario::Success, "0.62.0");
+    let session_host = FixtureHost::new(Scenario::Success, "0.65.0");
     let session = block_on(profile.open_session(session_host.services(host_id.clone())))
         .expect("unverified session opens");
     let binding = session
@@ -52,7 +52,7 @@ fn unverified_newer_delete_requires_explicit_acceptance_and_close_is_not_promote
             .allow_unverified_newer(),
         )
         .expect("explicit unverified-newer acceptance prepares deletion");
-    let delete_host = FixtureHost::new(Scenario::Success, "0.62.0");
+    let delete_host = FixtureHost::new(Scenario::Success, "0.65.0");
     let outcome = block_on(accepted.execute(delete_host.services(host_id)))
         .expect("accepted unverified deletion executes latest mapped behavior");
     assert_eq!(

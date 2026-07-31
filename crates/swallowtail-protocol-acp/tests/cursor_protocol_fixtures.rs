@@ -7,9 +7,17 @@ const PROTOCOL: &str =
     include_str!("fixtures/acp-v1-cursor-agent-2026.07.01-41b2de7/protocol.json");
 const INITIALIZE: &str =
     include_str!("fixtures/acp-v1-cursor-agent-2026.07.01-41b2de7/initialize.ndjson");
+const INTERACTIVE_SOURCE: &str =
+    include_str!("fixtures/acp-v1-cursor-agent-2026.07.01-41b2de7/interactive-source.json");
+const INTERACTIVE: &str =
+    include_str!("fixtures/acp-v1-cursor-agent-2026.07.01-41b2de7/interactive-derived.ndjson");
+const HEADLESS_SOURCE: &str =
+    include_str!("fixtures/acp-v1-cursor-agent-2026.07.01-41b2de7/headless-source.json");
+const HEADLESS: &str =
+    include_str!("fixtures/acp-v1-cursor-agent-2026.07.01-41b2de7/headless-derived.jsonl");
 
 #[test]
-fn exact_cursor_artifacts_remain_separate_and_unqualified() {
+fn exact_cursor_artifacts_remain_separate_and_route_scoped() {
     let fixture = parse_json(PROTOCOL);
 
     assert_eq!(
@@ -19,7 +27,11 @@ fn exact_cursor_artifacts_remain_separate_and_unqualified() {
     assert_eq!(fixture["registry_artifact"]["version"], "2026.07.23");
     assert_eq!(fixture["registry_artifact"]["build"], "2026.07.23-e383d2b");
     assert_eq!(fixture["registry_artifact"]["executed"], false);
-    assert_eq!(fixture["qualification"]["production_claim_created"], false);
+    assert_eq!(fixture["qualification"]["production_claim_created"], true);
+    assert_eq!(
+        fixture["qualification"]["production_claim_scope"],
+        "installed ACP interactive and headless structured routes"
+    );
     assert_eq!(
         fixture["qualification"]["continuous_calendar_range_allowed"],
         false
@@ -96,8 +108,65 @@ fn advertised_cursor_capabilities_are_observations_not_route_claims() {
 }
 
 #[test]
+fn installed_source_derives_only_the_bounded_interactive_corpus() {
+    let source = parse_json(INTERACTIVE_SOURCE);
+    assert_eq!(
+        source["capture_kind"],
+        "installed-source-derived-normalized-corpus"
+    );
+    assert_eq!(source["live_provider_session_created"], false);
+    assert_eq!(source["live_prompt_sent"], false);
+    assert_eq!(
+        source["artifacts"][0]["sha256"],
+        "0332efbd33814b900e00b52753eb2b9d4ab0fa022dc264c162d2b4f535bda48f"
+    );
+    assert!(
+        source["not_claimed"]
+            .as_array()
+            .expect("not-claimed list")
+            .iter()
+            .any(|value| value == "model_selection")
+    );
+
+    let frames = parse_transcript(INTERACTIVE).expect("Cursor interactive corpus parses");
+    assert_eq!(
+        methods(&frames),
+        [
+            "session/new",
+            "session/prompt",
+            "session/update",
+            "session/update",
+            "session/update",
+            "session/update",
+            "session/update",
+            "session/cancel",
+        ]
+    );
+    let updates = frames
+        .iter()
+        .filter(|frame| frame.method() == Some("session/update"))
+        .map(|frame| {
+            frame.message()["params"]["update"]["sessionUpdate"]
+                .as_str()
+                .expect("update kind")
+        })
+        .collect::<Vec<_>>();
+    assert_eq!(
+        updates,
+        [
+            "agent_thought_chunk",
+            "plan",
+            "tool_call",
+            "tool_call_update",
+            "agent_message_chunk",
+        ]
+    );
+}
+
+#[test]
 fn catalogue_and_headless_source_records_preserve_boundaries() {
     let fixture = parse_json(PROTOCOL);
+    let source = parse_json(HEADLESS_SOURCE);
 
     assert_eq!(fixture["catalogue"]["normalized_entry_count"], 193);
     assert_eq!(fixture["catalogue"]["dynamic"], true);
@@ -115,9 +184,16 @@ fn catalogue_and_headless_source_records_preserve_boundaries() {
     );
     assert_eq!(
         fixture["headless"]["documented_event_types"],
-        serde_json::json!(["system", "user", "assistant", "tool_call", "result"])
+        serde_json::json!([
+            "system",
+            "user",
+            "assistant",
+            "thinking",
+            "tool_call",
+            "result"
+        ])
     );
-    assert_eq!(fixture["headless"]["thinking_events_suppressed"], true);
+    assert_eq!(fixture["headless"]["thinking_events_suppressed"], false);
     assert_eq!(
         fixture["headless"]["terminal_fields"],
         serde_json::json!([
@@ -131,7 +207,12 @@ fn catalogue_and_headless_source_records_preserve_boundaries() {
     );
     assert_eq!(
         fixture["headless"]["token_usage_fields"],
-        serde_json::json!([])
+        serde_json::json!([
+            "inputTokens",
+            "outputTokens",
+            "cacheReadTokens",
+            "cacheWriteTokens"
+        ])
     );
     assert!(fixture["headless"]["cancellation_stream_event"].is_null());
     assert!(fixture["headless"]["json_schema_output_flag"].is_null());
@@ -140,4 +221,19 @@ fn catalogue_and_headless_source_records_preserve_boundaries() {
         true
     );
     assert_eq!(fixture["headless"]["dangerous_force_flags_selected"], false);
+    assert_eq!(source["live_provider_run_created"], false);
+    assert_eq!(source["live_prompt_sent"], false);
+    assert_eq!(
+        source["artifacts"][0]["sha256"],
+        "ac4050a1cd5c798979f890d21c4abc2faf074f6ac3586036090ad87f36191811"
+    );
+    let lines = HEADLESS.lines().map(parse_json).collect::<Vec<_>>();
+    assert_eq!(lines.first().expect("system event")["type"], "system");
+    assert_eq!(lines.last().expect("result event")["type"], "result");
+    assert!(lines.iter().any(|event| event["type"] == "thinking"));
+    assert!(
+        lines
+            .iter()
+            .any(|event| { event["type"] == "tool_call" && event["subtype"] == "completed" })
+    );
 }

@@ -42,16 +42,14 @@ impl ActiveTurn {
             payload,
         )
         .map_err(|_| malformed_notification())?;
-        let provider_request_ref =
-            ProviderRequestRef::new(provider_request_value(&provider_request_id))
-                .map_err(|_| malformed_notification())?;
+        let provider_request = canonical_provider_request_id(&provider_request_id)?;
         self.callbacks
             .enqueue_tool(request, provider_request_id, provider_call_id.clone())?;
         let request_activity = {
             let mut activity = self.activity.lock().expect("activity lock poisoned");
             activity.register_callback(&provider_call_id, callback_id.clone());
             activity.provider_request_started(
-                provider_request_ref,
+                provider_request,
                 Some(&provider_call_id),
                 "dynamicTool",
             )?
@@ -84,9 +82,8 @@ impl ActiveTurn {
             ));
         }
         self.verify_provider_request(params)?;
-        let provider_request_ref =
-            ProviderRequestRef::new(provider_request_value(provider_request_id))
-                .map_err(|_| malformed_notification())?;
+        let provider_request = canonical_provider_request_id(provider_request_id)?;
+        let provider_request_ref = provider_request.clone();
         if handling == ProviderRequestHandling::Exchange {
             if namespace != crate::session_access::codex_user_input_request_extension() {
                 return Err(failure(
@@ -115,7 +112,7 @@ impl ActiveTurn {
                 let mut activity = self.activity.lock().expect("activity lock poisoned");
                 activity.register_callback(&provider_call_id, callback_id.clone());
                 activity.provider_request_started(
-                    provider_request_ref,
+                    provider_request,
                     Some(&provider_call_id),
                     namespace.as_str(),
                 )?
@@ -154,7 +151,7 @@ impl ActiveTurn {
             .lock()
             .expect("activity lock poisoned")
             .provider_request_started(
-                provider_request_ref.clone(),
+                provider_request,
                 params.get("itemId").and_then(Value::as_str),
                 namespace.as_str(),
             )?;

@@ -3,7 +3,7 @@
 Status: active
 Owner: Tom
 Created: 2026-07-28
-Updated: 2026-07-30
+Updated: 2026-07-31
 
 ## Purpose
 
@@ -124,10 +124,12 @@ question context. Option preview is separate presentation content and keeps
 that form outside the qualified common subset.
 
 The callback record preserves runtime operation, turn, provider request id,
-callback id, deadline, and either the exact provider namespace and bounded
-payload or the typed question schema. The response repeats the exact
-correlation and is accepted once. Typed answers are checked against the
-offered question and option ids before translation.
+its qualified scalar representation when supplied by the provider, callback
+id, deadline, and either the exact provider namespace and bounded payload or
+the typed question schema. Text and signed-integer forms with the same visible
+value remain distinct correlations. The response repeats the exact correlation
+and is accepted once. Typed answers are checked against the offered question
+and option ids before translation.
 
 The consumer chooses the response. Swallowtail transports it. Transport
 acceptance does not prove provider action, tool execution, turn completion, or

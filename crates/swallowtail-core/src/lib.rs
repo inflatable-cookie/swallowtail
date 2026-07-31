@@ -100,8 +100,8 @@ pub use preflight::{
 };
 pub use provider_agent::{ProviderAgentBinding, ProviderAgentId, ProviderAgentVersion};
 pub use provider_reference::{
-    InvalidProviderActivityRef, ProviderActivityRef, ProviderRequestRef, RunRef, SessionRef,
-    TurnRef,
+    InvalidProviderActivityRef, ProviderActivityRef, ProviderRequestRef,
+    ProviderRequestRepresentation, RunRef, SessionRef, TurnRef,
 };
 pub use provider_session_management::{
     ProviderSessionActivityEvidence, ProviderSessionAffectedScope, ProviderSessionBindingOrigin,

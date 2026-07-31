@@ -380,11 +380,19 @@ impl ActiveTurn {
     }
 }
 
-fn provider_request_value(value: &Value) -> String {
-    value
-        .as_str()
-        .map(str::to_owned)
-        .unwrap_or_else(|| value.to_string())
+pub(crate) fn canonical_provider_request_id(
+    value: &Value,
+) -> Result<ProviderRequestRef, RuntimeFailure> {
+    match value {
+        Value::String(value) => {
+            ProviderRequestRef::new(value.clone()).map_err(|_| malformed_notification())
+        }
+        Value::Number(value) => {
+            let value = value.as_i64().ok_or_else(malformed_notification)?;
+            Ok(ProviderRequestRef::from_signed_integer(value))
+        }
+        _ => Err(malformed_notification()),
+    }
 }
 
 fn activity_notification(method: &str) -> bool {

@@ -179,6 +179,26 @@ Evidence-led provider breadth remains secondary. g02 begins by defining the
 public package, version, compatibility, MSRV, and release-authority boundary;
 no registry publication or API 1.0 promise is implied.
 
+## g02 Disposition And g03 Programme
+
+g02 closed at 49 roadmaps after completing prepared facades, package and
+candidate discipline, compatibility ranges, provider-session lifecycle,
+feature-matrix closure, observable activity, consumer handoffs, structural
+stabilization, validation routing, child-work topology, and Claude typed form
+elicitation.
+
+Pi RPC load and resume moved to the shared backlog behind the unchanged
+maintained public cwd-bound attachment gate. Provider-session binding
+persistence remains deferred. Registry publication remains outside the active
+roadmap until the operator revisits it after sustained application usage.
+
+g03 prioritizes compatibility maintenance and consumer-proven hardening. It
+starts with installed harnesses and shared protocols because their release
+cadence can outpace consumer application releases. Exact baselines,
+intermediate behavior milestones, latest-qualified points, exclusions, and
+unverified-newer posture remain separate. A version above the qualified upper
+point is not denied solely for being newer.
+
 Registry publication was later removed from the active runway. Local package
 and compatibility evidence continues, but publication does not return as a
 ready, paused, or backlog item. A future lane requires a new operator decision

@@ -35,7 +35,61 @@ macro_rules! opaque_provider_reference {
 opaque_provider_reference!(SessionRef, "session reference");
 opaque_provider_reference!(RunRef, "run reference");
 opaque_provider_reference!(TurnRef, "turn reference");
-opaque_provider_reference!(ProviderRequestRef, "provider request reference");
+
+/// Qualified scalar representation of an opaque provider request reference.
+#[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+pub enum ProviderRequestRepresentation {
+    Text,
+    SignedInteger,
+}
+
+/// Opaque provider-native request identity with its qualified scalar form.
+#[derive(Clone, Eq, Hash, Ord, PartialEq, PartialOrd)]
+pub struct ProviderRequestRef {
+    value: String,
+    representation: ProviderRequestRepresentation,
+}
+
+impl ProviderRequestRef {
+    /// Constructs a provider request reference supplied in text form.
+    pub fn new(value: impl Into<String>) -> Result<Self, ValueRequired> {
+        required_text("provider request reference", value).map(|value| Self {
+            value,
+            representation: ProviderRequestRepresentation::Text,
+        })
+    }
+
+    /// Constructs a provider request reference supplied as a signed integer.
+    #[must_use]
+    pub fn from_signed_integer(value: i64) -> Self {
+        Self {
+            value: value.to_string(),
+            representation: ProviderRequestRepresentation::SignedInteger,
+        }
+    }
+
+    /// Passes the opaque canonical value back to its owning provider adapter.
+    #[must_use]
+    pub fn as_provider_value(&self) -> &str {
+        &self.value
+    }
+
+    /// Reports the scalar form supplied by the qualified provider interface.
+    #[must_use]
+    pub const fn representation(&self) -> ProviderRequestRepresentation {
+        self.representation
+    }
+}
+
+impl fmt::Debug for ProviderRequestRef {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter
+            .debug_struct("ProviderRequestRef")
+            .field("value", &"<opaque>")
+            .field("representation", &self.representation)
+            .finish()
+    }
+}
 
 /// Opaque provider-native identity for one observable activity item.
 #[derive(Clone, Eq, Hash, Ord, PartialEq, PartialOrd)]
@@ -109,7 +163,11 @@ impl Error for InvalidProviderActivityRef {}
 
 #[cfg(test)]
 mod tests {
-    use super::{ProviderActivityRef, RunRef, SessionRef};
+    use std::collections::HashSet;
+
+    use super::{
+        ProviderActivityRef, ProviderRequestRef, ProviderRequestRepresentation, RunRef, SessionRef,
+    };
 
     #[test]
     fn provider_references_are_distinct_and_redacted_by_default() {
@@ -143,5 +201,23 @@ mod tests {
             "swallowtail.provider_activity_ref_invalid"
         );
         assert!(!oversized.to_string().contains(&"x".repeat(513)));
+    }
+
+    #[test]
+    fn provider_request_references_preserve_scalar_representation() {
+        let text = ProviderRequestRef::new("900").expect("text request reference is valid");
+        let integer = ProviderRequestRef::from_signed_integer(900);
+
+        assert_eq!(text.as_provider_value(), "900");
+        assert_eq!(integer.as_provider_value(), "900");
+        assert_eq!(text.representation(), ProviderRequestRepresentation::Text);
+        assert_eq!(
+            integer.representation(),
+            ProviderRequestRepresentation::SignedInteger
+        );
+        assert_ne!(text, integer);
+        assert_eq!(HashSet::from([text.clone(), integer.clone()]).len(), 2);
+        assert!(!format!("{text:?}").contains("900"));
+        assert!(!format!("{integer:?}").contains("900"));
     }
 }

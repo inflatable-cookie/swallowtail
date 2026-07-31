@@ -6,7 +6,7 @@ models and agent harnesses across host applications.
 Swallowtail owns portable integration mechanisms. Applications retain their
 prompts, tools, authority, workflows, persistence, and product state.
 
-Status: foundation. The repository is in strict Northstar posture. The
+Status: compatibility maintenance. The repository is in strict Northstar posture. The
 provider-neutral core, pure preflight, executor-neutral runtime, thirteen synthetic
 conformance profiles, host-approved local process/endpoint/credential services,
 twenty-seven production driver routes, including separate Claude Code, Gemini, Grok, and Kimi
@@ -18,15 +18,18 @@ are validated. Codex app-server supports both
 unchanged read-only sessions and one explicit host-resolved bounded workspace
 profile.
 
-Current g02 structural stabilization, validation-latency, child-work topology,
-and Claude form-elicitation work are complete. The accepted stabilization
+g02 structural stabilization, validation-latency, child-work topology, and
+Claude form-elicitation work are complete. g03 now owns compatibility
+maintenance and consumer-proven hardening. The accepted stabilization
 baseline removed all five critical and 28 high findings. Four affected
 archives now compile through one extracted target in five seconds, down from
 22.4 seconds through separate targets. Kimi child-activity projection is split
 on its native lifecycle seam. Claude Agent now projects its exact portable
 choice-form subset through typed harness user input. Doctor is warning-only at
 147 findings. Roadmaps g02.047-g02.048 own the completed topology and
-elicitation handoffs. Nucleus adoption remains separately authorized.
+elicitation handoffs; g02.049 closes the generation. Nucleus adoption is
+delegated to the Nucleus repository and does not govern Swallowtail's active
+lane. Roadmap g03.001 owns the compatibility-maintenance baseline.
 Warning-only reduction remains deferred.
 
 ## Start Here
@@ -217,9 +220,8 @@ Soundcheck and Nucleus Agent Chat are accepted consumers. The bounded
 workspace-write runtime required by Nucleus task execution is complete without
 widening read-only chat. The planned provider-route and model-catalogue
 expansion is realized. The feature-matrix completion programme is closed. Its
-final 660-cell audited
-region contains 202 `Yes`, 234 machine-classified `No`, 216
-`Not applicable`, four `Partial`, two `Caller-supplied`, and two
+current 713-cell audited region contains 212 `Yes`, 272 machine-classified
+`No`, 222 `Not applicable`, two `Partial`, two `Caller-supplied`, and three
 `Session-negotiated` cells. The starting 61-cell residual inventory closes at
 two `Yes`, 25 `No`, and 34 `Not applicable`. Qwen headless and Ollama attached
 now realize the selected interactive proof pair under Contract 043 and

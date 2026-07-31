@@ -5,15 +5,17 @@ shape.
 
 ## Current Generation
 
-- [g02 Swallowtail Stabilization And Release Discipline](g02/README.md) — active
+- [g03 Compatibility Maintenance And Consumer-Proven Hardening](g03/README.md) — active
+- [g02 Swallowtail Stabilization And Release Discipline](g02/README.md) — completed
 - [g01 Swallowtail Foundation](g01/README.md) — completed
 - [Generation Index](generation-index.md)
 - [Long-Term Plan](long-term-plan.md)
 
 ## Next Task
 
-Reassess Nucleus adoption authorization for the completed child-work and
-Claude typed user-input handoffs. No consumer edit is implicit.
+Execute [g03 card 004](g03/batch-cards/004-claude-gemini-acp-range-corpus.md).
+Freeze exact Claude Agent and Gemini CLI candidate artifacts and behavior
+groups before changing production compatibility claims.
 
 ## Index
 
@@ -21,8 +23,10 @@ Claude typed user-input handoffs. No consumer edit is implicit.
 - `long-term-plan.md` — staged multi-consumer adoption
 - `backlog/README.md` — deferred work and promotion gates
 - `g01/README.md` — completed foundation generation
-- `g02/README.md` — active stabilization, provider-wide facade, and release
-  runway, including provider-session lifecycle
+- `g02/README.md` — completed stabilization, provider-wide facade, activity,
+  compatibility, and lifecycle generation
+- `g03/README.md` — active compatibility-maintenance and consumer-proven
+  hardening generation
 
 ## Generation Shape
 

@@ -1,12 +1,12 @@
 # 097 Pi RPC Session Continuity Implementation
 
-Status: paused
+Status: moved to backlog
 Owner: Tom
 Created: 2026-07-28
 Milestone: `../029-pi-rpc-session-continuity.md`
 Depends on: card 096
 
-Pause gate: Research 053 found no public Pi attachment surface that preserves
+Backlog gate: Research 053 found no public Pi attachment surface that preserves
 the exact host-leased working resource. Resume only after its stated upstream
 unpause condition is met.
 

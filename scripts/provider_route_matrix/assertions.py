@@ -233,8 +233,8 @@ input_callback_no_cells = {
     ]
     if row[feature] == "No"
 }
-if len(input_callback_no_cells) != 93:
-    raise SystemExit("input/callback inventory must contain exactly 93 No cells")
+if len(input_callback_no_cells) != 92:
+    raise SystemExit("input/callback inventory must contain exactly 92 No cells")
 if input_callback_no_cells != set(input_callback_classifications):
     raise SystemExit("input/callback No classifications changed")
 
@@ -271,7 +271,7 @@ for row in rows:
 if classification_counts != Counter(
     {
         "contract_or_corpus_required": 65,
-        "upstream_unsupported": 122,
+        "upstream_unsupported": 121,
         "operation_shape_not_applicable": 43,
         "ready_existing_contract": 4,
         "ready_operator_hold": 6,

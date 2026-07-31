@@ -9,7 +9,7 @@ use crate::turn_state::malformed_notification;
 use item::ItemIdentity;
 use serde_json::Value;
 use std::collections::HashMap;
-use swallowtail_core::ProviderActivityRef;
+use swallowtail_core::{ProviderActivityRef, ProviderRequestRef};
 use swallowtail_runtime::{
     ActivityCorrelation, ActivityId, ActivityLabel, ActivityLifecyclePhase, ActivityNamespace,
     ActivityObservation, ActivityOperationId, ActivityStatus, RuntimeFailure, RuntimeTurnId,
@@ -21,7 +21,7 @@ pub(crate) struct AppServerActivityProjection {
     items: HashMap<String, ItemIdentity>,
     labels: HashMap<String, ActivityLabel>,
     correlations: HashMap<String, ActivityCorrelation>,
-    requests: HashMap<String, RequestIdentity>,
+    requests: HashMap<ProviderRequestRef, RequestIdentity>,
     next_minted_id: u64,
 }
 

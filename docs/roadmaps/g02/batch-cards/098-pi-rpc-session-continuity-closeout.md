@@ -1,12 +1,12 @@
 # 098 Pi RPC Session Continuity Closeout
 
-Status: paused
+Status: moved to backlog
 Owner: Tom
 Created: 2026-07-28
 Milestone: `../029-pi-rpc-session-continuity.md`
 Depends on: card 097
 
-Pause gate: card 097 cannot begin until Research 053's Pi resource-binding
+Backlog gate: card 097 cannot begin until Research 053's Pi resource-binding
 condition is met.
 
 ## Objective

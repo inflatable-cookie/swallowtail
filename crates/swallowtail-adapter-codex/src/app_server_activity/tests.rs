@@ -1,4 +1,5 @@
 use super::AppServerActivityProjection;
+use crate::turn_state::canonical_provider_request_id;
 use serde_json::Value;
 use swallowtail_runtime::{
     ActivityActor, ActivityCorrelation, ActivityKind, ActivityLifecyclePhase, CallbackId,
@@ -223,14 +224,16 @@ fn callbacks_and_provider_requests_remain_separate_correlations() {
     let mut projection = projector();
     let callback = CallbackId::new("callback-1").unwrap();
     projection.register_callback("call-1", callback.clone());
-    let request = swallowtail_core::ProviderRequestRef::new("request-1").unwrap();
+    let request_id = canonical_provider_request_id(&serde_json::json!("request-1")).unwrap();
+    let request = request_id.clone();
     let request_activity = projection
-        .provider_request_started(request.clone(), Some("call-1"), "dynamicTool")
+        .provider_request_started(request_id, Some("call-1"), "dynamicTool")
         .expect("request activity starts");
     assert_eq!(
         request_activity.correlation(),
-        Some(&ActivityCorrelation::ProviderRequest(request))
+        Some(&ActivityCorrelation::ProviderRequest(request.clone()))
     );
+    let request_activity_id = request_activity.activity_id().clone();
 
     let started = serde_json::json!({
         "item": {
@@ -259,6 +262,119 @@ fn callbacks_and_provider_requests_remain_separate_correlations() {
         .expect("request resolution projects");
     assert_eq!(resolution[0].phase(), ActivityLifecyclePhase::Completed);
     assert!(matches!(resolution[0].kind(), ActivityKind::Unknown(_)));
+    assert_eq!(resolution[0].activity_id(), &request_activity_id);
+    assert_eq!(
+        resolution[0].provider_activity_ref(),
+        request_activity.provider_activity_ref()
+    );
+    assert_eq!(
+        resolution[0].correlation(),
+        Some(&ActivityCorrelation::ProviderRequest(request))
+    );
+    assert!(
+        projection
+            .project_notification("serverRequest/resolved", &resolved)
+            .expect("duplicate resolution is unmatched")
+            .is_empty()
+    );
+}
+
+#[test]
+fn request_id_union_fixture_completes_the_same_correlated_activity() {
+    let cases = cases();
+    let messages = case(&cases, "request-id-union")["messages"]
+        .as_array()
+        .expect("request-id messages are an array");
+    let mut projection = projector();
+    let mut started = Vec::new();
+    for message in &messages[..2] {
+        let request_id =
+            canonical_provider_request_id(&message["id"]).expect("request id is legal");
+        let request_ref = request_id.clone();
+        let activity = projection
+            .provider_request_started(
+                request_id,
+                message["params"]["itemId"].as_str(),
+                "userInput",
+            )
+            .expect("request activity starts");
+        assert_eq!(activity.phase(), ActivityLifecyclePhase::Started);
+        started.push((activity, request_ref));
+    }
+    assert_eq!(
+        started[0].1.as_provider_value(),
+        started[1].1.as_provider_value()
+    );
+    assert_ne!(started[0].1, started[1].1);
+    assert_eq!(
+        started[0].1.representation(),
+        swallowtail_core::ProviderRequestRepresentation::Text
+    );
+    assert_eq!(
+        started[1].1.representation(),
+        swallowtail_core::ProviderRequestRepresentation::SignedInteger
+    );
+    assert_ne!(started[0].0.activity_id(), started[1].0.activity_id());
+
+    for (index, message) in messages[2..].iter().enumerate() {
+        let completed = projection
+            .project_notification(message["method"].as_str().unwrap(), &message["params"])
+            .expect("request activity completes");
+
+        assert_eq!(completed.len(), 1);
+        assert_eq!(completed[0].phase(), ActivityLifecyclePhase::Completed);
+        assert_eq!(completed[0].activity_id(), started[index].0.activity_id());
+        assert_eq!(
+            completed[0].provider_activity_ref(),
+            started[index].0.provider_activity_ref()
+        );
+        assert_eq!(
+            completed[0].correlation(),
+            Some(&ActivityCorrelation::ProviderRequest(
+                started[index].1.clone()
+            ))
+        );
+    }
+}
+
+#[test]
+fn request_id_normalization_rejects_non_protocol_shapes_and_ignores_unmatched_ids() {
+    for request_id in [serde_json::json!("missing"), serde_json::json!(901)] {
+        assert!(
+            projector()
+                .project_notification(
+                    "serverRequest/resolved",
+                    &serde_json::json!({"requestId": request_id}),
+                )
+                .expect("unmatched legal request id is harmless")
+                .is_empty()
+        );
+    }
+
+    for request_id in [
+        Value::Null,
+        serde_json::json!(true),
+        serde_json::json!({"id": 1}),
+        serde_json::json!([1]),
+        serde_json::json!(1.5),
+        serde_json::json!(u64::MAX),
+    ] {
+        assert!(canonical_provider_request_id(&request_id).is_err());
+        assert!(
+            projector()
+                .project_notification(
+                    "serverRequest/resolved",
+                    &serde_json::json!({"requestId": request_id}),
+                )
+                .is_err()
+        );
+    }
+
+    assert!(
+        projector()
+            .project_notification("serverRequest/resolved", &serde_json::json!({}))
+            .is_err()
+    );
 }
 
 fn project(case: &Value) -> Result<Vec<swallowtail_runtime::ActivityObservation>, ()> {

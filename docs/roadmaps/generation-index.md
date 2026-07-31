@@ -2,42 +2,36 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-28
+Updated: 2026-07-31
 
 ## Generations
 
 | Generation | Status | Focus |
 | --- | --- | --- |
-| `g01` | completed | Standalone authority, contract and runtime kernels, integration landscape, proof drivers, consumer adoption, hosted transports, ACP, and self-hosted coverage. |
-| `g02` | active | API stabilization, provider-wide prepared facades, packaging, consumer upgrade support, and release discipline. |
+| `g01` | completed | Standalone authority, runtime kernel, integration landscape, representative drivers, consumer adoption, compatibility foundations, and broad provider coverage. |
+| `g02` | completed | API stabilization, prepared facades, packaging, consumer upgrade proof, lifecycle management, feature-matrix closure, observable activity, and structural/validation hardening. |
+| `g03` | active | Compatibility maintenance across real interface ranges and consumer-proven hardening without release chasing. |
 
 ## Generation Size
 
 A generation normally contains 30-50 numbered roadmap files. Batch cards do
-not count toward this range. The operator closed g01 on 2026-07-24 after 48
-completed roadmaps and one backlog move. Roadmap 047 moved to the shared
-backlog; its cards remain g01 evidence.
+not count toward that range.
 
-g02 resets numbering and begins at roadmap 001. The rollover is manual because
-g01 reached 49 roadmaps and the next programme changes the sequencing baseline
-from integration-shape expansion to library stabilization and release
-discipline. Roadmap 001 proves package and candidate preparation. Roadmaps
-002-006 complete prepared integration contracts, the Codex facade, Nucleus and
-Soundcheck migration, and packaged consumer runtime proof. Roadmaps 007-014
-sequence provider-wide facade foundations, representative cross-shape proofs,
-all remaining production routes, packaged acceptance, replacement candidate
-evidence, canonical source provenance, and consumer hardening. No package
-publication, tag, or release mutation is implied. Roadmaps 015-019 add
-provider-session management foundations, Codex archive/restore/delete,
-ACP/Claude Agent and OpenCode deletion proofs, provider-wide acceptance, and a
-Nucleus handoff without absorbing consumer thread state. Roadmap 020 adds the
-separate Kimi Code local REST/WebSocket route, reversible archive and restore,
-explicit ACP binding import, and interactive execution without claiming Kimi
-deletion or changing ACP. Roadmap 021 closes source-scoped model catalogue
-coverage. Roadmaps 022-024 add independently qualified direct, harness, and
-retained Kimi structured-run branches, then close the solution matrix without
-widening realtime media or owned serving. All three roadmaps are complete.
-Roadmap 025 begins the provider feature-matrix `No`-closure programme with an
-exact inventory before another implementation lane. Roadmap 026 continues that
-programme through output-token limits, reasoning selection, and structured
-output without rolling the generation.
+g01 closed at 49 roadmaps: 48 completed milestones and one backlog move. g02
+closed at 49 roadmaps: 48 completed roadmaps, including roadmap 049's
+disposition and cutover, plus one backlog move. Roadmap g02.029 and cards
+097-098 remain recoverable as shared backlog evidence behind the Pi cwd-bound
+attachment gate.
+
+g03 resets roadmap and batch-card numbering. Its sequencing baseline is
+compatibility maintenance and consumer-proven hardening. It begins with a
+repository-local inventory, then current authoritative evidence, then a
+bounded implementation-tranche decision. It does not imply provider
+selection, consumer edits, publication, or a release per upstream version.
+
+## Rollover Rule
+
+g03 should normally run for 30-50 roadmaps. Provider releases, consumer
+defects, contract additions, or completed maintenance tranches do not create a
+new generation by themselves. Rollover requires a substantial run, clean
+disposition of unfinished work, and an explicit sequencing reset.

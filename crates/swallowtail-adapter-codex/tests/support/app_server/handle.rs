@@ -34,6 +34,23 @@ impl ScriptedAppServerHandle {
                 self.complete_turn("completed");
                 return;
             }
+            if message.get("id").and_then(serde_json::Value::as_i64) == Some(900)
+                && matches!(self.mode, AppServerMode::ExchangeUserInputNumericRequestId)
+            {
+                let thread_id = self
+                    .state
+                    .active_thread
+                    .lock()
+                    .expect("active thread lock is available")
+                    .clone()
+                    .expect("a turn is active");
+                self.state.push(serde_json::json!({
+                    "method": "serverRequest/resolved",
+                    "params": {"threadId": thread_id, "requestId": 900}
+                }));
+                self.complete_turn("completed");
+                return;
+            }
         }
         let Some(method) = message.get("method").and_then(serde_json::Value::as_str) else {
             return;
@@ -285,6 +302,27 @@ impl ScriptedAppServerHandle {
                             }]
                         }
                     })),
+                    AppServerMode::ExchangeUserInputNumericRequestId => {
+                        self.state.push(serde_json::json!({
+                            "id": 900,
+                            "method": "item/tool/requestUserInput",
+                            "params": {
+                                "threadId": thread_id,
+                                "turnId": "turn-provider-1",
+                                "itemId": "input-1",
+                                "questions": [{
+                                    "id": "scope",
+                                    "header": "Scope",
+                                    "question": "Choose a scope",
+                                    "isOther": false,
+                                    "isSecret": false,
+                                    "options": [
+                                        {"label": "Tests", "description": "Change tests"}
+                                    ]
+                                }]
+                            }
+                        }));
+                    }
                     AppServerMode::DynamicToolCall | AppServerMode::HoldDynamicToolCall => {
                         self.state.push(serde_json::json!({
                             "id": "callback-900",
@@ -383,4 +421,3 @@ fn message_requires_experimental_api(message: &serde_json::Value) -> bool {
                 .any(|field| params.contains_key(*field))
         })
 }
-

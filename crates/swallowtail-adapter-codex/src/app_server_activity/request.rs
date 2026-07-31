@@ -1,7 +1,9 @@
-use super::{AppServerActivityProjection, RequestIdentity, required_text};
-use crate::turn_state::malformed_notification;
+use super::{AppServerActivityProjection, RequestIdentity};
+use crate::turn_state::{canonical_provider_request_id, malformed_notification};
 use serde_json::Value;
-use swallowtail_core::{ActivityDisclosure, ProviderActivityRef, ProviderRequestRef};
+use swallowtail_core::{
+    ActivityDisclosure, ProviderActivityRef, ProviderRequestRef, ProviderRequestRepresentation,
+};
 use swallowtail_runtime::{
     ActivityCorrelation, ActivityKind, ActivityLifecyclePhase, ActivityNamespace,
     ActivityObservation, ActivityStatus, CallbackId, RuntimeFailure,
@@ -17,12 +19,19 @@ impl AppServerActivityProjection {
 
     pub(crate) fn provider_request_started(
         &mut self,
-        request_id: ProviderRequestRef,
+        request_ref: ProviderRequestRef,
         item_id: Option<&str>,
         namespace: &str,
     ) -> Result<ActivityObservation, RuntimeFailure> {
-        let request_key = request_id.as_provider_value().to_owned();
-        let identity = self.activity_id(&format!("request:{request_key}"))?;
+        let representation = match request_ref.representation() {
+            ProviderRequestRepresentation::Text => "text",
+            ProviderRequestRepresentation::SignedInteger => "signed-integer",
+        };
+        let activity_key = format!(
+            "request:{representation}:{}",
+            request_ref.as_provider_value()
+        );
+        let identity = self.activity_id(&activity_key)?;
         let provider_ref = item_id
             .map(ProviderActivityRef::new)
             .transpose()
@@ -30,7 +39,7 @@ impl AppServerActivityProjection {
         let namespace = ActivityNamespace::new(format!("codex.app-server.request.{namespace}"))
             .map_err(|_| malformed_notification())?;
         self.requests.insert(
-            request_key,
+            request_ref.clone(),
             RequestIdentity {
                 activity_id: identity.clone(),
                 namespace: namespace.clone(),
@@ -47,7 +56,7 @@ impl AppServerActivityProjection {
             ActivityDisclosure::IdentityAndLifecycleOnly,
         )
         .map_err(|_| malformed_notification())?
-        .with_correlation(ActivityCorrelation::ProviderRequest(request_id));
+        .with_correlation(ActivityCorrelation::ProviderRequest(request_ref));
         if let Some(provider_ref) = provider_ref {
             observation = observation.with_provider_activity_ref(provider_ref);
         }
@@ -58,12 +67,12 @@ impl AppServerActivityProjection {
         &mut self,
         params: &Value,
     ) -> Result<Vec<ActivityObservation>, RuntimeFailure> {
-        let request_id = required_text(params, "requestId")?;
-        let Some(identity) = self.requests.remove(request_id) else {
+        let request_id = canonical_provider_request_id(
+            params.get("requestId").ok_or_else(malformed_notification)?,
+        )?;
+        let Some(identity) = self.requests.remove(&request_id) else {
             return Ok(Vec::new());
         };
-        let request_ref =
-            ProviderRequestRef::new(request_id).map_err(|_| malformed_notification())?;
         let observation = ActivityObservation::new(
             identity.activity_id,
             self.operation_id.clone(),
@@ -74,7 +83,7 @@ impl AppServerActivityProjection {
             ActivityDisclosure::IdentityAndLifecycleOnly,
         )
         .map_err(|_| malformed_notification())?
-        .with_correlation(ActivityCorrelation::ProviderRequest(request_ref));
+        .with_correlation(ActivityCorrelation::ProviderRequest(request_id));
         Ok(vec![match identity.provider_ref {
             Some(reference) => observation.with_provider_activity_ref(reference),
             None => observation,

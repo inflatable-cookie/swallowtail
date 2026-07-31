@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-20
+Updated: 2026-07-31
 
 ## Purpose
 
@@ -140,8 +140,12 @@ route, access profile, and provider response that produced them. Cumulative
 stream usage replaces earlier snapshots for the same provider attempt; it is
 not summed as a new attempt.
 
-Provider request ids remain opaque references. They may support operator
-correlation without exposing raw headers or payloads.
+Provider request ids remain opaque references. When the qualified provider
+wire admits more than one scalar representation, the portable reference
+preserves that representation as bounded typed metadata beside the opaque
+value. Equal text and signed-integer forms are distinct references. The
+representation is correlation evidence, not permission to expose raw headers,
+payloads, or provider envelopes.
 
 ## Failure Mapping
 

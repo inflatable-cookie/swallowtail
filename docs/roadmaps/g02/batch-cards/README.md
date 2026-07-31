@@ -167,6 +167,9 @@ None.
 - `162-claude-form-elicitation-evidence-contract-and-corpus.md`
 - `163-claude-typed-user-input-exchange.md`
 - `164-claude-form-elicitation-acceptance-and-closeout.md`
+- `165-g02-closeout-inventory-and-pi-disposition.md`
+- `166-g02-closure-and-g03-generation-open.md`
+- `167-g03-compatibility-runway-compilation.md`
 
 ## Superseded
 
@@ -184,7 +187,8 @@ None.
 
 ## Backlog
 
-None. Cross-generation deferred work lives in `docs/roadmaps/backlog/`.
+No generation-local backlog. Cross-generation deferred work lives in
+`docs/roadmaps/backlog/`.
 
 ## Planned
 
@@ -194,8 +198,10 @@ None.
 
 None.
 
-## Paused
+## Backlog Evidence
 
-- `097-pi-rpc-session-continuity-implementation.md` — waits for a maintained
+- `097-pi-rpc-session-continuity-implementation.md` — moved to the shared
+  backlog; waits for a maintained
   public Pi cwd-bound attachment surface
-- `098-pi-rpc-session-continuity-closeout.md` — depends on paused card 097
+- `098-pi-rpc-session-continuity-closeout.md` — moved to the shared backlog;
+  depends on card 097

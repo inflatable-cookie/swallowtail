@@ -17,6 +17,7 @@ historical evidence.
 ## Items
 
 - [Provider-Session Management Binding Persistence](provider-session-management-binding-persistence.md)
+- [Pi RPC Session Continuity](pi-rpc-session-continuity.md)
 
 ## Completed
 

@@ -1,6 +1,6 @@
 # g02 Swallowtail Stabilization, Facades, And Release Discipline
 
-Status: active
+Status: completed
 Owner: Tom
 Created: 2026-07-24
 
@@ -55,6 +55,7 @@ evidence-led provider work.
 | Reduce normal development validation latency without weakening milestone or release proof. | completed | Contract 001, Effigy task graph, operator latency feedback | `g02.046` |
 | Accept provider-owned child-work topology and hand exact projection truth to consumers. | completed | Research 072, Contracts 044-045 | `g02.047` |
 | Expose Claude form elicitation through typed harness user input. | completed | Research 073, Contracts 012, 015, 041 | `g02.048` |
+| Close g02, preserve the Pi upstream gate, and open the compatibility-maintenance generation. | completed | Contract 001, Research 053 | `g02.049` |
 
 ## Current Checkpoint
 
@@ -1082,6 +1083,8 @@ is deferred until a consumer needs post-restart provider management.
 - card 164 accepts focused and packaged behavior, updates provider-wide truth,
   and retains richer forms, previews, and consumer presentation as explicit
   gaps
+- cards 165-167 rehome Pi continuity behind its unchanged upstream gate, close
+  g02 at 49 roadmaps, and compile the first evidence-first g03 milestone
 - cards 024-026 own remaining harness facades
 - cards 027-030 own hosted direct and provider-state facades
 - cards 031-033 own realtime, SDK, and llama.cpp facades
@@ -1091,14 +1094,13 @@ is deferred until a consumer needs post-restart provider management.
 
 ## Next
 
-Reassess Nucleus adoption authorization for the completed child-work and
-Claude typed user-input handoffs. Publication and provider-session binding
-persistence remain deferred.
+g02 is complete. Continue through g03 card 001. Publication and provider-
+session binding persistence remain deferred.
 
 ## Generation Boundary
 
-g02 is a long-lived generation with 48 roadmaps. It remains within its
-30-50-roadmap range. Provider-wide facade work stabilizes the existing
+g02 closed at 49 roadmaps, near the upper edge of its 30-50-roadmap range.
+Provider-wide facade work stabilizes the existing
 production routes. The provider-session lifecycle lane adds bounded management
 to applicable persistent-session routes without adding provider names,
 consumer persistence, or implicit deletion. The Kimi local-server route adds a
@@ -1106,3 +1108,7 @@ second driver under an existing integration family; it does not justify a
 generation rollover. Observable activity enriches existing route events and
 prepared evidence without adding provider identities, a global event bus,
 consumer persistence, or product UI.
+
+The unfinished Pi RPC load/resume lane moved to the shared backlog because its
+maintained public interface cannot corroborate exact caller-bound cwd
+attachment. g03 is now the sole active generation.

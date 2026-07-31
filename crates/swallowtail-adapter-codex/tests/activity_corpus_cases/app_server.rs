@@ -31,6 +31,7 @@ fn app_server_corpus_covers_rich_activity_and_disclosure_boundaries() {
         "item-timestamps",
         "namespaced-unknown-item",
         "qualified-current-additive",
+        "request-id-union",
         "malformed-item",
         "foreign-item",
     ] {
@@ -56,6 +57,10 @@ fn app_server_corpus_covers_rich_activity_and_disclosure_boundaries() {
 
     let newer = case(&cases, "qualified-current-additive");
     assert_eq!(newer["expected"]["profile"], "0.146.0-guarantee");
+    assert_eq!(
+        case(&cases, "request-id-union")["expected"]["request_id_representations"],
+        serde_json::json!(["string", "integer"])
+    );
 }
 
 #[test]

@@ -1,12 +1,12 @@
 # 029 Pi RPC Session Continuity
 
-Status: paused
+Status: moved to backlog
 Owner: Tom
 Created: 2026-07-28
 Depends on: g02.028
 Vision tags: exact lifecycle, installed harnesses, persistent sessions
 Contract refs: 003, 005, 009, 012, 017, 037-038
-Planning state: card 096 complete; cards 097-098 paused
+Planning state: card 096 complete; cards 097-098 retained as backlog evidence
 
 ## Problem
 
@@ -87,5 +87,11 @@ cannot silently widen the existing ephemeral session or structured-run paths.
 ## Next Planning Checkpoint
 
 Research 053 records the upstream public-interface gate. Cards 097-098 remain
-paused until Pi can attach a session with the exact caller-bound cwd and
-corroborate it. Roadmap 030 returns to the matrix. Stay in g02.
+deferred until Pi can attach a session with the exact caller-bound cwd and
+corroborate it. Roadmap 030 returned to the matrix and completed independently.
+
+## Backlog Disposition
+
+g02 closed without weakening this gate. The lane now lives in the
+[shared roadmap backlog](../backlog/pi-rpc-session-continuity.md). This source
+roadmap and cards 096-098 remain the preserved execution evidence.

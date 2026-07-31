@@ -133,7 +133,6 @@ input_callback_classifications = {
     ("question_exchange", "qwen.headless"): "upstream_unsupported",
     ("question_exchange", "alibaba.conversations"): "upstream_unsupported",
     ("question_exchange", "bedrock.catalogue; bedrock.runtime"): "upstream_unsupported",
-    ("question_exchange", "claude-agent.acp"): "upstream_unsupported",
     ("question_exchange", "claude-code.headless"): "contract_or_corpus_required",
     ("question_exchange", "anthropic.managed-agent"): "contract_or_corpus_required",
     ("question_exchange", "anthropic.messages"): "upstream_unsupported",
@@ -283,4 +282,3 @@ provider_retention_classifications[
 provider_retention_classifications[
     ("owned_remote_resource_cleanup", "opencode.http")
 ] = "realized_matrix_false_negative"
-

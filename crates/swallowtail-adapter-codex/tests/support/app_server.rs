@@ -17,6 +17,7 @@ pub enum AppServerMode {
     ObserveApproval,
     ObserveUserInput,
     ExchangeUserInput,
+    ExchangeUserInputNumericRequestId,
     DynamicToolCall,
     HoldDynamicToolCall,
     DisconnectTurn,

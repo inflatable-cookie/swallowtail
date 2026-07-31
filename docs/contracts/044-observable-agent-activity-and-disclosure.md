@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-30
+Updated: 2026-07-31
 
 ## Purpose
 
@@ -209,6 +209,12 @@ Observable activity may carry:
 
 It must not duplicate raw callback bodies, credential material, authorization
 headers, endpoint secrets, or an uninterpreted provider envelope.
+
+A provider-request correlation retains the portable request reference's
+qualified scalar representation. A text id and signed-integer id with equal
+visible content do not identify the same request. Activity projection uses the
+same representation-aware reference as callback admission and resolution; it
+does not maintain a weaker display-only identity.
 
 Standardized field names do not make uninterpreted content safe. ACP
 `rawInput`, `rawOutput`, and untyped `_meta` remain excluded unless the exact

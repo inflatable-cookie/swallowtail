@@ -5,6 +5,12 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-07-31 Provider Request Reference Representation](2026-07-31-provider-request-reference-representation.md)
+- [2026-07-31 Codex Request-ID Canonicalization](2026-07-31-codex-request-id-canonicalization.md)
+- [2026-07-31 First g03 Compatibility Tranche Selection](2026-07-31-first-g03-compatibility-tranche-selection.md)
+- [2026-07-31 Currentness Evidence And Gap Classification](2026-07-31-currentness-evidence-and-gap-classification.md)
+- [2026-07-31 Installed Harness Maintenance Inventory](2026-07-31-installed-harness-maintenance-inventory.md)
+- [2026-07-31 g02 Generation Closeout And g03 Open](2026-07-31-g02-generation-closeout-and-g03-open.md)
 - [2026-07-30 Claude Agent Form Elicitation Closeout](2026-07-30-claude-agent-form-elicitation-closeout.md)
 - [2026-07-30 Subagent Topology Consumer Handoff](2026-07-30-subagent-topology-consumer-handoff.md)
 - [2026-07-30 Subagent Topology Route And Package Acceptance](2026-07-30-subagent-topology-route-and-package-acceptance.md)

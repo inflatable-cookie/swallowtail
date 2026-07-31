@@ -1,10 +1,14 @@
 # 004 Claude And Gemini ACP Range Corpus
 
-Status: ready
+Status: paused
 Owner: Tom
 Created: 2026-07-31
 Milestone: `../002-claude-and-gemini-acp-range-maintenance.md`
 Depends on: card 003
+
+Paused: 2026-07-31. The operator moved the active installed-harness lane to
+Cursor, followed by Antigravity. Existing Claude and Gemini evidence remains
+valid; no production support was removed.
 
 ## Goal
 

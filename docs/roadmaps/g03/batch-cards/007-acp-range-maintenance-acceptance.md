@@ -1,10 +1,13 @@
 # 007 ACP Range Maintenance Acceptance
 
-Status: planned
+Status: paused
 Owner: Tom
 Created: 2026-07-31
 Milestone: `../002-claude-and-gemini-acp-range-maintenance.md`
 Depends on: cards 005-006
+
+Paused: 2026-07-31 with roadmap g03.002. No acceptance work is required while
+the underlying range extensions remain paused.
 
 ## Goal
 

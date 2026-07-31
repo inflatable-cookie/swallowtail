@@ -2854,6 +2854,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "swallowtail-adapter-cursor"
+version = "0.1.0"
+dependencies = [
+ "futures-channel",
+ "futures-executor",
+ "swallowtail-core",
+ "swallowtail-runtime",
+]
+
+[[package]]
 name = "swallowtail-adapter-deepseek"
 version = "0.1.0"
 dependencies = [

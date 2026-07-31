@@ -1,10 +1,14 @@
 # 006 Gemini CLI 0.53 Dual-Route Extension
 
-Status: planned
+Status: paused
 Owner: Tom
 Created: 2026-07-31
 Milestone: `../002-claude-and-gemini-acp-range-maintenance.md`
 Depends on: card 005
+
+Paused: 2026-07-31 after the operator's authenticated no-response evidence and
+Google's personal-account migration to Antigravity. Existing Gemini guarantees
+remain unchanged.
 
 ## Goal
 

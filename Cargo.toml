@@ -5,6 +5,7 @@ members = [
   "crates/swallowtail-adapter-bedrock",
   "crates/swallowtail-adapter-claude-agent",
   "crates/swallowtail-adapter-codex",
+  "crates/swallowtail-adapter-cursor",
   "crates/swallowtail-adapter-deepseek",
   "crates/swallowtail-adapter-gemini",
   "crates/swallowtail-adapter-grok",

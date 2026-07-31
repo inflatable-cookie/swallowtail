@@ -1,0 +1,185 @@
+use swallowtail_core::{
+    InterfaceBehaviorRevision, InterfaceCompatibilityClaim, InterfaceCompatibilityClaimId,
+    InterfaceNewerVersionPosture, InterfaceSupportStatus, InterfaceVersion, InterfaceVersionAxis,
+    InterfaceVersionBinding, InterfaceVersionScheme, InterfaceVersionSegment, PreflightPlan,
+};
+use swallowtail_runtime::RuntimeFailure;
+
+use crate::failure::failure;
+
+pub const CURSOR_AGENT_AUTOMATIC_EXECUTABLE_NAME: &str = "cursor-agent";
+pub const CURSOR_AGENT_RELEASE_AXIS: &str = "cursor-agent.release-date";
+pub const CURSOR_AGENT_BASELINE_VERSION: &str = "2026-07-01";
+pub const CURSOR_AGENT_LATEST_QUALIFIED_VERSION: &str = "2026-07-01";
+pub const CURSOR_AGENT_LATEST_QUALIFIED_BUILD_REVISION: &str = "41b2de7";
+
+pub(crate) const CURSOR_CATALOGUE_BEHAVIOR: &str = "cursor-agent.catalogue.calendar-release-v1";
+
+const RAW_VERSION_BYTES: usize = 18;
+const BUILD_REVISION_BYTES: usize = 7;
+
+#[must_use]
+pub fn cursor_agent_release_binding(value: &str) -> Option<InterfaceVersionBinding> {
+    if value.len() != RAW_VERSION_BYTES
+        || value.trim() != value
+        || !value.is_ascii()
+        || value.chars().any(char::is_control)
+    {
+        return None;
+    }
+    let bytes = value.as_bytes();
+    if bytes[4] != b'.' || bytes[7] != b'.' || bytes[10] != b'-' {
+        return None;
+    }
+    if !bytes[..4].iter().all(u8::is_ascii_digit)
+        || !bytes[5..7].iter().all(u8::is_ascii_digit)
+        || !bytes[8..10].iter().all(u8::is_ascii_digit)
+    {
+        return None;
+    }
+    let year = value[..4].parse::<u16>().ok()?;
+    let month = value[5..7].parse::<u8>().ok()?;
+    let day = value[8..10].parse::<u8>().ok()?;
+    if !valid_calendar_date(year, month, day) {
+        return None;
+    }
+    let date = format!("{}-{}-{}", &value[0..4], &value[5..7], &value[8..10]);
+    let build = &value[11..];
+    if build.len() != BUILD_REVISION_BYTES
+        || !build
+            .bytes()
+            .all(|byte| byte.is_ascii_digit() || (b'a'..=b'f').contains(&byte))
+    {
+        return None;
+    }
+    if date == CURSOR_AGENT_LATEST_QUALIFIED_VERSION
+        && build != CURSOR_AGENT_LATEST_QUALIFIED_BUILD_REVISION
+    {
+        return None;
+    }
+    let version = InterfaceVersion::new(date).ok()?;
+    Some(InterfaceVersionBinding::new(axis(), version))
+}
+
+const fn valid_calendar_date(year: u16, month: u8, day: u8) -> bool {
+    let maximum = match month {
+        1 | 3 | 5 | 7 | 8 | 10 | 12 => 31,
+        4 | 6 | 9 | 11 => 30,
+        2 if year.is_multiple_of(400) || (year.is_multiple_of(4) && !year.is_multiple_of(100)) => {
+            29
+        }
+        2 => 28,
+        _ => return false,
+    };
+    day > 0 && day <= maximum
+}
+
+#[must_use]
+pub fn cursor_catalogue_claim() -> InterfaceCompatibilityClaim {
+    InterfaceCompatibilityClaim::new(
+        InterfaceCompatibilityClaimId::new("cursor-agent.catalogue.release-window-1")
+            .expect("static Cursor claim id is valid"),
+        axis(),
+        InterfaceVersionScheme::CalendarDate,
+        InterfaceNewerVersionPosture::AllowUnverified,
+        [InterfaceVersionSegment::exact(
+            version(CURSOR_AGENT_LATEST_QUALIFIED_VERSION),
+            InterfaceBehaviorRevision::new(CURSOR_CATALOGUE_BEHAVIOR)
+                .expect("static Cursor behavior is valid"),
+            InterfaceSupportStatus::Maintained,
+        )],
+        [],
+    )
+    .expect("static Cursor compatibility claim is valid")
+}
+
+pub(crate) fn validate_cursor_catalogue_plan(plan: &PreflightPlan) -> Result<(), RuntimeFailure> {
+    let claim = cursor_catalogue_claim();
+    let mut bindings = plan
+        .interface_versions()
+        .filter(|binding| binding.axis() == claim.axis());
+    let binding = bindings.next().ok_or_else(|| {
+        failure(
+            "swallowtail.cursor.catalogue.version_missing",
+            "Cursor catalogue plan is missing its exact release version",
+        )
+    })?;
+    if bindings.next().is_some() {
+        return Err(failure(
+            "swallowtail.cursor.catalogue.version_ambiguous",
+            "Cursor catalogue plan contains more than one release version",
+        ));
+    }
+    let assessment = claim.assess(binding.version());
+    if assessment != plan.assess_interface_version(binding)
+        || !assessment.is_permitted()
+        || assessment
+            .behavior_revision()
+            .is_none_or(|revision| revision.as_str() != CURSOR_CATALOGUE_BEHAVIOR)
+    {
+        return Err(failure(
+            "swallowtail.cursor.catalogue.version_incompatible",
+            "Cursor release version is incompatible with the catalogue driver",
+        ));
+    }
+    Ok(())
+}
+
+fn axis() -> InterfaceVersionAxis {
+    InterfaceVersionAxis::new(CURSOR_AGENT_RELEASE_AXIS)
+        .expect("static Cursor release axis is valid")
+}
+
+fn version(value: &str) -> InterfaceVersion {
+    InterfaceVersion::new(value).expect("static Cursor release version is valid")
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{CURSOR_AGENT_RELEASE_AXIS, cursor_agent_release_binding, cursor_catalogue_claim};
+    use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
+
+    #[test]
+    fn exact_release_is_qualified_and_later_dates_are_unverified() {
+        let claim = cursor_catalogue_claim();
+        assert!(claim.supports(&version("2026-07-01")));
+        assert!(!claim.permits(&version("2026-06-30")));
+        let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
+            claim.assess(&version("2026-07-23"))
+        else {
+            panic!("later Cursor release remains visibly unverified");
+        };
+        assert_eq!(newer.latest_qualified().as_str(), "2026-07-01");
+    }
+
+    #[test]
+    fn binding_validates_build_revision_but_orders_only_the_release_date() {
+        let local = cursor_agent_release_binding("2026.07.01-41b2de7")
+            .expect("installed Cursor version parses");
+        assert_eq!(local.axis().as_str(), CURSOR_AGENT_RELEASE_AXIS);
+        assert_eq!(local.version().as_str(), "2026-07-01");
+        let registry = cursor_agent_release_binding("2026.07.23-e383d2b")
+            .expect("registry Cursor version parses");
+        assert_eq!(registry.version().as_str(), "2026-07-23");
+
+        for rejected in [
+            "",
+            "2026.07.01",
+            "2026-07-01-41b2de7",
+            "2026.07.01-41B2DE7",
+            "2026.07.01-deadbee",
+            "2026.07.01-41b2de",
+            "2026.02.30-41b2de7",
+            " 2026.07.01-41b2de7",
+        ] {
+            assert!(
+                cursor_agent_release_binding(rejected).is_none(),
+                "{rejected}"
+            );
+        }
+    }
+
+    fn version(value: &str) -> InterfaceVersion {
+        InterfaceVersion::new(value).expect("fixture version is valid")
+    }
+}

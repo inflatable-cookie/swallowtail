@@ -5,6 +5,10 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-07-31 Codex Child Activity Ownership](2026-07-31-codex-child-activity-ownership.md)
+- [2026-07-31 Cursor Discovery And Catalogue Foundation](2026-07-31-cursor-discovery-and-catalogue-foundation.md)
+- [2026-07-31 Cursor Exact Route Corpus](2026-07-31-cursor-exact-route-corpus.md)
+- [2026-07-31 Cursor And Antigravity Route Refocus](2026-07-31-cursor-and-antigravity-route-refocus.md)
 - [2026-07-31 Provider Request Reference Representation](2026-07-31-provider-request-reference-representation.md)
 - [2026-07-31 Codex Request-ID Canonicalization](2026-07-31-codex-request-id-canonicalization.md)
 - [2026-07-31 First g03 Compatibility Tranche Selection](2026-07-31-first-g03-compatibility-tranche-selection.md)

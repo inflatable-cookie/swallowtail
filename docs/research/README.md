@@ -82,3 +82,4 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [072 Subagent Topology, Observation, And Control Evidence](072-subagent-topology-observation-and-control-evidence.md)
 - [073 Claude Agent ACP Form Elicitation](073-claude-agent-acp-form-elicitation.md)
 - [074 Installed Harness And Protocol Maintenance Inventory](074-installed-harness-and-protocol-maintenance-inventory.md)
+- [075 Cursor And Antigravity Installed-Harness Refocus](075-cursor-and-antigravity-installed-harness-refocus.md)

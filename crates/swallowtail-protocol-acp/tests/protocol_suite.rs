@@ -13,6 +13,8 @@ mod claude_agent_lifecycle_fixtures;
 mod claude_agent_protocol_fixtures;
 #[path = "claude_agent_session_continuity_fixtures.rs"]
 mod claude_agent_session_continuity_fixtures;
+#[path = "cursor_protocol_fixtures.rs"]
+mod cursor_protocol_fixtures;
 #[path = "grok_protocol_fixtures.rs"]
 mod grok_protocol_fixtures;
 #[path = "kimi_protocol_fixtures.rs"]

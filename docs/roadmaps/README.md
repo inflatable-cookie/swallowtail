@@ -13,9 +13,9 @@ shape.
 
 ## Next Task
 
-Execute [g03 card 004](g03/batch-cards/004-claude-gemini-acp-range-corpus.md).
-Freeze exact Claude Agent and Gemini CLI candidate artifacts and behavior
-groups before changing production compatibility claims.
+Execute [g03 card 012](g03/batch-cards/012-cursor-acp-interactive-driver.md).
+Implement the Cursor first-party ACP interactive driver from card 010's frozen
+corpus without widening its route, access, or lifecycle claims.
 
 ## Index
 

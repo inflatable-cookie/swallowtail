@@ -20,17 +20,22 @@ profile.
 
 g02 structural stabilization, validation-latency, child-work topology, and
 Claude form-elicitation work are complete. g03 now owns compatibility
-maintenance and consumer-proven hardening. The accepted stabilization
+maintenance, consumer-proven hardening, and the next installed-harness routes.
+Cursor is the active high-priority lane with separate catalogue, ACP, and
+headless roles planned behind one facade. Antigravity follows as Google's
+personal-account harness. Existing Gemini support remains, while further
+Gemini range qualification is paused. The accepted stabilization
 baseline removed all five critical and 28 high findings. Four affected
 archives now compile through one extracted target in five seconds, down from
 22.4 seconds through separate targets. Kimi child-activity projection is split
 on its native lifecycle seam. Claude Agent now projects its exact portable
-choice-form subset through typed harness user input. Doctor is warning-only at
-147 findings. Roadmaps g02.047-g02.048 own the completed topology and
+choice-form subset through typed harness user input. Doctor reports 147
+oversized-file findings, including two errors; they remain known structural
+debt outside this provider batch. Roadmaps g02.047-g02.048 own the completed topology and
 elicitation handoffs; g02.049 closes the generation. Nucleus adoption is
 delegated to the Nucleus repository and does not govern Swallowtail's active
-lane. Roadmap g03.001 owns the compatibility-maintenance baseline.
-Warning-only reduction remains deferred.
+lane. Roadmap g03.005 owns the active Cursor foundation; g03.006 holds the
+planned Antigravity continuation.
 
 ## Start Here
 
@@ -197,11 +202,12 @@ until the current source enters canonical history.
 - local and remote execution hosts treated as equal topologies
 - Nucleus and Soundcheck as initial consumers, not Swallowtail authorities
 
-The twenty-four-crate Rust workspace contains `swallowtail-core`, `swallowtail-runtime`,
+The twenty-five-crate Rust workspace contains `swallowtail-core`, `swallowtail-runtime`,
 `swallowtail-testkit`, `swallowtail-host-local`, `swallowtail-protocol-acp`,
 `swallowtail-protocol-openai-chat`, `swallowtail-transport-acp-remote`,
 `swallowtail-adapter-alibaba-model-studio`,
 `swallowtail-adapter-claude-agent`, `swallowtail-adapter-codex`,
+`swallowtail-adapter-cursor`,
 `swallowtail-adapter-deepseek`, `swallowtail-adapter-opencode`,
 `swallowtail-adapter-anthropic`, `swallowtail-adapter-bedrock`,
 `swallowtail-adapter-gemini`, `swallowtail-adapter-grok`,

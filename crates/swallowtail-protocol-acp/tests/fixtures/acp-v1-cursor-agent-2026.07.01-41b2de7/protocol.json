@@ -1,0 +1,110 @@
+{
+  "evidence_checked": "2026-07-31",
+  "installed_artifact": {
+    "version": "2026.07.01-41b2de7",
+    "channel": "stable",
+    "platform": "darwin-aarch64",
+    "launcher_sha256": "eed61c5224668c9236334c4c68936a16aecc37374b592f59e31eb50433817831",
+    "runtime_index_sha256": "b974679f9f421360ac6f063ba54d5032b75230a58f28fc5c3017de5ff481f230",
+    "runtime_package_sha256": "625a6b5d64e45fd989706ab6fd21a95f454d4e70cab7c0c1c151d37582d8bee2",
+    "bundled_node_sha256": "336b5b3ebc5deb86df842102b20b6e4761605b7a667823e68dda7761b91a161b"
+  },
+  "registry_artifact": {
+    "registry_checked": "2026-07-31",
+    "registry_sha256": "47aa849816edf85f107d21259834bbbd0253d55bfdb666a2775401937b0d6a07",
+    "version": "2026.07.23",
+    "build": "2026.07.23-e383d2b",
+    "platform": "darwin-aarch64",
+    "archive_sha256": "f2eb25851f2079dcdf0558a816e06c402d187abfca93255d35167020439ebbf2",
+    "command": ["./dist-package/cursor-agent", "acp"],
+    "license": "proprietary",
+    "executed": false
+  },
+  "version_observation": {
+    "argv": ["--version"],
+    "stdout": "2026.07.01-41b2de7",
+    "stdout_sha256": "bcf4b0b5f6115024d4bf9919c59cbcd590021b20a2ae1404168ac23c00e43dc9",
+    "safe_for_contract_032": true
+  },
+  "discovery": {
+    "automatic_candidate": "cursor-agent",
+    "generic_agent_candidate_allowed": false,
+    "generic_agent_observed_identity": "grok",
+    "generic_agent_observed_version": "0.2.117",
+    "host_approved_path_requires_cursor_identity": true,
+    "silent_candidate_fallback": false
+  },
+  "protocol": {
+    "wire_version": 1,
+    "transport": "stdio_ndjson",
+    "encoding": "utf-8",
+    "delimiter": "newline",
+    "initialize_only_live_probe": true,
+    "session_created": false,
+    "prompt_sent": false
+  },
+  "capabilities": {
+    "load_session_advertised": true,
+    "session_list_advertised": true,
+    "prompt_image": true,
+    "prompt_audio": false,
+    "prompt_embedded_context": false,
+    "mcp_http": true,
+    "mcp_sse": true,
+    "claimed_before_route_corpus": []
+  },
+  "access": {
+    "advertised_auth_methods": ["cursor_login"],
+    "existing_delegated_login_observed": true,
+    "authenticate_called": false,
+    "credential_read": false,
+    "account_identity_retained": false,
+    "api_key_profile_selected": false
+  },
+  "catalogue": {
+    "argv": ["models"],
+    "source": "authenticated_installed_executable",
+    "normalized_entry_count": 193,
+    "normalized_output_sha256": "e3cffea5f81a609ff5ad4489087176ba6bbcf0b9da053afbc8c69c34e3888585",
+    "header_and_tip_excluded": true,
+    "entry_grammar": "<model-id> - <display-name>",
+    "representative_entries": [
+      "auto - Auto (current, default)",
+      "gpt-5.3-codex-high - Codex 5.3 High",
+      "glm-5.2-max - GLM 5.2 Max"
+    ],
+    "dynamic": true,
+    "model_invocation_availability_claimed": false
+  },
+  "headless": {
+    "help_sha256": "28a810a84859c50339dddd12e38b05986ec5cab1b4e36590b391fa366abd438f",
+    "output_formats": ["text", "json", "stream-json"],
+    "partial_output_flag": "--stream-partial-output",
+    "modes": ["plan", "ask"],
+    "explicit_model": true,
+    "documented_event_types": ["system", "user", "assistant", "tool_call", "result"],
+    "system_fields": ["apiKeySource", "cwd", "session_id", "model", "permissionMode"],
+    "message_fields": ["message.role", "message.content", "session_id"],
+    "tool_subtypes": ["started", "completed"],
+    "tool_correlation": "call_id",
+    "documented_tool_shapes": ["readToolCall", "writeToolCall", "function"],
+    "terminal_fields": ["duration_ms", "duration_api_ms", "is_error", "result", "session_id", "request_id"],
+    "success_terminal_required": true,
+    "failure_may_end_without_terminal": true,
+    "failure_diagnostic_channel": "stderr",
+    "token_usage_fields": [],
+    "cancellation_stream_event": null,
+    "json_schema_output_flag": null,
+    "thinking_events_suppressed": true,
+    "provider_tool_arguments_and_results_private": true,
+    "resume_and_continue_documented_not_claimed": true,
+    "optional_sandbox": true,
+    "dangerous_force_flags_selected": false
+  },
+  "qualification": {
+    "production_claim_created": false,
+    "continuous_calendar_range_allowed": false,
+    "installed_and_registry_artifacts_share_behavior": "unproven",
+    "unverified_newer_policy": "allow_visible"
+  }
+}

@@ -175,6 +175,14 @@ visible as unverified newer unless exact evidence requires rejection.
 - Research 091 finds no new consumer defect or non-deferred stable upstream
   drift, repairs the stale 24-package and 30-route authority counts, and leaves
   g03 evidence-gated without compiling roadmap 018
+- Soundcheck then reproduced a Codex exec `0.146.0` queryless completed
+  `web_search` navigation observation aborting a later valid structured result;
+  g03.018 owns the exact fixture, narrow projection repair, and whole-stream
+  regression
+- g03.018 now accepts only completed queryless `action.type == "other"`
+  lifecycle observations without content; ordinary search queries remain
+  visible, malformed actual searches remain rejected, and Soundcheck owns the
+  authenticated Luna/medium rerun
 
 ## Milestones
 
@@ -195,11 +203,12 @@ visible as unverified newer unless exact evidence requires rejection.
 - [015 Claude Agent 0.64 Standalone Range Maintenance](015-claude-agent-0-64-standalone-range-maintenance.md) — completed
 - [016 Attached Harness Probe Compatibility Truth](016-attached-harness-probe-compatibility-truth.md) — completed
 - [017 Prepared Facade Multi-Consumer Usability](017-prepared-facade-multi-consumer-usability.md) — completed
+- [018 Codex Exec Queryless Navigation Lifecycle](018-codex-exec-queryless-navigation-lifecycle.md) — completed
 
 ## Next
 
-Reassess g03 only after a consumer defect, material non-deferred stable drift,
-or explicit operator promotion supplies new evidence.
+Validate the committed fix from Soundcheck with its ignored Luna/medium
+structured-proposal test. Otherwise keep Swallowtail at the g03 evidence gate.
 
 ## Generation Boundary
 

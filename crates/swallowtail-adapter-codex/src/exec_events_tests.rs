@@ -1,8 +1,11 @@
 use super::ExecEventParser;
 use semver::Version;
+use serde_json::Value;
 use swallowtail_runtime::{
     ActivityKind, ProviderObservation, RuntimeEventKind, RuntimeRunId, TerminalStatus, TokenUsage,
 };
+
+const ACTIVITY_CORPUS: &str = include_str!("../tests/fixtures/activity/exec.jsonl");
 
 fn parser() -> ExecEventParser {
     ExecEventParser::new(
@@ -69,6 +72,58 @@ fn parser_preserves_safe_search_reasoning_and_usage_progress() {
     };
     assert_eq!(usage, &TokenUsage::new(Some(12), Some(4)));
     assert!(events[2].content().is_none());
+}
+
+#[test]
+fn queryless_other_search_does_not_abort_later_structured_output() {
+    let case: Value = ACTIVITY_CORPUS
+        .lines()
+        .map(|line| serde_json::from_str(line).expect("activity corpus line is valid"))
+        .find(|case: &Value| case["case"] == "search-other-navigation-lifecycle")
+        .expect("queryless navigation case exists");
+    let mut jsonl = case["events"]
+        .as_array()
+        .expect("events are an array")
+        .iter()
+        .map(|event| serde_json::to_string(event).expect("fixture event serializes"))
+        .collect::<Vec<_>>()
+        .join("\n");
+    jsonl.push('\n');
+
+    let mut parser = parser();
+    let events = parser
+        .push(jsonl.as_bytes())
+        .expect("queryless navigation and later proposal parse");
+    let activities = events
+        .iter()
+        .filter_map(|event| match event.kind() {
+            RuntimeEventKind::Activity(activity) => Some(activity),
+            _ => None,
+        })
+        .collect::<Vec<_>>();
+
+    assert_eq!(activities.len(), 3);
+    assert_eq!(activities[0].activity_id(), activities[1].activity_id());
+    assert_eq!(
+        activities[0].provider_activity_ref(),
+        activities[1].provider_activity_ref()
+    );
+    assert!(activities[..2].iter().all(|item| item.content().is_none()));
+    let output = events
+        .iter()
+        .find(|event| event.kind() == &RuntimeEventKind::OutputAvailable)
+        .and_then(|event| event.content())
+        .expect("valid structured proposal remains available");
+    assert_eq!(output.as_str(), r#"{"proposal":"valid"}"#);
+
+    let (trailing, terminal) = parser.finish().expect("stream finishes");
+    assert!(trailing.is_empty());
+    let outcome = terminal.outcome(true);
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    assert_eq!(
+        outcome.output().map(|value| value.as_str()),
+        Some(r#"{"proposal":"valid"}"#)
+    );
 }
 
 #[test]

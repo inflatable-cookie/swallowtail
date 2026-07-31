@@ -13,8 +13,8 @@ shape.
 
 ## Next Task
 
-Reassess g03 only after a consumer defect, material non-deferred stable drift,
-or explicit operator promotion supplies new evidence.
+Validate the committed fix from Soundcheck with its ignored Luna/medium
+structured-proposal test. Otherwise keep Swallowtail at the g03 evidence gate.
 
 ## Index
 

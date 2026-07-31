@@ -5,6 +5,7 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-08-01 Codex Exec Queryless Navigation Lifecycle](2026-08-01-codex-exec-queryless-navigation-lifecycle.md)
 - [2026-07-31 g03 Evidence-Gated Maintenance Checkpoint](2026-07-31-g03-evidence-gated-maintenance-checkpoint.md)
 - [2026-07-31 Prepared Facade Multi-Consumer Usability](2026-07-31-prepared-facade-multi-consumer-usability.md)
 - [2026-07-31 OpenCode Attached Live Probe Truth](2026-07-31-opencode-attached-live-probe-truth.md)

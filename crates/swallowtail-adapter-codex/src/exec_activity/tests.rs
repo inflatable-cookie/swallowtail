@@ -19,6 +19,7 @@ fn qualified_corpus_projects_exact_exec_lifecycle_and_content() {
         "mcp-tool-lifecycle",
         "search-lifecycle",
         "search-deferred-query-lifecycle",
+        "search-other-navigation-lifecycle",
         "collaboration-lifecycle",
         "todo-list-lifecycle",
         "warning-completion",
@@ -47,6 +48,39 @@ fn qualified_corpus_projects_exact_exec_lifecycle_and_content() {
             .as_str(),
         "final answer"
     );
+}
+
+#[test]
+fn queryless_other_search_lifecycle_retains_identity_without_content() {
+    let observations = project(
+        case(&cases(), "search-other-navigation-lifecycle"),
+        Version::new(0, 145, 0),
+    )
+    .expect("0.146 queryless navigation lifecycle projects");
+
+    let search = &observations[..2];
+    assert_eq!(
+        search.iter().map(|item| item.phase()).collect::<Vec<_>>(),
+        [
+            ActivityLifecyclePhase::Started,
+            ActivityLifecyclePhase::Completed
+        ]
+    );
+    assert_eq!(search[0].activity_id(), search[1].activity_id());
+    assert_eq!(
+        search[0].provider_activity_ref(),
+        search[1].provider_activity_ref()
+    );
+    assert!(search.iter().all(|item| item.content().is_none()));
+}
+
+#[test]
+fn queryless_completed_actual_search_still_fails_closed() {
+    let mut projection = projector(Version::new(0, 145, 0));
+    let cases = cases();
+    let event = &case(&cases, "malformed-completed-search-missing-query")["events"][0];
+
+    assert!(projection.project("item.completed", event).is_err());
 }
 
 #[test]

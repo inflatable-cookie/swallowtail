@@ -14,6 +14,8 @@ None.
 
 ## Completed
 
+- `048-codex-exec-queryless-navigation-acceptance.md`
+- `047-codex-exec-queryless-navigation-projection.md`
 - `044-local-host-deadline-convenience.md`
 - `045-codex-chatgpt-access-profile.md`
 - `046-prepared-usability-public-acceptance.md`

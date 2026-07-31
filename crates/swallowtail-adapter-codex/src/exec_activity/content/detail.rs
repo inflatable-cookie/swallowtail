@@ -75,6 +75,11 @@ pub(super) fn search(
     match query {
         Some(query) => bounded(query, ActivityContentStream::ProviderToolDisplay),
         None if phase == ActivityLifecyclePhase::Started => Ok(None),
+        None if phase == ActivityLifecyclePhase::Completed
+            && item.pointer("/action/type").and_then(Value::as_str) == Some("other") =>
+        {
+            Ok(None)
+        }
         None => Err(malformed_stream()),
     }
 }

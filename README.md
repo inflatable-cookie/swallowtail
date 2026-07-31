@@ -53,8 +53,11 @@ qualification opts into nested transcripts or host-owned steering fallback.
 Roadmaps g03.016-g03.017 are complete. The OpenCode attached probe now agrees
 with its maintained range, and the prepared Codex path exposes the two
 multi-consumer conveniences justified by Nucleus and Soundcheck. The current
-maintenance checkpoint found no new non-deferred stable drift or consumer
-regression. g03 is evidence-gated until one of those facts changes.
+maintenance checkpoint found no new non-deferred stable drift. Soundcheck then
+reproduced a Codex exec queryless navigation lifecycle aborting valid later
+structured output; roadmap g03.018 now fixes that exact shape without widening
+malformed search acceptance. Soundcheck's authenticated rerun is the current
+integration gate.
 
 ## Start Here
 

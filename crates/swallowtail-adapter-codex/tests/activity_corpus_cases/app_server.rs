@@ -19,6 +19,7 @@ fn app_server_corpus_covers_rich_activity_and_disclosure_boundaries() {
         "mcp-tool",
         "dynamic-tool",
         "collaboration",
+        "child-owned-envelope",
         "subagent-activity",
         "search-image-review",
         "compaction-replacement",
@@ -60,6 +61,10 @@ fn app_server_corpus_covers_rich_activity_and_disclosure_boundaries() {
     assert_eq!(
         case(&cases, "request-id-union")["expected"]["request_id_representations"],
         serde_json::json!(["string", "integer"])
+    );
+    assert_eq!(
+        case(&cases, "child-owned-envelope")["messages"][1]["params"]["threadId"],
+        "thread-child"
     );
 }
 

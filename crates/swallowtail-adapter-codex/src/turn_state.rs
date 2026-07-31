@@ -12,15 +12,17 @@ use std::sync::{Arc, Mutex, Weak};
 use std::task::{Context, Poll, Waker};
 use swallowtail_core::{ProviderExtension, ProviderRequestHandling, ProviderRequestRef};
 use swallowtail_runtime::{
-    BoxEventStream, CallbackAbandonment, CallbackExchange, CallbackId, CallbackPayload,
-    CallbackRequest, CleanupOutcome, Deadline, OperationContent, ProviderRequestObservation,
-    RuntimeEvent, RuntimeEventKind, RuntimeFailure, RuntimeTurnId, TerminalOutcome,
+    ActivityActor, ActivityLifecyclePhase, ActivityObservation, ActivityStatus, BoxEventStream,
+    CallbackAbandonment, CallbackExchange, CallbackId, CallbackPayload, CallbackRequest,
+    CleanupOutcome, Deadline, OperationContent, ProviderRequestObservation, RuntimeEvent,
+    RuntimeEventKind, RuntimeFailure, RuntimeTurnId, SubagentId, TerminalOutcome,
     TerminalOutcomeFuture, TerminalOutcomeSender, TerminalStatus, runtime_event_channel,
     terminal_outcome_channel,
 };
 
 const EVENT_CAPACITY: usize = 256;
 const MAX_CALLBACK_ARGUMENT_BYTES: usize = 1_048_576;
+const MAX_ADMITTED_CHILD_THREADS: usize = 256;
 
 pub(crate) enum ProviderRequestDisposition {
     Exchange,
@@ -57,6 +59,7 @@ pub(crate) struct ActiveTurn {
     declared_tools: BTreeSet<String>,
     provider_requests: swallowtail_core::ProviderRequestPolicy,
     activity: Mutex<AppServerActivityProjection>,
+    admitted_child_threads: Mutex<BTreeSet<String>>,
     callbacks: CallbackHub,
     events: swallowtail_runtime::RuntimeEventSender,
     terminal: TerminalOutcomeSender,
@@ -92,9 +95,13 @@ impl ActiveTurn {
         let (callbacks, exchange) = CallbackHub::new(connection);
         Ok((
             Arc::new(Self {
-                activity: Mutex::new(AppServerActivityProjection::new(runtime_id.clone())),
+                activity: Mutex::new(AppServerActivityProjection::new(
+                    runtime_id.clone(),
+                    provider_thread_id.clone(),
+                )),
                 runtime_id,
                 provider_thread_id,
+                admitted_child_threads: Mutex::new(BTreeSet::new()),
                 provider_id: Mutex::new(None),
                 deadline,
                 declared_tools,
@@ -175,6 +182,7 @@ impl ActiveTurn {
         method: &str,
         params: &Value,
     ) -> Result<(), RuntimeFailure> {
+        let mut activity_owner = None;
         let activities = if activity_notification(method) {
             if method == "serverRequest/resolved" {
                 let thread_id = required_text(params, "threadId")?;
@@ -185,12 +193,22 @@ impl ActiveTurn {
                     ));
                 }
             } else {
-                self.verify_activity_owner(params)?;
+                activity_owner = self.verify_activity_owner(params)?;
             }
-            self.activity
+            let activities = self
+                .activity
                 .lock()
                 .expect("activity lock poisoned")
-                .project_notification(method, params)?
+                .project_notification(method, params)?;
+            let activities = match activity_owner.clone() {
+                Some(child) => activities
+                    .into_iter()
+                    .map(|activity| activity.with_actor(ActivityActor::Subagent(child.clone())))
+                    .collect(),
+                None => activities,
+            };
+            self.admit_spawned_children(&activities)?;
+            activities
         } else {
             Vec::new()
         };
@@ -204,6 +222,13 @@ impl ActiveTurn {
                 self.emit(RuntimeEventKind::Progress, None)
             }
             "item/agentMessage/delta" => {
+                if activity_owner.is_some() {
+                    return if emitted_activity {
+                        Ok(())
+                    } else {
+                        self.emit(RuntimeEventKind::ProgressSnapshot, None)
+                    };
+                }
                 self.verify_turn(params)?;
                 let delta = required_text(params, "delta")?;
                 self.delta_output
@@ -217,6 +242,13 @@ impl ActiveTurn {
                 }
             }
             "item/completed" => {
+                if activity_owner.is_some() {
+                    return if emitted_activity {
+                        Ok(())
+                    } else {
+                        self.emit(RuntimeEventKind::ProgressSnapshot, None)
+                    };
+                }
                 self.verify_turn(params)?;
                 let item = params.get("item").ok_or_else(malformed_notification)?;
                 if item.get("type").and_then(Value::as_str) == Some("agentMessage") {
@@ -279,16 +311,62 @@ impl ActiveTurn {
         }
     }
 
-    fn verify_activity_owner(&self, params: &Value) -> Result<(), RuntimeFailure> {
+    fn verify_activity_owner(&self, params: &Value) -> Result<Option<SubagentId>, RuntimeFailure> {
         let thread_id = required_text(params, "threadId")?;
-        if thread_id != self.provider_thread_id {
+        let owner = if thread_id == self.provider_thread_id {
+            None
+        } else if self
+            .admitted_child_threads
+            .lock()
+            .expect("admitted child threads lock poisoned")
+            .contains(thread_id)
+        {
+            Some(SubagentId::new(thread_id).map_err(|_| malformed_notification())?)
+        } else {
             return Err(failure(
                 "swallowtail.codex.app_server.session_id_mismatch",
                 "Codex app-server event belongs to a different provider session",
             ));
-        }
+        };
         let turn_id = required_text(params, "turnId")?;
-        self.set_provider_id(turn_id)
+        self.set_provider_id(turn_id)?;
+        Ok(owner)
+    }
+
+    fn admit_spawned_children(
+        &self,
+        activities: &[ActivityObservation],
+    ) -> Result<(), RuntimeFailure> {
+        let candidates = activities
+            .iter()
+            .filter(|activity| {
+                activity.subagent_control()
+                    == Some(swallowtail_core::SubagentControlActionKind::Spawn)
+                    && activity.phase() == ActivityLifecyclePhase::Completed
+                    && activity.status() == ActivityStatus::Completed
+            })
+            .flat_map(ActivityObservation::subagents)
+            .map(|child| child.id().as_str().to_owned())
+            .collect::<BTreeSet<_>>();
+        if candidates.is_empty() {
+            return Ok(());
+        }
+        let mut admitted = self
+            .admitted_child_threads
+            .lock()
+            .expect("admitted child threads lock poisoned");
+        let additional = candidates
+            .iter()
+            .filter(|child| !admitted.contains(*child))
+            .count();
+        if admitted.len().saturating_add(additional) > MAX_ADMITTED_CHILD_THREADS {
+            return Err(failure(
+                "swallowtail.codex.app_server.child_thread_limit_exceeded",
+                "Codex app-server exceeded the operation child-thread ownership bound",
+            ));
+        }
+        admitted.extend(candidates);
+        Ok(())
     }
 
     fn verify_turn(&self, params: &Value) -> Result<(), RuntimeFailure> {
@@ -342,6 +420,10 @@ impl ActiveTurn {
         if self.finished.swap(true, Ordering::SeqCst) {
             return;
         }
+        self.admitted_child_threads
+            .lock()
+            .expect("admitted child threads lock poisoned")
+            .clear();
         let abandonment = match &status {
             TerminalStatus::Cancelled => CallbackAbandonment::TurnCancelled,
             TerminalStatus::TimedOut => CallbackAbandonment::TimedOut,
@@ -379,6 +461,9 @@ impl ActiveTurn {
         }
     }
 }
+
+#[cfg(test)]
+mod tests;
 
 pub(crate) fn canonical_provider_request_id(
     value: &Value,

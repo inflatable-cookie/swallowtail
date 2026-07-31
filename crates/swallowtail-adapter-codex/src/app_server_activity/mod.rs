@@ -17,6 +17,7 @@ use swallowtail_runtime::{
 
 pub(crate) struct AppServerActivityProjection {
     operation_id: ActivityOperationId,
+    root_provider_thread_id: String,
     identities: HashMap<String, ActivityId>,
     items: HashMap<String, ItemIdentity>,
     labels: HashMap<String, ActivityLabel>,
@@ -71,9 +72,10 @@ impl<'a> ActivitySource<'a> {
 }
 
 impl AppServerActivityProjection {
-    pub(crate) fn new(turn_id: RuntimeTurnId) -> Self {
+    pub(crate) fn new(turn_id: RuntimeTurnId, root_provider_thread_id: String) -> Self {
         Self {
             operation_id: ActivityOperationId::Turn(turn_id),
+            root_provider_thread_id,
             identities: HashMap::new(),
             items: HashMap::new(),
             labels: HashMap::new(),

@@ -64,6 +64,13 @@ The same native item maps to the same activity id for its whole observed
 lifecycle. Provider item references are opaque, bounded, redacted in default
 formatting, and never accepted as cross-route authority.
 
+An ordinary activity envelope may be owned by the root provider thread or by
+an exact child thread established earlier in the same operation through
+qualified topology evidence. Child ownership changes activity attribution
+only. It does not satisfy root turn, terminal, callback, provider-request, or
+provider-session ownership checks. Unknown, stale, and cross-operation thread
+ids fail closed.
+
 An adapter may mint a runtime activity id when the provider supplies no stable
 item id. Minting identity does not invent provider lifecycle or continuity.
 
@@ -358,6 +365,7 @@ Deterministic fixtures prove:
 
 - monotonic event and per-activity lifecycle ordering
 - stable activity identity and exact owner
+- root or previously admitted operation-local child envelope ownership
 - no synthetic lifecycle phases
 - separate intermediate and final assistant content
 - reasoning-summary disclosure without hidden reasoning

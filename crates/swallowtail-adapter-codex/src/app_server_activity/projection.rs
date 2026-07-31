@@ -112,8 +112,8 @@ impl AppServerActivityProjection {
     ) -> Result<Vec<ActivityObservation>, RuntimeFailure> {
         let item = params.get("item").ok_or_else(malformed_notification)?;
         let provider_id = required_text(item, "id")?;
-        let owner_thread_id = params.get("threadId").and_then(Value::as_str);
-        let projection = super::item::item_projection(item, phase, owner_thread_id)?;
+        let projection =
+            super::item::item_projection(item, phase, Some(self.root_provider_thread_id.as_str()))?;
         if let Some(existing) = self.items.get(provider_id) {
             if existing != &projection.identity {
                 return Err(malformed_notification());

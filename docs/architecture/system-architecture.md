@@ -1292,6 +1292,13 @@ originating tool, background posture, and spawn, run, suspend, completion, or
 failure lifecycle. Other selected routes retain ordinary provider-tool
 activity because their wires do not expose qualified child topology.
 
+Codex app-server activity ownership is operation-local. The root provider
+thread is always admitted. A completed successful spawn observation may add
+its exact bounded receiver ids to a 256-child turn-local set. Ordinary
+activity envelopes from those children are attributed to the child; root turn
+output, terminal, callback, provider-request, and provider-session ownership
+remain root-only. Turn termination clears the set.
+
 Consumers can build a browseable live or durable tree from ordered activity.
 The runtime also provides one bounded operation-local directory reducer. It
 retains first-observed child order, applies exact snapshot replacement,

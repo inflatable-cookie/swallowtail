@@ -24,6 +24,7 @@ fn qualified_corpus_projects_rich_items_without_raw_reasoning() {
         "deprecated-file-output",
         "mcp-tool",
         "collaboration",
+        "child-owned-envelope",
         "subagent-activity",
         "search-image-review",
         "compaction-replacement",
@@ -395,7 +396,10 @@ fn project(case: &Value) -> Result<Vec<swallowtail_runtime::ActivityObservation>
 }
 
 fn projector() -> AppServerActivityProjection {
-    AppServerActivityProjection::new(RuntimeTurnId::new("turn-fixture").unwrap())
+    AppServerActivityProjection::new(
+        RuntimeTurnId::new("turn-fixture").unwrap(),
+        "thread-fixture".to_owned(),
+    )
 }
 
 fn cases() -> Vec<Value> {

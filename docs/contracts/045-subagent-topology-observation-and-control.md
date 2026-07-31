@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-30
+Updated: 2026-07-31
 
 ## Purpose
 
@@ -104,6 +104,19 @@ its parent. Unknown parentage is not silently promoted to the main operation.
 The same provider child identity maps to the same operation-local child id
 within one run or turn. That id is correlation evidence. It cannot be passed
 to another route, configured instance, operation, or host as authority.
+
+A route whose native activity envelope is child-owned may keep one bounded
+operation-local admission set. The root thread remains admitted. A child enters
+the set only after an earlier qualified topology observation establishes its
+exact id for that operation. A child-owned envelope is then attributed to that
+child even when the activity item carries no separate child field.
+
+Admission is activity-only. It does not authorize callbacks, provider
+requests, terminal events, root-turn output, provider-session operations, or
+direct child control. Unknown, stale, and cross-operation ids fail closed. The
+set is cleared at operation termination and is never imported by a later run,
+turn, resumed session, or consumer. Missing parent evidence remains
+`Unknown`; admission does not invent parentage.
 
 ## Provider-Owned Collaboration Actions
 
@@ -231,6 +244,10 @@ Deterministic fixtures prove:
 - duplicate and oversized snapshot rejection
 - redacted formatting
 - no direct-control claim from observed provider actions
+- root and previously established child-owned activity envelope admission
+- unknown, stale, and cross-operation child-envelope rejection
+- operation-terminal child-admission cleanup without widening callback, turn,
+  terminal, or provider-session ownership
 
 No live authentication, paid inference, installed harness, or provider effect
 runs in default conformance.

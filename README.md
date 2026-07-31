@@ -50,6 +50,11 @@ provider prompt.
 Roadmap g03.015 is complete. The managed local Claude Agent wrapper is exact
 `0.63.0`; the separately accepted current artifact is exact `0.64.0`. Neither
 qualification opts into nested transcripts or host-owned steering fallback.
+Roadmaps g03.016-g03.017 are complete. The OpenCode attached probe now agrees
+with its maintained range, and the prepared Codex path exposes the two
+multi-consumer conveniences justified by Nucleus and Soundcheck. The current
+maintenance checkpoint found no new non-deferred stable drift or consumer
+regression. g03 is evidence-gated until one of those facts changes.
 
 ## Start Here
 
@@ -700,7 +705,7 @@ graph and current Cargo rules before promoting a release contract. No crates.io
 publication, tag, API 1.0 promise, or provider implementation is implied.
 Research 033 completes that inventory. The operator approved its package,
 registry, version, and MSRV recommendation. Spec 004 is archived, and Contract
-036 now governs all 24 public packages, coordinated pre-1.0 compatibility, the
+036 now governs all 26 public packages, coordinated pre-1.0 compatibility, the
 bounded MSRV policy, package evidence, and explicit human release authority.
 Card 003 now realizes those rules across every manifest and adds deterministic
 Effigy metadata, dependency, public-declaration, documentation, MSRV, content,

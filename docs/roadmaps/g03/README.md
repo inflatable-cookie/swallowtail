@@ -24,7 +24,7 @@ visible as unverified newer unless exact evidence requires rejection.
 | Keep deterministic corpora and conformance aligned with behavior milestones rather than package semver alone. | completed | Contracts 011, 029, 036 | `g03.010` |
 | Support host-approved interpreted installed harnesses without ambient environment inheritance. | completed | Contracts 010, 032; Research 084 | `g03.011` |
 | Turn consumer-reproduced defects and integration friction into portable regression evidence. | active | Contracts 002, 037, 044-045 | `g03.003` |
-| Reassess prepared-facade usability from multi-consumer proof without importing product policy. | planned | Contracts 002, 037 | later g03 |
+| Reassess prepared-facade usability from multi-consumer proof without importing product policy. | completed | Contracts 002, 010, 037 | `g03.017` |
 | Periodically reconcile deferred gates, route truth, and generation capacity. | planned | Contract 001 | recurring checkpoints |
 
 ## Current Checkpoint
@@ -164,6 +164,17 @@ visible as unverified newer unless exact evidence requires rejection.
 - g03.016 now classifies OpenCode probe evidence through the production claim;
   four gated deterministic tests and 82 focused package tests pass while the
   network selector remains separately operator-gated
+- Research 090 confirms Soundcheck uses bound operations while Nucleus retains
+  three low-level extractions; only local deadline arithmetic and canonical
+  Codex ChatGPT-subscription profile construction require new library work
+- cards 044-045 add saturating local deadline derivation and one effect-free
+  canonical Codex ChatGPT-subscription profile
+- card 046 closes the multi-consumer usability milestone with bound-operation
+  guidance, compile-tested canonical access, affected-package proof, and a
+  bounded Nucleus adoption delta
+- Research 091 finds no new consumer defect or non-deferred stable upstream
+  drift, repairs the stale 24-package and 30-route authority counts, and leaves
+  g03 evidence-gated without compiling roadmap 018
 
 ## Milestones
 
@@ -183,12 +194,12 @@ visible as unverified newer unless exact evidence requires rejection.
 - [014 Cursor Agent 2026.07.23 Range Maintenance](014-cursor-agent-2026-07-23-range-maintenance.md) — completed
 - [015 Claude Agent 0.64 Standalone Range Maintenance](015-claude-agent-0-64-standalone-range-maintenance.md) — completed
 - [016 Attached Harness Probe Compatibility Truth](016-attached-harness-probe-compatibility-truth.md) — completed
+- [017 Prepared Facade Multi-Consumer Usability](017-prepared-facade-multi-consumer-usability.md) — completed
 
 ## Next
 
-Run the planned prepared-facade usability reassessment against current Nucleus
-and Soundcheck adoption evidence. Compile only portable, contract-supported
-friction into the next bounded milestone.
+Reassess g03 only after a consumer defect, material non-deferred stable drift,
+or explicit operator promotion supplies new evidence.
 
 ## Generation Boundary
 

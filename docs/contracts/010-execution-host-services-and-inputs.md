@@ -30,6 +30,12 @@ The time service provides monotonic time and deadline observation. A
 cancellation or choose a terminal outcome. Wall-clock time may annotate safe
 records but never controls timeout correctness.
 
+A concrete host composition may derive a deadline from its monotonic clock and
+one caller-supplied duration. The caller still decides whether a deadline
+exists and selects the duration. The host owns conversion into its monotonic
+tick representation and saturates overflow at the latest representable
+instant. This convenience supplies no default timeout and observes no deadline.
+
 The same host time boundary may expose a UTC catalogue observation clock.
 Drivers use it only to timestamp evidence observed by the current operation.
 It remains distinct from provider-reported lifecycle timestamps and monotonic

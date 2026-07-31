@@ -11,17 +11,16 @@ use support::{
 use swallowtail_adapter_codex::{
     CODEX_CLI_AXIS, CodexExecProfileInput, CodexModelSelection, CodexPreparationInput,
     CodexPreparationProbe, CodexPreparedDriver, CodexPreparedSessionKind, CodexSessionProfileInput,
-    prepare_codex,
+    codex_chatgpt_subscription_access_profile, prepare_codex,
 };
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessStatus, ActivityContentStream, ActivityDisclosure,
     ActivityKindClass, ActivityLifecycleFidelity, ActivityUnknownEventPosture, Capability,
-    CapabilityConstraint, ConfiguredInstanceId, CredentialMechanism, CredentialState, DriverRole,
-    EndpointAudience, EndpointAuthorization, EntitlementMetering, EntitlementState,
-    ExecutionHostId, ExternalNetworkPolicy, ExternalSearchPolicy, HarnessMode, HostServiceKind,
-    InstanceRevision, InterfaceVersionAxis, ModelId, ModelRouteId, ModelRouteRevision,
-    ObservableActivityAvailability, ReasoningMode, RuntimeReadiness, SubagentObservationFidelity,
-    SupportAuthority,
+    CapabilityConstraint, ConfiguredInstanceId, CredentialState, DriverRole, EndpointAuthorization,
+    EntitlementState, ExecutionHostId, ExternalNetworkPolicy, ExternalSearchPolicy, HarnessMode,
+    HostServiceKind, InstanceRevision, InterfaceVersionAxis, ModelId, ModelRouteId,
+    ModelRouteRevision, ObservableActivityAvailability, ReasoningMode, RuntimeReadiness,
+    SubagentObservationFidelity, SupportAuthority,
 };
 use swallowtail_runtime::{
     AttachmentDescriptor, AttachmentRef, AttachmentRole, BoxFuture, CleanupOutcome, Deadline,
@@ -178,13 +177,7 @@ fn model() -> CodexModelSelection {
 }
 
 fn access_profile() -> AccessProfile {
-    AccessProfile::new(
-        AccessProfileId::new("access.codex").unwrap(),
-        CredentialMechanism::InteractiveOauth,
-        EntitlementMetering::SubscriptionAllowance,
-        EndpointAudience::new("codex").unwrap(),
-        SupportAuthority::ProviderSupported,
-    )
+    codex_chatgpt_subscription_access_profile(AccessProfileId::new("access.codex").unwrap())
 }
 
 fn access_status() -> AccessStatus {

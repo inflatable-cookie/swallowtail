@@ -12,7 +12,7 @@ trap 'rm -f "$release_metadata" "$release_edges" "$release_names"' EXIT
 cargo metadata --no-deps --format-version 1 > "$release_metadata"
 
 jq -e '
-  (.packages | length) == 24 and
+  (.packages | length) == 26 and
   all(.packages[];
     .version == "0.1.0" and
     .edition == "2024" and
@@ -25,9 +25,12 @@ jq -e '
       (.features | length == 0) or
       (
         (.name == "swallowtail-adapter-gemini" or
+         .name == "swallowtail-adapter-grok" or
          .name == "swallowtail-adapter-kimi" or
          .name == "swallowtail-adapter-opencode" or
-         .name == "swallowtail-adapter-ollama") and
+         .name == "swallowtail-adapter-ollama" or
+         .name == "swallowtail-adapter-pi" or
+         .name == "swallowtail-adapter-qwen") and
         .features == {"live-probes":[]}
       )
     ) and
@@ -58,4 +61,4 @@ jq -r '
 
 diff -u release-baselines/internal-dependencies-0.1.0.tsv "$release_edges"
 
-printf 'package metadata and dependency topology passed for 24 crates\n'
+printf 'package metadata and dependency topology passed for 26 crates\n'

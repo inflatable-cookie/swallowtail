@@ -9,8 +9,8 @@ when an application needs a profile the facade does not provide.
 2. The execution host approves one exact executable and returns an opaque
    `InstalledExecutableTarget`.
 3. The consumer supplies its stable instance identity, host identity, saved
-   environment reference, access profile, and observed or explicitly asserted
-   access evidence.
+   environment reference, access profile, and separate observed or explicitly
+   asserted access evidence.
 4. `prepare_codex` probes that exact target, classifies its installed version,
    and returns one `CodexPreparedIntegration`.
 5. The consumer selects one named operation profile and inspects its evidence,
@@ -36,6 +36,31 @@ Pass `services.clone()` to `prepare_codex` when the same service set will
 execute the resulting profile. The facade never searches `PATH`, chooses a
 credential, or changes host topology.
 
+When a caller already has an explicit timeout duration, the local composition
+can derive the corresponding monotonic deadline without choosing that
+duration:
+
+```rust
+let deadline = local.deadline_after(Duration::from_secs(15));
+```
+
+## Access Profiles
+
+For provider-supported Codex access through a cached ChatGPT login, use
+`codex_chatgpt_subscription_access_profile(profile_id)`. It encodes only the
+fixed route facts: interactive OAuth, subscription allowance, the `codex`
+audience, provider support, and no credential reference.
+
+The helper does not inspect local login state, discover credentials, assert
+readiness, or create `AccessStatus`. Supply observed or explicitly asserted
+status separately through `PreparedAccessEvidence`. Its profile id must match
+the chosen profile.
+
+API-key login and enterprise access tokens remain separate explicit profiles.
+The ChatGPT helper does not authorize the public OpenAI API or substitute one
+billing route for another. See the compile-tested example for the profile and
+status composition.
+
 ## Named Profiles
 
 | Prepared path | Driver | Consumer choices |
@@ -60,9 +85,8 @@ and `CodexPreparedExec` retain:
 - the expanded immutable `PreflightPlan`
 - the matching runtime request
 
-Use `evidence()`, `plan()`, and `request()` before effects. Catalogue, session,
-and exec values also provide `into_parts()`. Lifecycle values retain the
-prepared environment internally for their typed `execute` method.
+Use `evidence()`, `plan()`, and `request()` before effects. Lifecycle values
+retain the prepared environment internally for their typed `execute` method.
 
 ## Bound Operations
 
@@ -113,6 +137,12 @@ These methods clone the immutable plan and explicit request, construct the
 matching Codex low-level driver from the prepared environment reference, and
 delegate execution. They do not change preflight, host validation,
 cancellation, deadlines, callbacks, terminal outcomes, or cleanup.
+
+Use these bound operations for normal integration. Catalogue, session, and
+exec values retain `into_parts()` for advanced consumers that need to separate
+the exact prepared request from its driver. Extracting those parts only to
+reconstruct the same low-level role adds integration work and is not a second
+normal path.
 
 ## Explicit Limits
 

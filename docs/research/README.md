@@ -97,3 +97,5 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [087 Cursor Agent 2026.07.23 Range Checkpoint](087-cursor-agent-2026-07-23-range-checkpoint.md)
 - [088 Claude Agent Standalone Range And Gemini Disposition](088-claude-agent-standalone-range-and-gemini-disposition.md)
 - [089 Post-Claude Maintenance Checkpoint And OpenCode Probe Truth](089-post-claude-maintenance-checkpoint-and-opencode-probe-truth.md)
+- [090 Prepared Facade Multi-Consumer Usability Reassessment](090-prepared-facade-multi-consumer-usability-reassessment.md)
+- [091 g03 Evidence-Gated Maintenance Checkpoint](091-g03-evidence-gated-maintenance-checkpoint.md)

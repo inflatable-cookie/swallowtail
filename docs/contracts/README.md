@@ -118,7 +118,7 @@ Contract 035 adds an opt-in experimental remote ACP transport over one exact
 host-approved HTTP/SSE or WebSocket endpoint. It keeps transport separate from
 provider identity, scopes connection and affinity state, excludes
 authentication and implicit recovery, and requires explicit joined close.
-Contract 036 fixes the 24 public packages, coordinated pre-1.0 version,
+Contract 036 fixes the 26 public packages, coordinated pre-1.0 version,
 compatible internal requirements, three-stage publication order, bounded MSRV,
 package and consumer evidence, one accepted application-scale consumer proof
 before first publication, and explicit human authority for every external

@@ -2,6 +2,7 @@
 
 #![forbid(unsafe_code)]
 
+mod access;
 mod app_server;
 mod app_server_activity;
 mod callback_exchange;
@@ -26,6 +27,7 @@ mod session_replay;
 mod turn_state;
 mod user_input;
 
+pub use access::{CODEX_CHATGPT_SUBSCRIPTION_AUDIENCE, codex_chatgpt_subscription_access_profile};
 pub use app_server::{CodexAppServerDriver, codex_app_server_descriptor};
 pub use exec::{CodexExecDriver, codex_exec_descriptor};
 pub use prepared::{

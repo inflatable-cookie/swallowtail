@@ -5,8 +5,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use swallowtail_core::{ExecutionHostId, HostServiceKind, InterfaceVersionAxis};
 use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits, LocalScopedTaskService};
 use swallowtail_runtime::{
-    CancellationControl, Deadline, DiscoveryCancellation, ExecutableRef, MonotonicInstant, ScopeId,
-    ScopedTaskService,
+    CancellationControl, DiscoveryCancellation, ExecutableRef, ScopeId, ScopedTaskService,
 };
 
 #[test]
@@ -77,9 +76,7 @@ fn scoped_tasks_complete_cancel_reach_deadlines_and_join() {
         .time()
         .expect("composition includes time")
         .clone();
-    let deadline = Deadline::at(MonotonicInstant::from_ticks(
-        time.now().ticks().saturating_add(2_000_000),
-    ));
+    let deadline = local.deadline_after(std::time::Duration::from_millis(2));
     let reached = Arc::new(AtomicBool::new(false));
     let reached_by_task = Arc::clone(&reached);
     let task = task_service

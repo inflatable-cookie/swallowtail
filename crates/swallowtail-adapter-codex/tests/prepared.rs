@@ -7,12 +7,11 @@ use std::sync::Arc;
 use support::{FakeProcessService, host_services_for};
 use swallowtail_adapter_codex::{
     CODEX_CLI_AXIS, CodexPreparationInput, CodexPreparationProbe, CodexPreparedDriver,
-    prepare_codex,
+    codex_chatgpt_subscription_access_profile, prepare_codex,
 };
 use swallowtail_core::{
-    AccessProfile, AccessProfileId, AccessStatus, ConfiguredInstanceId, CredentialMechanism,
-    CredentialState, EndpointAudience, EndpointAuthorization, EntitlementMetering,
-    EntitlementState, ExecutionHostId, HarnessConfigurationPosture,
+    AccessProfile, AccessProfileId, AccessStatus, ConfiguredInstanceId, CredentialState,
+    EndpointAuthorization, EntitlementState, ExecutionHostId, HarnessConfigurationPosture,
     InstalledExecutableCompatibility, InstanceOwnership, InstanceRevision, InterfaceSupportStatus,
     InterfaceVersionAxis, RuntimeReadiness, SupportAuthority,
 };
@@ -220,13 +219,7 @@ fn fixture_with_cancellation(
 }
 
 fn access_profile() -> AccessProfile {
-    AccessProfile::new(
-        AccessProfileId::new("access.codex").unwrap(),
-        CredentialMechanism::InteractiveOauth,
-        EntitlementMetering::SubscriptionAllowance,
-        EndpointAudience::new("codex").unwrap(),
-        SupportAuthority::ProviderSupported,
-    )
+    codex_chatgpt_subscription_access_profile(AccessProfileId::new("access.codex").unwrap())
 }
 
 fn access_status(profile: &str) -> AccessStatus {

@@ -2,10 +2,11 @@ use swallowtail_adapter_codex::{
     CodexExecProfileInput, CodexModelSelection, CodexPreparationInput, CodexPreparationProbe,
     CodexPreparedArchive, CodexPreparedCatalogue, CodexPreparedDelete, CodexPreparedDriver,
     CodexPreparedExec, CodexPreparedIntegration, CodexPreparedRestore, CodexPreparedSession,
-    CodexSessionManagementInput, CodexSessionProfileInput, prepare_codex,
+    CodexSessionManagementInput, CodexSessionProfileInput,
+    codex_chatgpt_subscription_access_profile, prepare_codex,
 };
 use swallowtail_core::{
-    AccessProfile, AccessStatus, ConfiguredInstanceId, ExecutionHostId, ExternalNetworkPolicy,
+    AccessStatus, ConfiguredInstanceId, ExecutionHostId, ExternalNetworkPolicy,
     ExternalSearchPolicy, InstanceRevision, ModelCatalogEntry, ModelId, ModelRouteId,
     ModelRouteRevision,
 };
@@ -21,10 +22,11 @@ async fn prepare_installed_codex(
     services: HostServices,
     target: InstalledExecutableTarget,
     environment: EnvironmentRef,
-    access_profile: AccessProfile,
     access_status: AccessStatus,
     deadline: Deadline,
 ) -> Result<CodexPreparedIntegration, PreparationFailure> {
+    let access_profile =
+        codex_chatgpt_subscription_access_profile(access_status.profile_id().clone());
     let input = CodexPreparationInput::new(
         CodexPreparedDriver::AppServer,
         ConfiguredInstanceId::new("codex.local").expect("instance id is valid"),

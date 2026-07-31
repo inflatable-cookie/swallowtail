@@ -140,6 +140,13 @@ Prepared values expose enough identity and evidence for diagnostics,
 conformance, and advanced low-level use. They need not expose adapter-private
 wire records or secrets.
 
+The typed bound operation is the normal consumer path after successful
+operation preparation. Extracting a plan and request to call the same
+low-level role is an advanced escape hatch, not additional facade
+functionality. A consumer that reconstructs the matching low-level driver when
+the bound method already exists has adoption debt; Swallowtail must not answer
+that debt with another operation abstraction.
+
 ## Plan-Derived Request Agreement
 
 A runtime request field that merely echoes immutable preflight state must be:
@@ -185,6 +192,13 @@ authentication fallback.
 Access provenance contains no credential material, account identity, endpoint
 token, raw response, or provider payload. A later live access probe remains a
 separate, explicitly authorized operation.
+
+An adapter may expose a canonical access-profile constructor when credential
+mechanism, entitlement metering, endpoint audience, and support authority are
+fixed facts of one provider-supported route. The caller still supplies the
+profile identity and separate observed or caller-asserted status. Such a
+constructor discovers no credential, account, entitlement, or readiness and
+cannot relabel one login, billing, endpoint, or support route as another.
 
 ## Preparation Diagnostics
 

@@ -5,6 +5,8 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-07-31 g03 Evidence-Gated Maintenance Checkpoint](2026-07-31-g03-evidence-gated-maintenance-checkpoint.md)
+- [2026-07-31 Prepared Facade Multi-Consumer Usability](2026-07-31-prepared-facade-multi-consumer-usability.md)
 - [2026-07-31 OpenCode Attached Live Probe Truth](2026-07-31-opencode-attached-live-probe-truth.md)
 - [2026-07-31 Claude Agent 0.64 Range Acceptance](2026-07-31-claude-agent-0-64-range-acceptance.md)
 - [2026-07-31 Cursor 2026.07.23 Range Acceptance](2026-07-31-cursor-2026-07-23-range-acceptance.md)

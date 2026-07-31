@@ -23,4 +23,4 @@ for release_crate_dir in crates/*; do
 done
 
 diff -u release-baselines/public-api-0.1.0.sha256 "$release_actual"
-printf 'public API declaration baseline passed for 24 crates\n'
+printf 'public API declaration baseline passed for 26 crates\n'

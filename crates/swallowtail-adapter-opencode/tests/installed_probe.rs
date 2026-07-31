@@ -27,9 +27,7 @@ fn installed_opencode_health_and_schema_match_the_frozen_subset() {
     }
 }
 
-fn classify_health(
-    health: &Value,
-) -> Result<InterfaceCompatibilityAssessment, &'static str> {
+fn classify_health(health: &Value) -> Result<InterfaceCompatibilityAssessment, &'static str> {
     if health.get("healthy") != Some(&Value::Bool(true)) {
         return Err("OpenCode server did not report healthy status");
     }
@@ -37,8 +35,8 @@ fn classify_health(
         .get("version")
         .and_then(Value::as_str)
         .ok_or("OpenCode server did not report a string version")?;
-    let binding = opencode_server_binding(version)
-        .ok_or("OpenCode server reported a malformed version")?;
+    let binding =
+        opencode_server_binding(version).ok_or("OpenCode server reported a malformed version")?;
     let assessment = opencode_http_claim().assess(binding.version());
     if assessment.is_permitted() {
         Ok(assessment)

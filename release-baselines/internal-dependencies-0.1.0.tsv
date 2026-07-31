@@ -2,6 +2,8 @@ swallowtail-adapter-alibaba-model-studio	swallowtail-core	^0.1.0
 swallowtail-adapter-alibaba-model-studio	swallowtail-runtime	^0.1.0
 swallowtail-adapter-anthropic	swallowtail-core	^0.1.0
 swallowtail-adapter-anthropic	swallowtail-runtime	^0.1.0
+swallowtail-adapter-antigravity	swallowtail-core	^0.1.0
+swallowtail-adapter-antigravity	swallowtail-runtime	^0.1.0
 swallowtail-adapter-bedrock	swallowtail-core	^0.1.0
 swallowtail-adapter-bedrock	swallowtail-runtime	^0.1.0
 swallowtail-adapter-claude-agent	swallowtail-core	^0.1.0
@@ -9,6 +11,9 @@ swallowtail-adapter-claude-agent	swallowtail-protocol-acp	^0.1.0
 swallowtail-adapter-claude-agent	swallowtail-runtime	^0.1.0
 swallowtail-adapter-codex	swallowtail-core	^0.1.0
 swallowtail-adapter-codex	swallowtail-runtime	^0.1.0
+swallowtail-adapter-cursor	swallowtail-core	^0.1.0
+swallowtail-adapter-cursor	swallowtail-protocol-acp	^0.1.0
+swallowtail-adapter-cursor	swallowtail-runtime	^0.1.0
 swallowtail-adapter-deepseek	swallowtail-core	^0.1.0
 swallowtail-adapter-deepseek	swallowtail-protocol-openai-chat	^0.1.0
 swallowtail-adapter-deepseek	swallowtail-runtime	^0.1.0

@@ -2,11 +2,11 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-30
+Updated: 2026-07-31
 
 ## Realized State
 
-Swallowtail has a twenty-four-crate Rust workspace plus its strict Northstar authority
+Swallowtail has a twenty-six-crate Rust workspace plus its strict Northstar authority
 spine:
 
 - `swallowtail-core` owns pure provider-neutral contract records, including
@@ -284,7 +284,7 @@ remote ACP operations -> swallowtail-transport-acp-remote -> core/runtime/protoc
 ```
 
 The active public release topology is recorded in
-`release-and-package-topology.md` and governed by Contract 036. All 24
+`release-and-package-topology.md` and governed by Contract 036. All 26
 workspace libraries are separately consumable public packages under one
 coordinated pre-1.0 version. The three-stage publication order is core plus
 protocols, then runtime, then support, transport, and adapters. Current
@@ -882,7 +882,7 @@ lifecycle role and leaves its external server running.
 ## Prepared Integration And Bound Operation Layer
 
 Contract 037 fixes the application-facing normal path without changing the
-realized 23-crate dependency graph:
+realized 26-crate dependency graph:
 
 ```text
 consumer intent and explicit authority
@@ -913,7 +913,7 @@ session, background run, managed agent, realtime media, SDK, attached runtime,
 and owned-serving operations remain separate types and methods. There is no
 generic prompt method.
 
-The current 30 production routes form six facade implementation families:
+The current 32 production routes form six facade implementation families:
 installed harness, attached harness network, hosted direct and provider-owned
 state, realtime connection, embedded SDK, and local model runtime. Family
 helpers may share host and preparation mechanics. They cannot select a

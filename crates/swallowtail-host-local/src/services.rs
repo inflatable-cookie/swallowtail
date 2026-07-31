@@ -1,7 +1,8 @@
 use crate::{LocalProcessHost, LocalProcessHostBuilder, LocalScopedTaskService};
 use std::sync::Arc;
+use std::time::Duration;
 use swallowtail_core::ExecutionHostId;
-use swallowtail_runtime::HostServices;
+use swallowtail_runtime::{Deadline, HostServices, MonotonicInstant, TimeService};
 
 /// Inspectable host-owned local service composition for one execution host.
 #[derive(Clone)]
@@ -51,6 +52,20 @@ impl LocalHostServices {
     pub const fn task_service(&self) -> &Arc<LocalScopedTaskService> {
         &self.task_service
     }
+
+    /// Derives one deadline from this composition's monotonic clock and an
+    /// explicit caller-selected duration.
+    #[must_use]
+    pub fn deadline_after(&self, duration: Duration) -> Deadline {
+        deadline_after(self.process_host.now(), duration)
+    }
+}
+
+fn deadline_after(now: MonotonicInstant, duration: Duration) -> Deadline {
+    let duration_ticks = u64::try_from(duration.as_nanos()).unwrap_or(u64::MAX);
+    Deadline::at(MonotonicInstant::from_ticks(
+        now.ticks().saturating_add(duration_ticks),
+    ))
 }
 
 impl LocalProcessHostBuilder {
@@ -59,5 +74,34 @@ impl LocalProcessHostBuilder {
     pub fn build_services(mut self, execution_host_id: ExecutionHostId) -> LocalHostServices {
         self.execution_host_id = Some(execution_host_id.clone());
         LocalHostServices::compose(execution_host_id, self.build())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::deadline_after;
+    use std::time::Duration;
+    use swallowtail_runtime::MonotonicInstant;
+
+    #[test]
+    fn explicit_duration_uses_nanosecond_ticks() {
+        let deadline = deadline_after(MonotonicInstant::from_ticks(10), Duration::from_nanos(25));
+
+        assert_eq!(deadline.instant().ticks(), 35);
+    }
+
+    #[test]
+    fn duration_conversion_and_instant_addition_saturate() {
+        let oversized = deadline_after(
+            MonotonicInstant::from_ticks(10),
+            Duration::new(u64::MAX, 999_999_999),
+        );
+        let addition = deadline_after(
+            MonotonicInstant::from_ticks(u64::MAX - 5),
+            Duration::from_nanos(10),
+        );
+
+        assert_eq!(oversized.instant().ticks(), u64::MAX);
+        assert_eq!(addition.instant().ticks(), u64::MAX);
     }
 }

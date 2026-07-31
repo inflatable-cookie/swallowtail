@@ -13,9 +13,8 @@ shape.
 
 ## Next Task
 
-Run the g03 prepared-facade usability reassessment against current Nucleus and
-Soundcheck adoption evidence. Identify portable integration friction before
-compiling the next bounded milestone.
+Reassess g03 only after a consumer defect, material non-deferred stable drift,
+or explicit operator promotion supplies new evidence.
 
 ## Index
 

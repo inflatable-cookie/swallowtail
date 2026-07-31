@@ -14,6 +14,9 @@ None.
 
 ## Completed
 
+- `044-local-host-deadline-convenience.md`
+- `045-codex-chatgpt-access-profile.md`
+- `046-prepared-usability-public-acceptance.md`
 - `043-opencode-live-selector-acceptance.md`
 - `042-attached-probe-invariant-and-classification.md`
 - `001-installed-harness-and-protocol-maintenance-inventory.md`

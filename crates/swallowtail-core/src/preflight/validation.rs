@@ -148,7 +148,10 @@ fn validate_harness_isolation(
         ));
     }
 
-    if requirements.operation_shape() == OperationShape::InteractiveSession {
+    if matches!(
+        requirements.operation_shape(),
+        OperationShape::InteractiveSession | OperationShape::ProviderSessionImport
+    ) {
         let session_isolation = requirements
             .session_access_policy()
             .and_then(|policy| policy.harness_isolation());

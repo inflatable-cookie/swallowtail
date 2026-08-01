@@ -13,8 +13,8 @@ shape.
 
 ## Next Task
 
-Execute g03 card 049. Add the shared provider-session catalogue and import
-records, capabilities, plans, and validation before any provider mapping.
+Execute g03 card 050. Add the object-safe catalogue/import runtime roles,
+bounded outcomes, imported-binding origin, and host-service validation.
 
 ## Index
 

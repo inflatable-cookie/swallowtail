@@ -11,7 +11,10 @@ pub(super) fn validate_session_provider_state(
         requirements.operation_shape(),
         requirements.session_provider_state_policy(),
     ) {
-        (OperationShape::InteractiveSession, Some(policy)) => validate_policy(requirements, policy),
+        (
+            OperationShape::InteractiveSession | OperationShape::ProviderSessionImport,
+            Some(policy),
+        ) => validate_policy(requirements, policy),
         (OperationShape::InteractiveSession, None)
             if requirements.driver_role() != DriverRole::ModelCatalog =>
         {
@@ -19,6 +22,9 @@ pub(super) fn validate_session_provider_state(
                 "Interactive session provider-state policy is missing",
             ))
         }
+        (OperationShape::ProviderSessionImport, None) => Err(failure(
+            "Provider-session import provider-state policy is missing",
+        )),
         (OperationShape::InteractiveSession, None) => Ok(()),
         (_, Some(_)) => Err(failure(
             "Session provider-state policy is bound to a non-interactive operation",

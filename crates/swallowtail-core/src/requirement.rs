@@ -30,6 +30,8 @@ pub enum CancellationScope {
     OwnedServingInstance,
     ActiveResponse,
     ProviderSessionManagement,
+    ProviderSessionCatalogue,
+    ProviderSessionImport,
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]

@@ -37,6 +37,7 @@ mod prepared_operation;
 mod process_input;
 mod process_io;
 mod provider_observation;
+mod provider_session_import;
 mod provider_session_management;
 mod provider_session_operation;
 mod realtime_media;
@@ -115,9 +116,9 @@ pub use host_traits::{
 };
 pub use identity::{
     AccessEvidenceSourceId, CallbackId, DirectInferenceAttemptId, DirectToolCallId,
-    HarnessCommandId, HarnessQuestionId, HarnessQuestionOptionId, MediaStreamId, RequestId,
-    RuntimeIdentityRequired, RuntimeRunId, RuntimeSessionId, RuntimeTurnId, ScopeId,
-    ServingInstanceId,
+    HarnessCommandId, HarnessQuestionId, HarnessQuestionOptionId, MediaStreamId,
+    ProviderSessionCandidateId, ProviderSessionCatalogueId, RequestId, RuntimeIdentityRequired,
+    RuntimeRunId, RuntimeSessionId, RuntimeTurnId, ScopeId, ServingInstanceId,
 };
 pub use input::{InputLimitExceeded, InputValueRequired};
 pub use installed_executable::{
@@ -153,6 +154,12 @@ pub use provider_observation::{
     DirectAttemptFinishObservation, DirectAttemptUsageObservation, ProviderFinishReason,
     ProviderObservation, QuotaObservation, QuotaState, RateLimitKind, RateLimitObservation,
     TokenUsage,
+};
+pub use provider_session_import::{
+    ProviderSessionCandidate, ProviderSessionCatalogueAgreement, ProviderSessionCataloguePlan,
+    ProviderSessionCatalogueRequest, ProviderSessionCatalogueScope, ProviderSessionCursor,
+    ProviderSessionImportAgreement, ProviderSessionImportPlan, ProviderSessionImportRequest,
+    validate_provider_session_catalogue_request, validate_provider_session_import_request,
 };
 pub use provider_session_management::{
     InvalidProviderSessionManagementBinding, InvalidProviderSessionManagementBindingKind,
@@ -203,12 +210,14 @@ pub use swallowtail_core::{
     ObservableActivityProfile, OwnedRemoteResourceKind, PlannedConnectionRolloverPolicy,
     ProviderActivityRef, ProviderApprovalPolicy, ProviderInferenceCachePolicy,
     ProviderRequestHandling, ProviderRequestPolicy, ProviderSessionActivityEvidence,
-    ProviderSessionAffectedScope, ProviderSessionBindingOrigin, ProviderSessionCancellationPosture,
-    ProviderSessionDeletionStrength, ProviderSessionEffectTruth,
-    ProviderSessionInitialStateRequirement, ProviderSessionInterfaceCompatibility,
-    ProviderSessionLifecycleState, ProviderSessionManagementAction,
-    ProviderSessionManagementEffect, ResourceAccess, ResourceRepresentation, SessionAccessPolicy,
-    SessionProviderStatePolicy,
+    ProviderSessionActivityState, ProviderSessionAffectedScope, ProviderSessionBindingOrigin,
+    ProviderSessionCancellationPosture, ProviderSessionCatalogueBounds,
+    ProviderSessionDeletionStrength, ProviderSessionDiscoveryScope, ProviderSessionDisplayContent,
+    ProviderSessionEffectTruth, ProviderSessionImportAvailability,
+    ProviderSessionImportUnavailableReason, ProviderSessionInitialStateRequirement,
+    ProviderSessionInterfaceCompatibility, ProviderSessionLifecycleState,
+    ProviderSessionManagementAction, ProviderSessionManagementEffect, ResourceAccess,
+    ResourceRepresentation, SessionAccessPolicy, SessionProviderStatePolicy,
 };
 pub use time::{Deadline, DeadlineObservation, MonotonicInstant};
 pub use working_resource_io::{

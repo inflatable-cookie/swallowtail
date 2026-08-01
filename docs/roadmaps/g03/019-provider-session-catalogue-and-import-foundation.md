@@ -6,7 +6,7 @@ Created: 2026-08-01
 Depends on: g03.018
 Vision tags: consumer continuity, harness interoperability, explicit authority
 Contract refs: 005, 008-011, 017, 029, 037, 046
-Planning state: card 049 ready; cards 050-051 planned
+Planning state: card 049 completed; card 050 ready; card 051 planned
 
 ## Problem
 
@@ -28,12 +28,12 @@ see only sessions whose ids they already recorded.
 
 ### Batch 19.1 — Records, Capabilities, And Plans
 
-- [ ] Execute card 049.
-- [ ] add provider-neutral candidate, cursor, scope, availability, and content
+- [x] Execute card 049.
+- [x] add provider-neutral candidate, cursor, scope, availability, and content
   records
-- [ ] add independent catalogue and import capabilities, roles, requirements,
+- [x] add independent catalogue and import capabilities, roles, requirements,
   plans, and request validation
-- [ ] prove raw ids and candidates cannot enter existing load or resume paths
+- [x] prove raw ids and candidates cannot enter existing load or resume paths
 
 ### Batch 19.2 — Runtime Roles And Import Outcome
 

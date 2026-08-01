@@ -1420,9 +1420,10 @@ the separate server proof. Other routes remain explicitly unsupported until
 their own catalogue, history, resource-binding, and continuation evidence is
 complete.
 
-This section is contracted, not realized. Roadmaps g03.019-g03.023 own the
-common kernel, exact provider implementations, provider-wide classification,
-and consumer handoff. Nucleus or another consumer owns local thread creation,
+The provider-neutral capabilities, roles, operation shapes, bounded records,
+immutable plans, and typed requests are realized. Object-safe runtime roles,
+outcomes, common conformance, and provider mappings remain on roadmaps
+g03.019-g03.023. Nucleus or another consumer owns local thread creation,
 message persistence, replay merge, deduplication, presentation, and any later
 refresh. Background polling, bidirectional synchronization, global handle
 discovery, and implicit provider lifecycle actions remain absent.

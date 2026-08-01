@@ -34,6 +34,8 @@ pub enum Capability {
     ProviderSessionRestore,
     ProviderSessionDelete,
     ProviderNativeSessionClose,
+    ProviderSessionCatalogue,
+    ProviderSessionImport,
     OwnedRemoteResourceDeletion,
     StreamReattachment,
     RealtimeMedia,

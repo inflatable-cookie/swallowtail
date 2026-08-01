@@ -26,6 +26,7 @@ mod planned_connection_rollover;
 mod preflight;
 mod provider_agent;
 mod provider_reference;
+mod provider_session_catalogue;
 mod provider_session_management;
 mod realtime_media;
 mod registration;
@@ -102,6 +103,12 @@ pub use provider_agent::{ProviderAgentBinding, ProviderAgentId, ProviderAgentVer
 pub use provider_reference::{
     InvalidProviderActivityRef, ProviderActivityRef, ProviderRequestRef,
     ProviderRequestRepresentation, RunRef, SessionRef, TurnRef,
+};
+pub use provider_session_catalogue::{
+    InvalidProviderSessionCatalogueRecord, InvalidProviderSessionCatalogueRecordKind,
+    ProviderSessionActivityState, ProviderSessionCatalogueBounds, ProviderSessionDiscoveryScope,
+    ProviderSessionDisplayContent, ProviderSessionImportAvailability,
+    ProviderSessionImportUnavailableReason,
 };
 pub use provider_session_management::{
     ProviderSessionActivityEvidence, ProviderSessionAffectedScope, ProviderSessionBindingOrigin,

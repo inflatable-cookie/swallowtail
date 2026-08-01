@@ -193,6 +193,9 @@ visible as unverified newer unless exact evidence requires rejection.
 - roadmaps g03.019-g03.023 sequence the shared kernel, Codex, stable ACP/Kimi,
   OpenCode, provider-wide acceptance, and a bounded Nucleus handoff; automatic
   synchronization, consumer persistence, and raw-id attachment remain excluded
+- card 049 realizes separate catalogue/import vocabulary, bounded candidates
+  and cursors, immutable plans, and typed drift-rejecting requests; 163 focused
+  core/runtime tests pass and card 050 now owns the object-safe runtime roles
 
 ## Milestones
 
@@ -222,9 +225,9 @@ visible as unverified newer unless exact evidence requires rejection.
 
 ## Checkpoint
 
-Card 049 is ready. It adds the provider-neutral catalogue and import records,
-capabilities, requirements, plans, and validation before any provider mapping.
-The sole active pointer remains in the roadmap front door.
+Card 050 is ready. It adds object-safe catalogue/import runtime roles, bounded
+outcomes, imported-binding origin, and host-service validation. The sole active
+pointer remains in the roadmap front door.
 
 ## Generation Boundary
 

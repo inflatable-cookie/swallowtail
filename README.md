@@ -63,7 +63,9 @@ and import lane. Roadmaps g03.019-g03.023 sequence the shared kernel, Codex,
 stable ACP/Kimi, OpenCode, provider-wide acceptance, and a bounded Nucleus
 handoff. Consumers still own thread persistence, deduplication, merge policy,
 and UI. Swallowtail will not infer attachment authority from a raw provider id
-or run automatic synchronization. Card 049 is next.
+or run automatic synchronization. The separate vocabulary, bounded candidate
+records, immutable plans, and typed requests are now realized. Card 050 adds
+the executor-neutral runtime roles and outcomes next.
 
 ## Start Here
 

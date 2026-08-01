@@ -92,6 +92,8 @@ pub enum OperationShape {
     StructuredRun,
     InteractiveSession,
     ProviderSessionManagement,
+    ProviderSessionCatalogue,
+    ProviderSessionImport,
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
@@ -110,6 +112,8 @@ pub enum DriverRole {
     RealtimeMediaSession,
     ServingInstanceLifecycle,
     ProviderSessionManagement,
+    ProviderSessionCatalogue,
+    ProviderSessionImport,
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]

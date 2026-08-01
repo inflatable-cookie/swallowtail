@@ -6,11 +6,10 @@ None.
 
 ## Ready
 
-- `049-provider-session-catalogue-and-import-records.md`
+- `050-provider-session-catalogue-and-import-runtime.md`
 
 ## Planned
 
-- `050-provider-session-catalogue-and-import-runtime.md`
 - `051-provider-session-import-common-conformance.md`
 - `052-codex-thread-catalogue-range-corpus.md`
 - `053-codex-thread-catalogue-and-import-driver.md`
@@ -27,6 +26,7 @@ None.
 
 ## Completed
 
+- `049-provider-session-catalogue-and-import-records.md`
 - `048-codex-exec-queryless-navigation-acceptance.md`
 - `047-codex-exec-queryless-navigation-projection.md`
 - `044-local-host-deadline-convenience.md`

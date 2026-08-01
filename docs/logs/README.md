@@ -5,6 +5,7 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-08-01 Provider Session Catalogue And Import Kernel](2026-08-01-provider-session-catalogue-and-import-kernel.md)
 - [2026-08-01 Provider Session Discovery And Import Roadmap Compilation](2026-08-01-provider-session-discovery-and-import-roadmap-compilation.md)
 - [2026-08-01 Codex Exec Queryless Navigation Lifecycle](2026-08-01-codex-exec-queryless-navigation-lifecycle.md)
 - [2026-07-31 g03 Evidence-Gated Maintenance Checkpoint](2026-07-31-g03-evidence-gated-maintenance-checkpoint.md)

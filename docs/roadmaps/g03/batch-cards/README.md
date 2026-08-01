@@ -6,11 +6,24 @@ None.
 
 ## Ready
 
-None.
+- `049-provider-session-catalogue-and-import-records.md`
 
 ## Planned
 
-None.
+- `050-provider-session-catalogue-and-import-runtime.md`
+- `051-provider-session-import-common-conformance.md`
+- `052-codex-thread-catalogue-range-corpus.md`
+- `053-codex-thread-catalogue-and-import-driver.md`
+- `054-codex-thread-import-acceptance.md`
+- `055-acp-stable-session-list-corpus-and-codec.md`
+- `056-kimi-acp-session-catalogue-and-import.md`
+- `057-acp-kimi-session-import-acceptance.md`
+- `058-opencode-session-catalogue-range-corpus.md`
+- `059-opencode-session-catalogue-and-import-driver.md`
+- `060-opencode-session-import-acceptance.md`
+- `061-provider-session-import-route-classification.md`
+- `062-provider-session-import-public-and-package-acceptance.md`
+- `063-nucleus-external-thread-import-handoff.md`
 
 ## Completed
 

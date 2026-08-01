@@ -13,8 +13,8 @@ shape.
 
 ## Next Task
 
-Hold at the g03 evidence gate. Resume with the next consumer-reproduced defect
-or material non-deferred upstream change; do not compile speculative work.
+Execute g03 card 049. Add the shared provider-session catalogue and import
+records, capabilities, plans, and validation before any provider mapping.
 
 ## Index
 

@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-30
+Updated: 2026-08-01
 
 ## Purpose
 
@@ -81,6 +81,23 @@ The ACP v1 baseline requires `session/new`, `session/prompt`,
 `session/cancel`, and `session/update`. Load, resume, list, delete, close,
 configuration, logout, richer prompt content, filesystem, terminal, and custom
 methods remain independently optional.
+
+## Stable Session List
+
+Stable ACP v1 exposes optional `session/list` through
+`agentCapabilities.sessionCapabilities.list`.
+
+- `{}` advertises the method; omission or null forbids dispatch
+- optional `cwd` scopes discovery to one provider-understood working directory
+- optional cursor pagination remains opaque and request-scoped
+- results contain session id, cwd, optional title, optional updated time, and
+  optional bounded agent metadata
+- listing does not imply load, resume, close, delete, or complete history
+- stable protocol support does not qualify an adapter that omits the capability
+
+Contract 046 governs portable catalogue projection and explicit import. ACP
+session ids, cwd strings, titles, `_meta`, and list results grant no attachment
+or management authority by themselves.
 
 ## Stable Close And Delete
 

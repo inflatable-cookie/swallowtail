@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-24
+Updated: 2026-08-01
 
 ## Sequence
 
@@ -203,6 +203,17 @@ Registry publication was later removed from the active runway. Local package
 and compatibility evidence continues, but publication does not return as a
 ready, paused, or backlog item. A future lane requires a new operator decision
 after months of working-application usage evidence.
+
+Research 092 and Contract 046 add explicit discovery and import of
+harness-origin sessions to g03 without changing the consumer ownership
+boundary. Roadmaps g03.019-g03.023 sequence a provider-neutral catalogue and
+import kernel, Codex app-server, stable ACP through Kimi, OpenCode attached
+HTTP, provider-wide classification, and a Nucleus handoff. Discovery
+candidates carry no attachment authority. Successful import revalidates the
+exact route, host, access, version, model, resource, and policy before issuing
+the existing resume binding. Automatic synchronization, consumer persistence,
+raw-id attachment, and provider-session management binding persistence remain
+outside the lane.
 
 Research 036 and Contract 038 open the next additive stabilization lane.
 Consumer thread archive, restore, and deletion remain downstream. Swallowtail

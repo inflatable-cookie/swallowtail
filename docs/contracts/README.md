@@ -50,6 +50,7 @@ Contracts hold durable, testable rules.
 - [043 Turn-Scoped Interactive Continuity](043-turn-scoped-interactive-continuity.md)
 - [044 Observable Agent Activity And Disclosure](044-observable-agent-activity-and-disclosure.md)
 - [045 Subagent Topology, Observation, And Control](045-subagent-topology-observation-and-control.md)
+- [046 Provider Session Catalogue And Explicit Import](046-provider-session-catalogue-and-explicit-import.md)
 
 Contract 003 defines the provider-neutral record kernel. Contracts 004-016
 govern the realized runtime and current proof drivers. Contract 017 governs
@@ -173,6 +174,11 @@ topology, child activity attribution, and typed provider collaboration
 actions. It keeps visible harness actions separate from operator authority;
 whole-turn cancellation and main-turn messaging cannot stand in for targeted
 child control.
+Contract 046 adds a read-only provider-session catalogue and a separate
+consumer-authorized import operation. Candidates remain non-authoritative;
+import revalidates exact route, host, access, version, model, resource, and
+policy before issuing the ordinary resume binding. Load replay and consumer
+persistence remain separate, with no background synchronization.
 
 Contract 015 now permits exact, one-shot activation of an already authorized
 harness credential after ACP initialization. The first mapping is Grok Build

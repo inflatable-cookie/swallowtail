@@ -25,6 +25,7 @@ visible as unverified newer unless exact evidence requires rejection.
 | Support host-approved interpreted installed harnesses without ambient environment inheritance. | completed | Contracts 010, 032; Research 084 | `g03.011` |
 | Turn consumer-reproduced defects and integration friction into portable regression evidence. | active | Contracts 002, 037, 044-045 | `g03.003` |
 | Reassess prepared-facade usability from multi-consumer proof without importing product policy. | completed | Contracts 002, 010, 037 | `g03.017` |
+| Allow explicit discovery and import of harness-origin sessions without owning consumer persistence or synchronization. | active | Contracts 017, 029, 037, 046 | `g03.019` |
 | Periodically reconcile deferred gates, route truth, and generation capacity. | planned | Contract 001 | recurring checkpoints |
 
 ## Current Checkpoint
@@ -185,6 +186,13 @@ visible as unverified newer unless exact evidence requires rejection.
 - Soundcheck's unchanged Luna/medium structured-proposal test completed
   successfully through its consumer path; the defect is closed and g03 is
   evidence-gated again
+- Research 092 and Contract 046 select explicit provider-session catalogue and
+  import: candidates remain non-authoritative, import revalidates exact
+  attachment identity, and existing load/replay/resume follows only after an
+  ordinary binding is issued
+- roadmaps g03.019-g03.023 sequence the shared kernel, Codex, stable ACP/Kimi,
+  OpenCode, provider-wide acceptance, and a bounded Nucleus handoff; automatic
+  synchronization, consumer persistence, and raw-id attachment remain excluded
 
 ## Milestones
 
@@ -206,11 +214,17 @@ visible as unverified newer unless exact evidence requires rejection.
 - [016 Attached Harness Probe Compatibility Truth](016-attached-harness-probe-compatibility-truth.md) — completed
 - [017 Prepared Facade Multi-Consumer Usability](017-prepared-facade-multi-consumer-usability.md) — completed
 - [018 Codex Exec Queryless Navigation Lifecycle](018-codex-exec-queryless-navigation-lifecycle.md) — completed
+- [019 Provider Session Catalogue And Import Foundation](019-provider-session-catalogue-and-import-foundation.md) — active
+- [020 Codex External Thread Discovery And Import](020-codex-external-thread-discovery-and-import.md) — planned
+- [021 ACP Session List And Kimi Import](021-acp-session-list-and-kimi-import.md) — planned
+- [022 OpenCode External Session Discovery And Import](022-opencode-external-session-discovery-and-import.md) — planned
+- [023 Provider Session Import Acceptance And Handoff](023-provider-session-import-acceptance-and-handoff.md) — planned
 
 ## Checkpoint
 
-No implementation batch is ready. The sole active pointer remains in the
-roadmap front door.
+Card 049 is ready. It adds the provider-neutral catalogue and import records,
+capabilities, requirements, plans, and validation before any provider mapping.
+The sole active pointer remains in the roadmap front door.
 
 ## Generation Boundary
 

@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-31
+Updated: 2026-08-01
 
 | Contract | Status | Scope |
 | --- | --- | --- |
@@ -51,3 +51,4 @@ Updated: 2026-07-31
 | [043 Turn-Scoped Interactive Continuity](043-turn-scoped-interactive-continuity.md) | active | Restarted harness continuation versus consumer-owned transactional transcript replay across turn-scoped provider work |
 | [044 Observable Agent Activity And Disclosure](044-observable-agent-activity-and-disclosure.md) | active | Ordered activity identity, lifecycle, disclosure, content streams, route fidelity, and consumer projection ownership |
 | [045 Subagent Topology, Observation, And Control](045-subagent-topology-observation-and-control.md) | active | Child-work graph identity, parentage, lifecycle, attribution, provider collaboration actions, and direct-control qualification |
+| [046 Provider Session Catalogue And Explicit Import](046-provider-session-catalogue-and-explicit-import.md) | active | Bounded provider-session discovery, non-authoritative candidates, explicit revalidated import, ordinary load replay, and downstream persistence ownership |

@@ -1386,6 +1386,47 @@ Whole-turn interruption, main-turn steering, provider-session deletion, and
 observed harness collaboration actions do not substitute for targeted child
 control.
 
+## Contracted Provider Session Catalogue And Import
+
+Research 092 and Contract 046 add two provider-neutral roles without adding a
+session database.
+
+```text
+prepared catalogue
+  -> bounded provider candidate (observation only)
+  -> explicit consumer selection
+  -> prepared import revalidation
+  -> ordinary SessionResumeBinding
+  -> existing load and ordered replay
+  -> consumer-owned thread persistence
+```
+
+The catalogue plan binds one exact integration, driver, transport, configured
+instance, target revision, execution host, access profile, interface segment,
+and discovery scope. Its first common scope is one host-approved working
+resource. Provider title, preview, update time, and state are bounded content,
+not diagnostics or authority.
+
+Import is a separate read-only operation. It revalidates the selected
+candidate against the exact future attachment plan before issuing the ordinary
+resume binding. A list result, raw provider id, cwd, title, diagnostic, or
+copied provider payload cannot attach. Load and resume retain Contract 017's
+separate replay behavior; archive, restore, and delete retain Contract 038's
+separate management authority.
+
+Codex app-server is the first selected complete route. Stable ACP plus Kimi
+Code ACP provides the shared-protocol proof. OpenCode attached HTTP provides
+the separate server proof. Other routes remain explicitly unsupported until
+their own catalogue, history, resource-binding, and continuation evidence is
+complete.
+
+This section is contracted, not realized. Roadmaps g03.019-g03.023 own the
+common kernel, exact provider implementations, provider-wide classification,
+and consumer handoff. Nucleus or another consumer owns local thread creation,
+message persistence, replay merge, deduplication, presentation, and any later
+refresh. Background polling, bidirectional synchronization, global handle
+discovery, and implicit provider lifecycle actions remain absent.
+
 ## Dependency Rules
 
 - consumers depend toward Swallowtail; Swallowtail never depends on consumers

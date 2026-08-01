@@ -58,6 +58,12 @@ reproduced a Codex exec queryless navigation lifecycle aborting valid later
 structured output; roadmap g03.018 now fixes that exact shape without widening
 malformed search acceptance. Soundcheck's unchanged Luna/medium consumer rerun
 passes, closes the defect, and returns g03 to its evidence gate.
+Research 092 and Contract 046 now open an explicit provider-session catalogue
+and import lane. Roadmaps g03.019-g03.023 sequence the shared kernel, Codex,
+stable ACP/Kimi, OpenCode, provider-wide acceptance, and a bounded Nucleus
+handoff. Consumers still own thread persistence, deduplication, merge policy,
+and UI. Swallowtail will not infer attachment authority from a raw provider id
+or run automatic synchronization. Card 049 is next.
 
 ## Start Here
 

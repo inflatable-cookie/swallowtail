@@ -6,11 +6,10 @@ None.
 
 ## Ready
 
-- `052-codex-thread-catalogue-range-corpus.md`
+- `053-codex-thread-catalogue-and-import-driver.md`
 
 ## Planned
 
-- `053-codex-thread-catalogue-and-import-driver.md`
 - `054-codex-thread-import-acceptance.md`
 - `055-acp-stable-session-list-corpus-and-codec.md`
 - `056-kimi-acp-session-catalogue-and-import.md`
@@ -24,6 +23,7 @@ None.
 
 ## Completed
 
+- `052-codex-thread-catalogue-range-corpus.md`
 - `051-provider-session-import-common-conformance.md`
 - `050-provider-session-catalogue-and-import-runtime.md`
 - `049-provider-session-catalogue-and-import-records.md`

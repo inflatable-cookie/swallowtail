@@ -1,6 +1,6 @@
 # 052 Codex Thread Catalogue Range Corpus
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-01
 Milestone: `../020-codex-external-thread-discovery-and-import.md`
@@ -28,13 +28,23 @@ current app-server documentation backward across the maintained range.
 
 ## Acceptance Criteria
 
-- [ ] every claim has exact release and source identity
-- [ ] method introduction and behavior changes are explicit milestones
-- [ ] current main documentation is corroboration, not historical authority
-- [ ] legacy supported points remain usable without catalogue import
-- [ ] no production capability changes in this card
-- [ ] focused Codex corpus tests pass
-- [ ] card 053 becomes the sole ready and next task
+- [x] every claim has exact release and source identity
+- [x] method introduction and behavior changes are explicit milestones
+- [x] current main documentation is corroboration, not historical authority
+- [x] legacy supported points remain usable without catalogue import
+- [x] no production capability changes in this card
+- [x] focused Codex corpus tests pass
+- [x] card 053 becomes the sole ready and next task
+
+## Closeout
+
+Research 093 and the deterministic compatibility corpus select `0.105.0` as
+the first complete operation-specific floor. Earlier qualified Codex releases
+retain all existing operations without advertising catalogue/import. Current
+documentation remains corroboration only.
+
+`effigy validate:focused swallowtail-adapter-codex` passed 149 tests. No live,
+broad, production capability, or consumer change ran.
 
 ## Validation
 

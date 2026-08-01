@@ -204,6 +204,10 @@ visible as unverified newer unless exact evidence requires rejection.
   remote-authoritative fixtures, bounded negative conformance, exact prepared
   evidence, and import-to-load/resume sequencing; 248 focused tests and all
   three extracted common packages pass
+- Research 093 and card 052 freeze the exact Codex catalogue/import operation
+  floor at `0.105.0`, retain earlier supported app-server operations without
+  catalogue claims, and keep current documentation as corroboration only; 149
+  focused Codex tests pass without production changes
 
 ## Milestones
 
@@ -233,9 +237,9 @@ visible as unverified newer unless exact evidence requires rejection.
 
 ## Checkpoint
 
-Card 052 is ready. It freezes exact Codex thread catalogue, read, history,
-pagination, status, and resume milestones before production capability changes.
-The sole active pointer remains in the roadmap front door.
+Card 053 is ready. It implements resource-scoped Codex thread discovery,
+read-only revalidation, and imported binding issue only for the exact corpus-
+qualified segments. The sole active pointer remains in the roadmap front door.
 
 ## Generation Boundary
 

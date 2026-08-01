@@ -6,7 +6,7 @@ Created: 2026-08-01
 Depends on: g03.019
 Vision tags: Codex continuity, external thread import, consumer stability
 Contract refs: 010, 017, 029, 032-034, 037-038, 044-046
-Planning state: card 052 ready; cards 053-054 planned
+Planning state: card 052 completed; card 053 ready; card 054 planned
 
 ## Problem
 
@@ -17,7 +17,7 @@ entered the maintained `0.80.0..=0.146.0` range.
 
 ## Goals
 
-- [ ] freeze exact Codex catalogue, read, history, status, and resume milestones
+- [x] freeze exact Codex catalogue, read, history, status, and resume milestones
 - [ ] expose a resource-scoped prepared thread catalogue
 - [ ] revalidate one selected thread before issuing an imported binding
 - [ ] load ordered Codex history through the existing replay phase
@@ -28,11 +28,11 @@ entered the maintained `0.80.0..=0.146.0` range.
 
 ### Batch 20.1 — Exact Codex Range Corpus
 
-- [ ] Execute card 052.
-- [ ] freeze `thread/list`, `thread/read`, history, filters, pagination, status,
+- [x] Execute card 052.
+- [x] freeze `thread/list`, `thread/read`, history, filters, pagination, status,
   and `thread/resume` at every maintained behavior milestone
-- [ ] preserve legacy points where catalogue import is unavailable
-- [ ] record later-stable and experimental fields separately
+- [x] preserve legacy points where catalogue import is unavailable
+- [x] record later-stable and experimental fields separately
 
 ### Batch 20.2 — Driver And Prepared Facade
 

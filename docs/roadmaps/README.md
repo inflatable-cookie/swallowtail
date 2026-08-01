@@ -13,9 +13,9 @@ shape.
 
 ## Next Task
 
-Execute g03 card 052. Freeze exact Codex thread-list, read, history,
-pagination, status, and resume behavior across the maintained range before any
-production catalogue/import claim changes.
+Execute g03 card 053. Add resource-scoped Codex thread discovery, exact
+read-only revalidation, and imported binding issue through the prepared Codex
+facade for the corpus-qualified `0.105.0..=0.146.0` segments only.
 
 ## Index
 

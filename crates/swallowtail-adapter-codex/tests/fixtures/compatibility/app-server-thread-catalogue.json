@@ -1,0 +1,140 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-08-01",
+  "claim_id": "codex.app-server.thread-catalogue-window-1",
+  "claim_status": "evidence-only",
+  "axis": "codex.cli",
+  "facade": "codex-app-server-v2",
+  "qualified_range": {
+    "baseline": "0.80.0",
+    "latest": "0.146.0",
+    "excluded_gaps": ["0.82.0", "0.83.0", "0.108.0", "0.109.0"],
+    "newer_posture": "allow_unverified"
+  },
+  "method_boundaries": {
+    "thread/list": {"present": "0.80.0", "prior": null},
+    "thread/read": {"absent": "0.80.0", "present": "0.91.0"},
+    "thread/list.sourceKinds": {"absent": "0.91.0", "present": "0.92.0"},
+    "thread/list.cwd": {"absent": "0.102.0", "present": "0.103.0"},
+    "thread.status": {"absent": "0.104.0", "present": "0.105.0"},
+    "thread/list.searchTerm": {"absent": "0.106.0", "present": "0.107.0"},
+    "thread/list.sortDirection": {"absent": "0.122.0", "present": "0.123.0"},
+    "thread/resume.excludeTurns": {"absent": "0.128.0", "present": "0.129.0"},
+    "protocol.v2.split": {"monolithic": "0.129.0", "split": "0.130.0"},
+    "thread/resume.runtimeWorkspaceRoots": {"absent": "0.130.0", "present": "0.131.0"},
+    "thread/resume.initialTurnsPage": {"absent": "0.138.0", "present": "0.139.0"},
+    "thread/list.experimentalParentFilters": {"absent": "0.144.5", "present": "0.144.6"},
+    "thread.canAcceptDirectInput": {"absent": "0.144.6", "present": "0.145.0"},
+    "thread.isPinned": {"absent": "0.145.0", "present": "0.146.0"}
+  },
+  "segments": [
+    {
+      "range": "0.80.0..=0.90.0",
+      "catalogue_import": false,
+      "missing": ["thread/read", "thread/list.sourceKinds", "thread/list.cwd", "thread.status"]
+    },
+    {
+      "range": "0.91.0",
+      "catalogue_import": false,
+      "missing": ["thread/list.sourceKinds", "thread/list.cwd", "thread.status"]
+    },
+    {
+      "range": "0.92.0..=0.102.0",
+      "catalogue_import": false,
+      "missing": ["thread/list.cwd", "thread.status"]
+    },
+    {
+      "range": "0.103.0..=0.104.0",
+      "catalogue_import": false,
+      "missing": ["thread.status"]
+    },
+    {
+      "range": "0.105.0..=0.107.0",
+      "catalogue_import": true,
+      "behavior_revision": "codex.app-server.thread-catalogue.v1"
+    },
+    {
+      "range": "0.110.0..=0.128.0",
+      "catalogue_import": true,
+      "behavior_revision": "codex.app-server.thread-catalogue.v1"
+    },
+    {
+      "range": "0.129.0..=0.130.0",
+      "catalogue_import": true,
+      "behavior_revision": "codex.app-server.thread-catalogue.v1.exclude-turns"
+    },
+    {
+      "range": "0.131.0..=0.146.0",
+      "catalogue_import": true,
+      "behavior_revision": "codex.app-server.thread-catalogue.v1.workspace-roots"
+    }
+  ],
+  "selected_profile": {
+    "list_request": {
+      "method": "thread/list",
+      "params": {
+        "cursor": "<opaque-cursor-or-null>",
+        "limit": "<positive-bounded-page-size>",
+        "sourceKinds": ["cli", "vscode", "appServer"],
+        "archived": false,
+        "cwd": "<exact-approved-working-resource>"
+      }
+    },
+    "list_response": {
+      "items": "result.data",
+      "next_cursor": "result.nextCursor",
+      "candidate_fields": ["id", "name", "preview", "updatedAt", "status", "cwd", "source"],
+      "turns": "empty-and-ignored"
+    },
+    "read_request": {
+      "method": "thread/read",
+      "params": {"threadId": "<selected-thread-id>", "includeTurns": true}
+    },
+    "read_response": {
+      "thread": "result.thread",
+      "history": "result.thread.turns",
+      "binding_check": "id-cwd-source-and-status-revalidated",
+      "active": "reject-before-binding",
+      "notLoaded_or_idle": "eligible"
+    },
+    "resume_request": {
+      "method": "thread/resume",
+      "params": {"threadId": "<bound-thread-id>"}
+    },
+    "excluded_sources": ["exec", "subAgent", "subAgentReview", "subAgentCompact", "subAgentThreadSpawn", "subAgentOther", "unknown"],
+    "excluded_fields": ["path", "gitInfo", "agentNickname", "agentRole", "parentThreadId", "forkedFromId", "rolloutLineage", "historyMetadata", "isPinned"]
+  },
+  "milestones": [
+    {"version":"0.80.0","published_at":"2026-01-09T19:49:15.685Z","tag_commit":"f0679a6ab2563135e01cc922698cb54921a1719f","protocol_layout":"monolithic","list":true,"read":false,"source_filter":false,"cwd_filter":false,"status":false,"history_read":false},
+    {"version":"0.91.0","published_at":"2026-01-25T17:34:45.939Z","tag_commit":"3684bc646e0f1123e76a90f03cfb1111358f1aa1","protocol_layout":"monolithic","list":true,"read":true,"source_filter":false,"cwd_filter":false,"status":false,"history_read":true},
+    {"version":"0.92.0","published_at":"2026-01-27T11:51:59.692Z","tag_commit":"a09055074e082d70e8b92795b0cec1e969a6aaf9","protocol_layout":"monolithic","list":true,"read":true,"source_filter":true,"cwd_filter":false,"status":false,"history_read":true},
+    {"version":"0.103.0","published_at":"2026-02-17T23:03:50.048Z","tag_commit":"ff3d19f9022b154b9ab415f6ad128cd622608b1a","protocol_layout":"monolithic","list":true,"read":true,"source_filter":true,"cwd_filter":true,"status":false,"history_read":true},
+    {"version":"0.104.0","published_at":"2026-02-18T07:13:25.235Z","tag_commit":"74d1f7b2b3af383bd3605344f3c842b194fd1d70","protocol_layout":"monolithic","list":true,"read":true,"source_filter":true,"cwd_filter":true,"status":false,"history_read":true},
+    {"version":"0.105.0","published_at":"2026-02-25T17:22:34.496Z","tag_commit":"a7eda6a29b3ee25549f385197ff109508dc49a90","protocol_layout":"monolithic","list":true,"read":true,"source_filter":true,"cwd_filter":true,"status":true,"history_read":true},
+    {"version":"0.107.0","published_at":"2026-03-02T18:00:55.212Z","tag_commit":"19f8797c0f62abecb347e817aac36d18c5fc554e","protocol_layout":"monolithic","list":true,"read":true,"source_filter":true,"cwd_filter":true,"status":true,"history_read":true},
+    {"version":"0.110.0","published_at":"2026-03-05T02:23:39.861Z","tag_commit":"77aabe4218ab7ddaf4b6d471887bda043a4c16e6","protocol_layout":"monolithic","list":true,"read":true,"source_filter":true,"cwd_filter":true,"status":true,"history_read":true},
+    {"version":"0.123.0","published_at":"2026-04-23T01:27:03.972Z","tag_commit":"0785b66228dff87f891e291cb5686631865b6922","protocol_layout":"monolithic","list":true,"read":true,"source_filter":true,"cwd_filter":true,"status":true,"history_read":true},
+    {"version":"0.129.0","published_at":"2026-05-07T17:05:37.553Z","tag_commit":"2808a4deb181e5ca2b1293a1a5980938cb746861","protocol_layout":"monolithic","list":true,"read":true,"source_filter":true,"cwd_filter":true,"status":true,"history_read":true},
+    {"version":"0.130.0","published_at":"2026-05-08T23:12:58.744Z","tag_commit":"58573da43ab697e8b79f152c53df4b42230395a8","protocol_layout":"split","list":true,"read":true,"source_filter":true,"cwd_filter":true,"status":true,"history_read":true},
+    {"version":"0.131.0","published_at":"2026-05-18T18:08:19.710Z","tag_commit":"05eb8678451435cbc8d79c6d8254276289f2bdf1","protocol_layout":"split","list":true,"read":true,"source_filter":true,"cwd_filter":true,"status":true,"history_read":true},
+    {"version":"0.139.0","published_at":"2026-06-09T20:17:25.855Z","tag_commit":"a7dff904308535e965aee87680c1fc5ef1d19eec","protocol_layout":"split","list":true,"read":true,"source_filter":true,"cwd_filter":true,"status":true,"history_read":true},
+    {"version":"0.144.6","published_at":"2026-07-18T13:54:50.572Z","tag_commit":"5d1fbf26c43abc65a203928b2e31561cb039e06d","protocol_layout":"split","list":true,"read":true,"source_filter":true,"cwd_filter":true,"status":true,"history_read":true},
+    {"version":"0.145.0","published_at":"2026-07-21T18:24:11.494Z","tag_commit":"25af12f7e61572b0bc18ddb1008be543b91519b0","protocol_layout":"split","list":true,"read":true,"source_filter":true,"cwd_filter":true,"status":true,"history_read":true},
+    {"version":"0.146.0","published_at":"2026-07-29T01:45:57.696Z","tag_commit":"e363b08c9175ac1cbe5893615dd2cb9ddf95043b","protocol_layout":"split","list":true,"read":true,"source_filter":true,"cwd_filter":true,"status":true,"history_read":true}
+  ],
+  "sources": {
+    "repository": "https://github.com/openai/codex",
+    "monolithic_protocol": "codex-rs/app-server-protocol/src/protocol/v2.rs",
+    "split_thread_protocol": "codex-rs/app-server-protocol/src/protocol/v2/thread.rs",
+    "split_thread_data": "codex-rs/app-server-protocol/src/protocol/v2/thread_data.rs",
+    "handler": "codex-rs/app-server/src/codex_message_processor.rs",
+    "current_documentation": "https://developers.openai.com/codex/app-server/",
+    "current_documentation_role": "corroboration-only"
+  },
+  "unverified_newer": {
+    "version": "0.147.0",
+    "execution": "permitted-with-explicit-unverified-status",
+    "guaranteed": false,
+    "evidence": "synthetic-later-stable-classification"
+  }
+}

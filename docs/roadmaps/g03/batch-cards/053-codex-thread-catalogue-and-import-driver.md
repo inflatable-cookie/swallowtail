@@ -1,6 +1,6 @@
 # 053 Codex Thread Catalogue And Import Driver
 
-Status: planned
+Status: ready
 Owner: Tom
 Created: 2026-08-01
 Milestone: `../020-codex-external-thread-discovery-and-import.md`

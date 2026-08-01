@@ -68,8 +68,9 @@ records, immutable plans, typed requests, object-safe runtime roles, bounded
 outcomes, prepared evidence, and revalidation-gated imported bindings are now
 realized. Reusable local and remote-authoritative conformance now proves
 bounds, redaction, drift, stale targets, lifecycle failures, prepared evidence,
-and import-to-load/resume ordering. Card 052 now freezes the exact Codex thread
-catalogue range before production adapter work.
+and import-to-load/resume ordering. Research 093 and card 052 now freeze
+`0.105.0` as the first complete Codex catalogue/import floor without removing
+older app-server support. Card 053 is ready for the production adapter mapping.
 
 ## Start Here
 

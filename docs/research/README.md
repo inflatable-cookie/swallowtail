@@ -100,3 +100,4 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [090 Prepared Facade Multi-Consumer Usability Reassessment](090-prepared-facade-multi-consumer-usability-reassessment.md)
 - [091 g03 Evidence-Gated Maintenance Checkpoint](091-g03-evidence-gated-maintenance-checkpoint.md)
 - [092 Provider Session Discovery And Import](092-provider-session-discovery-and-import.md)
+- [093 Codex Thread Catalogue And Import Range](093-codex-thread-catalogue-and-import-range.md)

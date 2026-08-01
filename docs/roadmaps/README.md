@@ -13,9 +13,9 @@ shape.
 
 ## Next Task
 
-Execute g03 card 053. Add resource-scoped Codex thread discovery, exact
-read-only revalidation, and imported binding issue through the prepared Codex
-facade for the corpus-qualified `0.105.0..=0.146.0` segments only.
+Execute g03 card 054. Close Codex thread import with common local and
+remote-authoritative conformance, lifecycle controls, public prepared guidance,
+and extracted-package evidence.
 
 ## Index
 

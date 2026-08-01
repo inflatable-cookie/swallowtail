@@ -31,9 +31,9 @@ baseline removed all five critical and 28 high findings. Four affected
 archives now compile through one extracted target in five seconds, down from
 22.4 seconds through separate targets. Kimi child-activity projection is split
 on its native lifecycle seam. Claude Agent now projects its exact portable
-choice-form subset through typed harness user input. Doctor reports 174
-oversized-file findings, including six errors; they remain known structural
-debt outside this provider batch. Roadmaps g02.047-g02.048 own the completed topology and
+choice-form subset through typed harness user input. The current structural
+scan reports 183 oversized-file findings, including eight errors; they remain
+known structural debt outside this provider batch. Roadmaps g02.047-g02.048 own the completed topology and
 elicitation handoffs; g02.049 closes the generation. Nucleus adoption is
 delegated to the Nucleus repository and does not govern Swallowtail's active
 lane. Roadmaps g03.005-g03.006 and g03.009 are complete. Qwen Code now carries
@@ -70,7 +70,9 @@ realized. Reusable local and remote-authoritative conformance now proves
 bounds, redaction, drift, stale targets, lifecycle failures, prepared evidence,
 and import-to-load/resume ordering. Research 093 and card 052 now freeze
 `0.105.0` as the first complete Codex catalogue/import floor without removing
-older app-server support. Card 053 is ready for the production adapter mapping.
+older app-server support. Exact resource-scoped listing and read-before-import
+now sit behind the prepared Codex facade; card 054 owns cross-host, public, and
+package acceptance.
 
 ## Start Here
 

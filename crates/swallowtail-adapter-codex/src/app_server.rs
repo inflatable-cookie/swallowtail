@@ -49,11 +49,15 @@ pub fn codex_app_server_descriptor() -> DriverDescriptor {
         DriverRole::ModelCatalog,
         DriverRole::InteractiveSession,
         DriverRole::ProviderSessionManagement,
+        DriverRole::ProviderSessionCatalogue,
+        DriverRole::ProviderSessionImport,
     ])
     .with_execution_layers([ExecutionLayer::HarnessInteraction])
     .with_operation_shapes([
         OperationShape::InteractiveSession,
         OperationShape::ProviderSessionManagement,
+        OperationShape::ProviderSessionCatalogue,
+        OperationShape::ProviderSessionImport,
     ])
     .with_required_host_services(
         DriverRole::ModelCatalog,
@@ -66,6 +70,22 @@ pub fn codex_app_server_descriptor() -> DriverDescriptor {
     .with_required_host_services(
         DriverRole::ProviderSessionManagement,
         [HostServiceKind::Task, HostServiceKind::Process],
+    )
+    .with_required_host_services(
+        DriverRole::ProviderSessionCatalogue,
+        [
+            HostServiceKind::Task,
+            HostServiceKind::Process,
+            HostServiceKind::WorkingResource,
+        ],
+    )
+    .with_required_host_services(
+        DriverRole::ProviderSessionImport,
+        [
+            HostServiceKind::Task,
+            HostServiceKind::Process,
+            HostServiceKind::WorkingResource,
+        ],
     )
     .with_required_host_services(
         DriverRole::Discovery,

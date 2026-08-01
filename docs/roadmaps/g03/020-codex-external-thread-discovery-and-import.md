@@ -6,7 +6,7 @@ Created: 2026-08-01
 Depends on: g03.019
 Vision tags: Codex continuity, external thread import, consumer stability
 Contract refs: 010, 017, 029, 032-034, 037-038, 044-046
-Planning state: card 052 completed; card 053 ready; card 054 planned
+Planning state: cards 052-053 completed; card 054 ready
 
 ## Problem
 
@@ -18,10 +18,10 @@ entered the maintained `0.80.0..=0.146.0` range.
 ## Goals
 
 - [x] freeze exact Codex catalogue, read, history, status, and resume milestones
-- [ ] expose a resource-scoped prepared thread catalogue
-- [ ] revalidate one selected thread before issuing an imported binding
-- [ ] load ordered Codex history through the existing replay phase
-- [ ] preserve read-only and bounded-workspace profiles without fallback
+- [x] expose a resource-scoped prepared thread catalogue
+- [x] revalidate one selected thread before issuing an imported binding
+- [x] load ordered Codex history through the existing replay phase
+- [x] preserve read-only and bounded-workspace profiles without fallback
 - [ ] close with deterministic, package, and public guidance evidence
 
 ## Execution Plan
@@ -36,10 +36,10 @@ entered the maintained `0.80.0..=0.146.0` range.
 
 ### Batch 20.2 — Driver And Prepared Facade
 
-- [ ] Execute card 053 after the corpus passes.
-- [ ] implement bounded list and exact read-only revalidation
-- [ ] issue imported resume bindings only for exact matching working resources
-- [ ] route imported load through existing Codex replay projection
+- [x] Execute card 053 after the corpus passes.
+- [x] implement bounded list and exact read-only revalidation
+- [x] issue imported resume bindings only for exact matching working resources
+- [x] route imported load through existing Codex replay projection
 
 ### Batch 20.3 — Conformance And Acceptance
 
@@ -61,12 +61,12 @@ entered the maintained `0.80.0..=0.146.0` range.
 
 ## Acceptance Criteria
 
-- [ ] the guaranteed catalogue segment is exact and does not widen legacy support
-- [ ] one approved cwd/resource scope reaches only matching interactive threads
-- [ ] title and preview content are bounded and diagnostic-safe
-- [ ] a stale, missing, mismatched, or unsupported thread issues no binding
-- [ ] successful import loads history before readiness and resumes without replay
-- [ ] ordinary Swallowtail-created Codex sessions remain unchanged
+- [x] the guaranteed catalogue segment is exact and does not widen legacy support
+- [x] one approved cwd/resource scope reaches only matching interactive threads
+- [x] title and preview content are bounded and diagnostic-safe
+- [x] a stale, missing, mismatched, or unsupported thread issues no binding
+- [x] successful import loads history before readiness and resumes without replay
+- [x] ordinary Swallowtail-created Codex sessions remain unchanged
 - [ ] focused Codex and affected-package validation pass
 
 ## Next Planning Checkpoint

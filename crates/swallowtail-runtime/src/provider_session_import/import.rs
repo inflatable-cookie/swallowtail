@@ -56,7 +56,8 @@ impl ProviderSessionImportAgreement {
         self.deadline
     }
 
-    pub(super) const fn candidate(&self) -> &ProviderSessionCandidate {
+    #[must_use]
+    pub const fn candidate(&self) -> &ProviderSessionCandidate {
         &self.candidate
     }
 }

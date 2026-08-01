@@ -39,7 +39,8 @@ visible as unverified newer unless exact evidence requires rejection.
 - provider-session management binding persistence remains deferred
 - registry publication remains outside the active roadmap until the operator
   revisits it after sustained application usage
-- doctor reports 174 oversized-file findings, including six errors; this known
+- the current structural scan reports 183 oversized-file findings, including
+  eight errors; this known
   structural debt remains outside the active provider route batch
 - Research 074 inventories 13 installed/attached harness route ids and bounds
   the first external currentness source set
@@ -208,6 +209,9 @@ visible as unverified newer unless exact evidence requires rejection.
   floor at `0.105.0`, retain earlier supported app-server operations without
   catalogue claims, and keep current documentation as corroboration only; 149
   focused Codex tests pass without production changes
+- card 053 maps exact cwd-scoped Codex listing and read-before-import behind the
+  prepared facade, rejects drift and unavailable threads, and reuses existing
+  load/replay/resume behavior unchanged; 154 focused Codex tests pass
 
 ## Milestones
 
@@ -237,9 +241,9 @@ visible as unverified newer unless exact evidence requires rejection.
 
 ## Checkpoint
 
-Card 053 is ready. It implements resource-scoped Codex thread discovery,
-read-only revalidation, and imported binding issue only for the exact corpus-
-qualified segments. The sole active pointer remains in the roadmap front door.
+Card 054 is ready. It closes Codex import through the common cross-host profile,
+lifecycle controls, public prepared guidance, and extracted-package evidence.
+The sole active pointer remains in the roadmap front door.
 
 ## Generation Boundary
 

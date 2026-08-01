@@ -133,6 +133,8 @@ impl ScriptedAppServerHandle {
                     }));
                 }
             }
+            ("thread/list", Some(id)) => self.respond_thread_list(message, id),
+            ("thread/read", Some(id)) => self.respond_thread_read(message, id),
             ("thread/start", Some(id)) => self.state.push(serde_json::json!({
                 "id": id,
                 "result": {"thread": {"id": "thread-provider-new"}}
@@ -255,7 +257,8 @@ impl ScriptedAppServerHandle {
                     | AppServerMode::LifecycleHold
                     | AppServerMode::LifecycleMalformed
                     | AppServerMode::LifecycleCleanupFailure
-                    | AppServerMode::LifecycleWrongNotification => {}
+                    | AppServerMode::LifecycleWrongNotification
+                    | AppServerMode::ThreadCatalogue(_) => {}
                     AppServerMode::RequestCallback => self.state.push(serde_json::json!({
                         "id": "callback-900",
                         "method": "item/commandExecution/requestApproval",

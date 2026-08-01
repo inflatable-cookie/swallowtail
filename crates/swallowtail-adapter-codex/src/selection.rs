@@ -16,6 +16,7 @@ pub(crate) use lifecycle::{
 pub const CODEX_CLI_AXIS: &str = "codex.cli";
 pub const CODEX_EXEC_BASELINE_VERSION: &str = "0.80.0";
 pub const CODEX_APP_SERVER_BASELINE_VERSION: &str = "0.80.0";
+pub const CODEX_APP_SERVER_THREAD_CATALOGUE_BASELINE_VERSION: &str = "0.105.0";
 pub const CODEX_LATEST_QUALIFIED_VERSION: &str = "0.146.0";
 pub(crate) const CODEX_APP_SERVER_WORKSPACE_ROOTS_VERSION: &str = "0.131.0";
 const CODEX_EXEC_RETAINED_BOOLEAN_SEARCH_BEHAVIOR: &str =
@@ -198,6 +199,15 @@ pub(crate) fn classify_app_server_plan(
             "Codex app-server behavior is not mapped by this driver",
         )),
     }
+}
+
+pub(crate) fn supports_thread_catalogue_version(version: &InterfaceVersion) -> bool {
+    let Ok(version) = semver::Version::parse(version.as_str()) else {
+        return false;
+    };
+    (version >= semver::Version::new(0, 105, 0) && version <= semver::Version::new(0, 107, 0))
+        || (version >= semver::Version::new(0, 110, 0)
+            && version <= semver::Version::new(0, 146, 0))
 }
 
 pub(crate) fn classify_plan(

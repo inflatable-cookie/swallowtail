@@ -30,6 +30,17 @@ pub enum AppServerMode {
     LifecycleMalformed,
     LifecycleCleanupFailure,
     LifecycleWrongNotification,
+    ThreadCatalogue(ThreadCatalogueMode),
+}
+
+#[derive(Clone, Copy)]
+pub enum ThreadCatalogueMode {
+    Available,
+    WrongResource,
+    Missing,
+    Active,
+    Changed,
+    Mismatched,
 }
 
 #[derive(Default)]
@@ -167,3 +178,4 @@ struct ScriptedAppServerHandle {
 
 include!("app_server/handle.rs");
 include!("app_server/process_handle.rs");
+include!("app_server/thread_catalogue.rs");

@@ -1,10 +1,11 @@
 use swallowtail_core::{
     ExternalNetworkPolicy, ExternalSearchPolicy, ModelId, ModelRouteId, ModelRouteRevision,
-    ReasoningMode,
+    ProviderSessionCatalogueBounds, ReasoningMode,
 };
 use swallowtail_runtime::{
-    AttachmentDescriptor, Deadline, OperationContent, ProviderSessionManagementBinding, RequestId,
-    SessionOptions, StructuredOutputDescriptor, ToolDeclaration, WorkingResourceRef,
+    AttachmentDescriptor, Deadline, OperationContent, ProviderSessionCatalogueId,
+    ProviderSessionManagementBinding, RequestId, SessionOptions, StructuredOutputDescriptor,
+    ToolDeclaration, WorkingResourceRef,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -57,6 +58,57 @@ pub struct CodexSessionManagementInput {
     binding: ProviderSessionManagementBinding,
     deadline: Option<Deadline>,
     allow_unverified_newer: bool,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct CodexSessionCatalogueInput {
+    request_id: RequestId,
+    catalogue_id: ProviderSessionCatalogueId,
+    working_resource: WorkingResourceRef,
+    bounds: ProviderSessionCatalogueBounds,
+    deadline: Option<Deadline>,
+}
+
+impl CodexSessionCatalogueInput {
+    #[must_use]
+    pub const fn new(
+        request_id: RequestId,
+        catalogue_id: ProviderSessionCatalogueId,
+        working_resource: WorkingResourceRef,
+        bounds: ProviderSessionCatalogueBounds,
+    ) -> Self {
+        Self {
+            request_id,
+            catalogue_id,
+            working_resource,
+            bounds,
+            deadline: None,
+        }
+    }
+
+    #[must_use]
+    pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
+        self.deadline = Some(deadline);
+        self
+    }
+
+    pub(crate) fn into_parts(
+        self,
+    ) -> (
+        RequestId,
+        ProviderSessionCatalogueId,
+        WorkingResourceRef,
+        ProviderSessionCatalogueBounds,
+        Option<Deadline>,
+    ) {
+        (
+            self.request_id,
+            self.catalogue_id,
+            self.working_resource,
+            self.bounds,
+            self.deadline,
+        )
+    }
 }
 
 impl CodexSessionManagementInput {

@@ -24,6 +24,7 @@ mod session_input;
 mod session_management;
 mod session_open;
 mod session_replay;
+mod thread_catalogue;
 mod turn_state;
 mod user_input;
 
@@ -37,13 +38,14 @@ pub use prepared::{
 pub use prepared_profile::{
     CodexExecProfileInput, CodexModelSelection, CodexPreparedArchive, CodexPreparedCatalogue,
     CodexPreparedDelete, CodexPreparedEvidence, CodexPreparedExec, CodexPreparedRestore,
-    CodexPreparedSession, CodexPreparedSessionFuture, CodexPreparedSessionKind,
-    CodexPreparedSessionLoadFuture, CodexSessionManagementInput, CodexSessionProfileInput,
+    CodexPreparedSession, CodexPreparedSessionCatalogue, CodexPreparedSessionFuture,
+    CodexPreparedSessionImport, CodexPreparedSessionKind, CodexPreparedSessionLoadFuture,
+    CodexSessionCatalogueInput, CodexSessionManagementInput, CodexSessionProfileInput,
 };
 pub use selection::{
-    CODEX_APP_SERVER_BASELINE_VERSION, CODEX_CLI_AXIS, CODEX_EXEC_BASELINE_VERSION,
-    CODEX_LATEST_QUALIFIED_VERSION, codex_app_server_claim, codex_app_server_lifecycle_claim,
-    codex_cli_binding, codex_exec_claim,
+    CODEX_APP_SERVER_BASELINE_VERSION, CODEX_APP_SERVER_THREAD_CATALOGUE_BASELINE_VERSION,
+    CODEX_CLI_AXIS, CODEX_EXEC_BASELINE_VERSION, CODEX_LATEST_QUALIFIED_VERSION,
+    codex_app_server_claim, codex_app_server_lifecycle_claim, codex_cli_binding, codex_exec_claim,
 };
 pub use session_access::{
     codex_approval_request_extension, codex_bounded_workspace_access_policy,

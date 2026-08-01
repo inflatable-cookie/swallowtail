@@ -14,7 +14,7 @@ impl CodexAppServerDriver {
         Ok(behavior)
     }
 
-    async fn start_connection(
+    pub(crate) async fn start_connection(
         &self,
         plan: &PreflightPlan,
         behavior: CodexAppServerBehavior,

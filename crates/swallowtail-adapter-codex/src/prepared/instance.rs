@@ -1,6 +1,7 @@
 use super::CodexPreparationInput;
 use super::failure::{CompatibilityBehavior, preparation_failure};
 use crate::selection::CODEX_EXEC_BEHAVIOR;
+use crate::selection::supports_thread_catalogue_version;
 use crate::{CodexPreparedDriver, codex_app_server_descriptor, codex_exec_descriptor};
 use swallowtail_core::{
     Capability, CapabilityProfile, CapabilityRequirement, ConfiguredInstance,
@@ -46,10 +47,7 @@ pub(super) fn configured_instance(
             InstanceOwnership::HostOwnedPersistent,
             "codex-app-server-v2",
             "codex-app-server-prepared",
-            CapabilityProfile::new([
-                CapabilityRequirement::new(Capability::ModelCatalog, []),
-                CapabilityRequirement::new(Capability::InteractiveSession, []),
-            ]),
+            app_server_capabilities(observation),
             HarnessConfigurationPosture::Ambient,
         ),
     };
@@ -68,4 +66,18 @@ pub(super) fn configured_instance(
     )
     .with_interface_versions([observation.version().clone()])
     .with_harness_configuration_posture(posture))
+}
+
+fn app_server_capabilities(observation: &InstalledExecutableObservation) -> CapabilityProfile {
+    let mut capabilities = vec![
+        CapabilityRequirement::new(Capability::ModelCatalog, []),
+        CapabilityRequirement::new(Capability::InteractiveSession, []),
+    ];
+    if supports_thread_catalogue_version(observation.version().version()) {
+        capabilities.extend([
+            CapabilityRequirement::new(Capability::ProviderSessionCatalogue, []),
+            CapabilityRequirement::new(Capability::ProviderSessionImport, []),
+        ]);
+    }
+    CapabilityProfile::new(capabilities)
 }

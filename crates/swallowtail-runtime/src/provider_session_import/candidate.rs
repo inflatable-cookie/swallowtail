@@ -2,6 +2,7 @@ use super::{ProviderSessionCataloguePlan, failure, same_working_resource};
 use crate::{
     ProviderSessionCandidateId, ProviderSessionCatalogueId, RuntimeFailure, WorkingResourceRef,
 };
+use std::collections::BTreeSet;
 use std::fmt;
 use swallowtail_core::{
     PreflightPlan, ProviderSessionActivityState, ProviderSessionDisplayContent,
@@ -13,12 +14,16 @@ pub struct ProviderSessionCursor {
     catalogue_id: ProviderSessionCatalogueId,
     source_preflight: PreflightPlan,
     value: String,
+    seen_candidate_ids: BTreeSet<ProviderSessionCandidateId>,
+    seen_provider_refs: BTreeSet<SessionRef>,
 }
 
 impl ProviderSessionCursor {
-    pub fn new(
+    pub(crate) fn new(
         plan: &ProviderSessionCataloguePlan,
         value: impl Into<String>,
+        seen_candidate_ids: BTreeSet<ProviderSessionCandidateId>,
+        seen_provider_refs: BTreeSet<SessionRef>,
     ) -> Result<Self, RuntimeFailure> {
         let value = value.into();
         if value.trim().is_empty() {
@@ -33,16 +38,40 @@ impl ProviderSessionCursor {
                 "Provider-session catalogue cursor exceeds its planned bound",
             ));
         }
+        if seen_candidate_ids.len() != seen_provider_refs.len()
+            || seen_candidate_ids.len()
+                > plan.agreement().bounds().maximum_total_candidates().get() as usize
+        {
+            return Err(failure(
+                "swallowtail.provider_session_catalogue.traversal_limit_exceeded",
+                "Provider-session catalogue cursor exceeds its traversal bound",
+            ));
+        }
         Ok(Self {
             catalogue_id: plan.agreement().catalogue_id().clone(),
             source_preflight: plan.preflight().clone(),
             value,
+            seen_candidate_ids,
+            seen_provider_refs,
         })
     }
 
     #[must_use]
     pub fn as_provider_value(&self) -> &str {
         &self.value
+    }
+
+    #[must_use]
+    pub fn observed_candidates(&self) -> u32 {
+        self.seen_candidate_ids.len() as u32
+    }
+
+    pub(super) const fn seen_candidate_ids(&self) -> &BTreeSet<ProviderSessionCandidateId> {
+        &self.seen_candidate_ids
+    }
+
+    pub(super) const fn seen_provider_refs(&self) -> &BTreeSet<SessionRef> {
+        &self.seen_provider_refs
     }
 
     pub(super) fn matches_plan(&self, plan: &ProviderSessionCataloguePlan) -> bool {
@@ -60,6 +89,7 @@ impl fmt::Debug for ProviderSessionCursor {
                 "value",
                 &format_args!("<opaque:{} bytes>", self.value.len()),
             )
+            .field("observed_candidates", &self.seen_candidate_ids.len())
             .finish()
     }
 }

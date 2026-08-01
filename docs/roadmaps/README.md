@@ -13,8 +13,8 @@ shape.
 
 ## Next Task
 
-Execute g03 card 050. Add the object-safe catalogue/import runtime roles,
-bounded outcomes, imported-binding origin, and host-service validation.
+Execute g03 card 051. Add local and remote-authoritative synthetic conformance,
+prepared evidence assertions, and the import-to-load/resume boundary proof.
 
 ## Index
 

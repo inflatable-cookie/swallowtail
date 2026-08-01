@@ -1,8 +1,9 @@
 use super::{
     ProviderSessionCataloguePlan, ProviderSessionCatalogueRequest, ProviderSessionImportPlan,
-    ProviderSessionImportRequest, failure,
+    ProviderSessionImportRequest, ProviderSessionOperationFailure,
+    ProviderSessionOperationFailureStage, failure,
 };
-use crate::RuntimeFailure;
+use crate::{HostServices, RuntimeFailure};
 
 pub fn validate_provider_session_catalogue_request(
     plan: &ProviderSessionCataloguePlan,
@@ -34,4 +35,53 @@ pub fn validate_provider_session_import_request(
             "Provider-session import request does not match its immutable plan",
         ))
     }
+}
+
+pub fn validate_provider_session_catalogue_execution(
+    plan: &ProviderSessionCataloguePlan,
+    request: &ProviderSessionCatalogueRequest,
+    services: &HostServices,
+) -> Result<(), ProviderSessionOperationFailure> {
+    validate_provider_session_catalogue_request(plan, request).map_err(before_dispatch_failure)?;
+    validate_services(plan.preflight(), services)
+}
+
+pub fn validate_provider_session_import_execution(
+    plan: &ProviderSessionImportPlan,
+    request: &ProviderSessionImportRequest,
+    services: &HostServices,
+) -> Result<(), ProviderSessionOperationFailure> {
+    validate_provider_session_import_request(plan, request).map_err(before_dispatch_failure)?;
+    validate_services(plan.preflight(), services)
+}
+
+fn validate_services(
+    plan: &swallowtail_core::PreflightPlan,
+    services: &HostServices,
+) -> Result<(), ProviderSessionOperationFailure> {
+    services
+        .require_execution_host(plan.execution_host_id())
+        .map_err(before_dispatch_failure)?;
+    let available = services.available_kinds();
+    if plan
+        .requirements()
+        .host_services()
+        .any(|required| !available.contains(&required))
+    {
+        return Err(ProviderSessionOperationFailure::new(
+            ProviderSessionOperationFailureStage::BeforeDispatch,
+            swallowtail_core::SafeDiagnostic::new(
+                "swallowtail.provider_session_operation.service_unavailable",
+                "Provider-session operation host services are unavailable",
+            ),
+        ));
+    }
+    Ok(())
+}
+
+fn before_dispatch_failure(failure: RuntimeFailure) -> ProviderSessionOperationFailure {
+    ProviderSessionOperationFailure::from_runtime(
+        ProviderSessionOperationFailureStage::BeforeDispatch,
+        failure,
+    )
 }

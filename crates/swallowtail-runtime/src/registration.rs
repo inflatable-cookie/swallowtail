@@ -1,6 +1,7 @@
 use crate::{
-    DiscoveryDriver, InteractiveSessionDriver, ModelCatalogDriver, ProviderSessionManagementDriver,
-    RealtimeMediaSessionDriver, ServingInstanceDriver, StructuredRunDriver,
+    DiscoveryDriver, InteractiveSessionDriver, ModelCatalogDriver, ProviderSessionCatalogueDriver,
+    ProviderSessionImportDriver, ProviderSessionManagementDriver, RealtimeMediaSessionDriver,
+    ServingInstanceDriver, StructuredRunDriver,
 };
 use std::error::Error;
 use std::fmt;
@@ -53,6 +54,8 @@ pub struct DriverRegistration {
     realtime_media_session: Option<Arc<dyn RealtimeMediaSessionDriver>>,
     serving_instance: Option<Arc<dyn ServingInstanceDriver>>,
     provider_session_management: Option<Arc<dyn ProviderSessionManagementDriver>>,
+    provider_session_catalogue: Option<Arc<dyn ProviderSessionCatalogueDriver>>,
+    provider_session_import: Option<Arc<dyn ProviderSessionImportDriver>>,
 }
 
 impl DriverRegistration {
@@ -67,6 +70,8 @@ impl DriverRegistration {
             realtime_media_session: None,
             serving_instance: None,
             provider_session_management: None,
+            provider_session_catalogue: None,
+            provider_session_import: None,
         }
     }
 
@@ -133,6 +138,24 @@ impl DriverRegistration {
         Ok(self)
     }
 
+    pub fn with_provider_session_catalogue(
+        mut self,
+        role: Arc<dyn ProviderSessionCatalogueDriver>,
+    ) -> Result<Self, RegistrationFailure> {
+        self.require_declared(DriverRole::ProviderSessionCatalogue)?;
+        self.provider_session_catalogue = Some(role);
+        Ok(self)
+    }
+
+    pub fn with_provider_session_import(
+        mut self,
+        role: Arc<dyn ProviderSessionImportDriver>,
+    ) -> Result<Self, RegistrationFailure> {
+        self.require_declared(DriverRole::ProviderSessionImport)?;
+        self.provider_session_import = Some(role);
+        Ok(self)
+    }
+
     #[must_use]
     pub const fn descriptor(&self) -> &DriverDescriptor {
         &self.descriptor
@@ -171,6 +194,16 @@ impl DriverRegistration {
     #[must_use]
     pub fn provider_session_management(&self) -> Option<&Arc<dyn ProviderSessionManagementDriver>> {
         self.provider_session_management.as_ref()
+    }
+
+    #[must_use]
+    pub fn provider_session_catalogue(&self) -> Option<&Arc<dyn ProviderSessionCatalogueDriver>> {
+        self.provider_session_catalogue.as_ref()
+    }
+
+    #[must_use]
+    pub fn provider_session_import(&self) -> Option<&Arc<dyn ProviderSessionImportDriver>> {
+        self.provider_session_import.as_ref()
     }
 
     fn require_declared(&self, role: DriverRole) -> Result<(), RegistrationFailure> {

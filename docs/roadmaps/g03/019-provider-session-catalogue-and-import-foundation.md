@@ -6,7 +6,7 @@ Created: 2026-08-01
 Depends on: g03.018
 Vision tags: consumer continuity, harness interoperability, explicit authority
 Contract refs: 005, 008-011, 017, 029, 037, 046
-Planning state: card 049 completed; card 050 ready; card 051 planned
+Planning state: cards 049-050 completed; card 051 ready
 
 ## Problem
 
@@ -37,10 +37,10 @@ see only sessions whose ids they already recorded.
 
 ### Batch 19.2 — Runtime Roles And Import Outcome
 
-- [ ] Execute card 050 after card 049 passes.
-- [ ] add object-safe catalogue and import drivers
-- [ ] return the ordinary `SessionResumeBinding` only after import revalidation
-- [ ] preserve cancellation, deadline, failure, and cleanup truth
+- [x] Execute card 050 after card 049 passes.
+- [x] add object-safe catalogue and import drivers
+- [x] return the ordinary `SessionResumeBinding` only after import revalidation
+- [x] preserve cancellation, deadline, failure, and cleanup truth
 
 ### Batch 19.3 — Common Conformance And Prepared Evidence
 

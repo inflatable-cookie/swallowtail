@@ -5,7 +5,13 @@ fn cursors_and_candidates_reject_cross_plan_reuse() {
     let fixture = fixture();
     let first = catalogue_plan(&fixture, "catalogue-a", "resource-a", bounds(128, 128));
     let second = catalogue_plan(&fixture, "catalogue-b", "resource-a", bounds(128, 128));
-    let cursor = ProviderSessionCursor::new(&first, "private-cursor").expect("cursor is valid");
+    let cursor = ProviderSessionCursor::new(
+        &first,
+        "private-cursor",
+        std::collections::BTreeSet::new(),
+        std::collections::BTreeSet::new(),
+    )
+    .expect("cursor is valid");
     let selected = candidate(
         &first,
         "candidate-a",

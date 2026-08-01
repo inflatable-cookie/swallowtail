@@ -466,6 +466,8 @@ include!("roles/drivers/structured_run.rs");
 include!("roles/drivers/interactive_session.rs");
 include!("roles/drivers/realtime.rs");
 include!("roles/drivers/provider_session_management.rs");
+include!("roles/drivers/provider_session_catalogue.rs");
+include!("roles/drivers/provider_session_import.rs");
 include!("roles/drivers/serving.rs");
 
 pub trait DiscoveryDriver: Send + Sync {
@@ -494,6 +496,16 @@ pub trait RealtimeMediaSessionDriver: Send + Sync {
 /// after-dispatch truth before resolving the returned future.
 pub trait ProviderSessionManagementDriver: Send + Sync {
     provider_session_management_driver_items!();
+}
+
+/// Read-only discovery of provider-owned sessions within one prepared scope.
+pub trait ProviderSessionCatalogueDriver: Send + Sync {
+    provider_session_catalogue_driver_items!();
+}
+
+/// Read-only revalidation and binding issue for one explicitly selected session.
+pub trait ProviderSessionImportDriver: Send + Sync {
+    provider_session_import_driver_items!();
 }
 
 pub trait ServingInstanceDriver: Send + Sync {

@@ -1,6 +1,6 @@
 # 050 Provider Session Catalogue And Import Runtime
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-01
 Milestone: `../019-provider-session-catalogue-and-import-foundation.md`
@@ -28,13 +28,13 @@ ordinary exact `SessionResumeBinding`.
 
 ## Acceptance Criteria
 
-- [ ] catalogue returns candidates and cursor evidence only
-- [ ] import returns no usable handle and at most one resume binding
-- [ ] failed, cancelled, stale, or cleanup-degraded import returns no binding
-- [ ] object-safe roles preserve executor neutrality
-- [ ] existing session roles and bindings remain source-compatible
-- [ ] focused runtime validation passes
-- [ ] card 051 becomes the sole ready and next task
+- [x] catalogue returns candidates and cursor evidence only
+- [x] import returns no usable handle and at most one resume binding
+- [x] failed, cancelled, stale, or cleanup-degraded import returns no binding
+- [x] object-safe roles preserve executor neutrality
+- [x] existing session roles and bindings remain source-compatible
+- [x] focused runtime validation passes
+- [x] card 051 becomes the sole ready and next task
 
 ## Validation
 
@@ -45,3 +45,17 @@ ordinary exact `SessionResumeBinding`.
 ## Auto-Continuation
 
 Yes. Continue to card 051 after focused runtime acceptance.
+
+## Evidence
+
+- separate object-safe catalogue and import driver traits register only against
+  their declared roles
+- catalogue outcomes enforce page and traversal bounds, request-local cursor
+  history, duplicate rejection, plan identity, and clean completion
+- import outcomes require exact read-only revalidation before issuing one
+  `ExplicitlyImported` resume binding
+- typed failures retain before-dispatch, dispatch, projection, revalidation,
+  binding, cancellation, deadline, and cleanup stages
+- prepared evidence binds exact access provenance without adding a router
+- `effigy validate:focused swallowtail-runtime` passed 107 tests
+- `git diff --check` passed

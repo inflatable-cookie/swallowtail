@@ -196,6 +196,10 @@ visible as unverified newer unless exact evidence requires rejection.
 - card 049 realizes separate catalogue/import vocabulary, bounded candidates
   and cursors, immutable plans, and typed drift-rejecting requests; 163 focused
   core/runtime tests pass and card 050 now owns the object-safe runtime roles
+- card 050 realizes independently registered object-safe roles, bounded
+  traversal outcomes, typed failure stages, host-service validation, prepared
+  evidence, and exact revalidation-gated imported bindings; 107 focused runtime
+  tests pass and card 051 now owns common cross-host conformance
 
 ## Milestones
 
@@ -225,9 +229,9 @@ visible as unverified newer unless exact evidence requires rejection.
 
 ## Checkpoint
 
-Card 050 is ready. It adds object-safe catalogue/import runtime roles, bounded
-outcomes, imported-binding origin, and host-service validation. The sole active
-pointer remains in the roadmap front door.
+Card 051 is ready. It adds local and remote-authoritative synthetic
+conformance, prepared evidence assertions, and the import-to-load/resume
+boundary proof. The sole active pointer remains in the roadmap front door.
 
 ## Generation Boundary
 

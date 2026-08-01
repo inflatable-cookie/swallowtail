@@ -1,7 +1,7 @@
 use crate::WorkingResourceRef;
 use swallowtail_core::{
     ConfiguredInstanceId, ExecutionHostId, ModelId, ModelRouteId, PreflightPlan,
-    SessionAccessPolicy, SessionRef,
+    ProviderSessionBindingOrigin, SessionAccessPolicy, SessionRef,
 };
 
 /// Durable provider-session identity plus the route that is allowed to resume it.
@@ -14,6 +14,7 @@ pub struct SessionResumeBinding {
     model_id: ModelId,
     working_resource: WorkingResourceRef,
     access_policy: SessionAccessPolicy,
+    origin: ProviderSessionBindingOrigin,
 }
 
 impl SessionResumeBinding {
@@ -35,7 +36,13 @@ impl SessionResumeBinding {
             model_id,
             working_resource,
             access_policy,
+            origin: ProviderSessionBindingOrigin::Created,
         }
+    }
+
+    pub(crate) const fn with_origin(mut self, origin: ProviderSessionBindingOrigin) -> Self {
+        self.origin = origin;
+        self
     }
 
     #[must_use]
@@ -71,6 +78,11 @@ impl SessionResumeBinding {
     #[must_use]
     pub const fn access_policy(&self) -> &SessionAccessPolicy {
         &self.access_policy
+    }
+
+    #[must_use]
+    pub const fn origin(&self) -> ProviderSessionBindingOrigin {
+        self.origin
     }
 
     #[must_use]
@@ -116,5 +128,9 @@ mod tests {
         );
 
         assert!(!format!("{binding:?}").contains("provider/private/thread"));
+        assert_eq!(
+            binding.origin(),
+            swallowtail_core::ProviderSessionBindingOrigin::Created
+        );
     }
 }

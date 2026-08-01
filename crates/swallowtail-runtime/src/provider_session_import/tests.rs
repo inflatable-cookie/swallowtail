@@ -8,6 +8,7 @@ use crate::{
     Deadline, MonotonicInstant, ProviderSessionCandidateId, ProviderSessionCatalogueId, RequestId,
     SessionPlanAgreement, WorkingResourceRef,
 };
+use std::collections::BTreeSet;
 use std::num::NonZeroU32;
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessRequirement, AccessStatus, AdapterId, AdapterIdentity,
@@ -350,8 +351,13 @@ fn catalogue_and_import_plans_preserve_separate_shapes_and_requests() {
 fn cursor_candidate_and_content_are_bounded_and_redacted() {
     let fixture = fixture();
     let catalogue = catalogue_plan(&fixture, "catalogue-a", "resource-a", bounds(8, 8));
-    let cursor = ProviderSessionCursor::new(&catalogue, "private-cursor")
-        .expect("cursor fits its planned bound");
+    let cursor = ProviderSessionCursor::new(
+        &catalogue,
+        "private-cursor",
+        BTreeSet::new(),
+        BTreeSet::new(),
+    )
+    .expect("cursor fits its planned bound");
     let content = ProviderSessionDisplayContent::new(Some("private title".to_owned()), None)
         .expect("display content is structurally valid");
     let content_error = ProviderSessionCandidate::new(
@@ -400,4 +406,5 @@ fn cursor_candidate_and_content_are_bounded_and_redacted() {
     assert!(!debug.contains("resource-a"));
 }
 
+mod runtime_tests;
 mod validation_tests;

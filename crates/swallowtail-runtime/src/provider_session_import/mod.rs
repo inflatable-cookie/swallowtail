@@ -1,6 +1,9 @@
 mod candidate;
 mod catalogue;
+mod failure;
 mod import;
+mod outcome;
+mod prepared;
 mod validation;
 
 pub use candidate::{ProviderSessionCandidate, ProviderSessionCursor};
@@ -8,11 +11,20 @@ pub use catalogue::{
     ProviderSessionCatalogueAgreement, ProviderSessionCataloguePlan,
     ProviderSessionCatalogueRequest, ProviderSessionCatalogueScope,
 };
+pub use failure::{ProviderSessionOperationFailure, ProviderSessionOperationFailureStage};
 pub use import::{
     ProviderSessionImportAgreement, ProviderSessionImportPlan, ProviderSessionImportRequest,
 };
+pub use outcome::{
+    ProviderSessionCatalogueOutcome, ProviderSessionImportOutcome,
+    ProviderSessionImportRevalidation,
+};
+pub use prepared::{
+    PreparedProviderSessionCatalogueEvidence, PreparedProviderSessionImportEvidence,
+};
 pub use validation::{
-    validate_provider_session_catalogue_request, validate_provider_session_import_request,
+    validate_provider_session_catalogue_execution, validate_provider_session_catalogue_request,
+    validate_provider_session_import_execution, validate_provider_session_import_request,
 };
 
 use crate::{RuntimeFailure, WorkingResourceRef};

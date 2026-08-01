@@ -1421,12 +1421,13 @@ their own catalogue, history, resource-binding, and continuation evidence is
 complete.
 
 The provider-neutral capabilities, roles, operation shapes, bounded records,
-immutable plans, and typed requests are realized. Object-safe runtime roles,
-outcomes, common conformance, and provider mappings remain on roadmaps
-g03.019-g03.023. Nucleus or another consumer owns local thread creation,
-message persistence, replay merge, deduplication, presentation, and any later
-refresh. Background polling, bidirectional synchronization, global handle
-discovery, and implicit provider lifecycle actions remain absent.
+immutable plans, typed requests, object-safe drivers, bounded outcomes,
+prepared evidence, and revalidation-gated imported bindings are realized.
+Common conformance and provider mappings remain on roadmaps g03.019-g03.023.
+Nucleus or another consumer owns local thread creation, message persistence,
+replay merge, deduplication, presentation, and any later refresh. Background
+polling, bidirectional synchronization, global handle discovery, and implicit
+provider lifecycle actions remain absent.
 
 ## Dependency Rules
 

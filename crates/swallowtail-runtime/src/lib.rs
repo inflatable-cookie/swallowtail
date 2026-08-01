@@ -156,10 +156,14 @@ pub use provider_observation::{
     TokenUsage,
 };
 pub use provider_session_import::{
-    ProviderSessionCandidate, ProviderSessionCatalogueAgreement, ProviderSessionCataloguePlan,
-    ProviderSessionCatalogueRequest, ProviderSessionCatalogueScope, ProviderSessionCursor,
-    ProviderSessionImportAgreement, ProviderSessionImportPlan, ProviderSessionImportRequest,
-    validate_provider_session_catalogue_request, validate_provider_session_import_request,
+    PreparedProviderSessionCatalogueEvidence, PreparedProviderSessionImportEvidence,
+    ProviderSessionCandidate, ProviderSessionCatalogueAgreement, ProviderSessionCatalogueOutcome,
+    ProviderSessionCataloguePlan, ProviderSessionCatalogueRequest, ProviderSessionCatalogueScope,
+    ProviderSessionCursor, ProviderSessionImportAgreement, ProviderSessionImportOutcome,
+    ProviderSessionImportPlan, ProviderSessionImportRequest, ProviderSessionImportRevalidation,
+    ProviderSessionOperationFailure, ProviderSessionOperationFailureStage,
+    validate_provider_session_catalogue_execution, validate_provider_session_catalogue_request,
+    validate_provider_session_import_execution, validate_provider_session_import_request,
 };
 pub use provider_session_management::{
     InvalidProviderSessionManagementBinding, InvalidProviderSessionManagementBindingKind,
@@ -180,9 +184,9 @@ pub use registration::{DriverRegistration, RegistrationFailure};
 pub use roles::{
     AttachServingRequest, DiscoveryDriver, DiscoveryRequest, InteractiveSessionDriver,
     LoadSessionRequest, LoadedSession, ModelCatalogDriver, ModelCatalogRequest, OpenSessionRequest,
-    ProviderSessionManagementDriver, RealtimeMediaSessionDriver, ResumeSessionRequest,
-    ServingInstanceDriver, StartServingRequest, StructuredRunDriver, StructuredRunRequest,
-    TurnRequest,
+    ProviderSessionCatalogueDriver, ProviderSessionImportDriver, ProviderSessionManagementDriver,
+    RealtimeMediaSessionDriver, ResumeSessionRequest, ServingInstanceDriver, StartServingRequest,
+    StructuredRunDriver, StructuredRunRequest, TurnRequest,
 };
 pub use schema::{SchemaDocument, StructuredOutputDescriptor};
 pub use secret::{CredentialLease, DelegatedCredential, SecretLease};

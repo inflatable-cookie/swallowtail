@@ -20,7 +20,7 @@ output and close the consumer defect.
 - [x] the extracted Codex package compiles
 - [x] docs, Northstar, format, and diff checks pass
 - [x] the fixture and parser fix are committed together
-- [x] Soundcheck's ignored Luna/medium review is the explicit next task
+- [x] Soundcheck's unchanged Luna/medium structured-proposal test passes
 
 ## Validation
 
@@ -45,3 +45,5 @@ retest handoff.
 - the extracted Codex package compiled
 - docs, Northstar, scoped format, and diff checks passed
 - no provider or consumer effect ran
+- the operator reported the Soundcheck consumer rerun completed successfully
+  with Luna and medium reasoning unchanged

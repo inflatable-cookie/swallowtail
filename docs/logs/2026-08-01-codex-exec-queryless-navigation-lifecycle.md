@@ -53,14 +53,16 @@ the consumer.
 - extracted Codex package compiled
 - no live provider, authentication, consumer, installation, or publication
   effect ran
+- the operator subsequently reported the unchanged Soundcheck Luna/medium
+  structured-proposal test completed successfully through its consumer path
 
-## Next
+## Consumer Acceptance
 
-Soundcheck should rerun:
+Soundcheck reran:
 
 ```sh
 cargo test -p soundcheck-app codex_cli_returns_a_valid_structured_proposal --lib -- --ignored --nocapture
 ```
 
-The rerun keeps Luna and medium reasoning unchanged. If it passes, Swallowtail
-returns to the g03 evidence gate.
+The consumer-reported pass closes the reproduced defect. Swallowtail returns
+to the g03 evidence gate; no implementation batch is ready.

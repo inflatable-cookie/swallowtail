@@ -13,8 +13,8 @@ shape.
 
 ## Next Task
 
-Validate the committed fix from Soundcheck with its ignored Luna/medium
-structured-proposal test. Otherwise keep Swallowtail at the g03 evidence gate.
+Hold at the g03 evidence gate. Resume with the next consumer-reproduced defect
+or material non-deferred upstream change; do not compile speculative work.
 
 ## Index
 

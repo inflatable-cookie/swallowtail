@@ -38,7 +38,7 @@ visible as unverified newer unless exact evidence requires rejection.
 - provider-session management binding persistence remains deferred
 - registry publication remains outside the active roadmap until the operator
   revisits it after sustained application usage
-- doctor reports 173 oversized-file findings, including six errors; this known
+- doctor reports 174 oversized-file findings, including six errors; this known
   structural debt remains outside the active provider route batch
 - Research 074 inventories 13 installed/attached harness route ids and bounds
   the first external currentness source set
@@ -181,8 +181,10 @@ visible as unverified newer unless exact evidence requires rejection.
   regression
 - g03.018 now accepts only completed queryless `action.type == "other"`
   lifecycle observations without content; ordinary search queries remain
-  visible, malformed actual searches remain rejected, and Soundcheck owns the
-  authenticated Luna/medium rerun
+  visible, and malformed actual searches remain rejected
+- Soundcheck's unchanged Luna/medium structured-proposal test completed
+  successfully through its consumer path; the defect is closed and g03 is
+  evidence-gated again
 
 ## Milestones
 
@@ -205,10 +207,10 @@ visible as unverified newer unless exact evidence requires rejection.
 - [017 Prepared Facade Multi-Consumer Usability](017-prepared-facade-multi-consumer-usability.md) — completed
 - [018 Codex Exec Queryless Navigation Lifecycle](018-codex-exec-queryless-navigation-lifecycle.md) — completed
 
-## Next
+## Checkpoint
 
-Validate the committed fix from Soundcheck with its ignored Luna/medium
-structured-proposal test. Otherwise keep Swallowtail at the g03 evidence gate.
+No implementation batch is ready. The sole active pointer remains in the
+roadmap front door.
 
 ## Generation Boundary
 

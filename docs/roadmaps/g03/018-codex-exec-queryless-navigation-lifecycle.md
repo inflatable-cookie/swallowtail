@@ -67,9 +67,8 @@ narrower than the observed qualified event.
 - [x] completed actual-search actions without a query remain malformed
 - [x] the later valid structured proposal becomes final output
 - [x] focused, package, docs, Northstar, format, and diff checks pass
-- [x] Soundcheck's ignored live review remains the sole next integration task
+- [x] Soundcheck's unchanged Luna/medium structured-proposal test passes
 
 ## Next Planning Checkpoint
 
-After card 048, return Swallowtail to the g03 evidence gate. Soundcheck owns
-the authenticated Luna/medium rerun.
+Soundcheck's consumer rerun passed. Return Swallowtail to the g03 evidence gate.

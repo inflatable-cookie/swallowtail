@@ -31,7 +31,7 @@ baseline removed all five critical and 28 high findings. Four affected
 archives now compile through one extracted target in five seconds, down from
 22.4 seconds through separate targets. Kimi child-activity projection is split
 on its native lifecycle seam. Claude Agent now projects its exact portable
-choice-form subset through typed harness user input. Doctor reports 173
+choice-form subset through typed harness user input. Doctor reports 174
 oversized-file findings, including six errors; they remain known structural
 debt outside this provider batch. Roadmaps g02.047-g02.048 own the completed topology and
 elicitation handoffs; g02.049 closes the generation. Nucleus adoption is
@@ -56,8 +56,8 @@ multi-consumer conveniences justified by Nucleus and Soundcheck. The current
 maintenance checkpoint found no new non-deferred stable drift. Soundcheck then
 reproduced a Codex exec queryless navigation lifecycle aborting valid later
 structured output; roadmap g03.018 now fixes that exact shape without widening
-malformed search acceptance. Soundcheck's authenticated rerun is the current
-integration gate.
+malformed search acceptance. Soundcheck's unchanged Luna/medium consumer rerun
+passes, closes the defect, and returns g03 to its evidence gate.
 
 ## Start Here
 

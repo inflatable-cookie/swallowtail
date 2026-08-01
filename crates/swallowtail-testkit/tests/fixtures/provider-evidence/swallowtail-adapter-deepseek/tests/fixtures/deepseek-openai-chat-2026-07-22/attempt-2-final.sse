@@ -1,0 +1,12 @@
+: keepalive
+
+data: {"id":"chatcmpl-fixture-2","object":"chat.completion.chunk","created":1784680002,"model":"deepseek-v4-pro","choices":[{"index":0,"delta":{"role":"assistant","reasoning_content":"fixture-private-reasoning-2"},"finish_reason":null}],"system_fingerprint":"fp_fixture_v4"}
+
+data: {"id":"chatcmpl-fixture-2","object":"chat.completion.chunk","created":1784680002,"model":"deepseek-v4-pro","choices":[{"index":0,"delta":{"content":"London is 18 C and clear."},"finish_reason":null}],"system_fingerprint":"fp_fixture_v4"}
+
+data: {"id":"chatcmpl-fixture-2","object":"chat.completion.chunk","created":1784680002,"model":"deepseek-v4-pro","choices":[{"index":0,"delta":{},"finish_reason":"stop"}],"system_fingerprint":"fp_fixture_v4"}
+
+data: {"id":"chatcmpl-fixture-2","object":"chat.completion.chunk","created":1784680002,"model":"deepseek-v4-pro","choices":[],"usage":{"prompt_tokens":180,"completion_tokens":22,"total_tokens":202,"prompt_cache_hit_tokens":128,"prompt_cache_miss_tokens":52},"system_fingerprint":"fp_fixture_v4"}
+
+data: [DONE]
+

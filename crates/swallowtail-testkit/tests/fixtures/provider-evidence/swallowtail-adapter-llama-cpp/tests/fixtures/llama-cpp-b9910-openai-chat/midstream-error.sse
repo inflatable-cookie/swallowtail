@@ -1,0 +1,8 @@
+data: {"id":"chatcmpl-fixture","object":"chat.completion.chunk","created":0,"model":"swallowtail-fixture-stories260k","choices":[{"index":0,"delta":{"role":"assistant","content":null},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-fixture","object":"chat.completion.chunk","created":0,"model":"swallowtail-fixture-stories260k","choices":[{"index":0,"delta":{"content":"partial"},"finish_reason":null}]}
+
+data: {"error":{"code":500,"message":"raw-provider-payload","type":"server_error"}}
+
+data: [DONE]
+

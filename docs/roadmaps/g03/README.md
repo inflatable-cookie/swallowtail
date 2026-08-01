@@ -200,6 +200,10 @@ visible as unverified newer unless exact evidence requires rejection.
   traversal outcomes, typed failure stages, host-service validation, prepared
   evidence, and exact revalidation-gated imported bindings; 107 focused runtime
   tests pass and card 051 now owns common cross-host conformance
+- card 051 closes the shared foundation with reusable local and
+  remote-authoritative fixtures, bounded negative conformance, exact prepared
+  evidence, and import-to-load/resume sequencing; 248 focused tests and all
+  three extracted common packages pass
 
 ## Milestones
 
@@ -221,17 +225,17 @@ visible as unverified newer unless exact evidence requires rejection.
 - [016 Attached Harness Probe Compatibility Truth](016-attached-harness-probe-compatibility-truth.md) — completed
 - [017 Prepared Facade Multi-Consumer Usability](017-prepared-facade-multi-consumer-usability.md) — completed
 - [018 Codex Exec Queryless Navigation Lifecycle](018-codex-exec-queryless-navigation-lifecycle.md) — completed
-- [019 Provider Session Catalogue And Import Foundation](019-provider-session-catalogue-and-import-foundation.md) — active
-- [020 Codex External Thread Discovery And Import](020-codex-external-thread-discovery-and-import.md) — planned
+- [019 Provider Session Catalogue And Import Foundation](019-provider-session-catalogue-and-import-foundation.md) — completed
+- [020 Codex External Thread Discovery And Import](020-codex-external-thread-discovery-and-import.md) — active
 - [021 ACP Session List And Kimi Import](021-acp-session-list-and-kimi-import.md) — planned
 - [022 OpenCode External Session Discovery And Import](022-opencode-external-session-discovery-and-import.md) — planned
 - [023 Provider Session Import Acceptance And Handoff](023-provider-session-import-acceptance-and-handoff.md) — planned
 
 ## Checkpoint
 
-Card 051 is ready. It adds local and remote-authoritative synthetic
-conformance, prepared evidence assertions, and the import-to-load/resume
-boundary proof. The sole active pointer remains in the roadmap front door.
+Card 052 is ready. It freezes exact Codex thread catalogue, read, history,
+pagination, status, and resume milestones before production capability changes.
+The sole active pointer remains in the roadmap front door.
 
 ## Generation Boundary
 

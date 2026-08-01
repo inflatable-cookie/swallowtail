@@ -66,7 +66,10 @@ and UI. Swallowtail will not infer attachment authority from a raw provider id
 or run automatic synchronization. The separate vocabulary, bounded candidate
 records, immutable plans, typed requests, object-safe runtime roles, bounded
 outcomes, prepared evidence, and revalidation-gated imported bindings are now
-realized. Card 051 adds provider-neutral cross-host conformance next.
+realized. Reusable local and remote-authoritative conformance now proves
+bounds, redaction, drift, stale targets, lifecycle failures, prepared evidence,
+and import-to-load/resume ordering. Card 052 now freezes the exact Codex thread
+catalogue range before production adapter work.
 
 ## Start Here
 

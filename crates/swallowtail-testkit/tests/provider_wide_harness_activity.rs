@@ -11,7 +11,7 @@ fn every_production_harness_route_has_exact_prepared_activity_truth() {
         "044-observable-agent-activity-and-disclosure"
     );
     let routes = inventory["routes"].as_array().expect("routes are an array");
-    assert_eq!(routes.len(), 14);
+    assert_eq!(routes.len(), 19);
 
     let ids = routes
         .iter()
@@ -20,11 +20,16 @@ fn every_production_harness_route_has_exact_prepared_activity_truth() {
     assert_eq!(
         ids,
         BTreeSet::from([
+            "antigravity.catalogue",
+            "antigravity.headless",
             "anthropic.managed-agent",
             "claude-agent.acp",
             "claude-code.headless",
             "codex.app-server",
             "codex.exec",
+            "cursor-agent.acp",
+            "cursor-agent.catalogue",
+            "cursor-agent.headless",
             "gemini-cli.acp",
             "gemini-cli.headless",
             "grok-build.acp",
@@ -78,8 +83,10 @@ fn every_production_harness_route_has_exact_prepared_activity_truth() {
         }
     }
 
-    assert_eq!(profiles.len(), 20);
+    assert_eq!(profiles.len(), 24);
     for expected in [
+        ("antigravity.headless", "structured-run"),
+        ("antigravity.headless", "interactive-session"),
         ("claude-agent.acp", "structured-run"),
         ("claude-agent.acp", "interactive-session"),
         ("grok-build.acp", "structured-run"),
@@ -123,9 +130,11 @@ fn catalogue_and_management_roles_are_not_misreported_as_ordinary_activity() {
     assert_eq!(
         classified,
         BTreeSet::from([
+            ("antigravity.catalogue", "model-catalogue"),
             ("claude-agent.acp", "provider-session-management"),
             ("codex.app-server", "model-catalogue"),
             ("codex.app-server", "provider-session-management"),
+            ("cursor-agent.catalogue", "model-catalogue"),
             ("gemini-cli.headless", "provider-session-management"),
             ("kimi-code.local-server", "model-catalogue"),
             ("kimi-code.local-server", "provider-session-management"),

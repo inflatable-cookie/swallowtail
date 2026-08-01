@@ -47,6 +47,8 @@ mod profile_session_access;
 mod profile_shape;
 mod profiles;
 mod provider_conversation_fixture;
+mod provider_session_import_assertions;
+mod provider_session_import_fixture;
 mod provider_session_management_assertions;
 mod provider_session_management_fixture;
 mod realtime_media_fixture;
@@ -103,6 +105,10 @@ pub use profiles::{
 };
 pub use provider_conversation_fixture::{
     ProviderConversationPreflightCase, ProviderConversationPreflightFixture,
+};
+pub use provider_session_import_assertions::assert_provider_session_import_contract;
+pub use provider_session_import_fixture::{
+    ProviderSessionImportFixture, provider_session_catalogue_bounds,
 };
 pub use provider_session_management_assertions::assert_provider_session_management_contract;
 pub use provider_session_management_fixture::{

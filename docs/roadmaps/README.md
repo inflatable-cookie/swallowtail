@@ -13,8 +13,9 @@ shape.
 
 ## Next Task
 
-Execute g03 card 051. Add local and remote-authoritative synthetic conformance,
-prepared evidence assertions, and the import-to-load/resume boundary proof.
+Execute g03 card 052. Freeze exact Codex thread-list, read, history,
+pagination, status, and resume behavior across the maintained range before any
+production catalogue/import claim changes.
 
 ## Index
 

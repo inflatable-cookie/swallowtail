@@ -1,0 +1,9 @@
+event: response.output_text.delta
+data: {"type":"response.output_text.delta","sequence_number":4,"response_id":"resp_fixture_123","delta":"lo"}
+
+event: response.output_text.done
+data: {"type":"response.output_text.done","sequence_number":5,"response_id":"resp_fixture_123","text":"Hello"}
+
+event: response.completed
+data: {"type":"response.completed","sequence_number":6,"response":{"id":"resp_fixture_123","status":"completed","output":[{"type":"message","role":"assistant","content":[{"type":"output_text","text":"Hello","annotations":[]}]}],"usage":{"input_tokens":3,"output_tokens":2,"total_tokens":5}}}
+

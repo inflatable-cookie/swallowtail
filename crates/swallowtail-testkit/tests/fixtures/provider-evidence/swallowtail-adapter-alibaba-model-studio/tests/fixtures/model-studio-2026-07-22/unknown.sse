@@ -1,0 +1,6 @@
+event: response.created
+data: {"sequence_number":0,"type":"response.created","response":{"id":"resp_fixture_unknown","model":"qwen3.7-plus-2026-05-26","output":[],"status":"queued"}}
+
+event: response.provider_metadata
+data: {"sequence_number":1,"type":"response.provider_metadata","opaque":{"future":true}}
+

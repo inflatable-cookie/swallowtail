@@ -1,0 +1,2 @@
+data: {"id":"chatcmpl-fixture","object":"chat.completion.chunk","created":0,"model":"swallowtail-fixture-stories260k","choices":[{"index":0,"delta":{"reasoning_content":"unobserved"},"finish_reason":null}]}
+

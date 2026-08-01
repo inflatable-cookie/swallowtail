@@ -16,6 +16,8 @@ mod observable_activity_conformance;
 mod prepared_integration;
 #[path = "provider_conversation_policy.rs"]
 mod provider_conversation_policy;
+#[path = "provider_session_import.rs"]
+mod provider_session_import;
 #[path = "provider_session_management.rs"]
 mod provider_session_management;
 #[path = "realtime_media_conformance.rs"]

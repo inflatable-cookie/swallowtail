@@ -1,0 +1,6 @@
+data: {"type":"message.part.delta","properties":{"sessionID":"session-fixture","messageID":"message-fixture","partID":"text-fixture","field":"text","delta":"fixture answer"}}
+
+data: {"type":"session.status","properties":{"sessionID":"session-fixture","status":{"type":"busy"}}}
+
+data: {"type":"session.idle","properties":{"sessionID":"session-fixture"}}
+

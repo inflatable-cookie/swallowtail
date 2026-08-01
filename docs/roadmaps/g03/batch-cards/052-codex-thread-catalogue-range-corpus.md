@@ -1,6 +1,6 @@
 # 052 Codex Thread Catalogue Range Corpus
 
-Status: planned
+Status: ready
 Owner: Tom
 Created: 2026-08-01
 Milestone: `../020-codex-external-thread-discovery-and-import.md`

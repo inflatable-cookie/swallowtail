@@ -1,12 +1,12 @@
 # 020 Codex External Thread Discovery And Import
 
-Status: planned
+Status: active
 Owner: Tom
 Created: 2026-08-01
 Depends on: g03.019
 Vision tags: Codex continuity, external thread import, consumer stability
 Contract refs: 010, 017, 029, 032-034, 037-038, 044-046
-Planning state: cards 052-054 planned
+Planning state: card 052 ready; cards 053-054 planned
 
 ## Problem
 

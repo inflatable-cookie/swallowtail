@@ -5,6 +5,7 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-08-01 Provider Session Import Common Conformance](2026-08-01-provider-session-import-common-conformance.md)
 - [2026-08-01 Provider Session Catalogue And Import Runtime](2026-08-01-provider-session-catalogue-and-import-runtime.md)
 - [2026-08-01 Provider Session Catalogue And Import Kernel](2026-08-01-provider-session-catalogue-and-import-kernel.md)
 - [2026-08-01 Provider Session Discovery And Import Roadmap Compilation](2026-08-01-provider-session-discovery-and-import-roadmap-compilation.md)

@@ -1,12 +1,12 @@
 # 019 Provider Session Catalogue And Import Foundation
 
-Status: active
+Status: completed
 Owner: Tom
 Created: 2026-08-01
 Depends on: g03.018
 Vision tags: consumer continuity, harness interoperability, explicit authority
 Contract refs: 005, 008-011, 017, 029, 037, 046
-Planning state: cards 049-050 completed; card 051 ready
+Planning state: cards 049-051 completed
 
 ## Problem
 
@@ -17,12 +17,12 @@ see only sessions whose ids they already recorded.
 
 ## Goals
 
-- [ ] add separate provider-session catalogue and import roles
-- [ ] keep candidates non-authoritative and content bounded
-- [ ] bind discovery scope, pagination, cancellation, and cleanup
-- [ ] revalidate exact attachment dimensions before issuing a binding
-- [ ] reuse existing load, replay, and resume contracts after import
-- [ ] provide deterministic provider-neutral conformance and prepared evidence
+- [x] add separate provider-session catalogue and import roles
+- [x] keep candidates non-authoritative and content bounded
+- [x] bind discovery scope, pagination, cancellation, and cleanup
+- [x] revalidate exact attachment dimensions before issuing a binding
+- [x] reuse existing load, replay, and resume contracts after import
+- [x] provide deterministic provider-neutral conformance and prepared evidence
 
 ## Execution Plan
 
@@ -44,11 +44,11 @@ see only sessions whose ids they already recorded.
 
 ### Batch 19.3 — Common Conformance And Prepared Evidence
 
-- [ ] Execute card 051 after card 050 passes.
-- [ ] add local and remote-authoritative synthetic fixtures
-- [ ] cover bounds, redaction, cursor drift, candidate drift, stale import,
+- [x] Execute card 051 after card 050 passes.
+- [x] add local and remote-authoritative synthetic fixtures
+- [x] cover bounds, redaction, cursor drift, candidate drift, stale import,
   replay ordering, and no provider mutation
-- [ ] expose common prepared evidence without a provider router
+- [x] expose common prepared evidence without a provider router
 
 ## Boundaries
 
@@ -62,14 +62,14 @@ see only sessions whose ids they already recorded.
 
 ## Acceptance Criteria
 
-- [ ] catalogue observation and import authority are distinct types and roles
-- [ ] one exact prepared scope bounds every candidate and cursor
-- [ ] provider content is bounded and absent from stable diagnostics
-- [ ] import validates route, host, access, version, model, resource, and policy
-- [ ] missing, stale, malformed, or mismatched candidates issue no binding
-- [ ] imported bindings use unchanged load/replay/resume semantics
-- [ ] synthetic conformance passes under both host identities
-- [ ] focused and affected-package validation passes without a broad suite
+- [x] catalogue observation and import authority are distinct types and roles
+- [x] one exact prepared scope bounds every candidate and cursor
+- [x] provider content is bounded and absent from stable diagnostics
+- [x] import validates route, host, access, version, model, resource, and policy
+- [x] missing, stale, malformed, or mismatched candidates issue no binding
+- [x] imported bindings use unchanged load/replay/resume semantics
+- [x] synthetic conformance passes under both host identities
+- [x] focused and affected-package validation passes without a broad suite
 
 ## Next Planning Checkpoint
 

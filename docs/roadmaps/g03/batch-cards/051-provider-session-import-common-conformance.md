@@ -1,6 +1,6 @@
 # 051 Provider Session Import Common Conformance
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-01
 Milestone: `../019-provider-session-catalogue-and-import-foundation.md`
@@ -28,13 +28,13 @@ provider adapter implements it.
 
 ## Acceptance Criteria
 
-- [ ] local and remote-authoritative fixtures agree
-- [ ] raw ids, copied candidates, and cross-plan cursors fail before effects
-- [ ] provider content never enters diagnostics
-- [ ] successful import binds exact attachment dimensions
-- [ ] load replay completes before readiness and resume emits none
-- [ ] focused and affected-package validation pass
-- [ ] card 052 becomes the sole ready and next task
+- [x] local and remote-authoritative fixtures agree
+- [x] raw ids, copied candidates, and cross-plan cursors fail before effects
+- [x] provider content never enters diagnostics
+- [x] successful import binds exact attachment dimensions
+- [x] load replay completes before readiness and resume emits none
+- [x] focused and affected-package validation pass
+- [x] card 052 becomes the sole ready and next task
 
 ## Validation
 
@@ -46,3 +46,22 @@ provider adapter implements it.
 ## Auto-Continuation
 
 Yes. Continue to card 052 after common conformance passes.
+
+## Evidence
+
+- the public testkit fixture prepares the same catalogue/import chain for local
+  and remote-authoritative host identities
+- bounded pages reject cross-page duplicates, oversized content and provider
+  references, copied candidates, cross-plan cursors, stale targets, and active
+  unavailable targets without issuing bindings
+- synthetic continuation proves ordered load replay before readiness and no
+  replay on ordinary resume
+- prepared evidence retains exact access, host, route, resource, policy, and
+  interface-version bindings without adding a provider router
+- testkit corpus snapshots are package-local, so extracted package validation
+  no longer depends on sibling workspace crates
+- `effigy validate:focused swallowtail-core swallowtail-runtime
+  swallowtail-testkit` passed 248 tests
+- `effigy package:verify-affected swallowtail-core swallowtail-runtime
+  swallowtail-testkit` passed
+- `git diff --check` passed

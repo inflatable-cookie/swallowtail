@@ -4,76 +4,76 @@ use std::collections::BTreeSet;
 const INVENTORY: &str = include_str!("fixtures/direct-activity-applicability.json");
 
 const ALIBABA_POSITIVE: &str = include_str!(
-    "../../swallowtail-adapter-alibaba-model-studio/tests/fixtures/model-studio-2026-07-22/success.sse"
+    "fixtures/provider-evidence/swallowtail-adapter-alibaba-model-studio/tests/fixtures/model-studio-2026-07-22/success.sse"
 );
 const ALIBABA_UNAVAILABLE: &str = include_str!(
-    "../../swallowtail-adapter-alibaba-model-studio/tests/fixtures/model-studio-2026-07-22/reasoning.sse"
+    "fixtures/provider-evidence/swallowtail-adapter-alibaba-model-studio/tests/fixtures/model-studio-2026-07-22/reasoning.sse"
 );
 const ANTHROPIC_POSITIVE: &str = include_str!(
-    "../../swallowtail-adapter-anthropic/tests/fixtures/anthropic-2023-06-01/success.sse"
+    "fixtures/provider-evidence/swallowtail-adapter-anthropic/tests/fixtures/anthropic-2023-06-01/success.sse"
 );
 const ANTHROPIC_TOOL: &str = include_str!(
-    "../../swallowtail-adapter-anthropic/tests/fixtures/anthropic-2023-06-01/tool-use.sse"
+    "fixtures/provider-evidence/swallowtail-adapter-anthropic/tests/fixtures/anthropic-2023-06-01/tool-use.sse"
 );
 const ANTHROPIC_PROVIDER_TOOL: &str = include_str!(
-    "../../swallowtail-adapter-anthropic/tests/fixtures/anthropic-2023-06-01/web-search.sse"
+    "fixtures/provider-evidence/swallowtail-adapter-anthropic/tests/fixtures/anthropic-2023-06-01/web-search.sse"
 );
 const DEEPSEEK_POSITIVE: &str = include_str!(
-    "../../swallowtail-adapter-deepseek/tests/fixtures/deepseek-openai-chat-2026-07-22/attempt-2-final.sse"
+    "fixtures/provider-evidence/swallowtail-adapter-deepseek/tests/fixtures/deepseek-openai-chat-2026-07-22/attempt-2-final.sse"
 );
 const DEEPSEEK_TOOL: &str = include_str!(
-    "../../swallowtail-adapter-deepseek/tests/fixtures/deepseek-openai-chat-2026-07-22/attempt-1-tool-response.json"
+    "fixtures/provider-evidence/swallowtail-adapter-deepseek/tests/fixtures/deepseek-openai-chat-2026-07-22/attempt-1-tool-response.json"
 );
 const KIMI_POSITIVE: &str = include_str!(
-    "../../swallowtail-protocol-openai-chat/tests/fixtures/kimi-platform-k3-2026-07-21/success.sse"
+    "fixtures/provider-evidence/swallowtail-protocol-openai-chat/tests/fixtures/kimi-platform-k3-2026-07-21/success.sse"
 );
 const OPENAI_INITIAL: &str = include_str!(
-    "../../swallowtail-adapter-openai/tests/fixtures/openai-responses-2026-07-21/initial-stream.sse"
+    "fixtures/provider-evidence/swallowtail-adapter-openai/tests/fixtures/openai-responses-2026-07-21/initial-stream.sse"
 );
 const OPENAI_REATTACHED: &str = include_str!(
-    "../../swallowtail-adapter-openai/tests/fixtures/openai-responses-2026-07-21/reattached-stream.sse"
+    "fixtures/provider-evidence/swallowtail-adapter-openai/tests/fixtures/openai-responses-2026-07-21/reattached-stream.sse"
 );
 const XAI_POSITIVE: &str = include_str!(
-    "../../swallowtail-adapter-xai/tests/fixtures/xai-responses-websocket-2026-04-23/first-turn-events.ndjson"
+    "fixtures/provider-evidence/swallowtail-adapter-xai/tests/fixtures/xai-responses-websocket-2026-04-23/first-turn-events.ndjson"
 );
 const OLLAMA_POSITIVE: &str = include_str!(
-    "../../swallowtail-adapter-ollama/tests/fixtures/ollama-native-v0.14.0-v0.32.1/chat-success.ndjson"
+    "fixtures/provider-evidence/swallowtail-adapter-ollama/tests/fixtures/ollama-native-v0.14.0-v0.32.1/chat-success.ndjson"
 );
 const OLLAMA_UNAVAILABLE: &str = include_str!(
-    "../../swallowtail-adapter-ollama/tests/fixtures/ollama-native-v0.14.0-v0.32.1/chat-unsupported.ndjson"
+    "fixtures/provider-evidence/swallowtail-adapter-ollama/tests/fixtures/ollama-native-v0.14.0-v0.32.1/chat-unsupported.ndjson"
 );
 const LLAMA_POSITIVE: &str = include_str!(
-    "../../swallowtail-adapter-llama-cpp/tests/fixtures/llama-cpp-b9910-openai-chat/success.sse"
+    "fixtures/provider-evidence/swallowtail-adapter-llama-cpp/tests/fixtures/llama-cpp-b9910-openai-chat/success.sse"
 );
 const LLAMA_UNAVAILABLE: &str = include_str!(
-    "../../swallowtail-adapter-llama-cpp/tests/fixtures/llama-cpp-b9910-openai-chat/unsupported-semantics.sse"
+    "fixtures/provider-evidence/swallowtail-adapter-llama-cpp/tests/fixtures/llama-cpp-b9910-openai-chat/unsupported-semantics.sse"
 );
 const BEDROCK_TYPED_FIXTURES: &str =
-    include_str!("../../swallowtail-adapter-bedrock/tests/sdk_fixtures.rs");
+    include_str!("fixtures/provider-evidence/swallowtail-adapter-bedrock/tests/sdk_fixtures.rs");
 
 const ALIBABA_UNKNOWN: &str = include_str!(
-    "../../swallowtail-adapter-alibaba-model-studio/tests/fixtures/model-studio-2026-07-22/unknown.sse"
+    "fixtures/provider-evidence/swallowtail-adapter-alibaba-model-studio/tests/fixtures/model-studio-2026-07-22/unknown.sse"
 );
 const ANTHROPIC_MALFORMED: &str = include_str!(
-    "../../swallowtail-adapter-anthropic/tests/fixtures/anthropic-2023-06-01/disconnect.sse"
+    "fixtures/provider-evidence/swallowtail-adapter-anthropic/tests/fixtures/anthropic-2023-06-01/disconnect.sse"
 );
 const DEEPSEEK_FAILURE: &str = include_str!(
-    "../../swallowtail-adapter-deepseek/tests/fixtures/deepseek-openai-chat-2026-07-22/provider-error.sse"
+    "fixtures/provider-evidence/swallowtail-adapter-deepseek/tests/fixtures/deepseek-openai-chat-2026-07-22/provider-error.sse"
 );
 const KIMI_UNKNOWN: &str = include_str!(
-    "../../swallowtail-protocol-openai-chat/tests/fixtures/kimi-platform-k3-2026-07-21/unknown.sse"
+    "fixtures/provider-evidence/swallowtail-protocol-openai-chat/tests/fixtures/kimi-platform-k3-2026-07-21/unknown.sse"
 );
 const OPENAI_FAILURE: &str = include_str!(
-    "../../swallowtail-adapter-openai/tests/fixtures/openai-responses-2026-07-21/failed-stream.sse"
+    "fixtures/provider-evidence/swallowtail-adapter-openai/tests/fixtures/openai-responses-2026-07-21/failed-stream.sse"
 );
 const XAI_UNKNOWN: &str = include_str!(
-    "../../swallowtail-adapter-xai/tests/fixtures/xai-responses-websocket-2026-04-23/unknown-event.json"
+    "fixtures/provider-evidence/swallowtail-adapter-xai/tests/fixtures/xai-responses-websocket-2026-04-23/unknown-event.json"
 );
 const OLLAMA_MALFORMED: &str = include_str!(
-    "../../swallowtail-adapter-ollama/tests/fixtures/ollama-native-v0.14.0-v0.32.1/chat-malformed.ndjson"
+    "fixtures/provider-evidence/swallowtail-adapter-ollama/tests/fixtures/ollama-native-v0.14.0-v0.32.1/chat-malformed.ndjson"
 );
 const LLAMA_FAILURE: &str = include_str!(
-    "../../swallowtail-adapter-llama-cpp/tests/fixtures/llama-cpp-b9910-openai-chat/midstream-error.sse"
+    "fixtures/provider-evidence/swallowtail-adapter-llama-cpp/tests/fixtures/llama-cpp-b9910-openai-chat/midstream-error.sse"
 );
 
 #[test]

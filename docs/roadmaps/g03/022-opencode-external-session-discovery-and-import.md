@@ -1,12 +1,12 @@
 # 022 OpenCode External Session Discovery And Import
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-01
 Depends on: g03.021
 Vision tags: attached harness, HTTP session catalogue, external import
 Contract refs: 009-011, 014, 017, 029, 037-038, 044, 046
-Planning state: card 058 completed; card 059 ready; card 060 planned
+Planning state: cards 058-060 completed
 
 ## Problem
 
@@ -18,11 +18,11 @@ maintained server range.
 ## Goals
 
 - [x] freeze exact list, lookup, status, message, load, and resume closures
-- [ ] preserve attached endpoint, directory, access, and version identity
-- [ ] expose bounded resource-scoped session catalogue and explicit import
-- [ ] reuse existing ordered replay and prompt continuation
-- [ ] retain server ownership, deletion, and SSE lifecycle boundaries
-- [ ] close with focused and extracted-package evidence
+- [x] preserve attached endpoint, directory, access, and version identity
+- [x] expose bounded resource-scoped session catalogue and explicit import
+- [x] reuse existing ordered replay and prompt continuation
+- [x] retain server ownership, deletion, and SSE lifecycle boundaries
+- [x] close with focused and extracted-package evidence
 
 ## Execution Plan
 
@@ -36,17 +36,17 @@ maintained server range.
 
 ### Batch 22.2 — HTTP Driver And Prepared Facade
 
-- [ ] Execute card 059 after the corpus passes.
-- [ ] implement list and exact candidate lookup through the approved endpoint
-- [ ] bind directory/resource, access, server revision, model, and policy
-- [ ] issue an imported binding and reuse existing load/resume behavior
+- [x] Execute card 059 after the corpus passes.
+- [x] implement list and exact candidate lookup through the approved endpoint
+- [x] bind directory/resource, access, server revision, model, and policy
+- [x] issue an imported binding and reuse existing load/resume behavior
 
 ### Batch 22.3 — Conformance And Acceptance
 
-- [ ] Execute card 060 after card 059 passes.
-- [ ] prove local and remote-authoritative host identity, attached preservation,
+- [x] Execute card 060 after card 059 passes.
+- [x] prove local and remote-authoritative host identity, attached preservation,
   Basic-auth lease cleanup, stale targets, deadlines, and cancellation
-- [ ] update facade guidance, matrix truth, and extracted package evidence
+- [x] update facade guidance, matrix truth, and extracted package evidence
 
 ## Boundaries
 
@@ -59,12 +59,12 @@ maintained server range.
 
 ## Acceptance Criteria
 
-- [ ] every guaranteed OpenCode segment proves the complete import chain
-- [ ] attached endpoint and directory identity cannot drift between list/import
-- [ ] imported replay preserves exact message/part ordering and bounds
-- [ ] deletion and provider-session management remain separate operations
-- [ ] attached servers remain running after success, cancellation, and failure
-- [ ] focused OpenCode and affected-package validation pass
+- [x] every guaranteed OpenCode segment proves the complete import chain
+- [x] attached endpoint and directory identity cannot drift between list/import
+- [x] imported replay preserves exact message/part ordering and bounds
+- [x] deletion and provider-session management remain separate operations
+- [x] attached servers remain running after success, cancellation, and failure
+- [x] focused OpenCode and affected-package validation pass
 
 ## Next Planning Checkpoint
 

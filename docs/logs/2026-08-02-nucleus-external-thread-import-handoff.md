@@ -35,3 +35,5 @@ All queued provider-session discovery/import cards are complete. The sole
 roadmap pointer has returned to the g03 evidence gate. Nucleus may implement
 the handoff independently; Swallowtail resumes only from new consumer evidence,
 material non-deferred provider drift, or explicit operator-selected work.
+The final queue audit also repaired g03.022's stale planned status after its
+three completed cards.

@@ -13,9 +13,9 @@ shape.
 
 ## Next Task
 
-Execute g03 card 063. Publish the bounded Nucleus external-thread import
-handoff: consumer-owned mapping, replay persistence, deduplication, stale and
-unsupported UX, exact prepared entry points, and deterministic fixtures.
+Hold at the g03 evidence gate. Resume only for a new consumer-reproduced
+defect, material non-deferred provider/interface drift, or explicit
+operator-selected roadmap work.
 
 ## Index
 

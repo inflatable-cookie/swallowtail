@@ -11,6 +11,8 @@ authorize registry, tag, push, GitHub release, workflow, or consumer mutations.
   adoption
 - [Nucleus provider-session lifecycle handoff](0.1.0-nucleus-provider-session-lifecycle-handoff.md)
   — separate local and optional provider lifecycle adoption
+- [Nucleus external-thread import handoff](0.1.0-nucleus-provider-session-import-handoff.md)
+  — explicit browse, import, replay, persistence, and continuation adoption
 - [Nucleus observable-activity handoff](0.1.0-nucleus-observable-activity-handoff.md)
   — separate durable message, collapsible work, and child-navigation
   projections

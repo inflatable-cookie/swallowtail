@@ -25,7 +25,7 @@ visible as unverified newer unless exact evidence requires rejection.
 | Support host-approved interpreted installed harnesses without ambient environment inheritance. | completed | Contracts 010, 032; Research 084 | `g03.011` |
 | Turn consumer-reproduced defects and integration friction into portable regression evidence. | active | Contracts 002, 037, 044-045 | `g03.003` |
 | Reassess prepared-facade usability from multi-consumer proof without importing product policy. | completed | Contracts 002, 010, 037 | `g03.017` |
-| Allow explicit discovery and import of harness-origin sessions without owning consumer persistence or synchronization. | active | Contracts 017, 029, 037, 046 | `g03.019` |
+| Allow explicit discovery and import of harness-origin sessions without owning consumer persistence or synchronization. | completed | Contracts 017, 029, 037, 046 | `g03.019` |
 | Periodically reconcile deferred gates, route truth, and generation capacity. | planned | Contract 001 | recurring checkpoints |
 
 ## Current Checkpoint
@@ -248,6 +248,10 @@ visible as unverified newer unless exact evidence requires rejection.
   19-route matrix, a prepared browse-select-import-load/resume guide, and
   compile-tested examples; seven extracted common and adapter packages compile
   independently
+- card 063 publishes the bounded Nucleus external-thread handoff: prepared
+  entry points, in-process binding ownership, replay-to-live persistence,
+  duplicate and restart posture, unsupported/stale UX, and deterministic
+  fixtures remain consumer-facing without a Nucleus edit
 
 ## Milestones
 
@@ -273,14 +277,14 @@ visible as unverified newer unless exact evidence requires rejection.
 - [020 Codex External Thread Discovery And Import](020-codex-external-thread-discovery-and-import.md) — completed
 - [021 ACP Session List And Kimi Import](021-acp-session-list-and-kimi-import.md) — completed
 - [022 OpenCode External Session Discovery And Import](022-opencode-external-session-discovery-and-import.md) — completed
-- [023 Provider Session Import Acceptance And Handoff](023-provider-session-import-acceptance-and-handoff.md) — active
+- [023 Provider Session Import Acceptance And Handoff](023-provider-session-import-acceptance-and-handoff.md) — completed
 
 ## Checkpoint
 
-Card 063 is ready. It hands Nucleus the consumer-owned mapping, replay,
-deduplication, stale-candidate, unsupported-route, and reauthorization flow
-without editing the consumer or moving persistence into Swallowtail. The sole
-active pointer remains in the roadmap front door.
+The provider-session import tranche is complete. Nucleus may adopt the bounded
+handoff independently. g03 is evidence-gated: resume only for a new
+consumer-reproduced defect, material non-deferred provider/interface drift, or
+explicit operator-selected roadmap work.
 
 ## Generation Boundary
 

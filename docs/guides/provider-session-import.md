@@ -76,3 +76,9 @@ or automatic synchronization.
 Discovery-only and attachment-only routes remain visible as partial rather
 than being flattened into support. See the provider route matrix for their
 exact promotion gates.
+
+Nucleus adoption should follow the bounded
+[external-thread import handoff](../releases/0.1.0-nucleus-provider-session-import-handoff.md).
+It defines the in-process binding map, replay-to-live boundary, duplicate and
+restart posture, deterministic fixtures, and unsupported-route UX without
+moving consumer persistence into Swallowtail.

@@ -1,6 +1,6 @@
 # 063 Nucleus External Thread Import Handoff
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-01
 Milestone: `../023-provider-session-import-acceptance-and-handoff.md`
@@ -31,12 +31,12 @@ Nucleus.
 
 ## Acceptance Criteria
 
-- [ ] the handoff maps each consumer responsibility explicitly
-- [ ] imported history and future events have a clear deduplication boundary
-- [ ] unsupported and stale routes cannot appear resumable
-- [ ] the handoff identifies the exact prepared Swallowtail entry points
-- [ ] no consumer policy enters Swallowtail contracts
-- [ ] the sole Next Task returns to the g03 evidence gate
+- [x] the handoff maps each consumer responsibility explicitly
+- [x] imported history and future events have a clear deduplication boundary
+- [x] unsupported and stale routes cannot appear resumable
+- [x] the handoff identifies the exact prepared Swallowtail entry points
+- [x] no consumer policy enters Swallowtail contracts
+- [x] the sole Next Task returns to the g03 evidence gate
 
 ## Validation
 

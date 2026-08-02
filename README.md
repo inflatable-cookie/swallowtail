@@ -83,7 +83,11 @@ discovery-only, two attachment-only, two blocked, and 11 not-applicable routes.
 The public matrix now separates provider-session catalogue from import; the
 [import guide](docs/guides/provider-session-import.md) keeps browse, selection,
 revalidation, replay, continuation, management, and consumer persistence
-distinct.
+distinct. The bounded
+[Nucleus handoff](docs/releases/0.1.0-nucleus-provider-session-import-handoff.md)
+now fixes the consumer-owned mapping, replay-to-live boundary, duplicate and
+restart posture, and deterministic adoption cases. The tranche is complete;
+g03 has returned to its evidence gate.
 
 ## Start Here
 

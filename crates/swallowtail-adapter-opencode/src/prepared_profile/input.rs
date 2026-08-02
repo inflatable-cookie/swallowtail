@@ -1,10 +1,62 @@
+use swallowtail_core::ProviderSessionCatalogueBounds;
 use swallowtail_core::{
     ModelCatalogEntry, ModelId, ModelRouteId, ModelRouteRevision, ProviderId, ReasoningMode,
 };
 use swallowtail_runtime::{
-    AttachmentDescriptor, Deadline, OperationContent, ProviderSessionManagementBinding, RequestId,
-    StructuredOutputDescriptor, WorkingResourceRef,
+    AttachmentDescriptor, Deadline, OperationContent, ProviderSessionCatalogueId,
+    ProviderSessionManagementBinding, RequestId, StructuredOutputDescriptor, WorkingResourceRef,
 };
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct OpenCodeSessionCatalogueInput {
+    request_id: RequestId,
+    catalogue_id: ProviderSessionCatalogueId,
+    working_resource: WorkingResourceRef,
+    bounds: ProviderSessionCatalogueBounds,
+    deadline: Option<Deadline>,
+}
+
+impl OpenCodeSessionCatalogueInput {
+    #[must_use]
+    pub const fn new(
+        request_id: RequestId,
+        catalogue_id: ProviderSessionCatalogueId,
+        working_resource: WorkingResourceRef,
+        bounds: ProviderSessionCatalogueBounds,
+    ) -> Self {
+        Self {
+            request_id,
+            catalogue_id,
+            working_resource,
+            bounds,
+            deadline: None,
+        }
+    }
+
+    #[must_use]
+    pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
+        self.deadline = Some(deadline);
+        self
+    }
+
+    pub(super) fn into_parts(
+        self,
+    ) -> (
+        RequestId,
+        ProviderSessionCatalogueId,
+        WorkingResourceRef,
+        ProviderSessionCatalogueBounds,
+        Option<Deadline>,
+    ) {
+        (
+            self.request_id,
+            self.catalogue_id,
+            self.working_resource,
+            self.bounds,
+            self.deadline,
+        )
+    }
+}
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct OpenCodeCatalogueProfileInput {

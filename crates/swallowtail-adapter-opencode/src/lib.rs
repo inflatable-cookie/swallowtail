@@ -19,9 +19,10 @@ pub use prepared::{
 pub use prepared_profile::{
     OpenCodeCatalogueProfileInput, OpenCodeModelSelection, OpenCodePreparedCatalogue,
     OpenCodePreparedDelete, OpenCodePreparedEvidence, OpenCodePreparedRun,
-    OpenCodePreparedRunFuture, OpenCodePreparedSession, OpenCodePreparedSessionFuture,
-    OpenCodePreparedSessionLoadFuture, OpenCodeRunProfileInput, OpenCodeSessionManagementInput,
-    OpenCodeSessionProfileInput,
+    OpenCodePreparedRunFuture, OpenCodePreparedSession, OpenCodePreparedSessionCatalogue,
+    OpenCodePreparedSessionFuture, OpenCodePreparedSessionImport,
+    OpenCodePreparedSessionLoadFuture, OpenCodeRunProfileInput, OpenCodeSessionCatalogueInput,
+    OpenCodeSessionManagementInput, OpenCodeSessionProfileInput,
 };
 pub use selection::{
     OPENCODE_BASELINE_VERSION, OPENCODE_LATEST_QUALIFIED_VERSION, OPENCODE_SERVER_AXIS,

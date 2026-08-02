@@ -1,6 +1,7 @@
 mod input;
 mod operations;
 mod plan;
+mod provider_sessions;
 
 use swallowtail_runtime::{
     BoxFuture, InteractiveSessionHandle, LoadedSession, RunHandle, RuntimeFailure,
@@ -8,12 +9,13 @@ use swallowtail_runtime::{
 
 pub use input::{
     OpenCodeCatalogueProfileInput, OpenCodeModelSelection, OpenCodeRunProfileInput,
-    OpenCodeSessionManagementInput, OpenCodeSessionProfileInput,
+    OpenCodeSessionCatalogueInput, OpenCodeSessionManagementInput, OpenCodeSessionProfileInput,
 };
 pub use operations::{
     OpenCodePreparedCatalogue, OpenCodePreparedDelete, OpenCodePreparedRun, OpenCodePreparedSession,
 };
 pub use plan::OpenCodePreparedEvidence;
+pub use provider_sessions::{OpenCodePreparedSessionCatalogue, OpenCodePreparedSessionImport};
 
 pub type OpenCodePreparedSessionFuture =
     BoxFuture<'static, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>>;

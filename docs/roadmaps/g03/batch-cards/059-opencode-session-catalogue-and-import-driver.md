@@ -1,6 +1,6 @@
 # 059 OpenCode Session Catalogue And Import Driver
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-01
 Milestone: `../022-opencode-external-session-discovery-and-import.md`
@@ -29,13 +29,30 @@ approved attached HTTP endpoint.
 
 ## Acceptance Criteria
 
-- [ ] candidates remain bound to the exact endpoint and directory plan
-- [ ] stale, missing, mismatched, or unsupported sessions issue no binding
-- [ ] successful import replays bounded ordered history before readiness
-- [ ] attached server and credential ownership remain unchanged
-- [ ] existing OpenCode new/load/resume behavior is unchanged
-- [ ] focused driver tests pass
-- [ ] card 060 becomes the sole ready and next task
+- [x] candidates remain bound to the exact endpoint and directory plan
+- [x] stale, missing, mismatched, or unsupported sessions issue no binding
+- [x] successful import replays bounded ordered history before readiness
+- [x] attached server and credential ownership remain unchanged
+- [x] existing OpenCode new/load/resume behavior is unchanged
+- [x] focused driver tests pass
+- [x] card 060 becomes the sole ready and next task
+
+## Evidence
+
+- the attached facade exposes separate resource-scoped catalogue and explicit
+  import operations only for qualified server revisions
+- page projection distinguishes inactive roots, children, active sessions,
+  archived sessions, missing status, and incompatible revisions without
+  granting unavailable candidates import authority
+- import repeats exact health, lookup, directory, title, update-time, revision,
+  root, archive, and idle-status checks before issuing a binding
+- the imported binding enters the unchanged four-item load/replay path under
+  local and remote-authoritative host identities
+- a deterministic title-drift case fails at import revalidation and issues no
+  binding
+- `effigy validate:focused swallowtail-adapter-opencode swallowtail-runtime`
+  passed 195 tests
+- `git diff --check` passed
 
 ## Validation
 

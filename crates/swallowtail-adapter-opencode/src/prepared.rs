@@ -10,7 +10,7 @@ mod probe;
 mod validation;
 
 use instance::configured_instance;
-pub(crate) use instance::{all_capabilities, run_capabilities};
+pub(crate) use instance::{all_capabilities, run_capabilities, working_resource_capability};
 pub use observation::OpenCodePreparedServerObservation;
 use std::collections::BTreeSet;
 use swallowtail_core::{

@@ -6,17 +6,17 @@ None.
 
 ## Ready
 
-- `059-opencode-session-catalogue-and-import-driver.md`
+- `060-opencode-session-import-acceptance.md`
 
 ## Planned
 
-- `060-opencode-session-import-acceptance.md`
 - `061-provider-session-import-route-classification.md`
 - `062-provider-session-import-public-and-package-acceptance.md`
 - `063-nucleus-external-thread-import-handoff.md`
 
 ## Completed
 
+- `059-opencode-session-catalogue-and-import-driver.md`
 - `058-opencode-session-catalogue-range-corpus.md`
 - `057-acp-kimi-session-import-acceptance.md`
 - `056-kimi-acp-session-catalogue-and-import.md`

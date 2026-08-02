@@ -102,3 +102,13 @@ pub(crate) fn image_attachment_capability() -> CapabilityRequirement {
         ],
     )
 }
+
+pub(crate) fn working_resource_capability(access: ResourceAccess) -> CapabilityRequirement {
+    CapabilityRequirement::new(
+        Capability::WorkingResource,
+        [
+            CapabilityConstraint::ResourceAccess(access),
+            CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
+        ],
+    )
+}

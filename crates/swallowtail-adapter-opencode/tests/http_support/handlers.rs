@@ -48,7 +48,31 @@ fn handle(mut stream: TcpStream, fixture: StreamFixture, state: HandleState, ser
             200,
             &fixture[1]["response"]["body"].to_string(),
         );
-    } else if path.starts_with("/session?") {
+    } else if target.starts_with("GET ") && path.starts_with("/session/status?") {
+        respond_json(
+            &mut stream,
+            200,
+            &serde_json::json!({
+                "ses_fixture": {"type":"idle"},
+                "ses_child": {"type":"idle"},
+                "ses_busy": {"type":"busy"}
+            }).to_string(),
+        );
+    } else if target.starts_with("GET ") && path.starts_with("/session?") {
+        let directory = std::env::temp_dir().to_string_lossy().into_owned();
+        let start = path.split(['?', '&']).find_map(|part| part.strip_prefix("start=")).and_then(|value| value.parse::<u32>().ok()).unwrap_or(0);
+        let sessions = match start {
+            0 => serde_json::json!([
+                {"id":"ses_fixture","directory":directory,"title":"Fixture session","version":server_version,"time":{"created":1,"updated":4}},
+                {"id":"ses_child","directory":directory,"parentID":"ses_fixture","title":"Child session","version":server_version,"time":{"created":2,"updated":3}}
+            ]),
+            2 => serde_json::json!([
+                {"id":"ses_busy","directory":directory,"title":"Busy session","version":server_version,"time":{"created":2,"updated":2}}
+            ]),
+            _ => serde_json::json!([]),
+        };
+        respond_json(&mut stream, 200, &sessions.to_string());
+    } else if target.starts_with("POST ") && path.starts_with("/session?") {
         let fixture: serde_json::Value =
             serde_json::from_str(HTTP_SUCCESS).expect("fixture parses");
         let mut body = fixture[2]["response"]["body"].clone();
@@ -71,10 +95,16 @@ fn handle(mut stream: TcpStream, fixture: StreamFixture, state: HandleState, ser
             );
         }
     } else if target.starts_with("GET ") && path.starts_with("/session/ses_fixture?") {
+        let directory = std::env::temp_dir().to_string_lossy().into_owned();
+        let title = if matches!(fixture, StreamFixture::ImportTitleDrift) {
+            "Changed fixture session"
+        } else {
+            "Fixture session"
+        };
         respond_json(
             &mut stream,
             200,
-            &serde_json::json!({"id":"ses_fixture","version":server_version}).to_string(),
+            &serde_json::json!({"id":"ses_fixture","directory":directory,"title":title,"version":server_version,"time":{"created":1,"updated":4}}).to_string(),
         );
     } else if target.starts_with("DELETE ") && path.starts_with("/session/") {
         match fixture {
@@ -117,4 +147,3 @@ fn handle(mut stream: TcpStream, fixture: StreamFixture, state: HandleState, ser
         respond_json(&mut stream, 404, r#"{"error":"private fixture payload"}"#);
     }
 }
-

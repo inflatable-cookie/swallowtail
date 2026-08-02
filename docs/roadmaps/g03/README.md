@@ -232,6 +232,10 @@ visible as unverified newer unless exact evidence requires rejection.
   12 published-version segments, explicit directory/endpoint/status/child
   policy, deterministic failures, and 86 focused tests
   focused protocol tests and extracted-package verification pass
+- card 059 adds an attached, directory-scoped OpenCode session catalogue and
+  explicit import facade. Exact health, lookup, status, revision, directory,
+  title, update-time, root, and archive evidence is revalidated before a
+  binding enters the unchanged load/replay path; 195 focused tests pass
 
 ## Milestones
 
@@ -255,16 +259,16 @@ visible as unverified newer unless exact evidence requires rejection.
 - [018 Codex Exec Queryless Navigation Lifecycle](018-codex-exec-queryless-navigation-lifecycle.md) — completed
 - [019 Provider Session Catalogue And Import Foundation](019-provider-session-catalogue-and-import-foundation.md) — completed
 - [020 Codex External Thread Discovery And Import](020-codex-external-thread-discovery-and-import.md) — completed
-- [021 ACP Session List And Kimi Import](021-acp-session-list-and-kimi-import.md) — active
-- [022 OpenCode External Session Discovery And Import](022-opencode-external-session-discovery-and-import.md) — planned
+- [021 ACP Session List And Kimi Import](021-acp-session-list-and-kimi-import.md) — completed
+- [022 OpenCode External Session Discovery And Import](022-opencode-external-session-discovery-and-import.md) — active
 - [023 Provider Session Import Acceptance And Handoff](023-provider-session-import-acceptance-and-handoff.md) — planned
 
 ## Checkpoint
 
-Card 056 is ready. It uses the stable common codec for resource-scoped Kimi
-Code ACP catalogue and explicit import while preserving exact state-root,
-host, resource, access, version, model, and policy identity. The sole active
-pointer remains in the roadmap front door.
+Card 060 is ready. It closes the OpenCode route through common cross-host and
+lifecycle conformance, attached ownership preservation, public guidance, and
+extracted-package proof. The sole active pointer remains in the roadmap front
+door.
 
 ## Generation Boundary
 

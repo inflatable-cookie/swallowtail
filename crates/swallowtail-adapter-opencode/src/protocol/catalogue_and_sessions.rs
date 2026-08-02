@@ -218,6 +218,87 @@ pub(crate) fn session_get(session_id: &str, directory: &str) -> Request {
     Request::get(format!("/session/{session_id}")).with_directory(directory)
 }
 
+pub(crate) fn session_list(directory: &str, start: u32, limit: u32) -> Request {
+    Request::get("/session")
+        .with_directory(directory)
+        .with_query("start", start.to_string())
+        .with_query("limit", limit.to_string())
+}
+
+pub(crate) fn session_status(directory: &str) -> Request {
+    Request::get("/session/status").with_directory(directory)
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) struct OpenCodeSessionObservation {
+    pub id: String,
+    pub directory: String,
+    pub title: String,
+    pub version: String,
+    pub updated_at: u64,
+    pub parent: bool,
+    pub archived: bool,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(crate) enum OpenCodeSessionStatus {
+    Idle,
+    Active,
+    Unavailable,
+}
+
+pub(crate) fn parse_session_list(response: &Response) -> Result<Vec<OpenCodeSessionObservation>, RuntimeFailure> {
+    require_success(response, "session catalogue request")?;
+    let values: Vec<Value> = parse_json(&response.body, "session catalogue response")?;
+    values.into_iter().map(parse_session_observation).collect()
+}
+
+pub(crate) fn parse_session_lookup(response: &Response) -> Result<OpenCodeSessionObservation, RuntimeFailure> {
+    require_success(response, "session lookup request")?;
+    let value: Value = parse_json(&response.body, "session lookup response")?;
+    parse_session_observation(value)
+}
+
+pub(crate) fn parse_session_statuses(response: &Response) -> Result<BTreeMap<String, OpenCodeSessionStatus>, RuntimeFailure> {
+    require_success(response, "session status request")?;
+    let values: BTreeMap<String, Value> = parse_json(&response.body, "session status response")?;
+    values.into_iter().map(|(id, value)| {
+        if id.trim().is_empty() {
+            return Err(session_catalogue_invalid());
+        }
+        let status = match value.get("type").and_then(Value::as_str) {
+            Some("idle") => OpenCodeSessionStatus::Idle,
+            Some("busy" | "retry") => OpenCodeSessionStatus::Active,
+            _ => OpenCodeSessionStatus::Unavailable,
+        };
+        Ok((id, status))
+    }).collect()
+}
+
+fn parse_session_observation(value: Value) -> Result<OpenCodeSessionObservation, RuntimeFailure> {
+    let string = |key: &str| value.get(key).and_then(Value::as_str).filter(|value| !value.trim().is_empty()).map(str::to_owned).ok_or_else(session_catalogue_invalid);
+    let time = value.get("time").and_then(Value::as_object).ok_or_else(session_catalogue_invalid)?;
+    let updated_at = time.get("updated").and_then(Value::as_u64).ok_or_else(session_catalogue_invalid)?;
+    let parent = value.get("parentID").is_some_and(|parent| parent.as_str().is_some_and(|parent| !parent.trim().is_empty()));
+    let archived = time.get("archived").is_some_and(|archived| !archived.is_null());
+    Ok(OpenCodeSessionObservation {
+        id: string("id")?,
+        directory: string("directory")?,
+        title: string("title")?,
+        version: string("version")?,
+        updated_at,
+        parent,
+        archived,
+    })
+}
+
+fn session_catalogue_invalid() -> RuntimeFailure {
+    failure(
+        "swallowtail.opencode.session_catalogue.invalid_response",
+        "OpenCode returned malformed session catalogue evidence",
+    )
+}
+
 pub(crate) fn require_existing_session(
     response: &Response,
     expected_version: &InterfaceVersionBinding,

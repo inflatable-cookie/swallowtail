@@ -98,7 +98,8 @@ fn respond_sse(
         | StreamFixture::DeleteMalformedSuccess
         | StreamFixture::DeleteDisconnect
         | StreamFixture::DeleteDelayed
-        | StreamFixture::DeleteHealthDrift => {
+        | StreamFixture::DeleteHealthDrift
+        | StreamFixture::ImportTitleDrift => {
             stream.write_all(SUCCESS.as_bytes()).expect("SSE writes")
         }
         StreamFixture::ProviderError => stream
@@ -157,4 +158,3 @@ fn respond_sse(
         }
     }
 }
-

@@ -13,9 +13,10 @@ shape.
 
 ## Next Task
 
-Execute g03 card 059. Add OpenCode's directory-scoped HTTP session catalogue,
-status-aware candidate projection, exact revalidation, prepared import facade,
-and binding handoff into the existing load/replay/resume path.
+Execute g03 card 060. Close OpenCode session import with common local and
+remote-authoritative conformance, cancellation and deadline evidence, attached
+server and credential preservation, public guidance, and extracted-package
+proof.
 
 ## Index
 

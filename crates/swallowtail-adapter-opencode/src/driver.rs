@@ -1,9 +1,11 @@
 use crate::failure::{failure, unsupported};
 use crate::protocol::{
-    Event, PromptPayload, Request, Response, SessionDeleteResponse, abort, classify_session_delete,
-    parse_catalog, parse_event, parse_session_for_version, project_session_messages, prompt,
-    require_abort_success, require_existing_session, require_health_matches, require_no_content,
-    session_create, session_delete, session_get, session_messages,
+    Event, OpenCodeSessionObservation, OpenCodeSessionStatus, PromptPayload, Request, Response,
+    SessionDeleteResponse, abort, classify_session_delete, parse_catalog, parse_event,
+    parse_session_for_version, parse_session_list, parse_session_lookup, parse_session_statuses,
+    project_session_messages, prompt, require_abort_success, require_existing_session,
+    require_health_matches, require_no_content, session_create, session_delete, session_get,
+    session_list, session_messages, session_status,
 };
 use crate::selection::{OpenCodePlanVersion, classify_plan, opencode_http_claim};
 use crate::transport::{CurlTransport, Subscription};
@@ -16,9 +18,12 @@ use swallowtail_core::{
     AdapterId, AdapterIdentity, AdapterVersion, CancellationScope, Capability,
     CapabilityConstraint, CredentialMechanism, DriverDescriptor, DriverRole, ExecutionLayer,
     HarnessConfigurationPosture, HarnessIsolation, HostServiceKind, InstanceOwnership,
-    IntegrationFamilyId, ModelCatalogEntry, OperationShape, OwnedRemoteResourceKind, PreflightPlan,
-    ProviderId, ResourceAccess, ResourceRepresentation, RunRef, SafeDiagnostic,
-    SessionAccessPolicy, SessionRef, StructuredOutputEnforcement, TransportFamilyId,
+    IntegrationFamilyId, InterfaceCompatibilityAssessment, ModelCatalogEntry, OperationShape,
+    OwnedRemoteResourceKind, PreflightPlan, ProviderId, ProviderSessionActivityState,
+    ProviderSessionDisplayContent, ProviderSessionImportAvailability,
+    ProviderSessionImportUnavailableReason, ResourceAccess, ResourceRepresentation, RunRef,
+    SafeDiagnostic, SessionAccessPolicy, SessionRef, StructuredOutputEnforcement,
+    TransportFamilyId,
 };
 use swallowtail_runtime::{
     BoxEventStream, BoxFuture, CancellationAcknowledgement, CancellationControl, CleanupOutcome,
@@ -26,11 +31,18 @@ use swallowtail_runtime::{
     InteractiveSessionDriver, InteractiveSessionHandle, JoinedTask, LoadSessionRequest,
     LoadedSession, ModelCatalogDriver, ModelCatalogRequest, OpenSessionRequest,
     ProviderExecutionPolicy, ProviderRecoveryPolicy, ProviderRetentionPolicy,
+    ProviderSessionCandidate, ProviderSessionCandidateId, ProviderSessionCatalogueDriver,
+    ProviderSessionCatalogueOutcome, ProviderSessionCataloguePlan, ProviderSessionCatalogueRequest,
+    ProviderSessionImportDriver, ProviderSessionImportOutcome, ProviderSessionImportPlan,
+    ProviderSessionImportRequest, ProviderSessionImportRevalidation,
+    ProviderSessionOperationFailure, ProviderSessionOperationFailureStage,
     RemoteResourceDeletionOutcome, RequestId, ResourceLease, ResumeSessionRequest, RunHandle,
     RuntimeEvent, RuntimeEventKind, RuntimeFailure, RuntimeRunId, RuntimeSessionId, RuntimeTurnId,
     ScopeId, SessionResumeBinding, StreamReattachmentPolicy, StructuredOutputDescriptor,
     StructuredRunDriver, StructuredRunRequest, TerminalOutcome, TerminalStatus, TurnHandle,
-    TurnRequest, runtime_event_channel, terminal_outcome_channel, validate_session_resource_lease,
+    TurnRequest, runtime_event_channel, terminal_outcome_channel,
+    validate_provider_session_catalogue_execution, validate_provider_session_import_execution,
+    validate_session_resource_lease,
 };
 
 const DRIVER_ID: &str = "swallowtail.opencode.http";
@@ -100,6 +112,8 @@ pub fn opencode_http_descriptor() -> DriverDescriptor {
         DriverRole::InteractiveSession,
         DriverRole::StructuredRun,
         DriverRole::ProviderSessionManagement,
+        DriverRole::ProviderSessionCatalogue,
+        DriverRole::ProviderSessionImport,
     ])
     .with_interface_compatibility(opencode_http_claim())
     .with_execution_layers([ExecutionLayer::HarnessInteraction])
@@ -107,6 +121,8 @@ pub fn opencode_http_descriptor() -> DriverDescriptor {
         OperationShape::InteractiveSession,
         OperationShape::StructuredRun,
         OperationShape::ProviderSessionManagement,
+        OperationShape::ProviderSessionCatalogue,
+        OperationShape::ProviderSessionImport,
     ])
     .with_extension_namespaces([
         callback::permission_namespace(),
@@ -119,6 +135,28 @@ pub fn opencode_http_descriptor() -> DriverDescriptor {
             HostServiceKind::Time,
             HostServiceKind::Network,
             HostServiceKind::Credential,
+        ],
+    )
+    .with_required_host_services(
+        DriverRole::ProviderSessionCatalogue,
+        [
+            HostServiceKind::Task,
+            HostServiceKind::BlockingWork,
+            HostServiceKind::Time,
+            HostServiceKind::Network,
+            HostServiceKind::Credential,
+            HostServiceKind::WorkingResource,
+        ],
+    )
+    .with_required_host_services(
+        DriverRole::ProviderSessionImport,
+        [
+            HostServiceKind::Task,
+            HostServiceKind::BlockingWork,
+            HostServiceKind::Time,
+            HostServiceKind::Network,
+            HostServiceKind::Credential,
+            HostServiceKind::WorkingResource,
         ],
     )
     .with_required_host_services(
@@ -165,4 +203,5 @@ include!("driver/turn.rs");
 include!("driver/run.rs");
 include!("driver/lifecycle.rs");
 include!("driver/session_management.rs");
+include!("driver/provider_session_import.rs");
 include!("driver/tests.rs");

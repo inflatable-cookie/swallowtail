@@ -51,7 +51,8 @@ pub use prepared_headless::{
 };
 pub use prepared_profile::{
     KimiAcpSessionImportAuthority, KimiModelSelection, KimiPreparedEvidence, KimiPreparedSession,
-    KimiPreparedSessionFuture, KimiPreparedSessionLoadFuture, KimiSessionProfileInput,
+    KimiPreparedSessionCatalogue, KimiPreparedSessionFuture, KimiPreparedSessionImport,
+    KimiPreparedSessionLoadFuture, KimiSessionCatalogueInput, KimiSessionProfileInput,
 };
 pub use selection::{
     KIMI_CODE_AXIS, KIMI_CODE_BASELINE_VERSION, KIMI_CODE_LATEST_QUALIFIED_VERSION,

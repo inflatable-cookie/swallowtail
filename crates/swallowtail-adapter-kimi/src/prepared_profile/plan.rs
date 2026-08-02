@@ -133,6 +133,23 @@ pub(super) fn build_plan(
     route: &ModelRoute,
     requirements: &OperationRequirements,
 ) -> Result<PreflightPlan, PreparationFailure> {
+    build_plan_with_optional_route(prepared, instance, Some(route), requirements)
+}
+
+pub(super) fn build_plan_without_route(
+    prepared: &KimiPreparedIntegration,
+    instance: &ConfiguredInstance,
+    requirements: &OperationRequirements,
+) -> Result<PreflightPlan, PreparationFailure> {
+    build_plan_with_optional_route(prepared, instance, None, requirements)
+}
+
+fn build_plan_with_optional_route(
+    prepared: &KimiPreparedIntegration,
+    instance: &ConfiguredInstance,
+    route: Option<&ModelRoute>,
+    requirements: &OperationRequirements,
+) -> Result<PreflightPlan, PreparationFailure> {
     let descriptor = crate::kimi_acp_descriptor();
     let context = PreflightContext::new(
         &descriptor,
@@ -140,8 +157,12 @@ pub(super) fn build_plan(
         prepared.access_profile(),
         prepared.access_evidence().status(),
         prepared.available_host_services(),
-    )
-    .with_model_route(route);
+    );
+    let context = if let Some(route) = route {
+        context.with_model_route(route)
+    } else {
+        context
+    };
     preflight(&context, requirements).map_err(|error| {
         PreparationFailure::new(
             PreparationStage::Preflight,

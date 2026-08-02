@@ -218,6 +218,11 @@ visible as unverified newer unless exact evidence requires rejection.
 - Research 094 and card 055 freeze current stable ACP v1 session listing,
   including independently gated additional directories, bounded opaque
   extensions, strict request correlation, and fail-closed projection; 93
+  focused protocol tests pass
+- card 056 qualifies resource-scoped Kimi ACP catalogue and explicit import
+  across exact `0.28.1` through `0.31.1`; state-root or candidate drift issues
+  no binding, ordered replay stays on the existing load path, and 186 focused
+  Kimi/ACP tests plus both extracted packages pass
   focused protocol tests and extracted-package verification pass
 
 ## Milestones

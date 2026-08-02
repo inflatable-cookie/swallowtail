@@ -42,7 +42,7 @@ enum AttachPhase {
 pub(crate) struct AcpConnection {
     process: Arc<dyn ProcessHandle>,
     resource: ResourceLease,
-    resource_io: Arc<dyn WorkingResourceIoService>,
+    resource_io: Option<Arc<dyn WorkingResourceIoService>>,
     next_id: AtomicU64,
     pending: Mutex<BTreeMap<u64, ResponseSender>>,
     session_id: Mutex<Option<String>>,
@@ -56,7 +56,7 @@ impl AcpConnection {
     pub(crate) fn new(
         process: Arc<dyn ProcessHandle>,
         resource: ResourceLease,
-        resource_io: Arc<dyn WorkingResourceIoService>,
+        resource_io: Option<Arc<dyn WorkingResourceIoService>>,
     ) -> Arc<Self> {
         Arc::new(Self {
             process,

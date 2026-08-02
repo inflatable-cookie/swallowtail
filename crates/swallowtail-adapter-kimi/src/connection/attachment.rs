@@ -1,5 +1,16 @@
 impl AcpConnection {
     pub(crate) async fn initialize(&self) -> Result<Value, RuntimeFailure> {
+        self.initialize_with_write_capability(true).await
+    }
+
+    pub(crate) async fn initialize_catalogue(&self) -> Result<Value, RuntimeFailure> {
+        self.initialize_with_write_capability(false).await
+    }
+
+    async fn initialize_with_write_capability(
+        &self,
+        write_text_file: bool,
+    ) -> Result<Value, RuntimeFailure> {
         let response = self
             .request_with_id(
                 0,
@@ -7,7 +18,7 @@ impl AcpConnection {
                 json!({
                     "protocolVersion": ACP_PROTOCOL_VERSION,
                     "clientCapabilities": {
-                        "fs": {"readTextFile": false, "writeTextFile": true},
+                        "fs": {"readTextFile": false, "writeTextFile": write_text_file},
                         "terminal": false,
                         "auth": {"terminal": false}
                     },
@@ -106,5 +117,42 @@ impl AcpConnection {
             }) => Ok(response),
             _ => Err(protocol_failure()),
         }
+    }
+
+    pub(crate) async fn list_sessions(
+        &self,
+        capabilities: swallowtail_protocol_acp::AcpSessionListCapabilities,
+        cwd: String,
+        cursor: Option<String>,
+        limits: swallowtail_protocol_acp::AcpSessionListLimits,
+    ) -> Result<swallowtail_protocol_acp::AcpSessionListPage, RuntimeFailure> {
+        let id = self.next_id.fetch_add(1, Ordering::SeqCst);
+        let request = swallowtail_protocol_acp::AcpSessionListRequest::new(
+            json!(id),
+            capabilities,
+            Some(cwd),
+            cursor,
+            limits,
+        )
+        .map_err(|_| {
+            failure(
+                "swallowtail.kimi.acp.session_list_request_invalid",
+                "Kimi Code ACP session-list request is invalid",
+            )
+        })?;
+        let result = self
+            .begin_request_with_id(
+                id,
+                swallowtail_protocol_acp::ACP_SESSION_LIST_METHOD,
+                json!({"cwd": request.cwd(), "cursor": request.cursor()}),
+            )
+            .await?
+            .await?;
+        request.decode_result(&result).map_err(|_| {
+            failure(
+                "swallowtail.kimi.acp.session_list_response_invalid",
+                "Kimi Code returned invalid ACP session-list evidence",
+            )
+        })
     }
 }

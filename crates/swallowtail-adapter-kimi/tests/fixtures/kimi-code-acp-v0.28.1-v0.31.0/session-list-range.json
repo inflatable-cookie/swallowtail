@@ -1,0 +1,31 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-08-02",
+  "axis": "kimi-code.executable",
+  "transport": "acp_v1_stdio_ndjson",
+  "wire_version": 1,
+  "operation": {
+    "capability": "agentCapabilities.sessionCapabilities.list",
+    "method": "session/list",
+    "scope_field": "cwd",
+    "cursor_field": "cursor",
+    "result_fields": ["sessions", "nextCursor"],
+    "session_fields": ["sessionId", "cwd", "title", "updatedAt", "_meta"],
+    "history_operation": "session/load",
+    "continuation_operation": "session/resume"
+  },
+  "qualified_versions": [
+    {"version": "0.28.1", "tag_commit": "efacf0452d46f5dbd67499eabc053869495d5213"},
+    {"version": "0.29.0", "tag_commit": "8bf5bacba9e524c38fb808c0122070037ead25a8"},
+    {"version": "0.29.1", "tag_commit": "f4c3967a417a539372eadab6c809d27b8a14c005"},
+    {"version": "0.29.2", "tag_commit": "8a45f10eddbb35c317047e82e567cdb59a220b4f"},
+    {"version": "0.30.0", "tag_commit": "16c7189bd54a42fae65b1bbafd0843420523f797"},
+    {"version": "0.31.0", "tag_commit": "bc28e9d802fbec29395a7aed85e880679a050145"},
+    {"version": "0.31.1", "tag_commit": "6b56c11697771fe596099b38bafae539820309a4"}
+  ],
+  "later_stable_posture": {
+    "minimum": "greater-than-0.31.1",
+    "classification": "unverified-newer",
+    "session_import": "not-inherited"
+  }
+}

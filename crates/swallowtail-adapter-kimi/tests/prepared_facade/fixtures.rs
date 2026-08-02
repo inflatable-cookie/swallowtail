@@ -23,7 +23,21 @@ pub fn prepared(
     host_id: ExecutionHostId,
     version: &str,
 ) -> KimiPreparedIntegration {
-    let input = KimiPreparationInput::new(
+    prepared_with_state_root(
+        operation_host,
+        host_id,
+        version,
+        Some("fixture.kimi.state-root"),
+    )
+}
+
+pub fn prepared_with_state_root(
+    operation_host: &FixtureHost,
+    host_id: ExecutionHostId,
+    version: &str,
+    state_root: Option<&str>,
+) -> KimiPreparedIntegration {
+    let mut input = KimiPreparationInput::new(
         ConfiguredInstanceId::new("kimi.prepared").unwrap(),
         InstanceRevision::new("1").unwrap(),
         host_id.clone(),
@@ -31,8 +45,10 @@ pub fn prepared(
         EnvironmentRef::new("kimi.prepared.state").unwrap(),
         access_profile(),
         PreparedAccessEvidence::caller_asserted(access_status()),
-    )
-    .with_state_root(WorkingResourceRef::new("fixture.kimi.state-root").unwrap());
+    );
+    if let Some(state_root) = state_root {
+        input = input.with_state_root(WorkingResourceRef::new(state_root).unwrap());
+    }
     let (process, _) = FakeProcessService::completed(&format!("{version}\n"));
     block_on(prepare_kimi(
         input,

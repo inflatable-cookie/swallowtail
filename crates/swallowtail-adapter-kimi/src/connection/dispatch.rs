@@ -186,7 +186,10 @@ impl AcpConnection {
         let Ok(request) = request else {
             return self.callback_rejected(id).await;
         };
-        if self.resource_io.write_text(&self.resource, request).await.is_err() {
+        let Some(resource_io) = &self.resource_io else {
+            return self.callback_rejected(id).await;
+        };
+        if resource_io.write_text(&self.resource, request).await.is_err() {
             return self.callback_rejected(id).await;
         }
         self.write(encode_result(id, Value::Null).map_err(|_| protocol_failure())?)

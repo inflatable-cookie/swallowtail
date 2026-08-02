@@ -263,3 +263,4 @@ include!("driver/descriptor.rs");
 include!("driver/plan.rs");
 include!("driver/session.rs");
 include!("driver/validation.rs");
+mod session_catalogue;

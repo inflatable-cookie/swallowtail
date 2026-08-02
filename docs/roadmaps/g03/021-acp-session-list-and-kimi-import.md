@@ -6,7 +6,7 @@ Created: 2026-08-01
 Depends on: g03.020
 Vision tags: shared protocol, Kimi continuity, capability fidelity
 Contract refs: 009-011, 015, 017, 029, 035, 037, 046
-Planning state: card 055 ready; cards 056-057 planned
+Planning state: cards 055-056 completed; card 057 ready
 
 ## Problem
 
@@ -18,8 +18,8 @@ cannot qualify list, replay, or import for every ACP agent.
 
 - [x] freeze stable ACP list schema and compatibility identity
 - [x] add bounded list framing and candidate projection to the shared codec
-- [ ] qualify Kimi Code ACP as the first complete ACP import route
-- [ ] preserve Kimi's exact state-root and working-resource binding
+- [x] qualify Kimi Code ACP as the first complete ACP import route
+- [x] preserve Kimi's exact state-root and working-resource binding
 - [ ] classify Claude and Cursor without widening their current claims
 - [ ] prove common wire behavior across host topologies
 
@@ -35,11 +35,11 @@ cannot qualify list, replay, or import for every ACP agent.
 
 ### Batch 21.2 — Kimi ACP Catalogue And Import
 
-- [ ] Execute card 056 after card 055 passes.
-- [ ] freeze exact Kimi list behavior across qualified milestones
-- [ ] require matching execution host, Kimi state root, working resource,
+- [x] Execute card 056 after card 055 passes.
+- [x] freeze exact Kimi list behavior across qualified milestones
+- [x] require matching execution host, Kimi state root, working resource,
   access, model, and session policy
-- [ ] route imported sessions through existing Kimi load replay and resume
+- [x] route imported sessions through existing Kimi load replay and resume
 
 ### Batch 21.3 — ACP Conformance And Route Classification
 

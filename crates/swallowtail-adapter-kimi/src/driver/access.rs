@@ -14,6 +14,41 @@ impl KimiAcpDriver {
         working_resource: swallowtail_runtime::WorkingResourceRef,
         services: &HostServices,
     ) -> Result<PendingAttachment, RuntimeFailure> {
+        self.start_attachment_with_access(
+            plan,
+            request_id,
+            working_resource,
+            SessionAccessPolicy::ambient_harness(ResourceAccess::ReadWrite),
+            services,
+        )
+        .await
+    }
+
+    async fn start_catalogue_attachment(
+        &self,
+        plan: &PreflightPlan,
+        request_id: &RequestId,
+        working_resource: swallowtail_runtime::WorkingResourceRef,
+        services: &HostServices,
+    ) -> Result<PendingAttachment, RuntimeFailure> {
+        self.start_attachment_with_access(
+            plan,
+            request_id,
+            working_resource,
+            SessionAccessPolicy::ambient_harness(ResourceAccess::Read),
+            services,
+        )
+        .await
+    }
+
+    async fn start_attachment_with_access(
+        &self,
+        plan: &PreflightPlan,
+        request_id: &RequestId,
+        working_resource: swallowtail_runtime::WorkingResourceRef,
+        policy: SessionAccessPolicy,
+        services: &HostServices,
+    ) -> Result<PendingAttachment, RuntimeFailure> {
         services.require_execution_host(plan.execution_host_id())?;
         let scope = ScopeId::new(format!("kimi-acp:session:{}", request_id.as_str()))
             .map_err(|_| malformed())?;
@@ -44,11 +79,14 @@ impl KimiAcpDriver {
             .working_resource()
             .cloned()
             .expect("validated working-resource service");
+        let resource_access = policy
+            .resource_access()
+            .expect("attachment policy binds a working resource");
         let resource = match resource_service
             .resolve(
                 scope.clone(),
                 working_resource.clone(),
-                ResourceAccess::ReadWrite,
+                resource_access,
                 ResourceRepresentation::Filesystem,
             )
             .await
@@ -59,7 +97,6 @@ impl KimiAcpDriver {
                 return Err(error);
             }
         };
-        let policy = SessionAccessPolicy::ambient_harness(ResourceAccess::ReadWrite);
         if let Err(error) = validate_session_resource_lease(&policy, &working_resource, &resource) {
             let _ = resource_service.release(resource).await;
             let _ = credential_service.release(credential).await;
@@ -85,13 +122,20 @@ impl KimiAcpDriver {
                 return Err(error);
             }
         };
+        let resource_io = if resource_access == ResourceAccess::ReadWrite {
+            Some(
+                services
+                    .working_resource_io()
+                    .cloned()
+                    .expect("validated resource I/O service"),
+            )
+        } else {
+            None
+        };
         let connection = AcpConnection::new(
             Arc::clone(&process),
             resource.clone(),
-            services
-                .working_resource_io()
-                .cloned()
-                .expect("validated resource I/O service"),
+            resource_io,
         );
         let pump = Arc::clone(&connection);
         let task = match services

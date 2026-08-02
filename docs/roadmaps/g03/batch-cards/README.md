@@ -6,11 +6,10 @@ None.
 
 ## Ready
 
-- `056-kimi-acp-session-catalogue-and-import.md`
+- `057-acp-kimi-session-import-acceptance.md`
 
 ## Planned
 
-- `057-acp-kimi-session-import-acceptance.md`
 - `058-opencode-session-catalogue-range-corpus.md`
 - `059-opencode-session-catalogue-and-import-driver.md`
 - `060-opencode-session-import-acceptance.md`
@@ -20,6 +19,7 @@ None.
 
 ## Completed
 
+- `056-kimi-acp-session-catalogue-and-import.md`
 - `055-acp-stable-session-list-corpus-and-codec.md`
 - `054-codex-thread-import-acceptance.md`
 - `053-codex-thread-catalogue-and-import-driver.md`

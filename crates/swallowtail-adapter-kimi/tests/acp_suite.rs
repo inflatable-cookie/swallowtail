@@ -16,6 +16,8 @@ mod conformance;
 mod installed_probe;
 #[path = "prepared_facade.rs"]
 mod prepared_facade;
+#[path = "provider_session_import.rs"]
+mod provider_session_import;
 #[path = "reasoning_dispatch.rs"]
 mod reasoning_dispatch;
 #[path = "reasoning_lifecycle.rs"]

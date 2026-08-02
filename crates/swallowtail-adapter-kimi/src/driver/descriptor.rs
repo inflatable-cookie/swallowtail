@@ -11,9 +11,18 @@ pub fn kimi_acp_descriptor() -> DriverDescriptor {
         IntegrationFamilyId::new("kimi-code").expect("static family id is valid"),
         TransportFamilyId::new("acp-v1-stdio").expect("static transport id is valid"),
     )
-    .with_roles([DriverRole::Discovery, DriverRole::InteractiveSession])
+    .with_roles([
+        DriverRole::Discovery,
+        DriverRole::InteractiveSession,
+        DriverRole::ProviderSessionCatalogue,
+        DriverRole::ProviderSessionImport,
+    ])
     .with_execution_layers([ExecutionLayer::HarnessInteraction])
-    .with_operation_shapes([OperationShape::InteractiveSession])
+    .with_operation_shapes([
+        OperationShape::InteractiveSession,
+        OperationShape::ProviderSessionCatalogue,
+        OperationShape::ProviderSessionImport,
+    ])
     .with_required_host_services(
         DriverRole::InteractiveSession,
         [
@@ -30,6 +39,24 @@ pub fn kimi_acp_descriptor() -> DriverDescriptor {
             HostServiceKind::Task,
             HostServiceKind::Time,
             HostServiceKind::Process,
+        ],
+    )
+    .with_required_host_services(
+        DriverRole::ProviderSessionCatalogue,
+        [
+            HostServiceKind::Task,
+            HostServiceKind::Process,
+            HostServiceKind::Credential,
+            HostServiceKind::WorkingResource,
+        ],
+    )
+    .with_required_host_services(
+        DriverRole::ProviderSessionImport,
+        [
+            HostServiceKind::Task,
+            HostServiceKind::Process,
+            HostServiceKind::Credential,
+            HostServiceKind::WorkingResource,
         ],
     )
     .with_discovery_actions([swallowtail_core::DiscoveryAction::Probe])

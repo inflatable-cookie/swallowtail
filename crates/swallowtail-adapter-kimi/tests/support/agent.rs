@@ -11,6 +11,7 @@ pub enum Scenario {
     Complete,
     HoldPrompt,
     DisconnectPrompt,
+    CatalogueChanged,
     ReasoningLegacySuccess,
     ReasoningEffortSuccess,
     ReasoningEffort291Success,
@@ -34,6 +35,7 @@ impl Scenario {
             Self::Complete
             | Self::HoldPrompt
             | Self::DisconnectPrompt
+            | Self::CatalogueChanged
             | Self::ReasoningLegacySuccess => "0.28.1",
             Self::ReasoningEffort291Success => "0.29.1",
             Self::ReasoningEffort292Success => "0.29.2",
@@ -48,7 +50,7 @@ impl Scenario {
     fn has_reasoning(self) -> bool {
         !matches!(
             self,
-            Self::Complete | Self::HoldPrompt | Self::DisconnectPrompt
+            Self::Complete | Self::HoldPrompt | Self::DisconnectPrompt | Self::CatalogueChanged
         )
     }
 }
@@ -123,6 +125,7 @@ impl SharedAgent {
             Scenario::Complete
             | Scenario::HoldPrompt
             | Scenario::DisconnectPrompt
+            | Scenario::CatalogueChanged
             | Scenario::ReasoningMissing => {}
         }
         json!({"configOptions": options})
@@ -143,6 +146,32 @@ impl SharedAgent {
                 enqueue_session_metadata(&mut state);
             }
             Some("session/load") => self.load(&mut state, id),
+            Some("session/list") => {
+                let cwd = message["params"]["cwd"]
+                    .as_str()
+                    .ok_or_else(fixture_failure)?;
+                let title = if matches!(self.scenario, Scenario::CatalogueChanged) {
+                    "Changed Kimi fixture session"
+                } else {
+                    "Kimi fixture session"
+                };
+                Self::enqueue(
+                    &mut state,
+                    Self::response(
+                        id,
+                        json!({
+                            "sessions": [{
+                                "sessionId": "kimi-session-bound",
+                                "cwd": cwd,
+                                "title": title,
+                                "updatedAt": "2026-08-01T12:34:56.789Z",
+                                "_meta": {"fixturePrivate": "not-public"}
+                            }],
+                            "_meta": {"fixturePrivate": "not-public"}
+                        }),
+                    ),
+                );
+            }
             Some("session/resume") => {
                 Self::enqueue(&mut state, Self::response(id, self.session_configuration()));
                 enqueue_session_metadata(&mut state);
@@ -220,6 +249,7 @@ impl SharedAgent {
             }
             Scenario::HoldPrompt => {}
             Scenario::DisconnectPrompt => state.stopped = true,
+            Scenario::CatalogueChanged => return Err(fixture_failure()),
             _ => return Err(fixture_failure()),
         }
         Ok(())

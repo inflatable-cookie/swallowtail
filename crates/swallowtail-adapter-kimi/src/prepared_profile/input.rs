@@ -1,5 +1,58 @@
-use swallowtail_core::{ModelId, ModelRouteId, ModelRouteRevision};
-use swallowtail_runtime::{RequestId, SessionOptions, WorkingResourceRef};
+use swallowtail_core::{ModelId, ModelRouteId, ModelRouteRevision, ProviderSessionCatalogueBounds};
+use swallowtail_runtime::{
+    Deadline, ProviderSessionCatalogueId, RequestId, SessionOptions, WorkingResourceRef,
+};
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct KimiSessionCatalogueInput {
+    request_id: RequestId,
+    catalogue_id: ProviderSessionCatalogueId,
+    working_resource: WorkingResourceRef,
+    bounds: ProviderSessionCatalogueBounds,
+    deadline: Option<Deadline>,
+}
+
+impl KimiSessionCatalogueInput {
+    #[must_use]
+    pub const fn new(
+        request_id: RequestId,
+        catalogue_id: ProviderSessionCatalogueId,
+        working_resource: WorkingResourceRef,
+        bounds: ProviderSessionCatalogueBounds,
+    ) -> Self {
+        Self {
+            request_id,
+            catalogue_id,
+            working_resource,
+            bounds,
+            deadline: None,
+        }
+    }
+
+    #[must_use]
+    pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
+        self.deadline = Some(deadline);
+        self
+    }
+
+    pub(crate) fn into_parts(
+        self,
+    ) -> (
+        RequestId,
+        ProviderSessionCatalogueId,
+        WorkingResourceRef,
+        ProviderSessionCatalogueBounds,
+        Option<Deadline>,
+    ) {
+        (
+            self.request_id,
+            self.catalogue_id,
+            self.working_resource,
+            self.bounds,
+            self.deadline,
+        )
+    }
+}
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct KimiModelSelection {

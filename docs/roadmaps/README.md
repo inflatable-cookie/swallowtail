@@ -13,9 +13,9 @@ shape.
 
 ## Next Task
 
-Execute g03 card 056. Add resource-scoped Kimi Code ACP session catalogue and
-explicit import through the stable common codec, preserving exact state-root,
-host, resource, access, version, model, and session-policy identity.
+Execute g03 card 057. Close Kimi ACP session import through common local and
+remote-authoritative conformance, lifecycle failure boundaries, route
+classification, guidance, and extracted-package proof.
 
 ## Index
 

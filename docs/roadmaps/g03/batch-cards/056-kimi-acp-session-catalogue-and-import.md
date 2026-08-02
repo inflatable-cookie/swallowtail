@@ -1,6 +1,6 @@
 # 056 Kimi ACP Session Catalogue And Import
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-01
 Milestone: `../021-acp-session-list-and-kimi-import.md`
@@ -29,19 +29,32 @@ exact state-root, resource, access, and version identity.
 
 ## Acceptance Criteria
 
-- [ ] every supported Kimi milestone has exact list/import evidence
-- [ ] candidates cannot cross state roots, resources, hosts, or plans
-- [ ] stale or mismatched selections issue no binding
-- [ ] successful import completes replay before readiness
-- [ ] existing Kimi-created session behavior is unchanged
-- [ ] focused Kimi and ACP tests pass
-- [ ] card 057 becomes the sole ready and next task
+- [x] every supported Kimi milestone has exact list/import evidence
+- [x] candidates cannot cross state roots, resources, hosts, or plans
+- [x] stale or mismatched selections issue no binding
+- [x] successful import completes replay before readiness
+- [x] existing Kimi-created session behavior is unchanged
+- [x] focused Kimi and ACP tests pass
+- [x] card 057 becomes the sole ready and next task
 
 ## Validation
 
-- `effigy validate:focused swallowtail-adapter-kimi swallowtail-acp`
+- `effigy validate:focused swallowtail-adapter-kimi swallowtail-protocol-acp`
 - `git diff --check`
 - no authentication mutation or broad suite
+
+## Evidence
+
+- exact `0.28.1`, `0.29.0`, `0.29.1`, `0.29.2`, `0.30.0`, `0.31.0`, and
+  `0.31.1` fixtures exercise the same negotiated `session/list`, explicit
+  import, ordered `session/load` replay, and imported binding boundary
+- catalogue launch advertises read-only filesystem capability and carries no
+  working-resource write callback
+- preparation rejects missing or drifted Kimi state roots before process
+  launch; import revalidation rejects changed candidates without a binding
+- versions above `0.31.1` remain visible through discovery but cannot inherit
+  the session-import capability
+- 186 focused Kimi and ACP tests passed; both extracted packages compiled
 
 ## Auto-Continuation
 

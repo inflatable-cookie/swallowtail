@@ -192,7 +192,7 @@ fn with_activity(
     CapabilityProfile::new(requirements)
 }
 
-fn validate_options(options: &SessionOptions) -> Result<(), PreparationFailure> {
+pub(super) fn validate_options(options: &SessionOptions) -> Result<(), PreparationFailure> {
     if options.developer_instructions().is_some() || options.tools().len() != 0 {
         return Err(failure(
             "swallowtail.kimi.preparation.session_options_unsupported",
@@ -210,7 +210,9 @@ fn validate_options(options: &SessionOptions) -> Result<(), PreparationFailure> 
     Ok(())
 }
 
-fn reject_attachment_reasoning(options: &SessionOptions) -> Result<(), PreparationFailure> {
+pub(super) fn reject_attachment_reasoning(
+    options: &SessionOptions,
+) -> Result<(), PreparationFailure> {
     if options.reasoning_mode().is_some() {
         Err(failure(
             "swallowtail.kimi.preparation.attachment_reasoning_unsupported",

@@ -240,6 +240,10 @@ visible as unverified newer unless exact evidence requires rejection.
   remote-authoritative topology proof, in-flight cancellation and deadline
   control, lease cleanup, attached-server preservation, public guidance, 172
   focused tests, and an independently compiling extracted package
+- Research 096 and card 061 classify all 19 harness routes without transport
+  inheritance: Codex app-server, Kimi ACP, and OpenCode HTTP are supported;
+  one route is discovery-only, two attachment-only, two blocked, and 11 not
+  applicable, each with an exact promotion gate
 
 ## Milestones
 
@@ -269,9 +273,9 @@ visible as unverified newer unless exact evidence requires rejection.
 
 ## Checkpoint
 
-Card 061 is ready. It classifies every harness route against the complete
-catalogue/import/replay/continuation profile, keeps alternate transports
-separate, and records exact promotion gates for partial routes. The sole active
+Card 062 is ready. It publishes the route classification, adds prepared
+browse-select-import-load/resume examples and warnings, then compiles the
+selected common and adapter packages from extracted targets. The sole active
 pointer remains in the roadmap front door.
 
 ## Generation Boundary

@@ -13,9 +13,9 @@ shape.
 
 ## Next Task
 
-Execute g03 card 061. Classify every harness route against the complete
-catalogue, exact revalidation, replay, continuation, resource-binding,
-activity, and version-evidence profile without transport inheritance.
+Execute g03 card 062. Publish the 19-route catalogue/import classification,
+add prepared browse-select-import-replay-resume guidance, and prove the common,
+Codex, Kimi, OpenCode, ACP, and testkit packages assemble independently.
 
 ## Index
 

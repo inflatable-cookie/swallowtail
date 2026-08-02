@@ -1,6 +1,6 @@
 # 061 Provider Session Import Route Classification
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-01
 Milestone: `../023-provider-session-import-acceptance-and-handoff.md`
@@ -29,12 +29,26 @@ and continuation profile without inferring support from a provider family.
 
 ## Acceptance Criteria
 
-- [ ] every harness route has one evidence-backed classification
-- [ ] alternate transports do not inherit each other's capability
-- [ ] only complete list, revalidation, replay, and continuation report support
-- [ ] partial routes retain exact promotion gates
-- [ ] public counts derive from the route inventory
-- [ ] card 062 becomes the sole ready and next task
+- [x] every harness route has one evidence-backed classification
+- [x] alternate transports do not inherit each other's capability
+- [x] only complete list, revalidation, replay, and continuation report support
+- [x] partial routes retain exact promotion gates
+- [x] public counts derive from the route inventory
+- [x] card 062 becomes the sole ready and next task
+
+## Evidence
+
+- Research 096 splits combined solution rows into 19 distinct harness routes
+  and audits catalogue, lookup, replay, load, resume, resource, activity, and
+  exact-version truth
+- exactly three routes are supported: Codex app-server, Kimi Code ACP, and
+  OpenCode HTTP
+- Gemini headless is discovery-only; Claude ACP and Kimi local server are
+  attachment-only; Cursor ACP and Pi RPC remain blocked; 11 routes are not
+  applicable
+- every partial route names its exact promotion gate
+- no adapter, provider, executable, credential, prompt, or consumer changed
+- `effigy qa:docs`, `effigy qa:northstar`, and `git diff --check` passed
 
 ## Validation
 

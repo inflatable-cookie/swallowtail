@@ -9,5 +9,7 @@ mod input_callback_corpus;
 mod protocol_fixtures;
 #[path = "session_continuity_corpus.rs"]
 mod session_continuity_corpus;
+#[path = "session_import_corpus.rs"]
+mod session_import_corpus;
 #[path = "usage_corpus.rs"]
 mod usage_corpus;

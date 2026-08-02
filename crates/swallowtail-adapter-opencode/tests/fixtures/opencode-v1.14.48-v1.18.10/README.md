@@ -65,6 +65,15 @@ accepts only `once` or `reject`; upstream `always` remains visible but cannot
 be selected. File input uses bounded host-materialized bytes encoded as a data
 URL and grants no client path or arbitrary URL authority.
 
+`session-import.json` extends the existing load/resume closure with exact
+`session.list` and `session.status` operations. All 51 qualified releases map
+to seven recursive five-operation closures and the same 12 published-version
+segments as continuity. `session-import-success.json` freezes directory-bound
+offset pagination, root/child/active projection, exact lookup, and ordered
+history identity. `session-import-failures.json` freezes malformed, stale,
+active, child, foreign-directory, gap, and unverified-newer rejection without
+provider payloads or credentials.
+
 The small health and session envelopes are synthetic. They contain no
 credential, endpoint, account, path, provider payload, model response, or user
 content.

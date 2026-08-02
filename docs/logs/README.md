@@ -5,6 +5,7 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-08-02 OpenCode Session Catalogue Range Corpus](2026-08-02-opencode-session-catalogue-range-corpus.md)
 - [2026-08-02 Kimi ACP Session Import Acceptance](2026-08-02-kimi-acp-session-import-acceptance.md)
 - [2026-08-02 Kimi ACP Session Catalogue And Import](2026-08-02-kimi-acp-session-catalogue-and-import.md)
 - [2026-08-02 Codex Thread Import Acceptance](2026-08-02-codex-thread-import-acceptance.md)

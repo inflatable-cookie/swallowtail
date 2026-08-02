@@ -1,0 +1,22 @@
+{
+  "malformed": [
+    {"case":"missing_id","session":{"directory":"/workspace/fixture","title":"Missing id","version":"1.18.10","time":{"created":1,"updated":2}}},
+    {"case":"missing_updated_time","session":{"id":"ses_missing_time","directory":"/workspace/fixture","title":"Missing time","version":"1.18.10","time":{"created":1}}},
+    {"case":"invalid_status","status":{"ses_invalid":{"type":"provider-private-state"}}},
+    {"case":"duplicate_id","session_ids":["ses_duplicate","ses_duplicate"]}
+  ],
+  "stale": [
+    {"case":"missing_lookup","http_status":404,"result":"no_binding"},
+    {"case":"title_changed","listed":"Original title","lookup":"Changed title","result":"no_binding"},
+    {"case":"updated_time_changed","listed":1775000004000,"lookup":1775000005000,"result":"no_binding"},
+    {"case":"became_busy","listed_status":"idle","lookup_status":"busy","result":"no_binding"},
+    {"case":"version_changed","listed":"1.18.10","lookup":"1.18.9","result":"no_binding"}
+  ],
+  "unsupported": [
+    {"case":"child_session","parentID":"ses_parent","result":"unavailable"},
+    {"case":"foreign_directory","directory":"/workspace/other","result":"reject"},
+    {"case":"unverified_newer","version":"1.18.11","result":"capability_unavailable"},
+    {"case":"semantic_gap","version":"1.15.8","result":"capability_unavailable"}
+  ],
+  "diagnostic_forbidden": ["session_id","directory","title","message_content","raw_http_body","credential"]
+}

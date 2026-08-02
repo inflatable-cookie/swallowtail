@@ -6,7 +6,7 @@ Created: 2026-08-01
 Depends on: g03.021
 Vision tags: attached harness, HTTP session catalogue, external import
 Contract refs: 009-011, 014, 017, 029, 037-038, 044, 046
-Planning state: cards 058-060 planned
+Planning state: card 058 completed; card 059 ready; card 060 planned
 
 ## Problem
 
@@ -17,7 +17,7 @@ maintained server range.
 
 ## Goals
 
-- [ ] freeze exact list, lookup, status, message, load, and resume closures
+- [x] freeze exact list, lookup, status, message, load, and resume closures
 - [ ] preserve attached endpoint, directory, access, and version identity
 - [ ] expose bounded resource-scoped session catalogue and explicit import
 - [ ] reuse existing ordered replay and prompt continuation
@@ -28,10 +28,10 @@ maintained server range.
 
 ### Batch 22.1 — Exact OpenCode Range Corpus
 
-- [ ] Execute card 058.
-- [ ] freeze the selected OpenAPI closures and runtime behavior at every
+- [x] Execute card 058.
+- [x] freeze the selected OpenAPI closures and runtime behavior at every
   maintained segment
-- [ ] record pagination, directory scoping, child-session, status, and message
+- [x] record pagination, directory scoping, child-session, status, and message
   differences without widening the selected profile
 
 ### Batch 22.2 — HTTP Driver And Prepared Facade

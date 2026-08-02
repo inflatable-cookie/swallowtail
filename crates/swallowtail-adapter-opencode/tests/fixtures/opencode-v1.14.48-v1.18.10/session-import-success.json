@@ -1,0 +1,35 @@
+{
+  "directory": "/workspace/fixture",
+  "limit": 2,
+  "pages": [
+    {
+      "start": 0,
+      "sessions": [
+        {"id":"ses_root","slug":"root","projectID":"project-fixture","directory":"/workspace/fixture","title":"Root session","version":"1.18.10","time":{"created":1775000000000,"updated":1775000004000}},
+        {"id":"ses_child","slug":"child","projectID":"project-fixture","directory":"/workspace/fixture","parentID":"ses_root","title":"Child session","version":"1.18.10","time":{"created":1775000001000,"updated":1775000003000}}
+      ]
+    },
+    {
+      "start": 2,
+      "sessions": [
+        {"id":"ses_busy","slug":"busy","projectID":"project-fixture","directory":"/workspace/fixture","title":"Busy session","version":"1.18.10","time":{"created":1775000002000,"updated":1775000002000}},
+        {"id":"ses_foreign","slug":"foreign","projectID":"project-fixture","directory":"/workspace/other","title":"Foreign session","version":"1.18.10","time":{"created":1775000000000,"updated":1775000001000}}
+      ]
+    },
+    {"start":4,"sessions":[]}
+  ],
+  "status": {
+    "ses_root":{"type":"idle"},
+    "ses_child":{"type":"idle"},
+    "ses_busy":{"type":"busy"},
+    "ses_foreign":{"type":"idle"}
+  },
+  "lookup": {"id":"ses_root","slug":"root","projectID":"project-fixture","directory":"/workspace/fixture","title":"Root session","version":"1.18.10","time":{"created":1775000000000,"updated":1775000004000}},
+  "expected_candidates": [
+    {"id":"ses_root","activity":"inactive","availability":"available"},
+    {"id":"ses_child","activity":"inactive","availability":"provider_reported_unavailable"},
+    {"id":"ses_busy","activity":"active","availability":"active"}
+  ],
+  "excluded": ["ses_foreign"],
+  "expected_history_ids": ["message-1","message-2","message-3","message-4"]
+}

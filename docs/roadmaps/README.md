@@ -13,9 +13,9 @@ shape.
 
 ## Next Task
 
-Execute g03 card 058. Freeze OpenCode's exact resource-scoped session list,
-lookup, history, status, continuation, error, and pagination behavior across
-every maintained server milestone before changing production capabilities.
+Execute g03 card 059. Add OpenCode's directory-scoped HTTP session catalogue,
+status-aware candidate projection, exact revalidation, prepared import facade,
+and binding handoff into the existing load/replay/resume path.
 
 ## Index
 

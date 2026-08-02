@@ -1,0 +1,86 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-08-02",
+  "claim_id": "opencode.http.session-import-window-1",
+  "axis": "opencode.server",
+  "baseline": "1.14.48",
+  "latest_qualified": "1.18.10",
+  "support_authority": "swallowtail_maintainer_qualified",
+  "selected_routes": [
+    {"operation_id":"session.list","method":"GET","path":"/session"},
+    {"operation_id":"session.status","method":"GET","path":"/session/status"},
+    {"operation_id":"session.get","method":"GET","path":"/session/{sessionID}"},
+    {"operation_id":"session.messages","method":"GET","path":"/session/{sessionID}/message"},
+    {"operation_id":"session.prompt_async","method":"POST","path":"/session/{sessionID}/prompt_async"}
+  ],
+  "surface_revisions": [
+    {"id":"import-01","sha256":"f9b47d66ce39d384ab1861fd83bc4f57c779ae40d130bd473699dc8f8e781241","reference_count":50},
+    {"id":"import-02","sha256":"4a7f6961648c9b8de9b6f09962f12e80022c6aeec3b81511f51c12ed37cb8ecf","reference_count":50},
+    {"id":"import-03","sha256":"4adff5614df0a993655437555d1c61b087de30925d778e076a9142ccd0126266","reference_count":52},
+    {"id":"import-04","sha256":"2fd1aed76d9973cebb7d408e59b90787e2eaacdd0683c3e6967d3df698596d23","reference_count":52},
+    {"id":"import-05","sha256":"50e8e7cd77edda263d1f41093b3419c9a9f25abc5989f04e8a2c961d7d80cb67","reference_count":52},
+    {"id":"import-06","sha256":"39ae92e60c7da0d3eed11e53d28af6bd6b70bb50c3f7aff3e6921542b96adb3d","reference_count":52},
+    {"id":"import-07","sha256":"51f05c6bda2dd3f9eb02bfb612010fe33d5eae1cc586c32a913e057999a38eb1","reference_count":53}
+  ],
+  "segments": [
+    {"minimum":"1.14.48","maximum":"1.14.48","surface":"import-01"},
+    {"minimum":"1.14.49","maximum":"1.14.51","surface":"import-02"},
+    {"minimum":"1.15.0","maximum":"1.15.5","surface":"import-02"},
+    {"minimum":"1.15.6","maximum":"1.15.6","surface":"import-03"},
+    {"minimum":"1.15.7","maximum":"1.15.7","surface":"import-04"},
+    {"minimum":"1.15.9","maximum":"1.15.12","surface":"import-04"},
+    {"minimum":"1.15.13","maximum":"1.15.13","surface":"import-05"},
+    {"minimum":"1.16.0","maximum":"1.16.0","surface":"import-06"},
+    {"minimum":"1.16.2","maximum":"1.16.2","surface":"import-06"},
+    {"minimum":"1.17.0","maximum":"1.17.3","surface":"import-06"},
+    {"minimum":"1.17.4","maximum":"1.17.20","surface":"import-07"},
+    {"minimum":"1.18.0","maximum":"1.18.10","surface":"import-07"}
+  ],
+  "binding": {
+    "target": "exact_attached_endpoint",
+    "access": "basic_auth_credential_lease",
+    "resource": "exact_directory_query_and_response_field",
+    "version": "health_observation_and_session_version_exact",
+    "list_parameters": ["directory","workspace","scope","path","roots","start","search","limit"],
+    "selected_parameters": ["directory","start","limit"],
+    "pagination": "opaque_cursor_encodes_next_start_for_same_plan",
+    "terminal_page": "response_count_less_than_limit"
+  },
+  "projection": {
+    "title": "session.title",
+    "updated_at_unix_milliseconds": "session.time.updated",
+    "root_session": "parentID_absent",
+    "child_session": "visible_unavailable_provider_reported",
+    "idle": "inactive_available",
+    "busy_or_retry": "active_unavailable",
+    "missing_or_malformed_status": "unavailable_provider_reported",
+    "foreign_directory": "reject",
+    "archived": "visible_unavailable_archived",
+    "session_version_mismatch": "visible_unavailable_incompatible_interface"
+  },
+  "history": {
+    "source": "session-continuity.json",
+    "wire_page_order": "newest_page_first",
+    "item_order": "chronological_within_page",
+    "replay_order": "oldest_page_first_preserve_item_order",
+    "maximum_pages": 64,
+    "maximum_items": 4096,
+    "maximum_response_bytes": 4194304
+  },
+  "unsupported": {
+    "semantic_gaps": ["1.14.52","1.15.8","1.15.14","1.16.1","1.16.3","1.17.21"],
+    "unverified_newer_minimum": "1.18.11",
+    "child_import": false,
+    "cross_directory_import": false,
+    "account_wide_scan": false
+  },
+  "closure": {
+    "algorithm": "five selected operations plus transitive local JSON references; canonical keys recursively sorted before SHA-256",
+    "external_references": false
+  },
+  "sources": {
+    "baseline_openapi": "https://github.com/anomalyco/opencode/blob/v1.14.48/packages/sdk/openapi.json",
+    "latest_openapi": "https://github.com/anomalyco/opencode/blob/v1.18.10/packages/sdk/openapi.json",
+    "current_docs": "https://opencode.ai/docs/server/"
+  }
+}

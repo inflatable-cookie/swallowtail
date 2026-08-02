@@ -227,6 +227,10 @@ visible as unverified newer unless exact evidence requires rejection.
   remote-authoritative host identities, in-flight lifecycle control, honest
   Claude/Cursor non-promotion, public guidance, 272 focused tests, and two
   independently compiling packages
+- Research 095 and card 058 freeze OpenCode list/status/get/messages/prompt
+  closure across all 51 qualified releases: seven exact recursive surfaces,
+  12 published-version segments, explicit directory/endpoint/status/child
+  policy, deterministic failures, and 86 focused tests
   focused protocol tests and extracted-package verification pass
 
 ## Milestones

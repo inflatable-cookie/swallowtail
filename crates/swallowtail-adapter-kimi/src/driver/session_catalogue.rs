@@ -6,12 +6,14 @@ use swallowtail_runtime::{
     ProviderSessionCatalogueOutcome, ProviderSessionCataloguePlan, ProviderSessionCatalogueRequest,
     ProviderSessionImportDriver, ProviderSessionImportOutcome, ProviderSessionImportPlan,
     ProviderSessionImportRequest, ProviderSessionOperationFailure,
-    ProviderSessionOperationFailureStage,
-    validate_provider_session_catalogue_execution, validate_provider_session_import_execution,
+    ProviderSessionOperationFailureStage, validate_provider_session_catalogue_execution,
+    validate_provider_session_import_execution,
 };
 
+mod control;
 mod projection;
 
+use control::{Controlled, deadline_wait, wait_controlled};
 use projection::{find_candidate, limits, negotiated_capabilities, project_page};
 
 impl ProviderSessionCatalogueDriver for KimiAcpDriver {
@@ -80,18 +82,24 @@ impl KimiAcpDriver {
                 &initialize,
                 ProviderSessionOperationFailureStage::BeforeDispatch,
             )?;
-            let page = attachment
-                .connection
-                .list_sessions(
+            let page = wait_controlled(
+                attachment.connection.list_sessions(
                     capabilities,
                     attachment.cwd.clone(),
                     request
                         .cursor()
                         .map(|cursor| cursor.as_provider_value().to_owned()),
                     limits(&plan),
-                )
-                .await
-                .map_err(catalogue_projection)?;
+                ),
+                request.cancellation().as_ref(),
+                deadline_wait(request.agreement().deadline(), &services)?,
+            )
+            .await;
+            let page = match page {
+                Controlled::Completed(result) => result.map_err(catalogue_list_failure)?,
+                Controlled::Cancelled => return Err(cancelled()),
+                Controlled::Deadline => return Err(timed_out()),
+            };
             project_page(
                 &plan,
                 &page,
@@ -141,14 +149,23 @@ impl KimiAcpDriver {
                 &initialize,
                 ProviderSessionOperationFailureStage::ImportRevalidation,
             )?;
-            find_candidate(
-                &plan,
-                &request,
-                Arc::clone(&attachment.connection),
-                attachment.cwd.clone(),
-                capabilities,
+            match wait_controlled(
+                find_candidate(
+                    &plan,
+                    &request,
+                    Arc::clone(&attachment.connection),
+                    attachment.cwd.clone(),
+                    capabilities,
+                ),
+                request.cancellation().as_ref(),
+                deadline_wait(request.agreement().deadline(), &services)?,
             )
             .await
+            {
+                Controlled::Completed(result) => result,
+                Controlled::Cancelled => Err(cancelled()),
+                Controlled::Deadline => Err(timed_out()),
+            }
         }
         .await;
         let cleanup = attachment.abort(&services).await;
@@ -163,24 +180,32 @@ fn check_control(
     services: &HostServices,
 ) -> Result<(), ProviderSessionOperationFailure> {
     if cancellation.is_requested() {
-        return Err(operation_failure(
-            ProviderSessionOperationFailureStage::Cancelled,
-            "swallowtail.kimi.provider_session.cancelled",
-            "Kimi provider-session operation was cancelled",
-        ));
+        return Err(cancelled());
     }
     if deadline.is_some_and(|deadline| {
         services
             .time()
             .is_some_and(|time| time.now() >= deadline.instant())
     }) {
-        return Err(operation_failure(
-            ProviderSessionOperationFailureStage::TimedOut,
-            "swallowtail.kimi.provider_session.timed_out",
-            "Kimi provider-session operation timed out",
-        ));
+        return Err(timed_out());
     }
     Ok(())
+}
+
+fn cancelled() -> ProviderSessionOperationFailure {
+    operation_failure(
+        ProviderSessionOperationFailureStage::Cancelled,
+        "swallowtail.kimi.provider_session.cancelled",
+        "Kimi provider-session operation was cancelled",
+    )
+}
+
+fn timed_out() -> ProviderSessionOperationFailure {
+    operation_failure(
+        ProviderSessionOperationFailureStage::TimedOut,
+        "swallowtail.kimi.provider_session.timed_out",
+        "Kimi provider-session operation timed out",
+    )
 }
 
 fn finish<T>(
@@ -214,6 +239,16 @@ fn catalogue_projection(
         ProviderSessionOperationFailureStage::CatalogueProjection,
         error,
     )
+}
+
+fn catalogue_list_failure(
+    error: swallowtail_runtime::RuntimeFailure,
+) -> ProviderSessionOperationFailure {
+    if error.diagnostic().code() == "swallowtail.kimi.acp.session_list_response_invalid" {
+        catalogue_projection(error)
+    } else {
+        catalogue_dispatch(error)
+    }
 }
 
 fn import_revalidation(

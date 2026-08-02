@@ -223,6 +223,10 @@ visible as unverified newer unless exact evidence requires rejection.
   across exact `0.28.1` through `0.31.1`; state-root or candidate drift issues
   no binding, ordered replay stays on the existing load path, and 186 focused
   Kimi/ACP tests plus both extracted packages pass
+- card 057 closes g03.021 with production-driver conformance under local and
+  remote-authoritative host identities, in-flight lifecycle control, honest
+  Claude/Cursor non-promotion, public guidance, 272 focused tests, and two
+  independently compiling packages
   focused protocol tests and extracted-package verification pass
 
 ## Milestones

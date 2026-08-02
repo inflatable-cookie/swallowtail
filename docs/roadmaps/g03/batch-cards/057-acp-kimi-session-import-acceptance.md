@@ -1,6 +1,6 @@
 # 057 ACP And Kimi Session Import Acceptance
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-01
 Milestone: `../021-acp-session-list-and-kimi-import.md`
@@ -30,17 +30,17 @@ and honest classification of the remaining ACP adapters.
 
 ## Acceptance Criteria
 
-- [ ] Kimi passes the complete profile under both host identities
-- [ ] protocol support alone does not widen another adapter
-- [ ] unsupported ACP agents fail before dispatch
-- [ ] existing Kimi load/resume regressions pass
-- [ ] affected packages compile independently
-- [ ] card 058 becomes the sole ready and next task
+- [x] Kimi passes the complete profile under both host identities
+- [x] protocol support alone does not widen another adapter
+- [x] unsupported ACP agents fail before dispatch
+- [x] existing Kimi load/resume regressions pass
+- [x] affected packages compile independently
+- [x] card 058 becomes the sole ready and next task
 
 ## Validation
 
-- `effigy validate:focused swallowtail-acp swallowtail-adapter-kimi swallowtail-testkit`
-- `effigy package:verify-affected swallowtail-acp swallowtail-adapter-kimi`
+- `effigy validate:focused swallowtail-protocol-acp swallowtail-adapter-kimi swallowtail-testkit`
+- `effigy package:verify-affected swallowtail-protocol-acp swallowtail-adapter-kimi`
 - `effigy qa:docs`
 - `git diff --check`
 - no live or broad suite
@@ -48,3 +48,17 @@ and honest classification of the remaining ACP adapters.
 ## Auto-Continuation
 
 Yes. Continue to card 058 after ACP/Kimi acceptance.
+
+## Evidence
+
+- the Kimi suite invokes common provider-session import conformance and repeats
+  production list/import under local and remote-authoritative host identities
+- pagination retains cursor scope and stable candidate ordinals across fresh
+  operation attachments
+- in-flight cancellation and deadline stop the child, join the protocol pump,
+  and release resource and credential leases; disconnect and cleanup failure
+  remain distinct stages
+- a negotiated ACP agent without list capability fails before `session/list`;
+  Claude and Cursor descriptors still expose no catalogue/import roles
+- Kimi load/resume regressions remain inside 272 focused ACP, Kimi, and testkit
+  tests; the protocol and Kimi packages compile independently

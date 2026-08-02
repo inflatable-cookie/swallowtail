@@ -13,9 +13,9 @@ shape.
 
 ## Next Task
 
-Execute g03 card 057. Close Kimi ACP session import through common local and
-remote-authoritative conformance, lifecycle failure boundaries, route
-classification, guidance, and extracted-package proof.
+Execute g03 card 058. Freeze OpenCode's exact resource-scoped session list,
+lookup, history, status, continuation, error, and pagination behavior across
+every maintained server milestone before changing production capabilities.
 
 ## Index
 

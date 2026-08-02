@@ -198,7 +198,7 @@ fn state_root_drift_and_changed_candidates_issue_no_binding() {
     );
 }
 
-fn catalogue_input(suffix: &str) -> KimiSessionCatalogueInput {
+pub(crate) fn catalogue_input(suffix: &str) -> KimiSessionCatalogueInput {
     KimiSessionCatalogueInput::new(
         RequestId::new(format!("kimi-list-{suffix}")).unwrap(),
         ProviderSessionCatalogueId::new(format!("kimi-catalogue-{suffix}")).unwrap(),

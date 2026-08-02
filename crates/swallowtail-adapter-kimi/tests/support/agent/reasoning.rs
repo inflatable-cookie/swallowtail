@@ -44,7 +44,12 @@ impl SharedAgent {
             | Scenario::Complete
             | Scenario::HoldPrompt
             | Scenario::DisconnectPrompt
-            | Scenario::CatalogueChanged => return Err(fixture_failure()),
+            | Scenario::CatalogueChanged
+            | Scenario::CataloguePaginated
+            | Scenario::CatalogueHold
+            | Scenario::CatalogueDisconnect
+            | Scenario::CatalogueUnsupported
+            | Scenario::CleanupFailure => return Err(fixture_failure()),
         };
         Self::enqueue(state, result);
         Ok(())

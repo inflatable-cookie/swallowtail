@@ -2,11 +2,11 @@
 
 use swallowtail_adapter_kimi::{
     KimiPreparationInput, KimiPreparationProbe, KimiPreparedIntegration, KimiPreparedSession,
-    KimiSessionProfileInput, prepare_kimi,
+    KimiPreparedSessionCatalogue, KimiSessionCatalogueInput, KimiSessionProfileInput, prepare_kimi,
 };
 use swallowtail_runtime::{
-    CleanupOutcome, HostServices, OperationContent, RuntimeFailure, RuntimeTurnId,
-    SessionResumeBinding, TerminalOutcome, TurnRequest,
+    CleanupOutcome, HostServices, OperationContent, ProviderSessionCandidate, RuntimeFailure,
+    RuntimeTurnId, SessionResumeBinding, TerminalOutcome, TurnRequest,
 };
 
 async fn prepare_installation(
@@ -22,6 +22,29 @@ fn prepare_session(
     input: KimiSessionProfileInput,
 ) -> Result<KimiPreparedSession, swallowtail_runtime::PreparationFailure> {
     installation.prepare_session(input)
+}
+
+fn prepare_catalogue(
+    installation: &KimiPreparedIntegration,
+    input: KimiSessionCatalogueInput,
+) -> Result<KimiPreparedSessionCatalogue, swallowtail_runtime::PreparationFailure> {
+    installation.prepare_session_catalogue(input)
+}
+
+async fn import_selected_session(
+    installation: &KimiPreparedIntegration,
+    catalogue: &KimiPreparedSessionCatalogue,
+    candidate: ProviderSessionCandidate,
+    session_input: KimiSessionProfileInput,
+    services: HostServices,
+) -> Result<SessionResumeBinding, String> {
+    installation
+        .prepare_session_import(catalogue, candidate, session_input)
+        .map_err(|error| error.to_string())?
+        .import_session(services)
+        .await
+        .map(|outcome| outcome.binding().clone())
+        .map_err(|error| error.to_string())
 }
 
 async fn open_prompt_and_interrupt(

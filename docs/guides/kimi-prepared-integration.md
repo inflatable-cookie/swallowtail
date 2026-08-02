@@ -13,6 +13,8 @@ Preparation still requires:
 - one configured-instance identity and revision
 - one execution host and approved executable target
 - one isolated Kimi state environment
+- one opaque Kimi state-root identity when provider-session discovery or
+  import is required
 - one membership OAuth access profile and observed or caller-asserted evidence
 - caller-owned probe cancellation and deadline
 
@@ -32,6 +34,40 @@ The result is `KimiCodePreparedIntegration::Acp` or `Headless`. Each branch
 exposes the exact installed observation, access provenance, configured
 instance, approved target, and its low-level driver escape hatch. The older
 route-specific constructors remain available.
+
+## Browse And Import Existing Sessions
+
+Only the ACP branch exposes provider-session discovery. Supply
+`KimiPreparationInput::with_state_root` during installation preparation, then
+create a `KimiSessionCatalogueInput` with an explicit catalogue id, working
+resource, bounds, and optional deadline.
+
+`prepare_session_catalogue` derives a read-only operation. `list_sessions`
+negotiates ACP `session/list` and returns one bounded page. A returned cursor is
+private provider state; pass it only through `next_page_request` and
+`list_page`. Candidate provider ids, cwd values, and `_meta` never enter stable
+diagnostics.
+
+Import remains a separate operation:
+
+1. select one available candidate from a catalogue page
+2. call `prepare_session_import` with that catalogue, candidate, and the same
+   explicit model/resource session input used for ordinary attachment
+3. call `import_session`; Swallowtail re-lists and revalidates before returning
+   an explicitly imported binding
+4. pass that binding to an ordinary prepared session's `load_session` for
+   ordered replay, or later `resume_session` without replay
+
+The catalogue and import must retain the same configured instance, execution
+host, exact qualified Kimi version, access evidence, opaque state root, working
+resource, model route, and session policy. Missing, changed, active, or
+cross-plan candidates issue no binding. Versions above qualified `0.31.1` may
+still run other unverified-newer Kimi operations, but cannot inherit catalogue
+or import support.
+
+Claude Agent and Cursor remain unavailable on this operation. Stable ACP wire
+support or a provider capability advertisement does not qualify an adapter's
+list, history replay, state authority, or version range.
 
 ## Prepare One Persistent Session
 
@@ -64,6 +100,8 @@ The prepared value exposes distinct operations:
 
 | Operation | Prepared method | Result |
 | --- | --- | --- |
+| resource-scoped browse | `prepare_session_catalogue` → `list_sessions` | bounded candidate page |
+| explicit import | `prepare_session_import` → `import_session` | revalidated imported binding |
 | new session | `open_session` | interactive session handle |
 | provider load | `load_session` | replay plus interactive session handle |
 | provider resume | `resume_session` | interactive session handle, no replay |

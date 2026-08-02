@@ -12,6 +12,11 @@ pub enum Scenario {
     HoldPrompt,
     DisconnectPrompt,
     CatalogueChanged,
+    CataloguePaginated,
+    CatalogueHold,
+    CatalogueDisconnect,
+    CatalogueUnsupported,
+    CleanupFailure,
     ReasoningLegacySuccess,
     ReasoningEffortSuccess,
     ReasoningEffort291Success,
@@ -36,6 +41,11 @@ impl Scenario {
             | Self::HoldPrompt
             | Self::DisconnectPrompt
             | Self::CatalogueChanged
+            | Self::CataloguePaginated
+            | Self::CatalogueHold
+            | Self::CatalogueDisconnect
+            | Self::CatalogueUnsupported
+            | Self::CleanupFailure
             | Self::ReasoningLegacySuccess => "0.28.1",
             Self::ReasoningEffort291Success => "0.29.1",
             Self::ReasoningEffort292Success => "0.29.2",
@@ -50,8 +60,20 @@ impl Scenario {
     fn has_reasoning(self) -> bool {
         !matches!(
             self,
-            Self::Complete | Self::HoldPrompt | Self::DisconnectPrompt | Self::CatalogueChanged
+            Self::Complete
+                | Self::HoldPrompt
+                | Self::DisconnectPrompt
+                | Self::CatalogueChanged
+                | Self::CataloguePaginated
+                | Self::CatalogueHold
+                | Self::CatalogueDisconnect
+                | Self::CatalogueUnsupported
+                | Self::CleanupFailure
         )
+    }
+
+    pub(super) fn cleanup_fails(self) -> bool {
+        matches!(self, Self::CleanupFailure)
     }
 }
 
@@ -126,6 +148,11 @@ impl SharedAgent {
             | Scenario::HoldPrompt
             | Scenario::DisconnectPrompt
             | Scenario::CatalogueChanged
+            | Scenario::CataloguePaginated
+            | Scenario::CatalogueHold
+            | Scenario::CatalogueDisconnect
+            | Scenario::CatalogueUnsupported
+            | Scenario::CleanupFailure
             | Scenario::ReasoningMissing => {}
         }
         json!({"configOptions": options})
@@ -147,26 +174,50 @@ impl SharedAgent {
             }
             Some("session/load") => self.load(&mut state, id),
             Some("session/list") => {
+                if matches!(self.scenario, Scenario::CatalogueHold) {
+                    self.changed.notify_all();
+                    return Ok(());
+                }
+                if matches!(self.scenario, Scenario::CatalogueDisconnect) {
+                    state.stopped = true;
+                    self.changed.notify_all();
+                    return Ok(());
+                }
                 let cwd = message["params"]["cwd"]
                     .as_str()
                     .ok_or_else(fixture_failure)?;
+                let second_page = message["params"]["cursor"].as_str() == Some("page-2");
                 let title = if matches!(self.scenario, Scenario::CatalogueChanged) {
                     "Changed Kimi fixture session"
+                } else if second_page {
+                    "Second Kimi fixture session"
                 } else {
                     "Kimi fixture session"
                 };
+                let session_id = if second_page {
+                    "kimi-session-second"
+                } else {
+                    "kimi-session-bound"
+                };
+                let next_cursor =
+                    if matches!(self.scenario, Scenario::CataloguePaginated) && !second_page {
+                        Some("page-2")
+                    } else {
+                        None
+                    };
                 Self::enqueue(
                     &mut state,
                     Self::response(
                         id,
                         json!({
                             "sessions": [{
-                                "sessionId": "kimi-session-bound",
+                                "sessionId": session_id,
                                 "cwd": cwd,
                                 "title": title,
                                 "updatedAt": "2026-08-01T12:34:56.789Z",
                                 "_meta": {"fixturePrivate": "not-public"}
                             }],
+                            "nextCursor": next_cursor,
                             "_meta": {"fixturePrivate": "not-public"}
                         }),
                     ),
@@ -195,7 +246,11 @@ impl SharedAgent {
                 id,
                 json!({
                     "protocolVersion": 1,
-                    "agentCapabilities": {"loadSession": true, "sessionCapabilities": {"list": {}, "resume": {}}},
+                    "agentCapabilities": if matches!(self.scenario, Scenario::CatalogueUnsupported) {
+                        json!({"loadSession": true, "sessionCapabilities": {"resume": {}}})
+                    } else {
+                        json!({"loadSession": true, "sessionCapabilities": {"list": {}, "resume": {}}})
+                    },
                     "authMethods": [{"id": "login", "type": "terminal"}],
                     "agentInfo": {"name": "Kimi Code CLI", "version": self.scenario.version()}
                 }),
@@ -250,6 +305,11 @@ impl SharedAgent {
             Scenario::HoldPrompt => {}
             Scenario::DisconnectPrompt => state.stopped = true,
             Scenario::CatalogueChanged => return Err(fixture_failure()),
+            Scenario::CataloguePaginated
+            | Scenario::CatalogueHold
+            | Scenario::CatalogueDisconnect
+            | Scenario::CatalogueUnsupported
+            | Scenario::CleanupFailure => return Err(fixture_failure()),
             _ => return Err(fixture_failure()),
         }
         Ok(())

@@ -72,8 +72,11 @@ and import-to-load/resume ordering. Research 093 and card 052 now freeze
 `0.105.0` as the first complete Codex catalogue/import floor without removing
 older app-server support. Exact resource-scoped listing and read-before-import
 now sit behind the prepared Codex facade. Cross-host, lifecycle, public, and
-extracted-package acceptance passes. Stable ACP `session/list` codec work is
-next and does not widen any production agent claim by itself.
+extracted-package acceptance passes. The stable ACP `session/list` codec and
+the exact Kimi ACP catalogue/import route are now realized. Kimi revalidates
+state root, resource, host, access, version, candidate, model, and policy before
+an imported binding reaches the existing load/replay/resume path. Stable wire
+support alone still does not widen another production agent claim.
 
 ## Start Here
 

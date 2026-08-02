@@ -1,12 +1,12 @@
 # 021 ACP Session List And Kimi Import
 
-Status: active
+Status: completed
 Owner: Tom
 Created: 2026-08-01
 Depends on: g03.020
 Vision tags: shared protocol, Kimi continuity, capability fidelity
 Contract refs: 009-011, 015, 017, 029, 035, 037, 046
-Planning state: cards 055-056 completed; card 057 ready
+Planning state: cards 055-057 completed
 
 ## Problem
 
@@ -20,8 +20,8 @@ cannot qualify list, replay, or import for every ACP agent.
 - [x] add bounded list framing and candidate projection to the shared codec
 - [x] qualify Kimi Code ACP as the first complete ACP import route
 - [x] preserve Kimi's exact state-root and working-resource binding
-- [ ] classify Claude and Cursor without widening their current claims
-- [ ] prove common wire behavior across host topologies
+- [x] classify Claude and Cursor without widening their current claims
+- [x] prove common wire behavior across host topologies
 
 ## Execution Plan
 
@@ -43,11 +43,11 @@ cannot qualify list, replay, or import for every ACP agent.
 
 ### Batch 21.3 — ACP Conformance And Route Classification
 
-- [ ] Execute card 057 after card 056 passes.
-- [ ] prove Kimi under local and remote-authoritative host identities
-- [ ] keep Claude unavailable for listing until it advertises and implements it
-- [ ] keep Cursor load/list unavailable until exact behavior is qualified
-- [ ] reconcile ACP and Kimi prepared guidance and package evidence
+- [x] Execute card 057 after card 056 passes.
+- [x] prove Kimi under local and remote-authoritative host identities
+- [x] keep Claude unavailable for listing until it advertises and implements it
+- [x] keep Cursor load/list unavailable until exact behavior is qualified
+- [x] reconcile ACP and Kimi prepared guidance and package evidence
 
 ## Boundaries
 
@@ -61,13 +61,13 @@ cannot qualify list, replay, or import for every ACP agent.
 
 ## Acceptance Criteria
 
-- [ ] list capability is negotiated independently from load, resume, and delete
-- [ ] ACP cursors and candidates are bounded and request-scoped
-- [ ] Kimi import revalidates exact state root and resource authority
-- [ ] Kimi load replay completes before the imported handle is ready
-- [ ] unsupported ACP agents fail before list or import dispatch
-- [ ] local and remote-authoritative deterministic behavior agrees
-- [ ] focused ACP, Kimi, and affected-package validation pass
+- [x] list capability is negotiated independently from load, resume, and delete
+- [x] ACP cursors and candidates are bounded and request-scoped
+- [x] Kimi import revalidates exact state root and resource authority
+- [x] Kimi load replay completes before the imported handle is ready
+- [x] unsupported ACP agents fail before list or import dispatch
+- [x] local and remote-authoritative deterministic behavior agrees
+- [x] focused ACP, Kimi, and affected-package validation pass
 
 ## Next Planning Checkpoint
 

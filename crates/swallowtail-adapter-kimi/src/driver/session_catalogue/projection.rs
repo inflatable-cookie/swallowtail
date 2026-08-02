@@ -37,7 +37,7 @@ pub(super) async fn find_candidate(
             .await
             .map_err(import_revalidation)?;
         for session in page.sessions() {
-            observed = observed.checked_add(1).ok_or_else(traversal_limit)?;
+            observed = observed.checked_add(1).ok_or_else(import_traversal_limit)?;
             if observed
                 > plan
                     .source_catalogue()
@@ -47,7 +47,7 @@ pub(super) async fn find_candidate(
                     .get()
                 || !seen_sessions.insert(session.session_id().to_owned())
             {
-                return Err(traversal_limit());
+                return Err(import_traversal_limit());
             }
             if session.session_id() == request.provider_session_ref().as_provider_value() {
                 return revalidate_session(plan, request, session, &cwd);
@@ -61,7 +61,7 @@ pub(super) async fn find_candidate(
             ));
         };
         if !seen_cursors.insert(next.clone()) {
-            return Err(traversal_limit());
+            return Err(import_traversal_limit());
         }
         cursor = Some(next);
     }
@@ -187,5 +187,13 @@ fn traversal_limit() -> ProviderSessionOperationFailure {
         ProviderSessionOperationFailureStage::CatalogueProjection,
         "swallowtail.kimi.session_catalogue.traversal_limit_exceeded",
         "Kimi Code session catalogue traversal exceeded its planned bound",
+    )
+}
+
+fn import_traversal_limit() -> ProviderSessionOperationFailure {
+    operation_failure(
+        ProviderSessionOperationFailureStage::ImportRevalidation,
+        "swallowtail.kimi.session_import.traversal_limit_exceeded",
+        "Kimi Code session import revalidation exceeded its planned bound",
     )
 }

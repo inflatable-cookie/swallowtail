@@ -53,7 +53,15 @@ impl WorkingResourceService for FixtureHost {
             .lock()
             .expect("fixture cleanup-event lock poisoned")
             .push(CleanupEvent::ResourceRelease);
-        Box::pin(async { CleanupOutcome::NotApplicable })
+        let outcome = if self.agent.scenario.cleanup_fails() {
+            CleanupOutcome::Failed(swallowtail_core::SafeDiagnostic::new(
+                "fixture.kimi_acp.cleanup_failed",
+                "Kimi ACP fixture cleanup failed",
+            ))
+        } else {
+            CleanupOutcome::NotApplicable
+        };
+        Box::pin(async move { outcome })
     }
 }
 

@@ -47,18 +47,18 @@ impl OpenCodeHttpDriver {
             )))?;
             let health = controlled_request(
                 &self.transport, scope.clone(), access.endpoint.clone(), Request::get("/global/health"),
-                &services, request.cancellation(), request.agreement().deadline(),
+                &services, request.cancellation(), request.agreement().deadline(), ProviderSessionOperationFailureStage::CatalogueDispatch,
             ).await?;
             require_health_matches(&health, &version).map_err(catalogue_dispatch)?;
             let statuses = controlled_request(
                 &self.transport, scope.clone(), access.endpoint.clone(), session_status(directory),
-                &services, request.cancellation(), request.agreement().deadline(),
+                &services, request.cancellation(), request.agreement().deadline(), ProviderSessionOperationFailureStage::CatalogueDispatch,
             ).await.and_then(|response| parse_session_statuses(&response).map_err(catalogue_projection))?;
             let start = parse_cursor(request.cursor().map(|cursor| cursor.as_provider_value()))?;
             let limit = plan.agreement().bounds().maximum_page_size().get();
             let response = controlled_request(
                 &self.transport, scope, access.endpoint.clone(), session_list(directory, start, limit),
-                &services, request.cancellation(), request.agreement().deadline(),
+                &services, request.cancellation(), request.agreement().deadline(), ProviderSessionOperationFailureStage::CatalogueDispatch,
             ).await?;
             let observations = parse_session_list(&response).map_err(catalogue_projection)?;
             project_opencode_page(&plan, observations, &statuses, start, limit, directory, version.binding().version().as_str())
@@ -88,17 +88,17 @@ impl OpenCodeHttpDriver {
             )))?;
             let health = controlled_request(
                 &self.transport, scope.clone(), access.endpoint.clone(), Request::get("/global/health"),
-                &services, request.cancellation(), request.agreement().deadline(),
+                &services, request.cancellation(), request.agreement().deadline(), ProviderSessionOperationFailureStage::ImportRevalidation,
             ).await?;
             require_health_matches(&health, &version).map_err(import_revalidation)?;
             let lookup = controlled_request(
                 &self.transport, scope.clone(), access.endpoint.clone(), session_get(request.provider_session_ref().as_provider_value(), directory),
-                &services, request.cancellation(), request.agreement().deadline(),
+                &services, request.cancellation(), request.agreement().deadline(), ProviderSessionOperationFailureStage::ImportRevalidation,
             ).await?;
             let observed = parse_session_lookup(&lookup).map_err(import_revalidation)?;
             let statuses = controlled_request(
                 &self.transport, scope, access.endpoint.clone(), session_status(directory),
-                &services, request.cancellation(), request.agreement().deadline(),
+                &services, request.cancellation(), request.agreement().deadline(), ProviderSessionOperationFailureStage::ImportRevalidation,
             ).await.and_then(|response| parse_session_statuses(&response).map_err(import_revalidation))?;
             revalidate_opencode_candidate(&plan, &request, observed, &statuses, directory, version.binding().version().as_str())
         }.await;
@@ -184,10 +184,12 @@ fn parse_cursor(value: Option<&str>) -> Result<u32, ProviderSessionOperationFail
     value.map_or(Ok(0), |value| value.parse().map_err(|_| catalogue_malformed()))
 }
 
+#[allow(clippy::too_many_arguments)]
 async fn controlled_request(
     transport: &CurlTransport, scope: ScopeId, endpoint: String, request: Request,
     services: &HostServices, cancellation: &swallowtail_runtime::ImmediateCancellation,
     deadline: Option<swallowtail_runtime::Deadline>,
+    failure_stage: ProviderSessionOperationFailureStage,
 ) -> Result<Response, ProviderSessionOperationFailure> {
     if cancellation.is_requested() { return Err(cancelled()); }
     if deadline.is_some_and(|deadline| services.time().is_some_and(|time| time.now() >= deadline.instant())) { return Err(timed_out()); }
@@ -213,7 +215,7 @@ async fn controlled_request(
     match control {
         Some(ProviderSessionOperationFailureStage::Cancelled) => Err(cancelled()),
         Some(ProviderSessionOperationFailureStage::TimedOut) => Err(timed_out()),
-        _ => result.map_err(catalogue_dispatch),
+        _ => result.map_err(|error| from_runtime(failure_stage, error)),
     }
 }
 

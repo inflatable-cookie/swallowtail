@@ -13,10 +13,9 @@ shape.
 
 ## Next Task
 
-Execute g03 card 060. Close OpenCode session import with common local and
-remote-authoritative conformance, cancellation and deadline evidence, attached
-server and credential preservation, public guidance, and extracted-package
-proof.
+Execute g03 card 061. Classify every harness route against the complete
+catalogue, exact revalidation, replay, continuation, resource-binding,
+activity, and version-evidence profile without transport inheritance.
 
 ## Index
 

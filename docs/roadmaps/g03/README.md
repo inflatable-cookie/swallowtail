@@ -236,6 +236,10 @@ visible as unverified newer unless exact evidence requires rejection.
   explicit import facade. Exact health, lookup, status, revision, directory,
   title, update-time, root, and archive evidence is revalidated before a
   binding enters the unchanged load/replay path; 195 focused tests pass
+- card 060 closes g03.022 with provider-neutral contract inclusion, local and
+  remote-authoritative topology proof, in-flight cancellation and deadline
+  control, lease cleanup, attached-server preservation, public guidance, 172
+  focused tests, and an independently compiling extracted package
 
 ## Milestones
 
@@ -260,15 +264,15 @@ visible as unverified newer unless exact evidence requires rejection.
 - [019 Provider Session Catalogue And Import Foundation](019-provider-session-catalogue-and-import-foundation.md) — completed
 - [020 Codex External Thread Discovery And Import](020-codex-external-thread-discovery-and-import.md) — completed
 - [021 ACP Session List And Kimi Import](021-acp-session-list-and-kimi-import.md) — completed
-- [022 OpenCode External Session Discovery And Import](022-opencode-external-session-discovery-and-import.md) — active
-- [023 Provider Session Import Acceptance And Handoff](023-provider-session-import-acceptance-and-handoff.md) — planned
+- [022 OpenCode External Session Discovery And Import](022-opencode-external-session-discovery-and-import.md) — completed
+- [023 Provider Session Import Acceptance And Handoff](023-provider-session-import-acceptance-and-handoff.md) — active
 
 ## Checkpoint
 
-Card 060 is ready. It closes the OpenCode route through common cross-host and
-lifecycle conformance, attached ownership preservation, public guidance, and
-extracted-package proof. The sole active pointer remains in the roadmap front
-door.
+Card 061 is ready. It classifies every harness route against the complete
+catalogue/import/replay/continuation profile, keeps alternate transports
+separate, and records exact promotion gates for partial routes. The sole active
+pointer remains in the roadmap front door.
 
 ## Generation Boundary
 

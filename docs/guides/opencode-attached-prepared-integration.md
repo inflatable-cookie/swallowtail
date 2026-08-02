@@ -67,15 +67,43 @@ route, working-resource reference, and optional deadline. It derives:
 `OpenCodePreparedSession::open_session` returns the unchanged interactive
 session handle. Provider session identity, directory affinity, SSE ordering,
 turn interruption, deadline behavior, and credential and resource cleanup
-remain operation-scoped on the existing low-level lifecycle. Resume remains
-unsupported. Closing a turn or session does not stop or dispose the attached
-OpenCode service.
+remain operation-scoped on the existing low-level lifecycle. Qualified
+sessions support exact load with bounded oldest-first replay and exact resume
+without replay. Closing a turn or session does not stop or dispose the
+attached OpenCode service.
 
 `OpenCodeSessionProfileInput::with_provider_callbacks()` enables the qualified
 callback subset. Ordered OpenCode questions project into common typed harness
 user input. Permission requests remain exact OpenCode extensions because
 their one-shot authorization semantics are provider-specific. The consumer
 answers both through the same correlated callback exchange.
+
+## External Session Catalogue And Import
+
+`prepare_session_catalogue` derives a separate read-only, resource-scoped
+catalogue plan. `OpenCodePreparedSessionCatalogue::list_sessions` uses only the
+approved endpoint and resolved directory. It returns bounded candidates with
+opaque references, titles, update times, activity state, and explicit import
+availability. Pagination cursors remain bound to the exact catalogue plan.
+
+`prepare_session_import` accepts only an available candidate from that
+catalogue plus an explicit model route and the same working resource. Import
+repeats the exact health, lookup, directory, title, update-time, server
+revision, root, archive, and idle-status checks before issuing a normal
+`SessionResumeBinding`. The consumer then calls the existing prepared
+`load_session` to receive bounded replay or `resume_session` to continue
+without replay.
+
+Import support is guaranteed only for qualified `1.14.48..=1.18.10` server
+revisions. Visible unverified-newer servers do not inherit it. Child, active,
+archived, incompatible, missing-status, changed, or missing sessions issue no
+binding.
+
+The catalogue is not synchronization. A provider reference is not attachment
+authority, and a consumer must not construct a binding from a raw OpenCode
+session id. The consumer owns selection, persistence, duplicate handling, and
+when to repeat discovery. Swallowtail never scans other projects or
+directories and never starts, stops, or updates the attached server.
 
 ## Structured Run
 

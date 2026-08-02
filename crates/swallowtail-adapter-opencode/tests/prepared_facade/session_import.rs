@@ -2,12 +2,14 @@ use super::fixture::PreparedFixture;
 use crate::http_support::StreamFixture;
 use futures_executor::block_on;
 use std::num::NonZeroU32;
+use std::sync::Arc;
+use std::time::Duration;
 use swallowtail_adapter_opencode::{OpenCodeSessionCatalogueInput, OpenCodeSessionProfileInput};
 use swallowtail_core::{
     ProviderSessionActivityState, ProviderSessionCatalogueBounds,
     ProviderSessionImportAvailability, ProviderSessionImportUnavailableReason,
 };
-use swallowtail_runtime::ProviderSessionOperationFailureStage;
+use swallowtail_runtime::{CancellationControl, ProviderSessionOperationFailureStage};
 use swallowtail_runtime::{ProviderSessionCatalogueId, RequestId};
 
 fn bounds() -> ProviderSessionCatalogueBounds {
@@ -19,6 +21,11 @@ fn bounds() -> ProviderSessionCatalogueBounds {
         NonZeroU32::new(256).unwrap(),
     )
     .unwrap()
+}
+
+#[test]
+fn opencode_acceptance_includes_the_provider_neutral_contract() {
+    swallowtail_testkit::assert_provider_session_import_contract();
 }
 
 #[test]
@@ -172,5 +179,90 @@ fn changed_candidate_issues_no_import_binding() {
     assert_eq!(
         failure.diagnostic().code(),
         "swallowtail.opencode.session_import.candidate_changed"
+    );
+}
+
+#[test]
+fn cancellation_deadline_and_cleanup_release_leases_without_owning_the_server() {
+    let fixture = PreparedFixture::new_with_fixture(
+        "opencode.import.lifecycle",
+        "1.18.10",
+        StreamFixture::ImportDelayed,
+    );
+    let prepared = fixture.prepared();
+    let catalogue = prepared
+        .prepare_session_catalogue(OpenCodeSessionCatalogueInput::new(
+            RequestId::new("opencode-lifecycle-cancel").unwrap(),
+            ProviderSessionCatalogueId::new("opencode-lifecycle-cancel").unwrap(),
+            fixture.resource.clone(),
+            bounds(),
+        ))
+        .unwrap();
+    let cancellation = Arc::clone(catalogue.request().cancellation());
+    let execution = std::thread::spawn({
+        let future = catalogue.list_sessions(fixture.services());
+        move || block_on(future)
+    });
+    while !fixture
+        .server
+        .requests()
+        .iter()
+        .any(|request| request.contains("GET /session/status?"))
+    {
+        std::thread::yield_now();
+    }
+    block_on(cancellation.request()).unwrap();
+    let failure = execution.join().unwrap().expect_err("cancelled list fails");
+    assert_eq!(
+        failure.stage(),
+        ProviderSessionOperationFailureStage::Cancelled
+    );
+    assert_eq!(
+        fixture.releases.load(std::sync::atomic::Ordering::SeqCst),
+        2
+    );
+    assert!(
+        fixture.prepared().server().is_qualified(),
+        "attached server survives cancellation"
+    );
+
+    let deadline = prepared
+        .prepare_session_catalogue(
+            OpenCodeSessionCatalogueInput::new(
+                RequestId::new("opencode-lifecycle-deadline").unwrap(),
+                ProviderSessionCatalogueId::new("opencode-lifecycle-deadline").unwrap(),
+                fixture.resource.clone(),
+                bounds(),
+            )
+            .with_deadline(fixture.deadline_after(Duration::from_millis(10))),
+        )
+        .unwrap();
+    let failure =
+        block_on(deadline.list_sessions(fixture.services())).expect_err("deadline list fails");
+    assert_eq!(
+        failure.stage(),
+        ProviderSessionOperationFailureStage::TimedOut
+    );
+
+    let clean_fixture = PreparedFixture::new("opencode.import.cleanup", "1.18.10");
+    let clean_prepared = clean_fixture.prepared();
+    let catalogue = clean_prepared
+        .prepare_session_catalogue(OpenCodeSessionCatalogueInput::new(
+            RequestId::new("opencode-cleanup-failure").unwrap(),
+            ProviderSessionCatalogueId::new("opencode-cleanup-failure").unwrap(),
+            clean_fixture.resource.clone(),
+            bounds(),
+        ))
+        .unwrap();
+    let failure =
+        block_on(catalogue.list_sessions(clean_fixture.services_with_release_failure(true)))
+            .expect_err("credential cleanup failure is explicit");
+    assert_eq!(
+        failure.stage(),
+        ProviderSessionOperationFailureStage::Cleanup
+    );
+    assert!(
+        clean_fixture.prepared().server().is_qualified(),
+        "attached server survives cleanup failure"
     );
 }

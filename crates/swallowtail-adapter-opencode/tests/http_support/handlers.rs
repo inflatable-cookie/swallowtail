@@ -49,6 +49,9 @@ fn handle(mut stream: TcpStream, fixture: StreamFixture, state: HandleState, ser
             &fixture[1]["response"]["body"].to_string(),
         );
     } else if target.starts_with("GET ") && path.starts_with("/session/status?") {
+        if matches!(fixture, StreamFixture::ImportDelayed) {
+            thread::sleep(Duration::from_millis(100));
+        }
         respond_json(
             &mut stream,
             200,

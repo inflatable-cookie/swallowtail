@@ -16,8 +16,8 @@ cannot qualify list, replay, or import for every ACP agent.
 
 ## Goals
 
-- [ ] freeze stable ACP list schema and compatibility identity
-- [ ] add bounded list framing and candidate projection to the shared codec
+- [x] freeze stable ACP list schema and compatibility identity
+- [x] add bounded list framing and candidate projection to the shared codec
 - [ ] qualify Kimi Code ACP as the first complete ACP import route
 - [ ] preserve Kimi's exact state-root and working-resource binding
 - [ ] classify Claude and Cursor without widening their current claims
@@ -27,11 +27,11 @@ cannot qualify list, replay, or import for every ACP agent.
 
 ### Batch 21.1 — Stable ACP List Corpus And Codec
 
-- [ ] Execute card 055.
-- [ ] freeze capability, request, response, cursor, cwd, title, time, and `_meta`
+- [x] Execute card 055.
+- [x] freeze capability, request, response, cursor, cwd, title, time, and `_meta`
   shapes from the current stable schema
-- [ ] add bounded provider-neutral ACP message projection
-- [ ] reject unsupported, malformed, oversized, and cross-request cursors
+- [x] add bounded provider-neutral ACP message projection
+- [x] reject unsupported, malformed, oversized, and cross-request responses
 
 ### Batch 21.2 — Kimi ACP Catalogue And Import
 

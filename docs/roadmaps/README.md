@@ -13,9 +13,9 @@ shape.
 
 ## Next Task
 
-Execute g03 card 055. Freeze stable ACP `session/list` and add bounded,
-request-correlated common codec support without granting load or resume
-authority to every ACP agent.
+Execute g03 card 056. Add resource-scoped Kimi Code ACP session catalogue and
+explicit import through the stable common codec, preserving exact state-root,
+host, resource, access, version, model, and session-policy identity.
 
 ## Index
 

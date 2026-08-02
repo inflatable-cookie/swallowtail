@@ -1,6 +1,6 @@
 # 055 ACP Stable Session List Corpus And Codec
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-01
 Milestone: `../021-acp-session-list-and-kimi-import.md`
@@ -29,20 +29,33 @@ claiming that every ACP agent supports catalogue or import.
 
 ## Acceptance Criteria
 
-- [ ] the stable list schema is represented by deterministic fixtures
-- [ ] list dispatch requires explicit negotiated capability
-- [ ] candidates and cursors are bounded and request-scoped
-- [ ] unsupported or malformed replies fail closed
-- [ ] no load or resume authority follows from a list result
-- [ ] focused ACP tests pass
-- [ ] card 056 becomes the sole ready and next task
+- [x] the stable list schema is represented by deterministic fixtures
+- [x] list dispatch requires explicit negotiated capability
+- [x] candidates and cursors are bounded and request-scoped
+- [x] unsupported or malformed replies fail closed
+- [x] no load or resume authority follows from a list result
+- [x] focused ACP tests pass
+- [x] card 056 becomes the sole ready and next task
 
 ## Validation
 
-- `effigy validate:focused swallowtail-acp`
+- `effigy validate:focused swallowtail-protocol-acp`
 - `git diff --check`
 - no provider prompt or broad suite
 
 ## Auto-Continuation
 
 Yes. Continue to card 056 after common ACP acceptance.
+
+## Evidence
+
+- Research 094 rechecks current stable ACP v1 and records the independently
+  gated additive `additionalDirectories` field
+- the pinned normalized corpus covers capability, request, response, cwd,
+  cursor, title, RFC 3339 update time, `_meta`, and additive extensions
+- the shared codec requires negotiated list support, correlates the exact
+  JSON-RPC request, bounds every projected field, and rejects resource drift,
+  duplicates, malformed timestamps, malformed metadata, and oversized pages
+- opaque extension values survive protocol decoding but remain absent from
+  public accessors, `Debug`, and diagnostics
+- 93 focused protocol tests and extracted-package verification pass

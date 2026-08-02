@@ -21,3 +21,5 @@ mod grok_protocol_fixtures;
 mod kimi_protocol_fixtures;
 #[path = "protocol_fixtures.rs"]
 mod protocol_fixtures;
+#[path = "session_list_fixtures.rs"]
+mod session_list_fixtures;

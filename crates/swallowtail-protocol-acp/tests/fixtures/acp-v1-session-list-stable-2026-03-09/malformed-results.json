@@ -1,0 +1,9 @@
+[
+  {"case":"missing-sessions","result":{},"expected":"response_invalid"},
+  {"case":"missing-session-id","result":{"sessions":[{"cwd":"/fixture/project"}]},"expected":"response_invalid"},
+  {"case":"duplicate-session-id","result":{"sessions":[{"sessionId":"duplicate","cwd":"/fixture/project"},{"sessionId":"duplicate","cwd":"/fixture/project"}]},"expected":"response_invalid"},
+  {"case":"wrong-resource","result":{"sessions":[{"sessionId":"other","cwd":"/fixture/other"}]},"expected":"resource_mismatch"},
+  {"case":"invalid-timestamp","result":{"sessions":[{"sessionId":"bad-time","cwd":"/fixture/project","updatedAt":"yesterday"}]},"expected":"timestamp_invalid"},
+  {"case":"unadvertised-additional-directories","result":{"sessions":[{"sessionId":"extra-root","cwd":"/fixture/project","additionalDirectories":["/fixture/shared"]}]},"expected":"capability_invalid"},
+  {"case":"invalid-meta","result":{"sessions":[],"_meta":"raw-private-value"},"expected":"extension_invalid"}
+]

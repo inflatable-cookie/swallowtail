@@ -1,0 +1,32 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-08-02",
+  "protocol": {
+    "wire_version": 1,
+    "schema_crate": "1.6.0",
+    "source_commit": "a5b23d65366cdad16122989b490593db7795245d",
+    "schema_sha256": "7f1fba1561163729115247df75b67aeed02085115fbc7ef0131fb01d456c08f9"
+  },
+  "list": {
+    "method": "session/list",
+    "capability": "sessionCapabilities.list",
+    "capability_supported_value": {},
+    "request_optional_fields": ["cwd", "cursor", "_meta"],
+    "response_required_fields": ["sessions"],
+    "response_optional_fields": ["nextCursor", "_meta"],
+    "session_required_fields": ["sessionId", "cwd"],
+    "session_optional_fields": ["additionalDirectories", "title", "updatedAt", "_meta"],
+    "additional_directories_capability": "sessionCapabilities.additionalDirectories"
+  },
+  "pagination": {
+    "cursor_opaque": true,
+    "cursor_request_scoped": true,
+    "cursor_persistence": "forbidden"
+  },
+  "authority": {
+    "list_grants_load_or_resume": false,
+    "load_resume_delete_independent": true,
+    "raw_meta_public": false,
+    "raw_cwd_diagnostic": false
+  }
+}

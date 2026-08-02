@@ -8,6 +8,7 @@ use std::fmt;
 
 mod activity;
 mod message;
+mod session_list;
 
 pub use activity::{
     AcpBoundedText, AcpCommand, AcpConfigCategory, AcpConfigChoice, AcpConfigChoices,
@@ -19,6 +20,11 @@ pub use activity::{
     decode_session_update, decode_session_update_with_limits,
 };
 pub use message::{decode_message, encode_message};
+pub use session_list::{
+    ACP_SESSION_LIST_METHOD, AcpOpaqueExtensions, AcpSessionInfo, AcpSessionListCapabilities,
+    AcpSessionListDecodeError, AcpSessionListDecodeErrorKind, AcpSessionListLimits,
+    AcpSessionListPage, AcpSessionListRequest, decode_session_list_capabilities,
+};
 
 /// Stable ACP wire protocol version supported by this transport.
 pub const ACP_PROTOCOL_VERSION: u64 = 1;

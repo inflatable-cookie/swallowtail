@@ -215,6 +215,10 @@ visible as unverified newer unless exact evidence requires rejection.
 - card 054 closes Codex import with common local and remote-authoritative
   conformance, lifecycle failure boundaries, compile-tested public guidance,
   and an independently compiling extracted package; 239 focused tests pass
+- Research 094 and card 055 freeze current stable ACP v1 session listing,
+  including independently gated additional directories, bounded opaque
+  extensions, strict request correlation, and fail-closed projection; 93
+  focused protocol tests and extracted-package verification pass
 
 ## Milestones
 
@@ -244,9 +248,10 @@ visible as unverified newer unless exact evidence requires rejection.
 
 ## Checkpoint
 
-Card 055 is ready. It freezes stable ACP `session/list` and adds bounded,
-request-correlated common codec support without widening any production agent
-claim. The sole active pointer remains in the roadmap front door.
+Card 056 is ready. It uses the stable common codec for resource-scoped Kimi
+Code ACP catalogue and explicit import while preserving exact state-root,
+host, resource, access, version, model, and policy identity. The sole active
+pointer remains in the roadmap front door.
 
 ## Generation Boundary
 

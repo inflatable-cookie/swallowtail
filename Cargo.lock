@@ -3127,6 +3127,7 @@ dependencies = [
  "futures-executor",
  "serde_json",
  "swallowtail-core",
+ "time",
 ]
 
 [[package]]

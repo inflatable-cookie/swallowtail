@@ -101,3 +101,4 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [091 g03 Evidence-Gated Maintenance Checkpoint](091-g03-evidence-gated-maintenance-checkpoint.md)
 - [092 Provider Session Discovery And Import](092-provider-session-discovery-and-import.md)
 - [093 Codex Thread Catalogue And Import Range](093-codex-thread-catalogue-and-import-range.md)
+- [094 ACP Stable Session List Schema Delta](094-acp-stable-session-list-schema-delta.md)

@@ -244,6 +244,10 @@ visible as unverified newer unless exact evidence requires rejection.
   inheritance: Codex app-server, Kimi ACP, and OpenCode HTTP are supported;
   one route is discovery-only, two attachment-only, two blocked, and 11 not
   applicable, each with an exact promotion gate
+- card 062 publishes separate catalogue/import feature columns, the split
+  19-route matrix, a prepared browse-select-import-load/resume guide, and
+  compile-tested examples; seven extracted common and adapter packages compile
+  independently
 
 ## Milestones
 
@@ -273,10 +277,10 @@ visible as unverified newer unless exact evidence requires rejection.
 
 ## Checkpoint
 
-Card 062 is ready. It publishes the route classification, adds prepared
-browse-select-import-load/resume examples and warnings, then compiles the
-selected common and adapter packages from extracted targets. The sole active
-pointer remains in the roadmap front door.
+Card 063 is ready. It hands Nucleus the consumer-owned mapping, replay,
+deduplication, stale-candidate, unsupported-route, and reauthorization flow
+without editing the consumer or moving persistence into Swallowtail. The sole
+active pointer remains in the roadmap front door.
 
 ## Generation Boundary
 

@@ -76,7 +76,14 @@ extracted-package acceptance passes. The stable ACP `session/list` codec and
 the exact Kimi ACP catalogue/import route are now realized. Kimi revalidates
 state root, resource, host, access, version, candidate, model, and policy before
 an imported binding reaches the existing load/replay/resume path. Stable wire
-support alone still does not widen another production agent claim.
+support alone still does not widen another production agent claim. OpenCode's
+directory/status/lookup path now completes the third production import route.
+The provider-wide audit splits 19 harness routes into three supported, one
+discovery-only, two attachment-only, two blocked, and 11 not-applicable routes.
+The public matrix now separates provider-session catalogue from import; the
+[import guide](docs/guides/provider-session-import.md) keeps browse, selection,
+revalidation, replay, continuation, management, and consumer persistence
+distinct.
 
 ## Start Here
 

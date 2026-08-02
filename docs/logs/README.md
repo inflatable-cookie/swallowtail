@@ -5,6 +5,7 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-08-02 Provider Session Import Public And Package Acceptance](2026-08-02-provider-session-import-public-and-package-acceptance.md)
 - [2026-08-02 Provider Session Import Route Classification](2026-08-02-provider-session-import-route-classification.md)
 - [2026-08-02 OpenCode Session Import Acceptance](2026-08-02-opencode-session-import-acceptance.md)
 - [2026-08-02 OpenCode Session Catalogue And Import Driver](2026-08-02-opencode-session-catalogue-and-import-driver.md)

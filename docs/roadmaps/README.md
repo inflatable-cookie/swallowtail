@@ -13,9 +13,9 @@ shape.
 
 ## Next Task
 
-Execute g03 card 062. Publish the 19-route catalogue/import classification,
-add prepared browse-select-import-replay-resume guidance, and prove the common,
-Codex, Kimi, OpenCode, ACP, and testkit packages assemble independently.
+Execute g03 card 063. Publish the bounded Nucleus external-thread import
+handoff: consumer-owned mapping, replay persistence, deduplication, stale and
+unsupported UX, exact prepared entry points, and deterministic fixtures.
 
 ## Index
 

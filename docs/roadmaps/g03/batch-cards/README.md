@@ -6,14 +6,14 @@ None.
 
 ## Ready
 
-- `062-provider-session-import-public-and-package-acceptance.md`
+- `063-nucleus-external-thread-import-handoff.md`
 
 ## Planned
 
-- `063-nucleus-external-thread-import-handoff.md`
 
 ## Completed
 
+- `062-provider-session-import-public-and-package-acceptance.md`
 - `061-provider-session-import-route-classification.md`
 - `060-opencode-session-import-acceptance.md`
 - `059-opencode-session-catalogue-and-import-driver.md`

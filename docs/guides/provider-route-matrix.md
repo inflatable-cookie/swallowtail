@@ -53,6 +53,25 @@ ACP adapters may compose instead of their stdio transport.
 | `kimi-code.local-server` | `swallowtail-adapter-kimi`; `swallowtail.kimi.local-server` | catalogue, retained one-prompt structured run, interactive session, and inactive provider-session archive/restore; local REST and WebSocket v2 | approved loopback server endpoint and opaque server-bearer lease; Kimi retains its separate harness account and configuration | `kimi-code.executable`; exact `0.28.1`, exact `0.29.0`, qualified `0.29.1..=0.30.0`, exact `0.31.0`, and exact `0.31.1` behavior milestones, then permitted visible unverified-newer points | `prepare_kimi_local_server_attached` or `start_kimi_local_server_owned` → catalogue, run, session, archive, restore, or ACP-binding-import profile → its typed operation | `KimiLocalServerDriver`; `ModelCatalogDriver`, `StructuredRunDriver`, `InteractiveSessionDriver`, and `ProviderSessionManagementDriver` |
 | `opencode.http` | `swallowtail-adapter-opencode`; `swallowtail.opencode.http` | resource-scoped provider-session catalogue/import; model catalogue; operation-private structured run with catalogue-gated reasoning, zero-retry harness-validated JSON Schema, optional bounded PNG input, and optional one-shot permission or ordered-question callbacks; interactive session with the same opt-in input/callback subset; inactive provider-session delete; HTTP/SSE | approved attached-server endpoint; maintainer-supported delegated-auth credential profile | `opencode.server`; qualified published segments `1.14.48..=1.18.10`; later stable points may be visible unverified newer but do not inherit import | `prepare_opencode_attached` → session catalogue/import, model catalogue, run, session, or delete profile → typed operation; imported bindings then use ordinary `load_session` or `resume_session` | `OpenCodeHttpDriver`; `ProviderSessionCatalogueDriver`, `ProviderSessionImportDriver`, `ModelCatalogDriver`, `StructuredRunDriver`, `InteractiveSessionDriver`, and `ProviderSessionManagementDriver` |
 
+## External Provider-Session Import Classification
+
+The counts below split combined solution rows by transport. Support requires a
+qualified catalogue, exact revalidation, bounded replay, public continuation,
+resource binding, activity truth, and exact version evidence.
+
+| Classification | Routes | Promotion boundary |
+| --- | --- | --- |
+| supported (3) | `codex.app-server`; `kimi-code.acp`; `opencode.http` | complete production profile |
+| discovery-only (1) | `gemini-cli.headless` | exact lookup, history, public load/resume, activity, and import revalidation |
+| attachment-only (2) | `claude-agent.acp`; `kimi-code.local-server` | qualified catalogue plus exact list-to-attachment revalidation; Kimi also needs bounded transcript replay |
+| blocked (2) | `cursor-agent.acp`; `pi.rpc` | Cursor needs an exact list/load/resume corpus; Pi needs provable stored-cwd equality with the host lease |
+| not applicable (11) | `codex.exec`; `kimi-code.headless`; `claude-code.headless`; `cursor-agent.catalogue`; `cursor-agent.headless`; `qwen.headless`; `antigravity.catalogue`; `antigravity.headless`; `gemini-cli.acp`; `grok-build.acp`; `anthropic.managed-agent` | selected route exposes no reusable external provider-session identity |
+
+No row inherits capability from another transport or provider family. See
+[the import guide](provider-session-import.md) and
+[Research 096](../research/096-provider-session-import-route-classification.md)
+for the operation-level audit.
+
 ## Hosted Direct And Provider-Owned State
 
 | Route | Crate and driver | Role and transport | Explicit target and access | Version axis | Prepared path | Low-level escape hatch |

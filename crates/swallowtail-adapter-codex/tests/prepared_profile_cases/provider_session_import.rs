@@ -9,6 +9,8 @@ use swallowtail_core::{
 use swallowtail_runtime::ProviderSessionCatalogueId;
 use swallowtail_testkit::RecordedHostCall;
 
+mod acceptance;
+
 const PRIVATE_TITLE: &str = "Imported thread";
 const PRIVATE_PREVIEW: &str = "Bounded provider preview";
 
@@ -290,7 +292,7 @@ fn stale_missing_active_and_mismatched_revalidation_issue_no_binding() {
     }
 }
 
-fn catalogue_candidate(
+pub(super) fn catalogue_candidate(
     catalogue: &swallowtail_adapter_codex::CodexPreparedSessionCatalogue,
     recording: &RecordingHostServices,
 ) -> swallowtail_runtime::ProviderSessionCandidate {
@@ -309,7 +311,7 @@ fn catalogue_candidate(
     .clone()
 }
 
-fn catalogue_input(suffix: &str) -> CodexSessionCatalogueInput {
+pub(super) fn catalogue_input(suffix: &str) -> CodexSessionCatalogueInput {
     CodexSessionCatalogueInput::new(
         RequestId::new(format!("catalogue-{suffix}")).unwrap(),
         ProviderSessionCatalogueId::new(format!("codex-catalogue-{suffix}")).unwrap(),
@@ -325,7 +327,7 @@ fn catalogue_input(suffix: &str) -> CodexSessionCatalogueInput {
     )
 }
 
-fn session_input(suffix: &str) -> CodexSessionProfileInput {
+pub(super) fn session_input(suffix: &str) -> CodexSessionProfileInput {
     CodexSessionProfileInput::new(
         RequestId::new(suffix).unwrap(),
         model(),

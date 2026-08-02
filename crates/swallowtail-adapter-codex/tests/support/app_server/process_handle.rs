@@ -6,7 +6,11 @@ impl ProcessHandle for ScriptedAppServerHandle {
 
     fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
         self.state.closed.store(true, Ordering::SeqCst);
-        let fail = matches!(self.mode, AppServerMode::LifecycleCleanupFailure);
+        let fail = matches!(
+            self.mode,
+            AppServerMode::LifecycleCleanupFailure
+                | AppServerMode::ThreadCatalogue(ThreadCatalogueMode::CleanupFailure)
+        );
         Box::pin(async move {
             if fail {
                 Err(RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(

@@ -1,6 +1,6 @@
 # 055 ACP Stable Session List Corpus And Codec
 
-Status: planned
+Status: ready
 Owner: Tom
 Created: 2026-08-01
 Milestone: `../021-acp-session-list-and-kimi-import.md`

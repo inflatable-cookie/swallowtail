@@ -71,8 +71,9 @@ bounds, redaction, drift, stale targets, lifecycle failures, prepared evidence,
 and import-to-load/resume ordering. Research 093 and card 052 now freeze
 `0.105.0` as the first complete Codex catalogue/import floor without removing
 older app-server support. Exact resource-scoped listing and read-before-import
-now sit behind the prepared Codex facade; card 054 owns cross-host, public, and
-package acceptance.
+now sit behind the prepared Codex facade. Cross-host, lifecycle, public, and
+extracted-package acceptance passes. Stable ACP `session/list` codec work is
+next and does not widen any production agent claim by itself.
 
 ## Start Here
 

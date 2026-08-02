@@ -66,6 +66,9 @@ status composition.
 | Prepared path | Driver | Consumer choices |
 | --- | --- | --- |
 | `prepare_catalogue` | app-server | request identity and optional deadline |
+| `prepare_session_catalogue` | app-server | catalogue identity, exact working resource, page/traversal/content/reference bounds, optional deadline |
+| `prepare_read_only_session_import` | app-server | one candidate from the prepared catalogue plus the future model, resource, and read-only session options |
+| `prepare_bounded_workspace_session_import` | app-server | the same explicit candidate and future session inputs plus bounded-workspace selection |
 | `prepare_read_only_session` | app-server | model route, model, working resource, instructions, reasoning, plan mode, tools, optional typed user-input exchange |
 | `prepare_bounded_workspace_session` | app-server | the same session inputs plus explicit writable-profile selection |
 | `prepare_archive_session` | app-server | request identity, inactive management binding, optional deadline, explicit unverified-newer acceptance |
@@ -77,8 +80,9 @@ Catalogue, interactive session, and structured run remain different runtime
 roles. Read-only and bounded workspace remain different methods. There is no
 generic prompt method.
 
-`CodexPreparedCatalogue`, `CodexPreparedSession`, the three lifecycle values,
-and `CodexPreparedExec` retain:
+`CodexPreparedCatalogue`, `CodexPreparedSessionCatalogue`,
+`CodexPreparedSessionImport`, `CodexPreparedSession`, the three lifecycle
+values, and `CodexPreparedExec` retain:
 
 - exact installed-version and compatibility evidence
 - access status and whether it was observed or caller-asserted
@@ -95,16 +99,53 @@ Prepared profiles expose only the runtime role they implement:
 | Prepared value | Bound operation |
 | --- | --- |
 | `CodexPreparedCatalogue` | `list_models(services)` |
+| `CodexPreparedSessionCatalogue` | `list_sessions(services)` and bounded cursor continuation through `next_page_request` plus `list_page` |
+| `CodexPreparedSessionImport` | `import_session(services)` |
 | `CodexPreparedExec` | `start_run(services)` |
 | `CodexPreparedSession` | `open_session(services)` |
+| `CodexPreparedSession` | `load_session(request_id, imported_binding, services)` |
 | `CodexPreparedSession` | `resume_session(request_id, binding, services)` |
 | `CodexPreparedArchive` | `execute(services)` |
 | `CodexPreparedRestore` | `execute(services)` |
 | `CodexPreparedDelete` | `execute(services)` |
 
-`resume_session` derives and validates the resume request before returning the
-runtime future. Unsupported dynamic-tool redeclaration therefore fails before
-provider effects.
+`load_session` and `resume_session` derive and validate their requests before
+returning runtime futures. Unsupported dynamic-tool redeclaration therefore
+fails before provider effects.
+
+## External Thread Import
+
+Codex app-server versions `0.105.0..=0.107.0` and
+`0.110.0..=0.146.0` expose the complete selected import chain. Earlier
+supported app-server versions keep their existing operations without
+advertising catalogue or import. Later versions remain visible as unverified
+newer but do not gain this exact capability.
+
+Keep the phases separate:
+
+1. Prepare one catalogue for one exact host-approved working resource and
+   explicit bounds.
+2. Call `list_sessions`. Present its bounded title, preview, update time,
+   activity, and availability downstream. Follow only cursors returned by the
+   same prepared catalogue.
+3. After explicit user selection, pass the complete opaque candidate to
+   `prepare_read_only_session_import` or
+   `prepare_bounded_workspace_session_import`. A raw Codex thread id is not
+   accepted.
+4. Call `import_session`. Swallowtail reads and validates the exact thread id,
+   cwd, source, update time, inactive availability, and bounded history before
+   returning an `ExplicitlyImported` resume binding.
+5. Prepare the matching ordinary session profile and call `load_session` with
+   that binding. Load returns ordered history before the handle is ready.
+6. Close or continue the loaded handle normally. Later attachments use the
+   existing `resume_session` path and return no replay.
+
+The catalogue lists only non-archived `cli`, `vscode`, and `appServer` threads
+under the exact materialized cwd. Missing, changed, active, substituted,
+wrong-resource, malformed, oversized, cancelled, timed-out, disconnected, or
+unclean operations return no binding. Import does not create a consumer thread,
+persist history, synchronize databases, send a prompt, or grant archive/delete
+authority.
 
 Applicable prepared app-server session handles expose
 `management_binding()`. Clone that opaque binding while the handle is

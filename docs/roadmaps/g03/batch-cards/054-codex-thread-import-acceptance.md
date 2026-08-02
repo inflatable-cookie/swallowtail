@@ -1,6 +1,6 @@
 # 054 Codex Thread Import Acceptance
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-01
 Milestone: `../020-codex-external-thread-discovery-and-import.md`
@@ -28,12 +28,12 @@ guidance, and extracted-package evidence.
 
 ## Acceptance Criteria
 
-- [ ] Codex passes the complete common profile under both host identities
-- [ ] list/read failure cannot create a usable binding
-- [ ] existing new/load/resume and management regressions pass
-- [ ] docs explain browse, select, import, load, and resume separately
-- [ ] extracted Codex package compiles
-- [ ] card 055 becomes the sole ready and next task
+- [x] Codex passes the complete common profile under both host identities
+- [x] list/read failure cannot create a usable binding
+- [x] existing new/load/resume and management regressions pass
+- [x] docs explain browse, select, import, load, and resume separately
+- [x] extracted Codex package compiles
+- [x] card 055 becomes the sole ready and next task
 
 ## Validation
 
@@ -46,3 +46,15 @@ guidance, and extracted-package evidence.
 ## Auto-Continuation
 
 Yes. Continue to card 055 after Codex acceptance.
+
+## Evidence
+
+- the Codex suite invokes the common provider-session import contract and adds
+  production-driver proof under local and remote-authoritative host identities
+- cursor, stale-target, cancellation, deadline, disconnect, read failure, and
+  joined cleanup fixtures issue no binding on failure
+- existing new/load/resume and management suites remain inside the 239 focused
+  Codex/testkit tests
+- the public guide and compile-tested example separate browse, select, import,
+  load, and resume
+- the extracted `swallowtail-adapter-codex` package compiles independently

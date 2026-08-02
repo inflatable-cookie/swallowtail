@@ -1,5 +1,18 @@
 impl ScriptedAppServerHandle {
     fn respond_thread_list(&self, message: &serde_json::Value, id: u64) {
+        if matches!(
+            self.mode,
+            AppServerMode::ThreadCatalogue(ThreadCatalogueMode::Hold)
+        ) {
+            return;
+        }
+        if matches!(
+            self.mode,
+            AppServerMode::ThreadCatalogue(ThreadCatalogueMode::Disconnect)
+        ) {
+            self.state.closed.store(true, Ordering::SeqCst);
+            return;
+        }
         let cursor = message["params"]["cursor"].as_str();
         let requested_cwd = message["params"]["cwd"]
             .as_str()
@@ -62,6 +75,13 @@ impl ScriptedAppServerHandle {
             AppServerMode::ThreadCatalogue(mode) => mode,
             _ => return,
         };
+        if matches!(mode, ThreadCatalogueMode::Hold) {
+            return;
+        }
+        if matches!(mode, ThreadCatalogueMode::Disconnect) {
+            self.state.closed.store(true, Ordering::SeqCst);
+            return;
+        }
         if matches!(mode, ThreadCatalogueMode::Missing) {
             self.state.push(serde_json::json!({
                 "id": id,

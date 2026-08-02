@@ -1,12 +1,12 @@
 # 020 Codex External Thread Discovery And Import
 
-Status: active
+Status: completed
 Owner: Tom
 Created: 2026-08-01
 Depends on: g03.019
 Vision tags: Codex continuity, external thread import, consumer stability
 Contract refs: 010, 017, 029, 032-034, 037-038, 044-046
-Planning state: cards 052-053 completed; card 054 ready
+Planning state: cards 052-054 completed
 
 ## Problem
 
@@ -22,7 +22,7 @@ entered the maintained `0.80.0..=0.146.0` range.
 - [x] revalidate one selected thread before issuing an imported binding
 - [x] load ordered Codex history through the existing replay phase
 - [x] preserve read-only and bounded-workspace profiles without fallback
-- [ ] close with deterministic, package, and public guidance evidence
+- [x] close with deterministic, package, and public guidance evidence
 
 ## Execution Plan
 
@@ -43,11 +43,11 @@ entered the maintained `0.80.0..=0.146.0` range.
 
 ### Batch 20.3 — Conformance And Acceptance
 
-- [ ] Execute card 054 after card 053 passes.
-- [ ] prove local and remote-authoritative topology, pagination, stale target,
+- [x] Execute card 054 after card 053 passes.
+- [x] prove local and remote-authoritative topology, pagination, stale target,
   active-status observation, cancellation, deadlines, and joined cleanup
-- [ ] update prepared guidance and exact route truth
-- [ ] compile the extracted Codex package
+- [x] update prepared guidance and exact route truth
+- [x] compile the extracted Codex package
 
 ## Boundaries
 
@@ -67,7 +67,7 @@ entered the maintained `0.80.0..=0.146.0` range.
 - [x] a stale, missing, mismatched, or unsupported thread issues no binding
 - [x] successful import loads history before readiness and resumes without replay
 - [x] ordinary Swallowtail-created Codex sessions remain unchanged
-- [ ] focused Codex and affected-package validation pass
+- [x] focused Codex and affected-package validation pass
 
 ## Next Planning Checkpoint
 

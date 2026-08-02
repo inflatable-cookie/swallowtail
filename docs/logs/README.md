@@ -5,6 +5,7 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-08-02 Codex Thread Import Acceptance](2026-08-02-codex-thread-import-acceptance.md)
 - [2026-08-01 Codex Thread Catalogue And Import Driver](2026-08-01-codex-thread-catalogue-and-import-driver.md)
 - [2026-08-01 Codex Thread Catalogue Range Corpus](2026-08-01-codex-thread-catalogue-range-corpus.md)
 - [2026-08-01 Provider Session Import Common Conformance](2026-08-01-provider-session-import-common-conformance.md)

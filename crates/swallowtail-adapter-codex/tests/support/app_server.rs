@@ -41,6 +41,9 @@ pub enum ThreadCatalogueMode {
     Active,
     Changed,
     Mismatched,
+    Hold,
+    Disconnect,
+    CleanupFailure,
 }
 
 #[derive(Default)]

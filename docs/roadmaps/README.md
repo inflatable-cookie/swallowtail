@@ -13,9 +13,9 @@ shape.
 
 ## Next Task
 
-Execute g03 card 054. Close Codex thread import with common local and
-remote-authoritative conformance, lifecycle controls, public prepared guidance,
-and extracted-package evidence.
+Execute g03 card 055. Freeze stable ACP `session/list` and add bounded,
+request-correlated common codec support without granting load or resume
+authority to every ACP agent.
 
 ## Index
 

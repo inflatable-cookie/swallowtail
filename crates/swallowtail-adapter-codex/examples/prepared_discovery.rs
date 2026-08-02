@@ -2,17 +2,20 @@ use swallowtail_adapter_codex::{
     CodexExecProfileInput, CodexModelSelection, CodexPreparationInput, CodexPreparationProbe,
     CodexPreparedArchive, CodexPreparedCatalogue, CodexPreparedDelete, CodexPreparedDriver,
     CodexPreparedExec, CodexPreparedIntegration, CodexPreparedRestore, CodexPreparedSession,
+    CodexPreparedSessionCatalogue, CodexPreparedSessionImport, CodexSessionCatalogueInput,
     CodexSessionManagementInput, CodexSessionProfileInput,
     codex_chatgpt_subscription_access_profile, prepare_codex,
 };
 use swallowtail_core::{
     AccessStatus, ConfiguredInstanceId, ExecutionHostId, ExternalNetworkPolicy,
     ExternalSearchPolicy, InstanceRevision, ModelCatalogEntry, ModelId, ModelRouteId,
-    ModelRouteRevision,
+    ModelRouteRevision, ProviderSessionCatalogueBounds,
 };
 use swallowtail_runtime::{
     Deadline, DiscoveryCancellation, EnvironmentRef, HostServices, InstalledExecutableTarget,
-    InteractiveSessionHandle, OperationContent, PreparationFailure, PreparedAccessEvidence,
+    InteractiveSessionHandle, LoadedSession, OperationContent, PreparationFailure,
+    PreparedAccessEvidence, ProviderSessionCandidate, ProviderSessionCatalogueId,
+    ProviderSessionCatalogueOutcome, ProviderSessionImportOutcome,
     ProviderSessionManagementBinding, ProviderSessionManagementOutcome, RequestId, RunHandle,
     RuntimeFailure, ScopeId, SessionOptions, WorkingResourceRef,
 };
@@ -58,6 +61,68 @@ fn prepare_read_only_session(
         None,
         SessionOptions::default(),
     ))
+}
+
+fn prepare_thread_catalogue(
+    prepared: &CodexPreparedIntegration,
+    working_resource: WorkingResourceRef,
+    bounds: ProviderSessionCatalogueBounds,
+) -> Result<CodexPreparedSessionCatalogue, PreparationFailure> {
+    prepared.prepare_session_catalogue(CodexSessionCatalogueInput::new(
+        RequestId::new("codex-thread-catalogue").expect("request id is valid"),
+        ProviderSessionCatalogueId::new("codex-thread-catalogue").expect("catalogue id is valid"),
+        working_resource,
+        bounds,
+    ))
+}
+
+async fn list_threads(
+    catalogue: &CodexPreparedSessionCatalogue,
+    services: HostServices,
+) -> Result<ProviderSessionCatalogueOutcome, swallowtail_runtime::ProviderSessionOperationFailure> {
+    catalogue.list_sessions(services).await
+}
+
+fn prepare_thread_import(
+    prepared: &CodexPreparedIntegration,
+    catalogue: &CodexPreparedSessionCatalogue,
+    candidate: ProviderSessionCandidate,
+    model: CodexModelSelection,
+    working_resource: WorkingResourceRef,
+) -> Result<CodexPreparedSessionImport, PreparationFailure> {
+    prepared.prepare_read_only_session_import(
+        catalogue,
+        candidate,
+        CodexSessionProfileInput::new(
+            RequestId::new("codex-thread-import").expect("request id is valid"),
+            model,
+            working_resource,
+            None,
+            SessionOptions::default(),
+        ),
+    )
+}
+
+async fn import_thread(
+    import: &CodexPreparedSessionImport,
+    services: HostServices,
+) -> Result<ProviderSessionImportOutcome, swallowtail_runtime::ProviderSessionOperationFailure> {
+    import.import_session(services).await
+}
+
+async fn load_imported_thread(
+    session: &CodexPreparedSession,
+    import: &ProviderSessionImportOutcome,
+    services: HostServices,
+) -> Result<LoadedSession, RuntimeFailure> {
+    session
+        .load_session(
+            RequestId::new("codex-imported-load").expect("request id is valid"),
+            import.binding().clone(),
+            services,
+        )
+        .map_err(|failure| RuntimeFailure::new(failure.diagnostic().safe().clone()))?
+        .await
 }
 
 fn prepare_offline_exec(
@@ -130,6 +195,11 @@ async fn execute_archive(
 fn main() {
     let _ = prepare_installed_codex;
     let _ = prepare_read_only_session;
+    let _ = prepare_thread_catalogue;
+    let _ = list_threads;
+    let _ = prepare_thread_import;
+    let _ = import_thread;
+    let _ = load_imported_thread;
     let _ = prepare_offline_exec;
     let _ = list_models;
     let _ = open_session;

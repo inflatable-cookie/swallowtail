@@ -1,12 +1,12 @@
 # 021 ACP Session List And Kimi Import
 
-Status: planned
+Status: active
 Owner: Tom
 Created: 2026-08-01
 Depends on: g03.020
 Vision tags: shared protocol, Kimi continuity, capability fidelity
 Contract refs: 009-011, 015, 017, 029, 035, 037, 046
-Planning state: cards 055-057 planned
+Planning state: card 055 ready; cards 056-057 planned
 
 ## Problem
 

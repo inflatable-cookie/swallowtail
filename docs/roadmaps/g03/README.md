@@ -212,6 +212,9 @@ visible as unverified newer unless exact evidence requires rejection.
 - card 053 maps exact cwd-scoped Codex listing and read-before-import behind the
   prepared facade, rejects drift and unavailable threads, and reuses existing
   load/replay/resume behavior unchanged; 154 focused Codex tests pass
+- card 054 closes Codex import with common local and remote-authoritative
+  conformance, lifecycle failure boundaries, compile-tested public guidance,
+  and an independently compiling extracted package; 239 focused tests pass
 
 ## Milestones
 
@@ -234,16 +237,16 @@ visible as unverified newer unless exact evidence requires rejection.
 - [017 Prepared Facade Multi-Consumer Usability](017-prepared-facade-multi-consumer-usability.md) — completed
 - [018 Codex Exec Queryless Navigation Lifecycle](018-codex-exec-queryless-navigation-lifecycle.md) — completed
 - [019 Provider Session Catalogue And Import Foundation](019-provider-session-catalogue-and-import-foundation.md) — completed
-- [020 Codex External Thread Discovery And Import](020-codex-external-thread-discovery-and-import.md) — active
-- [021 ACP Session List And Kimi Import](021-acp-session-list-and-kimi-import.md) — planned
+- [020 Codex External Thread Discovery And Import](020-codex-external-thread-discovery-and-import.md) — completed
+- [021 ACP Session List And Kimi Import](021-acp-session-list-and-kimi-import.md) — active
 - [022 OpenCode External Session Discovery And Import](022-opencode-external-session-discovery-and-import.md) — planned
 - [023 Provider Session Import Acceptance And Handoff](023-provider-session-import-acceptance-and-handoff.md) — planned
 
 ## Checkpoint
 
-Card 054 is ready. It closes Codex import through the common cross-host profile,
-lifecycle controls, public prepared guidance, and extracted-package evidence.
-The sole active pointer remains in the roadmap front door.
+Card 055 is ready. It freezes stable ACP `session/list` and adds bounded,
+request-correlated common codec support without widening any production agent
+claim. The sole active pointer remains in the roadmap front door.
 
 ## Generation Boundary
 

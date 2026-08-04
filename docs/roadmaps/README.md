@@ -13,8 +13,9 @@ shape.
 
 ## Next Task
 
-Execute g03 card 086: close Anthropic Managed Agents recovery through public
-guidance, route truth, focused validation, docs QA, and extracted-package proof.
+Hold at the g03 evidence gate. Resume only for a new consumer-reproduced
+defect, material non-deferred provider/interface drift, or explicit
+operator-selected roadmap work.
 
 ## Index
 

@@ -32,7 +32,7 @@ archives now compile through one extracted target in five seconds, down from
 22.4 seconds through separate targets. Kimi child-activity projection is split
 on its native lifecycle seam. Claude Agent now projects its exact portable
 choice-form subset through typed harness user input. The current structural
-scan reports 183 oversized-file findings, including eight errors; they remain
+scan reports 206 oversized-file findings, including 19 errors; they remain
 known structural debt outside this provider batch. Roadmaps g02.047-g02.048 own the completed topology and
 elicitation handoffs; g02.049 closes the generation. Nucleus adoption is
 delegated to the Nucleus repository and does not govern Swallowtail's active

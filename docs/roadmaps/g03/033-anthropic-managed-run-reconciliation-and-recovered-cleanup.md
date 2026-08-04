@@ -1,12 +1,12 @@
 # 033 Anthropic Managed Run Reconciliation And Recovered Cleanup
 
-Status: active
+Status: completed
 Owner: Tom
 Created: 2026-08-04
 Depends on: g03.032
 Vision tags: provider continuity, exact recovery, managed resource cleanup
 Contract refs: 021-022, 038, 042, 048
-Planning state: cards 083-085 completed; card 086 ready
+Planning state: cards 083-086 completed
 
 ## Problem
 
@@ -37,7 +37,7 @@ observation, callback authority, interruption, or destructive cleanup.
   owned-resource cleanup binding, role, outcome, and conformance
 - [x] card 085: emit Anthropic checkpoints and cleanup bindings before work can
   be lost; realize exact session/event reconciliation and recovered cleanup
-- [ ] card 086: close prepared profiles, deterministic corpus, public guidance,
+- [x] card 086: close prepared profiles, deterministic corpus, public guidance,
   focused validation, and extracted-package proof
 
 ## Boundaries
@@ -57,15 +57,14 @@ observation, callback authority, interruption, or destructive cleanup.
 - [x] checkpoint and cleanup records restore only against the exact prepared route
 - [x] Anthropic active, waiting, completed, failed, cancelled, and unknown
   mappings follow exact ordered provider evidence
-- [ ] incomplete, foreign, stale, oversized, or contradictory history fails closed
+- [x] incomplete, foreign, stale, oversized, or contradictory history fails closed
 - [x] recovered cleanup deletes only an exact inactive session then environment
 - [x] ordinary run cleanup and credential-release ordering remain unchanged
-- [ ] focused and affected-package validation pass
+- [x] focused and affected-package validation pass
 
 ## Lane Runway
 
-Cards 083-084 removed the false Gemini claim and realized the portable cleanup
-kernel. Card 085 realizes the selected Anthropic mapping. Card 086 owns broader
-public guidance, route truth, docs, and extracted-package acceptance.
-The next planning checkpoint returns to g03 compatibility evidence after
-package acceptance.
+Complete. Cards 083-084 removed the false Gemini claim and realized the
+portable cleanup kernel. Cards 085-086 realize and accept the selected
+Anthropic mapping. The next planning checkpoint is the g03 compatibility
+evidence gate.

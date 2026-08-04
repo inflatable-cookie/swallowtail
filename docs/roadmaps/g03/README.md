@@ -35,7 +35,7 @@ visible as unverified newer unless exact evidence requires rejection.
 | Persist, reconcile, and detach an exact provider-owned structured run. | completed | Contracts 021, 042, 048-049 | `g03.030` |
 | Qualify ACP retained history for honest restart reconciliation. | completed | Contracts 017, 042, 048 | `g03.031` |
 | Qualify remaining durable transcript and retained-operation reconciliation candidates. | completed | Contracts 021-022, 042, 048 | `g03.032` |
-| Reconcile and clean exact recovered Anthropic Managed Agent runs without conflating observation and control. | active | Contracts 021-022, 038, 042, 048 | `g03.033` |
+| Reconcile and clean exact recovered Anthropic Managed Agent runs without conflating observation and control. | completed | Contracts 021-022, 038, 042, 048 | `g03.033` |
 | Periodically reconcile deferred gates, route truth, and generation capacity. | planned | Contract 001 | recurring checkpoints |
 
 ## Current Checkpoint
@@ -50,8 +50,8 @@ visible as unverified newer unless exact evidence requires rejection.
   resume-binding persistence is complete in g03.025 after consumer evidence
 - registry publication remains outside the active roadmap until the operator
   revisits it after sustained application usage
-- the current structural scan reports 183 oversized-file findings, including
-  eight errors; this known
+- the current structural scan reports 206 oversized-file findings, including
+  19 errors; this known
   structural debt remains outside the active provider route batch
 - Research 074 inventories 13 installed/attached harness route ids and bounds
   the first external currentness source set
@@ -320,6 +320,9 @@ visible as unverified newer unless exact evidence requires rejection.
   persisted authorities before message dispatch, performs bounded exact
   session/event reconciliation, and orders inactive cleanup session before
   environment without retry or implicit interruption
+- card 086 aligns prepared examples, consumer guidance, route truth,
+  architecture, and Contract 048; focused, docs, and extracted-package
+  acceptance pass without authenticated provider work
 
 ## Milestones
 
@@ -355,14 +358,14 @@ visible as unverified newer unless exact evidence requires rejection.
 - [030 OpenAI Background Run Reconciliation And Detachment](030-openai-background-run-reconciliation-and-detachment.md) — completed
 - [031 ACP Retained History Reconciliation Qualification](031-acp-retained-history-reconciliation-qualification.md) — completed
 - [032 Retained Operation Reconciliation Candidate Gate](032-retained-operation-reconciliation-candidate-gate.md) — completed
-- [033 Anthropic Managed Run Reconciliation And Recovered Cleanup](033-anthropic-managed-run-reconciliation-and-recovered-cleanup.md) — active
+- [033 Anthropic Managed Run Reconciliation And Recovered Cleanup](033-anthropic-managed-run-reconciliation-and-recovered-cleanup.md) — completed
 
 ## Checkpoint
 
-The lane is executing g03.033. Cards 083-084 removed Gemini's unsupported
+Roadmap g03.033 is complete. Cards 083-084 removed Gemini's unsupported
 confirmed-deletion claim and added the portable waiting and recovered-resource
-cleanup kernel. Card 085 realizes exact Anthropic Managed Agents recovery.
-Card 086 is ready for public, docs, and extracted-package acceptance.
+cleanup kernel. Cards 085-086 realize and accept exact Anthropic Managed Agents
+recovery. The generation has returned to its evidence gate.
 
 ## Generation Boundary
 

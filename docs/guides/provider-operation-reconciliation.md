@@ -25,6 +25,13 @@ completion from an idle provider session.
 6. Use a separately qualified reattachment or cancellation operation if the
    operator chooses control. Reconciliation itself exposes none.
 
+Provider-owned runs use a separate sequence. Persist the emitted
+`ProviderRunCheckpoint` against the exact prepared run plan, restore it only
+through the same prepared route, and call that route's bounded
+`prepare_run_reconciliation` operation. A run checkpoint is not a session
+binding and grants no prompt, retry, callback, cancellation, management, or
+cleanup authority.
+
 ## OpenCode
 
 `OpenCodePreparedIntegration::prepare_session_reconciliation` accepts
@@ -59,11 +66,33 @@ The driver performs one exact `thread/read` with turns included. Missing exact
 turns fail closed. It sends no turn start, interrupt, thread resume, archive,
 restore, or delete request.
 
+## OpenAI Background
+
+`OpenAiBackgroundPreparedIntegration::prepare_run_reconciliation` restores one
+exact background response checkpoint and performs one bounded response retrieval.
+See the [OpenAI background guide](openai-background-prepared-integration.md)
+for checkpoint persistence, optional controlled detachment, and exact terminal
+mapping.
+
+## Anthropic Managed Agents
+
+`AnthropicManagedPreparedIntegration::prepare_run_reconciliation` restores one
+exact Managed Agents run checkpoint and performs bounded session plus paginated
+persisted-event reads. A separate
+`prepare_recovered_cleanup` operation accepts only the separately emitted
+owned-resource cleanup binding. Reconciliation cannot answer a waiting
+callback or clean resources; cleanup cannot interrupt active or ambiguous
+work. See the
+[Anthropic Managed Agent guide](anthropic-managed-agent-prepared-integration.md)
+for the full persistence and cleanup sequence.
+
 ## Route Availability
 
-`codex.app-server` and `opencode.http` are currently production-qualified.
-Research 099 records the actionable gate for every other route. Do not derive capability from
-provider family, session load support, durable retention, or another transport.
+`codex.app-server` and `opencode.http` implement session reconciliation.
+`openai.background` and `anthropic.managed-agent` implement exact provider-run
+reconciliation. Kimi local server implements exact-turn reconciliation. Do not
+derive capability from provider family, session load support, durable
+retention, or another transport.
 
 This guide intentionally does not add another column to the main provider
 feature CSV. Recovery support has several evidence strengths; collapsing them

@@ -187,11 +187,12 @@ create, prompt, retry, stream attachment, cancel, delete, callback, or session
 operation. The restored response/cursor checkpoint must match the current
 route binding exactly.
 
-`anthropic.managed-agent` is the next contracted mapping, pending realization
-in g03.033. One restored checkpoint binds the exact prepared route, runtime
-run, provider session, environment, and persisted-event position. Observation
-uses only bounded `GET` session and paginated persisted-event requests for that
-session. It sends no message, interrupt, callback result, stream attachment,
+`anthropic.managed-agent` implements exact-run reconciliation through its
+opt-in recoverable prepared profile. One restored checkpoint binds the exact
+prepared route, runtime run, provider session, environment, and adapter-private
+resource cursor. Observation uses only bounded `GET` session and paginated
+persisted-event requests for that session, with at most eight pages and 2,048
+events. It sends no message, interrupt, callback result, stream attachment,
 update, archive, or delete request.
 
 Running or rescheduling maps `Active`. Idle `requires_action` maps

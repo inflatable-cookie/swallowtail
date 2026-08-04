@@ -1521,13 +1521,15 @@ observes the persisted response id; the stored SSE cursor remains opaque
 attachment evidence. No create, stream attach, cancel, delete, callback, or
 session operation enters reconciliation.
 
-Contracted but unrealized g03.033 extends run reconciliation to Anthropic
-Managed Agents. The prepared recoverable profile emits a route-bound checkpoint
-as soon as its exact session and environment exist. Later observation performs
-only bounded session and persisted-event retrieval. A distinct opaque
+Realized g03.033 extends run reconciliation to Anthropic Managed Agents. The
+prepared recoverable profile emits route-bound checkpoint and cleanup records
+after its exact session and environment exist and before message submission.
+Later observation performs only bounded session and paginated persisted-event
+retrieval, with explicit page and event ceilings. A distinct opaque
 owned-resource binding admits explicit recovered cleanup; the checkpoint does
-not. Cleanup preserves active or ambiguous work and, once inactive, deletes the
-exact session before its exact environment.
+not. Cleanup rechecks state, preserves active or ambiguous work, and once
+inactive confirms exact session deletion before attempting its exact
+environment.
 
 Claude Agent ACP and Kimi ACP remain ordinary load/replay routes. Their only
 history operation is ACP `session/load`, which restores resumable context and

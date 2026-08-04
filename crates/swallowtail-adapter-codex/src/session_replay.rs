@@ -1,7 +1,10 @@
 use crate::rpc::failure;
 use serde_json::Value;
 use swallowtail_core::SessionRef;
-use swallowtail_runtime::{OperationContent, RuntimeFailure, SessionReplayItem, SessionReplayKind};
+use swallowtail_core::TurnRef;
+use swallowtail_runtime::{
+    InterruptedTurnState, OperationContent, RuntimeFailure, SessionReplayItem, SessionReplayKind,
+};
 
 pub(crate) const MAXIMUM_REPLAY_TURNS: usize = 4096;
 pub(crate) const MAXIMUM_REPLAY_ITEMS: usize = 16_384;
@@ -68,6 +71,39 @@ pub(crate) fn project_thread_history(
         }
     }
     Ok(replay)
+}
+
+pub(crate) fn project_interrupted_turn_state(
+    response: &Value,
+    expected_turn: &TurnRef,
+) -> Result<InterruptedTurnState, RuntimeFailure> {
+    let turns = response
+        .get("thread")
+        .and_then(|thread| thread.get("turns"))
+        .and_then(Value::as_array)
+        .ok_or_else(malformed_replay)?;
+    let turn = turns
+        .iter()
+        .find(|turn| {
+            turn.get("id").and_then(Value::as_str) == Some(expected_turn.as_provider_value())
+        })
+        .ok_or_else(|| {
+            failure(
+                "swallowtail.codex.app_server.reconciliation_turn_missing",
+                "Codex app-server did not return the exact interrupted turn",
+            )
+        })?;
+    match turn.get("status") {
+        None | Some(Value::Null) => Ok(InterruptedTurnState::Unknown),
+        Some(Value::String(status)) => match status.as_str() {
+            "inProgress" => Ok(InterruptedTurnState::Active),
+            "completed" => Ok(InterruptedTurnState::Completed),
+            "failed" => Ok(InterruptedTurnState::Failed),
+            "interrupted" | "cancelled" => Ok(InterruptedTurnState::Cancelled),
+            _ => Err(malformed_replay()),
+        },
+        Some(_) => Err(malformed_replay()),
+    }
 }
 
 fn project_item(

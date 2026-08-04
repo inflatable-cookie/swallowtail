@@ -1,16 +1,21 @@
 use super::fixture::PreparedFixture;
 use crate::http_support::StreamFixture;
 use futures_executor::block_on;
-use std::num::NonZeroU32;
+use std::num::{NonZeroU32, NonZeroU64};
 use std::sync::Arc;
 use std::time::Duration;
-use swallowtail_adapter_opencode::{OpenCodeSessionCatalogueInput, OpenCodeSessionProfileInput};
+use swallowtail_adapter_opencode::{
+    OpenCodeSessionCatalogueInput, OpenCodeSessionProfileInput, OpenCodeSessionReconciliationInput,
+};
 use swallowtail_core::{
     ProviderSessionActivityState, ProviderSessionCatalogueBounds,
     ProviderSessionImportAvailability, ProviderSessionImportUnavailableReason,
 };
 use swallowtail_runtime::{CancellationControl, ProviderSessionOperationFailureStage};
-use swallowtail_runtime::{ProviderSessionCatalogueId, RequestId};
+use swallowtail_runtime::{
+    ProviderSessionCatalogueId, ProviderSessionReconciliationBounds, RequestId, RuntimeTurnId,
+    SessionResumeBinding,
+};
 
 fn bounds() -> ProviderSessionCatalogueBounds {
     ProviderSessionCatalogueBounds::new(
@@ -21,6 +26,54 @@ fn bounds() -> ProviderSessionCatalogueBounds {
         NonZeroU32::new(256).unwrap(),
     )
     .unwrap()
+}
+
+#[test]
+fn prepared_reconciliation_preserves_the_original_turn_without_attaching_it() {
+    let fixture = PreparedFixture::new("opencode.reconciliation.prepared", "1.18.10");
+    let prepared = fixture.prepared();
+    let session = prepared
+        .prepare_session(OpenCodeSessionProfileInput::new(
+            RequestId::new("reconciliation-session-plan").unwrap(),
+            fixture.model(),
+            fixture.resource.clone(),
+        ))
+        .unwrap();
+    let plan = session.plan();
+    let binding = SessionResumeBinding::new(
+        swallowtail_core::SessionRef::new("ses_fixture").unwrap(),
+        plan.instance_id().clone(),
+        plan.execution_host_id().clone(),
+        plan.model_route_id().unwrap().clone(),
+        plan.model_id().unwrap().clone(),
+        fixture.resource.clone(),
+        session.request().access_policy().clone(),
+    );
+    let interrupted = RuntimeTurnId::new("consumer-turn-before-restart").unwrap();
+    let reconciliation = prepared
+        .prepare_session_reconciliation(OpenCodeSessionReconciliationInput::new(
+            RequestId::new("reconcile-prepared-session").unwrap(),
+            fixture.model(),
+            binding,
+            interrupted.clone(),
+            ProviderSessionReconciliationBounds::new(
+                NonZeroU32::new(4).unwrap(),
+                NonZeroU64::new(1024).unwrap(),
+            ),
+        ))
+        .expect("reconciliation prepares");
+
+    let outcome = block_on(reconciliation.reconcile(fixture.services()))
+        .expect("prepared reconciliation succeeds");
+    assert_eq!(outcome.interrupted_turn_id(), &interrupted);
+    assert_eq!(
+        outcome.state(),
+        swallowtail_runtime::InterruptedTurnState::InactiveUnresolved
+    );
+    assert_eq!(
+        outcome.attribution(),
+        swallowtail_runtime::InterruptedTurnAttribution::ProviderSession
+    );
 }
 
 #[test]

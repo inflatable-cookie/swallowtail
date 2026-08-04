@@ -52,6 +52,7 @@ Contracts hold durable, testable rules.
 - [045 Subagent Topology, Observation, And Control](045-subagent-topology-observation-and-control.md)
 - [046 Provider Session Catalogue And Explicit Import](046-provider-session-catalogue-and-explicit-import.md)
 - [047 Configured Provider Instance Catalogue](047-configured-provider-instance-catalogue.md)
+- [048 Cross-Process Active Operation Reconciliation](048-cross-process-active-operation-reconciliation.md)
 
 Contract 003 defines the provider-neutral record kernel. Contracts 004-016
 govern the realized runtime and current proof drivers. Contract 017 governs
@@ -192,6 +193,11 @@ credential and target authority. Strict derived selection readiness keeps
 unknown, unavailable, failed, unsupported, and empty instances visible but
 non-selectable; provider, model, route, default, fallback, refresh, and
 persistence policy remain downstream.
+Contract 048 adds read-only cross-process reconciliation for consumer turns
+whose runtime handles were lost. Exact persisted session and runtime-turn
+identity bind status plus bounded replacement history; terminal state requires
+an exact provider turn. The role grants no retry, prompt, import, resume,
+cancellation, callback, management, or child-control authority.
 
 Contract 015 now permits exact, one-shot activation of an already authorized
 harness credential after ACP initialization. The first mapping is Grok Build

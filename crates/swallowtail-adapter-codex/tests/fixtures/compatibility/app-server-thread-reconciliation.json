@@ -1,0 +1,41 @@
+{
+  "schema": "swallowtail.codex.app-server-thread-reconciliation.v1",
+  "minimum": "0.105.0",
+  "latest_qualified": "0.146.0",
+  "request": {
+    "method": "thread/read",
+    "params": {"threadId":"<exact-bound-thread>","includeTurns":true}
+  },
+  "exact_turn": {
+    "identity": "thread.turns[].id",
+    "status": {
+      "inProgress": "active",
+      "completed": "completed",
+      "failed": "failed",
+      "interrupted": "cancelled",
+      "cancelled": "cancelled",
+      "absent": "unknown"
+    },
+    "missing": "fail-closed"
+  },
+  "session_scoped": {
+    "active": "active",
+    "notLoaded_or_idle": "inactive-unresolved",
+    "systemError": "unknown",
+    "terminal_states": false
+  },
+  "history": {
+    "source": "thread.turns[].items[]",
+    "shape": "bounded-ordered-replacement-snapshot",
+    "completeness": "explicit"
+  },
+  "forbidden_methods": [
+    "turn/start",
+    "turn/interrupt",
+    "thread/start",
+    "thread/resume",
+    "thread/archive",
+    "thread/unarchive",
+    "thread/delete"
+  ]
+}

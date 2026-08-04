@@ -1,20 +1,25 @@
-use super::input::{OpenCodeSessionCatalogueInput, OpenCodeSessionProfileInput};
+use super::input::{
+    OpenCodeSessionCatalogueInput, OpenCodeSessionProfileInput, OpenCodeSessionReconciliationInput,
+};
 use super::plan::{build_plan, failure, instance_with_capabilities};
 use crate::{OpenCodeHttpDriver, OpenCodePreparedIntegration};
 use swallowtail_core::{
-    AccessRequirement, Capability, CapabilityProfile, CapabilityRequirement, CredentialState,
-    DriverRole, EndpointAuthorization, EntitlementState, ExecutionLayer,
+    AccessRequirement, Capability, CapabilityConstraint, CapabilityProfile, CapabilityRequirement,
+    CredentialState, DriverRole, EndpointAuthorization, EntitlementState, ExecutionLayer,
     HarnessConfigurationPosture, HarnessIsolation, HostServiceKind, ModelRoute,
     OperationRequirements, OperationShape, ProviderSessionImportAvailability, ResourceAccess,
     RuntimeReadiness, SessionAccessPolicy, SessionProviderStatePolicy,
 };
 use swallowtail_runtime::{
     BoxFuture, HostServices, PreparationFailure, PreparedProviderSessionCatalogueEvidence,
-    PreparedProviderSessionImportEvidence, ProviderSessionCandidate,
-    ProviderSessionCatalogueDriver, ProviderSessionCatalogueOutcome, ProviderSessionCataloguePlan,
-    ProviderSessionCatalogueRequest, ProviderSessionCatalogueScope, ProviderSessionImportAgreement,
-    ProviderSessionImportDriver, ProviderSessionImportOutcome, ProviderSessionImportPlan,
-    ProviderSessionImportRequest, ProviderSessionOperationFailure, SessionPlanAgreement,
+    PreparedProviderSessionImportEvidence, PreparedProviderSessionReconciliationEvidence,
+    ProviderSessionCandidate, ProviderSessionCatalogueDriver, ProviderSessionCatalogueOutcome,
+    ProviderSessionCataloguePlan, ProviderSessionCatalogueRequest, ProviderSessionCatalogueScope,
+    ProviderSessionImportAgreement, ProviderSessionImportDriver, ProviderSessionImportOutcome,
+    ProviderSessionImportPlan, ProviderSessionImportRequest, ProviderSessionOperationFailure,
+    ProviderSessionReconciliationAgreement, ProviderSessionReconciliationDriver,
+    ProviderSessionReconciliationOutcome, ProviderSessionReconciliationPlan,
+    ProviderSessionReconciliationRequest, SessionPlanAgreement,
 };
 
 #[derive(Clone, Debug)]
@@ -84,6 +89,47 @@ pub struct OpenCodePreparedSessionImport {
     request: ProviderSessionImportRequest,
 }
 
+#[derive(Clone, Debug)]
+pub struct OpenCodePreparedSessionReconciliation {
+    prepared: OpenCodePreparedIntegration,
+    evidence: PreparedProviderSessionReconciliationEvidence,
+    request: ProviderSessionReconciliationRequest,
+}
+
+impl OpenCodePreparedSessionReconciliation {
+    #[must_use]
+    pub const fn evidence(&self) -> &PreparedProviderSessionReconciliationEvidence {
+        &self.evidence
+    }
+
+    #[must_use]
+    pub const fn plan(&self) -> &ProviderSessionReconciliationPlan {
+        self.evidence.plan()
+    }
+
+    #[must_use]
+    pub const fn request(&self) -> &ProviderSessionReconciliationRequest {
+        &self.request
+    }
+
+    pub fn reconcile(
+        &self,
+        services: HostServices,
+    ) -> BoxFuture<
+        'static,
+        Result<ProviderSessionReconciliationOutcome, swallowtail_runtime::RuntimeFailure>,
+    > {
+        let driver = self.prepared.low_level_driver();
+        let plan = self.plan().clone();
+        let request = self.request.clone();
+        Box::pin(async move {
+            driver
+                .reconcile_provider_session(plan, request, services)
+                .await
+        })
+    }
+}
+
 impl OpenCodePreparedSessionImport {
     #[must_use]
     pub const fn evidence(&self) -> &PreparedProviderSessionImportEvidence {
@@ -119,6 +165,89 @@ impl OpenCodePreparedSessionImport {
 }
 
 impl OpenCodePreparedIntegration {
+    pub fn prepare_session_reconciliation(
+        &self,
+        input: OpenCodeSessionReconciliationInput,
+    ) -> Result<OpenCodePreparedSessionReconciliation, PreparationFailure> {
+        require_reconciliation_qualified(self)?;
+        let (request_id, model, binding, interrupted_turn_id, provider_turn_ref, bounds, deadline) =
+            input.into_parts();
+        if provider_turn_ref.is_some() {
+            return Err(failure(
+                "swallowtail.opencode.preparation.session_reconciliation_turn_ref_unsupported",
+                "OpenCode session reconciliation is session-scoped and accepts no provider turn reference",
+            ));
+        }
+        let reconciliation = CapabilityRequirement::new(
+            Capability::ProviderSessionReconciliation,
+            [
+                CapabilityConstraint::ReplayMaximumItems(bounds.maximum_replay_items().get()),
+                CapabilityConstraint::ReplayMaximumBytes(bounds.maximum_replay_bytes().get()),
+            ],
+        );
+        let resource = crate::prepared::working_resource_capability(ResourceAccess::Read);
+        let retention = CapabilityRequirement::new(Capability::ProviderDurableRetention, []);
+        let selected =
+            CapabilityProfile::new([reconciliation.clone(), resource.clone(), retention.clone()]);
+        let instance = instance_with_capabilities(self, selected.clone());
+        let (route_id, route_revision, provider_id, model_id, _) = model.into_parts();
+        if &route_id != binding.model_route_id() || &model_id != binding.model_id() {
+            return Err(failure(
+                "swallowtail.opencode.preparation.session_reconciliation_binding_mismatch",
+                "OpenCode reconciliation model does not match its durable session binding",
+            ));
+        }
+        let route = ModelRoute::new(
+            route_id,
+            route_revision,
+            self.instance().id().clone(),
+            model_id,
+            selected,
+        )
+        .with_provider_id(provider_id);
+        let requirements = provider_session_requirements(
+            self,
+            OperationShape::ProviderSessionReconciliation,
+            DriverRole::ProviderSessionReconciliation,
+            [reconciliation, resource, retention],
+            true,
+            deadline.is_some(),
+            Some(SessionAccessPolicy::ambient_harness(ResourceAccess::Read)),
+        );
+        let preflight = build_plan(self, &instance, Some(&route), &requirements)?;
+        let plan = ProviderSessionReconciliationPlan::new(
+            preflight,
+            ProviderSessionReconciliationAgreement::new(
+                binding,
+                interrupted_turn_id,
+                None,
+                bounds,
+                deadline,
+            ),
+        )
+        .map_err(|_| {
+            failure(
+                "swallowtail.opencode.preparation.session_reconciliation_plan_invalid",
+                "OpenCode session reconciliation plan could not be prepared",
+            )
+        })?;
+        let request =
+            ProviderSessionReconciliationRequest::from_plan(request_id, &plan).map_err(|_| {
+                failure(
+                    "swallowtail.opencode.preparation.session_reconciliation_request_invalid",
+                    "OpenCode session reconciliation request could not be prepared",
+                )
+            })?;
+        Ok(OpenCodePreparedSessionReconciliation {
+            prepared: self.clone(),
+            evidence: PreparedProviderSessionReconciliationEvidence::from_plan(
+                plan,
+                self.access_evidence().clone(),
+            )?,
+            request,
+        })
+    }
+
     pub fn prepare_session_catalogue(
         &self,
         input: OpenCodeSessionCatalogueInput,
@@ -274,6 +403,19 @@ fn require_qualified(prepared: &OpenCodePreparedIntegration) -> Result<(), Prepa
         Err(failure(
             "swallowtail.opencode.preparation.session_catalogue_version_unsupported",
             "OpenCode session catalogue and import require a qualified server version",
+        ))
+    }
+}
+
+fn require_reconciliation_qualified(
+    prepared: &OpenCodePreparedIntegration,
+) -> Result<(), PreparationFailure> {
+    if prepared.server().is_qualified() {
+        Ok(())
+    } else {
+        Err(failure(
+            "swallowtail.opencode.preparation.session_reconciliation_version_unsupported",
+            "OpenCode session reconciliation requires a qualified server version",
         ))
     }
 }

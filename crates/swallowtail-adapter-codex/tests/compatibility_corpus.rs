@@ -7,6 +7,8 @@ const APP_SERVER_GATES: &str = include_str!("fixtures/compatibility/app-server-g
 const APP_SERVER_TRANSCRIPT: &str = include_str!("fixtures/compatibility/app-server-core.jsonl");
 const APP_SERVER_THREAD_CATALOGUE: &str =
     include_str!("fixtures/compatibility/app-server-thread-catalogue.json");
+const APP_SERVER_THREAD_RECONCILIATION: &str =
+    include_str!("fixtures/compatibility/app-server-thread-reconciliation.json");
 
 #[test]
 fn exec_corpus_freezes_baseline_checkpoints_and_rejections() {
@@ -275,6 +277,27 @@ fn thread_catalogue_corpus_keeps_selected_wire_shape_narrow() {
             string_set(&profile["excluded_fields"]).contains(private),
             "provider-private field {private} cannot become portable content"
         );
+    }
+}
+
+#[test]
+fn thread_reconciliation_corpus_separates_exact_and_session_scoped_truth() {
+    let corpus = json(APP_SERVER_THREAD_RECONCILIATION);
+    assert_eq!(corpus["minimum"], "0.105.0");
+    assert_eq!(corpus["latest_qualified"], "0.146.0");
+    assert_eq!(corpus["request"]["method"], "thread/read");
+    assert_eq!(corpus["request"]["params"]["includeTurns"], true);
+    assert_eq!(corpus["exact_turn"]["status"]["completed"], "completed");
+    assert_eq!(corpus["exact_turn"]["missing"], "fail-closed");
+    assert_eq!(corpus["session_scoped"]["terminal_states"], false);
+    let forbidden = string_set(&corpus["forbidden_methods"]);
+    for method in [
+        "turn/start",
+        "turn/interrupt",
+        "thread/resume",
+        "thread/delete",
+    ] {
+        assert!(forbidden.contains(method));
     }
 }
 

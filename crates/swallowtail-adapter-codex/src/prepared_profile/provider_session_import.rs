@@ -1,5 +1,7 @@
 use super::CodexPreparedSessionKind;
-use super::input::{CodexSessionCatalogueInput, CodexSessionProfileInput};
+use super::input::{
+    CodexSessionCatalogueInput, CodexSessionProfileInput, CodexSessionReconciliationInput,
+};
 use super::plan::{
     CodexPreparedEvidence, build_plan, descriptor, failure, instance_with_capabilities,
     model_route, require_driver, requirements,
@@ -17,11 +19,14 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     BoxFuture, HostServices, PreparationFailure, PreparedProviderSessionCatalogueEvidence,
-    PreparedProviderSessionImportEvidence, ProviderSessionCandidate,
-    ProviderSessionCatalogueDriver, ProviderSessionCatalogueOutcome, ProviderSessionCataloguePlan,
-    ProviderSessionCatalogueRequest, ProviderSessionCatalogueScope, ProviderSessionImportAgreement,
-    ProviderSessionImportDriver, ProviderSessionImportOutcome, ProviderSessionImportPlan,
-    ProviderSessionImportRequest, ProviderSessionOperationFailure, SessionPlanAgreement,
+    PreparedProviderSessionImportEvidence, PreparedProviderSessionReconciliationEvidence,
+    ProviderSessionCandidate, ProviderSessionCatalogueDriver, ProviderSessionCatalogueOutcome,
+    ProviderSessionCataloguePlan, ProviderSessionCatalogueRequest, ProviderSessionCatalogueScope,
+    ProviderSessionImportAgreement, ProviderSessionImportDriver, ProviderSessionImportOutcome,
+    ProviderSessionImportPlan, ProviderSessionImportRequest, ProviderSessionOperationFailure,
+    ProviderSessionReconciliationAgreement, ProviderSessionReconciliationDriver,
+    ProviderSessionReconciliationOutcome, ProviderSessionReconciliationPlan,
+    ProviderSessionReconciliationRequest, SessionPlanAgreement,
 };
 
 #[derive(Clone, Debug)]
@@ -99,6 +104,52 @@ pub struct CodexPreparedSessionImport {
     request: ProviderSessionImportRequest,
 }
 
+#[derive(Clone, Debug)]
+pub struct CodexPreparedSessionReconciliation {
+    codex: CodexPreparedEvidence,
+    evidence: PreparedProviderSessionReconciliationEvidence,
+    request: ProviderSessionReconciliationRequest,
+}
+
+impl CodexPreparedSessionReconciliation {
+    #[must_use]
+    pub const fn evidence(&self) -> &PreparedProviderSessionReconciliationEvidence {
+        &self.evidence
+    }
+
+    #[must_use]
+    pub const fn codex_evidence(&self) -> &CodexPreparedEvidence {
+        &self.codex
+    }
+
+    #[must_use]
+    pub const fn plan(&self) -> &ProviderSessionReconciliationPlan {
+        self.evidence.plan()
+    }
+
+    #[must_use]
+    pub const fn request(&self) -> &ProviderSessionReconciliationRequest {
+        &self.request
+    }
+
+    pub fn reconcile(
+        &self,
+        services: HostServices,
+    ) -> BoxFuture<
+        'static,
+        Result<ProviderSessionReconciliationOutcome, swallowtail_runtime::RuntimeFailure>,
+    > {
+        let driver = CodexAppServerDriver::new(self.codex.environment().clone());
+        let plan = self.plan().clone();
+        let request = self.request.clone();
+        Box::pin(async move {
+            driver
+                .reconcile_provider_session(plan, request, services)
+                .await
+        })
+    }
+}
+
 impl CodexPreparedSessionImport {
     #[must_use]
     pub const fn evidence(&self) -> &PreparedProviderSessionImportEvidence {
@@ -142,6 +193,103 @@ impl CodexPreparedSessionImport {
 }
 
 impl CodexPreparedIntegration {
+    pub fn prepare_session_reconciliation(
+        &self,
+        input: CodexSessionReconciliationInput,
+    ) -> Result<CodexPreparedSessionReconciliation, PreparationFailure> {
+        require_driver(self, CodexPreparedDriver::AppServer)?;
+        require_catalogue_version(self)?;
+        let (request_id, model, binding, interrupted_turn_id, provider_turn_ref, bounds, deadline) =
+            input.into_parts();
+        if model.route_id() != binding.model_route_id() || model.model_id() != binding.model_id() {
+            return Err(failure(
+                "swallowtail.codex.preparation.thread_reconciliation_binding_mismatch",
+                "Codex reconciliation model does not match its durable session binding",
+            ));
+        }
+        let reconciliation = CapabilityRequirement::new(
+            Capability::ProviderSessionReconciliation,
+            [
+                CapabilityConstraint::ReplayMaximumItems(bounds.maximum_replay_items().get()),
+                CapabilityConstraint::ReplayMaximumBytes(bounds.maximum_replay_bytes().get()),
+            ],
+        );
+        let resource = read_only_working_resource_capability();
+        let retention = CapabilityRequirement::new(Capability::ProviderDurableRetention, []);
+        let capability_requirements =
+            vec![reconciliation.clone(), resource.clone(), retention.clone()];
+        let capabilities = CapabilityProfile::new(capability_requirements.clone());
+        let instance = instance_with_capabilities(self, capabilities.clone());
+        let route = model_route(
+            self,
+            model.route_id().clone(),
+            model.route_revision().clone(),
+            model.model_id().clone(),
+            capabilities,
+        );
+        let mut host_services = vec![
+            HostServiceKind::Task,
+            HostServiceKind::Process,
+            HostServiceKind::WorkingResource,
+        ];
+        if deadline.is_some() {
+            host_services.push(HostServiceKind::Time);
+        }
+        let requirements = requirements(
+            self,
+            OperationShape::ProviderSessionReconciliation,
+            DriverRole::ProviderSessionReconciliation,
+            host_services,
+            capability_requirements,
+        )
+        .with_session_access_policy(swallowtail_core::SessionAccessPolicy::ambient_harness(
+            ResourceAccess::Read,
+        ))
+        .with_session_provider_state_policy(
+            SessionProviderStatePolicy::DurableProviderSessionPreserved,
+        )
+        .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient)
+        .require_model_route();
+        let preflight = build_plan(
+            self,
+            &descriptor(self),
+            &instance,
+            Some(&route),
+            &requirements,
+        )?;
+        let plan = ProviderSessionReconciliationPlan::new(
+            preflight.clone(),
+            ProviderSessionReconciliationAgreement::new(
+                binding,
+                interrupted_turn_id,
+                provider_turn_ref,
+                bounds,
+                deadline,
+            ),
+        )
+        .map_err(|_| {
+            failure(
+                "swallowtail.codex.preparation.thread_reconciliation_plan_invalid",
+                "Codex thread reconciliation plan could not be prepared",
+            )
+        })?;
+        let request =
+            ProviderSessionReconciliationRequest::from_plan(request_id, &plan).map_err(|_| {
+                failure(
+                    "swallowtail.codex.preparation.thread_reconciliation_request_invalid",
+                    "Codex thread reconciliation request could not be prepared",
+                )
+            })?;
+        Ok(CodexPreparedSessionReconciliation {
+            codex: CodexPreparedEvidence::from_prepared(self, preflight)?,
+            evidence: PreparedProviderSessionReconciliationEvidence::from_plan(
+                plan,
+                self.access_evidence().clone(),
+            )?,
+            request,
+        })
+    }
+
     pub fn prepare_session_catalogue(
         &self,
         input: CodexSessionCatalogueInput,

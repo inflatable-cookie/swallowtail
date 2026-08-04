@@ -32,6 +32,7 @@ pub enum CancellationScope {
     ProviderSessionManagement,
     ProviderSessionCatalogue,
     ProviderSessionImport,
+    ProviderSessionReconciliation,
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]

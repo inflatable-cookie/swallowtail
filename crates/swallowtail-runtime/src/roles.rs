@@ -468,6 +468,7 @@ include!("roles/drivers/realtime.rs");
 include!("roles/drivers/provider_session_management.rs");
 include!("roles/drivers/provider_session_catalogue.rs");
 include!("roles/drivers/provider_session_import.rs");
+include!("roles/drivers/provider_session_reconciliation.rs");
 include!("roles/drivers/serving.rs");
 
 pub trait DiscoveryDriver: Send + Sync {
@@ -506,6 +507,14 @@ pub trait ProviderSessionCatalogueDriver: Send + Sync {
 /// Read-only revalidation and binding issue for one explicitly selected session.
 pub trait ProviderSessionImportDriver: Send + Sync {
     provider_session_import_driver_items!();
+}
+
+/// Read-only observation of provider work left attached to a durable session.
+///
+/// This role grants no cancellation, callback, continuation, or session-import
+/// authority.
+pub trait ProviderSessionReconciliationDriver: Send + Sync {
+    provider_session_reconciliation_driver_items!();
 }
 
 pub trait ServingInstanceDriver: Send + Sync {

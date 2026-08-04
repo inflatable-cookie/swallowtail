@@ -13,9 +13,8 @@ shape.
 
 ## Next Task
 
-Hold at the g03 evidence gate. Resume only for a new consumer-reproduced
-defect, material non-deferred provider/interface drift, or explicit
-operator-selected roadmap work.
+Hold at the g03 evidence gate. Select the next compatibility or reconciliation
+tranche only from concrete provider or consumer evidence.
 
 ## Index
 

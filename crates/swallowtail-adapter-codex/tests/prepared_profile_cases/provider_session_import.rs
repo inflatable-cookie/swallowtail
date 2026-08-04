@@ -1,18 +1,125 @@
 use super::*;
 use crate::support::app_server::ThreadCatalogueMode;
-use std::num::NonZeroU32;
-use swallowtail_adapter_codex::CodexSessionCatalogueInput;
+use std::num::{NonZeroU32, NonZeroU64};
+use swallowtail_adapter_codex::{CodexSessionCatalogueInput, CodexSessionReconciliationInput};
 use swallowtail_core::{
     ProviderSessionActivityState, ProviderSessionBindingOrigin, ProviderSessionCatalogueBounds,
     ProviderSessionImportAvailability, ProviderSessionImportUnavailableReason,
 };
 use swallowtail_runtime::ProviderSessionCatalogueId;
+use swallowtail_runtime::{
+    ProviderSessionReconciliationBounds, RuntimeTurnId, SessionResumeBinding,
+};
 use swallowtail_testkit::RecordedHostCall;
 
 mod acceptance;
 
 const PRIVATE_TITLE: &str = "Imported thread";
 const PRIVATE_PREVIEW: &str = "Bounded provider preview";
+
+#[test]
+fn exact_interrupted_turn_reconciliation_projects_active_and_terminal_truth() {
+    let recording = RecordingHostServices::default();
+    let prepared_app = prepared(CodexPreparedDriver::AppServer, "0.146.0", &recording, true);
+    let session = prepared_app
+        .prepare_read_only_session(session_input("reconciliation-session"))
+        .expect("read-only session prepares");
+    let session_plan = session.plan();
+    let binding = SessionResumeBinding::new(
+        swallowtail_core::SessionRef::new("thread-provider-import").unwrap(),
+        session_plan.instance_id().clone(),
+        session_plan.execution_host_id().clone(),
+        session_plan.model_route_id().unwrap().clone(),
+        session_plan.model_id().unwrap().clone(),
+        working_resource(),
+        session.request().access_policy().clone(),
+    );
+    for (provider_turn, expected) in [
+        ("turn-1", swallowtail_runtime::InterruptedTurnState::Active),
+        (
+            "turn-2",
+            swallowtail_runtime::InterruptedTurnState::Completed,
+        ),
+    ] {
+        let reconciliation = prepared_app
+            .prepare_session_reconciliation(
+                CodexSessionReconciliationInput::new(
+                    RequestId::new(format!("reconcile-{provider_turn}")).unwrap(),
+                    model(),
+                    binding.clone(),
+                    RuntimeTurnId::new(format!("runtime-{provider_turn}")).unwrap(),
+                    ProviderSessionReconciliationBounds::new(
+                        NonZeroU32::new(8).unwrap(),
+                        NonZeroU64::new(4096).unwrap(),
+                    ),
+                )
+                .with_provider_turn_ref(swallowtail_core::TurnRef::new(provider_turn).unwrap()),
+            )
+            .expect("exact reconciliation prepares");
+        let (process, state) = ScriptedAppServer::new(AppServerMode::ThreadCatalogue(
+            ThreadCatalogueMode::Available,
+        ));
+        let outcome = block_on(reconciliation.reconcile(host_services_with(
+            process,
+            &recording,
+            [HostServiceKind::WorkingResource],
+        )))
+        .expect("exact turn reconciles");
+        assert_eq!(outcome.state(), expected);
+        assert_eq!(
+            outcome.attribution(),
+            swallowtail_runtime::InterruptedTurnAttribution::ExactProviderTurn
+        );
+        assert_eq!(
+            outcome.provider_turn_ref().unwrap().as_provider_value(),
+            provider_turn
+        );
+        assert!(outcome.replay_complete());
+        assert_eq!(outcome.replay().count(), 2);
+        let read = state
+            .messages()
+            .into_iter()
+            .find(|message| message["method"] == "thread/read")
+            .expect("thread/read is captured");
+        assert_eq!(read["params"]["threadId"], "thread-provider-import");
+        assert_eq!(read["params"]["includeTurns"], true);
+        assert!(
+            !state
+                .methods()
+                .iter()
+                .any(|method| method == "turn/interrupt")
+        );
+    }
+
+    let missing = prepared_app
+        .prepare_session_reconciliation(
+            CodexSessionReconciliationInput::new(
+                RequestId::new("reconcile-missing-turn").unwrap(),
+                model(),
+                binding,
+                RuntimeTurnId::new("runtime-missing-turn").unwrap(),
+                ProviderSessionReconciliationBounds::new(
+                    NonZeroU32::new(8).unwrap(),
+                    NonZeroU64::new(4096).unwrap(),
+                ),
+            )
+            .with_provider_turn_ref(swallowtail_core::TurnRef::new("turn-missing").unwrap()),
+        )
+        .unwrap();
+    let (process, _) = ScriptedAppServer::new(AppServerMode::ThreadCatalogue(
+        ThreadCatalogueMode::Available,
+    ));
+    let failure = block_on(missing.reconcile(host_services_with(
+        process,
+        &recording,
+        [HostServiceKind::WorkingResource],
+    )))
+    .expect_err("missing exact turn fails closed");
+    assert_eq!(
+        failure.diagnostic().code(),
+        "swallowtail.codex.app_server.reconciliation_turn_missing"
+    );
+}
 
 #[test]
 fn exact_versions_advertise_and_prepare_thread_catalogue_only_inside_the_corpus() {
@@ -41,6 +148,14 @@ fn exact_versions_advertise_and_prepare_thread_catalogue_only_inside_the_corpus(
                 .supports(Capability::ProviderSessionImport),
             expected,
             "import advertisement for {version}"
+        );
+        assert_eq!(
+            prepared_app
+                .instance()
+                .capabilities()
+                .supports(Capability::ProviderSessionReconciliation),
+            expected,
+            "reconciliation advertisement for {version}"
         );
         let result = prepared_app.prepare_session_catalogue(catalogue_input(version));
         assert_eq!(

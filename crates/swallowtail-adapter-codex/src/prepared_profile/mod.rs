@@ -14,11 +14,13 @@ pub use catalogue::CodexPreparedCatalogue;
 pub use exec::CodexPreparedExec;
 pub use input::{
     CodexExecProfileInput, CodexModelSelection, CodexSessionCatalogueInput,
-    CodexSessionManagementInput, CodexSessionProfileInput,
+    CodexSessionManagementInput, CodexSessionProfileInput, CodexSessionReconciliationInput,
 };
 pub use management::{CodexPreparedArchive, CodexPreparedDelete, CodexPreparedRestore};
 pub use plan::CodexPreparedEvidence;
-pub use provider_session_import::{CodexPreparedSessionCatalogue, CodexPreparedSessionImport};
+pub use provider_session_import::{
+    CodexPreparedSessionCatalogue, CodexPreparedSessionImport, CodexPreparedSessionReconciliation,
+};
 pub use session::CodexPreparedSession;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]

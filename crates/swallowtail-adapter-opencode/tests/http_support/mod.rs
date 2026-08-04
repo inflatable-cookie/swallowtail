@@ -42,6 +42,7 @@ pub enum StreamFixture {
     DeleteHealthDrift,
     ImportTitleDrift,
     ImportDelayed,
+    ReconciliationActive,
 }
 
 pub struct FixtureServer {

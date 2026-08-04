@@ -36,13 +36,15 @@ use swallowtail_runtime::{
     ProviderSessionImportDriver, ProviderSessionImportOutcome, ProviderSessionImportPlan,
     ProviderSessionImportRequest, ProviderSessionImportRevalidation,
     ProviderSessionOperationFailure, ProviderSessionOperationFailureStage,
+    ProviderSessionReconciliationDriver, ProviderSessionReconciliationOutcome,
+    ProviderSessionReconciliationPlan, ProviderSessionReconciliationRequest,
     RemoteResourceDeletionOutcome, RequestId, ResourceLease, ResumeSessionRequest, RunHandle,
     RuntimeEvent, RuntimeEventKind, RuntimeFailure, RuntimeRunId, RuntimeSessionId, RuntimeTurnId,
     ScopeId, SessionResumeBinding, StreamReattachmentPolicy, StructuredOutputDescriptor,
     StructuredRunDriver, StructuredRunRequest, TerminalOutcome, TerminalStatus, TurnHandle,
     TurnRequest, runtime_event_channel, terminal_outcome_channel,
     validate_provider_session_catalogue_execution, validate_provider_session_import_execution,
-    validate_session_resource_lease,
+    validate_provider_session_reconciliation_execution, validate_session_resource_lease,
 };
 
 const DRIVER_ID: &str = "swallowtail.opencode.http";
@@ -114,6 +116,7 @@ pub fn opencode_http_descriptor() -> DriverDescriptor {
         DriverRole::ProviderSessionManagement,
         DriverRole::ProviderSessionCatalogue,
         DriverRole::ProviderSessionImport,
+        DriverRole::ProviderSessionReconciliation,
     ])
     .with_interface_compatibility(opencode_http_claim())
     .with_execution_layers([ExecutionLayer::HarnessInteraction])
@@ -123,6 +126,7 @@ pub fn opencode_http_descriptor() -> DriverDescriptor {
         OperationShape::ProviderSessionManagement,
         OperationShape::ProviderSessionCatalogue,
         OperationShape::ProviderSessionImport,
+        OperationShape::ProviderSessionReconciliation,
     ])
     .with_extension_namespaces([
         callback::permission_namespace(),
@@ -150,6 +154,17 @@ pub fn opencode_http_descriptor() -> DriverDescriptor {
     )
     .with_required_host_services(
         DriverRole::ProviderSessionImport,
+        [
+            HostServiceKind::Task,
+            HostServiceKind::BlockingWork,
+            HostServiceKind::Time,
+            HostServiceKind::Network,
+            HostServiceKind::Credential,
+            HostServiceKind::WorkingResource,
+        ],
+    )
+    .with_required_host_services(
+        DriverRole::ProviderSessionReconciliation,
         [
             HostServiceKind::Task,
             HostServiceKind::BlockingWork,
@@ -204,4 +219,5 @@ include!("driver/run.rs");
 include!("driver/lifecycle.rs");
 include!("driver/session_management.rs");
 include!("driver/provider_session_import.rs");
+include!("driver/provider_session_reconciliation.rs");
 include!("driver/tests.rs");

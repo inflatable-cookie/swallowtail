@@ -92,6 +92,7 @@ fn respond_sse(
     .expect("SSE headers write");
     match fixture {
         StreamFixture::Success
+        | StreamFixture::ReconciliationActive
         | StreamFixture::DeleteMissing
         | StreamFixture::DeleteUnauthorized
         | StreamFixture::DeleteServerError

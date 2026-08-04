@@ -21,8 +21,9 @@ pub use prepared_profile::{
     OpenCodePreparedDelete, OpenCodePreparedEvidence, OpenCodePreparedRun,
     OpenCodePreparedRunFuture, OpenCodePreparedSession, OpenCodePreparedSessionCatalogue,
     OpenCodePreparedSessionFuture, OpenCodePreparedSessionImport,
-    OpenCodePreparedSessionLoadFuture, OpenCodeRunProfileInput, OpenCodeSessionCatalogueInput,
-    OpenCodeSessionManagementInput, OpenCodeSessionProfileInput,
+    OpenCodePreparedSessionLoadFuture, OpenCodePreparedSessionReconciliation,
+    OpenCodeRunProfileInput, OpenCodeSessionCatalogueInput, OpenCodeSessionManagementInput,
+    OpenCodeSessionProfileInput, OpenCodeSessionReconciliationInput,
 };
 pub use selection::{
     OPENCODE_BASELINE_VERSION, OPENCODE_LATEST_QUALIFIED_VERSION, OPENCODE_SERVER_AXIS,

@@ -72,10 +72,12 @@ impl Fixture {
     ) -> PreflightPlan {
         let descriptor = opencode_http_descriptor();
         let access_id = AccessProfileId::new("access.opencode").expect("access id is valid");
-        let capability = if role == DriverRole::ModelCatalog {
-            Capability::ModelCatalog
-        } else {
-            Capability::InteractiveSession
+        let capability = match role {
+            DriverRole::ModelCatalog => Capability::ModelCatalog,
+            DriverRole::ProviderSessionReconciliation => {
+                Capability::ProviderSessionReconciliation
+            }
+            _ => Capability::InteractiveSession,
         };
         let mut capability_requirements = vec![CapabilityRequirement::new(capability, [])];
         if role == DriverRole::InteractiveSession {
@@ -89,6 +91,28 @@ impl Fixture {
                 ),
                 CapabilityRequirement::new(Capability::Resume, []),
             ]);
+        } else if role == DriverRole::ProviderSessionReconciliation {
+            capability_requirements = vec![
+                CapabilityRequirement::new(
+                    Capability::ProviderSessionReconciliation,
+                    [
+                        swallowtail_core::CapabilityConstraint::ReplayMaximumItems(4),
+                        swallowtail_core::CapabilityConstraint::ReplayMaximumBytes(1024),
+                    ],
+                ),
+                CapabilityRequirement::new(Capability::ProviderDurableRetention, []),
+                CapabilityRequirement::new(
+                    Capability::WorkingResource,
+                    [
+                        swallowtail_core::CapabilityConstraint::ResourceAccess(
+                            swallowtail_core::ResourceAccess::Read,
+                        ),
+                        swallowtail_core::CapabilityConstraint::ResourceRepresentation(
+                            swallowtail_core::ResourceRepresentation::Filesystem,
+                        ),
+                    ],
+                ),
+            ];
         }
         let capabilities = CapabilityProfile::new(capability_requirements.clone());
         let versions: Vec<_> = versions
@@ -138,7 +162,11 @@ impl Fixture {
         let host_services: Vec<_> = descriptor.required_host_services(role).collect();
         let requirements = OperationRequirements::new(
             ExecutionLayer::HarnessInteraction,
-            OperationShape::InteractiveSession,
+            if role == DriverRole::ProviderSessionReconciliation {
+                OperationShape::ProviderSessionReconciliation
+            } else {
+                OperationShape::InteractiveSession
+            },
             role,
             self.host_id.clone(),
             AccessRequirement::new(access_id)
@@ -155,7 +183,11 @@ impl Fixture {
         .with_session_access_policy(SessionAccessPolicy::ambient_harness(
             swallowtail_core::ResourceAccess::Read,
         ))
-        .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited);
+        .with_session_provider_state_policy(if role == DriverRole::ProviderSessionReconciliation {
+            SessionProviderStatePolicy::DurableProviderSessionPreserved
+        } else {
+            SessionProviderStatePolicy::Prohibited
+        });
         let context =
             PreflightContext::new(&descriptor, &instance, &access, &status, host_services);
         if role == DriverRole::ModelCatalog {

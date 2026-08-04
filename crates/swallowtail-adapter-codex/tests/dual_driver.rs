@@ -15,7 +15,8 @@ use swallowtail_adapter_codex::{
 use swallowtail_core::{Capability, DriverRole, SessionAccessPolicy};
 use swallowtail_runtime::{
     DriverRegistration, EnvironmentRef, InteractiveSessionDriver, ModelCatalogDriver,
-    OpenSessionRequest, OperationContent, RequestId, StructuredRunDriver, StructuredRunRequest,
+    OpenSessionRequest, OperationContent, ProviderSessionReconciliationDriver, RequestId,
+    StructuredRunDriver, StructuredRunRequest,
 };
 use swallowtail_testkit::{
     ConformanceAssertion, ConformanceReport, assert_unverified_newer_execution,
@@ -51,15 +52,23 @@ fn registrations_share_a_family_without_flattening_roles_or_transports() {
 
     let app_server_driver = Arc::new(CodexAppServerDriver::new(environment()));
     let catalog_role: Arc<dyn ModelCatalogDriver> = app_server_driver.clone();
-    let session_role: Arc<dyn InteractiveSessionDriver> = app_server_driver;
+    let session_role: Arc<dyn InteractiveSessionDriver> = app_server_driver.clone();
+    let reconciliation_role: Arc<dyn ProviderSessionReconciliationDriver> = app_server_driver;
     let app_server_registration = DriverRegistration::new(app_server_descriptor)
         .with_model_catalog(catalog_role)
         .expect("app-server declares model catalog")
         .with_interactive_session(session_role)
-        .expect("app-server declares interactive session");
+        .expect("app-server declares interactive session")
+        .with_provider_session_reconciliation(reconciliation_role)
+        .expect("app-server declares reconciliation");
     assert!(app_server_registration.structured_run().is_none());
     assert!(app_server_registration.model_catalog().is_some());
     assert!(app_server_registration.interactive_session().is_some());
+    assert!(
+        app_server_registration
+            .provider_session_reconciliation()
+            .is_some()
+    );
 
     let exec_capabilities = capabilities(&plan());
     let catalog_capabilities = capabilities(&app_server_plan(DriverRole::ModelCatalog));

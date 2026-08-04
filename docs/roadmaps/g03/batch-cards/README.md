@@ -2,8 +2,6 @@
 
 ## Active
 
-None.
-
 ## Ready
 
 ## Planned
@@ -11,6 +9,7 @@ None.
 
 ## Completed
 
+- `070-cross-process-reconciliation-kernel-and-opencode.md`
 - `063-nucleus-external-thread-import-handoff.md`
 - `062-provider-session-import-public-and-package-acceptance.md`
 - `061-provider-session-import-route-classification.md`

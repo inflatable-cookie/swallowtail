@@ -10,12 +10,16 @@ use swallowtail_runtime::{
 pub use input::{
     OpenCodeCatalogueProfileInput, OpenCodeModelSelection, OpenCodeRunProfileInput,
     OpenCodeSessionCatalogueInput, OpenCodeSessionManagementInput, OpenCodeSessionProfileInput,
+    OpenCodeSessionReconciliationInput,
 };
 pub use operations::{
     OpenCodePreparedCatalogue, OpenCodePreparedDelete, OpenCodePreparedRun, OpenCodePreparedSession,
 };
 pub use plan::OpenCodePreparedEvidence;
-pub use provider_sessions::{OpenCodePreparedSessionCatalogue, OpenCodePreparedSessionImport};
+pub use provider_sessions::{
+    OpenCodePreparedSessionCatalogue, OpenCodePreparedSessionImport,
+    OpenCodePreparedSessionReconciliation,
+};
 
 pub type OpenCodePreparedSessionFuture =
     BoxFuture<'static, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>>;

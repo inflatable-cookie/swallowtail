@@ -1,11 +1,79 @@
 use swallowtail_core::ProviderSessionCatalogueBounds;
 use swallowtail_core::{
     ModelCatalogEntry, ModelId, ModelRouteId, ModelRouteRevision, ProviderId, ReasoningMode,
+    TurnRef,
 };
 use swallowtail_runtime::{
     AttachmentDescriptor, Deadline, OperationContent, ProviderSessionCatalogueId,
-    ProviderSessionManagementBinding, RequestId, StructuredOutputDescriptor, WorkingResourceRef,
+    ProviderSessionManagementBinding, ProviderSessionReconciliationBounds, RequestId,
+    RuntimeTurnId, SessionResumeBinding, StructuredOutputDescriptor, WorkingResourceRef,
 };
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct OpenCodeSessionReconciliationInput {
+    request_id: RequestId,
+    model: OpenCodeModelSelection,
+    binding: SessionResumeBinding,
+    interrupted_turn_id: RuntimeTurnId,
+    provider_turn_ref: Option<TurnRef>,
+    bounds: ProviderSessionReconciliationBounds,
+    deadline: Option<Deadline>,
+}
+
+impl OpenCodeSessionReconciliationInput {
+    #[must_use]
+    pub const fn new(
+        request_id: RequestId,
+        model: OpenCodeModelSelection,
+        binding: SessionResumeBinding,
+        interrupted_turn_id: RuntimeTurnId,
+        bounds: ProviderSessionReconciliationBounds,
+    ) -> Self {
+        Self {
+            request_id,
+            model,
+            binding,
+            interrupted_turn_id,
+            provider_turn_ref: None,
+            bounds,
+            deadline: None,
+        }
+    }
+
+    #[must_use]
+    pub fn with_provider_turn_ref(mut self, provider_turn_ref: TurnRef) -> Self {
+        self.provider_turn_ref = Some(provider_turn_ref);
+        self
+    }
+
+    #[must_use]
+    pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
+        self.deadline = Some(deadline);
+        self
+    }
+
+    pub(super) fn into_parts(
+        self,
+    ) -> (
+        RequestId,
+        OpenCodeModelSelection,
+        SessionResumeBinding,
+        RuntimeTurnId,
+        Option<TurnRef>,
+        ProviderSessionReconciliationBounds,
+        Option<Deadline>,
+    ) {
+        (
+            self.request_id,
+            self.model,
+            self.binding,
+            self.interrupted_turn_id,
+            self.provider_turn_ref,
+            self.bounds,
+            self.deadline,
+        )
+    }
+}
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct OpenCodeSessionCatalogueInput {

@@ -122,12 +122,12 @@ impl ScriptedAppServerHandle {
                     "cwd": cwd,
                     "source": "cli",
                     "turns": [
-                        {"id":"turn-1","items":[
+                        {"id":"turn-1","status":"inProgress","items":[
                             {"type":"userMessage","id":"item-1","clientId":null,"content":[
                                 {"type":"text","text":"Earlier question."}
                             ]}
                         ]},
-                        {"id":"turn-2","items":[
+                        {"id":"turn-2","status":"completed","items":[
                             {"type":"agentMessage","id":"item-2","text":"Earlier answer."}
                         ]}
                     ]

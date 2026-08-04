@@ -12,7 +12,9 @@ pub(super) fn validate_session_provider_state(
         requirements.session_provider_state_policy(),
     ) {
         (
-            OperationShape::InteractiveSession | OperationShape::ProviderSessionImport,
+            OperationShape::InteractiveSession
+            | OperationShape::ProviderSessionImport
+            | OperationShape::ProviderSessionReconciliation,
             Some(policy),
         ) => validate_policy(requirements, policy),
         (OperationShape::InteractiveSession, None)
@@ -24,6 +26,9 @@ pub(super) fn validate_session_provider_state(
         }
         (OperationShape::ProviderSessionImport, None) => Err(failure(
             "Provider-session import provider-state policy is missing",
+        )),
+        (OperationShape::ProviderSessionReconciliation, None) => Err(failure(
+            "Provider-session reconciliation provider-state policy is missing",
         )),
         (OperationShape::InteractiveSession, None) => Ok(()),
         (_, Some(_)) => Err(failure(

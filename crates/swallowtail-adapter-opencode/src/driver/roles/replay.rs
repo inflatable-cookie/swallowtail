@@ -6,6 +6,7 @@ impl OpenCodeHttpDriver {
         deadline: Option<Deadline>,
         services: &HostServices,
         cancelled: Arc<AtomicBool>,
+        reconciliation_cancellation: Option<&swallowtail_runtime::ImmediateCancellation>,
     ) -> Result<Vec<swallowtail_runtime::SessionReplayItem>, RuntimeFailure> {
         let mut pages = Vec::new();
         let mut before = None;
@@ -15,26 +16,46 @@ impl OpenCodeHttpDriver {
             if pages.len() >= CONTINUITY_MAXIMUM_PAGES {
                 return Err(continuity_limit());
             }
-            let response = complete_before_deadline(
-                self.transport.request(
-                    scope.clone(),
-                    source.endpoint.to_owned(),
-                    session_messages(
-                        source.session.as_provider_value(),
-                        source.directory,
-                        CONTINUITY_PAGE_LIMIT,
-                        before.as_deref(),
-                    ),
-                    services,
-                    Arc::clone(&cancelled),
-                ),
-                deadline,
-                services,
-                Arc::clone(&cancelled),
-                "swallowtail.opencode.session_load_timed_out",
-                "OpenCode session load timed out",
-            )
-            .await?;
+            let message_request = session_messages(
+                source.session.as_provider_value(),
+                source.directory,
+                CONTINUITY_PAGE_LIMIT,
+                before.as_deref(),
+            );
+            let response = match reconciliation_cancellation {
+                Some(cancellation) => {
+                    reconciliation_request(
+                        &self.transport,
+                        scope.clone(),
+                        source.endpoint.to_owned(),
+                        message_request,
+                        ReconciliationControl::new(
+                            services,
+                            cancellation,
+                            deadline,
+                            Arc::clone(&cancelled),
+                        ),
+                    )
+                    .await?
+                }
+                None => {
+                    complete_before_deadline(
+                        self.transport.request(
+                            scope.clone(),
+                            source.endpoint.to_owned(),
+                            message_request,
+                            services,
+                            Arc::clone(&cancelled),
+                        ),
+                        deadline,
+                        services,
+                        Arc::clone(&cancelled),
+                        "swallowtail.opencode.session_load_timed_out",
+                        "OpenCode session load timed out",
+                    )
+                    .await?
+                }
+            };
             bytes = bytes.saturating_add(response.body.len());
             if bytes > CONTINUITY_MAXIMUM_BYTES {
                 return Err(continuity_limit());

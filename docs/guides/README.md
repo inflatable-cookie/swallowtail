@@ -22,6 +22,7 @@ contracts or architecture.
 - [OpenAI Background Prepared Integration](openai-background-prepared-integration.md)
 - [OpenCode Attached Prepared Integration](opencode-attached-prepared-integration.md)
 - [Provider Session Catalogue And Explicit Import](provider-session-import.md)
+- [Provider Operation Reconciliation](provider-operation-reconciliation.md)
 - [Pi RPC Prepared Integration](pi-rpc-prepared-integration.md)
 - [Prepared Facade Authoring](prepared-facade-authoring.md)
 - [Provider Solution Activity Matrix](provider-solution-activity-matrix.md)

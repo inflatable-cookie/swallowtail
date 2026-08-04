@@ -3,8 +3,8 @@ use std::sync::Arc;
 use swallowtail_core::{ResourceAccess, ResourceRepresentation};
 use swallowtail_runtime::{
     CleanupOutcome, HostServices, ProviderSessionCataloguePlan, ProviderSessionImportPlan,
-    ProviderSessionOperationFailure, ProviderSessionOperationFailureStage, ResourceLease, ScopeId,
-    WorkingResourceService,
+    ProviderSessionOperationFailure, ProviderSessionOperationFailureStage,
+    ProviderSessionReconciliationPlan, ResourceLease, ScopeId, WorkingResourceService,
 };
 
 pub(super) struct ScopedResource {
@@ -33,6 +33,19 @@ impl ScopedResource {
         services: &HostServices,
     ) -> Result<Self, ProviderSessionOperationFailure> {
         Self::resolve_reference(plan.agreement().working_resource().clone(), scope, services).await
+    }
+
+    pub(super) async fn resolve_reconciliation(
+        plan: &ProviderSessionReconciliationPlan,
+        scope: ScopeId,
+        services: &HostServices,
+    ) -> Result<Self, ProviderSessionOperationFailure> {
+        Self::resolve_reference(
+            plan.agreement().binding().working_resource().clone(),
+            scope,
+            services,
+        )
+        .await
     }
 
     async fn resolve_reference(

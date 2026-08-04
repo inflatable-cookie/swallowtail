@@ -77,6 +77,7 @@ fn app_server_capabilities(observation: &InstalledExecutableObservation) -> Capa
         capabilities.extend([
             CapabilityRequirement::new(Capability::ProviderSessionCatalogue, []),
             CapabilityRequirement::new(Capability::ProviderSessionImport, []),
+            CapabilityRequirement::new(Capability::ProviderSessionReconciliation, []),
         ]);
     }
     CapabilityProfile::new(capabilities)

@@ -3,8 +3,11 @@ use swallowtail_runtime::{
     BoxFuture, HostServices, ProviderSessionCatalogueDriver, ProviderSessionCatalogueOutcome,
     ProviderSessionCataloguePlan, ProviderSessionCatalogueRequest, ProviderSessionImportDriver,
     ProviderSessionImportOutcome, ProviderSessionImportPlan, ProviderSessionImportRequest,
-    ProviderSessionOperationFailure, validate_provider_session_catalogue_execution,
-    validate_provider_session_import_execution,
+    ProviderSessionOperationFailure, ProviderSessionReconciliationDriver,
+    ProviderSessionReconciliationOutcome, ProviderSessionReconciliationPlan,
+    ProviderSessionReconciliationRequest, RuntimeFailure,
+    validate_provider_session_catalogue_execution, validate_provider_session_import_execution,
+    validate_provider_session_reconciliation_execution,
 };
 
 #[path = "thread_catalogue/execution.rs"]
@@ -37,6 +40,21 @@ impl ProviderSessionImportDriver for CodexAppServerDriver {
         Box::pin(async move {
             validate_provider_session_import_execution(&plan, &request, &services)?;
             self.execute_thread_import(plan, request, services).await
+        })
+    }
+}
+
+impl ProviderSessionReconciliationDriver for CodexAppServerDriver {
+    fn reconcile_provider_session(
+        &self,
+        plan: ProviderSessionReconciliationPlan,
+        request: ProviderSessionReconciliationRequest,
+        services: HostServices,
+    ) -> BoxFuture<'_, Result<ProviderSessionReconciliationOutcome, RuntimeFailure>> {
+        Box::pin(async move {
+            validate_provider_session_reconciliation_execution(&plan, &request, &services)?;
+            self.execute_thread_reconciliation(plan, request, services)
+                .await
         })
     }
 }

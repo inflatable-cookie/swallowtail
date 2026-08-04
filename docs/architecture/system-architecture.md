@@ -1461,6 +1461,39 @@ restart restores only through the exact matching prepared attachment. This
 does not turn catalogue import into synchronization and does not authorize
 raw-id attachment or provider-session management.
 
+## Interrupted Provider Work Reconciliation
+
+Contract 048 adds a separate read-only role for a consumer turn whose runtime
+handle was lost after a crash or process exit.
+
+```text
+persisted runtime turn + exact SessionResumeBinding
+  -> prepared reconciliation agreement
+  -> exact provider status/history observation
+  -> attribution + state + bounded replacement snapshot
+  -> consumer-owned durable merge and presentation
+```
+
+The runtime exposes `ProviderSessionReconciliationPlan`, request, outcome,
+bounds, prepared evidence, capability, operation shape, registered driver role,
+`InterruptedTurnState`, and `InterruptedTurnAttribution`. Terminal state is
+valid only with an exact provider turn reference. A typed reconciliation
+observation constructs the exact-turn or session-scoped form before outcome
+validation. Session-scoped evidence can
+report active, waiting, inactive-unresolved, or unknown.
+
+The role returns no handle and grants no prompt, retry, import, resume,
+cancellation, callback, provider-request, management, or child-control
+authority. Replay is completeness-labelled and replacement-shaped.
+
+Codex app-server is the first exact-turn mapping: one exact thread read returns
+turn status plus bounded history and missing requested turns fail closed.
+OpenCode HTTP is the first session-scoped mapping. It revalidates the exact
+bound session and qualified server, reads status plus bounded retained
+messages, and preserves both attached service and provider session. Other
+routes remain gated by Research 099; no capability crosses a transport
+boundary.
+
 ## Dependency Rules
 
 - consumers depend toward Swallowtail; Swallowtail never depends on consumers

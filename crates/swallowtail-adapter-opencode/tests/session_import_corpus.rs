@@ -7,6 +7,8 @@ const SUCCESS: &str =
     include_str!("fixtures/opencode-v1.14.48-v1.18.10/session-import-success.json");
 const FAILURES: &str =
     include_str!("fixtures/opencode-v1.14.48-v1.18.10/session-import-failures.json");
+const RECONCILIATION: &str =
+    include_str!("fixtures/opencode-v1.14.48-v1.18.10/session-reconciliation.json");
 
 fn version(value: &serde_json::Value, field: &str) -> Version {
     Version::parse(value[field].as_str().expect("version field is text"))
@@ -147,5 +149,27 @@ fn history_and_failure_fixtures_remain_bounded_and_fail_closed() {
         ] {
             assert!(!fixture.contains(forbidden), "fixture leaked {forbidden}");
         }
+    }
+}
+
+#[test]
+fn reconciliation_reuses_only_the_read_only_qualified_surface() {
+    let reconciliation: serde_json::Value =
+        serde_json::from_str(RECONCILIATION).expect("reconciliation corpus");
+    assert_eq!(reconciliation["qualified_release_count"], 51);
+    assert_eq!(reconciliation["surface_segment_count"], 12);
+    assert_eq!(
+        reconciliation["operations"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|operation| operation["method"].as_str().unwrap())
+            .collect::<BTreeSet<_>>(),
+        BTreeSet::from(["GET"])
+    );
+    assert_eq!(reconciliation["attribution"]["kind"], "provider-session");
+    assert_eq!(reconciliation["attribution"]["terminal_states"], false);
+    for mutation in reconciliation["forbidden_mutations"].as_array().unwrap() {
+        assert!(!mutation.as_str().unwrap().trim().is_empty());
     }
 }

@@ -218,6 +218,7 @@ impl InteractiveSessionDriver for OpenCodeHttpDriver {
                         request.deadline(),
                         &services,
                         cancelled,
+                        None,
                     )
                     .await?;
                 Ok((provider_ref, replay))
@@ -339,4 +340,3 @@ impl InteractiveSessionDriver for OpenCodeHttpDriver {
         })
     }
 }
-

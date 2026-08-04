@@ -23,10 +23,12 @@ use swallowtail_runtime::{
     BlockingWorkService, CredentialRef, CredentialService, EndpointRef, HostServices,
     InteractiveSessionDriver, LoadSessionRequest, ModelCatalogDriver, ModelCatalogRequest,
     NetworkPolicyService, OpenSessionRequest, OperationContent, PersistedSessionResumeBinding,
-    ProviderObservation, RequestId, ResumeSessionRequest, RuntimeEventKind, RuntimeTurnId,
-    ScopedTaskService, SessionPlanAgreement, SessionResumeBinding,
-    SessionResumeBindingPersistenceFailureKind, TerminalStatus, TimeService, TurnRequest,
-    WorkingResourceRef, WorkingResourceService,
+    ProviderObservation, ProviderSessionReconciliationAgreement,
+    ProviderSessionReconciliationBounds, ProviderSessionReconciliationDriver,
+    ProviderSessionReconciliationPlan, ProviderSessionReconciliationRequest, RequestId,
+    ResumeSessionRequest, RuntimeEventKind, RuntimeTurnId, ScopedTaskService, SessionPlanAgreement,
+    SessionResumeBinding, SessionResumeBindingPersistenceFailureKind, TerminalStatus, TimeService,
+    TurnRequest, WorkingResourceRef, WorkingResourceService,
 };
 
 fn open_session_request(id: impl Into<String>, resource: WorkingResourceRef) -> OpenSessionRequest {
@@ -48,3 +50,4 @@ include!("http_driver/failures.rs");
 include!("http_driver/fixture.rs");
 include!("http_driver/version_range.rs");
 include!("http_driver/continuity.rs");
+include!("http_driver/reconciliation.rs");

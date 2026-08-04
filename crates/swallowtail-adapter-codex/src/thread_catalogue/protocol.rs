@@ -115,6 +115,22 @@ pub(super) fn project_revalidation(
     ))
 }
 
+pub(super) fn project_reconciliation_activity(
+    response: &Value,
+    expected_session: &SessionRef,
+    expected_cwd: &str,
+) -> Result<ProviderSessionActivityState, ProviderSessionOperationFailure> {
+    let thread = response.get("thread").ok_or_else(malformed_revalidation)?;
+    let observation = project_thread(thread, expected_cwd)?;
+    if &observation.provider_session_ref != expected_session {
+        return Err(projection_failure(
+            "swallowtail.codex.thread_reconciliation.session_mismatch",
+            "Codex reconciliation returned a different provider thread",
+        ));
+    }
+    Ok(observation.activity)
+}
+
 fn project_thread(
     thread: &Value,
     expected_cwd: &str,

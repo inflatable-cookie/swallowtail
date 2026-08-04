@@ -74,6 +74,11 @@ history identity. `session-import-failures.json` freezes malformed, stale,
 active, child, foreign-directory, gap, and unverified-newer rejection without
 provider payloads or credentials.
 
+`session-reconciliation.json` freezes the read-only health/get/status/messages
+subset used after consumer process loss. It records session-scoped attribution,
+non-terminal state mapping, bounded snapshot completeness, and every forbidden
+mutation.
+
 The small health and session envelopes are synthetic. They contain no
 credential, endpoint, account, path, provider payload, model response, or user
 content.

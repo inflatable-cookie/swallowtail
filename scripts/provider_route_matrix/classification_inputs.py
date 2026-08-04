@@ -285,7 +285,7 @@ for route in [
     )
 provider_retention_classifications[
     ("provider_session_delete", "gemini-cli.acp + gemini-cli.headless")
-] = "separate_transport_and_corpus_required"
+] = "selected_surface_absence"
 for route in owned_cleanup_not_applicable:
     provider_retention_classifications[("owned_remote_resource_cleanup", route)] = (
         "operation_shape_not_applicable"

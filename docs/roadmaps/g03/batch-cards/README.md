@@ -4,16 +4,16 @@
 
 ## Ready
 
-- `083-gemini-stored-transcript-management-truth-repair.md`
+- `084-provider-recovered-resource-cleanup-kernel.md`
 
 ## Planned
 
-- `084-provider-recovered-resource-cleanup-kernel.md`
 - `085-anthropic-managed-run-reconciliation-and-cleanup.md`
 - `086-anthropic-recovery-prepared-and-package-acceptance.md`
 
 ## Completed
 
+- `083-gemini-stored-transcript-management-truth-repair.md`
 - `082-retained-operation-reconciliation-selection.md`
 - `081-anthropic-managed-operation-recovery-qualification.md`
 - `080-gemini-durable-transcript-reconciliation-qualification.md`

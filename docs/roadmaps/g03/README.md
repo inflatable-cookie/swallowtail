@@ -307,7 +307,9 @@ visible as unverified newer unless exact evidence requires rejection.
   `0.51.0..=0.52.0` listing may invoke summary inference and mutate transcript
   metadata while exposing no terminal record
 - the same evidence invalidates Gemini's claimed read-only post-delete
-  confirmation; g03.033 card 083 owns the runtime and public truth repair
+  confirmation; g03.033 card 083 removes the public management role and binding,
+  sends no list request, and preserves one operation-owned delete attempt as
+  unconfirmed degraded cleanup
 - Anthropic Managed Agents is the selected exact retained-run candidate:
   bounded session and persisted-event reads support active, waiting, terminal,
   interrupt, and unknown truth once an early route-bound checkpoint exists
@@ -353,9 +355,10 @@ visible as unverified newer unless exact evidence requires rejection.
 
 ## Checkpoint
 
-The lane is executing g03.033. Card 083 first removes Gemini's unsupported
-confirmed-deletion claim. Cards 084-086 then realize exact Anthropic Managed
-Agents reconciliation and separately admitted recovered-resource cleanup.
+The lane is executing g03.033. Card 083 has removed Gemini's unsupported
+confirmed-deletion claim. Card 084 now adds the portable waiting and recovered-
+resource cleanup kernel; cards 085-086 realize and accept the exact Anthropic
+Managed Agents route.
 
 ## Generation Boundary
 

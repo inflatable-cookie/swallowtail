@@ -1,6 +1,6 @@
 # 083 Gemini Stored Transcript Management Truth Repair
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-04
 Milestone: `../033-anthropic-managed-run-reconciliation-and-recovered-cleanup.md`
@@ -27,6 +27,9 @@ Stop claiming confirmed Gemini transcript deletion through a
 - `effigy validate:focused swallowtail-adapter-gemini`
 - `effigy package:verify-affected swallowtail-adapter-gemini`
 
+Passed with 55 focused tests, strict package check, route matrices, docs QA,
+and independent extracted-package compilation.
+
 ## Stop Conditions
 
 - stop rather than introduce provider-private filesystem authority
@@ -35,3 +38,7 @@ Stop claiming confirmed Gemini transcript deletion through a
 ## Auto-Continuation
 
 Continue to card 084 after runtime and public deletion truth agree.
+
+Completed. Durable runs expose no management binding or role. Operation-owned
+cleanup issues one delete attempt, performs no list request, and records
+deletion unconfirmed with degraded cleanup.

@@ -51,7 +51,7 @@ The classes mean:
 | `antigravity.catalogue` | model and identity discovery only | none | none | no provider session exists | not-applicable | select a session-bearing Antigravity transport |
 | `antigravity.headless` | none | none | exact-id continuation stays private to one handle | exact cwd and version do not expose external attachment authority | not-applicable | a new public durable-session route with list and replay |
 | `gemini-cli.acp` | none qualified | none qualified | no public external attachment | ACP provider state is preserved without management support | not-applicable | a separately qualified ACP list/load/resume route and supported access posture |
-| `gemini-cli.headless` | qualified project-scoped `--list-sessions` exists for deletion reconciliation | no replay operation | no load or resume | exact executable and project storage identity are bound | discovery-only | exact lookup, bounded history, public load/resume, activity truth, and import revalidation |
+| `gemini-cli.headless` | `--list-sessions` may issue summary inference and mutate retained transcripts before listing | no qualified replay operation | no load or resume | exact executable and project storage identity are bound | blocked | side-effect-free exact lookup or export, bounded history, public load/resume, activity truth, and import revalidation |
 | `grok-build.acp` | none qualified | none qualified | no public load or resume | durable local state is preserved without public identity | not-applicable | an advertised, qualified list/load/resume surface with exact resource binding |
 | `anthropic.managed-agent` | operation-owned session only | operation-private output only | no reusable binding; cleanup deletes the session and environment | provider-hosted operation ownership | not-applicable | a separate provider-supported persistent managed-agent route |
 
@@ -60,9 +60,9 @@ The classes mean:
 The inventory contains 19 distinct harness routes:
 
 - supported: 3
-- discovery-only: 1
+- discovery-only: 0
 - attachment-only: 2
-- blocked: 2
+- blocked: 3
 - not applicable: 11
 
 Combined solution rows do not alter these counts. `codex.app-server` does not

@@ -5,6 +5,7 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-08-04 Gemini Stored Transcript Management Truth Repair](2026-08-04-gemini-stored-transcript-management-truth-repair.md)
 - [2026-08-04 Retained Operation Reconciliation Candidate Qualification](2026-08-04-retained-operation-reconciliation-candidate-qualification.md)
 - [2026-08-04 ACP Retained History Reconciliation Qualification](2026-08-04-acp-retained-history-reconciliation-qualification.md)
 - [2026-08-04 OpenAI Background Run Reconciliation And Detachment](2026-08-04-openai-background-run-reconciliation-and-detachment.md)

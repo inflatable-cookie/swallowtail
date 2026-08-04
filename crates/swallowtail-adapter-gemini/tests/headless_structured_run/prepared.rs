@@ -1,5 +1,8 @@
 #[test]
 fn prepared_facade_discovers_exact_version_and_starts_a_bound_run() {
+    let descriptor = swallowtail_adapter_gemini::gemini_headless_descriptor();
+    assert!(!descriptor.supports_role(DriverRole::ProviderSessionManagement));
+    assert!(!descriptor.supports_operation_shape(OperationShape::ProviderSessionManagement));
     for topology in [
         ExecutionTopologyFixture::local(),
         ExecutionTopologyFixture::remote_authoritative(),
@@ -73,75 +76,8 @@ fn prepared_facade_discovers_exact_version_and_starts_a_bound_run() {
                 .expect("terminal outcome is available"),
         );
         assert_eq!(terminal.status(), &TerminalStatus::Completed);
-        let binding = run
-            .take_management_binding()
-            .expect("successful durable run yields management authority");
-        assert!(binding.supports(Capability::ProviderSessionDelete));
+        assert!(run.take_management_binding().is_none());
         assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
-        let cancelled = prepared
-            .prepare_delete_session(GeminiHeadlessSessionManagementInput::new(
-                RequestId::new("gemini-prepared-delete-cancelled").expect("request id is valid"),
-                binding.clone(),
-                Deadline::at(MonotonicInstant::from_ticks(1_000)),
-            ))
-            .expect("cancelled deletion prepares");
-        block_on(cancelled.request().cancellation().request())
-            .expect("pre-dispatch cancellation is accepted");
-        let (cancelled_process, cancelled_state) = FakeProcessService::completed("");
-        let (cancelled_services, _) = host_services_for(
-            topology.execution_host_id().clone(),
-            cancelled_process,
-            Arc::new(PendingTimeService),
-        );
-        let cancelled_outcome = block_on(cancelled.execute(cancelled_services))
-            .expect("cancelled deletion returns effect truth");
-        assert_eq!(
-            cancelled_outcome.effect().truth(),
-            ProviderSessionEffectTruth::FailedBeforeEffect
-        );
-        assert!(!cancelled_state.started());
-        let delete = prepared
-            .prepare_delete_session(GeminiHeadlessSessionManagementInput::new(
-                RequestId::new("gemini-prepared-delete").expect("request id is valid"),
-                binding,
-                Deadline::at(MonotonicInstant::from_ticks(1_000)),
-            ))
-            .expect("bound transcript deletion prepares");
-        assert_eq!(
-            delete.plan().preflight().requirements().driver_role(),
-            DriverRole::ProviderSessionManagement
-        );
-        let (delete_process, delete_states) = ScriptedProcessService::new([
-            (
-                "Deleted session 1: private".to_owned(),
-                String::new(),
-                ProcessExit::new(true, Some(0)),
-            ),
-            (
-                "No sessions found".to_owned(),
-                String::new(),
-                ProcessExit::new(true, Some(0)),
-            ),
-        ]);
-        let (delete_services, _) = host_services_for(
-            topology.execution_host_id().clone(),
-            delete_process,
-            Arc::new(PendingTimeService),
-        );
-        let deletion = block_on(delete.execute(delete_services))
-            .expect("prepared transcript deletion executes");
-        assert_eq!(
-            deletion.effect().truth(),
-            ProviderSessionEffectTruth::Applied
-        );
-        assert_eq!(
-            delete_states[0].request().arguments,
-            [
-                "--delete-session",
-                headless_support::session_id("gemini-prepared-run").as_str(),
-            ]
-        );
-        assert_eq!(delete_states[1].request().arguments, ["--list-sessions"]);
         assert!(run_state.waited());
         assert!(task.joined());
         assert_eq!(run_state.stdin(), b"prepared private prompt");

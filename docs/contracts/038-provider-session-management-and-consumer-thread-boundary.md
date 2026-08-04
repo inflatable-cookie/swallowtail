@@ -311,11 +311,12 @@ request plus append summary or scratchpad metadata to retained transcripts.
 It therefore cannot be described or used as read-only reconciliation.
 
 Process exit, the success line, and a stateful list result are each
-insufficient to confirm removal. Until g03.033 repairs the route truth,
-Swallowtail must not advertise a contract-conforming Gemini `HistoryRemoved`
-outcome from this sequence. A future confirmation path must be explicitly
-qualified as side-effect free and must not expose the first user message in
-stable diagnostics.
+insufficient to confirm removal. Swallowtail therefore advertises no Gemini
+provider-session management binding or `HistoryRemoved` outcome. The opt-in
+operation-owned cleanup profile issues one exact delete attempt, performs no
+list confirmation, and reports removal unconfirmed. A future confirmation path
+must be explicitly qualified as side-effect free and must not expose the first
+user message in stable diagnostics.
 
 The exact route has no archive or restore claim. It requires an inactive
 target. A target still present after the command is not deleted. Cancellation,

@@ -1,6 +1,6 @@
 # 084 Provider Recovered Resource Cleanup Kernel
 
-Status: planned
+Status: ready
 Owner: Tom
 Created: 2026-08-04
 Milestone: `../033-anthropic-managed-run-reconciliation-and-recovered-cleanup.md`

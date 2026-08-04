@@ -130,7 +130,7 @@ cursor-agent.catalogue|not-applicable|no|not-applicable|not-applicable|not-appli
 cursor-agent.headless|unsupported|no|unsupported|unsupported|unsupported|unsupported
 deepseek.continuation|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
 gemini-cli.acp|unsupported|no|unsupported|unsupported|unsupported|unsupported
-gemini-cli.headless|supported|yes|unsupported|unsupported|supported|HistoryRemoved
+gemini-cli.headless|unsupported|no|unsupported|unsupported|unsupported|unsupported
 gemini.live|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
 grok-build.acp|unsupported|no|unsupported|unsupported|unsupported|unsupported
 kimi-code.acp|unsupported|no|unsupported|unsupported|unsupported|unsupported

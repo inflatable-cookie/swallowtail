@@ -134,31 +134,8 @@ async fn delete_transcript(
         &mut deadline,
     )
     .await;
-    if delete.is_err() {
-        return unconfirmed_deletion();
-    }
-    let list = run_management_process(
-        cleanup.process_service.as_ref(),
-        &cleanup.executable,
-        &cleanup.environment,
-        &cleanup.working_resource,
-        crate::headless_command::list_sessions_arguments(),
-        "reconcile",
-        &mut deadline,
-    )
-    .await;
-    match list {
-        Ok(result)
-            if result.exit.success()
-                && !contains_exact_session_id(&result.combined(), &cleanup.session_id) =>
-        {
-            (
-                RemoteResourceDeletionOutcome::Confirmed,
-                CleanupOutcome::Clean,
-            )
-        }
-        _ => unconfirmed_deletion(),
-    }
+    let _ = delete;
+    unconfirmed_deletion()
 }
 
 pub(crate) async fn run_management_process(
@@ -169,7 +146,7 @@ pub(crate) async fn run_management_process(
     arguments: Vec<String>,
     phase: &str,
     deadline: &mut Option<BoxFuture<'static, DeadlineObservation>>,
-) -> Result<ManagementProcessResult, RuntimeFailure> {
+) -> Result<(), RuntimeFailure> {
     let scope = ScopeId::new(format!("gemini-headless:transcript-{phase}")).map_err(|_| {
         RuntimeFailure::new(SafeDiagnostic::new(
             "swallowtail.gemini.headless.cleanup_scope_invalid",
@@ -229,51 +206,13 @@ pub(crate) async fn run_management_process(
             }
         }
     }
-    Ok(ManagementProcessResult {
-        exit: process.wait().await?,
-        stdout,
-        stderr,
-    })
-}
-
-pub(crate) struct ManagementProcessResult {
-    pub(crate) exit: swallowtail_runtime::ProcessExit,
-    pub(crate) stdout: Vec<u8>,
-    pub(crate) stderr: Vec<u8>,
-}
-
-impl ManagementProcessResult {
-    pub(crate) fn combined(&self) -> Vec<u8> {
-        let mut combined = Vec::with_capacity(self.stdout.len() + self.stderr.len());
-        combined.extend_from_slice(&self.stdout);
-        combined.extend_from_slice(&self.stderr);
-        combined
-    }
+    process.wait().await?;
+    Ok(())
 }
 
 enum ManagementSignal {
     Output(Result<Option<ProcessOutputChunk>, RuntimeFailure>),
     Deadline,
-}
-
-pub(crate) fn contains_exact_session_id(output: &[u8], session_id: &str) -> bool {
-    let needle = session_id.as_bytes();
-    output
-        .windows(needle.len())
-        .enumerate()
-        .any(|(index, value)| {
-            value == needle
-                && index
-                    .checked_sub(1)
-                    .is_none_or(|before| !is_session_id_byte(output[before]))
-                && output
-                    .get(index + needle.len())
-                    .is_none_or(|after| !is_session_id_byte(*after))
-        })
-}
-
-fn is_session_id_byte(value: u8) -> bool {
-    value.is_ascii_alphanumeric() || matches!(value, b'-' | b'_')
 }
 
 fn management_failure() -> RuntimeFailure {

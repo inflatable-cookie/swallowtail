@@ -35,10 +35,16 @@ The source defines exit codes `41`, `42`, `44`, `52`, `53`, `54`, `55`, and
 trust, and cancellation failures. Generic non-zero exits remain provider
 failures.
 
-`retention.json` freezes the separate stored-transcript delete role. The four
-selected deletion source files are byte-identical at both qualified tags.
-Delete-process exit and success text are not authoritative: the provider can
-exit zero after rejection, and its storage helper catches some unlink errors.
-The portable result is therefore `HistoryRemoved` only after one bounded
-`--list-sessions` reconciliation proves the exact bound id absent. Provider
-output may include the first user message and never enters stable diagnostics.
+`retention.json` now freezes why the separate stored-transcript delete role is
+unsupported. The four selected source files are byte-identical at both
+qualified tags. Delete-process exit and success text are not authoritative:
+the provider can exit zero after rejection, and its storage helper catches
+some unlink errors. Exact `sessions.ts` also calls summary generation before
+`--list-sessions`; listing may issue a provider request and append transcript
+metadata while exposing no exact terminal record.
+
+Swallowtail therefore emits no durable-run management binding and performs no
+stateful list confirmation. The opt-in operation-owned cleanup profile may
+still issue its one exact delete attempt, but reports deletion as unconfirmed
+and degraded. Provider output may include the first user message and never
+enters stable diagnostics.

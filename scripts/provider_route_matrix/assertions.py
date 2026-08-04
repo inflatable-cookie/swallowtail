@@ -64,7 +64,8 @@ if Counter(provider_retention_classifications.values()) != Counter(
     {
         "operation_shape_not_applicable": 60,
         "upstream_unsupported": 22,
-        "separate_transport_and_corpus_required": 2,
+        "separate_transport_and_corpus_required": 1,
+        "selected_surface_absence": 1,
         "realized_matrix_false_negative": 1,
         "ready_existing_contract": 1,
         "shared_contract_and_corpus_required": 1,
@@ -75,6 +76,7 @@ provider_retention_expected_values = {
     "operation_shape_not_applicable": "Not applicable",
     "upstream_unsupported": "No",
     "separate_transport_and_corpus_required": "Yes",
+    "selected_surface_absence": "No",
     "realized_matrix_false_negative": "Yes",
     "ready_existing_contract": "Yes",
     "shared_contract_and_corpus_required": "Yes",
@@ -90,7 +92,7 @@ provider_retention_final_counts = Counter(
     provider_retention_values[cell] for cell in provider_retention_classifications
 )
 if provider_retention_final_counts != Counter(
-    {"Not applicable": 60, "No": 22, "Yes": 5}
+    {"Not applicable": 60, "No": 23, "Yes": 4}
 ):
     raise SystemExit(
         "provider-retention final counts changed: "
@@ -280,7 +282,7 @@ if classification_counts != Counter(
         "shared_contract_expansion_required": 4,
         "upstream_ordering_blocked": 1,
         "separate_route_and_contract_required": 5,
-        "selected_surface_absence": 15,
+        "selected_surface_absence": 16,
         "non_authoritative_cost_evidence": 4,
         "missing_shared_contract_or_currentness_evidence": 10,
     }

@@ -5,18 +5,15 @@ use super::GeminiHeadlessPreparedIntegration;
 use super::instance::run_capabilities;
 use crate::headless_activity::profile::{activity_profile, with_activity};
 use plan::{build_plan, instance_with_capabilities, requirements};
-use std::sync::{Arc, Mutex};
 use swallowtail_core::{
     Capability, CapabilityProfile, CapabilityRequirement, HarnessConfigurationPosture,
     HarnessIsolation, ModelId, ModelRoute, ModelRouteId, ModelRouteRevision, PreflightPlan,
-    ProviderId, ProviderSessionBindingOrigin, SessionRef,
+    ProviderId,
 };
 use swallowtail_runtime::{
-    BoxEventStream, BoxFuture, CallbackExchange, CancellationControl, CleanupOutcome, Deadline,
-    HostServices, OperationContent, OperationPolicy, PreparationFailure, PreparedOperationEvidence,
-    ProviderRetentionPolicy, ProviderSessionManagementBinding, RequestId, RunHandle,
-    RuntimeFailure, RuntimeRunId, StructuredRunDriver, StructuredRunRequest, TerminalOutcome,
-    TerminalStatus, WorkingResourceRef,
+    BoxFuture, Deadline, HostServices, OperationContent, OperationPolicy, PreparationFailure,
+    PreparedOperationEvidence, ProviderRetentionPolicy, RequestId, RunHandle, RuntimeFailure,
+    StructuredRunDriver, StructuredRunRequest, WorkingResourceRef,
 };
 
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
@@ -180,7 +177,6 @@ impl GeminiHeadlessPreparedEvidence {
 pub struct GeminiHeadlessPreparedRun {
     evidence: GeminiHeadlessPreparedEvidence,
     request: StructuredRunRequest,
-    management_binding: Option<ProviderSessionManagementBinding>,
 }
 
 impl GeminiHeadlessPreparedRun {
@@ -211,11 +207,7 @@ impl GeminiHeadlessPreparedRun {
         let driver = self.low_level_driver();
         let plan = self.plan().clone();
         let request = self.request.clone();
-        let binding = self.management_binding.clone();
-        Box::pin(async move {
-            let inner = driver.start_run(plan, request, services).await?;
-            Ok(Box::new(GeminiManagedHeadlessRunHandle::new(inner, binding)) as Box<dyn RunHandle>)
-        })
+        Box::pin(async move { driver.start_run(plan, request, services).await })
     }
 
     #[must_use]
@@ -257,11 +249,6 @@ impl GeminiHeadlessPreparedIntegration {
             }),
         );
         let plan = build_plan(self, &instance, &route, &requirements)?;
-        let management_binding = if retention == GeminiHeadlessRunRetention::Durable {
-            Some(management_binding(self, &request_id, &working_resource)?)
-        } else {
-            None
-        };
         let provider_retention = match retention {
             GeminiHeadlessRunRetention::Durable => ProviderRetentionPolicy::DurableAllowed,
             GeminiHeadlessRunRetention::TemporaryWithOwnedTranscriptCleanup => {
@@ -278,7 +265,6 @@ impl GeminiHeadlessPreparedIntegration {
         Ok(GeminiHeadlessPreparedRun {
             evidence: GeminiHeadlessPreparedEvidence::from_prepared(self, plan, activity)?,
             request,
-            management_binding,
         })
     }
 }
@@ -310,109 +296,4 @@ fn run_capabilities_for(retention: GeminiHeadlessRunRetention) -> CapabilityProf
         }
     }
     CapabilityProfile::new(capabilities)
-}
-
-fn management_binding(
-    prepared: &GeminiHeadlessPreparedIntegration,
-    request_id: &RequestId,
-    working_resource: &WorkingResourceRef,
-) -> Result<ProviderSessionManagementBinding, PreparationFailure> {
-    let instance = instance_with_capabilities(
-        prepared,
-        CapabilityProfile::new([CapabilityRequirement::new(
-            Capability::ProviderSessionDelete,
-            [],
-        )]),
-    );
-    let provider_ref = SessionRef::new(crate::headless::provider_session_id(request_id))
-        .expect("driver-selected Gemini session id is valid");
-    ProviderSessionManagementBinding::from_bound_session(
-        provider_ref,
-        &crate::gemini_headless_descriptor(),
-        &instance,
-        prepared.access_evidence().clone(),
-        Some(working_resource.clone()),
-        ProviderSessionBindingOrigin::Created,
-    )
-    .map_err(|error| {
-        PreparationFailure::new(
-            swallowtail_runtime::PreparationStage::Preflight,
-            swallowtail_core::Diagnostic::new(error.diagnostic().clone()),
-        )
-    })
-}
-
-struct ManagementBindingState {
-    pending: Option<ProviderSessionManagementBinding>,
-    ready: Option<ProviderSessionManagementBinding>,
-}
-
-struct GeminiManagedHeadlessRunHandle {
-    inner: Box<dyn RunHandle>,
-    binding: Arc<Mutex<ManagementBindingState>>,
-}
-
-impl GeminiManagedHeadlessRunHandle {
-    fn new(inner: Box<dyn RunHandle>, binding: Option<ProviderSessionManagementBinding>) -> Self {
-        Self {
-            inner,
-            binding: Arc::new(Mutex::new(ManagementBindingState {
-                pending: binding,
-                ready: None,
-            })),
-        }
-    }
-}
-
-impl RunHandle for GeminiManagedHeadlessRunHandle {
-    fn request_id(&self) -> &RequestId {
-        self.inner.request_id()
-    }
-
-    fn run_id(&self) -> &RuntimeRunId {
-        self.inner.run_id()
-    }
-
-    fn provider_run_ref(&self) -> Option<&swallowtail_core::RunRef> {
-        self.inner.provider_run_ref()
-    }
-
-    fn take_events(&mut self) -> Option<BoxEventStream> {
-        self.inner.take_events()
-    }
-
-    fn take_callbacks(&mut self) -> Option<CallbackExchange> {
-        self.inner.take_callbacks()
-    }
-
-    fn take_management_binding(&mut self) -> Option<ProviderSessionManagementBinding> {
-        self.binding
-            .lock()
-            .expect("Gemini management binding lock poisoned")
-            .ready
-            .take()
-    }
-
-    fn cancellation(&self) -> &dyn CancellationControl {
-        self.inner.cancellation()
-    }
-
-    fn take_terminal_outcome(&mut self) -> Option<BoxFuture<'static, TerminalOutcome>> {
-        let terminal = self.inner.take_terminal_outcome()?;
-        let binding = Arc::clone(&self.binding);
-        Some(Box::pin(async move {
-            let outcome = terminal.await;
-            if outcome.status() == &TerminalStatus::Completed {
-                let mut state = binding
-                    .lock()
-                    .expect("Gemini management binding lock poisoned");
-                state.ready = state.pending.take();
-            }
-            outcome
-        }))
-    }
-
-    fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome> {
-        self.inner.close()
-    }
 }

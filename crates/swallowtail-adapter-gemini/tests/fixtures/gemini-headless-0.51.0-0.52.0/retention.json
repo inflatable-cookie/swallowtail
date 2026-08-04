@@ -1,15 +1,13 @@
 {
-  "fixture_schema": 1,
+  "fixture_schema": 2,
   "claim_id": "gemini-cli.stored-transcript-delete-window-1",
   "axis": "gemini-cli.headless-stream-json",
   "baseline": "0.51.0",
   "latest_qualified": "0.52.0",
   "driver_role": "provider_session_management",
-  "action": "delete",
-  "deletion_strength": "history_removed",
-  "affected_scope": "provider_defined_descendants",
-  "command": ["--delete-session", "<BOUND_SESSION_ID>"],
-  "reconciliation_command": ["--list-sessions"],
+  "classification": "unsupported_without_side_effect_free_confirmation",
+  "delete_command": ["--delete-session", "<BOUND_SESSION_ID>"],
+  "rejected_confirmation_command": ["--list-sessions"],
   "source_releases": [
     {
       "version": "0.51.0",
@@ -28,49 +26,26 @@
   },
   "cases": [
     {
-      "id": "delete_then_absent",
+      "id": "list_generates_summary_before_output",
+      "provider_request_possible": true,
+      "transcript_mutation_possible": true,
+      "read_only": false
+    },
+    {
+      "id": "list_omits_terminal_record",
+      "terminal_state_available": false,
+      "exact_run_attribution_available": false
+    },
+    {
+      "id": "delete_exit_and_success_text_are_insufficient",
       "delete_exit": 0,
       "delete_stdout": "Deleted session 1: <REDACTED_PROVIDER_TEXT>",
-      "delete_stderr": "",
-      "reconcile_exit": 0,
-      "reconcile_contains_bound_id": false,
-      "effect": "applied"
-    },
-    {
-      "id": "already_absent",
-      "delete_exit": 0,
-      "delete_stdout": "",
-      "delete_stderr": "Invalid session identifier <REDACTED>",
-      "reconcile_exit": 0,
-      "reconcile_contains_bound_id": false,
-      "effect": "already_absent"
-    },
-    {
-      "id": "provider_rejected_active",
-      "delete_exit": 0,
-      "delete_stdout": "",
-      "delete_stderr": "Cannot delete the current active session.",
-      "reconcile_exit": 0,
-      "reconcile_contains_bound_id": true,
-      "effect": "failed_before_effect"
-    },
-    {
-      "id": "success_text_but_still_present",
-      "delete_exit": 0,
-      "delete_stdout": "Deleted session 1: <REDACTED_PROVIDER_TEXT>",
-      "delete_stderr": "",
-      "reconcile_exit": 0,
-      "reconcile_contains_bound_id": true,
       "effect": "unconfirmed_after_effect"
     },
     {
-      "id": "reconciliation_failed",
-      "delete_exit": 0,
-      "delete_stdout": "Deleted session 1: <REDACTED_PROVIDER_TEXT>",
-      "delete_stderr": "",
-      "reconcile_exit": 1,
-      "reconcile_contains_bound_id": null,
-      "effect": "unconfirmed_after_effect"
+      "id": "owned_cleanup_issues_no_confirmation_request",
+      "commands": [["--delete-session", "<BOUND_SESSION_ID>"]],
+      "deletion_outcome": "unconfirmed"
     }
   ],
   "diagnostic_exclusions": [

@@ -13,9 +13,9 @@ shape.
 
 ## Next Task
 
-Execute g03 card 083: remove Gemini's unsupported confirmed-deletion claim and
-stateful `--list-sessions` reconciliation before adding Anthropic recovered-run
-support.
+Execute g03 card 084: add provider-input wait plus a bounded, persisted,
+route-bound recovered-resource cleanup role without widening read-only
+reconciliation.
 
 ## Index
 

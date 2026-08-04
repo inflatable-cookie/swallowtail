@@ -1256,9 +1256,10 @@ provider-retention tranche.
   one take-once bound management capability after terminal completion. Later
   exact-source qualification found its post-delete `--list-sessions` check may
   perform summary inference and mutate retained transcripts. It is not a
-  read-only confirmation surface. Contract 038 and g03.033 therefore require
-  the unsupported `HistoryRemoved` claim to be removed or downgraded; Gemini
-  ACP remains unsupported.
+  read-only confirmation surface. Contract 038 and g03.033 remove the public
+  management role and binding. Operation-owned cleanup sends one delete
+  request, performs no list confirmation, and records deletion as unconfirmed;
+  Gemini ACP remains unsupported.
 - Gemini CLI and Claude Agent expose separate opt-in temporary-retention
   structured profiles. Each deletes only the operation-private transcript or
   session, records deletion truth separately from inference truth, and leaves

@@ -44,16 +44,9 @@ pub fn gemini_headless_descriptor() -> DriverDescriptor {
         IntegrationFamilyId::new("gemini-cli").expect("static family id is valid"),
         TransportFamilyId::new("gemini-stream-json-stdio").expect("static transport id is valid"),
     )
-    .with_roles([
-        DriverRole::Discovery,
-        DriverRole::StructuredRun,
-        DriverRole::ProviderSessionManagement,
-    ])
+    .with_roles([DriverRole::Discovery, DriverRole::StructuredRun])
     .with_execution_layers([ExecutionLayer::HarnessInteraction])
-    .with_operation_shapes([
-        OperationShape::StructuredRun,
-        OperationShape::ProviderSessionManagement,
-    ])
+    .with_operation_shapes([OperationShape::StructuredRun])
     .with_required_host_services(
         DriverRole::StructuredRun,
         [
@@ -68,14 +61,6 @@ pub fn gemini_headless_descriptor() -> DriverDescriptor {
             HostServiceKind::Task,
             HostServiceKind::Time,
             HostServiceKind::Process,
-        ],
-    )
-    .with_required_host_services(
-        DriverRole::ProviderSessionManagement,
-        [
-            HostServiceKind::Task,
-            HostServiceKind::Process,
-            HostServiceKind::Time,
         ],
     )
     .with_discovery_actions([swallowtail_core::DiscoveryAction::Probe])

@@ -9,17 +9,17 @@ use headless_support::{
 use std::sync::Arc;
 use swallowtail_adapter_gemini::{
     GeminiCliPreparedDriver, GeminiCliPreparedIntegration, GeminiHeadlessModelSelection,
-    GeminiHeadlessRunProfileInput, GeminiHeadlessSessionManagementInput, prepare_gemini_cli,
+    GeminiHeadlessRunProfileInput, prepare_gemini_cli,
 };
 use swallowtail_core::{
-    Capability, DriverRole, HarnessConfigurationPosture, HarnessIsolation, ModelId, ModelRouteId,
-    ModelRouteRevision, ObservableActivityAvailability, OwnedRemoteResourceKind, ProviderId,
-    ProviderSessionEffectTruth,
+    DriverRole, HarnessConfigurationPosture, HarnessIsolation, ModelId, ModelRouteId,
+    ModelRouteRevision, ObservableActivityAvailability, OperationShape, OwnedRemoteResourceKind,
+    ProviderId,
 };
 use swallowtail_runtime::{
-    CancellationControl, CleanupOutcome, Deadline, MonotonicInstant, OperationContent, ProcessExit,
-    ProviderObservation, ProviderRetentionPolicy, RemoteResourceDeletionOutcome, RequestId,
-    RuntimeEventKind, StructuredRunDriver, TerminalStatus, WorkingResourceRef,
+    CleanupOutcome, Deadline, MonotonicInstant, OperationContent, ProcessExit, ProviderObservation,
+    ProviderRetentionPolicy, RemoteResourceDeletionOutcome, RequestId, RuntimeEventKind,
+    StructuredRunDriver, TerminalStatus, WorkingResourceRef,
 };
 use swallowtail_testkit::{
     ConformanceAssertion, ExecutionTopologyFixture, SyntheticProfile,

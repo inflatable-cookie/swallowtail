@@ -6,7 +6,7 @@ Created: 2026-08-04
 Depends on: g03.032
 Vision tags: provider continuity, exact recovery, managed resource cleanup
 Contract refs: 021-022, 038, 042, 048
-Planning state: card 083 ready; cards 084-086 planned
+Planning state: card 083 completed; card 084 ready; cards 085-086 planned
 
 ## Problem
 
@@ -23,7 +23,7 @@ observation, callback authority, interruption, or destructive cleanup.
 
 ## Goals
 
-- [ ] remove the unsupported Gemini `HistoryRemoved` confirmation claim
+- [x] remove the unsupported Gemini `HistoryRemoved` confirmation claim
 - [ ] add portable waiting-state and exact recovered-resource cleanup records
 - [ ] reconcile one exact Anthropic run through bounded session/event reads
 - [ ] clean exact inactive recovered resources without implicit interruption
@@ -31,7 +31,7 @@ observation, callback authority, interruption, or destructive cleanup.
 
 ## Execution Plan
 
-- [ ] card 083: repair Gemini stored-transcript management truth across runtime,
+- [x] card 083: repair Gemini stored-transcript management truth across runtime,
   prepared evidence, tests, and public route claims
 - [ ] card 084: add portable run waiting state plus bounded persisted
   owned-resource cleanup binding, role, outcome, and conformance

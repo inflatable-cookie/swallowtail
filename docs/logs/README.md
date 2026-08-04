@@ -5,6 +5,7 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-08-04 ACP Retained History Reconciliation Qualification](2026-08-04-acp-retained-history-reconciliation-qualification.md)
 - [2026-08-04 OpenAI Background Run Reconciliation And Detachment](2026-08-04-openai-background-run-reconciliation-and-detachment.md)
 - [2026-08-04 Kimi Operation Checkpoint, Reconciliation, And Detachment](2026-08-04-kimi-operation-checkpoint-reconciliation-and-detachment.md)
 - [2026-08-04 Controlled Shutdown Active Operation Detachment](2026-08-04-controlled-shutdown-active-operation-detachment.md)

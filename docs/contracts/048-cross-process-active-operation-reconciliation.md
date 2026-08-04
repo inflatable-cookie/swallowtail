@@ -187,6 +187,13 @@ create, prompt, retry, stream attachment, cancel, delete, callback, or session
 operation. The restored response/cursor checkpoint must match the current
 route binding exactly.
 
+ACP `session/load` is not a reconciliation operation. Stable ACP defines load
+as restoring resumable session context, connecting requested MCP servers, and
+returning a ready session after replay. A route cannot make that operation
+read-only by closing the resulting handle immediately. Claude Agent ACP and
+Kimi ACP therefore retain ordinary load/replay support but no reconciliation
+mapping.
+
 Other routes remain unclaimed until the route-specific gates in Research 099
 are satisfied. Capability does not inherit across another transport in the
 same provider family.

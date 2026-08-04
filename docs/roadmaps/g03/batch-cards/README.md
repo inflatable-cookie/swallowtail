@@ -4,12 +4,16 @@
 
 ## Ready
 
-- `079-acp-retained-history-reconciliation-qualification.md`
+- `080-gemini-durable-transcript-reconciliation-qualification.md`
 
 ## Planned
 
+- `081-anthropic-managed-operation-recovery-qualification.md`
+- `082-retained-operation-reconciliation-selection.md`
+
 ## Completed
 
+- `079-acp-retained-history-reconciliation-qualification.md`
 - `078-openai-background-run-detachment.md`
 - `077-openai-background-run-reconciliation.md`
 - `076-provider-run-reconciliation-kernel.md`

@@ -13,9 +13,9 @@ shape.
 
 ## Next Task
 
-Execute g03 card 079: qualify ACP retained-history reconciliation across
-Claude Agent and Kimi ACP without treating retained history as a surviving
-live turn.
+Execute g03 card 080: qualify Gemini CLI durable-transcript reconciliation
+without prompt replay, resume, deletion, or terminal inference from history
+presence.
 
 ## Index
 

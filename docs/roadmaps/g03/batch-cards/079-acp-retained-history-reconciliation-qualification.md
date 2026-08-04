@@ -1,6 +1,6 @@
 # 079 ACP Retained History Reconciliation Qualification
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-04
 Milestone: `../031-acp-retained-history-reconciliation-qualification.md`
@@ -24,6 +24,10 @@ honest read-only cross-process reconciliation mapping.
 - deterministic protocol and existing corpus checks only
 - `effigy qa:docs`
 
+Passed. Stable ACP schema, qualified route corpora, both production drivers,
+and installed Claude Agent ACP `0.63.0` source prove that load restores a live
+resumable session before or alongside replay. No Rust mapping was added.
+
 ## Stop Conditions
 
 - stop a route if load requires a state-changing resume or new prompt
@@ -31,5 +35,5 @@ honest read-only cross-process reconciliation mapping.
 
 ## Auto-Continuation
 
-Continue into the selected route implementation only when its evidence passes;
-otherwise return to the retained-operation candidate gate.
+Completed at the stop condition. Continue with card 080; no ACP implementation
+card exists.

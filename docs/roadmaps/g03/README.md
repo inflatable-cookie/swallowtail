@@ -33,7 +33,8 @@ visible as unverified newer unless exact evidence requires rejection.
 | Preserve qualified provider work across controlled consumer shutdown without leaking local work. | completed | Contracts 009, 017, 042, 048-049 | `g03.028` |
 | Persist and reconcile an exact Kimi operation before detaching its local observer. | completed | Contracts 017, 042, 048-049 | `g03.029` |
 | Persist, reconcile, and detach an exact provider-owned structured run. | completed | Contracts 021, 042, 048-049 | `g03.030` |
-| Qualify ACP retained history for honest restart reconciliation. | active | Contracts 017, 042, 048 | `g03.031` |
+| Qualify ACP retained history for honest restart reconciliation. | completed | Contracts 017, 042, 048 | `g03.031` |
+| Qualify remaining durable transcript and retained-operation reconciliation candidates. | active | Contracts 021-022, 042, 048 | `g03.032` |
 | Periodically reconcile deferred gates, route truth, and generation capacity. | planned | Contract 001 | recurring checkpoints |
 
 ## Current Checkpoint
@@ -296,6 +297,11 @@ visible as unverified newer unless exact evidence requires rejection.
 - Research 102 and g03.030 add the distinct provider-run checkpoint and
   reconciliation role, then qualify OpenAI background one-request recovery and
   opt-in structured-run detachment while preserving ordinary terminal deletion
+- card 079 closes ACP retained-history reconciliation negatively: stable ACP
+  `session/load`, the Claude continuity corpus through `0.61.0`, installed
+  exact `0.63.0`, and Kimi ACP `0.28.1..=0.31.1` all restore a resumable
+  session before or alongside replay; neither route gains Contract 048
+  observation authority
 
 ## Milestones
 
@@ -329,13 +335,14 @@ visible as unverified newer unless exact evidence requires rejection.
 - [028 Controlled Shutdown Active Operation Detachment](028-controlled-shutdown-active-operation-detachment.md) — completed
 - [029 Kimi Operation Checkpoint, Reconciliation, And Detachment](029-kimi-operation-checkpoint-reconciliation-and-detachment.md) — completed
 - [030 OpenAI Background Run Reconciliation And Detachment](030-openai-background-run-reconciliation-and-detachment.md) — completed
-- [031 ACP Retained History Reconciliation Qualification](031-acp-retained-history-reconciliation-qualification.md) — active
+- [031 ACP Retained History Reconciliation Qualification](031-acp-retained-history-reconciliation-qualification.md) — completed
+- [032 Retained Operation Reconciliation Candidate Gate](032-retained-operation-reconciliation-candidate-gate.md) — active
 
 ## Checkpoint
 
-The lane is executing g03.031. Card 079 qualifies whether Claude Agent ACP or
-Kimi ACP retained history can support honest read-only restart reconciliation
-without claiming a surviving live turn.
+The lane is executing g03.032. Card 080 qualifies whether Gemini CLI's durable
+headless transcript can prove exact interrupted-turn truth without prompt
+replay, resume, deletion, or a new provider operation.
 
 ## Generation Boundary
 

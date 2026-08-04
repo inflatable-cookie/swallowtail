@@ -1518,6 +1518,12 @@ observes the persisted response id; the stored SSE cursor remains opaque
 attachment evidence. No create, stream attach, cancel, delete, callback, or
 session operation enters reconciliation.
 
+Claude Agent ACP and Kimi ACP remain ordinary load/replay routes. Their only
+history operation is ACP `session/load`, which restores resumable context and
+returns a live session handle. Immediate close cannot turn that stateful
+attachment into Contract 048 observation, so neither route implements
+reconciliation.
+
 ## Controlled Operation Detachment
 
 Contract 049 adds an optional lifecycle control to qualified run and turn

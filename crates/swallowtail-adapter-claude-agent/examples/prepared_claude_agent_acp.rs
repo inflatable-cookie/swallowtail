@@ -7,8 +7,9 @@ use swallowtail_adapter_claude_agent::{
 };
 use swallowtail_runtime::{
     CleanupOutcome, HostServices, OperationContent, PreparationFailure,
-    ProviderSessionManagementBinding, ProviderSessionManagementOutcome, RequestId, RuntimeFailure,
-    RuntimeTurnId, TerminalOutcome, TurnRequest,
+    PreparedWorkingStateRestoration, ProviderSessionManagementBinding,
+    ProviderSessionManagementOutcome, RequestId, RuntimeFailure, RuntimeTurnId,
+    SessionResumeBinding, TerminalOutcome, TurnRequest, WorkingStateRestorationOutcome,
 };
 
 async fn prepare_installation(
@@ -24,6 +25,22 @@ fn prepare_session(
     input: ClaudeAgentSessionProfileInput,
 ) -> Result<ClaudeAgentPreparedSession, PreparationFailure> {
     integration.prepare_session(input)
+}
+
+fn prepare_working_state_restoration(
+    prepared: &ClaudeAgentPreparedSession,
+    request_id: RequestId,
+    binding: SessionResumeBinding,
+    interrupted_turn_id: RuntimeTurnId,
+) -> Result<PreparedWorkingStateRestoration, PreparationFailure> {
+    prepared.prepare_working_state_restoration(request_id, binding, interrupted_turn_id)
+}
+
+async fn restore_working_state(
+    prepared: PreparedWorkingStateRestoration,
+    services: HostServices,
+) -> Result<WorkingStateRestorationOutcome, RuntimeFailure> {
+    prepared.restore(services).await
 }
 
 async fn open_and_prompt(

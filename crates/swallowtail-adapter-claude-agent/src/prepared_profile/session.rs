@@ -12,8 +12,11 @@ use swallowtail_runtime::{
     BoxFuture, CancellationControl, CleanupOutcome, DirectContinuationTurnRequest, HostServices,
     InteractiveSessionDriver, InteractiveSessionHandle, LoadSessionRequest, LoadedSession,
     OpenSessionRequest, PreparationFailure, PreparedAccessEvidence,
-    ProviderSessionManagementBinding, ResumeSessionRequest, RuntimeFailure, SessionOptions,
-    SessionResumeBinding, TurnHandle, TurnRequest, WorkingResourceRef,
+    PreparedWorkingStateRestoration, ProviderSessionContinuationRecoveryOutcome,
+    ProviderSessionManagementBinding, ResumeSessionRequest, RuntimeFailure, RuntimeTurnId,
+    SessionOptions, SessionResumeBinding, TurnHandle, TurnRequest, WorkingResourceRef,
+    WorkingStateRestorationMethod, WorkingStateRestorationOperation,
+    WorkingStateRestorationOutcome,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -107,6 +110,25 @@ impl ClaudeAgentPreparedSession {
         }))
     }
 
+    pub fn prepare_working_state_restoration(
+        &self,
+        request_id: swallowtail_runtime::RequestId,
+        binding: SessionResumeBinding,
+        interrupted_turn_id: RuntimeTurnId,
+    ) -> Result<PreparedWorkingStateRestoration, PreparationFailure> {
+        let request = self.load_request(request_id, binding)?;
+        Ok(PreparedWorkingStateRestoration::new(
+            ClaudeAgentContinuationRecovery {
+                driver: self.low_level_driver(),
+                plan: self.plan().clone(),
+                request,
+                management_instance: self.management_instance.clone(),
+                access: self.evidence.access().clone(),
+                interrupted_turn_id,
+            },
+        ))
+    }
+
     pub fn resume_request(
         &self,
         request_id: swallowtail_runtime::RequestId,
@@ -161,6 +183,53 @@ impl ClaudeAgentPreparedSession {
     ) {
         let plan = self.evidence.plan().clone();
         (self.evidence, plan, self.request)
+    }
+}
+
+struct ClaudeAgentContinuationRecovery {
+    driver: ClaudeAgentAcpDriver,
+    plan: swallowtail_core::PreflightPlan,
+    request: LoadSessionRequest,
+    management_instance: swallowtail_core::ConfiguredInstance,
+    access: PreparedAccessEvidence,
+    interrupted_turn_id: RuntimeTurnId,
+}
+
+impl WorkingStateRestorationOperation for ClaudeAgentContinuationRecovery {
+    fn method(&self) -> WorkingStateRestorationMethod {
+        WorkingStateRestorationMethod::ProviderSessionContinuationRecovery
+    }
+
+    fn restore(
+        self: Box<Self>,
+        services: HostServices,
+    ) -> BoxFuture<'static, Result<WorkingStateRestorationOutcome, RuntimeFailure>> {
+        let Self {
+            driver,
+            plan,
+            request,
+            management_instance,
+            access,
+            interrupted_turn_id,
+        } = *self;
+        Box::pin(async move {
+            let loaded = driver.load_session(plan, request.clone(), services).await?;
+            let (replay, handle) = loaded.into_parts();
+            let handle = wrap_management_handle(
+                handle,
+                management_instance,
+                access,
+                Some(request.working_resource().clone()),
+                ProviderSessionBindingOrigin::Loaded,
+            )
+            .await?;
+            Ok(WorkingStateRestorationOutcome::SessionRecovered(
+                ProviderSessionContinuationRecoveryOutcome::new(
+                    interrupted_turn_id,
+                    LoadedSession::new(replay, handle),
+                ),
+            ))
+        })
     }
 }
 

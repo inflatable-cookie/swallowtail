@@ -31,6 +31,7 @@ use swallowtail_runtime::{
     PreparedAccessEvidence, ProviderObservation, ProviderRecoveryPolicy, ProviderRetentionPolicy,
     RemoteResourceDeletionOutcome, RequestId, SchemaDocument, ScopedTaskService,
     StreamReattachmentPolicy, StructuredRunRequest, TerminalStatus, TimeService, ToolDeclaration,
+    WorkingStateRestorationMethod, WorkingStateRestorationOutcome,
 };
 use swallowtail_testkit::ExecutionTopologyFixture;
 

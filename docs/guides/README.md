@@ -33,3 +33,4 @@ contracts or architecture.
 - [Qwen Headless Prepared Integration](qwen-headless-prepared-integration.md)
 - [Realtime Prepared Integration](realtime-prepared-integration.md)
 - [Validation Tiers](validation-tiers.md)
+- [Working-State Restoration](working-state-restoration.md)

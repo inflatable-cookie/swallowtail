@@ -97,3 +97,8 @@ retention, or another transport.
 This guide intentionally does not add another column to the main provider
 feature CSV. Recovery support has several evidence strengths; collapsing them
 to `Yes` or `No` would hide the promotion work.
+
+Consumers that need one restart execution API should use the
+[working-state restoration facade](working-state-restoration.md). It wraps
+these read-only mappings and the separately qualified Claude Agent ACP and
+Kimi ACP continuation-recovery paths without changing reconciliation truth.

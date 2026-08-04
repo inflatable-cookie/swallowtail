@@ -15,17 +15,27 @@ use swallowtail_runtime::{
     BoxFuture, Deadline, HostServices, PersistedProviderRecoveredResourceCleanupBinding,
     PersistedProviderRunCheckpoint, PreparationFailure, PreparationStage,
     PreparedProviderRecoveredResourceCleanupEvidence, PreparedProviderRunReconciliationEvidence,
-    ProviderRecoveredResourceCleanupAgreement, ProviderRecoveredResourceCleanupBinding,
-    ProviderRecoveredResourceCleanupDriver, ProviderRecoveredResourceCleanupOutcome,
-    ProviderRecoveredResourceCleanupPlan, ProviderRecoveredResourceCleanupRequest,
-    ProviderRunCheckpoint, ProviderRunReconciliationAgreement, ProviderRunReconciliationDriver,
+    PreparedWorkingStateRestoration, ProviderRecoveredResourceCleanupAgreement,
+    ProviderRecoveredResourceCleanupBinding, ProviderRecoveredResourceCleanupDriver,
+    ProviderRecoveredResourceCleanupOutcome, ProviderRecoveredResourceCleanupPlan,
+    ProviderRecoveredResourceCleanupRequest, ProviderRunCheckpoint,
+    ProviderRunReconciliationAgreement, ProviderRunReconciliationDriver,
     ProviderRunReconciliationOutcome, ProviderRunReconciliationPlan,
-    ProviderRunReconciliationRequest, RequestId, RuntimeFailure,
+    ProviderRunReconciliationRequest, RequestId, RuntimeFailure, WorkingStateRestorationMethod,
+    WorkingStateRestorationOperation, WorkingStateRestorationOutcome,
 };
 
 include!("prepared_managed_recovery/types.rs");
 
 impl AnthropicManagedPreparedIntegration {
+    pub fn prepare_working_state_restoration(
+        &self,
+        input: AnthropicManagedRunReconciliationInput,
+    ) -> Result<PreparedWorkingStateRestoration, PreparationFailure> {
+        self.prepare_run_reconciliation(input)
+            .map(PreparedWorkingStateRestoration::new)
+    }
+
     pub fn prepare_run_reconciliation(
         &self,
         input: AnthropicManagedRunReconciliationInput,

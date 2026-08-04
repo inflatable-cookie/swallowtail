@@ -10,8 +10,11 @@ use swallowtail_core::{
     ReasoningMode,
 };
 use swallowtail_runtime::{
-    HostServices, InteractiveSessionDriver, LoadSessionRequest, OpenSessionRequest,
-    PreparationFailure, RequestId, ResumeSessionRequest, SessionOptions, SessionResumeBinding,
+    BoxFuture, HostServices, InteractiveSessionDriver, LoadSessionRequest, OpenSessionRequest,
+    PreparationFailure, PreparedWorkingStateRestoration,
+    ProviderSessionContinuationRecoveryOutcome, RequestId, ResumeSessionRequest, RuntimeFailure,
+    RuntimeTurnId, SessionOptions, SessionResumeBinding, WorkingStateRestorationMethod,
+    WorkingStateRestorationOperation, WorkingStateRestorationOutcome,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -80,6 +83,23 @@ impl KimiPreparedSession {
         }))
     }
 
+    pub fn prepare_working_state_restoration(
+        &self,
+        request_id: RequestId,
+        binding: SessionResumeBinding,
+        interrupted_turn_id: RuntimeTurnId,
+    ) -> Result<PreparedWorkingStateRestoration, PreparationFailure> {
+        let request = self.load_request(request_id, binding)?;
+        Ok(PreparedWorkingStateRestoration::new(
+            KimiAcpContinuationRecovery {
+                driver: self.low_level_driver(),
+                plan: self.plan().clone(),
+                request,
+                interrupted_turn_id,
+            },
+        ))
+    }
+
     pub fn resume_request(
         &self,
         request_id: RequestId,
@@ -122,6 +142,37 @@ impl KimiPreparedSession {
     ) {
         let plan = self.evidence.plan().clone();
         (self.evidence, plan, self.request)
+    }
+}
+
+struct KimiAcpContinuationRecovery {
+    driver: KimiAcpDriver,
+    plan: swallowtail_core::PreflightPlan,
+    request: LoadSessionRequest,
+    interrupted_turn_id: RuntimeTurnId,
+}
+
+impl WorkingStateRestorationOperation for KimiAcpContinuationRecovery {
+    fn method(&self) -> WorkingStateRestorationMethod {
+        WorkingStateRestorationMethod::ProviderSessionContinuationRecovery
+    }
+
+    fn restore(
+        self: Box<Self>,
+        services: HostServices,
+    ) -> BoxFuture<'static, Result<WorkingStateRestorationOutcome, RuntimeFailure>> {
+        let Self {
+            driver,
+            plan,
+            request,
+            interrupted_turn_id,
+        } = *self;
+        Box::pin(async move {
+            let loaded = driver.load_session(plan, request, services).await?;
+            Ok(WorkingStateRestorationOutcome::SessionRecovered(
+                ProviderSessionContinuationRecoveryOutcome::new(interrupted_turn_id, loaded),
+            ))
+        })
     }
 }
 

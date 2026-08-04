@@ -14,7 +14,7 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     CleanupOutcome, OperationDetachmentAcknowledgement, ProviderSessionReconciliationBounds,
-    RequestId, TerminalStatus,
+    RequestId, TerminalStatus, WorkingStateRestorationMethod, WorkingStateRestorationOutcome,
 };
 
 #[test]
@@ -240,8 +240,8 @@ fn persisted_checkpoint_reconciles_the_exact_completed_turn_after_restart() {
         mismatch.diagnostic().safe().code(),
         "swallowtail.provider_operation_checkpoint.attachment_mismatch"
     );
-    let reconciliation = second_prepared
-        .prepare_session_reconciliation(KimiLocalServerReconciliationInput::new(
+    let restoration = second_prepared
+        .prepare_working_state_restoration(KimiLocalServerReconciliationInput::new(
             id(RequestId::new, "reconciliation-request"),
             KimiModelSelection::new(
                 id(ModelRouteId::new, "fixture.kimi.route"),
@@ -255,13 +255,20 @@ fn persisted_checkpoint_reconciles_the_exact_completed_turn_after_restart() {
                 NonZeroU64::new(4096).expect("bound is non-zero"),
             ),
         ))
-        .expect("reconciliation prepares");
-    let outcome = block_on(reconciliation.execute(second_services)).unwrap_or_else(|error| {
+        .expect("restoration prepares");
+    assert_eq!(
+        restoration.method(),
+        WorkingStateRestorationMethod::ProviderSessionReconciliation
+    );
+    let restored = block_on(restoration.restore(second_services)).unwrap_or_else(|error| {
         panic!(
             "reconciliation executes: {error:?}; requests={:?}",
             second_server.requests()
         )
     });
+    let WorkingStateRestorationOutcome::SessionReconciled(outcome) = restored else {
+        panic!("Kimi local server must preserve exact-turn reconciliation truth");
+    };
 
     assert_eq!(
         outcome.attribution(),

@@ -20,10 +20,12 @@ use swallowtail_core::{
 use swallowtail_runtime::{
     BoxFuture, CleanupOutcome, HostServices, PersistedProviderOperationCheckpoint,
     PreparationFailure, PreparationStage, PreparedProviderSessionReconciliationEvidence,
-    ProviderOperationCheckpoint, ProviderSessionReconciliationAgreement,
-    ProviderSessionReconciliationBounds, ProviderSessionReconciliationDriver,
-    ProviderSessionReconciliationOutcome, ProviderSessionReconciliationPlan,
-    ProviderSessionReconciliationRequest, RequestId, RuntimeFailure, SessionResumeBinding,
+    PreparedWorkingStateRestoration, ProviderOperationCheckpoint,
+    ProviderSessionReconciliationAgreement, ProviderSessionReconciliationBounds,
+    ProviderSessionReconciliationDriver, ProviderSessionReconciliationOutcome,
+    ProviderSessionReconciliationPlan, ProviderSessionReconciliationRequest, RequestId,
+    RuntimeFailure, SessionResumeBinding, WorkingStateRestorationMethod,
+    WorkingStateRestorationOperation, WorkingStateRestorationOutcome,
     validate_provider_session_reconciliation_execution,
 };
 
@@ -97,6 +99,34 @@ impl KimiLocalServerPreparedReconciliation {
                 .reconcile_provider_session(plan, request, services)
                 .await
         })
+    }
+}
+
+impl WorkingStateRestorationOperation for KimiLocalServerPreparedReconciliation {
+    fn method(&self) -> WorkingStateRestorationMethod {
+        WorkingStateRestorationMethod::ProviderSessionReconciliation
+    }
+
+    fn restore(
+        self: Box<Self>,
+        services: HostServices,
+    ) -> BoxFuture<'static, Result<WorkingStateRestorationOutcome, RuntimeFailure>> {
+        let future = self.execute(services);
+        Box::pin(async move {
+            future
+                .await
+                .map(WorkingStateRestorationOutcome::SessionReconciled)
+        })
+    }
+}
+
+impl crate::KimiLocalServerPreparedIntegration {
+    pub fn prepare_working_state_restoration(
+        &self,
+        input: KimiLocalServerReconciliationInput,
+    ) -> Result<PreparedWorkingStateRestoration, PreparationFailure> {
+        self.prepare_session_reconciliation(input)
+            .map(PreparedWorkingStateRestoration::new)
     }
 }
 

@@ -28,7 +28,8 @@ use swallowtail_runtime::{
     HarnessQuestionOptionId, HarnessUserInputAnswer, HarnessUserInputResponse,
     InstalledExecutableTarget, MonotonicInstant, OperationContent, PreparedAccessEvidence,
     ProviderRetentionPolicy, RemoteResourceDeletionOutcome, RequestId, RuntimeTurnId, ScopeId,
-    SessionOptions, TerminalStatus, TurnRequest, WorkingResourceRef,
+    SessionOptions, TerminalStatus, TurnRequest, WorkingResourceRef, WorkingStateRestorationMethod,
+    WorkingStateRestorationOutcome,
 };
 use swallowtail_testkit::{
     assert_observable_activity_trace, assert_prepared_operation_evidence_matches_plan,

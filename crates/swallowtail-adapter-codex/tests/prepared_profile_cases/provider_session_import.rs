@@ -9,6 +9,7 @@ use swallowtail_core::{
 use swallowtail_runtime::ProviderSessionCatalogueId;
 use swallowtail_runtime::{
     ProviderSessionReconciliationBounds, RuntimeTurnId, SessionResumeBinding,
+    WorkingStateRestorationMethod, WorkingStateRestorationOutcome,
 };
 use swallowtail_testkit::RecordedHostCall;
 
@@ -41,8 +42,8 @@ fn exact_interrupted_turn_reconciliation_projects_active_and_terminal_truth() {
             swallowtail_runtime::InterruptedTurnState::Completed,
         ),
     ] {
-        let reconciliation = prepared_app
-            .prepare_session_reconciliation(
+        let restoration = prepared_app
+            .prepare_working_state_restoration(
                 CodexSessionReconciliationInput::new(
                     RequestId::new(format!("reconcile-{provider_turn}")).unwrap(),
                     model(),
@@ -55,16 +56,23 @@ fn exact_interrupted_turn_reconciliation_projects_active_and_terminal_truth() {
                 )
                 .with_provider_turn_ref(swallowtail_core::TurnRef::new(provider_turn).unwrap()),
             )
-            .expect("exact reconciliation prepares");
+            .expect("exact restoration prepares");
+        assert_eq!(
+            restoration.method(),
+            WorkingStateRestorationMethod::ProviderSessionReconciliation
+        );
         let (process, state) = ScriptedAppServer::new(AppServerMode::ThreadCatalogue(
             ThreadCatalogueMode::Available,
         ));
-        let outcome = block_on(reconciliation.reconcile(host_services_with(
+        let restored = block_on(restoration.restore(host_services_with(
             process,
             &recording,
             [HostServiceKind::WorkingResource],
         )))
         .expect("exact turn reconciles");
+        let WorkingStateRestorationOutcome::SessionReconciled(outcome) = restored else {
+            panic!("Codex must preserve session reconciliation truth");
+        };
         assert_eq!(outcome.state(), expected);
         assert_eq!(
             outcome.attribution(),

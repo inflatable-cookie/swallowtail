@@ -200,6 +200,48 @@ fn prepared_session_load_and_resume_preserve_replay_and_attachment_truth() {
     );
     assert_eq!(block_on(loaded_handle.close()), CleanupOutcome::Clean);
 
+    let recovery_host = FixtureHost::new(Scenario::Success, "0.61.0");
+    let restoration = profile
+        .prepare_working_state_restoration(
+            RequestId::new("claude-agent-continuity-recovery").expect("valid request"),
+            binding.clone(),
+            RuntimeTurnId::new("claude-agent-interrupted-turn").expect("valid turn"),
+        )
+        .expect("working-state restoration prepares");
+    assert_eq!(
+        restoration.method(),
+        WorkingStateRestorationMethod::ProviderSessionContinuationRecovery
+    );
+    let recovered = block_on(restoration.restore(recovery_host.services(host_id.clone())))
+        .expect("working-state restoration loads the exact session");
+    let WorkingStateRestorationOutcome::SessionRecovered(recovered) = recovered else {
+        panic!("Claude Agent ACP must report continuation recovery");
+    };
+    assert_eq!(
+        recovered.interrupted_turn_id().as_str(),
+        "claude-agent-interrupted-turn"
+    );
+    assert_eq!(
+        recovered
+            .replay()
+            .map(swallowtail_runtime::SessionReplayItem::sequence)
+            .collect::<Vec<_>>(),
+        [0, 1]
+    );
+    let (_, loaded) = recovered.into_parts();
+    let (_, recovered_handle) = loaded.into_parts();
+    assert_eq!(
+        recovered_handle
+            .management_binding()
+            .expect("recovered session returns management authority")
+            .origin(),
+        swallowtail_core::ProviderSessionBindingOrigin::Loaded
+    );
+    assert_eq!(block_on(recovered_handle.close()), CleanupOutcome::Clean);
+    assert!(recovery_host.writes().iter().any(|message| {
+        message.get("method").and_then(serde_json::Value::as_str) == Some("session/load")
+    }));
+
     let resume_host = FixtureHost::new(Scenario::Success, "0.61.0");
     let resumed = block_on(
         profile

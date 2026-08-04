@@ -111,3 +111,4 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [101 Kimi Operation Checkpoint And Reconciliation](101-kimi-operation-checkpoint-and-reconciliation.md)
 - [102 OpenAI Background Run Checkpoint And Reconciliation](102-openai-background-run-checkpoint-and-reconciliation.md)
 - [103 Retained Operation Reconciliation Candidate Qualification](103-retained-operation-reconciliation-candidate-qualification.md)
+- [104 Working-State Restoration Facade](104-working-state-restoration-facade.md)

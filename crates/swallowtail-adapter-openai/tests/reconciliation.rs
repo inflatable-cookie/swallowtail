@@ -11,7 +11,7 @@ use swallowtail_core::{ModelId, ModelRouteId, ModelRouteRevision};
 use swallowtail_runtime::{
     CancellationControl, CleanupOutcome, Deadline, InterruptedRunState, MonotonicInstant,
     OperationContent, OperationDetachmentAcknowledgement, PersistedProviderRunCheckpoint,
-    RequestId, TerminalStatus,
+    RequestId, TerminalStatus, WorkingStateRestorationMethod, WorkingStateRestorationOutcome,
 };
 
 #[test]
@@ -59,14 +59,20 @@ fn detached_response_reconciles_exact_completed_run_without_cancel_or_delete() {
     assert!(outcome.remote_resource_deletions().next().is_none());
     assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
 
-    let reconciliation = prepared
-        .prepare_run_reconciliation(reconciliation_input(
+    let restoration = prepared
+        .prepare_working_state_restoration(reconciliation_input(
             "reconcile-complete",
             persisted.clone(),
         ))
-        .expect("reconciliation prepares");
-    let outcome =
-        block_on(reconciliation.reconcile(fixture.services())).expect("reconciliation succeeds");
+        .expect("restoration prepares");
+    assert_eq!(
+        restoration.method(),
+        WorkingStateRestorationMethod::ProviderRunReconciliation
+    );
+    let restored = block_on(restoration.restore(fixture.services())).expect("restoration succeeds");
+    let WorkingStateRestorationOutcome::RunReconciled(outcome) = restored else {
+        panic!("OpenAI background must preserve run reconciliation truth");
+    };
     assert_eq!(
         outcome.observation().state(),
         InterruptedRunState::Completed

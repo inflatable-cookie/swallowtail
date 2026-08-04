@@ -206,6 +206,11 @@ Contract 049 adds explicit controlled-shutdown detachment for qualified active
 runs or turns. It stops and joins only local observation work, reports local
 `Detached` truth, preserves provider terminal uncertainty, and requires a
 durable binding plus later reconciliation. Ordinary close remains unchanged.
+Contract 050 adds one prepared working-state restoration facade over the
+qualified reconciliation operations and stateful provider-session continuation
+recovery. It preserves the selected method and outcome strength, never turns
+ACP load into reconciliation, and never falls back from failed observation to
+broader live-session authority.
 
 Contract 015 now permits exact, one-shot activation of an already authorized
 harness credential after ACP initialization. The first mapping is Grok Build

@@ -64,6 +64,7 @@ mod session_replay;
 mod subagent_directory;
 mod time;
 mod working_resource_io;
+mod working_state_restoration;
 
 pub use activity::{
     ActivityActor, ActivityAssistantPhase, ActivityContent, ActivityContentChangeKind,
@@ -287,4 +288,9 @@ pub use time::{Deadline, DeadlineObservation, MonotonicInstant};
 pub use working_resource_io::{
     WorkingResourceIoService, WorkingResourceLocator, WorkingResourceReadRequest,
     WorkingResourceText, WorkingResourceWriteRequest,
+};
+pub use working_state_restoration::{
+    PreparedWorkingStateRestoration, ProviderSessionContinuationRecoveryOutcome,
+    WorkingStateRestorationMethod, WorkingStateRestorationOperation,
+    WorkingStateRestorationOutcome,
 };

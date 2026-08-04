@@ -20,13 +20,15 @@ use swallowtail_core::{
 use swallowtail_runtime::{
     BoxFuture, HostServices, PreparationFailure, PreparedProviderSessionCatalogueEvidence,
     PreparedProviderSessionImportEvidence, PreparedProviderSessionReconciliationEvidence,
-    ProviderSessionCandidate, ProviderSessionCatalogueDriver, ProviderSessionCatalogueOutcome,
-    ProviderSessionCataloguePlan, ProviderSessionCatalogueRequest, ProviderSessionCatalogueScope,
-    ProviderSessionImportAgreement, ProviderSessionImportDriver, ProviderSessionImportOutcome,
-    ProviderSessionImportPlan, ProviderSessionImportRequest, ProviderSessionOperationFailure,
-    ProviderSessionReconciliationAgreement, ProviderSessionReconciliationDriver,
-    ProviderSessionReconciliationOutcome, ProviderSessionReconciliationPlan,
-    ProviderSessionReconciliationRequest, SessionPlanAgreement,
+    PreparedWorkingStateRestoration, ProviderSessionCandidate, ProviderSessionCatalogueDriver,
+    ProviderSessionCatalogueOutcome, ProviderSessionCataloguePlan, ProviderSessionCatalogueRequest,
+    ProviderSessionCatalogueScope, ProviderSessionImportAgreement, ProviderSessionImportDriver,
+    ProviderSessionImportOutcome, ProviderSessionImportPlan, ProviderSessionImportRequest,
+    ProviderSessionOperationFailure, ProviderSessionReconciliationAgreement,
+    ProviderSessionReconciliationDriver, ProviderSessionReconciliationOutcome,
+    ProviderSessionReconciliationPlan, ProviderSessionReconciliationRequest, RuntimeFailure,
+    SessionPlanAgreement, WorkingStateRestorationMethod, WorkingStateRestorationOperation,
+    WorkingStateRestorationOutcome,
 };
 
 #[derive(Clone, Debug)]
@@ -147,6 +149,34 @@ impl CodexPreparedSessionReconciliation {
                 .reconcile_provider_session(plan, request, services)
                 .await
         })
+    }
+}
+
+impl WorkingStateRestorationOperation for CodexPreparedSessionReconciliation {
+    fn method(&self) -> WorkingStateRestorationMethod {
+        WorkingStateRestorationMethod::ProviderSessionReconciliation
+    }
+
+    fn restore(
+        self: Box<Self>,
+        services: HostServices,
+    ) -> BoxFuture<'static, Result<WorkingStateRestorationOutcome, RuntimeFailure>> {
+        let future = self.reconcile(services);
+        Box::pin(async move {
+            future
+                .await
+                .map(WorkingStateRestorationOutcome::SessionReconciled)
+        })
+    }
+}
+
+impl CodexPreparedIntegration {
+    pub fn prepare_working_state_restoration(
+        &self,
+        input: CodexSessionReconciliationInput,
+    ) -> Result<PreparedWorkingStateRestoration, PreparationFailure> {
+        self.prepare_session_reconciliation(input)
+            .map(PreparedWorkingStateRestoration::new)
     }
 }
 

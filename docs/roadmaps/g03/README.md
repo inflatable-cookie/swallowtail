@@ -36,6 +36,7 @@ visible as unverified newer unless exact evidence requires rejection.
 | Qualify ACP retained history for honest restart reconciliation. | completed | Contracts 017, 042, 048 | `g03.031` |
 | Qualify remaining durable transcript and retained-operation reconciliation candidates. | completed | Contracts 021-022, 042, 048 | `g03.032` |
 | Reconcile and clean exact recovered Anthropic Managed Agent runs without conflating observation and control. | completed | Contracts 021-022, 038, 042, 048 | `g03.033` |
+| Restore consumer working state through the strongest exact route method without flattening ACP continuation into reconciliation. | completed | Contracts 017, 037, 046, 048, 050 | `g03.034` |
 | Periodically reconcile deferred gates, route truth, and generation capacity. | planned | Contract 001 | recurring checkpoints |
 
 ## Current Checkpoint
@@ -53,6 +54,13 @@ visible as unverified newer unless exact evidence requires rejection.
 - the current structural scan reports 206 oversized-file findings, including
   19 errors; this known
   structural debt remains outside the active provider route batch
+- Research 104 and Contract 050 select one consuming working-state restoration
+  facade. Five reconciliation routes keep read-only observation; Claude Agent
+  ACP and Kimi ACP use distinct live continuation recovery with no lost-turn
+  state claim
+- g03.034 realizes that facade across all seven selected routes. Focused tests,
+  compile-checked guidance, and affected-package proof pass without live
+  provider work
 - Research 074 inventories 13 installed/attached harness route ids and bounds
   the first external currentness source set
 - the 2026-07-31 currentness pass leaves Codex and stable ACP unchanged,

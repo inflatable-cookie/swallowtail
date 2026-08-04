@@ -53,17 +53,24 @@ fn recoverable_run_emits_separate_authorities_before_message_and_restores_them_e
         let prepared =
             prepare_anthropic_managed_agent(recovered.preparation_input(), &recovered.services())
                 .expect("recovery integration prepares");
-        let reconciliation = prepared
-            .prepare_run_reconciliation(AnthropicManagedRunReconciliationInput::new(
+        let restoration = prepared
+            .prepare_working_state_restoration(AnthropicManagedRunReconciliationInput::new(
                 RequestId::new("reconcile-managed").expect("request id is valid"),
                 managed_model(),
                 checkpoint.clone(),
                 NonZeroU64::new(4 * 1024).expect("bound is non-zero"),
                 Some(recovered.deadline()),
             ))
-            .expect("reconciliation prepares");
-        let observation = block_on(reconciliation.reconcile(recovered.services()))
-            .expect("reconciliation succeeds");
+            .expect("restoration prepares");
+        assert_eq!(
+            restoration.method(),
+            WorkingStateRestorationMethod::ProviderRunReconciliation
+        );
+        let restored = block_on(restoration.restore(recovered.services()))
+            .expect("restoration succeeds");
+        let WorkingStateRestorationOutcome::RunReconciled(observation) = restored else {
+            panic!("Anthropic Managed Agents must preserve run reconciliation truth");
+        };
         assert_eq!(
             observation.observation().state(),
             InterruptedRunState::Completed

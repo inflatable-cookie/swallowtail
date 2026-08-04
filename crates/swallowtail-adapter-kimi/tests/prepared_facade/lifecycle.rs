@@ -8,7 +8,7 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     CleanupOutcome, OperationContent, RequestId, RuntimeTurnId, SessionOptions, TerminalStatus,
-    TurnRequest,
+    TurnRequest, WorkingStateRestorationMethod, WorkingStateRestorationOutcome,
 };
 use swallowtail_testkit::{
     assert_observable_activity_trace, assert_prepared_operation_evidence_matches_plan,
@@ -157,6 +157,38 @@ fn prepared_load_replays_history_while_resume_remains_replay_free() {
         );
         assert_eq!(block_on(loaded_session.close()), CleanupOutcome::Clean);
         assert_eq!(load_host.cleanup_events(), joined_cleanup());
+
+        let recovery_host = FixtureHost::new(Scenario::Complete);
+        let restoration = profile
+            .prepare_working_state_restoration(
+                RequestId::new("prepared-recovery").unwrap(),
+                binding.clone(),
+                RuntimeTurnId::new("prepared-interrupted-turn").unwrap(),
+            )
+            .expect("working-state restoration prepares");
+        assert_eq!(
+            restoration.method(),
+            WorkingStateRestorationMethod::ProviderSessionContinuationRecovery
+        );
+        let recovered = block_on(restoration.restore(recovery_host.services(host_id.clone())))
+            .expect("working-state restoration loads the exact session");
+        let WorkingStateRestorationOutcome::SessionRecovered(recovered) = recovered else {
+            panic!("Kimi ACP must report continuation recovery");
+        };
+        assert_eq!(
+            recovered.interrupted_turn_id().as_str(),
+            "prepared-interrupted-turn"
+        );
+        let (_, loaded) = recovered.into_parts();
+        let (replay, recovered_session) = loaded.into_parts();
+        assert_eq!(replay.len(), 2);
+        assert_eq!(block_on(recovered_session.close()), CleanupOutcome::Clean);
+        assert_eq!(recovery_host.cleanup_events(), joined_cleanup());
+        assert!(
+            recovery_host
+                .wire_methods()
+                .contains(&"session/load".to_owned())
+        );
 
         let resume_host = FixtureHost::new(Scenario::Complete);
         let resumed = block_on(

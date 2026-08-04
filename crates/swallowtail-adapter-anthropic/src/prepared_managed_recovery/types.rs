@@ -62,6 +62,24 @@ impl AnthropicPreparedManagedRunReconciliation {
     }
 }
 
+impl WorkingStateRestorationOperation for AnthropicPreparedManagedRunReconciliation {
+    fn method(&self) -> WorkingStateRestorationMethod {
+        WorkingStateRestorationMethod::ProviderRunReconciliation
+    }
+
+    fn restore(
+        self: Box<Self>,
+        services: HostServices,
+    ) -> BoxFuture<'static, Result<WorkingStateRestorationOutcome, RuntimeFailure>> {
+        let future = self.reconcile(services);
+        Box::pin(async move {
+            future
+                .await
+                .map(WorkingStateRestorationOutcome::RunReconciled)
+        })
+    }
+}
+
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct AnthropicManagedRecoveredCleanupInput {
     request_id: RequestId,

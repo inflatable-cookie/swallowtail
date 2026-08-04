@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-04
+Updated: 2026-08-05
 
 | Contract | Status | Scope |
 | --- | --- | --- |
@@ -55,3 +55,4 @@ Updated: 2026-08-04
 | [047 Configured Provider Instance Catalogue](047-configured-provider-instance-catalogue.md) | active | Consumer-assembled configured-instance, access, route, and model-catalogue projection without routing or credential authority |
 | [048 Cross-Process Active Operation Reconciliation](048-cross-process-active-operation-reconciliation.md) | active | Read-only restart observation of interrupted provider work without import, retry, callback, or control authority |
 | [049 Controlled Shutdown Active Operation Detachment](049-controlled-shutdown-active-operation-detachment.md) | active | Explicit local attachment shutdown without provider cancellation, leaked work, or terminal inference |
+| [050 Working-State Restoration Facade](050-working-state-restoration-facade.md) | active | One exact-once prepared restart facade over route-qualified reconciliation or continuation recovery without flattening evidence strength |

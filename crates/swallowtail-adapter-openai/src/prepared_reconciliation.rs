@@ -12,10 +12,11 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     BoxFuture, Deadline, HostServices, PersistedProviderRunCheckpoint, PreparationFailure,
-    PreparationStage, PreparedProviderRunReconciliationEvidence, ProviderRunCheckpoint,
-    ProviderRunReconciliationAgreement, ProviderRunReconciliationDriver,
+    PreparationStage, PreparedProviderRunReconciliationEvidence, PreparedWorkingStateRestoration,
+    ProviderRunCheckpoint, ProviderRunReconciliationAgreement, ProviderRunReconciliationDriver,
     ProviderRunReconciliationOutcome, ProviderRunReconciliationPlan,
-    ProviderRunReconciliationRequest, RequestId, RuntimeFailure,
+    ProviderRunReconciliationRequest, RequestId, RuntimeFailure, WorkingStateRestorationMethod,
+    WorkingStateRestorationOperation, WorkingStateRestorationOutcome,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -76,6 +77,34 @@ impl OpenAiPreparedBackgroundReconciliation {
         let plan = self.plan().clone();
         let request = self.request.clone();
         Box::pin(async move { driver.reconcile_provider_run(plan, request, services).await })
+    }
+}
+
+impl WorkingStateRestorationOperation for OpenAiPreparedBackgroundReconciliation {
+    fn method(&self) -> WorkingStateRestorationMethod {
+        WorkingStateRestorationMethod::ProviderRunReconciliation
+    }
+
+    fn restore(
+        self: Box<Self>,
+        services: HostServices,
+    ) -> BoxFuture<'static, Result<WorkingStateRestorationOutcome, RuntimeFailure>> {
+        let future = self.reconcile(services);
+        Box::pin(async move {
+            future
+                .await
+                .map(WorkingStateRestorationOutcome::RunReconciled)
+        })
+    }
+}
+
+impl OpenAiBackgroundPreparedIntegration {
+    pub fn prepare_working_state_restoration(
+        &self,
+        input: OpenAiBackgroundReconciliationInput,
+    ) -> Result<PreparedWorkingStateRestoration, PreparationFailure> {
+        self.prepare_run_reconciliation(input)
+            .map(PreparedWorkingStateRestoration::new)
     }
 }
 

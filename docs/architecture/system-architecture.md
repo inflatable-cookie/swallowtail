@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-31
+Updated: 2026-08-05
 
 ## Realized State
 
@@ -69,6 +69,11 @@ spine:
   adapters retain raw provider envelopes and exact version mapping, while
   consumers retain durable message and activity projections, transcript
   policy, grouping, and collapsed presentation
+- the runtime also owns one consuming prepared working-state restoration
+  facade over existing session reconciliation, run reconciliation, or exact
+  provider-session load. Route preparation fixes the strongest qualified
+  method before execution; unified outcomes preserve read-only observation
+  versus live continuation recovery, and failure never widens authority
 - `swallowtail-testkit` depends on core and runtime and owns deterministic
   Contract 003, Contract 008, runtime-skeleton, and Contract 011 cross-shape
   fixtures and assertions, including distinct local and remote-authoritative

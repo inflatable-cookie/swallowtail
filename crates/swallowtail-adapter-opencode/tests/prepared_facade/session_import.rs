@@ -14,7 +14,7 @@ use swallowtail_core::{
 use swallowtail_runtime::{CancellationControl, ProviderSessionOperationFailureStage};
 use swallowtail_runtime::{
     ProviderSessionCatalogueId, ProviderSessionReconciliationBounds, RequestId, RuntimeTurnId,
-    SessionResumeBinding,
+    SessionResumeBinding, WorkingStateRestorationMethod, WorkingStateRestorationOutcome,
 };
 
 fn bounds() -> ProviderSessionCatalogueBounds {
@@ -50,8 +50,8 @@ fn prepared_reconciliation_preserves_the_original_turn_without_attaching_it() {
         session.request().access_policy().clone(),
     );
     let interrupted = RuntimeTurnId::new("consumer-turn-before-restart").unwrap();
-    let reconciliation = prepared
-        .prepare_session_reconciliation(OpenCodeSessionReconciliationInput::new(
+    let restoration = prepared
+        .prepare_working_state_restoration(OpenCodeSessionReconciliationInput::new(
             RequestId::new("reconcile-prepared-session").unwrap(),
             fixture.model(),
             binding,
@@ -61,10 +61,17 @@ fn prepared_reconciliation_preserves_the_original_turn_without_attaching_it() {
                 NonZeroU64::new(1024).unwrap(),
             ),
         ))
-        .expect("reconciliation prepares");
+        .expect("restoration prepares");
+    assert_eq!(
+        restoration.method(),
+        WorkingStateRestorationMethod::ProviderSessionReconciliation
+    );
 
-    let outcome = block_on(reconciliation.reconcile(fixture.services()))
-        .expect("prepared reconciliation succeeds");
+    let restored =
+        block_on(restoration.restore(fixture.services())).expect("prepared restoration succeeds");
+    let WorkingStateRestorationOutcome::SessionReconciled(outcome) = restored else {
+        panic!("OpenCode must preserve session reconciliation truth");
+    };
     assert_eq!(outcome.interrupted_turn_id(), &interrupted);
     assert_eq!(
         outcome.state(),

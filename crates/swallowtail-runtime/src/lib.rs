@@ -206,7 +206,10 @@ pub use serving_endpoint::{
 };
 pub use serving_lifecycle::validate_owned_serving_start;
 pub use session_access::{validate_session_access_plan, validate_session_resource_lease};
-pub use session_binding::SessionResumeBinding;
+pub use session_binding::{
+    PersistedSessionResumeBinding, SessionResumeBinding, SessionResumeBindingPersistenceFailure,
+    SessionResumeBindingPersistenceFailureKind,
+};
 pub use session_options::{SessionOptions, ToolDeclaration};
 pub use session_plan_agreement::{SessionPlanAgreement, validate_session_plan_agreement};
 pub use session_provider_state::validate_session_provider_state_plan;

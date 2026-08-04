@@ -55,9 +55,12 @@ Contracts hold durable, testable rules.
 
 Contract 003 defines the provider-neutral record kernel. Contracts 004-016
 govern the realized runtime and current proof drivers. Contract 017 governs
-persistent-session, write-callback, ambient-harness, and optional process-
-containment work; exact deployed-runtime qualification applies only to an
-enforced isolation claim. Contract 018 governs owned ephemeral serving, now
+exact persistent-session load and resume, versioned ordinary resume-binding
+restart records, write callbacks, ambient harnesses, and optional process
+containment. Its restart record is attachment-bound authority input, not a
+consumer database or provider-session management binding; exact deployed-
+runtime qualification applies only to an enforced isolation claim. Contract
+018 governs owned ephemeral serving, now
 realized by the llama.cpp proof. Contract 019 governs in-process SDK drivers,
 explicit cloud-client configuration, and delegated SDK credentials. Contract
 020 keeps mutable catalogue observations separate from entitlement, runtime

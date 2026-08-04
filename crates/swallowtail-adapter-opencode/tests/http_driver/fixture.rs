@@ -57,6 +57,19 @@ impl Fixture {
     }
 
     fn plan_with_versions(&self, role: DriverRole, versions: &[&str]) -> PreflightPlan {
+        self.plan_with_versions_and_route(role, versions, "opencode-anthropic-sonnet")
+    }
+
+    fn plan_with_route(&self, role: DriverRole, route_id: &str) -> PreflightPlan {
+        self.plan_with_versions_and_route(role, &[self.server_version.as_str()], route_id)
+    }
+
+    fn plan_with_versions_and_route(
+        &self,
+        role: DriverRole,
+        versions: &[&str],
+        route_id: &str,
+    ) -> PreflightPlan {
         let descriptor = opencode_http_descriptor();
         let access_id = AccessProfileId::new("access.opencode").expect("access id is valid");
         let capability = if role == DriverRole::ModelCatalog {
@@ -97,7 +110,7 @@ impl Fixture {
         )
         .with_interface_versions(versions.clone());
         let route = ModelRoute::new(
-            ModelRouteId::new("opencode-anthropic-sonnet").expect("route id is valid"),
+            ModelRouteId::new(route_id).expect("route id is valid"),
             ModelRouteRevision::new("1").expect("route revision is valid"),
             instance.id().clone(),
             ModelId::new("claude-sonnet").expect("model id is valid"),

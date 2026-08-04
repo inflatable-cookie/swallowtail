@@ -159,5 +159,15 @@
             parse_event(unknown, "ses_fixture").expect("correlated unknown is preserved"),
             Event::Unknown("provider.future".to_owned())
         );
+        let compacted = br#"{"id":"evt","type":"session.compacted","properties":{"sessionID":"ses_fixture"}}"#;
+        assert_eq!(
+            parse_event(compacted, "ses_fixture").expect("same-session compaction is accepted"),
+            Event::Unknown("session.compacted".to_owned())
+        );
+        let foreign_compaction = br#"{"id":"evt","type":"session.compacted","properties":{"sessionID":"other"}}"#;
+        assert_eq!(
+            parse_event(foreign_compaction, "ses_fixture")
+                .expect("foreign compaction is quarantined"),
+            Event::Foreign
+        );
     }
-

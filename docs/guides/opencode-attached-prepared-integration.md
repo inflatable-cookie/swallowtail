@@ -105,6 +105,14 @@ session id. The consumer owns selection, persistence, duplicate handling, and
 when to repeat discovery. Swallowtail never scans other projects or
 directories and never starts, stops, or updates the attached server.
 
+For restart continuity, export the issued binding with
+`SessionResumeBinding::export_persisted(prepared_session.plan())` and store the
+opaque bytes with the consumer thread. After restart, re-prepare the exact
+OpenCode route and restore with `SessionResumeBinding::restore_persisted` using
+that plan, working resource, and access policy. Compaction retains the same
+OpenCode session identity. Invalid or drifted records fail before HTTP work and
+must not trigger fresh-session fallback.
+
 ## Structured Run
 
 `prepare_run` requires a request identity, explicit provider and model route,

@@ -19,6 +19,7 @@ const DISCONNECT: &str = include_str!("../fixtures/opencode-1.14.48/disconnect.s
 const ABORTED: &str = include_str!("../fixtures/opencode-1.14.48/aborted.sse");
 const DUPLICATE_USAGE: &str = include_str!("../fixtures/opencode-1.14.48/duplicate-usage.sse");
 const MISSING_USAGE: &str = include_str!("../fixtures/opencode-1.14.48/missing-usage.sse");
+const COMPACTION: &str = include_str!("../fixtures/opencode-v1.14.48-v1.18.10/compaction.sse");
 
 #[derive(Clone, Copy, Eq, PartialEq)]
 #[allow(dead_code)]
@@ -29,6 +30,7 @@ pub enum StreamFixture {
     Disconnect,
     DuplicateUsage,
     MissingUsage,
+    Compaction,
     InputCallbacks,
     WaitForAbort,
     DeleteMissing,

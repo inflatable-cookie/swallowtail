@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-01
+Updated: 2026-08-04
 
 | Contract | Status | Scope |
 | --- | --- | --- |
@@ -22,7 +22,7 @@ Updated: 2026-08-01
 | [014 Hosted Transport, Credential, And Evidence Boundary](014-hosted-transport-credential-and-evidence-boundary.md) | active | Scoped endpoint grants, credential leases, direct streaming, catalogue metadata, and provider usage or limit evidence |
 | [015 ACP v1 Negotiation And Client Callbacks](015-acp-v1-negotiation-and-client-callbacks.md) | active | ACP wire negotiation, exact delegated-credential activation, form elicitation, capability gates, session lifecycle, and execution-host callback authority |
 | [016 Connection-Scoped Direct Sessions And Billed Cost](016-connection-scoped-direct-sessions-and-billed-cost.md) | active | Resource-free direct sessions, connection-bound continuation and cleanup, and exact provider-billed-cost evidence |
-| [017 Provider-Owned Session Load, Replay, And Host Containment](017-provider-owned-session-load-replay-and-host-containment.md) | active | Persistent session bindings, load and resume, replay, write callbacks, delegated login, ambient execution, and optional containment |
+| [017 Provider-Owned Session Load, Replay, And Host Containment](017-provider-owned-session-load-replay-and-host-containment.md) | active | Persistent session bindings, versioned restart records, exact load and resume, replay, write callbacks, delegated login, ambient execution, and optional containment |
 | [018 Owned Ephemeral Model Serving Lifecycle](018-owned-ephemeral-model-serving-lifecycle.md) | active | Model-artifact leases, dynamic endpoint readiness, and joined owned-child cleanup |
 | [019 Embedded SDK And Cloud Client Boundary](019-embedded-sdk-and-cloud-client-boundary.md) | active | In-process SDK identity, explicit cloud-client configuration, delegated credentials, and joined execution |
 | [020 Model Catalogue Observation And Availability Boundary](020-model-catalogue-observation-and-availability-boundary.md) | active | Source-scoped catalogue observations, discovery timing, session-option separation, drift bounds, and availability or entitlement separation |

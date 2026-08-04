@@ -270,7 +270,9 @@ This contract does not add:
 - arbitrary raw-id load or resume
 - active-handle discovery, locking, stealing, or cancellation
 - provider archive, restore, delete, fork, rename, export, or compaction
-- management-binding persistence or a public serialization codec
+- provider-session management-binding persistence
+- any persistence form other than Contract 017's separate ordinary resume-
+  binding record
 - provider, account, credential, endpoint, model, transport, or topology
   fallback
 

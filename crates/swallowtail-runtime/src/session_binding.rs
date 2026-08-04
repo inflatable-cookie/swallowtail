@@ -4,6 +4,13 @@ use swallowtail_core::{
     ProviderSessionBindingOrigin, SessionAccessPolicy, SessionRef,
 };
 
+mod persistence;
+
+pub use persistence::{
+    PersistedSessionResumeBinding, SessionResumeBindingPersistenceFailure,
+    SessionResumeBindingPersistenceFailureKind,
+};
+
 /// Durable provider-session identity plus the route that is allowed to resume it.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SessionResumeBinding {

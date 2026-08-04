@@ -27,6 +27,7 @@ visible as unverified newer unless exact evidence requires rejection.
 | Reassess prepared-facade usability from multi-consumer proof without importing product policy. | completed | Contracts 002, 010, 037 | `g03.017` |
 | Allow explicit discovery and import of harness-origin sessions without owning consumer persistence or synchronization. | completed | Contracts 017, 029, 037, 046 | `g03.019` |
 | Expose configured provider instances for explicit consumer selection without central routing policy. | completed | Contracts 005-006, 008, 014, 020, 037, 047 | `g03.024` |
+| Persist exact ordinary provider-session resume authority across consumer restarts without adding routing or synchronization. | completed | Contracts 017, 029, 037, 046 | `g03.025` |
 | Periodically reconcile deferred gates, route truth, and generation capacity. | planned | Contract 001 | recurring checkpoints |
 
 ## Current Checkpoint
@@ -37,7 +38,8 @@ visible as unverified newer unless exact evidence requires rejection.
 - no active spec governs g03
 - Nucleus owns its delegated child-work, typed question, plan, and task-list
   adoption
-- provider-session management binding persistence remains deferred
+- provider-session management binding persistence remains deferred; ordinary
+  resume-binding persistence is complete in g03.025 after consumer evidence
 - registry publication remains outside the active roadmap until the operator
   revisits it after sustained application usage
 - the current structural scan reports 183 oversized-file findings, including
@@ -260,6 +262,13 @@ visible as unverified newer unless exact evidence requires rejection.
 - cards 064-065 realize bounded exact admission, strict non-ready truth,
   authority-redacted records, focused and extracted-package proof, and the
   Nucleus g05.073 assembly handoff without authenticated provider work
+- Research 097 shows T3 Code created fresh OpenCode roots after losing its
+  provider-session mapping; OpenCode compaction retained the existing id.
+  g03.025 promotes ordinary resume-binding persistence without automatic
+  rotation, raw-id attachment, or management authority
+- cards 066-067 add the bounded versioned record, strict attachment restore,
+  same-session compaction corpus, exact-id restart proof, public adoption path,
+  210 focused tests, and two independently compiling packages
 
 ## Milestones
 
@@ -287,13 +296,13 @@ visible as unverified newer unless exact evidence requires rejection.
 - [022 OpenCode External Session Discovery And Import](022-opencode-external-session-discovery-and-import.md) — completed
 - [023 Provider Session Import Acceptance And Handoff](023-provider-session-import-acceptance-and-handoff.md) — completed
 - [024 Configured Provider Instance Catalogue](024-configured-provider-instance-catalogue.md) — completed
+- [025 Durable Session Resume-Binding Persistence](025-durable-session-resume-binding-persistence.md) — completed
 
 ## Checkpoint
 
-The provider-session import tranche is complete. Nucleus may adopt the bounded
-handoff independently. g03 is evidence-gated: resume only for a new
-consumer-reproduced defect, material non-deferred provider/interface drift, or
-explicit operator-selected roadmap work.
+The durable ordinary resume-binding tranche is complete. g03 is evidence-
+gated: resume only for a new consumer-reproduced defect, material non-deferred
+provider/interface drift, or explicit operator-selected roadmap work.
 
 ## Generation Boundary
 

@@ -35,8 +35,19 @@ particular, Codex exec and Kimi headless do not become import routes.
    cross-resource, cross-host, or cross-version candidate returns no binding.
 7. Pass the returned ordinary `SessionResumeBinding` to the matching prepared
    session's `load_session` for bounded ordered replay.
-8. After the consumer persists its local projection, continue through the
-   loaded handle or call `resume_session` when replay is not needed.
+8. After the consumer persists its local projection, export the binding with
+   `SessionResumeBinding::export_persisted(prepared_session.plan())` and store
+   the returned opaque bytes with the local thread mapping.
+9. Continue through the loaded handle or call `resume_session` when replay is
+   not needed.
+
+After a consumer restart, parse the stored bytes with
+`PersistedSessionResumeBinding::from_bytes`, then call
+`SessionResumeBinding::restore_persisted` with the newly prepared exact plan,
+working resource, and access policy. Pass only the restored binding to
+`resume_session`. A malformed, corrupted, unsupported, or drifted record is a
+closed failure: refresh or re-import explicitly. Never fall back to creating a
+new provider session for the same local thread.
 
 The route-specific, compile-tested prepared examples are:
 
@@ -50,6 +61,7 @@ The consumer owns:
 
 - refresh timing and user selection
 - local thread creation, title, persistence, and provider-binding mapping
+- atomic storage of the local thread mapping and opaque persisted binding
 - replay/event deduplication and duplicate-import policy
 - unsupported, stale, incomplete-history, and reauthorization presentation
 - authorization for any later provider-session management action
@@ -79,6 +91,6 @@ exact promotion gates.
 
 Nucleus adoption should follow the bounded
 [external-thread import handoff](../releases/0.1.0-nucleus-provider-session-import-handoff.md).
-It defines the in-process binding map, replay-to-live boundary, duplicate and
-restart posture, deterministic fixtures, and unsupported-route UX without
-moving consumer persistence into Swallowtail.
+It defines the binding map, replay-to-live boundary, duplicate and restart
+posture, deterministic fixtures, and unsupported-route UX without moving
+consumer persistence into Swallowtail.

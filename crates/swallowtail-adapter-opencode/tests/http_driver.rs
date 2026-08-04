@@ -22,10 +22,11 @@ use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{
     BlockingWorkService, CredentialRef, CredentialService, EndpointRef, HostServices,
     InteractiveSessionDriver, LoadSessionRequest, ModelCatalogDriver, ModelCatalogRequest,
-    NetworkPolicyService, OpenSessionRequest, OperationContent, ProviderObservation, RequestId,
-    ResumeSessionRequest, RuntimeEventKind, RuntimeTurnId, ScopedTaskService, SessionPlanAgreement,
-    SessionResumeBinding, TerminalStatus, TimeService, TurnRequest, WorkingResourceRef,
-    WorkingResourceService,
+    NetworkPolicyService, OpenSessionRequest, OperationContent, PersistedSessionResumeBinding,
+    ProviderObservation, RequestId, ResumeSessionRequest, RuntimeEventKind, RuntimeTurnId,
+    ScopedTaskService, SessionPlanAgreement, SessionResumeBinding,
+    SessionResumeBindingPersistenceFailureKind, TerminalStatus, TimeService, TurnRequest,
+    WorkingResourceRef, WorkingResourceService,
 };
 
 fn open_session_request(id: impl Into<String>, resource: WorkingResourceRef) -> OpenSessionRequest {

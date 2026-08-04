@@ -114,6 +114,9 @@ fn respond_sse(
         StreamFixture::MissingUsage => stream
             .write_all(MISSING_USAGE.as_bytes())
             .expect("SSE writes"),
+        StreamFixture::Compaction => stream
+            .write_all(COMPACTION.as_bytes())
+            .expect("SSE writes"),
         StreamFixture::InputCallbacks => {
             for (event, expected_replies) in [
                 (

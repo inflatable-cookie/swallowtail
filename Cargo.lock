@@ -3142,6 +3142,7 @@ name = "swallowtail-runtime"
 version = "0.1.0"
 dependencies = [
  "futures-core",
+ "sha2 0.10.9",
  "swallowtail-core",
  "zeroize",
 ]

@@ -235,9 +235,11 @@ interruption, deadlines, disconnects, attached and owned topology, and joined
 cleanup. The 32-route matrix and current integration guide are complete. The
 provider-wide extracted-package structured proof and the earlier 23-route
 lifecycle proof pass. A bounded Nucleus lifecycle handoff now keeps universal
-local thread actions separate from optional provider operations. Current
-management bindings are same-process only because no stable persistence codec
-is exposed. The retained lifecycle candidate remains paused
+local thread actions separate from optional provider operations. Ordinary
+resume bindings now have a bounded, versioned, attachment-bound persistence
+record for exact consumer restart continuity. Provider-session management
+bindings remain same-process only because no stable management codec is
+exposed. The retained lifecycle candidate remains paused
 until the current source enters canonical history.
 
 ## Current Direction

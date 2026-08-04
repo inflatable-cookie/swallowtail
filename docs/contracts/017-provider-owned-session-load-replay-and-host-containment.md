@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-21
+Updated: 2026-08-04
 
 ## Purpose
 
@@ -37,6 +37,38 @@ or credential work. A provider session discovered through list, copied from a
 diagnostic, or supplied as an unbound string has no authority to attach.
 Consumers may persist an opaque binding, but Swallowtail does not provide a
 session database or infer consumer persistence policy.
+
+### Durable Binding Export And Restore
+
+An ordinary `SessionResumeBinding` may cross a consumer process boundary only
+through Swallowtail's versioned opaque persistence record. The record is not a
+provider id, catalogue candidate, runtime handle, management binding, or
+consumer-thread identity.
+
+Export requires the exact preflight plan which issued or accepted the binding.
+The record retains one bounded provider-session reference plus a fingerprint of
+the adapter, transport, configured instance and revision, target, execution
+host, facade, instance policy, access profile, model route and revision, model,
+provider when present, interface versions, working resource, session access
+policy, and binding origin. Target and working-resource values enter only the
+fingerprint. Credentials, endpoint secrets, prompts, transcripts, provider
+payloads, and consumer metadata never enter the record.
+
+Restore requires a current preflight plan, working resource, and access policy.
+Every fingerprint dimension must match before a binding is reconstructed.
+Malformed, oversized, unsupported-version, corrupted, or drifted records fail
+without provider work. Failure never falls back to new, catalogue, import,
+another provider, another route, title lookup, or ambient session recovery.
+
+The record's integrity check detects stored-record corruption. It is not a
+credential, signature, or authorization boundary against the consumer which
+owns the bytes. Provider attachment still performs the route's exact existing
+session lookup and correlation checks.
+
+Swallowtail provides the codec but no session database, key-value store,
+transaction, mapping, retention, synchronization, or UI policy. The consumer
+must durably commit its local thread-to-record mapping before relying on
+restart continuation.
 
 The preflight-bound provider-state policy distinguishes durable state
 preserved on runtime attachment close from driver-owned temporary state which
@@ -227,6 +259,13 @@ deletion of one bound inactive provider session.
 Deterministic persistent-session and write fixtures must prove:
 
 - new creates a binding and arbitrary ids cannot load or resume
+- persisted bindings round-trip only under the exact route, host, resource,
+  access, model, interface, and policy dimensions
+- malformed, oversized, unsupported-version, corrupted, and drifted records
+  produce no binding and no provider effect
+- persistence diagnostics and default formatting expose no provider session,
+  target, resource, prompt, transcript, credential, or raw record
+- persistence failure never creates or selects a replacement provider session
 - every binding dimension rejects mismatch before side effects
 - load and resume cannot change ambient, provider-enforced, or host-enforced
   isolation posture

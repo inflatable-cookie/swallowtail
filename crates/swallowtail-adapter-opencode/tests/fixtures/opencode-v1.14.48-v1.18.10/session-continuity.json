@@ -48,6 +48,13 @@
     "replay_phase": false,
     "continuation": "session.prompt_async_exact_session"
   },
+  "identity_lifecycle": {
+    "compaction_event": "session.compacted",
+    "compaction_session": "same_exact_session_id",
+    "compaction_identity_effect": "unchanged",
+    "foreign_session_event": "quarantine_without_adoption",
+    "persistence_failure": "fail_without_session_create"
+  },
   "representative_pages": [
     {
       "request_before": null,

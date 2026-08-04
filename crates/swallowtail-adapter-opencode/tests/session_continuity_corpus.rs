@@ -112,6 +112,18 @@ fn resume_and_cleanup_do_not_claim_replay_or_server_lifecycle() {
         continuity["failures"]["foreign_message_session"],
         "fail_without_usable_handle"
     );
+    assert_eq!(
+        continuity["identity_lifecycle"]["compaction_identity_effect"],
+        "unchanged"
+    );
+    assert_eq!(
+        continuity["identity_lifecycle"]["foreign_session_event"],
+        "quarantine_without_adoption"
+    );
+    assert_eq!(
+        continuity["identity_lifecycle"]["persistence_failure"],
+        "fail_without_session_create"
+    );
 }
 
 #[test]

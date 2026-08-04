@@ -1183,6 +1183,16 @@ downstream. Runtime attachment close, provider-native active close, reversible
 archive, restore, history removal, provider data deletion, provider hard
 deletion, and driver-owned resource cleanup remain separate.
 
+Contract 017's ordinary resume binding now has a separate versioned opaque
+persistence record. Export fingerprints the exact prepared adapter, transport,
+instance, target, host, facade, access, model route, interface, resource, and
+session policy while carrying only the bounded provider-session reference and
+safe binding origin directly. Restore reconstructs a binding only from a
+matching current preflight attachment. Swallowtail owns codec validation, not
+the consumer database or thread mapping. Decode or drift failure cannot create,
+discover, import, or select a replacement provider session. Management-binding
+persistence remains separate and deferred.
+
 The first common role targets one inactive bound provider session. It contains
 no global session registry, provider-history browser, arbitrary-id authority,
 implicit deletion, retry, or fallback. Codex app-server, Claude Agent ACP, and
@@ -1437,6 +1447,12 @@ Nucleus or another consumer owns local thread creation, message persistence,
 replay merge, deduplication, presentation, and any later refresh. Background
 polling, bidirectional synchronization, global handle discovery, and implicit
 provider lifecycle actions remain absent.
+
+After an explicit import or ordinary new session, a consumer may persist
+Contract 017's opaque resume-binding record beside its own thread mapping. A
+restart restores only through the exact matching prepared attachment. This
+does not turn catalogue import into synchronization and does not authorize
+raw-id attachment or provider-session management.
 
 ## Dependency Rules
 

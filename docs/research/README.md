@@ -105,3 +105,4 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [095 OpenCode Session Catalogue And Import Range](095-opencode-session-catalogue-and-import-range.md)
 - [096 Provider Session Import Route Classification](096-provider-session-import-route-classification.md)
 - [097 OpenCode Session Identity And Resume-Binding Persistence](097-opencode-session-identity-and-resume-binding-persistence.md)
+- [098 Portable Activity Key And Cross-Operation Isolation](098-portable-activity-key-and-cross-operation-isolation.md)

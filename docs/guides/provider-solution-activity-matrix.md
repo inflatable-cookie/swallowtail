@@ -150,7 +150,8 @@ bounds and classifies it but does not decide retention, encryption, export,
 redaction, or audience. Consumers should:
 
 1. preserve runtime event order
-2. project activity by operation identity and `activity_id`
+2. project activity by `ActivityKey`; never by `activity_id` or provider
+   reference alone
 3. apply delta or replacement semantics from the typed content update
 4. replace a sidebar checklist on each typed task-list snapshot; an empty
    snapshot clears it

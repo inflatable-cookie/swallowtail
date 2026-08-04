@@ -1,6 +1,6 @@
 use swallowtail_runtime::{
     ActivityActor, ActivityAssistantPhase, ActivityContentChangeKind, ActivityContentStream,
-    ActivityCorrelation, ActivityId, ActivityKindClass, ActivityLifecycleFidelity,
+    ActivityCorrelation, ActivityKey, ActivityKindClass, ActivityLifecycleFidelity,
     ActivityLifecyclePhase, ActivityOperationId, ActivityStatus, ObservableActivityAvailability,
     PreparedOperationEvidence, RuntimeEvent, RuntimeEventKind, SubagentControlActionKind,
     SubagentDirectoryDelta, SubagentDirectoryFailure, SubagentDirectoryProjection,
@@ -27,8 +27,7 @@ pub fn inspect_route(evidence: &PreparedOperationEvidence) -> RouteActivitySuppo
 /// outside Swallowtail.
 pub enum ChatProjection<'a> {
     AssistantMessage {
-        operation_id: &'a ActivityOperationId,
-        activity_id: &'a ActivityId,
+        key: ActivityKey,
         actor: &'a ActivityActor,
         assistant_phase: ActivityAssistantPhase,
         lifecycle: ActivityLifecyclePhase,
@@ -39,8 +38,7 @@ pub enum ChatProjection<'a> {
         directory: SubagentDirectoryDelta,
     },
     WorkActivity {
-        operation_id: &'a ActivityOperationId,
-        activity_id: &'a ActivityId,
+        key: ActivityKey,
         actor: &'a ActivityActor,
         kind: ActivityKindClass,
         lifecycle: ActivityLifecyclePhase,
@@ -90,8 +88,7 @@ impl AgentChatProjection {
                 let directory = directory.expect("activity event produces a directory delta");
                 if activity.kind().class() == ActivityKindClass::AssistantMessage {
                     ChatProjection::AssistantMessage {
-                        operation_id: activity.operation_id(),
-                        activity_id: activity.activity_id(),
+                        key: activity.key(),
                         actor: activity.actor(),
                         assistant_phase: activity
                             .assistant_phase()
@@ -105,8 +102,7 @@ impl AgentChatProjection {
                     }
                 } else {
                     ChatProjection::WorkActivity {
-                        operation_id: activity.operation_id(),
-                        activity_id: activity.activity_id(),
+                        key: activity.key(),
                         actor: activity.actor(),
                         kind: activity.kind().class(),
                         lifecycle: activity.phase(),

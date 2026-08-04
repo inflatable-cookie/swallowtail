@@ -11,10 +11,40 @@ use swallowtail_core::{
     SubagentControlActionKind,
 };
 
-#[derive(Clone, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum ActivityOperationId {
     Run(RuntimeRunId),
     Turn(RuntimeTurnId),
+}
+
+/// Durable portable identity for one activity inside one runtime operation.
+///
+/// Provider references and operation-local activity ids may repeat in another
+/// operation. Consumers should persist and index the complete key.
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+pub struct ActivityKey {
+    operation_id: ActivityOperationId,
+    activity_id: ActivityId,
+}
+
+impl ActivityKey {
+    #[must_use]
+    pub const fn new(operation_id: ActivityOperationId, activity_id: ActivityId) -> Self {
+        Self {
+            operation_id,
+            activity_id,
+        }
+    }
+
+    #[must_use]
+    pub const fn operation_id(&self) -> &ActivityOperationId {
+        &self.operation_id
+    }
+
+    #[must_use]
+    pub const fn activity_id(&self) -> &ActivityId {
+        &self.activity_id
+    }
 }
 
 #[derive(Clone, Debug, Eq, Hash, PartialEq)]
@@ -231,6 +261,12 @@ impl ActivityObservation {
     #[must_use]
     pub const fn operation_id(&self) -> &ActivityOperationId {
         &self.operation_id
+    }
+
+    /// Returns the complete portable persistence key for this activity.
+    #[must_use]
+    pub fn key(&self) -> ActivityKey {
+        ActivityKey::new(self.operation_id.clone(), self.activity_id.clone())
     }
 
     #[must_use]

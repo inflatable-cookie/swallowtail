@@ -14,7 +14,7 @@ Updated: 2026-08-04
 | [006 Execution Layer and Access Boundary](006-execution-layer-and-access-boundary.md) | active | Harness, inference, operation-shape, and access-profile separation |
 | [007 Model Artifact and Serving Boundary](007-model-artifact-and-serving-boundary.md) | active | Artifact, serving runtime, deployment, facade, and route separation |
 | [008 Runtime Registration and Preflight](008-runtime-registration-and-preflight.md) | active | Driver roles, configured instances, access state, requirements, and side-effect-free preflight |
-| [009 Async Operation Lifecycle](009-async-operation-lifecycle.md) | active | Object-safe async roles, scoped handles, events, cancellation, terminal outcomes, and cleanup |
+| [009 Async Operation Lifecycle](009-async-operation-lifecycle.md) | active | Object-safe async roles, consumer-unique operation identities, scoped handles, events, cancellation, terminal outcomes, and cleanup |
 | [010 Execution Host Services and Inputs](010-execution-host-services-and-inputs.md) | active | Capability-scoped host authority, executable launch recipes, credentials, resources, attachments, schemas, and diagnostics |
 | [011 Runtime Conformance Profiles](011-runtime-conformance-profiles.md) | active | Deterministic cross-shape runtime proof profiles and assertions |
 | [012 Interactive Session Options and Callback Exchange](012-interactive-session-options-and-callback-exchange.md) | active | Session instructions, reasoning selection, tool declarations, and correlated callback lifecycle |
@@ -49,7 +49,7 @@ Updated: 2026-08-04
 | [041 Input, Callback, And Provider-Tool Admission](041-input-callback-and-provider-tool-admission.md) | active | Finite attachment admission, native versus provider-owned tools, approval or question strength, context evidence, external-search authority, and cleanup |
 | [042 Harness-Managed Recovery And Active-Turn Reattachment](042-harness-managed-recovery-and-active-turn-reattachment.md) | active | Explicit harness retry acceptance, same-turn cursor reattachment, no prompt replay, uncertainty, and joined cleanup |
 | [043 Turn-Scoped Interactive Continuity](043-turn-scoped-interactive-continuity.md) | active | Restarted harness continuation versus consumer-owned transactional transcript replay across turn-scoped provider work |
-| [044 Observable Agent Activity And Disclosure](044-observable-agent-activity-and-disclosure.md) | active | Ordered activity identity, lifecycle, disclosure, content streams, route fidelity, and consumer projection ownership |
+| [044 Observable Agent Activity And Disclosure](044-observable-agent-activity-and-disclosure.md) | active | Composite operation-local activity identity, lifecycle, disclosure, content streams, route fidelity, and consumer projection ownership |
 | [045 Subagent Topology, Observation, And Control](045-subagent-topology-observation-and-control.md) | active | Child-work graph identity, parentage, lifecycle, attribution, provider collaboration actions, and direct-control qualification |
 | [046 Provider Session Catalogue And Explicit Import](046-provider-session-catalogue-and-explicit-import.md) | active | Bounded provider-session discovery, non-authoritative candidates, explicit revalidated import, ordinary load replay, and downstream persistence ownership |
 | [047 Configured Provider Instance Catalogue](047-configured-provider-instance-catalogue.md) | active | Consumer-assembled configured-instance, access, route, and model-catalogue projection without routing or credential authority |

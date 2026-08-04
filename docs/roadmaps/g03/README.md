@@ -28,6 +28,7 @@ visible as unverified newer unless exact evidence requires rejection.
 | Allow explicit discovery and import of harness-origin sessions without owning consumer persistence or synchronization. | completed | Contracts 017, 029, 037, 046 | `g03.019` |
 | Expose configured provider instances for explicit consumer selection without central routing policy. | completed | Contracts 005-006, 008, 014, 020, 037, 047 | `g03.024` |
 | Persist exact ordinary provider-session resume authority across consumer restarts without adding routing or synchronization. | completed | Contracts 017, 029, 037, 046 | `g03.025` |
+| Prevent cross-operation activity projection collisions without manufacturing provider-global identity. | completed | Contracts 009, 044 | `g03.026` |
 | Periodically reconcile deferred gates, route truth, and generation capacity. | planned | Contract 001 | recurring checkpoints |
 
 ## Current Checkpoint
@@ -269,6 +270,12 @@ visible as unverified newer unless exact evidence requires rejection.
 - cards 066-067 add the bounded versioned record, strict attachment restore,
   same-session compaction corpus, exact-id restart proof, public adoption path,
   210 focused tests, and two independently compiling packages
+- Research 098 promotes T3 Code's cross-thread message overwrite into g03.026:
+  one typed operation-plus-activity key, explicit consumer runtime-id
+  uniqueness, and Cursor reuse proof without provider id rewriting
+- cards 068-069 expose the route-neutral `ActivityKey`, freeze repeated Cursor
+  provider and fallback ids across two turns, update consumer examples, and
+  pass 154 focused tests plus two extracted-package checks
 
 ## Milestones
 
@@ -297,12 +304,13 @@ visible as unverified newer unless exact evidence requires rejection.
 - [023 Provider Session Import Acceptance And Handoff](023-provider-session-import-acceptance-and-handoff.md) — completed
 - [024 Configured Provider Instance Catalogue](024-configured-provider-instance-catalogue.md) — completed
 - [025 Durable Session Resume-Binding Persistence](025-durable-session-resume-binding-persistence.md) — completed
+- [026 Portable Activity Key And Cross-Operation Isolation](026-portable-activity-key-and-cross-operation-isolation.md) — completed
 
 ## Checkpoint
 
-The durable ordinary resume-binding tranche is complete. g03 is evidence-
-gated: resume only for a new consumer-reproduced defect, material non-deferred
-provider/interface drift, or explicit operator-selected roadmap work.
+Hold at the evidence gate. Resume only for a new consumer-reproduced defect,
+material non-deferred provider/interface drift, or explicit operator-selected
+roadmap work.
 
 ## Generation Boundary
 

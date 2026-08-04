@@ -170,7 +170,9 @@ state, attached-service preservation, and joined cleanup remain exact.
 Contract 044 adds operation-local observable activity identity, exact
 lifecycle and disclosure fidelity, typed content streams, tool and request
 correlation, provider-visible reasoning summaries, typed task-list replacement
-snapshots, and bounded unknown-event truth. Existing run and turn streams
+snapshots, and bounded unknown-event truth. Its composite activity key binds
+the consumer-unique runtime operation owner to the operation-local activity id;
+provider references and activity ids alone never become durable keys. Existing run and turn streams
 remain the transport. Consumers retain message and activity persistence,
 grouping, collapsed presentation, and transcript policy.
 Contract 045 adds bounded provider-owned child-work snapshots, parent

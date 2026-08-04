@@ -16,7 +16,7 @@ pub use identity::{ActivityId, ActivityNamespace};
 pub use label::ActivityLabel;
 pub(crate) use lifecycle::{ActivityLifecycleTracker, ActivityTransitionFailure};
 pub use record::{
-    ActivityAssistantPhase, ActivityCorrelation, ActivityKind, ActivityLifecyclePhase,
+    ActivityAssistantPhase, ActivityCorrelation, ActivityKey, ActivityKind, ActivityLifecyclePhase,
     ActivityObservation, ActivityOperationId, ActivityStatus,
 };
 pub use subagent::{ActivityActor, SubagentId, SubagentParent, SubagentSnapshot, SubagentStatus};

@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-24
+Updated: 2026-08-04
 
 ## Purpose
 
@@ -88,6 +88,13 @@ is the default. Concurrent turns require an explicit parameterized capability.
 
 Each turn has its own turn id, ordered event stream, cancellation control,
 terminal outcome, and optional opaque provider turn reference.
+
+Runtime run and turn ids are consumer-supplied logical-operation identities.
+The consumer must not reuse either id while activity from the earlier logical
+operation remains active or durably projected. Swallowtail validates record
+shape and exact operation correlation but owns no global consumer identity
+registry. Provider run, session, turn, message, item, and tool references
+cannot replace this consumer-owned uniqueness.
 
 A turn request uses the same opaque operation-content boundary. Session
 drivers may bind working resources at session scope rather than repeating them

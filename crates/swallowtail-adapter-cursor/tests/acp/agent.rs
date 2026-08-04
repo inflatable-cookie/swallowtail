@@ -1,6 +1,7 @@
 #[derive(Clone, Copy)]
 enum Scenario {
     Success,
+    IdentityReuse,
     Permission,
     Cancellation,
     Disconnect,
@@ -94,6 +95,7 @@ impl Agent {
                 state.prompt_id = id;
                 match self.scenario {
                     Scenario::Success => self.success(&mut state, id),
+                    Scenario::IdentityReuse => self.identity_reuse(&mut state, id),
                     Scenario::Permission => Self::enqueue(
                         &mut state,
                         json!({
@@ -170,6 +172,31 @@ impl Agent {
             json!({
                 "sessionUpdate": "agent_message_chunk",
                 "content": {"type": "text", "text": "Fixture response."}
+            }),
+        ] {
+            Self::update(state, update);
+        }
+        state.prompt_id = None;
+        Self::enqueue(
+            state,
+            json!({
+                "jsonrpc": "2.0",
+                "id": id,
+                "result": {"stopReason": "end_turn"}
+            }),
+        );
+    }
+
+    fn identity_reuse(&self, state: &mut AgentState, id: Option<u64>) {
+        for update in [
+            json!({
+                "sessionUpdate": "agent_message_chunk",
+                "messageId": "provider-message-reused",
+                "content": {"type": "text", "text": "Explicit-id response."}
+            }),
+            json!({
+                "sessionUpdate": "agent_message_chunk",
+                "content": {"type": "text", "text": "Fallback-id response."}
             }),
         ] {
             Self::update(state, update);

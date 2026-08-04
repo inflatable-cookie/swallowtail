@@ -83,6 +83,53 @@ fn exact_attachment_streams_activity_and_joins_owned_resources() {
 }
 
 #[test]
+fn repeated_provider_and_fallback_message_ids_remain_isolated_across_turns() {
+    let (_host, services, mut session) = open(Scenario::IdentityReuse);
+    let mut turns = Vec::new();
+
+    for turn_id in ["cursor-identity-turn-a", "cursor-identity-turn-b"] {
+        let mut turn = start(&mut *session, services.clone(), turn_id);
+        let outcome = block_on(turn.take_terminal_outcome().expect("terminal outcome"));
+        assert_eq!(outcome.status(), &TerminalStatus::Completed);
+        let mut stream = turn.take_events().expect("events");
+        let activities = block_on(async move {
+            let mut activities = Vec::<ActivityObservation>::new();
+            while let Some(event) = stream.next().await {
+                let event = event.expect("event");
+                if let RuntimeEventKind::Activity(activity) = event.kind()
+                    && activity.kind() == &ActivityKind::AssistantMessage
+                    && activity.phase() == ActivityLifecyclePhase::Updated
+                {
+                    activities.push(activity.clone());
+                }
+            }
+            activities
+        });
+        assert_eq!(activities.len(), 2);
+        turns.push(activities);
+        assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
+    }
+
+    for has_provider_ref in [true, false] {
+        let first = turns[0]
+            .iter()
+            .find(|activity| activity.provider_activity_ref().is_some() == has_provider_ref)
+            .expect("first turn activity");
+        let second = turns[1]
+            .iter()
+            .find(|activity| activity.provider_activity_ref().is_some() == has_provider_ref)
+            .expect("second turn activity");
+
+        assert_eq!(first.activity_id(), second.activity_id());
+        assert_eq!(first.provider_activity_ref(), second.provider_activity_ref());
+        assert_ne!(first.operation_id(), second.operation_id());
+        assert_ne!(first.key(), second.key());
+    }
+
+    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+}
+
+#[test]
 fn permission_is_observed_and_cancelled_without_ambient_approval() {
     let (host, services, mut session) = open(Scenario::Permission);
     let mut turn = start(&mut *session, services, "cursor-permission-turn");

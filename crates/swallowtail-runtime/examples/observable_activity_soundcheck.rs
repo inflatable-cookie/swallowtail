@@ -1,5 +1,5 @@
 use swallowtail_runtime::{
-    ActivityId, ActivityKindClass, ActivityLifecyclePhase, ObservableActivityAvailability,
+    ActivityKey, ActivityKindClass, ActivityLifecyclePhase, ObservableActivityAvailability,
     PreparedOperationEvidence, RuntimeEvent, RuntimeEventKind,
 };
 
@@ -12,7 +12,7 @@ pub fn activity_availability(
 
 /// Optional bounded progress derived from portable activity only.
 pub struct StructuredProgress<'a> {
-    pub activity_id: &'a ActivityId,
+    pub key: ActivityKey,
     pub kind: ActivityKindClass,
     pub phase: ActivityLifecyclePhase,
     pub label: Option<&'a str>,
@@ -23,7 +23,7 @@ pub fn optional_progress(event: &RuntimeEvent) -> Option<StructuredProgress<'_>>
         return None;
     };
     Some(StructuredProgress {
-        activity_id: activity.activity_id(),
+        key: activity.key(),
         kind: activity.kind().class(),
         phase: activity.phase(),
         label: activity.label().map(|value| value.as_str()),

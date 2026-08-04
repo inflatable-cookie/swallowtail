@@ -20,10 +20,11 @@ use swallowtail_core::{
     SessionAccessPolicy, SessionProviderStatePolicy, SupportAuthority, preflight,
 };
 use swallowtail_runtime::{
-    BoxFuture, CleanupOutcome, EnvironmentRef, HostServices, InteractiveSessionDriver, JoinedTask,
-    OpenSessionRequest, OperationContent, ProcessExit, ProcessHandle, ProcessInputChunk,
-    ProcessOutputChunk, ProcessOutputStream, ProcessRequest, ProcessService, RequestId,
-    ResourceLease, RuntimeEventKind, RuntimeFailure, RuntimeTurnId, ScopeId, ScopedTaskService,
+    ActivityKind, ActivityLifecyclePhase, ActivityObservation, BoxFuture, CleanupOutcome,
+    EnvironmentRef, HostServices, InteractiveSessionDriver, JoinedTask, OpenSessionRequest,
+    OperationContent, ProcessExit, ProcessHandle, ProcessInputChunk, ProcessOutputChunk,
+    ProcessOutputStream, ProcessRequest, ProcessService, RequestId, ResourceLease,
+    RuntimeEventKind, RuntimeFailure, RuntimeTurnId, ScopeId, ScopedTaskService,
     SessionPlanAgreement, TerminalStatus, TurnRequest, WorkingResourceIoService,
     WorkingResourceReadRequest, WorkingResourceRef, WorkingResourceService, WorkingResourceText,
     WorkingResourceWriteRequest,

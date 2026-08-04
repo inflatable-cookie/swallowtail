@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-31
+Updated: 2026-08-04
 
 ## Purpose
 
@@ -54,6 +54,7 @@ Each portable activity has:
 
 - one non-empty operation-local activity id
 - one runtime run or turn owner
+- one composite activity key containing that owner and activity id
 - the event sequence of each observation
 - one activity kind
 - an optional bounded provider-intended display label
@@ -63,6 +64,19 @@ Each portable activity has:
 The same native item maps to the same activity id for its whole observed
 lifecycle. Provider item references are opaque, bounded, redacted in default
 formatting, and never accepted as cross-route authority.
+
+Activity ids and provider item references are not globally unique. A provider
+may reuse either across threads, sessions, turns, retries, or restarts. An
+adapter-minted activity id may also repeat in another operation. The portable
+durable identity is the complete `ActivityKey` pair of operation owner and
+activity id. Consumers must not upsert activity or assistant projections by
+`ActivityId` or `ProviderActivityRef` alone.
+
+Contract 009 requires consumer-supplied runtime run and turn ids to remain
+unique across the consumer's active and retained projection domain. Consumer
+thread and transcript-message identities remain separate and downstream. An
+activity key never becomes a provider attachment reference, consumer thread
+id, or transcript-message id.
 
 An ordinary activity envelope may be owned by the root provider thread or by
 an exact child thread established earlier in the same operation through
@@ -161,8 +175,9 @@ Each snapshot contains an ordered bounded collection of:
 - pending, in-progress, or completed status
 - optional high, medium, or low provider priority
 
-The owning activity id is the list identity. Individual items have no portable
-identity because current qualified interfaces do not consistently supply one.
+The owning activity key is the list identity. Individual items have no
+portable identity because current qualified interfaces do not consistently
+supply one.
 Consumers replace the whole displayed list on every snapshot and may use
 position and content only as presentation hints, not durable identity.
 
@@ -354,6 +369,7 @@ Catalogue and serving-only operations expose no agent-activity profile.
 Consumers own:
 
 - durable message and activity persistence
+- local thread and transcript-message identity
 - transcript reconstruction
 - grouping and collapsed presentation
 - work-log labels and summaries
@@ -372,6 +388,8 @@ Deterministic fixtures prove:
 
 - monotonic event and per-activity lifecycle ordering
 - stable activity identity and exact owner
+- equal activity and provider references remain distinct under different
+  operation owners
 - root or previously admitted operation-local child envelope ownership
 - exact child-local turn lifecycle without root turn or terminal mutation
 - no synthetic lifecycle phases

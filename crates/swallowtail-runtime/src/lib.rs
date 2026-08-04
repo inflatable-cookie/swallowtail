@@ -61,10 +61,10 @@ mod working_resource_io;
 pub use activity::{
     ActivityActor, ActivityAssistantPhase, ActivityContent, ActivityContentChangeKind,
     ActivityContentStream, ActivityContentUpdate, ActivityCorrelation, ActivityDisclosure,
-    ActivityId, ActivityKind, ActivityLabel, ActivityLifecyclePhase, ActivityNamespace,
-    ActivityObservation, ActivityOperationId, ActivityStatus, InvalidActivityRecord,
-    SubagentControlActionKind, SubagentId, SubagentParent, SubagentSnapshot, SubagentStatus,
-    TaskListItem, TaskListItemPriority, TaskListItemStatus, TaskListSnapshot,
+    ActivityId, ActivityKey, ActivityKind, ActivityLabel, ActivityLifecyclePhase,
+    ActivityNamespace, ActivityObservation, ActivityOperationId, ActivityStatus,
+    InvalidActivityRecord, SubagentControlActionKind, SubagentId, SubagentParent, SubagentSnapshot,
+    SubagentStatus, TaskListItem, TaskListItemPriority, TaskListItemStatus, TaskListSnapshot,
 };
 pub use async_types::{
     BoxCallbackStream, BoxDirectToolCallStream, BoxEventStream, BoxFuture,

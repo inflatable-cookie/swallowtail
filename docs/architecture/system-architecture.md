@@ -1322,6 +1322,13 @@ reasoning. Permitted newer versions inherit the last qualified profile without
 widening it. Consumers still own durable projection, grouping, collapse state,
 and presentation.
 
+Portable durable activity identity is the composite `ActivityKey`, not the
+provider message or item reference and not `ActivityId` alone. The key combines
+one consumer-unique runtime run or turn owner with one operation-local activity
+id. Providers and adapters may reuse their local values in another operation
+without collision. Consumer thread and transcript-message primary keys remain
+outside Swallowtail.
+
 Card 131 closes the harness layer with a machine-checked inventory of 13
 canonical production routes and 18 structured-run or interactive-session
 profiles. Every positive profile is observable through its public prepared

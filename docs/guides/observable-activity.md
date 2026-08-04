@@ -38,7 +38,7 @@ Read `RuntimeEventKind::Activity` beside the existing operation events:
 ```rust
 match event.kind() {
     RuntimeEventKind::Activity(activity) => {
-        let id = activity.activity_id();
+        let key = activity.key();
         let phase = activity.phase();
         let kind = activity.kind();
         let provider_label = activity.label();
@@ -57,6 +57,12 @@ match event.kind() {
     _ => {}
 }
 ```
+
+Persist and upsert by the complete `ActivityKey`. `ActivityId` and
+`provider_activity_ref()` are operation-local evidence and may repeat in
+another run or turn. The consumer's thread and transcript-message primary keys
+remain separate. Runtime run and turn ids supplied by the consumer must not be
+reused while an earlier operation remains active or durably projected.
 
 An activity correlation points at a callback, direct-tool call, or provider
 request. It does not replace that exchange or duplicate its body. A completed

@@ -31,6 +31,7 @@ visible as unverified newer unless exact evidence requires rejection.
 | Prevent cross-operation activity projection collisions without manufacturing provider-global identity. | completed | Contracts 009, 044 | `g03.026` |
 | Reconcile interrupted consumer turns from retained provider truth without retry or control authority. | completed | Contracts 017, 042, 046, 048 | `g03.027` |
 | Preserve qualified provider work across controlled consumer shutdown without leaking local work. | completed | Contracts 009, 017, 042, 048-049 | `g03.028` |
+| Persist and reconcile an exact Kimi operation before detaching its local observer. | completed | Contracts 017, 042, 048-049 | `g03.029` |
 | Periodically reconcile deferred gates, route truth, and generation capacity. | planned | Contract 001 | recurring checkpoints |
 
 ## Current Checkpoint
@@ -318,11 +319,13 @@ visible as unverified newer unless exact evidence requires rejection.
 - [026 Portable Activity Key And Cross-Operation Isolation](026-portable-activity-key-and-cross-operation-isolation.md) — completed
 - [027 Cross-Process Active Operation Reconciliation](027-cross-process-active-operation-reconciliation.md) — completed
 - [028 Controlled Shutdown Active Operation Detachment](028-controlled-shutdown-active-operation-detachment.md) — completed
+- [029 Kimi Operation Checkpoint, Reconciliation, And Detachment](029-kimi-operation-checkpoint-reconciliation-and-detachment.md) — completed
 
 ## Checkpoint
 
-The lane is at the g03 evidence gate. Kimi cursor-checkpoint reconciliation or
-another provider-backed retained-operation record needs explicit selection.
+The lane is back at the g03 retained-operation evidence gate. OpenAI
+background response/cursor persistence is the next useful candidate; ACP
+retained-history reconciliation remains the alternative.
 
 ## Generation Boundary
 

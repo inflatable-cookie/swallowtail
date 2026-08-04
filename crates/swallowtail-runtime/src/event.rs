@@ -1,6 +1,6 @@
 use crate::{
     ActivityObservation, CallbackId, DirectToolCallId, HarnessUiDisplay, OperationContent,
-    ProviderObservation,
+    ProviderObservation, ProviderOperationCheckpoint,
 };
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -51,6 +51,7 @@ pub struct RuntimeEvent {
     sequence: u64,
     kind: RuntimeEventKind,
     content: Option<OperationContent>,
+    reconciliation_checkpoint: Option<ProviderOperationCheckpoint>,
 }
 
 impl RuntimeEvent {
@@ -60,6 +61,7 @@ impl RuntimeEvent {
             sequence,
             kind,
             content: None,
+            reconciliation_checkpoint: None,
         }
     }
 
@@ -69,7 +71,17 @@ impl RuntimeEvent {
             sequence,
             kind,
             content: Some(content),
+            reconciliation_checkpoint: None,
         }
+    }
+
+    #[must_use]
+    pub fn with_reconciliation_checkpoint(
+        mut self,
+        checkpoint: ProviderOperationCheckpoint,
+    ) -> Self {
+        self.reconciliation_checkpoint = Some(checkpoint);
+        self
     }
 
     #[must_use]
@@ -85,6 +97,11 @@ impl RuntimeEvent {
     #[must_use]
     pub const fn content(&self) -> Option<&OperationContent> {
         self.content.as_ref()
+    }
+
+    #[must_use]
+    pub const fn reconciliation_checkpoint(&self) -> Option<&ProviderOperationCheckpoint> {
+        self.reconciliation_checkpoint.as_ref()
     }
 
     #[must_use]

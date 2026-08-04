@@ -64,9 +64,13 @@ fn run_connected(
         .map_err(|_| disconnected())?;
     *control.lock().expect("control lock poisoned") = Some(tcp);
     require_hello(&mut socket)?;
-    subscribe(&mut socket, session_id, cursor_seq, cursor_epoch.as_deref())?;
+    let (current_seq, current_epoch) =
+        subscribe(&mut socket, session_id, cursor_seq, cursor_epoch.as_deref())?;
     updates
-        .try_send(Ok(Update::Ready))
+        .try_send(Ok(Update::Ready {
+            current_seq,
+            current_epoch,
+        }))
         .map_err(|_| backpressure())?;
     let mut pending_abort = None;
     loop {
@@ -158,7 +162,7 @@ fn subscribe(
     session_id: &str,
     seq: u64,
     epoch: Option<&str>,
-) -> Result<(), RuntimeFailure> {
+) -> Result<(u64, Option<String>), RuntimeFailure> {
     let cursor = match epoch {
         Some(epoch) => serde_json::json!({"seq":seq,"epoch":epoch}),
         None => serde_json::json!({"seq":seq}),
@@ -179,9 +183,25 @@ fn subscribe(
             code: 0,
             accepted_count: 1,
             resync_count: 0,
-        } => Ok(()),
+            cursors,
+        } => {
+            let [cursor] = cursors.as_slice() else {
+                return Err(resync_failure());
+            };
+            if cursor.session_id != session_id
+                || cursor.seq < seq
+                || cursor_epoch_mismatch(epoch, cursor.epoch.as_deref())
+            {
+                return Err(resync_failure());
+            }
+            Ok((cursor.seq, cursor.epoch.clone()))
+        }
         _ => Err(resync_failure()),
     }
+}
+
+fn cursor_epoch_mismatch(requested: Option<&str>, accepted: Option<&str>) -> bool {
+    requested.is_some_and(|requested| accepted != Some(requested))
 }
 
 fn complete_abort_ack(

@@ -1,6 +1,7 @@
 use super::{
     KimiLocalServerPermissionMode, KimiLocalServerPreparedSession,
-    KimiLocalServerPreparedSessionFuture, KimiLocalServerSessionInput,
+    KimiLocalServerPreparedSessionFuture, KimiLocalServerSessionConfiguration,
+    KimiLocalServerSessionInput,
 };
 use crate::local_server::KimiLocalServerPreparedIntegration;
 use crate::local_server::prepared::lifecycle_capabilities;
@@ -84,10 +85,21 @@ impl KimiLocalServerPreparedIntegration {
         }
         validate_options(&options)?;
         validate_revision_options(self, &configuration)?;
+        if configuration.active_turn_detachment()
+            && (configuration.permission_mode() == KimiLocalServerPermissionMode::Manual
+                || self.instance().ownership()
+                    != swallowtail_core::InstanceOwnership::ExternalAttached
+                || !self.server().is_qualified())
+        {
+            return Err(failure(
+                "swallowtail.kimi.local_server.preparation.detachment_unsupported",
+                "Kimi local-server detachment requires a qualified attached session without callbacks",
+            ));
+        }
 
         let activity_profile = super::super::activity::profile::activity_profile(self)?;
         let capabilities = super::super::activity::profile::with_activity(
-            session_capabilities(&options),
+            session_capabilities(&options, &configuration),
             &activity_profile,
         );
         let instance = instance_with_capabilities(self, capabilities.clone());
@@ -131,7 +143,10 @@ impl KimiLocalServerPreparedIntegration {
     }
 }
 
-fn session_capabilities(options: &swallowtail_runtime::SessionOptions) -> CapabilityProfile {
+fn session_capabilities(
+    options: &swallowtail_runtime::SessionOptions,
+    configuration: &KimiLocalServerSessionConfiguration,
+) -> CapabilityProfile {
     let mut capabilities = vec![
         CapabilityRequirement::new(Capability::InteractiveSession, []),
         CapabilityRequirement::new(Capability::StreamingEvents, []),
@@ -155,6 +170,14 @@ fn session_capabilities(options: &swallowtail_runtime::SessionOptions) -> Capabi
         capabilities.push(CapabilityRequirement::new(
             Capability::ReasoningSelection,
             [CapabilityConstraint::ReasoningMode(mode.clone())],
+        ));
+    }
+    if configuration.active_turn_detachment() {
+        capabilities.push(CapabilityRequirement::new(
+            Capability::ActiveOperationDetachment,
+            [CapabilityConstraint::OperationDetachmentScope(
+                swallowtail_core::OperationDetachmentScope::ActiveTurn,
+            )],
         ));
     }
     CapabilityProfile::new(capabilities)
@@ -254,4 +277,4 @@ fn failure(code: &'static str, message: &'static str) -> PreparationFailure {
 #[path = "prepared/instance.rs"]
 mod instance;
 
-use self::instance::instance_with_capabilities;
+pub(super) use self::instance::instance_with_capabilities;

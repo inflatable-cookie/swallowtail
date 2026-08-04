@@ -42,15 +42,64 @@ pub(super) fn serve(
     let Message::Text(subscribe) = message else {
         return;
     };
+    requests
+        .lock()
+        .expect("request lock is not poisoned")
+        .push(format!(
+            "WS subscribe seq1={} epoch={}",
+            subscribe.contains(r#""seq":1"#),
+            subscribe.contains(r#""epoch":"fixture-epoch""#)
+        ));
     if !subscribe.contains("swallowtail-subscribe") || !subscribe.contains(SESSION) {
         return;
     }
-    send_json(
-        &mut socket,
-        r#"{"type":"ack","id":"swallowtail-subscribe","code":0,"msg":"success","payload":{"accepted":["interactive-session"],"resync_required":[],"cursors":{"interactive-session":{"seq":0}}}}"#,
-    );
+    let acknowledgement = match scenario {
+        InteractiveScenario::ReconcileComplete => {
+            r#"{"type":"ack","id":"swallowtail-subscribe","code":0,"msg":"success","payload":{"accepted":["interactive-session"],"resync_required":[],"cursors":{"interactive-session":{"seq":2,"epoch":"fixture-epoch"}}}}"#
+        }
+        InteractiveScenario::ReconcileActive => {
+            r#"{"type":"ack","id":"swallowtail-subscribe","code":0,"msg":"success","payload":{"accepted":["interactive-session"],"resync_required":[],"cursors":{"interactive-session":{"seq":1,"epoch":"fixture-epoch"}}}}"#
+        }
+        InteractiveScenario::Reattach if subscribe.contains(r#""seq":1"#) => {
+            r#"{"type":"ack","id":"swallowtail-subscribe","code":0,"msg":"success","payload":{"accepted":["interactive-session"],"resync_required":[],"cursors":{"interactive-session":{"seq":1,"epoch":"fixture-epoch"}}}}"#
+        }
+        _ => {
+            r#"{"type":"ack","id":"swallowtail-subscribe","code":0,"msg":"success","payload":{"accepted":["interactive-session"],"resync_required":[],"cursors":{"interactive-session":{"seq":0}}}}"#
+        }
+    };
+    send_json(&mut socket, acknowledgement);
     match scenario {
         InteractiveScenario::Disconnect => {}
+        InteractiveScenario::Detach => {
+            event(&mut socket, 1, None, "turn.started", r#"{"turnId":7}"#);
+            match socket.read() {
+                Ok(Message::Close(_)) => requests
+                    .lock()
+                    .expect("request lock is not poisoned")
+                    .push("WS observer closed".to_owned()),
+                Ok(Message::Text(_)) => requests
+                    .lock()
+                    .expect("request lock is not poisoned")
+                    .push("WS unexpected control text".to_owned()),
+                _ => {}
+            }
+        }
+        InteractiveScenario::ReconcileActive => {
+            let _ = socket.read();
+        }
+        InteractiveScenario::ReconcileComplete => {
+            if subscribe.contains(r#""seq":1"#) && subscribe.contains(r#""epoch":"fixture-epoch""#)
+            {
+                event(
+                    &mut socket,
+                    2,
+                    None,
+                    "turn.ended",
+                    r#"{"turnId":7,"reason":"completed"}"#,
+                );
+            }
+            let _ = socket.read();
+        }
         InteractiveScenario::Reattach => {
             let connection_count = requests
                 .lock()

@@ -1,12 +1,17 @@
 mod access;
 mod callbacks;
+mod checkpoint;
 mod driver;
 mod prepared;
+mod reconciliation;
 mod session;
 mod websocket;
 
 pub(in crate::local_server) use callbacks::{approval_namespace, question_namespace};
 pub(in crate::local_server) use prepared::{access_policy, validate_revision_options};
+pub use reconciliation::{
+    KimiLocalServerPreparedReconciliation, KimiLocalServerReconciliationInput,
+};
 pub(in crate::local_server) use session::{KimiInteractiveSession, TurnCancellation};
 
 use swallowtail_core::ReasoningMode;
@@ -44,6 +49,7 @@ pub struct KimiLocalServerSessionConfiguration {
     disabled_tools: Vec<String>,
     managed_recovery: bool,
     maximum_reattachments: u32,
+    active_turn_detachment: bool,
 }
 
 impl KimiLocalServerSessionConfiguration {
@@ -55,6 +61,7 @@ impl KimiLocalServerSessionConfiguration {
             disabled_tools: Vec::new(),
             managed_recovery: false,
             maximum_reattachments: 0,
+            active_turn_detachment: false,
         }
     }
 
@@ -112,6 +119,18 @@ impl KimiLocalServerSessionConfiguration {
 
     pub(in crate::local_server) const fn maximum_reattachments(&self) -> u32 {
         self.maximum_reattachments
+    }
+
+    /// Allows controlled local observation detachment on a qualified attached
+    /// server. Preparation rejects callback-bearing and owned topologies.
+    #[must_use]
+    pub const fn with_active_turn_detachment(mut self) -> Self {
+        self.active_turn_detachment = true;
+        self
+    }
+
+    pub(in crate::local_server) const fn active_turn_detachment(&self) -> bool {
+        self.active_turn_detachment
     }
 }
 

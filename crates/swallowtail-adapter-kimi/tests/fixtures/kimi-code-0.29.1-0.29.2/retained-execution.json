@@ -103,5 +103,42 @@
       "route_change",
       "credential_reacquire"
     ]
+  },
+  "cross_process_reconciliation": {
+    "checkpoint": {
+      "session_id": "fixture-session-private",
+      "runtime_turn_id": "fixture-runtime-turn-private",
+      "turn_id": 7,
+      "cursor": {
+        "seq": 11,
+        "epoch": "fixture-epoch-private"
+      },
+      "persisted_form": "opaque_versioned_attachment_bound"
+    },
+    "finite_snapshot": {
+      "acknowledged_current_seq": 12,
+      "first_event_seq": 12,
+      "terminal_turn_id": 7,
+      "terminal_reason": "completed"
+    },
+    "detach": {
+      "topology": "external_attached",
+      "local_terminal": "detached",
+      "observer_close": true,
+      "provider_abort": false
+    },
+    "reject": [
+      "corrupt_checkpoint",
+      "unknown_checkpoint_version",
+      "attachment_mismatch",
+      "foreign_session",
+      "foreign_turn",
+      "cursor_gap",
+      "epoch_change",
+      "resync_required",
+      "owned_foreground_detachment",
+      "callback_bearing_detachment",
+      "unverified_newer_detachment"
+    ]
   }
 }

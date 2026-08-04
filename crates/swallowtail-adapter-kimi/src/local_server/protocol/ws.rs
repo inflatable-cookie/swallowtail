@@ -23,6 +23,7 @@ pub(crate) enum WsFrame {
         code: i64,
         accepted_count: usize,
         resync_count: usize,
+        cursors: Vec<WsCursor>,
     },
     Event(WsEventEnvelope),
     ResyncRequired {
@@ -32,6 +33,13 @@ pub(crate) enum WsFrame {
     Error {
         fatal: bool,
     },
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) struct WsCursor {
+    pub(crate) session_id: String,
+    pub(crate) seq: u64,
+    pub(crate) epoch: Option<String>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -203,11 +211,12 @@ pub(crate) fn decode_ws_frame(bytes: &[u8]) -> Result<WsFrame, RuntimeFailure> {
                 .get("resync_required")
                 .and_then(Value::as_array)
                 .map_or(0, Vec::len);
-            validate_cursors(payload.get("cursors"))?;
+            let cursors = decode_cursors(payload.get("cursors"))?;
             Ok(WsFrame::Ack {
                 code,
                 accepted_count,
                 resync_count,
+                cursors,
             })
         }
         "resync_required" => {

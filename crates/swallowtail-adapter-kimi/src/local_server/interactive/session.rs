@@ -5,7 +5,9 @@ mod pump;
 #[path = "session/turn.rs"]
 mod turn;
 
-pub(in crate::local_server) use self::handle::{ActiveSlot, ActiveTurn, TurnCancellation};
+pub(in crate::local_server) use self::handle::{
+    ActiveSlot, ActiveTurn, TurnCancellation, TurnDetachment,
+};
 pub(super) use self::handle::{KimiTurnHandle, SessionCancellation, close_active, reap};
 use super::access::{SessionAccess, merge};
 use super::websocket::{Subscription, SubscriptionInput};
@@ -105,6 +107,7 @@ impl InteractiveSessionHandle for KimiInteractiveSession {
             ))?;
             let (terminal_sender, terminal) = terminal_outcome_channel();
             let terminal_flag = Arc::new(AtomicBool::new(false));
+            let checkpoint_ready = Arc::new(AtomicBool::new(false));
             let (pump_sender, pump_receiver) = oneshot::channel();
             let task = services.task().expect("validated task service").spawn(
                 scope.clone(),
@@ -179,6 +182,14 @@ impl InteractiveSessionHandle for KimiInteractiveSession {
                 prompt_id: prompt.id,
                 requested: AtomicBool::new(false),
             });
+            let detachment = self.configuration.active_turn_detachment().then(|| {
+                Arc::new(TurnDetachment {
+                    cancellation: Arc::clone(&cancellation),
+                    terminal: Arc::clone(&terminal_flag),
+                    checkpoint_ready: Arc::clone(&checkpoint_ready),
+                    requested: AtomicBool::new(false),
+                })
+            });
             let pump_input = pump::PumpInput {
                 subscription: Some(subscription),
                 scope: scope.clone(),
@@ -191,10 +202,12 @@ impl InteractiveSessionHandle for KimiInteractiveSession {
                 secret: Arc::downgrade(&secret),
                 cursor: Arc::clone(&self.cursor),
                 cancellation: Arc::clone(&cancellation),
+                detachment: detachment.clone(),
                 callbacks: callback_hub,
                 events: event_sender,
                 terminal: terminal_sender,
                 terminal_flag: Arc::clone(&terminal_flag),
+                checkpoint_ready,
                 remaining_reattachments: self.configuration.maximum_reattachments(),
             };
             if let Err(input) = pump_sender.send(pump_input) {
@@ -220,6 +233,7 @@ impl InteractiveSessionHandle for KimiInteractiveSession {
                 callbacks,
                 terminal: Some(Box::pin(terminal)),
                 cancellation,
+                detachment,
                 terminal_flag,
                 active: Arc::clone(&self.active),
             }) as Box<dyn TurnHandle>)

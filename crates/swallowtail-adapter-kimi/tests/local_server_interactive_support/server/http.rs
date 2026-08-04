@@ -1,4 +1,4 @@
-use super::TOKEN;
+use super::{InteractiveScenario, TOKEN};
 use std::io::{Read, Write};
 use std::net::TcpStream;
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -9,6 +9,7 @@ pub(super) fn serve(
     requests: Arc<Mutex<Vec<String>>>,
     callback_resolved: Arc<AtomicBool>,
     version: &str,
+    scenario: InteractiveScenario,
 ) {
     let Some((method, path, authenticated, body)) = read_request(stream) else {
         return;
@@ -24,6 +25,7 @@ pub(super) fn serve(
         &body,
         &callback_resolved,
         version,
+        scenario,
     );
     let reply = format!(
         "HTTP/1.1 {status}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{response}",
@@ -75,6 +77,7 @@ fn response(
     body: &str,
     callback_resolved: &AtomicBool,
     version: &str,
+    scenario: InteractiveScenario,
 ) -> (&'static str, String) {
     if method == "GET" && path == "/api/v1/healthz" {
         return ("200 OK", envelope(r#"{"ok":true}"#, 0, "success"));
@@ -95,9 +98,9 @@ fn response(
         ),
         ("POST", "/api/v1/sessions") => {
             assert!(body.contains(r#""cwd":"fixture.kimi.workspace""#));
-            ("200 OK", session_envelope())
+            ("200 OK", session_envelope(scenario))
         }
-        ("GET", "/api/v1/sessions/interactive-session") => ("200 OK", session_envelope()),
+        ("GET", "/api/v1/sessions/interactive-session") => ("200 OK", session_envelope(scenario)),
         ("POST", "/api/v1/sessions/interactive-session:archive") => {
             ("200 OK", envelope(r#"{"archived":true}"#, 0, "success"))
         }
@@ -144,9 +147,16 @@ fn response(
     }
 }
 
-fn session_envelope() -> String {
+fn session_envelope(scenario: InteractiveScenario) -> String {
+    let (last_seq, busy) = match scenario {
+        InteractiveScenario::ReconcileComplete => (2, false),
+        InteractiveScenario::ReconcileActive => (1, true),
+        _ => (0, false),
+    };
     envelope(
-        r#"{"id":"interactive-session","archived":false,"busy":false,"last_seq":0,"metadata":{"cwd":"fixture.kimi.workspace"}}"#,
+        &format!(
+            r#"{{"id":"interactive-session","archived":false,"busy":{busy},"last_seq":{last_seq},"metadata":{{"cwd":"fixture.kimi.workspace"}}}}"#
+        ),
         0,
         "success",
     )

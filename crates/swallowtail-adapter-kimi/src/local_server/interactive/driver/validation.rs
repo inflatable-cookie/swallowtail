@@ -4,7 +4,7 @@ use crate::local_server::protocol::{
     InteractiveSessionRecord, RestReply, decode_interactive_session, decode_rest,
 };
 use std::future::Future;
-use swallowtail_core::PreflightPlan;
+use swallowtail_core::{Capability, CapabilityConstraint, InstanceOwnership, PreflightPlan};
 use swallowtail_runtime::{
     HostServices, OpenSessionRequest, RequestId, ResumeSessionRequest, RuntimeFailure, ScopeId,
     validate_session_plan_agreement,
@@ -37,6 +37,7 @@ pub(super) fn validate_projected_open(
 ) -> Result<(), RuntimeFailure> {
     services.require_execution_host(plan.execution_host_id())?;
     validate_driver_agreement(driver, request.plan_agreement(), request.options())?;
+    validate_detachment(driver, plan)?;
     validate_services(services)?;
     if request.working_resource().is_none() {
         return Err(unsupported("resource-free session"));
@@ -77,7 +78,43 @@ fn validate_common(
     services.require_execution_host(plan.execution_host_id())?;
     validate_session_plan_agreement(plan, agreement)?;
     validate_driver_agreement(driver, agreement, options)?;
+    validate_detachment(driver, plan)?;
     validate_services(services)
+}
+
+fn validate_detachment(
+    driver: &super::super::super::KimiLocalServerDriver,
+    plan: &PreflightPlan,
+) -> Result<(), RuntimeFailure> {
+    let configured = driver.configuration()?.active_turn_detachment();
+    let requirement = plan
+        .requirements()
+        .capabilities()
+        .find(|required| required.capability() == Capability::ActiveOperationDetachment);
+    if !configured && requirement.is_none() {
+        return Ok(());
+    }
+    let valid = configured
+        && plan.ownership() == InstanceOwnership::ExternalAttached
+        && requirement.is_some_and(|requirement| {
+            requirement.constraints().collect::<Vec<_>>()
+                == [&CapabilityConstraint::OperationDetachmentScope(
+                    swallowtail_core::OperationDetachmentScope::ActiveTurn,
+                )]
+        })
+        && plan
+            .requirements()
+            .capabilities()
+            .any(|required| required.capability() == Capability::ProviderDurableRetention)
+        && plan.requirements().extension_namespaces().next().is_none();
+    if valid {
+        Ok(())
+    } else {
+        Err(failure(
+            "swallowtail.kimi.local_server.detachment_plan_mismatch",
+            "Kimi local-server detachment does not match the immutable session plan",
+        ))
+    }
 }
 
 fn validate_driver_agreement(

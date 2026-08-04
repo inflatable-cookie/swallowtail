@@ -45,25 +45,44 @@ pub(super) async fn apply_frame(
                     sequence,
                     RuntimeEventKind::Activity(observation),
                     None,
+                    *provider_turn,
                 )?;
             }
             match envelope.event {
                 WsEvent::TurnStarted { turn_id } => {
                     bind_turn(provider_turn, turn_id)?;
-                    emit(input, sequence, RuntimeEventKind::Progress, None)?;
+                    emit(
+                        input,
+                        sequence,
+                        RuntimeEventKind::Progress,
+                        None,
+                        *provider_turn,
+                    )?;
                 }
                 WsEvent::AssistantDelta { turn_id, delta } => {
                     bind_turn(provider_turn, turn_id)?;
                     if align_delta(envelope.offset, output)? {
                         output.push_str(&delta);
-                        emit_content(input, sequence, RuntimeEventKind::OutputDelta, delta)?;
+                        emit_content(
+                            input,
+                            sequence,
+                            RuntimeEventKind::OutputDelta,
+                            delta,
+                            *provider_turn,
+                        )?;
                     }
                 }
                 WsEvent::ThinkingDelta { turn_id, delta } => {
                     bind_turn(provider_turn, turn_id)?;
                     if align_offset(envelope.offset, *reasoning_len)? {
                         *reasoning_len += utf16_len(&delta);
-                        emit_content(input, sequence, RuntimeEventKind::ReasoningProgress, delta)?;
+                        emit_content(
+                            input,
+                            sequence,
+                            RuntimeEventKind::ReasoningProgress,
+                            delta,
+                            *provider_turn,
+                        )?;
                     }
                 }
                 WsEvent::TurnEnded { turn_id, reason } => {
@@ -74,6 +93,7 @@ pub(super) async fn apply_frame(
                             sequence,
                             RuntimeEventKind::OutputAvailable,
                             output.clone(),
+                            *provider_turn,
                         )?;
                     }
                     return Ok(Some(reason));
@@ -100,7 +120,13 @@ pub(super) async fn apply_frame(
                         return Err(protocol_failure());
                     }
                     *recovery = Some((step, next_attempt, max_attempts));
-                    emit(input, sequence, RuntimeEventKind::Progress, None)?;
+                    emit(
+                        input,
+                        sequence,
+                        RuntimeEventKind::Progress,
+                        None,
+                        *provider_turn,
+                    )?;
                 }
                 WsEvent::AwaitingApproval => {
                     enqueue_pending(
@@ -140,7 +166,13 @@ pub(super) async fn apply_frame(
                 | WsEvent::TaskEnded { .. }
                 | WsEvent::Unknown(_) => {}
                 WsEvent::Warning | WsEvent::Progress => {
-                    emit(input, sequence, RuntimeEventKind::Progress, None)?;
+                    emit(
+                        input,
+                        sequence,
+                        RuntimeEventKind::Progress,
+                        None,
+                        *provider_turn,
+                    )?;
                 }
                 WsEvent::ProviderError => {
                     return Err(failure(
@@ -154,7 +186,13 @@ pub(super) async fn apply_frame(
         WsFrame::ResyncRequired { .. } => Err(resync_failure()),
         WsFrame::Error { fatal: true } => Err(protocol_failure()),
         WsFrame::Error { fatal: false } => {
-            emit(input, sequence, RuntimeEventKind::Progress, None)?;
+            emit(
+                input,
+                sequence,
+                RuntimeEventKind::Progress,
+                None,
+                *provider_turn,
+            )?;
             Ok(None)
         }
         _ => Err(protocol_failure()),
@@ -217,10 +255,19 @@ async fn enqueue_pending(
                 kind,
                 request,
             )?;
-        input.events.send(RuntimeEvent::new(
-            *sequence,
-            RuntimeEventKind::CallbackRequested(callback_id),
-        ))?;
+        let event = RuntimeEvent::new(*sequence, RuntimeEventKind::CallbackRequested(callback_id));
+        let event = match *provider_turn {
+            Some(provider_turn) => {
+                event.with_reconciliation_checkpoint(operation_checkpoint(input, provider_turn)?)
+            }
+            None => event,
+        };
+        input.events.send(event)?;
+        if provider_turn.is_some() {
+            input
+                .checkpoint_ready
+                .store(true, std::sync::atomic::Ordering::SeqCst);
+        }
         *sequence += 1;
     }
     Ok(())
@@ -231,12 +278,24 @@ fn emit(
     sequence: &mut u64,
     kind: RuntimeEventKind,
     content: Option<OperationContent>,
+    provider_turn: Option<u64>,
 ) -> Result<(), RuntimeFailure> {
     let event = match content {
         Some(content) => RuntimeEvent::with_content(*sequence, kind, content),
         None => RuntimeEvent::new(*sequence, kind),
     };
+    let event = match provider_turn {
+        Some(provider_turn) => {
+            event.with_reconciliation_checkpoint(operation_checkpoint(input, provider_turn)?)
+        }
+        None => event,
+    };
     input.events.send(event)?;
+    if provider_turn.is_some() {
+        input
+            .checkpoint_ready
+            .store(true, std::sync::atomic::Ordering::SeqCst);
+    }
     *sequence += 1;
     Ok(())
 }
@@ -246,11 +305,30 @@ fn emit_content(
     sequence: &mut u64,
     kind: RuntimeEventKind,
     content: String,
+    provider_turn: Option<u64>,
 ) -> Result<(), RuntimeFailure> {
     match OperationContent::new(content) {
-        Ok(content) => emit(input, sequence, kind, Some(content)),
+        Ok(content) => emit(input, sequence, kind, Some(content), provider_turn),
         Err(_) => Ok(()),
     }
+}
+
+fn operation_checkpoint(
+    input: &PumpInput,
+    provider_turn: u64,
+) -> Result<swallowtail_runtime::ProviderOperationCheckpoint, RuntimeFailure> {
+    let cursor = input.cursor.lock().expect("cursor lock poisoned");
+    let epoch = cursor.epoch.as_deref().ok_or_else(protocol_failure)?;
+    let encoded = super::super::super::checkpoint::encode(cursor.seq, epoch)?;
+    swallowtail_runtime::ProviderOperationCheckpoint::new(
+        swallowtail_core::SessionRef::new(input.session_id.clone())
+            .map_err(|_| protocol_failure())?,
+        input.runtime_turn_id.clone(),
+        swallowtail_core::TurnRef::new(provider_turn.to_string())
+            .map_err(|_| protocol_failure())?,
+        encoded,
+    )
+    .map_err(|_| protocol_failure())
 }
 
 fn turn_scope(turn: &RuntimeTurnId) -> Result<swallowtail_runtime::ScopeId, RuntimeFailure> {

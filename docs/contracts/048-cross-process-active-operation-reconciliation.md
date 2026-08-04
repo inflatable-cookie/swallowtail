@@ -42,6 +42,18 @@ The consumer persists the local turn as active before dispatch. It persists an
 exact provider turn reference as soon as the qualified adapter exposes one.
 Reusing that runtime turn id for later work is invalid.
 
+Some routes also require an exact durable event position. A
+`ProviderOperationCheckpoint` binds the provider session, consumer runtime
+turn, exact provider turn, and adapter-owned opaque cursor. Qualified runtime
+events may carry the newest checkpoint. Its persisted form is versioned,
+bounded, integrity-checked, and restorable only under the exact current
+session binding and attachment fingerprint.
+
+Consumers persist the complete opaque record. They do not parse, edit, merge,
+compare, or manufacture cursor bytes. A checkpoint from another runtime turn,
+provider turn, session, route, instance, host, model, resource, access posture,
+or provider-state policy fails closed.
+
 ## State And Attribution
 
 `InterruptedTurnState` is one of:
@@ -125,6 +137,21 @@ abort, delete, callback, import, load, or resume request.
 OpenCode `prompt_async` supplies no exact prompt/turn reference. `Active` and
 `InactiveUnresolved` are therefore honest; terminal states are unavailable.
 
+`kimi-code.local-server` implements exact-turn reconciliation for qualified
+externally attached `0.28.1..=0.31.1` servers. The restored checkpoint supplies
+the exact `{seq, epoch}` position and turn. One read-only session lookup and
+one WebSocket subscription must match the bound session and cwd. Subscription
+acknowledgement fixes a finite current sequence; accepted durable events are
+validated strictly through that sequence and the observer then closes.
+
+An exact retained `turn.ended` event maps completed, failed, blocked, or
+cancelled truth. Exact waiting events map provider input wait. If no new event
+exists, matching busy session state may report `Active`; an idle session
+without terminal evidence is `InactiveUnresolved`. Gaps, resync, epoch drift,
+foreign turns, stale cursors, and attachment drift fail closed. No prompt,
+abort, callback response, session resume, import, or management action is
+dispatched.
+
 Other routes remain unclaimed until the route-specific gates in Research 099
 are satisfied. Capability does not inherit across another transport in the
 same provider family.
@@ -134,6 +161,7 @@ same provider family.
 Portable and route tests must cover:
 
 - exact binding and runtime-turn correlation
+- checkpoint persistence, corruption, version, bound, and attachment checks
 - active, inactive-unresolved, unknown, and exact terminal rules as applicable
 - strict provider-turn attribution for terminal states
 - bounded complete and incomplete replay snapshots

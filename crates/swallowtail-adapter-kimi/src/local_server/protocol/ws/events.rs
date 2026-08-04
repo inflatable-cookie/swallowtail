@@ -185,18 +185,32 @@ pub(crate) const fn classify_ws_close(code: u16) -> WsCloseKind {
 }
 
 fn validate_cursors(value: Option<&Value>) -> Result<usize, RuntimeFailure> {
+    Ok(decode_cursors(value)?.len())
+}
+
+fn decode_cursors(value: Option<&Value>) -> Result<Vec<WsCursor>, RuntimeFailure> {
     let Some(cursors) = value else {
-        return Ok(0);
+        return Ok(Vec::new());
     };
     let cursors = cursors.as_object().ok_or_else(malformed)?;
-    for cursor in cursors.values() {
+    let mut decoded = Vec::with_capacity(cursors.len());
+    for (session_id, cursor) in cursors {
         let cursor = cursor.as_object().ok_or_else(malformed)?;
-        required_u64(cursor, "seq")?;
-        if let Some(epoch) = cursor.get("epoch")
-            && epoch.as_str().is_none_or(str::is_empty)
-        {
-            return Err(malformed());
-        }
+        let epoch = cursor
+            .get("epoch")
+            .map(|epoch| {
+                epoch
+                    .as_str()
+                    .filter(|epoch| !epoch.is_empty())
+                    .map(str::to_owned)
+                    .ok_or_else(malformed)
+            })
+            .transpose()?;
+        decoded.push(WsCursor {
+            session_id: session_id.clone(),
+            seq: required_u64(cursor, "seq")?,
+            epoch,
+        });
     }
-    Ok(cursors.len())
+    Ok(decoded)
 }

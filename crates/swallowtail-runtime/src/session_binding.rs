@@ -6,6 +6,8 @@ use swallowtail_core::{
 
 mod persistence;
 
+pub(crate) use persistence::attachment_fingerprint_for_checkpoint;
+
 pub use persistence::{
     PersistedSessionResumeBinding, SessionResumeBindingPersistenceFailure,
     SessionResumeBindingPersistenceFailureKind,

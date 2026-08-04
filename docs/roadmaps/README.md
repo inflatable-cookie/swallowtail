@@ -13,9 +13,9 @@ shape.
 
 ## Next Task
 
-Return to the g03 evidence gate. The next recovery expansion needs explicit
-selection between Kimi cursor-checkpoint reconciliation and another
-provider-backed retained-operation record.
+Return to the g03 retained-operation evidence gate. The next useful candidate
+is an exact OpenAI background response/cursor record; ACP retained-history
+reconciliation remains the alternative.
 
 ## Index
 

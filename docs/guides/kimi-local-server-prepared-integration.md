@@ -15,6 +15,8 @@ path, provider load replay, or resume without local-server management.
 | configured model catalogue | `kimi-code.local-server` |
 | one retained prompt with explicit callback exchange | `kimi-code.local-server` structured run |
 | explicit approval or structured-question callback exchange | `kimi-code.local-server` |
+| exact interrupted-turn reconciliation after restart | attached `kimi-code.local-server` |
+| controlled active-turn detachment | attached `kimi-code.local-server` without callbacks |
 | archive or restore an inactive provider session | `kimi-code.local-server` |
 | provider-session hard delete | neither route |
 
@@ -80,6 +82,38 @@ Cancellation sends Kimi's native WebSocket abort. Deadlines, provider
 cancellation, transport loss, resynchronization, and runtime failure remain
 distinct. Turn and session close join local work. Session close preserves
 provider state.
+
+### Checkpoint, Reconciliation, And Detachment
+
+After Kimi exposes the exact provider turn, accepted runtime events carry a
+`ProviderOperationCheckpoint`. Persist it with
+`ProviderOperationCheckpoint::export_persisted` under the same prepared
+session plan and `SessionResumeBinding`. The persisted bytes are opaque; do
+not parse or rewrite the Kimi cursor.
+
+After restart, construct `KimiLocalServerReconciliationInput` with the same
+model selection, restored session binding, persisted checkpoint, and replay
+bounds. `prepare_session_reconciliation` rejects another route, instance,
+host, model, resource, access posture, session, runtime turn, or provider turn.
+The prepared operation reads one finite retained WebSocket window and returns
+exact `InterruptedTurnState` without prompt, abort, callback, resume, import,
+or management authority.
+
+For controlled shutdown, select
+`KimiLocalServerSessionConfiguration::with_active_turn_detachment` before
+preparation. The turn handle then exposes `detachment()`. Request detachment,
+await the ordinary terminal outcome (`TerminalStatus::Detached`), and close
+the handle to join local work. This closes only the WebSocket observer and
+sends no provider abort.
+
+Do not request detachment until the newest event checkpoint is durably stored.
+The adapter rejects a request made before the first recoverable checkpoint is
+available.
+
+Detachment is available only on qualified externally attached servers in
+`Auto` or `Yolo` mode. Manual callbacks, owned foreground servers, structured
+runs, and unverified-newer versions remain excluded. Calling ordinary close
+without requesting detachment keeps the existing native-abort behavior.
 
 See the compile-tested
 [`interactive example`](../../crates/swallowtail-adapter-kimi/examples/prepared_local_server_interactive.rs).
@@ -148,6 +182,10 @@ The integration boundary needs:
 - callback UI for manual approvals and structured questions
 - storage of opaque resume and management bindings beside, not inside,
   Nucleus thread identity
+- atomic persistence of the newest opaque operation checkpoint carried by a
+  runtime event
+- explicit detach disposition followed by restart reconciliation before
+  admitting another turn on the same consumer thread
 - interactive-handle close before archive or restore
 - delete hidden or reported unsupported
 - visible unverified-newer evidence with execution allowed only after the

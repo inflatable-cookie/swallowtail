@@ -1494,6 +1494,18 @@ messages, and preserves both attached service and provider session. Other
 routes remain gated by Research 099; no capability crosses a transport
 boundary.
 
+Kimi local server is the next exact-turn mapping. Qualified runtime events
+carry a `ProviderOperationCheckpoint` after exact turn identity is known. Its
+persisted record binds session, runtime turn, provider turn, opaque cursor, and
+the existing attachment fingerprint. Restart restoration accepts only the
+same prepared route and durable session binding.
+
+Kimi reconciliation opens one finite read-only WebSocket observation from the
+restored `{seq, epoch}` cursor through the current cursor acknowledged by the
+server. Session, cwd, epoch, sequence, and turn remain exact. The observer
+closes after the acknowledged snapshot and grants no prompt, abort, callback,
+resume, import, management, or child-control authority.
+
 ## Controlled Operation Detachment
 
 Contract 049 adds an optional lifecycle control to qualified run and turn
@@ -1513,13 +1525,20 @@ selection binds exact run or active-turn scope. Unsupported handles expose no
 control; ordinary close retains its existing semantics. Detachment never
 reports provider completion, failure, cancellation, or continued activity.
 
-The realized first mapping is an explicitly selected OpenCode read-only interactive
-session. Its attached HTTP server and provider session remain external while
+The first realized mapping is an explicitly selected OpenCode read-only
+interactive session. Its attached HTTP server and provider session remain external while
 the SSE attachment joins locally without `/abort`. Callback-bearing sessions,
 structured runs, owned foreground processes, and delete-on-close resources are
 excluded. The prepared profile binds durable retention and exact active-turn
 scope; the driver exposes the optional control only for that plan and leaves
 provider activities unresolved at local detachment.
+
+The second mapping is an explicitly selected Kimi local-server interactive
+session on a qualified externally attached server. Detachment closes and joins
+only its WebSocket observer. It emits local `Detached`, sends no `abort`, and
+later exact-turn reconciliation consumes the persisted operation checkpoint.
+Manual callback mode, owned foreground servers, structured runs, and
+unverified-newer versions remain excluded.
 
 ## Dependency Rules
 

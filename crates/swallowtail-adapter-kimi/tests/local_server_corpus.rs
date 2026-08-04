@@ -164,6 +164,18 @@ fn later_currentness_corpus_is_bounded_valid_and_exactly_provenanced() {
             .iter()
             .any(|value| value == "prompt_submit")
     );
+    assert_eq!(
+        retained["cross_process_reconciliation"]["checkpoint"]["cursor"]["seq"],
+        11
+    );
+    assert_eq!(
+        retained["cross_process_reconciliation"]["finite_snapshot"]["terminal_turn_id"],
+        7
+    );
+    assert_eq!(
+        retained["cross_process_reconciliation"]["detach"]["provider_abort"],
+        false
+    );
 }
 
 #[test]

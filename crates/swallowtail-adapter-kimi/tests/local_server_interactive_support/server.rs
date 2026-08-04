@@ -24,6 +24,9 @@ pub enum InteractiveScenario {
     Disconnect,
     Retry,
     Reattach,
+    ReconcileComplete,
+    Detach,
+    ReconcileActive,
 }
 
 pub struct InteractiveFixtureServer {
@@ -150,6 +153,6 @@ fn serve(
             websocket::serve(stream, scenario, callback_resolved, requests);
         }
     } else {
-        http::serve(&mut stream, requests, callback_resolved, version);
+        http::serve(&mut stream, requests, callback_resolved, version, scenario);
     }
 }

@@ -31,9 +31,10 @@ pub use local_server::{
     KimiLocalServerObservation, KimiLocalServerOwnedHandle, KimiLocalServerOwnedInput,
     KimiLocalServerPermissionMode, KimiLocalServerPreparationProbe, KimiLocalServerPreparedArchive,
     KimiLocalServerPreparedBindingImport, KimiLocalServerPreparedCatalogue,
-    KimiLocalServerPreparedIntegration, KimiLocalServerPreparedRestore, KimiLocalServerPreparedRun,
-    KimiLocalServerPreparedSession, KimiLocalServerPreparedSessionFuture, KimiLocalServerRunInput,
-    KimiLocalServerSessionConfiguration, KimiLocalServerSessionInput,
+    KimiLocalServerPreparedIntegration, KimiLocalServerPreparedReconciliation,
+    KimiLocalServerPreparedRestore, KimiLocalServerPreparedRun, KimiLocalServerPreparedSession,
+    KimiLocalServerPreparedSessionFuture, KimiLocalServerReconciliationInput,
+    KimiLocalServerRunInput, KimiLocalServerSessionConfiguration, KimiLocalServerSessionInput,
     KimiLocalServerSessionManagementInput, kimi_local_server_claim, kimi_local_server_descriptor,
     prepare_kimi_local_server_attached, start_kimi_local_server_owned,
 };

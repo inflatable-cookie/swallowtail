@@ -12,8 +12,9 @@ mod transport;
 pub use descriptor::kimi_local_server_descriptor;
 pub use driver::KimiLocalServerDriver;
 pub use interactive::{
-    KimiLocalServerPermissionMode, KimiLocalServerPreparedSession,
-    KimiLocalServerPreparedSessionFuture, KimiLocalServerSessionConfiguration,
+    KimiLocalServerPermissionMode, KimiLocalServerPreparedReconciliation,
+    KimiLocalServerPreparedSession, KimiLocalServerPreparedSessionFuture,
+    KimiLocalServerReconciliationInput, KimiLocalServerSessionConfiguration,
     KimiLocalServerSessionInput,
 };
 pub use prepared::{

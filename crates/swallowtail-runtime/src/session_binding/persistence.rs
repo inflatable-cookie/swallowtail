@@ -11,6 +11,14 @@ mod fingerprint;
 
 use fingerprint::attachment_fingerprint;
 
+pub(crate) fn attachment_fingerprint_for_checkpoint(
+    plan: &PreflightPlan,
+    working_resource: &WorkingResourceRef,
+    access_policy: &SessionAccessPolicy,
+) -> Option<[u8; 32]> {
+    attachment_fingerprint(plan, working_resource, access_policy).ok()
+}
+
 const MAGIC: &[u8; 16] = b"SWST-RESUME-BIND";
 const VERSION: u16 = 1;
 const DIGEST_BYTES: usize = 32;

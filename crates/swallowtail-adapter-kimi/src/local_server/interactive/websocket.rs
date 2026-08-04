@@ -20,7 +20,10 @@ const UPDATE_CAPACITY: usize = 128;
 const FRAME_LIMIT: usize = 64 * 1024;
 
 enum Update {
-    Ready,
+    Ready {
+        current_seq: u64,
+        current_epoch: Option<String>,
+    },
     Event(Vec<u8>),
 }
 
@@ -39,6 +42,7 @@ pub(super) struct Subscription {
     work: Option<BoxFuture<'static, Result<(), RuntimeFailure>>>,
     cancelled: Arc<AtomicBool>,
     control: Arc<Mutex<Option<TcpStream>>>,
+    replay_target: (u64, Option<String>),
 }
 
 pub(super) struct SubscriptionInput {
@@ -82,6 +86,7 @@ impl Subscription {
         let worker_cancelled = Arc::clone(&cancelled);
         let control = Arc::new(Mutex::new(None));
         let worker_control = Arc::clone(&control);
+        let initial_replay_target = (cursor_seq, cursor_epoch.clone());
         let work = blocking.run(
             scope,
             Box::new(move || {
@@ -104,12 +109,20 @@ impl Subscription {
             work: Some(work),
             cancelled,
             control,
+            replay_target: initial_replay_target,
         };
-        if let Err(error) = subscription.wait_ready(deadline, services).await {
-            let _ = subscription.close().await;
-            return Err(error);
-        }
+        subscription.replay_target = match subscription.wait_ready(deadline, services).await {
+            Ok(target) => target,
+            Err(error) => {
+                let _ = subscription.close().await;
+                return Err(error);
+            }
+        };
         Ok(subscription)
+    }
+
+    pub(super) fn replay_target(&self) -> (u64, Option<&str>) {
+        (self.replay_target.0, self.replay_target.1.as_deref())
     }
 
     pub(super) fn control(&self) -> SubscriptionControl {
@@ -128,7 +141,7 @@ impl Subscription {
             return Poll::Ready(item.map(|item| {
                 item.and_then(|update| match update {
                     Update::Event(frame) => Ok(frame),
-                    Update::Ready => Err(protocol_failure()),
+                    Update::Ready { .. } => Err(protocol_failure()),
                 })
             }));
         }
@@ -145,7 +158,7 @@ impl Subscription {
                         item.map(|item| {
                             item.and_then(|update| match update {
                                 Update::Event(frame) => Ok(frame),
-                                Update::Ready => Err(protocol_failure()),
+                                Update::Ready { .. } => Err(protocol_failure()),
                             })
                         })
                     }),
@@ -171,13 +184,16 @@ impl Subscription {
         &mut self,
         deadline: Option<Deadline>,
         services: &HostServices,
-    ) -> Result<(), RuntimeFailure> {
+    ) -> Result<(u64, Option<String>), RuntimeFailure> {
         let mut timer =
             deadline.and_then(|deadline| services.time().map(|time| time.wait_until(deadline)));
         std::future::poll_fn(|context| {
             if let Poll::Ready(item) = Pin::new(&mut self.updates).poll_next(context) {
                 return Poll::Ready(match item {
-                    Some(Ok(Update::Ready)) => Ok(()),
+                    Some(Ok(Update::Ready {
+                        current_seq,
+                        current_epoch,
+                    })) => Ok((current_seq, current_epoch)),
                     Some(Ok(Update::Event(_))) => Err(protocol_failure()),
                     Some(Err(error)) => Err(error),
                     None => Err(disconnected()),
@@ -207,6 +223,12 @@ impl Subscription {
 }
 
 impl SubscriptionControl {
+    pub(super) fn close(&self) -> Result<(), RuntimeFailure> {
+        self.commands
+            .send(Command::Close)
+            .map_err(|_| disconnected())
+    }
+
     pub(super) async fn abort(
         &self,
         session_id: &str,

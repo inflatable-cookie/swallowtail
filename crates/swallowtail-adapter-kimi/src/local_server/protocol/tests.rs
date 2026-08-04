@@ -3,8 +3,8 @@ use super::rest::{
     decode_metadata, decode_rest, decode_session, inspect_asyncapi, inspect_openapi,
 };
 use super::ws::{
-    ResyncReason, TurnEndReason, WsCloseKind, WsEvent, WsEventEnvelope, WsFrame, classify_ws_close,
-    decode_ws_frame,
+    ResyncReason, TurnEndReason, WsCloseKind, WsCursor, WsEvent, WsEventEnvelope, WsFrame,
+    classify_ws_close, decode_ws_frame,
 };
 use serde_json::{Value, json};
 
@@ -216,7 +216,12 @@ fn websocket_v2_frames_keep_lifecycle_and_sync_meanings_distinct() {
         WsFrame::Ack {
             code: 0,
             accepted_count: 1,
-            resync_count: 0
+            resync_count: 0,
+            cursors: vec![WsCursor {
+                session_id: "fixture-session-private".to_owned(),
+                seq: 9,
+                epoch: Some("fixture-epoch-private".to_owned()),
+            }]
         }
     );
     assert_eq!(

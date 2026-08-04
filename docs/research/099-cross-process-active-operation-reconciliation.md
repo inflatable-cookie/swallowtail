@@ -47,7 +47,7 @@ must not be advertised as active-turn reattachment or exact terminal proof.
 | --- | --- | --- |
 | supported exact-turn observation | `codex.app-server` | realized in g03.027; missing status remains exact-attribution `Unknown` |
 | supported session-scoped observation | `opencode.http` | realized in g03.027 |
-| exact-turn candidate | `kimi-code.local-server` | persist the exact cursor checkpoint, then freeze cross-process ownership and stale-id failures |
+| supported exact-turn observation | `kimi-code.local-server` | realized in g03.029 with a persisted operation checkpoint and finite cursor replay |
 | retained-operation candidate | `openai.background`; `anthropic.managed-agent` | persist a strict route-bound provider operation/resource recovery record before dispatch can be lost |
 | history-snapshot candidate | `claude-agent.acp`; `kimi-code.acp` | qualify load-after-process-loss as read-only reconciliation and prove no prompt, callback, or control side effect |
 | durable-transcript candidate | `gemini-cli.headless` | bind one consumer turn to exact transcript terminal evidence without prompt replay |

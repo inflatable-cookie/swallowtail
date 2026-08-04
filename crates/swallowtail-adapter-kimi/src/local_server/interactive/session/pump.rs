@@ -4,7 +4,7 @@ mod frame;
 use super::super::access::SecretMaterial;
 use super::super::callbacks::CallbackHub;
 use super::super::websocket::{Subscription, SubscriptionInput};
-use super::{CursorState, TurnCancellation};
+use super::{CursorState, TurnCancellation, TurnDetachment};
 use crate::local_server::activity::KimiLocalActivityProjection;
 use crate::local_server::protocol::TurnEndReason;
 use crate::local_server::transport::CurlTransport;
@@ -31,10 +31,12 @@ pub(super) struct PumpInput {
     pub(super) secret: Weak<SecretMaterial>,
     pub(super) cursor: Arc<Mutex<CursorState>>,
     pub(super) cancellation: Arc<TurnCancellation>,
+    pub(super) detachment: Option<Arc<TurnDetachment>>,
     pub(super) callbacks: Option<CallbackHub>,
     pub(super) events: swallowtail_runtime::RuntimeEventSender,
     pub(super) terminal: TerminalOutcomeSender,
     pub(super) terminal_flag: Arc<AtomicBool>,
+    pub(super) checkpoint_ready: Arc<AtomicBool>,
     pub(super) remaining_reattachments: u32,
 }
 
@@ -71,6 +73,13 @@ pub(super) async fn run(mut input: PumpInput) {
                 if input.cancellation.requested.load(Ordering::SeqCst) {
                     break (TerminalStatus::Cancelled, CleanupOutcome::Clean);
                 }
+                if input
+                    .detachment
+                    .as_ref()
+                    .is_some_and(|detachment| detachment.is_requested())
+                {
+                    break (TerminalStatus::Detached, CleanupOutcome::Clean);
+                }
                 if reattach(&mut input).await.is_ok() {
                     continue;
                 }
@@ -82,6 +91,13 @@ pub(super) async fn run(mut input: PumpInput) {
             Signal::Failure(error) => {
                 if input.cancellation.requested.load(Ordering::SeqCst) {
                     break (TerminalStatus::Cancelled, CleanupOutcome::Clean);
+                }
+                if input
+                    .detachment
+                    .as_ref()
+                    .is_some_and(|detachment| detachment.is_requested())
+                {
+                    break (TerminalStatus::Detached, CleanupOutcome::Clean);
                 }
                 if reattach(&mut input).await.is_ok() {
                     continue;
@@ -186,8 +202,8 @@ pub(super) async fn run(mut input: PumpInput) {
     if let Some(cancellation) = provider_cancellation {
         outcome = outcome.with_provider_cancellation(cancellation);
     }
-    let _ = input.terminal.complete(outcome);
     input.terminal_flag.store(true, Ordering::SeqCst);
+    let _ = input.terminal.complete(outcome);
 }
 
 async fn reattach(input: &mut PumpInput) -> Result<(), RuntimeFailure> {

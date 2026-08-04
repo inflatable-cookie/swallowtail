@@ -1,9 +1,11 @@
-use super::fixture::{id, prepare, session_profile, turn};
+use super::fixture::{id, prepare, session_input, session_profile, turn};
 use crate::interactive_support::{InteractiveFixtureServer, InteractiveScenario};
 use crate::lifecycle_support::FixtureHost;
 use futures_executor::block_on;
 use std::sync::Arc;
-use swallowtail_adapter_kimi::KimiLocalServerPermissionMode;
+use swallowtail_adapter_kimi::{
+    KimiLocalServerPermissionMode, KimiLocalServerSessionConfiguration,
+};
 use swallowtail_core::{ExecutionHostId, SafeDiagnostic};
 use swallowtail_runtime::{
     BoxFuture, CleanupOutcome, Deadline, JoinedTask, MonotonicInstant, ProviderCancellationOutcome,
@@ -86,6 +88,58 @@ fn task_admission_failure_precedes_websocket_and_prompt_effects() {
     assert_eq!(failure.diagnostic().code(), "fixture.kimi.task_rejected");
     assert_eq!(server.requests(), requests_before_turn);
     assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+}
+
+#[test]
+fn cancellation_and_terminal_state_reject_late_detachment() {
+    for (scenario, cancel, expected_code) in [
+        (
+            InteractiveScenario::Cancel,
+            true,
+            "swallowtail.kimi.local_server.detachment_cancelled",
+        ),
+        (
+            InteractiveScenario::Complete,
+            false,
+            "swallowtail.kimi.local_server.detachment_terminal",
+        ),
+    ] {
+        let server = InteractiveFixtureServer::start(scenario);
+        let host = FixtureHost::for_endpoint(server.endpoint());
+        let execution_host = id(ExecutionHostId::new, "fixture.kimi.detachment-race");
+        let services = host.services(execution_host.clone(), false);
+        let prepared = prepare(execution_host, services.clone(), "0.29.0");
+        let profile = prepared
+            .prepare_session(session_input(
+                "detachment-race",
+                KimiLocalServerSessionConfiguration::new(KimiLocalServerPermissionMode::Auto)
+                    .with_active_turn_detachment(),
+            ))
+            .expect("detachment profile prepares");
+        let mut session = block_on(profile.open_session(services.clone())).expect("session opens");
+        let mut turn = block_on(session.start_turn(turn("detachment-race-turn"), services))
+            .expect("turn starts");
+        if cancel {
+            block_on(turn.cancellation().request()).expect("cancellation requests");
+        }
+        let outcome = block_on(
+            turn.take_terminal_outcome()
+                .expect("terminal outcome exists"),
+        );
+        assert!(matches!(
+            (cancel, outcome.status()),
+            (true, TerminalStatus::Cancelled) | (false, TerminalStatus::Completed)
+        ));
+        let error = block_on(
+            turn.detachment()
+                .expect("detachment control exists")
+                .request(),
+        )
+        .expect_err("late detachment rejects");
+        assert_eq!(error.diagnostic().code(), expected_code);
+        assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
+        assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    }
 }
 
 fn run_scenario(scenario: InteractiveScenario, cancel: bool) -> TerminalOutcome {

@@ -98,6 +98,19 @@ delete, callback, load, resume, import, or status work. Callback-enabled
 sessions and structured runs do not expose detachment. The attached OpenCode
 server and provider session remain external.
 
+## Kimi Local-Server Mapping
+
+`kimi-code.local-server` implements active-turn detachment for explicitly
+selected interactive sessions on qualified externally attached
+`0.28.1..=0.31.1` servers. The turn must have emitted an exact persisted
+Contract 048 operation checkpoint before local ownership can be recovered.
+
+Detachment closes and joins only the WebSocket observer. It sends no `abort`,
+prompt, callback answer, session action, or reattachment request. Manual
+permission mode, callback-bearing sessions, structured runs, owned foreground
+servers, and unverified-newer versions expose no control. Ordinary close still
+uses the existing exact Kimi abort path.
+
 ## Conformance
 
 Portable and route tests cover:

@@ -5,6 +5,7 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-08-04 Kimi Operation Checkpoint, Reconciliation, And Detachment](2026-08-04-kimi-operation-checkpoint-reconciliation-and-detachment.md)
 - [2026-08-04 Controlled Shutdown Active Operation Detachment](2026-08-04-controlled-shutdown-active-operation-detachment.md)
 - [2026-08-04 Cross-Process Active Operation Reconciliation](2026-08-04-cross-process-active-operation-reconciliation.md)
 - [2026-08-04 Portable Activity Key And Cursor Isolation](2026-08-04-portable-activity-key-and-cursor-isolation.md)

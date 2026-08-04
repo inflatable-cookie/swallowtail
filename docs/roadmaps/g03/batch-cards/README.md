@@ -6,9 +6,11 @@
 
 ## Planned
 
-
 ## Completed
 
+- `075-kimi-attached-turn-detachment.md`
+- `074-kimi-exact-turn-reconciliation.md`
+- `073-provider-operation-checkpoint-kernel.md`
 - `072-opencode-active-turn-detachment.md`
 - `071-active-operation-detachment-kernel.md`
 - `070-cross-process-reconciliation-kernel-and-opencode.md`

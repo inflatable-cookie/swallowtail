@@ -22,12 +22,14 @@ pub fn kimi_local_server_descriptor() -> DriverDescriptor {
         DriverRole::StructuredRun,
         DriverRole::InteractiveSession,
         DriverRole::ProviderSessionManagement,
+        DriverRole::ProviderSessionReconciliation,
     ])
     .with_execution_layers([ExecutionLayer::HarnessInteraction])
     .with_operation_shapes([
         OperationShape::InteractiveSession,
         OperationShape::StructuredRun,
         OperationShape::ProviderSessionManagement,
+        OperationShape::ProviderSessionReconciliation,
     ])
     .with_interface_compatibility(crate::kimi_local_server_claim())
     .with_extension_namespaces([
@@ -69,6 +71,16 @@ pub fn kimi_local_server_descriptor() -> DriverDescriptor {
         DriverRole::ProviderSessionManagement,
         [
             HostServiceKind::Task,
+            HostServiceKind::BlockingWork,
+            HostServiceKind::Time,
+            HostServiceKind::Network,
+            HostServiceKind::Credential,
+            HostServiceKind::WorkingResource,
+        ],
+    )
+    .with_required_host_services(
+        DriverRole::ProviderSessionReconciliation,
+        [
             HostServiceKind::BlockingWork,
             HostServiceKind::Time,
             HostServiceKind::Network,

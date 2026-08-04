@@ -1,7 +1,8 @@
 use crate::{
     CancellationControl, CleanupOutcome, Deadline, HostServices, ImmediateCancellation,
-    PreparationFailure, PreparedAccessEvidence, PreparedOperationEvidence, RequestId,
-    RuntimeFailure, RuntimeTurnId, SessionReplayItem, SessionResumeBinding,
+    PreparationFailure, PreparedAccessEvidence, PreparedOperationEvidence,
+    ProviderOperationCheckpoint, RequestId, RuntimeFailure, RuntimeTurnId, SessionReplayItem,
+    SessionResumeBinding,
 };
 use std::num::{NonZeroU32, NonZeroU64};
 use std::sync::Arc;
@@ -67,6 +68,7 @@ pub struct ProviderSessionReconciliationAgreement {
     provider_turn_ref: Option<TurnRef>,
     bounds: ProviderSessionReconciliationBounds,
     deadline: Option<Deadline>,
+    checkpoint: Option<ProviderOperationCheckpoint>,
 }
 
 impl ProviderSessionReconciliationAgreement {
@@ -84,7 +86,25 @@ impl ProviderSessionReconciliationAgreement {
             provider_turn_ref,
             bounds,
             deadline,
+            checkpoint: None,
         }
+    }
+
+    pub fn with_checkpoint(
+        mut self,
+        checkpoint: ProviderOperationCheckpoint,
+    ) -> Result<Self, RuntimeFailure> {
+        if checkpoint.provider_session_ref() != self.binding.provider_session_ref()
+            || checkpoint.runtime_turn_id() != &self.interrupted_turn_id
+            || self.provider_turn_ref.as_ref() != Some(checkpoint.provider_turn_ref())
+        {
+            return Err(failure(
+                "swallowtail.provider_session_reconciliation.checkpoint_mismatch",
+                "Provider operation checkpoint does not match the reconciliation agreement",
+            ));
+        }
+        self.checkpoint = Some(checkpoint);
+        Ok(self)
     }
 
     #[must_use]
@@ -110,6 +130,11 @@ impl ProviderSessionReconciliationAgreement {
     #[must_use]
     pub const fn deadline(&self) -> Option<Deadline> {
         self.deadline
+    }
+
+    #[must_use]
+    pub const fn checkpoint(&self) -> Option<&ProviderOperationCheckpoint> {
+        self.checkpoint.as_ref()
     }
 }
 

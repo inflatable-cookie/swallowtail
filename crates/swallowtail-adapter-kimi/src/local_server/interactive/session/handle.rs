@@ -5,7 +5,8 @@ use std::sync::{Arc, Mutex};
 use swallowtail_core::{CancellationScope, TurnRef};
 use swallowtail_runtime::{
     BoxEventStream, BoxFuture, CallbackExchange, CancellationAcknowledgement, CancellationControl,
-    CleanupOutcome, RuntimeFailure, RuntimeTurnId, TerminalOutcome, TurnHandle,
+    CleanupOutcome, OperationDetachmentAcknowledgement, OperationDetachmentControl, RuntimeFailure,
+    RuntimeTurnId, TerminalOutcome, TurnHandle,
 };
 
 pub(in crate::local_server) type ActiveSlot = Arc<Mutex<Option<ActiveTurn>>>;
@@ -63,6 +64,70 @@ pub(in crate::local_server) struct TurnCancellation {
     pub(super) requested: AtomicBool,
 }
 
+pub(in crate::local_server) struct TurnDetachment {
+    pub(super) cancellation: Arc<TurnCancellation>,
+    pub(super) terminal: Arc<AtomicBool>,
+    pub(super) checkpoint_ready: Arc<AtomicBool>,
+    pub(super) requested: AtomicBool,
+}
+
+impl TurnDetachment {
+    pub(super) fn is_requested(&self) -> bool {
+        self.requested.load(Ordering::SeqCst)
+    }
+}
+
+impl OperationDetachmentControl for TurnDetachment {
+    fn scope(&self) -> swallowtail_core::OperationDetachmentScope {
+        swallowtail_core::OperationDetachmentScope::ActiveTurn
+    }
+
+    fn request(&self) -> BoxFuture<'_, Result<OperationDetachmentAcknowledgement, RuntimeFailure>> {
+        Box::pin(async move {
+            if self.cancellation.requested.load(Ordering::SeqCst) {
+                return Err(crate::failure::failure(
+                    "swallowtail.kimi.local_server.detachment_cancelled",
+                    "Kimi local-server turn cancellation already won operation disposition",
+                ));
+            }
+            if self.is_requested() {
+                return Ok(OperationDetachmentAcknowledgement::AlreadyRequested);
+            }
+            if self.terminal.load(Ordering::SeqCst) {
+                return Err(crate::failure::failure(
+                    "swallowtail.kimi.local_server.detachment_terminal",
+                    "Kimi local-server turn already reached local terminal state",
+                ));
+            }
+            if !self.checkpoint_ready.load(Ordering::SeqCst) {
+                return Err(crate::failure::failure(
+                    "swallowtail.kimi.local_server.detachment_checkpoint_unavailable",
+                    "Kimi local-server turn has no recoverable operation checkpoint",
+                ));
+            }
+            let already = self.requested.swap(true, Ordering::SeqCst);
+            if self.cancellation.requested.load(Ordering::SeqCst) {
+                return Err(crate::failure::failure(
+                    "swallowtail.kimi.local_server.detachment_cancelled",
+                    "Kimi local-server turn cancellation won operation disposition",
+                ));
+            }
+            let control = self
+                .cancellation
+                .control
+                .lock()
+                .expect("subscription control lock poisoned")
+                .clone();
+            control.close()?;
+            Ok(if already {
+                OperationDetachmentAcknowledgement::AlreadyRequested
+            } else {
+                OperationDetachmentAcknowledgement::Requested
+            })
+        })
+    }
+}
+
 impl CancellationControl for TurnCancellation {
     fn scope(&self) -> CancellationScope {
         CancellationScope::ActiveTurn
@@ -92,6 +157,7 @@ pub(in crate::local_server::interactive) struct KimiTurnHandle {
     pub(super) callbacks: Option<CallbackExchange>,
     pub(super) terminal: Option<BoxFuture<'static, TerminalOutcome>>,
     pub(super) cancellation: Arc<TurnCancellation>,
+    pub(super) detachment: Option<Arc<TurnDetachment>>,
     pub(super) terminal_flag: Arc<AtomicBool>,
     pub(super) active: ActiveSlot,
 }
@@ -117,13 +183,24 @@ impl TurnHandle for KimiTurnHandle {
         self.cancellation.as_ref()
     }
 
+    fn detachment(&self) -> Option<&dyn OperationDetachmentControl> {
+        self.detachment
+            .as_deref()
+            .map(|control| control as &dyn OperationDetachmentControl)
+    }
+
     fn take_terminal_outcome(&mut self) -> Option<BoxFuture<'static, TerminalOutcome>> {
         self.terminal.take()
     }
 
     fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome> {
         Box::pin(async move {
-            if !self.terminal_flag.load(Ordering::SeqCst) {
+            if !self.terminal_flag.load(Ordering::SeqCst)
+                && !self
+                    .detachment
+                    .as_ref()
+                    .is_some_and(|detachment| detachment.is_requested())
+            {
                 let _ = self.cancellation.request().await;
             }
             join(&self.active).await

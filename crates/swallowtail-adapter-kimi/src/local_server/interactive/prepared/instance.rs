@@ -1,7 +1,7 @@
 use crate::local_server::KimiLocalServerPreparedIntegration;
 use swallowtail_core::{CapabilityProfile, ConfiguredInstance, HarnessConfigurationPosture};
 
-pub(super) fn instance_with_capabilities(
+pub(in crate::local_server::interactive) fn instance_with_capabilities(
     prepared: &KimiLocalServerPreparedIntegration,
     capabilities: CapabilityProfile,
 ) -> ConfiguredInstance {

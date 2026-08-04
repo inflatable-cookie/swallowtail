@@ -1,6 +1,6 @@
 use crate::failure::failure;
 use std::sync::Arc;
-use swallowtail_core::{PreflightPlan, ResourceAccess, ResourceRepresentation, SafeDiagnostic};
+use swallowtail_core::{PreflightPlan, ResourceRepresentation, SafeDiagnostic};
 use swallowtail_runtime::{
     CleanupOutcome, CredentialLease, EndpointRef, HostServices, ResourceLease, ScopeId,
     SessionAccessPolicy, WorkingResourceRef, validate_session_resource_lease,
@@ -107,7 +107,12 @@ impl SessionAccess {
             .resolve(
                 scope,
                 resource_ref.clone(),
-                ResourceAccess::ReadWrite,
+                policy.resource_access().ok_or_else(|| {
+                    failure(
+                        "swallowtail.kimi.local_server.resource_access_missing",
+                        "Kimi local-server operation requires explicit resource access",
+                    )
+                })?,
                 ResourceRepresentation::Filesystem,
             )
             .await

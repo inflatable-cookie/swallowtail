@@ -58,3 +58,53 @@ fn profile_and_tool_options_remain_available_across_later_milestones() {
             .expect("later qualified revisions preserve profile and tool options");
     }
 }
+
+#[test]
+fn callback_bearing_sessions_reject_detachment_before_dispatch() {
+    let server = InteractiveFixtureServer::start(InteractiveScenario::Complete);
+    let host = FixtureHost::for_endpoint(server.endpoint());
+    let execution_host = id(ExecutionHostId::new, "fixture.kimi.callback-detachment");
+    let services = host.services(execution_host.clone(), false);
+    let prepared = prepare(execution_host, services, "0.29.0");
+    let error = prepared
+        .prepare_session(session_input(
+            "callback-detachment",
+            KimiLocalServerSessionConfiguration::new(KimiLocalServerPermissionMode::Manual)
+                .with_active_turn_detachment(),
+        ))
+        .expect_err("callback-bearing detachment rejects");
+    assert_eq!(
+        error.diagnostic().safe().code(),
+        "swallowtail.kimi.local_server.preparation.detachment_unsupported"
+    );
+    assert!(
+        server
+            .requests()
+            .iter()
+            .all(|request| { !request.contains("/sessions/interactive-session/prompts") })
+    );
+}
+
+#[test]
+fn unverified_newer_session_cannot_opt_into_detachment() {
+    let server =
+        InteractiveFixtureServer::start_with_version(InteractiveScenario::Complete, "0.32.0");
+    let host = FixtureHost::for_endpoint(server.endpoint());
+    let execution_host = id(ExecutionHostId::new, "fixture.kimi.newer-detachment");
+    let services = host.services(execution_host.clone(), false);
+    let prepared = prepare(execution_host, services, "0.32.0");
+    let error = prepared
+        .prepare_session(
+            session_input(
+                "newer-detachment",
+                KimiLocalServerSessionConfiguration::new(KimiLocalServerPermissionMode::Auto)
+                    .with_active_turn_detachment(),
+            )
+            .allow_unverified_newer(),
+        )
+        .expect_err("unverified newer detachment rejects");
+    assert_eq!(
+        error.diagnostic().safe().code(),
+        "swallowtail.kimi.local_server.preparation.detachment_unsupported"
+    );
+}

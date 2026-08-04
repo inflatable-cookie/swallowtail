@@ -39,6 +39,7 @@ mod process_input;
 mod process_io;
 mod provider_instance_catalogue;
 mod provider_observation;
+mod provider_operation_checkpoint;
 mod provider_session_import;
 mod provider_session_management;
 mod provider_session_operation;
@@ -168,6 +169,10 @@ pub use provider_observation::{
     DirectAttemptFinishObservation, DirectAttemptUsageObservation, ProviderFinishReason,
     ProviderObservation, QuotaObservation, QuotaState, RateLimitKind, RateLimitObservation,
     TokenUsage,
+};
+pub use provider_operation_checkpoint::{
+    PersistedProviderOperationCheckpoint, ProviderOperationCheckpoint,
+    ProviderOperationCheckpointFailure, ProviderOperationCheckpointFailureKind,
 };
 pub use provider_session_import::{
     PreparedProviderSessionCatalogueEvidence, PreparedProviderSessionImportEvidence,

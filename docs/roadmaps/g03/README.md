@@ -316,6 +316,10 @@ visible as unverified newer unless exact evidence requires rejection.
 - Contracts 022 and 048 keep read-only reconciliation separate from explicit
   inactive-only cleanup of the exact recovered session then environment; cards
   084-086 own portable vocabulary, route realization, and package acceptance
+- card 085 adds the explicit recoverable Managed Agents profile, emits both
+  persisted authorities before message dispatch, performs bounded exact
+  session/event reconciliation, and orders inactive cleanup session before
+  environment without retry or implicit interruption
 
 ## Milestones
 
@@ -357,8 +361,8 @@ visible as unverified newer unless exact evidence requires rejection.
 
 The lane is executing g03.033. Cards 083-084 removed Gemini's unsupported
 confirmed-deletion claim and added the portable waiting and recovered-resource
-cleanup kernel. Cards 085-086 now realize and accept the exact Anthropic Managed
-Agents route.
+cleanup kernel. Card 085 realizes exact Anthropic Managed Agents recovery.
+Card 086 is ready for public, docs, and extracted-package acceptance.
 
 ## Generation Boundary
 

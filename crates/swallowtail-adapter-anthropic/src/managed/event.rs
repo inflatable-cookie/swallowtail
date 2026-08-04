@@ -22,6 +22,8 @@ pub(crate) enum ManagedEventKind {
     ProviderToolUse { tool_use_id: String, name: String },
     ProviderToolResult { tool_use_id: String, failed: bool },
     CustomToolUse { name: String, input: Value },
+    UserMessage(OperationContent),
+    UserInterrupt,
     Idle(IdleReason),
     Terminated,
     ProviderError,
@@ -74,22 +76,40 @@ pub(crate) fn parse_stream(input: &str) -> Result<Vec<ManagedEvent>, RuntimeFail
 }
 
 pub(crate) fn parse_history(input: &[u8]) -> Result<Vec<ManagedEvent>, RuntimeFailure> {
+    let page = parse_history_page(input)?;
+    if page.next_page.is_some() {
+        return Err(protocol_failure("event history pagination"));
+    }
+    Ok(page.events)
+}
+
+pub(crate) struct ManagedHistoryPage {
+    pub events: Vec<ManagedEvent>,
+    pub next_page: Option<String>,
+}
+
+pub(crate) fn parse_history_page(input: &[u8]) -> Result<ManagedHistoryPage, RuntimeFailure> {
     if input.len() > MAX_STREAM_BYTES {
         return Err(protocol_failure("event history bound"));
     }
     let value: Value =
         serde_json::from_slice(input).map_err(|_| protocol_failure("event history JSON"))?;
-    if value.get("next_page").is_some_and(|page| !page.is_null()) {
-        return Err(protocol_failure("event history pagination"));
-    }
-    value
+    let next_page = match value.get("next_page") {
+        None | Some(Value::Null) => None,
+        Some(Value::String(page)) if !page.trim().is_empty() && page.len() <= 1_024 => {
+            Some(page.clone())
+        }
+        _ => return Err(protocol_failure("event history pagination")),
+    };
+    let events = value
         .get("data")
         .and_then(Value::as_array)
         .ok_or_else(|| protocol_failure("event history data"))?
         .iter()
         .cloned()
         .map(parse_value)
-        .collect()
+        .collect::<Result<Vec<_>, _>>()?;
+    Ok(ManagedHistoryPage { events, next_page })
 }
 
 pub(crate) fn reconcile(
@@ -172,11 +192,11 @@ fn parse_value(value: Value) -> Result<ManagedEvent, RuntimeFailure> {
                 .cloned()
                 .ok_or_else(|| protocol_failure("custom tool input"))?,
         },
-        "span.model_request_start"
-        | "span.model_request_end"
-        | "user.message"
-        | "user.interrupt"
-        | "user.custom_tool_result" => ManagedEventKind::Observed,
+        "span.model_request_start" | "span.model_request_end" | "user.custom_tool_result" => {
+            ManagedEventKind::Observed
+        }
+        "user.message" => ManagedEventKind::UserMessage(parse_message(&value)?),
+        "user.interrupt" => ManagedEventKind::UserInterrupt,
         _ if event_type.starts_with("agent.")
             || event_type.starts_with("session.")
             || event_type.starts_with("span.") =>

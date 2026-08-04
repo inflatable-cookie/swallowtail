@@ -83,6 +83,37 @@ pub(crate) fn parse_session(
     expected_version: u64,
     expected_model: &str,
 ) -> Result<String, RuntimeFailure> {
+    Ok(parse_session_snapshot(
+        input,
+        expected_environment_id,
+        expected_agent_id,
+        expected_version,
+        expected_model,
+    )?
+    .id)
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(crate) enum ManagedSessionStatus {
+    Running,
+    Idle,
+    Terminated,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) struct ManagedSessionSnapshot {
+    pub id: String,
+    pub status: ManagedSessionStatus,
+    pub usage: Option<TokenUsage>,
+}
+
+pub(crate) fn parse_session_snapshot(
+    input: &[u8],
+    expected_environment_id: &str,
+    expected_agent_id: &str,
+    expected_version: u64,
+    expected_model: &str,
+) -> Result<ManagedSessionSnapshot, RuntimeFailure> {
     let value = response(input, "session response")?;
     let id = required_text(&value, "/id", "session identity")?;
     let agent = value
@@ -115,7 +146,14 @@ pub(crate) fn parse_session(
     {
         return Err(protocol_failure("session binding"));
     }
-    Ok(id)
+    let status = match value.get("status").and_then(Value::as_str) {
+        Some("running") => ManagedSessionStatus::Running,
+        Some("idle") => ManagedSessionStatus::Idle,
+        Some("terminated") => ManagedSessionStatus::Terminated,
+        _ => return Err(protocol_failure("session status")),
+    };
+    let usage = value.get("usage").map(parse_usage).transpose()?;
+    Ok(ManagedSessionSnapshot { id, status, usage })
 }
 
 pub(crate) fn parse_session_with_tools(
@@ -161,6 +199,10 @@ pub(crate) fn parse_session_usage(input: &[u8]) -> Result<TokenUsage, RuntimeFai
     let usage = value
         .get("usage")
         .ok_or_else(|| protocol_failure("session usage"))?;
+    parse_usage(usage)
+}
+
+fn parse_usage(usage: &Value) -> Result<TokenUsage, RuntimeFailure> {
     let input = usage.get("input_tokens").and_then(Value::as_u64);
     let output = usage.get("output_tokens").and_then(Value::as_u64);
     if input.is_none() && output.is_none() {

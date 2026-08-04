@@ -90,7 +90,7 @@ pub fn anthropic_managed_instance(
             InstancePolicyId::new,
             "managed-resource-free-delete-on-close",
         ),
-        CapabilityProfile::new(anthropic_managed_capabilities()),
+        CapabilityProfile::new(anthropic_managed_route_capabilities()),
     )
     .with_provider_agent(provider_agent)
     .with_interface_versions([anthropic_managed_facade_binding()])
@@ -108,7 +108,7 @@ pub fn anthropic_managed_model_route(
         revision,
         instance_id,
         model_id,
-        CapabilityProfile::new(anthropic_managed_capabilities()),
+        CapabilityProfile::new(anthropic_managed_route_capabilities()),
     )
     .with_provider_id(id(ProviderId::new, "anthropic"))
 }
@@ -182,6 +182,58 @@ fn anthropic_managed_capabilities() -> Vec<CapabilityRequirement> {
             .expect("managed-agent activity is available"),
     );
     capabilities
+}
+
+pub(crate) fn anthropic_managed_recoverable_requirements(
+    host: ExecutionHostId,
+) -> OperationRequirements {
+    let mut capabilities = anthropic_managed_capabilities();
+    capabilities.extend(recovery_capabilities());
+    OperationRequirements::new(
+        ExecutionLayer::HarnessInteraction,
+        OperationShape::StructuredRun,
+        DriverRole::StructuredRun,
+        host,
+        AccessRequirement::new(id(
+            AccessProfileId::new,
+            ANTHROPIC_MANAGED_ACCESS_PROFILE_ID,
+        ))
+        .with_credential_states([CredentialState::Ready])
+        .with_entitlement_states([EntitlementState::Available])
+        .with_endpoint_authorizations([EndpointAuthorization::Allowed])
+        .with_runtime_readiness([RuntimeReadiness::Ready])
+        .with_support_authorities([SupportAuthority::ProviderSupported]),
+    )
+    .with_ownership_modes([InstanceOwnership::ExternalAttached])
+    .with_host_services([
+        HostServiceKind::Task,
+        HostServiceKind::BlockingWork,
+        HostServiceKind::Time,
+        HostServiceKind::Network,
+        HostServiceKind::Credential,
+    ])
+    .with_capabilities(capabilities)
+    .with_interface_versions([anthropic_managed_facade_binding()])
+    .require_model_route()
+}
+
+fn anthropic_managed_route_capabilities() -> Vec<CapabilityRequirement> {
+    let mut capabilities = anthropic_managed_capabilities();
+    capabilities.extend(recovery_capabilities());
+    capabilities
+}
+
+fn recovery_capabilities() -> [CapabilityRequirement; 2] {
+    [
+        CapabilityRequirement::new(Capability::ProviderRunReconciliation, []),
+        CapabilityRequirement::new(
+            Capability::ProviderRecoveredResourceCleanup,
+            [
+                CapabilityConstraint::OwnedRemoteResource(OwnedRemoteResourceKind::Environment),
+                CapabilityConstraint::OwnedRemoteResource(OwnedRemoteResourceKind::Session),
+            ],
+        ),
+    ]
 }
 
 fn id<T, E>(constructor: impl FnOnce(String) -> Result<T, E>, value: &str) -> T

@@ -29,11 +29,23 @@ fn validate_run(
         Capability::StreamReattachment,
         Capability::ObservableActivity,
     ];
+    let recovery = [
+        Capability::ProviderRunReconciliation,
+        Capability::ProviderRecoveredResourceCleanup,
+    ];
+    let recovery_count = recovery
+        .into_iter()
+        .filter(|capability| requires(plan, *capability))
+        .count();
     if required.into_iter().any(|capability| !requires(plan, capability))
+        || !matches!(recovery_count, 0 | 2)
         || plan
             .requirements()
             .capabilities()
-            .any(|requirement| !required.contains(&requirement.capability()))
+            .any(|requirement| {
+                !required.contains(&requirement.capability())
+                    && !recovery.contains(&requirement.capability())
+            })
     {
         return Err(binding_failure("capability requirements"));
     }
@@ -108,6 +120,9 @@ fn validate_constraints(plan: &PreflightPlan) -> Result<(), RuntimeFailure> {
             Capability::StreamReattachment => constraints == [&reattachment],
             Capability::ObservableActivity => {
                 constraints == activity.constraints().collect::<Vec<_>>()
+            }
+            Capability::ProviderRecoveredResourceCleanup => {
+                constraints == deletion_constraints.iter().collect::<Vec<_>>()
             }
             _ => constraints.is_empty(),
         }

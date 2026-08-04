@@ -59,10 +59,16 @@ pub(super) fn model_route(
 pub(super) fn build_plan(
     prepared: &AnthropicManagedPreparedIntegration,
     route: &ModelRoute,
+    cross_process_recovery: bool,
 ) -> Result<PreflightPlan, PreparationFailure> {
     let descriptor = crate::anthropic_managed_agent_descriptor();
-    let requirements =
-        crate::anthropic_managed_requirements(prepared.instance().execution_host_id().clone());
+    let requirements = if cross_process_recovery {
+        crate::managed_selection::anthropic_managed_recoverable_requirements(
+            prepared.instance().execution_host_id().clone(),
+        )
+    } else {
+        crate::anthropic_managed_requirements(prepared.instance().execution_host_id().clone())
+    };
     preflight(
         &PreflightContext::new(
             &descriptor,

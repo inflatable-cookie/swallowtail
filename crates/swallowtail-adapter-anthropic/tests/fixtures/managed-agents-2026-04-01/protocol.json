@@ -9,6 +9,10 @@
   "preview_events_accepted": false,
   "history_limit": 1000,
   "maximum_reconciliations": 1,
+  "maximum_cross_process_recovery_pages": 8,
+  "maximum_cross_process_recovery_events": 2048,
+  "cross_process_records": ["run_checkpoint", "owned_resource_cleanup_binding"],
+  "recovered_cleanup_requires_inactive": true,
   "retention": "durable_allowed",
   "provider_recovery": "managed_allowed",
   "owned_resources": ["environment", "session"],
@@ -23,4 +27,3 @@
     }
   }
 }
-

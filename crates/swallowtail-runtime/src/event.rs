@@ -1,6 +1,7 @@
 use crate::{
     ActivityObservation, CallbackId, DirectToolCallId, HarnessUiDisplay, OperationContent,
-    ProviderObservation, ProviderOperationCheckpoint, ProviderRunCheckpoint,
+    ProviderObservation, ProviderOperationCheckpoint, ProviderRecoveredResourceCleanupBinding,
+    ProviderRunCheckpoint,
 };
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -53,6 +54,7 @@ pub struct RuntimeEvent {
     content: Option<OperationContent>,
     reconciliation_checkpoint: Option<ProviderOperationCheckpoint>,
     run_reconciliation_checkpoint: Option<ProviderRunCheckpoint>,
+    recovered_resource_cleanup_binding: Option<ProviderRecoveredResourceCleanupBinding>,
 }
 
 impl RuntimeEvent {
@@ -64,6 +66,7 @@ impl RuntimeEvent {
             content: None,
             reconciliation_checkpoint: None,
             run_reconciliation_checkpoint: None,
+            recovered_resource_cleanup_binding: None,
         }
     }
 
@@ -75,6 +78,7 @@ impl RuntimeEvent {
             content: Some(content),
             reconciliation_checkpoint: None,
             run_reconciliation_checkpoint: None,
+            recovered_resource_cleanup_binding: None,
         }
     }
 
@@ -90,6 +94,15 @@ impl RuntimeEvent {
     #[must_use]
     pub fn with_run_reconciliation_checkpoint(mut self, checkpoint: ProviderRunCheckpoint) -> Self {
         self.run_reconciliation_checkpoint = Some(checkpoint);
+        self
+    }
+
+    #[must_use]
+    pub fn with_recovered_resource_cleanup_binding(
+        mut self,
+        binding: ProviderRecoveredResourceCleanupBinding,
+    ) -> Self {
+        self.recovered_resource_cleanup_binding = Some(binding);
         self
     }
 
@@ -119,8 +132,17 @@ impl RuntimeEvent {
     }
 
     #[must_use]
+    pub const fn recovered_resource_cleanup_binding(
+        &self,
+    ) -> Option<&ProviderRecoveredResourceCleanupBinding> {
+        self.recovered_resource_cleanup_binding.as_ref()
+    }
+
+    #[must_use]
     pub const fn delivery(&self) -> EventDelivery {
-        if self.reconciliation_checkpoint.is_some() || self.run_reconciliation_checkpoint.is_some()
+        if self.reconciliation_checkpoint.is_some()
+            || self.run_reconciliation_checkpoint.is_some()
+            || self.recovered_resource_cleanup_binding.is_some()
         {
             EventDelivery::Semantic
         } else {

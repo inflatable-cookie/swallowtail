@@ -1,6 +1,7 @@
 # Claude Managed Agents Fixture Corpus
 
 Frozen: 2026-07-21
+Recovery extension: 2026-08-04
 
 Authority:
 
@@ -30,3 +31,9 @@ shape governs; an older curl example that used `interrupt` is excluded.
 tool, MCP tool, custom tool, and status records. Built-in and MCP execution is
 provider-owned. Custom tool use remains a consumer callback. The fixture does
 not enable or infer best-effort preview lifecycle.
+
+The 2026-08-04 recovery extension adds synthetic complete, active, and two-page
+persisted histories. It freezes separate route-bound checkpoint and cleanup
+records, read-only session/event reconciliation, inactive-only cleanup,
+session-before-environment deletion, and preservation after unconfirmed
+session deletion. It adds no live capture or account authority.

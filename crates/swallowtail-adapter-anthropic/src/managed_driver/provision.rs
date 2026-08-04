@@ -2,6 +2,8 @@
 async fn provision(
     transport: &ManagedCurlTransport,
     scope: &ScopeId,
+    plan: &PreflightPlan,
+    runtime_run_id: &RuntimeRunId,
     agent: &ProviderAgentBinding,
     agent_version: u64,
     model: &str,
@@ -11,7 +13,8 @@ async fn provision(
     endpoint: &str,
     credential: &[u8],
     resources: &mut OwnedResources,
-    headers: &mut Vec<BTreeMap<String, String>>,
+    events: &swallowtail_runtime::RuntimeEventSender,
+    sequence: &mut u64,
 ) -> Result<(ManagedSubscription, Arc<AtomicBool>), RuntimeFailure> {
     let response = request_before_deadline(
         transport,
@@ -24,7 +27,7 @@ async fn provision(
     )
     .await?;
     require_success(&response, "agent retrieval")?;
-    headers.push(response.headers);
+    emit_headers(events, sequence, &response.headers)?;
     crate::managed::validate_agent(
         &response.body,
         agent.id().as_str(),
@@ -43,7 +46,7 @@ async fn provision(
     )
     .await?;
     require_success(&response, "environment creation")?;
-    headers.push(response.headers);
+    emit_headers(events, sequence, &response.headers)?;
     resources.environment_id = Some(crate::managed::parse_environment(&response.body)?);
 
     let tools = request.tools().collect::<Vec<_>>();
@@ -64,7 +67,7 @@ async fn provision(
     )
     .await?;
     require_success(&response, "session creation")?;
-    headers.push(response.headers);
+    emit_headers(events, sequence, &response.headers)?;
     resources.session_id = Some(crate::managed::parse_session_with_tools(
         &response.body,
         resources.environment_id.as_deref().expect("environment exists"),
@@ -73,6 +76,24 @@ async fn provision(
         model,
         &tools,
     )?);
+
+    if requires(plan, Capability::ProviderRunReconciliation) {
+        let (checkpoint, cleanup) = crate::managed_recovery::records(
+            plan,
+            runtime_run_id.clone(),
+            resources
+                .environment_id
+                .as_deref()
+                .expect("environment exists"),
+            resources.session_id.as_deref().expect("session exists"),
+        )?;
+        events.send(
+            RuntimeEvent::new(*sequence, RuntimeEventKind::Progress)
+                .with_run_reconciliation_checkpoint(checkpoint)
+                .with_recovered_resource_cleanup_binding(cleanup),
+        )?;
+        *sequence += 1;
+    }
 
     let response = request_before_deadline(
         transport,
@@ -88,7 +109,7 @@ async fn provision(
     )
     .await?;
     require_success(&response, "message submission")?;
-    headers.push(response.headers);
+    emit_headers(events, sequence, &response.headers)?;
 
     let connection = Arc::new(AtomicBool::new(false));
     let subscription = transport.subscribe(

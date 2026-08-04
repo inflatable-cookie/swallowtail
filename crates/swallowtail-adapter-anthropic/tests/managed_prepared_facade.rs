@@ -2,13 +2,14 @@ mod support;
 
 use futures_executor::block_on;
 use futures_util::StreamExt;
-use std::num::NonZeroU32;
+use std::num::{NonZeroU32, NonZeroU64};
 use std::sync::Arc;
 use support::{ManagedFixtureServer, ManagedStreamFixture, ThreadServices};
 use swallowtail_adapter_anthropic::{
     ANTHROPIC_MANAGED_ACCESS_PROFILE_ID, ANTHROPIC_MANAGED_FACADE_REVISION,
     AnthropicManagedAgentRunInput, AnthropicManagedModelSelection,
-    AnthropicManagedPreparationInput, anthropic_managed_agent_descriptor,
+    AnthropicManagedPreparationInput, AnthropicManagedRecoveredCleanupInput,
+    AnthropicManagedRunReconciliationInput, anthropic_managed_agent_descriptor,
     anthropic_managed_requirements, prepare_anthropic_managed_agent,
 };
 use swallowtail_core::{
@@ -19,15 +20,15 @@ use swallowtail_core::{
     InstanceRevision, InstanceTargetRef, InterfaceCompatibilityAssessment, ModelId, ModelRoute,
     ModelRouteId, ModelRouteRevision, ObservableActivityAvailability, OperationRequirements,
     OperationShape, OwnedRemoteResourceKind, PreflightContext, ProtocolFacadeId,
-    ProviderAgentBinding, ProviderAgentId, ProviderAgentVersion, ProviderId, RuntimeReadiness,
-    SupportAuthority, preflight,
+    ProviderAgentBinding, ProviderAgentId, ProviderAgentVersion, ProviderId,
+    ProviderRecoveredResourceCleanupEffect, RuntimeReadiness, SupportAuthority, preflight,
 };
 use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{
-    BlockingWorkService, CallbackPayload, CallbackResponse, CallbackResult, CleanupOutcome,
-    CredentialRef, CredentialService, Deadline, EndpointRef, HostServices, MonotonicInstant,
-    NetworkPolicyService, OperationContent, OperationPolicy, PreparedAccessEvidence,
-    ProviderObservation, ProviderRecoveryPolicy, ProviderRetentionPolicy,
+    BlockingWorkService, CallbackPayload, CallbackResponse, CallbackResult, CancellationControl,
+    CleanupOutcome, CredentialRef, CredentialService, Deadline, EndpointRef, HostServices,
+    InterruptedRunState, MonotonicInstant, NetworkPolicyService, OperationContent, OperationPolicy,
+    PreparedAccessEvidence, ProviderObservation, ProviderRecoveryPolicy, ProviderRetentionPolicy,
     RemoteResourceDeletionOutcome, RequestId, SchemaDocument, ScopedTaskService,
     StreamReattachmentPolicy, StructuredRunRequest, TerminalStatus, TimeService, ToolDeclaration,
 };
@@ -178,6 +179,8 @@ fn prepared_managed_recovery_and_callback_retain_authoritative_correlation() {
     assert_eq!(callback.server.state().session_creations, 1);
     assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
 }
+
+include!("managed_driver/recovery_tests.rs");
 
 #[test]
 fn prepared_interrupt_deletes_owned_resources_before_credential_release() {

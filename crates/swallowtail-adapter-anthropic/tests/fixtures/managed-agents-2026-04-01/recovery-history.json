@@ -1,0 +1,10 @@
+{
+  "data": [
+    {"id":"recovery_user","type":"user.message","processed_at":"2026-08-04T09:00:00Z","content":[{"type":"text","text":"Return the fixture summary."}]},
+    {"id":"recovery_running","type":"session.status_running","processed_at":"2026-08-04T09:00:01Z"},
+    {"id":"recovery_output","type":"agent.message","processed_at":"2026-08-04T09:00:02Z","content":[{"type":"text","text":"Recovered fixture complete."}]},
+    {"id":"recovery_idle","type":"session.status_idle","processed_at":"2026-08-04T09:00:03Z","stop_reason":{"type":"end_turn"}}
+  ],
+  "next_page": null,
+  "prev_page": null
+}

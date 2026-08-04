@@ -26,7 +26,7 @@ impl AnthropicManagedModelSelection {
         }
     }
 
-    pub(super) fn into_parts(self) -> (ModelRouteId, ModelRouteRevision, ModelId) {
+    pub(crate) fn into_parts(self) -> (ModelRouteId, ModelRouteRevision, ModelId) {
         (self.route_id, self.route_revision, self.model_id)
     }
 }
@@ -41,6 +41,7 @@ pub struct AnthropicManagedAgentRunInput {
     provider_retention: ProviderRetentionPolicy,
     provider_recovery: ProviderRecoveryPolicy,
     stream_reattachment: StreamReattachmentPolicy,
+    cross_process_recovery: bool,
 }
 
 impl AnthropicManagedAgentRunInput {
@@ -65,7 +66,16 @@ impl AnthropicManagedAgentRunInput {
             provider_retention,
             provider_recovery,
             stream_reattachment,
+            cross_process_recovery: false,
         }
+    }
+
+    /// Emits separately persisted observation and cleanup authority before the
+    /// first provider message is submitted.
+    #[must_use]
+    pub const fn with_cross_process_recovery(mut self) -> Self {
+        self.cross_process_recovery = true;
+        self
     }
 
     #[must_use]
@@ -99,6 +109,7 @@ impl AnthropicManagedAgentRunInput {
         ProviderRetentionPolicy,
         ProviderRecoveryPolicy,
         StreamReattachmentPolicy,
+        bool,
     ) {
         (
             self.request_id,
@@ -109,6 +120,7 @@ impl AnthropicManagedAgentRunInput {
             self.provider_retention,
             self.provider_recovery,
             self.stream_reattachment,
+            self.cross_process_recovery,
         )
     }
 }

@@ -8,11 +8,13 @@ mod failure;
 mod managed;
 mod managed_activity;
 mod managed_driver;
+mod managed_recovery;
 mod managed_selection;
 mod managed_transport;
 mod prepared;
 mod prepared_managed;
 mod prepared_managed_profile;
+mod prepared_managed_recovery;
 mod prepared_profile;
 mod protocol;
 mod selection;
@@ -37,6 +39,10 @@ pub use prepared_managed::{
 pub use prepared_managed_profile::{
     AnthropicManagedAgentRunInput, AnthropicManagedModelSelection,
     AnthropicManagedPreparedEvidence, AnthropicPreparedManagedAgentRun,
+};
+pub use prepared_managed_recovery::{
+    AnthropicManagedRecoveredCleanupInput, AnthropicManagedRunReconciliationInput,
+    AnthropicPreparedManagedRecoveredCleanup, AnthropicPreparedManagedRunReconciliation,
 };
 pub use prepared_profile::{
     AnthropicCatalogueProfileInput, AnthropicInferenceAttemptInput, AnthropicModelSelection,

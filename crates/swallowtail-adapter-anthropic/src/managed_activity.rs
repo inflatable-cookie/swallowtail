@@ -81,6 +81,8 @@ impl ManagedActivityProjection {
             ManagedEventKind::Running
             | ManagedEventKind::Rescheduled
             | ManagedEventKind::Observed
+            | ManagedEventKind::UserMessage(_)
+            | ManagedEventKind::UserInterrupt
             | ManagedEventKind::Idle(_) => self.completed(
                 event.id(),
                 ActivityKind::Task,

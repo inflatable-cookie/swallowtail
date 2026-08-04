@@ -13,9 +13,8 @@ shape.
 
 ## Next Task
 
-Execute g03 card 085: emit Anthropic Managed Agents recovery records before
-message submission, then realize bounded exact-run reconciliation and inactive-
-only recovered cleanup through separate roles.
+Execute g03 card 086: close Anthropic Managed Agents recovery through public
+guidance, route truth, focused validation, docs QA, and extracted-package proof.
 
 ## Index
 

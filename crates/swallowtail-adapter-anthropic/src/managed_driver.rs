@@ -14,15 +14,21 @@ use swallowtail_core::{
     CapabilityConstraint, CredentialMechanism, DriverDescriptor, DriverRole, ExecutionLayer,
     ExternalNetworkPolicy, ExternalSearchPolicy, HostServiceKind, IntegrationFamilyId,
     OperationShape, OwnedRemoteResourceKind, PreflightPlan, ProviderAgentBinding,
-    ProviderRequestRef, RunRef, SafeDiagnostic, TransportFamilyId,
+    ProviderRecoveredResourceCleanupEffect, ProviderRequestRef, RunRef, SafeDiagnostic,
+    TransportFamilyId,
 };
 use swallowtail_runtime::{
     BoxCallbackStream, BoxEventStream, BoxFuture, CallbackAbandonment, CallbackExchange,
     CallbackFailureKind, CallbackId, CallbackPayload, CallbackRequest, CallbackResponder,
     CallbackResponse, CallbackResult, CancellationAcknowledgement, CancellationControl,
     CleanupOutcome, CredentialLease, Deadline, DeadlineObservation, EndpointRef, HostServices,
-    JoinedTask, OperationContent, ProviderCancellationOutcome, ProviderExecutionPolicy,
-    ProviderObservation, ProviderRecoveryPolicy, ProviderRetentionPolicy, RateLimitKind,
+    ImmediateCancellation, InterruptedRunState, JoinedTask, OperationContent,
+    ProviderCancellationOutcome, ProviderExecutionPolicy, ProviderObservation,
+    ProviderRecoveredResourceCleanupDriver, ProviderRecoveredResourceCleanupOutcome,
+    ProviderRecoveredResourceCleanupPlan, ProviderRecoveredResourceCleanupRequest,
+    ProviderRecoveryPolicy, ProviderRetentionPolicy, ProviderRunReconciliationDriver,
+    ProviderRunReconciliationObservation, ProviderRunReconciliationOutcome,
+    ProviderRunReconciliationPlan, ProviderRunReconciliationRequest, RateLimitKind,
     RateLimitObservation, RemoteResourceDeletionOutcome, RequestId, RunHandle, RuntimeEvent,
     RuntimeEventKind, RuntimeFailure, RuntimeRunId, ScopeId, StreamReattachmentPolicy,
     StructuredRunDriver, StructuredRunRequest, TerminalOutcome, TerminalStatus,
@@ -74,13 +80,39 @@ pub fn anthropic_managed_agent_descriptor() -> DriverDescriptor {
         IntegrationFamilyId::new("anthropic").expect("static family id is valid"),
         TransportFamilyId::new("https-sse-managed-agent").expect("static transport id is valid"),
     )
-    .with_roles([DriverRole::StructuredRun])
+    .with_roles([
+        DriverRole::StructuredRun,
+        DriverRole::ProviderRunReconciliation,
+        DriverRole::ProviderRecoveredResourceCleanup,
+    ])
     .with_execution_layers([ExecutionLayer::HarnessInteraction])
-    .with_operation_shapes([OperationShape::StructuredRun])
+    .with_operation_shapes([
+        OperationShape::StructuredRun,
+        OperationShape::ProviderRunReconciliation,
+        OperationShape::ProviderRecoveredResourceCleanup,
+    ])
     .with_required_host_services(
         DriverRole::StructuredRun,
         [
             HostServiceKind::Task,
+            HostServiceKind::BlockingWork,
+            HostServiceKind::Time,
+            HostServiceKind::Network,
+            HostServiceKind::Credential,
+        ],
+    )
+    .with_required_host_services(
+        DriverRole::ProviderRunReconciliation,
+        [
+            HostServiceKind::BlockingWork,
+            HostServiceKind::Time,
+            HostServiceKind::Network,
+            HostServiceKind::Credential,
+        ],
+    )
+    .with_required_host_services(
+        DriverRole::ProviderRecoveredResourceCleanup,
+        [
             HostServiceKind::BlockingWork,
             HostServiceKind::Time,
             HostServiceKind::Network,
@@ -129,3 +161,4 @@ include!("managed_driver/provision.rs");
 include!("managed_driver/observations.rs");
 include!("managed_driver/run.rs");
 include!("managed_driver/pump.rs");
+include!("managed_driver/recovery.rs");

@@ -74,6 +74,7 @@ impl AnthropicManagedPreparedIntegration {
             provider_retention,
             provider_recovery,
             stream_reattachment,
+            cross_process_recovery,
         ) = input.into_parts();
         if provider_retention != ProviderRetentionPolicy::DurableAllowed {
             return Err(failure(
@@ -106,7 +107,7 @@ impl AnthropicManagedPreparedIntegration {
             ));
         }
         let route = model_route(self, model);
-        let plan = build_plan(self, &route)?;
+        let plan = build_plan(self, &route, cross_process_recovery)?;
         let policy = OperationPolicy::offline()
             .with_provider_retention(provider_retention)
             .with_provider_recovery(provider_recovery)

@@ -1,6 +1,6 @@
 # 086 Anthropic Recovery Prepared And Package Acceptance
 
-Status: planned
+Status: ready
 Owner: Tom
 Created: 2026-08-04
 Milestone: `../033-anthropic-managed-run-reconciliation-and-recovered-cleanup.md`

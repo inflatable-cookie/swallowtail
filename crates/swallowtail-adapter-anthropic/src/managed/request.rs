@@ -71,13 +71,18 @@ impl Request {
     }
 
     pub(crate) fn history(session_id: &str) -> Self {
-        Self::get(
-            format!("/v1/sessions/{session_id}/events"),
-            vec![
-                ("limit".to_owned(), "1000".to_owned()),
-                ("order".to_owned(), "asc".to_owned()),
-            ],
-        )
+        Self::history_page(session_id, None)
+    }
+
+    pub(crate) fn history_page(session_id: &str, cursor: Option<&str>) -> Self {
+        let mut query = vec![
+            ("limit".to_owned(), "1000".to_owned()),
+            ("order".to_owned(), "asc".to_owned()),
+        ];
+        if let Some(cursor) = cursor {
+            query.push(("page".to_owned(), cursor.to_owned()));
+        }
+        Self::get(format!("/v1/sessions/{session_id}/events"), query)
     }
 
     pub(crate) fn message(session_id: &str, content: &OperationContent) -> Self {

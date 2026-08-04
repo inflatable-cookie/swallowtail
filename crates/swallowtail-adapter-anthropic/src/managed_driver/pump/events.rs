@@ -31,6 +31,8 @@ fn apply_event(
         | ManagedEventKind::ProviderToolUse { .. }
         | ManagedEventKind::ProviderToolResult { .. }
         | ManagedEventKind::Observed
+        | ManagedEventKind::UserMessage(_)
+        | ManagedEventKind::UserInterrupt
         | ManagedEventKind::Unknown(_) => Ok(EventAction::Continue),
         ManagedEventKind::Message(content) => {
             output.push_str(content.as_str());

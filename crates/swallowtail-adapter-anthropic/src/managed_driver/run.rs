@@ -25,14 +25,18 @@ impl StructuredRunDriver for AnthropicManagedAgentDriver {
             ))
             .map_err(|_| binding_failure("runtime run identity"))?;
             let scope = operation_scope(request.request_id().as_str())?;
+            let (event_sender, event_stream) = runtime_event_channel(EVENT_CAPACITY)?;
+            event_sender.send(RuntimeEvent::new(0, RuntimeEventKind::Started))?;
+            let mut sequence = 1;
             let mut access = ManagedAccessLeases::acquire(&plan, scope.clone(), &services).await?;
             let endpoint = access.endpoint.clone();
             let credential = ManagedSecret(access.secret()?.to_vec());
             let mut resources = OwnedResources::default();
-            let mut setup_headers = Vec::new();
             let setup = provision(
                 &self.transport,
                 &scope,
+                &plan,
+                &run_id,
                 &agent,
                 agent_version,
                 &model,
@@ -42,7 +46,8 @@ impl StructuredRunDriver for AnthropicManagedAgentDriver {
                 &endpoint,
                 &credential.0,
                 &mut resources,
-                &mut setup_headers,
+                &event_sender,
+                &mut sequence,
             )
             .await;
             let (subscription, connection) = match setup {
@@ -61,12 +66,6 @@ impl StructuredRunDriver for AnthropicManagedAgentDriver {
                     return Err(error);
                 }
             };
-            let (event_sender, event_stream) = runtime_event_channel(EVENT_CAPACITY)?;
-            event_sender.send(RuntimeEvent::new(0, RuntimeEventKind::Started))?;
-            let mut sequence = 1;
-            for headers in setup_headers {
-                emit_headers(&event_sender, &mut sequence, &headers)?;
-            }
             let (callback_hub, callback_exchange) = ManagedCallbackHub::new();
             let declared_tools = request
                 .tools()

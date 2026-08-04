@@ -6,7 +6,7 @@ Created: 2026-08-04
 Depends on: g03.032
 Vision tags: provider continuity, exact recovery, managed resource cleanup
 Contract refs: 021-022, 038, 042, 048
-Planning state: cards 083-084 completed; card 085 ready; card 086 planned
+Planning state: cards 083-085 completed; card 086 ready
 
 ## Problem
 
@@ -25,9 +25,9 @@ observation, callback authority, interruption, or destructive cleanup.
 
 - [x] remove the unsupported Gemini `HistoryRemoved` confirmation claim
 - [x] add portable waiting-state and exact recovered-resource cleanup records
-- [ ] reconcile one exact Anthropic run through bounded session/event reads
-- [ ] clean exact inactive recovered resources without implicit interruption
-- [ ] preserve ordinary Managed Agents delete-on-close behavior
+- [x] reconcile one exact Anthropic run through bounded session/event reads
+- [x] clean exact inactive recovered resources without implicit interruption
+- [x] preserve ordinary Managed Agents delete-on-close behavior
 
 ## Execution Plan
 
@@ -35,7 +35,7 @@ observation, callback authority, interruption, or destructive cleanup.
   prepared evidence, tests, and public route claims
 - [x] card 084: add portable run waiting state plus bounded persisted
   owned-resource cleanup binding, role, outcome, and conformance
-- [ ] card 085: emit Anthropic checkpoints and cleanup bindings before work can
+- [x] card 085: emit Anthropic checkpoints and cleanup bindings before work can
   be lost; realize exact session/event reconciliation and recovered cleanup
 - [ ] card 086: close prepared profiles, deterministic corpus, public guidance,
   focused validation, and extracted-package proof
@@ -53,18 +53,19 @@ observation, callback authority, interruption, or destructive cleanup.
 
 ## Acceptance Criteria
 
-- [ ] Gemini no longer reports deletion truth from a stateful list operation
+- [x] Gemini no longer reports deletion truth from a stateful list operation
 - [x] checkpoint and cleanup records restore only against the exact prepared route
-- [ ] Anthropic active, waiting, completed, failed, cancelled, and unknown
+- [x] Anthropic active, waiting, completed, failed, cancelled, and unknown
   mappings follow exact ordered provider evidence
 - [ ] incomplete, foreign, stale, oversized, or contradictory history fails closed
-- [ ] recovered cleanup deletes only an exact inactive session then environment
-- [ ] ordinary run cleanup and credential-release ordering remain unchanged
+- [x] recovered cleanup deletes only an exact inactive session then environment
+- [x] ordinary run cleanup and credential-release ordering remain unchanged
 - [ ] focused and affected-package validation pass
 
 ## Lane Runway
 
 Cards 083-084 removed the false Gemini claim and realized the portable cleanup
-kernel. Cards 085-086 now realize and accept the selected Anthropic mapping.
+kernel. Card 085 realizes the selected Anthropic mapping. Card 086 owns broader
+public guidance, route truth, docs, and extracted-package acceptance.
 The next planning checkpoint returns to g03 compatibility evidence after
 package acceptance.

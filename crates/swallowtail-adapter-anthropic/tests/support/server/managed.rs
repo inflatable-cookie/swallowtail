@@ -39,6 +39,18 @@ const MANAGED_PROVIDER_FAILURE: &str = include_str!(concat!(
 const MANAGED_HISTORY: &str = include_str!(concat!(
     "../../fixtures/managed-agents-2026-04-01/history.json"
 ));
+const MANAGED_RECOVERY_HISTORY: &str = include_str!(concat!(
+    "../../fixtures/managed-agents-2026-04-01/recovery-history.json"
+));
+const MANAGED_RECOVERY_HISTORY_PAGE_1: &str = include_str!(concat!(
+    "../../fixtures/managed-agents-2026-04-01/recovery-history-page-1.json"
+));
+const MANAGED_RECOVERY_HISTORY_PAGE_2: &str = include_str!(concat!(
+    "../../fixtures/managed-agents-2026-04-01/recovery-history-page-2.json"
+));
+const MANAGED_RECOVERY_ACTIVE_HISTORY: &str = include_str!(concat!(
+    "../../fixtures/managed-agents-2026-04-01/recovery-active-history.json"
+));
 const MANAGED_DELETE_SESSION: &str = include_str!(concat!(
     "../../fixtures/managed-agents-2026-04-01/delete-session.json"
 ));
@@ -67,6 +79,10 @@ pub enum ManagedStreamFixture {
     ProviderFailure,
     WaitForInterrupt,
     SessionDeleteFailure,
+    Recovered,
+    RecoveredPaginated,
+    RecoveredActive,
+    RecoveredSessionDeleteFailure,
 }
 
 pub struct ManagedFixtureServer {
@@ -87,7 +103,21 @@ impl ManagedFixtureServer {
         let listener = TcpListener::bind("127.0.0.1:0").expect("managed fixture listener binds");
         let endpoint = format!("http://{}", listener.local_addr().expect("address exists"));
         let requests = Arc::new(Mutex::new(Vec::new()));
-        let state = Arc::new(Mutex::new(ManagedFixtureState::default()));
+        let initial_state = if matches!(
+            fixture,
+            ManagedStreamFixture::Recovered | ManagedStreamFixture::RecoveredPaginated
+                | ManagedStreamFixture::RecoveredActive
+                | ManagedStreamFixture::RecoveredSessionDeleteFailure
+        ) {
+            ManagedFixtureState {
+                environment_created: true,
+                session_creations: 1,
+                ..ManagedFixtureState::default()
+            }
+        } else {
+            ManagedFixtureState::default()
+        };
+        let state = Arc::new(Mutex::new(initial_state));
         let stop = Arc::new(AtomicBool::new(false));
         let server_requests = Arc::clone(&requests);
         let server_state = Arc::clone(&state);
@@ -186,7 +216,14 @@ fn respond_managed(
             }
         }
         ("GET", "/v1/sessions/session_fixture") if state.session_creations == 1 => {
-            respond_json(stream, 200, MANAGED_SESSION)
+            if fixture == ManagedStreamFixture::RecoveredActive {
+                let mut response: serde_json::Value =
+                    serde_json::from_str(MANAGED_SESSION).expect("session fixture is JSON");
+                response["status"] = serde_json::json!("running");
+                respond_json(stream, 200, &response.to_string());
+            } else {
+                respond_json(stream, 200, MANAGED_SESSION)
+            }
         }
         ("GET", "/v1/sessions/session_fixture/events/stream") if state.session_creations == 1 => {
             state.stream_attachments += 1;
@@ -209,12 +246,39 @@ fn respond_managed(
                 }
                 ManagedStreamFixture::WaitForInterrupt => respond_managed_wait(stream),
                 ManagedStreamFixture::SessionDeleteFailure => respond_sse(stream, MANAGED_SUCCESS),
+                ManagedStreamFixture::Recovered | ManagedStreamFixture::RecoveredPaginated => {
+                    respond_sse(stream, MANAGED_SUCCESS)
+                }
+                ManagedStreamFixture::RecoveredActive
+                | ManagedStreamFixture::RecoveredSessionDeleteFailure => {
+                    respond_sse(stream, MANAGED_SUCCESS)
+                }
             }
         }
         ("GET", "/v1/sessions/session_fixture/events?limit=1000&order=asc")
             if state.session_creations == 1 =>
         {
-            respond_json(stream, 200, MANAGED_HISTORY)
+            match fixture {
+                ManagedStreamFixture::Recovered => {
+                    respond_json(stream, 200, MANAGED_RECOVERY_HISTORY)
+                }
+                ManagedStreamFixture::RecoveredPaginated => {
+                    respond_json(stream, 200, MANAGED_RECOVERY_HISTORY_PAGE_1)
+                }
+                ManagedStreamFixture::RecoveredActive => {
+                    respond_json(stream, 200, MANAGED_RECOVERY_ACTIVE_HISTORY)
+                }
+                ManagedStreamFixture::RecoveredSessionDeleteFailure => {
+                    respond_json(stream, 200, MANAGED_RECOVERY_HISTORY)
+                }
+                _ => respond_json(stream, 200, MANAGED_HISTORY),
+            }
+        }
+        ("GET", "/v1/sessions/session_fixture/events?limit=1000&order=asc&page=page-2")
+            if state.session_creations == 1
+                && fixture == ManagedStreamFixture::RecoveredPaginated =>
+        {
+            respond_json(stream, 200, MANAGED_RECOVERY_HISTORY_PAGE_2)
         }
         ("POST", "/v1/sessions/session_fixture/events")
             if state.session_creations == 1
@@ -239,7 +303,11 @@ fn respond_managed(
         ),
         ("DELETE", "/v1/sessions/session_fixture")
             if state.session_creations == 1
-                && fixture == ManagedStreamFixture::SessionDeleteFailure =>
+                && matches!(
+                    fixture,
+                    ManagedStreamFixture::SessionDeleteFailure
+                        | ManagedStreamFixture::RecoveredSessionDeleteFailure
+                ) =>
         {
             respond_json(
                 stream,

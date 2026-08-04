@@ -105,6 +105,9 @@ fn corpus_is_present_and_freezes_exact_headers_and_subset() {
     assert_eq!(manifest["preview_events_accepted"], false);
     assert_eq!(manifest["history_limit"], 1000);
     assert_eq!(manifest["maximum_reconciliations"], 1);
+    assert_eq!(manifest["maximum_cross_process_recovery_pages"], 8);
+    assert_eq!(manifest["maximum_cross_process_recovery_events"], 2048);
+    assert_eq!(manifest["recovered_cleanup_requires_inactive"], true);
     assert_eq!(
         manifest["environment"]["networking"]["allowed_hosts"],
         serde_json::json!([])

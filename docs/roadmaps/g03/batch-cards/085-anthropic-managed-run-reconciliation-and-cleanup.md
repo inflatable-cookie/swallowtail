@@ -1,6 +1,6 @@
 # 085 Anthropic Managed Run Reconciliation And Cleanup
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-04
 Milestone: `../033-anthropic-managed-run-reconciliation-and-recovered-cleanup.md`
@@ -34,3 +34,23 @@ reconcile and clean the exact recovered resources through separate roles.
 ## Auto-Continuation
 
 Continue to card 086 after route conformance passes.
+
+## Closeout
+
+- added an explicit recoverable Managed Agents run profile while preserving the
+  ordinary delete-on-close profile
+- emitted separate exact-run checkpoint and recovered-resource cleanup records
+  after environment/session creation and before message submission
+- added bounded exact session retrieval and at most eight persisted-event pages
+  with a 2,048-event ceiling, cursor-cycle rejection, and contradiction checks
+- mapped running, waiting, completed, failed, cancelled, inactive unresolved,
+  and unknown state from exact ordered provider evidence
+- kept reconciliation read-only and cleanup inactive-only, non-retrying, and
+  ordered: confirmed session deletion before environment deletion
+- preserved cancellation and elapsed-deadline truth before provider reads or
+  cleanup effects
+- `effigy validate:focused swallowtail-adapter-anthropic swallowtail-runtime`
+  — 188 tests passed; focused package check passed
+
+No authenticated provider work ran. Card 086 is ready for broader prepared,
+public-truth, docs, and extracted-package acceptance.

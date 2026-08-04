@@ -58,11 +58,12 @@ mod request;
 mod response;
 
 pub(crate) use event::{
-    IdleReason, ManagedEvent, ManagedEventKind, parse_history, parse_stream, reconcile,
+    IdleReason, ManagedEvent, ManagedEventKind, parse_history, parse_history_page, parse_stream,
+    reconcile,
 };
 pub(crate) use response::{
-    parse_deletion, parse_environment, parse_session_usage, parse_session_with_tools,
-    validate_agent,
+    ManagedSessionSnapshot, ManagedSessionStatus, parse_deletion, parse_environment,
+    parse_session_snapshot, parse_session_usage, parse_session_with_tools, validate_agent,
 };
 #[cfg(test)]
 pub(crate) use response::{validate_environment, validate_session};

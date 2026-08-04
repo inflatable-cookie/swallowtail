@@ -61,7 +61,7 @@ route, working-resource reference, and optional deadline. It derives:
 - ambient-host isolation posture
 - ambient OpenCode configuration
 - read-only working-resource access
-- prohibited provider-owned durable session state
+- prohibited provider-owned durable session state by default
 - exact provider, model, route, endpoint target, and server version
 
 `OpenCodePreparedSession::open_session` returns the unchanged interactive
@@ -77,6 +77,19 @@ callback subset. Ordered OpenCode questions project into common typed harness
 user input. Permission requests remain exact OpenCode extensions because
 their one-shot authorization semantics are provider-specific. The consumer
 answers both through the same correlated callback exchange.
+
+`OpenCodeSessionProfileInput::with_active_turn_detachment()` instead selects a
+durable, callback-free session profile for controlled application shutdown.
+Its active turn handle exposes `OperationDetachmentControl`. Request
+detachment, await the local `Detached` terminal outcome, then consume ordinary
+turn and session close. This joins the SSE client without `/abort` while the
+external server and provider session remain preserved. Persist the resume
+binding before dispatch and reconcile it after restart. See
+[Provider Operation Detachment](provider-operation-detachment.md).
+
+Detachment and provider callbacks are mutually exclusive. Structured runs
+remain temporary and delete their private session on close, so they do not
+expose detachment.
 
 ## External Session Catalogue And Import
 

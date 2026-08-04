@@ -56,7 +56,7 @@ fn handle(mut stream: TcpStream, fixture: StreamFixture, state: HandleState, ser
             &mut stream,
             200,
             &serde_json::json!({
-                "ses_fixture": {"type": if matches!(fixture, StreamFixture::ReconciliationActive) {"busy"} else {"idle"}},
+                "ses_fixture": {"type": if matches!(fixture, StreamFixture::ReconciliationActive | StreamFixture::WaitForAbort) {"busy"} else {"idle"}},
                 "ses_child": {"type":"idle"},
                 "ses_busy": {"type":"busy"}
             }).to_string(),

@@ -9,6 +9,8 @@
 
 ## Completed
 
+- `072-opencode-active-turn-detachment.md`
+- `071-active-operation-detachment-kernel.md`
 - `070-cross-process-reconciliation-kernel-and-opencode.md`
 - `063-nucleus-external-thread-import-handoff.md`
 - `062-provider-session-import-public-and-package-acceptance.md`

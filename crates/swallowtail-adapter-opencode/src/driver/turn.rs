@@ -3,6 +3,7 @@ struct OpenCodeTurnHandle {
     events: Option<BoxEventStream>,
     terminal: Option<BoxFuture<'static, TerminalOutcome>>,
     cancellation: Arc<TurnCancellation>,
+    detachment: Option<Arc<TurnDetachment>>,
     terminal_flag: Arc<AtomicBool>,
     active: ActiveSlot,
     callbacks: Option<swallowtail_runtime::CallbackExchange>,
@@ -30,13 +31,24 @@ impl TurnHandle for OpenCodeTurnHandle {
         self.cancellation.as_ref()
     }
 
+    fn detachment(&self) -> Option<&dyn OperationDetachmentControl> {
+        self.detachment
+            .as_deref()
+            .map(|control| control as &dyn OperationDetachmentControl)
+    }
+
     fn take_terminal_outcome(&mut self) -> Option<BoxFuture<'static, TerminalOutcome>> {
         self.terminal.take()
     }
 
     fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome> {
         Box::pin(async move {
-            if !self.terminal_flag.load(Ordering::SeqCst) {
+            if !self.terminal_flag.load(Ordering::SeqCst)
+                && !self
+                    .detachment
+                    .as_ref()
+                    .is_some_and(|detachment| detachment.is_requested())
+            {
                 let _ = self.cancellation.request().await;
             }
             let active = join_active(&self.active).await;
@@ -51,6 +63,7 @@ struct TurnPump {
     deadline: Option<Deadline>,
     services: HostServices,
     cancellation: Arc<TurnCancellation>,
+    detachment: Option<Arc<TurnDetachment>>,
     events: swallowtail_runtime::RuntimeEventSender,
     terminal: swallowtail_runtime::TerminalOutcomeSender,
     terminal_flag: Arc<AtomicBool>,
@@ -65,6 +78,7 @@ async fn pump_turn(pump: TurnPump) {
         deadline,
         services,
         cancellation,
+        detachment,
         events,
         terminal,
         terminal_flag,
@@ -88,8 +102,14 @@ async fn pump_turn(pump: TurnPump) {
                 );
             }
             TurnSignal::Closed => {
-                if cancellation.requested.load(Ordering::SeqCst) {
+                if cancellation.is_requested() {
                     break (TerminalStatus::Cancelled, CleanupOutcome::Clean);
+                }
+                if detachment
+                    .as_ref()
+                    .is_some_and(|detachment| detachment.is_requested())
+                {
+                    break (TerminalStatus::Detached, CleanupOutcome::Clean);
                 }
                 break (
                     TerminalStatus::RuntimeFailed(SafeDiagnostic::new(
@@ -100,8 +120,14 @@ async fn pump_turn(pump: TurnPump) {
                 );
             }
             TurnSignal::Failure(error) => {
-                if cancellation.requested.load(Ordering::SeqCst) {
+                if cancellation.is_requested() {
                     break (TerminalStatus::Cancelled, CleanupOutcome::Clean);
+                }
+                if detachment
+                    .as_ref()
+                    .is_some_and(|detachment| detachment.is_requested())
+                {
+                    break (TerminalStatus::Detached, CleanupOutcome::Clean);
                 }
                 break (
                     TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
@@ -286,32 +312,35 @@ async fn pump_turn(pump: TurnPump) {
     }
     let cleanup = merge_cleanup(status.1, stream_cleanup);
     let activity_status = match &status.0 {
-        TerminalStatus::Completed => swallowtail_runtime::ActivityStatus::Completed,
+        TerminalStatus::Detached => None,
+        TerminalStatus::Completed => Some(swallowtail_runtime::ActivityStatus::Completed),
         TerminalStatus::Cancelled | TerminalStatus::TimedOut => {
-            swallowtail_runtime::ActivityStatus::Cancelled
+            Some(swallowtail_runtime::ActivityStatus::Cancelled)
         }
         TerminalStatus::ProviderRequestObserved(_)
         | TerminalStatus::ProviderFailed(_)
         | TerminalStatus::HostFailed(_)
-        | TerminalStatus::RuntimeFailed(_) => swallowtail_runtime::ActivityStatus::Failed,
+        | TerminalStatus::RuntimeFailed(_) => Some(swallowtail_runtime::ActivityStatus::Failed),
     };
-    match activity.complete(activity_status) {
-        Ok(observations) => {
-            for observation in observations {
-                if let Err(error) = events.send(RuntimeEvent::new(
-                    sequence,
-                    RuntimeEventKind::Activity(observation),
-                )) {
-                    status.0 = TerminalStatus::RuntimeFailed(error.diagnostic().clone());
-                    break;
+    if let Some(activity_status) = activity_status {
+        match activity.complete(activity_status) {
+            Ok(observations) => {
+                for observation in observations {
+                    if let Err(error) = events.send(RuntimeEvent::new(
+                        sequence,
+                        RuntimeEventKind::Activity(observation),
+                    )) {
+                        status.0 = TerminalStatus::RuntimeFailed(error.diagnostic().clone());
+                        break;
+                    }
+                    sequence += 1;
                 }
-                sequence += 1;
+            }
+            Err(error) => {
+                status.0 = TerminalStatus::RuntimeFailed(error.diagnostic().clone());
             }
         }
-        Err(error) => {
-            status.0 = TerminalStatus::RuntimeFailed(error.diagnostic().clone());
-        }
-    }
+    };
     if let Some(usage) = usage
         && let Err(error) = events.send(RuntimeEvent::new(
             sequence,
@@ -327,8 +356,8 @@ async fn pump_turn(pump: TurnPump) {
     if let Some(output) = output {
         outcome = outcome.with_output(output);
     }
-    let _ = terminal.complete(outcome);
     terminal_flag.store(true, Ordering::SeqCst);
+    let _ = terminal.complete(outcome);
 }
 
 fn project_event(

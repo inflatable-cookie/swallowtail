@@ -10,6 +10,7 @@ impl InteractiveSessionDriver for OpenCodeHttpDriver {
             services.require_execution_host(plan.execution_host_id())?;
             validate_open(&plan, &request, &services)?;
             let callback_enabled = provider_callbacks(&plan)?;
+            let active_turn_detachment = active_turn_detachment(&plan)?;
             let image_attachments = validate_attachment_plan(&plan, &services)?;
             let provider_id = plan.provider_id().cloned().ok_or_else(|| {
                 failure(
@@ -138,6 +139,7 @@ impl InteractiveSessionDriver for OpenCodeHttpDriver {
                 structured_output: None,
                 image_attachments,
                 provider_callbacks: callback_enabled,
+                active_turn_detachment,
                 callback_run_id: None,
             }) as Box<dyn InteractiveSessionHandle>)
         })

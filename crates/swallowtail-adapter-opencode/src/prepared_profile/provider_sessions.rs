@@ -315,9 +315,16 @@ impl OpenCodePreparedIntegration {
                 "OpenCode session import does not match its catalogue authority",
             ));
         }
-        let (request_id, model, working_resource, deadline, image_attachments, provider_callbacks) =
-            input.into_parts();
-        if image_attachments || provider_callbacks {
+        let (
+            request_id,
+            model,
+            working_resource,
+            deadline,
+            image_attachments,
+            provider_callbacks,
+            active_turn_detachment,
+        ) = input.into_parts();
+        if image_attachments || provider_callbacks || active_turn_detachment {
             return Err(failure(
                 "swallowtail.opencode.preparation.session_import_options_unsupported",
                 "OpenCode session import currently requires the default read-only session profile",
@@ -329,7 +336,10 @@ impl OpenCodePreparedIntegration {
                 .filter(|(capability, _)| {
                     !matches!(
                         *capability,
-                        Capability::ModelCatalog | Capability::ProviderSessionDelete
+                        Capability::ModelCatalog
+                            | Capability::ProviderSessionDelete
+                            | Capability::ActiveOperationDetachment
+                            | Capability::ProviderDurableRetention
                     )
                 })
                 .map(|(capability, constraints)| {

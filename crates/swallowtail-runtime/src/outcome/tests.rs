@@ -56,6 +56,7 @@ fn terminal_failure_dimensions_remain_distinct() {
     let diagnostic = swallowtail_core::SafeDiagnostic::new("fixture.failure", "Failed");
     let statuses = [
         TerminalStatus::Completed,
+        TerminalStatus::Detached,
         TerminalStatus::Cancelled,
         TerminalStatus::TimedOut,
         TerminalStatus::ProviderRequestObserved(ProviderRequestObservation::new(

@@ -169,7 +169,9 @@ impl AntigravityActivityProjection {
         &mut self,
         terminal: &TerminalStatus,
     ) -> Result<Vec<ActivityObservation>, RuntimeFailure> {
-        let status = terminal_activity_status(terminal);
+        let Some(status) = terminal_activity_status(terminal) else {
+            return Ok(Vec::new());
+        };
         let activities = std::mem::take(&mut self.steps);
         activities
             .into_values()
@@ -264,14 +266,15 @@ fn display(
     Ok(ActivityContentUpdate::new(change, stream, content))
 }
 
-fn terminal_activity_status(status: &TerminalStatus) -> ActivityStatus {
+fn terminal_activity_status(status: &TerminalStatus) -> Option<ActivityStatus> {
     match status {
-        TerminalStatus::Completed => ActivityStatus::Completed,
-        TerminalStatus::Cancelled | TerminalStatus::TimedOut => ActivityStatus::Cancelled,
+        TerminalStatus::Detached => None,
+        TerminalStatus::Completed => Some(ActivityStatus::Completed),
+        TerminalStatus::Cancelled | TerminalStatus::TimedOut => Some(ActivityStatus::Cancelled),
         TerminalStatus::ProviderRequestObserved(_)
         | TerminalStatus::ProviderFailed(_)
         | TerminalStatus::HostFailed(_)
-        | TerminalStatus::RuntimeFailed(_) => ActivityStatus::Failed,
+        | TerminalStatus::RuntimeFailed(_) => Some(ActivityStatus::Failed),
     }
 }
 

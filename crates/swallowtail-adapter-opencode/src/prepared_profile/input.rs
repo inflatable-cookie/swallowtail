@@ -211,6 +211,7 @@ pub struct OpenCodeSessionProfileInput {
     deadline: Option<Deadline>,
     image_attachments: bool,
     provider_callbacks: bool,
+    active_turn_detachment: bool,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -275,6 +276,7 @@ impl OpenCodeSessionProfileInput {
             deadline: None,
             image_attachments: false,
             provider_callbacks: false,
+            active_turn_detachment: false,
         }
     }
 
@@ -287,6 +289,12 @@ impl OpenCodeSessionProfileInput {
     #[must_use]
     pub const fn with_provider_callbacks(mut self) -> Self {
         self.provider_callbacks = true;
+        self
+    }
+
+    #[must_use]
+    pub const fn with_active_turn_detachment(mut self) -> Self {
+        self.active_turn_detachment = true;
         self
     }
 
@@ -305,6 +313,7 @@ impl OpenCodeSessionProfileInput {
         Option<Deadline>,
         bool,
         bool,
+        bool,
     ) {
         (
             self.request_id,
@@ -313,6 +322,7 @@ impl OpenCodeSessionProfileInput {
             self.deadline,
             self.image_attachments,
             self.provider_callbacks,
+            self.active_turn_detachment,
         )
     }
 }

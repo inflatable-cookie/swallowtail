@@ -48,6 +48,7 @@ impl ProviderRequestObservation {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum TerminalStatus {
     Completed,
+    Detached,
     Cancelled,
     TimedOut,
     ProviderRequestObserved(ProviderRequestObservation),

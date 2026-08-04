@@ -53,6 +53,7 @@ Contracts hold durable, testable rules.
 - [046 Provider Session Catalogue And Explicit Import](046-provider-session-catalogue-and-explicit-import.md)
 - [047 Configured Provider Instance Catalogue](047-configured-provider-instance-catalogue.md)
 - [048 Cross-Process Active Operation Reconciliation](048-cross-process-active-operation-reconciliation.md)
+- [049 Controlled Shutdown Active Operation Detachment](049-controlled-shutdown-active-operation-detachment.md)
 
 Contract 003 defines the provider-neutral record kernel. Contracts 004-016
 govern the realized runtime and current proof drivers. Contract 017 governs
@@ -198,6 +199,10 @@ whose runtime handles were lost. Exact persisted session and runtime-turn
 identity bind status plus bounded replacement history; terminal state requires
 an exact provider turn. The role grants no retry, prompt, import, resume,
 cancellation, callback, management, or child-control authority.
+Contract 049 adds explicit controlled-shutdown detachment for qualified active
+runs or turns. It stops and joins only local observation work, reports local
+`Detached` truth, preserves provider terminal uncertainty, and requires a
+durable binding plus later reconciliation. Ordinary close remains unchanged.
 
 Contract 015 now permits exact, one-shot activation of an already authorized
 harness credential after ACP initialization. The first mapping is Grok Build

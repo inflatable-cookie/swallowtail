@@ -146,6 +146,7 @@ fn build_attached_handle(
     provider_callbacks: bool,
     image_attachments: bool,
 ) -> Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure> {
+    let active_turn_detachment = active_turn_detachment(plan)?;
     let provider_id = plan.provider_id().cloned().ok_or_else(|| {
         failure(
             "swallowtail.opencode.provider_missing",
@@ -186,6 +187,7 @@ fn build_attached_handle(
         structured_output: None,
         image_attachments,
         provider_callbacks,
+        active_turn_detachment,
         callback_run_id: None,
     }))
 }

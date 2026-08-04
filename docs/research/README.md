@@ -107,3 +107,4 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [097 OpenCode Session Identity And Resume-Binding Persistence](097-opencode-session-identity-and-resume-binding-persistence.md)
 - [098 Portable Activity Key And Cross-Operation Isolation](098-portable-activity-key-and-cross-operation-isolation.md)
 - [099 Cross-Process Active Operation Reconciliation](099-cross-process-active-operation-reconciliation.md)
+- [100 Controlled Shutdown Active Operation Detachment](100-controlled-shutdown-active-operation-detachment.md)

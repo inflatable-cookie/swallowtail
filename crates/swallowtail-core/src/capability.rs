@@ -13,6 +13,7 @@ pub enum Capability {
     ObservableActivity,
     ToolCalls,
     Interruption,
+    ActiveOperationDetachment,
     LoadSession,
     Resume,
     StructuredOutput,

@@ -31,8 +31,27 @@ impl OpenCodePreparedIntegration {
         &self,
         input: OpenCodeSessionProfileInput,
     ) -> Result<OpenCodePreparedSession, PreparationFailure> {
-        let (request_id, model, working_resource, deadline, image_attachments, provider_callbacks) =
-            input.into_parts();
+        let (
+            request_id,
+            model,
+            working_resource,
+            deadline,
+            image_attachments,
+            provider_callbacks,
+            active_turn_detachment,
+        ) = input.into_parts();
+        if active_turn_detachment && provider_callbacks {
+            return Err(failure(
+                "swallowtail.opencode.preparation.detachment_callbacks_unsupported",
+                "OpenCode active-turn detachment cannot retain consumer-mediated callbacks",
+            ));
+        }
+        if active_turn_detachment && !self.server().is_qualified() {
+            return Err(failure(
+                "swallowtail.opencode.preparation.detachment_version_unsupported",
+                "OpenCode active-turn detachment requires a qualified server version",
+            ));
+        }
         let capabilities = crate::prepared::all_capabilities();
         let activity_profile = crate::activity::profile::activity_profile(self)?;
         let session_capabilities = crate::activity::profile::with_activity(
@@ -45,6 +64,12 @@ impl OpenCodePreparedIntegration {
                                 *capability,
                                 Capability::ModelCatalog | Capability::ProviderSessionDelete
                             ) && (image_attachments || *capability != Capability::Attachments)
+                                && (active_turn_detachment
+                                    || !matches!(
+                                        *capability,
+                                        Capability::ActiveOperationDetachment
+                                            | Capability::ProviderDurableRetention
+                                    ))
                         })
                         .map(|(capability, constraints)| {
                             CapabilityRequirement::new(capability, constraints.iter().cloned())

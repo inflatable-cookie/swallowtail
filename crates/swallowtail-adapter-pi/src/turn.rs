@@ -169,23 +169,15 @@ impl ActiveTurn {
                 Ok(())
             }
             PiAgentEvent::Settled => {
-                let status = if self.timed_out.load(Ordering::SeqCst) {
-                    TerminalStatus::TimedOut
+                let (status, activity_status) = if self.timed_out.load(Ordering::SeqCst) {
+                    (TerminalStatus::TimedOut, ActivityStatus::Failed)
                 } else if self.cancelled.load(Ordering::SeqCst) {
-                    TerminalStatus::Cancelled
+                    (TerminalStatus::Cancelled, ActivityStatus::Cancelled)
                 } else {
                     self.completed_prompts.fetch_add(1, Ordering::SeqCst);
-                    TerminalStatus::Completed
+                    (TerminalStatus::Completed, ActivityStatus::Completed)
                 };
-                self.complete_activity(match &status {
-                    TerminalStatus::Completed => ActivityStatus::Completed,
-                    TerminalStatus::Cancelled => ActivityStatus::Cancelled,
-                    TerminalStatus::TimedOut
-                    | TerminalStatus::ProviderRequestObserved(_)
-                    | TerminalStatus::ProviderFailed(_)
-                    | TerminalStatus::HostFailed(_)
-                    | TerminalStatus::RuntimeFailed(_) => ActivityStatus::Failed,
-                })?;
+                self.complete_activity(activity_status)?;
                 let usage = *self.usage.lock().expect("Pi usage lock poisoned");
                 if matches!(status, TerminalStatus::Completed) && usage.is_none() {
                     self.finish(TerminalStatus::RuntimeFailed(

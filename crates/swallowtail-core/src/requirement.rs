@@ -36,6 +36,12 @@ pub enum CancellationScope {
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+pub enum OperationDetachmentScope {
+    StructuredRun,
+    ActiveTurn,
+}
+
+#[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum StructuredOutputEnforcement {
     ProviderNative,
     HarnessValidated,
@@ -73,6 +79,7 @@ impl NamedCapabilityConstraint {
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum CapabilityConstraint {
     CancellationScope(CancellationScope),
+    OperationDetachmentScope(OperationDetachmentScope),
     AttachmentMediaType(String),
     AttachmentMaximumBytes(u64),
     AttachmentMaximumCount(u32),

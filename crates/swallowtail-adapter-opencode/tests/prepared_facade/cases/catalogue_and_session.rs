@@ -151,3 +151,92 @@ fn prepared_catalogue_and_session_stay_separate_on_both_host_topologies() {
     }
 }
 
+#[test]
+fn active_turn_detachment_is_an_explicit_durable_callback_free_session_profile() {
+    let fixture = PreparedFixture::new("opencode.prepared.detachment", "1.18.10");
+    let prepared = fixture.prepared();
+
+    let ordinary = prepared
+        .prepare_session(OpenCodeSessionProfileInput::new(
+            RequestId::new("ordinary-session-profile").unwrap(),
+            fixture.model(),
+            fixture.resource.clone(),
+        ))
+        .expect("ordinary session prepares");
+    assert!(!ordinary.plan().requirements().capabilities().any(|required| {
+        required.capability() == Capability::ActiveOperationDetachment
+    }));
+    assert_eq!(
+        ordinary
+            .plan()
+            .requirements()
+            .session_provider_state_policy(),
+        Some(SessionProviderStatePolicy::Prohibited)
+    );
+
+    let detachable = prepared
+        .prepare_session(
+            OpenCodeSessionProfileInput::new(
+                RequestId::new("detachable-session-profile").unwrap(),
+                fixture.model(),
+                fixture.resource.clone(),
+            )
+            .with_active_turn_detachment(),
+        )
+        .expect("detachable session prepares");
+    let detachment = detachable
+        .plan()
+        .requirements()
+        .capabilities()
+        .find(|required| required.capability() == Capability::ActiveOperationDetachment)
+        .expect("detachment capability is selected");
+    assert_eq!(
+        detachment.constraints().collect::<Vec<_>>(),
+        vec![&CapabilityConstraint::OperationDetachmentScope(
+            swallowtail_core::OperationDetachmentScope::ActiveTurn,
+        )]
+    );
+    assert_eq!(
+        detachable
+            .plan()
+            .requirements()
+            .session_provider_state_policy(),
+        Some(SessionProviderStatePolicy::DurableProviderSessionPreserved)
+    );
+
+    let failure = prepared
+        .prepare_session(
+            OpenCodeSessionProfileInput::new(
+                RequestId::new("callback-detachment-profile").unwrap(),
+                fixture.model(),
+                fixture.resource.clone(),
+            )
+            .with_provider_callbacks()
+            .with_active_turn_detachment(),
+        )
+        .expect_err("callback-bearing detachment is rejected");
+    assert_eq!(
+        failure.diagnostic().safe().code(),
+        "swallowtail.opencode.preparation.detachment_callbacks_unsupported"
+    );
+}
+
+#[test]
+fn unverified_newer_server_does_not_inherit_active_turn_detachment() {
+    let fixture = PreparedFixture::new("opencode.prepared.detachment-newer", "1.18.11");
+    let failure = fixture
+        .prepared()
+        .prepare_session(
+            OpenCodeSessionProfileInput::new(
+                RequestId::new("detachment-newer-profile").unwrap(),
+                fixture.model(),
+                fixture.resource.clone(),
+            )
+            .with_active_turn_detachment(),
+        )
+        .expect_err("unverified newer version cannot inherit detachment");
+    assert_eq!(
+        failure.diagnostic().safe().code(),
+        "swallowtail.opencode.preparation.detachment_version_unsupported"
+    );
+}

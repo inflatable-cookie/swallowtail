@@ -66,7 +66,9 @@ impl AcpActivityProjection {
         &mut self,
         terminal: &TerminalStatus,
     ) -> Result<Vec<ActivityObservation>, RuntimeFailure> {
-        let status = terminal_activity_status(terminal);
+        let Some(status) = terminal_activity_status(terminal) else {
+            return Ok(Vec::new());
+        };
         std::mem::take(&mut self.open)
             .into_values()
             .map(|activity| {

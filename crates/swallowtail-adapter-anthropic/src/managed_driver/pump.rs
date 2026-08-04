@@ -218,29 +218,32 @@ async fn pump_managed_run(
     };
 
     let activity_status = match &final_state.status {
-        TerminalStatus::Completed => swallowtail_runtime::ActivityStatus::Completed,
+        TerminalStatus::Detached => None,
+        TerminalStatus::Completed => Some(swallowtail_runtime::ActivityStatus::Completed),
         TerminalStatus::Cancelled | TerminalStatus::TimedOut => {
-            swallowtail_runtime::ActivityStatus::Cancelled
+            Some(swallowtail_runtime::ActivityStatus::Cancelled)
         }
         TerminalStatus::ProviderRequestObserved(_)
         | TerminalStatus::ProviderFailed(_)
         | TerminalStatus::HostFailed(_)
-        | TerminalStatus::RuntimeFailed(_) => swallowtail_runtime::ActivityStatus::Failed,
+        | TerminalStatus::RuntimeFailed(_) => Some(swallowtail_runtime::ActivityStatus::Failed),
     };
-    match activity.complete(activity_status) {
-        Ok(observations) => {
-            for observation in observations {
-                if let Err(error) = emit(
-                    &events,
-                    &mut sequence,
-                    RuntimeEventKind::Activity(observation),
-                ) {
-                    final_state.status = provider_status(error);
-                    break;
+    if let Some(activity_status) = activity_status {
+        match activity.complete(activity_status) {
+            Ok(observations) => {
+                for observation in observations {
+                    if let Err(error) = emit(
+                        &events,
+                        &mut sequence,
+                        RuntimeEventKind::Activity(observation),
+                    ) {
+                        final_state.status = provider_status(error);
+                        break;
+                    }
                 }
             }
+            Err(error) => final_state.status = provider_status(error),
         }
-        Err(error) => final_state.status = provider_status(error),
     }
 
     finish_managed_run(

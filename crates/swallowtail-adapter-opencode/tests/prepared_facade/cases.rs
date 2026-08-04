@@ -11,7 +11,8 @@ use swallowtail_core::{
     Capability, CapabilityConstraint, DriverRole, ExecutionHostId, HarnessConfigurationPosture,
     HarnessIsolation, InstanceOwnership, InterfaceCompatibilityAssessment,
     ObservableActivityAvailability, OwnedRemoteResourceKind, ProviderSessionDeletionStrength,
-    ProviderSessionEffectTruth, ReasoningMode, StructuredOutputEnforcement,
+    ProviderSessionEffectTruth, ReasoningMode, SessionProviderStatePolicy,
+    StructuredOutputEnforcement,
 };
 use swallowtail_runtime::{
     CancellationControl, CleanupOutcome, DiscoveryCancellation, HostServices, OperationContent,

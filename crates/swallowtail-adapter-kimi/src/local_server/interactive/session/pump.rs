@@ -137,16 +137,21 @@ pub(super) async fn run(mut input: PumpInput) {
         }
     };
     let activity_status = match &status {
-        TerminalStatus::Completed => swallowtail_runtime::ActivityStatus::Completed,
+        TerminalStatus::Detached => None,
+        TerminalStatus::Completed => Some(swallowtail_runtime::ActivityStatus::Completed),
         TerminalStatus::Cancelled | TerminalStatus::TimedOut => {
-            swallowtail_runtime::ActivityStatus::Cancelled
+            Some(swallowtail_runtime::ActivityStatus::Cancelled)
         }
         TerminalStatus::ProviderFailed(_)
         | TerminalStatus::HostFailed(_)
         | TerminalStatus::RuntimeFailed(_)
-        | TerminalStatus::ProviderRequestObserved(_) => swallowtail_runtime::ActivityStatus::Failed,
+        | TerminalStatus::ProviderRequestObserved(_) => {
+            Some(swallowtail_runtime::ActivityStatus::Failed)
+        }
     };
-    if let Ok(observations) = activity.complete(activity_status) {
+    if let Some(activity_status) = activity_status
+        && let Ok(observations) = activity.complete(activity_status)
+    {
         for observation in observations {
             if input
                 .events

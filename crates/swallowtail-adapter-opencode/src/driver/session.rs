@@ -16,6 +16,7 @@ struct OpenCodeSessionHandle {
     structured_output: Option<StructuredOutputDescriptor>,
     image_attachments: bool,
     provider_callbacks: bool,
+    active_turn_detachment: bool,
     callback_run_id: Option<swallowtail_runtime::RuntimeRunId>,
 }
 
@@ -127,6 +128,7 @@ impl InteractiveSessionHandle for OpenCodeSessionHandle {
             } else {
                 (None, None)
             };
+            let detachment_stream = Arc::clone(&stream_cancelled);
             let cancellation = Arc::new(TurnCancellation {
                 scope: turn_scope.clone(),
                 session_id: self.provider_session_id.clone(),
@@ -137,6 +139,14 @@ impl InteractiveSessionHandle for OpenCodeSessionHandle {
                 stream_cancelled,
                 requested: AtomicBool::new(false),
                 callbacks: callback_hub.clone(),
+            });
+            let detachment = self.active_turn_detachment.then(|| {
+                Arc::new(TurnDetachment {
+                    stream_cancelled: detachment_stream,
+                    terminal: Arc::clone(&terminal_flag),
+                    cancellation: Arc::clone(&cancellation),
+                    requested: AtomicBool::new(false),
+                })
             });
             let task_service = services.task().cloned().expect("validated task service");
             let pump_cancellation = Arc::clone(&cancellation);
@@ -150,6 +160,7 @@ impl InteractiveSessionHandle for OpenCodeSessionHandle {
             );
             let pump_services = services.clone();
             let pump_callback_hub = callback_hub.clone();
+            let pump_detachment = detachment.clone();
             let task = match task_service.spawn(
                 turn_scope.clone(),
                 Box::pin(async move {
@@ -159,6 +170,7 @@ impl InteractiveSessionHandle for OpenCodeSessionHandle {
                         deadline,
                         services: pump_services,
                         cancellation: pump_cancellation,
+                        detachment: pump_detachment,
                         events: event_sender,
                         terminal: terminal_sender,
                         terminal_flag: Arc::clone(&pump_terminal),
@@ -200,6 +212,7 @@ impl InteractiveSessionHandle for OpenCodeSessionHandle {
             *self.active.lock().expect("active turn lock poisoned") = Some(ActiveTurn {
                 task: Some(task),
                 cancellation: Arc::clone(&cancellation),
+                detachment: detachment.clone(),
                 terminal: Arc::clone(&terminal_flag),
                 attachment: attachment.clone(),
             });
@@ -208,6 +221,7 @@ impl InteractiveSessionHandle for OpenCodeSessionHandle {
                 events: Some(Box::pin(event_stream)),
                 terminal: Some(Box::pin(terminal)),
                 cancellation,
+                detachment,
                 terminal_flag,
                 active: Arc::clone(&self.active),
                 callbacks: callback_exchange,

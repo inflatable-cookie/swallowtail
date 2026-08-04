@@ -30,6 +30,7 @@ visible as unverified newer unless exact evidence requires rejection.
 | Persist exact ordinary provider-session resume authority across consumer restarts without adding routing or synchronization. | completed | Contracts 017, 029, 037, 046 | `g03.025` |
 | Prevent cross-operation activity projection collisions without manufacturing provider-global identity. | completed | Contracts 009, 044 | `g03.026` |
 | Reconcile interrupted consumer turns from retained provider truth without retry or control authority. | completed | Contracts 017, 042, 046, 048 | `g03.027` |
+| Preserve qualified provider work across controlled consumer shutdown without leaking local work. | completed | Contracts 009, 017, 042, 048-049 | `g03.028` |
 | Periodically reconcile deferred gates, route truth, and generation capacity. | planned | Contract 001 | recurring checkpoints |
 
 ## Current Checkpoint
@@ -282,6 +283,10 @@ visible as unverified newer unless exact evidence requires rejection.
   boundary, exact-turn Codex mapping, and session-scoped OpenCode mapping;
   remaining routes retain exact evidence gates without expanding the main
   feature CSV
+- Research 100 and g03.028 separate controlled local detachment from provider
+  cancellation. Cards 071-072 add the portable handle control and first
+  opt-in OpenCode read-only mapping without widening callback or owned-process
+  routes; deterministic restart composition and package proof pass
 
 ## Milestones
 
@@ -312,11 +317,12 @@ visible as unverified newer unless exact evidence requires rejection.
 - [025 Durable Session Resume-Binding Persistence](025-durable-session-resume-binding-persistence.md) — completed
 - [026 Portable Activity Key And Cross-Operation Isolation](026-portable-activity-key-and-cross-operation-isolation.md) — completed
 - [027 Cross-Process Active Operation Reconciliation](027-cross-process-active-operation-reconciliation.md) — completed
+- [028 Controlled Shutdown Active Operation Detachment](028-controlled-shutdown-active-operation-detachment.md) — completed
 
 ## Checkpoint
 
-Hold at the evidence gate. Select another compatibility or reconciliation
-tranche only from concrete provider or consumer evidence.
+The lane is at the g03 evidence gate. Kimi cursor-checkpoint reconciliation or
+another provider-backed retained-operation record needs explicit selection.
 
 ## Generation Boundary
 

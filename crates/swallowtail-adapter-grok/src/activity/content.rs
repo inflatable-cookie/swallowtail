@@ -61,15 +61,16 @@ fn tool_status(status: AcpToolCallStatus) -> ActivityStatus {
     }
 }
 
-fn terminal_activity_status(status: &TerminalStatus) -> ActivityStatus {
+fn terminal_activity_status(status: &TerminalStatus) -> Option<ActivityStatus> {
     match status {
-        TerminalStatus::Completed => ActivityStatus::Completed,
+        TerminalStatus::Detached => None,
+        TerminalStatus::Completed => Some(ActivityStatus::Completed),
         TerminalStatus::Cancelled
         | TerminalStatus::TimedOut
-        | TerminalStatus::ProviderRequestObserved(_) => ActivityStatus::Cancelled,
+        | TerminalStatus::ProviderRequestObserved(_) => Some(ActivityStatus::Cancelled),
         TerminalStatus::ProviderFailed(_)
         | TerminalStatus::HostFailed(_)
-        | TerminalStatus::RuntimeFailed(_) => ActivityStatus::Failed,
+        | TerminalStatus::RuntimeFailed(_) => Some(ActivityStatus::Failed),
     }
 }
 

@@ -44,6 +44,13 @@ pub(crate) fn all_capabilities() -> CapabilityProfile {
         CapabilityRequirement::new(Capability::Resume, []),
         CapabilityRequirement::new(Capability::StreamingEvents, []),
         CapabilityRequirement::new(Capability::UsageReporting, []),
+        CapabilityRequirement::new(
+            Capability::ActiveOperationDetachment,
+            [CapabilityConstraint::OperationDetachmentScope(
+                swallowtail_core::OperationDetachmentScope::ActiveTurn,
+            )],
+        ),
+        CapabilityRequirement::new(Capability::ProviderDurableRetention, []),
         CapabilityRequirement::new(Capability::ProviderSessionDelete, []),
         image_attachment_capability(),
         CapabilityRequirement::new(

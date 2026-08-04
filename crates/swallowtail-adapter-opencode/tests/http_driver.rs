@@ -22,8 +22,8 @@ use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{
     BlockingWorkService, CredentialRef, CredentialService, EndpointRef, HostServices,
     InteractiveSessionDriver, LoadSessionRequest, ModelCatalogDriver, ModelCatalogRequest,
-    NetworkPolicyService, OpenSessionRequest, OperationContent, PersistedSessionResumeBinding,
-    ProviderObservation, ProviderSessionReconciliationAgreement,
+    NetworkPolicyService, OpenSessionRequest, OperationContent, OperationDetachmentAcknowledgement,
+    PersistedSessionResumeBinding, ProviderObservation, ProviderSessionReconciliationAgreement,
     ProviderSessionReconciliationBounds, ProviderSessionReconciliationDriver,
     ProviderSessionReconciliationPlan, ProviderSessionReconciliationRequest, RequestId,
     ResumeSessionRequest, RuntimeEventKind, RuntimeTurnId, ScopedTaskService, SessionPlanAgreement,
@@ -39,6 +39,22 @@ fn open_session_request(id: impl Into<String>, resource: WorkingResourceRef) -> 
         SessionPlanAgreement::explicit(
             SessionAccessPolicy::ambient_harness(swallowtail_core::ResourceAccess::Read),
             Some(SessionProviderStatePolicy::Prohibited),
+            None,
+        ),
+    )
+}
+
+fn open_detachable_session_request(
+    id: impl Into<String>,
+    resource: WorkingResourceRef,
+) -> OpenSessionRequest {
+    OpenSessionRequest::new(
+        RequestId::new(id).expect("request id is valid"),
+        resource,
+        None,
+        SessionPlanAgreement::explicit(
+            SessionAccessPolicy::ambient_harness(swallowtail_core::ResourceAccess::Read),
+            Some(SessionProviderStatePolicy::DurableProviderSessionPreserved),
             None,
         ),
     )

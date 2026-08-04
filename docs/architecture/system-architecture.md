@@ -1494,6 +1494,33 @@ messages, and preserves both attached service and provider session. Other
 routes remain gated by Research 099; no capability crosses a transport
 boundary.
 
+## Controlled Operation Detachment
+
+Contract 049 adds an optional lifecycle control to qualified run and turn
+handles.
+
+```text
+active local attachment + persisted durable binding
+  -> explicit detachment request
+  -> stop local observation without provider interruption
+  -> join local task and release leases
+  -> local Detached terminal truth
+  -> later Contract 048 reconciliation
+```
+
+`OperationDetachmentControl` remains separate from cancellation. Capability
+selection binds exact run or active-turn scope. Unsupported handles expose no
+control; ordinary close retains its existing semantics. Detachment never
+reports provider completion, failure, cancellation, or continued activity.
+
+The realized first mapping is an explicitly selected OpenCode read-only interactive
+session. Its attached HTTP server and provider session remain external while
+the SSE attachment joins locally without `/abort`. Callback-bearing sessions,
+structured runs, owned foreground processes, and delete-on-close resources are
+excluded. The prepared profile binds durable retention and exact active-turn
+scope; the driver exposes the optional control only for that plan and leaves
+provider activities unresolved at local detachment.
+
 ## Dependency Rules
 
 - consumers depend toward Swallowtail; Swallowtail never depends on consumers

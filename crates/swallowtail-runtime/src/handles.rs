@@ -2,9 +2,9 @@ use crate::{
     BoxEventStream, BoxFuture, BoxRealtimeMediaEventStream, CallbackExchange, CancellationControl,
     CleanupOutcome, DirectContinuationTurnRequest, DirectToolExchange, HarnessCommandResponse,
     HarnessScheduledMessage, HostServices, MediaChunk, MediaInputCommit,
-    NegotiatedSessionModelOptions, ProviderSessionManagementBinding, RequestId, RuntimeFailure,
-    RuntimeRunId, RuntimeSessionId, RuntimeTurnId, ServingEndpointBinding, ServingInstanceId,
-    SessionResumeBinding, TerminalOutcome, TurnRequest,
+    NegotiatedSessionModelOptions, OperationDetachmentControl, ProviderSessionManagementBinding,
+    RequestId, RuntimeFailure, RuntimeRunId, RuntimeSessionId, RuntimeTurnId,
+    ServingEndpointBinding, ServingInstanceId, SessionResumeBinding, TerminalOutcome, TurnRequest,
 };
 use swallowtail_core::{ExecutionHostId, InstanceOwnership, RunRef, SessionRef, TurnRef};
 
@@ -20,6 +20,9 @@ pub trait RunHandle: Send {
         None
     }
     fn cancellation(&self) -> &dyn CancellationControl;
+    fn detachment(&self) -> Option<&dyn OperationDetachmentControl> {
+        None
+    }
     fn take_terminal_outcome(&mut self) -> Option<BoxFuture<'static, TerminalOutcome>>;
     fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome>;
 }
@@ -46,6 +49,9 @@ pub trait TurnHandle: Send {
         })
     }
     fn cancellation(&self) -> &dyn CancellationControl;
+    fn detachment(&self) -> Option<&dyn OperationDetachmentControl> {
+        None
+    }
     fn take_terminal_outcome(&mut self) -> Option<BoxFuture<'static, TerminalOutcome>>;
     fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome>;
 }

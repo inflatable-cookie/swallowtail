@@ -1,6 +1,7 @@
 struct ActiveTurn {
     task: Option<Box<dyn JoinedTask>>,
     cancellation: Arc<TurnCancellation>,
+    detachment: Option<Arc<TurnDetachment>>,
     terminal: Arc<AtomicBool>,
     attachment: input::SharedAttachment,
 }
@@ -45,4 +46,3 @@ impl CancellationControl for SessionCancellation {
         })
     }
 }
-

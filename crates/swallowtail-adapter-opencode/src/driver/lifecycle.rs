@@ -158,6 +158,45 @@ fn provider_callbacks(plan: &PreflightPlan) -> Result<bool, RuntimeFailure> {
     }
 }
 
+fn active_turn_detachment(plan: &PreflightPlan) -> Result<bool, RuntimeFailure> {
+    let detachment = plan
+        .requirements()
+        .capabilities()
+        .find(|required| required.capability() == Capability::ActiveOperationDetachment);
+    let Some(detachment) = detachment else {
+        return Ok(false);
+    };
+    if !matches!(
+        classify_plan(plan)?.assessment(),
+        InterfaceCompatibilityAssessment::Qualified(_)
+    ) {
+        return Err(failure(
+            "swallowtail.opencode.detachment_version_unsupported",
+            "OpenCode active-turn detachment requires a qualified server version",
+        ));
+    }
+    let constraints = detachment.constraints().collect::<Vec<_>>();
+    let durable = plan
+        .requirements()
+        .capabilities()
+        .any(|required| required.capability() == Capability::ProviderDurableRetention);
+    if constraints.as_slice()
+        != [&CapabilityConstraint::OperationDetachmentScope(
+            swallowtail_core::OperationDetachmentScope::ActiveTurn,
+        )]
+        || !durable
+        || plan.requirements().session_provider_state_policy()
+            != Some(SessionProviderStatePolicy::DurableProviderSessionPreserved)
+        || provider_callbacks(plan)?
+    {
+        return Err(failure(
+            "swallowtail.opencode.detachment_plan_mismatch",
+            "OpenCode active-turn detachment does not match the immutable session plan",
+        ));
+    }
+    Ok(true)
+}
+
 fn validate_attachment_plan(
     plan: &PreflightPlan,
     services: &HostServices,
@@ -363,6 +402,12 @@ async fn close_active(active: &ActiveSlot) -> CleanupOutcome {
         .expect("active turn lock poisoned")
         .as_ref()
         .filter(|turn| !turn.terminal.load(Ordering::SeqCst))
+        .filter(|turn| {
+            !turn
+                .detachment
+                .as_ref()
+                .is_some_and(|detachment| detachment.is_requested())
+        })
         .map(|turn| Arc::clone(&turn.cancellation));
     let cancel_cleanup = match cancellation {
         Some(cancellation) => cleanup_from_result(cancellation.request().await.map(|_| ())),

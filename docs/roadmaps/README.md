@@ -13,8 +13,9 @@ shape.
 
 ## Next Task
 
-Hold at the g03 evidence gate. Select the next compatibility or reconciliation
-tranche only from concrete provider or consumer evidence.
+Return to the g03 evidence gate. The next recovery expansion needs explicit
+selection between Kimi cursor-checkpoint reconciliation and another
+provider-backed retained-operation record.
 
 ## Index
 

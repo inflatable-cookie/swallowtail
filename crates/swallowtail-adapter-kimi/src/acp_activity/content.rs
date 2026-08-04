@@ -71,13 +71,14 @@ pub(super) fn tool_status(status: AcpToolCallStatus) -> ActivityStatus {
     }
 }
 
-pub(super) fn terminal_status(status: &TerminalStatus) -> ActivityStatus {
+pub(super) fn terminal_status(status: &TerminalStatus) -> Option<ActivityStatus> {
     match status {
-        TerminalStatus::Completed => ActivityStatus::Completed,
-        TerminalStatus::Cancelled | TerminalStatus::TimedOut => ActivityStatus::Cancelled,
+        TerminalStatus::Detached => None,
+        TerminalStatus::Completed => Some(ActivityStatus::Completed),
+        TerminalStatus::Cancelled | TerminalStatus::TimedOut => Some(ActivityStatus::Cancelled),
         TerminalStatus::ProviderRequestObserved(_)
         | TerminalStatus::ProviderFailed(_)
         | TerminalStatus::HostFailed(_)
-        | TerminalStatus::RuntimeFailed(_) => ActivityStatus::Failed,
+        | TerminalStatus::RuntimeFailed(_) => Some(ActivityStatus::Failed),
     }
 }

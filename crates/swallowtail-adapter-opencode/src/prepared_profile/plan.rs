@@ -1,6 +1,6 @@
 use crate::OpenCodePreparedIntegration;
 use swallowtail_core::{
-    AccessRequirement, CapabilityProfile, CapabilityRequirement, ConfiguredInstance,
+    AccessRequirement, Capability, CapabilityProfile, CapabilityRequirement, ConfiguredInstance,
     CredentialState, Diagnostic, DriverRole, EndpointAuthorization, EntitlementState,
     ExecutionLayer, HarnessConfigurationPosture, HarnessIsolation, ModelRoute,
     OperationRequirements, OperationShape, PreflightContext, PreflightPlan, ResourceAccess,
@@ -117,6 +117,9 @@ pub(super) fn requirements(
     .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient);
 
     if role == DriverRole::InteractiveSession {
+        let active_turn_detachment = requirements
+            .capabilities()
+            .any(|required| required.capability() == Capability::ActiveOperationDetachment);
         let namespaces = provider_callbacks
             .then(|| {
                 [
@@ -139,7 +142,11 @@ pub(super) fn requirements(
             .with_extension_namespaces(namespaces)
             .with_harness_isolation(HarnessIsolation::AmbientHost)
             .with_session_access_policy(access_policy)
-            .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited)
+            .with_session_provider_state_policy(if active_turn_detachment {
+                SessionProviderStatePolicy::DurableProviderSessionPreserved
+            } else {
+                SessionProviderStatePolicy::Prohibited
+            })
             .require_model_route()
     } else {
         requirements

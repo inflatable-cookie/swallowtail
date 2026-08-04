@@ -190,7 +190,9 @@ impl CursorHeadlessActivityProjection {
         &mut self,
         terminal: &TerminalStatus,
     ) -> Result<Vec<ActivityObservation>, RuntimeFailure> {
-        let status = terminal_activity_status(terminal);
+        let Some(status) = terminal_activity_status(terminal) else {
+            return Ok(Vec::new());
+        };
         let mut observations = Vec::new();
         if let Some(activity) = self.thought.take() {
             observations.push(self.observation(
@@ -288,14 +290,15 @@ fn activity_label(value: &str) -> Option<ActivityLabel> {
     ActivityLabel::new(value.trim()).ok()
 }
 
-fn terminal_activity_status(status: &TerminalStatus) -> ActivityStatus {
+fn terminal_activity_status(status: &TerminalStatus) -> Option<ActivityStatus> {
     match status {
-        TerminalStatus::Completed => ActivityStatus::Completed,
-        TerminalStatus::Cancelled | TerminalStatus::TimedOut => ActivityStatus::Cancelled,
+        TerminalStatus::Detached => None,
+        TerminalStatus::Completed => Some(ActivityStatus::Completed),
+        TerminalStatus::Cancelled | TerminalStatus::TimedOut => Some(ActivityStatus::Cancelled),
         TerminalStatus::ProviderRequestObserved(_)
         | TerminalStatus::ProviderFailed(_)
         | TerminalStatus::HostFailed(_)
-        | TerminalStatus::RuntimeFailed(_) => ActivityStatus::Failed,
+        | TerminalStatus::RuntimeFailed(_) => Some(ActivityStatus::Failed),
     }
 }
 

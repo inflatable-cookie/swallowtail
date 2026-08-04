@@ -11,6 +11,7 @@ mod attachment;
 mod callback;
 mod cancellation;
 mod content;
+mod detachment;
 mod direct_continuation;
 mod event;
 mod event_buffer;
@@ -82,6 +83,7 @@ pub use callback::{
 };
 pub use cancellation::{CancellationAcknowledgement, CancellationControl, ImmediateCancellation};
 pub use content::OperationContent;
+pub use detachment::{OperationDetachmentAcknowledgement, OperationDetachmentControl};
 pub use direct_continuation::{
     DirectAttemptAuthorizationKind, DirectContinuationBinding, DirectContinuationState,
     DirectContinuationTurnRequest, DirectInferenceAttempt, DirectToolArguments, DirectToolCall,
@@ -236,13 +238,13 @@ pub use swallowtail_core::{
     HarnessIsolation, IncompatibleSessionAccessPolicy, InvalidObservableActivityProfile,
     ModelArtifactBinding, ModelArtifactDescriptor, ModelArtifactDigest, ModelArtifactFormat,
     ModelArtifactId, ModelArtifactRef, ModelArtifactRevision, ObservableActivityAvailability,
-    ObservableActivityProfile, OwnedRemoteResourceKind, PlannedConnectionRolloverPolicy,
-    ProviderActivityRef, ProviderApprovalPolicy, ProviderInferenceCachePolicy,
-    ProviderRequestHandling, ProviderRequestPolicy, ProviderSessionActivityEvidence,
-    ProviderSessionActivityState, ProviderSessionAffectedScope, ProviderSessionBindingOrigin,
-    ProviderSessionCancellationPosture, ProviderSessionCatalogueBounds,
-    ProviderSessionDeletionStrength, ProviderSessionDiscoveryScope, ProviderSessionDisplayContent,
-    ProviderSessionEffectTruth, ProviderSessionImportAvailability,
+    ObservableActivityProfile, OperationDetachmentScope, OwnedRemoteResourceKind,
+    PlannedConnectionRolloverPolicy, ProviderActivityRef, ProviderApprovalPolicy,
+    ProviderInferenceCachePolicy, ProviderRequestHandling, ProviderRequestPolicy,
+    ProviderSessionActivityEvidence, ProviderSessionActivityState, ProviderSessionAffectedScope,
+    ProviderSessionBindingOrigin, ProviderSessionCancellationPosture,
+    ProviderSessionCatalogueBounds, ProviderSessionDeletionStrength, ProviderSessionDiscoveryScope,
+    ProviderSessionDisplayContent, ProviderSessionEffectTruth, ProviderSessionImportAvailability,
     ProviderSessionImportUnavailableReason, ProviderSessionInitialStateRequirement,
     ProviderSessionInterfaceCompatibility, ProviderSessionLifecycleState,
     ProviderSessionManagementAction, ProviderSessionManagementEffect, ResourceAccess,

@@ -64,11 +64,30 @@ impl Fixture {
         self.plan_with_versions_and_route(role, &[self.server_version.as_str()], route_id)
     }
 
+    fn detachable_session_plan(&self) -> PreflightPlan {
+        self.plan_with_versions_route_and_detachment(
+            DriverRole::InteractiveSession,
+            &[self.server_version.as_str()],
+            "opencode-anthropic-sonnet",
+            true,
+        )
+    }
+
     fn plan_with_versions_and_route(
         &self,
         role: DriverRole,
         versions: &[&str],
         route_id: &str,
+    ) -> PreflightPlan {
+        self.plan_with_versions_route_and_detachment(role, versions, route_id, false)
+    }
+
+    fn plan_with_versions_route_and_detachment(
+        &self,
+        role: DriverRole,
+        versions: &[&str],
+        route_id: &str,
+        active_turn_detachment: bool,
     ) -> PreflightPlan {
         let descriptor = opencode_http_descriptor();
         let access_id = AccessProfileId::new("access.opencode").expect("access id is valid");
@@ -91,6 +110,17 @@ impl Fixture {
                 ),
                 CapabilityRequirement::new(Capability::Resume, []),
             ]);
+            if active_turn_detachment {
+                capability_requirements.extend([
+                    CapabilityRequirement::new(
+                        Capability::ActiveOperationDetachment,
+                        [swallowtail_core::CapabilityConstraint::OperationDetachmentScope(
+                            swallowtail_core::OperationDetachmentScope::ActiveTurn,
+                        )],
+                    ),
+                    CapabilityRequirement::new(Capability::ProviderDurableRetention, []),
+                ]);
+            }
         } else if role == DriverRole::ProviderSessionReconciliation {
             capability_requirements = vec![
                 CapabilityRequirement::new(
@@ -183,11 +213,13 @@ impl Fixture {
         .with_session_access_policy(SessionAccessPolicy::ambient_harness(
             swallowtail_core::ResourceAccess::Read,
         ))
-        .with_session_provider_state_policy(if role == DriverRole::ProviderSessionReconciliation {
-            SessionProviderStatePolicy::DurableProviderSessionPreserved
-        } else {
-            SessionProviderStatePolicy::Prohibited
-        });
+        .with_session_provider_state_policy(
+            if role == DriverRole::ProviderSessionReconciliation || active_turn_detachment {
+                SessionProviderStatePolicy::DurableProviderSessionPreserved
+            } else {
+                SessionProviderStatePolicy::Prohibited
+            },
+        );
         let context =
             PreflightContext::new(&descriptor, &instance, &access, &status, host_services);
         if role == DriverRole::ModelCatalog {

@@ -276,6 +276,7 @@ impl OpenCodeHttpDriver {
             structured_output: request.structured_output().cloned(),
             image_attachments,
             provider_callbacks: callback_enabled,
+            active_turn_detachment: false,
             callback_run_id: Some(
                 RuntimeRunId::new(format!(
                     "opencode:run:{}",
@@ -286,4 +287,3 @@ impl OpenCodeHttpDriver {
         })
     }
 }
-

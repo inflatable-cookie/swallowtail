@@ -13,9 +13,9 @@ shape.
 
 ## Next Task
 
-Execute g03 card 080: qualify Gemini CLI durable-transcript reconciliation
-without prompt replay, resume, deletion, or terminal inference from history
-presence.
+Execute g03 card 083: remove Gemini's unsupported confirmed-deletion claim and
+stateful `--list-sessions` reconciliation before adding Anthropic recovered-run
+support.
 
 ## Index
 

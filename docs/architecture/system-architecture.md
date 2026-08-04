@@ -1253,10 +1253,12 @@ provider-retention tranche.
 
 - Gemini CLI stored-transcript management is a separate installed-executable
   role across `0.51.0..=0.52.0`. A successful durable headless run can return
-  one take-once bound management capability after terminal completion.
-  Deletion uses the exact bound id, joins the delete process, performs one
-  bounded `--list-sessions` reconciliation, and reports only
-  `HistoryRemoved`; Gemini ACP remains unsupported.
+  one take-once bound management capability after terminal completion. Later
+  exact-source qualification found its post-delete `--list-sessions` check may
+  perform summary inference and mutate retained transcripts. It is not a
+  read-only confirmation surface. Contract 038 and g03.033 therefore require
+  the unsupported `HistoryRemoved` claim to be removed or downgraded; Gemini
+  ACP remains unsupported.
 - Gemini CLI and Claude Agent expose separate opt-in temporary-retention
   structured profiles. Each deletes only the operation-private transcript or
   session, records deletion truth separately from inference truth, and leaves
@@ -1517,6 +1519,14 @@ OpenAI background Responses is the first mapping. One exact retrieve request
 observes the persisted response id; the stored SSE cursor remains opaque
 attachment evidence. No create, stream attach, cancel, delete, callback, or
 session operation enters reconciliation.
+
+Contracted but unrealized g03.033 extends run reconciliation to Anthropic
+Managed Agents. The prepared recoverable profile emits a route-bound checkpoint
+as soon as its exact session and environment exist. Later observation performs
+only bounded session and persisted-event retrieval. A distinct opaque
+owned-resource binding admits explicit recovered cleanup; the checkpoint does
+not. Cleanup preserves active or ambiguous work and, once inactive, deletes the
+exact session before its exact environment.
 
 Claude Agent ACP and Kimi ACP remain ordinary load/replay routes. Their only
 history operation is ACP `session/load`, which restores resumable context and

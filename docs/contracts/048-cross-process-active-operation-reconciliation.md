@@ -102,11 +102,11 @@ Unknown, missing, stale, cross-route, cross-instance, cross-host,
 cross-resource, or mismatched model bindings fail closed. A missing exact turn
 does not fall back to a similarly timed or similarly worded turn.
 
-`InterruptedRunState` is `Active`, `Completed`, `Failed`, `Cancelled`,
-`InactiveUnresolved`, or `Unknown`. Run observations always carry the exact
-provider run reference. Recovered output and usage are optional and bounded;
-non-terminal observations carry neither. A terminal provider payload from a
-different run fails closed.
+`InterruptedRunState` is `Active`, `WaitingForProviderInput`, `Completed`,
+`Failed`, `Cancelled`, `InactiveUnresolved`, or `Unknown`. Run observations
+always carry the exact provider run reference. Recovered output and usage are
+optional and bounded; non-terminal observations carry neither. A terminal
+provider payload from a different run fails closed.
 
 ## Replay Snapshot
 
@@ -187,6 +187,26 @@ create, prompt, retry, stream attachment, cancel, delete, callback, or session
 operation. The restored response/cursor checkpoint must match the current
 route binding exactly.
 
+`anthropic.managed-agent` is the next contracted mapping, pending realization
+in g03.033. One restored checkpoint binds the exact prepared route, runtime
+run, provider session, environment, and persisted-event position. Observation
+uses only bounded `GET` session and paginated persisted-event requests for that
+session. It sends no message, interrupt, callback result, stream attachment,
+update, archive, or delete request.
+
+Running or rescheduling maps `Active`. Idle `requires_action` maps
+`WaitingForProviderInput`. Exact retries-exhausted evidence maps `Failed`. A
+persisted user-interrupt followed by the corresponding idle end-turn maps
+`Cancelled`. Natural idle end-turn maps `Completed` only when the ordered
+events attribute it to the exact operation-private submitted message. A bare
+terminated session or incomplete history maps `Unknown` unless stronger exact
+event evidence proves a terminal state. Missing pages, event gaps, foreign
+sessions, route drift, and resource drift fail closed.
+
+The checkpoint does not grant cleanup authority. Contract 022 defines a
+separate exact owned-resource cleanup binding for a recovered driver-owned
+session and environment.
+
 ACP `session/load` is not a reconciliation operation. Stable ACP defines load
 as restoring resumable session context, connecting requested MCP servers, and
 returning a ready session after replay. A route cannot make that operation
@@ -213,3 +233,6 @@ Portable and route tests must cover:
   side effect
 - joined cleanup and provider-session preservation
 - exact run binding, bounded recovered output, and no state-changing request
+- waiting-for-provider-input run state and exact callback non-authority
+- Anthropic exact session/event attribution, pagination bounds, interrupt
+  ordering, ambiguous termination, and checkpoint-before-loss behavior

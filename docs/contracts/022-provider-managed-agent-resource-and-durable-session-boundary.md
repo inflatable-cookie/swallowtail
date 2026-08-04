@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-21
+Updated: 2026-08-04
 
 ## Purpose
 
@@ -62,6 +62,39 @@ produces degraded cleanup and records remote removal as unconfirmed.
 Deleting a runtime handle locally is not remote deletion. Drop is never proof
 of interruption, deletion, or credential release. No durable cross-process
 resume binding exists unless a later contract adds it explicitly.
+
+## Cross-Process Observation And Recovered Cleanup
+
+An opt-in recoverable Managed Agents profile may expose two separate opaque,
+persistable records after exact resources are established and before submitted
+work can be lost:
+
+- a Contract 048 `ProviderRunCheckpoint` for read-only reconciliation
+- an owned-resource cleanup binding for the exact driver-created environment
+  and session
+
+Both records bind the prepared driver, configured instance, endpoint, beta,
+access posture, agent version, model route, runtime run, execution host, and
+exact provider resources. They are bounded, versioned, integrity checked, and
+contain no credential or provider payload. Consumers persist them opaquely and
+cannot manufacture authority from raw environment or session ids.
+
+Reconciliation performs only bounded session retrieval and paginated persisted
+event retrieval. It creates no stream, sends no message or interrupt, answers
+no callback, and changes no provider resource. A callback wait is observable
+as `WaitingForProviderInput` but grants no answer authority.
+
+Recovered cleanup is a separate explicit runtime role. It accepts only the
+restored owned-resource binding, never a reconciliation checkpoint or raw id.
+It deletes the exact inactive session, confirms removal, then deletes the exact
+environment and confirms removal. An active or ambiguously active session is
+preserved and rejected; cleanup does not smuggle an interrupt or cancellation
+decision into recovery. Cancellation, deadline, lost acknowledgement, or
+partial deletion retains exact unconfirmed effect truth and performs no retry.
+
+The ordinary first profile remains delete-on-close. The recoverable profile
+does not change operator-owned resources, grant indefinite retention policy,
+or allow one operation's binding to clean another operation's resources.
 
 ## Provider-Managed Recovery
 
@@ -194,6 +227,11 @@ Deterministic dated fixtures and loopback tests must prove:
 - cumulative usage, safe rate and request evidence, and redaction
 - session-before-environment deletion and joined work before lease release
 - degraded cleanup when interruption or either deletion is unconfirmed
+- recoverable-profile checkpoint and cleanup binding emission before work can
+  be lost
+- strict separation of read-only reconciliation from recovered-resource cleanup
+- exact route/resource restoration, cross-operation rejection, inactive-only
+  deletion, session-before-environment order, and partial-effect truth
 
 Default QA uses no credential, provider account, external request, remote
 sandbox, or paid inference. Live authentication remains separately gated.

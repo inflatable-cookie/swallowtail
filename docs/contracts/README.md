@@ -197,9 +197,11 @@ persistence policy remain downstream.
 Contract 048 adds read-only cross-process reconciliation for consumer turns or
 structured runs whose runtime handles were lost. Session reconciliation binds
 an exact durable session and runtime turn; run reconciliation binds an exact
-persisted provider-run checkpoint. Terminal attribution stays exact. Neither
-role grants retry, prompt, import, resume, cancellation, callback, management,
-or child-control authority.
+persisted provider-run checkpoint. Run state includes provider-input wait;
+terminal attribution stays exact. Neither role grants retry, prompt, import,
+resume, cancellation, callback, management, cleanup, or child-control
+authority. Contract 022 separately admits exact inactive recovered-resource
+cleanup for a qualified driver-owned Managed Agents session and environment.
 Contract 049 adds explicit controlled-shutdown detachment for qualified active
 runs or turns. It stops and joins only local observation work, reports local
 `Detached` truth, preserves provider terminal uncertainty, and requires a

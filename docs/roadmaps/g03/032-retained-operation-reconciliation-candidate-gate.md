@@ -1,12 +1,12 @@
 # 032 Retained Operation Reconciliation Candidate Gate
 
-Status: active
+Status: completed
 Owner: Tom
 Created: 2026-08-04
 Depends on: g03.031
 Vision tags: provider continuity, exact recovery, retained operation
 Contract refs: 021, 022, 042, 048
-Planning state: card 080 ready; cards 081-082 planned
+Planning state: cards 080-082 completed
 
 ## Problem
 
@@ -17,16 +17,16 @@ durable exact operation binding accepted for restart observation.
 
 ## Goals
 
-- [ ] qualify Gemini transcript identity, terminal evidence, and read path
-- [ ] qualify Anthropic managed-operation identity, retention, and event lookup
-- [ ] select one exact implementation mapping or close both candidates
-- [ ] preserve route-specific retention, deletion, and control boundaries
+- [x] qualify Gemini transcript identity, terminal evidence, and read path
+- [x] qualify Anthropic managed-operation identity, retention, and event lookup
+- [x] select one exact implementation mapping or close both candidates
+- [x] preserve route-specific retention, deletion, and control boundaries
 
 ## Execution Plan
 
-- [ ] card 080: Gemini durable-transcript reconciliation qualification
-- [ ] card 081: Anthropic managed-operation recovery qualification
-- [ ] card 082: compare exact evidence, select a mapping, and compile only the
+- [x] card 080: Gemini durable-transcript reconciliation qualification
+- [x] card 081: Anthropic managed-operation recovery qualification
+- [x] card 082: compare exact evidence, select a mapping, and compile only the
   implementation runway which passes Contract 048
 
 ## Boundaries
@@ -39,13 +39,15 @@ durable exact operation binding accepted for restart observation.
 
 ## Acceptance Criteria
 
-- [ ] each route has exact version, identity, retention, and observation evidence
-- [ ] read-only observation and ordinary continuation remain separate
-- [ ] exact terminal claims require exact provider operation or turn attribution
-- [ ] failures and negative qualifications remain visible without fake support
-- [ ] any implementation cards bind one exact qualified route
+- [x] each route has exact version, identity, retention, and observation evidence
+- [x] read-only observation and ordinary continuation remain separate
+- [x] exact terminal claims require exact provider operation or turn attribution
+- [x] failures and negative qualifications remain visible without fake support
+- [x] any implementation cards bind one exact qualified route
 
 ## Next Planning Checkpoint
 
-After card 082, execute the selected mapping or return the sole Next Task to
-the g03 evidence gate when neither candidate passes.
+Complete. Gemini fails because listing may mutate retained state and lacks
+terminal evidence. Anthropic passes the exact read-only observation gate.
+Continue with g03.033 card 083 to repair Gemini management truth before the
+selected Anthropic implementation.

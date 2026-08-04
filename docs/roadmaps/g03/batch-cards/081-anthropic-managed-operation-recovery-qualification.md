@@ -1,6 +1,6 @@
 # 081 Anthropic Managed Operation Recovery Qualification
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-04
 Milestone: `../032-retained-operation-reconciliation-candidate-gate.md`
@@ -39,3 +39,10 @@ continuation or control authority.
 ## Auto-Continuation
 
 Continue to card 082 after the managed-operation classification is promoted.
+
+## Evidence
+
+Exact session retrieval and bounded persisted-event history pass the read-only
+gate. Current provisioning does not expose a durable checkpoint before work
+can be lost, and recovered cleanup needs authority separate from observation.
+Research 103 and Contracts 022 and 048 carry the selected mapping.

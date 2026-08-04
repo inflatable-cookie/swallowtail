@@ -302,13 +302,20 @@ arbitrary CLI argument is not a management binding. Cross-transport ACP import
 is outside this claim. The opt-in temporary-cleanup profile never returns a
 management binding.
 
-The route qualifies only `HistoryRemoved`. The provider command prints a
-success line after its storage helper returns, but storage cleanup catches
-some local unlink failures. Swallowtail must therefore run one bounded
-read-only `--list-sessions` reconciliation after the delete process joins and
-confirm that the exact bound session id is absent. Process exit or the success
-line alone is insufficient. The command's stdout may contain the first user
-message and must never enter stable diagnostics.
+The intended route outcome is `HistoryRemoved`, but the qualified
+`0.51.0..=0.52.0` absence check is not side-effect free. The provider command
+prints a success line after its storage helper returns, while storage cleanup
+catches some local unlink failures. Exact source also shows that
+`--list-sessions` runs summary generation before listing and may issue a model
+request plus append summary or scratchpad metadata to retained transcripts.
+It therefore cannot be described or used as read-only reconciliation.
+
+Process exit, the success line, and a stateful list result are each
+insufficient to confirm removal. Until g03.033 repairs the route truth,
+Swallowtail must not advertise a contract-conforming Gemini `HistoryRemoved`
+outcome from this sequence. A future confirmation path must be explicitly
+qualified as side-effect free and must not expose the first user message in
+stable diagnostics.
 
 The exact route has no archive or restore claim. It requires an inactive
 target. A target still present after the command is not deleted. Cancellation,

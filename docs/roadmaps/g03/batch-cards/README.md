@@ -4,15 +4,19 @@
 
 ## Ready
 
-- `080-gemini-durable-transcript-reconciliation-qualification.md`
+- `083-gemini-stored-transcript-management-truth-repair.md`
 
 ## Planned
 
-- `081-anthropic-managed-operation-recovery-qualification.md`
-- `082-retained-operation-reconciliation-selection.md`
+- `084-provider-recovered-resource-cleanup-kernel.md`
+- `085-anthropic-managed-run-reconciliation-and-cleanup.md`
+- `086-anthropic-recovery-prepared-and-package-acceptance.md`
 
 ## Completed
 
+- `082-retained-operation-reconciliation-selection.md`
+- `081-anthropic-managed-operation-recovery-qualification.md`
+- `080-gemini-durable-transcript-reconciliation-qualification.md`
 - `079-acp-retained-history-reconciliation-qualification.md`
 - `078-openai-background-run-detachment.md`
 - `077-openai-background-run-reconciliation.md`

@@ -1,6 +1,6 @@
 # 082 Retained Operation Reconciliation Selection
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-04
 Milestone: `../032-retained-operation-reconciliation-candidate-gate.md`
@@ -33,3 +33,9 @@ the lane honestly when neither candidate passes.
 
 Continue into the selected implementation roadmap only when one exact route
 passes. Otherwise return to the g03 evidence gate.
+
+## Selection
+
+Anthropic Managed Agents is selected. Roadmap g03.033 sequences one prerequisite
+Gemini management truth repair, the portable cleanup kernel, route realization,
+and prepared/package acceptance.

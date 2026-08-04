@@ -34,7 +34,8 @@ visible as unverified newer unless exact evidence requires rejection.
 | Persist and reconcile an exact Kimi operation before detaching its local observer. | completed | Contracts 017, 042, 048-049 | `g03.029` |
 | Persist, reconcile, and detach an exact provider-owned structured run. | completed | Contracts 021, 042, 048-049 | `g03.030` |
 | Qualify ACP retained history for honest restart reconciliation. | completed | Contracts 017, 042, 048 | `g03.031` |
-| Qualify remaining durable transcript and retained-operation reconciliation candidates. | active | Contracts 021-022, 042, 048 | `g03.032` |
+| Qualify remaining durable transcript and retained-operation reconciliation candidates. | completed | Contracts 021-022, 042, 048 | `g03.032` |
+| Reconcile and clean exact recovered Anthropic Managed Agent runs without conflating observation and control. | active | Contracts 021-022, 038, 042, 048 | `g03.033` |
 | Periodically reconcile deferred gates, route truth, and generation capacity. | planned | Contract 001 | recurring checkpoints |
 
 ## Current Checkpoint
@@ -302,6 +303,17 @@ visible as unverified newer unless exact evidence requires rejection.
   exact `0.63.0`, and Kimi ACP `0.28.1..=0.31.1` all restore a resumable
   session before or alongside replay; neither route gains Contract 048
   observation authority
+- Research 103 and g03.032 reject Gemini headless reconciliation because exact
+  `0.51.0..=0.52.0` listing may invoke summary inference and mutate transcript
+  metadata while exposing no terminal record
+- the same evidence invalidates Gemini's claimed read-only post-delete
+  confirmation; g03.033 card 083 owns the runtime and public truth repair
+- Anthropic Managed Agents is the selected exact retained-run candidate:
+  bounded session and persisted-event reads support active, waiting, terminal,
+  interrupt, and unknown truth once an early route-bound checkpoint exists
+- Contracts 022 and 048 keep read-only reconciliation separate from explicit
+  inactive-only cleanup of the exact recovered session then environment; cards
+  084-086 own portable vocabulary, route realization, and package acceptance
 
 ## Milestones
 
@@ -336,13 +348,14 @@ visible as unverified newer unless exact evidence requires rejection.
 - [029 Kimi Operation Checkpoint, Reconciliation, And Detachment](029-kimi-operation-checkpoint-reconciliation-and-detachment.md) — completed
 - [030 OpenAI Background Run Reconciliation And Detachment](030-openai-background-run-reconciliation-and-detachment.md) — completed
 - [031 ACP Retained History Reconciliation Qualification](031-acp-retained-history-reconciliation-qualification.md) — completed
-- [032 Retained Operation Reconciliation Candidate Gate](032-retained-operation-reconciliation-candidate-gate.md) — active
+- [032 Retained Operation Reconciliation Candidate Gate](032-retained-operation-reconciliation-candidate-gate.md) — completed
+- [033 Anthropic Managed Run Reconciliation And Recovered Cleanup](033-anthropic-managed-run-reconciliation-and-recovered-cleanup.md) — active
 
 ## Checkpoint
 
-The lane is executing g03.032. Card 080 qualifies whether Gemini CLI's durable
-headless transcript can prove exact interrupted-turn truth without prompt
-replay, resume, deletion, or a new provider operation.
+The lane is executing g03.033. Card 083 first removes Gemini's unsupported
+confirmed-deletion claim. Cards 084-086 then realize exact Anthropic Managed
+Agents reconciliation and separately admitted recovered-resource cleanup.
 
 ## Generation Boundary
 

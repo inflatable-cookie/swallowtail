@@ -1,6 +1,6 @@
 # 080 Gemini Durable Transcript Reconciliation Qualification
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-04
 Milestone: `../032-retained-operation-reconciliation-candidate-gate.md`
@@ -37,3 +37,10 @@ read-only interrupted-run reconciliation without prompt replay or deletion.
 ## Auto-Continuation
 
 Continue to card 081 after the Gemini classification is promoted.
+
+## Evidence
+
+Exact `v0.51.0` and `v0.52.0` source calls summary generation before
+`--list-sessions`; that path may invoke Gemini and append transcript metadata.
+The list and transcript also lack an exact terminal record. Research 103 and
+Contracts 038 and 048 preserve the blocked classification.

@@ -54,6 +54,7 @@ fn validate_run(
         Capability::ReasoningSelection,
         Capability::StructuredOutput,
         Capability::ObservableActivity,
+        Capability::ActiveOperationDetachment,
     ];
     if plan
         .requirements()
@@ -97,6 +98,10 @@ fn validate_run(
                 constraints == [&dialect, &enforcement] || constraints == [&enforcement, &dialect]
             }),
             Capability::ObservableActivity => true,
+            Capability::ActiveOperationDetachment => constraints
+                == [&CapabilityConstraint::OperationDetachmentScope(
+                    swallowtail_core::OperationDetachmentScope::StructuredRun,
+                )],
             _ => constraints.is_empty(),
         }
     }) {

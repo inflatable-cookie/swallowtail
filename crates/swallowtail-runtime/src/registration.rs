@@ -1,6 +1,6 @@
 use crate::{
-    DiscoveryDriver, InteractiveSessionDriver, ModelCatalogDriver, ProviderSessionCatalogueDriver,
-    ProviderSessionImportDriver, ProviderSessionManagementDriver,
+    DiscoveryDriver, InteractiveSessionDriver, ModelCatalogDriver, ProviderRunReconciliationDriver,
+    ProviderSessionCatalogueDriver, ProviderSessionImportDriver, ProviderSessionManagementDriver,
     ProviderSessionReconciliationDriver, RealtimeMediaSessionDriver, ServingInstanceDriver,
     StructuredRunDriver,
 };
@@ -58,6 +58,7 @@ pub struct DriverRegistration {
     provider_session_catalogue: Option<Arc<dyn ProviderSessionCatalogueDriver>>,
     provider_session_import: Option<Arc<dyn ProviderSessionImportDriver>>,
     provider_session_reconciliation: Option<Arc<dyn ProviderSessionReconciliationDriver>>,
+    provider_run_reconciliation: Option<Arc<dyn ProviderRunReconciliationDriver>>,
 }
 
 impl DriverRegistration {
@@ -75,6 +76,7 @@ impl DriverRegistration {
             provider_session_catalogue: None,
             provider_session_import: None,
             provider_session_reconciliation: None,
+            provider_run_reconciliation: None,
         }
     }
 
@@ -168,6 +170,15 @@ impl DriverRegistration {
         Ok(self)
     }
 
+    pub fn with_provider_run_reconciliation(
+        mut self,
+        role: Arc<dyn ProviderRunReconciliationDriver>,
+    ) -> Result<Self, RegistrationFailure> {
+        self.require_declared(DriverRole::ProviderRunReconciliation)?;
+        self.provider_run_reconciliation = Some(role);
+        Ok(self)
+    }
+
     #[must_use]
     pub const fn descriptor(&self) -> &DriverDescriptor {
         &self.descriptor
@@ -223,6 +234,11 @@ impl DriverRegistration {
         &self,
     ) -> Option<&Arc<dyn ProviderSessionReconciliationDriver>> {
         self.provider_session_reconciliation.as_ref()
+    }
+
+    #[must_use]
+    pub fn provider_run_reconciliation(&self) -> Option<&Arc<dyn ProviderRunReconciliationDriver>> {
+        self.provider_run_reconciliation.as_ref()
     }
 
     fn require_declared(&self, role: DriverRole) -> Result<(), RegistrationFailure> {

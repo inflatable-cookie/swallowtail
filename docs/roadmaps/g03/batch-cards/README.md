@@ -4,10 +4,15 @@
 
 ## Ready
 
+- `079-acp-retained-history-reconciliation-qualification.md`
+
 ## Planned
 
 ## Completed
 
+- `078-openai-background-run-detachment.md`
+- `077-openai-background-run-reconciliation.md`
+- `076-provider-run-reconciliation-kernel.md`
 - `075-kimi-attached-turn-detachment.md`
 - `074-kimi-exact-turn-reconciliation.md`
 - `073-provider-operation-checkpoint-kernel.md`

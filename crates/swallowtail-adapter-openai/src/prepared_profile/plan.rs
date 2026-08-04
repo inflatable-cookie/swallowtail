@@ -46,7 +46,7 @@ impl OpenAiBackgroundPreparedEvidence {
     }
 }
 
-pub(super) fn model_route(
+pub(crate) fn model_route(
     prepared: &OpenAiBackgroundPreparedIntegration,
     selection: super::OpenAiBackgroundModelSelection,
     capabilities: CapabilityProfile,
@@ -62,7 +62,7 @@ pub(super) fn model_route(
     .with_provider_id(ProviderId::new("openai").expect("static OpenAI provider identity is valid"))
 }
 
-pub(super) fn instance_with_capabilities(
+pub(crate) fn instance_with_capabilities(
     prepared: &OpenAiBackgroundPreparedIntegration,
     capabilities: CapabilityProfile,
 ) -> ConfiguredInstance {

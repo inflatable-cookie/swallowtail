@@ -32,10 +32,11 @@ session therefore proves only `InactiveUnresolved`, never completion.
 Codex app-server `thread/read` carries exact turn records. The promoted mapping
 now admits exact turn status when present and fails closed when the requested
 turn is absent. Kimi local server carries exact turn ids plus resumable event
-cursors and remains the next stronger candidate. OpenAI background and
-Anthropic managed-agent work also can
-outlive an attachment; their current provider operation/resource references
-are operation-private and have no durable recovery record.
+cursors. OpenAI background Responses now carries a strict route-bound
+provider-run checkpoint and one exact read-only retrieve path. Anthropic
+managed-agent work can also outlive an attachment, but its current provider
+operation/resource references remain operation-private with no durable
+recovery record.
 
 ACP child-process routes can often reload retained history. The original child
 and live turn do not survive as an observable attachment, so history recovery
@@ -48,7 +49,8 @@ must not be advertised as active-turn reattachment or exact terminal proof.
 | supported exact-turn observation | `codex.app-server` | realized in g03.027; missing status remains exact-attribution `Unknown` |
 | supported session-scoped observation | `opencode.http` | realized in g03.027 |
 | supported exact-turn observation | `kimi-code.local-server` | realized in g03.029 with a persisted operation checkpoint and finite cursor replay |
-| retained-operation candidate | `openai.background`; `anthropic.managed-agent` | persist a strict route-bound provider operation/resource recovery record before dispatch can be lost |
+| supported exact-run observation | `openai.background` | realized in g03.030 with a persisted provider-run checkpoint and one exact retrieve request |
+| retained-operation candidate | `anthropic.managed-agent` | persist a strict route-bound provider operation/resource recovery record before dispatch can be lost |
 | history-snapshot candidate | `claude-agent.acp`; `kimi-code.acp` | qualify load-after-process-loss as read-only reconciliation and prove no prompt, callback, or control side effect |
 | durable-transcript candidate | `gemini-cli.headless` | bind one consumer turn to exact transcript terminal evidence without prompt replay |
 | blocked pending durable provider identity | `cursor-agent.acp`; `gemini-cli.acp`; `grok-build.acp`; `pi.rpc`; `qwen.headless`; `antigravity.headless`; `alibaba.conversations` | expose and persist an exact route-qualified operation/session reference plus bounded status or history lookup |

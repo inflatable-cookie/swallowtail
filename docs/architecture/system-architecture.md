@@ -1506,6 +1506,18 @@ server. Session, cwd, epoch, sequence, and turn remain exact. The observer
 closes after the acknowledged snapshot and grants no prompt, abort, callback,
 resume, import, management, or child-control authority.
 
+Realized g03.030 adds a parallel run-scoped path for provider-owned work with
+no provider session. `ProviderRunCheckpoint` binds runtime run, exact provider
+run, opaque adapter cursor, and the prepared route fingerprint.
+`ProviderRunReconciliation` returns one exact state observation plus bounded
+terminal output and usage. It does not reuse session replay or manufacture a
+session identity.
+
+OpenAI background Responses is the first mapping. One exact retrieve request
+observes the persisted response id; the stored SSE cursor remains opaque
+attachment evidence. No create, stream attach, cancel, delete, callback, or
+session operation enters reconciliation.
+
 ## Controlled Operation Detachment
 
 Contract 049 adds an optional lifecycle control to qualified run and turn
@@ -1539,6 +1551,12 @@ only its WebSocket observer. It emits local `Detached`, sends no `abort`, and
 later exact-turn reconciliation consumes the persisted operation checkpoint.
 Manual callback mode, owned foreground servers, structured runs, and
 unverified-newer versions remain excluded.
+
+Realized g03.030 adds one structured-run mapping for an explicitly selected
+OpenAI background profile. After the response/cursor checkpoint is available,
+detachment closes the SSE observer without response cancel or delete. Ordinary
+close and terminal cleanup remain unchanged; restart uses exact run
+reconciliation.
 
 ## Dependency Rules
 

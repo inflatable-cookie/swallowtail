@@ -55,7 +55,7 @@ retained_execution_classifications = {
     ("retained_background_execution", "openai.realtime"): "operation_shape_not_applicable",
     ("stream_reattachment", "openai.realtime"): "operation_shape_not_applicable",
     ("provider_managed_recovery", "openai.realtime"): "upstream_unsupported",
-    ("provider_managed_recovery", "openai.background"): "upstream_unsupported",
+    ("provider_managed_recovery", "openai.background"): "shared_contract_and_corpus_required",
     ("retained_background_execution", "opencode.http"): "operation_shape_not_applicable",
     ("stream_reattachment", "opencode.http"): "upstream_unsupported",
     ("provider_managed_recovery", "opencode.http"): "upstream_unsupported",

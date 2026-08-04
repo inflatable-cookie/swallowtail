@@ -13,9 +13,9 @@ shape.
 
 ## Next Task
 
-Return to the g03 retained-operation evidence gate. The next useful candidate
-is an exact OpenAI background response/cursor record; ACP retained-history
-reconciliation remains the alternative.
+Execute g03 card 079: qualify ACP retained-history reconciliation across
+Claude Agent and Kimi ACP without treating retained history as a surviving
+live turn.
 
 ## Index
 

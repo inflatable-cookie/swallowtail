@@ -3,7 +3,8 @@ use std::sync::{Arc, Mutex};
 use swallowtail_core::{RunRef, SafeDiagnostic};
 use swallowtail_runtime::{
     BoxEventStream, BoxFuture, CancellationAcknowledgement, CancellationControl, JoinedTask,
-    RequestId, RunHandle, RuntimeRunId, TerminalOutcome,
+    OperationDetachmentAcknowledgement, OperationDetachmentControl, RequestId, RunHandle,
+    RuntimeRunId, TerminalOutcome,
 };
 
 struct RunCancellation {
@@ -59,6 +60,64 @@ impl CancellationControl for RunCancellation {
     }
 }
 
+struct RunDetachment {
+    cancellation: Arc<RunCancellation>,
+    terminal: Arc<AtomicBool>,
+    checkpoint_ready: Arc<AtomicBool>,
+    requested: AtomicBool,
+}
+
+impl RunDetachment {
+    fn is_requested(&self) -> bool {
+        self.requested.load(Ordering::SeqCst)
+    }
+}
+
+impl OperationDetachmentControl for RunDetachment {
+    fn scope(&self) -> swallowtail_core::OperationDetachmentScope {
+        swallowtail_core::OperationDetachmentScope::StructuredRun
+    }
+
+    fn request(&self) -> BoxFuture<'_, Result<OperationDetachmentAcknowledgement, RuntimeFailure>> {
+        Box::pin(async move {
+            if self.cancellation.requested.load(Ordering::SeqCst) {
+                return Err(failure(
+                    "swallowtail.openai.detachment_cancelled",
+                    "OpenAI background cancellation already won operation disposition",
+                ));
+            }
+            if self.is_requested() {
+                return Ok(OperationDetachmentAcknowledgement::AlreadyRequested);
+            }
+            if self.terminal.load(Ordering::SeqCst) {
+                return Err(failure(
+                    "swallowtail.openai.detachment_terminal",
+                    "OpenAI background run already reached local terminal state",
+                ));
+            }
+            if !self.checkpoint_ready.load(Ordering::SeqCst) {
+                return Err(failure(
+                    "swallowtail.openai.detachment_checkpoint_unavailable",
+                    "OpenAI background run has no recoverable response checkpoint",
+                ));
+            }
+            let already = self.requested.swap(true, Ordering::SeqCst);
+            if self.cancellation.requested.load(Ordering::SeqCst) {
+                return Err(failure(
+                    "swallowtail.openai.detachment_cancelled",
+                    "OpenAI background cancellation won operation disposition",
+                ));
+            }
+            self.cancellation.stop_active();
+            Ok(if already {
+                OperationDetachmentAcknowledgement::AlreadyRequested
+            } else {
+                OperationDetachmentAcknowledgement::Requested
+            })
+        })
+    }
+}
+
 struct OpenAiRunHandle {
     request_id: RequestId,
     run_id: RuntimeRunId,
@@ -66,6 +125,8 @@ struct OpenAiRunHandle {
     events: Option<BoxEventStream>,
     terminal: Option<BoxFuture<'static, TerminalOutcome>>,
     cancellation: Arc<RunCancellation>,
+    detachment: Option<Arc<RunDetachment>>,
+    terminal_flag: Arc<AtomicBool>,
     task: Box<dyn JoinedTask>,
 }
 
@@ -90,14 +151,27 @@ impl RunHandle for OpenAiRunHandle {
         self.cancellation.as_ref()
     }
 
+    fn detachment(&self) -> Option<&dyn OperationDetachmentControl> {
+        self.detachment
+            .as_deref()
+            .map(|control| control as &dyn OperationDetachmentControl)
+    }
+
     fn take_terminal_outcome(&mut self) -> Option<BoxFuture<'static, TerminalOutcome>> {
         self.terminal.take()
     }
 
     fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome> {
         Box::pin(async move {
-            self.cancellation.requested.store(true, Ordering::SeqCst);
-            self.cancellation.stop_active();
+            if !self.terminal_flag.load(Ordering::SeqCst)
+                && !self
+                    .detachment
+                    .as_ref()
+                    .is_some_and(|detachment| detachment.is_requested())
+            {
+                self.cancellation.requested.store(true, Ordering::SeqCst);
+                self.cancellation.stop_active();
+            }
             match self.task.join().await {
                 Ok(()) => CleanupOutcome::Clean,
                 Err(_) => CleanupOutcome::Failed(SafeDiagnostic::new(

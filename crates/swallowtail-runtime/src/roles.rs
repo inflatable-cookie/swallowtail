@@ -1,5 +1,6 @@
 #![allow(unused_mut)]
 include!("roles/imports.rs");
+include!("roles/drivers/provider_run_reconciliation.rs");
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct DiscoveryRequest {
@@ -515,6 +516,14 @@ pub trait ProviderSessionImportDriver: Send + Sync {
 /// authority.
 pub trait ProviderSessionReconciliationDriver: Send + Sync {
     provider_session_reconciliation_driver_items!();
+}
+
+/// Read-only observation of one exact provider-owned structured run.
+///
+/// This role grants no create, retry, stream attachment, cancellation,
+/// callback, deletion, or provider-session authority.
+pub trait ProviderRunReconciliationDriver: Send + Sync {
+    provider_run_reconciliation_driver_items!();
 }
 
 pub trait ServingInstanceDriver: Send + Sync {

@@ -82,6 +82,7 @@ impl OpenAiBackgroundPreparedIntegration {
             provider_execution,
             provider_retention,
             stream_reattachment,
+            active_run_detachment,
         ) = input.into_parts();
         if provider_execution != ProviderExecutionPolicy::Background {
             return Err(failure(
@@ -123,6 +124,7 @@ impl OpenAiBackgroundPreparedIntegration {
             maximum.get(),
             reasoning.as_ref(),
             structured_output.as_ref(),
+            active_run_detachment,
         );
         let activity = crate::activity::profile::activity_profile();
         let capabilities = crate::activity::profile::with_activity(
@@ -171,6 +173,7 @@ fn run_capabilities(
     maximum: u64,
     reasoning: Option<&ReasoningMode>,
     structured_output: Option<&StructuredOutputDescriptor>,
+    active_run_detachment: bool,
 ) -> Vec<CapabilityRequirement> {
     let mut capabilities = vec![
         CapabilityRequirement::new(Capability::StructuredRun, []),
@@ -214,6 +217,14 @@ fn run_capabilities(
                     StructuredOutputEnforcement::ProviderNative,
                 ),
             ],
+        ));
+    }
+    if active_run_detachment {
+        capabilities.push(CapabilityRequirement::new(
+            Capability::ActiveOperationDetachment,
+            [CapabilityConstraint::OperationDetachmentScope(
+                swallowtail_core::OperationDetachmentScope::StructuredRun,
+            )],
         ));
     }
     capabilities

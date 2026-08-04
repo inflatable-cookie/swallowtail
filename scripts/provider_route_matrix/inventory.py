@@ -15,11 +15,13 @@ expected_no_counts = Counter(
         "question_exchange": 19,
         "load_session": 20,
         "resume_session": 19,
+        "provider_session_catalogue": 5,
+        "provider_session_import": 5,
         "bounded_workspace_text_write": 7,
         "external_search": 22,
         "retained_background_execution": 5,
         "stream_reattachment": 3,
-        "provider_managed_recovery": 19,
+        "provider_managed_recovery": 18,
         "provider_session_archive": 7,
         "provider_session_restore": 7,
         "provider_session_delete": 5,
@@ -45,9 +47,9 @@ audited_value_counts = Counter(
 )
 if audited_value_counts != Counter(
     {
-        "Yes": 232,
-        "No": 302,
-        "Not applicable": 234,
+        "Yes": 239,
+        "No": 311,
+        "Not applicable": 268,
         "Partial": 2,
         "Caller-supplied": 2,
         "Session-negotiated": 3,
@@ -60,5 +62,5 @@ if actual_no_counts != expected_no_counts:
     raise SystemExit(
         f"provider solution No inventory changed: {dict(actual_no_counts)}"
     )
-if len(no_cells) != 302 or len(no_cells) != len(set(no_cells)):
-    raise SystemExit("provider solution No inventory must contain 302 unique cells")
+if len(no_cells) != 311 or len(no_cells) != len(set(no_cells)):
+    raise SystemExit("provider solution No inventory must contain 311 unique cells")

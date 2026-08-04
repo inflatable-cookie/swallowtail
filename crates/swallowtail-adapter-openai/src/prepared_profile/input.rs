@@ -16,6 +16,7 @@ type OpenAiBackgroundRunParts = (
     ProviderExecutionPolicy,
     ProviderRetentionPolicy,
     StreamReattachmentPolicy,
+    bool,
 );
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -39,7 +40,7 @@ impl OpenAiBackgroundModelSelection {
         }
     }
 
-    pub(super) fn into_parts(self) -> (ModelRouteId, ModelRouteRevision, ModelId) {
+    pub(crate) fn into_parts(self) -> (ModelRouteId, ModelRouteRevision, ModelId) {
         (self.route_id, self.route_revision, self.model_id)
     }
 }
@@ -56,6 +57,7 @@ pub struct OpenAiBackgroundRunProfileInput {
     provider_execution: ProviderExecutionPolicy,
     provider_retention: ProviderRetentionPolicy,
     stream_reattachment: StreamReattachmentPolicy,
+    active_run_detachment: bool,
 }
 
 impl OpenAiBackgroundRunProfileInput {
@@ -82,6 +84,7 @@ impl OpenAiBackgroundRunProfileInput {
             provider_execution,
             provider_retention,
             stream_reattachment,
+            active_run_detachment: false,
         }
     }
 
@@ -117,6 +120,12 @@ impl OpenAiBackgroundRunProfileInput {
         self
     }
 
+    #[must_use]
+    pub const fn with_active_run_detachment(mut self) -> Self {
+        self.active_run_detachment = true;
+        self
+    }
+
     pub(super) fn into_parts(self) -> OpenAiBackgroundRunParts {
         (
             self.request_id,
@@ -129,6 +138,7 @@ impl OpenAiBackgroundRunProfileInput {
             self.provider_execution,
             self.provider_retention,
             self.stream_reattachment,
+            self.active_run_detachment,
         )
     }
 }

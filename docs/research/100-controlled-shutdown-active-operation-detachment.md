@@ -40,9 +40,8 @@ authority.
 
 | Class | Routes | Promotion gate |
 | --- | --- | --- |
-| supported attached-turn detachment | `opencode.http` read-only interactive session; attached `kimi-code.local-server` interactive session | realized in g03.028-g03.029 with durable binding/checkpoint plus reconciliation |
+| supported operation detachment | `opencode.http` read-only interactive session; attached `kimi-code.local-server` interactive session; `openai.background` structured run | realized in g03.028-g03.030 with durable binding/checkpoint plus reconciliation |
 | continuation unproven | `codex.app-server` | prove provider turn survival after app-server connection/process teardown without callback or lifecycle loss |
-| retained-operation record required | `openai.background` | persist exact response and cursor authority before temporary-retention cleanup |
 | incompatible owned-resource cleanup | `anthropic.managed-agent` | define a retained-resource profile that does not inherit delete-on-close |
 | process-bound or non-retained | ACP, headless child-process, direct, realtime, attached inference, and owned serving routes | prove provider work can outlive local ownership before claiming detachment |
 

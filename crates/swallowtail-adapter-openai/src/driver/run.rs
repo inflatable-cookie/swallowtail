@@ -32,6 +32,11 @@ impl StructuredRunDriver for OpenAiBackgroundDriver {
                 request.structured_output(),
             )?;
             let scope = operation_scope(request.request_id().as_str())?;
+            let run_id = RuntimeRunId::new(format!(
+                "openai-background:{}",
+                request.request_id().as_str()
+            ))
+            .expect("validated request identity makes a valid runtime run identity");
             let mut access = AccessLeases::acquire(&plan, scope.clone(), &services).await?;
             let connection = Arc::new(AtomicBool::new(false));
             let cancellation = Arc::new(RunCancellation::new(Arc::clone(&connection)));
@@ -77,11 +82,27 @@ impl StructuredRunDriver for OpenAiBackgroundDriver {
             };
             let provider_run_ref = RunRef::new(response_id.clone())
                 .expect("validated OpenAI response identity is non-blank");
-            let run_id = RuntimeRunId::new(format!(
-                "openai-background:{}",
-                request.request_id().as_str()
-            ))
-            .expect("validated request identity makes a valid runtime run identity");
+            let checkpoint = crate::checkpoint::checkpoint(
+                &plan,
+                run_id.clone(),
+                provider_run_ref.clone(),
+                stream.last_sequence().expect("response identity carries a cursor"),
+            )?;
+            event_sender.send(
+                RuntimeEvent::new(sequence, RuntimeEventKind::Progress)
+                    .with_run_reconciliation_checkpoint(checkpoint.clone()),
+            )?;
+            sequence += 1;
+            let checkpoint_ready = Arc::new(AtomicBool::new(true));
+            let terminal_flag = Arc::new(AtomicBool::new(false));
+            let detachment = requires(&plan, Capability::ActiveOperationDetachment).then(|| {
+                Arc::new(RunDetachment {
+                    cancellation: Arc::clone(&cancellation),
+                    terminal: Arc::clone(&terminal_flag),
+                    checkpoint_ready: Arc::clone(&checkpoint_ready),
+                    requested: AtomicBool::new(false),
+                })
+            });
             let activity = crate::activity::OpenAiBackgroundActivityProjection::new(
                 swallowtail_runtime::ActivityOperationId::Run(run_id.clone()),
                 response_id.clone(),
@@ -96,6 +117,8 @@ impl StructuredRunDriver for OpenAiBackgroundDriver {
             let task_service = services.task().expect("validated task").clone();
             let task_pending = Arc::clone(&pending);
             let task_cancellation = Arc::clone(&cancellation);
+            let task_detachment = detachment.clone();
+            let task_terminal_flag = Arc::clone(&terminal_flag);
             let run_services = services.clone();
             let transport = self.transport.clone();
             let task = task_service.spawn(
@@ -117,10 +140,12 @@ impl StructuredRunDriver for OpenAiBackgroundDriver {
                         event_sender.clone(),
                         sequence,
                         task_cancellation,
+                        task_detachment,
                         deadline,
                         activity,
                     )
                     .await;
+                    task_terminal_flag.store(true, Ordering::SeqCst);
                     let _ = terminal_sender.complete(outcome);
                     event_sender.mark_terminal();
                 }),
@@ -148,6 +173,8 @@ impl StructuredRunDriver for OpenAiBackgroundDriver {
                 events: Some(Box::pin(event_stream)),
                 terminal: Some(Box::pin(terminal_future)),
                 cancellation,
+                detachment,
+                terminal_flag,
                 task,
             }) as Box<dyn RunHandle>)
         })
@@ -180,7 +207,6 @@ async fn await_response_identity(
             }
             RunSignal::Item(Ok(StreamItem::Frame(frame))) => match stream.apply(&frame)? {
                 ProviderEvent::Created(snapshot) => {
-                    emit(events, sequence, RuntimeEventKind::Progress)?;
                     return Ok(snapshot.response_id);
                 }
                 _ => {

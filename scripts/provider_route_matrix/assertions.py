@@ -111,9 +111,9 @@ if len(retained_execution_classifications) != 66:
 if Counter(retained_execution_classifications.values()) != Counter(
     {
         "operation_shape_not_applicable": 36,
-        "upstream_unsupported": 25,
+        "upstream_unsupported": 24,
         "separate_route_and_contract_required": 2,
-        "shared_contract_and_corpus_required": 3,
+        "shared_contract_and_corpus_required": 4,
     }
 ):
     raise SystemExit("retained-execution classification counts changed")
@@ -121,6 +121,7 @@ retained_execution_realized = {
     ("provider_managed_recovery", "kimi-code.acp + kimi-code.headless"): "Partial",
     ("stream_reattachment", "kimi-code.local-server"): "Yes",
     ("provider_managed_recovery", "kimi-code.local-server"): "Yes",
+    ("provider_managed_recovery", "openai.background"): "Yes",
 }
 for cell, classification in retained_execution_classifications.items():
     expected = retained_execution_realized.get(
@@ -137,7 +138,7 @@ retained_execution_final_counts = Counter(
     retained_execution_values[cell] for cell in retained_execution_classifications
 )
 if retained_execution_final_counts != Counter(
-    {"Not applicable": 36, "No": 27, "Yes": 2, "Partial": 1}
+    {"Not applicable": 36, "No": 26, "Yes": 3, "Partial": 1}
 ):
     raise SystemExit(
         "retained-execution final counts changed: "
@@ -271,7 +272,7 @@ for row in rows:
 if classification_counts != Counter(
     {
         "contract_or_corpus_required": 72,
-        "upstream_unsupported": 140,
+        "upstream_unsupported": 139,
         "operation_shape_not_applicable": 45,
         "ready_existing_contract": 4,
         "ready_operator_hold": 6,
@@ -281,6 +282,7 @@ if classification_counts != Counter(
         "separate_route_and_contract_required": 5,
         "selected_surface_absence": 15,
         "non_authoritative_cost_evidence": 4,
+        "missing_shared_contract_or_currentness_evidence": 10,
     }
 ):
     raise SystemExit(

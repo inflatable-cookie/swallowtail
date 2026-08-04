@@ -6,8 +6,9 @@ Updated: 2026-08-04
 
 ## Purpose
 
-Define how a consumer reconciles a locally active turn after its runtime handle
-was lost while provider-owned work or retained history may remain.
+Define how a consumer reconciles a locally active turn or structured run after
+its runtime handle was lost while provider-owned work or retained history may
+remain.
 
 ## Separate Operations
 
@@ -20,9 +21,10 @@ Reconciliation is a read-only operation. It is not:
 - callback recovery or answer submission
 - provider-session management
 
-The operation uses one already persisted `SessionResumeBinding`. A raw provider
-session id, catalogue candidate, diagnostic, path, or provider payload is not
-admission authority.
+Session reconciliation uses one already persisted `SessionResumeBinding`. Run
+reconciliation uses one persisted `ProviderRunCheckpoint`. A raw provider
+session id, provider run id, catalogue candidate, diagnostic, path, or provider
+payload is not admission authority.
 
 ## Immutable Agreement
 
@@ -54,6 +56,25 @@ compare, or manufacture cursor bytes. A checkpoint from another runtime turn,
 provider turn, session, route, instance, host, model, resource, access posture,
 or provider-state policy fails closed.
 
+## Structured-Run Agreement
+
+`ProviderRunReconciliationAgreement` binds:
+
+- the consumer-unique interrupted `RuntimeRunId`
+- the exact provider `RunRef`
+- one restored `ProviderRunCheckpoint`
+- a positive maximum recovered-output byte bound
+- an optional deadline
+
+`ProviderRunCheckpoint` binds the same runtime and provider run ids plus
+adapter-owned opaque cursor bytes. Its persisted form is versioned, bounded,
+integrity-checked, and restorable only under the exact driver, configured
+instance, target, host, access profile, model route, protocol facade, and
+interface evidence.
+
+Run reconciliation is a distinct capability, operation shape, and driver
+role. It cannot manufacture a provider session around a sessionless run.
+
 ## State And Attribution
 
 `InterruptedTurnState` is one of:
@@ -80,6 +101,12 @@ history.
 Unknown, missing, stale, cross-route, cross-instance, cross-host,
 cross-resource, or mismatched model bindings fail closed. A missing exact turn
 does not fall back to a similarly timed or similarly worded turn.
+
+`InterruptedRunState` is `Active`, `Completed`, `Failed`, `Cancelled`,
+`InactiveUnresolved`, or `Unknown`. Run observations always carry the exact
+provider run reference. Recovered output and usage are optional and bounded;
+non-terminal observations carry neither. A terminal provider payload from a
+different run fails closed.
 
 ## Replay Snapshot
 
@@ -152,6 +179,14 @@ foreign turns, stale cursors, and attachment drift fail closed. No prompt,
 abort, callback response, session resume, import, or management action is
 dispatched.
 
+`openai.background` implements exact-run reconciliation for the exact prepared
+public Responses route. One `GET /v1/responses/{response_id}` request maps
+queued or in-progress to active, completed to completed with bounded output and
+usage, incomplete or failed to failed, and cancelled to cancelled. It sends no
+create, prompt, retry, stream attachment, cancel, delete, callback, or session
+operation. The restored response/cursor checkpoint must match the current
+route binding exactly.
+
 Other routes remain unclaimed until the route-specific gates in Research 099
 are satisfied. Capability does not inherit across another transport in the
 same provider family.
@@ -170,3 +205,4 @@ Portable and route tests must cover:
 - no prompt, abort, callback answer, provider request, import, or management
   side effect
 - joined cleanup and provider-session preservation
+- exact run binding, bounded recovered output, and no state-changing request

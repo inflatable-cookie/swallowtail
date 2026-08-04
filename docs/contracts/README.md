@@ -194,11 +194,12 @@ credential and target authority. Strict derived selection readiness keeps
 unknown, unavailable, failed, unsupported, and empty instances visible but
 non-selectable; provider, model, route, default, fallback, refresh, and
 persistence policy remain downstream.
-Contract 048 adds read-only cross-process reconciliation for consumer turns
-whose runtime handles were lost. Exact persisted session and runtime-turn
-identity bind status plus bounded replacement history; terminal state requires
-an exact provider turn. The role grants no retry, prompt, import, resume,
-cancellation, callback, management, or child-control authority.
+Contract 048 adds read-only cross-process reconciliation for consumer turns or
+structured runs whose runtime handles were lost. Session reconciliation binds
+an exact durable session and runtime turn; run reconciliation binds an exact
+persisted provider-run checkpoint. Terminal attribution stays exact. Neither
+role grants retry, prompt, import, resume, cancellation, callback, management,
+or child-control authority.
 Contract 049 adds explicit controlled-shutdown detachment for qualified active
 runs or turns. It stops and joins only local observation work, reports local
 `Detached` truth, preserves provider terminal uncertainty, and requires a

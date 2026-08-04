@@ -31,6 +31,7 @@ pub enum ServerMode {
     DeleteMismatch,
     DeleteFalse,
     DeleteNotFound,
+    ReconcileMismatch,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -146,7 +147,10 @@ fn respond(
                 write_response(stream, 200, "text/event-stream", "");
             } else if matches!(
                 mode,
-                ServerMode::HoldForCancel | ServerMode::CancelRace | ServerMode::CancelUnconfirmed
+                ServerMode::HoldForCancel
+                    | ServerMode::CancelRace
+                    | ServerMode::CancelUnconfirmed
+                    | ServerMode::ReconcileMismatch
             ) {
                 write_held_stream(stream);
             } else {
@@ -158,7 +162,9 @@ fn respond(
                 stream,
                 200,
                 "application/json",
-                if mode == ServerMode::CancelRace {
+                if mode == ServerMode::ReconcileMismatch {
+                    r#"{"id":"resp_foreign","object":"response","status":"completed","output":[{"type":"message","role":"assistant","content":[{"type":"output_text","text":"Hello","annotations":[]}]}],"usage":{"input_tokens":3,"output_tokens":2,"total_tokens":5}}"#
+                } else if mode == ServerMode::CancelRace {
                     COMPLETED
                 } else {
                     IN_PROGRESS

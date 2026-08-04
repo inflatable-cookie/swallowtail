@@ -111,6 +111,18 @@ permission mode, callback-bearing sessions, structured runs, owned foreground
 servers, and unverified-newer versions expose no control. Ordinary close still
 uses the existing exact Kimi abort path.
 
+## OpenAI Background Mapping
+
+`openai.background` implements structured-run detachment for an explicitly
+selected prepared profile after an exact response/cursor checkpoint is
+available. Detachment closes the local SSE observer, releases its API-key
+lease, joins the task, and sends no response cancel or delete request.
+
+The detached response remains subject to the already accepted temporary
+provider-retention policy. Later read-only run reconciliation retrieves the
+exact response. Ordinary close, cancellation, deadline, terminal response
+deletion, and the default prepared profile retain their existing behavior.
+
 ## Conformance
 
 Portable and route tests cover:
@@ -125,3 +137,4 @@ Portable and route tests cover:
 - joined stream, task, attachment, resource, endpoint, and credential cleanup
 - exact durable binding preservation followed by same-session reconciliation
 - unchanged ordinary close cancellation
+- unchanged terminal remote-resource deletion outside detachment

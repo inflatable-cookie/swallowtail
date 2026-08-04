@@ -53,13 +53,28 @@ pub fn openai_background_descriptor() -> DriverDescriptor {
         IntegrationFamilyId::new(crate::INTEGRATION_FAMILY).expect("static family id is valid"),
         TransportFamilyId::new("http-sse-background").expect("static transport id is valid"),
     )
-    .with_roles([DriverRole::StructuredRun])
+    .with_roles([
+        DriverRole::StructuredRun,
+        DriverRole::ProviderRunReconciliation,
+    ])
     .with_execution_layers([ExecutionLayer::DirectModelInference])
-    .with_operation_shapes([OperationShape::StructuredRun])
+    .with_operation_shapes([
+        OperationShape::StructuredRun,
+        OperationShape::ProviderRunReconciliation,
+    ])
     .with_required_host_services(
         DriverRole::StructuredRun,
         [
             HostServiceKind::Task,
+            HostServiceKind::BlockingWork,
+            HostServiceKind::Time,
+            HostServiceKind::Network,
+            HostServiceKind::Credential,
+        ],
+    )
+    .with_required_host_services(
+        DriverRole::ProviderRunReconciliation,
+        [
             HostServiceKind::BlockingWork,
             HostServiceKind::Time,
             HostServiceKind::Network,
@@ -189,3 +204,4 @@ include!("driver/lifecycle.rs");
 include!("driver/observations.rs");
 include!("driver/run.rs");
 include!("driver/pump.rs");
+include!("driver/reconciliation.rs");

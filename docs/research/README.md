@@ -109,3 +109,4 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [099 Cross-Process Active Operation Reconciliation](099-cross-process-active-operation-reconciliation.md)
 - [100 Controlled Shutdown Active Operation Detachment](100-controlled-shutdown-active-operation-detachment.md)
 - [101 Kimi Operation Checkpoint And Reconciliation](101-kimi-operation-checkpoint-and-reconciliation.md)
+- [102 OpenAI Background Run Checkpoint And Reconciliation](102-openai-background-run-checkpoint-and-reconciliation.md)

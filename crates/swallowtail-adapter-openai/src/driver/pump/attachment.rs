@@ -7,6 +7,7 @@ async fn pump_attachment(
     events: &swallowtail_runtime::RuntimeEventSender,
     sequence: &mut u64,
     cancellation: &RunCancellation,
+    detachment: Option<&RunDetachment>,
     deadline: &mut Option<
         swallowtail_runtime::BoxFuture<'static, swallowtail_runtime::DeadlineObservation>,
     >,
@@ -16,13 +17,25 @@ async fn pump_attachment(
         if cancellation.is_requested() {
             return AttachmentExit::Cancelled;
         }
+        if detachment.is_some_and(RunDetachment::is_requested) {
+            return AttachmentExit::Detached;
+        }
         match next_run_signal(subscription, deadline).await {
             RunSignal::Deadline => return AttachmentExit::Deadline,
-            RunSignal::Closed => return AttachmentExit::Disconnected,
+            RunSignal::Closed => {
+                return if detachment.is_some_and(RunDetachment::is_requested) {
+                    AttachmentExit::Detached
+                } else {
+                    AttachmentExit::Disconnected
+                };
+            }
             RunSignal::Item(Err(_)) if cancellation.is_requested() => {
                 return AttachmentExit::Cancelled;
             }
             RunSignal::Item(Err(error)) => {
+                if detachment.is_some_and(RunDetachment::is_requested) {
+                    return AttachmentExit::Detached;
+                }
                 return if matches!(
                     error.diagnostic().code(),
                     "swallowtail.openai.transport_failed"
@@ -31,37 +44,39 @@ async fn pump_attachment(
                 ) {
                     AttachmentExit::Disconnected
                 } else {
-                    AttachmentExit::Terminal(FinalState::new(provider_status(error)))
+                    AttachmentExit::Terminal(Box::new(FinalState::new(provider_status(error))))
                 };
             }
             RunSignal::Item(Ok(StreamItem::Headers(headers))) => {
                 if let Err(error) = emit_headers(events, sequence, &headers) {
-                    return AttachmentExit::Terminal(FinalState::new(
+                    return AttachmentExit::Terminal(Box::new(FinalState::new(
                         TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
-                    ));
+                    )));
                 }
             }
             RunSignal::Item(Ok(StreamItem::Frame(frame))) => {
                 let event = match stream.apply(&frame) {
                     Ok(event) => event,
                     Err(error) => {
-                        return AttachmentExit::Terminal(FinalState::new(provider_status(error)));
+                        return AttachmentExit::Terminal(Box::new(FinalState::new(
+                            provider_status(error),
+                        )));
                     }
                 };
                 match event {
                     ProviderEvent::Created(_) => {
-                        return AttachmentExit::Terminal(FinalState::new(provider_status(
+                        return AttachmentExit::Terminal(Box::new(FinalState::new(provider_status(
                             failure(
                                 "swallowtail.openai.created_repeated",
                                 "OpenAI repeated the response identity event",
                             ),
-                        )));
+                        ))));
                     }
                     ProviderEvent::Status(_) => {
                         if let Err(error) = emit(events, sequence, RuntimeEventKind::Progress) {
-                            return AttachmentExit::Terminal(FinalState::new(
+                            return AttachmentExit::Terminal(Box::new(FinalState::new(
                                 TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
-                            ));
+                            )));
                         }
                     }
                     ProviderEvent::OutputDelta(delta) => {
@@ -72,9 +87,9 @@ async fn pump_attachment(
                             RuntimeEventKind::Activity(match activity.delta(&delta) {
                                 Ok(observation) => observation,
                                 Err(error) => {
-                                    return AttachmentExit::Terminal(FinalState::new(
+                                    return AttachmentExit::Terminal(Box::new(FinalState::new(
                                         TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
-                                    ));
+                                    )));
                                 }
                             }),
                         )
@@ -84,26 +99,26 @@ async fn pump_attachment(
                             RuntimeEventKind::OutputDelta,
                             delta,
                         )) {
-                            return AttachmentExit::Terminal(FinalState::new(
+                            return AttachmentExit::Terminal(Box::new(FinalState::new(
                                 TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
-                            ));
+                            )));
                         }
                     }
                     ProviderEvent::OutputDone(done) => *output_done = Some(done),
                     ProviderEvent::Terminal(snapshot) => {
-                        return AttachmentExit::Terminal(stream_terminal(
+                        return AttachmentExit::Terminal(Box::new(stream_terminal(
                             snapshot,
                             output,
                             output_done.as_deref(),
-                        ));
+                        )));
                     }
                     ProviderEvent::Error => {
-                        return AttachmentExit::Terminal(FinalState::new(provider_status(
+                        return AttachmentExit::Terminal(Box::new(FinalState::new(provider_status(
                             failure(
                                 "swallowtail.openai.stream_provider_failed",
                                 "OpenAI reported a provider stream failure",
                             ),
-                        )));
+                        ))));
                     }
                 }
             }

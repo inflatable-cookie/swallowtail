@@ -1,6 +1,6 @@
 use crate::{
     ActivityObservation, CallbackId, DirectToolCallId, HarnessUiDisplay, OperationContent,
-    ProviderObservation, ProviderOperationCheckpoint,
+    ProviderObservation, ProviderOperationCheckpoint, ProviderRunCheckpoint,
 };
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -52,6 +52,7 @@ pub struct RuntimeEvent {
     kind: RuntimeEventKind,
     content: Option<OperationContent>,
     reconciliation_checkpoint: Option<ProviderOperationCheckpoint>,
+    run_reconciliation_checkpoint: Option<ProviderRunCheckpoint>,
 }
 
 impl RuntimeEvent {
@@ -62,6 +63,7 @@ impl RuntimeEvent {
             kind,
             content: None,
             reconciliation_checkpoint: None,
+            run_reconciliation_checkpoint: None,
         }
     }
 
@@ -72,6 +74,7 @@ impl RuntimeEvent {
             kind,
             content: Some(content),
             reconciliation_checkpoint: None,
+            run_reconciliation_checkpoint: None,
         }
     }
 
@@ -81,6 +84,12 @@ impl RuntimeEvent {
         checkpoint: ProviderOperationCheckpoint,
     ) -> Self {
         self.reconciliation_checkpoint = Some(checkpoint);
+        self
+    }
+
+    #[must_use]
+    pub fn with_run_reconciliation_checkpoint(mut self, checkpoint: ProviderRunCheckpoint) -> Self {
+        self.run_reconciliation_checkpoint = Some(checkpoint);
         self
     }
 
@@ -105,7 +114,17 @@ impl RuntimeEvent {
     }
 
     #[must_use]
+    pub const fn run_reconciliation_checkpoint(&self) -> Option<&ProviderRunCheckpoint> {
+        self.run_reconciliation_checkpoint.as_ref()
+    }
+
+    #[must_use]
     pub const fn delivery(&self) -> EventDelivery {
-        self.kind.delivery()
+        if self.reconciliation_checkpoint.is_some() || self.run_reconciliation_checkpoint.is_some()
+        {
+            EventDelivery::Semantic
+        } else {
+            self.kind.delivery()
+        }
     }
 }

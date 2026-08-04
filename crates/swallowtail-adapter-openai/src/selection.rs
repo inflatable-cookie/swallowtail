@@ -169,6 +169,13 @@ fn openai_background_capabilities() -> Vec<CapabilityRequirement> {
                 CancellationScope::StructuredRun,
             )],
         ),
+        CapabilityRequirement::new(
+            Capability::ActiveOperationDetachment,
+            [CapabilityConstraint::OperationDetachmentScope(
+                swallowtail_core::OperationDetachmentScope::StructuredRun,
+            )],
+        ),
+        CapabilityRequirement::new(Capability::ProviderRunReconciliation, []),
     ]
 }
 

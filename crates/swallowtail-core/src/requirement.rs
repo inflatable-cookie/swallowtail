@@ -33,6 +33,7 @@ pub enum CancellationScope {
     ProviderSessionCatalogue,
     ProviderSessionImport,
     ProviderSessionReconciliation,
+    ProviderRunReconciliation,
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
@@ -95,6 +96,7 @@ pub enum CapabilityConstraint {
     WorkingResourceMaximumBytes(u64),
     ReplayMaximumItems(u32),
     ReplayMaximumBytes(u64),
+    RecoveredOutputMaximumBytes(u64),
     ReattachmentMaximumCount(u32),
     OwnedRemoteResource(OwnedRemoteResourceKind),
     ContextLimit(u64),

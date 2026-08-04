@@ -28,6 +28,7 @@ fn descriptor_and_policy_expose_only_the_bounded_background_route() {
         "http-sse-background"
     );
     assert!(descriptor.supports_role(swallowtail_core::DriverRole::StructuredRun));
+    assert!(descriptor.supports_role(swallowtail_core::DriverRole::ProviderRunReconciliation));
     assert!(!descriptor.supports_role(swallowtail_core::DriverRole::InteractiveSession));
     assert!(
         !descriptor

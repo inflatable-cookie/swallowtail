@@ -18,6 +18,7 @@ async fn pump_run(
     events: swallowtail_runtime::RuntimeEventSender,
     mut sequence: u64,
     cancellation: Arc<RunCancellation>,
+    detachment: Option<Arc<RunDetachment>>,
     mut deadline: Option<
         swallowtail_runtime::BoxFuture<'static, swallowtail_runtime::DeadlineObservation>,
     >,
@@ -43,13 +44,14 @@ async fn pump_run(
             &events,
             &mut sequence,
             &cancellation,
+            detachment.as_deref(),
             &mut deadline,
             &activity,
         )
         .await;
         cleanup = merge_cleanup(cleanup, cleanup_result(subscription.close().await));
         match exit {
-            AttachmentExit::Terminal(state) => break state,
+            AttachmentExit::Terminal(state) => break *state,
             AttachmentExit::Cancelled => {
                 break stop_remote(
                     &transport,
@@ -79,6 +81,7 @@ async fn pump_run(
                 )
                 .await;
             }
+            AttachmentExit::Detached => break FinalState::detached(),
             AttachmentExit::Disconnected if !reattached => {
                 reattached = true;
                 match open_reattachment(
@@ -168,23 +171,30 @@ async fn pump_run(
             )),
         );
     }
-    let (response_deletion, deletion_cleanup) = delete_response(
-        &transport,
-        &scope,
-        &response_id,
-        final_state.provider_terminal_known,
-        &endpoint,
-        &credential,
-        &services,
-    )
-    .await;
-    cleanup = merge_cleanup(cleanup, deletion_cleanup);
+    let response_deletion = if matches!(final_state.status, TerminalStatus::Detached) {
+        None
+    } else {
+        let (response_deletion, deletion_cleanup) = delete_response(
+            &transport,
+            &scope,
+            &response_id,
+            final_state.provider_terminal_known,
+            &endpoint,
+            &credential,
+            &services,
+        )
+        .await;
+        cleanup = merge_cleanup(cleanup, deletion_cleanup);
+        Some(response_deletion)
+    };
     cleanup = merge_cleanup(cleanup, access.release(&services).await);
     let mut outcome = TerminalOutcome::new(final_state.status, cleanup);
-    outcome = outcome.with_remote_resource_deletion(
-        OwnedRemoteResourceKind::Response,
-        response_deletion,
-    );
+    if let Some(response_deletion) = response_deletion {
+        outcome = outcome.with_remote_resource_deletion(
+            OwnedRemoteResourceKind::Response,
+            response_deletion,
+        );
+    }
     if let Some(cancellation) = final_state.cancellation {
         outcome = outcome.with_provider_cancellation(cancellation);
     }
@@ -197,9 +207,10 @@ async fn pump_run(
 }
 
 enum AttachmentExit {
-    Terminal(FinalState),
+    Terminal(Box<FinalState>),
     Cancelled,
     Deadline,
+    Detached,
     Disconnected,
 }
 
@@ -227,6 +238,10 @@ impl FinalState {
             provider_terminal_known: true,
             ..Self::new(status)
         }
+    }
+
+    fn detached() -> Self {
+        Self::new(TerminalStatus::Detached)
     }
 }
 

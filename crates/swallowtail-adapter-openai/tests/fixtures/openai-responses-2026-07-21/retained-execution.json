@@ -1,0 +1,28 @@
+{
+  "claim_id": "openai.responses-background.retained-execution-1",
+  "captured": "2026-08-04",
+  "facade_revision": "openai-responses-background-2026-07-21",
+  "checkpoint": {
+    "provider_identity": "response.id",
+    "cursor": "sequence_number",
+    "consumer_representation": "opaque-versioned-route-bound-record"
+  },
+  "reconciliation": {
+    "method": "GET",
+    "path": "/v1/responses/{response_id}",
+    "maximum_requests": 1,
+    "maps": ["queued", "in_progress", "completed", "incomplete", "failed", "cancelled"],
+    "forbidden": ["create", "stream", "cancel", "delete", "callback", "session"]
+  },
+  "detachment": {
+    "scope": "structured-run",
+    "close_local_stream": true,
+    "cancel_response": false,
+    "delete_response": false,
+    "release_credential": true,
+    "join_local_task": true
+  },
+  "ordinary_terminal_cleanup": {
+    "delete_response": true
+  }
+}

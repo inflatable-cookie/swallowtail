@@ -7,6 +7,7 @@
 
 mod activity;
 mod catalogue;
+mod checkpoint;
 mod driver;
 mod failure;
 mod prepared;
@@ -14,6 +15,7 @@ mod prepared_catalogue;
 mod prepared_profile;
 mod prepared_realtime;
 mod prepared_realtime_profile;
+mod prepared_reconciliation;
 mod protocol;
 mod realtime;
 mod realtime_protocol;
@@ -40,6 +42,9 @@ pub use prepared_realtime::{
 pub use prepared_realtime_profile::{
     OpenAiPreparedRealtimeSession, OpenAiRealtimePreparedEvidence,
     OpenAiRealtimeSessionProfileInput,
+};
+pub use prepared_reconciliation::{
+    OpenAiBackgroundReconciliationInput, OpenAiPreparedBackgroundReconciliation,
 };
 pub use realtime::{OpenAiRealtimeDriver, openai_realtime_descriptor};
 pub use realtime_selection::{

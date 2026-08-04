@@ -28,3 +28,8 @@ exact id and `deleted=true`. Missing identity, active or unconfirmed remote
 state, 404, transport loss, mismatched id, or malformed acknowledgement remains
 unconfirmed. Deletion joins before credential release and never substitutes
 for native cancellation.
+
+`retained-execution.json` freezes the additive 2026-08-04 response/cursor
+checkpoint, one-request read-only reconciliation, and opt-in local detachment
+boundary. Detachment sends neither cancel nor delete; ordinary terminal cleanup
+keeps its existing deletion attempt.

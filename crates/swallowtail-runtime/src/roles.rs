@@ -1,6 +1,7 @@
 #![allow(unused_mut)]
 include!("roles/imports.rs");
 include!("roles/drivers/provider_run_reconciliation.rs");
+include!("roles/drivers/provider_recovered_resource_cleanup.rs");
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct DiscoveryRequest {
@@ -524,6 +525,14 @@ pub trait ProviderSessionReconciliationDriver: Send + Sync {
 /// callback, deletion, or provider-session authority.
 pub trait ProviderRunReconciliationDriver: Send + Sync {
     provider_run_reconciliation_driver_items!();
+}
+
+/// Destructive cleanup of exact inactive resources from one recovered run.
+///
+/// This role accepts only the separately persisted cleanup binding. It grants
+/// no interruption, retry, callback, or provider-specific ordering authority.
+pub trait ProviderRecoveredResourceCleanupDriver: Send + Sync {
+    provider_recovered_resource_cleanup_driver_items!();
 }
 
 pub trait ServingInstanceDriver: Send + Sync {

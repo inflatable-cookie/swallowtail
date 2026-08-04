@@ -40,6 +40,8 @@ mod process_io;
 mod provider_instance_catalogue;
 mod provider_observation;
 mod provider_operation_checkpoint;
+mod provider_recovered_resource_cleanup;
+mod provider_recovered_resource_cleanup_binding;
 mod provider_run_checkpoint;
 mod provider_run_reconciliation;
 mod provider_session_import;
@@ -176,6 +178,18 @@ pub use provider_operation_checkpoint::{
     PersistedProviderOperationCheckpoint, ProviderOperationCheckpoint,
     ProviderOperationCheckpointFailure, ProviderOperationCheckpointFailureKind,
 };
+pub use provider_recovered_resource_cleanup::{
+    PreparedProviderRecoveredResourceCleanupEvidence, ProviderRecoveredResourceCleanupAgreement,
+    ProviderRecoveredResourceCleanupOutcome, ProviderRecoveredResourceCleanupPlan,
+    ProviderRecoveredResourceCleanupRequest,
+    validate_provider_recovered_resource_cleanup_execution,
+    validate_provider_recovered_resource_cleanup_request,
+};
+pub use provider_recovered_resource_cleanup_binding::{
+    PersistedProviderRecoveredResourceCleanupBinding, ProviderRecoveredResourceCleanupBinding,
+    ProviderRecoveredResourceCleanupBindingFailure,
+    ProviderRecoveredResourceCleanupBindingFailureKind,
+};
 pub use provider_run_checkpoint::{
     PersistedProviderRunCheckpoint, ProviderRunCheckpoint, ProviderRunCheckpointFailure,
     ProviderRunCheckpointFailureKind,
@@ -225,10 +239,11 @@ pub use registration::{DriverRegistration, RegistrationFailure};
 pub use roles::{
     AttachServingRequest, DiscoveryDriver, DiscoveryRequest, InteractiveSessionDriver,
     LoadSessionRequest, LoadedSession, ModelCatalogDriver, ModelCatalogRequest, OpenSessionRequest,
-    ProviderRunReconciliationDriver, ProviderSessionCatalogueDriver, ProviderSessionImportDriver,
-    ProviderSessionManagementDriver, ProviderSessionReconciliationDriver,
-    RealtimeMediaSessionDriver, ResumeSessionRequest, ServingInstanceDriver, StartServingRequest,
-    StructuredRunDriver, StructuredRunRequest, TurnRequest,
+    ProviderRecoveredResourceCleanupDriver, ProviderRunReconciliationDriver,
+    ProviderSessionCatalogueDriver, ProviderSessionImportDriver, ProviderSessionManagementDriver,
+    ProviderSessionReconciliationDriver, RealtimeMediaSessionDriver, ResumeSessionRequest,
+    ServingInstanceDriver, StartServingRequest, StructuredRunDriver, StructuredRunRequest,
+    TurnRequest,
 };
 pub use schema::{SchemaDocument, StructuredOutputDescriptor};
 pub use secret::{CredentialLease, DelegatedCredential, SecretLease};

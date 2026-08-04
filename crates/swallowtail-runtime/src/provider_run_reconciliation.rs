@@ -13,6 +13,7 @@ use swallowtail_core::{
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum InterruptedRunState {
     Active,
+    WaitingForProviderInput,
     Completed,
     Failed,
     Cancelled,

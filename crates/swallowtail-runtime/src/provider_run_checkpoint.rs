@@ -260,7 +260,7 @@ fn read_text(
         .map_err(|_| invalid())
 }
 
-fn route_fingerprint(plan: &PreflightPlan) -> Option<[u8; FINGERPRINT_BYTES]> {
+pub(crate) fn route_fingerprint(plan: &PreflightPlan) -> Option<[u8; FINGERPRINT_BYTES]> {
     let route = plan.model_route_id()?;
     let route_revision = plan.model_route_revision()?;
     let model = plan.model_id()?;

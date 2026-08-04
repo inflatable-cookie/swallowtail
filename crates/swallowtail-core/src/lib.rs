@@ -25,6 +25,7 @@ mod observable_activity;
 mod planned_connection_rollover;
 mod preflight;
 mod provider_agent;
+mod provider_recovered_resource_cleanup;
 mod provider_reference;
 mod provider_session_catalogue;
 mod provider_session_management;
@@ -100,6 +101,7 @@ pub use preflight::{
     preflight,
 };
 pub use provider_agent::{ProviderAgentBinding, ProviderAgentId, ProviderAgentVersion};
+pub use provider_recovered_resource_cleanup::ProviderRecoveredResourceCleanupEffect;
 pub use provider_reference::{
     InvalidProviderActivityRef, ProviderActivityRef, ProviderRequestRef,
     ProviderRequestRepresentation, RunRef, SessionRef, TurnRef,

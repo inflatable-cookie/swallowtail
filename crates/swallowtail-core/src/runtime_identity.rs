@@ -96,6 +96,7 @@ pub enum OperationShape {
     ProviderSessionImport,
     ProviderSessionReconciliation,
     ProviderRunReconciliation,
+    ProviderRecoveredResourceCleanup,
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
@@ -118,6 +119,7 @@ pub enum DriverRole {
     ProviderSessionImport,
     ProviderSessionReconciliation,
     ProviderRunReconciliation,
+    ProviderRecoveredResourceCleanup,
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]

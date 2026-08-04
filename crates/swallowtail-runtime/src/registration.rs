@@ -1,5 +1,6 @@
 use crate::{
-    DiscoveryDriver, InteractiveSessionDriver, ModelCatalogDriver, ProviderRunReconciliationDriver,
+    DiscoveryDriver, InteractiveSessionDriver, ModelCatalogDriver,
+    ProviderRecoveredResourceCleanupDriver, ProviderRunReconciliationDriver,
     ProviderSessionCatalogueDriver, ProviderSessionImportDriver, ProviderSessionManagementDriver,
     ProviderSessionReconciliationDriver, RealtimeMediaSessionDriver, ServingInstanceDriver,
     StructuredRunDriver,
@@ -59,6 +60,7 @@ pub struct DriverRegistration {
     provider_session_import: Option<Arc<dyn ProviderSessionImportDriver>>,
     provider_session_reconciliation: Option<Arc<dyn ProviderSessionReconciliationDriver>>,
     provider_run_reconciliation: Option<Arc<dyn ProviderRunReconciliationDriver>>,
+    provider_recovered_resource_cleanup: Option<Arc<dyn ProviderRecoveredResourceCleanupDriver>>,
 }
 
 impl DriverRegistration {
@@ -77,6 +79,7 @@ impl DriverRegistration {
             provider_session_import: None,
             provider_session_reconciliation: None,
             provider_run_reconciliation: None,
+            provider_recovered_resource_cleanup: None,
         }
     }
 
@@ -179,6 +182,15 @@ impl DriverRegistration {
         Ok(self)
     }
 
+    pub fn with_provider_recovered_resource_cleanup(
+        mut self,
+        role: Arc<dyn ProviderRecoveredResourceCleanupDriver>,
+    ) -> Result<Self, RegistrationFailure> {
+        self.require_declared(DriverRole::ProviderRecoveredResourceCleanup)?;
+        self.provider_recovered_resource_cleanup = Some(role);
+        Ok(self)
+    }
+
     #[must_use]
     pub const fn descriptor(&self) -> &DriverDescriptor {
         &self.descriptor
@@ -239,6 +251,13 @@ impl DriverRegistration {
     #[must_use]
     pub fn provider_run_reconciliation(&self) -> Option<&Arc<dyn ProviderRunReconciliationDriver>> {
         self.provider_run_reconciliation.as_ref()
+    }
+
+    #[must_use]
+    pub fn provider_recovered_resource_cleanup(
+        &self,
+    ) -> Option<&Arc<dyn ProviderRecoveredResourceCleanupDriver>> {
+        self.provider_recovered_resource_cleanup.as_ref()
     }
 
     fn require_declared(&self, role: DriverRole) -> Result<(), RegistrationFailure> {

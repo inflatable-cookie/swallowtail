@@ -9,6 +9,8 @@ use crate::{
     ProviderSessionManagementPlan, ProviderSessionOperationFailure,
     ProviderRunReconciliationOutcome, ProviderRunReconciliationPlan,
     ProviderRunReconciliationRequest,
+    ProviderRecoveredResourceCleanupOutcome, ProviderRecoveredResourceCleanupPlan,
+    ProviderRecoveredResourceCleanupRequest,
     ProviderSessionReconciliationOutcome, ProviderSessionReconciliationPlan,
     ProviderSessionReconciliationRequest, RealtimeMediaSessionHandle,
     RequestId, RestoreProviderSessionRequest, RunHandle,

@@ -355,10 +355,10 @@ visible as unverified newer unless exact evidence requires rejection.
 
 ## Checkpoint
 
-The lane is executing g03.033. Card 083 has removed Gemini's unsupported
-confirmed-deletion claim. Card 084 now adds the portable waiting and recovered-
-resource cleanup kernel; cards 085-086 realize and accept the exact Anthropic
-Managed Agents route.
+The lane is executing g03.033. Cards 083-084 removed Gemini's unsupported
+confirmed-deletion claim and added the portable waiting and recovered-resource
+cleanup kernel. Cards 085-086 now realize and accept the exact Anthropic Managed
+Agents route.
 
 ## Generation Boundary
 

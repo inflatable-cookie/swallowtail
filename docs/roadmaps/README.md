@@ -13,9 +13,9 @@ shape.
 
 ## Next Task
 
-Execute g03 card 084: add provider-input wait plus a bounded, persisted,
-route-bound recovered-resource cleanup role without widening read-only
-reconciliation.
+Execute g03 card 085: emit Anthropic Managed Agents recovery records before
+message submission, then realize bounded exact-run reconciliation and inactive-
+only recovered cleanup through separate roles.
 
 ## Index
 

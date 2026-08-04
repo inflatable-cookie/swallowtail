@@ -1,6 +1,6 @@
 # 084 Provider Recovered Resource Cleanup Kernel
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-04
 Milestone: `../033-anthropic-managed-run-reconciliation-and-recovered-cleanup.md`
@@ -33,3 +33,21 @@ resource group recovered after process loss without widening reconciliation.
 ## Auto-Continuation
 
 Continue to card 085 when the provider-neutral contract and conformance pass.
+
+## Closeout
+
+- added non-terminal `WaitingForProviderInput` run reconciliation truth
+- added a bounded, versioned, integrity-checked cleanup binding distinct from
+  the read-only run checkpoint
+- bound runtime run, provider run, typed resource kinds, opaque exact provider
+  resources, route fingerprint, and prepared access attachment
+- added the separate cleanup capability, operation shape, role, cancellation
+  scope, immutable plan/request, and effect-truth outcome
+- froze malformed, oversized, version, corruption, route drift,
+  cross-operation, cancellation-scope, deadline, active-resource, and partial-
+  effect rejection or preservation
+- `effigy validate:focused swallowtail-core swallowtail-runtime` — 194 tests passed
+- `effigy package:verify-affected swallowtail-core swallowtail-runtime` — both
+  extracted packages compiled
+
+No authenticated provider work ran. Card 085 is ready.

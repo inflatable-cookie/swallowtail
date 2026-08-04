@@ -34,6 +34,7 @@ pub enum CancellationScope {
     ProviderSessionImport,
     ProviderSessionReconciliation,
     ProviderRunReconciliation,
+    ProviderRecoveredResourceCleanup,
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]

@@ -36,6 +36,7 @@ mod prepared_access;
 mod prepared_operation;
 mod process_input;
 mod process_io;
+mod provider_instance_catalogue;
 mod provider_observation;
 mod provider_session_import;
 mod provider_session_management;
@@ -149,6 +150,16 @@ pub use prepared_operation::{
 };
 pub use process_input::ProcessRequest;
 pub use process_io::{ProcessExit, ProcessInputChunk, ProcessOutputChunk, ProcessOutputStream};
+pub use provider_instance_catalogue::{
+    ConfiguredProviderCredentialPosture, ConfiguredProviderInstanceAdmission,
+    ConfiguredProviderInstanceCatalogue, ConfiguredProviderInstanceCatalogueFailure,
+    ConfiguredProviderInstanceCatalogueFailureKind, ConfiguredProviderInstanceRecord,
+    ConfiguredProviderInstanceRoute, ConfiguredProviderInstanceSelectionReadiness,
+    ConfiguredProviderModelCatalogue, ConfiguredProviderModelCatalogueInput,
+    ConfiguredProviderModelCatalogueState, ConfiguredProviderModelRoute,
+    MAX_CONFIGURED_PROVIDER_INSTANCES, MAX_CONFIGURED_PROVIDER_MODELS_PER_INSTANCE,
+    MAX_CONFIGURED_PROVIDER_ROUTES_PER_INSTANCE,
+};
 pub use provider_observation::{
     BilledCostObservation, BilledCostSemantics, BilledCostSource, Currency,
     DirectAttemptFinishObservation, DirectAttemptUsageObservation, ProviderFinishReason,

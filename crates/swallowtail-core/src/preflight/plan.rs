@@ -7,7 +7,7 @@ use crate::{
     HarnessConfigurationPosture, HarnessRpcPolicy, InstanceOwnership, InstancePolicyId,
     InstanceRevision, InstanceTargetRef, InterfaceCompatibilityAssessment,
     InterfaceCompatibilityMatch, InterfaceVersionBinding, ModelId, ModelRoute, ModelRouteId,
-    OperationRequirements, ProtocolFacadeId, ProviderAgentBinding, ProviderId,
+    ModelRouteRevision, OperationRequirements, ProtocolFacadeId, ProviderAgentBinding, ProviderId,
 };
 
 impl PreflightPlan {
@@ -54,6 +54,11 @@ impl PreflightPlan {
     #[must_use]
     pub fn model_route_id(&self) -> Option<&ModelRouteId> {
         self.binding.model_route.as_ref().map(ModelRoute::id)
+    }
+
+    #[must_use]
+    pub fn model_route_revision(&self) -> Option<&ModelRouteRevision> {
+        self.binding.model_route.as_ref().map(ModelRoute::revision)
     }
 
     #[must_use]

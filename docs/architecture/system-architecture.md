@@ -936,6 +936,15 @@ exact interface-assessment evidence. Testkit proves the same record across
 installed-harness, hosted-direct, and attached-runtime fixtures. It adds no
 execution trait, provider selection, or operation request.
 
+Runtime also owns the configured provider-instance catalogue projection. A
+consumer assembles it from exact configured instances, safe access evidence,
+prepared operation evidence, and bound model-catalogue outcomes. Admission
+checks driver, transport, instance, revision, host, target, facade, policy, and
+access agreement before dropping credential and target authority. The result
+retains exact identity, route, capability, model, provider, and readiness
+posture for presentation. It has no driver handle, provider probe, router,
+default, fallback, refresh loop, or persistence policy.
+
 Host-local owns joined scoped tasks, exact service composition, and opaque
 executable target approval. The Codex adapter owns an exact-target factory that
 derives its discovery request, retains exact qualified, deprecated, or

@@ -51,6 +51,7 @@ Contracts hold durable, testable rules.
 - [044 Observable Agent Activity And Disclosure](044-observable-agent-activity-and-disclosure.md)
 - [045 Subagent Topology, Observation, And Control](045-subagent-topology-observation-and-control.md)
 - [046 Provider Session Catalogue And Explicit Import](046-provider-session-catalogue-and-explicit-import.md)
+- [047 Configured Provider Instance Catalogue](047-configured-provider-instance-catalogue.md)
 
 Contract 003 defines the provider-neutral record kernel. Contracts 004-016
 govern the realized runtime and current proof drivers. Contract 017 governs
@@ -179,6 +180,13 @@ consumer-authorized import operation. Candidates remain non-authoritative;
 import revalidates exact route, host, access, version, model, resource, and
 policy before issuing the ordinary resume binding. Load replay and consumer
 persistence remain separate, with no background synchronization.
+Contract 047 adds a bounded, consumer-assembled configured provider-instance
+catalogue. It admits exact driver, instance, prepared-route, safe access, and
+model-catalogue evidence into one immutable projection while excluding
+credential and target authority. Strict derived selection readiness keeps
+unknown, unavailable, failed, unsupported, and empty instances visible but
+non-selectable; provider, model, route, default, fallback, refresh, and
+persistence policy remain downstream.
 
 Contract 015 now permits exact, one-shot activation of an already authorized
 harness credential after ACP initialization. The first mapping is Grok Build

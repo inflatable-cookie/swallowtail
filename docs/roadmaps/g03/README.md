@@ -26,6 +26,7 @@ visible as unverified newer unless exact evidence requires rejection.
 | Turn consumer-reproduced defects and integration friction into portable regression evidence. | active | Contracts 002, 037, 044-045 | `g03.003` |
 | Reassess prepared-facade usability from multi-consumer proof without importing product policy. | completed | Contracts 002, 010, 037 | `g03.017` |
 | Allow explicit discovery and import of harness-origin sessions without owning consumer persistence or synchronization. | completed | Contracts 017, 029, 037, 046 | `g03.019` |
+| Expose configured provider instances for explicit consumer selection without central routing policy. | completed | Contracts 005-006, 008, 014, 020, 037, 047 | `g03.024` |
 | Periodically reconcile deferred gates, route truth, and generation capacity. | planned | Contract 001 | recurring checkpoints |
 
 ## Current Checkpoint
@@ -252,6 +253,13 @@ visible as unverified newer unless exact evidence requires rejection.
   entry points, in-process binding ownership, replay-to-live persistence,
   duplicate and restart posture, unsupported/stale UX, and deterministic
   fixtures remain consumer-facing without a Nucleus edit
+- Nucleus g05.073 then exposed a portable selection gap: Swallowtail had exact
+  configured instances, access evidence, prepared routes, and model catalogues
+  but no admitted projection binding them together; g03.024 and Contract 047
+  own the consumer-assembled catalogue without adding routing policy
+- cards 064-065 realize bounded exact admission, strict non-ready truth,
+  authority-redacted records, focused and extracted-package proof, and the
+  Nucleus g05.073 assembly handoff without authenticated provider work
 
 ## Milestones
 
@@ -278,6 +286,7 @@ visible as unverified newer unless exact evidence requires rejection.
 - [021 ACP Session List And Kimi Import](021-acp-session-list-and-kimi-import.md) — completed
 - [022 OpenCode External Session Discovery And Import](022-opencode-external-session-discovery-and-import.md) — completed
 - [023 Provider Session Import Acceptance And Handoff](023-provider-session-import-acceptance-and-handoff.md) — completed
+- [024 Configured Provider Instance Catalogue](024-configured-provider-instance-catalogue.md) — completed
 
 ## Checkpoint
 

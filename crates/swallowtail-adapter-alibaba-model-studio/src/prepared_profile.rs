@@ -3,6 +3,7 @@ mod input;
 mod lifecycle;
 mod plan;
 mod retained;
+mod restoration;
 mod run;
 
 pub use conversation::AlibabaModelStudioPreparedConversation;

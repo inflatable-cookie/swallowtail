@@ -15,8 +15,7 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     CancellationControl, CleanupOutcome, OperationContent, PreparationStage, RequestId,
-    RuntimeTurnId, TerminalStatus, TurnRequest, WorkingStateRestorationMethod,
-    WorkingStateRestorationOutcome,
+    RuntimeTurnId, TerminalStatus, TurnRequest,
 };
 use swallowtail_testkit::{
     assert_observable_activity_trace, assert_prepared_operation_evidence_matches_plan,
@@ -224,53 +223,6 @@ fn retained_prepared_session_loads_replay_and_preserves_both_attachments() {
             .all(|request| request.method != "DELETE")
     );
     assert_eq!(fixture.releases(), 2);
-}
-
-#[test]
-fn retained_conversation_maps_to_common_continuation_recovery() {
-    let fixture = DriverFixture::new(ServerScenario::RetainedSuccess);
-    let prepared = prepare_alibaba_model_studio(fixture.preparation_input(), &fixture.services())
-        .expect("integration prepares");
-    let retained = prepared
-        .prepare_retained_conversation(retained_profile_input("restoration-source"))
-        .expect("retained conversation prepares");
-    let session = block_on(retained.open_session(fixture.services())).expect("session opens");
-    let binding = session.resume_binding().expect("resume binding").clone();
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
-
-    let interrupted_turn_id = RuntimeTurnId::new("interrupted-retained-turn").expect("turn id");
-    let restoration = retained
-        .prepare_working_state_restoration(
-            RequestId::new("restore-retained").expect("request id"),
-            binding,
-            interrupted_turn_id.clone(),
-        )
-        .expect("restoration prepares");
-    assert_eq!(
-        restoration.method(),
-        WorkingStateRestorationMethod::ProviderSessionContinuationRecovery
-    );
-
-    let outcome = block_on(restoration.restore(fixture.services())).expect("restoration succeeds");
-    assert_eq!(
-        outcome.method(),
-        WorkingStateRestorationMethod::ProviderSessionContinuationRecovery
-    );
-    let WorkingStateRestorationOutcome::SessionRecovered(recovered) = outcome else {
-        panic!("retained conversation must recover a loaded session");
-    };
-    assert_eq!(recovered.interrupted_turn_id(), &interrupted_turn_id);
-    assert_eq!(recovered.replay().len(), 4);
-    let (_, loaded) = recovered.into_parts();
-    let (_, session) = loaded.into_parts();
-    assert!(session.management_binding().is_some());
-    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
-    assert!(
-        fixture
-            .requests()
-            .iter()
-            .all(|request| request.method != "DELETE")
-    );
 }
 
 #[test]

@@ -1,6 +1,6 @@
 # 091 Cursor And Grok ACP Recovery Drivers
 
-Status: planned
+Status: superseded
 Owner: Tom
 Created: 2026-08-05
 Milestone: `../035-acp-continuation-recovery-expansion.md`
@@ -33,3 +33,8 @@ selected by card 090.
 ## Auto-Continuation
 
 Continue to card 092 when all selected mappings pass focused validation.
+
+## Disposition
+
+Card 090 selected no route. Cursor suppresses replay failures; Grok lacks
+complete client-visible replay evidence. No driver work is authorized.

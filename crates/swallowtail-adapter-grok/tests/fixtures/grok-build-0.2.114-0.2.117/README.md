@@ -18,3 +18,8 @@ paths, raw provider payloads, prompts, or session identities.
 
 `candidate_behavior_revision` was frozen before card 031 widened the production
 claim. The corpus remains the exact evidence behind both maintained segments.
+
+The continuation-recovery corpus rechecks all four decompressed executables.
+The stripped artifacts expose replay-drain diagnostics but no inspectable
+control flow or deterministic load transcript, and include paths which skip
+malformed or failed replay work. Load remains unqualified.

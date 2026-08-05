@@ -13,8 +13,8 @@ shape.
 
 ## Next Task
 
-Execute g03 card 090: qualify Cursor Agent ACP and Grok Build ACP load/replay
-independently before adding either continuation-recovery mapping.
+Execute g03 card 093: define the exact settled-session observe-then-attach
+contract before composing any reconciliation and attachment route.
 
 ## Index
 

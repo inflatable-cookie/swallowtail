@@ -16,3 +16,8 @@ selected by Swallowtail and grant no new authority.
 
 No fixture contains credentials, account identity, model observations, host
 paths, session identifiers, prompts, or provider payloads.
+
+The continuation-recovery corpus rechecks both exact source bundles. Their
+load methods await replay before responding, but suppress whole-history and
+per-turn replay failures. Load therefore remains unqualified: a successful
+response cannot prove complete replay.

@@ -4,9 +4,16 @@ use swallowtail_adapter_grok::{GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, grok_bui
 use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
 
 const CORPUS: &str = include_str!("fixtures/grok-build-0.2.114-0.2.117/compatibility.json");
+const RECOVERY_CORPUS: &str =
+    include_str!("fixtures/grok-build-0.2.114-0.2.117/continuation-recovery.json");
 
 fn corpus() -> Value {
     serde_json::from_str(CORPUS).expect("Grok Build compatibility corpus is valid JSON")
+}
+
+fn recovery_corpus() -> Value {
+    serde_json::from_str(RECOVERY_CORPUS)
+        .expect("Grok Build continuation-recovery corpus is valid JSON")
 }
 
 fn records(corpus: &Value) -> &[Value] {
@@ -104,6 +111,57 @@ fn production_claim_matches_the_frozen_segments() {
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert!(!claim.permits(&version("0.2.117-alpha.1")));
+}
+
+#[test]
+fn load_replay_remains_blocked_without_complete_client_visible_evidence() {
+    let corpus = recovery_corpus();
+    let artifacts = corpus["qualified_artifacts"]
+        .as_array()
+        .expect("qualified artifacts are an array");
+    assert_eq!(artifacts.len(), 4);
+    assert_eq!(
+        artifacts
+            .iter()
+            .map(|artifact| artifact["version"].as_str().expect("version is text"))
+            .collect::<Vec<_>>(),
+        ["0.2.114", "0.2.115", "0.2.116", "0.2.117"]
+    );
+    assert!(artifacts.iter().all(|artifact| is_sha256(
+        artifact["executable_sha256"]
+            .as_str()
+            .expect("executable digest is text")
+    )));
+
+    assert_eq!(corpus["load"]["advertised"], true);
+    assert_eq!(
+        corpus["load"]["artifact_form"],
+        "official_stripped_native_executables"
+    );
+    assert_eq!(corpus["load"]["public_control_flow_source"], false);
+    assert_eq!(corpus["load"]["deterministic_load_transcript"], false);
+    assert_eq!(corpus["load"]["client_visible_replay_integrity"], false);
+    assert_eq!(
+        corpus["load"]["embedded_replay_paths"],
+        serde_json::json!([
+            "completion_drain",
+            "cursor_missing_falls_back_to_full_replay",
+            "unparseable_replay_records_are_skipped",
+            "post_replay_flush_failure_skips_delta_replay"
+        ])
+    );
+    assert_eq!(corpus["decision"]["continuation_recovery"], "blocked");
+    assert_eq!(corpus["decision"]["production_mapping"], false);
+    assert_eq!(
+        corpus["unqualified_negative_cases"]
+            .as_array()
+            .expect("negative cases are an array")
+            .len(),
+        10
+    );
+    assert_eq!(corpus["provider_prompt_sent"], false);
+    assert_eq!(corpus["provider_session_loaded"], false);
+    assert_eq!(corpus["authenticated_work_performed"], false);
 }
 
 fn is_sha256(value: &str) -> bool {

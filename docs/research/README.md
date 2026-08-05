@@ -112,3 +112,4 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [102 OpenAI Background Run Checkpoint And Reconciliation](102-openai-background-run-checkpoint-and-reconciliation.md)
 - [103 Retained Operation Reconciliation Candidate Qualification](103-retained-operation-reconciliation-candidate-qualification.md)
 - [104 Working-State Restoration Facade](104-working-state-restoration-facade.md)
+- [105 Cursor And Grok ACP Continuation Recovery Qualification](105-cursor-and-grok-acp-continuation-recovery-qualification.md)

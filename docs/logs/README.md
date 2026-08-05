@@ -5,6 +5,7 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-08-05 Cursor And Grok ACP Continuation Recovery Qualification](2026-08-05-cursor-and-grok-acp-continuation-recovery-qualification.md)
 - [2026-08-05 Working-State Restoration Facade](2026-08-05-working-state-restoration-facade.md)
 - [2026-08-04 Anthropic Managed Recovery Acceptance](2026-08-04-anthropic-managed-recovery-acceptance.md)
 - [2026-08-04 Anthropic Managed Run Reconciliation And Cleanup](2026-08-04-anthropic-managed-run-reconciliation-and-cleanup.md)

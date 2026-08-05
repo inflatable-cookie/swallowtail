@@ -1,6 +1,6 @@
 # 092 ACP Recovery Expansion Acceptance
 
-Status: planned
+Status: superseded
 Owner: Tom
 Created: 2026-08-05
 Milestone: `../035-acp-continuation-recovery-expansion.md`
@@ -33,3 +33,8 @@ continuation-recovery mappings.
 ## Auto-Continuation
 
 Continue to card 093 after g03.035 closes.
+
+## Disposition
+
+Card 090 closed g03.035 negatively. No production or package mapping exists to
+accept. Public blocked-route truth was updated in card 090.

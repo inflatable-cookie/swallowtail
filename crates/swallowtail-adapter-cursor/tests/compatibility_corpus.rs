@@ -7,9 +7,16 @@ use swallowtail_adapter_cursor::{
 use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
 
 const CORPUS: &str = include_str!("fixtures/cursor-agent-2026.07.01-2026.07.23/compatibility.json");
+const RECOVERY_CORPUS: &str =
+    include_str!("fixtures/cursor-agent-2026.07.01-2026.07.23/continuation-recovery.json");
 
 fn corpus() -> Value {
     serde_json::from_str(CORPUS).expect("Cursor compatibility corpus is valid JSON")
+}
+
+fn recovery_corpus() -> Value {
+    serde_json::from_str(RECOVERY_CORPUS)
+        .expect("Cursor continuation-recovery corpus is valid JSON")
 }
 
 #[test]
@@ -90,6 +97,46 @@ fn every_qualified_date_requires_its_exact_build_revision() {
         assert!(cursor_agent_release_binding(rejected).is_none());
     }
     assert!(cursor_agent_release_binding("2026.07.24-a1b2c3d").is_some());
+}
+
+#[test]
+fn load_replay_is_blocked_when_source_suppresses_replay_failures() {
+    let corpus = recovery_corpus();
+    let artifacts = corpus["qualified_artifacts"]
+        .as_array()
+        .expect("qualified artifacts are an array");
+    assert_eq!(artifacts.len(), 2);
+    assert_eq!(artifacts[0]["version"], "2026.07.01-41b2de7");
+    assert_eq!(artifacts[1]["version"], "2026.07.23-e383d2b");
+    assert!(artifacts.iter().all(|artifact| is_sha256(
+        artifact["acp_chunk_sha256"]
+            .as_str()
+            .expect("ACP chunk digest is text")
+    )));
+
+    assert_eq!(corpus["load"]["advertised"], true);
+    assert_eq!(corpus["load"]["replay_awaited_before_response"], true);
+    assert_eq!(
+        corpus["load"]["history_read_failure"],
+        "logged_and_suppressed"
+    );
+    assert_eq!(
+        corpus["load"]["turn_replay_failure"],
+        "logged_and_suppressed"
+    );
+    assert_eq!(corpus["load"]["failure_visible_to_client"], false);
+    assert_eq!(corpus["decision"]["continuation_recovery"], "blocked");
+    assert_eq!(corpus["decision"]["production_mapping"], false);
+    assert_eq!(
+        corpus["unqualified_negative_cases"]
+            .as_array()
+            .expect("negative cases are an array")
+            .len(),
+        10
+    );
+    assert_eq!(corpus["provider_prompt_sent"], false);
+    assert_eq!(corpus["provider_session_loaded"], false);
+    assert_eq!(corpus["authenticated_work_performed"], false);
 }
 
 fn is_sha256(value: &str) -> bool {

@@ -1,6 +1,6 @@
 # 090 Cursor And Grok ACP Load/Replay Qualification
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-05
 Milestone: `../035-acp-continuation-recovery-expansion.md`
@@ -25,6 +25,8 @@ continuation-recovery load and replay requirements.
 
 - `effigy validate:focused swallowtail-protocol-acp swallowtail-adapter-cursor swallowtail-adapter-grok`
 
+Passed: 154 tests and focused package checks.
+
 ## Stop Conditions
 
 - stop a route if exact evidence cannot prove replay completion before readiness
@@ -35,3 +37,16 @@ continuation-recovery load and replay requirements.
 
 Continue to card 091 only for routes selected by this card. If neither route
 passes, close g03.035 negatively and advance to g03.036.
+
+## Outcome
+
+- Cursor is blocked: both exact source bundles suppress whole-history and
+  per-turn replay failures before returning load success.
+- Grok is blocked: all four exact stripped binaries expose incomplete-replay
+  paths, while no deterministic load transcript or inspectable control flow
+  proves client-visible completeness.
+- frozen corpora enumerate every unqualified negative load case
+- no production driver, facade, binding, capability, or public API changed
+- no authenticated work or provider session ran
+
+Advance to card 093. Cards 091-092 are superseded.

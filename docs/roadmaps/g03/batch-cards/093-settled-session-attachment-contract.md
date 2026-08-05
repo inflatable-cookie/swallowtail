@@ -1,6 +1,6 @@
 # 093 Settled Session Attachment Contract
 
-Status: planned
+Status: ready
 Owner: Tom
 Created: 2026-08-05
 Milestone: `../036-reconciliation-then-attachment-composition.md`

@@ -37,8 +37,8 @@ visible as unverified newer unless exact evidence requires rejection.
 | Qualify remaining durable transcript and retained-operation reconciliation candidates. | completed | Contracts 021-022, 042, 048 | `g03.032` |
 | Reconcile and clean exact recovered Anthropic Managed Agent runs without conflating observation and control. | completed | Contracts 021-022, 038, 042, 048 | `g03.033` |
 | Restore consumer working state through the strongest exact route method without flattening ACP continuation into reconciliation. | completed | Contracts 017, 037, 046, 048, 050 | `g03.034` |
-| Extend ACP continuation recovery only where exact agent-specific load/replay evidence passes. | ready | Contracts 013, 015, 017, 029, 037, 050 | `g03.035` |
-| Compose read-only reconciliation with separately prepared settled-session attachment. | planned | Contracts 017, 037, 046, 048, 050 | `g03.036` |
+| Extend ACP continuation recovery only where exact agent-specific load/replay evidence passes. | completed negatively | Contracts 013, 015, 017, 029, 037, 050 | `g03.035` |
+| Compose read-only reconciliation with separately prepared settled-session attachment. | ready | Contracts 017, 037, 046, 048, 050 | `g03.036` |
 | Promote further retained-session recovery behind exact resource and ownership gates. | planned | Contracts 009, 017, 025, 029, 037-038, 050 | `g03.037` |
 | Periodically reconcile deferred gates, route truth, and generation capacity. | planned | Contract 001 | recurring checkpoints |
 
@@ -72,6 +72,11 @@ visible as unverified newer unless exact evidence requires rejection.
 - Gemini ACP remains blocked on replay-readiness evidence; private headless
   continuation and routes without reusable provider sessions remain outside
   this runway
+- Research 105 and card 090 close g03.035 negatively: Cursor suppresses exact
+  replay failures and Grok lacks complete client-visible replay proof; neither
+  route gains load or continuation-recovery authority
+- cards 091-092 are superseded without production changes; card 093 is the
+  sole ready task and owns Contract 050's explicit observe-then-attach extension
 - Research 074 inventories 13 installed/attached harness route ids and bounds
   the first external currentness source set
 - the 2026-07-31 currentness pass leaves Codex and stable ACP unchanged,
@@ -379,17 +384,16 @@ visible as unverified newer unless exact evidence requires rejection.
 - [032 Retained Operation Reconciliation Candidate Gate](032-retained-operation-reconciliation-candidate-gate.md) — completed
 - [033 Anthropic Managed Run Reconciliation And Recovered Cleanup](033-anthropic-managed-run-reconciliation-and-recovered-cleanup.md) — completed
 - [034 Working-State Restoration Facade](034-working-state-restoration-facade.md) — completed
-- [035 ACP Continuation Recovery Expansion](035-acp-continuation-recovery-expansion.md) — ready
-- [036 Reconciliation Then Attachment Composition](036-reconciliation-then-attachment-composition.md) — planned
+- [035 ACP Continuation Recovery Expansion](035-acp-continuation-recovery-expansion.md) — completed negatively
+- [036 Reconciliation Then Attachment Composition](036-reconciliation-then-attachment-composition.md) — ready
 - [037 Retained Session Recovery Promotion](037-retained-session-recovery-promotion.md) — planned
 
 ## Checkpoint
 
-Roadmap g03.034 is complete. Cards 087-089 realize one facade across five
-reconciliation routes and two ACP continuation-recovery routes. Operator-
-selected roadmap g03.035 is ready at evidence-only card 090. Roadmaps
-g03.036-g03.037 remain planned behind their explicit contract, resource, and
-ownership gates.
+Roadmap g03.035 is complete negatively. Exact Cursor source suppresses replay
+failure and exact Grok artifacts do not prove complete client-visible replay.
+Cards 091-092 are superseded. Roadmap g03.036 is ready at contract card 093;
+g03.037 remains planned behind its resource and ownership gates.
 
 ## Generation Boundary
 

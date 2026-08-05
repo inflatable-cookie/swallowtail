@@ -1,12 +1,12 @@
 # 036 Reconciliation Then Attachment Composition
 
-Status: planned
+Status: ready
 Owner: Tom
 Created: 2026-08-05
 Depends on: g03.035
 Vision tags: restart continuity, exact observation, session attachment
 Contract refs: 017, 037, 046, 048, 050
-Planning state: cards 093-096 planned
+Planning state: card 093 ready; cards 094-096 planned
 
 ## Problem
 
@@ -60,5 +60,6 @@ the exact reconciled state permits it.
 
 ## Lane Runway
 
-Planned after g03.035. Card 093 is the contract gate. Implementation cannot
-begin while Contract 050 still permits exactly one restoration method.
+Card 093 is ready after g03.035 closed negatively. It is the contract gate.
+Implementation cannot begin while Contract 050 still permits exactly one
+restoration method.

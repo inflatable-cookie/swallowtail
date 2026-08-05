@@ -1,0 +1,56 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-08-05",
+  "route": "grok-build.acp",
+  "qualified_artifacts": [
+    {
+      "version": "0.2.114",
+      "executable_sha256": "e715f57f9018a1737c1a64ef1cb260ac2a5045dfa6a1a0e1c7a7cbe193a083b2"
+    },
+    {
+      "version": "0.2.115",
+      "executable_sha256": "32e6a2a7beabd480a299db9955f860bd47e46d40ed0c06552fab7347615da4ca"
+    },
+    {
+      "version": "0.2.116",
+      "executable_sha256": "7b54fde201cfe7c753bd6f6f8e9ee4bb7d4d9b5a04568c26a80a622d69f9d463"
+    },
+    {
+      "version": "0.2.117",
+      "executable_sha256": "03de738b8ccd40569a18905ddafe004226eff3343b8423a172477b2767e721d2"
+    }
+  ],
+  "load": {
+    "advertised": true,
+    "artifact_form": "official_stripped_native_executables",
+    "public_control_flow_source": false,
+    "deterministic_load_transcript": false,
+    "embedded_replay_paths": [
+      "completion_drain",
+      "cursor_missing_falls_back_to_full_replay",
+      "unparseable_replay_records_are_skipped",
+      "post_replay_flush_failure_skips_delta_replay"
+    ],
+    "client_visible_replay_integrity": false
+  },
+  "decision": {
+    "continuation_recovery": "blocked",
+    "reason": "complete_replay_and_failure_visibility_unproven",
+    "production_mapping": false
+  },
+  "unqualified_negative_cases": [
+    "foreign_session_update",
+    "early_response",
+    "replay_after_readiness",
+    "malformed_session_identity",
+    "binding_drift",
+    "replay_item_overflow",
+    "replay_byte_overflow",
+    "cancellation",
+    "disconnect",
+    "joined_cleanup"
+  ],
+  "provider_prompt_sent": false,
+  "provider_session_loaded": false,
+  "authenticated_work_performed": false
+}

@@ -4,13 +4,10 @@
 
 ## Ready
 
-- `090-cursor-and-grok-acp-load-replay-qualification.md`
+- `093-settled-session-attachment-contract.md`
 
 ## Planned
 
-- `091-cursor-and-grok-acp-recovery-drivers.md`
-- `092-acp-recovery-expansion-acceptance.md`
-- `093-settled-session-attachment-contract.md`
 - `094-restoration-sequence-runtime-kernel.md`
 - `095-codex-opencode-reconcile-then-load.md`
 - `096-kimi-reconcile-then-resume-and-acceptance.md`
@@ -22,6 +19,7 @@
 
 ## Completed
 
+- `090-cursor-and-grok-acp-load-replay-qualification.md`
 - `089-working-state-restoration-route-acceptance.md`
 - `088-acp-continuation-recovery.md`
 - `087-working-state-restoration-runtime-kernel.md`
@@ -104,6 +102,8 @@
 
 ## Superseded
 
+- `092-acp-recovery-expansion-acceptance.md`
+- `091-cursor-and-grok-acp-recovery-drivers.md`
 - `004-claude-gemini-acp-range-corpus.md`
 - `005-claude-agent-0-64-range-extension.md`
 - `006-gemini-cli-0-53-dual-route-extension.md`

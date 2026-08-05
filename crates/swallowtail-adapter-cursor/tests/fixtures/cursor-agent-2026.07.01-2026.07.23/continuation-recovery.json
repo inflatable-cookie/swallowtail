@@ -1,0 +1,45 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-08-05",
+  "route": "cursor-agent.acp",
+  "qualified_artifacts": [
+    {
+      "version": "2026.07.01-41b2de7",
+      "acp_chunk_sha256": "0332efbd33814b900e00b52753eb2b9d4ab0fa022dc264c162d2b4f535bda48f",
+      "source_form": "installed-source-bundle"
+    },
+    {
+      "version": "2026.07.23-e383d2b",
+      "acp_chunk_sha256": "7cebbaa556244f35fc1f45c281c6b8959c05ba5c163e20b7de96cf9e22fb79e9",
+      "source_form": "official-registry-source-bundle"
+    }
+  ],
+  "load": {
+    "advertised": true,
+    "request_fields": ["sessionId", "cwd", "mcpServers"],
+    "replay_awaited_before_response": true,
+    "history_read_failure": "logged_and_suppressed",
+    "turn_replay_failure": "logged_and_suppressed",
+    "failure_visible_to_client": false
+  },
+  "decision": {
+    "continuation_recovery": "blocked",
+    "reason": "silent_incomplete_replay_can_return_success",
+    "production_mapping": false
+  },
+  "unqualified_negative_cases": [
+    "foreign_session_update",
+    "early_response",
+    "replay_after_readiness",
+    "malformed_session_identity",
+    "binding_drift",
+    "replay_item_overflow",
+    "replay_byte_overflow",
+    "cancellation",
+    "disconnect",
+    "joined_cleanup"
+  ],
+  "provider_prompt_sent": false,
+  "provider_session_loaded": false,
+  "authenticated_work_performed": false
+}

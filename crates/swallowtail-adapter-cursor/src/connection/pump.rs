@@ -13,6 +13,9 @@ impl AcpConnection {
                                     break;
                                 }
                             }
+                            if transport_failure.is_none() {
+                                self.complete_attachment_recovery_batch();
+                            }
                         }
                         Err(_) => transport_failure = Some(protocol_failure()),
                     }
@@ -51,6 +54,7 @@ impl AcpConnection {
                 "Cursor Agent ACP connection ended",
             )
         });
+        self.fail_attachment_recovery(error.clone());
         if let Some(turn) = self
             .active_turn
             .lock()
@@ -63,4 +67,3 @@ impl AcpConnection {
         self.fail_pending(error);
     }
 }
-

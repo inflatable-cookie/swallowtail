@@ -170,7 +170,7 @@ impl crate::KimiLocalServerPreparedIntegration {
             CapabilityProfile::new([reconciliation.clone(), retention.clone(), resource.clone()]);
         let instance = super::prepared::instance_with_capabilities(self, capabilities.clone());
         let (route_id, route_revision, model_id) = model.into_parts();
-        if &route_id != binding.model_route_id() || &model_id != binding.model_id() {
+        if Some(&route_id) != binding.model_route_id() || Some(&model_id) != binding.model_id() {
             return Err(preparation_failure(
                 "swallowtail.kimi.local_server.preparation.reconciliation_binding_mismatch",
                 "Kimi local-server reconciliation model does not match its durable binding",

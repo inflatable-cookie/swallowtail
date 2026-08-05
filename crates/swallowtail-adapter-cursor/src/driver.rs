@@ -5,16 +5,18 @@ use serde_json::{Value, json};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use swallowtail_core::{
-    CancellationScope, CredentialMechanism, HarnessConfigurationPosture, HarnessIsolation,
-    PreflightPlan, ResourceAccess, ResourceRepresentation, SessionAccessPolicy,
-    SessionProviderStatePolicy, SessionRef, SupportAuthority,
+    CancellationScope, Capability, CapabilityConstraint, CredentialMechanism,
+    HarnessConfigurationPosture, HarnessIsolation, PreflightPlan, ResourceAccess,
+    ResourceRepresentation, SessionAccessPolicy, SessionProviderStatePolicy, SessionRef,
+    SupportAuthority,
 };
 use swallowtail_runtime::{
     BoxEventStream, BoxFuture, CancellationAcknowledgement, CancellationControl, CleanupOutcome,
     ExecutableRef, HostServices, InteractiveSessionDriver, InteractiveSessionHandle, JoinedTask,
     OpenSessionRequest, ProcessHandle, ProcessRequest, RequestId, ResourceLease,
-    ResumeSessionRequest, RuntimeFailure, RuntimeSessionId, ScopeId, TerminalOutcome, TurnHandle,
-    TurnRequest, validate_session_resource_lease,
+    ResumeSessionRequest, RuntimeFailure, RuntimeSessionId, ScopeId, SessionResumeBinding,
+    TerminalOutcome, TurnHandle, TurnRequest, validate_session_plan_agreement,
+    validate_session_resource_lease,
 };
 
 use crate::CursorAcpDriver;
@@ -101,6 +103,67 @@ impl InteractiveSessionDriver for CursorAcpDriver {
     ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
         Box::pin(async { Err(unsupported("session resume")) })
     }
+
+    fn recover_session_attachment(
+        &self,
+        plan: PreflightPlan,
+        request: ResumeSessionRequest,
+        services: HostServices,
+    ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
+        Box::pin(async move {
+            validate_session_plan_agreement(&plan, request.plan_agreement())?;
+            self.validate_plan(&plan)?;
+            services.require_execution_host(plan.execution_host_id())?;
+            validate_recovery(&plan, &request, &services)?;
+            let mut attachment = self
+                .start_attachment(
+                    &plan,
+                    request.request_id(),
+                    request.working_resource(),
+                    request.access_policy(),
+                    &services,
+                )
+                .await?;
+            let recovered = async {
+                validate_initialize(&attachment.connection.initialize().await?)?;
+                let provider_ref = request.provider_session_ref().clone();
+                let response = attachment
+                    .connection
+                    .recover_session_attachment(provider_ref.clone(), attachment.cwd.clone())
+                    .await?;
+                if response.get("sessionId").and_then(Value::as_str)
+                    != Some(provider_ref.as_provider_value())
+                {
+                    return Err(failure(
+                        "swallowtail.cursor.acp.attachment_recovery_response_mismatch",
+                        "Cursor Agent attached a different provider session",
+                    ));
+                }
+                let runtime_id =
+                    RuntimeSessionId::new(format!("cursor-acp:{}", request.request_id().as_str()))
+                        .map_err(|_| malformed())?;
+                Ok((runtime_id, provider_ref))
+            }
+            .await;
+            match recovered {
+                Ok((runtime_id, provider_ref)) => {
+                    let provider_id = provider_ref.as_provider_value().to_owned();
+                    Ok(Box::new(attachment.into_session(
+                        request.request_id().clone(),
+                        runtime_id,
+                        provider_ref,
+                        provider_id,
+                        request.resume_binding().clone(),
+                        &services,
+                    )) as Box<dyn InteractiveSessionHandle>)
+                }
+                Err(error) => {
+                    let _ = attachment.abort(&services).await;
+                    Err(error)
+                }
+            }
+        })
+    }
 }
 
 impl CursorAcpDriver {
@@ -113,7 +176,20 @@ impl CursorAcpDriver {
         let _selected = self.validate_plan(plan)?;
         services.require_execution_host(plan.execution_host_id())?;
         validate_open(plan, request, services)?;
-        let mut attachment = self.start_attachment(plan, request, services).await?;
+        let working_resource = request
+            .working_resource()
+            .expect("validated working resource")
+            .clone();
+        let access_policy = request.access_policy().clone();
+        let mut attachment = self
+            .start_attachment(
+                plan,
+                request.request_id(),
+                &working_resource,
+                &access_policy,
+                services,
+            )
+            .await?;
         let opened = async {
             let initialize = attachment.connection.initialize().await?;
             validate_initialize(&initialize)?;
@@ -154,11 +230,19 @@ impl CursorAcpDriver {
                 return Err(error);
             }
         };
+        let binding = SessionResumeBinding::without_model(
+            provider_ref.clone(),
+            plan.instance_id().clone(),
+            plan.execution_host_id().clone(),
+            working_resource,
+            access_policy,
+        );
         Ok(attachment.into_session(
             request.request_id().clone(),
             runtime_id,
             provider_ref,
             provider_id,
+            binding,
             services,
         ))
     }

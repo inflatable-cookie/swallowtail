@@ -12,15 +12,16 @@ use swallowtail_adapter_cursor::{
 use swallowtail_core::{
     AccessProfileId, AccessStatus, CredentialState, EndpointAuthorization, EntitlementState,
     ExecutionHostId, InterfaceVersionAxis, ModelId, ModelRouteId, ModelRouteRevision, ProviderId,
-    ResourceAccess, ResourceRepresentation, RuntimeReadiness, SupportAuthority,
+    ResourceAccess, ResourceRepresentation, RuntimeReadiness, SessionRef, SupportAuthority,
 };
 use swallowtail_runtime::{
     BoxFuture, CleanupOutcome, Deadline, DiscoveryCancellation, EnvironmentRef, ExecutableRef,
     HostServices, InstalledExecutableTarget, MaterializedResourceRef, MonotonicInstant,
     OperationContent, PreparationFailure, PreparedAccessEvidence, ProcessOutputChunk,
-    ProcessOutputStream, RequestId, ResourceLease, RuntimeFailure, ScopeId, TerminalStatus,
-    WorkingResourceIoService, WorkingResourceReadRequest, WorkingResourceRef,
-    WorkingResourceService, WorkingResourceText, WorkingResourceWriteRequest,
+    ProcessOutputStream, RequestId, ResourceLease, RuntimeFailure, RuntimeTurnId, ScopeId,
+    SessionResumeBinding, TerminalStatus, WorkingResourceIoService, WorkingResourceReadRequest,
+    WorkingResourceRef, WorkingResourceService, WorkingResourceText, WorkingResourceWriteRequest,
+    WorkingStateRestorationMethod,
 };
 
 const VERSION: &str = "2026.07.01-41b2de7\n";
@@ -76,6 +77,24 @@ fn explicit_routes_prepare_only_their_typed_operations() {
     assert_eq!(
         prepared.request().access_policy(),
         &swallowtail_core::SessionAccessPolicy::ambient_harness(ResourceAccess::ReadWrite)
+    );
+    let binding = SessionResumeBinding::without_model(
+        SessionRef::new("cursor-prepared-session").expect("session"),
+        prepared.plan().instance_id().clone(),
+        prepared.plan().execution_host_id().clone(),
+        working_resource(),
+        prepared.request().access_policy().clone(),
+    );
+    assert_eq!(
+        prepared
+            .prepare_working_state_restoration(
+                request_id("cursor-recovery"),
+                binding,
+                RuntimeTurnId::new("lost-cursor-turn").expect("turn"),
+            )
+            .expect("attachment recovery prepares")
+            .method(),
+        WorkingStateRestorationMethod::ProviderSessionAttachmentRecovery
     );
 
     let headless =

@@ -24,8 +24,8 @@ use swallowtail_runtime::{
     EnvironmentRef, HostServices, InteractiveSessionDriver, JoinedTask, OpenSessionRequest,
     OperationContent, ProcessExit, ProcessHandle, ProcessInputChunk, ProcessOutputChunk,
     ProcessOutputStream, ProcessRequest, ProcessService, RequestId, ResourceLease,
-    RuntimeEventKind, RuntimeFailure, RuntimeTurnId, ScopeId, ScopedTaskService,
-    SessionPlanAgreement, TerminalStatus, TurnRequest, WorkingResourceIoService,
+    ResumeSessionRequest, RuntimeEventKind, RuntimeFailure, RuntimeTurnId, ScopeId,
+    ScopedTaskService, SessionPlanAgreement, TerminalStatus, TurnRequest, WorkingResourceIoService,
     WorkingResourceReadRequest, WorkingResourceRef, WorkingResourceService, WorkingResourceText,
     WorkingResourceWriteRequest,
 };

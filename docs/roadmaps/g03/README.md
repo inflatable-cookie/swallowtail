@@ -38,8 +38,9 @@ visible as unverified newer unless exact evidence requires rejection.
 | Reconcile and clean exact recovered Anthropic Managed Agent runs without conflating observation and control. | completed | Contracts 021-022, 038, 042, 048 | `g03.033` |
 | Restore consumer working state through the strongest exact route method without flattening ACP continuation into reconciliation. | completed | Contracts 017, 037, 046, 048, 050 | `g03.034` |
 | Extend ACP continuation recovery only where exact agent-specific load/replay evidence passes. | completed negatively | Contracts 013, 015, 017, 029, 037, 050 | `g03.035` |
-| Compose read-only reconciliation with separately prepared settled-session attachment. | ready | Contracts 017, 037, 046, 048, 050 | `g03.036` |
+| Compose read-only reconciliation with separately prepared settled-session attachment. | active | Contracts 017, 037, 046, 048, 050 | `g03.036` |
 | Promote further retained-session recovery behind exact resource and ownership gates. | planned | Contracts 009, 017, 025, 029, 037-038, 050 | `g03.037` |
+| Give every prepared interactive harness route one truthful post-crash action. | completed | Contracts 017, 037, 042, 048, 050 | `g03.038` |
 | Periodically reconcile deferred gates, route truth, and generation capacity. | planned | Contract 001 | recurring checkpoints |
 
 ## Current Checkpoint
@@ -67,16 +68,22 @@ visible as unverified newer unless exact evidence requires rejection.
 - the operator selected three follow-on restoration milestones inside g03:
   Cursor/Grok ACP qualification, explicit reconciliation-then-attachment, and
   gated Pi/Alibaba retained-session recovery
-- card 090 is the sole ready task; it must qualify Cursor and Grok independently
-  from exact load/replay evidence before either production mapping changes
+- card 090 independently qualified Cursor and Grok against exact load/replay
+  evidence before either production mapping changed
 - Gemini ACP remains blocked on replay-readiness evidence; private headless
   continuation and routes without reusable provider sessions remain outside
   this runway
 - Research 105 and card 090 close g03.035 negatively: Cursor suppresses exact
   replay failures and Grok lacks complete client-visible replay proof; neither
   route gains load or continuation-recovery authority
-- cards 091-092 are superseded without production changes; card 093 is the
-  sole ready task and owns Contract 050's explicit observe-then-attach extension
+- cards 091-092 are superseded without production changes
+- operator direction expands the facade to every prepared interactive harness
+  route; Research 106 and Contract 050 distinguish full recovery, exact
+  reattachment with discarded replay, and fresh replacement with context loss
+- g03.038 gives all 11 prepared interactive harness routes one truthful restart
+  action; Cursor and Grok attach exactly, four weaker routes replace with
+  explicit context loss, and Gemini remains unpromoted from replacement
+- g03.036 is active again; card 093 is the sole ready task
 - Research 074 inventories 13 installed/attached harness route ids and bounds
   the first external currentness source set
 - the 2026-07-31 currentness pass leaves Codex and stable ACP unchanged,
@@ -385,15 +392,15 @@ visible as unverified newer unless exact evidence requires rejection.
 - [033 Anthropic Managed Run Reconciliation And Recovered Cleanup](033-anthropic-managed-run-reconciliation-and-recovered-cleanup.md) — completed
 - [034 Working-State Restoration Facade](034-working-state-restoration-facade.md) — completed
 - [035 ACP Continuation Recovery Expansion](035-acp-continuation-recovery-expansion.md) — completed negatively
-- [036 Reconciliation Then Attachment Composition](036-reconciliation-then-attachment-composition.md) — ready
+- [036 Reconciliation Then Attachment Composition](036-reconciliation-then-attachment-composition.md) — active
 - [037 Retained Session Recovery Promotion](037-retained-session-recovery-promotion.md) — planned
+- [038 Provider-Wide Interactive Crash Recovery](038-provider-wide-interactive-crash-recovery.md) — completed
 
 ## Checkpoint
 
-Roadmap g03.035 is complete negatively. Exact Cursor source suppresses replay
-failure and exact Grok artifacts do not prove complete client-visible replay.
-Cards 091-092 are superseded. Roadmap g03.036 is ready at contract card 093;
-g03.037 remains planned behind its resource and ownership gates.
+Roadmaps g03.035 and g03.038 are complete. Research 106 promotes a weaker exact
+attachment boundary plus explicit fresh replacement. Roadmap g03.036 resumes
+at card 093; g03.037 remains planned behind it.
 
 ## Generation Boundary
 

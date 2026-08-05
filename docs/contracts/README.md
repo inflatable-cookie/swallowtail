@@ -208,8 +208,10 @@ runs or turns. It stops and joins only local observation work, reports local
 durable binding plus later reconciliation. Ordinary close remains unchanged.
 Contract 050 adds one prepared working-state restoration facade over the
 qualified reconciliation operations and stateful provider-session continuation
-recovery. It preserves the selected method and outcome strength, never turns
-ACP load into reconciliation, and never falls back from failed observation to
+recovery. It also distinguishes exact live reattachment with discarded
+non-authoritative replay from a new replacement session with provider context
+lost. It preserves the selected method and outcome strength, never turns ACP
+load into reconciliation, and never falls back from failed observation to
 broader live-session authority.
 
 Contract 015 now permits exact, one-shot activation of an already authorized

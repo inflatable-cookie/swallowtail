@@ -231,7 +231,9 @@ impl CodexPreparedIntegration {
         require_catalogue_version(self)?;
         let (request_id, model, binding, interrupted_turn_id, provider_turn_ref, bounds, deadline) =
             input.into_parts();
-        if model.route_id() != binding.model_route_id() || model.model_id() != binding.model_id() {
+        if Some(model.route_id()) != binding.model_route_id()
+            || Some(model.model_id()) != binding.model_id()
+        {
             return Err(failure(
                 "swallowtail.codex.preparation.thread_reconciliation_binding_mismatch",
                 "Codex reconciliation model does not match its durable session binding",

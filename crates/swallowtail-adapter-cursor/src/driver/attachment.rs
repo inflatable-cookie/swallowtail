@@ -9,18 +9,17 @@ impl CursorAcpDriver {
     async fn start_attachment(
         &self,
         plan: &PreflightPlan,
-        request: &OpenSessionRequest,
+        request_id: &RequestId,
+        working_resource: &swallowtail_runtime::WorkingResourceRef,
+        access_policy: &SessionAccessPolicy,
         services: &HostServices,
     ) -> Result<PendingAttachment, RuntimeFailure> {
         let scope = ScopeId::new(format!(
             "cursor-acp:session:{}",
-            request.request_id().as_str()
+            request_id.as_str()
         ))
         .map_err(|_| malformed())?;
-        let working_resource = request
-            .working_resource()
-            .expect("validated working resource")
-            .clone();
+        let working_resource = working_resource.clone();
         let resource_service = services
             .working_resource()
             .cloned()
@@ -34,7 +33,7 @@ impl CursorAcpDriver {
             )
             .await?;
         if let Err(error) =
-            validate_session_resource_lease(request.access_policy(), &working_resource, &resource)
+            validate_session_resource_lease(access_policy, &working_resource, &resource)
         {
             let _ = resource_service.release(resource).await;
             return Err(error);
@@ -100,6 +99,7 @@ impl PendingAttachment {
         runtime_id: RuntimeSessionId,
         provider_ref: SessionRef,
         provider_id: String,
+        binding: SessionResumeBinding,
         services: &HostServices,
     ) -> CursorSessionHandle {
         CursorSessionHandle {
@@ -107,6 +107,7 @@ impl PendingAttachment {
             runtime_id,
             provider_ref,
             provider_id,
+            binding,
             execution_host_id: services.execution_host_id().clone(),
             connection: Arc::clone(&self.connection),
             cancellation: SessionCancellation::new(Arc::clone(&self.connection)),

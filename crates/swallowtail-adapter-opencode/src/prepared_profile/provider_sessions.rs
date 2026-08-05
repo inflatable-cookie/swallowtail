@@ -221,7 +221,7 @@ impl OpenCodePreparedIntegration {
             CapabilityProfile::new([reconciliation.clone(), resource.clone(), retention.clone()]);
         let instance = instance_with_capabilities(self, selected.clone());
         let (route_id, route_revision, provider_id, model_id, _) = model.into_parts();
-        if &route_id != binding.model_route_id() || &model_id != binding.model_id() {
+        if Some(&route_id) != binding.model_route_id() || Some(&model_id) != binding.model_id() {
             return Err(failure(
                 "swallowtail.opencode.preparation.session_reconciliation_binding_mismatch",
                 "OpenCode reconciliation model does not match its durable session binding",

@@ -27,6 +27,20 @@ macro_rules! interactive_session_driver_items {
                     )))
                 })
             }
+
+            fn recover_session_attachment(
+                &self,
+                _plan: PreflightPlan,
+                _request: ResumeSessionRequest,
+                _services: HostServices,
+            ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
+                Box::pin(async {
+                    Err(RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
+                        "swallowtail.session_attachment_recovery_unsupported",
+                        "Driver does not support provider session attachment recovery",
+                    )))
+                })
+            }
         
             fn open_direct_continuation_session(
                 &self,

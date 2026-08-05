@@ -83,6 +83,109 @@ fn exact_attachment_streams_activity_and_joins_owned_resources() {
 }
 
 #[test]
+fn exact_attachment_recovery_discards_large_history_and_returns_the_bound_session() {
+    let (_opened_host, _opened_services, session) = open(Scenario::Success);
+    let binding = session
+        .resume_binding()
+        .expect("opened Cursor session exposes a durable binding")
+        .clone();
+    assert!(binding.model_id().is_none());
+    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+
+    let host_id = ExecutionHostId::new("fixture.host.cursor").expect("host");
+    let selected = selection(host_id.clone());
+    let persisted = binding
+        .export_persisted(&selected.plan)
+        .expect("model-less Cursor binding persists");
+    let binding = swallowtail_runtime::SessionResumeBinding::restore_persisted(
+        &persisted,
+        &selected.plan,
+        &selected.resource,
+        &SessionAccessPolicy::ambient_harness(ResourceAccess::ReadWrite),
+    )
+    .expect("model-less Cursor binding restores after a process restart");
+    let host = FixtureHost::new(Scenario::Success);
+    let services = host.services(host_id);
+    let request = ResumeSessionRequest::from_plan(
+        &selected.plan,
+        RequestId::new("cursor-recover").expect("request"),
+        binding.clone(),
+        selected.resource,
+        None,
+    )
+    .expect("recovery request");
+    let driver = CursorAcpDriver::new(
+        EnvironmentRef::new("cursor.fixture.ambient").expect("environment"),
+    );
+    let recovered = block_on(driver.recover_session_attachment(
+        selected.plan,
+        request,
+        services,
+    ))
+    .expect("exact attachment recovers");
+    assert_eq!(
+        recovered.provider_session_ref(),
+        Some(binding.provider_session_ref())
+    );
+    assert_eq!(recovered.resume_binding(), Some(&binding));
+    assert_eq!(block_on(recovered.close()), CleanupOutcome::Clean);
+    assert_eq!(
+        host.writes()
+            .iter()
+            .filter_map(|message| message.get("method").and_then(Value::as_str))
+            .collect::<Vec<_>>(),
+        ["initialize", "session/load"]
+    );
+}
+
+#[test]
+fn attachment_recovery_rejects_invalid_or_incomplete_loads_without_a_handle() {
+    let (_host, _services, session) = open(Scenario::Success);
+    let binding = session.resume_binding().expect("binding").clone();
+    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+
+    for (scenario, suffix) in [
+        (Scenario::RecoveryForeign, "session_mismatch"),
+        (Scenario::RecoveryCallback, "callback_rejected"),
+        (Scenario::RecoveryMalformed, "response_malformed"),
+        (Scenario::RecoveryOversized, "limit_exceeded"),
+        (Scenario::RecoveryLate, "late_update"),
+        (Scenario::RecoveryDisconnect, "connection_ended"),
+        (Scenario::RecoveryResponseMismatch, "response_mismatch"),
+    ] {
+        let host_id = ExecutionHostId::new("fixture.host.cursor").expect("host");
+        let selected = selection(host_id.clone());
+        let host = FixtureHost::new(scenario);
+        let services = host.services(host_id);
+        let request = ResumeSessionRequest::from_plan(
+            &selected.plan,
+            RequestId::new(format!("cursor-recover-{suffix}")).expect("request"),
+            binding.clone(),
+            selected.resource,
+            None,
+        )
+        .expect("recovery request");
+        let driver = CursorAcpDriver::new(
+            EnvironmentRef::new("cursor.fixture.ambient").expect("environment"),
+        );
+        let error = match block_on(driver.recover_session_attachment(
+            selected.plan,
+            request,
+            services,
+        )) {
+            Ok(_) => panic!("{scenario:?} recovery must return no handle"),
+            Err(error) => error,
+        };
+        assert!(
+            error.diagnostic().code().ends_with(suffix),
+            "unexpected diagnostic: {}",
+            error.diagnostic().code()
+        );
+        assert_eq!(host.resource_releases.load(Ordering::SeqCst), 1);
+    }
+}
+
+#[test]
 fn repeated_provider_and_fallback_message_ids_remain_isolated_across_turns() {
     let (_host, services, mut session) = open(Scenario::IdentityReuse);
     let mut turns = Vec::new();

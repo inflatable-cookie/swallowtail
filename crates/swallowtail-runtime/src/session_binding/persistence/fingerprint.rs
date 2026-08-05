@@ -12,13 +12,21 @@ pub(super) fn attachment_fingerprint(
     working_resource: &WorkingResourceRef,
     access_policy: &SessionAccessPolicy,
 ) -> Result<[u8; 32], SessionResumeBindingPersistenceFailure> {
-    let route = plan.model_route_id().ok_or_else(attachment_mismatch)?;
-    let route_revision = plan
-        .model_route_revision()
-        .ok_or_else(attachment_mismatch)?;
-    let model = plan.model_id().ok_or_else(attachment_mismatch)?;
+    let model = match (
+        plan.model_route_id(),
+        plan.model_route_revision(),
+        plan.model_id(),
+    ) {
+        (Some(route), Some(revision), Some(model)) => Some((route, revision, model)),
+        (None, None, None) => None,
+        _ => return Err(attachment_mismatch()),
+    };
     let mut digest = Sha256::new();
-    digest.update(b"swallowtail.session-resume-binding.attachment.v1");
+    digest.update(if model.is_some() {
+        b"swallowtail.session-resume-binding.attachment.v1".as_slice()
+    } else {
+        b"swallowtail.session-resume-binding.attachment.model-less.v1".as_slice()
+    });
     hash_text(&mut digest, plan.driver_identity().id().as_str());
     hash_text(&mut digest, plan.driver_identity().version().as_str());
     hash_text(&mut digest, plan.integration_family().as_str());
@@ -32,9 +40,11 @@ pub(super) fn attachment_fingerprint(
     hash_text(&mut digest, plan.access_profile_id().as_str());
     hash_credential_mechanism(&mut digest, plan.credential_mechanism());
     hash_text(&mut digest, plan.endpoint_audience().as_str());
-    hash_text(&mut digest, route.as_str());
-    hash_text(&mut digest, route_revision.as_str());
-    hash_text(&mut digest, model.as_str());
+    if let Some((route, route_revision, model)) = model {
+        hash_text(&mut digest, route.as_str());
+        hash_text(&mut digest, route_revision.as_str());
+        hash_text(&mut digest, model.as_str());
+    }
     hash_optional_text(&mut digest, plan.provider_id().map(|value| value.as_str()));
     let mut versions = plan
         .interface_versions()

@@ -54,6 +54,14 @@ fn prepared_sessions_preserve_pi_rpc_policy_in_both_host_topologies() {
                 .availability(),
             ObservableActivityAvailability::Available
         );
+        assert_eq!(
+            profile
+                .prepare_working_state_restoration(
+                    RuntimeTurnId::new("lost-pi-turn").expect("valid turn")
+                )
+                .method(),
+            swallowtail_runtime::WorkingStateRestorationMethod::FreshSessionReplacement
+        );
 
         let operation = FixtureHost::new(Scenario::Complete);
         let session = block_on(profile.open_session(operation.services(host_id)))
@@ -222,4 +230,3 @@ fn prepared_sessions_and_runs_dispatch_one_bounded_png_and_release_it() {
         1
     );
 }
-

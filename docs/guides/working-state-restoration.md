@@ -24,6 +24,14 @@ match outcome {
         // Merge bounded replay, keep the interrupted turn unresolved,
         // then continue through recovered.into_parts().1.
     }
+    WorkingStateRestorationOutcome::SessionReattached(reattached) => {
+        // Continue through the exact provider session. No replay was accepted
+        // as transcript or terminal truth.
+    }
+    WorkingStateRestorationOutcome::SessionReplaced(replaced) => {
+        // Continue in a fresh usable session. Provider context from the lost
+        // session is gone and the interrupted turn remains unresolved.
+    }
 }
 ```
 
@@ -41,6 +49,10 @@ references, access, and working resources are exact route evidence.
 - A prepared Claude Agent ACP or Kimi ACP session accepts request id, exact
   resume binding, and interrupted consumer turn id through
   `prepare_working_state_restoration`.
+- A prepared Cursor or Grok ACP session accepts the same exact attachment
+  dimensions and returns a live attachment without claiming complete replay.
+- Prepared Antigravity continuation, Gemini ACP, Pi RPC, and Qwen continuation
+  sessions accept the interrupted consumer turn id and return a fresh session.
 
 Consumers may store the resulting prepared operation behind one application
 boundary. They must still persist the exact route identity and binding or
@@ -55,9 +67,24 @@ checkpoint needed to prepare it after restart.
 | `ProviderSessionReconciliation` | bounded read-only observation | exact turn or session-scoped |
 | `ProviderRunReconciliation` | bounded read-only observation | exact provider run |
 | `ProviderSessionContinuationRecovery` | stateful load, replay, and live attachment | unresolved |
+| `ProviderSessionAttachmentRecovery` | exact live attachment; bounded pre-response replay discarded | unresolved |
+| `FreshSessionReplacement` | new usable session with no prompt replay | unresolved; provider context lost |
 
-The recovery variant intentionally exposes no state accessor. Transcript shape
-or a terminal-looking provider message is not terminal evidence.
+The continuation and attachment variants intentionally expose no terminal
+state accessor. Transcript shape or a terminal-looking provider message is not
+terminal evidence. Replacement is not recovery of provider state.
+
+## Connected Harness Routes
+
+| Route | Prepared action after restart |
+| --- | --- |
+| Codex app-server, OpenCode HTTP, Kimi local server | session reconciliation |
+| Claude Agent ACP, Kimi ACP | complete continuation recovery |
+| Cursor ACP, Grok ACP | exact attachment; replay discarded |
+| Antigravity continuation, Gemini ACP, Pi RPC, Qwen continuation | fresh replacement; context lost |
+
+This table covers prepared interactive harness routes. Catalogue-only and
+one-prompt headless routes do not automatically retry a prompt after restart.
 
 ## Failure
 
@@ -65,6 +92,6 @@ Method selection is fixed during preparation. A failed reconciliation returns
 that failure. It never falls back to ACP load, another credential, another
 route, prompt replay, callback response, cancellation, or cleanup.
 
-Unsupported routes fail during route-specific preparation. Do not infer
-support from provider family, durable retention, session import, or ordinary
-load support.
+Routes without a prepared interactive restoration mapping fail during
+route-specific preparation. Do not infer stronger support from provider
+family, durable retention, session import, or ordinary load support.

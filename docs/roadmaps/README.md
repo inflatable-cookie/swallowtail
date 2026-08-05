@@ -13,8 +13,8 @@ shape.
 
 ## Next Task
 
-Execute g03 card 093: define the exact settled-session observe-then-attach
-contract before composing any reconciliation and attachment route.
+Execute g03 card 093: promote the settled-session attachment contract before
+composing reconciliation with a separate live attachment.
 
 ## Index
 

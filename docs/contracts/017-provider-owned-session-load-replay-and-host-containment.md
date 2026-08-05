@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-04
+Updated: 2026-08-05
 
 ## Purpose
 
@@ -27,7 +27,7 @@ A durable session binding fixes:
 
 - provider session reference
 - configured instance and execution host
-- model route and model
+- model-selection posture, including an exact absence of a selectable model
 - working-resource reference and access
 - expanded interactive session access policy
 - harness-isolation posture when a local harness process exists
@@ -76,20 +76,42 @@ must be deleted on close. Neither posture authorizes archive, restore, or
 delete. A persistent harness route cannot use `Prohibited` or delete-on-close
 as a stand-in for preserved provider state.
 
-## New, Load, And Resume
+## New, Load, Resume, And Recovery Attachment
 
-New, load, and resume remain separate lifecycle operations:
+New, load, resume, and recovery attachment remain separate lifecycle
+operations:
 
 - **new** creates provider state and returns the initial durable binding
 - **load** attaches to bound provider state and transports historical replay
   before returning a ready session
 - **resume** attaches to the same kind of bound provider state without
   historical replay
+- **recovery attachment** attaches the same exact bound provider state when
+  the provider can return a live handle but cannot prove replay completeness
 
 One generic resume boolean or provider-specific option cannot represent all
-three. A driver may implement only the operations it advertises. A proxy may
+four. A driver may implement only the operations it qualifies. A proxy may
 build load from resume plus consumer-owned history only through a later
 explicit contract; the first implementation does not.
+
+Recovery attachment may use a provider load method internally only when exact
+route evidence proves that the response establishes the requested live
+session. Swallowtail validates and bounds every pre-response update, then
+discards it as non-authoritative. The operation returns no replay, history
+completeness, interrupted-turn state, callback authority, or provider-request
+authority. A consumer transcript remains consumer truth.
+
+Foreign session identity, malformed updates, callback requests, bound
+overflow, response-before-drain, replay after readiness, cancellation,
+disconnect, or cleanup failure returns no usable handle. Silently incomplete
+provider replay therefore cannot qualify load, but it need not prevent an
+explicit weaker recovery attachment.
+
+A fresh replacement session is not attachment. It creates new provider state
+through the ordinary qualified new-session path after the old runtime handle
+was lost. The old provider context and interrupted turn remain unavailable.
+Consumer-owned context reconstruction, if any, is a later explicit prompt and
+must never be injected by Swallowtail.
 
 The driver derives the provider working directory or equivalent project
 location only from the host lease resolved for the binding. Provider-stored
@@ -115,6 +137,8 @@ Provider replay belongs to the load operation. It is not live turn output.
   items were already observed
 - resume exposes no replay phase; a historical replay item before its response
   is a protocol failure
+- recovery attachment may receive bounded historical updates before its
+  response, but they are discarded and never exposed as replay
 
 Replay transport does not assert that history is complete, accepted, or
 persisted by the consumer. Consumers decide whether and how to merge it with

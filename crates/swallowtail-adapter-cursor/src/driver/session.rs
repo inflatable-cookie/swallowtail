@@ -10,6 +10,7 @@ struct CursorSessionHandle {
     runtime_id: RuntimeSessionId,
     provider_ref: SessionRef,
     provider_id: String,
+    binding: SessionResumeBinding,
     execution_host_id: swallowtail_core::ExecutionHostId,
     connection: Arc<AcpConnection>,
     cancellation: SessionCancellation,
@@ -33,7 +34,7 @@ impl InteractiveSessionHandle for CursorSessionHandle {
     }
 
     fn resume_binding(&self) -> Option<&swallowtail_runtime::SessionResumeBinding> {
-        None
+        Some(&self.binding)
     }
 
     fn negotiated_model_options(

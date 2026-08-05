@@ -21,6 +21,7 @@ use swallowtail_runtime::{
     InstalledExecutableTarget, MonotonicInstant, OperationContent, PreparedAccessEvidence,
     ProcessOutputChunk, ProcessOutputStream, RequestId, RuntimeTurnId, SchemaDocument, ScopeId,
     StructuredOutputDescriptor, TerminalStatus, TurnRequest, WorkingResourceRef,
+    WorkingStateRestorationMethod, WorkingStateRestorationOutcome,
 };
 use swallowtail_testkit::assert_prepared_operation_evidence_matches_plan;
 
@@ -115,10 +116,24 @@ fn facade_keeps_catalogue_run_and_continuation_explicit() {
         continuation.evidence().observable_activity().availability(),
         ObservableActivityAvailability::Available
     );
+    let restoration = continuation.prepare_working_state_restoration(
+        RuntimeTurnId::new("lost-antigravity-turn").expect("turn"),
+    );
+    assert_eq!(
+        restoration.method(),
+        WorkingStateRestorationMethod::FreshSessionReplacement
+    );
     let continuation_host = FixtureHost::scripted(&[FIRST, SECOND]);
     let services = continuation_host.services(host_id);
-    let mut session =
-        block_on(continuation.open_session(services.clone())).expect("continuation session opens");
+    let restored = block_on(restoration.restore(services.clone())).expect("replacement opens");
+    let WorkingStateRestorationOutcome::SessionReplaced(replaced) = restored else {
+        panic!("continuation route reports an honest replacement");
+    };
+    assert_eq!(
+        replaced.interrupted_turn_id().as_str(),
+        "lost-antigravity-turn"
+    );
+    let (_, mut session) = replaced.into_parts();
     for (index, prompt) in ["first", "second"].into_iter().enumerate() {
         let mut turn = block_on(
             session.start_turn(

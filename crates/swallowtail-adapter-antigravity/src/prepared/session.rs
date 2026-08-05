@@ -6,8 +6,8 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     BoxFuture, Deadline, HostServices, InteractiveSessionDriver, InteractiveSessionHandle,
-    OpenSessionRequest, PreparationFailure, PreparedOperationEvidence, RequestId, RuntimeFailure,
-    WorkingResourceRef,
+    OpenSessionRequest, PreparationFailure, PreparedOperationEvidence,
+    PreparedWorkingStateRestoration, RequestId, RuntimeFailure, RuntimeTurnId, WorkingResourceRef,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -142,5 +142,18 @@ impl AntigravityPreparedContinuation {
         let plan = self.plan().clone();
         let request = self.request.clone();
         Box::pin(async move { driver.open_session(plan, request, services).await })
+    }
+
+    #[must_use]
+    pub fn prepare_working_state_restoration(
+        &self,
+        interrupted_turn_id: RuntimeTurnId,
+    ) -> PreparedWorkingStateRestoration {
+        PreparedWorkingStateRestoration::fresh_session_replacement(
+            interrupted_turn_id,
+            crate::AntigravityHeadlessDriver::new(self.environment.clone()),
+            self.plan().clone(),
+            self.request.clone(),
+        )
     }
 }

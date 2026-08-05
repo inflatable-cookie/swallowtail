@@ -10,6 +10,7 @@ struct GrokSessionHandle {
     runtime_id: RuntimeSessionId,
     provider_ref: SessionRef,
     provider_id: String,
+    binding: SessionResumeBinding,
     model_options: NegotiatedSessionModelOptions,
     execution_host_id: swallowtail_core::ExecutionHostId,
     connection: Arc<AcpConnection>,
@@ -35,7 +36,7 @@ impl InteractiveSessionHandle for GrokSessionHandle {
     }
 
     fn resume_binding(&self) -> Option<&swallowtail_runtime::SessionResumeBinding> {
-        None
+        Some(&self.binding)
     }
 
     fn negotiated_model_options(&self) -> Option<&NegotiatedSessionModelOptions> {

@@ -127,11 +127,13 @@ fn load_replay_remains_blocked_without_complete_client_visible_evidence() {
             .collect::<Vec<_>>(),
         ["0.2.114", "0.2.115", "0.2.116", "0.2.117"]
     );
-    assert!(artifacts.iter().all(|artifact| is_sha256(
-        artifact["executable_sha256"]
-            .as_str()
-            .expect("executable digest is text")
-    )));
+    assert!(artifacts.iter().all(|artifact| {
+        is_sha256(
+            artifact["executable_sha256"]
+                .as_str()
+                .expect("executable digest is text"),
+        )
+    }));
 
     assert_eq!(corpus["load"]["advertised"], true);
     assert_eq!(

@@ -19,6 +19,11 @@
 
 ## Completed
 
+- `106-interactive-crash-recovery-acceptance.md`
+- `105-gemini-acp-attachment-recovery-qualification.md`
+- `104-interactive-harness-replacement-recovery.md`
+- `103-cursor-grok-attachment-recovery.md`
+- `102-interactive-crash-recovery-kernel.md`
 - `090-cursor-and-grok-acp-load-replay-qualification.md`
 - `089-working-state-restoration-route-acceptance.md`
 - `088-acp-continuation-recovery.md`

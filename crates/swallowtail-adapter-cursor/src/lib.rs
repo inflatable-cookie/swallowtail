@@ -48,3 +48,5 @@ pub use selection::{
 const CATALOGUE_DRIVER_ID: &str = "swallowtail.cursor-agent.catalogue";
 const ACP_DRIVER_ID: &str = "swallowtail.cursor-agent.acp";
 const HEADLESS_DRIVER_ID: &str = "swallowtail.cursor-agent.headless";
+const MAXIMUM_ATTACHMENT_RECOVERY_UPDATES: usize = 4096;
+const MAXIMUM_ATTACHMENT_RECOVERY_BYTES: usize = 8 * 1024 * 1024;

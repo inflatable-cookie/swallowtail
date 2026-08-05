@@ -75,7 +75,13 @@ Interrupted-turn recovery is classified separately because session-scoped
 observation, exact-turn terminal proof, history-only recovery, and live stream
 reattachment are not equivalent. See the
 [reconciliation guide](provider-operation-reconciliation.md) and
-[Research 099](../research/099-cross-process-active-operation-reconciliation.md).
+[working-state restoration guide](working-state-restoration.md). Every prepared
+interactive harness route now exposes one static post-restart action: Codex,
+OpenCode, and Kimi local reconcile; Claude Agent ACP and Kimi ACP recover with
+complete bounded replay; Cursor and Grok attach to the exact provider session
+while discarding non-authoritative replay; Antigravity continuation, Gemini
+ACP, Pi RPC, and Qwen continuation create an explicitly context-losing
+replacement. One-prompt routes never auto-retry provider work.
 
 ## Hosted Direct And Provider-Owned State
 

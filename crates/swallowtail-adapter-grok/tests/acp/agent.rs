@@ -1,4 +1,4 @@
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 enum Scenario {
     Success,
     Permission,
@@ -6,6 +6,13 @@ enum Scenario {
     Deadline,
     Disconnect,
     Malformed,
+    RecoveryForeign,
+    RecoveryCallback,
+    RecoveryMalformed,
+    RecoveryOversized,
+    RecoveryLate,
+    RecoveryDisconnect,
+    RecoveryResponseMismatch,
 }
 
 #[derive(Default)]
@@ -41,6 +48,17 @@ impl Agent {
                 "params": {"sessionId": "grok-fixture-session", "update": update}
             }),
         );
+    }
+
+    fn enqueue_many(state: &mut AgentState, messages: &[Value]) {
+        let mut bytes = Vec::new();
+        for message in messages {
+            bytes.extend_from_slice(&serde_json::to_vec(message).expect("fixture serializes"));
+            bytes.push(b'\n');
+        }
+        state
+            .output
+            .push_back(ProcessOutputChunk::new(ProcessOutputStream::Stdout, bytes));
     }
 
     fn write(&self, chunk: ProcessInputChunk) -> Result<(), RuntimeFailure> {
@@ -105,6 +123,92 @@ impl Agent {
                     "result": {"sessionId": "grok-fixture-session"}
                 }),
             ),
+            Some("session/load") => match self.scenario {
+                Scenario::RecoveryForeign => Self::enqueue(
+                    &mut state,
+                    json!({
+                        "jsonrpc": "2.0",
+                        "method": "session/update",
+                        "params": {
+                            "sessionId": "foreign-grok-session",
+                            "update": {"sessionUpdate": "agent_message_chunk", "content": {"type": "text", "text": "foreign"}}
+                        }
+                    }),
+                ),
+                Scenario::RecoveryCallback => Self::enqueue(
+                    &mut state,
+                    json!({
+                        "jsonrpc": "2.0",
+                        "id": 901,
+                        "method": "fs/read_text_file",
+                        "params": {"sessionId": "grok-fixture-session", "path": "private.txt"}
+                    }),
+                ),
+                Scenario::RecoveryMalformed => Self::enqueue(
+                    &mut state,
+                    json!({
+                        "jsonrpc": "2.0",
+                        "method": "session/update",
+                        "params": {"sessionId": "grok-fixture-session", "update": "invalid"}
+                    }),
+                ),
+                Scenario::RecoveryOversized => Self::update(
+                    &mut state,
+                    json!({
+                        "sessionUpdate": "agent_message_chunk",
+                        "content": {"type": "text", "text": "x".repeat(9 * 1024 * 1024)}
+                    }),
+                ),
+                Scenario::RecoveryLate => Self::enqueue_many(
+                    &mut state,
+                    &[
+                        json!({
+                            "jsonrpc": "2.0",
+                            "id": id,
+                            "result": {"sessionId": "grok-fixture-session"}
+                        }),
+                        json!({
+                            "jsonrpc": "2.0",
+                            "method": "session/update",
+                            "params": {
+                                "sessionId": "grok-fixture-session",
+                                "update": {"sessionUpdate": "agent_message_chunk", "content": {"type": "text", "text": "late"}}
+                            }
+                        }),
+                    ],
+                ),
+                Scenario::RecoveryDisconnect => state.stopped = true,
+                Scenario::RecoveryResponseMismatch => Self::enqueue(
+                    &mut state,
+                    json!({
+                        "jsonrpc": "2.0",
+                        "id": id,
+                        "result": {"sessionId": "different-grok-session"}
+                    }),
+                ),
+                _ => {
+                    Self::update(
+                        &mut state,
+                        json!({
+                            "sessionUpdate": "tool_call_update",
+                            "toolCallId": "historical-tool",
+                            "status": "completed",
+                            "content": [{
+                                "type": "content",
+                                "content": {"type": "text", "text": "x".repeat(128 * 1024)}
+                            }]
+                        }),
+                    );
+                    Self::enqueue(
+                        &mut state,
+                        json!({
+                            "jsonrpc": "2.0",
+                            "id": id,
+                            "result": {"sessionId": "grok-fixture-session"}
+                        }),
+                    );
+                }
+            },
             Some("session/prompt") => {
                 state.prompt_id = id;
                 match self.scenario {
@@ -131,6 +235,15 @@ impl Agent {
                         state.stopped = true;
                     }
                     Scenario::Malformed => unreachable!("malformed initialization stops first"),
+                    Scenario::RecoveryForeign
+                    | Scenario::RecoveryCallback
+                    | Scenario::RecoveryMalformed
+                    | Scenario::RecoveryOversized
+                    | Scenario::RecoveryLate
+                    | Scenario::RecoveryDisconnect
+                    | Scenario::RecoveryResponseMismatch => {
+                        unreachable!("recovery scenarios do not prompt")
+                    }
                 }
             }
             Some("session/cancel") => {
@@ -145,7 +258,7 @@ impl Agent {
                     );
                 }
             }
-            None if id == Some(900) => {}
+            None if matches!(id, Some(900 | 901)) => {}
             _ => return Err(fixture_failure()),
         }
         self.changed.notify_all();

@@ -8,11 +8,10 @@ use std::pin::Pin;
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
 use std::task::{Context, Poll, Waker};
-use swallowtail_core::SafeDiagnostic;
+use swallowtail_core::{SafeDiagnostic, SessionRef};
 use swallowtail_protocol_acp::{
-    ACP_PROTOCOL_VERSION, DEFAULT_MAX_BUFFER_BYTES, DEFAULT_MAX_FRAME_BYTES, FramingLimits,
-    Message, NdjsonDecoder, encode_error, encode_notification, encode_request, encode_result,
-    is_session_scoped_metadata_update,
+    ACP_PROTOCOL_VERSION, FramingLimits, Message, NdjsonDecoder, encode_error, encode_notification,
+    encode_request, encode_result, is_session_scoped_metadata_update,
 };
 use swallowtail_runtime::{
     CleanupOutcome, ProcessHandle, ProcessInputChunk, ProcessOutputStream, ResourceLease,
@@ -21,8 +20,19 @@ use swallowtail_runtime::{
 
 const MAXIMUM_PENDING_REQUESTS: usize = 32;
 const MAXIMUM_READ_BYTES: usize = 1024 * 1024;
+const MAXIMUM_RECEIVE_FRAME_BYTES: usize = 16 * 1024 * 1024;
+const MAXIMUM_RECEIVE_BUFFER_BYTES: usize = 32 * 1024 * 1024;
 const RECEIVE_FRAMING_LIMITS: FramingLimits =
-    FramingLimits::new(DEFAULT_MAX_FRAME_BYTES, DEFAULT_MAX_BUFFER_BYTES);
+    FramingLimits::new(MAXIMUM_RECEIVE_FRAME_BYTES, MAXIMUM_RECEIVE_BUFFER_BYTES);
+
+struct AttachmentRecoveryPhase {
+    response_id: u64,
+    session: SessionRef,
+    response_seen: bool,
+    updates: usize,
+    bytes: usize,
+    batch_completion: Option<ResponseSender>,
+}
 
 pub(crate) struct AcpConnection {
     process: Arc<dyn ProcessHandle>,
@@ -32,6 +42,7 @@ pub(crate) struct AcpConnection {
     pending: Mutex<BTreeMap<u64, ResponseSender>>,
     session_id: Mutex<Option<String>>,
     active_turn: Mutex<Option<Arc<ActiveTurn>>>,
+    attachment_recovery: Mutex<Option<AttachmentRecoveryPhase>>,
     closed: AtomicBool,
     cleanup: Mutex<Option<CleanupOutcome>>,
 }
@@ -50,6 +61,7 @@ impl AcpConnection {
             pending: Mutex::new(BTreeMap::new()),
             session_id: Mutex::new(None),
             active_turn: Mutex::new(None),
+            attachment_recovery: Mutex::new(None),
             closed: AtomicBool::new(false),
             cleanup: Mutex::new(None),
         })
@@ -99,6 +111,86 @@ impl AcpConnection {
         params: Value,
     ) -> Result<Value, RuntimeFailure> {
         self.begin_request(method, params).await?.await
+    }
+
+    pub(crate) async fn recover_session_attachment(
+        &self,
+        session: SessionRef,
+        cwd: String,
+    ) -> Result<Value, RuntimeFailure> {
+        let id = self.next_id.fetch_add(1, Ordering::SeqCst);
+        let (batch_sender, batch_completion) = response_channel();
+        self.set_session_id(session.as_provider_value().to_owned())?;
+        *self
+            .attachment_recovery
+            .lock()
+            .expect("ACP attachment-recovery lock poisoned") = Some(AttachmentRecoveryPhase {
+            response_id: id,
+            session: session.clone(),
+            response_seen: false,
+            updates: 0,
+            bytes: 0,
+            batch_completion: Some(batch_sender),
+        });
+        let pending = self
+            .begin_request_with_id(
+                id,
+                "session/load",
+                json!({"sessionId": session.as_provider_value(), "cwd": cwd, "mcpServers": []}),
+            )
+            .await;
+        let response = match pending {
+            Ok(response) => {
+                let response = response.await;
+                let batch = batch_completion.await;
+                match (response, batch) {
+                    (Ok(response), Ok(_)) => Ok(response),
+                    (Err(error), _) | (_, Err(error)) => Err(error),
+                }
+            }
+            Err(error) => Err(error),
+        };
+        let phase = self
+            .attachment_recovery
+            .lock()
+            .expect("ACP attachment-recovery lock poisoned")
+            .take();
+        match (response, phase) {
+            (
+                Ok(response),
+                Some(AttachmentRecoveryPhase {
+                    response_seen: true,
+                    ..
+                }),
+            ) => Ok(response),
+            (Err(error), _) => Err(error),
+            _ => Err(protocol_failure()),
+        }
+    }
+
+    fn complete_attachment_recovery_batch(&self) {
+        let sender = self
+            .attachment_recovery
+            .lock()
+            .expect("ACP attachment-recovery lock poisoned")
+            .as_mut()
+            .filter(|phase| phase.response_seen)
+            .and_then(|phase| phase.batch_completion.take());
+        if let Some(sender) = sender {
+            sender.complete(Ok(Value::Null));
+        }
+    }
+
+    fn fail_attachment_recovery(&self, error: RuntimeFailure) {
+        let sender = self
+            .attachment_recovery
+            .lock()
+            .expect("ACP attachment-recovery lock poisoned")
+            .as_mut()
+            .and_then(|phase| phase.batch_completion.take());
+        if let Some(sender) = sender {
+            sender.complete(Err(error));
+        }
     }
 
     pub(crate) async fn begin_request(

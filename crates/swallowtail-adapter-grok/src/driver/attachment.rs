@@ -6,16 +6,27 @@ struct PendingAttachment {
     cwd: String,
 }
 
+struct GrokSessionInput {
+    request_id: RequestId,
+    runtime_id: RuntimeSessionId,
+    provider_ref: SessionRef,
+    provider_id: String,
+    binding: SessionResumeBinding,
+    model_options: NegotiatedSessionModelOptions,
+}
+
 impl GrokAcpDriver {
     async fn start_attachment(
         &self,
         plan: &PreflightPlan,
-        request: &OpenSessionRequest,
+        request_id: &RequestId,
+        working_resource: &swallowtail_runtime::WorkingResourceRef,
+        access_policy: &SessionAccessPolicy,
         services: &HostServices,
     ) -> Result<PendingAttachment, RuntimeFailure> {
         let scope = ScopeId::new(format!(
             "grok-acp:session:{}",
-            request.request_id().as_str()
+            request_id.as_str()
         ))
         .map_err(|_| malformed())?;
         let credential_service = services
@@ -44,10 +55,7 @@ impl GrokAcpDriver {
                 "Grok Build requires a matching delegated credential lease",
             ));
         }
-        let working_resource = request
-            .working_resource()
-            .expect("validated working resource")
-            .clone();
+        let working_resource = working_resource.clone();
         let resource_service = services
             .working_resource()
             .cloned()
@@ -68,7 +76,7 @@ impl GrokAcpDriver {
             }
         };
         if let Err(error) =
-            validate_session_resource_lease(request.access_policy(), &working_resource, &resource)
+            validate_session_resource_lease(access_policy, &working_resource, &resource)
         {
             let _ = resource_service.release(resource).await;
             let _ = credential_service.release(credential).await;
@@ -138,19 +146,16 @@ impl GrokAcpDriver {
 impl PendingAttachment {
     fn into_session(
         mut self,
-        request_id: RequestId,
-        runtime_id: RuntimeSessionId,
-        provider_ref: SessionRef,
-        provider_id: String,
-        model_options: NegotiatedSessionModelOptions,
+        input: GrokSessionInput,
         services: &HostServices,
     ) -> GrokSessionHandle {
         GrokSessionHandle {
-            request_id,
-            runtime_id,
-            provider_ref,
-            provider_id,
-            model_options,
+            request_id: input.request_id,
+            runtime_id: input.runtime_id,
+            provider_ref: input.provider_ref,
+            provider_id: input.provider_id,
+            binding: input.binding,
+            model_options: input.model_options,
             execution_host_id: services.execution_host_id().clone(),
             connection: Arc::clone(&self.connection),
             cancellation: SessionCancellation::new(Arc::clone(&self.connection)),

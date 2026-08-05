@@ -16,6 +16,7 @@ pub enum Capability {
     ActiveOperationDetachment,
     LoadSession,
     Resume,
+    ProviderSessionAttachmentRecovery,
     StructuredOutput,
     Attachments,
     ReasoningSelection,

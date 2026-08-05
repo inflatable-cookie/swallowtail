@@ -19,8 +19,8 @@ pub struct SessionResumeBinding {
     provider_session_ref: SessionRef,
     configured_instance_id: ConfiguredInstanceId,
     execution_host_id: ExecutionHostId,
-    model_route_id: ModelRouteId,
-    model_id: ModelId,
+    model_route_id: Option<ModelRouteId>,
+    model_id: Option<ModelId>,
     working_resource: WorkingResourceRef,
     access_policy: SessionAccessPolicy,
     origin: ProviderSessionBindingOrigin,
@@ -41,8 +41,30 @@ impl SessionResumeBinding {
             provider_session_ref,
             configured_instance_id,
             execution_host_id,
-            model_route_id,
-            model_id,
+            model_route_id: Some(model_route_id),
+            model_id: Some(model_id),
+            working_resource,
+            access_policy,
+            origin: ProviderSessionBindingOrigin::Created,
+        }
+    }
+
+    /// Creates a binding for a route whose exact prepared posture has no
+    /// selectable model identity.
+    #[must_use]
+    pub const fn without_model(
+        provider_session_ref: SessionRef,
+        configured_instance_id: ConfiguredInstanceId,
+        execution_host_id: ExecutionHostId,
+        working_resource: WorkingResourceRef,
+        access_policy: SessionAccessPolicy,
+    ) -> Self {
+        Self {
+            provider_session_ref,
+            configured_instance_id,
+            execution_host_id,
+            model_route_id: None,
+            model_id: None,
             working_resource,
             access_policy,
             origin: ProviderSessionBindingOrigin::Created,
@@ -70,13 +92,13 @@ impl SessionResumeBinding {
     }
 
     #[must_use]
-    pub const fn model_route_id(&self) -> &ModelRouteId {
-        &self.model_route_id
+    pub const fn model_route_id(&self) -> Option<&ModelRouteId> {
+        self.model_route_id.as_ref()
     }
 
     #[must_use]
-    pub const fn model_id(&self) -> &ModelId {
-        &self.model_id
+    pub const fn model_id(&self) -> Option<&ModelId> {
+        self.model_id.as_ref()
     }
 
     #[must_use]
@@ -98,8 +120,8 @@ impl SessionResumeBinding {
     pub fn matches_plan(&self, plan: &PreflightPlan) -> bool {
         &self.configured_instance_id == plan.instance_id()
             && &self.execution_host_id == plan.execution_host_id()
-            && plan.model_route_id() == Some(&self.model_route_id)
-            && plan.model_id() == Some(&self.model_id)
+            && plan.model_route_id() == self.model_route_id.as_ref()
+            && plan.model_id() == self.model_id.as_ref()
     }
 
     #[must_use]

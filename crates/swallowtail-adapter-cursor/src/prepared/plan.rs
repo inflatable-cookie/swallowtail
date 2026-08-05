@@ -57,6 +57,17 @@ pub(crate) fn acp_capabilities() -> CapabilityProfile {
             ],
         ),
         CapabilityRequirement::new(Capability::ProviderDurableRetention, []),
+        CapabilityRequirement::new(
+            Capability::ProviderSessionAttachmentRecovery,
+            [
+                CapabilityConstraint::ReplayMaximumItems(
+                    crate::MAXIMUM_ATTACHMENT_RECOVERY_UPDATES as u32,
+                ),
+                CapabilityConstraint::ReplayMaximumBytes(
+                    crate::MAXIMUM_ATTACHMENT_RECOVERY_BYTES as u64,
+                ),
+            ],
+        ),
     ])
 }
 

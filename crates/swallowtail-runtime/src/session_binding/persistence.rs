@@ -146,21 +146,26 @@ impl SessionResumeBinding {
         }
         let provider_session_ref =
             SessionRef::new(decoded.provider_session_ref).map_err(|_| invalid_encoding())?;
-        let model_route_id = plan
-            .model_route_id()
-            .cloned()
-            .ok_or_else(attachment_mismatch)?;
-        let model_id = plan.model_id().cloned().ok_or_else(attachment_mismatch)?;
-        Ok(Self::new(
-            provider_session_ref,
-            plan.instance_id().clone(),
-            plan.execution_host_id().clone(),
-            model_route_id,
-            model_id,
-            working_resource.clone(),
-            access_policy.clone(),
-        )
-        .with_origin(decoded.origin))
+        let binding = match (plan.model_route_id(), plan.model_id()) {
+            (Some(model_route_id), Some(model_id)) => Self::new(
+                provider_session_ref,
+                plan.instance_id().clone(),
+                plan.execution_host_id().clone(),
+                model_route_id.clone(),
+                model_id.clone(),
+                working_resource.clone(),
+                access_policy.clone(),
+            ),
+            (None, None) => Self::without_model(
+                provider_session_ref,
+                plan.instance_id().clone(),
+                plan.execution_host_id().clone(),
+                working_resource.clone(),
+                access_policy.clone(),
+            ),
+            _ => return Err(attachment_mismatch()),
+        };
+        Ok(binding.with_origin(decoded.origin))
     }
 }
 

@@ -290,7 +290,8 @@ pub use working_resource_io::{
     WorkingResourceText, WorkingResourceWriteRequest,
 };
 pub use working_state_restoration::{
-    PreparedWorkingStateRestoration, ProviderSessionContinuationRecoveryOutcome,
+    FreshSessionReplacementOutcome, PreparedWorkingStateRestoration,
+    ProviderSessionAttachmentRecoveryOutcome, ProviderSessionContinuationRecoveryOutcome,
     WorkingStateRestorationMethod, WorkingStateRestorationOperation,
     WorkingStateRestorationOutcome,
 };

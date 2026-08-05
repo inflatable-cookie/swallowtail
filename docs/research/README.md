@@ -113,3 +113,4 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [103 Retained Operation Reconciliation Candidate Qualification](103-retained-operation-reconciliation-candidate-qualification.md)
 - [104 Working-State Restoration Facade](104-working-state-restoration-facade.md)
 - [105 Cursor And Grok ACP Continuation Recovery Qualification](105-cursor-and-grok-acp-continuation-recovery-qualification.md)
+- [106 Provider-Wide Interactive Crash Recovery](106-provider-wide-interactive-crash-recovery.md)

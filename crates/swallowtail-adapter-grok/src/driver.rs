@@ -5,9 +5,9 @@ use serde_json::{Value, json};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use swallowtail_core::{
-    CancellationScope, CredentialMechanism, HarnessConfigurationPosture, HarnessIsolation,
-    PreflightPlan, ResourceAccess, ResourceRepresentation, SessionAccessPolicy,
-    SessionProviderStatePolicy, SessionRef,
+    CancellationScope, Capability, CapabilityConstraint, CredentialMechanism,
+    HarnessConfigurationPosture, HarnessIsolation, PreflightPlan, ResourceAccess,
+    ResourceRepresentation, SessionAccessPolicy, SessionProviderStatePolicy, SessionRef,
 };
 use swallowtail_runtime::{
     BoxEventStream, BoxFuture, CancellationAcknowledgement, CancellationControl, CleanupOutcome,
@@ -15,7 +15,8 @@ use swallowtail_runtime::{
     InteractiveSessionHandle, JoinedTask, NegotiatedSessionModelOption,
     NegotiatedSessionModelOptions, OpenSessionRequest, ProcessHandle, ProcessRequest, RequestId,
     ResourceLease, ResumeSessionRequest, RuntimeFailure, RuntimeSessionId, ScopeId,
-    TerminalOutcome, TurnHandle, TurnRequest, validate_session_resource_lease,
+    SessionResumeBinding, TerminalOutcome, TurnHandle, TurnRequest,
+    validate_session_plan_agreement, validate_session_resource_lease,
 };
 
 use crate::GrokAcpDriver;
@@ -114,6 +115,73 @@ impl InteractiveSessionDriver for GrokAcpDriver {
     ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
         Box::pin(async { Err(unsupported("session resume")) })
     }
+
+    fn recover_session_attachment(
+        &self,
+        plan: PreflightPlan,
+        request: ResumeSessionRequest,
+        services: HostServices,
+    ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
+        Box::pin(async move {
+            validate_session_plan_agreement(&plan, request.plan_agreement())?;
+            let selected = self.validate_plan(&plan)?;
+            services.require_execution_host(plan.execution_host_id())?;
+            validate_recovery(&plan, &request, &services)?;
+            let mut attachment = self
+                .start_attachment(
+                    &plan,
+                    request.request_id(),
+                    request.working_resource(),
+                    request.access_policy(),
+                    &services,
+                )
+                .await?;
+            let recovered = async {
+                let initialize = attachment.connection.initialize().await?;
+                let model_options =
+                    validate_initialize(&initialize, selected.version(), EXPECTED_MODEL)?;
+                attachment.connection.activate_cached_token().await?;
+                let provider_ref = request.provider_session_ref().clone();
+                let response = attachment
+                    .connection
+                    .recover_session_attachment(provider_ref.clone(), attachment.cwd.clone())
+                    .await?;
+                if response.get("sessionId").and_then(Value::as_str)
+                    != Some(provider_ref.as_provider_value())
+                {
+                    return Err(failure(
+                        "swallowtail.grok.acp.attachment_recovery_response_mismatch",
+                        "Grok Build attached a different provider session",
+                    ));
+                }
+                let runtime_id =
+                    RuntimeSessionId::new(format!("grok-acp:{}", request.request_id().as_str()))
+                        .map_err(|_| malformed())?;
+                Ok((runtime_id, provider_ref, model_options))
+            }
+            .await;
+            match recovered {
+                Ok((runtime_id, provider_ref, model_options)) => {
+                    let provider_id = provider_ref.as_provider_value().to_owned();
+                    Ok(Box::new(attachment.into_session(
+                        GrokSessionInput {
+                            request_id: request.request_id().clone(),
+                            runtime_id,
+                            provider_ref,
+                            provider_id,
+                            binding: request.resume_binding().clone(),
+                            model_options,
+                        },
+                        &services,
+                    )) as Box<dyn InteractiveSessionHandle>)
+                }
+                Err(error) => {
+                    let _ = attachment.abort(&services).await;
+                    Err(error)
+                }
+            }
+        })
+    }
 }
 
 impl GrokAcpDriver {
@@ -126,7 +194,20 @@ impl GrokAcpDriver {
         let selected = self.validate_plan(plan)?;
         services.require_execution_host(plan.execution_host_id())?;
         validate_open(plan, request, services)?;
-        let mut attachment = self.start_attachment(plan, request, services).await?;
+        let working_resource = request
+            .working_resource()
+            .expect("validated working resource")
+            .clone();
+        let access_policy = request.access_policy().clone();
+        let mut attachment = self
+            .start_attachment(
+                plan,
+                request.request_id(),
+                &working_resource,
+                &access_policy,
+                services,
+            )
+            .await?;
         let opened = async {
             let initialize = attachment.connection.initialize().await?;
             let model_options =
@@ -169,12 +250,24 @@ impl GrokAcpDriver {
                 return Err(error);
             }
         };
+        let binding = SessionResumeBinding::new(
+            provider_ref.clone(),
+            plan.instance_id().clone(),
+            plan.execution_host_id().clone(),
+            plan.model_route_id().expect("validated route").clone(),
+            plan.model_id().expect("validated model").clone(),
+            working_resource,
+            access_policy,
+        );
         Ok(attachment.into_session(
-            request.request_id().clone(),
-            runtime_id,
-            provider_ref,
-            provider_id,
-            model_options,
+            GrokSessionInput {
+                request_id: request.request_id().clone(),
+                runtime_id,
+                provider_ref,
+                provider_id,
+                binding,
+                model_options,
+            },
             services,
         ))
     }

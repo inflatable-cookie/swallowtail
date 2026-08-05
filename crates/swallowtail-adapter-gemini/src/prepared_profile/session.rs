@@ -10,7 +10,8 @@ use swallowtail_core::{
     ResourceRepresentation,
 };
 use swallowtail_runtime::{
-    HostServices, InteractiveSessionDriver, OpenSessionRequest, PreparationFailure, SessionOptions,
+    HostServices, InteractiveSessionDriver, OpenSessionRequest, PreparationFailure,
+    PreparedWorkingStateRestoration, RuntimeTurnId, SessionOptions,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -45,6 +46,19 @@ impl GeminiPreparedSession {
         let plan = self.plan().clone();
         let request = self.request.clone();
         Box::pin(async move { driver.open_session(plan, request, services).await })
+    }
+
+    #[must_use]
+    pub fn prepare_working_state_restoration(
+        &self,
+        interrupted_turn_id: RuntimeTurnId,
+    ) -> PreparedWorkingStateRestoration {
+        PreparedWorkingStateRestoration::fresh_session_replacement(
+            interrupted_turn_id,
+            self.low_level_driver(),
+            self.plan().clone(),
+            self.request.clone(),
+        )
     }
 
     #[must_use]

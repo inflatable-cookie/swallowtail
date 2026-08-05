@@ -108,11 +108,13 @@ fn load_replay_is_blocked_when_source_suppresses_replay_failures() {
     assert_eq!(artifacts.len(), 2);
     assert_eq!(artifacts[0]["version"], "2026.07.01-41b2de7");
     assert_eq!(artifacts[1]["version"], "2026.07.23-e383d2b");
-    assert!(artifacts.iter().all(|artifact| is_sha256(
-        artifact["acp_chunk_sha256"]
-            .as_str()
-            .expect("ACP chunk digest is text")
-    )));
+    assert!(artifacts.iter().all(|artifact| {
+        is_sha256(
+            artifact["acp_chunk_sha256"]
+                .as_str()
+                .expect("ACP chunk digest is text"),
+        )
+    }));
 
     assert_eq!(corpus["load"]["advertised"], true);
     assert_eq!(corpus["load"]["replay_awaited_before_response"], true);

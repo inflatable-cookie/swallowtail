@@ -17,6 +17,15 @@ impl AcpConnection {
         result: Result<Value, swallowtail_protocol_acp::RpcError>,
     ) -> Result<(), RuntimeFailure> {
         let id = id.as_u64().ok_or_else(malformed)?;
+        if let Some(phase) = self
+            .attachment_recovery
+            .lock()
+            .expect("ACP attachment-recovery lock poisoned")
+            .as_mut()
+            && phase.response_id == id
+        {
+            phase.response_seen = true;
+        }
         let sender = self
             .pending
             .lock()
@@ -40,6 +49,9 @@ impl AcpConnection {
     fn dispatch_notification(&self, method: &str, params: &Value) -> Result<(), RuntimeFailure> {
         match method {
             "session/update" => {
+                if self.observe_attachment_recovery_update(params)? {
+                    return Ok(());
+                }
                 let active = self
                     .active_turn
                     .lock()
@@ -68,6 +80,22 @@ impl AcpConnection {
         method: &str,
         params: &Value,
     ) -> Result<(), RuntimeFailure> {
+        if self
+            .attachment_recovery
+            .lock()
+            .expect("ACP attachment-recovery lock poisoned")
+            .is_some()
+        {
+            self.write(
+                encode_error(id, -32600, "Request unavailable during session recovery")
+                    .map_err(|_| protocol_failure())?,
+            )
+            .await?;
+            return Err(failure(
+                "swallowtail.grok.acp.attachment_recovery_callback_rejected",
+                "Grok Build requested a callback during session attachment recovery",
+            ));
+        }
         match method {
             "fs/read_text_file" => self.read_text(id, params).await,
             "session/request_permission" => self.reject_permission(id, params).await,
@@ -88,6 +116,50 @@ impl AcpConnection {
                 ))
             }
         }
+    }
+
+    fn observe_attachment_recovery_update(
+        &self,
+        params: &Value,
+    ) -> Result<bool, RuntimeFailure> {
+        let mut phase = self
+            .attachment_recovery
+            .lock()
+            .expect("ACP attachment-recovery lock poisoned");
+        let Some(phase) = phase.as_mut() else {
+            return Ok(false);
+        };
+        let session_id = params
+            .get("sessionId")
+            .and_then(Value::as_str)
+            .ok_or_else(malformed)?;
+        if session_id != phase.session.as_provider_value() {
+            return Err(failure(
+                "swallowtail.grok.acp.attachment_recovery_session_mismatch",
+                "Grok Build recovery update belongs to another provider session",
+            ));
+        }
+        if !params.get("update").is_some_and(Value::is_object) {
+            return Err(malformed());
+        }
+        if phase.response_seen {
+            return Err(failure(
+                "swallowtail.grok.acp.attachment_recovery_late_update",
+                "Grok Build emitted recovery replay after attachment readiness",
+            ));
+        }
+        let bytes = serde_json::to_vec(params).map_err(|_| malformed())?.len();
+        if phase.updates >= crate::MAXIMUM_ATTACHMENT_RECOVERY_UPDATES
+            || phase.bytes.saturating_add(bytes) > crate::MAXIMUM_ATTACHMENT_RECOVERY_BYTES
+        {
+            return Err(failure(
+                "swallowtail.grok.acp.attachment_recovery_limit_exceeded",
+                "Grok Build attachment recovery exceeded its bounded discard limit",
+            ));
+        }
+        phase.updates += 1;
+        phase.bytes += bytes;
+        Ok(true)
     }
 
     async fn read_text(&self, id: Value, params: &Value) -> Result<(), RuntimeFailure> {

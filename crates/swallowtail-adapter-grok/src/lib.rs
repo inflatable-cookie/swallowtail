@@ -27,3 +27,6 @@ pub use selection::{
     GROK_BUILD_SUBSCRIPTION_ACCESS_PROFILE_ID, GROK_BUILD_SUBSCRIPTION_AUDIENCE,
     grok_build_acp_binding, grok_build_acp_claim, grok_build_subscription_access_profile,
 };
+
+const MAXIMUM_ATTACHMENT_RECOVERY_UPDATES: usize = 4096;
+const MAXIMUM_ATTACHMENT_RECOVERY_BYTES: usize = 8 * 1024 * 1024;

@@ -64,6 +64,84 @@ fn validate_open(
     Ok(())
 }
 
+fn validate_recovery(
+    plan: &PreflightPlan,
+    request: &ResumeSessionRequest,
+    services: &HostServices,
+) -> Result<(), RuntimeFailure> {
+    for (present, code, message) in [
+        (
+            services.task().is_some(),
+            "swallowtail.cursor.acp.task_service_missing",
+            "Cursor Agent ACP requires a scoped task service",
+        ),
+        (
+            services.process().is_some(),
+            "swallowtail.cursor.acp.process_service_missing",
+            "Cursor Agent ACP requires a process service",
+        ),
+        (
+            services.working_resource().is_some(),
+            "swallowtail.cursor.acp.resource_service_missing",
+            "Cursor Agent ACP requires a working-resource service",
+        ),
+        (
+            services.working_resource_io().is_some(),
+            "swallowtail.cursor.acp.resource_io_service_missing",
+            "Cursor Agent ACP requires a working-resource I/O service",
+        ),
+    ] {
+        if !present {
+            return Err(failure(code, message));
+        }
+    }
+    let requirement = plan
+        .requirements()
+        .capabilities()
+        .find(|requirement| {
+            requirement.capability() == Capability::ProviderSessionAttachmentRecovery
+        })
+        .ok_or_else(|| {
+            failure(
+                "swallowtail.cursor.acp.attachment_recovery_capability_mismatch",
+                "Cursor Agent attachment recovery does not match its preflight plan",
+            )
+        })?;
+    for constraint in [
+        CapabilityConstraint::ReplayMaximumItems(
+            crate::MAXIMUM_ATTACHMENT_RECOVERY_UPDATES as u32,
+        ),
+        CapabilityConstraint::ReplayMaximumBytes(crate::MAXIMUM_ATTACHMENT_RECOVERY_BYTES as u64),
+    ] {
+        if !requirement
+            .constraints()
+            .any(|present| present == &constraint)
+        {
+            return Err(failure(
+                "swallowtail.cursor.acp.attachment_recovery_capability_mismatch",
+                "Cursor Agent attachment recovery bounds do not match its preflight plan",
+            ));
+        }
+    }
+    if !request.resume_binding().matches_attachment(
+        plan,
+        request.working_resource(),
+        request.access_policy(),
+    ) || request.access_policy()
+        != &SessionAccessPolicy::ambient_harness(ResourceAccess::ReadWrite)
+        || request.provider_state_policy()
+            != Some(SessionProviderStatePolicy::DurableProviderSessionPreserved)
+        || request.deadline().is_some()
+        || !request.options().is_empty()
+    {
+        return Err(failure(
+            "swallowtail.cursor.acp.attachment_recovery_binding_mismatch",
+            "Cursor Agent attachment recovery does not match its durable binding",
+        ));
+    }
+    Ok(())
+}
+
 fn validate_turn(request: &TurnRequest, services: &HostServices) -> Result<(), RuntimeFailure> {
     if let Some(deadline) = request.deadline() {
         let time = services.time().ok_or_else(|| {

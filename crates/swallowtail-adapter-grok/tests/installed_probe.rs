@@ -11,13 +11,13 @@ use swallowtail_core::{
     AccessStatus, ConfiguredInstanceId, CredentialState, DiscoveryStatus, EndpointAuthorization,
     EntitlementState, ExecutionHostId, HarnessConfigurationPosture,
     InstalledExecutableCompatibility, InstanceRevision, InterfaceVersionAxis, ModelId,
-    ModelRouteId, ModelRouteRevision, RuntimeReadiness, SupportAuthority,
+    ModelRouteId, ModelRouteRevision, RuntimeReadiness, SessionRef, SupportAuthority,
 };
 use swallowtail_runtime::{
     CancellationControl, Deadline, DiscoveryCancellation, DiscoveryDriver, EnvironmentRef,
     ExecutableRef, InstalledExecutableDiscoveryRequest, InstalledExecutableTarget,
-    MonotonicInstant, OperationContent, PreparedAccessEvidence, RequestId, ScopeId, SessionOptions,
-    WorkingResourceRef,
+    MonotonicInstant, OperationContent, PreparedAccessEvidence, RequestId, RuntimeTurnId, ScopeId,
+    SessionOptions, SessionResumeBinding, WorkingResourceRef, WorkingStateRestorationMethod,
 };
 
 #[test]
@@ -235,6 +235,26 @@ fn prepared_discovery_binds_exact_instance_access_and_ambient_posture() {
                 .observable_activity()
                 .availability(),
             swallowtail_core::ObservableActivityAvailability::Available
+        );
+        let binding = SessionResumeBinding::new(
+            SessionRef::new("grok-prepared-session").expect("session"),
+            session.plan().instance_id().clone(),
+            session.plan().execution_host_id().clone(),
+            session.plan().model_route_id().expect("route").clone(),
+            session.plan().model_id().expect("model").clone(),
+            WorkingResourceRef::new("grok.fixture.workspace").expect("workspace"),
+            session.request().access_policy().clone(),
+        );
+        assert_eq!(
+            session
+                .prepare_working_state_restoration(
+                    RequestId::new("grok-recovery").expect("request"),
+                    binding,
+                    RuntimeTurnId::new("lost-grok-turn").expect("turn"),
+                )
+                .expect("attachment recovery prepares")
+                .method(),
+            WorkingStateRestorationMethod::ProviderSessionAttachmentRecovery
         );
         let run = prepared
             .prepare_run(GrokRunProfileInput::new(

@@ -1,6 +1,7 @@
 use crate::{
-    BoxFuture, HostServices, LoadedSession, ProviderRunReconciliationOutcome,
-    ProviderSessionReconciliationOutcome, RuntimeFailure, RuntimeTurnId, SessionReplayItem,
+    BoxFuture, HostServices, InteractiveSessionDriver, InteractiveSessionHandle, LoadedSession,
+    OpenSessionRequest, ProviderRunReconciliationOutcome, ProviderSessionReconciliationOutcome,
+    ResumeSessionRequest, RuntimeFailure, RuntimeTurnId, SessionReplayItem,
 };
 
 /// Route-qualified operation used by the common restart facade.
@@ -9,6 +10,66 @@ pub enum WorkingStateRestorationMethod {
     ProviderSessionReconciliation,
     ProviderRunReconciliation,
     ProviderSessionContinuationRecovery,
+    ProviderSessionAttachmentRecovery,
+    FreshSessionReplacement,
+}
+
+/// A live attachment to the exact provider session with no replay claim.
+pub struct ProviderSessionAttachmentRecoveryOutcome {
+    interrupted_turn_id: RuntimeTurnId,
+    session: Box<dyn InteractiveSessionHandle>,
+}
+
+impl ProviderSessionAttachmentRecoveryOutcome {
+    #[must_use]
+    pub const fn new(
+        interrupted_turn_id: RuntimeTurnId,
+        session: Box<dyn InteractiveSessionHandle>,
+    ) -> Self {
+        Self {
+            interrupted_turn_id,
+            session,
+        }
+    }
+
+    #[must_use]
+    pub const fn interrupted_turn_id(&self) -> &RuntimeTurnId {
+        &self.interrupted_turn_id
+    }
+
+    #[must_use]
+    pub fn into_parts(self) -> (RuntimeTurnId, Box<dyn InteractiveSessionHandle>) {
+        (self.interrupted_turn_id, self.session)
+    }
+}
+
+/// A new usable session which carries no provider context from the lost one.
+pub struct FreshSessionReplacementOutcome {
+    interrupted_turn_id: RuntimeTurnId,
+    session: Box<dyn InteractiveSessionHandle>,
+}
+
+impl FreshSessionReplacementOutcome {
+    #[must_use]
+    pub const fn new(
+        interrupted_turn_id: RuntimeTurnId,
+        session: Box<dyn InteractiveSessionHandle>,
+    ) -> Self {
+        Self {
+            interrupted_turn_id,
+            session,
+        }
+    }
+
+    #[must_use]
+    pub const fn interrupted_turn_id(&self) -> &RuntimeTurnId {
+        &self.interrupted_turn_id
+    }
+
+    #[must_use]
+    pub fn into_parts(self) -> (RuntimeTurnId, Box<dyn InteractiveSessionHandle>) {
+        (self.interrupted_turn_id, self.session)
+    }
 }
 
 /// A stateful loaded session whose interrupted provider turn remains unresolved.
@@ -46,6 +107,8 @@ pub enum WorkingStateRestorationOutcome {
     SessionReconciled(ProviderSessionReconciliationOutcome),
     RunReconciled(ProviderRunReconciliationOutcome),
     SessionRecovered(ProviderSessionContinuationRecoveryOutcome),
+    SessionReattached(ProviderSessionAttachmentRecoveryOutcome),
+    SessionReplaced(FreshSessionReplacementOutcome),
 }
 
 impl WorkingStateRestorationOutcome {
@@ -59,6 +122,10 @@ impl WorkingStateRestorationOutcome {
             Self::SessionRecovered(_) => {
                 WorkingStateRestorationMethod::ProviderSessionContinuationRecovery
             }
+            Self::SessionReattached(_) => {
+                WorkingStateRestorationMethod::ProviderSessionAttachmentRecovery
+            }
+            Self::SessionReplaced(_) => WorkingStateRestorationMethod::FreshSessionReplacement,
         }
     }
 }
@@ -90,6 +157,36 @@ impl PreparedWorkingStateRestoration {
     }
 
     #[must_use]
+    pub fn provider_session_attachment_recovery(
+        interrupted_turn_id: RuntimeTurnId,
+        driver: impl InteractiveSessionDriver + 'static,
+        plan: swallowtail_core::PreflightPlan,
+        request: ResumeSessionRequest,
+    ) -> Self {
+        Self::new(SessionAttachmentRecoveryOperation {
+            interrupted_turn_id,
+            driver: Box::new(driver),
+            plan,
+            request,
+        })
+    }
+
+    #[must_use]
+    pub fn fresh_session_replacement(
+        interrupted_turn_id: RuntimeTurnId,
+        driver: impl InteractiveSessionDriver + 'static,
+        plan: swallowtail_core::PreflightPlan,
+        request: OpenSessionRequest,
+    ) -> Self {
+        Self::new(FreshSessionReplacementOperation {
+            interrupted_turn_id,
+            driver: Box::new(driver),
+            plan,
+            request,
+        })
+    }
+
+    #[must_use]
     pub fn method(&self) -> WorkingStateRestorationMethod {
         self.operation.method()
     }
@@ -99,6 +196,62 @@ impl PreparedWorkingStateRestoration {
         services: HostServices,
     ) -> BoxFuture<'static, Result<WorkingStateRestorationOutcome, RuntimeFailure>> {
         self.operation.restore(services)
+    }
+}
+
+struct SessionAttachmentRecoveryOperation {
+    interrupted_turn_id: RuntimeTurnId,
+    driver: Box<dyn InteractiveSessionDriver>,
+    plan: swallowtail_core::PreflightPlan,
+    request: ResumeSessionRequest,
+}
+
+impl WorkingStateRestorationOperation for SessionAttachmentRecoveryOperation {
+    fn method(&self) -> WorkingStateRestorationMethod {
+        WorkingStateRestorationMethod::ProviderSessionAttachmentRecovery
+    }
+
+    fn restore(
+        self: Box<Self>,
+        services: HostServices,
+    ) -> BoxFuture<'static, Result<WorkingStateRestorationOutcome, RuntimeFailure>> {
+        Box::pin(async move {
+            let session = self
+                .driver
+                .recover_session_attachment(self.plan, self.request, services)
+                .await?;
+            Ok(WorkingStateRestorationOutcome::SessionReattached(
+                ProviderSessionAttachmentRecoveryOutcome::new(self.interrupted_turn_id, session),
+            ))
+        })
+    }
+}
+
+struct FreshSessionReplacementOperation {
+    interrupted_turn_id: RuntimeTurnId,
+    driver: Box<dyn InteractiveSessionDriver>,
+    plan: swallowtail_core::PreflightPlan,
+    request: OpenSessionRequest,
+}
+
+impl WorkingStateRestorationOperation for FreshSessionReplacementOperation {
+    fn method(&self) -> WorkingStateRestorationMethod {
+        WorkingStateRestorationMethod::FreshSessionReplacement
+    }
+
+    fn restore(
+        self: Box<Self>,
+        services: HostServices,
+    ) -> BoxFuture<'static, Result<WorkingStateRestorationOutcome, RuntimeFailure>> {
+        Box::pin(async move {
+            let session = self
+                .driver
+                .open_session(self.plan, self.request, services)
+                .await?;
+            Ok(WorkingStateRestorationOutcome::SessionReplaced(
+                FreshSessionReplacementOutcome::new(self.interrupted_turn_id, session),
+            ))
+        })
     }
 }
 

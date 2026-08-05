@@ -145,6 +145,14 @@ fn prepared_session_uses_only_the_exact_private_resume_id_on_later_turns() {
         profile.evidence().observable_activity().availability(),
         ObservableActivityAvailability::Available
     );
+    assert_eq!(
+        profile
+            .prepare_working_state_restoration(
+                RuntimeTurnId::new("lost-qwen-turn").expect("valid turn")
+            )
+            .method(),
+        swallowtail_runtime::WorkingStateRestorationMethod::FreshSessionReplacement
+    );
 
     let (process, states) = ScriptedProcessService::completed(&[
         include_str!("fixtures/qwen-code-v0.19.11/interactive-first-turn.jsonl"),

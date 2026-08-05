@@ -6,8 +6,9 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     BoxFuture, HostServices, InteractiveSessionDriver, InteractiveSessionHandle,
-    OpenSessionRequest, PreparationFailure, PreparedOperationEvidence, RequestId, RuntimeFailure,
-    WorkingResourceRef,
+    OpenSessionRequest, PreparationFailure, PreparedOperationEvidence,
+    PreparedWorkingStateRestoration, RequestId, ResumeSessionRequest, RuntimeFailure,
+    RuntimeTurnId, SessionResumeBinding, WorkingResourceRef,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -119,5 +120,39 @@ impl CursorPreparedAcpSession {
         let plan = self.plan().clone();
         let request = self.request.clone();
         Box::pin(async move { driver.open_session(plan, request, services).await })
+    }
+
+    pub fn attachment_recovery_request(
+        &self,
+        request_id: RequestId,
+        binding: SessionResumeBinding,
+    ) -> Result<ResumeSessionRequest, PreparationFailure> {
+        ResumeSessionRequest::from_plan(
+            self.plan(),
+            request_id,
+            binding,
+            self.request
+                .working_resource()
+                .expect("prepared Cursor session binds a working resource")
+                .clone(),
+            None,
+        )
+    }
+
+    pub fn prepare_working_state_restoration(
+        &self,
+        request_id: RequestId,
+        binding: SessionResumeBinding,
+        interrupted_turn_id: RuntimeTurnId,
+    ) -> Result<PreparedWorkingStateRestoration, PreparationFailure> {
+        let request = self.attachment_recovery_request(request_id, binding)?;
+        Ok(
+            PreparedWorkingStateRestoration::provider_session_attachment_recovery(
+                interrupted_turn_id,
+                self.low_level_driver(),
+                self.plan().clone(),
+                request,
+            ),
+        )
     }
 }

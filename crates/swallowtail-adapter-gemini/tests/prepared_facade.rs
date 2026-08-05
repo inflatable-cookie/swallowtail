@@ -22,7 +22,7 @@ use swallowtail_runtime::{
     CleanupOutcome, Deadline, DiscoveryCancellation, EnvironmentRef, ExecutableRef,
     InstalledExecutableTarget, MonotonicInstant, OperationContent, PreparedAccessEvidence,
     RequestId, RuntimeTurnId, ScopeId, SessionOptions, TerminalStatus, TurnRequest,
-    WorkingResourceRef,
+    WorkingResourceRef, WorkingStateRestorationMethod,
 };
 use swallowtail_testkit::{
     assert_observable_activity_trace, assert_prepared_operation_evidence_matches_plan,
@@ -86,6 +86,14 @@ fn prepared_sessions_bind_version_access_and_observation_only_model_policy() {
                 SessionOptions::default().with_harness_mode(HarnessMode::Plan),
             ))
             .expect("session profile prepares");
+        assert_eq!(
+            profile
+                .prepare_working_state_restoration(
+                    RuntimeTurnId::new("lost-gemini-turn").expect("turn")
+                )
+                .method(),
+            WorkingStateRestorationMethod::FreshSessionReplacement
+        );
 
         assert_eq!(
             profile

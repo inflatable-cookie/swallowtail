@@ -35,6 +35,13 @@ fn selection(host: ExecutionHostId) -> FixtureSelection {
                 .expect("constraint"),
             )],
         ),
+        CapabilityRequirement::new(
+            Capability::ProviderSessionAttachmentRecovery,
+            [
+                CapabilityConstraint::ReplayMaximumItems(4096),
+                CapabilityConstraint::ReplayMaximumBytes(8 * 1024 * 1024),
+            ],
+        ),
     ]);
     let version =
         cursor_agent_release_binding("2026.07.01-41b2de7").expect("Cursor version");

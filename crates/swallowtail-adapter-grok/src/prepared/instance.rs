@@ -65,6 +65,17 @@ pub(crate) fn session_capabilities() -> CapabilityProfile {
                 .expect("static Grok retention constraint is valid"),
             )],
         ),
+        CapabilityRequirement::new(
+            Capability::ProviderSessionAttachmentRecovery,
+            [
+                CapabilityConstraint::ReplayMaximumItems(
+                    crate::MAXIMUM_ATTACHMENT_RECOVERY_UPDATES as u32,
+                ),
+                CapabilityConstraint::ReplayMaximumBytes(
+                    crate::MAXIMUM_ATTACHMENT_RECOVERY_BYTES as u64,
+                ),
+            ],
+        ),
     ])
 }
 

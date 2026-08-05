@@ -27,7 +27,7 @@ fn selection_for(host: ExecutionHostId, version: &str, structured: bool) -> Fixt
     } else {
         swallowtail_core::CancellationScope::ActiveTurn
     };
-    let capabilities = CapabilityProfile::new([
+    let mut capability_requirements = vec![
         CapabilityRequirement::new(operation, []),
         CapabilityRequirement::new(Capability::StreamingEvents, []),
         CapabilityRequirement::new(Capability::ObservableActivity, []),
@@ -54,7 +54,17 @@ fn selection_for(host: ExecutionHostId, version: &str, structured: bool) -> Fixt
                 .expect("constraint"),
             )],
         ),
-    ]);
+    ];
+    if !structured {
+        capability_requirements.push(CapabilityRequirement::new(
+            Capability::ProviderSessionAttachmentRecovery,
+            [
+                CapabilityConstraint::ReplayMaximumItems(4096),
+                CapabilityConstraint::ReplayMaximumBytes(8 * 1024 * 1024),
+            ],
+        ));
+    }
+    let capabilities = CapabilityProfile::new(capability_requirements);
     let version = grok_build_acp_binding(version).expect("version");
     let instance = ConfiguredInstance::new(
         instance_id.clone(),

@@ -13,9 +13,8 @@ shape.
 
 ## Next Task
 
-Hold at the g03 evidence gate. Resume only for a new consumer-reproduced
-defect, material non-deferred provider/interface drift, or explicit
-operator-selected roadmap work.
+Execute g03 card 090: qualify Cursor Agent ACP and Grok Build ACP load/replay
+independently before adding either continuation-recovery mapping.
 
 ## Index
 

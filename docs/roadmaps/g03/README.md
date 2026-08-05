@@ -37,6 +37,9 @@ visible as unverified newer unless exact evidence requires rejection.
 | Qualify remaining durable transcript and retained-operation reconciliation candidates. | completed | Contracts 021-022, 042, 048 | `g03.032` |
 | Reconcile and clean exact recovered Anthropic Managed Agent runs without conflating observation and control. | completed | Contracts 021-022, 038, 042, 048 | `g03.033` |
 | Restore consumer working state through the strongest exact route method without flattening ACP continuation into reconciliation. | completed | Contracts 017, 037, 046, 048, 050 | `g03.034` |
+| Extend ACP continuation recovery only where exact agent-specific load/replay evidence passes. | ready | Contracts 013, 015, 017, 029, 037, 050 | `g03.035` |
+| Compose read-only reconciliation with separately prepared settled-session attachment. | planned | Contracts 017, 037, 046, 048, 050 | `g03.036` |
+| Promote further retained-session recovery behind exact resource and ownership gates. | planned | Contracts 009, 017, 025, 029, 037-038, 050 | `g03.037` |
 | Periodically reconcile deferred gates, route truth, and generation capacity. | planned | Contract 001 | recurring checkpoints |
 
 ## Current Checkpoint
@@ -61,6 +64,14 @@ visible as unverified newer unless exact evidence requires rejection.
 - g03.034 realizes that facade across all seven selected routes. Focused tests,
   compile-checked guidance, and affected-package proof pass without live
   provider work
+- the operator selected three follow-on restoration milestones inside g03:
+  Cursor/Grok ACP qualification, explicit reconciliation-then-attachment, and
+  gated Pi/Alibaba retained-session recovery
+- card 090 is the sole ready task; it must qualify Cursor and Grok independently
+  from exact load/replay evidence before either production mapping changes
+- Gemini ACP remains blocked on replay-readiness evidence; private headless
+  continuation and routes without reusable provider sessions remain outside
+  this runway
 - Research 074 inventories 13 installed/attached harness route ids and bounds
   the first external currentness source set
 - the 2026-07-31 currentness pass leaves Codex and stable ACP unchanged,
@@ -367,13 +378,18 @@ visible as unverified newer unless exact evidence requires rejection.
 - [031 ACP Retained History Reconciliation Qualification](031-acp-retained-history-reconciliation-qualification.md) — completed
 - [032 Retained Operation Reconciliation Candidate Gate](032-retained-operation-reconciliation-candidate-gate.md) — completed
 - [033 Anthropic Managed Run Reconciliation And Recovered Cleanup](033-anthropic-managed-run-reconciliation-and-recovered-cleanup.md) — completed
+- [034 Working-State Restoration Facade](034-working-state-restoration-facade.md) — completed
+- [035 ACP Continuation Recovery Expansion](035-acp-continuation-recovery-expansion.md) — ready
+- [036 Reconciliation Then Attachment Composition](036-reconciliation-then-attachment-composition.md) — planned
+- [037 Retained Session Recovery Promotion](037-retained-session-recovery-promotion.md) — planned
 
 ## Checkpoint
 
-Roadmap g03.033 is complete. Cards 083-084 removed Gemini's unsupported
-confirmed-deletion claim and added the portable waiting and recovered-resource
-cleanup kernel. Cards 085-086 realize and accept exact Anthropic Managed Agents
-recovery. The generation has returned to its evidence gate.
+Roadmap g03.034 is complete. Cards 087-089 realize one facade across five
+reconciliation routes and two ACP continuation-recovery routes. Operator-
+selected roadmap g03.035 is ready at evidence-only card 090. Roadmaps
+g03.036-g03.037 remain planned behind their explicit contract, resource, and
+ownership gates.
 
 ## Generation Boundary
 

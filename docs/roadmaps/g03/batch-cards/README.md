@@ -4,15 +4,30 @@
 
 ## Ready
 
-- `084-provider-recovered-resource-cleanup-kernel.md`
+- `090-cursor-and-grok-acp-load-replay-qualification.md`
 
 ## Planned
 
-- `085-anthropic-managed-run-reconciliation-and-cleanup.md`
-- `086-anthropic-recovery-prepared-and-package-acceptance.md`
+- `091-cursor-and-grok-acp-recovery-drivers.md`
+- `092-acp-recovery-expansion-acceptance.md`
+- `093-settled-session-attachment-contract.md`
+- `094-restoration-sequence-runtime-kernel.md`
+- `095-codex-opencode-reconcile-then-load.md`
+- `096-kimi-reconcile-then-resume-and-acceptance.md`
+- `097-retained-session-candidate-currentness.md`
+- `098-alibaba-retained-conversation-contract-and-corpus.md`
+- `099-pi-persistent-recovery-implementation.md`
+- `100-alibaba-retained-conversation-recovery.md`
+- `101-retained-session-recovery-acceptance.md`
 
 ## Completed
 
+- `089-working-state-restoration-route-acceptance.md`
+- `088-acp-continuation-recovery.md`
+- `087-working-state-restoration-runtime-kernel.md`
+- `086-anthropic-recovery-prepared-and-package-acceptance.md`
+- `085-anthropic-managed-run-reconciliation-and-cleanup.md`
+- `084-provider-recovered-resource-cleanup-kernel.md`
 - `083-gemini-stored-transcript-management-truth-repair.md`
 - `082-retained-operation-reconciliation-selection.md`
 - `081-anthropic-managed-operation-recovery-qualification.md`

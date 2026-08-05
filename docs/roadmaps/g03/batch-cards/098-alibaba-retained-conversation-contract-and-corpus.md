@@ -1,0 +1,35 @@
+# 098 Alibaba Retained Conversation Contract And Corpus
+
+Status: planned
+Owner: Tom
+Created: 2026-08-05
+Milestone: `../037-retained-session-recovery-promotion.md`
+Depends on: card 097 selecting Alibaba
+
+## Goal
+
+Define and freeze a separate retained Alibaba conversation profile without
+widening the existing operation-owned delete-on-close route.
+
+## Scope
+
+1. Promote exact retention, ownership, attachment, replay, and cleanup rules.
+2. Freeze bounded conversation and ordered-item retrieval before readiness.
+3. Bind workspace, region, endpoint, deployment, credential, model, and
+   conversation identity.
+4. Cover foreign, missing, deleted, malformed, oversized, stale, and uncertain
+   conversations.
+5. Preserve explicit cleanup as separate authority.
+
+## Validation
+
+- `effigy validate:focused swallowtail-core swallowtail-runtime swallowtail-testkit swallowtail-adapter-alibaba-model-studio`
+
+## Stop Conditions
+
+- stop if retained and operation-owned profiles cannot coexist explicitly
+- stop if list or retrieval mutates state or cannot prove replay completion
+
+## Auto-Continuation
+
+Continue to card 100 only when the contract and corpus pass.

@@ -9,11 +9,11 @@ prompts, tools, authority, workflows, persistence, and product state.
 Status: compatibility maintenance. The repository is in strict Northstar posture. The
 provider-neutral core, pure preflight, executor-neutral runtime, thirteen synthetic
 conformance profiles, host-approved local process/endpoint/credential services,
-32 production driver routes, including separate Antigravity, Claude Code, Cursor, Gemini, Grok, and Kimi
+33 production driver routes, including separate Antigravity, Claude Code, Cursor, Gemini, Grok, Kimi, and Oh My Pi
 installed-harness routes plus SDK-native Bedrock Runtime
 and control-plane routes, across Alibaba Model Studio, Anthropic, Bedrock,
 Claude Agent, Codex, Cursor, DeepSeek, Gemini, Grok, Kimi, llama.cpp, Ollama, OpenAI,
-OpenCode, Pi, Qwen, and xAI
+Oh My Pi, OpenCode, Pi, Qwen, and xAI
 are validated. Codex app-server supports both
 unchanged read-only sessions and one explicit host-resolved bounded workspace
 profile.
@@ -257,7 +257,7 @@ until the current source enters canonical history.
 - local and remote execution hosts treated as equal topologies
 - Nucleus and Soundcheck as initial consumers, not Swallowtail authorities
 
-The twenty-six-crate Rust workspace contains `swallowtail-core`, `swallowtail-runtime`,
+The twenty-seven-crate Rust workspace contains `swallowtail-core`, `swallowtail-runtime`,
 `swallowtail-testkit`, `swallowtail-host-local`, `swallowtail-protocol-acp`,
 `swallowtail-protocol-openai-chat`, `swallowtail-transport-acp-remote`,
 `swallowtail-adapter-alibaba-model-studio`,
@@ -269,7 +269,7 @@ The twenty-six-crate Rust workspace contains `swallowtail-core`, `swallowtail-ru
 `swallowtail-adapter-gemini`, `swallowtail-adapter-grok`,
 `swallowtail-adapter-kimi`, `swallowtail-adapter-kimi-platform`,
 `swallowtail-adapter-llama-cpp`, `swallowtail-adapter-ollama`,
-`swallowtail-adapter-pi`,
+`swallowtail-adapter-oh-my-pi`, `swallowtail-adapter-pi`,
 `swallowtail-adapter-openai`, `swallowtail-adapter-qwen`, and
 `swallowtail-adapter-xai`. Provider behavior stays isolated in adapters.
 

@@ -2997,6 +2997,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "swallowtail-adapter-oh-my-pi"
+version = "0.1.0"
+dependencies = [
+ "base64",
+ "futures-channel",
+ "futures-core",
+ "futures-executor",
+ "futures-util",
+ "semver",
+ "serde_json",
+ "swallowtail-core",
+ "swallowtail-host-local",
+ "swallowtail-runtime",
+ "swallowtail-testkit",
+]
+
+[[package]]
 name = "swallowtail-adapter-ollama"
 version = "0.1.0"
 dependencies = [

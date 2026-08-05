@@ -1,0 +1,32 @@
+{
+  "package": "@oh-my-pi/pi-coding-agent",
+  "package_version": "17.2.9",
+  "compatibility_claim": "exact_qualification_point",
+  "transport": "oh-my-pi-rpc-v2-jsonl-stdio",
+  "argv": [
+    "--mode", "rpc",
+    "--no-session",
+    "--provider", "fixture-provider",
+    "--model", "fixture-model",
+    "--tools", "read,grep,glob,todo,ask",
+    "--no-extensions",
+    "--no-skills",
+    "--no-rules",
+    "--no-prewalk",
+    "--approval-mode", "always-ask"
+  ],
+  "startup_commands": [
+    {"type": "negotiate_protocol", "protocolVersion": 2},
+    {"type": "set_model", "provider": "fixture-provider", "modelId": "fixture-model"},
+    {"type": "set_auto_retry", "enabled": false},
+    {"type": "set_auto_compaction", "enabled": false},
+    {"type": "set_steering_mode", "mode": "one-at-a-time"},
+    {"type": "set_follow_up_mode", "mode": "one-at-a-time"},
+    {"type": "set_interrupt_mode", "mode": "wait"},
+    {"type": "get_state"}
+  ],
+  "maximum_active_operations": 1,
+  "maximum_completed_prompts": 2,
+  "maximum_pending_steering": 1,
+  "maximum_pending_follow_up": 1
+}

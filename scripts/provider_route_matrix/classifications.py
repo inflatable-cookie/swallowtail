@@ -1,4 +1,7 @@
 retained_execution_classifications = {
+    ("retained_background_execution", "oh-my-pi.rpc"): "operation_shape_not_applicable",
+    ("stream_reattachment", "oh-my-pi.rpc"): "operation_shape_not_applicable",
+    ("provider_managed_recovery", "oh-my-pi.rpc"): "upstream_unsupported",
     ("retained_background_execution", "antigravity.catalogue + antigravity.headless"): "operation_shape_not_applicable",
     ("stream_reattachment", "antigravity.catalogue + antigravity.headless"): "operation_shape_not_applicable",
     ("provider_managed_recovery", "antigravity.catalogue + antigravity.headless"): "upstream_unsupported",
@@ -68,6 +71,7 @@ retained_execution_classifications = {
 }
 
 working_resource_write_classifications = {
+    ("bounded_workspace_text_write", "oh-my-pi.rpc"): "selected_surface_absence",
     ("bounded_workspace_text_write", "qwen.headless"): "upstream_unsupported",
     ("working_resource", "alibaba.conversations"): "operation_shape_not_applicable",
     ("bounded_workspace_text_write", "alibaba.conversations"): "operation_shape_not_applicable",
@@ -103,6 +107,7 @@ working_resource_write_classifications = {
 }
 
 owned_runtime_not_applicable = {
+    "oh-my-pi.rpc",
     "antigravity.catalogue + antigravity.headless",
     "cursor-agent.catalogue + cursor-agent.acp + cursor-agent.headless",
     "qwen.headless",
@@ -128,6 +133,7 @@ owned_runtime_not_applicable = {
     "xai.responses-websocket",
 }
 rollover_not_applicable = {
+    "oh-my-pi.rpc",
     "antigravity.catalogue + antigravity.headless",
     "cursor-agent.catalogue + cursor-agent.acp + cursor-agent.headless",
     "qwen.headless",
@@ -220,6 +226,7 @@ residual_operation_not_applicable = {
         "openai.background",
         "opencode.http",
         "grok-build.acp",
+        "oh-my-pi.rpc",
     }
 }
 residual_separate_route = {
@@ -235,6 +242,7 @@ residual_no_provider_billing = {
         "kimi-code.acp + kimi-code.headless",
         "kimi-code.local-server",
         "ollama.attached",
+        "oh-my-pi.rpc",
     }
 }
 residual_selected_surface_absence = {

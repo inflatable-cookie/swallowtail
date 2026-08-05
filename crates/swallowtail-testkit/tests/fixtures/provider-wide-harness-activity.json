@@ -1,11 +1,12 @@
 {
   "fixture_schema": 1,
-  "evidence_checked": "2026-07-29",
+  "evidence_checked": "2026-08-05",
   "contract": "044-observable-agent-activity-and-disclosure",
   "source_inventories": [
     "064-codex-observable-activity-range-evidence",
     "065-acp-observable-activity-currentness-and-corpus",
-    "066-non-acp-harness-observable-activity-inventory"
+    "066-non-acp-harness-observable-activity-inventory",
+    "109-oh-my-pi-rpc-route-qualification"
   ],
   "routes": [
     {
@@ -215,6 +216,20 @@
       "not_applicable_operations": ["model-catalogue", "provider-session-management"],
       "unknown_posture": "preserve-namespaced",
       "exact_absences": ["assistant provider item identity beyond turn and offset", "hidden reasoning", "callback-as-tool activity"]
+    },
+    {
+      "id": "oh-my-pi.rpc",
+      "driver": "swallowtail.oh-my-pi.rpc",
+      "transport": "oh-my-pi-rpc-v2-jsonl-stdio",
+      "qualified": "17.2.9",
+      "prepared_profiles": [
+        {"operation": "structured-run", "availability": "available"},
+        {"operation": "interactive-session", "availability": "available"}
+      ],
+      "unavailable_operations": [],
+      "not_applicable_operations": ["model-catalogue"],
+      "unknown_posture": "preserve-namespaced",
+      "exact_absences": ["write-capable tools", "provider permission exchange", "subagent topology"]
     },
     {
       "id": "opencode.http",

@@ -42,7 +42,7 @@ Prepared coverage is measured per production driver, not per provider name or
 crate. The current route set is:
 
 - installed harnesses: Codex exec, Codex app-server, Claude Agent ACP, Gemini
-  CLI ACP, Kimi Code ACP, Pi RPC, and Qwen headless
+  CLI ACP, Kimi Code ACP, Pi RPC, Oh My Pi RPC, and Qwen headless
 - attached harness network: OpenCode HTTP/SSE
 - hosted direct and provider-owned state: Anthropic Messages, Kimi Platform,
   DeepSeek, Alibaba Model Studio conversations, OpenAI background Responses,
@@ -82,6 +82,12 @@ Preparation never implicitly selects or falls back across:
 
 Failure remains failure for the selected route. It does not authorize another
 preparation attempt.
+
+Oh My Pi preparation binds an approved `omp` executable and environment with
+`CredentialMechanism::LocalUnauthenticated`. OMP resolves its local auth state.
+Swallowtail acquires no credential lease, does not inspect that store, and does
+not fall back to an API key. Catalogue, run, and session profiles remain
+separate; model and optional reasoning selections are exact inputs.
 
 ## Preparation Result
 

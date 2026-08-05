@@ -196,6 +196,13 @@ The first implementation covers:
 - Anthropic Messages `2023-06-01` image input, client-tool continuation under
   Contract 030, and provider-owned web search
 
+The separate Oh My Pi `17.2.9` route carries one bounded PNG and exact typed
+extension-UI question exchange. Its selected read-only tool set includes
+`ask`; the question remains an exactly-once consumer callback. Write-capable
+tools are absent, so OMP permission prompts are not admitted in this tranche.
+`--approval-mode always-ask` is a deny-by-absence safety posture, not ambient
+approval or a permission-exchange claim.
+
 Anthropic tool continuation adds a separately prepared interactive role. It
 does not widen the existing one-attempt structured role.
 

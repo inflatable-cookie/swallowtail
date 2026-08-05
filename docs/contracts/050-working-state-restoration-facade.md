@@ -177,6 +177,7 @@ Fresh-session replacement:
 - `deepseek.continuation` interactive profile
 - `gemini-cli.acp`
 - `ollama.attached` interactive profile
+- `oh-my-pi.rpc`
 - `pi.rpc`
 - `qwen.headless`
 - `xai.responses-websocket` interactive profile

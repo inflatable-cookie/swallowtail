@@ -46,13 +46,14 @@ ollama.attached
 openai.background
 openai.realtime
 opencode.http
+oh-my-pi.rpc
 pi.rpc
 qwen.headless
 xai.responses-websocket
 EOF
 
-if [ "$(wc -l < "$route_matrix_actual" | tr -d ' ')" -ne 32 ]; then
-  printf 'provider route matrix must contain exactly 32 route rows\n' >&2
+if [ "$(wc -l < "$route_matrix_actual" | tr -d ' ')" -ne 33 ]; then
+  printf 'provider route matrix must contain exactly 33 route rows\n' >&2
   exit 1
 fi
 
@@ -72,8 +73,8 @@ sed -n \
 sed -n 's/^| `\([^`]*\)` |.*$/\1/p' "$route_lifecycle_rows" |
   LC_ALL=C sort > "$route_lifecycle_actual"
 
-if [ "$(wc -l < "$route_lifecycle_actual" | tr -d ' ')" -ne 32 ]; then
-  printf 'provider session lifecycle matrix must contain exactly 32 route rows\n' >&2
+if [ "$(wc -l < "$route_lifecycle_actual" | tr -d ' ')" -ne 33 ]; then
+  printf 'provider session lifecycle matrix must contain exactly 33 route rows\n' >&2
   exit 1
 fi
 
@@ -143,6 +144,7 @@ ollama.attached|not-applicable|no|not-applicable|not-applicable|not-applicable|n
 openai.background|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
 openai.realtime|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
 opencode.http|supported|yes|unsupported|unsupported|supported|ProviderDataDeleted
+oh-my-pi.rpc|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
 pi.rpc|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
 qwen.headless|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
 xai.responses-websocket|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
@@ -156,4 +158,4 @@ python3 "$route_matrix_repo_root/scripts/provider_route_matrix/validate.py" \
 
 python3 "$route_matrix_repo_root/scripts/check-provider-activity-matrix.py"
 
-printf 'provider route, lifecycle, 25-solution feature, and activity matrices passed\n'
+printf 'provider route, lifecycle, 26-solution feature, and activity matrices passed\n'

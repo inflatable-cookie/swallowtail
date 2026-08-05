@@ -1,6 +1,6 @@
 # Provider Route Matrix
 
-This is the integration front door for Swallowtail's 32 production routes.
+This is the integration front door for Swallowtail's 33 production routes.
 Choose one row explicitly. Swallowtail does not select a provider, driver,
 model, target, endpoint, credential, billing arrangement, execution host, or
 fallback route.
@@ -8,7 +8,7 @@ fallback route.
 The companion
 [provider and feature CSV](provider-solution-feature-matrix.csv) groups
 complementary routes where one public solution facade exists, then compares
-runtime posture, version posture, and qualified feature coverage across all 32
+runtime posture, version posture, and qualified feature coverage across all 33
 routes. Composite-row notes name the branch that owns each route-specific
 capability; the cells remain a solution-conversion scoreboard. Permission
 exchange and question exchange are separate columns: authorization stays
@@ -43,6 +43,7 @@ ACP adapters may compose instead of their stdio transport.
 | `grok-build.acp` | `swallowtail-adapter-grok`; `swallowtail.grok-build.acp` | operation-private structured run and interactive session with session-negotiated model options; ACP v1 stdio | approved executable and environment; provider-supported delegated Grok subscription OAuth activated only through the advertised `cached_token` method | `grok-build.executable`; maintained `0.2.114..=0.2.117` across activation and task-control behavior segments, then permitted unverified-newer stable points | `prepare_grok_build` → run or session profile → `start_run` or `open_session`; read authorized model options from the session handle | `GrokAcpDriver`; `StructuredRunDriver` and `InteractiveSessionDriver` |
 | `kimi-code.acp` | `swallowtail-adapter-kimi`; `swallowtail.kimi.acp` | resource-scoped provider-session catalogue/import plus persistent interactive session with negotiated model options; ACP v1 stdio | approved executable; delegated Kimi membership OAuth reference; explicit opaque state-root identity for catalogue/import | `kimi-code.executable`; exact `0.28.1` plus qualified `0.29.0..=0.31.1`, then permitted unverified-newer stable points; unverified-newer does not inherit import | `prepare_kimi_code(Acp)` → `prepare_session_catalogue`/`prepare_session_import` or `prepare_session` → typed operation; imported bindings then use ordinary `load_session` or `resume_session` | `KimiAcpDriver`; `ProviderSessionCatalogueDriver`, `ProviderSessionImportDriver`, and `InteractiveSessionDriver` |
 | `kimi-code.headless` | `swallowtail-adapter-kimi`; `swallowtail.kimi.headless` | one-prompt structured run; stream-json stdio | approved executable and audited default-engine environment; delegated Kimi membership OAuth reference; explicit ambient harness configuration and durable provider retention | `kimi-code.executable`; exact `0.29.0..=0.31.1`, then permitted unverified-newer stable points | `prepare_kimi_code(Headless)` → `prepare_run` → `start_run` | `KimiHeadlessDriver`; `StructuredRunDriver` |
+| `oh-my-pi.rpc` | `swallowtail-adapter-oh-my-pi`; `swallowtail.oh-my-pi.rpc` | catalogue, one-prompt structured run, and interactive session with exact model/reasoning selection, typed questions, and optional bounded PNG input; negotiated RPC v2 chunked JSONL stdio | approved executable and environment; provider-supported local OMP authentication state; explicit ambient read authority and a provider-suppressed tool set | `oh-my-pi.package`; exact `17.2.9`, then permitted visible unverified-newer stable points | `prepare_oh_my_pi_rpc` → catalogue, run, or session profile → `list_models`, `start_run`, or `open_session`; prepared sessions expose fresh context-losing restoration | `OhMyPiRpcDriver`; `ModelCatalogDriver`, `StructuredRunDriver`, and `InteractiveSessionDriver` |
 | `pi.rpc` | `swallowtail-adapter-pi`; `swallowtail.pi.rpc` | catalogue, one-prompt structured run, and interactive session with optional bounded PNG input; strict LF JSONL RPC stdio | approved executable; maintainer-supported `pi/delegated-harness-auth` profile | `pi.package`; maintained range plus permitted unverified-newer stable points | `prepare_pi_rpc` → catalogue, run, or session profile → `list_models`, `start_run`, or `open_session`; run inputs carry attachments and session inputs opt into image-bearing turns | `PiRpcDriver`; `ModelCatalogDriver`, `StructuredRunDriver`, and `InteractiveSessionDriver` |
 | `qwen.headless` | `swallowtail-adapter-qwen`; `swallowtail.qwen.headless` | catalogue, structured run, and turn-scoped interactive continuation; structured CLI stream JSON with one joined child per run or turn | approved executable; maintainer-supported `qwen-code/delegated-harness-auth` profile | `qwen-code.package`; maintained `0.19.11..=0.20.1` plus `0.21.0..=0.21.2`, then permitted unverified-newer stable points | `prepare_qwen_catalogue` → `list_models`, or `prepare_qwen_headless` → run or session profile → `start_run` or `open_session`; later turns privately use the exact observed provider session ID | `QwenHeadlessDriver`; `ModelCatalogDriver`, `StructuredRunDriver`, and `InteractiveSessionDriver` |
 
@@ -64,7 +65,7 @@ resource binding, activity truth, and exact version evidence.
 | supported (3) | `codex.app-server`; `kimi-code.acp`; `opencode.http` | complete production profile |
 | attachment-only (2) | `claude-agent.acp`; `kimi-code.local-server` | qualified catalogue plus exact list-to-attachment revalidation; Kimi also needs bounded transcript replay |
 | blocked (3) | `cursor-agent.acp`; `gemini-cli.headless`; `pi.rpc` | Cursor needs an exact list/load/resume corpus; Gemini needs a side-effect-free list or export before lookup/history qualification; Pi needs provable stored-cwd equality with the host lease |
-| not applicable (11) | `codex.exec`; `kimi-code.headless`; `claude-code.headless`; `cursor-agent.catalogue`; `cursor-agent.headless`; `qwen.headless`; `antigravity.catalogue`; `antigravity.headless`; `gemini-cli.acp`; `grok-build.acp`; `anthropic.managed-agent` | selected route exposes no reusable external provider-session identity |
+| not applicable (12) | `codex.exec`; `kimi-code.headless`; `claude-code.headless`; `cursor-agent.catalogue`; `cursor-agent.headless`; `qwen.headless`; `antigravity.catalogue`; `antigravity.headless`; `gemini-cli.acp`; `grok-build.acp`; `oh-my-pi.rpc`; `anthropic.managed-agent` | selected route exposes no reusable external provider-session identity |
 
 No row inherits capability from another transport or provider family. See
 [the import guide](provider-session-import.md) and
@@ -80,7 +81,7 @@ interactive harness route now exposes one static post-restart action: Codex,
 OpenCode, and Kimi local reconcile; Claude Agent ACP and Kimi ACP recover with
 complete bounded replay; Cursor and Grok attach to the exact provider session
 while discarding non-authoritative replay; Antigravity continuation, Gemini
-ACP, Pi RPC, and Qwen continuation create an explicitly context-losing
+ACP, Oh My Pi RPC, Pi RPC, and Qwen continuation create an explicitly context-losing
 replacement. Hosted Anthropic and DeepSeek continuation, xAI WebSocket,
 attached Ollama, and ordinary Alibaba conversations also create a
 context-losing replacement. OpenAI Realtime and Gemini Live create a fresh
@@ -170,6 +171,7 @@ delete.
 | `kimi-code.acp` | `unsupported` | `no` | `unsupported` | `unsupported` | `unsupported` | `unsupported` | exact qualified `0.28.1` plus `0.29.0..=0.31.1`; later stable points may be visible `UnverifiedNewer`; selected ACP route supports separate catalogue/import but advertises no close or delete | catalogue/import joins its process and releases leases; interactive connection cleanup preserves provider state |
 | `kimi-code.headless` | `unsupported` | `no` | `unsupported` | `unsupported` | `unsupported` | `unsupported` | exact qualified `0.29.0..=0.31.1`; later stable points may be visible `UnverifiedNewer`; each run may retain provider-owned session state without exposing its identity | process and task cleanup only; provider state is preserved |
 | `kimi-code.local-server` | `supported` | `yes` | `supported` | `supported` | `unsupported` | `unsupported` | exact qualified `0.28.1` plus `0.29.0..=0.31.1`; profile and disabled-tool controls require `0.29.0`; `0.31.0` has a distinct subagent-status revision and `0.31.1` a refresh-stable revision; later stable points may be visible `UnverifiedNewer` | joins WebSocket and task work, releases the server-bearer lease, preserves provider state, and stops only an owned foreground child |
+| `oh-my-pi.rpc` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | exact `17.2.9`; later stable points may be visible `UnverifiedNewer` | operation process and materialized attachment cleanup only; local OMP auth/config state is preserved |
 | `pi.rpc` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | accepted `pi.package` segments; current RPC operation has no management binding | attachment and process cleanup only |
 | `qwen.headless` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | maintained `0.19.11..=0.20.1` plus `0.21.0..=0.21.2`; current structured-run operation has no provider session | run and process cleanup only |
 | `opencode.http` | `supported` | `yes` | `unsupported` | `unsupported` | `supported` | `ProviderDataDeleted` | `1.14.48..=1.18.10` across exact published segments; later stable points may be visible `UnverifiedNewer` | structured runs delete their operation-private session; interactive attachment cleanup preserves the external server |

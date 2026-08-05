@@ -1,0 +1,30 @@
+{
+  "axis": "oh-my-pi.package",
+  "qualified_version": "17.2.9",
+  "package": "@oh-my-pi/pi-coding-agent",
+  "commit": "f7f8e040ee04710414fbd775431091fa301b9786",
+  "npm_shasum": "22bcb3163192861726d1a920f26f899f5610795f",
+  "npm_integrity": "sha512-VTFxYdQxjr5TY/UyERlstPF2fjIsW4QUEhPATvrf1yZjLGIQqb2Q5nJGQahazDdDZUhLu1a5h7Ktm+sxK01Log==",
+  "launcher_shebang": "#!/usr/bin/env bun",
+  "version_output": "omp/17.2.9",
+  "protocol_versions": [1, 2],
+  "maximum_frame_bytes": 1048576,
+  "maximum_reassembled_frame_bytes": 67108864,
+  "session_lifecycle_events": ["model_changed", "thinking_level_changed"],
+  "selected_commands": [
+    "negotiate_protocol",
+    "prompt",
+    "steer",
+    "follow_up",
+    "abort",
+    "get_state",
+    "get_available_models",
+    "set_model",
+    "set_thinking_level",
+    "set_steering_mode",
+    "set_follow_up_mode",
+    "set_interrupt_mode",
+    "set_auto_compaction",
+    "set_auto_retry"
+  ]
+}

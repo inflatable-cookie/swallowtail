@@ -50,6 +50,7 @@ rules governed by Contract 036.
 - `swallowtail-adapter-llama-cpp`
 - `swallowtail-adapter-opencode`
 - `swallowtail-adapter-ollama`
+- `swallowtail-adapter-oh-my-pi`
 - `swallowtail-adapter-openai`
 - `swallowtail-adapter-pi`
 - `swallowtail-adapter-qwen`

@@ -11,7 +11,7 @@ fn every_production_harness_route_has_exact_prepared_activity_truth() {
         "044-observable-agent-activity-and-disclosure"
     );
     let routes = inventory["routes"].as_array().expect("routes are an array");
-    assert_eq!(routes.len(), 19);
+    assert_eq!(routes.len(), 20);
 
     let ids = routes
         .iter()
@@ -36,6 +36,7 @@ fn every_production_harness_route_has_exact_prepared_activity_truth() {
             "kimi-code.acp",
             "kimi-code.headless",
             "kimi-code.local-server",
+            "oh-my-pi.rpc",
             "opencode.http",
             "pi.rpc",
             "qwen.headless",
@@ -83,7 +84,7 @@ fn every_production_harness_route_has_exact_prepared_activity_truth() {
         }
     }
 
-    assert_eq!(profiles.len(), 24);
+    assert_eq!(profiles.len(), 26);
     for expected in [
         ("antigravity.headless", "structured-run"),
         ("antigravity.headless", "interactive-session"),
@@ -95,6 +96,8 @@ fn every_production_harness_route_has_exact_prepared_activity_truth() {
         ("kimi-code.local-server", "interactive-session"),
         ("opencode.http", "structured-run"),
         ("opencode.http", "interactive-session"),
+        ("oh-my-pi.rpc", "structured-run"),
+        ("oh-my-pi.rpc", "interactive-session"),
         ("pi.rpc", "structured-run"),
         ("pi.rpc", "interactive-session"),
         ("qwen.headless", "structured-run"),
@@ -140,6 +143,7 @@ fn catalogue_and_management_roles_are_not_misreported_as_ordinary_activity() {
             ("kimi-code.local-server", "provider-session-management"),
             ("opencode.http", "model-catalogue"),
             ("opencode.http", "provider-session-management"),
+            ("oh-my-pi.rpc", "model-catalogue"),
             ("pi.rpc", "model-catalogue"),
             ("qwen.headless", "model-catalogue"),
         ])

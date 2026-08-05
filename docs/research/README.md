@@ -116,3 +116,4 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [106 Provider-Wide Interactive Crash Recovery](106-provider-wide-interactive-crash-recovery.md)
 - [107 Retained Session Candidate Currentness](107-retained-session-candidate-currentness.md)
 - [108 Provider-Wide Session Usability Restoration](108-provider-wide-session-usability-restoration.md)
+- [109 Oh My Pi RPC Route Qualification](109-oh-my-pi-rpc-route-qualification.md)

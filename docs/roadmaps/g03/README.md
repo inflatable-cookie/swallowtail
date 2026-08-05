@@ -413,6 +413,7 @@ visible as unverified newer unless exact evidence requires rejection.
 - [037 Retained Session Recovery Promotion](037-retained-session-recovery-promotion.md) — completed
 - [038 Provider-Wide Interactive Crash Recovery](038-provider-wide-interactive-crash-recovery.md) — completed
 - [039 Provider-Wide Session Usability Restoration](039-provider-wide-session-usability-restoration.md) — completed
+- [040 Oh My Pi RPC Foundation](040-oh-my-pi-rpc-foundation.md) — completed
 
 ## Checkpoint
 
@@ -423,7 +424,12 @@ closes with a separate retained Alibaba open/load, common
 continuation-recovery, preservation, continuation, and management-cleanup
 path. Pi card 099 remains superseded behind its unchanged public cwd gate.
 Roadmap g03.039 closes with every prepared reusable session shape mapped to one
-truthful post-crash action. The generation is back at its evidence gate.
+truthful post-crash action. Roadmap g03.040 closes the distinct Oh My Pi
+package and negotiated RPC v2 route with local-auth preparation, exact model
+and reasoning control, typed questions, bounded PNG input, activity, usage,
+cancellation, and fresh replacement. Its later operator-gated Luna/low smoke
+passes through the prepared facade and freezes session-level model/thinking
+lifecycle plus empty display clears. g03 is back at its evidence gate.
 
 ## Generation Boundary
 

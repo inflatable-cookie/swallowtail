@@ -1,0 +1,5 @@
+{"type":"extension_ui_request","id":"ui-dialog-1","method":"select","title":"fixture title","options":["Allow","Block"],"timeout":10000}
+{"type":"extension_ui_request","id":"ui-display-1","method":"notify","message":"fixture notice","notifyType":"info"}
+{"type":"extension_ui_request","id":"ui-display-2","method":"setStatus","statusKey":"fixture","statusText":"running"}
+{"type":"extension_ui_request","id":"ui-startup-widget","method":"setWidget","widgetLines":["fixture startup state"]}
+{"type":"extension_ui_request","id":"ui-widget-clear","method":"setWidget"}

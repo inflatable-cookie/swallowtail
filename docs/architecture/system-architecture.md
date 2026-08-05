@@ -6,7 +6,7 @@ Updated: 2026-08-05
 
 ## Realized State
 
-Swallowtail has a twenty-six-crate Rust workspace plus its strict Northstar authority
+Swallowtail has a twenty-seven-crate Rust workspace plus its strict Northstar authority
 spine:
 
 - `swallowtail-core` owns pure provider-neutral contract records, including
@@ -192,6 +192,13 @@ spine:
   downstream provider/model routing, prompt, steering, follow-up, correlated
   extension UI, native abort, deadlines, joined credential-last cleanup, and
   a separate provider-suppressed `get_available_models` operation
+- `swallowtail-adapter-oh-my-pi` implements the distinct OMP `17.2.9` package
+  and `omp` executable over negotiated RPC v2 JSONL stdio. It uses OMP local
+  auth without a Swallowtail credential lease, binds exact provider, model,
+  and optional reasoning selection, and owns bounded physical/logical frame
+  decoding. Its first catalogue, run, and session subset omits write tools,
+  permission exchange, session switching, host-tool injection, and subagent
+  authority
 - `swallowtail-adapter-llama-cpp` implements attached llama.cpp build `9910`
   readiness, catalogue, and bounded Chat Completions direct inference without
   owning the model artifact or server; its exact request and text-only semantic
@@ -921,7 +928,7 @@ session, background run, managed agent, realtime media, SDK, attached runtime,
 and owned-serving operations remain separate types and methods. There is no
 generic prompt method.
 
-The current 32 production routes form six facade implementation families:
+The current 33 production routes form six facade implementation families:
 installed harness, attached harness network, hosted direct and provider-owned
 state, realtime connection, embedded SDK, and local model runtime. Family
 helpers may share host and preparation mechanics. They cannot select a
@@ -1308,6 +1315,11 @@ alone.
 - Pi RPC projects native message, readable thinking, provider-owned tool, and
   compaction lifecycle on the existing turn stream. UI callbacks remain a
   separate exchange.
+- Oh My Pi RPC separately projects bounded message, readable-thinking,
+  provider-tool, compaction, usage, and typed-question evidence after v2 frame
+  reassembly. Ready, command-list, model-change, and thinking-level updates
+  remain lifecycle-only. Empty provider-display clears carry no portable
+  content and are dropped.
 - Kimi local server projects accepted WebSocket events only after cursor
   admission. Step, tool, shell, subagent, task, compaction, recovery, callback,
   and reattachment truth remain distinct.

@@ -15,6 +15,7 @@ members = [
   "crates/swallowtail-adapter-llama-cpp",
   "crates/swallowtail-adapter-opencode",
   "crates/swallowtail-adapter-ollama",
+  "crates/swallowtail-adapter-oh-my-pi",
   "crates/swallowtail-adapter-pi",
   "crates/swallowtail-adapter-openai",
   "crates/swallowtail-adapter-qwen",

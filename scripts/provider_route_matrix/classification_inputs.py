@@ -7,8 +7,12 @@ no_classification_overrides = {
     ("usage_evidence", "grok-build.acp"): "contract_or_corpus_required",
     ("structured_run", "gemini.live"): "operation_shape_not_applicable",
     ("structured_run", "openai.realtime"): "operation_shape_not_applicable",
+    ("provider_session_catalogue", "oh-my-pi.rpc"): "selected_surface_absence",
+    ("provider_session_import", "oh-my-pi.rpc"): "selected_surface_absence",
 }
 generation_control_classifications = {
+    ("output_token_limit", "oh-my-pi.rpc"): "selected_surface_absence",
+    ("structured_output", "oh-my-pi.rpc"): "selected_surface_absence",
     ("output_token_limit", "antigravity.catalogue + antigravity.headless"): "upstream_unsupported",
     ("output_token_limit", "cursor-agent.catalogue + cursor-agent.acp + cursor-agent.headless"): "upstream_unsupported",
     ("reasoning_selection", "cursor-agent.catalogue + cursor-agent.acp + cursor-agent.headless"): "contract_or_corpus_required",
@@ -59,6 +63,9 @@ generation_control_classifications = {
     ("structured_output", "grok-build.acp"): "upstream_unsupported",
 }
 input_callback_classifications = {
+    ("consumer_tool_exchange", "oh-my-pi.rpc"): "selected_surface_absence",
+    ("permission_exchange", "oh-my-pi.rpc"): "selected_surface_absence",
+    ("external_search", "oh-my-pi.rpc"): "selected_surface_absence",
     ("attachments", "antigravity.catalogue + antigravity.headless"): "upstream_unsupported",
     ("consumer_tool_exchange", "antigravity.catalogue + antigravity.headless"): "upstream_unsupported",
     ("permission_exchange", "antigravity.catalogue + antigravity.headless"): "upstream_unsupported",
@@ -163,6 +170,9 @@ input_callback_classifications = {
     ("question_exchange", "grok-build.acp"): "upstream_unsupported",
 }
 session_continuity_classifications = {
+    ("load_session", "oh-my-pi.rpc"): "operation_shape_not_applicable",
+    ("resume_session", "oh-my-pi.rpc"): "operation_shape_not_applicable",
+    ("native_session_close", "oh-my-pi.rpc"): "operation_shape_not_applicable",
     ("load_session", "antigravity.catalogue + antigravity.headless"): "operation_shape_not_applicable",
     ("resume_session", "antigravity.catalogue + antigravity.headless"): "operation_shape_not_applicable",
     ("native_session_close", "antigravity.catalogue + antigravity.headless"): "upstream_unsupported",
@@ -226,6 +236,7 @@ session_continuity_classifications = {
     ("native_session_close", "grok-build.acp"): "upstream_unsupported",
 }
 provider_retention_not_applicable = {
+    "oh-my-pi.rpc",
     "qwen.headless",
     "bedrock.catalogue; bedrock.runtime",
     "claude-code.headless",

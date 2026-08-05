@@ -176,6 +176,18 @@ retains the older segment while its baseline remains supported. A public
 protocol or lifecycle break creates a new claim or driver revision; it does not
 weaken or erase the old proof.
 
+## Oh My Pi Mapping
+
+Oh My Pi is not another point on `pi.package`. Its first claim binds
+`@oh-my-pi/pi-coding-agent@17.2.9` on the separate `oh-my-pi.package` axis and
+the `oh-my-pi.rpc-v2-v17.2.9` behavior revision. Exact npm integrity, release
+commit, RPC negotiation, frame bounds, pre-turn lifecycle, and terminal event
+are frozen together.
+
+Later stable OMP releases remain unverified newer. They do not extend the
+guarantee or inherit new command, tool, session, or subagent authority.
+`pi.rpc` and `oh-my-pi.rpc` cannot substitute for each other.
+
 ## Acceptance
 
 - exact runtime observations remain distinct from compatibility claims

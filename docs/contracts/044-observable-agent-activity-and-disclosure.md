@@ -364,6 +364,15 @@ flattened into ordinary text activity.
 
 Catalogue and serving-only operations expose no agent-activity profile.
 
+Oh My Pi `17.2.9` separately projects bounded assistant, readable-reasoning,
+provider-tool, compaction, and usage activity after RPC v2 reassembly. Ready
+and available-command frames plus session-level `model_changed` and
+`thinking_level_changed` events are lifecycle-only. They do not require or
+manufacture an active turn. Empty extension-display values clear provider UI
+state and carry no portable display content, so the adapter drops them. Only
+`agent_end.isTerminal=true` settles a turn. OMP task and subagent RPC surfaces
+are outside this first activity profile.
+
 ## Consumer Ownership
 
 Consumers own:

@@ -9,6 +9,10 @@
 
 ## Completed
 
+- `114-oh-my-pi-package-and-route-acceptance.md`
+- `113-oh-my-pi-prepared-facade-and-control.md`
+- `112-oh-my-pi-rpc-driver-core.md`
+- `111-oh-my-pi-artifact-protocol-and-contract.md`
 - `110-session-usability-restoration-acceptance.md`
 - `109-realtime-session-replacement.md`
 - `108-direct-and-attached-session-replacement.md`

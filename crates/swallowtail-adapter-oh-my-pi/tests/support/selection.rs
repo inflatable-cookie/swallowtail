@@ -1,0 +1,242 @@
+use std::num::NonZeroU32;
+use swallowtail_adapter_oh_my_pi::oh_my_pi_rpc_descriptor;
+use swallowtail_core::{
+    AccessProfile, AccessProfileId, AccessRequirement, AccessStatus, Capability,
+    CapabilityConstraint, CapabilityProfile, CapabilityRequirement, ConfiguredInstance,
+    ConfiguredInstanceId, CredentialMechanism, CredentialState, DriverRole, EndpointAudience,
+    EndpointAuthorization, EntitlementMetering, EntitlementState, ExecutionHostId, ExecutionLayer,
+    HarnessConfigurationPosture, HarnessIsolation, HarnessRpcPolicy, HarnessSchedulingBounds,
+    HostServiceKind, InstanceOwnership, InstancePolicyId, InstanceRevision, InstanceTargetRef,
+    InterfaceVersion, InterfaceVersionAxis, InterfaceVersionBinding, ModelId, ModelRoute,
+    ModelRouteId, ModelRouteRevision, OperationRequirements, OperationShape, PreflightContext,
+    PreflightPlan, ProtocolFacadeId, ProviderId, ResourceAccess, ResourceRepresentation,
+    RuntimeReadiness, SessionAccessPolicy, SessionProviderStatePolicy, SupportAuthority, preflight,
+};
+use swallowtail_runtime::{
+    Deadline, OpenSessionRequest, OperationContent, OperationPolicy, ProviderRetentionPolicy,
+    RequestId, RuntimeTurnId, SessionPlanAgreement, StructuredRunRequest, TurnRequest,
+    WorkingResourceRef,
+};
+use swallowtail_testkit::ExecutionTopologyFixture;
+
+pub struct FixtureSelection {
+    pub plan: PreflightPlan,
+    pub resource: WorkingResourceRef,
+}
+
+pub fn selection(host: ExecutionHostId) -> FixtureSelection {
+    build_selection(
+        host,
+        ConfiguredInstanceId::new("pi.fixture.instance").expect("valid instance"),
+        InstanceTargetRef::new("pi.fixture.pinned-executable").expect("valid target"),
+        WorkingResourceRef::new("pi.fixture.workspace").expect("valid resource"),
+        DriverRole::InteractiveSession,
+    )
+}
+
+pub fn selection_for_topology(topology: &ExecutionTopologyFixture) -> FixtureSelection {
+    build_selection(
+        topology.execution_host_id().clone(),
+        topology.configured_instance_id().clone(),
+        topology.instance_target().clone(),
+        topology.working_resource().clone(),
+        DriverRole::InteractiveSession,
+    )
+}
+
+#[allow(dead_code)]
+pub fn run_selection_for_topology(topology: &ExecutionTopologyFixture) -> FixtureSelection {
+    build_selection(
+        topology.execution_host_id().clone(),
+        topology.configured_instance_id().clone(),
+        topology.instance_target().clone(),
+        topology.working_resource().clone(),
+        DriverRole::StructuredRun,
+    )
+}
+
+fn build_selection(
+    host: ExecutionHostId,
+    instance_id: ConfiguredInstanceId,
+    instance_target: InstanceTargetRef,
+    resource: WorkingResourceRef,
+    role: DriverRole,
+) -> FixtureSelection {
+    let descriptor = oh_my_pi_rpc_descriptor();
+    let access_id = AccessProfileId::new("pi.fixture.harness-auth").expect("valid access id");
+    let capability_requirements = capabilities(role);
+    let capabilities = CapabilityProfile::new(capability_requirements.clone());
+    let version = InterfaceVersionBinding::new(
+        InterfaceVersionAxis::new("oh-my-pi.package").expect("valid axis"),
+        InterfaceVersion::new("17.2.9").expect("valid version"),
+    );
+    let rpc_policy = rpc_policy();
+    let instance = ConfiguredInstance::new(
+        instance_id.clone(),
+        InstanceRevision::new("fixture-revision").expect("valid revision"),
+        descriptor.identity().id().clone(),
+        host.clone(),
+        instance_target,
+        InstanceOwnership::HostOwnedEphemeral,
+        access_id.clone(),
+        SupportAuthority::IntegrationMaintainerSupported,
+        ProtocolFacadeId::new("oh-my-pi-rpc-17.2.9-strict-lf").expect("valid facade"),
+        InstancePolicyId::new("pi.fixture.ambient-read").expect("valid policy"),
+        capabilities.clone(),
+    )
+    .with_interface_versions([version.clone()])
+    .with_harness_configuration_posture(HarnessConfigurationPosture::ProviderSuppressed)
+    .with_harness_rpc_policy(rpc_policy.clone());
+    let route = ModelRoute::new(
+        ModelRouteId::new("pi.fixture.route").expect("valid route"),
+        ModelRouteRevision::new("fixture-route-revision").expect("valid route revision"),
+        instance_id,
+        ModelId::new("fixture-model").expect("valid model"),
+        capabilities,
+    )
+    .with_provider_id(ProviderId::new("fixture-provider").expect("valid provider"));
+    let access = AccessProfile::new(
+        access_id.clone(),
+        CredentialMechanism::LocalUnauthenticated,
+        EntitlementMetering::Unknown,
+        EndpointAudience::new("oh-my-pi-harness").expect("valid audience"),
+        SupportAuthority::IntegrationMaintainerSupported,
+    );
+    let status = AccessStatus::new(
+        access_id.clone(),
+        CredentialState::NotRequired,
+        EntitlementState::Unknown,
+        EndpointAuthorization::Allowed,
+        RuntimeReadiness::Ready,
+        SupportAuthority::IntegrationMaintainerSupported,
+    );
+    let services = service_kinds();
+    let requirements = OperationRequirements::new(
+        ExecutionLayer::HarnessInteraction,
+        if role == DriverRole::StructuredRun {
+            OperationShape::StructuredRun
+        } else {
+            OperationShape::InteractiveSession
+        },
+        role,
+        host,
+        AccessRequirement::new(access_id)
+            .with_credential_states([CredentialState::NotRequired])
+            .with_entitlement_states([EntitlementState::Unknown])
+            .with_endpoint_authorizations([EndpointAuthorization::Allowed])
+            .with_runtime_readiness([RuntimeReadiness::Ready])
+            .with_support_authorities([SupportAuthority::IntegrationMaintainerSupported]),
+    )
+    .with_ownership_modes([InstanceOwnership::HostOwnedEphemeral])
+    .with_host_services(services)
+    .with_capabilities(capability_requirements)
+    .with_harness_isolation(HarnessIsolation::AmbientHost)
+    .with_harness_configuration_posture(HarnessConfigurationPosture::ProviderSuppressed)
+    .with_interface_versions([version])
+    .require_model_route();
+    let requirements = if role == DriverRole::InteractiveSession {
+        requirements
+            .with_harness_rpc_policy(rpc_policy)
+            .with_session_access_policy(SessionAccessPolicy::ambient_harness(ResourceAccess::Read))
+            .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited)
+    } else {
+        requirements
+    };
+    let plan = preflight(
+        &PreflightContext::new(&descriptor, &instance, &access, &status, services)
+            .with_model_route(&route),
+        &requirements,
+    )
+    .expect("OhMyPi fixture preflight succeeds");
+    FixtureSelection { plan, resource }
+}
+
+#[allow(dead_code)]
+pub fn run_request(
+    id: &str,
+    resource: WorkingResourceRef,
+    deadline: Deadline,
+) -> StructuredRunRequest {
+    let policy = OperationPolicy::offline()
+        .with_provider_retention(ProviderRetentionPolicy::Prohibited)
+        .with_harness_isolation(HarnessIsolation::AmbientHost)
+        .with_harness_configuration_posture(HarnessConfigurationPosture::ProviderSuppressed);
+    StructuredRunRequest::new(
+        RequestId::new(id).expect("valid request"),
+        OperationContent::new("fixture private prompt").expect("valid prompt"),
+        policy,
+    )
+    .with_working_resource(resource)
+    .with_deadline(deadline)
+}
+
+pub fn open_request(id: &str, resource: WorkingResourceRef) -> OpenSessionRequest {
+    OpenSessionRequest::new(
+        RequestId::new(id).expect("valid request"),
+        resource,
+        None,
+        SessionPlanAgreement::explicit(
+            SessionAccessPolicy::ambient_harness(ResourceAccess::Read),
+            Some(SessionProviderStatePolicy::Prohibited),
+            Some(HarnessConfigurationPosture::ProviderSuppressed),
+        ),
+    )
+}
+
+pub fn turn_request(id: &str, deadline: Deadline) -> TurnRequest {
+    TurnRequest::new(
+        RuntimeTurnId::new(id).expect("valid turn"),
+        OperationContent::new("fixture private prompt").expect("valid prompt"),
+    )
+    .with_deadline(deadline)
+}
+
+fn service_kinds() -> [HostServiceKind; 4] {
+    [
+        HostServiceKind::Task,
+        HostServiceKind::Process,
+        HostServiceKind::WorkingResource,
+        HostServiceKind::Time,
+    ]
+}
+
+fn rpc_policy() -> HarnessRpcPolicy {
+    let one = NonZeroU32::new(1).unwrap();
+    HarnessRpcPolicy::restrictive(HarnessSchedulingBounds::new(
+        one,
+        NonZeroU32::new(2).unwrap(),
+        one,
+        one,
+    ))
+}
+
+fn capabilities(role: DriverRole) -> Vec<CapabilityRequirement> {
+    vec![
+        CapabilityRequirement::new(
+            if role == DriverRole::StructuredRun {
+                Capability::StructuredRun
+            } else {
+                Capability::InteractiveSession
+            },
+            [],
+        ),
+        CapabilityRequirement::new(Capability::StreamingEvents, []),
+        CapabilityRequirement::new(
+            Capability::Interruption,
+            [CapabilityConstraint::CancellationScope(
+                if role == DriverRole::StructuredRun {
+                    swallowtail_core::CancellationScope::StructuredRun
+                } else {
+                    swallowtail_core::CancellationScope::ActiveTurn
+                },
+            )],
+        ),
+        CapabilityRequirement::new(
+            Capability::WorkingResource,
+            [
+                CapabilityConstraint::ResourceAccess(ResourceAccess::Read),
+                CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
+            ],
+        ),
+    ]
+}

@@ -13,8 +13,8 @@ shape.
 
 ## Next Task
 
-Execute g03 card 100: implement the separate retained Alibaba conversation
-open, load, bounded replay, preservation, continuation, and cleanup profile.
+Execute g03 card 101: close retained-session recovery route, facade, package,
+and remaining-gate truth.
 
 ## Index
 

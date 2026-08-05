@@ -1,6 +1,6 @@
 # 100 Alibaba Retained Conversation Recovery
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-08-05
 Milestone: `../037-retained-session-recovery-promotion.md`
@@ -33,3 +33,26 @@ recovery under the separately qualified profile.
 ## Auto-Continuation
 
 Continue to card 101 when Alibaba passes independently.
+
+## Completion
+
+- [x] added a separate prepared retained-conversation profile with preserved
+      provider state and no owned-resource deletion capability
+- [x] retained open issues exact resource-free resume and management bindings
+- [x] load validates the binding, retrieves exact metadata, follows bounded
+      ascending pages, and returns complete ordered replay before readiness
+- [x] loaded sessions continue through the existing exact turn path without
+      inferring interrupted-turn state
+- [x] ordinary retained close joins local work, releases access, and sends no
+      provider deletion request
+- [x] the existing operation-owned profile still deletes items before its
+      conversation on close
+- [x] explicit retained cleanup requires a separate management binding and
+      preserves failed-before-effect versus unconfirmed-after-effect truth
+- [x] stale, foreign, missing, malformed, oversized, and deadline-bound loads
+      return no usable handle
+- [x] focused adapter and runtime validation passed without authenticated
+      provider work
+
+Card 101 is ready for public route, facade, package, and remaining-gate
+acceptance.

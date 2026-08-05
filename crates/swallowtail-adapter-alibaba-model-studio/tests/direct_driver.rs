@@ -13,10 +13,10 @@ use swallowtail_core::{DriverRole, SessionProviderStatePolicy};
 use swallowtail_runtime::{
     AttachmentDescriptor, AttachmentRef, AttachmentRole, CleanupOutcome, DriverRegistration,
     InteractiveSessionDriver, OpenSessionRequest, OperationContent, OperationPolicy,
-    ProviderObservation, RequestId, RunHandle, RuntimeEvent, RuntimeEventKind, RuntimeTurnId,
-    SchemaDocument, SessionAccessPolicy, SessionPlanAgreement, StructuredOutputDescriptor,
-    StructuredRunDriver, StructuredRunRequest, TerminalOutcome, TerminalStatus, TurnHandle,
-    TurnRequest,
+    ProviderObservation, ProviderSessionManagementDriver, RequestId, RunHandle, RuntimeEvent,
+    RuntimeEventKind, RuntimeTurnId, SchemaDocument, SessionAccessPolicy, SessionPlanAgreement,
+    StructuredOutputDescriptor, StructuredRunDriver, StructuredRunRequest, TerminalOutcome,
+    TerminalStatus, TurnHandle, TurnRequest,
 };
 
 #[test]
@@ -27,6 +27,7 @@ fn descriptor_registers_the_direct_interactive_and_structured_roles() {
         "swallowtail.alibaba-model-studio.conversations-responses"
     );
     assert!(descriptor.supports_role(DriverRole::InteractiveSession));
+    assert!(descriptor.supports_role(DriverRole::ProviderSessionManagement));
     assert_eq!(descriptor.transport_family().as_str(), "https-sse");
     let driver = std::sync::Arc::new(AlibabaModelStudioDriver::new());
     let registration = DriverRegistration::new(descriptor)
@@ -36,6 +37,12 @@ fn descriptor_registers_the_direct_interactive_and_structured_roles() {
         .expect("declared role registers")
         .with_structured_run(driver as std::sync::Arc<dyn StructuredRunDriver>)
         .expect("declared role registers");
+    let driver = std::sync::Arc::new(AlibabaModelStudioDriver::new());
+    let registration = registration
+        .with_provider_session_management(
+            driver as std::sync::Arc<dyn ProviderSessionManagementDriver>,
+        )
+        .expect("declared management role registers");
     assert!(registration.interactive_session().is_some());
     assert!(registration.structured_run().is_some());
 }

@@ -4,8 +4,8 @@ use std::sync::{Arc, Mutex};
 use swallowtail_adapter_alibaba_model_studio::{
     AlibabaModelStudioPreparationInput, alibaba_model_studio_access_profile,
     alibaba_model_studio_descriptor, alibaba_model_studio_instance,
-    alibaba_model_studio_requirements, alibaba_model_studio_route,
-    alibaba_model_studio_run_requirements,
+    alibaba_model_studio_requirements, alibaba_model_studio_retained_requirements,
+    alibaba_model_studio_route, alibaba_model_studio_run_requirements,
 };
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessStatus, CredentialState, EndpointAuthorization,
@@ -116,6 +116,24 @@ impl DriverFixture {
             &requirements,
         )
         .expect("Alibaba Model Studio run preflight succeeds")
+    }
+
+    pub fn retained_plan(&self) -> PreflightPlan {
+        let descriptor = alibaba_model_studio_descriptor();
+        let instance = alibaba_model_studio_instance(self.host_id.clone());
+        let access = alibaba_model_studio_access_profile();
+        let route = alibaba_model_studio_route();
+        let requirements = alibaba_model_studio_retained_requirements(self.host_id.clone());
+        let status = ready_status(access.id().clone());
+        let services: Vec<_> = descriptor
+            .required_host_services(swallowtail_core::DriverRole::InteractiveSession)
+            .collect();
+        preflight(
+            &PreflightContext::new(&descriptor, &instance, &access, &status, services)
+                .with_model_route(&route),
+            &requirements,
+        )
+        .expect("Alibaba retained conversation preflight succeeds")
     }
 
     pub fn preparation_input(&self) -> AlibabaModelStudioPreparationInput {

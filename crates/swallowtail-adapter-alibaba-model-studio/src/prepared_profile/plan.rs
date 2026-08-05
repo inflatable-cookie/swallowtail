@@ -108,3 +108,27 @@ pub(super) fn build_plan(
         )
     })
 }
+
+pub(super) fn build_plan_without_route(
+    prepared: &AlibabaModelStudioPreparedIntegration,
+    instance: &ConfiguredInstance,
+    requirements: &OperationRequirements,
+) -> Result<PreflightPlan, PreparationFailure> {
+    let descriptor = crate::alibaba_model_studio_descriptor();
+    preflight(
+        &PreflightContext::new(
+            &descriptor,
+            instance,
+            prepared.access_profile(),
+            prepared.access_evidence().status(),
+            prepared.available_host_services(),
+        ),
+        requirements,
+    )
+    .map_err(|error| {
+        PreparationFailure::new(
+            PreparationStage::Preflight,
+            Diagnostic::new(error.diagnostic().clone()),
+        )
+    })
+}

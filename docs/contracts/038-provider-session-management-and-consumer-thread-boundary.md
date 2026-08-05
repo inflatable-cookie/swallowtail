@@ -401,7 +401,8 @@ authority after successful open or load. Its management binding targets the
 exact resource-free conversation and retains Contract 025's complete item-
 before-conversation deletion semantics. Its persisted resume binding is not
 management authority; cleanup-only restart from that record remains
-unsupported. Production route truth remains gated on cards 100-101.
+unsupported. The prepared retained cleanup path is realized; production route
+truth remains gated on card 101.
 
 ## Diagnostics
 

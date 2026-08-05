@@ -9,15 +9,16 @@ use crate::transport::CurlTransport;
 use cleanup::{CleanupAccess, cleanup_conversation};
 use std::sync::atomic::{AtomicBool, AtomicU8, Ordering};
 use std::sync::{Arc, Mutex};
-use swallowtail_core::{PreflightPlan, SessionRef};
+use swallowtail_core::{PreflightPlan, SessionProviderStatePolicy, SessionRef};
 use swallowtail_runtime::{
     BoxFuture, CancellationControl, CleanupOutcome, HostServices, InteractiveSessionDriver,
-    InteractiveSessionHandle, OpenSessionRequest, RequestId, ResumeSessionRequest, RuntimeFailure,
-    RuntimeSessionId, ScopeId, SessionAccessPolicy, SessionResumeBinding, TurnHandle, TurnRequest,
-    validate_session_plan_agreement,
+    InteractiveSessionHandle, LoadSessionRequest, LoadedSession, OpenSessionRequest, RequestId,
+    ResumeSessionRequest, RuntimeFailure, RuntimeSessionId, ScopeId, SessionAccessPolicy,
+    SessionResumeBinding, TurnHandle, TurnRequest, validate_session_plan_agreement,
 };
 
-mod cleanup;
+pub(super) mod cleanup;
+mod load;
 
 pub(super) struct AlibabaSessionHandle {
     pub(super) request_id: RequestId,
@@ -26,12 +27,21 @@ pub(super) struct AlibabaSessionHandle {
     pub(super) services: HostServices,
     pub(super) transport: CurlTransport,
     pub(super) conversation: ConversationRef,
+    provider_session_ref: Option<SessionRef>,
+    resume_binding: Option<SessionResumeBinding>,
+    retention: ConversationRetention,
     pub(super) access: Option<AccessLeases>,
     pub(super) completed_turns: Arc<AtomicU8>,
     pub(super) usable: Arc<AtomicBool>,
     pub(super) remote_uncertain: Arc<AtomicBool>,
     pub(super) active: ActiveSlot,
     pub(super) cancellation: Arc<SessionCancellation>,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum ConversationRetention {
+    DeleteOnClose,
+    Preserve,
 }
 
 impl InteractiveSessionDriver for AlibabaModelStudioDriver {
@@ -96,6 +106,9 @@ impl InteractiveSessionDriver for AlibabaModelStudioDriver {
                 Arc::clone(&active),
                 Arc::clone(&usable),
             ));
+            let retention = retention(&plan)?;
+            let (provider_session_ref, resume_binding) =
+                session_bindings(&plan, &conversation, request.access_policy(), retention)?;
             Ok(Box::new(AlibabaSessionHandle {
                 request_id: request.request_id().clone(),
                 runtime_id,
@@ -103,6 +116,9 @@ impl InteractiveSessionDriver for AlibabaModelStudioDriver {
                 services,
                 transport: self.transport.clone(),
                 conversation,
+                provider_session_ref,
+                resume_binding,
+                retention,
                 access: Some(access),
                 completed_turns: Arc::new(AtomicU8::new(0)),
                 usable,
@@ -111,6 +127,16 @@ impl InteractiveSessionDriver for AlibabaModelStudioDriver {
                 cancellation,
             }) as Box<dyn InteractiveSessionHandle>)
         })
+    }
+
+    fn load_session(
+        &self,
+        plan: PreflightPlan,
+        request: LoadSessionRequest,
+        services: HostServices,
+    ) -> BoxFuture<'_, Result<LoadedSession, RuntimeFailure>> {
+        let driver = self.clone();
+        Box::pin(async move { load::load_session(driver, plan, request, services).await })
     }
 
     fn resume_session(
@@ -131,10 +157,10 @@ impl InteractiveSessionHandle for AlibabaSessionHandle {
         &self.runtime_id
     }
     fn provider_session_ref(&self) -> Option<&SessionRef> {
-        None
+        self.provider_session_ref.as_ref()
     }
     fn resume_binding(&self) -> Option<&SessionResumeBinding> {
-        None
+        self.resume_binding.as_ref()
     }
 
     fn start_turn<'a>(
@@ -152,9 +178,11 @@ impl InteractiveSessionHandle for AlibabaSessionHandle {
     fn close(mut self: Box<Self>) -> BoxFuture<'static, CleanupOutcome> {
         Box::pin(async move {
             let active = close_active(&self.active).await;
-            let cleanup_access = self.access.as_ref().map(CleanupAccess::acquire);
-            let remote = match cleanup_access {
-                Some(Ok(access)) => {
+            let remote = match (
+                self.retention,
+                self.access.as_ref().map(CleanupAccess::acquire),
+            ) {
+                (ConversationRetention::DeleteOnClose, Some(Ok(access))) => {
                     cleanup_conversation(
                         &self.transport,
                         &self.scope,
@@ -165,8 +193,10 @@ impl InteractiveSessionHandle for AlibabaSessionHandle {
                     )
                     .await
                 }
-                Some(Err(error)) => CleanupOutcome::Failed(error.diagnostic().clone()),
-                None => CleanupOutcome::NotApplicable,
+                (ConversationRetention::DeleteOnClose, Some(Err(error))) => {
+                    CleanupOutcome::Failed(error.diagnostic().clone())
+                }
+                _ => CleanupOutcome::NotApplicable,
             };
             let credential = match self.access.as_mut() {
                 Some(access) => access.release(&self.services).await,
@@ -175,6 +205,49 @@ impl InteractiveSessionHandle for AlibabaSessionHandle {
             merge_cleanup(merge_cleanup(active, remote), credential)
         })
     }
+}
+
+fn retention(plan: &PreflightPlan) -> Result<ConversationRetention, RuntimeFailure> {
+    match plan.requirements().session_provider_state_policy() {
+        Some(SessionProviderStatePolicy::DurableConversationDeleteOnClose) => {
+            Ok(ConversationRetention::DeleteOnClose)
+        }
+        Some(SessionProviderStatePolicy::DurableProviderSessionPreserved) => {
+            Ok(ConversationRetention::Preserve)
+        }
+        _ => Err(failure(
+            "swallowtail.alibaba_model_studio.retention_mismatch",
+            "Alibaba Model Studio session retention did not match the prepared profile",
+        )),
+    }
+}
+
+fn session_bindings(
+    plan: &PreflightPlan,
+    conversation: &ConversationRef,
+    access_policy: &SessionAccessPolicy,
+    retention: ConversationRetention,
+) -> Result<(Option<SessionRef>, Option<SessionResumeBinding>), RuntimeFailure> {
+    if retention == ConversationRetention::DeleteOnClose {
+        return Ok((None, None));
+    }
+    let provider = SessionRef::new(conversation.as_str()).map_err(|_| {
+        failure(
+            "swallowtail.alibaba_model_studio.session_identity_invalid",
+            "Alibaba Model Studio retained conversation identity was invalid",
+        )
+    })?;
+    let binding = SessionResumeBinding::resource_free(
+        provider.clone(),
+        plan.instance_id().clone(),
+        plan.execution_host_id().clone(),
+        plan.model_route_id()
+            .expect("retained route validated")
+            .clone(),
+        plan.model_id().expect("retained model validated").clone(),
+        access_policy.clone(),
+    );
+    Ok((Some(provider), Some(binding)))
 }
 
 fn validate_open(

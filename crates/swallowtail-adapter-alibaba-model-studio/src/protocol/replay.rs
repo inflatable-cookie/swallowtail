@@ -14,6 +14,7 @@ pub const MAXIMUM_REPLAY_BYTES: usize = 4 * 1024 * 1024;
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ConversationReplayPage {
     replay: Vec<SessionReplayItem>,
+    item_ids: Vec<ItemRef>,
     next_after: Option<ItemRef>,
     content_bytes: usize,
 }
@@ -21,6 +22,10 @@ pub struct ConversationReplayPage {
 impl ConversationReplayPage {
     pub fn replay(&self) -> impl ExactSizeIterator<Item = &SessionReplayItem> {
         self.replay.iter()
+    }
+
+    pub fn item_ids(&self) -> impl ExactSizeIterator<Item = &ItemRef> {
+        self.item_ids.iter()
     }
 
     #[must_use]
@@ -135,9 +140,11 @@ pub fn parse_replay_page(
     {
         return Err(invalid("conversation replay page bounds"));
     }
+    let next_after = has_more.then(|| item_ids.last().expect("nonempty page checked").clone());
     Ok(ConversationReplayPage {
         replay,
-        next_after: has_more.then(|| item_ids.last().expect("nonempty page checked").clone()),
+        item_ids,
+        next_after,
         content_bytes,
     })
 }

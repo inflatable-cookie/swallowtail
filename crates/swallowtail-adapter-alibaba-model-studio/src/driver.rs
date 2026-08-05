@@ -2,6 +2,7 @@ mod access;
 mod lifecycle;
 mod run;
 mod session;
+mod session_management;
 mod turn;
 
 use crate::failure::{failure, protocol};

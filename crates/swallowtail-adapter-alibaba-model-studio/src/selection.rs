@@ -35,14 +35,20 @@ pub fn alibaba_model_studio_descriptor() -> DriverDescriptor {
         id(TransportFamilyId::new, "https-sse"),
     )
     .with_interface_compatibility(alibaba_model_studio_facade_claim())
-    .with_roles([DriverRole::InteractiveSession, DriverRole::StructuredRun])
+    .with_roles([
+        DriverRole::InteractiveSession,
+        DriverRole::StructuredRun,
+        DriverRole::ProviderSessionManagement,
+    ])
     .with_execution_layers([ExecutionLayer::DirectModelInference])
     .with_operation_shapes([
         OperationShape::InteractiveSession,
         OperationShape::StructuredRun,
+        OperationShape::ProviderSessionManagement,
     ])
     .with_required_host_services(DriverRole::InteractiveSession, host_services())
     .with_required_host_services(DriverRole::StructuredRun, host_services())
+    .with_required_host_services(DriverRole::ProviderSessionManagement, host_services())
 }
 
 #[must_use]
@@ -76,7 +82,7 @@ pub fn alibaba_model_studio_instance(host_id: ExecutionHostId) -> ConfiguredInst
         SupportAuthority::ProviderSupported,
         id(ProtocolFacadeId::new, FACADE_REVISION),
         id(InstancePolicyId::new, "alibaba-model-studio.sg.exact-route"),
-        CapabilityProfile::new(all_capabilities()),
+        CapabilityProfile::new(instance_capabilities()),
     )
     .with_interface_versions([alibaba_model_studio_facade_binding()])
 }
@@ -171,19 +177,70 @@ pub fn alibaba_model_studio_run_requirements(host_id: ExecutionHostId) -> Operat
     .require_model_route()
 }
 
+#[must_use]
+pub fn alibaba_model_studio_retained_requirements(
+    host_id: ExecutionHostId,
+) -> OperationRequirements {
+    interactive_requirements(
+        host_id,
+        SessionProviderStatePolicy::DurableProviderSessionPreserved,
+    )
+    .with_capabilities(retained_capabilities())
+}
+
+#[must_use]
+pub fn alibaba_model_studio_management_requirements(
+    host_id: ExecutionHostId,
+) -> OperationRequirements {
+    let access = AccessRequirement::new(id(AccessProfileId::new, ACCESS_PROFILE_ID))
+        .with_credential_states([CredentialState::Ready])
+        .with_entitlement_states([EntitlementState::Available])
+        .with_endpoint_authorizations([EndpointAuthorization::Allowed])
+        .with_runtime_readiness([RuntimeReadiness::Ready])
+        .with_support_authorities([SupportAuthority::ProviderSupported]);
+    OperationRequirements::new(
+        ExecutionLayer::DirectModelInference,
+        OperationShape::ProviderSessionManagement,
+        DriverRole::ProviderSessionManagement,
+        host_id,
+        access,
+    )
+    .with_ownership_modes([InstanceOwnership::ExternalAttached])
+    .with_host_services(host_services())
+    .with_capabilities([CapabilityRequirement::new(
+        Capability::ProviderSessionDelete,
+        [],
+    )])
+}
+
 pub fn validate_alibaba_model_studio_plan(
     plan: &PreflightPlan,
 ) -> Result<(), AlibabaProtocolFailure> {
     let requirements = plan.requirements();
+    let interactive_state = requirements.session_provider_state_policy();
     let interactive = requirements.driver_role() == DriverRole::InteractiveSession
         && requirements.operation_shape() == OperationShape::InteractiveSession
         && requirements.session_access_policy() == Some(&SessionAccessPolicy::resource_free())
-        && requirements.session_provider_state_policy()
-            == Some(SessionProviderStatePolicy::DurableConversationDeleteOnClose);
+        && matches!(
+            interactive_state,
+            Some(SessionProviderStatePolicy::DurableConversationDeleteOnClose)
+                | Some(SessionProviderStatePolicy::DurableProviderSessionPreserved)
+        )
+        && (interactive_state != Some(SessionProviderStatePolicy::DurableProviderSessionPreserved)
+            || requirements
+                .capabilities()
+                .any(|required| required.capability() == Capability::LoadSession));
     let structured = requirements.driver_role() == DriverRole::StructuredRun
         && requirements.operation_shape() == OperationShape::StructuredRun
         && requirements.session_access_policy().is_none()
         && requirements.session_provider_state_policy().is_none();
+    let management = requirements.driver_role() == DriverRole::ProviderSessionManagement
+        && requirements.operation_shape() == OperationShape::ProviderSessionManagement
+        && requirements.session_access_policy().is_none()
+        && requirements.session_provider_state_policy().is_none()
+        && requirements
+            .capabilities()
+            .any(|required| required.capability() == Capability::ProviderSessionDelete);
     if plan.driver_identity().id().as_str() != DRIVER_ID
         || plan.instance_id().as_str() != CONFIGURED_INSTANCE_ID
         || plan.instance_target_ref()
@@ -194,10 +251,12 @@ pub fn validate_alibaba_model_studio_plan(
         || plan.access_profile_id().as_str() != ACCESS_PROFILE_ID
         || plan.endpoint_audience().as_str() != ENDPOINT_AUDIENCE
         || plan.credential_mechanism() != &CredentialMechanism::ApiKey
-        || plan.model_route_id().map(ModelRouteId::as_str) != Some(MODEL_ROUTE_ID)
-        || plan.model_id().map(ModelId::as_str) != Some(EXACT_MODEL_ID)
+        || (!management
+            && (plan.model_route_id().map(ModelRouteId::as_str) != Some(MODEL_ROUTE_ID)
+                || plan.model_id().map(ModelId::as_str) != Some(EXACT_MODEL_ID)))
+        || (management && (plan.model_route_id().is_some() || plan.model_id().is_some()))
         || requirements.execution_layer() != ExecutionLayer::DirectModelInference
-        || !(interactive || structured)
+        || !(interactive || structured || management)
         || requirements
             .capabilities()
             .any(|requirement| requirement.capability() == Capability::Resume)
@@ -223,7 +282,17 @@ fn run_capabilities() -> Vec<CapabilityRequirement> {
 
 fn all_capabilities() -> Vec<CapabilityRequirement> {
     let mut requirements = capabilities();
+    requirements.push(CapabilityRequirement::new(Capability::LoadSession, []));
     requirements.extend(run_capabilities());
+    requirements
+}
+
+fn instance_capabilities() -> Vec<CapabilityRequirement> {
+    let mut requirements = all_capabilities();
+    requirements.push(CapabilityRequirement::new(
+        Capability::ProviderSessionDelete,
+        [],
+    ));
     requirements
 }
 
@@ -249,6 +318,39 @@ fn capabilities() -> Vec<CapabilityRequirement> {
             ],
         ),
     ]
+}
+
+fn retained_capabilities() -> Vec<CapabilityRequirement> {
+    let mut requirements = capabilities()
+        .into_iter()
+        .filter(|required| required.capability() != Capability::OwnedRemoteResourceDeletion)
+        .collect::<Vec<_>>();
+    requirements.push(CapabilityRequirement::new(Capability::LoadSession, []));
+    requirements
+}
+
+fn interactive_requirements(
+    host_id: ExecutionHostId,
+    provider_state: SessionProviderStatePolicy,
+) -> OperationRequirements {
+    let access = AccessRequirement::new(id(AccessProfileId::new, ACCESS_PROFILE_ID))
+        .with_credential_states([CredentialState::Ready])
+        .with_entitlement_states([EntitlementState::Available])
+        .with_endpoint_authorizations([EndpointAuthorization::Allowed])
+        .with_runtime_readiness([RuntimeReadiness::Ready])
+        .with_support_authorities([SupportAuthority::ProviderSupported]);
+    OperationRequirements::new(
+        ExecutionLayer::DirectModelInference,
+        OperationShape::InteractiveSession,
+        DriverRole::InteractiveSession,
+        host_id,
+        access,
+    )
+    .with_ownership_modes([InstanceOwnership::ExternalAttached])
+    .with_host_services(host_services())
+    .with_session_access_policy(SessionAccessPolicy::resource_free())
+    .with_session_provider_state_policy(provider_state)
+    .require_model_route()
 }
 
 fn host_services() -> [HostServiceKind; 5] {

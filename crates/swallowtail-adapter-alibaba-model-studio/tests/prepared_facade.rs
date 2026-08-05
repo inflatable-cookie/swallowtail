@@ -4,16 +4,18 @@ use futures_executor::block_on;
 use futures_util::StreamExt;
 use support::{DriverFixture, ServerScenario};
 use swallowtail_adapter_alibaba_model_studio::{
-    AlibabaConversationProfileInput, AlibabaRunProfileInput, ENDPOINT_AUDIENCE, EXACT_MODEL_ID,
+    AlibabaConversationProfileInput, AlibabaRetainedConversationProfileInput,
+    AlibabaRunProfileInput, AlibabaSessionManagementInput, ENDPOINT_AUDIENCE, EXACT_MODEL_ID,
     MODEL_ROUTE_ID, prepare_alibaba_model_studio,
 };
 use swallowtail_core::{
     EntitlementMetering, ExecutionHostId, InstanceTargetRef, ModelId, ModelRouteId,
-    ModelRouteRevision, SessionProviderStatePolicy,
+    ModelRouteRevision, ProviderSessionBindingOrigin, ProviderSessionEffectTruth,
+    SessionProviderStatePolicy,
 };
 use swallowtail_runtime::{
-    CleanupOutcome, OperationContent, PreparationStage, RequestId, RuntimeTurnId, TerminalStatus,
-    TurnRequest,
+    CancellationControl, CleanupOutcome, OperationContent, PreparationStage, RequestId,
+    RuntimeTurnId, TerminalStatus, TurnRequest,
 };
 use swallowtail_testkit::{
     assert_observable_activity_trace, assert_prepared_operation_evidence_matches_plan,
@@ -152,6 +154,197 @@ fn resource_free_structured_run_prepares_on_both_host_topologies() {
 }
 
 #[test]
+fn retained_prepared_session_loads_replay_and_preserves_both_attachments() {
+    let fixture = DriverFixture::new(ServerScenario::RetainedSuccess);
+    let prepared = prepare_alibaba_model_studio(fixture.preparation_input(), &fixture.services())
+        .expect("integration prepares");
+    let retained = prepared
+        .prepare_retained_conversation(retained_profile_input("prepared-retained"))
+        .expect("retained conversation prepares");
+    assert_eq!(
+        retained
+            .plan()
+            .requirements()
+            .session_provider_state_policy(),
+        Some(SessionProviderStatePolicy::DurableProviderSessionPreserved)
+    );
+    assert!(
+        retained
+            .plan()
+            .requirements()
+            .capabilities()
+            .any(|required| { required.capability() == swallowtail_core::Capability::LoadSession })
+    );
+    assert!(
+        !retained
+            .plan()
+            .requirements()
+            .capabilities()
+            .any(|required| {
+                required.capability() == swallowtail_core::Capability::OwnedRemoteResourceDeletion
+            })
+    );
+
+    let session = block_on(retained.open_session(fixture.services())).expect("session opens");
+    let resume = session.resume_binding().expect("resume binding").clone();
+    assert_eq!(
+        session
+            .management_binding()
+            .expect("management binding")
+            .origin(),
+        ProviderSessionBindingOrigin::Created
+    );
+    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+
+    let loaded = block_on(
+        retained
+            .load_session(
+                RequestId::new("prepared-load").expect("request id"),
+                resume,
+                fixture.services(),
+            )
+            .expect("load prepares"),
+    )
+    .expect("retained session loads");
+    assert_eq!(loaded.replay().len(), 4);
+    let (_, loaded) = loaded.into_parts();
+    assert_eq!(
+        loaded
+            .management_binding()
+            .expect("loaded management binding")
+            .origin(),
+        ProviderSessionBindingOrigin::Loaded
+    );
+    assert_eq!(block_on(loaded.close()), CleanupOutcome::Clean);
+    assert!(
+        fixture
+            .requests()
+            .iter()
+            .all(|request| request.method != "DELETE")
+    );
+    assert_eq!(fixture.releases(), 2);
+}
+
+#[test]
+fn retained_cleanup_requires_separate_management_authority() {
+    let fixture = DriverFixture::new(ServerScenario::RetainedSuccess);
+    let prepared = prepare_alibaba_model_studio(fixture.preparation_input(), &fixture.services())
+        .expect("integration prepares");
+    let retained = prepared
+        .prepare_retained_conversation(retained_profile_input("cleanup-source"))
+        .expect("retained conversation prepares");
+    let session = block_on(retained.open_session(fixture.services())).expect("session opens");
+    let management = session
+        .management_binding()
+        .expect("management binding")
+        .clone();
+    assert!(session.resume_binding().is_some());
+    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert_eq!(fixture.requests().len(), 1);
+
+    let deletion = prepared
+        .prepare_delete_retained_conversation(AlibabaSessionManagementInput::new(
+            RequestId::new("delete-retained").expect("request id"),
+            management,
+        ))
+        .expect("deletion prepares");
+    let outcome = block_on(deletion.execute(fixture.services())).expect("deletion executes");
+    assert_eq!(
+        outcome.effect().truth(),
+        ProviderSessionEffectTruth::Applied
+    );
+    assert!(outcome.diagnostic().is_none());
+    let requests = fixture.requests();
+    assert_eq!(requests[1].method, "GET");
+    assert!(requests[2].target.ends_with("after=msg_output_01"));
+    assert!(
+        requests[3..7]
+            .iter()
+            .all(|request| request.method == "DELETE" && request.target.contains("/items/"))
+    );
+    assert_eq!(requests[7].method, "DELETE");
+    assert_eq!(fixture.releases(), 2);
+}
+
+#[test]
+fn retained_cleanup_cancellation_and_binding_drift_fail_before_effects() {
+    let fixture = DriverFixture::new(ServerScenario::Success);
+    let prepared = prepare_alibaba_model_studio(fixture.preparation_input(), &fixture.services())
+        .expect("integration prepares");
+    let retained = prepared
+        .prepare_retained_conversation(retained_profile_input("cancel-source"))
+        .expect("retained conversation prepares");
+    let session = block_on(retained.open_session(fixture.services())).expect("session opens");
+    let management = session
+        .management_binding()
+        .expect("management binding")
+        .clone();
+    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+
+    let deletion = prepared
+        .prepare_delete_retained_conversation(AlibabaSessionManagementInput::new(
+            RequestId::new("cancel-delete").expect("request id"),
+            management.clone(),
+        ))
+        .expect("deletion prepares");
+    block_on(deletion.request().cancellation().request()).expect("cancellation requests");
+    let outcome = block_on(deletion.execute(fixture.services())).expect("cancellation is evidence");
+    assert_eq!(
+        outcome.effect().truth(),
+        ProviderSessionEffectTruth::FailedBeforeEffect
+    );
+    assert_eq!(fixture.requests().len(), 1);
+
+    let foreign = DriverFixture::for_host(
+        ServerScenario::Success,
+        ExecutionHostId::new("alibaba.foreign.host").expect("host id"),
+    );
+    let foreign_prepared =
+        prepare_alibaba_model_studio(foreign.preparation_input(), &foreign.services())
+            .expect("foreign integration prepares");
+    let failure = foreign_prepared
+        .prepare_delete_retained_conversation(AlibabaSessionManagementInput::new(
+            RequestId::new("drift-delete").expect("request id"),
+            management,
+        ))
+        .expect_err("cross-host binding rejects");
+    assert_eq!(failure.stage(), PreparationStage::Preflight);
+    assert!(foreign.requests().is_empty());
+}
+
+#[test]
+fn retained_cleanup_preserves_after_effect_uncertainty() {
+    let fixture = DriverFixture::new(ServerScenario::ManagedDeleteFailure);
+    let prepared = prepare_alibaba_model_studio(fixture.preparation_input(), &fixture.services())
+        .expect("integration prepares");
+    let retained = prepared
+        .prepare_retained_conversation(retained_profile_input("uncertain-source"))
+        .expect("retained conversation prepares");
+    let session = block_on(retained.open_session(fixture.services())).expect("session opens");
+    let management = session
+        .management_binding()
+        .expect("management binding")
+        .clone();
+    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    let deletion = prepared
+        .prepare_delete_retained_conversation(AlibabaSessionManagementInput::new(
+            RequestId::new("uncertain-delete").expect("request id"),
+            management,
+        ))
+        .expect("deletion prepares");
+    let outcome = block_on(deletion.execute(fixture.services())).expect("uncertainty is evidence");
+    assert_eq!(
+        outcome.effect().truth(),
+        ProviderSessionEffectTruth::UnconfirmedAfterEffect
+    );
+    assert!(outcome.diagnostic().is_some());
+    assert!(!fixture.requests().iter().any(|request| {
+        request.method == "DELETE"
+            && request.target == "/compatible-mode/v1/conversations/conv_fixture_01"
+    }));
+}
+
+#[test]
 fn plan_access_retention_model_and_target_drift_fail_before_effects() {
     let fixture = DriverFixture::new(ServerScenario::Success);
     let failure = prepare_alibaba_model_studio(
@@ -203,5 +396,14 @@ fn profile_input(id: &str) -> AlibabaConversationProfileInput {
         ModelRouteRevision::new("2026-07-22").expect("route revision"),
         ModelId::new(EXACT_MODEL_ID).expect("model id"),
         SessionProviderStatePolicy::DurableConversationDeleteOnClose,
+    )
+}
+
+fn retained_profile_input(id: &str) -> AlibabaRetainedConversationProfileInput {
+    AlibabaRetainedConversationProfileInput::new(
+        RequestId::new(id).expect("request id"),
+        ModelRouteId::new(MODEL_ROUTE_ID).expect("route id"),
+        ModelRouteRevision::new("2026-08-05").expect("route revision"),
+        ModelId::new(EXACT_MODEL_ID).expect("model id"),
     )
 }

@@ -160,7 +160,18 @@ fn perform_sse(
 }
 
 fn require_success(response: Response) -> Result<Response, RuntimeFailure> {
-    if (200..300).contains(&response.status) { Ok(response) } else { Err(provider_error(&response.body)) }
+    match response.status {
+        200..=299 => Ok(response),
+        404 => Err(failure(
+            "swallowtail.alibaba_model_studio.provider_resource_missing",
+            "Alibaba Model Studio reported that the requested provider resource was missing",
+        )),
+        401 | 403 => Err(failure(
+            "swallowtail.alibaba_model_studio.provider_access_rejected",
+            "Alibaba Model Studio rejected access to the requested provider resource",
+        )),
+        _ => Err(provider_error(&response.body)),
+    }
 }
 
 fn provider_error(body: &[u8]) -> RuntimeFailure {

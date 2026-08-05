@@ -405,9 +405,9 @@ visible as unverified newer unless exact evidence requires rejection.
 Roadmaps g03.035, g03.036, and g03.038 are complete. Research 106 promotes a
 weaker exact attachment boundary plus explicit fresh replacement; Contract 050
 also governs the completed settled reconcile-then-attach sequence. Roadmap
-g03.037 is active at card 100. Card 098 freezes the separate retained Alibaba
-contract and corpus. Pi card 099 is superseded behind its unchanged public cwd
-gate.
+g03.037 is active at card 101. Card 100 implements the separate retained
+Alibaba open/load, replay, preservation, continuation, and cleanup path. Pi
+card 099 is superseded behind its unchanged public cwd gate.
 
 ## Generation Boundary
 

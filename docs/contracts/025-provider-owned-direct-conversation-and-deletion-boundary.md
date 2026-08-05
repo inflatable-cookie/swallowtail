@@ -231,9 +231,8 @@ The retained contract additionally freezes evidence revalidated 2026-08-05:
 - strict user `input_text` and assistant `output_text` replay projection
 - a separate preserved-state profile and separate explicit cleanup authority
 
-Card 098 freezes this contract and deterministic corpus. It does not claim the
-retained prepared operation is production-ready; implementation and route
-truth remain cards 100-101.
+Card 100 realizes the separately prepared retained operation and deterministic
+driver proof. Public route and package truth remain gated on card 101.
 
 The subsets exclude model catalogue, legacy DashScope and trial domains, other
 regions, deployment-scope switching, Coding Plan, Token Plan, savings-plan

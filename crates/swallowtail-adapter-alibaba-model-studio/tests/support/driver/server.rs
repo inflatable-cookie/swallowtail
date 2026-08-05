@@ -8,6 +8,10 @@ use std::time::Duration;
 
 const CREATED: &str =
     include_str!("../../fixtures/model-studio-2026-07-22/conversation-created.json");
+const RETRIEVED: &str =
+    include_str!("../../fixtures/model-studio-2026-07-22/conversation-retrieved.json");
+const ITEMS_PAGE_1: &str = include_str!("../../fixtures/model-studio-2026-07-22/items-page-1.json");
+const ITEMS_PAGE_2: &str = include_str!("../../fixtures/model-studio-2026-07-22/items-page-2.json");
 const ITEMS: &str = include_str!("../../fixtures/model-studio-2026-07-22/items.json");
 const ITEMS_INCOMPLETE: &str =
     include_str!("../../fixtures/model-studio-2026-07-22/items-incomplete.json");
@@ -25,6 +29,13 @@ pub enum ServerScenario {
     Disconnect,
     WaitForCancel,
     CleanupFailure,
+    RetainedSuccess,
+    RetainedForeign,
+    RetainedMalformed,
+    RetainedMissing,
+    RetainedOversized,
+    RetainedWaitForDeadline,
+    ManagedDeleteFailure,
 }
 
 #[derive(Clone, Debug)]
@@ -153,7 +164,14 @@ fn respond(
         ("POST", "/compatible-mode/v1/responses") => {
             attempts.fetch_add(1, Ordering::SeqCst);
             match scenario {
-                ServerScenario::Success | ServerScenario::CleanupFailure => {
+                ServerScenario::Success
+                | ServerScenario::CleanupFailure
+                | ServerScenario::RetainedSuccess
+                | ServerScenario::RetainedForeign
+                | ServerScenario::RetainedMalformed
+                | ServerScenario::RetainedMissing
+                | ServerScenario::RetainedOversized
+                | ServerScenario::RetainedWaitForDeadline => {
                     write_response(stream, 200, "text/event-stream", SUCCESS)
                 }
                 ServerScenario::ProviderError => {
@@ -163,8 +181,50 @@ fn respond(
                     write_response(stream, 200, "text/event-stream", DISCONNECT)
                 }
                 ServerScenario::WaitForCancel => wait_for_cancel(stream),
+                ServerScenario::ManagedDeleteFailure => {
+                    write_response(stream, 200, "text/event-stream", SUCCESS)
+                }
             }
         }
+        ("GET", "/compatible-mode/v1/conversations/conv_fixture_01") => match scenario {
+            ServerScenario::RetainedMissing => {
+                write_response(stream, 404, "application/json", PROVIDER_ERROR)
+            }
+            ServerScenario::RetainedForeign => write_response(
+                stream,
+                200,
+                "application/json",
+                r#"{"id":"conv_foreign","object":"conversation","created_at":1784700000123}"#,
+            ),
+            ServerScenario::RetainedWaitForDeadline => wait_for_cancel(stream),
+            _ => write_response(stream, 200, "application/json", RETRIEVED),
+        },
+        ("GET", "/compatible-mode/v1/conversations/conv_fixture_01/items?limit=100&order=asc")
+            if matches!(
+                scenario,
+                ServerScenario::RetainedForeign
+                    | ServerScenario::RetainedSuccess
+                    | ServerScenario::RetainedMalformed
+                    | ServerScenario::RetainedMissing
+                    | ServerScenario::RetainedOversized
+                    | ServerScenario::RetainedWaitForDeadline
+            ) =>
+        {
+            match scenario {
+                ServerScenario::RetainedMalformed => {
+                    write_response(stream, 200, "application/json", r#"{"object":"list"}"#)
+                }
+                ServerScenario::RetainedOversized => {
+                    let body = format!(r#"{{"padding":"{}"}}"#, "x".repeat(512 * 1024));
+                    write_response(stream, 200, "application/json", &body);
+                }
+                _ => write_response(stream, 200, "application/json", ITEMS_PAGE_1),
+            }
+        }
+        (
+            "GET",
+            "/compatible-mode/v1/conversations/conv_fixture_01/items?limit=100&order=asc&after=msg_output_01",
+        ) => write_response(stream, 200, "application/json", ITEMS_PAGE_2),
         ("GET", "/compatible-mode/v1/conversations/conv_fixture_01/items?limit=100&order=asc") => {
             let body = if scenario == ServerScenario::CleanupFailure {
                 ITEMS_INCOMPLETE
@@ -177,6 +237,9 @@ fn respond(
             if target.starts_with("/compatible-mode/v1/conversations/conv_fixture_01/items/") =>
         {
             let id = target.rsplit('/').next().expect("item id exists");
+            if scenario == ServerScenario::ManagedDeleteFailure && id == "msg_output_01" {
+                return write_response(stream, 500, "application/json", PROVIDER_ERROR);
+            }
             let body =
                 format!(r#"{{"id":"{id}","object":"conversation.item.deleted","deleted":true}}"#);
             write_response(stream, 200, "application/json", &body);

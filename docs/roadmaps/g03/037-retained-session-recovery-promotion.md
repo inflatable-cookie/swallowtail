@@ -6,7 +6,8 @@ Created: 2026-08-05
 Depends on: g03.036
 Vision tags: restart continuity, retained sessions, exact resource ownership
 Contract refs: 009, 017, 025, 029, 037-038, 050
-Planning state: card 098 ready; Pi card 099 superseded; cards 100-101 gated
+Planning state: card 098 complete; Pi card 099 superseded; card 100 ready;
+card 101 gated
 
 ## Problem
 
@@ -25,14 +26,14 @@ provider-state ownership are separately proven.
 
 - [x] refresh Pi and Alibaba currentness without weakening existing gates
 - [x] retain or close Pi's exact cwd-binding blocker from public evidence
-- [ ] define a separate retained Alibaba conversation profile if supported
+- [x] define a separate retained Alibaba conversation profile if supported
 - [ ] implement and publish only independently qualified routes
 
 ## Execution Plan
 
 - [x] card 097: revalidate both candidates and record independent promotion
       decisions
-- [ ] card 098: promote the retained Alibaba ownership and replay contract if
+- [x] card 098: promote the retained Alibaba ownership and replay contract if
       its evidence passes
 - [x] card 099: close Pi implementation negatively because exact cwd
       attachment remains unprovable
@@ -65,6 +66,7 @@ provider-state ownership are separately proven.
 
 ## Lane Runway
 
-Card 098 is ready. Research 107 keeps Pi behind the exact public cwd gate and
-selects Alibaba independently for a separate retained-conversation contract.
-Card 100 remains gated on that contract; card 101 closes route truth.
+Card 098 is complete. The contract and corpus keep resource-free retained load,
+ordinary preservation, and separately authorized cleanup distinct from the
+existing delete-on-close profile. Card 100 is ready to implement that exact
+prepared route. Card 101 remains gated for final route truth.

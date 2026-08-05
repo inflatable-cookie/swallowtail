@@ -1472,6 +1472,21 @@ restart restores only through the exact matching prepared attachment. This
 does not turn catalogue import into synchronization and does not authorize
 raw-id attachment or provider-session management.
 
+The runtime binding and load request now represent working-resource presence
+or exact absence. Existing constructors and persisted fingerprints remain
+resource-bound. A separate resource-free constructor and fingerprint permit a
+qualified hosted retained session to load without manufacturing a filesystem
+resource; the two forms reject one another. Provider-operation checkpoints and
+replay-free resume remain resource-bound.
+
+Alibaba's protocol layer now freezes exact conversation retrieval and bounded
+ascending item pagination for the contracted retained profile. It projects
+completed user and assistant messages into ordered replay, with 100 items and
+512 KiB per page plus 10-page, 1,000-item, and 4 MiB aggregate limits for the
+future load driver. The production prepared retained route is not yet
+realized. The current prepared conversation remains delete-on-close until card
+100 implements the separate profile.
+
 ## Interrupted Provider Work Reconciliation
 
 Contract 048 adds a separate read-only role for a consumer turn whose runtime

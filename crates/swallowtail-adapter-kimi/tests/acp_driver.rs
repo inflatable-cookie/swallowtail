@@ -38,7 +38,7 @@ fn qualified_versions_preserve_prompt_write_and_cleanup_authority() {
                 binding.access_policy(),
                 &SessionAccessPolicy::ambient_harness(ResourceAccess::ReadWrite)
             );
-            assert_eq!(binding.working_resource(), &selected.resource);
+            assert_eq!(binding.working_resource(), Some(&selected.resource));
             assert!(!format!("{binding:?}").contains("kimi-session-bound"));
             let models = session
                 .negotiated_model_options()

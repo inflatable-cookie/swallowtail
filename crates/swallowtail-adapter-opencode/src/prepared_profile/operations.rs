@@ -212,7 +212,12 @@ impl OpenCodePreparedSession {
                 handle,
                 instance,
                 access,
-                Some(request.working_resource().clone()),
+                Some(
+                    request
+                        .working_resource()
+                        .expect("prepared OpenCode load binds a working resource")
+                        .clone(),
+                ),
                 ProviderSessionBindingOrigin::Loaded,
             )
             .await?;

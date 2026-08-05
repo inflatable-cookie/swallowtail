@@ -1,0 +1,13 @@
+{
+  "evidence_date": "2026-08-05",
+  "cases": [
+    {"case":"exact","disposition":"retrieve_then_complete_ordered_list"},
+    {"case":"foreign","disposition":"reject_access_without_readiness"},
+    {"case":"missing","disposition":"reject_missing_without_fallback"},
+    {"case":"deleted","disposition":"reject_missing_without_fallback"},
+    {"case":"malformed","disposition":"reject_protocol_without_readiness"},
+    {"case":"oversized","disposition":"reject_bound_without_readiness"},
+    {"case":"stale","disposition":"reject_attachment_without_request"},
+    {"case":"uncertain","disposition":"preserve_uncertainty_without_readiness"}
+  ]
+}

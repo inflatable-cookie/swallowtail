@@ -40,12 +40,19 @@ impl ScopedResource {
         scope: ScopeId,
         services: &HostServices,
     ) -> Result<Self, ProviderSessionOperationFailure> {
-        Self::resolve_reference(
-            plan.agreement().binding().working_resource().clone(),
-            scope,
-            services,
-        )
-        .await
+        let working_resource = plan
+            .agreement()
+            .binding()
+            .working_resource()
+            .cloned()
+            .ok_or_else(|| {
+                control_failure(
+                    ProviderSessionOperationFailureStage::BeforeDispatch,
+                    "swallowtail.codex.thread_catalogue.working_resource_required",
+                    "Codex thread reconciliation requires a working resource",
+                )
+            })?;
+        Self::resolve_reference(working_resource, scope, services).await
     }
 
     async fn resolve_reference(

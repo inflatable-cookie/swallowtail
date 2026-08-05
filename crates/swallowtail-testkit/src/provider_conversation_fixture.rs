@@ -8,14 +8,17 @@ use swallowtail_core::{
     InstancePolicyId, InstanceRevision, InstanceTargetRef, IntegrationFamilyId, ModelId,
     ModelRoute, ModelRouteId, ModelRouteRevision, OperationRequirements, OperationShape,
     OwnedRemoteResourceKind, PreflightContext, PreflightFailure, PreflightPlan, ProtocolFacadeId,
-    RuntimeReadiness, SessionAccessPolicy, SessionProviderStatePolicy, SupportAuthority,
-    TransportFamilyId, preflight,
+    RuntimeReadiness, SessionAccessPolicy, SessionProviderStatePolicy, SessionRef,
+    SupportAuthority, TransportFamilyId, preflight,
 };
-use swallowtail_runtime::{OpenSessionRequest, RequestId};
+use swallowtail_runtime::{
+    LoadSessionRequest, OpenSessionRequest, RequestId, SessionResumeBinding,
+};
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum ProviderConversationPreflightCase {
     Canonical,
+    CanonicalRetained,
     PolicyProhibited,
     MissingDurableRequirement,
     MissingConversationDeletionRequirement,
@@ -95,10 +98,14 @@ impl ProviderConversationPreflightFixture {
             .with_endpoint_authorizations([EndpointAuthorization::Allowed])
             .with_runtime_readiness([RuntimeReadiness::Ready])
             .with_support_authorities([SupportAuthority::ProviderSupported]);
-        let policy = if case == ProviderConversationPreflightCase::PolicyProhibited {
-            SessionProviderStatePolicy::Prohibited
-        } else {
-            SessionProviderStatePolicy::DurableConversationDeleteOnClose
+        let policy = match case {
+            ProviderConversationPreflightCase::PolicyProhibited => {
+                SessionProviderStatePolicy::Prohibited
+            }
+            ProviderConversationPreflightCase::CanonicalRetained => {
+                SessionProviderStatePolicy::DurableProviderSessionPreserved
+            }
+            _ => SessionProviderStatePolicy::DurableConversationDeleteOnClose,
         };
         let requirements = OperationRequirements::new(
             ExecutionLayer::DirectModelInference,
@@ -138,6 +145,40 @@ impl ProviderConversationPreflightFixture {
             None,
         )
         .expect("conversation request derives from plan")
+    }
+
+    #[must_use]
+    pub fn retained_binding(&self) -> SessionResumeBinding {
+        let plan = self
+            .preflight()
+            .expect("retained conversation preflight succeeds");
+        SessionResumeBinding::resource_free(
+            valid(SessionRef::new, "fixture/provider-conversation-retained"),
+            plan.instance_id().clone(),
+            plan.execution_host_id().clone(),
+            plan.model_route_id()
+                .expect("retained route has model")
+                .clone(),
+            plan.model_id().expect("retained route has model").clone(),
+            plan.requirements()
+                .session_access_policy()
+                .expect("retained route has access policy")
+                .clone(),
+        )
+    }
+
+    #[must_use]
+    pub fn retained_load_request(&self) -> LoadSessionRequest {
+        let plan = self
+            .preflight()
+            .expect("retained conversation preflight succeeds");
+        LoadSessionRequest::resource_free_from_plan(
+            &plan,
+            valid(RequestId::new, "fixture-conversation-load"),
+            self.retained_binding(),
+            None,
+        )
+        .expect("retained load request derives from plan")
     }
 
     pub fn record_provider_side_effect(&self) {
@@ -212,6 +253,9 @@ fn capabilities(
             Capability::ProviderDurableRetention,
             [],
         ));
+    }
+    if !advertised && case == ProviderConversationPreflightCase::CanonicalRetained {
+        return values;
     }
     let mut deletion = Vec::new();
     if !missing_conversation {

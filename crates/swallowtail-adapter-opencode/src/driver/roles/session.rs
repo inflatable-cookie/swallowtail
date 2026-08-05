@@ -155,9 +155,15 @@ impl InteractiveSessionDriver for OpenCodeHttpDriver {
             let version = Self::validate_plan(&plan)?;
             services.require_execution_host(plan.execution_host_id())?;
             require_continuity(&plan, Capability::LoadSession)?;
+            let working_resource = request.working_resource().ok_or_else(|| {
+                failure(
+                    "swallowtail.opencode.session_resource_required",
+                    "OpenCode session load requires a filesystem working resource",
+                )
+            })?;
             let attachment = AttachmentValidation::new(
                 request.resume_binding(),
-                request.working_resource(),
+                working_resource,
                 request.access_policy(),
                 request.deadline(),
                 request.options(),
@@ -170,7 +176,7 @@ impl InteractiveSessionDriver for OpenCodeHttpDriver {
                 &plan,
                 scope.clone(),
                 &services,
-                Some((request.working_resource(), request.access_policy())),
+                Some((working_resource, request.access_policy())),
             )
             .await?;
             let directory = access.directory.clone().expect("resource was acquired");

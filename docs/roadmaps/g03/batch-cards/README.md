@@ -4,15 +4,15 @@
 
 ## Ready
 
-- `098-alibaba-retained-conversation-contract-and-corpus.md`
+- `100-alibaba-retained-conversation-recovery.md`
 
 ## Planned
 
-- `100-alibaba-retained-conversation-recovery.md`
 - `101-retained-session-recovery-acceptance.md`
 
 ## Completed
 
+- `098-alibaba-retained-conversation-contract-and-corpus.md`
 - `097-retained-session-candidate-currentness.md`
 - `096-kimi-reconcile-then-resume-and-acceptance.md`
 - `095-codex-opencode-reconcile-then-load.md`

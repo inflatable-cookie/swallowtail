@@ -13,11 +13,17 @@ impl ProviderSessionReconciliationDriver for OpenCodeHttpDriver {
             let scope = scope("session-reconciliation", request.request_id().as_str())?;
             let policy = SessionAccessPolicy::ambient_harness(ResourceAccess::Read);
             let agreement = plan.agreement();
+            let working_resource = agreement.binding().working_resource().ok_or_else(|| {
+                failure(
+                    "swallowtail.opencode.session_reconciliation.resource_invalid",
+                    "OpenCode session reconciliation requires a filesystem working resource",
+                )
+            })?;
             let mut access = AccessLeases::acquire(
                 plan.preflight(),
                 scope.clone(),
                 &services,
-                Some((agreement.binding().working_resource(), &policy)),
+                Some((working_resource, &policy)),
             )
             .await?;
             let result = async {

@@ -89,7 +89,10 @@ pub use prepared_integration_assertions::{
 };
 pub(crate) use profile_common::assert_common_contract;
 pub(crate) use profile_fixture::ProfilePreflightFixture;
-pub use profile_provider_conversation::run_provider_conversation_boundary_assertions;
+pub use profile_provider_conversation::{
+    run_provider_conversation_boundary_assertions,
+    run_retained_provider_conversation_boundary_assertions,
+};
 pub use profiles::{
     ConformanceAssertion, ConformanceReport, SyntheticProfile,
     run_acp_single_turn_projection_assertions, run_all_synthetic_profiles,

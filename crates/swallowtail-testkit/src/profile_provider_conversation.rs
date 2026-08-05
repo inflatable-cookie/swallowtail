@@ -1,8 +1,9 @@
 use crate::{ProviderConversationPreflightCase, ProviderConversationPreflightFixture};
 use swallowtail_core::{OwnedRemoteResourceKind, SessionProviderStatePolicy};
 use swallowtail_runtime::{
-    CleanupOutcome, ProviderCancellationOutcome, RemoteResourceDeletionOutcome, TerminalOutcome,
-    TerminalStatus, validate_session_plan_agreement, validate_session_provider_state_plan,
+    CleanupOutcome, ProviderCancellationOutcome, RemoteResourceDeletionOutcome,
+    SessionResumeBinding, TerminalOutcome, TerminalStatus, WorkingResourceRef,
+    validate_session_plan_agreement, validate_session_provider_state_plan,
 };
 
 pub fn run_provider_conversation_boundary_assertions() {
@@ -71,6 +72,60 @@ pub fn run_provider_conversation_boundary_assertions() {
         Some(ProviderCancellationOutcome::Unconfirmed)
     );
     assert_eq!(raced.status(), &TerminalStatus::Cancelled);
+}
+
+pub fn run_retained_provider_conversation_boundary_assertions() {
+    let fixture = ProviderConversationPreflightFixture::for_case(
+        ProviderConversationPreflightCase::CanonicalRetained,
+    );
+    let plan = fixture
+        .preflight()
+        .expect("retained conversation preflight succeeds");
+    let open = fixture.open_request();
+    assert!(open.working_resource().is_none());
+    assert_eq!(
+        open.provider_state_policy(),
+        Some(SessionProviderStatePolicy::DurableProviderSessionPreserved)
+    );
+
+    let binding = fixture.retained_binding();
+    assert!(binding.is_resource_free());
+    assert!(binding.matches_resource_free_attachment(&plan, open.access_policy()));
+    let persisted = binding
+        .export_persisted(&plan)
+        .expect("exact retained binding persists");
+    let restored = SessionResumeBinding::restore_persisted_resource_free(
+        &persisted,
+        &plan,
+        open.access_policy(),
+    )
+    .expect("exact retained binding restores");
+    assert_eq!(restored, binding);
+
+    let resource = WorkingResourceRef::new("fixture.unrelated-resource")
+        .expect("static working resource is valid");
+    assert!(
+        SessionResumeBinding::restore_persisted(
+            &persisted,
+            &plan,
+            &resource,
+            open.access_policy(),
+        )
+        .is_err()
+    );
+
+    let load = fixture.retained_load_request();
+    assert!(load.working_resource().is_none());
+    assert_eq!(load.resume_binding(), &binding);
+    validate_session_plan_agreement(&plan, load.plan_agreement())
+        .expect("retained load agreement matches preflight");
+    assert!(
+        validate_session_provider_state_plan(
+            &plan,
+            SessionProviderStatePolicy::DurableConversationDeleteOnClose,
+        )
+        .is_err()
+    );
 }
 
 #[derive(Default)]

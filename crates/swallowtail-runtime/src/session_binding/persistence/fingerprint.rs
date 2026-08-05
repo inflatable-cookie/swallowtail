@@ -12,6 +12,21 @@ pub(super) fn attachment_fingerprint(
     working_resource: &WorkingResourceRef,
     access_policy: &SessionAccessPolicy,
 ) -> Result<[u8; 32], SessionResumeBindingPersistenceFailure> {
+    attachment_fingerprint_inner(plan, Some(working_resource), access_policy)
+}
+
+pub(super) fn resource_free_attachment_fingerprint(
+    plan: &PreflightPlan,
+    access_policy: &SessionAccessPolicy,
+) -> Result<[u8; 32], SessionResumeBindingPersistenceFailure> {
+    attachment_fingerprint_inner(plan, None, access_policy)
+}
+
+fn attachment_fingerprint_inner(
+    plan: &PreflightPlan,
+    working_resource: Option<&WorkingResourceRef>,
+    access_policy: &SessionAccessPolicy,
+) -> Result<[u8; 32], SessionResumeBindingPersistenceFailure> {
     let model = match (
         plan.model_route_id(),
         plan.model_route_revision(),
@@ -22,10 +37,15 @@ pub(super) fn attachment_fingerprint(
         _ => return Err(attachment_mismatch()),
     };
     let mut digest = Sha256::new();
-    digest.update(if model.is_some() {
-        b"swallowtail.session-resume-binding.attachment.v1".as_slice()
-    } else {
-        b"swallowtail.session-resume-binding.attachment.model-less.v1".as_slice()
+    digest.update(match (model.is_some(), working_resource.is_some()) {
+        (true, true) => b"swallowtail.session-resume-binding.attachment.v1".as_slice(),
+        (false, true) => b"swallowtail.session-resume-binding.attachment.model-less.v1".as_slice(),
+        (true, false) => {
+            b"swallowtail.session-resume-binding.resource-free-attachment.v1".as_slice()
+        }
+        (false, false) => {
+            b"swallowtail.session-resume-binding.resource-free-attachment.model-less.v1".as_slice()
+        }
     });
     hash_text(&mut digest, plan.driver_identity().id().as_str());
     hash_text(&mut digest, plan.driver_identity().version().as_str());
@@ -56,7 +76,9 @@ pub(super) fn attachment_fingerprint(
         hash_text(&mut digest, axis);
         hash_text(&mut digest, version);
     }
-    hash_text(&mut digest, working_resource.as_host_value());
+    if let Some(working_resource) = working_resource {
+        hash_text(&mut digest, working_resource.as_host_value());
+    }
     hash_access_policy(&mut digest, access_policy);
     hash_optional_session_state(
         &mut digest,

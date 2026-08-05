@@ -9,7 +9,7 @@ use swallowtail_core::{
 
 mod fingerprint;
 
-use fingerprint::attachment_fingerprint;
+use fingerprint::{attachment_fingerprint, resource_free_attachment_fingerprint};
 
 pub(crate) fn attachment_fingerprint_for_checkpoint(
     plan: &PreflightPlan,
@@ -108,16 +108,20 @@ impl SessionResumeBinding {
         &self,
         plan: &PreflightPlan,
     ) -> Result<PersistedSessionResumeBinding, SessionResumeBindingPersistenceFailure> {
-        if !self.matches_attachment(plan, &self.working_resource, &self.access_policy) {
-            return Err(attachment_mismatch());
-        }
+        let fingerprint = match self.working_resource.as_ref() {
+            Some(resource) if self.matches_attachment(plan, resource, &self.access_policy) => {
+                attachment_fingerprint(plan, resource, &self.access_policy)?
+            }
+            None if self.matches_resource_free_attachment(plan, &self.access_policy) => {
+                resource_free_attachment_fingerprint(plan, &self.access_policy)?
+            }
+            _ => return Err(attachment_mismatch()),
+        };
         let provider = self.provider_session_ref.as_provider_value().as_bytes();
         if provider.is_empty() || provider.len() > MAXIMUM_PROVIDER_REFERENCE_BYTES {
             return Err(oversized());
         }
         let provider_len = u16::try_from(provider.len()).map_err(|_| oversized())?;
-        let fingerprint =
-            attachment_fingerprint(plan, &self.working_resource, &self.access_policy)?;
         let mut payload = Vec::with_capacity(
             MAGIC.len() + 2 + 2 + provider.len() + 1 + FINGERPRINT_BYTES + DIGEST_BYTES,
         );
@@ -161,6 +165,33 @@ impl SessionResumeBinding {
                 plan.instance_id().clone(),
                 plan.execution_host_id().clone(),
                 working_resource.clone(),
+                access_policy.clone(),
+            ),
+            _ => return Err(attachment_mismatch()),
+        };
+        Ok(binding.with_origin(decoded.origin))
+    }
+
+    /// Restores a binding only when the current route is explicitly resource-free.
+    pub fn restore_persisted_resource_free(
+        record: &PersistedSessionResumeBinding,
+        plan: &PreflightPlan,
+        access_policy: &SessionAccessPolicy,
+    ) -> Result<Self, SessionResumeBindingPersistenceFailure> {
+        let decoded = decode_record(record.as_bytes())?;
+        let current = resource_free_attachment_fingerprint(plan, access_policy)?;
+        if decoded.fingerprint != current {
+            return Err(attachment_mismatch());
+        }
+        let provider_session_ref =
+            SessionRef::new(decoded.provider_session_ref).map_err(|_| invalid_encoding())?;
+        let binding = match (plan.model_route_id(), plan.model_id()) {
+            (Some(model_route_id), Some(model_id)) => Self::resource_free(
+                provider_session_ref,
+                plan.instance_id().clone(),
+                plan.execution_host_id().clone(),
+                model_route_id.clone(),
+                model_id.clone(),
                 access_policy.clone(),
             ),
             _ => return Err(attachment_mismatch()),

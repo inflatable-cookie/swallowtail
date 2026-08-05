@@ -2,6 +2,8 @@
 
 Observed: 2026-07-22. Offline only.
 
+Retained-conversation retrieval and replay evidence revalidated: 2026-08-05.
+
 Authority:
 
 - https://help.aliyun.com/en/model-studio/regions/
@@ -19,6 +21,19 @@ Excluded: Coding Plan, Token Plan, legacy or other-region domains, aliases,
 catalogue discovery, response storage, previous-response continuation,
 session cache, tools, files, multimodal input, reasoning output, background,
 retry, reattachment, resume, and fallback.
+
+The 2026-08-05 retained additions freeze a separate, not-yet-production
+profile: exact conversation retrieval, ascending item pagination, strict
+completed user/assistant replay, hard page/item/byte bounds, preservation on
+ordinary close, and separate explicit cleanup authority. The operation-owned
+profile above remains delete-on-close. Replay-free resume remains excluded.
+
+`conversation-retrieved.json`, `items-page-1.json`, and `items-page-2.json`
+are synthetic protocol shapes based on the current documented Conversations
+surface. `retained-recovery-cases.json` freezes Swallowtail dispositions, not
+provider error prose or undocumented error codes. Missing, deleted, foreign,
+stale, malformed, oversized, and uncertain cases never produce readiness or
+fallback.
 
 The request builder constructs only `model`, `input`, `conversation`,
 `stream=true`, `store=false`, and `reasoning.effort=none`. It rejects model

@@ -356,11 +356,17 @@ async fn execute(
     ))
     .map_err(|_| protocol_failure())?;
     let access_policy = SessionAccessPolicy::ambient_harness(ResourceAccess::Read);
+    let working_resource = agreement.binding().working_resource().ok_or_else(|| {
+        failure(
+            "swallowtail.kimi.local_server.reconciliation.resource_invalid",
+            "Kimi local-server reconciliation requires a filesystem working resource",
+        )
+    })?;
     let mut access = SessionAccess::acquire(
         plan.preflight(),
         scope.clone(),
         &services,
-        agreement.binding().working_resource(),
+        working_resource,
         &access_policy,
     )
     .await?;

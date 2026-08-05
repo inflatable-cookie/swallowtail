@@ -3,7 +3,7 @@
 Status: active
 Owner: Tom
 Created: 2026-07-26
-Updated: 2026-07-28
+Updated: 2026-08-05
 
 ## Purpose
 
@@ -394,9 +394,14 @@ inference, realtime sessions, catalogues, SDK inference, and attached or owned
 model runtimes have no user-managed persistent provider session under their
 current contracts. Their consumer threads remain local-only.
 
-Alibaba conversation and Anthropic Managed Agent cleanup retain their
-driver-owned resource contracts. They do not implement this user-directed
-role.
+Alibaba's operation-owned delete-on-close conversation and Anthropic Managed
+Agent cleanup retain their driver-owned resource contracts. A separately
+prepared retained Alibaba conversation may issue this user-directed delete
+authority after successful open or load. Its management binding targets the
+exact resource-free conversation and retains Contract 025's complete item-
+before-conversation deletion semantics. Its persisted resume binding is not
+management authority; cleanup-only restart from that record remains
+unsupported. Production route truth remains gated on cards 100-101.
 
 ## Diagnostics
 

@@ -28,7 +28,8 @@ A durable session binding fixes:
 - provider session reference
 - configured instance and execution host
 - model-selection posture, including an exact absence of a selectable model
-- working-resource reference and access
+- exact working-resource posture: one working-resource reference and access,
+  or an explicit resource-free attachment
 - expanded interactive session access policy
 - harness-isolation posture when a local harness process exists
 
@@ -49,13 +50,17 @@ Export requires the exact preflight plan which issued or accepted the binding.
 The record retains one bounded provider-session reference plus a fingerprint of
 the adapter, transport, configured instance and revision, target, execution
 host, facade, instance policy, access profile, model route and revision, model,
-provider when present, interface versions, working resource, session access
-policy, and binding origin. Target and working-resource values enter only the
-fingerprint. Credentials, endpoint secrets, prompts, transcripts, provider
-payloads, and consumer metadata never enter the record.
+provider when present, interface versions, exact working-resource presence or
+absence, session access policy, and binding origin. Target and any working-
+resource value enter only the fingerprint. Credentials, endpoint secrets,
+prompts, transcripts, provider payloads, and consumer metadata never enter the
+record.
 
-Restore requires a current preflight plan, working resource, and access policy.
-Every fingerprint dimension must match before a binding is reconstructed.
+Restore requires a current preflight plan and access policy. A resource-bound
+record additionally requires the exact working resource. A resource-free
+record restores only through the explicit resource-free path and cannot be
+presented to the resource-bound path. Every fingerprint dimension must match
+before a binding is reconstructed.
 Malformed, oversized, unsupported-version, corrupted, or drifted records fail
 without provider work. Failure never falls back to new, catalogue, import,
 another provider, another route, title lookup, or ambient session recovery.
@@ -93,6 +98,13 @@ One generic resume boolean or provider-specific option cannot represent all
 four. A driver may implement only the operations it qualifies. A proxy may
 build load from resume plus consumer-owned history only through a later
 explicit contract; the first implementation does not.
+
+`OpenSessionRequest` and `LoadSessionRequest` carry the same exact resource
+posture as the plan and binding. Resource-free construction is explicit.
+Existing resource-bound load and resume routes remain resource-bound;
+`ResumeSessionRequest` does not gain a resource-free form merely because one
+retained direct-conversation route qualifies load. Provider-operation
+checkpoints also remain working-resource-bound.
 
 Recovery attachment may use a provider load method internally only when exact
 route evidence proves that the response establishes the requested live
@@ -285,6 +297,8 @@ Deterministic persistent-session and write fixtures must prove:
 - new creates a binding and arbitrary ids cannot load or resume
 - persisted bindings round-trip only under the exact route, host, resource,
   access, model, interface, and policy dimensions
+- explicit resource-free bindings round-trip only through resource-free load;
+  resource presence and absence never coerce into one another
 - malformed, oversized, unsupported-version, corrupted, and drifted records
   produce no binding and no provider effect
 - persistence diagnostics and default formatting expose no provider session,

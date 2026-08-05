@@ -146,7 +146,12 @@ impl CodexPreparedSession {
                 handle,
                 management_instance,
                 access,
-                Some(request.working_resource().clone()),
+                Some(
+                    request
+                        .working_resource()
+                        .expect("prepared Codex load binds a working resource")
+                        .clone(),
+                ),
                 ProviderSessionBindingOrigin::Loaded,
             )
             .await?;

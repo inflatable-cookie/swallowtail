@@ -13,8 +13,8 @@ shape.
 
 ## Next Task
 
-Execute g03 card 098: promote the separate retained Alibaba conversation
-ownership, replay, attachment, and cleanup contract plus corpus.
+Execute g03 card 100: implement the separate retained Alibaba conversation
+open, load, bounded replay, preservation, continuation, and cleanup profile.
 
 ## Index
 

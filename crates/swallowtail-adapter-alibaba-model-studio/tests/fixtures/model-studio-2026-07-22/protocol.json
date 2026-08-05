@@ -12,5 +12,11 @@
   "maximum_concurrency": 1,
   "response_storage": false,
   "session_cache": false,
-  "native_response_cancel": false
+  "native_response_cancel": false,
+  "retained_recovery_evidence_date": "2026-08-05",
+  "retained_replay_maximum_page_items": 100,
+  "retained_replay_maximum_pages": 10,
+  "retained_replay_maximum_items": 1000,
+  "retained_replay_maximum_page_bytes": 524288,
+  "retained_replay_maximum_bytes": 4194304
 }

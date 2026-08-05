@@ -2,11 +2,17 @@ use swallowtail_core::PreflightDimension;
 use swallowtail_testkit::{
     ProviderConversationPreflightCase, ProviderConversationPreflightFixture,
     run_provider_conversation_boundary_assertions,
+    run_retained_provider_conversation_boundary_assertions,
 };
 
 #[test]
 fn provider_conversation_policy_and_lifecycle_assertions_pass() {
     run_provider_conversation_boundary_assertions();
+}
+
+#[test]
+fn retained_provider_conversation_policy_and_binding_assertions_pass() {
+    run_retained_provider_conversation_boundary_assertions();
 }
 
 #[test]

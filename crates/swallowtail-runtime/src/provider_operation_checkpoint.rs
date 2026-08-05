@@ -68,18 +68,15 @@ impl ProviderOperationCheckpoint {
         plan: &PreflightPlan,
         binding: &SessionResumeBinding,
     ) -> Result<PersistedProviderOperationCheckpoint, ProviderOperationCheckpointFailure> {
+        let working_resource = binding.working_resource().ok_or_else(attachment_mismatch)?;
         if self.provider_session_ref != *binding.provider_session_ref()
-            || !binding.matches_attachment(
-                plan,
-                binding.working_resource(),
-                binding.access_policy(),
-            )
+            || !binding.matches_attachment(plan, working_resource, binding.access_policy())
         {
             return Err(attachment_mismatch());
         }
         let fingerprint = crate::session_binding::attachment_fingerprint_for_checkpoint(
             plan,
-            binding.working_resource(),
+            working_resource,
             binding.access_policy(),
         )
         .ok_or_else(attachment_mismatch)?;
@@ -115,19 +112,16 @@ impl ProviderOperationCheckpoint {
         binding: &SessionResumeBinding,
     ) -> Result<Self, ProviderOperationCheckpointFailure> {
         let decoded = decode_record(record.as_bytes())?;
+        let working_resource = binding.working_resource().ok_or_else(attachment_mismatch)?;
         let current = crate::session_binding::attachment_fingerprint_for_checkpoint(
             plan,
-            binding.working_resource(),
+            working_resource,
             binding.access_policy(),
         )
         .ok_or_else(attachment_mismatch)?;
         if decoded.fingerprint != current
             || decoded.provider_session_ref != binding.provider_session_ref().as_provider_value()
-            || !binding.matches_attachment(
-                plan,
-                binding.working_resource(),
-                binding.access_policy(),
-            )
+            || !binding.matches_attachment(plan, working_resource, binding.access_policy())
         {
             return Err(attachment_mismatch());
         }

@@ -21,7 +21,7 @@ pub struct SessionResumeBinding {
     execution_host_id: ExecutionHostId,
     model_route_id: Option<ModelRouteId>,
     model_id: Option<ModelId>,
-    working_resource: WorkingResourceRef,
+    working_resource: Option<WorkingResourceRef>,
     access_policy: SessionAccessPolicy,
     origin: ProviderSessionBindingOrigin,
 }
@@ -43,7 +43,7 @@ impl SessionResumeBinding {
             execution_host_id,
             model_route_id: Some(model_route_id),
             model_id: Some(model_id),
-            working_resource,
+            working_resource: Some(working_resource),
             access_policy,
             origin: ProviderSessionBindingOrigin::Created,
         }
@@ -65,7 +65,29 @@ impl SessionResumeBinding {
             execution_host_id,
             model_route_id: None,
             model_id: None,
-            working_resource,
+            working_resource: Some(working_resource),
+            access_policy,
+            origin: ProviderSessionBindingOrigin::Created,
+        }
+    }
+
+    /// Creates a binding for an exact resource-free route.
+    #[must_use]
+    pub const fn resource_free(
+        provider_session_ref: SessionRef,
+        configured_instance_id: ConfiguredInstanceId,
+        execution_host_id: ExecutionHostId,
+        model_route_id: ModelRouteId,
+        model_id: ModelId,
+        access_policy: SessionAccessPolicy,
+    ) -> Self {
+        Self {
+            provider_session_ref,
+            configured_instance_id,
+            execution_host_id,
+            model_route_id: Some(model_route_id),
+            model_id: Some(model_id),
+            working_resource: None,
             access_policy,
             origin: ProviderSessionBindingOrigin::Created,
         }
@@ -102,8 +124,13 @@ impl SessionResumeBinding {
     }
 
     #[must_use]
-    pub const fn working_resource(&self) -> &WorkingResourceRef {
-        &self.working_resource
+    pub const fn working_resource(&self) -> Option<&WorkingResourceRef> {
+        self.working_resource.as_ref()
+    }
+
+    #[must_use]
+    pub const fn is_resource_free(&self) -> bool {
+        self.working_resource.is_none()
     }
 
     #[must_use]
@@ -132,7 +159,18 @@ impl SessionResumeBinding {
         access_policy: &SessionAccessPolicy,
     ) -> bool {
         self.matches_plan(plan)
-            && &self.working_resource == working_resource
+            && self.working_resource.as_ref() == Some(working_resource)
+            && &self.access_policy == access_policy
+    }
+
+    #[must_use]
+    pub fn matches_resource_free_attachment(
+        &self,
+        plan: &PreflightPlan,
+        access_policy: &SessionAccessPolicy,
+    ) -> bool {
+        self.matches_plan(plan)
+            && self.working_resource.is_none()
             && &self.access_policy == access_policy
     }
 }

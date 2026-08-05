@@ -29,10 +29,12 @@ pub use prepared_profile::{
     AlibabaModelStudioPreparedEvidence, AlibabaModelStudioPreparedRun, AlibabaRunProfileInput,
 };
 pub use protocol::{
-    ConversationInventory, ConversationRef, DeletionConfirmation, DeletionKind, ItemRef, Method,
+    ConversationInventory, ConversationMetadata, ConversationRef, ConversationReplayPage,
+    DeletionConfirmation, DeletionKind, ItemRef, MAXIMUM_REPLAY_BYTES, MAXIMUM_REPLAY_ITEMS,
+    MAXIMUM_REPLAY_PAGE_BYTES, MAXIMUM_REPLAY_PAGE_ITEMS, MAXIMUM_REPLAY_PAGES, Method,
     ProviderEvent, ResponseRef, ResponseStream, SseDecoder, SseFrame, TurnOptions, WireRequest,
-    parse_conversation, parse_deletion, parse_inventory, parse_provider_failure,
-    parse_request_correlation,
+    parse_conversation, parse_conversation_retrieval, parse_deletion, parse_inventory,
+    parse_provider_failure, parse_replay_page, parse_request_correlation,
 };
 pub use selection::{
     ACCESS_PROFILE_ID, CONFIGURED_INSTANCE_ID, ENDPOINT_AUDIENCE, EVIDENCE_DATE, EXACT_MODEL_ID,

@@ -4,6 +4,7 @@ use crate::selection::EXACT_MODEL_ID;
 use serde_json::{Value, json};
 use std::fmt;
 use swallowtail_runtime::OperationContent;
+use url::form_urlencoded::byte_serialize;
 
 mod options;
 
@@ -59,6 +60,19 @@ impl WireRequest {
         }
     }
 
+    #[must_use]
+    pub fn retrieve_conversation(conversation: &ConversationRef) -> Self {
+        Self {
+            method: Method::Get,
+            path: format!(
+                "/compatible-mode/v1/conversations/{}",
+                conversation.as_str()
+            ),
+            body: None,
+            session_cache: false,
+        }
+    }
+
     pub fn response(
         conversation: &ConversationRef,
         input: &OperationContent,
@@ -97,12 +111,22 @@ impl WireRequest {
 
     #[must_use]
     pub fn list_items(conversation: &ConversationRef) -> Self {
+        Self::list_items_after(conversation, None)
+    }
+
+    #[must_use]
+    pub fn list_items_after(conversation: &ConversationRef, after: Option<&ItemRef>) -> Self {
+        let mut path = format!(
+            "/compatible-mode/v1/conversations/{}/items?limit=100&order=asc",
+            conversation.as_str()
+        );
+        if let Some(after) = after {
+            path.push_str("&after=");
+            path.extend(byte_serialize(after.as_str().as_bytes()));
+        }
         Self {
             method: Method::Get,
-            path: format!(
-                "/compatible-mode/v1/conversations/{}/items?limit=100&order=asc",
-                conversation.as_str()
-            ),
+            path,
             body: None,
             session_cache: false,
         }

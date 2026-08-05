@@ -102,7 +102,12 @@ impl ClaudeAgentPreparedSession {
                 handle,
                 instance,
                 access,
-                Some(request.working_resource().clone()),
+                Some(
+                    request
+                        .working_resource()
+                        .expect("prepared Claude Agent load binds a working resource")
+                        .clone(),
+                ),
                 ProviderSessionBindingOrigin::Loaded,
             )
             .await?;
@@ -219,7 +224,12 @@ impl WorkingStateRestorationOperation for ClaudeAgentContinuationRecovery {
                 handle,
                 management_instance,
                 access,
-                Some(request.working_resource().clone()),
+                Some(
+                    request
+                        .working_resource()
+                        .expect("prepared Claude Agent recovery binds a working resource")
+                        .clone(),
+                ),
                 ProviderSessionBindingOrigin::Loaded,
             )
             .await?;

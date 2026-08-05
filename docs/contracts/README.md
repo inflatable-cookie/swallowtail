@@ -80,9 +80,12 @@ from host deadline, cancellation, and process authority.
 Contract 024 permits structural Chat Completions codec reuse while keeping
 provider access, model, capability, lifecycle, evidence, retry, and fallback
 semantics inside separately qualified adapters.
-Contract 025 makes provider-owned direct conversations an explicit interactive
-session posture and keeps regional workspace access, response storage, item
-inventory, deletion truth, cancellation, resume, and cleanup independent.
+Contract 025 makes provider-owned direct conversations explicit interactive
+session postures. It keeps the realized operation-owned delete-on-close route
+separate from a contracted retained resource-free load route with exact
+binding, bounded ordered replay, preservation on close, and separately
+authorized cleanup. Regional workspace access, response storage, item
+inventory, deletion truth, cancellation, load, and cleanup remain independent.
 Contract 026 adds a separate realtime-media interactive role with exact media
 formats, bounded redacted chunks, native response cancellation, consumer-owned
 device and playback truth, and joined duplex cleanup.

@@ -81,10 +81,16 @@ impl InteractiveSessionDriver for CodexAppServerDriver {
             let behavior = self.validate_plan(&plan)?;
             validate_workspace_behavior(&behavior, request.access_policy())?;
             let session_input = CodexSessionInput::for_resume(&plan, request.options())?;
+            let working_resource = request.working_resource().ok_or_else(|| {
+                failure(
+                    "swallowtail.codex.app_server.workspace_required",
+                    "Codex app-server session requires a filesystem working resource",
+                )
+            })?;
             validate_attachment_binding(
                 &plan,
                 request.resume_binding(),
-                request.working_resource(),
+                working_resource,
                 request.access_policy(),
             )?;
             let deadline_planned = plan
@@ -101,7 +107,7 @@ impl InteractiveSessionDriver for CodexAppServerDriver {
             let access = CodexSessionAccess::prepare(
                 &plan,
                 request.access_policy(),
-                request.working_resource(),
+                working_resource,
                 scope.clone(),
                 &services,
             )
@@ -235,4 +241,3 @@ impl InteractiveSessionDriver for CodexAppServerDriver {
         })
     }
 }
-

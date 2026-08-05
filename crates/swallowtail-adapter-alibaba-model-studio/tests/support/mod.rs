@@ -33,7 +33,16 @@ pub fn bytes(name: &str) -> &'static [u8] {
         "conversation-created.json" => {
             include_bytes!("../fixtures/model-studio-2026-07-22/conversation-created.json")
         }
+        "conversation-retrieved.json" => {
+            include_bytes!("../fixtures/model-studio-2026-07-22/conversation-retrieved.json")
+        }
         "items.json" => include_bytes!("../fixtures/model-studio-2026-07-22/items.json"),
+        "items-page-1.json" => {
+            include_bytes!("../fixtures/model-studio-2026-07-22/items-page-1.json")
+        }
+        "items-page-2.json" => {
+            include_bytes!("../fixtures/model-studio-2026-07-22/items-page-2.json")
+        }
         "items-incomplete.json" => {
             include_bytes!("../fixtures/model-studio-2026-07-22/items-incomplete.json")
         }
@@ -56,6 +65,9 @@ pub fn bytes(name: &str) -> &'static [u8] {
         "disconnect.sse" => include_bytes!("../fixtures/model-studio-2026-07-22/disconnect.sse"),
         "cleanup-race.json" => {
             include_bytes!("../fixtures/model-studio-2026-07-22/cleanup-race.json")
+        }
+        "retained-recovery-cases.json" => {
+            include_bytes!("../fixtures/model-studio-2026-07-22/retained-recovery-cases.json")
         }
         _ => panic!("unknown fixture {name}"),
     }

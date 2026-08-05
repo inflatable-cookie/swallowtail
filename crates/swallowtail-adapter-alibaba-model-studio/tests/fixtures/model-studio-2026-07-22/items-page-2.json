@@ -1,0 +1,10 @@
+{
+  "data": [
+    {"content":[{"text":"Second fixture input","type":"input_text"}],"id":"msg_input_02","role":"user","status":"completed","type":"message"},
+    {"content":[{"text":"Second output.","type":"output_text"}],"id":"msg_output_02","role":"assistant","status":"completed","type":"message"}
+  ],
+  "first_id": "msg_input_02",
+  "has_more": false,
+  "last_id": "msg_output_02",
+  "object": "list"
+}

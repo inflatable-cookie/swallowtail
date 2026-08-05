@@ -5,6 +5,7 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-08-05 Alibaba Retained Conversation Contract And Corpus](2026-08-05-alibaba-retained-conversation-contract-and-corpus.md)
 - [2026-08-05 Retained Session Candidate Currentness](2026-08-05-retained-session-candidate-currentness.md)
 - [2026-08-05 Reconciliation Then Settled Session Attachment](2026-08-05-reconciliation-then-settled-session-attachment.md)
 - [2026-08-05 Provider-Wide Interactive Crash Recovery](2026-08-05-provider-wide-interactive-crash-recovery.md)

@@ -147,10 +147,13 @@ impl InteractiveSessionDriver for ClaudeAgentAcpDriver {
         Box::pin(async move {
             let selected = validate_plan(&plan, self.credential.as_ref())?;
             require_continuity(&plan, Capability::LoadSession)?;
+            let working_resource = request
+                .working_resource()
+                .ok_or_else(|| unsupported("a resource-free session"))?;
             validate_attachment(
                 &plan,
                 request.resume_binding(),
-                request.working_resource(),
+                working_resource,
                 request.access_policy(),
                 request.deadline(),
                 request.options(),
@@ -160,7 +163,7 @@ impl InteractiveSessionDriver for ClaudeAgentAcpDriver {
                 .start_attachment(
                     &plan,
                     request.request_id(),
-                    request.working_resource().clone(),
+                    working_resource.clone(),
                     request.access_policy(),
                     &services,
                 )

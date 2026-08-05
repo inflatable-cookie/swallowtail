@@ -230,6 +230,25 @@ impl LoadSessionRequest {
         Self::from_plan_inner(plan, request_id, binding, working_resource, deadline)
     }
 
+    #[must_use]
+    pub fn resource_free(
+        request_id: RequestId,
+        binding: SessionResumeBinding,
+        deadline: Option<Deadline>,
+        plan_agreement: SessionPlanAgreement,
+    ) -> Self {
+        Self::resource_free_inner(request_id, binding, deadline, plan_agreement)
+    }
+
+    pub fn resource_free_from_plan(
+        plan: &PreflightPlan,
+        request_id: RequestId,
+        binding: SessionResumeBinding,
+        deadline: Option<Deadline>,
+    ) -> Result<Self, PreparationFailure> {
+        Self::resource_free_from_plan_inner(plan, request_id, binding, deadline)
+    }
+
     pub fn with_options(mut self, options: SessionOptions) -> Self {
         self.with_options_inner(options)
     }
@@ -246,7 +265,7 @@ impl LoadSessionRequest {
         self.resume_binding_inner()
     }
 
-    pub const fn working_resource(&self) -> &WorkingResourceRef {
+    pub const fn working_resource(&self) -> Option<&WorkingResourceRef> {
         self.working_resource_inner()
     }
 

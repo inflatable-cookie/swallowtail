@@ -39,6 +39,24 @@ opaque_ref!(ItemRef, "conversation item reference");
 opaque_ref!(ResponseRef, "provider response reference");
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ConversationMetadata {
+    conversation: ConversationRef,
+    created_at: u64,
+}
+
+impl ConversationMetadata {
+    #[must_use]
+    pub const fn conversation(&self) -> &ConversationRef {
+        &self.conversation
+    }
+
+    #[must_use]
+    pub const fn created_at(&self) -> u64 {
+        self.created_at
+    }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ConversationInventory {
     items: Vec<ItemRef>,
 }
@@ -68,15 +86,37 @@ impl DeletionConfirmation {
 }
 
 pub fn parse_conversation(input: &[u8]) -> Result<ConversationRef, AlibabaProtocolFailure> {
-    let value = object(input, "conversation creation response")?;
-    if text(&value, "/object")? != "conversation"
-        || value.get("created_at").and_then(Value::as_u64).is_none()
-    {
+    Ok(parse_conversation_metadata(input)?.conversation)
+}
+
+pub fn parse_conversation_retrieval(
+    input: &[u8],
+    expected: &ConversationRef,
+) -> Result<ConversationMetadata, AlibabaProtocolFailure> {
+    let metadata = parse_conversation_metadata(input)?;
+    if metadata.conversation != *expected {
         return Err(AlibabaProtocolFailure::invalid(
-            "conversation creation response",
+            "conversation retrieval identity",
         ));
     }
-    ConversationRef::new(text(&value, "/id")?)
+    Ok(metadata)
+}
+
+fn parse_conversation_metadata(
+    input: &[u8],
+) -> Result<ConversationMetadata, AlibabaProtocolFailure> {
+    let value = object(input, "conversation creation response")?;
+    if text(&value, "/object")? != "conversation" {
+        return Err(AlibabaProtocolFailure::invalid("conversation response"));
+    }
+    let created_at = value
+        .get("created_at")
+        .and_then(Value::as_u64)
+        .ok_or_else(|| AlibabaProtocolFailure::invalid("conversation response"))?;
+    Ok(ConversationMetadata {
+        conversation: ConversationRef::new(text(&value, "/id")?)?,
+        created_at,
+    })
 }
 
 pub fn parse_inventory(input: &[u8]) -> Result<ConversationInventory, AlibabaProtocolFailure> {

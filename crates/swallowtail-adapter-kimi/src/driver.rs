@@ -129,10 +129,13 @@ impl InteractiveSessionDriver for KimiAcpDriver {
                 Capability::LoadSession,
                 &CapabilityConstraint::ReplayMaximumBytes(crate::MAXIMUM_REPLAY_BYTES as u64),
             )?;
+            let working_resource = request
+                .working_resource()
+                .ok_or_else(|| unsupported("a resource-free session"))?;
             validate_bound_request(
                 &plan,
                 request.resume_binding(),
-                request.working_resource(),
+                working_resource,
                 request.access_policy(),
             )?;
             validate_request(
@@ -146,7 +149,7 @@ impl InteractiveSessionDriver for KimiAcpDriver {
                 .start_attachment(
                     &plan,
                     request.request_id(),
-                    request.working_resource().clone(),
+                    working_resource.clone(),
                     &services,
                 )
                 .await?;

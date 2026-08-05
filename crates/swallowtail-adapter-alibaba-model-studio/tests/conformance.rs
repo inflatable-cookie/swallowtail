@@ -12,11 +12,13 @@ use swallowtail_runtime::{
 use swallowtail_testkit::{
     ConformanceAssertion, ExecutionTopologyFixture, SyntheticProfile, run_all_synthetic_profiles,
     run_hosted_direct_api_profile, run_provider_conversation_boundary_assertions,
+    run_retained_provider_conversation_boundary_assertions,
 };
 
 #[test]
 fn provider_neutral_conversation_assertions_remain_adapter_independent() {
     run_provider_conversation_boundary_assertions();
+    run_retained_provider_conversation_boundary_assertions();
 }
 
 #[test]

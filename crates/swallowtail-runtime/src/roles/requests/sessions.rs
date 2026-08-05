@@ -119,7 +119,7 @@ impl OpenSessionRequest {
 struct LoadSessionRequestState {
     request_id: RequestId,
     binding: SessionResumeBinding,
-    working_resource: WorkingResourceRef,
+    working_resource: Option<WorkingResourceRef>,
     deadline: Option<Deadline>,
     options: SessionOptions,
     plan_agreement: SessionPlanAgreement,
@@ -137,10 +137,29 @@ impl LoadSessionRequest {
             state: LoadSessionRequestState {
             request_id,
             binding,
-            working_resource,
+            working_resource: Some(working_resource),
             deadline,
             options: SessionOptions::default(),
             plan_agreement,
+            },
+        }
+    }
+
+    #[must_use]
+    fn resource_free_inner(
+        request_id: RequestId,
+        binding: SessionResumeBinding,
+        deadline: Option<Deadline>,
+        plan_agreement: SessionPlanAgreement,
+    ) -> Self {
+        Self {
+            state: LoadSessionRequestState {
+                request_id,
+                binding,
+                working_resource: None,
+                deadline,
+                options: SessionOptions::default(),
+                plan_agreement,
             },
         }
     }
@@ -156,6 +175,20 @@ impl LoadSessionRequest {
             request_id,
             binding,
             working_resource,
+            deadline,
+            SessionPlanAgreement::from_plan(plan)?,
+        ))
+    }
+
+    fn resource_free_from_plan_inner(
+        plan: &PreflightPlan,
+        request_id: RequestId,
+        binding: SessionResumeBinding,
+        deadline: Option<Deadline>,
+    ) -> Result<Self, PreparationFailure> {
+        Ok(Self::resource_free(
+            request_id,
+            binding,
             deadline,
             SessionPlanAgreement::from_plan(plan)?,
         ))
@@ -180,8 +213,8 @@ impl LoadSessionRequest {
         &self.state.binding
     }
     #[must_use]
-    const fn working_resource_inner(&self) -> &WorkingResourceRef {
-        &self.state.working_resource
+    const fn working_resource_inner(&self) -> Option<&WorkingResourceRef> {
+        self.state.working_resource.as_ref()
     }
     #[must_use]
     const fn deadline_inner(&self) -> Option<Deadline> {

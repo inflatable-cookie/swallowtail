@@ -9,6 +9,7 @@ mod acp_projection_assertions;
 mod assertions;
 mod callback_fixture;
 mod direct_continuation_fixture;
+mod failure_assertions;
 mod fixture;
 mod installed_executable_assertions;
 mod interface_compatibility_assertions;
@@ -63,6 +64,7 @@ pub use assertions::{
     assert_extension_isolation, assert_extension_policies, assert_reference_opacity,
 };
 pub use callback_fixture::{CallbackExchangeFixture, successful_callback_response};
+pub use failure_assertions::assert_portable_failure_classification_contract;
 pub use fixture::ContractKernelFixture;
 pub use installed_executable_assertions::assert_installed_executable_observation_contract;
 pub use interface_compatibility_assertions::{

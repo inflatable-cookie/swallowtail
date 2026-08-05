@@ -223,10 +223,19 @@ impl GeminiHeadlessEventParser {
             if !non_empty_string(error, "type") || !non_empty_string(error, "message") {
                 return Err(malformed_stream());
             }
-            self.provider_failure = Some(SafeDiagnostic::new(
-                "swallowtail.gemini.headless.provider_failed",
-                "Gemini headless reported a provider execution failure",
-            ));
+            self.provider_failure = Some(
+                SafeDiagnostic::new(
+                    "swallowtail.gemini.headless.provider_failed",
+                    "Gemini headless reported a provider execution failure",
+                )
+                .with_failure_classification(
+                    swallowtail_core::FailureClassification::new(
+                        swallowtail_core::FailureOrigin::Provider,
+                        swallowtail_core::FailureKind::Unknown,
+                        swallowtail_core::FailureRecovery::Unknown,
+                    ),
+                ),
+            );
         }
         let activity = self.activity.complete(if status == "error" {
             ActivityStatus::Failed

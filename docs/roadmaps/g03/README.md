@@ -42,6 +42,7 @@ visible as unverified newer unless exact evidence requires rejection.
 | Promote further retained-session recovery behind exact resource and ownership gates. | completed | Contracts 009, 017, 025, 029, 037-038, 050 | `g03.037` |
 | Give every prepared interactive harness route one truthful post-crash action. | completed | Contracts 017, 037, 042, 048, 050 | `g03.038` |
 | Give every prepared reusable session shape one truthful post-crash action. | completed | Contracts 026-027, 030, 043, 050 | `g03.039` |
+| Give every provider and harness route one portable failure interface without erasing exact diagnostics. | completed | Contracts 003-004, 006, 009, 014, 037, 044, 051 | `g03.041` |
 | Periodically reconcile deferred gates, route truth, and generation capacity. | planned | Contract 001 | recurring checkpoints |
 
 ## Current Checkpoint
@@ -50,14 +51,17 @@ visible as unverified newer unless exact evidence requires rejection.
 - its only unfinished implementation lane, Pi RPC load and resume, moved to
   shared backlog behind the unchanged cwd-bound attachment gate
 - no active spec governs g03
+- g03.041 gives every safe diagnostic one portable unknown fallback, maps
+  typed failure evidence across 17 adapters, and preserves exact route codes
+  plus terminal source truth
 - Nucleus owns its delegated child-work, typed question, plan, and task-list
   adoption
 - provider-session management binding persistence remains deferred; ordinary
   resume-binding persistence is complete in g03.025 after consumer evidence
 - registry publication remains outside the active roadmap until the operator
   revisits it after sustained application usage
-- the current structural scan reports 219 oversized-file findings, including
-  21 errors; this known
+- the current structural scan reports 234 findings, including 22 errors; this
+  known
   structural debt remains outside the active provider route batch
 - Research 104 and Contract 050 select one consuming working-state restoration
   facade. Five reconciliation routes keep read-only observation; Claude Agent
@@ -414,6 +418,7 @@ visible as unverified newer unless exact evidence requires rejection.
 - [038 Provider-Wide Interactive Crash Recovery](038-provider-wide-interactive-crash-recovery.md) — completed
 - [039 Provider-Wide Session Usability Restoration](039-provider-wide-session-usability-restoration.md) — completed
 - [040 Oh My Pi RPC Foundation](040-oh-my-pi-rpc-foundation.md) — completed
+- [041 Portable Failure Classification](041-portable-failure-classification.md) — completed
 
 ## Checkpoint
 
@@ -429,7 +434,11 @@ package and negotiated RPC v2 route with local-auth preparation, exact model
 and reasoning control, typed questions, bounded PNG input, activity, usage,
 cancellation, and fresh replacement. Its later operator-gated Luna/low smoke
 passes through the prepared facade and freezes session-level model/thinking
-lifecycle plus empty display clears. g03 is back at its evidence gate.
+lifecycle plus empty display clears. Roadmap g03.041 closes with a portable
+failure classification on every safe diagnostic, evidence-backed mappings
+across direct providers and harness routes, and honest `Unknown` fallback.
+Terminal source, cleanup, callback, cancellation, timeout, and exact route
+diagnostics remain distinct. The generation returns to its evidence gate.
 
 ## Generation Boundary
 

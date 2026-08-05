@@ -1,6 +1,9 @@
 use crate::failure::failure;
 use serde::Deserialize;
-use swallowtail_core::{ModelCatalogEntry, ModelId, ModelMetadata};
+use swallowtail_core::{
+    FailureClassification, FailureKind, FailureOrigin, FailureRecovery, ModelCatalogEntry, ModelId,
+    ModelMetadata,
+};
 use swallowtail_protocol_openai_chat::{ChatMessage, ChatRequest, CodecLimits, encode_request};
 use swallowtail_runtime::{OperationContent, RuntimeFailure};
 
@@ -234,22 +237,35 @@ struct ProviderError {
 }
 
 pub(crate) fn provider_failure(kind: Option<&str>, operation: &str) -> RuntimeFailure {
-    let (code, label) = match kind {
+    let (code, label, failure_kind, recovery) = match kind {
         Some("unavailable_error") => (
             "swallowtail.llama_cpp.deployment_unavailable",
             "deployment was unavailable",
+            FailureKind::ProviderUnavailable,
+            FailureRecovery::RetryMaySucceed,
         ),
         Some("invalid_request_error") => (
             "swallowtail.llama_cpp.invalid_request",
             "rejected the request",
+            FailureKind::InvalidRequest,
+            FailureRecovery::InputChangeRequired,
         ),
         Some("not_found_error") => (
             "swallowtail.llama_cpp.model_not_found",
             "did not expose the selected model",
+            FailureKind::ModelUnavailable,
+            FailureRecovery::ConfigurationChangeRequired,
         ),
-        _ => ("swallowtail.llama_cpp.provider_failed", "request failed"),
+        _ => (
+            "swallowtail.llama_cpp.provider_failed",
+            "request failed",
+            FailureKind::Unknown,
+            FailureRecovery::Unknown,
+        ),
     };
-    failure(code, format!("llama.cpp {operation} {label}"))
+    failure(code, format!("llama.cpp {operation} {label}")).with_failure_classification(
+        FailureClassification::new(FailureOrigin::Provider, failure_kind, recovery),
+    )
 }
 
 fn parse_json<T: for<'de> Deserialize<'de>>(

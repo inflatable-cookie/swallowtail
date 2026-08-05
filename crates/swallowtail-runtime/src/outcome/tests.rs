@@ -1,6 +1,7 @@
 use super::{
     CleanupOutcome, ProviderCancellationOutcome, ProviderRequestObservation,
-    RemoteResourceDeletionOutcome, TerminalOutcome, TerminalStatus, terminal_outcome_channel,
+    RemoteResourceDeletionOutcome, TerminalFailureSource, TerminalOutcome, TerminalStatus,
+    terminal_outcome_channel,
 };
 use std::future::Future;
 use std::pin::Pin;
@@ -74,6 +75,39 @@ fn terminal_failure_dimensions_remain_distinct() {
     for (index, status) in statuses.iter().enumerate() {
         assert!(!statuses[index + 1..].contains(status));
     }
+}
+
+#[test]
+fn terminal_failure_has_one_route_neutral_view() {
+    let diagnostic = swallowtail_core::SafeDiagnostic::new("fixture.failure", "Failed")
+        .with_failure_classification(swallowtail_core::FailureClassification::new(
+            swallowtail_core::FailureOrigin::Protocol,
+            swallowtail_core::FailureKind::MalformedData,
+            swallowtail_core::FailureRecovery::HarnessUpdateRequired,
+        ));
+    let outcome = TerminalOutcome::new(
+        TerminalStatus::RuntimeFailed(diagnostic.clone()),
+        CleanupOutcome::Failed(swallowtail_core::SafeDiagnostic::new(
+            "fixture.cleanup",
+            "Cleanup failed",
+        )),
+    );
+
+    let failure = outcome.failure().expect("runtime failure is exposed");
+    assert_eq!(failure.source(), TerminalFailureSource::Runtime);
+    assert_eq!(failure.diagnostic(), &diagnostic);
+    assert_eq!(
+        failure.diagnostic().failure_classification().origin(),
+        swallowtail_core::FailureOrigin::Protocol
+    );
+    assert_eq!(
+        outcome
+            .cleanup()
+            .diagnostic()
+            .expect("cleanup diagnostic remains separate")
+            .code(),
+        "fixture.cleanup"
+    );
 }
 
 #[test]

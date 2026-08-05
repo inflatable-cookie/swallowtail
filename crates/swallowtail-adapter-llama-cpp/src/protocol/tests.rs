@@ -1,5 +1,5 @@
 mod tests {
-    use super::*;
+use super::*;
     use serde_json::{Value, json};
 
     const FIXTURE_ROOT: &str = "../../tests/fixtures/llama-cpp-b9910-openai-chat";
@@ -143,4 +143,22 @@ mod tests {
         decoder.finish()?;
         frames.iter().map(parse_event).collect()
     }
+}
+
+#[test]
+fn typed_provider_error_keeps_portable_classification() {
+    let failure = provider_failure(Some("unavailable_error"), "fixture");
+
+    assert_eq!(
+        failure.diagnostic().failure_classification().kind(),
+        FailureKind::ProviderUnavailable
+    );
+    assert_eq!(
+        failure.diagnostic().failure_classification().recovery(),
+        FailureRecovery::RetryMaySucceed
+    );
+    assert_eq!(
+        failure.diagnostic().code(),
+        "swallowtail.llama_cpp.deployment_unavailable"
+    );
 }

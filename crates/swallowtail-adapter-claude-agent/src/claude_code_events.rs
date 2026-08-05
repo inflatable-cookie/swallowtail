@@ -169,10 +169,19 @@ impl ClaudeCodeEventParser {
             .and_then(Value::as_str)
             .is_some_and(|error| !error.is_empty());
         if failed {
-            self.provider_failure = Some(SafeDiagnostic::new(
-                "swallowtail.claude_code.headless.provider_failed",
-                "Claude Code reported a provider execution failure",
-            ));
+            self.provider_failure = Some(
+                SafeDiagnostic::new(
+                    "swallowtail.claude_code.headless.provider_failed",
+                    "Claude Code reported a provider execution failure",
+                )
+                .with_failure_classification(
+                    swallowtail_core::FailureClassification::new(
+                        swallowtail_core::FailureOrigin::Provider,
+                        swallowtail_core::FailureKind::Unknown,
+                        swallowtail_core::FailureRecovery::Unknown,
+                    ),
+                ),
+            );
         }
         let message = payload.get("message").ok_or_else(malformed_stream)?;
         if message.get("model").and_then(Value::as_str) != Some(self.model.as_str()) {
@@ -234,10 +243,19 @@ impl ClaudeCodeEventParser {
                     Some(OperationContent::new(result).map_err(|_| malformed_stream())?);
             }
         } else {
-            self.provider_failure = Some(SafeDiagnostic::new(
-                "swallowtail.claude_code.headless.provider_failed",
-                "Claude Code reported a provider execution failure",
-            ));
+            self.provider_failure = Some(
+                SafeDiagnostic::new(
+                    "swallowtail.claude_code.headless.provider_failed",
+                    "Claude Code reported a provider execution failure",
+                )
+                .with_failure_classification(
+                    swallowtail_core::FailureClassification::new(
+                        swallowtail_core::FailureOrigin::Provider,
+                        swallowtail_core::FailureKind::Unknown,
+                        swallowtail_core::FailureRecovery::Unknown,
+                    ),
+                ),
+            );
         }
         self.activity.ensure_idle()?;
         self.terminal_seen = true;

@@ -25,6 +25,7 @@ contracts or architecture.
 - [Provider Operation Reconciliation](provider-operation-reconciliation.md)
 - [Provider Operation Detachment](provider-operation-detachment.md)
 - [Pi RPC Prepared Integration](pi-rpc-prepared-integration.md)
+- [Portable Failure Handling](portable-failure-handling.md)
 - [Prepared Facade Authoring](prepared-facade-authoring.md)
 - [Provider Solution Activity Matrix](provider-solution-activity-matrix.md)
 - [Provider Solution Activity Matrix CSV](provider-solution-activity-matrix.csv)

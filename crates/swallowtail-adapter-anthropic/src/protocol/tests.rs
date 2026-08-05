@@ -47,6 +47,17 @@ mod tests {
         assert_eq!(error.diagnostic().code(), "swallowtail.anthropic.sse_disconnected");
     }
 
+    #[test]
+    fn typed_provider_errors_keep_portable_meaning() {
+        let error = provider_failure(ProviderErrorKind::RateLimited, "fixture");
+        let classification = error.diagnostic().failure_classification();
+
+        assert_eq!(classification.origin(), FailureOrigin::Provider);
+        assert_eq!(classification.kind(), FailureKind::RateLimited);
+        assert_eq!(classification.recovery(), FailureRecovery::RetryMaySucceed);
+        assert_eq!(error.diagnostic().code(), "swallowtail.anthropic.rate_limited");
+    }
+
     fn decode(bytes: &[u8]) -> Result<Vec<SseFrame>, RuntimeFailure> {
         let mut decoder = SseDecoder::default();
         let frames = decoder.push(bytes)?;

@@ -1,10 +1,13 @@
 use super::super::prepared::access_policy;
 use crate::failure::failure;
 use crate::local_server::protocol::{
-    InteractiveSessionRecord, RestReply, decode_interactive_session, decode_rest,
+    InteractiveSessionRecord, RestFailureKind, RestReply, decode_interactive_session, decode_rest,
 };
 use std::future::Future;
-use swallowtail_core::{Capability, CapabilityConstraint, InstanceOwnership, PreflightPlan};
+use swallowtail_core::{
+    Capability, CapabilityConstraint, FailureClassification, FailureKind, FailureOrigin,
+    FailureRecovery, InstanceOwnership, PreflightPlan,
+};
 use swallowtail_runtime::{
     HostServices, OpenSessionRequest, RequestId, ResumeSessionRequest, RuntimeFailure, ScopeId,
     validate_session_plan_agreement,
@@ -157,7 +160,7 @@ pub(super) fn require_interactive_session(
 ) -> Result<InteractiveSessionRecord, RuntimeFailure> {
     if response.status != 200 {
         return match decode_rest(response.status, &response.body) {
-            Ok(RestReply::Failure(_)) => Err(provider_rejected()),
+            Ok(RestReply::Failure(kind)) => Err(provider_rejected(kind)),
             _ => Err(protocol_failure()),
         };
     }
@@ -227,11 +230,38 @@ pub(super) fn binding_failure() -> RuntimeFailure {
     )
 }
 
-fn provider_rejected() -> RuntimeFailure {
+fn provider_rejected(kind: RestFailureKind) -> RuntimeFailure {
+    let (failure_kind, recovery) = match kind {
+        RestFailureKind::Validation => (
+            FailureKind::InvalidRequest,
+            FailureRecovery::InputChangeRequired,
+        ),
+        RestFailureKind::Unauthorized => (
+            FailureKind::AuthenticationRejected,
+            FailureRecovery::ReauthenticationRequired,
+        ),
+        RestFailureKind::Missing => (
+            FailureKind::ResourceNotFound,
+            FailureRecovery::ConfigurationChangeRequired,
+        ),
+        RestFailureKind::Busy => (
+            FailureKind::ProviderUnavailable,
+            FailureRecovery::RetryMaySucceed,
+        ),
+        RestFailureKind::Server => (
+            FailureKind::ProviderUnavailable,
+            FailureRecovery::RetryMaySucceed,
+        ),
+    };
     failure(
         "swallowtail.kimi.local_server.session_rejected",
         "Kimi local server rejected the session request",
     )
+    .with_failure_classification(FailureClassification::new(
+        FailureOrigin::Harness,
+        failure_kind,
+        recovery,
+    ))
 }
 
 fn timeout() -> RuntimeFailure {
@@ -239,4 +269,23 @@ fn timeout() -> RuntimeFailure {
         "swallowtail.kimi.local_server.session_timed_out",
         "Kimi local-server session request timed out",
     )
+}
+
+#[cfg(test)]
+mod failure_classification_tests {
+    use super::*;
+
+    #[test]
+    fn typed_rest_failure_preserves_harness_authentication_meaning() {
+        let failure = provider_rejected(RestFailureKind::Unauthorized);
+
+        assert_eq!(
+            failure.diagnostic().failure_classification().origin(),
+            FailureOrigin::Harness
+        );
+        assert_eq!(
+            failure.diagnostic().failure_classification().kind(),
+            FailureKind::AuthenticationRejected
+        );
+    }
 }

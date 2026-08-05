@@ -1,11 +1,14 @@
 use std::error::Error;
 use std::fmt;
 
+use crate::FailureClassification;
+
 /// A stable code and operator-safe message.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SafeDiagnostic {
     code: &'static str,
     message: String,
+    classification: FailureClassification,
 }
 
 impl SafeDiagnostic {
@@ -14,7 +17,18 @@ impl SafeDiagnostic {
         Self {
             code,
             message: message.into(),
+            classification: FailureClassification::unknown(),
         }
+    }
+
+    /// Adds portable evidence without changing the exact route diagnostic.
+    #[must_use]
+    pub const fn with_failure_classification(
+        mut self,
+        classification: FailureClassification,
+    ) -> Self {
+        self.classification = classification;
+        self
     }
 
     #[must_use]
@@ -25,6 +39,11 @@ impl SafeDiagnostic {
     #[must_use]
     pub fn message(&self) -> &str {
         &self.message
+    }
+
+    #[must_use]
+    pub const fn failure_classification(&self) -> FailureClassification {
+        self.classification
     }
 }
 
@@ -133,6 +152,42 @@ pub(crate) fn required_text(
         Err(ValueRequired::for_field(field))
     } else {
         Ok(value)
+    }
+}
+
+#[cfg(test)]
+mod diagnostic_detail_tests {
+    use super::SafeDiagnostic;
+    use crate::{FailureClassification, FailureKind, FailureOrigin, FailureRecovery};
+
+    #[test]
+    fn diagnostics_default_to_honest_unknown_classification() {
+        let diagnostic = SafeDiagnostic::new("fixture.failure", "Fixture failed");
+
+        assert!(diagnostic.failure_classification().is_unknown());
+        assert_eq!(diagnostic.code(), "fixture.failure");
+        assert_eq!(diagnostic.message(), "Fixture failed");
+    }
+
+    #[test]
+    fn classification_does_not_replace_exact_diagnostic_identity() {
+        let diagnostic = SafeDiagnostic::new("fixture.rate_limited", "Fixture was rate limited")
+            .with_failure_classification(FailureClassification::new(
+                FailureOrigin::Provider,
+                FailureKind::RateLimited,
+                FailureRecovery::RetryMaySucceed,
+            ));
+
+        assert_eq!(diagnostic.code(), "fixture.rate_limited");
+        assert_eq!(diagnostic.message(), "Fixture was rate limited");
+        assert_eq!(
+            diagnostic.failure_classification(),
+            FailureClassification::new(
+                FailureOrigin::Provider,
+                FailureKind::RateLimited,
+                FailureRecovery::RetryMaySucceed,
+            )
+        );
     }
 }
 

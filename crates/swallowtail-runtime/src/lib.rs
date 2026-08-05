@@ -149,8 +149,9 @@ pub use operation_policy::{
 };
 pub use outcome::{
     CleanupOutcome, ProviderCancellationOutcome, ProviderRequestObservation,
-    RemoteResourceDeletionOutcome, TerminalAlreadySet, TerminalOutcome, TerminalOutcomeFuture,
-    TerminalOutcomeSender, TerminalStatus, terminal_outcome_channel,
+    RemoteResourceDeletionOutcome, TerminalAlreadySet, TerminalFailure, TerminalFailureSource,
+    TerminalOutcome, TerminalOutcomeFuture, TerminalOutcomeSender, TerminalStatus,
+    terminal_outcome_channel,
 };
 pub use planned_connection_rollover::validate_planned_connection_rollover_plan;
 pub use preparation::{PreparationFailure, PreparationStage};

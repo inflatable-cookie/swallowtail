@@ -7,7 +7,7 @@ use super::{
 use crate::{CallbackId, DirectToolCallId, RuntimeRunId, RuntimeTurnId};
 use std::fmt;
 use swallowtail_core::{
-    ActivityDisclosure, ActivityKindClass, ProviderActivityRef, ProviderRequestRef,
+    ActivityDisclosure, ActivityKindClass, ProviderActivityRef, ProviderRequestRef, SafeDiagnostic,
     SubagentControlActionKind,
 };
 
@@ -140,6 +140,7 @@ pub struct ActivityObservation {
     disclosure: ActivityDisclosure,
     correlation: Option<ActivityCorrelation>,
     label: Option<ActivityLabel>,
+    diagnostic: Option<SafeDiagnostic>,
     content: Option<ActivityContentUpdate>,
     task_list: Option<TaskListSnapshot>,
     actor: ActivityActor,
@@ -175,6 +176,7 @@ impl ActivityObservation {
             disclosure,
             correlation: None,
             label: None,
+            diagnostic: None,
             content: None,
             task_list: None,
             actor: ActivityActor::Primary,
@@ -207,6 +209,19 @@ impl ActivityObservation {
     pub fn with_label(mut self, label: ActivityLabel) -> Result<Self, InvalidActivityRecord> {
         super::validation::validate_label(&self)?;
         self.label = Some(label);
+        Ok(self)
+    }
+
+    pub fn with_diagnostic(
+        mut self,
+        diagnostic: SafeDiagnostic,
+    ) -> Result<Self, InvalidActivityRecord> {
+        if !matches!(self.kind, ActivityKind::WarningOrError) {
+            return Err(InvalidActivityRecord::new(
+                "Safe diagnostics require warning-or-error activity",
+            ));
+        }
+        self.diagnostic = Some(diagnostic);
         Ok(self)
     }
 
@@ -307,6 +322,11 @@ impl ActivityObservation {
     #[must_use]
     pub const fn label(&self) -> Option<&ActivityLabel> {
         self.label.as_ref()
+    }
+
+    #[must_use]
+    pub const fn diagnostic(&self) -> Option<&SafeDiagnostic> {
+        self.diagnostic.as_ref()
     }
 
     #[must_use]

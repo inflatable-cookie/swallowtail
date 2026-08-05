@@ -2,13 +2,18 @@
 
 ## Active
 
+
 ## Ready
 
 
 ## Planned
 
+
 ## Completed
 
+- `117-portable-failure-provider-wide-acceptance.md`
+- `116-portable-provider-and-harness-failure-mappings.md`
+- `115-portable-failure-contract-and-kernel.md`
 - `114-oh-my-pi-package-and-route-acceptance.md`
 - `113-oh-my-pi-prepared-facade-and-control.md`
 - `112-oh-my-pi-rpc-driver-core.md`

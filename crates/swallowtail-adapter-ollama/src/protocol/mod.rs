@@ -1,6 +1,8 @@
 use crate::failure::failure;
 use serde::{Deserialize, Serialize};
-use swallowtail_core::ReasoningMode;
+use swallowtail_core::{
+    FailureClassification, FailureKind, FailureOrigin, FailureRecovery, ReasoningMode,
+};
 use swallowtail_runtime::{RuntimeFailure, SchemaDocument, StructuredOutputDescriptor};
 
 mod catalog;
@@ -162,13 +164,33 @@ pub fn require_success(
     if (200..300).contains(&response.status) {
         return Ok(());
     }
-    let message = match response.status {
-        400 => "Ollama rejected the native request",
-        404 => "Ollama did not expose the selected model",
-        429 => "Ollama rejected the request due to a provider limit",
-        _ => "Ollama native request failed",
+    let (message, kind, recovery) = match response.status {
+        400 => (
+            "Ollama rejected the native request",
+            FailureKind::InvalidRequest,
+            FailureRecovery::InputChangeRequired,
+        ),
+        404 => (
+            "Ollama did not expose the selected model",
+            FailureKind::ModelUnavailable,
+            FailureRecovery::ConfigurationChangeRequired,
+        ),
+        429 => (
+            "Ollama rejected the request due to a provider limit",
+            FailureKind::RateLimited,
+            FailureRecovery::RetryMaySucceed,
+        ),
+        _ => (
+            "Ollama native request failed",
+            FailureKind::Unknown,
+            FailureRecovery::Unknown,
+        ),
     };
-    Err(failure("swallowtail.ollama.provider_failed", message))
+    Err(
+        failure("swallowtail.ollama.provider_failed", message).with_failure_classification(
+            FailureClassification::new(FailureOrigin::Provider, kind, recovery),
+        ),
+    )
 }
 
 fn encode_json(path: &'static str, value: &serde_json::Value) -> Result<Request, RuntimeFailure> {

@@ -8,7 +8,10 @@ use std::num::NonZeroU64;
 use std::pin::Pin;
 use std::sync::Arc;
 use std::task::Poll;
-use swallowtail_core::{AccessProfileId, ModelRouteId, SafeDiagnostic};
+use swallowtail_core::{
+    AccessProfileId, FailureClassification, FailureKind, FailureOrigin, FailureRecovery,
+    ModelRouteId, SafeDiagnostic,
+};
 use swallowtail_runtime::{
     BilledCostObservation, BoxFuture, CleanupOutcome, Currency, DeadlineObservation,
     OperationContent, ProviderObservation, RuntimeEvent, RuntimeEventKind, RuntimeFailure,
@@ -223,21 +226,33 @@ async fn next_signal(
 }
 
 fn provider_status(failure: ProviderFailure) -> TerminalStatus {
-    let (code, message) = match failure {
+    let (code, message, kind, recovery) = match failure {
         ProviderFailure::PreviousResponseNotFound => (
             "swallowtail.xai.previous_response_not_found",
             "xAI rejected the connection-local continuation",
+            FailureKind::ResourceStale,
+            FailureRecovery::ConfigurationChangeRequired,
         ),
         ProviderFailure::ConnectionLimitReached => (
             "swallowtail.xai.connection_limit_reached",
             "xAI closed the session at its connection lifetime limit",
+            FailureKind::ProviderUnavailable,
+            FailureRecovery::RetryMaySucceed,
         ),
         ProviderFailure::Other => (
             "swallowtail.xai.provider_failed",
             "xAI reported a provider failure",
+            FailureKind::Unknown,
+            FailureRecovery::Unknown,
         ),
     };
-    TerminalStatus::ProviderFailed(SafeDiagnostic::new(code, message))
+    TerminalStatus::ProviderFailed(
+        SafeDiagnostic::new(code, message).with_failure_classification(FailureClassification::new(
+            FailureOrigin::Provider,
+            kind,
+            recovery,
+        )),
+    )
 }
 
 fn runtime_failure(diagnostic: SafeDiagnostic) -> TerminalOutcome {
@@ -256,5 +271,35 @@ fn finish(cancellation: &TurnCancellation, outcome: TerminalOutcome) -> Terminal
             TerminalOutcome::new(TerminalStatus::TimedOut, CleanupOutcome::Clean)
         }
         CancelReason::None | CancelReason::Finished => outcome,
+    }
+}
+
+#[cfg(test)]
+mod failure_classification_tests {
+    use super::*;
+
+    #[test]
+    fn typed_provider_failures_keep_distinct_portable_meaning() {
+        let stale = provider_status(ProviderFailure::PreviousResponseNotFound);
+        let limit = provider_status(ProviderFailure::ConnectionLimitReached);
+
+        assert_eq!(
+            stale
+                .failure()
+                .expect("provider failure")
+                .diagnostic()
+                .failure_classification()
+                .kind(),
+            FailureKind::ResourceStale
+        );
+        assert_eq!(
+            limit
+                .failure()
+                .expect("provider failure")
+                .diagnostic()
+                .failure_classification()
+                .recovery(),
+            FailureRecovery::RetryMaySucceed
+        );
     }
 }

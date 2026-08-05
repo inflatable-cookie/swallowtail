@@ -212,6 +212,10 @@ fn malformed_disconnect_unsupported_and_http_errors_are_safe() {
         provider.diagnostic().code(),
         "swallowtail.ollama.provider_failed"
     );
+    assert_eq!(
+        provider.diagnostic().failure_classification().kind(),
+        swallowtail_core::FailureKind::ModelUnavailable
+    );
     for error in [malformed, disconnect, unsupported, provider] {
         let diagnostic = error.to_string();
         assert!(!diagnostic.contains("synthetic provider failure"));

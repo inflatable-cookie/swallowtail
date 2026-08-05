@@ -1,4 +1,5 @@
 use serde_json::Value;
+use swallowtail_core::{FailureClassification, FailureKind, FailureOrigin, FailureRecovery};
 use swallowtail_runtime::TokenUsage;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -162,6 +163,38 @@ pub(crate) fn provider_failure(kind: ProviderErrorKind, operation: &str) -> Runt
         ProviderErrorKind::Other => ("swallowtail.anthropic.provider_failed", "failed"),
     };
     failure(code, format!("Anthropic {operation} {label}"))
+        .with_failure_classification(classification(kind))
+}
+
+const fn classification(kind: ProviderErrorKind) -> FailureClassification {
+    let (failure_kind, recovery) = match kind {
+        ProviderErrorKind::Authentication => (
+            FailureKind::AuthenticationRejected,
+            FailureRecovery::ReauthenticationRequired,
+        ),
+        ProviderErrorKind::Billing => (
+            FailureKind::EntitlementUnavailable,
+            FailureRecovery::SameRequestNotRetryable,
+        ),
+        ProviderErrorKind::Permission => (
+            FailureKind::AuthorizationDenied,
+            FailureRecovery::ConfigurationChangeRequired,
+        ),
+        ProviderErrorKind::RateLimited => (
+            FailureKind::RateLimited,
+            FailureRecovery::RetryMaySucceed,
+        ),
+        ProviderErrorKind::Overloaded => (
+            FailureKind::ProviderUnavailable,
+            FailureRecovery::RetryMaySucceed,
+        ),
+        ProviderErrorKind::InvalidRequest => (
+            FailureKind::InvalidRequest,
+            FailureRecovery::InputChangeRequired,
+        ),
+        ProviderErrorKind::Other => (FailureKind::Unknown, FailureRecovery::Unknown),
+    };
+    FailureClassification::new(FailureOrigin::Provider, failure_kind, recovery)
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

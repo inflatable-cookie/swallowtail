@@ -1,6 +1,8 @@
 use std::error::Error;
 use std::fmt;
-use swallowtail_core::SafeDiagnostic;
+use swallowtail_core::{
+    FailureClassification, FailureKind, FailureOrigin, FailureRecovery, SafeDiagnostic,
+};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct AlibabaProtocolFailure {
@@ -12,6 +14,11 @@ impl AlibabaProtocolFailure {
         Self::new(
             "swallowtail.alibaba_model_studio.protocol_invalid",
             format!("Alibaba Model Studio {subject} was invalid"),
+            FailureClassification::new(
+                FailureOrigin::Protocol,
+                FailureKind::MalformedData,
+                FailureRecovery::Unknown,
+            ),
         )
     }
 
@@ -19,6 +26,11 @@ impl AlibabaProtocolFailure {
         Self::new(
             "swallowtail.alibaba_model_studio.unsupported_input",
             format!("Alibaba Model Studio does not support {subject} in the frozen route"),
+            FailureClassification::new(
+                FailureOrigin::Runtime,
+                FailureKind::InvalidRequest,
+                FailureRecovery::InputChangeRequired,
+            ),
         )
     }
 
@@ -26,12 +38,22 @@ impl AlibabaProtocolFailure {
         Self::new(
             "swallowtail.alibaba_model_studio.provider_failed",
             "Alibaba Model Studio rejected the request",
+            FailureClassification::new(
+                FailureOrigin::Provider,
+                FailureKind::Unknown,
+                FailureRecovery::Unknown,
+            ),
         )
     }
 
-    fn new(code: &'static str, message: impl Into<String>) -> Self {
+    fn new(
+        code: &'static str,
+        message: impl Into<String>,
+        classification: FailureClassification,
+    ) -> Self {
         Self {
-            diagnostic: SafeDiagnostic::new(code, message),
+            diagnostic: SafeDiagnostic::new(code, message)
+                .with_failure_classification(classification),
         }
     }
 

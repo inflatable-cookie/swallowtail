@@ -1,4 +1,6 @@
-use swallowtail_core::SafeDiagnostic;
+use swallowtail_core::{
+    FailureClassification, FailureKind, FailureOrigin, FailureRecovery, SafeDiagnostic,
+};
 use swallowtail_runtime::RuntimeFailure;
 
 use crate::stream::ProviderFailureKind;
@@ -57,5 +59,84 @@ pub(crate) fn provider_failure(kind: ProviderFailureKind) -> RuntimeFailure {
             "Bedrock Runtime transport failed",
         ),
     };
-    failure(code, message)
+    failure(code, message).with_failure_classification(classification(kind))
+}
+
+const fn classification(kind: ProviderFailureKind) -> FailureClassification {
+    let (origin, failure_kind, recovery) = match kind {
+        ProviderFailureKind::AuthenticationOrPermissionDenied => (
+            FailureOrigin::Provider,
+            FailureKind::AuthorizationDenied,
+            FailureRecovery::ConfigurationChangeRequired,
+        ),
+        ProviderFailureKind::InvalidRequest => (
+            FailureOrigin::Provider,
+            FailureKind::InvalidRequest,
+            FailureRecovery::InputChangeRequired,
+        ),
+        ProviderFailureKind::ModelUnavailable => (
+            FailureOrigin::Provider,
+            FailureKind::ModelUnavailable,
+            FailureRecovery::ConfigurationChangeRequired,
+        ),
+        ProviderFailureKind::ModelTimedOut | ProviderFailureKind::ProviderOverloaded => (
+            FailureOrigin::Provider,
+            FailureKind::ProviderUnavailable,
+            FailureRecovery::RetryMaySucceed,
+        ),
+        ProviderFailureKind::RateLimited => (
+            FailureOrigin::Provider,
+            FailureKind::RateLimited,
+            FailureRecovery::RetryMaySucceed,
+        ),
+        ProviderFailureKind::ResourceNotFound => (
+            FailureOrigin::Provider,
+            FailureKind::ResourceNotFound,
+            FailureRecovery::ConfigurationChangeRequired,
+        ),
+        ProviderFailureKind::ProviderFailed => (
+            FailureOrigin::Provider,
+            FailureKind::Unknown,
+            FailureRecovery::Unknown,
+        ),
+        ProviderFailureKind::ProtocolFailed => (
+            FailureOrigin::Protocol,
+            FailureKind::MalformedData,
+            FailureRecovery::Unknown,
+        ),
+        ProviderFailureKind::TransportFailed => (
+            FailureOrigin::Transport,
+            FailureKind::TransportInterrupted,
+            FailureRecovery::RetryMaySucceed,
+        ),
+    };
+    FailureClassification::new(origin, failure_kind, recovery)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn sdk_failure_classes_preserve_origin_and_recovery() {
+        let rate = provider_failure(ProviderFailureKind::RateLimited);
+        let transport = provider_failure(ProviderFailureKind::TransportFailed);
+
+        assert_eq!(
+            rate.diagnostic().failure_classification(),
+            FailureClassification::new(
+                FailureOrigin::Provider,
+                FailureKind::RateLimited,
+                FailureRecovery::RetryMaySucceed,
+            )
+        );
+        assert_eq!(
+            transport.diagnostic().failure_classification().origin(),
+            FailureOrigin::Transport
+        );
+        assert_eq!(
+            transport.diagnostic().code(),
+            "swallowtail.bedrock.transport_failed"
+        );
+    }
 }

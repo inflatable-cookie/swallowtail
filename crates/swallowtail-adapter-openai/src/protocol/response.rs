@@ -1,5 +1,6 @@
 use crate::failure::malformed;
 use serde_json::Value;
+use swallowtail_core::{FailureClassification, FailureKind, FailureOrigin, FailureRecovery};
 use swallowtail_runtime::{RuntimeFailure, TokenUsage};
 
 #[derive(Debug)]
@@ -152,7 +153,33 @@ pub(crate) fn require_success(response: &Response) -> Result<(), RuntimeFailure>
             "OpenAI public API request failed",
         ),
     };
-    Err(crate::failure::failure(code, message))
+    Err(crate::failure::failure(code, message).with_failure_classification(classification(kind)))
+}
+
+const fn classification(kind: ProviderFailureKind) -> FailureClassification {
+    let (failure_kind, recovery) = match kind {
+        ProviderFailureKind::Authentication => (
+            FailureKind::AuthenticationRejected,
+            FailureRecovery::ReauthenticationRequired,
+        ),
+        ProviderFailureKind::Permission => (
+            FailureKind::AuthorizationDenied,
+            FailureRecovery::ConfigurationChangeRequired,
+        ),
+        ProviderFailureKind::RateLimited => {
+            (FailureKind::RateLimited, FailureRecovery::RetryMaySucceed)
+        }
+        ProviderFailureKind::Quota => (
+            FailureKind::QuotaExhausted,
+            FailureRecovery::SameRequestNotRetryable,
+        ),
+        ProviderFailureKind::InvalidRequest => (
+            FailureKind::InvalidRequest,
+            FailureRecovery::InputChangeRequired,
+        ),
+        ProviderFailureKind::Other => (FailureKind::Unknown, FailureRecovery::Unknown),
+    };
+    FailureClassification::new(FailureOrigin::Provider, failure_kind, recovery)
 }
 
 fn parse_usage(value: &Value) -> Result<TokenUsage, RuntimeFailure> {

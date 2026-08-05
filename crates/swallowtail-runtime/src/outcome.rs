@@ -57,12 +57,67 @@ pub enum TerminalStatus {
     RuntimeFailed(SafeDiagnostic),
 }
 
+#[non_exhaustive]
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+pub enum TerminalFailureSource {
+    Provider,
+    Host,
+    Runtime,
+}
+
+/// Borrowed route-neutral view of a terminal failure.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct TerminalFailure<'a> {
+    source: TerminalFailureSource,
+    diagnostic: &'a SafeDiagnostic,
+}
+
+impl<'a> TerminalFailure<'a> {
+    #[must_use]
+    pub const fn source(self) -> TerminalFailureSource {
+        self.source
+    }
+
+    #[must_use]
+    pub const fn diagnostic(self) -> &'a SafeDiagnostic {
+        self.diagnostic
+    }
+}
+
+impl TerminalStatus {
+    /// Returns a common view for provider, host, and runtime terminal failures.
+    #[must_use]
+    pub const fn failure(&self) -> Option<TerminalFailure<'_>> {
+        let (source, diagnostic) = match self {
+            Self::ProviderFailed(diagnostic) => (TerminalFailureSource::Provider, diagnostic),
+            Self::HostFailed(diagnostic) => (TerminalFailureSource::Host, diagnostic),
+            Self::RuntimeFailed(diagnostic) => (TerminalFailureSource::Runtime, diagnostic),
+            Self::Completed
+            | Self::Detached
+            | Self::Cancelled
+            | Self::TimedOut
+            | Self::ProviderRequestObserved(_) => return None,
+        };
+        Some(TerminalFailure { source, diagnostic })
+    }
+}
+
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum CleanupOutcome {
     Clean,
     Degraded(SafeDiagnostic),
     Failed(SafeDiagnostic),
     NotApplicable,
+}
+
+impl CleanupOutcome {
+    #[must_use]
+    pub const fn diagnostic(&self) -> Option<&SafeDiagnostic> {
+        match self {
+            Self::Degraded(diagnostic) | Self::Failed(diagnostic) => Some(diagnostic),
+            Self::Clean | Self::NotApplicable => None,
+        }
+    }
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -97,6 +152,11 @@ impl TerminalOutcome {
             provider_cancellation: None,
             remote_resource_deletions: BTreeMap::new(),
         }
+    }
+
+    #[must_use]
+    pub const fn failure(&self) -> Option<TerminalFailure<'_>> {
+        self.status.failure()
     }
 
     #[must_use]

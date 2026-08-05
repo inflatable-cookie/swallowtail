@@ -165,11 +165,21 @@ fn require_success(response: Response) -> Result<Response, RuntimeFailure> {
         404 => Err(failure(
             "swallowtail.alibaba_model_studio.provider_resource_missing",
             "Alibaba Model Studio reported that the requested provider resource was missing",
-        )),
+        )
+        .with_failure_classification(swallowtail_core::FailureClassification::new(
+            swallowtail_core::FailureOrigin::Provider,
+            swallowtail_core::FailureKind::ResourceNotFound,
+            swallowtail_core::FailureRecovery::ConfigurationChangeRequired,
+        ))),
         401 | 403 => Err(failure(
             "swallowtail.alibaba_model_studio.provider_access_rejected",
             "Alibaba Model Studio rejected access to the requested provider resource",
-        )),
+        )
+        .with_failure_classification(swallowtail_core::FailureClassification::new(
+            swallowtail_core::FailureOrigin::Provider,
+            swallowtail_core::FailureKind::AuthorizationDenied,
+            swallowtail_core::FailureRecovery::ReauthenticationRequired,
+        ))),
         _ => Err(provider_error(&response.body)),
     }
 }

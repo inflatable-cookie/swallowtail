@@ -1,3 +1,5 @@
+use swallowtail_core::{FailureClassification, FailureKind, FailureOrigin, FailureRecovery};
+
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) enum Event {
     RoleStart,
@@ -155,6 +157,38 @@ pub(crate) fn provider_failure(kind: ProviderErrorKind, operation: &str) -> Runt
         },
         format!("Kimi Platform {operation} {label}"),
     )
+    .with_failure_classification(classification(kind))
+}
+
+const fn classification(kind: ProviderErrorKind) -> FailureClassification {
+    let (failure_kind, recovery) = match kind {
+        ProviderErrorKind::Authentication => (
+            FailureKind::AuthenticationRejected,
+            FailureRecovery::ReauthenticationRequired,
+        ),
+        ProviderErrorKind::Permission => (
+            FailureKind::AuthorizationDenied,
+            FailureRecovery::ConfigurationChangeRequired,
+        ),
+        ProviderErrorKind::ModelUnavailable => (
+            FailureKind::ModelUnavailable,
+            FailureRecovery::ConfigurationChangeRequired,
+        ),
+        ProviderErrorKind::Quota => (
+            FailureKind::QuotaExhausted,
+            FailureRecovery::SameRequestNotRetryable,
+        ),
+        ProviderErrorKind::RateLimited => (
+            FailureKind::RateLimited,
+            FailureRecovery::RetryMaySucceed,
+        ),
+        ProviderErrorKind::Unavailable => (
+            FailureKind::ProviderUnavailable,
+            FailureRecovery::RetryMaySucceed,
+        ),
+        ProviderErrorKind::Other => (FailureKind::Unknown, FailureRecovery::Unknown),
+    };
+    FailureClassification::new(FailureOrigin::Provider, failure_kind, recovery)
 }
 
 fn unknown_semantics() -> RuntimeFailure {

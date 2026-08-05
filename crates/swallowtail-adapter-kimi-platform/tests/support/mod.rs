@@ -14,23 +14,23 @@ use swallowtail_runtime::{
 
 const MODELS: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../swallowtail-protocol-openai-chat/tests/fixtures/kimi-platform-k3-2026-07-21/models.json"
+    "/tests/fixtures/kimi-platform-k3-2026-07-21/models.json"
 ));
 const SUCCESS: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../swallowtail-protocol-openai-chat/tests/fixtures/kimi-platform-k3-2026-07-21/success.sse"
+    "/tests/fixtures/kimi-platform-k3-2026-07-21/success.sse"
 ));
 const UNKNOWN: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../swallowtail-protocol-openai-chat/tests/fixtures/kimi-platform-k3-2026-07-21/unknown.sse"
+    "/tests/fixtures/kimi-platform-k3-2026-07-21/unknown.sse"
 ));
 const MISMATCH: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../swallowtail-protocol-openai-chat/tests/fixtures/kimi-platform-k3-2026-07-21/model-mismatch.sse"
+    "/tests/fixtures/kimi-platform-k3-2026-07-21/model-mismatch.sse"
 ));
 const DISCONNECT: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../swallowtail-protocol-openai-chat/tests/fixtures/kimi-platform-k3-2026-07-21/disconnect.sse"
+    "/tests/fixtures/kimi-platform-k3-2026-07-21/disconnect.sse"
 ));
 
 #[derive(Clone, Copy)]

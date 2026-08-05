@@ -9,7 +9,10 @@ use super::{
 use crate::{
     CallbackId, DirectToolCallId, EventDelivery, OperationContent, RuntimeEventKind, RuntimeRunId,
 };
-use swallowtail_core::{ProviderActivityRef, ProviderRequestRef};
+use swallowtail_core::{
+    FailureClassification, FailureKind, FailureOrigin, FailureRecovery, ProviderActivityRef,
+    ProviderRequestRef, SafeDiagnostic,
+};
 
 fn run_id() -> ActivityOperationId {
     ActivityOperationId::Run(RuntimeRunId::new("private-run").expect("run id is valid"))
@@ -444,5 +447,49 @@ fn activity_events_are_always_semantic() {
     assert_eq!(
         RuntimeEventKind::Activity(observation).delivery(),
         EventDelivery::Semantic
+    );
+}
+
+#[test]
+fn warning_activity_may_carry_portable_safe_failure_evidence() {
+    let diagnostic = SafeDiagnostic::new("fixture.warning", "Harness reported a warning")
+        .with_failure_classification(FailureClassification::new(
+            FailureOrigin::Harness,
+            FailureKind::Unknown,
+            FailureRecovery::Unknown,
+        ));
+    let observation = ActivityObservation::new(
+        ActivityId::new("warning-1").unwrap(),
+        run_id(),
+        ActivityKind::WarningOrError,
+        ActivityLifecyclePhase::Completed,
+        ActivityStatus::Failed,
+        None,
+        ActivityDisclosure::AdapterNormalizedSummary,
+    )
+    .unwrap()
+    .with_diagnostic(diagnostic.clone())
+    .expect("warning activity admits safe diagnostic");
+
+    assert_eq!(observation.diagnostic(), Some(&diagnostic));
+}
+
+#[test]
+fn ordinary_activity_cannot_be_relabelled_as_failure_evidence() {
+    let observation = ActivityObservation::new(
+        ActivityId::new("task-diagnostic").unwrap(),
+        run_id(),
+        ActivityKind::Task,
+        ActivityLifecyclePhase::Completed,
+        ActivityStatus::Completed,
+        None,
+        ActivityDisclosure::IdentityAndLifecycleOnly,
+    )
+    .unwrap();
+
+    assert!(
+        observation
+            .with_diagnostic(SafeDiagnostic::new("fixture.failure", "Failed"))
+            .is_err()
     );
 }

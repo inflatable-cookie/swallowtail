@@ -112,12 +112,27 @@ fn frozen_provider_errors_map_without_exposing_provider_messages() {
         "rate_limited",
         "provider_unavailable",
     ];
-    for (item, suffix) in values.as_array().expect("array").iter().zip(expected) {
+    let expected_kinds = [
+        FailureKind::AuthenticationRejected,
+        FailureKind::AuthorizationDenied,
+        FailureKind::ModelUnavailable,
+        FailureKind::QuotaExhausted,
+        FailureKind::RateLimited,
+        FailureKind::ProviderUnavailable,
+    ];
+    for ((item, suffix), kind) in values
+        .as_array()
+        .expect("array")
+        .iter()
+        .zip(expected)
+        .zip(expected_kinds)
+    {
         let status = item["status"].as_u64().expect("status") as u32;
         let body = serde_json::to_vec(&item["body"]).expect("body");
         let error = require_success(&response(status, body), "fixture request")
             .expect_err("provider error fails");
         assert!(error.diagnostic().code().ends_with(suffix));
+        assert_eq!(error.diagnostic().failure_classification().kind(), kind);
         assert!(!error.to_string().contains("synthetic"));
     }
 }

@@ -287,10 +287,19 @@ impl QwenEventParser {
                 }
             }
             ("error_max_turns" | "error_during_execution", true) => {
-                self.provider_failure = Some(SafeDiagnostic::new(
-                    "swallowtail.qwen.headless.provider_failed",
-                    "Qwen Code reported a provider execution failure",
-                ));
+                self.provider_failure = Some(
+                    SafeDiagnostic::new(
+                        "swallowtail.qwen.headless.provider_failed",
+                        "Qwen Code reported a provider execution failure",
+                    )
+                    .with_failure_classification(
+                        swallowtail_core::FailureClassification::new(
+                            swallowtail_core::FailureOrigin::Provider,
+                            swallowtail_core::FailureKind::Unknown,
+                            swallowtail_core::FailureRecovery::Unknown,
+                        ),
+                    ),
+                );
                 Ok(vec![self.event(RuntimeEventKind::ProviderObservation(
                     ProviderObservation::Usage(usage),
                 ))])

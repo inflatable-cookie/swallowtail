@@ -3,7 +3,7 @@ use crate::support::{DriverFixture, ServerScenario};
 use futures_executor::block_on;
 use futures_util::StreamExt;
 use swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioDriver;
-use swallowtail_core::{OwnedRemoteResourceKind, ReasoningMode};
+use swallowtail_core::{FailureOrigin, OwnedRemoteResourceKind, ReasoningMode};
 use swallowtail_runtime::{
     CleanupOutcome, Deadline, InteractiveSessionDriver, MonotonicInstant, OpenSessionRequest,
     ProviderCancellationOutcome, RemoteResourceDeletionOutcome, RequestId, SessionOptions,
@@ -31,6 +31,19 @@ fn provider_failure_disconnect_and_cleanup_failure_remain_distinct() {
                 outcome.status(),
                 TerminalStatus::ProviderFailed(_)
             ));
+            assert_eq!(
+                outcome
+                    .failure()
+                    .expect("provider failure")
+                    .diagnostic()
+                    .failure_classification()
+                    .origin(),
+                if scenario == ServerScenario::ProviderError {
+                    FailureOrigin::Provider
+                } else {
+                    FailureOrigin::Protocol
+                }
+            );
             assert_eq!(
                 outcome.remote_resource_deletion(OwnedRemoteResourceKind::ConversationItems),
                 Some(RemoteResourceDeletionOutcome::Unconfirmed)

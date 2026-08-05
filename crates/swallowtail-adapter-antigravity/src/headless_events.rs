@@ -362,15 +362,24 @@ impl ParsedTerminal {
                 ))
             });
             if parsed == TerminalStatus::Completed && !exit.success() {
-                TerminalStatus::ProviderFailed(SafeDiagnostic::new(
-                    "swallowtail.antigravity.headless.process_failed",
-                    match exit.code() {
-                        Some(code) => {
-                            format!("Antigravity headless process exited with status {code}")
-                        }
-                        None => "Antigravity headless process exited unsuccessfully".to_owned(),
-                    },
-                ))
+                TerminalStatus::ProviderFailed(
+                    SafeDiagnostic::new(
+                        "swallowtail.antigravity.headless.process_failed",
+                        match exit.code() {
+                            Some(code) => {
+                                format!("Antigravity headless process exited with status {code}")
+                            }
+                            None => "Antigravity headless process exited unsuccessfully".to_owned(),
+                        },
+                    )
+                    .with_failure_classification(
+                        swallowtail_core::FailureClassification::new(
+                            swallowtail_core::FailureOrigin::Harness,
+                            swallowtail_core::FailureKind::Unknown,
+                            swallowtail_core::FailureRecovery::Unknown,
+                        ),
+                    ),
+                )
             } else {
                 parsed
             }
@@ -492,4 +501,29 @@ fn stream_limit() -> RuntimeFailure {
         "swallowtail.antigravity.headless.stream_limit",
         "Antigravity exceeded the bounded headless stream limit",
     )
+}
+
+#[cfg(test)]
+mod failure_classification_tests {
+    use super::*;
+
+    #[test]
+    fn opaque_process_exit_remains_harness_unknown() {
+        let outcome = ParsedTerminal::new(None, Some(TerminalStatus::Completed), true, None)
+            .outcome(ProcessExit::new(false, Some(7)));
+        let classification = outcome
+            .failure()
+            .expect("process exit fails")
+            .diagnostic()
+            .failure_classification();
+
+        assert_eq!(
+            classification.origin(),
+            swallowtail_core::FailureOrigin::Harness
+        );
+        assert_eq!(
+            classification.kind(),
+            swallowtail_core::FailureKind::Unknown
+        );
+    }
 }

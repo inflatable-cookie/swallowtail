@@ -1,5 +1,6 @@
 use super::projection::CatalogueProjectionError;
 use crate::failure::failure;
+use swallowtail_core::{FailureClassification, FailureKind, FailureOrigin, FailureRecovery};
 use swallowtail_runtime::RuntimeFailure;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -34,7 +35,29 @@ pub(super) fn provider_failure(kind: CatalogueFailureKind) -> RuntimeFailure {
             "Bedrock catalogue returned an unknown failure",
         ),
     };
-    failure(code, message)
+    let (failure_kind, recovery) = match kind {
+        CatalogueFailureKind::PermissionDenied => (
+            FailureKind::AuthorizationDenied,
+            FailureRecovery::ConfigurationChangeRequired,
+        ),
+        CatalogueFailureKind::InvalidRequest => (
+            FailureKind::InvalidRequest,
+            FailureRecovery::InputChangeRequired,
+        ),
+        CatalogueFailureKind::RateLimited => {
+            (FailureKind::RateLimited, FailureRecovery::RetryMaySucceed)
+        }
+        CatalogueFailureKind::ProviderUnavailable => (
+            FailureKind::ProviderUnavailable,
+            FailureRecovery::RetryMaySucceed,
+        ),
+        CatalogueFailureKind::ProviderFailed => (FailureKind::Unknown, FailureRecovery::Unknown),
+    };
+    failure(code, message).with_failure_classification(FailureClassification::new(
+        FailureOrigin::Provider,
+        failure_kind,
+        recovery,
+    ))
 }
 
 pub(super) fn projection_failure(error: CatalogueProjectionError) -> RuntimeFailure {

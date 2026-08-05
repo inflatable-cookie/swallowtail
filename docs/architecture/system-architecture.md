@@ -11,6 +11,8 @@ spine:
 
 - `swallowtail-core` owns pure provider-neutral contract records, including
   runtime identities, access state, configured instances, model routes,
+  portable failure origin, kind, and recovery evidence alongside exact safe
+  diagnostic codes,
   model-artifact identity and preflight bindings, reasoning and token-limit
   catalog evidence, source-scoped catalogue modality, lifecycle, streaming,
   inference, customization, and provider-extension observations, expanded
@@ -33,7 +35,8 @@ spine:
   unauthenticated access remains distinct from local topology
 - `swallowtail-runtime` depends on core plus `futures-core` and `zeroize` and owns
   executor-neutral dynamic roles, lifecycle handles, bounded events, terminal
-  outcomes, explicit operation policy, typed usage/rate/quota observations;
+  outcomes, one route-neutral borrowed terminal-failure view, explicit
+  operation policy, typed usage/rate/quota observations;
   usage is one cumulative operation snapshot at each emitted boundary,
   replacing provider-cumulative records or summing disjoint provider
   components once while keeping context occupancy and billed cost separate;
@@ -68,7 +71,9 @@ spine:
   request correlation, bounded namespaced unknowns, and redacted formatting;
   adapters retain raw provider envelopes and exact version mapping, while
   consumers retain durable message and activity projections, transcript
-  policy, grouping, and collapsed presentation
+  policy, grouping, and collapsed presentation; warning-or-error activity may
+  carry the same safe portable failure classification without turning display
+  content into diagnostic text
 - the runtime also owns one consuming prepared working-state restoration
   facade over existing session reconciliation, run reconciliation, or exact
   provider-session load. Route preparation fixes the strongest qualified

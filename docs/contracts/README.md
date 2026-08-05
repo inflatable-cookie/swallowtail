@@ -54,6 +54,8 @@ Contracts hold durable, testable rules.
 - [047 Configured Provider Instance Catalogue](047-configured-provider-instance-catalogue.md)
 - [048 Cross-Process Active Operation Reconciliation](048-cross-process-active-operation-reconciliation.md)
 - [049 Controlled Shutdown Active Operation Detachment](049-controlled-shutdown-active-operation-detachment.md)
+- [050 Working-State Restoration Facade](050-working-state-restoration-facade.md)
+- [051 Portable Failure Classification](051-portable-failure-classification.md)
 
 Contract 003 defines the provider-neutral record kernel. Contracts 004-016
 govern the realized runtime and current proof drivers. Contract 017 governs
@@ -218,6 +220,10 @@ load into reconciliation, and never falls back from failed observation to
 broader live-session authority. A separate consuming sequence may attach only
 after eligible settled reconciliation. Both operations are prepared before
 provider work; successful observation remains available if attachment fails.
+Contract 051 adds portable failure origin, kind, and recovery evidence to the
+existing safe diagnostic boundary. Exact route codes, terminal source,
+preparation stage, cleanup truth, and downstream retry policy remain separate;
+unknown evidence stays unknown.
 
 Contract 015 now permits exact, one-shot activation of an already authorized
 harness credential after ACP initialization. The first mapping is Grok Build

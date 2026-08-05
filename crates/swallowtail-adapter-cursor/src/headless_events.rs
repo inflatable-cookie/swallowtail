@@ -257,13 +257,22 @@ impl ParsedTerminal {
 
     pub(crate) fn outcome(self, exit: ProcessExit) -> TerminalOutcome {
         let status = if !exit.success() {
-            TerminalStatus::ProviderFailed(SafeDiagnostic::new(
-                "swallowtail.cursor.headless.process_failed",
-                match exit.code() {
-                    Some(code) => format!("Cursor headless process exited with status {code}"),
-                    None => "Cursor headless process exited unsuccessfully".to_owned(),
-                },
-            ))
+            TerminalStatus::ProviderFailed(
+                SafeDiagnostic::new(
+                    "swallowtail.cursor.headless.process_failed",
+                    match exit.code() {
+                        Some(code) => format!("Cursor headless process exited with status {code}"),
+                        None => "Cursor headless process exited unsuccessfully".to_owned(),
+                    },
+                )
+                .with_failure_classification(
+                    swallowtail_core::FailureClassification::new(
+                        swallowtail_core::FailureOrigin::Harness,
+                        swallowtail_core::FailureKind::Unknown,
+                        swallowtail_core::FailureRecovery::Unknown,
+                    ),
+                ),
+            )
         } else if !self.terminal_seen {
             TerminalStatus::RuntimeFailed(SafeDiagnostic::new(
                 "swallowtail.cursor.headless.incomplete_stream",
@@ -355,4 +364,28 @@ fn stream_limit() -> RuntimeFailure {
         "swallowtail.cursor.headless.stream_limit",
         "Cursor Agent exceeded the bounded headless stream limit",
     )
+}
+
+#[cfg(test)]
+mod failure_classification_tests {
+    use super::*;
+
+    #[test]
+    fn opaque_process_exit_remains_harness_unknown() {
+        let outcome = ParsedTerminal::new(None, true).outcome(ProcessExit::new(false, Some(7)));
+        let classification = outcome
+            .failure()
+            .expect("process exit fails")
+            .diagnostic()
+            .failure_classification();
+
+        assert_eq!(
+            classification.origin(),
+            swallowtail_core::FailureOrigin::Harness
+        );
+        assert_eq!(
+            classification.kind(),
+            swallowtail_core::FailureKind::Unknown
+        );
+    }
 }

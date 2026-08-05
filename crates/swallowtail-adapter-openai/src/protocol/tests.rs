@@ -1,6 +1,6 @@
 use super::{
     BackgroundStatus, BackgroundStream, Method, ProviderEvent, ProviderFailureKind, Request,
-    SseDecoder, parse_deletion, parse_failure, parse_snapshot,
+    Response, SseDecoder, parse_deletion, parse_failure, parse_snapshot, require_success,
 };
 use crate::{ENDPOINT_AUDIENCE, INTEGRATION_FAMILY, SUPPORT_AUTHORITY};
 use serde_json::Value;
@@ -221,6 +221,16 @@ fn failures_and_access_pins_are_safe_and_exact() {
     assert_eq!(
         parse_failure(fixture("rate-limit-error.json")).expect("error parses"),
         ProviderFailureKind::RateLimited
+    );
+    let rate_limited = require_success(&Response {
+        status: 429,
+        headers: std::collections::BTreeMap::new(),
+        body: fixture("rate-limit-error.json").to_vec(),
+    })
+    .expect_err("rate limit fails");
+    assert_eq!(
+        rate_limited.diagnostic().failure_classification().kind(),
+        swallowtail_core::FailureKind::RateLimited
     );
     let malformed = parse_snapshot(br#"{"id":"resp_secret","status":"mystery"}"#)
         .expect_err("unknown status fails");

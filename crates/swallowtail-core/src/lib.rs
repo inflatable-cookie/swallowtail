@@ -11,6 +11,7 @@ mod capability;
 mod diagnostic;
 mod direct_continuation;
 mod event;
+mod failure;
 mod harness_configuration;
 mod harness_mode;
 mod harness_rpc;
@@ -57,6 +58,7 @@ pub use event::{
     EventEnvelope, EventKind, ExtensionNamespace, ExtensionPolicy, ExtensionRejected,
     ProviderExtension,
 };
+pub use failure::{FailureClassification, FailureKind, FailureOrigin, FailureRecovery};
 pub use harness_configuration::HarnessConfigurationPosture;
 pub use harness_mode::HarnessMode;
 pub use harness_rpc::{

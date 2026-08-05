@@ -5,6 +5,7 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-08-05 Portable Failure Classification](2026-08-05-portable-failure-classification.md)
 - [2026-08-05 Oh My Pi RPC Foundation](2026-08-05-oh-my-pi-rpc-foundation.md)
 - [2026-08-05 Provider-Wide Session Usability Restoration](2026-08-05-provider-wide-session-usability-restoration.md)
 - [2026-08-05 Retained Session Recovery Acceptance](2026-08-05-retained-session-recovery-acceptance.md)

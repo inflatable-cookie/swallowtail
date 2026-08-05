@@ -48,6 +48,17 @@ fn provider_retry_disconnect_and_protocol_failures_remain_distinct_in_both_topol
                 status => panic!("unexpected OhMyPi terminal status: {status:?}"),
             };
             assert_eq!(diagnostic.code(), expected_code);
+            if provider_failure {
+                assert_eq!(
+                    diagnostic.failure_classification().origin(),
+                    swallowtail_core::FailureOrigin::Provider
+                );
+            } else if expected_code == "swallowtail.oh_my_pi.rpc.retry_policy_drift" {
+                assert_eq!(
+                    diagnostic.failure_classification().origin(),
+                    swallowtail_core::FailureOrigin::Harness
+                );
+            }
             let public = format!("{outcome:?}");
             assert!(!public.contains("fixture provider secret"));
             assert!(!public.contains("fixture private prompt"));

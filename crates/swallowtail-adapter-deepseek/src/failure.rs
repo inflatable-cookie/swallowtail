@@ -1,5 +1,7 @@
 use crate::protocol::{ProtocolFailure, ProtocolFailureKind, ProviderFailureKind};
-use swallowtail_core::SafeDiagnostic;
+use swallowtail_core::{
+    FailureClassification, FailureKind, FailureOrigin, FailureRecovery, SafeDiagnostic,
+};
 use swallowtail_runtime::RuntimeFailure;
 
 pub(crate) fn failure(code: &'static str, message: impl Into<String>) -> RuntimeFailure {
@@ -33,7 +35,26 @@ pub(crate) fn protocol(error: ProtocolFailure) -> RuntimeFailure {
             "DeepSeek stream reported a provider failure",
         ),
     };
-    failure(code, message)
+    let (origin, failure_kind) = match error.kind() {
+        ProtocolFailureKind::BoundExceeded => {
+            (FailureOrigin::Protocol, FailureKind::InputLimitExceeded)
+        }
+        ProtocolFailureKind::ModelMismatch => {
+            (FailureOrigin::Protocol, FailureKind::ProtocolIncompatible)
+        }
+        ProtocolFailureKind::IncompleteStream => {
+            (FailureOrigin::Transport, FailureKind::TransportInterrupted)
+        }
+        ProtocolFailureKind::InvalidStructure | ProtocolFailureKind::UnknownSemanticField => {
+            (FailureOrigin::Protocol, FailureKind::MalformedData)
+        }
+        ProtocolFailureKind::ProviderFailure => (FailureOrigin::Provider, FailureKind::Unknown),
+    };
+    failure(code, message).with_failure_classification(FailureClassification::new(
+        origin,
+        failure_kind,
+        FailureRecovery::Unknown,
+    ))
 }
 
 pub(crate) fn provider(kind: ProviderFailureKind) -> RuntimeFailure {
@@ -63,7 +84,33 @@ pub(crate) fn provider(kind: ProviderFailureKind) -> RuntimeFailure {
             "DeepSeek reported temporary overload",
         ),
     };
-    failure(code, message)
+    let (failure_kind, recovery) = match kind {
+        ProviderFailureKind::InvalidRequest => (
+            FailureKind::InvalidRequest,
+            FailureRecovery::InputChangeRequired,
+        ),
+        ProviderFailureKind::Authentication => (
+            FailureKind::AuthenticationRejected,
+            FailureRecovery::ReauthenticationRequired,
+        ),
+        ProviderFailureKind::InsufficientBalance => (
+            FailureKind::EntitlementUnavailable,
+            FailureRecovery::SameRequestNotRetryable,
+        ),
+        ProviderFailureKind::AccountConcurrency => {
+            (FailureKind::RateLimited, FailureRecovery::RetryMaySucceed)
+        }
+        ProviderFailureKind::Provider => (FailureKind::Unknown, FailureRecovery::Unknown),
+        ProviderFailureKind::Overloaded => (
+            FailureKind::ProviderUnavailable,
+            FailureRecovery::RetryMaySucceed,
+        ),
+    };
+    failure(code, message).with_failure_classification(FailureClassification::new(
+        FailureOrigin::Provider,
+        failure_kind,
+        recovery,
+    ))
 }
 
 pub(crate) fn unsupported(subject: &'static str) -> RuntimeFailure {
@@ -71,4 +118,28 @@ pub(crate) fn unsupported(subject: &'static str) -> RuntimeFailure {
         "swallowtail.deepseek.unsupported",
         format!("DeepSeek V4 continuation does not support {subject}"),
     )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn provider_status_classes_are_portable_without_losing_codes() {
+        let authentication = provider(ProviderFailureKind::Authentication);
+        let overloaded = provider(ProviderFailureKind::Overloaded);
+
+        assert_eq!(
+            authentication.diagnostic().failure_classification().kind(),
+            FailureKind::AuthenticationRejected
+        );
+        assert_eq!(
+            authentication.diagnostic().code(),
+            "swallowtail.deepseek.authentication_rejected"
+        );
+        assert_eq!(
+            overloaded.diagnostic().failure_classification().recovery(),
+            FailureRecovery::RetryMaySucceed
+        );
+    }
 }

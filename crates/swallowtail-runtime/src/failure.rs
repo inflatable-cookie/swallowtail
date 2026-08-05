@@ -1,6 +1,6 @@
 use std::error::Error;
 use std::fmt;
-use swallowtail_core::SafeDiagnostic;
+use swallowtail_core::{FailureClassification, SafeDiagnostic};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct RuntimeFailure {
@@ -16,6 +16,12 @@ impl RuntimeFailure {
     #[must_use]
     pub const fn diagnostic(&self) -> &SafeDiagnostic {
         &self.diagnostic
+    }
+
+    /// Adds portable evidence without replacing the exact safe diagnostic.
+    #[must_use]
+    pub fn with_failure_classification(self, classification: FailureClassification) -> Self {
+        Self::new(self.diagnostic.with_failure_classification(classification))
     }
 }
 

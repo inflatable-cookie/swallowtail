@@ -154,6 +154,13 @@ impl ActiveTurn {
                     swallowtail_core::SafeDiagnostic::new(
                         "swallowtail.pi.rpc.provider_failed",
                         "Pi RPC reported a downstream provider failure",
+                    )
+                    .with_failure_classification(
+                        swallowtail_core::FailureClassification::new(
+                            swallowtail_core::FailureOrigin::Provider,
+                            swallowtail_core::FailureKind::Unknown,
+                            swallowtail_core::FailureRecovery::Unknown,
+                        ),
                     ),
                 ));
                 Ok(())
@@ -164,6 +171,13 @@ impl ActiveTurn {
                     swallowtail_core::SafeDiagnostic::new(
                         "swallowtail.pi.rpc.retry_policy_drift",
                         "Pi RPC retried despite the disabled retry policy",
+                    )
+                    .with_failure_classification(
+                        swallowtail_core::FailureClassification::new(
+                            swallowtail_core::FailureOrigin::Harness,
+                            swallowtail_core::FailureKind::ProtocolIncompatible,
+                            swallowtail_core::FailureRecovery::HarnessUpdateRequired,
+                        ),
                     ),
                 ));
                 Ok(())

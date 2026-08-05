@@ -1,0 +1,2 @@
+data: {"id":"chatcmpl-k3-fixture","object":"chat.completion.chunk","created":1784592000,"model":"kimi-k3","choices":[{"index":0,"delta":{"future_semantic":"synthetic private value"},"finish_reason":null}]}
+

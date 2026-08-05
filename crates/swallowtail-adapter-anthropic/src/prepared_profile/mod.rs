@@ -2,6 +2,7 @@ mod catalogue;
 mod inference;
 mod input;
 mod plan;
+mod restoration;
 mod session;
 
 pub use catalogue::AnthropicPreparedCatalogue;

@@ -1,3 +1,4 @@
+use super::conversation::AlibabaModelStudioPreparedConversation;
 use super::retained::{AlibabaModelStudioPreparedRetainedConversation, load_retained_session};
 use crate::AlibabaModelStudioDriver;
 use swallowtail_core::PreflightPlan;
@@ -7,6 +8,21 @@ use swallowtail_runtime::{
     RuntimeTurnId, SessionResumeBinding, WorkingStateRestorationMethod,
     WorkingStateRestorationOperation, WorkingStateRestorationOutcome,
 };
+
+impl AlibabaModelStudioPreparedConversation {
+    #[must_use]
+    pub fn prepare_working_state_restoration(
+        &self,
+        interrupted_turn_id: RuntimeTurnId,
+    ) -> PreparedWorkingStateRestoration {
+        PreparedWorkingStateRestoration::fresh_session_replacement(
+            interrupted_turn_id,
+            self.low_level_driver(),
+            self.plan().clone(),
+            self.request().clone(),
+        )
+    }
+}
 
 impl AlibabaModelStudioPreparedRetainedConversation {
     pub fn prepare_working_state_restoration(

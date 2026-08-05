@@ -5,7 +5,8 @@ use swallowtail_core::PreflightPlan;
 use swallowtail_core::{CapabilityProfile, CapabilityRequirement};
 use swallowtail_runtime::{
     BoxFuture, HostServices, InteractiveSessionDriver, InteractiveSessionHandle,
-    OpenSessionRequest, PreparationFailure, RuntimeFailure,
+    OpenSessionRequest, PreparationFailure, PreparedWorkingStateRestoration, RuntimeFailure,
+    RuntimeTurnId,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -43,6 +44,19 @@ impl XaiPreparedResponsesSession {
         let plan = self.plan().clone();
         let request = self.request.clone();
         Box::pin(async move { driver.open_session(plan, request, services).await })
+    }
+
+    #[must_use]
+    pub fn prepare_working_state_restoration(
+        &self,
+        interrupted_turn_id: RuntimeTurnId,
+    ) -> PreparedWorkingStateRestoration {
+        PreparedWorkingStateRestoration::fresh_session_replacement(
+            interrupted_turn_id,
+            self.low_level_driver(),
+            self.plan().clone(),
+            self.request.clone(),
+        )
     }
 
     #[must_use]

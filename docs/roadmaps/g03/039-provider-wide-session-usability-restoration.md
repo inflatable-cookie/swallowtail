@@ -6,7 +6,7 @@ Created: 2026-08-05
 Depends on: g03.037
 Vision tags: restart usability, direct continuation, realtime media
 Contract refs: 026-027, 030, 043, 050
-Planning state: card 107 complete; card 108 ready
+Planning state: cards 107-108 complete; card 109 ready
 
 ## Problem
 
@@ -23,15 +23,15 @@ keeping one-prompt retry and hidden-state reconstruction prohibited.
 ## Goals
 
 - [x] promote direct-continuation and realtime replacement boundaries
-- [ ] map the four remaining interactive route identities
-- [ ] map ordinary Alibaba without weakening its retained profile
+- [x] map the four remaining interactive route identities
+- [x] map ordinary Alibaba without weakening its retained profile
 - [ ] add a distinct realtime replacement outcome and two mappings
 - [ ] publish exact route and package truth while preserving stronger gates
 
 ## Execution Plan
 
 - [x] card 107: audit current prepared surfaces and promote Contract 050
-- [ ] card 108: map Anthropic, DeepSeek, Ollama, xAI, and ordinary Alibaba
+- [x] card 108: map Anthropic, DeepSeek, Ollama, xAI, and ordinary Alibaba
 - [ ] card 109: implement realtime replacement and map OpenAI and Gemini
 - [ ] card 110: close route, guide, package, and remaining-gate acceptance
 
@@ -57,5 +57,5 @@ keeping one-prompt retry and hidden-state reconstruction prohibited.
 
 ## Lane Runway
 
-Card 108 is ready. Cards 109-110 follow automatically after their dependencies
-pass. Completion returns g03 to its evidence gate.
+Card 109 is ready. Card 110 follows automatically after its dependency passes.
+Completion returns g03 to its evidence gate.

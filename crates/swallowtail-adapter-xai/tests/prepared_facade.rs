@@ -12,7 +12,8 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     CleanupOutcome, InteractiveSessionHandle, OperationContent, ProviderObservation, RequestId,
-    RuntimeEventKind, TerminalStatus,
+    RuntimeEventKind, RuntimeTurnId, TerminalStatus, WorkingStateRestorationMethod,
+    WorkingStateRestorationOutcome,
 };
 use swallowtail_testkit::assert_observable_activity_trace;
 
@@ -65,6 +66,40 @@ fn prepared_xai_session_preserves_serial_continuation_cost_and_cleanup_on_both_h
         assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
         assert_eq!(fixture.calls.count(DriverCall::CredentialRelease), 1);
     }
+}
+
+#[test]
+fn prepared_xai_restoration_opens_a_new_websocket_session() {
+    let fixture = DriverFixture::new(ServerScenario::Success);
+    let prepared =
+        prepare_xai_responses_websocket(fixture.preparation_input(), &fixture.services())
+            .expect("xAI integration prepares");
+    let session = prepared
+        .prepare_responses_session(XaiSessionProfileInput::new(
+            RequestId::new("xai-restoration").expect("request id"),
+            model(),
+            None,
+        ))
+        .expect("session prepares");
+    let interrupted = RuntimeTurnId::new("xai-interrupted").expect("turn id");
+    let restoration = session.prepare_working_state_restoration(interrupted.clone());
+    assert_eq!(
+        restoration.method(),
+        WorkingStateRestorationMethod::FreshSessionReplacement
+    );
+    let restored = block_on(restoration.restore(fixture.services())).expect("replacement opens");
+    let WorkingStateRestorationOutcome::SessionReplaced(replacement) = restored else {
+        panic!("fresh session replacement expected");
+    };
+    assert_eq!(replacement.interrupted_turn_id(), &interrupted);
+    let (_, mut replacement) = replacement.into_parts();
+    assert!(replacement.provider_session_ref().is_none());
+    for turn in ["replacement-turn-1", "replacement-turn-2"] {
+        let events = complete_turn(&mut replacement, &fixture, turn);
+        assert_observable_activity_trace(session.evidence().observable_activity(), &events);
+    }
+    assert_eq!(block_on(replacement.close()), CleanupOutcome::Clean);
+    assert_eq!(fixture.server.frames().len(), 2);
 }
 
 #[test]

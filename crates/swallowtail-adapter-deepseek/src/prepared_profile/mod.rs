@@ -1,6 +1,7 @@
 mod catalogue;
 mod input;
 mod plan;
+mod restoration;
 mod run;
 mod session;
 

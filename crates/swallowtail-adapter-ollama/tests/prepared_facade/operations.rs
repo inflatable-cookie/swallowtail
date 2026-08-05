@@ -8,7 +8,7 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     CleanupOutcome, OperationContent, RuntimeTurnId, SchemaDocument, StructuredOutputDescriptor,
-    TerminalStatus, TurnRequest,
+    TerminalStatus, TurnRequest, WorkingStateRestorationMethod, WorkingStateRestorationOutcome,
 };
 use swallowtail_testkit::{
     assert_observable_activity_not_applicable, assert_observable_activity_trace,
@@ -170,6 +170,29 @@ fn prepared_session_replays_only_cleanly_committed_history() {
     );
     assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
     assert!(fixture.server.is_reachable());
+}
+
+#[test]
+fn prepared_session_restoration_opens_an_empty_replacement() {
+    let fixture = Fixture::new();
+    let profile = prepared(&fixture)
+        .prepare_session(session_input("ollama-restoration"))
+        .expect("session prepares");
+    let interrupted = RuntimeTurnId::new("ollama-interrupted").expect("turn id");
+    let restoration = profile.prepare_working_state_restoration(interrupted.clone());
+    assert_eq!(
+        restoration.method(),
+        WorkingStateRestorationMethod::FreshSessionReplacement
+    );
+    let restored = block_on(restoration.restore(fixture.services())).expect("replacement opens");
+    let WorkingStateRestorationOutcome::SessionReplaced(replacement) = restored else {
+        panic!("fresh session replacement expected");
+    };
+    assert_eq!(replacement.interrupted_turn_id(), &interrupted);
+    let (_, replacement) = replacement.into_parts();
+    assert!(replacement.provider_session_ref().is_none());
+    assert_eq!(block_on(replacement.close()), CleanupOutcome::Clean);
+    assert_eq!(fixture.server.inference_attempts(), 0);
 }
 
 #[test]

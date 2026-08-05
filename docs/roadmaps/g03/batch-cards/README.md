@@ -4,15 +4,15 @@
 
 ## Ready
 
-- `108-direct-and-attached-session-replacement.md`
+- `109-realtime-session-replacement.md`
 
 ## Planned
 
 - `110-session-usability-restoration-acceptance.md`
-- `109-realtime-session-replacement.md`
 
 ## Completed
 
+- `108-direct-and-attached-session-replacement.md`
 - `107-session-usability-restoration-contract.md`
 - `101-retained-session-recovery-acceptance.md`
 - `100-alibaba-retained-conversation-recovery.md`

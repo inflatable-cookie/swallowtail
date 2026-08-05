@@ -13,8 +13,8 @@ shape.
 
 ## Next Task
 
-Execute g03 card 108: map the remaining direct and attached interactive
-sessions to explicit fresh replacement.
+Execute g03 card 109: add the distinct realtime replacement outcome and map
+OpenAI Realtime plus Gemini Live.
 
 ## Index
 

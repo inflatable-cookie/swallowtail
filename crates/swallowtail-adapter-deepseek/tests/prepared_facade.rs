@@ -19,7 +19,8 @@ use swallowtail_core::{
 use swallowtail_runtime::{
     CleanupOutcome, Deadline, DirectContinuationTurnRequest, DirectToolResult,
     DirectToolResultContent, MonotonicInstant, OperationContent, RequestId, RuntimeTurnId,
-    SchemaDocument, TerminalStatus, ToolDeclaration,
+    SchemaDocument, TerminalStatus, ToolDeclaration, WorkingStateRestorationMethod,
+    WorkingStateRestorationOutcome,
 };
 use swallowtail_testkit::{
     ExecutionTopologyFixture, assert_observable_activity_not_applicable,
@@ -122,6 +123,31 @@ fn catalogue_and_consumer_authorized_continuation_run_on_both_host_topologies() 
         assert_eq!(fixture.releases(), 2);
         assert_eq!(fixture.release_after_blocking(), [1, 3]);
     }
+}
+
+#[test]
+fn direct_session_restoration_opens_a_fresh_session_with_explicit_context_loss() {
+    let fixture = Fixture::new();
+    let prepared = prepare_deepseek_direct(fixture.preparation_input(), &fixture.services())
+        .expect("integration prepares");
+    let session = prepared
+        .prepare_session(session_input("restoration", DEEPSEEK_MODEL_ID))
+        .expect("session prepares");
+    let interrupted = RuntimeTurnId::new("deepseek-interrupted").expect("turn id");
+    let restoration = session.prepare_working_state_restoration(interrupted.clone());
+    assert_eq!(
+        restoration.method(),
+        WorkingStateRestorationMethod::FreshSessionReplacement
+    );
+    let restored = block_on(restoration.restore(fixture.services())).expect("replacement opens");
+    let WorkingStateRestorationOutcome::SessionReplaced(replacement) = restored else {
+        panic!("fresh session replacement expected");
+    };
+    assert_eq!(replacement.interrupted_turn_id(), &interrupted);
+    let (_, replacement) = replacement.into_parts();
+    assert!(replacement.provider_session_ref().is_none());
+    assert_eq!(block_on(replacement.close()), CleanupOutcome::Clean);
+    assert_eq!(fixture.server.attempts(), 0);
 }
 
 #[test]

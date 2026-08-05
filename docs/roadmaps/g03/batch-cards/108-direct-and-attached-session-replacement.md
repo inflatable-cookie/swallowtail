@@ -1,6 +1,6 @@
 # 108 Direct And Attached Session Replacement
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-05
 Milestone: `../039-provider-wide-session-usability-restoration.md`
@@ -31,3 +31,14 @@ Map every remaining prepared interactive route to truthful fresh replacement.
 ## Auto-Continuation
 
 Continue to card 109 when all five mappings pass.
+
+## Outcome
+
+- Anthropic and DeepSeek direct continuation now prepare adapter-local fresh
+  replacement without serializing or replaying private continuation state
+- Ollama, xAI, and ordinary Alibaba use the common interactive replacement
+  operation
+- ordinary Alibaba replacement preserves delete-on-close cleanup; retained
+  Alibaba remains on the stronger continuation-recovery method
+- focused validation passed for the five adapters and runtime; extracted
+  package verification passed for all five adapters

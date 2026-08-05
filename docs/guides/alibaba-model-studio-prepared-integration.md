@@ -2,8 +2,9 @@
 
 Use this facade for the frozen Singapore workspace-dedicated Conversations and
 Responses route. It binds one configured workspace instance, exact regional
-audience, general API-key access profile, Qwen route, durable provider
-conversation, and delete-on-close lifecycle.
+audience, general API-key access profile, and Qwen route. Conversation
+ownership is selected explicitly: operation-owned delete-on-close or retained
+provider state with separate cleanup authority.
 
 ## Regional Access
 
@@ -53,6 +54,18 @@ The retention value is consumer-visible authority, not a constructor default.
 Preparation derives the resource-free session request and plan agreement from
 that exact selection.
 
+`prepare_retained_conversation` is a separate profile. It fixes
+`DurableProviderSessionPreserved`, exposes no owned-resource deletion
+capability, and returns both an exact resource-free resume binding and a
+separate management binding. Ordinary close preserves provider state.
+
+The retained profile's `load_session` retrieves exact conversation metadata,
+follows bounded ascending item pages, and returns complete ordered replay
+before the live handle becomes ready. Its
+`prepare_working_state_restoration` maps that same load path to
+`ProviderSessionContinuationRecovery`; it preserves the interrupted consumer
+turn as unresolved. There is no replay-free resume or inferred terminal state.
+
 ## Resource-Free Structured Run
 
 `prepare_run` binds the same exact workspace, route, and model but creates no
@@ -89,8 +102,13 @@ deletion. Cancellation and deadlines stop local transport but do not fabricate
 remote response cancellation or confirmed deletion when remote state is
 uncertain.
 
-Both prepared branches expose `plan`, `request`, `evidence`,
-`low_level_driver`, and `into_parts` for diagnostics and advanced use.
+Retained cleanup is not granted by the resume binding. Call
+`prepare_delete_retained_conversation` with the exact management binding. It
+lists and deletes items before deleting the conversation, and distinguishes
+failed-before-effect from unconfirmed-after-effect outcomes.
+
+Prepared run and conversation branches expose `plan`, `request`, `evidence`,
+and `low_level_driver` for diagnostics and advanced use.
 
 See the compile-tested
 [`prepared_provider_conversation` example](../../crates/swallowtail-adapter-alibaba-model-studio/examples/prepared_provider_conversation.rs).

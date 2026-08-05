@@ -1,6 +1,6 @@
 # 101 Retained Session Recovery Acceptance
 
-Status: planned
+Status: complete
 Owner: Tom
 Created: 2026-08-05
 Milestone: `../037-retained-session-recovery-promotion.md`
@@ -35,3 +35,24 @@ recovery candidates.
 ## Auto-Continuation
 
 No. Close g03.037 and return to the generation evidence gate.
+
+## Completion
+
+- [x] common retained-conversation conformance passes for the selected Alibaba
+      route; Pi remains blocked rather than partially promoted
+- [x] Alibaba retained conversation maps to the common one-shot restoration
+      facade as `ProviderSessionContinuationRecovery`
+- [x] the mapping returns exact interrupted-turn identity, complete bounded
+      replay, one live session, and no terminal-state inference
+- [x] route, lifecycle, feature, restoration, and prepared-integration guidance
+      distinguishes retained preservation from operation-owned deletion
+- [x] Alibaba load and explicit management deletion are public `Yes` values;
+      archive, restore, replay-free resume, and native close remain unsupported
+- [x] Gemini ACP replay readiness and private headless continuation remain
+      outside production recovery
+- [x] focused validation passed: 216 tests across runtime, Pi, and Alibaba
+- [x] extracted Alibaba package proof, docs validation, and route validation
+      passed without authenticated provider work
+
+Roadmap g03.037 is complete. The sole Next Task returns to the g03 evidence
+gate.

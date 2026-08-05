@@ -805,8 +805,11 @@ continuation with private reasoning replay and visible cache acceptance. Its
 separate structured branch sends one tool-free request with no reusable
 continuation.
 Alibaba Model Studio now adds exact regional workspace preparation with
-explicit durable retention and item-before-conversation deletion. Its
-structured branch sends one unstored response without a conversation. OpenAI
+separate delete-on-close and retained conversation profiles. The retained path
+loads bounded ordered replay, participates in the common restoration facade,
+preserves on ordinary close, and requires separate item-before-conversation
+deletion authority. Its structured branch sends one unstored response without
+a conversation. OpenAI
 background Responses now adds exact public-API preparation, visible temporary
 retention, maximum-one cursor reattachment, bounded retrieval, native
 cancellation, and unchanged remote terminal truth. Anthropic Managed Agents

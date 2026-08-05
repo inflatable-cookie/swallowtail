@@ -74,6 +74,9 @@ references, access, and working resources are exact route evidence.
 - A prepared Claude Agent ACP or Kimi ACP session accepts request id, exact
   resume binding, and interrupted consumer turn id through
   `prepare_working_state_restoration`.
+- A prepared Alibaba retained conversation accepts the same identities through
+  `prepare_working_state_restoration`; its binding is resource-free and its
+  loaded session preserves provider state.
 - A prepared Cursor or Grok ACP session accepts the same exact attachment
   dimensions and returns a live attachment without claiming complete replay.
 - Prepared Antigravity continuation, Gemini ACP, Pi RPC, and Qwen continuation
@@ -111,6 +114,18 @@ terminal evidence. Replacement is not recovery of provider state.
 
 This table covers prepared interactive harness routes. Catalogue-only and
 one-prompt headless routes do not automatically retry a prompt after restart.
+
+## Hosted Retained Conversation
+
+The separate `alibaba.conversations` retained profile also maps to
+`ProviderSessionContinuationRecovery`. It retrieves exact conversation
+metadata and complete bounded ordered items before returning one live loaded
+session. The interrupted consumer turn remains unresolved. Ordinary close
+preserves the conversation; deletion requires the separately prepared
+management operation.
+
+This hosted-direct mapping does not change the connected-harness route count.
+The ordinary Alibaba delete-on-close profile has no restoration mapping.
 
 ## Failure
 

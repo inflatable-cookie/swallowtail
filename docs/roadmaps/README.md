@@ -13,8 +13,9 @@ shape.
 
 ## Next Task
 
-Execute g03 card 101: close retained-session recovery route, facade, package,
-and remaining-gate truth.
+Hold at the g03 evidence gate until a consumer-reproduced portable defect,
+material non-deferred provider or interface drift, or explicit operator
+promotion supplies the next roadmap input.
 
 ## Index
 

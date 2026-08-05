@@ -1,13 +1,12 @@
 # 037 Retained Session Recovery Promotion
 
-Status: active
+Status: completed
 Owner: Tom
 Created: 2026-08-05
 Depends on: g03.036
 Vision tags: restart continuity, retained sessions, exact resource ownership
 Contract refs: 009, 017, 025, 029, 037-038, 050
-Planning state: cards 098 and 100 complete; Pi card 099 superseded; card 101
-ready
+Planning state: cards 098, 100, and 101 complete; Pi card 099 superseded
 
 ## Problem
 
@@ -28,7 +27,7 @@ provider-state ownership are separately proven.
 - [x] retain or close Pi's exact cwd-binding blocker from public evidence
 - [x] define a separate retained Alibaba conversation profile if supported
 - [x] implement only independently qualified routes
-- [ ] publish independently qualified route truth
+- [x] publish independently qualified route truth
 
 ## Execution Plan
 
@@ -40,7 +39,7 @@ provider-state ownership are separately proven.
       attachment remains unprovable
 - [x] card 100: implement Alibaba retained-conversation recovery only after its
       separate contract passes
-- [ ] card 101: reconcile route truth, facade mappings, package proof, and all
+- [x] card 101: reconcile route truth, facade mappings, package proof, and all
       remaining blocked gates
 
 ## Boundaries
@@ -57,18 +56,19 @@ provider-state ownership are separately proven.
 
 ## Acceptance Criteria
 
-- [ ] every candidate ends as supported or blocked with one exact reason
-- [ ] Pi requires caller-bound cwd plus corroborated effective-resource truth
+- [x] every candidate ends as supported or blocked with one exact reason
+- [x] Pi requires caller-bound cwd plus corroborated effective-resource truth
 - [x] Alibaba retention uses a separate explicit provider-state and cleanup
       profile
 - [x] load replay completes before readiness; replay-free resume stays distinct
-- [ ] facade mappings change only for routes with complete bindings and corpus
-- [ ] public and package truth retain every unsupported route honestly
+- [x] facade mappings change only for routes with complete bindings and corpus
+- [x] public and package truth retain every unsupported route honestly
 
 ## Lane Runway
 
-Card 100 is complete. Alibaba now has a separate prepared retained open/load
-path, bounded complete replay before readiness, ordinary preservation, live
-continuation, and separately authorized deletion. The existing prepared
-conversation remains delete-on-close. Card 101 is ready for final route,
-facade, package, and blocked-candidate truth.
+Complete. Alibaba's separate retained profile now maps exact load/replay into
+the common continuation-recovery facade and retains separate management-only
+deletion. The existing prepared conversation remains delete-on-close. Pi RPC
+remains blocked on caller-bound and corroborated effective cwd; Gemini ACP's
+replay gate and private headless continuation remain unchanged. g03 returns to
+its evidence gate.

@@ -172,8 +172,7 @@ session_continuity_classifications = {
     ("load_session", "qwen.headless"): "operation_shape_not_applicable",
     ("resume_session", "qwen.headless"): "operation_shape_not_applicable",
     ("native_session_close", "qwen.headless"): "operation_shape_not_applicable",
-    ("load_session", "alibaba.conversations"): "shared_contract_expansion_required",
-    ("resume_session", "alibaba.conversations"): "shared_contract_expansion_required",
+    ("resume_session", "alibaba.conversations"): "selected_surface_absence",
     ("native_session_close", "alibaba.conversations"): "upstream_unsupported",
     ("load_session", "bedrock.catalogue; bedrock.runtime"): "operation_shape_not_applicable",
     ("resume_session", "bedrock.catalogue; bedrock.runtime"): "operation_shape_not_applicable",
@@ -228,7 +227,6 @@ session_continuity_classifications = {
 }
 provider_retention_not_applicable = {
     "qwen.headless",
-    "alibaba.conversations",
     "bedrock.catalogue; bedrock.runtime",
     "claude-code.headless",
     "anthropic.managed-agent",
@@ -261,6 +259,7 @@ for feature in ["provider_session_archive", "provider_session_restore"]:
         )
     for route in [
         "antigravity.catalogue + antigravity.headless",
+        "alibaba.conversations",
         "claude-agent.acp",
         "gemini-cli.acp + gemini-cli.headless",
         "grok-build.acp",
@@ -286,6 +285,9 @@ for route in [
 provider_retention_classifications[
     ("provider_session_delete", "gemini-cli.acp + gemini-cli.headless")
 ] = "selected_surface_absence"
+provider_retention_classifications[
+    ("provider_session_delete", "alibaba.conversations")
+] = "shared_contract_and_corpus_required"
 for route in owned_cleanup_not_applicable:
     provider_retention_classifications[("owned_remote_resource_cleanup", route)] = (
         "operation_shape_not_applicable"

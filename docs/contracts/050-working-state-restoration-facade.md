@@ -47,7 +47,7 @@ another transport cannot authorize restoration.
 
 ## Outcomes
 
-`WorkingStateRestorationOutcome` preserves three variants:
+`WorkingStateRestorationOutcome` preserves five variants:
 
 - `SessionReconciled(ProviderSessionReconciliationOutcome)`
 - `RunReconciled(ProviderRunReconciliationOutcome)`
@@ -139,6 +139,7 @@ Continuation recovery:
 
 - `claude-agent.acp`
 - `kimi-code.acp`
+- `alibaba.conversations` retained profile
 
 Attachment recovery:
 
@@ -152,7 +153,10 @@ Fresh-session replacement:
 - `pi.rpc`
 - `qwen.headless`
 
-All other production routes remain unsupported until separately qualified.
+The Alibaba mapping is resource-free and exists only on the separate retained
+conversation profile. The operation-owned delete-on-close profile does not
+inherit it. All other production routes remain unsupported until separately
+qualified.
 
 ## Settled Observe Then Attach
 

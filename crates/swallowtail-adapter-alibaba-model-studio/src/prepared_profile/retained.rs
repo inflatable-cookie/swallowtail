@@ -11,8 +11,11 @@ use swallowtail_core::{
 use swallowtail_runtime::{
     BoxFuture, CancellationControl, CleanupOutcome, HostServices, InteractiveSessionDriver,
     InteractiveSessionHandle, LoadSessionRequest, LoadedSession, OpenSessionRequest,
-    PreparationFailure, PreparationStage, PreparedAccessEvidence, ProviderSessionManagementBinding,
-    RuntimeFailure, SessionPlanAgreement, SessionResumeBinding, TurnHandle, TurnRequest,
+    PreparationFailure, PreparationStage, PreparedAccessEvidence, PreparedWorkingStateRestoration,
+    ProviderSessionContinuationRecoveryOutcome, ProviderSessionManagementBinding, RuntimeFailure,
+    RuntimeTurnId, SessionPlanAgreement, SessionResumeBinding, TurnHandle, TurnRequest,
+    WorkingStateRestorationMethod, WorkingStateRestorationOperation,
+    WorkingStateRestorationOutcome,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -88,19 +91,86 @@ impl AlibabaModelStudioPreparedRetainedConversation {
         let plan = self.plan().clone();
         let instance = self.management_instance.clone();
         let access = self.evidence.access().clone();
-        Ok(Box::pin(async move {
-            let loaded = driver.load_session(plan, request, services).await?;
-            let (replay, handle) = loaded.into_parts();
-            let handle = wrap_management_handle(
-                handle,
-                instance,
-                access,
-                ProviderSessionBindingOrigin::Loaded,
-            )
-            .await?;
-            Ok(LoadedSession::new(replay, handle))
-        }))
+        Ok(Box::pin(load_retained_session(
+            driver, plan, request, instance, access, services,
+        )))
     }
+
+    pub fn prepare_working_state_restoration(
+        &self,
+        request_id: swallowtail_runtime::RequestId,
+        binding: SessionResumeBinding,
+        interrupted_turn_id: RuntimeTurnId,
+    ) -> Result<PreparedWorkingStateRestoration, PreparationFailure> {
+        let request = self.load_request(request_id, binding)?;
+        Ok(PreparedWorkingStateRestoration::new(
+            AlibabaRetainedConversationRecovery {
+                driver: self.low_level_driver(),
+                plan: self.plan().clone(),
+                request,
+                management_instance: self.management_instance.clone(),
+                access: self.evidence.access().clone(),
+                interrupted_turn_id,
+            },
+        ))
+    }
+}
+
+struct AlibabaRetainedConversationRecovery {
+    driver: AlibabaModelStudioDriver,
+    plan: PreflightPlan,
+    request: LoadSessionRequest,
+    management_instance: swallowtail_core::ConfiguredInstance,
+    access: PreparedAccessEvidence,
+    interrupted_turn_id: RuntimeTurnId,
+}
+
+impl WorkingStateRestorationOperation for AlibabaRetainedConversationRecovery {
+    fn method(&self) -> WorkingStateRestorationMethod {
+        WorkingStateRestorationMethod::ProviderSessionContinuationRecovery
+    }
+
+    fn restore(
+        self: Box<Self>,
+        services: HostServices,
+    ) -> BoxFuture<'static, Result<WorkingStateRestorationOutcome, RuntimeFailure>> {
+        let Self {
+            driver,
+            plan,
+            request,
+            management_instance,
+            access,
+            interrupted_turn_id,
+        } = *self;
+        Box::pin(async move {
+            let loaded =
+                load_retained_session(driver, plan, request, management_instance, access, services)
+                    .await?;
+            Ok(WorkingStateRestorationOutcome::SessionRecovered(
+                ProviderSessionContinuationRecoveryOutcome::new(interrupted_turn_id, loaded),
+            ))
+        })
+    }
+}
+
+async fn load_retained_session(
+    driver: AlibabaModelStudioDriver,
+    plan: PreflightPlan,
+    request: LoadSessionRequest,
+    management_instance: swallowtail_core::ConfiguredInstance,
+    access: PreparedAccessEvidence,
+    services: HostServices,
+) -> Result<LoadedSession, RuntimeFailure> {
+    let loaded = driver.load_session(plan, request, services).await?;
+    let (replay, handle) = loaded.into_parts();
+    let handle = wrap_management_handle(
+        handle,
+        management_instance,
+        access,
+        ProviderSessionBindingOrigin::Loaded,
+    )
+    .await?;
+    Ok(LoadedSession::new(replay, handle))
 }
 
 impl AlibabaModelStudioPreparedIntegration {

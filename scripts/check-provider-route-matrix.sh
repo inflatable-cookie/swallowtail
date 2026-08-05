@@ -116,7 +116,7 @@ awk -F '|' '
 cat <<'EOF' | LC_ALL=C sort > "$route_lifecycle_posture_expected"
 antigravity.catalogue|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
 antigravity.headless|unsupported|no|unsupported|unsupported|unsupported|unsupported
-alibaba.conversations|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
+alibaba.conversations|supported|yes|unsupported|unsupported|supported|ProviderDataDeleted
 anthropic.managed-agent|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
 anthropic.messages|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
 bedrock.catalogue|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable

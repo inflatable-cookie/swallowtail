@@ -62,13 +62,13 @@ if len(provider_retention_classifications) != 87:
     raise SystemExit("provider-retention starting inventory must contain 87 cells")
 if Counter(provider_retention_classifications.values()) != Counter(
     {
-        "operation_shape_not_applicable": 60,
-        "upstream_unsupported": 22,
+        "operation_shape_not_applicable": 57,
+        "upstream_unsupported": 24,
         "separate_transport_and_corpus_required": 1,
         "selected_surface_absence": 1,
         "realized_matrix_false_negative": 1,
         "ready_existing_contract": 1,
-        "shared_contract_and_corpus_required": 1,
+        "shared_contract_and_corpus_required": 2,
     }
 ):
     raise SystemExit("provider-retention classification counts changed")
@@ -92,7 +92,7 @@ provider_retention_final_counts = Counter(
     provider_retention_values[cell] for cell in provider_retention_classifications
 )
 if provider_retention_final_counts != Counter(
-    {"Not applicable": 60, "No": 23, "Yes": 4}
+    {"Not applicable": 57, "No": 25, "Yes": 5}
 ):
     raise SystemExit(
         "provider-retention final counts changed: "
@@ -247,8 +247,8 @@ session_continuity_no_cells = {
     for feature in ["load_session", "resume_session", "native_session_close"]
     if row[feature] == "No"
 }
-if len(session_continuity_no_cells) != 62:
-    raise SystemExit("session-continuity inventory must contain exactly 62 No cells")
+if len(session_continuity_no_cells) != 61:
+    raise SystemExit("session-continuity inventory must contain exactly 61 No cells")
 if session_continuity_no_cells != set(session_continuity_classifications):
     raise SystemExit("session-continuity No classifications changed")
 
@@ -274,15 +274,15 @@ for row in rows:
 if classification_counts != Counter(
     {
         "contract_or_corpus_required": 72,
-        "upstream_unsupported": 139,
+        "upstream_unsupported": 141,
         "operation_shape_not_applicable": 45,
         "ready_existing_contract": 4,
         "ready_operator_hold": 6,
         "composite_partial_only": 6,
-        "shared_contract_expansion_required": 4,
+        "shared_contract_expansion_required": 2,
         "upstream_ordering_blocked": 1,
         "separate_route_and_contract_required": 5,
-        "selected_surface_absence": 16,
+        "selected_surface_absence": 17,
         "non_authoritative_cost_evidence": 4,
         "missing_shared_contract_or_currentness_evidence": 10,
     }

@@ -39,7 +39,7 @@ visible as unverified newer unless exact evidence requires rejection.
 | Restore consumer working state through the strongest exact route method without flattening ACP continuation into reconciliation. | completed | Contracts 017, 037, 046, 048, 050 | `g03.034` |
 | Extend ACP continuation recovery only where exact agent-specific load/replay evidence passes. | completed negatively | Contracts 013, 015, 017, 029, 037, 050 | `g03.035` |
 | Compose read-only reconciliation with separately prepared settled-session attachment. | completed | Contracts 017, 037, 046, 048, 050 | `g03.036` |
-| Promote further retained-session recovery behind exact resource and ownership gates. | active | Contracts 009, 017, 025, 029, 037-038, 050 | `g03.037` |
+| Promote further retained-session recovery behind exact resource and ownership gates. | completed | Contracts 009, 017, 025, 029, 037-038, 050 | `g03.037` |
 | Give every prepared interactive harness route one truthful post-crash action. | completed | Contracts 017, 037, 042, 048, 050 | `g03.038` |
 | Periodically reconcile deferred gates, route truth, and generation capacity. | planned | Contract 001 | recurring checkpoints |
 
@@ -88,6 +88,10 @@ visible as unverified newer unless exact evidence requires rejection.
 - Research 107 closes g03.037's candidate gate: Pi RPC `0.83.0` remains blocked
   on public cwd binding and corroboration; Alibaba Conversations advances to a
   separate retained-profile contract at card 098
+- g03.037 is complete: Alibaba retained conversations load bounded ordered
+  replay through the common continuation-recovery facade, preserve on ordinary
+  close, and delete only under separate management authority; Pi remains
+  blocked and the generation returns to its evidence gate
 - Research 074 inventories 13 installed/attached harness route ids and bounds
   the first external currentness source set
 - the 2026-07-31 currentness pass leaves Codex and stable ACP unchanged,
@@ -397,17 +401,18 @@ visible as unverified newer unless exact evidence requires rejection.
 - [034 Working-State Restoration Facade](034-working-state-restoration-facade.md) — completed
 - [035 ACP Continuation Recovery Expansion](035-acp-continuation-recovery-expansion.md) — completed negatively
 - [036 Reconciliation Then Attachment Composition](036-reconciliation-then-attachment-composition.md) — completed
-- [037 Retained Session Recovery Promotion](037-retained-session-recovery-promotion.md) — active
+- [037 Retained Session Recovery Promotion](037-retained-session-recovery-promotion.md) — completed
 - [038 Provider-Wide Interactive Crash Recovery](038-provider-wide-interactive-crash-recovery.md) — completed
 
 ## Checkpoint
 
-Roadmaps g03.035, g03.036, and g03.038 are complete. Research 106 promotes a
+Roadmaps g03.035 through g03.038 are complete. Research 106 promotes a
 weaker exact attachment boundary plus explicit fresh replacement; Contract 050
 also governs the completed settled reconcile-then-attach sequence. Roadmap
-g03.037 is active at card 101. Card 100 implements the separate retained
-Alibaba open/load, replay, preservation, continuation, and cleanup path. Pi
-card 099 is superseded behind its unchanged public cwd gate.
+Roadmap g03.037 closes with a separate retained Alibaba open/load, common
+continuation-recovery, preservation, continuation, and management-cleanup
+path. Pi card 099 remains superseded behind its unchanged public cwd gate. The
+generation is back at its evidence gate.
 
 ## Generation Boundary
 

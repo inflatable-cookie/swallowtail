@@ -8,7 +8,8 @@ Updated: 2026-08-05
 
 Provide portable execution facades for restoring consumer working state after
 a runtime handle is lost without flattening read-only reconciliation,
-stateful continuation recovery, or a later settled-session attachment.
+stateful continuation recovery, realtime replacement, or a later
+settled-session attachment.
 
 ## Boundary
 
@@ -24,6 +25,7 @@ The facade wraps exactly one qualified method:
 - `ProviderSessionContinuationRecovery`
 - `ProviderSessionAttachmentRecovery`
 - `FreshSessionReplacement`
+- `FreshRealtimeSessionReplacement`
 
 Preparation selects the strongest supported method for the exact route.
 Execution consumes the prepared facade once.
@@ -36,7 +38,10 @@ when reconciliation is unavailable and exact bounded load/replay is qualified.
 It may select attachment recovery only when neither stronger method is
 available and an exact bound session can be reattached without claiming its
 replay. It may select fresh-session replacement only when no provider context
-can be restored and the ordinary new-session path is qualified.
+can be restored and the ordinary new-session path is qualified. It may select
+fresh realtime replacement only when the lost route uses
+`RealtimeMediaSessionDriver`, no provider context can be restored, and the
+ordinary new-media-session path is qualified.
 
 Selection happens before provider work. A reconciliation error must be
 returned unchanged. It must not trigger continuation recovery, retry, import,
@@ -47,13 +52,14 @@ another transport cannot authorize restoration.
 
 ## Outcomes
 
-`WorkingStateRestorationOutcome` preserves five variants:
+`WorkingStateRestorationOutcome` preserves six variants:
 
 - `SessionReconciled(ProviderSessionReconciliationOutcome)`
 - `RunReconciled(ProviderRunReconciliationOutcome)`
 - `SessionRecovered(ProviderSessionContinuationRecoveryOutcome)`
 - `SessionReattached(ProviderSessionAttachmentRecoveryOutcome)`
 - `SessionReplaced(FreshSessionReplacementOutcome)`
+- `RealtimeSessionReplaced(FreshRealtimeSessionReplacementOutcome)`
 
 Reconciled outcomes retain their exact existing attribution, state, replay,
 output, usage, bounds, and cleanup truth.
@@ -79,6 +85,12 @@ created live session. It explicitly means that provider context for the prior
 session was not restored. The consumer may present that loss or later send its
 own reconstruction; Swallowtail does not replay prompts, messages, tools, or
 side effects.
+
+A realtime replacement carries the original consumer `RuntimeTurnId` and one
+new `RealtimeMediaSessionHandle`. It carries no audio, transcript, response,
+buffer, provider continuation, rollover, or terminal truth from the lost
+connection. A provider's in-operation planned rollover remains separate and
+cannot be reclassified as restart recovery.
 
 ## Continuation Recovery
 
@@ -107,6 +119,16 @@ Fresh-session replacement consumes an already prepared ordinary open-session
 operation. It grants authority only for the new session. It does not inspect,
 cancel, mutate, archive, delete, or settle the lost provider session.
 
+Fresh realtime replacement follows the same rule through an already prepared
+`OpenRealtimeMediaSessionRequest`. It opens one new connection and grants no
+continuity with the lost media session.
+
+Anthropic Messages and DeepSeek direct continuation hold provider-private
+continuation material only in bounded process memory under Contract 030. That
+material is non-serializable and destroyed on close. Visible transcript replay
+cannot recreate it, so these routes may replace a session but cannot claim
+continuation recovery after process loss.
+
 ## Authority
 
 Restoration grants only the authority of its selected method.
@@ -118,6 +140,8 @@ Restoration grants only the authority of its selected method.
 - attachment recovery grants only the exact reattached-session authority
 - fresh replacement grants only the ordinary new-session authority and
   explicitly grants no continuity with the lost session
+- fresh realtime replacement grants only the ordinary new-media-session
+  authority and explicitly grants no continuity with the lost connection
 - the facade never answers a waiting callback or infers terminal state from
   provider prose or transcript shape
 - recovered-resource cleanup remains a separate exact operation
@@ -265,6 +289,8 @@ Portable and route tests must prove:
 - recovery failure returns no handle
 - attachment updates are bounded and discarded without a replay claim
 - replacement reports provider-context loss and performs no prompt replay
+- realtime replacement reports connection-context loss and performs no audio,
+  transcript, response, buffer, or rollover replay
 - unsupported routes are not silently promoted
 - both settled-sequence operations are fully prepared before provider work
 - eligible state dispatches exactly one attachment after reconciliation

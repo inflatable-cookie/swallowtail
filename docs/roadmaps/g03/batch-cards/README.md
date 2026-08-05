@@ -4,14 +4,18 @@
 
 ## Ready
 
-- `100-alibaba-retained-conversation-recovery.md`
+- `108-direct-and-attached-session-replacement.md`
 
 ## Planned
 
-- `101-retained-session-recovery-acceptance.md`
+- `110-session-usability-restoration-acceptance.md`
+- `109-realtime-session-replacement.md`
 
 ## Completed
 
+- `107-session-usability-restoration-contract.md`
+- `101-retained-session-recovery-acceptance.md`
+- `100-alibaba-retained-conversation-recovery.md`
 - `098-alibaba-retained-conversation-contract-and-corpus.md`
 - `097-retained-session-candidate-currentness.md`
 - `096-kimi-reconcile-then-resume-and-acceptance.md`

@@ -41,6 +41,7 @@ visible as unverified newer unless exact evidence requires rejection.
 | Compose read-only reconciliation with separately prepared settled-session attachment. | completed | Contracts 017, 037, 046, 048, 050 | `g03.036` |
 | Promote further retained-session recovery behind exact resource and ownership gates. | completed | Contracts 009, 017, 025, 029, 037-038, 050 | `g03.037` |
 | Give every prepared interactive harness route one truthful post-crash action. | completed | Contracts 017, 037, 042, 048, 050 | `g03.038` |
+| Give every prepared reusable session shape one truthful post-crash action. | active | Contracts 026-027, 030, 043, 050 | `g03.039` |
 | Periodically reconcile deferred gates, route truth, and generation capacity. | planned | Contract 001 | recurring checkpoints |
 
 ## Current Checkpoint
@@ -92,6 +93,10 @@ visible as unverified newer unless exact evidence requires rejection.
   replay through the common continuation-recovery facade, preserve on ordinary
   close, and delete only under separate management authority; Pi remains
   blocked and the generation returns to its evidence gate
+- operator selection opens g03.039: four remaining direct/attached interactive
+  routes and two realtime routes may restore usability through explicit fresh
+  replacement while private continuation, connection state, and interrupted
+  turns remain lost
 - Research 074 inventories 13 installed/attached harness route ids and bounds
   the first external currentness source set
 - the 2026-07-31 currentness pass leaves Codex and stable ACP unchanged,
@@ -403,16 +408,17 @@ visible as unverified newer unless exact evidence requires rejection.
 - [036 Reconciliation Then Attachment Composition](036-reconciliation-then-attachment-composition.md) — completed
 - [037 Retained Session Recovery Promotion](037-retained-session-recovery-promotion.md) — completed
 - [038 Provider-Wide Interactive Crash Recovery](038-provider-wide-interactive-crash-recovery.md) — completed
+- [039 Provider-Wide Session Usability Restoration](039-provider-wide-session-usability-restoration.md) — active
 
 ## Checkpoint
 
-Roadmaps g03.035 through g03.038 are complete. Research 106 promotes a
-weaker exact attachment boundary plus explicit fresh replacement; Contract 050
-also governs the completed settled reconcile-then-attach sequence. Roadmap
-Roadmap g03.037 closes with a separate retained Alibaba open/load, common
+Roadmaps g03.035 through g03.038 are complete. Research 106 promotes a weaker
+exact attachment boundary plus explicit fresh replacement; Contract 050 also
+governs the completed settled reconcile-then-attach sequence. Roadmap g03.037
+closes with a separate retained Alibaba open/load, common
 continuation-recovery, preservation, continuation, and management-cleanup
-path. Pi card 099 remains superseded behind its unchanged public cwd gate. The
-generation is back at its evidence gate.
+path. Pi card 099 remains superseded behind its unchanged public cwd gate.
+Research 108 and Contract 050 open g03.039; card 108 is ready.
 
 ## Generation Boundary
 

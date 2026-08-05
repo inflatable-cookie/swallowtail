@@ -13,9 +13,8 @@ shape.
 
 ## Next Task
 
-Hold at the g03 evidence gate until a consumer-reproduced portable defect,
-material non-deferred provider or interface drift, or explicit operator
-promotion supplies the next roadmap input.
+Execute g03 card 108: map the remaining direct and attached interactive
+sessions to explicit fresh replacement.
 
 ## Index
 

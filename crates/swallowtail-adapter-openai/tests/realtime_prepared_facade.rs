@@ -11,7 +11,10 @@ use swallowtail_adapter_openai::{
 use swallowtail_core::{
     Capability, CapabilityConstraint, PlannedConnectionRolloverPolicy, RealtimeMediaConfig,
 };
-use swallowtail_runtime::{CleanupOutcome, RequestId, TerminalStatus};
+use swallowtail_runtime::{
+    CleanupOutcome, RequestId, RuntimeTurnId, TerminalStatus, WorkingStateRestorationMethod,
+    WorkingStateRestorationOutcome,
+};
 use swallowtail_testkit::assert_observable_activity_not_applicable;
 
 #[test]
@@ -54,6 +57,45 @@ fn prepared_openai_realtime_preserves_two_turn_media_and_cleanup_on_both_hosts()
         assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
         assert_eq!(fixture.calls.count(Call::CredentialRelease), 1);
     }
+}
+
+#[test]
+fn prepared_openai_realtime_restoration_opens_a_new_media_session() {
+    let fixture = RealtimeFixture::new(RealtimeScenario::TwoTurns, TimeMode::Pending);
+    let prepared = prepare_openai_realtime(fixture.preparation_input(), &fixture.services())
+        .expect("OpenAI Realtime integration prepares");
+    let session = prepared
+        .prepare_realtime_session(OpenAiRealtimeSessionProfileInput::manual_pcm_two_turns(
+            RequestId::new("realtime-restoration").expect("request id"),
+            None,
+        ))
+        .expect("Realtime session prepares");
+    let interrupted = RuntimeTurnId::new("realtime-interrupted").expect("turn id");
+    let restoration = session.prepare_working_state_restoration(interrupted.clone());
+    assert_eq!(
+        restoration.method(),
+        WorkingStateRestorationMethod::FreshRealtimeSessionReplacement
+    );
+    let restored = block_on(restoration.restore(fixture.services())).expect("replacement opens");
+    let WorkingStateRestorationOutcome::RealtimeSessionReplaced(replacement) = restored else {
+        panic!("fresh realtime replacement expected");
+    };
+    assert_eq!(replacement.interrupted_turn_id(), &interrupted);
+    let (_, mut replacement) = replacement.into_parts();
+    assert_eq!(replacement.request_id().as_str(), "realtime-restoration");
+    for turn in 1..=2 {
+        let response = start_turn(
+            &mut replacement,
+            &fixture,
+            &format!("replacement-stream-{turn}"),
+            turn,
+        );
+        let (response, _, outcome) = complete(response);
+        assert_eq!(outcome.status(), &TerminalStatus::Completed);
+        assert_eq!(block_on(response.close()), CleanupOutcome::Clean);
+    }
+    assert_eq!(block_on(replacement.close()), CleanupOutcome::Clean);
+    assert_eq!(fixture.calls.count(Call::CredentialRelease), 1);
 }
 
 #[test]

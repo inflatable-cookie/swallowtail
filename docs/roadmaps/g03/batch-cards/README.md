@@ -4,14 +4,13 @@
 
 ## Ready
 
-- `109-realtime-session-replacement.md`
+- `110-session-usability-restoration-acceptance.md`
 
 ## Planned
 
-- `110-session-usability-restoration-acceptance.md`
-
 ## Completed
 
+- `109-realtime-session-replacement.md`
 - `108-direct-and-attached-session-replacement.md`
 - `107-session-usability-restoration-contract.md`
 - `101-retained-session-recovery-acceptance.md`

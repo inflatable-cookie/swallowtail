@@ -8,7 +8,10 @@ use swallowtail_adapter_gemini::{
     prepare_gemini_live,
 };
 use swallowtail_core::{PlannedConnectionRolloverPolicy, RealtimeMediaConfig};
-use swallowtail_runtime::{CleanupOutcome, RequestId, TerminalStatus};
+use swallowtail_runtime::{
+    CleanupOutcome, RequestId, RuntimeTurnId, TerminalStatus, WorkingStateRestorationMethod,
+    WorkingStateRestorationOutcome,
+};
 use swallowtail_testkit::assert_observable_activity_not_applicable;
 
 #[test]
@@ -44,6 +47,41 @@ fn prepared_gemini_live_preserves_rollover_and_cleanup_on_both_hosts() {
         assert_eq!(fixture.server.handshakes().len(), 2);
         assert_eq!(fixture.calls.count(Call::CredentialRelease), 1);
     }
+}
+
+#[test]
+fn prepared_gemini_live_restoration_opens_a_new_media_session() {
+    let fixture = LiveFixture::new(LiveScenario::TwoTurnsRollover, TimeMode::Pending);
+    let prepared = prepare_gemini_live(fixture.preparation_input(), &fixture.services())
+        .expect("Gemini Live integration prepares");
+    let session = prepared
+        .prepare_live_session(GeminiLiveSessionProfileInput::manual_pcm_with_one_rollover(
+            RequestId::new("live-restoration").expect("request id"),
+            None,
+        ))
+        .expect("Live session prepares");
+    let interrupted = RuntimeTurnId::new("live-interrupted").expect("turn id");
+    let restoration = session.prepare_working_state_restoration(interrupted.clone());
+    assert_eq!(
+        restoration.method(),
+        WorkingStateRestorationMethod::FreshRealtimeSessionReplacement
+    );
+    let restored = block_on(restoration.restore(fixture.services())).expect("replacement opens");
+    let WorkingStateRestorationOutcome::RealtimeSessionReplaced(replacement) = restored else {
+        panic!("fresh realtime replacement expected");
+    };
+    assert_eq!(replacement.interrupted_turn_id(), &interrupted);
+    let (_, mut replacement) = replacement.into_parts();
+    assert_eq!(replacement.request_id().as_str(), "live-restoration");
+    for turn in 1..=2 {
+        let response = start_turn(&mut replacement, &fixture, turn);
+        let (response, _, outcome) = complete(response);
+        assert_eq!(outcome.status(), &TerminalStatus::Completed);
+        assert_eq!(block_on(response.close()), CleanupOutcome::Clean);
+    }
+    assert_eq!(block_on(replacement.close()), CleanupOutcome::Clean);
+    assert_eq!(fixture.server.handshakes().len(), 2);
+    assert_eq!(fixture.calls.count(Call::CredentialRelease), 1);
 }
 
 #[test]

@@ -10,7 +10,8 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     BoxFuture, HostServices, OpenRealtimeMediaSessionRequest, PreparationFailure, PreparationStage,
-    RealtimeMediaSessionDriver, RealtimeMediaSessionHandle, RuntimeFailure,
+    PreparedWorkingStateRestoration, RealtimeMediaSessionDriver, RealtimeMediaSessionHandle,
+    RuntimeFailure, RuntimeTurnId,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -52,6 +53,19 @@ impl OpenAiPreparedRealtimeSession {
                 .open_realtime_media_session(plan, request, services)
                 .await
         })
+    }
+
+    #[must_use]
+    pub fn prepare_working_state_restoration(
+        &self,
+        interrupted_turn_id: RuntimeTurnId,
+    ) -> PreparedWorkingStateRestoration {
+        PreparedWorkingStateRestoration::fresh_realtime_session_replacement(
+            interrupted_turn_id,
+            self.low_level_driver(),
+            self.plan().clone(),
+            self.request.clone(),
+        )
     }
 
     #[must_use]

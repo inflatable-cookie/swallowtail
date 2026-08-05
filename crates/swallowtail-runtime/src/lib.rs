@@ -298,8 +298,8 @@ pub use working_resource_io::{
     WorkingResourceText, WorkingResourceWriteRequest,
 };
 pub use working_state_restoration::{
-    FreshSessionReplacementOutcome, PreparedWorkingStateRestoration,
-    ProviderSessionAttachmentRecoveryOutcome, ProviderSessionContinuationRecoveryOutcome,
-    WorkingStateRestorationMethod, WorkingStateRestorationOperation,
-    WorkingStateRestorationOutcome,
+    FreshRealtimeSessionReplacementOutcome, FreshSessionReplacementOutcome,
+    PreparedWorkingStateRestoration, ProviderSessionAttachmentRecoveryOutcome,
+    ProviderSessionContinuationRecoveryOutcome, WorkingStateRestorationMethod,
+    WorkingStateRestorationOperation, WorkingStateRestorationOutcome,
 };

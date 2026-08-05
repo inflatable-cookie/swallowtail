@@ -13,8 +13,8 @@ shape.
 
 ## Next Task
 
-Execute g03 card 109: add the distinct realtime replacement outcome and map
-OpenAI Realtime plus Gemini Live.
+Execute g03 card 110: reconcile route, guide, package, and remaining-gate truth
+for provider-wide session usability restoration.
 
 ## Index
 

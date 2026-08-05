@@ -1,6 +1,6 @@
 # 109 Realtime Session Replacement
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-05
 Milestone: `../039-provider-wide-session-usability-restoration.md`
@@ -31,3 +31,13 @@ Live without implying connection continuity.
 ## Auto-Continuation
 
 Continue to card 110 when both mappings pass.
+
+## Outcome
+
+- runtime now exposes `FreshRealtimeSessionReplacement` and a distinct
+  `RealtimeSessionReplaced` outcome carrying only the interrupted turn and new
+  media-session handle
+- OpenAI Realtime and Gemini Live prepared sessions map to the common operation
+- deterministic two-turn replacement tests prove each new handle is usable;
+  Gemini's within-session planned rollover remains separate
+- focused and extracted-package validation passed for runtime and both adapters

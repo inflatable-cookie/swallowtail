@@ -13,8 +13,8 @@ shape.
 
 ## Next Task
 
-Execute g03 card 097: revalidate Pi RPC and Alibaba Conversations against their
-independent retained-session recovery gates.
+Execute g03 card 098: promote the separate retained Alibaba conversation
+ownership, replay, attachment, and cleanup contract plus corpus.
 
 ## Index
 

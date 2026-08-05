@@ -55,8 +55,8 @@ visible as unverified newer unless exact evidence requires rejection.
   resume-binding persistence is complete in g03.025 after consumer evidence
 - registry publication remains outside the active roadmap until the operator
   revisits it after sustained application usage
-- the current structural scan reports 206 oversized-file findings, including
-  19 errors; this known
+- the current structural scan reports 219 oversized-file findings, including
+  21 errors; this known
   structural debt remains outside the active provider route batch
 - Research 104 and Contract 050 select one consuming working-state restoration
   facade. Five reconciliation routes keep read-only observation; Claude Agent
@@ -85,8 +85,9 @@ visible as unverified newer unless exact evidence requires rejection.
   explicit context loss, and Gemini remains unpromoted from replacement
 - g03.036 is complete; Codex and OpenCode reconcile then load bounded replay,
   while Kimi local server reconciles an exact turn then resumes without replay
-- g03.037 is active; card 097 is the sole ready independent Pi and Alibaba
-  retained-session evidence gate
+- Research 107 closes g03.037's candidate gate: Pi RPC `0.83.0` remains blocked
+  on public cwd binding and corroboration; Alibaba Conversations advances to a
+  separate retained-profile contract at card 098
 - Research 074 inventories 13 installed/attached harness route ids and bounds
   the first external currentness source set
 - the 2026-07-31 currentness pass leaves Codex and stable ACP unchanged,
@@ -404,7 +405,8 @@ visible as unverified newer unless exact evidence requires rejection.
 Roadmaps g03.035, g03.036, and g03.038 are complete. Research 106 promotes a
 weaker exact attachment boundary plus explicit fresh replacement; Contract 050
 also governs the completed settled reconcile-then-attach sequence. Roadmap
-g03.037 is active at card 097.
+g03.037 is active at card 098. Pi card 099 is superseded behind its unchanged
+public cwd gate.
 
 ## Generation Boundary
 

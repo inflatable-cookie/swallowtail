@@ -8,3 +8,5 @@ mod fixture;
 mod input_callbacks;
 #[path = "prepared_facade/session_import.rs"]
 mod session_import;
+#[path = "prepared_facade/settled_session_restoration.rs"]
+mod settled_session_restoration;

@@ -1,6 +1,6 @@
 # 097 Retained Session Candidate Currentness
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-05
 Milestone: `../037-retained-session-recovery-promotion.md`
@@ -37,3 +37,12 @@ recovery gates and select each route independently.
 
 Continue independently to cards 098-100 only for gates this card opens. Card
 101 closes the milestone even if every candidate remains blocked.
+
+## Outcome
+
+Research 107 revalidated both candidates independently. Pi RPC `0.83.0`
+remains blocked because the public switch path cannot bind or corroborate the
+effective cwd. Alibaba Conversations supports exact retrieval, bounded ordered
+item listing, explicit continuation, preserved retention, and separate cleanup
+operations. Card 098 is ready to promote a distinct retained profile. No
+authenticated provider work or remote mutation ran.

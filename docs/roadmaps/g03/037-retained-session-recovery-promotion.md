@@ -6,7 +6,7 @@ Created: 2026-08-05
 Depends on: g03.036
 Vision tags: restart continuity, retained sessions, exact resource ownership
 Contract refs: 009, 017, 025, 029, 037-038, 050
-Planning state: card 097 ready; cards 098-101 remain independently gated
+Planning state: card 098 ready; Pi card 099 superseded; cards 100-101 gated
 
 ## Problem
 
@@ -23,19 +23,19 @@ provider-state ownership are separately proven.
 
 ## Goals
 
-- [ ] refresh Pi and Alibaba currentness without weakening existing gates
-- [ ] retain or close Pi's exact cwd-binding blocker from public evidence
+- [x] refresh Pi and Alibaba currentness without weakening existing gates
+- [x] retain or close Pi's exact cwd-binding blocker from public evidence
 - [ ] define a separate retained Alibaba conversation profile if supported
 - [ ] implement and publish only independently qualified routes
 
 ## Execution Plan
 
-- [ ] card 097: revalidate both candidates and record independent promotion
+- [x] card 097: revalidate both candidates and record independent promotion
       decisions
 - [ ] card 098: promote the retained Alibaba ownership and replay contract if
       its evidence passes
-- [ ] card 099: implement Pi persistent recovery only if exact cwd attachment
-      becomes provable
+- [x] card 099: close Pi implementation negatively because exact cwd
+      attachment remains unprovable
 - [ ] card 100: implement Alibaba retained-conversation recovery only after its
       separate contract passes
 - [ ] card 101: reconcile route truth, facade mappings, package proof, and all
@@ -65,6 +65,6 @@ provider-state ownership are separately proven.
 
 ## Lane Runway
 
-Card 097 is ready. Pi remains behind the shared backlog gate until public cwd
-evidence changes. Alibaba may advance independently after card 097; one blocked
-candidate cannot authorize or prevent the other.
+Card 098 is ready. Research 107 keeps Pi behind the exact public cwd gate and
+selects Alibaba independently for a separate retained-conversation contract.
+Card 100 remains gated on that contract; card 101 closes route truth.

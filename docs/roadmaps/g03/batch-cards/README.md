@@ -4,17 +4,16 @@
 
 ## Ready
 
-- `097-retained-session-candidate-currentness.md`
+- `098-alibaba-retained-conversation-contract-and-corpus.md`
 
 ## Planned
 
-- `098-alibaba-retained-conversation-contract-and-corpus.md`
-- `099-pi-persistent-recovery-implementation.md`
 - `100-alibaba-retained-conversation-recovery.md`
 - `101-retained-session-recovery-acceptance.md`
 
 ## Completed
 
+- `097-retained-session-candidate-currentness.md`
 - `096-kimi-reconcile-then-resume-and-acceptance.md`
 - `095-codex-opencode-reconcile-then-load.md`
 - `094-restoration-sequence-runtime-kernel.md`
@@ -107,6 +106,7 @@
 
 ## Superseded
 
+- `099-pi-persistent-recovery-implementation.md`
 - `092-acp-recovery-expansion-acceptance.md`
 - `091-cursor-and-grok-acp-recovery-drivers.md`
 - `004-claude-gemini-acp-range-corpus.md`

@@ -1,6 +1,6 @@
 # 098 Alibaba Retained Conversation Contract And Corpus
 
-Status: planned
+Status: ready
 Owner: Tom
 Created: 2026-08-05
 Milestone: `../037-retained-session-recovery-promotion.md`

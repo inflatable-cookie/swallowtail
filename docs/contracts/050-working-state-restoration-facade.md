@@ -173,14 +173,23 @@ Attachment recovery:
 Fresh-session replacement:
 
 - `antigravity.headless`
+- `anthropic.messages` direct-continuation profile
+- `deepseek.continuation` interactive profile
 - `gemini-cli.acp`
+- `ollama.attached` interactive profile
 - `pi.rpc`
 - `qwen.headless`
+- `xai.responses-websocket` interactive profile
+- `alibaba.conversations` delete-on-close profile
 
-The Alibaba mapping is resource-free and exists only on the separate retained
-conversation profile. The operation-owned delete-on-close profile does not
-inherit it. All other production routes remain unsupported until separately
-qualified.
+Fresh realtime replacement:
+
+- `openai.realtime`
+- `gemini.live`
+
+Alibaba's retained profile remains the stronger continuation-recovery mapping;
+its delete-on-close profile independently maps to context-losing replacement.
+All other production routes remain unsupported until separately qualified.
 
 ## Settled Observe Then Attach
 

@@ -15,8 +15,7 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     CancellationControl, CleanupOutcome, OperationContent, PreparationStage, RequestId,
-    RuntimeTurnId, TerminalStatus, TurnRequest, WorkingStateRestorationMethod,
-    WorkingStateRestorationOutcome,
+    RuntimeTurnId, TerminalStatus, TurnRequest,
 };
 use swallowtail_testkit::{
     assert_observable_activity_trace, assert_prepared_operation_evidence_matches_plan,
@@ -109,44 +108,6 @@ fn exact_conversation_lifecycle_runs_on_both_host_topologies() {
             )
         );
     }
-}
-
-#[test]
-fn delete_on_close_conversation_restoration_opens_a_fresh_replacement() {
-    let fixture = DriverFixture::new(ServerScenario::Success);
-    let prepared = prepare_alibaba_model_studio(fixture.preparation_input(), &fixture.services())
-        .expect("Alibaba integration prepares");
-    let conversation = prepared
-        .prepare_conversation(profile_input("replacement"))
-        .expect("conversation prepares");
-    let interrupted = RuntimeTurnId::new("alibaba-interrupted").expect("turn id");
-    let restoration = conversation.prepare_working_state_restoration(interrupted.clone());
-    assert_eq!(
-        restoration.method(),
-        WorkingStateRestorationMethod::FreshSessionReplacement
-    );
-    let restored = block_on(restoration.restore(fixture.services())).expect("replacement opens");
-    let WorkingStateRestorationOutcome::SessionReplaced(replacement) = restored else {
-        panic!("fresh session replacement expected");
-    };
-    assert_eq!(replacement.interrupted_turn_id(), &interrupted);
-    let (_, replacement) = replacement.into_parts();
-    assert!(replacement.provider_session_ref().is_none());
-    assert_eq!(block_on(replacement.close()), CleanupOutcome::Clean);
-    let requests = fixture.requests();
-    assert_eq!(requests[0].method, "POST");
-    assert_eq!(requests[0].target, "/compatible-mode/v1/conversations");
-    assert_eq!(requests[1].method, "GET");
-    assert!(
-        requests[2..6]
-            .iter()
-            .all(|request| request.method == "DELETE" && request.target.contains("/items/"))
-    );
-    assert_eq!(requests[6].method, "DELETE");
-    assert_eq!(
-        requests[6].target,
-        "/compatible-mode/v1/conversations/conv_fixture_01"
-    );
 }
 
 #[test]

@@ -76,6 +76,12 @@ server or unload a model. Retry, endpoint fallback, model substitution,
 compatible-facade fallback, tools, thinking, vision, and model administration
 remain absent.
 
+The prepared interactive profile exposes `prepare_working_state_restoration`.
+It opens an empty replacement session against the same selected attached
+runtime and returns the interrupted consumer turn id. The lost private
+transcript is not serialized or replayed, and the external runtime remains
+operator-owned.
+
 `plan`, `request`, `evidence`, `runtime`, `low_level_driver`, and `into_parts`
 remain available for diagnostics and advanced low-level use.
 

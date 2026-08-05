@@ -85,6 +85,13 @@ Responses request against the same conversation. The first subset allows two
 serial text turns and no tools, response storage, cache, background execution,
 retry, reattachment, or resume.
 
+The delete-on-close profile exposes `prepare_working_state_restoration` as a
+fresh replacement. It creates a new provider conversation under the same
+prepared route and returns the interrupted consumer turn id without prior
+messages or terminal truth. Ordinary close still deletes the replacement's
+items and conversation. This path grants no retained load or management
+authority.
+
 ## Inspection And Deletion
 
 The provider conversation is not consumer memory. Closing the handle:

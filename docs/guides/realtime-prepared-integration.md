@@ -53,6 +53,10 @@ Cancellation, deadline, disconnect, provider failure, or connection lifetime
 end invalidates the whole session. There is no reconnect, replay, provider
 storage, or consumer resume binding.
 
+`XaiPreparedResponsesSession::prepare_working_state_restoration` opens a fresh
+interactive WebSocket session. It returns `SessionReplaced`, not connection
+continuation, and carries no private response chain from the lost socket.
+
 See the compile-tested
 [`prepared_responses_websocket` example](../../crates/swallowtail-adapter-xai/examples/prepared_responses_websocket.rs).
 
@@ -74,6 +78,11 @@ The prepared session delegates append, commit, output audio, transcript,
 usage, rate, request correlation, native response cancellation, connection
 invalidation, and cleanup to the unchanged realtime driver. Consumers retain
 capture, playback, conversion, pacing, privacy, and played-position truth.
+
+`OpenAiPreparedRealtimeSession::prepare_working_state_restoration` returns
+`RealtimeSessionReplaced` with one new media handle. It carries no audio,
+transcript, response, buffer, cancellation, or terminal state from the lost
+connection.
 
 See the compile-tested
 [`prepared_realtime_session` example](../../crates/swallowtail-adapter-openai/examples/prepared_realtime_session.rs).
@@ -98,6 +107,11 @@ Rollover uses only the latest in-memory resumable handle after provider
 unexpected reconnect, stream reattachment, consumer resume, or durable
 provider storage. Cancellation and deadline close locally with unconfirmed
 provider cancellation truth.
+
+`GeminiPreparedLiveSession::prepare_working_state_restoration` also returns a
+fresh realtime handle with connection-state loss. The configured one-rollover
+policy remains an in-session idle-boundary mechanism; it does not recover a
+session after process loss.
 
 See the compile-tested
 [`prepared_live_session` example](../../crates/swallowtail-adapter-gemini/examples/prepared_live_session.rs).

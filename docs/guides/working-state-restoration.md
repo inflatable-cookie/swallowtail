@@ -32,6 +32,10 @@ match outcome {
         // Continue in a fresh usable session. Provider context from the lost
         // session is gone and the interrupted turn remains unresolved.
     }
+    WorkingStateRestorationOutcome::RealtimeSessionReplaced(replaced) => {
+        // Continue through a new media connection. Audio, transcript,
+        // response, buffer, rollover, and terminal state were not recovered.
+    }
 }
 ```
 
@@ -81,6 +85,11 @@ references, access, and working resources are exact route evidence.
   dimensions and returns a live attachment without claiming complete replay.
 - Prepared Antigravity continuation, Gemini ACP, Pi RPC, and Qwen continuation
   sessions accept the interrupted consumer turn id and return a fresh session.
+- Prepared Anthropic and DeepSeek direct-continuation sessions, Ollama attached
+  sessions, xAI WebSocket sessions, and ordinary Alibaba conversations accept
+  the interrupted turn id and return a fresh session with context loss.
+- Prepared OpenAI Realtime and Gemini Live sessions accept the interrupted turn
+  id and return a fresh realtime media session with connection-state loss.
 
 Consumers may store the resulting prepared operation behind one application
 boundary. They must still persist the exact route identity and binding or
@@ -97,12 +106,13 @@ checkpoint needed to prepare it after restart.
 | `ProviderSessionContinuationRecovery` | stateful load, replay, and live attachment | unresolved |
 | `ProviderSessionAttachmentRecovery` | exact live attachment; bounded pre-response replay discarded | unresolved |
 | `FreshSessionReplacement` | new usable session with no prompt replay | unresolved; provider context lost |
+| `FreshRealtimeSessionReplacement` | new usable media session with no media replay | unresolved; connection context lost |
 
 The continuation and attachment variants intentionally expose no terminal
 state accessor. Transcript shape or a terminal-looking provider message is not
 terminal evidence. Replacement is not recovery of provider state.
 
-## Connected Harness Routes
+## Prepared Reusable Routes
 
 | Route | Prepared action after restart |
 | --- | --- |
@@ -111,6 +121,8 @@ terminal evidence. Replacement is not recovery of provider state.
 | Claude Agent ACP, Kimi ACP | complete continuation recovery |
 | Cursor ACP, Grok ACP | exact attachment; replay discarded |
 | Antigravity continuation, Gemini ACP, Pi RPC, Qwen continuation | fresh replacement; context lost |
+| Anthropic Messages, DeepSeek continuation, Ollama attached, xAI Responses WebSocket | fresh replacement; context lost |
+| OpenAI Realtime, Gemini Live | fresh realtime replacement; connection context lost |
 
 This table covers prepared interactive harness routes. Catalogue-only and
 one-prompt headless routes do not automatically retry a prompt after restart.
@@ -125,7 +137,9 @@ preserves the conversation; deletion requires the separately prepared
 management operation.
 
 This hosted-direct mapping does not change the connected-harness route count.
-The ordinary Alibaba delete-on-close profile has no restoration mapping.
+The ordinary Alibaba delete-on-close profile maps to fresh replacement. Its
+new remote conversation is still deleted on ordinary close. It does not
+inherit retained replay, preservation, or management authority.
 
 ## Failure
 

@@ -1,12 +1,12 @@
 # 039 Provider-Wide Session Usability Restoration
 
-Status: active
+Status: completed
 Owner: Tom
 Created: 2026-08-05
 Depends on: g03.037
 Vision tags: restart usability, direct continuation, realtime media
 Contract refs: 026-027, 030, 043, 050
-Planning state: cards 107-109 complete; card 110 ready
+Planning state: cards 107-110 complete
 
 ## Problem
 
@@ -26,14 +26,14 @@ keeping one-prompt retry and hidden-state reconstruction prohibited.
 - [x] map the four remaining interactive route identities
 - [x] map ordinary Alibaba without weakening its retained profile
 - [x] add a distinct realtime replacement outcome and two mappings
-- [ ] publish exact route and package truth while preserving stronger gates
+- [x] publish exact route and package truth while preserving stronger gates
 
 ## Execution Plan
 
 - [x] card 107: audit current prepared surfaces and promote Contract 050
 - [x] card 108: map Anthropic, DeepSeek, Ollama, xAI, and ordinary Alibaba
 - [x] card 109: implement realtime replacement and map OpenAI and Gemini
-- [ ] card 110: close route, guide, package, and remaining-gate acceptance
+- [x] card 110: close route, guide, package, and remaining-gate acceptance
 
 ## Boundaries
 
@@ -46,15 +46,15 @@ keeping one-prompt retry and hidden-state reconstruction prohibited.
 
 ## Acceptance Criteria
 
-- [ ] all prepared reusable interactive and realtime route shapes expose one
+- [x] all prepared reusable interactive and realtime route shapes expose one
       exact strongest action
-- [ ] direct continuation replacement reports context loss and no hidden-state
+- [x] direct continuation replacement reports context loss and no hidden-state
       recovery
-- [ ] realtime replacement returns a new media handle and no connection truth
-- [ ] retained Alibaba remains stronger than its ordinary profile
-- [ ] blocked stronger-recovery candidates retain exact gates
-- [ ] focused and affected-package validation pass without authenticated work
+- [x] realtime replacement returns a new media handle and no connection truth
+- [x] retained Alibaba remains stronger than its ordinary profile
+- [x] blocked stronger-recovery candidates retain exact gates
+- [x] focused and affected-package validation pass without authenticated work
 
 ## Lane Runway
 
-Card 110 is ready. Completion returns g03 to its evidence gate.
+Cards 107-110 are complete. g03 returns to its evidence gate.

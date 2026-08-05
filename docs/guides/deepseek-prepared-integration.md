@@ -73,6 +73,12 @@ cannot replay it across session, facade, model, route, access, or host
 boundaries. Closing the session joins active work, clears private continuation,
 then releases credentials.
 
+`DeepSeekPreparedSession::prepare_working_state_restoration` opens one fresh
+session after handle loss. The `SessionReplaced` outcome retains the
+interrupted consumer turn id but explicitly carries no prior transcript,
+reasoning content, tool exchange, provider cache, or terminal truth. Visible
+message replay cannot reconstruct the discarded private continuation.
+
 The legacy `deepseek-chat` and `deepseek-reasoner` aliases are outside this
 route. Compatible JSON syntax does not authorize model mapping or provider
 fallback.

@@ -13,8 +13,9 @@ shape.
 
 ## Next Task
 
-Execute g03 card 110: reconcile route, guide, package, and remaining-gate truth
-for provider-wide session usability restoration.
+Hold at the g03 evidence gate until a consumer-reproduced portable defect,
+material non-deferred provider or interface drift, or explicit operator
+promotion supplies the next roadmap input.
 
 ## Index
 

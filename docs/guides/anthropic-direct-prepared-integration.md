@@ -62,6 +62,19 @@ Every further Anthropic attempt requires another explicit prepared input and
 `start_run` call. No usage observation, remaining capacity, provider error,
 timer, catalogue result, or successful output authorizes retry.
 
+## Direct Continuation And Restart
+
+`prepare_session` binds one resource-free consumer-tool continuation session.
+Its provider-required assistant and reasoning envelopes remain bounded,
+adapter-private process memory. They are neither portable output nor durable
+provider-session identity.
+
+`AnthropicPreparedSession::prepare_working_state_restoration` therefore opens
+one fresh session and returns `SessionReplaced`. It preserves the interrupted
+consumer turn id but no prompt, transcript, tool result, provider-private
+continuation, or terminal truth. Closing or losing the original session makes
+its hidden continuation unrecoverable.
+
 `plan`, `request`, `evidence`, `low_level_driver`, and `into_parts` remain
 available for diagnostics and advanced low-level use.
 

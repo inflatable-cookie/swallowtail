@@ -11,6 +11,12 @@
 
 ## Completed
 
+- `123-integration-guide-coverage-acceptance.md`
+- `122-cross-cutting-feature-runbooks.md`
+- `121-hosted-local-and-realtime-guide-deepening.md`
+- `120-installed-and-attached-harness-guide-deepening.md`
+- `119-missing-route-guides-and-examples.md`
+- `118-integration-guide-contract-and-inventory.md`
 - `117-portable-failure-provider-wide-acceptance.md`
 - `116-portable-provider-and-harness-failure-mappings.md`
 - `115-portable-failure-contract-and-kernel.md`

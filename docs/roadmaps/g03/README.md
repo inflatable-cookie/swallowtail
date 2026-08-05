@@ -43,6 +43,7 @@ visible as unverified newer unless exact evidence requires rejection.
 | Give every prepared interactive harness route one truthful post-crash action. | completed | Contracts 017, 037, 042, 048, 050 | `g03.038` |
 | Give every prepared reusable session shape one truthful post-crash action. | completed | Contracts 026-027, 030, 043, 050 | `g03.039` |
 | Give every provider and harness route one portable failure interface without erasing exact diagnostics. | completed | Contracts 003-004, 006, 009, 014, 037, 044, 051 | `g03.041` |
+| Give agents and operators deep traceable instructions for every production route and portable feature. | completed | Contracts 037, 044-052 | `g03.042` |
 | Periodically reconcile deferred gates, route truth, and generation capacity. | planned | Contract 001 | recurring checkpoints |
 
 ## Current Checkpoint
@@ -54,6 +55,12 @@ visible as unverified newer unless exact evidence requires rejection.
 - g03.041 gives every safe diagnostic one portable unknown fallback, maps
   typed failure evidence across 17 adapters, and preserves exact route codes
   plus terminal source truth
+- Research 110 and card 118 open g03.042: 18 route guides cover 26 of 33
+  routes, 31 adapter examples cover 27 routes, and Contract 052 now requires
+  traceable deep route and feature instructions
+- card 119 closes the visible route holes: all 33 routes now map to a canonical
+  guide and compiling example; Antigravity, Cursor, Grok, and Oh My Pi remain
+  partial pending the shared deep-guide checklist
 - Nucleus owns its delegated child-work, typed question, plan, and task-list
   adoption
 - provider-session management binding persistence remains deferred; ordinary
@@ -419,6 +426,7 @@ visible as unverified newer unless exact evidence requires rejection.
 - [039 Provider-Wide Session Usability Restoration](039-provider-wide-session-usability-restoration.md) — completed
 - [040 Oh My Pi RPC Foundation](040-oh-my-pi-rpc-foundation.md) — completed
 - [041 Portable Failure Classification](041-portable-failure-classification.md) — completed
+- [042 Complete Integration Guide System](042-complete-integration-guide-system.md) — active
 
 ## Checkpoint
 
@@ -439,6 +447,17 @@ failure classification on every safe diagnostic, evidence-backed mappings
 across direct providers and harness routes, and honest `Unknown` fallback.
 Terminal source, cleanup, callback, cancellation, timeout, and exact route
 diagnostics remain distinct. The generation returns to its evidence gate.
+Operator promotion opens roadmap g03.042. Cards 118-119 record and close seven
+missing route guides plus six missing examples. Card 120 completes Contract
+052 guidance for all 19 installed and attached harness routes, including
+branch-specific recovery, callback, cleanup, failure, and promotion truth.
+Card 121 completes the remaining 14 hosted, SDK, realtime, attached-runtime,
+and owned-serving route guides. All 33 production route rows now meet Contract
+052. Card 122 adds four shared runbooks, deepens plan/task activity and failure
+handling, and gives all 34 feature columns plus the named portable surfaces a
+canonical complete guide owner. Card 123 adds deterministic route, feature,
+guide-index, and example enforcement, proves the three packages that gained
+examples, closes g03.042, and returns the generation to its evidence gate.
 
 ## Generation Boundary
 

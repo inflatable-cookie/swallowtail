@@ -4,6 +4,13 @@ Use the prepared facade to connect to an operator-managed OpenCode HTTP
 server. Swallowtail observes and invokes the selected service. It does not
 start, stop, configure, authenticate, update, or recover the server.
 
+The route is `opencode.http` in `swallowtail-adapter-opencode`, with driver ID
+`swallowtail.opencode.http`. Use it for an already running OpenCode server when
+the application needs HTTP/SSE catalogue, run, session, import,
+reconciliation, callbacks, or inactive-session delete. Reject it when the
+application must own server startup or shutdown, requires ACP, or cannot
+provide an approved endpoint and delegated credential lease.
+
 ## Explicit Inputs
 
 Preparation requires:
@@ -29,6 +36,11 @@ attached-service lifecycle action.
 The result retains external-attached ownership, ambient harness configuration,
 the exact server binding and compatibility assessment, access provenance, and
 the low-level driver escape hatch.
+
+Operation plans additionally bind task, time, HTTP, credential, attachment,
+and working-resource services as needed. Default sessions are read-only.
+Callback-enabled operations explicitly select ambient read-write authority.
+Neither posture is a sandbox or host-containment claim.
 
 ## Version Posture
 
@@ -72,11 +84,22 @@ sessions support exact load with bounded oldest-first replay and exact resume
 without replay. Closing a turn or session does not stop or dispose the
 attached OpenCode service.
 
+Call `with_image_attachments()` before preparation if later turns may carry at
+most one PNG of declared size no greater than one MiB. The host materializes
+the opaque reference within the prepared attachment and working-resource
+bounds; the consumer does not pass provider-native image data.
+
 `OpenCodeSessionProfileInput::with_provider_callbacks()` enables the qualified
 callback subset. Ordered OpenCode questions project into common typed harness
 user input. Permission requests remain exact OpenCode extensions because
 their one-shot authorization semantics are provider-specific. The consumer
 answers both through the same correlated callback exchange.
+
+Take each turn's events, optional callback exchange, and terminal outcome
+immediately and poll them concurrently. Responses are exactly once and scoped
+to the requesting turn. Cancellation interrupts only that turn. Close the turn
+and session to join local work while preserving the external server and
+provider session; terminal and cleanup truth remain separate.
 
 `OpenCodeSessionProfileInput::with_active_turn_detachment()` instead selects a
 durable, callback-free session profile for controlled application shutdown.
@@ -126,12 +149,28 @@ that plan, working resource, and access policy. Compaction retains the same
 OpenCode session identity. Invalid or drifted records fail before HTTP work and
 must not trigger fresh-session fallback.
 
+For an interrupted attached turn, build
+`OpenCodeSessionReconciliationInput` with that exact binding, model, runtime
+turn, optional provider turn, bounds, and deadline. Then call
+`prepare_session_reconciliation` and `reconcile`. The read-only operation
+classifies retained session state without prompting, aborting, answering a
+callback, or granting attachment or management authority. A settled result
+may compose with the matching prepared session through
+`prepare_settled_session_restoration`; active or ambiguous work stays
+observational. This is qualified only on the maintained version range.
+
 ## Structured Run
 
 `prepare_run` requires a request identity, explicit provider and model route,
 content, working-resource reference, and optional deadline. It derives a
 separate `StructuredRun` plan with temporary provider retention and exact
 operation-owned session deletion.
+
+Optional `OpenCodeRunProfileInput` controls are one bounded PNG, provider
+callbacks, a catalogue-supported model reasoning variant, and one inline JSON
+Schema 2020-12 object. Reasoning and schema require the exact bound
+`ModelCatalogEntry`; structured output uses zero hidden retries. The route
+does not infer support from a model name.
 
 `OpenCodePreparedRun::start_run` creates one private provider session,
 subscribes to its exact SSE terminal stream, submits one prompt, closes the
@@ -146,6 +185,30 @@ recovers the attached OpenCode server.
 `OpenCodeRunProfileInput::with_provider_callbacks()` enables the same typed
 question and provider-specific permission subset for the structured run.
 
+Drain events, callbacks, and terminal concurrently. Deletion confirmation and
+local cleanup remain independent from model completion.
+
+## Delete, Failures, And Unsupported Capabilities
+
+An interactive handle exposes an opaque management binding. After closing the
+handle, pass that binding to `prepare_delete_session`; a raw OpenCode session
+ID cannot authorize deletion. The typed effect reports provider-data deletion
+with provider-defined descendant scope. Unknown, active, drifted,
+cross-instance, and cross-resource bindings fail closed. Unverified-newer
+execution requires explicit acceptance and does not inherit import,
+reconciliation, or detachment.
+
+Handle failures through portable classification and retain the exact
+`swallowtail.opencode.*` diagnostic for support. Do not parse HTTP bodies, SSE
+frames, server logs, question text, permission display, or provider prose to
+infer retry, auth, terminal, or cleanup truth.
+
+OpenCode exposes no archive, restore, native close, external search,
+consumer-tool exchange, output-token limit, billed-cost evidence, provider
+managed retry, owned server lifecycle, or public subagent control. New claims
+require an exact server surface, qualified release evidence, prepared-plan and
+access binding, bounded fixtures, lifecycle tests, and route-matrix coverage.
+
 ## Transport Separation
 
 OpenCode HTTP/SSE is a provider-specific harness interface. It is not ACP.
@@ -159,3 +222,13 @@ remain available for inspection and advanced use.
 
 See the compile-tested
 [`prepared_opencode_attached` example](../../crates/swallowtail-adapter-opencode/examples/prepared_opencode_attached.rs).
+
+## Deterministic Validation
+
+```sh
+effigy validate:focused swallowtail-adapter-opencode
+effigy check:examples
+```
+
+No live server, credential use, prompt, import, reconciliation, or delete is
+required. Operator live checks must remain separately gated.

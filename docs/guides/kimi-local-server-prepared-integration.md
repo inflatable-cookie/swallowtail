@@ -5,6 +5,11 @@ REST/WebSocket server, explicit approval and question exchange, or native
 archive and restore. Use the separate Kimi ACP facade for the smaller stdio
 path, provider load replay, or resume without local-server management.
 
+The route is `kimi-code.local-server` in `swallowtail-adapter-kimi`, with
+driver ID `swallowtail.kimi.local-server`. Its transport is authenticated
+loopback REST plus WebSocket v2. It may attach to an operator-owned server or
+own one foreground `kimi web` child; topology selection is explicit.
+
 ## Route Choice
 
 | Need | Route |
@@ -68,6 +73,12 @@ resume and archive/restore bindings. Prompt content remains a `TurnRequest`.
 Output, reasoning, lifecycle, disconnect, resynchronization, and terminal
 events remain ordered runtime events.
 
+Take turn events, callbacks in `Manual` mode, and the terminal outcome
+immediately and poll them concurrently. A blocked callback can block the turn;
+an undrained semantic stream can exhaust its bounded buffer. Terminal status,
+native provider state, local attachment cleanup, and owned-server cleanup are
+separate truth.
+
 `Manual` mode exposes provider approval and structured-question requests
 through the callback exchange. The consumer owns authorization and response
 policy. `Auto` and `Yolo` do not silently elevate an unexpected callback;
@@ -130,6 +141,12 @@ awaits one terminal outcome, then closes and joins local resources. The Kimi
 thread remains. `DurableAllowed` is mandatory. Close does not archive, delete,
 or expose reusable session-management authority.
 
+The run input requires `accept_managed_recovery()`. An attached run may also
+select `with_one_stream_reattachment()` for at most one same-turn cursor
+reattachment after transport loss. It never replays the prompt and preserves
+callback and cancellation truth. Reattachment is not automatic retry, a new
+run, or authority to adopt another provider session.
+
 Attached topology preserves the external server. Owned topology joins the run
 before the caller may stop the foreground child. Neither path requires a
 container or claims a sandbox.
@@ -167,6 +184,37 @@ See the compile-tested [owned lifecycle
 example](../../crates/swallowtail-adapter-kimi/examples/prepared_local_server_owned_lifecycle.rs)
 and [binding-import
 example](../../crates/swallowtail-adapter-kimi/examples/prepared_local_server_imported_management.rs).
+
+## Failures, Unsupported Capabilities, And Promotion
+
+Handle failures through portable classification and retain the exact
+`swallowtail.kimi.local_server.*` diagnostic for support. Keep preparation,
+provider terminal status, callback abandonment, reconciliation result,
+management effect truth, and cleanup separate. Do not parse WebSocket frames,
+REST bodies, server logs, Kimi prose, or state files in consumer code.
+
+The route exposes no hard delete, JSON Schema output, attachments, consumer
+tools, external search, billed-cost evidence, public subagent control, or host
+sandbox claim. Provider task and child activity remains observational.
+Unverified-newer servers do not inherit reconciliation, detachment, binding
+import, or management capabilities merely because endpoints respond.
+
+Promotion requires an exact server/executable behavior milestone, attached
+and owned topology evidence where applicable, immutable plan and access
+binding, bounded REST/WebSocket fixtures, lifecycle tests, and route-matrix
+coverage.
+
+## Deterministic Validation
+
+The linked examples cover attached preparation, interactive and structured
+operations, owned lifecycle, and ACP management-binding import. Run:
+
+```sh
+effigy validate:focused swallowtail-adapter-kimi
+effigy check:examples
+```
+
+No Kimi login, live server, prompt, archive, or restore is required.
 
 ## Nucleus Adoption Inputs
 

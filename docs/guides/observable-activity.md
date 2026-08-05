@@ -75,6 +75,43 @@ not part of activity identity or a content stream. Tool payload remains in
 `content()`; consumers should not parse its first line as a label. Applications
 still own their final presentation labels and may replace the provider value.
 
+## Plan Mode, Plans, And Task Lists
+
+Plan mode is an input posture. Where a route supports it, select
+`HarnessMode::Plan` through `SessionOptions::with_harness_mode` or the exact
+prepared profile named by the route guide. The immutable plan must carry
+`HarnessModeSelection`. For negotiated harnesses, the adapter creates or
+attaches the provider session, selects the adapter-private option, confirms the
+effective portable value, then returns the ready session.
+
+Plan mode is not read-only access, sandboxing, permission approval, or proof
+that plan activity will be emitted. A route may expose plan activity without a
+selectable plan mode, or plan mode without a typed task list. Changing mode
+after readiness requires a separately qualified operation.
+
+`ActivityKind::Plan` and `ActivityKind::Task` may carry a bounded
+`TaskListSnapshot`:
+
+```rust
+if let Some(snapshot) = activity.task_list() {
+    let replacement = snapshot
+        .items()
+        .map(|item| (item.content(), item.status(), item.priority()))
+        .collect::<Vec<_>>();
+    replace_sidebar_tasks(replacement);
+}
+```
+
+Every snapshot replaces the whole displayed list. An empty snapshot clears
+it. Omission means no new task-list evidence and does not clear prior state.
+Items have ordered content, `Pending`, `InProgress`, or `Completed` status,
+and optional high, medium, or low priority. They have no portable durable item
+id; position and content are presentation hints only.
+
+Do not parse plan text, tool display, labels, or transcript prose into task
+records. The consumer owns task-list persistence and sidebar presentation.
+Swallowtail owns the qualified replacement semantics and bounds.
+
 ## Project Child Work
 
 `actor()` distinguishes primary activity from activity attributed to one

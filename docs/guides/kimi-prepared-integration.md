@@ -6,6 +6,16 @@ one host-approved executable, preserves the route-specific compatibility
 result, and derives the configured instance, preflight plan, policy, and
 request echoes.
 
+Both routes live in `swallowtail-adapter-kimi`:
+
+| Selection | Route, driver ID, and transport | Choose it for | Reject it when |
+| --- | --- | --- | --- |
+| `Acp` | `kimi-code.acp`; `swallowtail.kimi.acp`; ACP v1 over stdio | reusable read-write sessions, negotiated models, reasoning, bounded writes, provider load/resume, or resource-scoped catalogue/import | the application needs a one-prompt run or cannot accept durable Kimi session state |
+| `Headless` | `kimi-code.headless`; `swallowtail.kimi.headless`; stream JSON over stdio | one explicit-model bounded prompt with qualified provider retry observations | the application needs callbacks, reasoning selection, usage, a reusable binding, or management |
+
+There is no fallback between the branches. The separate local-server route is
+documented in [Kimi Local Server](kimi-local-server-prepared-integration.md).
+
 ## Inputs That Stay Explicit
 
 Preparation still requires:
@@ -21,6 +31,16 @@ Preparation still requires:
 The selected operation still requires its model route, working resource,
 deadline, and supported options. Swallowtail does not select a model,
 workspace, account, credential, transport, or fallback route.
+
+The host binds task, process, time, credential, and working-resource services
+required by the immutable plan. ACP import also requires the opaque state-root
+identity. The membership OAuth credential remains a scoped opaque lease;
+Swallowtail never exposes or persists its value.
+
+ACP exact `0.28.1` and `0.29.0..=0.31.1` are qualified. Headless exact
+`0.29.0..=0.31.1` is qualified. Later stable releases remain visible
+`UnverifiedNewer`; they do not inherit ACP catalogue/import support. Older,
+excluded, and prerelease observations do not prepare.
 
 ## Prepare The Installation
 
@@ -78,6 +98,11 @@ Create a `KimiSessionProfileInput` with:
 - working-resource reference
 - `SessionOptions`
 
+The only portable option is reasoning `off`, `on`, `low`, `medium`, or `high`.
+Kimi must advertise and confirm the exact selection before the first prompt.
+Load and resume cannot redeclare it. Developer instructions, consumer tools,
+plan mode, attachments, and question or permission exchanges are not mapped.
+
 `KimiPreparedIntegration::prepare_session` derives one immutable plan and its
 matching new-session request. The plan visibly binds:
 
@@ -117,6 +142,11 @@ cancellation control. Bounded filesystem writes and delegated authentication
 continue through host services; the adapter does not execute consumer tools or
 extract credentials.
 
+Take turn events and the terminal outcome immediately and poll them
+concurrently. Active-turn cancellation does not imply session cleanup. Close
+each turn and the session to join task, connection, process, resource, and
+credential work; Kimi's provider state remains preserved.
+
 New, load, and resume handles may expose bounded
 `negotiated_model_options()` from Kimi's ACP model selector. The evidence
 exists only after that session is authorized. It is not the local-server model
@@ -134,6 +164,8 @@ Select `Headless`, then create `KimiHeadlessRunInput` with an explicit model,
 prompt content, working resource, and deadline. `prepare_run` derives the
 immutable structured plan, mandatory `DurableAllowed` retention policy, and
 exact process request.
+Call `accept_managed_recovery()` to acknowledge the provider's qualified retry
+behavior before preparation; this does not authorize consumer retry.
 The driver executes:
 
 ```text
@@ -152,5 +184,42 @@ callbacks. Cancellation and deadline stop and join the child. Kimi may retain
 provider state, so the operation requires `DurableAllowed`; no reusable
 session, archive, restore, or delete authority escapes.
 
+Take the event stream and terminal outcome immediately and poll them
+concurrently, then close the run. Cancellation and deadline stop the child;
+terminal, provider retry observation, and joined cleanup remain separate.
+
 See the compile-tested
 [`prepared_headless` example](../../crates/swallowtail-adapter-kimi/examples/prepared_headless.rs).
+
+## Recovery, Failures, And Unsupported Capabilities
+
+ACP can load or resume only from an exact opaque binding. It exposes no
+interrupted-turn reconciliation. `prepare_working_state_restoration` uses the
+existing binding for bounded attachment recovery without claiming replay or
+turn recovery. Headless exposes no reusable binding or restoration action.
+
+Neither installed branch exposes archive, restore, delete, native close,
+structured output, attachments, permission/question response, external
+search, or billed cost. Headless additionally rejects reasoning selection and
+consumer tools and exposes no usage claim. Provider retry activity is
+observation, not a consumer retry instruction.
+
+Handle failures through portable classification and keep the exact
+`swallowtail.kimi.*` diagnostic for support. Never parse prompt arguments,
+stderr, ACP payloads, Kimi prose, or state files to infer auth, retry,
+terminal, or cleanup truth.
+
+A capability may be promoted only with exact route/version evidence, a
+prepared-plan and access-policy mapping, bounded protocol projection,
+deterministic fixtures, and route-matrix coverage. ACP advertisement or a
+headless flag alone is insufficient.
+
+## Deterministic Validation
+
+```sh
+effigy validate:focused swallowtail-adapter-kimi
+effigy check:examples
+```
+
+No OAuth mutation, live Kimi prompt, state-file inspection, or destructive
+provider work is required.

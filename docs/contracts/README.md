@@ -56,6 +56,7 @@ Contracts hold durable, testable rules.
 - [049 Controlled Shutdown Active Operation Detachment](049-controlled-shutdown-active-operation-detachment.md)
 - [050 Working-State Restoration Facade](050-working-state-restoration-facade.md)
 - [051 Portable Failure Classification](051-portable-failure-classification.md)
+- [052 Consumer And Operator Integration Documentation](052-consumer-and-operator-integration-documentation.md)
 
 Contract 003 defines the provider-neutral record kernel. Contracts 004-016
 govern the realized runtime and current proof drivers. Contract 017 governs
@@ -224,6 +225,10 @@ Contract 051 adds portable failure origin, kind, and recovery evidence to the
 existing safe diagnostic boundary. Exact route codes, terminal source,
 preparation stage, cleanup truth, and downstream retry policy remain separate;
 unknown evidence stays unknown.
+Contract 052 requires traceable, task-oriented consumer and operator guidance
+for every production route and portable feature. Guides and examples explain
+realized truth without widening route capabilities, authority, access,
+versions, lifecycle, cleanup, or recovery.
 
 Contract 015 now permits exact, one-shot activation of an already authorized
 harness credential after ACP initialization. The first mapping is Grok Build

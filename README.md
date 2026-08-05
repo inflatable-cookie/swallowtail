@@ -32,7 +32,7 @@ archives now compile through one extracted target in five seconds, down from
 22.4 seconds through separate targets. Kimi child-activity projection is split
 on its native lifecycle seam. Claude Agent now projects its exact portable
 choice-form subset through typed harness user input. The current structural
-scan reports 206 oversized-file findings, including 19 errors; they remain
+scan reports 238 oversized-file findings, including 22 errors; they remain
 known structural debt outside this provider batch. Roadmaps g02.047-g02.048 own the completed topology and
 elicitation handoffs; g02.049 closes the generation. Nucleus adoption is
 delegated to the Nucleus repository and does not govern Swallowtail's active
@@ -86,8 +86,9 @@ revalidation, replay, continuation, management, and consumer persistence
 distinct. The bounded
 [Nucleus handoff](docs/releases/0.1.0-nucleus-provider-session-import-handoff.md)
 now fixes the consumer-owned mapping, replay-to-live boundary, duplicate and
-restart posture, and deterministic adoption cases. The tranche is complete;
-g03 has returned to its evidence gate.
+restart posture, and deterministic adoption cases. The tranche is complete.
+g03.042 now provides deep route and feature integration guidance plus
+deterministic coverage acceptance.
 
 ## Start Here
 
@@ -97,15 +98,15 @@ effigy doctor
 effigy test --plan
 ```
 
-Then read [docs/README.md](docs/README.md). Applications integrating Codex
+Then read [docs/README.md](docs/README.md). Integrating agents and operators
 should start with the
-[prepared-integration guides](docs/guides/README.md). Multi-provider
-applications should start with the exact
-[32-route matrix](docs/guides/provider-route-matrix.md).
+[integration guide map](docs/guides/integration-guide-map.md), then select one
+exact route from the
+[33-route matrix](docs/guides/provider-route-matrix.md).
 Applications rendering provider-visible work should use the
 [observable-activity guide](docs/guides/observable-activity.md).
 Source-scoped model-catalogue expansion is complete: every selected
-machine-readable source has a Swallowtail path. The 25-solution feature matrix
+machine-readable source has a Swallowtail path. The 26-solution feature matrix
 now reports 18 catalogue-capable solutions, three session-negotiated sources,
 two not-applicable operation shapes, two caller-supplied sources, and no
 unexplained `No`.
@@ -232,7 +233,9 @@ agreement, and one authenticated read-only lookup before issuing a separate
 archive/restore binding. The interactive local-server driver now covers exact
 REST prompt submission, WebSocket v2 events and cursors, callbacks,
 interruption, deadlines, disconnects, attached and owned topology, and joined
-cleanup. The 32-route matrix and current integration guide are complete. The
+cleanup. The 33-route matrix is current. The integration guide map binds all
+33 routes and all 34 feature columns to complete canonical guidance and
+normal-path examples; `effigy qa:guides` enforces that traceability. The
 provider-wide extracted-package structured proof and the earlier 23-route
 lifecycle proof pass. A bounded Nucleus lifecycle handoff now keeps universal
 local thread actions separate from optional provider operations. Ordinary

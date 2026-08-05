@@ -1626,6 +1626,23 @@ detachment closes the SSE observer without response cancel or delete. Ordinary
 close and terminal cleanup remain unchanged; restart uses exact run
 reconciliation.
 
+## Consumer And Operator Documentation Layer
+
+The provider route and solution feature matrices remain the canonical
+inventory of production routes and qualified feature posture. The integration
+guide map binds each route and feature family to non-authoritative usage
+guidance and compiling examples. Route guides lead with adapter-local prepared
+operations; low-level roles remain explicit escape hatches.
+
+Contract 052 requires route, feature, example, and operator traceability. Guide
+coverage cannot widen capabilities, version claims, access, authority,
+lifecycle, cleanup, or recovery. Deterministic examples compile without live
+credentials; optional probes remain separately operator-gated. The
+`qa:guides` selector compares the 33-route inventory and all 34 feature headers
+with complete guide-map owners, indexed local guide files, and existing Rust
+examples. It fails on missing, duplicate, partial, unexpected, or stale
+traceability.
+
 ## Dependency Rules
 
 - consumers depend toward Swallowtail; Swallowtail never depends on consumers

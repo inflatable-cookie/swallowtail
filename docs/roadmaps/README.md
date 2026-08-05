@@ -13,9 +13,8 @@ shape.
 
 ## Next Task
 
-Hold at the g03 evidence gate until a consumer-reproduced portable defect,
-material non-deferred provider or interface drift, or explicit operator
-promotion supplies the next roadmap input.
+Reassess g03 only after a consumer defect, material non-deferred stable drift,
+or explicit operator promotion supplies new evidence.
 
 ## Index
 

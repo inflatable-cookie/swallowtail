@@ -3,6 +3,38 @@
 Use the prepared facade for normal Codex integration. Use the low-level drivers
 when an application needs a profile the facade does not provide.
 
+## Choose A Route
+
+Both routes are in `swallowtail-adapter-codex`; selection is explicit through
+`CodexPreparedDriver`.
+
+| Route | Driver ID and transport | Choose it for | Reject it when |
+| --- | --- | --- | --- |
+| `codex.exec` | `swallowtail.codex.exec`; structured CLI JSONL over stdio | one bounded structured run, optional reasoning, one image, JSON Schema output, or host-approved search | the application needs a reusable session, callbacks, discovery/import, reconciliation, or management |
+| `codex.app-server` | `swallowtail.codex.app-server`; app-server JSONL RPC over stdio | model and thread catalogues, interactive sessions, tools, questions, plan mode, load/resume, reconciliation, or inactive-thread management | the application needs exec-only attachments, structured output, or external search |
+
+There is no fallback between the drivers. A capability on one branch does not
+belong to the other.
+
+## Operator Prerequisites
+
+The host supplies one approved `codex` executable target, explicit process
+environment, configured-instance and execution-host identity, caller-selected
+access profile, matching observed or asserted access evidence, and the task,
+process, time, credential, working-resource, and attachment services required
+by the chosen plan. Local ChatGPT subscription access uses the approved local
+login state without a credential lease; API-key and enterprise access remain
+separate explicit profiles.
+
+Swallowtail does not install Codex, search `PATH`, log in, choose a model,
+select billing, read an auth store, or infer a writable workspace. Exec admits
+`0.80.0..=0.81.0`, `0.84.0..=0.107.0`, and `0.110.0..=0.146.0`; support is
+deprecated through `0.121.0` and maintained from `0.122.0`. App-server admits
+`0.80.0..=0.81.0`, `0.84.0..=0.107.0`, and `0.110.0..=0.146.0`; support is
+maintained from `0.110.0`. Exact feature milestones remain narrower. Later
+stable versions may remain visible `UnverifiedNewer` without gaining
+capabilities.
+
 ## Normal Flow
 
 1. The consumer selects the Codex driver: app-server or structured exec.
@@ -113,6 +145,18 @@ Prepared profiles expose only the runtime role they implement:
 returning runtime futures. Unsupported dynamic-tool redeclaration therefore
 fails before provider effects.
 
+For a run or turn, take its event stream, optional callback exchange, and
+terminal outcome immediately and poll them concurrently. Leaving semantic
+events or callbacks undrained can stall or fail a bounded operation. A
+terminal outcome does not imply cleanup success; close the run, turn, and
+session handles in their documented order and retain cleanup separately.
+
+Exec emits assistant, tool, usage, and terminal evidence for one run.
+App-server additionally projects provider activity, plans, task lists, child
+topology, consumer-tool callbacks, and the opt-in typed question exchange when
+the selected version and profile qualify them. Provider approval observations
+do not grant response authority.
+
 ## External Thread Import
 
 Codex app-server versions `0.105.0..=0.107.0` and
@@ -185,6 +229,28 @@ the exact prepared request from its driver. Extracting those parts only to
 reconstruct the same low-level role adds integration work and is not a second
 normal path.
 
+## Restart, Reconciliation, And Management
+
+Persist an app-server `SessionResumeBinding` only through its opaque export
+under the same prepared plan. On ordinary attachment, `load_session` returns
+bounded ordered replay and `resume_session` returns no replay.
+
+When the consumer has durable interrupted-turn evidence, build
+`CodexSessionReconciliationInput` from the exact binding and optional exact
+provider-turn reference, then call `prepare_session_reconciliation` and
+`reconcile`. The operation reads provider state without sending a prompt,
+answering a callback, interrupting work, or replacing root turn ownership. A
+settled result may compose with the same prepared session through
+`prepare_settled_session_restoration`; active or ambiguous work stays
+observational. Unknown, stale, cross-instance, cross-resource, and
+post-terminal evidence fails closed.
+
+Archive, restore, and delete require the opaque inactive management binding
+from a matching app-server handle. They are separate effects, not cleanup on
+session close. Exec exposes no continuation, reconciliation, or management.
+See [Provider Operation Reconciliation](provider-operation-reconciliation.md)
+and [Working-State Restoration](working-state-restoration.md).
+
 ## Explicit Limits
 
 - A model is always explicit. Catalogue defaults are display evidence, not
@@ -212,6 +278,13 @@ normal path.
 - Destructive lifecycle preparation requires
   `CodexSessionManagementInput::allow_unverified_newer()` before an
   unverified-newer executable may run.
+
+Codex exposes no portable output-token limit. Exec has no interactive tools or
+callbacks; app-server has no image attachment, JSON Schema result, or external
+search operation. New claims require an exact provider surface, versioned
+behavior evidence, prepared capability and preflight binding, deterministic
+corpus coverage, and a route-matrix update. Provider prose or a CLI flag alone
+is not a promotion gate.
 
 ## Failures
 
@@ -246,3 +319,17 @@ named facade does not express. The consumer then owns exact configured-instance
 construction, access and interface-version bindings, requirements, immutable
 request agreement, and drift rejection. Do not bypass a preparation failure by
 rebuilding a weaker low-level plan.
+
+## Deterministic Validation
+
+The compile-tested
+[`prepared_discovery` example](../../crates/swallowtail-adapter-codex/examples/prepared_discovery.rs)
+covers the public prepared branches. Validate without provider work:
+
+```sh
+effigy validate:focused swallowtail-adapter-codex
+effigy check:examples
+```
+
+Authenticated Codex prompts, destructive lifecycle calls, and account checks
+are optional operator-gated evidence, never deterministic acceptance.

@@ -11,6 +11,13 @@ This is provider-hosted harness execution. It is not the Anthropic Messages
 direct-inference facade, Claude Agent SDK, Claude Code, a Claude subscription,
 Bedrock, or another cloud marketplace.
 
+The route is `anthropic.managed-agent` in `swallowtail-adapter-anthropic`,
+driver ID `swallowtail.anthropic.managed-agent`, over managed-agent HTTPS/SSE.
+Choose it for an operator-defined Anthropic agent needing provider-managed
+recovery, custom-tool callbacks, or opt-in exact-run crash reconciliation.
+Reject it when the application needs direct Messages, local Claude auth,
+repository access, a reusable provider session, or user-directed management.
+
 ## Managed Preparation
 
 `prepare_anthropic_managed_agent` requires:
@@ -30,6 +37,12 @@ The prepared integration exposes its safe instance, access provenance,
 available host services, target-drift check, and managed low-level driver. Its
 driver identity and `HarnessInteraction` layer cannot substitute for the
 separate direct Messages preparation.
+
+Host endpoint, credential, HTTP, task, and time services are bound by the
+prepared plan. Provider environment and session resources are operation-owned;
+the operator's agent definition is not. The route binds exact opaque
+`anthropic.managed-agents-facade` behavior and has no ordered or
+unverified-newer range.
 
 ## Explicit Run Authority
 
@@ -88,6 +101,12 @@ terminal-outcome, remote-deletion, and cleanup APIs. `plan`, `request`,
 `evidence`, `low_level_driver`, and `into_parts` remain available for
 inspection and advanced use.
 
+Take events, the custom-tool callback exchange, and terminal outcome
+immediately and poll them concurrently. Each callback is correlated and
+exactly once; Swallowtail does not execute the tool. A pending callback can
+block provider progress. Close the run after terminal handling so session and
+environment deletion and credential-last cleanup complete.
+
 ## Cross-Process Recovery
 
 After the exact environment and session exist, a recoverable run emits one
@@ -134,5 +153,34 @@ policy after reconciliation or cleanup truth no longer needs to survive a
 restart. Neither record is a reusable session, prompt, callback, or management
 binding.
 
+## Failures, Unsupported Capabilities, And Promotion
+
+Handle failures through portable classification and retain the exact
+`swallowtail.anthropic.managed*` diagnostic for support. Keep provider
+terminal, interruption, session deletion, environment deletion,
+reconciliation, recovered cleanup, callback abandonment, and local cleanup
+separate. Never parse SSE/HTTP payloads, provider prose, checkpoint bytes,
+resource bindings, credentials, or endpoint values.
+
+The route exposes no model catalogue, independent reasoning/output-token or
+structured-output controls, attachments, working resource, built-in tools,
+MCP, skills, memory, multiagent control, schedule, webhook, public
+load/resume, provider-session management, archive/restore, or billed cost.
+Provider rescheduling is not consumer retry.
+
+Promotion requires exact Managed Agents facade and agent-version evidence,
+immutable access and resource-ownership binding, bounded event/reconciliation
+fixtures, callback and cleanup effect tests, and route-matrix coverage.
+
 See the compile-tested
 [`prepared_managed_agent` example](../../crates/swallowtail-adapter-anthropic/examples/prepared_managed_agent.rs).
+
+## Deterministic Validation
+
+```sh
+effigy validate:focused swallowtail-adapter-anthropic
+effigy check:examples
+```
+
+No agent mutation, environment/session creation, inference, cleanup, or
+credential use is required.

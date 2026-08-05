@@ -6,6 +6,9 @@ in application code.
 
 Normal validation scripts:
 
+- `check-integration-guide-coverage.py` — Contract 052 production-route,
+  feature-header, canonical-guide, index, coverage-state, and compiling-example
+  traceability behind `effigy qa:guides`
 - `validate-focused-packages.sh` — one nextest invocation and one
   warnings-denied all-target clippy invocation for one to four explicit
   workspace packages

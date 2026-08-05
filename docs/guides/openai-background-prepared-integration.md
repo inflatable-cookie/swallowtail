@@ -6,6 +6,13 @@ provider support authority, exact GPT-5.6 route, temporary retention, one
 maximum stream reattachment, native cancellation, and optional controlled
 detachment followed by read-only restart reconciliation.
 
+The route is `openai.background` in `swallowtail-adapter-openai`, driver ID
+`swallowtail.openai.background`, over HTTPS/SSE Background Responses. Choose
+it for one retained GPT-5.6 run that needs bounded in-process reattachment,
+native cancellation, or opt-in crash reconciliation. Reject it when the
+application needs a reusable conversation, callbacks, attachments, tools, or
+cross-process stream reattachment.
+
 This is direct inference. ChatGPT login, ChatGPT subscription access, Codex
 login, harness credentials, community OAuth, and delegated subscription access
 do not satisfy this profile.
@@ -14,7 +21,7 @@ do not satisfy this profile.
 
 `prepare_openai_background` requires:
 
-- one configured-instance revision
+- one configured-instance identity and revision
 - one execution host with `https://api.openai.com` explicitly approved
 - the exact public API-key pay-as-you-go access profile
 - observed or caller-asserted access evidence
@@ -23,6 +30,11 @@ do not satisfy this profile.
 from one consumer-selected credential reference. Preparation acquires no
 endpoint grant or credential. The prepared integration exposes its instance,
 access evidence, available services, target-drift check, and low-level driver.
+
+Operations bind host endpoint, credential, HTTP, task, and time services. No
+secret or endpoint value enters plans or diagnostics. The route binds exact
+opaque `openai.responses-background-facade` behavior; it has no ordered or
+unverified-newer range.
 
 ## Explicit Background Policy
 
@@ -35,6 +47,11 @@ access evidence, available services, target-drift check, and low-level driver.
 - `ProviderExecutionPolicy::Background`
 - `ProviderRetentionPolicy::TemporaryAllowed`
 - exactly one allowed stream reattachment
+
+The input may additionally select reasoning `none`, `minimal`, `low`,
+`medium`, `high`, `xhigh`, or `max`, and one inline JSON Schema 2020-12 object
+with provider-native enforcement. These remain explicit GPT-5.6 controls;
+Swallowtail does not infer them from a model name or catalogue.
 
 The full constructor keeps all three provider-operation policies visible.
 `background_with_temporary_retention_and_one_reattachment` is the named
@@ -61,6 +78,12 @@ use the exact reconciliation path.
 4. use one bounded retrieve when terminal stream truth is unavailable
 5. use native provider cancellation after local cancel or deadline
 6. close and join all network work before releasing the credential
+
+Take and drain run events and terminal concurrently. A terminal run makes one
+operation-owned response-deletion attempt and reports deletion separately
+from model completion and local cleanup. A detached run deliberately skips
+cancellation and deletion so the exact checkpointed response remains
+observable for reconciliation.
 
 Reattachment, retrieve, and cancellation manage the original inference
 attempt. They never recreate input, retry inference, select another route, or
@@ -103,8 +126,34 @@ state no longer needs reconciliation.
 Webhooks, conversations, tools, files, search, batch jobs, retry, fallback,
 and cross-process stream reattachment remain outside this profile.
 
+The route also exposes no attachments, consumer callbacks, working resource,
+provider-session load/resume/import/management, archive/restore, billed-cost
+evidence, or reusable provider identity. Reconciliation is read-only and
+cannot delete a detached response; provider temporary-retention policy remains
+authoritative.
+
+## Failures, Promotion, And Validation
+
+Handle failures through portable classification and retain the exact
+`swallowtail.openai.*` diagnostic for support. Keep provider terminal,
+cancellation confirmation, response deletion, detachment, reconciliation, and
+cleanup truth separate. Do not parse SSE/HTTP payloads, provider prose,
+checkpoint bytes, credentials, or endpoint values.
+
+Promotion requires exact Responses/facade evidence, immutable plan and access
+binding, bounded stream/retrieve/reconciliation fixtures, effect-boundary
+tests, and route-matrix coverage.
+
 `plan`, `request`, `evidence`, `low_level_driver`, and `into_parts` remain
 available for inspection and advanced use.
 
 See the compile-tested
 [`prepared_background_response` example](../../crates/swallowtail-adapter-openai/examples/prepared_background_response.rs).
+
+```sh
+effigy validate:focused swallowtail-adapter-openai
+effigy check:examples
+```
+
+No live response, cancellation, deletion, reconciliation, or credential use is
+required. Such checks remain separately operator-gated.

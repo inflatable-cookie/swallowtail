@@ -9,6 +9,19 @@ The adapter exposes two explicit local Claude routes:
 
 Neither route is an implicit fallback for the other.
 
+Both live in `swallowtail-adapter-claude-agent`:
+
+| Route | Driver ID and transport | Choose it for | Reject it when |
+| --- | --- | --- | --- |
+| `claude-agent.acp` | `swallowtail.claude-agent.acp`; ACP v1 over stdio | structured runs or reusable sessions with model/reasoning configuration, plan mode, activity, usage, typed questions, optional one-shot permissions, load/resume, and delete | the application cannot package the ACP sidecar or needs the smaller subscription-only read-only path |
+| `claude-code.headless` | `swallowtail.claude-code.headless`; Claude Code stream JSON over stdio | one read-only plan-mode prompt using local Claude subscription state | the application needs callbacks, writes, reusable sessions, management, or API-key billing |
+
+The host supplies the approved executable, explicit environment, configured
+instance and host identity, matching access evidence, and the task, process,
+time, working-resource, credential, and attachment services required by the
+selected plan. Swallowtail does not install either executable, perform login,
+choose a model, select billing, search `PATH`, or infer workspace authority.
+
 ## Claude Agent ACP Inputs
 
 Preparation requires:
@@ -71,6 +84,12 @@ permission handling.
 These are caller selections, not provider discovery. The route exposes no
 standalone model catalogue.
 
+ACP form elicitation is separate from permission mediation. The exact
+choice-and-Other subset projects into the common typed harness-user-input
+callback and is answered exactly once through the turn or run callback
+exchange. Richer forms and provider option previews are declined rather than
+flattened. A question is not authorization to execute a provider tool.
+
 ### Run Drain Contract
 
 After `start_run`, take the event stream and terminal outcome and poll them
@@ -80,6 +99,11 @@ output, reasoning, or tool-progress events; an undrained long agentic run
 therefore fails with `swallowtail.event_buffer_rejected`. A consumer that does
 not surface events must still drain them and may ignore them only after they
 cross the runtime boundary.
+
+Apply the same drain rule to session turns: poll events, callbacks when
+present, and the terminal outcome concurrently. Cancellation stops only the
+active operation. Always close and join the turn, session or run; retain
+terminal, native provider close/delete, and local cleanup as separate truth.
 
 ### ACP Permission Exchange
 
@@ -240,3 +264,57 @@ available for inspection and advanced use.
 
 See the compile-tested
 [`prepared_claude_agent_acp` example](../../crates/swallowtail-adapter-claude-agent/examples/prepared_claude_agent_acp.rs).
+
+## Continuation, Retention, And Delete
+
+ACP sessions return exact resume and management bindings. `load_session`
+returns bounded ordered ACP replay before readiness; `resume_session`
+reattaches without replay. Neither operation may redeclare reasoning or plan
+mode. Persist bindings only through their opaque export under the same
+prepared plan.
+
+`prepare_working_state_restoration` performs attachment recovery from an
+existing binding. It restores a usable session but does not reconcile the
+interrupted turn. There is no provider-session catalogue or import path.
+
+Structured runs are durable by default: native ACP close preserves history.
+`ClaudeAgentRunProfileInput::with_owned_session_cleanup()` instead binds a
+temporary operation-private profile that closes and then deletes that exact
+session, reporting provider completion and cleanup independently. Interactive
+delete is separately prepared from the opaque inactive management binding;
+it reports provider-data deletion, not secure erasure. Archive and restore are
+unsupported.
+
+Claude Code headless sets `--no-session-persistence`; closing joins only the
+owned run process and exposes no binding or lifecycle authority.
+
+## Failures, Unsupported Capabilities, And Promotion
+
+Handle preparation and runtime failures through the portable classification,
+while retaining the exact `swallowtail.claude_agent.*` or
+`swallowtail.claude_code.*` diagnostic for support. Never parse stderr, ACP
+payloads, permission display text, or Claude prose to infer retry, auth, or
+success. Terminal and cleanup outcomes remain distinct.
+
+Claude Agent ACP has no standalone model catalogue, attachments, structured
+output, output-token limit, external search, archive, restore, or
+provider-session import. Claude Code headless has no callbacks, writes,
+consumer tools, durable state, continuation, or management. Provider tool,
+plan, task, and child observations grant no control authority.
+
+A new capability needs exact adapter and provider-version evidence, an
+immutable prepared-plan mapping, bounded projection or callback semantics,
+deterministic fixtures, and route-matrix coverage. An advertised ACP method or
+Claude CLI option alone does not qualify it.
+
+## Deterministic Validation And Optional Probes
+
+```sh
+effigy validate:focused swallowtail-adapter-claude-agent
+effigy check:examples
+```
+
+These compile and test the prepared paths without auth or prompts. The
+repository-local sidecar bootstrap and managed probe above are separately
+gated operator work; authenticated Claude prompts are not required for
+deterministic acceptance.

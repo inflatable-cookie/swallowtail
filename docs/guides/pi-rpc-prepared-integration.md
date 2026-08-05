@@ -5,6 +5,13 @@ one host-approved executable and derives the configured instance, exact
 version binding, restrictive RPC policy, preflight plan, and open-session
 request.
 
+The route is `pi.rpc` in `swallowtail-adapter-pi`, with driver ID
+`swallowtail.pi.rpc` and strict-LF JSONL RPC over stdio. Choose it for Pi's
+configured model catalogue, a one-prompt no-session run, or an interactive
+session with typed UI questions and optional bounded PNG input. Reject it when
+the application needs reasoning selection, writes, permission exchange,
+provider-session continuation, or lifecycle management.
+
 ## Explicit Inputs
 
 Preparation requires:
@@ -29,6 +36,13 @@ model route, prompt, session, or working resource.
 
 Swallowtail does not choose the provider, model, account, credential,
 workspace, or fallback route.
+
+The host binds task, process, time, credential, working-resource, and optional
+attachment services required by the chosen plan. The delegated harness
+credential remains an opaque scoped lease; Swallowtail does not inspect Pi's
+provider configuration, login state, billing, or endpoint selection. The
+working resource is read-only and `ProviderSuppressed` configuration is not a
+sandbox.
 
 ## Version Posture
 
@@ -75,6 +89,12 @@ interruption, and joined cleanup remain on the existing session and turn
 interfaces. The facade does not copy those lifecycle rules into shared facade
 records.
 
+Take each turn's events, typed question callbacks, and terminal outcome
+immediately and poll them concurrently. Answer each callback at most once with
+the correlated portable question and option IDs. Cancellation interrupts the
+active turn; session close joins the child, task, resource, credential, and
+attachment work. A question is not a permission request.
+
 Pi `confirm`, `select`, `input`, and `editor` requests project into the common
 typed harness user-input callback. Stable runtime question and option ids
 correlate the response; Pi display-only UI stays a separate observation.
@@ -86,6 +106,10 @@ callback exchange, awaits `agent_end`, then joins the turn, process,
 working-resource, and credential work. Its policy prohibits provider
 retention. It exposes no provider run, reusable session, resume binding, or
 management binding.
+
+Drain run events, callbacks, usage, and terminal concurrently before `close`.
+Terminal status and cleanup remain separate. The run has no provider session
+to archive, restore, delete, load, or resume.
 
 `PiRunProfileInput::with_attachments` accepts at most one `image/png`
 descriptor with a declared size no greater than one MiB.
@@ -103,3 +127,33 @@ available for inspection and advanced use.
 
 See the compile-tested
 [`prepared_pi_rpc` example](../../crates/swallowtail-adapter-pi/examples/prepared_pi_rpc.rs).
+
+## Restart, Failures, And Promotion
+
+Pi exposes no durable Swallowtail resume or management binding. A prepared
+interactive profile can use `prepare_working_state_restoration` only to open a
+fresh context-losing session after process loss. It does not recover the
+interrupted turn, pending callbacks, or transcript.
+
+Handle failures through portable classification and retain the exact
+`swallowtail.pi.*` diagnostic for support. Do not parse RPC records, UI text,
+stderr, Pi state, or provider prose to infer authentication, retry, terminal,
+or cleanup truth.
+
+Unsupported capabilities include reasoning control, structured output,
+consumer tools, permission exchange, writes, external search, public
+continuation, provider-session catalogue/import, archive/restore/delete,
+subagent control, and billed cost. Promotion requires exact Pi protocol and
+published-version evidence, immutable prepared-plan binding, bounded fixtures,
+and route-matrix coverage; a provider plugin or UI behavior alone is not
+sufficient.
+
+## Deterministic Validation
+
+```sh
+effigy validate:focused swallowtail-adapter-pi
+effigy check:examples
+```
+
+No configured provider call, credential use, prompt, or account mutation is
+required.

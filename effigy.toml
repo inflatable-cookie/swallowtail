@@ -23,12 +23,14 @@ allowlist_file = "docs/policy/vision-next-task-verbs.txt"
 "qa:docs:index:vision" = "effigy docs check index --policy-index vision"
 "qa:docs:next-action:roadmaps" = "effigy docs check next-action --policy roadmaps"
 "qa:docs:agent-defaults" = "effigy docs check forbidden AGENTS.md README.md docs/README.md --forbid '--repo .'"
+"qa:guides" = "python3 scripts/check-integration-guide-coverage.py"
 
 "qa:docs" = [
   { task = "qa:docs:links" },
   { task = "qa:docs:index:vision" },
   { task = "qa:docs:next-action:roadmaps" },
   { task = "qa:docs:agent-defaults" },
+  { task = "qa:guides" },
 ]
 
 "qa:northstar:spine" = "effigy docs check paths README.md AGENTS.md CHANGELOG.md docs/README.md docs/vision/README.md docs/architecture/README.md docs/contracts/README.md docs/specs/README.md docs/roadmaps/README.md docs/logs/README.md docs/policy/internal-writing-style.md docs/policy/vision-next-task-verbs.txt"

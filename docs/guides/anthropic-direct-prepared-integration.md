@@ -1,82 +1,109 @@
 # Anthropic Direct Prepared Integration
 
-Use the prepared facade for the provider-supported Anthropic Models and
-Messages route. It binds the public API audience, dated protocol facade,
-configured endpoint target, API-key lease source, host, access evidence, and
-operation plans without exposing the key or approved endpoint value.
+Use `swallowtail-adapter-anthropic` route `anthropic.messages`, driver ID
+`swallowtail.anthropic.direct`, for the provider-supported Models and Messages
+API over HTTPS/SSE. Choose it for catalogue observation, one bounded Messages
+attempt, or a small resource-free consumer-tool continuation. Reject it when
+the application needs Claude subscription access, provider-hosted agent state,
+durable continuation, a working resource, or provider-session management.
 
-## Inputs That Stay Explicit
+## Operator Prerequisites
 
-Preparation requires:
+Preparation requires one configured-instance revision, execution host,
+host-approved `api.anthropic.com` endpoint target, public API-key pay-as-you-go
+profile, opaque credential reference for that audience, and matching observed
+or caller-asserted access evidence. The host supplies endpoint, credential,
+HTTP, task, time, and optional attachment services required by the prepared
+operation.
 
-- one configured-instance identity and revision
-- one execution host and host-approved endpoint target
-- one provider-supported, pay-as-you-go public API-key access profile
-- one opaque credential reference for `api.anthropic.com`
-- observed or caller-asserted access evidence
+Swallowtail does not read environment variables, discover an account or
+endpoint, choose a model, infer entitlement or billing, or fall back to Claude
+Agent, Claude Code, Bedrock, or another compatible API. Credential and endpoint
+values remain outside plans and stable diagnostics.
 
-Swallowtail does not discover an account, read an environment variable, choose
-an endpoint, select a model, infer entitlement, or fall back to another route.
-The host resolves the opaque endpoint and credential references only when an
-operation starts.
+The route has no ordered version axis. It binds exact
+`anthropic-2023-06-01` facade behavior. A different date or compatible JSON
+shape requires separate qualification; there is no unverified-newer inference.
 
-Call `prepare_anthropic_direct` with `AnthropicPreparationInput` and the host
-service composition. Preparation is local and performs no provider request or
-credential acquisition. The result exposes its safe configured instance,
-access provenance, service set, and low-level `AnthropicDirectDriver` escape
-hatch.
+## Prepare And Observe Models
 
-## Catalogue Observation
+Call `prepare_anthropic_direct` with `AnthropicPreparationInput` and the exact
+host services. Preparation is local: it checks host, target, access evidence,
+and service availability without acquiring a credential or making a provider
+request. The result exposes its safe configured instance, access provenance,
+services, and `AnthropicDirectDriver` escape hatch.
 
-`prepare_catalogue` accepts an `AnthropicCatalogueProfileInput` containing a
-request identity and optional deadline. It derives a `ModelCatalog` plan and
-request without a model route.
-
-`AnthropicPreparedCatalogue::list_models` observes the exact configured
-catalogue source. Returned entries are mutable, source-scoped evidence. Their
-presence, token limits, and provider ids do not select a route or prove model
-permission, entitlement, balance, quota, or request acceptance.
+`prepare_catalogue` accepts `AnthropicCatalogueProfileInput`; the returned
+`list_models` operation observes the exact configured source. Entries and
+token limits do not select a route or prove model permission, balance, quota,
+capacity, billing, or invocation success.
 
 ## One Inference Attempt
 
-`prepare_inference_attempt` requires:
+`AnthropicInferenceAttemptInput` requires request identity, exact
+`AnthropicModelSelection`, user content, one positive maximum-output-token
+bound, and optional deadline. Optional qualified inputs are:
 
-- one exact `AnthropicModelSelection`
-- request identity and user content
-- one explicit positive maximum-output-token bound
-- an optional host-monotonic deadline
+- at most one input PNG with declared size no greater than one MiB
+- `AnthropicWebSearchInput` with one to ten bare allowed domains; the provider
+  tool is fixed to at most two uses
 
-The result derives an offline, attached, non-retained structured-run request
-and a route-bound direct-inference plan. `start_run` makes exactly one Messages
-request. Provider errors, cancellation, deadline, usage, request correlation,
-rate evidence, terminal outcome, and joined cleanup retain the low-level
-driver semantics.
+The host materializes the opaque attachment. Web search is provider-owned
+external network access, not a consumer tool or general network grant.
 
-This first Anthropic subset is text-only. It declares neither `ToolCalls` nor
-`DirectToolContinuation`. Swallowtail does not execute tools or turn a model
-tool call into another request. Consumers needing a tool loop must select a
-separately supported direct-session route; they cannot treat this structured
-run as an implicit agent loop.
+Call `prepare_inference_attempt`, inspect `plan()`, `request()`, and
+`evidence()`, then `start_run`. One start makes exactly one Messages request.
+Take and drain events and the terminal outcome concurrently, then close the
+run. Usage, request correlation, rate evidence, cancellation, deadline,
+provider failure, and cleanup remain distinct. No result, error, timer, usage,
+or catalogue observation authorizes an automatic retry.
 
-Every further Anthropic attempt requires another explicit prepared input and
-`start_run` call. No usage observation, remaining capacity, provider error,
-timer, catalogue result, or successful output authorizes retry.
+The structured role has no consumer tool loop, reasoning selection,
+structured output, provider retention, background execution, or continuation.
 
-## Direct Continuation And Restart
+## Direct Tool Continuation And Restart
 
-`prepare_session` binds one resource-free consumer-tool continuation session.
-Its provider-required assistant and reasoning envelopes remain bounded,
-adapter-private process memory. They are neither portable output nor durable
-provider-session identity.
+`AnthropicSessionProfileInput` binds an exact model and one to eight declared
+consumer JSON Schema tools. `prepare_session` returns a resource-free
+interactive profile supporting two user turns and one exact correlated tool
+call/result continuation. Swallowtail relays the tool exchange but never
+selects or executes a tool.
 
-`AnthropicPreparedSession::prepare_working_state_restoration` therefore opens
-one fresh session and returns `SessionReplaced`. It preserves the interrupted
-consumer turn id but no prompt, transcript, tool result, provider-private
-continuation, or terminal truth. Closing or losing the original session makes
-its hidden continuation unrecoverable.
+Call `open_session`, then start turns through the direct-continuation
+interface. Drain events, the tool exchange, and terminal concurrently. A next
+provider request occurs only after the consumer supplies the exact correlated
+result. Cancellation, omission, or rejection sends no continuation attempt.
+Close each turn and the session to join local HTTP, task, and credential work.
 
-`plan`, `request`, `evidence`, `low_level_driver`, and `into_parts` remain
-available for diagnostics and advanced low-level use.
+Provider-required assistant and reasoning envelopes stay bounded in adapter
+memory. They are not portable output or durable provider-session identity.
+`prepare_working_state_restoration` therefore opens a fresh session and
+returns `SessionReplaced`. It preserves only the interrupted consumer turn ID,
+not prompt, transcript, tool result, private continuation, or terminal truth.
 
-See the compile-tested
-[`prepared_direct` example](../../crates/swallowtail-adapter-anthropic/examples/prepared_direct.rs).
+The route exposes no load/resume binding, reconciliation, archive, restore,
+delete, native close, provider-session catalogue/import, billed cost, or
+working-resource authority.
+
+## Failures, Promotion, And Validation
+
+Handle failures through portable classification and retain the exact
+`swallowtail.anthropic.*` diagnostic for support. Do not parse SSE records,
+HTTP bodies, provider prose, tool text, endpoint values, or credentials in
+consumer code.
+
+Promotion requires an exact Anthropic facade and model surface, immutable
+prepared-plan and access binding, bounded protocol/attachment fixtures,
+lifecycle tests, and route-matrix coverage. Documentation or compatible syntax
+alone is insufficient.
+
+The compile-tested
+[`prepared_direct` example](../../crates/swallowtail-adapter-anthropic/examples/prepared_direct.rs)
+covers catalogue, run, and session preparation. Validate without network work:
+
+```sh
+effigy validate:focused swallowtail-adapter-anthropic
+effigy check:examples
+```
+
+Live API calls and allowance spend are separately operator-gated.

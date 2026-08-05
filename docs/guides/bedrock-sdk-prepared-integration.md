@@ -2,13 +2,19 @@
 
 Amazon Bedrock uses two separate prepared surfaces:
 
-| Route | Preparation | Bound operation | SDK |
-| --- | --- | --- | --- |
-| Runtime inference | `prepare_bedrock_runtime` | `BedrockPreparedInferenceAttempt` | `aws-sdk-bedrockruntime = 1.136.0` |
-| Control-plane catalogue | `prepare_bedrock_catalogue` | `BedrockPreparedCatalogue` | `aws-sdk-bedrock = 1.148.0` |
+| Route | Driver ID and operation | Transport and SDK |
+| --- | --- | --- |
+| `bedrock.runtime` | `swallowtail.amazon-bedrock.direct`; `BedrockPreparedInferenceAttempt` | Rust SDK EventStream; `aws-sdk-bedrockruntime = 1.136.0` |
+| `bedrock.catalogue` | `swallowtail.amazon-bedrock.catalogue`; `BedrockPreparedCatalogue` | Rust SDK control plane; `aws-sdk-bedrock = 1.148.0` |
 
 They do not share a configured instance, driver, access profile, endpoint
 audience, plan, request, or operation method.
+
+Both routes live in `swallowtail-adapter-bedrock`. Choose Runtime for one
+explicit regional model attempt and Catalogue for control-plane observation.
+Reject Bedrock when the application needs a public model API, automatic global
+routing, ambient AWS discovery, a reusable session, or provider lifecycle
+management.
 
 ## Explicit Cloud Client
 
@@ -25,6 +31,19 @@ profiles, container metadata, instance metadata, or region chain.
 The credential provider object stays opaque. Stable diagnostics and prepared
 evidence expose no keys, tokens, SDK request objects, endpoint values, or raw
 provider payloads.
+
+Use `prepare_bedrock` with `BedrockFacadePreparationInput` to bind the shared
+execution host and exact cloud-client configuration. Then select `runtime` or
+`catalogue` with a route-specific instance, approved regional target, access
+profile, and evidence. The older branch-specific preparation functions remain
+public escape hatches; the normal facade never infers a branch.
+
+The host supplies blocking-work, task, time, network, and credential services
+plus the explicit credential-provider composition. The adapter constructs the
+route-specific SDK client with retries disabled. Preparation makes no SDK
+request and does not inspect AWS environment variables, profiles, shared
+files, container or instance metadata, account billing, IAM policy, or model
+entitlement.
 
 ## Runtime
 
@@ -50,6 +69,12 @@ The returned `BedrockPreparedInferenceAttempt::start_run` delegates to the
 unchanged `ConverseStream` driver. One operation remains one SDK attempt with
 SDK retries disabled. Cancellation and deadline join the operation-private
 executor before credential release.
+
+Take and drain streaming events and terminal concurrently, then close the
+run. Output, usage, rate/request evidence, SDK error, cancellation, deadline,
+EventStream cleanup, and credential release remain distinct. Cancellation
+releases local request work without claiming provider-native interruption. No
+result or error authorizes retry.
 
 See the compile-tested
 [`prepared_runtime` example](../../crates/swallowtail-adapter-bedrock/examples/prepared_runtime.rs).
@@ -88,6 +113,11 @@ Runtime and catalogue evidence separately retain:
 - exact service-operation facade
 - immutable preflight plan
 
+Runtime binds exact `amazon-bedrock.runtime-rust-sdk` and Runtime service API
+revisions. Catalogue binds exact `amazon-bedrock.control-plane-rust-sdk` and
+control-plane service API revisions. These are opaque exact claims, not an
+ordered or unverified-newer range.
+
 Prepared operations expose `plan`, `request`, `low_level_driver`, and
 `into_parts`. Advanced consumers may still assemble and call the low-level
 drivers directly.
@@ -96,3 +126,26 @@ Cross-region inference profiles, global routing, guardrails, tools, prompt
 resources, attachments, ambient AWS configuration, automatic SDK retry, route
 selection from catalogue results, and live AWS authentication tests remain
 excluded.
+
+Both routes also expose no structured output, reasoning selection,
+working-resource access, callbacks, background execution, retained sessions,
+reconciliation, or provider management. Owned cloud resources are not created.
+
+## Failures, Promotion, And Validation
+
+Handle failures through portable classification and retain the exact
+`swallowtail.bedrock.*` diagnostic for support. Never parse SDK debug values,
+raw EventStream records, provider prose, endpoint targets, or credential
+provider internals.
+
+Promotion requires exact SDK and service-model revisions, regional target and
+access binding, bounded client fixtures, operation lifecycle tests, and
+route-matrix coverage. Catalogue presence alone cannot promote Runtime support.
+
+```sh
+effigy validate:focused swallowtail-adapter-bedrock
+effigy check:examples
+```
+
+The linked Runtime and Catalogue examples compile without AWS credentials or
+network calls. Live AWS access and billable inference remain operator-gated.

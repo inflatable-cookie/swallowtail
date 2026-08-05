@@ -1,87 +1,95 @@
 # DeepSeek Prepared Integration
 
-Use this facade for the exact DeepSeek Open Platform V4 Pro continuation route.
-It binds `https://api.deepseek.com`, the `api.deepseek.com` audience, the dated
-OpenAI-format facade, one public API-key profile, and the exact
-`deepseek-v4-pro` route.
+Use `swallowtail-adapter-deepseek` route `deepseek.continuation`, driver ID
+`swallowtail.deepseek.direct`, for the exact DeepSeek Open Platform V4 Pro
+surface over OpenAI-compatible HTTPS/SSE. Choose it for catalogue observation,
+one bounded reasoning request, or consumer-owned direct tool continuation.
+Reject it when the application needs a durable provider thread, working
+resource, attachments, structured output, or managed recovery.
 
-## Inputs That Stay Explicit
+## Operator Prerequisites
 
-`prepare_deepseek_direct` requires:
+`prepare_deepseek_direct` requires configured-instance and execution-host
+identity, the exact approved `https://api.deepseek.com` target, the Open
+Platform API-key pay-as-you-go profile, opaque credential reference, and
+matching access evidence. The host supplies endpoint, credential, HTTP, task,
+and time services.
 
-- one configured-instance identity and revision
-- one execution host
-- the exact public endpoint target
-- one provider-supported, pay-as-you-go Open Platform API-key profile
-- observed or caller-asserted access evidence
+App credentials, OAuth, proxies, gateways, Anthropic facades, `/v1`, beta
+endpoints, model aliases, and third-party compatible APIs cannot substitute.
+Swallowtail does not discover an account, read an environment variable, choose
+a model or endpoint, select billing, or fall back.
 
-No DeepSeek app credential, OAuth route, proxy, gateway, Anthropic facade,
-`/v1` path, beta endpoint, model alias, or third-party compatible endpoint can
-substitute.
+The route binds one exact opaque `deepseek.openai-chat-facade` revision. It has
+no ordered or unverified-newer range. Compatible JSON does not widen the
+contract.
+
+## Preparation And Catalogue
 
 Preparation performs no network or credential work. The result exposes its
-safe configured instance, opaque facade compatibility assessment, access
-provenance, service set, and low-level driver.
+safe configured instance, exact facade assessment, access provenance, service
+set, and `DeepSeekDirectDriver` escape hatch.
 
-## Catalogue
-
-`prepare_catalogue` derives a catalogue plan without selecting a model.
-Catalogue presence remains source-scoped evidence. It does not prove balance,
-entitlement, capacity, cache state, or invocation success.
+`prepare_catalogue` and `list_models` observe the exact account source without
+selecting a model. Catalogue presence proves neither balance, entitlement,
+capacity, cache state, billing, nor invocation success.
 
 ## One-Request Structured Run
 
-`prepare_run` requires the exact V4 Pro route, explicit `high` reasoning, text
-content, a positive output-token limit, explicit acceptance of DeepSeek's
-unmanaged inference cache, and an optional host-monotonic deadline.
-`start_run` sends one streamed, tool-free Chat Completions request.
+`prepare_run` requires the exact `deepseek-v4-pro` route, `high` reasoning,
+text content, positive output-token limit, optional host deadline, and explicit
+`ProviderInferenceCachePolicy::AcceptedWithoutManagementAuthority`.
+`start_run` sends one tool-free streamed request.
 
-The structured branch retains no reusable session or private continuation.
-Reasoning content needed to validate the provider stream remains adapter-
-private and is discarded at terminal completion. Tools, attachments,
-structured output, working resources, provider retention, background
-execution, recovery, and reattachment reject before endpoint or credential
-effects.
+Take and drain events and terminal concurrently, then close the run. Assistant
+output, reasoning, usage, rate and request correlation, provider failure,
+cancellation, deadline, and cleanup remain distinct. Provider-required
+reasoning validation state is discarded at terminal completion. No result or
+error authorizes retry.
 
 ## Direct Tool Continuation
 
-`prepare_session` requires:
+`prepare_session` requires the exact model, `high` reasoning, one to eight
+consumer-owned JSON Schema tools, and the same unmanaged-cache acceptance.
+The cache policy grants no cache read, deletion, retention, or retry authority.
 
-- exact route identity, revision, and `deepseek-v4-pro` model identity
-- explicit `high` reasoning
-- one to eight consumer-owned JSON Schema tools
-- explicit
-  `ProviderInferenceCachePolicy::AcceptedWithoutManagementAuthority`
+Call `open_session`, then `start_direct_continuation_turn`. When DeepSeek emits
+a tool call, the turn pauses. Swallowtail never selects or executes the tool;
+the next provider attempt starts only after the consumer submits exact
+correlated `DirectToolResult` values through `DirectToolExchange`. Missing,
+cancelled, or rejected results send no further request.
 
-That cache value records consumer acceptance of DeepSeek's provider-managed
-best-effort context cache. It grants Swallowtail no cache read, deletion,
-retention, or retry authority.
+Drain events, exchange, and terminal concurrently, then close turns and the
+session. Closing joins work, clears private assistant and
+`reasoning_content` envelopes, and releases credentials. Those envelopes are
+bounded adapter state, not portable output or durable provider identity.
 
-`open_session` acquires the endpoint and credential leases and returns the
-normal `InteractiveSessionHandle`. The consumer starts each user turn through
-`start_direct_continuation_turn`.
+`prepare_working_state_restoration` opens a fresh session and returns
+`SessionReplaced`, retaining only the interrupted consumer turn ID. It cannot
+recover transcript, reasoning, tool exchange, cache, or terminal truth.
 
-When DeepSeek returns a tool call, the turn pauses. Swallowtail neither selects
-nor executes the tool. The next provider attempt starts only when the consumer
-submits correlated `DirectToolResult` values through the returned
-`DirectToolExchange`. Omitting, cancelling, or rejecting that submission makes
-no further request.
+The route exposes no attachments, structured output, working resource,
+provider session, public load/resume, reconciliation, archive/restore/delete,
+background execution, reattachment, external search, or billed cost.
 
-The adapter privately retains the provider-required assistant envelope and
-`reasoning_content`. It never exposes that reasoning as portable output and
-cannot replay it across session, facade, model, route, access, or host
-boundaries. Closing the session joins active work, clears private continuation,
-then releases credentials.
+## Failures, Promotion, And Validation
 
-`DeepSeekPreparedSession::prepare_working_state_restoration` opens one fresh
-session after handle loss. The `SessionReplaced` outcome retains the
-interrupted consumer turn id but explicitly carries no prior transcript,
-reasoning content, tool exchange, provider cache, or terminal truth. Visible
-message replay cannot reconstruct the discarded private continuation.
+Handle failures through portable classification and keep the exact
+`swallowtail.deepseek.*` diagnostic for support. Never parse HTTP bodies, SSE
+frames, provider prose, cache state, credentials, or endpoint values.
 
-The legacy `deepseek-chat` and `deepseek-reasoner` aliases are outside this
-route. Compatible JSON syntax does not authorize model mapping or provider
-fallback.
+Promotion requires exact DeepSeek route/facade evidence, immutable plan and
+access binding, bounded continuation fixtures, lifecycle tests, and
+route-matrix coverage. Legacy `deepseek-chat` and `deepseek-reasoner` aliases
+remain outside this route.
 
-See the compile-tested
-[`prepared_direct_continuation` example](../../crates/swallowtail-adapter-deepseek/examples/prepared_direct_continuation.rs).
+The compile-tested
+[`prepared_direct_continuation` example](../../crates/swallowtail-adapter-deepseek/examples/prepared_direct_continuation.rs)
+covers run and session preparation. Validate without provider work:
+
+```sh
+effigy validate:focused swallowtail-adapter-deepseek
+effigy check:examples
+```
+
+Live API calls and cache-affecting inference remain operator-gated.

@@ -5,6 +5,12 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-08-05 Integration Guide System Acceptance](2026-08-05-integration-guide-system-acceptance.md)
+- [2026-08-05 Cross-Cutting Feature Runbooks](2026-08-05-cross-cutting-feature-runbooks.md)
+- [2026-08-05 Hosted And Runtime Integration Guide Deepening](2026-08-05-hosted-and-runtime-integration-guide-deepening.md)
+- [2026-08-05 Harness Integration Guide Deepening](2026-08-05-harness-integration-guide-deepening.md)
+- [2026-08-05 Missing Route Guide Closure](2026-08-05-missing-route-guide-closure.md)
+- [2026-08-05 Integration Guide Coverage Audit](2026-08-05-integration-guide-coverage-audit.md)
 - [2026-08-05 Portable Failure Classification](2026-08-05-portable-failure-classification.md)
 - [2026-08-05 Oh My Pi RPC Foundation](2026-08-05-oh-my-pi-rpc-foundation.md)
 - [2026-08-05 Provider-Wide Session Usability Restoration](2026-08-05-provider-wide-session-usability-restoration.md)

@@ -2,15 +2,21 @@
 
 Swallowtail exposes three separate prepared connection surfaces:
 
-| Route | Prepared integration | Bound operation | Native shape |
+| Route | Package and driver ID | Bound operation | Native shape |
 | --- | --- | --- | --- |
-| xAI Responses WebSocket | `XaiPreparedIntegration` | `XaiPreparedResponsesRun`; `XaiPreparedResponsesSession` | one bounded response without continuation; serial text turns with private continuation and billed cost |
-| OpenAI Realtime | `OpenAiRealtimePreparedIntegration` | `OpenAiPreparedRealtimeSession` | manual PCM input, audio/transcript output, native response cancellation |
-| Gemini Live | `GeminiLivePreparedIntegration` | `GeminiPreparedLiveSession` | asymmetric PCM, local interruption, one provider-planned rollover |
+| `xai.responses-websocket` | `swallowtail-adapter-xai`; `swallowtail.xai.websocket` | `XaiPreparedResponsesRun`; `XaiPreparedResponsesSession` | Responses WebSocket; one bounded response without continuation, or serial text turns with private continuation and billed cost |
+| `openai.realtime` | `swallowtail-adapter-openai`; `swallowtail.openai.realtime` | `OpenAiPreparedRealtimeSession` | Realtime WebSocket; manual PCM input, audio/transcript output, native response cancellation |
+| `gemini.live` | `swallowtail-adapter-gemini`; `swallowtail.gemini.live` | `GeminiPreparedLiveSession` | Gemini Live raw WebSocket; asymmetric PCM, local interruption, one provider-planned rollover |
 
 They share provider-neutral prepared evidence. They do not share a connection
 constructor, turn method, cancellation claim, rollover policy, media format,
 or model-selection rule.
+
+Choose xAI for text Responses over one socket, OpenAI for the exact public
+Realtime PCM profile and output-token control, and Gemini for the qualified
+Live preview with planned rollover. Reject this guide when the application
+needs HTTP/SSE request-response inference, browser/WebRTC/SIP transport,
+durable provider sessions, callbacks, tools, or cross-process continuity.
 
 ## Provider Catalogue Branches
 
@@ -49,6 +55,11 @@ one resource-free structured operation. It opens one connection, sends one
 terminal response, reports usage and billed cost, then closes and joins the
 connection. It exposes no provider run, session, or continuation binding.
 
+For runs and text turns, take and drain events and terminal concurrently, then
+close the operation. Usage and billed-cost evidence are provider observations,
+not retry or balance authority. Cancellation, deadline, disconnect, and
+cleanup remain distinct.
+
 Cancellation, deadline, disconnect, provider failure, or connection lifetime
 end invalidates the whole session. There is no reconnect, replay, provider
 storage, or consumer resume binding.
@@ -74,10 +85,19 @@ GA facade.
 - disabled planned rollover
 - optional operation deadline
 
+Call `with_maximum_output_tokens` for an exact positive maximum no greater
+than 4,096. Omission leaves the provider profile's existing behavior; the
+adapter never invents a default for the consumer.
+
 The prepared session delegates append, commit, output audio, transcript,
 usage, rate, request correlation, native response cancellation, connection
 invalidation, and cleanup to the unchanged realtime driver. Consumers retain
 capture, playback, conversion, pacing, privacy, and played-position truth.
+
+Consumers must continuously drain media/session events while driving input
+and response operations. Native response cancellation affects the active
+response, while connection failure invalidates the session. Close joins local
+socket, task, and credential work; terminal and cleanup truth stay separate.
 
 `OpenAiPreparedRealtimeSession::prepare_working_state_restoration` returns
 `RealtimeSessionReplaced` with one new media handle. It carries no audio,
@@ -108,6 +128,11 @@ unexpected reconnect, stream reattachment, consumer resume, or durable
 provider storage. Cancellation and deadline close locally with unconfirmed
 provider cancellation truth.
 
+Consumers drain audio, transcript, usage, lifecycle, rollover, and terminal
+events continuously. They retain capture, playback, sample conversion,
+backpressure, privacy, and played-position truth. Rollover failure invalidates
+the connection rather than silently starting a fresh session.
+
 `GeminiPreparedLiveSession::prepare_working_state_restoration` also returns a
 fresh realtime handle with connection-state loss. The configured one-rollover
 policy remains an in-session idle-boundary mechanism; it does not recover a
@@ -120,11 +145,26 @@ See the compile-tested
 
 Each preparation input requires:
 
-- one configured-instance revision
+- one configured-instance identity and revision
 - one exact execution host and host-approved endpoint target
 - the adapter-owned access profile with a consumer-selected credential
   reference
 - observed or caller-asserted access evidence
+
+The host binds approved endpoint, opaque credential, WebSocket/HTTP, task, and
+time services. Swallowtail performs no login, endpoint discovery, model
+selection, billing selection, microphone/speaker access, or route fallback.
+Each route uses public API-key billing and its exact audience; Gemini uses its
+project-authorization profile.
+
+The three routes bind exact opaque facade revisions:
+
+- `xai.responses-websocket-facade`
+- `openai.realtime-facade`
+- `gemini.live-facade`
+
+They have no ordered or unverified-newer version range. Catalogue presence
+cannot promote a model to any of these transports.
 
 Preparation acquires no endpoint grant or credential and opens no socket.
 Each prepared operation exposes its immutable plan, request, access evidence,
@@ -133,3 +173,30 @@ low-level driver, and `into_parts` escape hatch.
 Live authentication, microphone capture, speakers, browser transports,
 ephemeral client tokens, WebRTC, SIP, tools, automatic provider fallback, and
 route selection remain downstream or separately gated.
+
+The routes also expose no attachments, structured output, reasoning control,
+consumer callbacks, working resources, public load/resume, reconciliation,
+provider-session management, background execution, or cross-process stream
+reattachment. xAI alone reports billed cost; OpenAI alone exposes the
+qualified output-token maximum; Gemini alone permits the planned rollover.
+
+## Failures, Promotion, And Validation
+
+Handle failures through portable classification and retain the exact route
+diagnostic (`swallowtail.xai.*`, `swallowtail.openai.*`, or
+`swallowtail.gemini.*`) for support. Do not parse WebSocket payloads, provider
+prose, private continuation handles, credentials, or endpoint values.
+
+Promotion requires exact provider facade/model evidence, immutable media,
+access, and rollover binding, bounded WebSocket fixtures, cancellation and
+connection-lifecycle tests, and route-matrix coverage.
+
+Validate the three compile-tested examples without opening sockets:
+
+```sh
+effigy validate:focused swallowtail-adapter-xai swallowtail-adapter-openai swallowtail-adapter-gemini
+effigy check:examples
+```
+
+Live API calls, microphone capture, audio playback, and allowance spend remain
+separately operator-gated.

@@ -6,9 +6,9 @@ Updated: 2026-08-05
 
 ## Purpose
 
-Provide one portable execution facade for restoring consumer working state
-after a runtime handle is lost without flattening read-only reconciliation and
-stateful continuation recovery.
+Provide portable execution facades for restoring consumer working state after
+a runtime handle is lost without flattening read-only reconciliation,
+stateful continuation recovery, or a later settled-session attachment.
 
 ## Boundary
 
@@ -154,6 +154,99 @@ Fresh-session replacement:
 
 All other production routes remain unsupported until separately qualified.
 
+## Settled Observe Then Attach
+
+Some reconciliation routes can return a usable live session only after the
+read-only observation proves that provider work is no longer active. This is
+a separate consuming sequence, not another
+`WorkingStateRestorationMethod`.
+
+`PreparedSettledSessionRestoration` owns two independently prepared bound
+operations before provider work begins:
+
+1. one exact provider-session reconciliation
+2. one exact attachment for the same durable session binding
+
+The second operation is either load with its own bounded replay or replay-free
+resume. The reconciliation outcome cannot create, modify, or substitute its
+binding, plan, request, cancellation, deadline, host, resource, access,
+version, model, or provider-session authority. Adapter preparation must reject
+any mismatch before the sequence exists.
+
+The sequence consumes itself once. It always finishes reconciliation before
+deciding whether attachment may start.
+
+## Settled Eligibility
+
+Attachment is eligible only for these validated reconciliation states:
+
+- `Completed`
+- `Failed`
+- `Cancelled`
+- `InactiveUnresolved`
+
+Terminal states already require exact provider-turn attribution under
+Contract 048. `InactiveUnresolved` may be exact-turn or provider-session
+attributed; it authorizes attachment only because qualified route evidence
+proved the session inactive. It does not settle the interrupted consumer turn.
+
+These states never start attachment:
+
+- `Active`
+- `WaitingForProviderInput`
+- `Unknown`
+
+Waiting does not grant callback-answer authority. Unknown does not degrade to
+inactive. Replay completeness, transcript shape, idle-looking prose, or a
+terminal-looking replay item cannot change eligibility.
+
+## Settled Sequence Outcomes
+
+`SettledSessionRestorationOutcome` preserves one of two successful paths:
+
+- `Observed(ProviderSessionReconciliationOutcome)` when the validated state is
+  ineligible for attachment
+- `Attached(SettledSessionAttachmentOutcome)` when attachment succeeds
+
+`SettledSessionAttachmentOutcome` retains the complete reconciliation outcome
+beside one distinct `SettledSessionAttachment`:
+
+- `Loaded(LoadedSession)` preserves the attachment operation's bounded ordered
+  replay and live handle
+- `Resumed(InteractiveSessionHandle)` explicitly carries no replay
+
+The first-phase replay and load replay remain separate snapshots. Swallowtail
+does not merge, deduplicate, or promote either into consumer transcript truth.
+
+`SettledSessionRestorationFailure` preserves failure phase:
+
+- `Reconciliation(RuntimeFailure)` means no attachment operation started
+- `Attachment { reconciliation, failure }` retains the successful complete
+  reconciliation outcome beside the second-phase failure
+
+An attachment failure does not erase or weaken observed provider truth. It
+returns no live handle. The consumer may persist or present the reconciliation
+outcome, then explicitly prepare a later action under current evidence.
+
+## Settled Sequence Lifecycle
+
+Reconciliation and attachment retain their own prebound cancellation and
+deadline rules. Cancellation, deadline, cleanup failure, disconnect, stale
+binding, or provider failure in phase one returns reconciliation failure and
+starts no attachment. The same conditions in phase two return attachment
+failure beside the completed reconciliation outcome.
+
+The sequence adds no retry, prompt, callback answer, provider request,
+cancellation of provider work, import, management, cleanup, child control,
+route fallback, or credential fallback. It issues no attachment after a first-
+phase failure or ineligible state.
+
+The first production mappings are:
+
+- Codex app-server reconciliation followed by bounded load/replay
+- OpenCode HTTP reconciliation followed by bounded load/replay
+- Kimi local-server exact-turn reconciliation followed by replay-free resume
+
 ## Conformance
 
 Portable and route tests must prove:
@@ -169,3 +262,10 @@ Portable and route tests must prove:
 - attachment updates are bounded and discarded without a replay claim
 - replacement reports provider-context loss and performs no prompt replay
 - unsupported routes are not silently promoted
+- both settled-sequence operations are fully prepared before provider work
+- eligible state dispatches exactly one attachment after reconciliation
+- active, waiting, and unknown state dispatch no attachment
+- first-phase failure dispatches no attachment
+- attachment failure preserves the complete reconciliation outcome and returns
+  no handle
+- loaded and resumed attachments retain distinct replay truth

@@ -38,8 +38,8 @@ visible as unverified newer unless exact evidence requires rejection.
 | Reconcile and clean exact recovered Anthropic Managed Agent runs without conflating observation and control. | completed | Contracts 021-022, 038, 042, 048 | `g03.033` |
 | Restore consumer working state through the strongest exact route method without flattening ACP continuation into reconciliation. | completed | Contracts 017, 037, 046, 048, 050 | `g03.034` |
 | Extend ACP continuation recovery only where exact agent-specific load/replay evidence passes. | completed negatively | Contracts 013, 015, 017, 029, 037, 050 | `g03.035` |
-| Compose read-only reconciliation with separately prepared settled-session attachment. | active | Contracts 017, 037, 046, 048, 050 | `g03.036` |
-| Promote further retained-session recovery behind exact resource and ownership gates. | planned | Contracts 009, 017, 025, 029, 037-038, 050 | `g03.037` |
+| Compose read-only reconciliation with separately prepared settled-session attachment. | completed | Contracts 017, 037, 046, 048, 050 | `g03.036` |
+| Promote further retained-session recovery behind exact resource and ownership gates. | active | Contracts 009, 017, 025, 029, 037-038, 050 | `g03.037` |
 | Give every prepared interactive harness route one truthful post-crash action. | completed | Contracts 017, 037, 042, 048, 050 | `g03.038` |
 | Periodically reconcile deferred gates, route truth, and generation capacity. | planned | Contract 001 | recurring checkpoints |
 
@@ -83,7 +83,10 @@ visible as unverified newer unless exact evidence requires rejection.
 - g03.038 gives all 11 prepared interactive harness routes one truthful restart
   action; Cursor and Grok attach exactly, four weaker routes replace with
   explicit context loss, and Gemini remains unpromoted from replacement
-- g03.036 is active again; card 093 is the sole ready task
+- g03.036 is complete; Codex and OpenCode reconcile then load bounded replay,
+  while Kimi local server reconciles an exact turn then resumes without replay
+- g03.037 is active; card 097 is the sole ready independent Pi and Alibaba
+  retained-session evidence gate
 - Research 074 inventories 13 installed/attached harness route ids and bounds
   the first external currentness source set
 - the 2026-07-31 currentness pass leaves Codex and stable ACP unchanged,
@@ -392,15 +395,16 @@ visible as unverified newer unless exact evidence requires rejection.
 - [033 Anthropic Managed Run Reconciliation And Recovered Cleanup](033-anthropic-managed-run-reconciliation-and-recovered-cleanup.md) — completed
 - [034 Working-State Restoration Facade](034-working-state-restoration-facade.md) — completed
 - [035 ACP Continuation Recovery Expansion](035-acp-continuation-recovery-expansion.md) — completed negatively
-- [036 Reconciliation Then Attachment Composition](036-reconciliation-then-attachment-composition.md) — active
-- [037 Retained Session Recovery Promotion](037-retained-session-recovery-promotion.md) — planned
+- [036 Reconciliation Then Attachment Composition](036-reconciliation-then-attachment-composition.md) — completed
+- [037 Retained Session Recovery Promotion](037-retained-session-recovery-promotion.md) — active
 - [038 Provider-Wide Interactive Crash Recovery](038-provider-wide-interactive-crash-recovery.md) — completed
 
 ## Checkpoint
 
-Roadmaps g03.035 and g03.038 are complete. Research 106 promotes a weaker exact
-attachment boundary plus explicit fresh replacement. Roadmap g03.036 resumes
-at card 093; g03.037 remains planned behind it.
+Roadmaps g03.035, g03.036, and g03.038 are complete. Research 106 promotes a
+weaker exact attachment boundary plus explicit fresh replacement; Contract 050
+also governs the completed settled reconcile-then-attach sequence. Roadmap
+g03.037 is active at card 097.
 
 ## Generation Boundary
 

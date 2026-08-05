@@ -20,12 +20,15 @@ use swallowtail_core::{
 use swallowtail_runtime::{
     BoxFuture, CleanupOutcome, HostServices, PersistedProviderOperationCheckpoint,
     PreparationFailure, PreparationStage, PreparedProviderSessionReconciliationEvidence,
-    PreparedWorkingStateRestoration, ProviderOperationCheckpoint,
-    ProviderSessionReconciliationAgreement, ProviderSessionReconciliationBounds,
-    ProviderSessionReconciliationDriver, ProviderSessionReconciliationOutcome,
-    ProviderSessionReconciliationPlan, ProviderSessionReconciliationRequest, RequestId,
-    RuntimeFailure, SessionResumeBinding, WorkingStateRestorationMethod,
-    WorkingStateRestorationOperation, WorkingStateRestorationOutcome,
+    PreparedSettledSessionRestoration, PreparedWorkingStateRestoration,
+    ProviderOperationCheckpoint, ProviderSessionReconciliationAgreement,
+    ProviderSessionReconciliationBounds, ProviderSessionReconciliationDriver,
+    ProviderSessionReconciliationOutcome, ProviderSessionReconciliationPlan,
+    ProviderSessionReconciliationRequest, RequestId, ResumeSessionRequest, RuntimeFailure,
+    SessionResumeBinding, SettledSessionAttachment, SettledSessionAttachmentKind,
+    SettledSessionAttachmentOperation, SettledSessionReconciliationOperation,
+    WorkingStateRestorationMethod, WorkingStateRestorationOperation,
+    WorkingStateRestorationOutcome, settled_session_plans_share_binding,
     validate_provider_session_reconciliation_execution,
 };
 
@@ -99,6 +102,55 @@ impl KimiLocalServerPreparedReconciliation {
                 .reconcile_provider_session(plan, request, services)
                 .await
         })
+    }
+
+    pub fn prepare_settled_session_restoration(
+        self,
+        session: super::KimiLocalServerPreparedSession,
+        attachment_request_id: RequestId,
+    ) -> Result<PreparedSettledSessionRestoration, PreparationFailure> {
+        if !settled_session_plans_share_binding(self.plan().preflight(), session.plan()) {
+            return Err(preparation_failure(
+                "swallowtail.kimi.local_server.preparation.settled_session_binding_mismatch",
+                "Kimi reconciliation and attachment do not share one prepared route binding",
+            ));
+        }
+        let request = session.resume_request(
+            attachment_request_id,
+            self.plan().agreement().binding().clone(),
+        )?;
+        Ok(PreparedSettledSessionRestoration::new(
+            self,
+            KimiSettledSessionResume { session, request },
+        ))
+    }
+}
+
+impl SettledSessionReconciliationOperation for KimiLocalServerPreparedReconciliation {
+    fn reconcile(
+        self: Box<Self>,
+        services: HostServices,
+    ) -> BoxFuture<'static, Result<ProviderSessionReconciliationOutcome, RuntimeFailure>> {
+        KimiLocalServerPreparedReconciliation::execute(&self, services)
+    }
+}
+
+struct KimiSettledSessionResume {
+    session: super::KimiLocalServerPreparedSession,
+    request: ResumeSessionRequest,
+}
+
+impl SettledSessionAttachmentOperation for KimiSettledSessionResume {
+    fn kind(&self) -> SettledSessionAttachmentKind {
+        SettledSessionAttachmentKind::Resume
+    }
+
+    fn attach(
+        self: Box<Self>,
+        services: HostServices,
+    ) -> BoxFuture<'static, Result<SettledSessionAttachment, RuntimeFailure>> {
+        let future = self.session.resume_prepared_session(self.request, services);
+        Box::pin(async move { future.await.map(SettledSessionAttachment::Resumed) })
     }
 }
 

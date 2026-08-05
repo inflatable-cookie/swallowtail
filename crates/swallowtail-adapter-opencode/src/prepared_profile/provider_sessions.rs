@@ -2,7 +2,7 @@ use super::input::{
     OpenCodeSessionCatalogueInput, OpenCodeSessionProfileInput, OpenCodeSessionReconciliationInput,
 };
 use super::plan::{build_plan, failure, instance_with_capabilities};
-use crate::{OpenCodeHttpDriver, OpenCodePreparedIntegration};
+use crate::{OpenCodeHttpDriver, OpenCodePreparedIntegration, OpenCodePreparedSession};
 use swallowtail_core::{
     AccessRequirement, Capability, CapabilityConstraint, CapabilityProfile, CapabilityRequirement,
     CredentialState, DriverRole, EndpointAuthorization, EntitlementState, ExecutionLayer,
@@ -11,17 +11,20 @@ use swallowtail_core::{
     RuntimeReadiness, SessionAccessPolicy, SessionProviderStatePolicy,
 };
 use swallowtail_runtime::{
-    BoxFuture, HostServices, PreparationFailure, PreparedProviderSessionCatalogueEvidence,
-    PreparedProviderSessionImportEvidence, PreparedProviderSessionReconciliationEvidence,
+    BoxFuture, HostServices, LoadSessionRequest, PreparationFailure,
+    PreparedProviderSessionCatalogueEvidence, PreparedProviderSessionImportEvidence,
+    PreparedProviderSessionReconciliationEvidence, PreparedSettledSessionRestoration,
     PreparedWorkingStateRestoration, ProviderSessionCandidate, ProviderSessionCatalogueDriver,
     ProviderSessionCatalogueOutcome, ProviderSessionCataloguePlan, ProviderSessionCatalogueRequest,
     ProviderSessionCatalogueScope, ProviderSessionImportAgreement, ProviderSessionImportDriver,
     ProviderSessionImportOutcome, ProviderSessionImportPlan, ProviderSessionImportRequest,
     ProviderSessionOperationFailure, ProviderSessionReconciliationAgreement,
     ProviderSessionReconciliationDriver, ProviderSessionReconciliationOutcome,
-    ProviderSessionReconciliationPlan, ProviderSessionReconciliationRequest, RuntimeFailure,
-    SessionPlanAgreement, WorkingStateRestorationMethod, WorkingStateRestorationOperation,
-    WorkingStateRestorationOutcome,
+    ProviderSessionReconciliationPlan, ProviderSessionReconciliationRequest, RequestId,
+    RuntimeFailure, SessionPlanAgreement, SettledSessionAttachment, SettledSessionAttachmentKind,
+    SettledSessionAttachmentOperation, SettledSessionReconciliationOperation,
+    WorkingStateRestorationMethod, WorkingStateRestorationOperation,
+    WorkingStateRestorationOutcome, settled_session_plans_share_binding,
 };
 
 #[derive(Clone, Debug)]
@@ -129,6 +132,58 @@ impl OpenCodePreparedSessionReconciliation {
                 .reconcile_provider_session(plan, request, services)
                 .await
         })
+    }
+
+    pub fn prepare_settled_session_restoration(
+        self,
+        session: OpenCodePreparedSession,
+        attachment_request_id: RequestId,
+    ) -> Result<PreparedSettledSessionRestoration, PreparationFailure> {
+        if !settled_session_plans_share_binding(self.plan().preflight(), session.plan())
+            || self.prepared.server() != session.evidence().server()
+            || self.prepared.access_evidence() != session.evidence().access()
+        {
+            return Err(failure(
+                "swallowtail.opencode.preparation.settled_session_binding_mismatch",
+                "OpenCode reconciliation and attachment do not share one prepared route binding",
+            ));
+        }
+        let request = session.load_request(
+            attachment_request_id,
+            self.plan().agreement().binding().clone(),
+        )?;
+        Ok(PreparedSettledSessionRestoration::new(
+            self,
+            OpenCodeSettledSessionLoad { session, request },
+        ))
+    }
+}
+
+impl SettledSessionReconciliationOperation for OpenCodePreparedSessionReconciliation {
+    fn reconcile(
+        self: Box<Self>,
+        services: HostServices,
+    ) -> BoxFuture<'static, Result<ProviderSessionReconciliationOutcome, RuntimeFailure>> {
+        OpenCodePreparedSessionReconciliation::reconcile(&self, services)
+    }
+}
+
+struct OpenCodeSettledSessionLoad {
+    session: OpenCodePreparedSession,
+    request: LoadSessionRequest,
+}
+
+impl SettledSessionAttachmentOperation for OpenCodeSettledSessionLoad {
+    fn kind(&self) -> SettledSessionAttachmentKind {
+        SettledSessionAttachmentKind::Load
+    }
+
+    fn attach(
+        self: Box<Self>,
+        services: HostServices,
+    ) -> BoxFuture<'static, Result<SettledSessionAttachment, RuntimeFailure>> {
+        let future = self.session.load_prepared_session(self.request, services);
+        Box::pin(async move { future.await.map(SettledSessionAttachment::Loaded) })
     }
 }
 

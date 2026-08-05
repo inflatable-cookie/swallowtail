@@ -1,6 +1,6 @@
 # 094 Restoration Sequence Runtime Kernel
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-05
 Milestone: `../036-reconciliation-then-attachment-composition.md`
@@ -31,3 +31,12 @@ conformance defined by Contract 050.
 ## Auto-Continuation
 
 Continue to card 095 when provider-free conformance passes.
+
+## Outcome
+
+- added one consuming `PreparedSettledSessionRestoration` sequence
+- added distinct loaded and replay-free resumed attachment outcomes
+- added phase-aware failures which retain completed reconciliation
+- proved eligibility, ordering, first-phase stop, partial failure, and method
+  mismatch without provider identity or route selection
+- focused runtime and testkit validation passed: 219 tests

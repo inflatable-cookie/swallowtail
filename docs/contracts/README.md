@@ -212,7 +212,9 @@ recovery. It also distinguishes exact live reattachment with discarded
 non-authoritative replay from a new replacement session with provider context
 lost. It preserves the selected method and outcome strength, never turns ACP
 load into reconciliation, and never falls back from failed observation to
-broader live-session authority.
+broader live-session authority. A separate consuming sequence may attach only
+after eligible settled reconciliation. Both operations are prepared before
+provider work; successful observation remains available if attachment fails.
 
 Contract 015 now permits exact, one-shot activation of an already authorized
 harness credential after ACP initialization. The first mapping is Grok Build

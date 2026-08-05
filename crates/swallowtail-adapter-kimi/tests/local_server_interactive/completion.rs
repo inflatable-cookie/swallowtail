@@ -14,7 +14,8 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     CleanupOutcome, OperationDetachmentAcknowledgement, ProviderSessionReconciliationBounds,
-    RequestId, TerminalStatus, WorkingStateRestorationMethod, WorkingStateRestorationOutcome,
+    RequestId, SettledSessionAttachment, SettledSessionAttachmentKind,
+    SettledSessionRestorationOutcome, TerminalStatus, WorkingStateRestorationMethod,
 };
 
 #[test]
@@ -240,25 +241,40 @@ fn persisted_checkpoint_reconciles_the_exact_completed_turn_after_restart() {
         mismatch.diagnostic().safe().code(),
         "swallowtail.provider_operation_checkpoint.attachment_mismatch"
     );
-    let restoration = second_prepared
-        .prepare_working_state_restoration(KimiLocalServerReconciliationInput::new(
-            id(RequestId::new, "reconciliation-request"),
-            KimiModelSelection::new(
-                id(ModelRouteId::new, "fixture.kimi.route"),
-                id(ModelRouteRevision::new, "1"),
-                id(ModelId::new, "kimi-k2.5"),
-            ),
-            binding,
-            persisted,
-            ProviderSessionReconciliationBounds::new(
-                NonZeroU32::new(16).expect("bound is non-zero"),
-                NonZeroU64::new(4096).expect("bound is non-zero"),
-            ),
-        ))
-        .expect("restoration prepares");
+    let input = KimiLocalServerReconciliationInput::new(
+        id(RequestId::new, "reconciliation-request"),
+        KimiModelSelection::new(
+            id(ModelRouteId::new, "fixture.kimi.route"),
+            id(ModelRouteRevision::new, "1"),
+            id(ModelId::new, "kimi-k2.5"),
+        ),
+        binding,
+        persisted,
+        ProviderSessionReconciliationBounds::new(
+            NonZeroU32::new(16).expect("bound is non-zero"),
+            NonZeroU64::new(4096).expect("bound is non-zero"),
+        ),
+    );
+    let legacy = second_prepared
+        .prepare_working_state_restoration(input.clone())
+        .expect("read-only restoration still prepares");
     assert_eq!(
-        restoration.method(),
+        legacy.method(),
         WorkingStateRestorationMethod::ProviderSessionReconciliation
+    );
+    let session = session_profile(
+        &second_prepared,
+        KimiLocalServerPermissionMode::Auto,
+        "reconciliation-attachment",
+    );
+    let restoration = second_prepared
+        .prepare_session_reconciliation(input)
+        .expect("reconciliation prepares")
+        .prepare_settled_session_restoration(session, id(RequestId::new, "reconciliation-resume"))
+        .expect("settled restoration prepares");
+    assert_eq!(
+        restoration.attachment_kind(),
+        SettledSessionAttachmentKind::Resume
     );
     let restored = block_on(restoration.restore(second_services)).unwrap_or_else(|error| {
         panic!(
@@ -266,9 +282,10 @@ fn persisted_checkpoint_reconciles_the_exact_completed_turn_after_restart() {
             second_server.requests()
         )
     });
-    let WorkingStateRestorationOutcome::SessionReconciled(outcome) = restored else {
-        panic!("Kimi local server must preserve exact-turn reconciliation truth");
+    let SettledSessionRestorationOutcome::Attached(attached) = restored else {
+        panic!("completed Kimi turn must resume its session");
     };
+    let (outcome, attachment) = attached.into_parts();
 
     assert_eq!(
         outcome.attribution(),
@@ -284,6 +301,16 @@ fn persisted_checkpoint_reconciles_the_exact_completed_turn_after_restart() {
             .expect("exact provider turn remains bound")
             .as_provider_value(),
         "7"
+    );
+    let SettledSessionAttachment::Resumed(resumed) = attachment else {
+        panic!("Kimi local-server settled attachment is replay-free resume");
+    };
+    assert_eq!(block_on(resumed.close()), CleanupOutcome::Clean);
+    assert!(
+        second_server
+            .requests()
+            .iter()
+            .any(|request| { request.contains("GET /api/v1/sessions/interactive-session") })
     );
     assert!(second_server.requests().iter().all(|request| {
         !request.contains("/prompts")

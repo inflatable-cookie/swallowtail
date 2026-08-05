@@ -1,6 +1,6 @@
 # 096 Kimi Reconcile Then Resume And Acceptance
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-05
 Milestone: `../036-reconciliation-then-attachment-composition.md`
@@ -32,3 +32,11 @@ close public and package acceptance for the composed workflow.
 ## Auto-Continuation
 
 Continue to card 097 after g03.036 closes.
+
+## Outcome
+
+Completed 2026-08-05. Kimi local-server exact-turn reconciliation now composes
+with its existing managed replay-free resume path. Public guidance keeps that
+result distinct from Codex and OpenCode bounded load. Focused validation passed
+511 tests across the runtime and three adapters; extracted package proof passed
+for all three adapter packages. No authenticated provider work ran.

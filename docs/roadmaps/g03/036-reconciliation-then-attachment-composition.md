@@ -1,12 +1,12 @@
 # 036 Reconciliation Then Attachment Composition
 
-Status: active
+Status: completed
 Owner: Tom
 Created: 2026-08-05
 Depends on: g03.035
 Vision tags: restart continuity, exact observation, session attachment
 Contract refs: 017, 037, 046, 048, 050
-Planning state: card 093 ready
+Planning state: completed; g03.037 card 097 ready
 
 ## Problem
 
@@ -23,19 +23,20 @@ the exact reconciled state permits it.
 
 ## Goals
 
-- [ ] define portable observation-plus-attachment outcomes without flattening
+- [x] define portable observation-plus-attachment outcomes without flattening
       either phase
-- [ ] keep active, waiting, unknown, failed, and stale evidence fail-closed
-- [ ] compose Codex and OpenCode reconciliation with exact load/replay
-- [ ] compose Kimi local exact-turn reconciliation with replay-free resume
+- [x] keep active, waiting, unknown, stale, and reconciliation-failure evidence
+      fail-closed
+- [x] compose Codex and OpenCode reconciliation with exact load/replay
+- [x] compose Kimi local exact-turn reconciliation with replay-free resume
 
 ## Execution Plan
 
-- [ ] card 093: promote the settled-session attachment rules into Contract 050
-- [ ] card 094: realize the consuming runtime sequence and provider-free
+- [x] card 093: promote the settled-session attachment rules into Contract 050
+- [x] card 094: realize the consuming runtime sequence and provider-free
       conformance
-- [ ] card 095: map Codex app-server and OpenCode HTTP
-- [ ] card 096: map Kimi local server and close public/package acceptance
+- [x] card 095: map Codex app-server and OpenCode HTTP
+- [x] card 096: map Kimi local server and close public/package acceptance
 
 ## Boundaries
 
@@ -49,16 +50,16 @@ the exact reconciled state permits it.
 
 ## Acceptance Criteria
 
-- [ ] preparation binds both operations before provider work
-- [ ] reconciliation always precedes attachment
-- [ ] settled attachment preserves the complete reconciliation outcome beside
+- [x] preparation binds both operations before provider work
+- [x] reconciliation always precedes attachment
+- [x] settled attachment preserves the complete reconciliation outcome beside
       the distinct live-session result
-- [ ] Codex and OpenCode retain bounded ordered replay
-- [ ] Kimi local reports replay-free resume honestly
-- [ ] any first-phase failure or ineligible state issues no attachment request
-- [ ] focused and affected-package validation pass
+- [x] Codex and OpenCode retain bounded ordered replay
+- [x] Kimi local reports replay-free resume honestly
+- [x] any first-phase failure or ineligible state issues no attachment request
+- [x] focused and affected-package validation pass
 
 ## Lane Runway
 
-Card 093 is the contract gate. Its observe-then-attach sequence stays distinct
-from direct attachment recovery and fresh replacement.
+Milestone complete. Continue to g03.037 card 097. Its independent evidence
+gates do not inherit attachment authority from this milestone.

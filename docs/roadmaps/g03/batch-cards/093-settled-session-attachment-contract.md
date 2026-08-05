@@ -1,6 +1,6 @@
 # 093 Settled Session Attachment Contract
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-05
 Milestone: `../036-reconciliation-then-attachment-composition.md`
@@ -32,3 +32,12 @@ settled sessions.
 ## Auto-Continuation
 
 Continue to card 094 when the contract is testable without provider policy.
+
+## Outcome
+
+- Contract 050 now owns a separate consuming observe-then-attach sequence
+- completed, failed, cancelled, and inactive-unresolved evidence is eligible
+- active, waiting, unknown, and first-phase failure dispatch no attachment
+- load and replay-free resume remain distinct attachment outcomes
+- second-phase failure retains the complete reconciliation outcome
+- `effigy qa:docs` passed

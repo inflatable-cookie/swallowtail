@@ -9,7 +9,8 @@ use swallowtail_core::{
 use swallowtail_runtime::ProviderSessionCatalogueId;
 use swallowtail_runtime::{
     ProviderSessionReconciliationBounds, RuntimeTurnId, SessionResumeBinding,
-    WorkingStateRestorationMethod, WorkingStateRestorationOutcome,
+    SettledSessionAttachmentKind, SettledSessionRestorationOutcome, WorkingStateRestorationMethod,
+    WorkingStateRestorationOutcome,
 };
 use swallowtail_testkit::RecordedHostCall;
 
@@ -126,6 +127,78 @@ fn exact_interrupted_turn_reconciliation_projects_active_and_terminal_truth() {
     assert_eq!(
         failure.diagnostic().code(),
         "swallowtail.codex.app_server.reconciliation_turn_missing"
+    );
+}
+
+#[test]
+fn active_codex_reconciliation_is_observed_without_starting_prepared_load() {
+    let recording = RecordingHostServices::default();
+    let prepared_app = prepared(CodexPreparedDriver::AppServer, "0.146.0", &recording, true);
+    let session = prepared_app
+        .prepare_read_only_session(session_input("settled-load-session"))
+        .expect("read-only session prepares");
+    let plan = session.plan();
+    let binding = SessionResumeBinding::new(
+        swallowtail_core::SessionRef::new("thread-provider-import").unwrap(),
+        plan.instance_id().clone(),
+        plan.execution_host_id().clone(),
+        plan.model_route_id().unwrap().clone(),
+        plan.model_id().unwrap().clone(),
+        working_resource(),
+        session.request().access_policy().clone(),
+    );
+    let reconciliation = prepared_app
+        .prepare_session_reconciliation(
+            CodexSessionReconciliationInput::new(
+                RequestId::new("settled-reconciliation").unwrap(),
+                model(),
+                binding,
+                RuntimeTurnId::new("runtime-active-turn").unwrap(),
+                ProviderSessionReconciliationBounds::new(
+                    NonZeroU32::new(8).unwrap(),
+                    NonZeroU64::new(4096).unwrap(),
+                ),
+            )
+            .with_provider_turn_ref(swallowtail_core::TurnRef::new("turn-1").unwrap()),
+        )
+        .expect("reconciliation prepares");
+    let restoration = reconciliation
+        .prepare_settled_session_restoration(session, RequestId::new("settled-load").unwrap())
+        .expect("settled restoration prepares");
+    assert_eq!(
+        restoration.attachment_kind(),
+        SettledSessionAttachmentKind::Load
+    );
+
+    let (process, state) = ScriptedAppServer::new(AppServerMode::ThreadCatalogue(
+        ThreadCatalogueMode::Available,
+    ));
+    let restored = block_on(restoration.restore(host_services_with(
+        process,
+        &recording,
+        [HostServiceKind::WorkingResource],
+    )))
+    .expect("active reconciliation succeeds");
+    let SettledSessionRestorationOutcome::Observed(outcome) = restored else {
+        panic!("active Codex turn must not attach");
+    };
+    assert_eq!(
+        outcome.state(),
+        swallowtail_runtime::InterruptedTurnState::Active
+    );
+    assert_eq!(
+        state
+            .methods()
+            .into_iter()
+            .filter(|method| method == "thread/read")
+            .count(),
+        1
+    );
+    assert!(
+        !state
+            .methods()
+            .iter()
+            .any(|method| method == "thread/resume")
     );
 }
 

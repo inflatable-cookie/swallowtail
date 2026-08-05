@@ -1,4 +1,3 @@
-use super::CodexPreparedSessionKind;
 use super::input::{
     CodexSessionCatalogueInput, CodexSessionProfileInput, CodexSessionReconciliationInput,
 };
@@ -7,6 +6,7 @@ use super::plan::{
     model_route, require_driver, requirements,
 };
 use super::session_capabilities::{behavior_revision, session_capabilities, supports_harness_mode};
+use super::{CodexPreparedSession, CodexPreparedSessionKind};
 use crate::selection::{CODEX_APP_SERVER_WORKSPACE_BEHAVIOR, supports_thread_catalogue_version};
 use crate::{
     CodexAppServerDriver, CodexPreparedDriver, CodexPreparedIntegration,
@@ -18,17 +18,20 @@ use swallowtail_core::{
     ResourceRepresentation, SessionProviderStatePolicy,
 };
 use swallowtail_runtime::{
-    BoxFuture, HostServices, PreparationFailure, PreparedProviderSessionCatalogueEvidence,
-    PreparedProviderSessionImportEvidence, PreparedProviderSessionReconciliationEvidence,
+    BoxFuture, HostServices, LoadSessionRequest, PreparationFailure,
+    PreparedProviderSessionCatalogueEvidence, PreparedProviderSessionImportEvidence,
+    PreparedProviderSessionReconciliationEvidence, PreparedSettledSessionRestoration,
     PreparedWorkingStateRestoration, ProviderSessionCandidate, ProviderSessionCatalogueDriver,
     ProviderSessionCatalogueOutcome, ProviderSessionCataloguePlan, ProviderSessionCatalogueRequest,
     ProviderSessionCatalogueScope, ProviderSessionImportAgreement, ProviderSessionImportDriver,
     ProviderSessionImportOutcome, ProviderSessionImportPlan, ProviderSessionImportRequest,
     ProviderSessionOperationFailure, ProviderSessionReconciliationAgreement,
     ProviderSessionReconciliationDriver, ProviderSessionReconciliationOutcome,
-    ProviderSessionReconciliationPlan, ProviderSessionReconciliationRequest, RuntimeFailure,
-    SessionPlanAgreement, WorkingStateRestorationMethod, WorkingStateRestorationOperation,
-    WorkingStateRestorationOutcome,
+    ProviderSessionReconciliationPlan, ProviderSessionReconciliationRequest, RequestId,
+    RuntimeFailure, SessionPlanAgreement, SettledSessionAttachment, SettledSessionAttachmentKind,
+    SettledSessionAttachmentOperation, SettledSessionReconciliationOperation,
+    WorkingStateRestorationMethod, WorkingStateRestorationOperation,
+    WorkingStateRestorationOutcome, settled_session_plans_share_binding,
 };
 
 #[derive(Clone, Debug)]
@@ -149,6 +152,59 @@ impl CodexPreparedSessionReconciliation {
                 .reconcile_provider_session(plan, request, services)
                 .await
         })
+    }
+
+    pub fn prepare_settled_session_restoration(
+        self,
+        session: CodexPreparedSession,
+        attachment_request_id: RequestId,
+    ) -> Result<PreparedSettledSessionRestoration, PreparationFailure> {
+        if !settled_session_plans_share_binding(self.plan().preflight(), session.plan())
+            || self.codex.observation() != session.evidence().observation()
+            || self.codex.environment() != session.evidence().environment()
+            || self.codex.access() != session.evidence().access()
+        {
+            return Err(failure(
+                "swallowtail.codex.preparation.settled_session_binding_mismatch",
+                "Codex reconciliation and attachment do not share one prepared route binding",
+            ));
+        }
+        let request = session.load_request(
+            attachment_request_id,
+            self.plan().agreement().binding().clone(),
+        )?;
+        Ok(PreparedSettledSessionRestoration::new(
+            self,
+            CodexSettledSessionLoad { session, request },
+        ))
+    }
+}
+
+impl SettledSessionReconciliationOperation for CodexPreparedSessionReconciliation {
+    fn reconcile(
+        self: Box<Self>,
+        services: HostServices,
+    ) -> BoxFuture<'static, Result<ProviderSessionReconciliationOutcome, RuntimeFailure>> {
+        CodexPreparedSessionReconciliation::reconcile(&self, services)
+    }
+}
+
+struct CodexSettledSessionLoad {
+    session: CodexPreparedSession,
+    request: LoadSessionRequest,
+}
+
+impl SettledSessionAttachmentOperation for CodexSettledSessionLoad {
+    fn kind(&self) -> SettledSessionAttachmentKind {
+        SettledSessionAttachmentKind::Load
+    }
+
+    fn attach(
+        self: Box<Self>,
+        services: HostServices,
+    ) -> BoxFuture<'static, Result<SettledSessionAttachment, RuntimeFailure>> {
+        let future = self.session.load_prepared_session(self.request, services);
+        Box::pin(async move { future.await.map(SettledSessionAttachment::Loaded) })
     }
 }
 

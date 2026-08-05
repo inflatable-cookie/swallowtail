@@ -37,6 +37,31 @@ match outcome {
 
 The facade is consumed by `restore`. It cannot dispatch twice.
 
+## Reconcile Then Attach A Settled Session
+
+Codex app-server, OpenCode HTTP, and Kimi local server also expose a stronger
+two-phase path when the consumer needs a live session after observation. First
+prepare the ordinary session and reconciliation independently. Then consume
+the prepared reconciliation through `prepare_settled_session_restoration`,
+supplying the prepared session and a new attachment request id.
+
+The returned `PreparedSettledSessionRestoration` always reconciles first. It
+attaches only for `Completed`, `Failed`, `Cancelled`, or
+`InactiveUnresolved`. `Active`, `WaitingForProviderInput`, and `Unknown`
+return `SettledSessionRestorationOutcome::Observed` without issuing an
+attachment request.
+
+Codex and OpenCode return `SettledSessionAttachment::Loaded`, preserving their
+bounded ordered replay. Kimi local server returns
+`SettledSessionAttachment::Resumed`; it carries no replay. An attachment-phase
+failure retains the complete successful reconciliation in
+`SettledSessionRestorationFailure`.
+
+This path does not replace `prepare_working_state_restoration`. Use the common
+facade for observation-only recovery across routes. Use the consuming
+two-phase path only after the application has independently selected and
+prepared one of these exact attachment-capable routes.
+
 ## Preparation
 
 Preparation remains adapter-local because models, checkpoints, provider turn
@@ -78,7 +103,8 @@ terminal evidence. Replacement is not recovery of provider state.
 
 | Route | Prepared action after restart |
 | --- | --- |
-| Codex app-server, OpenCode HTTP, Kimi local server | session reconciliation |
+| Codex app-server, OpenCode HTTP | session reconciliation; optional settled reconcile then bounded load |
+| Kimi local server | exact-turn reconciliation; optional settled reconcile then replay-free resume |
 | Claude Agent ACP, Kimi ACP | complete continuation recovery |
 | Cursor ACP, Grok ACP | exact attachment; replay discarded |
 | Antigravity continuation, Gemini ACP, Pi RPC, Qwen continuation | fresh replacement; context lost |

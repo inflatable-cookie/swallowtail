@@ -17,7 +17,7 @@ pub(in crate::local_server) use session::{KimiInteractiveSession, TurnCancellati
 use swallowtail_core::ReasoningMode;
 use swallowtail_runtime::{
     BoxFuture, InteractiveSessionHandle, OperationContent, PreparationFailure, RequestId,
-    SessionOptions, WorkingResourceRef,
+    ResumeSessionRequest, SessionOptions, WorkingResourceRef,
 };
 
 pub type KimiLocalServerPreparedSessionFuture = BoxFuture<
@@ -230,7 +230,24 @@ impl KimiLocalServerPreparedSession {
         binding: swallowtail_runtime::SessionResumeBinding,
         services: swallowtail_runtime::HostServices,
     ) -> Result<KimiLocalServerPreparedSessionFuture, PreparationFailure> {
-        prepared::resume(self, request_id, binding, services)
+        let request = self.resume_request(request_id, binding)?;
+        Ok(self.clone().resume_prepared_session(request, services))
+    }
+
+    pub fn resume_request(
+        &self,
+        request_id: RequestId,
+        binding: swallowtail_runtime::SessionResumeBinding,
+    ) -> Result<ResumeSessionRequest, PreparationFailure> {
+        prepared::resume_request(self, request_id, binding)
+    }
+
+    pub(crate) fn resume_prepared_session(
+        self,
+        request: ResumeSessionRequest,
+        services: swallowtail_runtime::HostServices,
+    ) -> KimiLocalServerPreparedSessionFuture {
+        prepared::resume_prepared(self, request, services)
     }
 }
 

@@ -34,13 +34,12 @@ pub(super) fn open(
     })
 }
 
-pub(super) fn resume(
+pub(super) fn resume_request(
     prepared: &KimiLocalServerPreparedSession,
     request_id: RequestId,
     binding: SessionResumeBinding,
-    services: HostServices,
-) -> Result<KimiLocalServerPreparedSessionFuture, PreparationFailure> {
-    let request = ResumeSessionRequest::from_plan(
+) -> Result<ResumeSessionRequest, PreparationFailure> {
+    Ok(ResumeSessionRequest::from_plan(
         prepared.plan(),
         request_id,
         binding,
@@ -51,16 +50,23 @@ pub(super) fn resume(
             .clone(),
         prepared.request().deadline(),
     )?
-    .with_options(prepared.request().options().clone());
+    .with_options(prepared.request().options().clone()))
+}
+
+pub(super) fn resume_prepared(
+    prepared: KimiLocalServerPreparedSession,
+    request: ResumeSessionRequest,
+    services: HostServices,
+) -> KimiLocalServerPreparedSessionFuture {
     let driver = prepared.low_level_driver();
     let plan = prepared.plan().clone();
     let management = prepared.management_instance.clone();
     let access = prepared.evidence.access().clone();
-    Ok(Box::pin(async move {
+    Box::pin(async move {
         driver
             .resume_bound_session(plan, request, services, management, access)
             .await
-    }))
+    })
 }
 
 impl KimiLocalServerPreparedIntegration {

@@ -1,6 +1,6 @@
 # 095 Codex And OpenCode Reconcile Then Load
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-05
 Milestone: `../036-reconciliation-then-attachment-composition.md`
@@ -31,3 +31,11 @@ load/replay paths.
 ## Auto-Continuation
 
 Continue to card 096 when both mappings pass.
+
+## Outcome
+
+Completed 2026-08-05. Codex app-server and OpenCode HTTP now compose their
+prepared reconciliation with the existing managed load path. Immutable route
+binding is checked before dispatch. Active Codex evidence remains observation
+only; inactive OpenCode evidence proceeds to bounded replay-bearing load.
+Focused validation passed 403 tests across the runtime and both adapters.

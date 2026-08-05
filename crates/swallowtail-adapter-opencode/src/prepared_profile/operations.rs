@@ -192,12 +192,20 @@ impl OpenCodePreparedSession {
         binding: SessionResumeBinding,
         services: HostServices,
     ) -> Result<OpenCodePreparedSessionLoadFuture, PreparationFailure> {
+        let request = self.load_request(request_id, binding)?;
+        Ok(self.clone().load_prepared_session(request, services))
+    }
+
+    pub(crate) fn load_prepared_session(
+        self,
+        request: LoadSessionRequest,
+        services: HostServices,
+    ) -> OpenCodePreparedSessionLoadFuture {
         let driver = self.low_level_driver();
         let plan = self.plan().clone();
-        let request = self.load_request(request_id, binding)?;
         let instance = self.management_instance.clone();
         let access = self.evidence.access().clone();
-        Ok(Box::pin(async move {
+        Box::pin(async move {
             let loaded = driver.load_session(plan, request.clone(), services).await?;
             let (replay, handle) = loaded.into_parts();
             let handle = wrap_management_handle(
@@ -209,7 +217,7 @@ impl OpenCodePreparedSession {
             )
             .await?;
             Ok(LoadedSession::new(replay, handle))
-        }))
+        })
     }
 
     pub fn resume_request(

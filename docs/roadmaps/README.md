@@ -13,8 +13,8 @@ shape.
 
 ## Next Task
 
-Execute g03 card 093: promote the settled-session attachment contract before
-composing reconciliation with a separate live attachment.
+Execute g03 card 097: revalidate Pi RPC and Alibaba Conversations against their
+independent retained-session recovery gates.
 
 ## Index
 

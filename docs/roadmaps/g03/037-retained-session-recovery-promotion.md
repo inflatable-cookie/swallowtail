@@ -1,12 +1,12 @@
 # 037 Retained Session Recovery Promotion
 
-Status: planned
+Status: active
 Owner: Tom
 Created: 2026-08-05
 Depends on: g03.036
 Vision tags: restart continuity, retained sessions, exact resource ownership
 Contract refs: 009, 017, 025, 029, 037-038, 050
-Planning state: cards 097-101 planned behind independent promotion gates
+Planning state: card 097 ready; cards 098-101 remain independently gated
 
 ## Problem
 
@@ -65,6 +65,6 @@ provider-state ownership are separately proven.
 
 ## Lane Runway
 
-Planned after g03.036. Pi remains behind the shared backlog gate until public
-cwd evidence changes. Alibaba may advance independently after card 097; one
-blocked candidate cannot authorize or prevent the other.
+Card 097 is ready. Pi remains behind the shared backlog gate until public cwd
+evidence changes. Alibaba may advance independently after card 097; one blocked
+candidate cannot authorize or prevent the other.

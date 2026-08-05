@@ -25,6 +25,14 @@ completion from an idle provider session.
 6. Use a separately qualified reattachment or cancellation operation if the
    operator chooses control. Reconciliation itself exposes none.
 
+For a consumer-selected settled session, Codex app-server, OpenCode HTTP, and
+Kimi local server can compose reconciliation with an independently prepared
+attachment through `prepare_settled_session_restoration`. The sequence retains
+read-only reconciliation as its first phase and never attaches after active,
+waiting, or unknown evidence, or after a reconciliation failure. Codex and
+OpenCode then load bounded replay; Kimi resumes without replay. See the
+[working-state restoration guide](working-state-restoration.md).
+
 Provider-owned runs use a separate sequence. Persist the emitted
 `ProviderRunCheckpoint` against the exact prepared run plan, restore it only
 through the same prepared route, and call that route's bounded

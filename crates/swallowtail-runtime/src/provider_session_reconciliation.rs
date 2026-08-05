@@ -418,6 +418,29 @@ impl ProviderSessionReconciliationOutcome {
     pub const fn cleanup(&self) -> &CleanupOutcome {
         &self.cleanup
     }
+
+    #[cfg(test)]
+    pub(crate) fn fixture(state: InterruptedTurnState) -> Self {
+        let exact = state.is_terminal();
+        Self {
+            interrupted_turn_id: RuntimeTurnId::new("fixture-interrupted-turn")
+                .expect("fixture turn id is valid"),
+            observation: ProviderSessionReconciliationObservation {
+                attribution: if exact {
+                    InterruptedTurnAttribution::ExactProviderTurn
+                } else {
+                    InterruptedTurnAttribution::ProviderSession
+                },
+                state,
+                provider_turn_ref: exact.then(|| {
+                    TurnRef::new("fixture-provider-turn").expect("fixture turn ref is valid")
+                }),
+                replay: Vec::new(),
+                replay_complete: true,
+            },
+            cleanup: CleanupOutcome::Clean,
+        }
+    }
 }
 
 pub fn validate_provider_session_reconciliation_request(

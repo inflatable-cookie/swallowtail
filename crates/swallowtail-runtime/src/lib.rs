@@ -61,6 +61,7 @@ mod session_options;
 mod session_plan_agreement;
 mod session_provider_state;
 mod session_replay;
+mod settled_session_restoration;
 mod subagent_directory;
 mod time;
 mod working_resource_io;
@@ -261,6 +262,13 @@ pub use session_options::{SessionOptions, ToolDeclaration};
 pub use session_plan_agreement::{SessionPlanAgreement, validate_session_plan_agreement};
 pub use session_provider_state::validate_session_provider_state_plan;
 pub use session_replay::{SessionReplayItem, SessionReplayKind};
+pub use settled_session_restoration::{
+    PreparedSettledSessionRestoration, SettledSessionAttachment, SettledSessionAttachmentKind,
+    SettledSessionAttachmentOperation, SettledSessionAttachmentOutcome,
+    SettledSessionReconciliationOperation, SettledSessionRestorationFailure,
+    SettledSessionRestorationFailurePhase, SettledSessionRestorationOutcome,
+    settled_session_plans_share_binding,
+};
 pub use subagent_directory::{
     SubagentDirectoryChange, SubagentDirectoryChangeKind, SubagentDirectoryDelta,
     SubagentDirectoryFailure, SubagentDirectoryFailureKind, SubagentDirectoryProjection,

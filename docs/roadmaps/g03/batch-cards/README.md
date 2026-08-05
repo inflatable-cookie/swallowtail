@@ -4,14 +4,10 @@
 
 ## Ready
 
-- `093-settled-session-attachment-contract.md`
+- `097-retained-session-candidate-currentness.md`
 
 ## Planned
 
-- `094-restoration-sequence-runtime-kernel.md`
-- `095-codex-opencode-reconcile-then-load.md`
-- `096-kimi-reconcile-then-resume-and-acceptance.md`
-- `097-retained-session-candidate-currentness.md`
 - `098-alibaba-retained-conversation-contract-and-corpus.md`
 - `099-pi-persistent-recovery-implementation.md`
 - `100-alibaba-retained-conversation-recovery.md`
@@ -19,6 +15,10 @@
 
 ## Completed
 
+- `096-kimi-reconcile-then-resume-and-acceptance.md`
+- `095-codex-opencode-reconcile-then-load.md`
+- `094-restoration-sequence-runtime-kernel.md`
+- `093-settled-session-attachment-contract.md`
 - `106-interactive-crash-recovery-acceptance.md`
 - `105-gemini-acp-attachment-recovery-qualification.md`
 - `104-interactive-harness-replacement-recovery.md`

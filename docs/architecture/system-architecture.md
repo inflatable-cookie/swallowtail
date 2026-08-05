@@ -73,7 +73,10 @@ spine:
   facade over existing session reconciliation, run reconciliation, or exact
   provider-session load. Route preparation fixes the strongest qualified
   method before execution; unified outcomes preserve read-only observation
-  versus live continuation recovery, and failure never widens authority
+  versus live continuation recovery, and failure never widens authority. A
+  separate consuming settled-session sequence composes independently prepared
+  reconciliation and attachment, preserves both phase outcomes, and attaches
+  only after eligible settled evidence
 - `swallowtail-testkit` depends on core and runtime and owns deterministic
   Contract 003, Contract 008, runtime-skeleton, and Contract 011 cross-shape
   fixtures and assertions, including distinct local and remote-authoritative
@@ -1513,6 +1516,15 @@ restored `{seq, epoch}` cursor through the current cursor acknowledged by the
 server. Session, cwd, epoch, sequence, and turn remain exact. The observer
 closes after the acknowledged snapshot and grants no prompt, abort, callback,
 resume, import, management, or child-control authority.
+
+Realized g03.036 adds `PreparedSettledSessionRestoration`. Both route-bound
+operations exist before dispatch. Reconciliation runs first; active, waiting,
+or unknown evidence returns observation only. Completed, failed, cancelled,
+or inactive-unresolved evidence admits the fixed attachment operation. Codex
+and OpenCode reuse their managed bounded load paths and retain ordered replay.
+Kimi local server reuses managed resume and exposes no replay. A second-phase
+failure retains the complete reconciliation; neither phase falls back,
+retries, answers callbacks, or broadens route authority.
 
 Realized g03.030 adds a parallel run-scoped path for provider-owned work with
 no provider session. `ProviderRunCheckpoint` binds runtime run, exact provider

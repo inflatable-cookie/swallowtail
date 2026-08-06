@@ -38,7 +38,7 @@ license = "MIT"
 repository = "https://github.com/inflatable-cookie/swallowtail"
 readme = "README.md"
 publish = false
-rust-version = "1.90"
+rust-version = "1.95"
 
 [workspace.dependencies]
 swallowtail-core = { path = "crates/swallowtail-core", version = "0.1.1" }

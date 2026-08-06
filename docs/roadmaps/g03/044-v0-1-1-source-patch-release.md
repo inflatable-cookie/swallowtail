@@ -1,6 +1,6 @@
 # 044 v0.1.1 Source Patch Release
 
-Status: active
+Status: completed
 Owner: Tom
 Created: 2026-08-06
 Depends on: g03.043
@@ -24,17 +24,17 @@ the existing 27-package, 33-route source-only distribution boundary.
 
 - [x] card 132: synchronize Kimi fixture evidence and prepare the complete
       `v0.1.1` source candidate
-- [ ] card 133: push the exact release commit and require all GitHub CI lanes
+- [x] card 133: push the exact release commit and require all GitHub CI lanes
       to pass from canonical clean source
-- [ ] card 134: create and push one annotated immutable `v0.1.1` tag
+- [x] card 134: create and push one annotated immutable `v0.1.1` tag
 
 ## Goals
 
-- [ ] ship the accepted Anthropic cancellation fix as a compatible patch
-- [ ] keep deterministic detachment evidence stable under workspace contention
-- [ ] bind version, changelog, release notes, package graph, CI, and tag to one
+- [x] ship the accepted Anthropic cancellation fix as a compatible patch
+- [x] keep deterministic detachment evidence stable under workspace contention
+- [x] bind version, changelog, release notes, package graph, CI, and tag to one
       exact source identity
-- [ ] leave `v0.1.0` immutable
+- [x] leave `v0.1.0` immutable
 
 ## Boundaries
 
@@ -50,9 +50,9 @@ the existing 27-package, 33-route source-only distribution boundary.
 - [x] all 11 source-release gates pass locally
 - [x] Rust 1.90 and Bedrock Rust 1.94.1 floors remain exact
 - [x] the isolated Git-source consumer resolves the candidate
-- [ ] the exact release commit passes all six GitHub CI jobs
-- [ ] annotated `v0.1.1` resolves locally and remotely to that commit
-- [ ] release notes describe upgrade, rollback, fixes, and unchanged limits
+- [x] the exact release commit passes all six GitHub CI jobs
+- [x] annotated `v0.1.1` resolves locally and remotely to that commit
+- [x] release notes describe upgrade, rollback, fixes, and unchanged limits
 
 ## Planning Checkpoint
 

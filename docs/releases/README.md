@@ -4,10 +4,10 @@ Release notes describe candidate or tagged source compatibility. They do not
 authorize registry, tag, push, GitHub Release, workflow, consumer, or provider
 mutations.
 
-## Current Candidate
+## Current Release
 
 - [Swallowtail 0.1.1](0.1.1.md) — compatible 27-package, 33-route Git
-  source-tag repair candidate
+  source-tag repair
 
 The initial distribution remains the immutable annotated [`v0.1.0`](0.1.0.md)
 tag. The release line includes no crates.io publication, GitHub Release

@@ -45,7 +45,7 @@ visible as unverified newer unless exact evidence requires rejection.
 | Give every provider and harness route one portable failure interface without erasing exact diagnostics. | completed | Contracts 003-004, 006, 009, 014, 037, 044, 051 | `g03.041` |
 | Give agents and operators deep traceable instructions for every production route and portable feature. | completed | Contracts 037, 044-052 | `g03.042` |
 | Prepare the 27-package workspace for an initial `v0.1.0` GitHub source tag without registry publication. | completed | Contracts 009, 022, 029, 036-037, 052; Research 111 | `g03.043` |
-| Ship compatible post-tag repairs as an exact CI-green `v0.1.1` source tag. | active | Contracts 001, 009, 022, 036, 049, 052 | `g03.044` |
+| Ship compatible post-tag repairs as an exact CI-green `v0.1.1` source tag. | completed | Contracts 001, 009, 022, 036, 049, 052 | `g03.044` |
 | Periodically reconcile deferred gates, route truth, and generation capacity. | planned | Contract 001 | recurring checkpoints |
 
 ## Current Checkpoint
@@ -86,8 +86,11 @@ visible as unverified newer unless exact evidence requires rejection.
   before any version or tag mutation
 - card 132 is complete: the synchronized fixture passes 40 repeated Rust 1.90
   runs, ten complete workspace test rounds, focused and extracted-package
-  proof, and all 11 final-version release gates; card 133 is ready for exact
-  canonical CI
+  proof, and all 11 final-version release gates
+- cards 133-134 are complete: all six CI jobs pass at exact release commit
+  `bd3f4bbdffc403897ece4499ee0904b1e8116639`; annotated `v0.1.1` tag object
+  `d7cb439ef3b6808013950d209c2ffcf7930ec81a` resolves to that commit and
+  `v0.1.0` remains unchanged
 - g02 closed at 49 roadmaps
 - its only unfinished implementation lane, Pi RPC load and resume, moved to
   shared backlog behind the unchanged cwd-bound attachment gate
@@ -468,7 +471,7 @@ visible as unverified newer unless exact evidence requires rejection.
 - [041 Portable Failure Classification](041-portable-failure-classification.md) — completed
 - [042 Complete Integration Guide System](042-complete-integration-guide-system.md) — completed
 - [043 v0.1.0 Source Release Readiness](043-v0-1-0-source-release-readiness.md) — completed
-- [044 v0.1.1 Source Patch Release](044-v0-1-1-source-patch-release.md) — active
+- [044 v0.1.1 Source Patch Release](044-v0-1-1-source-patch-release.md) — completed
 
 ## Checkpoint
 

@@ -1,6 +1,6 @@
 # 134 v0.1.1 Annotated Source Tag
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-06
 Milestone: `../044-v0-1-1-source-patch-release.md`
@@ -21,10 +21,10 @@ commit.
 
 ## Acceptance
 
-- [ ] local and remote peeled tag resolve to the exact green release commit
-- [ ] the tag annotation is `v0.1.1`
-- [ ] `v0.1.0` remains unchanged
-- [ ] no crates.io, GitHub Release, binary, consumer, or provider mutation runs
+- [x] local and remote peeled tag resolve to the exact green release commit
+- [x] the tag annotation is `v0.1.1`
+- [x] `v0.1.0` remains unchanged
+- [x] no crates.io, GitHub Release, binary, consumer, or provider mutation runs
 
 ## Stop Conditions
 
@@ -37,3 +37,18 @@ commit.
 Yes. The operator explicitly authorized this patch release. Stop immediately
 after exact tag and closeout evidence.
 
+## Completion Evidence
+
+- annotated tag object: `d7cb439ef3b6808013950d209c2ffcf7930ec81a`
+- peeled release commit: `bd3f4bbdffc403897ece4499ee0904b1e8116639`
+- annotation: `v0.1.1`
+- local and remote tag identities match; `v0.1.0` remains unchanged at tag
+  object `630d33a0d1ff285d20787ee038147dc3493f8b88`
+- a fresh clone at `v0.1.1` passes the exact Git-source consumer proof for
+  `swallowtail-core`, `swallowtail-runtime`, `swallowtail-host-local`, and
+  `swallowtail-adapter-codex`
+- Effigy's binary-oriented install verifier is inapplicable: it attempted to
+  install an `effigy` binary from this library-only repository; no release
+  identity or source-consumer failure occurred
+- no crates.io publication, GitHub Release, binary, consumer, or authenticated
+  provider work ran

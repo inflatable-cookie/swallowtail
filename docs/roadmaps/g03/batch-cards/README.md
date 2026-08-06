@@ -4,14 +4,12 @@
 
 ## Ready
 
-- `133-v0-1-1-exact-ci-candidate.md`
-
 ## Planned
-
-- `134-v0-1-1-annotated-source-tag.md`
 
 ## Completed
 
+- `134-v0-1-1-annotated-source-tag.md`
+- `133-v0-1-1-exact-ci-candidate.md`
 - `132-v0-1-1-repair-and-source-candidate.md`
 - `131-tagged-ci-anthropic-cancellation-repair.md`
 - `130-v0-1-0-tag-authorization-handoff.md`

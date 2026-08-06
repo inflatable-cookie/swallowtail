@@ -47,11 +47,17 @@ visible as unverified newer unless exact evidence requires rejection.
 | Prepare the 27-package workspace for an initial `v0.1.0` GitHub source tag without registry publication. | completed | Contracts 009, 022, 029, 036-037, 052; Research 111 | `g03.043` |
 | Ship compatible post-tag repairs as an exact CI-green `v0.1.1` source tag. | completed | Contracts 001, 009, 022, 036, 049, 052 | `g03.044` |
 | Add Meta Muse Code through its exact installed headless event protocol without chasing every new harness. | completed | Contracts 005-006, 009-010, 023, 029, 032-033, 036-037, 039-041, 044-045, 051-052 | `g03.045` |
-| Ship Muse and the breaking unified Rust 1.95 floor as exact-source `v0.2.0` without carrying Muse's two new structural errors. | active | Contracts 001, 023, 029, 032-033, 036-037, 044-045, 051-052 | `g03.046` |
+| Ship Muse and the breaking unified Rust 1.95 floor as exact-source `v0.2.0` without carrying Muse's two new structural errors. | completed | Contracts 001, 023, 029, 032-033, 036-037, 044-045, 051-052 | `g03.046` |
 | Periodically reconcile deferred gates, route truth, and generation capacity. | planned | Contract 001 | recurring checkpoints |
 
 ## Current Checkpoint
 
+- g03.046 is complete: all five GitHub CI jobs pass at exact release commit
+  `0104b8948ad141f5c42ad752127203b9b1d72db5`; annotated `v0.2.0` tag object
+  `643373ccb794c854a594297d823972dc3621fd3c` resolves to that commit, and
+  `v0.1.0` plus `v0.1.1` remain unchanged
+- the generation is paused at its evidence gate pending a consumer-proven
+  defect, material provider drift, or explicit operator-selected route
 - the operator promoted initial `v0.1.0` source-tag preparation; crates.io and
   GitHub Release publication remain excluded
 - Research 111 finds deterministic QA and both Rust floors passing, then
@@ -475,7 +481,7 @@ visible as unverified newer unless exact evidence requires rejection.
 - [043 v0.1.0 Source Release Readiness](043-v0-1-0-source-release-readiness.md) — completed
 - [044 v0.1.1 Source Patch Release](044-v0-1-1-source-patch-release.md) — completed
 - [045 Muse Code Headless Foundation](045-muse-code-headless-foundation.md) — completed
-- [046 v0.2.0 Muse And Rust-Floor Source Release](046-v0-2-0-muse-and-rust-floor-source-release.md) — active
+- [046 v0.2.0 Muse And Rust-Floor Source Release](046-v0-2-0-muse-and-rust-floor-source-release.md) — completed
 
 ## Checkpoint
 
@@ -486,9 +492,11 @@ validation, terminal projection, unit tests, and corpus cases into focused
 private modules. Muse contributes none of Effigy doctor's 22 inherited error
 findings; focused, corpus, extracted-package, and semantic API proof passes.
 Card 140 completes the local candidate: all 11 gates pass on the final exact
-`^0.2.0` dependency graph. Card 141 is ready but requires explicit workflow
-edit, commit, and push authority before canonical CI can prove the candidate.
-Card 142 retains a separate exact tag gate. No tag authority is implied.
+`^0.2.0` dependency graph. Card 141 proves all five canonical CI jobs at exact
+commit `0104b8948ad141f5c42ad752127203b9b1d72db5`. Card 142 creates annotated
+tag object `643373ccb794c854a594297d823972dc3621fd3c`, peeled to that commit, without
+a GitHub Release or registry publication. The generation returns to its
+evidence gate.
 
 Research 112 qualifies exact Muse Code `0.1.0-R708.1` for one dedicated
 read-only headless route. Card 135 freezes the signed payload, mutable launcher,

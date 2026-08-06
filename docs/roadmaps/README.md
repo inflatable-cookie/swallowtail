@@ -13,9 +13,8 @@ shape.
 
 ## Next Task
 
-Prove g03 card 141's exact `v0.2.0` CI candidate after explicit authorization
-to replace the obsolete split-floor GitHub workflow with one Rust `1.95.0`
-workspace floor job.
+Pause at g03's evidence gate. Resume only for a consumer-proven compatibility
+defect, material provider drift, or an explicit operator-selected route.
 
 ## Index
 

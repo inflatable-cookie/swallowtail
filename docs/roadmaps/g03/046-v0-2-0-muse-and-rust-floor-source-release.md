@@ -1,6 +1,6 @@
 # 046 v0.2.0 Muse And Rust-Floor Source Release
 
-Status: active
+Status: completed
 Owner: Tom
 Created: 2026-08-06
 Depends on: g03.045
@@ -30,19 +30,19 @@ unrelated structural debt.
       or public API change
 - [x] card 140: prepare the complete `v0.2.0` source candidate and pass all
       local release gates
-- [ ] card 141: push the exact release commit and require canonical GitHub CI
-- [ ] card 142: after separate exact authorization, create and push one
+- [x] card 141: push the exact release commit and require canonical GitHub CI
+- [x] card 142: after separate exact authorization, create and push one
       annotated immutable `v0.2.0` tag
 
 ## Goals
 
-- [ ] give Muse consumers one stable exact source tag
+- [x] give Muse consumers one stable exact source tag
 - [x] preserve all existing package APIs and guaranteed route behavior
 - [x] promote Muse from separate unreleased evidence into the coordinated
       release package, route, and semantic API baselines
 - [x] publish the intentional unified Rust `1.95.0` floor as a breaking minor
       release with explicit upgrade and rollback guidance
-- [ ] leave `v0.1.0` and `v0.1.1` immutable
+- [x] leave `v0.1.0` and `v0.1.1` immutable
 - [x] avoid carrying the two new Muse structural errors into the tag
 
 ## Boundaries
@@ -62,10 +62,10 @@ unrelated structural debt.
 - [x] all 11 source-release gates pass locally
 - [x] every package passes at the exact unified Rust `1.95.0` floor
 - [x] the isolated Git-source consumer resolves the 28-package candidate
-- [ ] all five GitHub CI jobs pass against the exact release commit
+- [x] all five GitHub CI jobs pass against the exact release commit
 - [x] release notes describe Muse, upgrade, rollback, limits, and unchanged
       publication posture
-- [ ] annotated `v0.2.0` resolves locally and remotely to the green commit
+- [x] annotated `v0.2.0` resolves locally and remotely to the green commit
 
 ## Planning Checkpoint
 

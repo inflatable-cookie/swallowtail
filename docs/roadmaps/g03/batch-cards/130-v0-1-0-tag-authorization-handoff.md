@@ -1,6 +1,6 @@
 # 130 v0.1.0 Tag Authorization Handoff
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-05
 Milestone: `../043-v0-1-0-source-release-readiness.md`
@@ -26,3 +26,18 @@ annotated-tag creation and tag push.
 ## Auto-Continuation
 
 No. External tag mutation cannot auto-continue.
+
+## Completion Evidence
+
+- accepted candidate: `0ef25a8c4f8bb9ee5c7c71b27cb0c4df0f608b01`
+- release commit: `a8bef72b718d3d9e503da48b3af05da4b674d4ec`
+- annotated tag object: `630d33a0d1ff285d20787ee038147dc3493f8b88`
+- tag and annotation: `v0.1.0`
+- canonical branch and remote: `main`,
+  `git@github.com:inflatable-cookie/swallowtail.git`
+- remote branch and peeled tag both resolve to the release commit
+- crates.io publication and GitHub Release creation did not run
+
+The first manually dispatched tag CI run exposed a deterministic-under-load
+Anthropic cancellation/deadline race. Card 131 owns the repair. The published
+tag remains immutable.

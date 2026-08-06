@@ -13,9 +13,9 @@ shape.
 
 ## Next Task
 
-Execute g03 card 130 as a read-only operator handoff: name the exact accepted
-candidate, branch, remote, absent `v0.1.0` tag, annotation, and excluded
-actions. Stop for explicit authorization before prepare, tag, or push.
+Execute g03 card 131: repair Anthropic Managed Agents cancellation/deadline
+arbitration reproduced by tagged CI, prove the exact repair commit through the
+existing workflow, and leave `v0.1.0` immutable.
 
 ## Index
 

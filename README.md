@@ -16,9 +16,9 @@ annotated Git tag from the
 There is no crates.io publication, GitHub Release object, binary bundle, or
 installer in this release line.
 
-The tag is not usable until it resolves on the canonical repository. Before
-then, candidate evaluation must use an explicitly approved commit revision and
-must not present that revision as a release.
+The canonical `v0.1.0` tag resolves to the reviewed release commit. Later
+unreleased work must use an explicitly approved commit revision and must not
+be presented as part of that immutable release.
 
 All 27 packages share version `0.1.0`. The first tag establishes a pre-1.0 API
 and guaranteed-behavior baseline, not an API 1.0 promise.

@@ -9,6 +9,7 @@ enum AttachmentExit {
 enum AttachmentSignal {
     Item(Result<ManagedStreamItem, RuntimeFailure>),
     Closed,
+    Cancelled,
     Deadline,
 }
 
@@ -33,8 +34,9 @@ async fn pump_attachment(
         if cancellation.is_requested() {
             return AttachmentExit::Cancelled;
         }
-        match next_attachment_signal(subscription, deadline).await {
-            AttachmentSignal::Deadline => return AttachmentExit::Deadline,
+        match next_attachment_signal(subscription, cancellation, deadline).await {
+            AttachmentSignal::Cancelled => return AttachmentExit::Cancelled,
+            AttachmentSignal::Deadline => return deadline_exit(cancellation),
             AttachmentSignal::Closed | AttachmentSignal::Item(Err(_)) => {
                 return if cancellation.is_requested() {
                     AttachmentExit::Cancelled
@@ -103,9 +105,13 @@ async fn pump_attachment(
 
 async fn next_attachment_signal(
     subscription: &mut ManagedSubscription,
+    cancellation: &ManagedRunCancellation,
     deadline: &mut Option<BoxFuture<'static, DeadlineObservation>>,
 ) -> AttachmentSignal {
     poll_fn(|context| {
+        if cancellation.poll_requested(context).is_ready() {
+            return Poll::Ready(AttachmentSignal::Cancelled);
+        }
         if let Poll::Ready(item) = subscription.poll_next(context) {
             return Poll::Ready(match item {
                 Some(item) => AttachmentSignal::Item(item),
@@ -120,4 +126,12 @@ async fn next_attachment_signal(
         Poll::Pending
     })
     .await
+}
+
+fn deadline_exit(cancellation: &ManagedRunCancellation) -> AttachmentExit {
+    if cancellation.is_requested() {
+        AttachmentExit::Cancelled
+    } else {
+        AttachmentExit::Deadline
+    }
 }

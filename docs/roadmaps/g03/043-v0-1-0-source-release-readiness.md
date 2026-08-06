@@ -5,8 +5,8 @@ Owner: Tom
 Created: 2026-08-05
 Depends on: g03.042
 Vision tags: source release, consumer readiness, public API, security
-Contract refs: 002, 029, 032, 036-037, 052
-Planning state: cards 124-129 complete; card 130 ready
+Contract refs: 002, 009, 022, 029, 032, 036-037, 052
+Planning state: cards 124-130 complete; card 131 ready
 
 ## Problem
 
@@ -28,7 +28,9 @@ operator approval.
 - [x] card 127: consumer front door, source install, release notes, and support
 - [x] card 128: GitHub CI and source-tag candidate selector
 - [x] card 129: full deterministic candidate and external-source consumer proof
-- [ ] card 130: exact operator handoff; tag creation remains separately gated
+- [x] card 130: exact operator handoff and separately authorized tag execution
+- [ ] card 131: repair tagged CI cancellation/deadline arbitration and prove
+      `main` green
 
 ## Boundaries
 
@@ -53,13 +55,18 @@ operator approval.
 - [x] deterministic CI covers QA, Rust floors, docs, security, and source use
 - [x] an isolated consumer compiles and prepares representative routes from the
       exact candidate source
-- [ ] tag handoff names the exact commit and excluded external actions
+- [x] tag handoff names the exact commit and excluded external actions
+- [ ] post-tag CI passes without moving or recreating `v0.1.0`
 
 Card 129 binds the reviewed source to one exact clean candidate. Simulation
 and status checks pass all 11 deterministic gates, including 1,463 tests and
 an isolated consumer compiled from the exact candidate revision. The prepare
-plan contains only the changelog promotion. Card 130 is ready for the separate
-operator tag-authorization handoff.
+plan contained only the changelog promotion. Card 130 completed the separate
+operator handoff and authorized execution. Annotated tag `v0.1.0` now resolves
+to release commit `a8bef72b718d3d9e503da48b3af05da4b674d4ec`. The first
+manual CI dispatch exposed cancellation being relabelled as timeout under
+runner load. Card 131 is ready for the bounded repair; the tag remains
+immutable.
 
 ## Lane Runway
 

@@ -6,6 +6,11 @@ candidate source for the initial `v0.1.0` Git tag.
 
 ## [Unreleased]
 
+### Fixed
+
+- preserve accepted Anthropic Managed Agents cancellation as `Cancelled` when
+  cancellation and the operation deadline become ready concurrently
+
 ## [0.1.0] - 2026-08-06
 
 ### Added

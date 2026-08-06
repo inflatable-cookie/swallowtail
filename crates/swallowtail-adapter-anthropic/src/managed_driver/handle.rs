@@ -2,6 +2,7 @@ struct ManagedRunCancellation {
     requested: AtomicBool,
     active_connection: Mutex<Arc<AtomicBool>>,
     callbacks: ManagedCallbackHub,
+    waiter: Mutex<Option<Waker>>,
 }
 
 impl ManagedRunCancellation {
@@ -10,6 +11,7 @@ impl ManagedRunCancellation {
             requested: AtomicBool::new(false),
             active_connection: Mutex::new(connection),
             callbacks,
+            waiter: Mutex::new(None),
         }
     }
 
@@ -33,6 +35,33 @@ impl ManagedRunCancellation {
             .expect("managed active connection lock poisoned")
             .store(true, Ordering::SeqCst);
     }
+
+    fn poll_requested(&self, context: &mut Context<'_>) -> Poll<()> {
+        if self.is_requested() {
+            return Poll::Ready(());
+        }
+        let mut waiter = self
+            .waiter
+            .lock()
+            .expect("managed cancellation waiter lock poisoned");
+        if self.is_requested() {
+            Poll::Ready(())
+        } else {
+            *waiter = Some(context.waker().clone());
+            Poll::Pending
+        }
+    }
+
+    fn wake_waiter(&self) {
+        if let Some(waiter) = self
+            .waiter
+            .lock()
+            .expect("managed cancellation waiter lock poisoned")
+            .take()
+        {
+            waiter.wake();
+        }
+    }
 }
 
 impl CancellationControl for ManagedRunCancellation {
@@ -44,6 +73,7 @@ impl CancellationControl for ManagedRunCancellation {
         let prior = self.requested.swap(true, Ordering::SeqCst);
         self.stop_active();
         self.callbacks.abandon(CallbackAbandonment::TurnCancelled);
+        self.wake_waiter();
         Box::pin(async move {
             Ok(if prior {
                 CancellationAcknowledgement::AlreadyRequested
@@ -97,6 +127,7 @@ impl RunHandle for ManagedRunHandle {
         Box::pin(async move {
             self.cancellation.requested.store(true, Ordering::SeqCst);
             self.cancellation.stop_active();
+            self.cancellation.wake_waiter();
             self.cancellation
                 .callbacks
                 .abandon(CallbackAbandonment::Closed);
@@ -108,5 +139,45 @@ impl RunHandle for ManagedRunHandle {
                 )),
             }
         })
+    }
+}
+
+#[cfg(test)]
+mod cancellation_tests {
+    use super::*;
+    use std::sync::atomic::AtomicUsize;
+    use std::task::Wake;
+
+    #[derive(Default)]
+    struct WakeCounter(AtomicUsize);
+
+    impl Wake for WakeCounter {
+        fn wake(self: Arc<Self>) {
+            self.0.fetch_add(1, Ordering::SeqCst);
+        }
+    }
+
+    #[test]
+    fn accepted_cancellation_wakes_the_attachment_and_wins_a_ready_deadline() {
+        let (callbacks, _exchange) = ManagedCallbackHub::new();
+        let connection = Arc::new(AtomicBool::new(false));
+        let cancellation = ManagedRunCancellation::new(Arc::clone(&connection), callbacks);
+        let wakes = Arc::new(WakeCounter::default());
+        let waker = Waker::from(Arc::clone(&wakes));
+        let mut context = Context::from_waker(&waker);
+
+        assert_eq!(cancellation.poll_requested(&mut context), Poll::Pending);
+        assert_eq!(
+            futures_executor::block_on(cancellation.request()).expect("cancellation accepted"),
+            CancellationAcknowledgement::Requested
+        );
+
+        assert!(connection.load(Ordering::SeqCst));
+        assert_eq!(wakes.0.load(Ordering::SeqCst), 1);
+        assert_eq!(cancellation.poll_requested(&mut context), Poll::Ready(()));
+        assert!(matches!(
+            deadline_exit(&cancellation),
+            AttachmentExit::Cancelled
+        ));
     }
 }

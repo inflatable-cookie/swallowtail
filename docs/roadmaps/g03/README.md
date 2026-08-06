@@ -44,7 +44,7 @@ visible as unverified newer unless exact evidence requires rejection.
 | Give every prepared reusable session shape one truthful post-crash action. | completed | Contracts 026-027, 030, 043, 050 | `g03.039` |
 | Give every provider and harness route one portable failure interface without erasing exact diagnostics. | completed | Contracts 003-004, 006, 009, 014, 037, 044, 051 | `g03.041` |
 | Give agents and operators deep traceable instructions for every production route and portable feature. | completed | Contracts 037, 044-052 | `g03.042` |
-| Prepare the 27-package workspace for an initial `v0.1.0` GitHub source tag without registry publication. | active | Contracts 029, 036-037, 052; Research 111 | `g03.043` |
+| Prepare the 27-package workspace for an initial `v0.1.0` GitHub source tag without registry publication. | active | Contracts 009, 022, 029, 036-037, 052; Research 111 | `g03.043` |
 | Periodically reconcile deferred gates, route truth, and generation capacity. | planned | Contract 001 | recurring checkpoints |
 
 ## Current Checkpoint
@@ -55,7 +55,7 @@ visible as unverified newer unless exact evidence requires rejection.
   identifies stale release authority, Bedrock's legacy TLS advisory path,
   5,897 missing public-doc warnings, and missing source-consumer release polish
 - Contract 036 now governs 27 source packages and exact tag consumption;
-  g03.043 sequences cards 124-130
+  g03.043 sequences cards 124-131
 - card 125 removes Bedrock's legacy Rustls 0.21 path and adds a passing
   advisory, license, and source policy
 - card 126 is complete: all 27 packages have a pinned 7,819-entry semantic API
@@ -72,9 +72,12 @@ visible as unverified newer unless exact evidence requires rejection.
   matching CI, dependency refresh, and all 11 deterministic gates pass;
   Effigy's explicit first-tag/current-version mode simulates exact `v0.1.0`
   with only the changelog mutation and no release-state write
-- card 129 is complete: one exact clean source candidate passes all 11 release
-  gates and the canonical-HEAD external consumer proof; card 130 is ready for
-  the separately gated tag-authorization handoff
+- card 130 is complete: annotated `v0.1.0` and `main` resolve to release commit
+  `a8bef72b718d3d9e503da48b3af05da4b674d4ec`; no registry or GitHub Release
+  mutation ran
+- the first manually dispatched tag CI run reproduced Anthropic Managed Agents
+  cancellation as timeout under runner load; card 131 is ready to repair the
+  contract violation and prove `main` green without moving the published tag
 - g02 closed at 49 roadmaps
 - its only unfinished implementation lane, Pi RPC load and resume, moved to
   shared backlog behind the unchanged cwd-bound attachment gate
@@ -491,7 +494,7 @@ finds the functional baseline healthy but blocks the tag on stale registry
 authority, Bedrock's legacy TLS graph, undocumented public Rust API, and
 missing release-consumer polish. Contract 036 now selects 27 source packages,
 Rust 1.90/1.94.1, and a separately authorized annotated `v0.1.0` tag. Roadmap
-g03.043 owns cards 124-130. Card 125 removes the redundant Bedrock legacy TLS
+g03.043 owns cards 124-131. Card 125 removes the redundant Bedrock legacy TLS
 feature, drops the vulnerable Rustls 0.21 graph, and adds a clean dependency
 policy. Card 126 replaces declaration hashes with a pinned 27-package semantic
 inventory and starts package-family Rustdoc closure; both protocol crates and

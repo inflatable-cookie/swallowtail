@@ -14,7 +14,7 @@ cargo metadata --no-deps --format-version 1 > "$release_metadata"
 jq -e '
   (.packages | length) == 27 and
   all(.packages[];
-    .version == "0.1.0" and
+    .version == "0.1.1" and
     .edition == "2024" and
     .license == "MIT" and
     .repository == "https://github.com/inflatable-cookie/swallowtail" and
@@ -44,7 +44,7 @@ jq -e '
     end
   ) and
   all(.packages[].dependencies[];
-    if .path != null then .req == "^0.1.0" else true end
+    if .path != null then .req == "^0.1.1" else true end
   )
 ' "$release_metadata" > /dev/null
 
@@ -59,6 +59,6 @@ jq -r '
   @tsv
 ' "$release_metadata" | LC_ALL=C sort > "$release_edges"
 
-diff -u release-baselines/internal-dependencies-0.1.0.tsv "$release_edges"
+diff -u release-baselines/internal-dependencies-0.1.1.tsv "$release_edges"
 
 printf 'package metadata and dependency topology passed for 27 crates\n'

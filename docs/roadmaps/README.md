@@ -13,8 +13,8 @@ shape.
 
 ## Next Task
 
-Select the next substantial g03 compatibility-maintenance milestone from
-consumer-proven evidence. No batch card is currently ready.
+Execute g03 card 133: push the exact clean `v0.1.1` release commit and require
+all six canonical GitHub CI jobs to pass before tag creation.
 
 ## Index
 

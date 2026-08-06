@@ -1,15 +1,21 @@
 # Changelog
 
-All notable Swallowtail changes are recorded here.
-Swallowtail has not published a release. The entries below describe the
-candidate source for the initial `v0.1.0` Git tag.
+All notable Swallowtail changes are recorded here. Releases are source-only
+annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
-### Fixed
+## [0.1.1] - 2026-08-06
 
+### Changed
+- publish [v0.1.1 release notes](docs/releases/0.1.1.md) for the compatible
+  source-tag repair
+
+### Fixed
 - preserve accepted Anthropic Managed Agents cancellation as `Cancelled` when
   cancellation and the operation deadline become ready concurrently
+- synchronize Kimi detachment conformance with the fixture peer before
+  asserting observer-close evidence under workspace contention
 
 ## [0.1.0] - 2026-08-06
 

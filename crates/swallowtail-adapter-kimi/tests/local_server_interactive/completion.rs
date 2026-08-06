@@ -380,10 +380,9 @@ fn attached_turn_detaches_without_abort_and_reconciles_as_exact_active_work() {
     drop(events);
     assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
     assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
-    let first_requests = first_server.requests();
+    let first_requests = first_server.finish();
     assert!(first_requests.contains(&"WS observer closed".to_owned()));
     assert!(!first_requests.contains(&"WS unexpected control text".to_owned()));
-    drop(first_server);
 
     let second_server = InteractiveFixtureServer::start(InteractiveScenario::ReconcileActive);
     let second_host = FixtureHost::for_endpoint(second_server.endpoint());

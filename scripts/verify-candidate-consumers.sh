@@ -158,9 +158,9 @@ done
   done
 } >> "$release_soundcheck_copy/Cargo.toml"
 
-rg -q 'swallowtail-core = \{ version = "=0.1.0" \}' \
+rg -q "swallowtail-core = \\{ version = \"=$release_version\" \\}" \
   "$release_nucleus_copy/crates/nucleus-agent-adapters/Cargo.toml"
-rg -q 'swallowtail-core = \{ version = "=0.1.0" \}' \
+rg -q "swallowtail-core = \\{ version = \"=$release_version\" \\}" \
   "$release_soundcheck_copy/Cargo.toml"
 
 CARGO_TARGET_DIR="$release_tmp/target/nucleus" \

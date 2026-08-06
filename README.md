@@ -10,18 +10,19 @@ and product state.
 
 ## Release Posture
 
-`v0.1.0` is the initial supported source identity. It is distributed as one
+`v0.1.1` is the current supported source identity. It is distributed as one
 annotated Git tag from the
 [canonical repository](https://github.com/inflatable-cookie/swallowtail).
 There is no crates.io publication, GitHub Release object, binary bundle, or
 installer in this release line.
 
-The canonical `v0.1.0` tag resolves to the reviewed release commit. Later
+The canonical `v0.1.1` tag resolves to the reviewed release commit. Later
 unreleased work must use an explicitly approved commit revision and must not
 be presented as part of that immutable release.
 
-All 27 packages share version `0.1.0`. The first tag establishes a pre-1.0 API
-and guaranteed-behavior baseline, not an API 1.0 promise.
+All 27 packages share version `0.1.1`. The immutable `v0.1.0` tag established
+the pre-1.0 API and guaranteed-behavior baseline; `v0.1.1` is a compatible
+repair, not an API 1.0 promise.
 
 ## Choose A Route First
 
@@ -48,10 +49,10 @@ a typical application:
 <!-- source-install:start -->
 ```toml
 [dependencies]
-swallowtail-core = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.1.0" }
-swallowtail-runtime = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.1.0" }
-swallowtail-host-local = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.1.0" }
-swallowtail-adapter-codex = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.1.0" }
+swallowtail-core = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.1.1" }
+swallowtail-runtime = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.1.1" }
+swallowtail-host-local = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.1.1" }
+swallowtail-adapter-codex = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.1.1" }
 ```
 <!-- source-install:end -->
 
@@ -109,7 +110,7 @@ payloads in the consumer. Start with:
 
 - Rust `1.90.0` or newer for every package except Bedrock
 - Rust `1.94.1` or newer for `swallowtail-adapter-bedrock`
-- Apple Silicon macOS is the verified `v0.1.0` target; other targets are
+- Apple Silicon macOS is the verified `v0.1.1` target; other targets are
   unverified, not prohibited
 - installed harnesses, attached services, model artifacts, authentication, and
   provider billing are external prerequisites named by each route guide
@@ -129,7 +130,7 @@ and does not use that sidecar.
 
 Swallowtail package versions and provider-interface versions are independent.
 An adapter documents exact maintained, deprecated, excluded, and sometimes
-visible unverified-newer provider versions. Installing package `0.1.0` does
+visible unverified-newer provider versions. Installing package `0.1.1` does
 not guarantee every provider or harness release.
 
 Before 1.0:
@@ -140,7 +141,7 @@ Before 1.0:
   identity, or weakening lifecycle and authority truth is breaking
 
 See [Contract 036](docs/contracts/036-crate-release-and-compatibility-boundary.md)
-and the [v0.1.0 release notes](docs/releases/0.1.0.md).
+and the [v0.1.1 release notes](docs/releases/0.1.1.md).
 
 ## Development
 

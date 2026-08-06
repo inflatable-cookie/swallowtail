@@ -2659,7 +2659,7 @@ checksum = "13c2bddecc57b384dee18652358fb23172facb8a2c51ccc10d74c157bdea3292"
 
 [[package]]
 name = "swallowtail-adapter-alibaba-model-studio"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "curl",
  "futures-channel",
@@ -2676,7 +2676,7 @@ dependencies = [
 
 [[package]]
 name = "swallowtail-adapter-anthropic"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "base64",
  "curl",
@@ -2695,7 +2695,7 @@ dependencies = [
 
 [[package]]
 name = "swallowtail-adapter-antigravity"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "futures-channel",
  "futures-executor",
@@ -2709,7 +2709,7 @@ dependencies = [
 
 [[package]]
 name = "swallowtail-adapter-bedrock"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "aws-credential-types",
  "aws-sdk-bedrock",
@@ -2728,7 +2728,7 @@ dependencies = [
 
 [[package]]
 name = "swallowtail-adapter-claude-agent"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "async-tungstenite",
  "futures-channel",
@@ -2747,7 +2747,7 @@ dependencies = [
 
 [[package]]
 name = "swallowtail-adapter-codex"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "futures-channel",
  "futures-core",
@@ -2762,7 +2762,7 @@ dependencies = [
 
 [[package]]
 name = "swallowtail-adapter-cursor"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "futures-channel",
  "futures-executor",
@@ -2776,7 +2776,7 @@ dependencies = [
 
 [[package]]
 name = "swallowtail-adapter-deepseek"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "curl",
  "futures-channel",
@@ -2795,7 +2795,7 @@ dependencies = [
 
 [[package]]
 name = "swallowtail-adapter-gemini"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "base64",
  "curl",
@@ -2817,7 +2817,7 @@ dependencies = [
 
 [[package]]
 name = "swallowtail-adapter-grok"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "futures-channel",
  "futures-core",
@@ -2834,7 +2834,7 @@ dependencies = [
 
 [[package]]
 name = "swallowtail-adapter-kimi"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "curl",
  "futures-channel",
@@ -2853,7 +2853,7 @@ dependencies = [
 
 [[package]]
 name = "swallowtail-adapter-kimi-platform"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "curl",
  "futures-channel",
@@ -2872,7 +2872,7 @@ dependencies = [
 
 [[package]]
 name = "swallowtail-adapter-llama-cpp"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "curl",
  "futures-channel",
@@ -2891,7 +2891,7 @@ dependencies = [
 
 [[package]]
 name = "swallowtail-adapter-oh-my-pi"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "base64",
  "futures-channel",
@@ -2908,7 +2908,7 @@ dependencies = [
 
 [[package]]
 name = "swallowtail-adapter-ollama"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "curl",
  "futures-channel",
@@ -2926,7 +2926,7 @@ dependencies = [
 
 [[package]]
 name = "swallowtail-adapter-openai"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "base64",
  "curl",
@@ -2946,7 +2946,7 @@ dependencies = [
 
 [[package]]
 name = "swallowtail-adapter-opencode"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "base64",
  "curl",
@@ -2966,7 +2966,7 @@ dependencies = [
 
 [[package]]
 name = "swallowtail-adapter-pi"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "base64",
  "futures-channel",
@@ -2983,7 +2983,7 @@ dependencies = [
 
 [[package]]
 name = "swallowtail-adapter-qwen"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "futures-channel",
  "futures-executor",
@@ -2997,7 +2997,7 @@ dependencies = [
 
 [[package]]
 name = "swallowtail-adapter-xai"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "curl",
  "futures-channel",
@@ -3015,14 +3015,14 @@ dependencies = [
 
 [[package]]
 name = "swallowtail-core"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "semver",
 ]
 
 [[package]]
 name = "swallowtail-host-local"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "futures-executor",
  "sha2 0.10.9",
@@ -3032,7 +3032,7 @@ dependencies = [
 
 [[package]]
 name = "swallowtail-protocol-acp"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "futures-executor",
  "serde_json",
@@ -3042,14 +3042,14 @@ dependencies = [
 
 [[package]]
 name = "swallowtail-protocol-openai-chat"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "serde_json",
 ]
 
 [[package]]
 name = "swallowtail-runtime"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "futures-core",
  "sha2 0.10.9",
@@ -3059,7 +3059,7 @@ dependencies = [
 
 [[package]]
 name = "swallowtail-testkit"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "futures-core",
  "serde_json",
@@ -3069,7 +3069,7 @@ dependencies = [
 
 [[package]]
 name = "swallowtail-transport-acp-remote"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "agent-client-protocol",
  "agent-client-protocol-http",
@@ -3816,18 +3816,18 @@ dependencies = [
 
 [[package]]
 name = "zerocopy"
-version = "0.8.55"
+version = "0.8.56"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b5a105cd7b140f6eeec8acff2ea38135d3cab283ada58540f629fe51e46696eb"
+checksum = "556764e583adb45a9f8d413c2a147fa7e8d821e48e12b14fd560b607998b75eb"
 dependencies = [
  "zerocopy-derive",
 ]
 
 [[package]]
 name = "zerocopy-derive"
-version = "0.8.55"
+version = "0.8.56"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0fe976fb70c78cd64cccfe3a6fc142244e8a77b70959b30faf9d0ac37ee228eb"
+checksum = "f2ab42fc20575779bd240faa45f94a74256f755c0fa9e89f0ede20d91d0cdfc1"
 dependencies = [
  "proc-macro2",
  "quote",

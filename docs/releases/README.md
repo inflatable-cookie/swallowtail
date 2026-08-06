@@ -6,12 +6,12 @@ mutations.
 
 ## Current Candidate
 
-- [Swallowtail 0.1.0](0.1.0.md) — 27-package, 33-route Git source-tag
-  candidate; the tag has not been created
+- [Swallowtail 0.1.1](0.1.1.md) — compatible 27-package, 33-route Git
+  source-tag repair candidate
 
-The initial distribution is an annotated `v0.1.0` tag on the canonical GitHub
-repository. It includes no crates.io publication, GitHub Release object,
-binary, sidecar, installer, or model artifact.
+The initial distribution remains the immutable annotated [`v0.1.0`](0.1.0.md)
+tag. The release line includes no crates.io publication, GitHub Release
+object, binary, sidecar, installer, or model artifact.
 
 ## Consumer Handoffs
 

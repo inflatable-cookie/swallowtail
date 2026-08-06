@@ -101,10 +101,13 @@ impl InteractiveFixtureServer {
             .expect("request lock is not poisoned")
             .clone()
     }
-}
 
-impl Drop for InteractiveFixtureServer {
-    fn drop(&mut self) {
+    pub fn finish(mut self) -> Vec<String> {
+        self.stop_and_join();
+        self.requests()
+    }
+
+    fn stop_and_join(&mut self) {
         self.stopped.store(true, Ordering::SeqCst);
         if let Some(listener) = self.listener.take() {
             let _ = listener.join();
@@ -117,6 +120,12 @@ impl Drop for InteractiveFixtureServer {
         {
             let _ = connection.join();
         }
+    }
+}
+
+impl Drop for InteractiveFixtureServer {
+    fn drop(&mut self) {
+        self.stop_and_join();
     }
 }
 

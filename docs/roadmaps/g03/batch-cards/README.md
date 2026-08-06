@@ -2,16 +2,13 @@
 
 ## Active
 
-- `129-v0-1-0-source-candidate.md`
-
 ## Ready
-
-## Planned
 
 - `130-v0-1-0-tag-authorization-handoff.md`
 
 ## Completed
 
+- `129-v0-1-0-source-candidate.md`
 - `128-source-release-ci-and-candidate-gate.md`
 - `127-consumer-front-door-and-release-copy.md`
 - `126-public-api-review-and-rustdoc.md`

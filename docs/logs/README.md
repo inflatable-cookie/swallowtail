@@ -5,6 +5,7 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-08-06 v0.1.0 Exact Source Candidate](2026-08-06-v0-1-0-exact-source-candidate.md)
 - [2026-08-06 Dependency Refresh And Source Release Gate](2026-08-06-dependency-refresh-and-source-release-gate.md)
 - [2026-08-06 Consumer Front Door And Release Copy](2026-08-06-consumer-front-door-and-release-copy.md)
 - [2026-08-06 Public API And Rustdoc Closure](2026-08-06-public-api-and-rustdoc-closure.md)

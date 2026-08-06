@@ -1,6 +1,6 @@
 # 130 v0.1.0 Tag Authorization Handoff
 
-Status: planned
+Status: ready
 Owner: Tom
 Created: 2026-08-05
 Milestone: `../043-v0-1-0-source-release-readiness.md`

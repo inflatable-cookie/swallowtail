@@ -72,8 +72,9 @@ visible as unverified newer unless exact evidence requires rejection.
   matching CI, dependency refresh, and all 11 deterministic gates pass;
   Effigy's explicit first-tag/current-version mode simulates exact `v0.1.0`
   with only the changelog mutation and no release-state write
-- card 129 is active: the complete audit worktree is under final review before
-  one exact clean candidate commit and canonical-HEAD source-consumer proof
+- card 129 is complete: one exact clean source candidate passes all 11 release
+  gates and the canonical-HEAD external consumer proof; card 130 is ready for
+  the separately gated tag-authorization handoff
 - g02 closed at 49 roadmaps
 - its only unfinished implementation lane, Pi RPC load and resume, moved to
   shared backlog behind the unchanged cwd-bound attachment gate

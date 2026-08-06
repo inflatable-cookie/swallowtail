@@ -13,9 +13,9 @@ shape.
 
 ## Next Task
 
-Complete g03 card 129: commit the reviewed v0.1.0 audit work, then bind the
-full deterministic gate and external consumer to that exact clean candidate.
-Do not prepare, tag, or push before the later operator authorization handoff.
+Execute g03 card 130 as a read-only operator handoff: name the exact accepted
+candidate, branch, remote, absent `v0.1.0` tag, annotation, and excluded
+actions. Stop for explicit authorization before prepare, tag, or push.
 
 ## Index
 

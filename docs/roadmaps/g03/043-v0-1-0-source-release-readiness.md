@@ -6,7 +6,7 @@ Created: 2026-08-05
 Depends on: g03.042
 Vision tags: source release, consumer readiness, public API, security
 Contract refs: 002, 029, 032, 036-037, 052
-Planning state: cards 124-128 complete; card 129 active
+Planning state: cards 124-129 complete; card 130 ready
 
 ## Problem
 
@@ -27,7 +27,7 @@ operator approval.
 - [x] card 126: public API review, narrowing, semantic baseline, and Rustdoc
 - [x] card 127: consumer front door, source install, release notes, and support
 - [x] card 128: GitHub CI and source-tag candidate selector
-- [ ] card 129: full deterministic candidate and external-source consumer proof
+- [x] card 129: full deterministic candidate and external-source consumer proof
 - [ ] card 130: exact operator handoff; tag creation remains separately gated
 
 ## Boundaries
@@ -51,16 +51,15 @@ operator approval.
       baselined
 - [x] root onboarding and release notes describe exact Git-tag consumption
 - [x] deterministic CI covers QA, Rust floors, docs, security, and source use
-- [ ] an isolated consumer compiles and prepares representative routes from the
+- [x] an isolated consumer compiles and prepares representative routes from the
       exact candidate source
 - [ ] tag handoff names the exact commit and excluded external actions
 
-Card 128's repository work and read-only release simulation pass all 11
-deterministic gates. Effigy's explicit first-tag/current-version mode selects
-the already-declared `0.1.0`, plans `v0.1.0`, omits a no-op version rewrite,
-and writes no release state. Card 129 now waits for the audit work to be
-reviewed and committed so its candidate evidence can bind one exact clean
-commit.
+Card 129 binds the reviewed source to one exact clean candidate. Simulation
+and status checks pass all 11 deterministic gates, including 1,463 tests and
+an isolated consumer compiled from the exact candidate revision. The prepare
+plan contains only the changelog promotion. Card 130 is ready for the separate
+operator tag-authorization handoff.
 
 ## Lane Runway
 

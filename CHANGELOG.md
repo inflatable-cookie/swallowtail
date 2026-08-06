@@ -1,14 +1,14 @@
 # Changelog
 
 All notable Swallowtail changes are recorded here.
-
 Swallowtail has not published a release. The entries below describe the
 candidate source for the initial `v0.1.0` Git tag.
 
 ## [Unreleased]
 
-### Added
+## [0.1.0] - 2026-08-06
 
+### Added
 - selected one annotated Git tag as the initial distribution; crates.io,
   GitHub Release assets, binaries, sidecars, and installers are excluded
 - coordinated 27 independently selectable Rust library packages at version
@@ -40,7 +40,6 @@ candidate source for the initial `v0.1.0` Git tag.
   guide, example, facade, lifecycle, and external-consumer validation surfaces
 
 ### Changed
-
 - Established this tag as the first pre-1.0 public API and guaranteed-behavior
   baseline. Compatible changes advance the patch version; breaking API or
   guaranteed-behavior changes advance the minor version; provider

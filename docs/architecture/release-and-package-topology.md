@@ -7,10 +7,10 @@ Realization: roadmap g02.001; g03.043
 
 ## Boundary
 
-Swallowtail current source is a coordinated 28-package Rust workspace. The
-immutable `v0.1.0` and `v0.1.1` Git source tags contain 27 packages. The
-additive `swallowtail-adapter-muse` package is unreleased source after
-`v0.1.1`. No crate is published to crates.io in this release lane.
+Swallowtail current source is a coordinated 28-package Rust workspace and the
+`v0.2.0` candidate. The immutable `v0.1.0` and `v0.1.1` Git source tags contain
+27 packages. `swallowtail-adapter-muse` is package 28. No crate is published to
+crates.io in this release lane.
 
 Each package remains independently selectable from the tagged Git source.
 There is no umbrella crate or private implementation package.
@@ -48,7 +48,7 @@ Adapters:
 - `swallowtail-adapter-kimi`
 - `swallowtail-adapter-kimi-platform`
 - `swallowtail-adapter-llama-cpp`
-- `swallowtail-adapter-muse` (unreleased after `v0.1.1`)
+- `swallowtail-adapter-muse` (`v0.2.0` candidate)
 - `swallowtail-adapter-opencode`
 - `swallowtail-adapter-ollama`
 - `swallowtail-adapter-oh-my-pi`
@@ -80,21 +80,22 @@ No normal internal edge points upward. Workspace paths keep the source tag
 self-contained. Compatible version requirements preserve coordinated package
 identity without claiming registry availability.
 
-Current-source metadata, dependency topology, and semantic API checks include
-all 28 packages. Immutable tag inventories retain their 27 packages and 33
+Candidate metadata, dependency topology, and semantic API checks include all
+28 packages. Immutable `v0.1.x` inventories retain their 27 packages and 33
 routes. Adding Muse does not rewrite release notes, tag contents, or historical
 candidate evidence.
 
 ## Version And Toolchains
 
-All packages share version `0.1.0` before the first tag.
+All candidate packages share version `0.2.0`.
 
-- general MSRV: Rust `1.90.0`
-- Bedrock MSRV: Rust `1.94.1`
+- unified MSRV: Rust `1.95.0`
 - verified target: Apple Silicon macOS
 
-The Bedrock exception follows its AWS SDK graph. The workspace lock and Cargo
-resolver 3 retain reproducible, floor-aware selection.
+The immutable `v0.1.x` line used Rust `1.90.0` generally and Rust `1.94.1` for
+Bedrock. Raising and unifying that floor is the intentional breaking boundary
+that makes the candidate `v0.2.0`. The workspace lock and Cargo resolver 3
+retain reproducible, floor-aware selection.
 
 ## Source-Tag Consumption
 
@@ -102,9 +103,9 @@ A consumer selects only the packages it needs:
 
 ```toml
 [dependencies]
-swallowtail-core = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.1.0" }
-swallowtail-runtime = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.1.0" }
-swallowtail-adapter-codex = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.1.0" }
+swallowtail-core = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.2.0" }
+swallowtail-runtime = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.2.0" }
+swallowtail-adapter-codex = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.2.0" }
 ```
 
 All selected packages must use the same tag. Consumers do not combine moving
@@ -123,8 +124,8 @@ evidence:
 
 - exact commit and parent
 - clean worktree
-- 28-package current-source metadata and topology plus immutable 27-package
-  tag evidence
+- 28-package candidate metadata and topology plus immutable 27-package
+  `v0.1.x` evidence
 - semantic public API baseline
 - documented public API
 - dependency and security policy

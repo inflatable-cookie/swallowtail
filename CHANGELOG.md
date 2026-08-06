@@ -5,6 +5,28 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-08-06
+
+### Added
+- add the separately selectable `swallowtail-adapter-muse` package and exact
+  `muse-code.headless` route for local Meta account access to
+  `meta` / `muse-spark-1.2`
+- add explicit Muse reasoning effort, prepared read-only execution, bounded
+  JSONL activity, exact signed-payload discovery, and operator-gated live
+  acceptance evidence
+
+### Changed
+- promote the coordinated source release to 28 packages and 34 production
+  routes without changing crates.io, GitHub Release, binary, or installer
+  posture
+- raise the verified Rust floor to `1.95.0` for all packages and retire the
+  separate Bedrock override; this breaking requirement makes the release
+  `0.2.0`
+- split Muse event and corpus internals before release without changing public
+  API, diagnostics, or guaranteed behavior
+- publish [v0.2.0 release notes](docs/releases/0.2.0.md) with exact upgrade,
+  rollback, support, and known-limit guidance
+
 ## [0.1.1] - 2026-08-06
 
 ### Changed

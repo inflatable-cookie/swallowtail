@@ -10,7 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 REPOSITORY = "https://github.com/inflatable-cookie/swallowtail"
-TAG = "v0.1.1"
+TAG = "v0.2.0"
 
 
 def fail(message: str) -> None:
@@ -34,7 +34,7 @@ def section(document: str, start: str, end: str) -> str:
 
 
 readme = read("README.md")
-release = read("docs/releases/0.1.1.md")
+release = read("docs/releases/0.2.0.md")
 changelog = read("CHANGELOG.md")
 matrix = read("docs/guides/provider-route-matrix.md")
 
@@ -76,7 +76,7 @@ if set(dependencies) != expected_dependencies:
     fail("source-install example does not contain the expected direct package set")
 
 expected_packages = set(
-    read("release-baselines/public-api-0.1.0/packages.txt").splitlines()
+    read("release-baselines/public-api-0.2.0/packages.txt").splitlines()
 )
 release_package_section = section(release, "## Package Set", "## Production Routes")
 documented_packages = set(re.findall(r"`(swallowtail-[a-z0-9-]+)`", release_package_section))
@@ -92,9 +92,9 @@ current_routes = set(
         re.MULTILINE,
     )
 )
-expected_routes = set(read("release-baselines/production-routes-0.1.1.txt").splitlines())
-if not expected_routes <= current_routes or "muse-code.headless" not in current_routes:
-    fail("current route inventory lost tagged routes or the additive Muse route")
+expected_routes = set(read("release-baselines/production-routes-0.2.0.txt").splitlines())
+if expected_routes != current_routes:
+    fail("current route inventory differs from the v0.2.0 candidate")
 release_route_section = section(release, "## Production Routes", "## Highlights")
 documented_routes = set(re.findall(r"^- `([^`]+)`$", release_route_section, re.MULTILINE))
 if documented_routes != expected_routes:
@@ -104,12 +104,12 @@ if documented_routes != expected_routes:
 
 for relative, document in (
     ("README.md", readme),
-    ("docs/releases/0.1.1.md", release),
+    ("docs/releases/0.2.0.md", release),
 ):
     if REPOSITORY not in document or TAG not in document:
         fail(f"{relative} omits the canonical repository or exact tag")
 
-if "docs/releases/0.1.1.md" not in changelog:
+if "docs/releases/0.2.0.md" not in changelog:
     fail("CHANGELOG.md does not link to the current release notes")
 if "security/advisories/new" not in read("SECURITY.md"):
     fail("SECURITY.md does not name the private reporting path")

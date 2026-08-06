@@ -2,11 +2,11 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-05
+Updated: 2026-08-06
 
 ## Realized State
 
-Swallowtail has a twenty-seven-crate Rust workspace plus its strict Northstar authority
+Swallowtail has a twenty-eight-crate Rust workspace plus its strict Northstar authority
 spine:
 
 - `swallowtail-core` owns pure provider-neutral contract records, including
@@ -313,11 +313,11 @@ remote ACP operations -> swallowtail-transport-acp-remote -> core/runtime/protoc
 
 The active public release topology is recorded in
 `release-and-package-topology.md` and governed by Contract 036. The immutable
-source tags contain 27 separately consumable packages. Current source adds the
-separately baselined, unreleased Muse package for 28 under the coordinated
-pre-1.0 version. The initial release is an exact GitHub source tag, not a
-registry publication. Current manifests realize the acyclic workspace
-dependencies, resolver 3, Rust-version floors, and shared package metadata.
+`v0.1.x` source tags contain 27 separately consumable packages. The `v0.2.0`
+candidate adds the separately baselined Muse package for 28 and raises every
+package to one Rust `1.95.0` floor. Releases are exact GitHub source tags, not
+registry publications. Current manifests realize the acyclic workspace
+dependencies, resolver 3, unified Rust floor, and shared package metadata.
 Roadmap g03.043 replaces the stale registry candidate path with semantic API,
 documentation, dependency-policy, source-consumer, and exact-tag evidence.
 

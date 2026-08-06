@@ -12,11 +12,12 @@ release_expected_edges=$(mktemp)
 trap 'rm -f "$release_metadata" "$release_edges" "$release_names" "$release_expected_names" "$release_expected_edges"' EXIT
 
 cargo metadata --no-deps --format-version 1 > "$release_metadata"
+release_version=$(jq -r '.packages[0].version' "$release_metadata")
 
-jq -e '
+jq -e --arg version "$release_version" '
   (.packages | length) == 28 and
   all(.packages[];
-    .version == "0.1.1" and
+    .version == $version and
     .edition == "2024" and
     .license == "MIT" and
     .repository == "https://github.com/inflatable-cookie/swallowtail" and
@@ -40,22 +41,15 @@ jq -e '
     ) and
     all(.targets[]; all(.kind[]; . == "lib" or . == "test" or . == "example"))
   ) and
-  all(.packages[];
-    if .name == "swallowtail-adapter-bedrock"
-    then .rust_version == "1.94.1"
-    else .rust_version == "1.90"
-    end
-  ) and
+  all(.packages[]; .rust_version == "1.95") and
   all(.packages[].dependencies[];
-    if .path != null then .req == "^0.1.1" else true end
+    if .path != null then .req == ("^" + $version) else true end
   )
 ' "$release_metadata" > /dev/null
 
 jq -r '.packages[].name' "$release_metadata" | LC_ALL=C sort > "$release_names"
-{
-  cat release-baselines/public-api-0.1.0/packages.txt
-  printf 'swallowtail-adapter-muse\n'
-} | LC_ALL=C sort > "$release_expected_names"
+LC_ALL=C sort release-baselines/public-api-0.2.0/packages.txt \
+  > "$release_expected_names"
 diff -u "$release_expected_names" "$release_names"
 
 jq -r '
@@ -66,11 +60,11 @@ jq -r '
   @tsv
 ' "$release_metadata" | LC_ALL=C sort > "$release_edges"
 
-{
-  cat release-baselines/internal-dependencies-0.1.1.tsv
-  printf 'swallowtail-adapter-muse\tswallowtail-core\t^0.1.1\n'
-  printf 'swallowtail-adapter-muse\tswallowtail-runtime\t^0.1.1\n'
-} | LC_ALL=C sort > "$release_expected_edges"
+awk -F '\t' -v OFS='\t' -v requirement="^$release_version" \
+  '{$3 = requirement; print}' \
+  release-baselines/internal-dependencies-0.2.0.tsv \
+  | LC_ALL=C sort > "$release_expected_edges"
 diff -u "$release_expected_edges" "$release_edges"
 
-printf 'current-source metadata passed for 28 crates; immutable release baseline remains 27\n'
+printf 'coordinated metadata passed for 28 crates at %s and Rust 1.95\n' \
+  "$release_version"

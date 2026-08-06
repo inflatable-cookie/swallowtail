@@ -6,6 +6,7 @@ license.workspace = true
 repository.workspace = true
 readme.workspace = true
 publish.workspace = true
+rust-version.workspace = true
 description = "Amazon Bedrock SDK-native direct-inference drivers for Swallowtail"
 
 [lib]

@@ -5,6 +5,9 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-08-06 v0.2.0 Local Source Candidate](2026-08-06-v0-2-0-local-source-candidate.md)
+- [2026-08-06 Muse Release Structural Cleanup](2026-08-06-muse-release-structural-cleanup.md)
+- [2026-08-06 v0.2.0 Muse And Rust-Floor Source Release Selection](2026-08-06-v0-2-0-muse-and-rust-floor-source-release-selection.md)
 - [2026-08-06 Muse Code Headless Foundation](2026-08-06-muse-code-headless-foundation.md)
 - [2026-08-06 Muse Code Prepared Facade](2026-08-06-muse-code-prepared-facade.md)
 - [2026-08-06 Muse Code Headless Driver Core](2026-08-06-muse-code-headless-driver-core.md)

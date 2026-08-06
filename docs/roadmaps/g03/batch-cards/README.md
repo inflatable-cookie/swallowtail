@@ -4,10 +4,16 @@
 
 ## Ready
 
+- `141-v0-2-0-exact-ci-candidate.md`
+
 ## Planned
+
+- `142-v0-2-0-annotated-source-tag.md`
 
 ## Completed
 
+- `140-v0-2-0-source-candidate.md`
+- `139-muse-release-structural-cleanup.md`
 - `138-muse-code-package-and-route-acceptance.md`
 - `137-muse-code-prepared-facade.md`
 - `136-muse-code-headless-driver-core.md`

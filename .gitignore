@@ -4,3 +4,4 @@
 *.swp
 *.swo
 .effigy
+.release-prepared.json

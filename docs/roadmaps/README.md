@@ -13,9 +13,9 @@ shape.
 
 ## Next Task
 
-Hold at the g03 evidence gate. The next operator choice is whether to qualify
-Muse retained-session continuation/recovery, assess the direct Meta Model API,
-or return to ordinary provider-compatibility evidence.
+Prove g03 card 141's exact `v0.2.0` CI candidate after explicit authorization
+to replace the obsolete split-floor GitHub workflow with one Rust `1.95.0`
+workspace floor job.
 
 ## Index
 

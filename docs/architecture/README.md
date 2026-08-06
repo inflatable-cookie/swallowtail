@@ -13,5 +13,5 @@ until code lands.
 - [Consumer Runtime Evidence](consumer-runtime-evidence.md) — realized Nucleus
   and Soundcheck execution shapes
 - [Release And Package Topology](release-and-package-topology.md) — realized
-  public package roles, dependency order, version shape, MSRV bands,
+  public package roles, dependency order, version shape, MSRV floor,
   deterministic local gates, and release authority

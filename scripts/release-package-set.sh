@@ -1,4 +1,4 @@
-release_version=0.1.1
+release_version=0.2.0
 
 release_internal_patch_packages=(
   swallowtail-core

@@ -10,21 +10,22 @@ and product state.
 
 ## Release Posture
 
-`v0.1.1` is the current supported source identity. It is distributed as one
-annotated Git tag from the
+`v0.1.1` is the current supported source identity. `v0.2.0` is the prepared
+candidate and is not usable as a tag until exact CI acceptance and tag
+creation. Releases are distributed as annotated Git tags from the
 [canonical repository](https://github.com/inflatable-cookie/swallowtail).
 There is no crates.io publication, GitHub Release object, binary bundle, or
 installer in this release line.
 
-The canonical `v0.1.1` tag resolves to the reviewed release commit. Later
-unreleased work must use an explicitly approved commit revision and must not
-be presented as part of that immutable release.
+The canonical `v0.1.1` tag resolves to the reviewed release commit. Candidate
+work must use an explicitly approved commit revision and must not be presented
+as part of that immutable release.
 
-The 27 tagged packages share version `0.1.1`. Current source adds the unreleased
-`swallowtail-adapter-muse` package as number 28. It requires an explicitly
-approved commit and is not part of either immutable tag. `v0.1.0` established
-the pre-1.0 API and guaranteed-behavior baseline; `v0.1.1` is a compatible
-repair, not an API 1.0 promise.
+The 27 tagged packages share version `0.1.1`. The `v0.2.0` candidate contains
+28 packages, adding `swallowtail-adapter-muse`. `v0.1.0` established the
+pre-1.0 API and guaranteed-behavior baseline; `v0.1.1` is a compatible repair.
+`v0.2.0` is a minor release because it raises the unified Rust floor to
+`1.95.0`, not an API 1.0 promise.
 
 ## Choose A Route First
 
@@ -51,10 +52,10 @@ a typical application:
 <!-- source-install:start -->
 ```toml
 [dependencies]
-swallowtail-core = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.1.1" }
-swallowtail-runtime = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.1.1" }
-swallowtail-host-local = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.1.1" }
-swallowtail-adapter-codex = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.1.1" }
+swallowtail-core = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.2.0" }
+swallowtail-runtime = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.2.0" }
+swallowtail-host-local = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.2.0" }
+swallowtail-adapter-codex = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.2.0" }
 ```
 <!-- source-install:end -->
 
@@ -76,7 +77,7 @@ There is no umbrella crate. Every package is independently selectable.
 | Portable contracts and execution | `swallowtail-core`, `swallowtail-runtime` |
 | Host integration and conformance | `swallowtail-host-local`, `swallowtail-testkit` |
 | Protocols and transport | `swallowtail-protocol-acp`, `swallowtail-protocol-openai-chat`, `swallowtail-transport-acp-remote` |
-| Installed agent harnesses | `swallowtail-adapter-antigravity`, `swallowtail-adapter-claude-agent`, `swallowtail-adapter-codex`, `swallowtail-adapter-cursor`, `swallowtail-adapter-grok`, `swallowtail-adapter-kimi`, `swallowtail-adapter-muse` (unreleased), `swallowtail-adapter-oh-my-pi`, `swallowtail-adapter-opencode`, `swallowtail-adapter-pi`, `swallowtail-adapter-qwen` |
+| Installed agent harnesses | `swallowtail-adapter-antigravity`, `swallowtail-adapter-claude-agent`, `swallowtail-adapter-codex`, `swallowtail-adapter-cursor`, `swallowtail-adapter-grok`, `swallowtail-adapter-kimi`, `swallowtail-adapter-muse`, `swallowtail-adapter-oh-my-pi`, `swallowtail-adapter-opencode`, `swallowtail-adapter-pi`, `swallowtail-adapter-qwen` |
 | Hosted APIs and SDKs | `swallowtail-adapter-alibaba-model-studio`, `swallowtail-adapter-anthropic`, `swallowtail-adapter-bedrock`, `swallowtail-adapter-deepseek`, `swallowtail-adapter-gemini`, `swallowtail-adapter-kimi-platform`, `swallowtail-adapter-openai`, `swallowtail-adapter-xai` |
 | Local model runtimes | `swallowtail-adapter-llama-cpp`, `swallowtail-adapter-ollama` |
 
@@ -110,9 +111,8 @@ payloads in the consumer. Start with:
 
 ## Runtime Prerequisites
 
-- Rust `1.90.0` or newer for every package except Bedrock
-- Rust `1.94.1` or newer for `swallowtail-adapter-bedrock`
-- Apple Silicon macOS is the verified `v0.1.1` target; other targets are
+- Rust `1.95.0` or newer for every `v0.2.0` candidate package
+- Apple Silicon macOS is the verified candidate target; other targets are
   unverified, not prohibited
 - installed harnesses, attached services, model artifacts, authentication, and
   provider billing are external prerequisites named by each route guide
@@ -132,7 +132,7 @@ and does not use that sidecar.
 
 Swallowtail package versions and provider-interface versions are independent.
 An adapter documents exact maintained, deprecated, excluded, and sometimes
-visible unverified-newer provider versions. Installing package `0.1.1` does
+visible unverified-newer provider versions. Installing package `0.2.0` does
 not guarantee every provider or harness release.
 
 Before 1.0:
@@ -143,7 +143,7 @@ Before 1.0:
   identity, or weakening lifecycle and authority truth is breaking
 
 See [Contract 036](docs/contracts/036-crate-release-and-compatibility-boundary.md)
-and the [v0.1.1 release notes](docs/releases/0.1.1.md).
+and the [v0.2.0 candidate release notes](docs/releases/0.2.0.md).
 
 ## Development
 

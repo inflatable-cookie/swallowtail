@@ -63,39 +63,22 @@ jobs:
       - name: Semantic public API baseline
         run: bash scripts/check-public-api.sh
 
-  general-floor:
-    name: Rust 1.90 floor
+  rust-floor:
+    name: Rust 1.95 floor
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: 1.90.0
+          toolchain: 1.95.0
           components: clippy
       - uses: Swatinem/rust-cache@v2
         with:
-          key: rust-1.90
+          key: rust-1.95
       - name: Clippy
-        run: cargo clippy --workspace --exclude swallowtail-adapter-bedrock --all-targets --all-features --locked -- -D warnings
+        run: cargo clippy --workspace --all-targets --all-features --locked -- -D warnings
       - name: Test
-        run: cargo test --workspace --exclude swallowtail-adapter-bedrock --all-features --locked
-
-  bedrock-floor:
-    name: Bedrock Rust 1.94.1 floor
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: 1.94.1
-          components: clippy
-      - uses: Swatinem/rust-cache@v2
-        with:
-          key: rust-1.94.1-bedrock
-      - name: Clippy
-        run: cargo clippy --package swallowtail-adapter-bedrock --all-targets --all-features --locked -- -D warnings
-      - name: Test
-        run: cargo test --package swallowtail-adapter-bedrock --all-features --locked
+        run: cargo test --workspace --all-features --locked
 
   supply-chain:
     name: Dependency security, licenses, and sources

@@ -56,7 +56,7 @@ name = "swallowtail-source-consumer"
 version = "0.0.0"
 edition = "2024"
 publish = false
-rust-version = "1.90"
+rust-version = "1.95"
 
 [dependencies]
 swallowtail-core = { git = "$release_source_url", rev = "$release_source_commit" }

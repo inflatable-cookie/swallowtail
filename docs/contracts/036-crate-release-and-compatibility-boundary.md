@@ -37,9 +37,9 @@ workspace checkout.
 ## Public Package Set
 
 The immutable `v0.1.0` and `v0.1.1` tags contain 27 public source packages.
-Current source contains one reviewed additive package,
-`swallowtail-adapter-muse`, for 28 total. Muse is unreleased and must not be
-presented as part of either tag.
+The `v0.2.0` candidate contains 28, adding the reviewed
+`swallowtail-adapter-muse` package. Muse must not be presented as part of an
+immutable earlier tag or as tagged before exact release acceptance.
 
 Foundations:
 
@@ -72,7 +72,7 @@ Opt-in adapters:
 - `swallowtail-adapter-kimi`
 - `swallowtail-adapter-kimi-platform`
 - `swallowtail-adapter-llama-cpp`
-- `swallowtail-adapter-muse` (unreleased source after `v0.1.1`)
+- `swallowtail-adapter-muse` (`v0.2.0` candidate)
 - `swallowtail-adapter-opencode`
 - `swallowtail-adapter-ollama`
 - `swallowtail-adapter-oh-my-pi`
@@ -87,9 +87,10 @@ to use another, install a harness, acquire a model, start a server,
 authenticate, select billing, or claim provider support.
 
 A package addition, removal, merge, or private role requires architecture and
-contract review before manifest work. Additive unreleased packages receive a
-separate source inventory and semantic API baseline. Historical tag package,
-dependency, API, route, and release-note inventories remain immutable.
+contract review before manifest work. Additive candidates receive explicit
+source inventory and semantic API evidence before their first tag. Historical
+tag package, dependency, API, route, and release-note inventories remain
+immutable.
 
 ## Dependency Topology
 
@@ -131,18 +132,19 @@ packages, compatibility loss, rollback, and upgrade path.
 
 ## Rust And Target Support
 
-The initial verified floors are:
+The immutable `v0.1.x` verified floors are:
 
 - Rust `1.90.0` for every package except Bedrock
 - Rust `1.94.1` for `swallowtail-adapter-bedrock`
 
-Bedrock's higher floor follows its pinned AWS SDK graph. Resolver 3 and the
-committed lock file preserve floor-aware resolution.
+Bedrock's historical higher floor follows its pinned AWS SDK graph. The
+`v0.2.0` candidate deliberately replaces that split with one Rust `1.95.0`
+floor for all 28 packages. This is a breaking MSRV raise and therefore uses a
+new pre-1.0 minor version.
 
-Every candidate must pass:
+The `v0.2.0` candidate must pass:
 
-- all non-Bedrock packages at Rust `1.90.0`
-- Bedrock at Rust `1.94.1`
+- all 28 packages at Rust `1.95.0`
 - the complete workspace on the selected current stable toolchain
 
 Apple Silicon macOS is the initial verified target. Other targets may work and
@@ -191,8 +193,10 @@ the current release candidate.
 ## Public API And Documentation
 
 The first tag creates the compatibility baseline for its 27 packages. An
-additive post-tag package creates a separate unreleased API baseline until an
-operator authorizes a later source release containing it.
+additive post-tag package receives separate candidate API evidence until an
+operator authorizes a later source release containing it. The `v0.2.0`
+candidate retains the 27-package `v0.1.0` baseline and adds Muse's first
+baseline without rewriting the earlier inventory.
 
 Before the tag:
 
@@ -210,7 +214,7 @@ Examples and route guides supplement Rustdoc; they do not replace it.
 Subsequent compatible candidates compare against the tagged semantic baseline
 and receive explicit compatible or breaking classification.
 
-The initial semantic inventory uses `cargo-public-api 0.52.0` with
+The semantic inventory uses `cargo-public-api 0.52.0` with
 `nightly-2026-08-05`, all package features enabled, and blanket, auto-trait,
 and auto-derived implementations omitted. That nightly exists only to produce
 rustdoc JSON. It does not change the stable release compiler or either verified
@@ -258,12 +262,12 @@ not every provider behavior.
 Credential-free release checks sit behind explicit Effigy selectors and cover:
 
 - clean source and exact commit identity
-- 28-package current-source metadata and dependency topology, kept distinct
-  from the immutable 27-package tag baseline
+- exact 28-package candidate metadata and dependency topology, kept distinct
+  from the immutable 27-package `v0.1.x` baselines
 - semantic public API baseline
 - denied missing public documentation
 - dependency advisory, license, and source policy
-- Rust floors and current stable
+- Rust `1.95.0` floor and current stable
 - formatting, lint, tests, guide coverage, and examples
 - external source-consumer compilation and normal-path preparation
 - release-note, changelog, license, and security-policy presence
@@ -274,11 +278,11 @@ virtual workspace version explicitly and carries no registry or GitHub Release
 step. Swallowtail-specific scripts supply package, API, floor, security, and
 external-source evidence behind that configuration.
 
-Because the workspace already declares its intended first release version,
-the configuration explicitly enables Effigy's first-tag/current-version mode.
-That mode is valid only while the changelog has no released versions and the
-matching local tag does not exist. It does not permit a lower version, a
-repeated release, or a bypass around normal release gates.
+The configuration retains Effigy's first-tag/current-version setting as
+historical bootstrap authority for `v0.1.0`. Later candidates still require a
+strictly greater version and an absent matching tag. The setting does not
+permit a lower version, a repeated release, or a bypass around normal release
+gates.
 
 The gate performs no authenticated provider work and no external release
 mutation.
@@ -293,7 +297,7 @@ tag action against:
 
 - source commit
 - canonical branch and remote
-- tag name `v0.1.0`
+- tag name `v0.2.0`
 - annotated tag message
 - confirmation that no crate publication or GitHub Release is included
 
@@ -303,13 +307,13 @@ GitHub Release creation, consumer edits, and provider work remain separate.
 
 ## Acceptance
 
-- all 27 tagged packages are separately consumable from one exact tag
-- the 28th current-source Muse package is visibly unreleased and consumable
-  only from an explicitly approved commit
+- all 28 candidate packages are separately consumable from one exact source
+  identity
+- Muse is visibly candidate-only until the exact `v0.2.0` tag exists
 - `publish = false` prevents accidental registry publication
 - internal dependency direction is exact
-- `0.1.0` compatibility and provider-interface versions remain separate
-- Rust floors and Apple Silicon support are explicit and tested
+- package compatibility and provider-interface versions remain separate
+- the Rust floor and Apple Silicon support are explicit and tested
 - source contents are clean, bounded, redacted, and reproducible
 - public API is reviewed, semantically baselined, and documented
 - dependency and security policy passes

@@ -9,6 +9,11 @@ mutations.
 - [Swallowtail 0.1.1](0.1.1.md) — compatible 27-package, 33-route Git
   source-tag repair
 
+## Current Candidate
+
+- [Swallowtail 0.2.0](0.2.0.md) — 28-package, 34-route source candidate
+  containing Muse Code and a breaking unified Rust `1.95.0` floor; not tagged
+
 The initial distribution remains the immutable annotated [`v0.1.0`](0.1.0.md)
 tag. The release line includes no crates.io publication, GitHub Release
 object, binary, sidecar, installer, or model artifact.

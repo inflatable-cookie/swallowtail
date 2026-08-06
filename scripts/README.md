@@ -30,15 +30,15 @@ Release-preparation scripts:
 - `check-package-metadata.sh` — Contract 036 metadata, package set, MSRV, and
   dependency topology
 - `check-release-floor.sh` — warnings-denied Clippy and full tests for the
-  Rust 1.90 general package set and Rust 1.94.1 Bedrock exception
+  unified Rust 1.95 package floor
 - `verify-source-consumer.sh` — isolated external Cargo consumer against exact
   repository `HEAD` when the worktree is clean; dirty pre-commit simulations
   use an explicitly reported synthetic Git snapshot
 - `generate-public-api-baseline.sh` — generate the reviewed semantic Rust API
   inventory with pinned `cargo-public-api` and nightly versions
-- `check-public-api.sh` — compare 27 immutable release packages plus separately
-  baselined unreleased Muse source with reviewed semantic API evidence
-- `check-msrv.sh` — general floor, Bedrock floor, and current stable checks
+- `check-public-api.sh` — compare the 27 immutable v0.1.0 package APIs plus
+  Muse's v0.2.0 baseline with reviewed semantic API evidence
+- `check-msrv.sh` — unified Rust 1.95 floor and current stable checks
 
 Historical registry-candidate scripts:
 

@@ -4,10 +4,9 @@
 
 ## Ready
 
-- `131-tagged-ci-anthropic-cancellation-repair.md`
-
 ## Completed
 
+- `131-tagged-ci-anthropic-cancellation-repair.md`
 - `130-v0-1-0-tag-authorization-handoff.md`
 - `129-v0-1-0-source-candidate.md`
 - `128-source-release-ci-and-candidate-gate.md`

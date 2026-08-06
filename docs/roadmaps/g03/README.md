@@ -44,7 +44,7 @@ visible as unverified newer unless exact evidence requires rejection.
 | Give every prepared reusable session shape one truthful post-crash action. | completed | Contracts 026-027, 030, 043, 050 | `g03.039` |
 | Give every provider and harness route one portable failure interface without erasing exact diagnostics. | completed | Contracts 003-004, 006, 009, 014, 037, 044, 051 | `g03.041` |
 | Give agents and operators deep traceable instructions for every production route and portable feature. | completed | Contracts 037, 044-052 | `g03.042` |
-| Prepare the 27-package workspace for an initial `v0.1.0` GitHub source tag without registry publication. | active | Contracts 009, 022, 029, 036-037, 052; Research 111 | `g03.043` |
+| Prepare the 27-package workspace for an initial `v0.1.0` GitHub source tag without registry publication. | completed | Contracts 009, 022, 029, 036-037, 052; Research 111 | `g03.043` |
 | Periodically reconcile deferred gates, route truth, and generation capacity. | planned | Contract 001 | recurring checkpoints |
 
 ## Current Checkpoint
@@ -75,9 +75,11 @@ visible as unverified newer unless exact evidence requires rejection.
 - card 130 is complete: annotated `v0.1.0` and `main` resolve to release commit
   `a8bef72b718d3d9e503da48b3af05da4b674d4ec`; no registry or GitHub Release
   mutation ran
-- the first manually dispatched tag CI run reproduced Anthropic Managed Agents
-  cancellation as timeout under runner load; card 131 is ready to repair the
-  contract violation and prove `main` green without moving the published tag
+- card 131 closes the tagged CI finding: accepted cancellation wakes the
+  attachment pump and wins concurrent deadline readiness; cancellation tests
+  isolate managed-resource setup contention; all six CI jobs pass on exact
+  repair commit `4ffbd8f8a5302b9ce31ee37687876fcab8661f58` without moving
+  the published tag
 - g02 closed at 49 roadmaps
 - its only unfinished implementation lane, Pi RPC load and resume, moved to
   shared backlog behind the unchanged cwd-bound attachment gate
@@ -457,7 +459,7 @@ visible as unverified newer unless exact evidence requires rejection.
 - [040 Oh My Pi RPC Foundation](040-oh-my-pi-rpc-foundation.md) — completed
 - [041 Portable Failure Classification](041-portable-failure-classification.md) — completed
 - [042 Complete Integration Guide System](042-complete-integration-guide-system.md) — completed
-- [043 v0.1.0 Source Release Readiness](043-v0-1-0-source-release-readiness.md) — active
+- [043 v0.1.0 Source Release Readiness](043-v0-1-0-source-release-readiness.md) — completed
 
 ## Checkpoint
 

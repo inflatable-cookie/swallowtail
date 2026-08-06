@@ -13,9 +13,8 @@ shape.
 
 ## Next Task
 
-Execute g03 card 131: repair Anthropic Managed Agents cancellation/deadline
-arbitration reproduced by tagged CI, prove the exact repair commit through the
-existing workflow, and leave `v0.1.0` immutable.
+Select the next substantial g03 compatibility-maintenance milestone from
+consumer-proven evidence. No batch card is currently ready.
 
 ## Index
 

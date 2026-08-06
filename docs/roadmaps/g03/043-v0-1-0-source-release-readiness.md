@@ -1,12 +1,12 @@
 # 043 v0.1.0 Source Release Readiness
 
-Status: active
+Status: completed
 Owner: Tom
 Created: 2026-08-05
 Depends on: g03.042
 Vision tags: source release, consumer readiness, public API, security
 Contract refs: 002, 009, 022, 029, 032, 036-037, 052
-Planning state: cards 124-130 complete; card 131 ready
+Planning state: cards 124-131 complete
 
 ## Problem
 
@@ -29,7 +29,7 @@ operator approval.
 - [x] card 128: GitHub CI and source-tag candidate selector
 - [x] card 129: full deterministic candidate and external-source consumer proof
 - [x] card 130: exact operator handoff and separately authorized tag execution
-- [ ] card 131: repair tagged CI cancellation/deadline arbitration and prove
+- [x] card 131: repair tagged CI cancellation/deadline arbitration and prove
       `main` green
 
 ## Boundaries
@@ -56,7 +56,7 @@ operator approval.
 - [x] an isolated consumer compiles and prepares representative routes from the
       exact candidate source
 - [x] tag handoff names the exact commit and excluded external actions
-- [ ] post-tag CI passes without moving or recreating `v0.1.0`
+- [x] post-tag CI passes without moving or recreating `v0.1.0`
 
 Card 129 binds the reviewed source to one exact clean candidate. Simulation
 and status checks pass all 11 deterministic gates, including 1,463 tests and
@@ -65,8 +65,10 @@ plan contained only the changelog promotion. Card 130 completed the separate
 operator handoff and authorized execution. Annotated tag `v0.1.0` now resolves
 to release commit `a8bef72b718d3d9e503da48b3af05da4b674d4ec`. The first
 manual CI dispatch exposed cancellation being relabelled as timeout under
-runner load. Card 131 is ready for the bounded repair; the tag remains
-immutable.
+runner load. Card 131 wakes the attachment pump on cancellation, preserves
+cancellation-first arbitration, isolates cancellation fixtures from setup
+contention, and passes all six CI jobs at exact repair commit
+`4ffbd8f8a5302b9ce31ee37687876fcab8661f58`. The tag remains immutable.
 
 ## Lane Runway
 

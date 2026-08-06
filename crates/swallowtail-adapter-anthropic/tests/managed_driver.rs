@@ -172,11 +172,15 @@ fn rescheduling_is_observed_inside_one_provider_session_without_swallowtail_retr
 #[test]
 fn cancellation_interrupts_then_deletes_before_releasing_the_credential() {
     let fixture = Fixture::with_stream(ManagedStreamFixture::WaitForInterrupt);
-    let mut run = block_on(AnthropicManagedAgentDriver::new().start_run(
-        fixture.plan(),
-        fixture.request("managed-cancel"),
-        fixture.services(),
-    ))
+    let mut run = block_on(
+        AnthropicManagedAgentDriver::new().start_run(
+            fixture.plan(),
+            fixture
+                .request("managed-cancel")
+                .with_deadline(fixture.cancellation_deadline()),
+            fixture.services(),
+        ),
+    )
     .expect("run starts");
     let terminal = run.take_terminal_outcome().expect("terminal is available");
     for _ in 0..200 {

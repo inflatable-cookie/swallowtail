@@ -87,6 +87,10 @@ impl Fixture {
         self.deadline_after(5_000)
     }
 
+    fn cancellation_deadline(&self) -> Deadline {
+        self.deadline_after(30_000)
+    }
+
     fn deadline_after(&self, milliseconds: u64) -> Deadline {
         Deadline::at(MonotonicInstant::from_ticks(
             self.thread.now().ticks() + milliseconds,

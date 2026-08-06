@@ -5,7 +5,11 @@ fn prepared_interrupt_deletes_owned_resources_before_credential_release() {
         prepare_anthropic_managed_agent(fixture.preparation_input(), &fixture.services())
             .expect("managed integration prepares");
     let run = prepared
-        .prepare_managed_run(fixture.prepared_run_input("prepared-interrupt", []))
+        .prepare_managed_run(fixture.prepared_run_input_with_deadline(
+            "prepared-interrupt",
+            fixture.cancellation_deadline(),
+            [],
+        ))
         .expect("managed run prepares");
     let mut handle = block_on(run.start_run(fixture.services())).expect("run starts");
     let terminal = handle.take_terminal_outcome().expect("terminal exists");

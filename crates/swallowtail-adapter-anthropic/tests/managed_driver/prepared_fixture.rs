@@ -29,6 +29,15 @@ impl Fixture {
         id: &str,
         tools: impl IntoIterator<Item = ToolDeclaration>,
     ) -> AnthropicManagedAgentRunInput {
+        self.prepared_run_input_with_deadline(id, self.deadline(), tools)
+    }
+
+    fn prepared_run_input_with_deadline(
+        &self,
+        id: &str,
+        deadline: Deadline,
+        tools: impl IntoIterator<Item = ToolDeclaration>,
+    ) -> AnthropicManagedAgentRunInput {
         AnthropicManagedAgentRunInput::durable_with_managed_recovery_and_one_reattachment(
             RequestId::new(id).expect("request id is valid"),
             AnthropicManagedModelSelection::new(
@@ -37,7 +46,7 @@ impl Fixture {
                 ModelId::new("claude-fixture-model").expect("model id is valid"),
             ),
             OperationContent::new("Return the fixture summary.").expect("content is valid"),
-            self.deadline(),
+            deadline,
             tools,
         )
     }

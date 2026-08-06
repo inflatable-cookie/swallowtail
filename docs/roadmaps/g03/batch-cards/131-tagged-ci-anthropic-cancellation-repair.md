@@ -36,7 +36,9 @@ Agents cancellation being relabelled as timeout under runner load.
 ## Stop Conditions
 
 - do not weaken deadline truth when no cancellation was accepted
-- do not extend the fixture deadline to hide the race
+- do not globally extend fixture deadlines or remove the direct simultaneous-
+  readiness regression; cancellation tests may isolate setup contention from
+  the terminal condition they assert
 - do not edit the published tag or start another release
 - stop on any CI failure and retain its exact evidence
 

@@ -20,6 +20,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug)]
+/// Prepared bounded catalogue of retained Kimi ACP sessions.
 pub struct KimiPreparedSessionCatalogue {
     kimi: KimiPreparedIntegration,
     evidence: PreparedProviderSessionCatalogueEvidence,
@@ -27,26 +28,31 @@ pub struct KimiPreparedSessionCatalogue {
 }
 
 impl KimiPreparedSessionCatalogue {
+    /// Returns portable evidence for the prepared catalogue.
     #[must_use]
     pub const fn evidence(&self) -> &PreparedProviderSessionCatalogueEvidence {
         &self.evidence
     }
 
+    /// Returns the exact provider-session catalogue plan.
     #[must_use]
     pub const fn plan(&self) -> &ProviderSessionCataloguePlan {
         self.evidence.plan()
     }
 
+    /// Returns the initial catalogue-page request.
     #[must_use]
     pub const fn request(&self) -> &ProviderSessionCatalogueRequest {
         &self.request
     }
 
+    /// Creates the low-level ACP driver bound to this catalogue.
     #[must_use]
     pub fn low_level_driver(&self) -> KimiAcpDriver {
         self.kimi.low_level_driver()
     }
 
+    /// Lists the initial page of retained Kimi sessions.
     pub fn list_sessions(
         &self,
         services: HostServices,
@@ -55,6 +61,7 @@ impl KimiPreparedSessionCatalogue {
         self.list_page(self.request.clone(), services)
     }
 
+    /// Lists one explicitly supplied catalogue page.
     pub fn list_page(
         &self,
         request: ProviderSessionCatalogueRequest,
@@ -66,6 +73,7 @@ impl KimiPreparedSessionCatalogue {
         Box::pin(async move { driver.list_provider_sessions(plan, request, services).await })
     }
 
+    /// Builds a continuation request from an opaque provider cursor.
     pub fn next_page_request(
         &self,
         request_id: swallowtail_runtime::RequestId,
@@ -83,6 +91,7 @@ impl KimiPreparedSessionCatalogue {
 }
 
 #[derive(Clone, Debug)]
+/// Prepared read-only import of one retained Kimi ACP session.
 pub struct KimiPreparedSessionImport {
     kimi: KimiPreparedIntegration,
     evidence: PreparedProviderSessionImportEvidence,
@@ -90,26 +99,31 @@ pub struct KimiPreparedSessionImport {
 }
 
 impl KimiPreparedSessionImport {
+    /// Returns portable evidence for the prepared import.
     #[must_use]
     pub const fn evidence(&self) -> &PreparedProviderSessionImportEvidence {
         &self.evidence
     }
 
+    /// Returns the exact provider-session import plan.
     #[must_use]
     pub const fn plan(&self) -> &ProviderSessionImportPlan {
         self.evidence.plan()
     }
 
+    /// Returns the bound import request.
     #[must_use]
     pub const fn request(&self) -> &ProviderSessionImportRequest {
         &self.request
     }
 
+    /// Creates the low-level ACP driver bound to this import.
     #[must_use]
     pub fn low_level_driver(&self) -> KimiAcpDriver {
         self.kimi.low_level_driver()
     }
 
+    /// Revalidates and imports the selected retained session as resume authority.
     pub fn import_session(
         &self,
         services: HostServices,
@@ -127,6 +141,7 @@ impl KimiPreparedSessionImport {
 }
 
 impl KimiPreparedIntegration {
+    /// Prepares a bounded retained-session catalogue.
     pub fn prepare_session_catalogue(
         &self,
         input: KimiSessionCatalogueInput,
@@ -181,6 +196,7 @@ impl KimiPreparedIntegration {
         })
     }
 
+    /// Prepares import of one candidate from the bound catalogue.
     pub fn prepare_session_import(
         &self,
         catalogue: &KimiPreparedSessionCatalogue,

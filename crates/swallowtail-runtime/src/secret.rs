@@ -2,6 +2,10 @@ use crate::{CredentialRef, ScopeId};
 use std::fmt;
 use swallowtail_core::EndpointAudience;
 
+/// Operation-scoped secret bytes bound to one credential reference and audience.
+///
+/// Formatting is redacted, bytes are cleared on drop, and an optional host
+/// release callback runs exactly once when the lease is dropped.
 pub struct SecretLease {
     scope: ScopeId,
     reference: CredentialRef,
@@ -12,6 +16,7 @@ pub struct SecretLease {
 
 impl SecretLease {
     #[must_use]
+    /// Creates a lease without a host release callback.
     pub const fn new(
         scope: ScopeId,
         reference: CredentialRef,
@@ -28,6 +33,7 @@ impl SecretLease {
     }
 
     #[must_use]
+    /// Registers the callback invoked when the lease is dropped.
     pub fn with_release(mut self, release: impl FnOnce() + Send + 'static) -> Self {
         self.release = Some(Box::new(release));
         self
@@ -40,16 +46,19 @@ impl SecretLease {
     }
 
     #[must_use]
+    /// Returns the operation scope that owns the lease.
     pub const fn scope(&self) -> &ScopeId {
         &self.scope
     }
 
     #[must_use]
+    /// Returns the opaque credential reference resolved by the host.
     pub const fn reference(&self) -> &CredentialRef {
         &self.reference
     }
 
     #[must_use]
+    /// Returns the exact endpoint audience for which the secret is authorized.
     pub const fn audience(&self) -> &EndpointAudience {
         &self.audience
     }
@@ -83,6 +92,7 @@ impl fmt::Display for SecretLease {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Operation-scoped delegated authentication with no exposed secret bytes.
 pub struct DelegatedCredential {
     scope: ScopeId,
     reference: CredentialRef,
@@ -91,6 +101,7 @@ pub struct DelegatedCredential {
 
 impl DelegatedCredential {
     #[must_use]
+    /// Creates delegated authentication for one scope, reference, and audience.
     pub const fn new(scope: ScopeId, reference: CredentialRef, audience: EndpointAudience) -> Self {
         Self {
             scope,
@@ -100,28 +111,35 @@ impl DelegatedCredential {
     }
 
     #[must_use]
+    /// Returns the operation scope that owns the delegated authority.
     pub const fn scope(&self) -> &ScopeId {
         &self.scope
     }
 
     #[must_use]
+    /// Returns the opaque delegated credential reference.
     pub const fn reference(&self) -> &CredentialRef {
         &self.reference
     }
 
     #[must_use]
+    /// Returns the exact endpoint audience for the delegated authority.
     pub const fn audience(&self) -> &EndpointAudience {
         &self.audience
     }
 }
 
+/// Host-issued credential authority for one operation and endpoint audience.
 pub enum CredentialLease {
+    /// Swallowtail may expose scoped secret bytes to the authorized driver.
     Secret(SecretLease),
+    /// A harness, SDK, environment, or helper retains authentication control.
     Delegated(DelegatedCredential),
 }
 
 impl CredentialLease {
     #[must_use]
+    /// Returns the operation scope that owns this credential authority.
     pub const fn scope(&self) -> &ScopeId {
         match self {
             Self::Secret(lease) => lease.scope(),
@@ -130,6 +148,7 @@ impl CredentialLease {
     }
 
     #[must_use]
+    /// Returns the opaque credential reference.
     pub const fn reference(&self) -> &CredentialRef {
         match self {
             Self::Secret(lease) => lease.reference(),
@@ -138,6 +157,7 @@ impl CredentialLease {
     }
 
     #[must_use]
+    /// Returns the exact authorized endpoint audience.
     pub const fn audience(&self) -> &EndpointAudience {
         match self {
             Self::Secret(lease) => lease.audience(),

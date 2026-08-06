@@ -6,6 +6,7 @@ use swallowtail_core::{
 use swallowtail_runtime::{PreparationFailure, PreparationStage, PreparedOperationEvidence};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared operation and access evidence for an OpenAI Realtime session.
 pub struct OpenAiRealtimePreparedEvidence {
     operation: PreparedOperationEvidence,
 }
@@ -24,16 +25,19 @@ impl OpenAiRealtimePreparedEvidence {
     }
 
     #[must_use]
+    /// Returns access evidence and its provenance.
     pub const fn access(&self) -> &swallowtail_runtime::PreparedAccessEvidence {
         self.operation.access()
     }
 
     #[must_use]
+    /// Returns the provider-neutral prepared operation evidence.
     pub const fn operation(&self) -> &PreparedOperationEvidence {
         &self.operation
     }
 
     #[must_use]
+    /// Returns the immutable Realtime preflight plan.
     pub const fn plan(&self) -> &PreflightPlan {
         self.operation.plan()
     }

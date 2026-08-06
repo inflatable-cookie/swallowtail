@@ -5,6 +5,7 @@ use swallowtail_core::{
 use swallowtail_runtime::{Deadline, PreparedAccessEvidence, RequestId};
 
 #[derive(Clone)]
+/// Instance, access, host, region, and delegated SDK inputs for catalogue preparation.
 pub struct BedrockCataloguePreparationInput {
     instance_id: ConfiguredInstanceId,
     instance_revision: InstanceRevision,
@@ -17,6 +18,7 @@ pub struct BedrockCataloguePreparationInput {
 
 impl BedrockCataloguePreparationInput {
     #[must_use]
+    /// Creates control-plane preparation input without provider effects.
     pub const fn new(
         instance_id: ConfiguredInstanceId,
         instance_revision: InstanceRevision,
@@ -61,6 +63,7 @@ impl BedrockCataloguePreparationInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Turn-scoped input for one bounded Bedrock catalogue request.
 pub struct BedrockCatalogueProfileInput {
     request_id: RequestId,
     deadline: Option<Deadline>,
@@ -68,6 +71,7 @@ pub struct BedrockCatalogueProfileInput {
 
 impl BedrockCatalogueProfileInput {
     #[must_use]
+    /// Creates catalogue input with no deadline.
     pub const fn new(request_id: RequestId) -> Self {
         Self {
             request_id,
@@ -76,6 +80,7 @@ impl BedrockCatalogueProfileInput {
     }
 
     #[must_use]
+    /// Adds the operation deadline.
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
         self

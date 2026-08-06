@@ -7,11 +7,17 @@ use swallowtail_runtime::RuntimeFailure;
 
 use crate::failure::failure;
 
+/// Executable name used for automatic Cursor Agent discovery.
 pub const CURSOR_AGENT_AUTOMATIC_EXECUTABLE_NAME: &str = "cursor-agent";
+/// Release-date interface axis reported by Cursor Agent discovery.
 pub const CURSOR_AGENT_RELEASE_AXIS: &str = "cursor-agent.release-date";
+/// Oldest qualified Cursor Agent release date.
 pub const CURSOR_AGENT_BASELINE_VERSION: &str = "2026-07-01";
+/// Qualified build revision for [`CURSOR_AGENT_BASELINE_VERSION`].
 pub const CURSOR_AGENT_BASELINE_BUILD_REVISION: &str = "41b2de7";
+/// Most recent qualified Cursor Agent release date.
 pub const CURSOR_AGENT_LATEST_QUALIFIED_VERSION: &str = "2026-07-23";
+/// Qualified build revision for [`CURSOR_AGENT_LATEST_QUALIFIED_VERSION`].
 pub const CURSOR_AGENT_LATEST_QUALIFIED_BUILD_REVISION: &str = "e383d2b";
 
 pub(crate) const CURSOR_CATALOGUE_BEHAVIOR: &str = "cursor-agent.catalogue.calendar-release-v1";
@@ -22,6 +28,7 @@ const RAW_VERSION_BYTES: usize = 18;
 const BUILD_REVISION_BYTES: usize = 7;
 
 #[must_use]
+/// Parses an exact `YYYY.MM.DD-build` Cursor release into its interface binding.
 pub fn cursor_agent_release_binding(value: &str) -> Option<InterfaceVersionBinding> {
     if value.len() != RAW_VERSION_BYTES
         || value.trim() != value
@@ -78,6 +85,7 @@ const fn valid_calendar_date(year: u16, month: u8, day: u8) -> bool {
 }
 
 #[must_use]
+/// Returns the compatibility claim for Cursor model discovery.
 pub fn cursor_catalogue_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
         InterfaceCompatibilityClaimId::new("cursor-agent.catalogue.release-window-2")
@@ -92,6 +100,7 @@ pub fn cursor_catalogue_claim() -> InterfaceCompatibilityClaim {
 }
 
 #[must_use]
+/// Returns the compatibility claim for Cursor ACP sessions.
 pub fn cursor_acp_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
         InterfaceCompatibilityClaimId::new("cursor-agent.acp.release-window-2")
@@ -106,6 +115,7 @@ pub fn cursor_acp_claim() -> InterfaceCompatibilityClaim {
 }
 
 #[must_use]
+/// Returns the compatibility claim for Cursor stream-JSON runs.
 pub fn cursor_headless_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
         InterfaceCompatibilityClaimId::new("cursor-agent.headless.release-window-2")

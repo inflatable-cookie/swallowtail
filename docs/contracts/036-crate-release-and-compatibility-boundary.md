@@ -1,20 +1,42 @@
-# 036 Crate Release And Compatibility Boundary
+# 036 Source Release And Compatibility Boundary
 
 Status: active
 Owner: Tom
-Updated: 2026-07-31
+Updated: 2026-08-06
 
 ## Purpose
 
 Define Swallowtail's public package set, pre-1.0 compatibility promise, MSRV,
-package evidence, registry boundary, and release authority.
+source-release evidence, consumer proof, and release authority.
 
-This contract governs crate releases. Contract 029 separately governs
-provider, harness, SDK, protocol, service, and runtime-interface versions.
+Contract 029 separately governs provider, harness, SDK, protocol, service, and
+runtime-interface versions.
+
+## Initial Distribution
+
+The initial external release is one annotated Git tag, `v0.1.0`, on the
+canonical GitHub repository.
+
+It is not:
+
+- a crates.io publication
+- a GitHub Release object
+- a binary or sidecar bundle
+- an installer
+- an API 1.0 promise
+
+All workspace packages declare `publish = false` for this release line.
+Changing that posture requires a separate registry contract, package-name and
+owner checks, archive evidence, and explicit operator authorization.
+
+Consumers select exact packages from the same exact Git tag. They do not use a
+moving branch, an untagged revision presented as a release, or an unpublished
+registry fallback. Normal internal path dependencies remain inside the tagged
+workspace checkout.
 
 ## Public Package Set
 
-All 26 current workspace libraries are public packages.
+All 27 workspace libraries are public source packages.
 
 Foundations:
 
@@ -55,181 +77,76 @@ Opt-in adapters:
 - `swallowtail-adapter-qwen`
 - `swallowtail-adapter-xai`
 
-There is no umbrella crate or intentionally unpublished implementation crate
-in this package set. `swallowtail-adapter-grok`,
-`swallowtail-adapter-antigravity`, and `swallowtail-adapter-cursor` were added
-after their exact evidence, architecture, contract, roadmap, and package
-reviews. A future package addition, removal, merge, or private role requires
-the same review before manifest work.
+There is no umbrella crate or intentionally private implementation crate.
+Every package remains separately selectable. Selecting one grants no authority
+to use another, install a harness, acquire a model, start a server,
+authenticate, select billing, or claim provider support.
 
-Every package remains separately consumable. Publishing one grants no
-authority to use another, install a harness, acquire a model, start a server,
-authenticate, select a billing route, or claim provider support.
-
-## Registry Boundary
-
-crates.io is the initial package registry.
-
-Registry name visibility is observation, not reservation or ownership. The
-first publish is permanent and establishes external package state. Account,
-owner, team, token, and final name availability must be checked separately at
-the release gate.
-
-No package may silently fall back to another registry, a Git dependency, or a
-local path when registry resolution was selected.
+A package addition, removal, merge, or private role requires architecture and
+contract review before manifest work.
 
 ## Dependency Topology
 
-Publication follows three stages.
+Normal internal dependencies remain acyclic across three layers:
 
-Stage 1:
+1. core and protocol codecs
+2. runtime
+3. host support, testkit, remote ACP transport, and adapters
 
-- `swallowtail-core`
-- `swallowtail-protocol-acp`
-- `swallowtail-protocol-openai-chat`
+Each normal or build internal dependency declares both the workspace path and
+an ordinary compatible requirement for the coordinated version. Path-only
+development dependencies are permitted.
 
-Stage 2:
-
-- `swallowtail-runtime`
-
-Stage 3:
-
-- `swallowtail-host-local`
-- `swallowtail-testkit`
-- `swallowtail-transport-acp-remote`
-- all adapter packages
-
-Stage 2 waits until core is visible in the registry index. Stage 3 waits until
-every normal internal dependency is visible. Crates within one stage may be
-ordered freely because they have no normal internal edge.
-
-Every normal or build internal dependency must declare:
-
-- the exact local workspace path
-- an ordinary Cargo-compatible requirement for the current workspace version
-
-The first requirement is `0.1.0`, meaning Cargo's compatible
-`>=0.1.0, <0.2.0` range. Exact `=0.1.0` requirements are prohibited without a
-new contract decision.
-
-Path-only development dependencies are permitted. Generated published
-manifests must resolve all normal and build dependencies through the selected
-registry with no local path or unpublished package requirement.
+The version requirement does not imply registry availability. It preserves
+the package relationship and leaves a future registry decision explicit.
 
 ## Coordinated Pre-1.0 Version
 
-All packages use one coordinated workspace version. The first release
-candidate is `0.1.0`.
+All packages use one coordinated workspace version. The first release is
+`0.1.0`.
 
-The workspace minor is the breaking compatibility boundary before 1.0:
+Before 1.0:
 
-- a patch may contain only compatible public API and guaranteed-behavior
-  changes
-- a breaking public API or guaranteed-behavior change advances the workspace
-  minor
-- a major version remains zero until a separate API 1.0 decision
+- compatible public API and guaranteed-behavior changes advance the patch
+- breaking public API or guaranteed-behavior changes advance the minor
+- provider-interface qualification remains a separate Contract 029 axis
 
-A coordinated version does not require uploading an unchanged package for
-every patch. Any uploaded package must match the workspace version of the
-candidate commit.
+Patch-compatible changes may include additive public items, internal
+refactoring, safety fixes preserving documented behavior, additive safe
+diagnostics, and newly qualified provider-interface versions.
 
-## Compatible And Breaking Changes
+Breaking changes include removing or incompatibly changing public items,
+raising MSRV, shrinking a guaranteed provider range, removing a capability or
+verified target, changing route identity, or weakening lifecycle, cleanup,
+access, isolation, or evidence truth.
 
-Patch-compatible changes may include:
+An urgent security exception must be operator-approved and record affected
+packages, compatibility loss, rollback, and upgrade path.
 
-- additive public items with non-exhaustive or otherwise compatible shape
-- bug and safety fixes that preserve documented behavior
-- internal refactoring
-- newly qualified provider-interface versions
-- additive diagnostics or evidence that do not expose secrets or change
-  stable meanings
+## Rust And Target Support
 
-Breaking changes include:
+The initial verified floors are:
 
-- removing, renaming, or incompatibly changing a public item
-- adding a required trait item or making a public type newly non-exhaustive in
-  an incompatible direction
-- removing or changing a default feature or target guarantee
-- shrinking a guaranteed provider-interface range
-- removing a capability or weakening lifecycle, cleanup, access, isolation, or
-  evidence truth
-- raising a package's declared Rust-version floor
-- changing registry identity or making an optional route implicit
+- Rust `1.90.0` for every package except Bedrock
+- Rust `1.94.1` for `swallowtail-adapter-bedrock`
 
-Cargo's current SemVer guidance governs unlisted Rust API cases. A deterministic
-API comparison must supplement, not replace, maintainer classification.
+Bedrock's higher floor follows its pinned AWS SDK graph. Resolver 3 and the
+committed lock file preserve floor-aware resolution.
 
-Deprecation should precede planned removal when practical. Deprecation does not
-authorize a compatibility shim, silent alias, fallback, or duplicate API.
-Removal still requires the next workspace minor.
+Every candidate must pass:
 
-An urgent dependency or security constraint may require an exception. It must:
+- all non-Bedrock packages at Rust `1.90.0`
+- Bedrock at Rust `1.94.1`
+- the complete workspace on the selected current stable toolchain
 
-- be operator-approved
-- identify affected packages and consumers
-- state why a normal minor release is unsafe or impractical
-- record the compatibility loss, rollback, and upgrade path
-- never be described as an ordinary compatible patch
+Apple Silicon macOS is the initial verified target. Other targets may work and
+remain unverified, not prohibited.
 
-## Provider-Interface Separation
-
-Crate versions and provider-interface versions are independent axes.
-
-Contract 029 remains the authority for qualified baselines, milestones,
-deprecations, exclusions, and visible unverified-newer execution. A crate
-version does not imply support for every provider release. A provider release
-does not force a Swallowtail release when the current adapter can run it under
-the contract's unverified-newer posture.
-
-Release notes must state material provider-range changes separately from Rust
-API changes.
-
-## Rust-Version Policy
-
-Each new workspace minor selects a general floor from the stable Rust release
-four minor versions behind current stable at that line's first candidate.
-
-The initial floors are:
-
-- `1.93` for every package except Bedrock
-- `1.94.1` for `swallowtail-adapter-bedrock`
-
-The Bedrock exception reflects the pinned AWS dependency floor. A package may
-carry a higher floor only when current normal or build dependencies require
-it and the exception is explicit.
-
-The workspace uses resolver 3. Package manifests declare their exact
-`rust-version`.
-
-Before a release candidate:
-
-- every package must compile and pass its contract-selected checks at its
-  declared floor
-- the full workspace must pass on current stable Rust
-- dependency resolution at the floor must be reproducible from the candidate
-  lock and manifests
-
-The declared floor is a support promise, not a hard execution ceiling.
-Unsupported older or newer toolchains may work, but are unverified. The floor
-stays fixed through compatible patches unless the explicit exception process
-is used.
-
-## Supported Targets
-
-Apple Silicon macOS is the initial verified target because that is the current
-repository and consumer evidence.
-
-Other Cargo targets are unverified, not prohibited. Swallowtail must not add a
-runtime denial solely because a target is outside the verified set when the
-package can otherwise compile and operate.
-
-Adding a verified target is compatible. Removing one is breaking. Target-
-specific provider, SDK, native library, harness, or runtime constraints remain
-package- and route-specific.
+Raising a floor or removing a verified target is breaking.
 
 ## Package Metadata
 
-Every public package must declare or inherit:
+Every package declares or inherits:
 
 - version
 - edition
@@ -237,208 +154,155 @@ Every public package must declare or inherit:
 - repository
 - description
 - readme
-- registry publication policy
-- Rust-version
+- `publish = false`
+- Rust version
 
-Documentation, homepage, keywords, and categories may be shared or
-package-specific. Required metadata must describe the crate's actual role and
-must not imply unavailable provider support or access.
+Metadata must describe the package's real role. It must not contain local
+absolute paths, credentials, private endpoints, mutable provider payloads as
+authority, or consumer product policy.
 
-No package metadata may contain:
+## Source Contents
 
-- developer-local absolute paths
-- credentials or credential locations
-- private endpoint or account identity
-- mutable provider payloads presented as stable authority
-- consumer-owned product policy
+The tag targets one clean non-root commit already present on the canonical
+branch and approved remote. The tagged tree is the release artifact.
 
-## Package Contents
+It may contain source, bounded deterministic fixtures, public documentation,
+examples, license material, the dependency lock, and release validation
+scripts.
 
-Package contents must be listed and audited before assembly. Final archives
-must be built from a clean exact commit without `--allow-dirty`.
+It must not contain secrets, authentication state, mutable caches, build
+output, generated local release bundles, developer-local paths, or unreviewed
+live provider captures.
 
-A publishable candidate must use the exact non-root commit already present in
-the canonical branch's local history. Its source bundle preserves that commit
-and ancestry. A deterministic root snapshot assembled from tracked and
-untracked working-tree files remains valid package-check evidence, but it
-cannot be the source of an active publication candidate.
+A deterministic source bundle may be retained as evidence. It must reproduce
+the exact tagged commit and cannot replace canonical Git history.
 
-Allowed contents include:
+`.crate` archives, registry publication order, registry size limits, and
+registry owner state are outside the initial source-tag acceptance boundary.
+Historical candidate evidence remains historical and must not be presented as
+the current release candidate.
 
-- package source
-- Cargo-generated normalized manifest, lock, and VCS records
-- public documentation and license material
-- bounded deterministic tests and fixtures needed to verify the package
+## Public API And Documentation
 
-Forbidden contents include:
+The first tag creates the compatibility baseline for all 27 packages.
 
-- secrets, tokens, private keys, or live authentication state
-- developer-local paths or machine state
-- mutable caches, build output, logs, or temporary files
-- live provider captures that were not frozen, bounded, redacted, and reviewed
-- unrelated consumer or repository artifacts
+Before the tag:
 
-Every final `.crate` archive must:
+- publicly reachable items are reviewed as supported API or made private
+- supported API has meaningful Rustdoc
+- workspace documentation builds with missing-public-documentation denied
+- normal-path examples compile
+- an API baseline is generated from semantic Rust API evidence, not source-line
+  hashes alone
+- the changelog and release notes describe the actual tagged source
 
-- remain below the selected registry's current size limit
-- have a recorded cryptographic checksum
-- match the audited file list
-- build and test through contract-selected checks after extraction
-- resolve only allowed registry dependencies
+Mechanical comments that repeat an identifier do not satisfy documentation.
+Examples and route guides supplement Rustdoc; they do not replace it.
 
-## API, Documentation, And Changelog Evidence
+Subsequent compatible candidates compare against the tagged semantic baseline
+and receive explicit compatible or breaking classification.
 
-The first candidate creates the public API baseline for every package.
-Subsequent candidates compare against the latest released compatible baseline.
+The initial semantic inventory uses `cargo-public-api 0.52.0` with
+`nightly-2026-08-05`, all package features enabled, and blanket, auto-trait,
+and auto-derived implementations omitted. That nightly exists only to produce
+rustdoc JSON. It does not change the stable release compiler or either verified
+Rust floor.
+
+## Dependency And Security Evidence
 
 A candidate requires:
 
-- deterministic public API change evidence
-- explicit compatible or breaking classification
-- successful package documentation generation
-- a manually curated changelog entry
-- release notes naming package, MSRV, target, provider-range, and known
-  compatibility changes
-- exact source commit, package list, version, archive checksum, and dependency
-  order
+- a committed dependency lock
+- no known unaccepted vulnerability in the selected normal dependency graph
+- an explicit license and source policy
+- review of duplicate major protocol or TLS stacks where they change risk or
+  maintenance cost
+- currentness review for direct dependencies without blind upgrades
 
-Tool output is evidence, not release authority. A tool's failure cannot be
-waived silently.
+Security findings cannot be reclassified by omission. An accepted exception
+must name reachability, affected packages, expiry or recheck condition, and
+operator approval.
 
 ## Consumer Evidence
 
-The release candidate must prove the selected packages without editing
-consumer repositories by default.
+The release candidate must prove normal public paths without editing consumer
+repositories by default.
 
-Where the normal public path uses Contract 037 preparation, compile-only
-consumer evidence is insufficient. The candidate must also run deterministic,
-credential-free preparation through the packaged public API and prove its
-expanded plan, access provenance, compatibility assessment, and runtime request
-agreement. Live installed-binary and authentication checks remain separately
-gated.
+Required evidence:
 
-Nucleus and Soundcheck handoffs must name:
+- an isolated external Cargo consumer using exact source identity
+- deterministic prepared-facade execution for applicable route families
+- complete route and feature guide coverage
+- at least one operator-selected working application smoke through a normal
+  authenticated product path
+- exact upgrade and rollback instructions
 
-- exact package versions and source
-- selected Swallowtail packages
-- minimum Rust version
-- validation commands and expected evidence
-- provider-interface guarantees relevant to the consumer
-- rollback through the prior dependency source or candidate
-- known unverified targets and toolchains
-
-A consumer edit, branch, commit, or release remains owned by that consumer and
-requires separate authorization.
-
-Deterministic package and isolated-consumer evidence is necessary but not
-sufficient for Swallowtail's first external release. Before publication, at
-least one operator-selected working application must exercise the candidate
-through its normal product entry point and a real authenticated harness or
-provider route. This is a vertical integration smoke, not the default
-repetition harness.
-
-The consumer-owned proof plan must state:
-
-- exact application, Swallowtail, harness or provider, and model versions
-- route, access, topology, test data, provider-state, cost, and mutation bounds
-- which claims belong to adapter scenarios, consumer backend scenarios, and
-  the native or live smoke
-- repeated workload, lifecycle turnover, and any permitted concurrency at the
-  narrowest boundary that owns each claim
-- applicable cancellation, deadline, callback, restart, recovery, resume, and
-  bounded-write cases
-- safe diagnostics, usage, rate, cleanup, and persisted application evidence
-- the defect record, fixture-first regression coverage, and rerun result
-
-No universal operation count or concurrency level is implied. The exact scale
-budget belongs to the selected application and candidate and must be accepted
-before live work. Repeated transport, cancellation, deadline, callback,
-attachment, search-event, and cleanup cases should run through deterministic
-adapter or consumer backend harnesses. They do not need repeated UI startup or
-provider calls unless the normal product lifecycle or current provider
-behavior is the claim. Unsupported parallelism must not be introduced merely
-to claim scale.
+The external Cargo smoke uses the candidate commit before tagging. After tag
+creation, tag identity must resolve to that same commit.
 
 Live credentials, provider calls, workspace writes, and consumer mutations
-remain separately gated. A failed required scenario or vertical smoke keeps
-the candidate unpublished. Swallowtail-owned defects must be reduced to
-deterministic fixtures before a corrected candidate can pass the narrowest
-failed scenario and the affected vertical smoke.
+remain separately gated. Deterministic adapter or consumer scenarios own
+repeatable lifecycle claims. A native application smoke proves integration,
+not every provider behavior.
 
-## Deterministic Preparation
+## Deterministic Candidate Gate
 
-Credential-free package, API, documentation, MSRV, content, dependency-order,
-and checksum checks belong behind explicit Effigy selectors.
+Credential-free release checks sit behind explicit Effigy selectors and cover:
 
-Preparation may use:
+- clean source and exact commit identity
+- 27-package metadata and dependency topology
+- semantic public API baseline
+- denied missing public documentation
+- dependency advisory, license, and source policy
+- Rust floors and current stable
+- formatting, lint, tests, guide coverage, and examples
+- external source-consumer compilation and normal-path preparation
+- release-note, changelog, license, and security-policy presence
 
-- `cargo metadata`
-- `cargo package`
-- `cargo publish --dry-run`
-- deterministic API and documentation tools
-- local archive extraction and build verification
-- read-only registry and release-state checks
+The repository-owned Effigy release configuration is authoritative for
+candidate gates, version preparation, and tag execution. It targets the
+virtual workspace version explicitly and carries no registry or GitHub Release
+step. Swallowtail-specific scripts supply package, API, floor, security, and
+external-source evidence behind that configuration.
 
-Local package verification may assemble a deterministic working-tree snapshot.
-Final candidate preparation instead must:
+Because the workspace already declares its intended first release version,
+the configuration explicitly enables Effigy's first-tag/current-version mode.
+That mode is valid only while the changelog has no released versions and the
+matching local tag does not exist. It does not permit a lower version, a
+repeated release, or a bypass around normal release gates.
 
-- reject tracked or untracked source changes, excluding only generated
-  candidate evidence outside the package source scope
-- retain the current clean `HEAD` and its ancestry rather than creating a new
-  synthetic commit
-- record the exact source commit, parent, scope, and source bundle
-- reproduce the same commit and archive checksums from that bundle
-
-Preparation must not require a registry token. It must not upload, tag, push,
-change an owner, create a GitHub release, or mutate a consumer.
-
-An unpublished candidate may be marked superseded when later deterministic
-evidence exposes an incomplete normal integration path. Its frozen source,
-packages, hashes, and handoffs remain retained. Supersession authorizes neither
-replacement freeze nor external release mutation.
+The gate performs no authenticated provider work and no external release
+mutation.
 
 ## Release Authority
 
-No automation, manifest version, changelog, clean package, passing dry run, or
-release plan grants authority to mutate external release state.
+No manifest version, passing gate, changelog, clean commit, or generated
+candidate grants authority to mutate external state.
 
-After all candidate evidence passes, the operator must explicitly authorize
-the exact external action against:
+After candidate acceptance, the operator must explicitly authorize the exact
+tag action against:
 
 - source commit
-- registry
-- package set and publication order
-- package version
-- archive checksums
-- owner identity
-- tag and GitHub release plan
+- canonical branch and remote
+- tag name `v0.1.0`
+- annotated tag message
+- confirmation that no crate publication or GitHub Release is included
 
-Before the first upload, the exact candidate commit must be reachable from the
-canonical branch on the approved remote. The release tag must target that same
-commit. Publishing from an orphan commit or from a working-tree snapshot is
-prohibited.
-
-Registry upload, owner changes, tag creation, push, GitHub release creation,
-workflow edits, and consumer changes are separate mutations. One approval may
-cover several only when it names the exact bounded action set.
-
-Release credentials stay outside stable diagnostics and repository files.
-Failure or registry timeout must not trigger a repeated upload without
-checking external state first.
+Creating the local tag and pushing it are separate mutations unless one
+approval names both. Branch push, workflow edit, crates.io publication,
+GitHub Release creation, consumer edits, and provider work remain separate.
 
 ## Acceptance
 
-- all 26 packages remain public and separately consumable
-- dependency direction and publication order are exact
-- pre-1.0 patch compatibility and breaking minor changes are distinct
-- MSRV is explicit, bounded, tested, and separate from unverified execution
-- provider-interface ranges remain independent
-- package contents and metadata are reproducible and redacted
-- consumer upgrade and rollback evidence is exact
-- adapter and consumer scenario harnesses pass the repeated lifecycle claims
-  they own
-- an operator-selected working application passes an authenticated vertical
-  smoke through the normal product path
-- release preparation is credential-free
-- active publication candidates retain canonical source history
-- every external release mutation remains human-approved
+- all 27 packages are separately consumable from one exact tag
+- `publish = false` prevents accidental registry publication
+- internal dependency direction is exact
+- `0.1.0` compatibility and provider-interface versions remain separate
+- Rust floors and Apple Silicon support are explicit and tested
+- source contents are clean, bounded, redacted, and reproducible
+- public API is reviewed, semantically baselined, and documented
+- dependency and security policy passes
+- deterministic QA and external source-consumer proof pass
+- an accepted working-application smoke remains recorded
+- release notes and consumer instructions match the candidate
+- tag creation and push remain explicitly authorized external mutations

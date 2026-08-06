@@ -12,32 +12,38 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared Pi structured run ready for explicit dispatch.
 pub struct PiPreparedRun {
     evidence: PiPreparedEvidence,
     request: StructuredRunRequest,
 }
 
 impl PiPreparedRun {
+    /// Returns the run's preparation evidence.
     #[must_use]
     pub const fn evidence(&self) -> &PiPreparedEvidence {
         &self.evidence
     }
 
+    /// Returns the immutable preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &swallowtail_core::PreflightPlan {
         self.evidence.plan()
     }
 
+    /// Returns the structured run request.
     #[must_use]
     pub const fn request(&self) -> &StructuredRunRequest {
         &self.request
     }
 
+    /// Reconstructs the low-level driver from prepared evidence.
     #[must_use]
     pub fn low_level_driver(&self) -> PiRpcDriver {
         self.evidence.low_level_driver()
     }
 
+    /// Starts the prepared structured run.
     pub fn start_run(&self, services: HostServices) -> PiPreparedRunFuture {
         let driver = self.low_level_driver();
         let plan = self.plan().clone();
@@ -45,6 +51,7 @@ impl PiPreparedRun {
         Box::pin(async move { driver.start_run(plan, request, services).await })
     }
 
+    /// Consumes the prepared run into evidence, plan, and request.
     #[must_use]
     pub fn into_parts(
         self,
@@ -59,6 +66,7 @@ impl PiPreparedRun {
 }
 
 impl PiPreparedIntegration {
+    /// Validates attachments and prepares a structured run.
     pub fn prepare_run(
         &self,
         input: PiRunProfileInput,

@@ -9,6 +9,7 @@ use swallowtail_core::Capability;
 use swallowtail_runtime::{PreparationFailure, PreparationStage};
 
 impl KimiLocalServerPreparedIntegration {
+    /// Prepares cross-transport import into this exact local-server target.
     pub fn prepare_binding_import(
         &self,
         input: KimiLocalServerBindingImportInput,

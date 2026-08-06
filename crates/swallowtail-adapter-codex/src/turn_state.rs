@@ -271,12 +271,10 @@ impl ActiveTurn {
                         }
                         Err(_) => Err(malformed_notification()),
                     }
+                } else if emitted_activity {
+                    Ok(())
                 } else {
-                    if emitted_activity {
-                        Ok(())
-                    } else {
-                        self.emit(RuntimeEventKind::Progress, None)
-                    }
+                    self.emit(RuntimeEventKind::Progress, None)
                 }
             }
             "turn/completed" => {

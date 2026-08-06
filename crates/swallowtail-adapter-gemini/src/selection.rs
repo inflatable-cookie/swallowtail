@@ -7,11 +7,17 @@ use swallowtail_runtime::RuntimeFailure;
 
 use crate::failure::failure;
 
+/// Semantic-version axis reported by the Gemini CLI ACP route.
 pub const GEMINI_CLI_ACP_AXIS: &str = "gemini-cli.acp-agent";
+/// Oldest Gemini CLI version qualified for ACP interaction.
 pub const GEMINI_CLI_ACP_BASELINE_VERSION: &str = "0.51.0";
+/// Newest Gemini CLI version behaviorally qualified for ACP interaction.
 pub const GEMINI_CLI_ACP_LATEST_QUALIFIED_VERSION: &str = "0.51.0";
+/// Semantic-version axis reported by the Gemini CLI headless route.
 pub const GEMINI_CLI_HEADLESS_AXIS: &str = "gemini-cli.headless-stream-json";
+/// Oldest Gemini CLI version qualified for headless stream-JSON runs.
 pub const GEMINI_CLI_HEADLESS_BASELINE_VERSION: &str = "0.51.0";
+/// Newest Gemini CLI version behaviorally qualified for headless runs.
 pub const GEMINI_CLI_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "0.52.0";
 
 const BASELINE_BEHAVIOR: &str = "gemini-cli.acp.v0.51.0";
@@ -29,11 +35,15 @@ impl GeminiPlanSelection {
     }
 }
 
+/// Parses one exact Gemini CLI ACP semantic-version binding.
+///
+/// Returns `None` for non-semantic, padded, controlled, or oversized values.
 #[must_use]
 pub fn gemini_cli_acp_binding(value: &str) -> Option<InterfaceVersionBinding> {
     binding(GEMINI_CLI_ACP_AXIS, value)
 }
 
+/// Parses one exact Gemini CLI headless semantic-version binding.
 #[must_use]
 pub fn gemini_cli_headless_binding(value: &str) -> Option<InterfaceVersionBinding> {
     binding(GEMINI_CLI_HEADLESS_AXIS, value)
@@ -54,6 +64,7 @@ fn binding(axis_value: &str, value: &str) -> Option<InterfaceVersionBinding> {
     ))
 }
 
+/// Returns the qualified Gemini CLI ACP compatibility window.
 #[must_use]
 pub fn gemini_cli_acp_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
@@ -74,6 +85,7 @@ pub fn gemini_cli_acp_claim() -> InterfaceCompatibilityClaim {
     .expect("static Gemini CLI compatibility claim is valid")
 }
 
+/// Returns the qualified Gemini CLI headless compatibility window.
 #[must_use]
 pub fn gemini_cli_headless_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(

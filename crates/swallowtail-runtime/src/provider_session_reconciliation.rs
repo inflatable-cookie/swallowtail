@@ -1,3 +1,5 @@
+#![deny(missing_docs)]
+
 use crate::{
     CancellationControl, CleanupOutcome, Deadline, HostServices, ImmediateCancellation,
     PreparationFailure, PreparedAccessEvidence, PreparedOperationEvidence,
@@ -11,30 +13,43 @@ use swallowtail_core::{
     HostServiceKind, OperationShape, PreflightPlan, SafeDiagnostic, TurnRef,
 };
 
+/// Read-only observed state of a turn whose runtime handle was lost.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum InterruptedTurnState {
+    /// Provider evidence shows the turn remains active.
     Active,
+    /// Provider evidence shows the turn is waiting for provider input.
     WaitingForProviderInput,
+    /// Exact provider-turn evidence shows successful completion.
     Completed,
+    /// Exact provider-turn evidence shows failure.
     Failed,
+    /// Exact provider-turn evidence shows cancellation.
     Cancelled,
+    /// The session is inactive but the interrupted turn remains unresolved.
     InactiveUnresolved,
+    /// Available provider evidence cannot classify the state safely.
     Unknown,
 }
 
 impl InterruptedTurnState {
+    /// Returns whether exact provider-turn attribution is required.
     #[must_use]
     pub const fn is_terminal(self) -> bool {
         matches!(self, Self::Completed | Self::Failed | Self::Cancelled)
     }
 }
 
+/// Strength of provider attribution for an interrupted-turn observation.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum InterruptedTurnAttribution {
+    /// Evidence identifies the exact provider turn.
     ExactProviderTurn,
+    /// Evidence describes only the bound provider session.
     ProviderSession,
 }
 
+/// Immutable item and byte bounds for reconciliation replay.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct ProviderSessionReconciliationBounds {
     maximum_replay_items: NonZeroU32,
@@ -42,6 +57,7 @@ pub struct ProviderSessionReconciliationBounds {
 }
 
 impl ProviderSessionReconciliationBounds {
+    /// Creates positive replay item and content bounds.
     #[must_use]
     pub const fn new(maximum_replay_items: NonZeroU32, maximum_replay_bytes: NonZeroU64) -> Self {
         Self {
@@ -51,16 +67,19 @@ impl ProviderSessionReconciliationBounds {
     }
 
     #[must_use]
+    /// Returns the maximum replay item count.
     pub const fn maximum_replay_items(self) -> NonZeroU32 {
         self.maximum_replay_items
     }
 
     #[must_use]
+    /// Returns the maximum aggregate replay content bytes.
     pub const fn maximum_replay_bytes(self) -> NonZeroU64 {
         self.maximum_replay_bytes
     }
 }
 
+/// Exact durable binding, interrupted turn, bounds, and deadline to reconcile.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ProviderSessionReconciliationAgreement {
     binding: SessionResumeBinding,
@@ -72,6 +91,7 @@ pub struct ProviderSessionReconciliationAgreement {
 }
 
 impl ProviderSessionReconciliationAgreement {
+    /// Creates an agreement without an event-position checkpoint.
     #[must_use]
     pub const fn new(
         binding: SessionResumeBinding,
@@ -90,6 +110,7 @@ impl ProviderSessionReconciliationAgreement {
         }
     }
 
+    /// Adds a checkpoint that exactly matches the session and interrupted turn.
     pub fn with_checkpoint(
         mut self,
         checkpoint: ProviderOperationCheckpoint,
@@ -108,42 +129,50 @@ impl ProviderSessionReconciliationAgreement {
     }
 
     #[must_use]
+    /// Returns the durable provider-session binding.
     pub const fn binding(&self) -> &SessionResumeBinding {
         &self.binding
     }
 
     #[must_use]
+    /// Returns the consumer turn whose handle was lost.
     pub const fn interrupted_turn_id(&self) -> &RuntimeTurnId {
         &self.interrupted_turn_id
     }
 
     #[must_use]
+    /// Returns the exact provider turn when known before observation.
     pub const fn provider_turn_ref(&self) -> Option<&TurnRef> {
         self.provider_turn_ref.as_ref()
     }
 
     #[must_use]
+    /// Returns the replay bounds.
     pub const fn bounds(&self) -> ProviderSessionReconciliationBounds {
         self.bounds
     }
 
     #[must_use]
+    /// Returns the observation deadline when present.
     pub const fn deadline(&self) -> Option<Deadline> {
         self.deadline
     }
 
     #[must_use]
+    /// Returns the exact durable event position when supplied.
     pub const fn checkpoint(&self) -> Option<&ProviderOperationCheckpoint> {
         self.checkpoint.as_ref()
     }
 }
 
+/// Validated preflight plan and immutable reconciliation agreement.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ProviderSessionReconciliationPlan {
     preflight: PreflightPlan,
     agreement: ProviderSessionReconciliationAgreement,
 }
 
+/// Prepared route and access evidence for session reconciliation.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct PreparedProviderSessionReconciliationEvidence {
     operation: PreparedOperationEvidence,
@@ -151,6 +180,7 @@ pub struct PreparedProviderSessionReconciliationEvidence {
 }
 
 impl PreparedProviderSessionReconciliationEvidence {
+    /// Binds prepared access evidence to a validated reconciliation plan.
     pub fn from_plan(
         plan: ProviderSessionReconciliationPlan,
         access: PreparedAccessEvidence,
@@ -160,17 +190,20 @@ impl PreparedProviderSessionReconciliationEvidence {
     }
 
     #[must_use]
+    /// Returns the common prepared-operation evidence.
     pub const fn operation(&self) -> &PreparedOperationEvidence {
         &self.operation
     }
 
     #[must_use]
+    /// Returns the exact reconciliation plan.
     pub const fn plan(&self) -> &ProviderSessionReconciliationPlan {
         &self.plan
     }
 }
 
 impl ProviderSessionReconciliationPlan {
+    /// Validates a preflight plan against the reconciliation agreement.
     pub fn new(
         preflight: PreflightPlan,
         agreement: ProviderSessionReconciliationAgreement,
@@ -183,16 +216,19 @@ impl ProviderSessionReconciliationPlan {
     }
 
     #[must_use]
+    /// Returns the immutable preflight plan.
     pub const fn preflight(&self) -> &PreflightPlan {
         &self.preflight
     }
 
     #[must_use]
+    /// Returns the immutable reconciliation agreement.
     pub const fn agreement(&self) -> &ProviderSessionReconciliationAgreement {
         &self.agreement
     }
 }
 
+/// One execution request derived from a reconciliation plan.
 #[derive(Clone, Debug)]
 pub struct ProviderSessionReconciliationRequest {
     request_id: RequestId,
@@ -201,6 +237,7 @@ pub struct ProviderSessionReconciliationRequest {
 }
 
 impl ProviderSessionReconciliationRequest {
+    /// Creates a request with an explicitly scoped cancellation control.
     pub fn new(
         request_id: RequestId,
         plan: &ProviderSessionReconciliationPlan,
@@ -219,6 +256,7 @@ impl ProviderSessionReconciliationRequest {
         })
     }
 
+    /// Creates a request with a fresh correctly scoped cancellation control.
     pub fn from_plan(
         request_id: RequestId,
         plan: &ProviderSessionReconciliationPlan,
@@ -233,21 +271,25 @@ impl ProviderSessionReconciliationRequest {
     }
 
     #[must_use]
+    /// Returns the caller-assigned request identity.
     pub const fn request_id(&self) -> &RequestId {
         &self.request_id
     }
 
     #[must_use]
+    /// Returns the copied immutable agreement.
     pub const fn agreement(&self) -> &ProviderSessionReconciliationAgreement {
         &self.agreement
     }
 
     #[must_use]
+    /// Returns the reconciliation-scoped cancellation control.
     pub const fn cancellation(&self) -> &Arc<ImmediateCancellation> {
         &self.cancellation
     }
 }
 
+/// Adapter-produced read-only observation before outcome validation.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ProviderSessionReconciliationObservation {
     attribution: InterruptedTurnAttribution,
@@ -258,6 +300,7 @@ pub struct ProviderSessionReconciliationObservation {
 }
 
 impl ProviderSessionReconciliationObservation {
+    /// Creates a session-scoped observation with bounded replay.
     #[must_use]
     pub fn session_scoped(
         state: InterruptedTurnState,
@@ -274,6 +317,7 @@ impl ProviderSessionReconciliationObservation {
     }
 
     #[must_use]
+    /// Creates an observation attributed to one exact provider turn.
     pub fn exact_turn(
         state: InterruptedTurnState,
         provider_turn_ref: TurnRef,
@@ -315,6 +359,7 @@ pub fn bound_provider_session_replay_tail(
     (selected, complete)
 }
 
+/// Validated reconciliation result with replay and joined-cleanup truth.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ProviderSessionReconciliationOutcome {
     interrupted_turn_id: RuntimeTurnId,
@@ -323,6 +368,7 @@ pub struct ProviderSessionReconciliationOutcome {
 }
 
 impl ProviderSessionReconciliationOutcome {
+    /// Validates request correlation, attribution, replay bounds, and cleanup.
     pub fn new(
         plan: &ProviderSessionReconciliationPlan,
         request: &ProviderSessionReconciliationRequest,
@@ -386,35 +432,42 @@ impl ProviderSessionReconciliationOutcome {
     }
 
     #[must_use]
+    /// Returns the interrupted consumer turn.
     pub const fn interrupted_turn_id(&self) -> &RuntimeTurnId {
         &self.interrupted_turn_id
     }
 
     #[must_use]
+    /// Returns the observation's provider-attribution strength.
     pub const fn attribution(&self) -> InterruptedTurnAttribution {
         self.observation.attribution
     }
 
     #[must_use]
+    /// Returns the observed interrupted-turn state.
     pub const fn state(&self) -> InterruptedTurnState {
         self.observation.state
     }
 
     #[must_use]
+    /// Returns the exact provider turn when attribution permits it.
     pub const fn provider_turn_ref(&self) -> Option<&TurnRef> {
         self.observation.provider_turn_ref.as_ref()
     }
 
+    /// Iterates over the bounded replacement replay snapshot.
     pub fn replay(&self) -> impl ExactSizeIterator<Item = &SessionReplayItem> {
         self.observation.replay.iter()
     }
 
     #[must_use]
+    /// Returns whether replay contains the complete qualified snapshot.
     pub const fn replay_complete(&self) -> bool {
         self.observation.replay_complete
     }
 
     #[must_use]
+    /// Returns joined-cleanup truth for the observation operation.
     pub const fn cleanup(&self) -> &CleanupOutcome {
         &self.cleanup
     }
@@ -443,6 +496,7 @@ impl ProviderSessionReconciliationOutcome {
     }
 }
 
+/// Verifies that execution input still matches its immutable plan.
 pub fn validate_provider_session_reconciliation_request(
     plan: &ProviderSessionReconciliationPlan,
     request: &ProviderSessionReconciliationRequest,
@@ -457,6 +511,7 @@ pub fn validate_provider_session_reconciliation_request(
     }
 }
 
+/// Verifies request, execution host, and required host-service availability.
 pub fn validate_provider_session_reconciliation_execution(
     plan: &ProviderSessionReconciliationPlan,
     request: &ProviderSessionReconciliationRequest,

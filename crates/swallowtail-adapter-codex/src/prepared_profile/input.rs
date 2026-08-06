@@ -10,6 +10,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs for read-only reconciliation of one interrupted Codex thread turn.
 pub struct CodexSessionReconciliationInput {
     request_id: RequestId,
     model: CodexModelSelection,
@@ -21,6 +22,7 @@ pub struct CodexSessionReconciliationInput {
 }
 
 impl CodexSessionReconciliationInput {
+    /// Creates bounded reconciliation input from an exact durable session binding.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -40,12 +42,14 @@ impl CodexSessionReconciliationInput {
         }
     }
 
+    /// Adds the exact provider turn reference when the interrupted turn is known.
     #[must_use]
     pub fn with_provider_turn_ref(mut self, provider_turn_ref: TurnRef) -> Self {
         self.provider_turn_ref = Some(provider_turn_ref);
         self
     }
 
+    /// Adds a reconciliation deadline.
     #[must_use]
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
@@ -76,6 +80,7 @@ impl CodexSessionReconciliationInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Exact model route for a prepared Codex operation.
 pub struct CodexModelSelection {
     route_id: ModelRouteId,
     route_revision: ModelRouteRevision,
@@ -83,6 +88,7 @@ pub struct CodexModelSelection {
 }
 
 impl CodexModelSelection {
+    /// Creates an exact Codex model selection.
     #[must_use]
     pub const fn new(
         route_id: ModelRouteId,
@@ -110,6 +116,7 @@ impl CodexModelSelection {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer inputs for one prepared Codex app-server session.
 pub struct CodexSessionProfileInput {
     request_id: RequestId,
     model: CodexModelSelection,
@@ -120,6 +127,7 @@ pub struct CodexSessionProfileInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer inputs for one inactive Codex thread-management action.
 pub struct CodexSessionManagementInput {
     request_id: RequestId,
     binding: ProviderSessionManagementBinding,
@@ -128,6 +136,7 @@ pub struct CodexSessionManagementInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer inputs for one bounded Codex thread-catalogue request.
 pub struct CodexSessionCatalogueInput {
     request_id: RequestId,
     catalogue_id: ProviderSessionCatalogueId,
@@ -137,6 +146,7 @@ pub struct CodexSessionCatalogueInput {
 }
 
 impl CodexSessionCatalogueInput {
+    /// Creates a working-resource-scoped thread catalogue request.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -153,6 +163,7 @@ impl CodexSessionCatalogueInput {
         }
     }
 
+    /// Adds a thread-catalogue deadline.
     #[must_use]
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
@@ -179,6 +190,7 @@ impl CodexSessionCatalogueInput {
 }
 
 impl CodexSessionManagementInput {
+    /// Creates an inactive-thread management request.
     #[must_use]
     pub const fn new(request_id: RequestId, binding: ProviderSessionManagementBinding) -> Self {
         Self {
@@ -189,12 +201,14 @@ impl CodexSessionManagementInput {
         }
     }
 
+    /// Adds a lifecycle-operation deadline.
     #[must_use]
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
         self
     }
 
+    /// Explicitly admits an unverified-newer lifecycle implementation.
     #[must_use]
     pub const fn allow_unverified_newer(mut self) -> Self {
         self.allow_unverified_newer = true;
@@ -219,6 +233,7 @@ impl CodexSessionManagementInput {
 }
 
 impl CodexSessionProfileInput {
+    /// Creates a session profile with explicit model, workspace, deadline, and options.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -237,6 +252,7 @@ impl CodexSessionProfileInput {
         }
     }
 
+    /// Enables typed provider-to-consumer user-input exchange for the session.
     #[must_use]
     pub const fn with_user_input_exchange(mut self) -> Self {
         self.user_input_exchange = true;
@@ -265,6 +281,7 @@ impl CodexSessionProfileInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer inputs for one prepared Codex exec run.
 pub struct CodexExecProfileInput {
     request_id: RequestId,
     content: OperationContent,
@@ -280,6 +297,7 @@ pub struct CodexExecProfileInput {
 }
 
 impl CodexExecProfileInput {
+    /// Creates an exec profile with explicit model and network/search policy.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -304,18 +322,21 @@ impl CodexExecProfileInput {
         }
     }
 
+    /// Selects the requested reasoning mode.
     #[must_use]
     pub fn with_reasoning_mode(mut self, mode: ReasoningMode) -> Self {
         self.reasoning_mode = Some(mode);
         self
     }
 
+    /// Adds a run deadline.
     #[must_use]
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
         self
     }
 
+    /// Replaces the run's ordered attachment set.
     #[must_use]
     pub fn with_attachments(
         mut self,
@@ -325,12 +346,14 @@ impl CodexExecProfileInput {
         self
     }
 
+    /// Replaces the run's dynamic tool declarations.
     #[must_use]
     pub fn with_tools(mut self, tools: impl IntoIterator<Item = ToolDeclaration>) -> Self {
         self.tools = tools.into_iter().collect();
         self
     }
 
+    /// Requests output conforming to the supplied structured-output descriptor.
     #[must_use]
     pub fn with_structured_output(mut self, output: StructuredOutputDescriptor) -> Self {
         self.structured_output = Some(output);

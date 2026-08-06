@@ -21,6 +21,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone)]
+/// Prepared Bedrock catalogue integration bound to one instance, host, and region.
 pub struct BedrockCataloguePreparedIntegration {
     instance: ConfiguredInstance,
     access: AccessProfile,
@@ -32,45 +33,54 @@ pub struct BedrockCataloguePreparedIntegration {
 
 impl BedrockCataloguePreparedIntegration {
     #[must_use]
+    /// Returns the configured control-plane instance.
     pub const fn instance(&self) -> &ConfiguredInstance {
         &self.instance
     }
 
     #[must_use]
+    /// Returns the delegated cloud-identity access profile.
     pub const fn access_profile(&self) -> &AccessProfile {
         &self.access
     }
 
     #[must_use]
+    /// Returns access evidence together with its provenance.
     pub const fn access_evidence(&self) -> &PreparedAccessEvidence {
         &self.evidence
     }
 
     #[must_use]
+    /// Returns the exact AWS region.
     pub const fn region(&self) -> &BedrockRegion {
         &self.region
     }
 
     #[must_use]
+    /// Returns the qualified control-plane SDK crate name.
     pub const fn sdk_crate(&self) -> &'static str {
         crate::CATALOGUE_SDK_CRATE
     }
 
     #[must_use]
+    /// Returns the qualified control-plane SDK version.
     pub const fn sdk_version(&self) -> &'static str {
         crate::CATALOGUE_SDK_VERSION
     }
 
     #[must_use]
+    /// Returns the qualified catalogue service API.
     pub const fn service_api(&self) -> &'static str {
         crate::CATALOGUE_SERVICE_API
     }
 
+    /// Iterates the host services present during preparation.
     pub fn available_host_services(&self) -> impl ExactSizeIterator<Item = HostServiceKind> + '_ {
         self.services.iter().copied()
     }
 
     #[must_use]
+    /// Returns the public low-level catalogue driver with its exact SDK binding.
     pub fn low_level_driver(&self) -> BedrockCatalogueDriver {
         BedrockCatalogueDriver::new(BedrockCatalogueBinding::new(
             self.instance.id().clone(),
@@ -85,6 +95,7 @@ impl BedrockCataloguePreparedIntegration {
         ))
     }
 
+    /// Rejects execution-host or endpoint drift from the prepared binding.
     pub fn validate_execution_binding(
         &self,
         execution_host: &ExecutionHostId,
@@ -99,6 +110,7 @@ impl BedrockCataloguePreparedIntegration {
         )
     }
 
+    /// Builds one bounded catalogue operation without provider effects.
     pub fn prepare_catalogue(
         &self,
         input: BedrockCatalogueProfileInput,
@@ -131,6 +143,7 @@ impl BedrockCataloguePreparedIntegration {
     }
 }
 
+/// Prepares the Bedrock control-plane catalogue without invoking the SDK.
 pub fn prepare_bedrock_catalogue(
     input: BedrockCataloguePreparationInput,
     services: &HostServices,
@@ -171,6 +184,7 @@ pub fn prepare_bedrock_catalogue(
 }
 
 #[derive(Clone)]
+/// Executable Bedrock catalogue operation with exact plan and request agreement.
 pub struct BedrockPreparedCatalogue {
     evidence: BedrockCataloguePreparedEvidence,
     request: ModelCatalogRequest,
@@ -179,25 +193,30 @@ pub struct BedrockPreparedCatalogue {
 
 impl BedrockPreparedCatalogue {
     #[must_use]
+    /// Returns route-specific catalogue evidence.
     pub const fn evidence(&self) -> &BedrockCataloguePreparedEvidence {
         &self.evidence
     }
 
     #[must_use]
+    /// Returns the immutable catalogue preflight plan.
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
     #[must_use]
+    /// Returns the plan-derived catalogue request.
     pub const fn request(&self) -> &ModelCatalogRequest {
         &self.request
     }
 
     #[must_use]
+    /// Returns the bound low-level catalogue driver.
     pub fn low_level_driver(&self) -> BedrockCatalogueDriver {
         self.driver.clone()
     }
 
+    /// Executes foundation-model discovery through the control-plane SDK.
     pub fn list_models(
         &self,
         services: HostServices,
@@ -209,6 +228,7 @@ impl BedrockPreparedCatalogue {
     }
 
     #[must_use]
+    /// Splits the prepared operation into evidence, plan, request, and driver.
     pub fn into_parts(
         self,
     ) -> (

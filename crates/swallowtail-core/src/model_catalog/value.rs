@@ -13,6 +13,7 @@ pub struct ProviderCatalogValue {
 }
 
 impl ProviderCatalogValue {
+    /// Creates a bounded provider-defined value tied to its integration source.
     pub fn new(
         source: IntegrationFamilyId,
         value: impl Into<String>,
@@ -40,11 +41,13 @@ impl ProviderCatalogValue {
     }
 
     #[must_use]
+    /// Returns the integration family that defined this value.
     pub const fn source(&self) -> &IntegrationFamilyId {
         &self.source
     }
 
     #[must_use]
+    /// Returns the validated provider-defined text.
     pub fn as_str(&self) -> &str {
         &self.value
     }
@@ -53,11 +56,14 @@ impl ProviderCatalogValue {
 /// A common typed value or one bounded provider-defined extension.
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum CatalogObservation<T> {
+    /// A value represented by Swallowtail's common vocabulary.
     Known(T),
+    /// A bounded value understood only by its provider integration.
     ProviderDefined(ProviderCatalogValue),
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Rejection raised when catalogue evidence is empty, unsafe, or out of bounds.
 pub struct InvalidCatalogObservation {
     diagnostic: SafeDiagnostic,
 }
@@ -70,6 +76,7 @@ impl InvalidCatalogObservation {
     }
 
     #[must_use]
+    /// Returns the redacted diagnostic describing the rejected observation.
     pub const fn diagnostic(&self) -> &SafeDiagnostic {
         &self.diagnostic
     }

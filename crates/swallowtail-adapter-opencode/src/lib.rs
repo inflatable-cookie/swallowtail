@@ -1,6 +1,11 @@
 //! Attached OpenCode HTTP harness integration for Swallowtail.
+//!
+//! The adapter keeps model catalogue, interactive and structured execution,
+//! provider-session catalogue/import/reconciliation, and inactive-session
+//! deletion as separately prepared authorities against one observed server.
 
 #![forbid(unsafe_code)]
+#![deny(missing_docs)]
 
 mod activity;
 mod driver;

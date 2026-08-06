@@ -16,6 +16,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug)]
+/// Executable deletion of one inactive retained conversation and its items.
 pub struct AlibabaModelStudioPreparedDelete {
     evidence: PreparedProviderSessionManagementEvidence,
     request: DeleteProviderSessionRequest,
@@ -23,20 +24,24 @@ pub struct AlibabaModelStudioPreparedDelete {
 
 impl AlibabaModelStudioPreparedDelete {
     #[must_use]
+    /// Returns prepared management evidence.
     pub const fn evidence(&self) -> &PreparedProviderSessionManagementEvidence {
         &self.evidence
     }
 
     #[must_use]
+    /// Returns the immutable session-management plan.
     pub const fn plan(&self) -> &ProviderSessionManagementPlan {
         self.evidence.plan()
     }
 
     #[must_use]
+    /// Returns the plan-derived delete request.
     pub const fn request(&self) -> &DeleteProviderSessionRequest {
         &self.request
     }
 
+    /// Deletes items before the retained conversation through the low-level driver.
     pub fn execute(
         &self,
         services: HostServices,
@@ -49,6 +54,7 @@ impl AlibabaModelStudioPreparedDelete {
 }
 
 impl AlibabaModelStudioPreparedIntegration {
+    /// Prepares deletion from an exact inactive-session management binding.
     pub fn prepare_delete_retained_conversation(
         &self,
         input: AlibabaSessionManagementInput,

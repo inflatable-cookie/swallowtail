@@ -36,7 +36,7 @@ edition = "2024"
 license = "MIT"
 repository = "https://github.com/inflatable-cookie/swallowtail"
 readme = "README.md"
-publish = ["crates-io"]
+publish = false
 rust-version = "1.90"
 
 [workspace.dependencies]

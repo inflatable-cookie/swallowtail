@@ -14,16 +14,19 @@ const APPROVAL_EXTENSION: &str = "codex.app-server/provider-request/approval-v1"
 const USER_INPUT_EXTENSION: &str = "codex.app-server/provider-request/user-input-v1";
 
 #[must_use]
+/// Returns the extension namespace for Codex approval callbacks.
 pub fn codex_approval_request_extension() -> ExtensionNamespace {
     ExtensionNamespace::new(APPROVAL_EXTENSION).expect("static extension namespace is valid")
 }
 
 #[must_use]
+/// Returns the extension namespace for Codex typed user-input callbacks.
 pub fn codex_user_input_request_extension() -> ExtensionNamespace {
     ExtensionNamespace::new(USER_INPUT_EXTENSION).expect("static extension namespace is valid")
 }
 
 #[must_use]
+/// Returns all Codex provider-request extension namespaces.
 pub fn codex_provider_request_extensions() -> [ExtensionNamespace; 2] {
     [
         codex_approval_request_extension(),
@@ -42,11 +45,13 @@ pub(crate) fn provider_request_namespace(method: &str) -> Option<ExtensionNamesp
 }
 
 #[must_use]
+/// Returns the ambient-harness policy for a bounded writable workspace.
 pub fn codex_bounded_workspace_access_policy() -> SessionAccessPolicy {
     SessionAccessPolicy::bounded_workspace(codex_provider_request_extensions())
 }
 
 #[must_use]
+/// Returns the capability requirement for bounded workspace access.
 pub fn codex_bounded_workspace_capability() -> CapabilityRequirement {
     CapabilityRequirement::new(
         Capability::WorkingResource,

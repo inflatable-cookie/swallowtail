@@ -4,7 +4,9 @@ use swallowtail_core::{
     InterfaceVersionBinding, InterfaceVersionScheme, InterfaceVersionSegment,
 };
 
+/// Qualified service behavior revision for Runtime `ConverseStream`.
 pub const BEDROCK_RUNTIME_SERVICE_REVISION: &str = "bedrock-runtime-converse-stream";
+/// Qualified service behavior revision for `ListFoundationModels`.
 pub const BEDROCK_CATALOGUE_SERVICE_REVISION: &str = "bedrock-list-foundation-models";
 
 const RUNTIME_SDK_AXIS: &str = "amazon-bedrock.runtime-rust-sdk";
@@ -13,6 +15,7 @@ const CATALOGUE_SDK_AXIS: &str = "amazon-bedrock.control-plane-rust-sdk";
 const CATALOGUE_SERVICE_AXIS: &str = "amazon-bedrock.control-plane-service-api";
 
 #[must_use]
+/// Returns separate SDK and service bindings for Bedrock Runtime.
 pub fn bedrock_runtime_interface_bindings() -> [InterfaceVersionBinding; 2] {
     [
         binding(RUNTIME_SDK_AXIS, crate::SDK_VERSION),
@@ -21,6 +24,7 @@ pub fn bedrock_runtime_interface_bindings() -> [InterfaceVersionBinding; 2] {
 }
 
 #[must_use]
+/// Returns separate SDK and service bindings for the Bedrock catalogue.
 pub fn bedrock_catalogue_interface_bindings() -> [InterfaceVersionBinding; 2] {
     [
         binding(CATALOGUE_SDK_AXIS, crate::CATALOGUE_SDK_VERSION),
@@ -29,6 +33,7 @@ pub fn bedrock_catalogue_interface_bindings() -> [InterfaceVersionBinding; 2] {
 }
 
 #[must_use]
+/// Returns qualified-only SDK and service claims for Bedrock Runtime.
 pub fn bedrock_runtime_interface_claims() -> [InterfaceCompatibilityClaim; 2] {
     [
         exact_claim(
@@ -47,6 +52,7 @@ pub fn bedrock_runtime_interface_claims() -> [InterfaceCompatibilityClaim; 2] {
 }
 
 #[must_use]
+/// Returns qualified-only SDK and service claims for the Bedrock catalogue.
 pub fn bedrock_catalogue_interface_claims() -> [InterfaceCompatibilityClaim; 2] {
     [
         exact_claim(

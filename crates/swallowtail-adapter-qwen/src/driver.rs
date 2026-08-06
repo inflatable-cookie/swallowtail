@@ -17,11 +17,13 @@ use swallowtail_runtime::{
 
 const EVENT_CAPACITY: usize = 4098;
 
+/// Low-level driver for installed Qwen Code CLI operations.
 pub struct QwenHeadlessDriver {
     environment: EnvironmentRef,
 }
 
 impl QwenHeadlessDriver {
+    /// Creates a Qwen driver using the approved execution environment.
     #[must_use]
     pub const fn new(environment: EnvironmentRef) -> Self {
         Self { environment }
@@ -33,6 +35,7 @@ impl QwenHeadlessDriver {
 }
 
 #[must_use]
+/// Describes Qwen's installed headless CLI route.
 pub fn qwen_headless_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(
         AdapterIdentity::new(

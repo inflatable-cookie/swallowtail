@@ -8,7 +8,9 @@ use swallowtail_runtime::RuntimeFailure;
 
 use crate::{KIMI_CODE_AXIS, failure::failure, kimi_code_binding};
 
+/// Oldest qualified Kimi local-server version.
 pub const KIMI_LOCAL_SERVER_BASELINE_VERSION: &str = "0.28.1";
+/// Most recent qualified Kimi local-server version.
 pub const KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION: &str = "0.31.1";
 
 const REST_WS_V2_BASELINE_BEHAVIOR: &str = "kimi.local-server.rest-ws-v2-baseline";
@@ -20,6 +22,7 @@ const REST_WS_V2_SUBAGENT_STATUS_BEHAVIOR: &str =
 const REST_WS_V2_REFRESH_STABLE_BEHAVIOR: &str = "kimi.local-server.rest-ws-v2-refresh-stable";
 
 #[must_use]
+/// Returns the qualified compatibility claim for Kimi local-server.
 pub fn kimi_local_server_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
         InterfaceCompatibilityClaimId::new("kimi.local-server.executable-window-4")

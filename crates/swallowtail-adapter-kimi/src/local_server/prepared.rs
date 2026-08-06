@@ -56,6 +56,7 @@ fn preparation_failure(
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Corroborated Kimi local-server interface observation.
 pub struct KimiLocalServerObservation {
     binding: InterfaceVersionBinding,
     compatibility: InterfaceCompatibilityAssessment,
@@ -72,16 +73,19 @@ impl KimiLocalServerObservation {
         }
     }
 
+    /// Returns the exact observed interface binding.
     #[must_use]
     pub const fn binding(&self) -> &InterfaceVersionBinding {
         &self.binding
     }
 
+    /// Returns the compatibility assessment for the observed binding.
     #[must_use]
     pub const fn compatibility(&self) -> &InterfaceCompatibilityAssessment {
         &self.compatibility
     }
 
+    /// Reports whether the observed server is inside the qualified range.
     #[must_use]
     pub const fn is_qualified(&self) -> bool {
         matches!(
@@ -92,6 +96,7 @@ impl KimiLocalServerObservation {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Qualified attached or owned Kimi local-server integration.
 pub struct KimiLocalServerPreparedIntegration {
     access_profile: AccessProfile,
     access_evidence: PreparedAccessEvidence,
@@ -103,40 +108,48 @@ pub struct KimiLocalServerPreparedIntegration {
 }
 
 impl KimiLocalServerPreparedIntegration {
+    /// Returns the configured endpoint access profile.
     #[must_use]
     pub const fn access_profile(&self) -> &AccessProfile {
         &self.access_profile
     }
 
+    /// Returns the prepared endpoint access evidence.
     #[must_use]
     pub const fn access_evidence(&self) -> &PreparedAccessEvidence {
         &self.access_evidence
     }
 
+    /// Returns the exact configured provider instance.
     #[must_use]
     pub const fn instance(&self) -> &ConfiguredInstance {
         &self.instance
     }
 
+    /// Returns the corroborated server observation.
     #[must_use]
     pub const fn server(&self) -> &KimiLocalServerObservation {
         &self.server
     }
 
+    /// Returns the provider-owned state root.
     #[must_use]
     pub const fn state_root(&self) -> &WorkingResourceRef {
         &self.state_root
     }
 
+    /// Returns the owned executable target, if Swallowtail started the server.
     #[must_use]
     pub const fn executable_target(&self) -> Option<&InstanceTargetRef> {
         self.executable_target.as_ref()
     }
 
+    /// Iterates over host services present when preparation succeeded.
     pub fn available_host_services(&self) -> impl ExactSizeIterator<Item = HostServiceKind> + '_ {
         self.available_host_services.iter().copied()
     }
 
+    /// Creates a low-level driver for the prepared endpoint.
     #[must_use]
     pub fn low_level_driver(&self) -> super::KimiLocalServerDriver {
         super::KimiLocalServerDriver::new()

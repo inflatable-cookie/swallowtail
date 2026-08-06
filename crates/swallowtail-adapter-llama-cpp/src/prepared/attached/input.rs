@@ -6,6 +6,7 @@ use swallowtail_core::{
 use swallowtail_runtime::{Deadline, OperationContent, PreparedAccessEvidence, RequestId};
 
 #[derive(Clone)]
+/// Inputs for admitting one externally managed llama.cpp endpoint.
 pub struct LlamaCppAttachedPreparationInput {
     instance_id: ConfiguredInstanceId,
     instance_revision: InstanceRevision,
@@ -16,6 +17,7 @@ pub struct LlamaCppAttachedPreparationInput {
 }
 
 impl LlamaCppAttachedPreparationInput {
+    /// Creates explicit endpoint and access inputs for attached preparation.
     #[must_use]
     pub const fn new(
         instance_id: ConfiguredInstanceId,
@@ -57,6 +59,7 @@ impl LlamaCppAttachedPreparationInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Exact model route selected for catalogue-bound inference.
 pub struct LlamaCppModelSelection {
     route_id: ModelRouteId,
     route_revision: ModelRouteRevision,
@@ -64,6 +67,7 @@ pub struct LlamaCppModelSelection {
 }
 
 impl LlamaCppModelSelection {
+    /// Creates a model selection without inferring an alias or route.
     #[must_use]
     pub const fn new(
         route_id: ModelRouteId,
@@ -83,12 +87,14 @@ impl LlamaCppModelSelection {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs for one read-only attached-server model catalogue request.
 pub struct LlamaCppCatalogueProfileInput {
     request_id: RequestId,
     deadline: Option<Deadline>,
 }
 
 impl LlamaCppCatalogueProfileInput {
+    /// Creates a catalogue profile without a deadline.
     #[must_use]
     pub const fn new(request_id: RequestId) -> Self {
         Self {
@@ -97,6 +103,7 @@ impl LlamaCppCatalogueProfileInput {
         }
     }
 
+    /// Adds a caller-owned catalogue deadline.
     #[must_use]
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
@@ -109,6 +116,7 @@ impl LlamaCppCatalogueProfileInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs for one bounded attached-server inference attempt.
 pub struct LlamaCppInferenceProfileInput {
     request_id: RequestId,
     selection: LlamaCppModelSelection,
@@ -118,6 +126,7 @@ pub struct LlamaCppInferenceProfileInput {
 }
 
 impl LlamaCppInferenceProfileInput {
+    /// Creates an attempt with explicit model, content, and output-token bound.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -134,6 +143,7 @@ impl LlamaCppInferenceProfileInput {
         }
     }
 
+    /// Adds a caller-owned inference deadline.
     #[must_use]
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);

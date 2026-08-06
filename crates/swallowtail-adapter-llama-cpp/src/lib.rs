@@ -1,6 +1,11 @@
 //! llama.cpp serving-runtime drivers for Swallowtail.
 //!
+//! The crate keeps an externally attached server separate from a host-owned
+//! ephemeral server. Only the owned route acquires a model artifact, launches
+//! a process, publishes an endpoint, and owns joined cleanup.
+
 #![forbid(unsafe_code)]
+#![deny(missing_docs)]
 
 mod activity;
 mod driver;

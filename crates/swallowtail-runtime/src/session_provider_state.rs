@@ -1,6 +1,7 @@
 use crate::{RuntimeFailure, SessionProviderStatePolicy};
 use swallowtail_core::{PreflightPlan, SafeDiagnostic};
 
+/// Validates exact provider-state policy agreement with immutable preflight.
 pub fn validate_session_provider_state_plan(
     plan: &PreflightPlan,
     requested: SessionProviderStatePolicy,

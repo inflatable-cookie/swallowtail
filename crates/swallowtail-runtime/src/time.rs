@@ -1,28 +1,34 @@
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+/// Executor-neutral point on an execution host's monotonic clock.
 pub struct MonotonicInstant(u64);
 
 impl MonotonicInstant {
     #[must_use]
+    /// Creates an instant from host-defined monotonic ticks.
     pub const fn from_ticks(ticks: u64) -> Self {
         Self(ticks)
     }
 
     #[must_use]
+    /// Returns the host-defined monotonic tick value.
     pub const fn ticks(self) -> u64 {
         self.0
     }
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+/// Exact monotonic deadline selected for one operation.
 pub struct Deadline(MonotonicInstant);
 
 impl Deadline {
     #[must_use]
+    /// Creates a deadline at an exact monotonic instant.
     pub const fn at(instant: MonotonicInstant) -> Self {
         Self(instant)
     }
 
     #[must_use]
+    /// Returns the deadline's monotonic instant.
     pub const fn instant(self) -> MonotonicInstant {
         self.0
     }
@@ -37,6 +43,7 @@ pub struct DeadlineObservation {
 
 impl DeadlineObservation {
     #[must_use]
+    /// Creates evidence that the deadline was observed at a monotonic instant.
     pub const fn new(deadline: Deadline, observed_at: MonotonicInstant) -> Self {
         Self {
             deadline,
@@ -45,11 +52,13 @@ impl DeadlineObservation {
     }
 
     #[must_use]
+    /// Returns the deadline that was reached.
     pub const fn deadline(self) -> Deadline {
         self.deadline
     }
 
     #[must_use]
+    /// Returns the monotonic instant at which the host observed it.
     pub const fn observed_at(self) -> MonotonicInstant {
         self.observed_at
     }

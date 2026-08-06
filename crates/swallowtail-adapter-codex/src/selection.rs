@@ -13,10 +13,15 @@ pub(crate) use lifecycle::{
     CodexLifecycleAssessment, CodexLifecycleBehavior, classify_lifecycle_version,
 };
 
+/// CLI-version interface axis shared by Codex routes.
 pub const CODEX_CLI_AXIS: &str = "codex.cli";
+/// Oldest qualified Codex exec version.
 pub const CODEX_EXEC_BASELINE_VERSION: &str = "0.80.0";
+/// Oldest qualified Codex app-server version.
 pub const CODEX_APP_SERVER_BASELINE_VERSION: &str = "0.80.0";
+/// Oldest app-server version qualified for thread catalogue and import.
 pub const CODEX_APP_SERVER_THREAD_CATALOGUE_BASELINE_VERSION: &str = "0.105.0";
+/// Most recent qualified Codex CLI version.
 pub const CODEX_LATEST_QUALIFIED_VERSION: &str = "0.146.0";
 pub(crate) const CODEX_APP_SERVER_WORKSPACE_ROOTS_VERSION: &str = "0.131.0";
 const CODEX_EXEC_RETAINED_BOOLEAN_SEARCH_BEHAVIOR: &str =
@@ -68,6 +73,7 @@ impl CodexAppServerBehavior {
 }
 
 #[must_use]
+/// Converts an exact Codex CLI version into its interface binding.
 pub fn codex_cli_binding(version: &str) -> InterfaceVersionBinding {
     InterfaceVersionBinding::new(
         InterfaceVersionAxis::new(CODEX_CLI_AXIS).expect("static Codex axis is valid"),
@@ -76,6 +82,7 @@ pub fn codex_cli_binding(version: &str) -> InterfaceVersionBinding {
 }
 
 #[must_use]
+/// Returns the qualified compatibility claim for Codex exec.
 pub fn codex_exec_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
         InterfaceCompatibilityClaimId::new("codex.exec.cli-window-2")
@@ -115,6 +122,7 @@ pub fn codex_exec_claim() -> InterfaceCompatibilityClaim {
 }
 
 #[must_use]
+/// Returns the qualified compatibility claim for Codex app-server.
 pub fn codex_app_server_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
         InterfaceCompatibilityClaimId::new("codex.app-server.cli-window-2")

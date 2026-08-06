@@ -9,6 +9,7 @@ use swallowtail_core::{
     ProviderSessionImportAvailability, SessionRef,
 };
 
+/// Opaque pagination cursor bound to one exact catalogue plan and traversal.
 #[derive(Clone, Eq, PartialEq)]
 pub struct ProviderSessionCursor {
     catalogue_id: ProviderSessionCatalogueId,
@@ -57,11 +58,13 @@ impl ProviderSessionCursor {
     }
 
     #[must_use]
+    /// Returns the provider-native cursor value for the owning adapter only.
     pub fn as_provider_value(&self) -> &str {
         &self.value
     }
 
     #[must_use]
+    /// Returns the number of unique candidates already observed.
     pub fn observed_candidates(&self) -> u32 {
         self.seen_candidate_ids.len() as u32
     }
@@ -94,6 +97,9 @@ impl fmt::Debug for ProviderSessionCursor {
     }
 }
 
+/// Bounded provider-session observation from one exact catalogue operation.
+///
+/// A candidate is not attachment, resume, management, or deletion authority.
 #[derive(Clone, Eq, PartialEq)]
 pub struct ProviderSessionCandidate {
     catalogue_id: ProviderSessionCatalogueId,
@@ -108,6 +114,7 @@ pub struct ProviderSessionCandidate {
 }
 
 impl ProviderSessionCandidate {
+    /// Creates a candidate after enforcing reference and display-content bounds.
     #[allow(clippy::too_many_arguments)]
     pub fn new(
         plan: &ProviderSessionCataloguePlan,
@@ -150,26 +157,31 @@ impl ProviderSessionCandidate {
     }
 
     #[must_use]
+    /// Returns the operation-local opaque candidate identity.
     pub const fn candidate_id(&self) -> &ProviderSessionCandidateId {
         &self.candidate_id
     }
 
     #[must_use]
+    /// Returns bounded provider display content.
     pub const fn display(&self) -> &ProviderSessionDisplayContent {
         &self.display
     }
 
     #[must_use]
+    /// Returns the provider update time, when supplied, as Unix milliseconds.
     pub const fn updated_at_unix_milliseconds(&self) -> Option<u64> {
         self.updated_at_unix_milliseconds
     }
 
     #[must_use]
+    /// Returns the observed provider-session activity state.
     pub const fn activity(&self) -> ProviderSessionActivityState {
         self.activity
     }
 
     #[must_use]
+    /// Returns whether this candidate may enter explicit import planning.
     pub const fn import_availability(&self) -> ProviderSessionImportAvailability {
         self.import_availability
     }

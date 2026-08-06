@@ -20,11 +20,13 @@ use outcome::{exit_failed, outcome, staged_outcome};
 const MAX_VERSION_OUTPUT_BYTES: usize = 64;
 const MAX_VERSION_STDERR_BYTES: usize = 1_024;
 
+/// Low-level discovery and interactive-session driver for Cursor ACP.
 pub struct CursorAcpDriver {
     ambient_environment: EnvironmentRef,
 }
 
 impl CursorAcpDriver {
+    /// Creates a Cursor ACP driver using the approved ambient environment.
     #[must_use]
     pub const fn new(ambient_environment: EnvironmentRef) -> Self {
         Self {
@@ -32,6 +34,7 @@ impl CursorAcpDriver {
         }
     }
 
+    /// Returns the approved ambient execution environment.
     #[must_use]
     pub const fn ambient_environment(&self) -> &EnvironmentRef {
         &self.ambient_environment

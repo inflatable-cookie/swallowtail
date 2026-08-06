@@ -5,6 +5,7 @@
 //! values through opaque references and scoped grants.
 
 #![forbid(unsafe_code)]
+#![deny(missing_docs)]
 
 mod attachment;
 mod child;

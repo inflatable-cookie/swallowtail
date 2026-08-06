@@ -15,6 +15,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer inputs for one managed Kimi local-server structured run.
 pub struct KimiLocalServerRunInput {
     request_id: RequestId,
     model: crate::KimiModelSelection,
@@ -29,6 +30,7 @@ pub struct KimiLocalServerRunInput {
 }
 
 impl KimiLocalServerRunInput {
+    /// Creates a run input with explicit model, resource, deadline, and configuration.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -52,24 +54,28 @@ impl KimiLocalServerRunInput {
         }
     }
 
+    /// Explicitly admits an unverified-newer local-server implementation.
     #[must_use]
     pub fn with_reasoning(mut self, reasoning: ReasoningMode) -> Self {
         self.reasoning = Some(reasoning);
         self
     }
 
+    /// Explicitly admits an unverified-newer local-server implementation.
     #[must_use]
     pub const fn allow_unverified_newer(mut self) -> Self {
         self.allow_unverified_newer = true;
         self
     }
 
+    /// Explicitly accepts provider-managed recovery for the run.
     #[must_use]
     pub const fn accept_managed_recovery(mut self) -> Self {
         self.managed_recovery_accepted = true;
         self
     }
 
+    /// Admits at most one stream reattachment after interruption.
     #[must_use]
     pub const fn with_one_stream_reattachment(mut self) -> Self {
         self.stream_reattachment =
@@ -79,6 +85,7 @@ impl KimiLocalServerRunInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared managed Kimi local-server structured run.
 pub struct KimiLocalServerPreparedRun {
     evidence: PreparedOperationEvidence,
     request: StructuredRunRequest,
@@ -86,31 +93,37 @@ pub struct KimiLocalServerPreparedRun {
 }
 
 impl KimiLocalServerPreparedRun {
+    /// Returns portable evidence for the prepared run.
     #[must_use]
     pub const fn evidence(&self) -> &PreparedOperationEvidence {
         &self.evidence
     }
 
+    /// Returns the validated preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
+    /// Returns the bound structured-run request.
     #[must_use]
     pub const fn request(&self) -> &StructuredRunRequest {
         &self.request
     }
 
+    /// Returns the provider configuration bound to the run.
     #[must_use]
     pub const fn configuration(&self) -> &super::super::KimiLocalServerSessionConfiguration {
         &self.configuration
     }
 
+    /// Creates the low-level local-server driver bound to this run.
     #[must_use]
     pub fn low_level_driver(&self) -> super::super::KimiLocalServerDriver {
         super::super::KimiLocalServerDriver::with_session_configuration(self.configuration.clone())
     }
 
+    /// Starts the prepared run with caller-supplied host services.
     pub fn start_run(
         &self,
         services: HostServices,
@@ -123,6 +136,7 @@ impl KimiLocalServerPreparedRun {
 }
 
 impl KimiLocalServerPreparedIntegration {
+    /// Prepares a managed structured run through the admitted server.
     pub fn prepare_run(
         &self,
         input: KimiLocalServerRunInput,

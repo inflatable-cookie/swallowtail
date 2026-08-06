@@ -1,3 +1,5 @@
+#![deny(missing_docs)]
+
 use crate::{RuntimeRunId, provider_run_checkpoint::route_fingerprint};
 use sha2::{Digest, Sha256};
 use std::collections::BTreeSet;
@@ -25,6 +27,7 @@ pub struct ProviderRecoveredResourceCleanupBinding {
 }
 
 impl ProviderRecoveredResourceCleanupBinding {
+    /// Creates cleanup authority for exact resources left by one provider run.
     pub fn new(
         plan: &PreflightPlan,
         runtime_run_id: RuntimeRunId,
@@ -51,15 +54,18 @@ impl ProviderRecoveredResourceCleanupBinding {
     }
 
     #[must_use]
+    /// Returns the runtime run which owned the resources.
     pub const fn runtime_run_id(&self) -> &RuntimeRunId {
         &self.runtime_run_id
     }
 
     #[must_use]
+    /// Returns the opaque provider run reference.
     pub const fn provider_run_ref(&self) -> &RunRef {
         &self.provider_run_ref
     }
 
+    /// Iterates the kinds of driver-owned resources covered by the binding.
     pub fn resource_kinds(&self) -> impl ExactSizeIterator<Item = OwnedRemoteResourceKind> + '_ {
         self.resource_kinds.iter().copied()
     }
@@ -70,6 +76,7 @@ impl ProviderRecoveredResourceCleanupBinding {
         &self.provider_resource_binding
     }
 
+    /// Exports the binding for opaque consumer-owned persistence.
     pub fn export_persisted(
         &self,
         plan: &PreflightPlan,
@@ -100,6 +107,7 @@ impl ProviderRecoveredResourceCleanupBinding {
         PersistedProviderRecoveredResourceCleanupBinding::from_bytes(payload)
     }
 
+    /// Restores cleanup authority only under the exact prepared route.
     pub fn restore_persisted(
         record: &PersistedProviderRecoveredResourceCleanupBinding,
         plan: &PreflightPlan,
@@ -129,10 +137,15 @@ impl fmt::Debug for ProviderRecoveredResourceCleanupBinding {
     }
 }
 
+/// Stable persisted form of one recovered-resource cleanup binding.
+///
+/// Default formatting never exposes provider references or adapter-private
+/// cleanup material.
 #[derive(Clone, Eq, PartialEq)]
 pub struct PersistedProviderRecoveredResourceCleanupBinding(Vec<u8>);
 
 impl PersistedProviderRecoveredResourceCleanupBinding {
+    /// Validates and owns one previously persisted cleanup-binding record.
     pub fn from_bytes(
         bytes: impl AsRef<[u8]>,
     ) -> Result<Self, ProviderRecoveredResourceCleanupBindingFailure> {
@@ -142,6 +155,7 @@ impl PersistedProviderRecoveredResourceCleanupBinding {
     }
 
     #[must_use]
+    /// Returns the versioned opaque bytes for consumer-owned storage.
     pub fn as_bytes(&self) -> &[u8] {
         &self.0
     }
@@ -154,14 +168,21 @@ impl fmt::Debug for PersistedProviderRecoveredResourceCleanupBinding {
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+/// Stable classification for a recovered-resource binding failure.
 pub enum ProviderRecoveredResourceCleanupBindingFailureKind {
+    /// The record does not use the required bounded encoding.
     InvalidEncoding,
+    /// The record version is not supported by this runtime.
     UnsupportedVersion,
+    /// A record field or the complete record exceeds its declared bound.
     Oversized,
+    /// The record digest does not match its encoded contents.
     IntegrityMismatch,
+    /// The binding was issued for a different prepared route.
     AttachmentMismatch,
 }
 
+/// Safe failure returned while creating, exporting, or restoring a cleanup binding.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ProviderRecoveredResourceCleanupBindingFailure {
     kind: ProviderRecoveredResourceCleanupBindingFailureKind,
@@ -181,11 +202,13 @@ impl ProviderRecoveredResourceCleanupBindingFailure {
     }
 
     #[must_use]
+    /// Returns the stable binding-failure classification.
     pub const fn kind(&self) -> ProviderRecoveredResourceCleanupBindingFailureKind {
         self.kind
     }
 
     #[must_use]
+    /// Returns the bounded, redacted diagnostic.
     pub const fn diagnostic(&self) -> &SafeDiagnostic {
         &self.diagnostic
     }

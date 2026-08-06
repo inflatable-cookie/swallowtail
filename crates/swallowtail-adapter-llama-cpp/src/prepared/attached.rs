@@ -23,6 +23,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone)]
+/// Admitted externally managed server before operation-specific preflight.
 pub struct LlamaCppAttachedPreparedIntegration {
     instance: ConfiguredInstance,
     access: AccessProfile,
@@ -31,40 +32,48 @@ pub struct LlamaCppAttachedPreparedIntegration {
 }
 
 impl LlamaCppAttachedPreparedIntegration {
+    /// Returns the configured attached-server instance.
     #[must_use]
     pub const fn instance(&self) -> &ConfiguredInstance {
         &self.instance
     }
 
+    /// Returns the selected local-unauthenticated access profile.
     #[must_use]
     pub const fn access_profile(&self) -> &AccessProfile {
         &self.access
     }
 
+    /// Returns the admitted access evidence.
     #[must_use]
     pub const fn access_evidence(&self) -> &PreparedAccessEvidence {
         &self.evidence
     }
 
+    /// Returns the exact attached llama.cpp build expected at execution.
     #[must_use]
     pub const fn expected_build(&self) -> &'static str {
         crate::LLAMA_CPP_ATTACHED_BUILD
     }
 
+    /// Returns the exact attached llama.cpp commit expected at execution.
     #[must_use]
     pub const fn expected_commit(&self) -> &'static str {
         crate::LLAMA_CPP_ATTACHED_COMMIT
     }
 
+    /// Iterates host services available when preparation completed.
     pub fn available_host_services(&self) -> impl ExactSizeIterator<Item = HostServiceKind> + '_ {
         self.services.iter().copied()
     }
 
+    /// Creates the exact low-level attached-server driver.
     #[must_use]
     pub fn low_level_driver(&self) -> LlamaCppAttachedDriver {
         LlamaCppAttachedDriver::new()
     }
 
+    /// Validates and prepares a read-only model-catalogue request.
     pub fn prepare_catalogue(
         &self,
         input: LlamaCppCatalogueProfileInput,
@@ -97,6 +106,7 @@ impl LlamaCppAttachedPreparedIntegration {
         })
     }
 
+    /// Validates and prepares one bounded structured inference attempt.
     pub fn prepare_inference_attempt(
         &self,
         input: LlamaCppInferenceProfileInput,
@@ -177,6 +187,7 @@ fn instance_with_capabilities(
     .with_interface_versions(base.interface_versions().cloned())
 }
 
+/// Admits one externally managed llama.cpp endpoint and access profile.
 pub fn prepare_llama_cpp_attached(
     input: LlamaCppAttachedPreparationInput,
     services: &HostServices,
@@ -206,6 +217,7 @@ pub fn prepare_llama_cpp_attached(
 }
 
 #[derive(Clone)]
+/// Prepared read-only catalogue request for an attached server.
 pub struct LlamaCppPreparedCatalogue {
     evidence: LlamaCppAttachedPreparedEvidence,
     request: ModelCatalogRequest,
@@ -213,26 +225,31 @@ pub struct LlamaCppPreparedCatalogue {
 }
 
 impl LlamaCppPreparedCatalogue {
+    /// Returns the catalogue's preparation evidence.
     #[must_use]
     pub const fn evidence(&self) -> &LlamaCppAttachedPreparedEvidence {
         &self.evidence
     }
 
+    /// Returns the immutable preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
+    /// Returns the model-catalogue request.
     #[must_use]
     pub const fn request(&self) -> &ModelCatalogRequest {
         &self.request
     }
 
+    /// Returns the bound low-level attached-server driver.
     #[must_use]
     pub fn low_level_driver(&self) -> LlamaCppAttachedDriver {
         self.driver.clone()
     }
 
+    /// Dispatches the prepared model-catalogue request.
     pub fn list_models(
         &self,
         services: HostServices,
@@ -245,6 +262,7 @@ impl LlamaCppPreparedCatalogue {
 }
 
 #[derive(Clone)]
+/// Prepared attached-server inference attempt ready for dispatch.
 pub struct LlamaCppPreparedInferenceAttempt {
     evidence: LlamaCppAttachedPreparedEvidence,
     request: StructuredRunRequest,
@@ -252,26 +270,31 @@ pub struct LlamaCppPreparedInferenceAttempt {
 }
 
 impl LlamaCppPreparedInferenceAttempt {
+    /// Returns the attempt's preparation evidence.
     #[must_use]
     pub const fn evidence(&self) -> &LlamaCppAttachedPreparedEvidence {
         &self.evidence
     }
 
+    /// Returns the immutable preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
+    /// Returns the structured run request.
     #[must_use]
     pub const fn request(&self) -> &StructuredRunRequest {
         &self.request
     }
 
+    /// Returns the bound low-level attached-server driver.
     #[must_use]
     pub fn low_level_driver(&self) -> LlamaCppAttachedDriver {
         self.driver.clone()
     }
 
+    /// Starts the prepared inference attempt.
     pub fn start_run(
         &self,
         services: HostServices,

@@ -1,12 +1,18 @@
+#![deny(missing_docs)]
+
 use crate::AccessEvidenceSourceId;
 use swallowtail_core::AccessStatus;
 
+/// Provenance of access status supplied to prepared integration construction.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum AccessEvidenceProvenance {
+    /// Status observed by the named safe host, provider, or consumer source.
     Observed(AccessEvidenceSourceId),
+    /// Status explicitly asserted by the caller without observation promotion.
     CallerAsserted,
 }
 
+/// Exact access status paired with honest, non-authority-widening provenance.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct PreparedAccessEvidence {
     status: AccessStatus,
@@ -15,6 +21,7 @@ pub struct PreparedAccessEvidence {
 
 impl PreparedAccessEvidence {
     #[must_use]
+    /// Records access status observed by one identified safe source.
     pub const fn observed(status: AccessStatus, source: AccessEvidenceSourceId) -> Self {
         Self {
             status,
@@ -23,6 +30,7 @@ impl PreparedAccessEvidence {
     }
 
     #[must_use]
+    /// Records access status explicitly asserted by the caller.
     pub const fn caller_asserted(status: AccessStatus) -> Self {
         Self {
             status,
@@ -31,11 +39,13 @@ impl PreparedAccessEvidence {
     }
 
     #[must_use]
+    /// Returns the supplied multidimensional access status unchanged.
     pub const fn status(&self) -> &AccessStatus {
         &self.status
     }
 
     #[must_use]
+    /// Returns whether and where the access status was observed.
     pub const fn provenance(&self) -> &AccessEvidenceProvenance {
         &self.provenance
     }

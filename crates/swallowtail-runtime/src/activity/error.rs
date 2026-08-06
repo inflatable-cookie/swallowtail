@@ -2,6 +2,7 @@ use std::error::Error;
 use std::fmt;
 use swallowtail_core::SafeDiagnostic;
 
+/// Safe validation failure for a portable activity record.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct InvalidActivityRecord {
     diagnostic: SafeDiagnostic,
@@ -15,6 +16,7 @@ impl InvalidActivityRecord {
     }
 
     #[must_use]
+    /// Returns the redacted validation diagnostic.
     pub const fn diagnostic(&self) -> &SafeDiagnostic {
         &self.diagnostic
     }

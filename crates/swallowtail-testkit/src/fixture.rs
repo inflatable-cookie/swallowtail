@@ -19,6 +19,7 @@ pub struct ContractKernelFixture {
 }
 
 impl ContractKernelFixture {
+    /// Creates the canonical capability, reference, diagnostic, and extension fixture.
     #[must_use]
     pub fn canonical() -> Self {
         Self {
@@ -46,36 +47,43 @@ impl ContractKernelFixture {
         }
     }
 
+    /// Returns the advertised capability manifest.
     #[must_use]
     pub const fn capabilities(&self) -> &CapabilityManifest {
         &self.capabilities
     }
 
+    /// Returns a capability declared by the fixture.
     #[must_use]
     pub const fn supported_capability(&self) -> Capability {
         self.supported_capability
     }
 
+    /// Returns a capability absent from the fixture.
     #[must_use]
     pub const fn unsupported_capability(&self) -> Capability {
         self.unsupported_capability
     }
 
+    /// Returns the opaque provider session reference.
     #[must_use]
     pub const fn session_ref(&self) -> &SessionRef {
         &self.session_ref
     }
 
+    /// Returns the opaque provider run reference.
     #[must_use]
     pub const fn run_ref(&self) -> &RunRef {
         &self.run_ref
     }
 
+    /// Returns a diagnostic containing private internal detail.
     #[must_use]
     pub const fn diagnostic(&self) -> &Diagnostic {
         &self.diagnostic
     }
 
+    /// Returns an event carrying opaque extension bytes.
     #[must_use]
     pub const fn event_with_extension(&self) -> &EventEnvelope {
         &self.event_with_extension

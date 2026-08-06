@@ -27,16 +27,19 @@ const MAXIMUM_BODY_BYTES: usize = 4 * 1024 * 1024;
 const MAXIMUM_TEXT_BYTES: usize = 512;
 
 #[derive(Clone, Default)]
+/// Low-level read-only xAI language-model catalogue driver.
 pub struct XaiModelsDriver;
 
 impl XaiModelsDriver {
     #[must_use]
+    /// Creates an xAI Models driver.
     pub fn new() -> Self {
         Self
     }
 }
 
 #[must_use]
+/// Returns the exact descriptor for the xAI Models route.
 pub fn xai_models_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(
         AdapterIdentity::new(

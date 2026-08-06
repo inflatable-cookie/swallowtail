@@ -8,6 +8,7 @@ const MAX_ACTIVITY_LABEL_BYTES: usize = 512;
 pub struct ActivityLabel(String);
 
 impl ActivityLabel {
+    /// Creates a non-empty, control-free bounded display label.
     pub fn new(value: impl Into<String>) -> Result<Self, InvalidActivityRecord> {
         let value = value.into();
         if value.trim().is_empty()
@@ -22,6 +23,7 @@ impl ActivityLabel {
     }
 
     #[must_use]
+    /// Returns the provider-intended display value.
     pub fn as_str(&self) -> &str {
         &self.0
     }

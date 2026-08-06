@@ -2,6 +2,7 @@ use swallowtail_core::ResourceAccess;
 use swallowtail_runtime::{RequestId, SessionOptions, WorkingResourceRef};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer inputs for preparing one Gemini CLI ACP session.
 pub struct GeminiSessionProfileInput {
     request_id: RequestId,
     working_resource: WorkingResourceRef,
@@ -10,6 +11,7 @@ pub struct GeminiSessionProfileInput {
 }
 
 impl GeminiSessionProfileInput {
+    /// Creates a read-only session profile.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -24,6 +26,7 @@ impl GeminiSessionProfileInput {
         }
     }
 
+    /// Creates a session profile with bounded read-write workspace access.
     #[must_use]
     pub const fn bounded_write(
         request_id: RequestId,
@@ -38,6 +41,7 @@ impl GeminiSessionProfileInput {
         }
     }
 
+    /// Returns the requested working-resource access level.
     #[must_use]
     pub const fn resource_access(&self) -> ResourceAccess {
         self.resource_access

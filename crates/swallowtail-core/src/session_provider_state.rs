@@ -12,6 +12,7 @@ pub enum SessionProviderStatePolicy {
 
 impl SessionProviderStatePolicy {
     #[must_use]
+    /// Reports whether durable provider conversation state is permitted.
     pub const fn permits_durable_conversation(self) -> bool {
         matches!(
             self,
@@ -20,6 +21,7 @@ impl SessionProviderStatePolicy {
     }
 
     #[must_use]
+    /// Reports whether ordinary close must delete the durable conversation.
     pub const fn requires_delete_on_close(self) -> bool {
         matches!(self, Self::DurableConversationDeleteOnClose)
     }

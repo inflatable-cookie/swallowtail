@@ -5,6 +5,7 @@ use super::{
 };
 use crate::{HostServices, RuntimeFailure};
 
+/// Verifies that a catalogue request matches its immutable plan and cursor.
 pub fn validate_provider_session_catalogue_request(
     plan: &ProviderSessionCataloguePlan,
     request: &ProviderSessionCatalogueRequest,
@@ -23,6 +24,7 @@ pub fn validate_provider_session_catalogue_request(
     }
 }
 
+/// Verifies that an import request matches its immutable plan.
 pub fn validate_provider_session_import_request(
     plan: &ProviderSessionImportPlan,
     request: &ProviderSessionImportRequest,
@@ -37,6 +39,7 @@ pub fn validate_provider_session_import_request(
     }
 }
 
+/// Verifies a catalogue request and the host services needed to execute it.
 pub fn validate_provider_session_catalogue_execution(
     plan: &ProviderSessionCataloguePlan,
     request: &ProviderSessionCatalogueRequest,
@@ -46,6 +49,7 @@ pub fn validate_provider_session_catalogue_execution(
     validate_services(plan.preflight(), services)
 }
 
+/// Verifies an import request and the host services needed to execute it.
 pub fn validate_provider_session_import_execution(
     plan: &ProviderSessionImportPlan,
     request: &ProviderSessionImportRequest,

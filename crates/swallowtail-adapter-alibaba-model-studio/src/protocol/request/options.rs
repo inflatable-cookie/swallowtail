@@ -2,6 +2,7 @@ use crate::failure::AlibabaProtocolFailure;
 use crate::selection::EXACT_MODEL_ID;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Explicit turn options checked against the qualified conversation subset.
 pub struct TurnOptions {
     model: String,
     stream: bool,
@@ -18,6 +19,7 @@ pub struct TurnOptions {
 
 impl TurnOptions {
     #[must_use]
+    /// Returns the exact supported streaming, unstored, tool-free options.
     pub fn frozen() -> Self {
         Self {
             model: EXACT_MODEL_ID.to_owned(),
@@ -35,66 +37,77 @@ impl TurnOptions {
     }
 
     #[must_use]
+    /// Replaces the model for negative testing or explicit validation.
     pub fn with_model(mut self, model: impl Into<String>) -> Self {
         self.model = model.into();
         self
     }
 
     #[must_use]
+    /// Selects streaming response delivery.
     pub const fn with_stream(mut self, value: bool) -> Self {
         self.stream = value;
         self
     }
 
     #[must_use]
+    /// Selects provider response storage.
     pub const fn with_store(mut self, value: bool) -> Self {
         self.store = value;
         self
     }
 
     #[must_use]
+    /// Selects the provider reasoning-effort value.
     pub fn with_reasoning_effort(mut self, value: impl Into<String>) -> Self {
         self.reasoning_effort = value.into();
         self
     }
 
     #[must_use]
+    /// Selects the number of declared tools.
     pub const fn with_tools(mut self, value: usize) -> Self {
         self.tools = value;
         self
     }
 
     #[must_use]
+    /// Selects provider session caching.
     pub const fn with_session_cache(mut self, value: bool) -> Self {
         self.session_cache = value;
         self
     }
 
     #[must_use]
+    /// Selects provider background execution.
     pub const fn with_background(mut self, value: bool) -> Self {
         self.background = value;
         self
     }
 
     #[must_use]
+    /// Selects automatic provider retries.
     pub const fn with_retries(mut self, value: u32) -> Self {
         self.retries = value;
         self
     }
 
     #[must_use]
+    /// Selects response-id continuation instead of conversation state.
     pub const fn with_previous_response(mut self, value: bool) -> Self {
         self.previous_response = value;
         self
     }
 
     #[must_use]
+    /// Selects a provider output-token bound.
     pub const fn with_maximum_output_tokens(mut self, value: u64) -> Self {
         self.maximum_output_tokens = Some(value);
         self
     }
 
     #[must_use]
+    /// Selects provider model fallback.
     pub const fn with_fallback(mut self, value: bool) -> Self {
         self.fallback = value;
         self

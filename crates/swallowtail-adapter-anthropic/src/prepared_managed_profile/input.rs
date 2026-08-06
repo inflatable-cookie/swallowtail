@@ -6,6 +6,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Exact Managed Agents model-route selection supplied by the consumer.
 pub struct AnthropicManagedModelSelection {
     route_id: ModelRouteId,
     route_revision: ModelRouteRevision,
@@ -14,6 +15,7 @@ pub struct AnthropicManagedModelSelection {
 
 impl AnthropicManagedModelSelection {
     #[must_use]
+    /// Creates an exact route, revision, and model selection.
     pub const fn new(
         route_id: ModelRouteId,
         route_revision: ModelRouteRevision,
@@ -32,6 +34,7 @@ impl AnthropicManagedModelSelection {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer input for one provider-managed agent run.
 pub struct AnthropicManagedAgentRunInput {
     request_id: RequestId,
     model: AnthropicManagedModelSelection,
@@ -47,6 +50,7 @@ pub struct AnthropicManagedAgentRunInput {
 impl AnthropicManagedAgentRunInput {
     #[must_use]
     #[allow(clippy::too_many_arguments)]
+    /// Creates run input with explicit retention, recovery, and reattachment policy.
     pub fn new(
         request_id: RequestId,
         model: AnthropicManagedModelSelection,
@@ -79,6 +83,7 @@ impl AnthropicManagedAgentRunInput {
     }
 
     #[must_use]
+    /// Creates input with the exact durable, managed-recovery, one-reattachment policy.
     pub fn durable_with_managed_recovery_and_one_reattachment(
         request_id: RequestId,
         model: AnthropicManagedModelSelection,

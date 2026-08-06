@@ -5,6 +5,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer input for an Anthropic Messages catalogue observation.
 pub struct AnthropicCatalogueProfileInput {
     request_id: RequestId,
     deadline: Option<Deadline>,
@@ -12,6 +13,7 @@ pub struct AnthropicCatalogueProfileInput {
 
 impl AnthropicCatalogueProfileInput {
     #[must_use]
+    /// Creates catalogue input without a deadline.
     pub const fn new(request_id: RequestId) -> Self {
         Self {
             request_id,
@@ -20,6 +22,7 @@ impl AnthropicCatalogueProfileInput {
     }
 
     #[must_use]
+    /// Adds an exact host-monotonic deadline.
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
         self
@@ -31,6 +34,7 @@ impl AnthropicCatalogueProfileInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Exact Anthropic model-route selection supplied by the consumer.
 pub struct AnthropicModelSelection {
     route_id: ModelRouteId,
     route_revision: ModelRouteRevision,
@@ -39,6 +43,7 @@ pub struct AnthropicModelSelection {
 
 impl AnthropicModelSelection {
     #[must_use]
+    /// Creates an exact route, revision, and model selection.
     pub const fn new(
         route_id: ModelRouteId,
         route_revision: ModelRouteRevision,
@@ -57,6 +62,7 @@ impl AnthropicModelSelection {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer input for one Anthropic Messages inference attempt.
 pub struct AnthropicInferenceAttemptInput {
     request_id: RequestId,
     model: AnthropicModelSelection,
@@ -69,6 +75,7 @@ pub struct AnthropicInferenceAttemptInput {
 
 impl AnthropicInferenceAttemptInput {
     #[must_use]
+    /// Creates input with exact model, content, and output-token bound.
     pub const fn new(
         request_id: RequestId,
         model: AnthropicModelSelection,
@@ -87,12 +94,14 @@ impl AnthropicInferenceAttemptInput {
     }
 
     #[must_use]
+    /// Adds an exact host-monotonic deadline.
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
         self
     }
 
     #[must_use]
+    /// Adds the bounded portable attachment set.
     pub fn with_attachments(
         mut self,
         attachments: impl IntoIterator<Item = AttachmentDescriptor>,
@@ -102,6 +111,7 @@ impl AnthropicInferenceAttemptInput {
     }
 
     #[must_use]
+    /// Enables provider web search within an explicit domain allowlist.
     pub fn with_web_search(mut self, search: AnthropicWebSearchInput) -> Self {
         self.web_search = Some(search);
         self
@@ -131,12 +141,14 @@ impl AnthropicInferenceAttemptInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Explicit provider web-search allowlist for one Messages attempt.
 pub struct AnthropicWebSearchInput {
     allowed_domains: Vec<String>,
 }
 
 impl AnthropicWebSearchInput {
     #[must_use]
+    /// Creates search input from bare allowed domain names.
     pub fn new(allowed_domains: impl IntoIterator<Item = impl Into<String>>) -> Self {
         Self {
             allowed_domains: allowed_domains.into_iter().map(Into::into).collect(),
@@ -149,6 +161,7 @@ impl AnthropicWebSearchInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer input for an Anthropic direct tool-continuation session.
 pub struct AnthropicSessionProfileInput {
     request_id: RequestId,
     model: AnthropicModelSelection,
@@ -157,6 +170,7 @@ pub struct AnthropicSessionProfileInput {
 
 impl AnthropicSessionProfileInput {
     #[must_use]
+    /// Creates session input with an exact model and declared consumer tools.
     pub fn new(
         request_id: RequestId,
         model: AnthropicModelSelection,

@@ -3,8 +3,10 @@ use swallowtail_core::{
     SupportAuthority,
 };
 
+/// Endpoint audience for Cursor's provider-owned local subscription login.
 pub const CURSOR_SUBSCRIPTION_AUDIENCE: &str = "cursor-agent.subscription";
 
+/// Builds an access profile for Cursor's locally authenticated subscription.
 #[must_use]
 pub fn cursor_subscription_access_profile(id: AccessProfileId) -> AccessProfile {
     AccessProfile::new(

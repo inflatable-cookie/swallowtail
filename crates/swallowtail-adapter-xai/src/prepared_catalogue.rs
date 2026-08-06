@@ -13,6 +13,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Explicit host, endpoint, and API-key evidence for xAI Models preparation.
 pub struct XaiModelsPreparationInput {
     instance_revision: InstanceRevision,
     execution_host_id: ExecutionHostId,
@@ -23,6 +24,7 @@ pub struct XaiModelsPreparationInput {
 
 impl XaiModelsPreparationInput {
     #[must_use]
+    /// Creates Models preparation input without provider work.
     pub const fn new(
         instance_revision: InstanceRevision,
         execution_host_id: ExecutionHostId,
@@ -41,6 +43,7 @@ impl XaiModelsPreparationInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared read-only xAI Models integration.
 pub struct XaiModelsPreparedIntegration {
     access_profile: AccessProfile,
     access_evidence: PreparedAccessEvidence,
@@ -49,6 +52,7 @@ pub struct XaiModelsPreparedIntegration {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer input for an xAI Models catalogue observation.
 pub struct XaiModelsProfileInput {
     request_id: RequestId,
     deadline: Option<Deadline>,
@@ -56,6 +60,7 @@ pub struct XaiModelsProfileInput {
 
 impl XaiModelsProfileInput {
     #[must_use]
+    /// Creates catalogue input without a deadline.
     pub const fn new(request_id: RequestId) -> Self {
         Self {
             request_id,
@@ -64,6 +69,7 @@ impl XaiModelsProfileInput {
     }
 
     #[must_use]
+    /// Adds an exact host-monotonic deadline.
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
         self
@@ -71,6 +77,7 @@ impl XaiModelsProfileInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Bound prepared xAI Models catalogue operation.
 pub struct XaiPreparedModels {
     evidence: PreparedOperationEvidence,
     request: ModelCatalogRequest,
@@ -78,24 +85,29 @@ pub struct XaiPreparedModels {
 
 impl XaiModelsPreparedIntegration {
     #[must_use]
+    /// Returns the prepared configured instance.
     pub const fn instance(&self) -> &ConfiguredInstance {
         &self.instance
     }
 
     #[must_use]
+    /// Returns the exact public API-key access profile.
     pub const fn access_profile(&self) -> &AccessProfile {
         &self.access_profile
     }
 
     #[must_use]
+    /// Returns the access evidence and provenance.
     pub const fn access_evidence(&self) -> &PreparedAccessEvidence {
         &self.access_evidence
     }
 
+    /// Iterates the host services present during preparation.
     pub fn available_host_services(&self) -> impl ExactSizeIterator<Item = HostServiceKind> + '_ {
         self.available_host_services.iter().copied()
     }
 
+    /// Prepares a bound read-only model-catalogue observation.
     pub fn prepare_catalogue(
         &self,
         input: XaiModelsProfileInput,
@@ -146,20 +158,24 @@ impl XaiModelsPreparedIntegration {
 
 impl XaiPreparedModels {
     #[must_use]
+    /// Returns the prepared operation evidence.
     pub const fn evidence(&self) -> &PreparedOperationEvidence {
         &self.evidence
     }
 
     #[must_use]
+    /// Returns the immutable catalogue plan.
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
     #[must_use]
+    /// Returns the plan-derived catalogue request.
     pub const fn request(&self) -> &ModelCatalogRequest {
         &self.request
     }
 
+    /// Executes the bound model-catalogue observation.
     pub fn list_models(
         &self,
         services: HostServices,
@@ -171,6 +187,7 @@ impl XaiPreparedModels {
     }
 }
 
+/// Prepares the xAI Models integration without provider effects.
 pub fn prepare_xai_models(
     input: XaiModelsPreparationInput,
     services: &HostServices,

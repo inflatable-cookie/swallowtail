@@ -18,6 +18,7 @@ use swallowtail_runtime::{
 };
 
 impl CodexPreparedIntegration {
+    /// Prepares archival of one exact inactive thread.
     pub fn prepare_archive_session(
         &self,
         input: CodexSessionManagementInput,
@@ -36,6 +37,7 @@ impl CodexPreparedIntegration {
         })
     }
 
+    /// Prepares restoration of one exact archived thread.
     pub fn prepare_restore_session(
         &self,
         input: CodexSessionManagementInput,
@@ -54,6 +56,7 @@ impl CodexPreparedIntegration {
         })
     }
 
+    /// Prepares the strongest qualified deletion action for one inactive thread.
     pub fn prepare_delete_session(
         &self,
         input: CodexSessionManagementInput,

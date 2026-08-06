@@ -44,10 +44,36 @@ visible as unverified newer unless exact evidence requires rejection.
 | Give every prepared reusable session shape one truthful post-crash action. | completed | Contracts 026-027, 030, 043, 050 | `g03.039` |
 | Give every provider and harness route one portable failure interface without erasing exact diagnostics. | completed | Contracts 003-004, 006, 009, 014, 037, 044, 051 | `g03.041` |
 | Give agents and operators deep traceable instructions for every production route and portable feature. | completed | Contracts 037, 044-052 | `g03.042` |
+| Prepare the 27-package workspace for an initial `v0.1.0` GitHub source tag without registry publication. | active | Contracts 029, 036-037, 052; Research 111 | `g03.043` |
 | Periodically reconcile deferred gates, route truth, and generation capacity. | planned | Contract 001 | recurring checkpoints |
 
 ## Current Checkpoint
 
+- the operator promoted initial `v0.1.0` source-tag preparation; crates.io and
+  GitHub Release publication remain excluded
+- Research 111 finds deterministic QA and both Rust floors passing, then
+  identifies stale release authority, Bedrock's legacy TLS advisory path,
+  5,897 missing public-doc warnings, and missing source-consumer release polish
+- Contract 036 now governs 27 source packages and exact tag consumption;
+  g03.043 sequences cards 124-130
+- card 125 removes Bedrock's legacy Rustls 0.21 path and adds a passing
+  advisory, license, and source policy
+- card 126 is complete: all 27 packages have a pinned 7,819-entry semantic API
+  inventory and deny missing public docs at their roots; the review preserves
+  route, access, lifecycle, recovery, and management differences instead of
+  flattening them; all-feature workspace Rustdoc and broad QA pass with no
+  hidden missing-doc allowances; card 127 is ready after the required review
+  boundary
+- card 127 is complete: the concise root front door, changelog, source-tag
+  release notes, and security, support, and contribution policies match the
+  27-package, 33-route reviewed surface; docs QA now rejects source-pin,
+  package, or route drift
+- card 128 is complete: package posture, source-only release configuration,
+  matching CI, dependency refresh, and all 11 deterministic gates pass;
+  Effigy's explicit first-tag/current-version mode simulates exact `v0.1.0`
+  with only the changelog mutation and no release-state write
+- card 129 is active: the complete audit worktree is under final review before
+  one exact clean candidate commit and canonical-HEAD source-consumer proof
 - g02 closed at 49 roadmaps
 - its only unfinished implementation lane, Pi RPC load and resume, moved to
   shared backlog behind the unchanged cwd-bound attachment gate
@@ -426,7 +452,8 @@ visible as unverified newer unless exact evidence requires rejection.
 - [039 Provider-Wide Session Usability Restoration](039-provider-wide-session-usability-restoration.md) — completed
 - [040 Oh My Pi RPC Foundation](040-oh-my-pi-rpc-foundation.md) — completed
 - [041 Portable Failure Classification](041-portable-failure-classification.md) — completed
-- [042 Complete Integration Guide System](042-complete-integration-guide-system.md) — active
+- [042 Complete Integration Guide System](042-complete-integration-guide-system.md) — completed
+- [043 v0.1.0 Source Release Readiness](043-v0-1-0-source-release-readiness.md) — active
 
 ## Checkpoint
 
@@ -458,6 +485,22 @@ handling, and gives all 34 feature columns plus the named portable surfaces a
 canonical complete guide owner. Card 123 adds deterministic route, feature,
 guide-index, and example enforcement, proves the three packages that gained
 examples, closes g03.042, and returns the generation to its evidence gate.
+The operator then promotes an initial GitHub source-tag release. Research 111
+finds the functional baseline healthy but blocks the tag on stale registry
+authority, Bedrock's legacy TLS graph, undocumented public Rust API, and
+missing release-consumer polish. Contract 036 now selects 27 source packages,
+Rust 1.90/1.94.1, and a separately authorized annotated `v0.1.0` tag. Roadmap
+g03.043 owns cards 124-130. Card 125 removes the redundant Bedrock legacy TLS
+feature, drops the vulnerable Rustls 0.21 graph, and adds a clean dependency
+policy. Card 126 replaces declaration hashes with a pinned 27-package semantic
+inventory and starts package-family Rustdoc closure; both protocol crates and
+two support crates now deny missing docs locally. Testkit, core, runtime, and
+seven hosted adapters are also closed. The first installed-harness batch adds
+Antigravity, Cursor, Grok, and Qwen. The stateful harness batch adds Codex,
+Claude Agent, and Kimi; 21 of 27 packages enforce the gate and 662 warnings
+remain. The server and local-runtime batch adds Gemini, OpenCode, and Ollama;
+24 of 27 packages enforce the gate and 255 warnings remain across llama.cpp,
+Oh My Pi, and Pi.
 
 ## Generation Boundary
 

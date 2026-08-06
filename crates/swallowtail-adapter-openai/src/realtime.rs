@@ -18,10 +18,12 @@ pub(crate) const MODEL_ID: &str = "gpt-realtime-2.1";
 pub(crate) const REALTIME_PATH: &str = "/v1/realtime";
 
 #[derive(Clone, Default)]
+/// Low-level driver for one OpenAI Realtime media connection.
 pub struct OpenAiRealtimeDriver;
 
 impl OpenAiRealtimeDriver {
     #[must_use]
+    /// Creates a Realtime driver.
     pub fn new() -> Self {
         Self
     }
@@ -120,6 +122,7 @@ impl OpenAiRealtimeDriver {
 }
 
 #[must_use]
+/// Returns the descriptor for OpenAI Realtime media sessions.
 pub fn openai_realtime_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(
         AdapterIdentity::new(

@@ -5,6 +5,7 @@ use swallowtail_core::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Bounded protocol failure with an adapter-owned safe diagnostic.
 pub struct AlibabaProtocolFailure {
     diagnostic: SafeDiagnostic,
 }
@@ -58,6 +59,7 @@ impl AlibabaProtocolFailure {
     }
 
     #[must_use]
+    /// Returns the safe diagnostic and portable failure classification.
     pub const fn diagnostic(&self) -> &SafeDiagnostic {
         &self.diagnostic
     }

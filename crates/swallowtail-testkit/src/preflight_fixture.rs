@@ -27,28 +27,50 @@ macro_rules! valid_text {
     };
 }
 
+/// Canonical or intentionally invalid pure-preflight scenario.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum PreflightFixtureCase {
+    /// Complete structured harness binding.
     Canonical,
+    /// Driver omits the required role.
     MissingRole,
+    /// Host omits a required service.
     MissingHostService,
+    /// Instance omits a required capability.
     MissingCapability,
+    /// Capability omits a required constraint.
     MissingConstraint,
+    /// Route omits the required reasoning mode.
     MissingReasoningMode,
+    /// Route omits external-search support.
     MissingExternalSearch,
+    /// Host omits the schema service.
     MissingSchemaService,
+    /// Context omits the required model route.
     MissingModelRoute,
+    /// Access evidence is not ready.
     RejectedAccess,
+    /// Support authority is weaker than required.
     RejectedSupportAuthority,
+    /// Instance ownership differs from the requirement.
     RejectedOwnership,
+    /// Requirement names another execution host.
     WrongExecutionHost,
+    /// Driver omits a required extension namespace.
     MissingExtension,
+    /// Harness interaction incorrectly relies on ambient isolation.
     HarnessIsolationAmbient,
+    /// Direct inference incorrectly declares harness isolation.
     DirectInferenceHarnessIsolation,
+    /// Harness configuration is left ambient.
     HarnessConfigurationAmbient,
+    /// Instance and operation harness configurations disagree.
     HarnessConfigurationMismatch,
+    /// Provider-suppressed configuration lacks version evidence.
     ProviderSuppressedWithoutVersionEvidence,
+    /// Direct inference incorrectly carries harness configuration.
     DirectInferenceHarnessConfiguration,
+    /// Harness configuration is explicitly host-scoped.
     HostScopedHarnessConfiguration,
 }
 
@@ -65,11 +87,13 @@ pub struct RuntimePreflightFixture {
 }
 
 impl RuntimePreflightFixture {
+    /// Builds the complete canonical structured harness fixture.
     #[must_use]
     pub fn canonical() -> Self {
         Self::for_case(PreflightFixtureCase::Canonical)
     }
 
+    /// Builds one selected valid or intentionally invalid preflight scenario.
     #[must_use]
     pub fn for_case(case: PreflightFixtureCase) -> Self {
         let extension = extension_namespace();
@@ -275,15 +299,18 @@ impl RuntimePreflightFixture {
         }
     }
 
+    /// Runs pure preflight against the fixture context.
     pub fn preflight(&self) -> Result<PreflightPlan, PreflightFailure> {
         preflight(&self.context(), &self.requirements)
     }
 
+    /// Returns the fixture driver descriptor.
     #[must_use]
     pub const fn driver_descriptor(&self) -> &DriverDescriptor {
         &self.driver
     }
 
+    /// Returns the exact driver, instance, route, access, and host context.
     #[must_use]
     pub fn context(&self) -> PreflightContext<'_> {
         let context = PreflightContext::new(
@@ -300,6 +327,7 @@ impl RuntimePreflightFixture {
         }
     }
 
+    /// Replaces the instance revision to test stale-plan rejection.
     #[must_use]
     pub fn with_instance_revision(mut self, revision: &str) -> Self {
         let mut instance = configured_instance(
@@ -321,6 +349,7 @@ impl RuntimePreflightFixture {
             .set(self.provider_side_effects.get() + 1);
     }
 
+    /// Returns the number of simulated provider-side effects.
     #[must_use]
     pub fn provider_side_effect_count(&self) -> usize {
         self.provider_side_effects.get()

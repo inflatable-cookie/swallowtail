@@ -3,9 +3,12 @@ use swallowtail_core::{ModelCatalogEntry, SafeDiagnostic};
 
 use super::ConfiguredProviderInstanceRoute;
 
+/// Availability state of a bound model-catalogue result.
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum ConfiguredProviderModelCatalogueState {
+    /// The source route returned a bounded model collection.
     Available,
+    /// The source route failed with a safe diagnostic.
     Unavailable,
 }
 
@@ -15,6 +18,7 @@ pub(super) enum ConfiguredProviderModelCatalogueOutcome {
     Unavailable(SafeDiagnostic),
 }
 
+/// Authority-bearing model-catalogue result submitted for admission.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ConfiguredProviderModelCatalogueInput {
     pub(super) source: PreparedOperationEvidence,
@@ -22,6 +26,7 @@ pub struct ConfiguredProviderModelCatalogueInput {
 }
 
 impl ConfiguredProviderModelCatalogueInput {
+    /// Creates a successful result tied to its exact prepared source route.
     #[must_use]
     pub fn available(
         source: PreparedOperationEvidence,
@@ -36,6 +41,7 @@ impl ConfiguredProviderModelCatalogueInput {
     }
 
     #[must_use]
+    /// Creates an unavailable result tied to its exact prepared source route.
     pub const fn unavailable(
         source: PreparedOperationEvidence,
         diagnostic: SafeDiagnostic,
@@ -47,6 +53,7 @@ impl ConfiguredProviderModelCatalogueInput {
     }
 }
 
+/// Safe model-catalogue projection bound to one admitted source route.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ConfiguredProviderModelCatalogue {
     pub(super) source_route: ConfiguredProviderInstanceRoute,
@@ -55,11 +62,13 @@ pub struct ConfiguredProviderModelCatalogue {
 
 impl ConfiguredProviderModelCatalogue {
     #[must_use]
+    /// Returns the admitted route which produced this result.
     pub const fn source_route(&self) -> &ConfiguredProviderInstanceRoute {
         &self.source_route
     }
 
     #[must_use]
+    /// Returns whether the source succeeded or was unavailable.
     pub const fn state(&self) -> ConfiguredProviderModelCatalogueState {
         match self.outcome {
             ConfiguredProviderModelCatalogueOutcome::Available(_) => {
@@ -71,6 +80,7 @@ impl ConfiguredProviderModelCatalogue {
         }
     }
 
+    /// Iterates available models, or an empty collection when unavailable.
     pub fn entries(&self) -> impl ExactSizeIterator<Item = &ModelCatalogEntry> {
         match &self.outcome {
             ConfiguredProviderModelCatalogueOutcome::Available(entries) => entries.as_slice(),
@@ -80,6 +90,7 @@ impl ConfiguredProviderModelCatalogue {
     }
 
     #[must_use]
+    /// Returns the safe failure diagnostic when the source was unavailable.
     pub const fn unavailable_diagnostic(&self) -> Option<&SafeDiagnostic> {
         match &self.outcome {
             ConfiguredProviderModelCatalogueOutcome::Available(_) => None,

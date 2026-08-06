@@ -12,6 +12,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Bound prepared DeepSeek catalogue operation.
 pub struct DeepSeekPreparedCatalogue {
     evidence: DeepSeekPreparedEvidence,
     request: ModelCatalogRequest,
@@ -19,25 +20,30 @@ pub struct DeepSeekPreparedCatalogue {
 
 impl DeepSeekPreparedCatalogue {
     #[must_use]
+    /// Returns the prepared operation evidence.
     pub const fn evidence(&self) -> &DeepSeekPreparedEvidence {
         &self.evidence
     }
 
     #[must_use]
+    /// Returns the immutable catalogue preflight plan.
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
     #[must_use]
+    /// Returns the plan-derived catalogue request.
     pub const fn request(&self) -> &ModelCatalogRequest {
         &self.request
     }
 
     #[must_use]
+    /// Returns the low-level direct driver.
     pub fn low_level_driver(&self) -> DeepSeekDirectDriver {
         DeepSeekDirectDriver::new()
     }
 
+    /// Executes the bound model-catalogue observation.
     pub fn list_models(
         &self,
         services: HostServices,
@@ -49,6 +55,7 @@ impl DeepSeekPreparedCatalogue {
     }
 
     #[must_use]
+    /// Splits the prepared operation into evidence, plan, and request.
     pub fn into_parts(self) -> (DeepSeekPreparedEvidence, PreflightPlan, ModelCatalogRequest) {
         let plan = self.evidence.plan().clone();
         (self.evidence, plan, self.request)
@@ -56,6 +63,7 @@ impl DeepSeekPreparedCatalogue {
 }
 
 impl DeepSeekPreparedIntegration {
+    /// Prepares a bound model-catalogue observation.
     pub fn prepare_catalogue(
         &self,
         input: DeepSeekCatalogueProfileInput,

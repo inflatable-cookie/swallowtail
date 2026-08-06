@@ -20,6 +20,7 @@ pub struct DirectContinuationState {
 
 impl DirectContinuationState {
     #[must_use]
+    /// Creates unused authorization state under immutable session bounds.
     pub const fn new(config: DirectContinuationConfig) -> Self {
         Self {
             config,
@@ -32,6 +33,7 @@ impl DirectContinuationState {
         }
     }
 
+    /// Authorizes exactly one initial inference attempt for a new user turn.
     pub fn authorize_user_turn(
         &mut self,
         request: &DirectContinuationTurnRequest,
@@ -54,6 +56,9 @@ impl DirectContinuationState {
         )
     }
 
+    /// Records the complete tool-call set returned by an inference attempt.
+    ///
+    /// The state pauses until the consumer submits one exact result per call.
     pub fn pause_for_tool_calls(
         &mut self,
         attempt: &DirectInferenceAttempt,
@@ -93,6 +98,7 @@ impl DirectContinuationState {
         Ok(())
     }
 
+    /// Authorizes one continuation attempt from the exact pending result set.
     pub fn authorize_tool_results(
         &mut self,
         results: &[DirectToolResult],
@@ -119,6 +125,7 @@ impl DirectContinuationState {
         )
     }
 
+    /// Completes the active turn when no tool calls remain unanswered.
     pub fn complete_turn(&mut self) -> Result<(), RuntimeFailure> {
         self.require_valid()?;
         if self.active_turn.is_none() || !self.pending_calls.is_empty() {
@@ -130,6 +137,7 @@ impl DirectContinuationState {
         Ok(())
     }
 
+    /// Irreversibly invalidates this authorization state and clears correlations.
     pub fn invalidate(&mut self) {
         self.invalidated = true;
         self.active_turn = None;
@@ -137,6 +145,7 @@ impl DirectContinuationState {
     }
 
     #[must_use]
+    /// Returns the number of tool calls awaiting an exact result.
     pub fn pending_tool_calls(&self) -> usize {
         self.pending_calls.len()
     }

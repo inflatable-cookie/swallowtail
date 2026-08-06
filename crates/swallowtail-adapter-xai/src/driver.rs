@@ -15,10 +15,12 @@ pub(super) const DRIVER_ID: &str = "swallowtail.xai.websocket";
 pub(super) const PROVIDER_ID: &str = "xai";
 
 #[derive(Clone, Default)]
+/// Low-level serial xAI Responses WebSocket driver.
 pub struct XaiWebSocketDriver;
 
 impl XaiWebSocketDriver {
     #[must_use]
+    /// Creates a Responses WebSocket driver.
     pub fn new() -> Self {
         Self
     }
@@ -43,6 +45,7 @@ impl XaiWebSocketDriver {
 }
 
 #[must_use]
+/// Returns the exact descriptor for the xAI Responses WebSocket route.
 pub fn xai_websocket_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(
         AdapterIdentity::new(

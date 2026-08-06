@@ -6,11 +6,15 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::RuntimeFailure;
 
+/// Semantic-version axis reported by an attached OpenCode server.
 pub const OPENCODE_SERVER_AXIS: &str = "opencode.server";
+/// Oldest OpenCode server release qualified by the HTTP facade.
 pub const OPENCODE_BASELINE_VERSION: &str = "1.14.48";
+/// Newest OpenCode server release behaviorally qualified by the HTTP facade.
 pub const OPENCODE_LATEST_QUALIFIED_VERSION: &str = "1.18.10";
 const MAX_SERVER_VERSION_BYTES: usize = 64;
 
+/// Parses one exact OpenCode server semantic-version binding.
 #[must_use]
 pub fn opencode_server_binding(value: &str) -> Option<InterfaceVersionBinding> {
     if value.is_empty()
@@ -27,6 +31,7 @@ pub fn opencode_server_binding(value: &str) -> Option<InterfaceVersionBinding> {
     ))
 }
 
+/// Returns the qualified OpenCode HTTP/SSE compatibility window.
 #[must_use]
 pub fn opencode_http_claim() -> InterfaceCompatibilityClaim {
     let segments = [

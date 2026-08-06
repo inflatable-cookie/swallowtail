@@ -4,6 +4,7 @@ use swallowtail_core::PreflightDimension;
 const PREFLIGHT_RULE: &str = "Contract 008 side-effect-free preflight";
 const PLAN_RULE: &str = "Contract 008 immutable preflight binding";
 
+/// Proves one invalid preflight dimension fails before provider side effects.
 pub fn assert_preflight_rejection_without_side_effects(
     case: PreflightFixtureCase,
     expected_dimension: PreflightDimension,
@@ -28,6 +29,7 @@ pub fn assert_preflight_rejection_without_side_effects(
     );
 }
 
+/// Proves canonical preflight binds the exact route, instance, and host evidence.
 pub fn assert_successful_preflight_binding() {
     let fixture = RuntimePreflightFixture::canonical();
     let plan = fixture
@@ -58,6 +60,7 @@ pub fn assert_successful_preflight_binding() {
         .unwrap_or_else(|error| panic!("{PLAN_RULE}: unchanged plan was stale: {error}"));
 }
 
+/// Proves an instance-revision change invalidates an earlier plan.
 pub fn assert_changed_revision_invalidates_plan() {
     let original = RuntimePreflightFixture::canonical();
     let plan = original

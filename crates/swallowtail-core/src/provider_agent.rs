@@ -6,11 +6,13 @@ use std::fmt;
 pub struct ProviderAgentId(String);
 
 impl ProviderAgentId {
+    /// Creates an opaque agent identity after rejecting blank text.
     pub fn new(value: impl Into<String>) -> Result<Self, ValueRequired> {
         required_text("provider agent id", value).map(Self)
     }
 
     #[must_use]
+    /// Returns private provider agent identity text.
     pub fn as_str(&self) -> &str {
         &self.0
     }
@@ -27,11 +29,13 @@ impl fmt::Debug for ProviderAgentId {
 pub struct ProviderAgentVersion(String);
 
 impl ProviderAgentVersion {
+    /// Creates an opaque agent version after rejecting blank text.
     pub fn new(value: impl Into<String>) -> Result<Self, ValueRequired> {
         required_text("provider agent version", value).map(Self)
     }
 
     #[must_use]
+    /// Returns private provider agent version text.
     pub fn as_str(&self) -> &str {
         &self.0
     }
@@ -52,16 +56,19 @@ pub struct ProviderAgentBinding {
 
 impl ProviderAgentBinding {
     #[must_use]
+    /// Creates an exact provider agent identity and version binding.
     pub const fn new(id: ProviderAgentId, version: ProviderAgentVersion) -> Self {
         Self { id, version }
     }
 
     #[must_use]
+    /// Returns opaque provider agent identity.
     pub const fn id(&self) -> &ProviderAgentId {
         &self.id
     }
 
     #[must_use]
+    /// Returns opaque provider agent version.
     pub const fn version(&self) -> &ProviderAgentVersion {
         &self.version
     }

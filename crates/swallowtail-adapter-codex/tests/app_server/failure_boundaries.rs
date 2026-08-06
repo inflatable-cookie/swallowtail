@@ -41,10 +41,10 @@ fn callback_wait_ends_when_the_host_deadline_is_observed() {
     assert_eq!(terminal.status(), &TerminalStatus::TimedOut);
     assert!(block_on(requests.next()).is_none());
     assert!(state.methods().contains(&"turn/interrupt".to_owned()));
-    assert!(state.messages().iter().any(|message| {
+    state.wait_for_message(|message| {
         message.get("id").and_then(serde_json::Value::as_str) == Some("callback-900")
             && message.get("error").is_some()
-    }));
+    });
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
     assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
 }

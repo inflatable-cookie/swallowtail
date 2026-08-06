@@ -10,6 +10,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs for read-only reconciliation of one exact retained OpenCode session.
 pub struct OpenCodeSessionReconciliationInput {
     request_id: RequestId,
     model: OpenCodeModelSelection,
@@ -21,6 +22,7 @@ pub struct OpenCodeSessionReconciliationInput {
 }
 
 impl OpenCodeSessionReconciliationInput {
+    /// Creates a bounded session-scoped reconciliation input.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -40,12 +42,16 @@ impl OpenCodeSessionReconciliationInput {
         }
     }
 
+    /// Supplies an optional provider turn reference for capability validation.
+    ///
+    /// The current OpenCode route rejects turn-scoped reconciliation.
     #[must_use]
     pub fn with_provider_turn_ref(mut self, provider_turn_ref: TurnRef) -> Self {
         self.provider_turn_ref = Some(provider_turn_ref);
         self
     }
 
+    /// Adds a caller-owned reconciliation deadline.
     #[must_use]
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
@@ -76,6 +82,7 @@ impl OpenCodeSessionReconciliationInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs for listing retained OpenCode sessions within one working resource.
 pub struct OpenCodeSessionCatalogueInput {
     request_id: RequestId,
     catalogue_id: ProviderSessionCatalogueId,
@@ -85,6 +92,7 @@ pub struct OpenCodeSessionCatalogueInput {
 }
 
 impl OpenCodeSessionCatalogueInput {
+    /// Creates a bounded, working-resource-scoped session catalogue input.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -101,6 +109,7 @@ impl OpenCodeSessionCatalogueInput {
         }
     }
 
+    /// Adds a caller-owned catalogue deadline.
     #[must_use]
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
@@ -127,12 +136,14 @@ impl OpenCodeSessionCatalogueInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs for one read-only OpenCode model-catalogue request.
 pub struct OpenCodeCatalogueProfileInput {
     request_id: RequestId,
     deadline: Option<Deadline>,
 }
 
 impl OpenCodeCatalogueProfileInput {
+    /// Creates a catalogue input without a deadline.
     #[must_use]
     pub const fn new(request_id: RequestId) -> Self {
         Self {
@@ -141,6 +152,7 @@ impl OpenCodeCatalogueProfileInput {
         }
     }
 
+    /// Adds a caller-owned catalogue deadline.
     #[must_use]
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
@@ -153,6 +165,7 @@ impl OpenCodeCatalogueProfileInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Exact provider and model-route identity selected for OpenCode execution.
 pub struct OpenCodeModelSelection {
     route_id: ModelRouteId,
     route_revision: ModelRouteRevision,
@@ -162,6 +175,7 @@ pub struct OpenCodeModelSelection {
 }
 
 impl OpenCodeModelSelection {
+    /// Creates a model selection without inferring a default route.
     #[must_use]
     pub const fn new(
         route_id: ModelRouteId,
@@ -178,6 +192,7 @@ impl OpenCodeModelSelection {
         }
     }
 
+    /// Attaches catalogue evidence for model-specific capabilities and limits.
     #[must_use]
     pub fn with_catalogue_entry(mut self, entry: ModelCatalogEntry) -> Self {
         self.catalogue_entry = Some(entry);
@@ -204,6 +219,7 @@ impl OpenCodeModelSelection {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs for preparing one interactive OpenCode session.
 pub struct OpenCodeSessionProfileInput {
     request_id: RequestId,
     model: OpenCodeModelSelection,
@@ -215,6 +231,7 @@ pub struct OpenCodeSessionProfileInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs for a separately authorized inactive-session management action.
 pub struct OpenCodeSessionManagementInput {
     request_id: RequestId,
     binding: ProviderSessionManagementBinding,
@@ -223,6 +240,7 @@ pub struct OpenCodeSessionManagementInput {
 }
 
 impl OpenCodeSessionManagementInput {
+    /// Creates a management input bound to one exact provider session.
     #[must_use]
     pub const fn new(request_id: RequestId, binding: ProviderSessionManagementBinding) -> Self {
         Self {
@@ -233,12 +251,16 @@ impl OpenCodeSessionManagementInput {
         }
     }
 
+    /// Adds a caller-owned management deadline.
     #[must_use]
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
         self
     }
 
+    /// Explicitly permits management against an unverified-newer server.
+    ///
+    /// This opt-in does not upgrade the server's compatibility assessment.
     #[must_use]
     pub const fn allow_unverified_newer(mut self) -> Self {
         self.allow_unverified_newer = true;
@@ -263,6 +285,7 @@ impl OpenCodeSessionManagementInput {
 }
 
 impl OpenCodeSessionProfileInput {
+    /// Creates the default read-only interactive session profile.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -280,24 +303,28 @@ impl OpenCodeSessionProfileInput {
         }
     }
 
+    /// Enables image attachment transport for the prepared session.
     #[must_use]
     pub const fn with_image_attachments(mut self) -> Self {
         self.image_attachments = true;
         self
     }
 
+    /// Enables consumer-mediated permission and question callbacks.
     #[must_use]
     pub const fn with_provider_callbacks(mut self) -> Self {
         self.provider_callbacks = true;
         self
     }
 
+    /// Requests durable provider state and active-turn detachment support.
     #[must_use]
     pub const fn with_active_turn_detachment(mut self) -> Self {
         self.active_turn_detachment = true;
         self
     }
 
+    /// Adds a caller-owned session deadline.
     #[must_use]
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
@@ -328,6 +355,7 @@ impl OpenCodeSessionProfileInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs for preparing one OpenCode structured run.
 pub struct OpenCodeRunProfileInput {
     request_id: RequestId,
     model: OpenCodeModelSelection,
@@ -353,6 +381,7 @@ pub(super) struct OpenCodeRunProfileParts {
 }
 
 impl OpenCodeRunProfileInput {
+    /// Creates a run input with explicit model, content, and working resource.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -373,6 +402,7 @@ impl OpenCodeRunProfileInput {
         }
     }
 
+    /// Replaces the run's ordered attachment set.
     #[must_use]
     pub fn with_attachments(
         mut self,
@@ -382,24 +412,28 @@ impl OpenCodeRunProfileInput {
         self
     }
 
+    /// Enables consumer-mediated permission and question callbacks.
     #[must_use]
     pub const fn with_provider_callbacks(mut self) -> Self {
         self.provider_callbacks = true;
         self
     }
 
+    /// Adds a caller-owned run deadline.
     #[must_use]
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
         self
     }
 
+    /// Selects an explicit portable reasoning mode.
     #[must_use]
     pub fn with_reasoning_mode(mut self, reasoning: ReasoningMode) -> Self {
         self.reasoning = Some(reasoning);
         self
     }
 
+    /// Requests schema-constrained structured output.
     #[must_use]
     pub fn with_structured_output(mut self, output: StructuredOutputDescriptor) -> Self {
         self.structured_output = Some(output);

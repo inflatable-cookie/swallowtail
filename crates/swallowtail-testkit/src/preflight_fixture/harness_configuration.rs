@@ -38,6 +38,7 @@ pub(super) fn bind_requirement(
 }
 
 impl RuntimePreflightFixture {
+    /// Replaces both instance and operation harness-configuration evidence.
     #[must_use]
     pub fn with_instance_harness_configuration_posture(
         mut self,

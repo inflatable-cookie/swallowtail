@@ -12,15 +12,21 @@ use swallowtail_core::{
     SupportAuthority,
 };
 
+/// Official xAI Responses WebSocket endpoint admitted by this route.
 pub const XAI_RESPONSES_ENDPOINT: &str = "wss://api.x.ai/v1/responses";
+/// Endpoint audience required by xAI Responses credential leases.
 pub const XAI_RESPONSES_ENDPOINT_AUDIENCE: &str = "api.x.ai";
+/// Public API-key profile admitted by the Responses route.
 pub const XAI_RESPONSES_ACCESS_PROFILE_ID: &str = "xai.public-api.api-key.payg";
+/// Stable configured-instance identity for the Responses route.
 pub const XAI_RESPONSES_CONFIGURED_INSTANCE_ID: &str = "xai.public.responses-websocket";
+/// Exact opaque xAI Responses WebSocket facade revision.
 pub const XAI_RESPONSES_FACADE_REVISION: &str = "xai-responses-websocket-2026-04-23";
 
 const FACADE_AXIS: &str = "xai.responses-websocket-facade";
 
 #[must_use]
+/// Creates the provider-supported xAI public API-key access profile.
 pub fn xai_responses_access_profile(credential: CredentialRef) -> AccessProfile {
     AccessProfile::new(
         id(AccessProfileId::new, XAI_RESPONSES_ACCESS_PROFILE_ID),
@@ -33,6 +39,7 @@ pub fn xai_responses_access_profile(credential: CredentialRef) -> AccessProfile 
 }
 
 #[must_use]
+/// Returns the exact xAI Responses facade version binding.
 pub fn xai_responses_facade_binding() -> InterfaceVersionBinding {
     InterfaceVersionBinding::new(
         id(InterfaceVersionAxis::new, FACADE_AXIS),
@@ -41,6 +48,7 @@ pub fn xai_responses_facade_binding() -> InterfaceVersionBinding {
 }
 
 #[must_use]
+/// Returns the qualified-only compatibility claim for the Responses facade.
 pub fn xai_responses_facade_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
         id(
@@ -64,6 +72,7 @@ pub fn xai_responses_facade_claim() -> InterfaceCompatibilityClaim {
 }
 
 #[must_use]
+/// Builds the configured external Responses WebSocket instance.
 pub fn xai_responses_instance(
     revision: InstanceRevision,
     host: ExecutionHostId,
@@ -93,6 +102,7 @@ pub fn xai_responses_instance(
 }
 
 #[must_use]
+/// Builds one exact model route for the configured Responses instance.
 pub fn xai_responses_model_route(
     instance_id: ConfiguredInstanceId,
     route_id: ModelRouteId,
@@ -110,6 +120,7 @@ pub fn xai_responses_model_route(
 }
 
 #[must_use]
+/// Returns requirements for a serial resource-free Responses session.
 pub fn xai_responses_requirements(host: ExecutionHostId) -> OperationRequirements {
     OperationRequirements::new(
         ExecutionLayer::DirectModelInference,
@@ -139,6 +150,7 @@ pub fn xai_responses_requirements(host: ExecutionHostId) -> OperationRequirement
 }
 
 #[must_use]
+/// Returns requirements for a one-attempt Responses structured run.
 pub fn xai_responses_run_requirements(host: ExecutionHostId) -> OperationRequirements {
     OperationRequirements::new(
         ExecutionLayer::DirectModelInference,

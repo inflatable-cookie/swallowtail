@@ -28,6 +28,7 @@ const DRIVER_ID: &str = "swallowtail.amazon-bedrock.direct";
 const EVENT_CAPACITY: usize = 64;
 
 #[derive(Clone)]
+/// Low-level SDK-native Bedrock Runtime streaming driver.
 pub struct BedrockDirectDriver {
     binding: BedrockDriverBinding,
     executor: Arc<dyn SdkExecutor>,
@@ -35,6 +36,7 @@ pub struct BedrockDirectDriver {
 
 impl BedrockDirectDriver {
     #[must_use]
+    /// Creates a Runtime driver from an exact host and SDK binding.
     pub fn new(binding: BedrockDriverBinding) -> Self {
         Self {
             binding,
@@ -70,6 +72,7 @@ impl BedrockDirectDriver {
 }
 
 #[must_use]
+/// Returns the descriptor for Bedrock Runtime structured inference.
 pub fn bedrock_direct_descriptor() -> DriverDescriptor {
     let [sdk_claim, service_claim] = crate::bedrock_runtime_interface_claims();
     DriverDescriptor::new(

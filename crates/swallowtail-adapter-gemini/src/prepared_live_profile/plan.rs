@@ -3,6 +3,7 @@ use swallowtail_core::{Diagnostic, ModelRoute, PreflightContext, PreflightPlan, 
 use swallowtail_runtime::{PreparationFailure, PreparationStage, PreparedOperationEvidence};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Immutable access and preflight evidence for a Gemini Live session.
 pub struct GeminiLivePreparedEvidence {
     operation: PreparedOperationEvidence,
 }
@@ -20,16 +21,19 @@ impl GeminiLivePreparedEvidence {
         })
     }
 
+    /// Returns the admitted access evidence.
     #[must_use]
     pub const fn access(&self) -> &swallowtail_runtime::PreparedAccessEvidence {
         self.operation.access()
     }
 
+    /// Returns the complete prepared operation evidence.
     #[must_use]
     pub const fn operation(&self) -> &PreparedOperationEvidence {
         &self.operation
     }
 
+    /// Returns the immutable preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.operation.plan()

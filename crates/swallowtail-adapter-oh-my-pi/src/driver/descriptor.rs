@@ -4,6 +4,7 @@ use swallowtail_core::{
     HostServiceKind, IntegrationFamilyId, OperationShape, TransportFamilyId,
 };
 
+/// Describes Oh My Pi discovery, catalogue, run, and session roles.
 #[must_use]
 pub fn oh_my_pi_rpc_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(

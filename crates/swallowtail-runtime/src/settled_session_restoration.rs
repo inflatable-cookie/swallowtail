@@ -1,3 +1,5 @@
+#![deny(missing_docs)]
+
 use crate::{
     BoxFuture, HostServices, InteractiveSessionHandle, InterruptedTurnState, LoadedSession,
     ProviderSessionReconciliationOutcome, RuntimeFailure,
@@ -9,17 +11,22 @@ use swallowtail_core::PreflightPlan;
 /// Stateful attachment method prepared beside read-only reconciliation.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum SettledSessionAttachmentKind {
+    /// Load bounded replay before returning a live session.
     Load,
+    /// Resume a live session without replay.
     Resume,
 }
 
 /// Live attachment returned only after eligible settled reconciliation.
 pub enum SettledSessionAttachment {
+    /// Loaded session with bounded replay.
     Loaded(LoadedSession),
+    /// Resumed session without replay.
     Resumed(Box<dyn InteractiveSessionHandle>),
 }
 
 impl SettledSessionAttachment {
+    /// Returns the attachment method represented by this outcome.
     #[must_use]
     pub const fn kind(&self) -> SettledSessionAttachmentKind {
         match self {
@@ -36,17 +43,20 @@ pub struct SettledSessionAttachmentOutcome {
 }
 
 impl SettledSessionAttachmentOutcome {
+    /// Returns the complete first-phase reconciliation result.
     #[must_use]
     pub const fn reconciliation(&self) -> &ProviderSessionReconciliationOutcome {
         &self.reconciliation
     }
 
     #[must_use]
+    /// Returns the distinct live attachment result.
     pub const fn attachment(&self) -> &SettledSessionAttachment {
         &self.attachment
     }
 
     #[must_use]
+    /// Separates first-phase observation from second-phase attachment.
     pub fn into_parts(
         self,
     ) -> (
@@ -59,11 +69,14 @@ impl SettledSessionAttachmentOutcome {
 
 /// Truth-preserving successful outcome of observe-then-attach restoration.
 pub enum SettledSessionRestorationOutcome {
+    /// Reconciliation state was not eligible for attachment.
     Observed(ProviderSessionReconciliationOutcome),
+    /// Eligible reconciliation was followed by a live attachment.
     Attached(SettledSessionAttachmentOutcome),
 }
 
 impl SettledSessionRestorationOutcome {
+    /// Returns the complete reconciliation result from either successful path.
     #[must_use]
     pub const fn reconciliation(&self) -> &ProviderSessionReconciliationOutcome {
         match self {
@@ -73,22 +86,30 @@ impl SettledSessionRestorationOutcome {
     }
 }
 
+/// Phase in which observe-then-attach restoration failed.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum SettledSessionRestorationFailurePhase {
+    /// Read-only reconciliation failed; attachment never started.
     Reconciliation,
+    /// Attachment failed after successful reconciliation.
     Attachment,
 }
 
 /// Phase-aware failure which retains completed reconciliation on partial loss.
 pub enum SettledSessionRestorationFailure {
+    /// First-phase reconciliation failure.
     Reconciliation(RuntimeFailure),
+    /// Second-phase failure retaining the successful reconciliation result.
     Attachment {
+        /// Complete successful first-phase observation.
         reconciliation: ProviderSessionReconciliationOutcome,
+        /// Attachment failure.
         failure: RuntimeFailure,
     },
 }
 
 impl SettledSessionRestorationFailure {
+    /// Returns the phase that failed.
     #[must_use]
     pub const fn phase(&self) -> SettledSessionRestorationFailurePhase {
         match self {
@@ -98,6 +119,7 @@ impl SettledSessionRestorationFailure {
     }
 
     #[must_use]
+    /// Returns the underlying safe runtime failure.
     pub const fn failure(&self) -> &RuntimeFailure {
         match self {
             Self::Reconciliation(failure) | Self::Attachment { failure, .. } => failure,
@@ -105,6 +127,7 @@ impl SettledSessionRestorationFailure {
     }
 
     #[must_use]
+    /// Returns successful reconciliation retained after attachment failure.
     pub const fn reconciliation(&self) -> Option<&ProviderSessionReconciliationOutcome> {
         match self {
             Self::Reconciliation(_) => None,
@@ -113,6 +136,7 @@ impl SettledSessionRestorationFailure {
     }
 
     #[must_use]
+    /// Separates retained reconciliation evidence from the runtime failure.
     pub fn into_parts(self) -> (Option<ProviderSessionReconciliationOutcome>, RuntimeFailure) {
         match self {
             Self::Reconciliation(failure) => (None, failure),
@@ -148,6 +172,7 @@ impl Error for SettledSessionRestorationFailure {
 
 /// One exact prepared read-only reconciliation operation.
 pub trait SettledSessionReconciliationOperation: Send + Sync {
+    /// Consumes and runs the prepared read-only reconciliation phase.
     fn reconcile(
         self: Box<Self>,
         services: HostServices,
@@ -156,8 +181,10 @@ pub trait SettledSessionReconciliationOperation: Send + Sync {
 
 /// One independently prepared stateful attachment operation.
 pub trait SettledSessionAttachmentOperation: Send + Sync {
+    /// Returns the independently prepared attachment method.
     fn kind(&self) -> SettledSessionAttachmentKind;
 
+    /// Consumes and runs the prepared stateful attachment phase.
     fn attach(
         self: Box<Self>,
         services: HostServices,
@@ -171,6 +198,7 @@ pub struct PreparedSettledSessionRestoration {
 }
 
 impl PreparedSettledSessionRestoration {
+    /// Combines independently prepared reconciliation and attachment operations.
     #[must_use]
     pub fn new(
         reconciliation: impl SettledSessionReconciliationOperation + 'static,
@@ -183,10 +211,12 @@ impl PreparedSettledSessionRestoration {
     }
 
     #[must_use]
+    /// Returns the second-phase attachment method without executing it.
     pub fn attachment_kind(&self) -> SettledSessionAttachmentKind {
         self.attachment.kind()
     }
 
+    /// Reconciles first and attaches only when the observed state is eligible.
     pub fn restore(
         self,
         services: HostServices,

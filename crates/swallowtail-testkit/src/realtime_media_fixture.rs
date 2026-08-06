@@ -20,26 +20,45 @@ pub(crate) use shape::realtime_media_config;
 use shape::{common_capabilities, host_services};
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+/// Realtime-media preflight scenario selected by the fixture.
 pub enum RealtimeMediaPreflightCase {
+    /// Fully valid realtime-media operation.
     Canonical,
+    /// Driver advertises a role other than realtime media.
     WrongRole,
+    /// Operation targets the wrong execution layer.
     WrongLayer,
+    /// Operation uses an incompatible shape.
     WrongShape,
+    /// Required model route is absent.
     MissingRoute,
+    /// Model route identifies the wrong model.
     WrongModel,
+    /// Required output media format is absent.
     MissingFormat,
+    /// Advertised chunk bound differs from the required bound.
     WrongChunkBound,
+    /// Prepared access evidence is not ready.
     RejectedAccess,
+    /// A required host service is unavailable.
     MissingHostService,
+    /// Valid connection-rollover configuration.
     RolloverCanonical,
+    /// Rollover is requested while the route disables it.
     RolloverCapabilityWhileDisabled,
+    /// Required rollover capability is absent.
     RolloverMissingCapability,
+    /// Route and operation advertise different rollover bounds.
     RolloverMismatchedBound,
+    /// Rollover uses an invalid zero bound.
     RolloverZeroBound,
+    /// Configured instance lacks rollover support.
     RolloverInstanceMissing,
+    /// Model route advertises the wrong rollover bound.
     RolloverRouteWrongBound,
 }
 
+/// Deterministic preflight fixture for realtime-media operations.
 pub struct RealtimeMediaPreflightFixture {
     driver: DriverDescriptor,
     instance: ConfiguredInstance,
@@ -53,6 +72,7 @@ pub struct RealtimeMediaPreflightFixture {
 }
 
 impl RealtimeMediaPreflightFixture {
+    /// Builds the fixture for `case`.
     #[must_use]
     pub fn for_case(case: RealtimeMediaPreflightCase) -> Self {
         let adapter_id = valid(AdapterId::new, "fixture.realtime-media");
@@ -171,6 +191,7 @@ impl RealtimeMediaPreflightFixture {
         }
     }
 
+    /// Runs provider-neutral preflight for the selected case.
     pub fn preflight(&self) -> Result<PreflightPlan, PreflightFailure> {
         let context = PreflightContext::new(
             &self.driver,
@@ -187,11 +208,13 @@ impl RealtimeMediaPreflightFixture {
     }
 
     #[must_use]
+    /// Returns the number of simulated provider side effects.
     pub fn provider_side_effect_count(&self) -> usize {
         self.provider_side_effects.get()
     }
 
     #[must_use]
+    /// Builds the realtime-media open request bound to this fixture.
     pub fn open_request(&self) -> OpenRealtimeMediaSessionRequest {
         OpenRealtimeMediaSessionRequest::new(
             valid(RequestId::new, "fixture-realtime-request"),

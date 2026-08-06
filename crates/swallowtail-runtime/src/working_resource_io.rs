@@ -7,6 +7,7 @@ use std::num::NonZeroUsize;
 pub struct WorkingResourceLocator(String);
 
 impl WorkingResourceLocator {
+    /// Creates an opaque, nonempty provider-supplied locator.
     pub fn new(value: impl Into<String>) -> Result<Self, InputValueRequired> {
         crate::input::required_text("working resource locator", value).map(Self)
     }
@@ -28,6 +29,7 @@ impl fmt::Debug for WorkingResourceLocator {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Bounded request to read text through a working-resource lease.
 pub struct WorkingResourceReadRequest {
     locator: WorkingResourceLocator,
     line: Option<usize>,
@@ -37,6 +39,7 @@ pub struct WorkingResourceReadRequest {
 
 impl WorkingResourceReadRequest {
     #[must_use]
+    /// Creates a request without line selection and with an exact byte bound.
     pub const fn new(locator: WorkingResourceLocator, maximum_bytes: NonZeroUsize) -> Self {
         Self {
             locator,
@@ -47,6 +50,7 @@ impl WorkingResourceReadRequest {
     }
 
     #[must_use]
+    /// Sets provider-supplied line offset and count hints.
     pub const fn with_lines(mut self, line: Option<usize>, limit: Option<usize>) -> Self {
         self.line = line;
         self.limit = limit;
@@ -54,21 +58,25 @@ impl WorkingResourceReadRequest {
     }
 
     #[must_use]
+    /// Returns the opaque resource locator.
     pub const fn locator(&self) -> &WorkingResourceLocator {
         &self.locator
     }
 
     #[must_use]
+    /// Returns the optional line offset.
     pub const fn line(&self) -> Option<usize> {
         self.line
     }
 
     #[must_use]
+    /// Returns the optional line-count limit.
     pub const fn limit(&self) -> Option<usize> {
         self.limit
     }
 
     #[must_use]
+    /// Returns the maximum accepted response size in bytes.
     pub const fn maximum_bytes(&self) -> NonZeroUsize {
         self.maximum_bytes
     }
@@ -79,6 +87,7 @@ impl WorkingResourceReadRequest {
 pub struct WorkingResourceText(String);
 
 impl WorkingResourceText {
+    /// Creates bounded text for a resource callback response or write request.
     pub fn new(value: String, maximum_bytes: NonZeroUsize) -> Result<Self, InputLimitExceeded> {
         if value.len() > maximum_bytes.get() {
             return Err(InputLimitExceeded::new(
@@ -97,12 +106,14 @@ impl WorkingResourceText {
     }
 
     #[must_use]
+    /// Returns the text size in bytes.
     pub fn byte_len(&self) -> usize {
         self.0.len()
     }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Bounded request to replace text through a read-write resource lease.
 pub struct WorkingResourceWriteRequest {
     locator: WorkingResourceLocator,
     content: WorkingResourceText,
@@ -110,16 +121,19 @@ pub struct WorkingResourceWriteRequest {
 
 impl WorkingResourceWriteRequest {
     #[must_use]
+    /// Creates a write request for an opaque locator and bounded content.
     pub const fn new(locator: WorkingResourceLocator, content: WorkingResourceText) -> Self {
         Self { locator, content }
     }
 
     #[must_use]
+    /// Returns the opaque resource locator.
     pub const fn locator(&self) -> &WorkingResourceLocator {
         &self.locator
     }
 
     #[must_use]
+    /// Returns the bounded replacement content.
     pub const fn content(&self) -> &WorkingResourceText {
         &self.content
     }
@@ -134,13 +148,21 @@ impl fmt::Debug for WorkingResourceText {
     }
 }
 
+/// Host-mediated bounded text I/O within one working-resource lease.
+///
+/// This port grants no general filesystem authority. The host must enforce
+/// lease scope, host identity, access mode, traversal, and content bounds.
 pub trait WorkingResourceIoService: Send + Sync {
+    /// Reads bounded text under the supplied resource lease.
     fn read_text(
         &self,
         lease: &ResourceLease,
         request: WorkingResourceReadRequest,
     ) -> BoxFuture<'static, Result<WorkingResourceText, RuntimeFailure>>;
 
+    /// Replaces bounded text under a read-write resource lease.
+    ///
+    /// The default implementation rejects writes explicitly.
     fn write_text(
         &self,
         _lease: &ResourceLease,

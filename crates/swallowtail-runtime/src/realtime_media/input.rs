@@ -5,6 +5,7 @@ use std::num::NonZeroU64;
 use swallowtail_core::{MediaDirection, MediaFormat, RealtimeMediaConfig};
 use zeroize::Zeroize;
 
+/// One bounded opaque media chunk with exact session, stream, and sequence identity.
 pub struct MediaChunk {
     session_id: RuntimeSessionId,
     stream_id: MediaStreamId,
@@ -15,6 +16,7 @@ pub struct MediaChunk {
 }
 
 impl MediaChunk {
+    /// Creates a chunk after enforcing nonempty content, size, and format bounds.
     pub fn new(
         session_id: RuntimeSessionId,
         stream_id: MediaStreamId,
@@ -57,31 +59,37 @@ impl MediaChunk {
     }
 
     #[must_use]
+    /// Returns the runtime session that owns this chunk.
     pub const fn session_id(&self) -> &RuntimeSessionId {
         &self.session_id
     }
 
     #[must_use]
+    /// Returns the logical media stream identity.
     pub const fn stream_id(&self) -> &MediaStreamId {
         &self.stream_id
     }
 
     #[must_use]
+    /// Returns the one-based sequence within the media stream.
     pub const fn sequence(&self) -> NonZeroU64 {
         self.sequence
     }
 
     #[must_use]
+    /// Returns whether the chunk is provider input or output.
     pub const fn direction(&self) -> MediaDirection {
         self.direction
     }
 
     #[must_use]
+    /// Returns the exact preflight-admitted media format.
     pub const fn format(&self) -> MediaFormat {
         self.format
     }
 
     #[must_use]
+    /// Borrows the opaque media bytes.
     pub fn bytes(&self) -> &[u8] {
         &self.bytes
     }
@@ -111,6 +119,7 @@ impl Drop for MediaChunk {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer authorization to commit one accumulated input stream as a turn.
 pub struct MediaInputCommit {
     turn_id: RuntimeTurnId,
     stream_id: MediaStreamId,
@@ -118,25 +127,30 @@ pub struct MediaInputCommit {
 
 impl MediaInputCommit {
     #[must_use]
+    /// Creates commit evidence for an exact turn and input stream.
     pub const fn new(turn_id: RuntimeTurnId, stream_id: MediaStreamId) -> Self {
         Self { turn_id, stream_id }
     }
 
     #[must_use]
+    /// Returns the turn created by this commit.
     pub const fn turn_id(&self) -> &RuntimeTurnId {
         &self.turn_id
     }
 
     #[must_use]
+    /// Returns the committed input stream identity.
     pub const fn stream_id(&self) -> &MediaStreamId {
         &self.stream_id
     }
 }
 
 #[derive(Clone, Eq, PartialEq)]
+/// Nonempty, redacted transcript text from a realtime response.
 pub struct MediaTranscript(String);
 
 impl MediaTranscript {
+    /// Creates transcript content, rejecting an empty value.
     pub fn new(value: impl Into<String>) -> Result<Self, RealtimeMediaFailure> {
         let value = value.into();
         if value.is_empty() {
@@ -150,6 +164,7 @@ impl MediaTranscript {
     }
 
     #[must_use]
+    /// Borrows the transcript text.
     pub fn as_str(&self) -> &str {
         &self.0
     }

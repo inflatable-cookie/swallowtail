@@ -1,3 +1,5 @@
+#![deny(missing_docs)]
+
 use crate::WorkingResourceRef;
 use swallowtail_core::{
     ConfiguredInstanceId, ExecutionHostId, ModelId, ModelRouteId, PreflightPlan,
@@ -27,6 +29,7 @@ pub struct SessionResumeBinding {
 }
 
 impl SessionResumeBinding {
+    /// Creates a binding for an exact resource-bound route and selected model.
     #[must_use]
     pub const fn new(
         provider_session_ref: SessionRef,
@@ -99,51 +102,61 @@ impl SessionResumeBinding {
     }
 
     #[must_use]
+    /// Returns the opaque provider-session reference.
     pub const fn provider_session_ref(&self) -> &SessionRef {
         &self.provider_session_ref
     }
 
     #[must_use]
+    /// Returns the configured instance that issued or accepted the binding.
     pub const fn configured_instance_id(&self) -> &ConfiguredInstanceId {
         &self.configured_instance_id
     }
 
     #[must_use]
+    /// Returns the execution host on which the session may be resumed.
     pub const fn execution_host_id(&self) -> &ExecutionHostId {
         &self.execution_host_id
     }
 
     #[must_use]
+    /// Returns the selected model route, when the prepared route has one.
     pub const fn model_route_id(&self) -> Option<&ModelRouteId> {
         self.model_route_id.as_ref()
     }
 
     #[must_use]
+    /// Returns the selected model, when the prepared route has one.
     pub const fn model_id(&self) -> Option<&ModelId> {
         self.model_id.as_ref()
     }
 
     #[must_use]
+    /// Returns the exact working resource bound to the session, when any.
     pub const fn working_resource(&self) -> Option<&WorkingResourceRef> {
         self.working_resource.as_ref()
     }
 
     #[must_use]
+    /// Reports whether the session is bound to a resource-free route.
     pub const fn is_resource_free(&self) -> bool {
         self.working_resource.is_none()
     }
 
     #[must_use]
+    /// Returns the resource-access policy fixed by the binding.
     pub const fn access_policy(&self) -> &SessionAccessPolicy {
         &self.access_policy
     }
 
     #[must_use]
+    /// Returns how the provider session entered Swallowtail's authority.
     pub const fn origin(&self) -> ProviderSessionBindingOrigin {
         self.origin
     }
 
     #[must_use]
+    /// Reports whether the binding's route identity matches a preflight plan.
     pub fn matches_plan(&self, plan: &PreflightPlan) -> bool {
         &self.configured_instance_id == plan.instance_id()
             && &self.execution_host_id == plan.execution_host_id()
@@ -152,6 +165,7 @@ impl SessionResumeBinding {
     }
 
     #[must_use]
+    /// Reports whether the binding matches an exact resource-bound attachment.
     pub fn matches_attachment(
         &self,
         plan: &PreflightPlan,
@@ -164,6 +178,7 @@ impl SessionResumeBinding {
     }
 
     #[must_use]
+    /// Reports whether the binding matches an exact resource-free attachment.
     pub fn matches_resource_free_attachment(
         &self,
         plan: &PreflightPlan,

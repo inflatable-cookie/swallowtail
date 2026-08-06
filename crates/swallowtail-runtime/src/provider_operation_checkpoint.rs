@@ -1,3 +1,5 @@
+#![deny(missing_docs)]
+
 use crate::{RuntimeTurnId, SessionResumeBinding};
 use sha2::{Digest, Sha256};
 use std::error::Error;
@@ -24,6 +26,7 @@ pub struct ProviderOperationCheckpoint {
 }
 
 impl ProviderOperationCheckpoint {
+    /// Creates a checkpoint from exact session, turn, and opaque cursor values.
     pub fn new(
         provider_session_ref: SessionRef,
         runtime_turn_id: RuntimeTurnId,
@@ -43,16 +46,19 @@ impl ProviderOperationCheckpoint {
     }
 
     #[must_use]
+    /// Returns the bound provider session.
     pub const fn provider_session_ref(&self) -> &SessionRef {
         &self.provider_session_ref
     }
 
     #[must_use]
+    /// Returns the interrupted consumer turn.
     pub const fn runtime_turn_id(&self) -> &RuntimeTurnId {
         &self.runtime_turn_id
     }
 
     #[must_use]
+    /// Returns the exact provider turn.
     pub const fn provider_turn_ref(&self) -> &TurnRef {
         &self.provider_turn_ref
     }
@@ -63,6 +69,7 @@ impl ProviderOperationCheckpoint {
         &self.cursor
     }
 
+    /// Exports an integrity-checked record bound to the current session attachment.
     pub fn export_persisted(
         &self,
         plan: &PreflightPlan,
@@ -106,6 +113,7 @@ impl ProviderOperationCheckpoint {
         PersistedProviderOperationCheckpoint::from_bytes(payload)
     }
 
+    /// Restores a record only when it matches the current session attachment.
     pub fn restore_persisted(
         record: &PersistedProviderOperationCheckpoint,
         plan: &PreflightPlan,
@@ -140,10 +148,12 @@ impl fmt::Debug for ProviderOperationCheckpoint {
     }
 }
 
+/// Versioned opaque persisted form of a provider operation checkpoint.
 #[derive(Clone, Eq, PartialEq)]
 pub struct PersistedProviderOperationCheckpoint(Vec<u8>);
 
 impl PersistedProviderOperationCheckpoint {
+    /// Validates and copies an encoded checkpoint record.
     pub fn from_bytes(bytes: impl AsRef<[u8]>) -> Result<Self, ProviderOperationCheckpointFailure> {
         let bytes = bytes.as_ref();
         decode_record(bytes)?;
@@ -151,6 +161,7 @@ impl PersistedProviderOperationCheckpoint {
     }
 
     #[must_use]
+    /// Returns the opaque encoded record for consumer persistence.
     pub fn as_bytes(&self) -> &[u8] {
         &self.0
     }
@@ -162,15 +173,22 @@ impl fmt::Debug for PersistedProviderOperationCheckpoint {
     }
 }
 
+/// Portable reason a provider operation checkpoint was rejected.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum ProviderOperationCheckpointFailureKind {
+    /// The record structure or one field was malformed.
     InvalidEncoding,
+    /// The record uses an unsupported encoding version.
     UnsupportedVersion,
+    /// The record or one field exceeded its bound.
     Oversized,
+    /// The record digest did not match its contents.
     IntegrityMismatch,
+    /// The checkpoint does not match the requested session attachment.
     AttachmentMismatch,
 }
 
+/// Safe failure returned while creating, exporting, or restoring a checkpoint.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ProviderOperationCheckpointFailure {
     kind: ProviderOperationCheckpointFailureKind,
@@ -190,11 +208,13 @@ impl ProviderOperationCheckpointFailure {
     }
 
     #[must_use]
+    /// Returns the portable failure kind.
     pub const fn kind(&self) -> ProviderOperationCheckpointFailureKind {
         self.kind
     }
 
     #[must_use]
+    /// Returns the redacted diagnostic.
     pub const fn diagnostic(&self) -> &SafeDiagnostic {
         &self.diagnostic
     }

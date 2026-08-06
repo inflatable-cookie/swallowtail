@@ -12,6 +12,7 @@ use swallowtail_core::{
     PreflightPlan, ProviderSessionImportAvailability, SessionRef,
 };
 
+/// Explicit candidate selection and future attachment agreement.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ProviderSessionImportAgreement {
     candidate: ProviderSessionCandidate,
@@ -21,6 +22,7 @@ pub struct ProviderSessionImportAgreement {
 }
 
 impl ProviderSessionImportAgreement {
+    /// Creates import authorization for one candidate and exact attachment.
     #[must_use]
     pub const fn new(
         candidate: ProviderSessionCandidate,
@@ -37,31 +39,37 @@ impl ProviderSessionImportAgreement {
     }
 
     #[must_use]
+    /// Returns the selected operation-local candidate identity.
     pub const fn candidate_id(&self) -> &ProviderSessionCandidateId {
         self.candidate.candidate_id()
     }
 
     #[must_use]
+    /// Returns the exact host-approved working resource.
     pub const fn working_resource(&self) -> &WorkingResourceRef {
         &self.working_resource
     }
 
     #[must_use]
+    /// Returns the future session access and provider-state agreement.
     pub const fn session(&self) -> &SessionPlanAgreement {
         &self.session
     }
 
     #[must_use]
+    /// Returns the optional import deadline.
     pub const fn deadline(&self) -> Option<Deadline> {
         self.deadline
     }
 
     #[must_use]
+    /// Returns the selected catalogue candidate.
     pub const fn candidate(&self) -> &ProviderSessionCandidate {
         &self.candidate
     }
 }
 
+/// Side-effect-free plan for revalidating and importing one candidate.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ProviderSessionImportPlan {
     preflight: PreflightPlan,
@@ -70,6 +78,7 @@ pub struct ProviderSessionImportPlan {
 }
 
 impl ProviderSessionImportPlan {
+    /// Validates and creates an explicit provider-session import plan.
     pub fn new(
         preflight: PreflightPlan,
         source_catalogue: ProviderSessionCataloguePlan,
@@ -84,21 +93,25 @@ impl ProviderSessionImportPlan {
     }
 
     #[must_use]
+    /// Returns the exact import route preflight plan.
     pub const fn preflight(&self) -> &PreflightPlan {
         &self.preflight
     }
 
     #[must_use]
+    /// Returns the exact source catalogue plan.
     pub const fn source_catalogue(&self) -> &ProviderSessionCataloguePlan {
         &self.source_catalogue
     }
 
     #[must_use]
+    /// Returns the immutable import and attachment agreement.
     pub const fn agreement(&self) -> &ProviderSessionImportAgreement {
         &self.agreement
     }
 }
 
+/// Typed request to revalidate and import one selected provider session.
 #[derive(Clone, Debug)]
 pub struct ProviderSessionImportRequest {
     request_id: RequestId,
@@ -107,6 +120,7 @@ pub struct ProviderSessionImportRequest {
 }
 
 impl ProviderSessionImportRequest {
+    /// Creates a request after validating its cancellation scope.
     pub fn new(
         request_id: RequestId,
         plan: &ProviderSessionImportPlan,
@@ -125,6 +139,7 @@ impl ProviderSessionImportRequest {
         })
     }
 
+    /// Creates a request with a new import-scoped cancellation control.
     pub fn from_plan(
         request_id: RequestId,
         plan: &ProviderSessionImportPlan,
@@ -139,21 +154,25 @@ impl ProviderSessionImportRequest {
     }
 
     #[must_use]
+    /// Returns the consumer-unique request identity.
     pub const fn request_id(&self) -> &RequestId {
         &self.request_id
     }
 
     #[must_use]
+    /// Returns the immutable import agreement.
     pub const fn agreement(&self) -> &ProviderSessionImportAgreement {
         &self.agreement
     }
 
     #[must_use]
+    /// Returns the opaque provider-session reference for the owning adapter.
     pub const fn provider_session_ref(&self) -> &SessionRef {
         self.agreement.candidate().provider_session_ref()
     }
 
     #[must_use]
+    /// Returns the import-scoped cancellation control.
     pub const fn cancellation(&self) -> &Arc<ImmediateCancellation> {
         &self.cancellation
     }

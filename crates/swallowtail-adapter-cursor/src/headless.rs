@@ -12,16 +12,19 @@ use swallowtail_runtime::{
 
 const EVENT_CAPACITY: usize = 4098;
 
+/// Low-level driver for one-shot Cursor stream-JSON runs.
 pub struct CursorHeadlessDriver {
     environment: EnvironmentRef,
 }
 
 impl CursorHeadlessDriver {
+    /// Creates a headless driver using the approved execution environment.
     #[must_use]
     pub const fn new(environment: EnvironmentRef) -> Self {
         Self { environment }
     }
 
+    /// Returns the approved execution environment.
     #[must_use]
     pub const fn environment(&self) -> &EnvironmentRef {
         &self.environment

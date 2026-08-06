@@ -57,14 +57,21 @@ impl fmt::Debug for PersistedSessionResumeBinding {
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+/// Stable classification for a persisted resume-binding failure.
 pub enum SessionResumeBindingPersistenceFailureKind {
+    /// The record does not use the required bounded encoding.
     InvalidEncoding,
+    /// The record version is not supported by this runtime.
     UnsupportedVersion,
+    /// The record or provider reference exceeds its declared bound.
     Oversized,
+    /// The record digest does not match its encoded contents.
     IntegrityMismatch,
+    /// The record was issued for different attachment dimensions.
     AttachmentMismatch,
 }
 
+/// Safe failure returned while exporting or restoring a resume binding.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SessionResumeBindingPersistenceFailure {
     kind: SessionResumeBindingPersistenceFailureKind,
@@ -84,11 +91,13 @@ impl SessionResumeBindingPersistenceFailure {
     }
 
     #[must_use]
+    /// Returns the stable failure classification.
     pub const fn kind(&self) -> SessionResumeBindingPersistenceFailureKind {
         self.kind
     }
 
     #[must_use]
+    /// Returns the bounded, redacted diagnostic.
     pub const fn diagnostic(&self) -> &SafeDiagnostic {
         &self.diagnostic
     }

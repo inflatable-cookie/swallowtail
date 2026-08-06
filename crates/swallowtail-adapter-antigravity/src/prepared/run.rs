@@ -13,6 +13,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Exact provider, model, and route selection for headless execution.
 pub struct AntigravityHeadlessModelSelection {
     pub(super) route_id: ModelRouteId,
     pub(super) route_revision: ModelRouteRevision,
@@ -22,6 +23,7 @@ pub struct AntigravityHeadlessModelSelection {
 
 impl AntigravityHeadlessModelSelection {
     #[must_use]
+    /// Creates one exact headless model-route selection.
     pub const fn new(
         route_id: ModelRouteId,
         route_revision: ModelRouteRevision,
@@ -38,6 +40,7 @@ impl AntigravityHeadlessModelSelection {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Content, resource, isolation, deadline, and optional output controls for one run.
 pub struct AntigravityHeadlessRunProfileInput {
     request_id: RequestId,
     model: AntigravityHeadlessModelSelection,
@@ -53,6 +56,7 @@ pub struct AntigravityHeadlessRunProfileInput {
 impl AntigravityHeadlessRunProfileInput {
     #[must_use]
     #[allow(clippy::too_many_arguments)]
+    /// Creates explicit headless-run input without reasoning or schema defaults.
     pub const fn new(
         request_id: RequestId,
         model: AntigravityHeadlessModelSelection,
@@ -76,12 +80,14 @@ impl AntigravityHeadlessRunProfileInput {
     }
 
     #[must_use]
+    /// Selects a supported low, medium, or high reasoning effort.
     pub fn with_effort(mut self, effort: ReasoningMode) -> Self {
         self.effort = Some(effort);
         self
     }
 
     #[must_use]
+    /// Requests provider-enforced structured output.
     pub fn with_structured_output(mut self, output: StructuredOutputDescriptor) -> Self {
         self.structured_output = Some(output);
         self
@@ -89,6 +95,7 @@ impl AntigravityHeadlessRunProfileInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Executable headless run with exact plan, request, and environment agreement.
 pub struct AntigravityPreparedHeadlessRun {
     evidence: PreparedOperationEvidence,
     request: StructuredRunRequest,
@@ -96,6 +103,7 @@ pub struct AntigravityPreparedHeadlessRun {
 }
 
 impl AntigravityPreparedHeadlessIntegration {
+    /// Validates and prepares one stream-JSON headless run.
     pub fn prepare_run(
         &self,
         input: AntigravityHeadlessRunProfileInput,
@@ -197,20 +205,24 @@ impl AntigravityPreparedHeadlessIntegration {
 
 impl AntigravityPreparedHeadlessRun {
     #[must_use]
+    /// Returns prepared operation and activity evidence.
     pub const fn evidence(&self) -> &PreparedOperationEvidence {
         &self.evidence
     }
 
     #[must_use]
+    /// Returns the immutable run preflight plan.
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
     #[must_use]
+    /// Returns the plan-derived structured-run request.
     pub const fn request(&self) -> &StructuredRunRequest {
         &self.request
     }
 
+    /// Starts the single prepared headless run.
     pub fn start_run(
         &self,
         services: HostServices,

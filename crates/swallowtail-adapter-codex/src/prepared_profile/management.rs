@@ -10,6 +10,7 @@ use swallowtail_runtime::{
 mod preparation;
 
 #[derive(Clone, Debug)]
+/// Prepared archive operation for one inactive Codex thread.
 pub struct CodexPreparedArchive {
     environment: swallowtail_runtime::EnvironmentRef,
     evidence: PreparedProviderSessionManagementEvidence,
@@ -17,21 +18,25 @@ pub struct CodexPreparedArchive {
 }
 
 impl CodexPreparedArchive {
+    /// Returns portable evidence for the prepared management operation.
     #[must_use]
     pub const fn evidence(&self) -> &PreparedProviderSessionManagementEvidence {
         &self.evidence
     }
 
+    /// Returns the exact management plan.
     #[must_use]
     pub const fn plan(&self) -> &ProviderSessionManagementPlan {
         self.evidence.plan()
     }
 
+    /// Returns the bound archive request.
     #[must_use]
     pub const fn request(&self) -> &ArchiveProviderSessionRequest {
         &self.request
     }
 
+    /// Executes the prepared archive operation.
     pub fn execute(
         &self,
         services: HostServices,
@@ -44,6 +49,7 @@ impl CodexPreparedArchive {
 }
 
 #[derive(Clone, Debug)]
+/// Prepared restore operation for one inactive Codex thread.
 pub struct CodexPreparedRestore {
     environment: swallowtail_runtime::EnvironmentRef,
     evidence: PreparedProviderSessionManagementEvidence,
@@ -51,21 +57,25 @@ pub struct CodexPreparedRestore {
 }
 
 impl CodexPreparedRestore {
+    /// Returns portable evidence for the prepared management operation.
     #[must_use]
     pub const fn evidence(&self) -> &PreparedProviderSessionManagementEvidence {
         &self.evidence
     }
 
+    /// Returns the exact management plan.
     #[must_use]
     pub const fn plan(&self) -> &ProviderSessionManagementPlan {
         self.evidence.plan()
     }
 
+    /// Returns the bound restore request.
     #[must_use]
     pub const fn request(&self) -> &RestoreProviderSessionRequest {
         &self.request
     }
 
+    /// Executes the prepared restore operation.
     pub fn execute(
         &self,
         services: HostServices,
@@ -78,6 +88,7 @@ impl CodexPreparedRestore {
 }
 
 #[derive(Clone, Debug)]
+/// Prepared delete operation for one inactive Codex thread.
 pub struct CodexPreparedDelete {
     environment: swallowtail_runtime::EnvironmentRef,
     evidence: PreparedProviderSessionManagementEvidence,
@@ -85,21 +96,25 @@ pub struct CodexPreparedDelete {
 }
 
 impl CodexPreparedDelete {
+    /// Returns portable evidence for the prepared management operation.
     #[must_use]
     pub const fn evidence(&self) -> &PreparedProviderSessionManagementEvidence {
         &self.evidence
     }
 
+    /// Returns the exact management plan.
     #[must_use]
     pub const fn plan(&self) -> &ProviderSessionManagementPlan {
         self.evidence.plan()
     }
 
+    /// Returns the bound delete request.
     #[must_use]
     pub const fn request(&self) -> &DeleteProviderSessionRequest {
         &self.request
     }
 
+    /// Executes the prepared delete operation.
     pub fn execute(
         &self,
         services: HostServices,

@@ -14,17 +14,25 @@ use swallowtail_core::{
     SupportAuthority,
 };
 
+/// Exact OpenAI Realtime WebSocket endpoint.
 pub const OPENAI_REALTIME_ENDPOINT: &str = "wss://api.openai.com/v1/realtime";
+/// Credential audience required by the Realtime route.
 pub const OPENAI_REALTIME_ENDPOINT_AUDIENCE: &str = "api.openai.com";
+/// Canonical public API-key access-profile identity for Realtime.
 pub const OPENAI_REALTIME_ACCESS_PROFILE_ID: &str = "openai.realtime.public-api.api-key.payg";
+/// Canonical configured-instance identity for OpenAI Realtime.
 pub const OPENAI_REALTIME_CONFIGURED_INSTANCE_ID: &str = "openai.public.realtime";
+/// Exact qualified revision of the Realtime facade.
 pub const OPENAI_REALTIME_FACADE_REVISION: &str = "openai-realtime-2026-07-22";
+/// Exact model identity qualified for the Realtime route.
 pub const OPENAI_REALTIME_MODEL_ID: &str = "gpt-realtime-2.1";
+/// Canonical model-route identity for OpenAI Realtime.
 pub const OPENAI_REALTIME_MODEL_ROUTE_ID: &str = "openai.public.gpt-realtime-2.1";
 
 const FACADE_AXIS: &str = "openai.realtime-facade";
 
 #[must_use]
+/// Builds the provider-supported Realtime API-key access profile.
 pub fn openai_realtime_access_profile(credential: CredentialRef) -> AccessProfile {
     AccessProfile::new(
         id(AccessProfileId::new, OPENAI_REALTIME_ACCESS_PROFILE_ID),
@@ -37,6 +45,7 @@ pub fn openai_realtime_access_profile(credential: CredentialRef) -> AccessProfil
 }
 
 #[must_use]
+/// Returns the exact interface-version binding for OpenAI Realtime.
 pub fn openai_realtime_facade_binding() -> InterfaceVersionBinding {
     InterfaceVersionBinding::new(
         id(InterfaceVersionAxis::new, FACADE_AXIS),
@@ -45,6 +54,7 @@ pub fn openai_realtime_facade_binding() -> InterfaceVersionBinding {
 }
 
 #[must_use]
+/// Returns the qualified-only OpenAI Realtime compatibility claim.
 pub fn openai_realtime_facade_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
         id(
@@ -68,6 +78,7 @@ pub fn openai_realtime_facade_claim() -> InterfaceCompatibilityClaim {
 }
 
 #[must_use]
+/// Returns the exact manual mono 24 kHz PCM session configuration.
 pub fn openai_realtime_media_config() -> RealtimeMediaConfig {
     let format = MediaFormat::audio(
         AudioEncoding::Pcm16LittleEndian,
@@ -83,6 +94,7 @@ pub fn openai_realtime_media_config() -> RealtimeMediaConfig {
 }
 
 #[must_use]
+/// Builds the configured Realtime instance for one host and endpoint.
 pub fn openai_realtime_instance(
     revision: InstanceRevision,
     host: ExecutionHostId,
@@ -109,6 +121,7 @@ pub fn openai_realtime_instance(
 }
 
 #[must_use]
+/// Builds the exact GPT Realtime model route.
 pub fn openai_realtime_model_route(
     instance_id: ConfiguredInstanceId,
     revision: ModelRouteRevision,
@@ -124,6 +137,7 @@ pub fn openai_realtime_model_route(
 }
 
 #[must_use]
+/// Builds requirements for a resource-free manual PCM Realtime session.
 pub fn openai_realtime_requirements(
     host: ExecutionHostId,
     capabilities: impl IntoIterator<Item = CapabilityRequirement>,

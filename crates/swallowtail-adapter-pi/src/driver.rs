@@ -24,12 +24,14 @@ mod session;
 mod startup;
 mod validation;
 
+/// Low-level driver for the installed Pi JSONL RPC harness.
 pub struct PiRpcDriver {
     environment: EnvironmentRef,
     credential: swallowtail_core::CredentialRef,
 }
 
 impl PiRpcDriver {
+    /// Binds the host-private environment and delegated harness credential.
     #[must_use]
     pub const fn new(
         environment: EnvironmentRef,

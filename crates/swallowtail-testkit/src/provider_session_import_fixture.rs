@@ -39,16 +39,19 @@ pub struct ProviderSessionImportFixture {
 }
 
 impl ProviderSessionImportFixture {
+    /// Builds the fixture for a local execution topology.
     #[must_use]
     pub fn local() -> Self {
         Self::for_topology(ExecutionTopologyFixture::local())
     }
 
+    /// Builds the fixture for an authoritative remote execution topology.
     #[must_use]
     pub fn remote_authoritative() -> Self {
         Self::for_topology(ExecutionTopologyFixture::remote_authoritative())
     }
 
+    /// Builds the fixture for an explicit execution topology.
     #[must_use]
     pub fn for_topology(topology: ExecutionTopologyFixture) -> Self {
         let adapter_id = value(AdapterId::new, "fixture.provider-session-import");
@@ -142,6 +145,7 @@ impl ProviderSessionImportFixture {
         }
     }
 
+    /// Builds a provider-session catalogue plan with explicit result bounds.
     pub fn catalogue_plan(
         &self,
         catalogue_id: &str,
@@ -171,6 +175,7 @@ impl ProviderSessionImportFixture {
         .expect("fixture catalogue plan is valid")
     }
 
+    /// Builds a catalogue candidate bound to `plan`.
     pub fn candidate(
         &self,
         plan: &ProviderSessionCataloguePlan,
@@ -193,6 +198,7 @@ impl ProviderSessionImportFixture {
         )
     }
 
+    /// Builds an import plan for a candidate from the source catalogue.
     pub fn import_plan(
         &self,
         source: ProviderSessionCataloguePlan,
@@ -231,6 +237,7 @@ impl ProviderSessionImportFixture {
         )
     }
 
+    /// Produces prepared catalogue evidence from a validated plan.
     pub fn prepared_catalogue(
         &self,
         plan: ProviderSessionCataloguePlan,
@@ -239,6 +246,7 @@ impl ProviderSessionImportFixture {
             .expect("fixture catalogue evidence is valid")
     }
 
+    /// Produces prepared import evidence from a validated plan.
     pub fn prepared_import(
         &self,
         plan: ProviderSessionImportPlan,
@@ -248,16 +256,19 @@ impl ProviderSessionImportFixture {
     }
 
     #[must_use]
+    /// Returns the execution topology used by this fixture.
     pub const fn topology(&self) -> &ExecutionTopologyFixture {
         &self.topology
     }
 
     #[must_use]
+    /// Returns the fixture driver descriptor.
     pub const fn driver(&self) -> &DriverDescriptor {
         &self.driver
     }
 
     #[must_use]
+    /// Returns the ambient-harness access policy used for imported sessions.
     pub fn access_policy(&self) -> SessionAccessPolicy {
         SessionAccessPolicy::ambient_harness(ResourceAccess::Read)
     }
@@ -320,6 +331,7 @@ impl ProviderSessionImportFixture {
 }
 
 #[must_use]
+/// Builds validated catalogue bounds from ordinary integer inputs.
 pub fn provider_session_catalogue_bounds(
     page: u32,
     total: u32,

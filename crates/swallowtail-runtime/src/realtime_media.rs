@@ -1,3 +1,12 @@
+//! Bounded realtime media session vocabulary and ordering state.
+//!
+//! Media bytes remain opaque, redacted, and non-serializable. Consumers retain
+//! device, capture, playback, conversion, and privacy policy. Planned connection
+//! rollover is transport continuity within one live operation, never durable
+//! resume, retry, or reconstruction.
+
+#![deny(missing_docs)]
+
 mod event;
 mod failure;
 mod input;

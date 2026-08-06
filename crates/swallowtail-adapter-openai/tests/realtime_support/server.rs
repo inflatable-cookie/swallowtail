@@ -56,10 +56,8 @@ impl RealtimeFixtureServer {
             stream
                 .set_read_timeout(Some(Duration::from_secs(2)))
                 .expect("fixture timeout sets");
-            #[expect(
-                clippy::result_large_err,
-                reason = "the tungstenite callback fixes the response type"
-            )]
+            // The tungstenite callback contract fixes this response type.
+            #[allow(clippy::result_large_err)]
             let callback = |request: &Request, mut response: Response| {
                 let target = request
                     .uri()

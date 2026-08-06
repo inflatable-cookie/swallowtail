@@ -23,6 +23,7 @@ struct ResponseState {
 }
 
 #[derive(Debug)]
+/// Pure ordering and admission state for one realtime media session.
 pub struct RealtimeMediaSessionState {
     session_id: RuntimeSessionId,
     config: RealtimeMediaConfig,
@@ -35,6 +36,7 @@ pub struct RealtimeMediaSessionState {
 
 impl RealtimeMediaSessionState {
     #[must_use]
+    /// Creates reusable state with no active input stream or response.
     pub const fn new(session_id: RuntimeSessionId, config: RealtimeMediaConfig) -> Self {
         Self {
             session_id,
@@ -47,6 +49,7 @@ impl RealtimeMediaSessionState {
         }
     }
 
+    /// Admits the next exact input chunk for the current stream.
     pub fn append_input(&mut self, chunk: &MediaChunk) -> Result<(), RealtimeMediaFailure> {
         self.require_reusable()?;
         if self.response.is_some() {
@@ -94,6 +97,7 @@ impl RealtimeMediaSessionState {
         Ok(())
     }
 
+    /// Commits the accumulated input stream and opens one response slot.
     pub fn commit_input(
         &mut self,
         turn_id: RuntimeTurnId,
@@ -124,6 +128,10 @@ impl RealtimeMediaSessionState {
         Ok(MediaInputCommit::new(turn_id, stream_id))
     }
 
+    /// Records the next exactly ordered response event.
+    ///
+    /// Terminal outcomes close the response slot. Any outcome other than
+    /// completion also makes the session non-reusable.
     pub fn record_response_event(
         &mut self,
         event: &RealtimeMediaEvent,
@@ -187,15 +195,18 @@ impl RealtimeMediaSessionState {
     }
 
     #[must_use]
+    /// Returns whether a committed response is currently active.
     pub const fn response_active(&self) -> bool {
         self.response.is_some()
     }
 
     #[must_use]
+    /// Returns whether another turn may begin under the session bounds.
     pub const fn is_reusable(&self) -> bool {
         self.reusable && self.completed_turns < self.config.maximum_turns().get()
     }
 
+    /// Closes the session locally and clears pending input and response state.
     pub fn close(&mut self) {
         self.reusable = false;
         self.input = None;

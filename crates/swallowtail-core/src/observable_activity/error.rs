@@ -3,6 +3,7 @@ use std::error::Error;
 use std::fmt;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Rejection raised for contradictory observable-activity guarantees.
 pub struct InvalidObservableActivityProfile {
     diagnostic: SafeDiagnostic,
 }
@@ -18,6 +19,7 @@ impl InvalidObservableActivityProfile {
     }
 
     #[must_use]
+    /// Returns the redacted activity-profile diagnostic.
     pub const fn diagnostic(&self) -> &SafeDiagnostic {
         &self.diagnostic
     }

@@ -1,3 +1,5 @@
+#![deny(missing_docs)]
+
 use crate::{
     ActivityActor, ActivityObservation, ActivityOperationId, RuntimeEvent, RuntimeEventKind,
     SubagentId, SubagentParent, SubagentSnapshot, SubagentStatus,
@@ -6,12 +8,16 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::error::Error;
 use std::fmt;
 
+/// Kind of change applied to one transient child-work snapshot.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum SubagentDirectoryChangeKind {
+    /// The child identity was observed for the first time.
     Added,
+    /// Later provider truth replaced the child's complete prior snapshot.
     Replaced,
 }
 
+/// One child identity changed by a directory observation.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SubagentDirectoryChange {
     id: SubagentId,
@@ -24,16 +30,19 @@ impl SubagentDirectoryChange {
     }
 
     #[must_use]
+    /// Returns the operation-local child identity.
     pub const fn id(&self) -> &SubagentId {
         &self.id
     }
 
     #[must_use]
+    /// Returns whether the snapshot was added or replaced.
     pub const fn kind(&self) -> SubagentDirectoryChangeKind {
         self.kind
     }
 }
 
+/// Ordered directory changes plus the exact actor of the source activity.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SubagentDirectoryDelta {
     actor: ActivityActor,
@@ -46,27 +55,35 @@ impl SubagentDirectoryDelta {
     }
 
     #[must_use]
+    /// Returns the primary or child actor attributed by the adapter.
     pub const fn actor(&self) -> &ActivityActor {
         &self.actor
     }
 
+    /// Iterates directory changes in observation order.
     pub fn changes(&self) -> impl ExactSizeIterator<Item = &SubagentDirectoryChange> {
         self.changes.iter()
     }
 
     #[must_use]
+    /// Reports whether the activity changed no retained child snapshot.
     pub fn is_unchanged(&self) -> bool {
         self.changes.is_empty()
     }
 }
 
+/// Stable reason a transient child-work projection rejected an observation.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum SubagentDirectoryFailureKind {
+    /// The requested directory capacity was zero.
     InvalidCapacity,
+    /// Activity belongs to a different operation.
     OperationMismatch,
+    /// New identities would exceed the explicit positive child bound.
     CapacityExceeded,
 }
 
+/// Safe failure returned by the transient subagent directory projection.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct SubagentDirectoryFailure {
     kind: SubagentDirectoryFailureKind,
@@ -78,6 +95,7 @@ impl SubagentDirectoryFailure {
     }
 
     #[must_use]
+    /// Returns the stable projection-failure classification.
     pub const fn kind(self) -> SubagentDirectoryFailureKind {
         self.kind
     }
@@ -114,6 +132,7 @@ pub struct SubagentDirectoryProjection {
 }
 
 impl SubagentDirectoryProjection {
+    /// Creates a transient directory for one operation and positive child bound.
     pub fn new(
         operation_id: ActivityOperationId,
         maximum_subagents: usize,
@@ -132,30 +151,36 @@ impl SubagentDirectoryProjection {
     }
 
     #[must_use]
+    /// Returns the exact operation whose activity may update this directory.
     pub const fn operation_id(&self) -> &ActivityOperationId {
         &self.operation_id
     }
 
     #[must_use]
+    /// Returns the maximum number of retained child identities.
     pub const fn maximum_subagents(&self) -> usize {
         self.maximum_subagents
     }
 
     #[must_use]
+    /// Returns the number of currently retained child snapshots.
     pub fn len(&self) -> usize {
         self.snapshots.len()
     }
 
     #[must_use]
+    /// Reports whether no child identity has been observed.
     pub fn is_empty(&self) -> bool {
         self.snapshots.is_empty()
     }
 
     #[must_use]
+    /// Returns the current snapshot for one operation-local child identity.
     pub fn get(&self, id: &SubagentId) -> Option<&SubagentSnapshot> {
         self.snapshots.get(id)
     }
 
+    /// Iterates current snapshots in first-observed identity order.
     pub fn subagents(&self) -> impl ExactSizeIterator<Item = &SubagentSnapshot> {
         self.order.iter().map(|id| {
             self.snapshots
@@ -164,11 +189,13 @@ impl SubagentDirectoryProjection {
         })
     }
 
+    /// Iterates children whose parent is the primary operation.
     pub fn operation_children(&self) -> impl Iterator<Item = &SubagentSnapshot> {
         self.subagents()
             .filter(|snapshot| snapshot.parent() == &SubagentParent::Operation)
     }
 
+    /// Iterates children with one exact known child parent.
     pub fn children_of<'a>(
         &'a self,
         parent: &'a SubagentId,
@@ -181,11 +208,13 @@ impl SubagentDirectoryProjection {
         })
     }
 
+    /// Iterates children whose provider parentage remains unknown.
     pub fn unknown_parent(&self) -> impl Iterator<Item = &SubagentSnapshot> {
         self.subagents()
             .filter(|snapshot| snapshot.parent() == &SubagentParent::Unknown)
     }
 
+    /// Observes an activity event, ignoring other common runtime event kinds.
     pub fn observe_event(
         &mut self,
         event: &RuntimeEvent,
@@ -196,6 +225,9 @@ impl SubagentDirectoryProjection {
         self.observe_activity(activity).map(Some)
     }
 
+    /// Applies one exact-operation activity observation transactionally.
+    ///
+    /// Capacity or operation mismatch leaves the projection unchanged.
     pub fn observe_activity(
         &mut self,
         activity: &ActivityObservation,

@@ -9,6 +9,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Bound prepared xAI Responses structured run.
 pub struct XaiPreparedResponsesRun {
     evidence: XaiPreparedEvidence,
     request: StructuredRunRequest,
@@ -16,25 +17,30 @@ pub struct XaiPreparedResponsesRun {
 
 impl XaiPreparedResponsesRun {
     #[must_use]
+    /// Returns the prepared operation evidence.
     pub const fn evidence(&self) -> &XaiPreparedEvidence {
         &self.evidence
     }
 
     #[must_use]
+    /// Returns the immutable structured-run plan.
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
     #[must_use]
+    /// Returns the plan-derived structured-run request.
     pub const fn request(&self) -> &StructuredRunRequest {
         &self.request
     }
 
     #[must_use]
+    /// Returns the low-level WebSocket driver.
     pub fn low_level_driver(&self) -> XaiWebSocketDriver {
         XaiWebSocketDriver::new()
     }
 
+    /// Starts the bound one-attempt structured run.
     pub fn start_run(
         &self,
         services: HostServices,
@@ -46,6 +52,7 @@ impl XaiPreparedResponsesRun {
     }
 
     #[must_use]
+    /// Splits the prepared operation into evidence, plan, and request.
     pub fn into_parts(self) -> (XaiPreparedEvidence, PreflightPlan, StructuredRunRequest) {
         let plan = self.evidence.plan().clone();
         (self.evidence, plan, self.request)
@@ -53,6 +60,7 @@ impl XaiPreparedResponsesRun {
 }
 
 impl XaiPreparedIntegration {
+    /// Prepares one Responses structured run with storage disabled.
     pub fn prepare_responses_run(
         &self,
         input: XaiRunProfileInput,

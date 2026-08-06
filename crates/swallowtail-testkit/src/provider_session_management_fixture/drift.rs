@@ -12,24 +12,40 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+/// One retained-binding field to change for drift validation.
 pub enum ProviderSessionManagementBindingDrift {
+    /// Change the opaque provider-session reference.
     ProviderSessionReference,
+    /// Change the driver identity.
     DriverIdentity,
+    /// Change the integration family.
     IntegrationFamily,
+    /// Change the transport family.
     TransportFamily,
+    /// Change the configured instance identity.
     ConfiguredInstance,
+    /// Change the configured instance revision.
     InstanceRevision,
+    /// Change the execution host.
     ExecutionHost,
+    /// Change the instance target.
     InstanceTarget,
+    /// Change the protocol facade.
     ProtocolFacade,
+    /// Change the access profile.
     AccessProfile,
+    /// Change the bound interface version.
     InterfaceVersion,
+    /// Change the advertised capability profile.
     Capabilities,
+    /// Change the working-resource binding.
     WorkingResource,
+    /// Change the binding origin.
     Origin,
 }
 
 impl ProviderSessionManagementFixture {
+    /// Builds a binding with exactly the selected field changed.
     pub fn drifted_binding(
         &self,
         drift: ProviderSessionManagementBindingDrift,

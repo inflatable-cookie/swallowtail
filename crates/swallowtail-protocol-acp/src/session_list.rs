@@ -11,6 +11,7 @@ mod record;
 
 pub use record::{AcpOpaqueExtensions, AcpSessionInfo, AcpSessionListPage};
 
+/// Qualified ACP method used to list provider-owned sessions.
 pub const ACP_SESSION_LIST_METHOD: &str = "session/list";
 
 const DEFAULT_MAX_RESPONSE_BYTES: usize = 64 * 1024;
@@ -22,6 +23,7 @@ const DEFAULT_MAX_CURSOR_BYTES: usize = 4_096;
 const DEFAULT_MAX_EXTENSION_BYTES: usize = 16_384;
 const DEFAULT_MAX_ADDITIONAL_DIRECTORIES: usize = 64;
 
+/// Safety limits for one ACP session-list request and response page.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct AcpSessionListLimits {
     maximum_response_bytes: usize,
@@ -35,6 +37,7 @@ pub struct AcpSessionListLimits {
 }
 
 impl AcpSessionListLimits {
+    /// Creates explicit response, collection, text, extension, and path limits.
     #[allow(clippy::too_many_arguments)]
     #[must_use]
     pub const fn new(
@@ -75,6 +78,7 @@ impl Default for AcpSessionListLimits {
     }
 }
 
+/// Session-list capabilities decoded from one ACP initialize result.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct AcpSessionListCapabilities {
     list: bool,
@@ -82,17 +86,20 @@ pub struct AcpSessionListCapabilities {
 }
 
 impl AcpSessionListCapabilities {
+    /// Returns whether `session/list` was advertised.
     #[must_use]
     pub const fn list(self) -> bool {
         self.list
     }
 
+    /// Returns whether additional working directories were advertised.
     #[must_use]
     pub const fn additional_directories(self) -> bool {
         self.additional_directories
     }
 }
 
+/// Validates the ACP version and decodes session-list capability presence.
 pub fn decode_session_list_capabilities(
     initialize_result: &Value,
 ) -> Result<AcpSessionListCapabilities, AcpSessionListDecodeError> {
@@ -135,6 +142,7 @@ fn capability(value: Option<&Value>) -> Result<bool, AcpSessionListDecodeError> 
     }
 }
 
+/// Correlated, bounded request for one page of provider-owned ACP sessions.
 #[derive(Clone, Eq, PartialEq)]
 pub struct AcpSessionListRequest {
     id: Value,
@@ -145,6 +153,7 @@ pub struct AcpSessionListRequest {
 }
 
 impl AcpSessionListRequest {
+    /// Creates a request after validating capability, ID, path, cursor, and limits.
     pub fn new(
         id: Value,
         capabilities: AcpSessionListCapabilities,
@@ -173,6 +182,7 @@ impl AcpSessionListRequest {
         })
     }
 
+    /// Encodes the request as one ACP JSON-RPC frame.
     pub fn encode(&self) -> Result<Vec<u8>, crate::ProtocolError> {
         let mut params = Map::new();
         if let Some(cwd) = &self.cwd {
@@ -191,6 +201,7 @@ impl AcpSessionListRequest {
         })
     }
 
+    /// Correlates and decodes one successful ACP response message.
     pub fn decode_response(
         &self,
         message: &Message,
@@ -207,6 +218,7 @@ impl AcpSessionListRequest {
         }
     }
 
+    /// Decodes an already-correlated successful result value.
     pub fn decode_result(
         &self,
         result: &Value,
@@ -214,16 +226,19 @@ impl AcpSessionListRequest {
         decode::decode_result(self, result)
     }
 
+    /// Returns the exact string or integer JSON-RPC request identity.
     #[must_use]
     pub fn id(&self) -> &Value {
         &self.id
     }
 
+    /// Returns the optional absolute working-directory filter.
     #[must_use]
     pub fn cwd(&self) -> Option<&str> {
         self.cwd.as_ref().map(AcpBoundedText::as_str)
     }
 
+    /// Returns the optional pagination cursor.
     #[must_use]
     pub fn cursor(&self) -> Option<&str> {
         self.cursor.as_ref().map(AcpBoundedText::as_str)
@@ -247,26 +262,39 @@ impl fmt::Debug for AcpSessionListRequest {
     }
 }
 
+/// Stable classification of an ACP session-list boundary failure.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum AcpSessionListDecodeErrorKind {
+    /// Initialize capability evidence was malformed or used another version.
     CapabilityInvalid,
+    /// A response carried a different request identity.
     CorrelationMismatch,
+    /// Preserved provider extensions could not be encoded safely.
     ExtensionInvalid,
+    /// A configured session-list bound was exceeded.
     LimitExceeded,
+    /// The provider returned a JSON-RPC error.
     ProviderRejected,
+    /// The request identity, path, or cursor was invalid.
     RequestInvalid,
+    /// A returned session did not match the requested resource boundary.
     ResourceMismatch,
+    /// A response or result had an invalid structural shape.
     ResponseInvalid,
+    /// A provider update timestamp could not be normalized safely.
     TimestampInvalid,
+    /// The agent did not advertise session listing.
     Unsupported,
 }
 
+/// Bounded ACP session-list failure without provider payload content.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct AcpSessionListDecodeError {
     kind: AcpSessionListDecodeErrorKind,
 }
 
 impl AcpSessionListDecodeError {
+    /// Returns the stable session-list failure classification.
     #[must_use]
     pub const fn kind(self) -> AcpSessionListDecodeErrorKind {
         self.kind

@@ -22,6 +22,7 @@ use readiness::observe_ready_origin;
 const STOP_GRACE_TICKS: u64 = 1_000;
 
 #[must_use = "owned Kimi local-server handles must be closed to join the child process"]
+/// Owned Kimi local-server process paired with its prepared integration.
 pub struct KimiLocalServerOwnedHandle {
     prepared: KimiLocalServerPreparedIntegration,
     process: Arc<dyn ProcessHandle>,
@@ -29,16 +30,19 @@ pub struct KimiLocalServerOwnedHandle {
 }
 
 impl KimiLocalServerOwnedHandle {
+    /// Returns the prepared integration backed by the owned process.
     #[must_use]
     pub const fn prepared(&self) -> &KimiLocalServerPreparedIntegration {
         &self.prepared
     }
 
+    /// Stops and joins the owned local-server process.
     pub async fn close(self) -> CleanupOutcome {
         cleanup_process(self.process.as_ref(), &self.services).await
     }
 }
 
+/// Starts, probes, and prepares one Swallowtail-owned Kimi local server.
 pub async fn start_kimi_local_server_owned(
     input: KimiLocalServerOwnedInput,
     probe: KimiLocalServerPreparationProbe,

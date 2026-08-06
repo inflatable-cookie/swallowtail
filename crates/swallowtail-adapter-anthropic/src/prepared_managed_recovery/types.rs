@@ -1,4 +1,5 @@
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer input for read-only reconciliation of a managed-agent run.
 pub struct AnthropicManagedRunReconciliationInput {
     request_id: RequestId,
     model: AnthropicManagedModelSelection,
@@ -9,6 +10,7 @@ pub struct AnthropicManagedRunReconciliationInput {
 
 impl AnthropicManagedRunReconciliationInput {
     #[must_use]
+    /// Creates reconciliation input with an exact output bound and deadline.
     pub const fn new(
         request_id: RequestId,
         model: AnthropicManagedModelSelection,
@@ -27,6 +29,7 @@ impl AnthropicManagedRunReconciliationInput {
 }
 
 #[derive(Clone, Debug)]
+/// Bound prepared read-only Managed Agents run reconciliation.
 pub struct AnthropicPreparedManagedRunReconciliation {
     evidence: PreparedProviderRunReconciliationEvidence,
     request: ProviderRunReconciliationRequest,
@@ -34,20 +37,24 @@ pub struct AnthropicPreparedManagedRunReconciliation {
 
 impl AnthropicPreparedManagedRunReconciliation {
     #[must_use]
+    /// Returns the prepared reconciliation evidence.
     pub const fn evidence(&self) -> &PreparedProviderRunReconciliationEvidence {
         &self.evidence
     }
 
     #[must_use]
+    /// Returns the bound reconciliation plan.
     pub const fn plan(&self) -> &ProviderRunReconciliationPlan {
         self.evidence.plan()
     }
 
     #[must_use]
+    /// Returns the plan-derived reconciliation request.
     pub const fn request(&self) -> &ProviderRunReconciliationRequest {
         &self.request
     }
 
+    /// Observes the exact retained provider run without mutating it.
     pub fn reconcile(
         &self,
         services: HostServices,
@@ -81,6 +88,7 @@ impl WorkingStateRestorationOperation for AnthropicPreparedManagedRunReconciliat
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer input for cleanup of recovered driver-owned managed resources.
 pub struct AnthropicManagedRecoveredCleanupInput {
     request_id: RequestId,
     model: AnthropicManagedModelSelection,
@@ -90,6 +98,7 @@ pub struct AnthropicManagedRecoveredCleanupInput {
 
 impl AnthropicManagedRecoveredCleanupInput {
     #[must_use]
+    /// Creates cleanup input from an opaque persisted binding and deadline.
     pub const fn new(
         request_id: RequestId,
         model: AnthropicManagedModelSelection,
@@ -106,6 +115,7 @@ impl AnthropicManagedRecoveredCleanupInput {
 }
 
 #[derive(Clone, Debug)]
+/// Bound prepared cleanup of recovered Managed Agents resources.
 pub struct AnthropicPreparedManagedRecoveredCleanup {
     evidence: PreparedProviderRecoveredResourceCleanupEvidence,
     request: ProviderRecoveredResourceCleanupRequest,
@@ -113,20 +123,24 @@ pub struct AnthropicPreparedManagedRecoveredCleanup {
 
 impl AnthropicPreparedManagedRecoveredCleanup {
     #[must_use]
+    /// Returns the prepared cleanup evidence.
     pub const fn evidence(&self) -> &PreparedProviderRecoveredResourceCleanupEvidence {
         &self.evidence
     }
 
     #[must_use]
+    /// Returns the bound recovered-resource cleanup plan.
     pub const fn plan(&self) -> &ProviderRecoveredResourceCleanupPlan {
         self.evidence.plan()
     }
 
     #[must_use]
+    /// Returns the plan-derived recovered-resource cleanup request.
     pub const fn request(&self) -> &ProviderRecoveredResourceCleanupRequest {
         &self.request
     }
 
+    /// Cleans the exact inactive session and environment named by the binding.
     pub fn cleanup(
         &self,
         services: HostServices,

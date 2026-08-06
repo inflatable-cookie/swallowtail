@@ -28,6 +28,7 @@ use swallowtail_runtime::{
 include!("prepared_managed_recovery/types.rs");
 
 impl AnthropicManagedPreparedIntegration {
+    /// Prepares best-available working-state restoration by read-only reconciliation.
     pub fn prepare_working_state_restoration(
         &self,
         input: AnthropicManagedRunReconciliationInput,
@@ -36,6 +37,7 @@ impl AnthropicManagedPreparedIntegration {
             .map(PreparedWorkingStateRestoration::new)
     }
 
+    /// Prepares read-only reconciliation from an opaque persisted checkpoint.
     pub fn prepare_run_reconciliation(
         &self,
         input: AnthropicManagedRunReconciliationInput,
@@ -75,6 +77,7 @@ impl AnthropicManagedPreparedIntegration {
         Ok(AnthropicPreparedManagedRunReconciliation { evidence, request })
     }
 
+    /// Prepares inactive owned-resource cleanup from an opaque persisted binding.
     pub fn prepare_recovered_cleanup(
         &self,
         input: AnthropicManagedRecoveredCleanupInput,

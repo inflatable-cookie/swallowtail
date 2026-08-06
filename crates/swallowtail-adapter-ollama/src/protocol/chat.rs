@@ -5,13 +5,19 @@ use std::collections::BTreeMap;
 use swallowtail_runtime::{RuntimeFailure, TokenUsage};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Portable observations decoded from the qualified native NDJSON stream.
 pub enum NativeEvent {
+    /// Assistant text appended to the active response.
     OutputDelta(String),
+    /// Terminal native stop reason (`stop` or `length`).
     Finished(String),
+    /// Terminal provider token usage.
     Usage(TokenUsage),
+    /// Bounded provider error without exposing provider prose.
     ProviderFailed,
 }
 
+/// Incremental decoder for one exact-model Ollama chat stream.
 pub struct ChatDecoder {
     inner: NdjsonDecoder,
     expected_model: String,
@@ -19,6 +25,7 @@ pub struct ChatDecoder {
 }
 
 impl ChatDecoder {
+    /// Creates a decoder that rejects records for another model.
     pub fn new(expected_model: impl Into<String>) -> Self {
         Self {
             inner: NdjsonDecoder::default(),
@@ -27,6 +34,7 @@ impl ChatDecoder {
         }
     }
 
+    /// Decodes complete NDJSON records from one arbitrary byte chunk.
     pub fn push(&mut self, chunk: &[u8]) -> Result<Vec<NativeEvent>, RuntimeFailure> {
         let lines = self.inner.push(chunk)?;
         let mut events = Vec::new();
@@ -48,6 +56,7 @@ impl ChatDecoder {
         Ok(events)
     }
 
+    /// Requires a clean decoder buffer and an observed terminal record.
     pub fn finish(self) -> Result<(), RuntimeFailure> {
         self.inner.finish()?;
         if self.terminal {

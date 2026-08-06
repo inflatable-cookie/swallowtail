@@ -12,12 +12,14 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer inputs for one prepared Cursor ACP session.
 pub struct CursorAcpSessionProfileInput {
     request_id: RequestId,
     working_resource: WorkingResourceRef,
 }
 
 impl CursorAcpSessionProfileInput {
+    /// Creates an ACP session profile bound to a working resource.
     #[must_use]
     pub const fn new(request_id: RequestId, working_resource: WorkingResourceRef) -> Self {
         Self {
@@ -28,6 +30,7 @@ impl CursorAcpSessionProfileInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared interactive Cursor ACP session.
 pub struct CursorPreparedAcpSession {
     evidence: PreparedOperationEvidence,
     request: OpenSessionRequest,
@@ -35,6 +38,7 @@ pub struct CursorPreparedAcpSession {
 }
 
 impl CursorPreparedAcpIntegration {
+    /// Prepares an interactive session from the admitted ACP integration.
     pub fn prepare_session(
         &self,
         input: CursorAcpSessionProfileInput,
@@ -92,26 +96,31 @@ impl CursorPreparedAcpIntegration {
 }
 
 impl CursorPreparedAcpSession {
+    /// Returns portable evidence for the prepared session.
     #[must_use]
     pub const fn evidence(&self) -> &PreparedOperationEvidence {
         &self.evidence
     }
 
+    /// Returns the validated preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
+    /// Returns the bound session-open request.
     #[must_use]
     pub const fn request(&self) -> &OpenSessionRequest {
         &self.request
     }
 
+    /// Creates the low-level driver bound to this prepared session.
     #[must_use]
     pub fn low_level_driver(&self) -> crate::CursorAcpDriver {
         crate::CursorAcpDriver::new(self.environment.clone())
     }
 
+    /// Opens the prepared session with caller-supplied host services.
     pub fn open_session(
         &self,
         services: HostServices,
@@ -122,6 +131,7 @@ impl CursorPreparedAcpSession {
         Box::pin(async move { driver.open_session(plan, request, services).await })
     }
 
+    /// Builds an exact provider-session attachment recovery request.
     pub fn attachment_recovery_request(
         &self,
         request_id: RequestId,
@@ -139,6 +149,7 @@ impl CursorPreparedAcpSession {
         )
     }
 
+    /// Prepares bounded restoration of an interrupted turn by session attachment.
     pub fn prepare_working_state_restoration(
         &self,
         request_id: RequestId,

@@ -13,6 +13,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Bound prepared Anthropic Messages catalogue operation.
 pub struct AnthropicPreparedCatalogue {
     evidence: AnthropicPreparedEvidence,
     request: ModelCatalogRequest,
@@ -20,25 +21,30 @@ pub struct AnthropicPreparedCatalogue {
 
 impl AnthropicPreparedCatalogue {
     #[must_use]
+    /// Returns the prepared operation evidence.
     pub const fn evidence(&self) -> &AnthropicPreparedEvidence {
         &self.evidence
     }
 
     #[must_use]
+    /// Returns the immutable catalogue plan.
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
     #[must_use]
+    /// Returns the plan-derived catalogue request.
     pub const fn request(&self) -> &ModelCatalogRequest {
         &self.request
     }
 
     #[must_use]
+    /// Returns the low-level Messages driver.
     pub fn low_level_driver(&self) -> AnthropicDirectDriver {
         AnthropicDirectDriver::new()
     }
 
+    /// Executes the bound model-catalogue observation.
     pub fn list_models(
         &self,
         services: HostServices,
@@ -50,6 +56,7 @@ impl AnthropicPreparedCatalogue {
     }
 
     #[must_use]
+    /// Splits the prepared operation into evidence, plan, and request.
     pub fn into_parts(
         self,
     ) -> (
@@ -63,6 +70,7 @@ impl AnthropicPreparedCatalogue {
 }
 
 impl AnthropicPreparedIntegration {
+    /// Prepares a bound model-catalogue observation.
     pub fn prepare_catalogue(
         &self,
         input: AnthropicCatalogueProfileInput,

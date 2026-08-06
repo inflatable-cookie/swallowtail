@@ -1,3 +1,5 @@
+#![deny(missing_docs)]
+
 use crate::{OrderedEventBuffer, RuntimeEvent, RuntimeFailure};
 use futures_core::Stream;
 use std::pin::Pin;
@@ -13,12 +15,14 @@ struct EventChannelState {
     waiter: Option<Waker>,
 }
 
+/// Cloneable producer for one bounded ordered runtime-event stream.
 #[derive(Clone)]
 pub struct RuntimeEventSender {
     state: Arc<Mutex<EventChannelState>>,
 }
 
 impl RuntimeEventSender {
+    /// Sends one event or closes the channel with the buffer's semantic failure.
     pub fn send(&self, event: RuntimeEvent) -> Result<(), RuntimeFailure> {
         let mut state = self.state.lock().expect("event channel lock poisoned");
         if state.closed {
@@ -37,6 +41,7 @@ impl RuntimeEventSender {
         Ok(())
     }
 
+    /// Marks terminal state after which the stream drains and ends.
     pub fn mark_terminal(&self) {
         let mut state = self.state.lock().expect("event channel lock poisoned");
         state.buffer.mark_terminal();
@@ -44,6 +49,7 @@ impl RuntimeEventSender {
         wake(&mut state);
     }
 
+    /// Closes the stream without manufacturing terminal outcome truth.
     pub fn close(&self) {
         let mut state = self.state.lock().expect("event channel lock poisoned");
         state.closed = true;
@@ -51,6 +57,7 @@ impl RuntimeEventSender {
     }
 }
 
+/// Bounded ordered stream paired with a [`RuntimeEventSender`].
 pub struct RuntimeEventStream {
     state: Arc<Mutex<EventChannelState>>,
 }
@@ -75,6 +82,7 @@ impl Stream for RuntimeEventStream {
     }
 }
 
+/// Creates one bounded event sender and stream pair.
 pub fn runtime_event_channel(
     capacity: usize,
 ) -> Result<(RuntimeEventSender, RuntimeEventStream), RuntimeFailure> {

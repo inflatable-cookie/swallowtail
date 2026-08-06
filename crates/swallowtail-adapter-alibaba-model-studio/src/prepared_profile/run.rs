@@ -11,6 +11,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Executable unstored structured response with exact plan agreement.
 pub struct AlibabaModelStudioPreparedRun {
     evidence: AlibabaModelStudioPreparedEvidence,
     request: StructuredRunRequest,
@@ -18,25 +19,30 @@ pub struct AlibabaModelStudioPreparedRun {
 
 impl AlibabaModelStudioPreparedRun {
     #[must_use]
+    /// Returns route-specific prepared evidence.
     pub const fn evidence(&self) -> &AlibabaModelStudioPreparedEvidence {
         &self.evidence
     }
 
     #[must_use]
+    /// Returns the immutable structured-run preflight plan.
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
     #[must_use]
+    /// Returns the plan-derived structured-run request.
     pub const fn request(&self) -> &StructuredRunRequest {
         &self.request
     }
 
     #[must_use]
+    /// Returns the public low-level workspace driver.
     pub fn low_level_driver(&self) -> AlibabaModelStudioDriver {
         AlibabaModelStudioDriver::new()
     }
 
+    /// Starts the single unstored provider inference attempt.
     pub fn start_run(
         &self,
         services: HostServices,
@@ -48,6 +54,7 @@ impl AlibabaModelStudioPreparedRun {
     }
 
     #[must_use]
+    /// Splits the prepared value into evidence, plan, and request.
     pub fn into_parts(
         self,
     ) -> (
@@ -61,6 +68,7 @@ impl AlibabaModelStudioPreparedRun {
 }
 
 impl AlibabaModelStudioPreparedIntegration {
+    /// Validates and prepares one tool-free unstored structured response.
     pub fn prepare_run(
         &self,
         input: AlibabaRunProfileInput,

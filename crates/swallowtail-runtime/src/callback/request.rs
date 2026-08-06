@@ -1,13 +1,18 @@
+/// Runtime operation that owns a callback request.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum CallbackOperationId {
+    /// Callback emitted by a structured run.
     Run(RuntimeRunId),
+    /// Callback emitted by an interactive turn.
     Turn(RuntimeTurnId),
 }
 
+/// Bounded opaque callback bytes that redact their value in debug output.
 #[derive(Clone, Eq, PartialEq)]
 pub struct CallbackPayload(Vec<u8>);
 
 impl CallbackPayload {
+    /// Creates a payload after enforcing the caller-supplied byte bound.
     pub fn new(
         bytes: impl Into<Vec<u8>>,
         maximum_bytes: usize,
@@ -25,11 +30,13 @@ impl CallbackPayload {
     }
 
     #[must_use]
+    /// Returns the unredacted bytes for exact adapter translation.
     pub fn as_bytes(&self) -> &[u8] {
         &self.0
     }
 
     #[must_use]
+    /// Returns the payload byte length.
     pub fn byte_len(&self) -> usize {
         self.0.len()
     }
@@ -44,16 +51,23 @@ impl fmt::Debug for CallbackPayload {
     }
 }
 
+/// Typed callback request admitted by a runtime route.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum CallbackRequestKind {
+    /// Consumer-owned tool call with exact name and bounded arguments.
     ToolCall {
+        /// Declared consumer tool name.
         tool_name: String,
+        /// Opaque bounded tool arguments.
         arguments: CallbackPayload,
     },
+    /// Namespaced provider extension with route-specific semantics.
     Extension(ProviderExtension),
+    /// Losslessly represented typed harness question.
     HarnessUserInput(crate::HarnessUserInputRequest),
 }
 
+/// One bounded callback request correlated to its operation and event.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct CallbackRequest {
     callback_id: CallbackId,
@@ -65,6 +79,7 @@ pub struct CallbackRequest {
 }
 
 impl CallbackRequest {
+    /// Creates a consumer tool callback for an interactive turn.
     pub fn tool_call(
         callback_id: CallbackId,
         turn_id: RuntimeTurnId,
@@ -83,6 +98,7 @@ impl CallbackRequest {
         )
     }
 
+    /// Creates a consumer tool callback for a structured run.
     pub fn run_tool_call(
         callback_id: CallbackId,
         run_id: RuntimeRunId,
@@ -122,6 +138,7 @@ impl CallbackRequest {
         })
     }
 
+    /// Creates a bounded provider-extension callback for an interactive turn.
     pub fn extension(
         callback_id: CallbackId,
         turn_id: RuntimeTurnId,
@@ -140,6 +157,7 @@ impl CallbackRequest {
         )
     }
 
+    /// Creates a bounded provider-extension callback for a structured run.
     pub fn run_extension(
         callback_id: CallbackId,
         run_id: RuntimeRunId,
@@ -184,6 +202,7 @@ impl CallbackRequest {
     }
 
     #[must_use]
+    /// Creates a typed harness-input callback for an interactive turn.
     pub fn harness_user_input(
         callback_id: CallbackId,
         turn_id: RuntimeTurnId,
@@ -202,6 +221,7 @@ impl CallbackRequest {
     }
 
     #[must_use]
+    /// Creates a typed harness-input callback for a structured run.
     pub fn run_harness_user_input(
         callback_id: CallbackId,
         run_id: RuntimeRunId,
@@ -220,16 +240,19 @@ impl CallbackRequest {
     }
 
     #[must_use]
+    /// Returns the callback identity.
     pub const fn callback_id(&self) -> &CallbackId {
         &self.callback_id
     }
 
     #[must_use]
+    /// Returns the owning runtime operation.
     pub const fn operation_id(&self) -> &CallbackOperationId {
         &self.operation_id
     }
 
     #[must_use]
+    /// Returns the owning turn when this is a turn callback.
     pub const fn turn_id(&self) -> Option<&RuntimeTurnId> {
         match &self.operation_id {
             CallbackOperationId::Turn(turn_id) => Some(turn_id),
@@ -238,6 +261,7 @@ impl CallbackRequest {
     }
 
     #[must_use]
+    /// Returns the owning run when this is a run callback.
     pub const fn run_id(&self) -> Option<&RuntimeRunId> {
         match &self.operation_id {
             CallbackOperationId::Run(run_id) => Some(run_id),
@@ -246,27 +270,32 @@ impl CallbackRequest {
     }
 
     #[must_use]
+    /// Returns the event sequence that announced this callback.
     pub const fn event_sequence(&self) -> u64 {
         self.event_sequence
     }
 
     #[must_use]
+    /// Returns the absolute response deadline when present.
     pub const fn deadline(&self) -> Option<Deadline> {
         self.deadline
     }
 
     #[must_use]
+    /// Returns the admitted callback kind and payload.
     pub const fn kind(&self) -> &CallbackRequestKind {
         &self.kind
     }
 
     #[must_use]
+    /// Adds the exact representation-aware provider request correlation.
     pub fn with_provider_request_ref(mut self, provider_request_ref: ProviderRequestRef) -> Self {
         self.provider_request_ref = Some(provider_request_ref);
         self
     }
 
     #[must_use]
+    /// Returns the provider request correlation when supplied.
     pub const fn provider_request_ref(&self) -> Option<&ProviderRequestRef> {
         self.provider_request_ref.as_ref()
     }

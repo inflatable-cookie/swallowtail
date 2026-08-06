@@ -1,4 +1,8 @@
-# Swallowtail 0.1.0 Candidate Evidence
+# Historical Swallowtail 0.1.0 Registry Candidate Evidence
+
+This is immutable evidence from the retired `.crate` candidate path. It is
+not the active source-tag candidate and grants no tag or publication
+authority.
 
 The files beside this README are generated from the retained candidate:
 
@@ -15,12 +19,12 @@ The files beside this README are generated from the retained candidate:
 
 Binary artifacts remain in `.effigy/release-candidates/0.1.0/`.
 
-This candidate is the local post-hardening baseline. Nucleus vertical and
-sustained evidence plus Soundcheck's distinct structured-run integration are
-accepted. Publication remains operator-held for continued consumer soak.
+This was the local post-hardening baseline. Nucleus vertical and sustained
+evidence plus Soundcheck's distinct structured-run integration were accepted
+for that candidate shape.
 
-`effigy package:candidate:verify` rebuilds the package family from the retained
-source bundle and compares archive and file-list hashes.
+The retired `verify-release-candidate.sh` path can rebuild the package family
+from the retained source bundle and compare archive and file-list hashes.
 
 The candidate source is a clean non-root commit in local canonical history.
 Its bundle preserves complete history. Generated evidence remains outside that

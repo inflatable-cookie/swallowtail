@@ -5,14 +5,17 @@ use swallowtail_core::InstanceTargetRef;
 
 macro_rules! opaque_host_reference {
     ($name:ident, $field:literal) => {
+        #[doc = concat!("Opaque host-approved ", $field, ".")]
         #[derive(Clone, Eq, Hash, Ord, PartialEq, PartialOrd)]
         pub struct $name(String);
 
         impl $name {
+            #[doc = concat!("Creates a ", $field, " after rejecting blank text.")]
             pub fn new(value: impl Into<String>) -> Result<Self, InputValueRequired> {
                 required_text($field, value).map(Self)
             }
 
+            /// Returns the opaque value for host resolution; consumers should not log it.
             #[must_use]
             pub fn as_host_value(&self) -> &str {
                 &self.0

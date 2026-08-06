@@ -23,6 +23,7 @@ const CALLBACK_BYTES: usize = 64 * 1024;
 const MAXIMUM_OPTION_ID_BYTES: usize = 512;
 
 #[must_use]
+/// Returns the extension namespace for Claude Agent permission callbacks.
 pub fn claude_agent_permission_namespace() -> ExtensionNamespace {
     ExtensionNamespace::new(PERMISSION_NAMESPACE).expect("static namespace is valid")
 }

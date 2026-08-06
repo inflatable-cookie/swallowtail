@@ -4,6 +4,7 @@
 //! lifecycle primitives. It does not provide an executor or concrete I/O.
 
 #![forbid(unsafe_code)]
+#![deny(missing_docs)]
 
 mod activity;
 mod async_types;

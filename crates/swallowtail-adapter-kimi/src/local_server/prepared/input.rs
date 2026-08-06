@@ -12,6 +12,7 @@ use crate::KimiAcpSessionImportAuthority;
 use swallowtail_core::ConfiguredInstance;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs for preparing a caller-owned attached Kimi local server.
 pub struct KimiLocalServerAttachedInput {
     pub(super) instance_id: ConfiguredInstanceId,
     pub(super) instance_revision: InstanceRevision,
@@ -24,6 +25,7 @@ pub struct KimiLocalServerAttachedInput {
 }
 
 impl KimiLocalServerAttachedInput {
+    /// Creates attached-server preparation input with explicit endpoint and state root.
     #[must_use]
     #[allow(clippy::too_many_arguments)]
     pub const fn new(
@@ -50,12 +52,14 @@ impl KimiLocalServerAttachedInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs for starting and preparing a Swallowtail-owned Kimi local server.
 pub struct KimiLocalServerOwnedInput {
     pub(super) attached: KimiLocalServerAttachedInput,
     pub(super) executable_target: InstanceTargetRef,
 }
 
 impl KimiLocalServerOwnedInput {
+    /// Creates owned-server input from attached endpoint facts and executable target.
     #[must_use]
     pub const fn new(
         attached: KimiLocalServerAttachedInput,
@@ -69,6 +73,7 @@ impl KimiLocalServerOwnedInput {
 }
 
 #[derive(Clone, Debug)]
+/// Bounded readiness probe for Kimi local-server preparation.
 pub struct KimiLocalServerPreparationProbe {
     pub(super) scope_id: ScopeId,
     pub(super) deadline: Deadline,
@@ -76,6 +81,7 @@ pub struct KimiLocalServerPreparationProbe {
 }
 
 impl KimiLocalServerPreparationProbe {
+    /// Creates a local-server preparation probe.
     #[must_use]
     pub const fn new(
         scope_id: ScopeId,
@@ -91,6 +97,7 @@ impl KimiLocalServerPreparationProbe {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer inputs for one inactive local-server session lifecycle action.
 pub struct KimiLocalServerSessionManagementInput {
     pub(super) request_id: RequestId,
     pub(super) binding: ProviderSessionManagementBinding,
@@ -99,6 +106,7 @@ pub struct KimiLocalServerSessionManagementInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer inputs for one Kimi local-server model-catalogue request.
 pub struct KimiLocalServerCatalogueInput {
     request_id: RequestId,
     deadline: Option<Deadline>,
@@ -106,6 +114,7 @@ pub struct KimiLocalServerCatalogueInput {
 }
 
 impl KimiLocalServerCatalogueInput {
+    /// Creates a catalogue request without a deadline.
     #[must_use]
     pub const fn new(request_id: RequestId) -> Self {
         Self {
@@ -115,12 +124,14 @@ impl KimiLocalServerCatalogueInput {
         }
     }
 
+    /// Adds a catalogue deadline.
     #[must_use]
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
         self
     }
 
+    /// Explicitly admits an unverified-newer local-server implementation.
     #[must_use]
     pub const fn allow_unverified_newer(mut self) -> Self {
         self.allow_unverified_newer = true;
@@ -144,6 +155,7 @@ pub struct KimiLocalServerBindingImportTarget {
 }
 
 impl KimiLocalServerPreparedIntegration {
+    /// Snapshots the exact target facts needed for cross-transport binding import.
     #[must_use]
     pub fn binding_import_target(&self) -> KimiLocalServerBindingImportTarget {
         KimiLocalServerBindingImportTarget {
@@ -157,6 +169,7 @@ impl KimiLocalServerPreparedIntegration {
 }
 
 #[derive(Clone, Debug)]
+/// Inputs for importing ACP session authority into an exact local-server target.
 pub struct KimiLocalServerBindingImportInput {
     pub(super) request_id: RequestId,
     pub(super) scope_id: ScopeId,
@@ -168,6 +181,7 @@ pub struct KimiLocalServerBindingImportInput {
 }
 
 impl KimiLocalServerBindingImportInput {
+    /// Creates a bounded cross-transport binding-import request.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -188,6 +202,7 @@ impl KimiLocalServerBindingImportInput {
         }
     }
 
+    /// Explicitly admits an unverified-newer target server.
     #[must_use]
     pub const fn allow_unverified_newer(mut self) -> Self {
         self.allow_unverified_newer = true;
@@ -196,6 +211,7 @@ impl KimiLocalServerBindingImportInput {
 }
 
 impl KimiLocalServerSessionManagementInput {
+    /// Creates an inactive-session management request.
     #[must_use]
     pub const fn new(request_id: RequestId, binding: ProviderSessionManagementBinding) -> Self {
         Self {
@@ -206,12 +222,14 @@ impl KimiLocalServerSessionManagementInput {
         }
     }
 
+    /// Adds a lifecycle-operation deadline.
     #[must_use]
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
         self
     }
 
+    /// Explicitly admits an unverified-newer lifecycle implementation.
     #[must_use]
     pub const fn allow_unverified_newer(mut self) -> Self {
         self.allow_unverified_newer = true;

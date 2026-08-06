@@ -17,18 +17,27 @@ use swallowtail_core::{
     ProtocolFacadeId, RuntimeReadiness, SupportAuthority,
 };
 
+/// Exact qualified build number for the externally attached route.
 pub const LLAMA_CPP_ATTACHED_BUILD: &str = "9910";
+/// Exact qualified source commit for the externally attached route.
 pub const LLAMA_CPP_ATTACHED_COMMIT: &str = "f5525f7e7";
+/// Exact qualified build number for the host-owned route.
 pub const LLAMA_CPP_OWNED_BUILD: &str = "10069";
+/// Exact qualified source commit for the host-owned route.
 pub const LLAMA_CPP_OWNED_COMMIT: &str = "178a6c449";
+/// Network-grant audience for an externally managed server.
 pub const LLAMA_CPP_ATTACHED_ENDPOINT_AUDIENCE: &str = "llama.cpp.attached";
+/// Loopback network-grant audience for a host-owned server.
 pub const LLAMA_CPP_OWNED_ENDPOINT_AUDIENCE: &str = "llama.cpp.owned-loopback";
+/// Local-unauthenticated access-profile identifier for attached serving.
 pub const LLAMA_CPP_ATTACHED_ACCESS_PROFILE_ID: &str = "llama-cpp.attached.local-unauthenticated";
+/// Local-unauthenticated access-profile identifier for owned serving.
 pub const LLAMA_CPP_OWNED_ACCESS_PROFILE_ID: &str = "llama-cpp.owned.local-unauthenticated";
 
 const ATTACHED_FACADE: &str = "llama.cpp.openai-chat-completions.b9910";
 const OWNED_FACADE: &str = "llama.cpp.openai-chat-completions.b10069";
 
+/// Builds the local-unauthenticated profile for an attached server.
 #[must_use]
 pub fn llama_cpp_attached_access_profile() -> AccessProfile {
     access_profile(
@@ -37,6 +46,7 @@ pub fn llama_cpp_attached_access_profile() -> AccessProfile {
     )
 }
 
+/// Builds the local-unauthenticated profile for a host-owned loopback server.
 #[must_use]
 pub fn llama_cpp_owned_access_profile() -> AccessProfile {
     access_profile(

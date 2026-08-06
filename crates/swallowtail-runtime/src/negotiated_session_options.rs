@@ -1,3 +1,5 @@
+#![deny(missing_docs)]
+
 use swallowtail_core::{
     Capability, CapabilityConstraint, ExecutionLayer, OperationRequirements, OperationShape,
     PreflightPlan, ReasoningMode, SafeDiagnostic,
@@ -18,6 +20,7 @@ pub struct NegotiatedSessionModelOption {
 }
 
 impl NegotiatedSessionModelOption {
+    /// Creates one bounded provider-native option and optional display name.
     pub fn new(
         value: impl Into<String>,
         display_name: Option<String>,
@@ -31,11 +34,13 @@ impl NegotiatedSessionModelOption {
     }
 
     #[must_use]
+    /// Returns the opaque provider-native selector value.
     pub fn value(&self) -> &str {
         &self.value
     }
 
     #[must_use]
+    /// Returns provider display text, when supplied.
     pub fn display_name(&self) -> Option<&str> {
         self.display_name.as_deref()
     }
@@ -50,6 +55,7 @@ pub struct NegotiatedSessionModelOptions {
 }
 
 impl NegotiatedSessionModelOptions {
+    /// Creates a bounded unique snapshot containing its current value.
     pub fn new(
         current_value: impl Into<String>,
         options: impl IntoIterator<Item = NegotiatedSessionModelOption>,
@@ -76,22 +82,29 @@ impl NegotiatedSessionModelOptions {
     }
 
     #[must_use]
+    /// Returns the provider-native value effective for the open session.
     pub fn current_value(&self) -> &str {
         &self.current_value
     }
 
+    /// Iterates the bounded advertised options in provider order.
     pub fn options(&self) -> impl ExactSizeIterator<Item = &NegotiatedSessionModelOption> {
         self.options.iter()
     }
 }
 
+/// Session lifecycle on which a portable option may be negotiated.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum SessionLifecycleOperation {
+    /// Create a new provider session.
     Open,
+    /// Load a retained provider session with replay.
     Load,
+    /// Resume a retained provider session without replay.
     Resume,
 }
 
+/// Pending exact reasoning selection awaiting provider confirmation.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct NegotiatedReasoningSetup {
     operation: SessionLifecycleOperation,
@@ -100,15 +113,18 @@ pub struct NegotiatedReasoningSetup {
 
 impl NegotiatedReasoningSetup {
     #[must_use]
+    /// Returns the lifecycle operation being configured.
     pub const fn operation(&self) -> SessionLifecycleOperation {
         self.operation
     }
 
     #[must_use]
+    /// Returns the exact portable reasoning mode requested by the consumer.
     pub const fn requested(&self) -> &ReasoningMode {
         &self.requested
     }
 
+    /// Confirms the provider-effective mode, rejecting any mismatch.
     pub fn confirm(
         self,
         effective: ReasoningMode,
@@ -126,6 +142,7 @@ impl NegotiatedReasoningSetup {
     }
 }
 
+/// Confirmed equality between requested and provider-effective reasoning modes.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct EffectiveReasoningSetup {
     requested: ReasoningMode,
@@ -134,16 +151,20 @@ pub struct EffectiveReasoningSetup {
 
 impl EffectiveReasoningSetup {
     #[must_use]
+    /// Returns the consumer-requested reasoning mode.
     pub const fn requested(&self) -> &ReasoningMode {
         &self.requested
     }
 
     #[must_use]
+    /// Returns the provider-confirmed effective reasoning mode.
     pub const fn effective(&self) -> &ReasoningMode {
         &self.effective
     }
 }
 
+/// Prepares negotiated reasoning only when one exact preflight constraint and
+/// session option agree for the selected lifecycle.
 pub fn prepare_negotiated_reasoning_setup(
     plan: &PreflightPlan,
     operation: SessionLifecycleOperation,

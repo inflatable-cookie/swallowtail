@@ -18,12 +18,14 @@ use swallowtail_runtime::{
 pub(crate) const DRIVER_ID: &str = "swallowtail.gemini.headless";
 const EVENT_CAPACITY: usize = 4098;
 
+/// Low-level structured-run driver for Gemini CLI stream-JSON mode.
 pub struct GeminiHeadlessDriver {
     pub(crate) environment: EnvironmentRef,
     pub(crate) credential: CredentialRef,
 }
 
 impl GeminiHeadlessDriver {
+    /// Binds the launch environment and Developer API credential reference.
     #[must_use]
     pub const fn new(environment: EnvironmentRef, credential: CredentialRef) -> Self {
         Self {
@@ -33,6 +35,7 @@ impl GeminiHeadlessDriver {
     }
 }
 
+/// Describes the installed Gemini CLI headless discovery and run roles.
 #[must_use]
 pub fn gemini_headless_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(

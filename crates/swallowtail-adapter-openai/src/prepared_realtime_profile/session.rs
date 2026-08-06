@@ -15,6 +15,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Executable OpenAI Realtime session with exact plan and request agreement.
 pub struct OpenAiPreparedRealtimeSession {
     evidence: OpenAiRealtimePreparedEvidence,
     request: OpenRealtimeMediaSessionRequest,
@@ -22,25 +23,30 @@ pub struct OpenAiPreparedRealtimeSession {
 
 impl OpenAiPreparedRealtimeSession {
     #[must_use]
+    /// Returns the route-specific prepared evidence.
     pub const fn evidence(&self) -> &OpenAiRealtimePreparedEvidence {
         &self.evidence
     }
 
     #[must_use]
+    /// Returns the immutable Realtime preflight plan.
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
     #[must_use]
+    /// Returns the plan-derived session request.
     pub const fn request(&self) -> &OpenRealtimeMediaSessionRequest {
         &self.request
     }
 
     #[must_use]
+    /// Returns the public low-level Realtime driver.
     pub fn low_level_driver(&self) -> OpenAiRealtimeDriver {
         OpenAiRealtimeDriver::new()
     }
 
+    /// Opens the prepared Realtime media connection.
     pub fn open_session(
         &self,
         services: HostServices,
@@ -56,6 +62,7 @@ impl OpenAiPreparedRealtimeSession {
     }
 
     #[must_use]
+    /// Prepares context-losing replacement after an interrupted media turn.
     pub fn prepare_working_state_restoration(
         &self,
         interrupted_turn_id: RuntimeTurnId,
@@ -69,6 +76,7 @@ impl OpenAiPreparedRealtimeSession {
     }
 
     #[must_use]
+    /// Splits the prepared value into evidence, plan, and request.
     pub fn into_parts(
         self,
     ) -> (
@@ -82,6 +90,7 @@ impl OpenAiPreparedRealtimeSession {
 }
 
 impl OpenAiRealtimePreparedIntegration {
+    /// Validates and prepares one manual PCM Realtime session.
     pub fn prepare_realtime_session(
         &self,
         input: OpenAiRealtimeSessionProfileInput,

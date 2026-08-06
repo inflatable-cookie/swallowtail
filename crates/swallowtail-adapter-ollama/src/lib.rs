@@ -1,12 +1,18 @@
 //! Ollama native attached-runtime integration for Swallowtail.
+//!
+//! Preparation binds an externally managed local runtime to an exact model
+//! tag and manifest digest before inventory, structured-run, or interactive
+//! session authority is produced.
 
 #![forbid(unsafe_code)]
+#![deny(missing_docs)]
 
 mod activity;
 mod driver;
 mod failure;
 mod prepared;
 mod prepared_profile;
+/// Bounded native HTTP request, response, catalogue, and stream projection.
 pub mod protocol;
 mod selection;
 mod transport;

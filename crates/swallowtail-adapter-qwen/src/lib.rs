@@ -1,8 +1,10 @@
 //! Qwen Code harness integration for Swallowtail.
 //!
-//! The production driver implements the maintained read-only headless subset.
+//! Installed discovery, model catalogue, one-shot structured runs, and
+//! turn-scoped interactive sessions share one explicit headless CLI route.
 
 #![forbid(unsafe_code)]
+#![deny(missing_docs)]
 
 mod activity;
 mod catalogue;
@@ -35,7 +37,9 @@ pub use selection::{
     qwen_code_binding, qwen_headless_claim,
 };
 
+/// Historical baseline Qwen Code version used by the original fixture corpus.
 pub const PINNED_QWEN_CODE_VERSION: &str = "0.19.11";
+/// Source commit corresponding to [`PINNED_QWEN_CODE_VERSION`].
 pub const PINNED_QWEN_CODE_COMMIT: &str = "f22cf5009ee3eb26b5c5de2eca6e1f1d0ffee0ad";
 
 const DRIVER_ID: &str = "swallowtail.qwen.headless";

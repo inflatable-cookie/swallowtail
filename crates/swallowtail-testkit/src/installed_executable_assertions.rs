@@ -11,6 +11,7 @@ use swallowtail_runtime::{
     validate_installed_executable_discovery_services,
 };
 
+/// Proves installed-executable discovery classification, topology, and redaction.
 pub fn assert_installed_executable_observation_contract() {
     let claim = compatibility_claim();
     let local = ExecutionHostId::new("fixture.host.local").expect("host id is valid");

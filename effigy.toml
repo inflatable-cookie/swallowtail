@@ -1,3 +1,6 @@
+[manifest]
+include = ["config/release.toml"]
+
 [catalog]
 alias = "swallowtail"
 
@@ -19,21 +22,23 @@ heading = "## Next Task"
 allowlist_file = "docs/policy/vision-next-task-verbs.txt"
 
 [tasks]
-"qa:docs:links" = "effigy docs check links README.md AGENTS.md docs/README.md"
+"qa:docs:links" = "effigy docs check links README.md AGENTS.md CHANGELOG.md CONTRIBUTING.md SECURITY.md SUPPORT.md docs/README.md docs/releases/README.md docs/releases/0.1.0.md"
 "qa:docs:index:vision" = "effigy docs check index --policy-index vision"
 "qa:docs:next-action:roadmaps" = "effigy docs check next-action --policy roadmaps"
 "qa:docs:agent-defaults" = "effigy docs check forbidden AGENTS.md README.md docs/README.md --forbid '--repo .'"
 "qa:guides" = "python3 scripts/check-integration-guide-coverage.py"
+"qa:consumer-docs" = "python3 scripts/check-consumer-front-door.py"
 
 "qa:docs" = [
   { task = "qa:docs:links" },
   { task = "qa:docs:index:vision" },
   { task = "qa:docs:next-action:roadmaps" },
   { task = "qa:docs:agent-defaults" },
+  { task = "qa:consumer-docs" },
   { task = "qa:guides" },
 ]
 
-"qa:northstar:spine" = "effigy docs check paths README.md AGENTS.md CHANGELOG.md docs/README.md docs/vision/README.md docs/architecture/README.md docs/contracts/README.md docs/specs/README.md docs/roadmaps/README.md docs/logs/README.md docs/policy/internal-writing-style.md docs/policy/vision-next-task-verbs.txt"
+"qa:northstar:spine" = "effigy docs check paths README.md AGENTS.md CHANGELOG.md CONTRIBUTING.md SECURITY.md SUPPORT.md docs/README.md docs/vision/README.md docs/architecture/README.md docs/contracts/README.md docs/specs/README.md docs/roadmaps/README.md docs/logs/README.md docs/policy/internal-writing-style.md docs/policy/vision-next-task-verbs.txt"
 "qa:northstar:agent-contract" = "effigy docs check contains AGENTS.md --require 'effigy tasks' --require 'effigy test --plan' --require 'docs/README.md'"
 "qa:northstar:readme" = "effigy docs check contains README.md --require 'docs/README.md'"
 "qa:northstar:docs-front-door" = "effigy docs check contains docs/README.md --require 'vision/README.md' --require 'architecture/README.md' --require 'contracts/README.md' --require 'roadmaps/README.md' --require 'logs/README.md'"
@@ -70,20 +75,21 @@ allowlist_file = "docs/policy/vision-next-task-verbs.txt"
 
 "package:metadata" = "bash scripts/check-package-metadata.sh"
 "package:api" = "bash scripts/check-public-api.sh"
+"security:dependencies" = "cargo deny check advisories licenses sources"
 "package:verify-affected" = "bash scripts/verify-affected-packages.sh {args}"
-"package:docs" = "cargo doc --workspace --no-deps --locked"
+"package:docs" = "RUSTDOCFLAGS='-D missing_docs' cargo doc --workspace --all-features --no-deps --locked"
 "package:msrv" = "bash scripts/check-msrv.sh"
-"package:verify-local" = "bash scripts/verify-packages-local.sh"
-"package:candidate:prepare" = "SWALLOWTAIL_CANDIDATE_OUTPUT=.effigy/release-candidates/0.1.0 bash scripts/verify-packages-local.sh"
-"package:candidate:verify" = "bash scripts/verify-release-candidate.sh"
-"package:candidate:consumers" = "bash scripts/verify-packaged-consumer-runtime.sh"
-"package:candidate:facades" = "bash scripts/verify-packaged-provider-runtime.sh"
+"package:release-floor" = "bash scripts/check-release-floor.sh"
+"package:source-consumer" = "bash scripts/verify-source-consumer.sh"
 "package:check" = [
   { task = "package:metadata" },
   { task = "package:api" },
   { task = "package:docs" },
   { task = "package:msrv" },
-  { task = "package:verify-local" },
+  { task = "package:release-floor" },
+  { task = "security:dependencies" },
+  { task = "package:source-consumer" },
+  { task = "qa" },
 ]
 
 "qa" = [

@@ -28,15 +28,18 @@ const MAXIMUM_BODY_BYTES: usize = 4 * 1024 * 1024;
 const MAXIMUM_TEXT_BYTES: usize = 512;
 
 #[derive(Clone, Default)]
+/// Low-level read-only driver for the Gemini Developer API model catalogue.
 pub struct GeminiModelsDriver;
 
 impl GeminiModelsDriver {
+    /// Creates the stateless hosted model-catalogue driver.
     #[must_use]
     pub fn new() -> Self {
         Self
     }
 }
 
+/// Describes the hosted Gemini model-catalogue role and host needs.
 #[must_use]
 pub fn gemini_models_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(

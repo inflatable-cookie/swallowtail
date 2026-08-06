@@ -13,6 +13,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Explicit host, endpoint, and API-key evidence used for preparation.
 pub struct DeepSeekPreparationInput {
     instance_id: ConfiguredInstanceId,
     instance_revision: InstanceRevision,
@@ -24,6 +25,7 @@ pub struct DeepSeekPreparationInput {
 
 impl DeepSeekPreparationInput {
     #[must_use]
+    /// Creates preparation input without performing provider work.
     pub const fn new(
         instance_id: ConfiguredInstanceId,
         instance_revision: InstanceRevision,
@@ -44,6 +46,7 @@ impl DeepSeekPreparationInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared DeepSeek integration bound to one instance and host.
 pub struct DeepSeekPreparedIntegration {
     access_profile: AccessProfile,
     access_evidence: PreparedAccessEvidence,
@@ -53,29 +56,35 @@ pub struct DeepSeekPreparedIntegration {
 
 impl DeepSeekPreparedIntegration {
     #[must_use]
+    /// Returns the exact Open Platform API-key access profile.
     pub const fn access_profile(&self) -> &AccessProfile {
         &self.access_profile
     }
 
     #[must_use]
+    /// Returns the access evidence and its provenance.
     pub const fn access_evidence(&self) -> &PreparedAccessEvidence {
         &self.access_evidence
     }
 
     #[must_use]
+    /// Returns the prepared configured instance.
     pub const fn instance(&self) -> &ConfiguredInstance {
         &self.instance
     }
 
+    /// Iterates the host services present during preparation.
     pub fn available_host_services(&self) -> impl ExactSizeIterator<Item = HostServiceKind> + '_ {
         self.available_host_services.iter().copied()
     }
 
     #[must_use]
+    /// Returns the public low-level driver for advanced integration.
     pub fn low_level_driver(&self) -> crate::DeepSeekDirectDriver {
         crate::DeepSeekDirectDriver::new()
     }
 
+    /// Rejects execution-host or endpoint drift from the prepared binding.
     pub fn validate_execution_binding(
         &self,
         execution_host_id: &ExecutionHostId,
@@ -94,6 +103,7 @@ impl DeepSeekPreparedIntegration {
     }
 }
 
+/// Prepares the DeepSeek direct integration without provider effects.
 pub fn prepare_deepseek_direct(
     input: DeepSeekPreparationInput,
     services: &HostServices,

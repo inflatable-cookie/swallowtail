@@ -7,15 +7,20 @@ use swallowtail_core::{
     RemoteAcpTransportSdkVersion, RemoteAcpVersionEvidence,
 };
 
+/// Remote ACP RFD revision represented by this fixture.
 pub const REMOTE_ACP_RFD_REVISION: &str = "2026-07-21-active";
+/// Remote ACP transport SDK version represented by this fixture.
 pub const REMOTE_ACP_TRANSPORT_SDK_VERSION: &str = "2.0.0";
+/// Remote ACP core SDK version represented by this fixture.
 pub const REMOTE_ACP_CORE_SDK_VERSION: &str = "2.0.0";
 
+/// Preflight fixture for a remote ACP transport and execution host.
 pub struct RemoteAcpPreflightFixture {
     inner: ProfilePreflightFixture,
 }
 
 impl RemoteAcpPreflightFixture {
+    /// Builds a remote ACP fixture for the selected transport and host.
     #[must_use]
     pub fn new(transport: RemoteAcpTransport, execution_host_id: ExecutionHostId) -> Self {
         Self {
@@ -23,12 +28,14 @@ impl RemoteAcpPreflightFixture {
         }
     }
 
+    /// Runs provider-neutral remote ACP preflight.
     pub fn preflight(&self) -> Result<PreflightPlan, PreflightFailure> {
         self.inner.preflight()
     }
 }
 
 #[must_use]
+/// Returns the canonical remote ACP requirements for `transport`.
 pub fn remote_acp_requirements(transport: RemoteAcpTransport) -> RemoteAcpRequirements {
     let affinity = match transport {
         RemoteAcpTransport::StreamableHttpSse | RemoteAcpTransport::WebSocket => {

@@ -20,6 +20,7 @@ pub struct ObservableActivityProfile {
 
 impl ObservableActivityProfile {
     #[must_use]
+    /// Creates a profile for a route where activity is not meaningful.
     pub fn not_applicable() -> Self {
         Self {
             availability: ObservableActivityAvailability::NotApplicable,
@@ -29,6 +30,7 @@ impl ObservableActivityProfile {
         }
     }
 
+    /// Creates a profile where activity applies but cannot be exposed safely.
     pub fn unavailable(
         interface_basis: impl IntoIterator<Item = ActivityInterfaceBasis>,
     ) -> Result<Self, InvalidObservableActivityProfile> {
@@ -40,6 +42,7 @@ impl ObservableActivityProfile {
         })
     }
 
+    /// Creates and validates an available route activity profile.
     pub fn available(
         interface_basis: impl IntoIterator<Item = ActivityInterfaceBasis>,
         kinds: impl IntoIterator<Item = ActivityKindProfile>,
@@ -76,26 +79,31 @@ impl ObservableActivityProfile {
     }
 
     #[must_use]
+    /// Returns whether activity is available for the route.
     pub const fn availability(&self) -> ObservableActivityAvailability {
         self.availability
     }
 
+    /// Iterates qualified interface evidence in stable axis order.
     pub fn interface_basis(&self) -> impl ExactSizeIterator<Item = ActivityInterfaceBasis> + '_ {
         self.interface_basis
             .iter()
             .map(|(axis, revision)| ActivityInterfaceBasis::new(axis.clone(), revision.clone()))
     }
 
+    /// Iterates supported activity-kind profiles in stable order.
     pub fn kinds(&self) -> impl ExactSizeIterator<Item = &ActivityKindProfile> {
         self.kinds.values()
     }
 
     #[must_use]
+    /// Returns maximum fidelity for one activity kind.
     pub fn kind(&self, kind: ActivityKindClass) -> Option<&ActivityKindProfile> {
         self.kinds.get(&kind)
     }
 
     #[must_use]
+    /// Returns lifecycle fidelity or `Unavailable` for an unsupported kind.
     pub fn lifecycle(&self, kind: ActivityKindClass) -> ActivityLifecycleFidelity {
         self.kind(kind).map_or(
             ActivityLifecycleFidelity::Unavailable,
@@ -104,6 +112,7 @@ impl ObservableActivityProfile {
     }
 
     #[must_use]
+    /// Returns disclosure fidelity or `Unavailable` for an unsupported kind.
     pub fn disclosure(&self, kind: ActivityKindClass) -> ActivityDisclosure {
         self.kind(kind).map_or(
             ActivityDisclosure::Unavailable,
@@ -112,11 +121,13 @@ impl ObservableActivityProfile {
     }
 
     #[must_use]
+    /// Returns handling for unknown provider events.
     pub const fn unknown_event_posture(&self) -> ActivityUnknownEventPosture {
         self.unknown_event_posture
     }
 
     #[must_use]
+    /// Projects the available profile into an exact capability requirement.
     pub fn capability_requirement(&self) -> Option<CapabilityRequirement> {
         if self.availability != ObservableActivityAvailability::Available {
             return None;
@@ -137,6 +148,7 @@ impl ObservableActivityProfile {
     }
 
     #[must_use]
+    /// Reports whether this profile satisfies an activity capability requirement.
     pub fn supports(&self, requirement: &CapabilityRequirement) -> bool {
         requirement.capability() == Capability::ObservableActivity
             && self.capability_requirement().is_some_and(|available| {

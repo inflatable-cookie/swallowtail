@@ -16,11 +16,13 @@ const MAXIMUM_MODELS: usize = 512;
 const MAXIMUM_OUTPUT_BYTES: usize = 512 * 1024;
 const MAXIMUM_LINE_BYTES: usize = 1_024;
 
+/// Low-level driver for the installed Cursor model catalogue command.
 pub struct CursorCatalogueDriver {
     environment: EnvironmentRef,
 }
 
 impl CursorCatalogueDriver {
+    /// Creates a catalogue driver using the approved execution environment.
     #[must_use]
     pub const fn new(environment: EnvironmentRef) -> Self {
         Self { environment }

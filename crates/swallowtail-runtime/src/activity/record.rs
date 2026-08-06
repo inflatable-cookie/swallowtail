@@ -11,9 +11,12 @@ use swallowtail_core::{
     SubagentControlActionKind,
 };
 
+/// Runtime operation that owns an activity identity.
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum ActivityOperationId {
+    /// Activity observed during a structured run.
     Run(RuntimeRunId),
+    /// Activity observed during an interactive turn.
     Turn(RuntimeTurnId),
 }
 
@@ -28,6 +31,7 @@ pub struct ActivityKey {
 }
 
 impl ActivityKey {
+    /// Creates a composite operation-local activity key.
     #[must_use]
     pub const fn new(operation_id: ActivityOperationId, activity_id: ActivityId) -> Self {
         Self {
@@ -37,37 +41,57 @@ impl ActivityKey {
     }
 
     #[must_use]
+    /// Returns the owning runtime operation.
     pub const fn operation_id(&self) -> &ActivityOperationId {
         &self.operation_id
     }
 
     #[must_use]
+    /// Returns the activity identity within that operation.
     pub const fn activity_id(&self) -> &ActivityId {
         &self.activity_id
     }
 }
 
+/// Portable semantic classification of observable provider work.
 #[derive(Clone, Debug, Eq, Hash, PartialEq)]
 pub enum ActivityKind {
+    /// Provider-intended assistant message.
     AssistantMessage,
+    /// Provider-intended readable reasoning summary.
     ReasoningSummary,
+    /// Provider plan activity.
     Plan,
+    /// Command or shell execution.
     CommandExecution,
+    /// File creation, deletion, or modification.
     FileChange,
+    /// Tool executed by the provider or harness.
     ProviderOwnedTool,
+    /// Tool delegated to the consumer.
     ConsumerOwnedTool,
+    /// Provider-owned external search.
     ExternalSearch,
+    /// Image inspection activity.
     ImageView,
+    /// Child-agent or collaboration activity.
     SubagentOrCollaboration,
+    /// Provider review-mode transition.
     ReviewTransition,
+    /// Provider context-compaction activity.
     ContextCompaction,
+    /// Provider task or todo activity.
     Task,
+    /// Provider or harness hook execution.
     Hook,
+    /// Warning or error activity carrying a safe diagnostic.
     WarningOrError,
+    /// Safely identified provider activity outside the portable vocabulary.
     Unknown(ActivityNamespace),
 }
 
 impl ActivityKind {
+    /// Returns the provider-neutral class used by prepared activity profiles.
     #[must_use]
     pub const fn class(&self) -> ActivityKindClass {
         match self {
@@ -91,43 +115,67 @@ impl ActivityKind {
     }
 }
 
+/// Observable lifecycle phase supplied or safely derived by an adapter.
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub enum ActivityLifecyclePhase {
+    /// The activity became observable.
     Started,
+    /// The activity supplied a non-terminal refinement.
     Updated,
+    /// The activity supplied its terminal observation.
     Completed,
 }
 
+/// Provider-visible status of an activity at one lifecycle phase.
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub enum ActivityStatus {
+    /// Accepted but not yet executing.
     Pending,
+    /// Currently executing.
     InProgress,
+    /// Finished successfully.
     Completed,
+    /// Finished with failure.
     Failed,
+    /// Finished through cancellation.
     Cancelled,
 }
 
 impl ActivityStatus {
+    /// Returns whether no later status is valid for this activity.
     #[must_use]
     pub const fn is_terminal(self) -> bool {
         matches!(self, Self::Completed | Self::Failed | Self::Cancelled)
     }
 }
 
+/// Message position disclosed for assistant-message activity.
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub enum ActivityAssistantPhase {
+    /// The provider did not distinguish intermediate from final output.
     ProviderUnspecified,
+    /// Intermediate assistant content produced before the final answer.
     Intermediate,
+    /// Final assistant-answer content.
     Final,
 }
 
+/// Exact portable exchange correlated with an activity.
 #[derive(Clone, Debug, Eq, Hash, PartialEq)]
 pub enum ActivityCorrelation {
+    /// Consumer callback correlation.
     Callback(CallbackId),
+    /// Direct-continuation tool-call correlation.
     DirectToolCall(DirectToolCallId),
+    /// Representation-aware provider request correlation.
     ProviderRequest(ProviderRequestRef),
 }
 
+/// One bounded observation of provider-visible activity.
+///
+/// The record separates identity, lifecycle, status, disclosure, content,
+/// task lists, child attribution, and exchange correlation. Its default
+/// formatting redacts operation content.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ActivityObservation {
     activity_id: ActivityId,
@@ -149,6 +197,7 @@ pub struct ActivityObservation {
 }
 
 impl ActivityObservation {
+    /// Creates a validated identity and lifecycle observation.
     pub fn new(
         activity_id: ActivityId,
         operation_id: ActivityOperationId,
@@ -186,17 +235,20 @@ impl ActivityObservation {
     }
 
     #[must_use]
+    /// Attaches the provider's opaque operation-local activity reference.
     pub fn with_provider_activity_ref(mut self, reference: ProviderActivityRef) -> Self {
         self.provider_activity_ref = Some(reference);
         self
     }
 
     #[must_use]
+    /// Attaches an exact callback, request, or direct-tool correlation.
     pub fn with_correlation(mut self, correlation: ActivityCorrelation) -> Self {
         self.correlation = Some(correlation);
         self
     }
 
+    /// Attaches validated content permitted by the kind and disclosure level.
     pub fn with_content(
         mut self,
         content: ActivityContentUpdate,
@@ -206,12 +258,14 @@ impl ActivityObservation {
         Ok(self)
     }
 
+    /// Attaches a bounded provider-intended display label.
     pub fn with_label(mut self, label: ActivityLabel) -> Result<Self, InvalidActivityRecord> {
         super::validation::validate_label(&self)?;
         self.label = Some(label);
         Ok(self)
     }
 
+    /// Attaches a safe diagnostic to warning-or-error activity.
     pub fn with_diagnostic(
         mut self,
         diagnostic: SafeDiagnostic,
@@ -225,6 +279,7 @@ impl ActivityObservation {
         Ok(self)
     }
 
+    /// Attaches a full task-list replacement to plan or task activity.
     pub fn with_task_list(
         mut self,
         task_list: TaskListSnapshot,
@@ -235,11 +290,13 @@ impl ActivityObservation {
     }
 
     #[must_use]
+    /// Attributes the observation to the primary agent or one admitted child.
     pub fn with_actor(mut self, actor: ActivityActor) -> Self {
         self.actor = actor;
         self
     }
 
+    /// Attaches a bounded replacement snapshot of visible child agents.
     pub fn with_subagents(
         mut self,
         subagents: impl IntoIterator<Item = SubagentSnapshot>,
@@ -255,6 +312,7 @@ impl ActivityObservation {
         Ok(self)
     }
 
+    /// Attaches an observed provider collaboration-control action.
     pub fn with_subagent_control(
         mut self,
         action: SubagentControlActionKind,
@@ -269,11 +327,13 @@ impl ActivityObservation {
     }
 
     #[must_use]
+    /// Returns the operation-local activity identity.
     pub const fn activity_id(&self) -> &ActivityId {
         &self.activity_id
     }
 
     #[must_use]
+    /// Returns the runtime operation that owns this observation.
     pub const fn operation_id(&self) -> &ActivityOperationId {
         &self.operation_id
     }
@@ -285,70 +345,84 @@ impl ActivityObservation {
     }
 
     #[must_use]
+    /// Returns the provider's opaque activity reference when supplied.
     pub const fn provider_activity_ref(&self) -> Option<&ProviderActivityRef> {
         self.provider_activity_ref.as_ref()
     }
 
     #[must_use]
+    /// Returns the portable activity kind.
     pub const fn kind(&self) -> &ActivityKind {
         &self.kind
     }
 
     #[must_use]
+    /// Returns the observed lifecycle phase.
     pub const fn phase(&self) -> ActivityLifecyclePhase {
         self.phase
     }
 
     #[must_use]
+    /// Returns the provider-visible activity status.
     pub const fn status(&self) -> ActivityStatus {
         self.status
     }
 
     #[must_use]
+    /// Returns message position for assistant-message activity.
     pub const fn assistant_phase(&self) -> Option<ActivityAssistantPhase> {
         self.assistant_phase
     }
 
     #[must_use]
+    /// Returns the maximum disclosure strength of this observation.
     pub const fn disclosure(&self) -> ActivityDisclosure {
         self.disclosure
     }
 
     #[must_use]
+    /// Returns the exact exchange correlation when present.
     pub const fn correlation(&self) -> Option<&ActivityCorrelation> {
         self.correlation.as_ref()
     }
 
     #[must_use]
+    /// Returns the provider-intended display label when present.
     pub const fn label(&self) -> Option<&ActivityLabel> {
         self.label.as_ref()
     }
 
     #[must_use]
+    /// Returns the safe warning or error diagnostic when present.
     pub const fn diagnostic(&self) -> Option<&SafeDiagnostic> {
         self.diagnostic.as_ref()
     }
 
     #[must_use]
+    /// Returns the bounded content update when present.
     pub const fn content(&self) -> Option<&ActivityContentUpdate> {
         self.content.as_ref()
     }
 
     #[must_use]
+    /// Returns the task-list replacement snapshot when present.
     pub const fn task_list(&self) -> Option<&TaskListSnapshot> {
         self.task_list.as_ref()
     }
 
     #[must_use]
+    /// Returns the agent attributed as the actor.
     pub const fn actor(&self) -> &ActivityActor {
         &self.actor
     }
 
+    /// Iterates over visible child snapshots in provider order.
     pub fn subagents(&self) -> impl ExactSizeIterator<Item = &SubagentSnapshot> {
         self.subagents.iter()
     }
 
     #[must_use]
+    /// Returns the observed collaboration-control action when present.
     pub const fn subagent_control(&self) -> Option<SubagentControlActionKind> {
         self.subagent_control
     }

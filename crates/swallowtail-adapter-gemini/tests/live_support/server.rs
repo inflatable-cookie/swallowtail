@@ -185,10 +185,8 @@ fn accept(
     }
     stream.set_read_timeout(Some(Duration::from_secs(2))).ok()?;
     let seen = Arc::clone(handshakes);
-    #[expect(
-        clippy::result_large_err,
-        reason = "the tungstenite callback fixes the response type"
-    )]
+    // The tungstenite callback contract fixes this response type.
+    #[allow(clippy::result_large_err)]
     let callback = move |request: &Request, response: Response| {
         let target = request
             .uri()

@@ -38,16 +38,19 @@ impl LocalHostServices {
         }
     }
 
+    /// Returns the complete provider-neutral host service registry.
     #[must_use]
     pub const fn services(&self) -> &HostServices {
         &self.services
     }
 
+    /// Returns the local process and materialization host.
     #[must_use]
     pub const fn process_host(&self) -> &Arc<LocalProcessHost> {
         &self.process_host
     }
 
+    /// Returns the scoped local task service.
     #[must_use]
     pub const fn task_service(&self) -> &Arc<LocalScopedTaskService> {
         &self.task_service

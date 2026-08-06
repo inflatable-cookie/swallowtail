@@ -1,6 +1,7 @@
 //! Kimi Code ACP integration for Swallowtail.
 
 #![forbid(unsafe_code)]
+#![deny(missing_docs)]
 
 mod acp_activity;
 mod connection;

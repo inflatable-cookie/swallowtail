@@ -12,6 +12,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Host, endpoint, and access evidence used to prepare background Responses.
 pub struct OpenAiBackgroundPreparationInput {
     instance_revision: InstanceRevision,
     execution_host_id: ExecutionHostId,
@@ -22,6 +23,7 @@ pub struct OpenAiBackgroundPreparationInput {
 
 impl OpenAiBackgroundPreparationInput {
     #[must_use]
+    /// Creates side-effect-free preparation input for one exact public API route.
     pub const fn new(
         instance_revision: InstanceRevision,
         execution_host_id: ExecutionHostId,
@@ -40,6 +42,7 @@ impl OpenAiBackgroundPreparationInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared OpenAI background integration bound to one instance and host.
 pub struct OpenAiBackgroundPreparedIntegration {
     access_profile: AccessProfile,
     access_evidence: PreparedAccessEvidence,
@@ -49,29 +52,35 @@ pub struct OpenAiBackgroundPreparedIntegration {
 
 impl OpenAiBackgroundPreparedIntegration {
     #[must_use]
+    /// Returns the selected public API-key access profile.
     pub const fn access_profile(&self) -> &AccessProfile {
         &self.access_profile
     }
 
     #[must_use]
+    /// Returns access evidence together with its provenance.
     pub const fn access_evidence(&self) -> &PreparedAccessEvidence {
         &self.access_evidence
     }
 
     #[must_use]
+    /// Returns the configured background Responses instance.
     pub const fn instance(&self) -> &ConfiguredInstance {
         &self.instance
     }
 
+    /// Iterates the host services present during preparation.
     pub fn available_host_services(&self) -> impl ExactSizeIterator<Item = HostServiceKind> + '_ {
         self.available_host_services.iter().copied()
     }
 
     #[must_use]
+    /// Returns the public low-level background driver.
     pub fn low_level_driver(&self) -> crate::OpenAiBackgroundDriver {
         crate::OpenAiBackgroundDriver::new()
     }
 
+    /// Rejects execution-host or endpoint drift from the prepared binding.
     pub fn validate_execution_binding(
         &self,
         execution_host_id: &ExecutionHostId,
@@ -90,6 +99,7 @@ impl OpenAiBackgroundPreparedIntegration {
     }
 }
 
+/// Prepares OpenAI background Responses without issuing provider requests.
 pub fn prepare_openai_background(
     input: OpenAiBackgroundPreparationInput,
     services: &HostServices,

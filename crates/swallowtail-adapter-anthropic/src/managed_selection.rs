@@ -12,15 +12,20 @@ use swallowtail_core::{
     SupportAuthority,
 };
 
+/// Official first-party endpoint admitted by the Managed Agents route.
 pub const ANTHROPIC_MANAGED_API_ENDPOINT: &str = "https://api.anthropic.com";
+/// Endpoint audience required by Managed Agents credential leases.
 pub const ANTHROPIC_MANAGED_ENDPOINT_AUDIENCE: &str = "api.anthropic.com";
+/// Public API-key access profile admitted by Managed Agents.
 pub const ANTHROPIC_MANAGED_ACCESS_PROFILE_ID: &str =
     "anthropic.managed-agents.public-api-key.payg";
+/// Exact opaque Managed Agents beta facade revision.
 pub const ANTHROPIC_MANAGED_FACADE_REVISION: &str = "managed-agents-2026-04-01";
 
 const ANTHROPIC_MANAGED_FACADE_AXIS: &str = "anthropic.managed-agents-facade";
 
 #[must_use]
+/// Creates the provider-supported Managed Agents API-key access profile.
 pub fn anthropic_managed_access_profile(credential: CredentialRef) -> AccessProfile {
     AccessProfile::new(
         id(AccessProfileId::new, ANTHROPIC_MANAGED_ACCESS_PROFILE_ID),
@@ -33,6 +38,7 @@ pub fn anthropic_managed_access_profile(credential: CredentialRef) -> AccessProf
 }
 
 #[must_use]
+/// Returns the exact Managed Agents facade version binding.
 pub fn anthropic_managed_facade_binding() -> InterfaceVersionBinding {
     InterfaceVersionBinding::new(
         id(InterfaceVersionAxis::new, ANTHROPIC_MANAGED_FACADE_AXIS),
@@ -41,6 +47,7 @@ pub fn anthropic_managed_facade_binding() -> InterfaceVersionBinding {
 }
 
 #[must_use]
+/// Returns the qualified-only compatibility claim for Managed Agents.
 pub fn anthropic_managed_facade_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
         id(
@@ -65,6 +72,7 @@ pub fn anthropic_managed_facade_claim() -> InterfaceCompatibilityClaim {
 
 #[must_use]
 #[allow(clippy::too_many_arguments)]
+/// Builds a configured Managed Agents instance with one operator-owned agent.
 pub fn anthropic_managed_instance(
     instance_id: ConfiguredInstanceId,
     revision: InstanceRevision,
@@ -97,6 +105,7 @@ pub fn anthropic_managed_instance(
 }
 
 #[must_use]
+/// Builds one exact model route for a Managed Agents instance.
 pub fn anthropic_managed_model_route(
     instance_id: ConfiguredInstanceId,
     route_id: ModelRouteId,
@@ -114,6 +123,7 @@ pub fn anthropic_managed_model_route(
 }
 
 #[must_use]
+/// Returns requirements for a durable delete-on-close managed-agent run.
 pub fn anthropic_managed_requirements(host: ExecutionHostId) -> OperationRequirements {
     OperationRequirements::new(
         ExecutionLayer::HarnessInteraction,

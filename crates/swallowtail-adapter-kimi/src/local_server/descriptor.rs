@@ -7,6 +7,7 @@ const DRIVER_ID: &str = "swallowtail.kimi.local-server";
 const TRANSPORT_ID: &str = "kimi-local-server-rest-ws-v2";
 
 #[must_use]
+/// Describes the attached or owned Kimi local-server route.
 pub fn kimi_local_server_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(
         AdapterIdentity::new(

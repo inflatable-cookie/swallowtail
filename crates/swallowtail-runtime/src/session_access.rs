@@ -3,6 +3,7 @@ use crate::{
 };
 use swallowtail_core::{PreflightPlan, SafeDiagnostic};
 
+/// Validates exact session-access policy agreement with immutable preflight.
 pub fn validate_session_access_plan(
     plan: &PreflightPlan,
     requested: &SessionAccessPolicy,
@@ -17,6 +18,10 @@ pub fn validate_session_access_plan(
     }
 }
 
+/// Validates a filesystem working-resource lease against session access policy.
+///
+/// Reference, access mode, representation, and materialized-root presence must
+/// all agree before a driver may use the lease.
 pub fn validate_session_resource_lease(
     requested: &SessionAccessPolicy,
     resource: &WorkingResourceRef,

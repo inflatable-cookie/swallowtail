@@ -4,12 +4,14 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs for one Pi model-catalogue request.
 pub struct PiCatalogueProfileInput {
     request_id: RequestId,
     deadline: Option<Deadline>,
 }
 
 impl PiCatalogueProfileInput {
+    /// Creates a catalogue input without a deadline.
     #[must_use]
     pub const fn new(request_id: RequestId) -> Self {
         Self {
@@ -18,6 +20,7 @@ impl PiCatalogueProfileInput {
         }
     }
 
+    /// Adds a caller-owned catalogue deadline.
     #[must_use]
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
@@ -30,6 +33,7 @@ impl PiCatalogueProfileInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Exact provider and model-route identity selected for RPC execution.
 pub struct PiModelSelection {
     route_id: ModelRouteId,
     route_revision: ModelRouteRevision,
@@ -38,6 +42,7 @@ pub struct PiModelSelection {
 }
 
 impl PiModelSelection {
+    /// Creates a model selection without inferring provider or model defaults.
     #[must_use]
     pub const fn new(
         route_id: ModelRouteId,
@@ -64,6 +69,7 @@ impl PiModelSelection {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs for one read-only Pi interactive session.
 pub struct PiSessionProfileInput {
     request_id: RequestId,
     model: PiModelSelection,
@@ -74,6 +80,7 @@ pub struct PiSessionProfileInput {
 }
 
 impl PiSessionProfileInput {
+    /// Creates a session with explicit model, workspace, and portable options.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -91,12 +98,14 @@ impl PiSessionProfileInput {
         }
     }
 
+    /// Adds a caller-owned session deadline.
     #[must_use]
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
         self
     }
 
+    /// Enables the route's bounded image-attachment capability.
     #[must_use]
     pub const fn with_image_attachments(mut self) -> Self {
         self.image_attachments = true;
@@ -125,6 +134,7 @@ impl PiSessionProfileInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs for one bounded Pi structured run.
 pub struct PiRunProfileInput {
     request_id: RequestId,
     model: PiModelSelection,
@@ -135,6 +145,7 @@ pub struct PiRunProfileInput {
 }
 
 impl PiRunProfileInput {
+    /// Creates a run with explicit model, content, workspace, and deadline.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -153,6 +164,7 @@ impl PiRunProfileInput {
         }
     }
 
+    /// Replaces the run's bounded attachment set.
     #[must_use]
     pub fn with_attachments(
         mut self,

@@ -6,12 +6,14 @@ use swallowtail_core::{
 use swallowtail_runtime::PreparedAccessEvidence;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Exact model-artifact and model-route selection for owned serving.
 pub struct LlamaCppOwnedServingSelection {
     artifact: ModelArtifactBinding,
     model: LlamaCppModelSelection,
 }
 
 impl LlamaCppOwnedServingSelection {
+    /// Creates one explicit artifact-backed serving selection.
     #[must_use]
     pub const fn new(artifact: ModelArtifactBinding, model: LlamaCppModelSelection) -> Self {
         Self { artifact, model }
@@ -23,6 +25,7 @@ impl LlamaCppOwnedServingSelection {
 }
 
 #[derive(Clone)]
+/// Inputs for admitting a host-owned llama.cpp executable and artifact.
 pub struct LlamaCppOwnedPreparationInput {
     instance_id: ConfiguredInstanceId,
     instance_revision: InstanceRevision,
@@ -34,6 +37,7 @@ pub struct LlamaCppOwnedPreparationInput {
 }
 
 impl LlamaCppOwnedPreparationInput {
+    /// Creates explicit executable, access, artifact, and route inputs.
     #[must_use]
     pub const fn new(
         instance_id: ConfiguredInstanceId,

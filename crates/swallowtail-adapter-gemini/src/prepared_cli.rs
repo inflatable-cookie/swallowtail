@@ -12,7 +12,9 @@ use swallowtail_runtime::{
 /// The exact Gemini CLI route selected before preparation.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum GeminiCliPreparedDriver {
+    /// Installed ACP agent route for an interactive session.
     Acp,
+    /// Installed stream-JSON route for a bounded structured run.
     Headless,
 }
 
@@ -30,6 +32,7 @@ pub struct GeminiCliPreparationInput {
 }
 
 impl GeminiCliPreparationInput {
+    /// Creates shared installation inputs with one explicit route selection.
     #[must_use]
     #[allow(clippy::too_many_arguments)]
     pub const fn new(
@@ -54,6 +57,7 @@ impl GeminiCliPreparationInput {
         }
     }
 
+    /// Returns the explicitly selected CLI route.
     #[must_use]
     pub const fn driver(&self) -> GeminiCliPreparedDriver {
         self.driver
@@ -70,6 +74,7 @@ pub struct GeminiCliPreparationProbe {
 }
 
 impl GeminiCliPreparationProbe {
+    /// Creates caller-owned discovery controls shared by both CLI routes.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -89,11 +94,14 @@ impl GeminiCliPreparationProbe {
 /// One explicitly selected Gemini CLI route after exact executable discovery.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum GeminiCliPreparedIntegration {
+    /// Prepared interactive ACP integration.
     Acp(GeminiPreparedIntegration),
+    /// Prepared headless stream-JSON integration.
     Headless(GeminiHeadlessPreparedIntegration),
 }
 
 impl GeminiCliPreparedIntegration {
+    /// Returns the route selected by the prepared integration.
     #[must_use]
     pub const fn driver(&self) -> GeminiCliPreparedDriver {
         match self {

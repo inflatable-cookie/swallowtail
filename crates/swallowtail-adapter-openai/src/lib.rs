@@ -4,6 +4,7 @@
 //! remain separate production drivers and prepared-profile lanes.
 
 #![forbid(unsafe_code)]
+#![deny(missing_docs)]
 
 mod activity;
 mod catalogue;
@@ -65,13 +66,19 @@ pub use selection::{
 
 pub(crate) const ENDPOINT_AUDIENCE: &str = OPENAI_BACKGROUND_ENDPOINT_AUDIENCE;
 pub(crate) const INTEGRATION_FAMILY: &str = "openai";
+/// Exact OpenAI public API origin used by model-catalogue discovery.
 pub const OPENAI_MODELS_ENDPOINT: &str = "https://api.openai.com";
+/// Credential audience required by the OpenAI Models API route.
 pub const OPENAI_MODELS_ENDPOINT_AUDIENCE: &str = "api.openai.com";
+/// Canonical public API-key access-profile identity for model discovery.
 pub const OPENAI_MODELS_ACCESS_PROFILE_ID: &str = "openai.public-api.api-key.payg";
+/// Canonical configured-instance identity for OpenAI model discovery.
 pub const OPENAI_MODELS_CONFIGURED_INSTANCE_ID: &str = "openai.public.models";
+/// Exact qualified revision of the OpenAI Models facade.
 pub const OPENAI_MODELS_FACADE_REVISION: &str = "openai-models-2026-07-27";
 
 #[must_use]
+/// Returns the exact interface-version binding for the Models facade.
 pub fn openai_models_facade_binding() -> swallowtail_core::InterfaceVersionBinding {
     swallowtail_core::InterfaceVersionBinding::new(
         swallowtail_core::InterfaceVersionAxis::new("openai.models-facade")
@@ -82,6 +89,7 @@ pub fn openai_models_facade_binding() -> swallowtail_core::InterfaceVersionBindi
 }
 
 #[must_use]
+/// Returns the qualified-only compatibility claim for the Models facade.
 pub fn openai_models_facade_claim() -> swallowtail_core::InterfaceCompatibilityClaim {
     swallowtail_core::InterfaceCompatibilityClaim::new(
         swallowtail_core::InterfaceCompatibilityClaimId::new("openai.models-window-1")

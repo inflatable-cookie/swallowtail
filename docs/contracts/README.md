@@ -40,7 +40,7 @@ Contracts hold durable, testable rules.
 - [033 Harness Configuration Posture](033-harness-configuration-posture.md)
 - [034 Negotiated Harness Session Options](034-negotiated-harness-session-options.md)
 - [035 Remote ACP Connection Transport](035-remote-acp-connection-transport.md)
-- [036 Crate Release And Compatibility Boundary](036-crate-release-and-compatibility-boundary.md)
+- [036 Source Release And Compatibility Boundary](036-crate-release-and-compatibility-boundary.md)
 - [037 Provider-Wide Prepared Integration And Bound Operations](037-prepared-consumer-integration.md)
 - [038 Provider Session Management And Consumer Thread Boundary](038-provider-session-management-and-consumer-thread-boundary.md)
 - [039 Bounded Single-Turn Structured-Run Projection](039-bounded-single-turn-structured-run-projection.md)
@@ -131,12 +131,12 @@ Contract 035 adds an opt-in experimental remote ACP transport over one exact
 host-approved HTTP/SSE or WebSocket endpoint. It keeps transport separate from
 provider identity, scopes connection and affinity state, excludes
 authentication and implicit recovery, and requires explicit joined close.
-Contract 036 fixes the 26 public packages, coordinated pre-1.0 version,
-compatible internal requirements, three-stage publication order, bounded MSRV,
-package and consumer evidence, one accepted application-scale consumer proof
-before first publication, and explicit human authority for every external
-release mutation. Crate versions remain separate from Contract 029 provider-
-interface ranges.
+Contract 036 fixes the 27 public source packages, coordinated pre-1.0 version,
+Rust 1.90/1.94.1 floors, semantic and documented API evidence, dependency
+policy, exact Git-tag consumption, consumer proof, and explicit human authority
+for every external release mutation. The initial release excludes crates.io
+and a GitHub Release object. Crate versions remain separate from Contract 029
+provider-interface ranges.
 Contract 037 requires an adapter-local prepared normal path for every
 production driver above the unchanged low-level roles. It binds adapter-owned
 facts, derives immutable plan echoes, preserves explicit access provenance and

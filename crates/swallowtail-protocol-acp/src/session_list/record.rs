@@ -4,6 +4,7 @@ use serde_json::{Map, Value};
 use std::collections::BTreeSet;
 use std::fmt;
 
+/// Bounded unrecognized fields retained from an ACP session-list object.
 #[derive(Clone, PartialEq)]
 pub struct AcpOpaqueExtensions {
     value: Value,
@@ -36,11 +37,13 @@ impl AcpOpaqueExtensions {
         })
     }
 
+    /// Returns whether no unrecognized fields were present.
     #[must_use]
     pub fn is_empty(&self) -> bool {
         self.value.as_object().is_none_or(Map::is_empty)
     }
 
+    /// Returns the encoded byte size used for limit enforcement.
     #[must_use]
     pub const fn byte_len(&self) -> usize {
         self.encoded_bytes
@@ -57,6 +60,7 @@ impl fmt::Debug for AcpOpaqueExtensions {
     }
 }
 
+/// One bounded provider-owned session returned by ACP session listing.
 #[derive(Clone, Debug, PartialEq)]
 pub struct AcpSessionInfo {
     pub(super) session_id: AcpBoundedText,
@@ -69,43 +73,51 @@ pub struct AcpSessionInfo {
 }
 
 impl AcpSessionInfo {
+    /// Returns the provider session identity.
     #[must_use]
     pub fn session_id(&self) -> &str {
         self.session_id.as_str()
     }
 
+    /// Returns the absolute primary working directory.
     #[must_use]
     pub fn cwd(&self) -> &str {
         self.cwd.as_str()
     }
 
+    /// Iterates over additional absolute working directories.
     pub fn additional_directories(&self) -> impl ExactSizeIterator<Item = &str> {
         self.additional_directories
             .iter()
             .map(AcpBoundedText::as_str)
     }
 
+    /// Returns the optional provider session title.
     #[must_use]
     pub fn title(&self) -> Option<&str> {
         self.title.as_ref().map(AcpBoundedText::as_str)
     }
 
+    /// Returns the optional provider timestamp text.
     #[must_use]
     pub fn updated_at(&self) -> Option<&str> {
         self.updated_at.as_ref().map(AcpBoundedText::as_str)
     }
 
+    /// Returns the normalized timestamp in Unix milliseconds when available.
     #[must_use]
     pub const fn updated_at_unix_milliseconds(&self) -> Option<u64> {
         self.updated_at_unix_milliseconds
     }
 
+    /// Returns bounded unrecognized session fields.
     #[must_use]
     pub const fn extensions(&self) -> &AcpOpaqueExtensions {
         &self.extensions
     }
 }
 
+/// One bounded page of provider-owned ACP sessions.
 #[derive(Clone, Debug, PartialEq)]
 pub struct AcpSessionListPage {
     pub(super) sessions: Vec<AcpSessionInfo>,
@@ -114,15 +126,18 @@ pub struct AcpSessionListPage {
 }
 
 impl AcpSessionListPage {
+    /// Iterates over sessions in provider order.
     pub fn sessions(&self) -> impl ExactSizeIterator<Item = &AcpSessionInfo> {
         self.sessions.iter()
     }
 
+    /// Returns the next-page cursor when more sessions may exist.
     #[must_use]
     pub fn next_cursor(&self) -> Option<&str> {
         self.next_cursor.as_ref().map(AcpBoundedText::as_str)
     }
 
+    /// Returns bounded unrecognized page fields.
     #[must_use]
     pub const fn extensions(&self) -> &AcpOpaqueExtensions {
         &self.extensions

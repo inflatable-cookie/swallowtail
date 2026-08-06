@@ -14,6 +14,7 @@ pub(super) const MAX_SUBAGENTS_PER_OBSERVATION: usize = 64;
 pub struct SubagentId(String);
 
 impl SubagentId {
+    /// Creates a non-empty, control-free bounded child identity.
     pub fn new(value: impl Into<String>) -> Result<Self, InvalidActivityRecord> {
         let value = value.into();
         if value.trim().is_empty()
@@ -28,6 +29,7 @@ impl SubagentId {
     }
 
     #[must_use]
+    /// Returns the unredacted identity for operation-local correlation.
     pub fn as_str(&self) -> &str {
         &self.0
     }
@@ -48,31 +50,51 @@ impl fmt::Display for SubagentId {
     }
 }
 
+/// Agent responsible for one activity observation.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum ActivityActor {
+    /// The operation's primary agent.
     Primary,
+    /// One provider-owned child agent.
     Subagent(SubagentId),
 }
 
+/// Best available parentage for a provider-owned child agent.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum SubagentParent {
+    /// The root runtime operation is the parent.
     Operation,
+    /// Another observed child agent is the parent.
     Subagent(SubagentId),
+    /// The provider did not expose trustworthy parentage.
     Unknown,
 }
 
+/// Provider-visible lifecycle status of a child agent.
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum SubagentStatus {
+    /// No portable status was supplied.
     Unknown,
+    /// Accepted but not yet running.
     Pending,
+    /// Actively working.
     Running,
+    /// Paused while awaiting another event or decision.
     Waiting,
+    /// Finished successfully.
     Completed,
+    /// Finished with failure.
     Failed,
+    /// Interrupted before normal completion.
     Interrupted,
+    /// Shut down through provider lifecycle control.
     Shutdown,
 }
 
+/// Bounded provider-visible snapshot of one child agent.
+///
+/// Optional model, reasoning, description, and background fields are
+/// observations only; they grant no child-control authority.
 #[derive(Clone, Eq, PartialEq)]
 pub struct SubagentSnapshot {
     id: SubagentId,
@@ -107,6 +129,7 @@ impl fmt::Debug for SubagentSnapshot {
 }
 
 impl SubagentSnapshot {
+    /// Creates the minimum identity, parentage, and status snapshot.
     #[must_use]
     pub const fn new(id: SubagentId, parent: SubagentParent, status: SubagentStatus) -> Self {
         Self {
@@ -123,88 +146,104 @@ impl SubagentSnapshot {
     }
 
     #[must_use]
+    /// Adds a bounded provider-intended display label.
     pub fn with_label(mut self, label: ActivityLabel) -> Self {
         self.label = Some(label);
         self
     }
 
     #[must_use]
+    /// Adds a bounded provider-visible description.
     pub fn with_description(mut self, description: ActivityContent) -> Self {
         self.description = Some(description);
         self
     }
 
     #[must_use]
+    /// Adds the provider-reported model identity.
     pub fn with_model(mut self, model: ModelId) -> Self {
         self.model = Some(model);
         self
     }
 
     #[must_use]
+    /// Adds the provider-reported reasoning selection.
     pub fn with_reasoning(mut self, reasoning: ReasoningMode) -> Self {
         self.reasoning = Some(reasoning);
         self
     }
 
     #[must_use]
+    /// Adds the provider-reported foreground or background posture.
     pub const fn with_background(mut self, background: bool) -> Self {
         self.background = Some(background);
         self
     }
 
     #[must_use]
+    /// Replaces the observed child status.
     pub const fn with_status(mut self, status: SubagentStatus) -> Self {
         self.status = status;
         self
     }
 
     #[must_use]
+    /// Adds the opaque provider activity that originated this child.
     pub fn with_originating_activity(mut self, activity: ProviderActivityRef) -> Self {
         self.originating_activity = Some(activity);
         self
     }
 
     #[must_use]
+    /// Returns the operation-local child identity.
     pub const fn id(&self) -> &SubagentId {
         &self.id
     }
 
     #[must_use]
+    /// Returns the best available parentage.
     pub const fn parent(&self) -> &SubagentParent {
         &self.parent
     }
 
     #[must_use]
+    /// Returns the provider-visible child status.
     pub const fn status(&self) -> SubagentStatus {
         self.status
     }
 
     #[must_use]
+    /// Returns the provider-intended display label when present.
     pub const fn label(&self) -> Option<&ActivityLabel> {
         self.label.as_ref()
     }
 
     #[must_use]
+    /// Returns the bounded child description when present.
     pub const fn description(&self) -> Option<&ActivityContent> {
         self.description.as_ref()
     }
 
     #[must_use]
+    /// Returns the provider-reported model when present.
     pub const fn model(&self) -> Option<&ModelId> {
         self.model.as_ref()
     }
 
     #[must_use]
+    /// Returns the provider-reported reasoning selection when present.
     pub const fn reasoning(&self) -> Option<&ReasoningMode> {
         self.reasoning.as_ref()
     }
 
     #[must_use]
+    /// Returns the foreground or background observation when present.
     pub const fn background(&self) -> Option<bool> {
         self.background
     }
 
     #[must_use]
+    /// Returns the originating provider activity when present.
     pub const fn originating_activity(&self) -> Option<&ProviderActivityRef> {
         self.originating_activity.as_ref()
     }

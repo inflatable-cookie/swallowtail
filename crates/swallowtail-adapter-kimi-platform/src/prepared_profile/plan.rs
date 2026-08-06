@@ -8,6 +8,7 @@ use swallowtail_core::{
 use swallowtail_runtime::{PreparationFailure, PreparationStage, PreparedOperationEvidence};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inspectable prepared evidence for one Kimi Platform operation.
 pub struct KimiPlatformPreparedEvidence {
     operation: PreparedOperationEvidence,
 }
@@ -40,21 +41,25 @@ impl KimiPlatformPreparedEvidence {
     }
 
     #[must_use]
+    /// Returns the access evidence and provenance bound to the operation.
     pub const fn access(&self) -> &swallowtail_runtime::PreparedAccessEvidence {
         self.operation.access()
     }
 
     #[must_use]
+    /// Returns the shared prepared-operation evidence.
     pub const fn operation(&self) -> &PreparedOperationEvidence {
         &self.operation
     }
 
     #[must_use]
+    /// Returns the route's observable-activity contract.
     pub const fn observable_activity(&self) -> &swallowtail_core::ObservableActivityProfile {
         self.operation.observable_activity()
     }
 
     #[must_use]
+    /// Returns the immutable preflight plan.
     pub const fn plan(&self) -> &PreflightPlan {
         self.operation.plan()
     }

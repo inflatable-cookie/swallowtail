@@ -14,6 +14,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Bound prepared Kimi Platform one-attempt structured run.
 pub struct KimiPlatformPreparedInferenceAttempt {
     evidence: KimiPlatformPreparedEvidence,
     request: StructuredRunRequest,
@@ -21,25 +22,30 @@ pub struct KimiPlatformPreparedInferenceAttempt {
 
 impl KimiPlatformPreparedInferenceAttempt {
     #[must_use]
+    /// Returns the prepared operation evidence.
     pub const fn evidence(&self) -> &KimiPlatformPreparedEvidence {
         &self.evidence
     }
 
     #[must_use]
+    /// Returns the immutable inference preflight plan.
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
     #[must_use]
+    /// Returns the plan-derived structured-run request.
     pub const fn request(&self) -> &StructuredRunRequest {
         &self.request
     }
 
     #[must_use]
+    /// Returns the low-level direct driver.
     pub fn low_level_driver(&self) -> KimiPlatformDirectDriver {
         KimiPlatformDirectDriver::new()
     }
 
+    /// Starts the bound one-attempt structured run.
     pub fn start_run(
         &self,
         services: HostServices,
@@ -51,6 +57,7 @@ impl KimiPlatformPreparedInferenceAttempt {
     }
 
     #[must_use]
+    /// Splits the prepared operation into evidence, plan, and request.
     pub fn into_parts(
         self,
     ) -> (
@@ -64,6 +71,7 @@ impl KimiPlatformPreparedInferenceAttempt {
 }
 
 impl KimiPlatformPreparedIntegration {
+    /// Prepares an exact K3 structured inference attempt.
     pub fn prepare_inference_attempt(
         &self,
         input: KimiPlatformInferenceAttemptInput,

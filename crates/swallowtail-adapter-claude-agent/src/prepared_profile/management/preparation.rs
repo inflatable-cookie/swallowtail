@@ -18,6 +18,7 @@ use swallowtail_runtime::{
 };
 
 impl ClaudeAgentPreparedIntegration {
+    /// Prepares deletion of one exact inactive provider session.
     pub fn prepare_delete_session(
         &self,
         input: ClaudeAgentSessionManagementInput,

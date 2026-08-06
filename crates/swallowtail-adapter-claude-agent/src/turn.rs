@@ -106,6 +106,11 @@ impl ActiveTurn {
         self.callbacks.abandon(CallbackAbandonment::TurnCancelled);
     }
 
+    pub(crate) fn finish_for_session_close(&self) {
+        self.mark_cancelled();
+        self.finish(TerminalStatus::Cancelled);
+    }
+
     pub(crate) fn timeout(&self) {
         self.timed_out.store(true, Ordering::SeqCst);
         self.finish(TerminalStatus::TimedOut);

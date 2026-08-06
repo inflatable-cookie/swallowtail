@@ -13,6 +13,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer inputs for one prepared Kimi headless run.
 pub struct KimiHeadlessRunInput {
     request_id: RequestId,
     model: crate::KimiModelSelection,
@@ -23,6 +24,7 @@ pub struct KimiHeadlessRunInput {
 }
 
 impl KimiHeadlessRunInput {
+    /// Creates a Kimi headless run profile.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -41,6 +43,7 @@ impl KimiHeadlessRunInput {
         }
     }
 
+    /// Explicitly accepts provider-managed recovery semantics.
     #[must_use]
     pub const fn accept_managed_recovery(mut self) -> Self {
         self.managed_recovery_accepted = true;
@@ -49,6 +52,7 @@ impl KimiHeadlessRunInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Portable evidence for a prepared Kimi headless run.
 pub struct KimiHeadlessPreparedEvidence {
     observation: swallowtail_core::InstalledExecutableObservation,
     environment: swallowtail_runtime::EnvironmentRef,
@@ -78,26 +82,31 @@ impl KimiHeadlessPreparedEvidence {
         })
     }
 
+    /// Returns the qualified installed-executable observation.
     #[must_use]
     pub const fn observation(&self) -> &swallowtail_core::InstalledExecutableObservation {
         &self.observation
     }
 
+    /// Returns the prepared access evidence.
     #[must_use]
     pub const fn access(&self) -> &swallowtail_runtime::PreparedAccessEvidence {
         self.operation.access()
     }
 
+    /// Returns the complete prepared-operation evidence.
     #[must_use]
     pub const fn operation(&self) -> &PreparedOperationEvidence {
         &self.operation
     }
 
+    /// Returns the admitted observable-activity profile.
     #[must_use]
     pub const fn observable_activity(&self) -> &swallowtail_core::ObservableActivityProfile {
         self.operation.observable_activity()
     }
 
+    /// Returns the validated preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.operation.plan()
@@ -109,32 +118,38 @@ impl KimiHeadlessPreparedEvidence {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared one-shot Kimi headless structured run.
 pub struct KimiHeadlessPreparedRun {
     evidence: KimiHeadlessPreparedEvidence,
     request: StructuredRunRequest,
 }
 
 impl KimiHeadlessPreparedRun {
+    /// Returns portable evidence for the prepared run.
     #[must_use]
     pub const fn evidence(&self) -> &KimiHeadlessPreparedEvidence {
         &self.evidence
     }
 
+    /// Returns the validated preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
+    /// Returns the bound structured-run request.
     #[must_use]
     pub const fn request(&self) -> &StructuredRunRequest {
         &self.request
     }
 
+    /// Creates the low-level headless driver bound to this run.
     #[must_use]
     pub fn low_level_driver(&self) -> crate::KimiHeadlessDriver {
         self.evidence.low_level_driver()
     }
 
+    /// Starts the prepared run with caller-supplied host services.
     pub fn start_run(
         &self,
         services: HostServices,
@@ -147,6 +162,7 @@ impl KimiHeadlessPreparedRun {
 }
 
 impl KimiHeadlessPreparedIntegration {
+    /// Prepares a structured run through the admitted headless integration.
     pub fn prepare_run(
         &self,
         input: KimiHeadlessRunInput,

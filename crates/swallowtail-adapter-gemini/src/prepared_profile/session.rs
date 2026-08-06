@@ -15,32 +15,38 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared Gemini CLI ACP session ready for explicit opening.
 pub struct GeminiPreparedSession {
     evidence: GeminiPreparedEvidence,
     request: OpenSessionRequest,
 }
 
 impl GeminiPreparedSession {
+    /// Returns the session's preparation evidence.
     #[must_use]
     pub const fn evidence(&self) -> &GeminiPreparedEvidence {
         &self.evidence
     }
 
+    /// Returns the immutable preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &swallowtail_core::PreflightPlan {
         self.evidence.plan()
     }
 
+    /// Returns the open-session request.
     #[must_use]
     pub const fn request(&self) -> &OpenSessionRequest {
         &self.request
     }
 
+    /// Reconstructs the low-level ACP driver from prepared evidence.
     #[must_use]
     pub fn low_level_driver(&self) -> GeminiAcpDriver {
         self.evidence.low_level_driver()
     }
 
+    /// Opens the prepared session using the supplied host services.
     pub fn open_session(&self, services: HostServices) -> GeminiPreparedSessionFuture {
         let driver = self.low_level_driver();
         let plan = self.plan().clone();
@@ -48,6 +54,7 @@ impl GeminiPreparedSession {
         Box::pin(async move { driver.open_session(plan, request, services).await })
     }
 
+    /// Prepares a fresh replacement after interruption, with prior context lost.
     #[must_use]
     pub fn prepare_working_state_restoration(
         &self,
@@ -61,6 +68,7 @@ impl GeminiPreparedSession {
         )
     }
 
+    /// Consumes the prepared session into evidence, plan, and request.
     #[must_use]
     pub fn into_parts(
         self,
@@ -75,6 +83,7 @@ impl GeminiPreparedSession {
 }
 
 impl GeminiPreparedIntegration {
+    /// Validates and prepares an ACP session without starting provider work.
     pub fn prepare_session(
         &self,
         input: GeminiSessionProfileInput,

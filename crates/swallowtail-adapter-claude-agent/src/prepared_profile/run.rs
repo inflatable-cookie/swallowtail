@@ -14,32 +14,38 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared one-shot structured run through Claude Agent ACP.
 pub struct ClaudeAgentPreparedRun {
     evidence: ClaudeAgentPreparedEvidence,
     request: StructuredRunRequest,
 }
 
 impl ClaudeAgentPreparedRun {
+    /// Returns portable evidence for the prepared run.
     #[must_use]
     pub const fn evidence(&self) -> &ClaudeAgentPreparedEvidence {
         &self.evidence
     }
 
+    /// Returns the validated preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &swallowtail_core::PreflightPlan {
         self.evidence.plan()
     }
 
+    /// Returns the bound structured-run request.
     #[must_use]
     pub const fn request(&self) -> &StructuredRunRequest {
         &self.request
     }
 
+    /// Creates the low-level ACP driver bound to this run.
     #[must_use]
     pub fn low_level_driver(&self) -> ClaudeAgentAcpDriver {
         self.evidence.low_level_driver()
     }
 
+    /// Starts the prepared run with caller-supplied host services.
     pub fn start_run(
         &self,
         services: HostServices,
@@ -50,6 +56,7 @@ impl ClaudeAgentPreparedRun {
         Box::pin(async move { driver.start_run(plan, request, services).await })
     }
 
+    /// Splits the prepared run into evidence, plan, and request.
     #[must_use]
     pub fn into_parts(
         self,
@@ -64,6 +71,7 @@ impl ClaudeAgentPreparedRun {
 }
 
 impl ClaudeAgentPreparedIntegration {
+    /// Prepares a structured run through the admitted ACP integration.
     pub fn prepare_run(
         &self,
         input: ClaudeAgentRunProfileInput,

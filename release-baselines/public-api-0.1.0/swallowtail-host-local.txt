@@ -1,0 +1,94 @@
+pub mod swallowtail_host_local
+pub struct swallowtail_host_local::LocalExecutableLaunch
+impl swallowtail_host_local::LocalExecutableLaunch
+pub fn swallowtail_host_local::LocalExecutableLaunch::new(impl core::convert::Into<std::path::PathBuf>) -> Self
+pub fn swallowtail_host_local::LocalExecutableLaunch::with_bootstrap_environment(self, impl core::iter::traits::collect::IntoIterator<Item = (std::ffi::os_str::OsString, std::ffi::os_str::OsString)>) -> Self
+pub fn swallowtail_host_local::LocalExecutableLaunch::with_prefix_arguments(self, impl core::iter::traits::collect::IntoIterator<Item = std::ffi::os_str::OsString>) -> Self
+impl core::fmt::Debug for swallowtail_host_local::LocalExecutableLaunch
+pub fn swallowtail_host_local::LocalExecutableLaunch::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_host_local::LocalHostServices
+impl swallowtail_host_local::LocalHostServices
+pub fn swallowtail_host_local::LocalHostServices::deadline_after(&self, core::time::Duration) -> swallowtail_runtime::time::Deadline
+pub const fn swallowtail_host_local::LocalHostServices::process_host(&self) -> &alloc::sync::Arc<swallowtail_host_local::LocalProcessHost>
+pub const fn swallowtail_host_local::LocalHostServices::services(&self) -> &swallowtail_runtime::host_registry::HostServices
+pub const fn swallowtail_host_local::LocalHostServices::task_service(&self) -> &alloc::sync::Arc<swallowtail_host_local::LocalScopedTaskService>
+pub struct swallowtail_host_local::LocalMaterializationLimits
+impl swallowtail_host_local::LocalMaterializationLimits
+pub const fn swallowtail_host_local::LocalMaterializationLimits::attachment_bytes(self) -> u64
+pub const fn swallowtail_host_local::LocalMaterializationLimits::new(u64, u64) -> Self
+pub const fn swallowtail_host_local::LocalMaterializationLimits::schema_bytes(self) -> u64
+impl core::default::Default for swallowtail_host_local::LocalMaterializationLimits
+pub fn swallowtail_host_local::LocalMaterializationLimits::default() -> Self
+pub struct swallowtail_host_local::LocalProcessHost
+impl swallowtail_host_local::LocalProcessHost
+pub fn swallowtail_host_local::LocalProcessHost::builder(swallowtail_host_local::LocalProcessLimits) -> swallowtail_host_local::LocalProcessHostBuilder
+impl swallowtail_runtime::host_traits::AttachmentService for swallowtail_host_local::LocalProcessHost
+pub fn swallowtail_host_local::LocalProcessHost::materialize_file(&self, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::attachment::AttachmentDescriptor) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::host_traits::AttachmentFileLease, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_host_local::LocalProcessHost::release_file(&self, swallowtail_runtime::host_traits::AttachmentFileLease) -> swallowtail_runtime::async_types::BoxFuture<'static, swallowtail_runtime::outcome::CleanupOutcome>
+impl swallowtail_runtime::host_traits::CredentialService for swallowtail_host_local::LocalProcessHost
+pub fn swallowtail_host_local::LocalProcessHost::acquire(&self, swallowtail_runtime::identity::ScopeId, swallowtail_core::runtime_identity::CredentialRef, swallowtail_core::runtime_identity::EndpointAudience) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::secret::CredentialLease, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_host_local::LocalProcessHost::release(&self, swallowtail_runtime::secret::CredentialLease) -> swallowtail_runtime::async_types::BoxFuture<'static, swallowtail_runtime::outcome::CleanupOutcome>
+impl swallowtail_runtime::host_traits::ProcessService for swallowtail_host_local::LocalProcessHost
+pub fn swallowtail_host_local::LocalProcessHost::start(&self, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::process_input::ProcessRequest) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::host_traits::ProcessHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::host_traits::SchemaService for swallowtail_host_local::LocalProcessHost
+pub fn swallowtail_host_local::LocalProcessHost::materialize_file(&self, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::schema::SchemaDocument) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::host_traits::SchemaFileLease, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_host_local::LocalProcessHost::release_file(&self, swallowtail_runtime::host_traits::SchemaFileLease) -> swallowtail_runtime::async_types::BoxFuture<'static, swallowtail_runtime::outcome::CleanupOutcome>
+impl swallowtail_runtime::host_traits::TimeService for swallowtail_host_local::LocalProcessHost
+pub fn swallowtail_host_local::LocalProcessHost::catalog_now(&self) -> core::result::Result<swallowtail_core::model_catalog::lifecycle::CatalogTimestamp, swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_host_local::LocalProcessHost::now(&self) -> swallowtail_runtime::time::MonotonicInstant
+pub fn swallowtail_host_local::LocalProcessHost::wait_until(&self, swallowtail_runtime::time::Deadline) -> swallowtail_runtime::async_types::BoxFuture<'static, swallowtail_runtime::time::DeadlineObservation>
+impl swallowtail_runtime::host_traits::WorkingResourceService for swallowtail_host_local::LocalProcessHost
+pub fn swallowtail_host_local::LocalProcessHost::create_temporary(&self, swallowtail_runtime::identity::ScopeId, swallowtail_core::session_access::ResourceAccess, swallowtail_core::session_access::ResourceRepresentation) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::host_traits::ResourceLease, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_host_local::LocalProcessHost::release(&self, swallowtail_runtime::host_traits::ResourceLease) -> swallowtail_runtime::async_types::BoxFuture<'static, swallowtail_runtime::outcome::CleanupOutcome>
+pub fn swallowtail_host_local::LocalProcessHost::resolve(&self, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_core::session_access::ResourceAccess, swallowtail_core::session_access::ResourceRepresentation) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::host_traits::ResourceLease, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::model_artifact::ModelArtifactService for swallowtail_host_local::LocalProcessHost
+pub fn swallowtail_host_local::LocalProcessHost::acquire(&self, swallowtail_runtime::identity::ScopeId, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::model_artifact::ModelArtifactBinding) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::model_artifact::ModelArtifactLease, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_host_local::LocalProcessHost::release(&self, swallowtail_runtime::model_artifact::ModelArtifactLease) -> swallowtail_runtime::async_types::BoxFuture<'static, swallowtail_runtime::outcome::CleanupOutcome>
+impl swallowtail_runtime::network::NetworkPolicyService for swallowtail_host_local::LocalProcessHost
+pub fn swallowtail_host_local::LocalProcessHost::authorize(&self, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::host_reference::EndpointRef, swallowtail_core::runtime_identity::EndpointAudience) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::network::NetworkGrant, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::serving_endpoint::ServingEndpointService for swallowtail_host_local::LocalProcessHost
+pub fn swallowtail_host_local::LocalProcessHost::publish(&self, swallowtail_runtime::identity::ScopeId, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::EndpointAudience, swallowtail_runtime::serving_endpoint::ObservedServingEndpoint) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::serving_endpoint::ServingEndpointLease, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_host_local::LocalProcessHost::release(&self, swallowtail_runtime::serving_endpoint::ServingEndpointLease) -> swallowtail_runtime::async_types::BoxFuture<'static, swallowtail_runtime::outcome::CleanupOutcome>
+impl swallowtail_runtime::working_resource_io::WorkingResourceIoService for swallowtail_host_local::LocalProcessHost
+pub fn swallowtail_host_local::LocalProcessHost::read_text(&self, &swallowtail_runtime::host_traits::ResourceLease, swallowtail_runtime::working_resource_io::WorkingResourceReadRequest) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::working_resource_io::WorkingResourceText, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_host_local::LocalProcessHost::write_text(&self, &swallowtail_runtime::host_traits::ResourceLease, swallowtail_runtime::working_resource_io::WorkingResourceWriteRequest) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_host_local::LocalProcessHostBuilder
+impl swallowtail_host_local::LocalProcessHostBuilder
+pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_attachment(self, swallowtail_runtime::host_reference::AttachmentRef, impl core::convert::Into<std::path::PathBuf>) -> Self
+pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_environment(self, swallowtail_runtime::host_reference::EnvironmentRef, impl core::iter::traits::collect::IntoIterator<Item = (std::ffi::os_str::OsString, std::ffi::os_str::OsString)>) -> Self
+pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_executable(self, swallowtail_runtime::host_reference::ExecutableRef, impl core::convert::Into<std::path::PathBuf>) -> Self
+pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_executable_launch(self, swallowtail_runtime::host_reference::ExecutableRef, swallowtail_host_local::LocalExecutableLaunch) -> Self
+pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_schema(self, swallowtail_runtime::host_reference::SchemaRef, impl core::convert::Into<std::path::PathBuf>) -> Self
+pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_working_resource(self, swallowtail_runtime::host_reference::WorkingResourceRef, impl core::convert::Into<std::path::PathBuf>) -> Self
+pub fn swallowtail_host_local::LocalProcessHostBuilder::build(self) -> swallowtail_host_local::LocalProcessHost
+pub fn swallowtail_host_local::LocalProcessHostBuilder::with_materialization_limits(self, swallowtail_host_local::LocalMaterializationLimits) -> Self
+impl swallowtail_host_local::LocalProcessHostBuilder
+pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_delegated_credential(self, swallowtail_core::runtime_identity::CredentialRef, swallowtail_core::runtime_identity::EndpointAudience) -> Self
+pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_endpoint(self, swallowtail_runtime::host_reference::EndpointRef, swallowtail_core::runtime_identity::EndpointAudience, impl core::convert::Into<alloc::string::String>) -> Self
+pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_secret_credential(self, swallowtail_core::runtime_identity::CredentialRef, swallowtail_core::runtime_identity::EndpointAudience, impl core::convert::Into<alloc::vec::Vec<u8>>) -> Self
+impl swallowtail_host_local::LocalProcessHostBuilder
+pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_installed_executable(self, swallowtail_runtime::host_reference::ExecutableRef, swallowtail_core::interface_version::InterfaceVersionAxis, impl core::convert::Into<std::path::PathBuf>) -> (Self, swallowtail_runtime::installed_executable::InstalledExecutableTarget)
+pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_installed_executable_launch(self, swallowtail_runtime::host_reference::ExecutableRef, swallowtail_core::interface_version::InterfaceVersionAxis, swallowtail_host_local::LocalExecutableLaunch) -> (Self, swallowtail_runtime::installed_executable::InstalledExecutableTarget)
+impl swallowtail_host_local::LocalProcessHostBuilder
+pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_model_artifact(self, swallowtail_core::model_artifact::ModelArtifactBinding, impl core::convert::Into<std::path::PathBuf>) -> Self
+pub fn swallowtail_host_local::LocalProcessHostBuilder::bind_execution_host(self, swallowtail_core::runtime_identity::ExecutionHostId) -> Self
+impl swallowtail_host_local::LocalProcessHostBuilder
+pub fn swallowtail_host_local::LocalProcessHostBuilder::build_services(self, swallowtail_core::runtime_identity::ExecutionHostId) -> swallowtail_host_local::LocalHostServices
+impl swallowtail_host_local::LocalProcessHostBuilder
+pub fn swallowtail_host_local::LocalProcessHostBuilder::with_temporary_root(self, impl core::convert::Into<std::path::PathBuf>) -> Self
+pub struct swallowtail_host_local::LocalProcessLimits
+impl swallowtail_host_local::LocalProcessLimits
+pub const fn swallowtail_host_local::LocalProcessLimits::argument_bytes(self) -> usize
+pub const fn swallowtail_host_local::LocalProcessLimits::arguments(self) -> usize
+pub const fn swallowtail_host_local::LocalProcessLimits::new(usize, usize, usize, usize, usize) -> Self
+pub const fn swallowtail_host_local::LocalProcessLimits::stderr_bytes(self) -> usize
+pub const fn swallowtail_host_local::LocalProcessLimits::stdin_bytes(self) -> usize
+pub const fn swallowtail_host_local::LocalProcessLimits::stdout_bytes(self) -> usize
+impl core::default::Default for swallowtail_host_local::LocalProcessLimits
+pub fn swallowtail_host_local::LocalProcessLimits::default() -> Self
+pub struct swallowtail_host_local::LocalScopedTaskService
+impl swallowtail_host_local::LocalScopedTaskService
+pub const fn swallowtail_host_local::LocalScopedTaskService::execution_host_id(&self) -> &swallowtail_core::runtime_identity::ExecutionHostId
+pub const fn swallowtail_host_local::LocalScopedTaskService::new(swallowtail_core::runtime_identity::ExecutionHostId) -> Self
+impl swallowtail_runtime::host_traits::ScopedTaskService for swallowtail_host_local::LocalScopedTaskService
+pub fn swallowtail_host_local::LocalScopedTaskService::spawn(&self, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::async_types::BoxFuture<'static, ()>) -> core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::host_traits::JoinedTask>, swallowtail_runtime::failure::RuntimeFailure>

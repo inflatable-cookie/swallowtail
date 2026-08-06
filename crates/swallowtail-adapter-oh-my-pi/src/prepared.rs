@@ -20,6 +20,7 @@ use swallowtail_runtime::{
 const ENDPOINT_AUDIENCE: &str = "oh-my-pi-harness";
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs that bind one installed Oh My Pi package before discovery.
 pub struct OhMyPiPreparationInput {
     pub(crate) instance_id: ConfiguredInstanceId,
     pub(crate) instance_revision: InstanceRevision,
@@ -31,6 +32,7 @@ pub struct OhMyPiPreparationInput {
 }
 
 impl OhMyPiPreparationInput {
+    /// Creates explicit target, environment, and local-access inputs.
     #[must_use]
     pub const fn new(
         instance_id: ConfiguredInstanceId,
@@ -54,6 +56,7 @@ impl OhMyPiPreparationInput {
 }
 
 #[derive(Clone, Debug)]
+/// Caller-owned identity, deadline, and cancellation controls for discovery.
 pub struct OhMyPiPreparationProbe {
     request_id: RequestId,
     scope_id: ScopeId,
@@ -62,6 +65,7 @@ pub struct OhMyPiPreparationProbe {
 }
 
 impl OhMyPiPreparationProbe {
+    /// Creates one bounded installed-executable discovery probe.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -79,6 +83,7 @@ impl OhMyPiPreparationProbe {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Discovered Oh My Pi integration before operation-specific preflight.
 pub struct OhMyPiPreparedIntegration {
     environment: EnvironmentRef,
     target: InstalledExecutableTarget,
@@ -90,45 +95,54 @@ pub struct OhMyPiPreparedIntegration {
 }
 
 impl OhMyPiPreparedIntegration {
+    /// Returns the host-private launch environment.
     #[must_use]
     pub const fn environment(&self) -> &EnvironmentRef {
         &self.environment
     }
 
+    /// Returns the exact executable discovery target.
     #[must_use]
     pub const fn target(&self) -> &InstalledExecutableTarget {
         &self.target
     }
 
+    /// Returns the qualified installed-package observation.
     #[must_use]
     pub const fn observation(&self) -> &InstalledExecutableObservation {
         &self.observation
     }
 
+    /// Returns the local harness access profile.
     #[must_use]
     pub const fn access_profile(&self) -> &AccessProfile {
         &self.access_profile
     }
 
+    /// Returns the admitted access evidence.
     #[must_use]
     pub const fn access_evidence(&self) -> &PreparedAccessEvidence {
         &self.access_evidence
     }
 
+    /// Returns the configured RPC instance.
     #[must_use]
     pub const fn instance(&self) -> &ConfiguredInstance {
         &self.instance
     }
 
+    /// Iterates host services available when preparation completed.
     pub fn available_host_services(&self) -> impl ExactSizeIterator<Item = HostServiceKind> + '_ {
         self.available_host_services.iter().copied()
     }
 
+    /// Reconstructs the low-level RPC driver from prepared inputs.
     #[must_use]
     pub fn low_level_driver(&self) -> OhMyPiRpcDriver {
         OhMyPiRpcDriver::new(self.environment.clone())
     }
 
+    /// Rejects execution after the selected host or target has drifted.
     pub fn validate_execution_binding(
         &self,
         execution_host_id: &ExecutionHostId,
@@ -145,6 +159,7 @@ impl OhMyPiPreparedIntegration {
     }
 }
 
+/// Discovers and prepares one exact installed Oh My Pi RPC route.
 pub async fn prepare_oh_my_pi_rpc(
     input: OhMyPiPreparationInput,
     probe: OhMyPiPreparationProbe,

@@ -270,7 +270,7 @@ fn cancellation_disconnect_drift_and_access_mismatch_fail_without_leaks() {
 
 #[test]
 fn qualified_native_close_ends_active_work_without_deleting_history() {
-    let (host, mut session, services) = open(Scenario::Cancellation, "0.61.0", "native-close");
+    let (host, mut session, services) = open(Scenario::ClosePending, "0.61.0", "native-close");
     let mut turn = start(&mut *session, services, "native-close-turn");
     assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
     let outcome = block_on(

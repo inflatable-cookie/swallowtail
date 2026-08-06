@@ -1,3 +1,5 @@
+#![deny(missing_docs)]
+
 mod admission;
 mod catalogue;
 mod credential;
@@ -22,8 +24,11 @@ pub use model::{
 };
 pub use route::{ConfiguredProviderInstanceRoute, ConfiguredProviderModelRoute};
 
+/// Maximum configured instances in one portable catalogue snapshot.
 pub const MAX_CONFIGURED_PROVIDER_INSTANCES: usize = 256;
+/// Maximum prepared operation routes projected for one configured instance.
 pub const MAX_CONFIGURED_PROVIDER_ROUTES_PER_INSTANCE: usize = 64;
+/// Maximum model entries projected for one configured instance.
 pub const MAX_CONFIGURED_PROVIDER_MODELS_PER_INSTANCE: usize = 10_000;
 
 #[cfg(test)]

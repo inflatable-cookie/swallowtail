@@ -13,6 +13,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs for admitting the hosted Gemini model-catalogue endpoint.
 pub struct GeminiModelsPreparationInput {
     instance_revision: InstanceRevision,
     execution_host_id: ExecutionHostId,
@@ -22,6 +23,7 @@ pub struct GeminiModelsPreparationInput {
 }
 
 impl GeminiModelsPreparationInput {
+    /// Creates an explicit hosted Models preparation input.
     #[must_use]
     pub const fn new(
         instance_revision: InstanceRevision,
@@ -41,6 +43,7 @@ impl GeminiModelsPreparationInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Admitted hosted Gemini Models integration before a catalogue request.
 pub struct GeminiModelsPreparedIntegration {
     access_profile: AccessProfile,
     access_evidence: PreparedAccessEvidence,
@@ -49,12 +52,14 @@ pub struct GeminiModelsPreparedIntegration {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer inputs for preparing one model-catalogue request.
 pub struct GeminiModelsProfileInput {
     request_id: RequestId,
     deadline: Option<Deadline>,
 }
 
 impl GeminiModelsProfileInput {
+    /// Creates a catalogue profile without a deadline.
     #[must_use]
     pub const fn new(request_id: RequestId) -> Self {
         Self {
@@ -63,6 +68,7 @@ impl GeminiModelsProfileInput {
         }
     }
 
+    /// Adds a caller-owned deadline to the catalogue request.
     #[must_use]
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
@@ -71,31 +77,37 @@ impl GeminiModelsProfileInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared read-only Gemini model-catalogue request.
 pub struct GeminiPreparedModels {
     evidence: PreparedOperationEvidence,
     request: ModelCatalogRequest,
 }
 
 impl GeminiModelsPreparedIntegration {
+    /// Returns the exact hosted configured instance.
     #[must_use]
     pub const fn instance(&self) -> &ConfiguredInstance {
         &self.instance
     }
 
+    /// Returns the selected project API-key access profile.
     #[must_use]
     pub const fn access_profile(&self) -> &AccessProfile {
         &self.access_profile
     }
 
+    /// Returns the admitted access evidence.
     #[must_use]
     pub const fn access_evidence(&self) -> &PreparedAccessEvidence {
         &self.access_evidence
     }
 
+    /// Iterates the host services available when preparation completed.
     pub fn available_host_services(&self) -> impl ExactSizeIterator<Item = HostServiceKind> + '_ {
         self.available_host_services.iter().copied()
     }
 
+    /// Validates and prepares a read-only catalogue request.
     pub fn prepare_catalogue(
         &self,
         input: GeminiModelsProfileInput,
@@ -145,21 +157,25 @@ impl GeminiModelsPreparedIntegration {
 }
 
 impl GeminiPreparedModels {
+    /// Returns the complete prepared operation evidence.
     #[must_use]
     pub const fn evidence(&self) -> &PreparedOperationEvidence {
         &self.evidence
     }
 
+    /// Returns the immutable preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
+    /// Returns the model-catalogue request.
     #[must_use]
     pub const fn request(&self) -> &ModelCatalogRequest {
         &self.request
     }
 
+    /// Dispatches the prepared read-only catalogue request.
     pub fn list_models(
         &self,
         services: HostServices,
@@ -171,6 +187,7 @@ impl GeminiPreparedModels {
     }
 }
 
+/// Admits the exact hosted Gemini Models endpoint and API-key profile.
 pub fn prepare_gemini_models(
     input: GeminiModelsPreparationInput,
     services: &HostServices,

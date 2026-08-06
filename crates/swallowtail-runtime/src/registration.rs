@@ -1,3 +1,5 @@
+#![deny(missing_docs)]
+
 use crate::{
     DiscoveryDriver, InteractiveSessionDriver, ModelCatalogDriver,
     ProviderRecoveredResourceCleanupDriver, ProviderRunReconciliationDriver,
@@ -10,6 +12,7 @@ use std::fmt;
 use std::sync::Arc;
 use swallowtail_core::{DriverDescriptor, DriverRole, SafeDiagnostic};
 
+/// Failure produced when a registration supplies a role absent from its descriptor.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct RegistrationFailure {
     role: DriverRole,
@@ -28,11 +31,13 @@ impl RegistrationFailure {
     }
 
     #[must_use]
+    /// Returns the undeclared role that was rejected.
     pub const fn role(&self) -> DriverRole {
         self.role
     }
 
     #[must_use]
+    /// Returns the redacted diagnostic suitable for consumer display or logs.
     pub const fn diagnostic(&self) -> &SafeDiagnostic {
         &self.diagnostic
     }
@@ -46,6 +51,11 @@ impl fmt::Display for RegistrationFailure {
 
 impl Error for RegistrationFailure {}
 
+/// Runtime binding between one driver descriptor and its implemented roles.
+///
+/// Each `with_*` method verifies that the descriptor declared the role. The
+/// registration does not select a provider, infer a fallback, or manufacture
+/// capability support.
 #[derive(Clone)]
 pub struct DriverRegistration {
     descriptor: DriverDescriptor,
@@ -64,6 +74,7 @@ pub struct DriverRegistration {
 }
 
 impl DriverRegistration {
+    /// Creates an empty role binding for the supplied descriptor.
     #[must_use]
     pub const fn new(descriptor: DriverDescriptor) -> Self {
         Self {
@@ -83,6 +94,7 @@ impl DriverRegistration {
         }
     }
 
+    /// Registers the declared discovery role.
     pub fn with_discovery(
         mut self,
         role: Arc<dyn DiscoveryDriver>,
@@ -92,6 +104,7 @@ impl DriverRegistration {
         Ok(self)
     }
 
+    /// Registers the declared structured-run role.
     pub fn with_structured_run(
         mut self,
         role: Arc<dyn StructuredRunDriver>,
@@ -101,6 +114,7 @@ impl DriverRegistration {
         Ok(self)
     }
 
+    /// Registers the declared model-catalogue role.
     pub fn with_model_catalog(
         mut self,
         role: Arc<dyn ModelCatalogDriver>,
@@ -110,6 +124,7 @@ impl DriverRegistration {
         Ok(self)
     }
 
+    /// Registers the declared interactive-session role.
     pub fn with_interactive_session(
         mut self,
         role: Arc<dyn InteractiveSessionDriver>,
@@ -119,6 +134,7 @@ impl DriverRegistration {
         Ok(self)
     }
 
+    /// Registers the declared serving-instance lifecycle role.
     pub fn with_serving_instance(
         mut self,
         role: Arc<dyn ServingInstanceDriver>,
@@ -128,6 +144,7 @@ impl DriverRegistration {
         Ok(self)
     }
 
+    /// Registers the declared realtime-media session role.
     pub fn with_realtime_media_session(
         mut self,
         role: Arc<dyn RealtimeMediaSessionDriver>,
@@ -137,6 +154,7 @@ impl DriverRegistration {
         Ok(self)
     }
 
+    /// Registers the declared inactive provider-session management role.
     pub fn with_provider_session_management(
         mut self,
         role: Arc<dyn ProviderSessionManagementDriver>,
@@ -146,6 +164,7 @@ impl DriverRegistration {
         Ok(self)
     }
 
+    /// Registers the declared provider-session catalogue role.
     pub fn with_provider_session_catalogue(
         mut self,
         role: Arc<dyn ProviderSessionCatalogueDriver>,
@@ -155,6 +174,7 @@ impl DriverRegistration {
         Ok(self)
     }
 
+    /// Registers the declared provider-session import role.
     pub fn with_provider_session_import(
         mut self,
         role: Arc<dyn ProviderSessionImportDriver>,
@@ -164,6 +184,7 @@ impl DriverRegistration {
         Ok(self)
     }
 
+    /// Registers the declared provider-session reconciliation role.
     pub fn with_provider_session_reconciliation(
         mut self,
         role: Arc<dyn ProviderSessionReconciliationDriver>,
@@ -173,6 +194,7 @@ impl DriverRegistration {
         Ok(self)
     }
 
+    /// Registers the declared provider-run reconciliation role.
     pub fn with_provider_run_reconciliation(
         mut self,
         role: Arc<dyn ProviderRunReconciliationDriver>,
@@ -182,6 +204,7 @@ impl DriverRegistration {
         Ok(self)
     }
 
+    /// Registers the declared recovered-resource cleanup role.
     pub fn with_provider_recovered_resource_cleanup(
         mut self,
         role: Arc<dyn ProviderRecoveredResourceCleanupDriver>,
@@ -191,56 +214,67 @@ impl DriverRegistration {
         Ok(self)
     }
 
+    /// Returns the descriptor whose declarations bound this registration.
     #[must_use]
     pub const fn descriptor(&self) -> &DriverDescriptor {
         &self.descriptor
     }
 
+    /// Returns the discovery role when registered.
     #[must_use]
     pub fn discovery(&self) -> Option<&Arc<dyn DiscoveryDriver>> {
         self.discovery.as_ref()
     }
 
+    /// Returns the structured-run role when registered.
     #[must_use]
     pub fn structured_run(&self) -> Option<&Arc<dyn StructuredRunDriver>> {
         self.structured_run.as_ref()
     }
 
+    /// Returns the model-catalogue role when registered.
     #[must_use]
     pub fn model_catalog(&self) -> Option<&Arc<dyn ModelCatalogDriver>> {
         self.model_catalog.as_ref()
     }
 
+    /// Returns the interactive-session role when registered.
     #[must_use]
     pub fn interactive_session(&self) -> Option<&Arc<dyn InteractiveSessionDriver>> {
         self.interactive_session.as_ref()
     }
 
+    /// Returns the serving-instance role when registered.
     #[must_use]
     pub fn serving_instance(&self) -> Option<&Arc<dyn ServingInstanceDriver>> {
         self.serving_instance.as_ref()
     }
 
+    /// Returns the realtime-media session role when registered.
     #[must_use]
     pub fn realtime_media_session(&self) -> Option<&Arc<dyn RealtimeMediaSessionDriver>> {
         self.realtime_media_session.as_ref()
     }
 
+    /// Returns the provider-session management role when registered.
     #[must_use]
     pub fn provider_session_management(&self) -> Option<&Arc<dyn ProviderSessionManagementDriver>> {
         self.provider_session_management.as_ref()
     }
 
+    /// Returns the provider-session catalogue role when registered.
     #[must_use]
     pub fn provider_session_catalogue(&self) -> Option<&Arc<dyn ProviderSessionCatalogueDriver>> {
         self.provider_session_catalogue.as_ref()
     }
 
+    /// Returns the provider-session import role when registered.
     #[must_use]
     pub fn provider_session_import(&self) -> Option<&Arc<dyn ProviderSessionImportDriver>> {
         self.provider_session_import.as_ref()
     }
 
+    /// Returns the provider-session reconciliation role when registered.
     #[must_use]
     pub fn provider_session_reconciliation(
         &self,
@@ -248,11 +282,13 @@ impl DriverRegistration {
         self.provider_session_reconciliation.as_ref()
     }
 
+    /// Returns the provider-run reconciliation role when registered.
     #[must_use]
     pub fn provider_run_reconciliation(&self) -> Option<&Arc<dyn ProviderRunReconciliationDriver>> {
         self.provider_run_reconciliation.as_ref()
     }
 
+    /// Returns the recovered-resource cleanup role when registered.
     #[must_use]
     pub fn provider_recovered_resource_cleanup(
         &self,

@@ -6,6 +6,7 @@ use swallowtail_core::{
 use swallowtail_runtime::{PreparationFailure, PreparationStage, PreparedOperationEvidence};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared background-run evidence, including observable activity support.
 pub struct OpenAiBackgroundPreparedEvidence {
     operation: PreparedOperationEvidence,
 }
@@ -26,21 +27,25 @@ impl OpenAiBackgroundPreparedEvidence {
     }
 
     #[must_use]
+    /// Returns access evidence and its provenance.
     pub const fn access(&self) -> &swallowtail_runtime::PreparedAccessEvidence {
         self.operation.access()
     }
 
     #[must_use]
+    /// Returns the provider-neutral prepared operation evidence.
     pub const fn operation(&self) -> &PreparedOperationEvidence {
         &self.operation
     }
 
     #[must_use]
+    /// Returns the activity profile promised by the prepared operation.
     pub const fn observable_activity(&self) -> &swallowtail_core::ObservableActivityProfile {
         self.operation.observable_activity()
     }
 
     #[must_use]
+    /// Returns the immutable background-run preflight plan.
     pub const fn plan(&self) -> &PreflightPlan {
         self.operation.plan()
     }

@@ -9,11 +9,16 @@ use swallowtail_runtime::RuntimeFailure;
 
 use crate::failure::failure;
 
+/// Executable-version interface axis used by Grok Build ACP.
 pub const GROK_BUILD_ACP_AXIS: &str = "grok-build.executable";
+/// Oldest qualified Grok Build version.
 pub const GROK_BUILD_ACP_BASELINE_VERSION: &str = "0.2.114";
+/// Most recent qualified Grok Build version.
 pub const GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION: &str = "0.2.117";
+/// Stable identifier for Grok Build delegated subscription access.
 pub const GROK_BUILD_SUBSCRIPTION_ACCESS_PROFILE_ID: &str =
     "grok-build.subscription.delegated-oauth";
+/// Endpoint audience for Grok Build delegated subscription access.
 pub const GROK_BUILD_SUBSCRIPTION_AUDIENCE: &str = "grok-build.subscription";
 
 pub(crate) const GROK_BUILD_ACP_BEHAVIOR: &str = "grok-build.acp-v1.cached-token-activation-v1";
@@ -33,6 +38,7 @@ impl GrokPlanSelection {
 }
 
 #[must_use]
+/// Builds Grok Build's delegated subscription OAuth access profile.
 pub fn grok_build_subscription_access_profile(credential: CredentialRef) -> AccessProfile {
     AccessProfile::new(
         AccessProfileId::new(GROK_BUILD_SUBSCRIPTION_ACCESS_PROFILE_ID)
@@ -47,6 +53,7 @@ pub fn grok_build_subscription_access_profile(credential: CredentialRef) -> Acce
 }
 
 #[must_use]
+/// Parses a stable Grok Build release into its interface binding.
 pub fn grok_build_acp_binding(value: &str) -> Option<InterfaceVersionBinding> {
     if value.is_empty()
         || value.len() > MAX_VERSION_BYTES
@@ -66,6 +73,7 @@ pub fn grok_build_acp_binding(value: &str) -> Option<InterfaceVersionBinding> {
 }
 
 #[must_use]
+/// Returns the qualified compatibility claim for Grok Build ACP.
 pub fn grok_build_acp_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
         InterfaceCompatibilityClaimId::new("grok-build.acp.executable-window-2")

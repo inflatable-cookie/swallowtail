@@ -1,6 +1,7 @@
 //! Grok Build ACP integration for Swallowtail.
 
 #![forbid(unsafe_code)]
+#![deny(missing_docs)]
 
 mod activity;
 mod connection;

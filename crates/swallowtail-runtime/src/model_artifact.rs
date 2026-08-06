@@ -2,7 +2,9 @@ use crate::{BoxFuture, CleanupOutcome, MaterializedModelArtifactRef, RuntimeFail
 use swallowtail_core::{ExecutionHostId, ModelArtifactBinding};
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+/// Driver access permitted by a model-artifact lease.
 pub enum ModelArtifactAccess {
+    /// The serving driver may read but not mutate artifact material.
     ReadOnly,
 }
 
@@ -18,6 +20,7 @@ pub struct ModelArtifactLease {
 
 impl ModelArtifactLease {
     #[must_use]
+    /// Creates a serving-scope read-only lease for host-resolved material.
     pub const fn read_only(
         scope: ScopeId,
         execution_host_id: ExecutionHostId,
@@ -34,21 +37,25 @@ impl ModelArtifactLease {
     }
 
     #[must_use]
+    /// Returns the serving scope that owns the lease.
     pub const fn scope(&self) -> &ScopeId {
         &self.scope
     }
 
     #[must_use]
+    /// Returns the authoritative execution host.
     pub const fn execution_host_id(&self) -> &ExecutionHostId {
         &self.execution_host_id
     }
 
     #[must_use]
+    /// Returns the exact portable artifact binding resolved by the host.
     pub const fn binding(&self) -> &ModelArtifactBinding {
         &self.binding
     }
 
     #[must_use]
+    /// Returns the permitted artifact access mode.
     pub const fn access(&self) -> ModelArtifactAccess {
         self.access
     }
@@ -60,7 +67,12 @@ impl ModelArtifactLease {
     }
 }
 
+/// Host boundary for acquiring and releasing serving-scope model artifacts.
+///
+/// Release follows owned-child join and never deletes consumer-owned model
+/// material.
 pub trait ModelArtifactService: Send + Sync {
+    /// Acquires a read-only artifact lease for one scope and host.
     fn acquire(
         &self,
         scope: ScopeId,
@@ -68,6 +80,7 @@ pub trait ModelArtifactService: Send + Sync {
         binding: ModelArtifactBinding,
     ) -> BoxFuture<'static, Result<ModelArtifactLease, RuntimeFailure>>;
 
+    /// Releases host materialization after owned serving cleanup.
     fn release(&self, lease: ModelArtifactLease) -> BoxFuture<'static, CleanupOutcome>;
 }
 

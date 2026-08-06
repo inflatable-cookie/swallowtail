@@ -1,6 +1,7 @@
 const DRIVER_ID: &str = "swallowtail.kimi.acp";
 
 #[must_use]
+/// Describes the installed Kimi Code ACP route.
 pub fn kimi_acp_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(
         AdapterIdentity::new(

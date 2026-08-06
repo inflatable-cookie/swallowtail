@@ -13,32 +13,38 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared turn-scoped Qwen interactive session.
 pub struct QwenPreparedSession {
     evidence: QwenPreparedEvidence,
     request: OpenSessionRequest,
 }
 
 impl QwenPreparedSession {
+    /// Returns portable evidence for the prepared session.
     #[must_use]
     pub const fn evidence(&self) -> &QwenPreparedEvidence {
         &self.evidence
     }
 
+    /// Returns the validated preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &swallowtail_core::PreflightPlan {
         self.evidence.plan()
     }
 
+    /// Returns the bound session-open request.
     #[must_use]
     pub const fn request(&self) -> &OpenSessionRequest {
         &self.request
     }
 
+    /// Creates the low-level driver bound to this session.
     #[must_use]
     pub fn low_level_driver(&self) -> QwenHeadlessDriver {
         self.evidence.low_level_driver()
     }
 
+    /// Opens the prepared turn-scoped session with caller-supplied host services.
     pub fn open_session(
         &self,
         services: HostServices,
@@ -49,6 +55,7 @@ impl QwenPreparedSession {
         Box::pin(async move { driver.open_session(plan, request, services).await })
     }
 
+    /// Prepares context-losing recovery through a fresh session replacement.
     #[must_use]
     pub fn prepare_working_state_restoration(
         &self,
@@ -62,6 +69,7 @@ impl QwenPreparedSession {
         )
     }
 
+    /// Splits the prepared session into evidence, plan, and request.
     #[must_use]
     pub fn into_parts(
         self,
@@ -76,6 +84,7 @@ impl QwenPreparedSession {
 }
 
 impl QwenPreparedIntegration {
+    /// Prepares a turn-scoped interactive session from the admitted integration.
     pub fn prepare_session(
         &self,
         input: QwenSessionProfileInput,

@@ -14,32 +14,38 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared Oh My Pi structured run ready for explicit dispatch.
 pub struct OhMyPiPreparedRun {
     evidence: OhMyPiPreparedEvidence,
     request: StructuredRunRequest,
 }
 
 impl OhMyPiPreparedRun {
+    /// Returns the run's preparation evidence.
     #[must_use]
     pub const fn evidence(&self) -> &OhMyPiPreparedEvidence {
         &self.evidence
     }
 
+    /// Returns the immutable preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &swallowtail_core::PreflightPlan {
         self.evidence.plan()
     }
 
+    /// Returns the structured run request.
     #[must_use]
     pub const fn request(&self) -> &StructuredRunRequest {
         &self.request
     }
 
+    /// Reconstructs the low-level driver from prepared evidence.
     #[must_use]
     pub fn low_level_driver(&self) -> OhMyPiRpcDriver {
         self.evidence.low_level_driver()
     }
 
+    /// Starts the prepared structured run.
     pub fn start_run(&self, services: HostServices) -> OhMyPiPreparedRunFuture {
         let driver = self.low_level_driver();
         let plan = self.plan().clone();
@@ -47,6 +53,7 @@ impl OhMyPiPreparedRun {
         Box::pin(async move { driver.start_run(plan, request, services).await })
     }
 
+    /// Consumes the prepared run into evidence, plan, and request.
     #[must_use]
     pub fn into_parts(
         self,
@@ -61,6 +68,7 @@ impl OhMyPiPreparedRun {
 }
 
 impl OhMyPiPreparedIntegration {
+    /// Validates attachments and reasoning, then prepares a structured run.
     pub fn prepare_run(
         &self,
         input: OhMyPiRunProfileInput,

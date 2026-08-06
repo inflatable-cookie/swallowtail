@@ -22,12 +22,14 @@ const QUALIFIED_SOURCE_REVISIONS: [(&str, &str); 4] = [
     ("0.2.117", "f1c06093089f"),
 ];
 
+/// Low-level installed discovery and ACP operation driver for Grok Build.
 pub struct GrokAcpDriver {
     ambient_environment: EnvironmentRef,
     credential: CredentialRef,
 }
 
 impl GrokAcpDriver {
+    /// Creates a driver with its approved environment and opaque OAuth credential.
     #[must_use]
     pub const fn new(ambient_environment: EnvironmentRef, credential: CredentialRef) -> Self {
         Self {
@@ -36,11 +38,13 @@ impl GrokAcpDriver {
         }
     }
 
+    /// Returns the approved ambient execution environment.
     #[must_use]
     pub const fn ambient_environment(&self) -> &EnvironmentRef {
         &self.ambient_environment
     }
 
+    /// Returns the opaque credential reference used for token activation.
     #[must_use]
     pub const fn credential(&self) -> &CredentialRef {
         &self.credential

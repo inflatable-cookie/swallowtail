@@ -2,6 +2,7 @@ use crate::failure::AlibabaProtocolFailure;
 use serde_json::Value;
 use swallowtail_core::ProviderRequestRef;
 
+/// Parses a bounded provider request-correlation reference from response headers.
 pub fn parse_request_correlation(
     input: &[u8],
 ) -> Result<ProviderRequestRef, AlibabaProtocolFailure> {
@@ -15,6 +16,7 @@ pub fn parse_request_correlation(
         .map_err(|_| AlibabaProtocolFailure::invalid("request correlation"))
 }
 
+/// Validates a provider error envelope and returns only a safe failure.
 pub fn parse_provider_failure(
     input: &[u8],
 ) -> Result<AlibabaProtocolFailure, AlibabaProtocolFailure> {

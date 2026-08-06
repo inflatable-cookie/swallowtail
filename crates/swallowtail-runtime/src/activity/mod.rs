@@ -1,3 +1,5 @@
+#![deny(missing_docs)]
+
 mod content;
 mod error;
 mod identity;

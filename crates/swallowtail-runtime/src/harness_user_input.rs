@@ -1,23 +1,35 @@
+#![deny(missing_docs)]
+
 use crate::{HarnessQuestionId, HarnessQuestionOptionId, InputLimitExceeded, OperationContent};
 use std::collections::BTreeSet;
 
+/// Cardinality of a portable harness choice question.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum HarnessUserInputChoiceMode {
+    /// At most one offered option may be selected.
     Single,
+    /// Any number of distinct offered options may be selected.
     Multiple,
 }
 
+/// Portable shape of one harness-originated question.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum HarnessUserInputQuestionKind {
+    /// Selection from a bounded set of stable options.
     Choice {
+        /// Whether one or several offered options may be selected.
         mode: HarnessUserInputChoiceMode,
+        /// Whether free text may accompany or replace an offered selection.
         allow_other: bool,
     },
+    /// Free-text input with optional secret-display posture.
     Text {
+        /// Whether consumers should conceal the entered value in their UI.
         secret: bool,
     },
 }
 
+/// One stable, bounded option offered by a harness question.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct HarnessUserInputOption {
     id: HarnessQuestionOptionId,
@@ -27,6 +39,7 @@ pub struct HarnessUserInputOption {
 
 impl HarnessUserInputOption {
     #[must_use]
+    /// Creates an option from its stable id, label, and optional description.
     pub const fn new(
         id: HarnessQuestionOptionId,
         label: OperationContent,
@@ -40,16 +53,19 @@ impl HarnessUserInputOption {
     }
 
     #[must_use]
+    /// Returns the stable option identity.
     pub const fn id(&self) -> &HarnessQuestionOptionId {
         &self.id
     }
 
     #[must_use]
+    /// Returns the provider-visible option label as redacted operation content.
     pub const fn label(&self) -> &OperationContent {
         &self.label
     }
 
     #[must_use]
+    /// Returns the optional provider-visible description.
     pub const fn description(&self) -> Option<&OperationContent> {
         self.description.as_ref()
     }
@@ -64,6 +80,7 @@ impl HarnessUserInputOption {
     }
 }
 
+/// One ordered, bounded question requested by an interactive harness.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct HarnessUserInputQuestion {
     id: HarnessQuestionId,
@@ -74,6 +91,7 @@ pub struct HarnessUserInputQuestion {
 }
 
 impl HarnessUserInputQuestion {
+    /// Creates a question after validating option shape and unique option ids.
     pub fn new(
         id: HarnessQuestionId,
         header: OperationContent,
@@ -105,25 +123,30 @@ impl HarnessUserInputQuestion {
     }
 
     #[must_use]
+    /// Returns the stable question identity.
     pub const fn id(&self) -> &HarnessQuestionId {
         &self.id
     }
 
     #[must_use]
+    /// Returns the short provider-visible question header.
     pub const fn header(&self) -> &OperationContent {
         &self.header
     }
 
     #[must_use]
+    /// Returns the provider-visible question prompt.
     pub const fn prompt(&self) -> &OperationContent {
         &self.prompt
     }
 
     #[must_use]
+    /// Returns the portable question shape.
     pub const fn kind(&self) -> HarnessUserInputQuestionKind {
         self.kind
     }
 
+    /// Iterates offered options in provider order.
     pub fn options(&self) -> impl ExactSizeIterator<Item = &HarnessUserInputOption> {
         self.options.iter()
     }
@@ -140,6 +163,7 @@ impl HarnessUserInputQuestion {
     }
 }
 
+/// Bounded ordered set of harness questions carried by one callback request.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct HarnessUserInputRequest {
     questions: Vec<HarnessUserInputQuestion>,
@@ -147,6 +171,7 @@ pub struct HarnessUserInputRequest {
 }
 
 impl HarnessUserInputRequest {
+    /// Creates a request after enforcing question, option, identity, and byte bounds.
     pub fn new(
         questions: impl IntoIterator<Item = HarnessUserInputQuestion>,
         auto_resolution_ms: Option<u64>,
@@ -196,16 +221,19 @@ impl HarnessUserInputRequest {
         })
     }
 
+    /// Iterates questions in provider order.
     pub fn questions(&self) -> impl ExactSizeIterator<Item = &HarnessUserInputQuestion> {
         self.questions.iter()
     }
 
     #[must_use]
+    /// Returns the provider-supplied auto-resolution interval, when any.
     pub const fn auto_resolution_ms(&self) -> Option<u64> {
         self.auto_resolution_ms
     }
 
     #[must_use]
+    /// Reports whether a response exactly answers this request's question shapes.
     pub fn accepts(&self, response: &HarnessUserInputResponse) -> bool {
         if response.answers.len() != self.questions.len() {
             return false;
@@ -220,6 +248,7 @@ impl HarnessUserInputRequest {
     }
 }
 
+/// One selected, textual, or skipped answer to a stable harness question.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct HarnessUserInputAnswer {
     question_id: HarnessQuestionId,
@@ -230,6 +259,7 @@ pub struct HarnessUserInputAnswer {
 
 impl HarnessUserInputAnswer {
     #[must_use]
+    /// Creates a non-skipped answer with selected options and optional text.
     pub fn selected(
         question_id: HarnessQuestionId,
         selected_options: impl IntoIterator<Item = HarnessQuestionOptionId>,
@@ -244,6 +274,7 @@ impl HarnessUserInputAnswer {
     }
 
     #[must_use]
+    /// Creates an explicit skipped answer for one question.
     pub const fn skipped(question_id: HarnessQuestionId) -> Self {
         Self {
             question_id,
@@ -254,20 +285,24 @@ impl HarnessUserInputAnswer {
     }
 
     #[must_use]
+    /// Returns the stable question identity being answered.
     pub const fn question_id(&self) -> &HarnessQuestionId {
         &self.question_id
     }
 
+    /// Iterates selected option identities in consumer-supplied order.
     pub fn selected_options(&self) -> impl ExactSizeIterator<Item = &HarnessQuestionOptionId> {
         self.selected_options.iter()
     }
 
     #[must_use]
+    /// Returns optional free-text or other input.
     pub const fn text(&self) -> Option<&OperationContent> {
         self.text.as_ref()
     }
 
     #[must_use]
+    /// Reports whether the consumer explicitly skipped the question.
     pub const fn is_skipped(&self) -> bool {
         self.skipped
     }
@@ -283,12 +318,14 @@ impl HarnessUserInputAnswer {
     }
 }
 
+/// Bounded complete response to one harness user-input callback.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct HarnessUserInputResponse {
     answers: Vec<HarnessUserInputAnswer>,
 }
 
 impl HarnessUserInputResponse {
+    /// Creates a response after enforcing answer, identity, and byte bounds.
     pub fn new(
         answers: impl IntoIterator<Item = HarnessUserInputAnswer>,
         maximum_answers: usize,
@@ -329,11 +366,13 @@ impl HarnessUserInputResponse {
         Ok(Self { answers })
     }
 
+    /// Iterates answers in consumer-supplied order.
     pub fn answers(&self) -> impl ExactSizeIterator<Item = &HarnessUserInputAnswer> {
         self.answers.iter()
     }
 }
 
+/// Indicates that a question's option shape is internally invalid.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct HarnessUserInputInvalid;
 

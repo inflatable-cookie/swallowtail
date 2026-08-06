@@ -3,6 +3,7 @@ use swallowtail_core::{ModelArtifactBinding, PreflightPlan};
 use swallowtail_runtime::{PreparationFailure, PreparedOperationEvidence};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Immutable artifact, access, and preflight evidence for owned serving.
 pub struct LlamaCppOwnedPreparedEvidence {
     operation: PreparedOperationEvidence,
     artifact: ModelArtifactBinding,
@@ -19,26 +20,31 @@ impl LlamaCppOwnedPreparedEvidence {
         })
     }
 
+    /// Returns the complete prepared lifecycle operation evidence.
     #[must_use]
     pub const fn operation(&self) -> &PreparedOperationEvidence {
         &self.operation
     }
 
+    /// Returns the immutable preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.operation.plan()
     }
 
+    /// Returns the exact model artifact binding selected for acquisition.
     #[must_use]
     pub const fn artifact(&self) -> &ModelArtifactBinding {
         &self.artifact
     }
 
+    /// Returns the exact owned llama.cpp build expected by the driver.
     #[must_use]
     pub const fn expected_build(&self) -> &'static str {
         crate::LLAMA_CPP_OWNED_BUILD
     }
 
+    /// Returns the exact owned llama.cpp commit expected by the driver.
     #[must_use]
     pub const fn expected_commit(&self) -> &'static str {
         crate::LLAMA_CPP_OWNED_COMMIT

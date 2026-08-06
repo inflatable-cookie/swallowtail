@@ -4,10 +4,12 @@ use swallowtail_core::{
     InterfaceVersionScheme, InterfaceVersionSegment,
 };
 
+/// Exact opaque Anthropic Messages facade revision.
 pub const ANTHROPIC_MESSAGES_FACADE_REVISION: &str = "anthropic-2023-06-01";
 const FACADE_AXIS: &str = "anthropic.messages-facade";
 
 #[must_use]
+/// Returns the exact Anthropic Messages facade version binding.
 pub fn anthropic_messages_facade_binding() -> InterfaceVersionBinding {
     InterfaceVersionBinding::new(
         InterfaceVersionAxis::new(FACADE_AXIS).expect("static Anthropic axis is valid"),
@@ -17,6 +19,7 @@ pub fn anthropic_messages_facade_binding() -> InterfaceVersionBinding {
 }
 
 #[must_use]
+/// Returns the qualified-only compatibility claim for the Messages facade.
 pub fn anthropic_messages_facade_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
         InterfaceCompatibilityClaimId::new("anthropic.messages-window-1")

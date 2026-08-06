@@ -8,6 +8,7 @@ use swallowtail_core::{
 };
 
 #[derive(Clone, Eq, PartialEq)]
+/// Immutable route and session identity bound to private continuation state.
 pub struct DirectContinuationBinding {
     instance_id: ConfiguredInstanceId,
     instance_revision: InstanceRevision,
@@ -20,6 +21,9 @@ pub struct DirectContinuationBinding {
 }
 
 impl DirectContinuationBinding {
+    /// Builds a binding from an exact preflight plan and runtime session.
+    ///
+    /// Fails when the plan does not select an exact model route.
     pub fn from_plan(
         plan: &PreflightPlan,
         session_id: RuntimeSessionId,
@@ -37,6 +41,7 @@ impl DirectContinuationBinding {
     }
 
     #[must_use]
+    /// Returns whether the plan and session exactly match this binding.
     pub fn matches_plan(&self, plan: &PreflightPlan, session_id: &RuntimeSessionId) -> bool {
         self.instance_id == *plan.instance_id()
             && self.instance_revision == *plan.instance_revision()
@@ -56,6 +61,10 @@ impl fmt::Debug for DirectContinuationBinding {
 }
 
 #[derive(Clone, Eq, PartialEq)]
+/// Redacted metadata describing bounded provider-private continuation state.
+///
+/// This record exposes only binding, source-attempt, and size evidence. It does
+/// not make the provider continuation bytes portable or serializable.
 pub struct ProviderPrivateContinuationRecord {
     binding: DirectContinuationBinding,
     source_attempt_id: DirectInferenceAttemptId,
@@ -63,6 +72,7 @@ pub struct ProviderPrivateContinuationRecord {
 }
 
 impl ProviderPrivateContinuationRecord {
+    /// Creates a record when the private continuation fits its configured bound.
     pub fn new(
         binding: DirectContinuationBinding,
         source_attempt_id: DirectInferenceAttemptId,
@@ -83,16 +93,19 @@ impl ProviderPrivateContinuationRecord {
     }
 
     #[must_use]
+    /// Returns the retained private continuation size.
     pub const fn byte_len(&self) -> NonZeroU64 {
         self.byte_len
     }
 
     #[must_use]
+    /// Returns the inference attempt that produced the continuation.
     pub const fn source_attempt_id(&self) -> &DirectInferenceAttemptId {
         &self.source_attempt_id
     }
 
     #[must_use]
+    /// Returns whether the private continuation belongs to the plan and session.
     pub fn matches_plan(&self, plan: &PreflightPlan, session_id: &RuntimeSessionId) -> bool {
         self.binding.matches_plan(plan, session_id)
     }

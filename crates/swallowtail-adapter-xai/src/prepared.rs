@@ -8,6 +8,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Explicit host, endpoint, and API-key evidence used for Responses preparation.
 pub struct XaiPreparationInput {
     instance_revision: InstanceRevision,
     execution_host_id: ExecutionHostId,
@@ -18,6 +19,7 @@ pub struct XaiPreparationInput {
 
 impl XaiPreparationInput {
     #[must_use]
+    /// Creates preparation input without performing provider work.
     pub const fn new(
         instance_revision: InstanceRevision,
         execution_host_id: ExecutionHostId,
@@ -36,6 +38,7 @@ impl XaiPreparationInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared xAI Responses integration bound to one instance and host.
 pub struct XaiPreparedIntegration {
     access_profile: AccessProfile,
     access_evidence: PreparedAccessEvidence,
@@ -45,29 +48,35 @@ pub struct XaiPreparedIntegration {
 
 impl XaiPreparedIntegration {
     #[must_use]
+    /// Returns the exact public API-key access profile.
     pub const fn access_profile(&self) -> &AccessProfile {
         &self.access_profile
     }
 
     #[must_use]
+    /// Returns the access evidence and its provenance.
     pub const fn access_evidence(&self) -> &PreparedAccessEvidence {
         &self.access_evidence
     }
 
     #[must_use]
+    /// Returns the prepared configured instance.
     pub const fn instance(&self) -> &ConfiguredInstance {
         &self.instance
     }
 
+    /// Iterates the host services present during preparation.
     pub fn available_host_services(&self) -> impl ExactSizeIterator<Item = HostServiceKind> + '_ {
         self.available_host_services.iter().copied()
     }
 
     #[must_use]
+    /// Returns the public low-level WebSocket driver.
     pub fn low_level_driver(&self) -> crate::XaiWebSocketDriver {
         crate::XaiWebSocketDriver::new()
     }
 
+    /// Rejects execution-host or endpoint drift from the prepared binding.
     pub fn validate_execution_binding(
         &self,
         host: &ExecutionHostId,
@@ -84,6 +93,7 @@ impl XaiPreparedIntegration {
     }
 }
 
+/// Prepares xAI Responses WebSocket integration without provider effects.
 pub fn prepare_xai_responses_websocket(
     input: XaiPreparationInput,
     services: &HostServices,

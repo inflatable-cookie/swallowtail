@@ -7,28 +7,45 @@ use swallowtail_runtime::{OperationContent, TokenUsage};
 include!("sse/decoder.rs");
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Validated semantic event from the qualified Responses SSE subset.
 pub enum ProviderEvent {
+    /// The provider created one exact response.
     Created(ResponseRef),
+    /// An assistant output item started.
     AssistantStarted(String),
+    /// A known non-content lifecycle event advanced the response.
     Progress(String),
+    /// An ordered assistant text delta.
     TextDelta {
+        /// Provider output-item identity.
         item: String,
+        /// Newly emitted text content.
         content: OperationContent,
     },
+    /// The provider closed the assistant text content.
     TextDone {
+        /// Provider output-item identity.
         item: String,
+        /// Complete assistant text.
         content: OperationContent,
     },
+    /// The response reached terminal success with exact identity agreement.
     Completed {
+        /// Provider response identity.
         response: ResponseRef,
+        /// Provider output-item identity.
         item: String,
+        /// Complete assistant output.
         output: OperationContent,
+        /// Final provider token usage.
         usage: TokenUsage,
     },
+    /// A forward-compatible event outside the semantic projection.
     Unknown(String),
 }
 
 #[derive(Default)]
+/// Stateful validator for one ordered Model Studio response stream.
 pub struct ResponseStream {
     response: Option<ResponseRef>,
     last_sequence: Option<u64>,
@@ -39,6 +56,7 @@ pub struct ResponseStream {
 }
 
 impl ResponseStream {
+    /// Applies one SSE frame and returns its bounded semantic projection.
     pub fn apply(&mut self, frame: &SseFrame) -> Result<ProviderEvent, AlibabaProtocolFailure> {
         if self.terminal {
             return Err(AlibabaProtocolFailure::invalid(

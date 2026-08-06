@@ -9,11 +9,13 @@ pub struct LocalScopedTaskService {
 }
 
 impl LocalScopedTaskService {
+    /// Creates a scoped task service for one exact execution host.
     #[must_use]
     pub const fn new(execution_host_id: ExecutionHostId) -> Self {
         Self { execution_host_id }
     }
 
+    /// Returns the execution host identity bound to spawned tasks.
     #[must_use]
     pub const fn execution_host_id(&self) -> &ExecutionHostId {
         &self.execution_host_id

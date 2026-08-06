@@ -32,6 +32,7 @@ impl LocalCredentialApproval {
 }
 
 impl LocalProcessHostBuilder {
+    /// Approves one exact endpoint value and audience behind an opaque reference.
     #[must_use]
     pub fn approve_endpoint(
         mut self,
@@ -46,6 +47,7 @@ impl LocalProcessHostBuilder {
         self
     }
 
+    /// Approves secret credential bytes for one exact endpoint audience.
     #[must_use]
     pub fn approve_secret_credential(
         mut self,
@@ -63,6 +65,7 @@ impl LocalProcessHostBuilder {
         self
     }
 
+    /// Approves host-delegated authentication for one exact endpoint audience.
     #[must_use]
     pub fn approve_delegated_credential(
         mut self,

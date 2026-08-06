@@ -31,6 +31,7 @@ use swallowtail_runtime::{
 const ENDPOINT_AUDIENCE: &str = "ollama.attached";
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs that bind one attached runtime to an exact local model artifact.
 pub struct OllamaPreparationInput {
     instance_id: ConfiguredInstanceId,
     instance_revision: InstanceRevision,
@@ -44,6 +45,7 @@ pub struct OllamaPreparationInput {
 }
 
 impl OllamaPreparationInput {
+    /// Creates preparation inputs with explicit endpoint, model tag, and digest.
     #[must_use]
     #[allow(clippy::too_many_arguments)]
     pub const fn new(
@@ -72,6 +74,7 @@ impl OllamaPreparationInput {
 }
 
 #[derive(Clone, Debug)]
+/// Caller-owned scope, deadline, and cancellation controls for runtime probing.
 pub struct OllamaPreparationProbe {
     scope_id: ScopeId,
     deadline: Deadline,
@@ -79,6 +82,7 @@ pub struct OllamaPreparationProbe {
 }
 
 impl OllamaPreparationProbe {
+    /// Creates one bounded attached-runtime probe.
     #[must_use]
     pub const fn new(
         scope_id: ScopeId,
@@ -94,6 +98,7 @@ impl OllamaPreparationProbe {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Observed attached Ollama runtime before operation-specific preflight.
 pub struct OllamaPreparedIntegration {
     access_profile: AccessProfile,
     access_evidence: PreparedAccessEvidence,
@@ -104,40 +109,48 @@ pub struct OllamaPreparedIntegration {
 }
 
 impl OllamaPreparedIntegration {
+    /// Returns the local-unauthenticated access profile.
     #[must_use]
     pub const fn access_profile(&self) -> &AccessProfile {
         &self.access_profile
     }
 
+    /// Returns the admitted access evidence.
     #[must_use]
     pub const fn access_evidence(&self) -> &PreparedAccessEvidence {
         &self.access_evidence
     }
 
+    /// Returns the configured attached runtime instance.
     #[must_use]
     pub const fn instance(&self) -> &ConfiguredInstance {
         &self.instance
     }
 
+    /// Returns the runtime, inventory, and selected-model observations.
     #[must_use]
     pub const fn runtime(&self) -> &OllamaPreparedRuntimeObservation {
         &self.runtime
     }
 
+    /// Returns the exact model-route selection bound during preparation.
     #[must_use]
     pub const fn model_selection(&self) -> &crate::prepared_profile::OllamaModelSelection {
         &self.model
     }
 
+    /// Iterates host services available when preparation completed.
     pub fn available_host_services(&self) -> impl ExactSizeIterator<Item = HostServiceKind> + '_ {
         self.available_host_services.iter().copied()
     }
 
+    /// Creates the stateless low-level native HTTP driver.
     #[must_use]
     pub fn low_level_driver(&self) -> crate::OllamaNativeAttachedDriver {
         crate::OllamaNativeAttachedDriver::new()
     }
 
+    /// Rejects execution after the selected host or endpoint has drifted.
     pub fn validate_execution_binding(
         &self,
         execution_host_id: &ExecutionHostId,
@@ -156,6 +169,7 @@ impl OllamaPreparedIntegration {
     }
 }
 
+/// Probes and admits one exact externally managed Ollama runtime and model.
 pub async fn prepare_ollama_attached(
     input: OllamaPreparationInput,
     probe: OllamaPreparationProbe,

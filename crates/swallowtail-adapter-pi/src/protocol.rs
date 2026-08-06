@@ -9,26 +9,41 @@ pub(crate) use wire::{
 };
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+/// Qualified top-level record categories emitted by Pi RPC.
 pub enum PiRpcRecordKind {
+    /// Correlated RPC response.
     Response,
+    /// Agent lifecycle, message, tool, usage, or error event.
     AgentEvent,
+    /// Extension UI dialog request.
     ExtensionUiDialog,
+    /// Extension UI display update.
     ExtensionUiDisplay,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+/// Safe failure categories from bounded Pi record decoding.
 pub enum PiRpcProtocolFailureKind {
+    /// The final record was not LF-terminated.
     MissingLfDelimiter,
+    /// An LF-delimited record was empty.
     EmptyRecord,
+    /// A record was not valid JSON.
     MalformedJson,
+    /// A record omitted its required type discriminator.
     MissingType,
+    /// A top-level record type was outside the qualified protocol.
     UnknownRecord,
+    /// An RPC response did not match the qualified shape.
     InvalidResponse,
+    /// An extension UI request did not match the qualified shape.
     InvalidUiRequest,
+    /// A single record exceeded the decoder bound.
     RecordTooLarge,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Redacted protocol failure returned by the public corpus decoder.
 pub struct PiRpcProtocolFailure {
     kind: PiRpcProtocolFailureKind,
 }
@@ -38,6 +53,7 @@ impl PiRpcProtocolFailure {
         Self { kind }
     }
 
+    /// Returns the safe protocol failure category.
     #[must_use]
     pub const fn kind(&self) -> PiRpcProtocolFailureKind {
         self.kind

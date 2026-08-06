@@ -21,6 +21,7 @@ pub enum Scenario {
     Permission,
     Elicitation,
     Cancellation,
+    ClosePending,
     Disconnect,
     ModelDrift,
     AuthDrift,

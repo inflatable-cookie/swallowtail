@@ -13,7 +13,9 @@ use swallowtail_runtime::{
 /// The exact installed Kimi Code route selected before preparation.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum KimiCodePreparedDriver {
+    /// Interactive ACP route.
     Acp,
+    /// One-shot stream-JSON route.
     Headless,
 }
 
@@ -32,6 +34,7 @@ pub struct KimiCodePreparationInput {
 }
 
 impl KimiCodePreparationInput {
+    /// Creates preparation input for an exact installed Kimi Code route.
     #[must_use]
     #[allow(clippy::too_many_arguments)]
     pub const fn new(
@@ -57,6 +60,7 @@ impl KimiCodePreparationInput {
         }
     }
 
+    /// Returns the selected Kimi Code route.
     #[must_use]
     pub const fn driver(&self) -> KimiCodePreparedDriver {
         self.driver
@@ -83,6 +87,7 @@ pub struct KimiCodePreparationProbe {
 }
 
 impl KimiCodePreparationProbe {
+    /// Creates a shared Kimi Code preparation probe.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -102,11 +107,14 @@ impl KimiCodePreparationProbe {
 /// One explicitly selected installed Kimi Code route.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum KimiCodePreparedIntegration {
+    /// Prepared interactive ACP integration.
     Acp(KimiPreparedIntegration),
+    /// Prepared one-shot headless integration.
     Headless(KimiHeadlessPreparedIntegration),
 }
 
 impl KimiCodePreparedIntegration {
+    /// Returns the prepared Kimi Code route.
     #[must_use]
     pub const fn driver(&self) -> KimiCodePreparedDriver {
         match self {

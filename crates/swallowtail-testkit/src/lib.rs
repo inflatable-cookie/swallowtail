@@ -4,6 +4,7 @@
 //! contains no execution, transport, or provider behavior.
 
 #![forbid(unsafe_code)]
+#![deny(missing_docs)]
 
 mod acp_projection_assertions;
 mod assertions;

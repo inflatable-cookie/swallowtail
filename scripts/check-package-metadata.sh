@@ -12,13 +12,13 @@ trap 'rm -f "$release_metadata" "$release_edges" "$release_names"' EXIT
 cargo metadata --no-deps --format-version 1 > "$release_metadata"
 
 jq -e '
-  (.packages | length) == 26 and
+  (.packages | length) == 27 and
   all(.packages[];
     .version == "0.1.0" and
     .edition == "2024" and
     .license == "MIT" and
     .repository == "https://github.com/inflatable-cookie/swallowtail" and
-    .publish == ["crates-io"] and
+    .publish == [] and
     .readme == "../../README.md" and
     (.description | type == "string" and length > 0) and
     (
@@ -29,6 +29,7 @@ jq -e '
          .name == "swallowtail-adapter-kimi" or
          .name == "swallowtail-adapter-opencode" or
          .name == "swallowtail-adapter-ollama" or
+         .name == "swallowtail-adapter-oh-my-pi" or
          .name == "swallowtail-adapter-pi" or
          .name == "swallowtail-adapter-qwen") and
         .features == {"live-probes":[]}
@@ -39,7 +40,7 @@ jq -e '
   all(.packages[];
     if .name == "swallowtail-adapter-bedrock"
     then .rust_version == "1.94.1"
-    else .rust_version == "1.93"
+    else .rust_version == "1.90"
     end
   ) and
   all(.packages[].dependencies[];
@@ -48,8 +49,7 @@ jq -e '
 ' "$release_metadata" > /dev/null
 
 jq -r '.packages[].name' "$release_metadata" | LC_ALL=C sort > "$release_names"
-cut -f1 release-baselines/public-api-0.1.0.sha256 | LC_ALL=C sort |
-  diff -u - "$release_names"
+diff -u release-baselines/public-api-0.1.0/packages.txt "$release_names"
 
 jq -r '
   .packages[] as $package |
@@ -61,4 +61,4 @@ jq -r '
 
 diff -u release-baselines/internal-dependencies-0.1.0.tsv "$release_edges"
 
-printf 'package metadata and dependency topology passed for 26 crates\n'
+printf 'package metadata and dependency topology passed for 27 crates\n'

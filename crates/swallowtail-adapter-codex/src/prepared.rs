@@ -19,7 +19,9 @@ use swallowtail_runtime::{
 /// The Codex transport selected before preparation.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum CodexPreparedDriver {
+    /// One-shot structured `codex exec` route.
     StructuredExec,
+    /// Interactive and retained-thread app-server route.
     AppServer,
 }
 
@@ -37,6 +39,7 @@ pub struct CodexPreparationInput {
 }
 
 impl CodexPreparationInput {
+    /// Creates preparation input for one exact installed Codex route.
     #[must_use]
     #[allow(clippy::too_many_arguments)]
     pub const fn new(
@@ -72,6 +75,7 @@ pub struct CodexPreparationProbe {
 }
 
 impl CodexPreparationProbe {
+    /// Creates a bounded installed-version probe.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -102,41 +106,49 @@ pub struct CodexPreparedIntegration {
 }
 
 impl CodexPreparedIntegration {
+    /// Returns the exact prepared Codex route.
     #[must_use]
     pub const fn driver(&self) -> CodexPreparedDriver {
         self.driver
     }
 
+    /// Returns the approved execution environment.
     #[must_use]
     pub const fn environment(&self) -> &EnvironmentRef {
         &self.environment
     }
 
+    /// Returns the qualified installed-executable target.
     #[must_use]
     pub const fn target(&self) -> &InstalledExecutableTarget {
         &self.target
     }
 
+    /// Returns the executable observation admitted during preparation.
     #[must_use]
     pub const fn observation(&self) -> &InstalledExecutableObservation {
         &self.observation
     }
 
+    /// Returns the configured ChatGPT subscription access profile.
     #[must_use]
     pub const fn access_profile(&self) -> &AccessProfile {
         &self.access_profile
     }
 
+    /// Returns the prepared access evidence.
     #[must_use]
     pub const fn access_evidence(&self) -> &PreparedAccessEvidence {
         &self.access_evidence
     }
 
+    /// Returns the exact configured provider instance.
     #[must_use]
     pub const fn instance(&self) -> &ConfiguredInstance {
         &self.instance
     }
 
+    /// Iterates over host services present when preparation succeeded.
     pub fn available_host_services(&self) -> impl ExactSizeIterator<Item = HostServiceKind> + '_ {
         self.available_host_services.iter().copied()
     }

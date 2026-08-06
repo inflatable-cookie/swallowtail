@@ -10,32 +10,38 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared Gemini Live media session ready for explicit opening.
 pub struct GeminiPreparedLiveSession {
     evidence: GeminiLivePreparedEvidence,
     request: OpenRealtimeMediaSessionRequest,
 }
 
 impl GeminiPreparedLiveSession {
+    /// Returns the session's preparation evidence.
     #[must_use]
     pub const fn evidence(&self) -> &GeminiLivePreparedEvidence {
         &self.evidence
     }
 
+    /// Returns the immutable preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
+    /// Returns the realtime open-session request.
     #[must_use]
     pub const fn request(&self) -> &OpenRealtimeMediaSessionRequest {
         &self.request
     }
 
+    /// Creates the stateless low-level Live driver.
     #[must_use]
     pub fn low_level_driver(&self) -> GeminiLiveDriver {
         GeminiLiveDriver::new()
     }
 
+    /// Opens the prepared media session using the supplied host services.
     pub fn open_session(
         &self,
         services: HostServices,
@@ -50,6 +56,7 @@ impl GeminiPreparedLiveSession {
         })
     }
 
+    /// Prepares a fresh media session after interruption, with prior connection state lost.
     #[must_use]
     pub fn prepare_working_state_restoration(
         &self,
@@ -63,6 +70,7 @@ impl GeminiPreparedLiveSession {
         )
     }
 
+    /// Consumes the prepared session into evidence, plan, and request.
     #[must_use]
     pub fn into_parts(
         self,
@@ -77,6 +85,7 @@ impl GeminiPreparedLiveSession {
 }
 
 impl GeminiLivePreparedIntegration {
+    /// Validates and prepares a Live session without opening the socket.
     pub fn prepare_live_session(
         &self,
         input: GeminiLiveSessionProfileInput,

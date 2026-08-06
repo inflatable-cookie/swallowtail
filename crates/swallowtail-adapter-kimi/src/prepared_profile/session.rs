@@ -18,32 +18,38 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared interactive Kimi Code ACP session.
 pub struct KimiPreparedSession {
     evidence: KimiPreparedEvidence,
     request: OpenSessionRequest,
 }
 
 impl KimiPreparedSession {
+    /// Returns portable evidence for the prepared session.
     #[must_use]
     pub const fn evidence(&self) -> &KimiPreparedEvidence {
         &self.evidence
     }
 
+    /// Returns the validated preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &swallowtail_core::PreflightPlan {
         self.evidence.plan()
     }
 
+    /// Returns the bound session-open request.
     #[must_use]
     pub const fn request(&self) -> &OpenSessionRequest {
         &self.request
     }
 
+    /// Creates the low-level ACP driver bound to this session.
     #[must_use]
     pub fn low_level_driver(&self) -> KimiAcpDriver {
         self.evidence.low_level_driver()
     }
 
+    /// Opens a new Kimi ACP session with caller-supplied host services.
     pub fn open_session(&self, services: HostServices) -> KimiPreparedSessionFuture {
         let driver = self.low_level_driver();
         let plan = self.plan().clone();
@@ -51,6 +57,7 @@ impl KimiPreparedSession {
         Box::pin(async move { driver.open_session(plan, request, services).await })
     }
 
+    /// Builds an exact provider-session load request with bounded replay.
     pub fn load_request(
         &self,
         request_id: RequestId,
@@ -69,6 +76,7 @@ impl KimiPreparedSession {
         )
     }
 
+    /// Loads a retained session and returns replay plus an interactive handle.
     pub fn load_session(
         &self,
         request_id: RequestId,
@@ -83,6 +91,7 @@ impl KimiPreparedSession {
         }))
     }
 
+    /// Prepares exact continuation recovery for an interrupted consumer turn.
     pub fn prepare_working_state_restoration(
         &self,
         request_id: RequestId,
@@ -100,6 +109,7 @@ impl KimiPreparedSession {
         ))
     }
 
+    /// Builds an exact provider-session resume request without replay.
     pub fn resume_request(
         &self,
         request_id: RequestId,
@@ -118,6 +128,7 @@ impl KimiPreparedSession {
         )
     }
 
+    /// Resumes a retained Kimi session without replaying prior content.
     pub fn resume_session(
         &self,
         request_id: RequestId,
@@ -132,6 +143,7 @@ impl KimiPreparedSession {
         }))
     }
 
+    /// Splits the prepared session into evidence, plan, and request.
     #[must_use]
     pub fn into_parts(
         self,
@@ -177,6 +189,7 @@ impl WorkingStateRestorationOperation for KimiAcpContinuationRecovery {
 }
 
 impl KimiPreparedIntegration {
+    /// Prepares an interactive session through the admitted ACP integration.
     pub fn prepare_session(
         &self,
         input: KimiSessionProfileInput,

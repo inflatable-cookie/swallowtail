@@ -8,6 +8,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs for admitting the hosted Gemini Live endpoint and access evidence.
 pub struct GeminiLivePreparationInput {
     instance_revision: InstanceRevision,
     execution_host_id: ExecutionHostId,
@@ -17,6 +18,7 @@ pub struct GeminiLivePreparationInput {
 }
 
 impl GeminiLivePreparationInput {
+    /// Creates an explicit hosted Live preparation input.
     #[must_use]
     pub const fn new(
         instance_revision: InstanceRevision,
@@ -36,6 +38,7 @@ impl GeminiLivePreparationInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Admitted Gemini Live integration before one media session is prepared.
 pub struct GeminiLivePreparedIntegration {
     access_profile: AccessProfile,
     access_evidence: PreparedAccessEvidence,
@@ -44,30 +47,36 @@ pub struct GeminiLivePreparedIntegration {
 }
 
 impl GeminiLivePreparedIntegration {
+    /// Returns the selected project API-key access profile.
     #[must_use]
     pub const fn access_profile(&self) -> &AccessProfile {
         &self.access_profile
     }
 
+    /// Returns the admitted access evidence.
     #[must_use]
     pub const fn access_evidence(&self) -> &PreparedAccessEvidence {
         &self.access_evidence
     }
 
+    /// Returns the exact hosted configured instance.
     #[must_use]
     pub const fn instance(&self) -> &ConfiguredInstance {
         &self.instance
     }
 
+    /// Iterates the host services available when preparation completed.
     pub fn available_host_services(&self) -> impl ExactSizeIterator<Item = HostServiceKind> + '_ {
         self.available_host_services.iter().copied()
     }
 
+    /// Creates the stateless low-level Live driver.
     #[must_use]
     pub fn low_level_driver(&self) -> crate::GeminiLiveDriver {
         crate::GeminiLiveDriver::new()
     }
 
+    /// Rejects execution after the selected host or endpoint has drifted.
     pub fn validate_execution_binding(
         &self,
         host: &ExecutionHostId,
@@ -84,6 +93,7 @@ impl GeminiLivePreparedIntegration {
     }
 }
 
+/// Admits one exact hosted Gemini Live endpoint and access profile.
 pub fn prepare_gemini_live(
     input: GeminiLivePreparationInput,
     services: &HostServices,

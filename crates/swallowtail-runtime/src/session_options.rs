@@ -1,6 +1,12 @@
+#![deny(missing_docs)]
+
 use crate::{InputValueRequired, OperationContent, SchemaDocument};
 use swallowtail_core::{HarnessMode, ReasoningMode};
 
+/// Consumer-owned tool declaration transported to an interactive harness.
+///
+/// Swallowtail validates and transports this declaration but does not
+/// interpret its schema or execute the tool.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ToolDeclaration {
     name: String,
@@ -11,6 +17,7 @@ pub struct ToolDeclaration {
 }
 
 impl ToolDeclaration {
+    /// Creates a declaration with required bounded transport metadata.
     pub fn new(
         name: impl Into<String>,
         input_schema: SchemaDocument,
@@ -30,37 +37,47 @@ impl ToolDeclaration {
     }
 
     #[must_use]
+    /// Adds an optional redacted tool description.
     pub fn with_description(mut self, description: OperationContent) -> Self {
         self.description = Some(description);
         self
     }
 
     #[must_use]
+    /// Returns the consumer-owned tool name.
     pub fn name(&self) -> &str {
         &self.name
     }
 
     #[must_use]
+    /// Returns the optional opaque description.
     pub const fn description(&self) -> Option<&OperationContent> {
         self.description.as_ref()
     }
 
     #[must_use]
+    /// Returns the bounded input-schema document.
     pub const fn input_schema(&self) -> &SchemaDocument {
         &self.input_schema
     }
 
     #[must_use]
+    /// Returns the declared schema media type.
     pub fn schema_media_type(&self) -> &str {
         &self.schema_media_type
     }
 
     #[must_use]
+    /// Returns the declared schema dialect.
     pub fn schema_dialect(&self) -> &str {
         &self.schema_dialect
     }
 }
 
+/// Typed options selected when opening or resuming an interactive session.
+///
+/// Empty fields retain qualified route behavior; they do not select provider
+/// defaults on the consumer's behalf.
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
 pub struct SessionOptions {
     developer_instructions: Option<OperationContent>,
@@ -71,6 +88,7 @@ pub struct SessionOptions {
 
 impl SessionOptions {
     #[must_use]
+    /// Reports whether no portable session option was selected.
     pub fn is_empty(&self) -> bool {
         self.developer_instructions.is_none()
             && self.reasoning_mode.is_none()
@@ -79,44 +97,52 @@ impl SessionOptions {
     }
 
     #[must_use]
+    /// Adds opaque consumer-owned developer instructions.
     pub fn with_developer_instructions(mut self, instructions: OperationContent) -> Self {
         self.developer_instructions = Some(instructions);
         self
     }
 
     #[must_use]
+    /// Selects one exact reasoning mode.
     pub fn with_reasoning_mode(mut self, reasoning_mode: ReasoningMode) -> Self {
         self.reasoning_mode = Some(reasoning_mode);
         self
     }
 
     #[must_use]
+    /// Selects one exact harness behavioral mode.
     pub const fn with_harness_mode(mut self, harness_mode: HarnessMode) -> Self {
         self.harness_mode = Some(harness_mode);
         self
     }
 
     #[must_use]
+    /// Replaces the bounded consumer-owned tool declaration set.
     pub fn with_tools(mut self, tools: impl IntoIterator<Item = ToolDeclaration>) -> Self {
         self.tools = tools.into_iter().collect();
         self
     }
 
     #[must_use]
+    /// Returns opaque developer instructions, when supplied.
     pub const fn developer_instructions(&self) -> Option<&OperationContent> {
         self.developer_instructions.as_ref()
     }
 
     #[must_use]
+    /// Returns the exact reasoning selection, when supplied.
     pub const fn reasoning_mode(&self) -> Option<&ReasoningMode> {
         self.reasoning_mode.as_ref()
     }
 
     #[must_use]
+    /// Returns the exact harness mode, when supplied.
     pub const fn harness_mode(&self) -> Option<HarnessMode> {
         self.harness_mode
     }
 
+    /// Iterates consumer-owned tool declarations in supplied order.
     pub fn tools(&self) -> impl ExactSizeIterator<Item = &ToolDeclaration> {
         self.tools.iter()
     }

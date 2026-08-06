@@ -11,6 +11,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Exact provider and model route for a Cursor headless run.
 pub struct CursorHeadlessModelSelection {
     route_id: ModelRouteId,
     route_revision: ModelRouteRevision,
@@ -19,6 +20,7 @@ pub struct CursorHeadlessModelSelection {
 }
 
 impl CursorHeadlessModelSelection {
+    /// Creates an exact Cursor model selection.
     #[must_use]
     pub const fn new(
         route_id: ModelRouteId,
@@ -36,6 +38,7 @@ impl CursorHeadlessModelSelection {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer inputs for one prepared Cursor headless run.
 pub struct CursorHeadlessRunProfileInput {
     request_id: RequestId,
     model: CursorHeadlessModelSelection,
@@ -46,6 +49,7 @@ pub struct CursorHeadlessRunProfileInput {
 }
 
 impl CursorHeadlessRunProfileInput {
+    /// Creates a bounded Cursor headless-run profile.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -67,6 +71,7 @@ impl CursorHeadlessRunProfileInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared one-shot Cursor stream-JSON run.
 pub struct CursorPreparedHeadlessRun {
     evidence: PreparedOperationEvidence,
     request: StructuredRunRequest,
@@ -74,6 +79,7 @@ pub struct CursorPreparedHeadlessRun {
 }
 
 impl CursorPreparedHeadlessIntegration {
+    /// Prepares a structured run from the admitted headless integration.
     pub fn prepare_run(
         &self,
         input: CursorHeadlessRunProfileInput,
@@ -143,26 +149,31 @@ impl CursorPreparedHeadlessIntegration {
 }
 
 impl CursorPreparedHeadlessRun {
+    /// Returns portable evidence for the prepared run.
     #[must_use]
     pub const fn evidence(&self) -> &PreparedOperationEvidence {
         &self.evidence
     }
 
+    /// Returns the validated preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
+    /// Returns the bound structured-run request.
     #[must_use]
     pub const fn request(&self) -> &StructuredRunRequest {
         &self.request
     }
 
+    /// Creates the low-level driver bound to this prepared run.
     #[must_use]
     pub fn low_level_driver(&self) -> crate::CursorHeadlessDriver {
         crate::CursorHeadlessDriver::new(self.environment.clone())
     }
 
+    /// Starts the prepared run with caller-supplied host services.
     pub fn start_run(
         &self,
         services: HostServices,

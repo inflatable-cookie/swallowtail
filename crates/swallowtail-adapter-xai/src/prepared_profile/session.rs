@@ -10,6 +10,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Bound prepared serial xAI Responses WebSocket session.
 pub struct XaiPreparedResponsesSession {
     evidence: XaiPreparedEvidence,
     request: OpenSessionRequest,
@@ -17,25 +18,30 @@ pub struct XaiPreparedResponsesSession {
 
 impl XaiPreparedResponsesSession {
     #[must_use]
+    /// Returns the prepared operation evidence.
     pub const fn evidence(&self) -> &XaiPreparedEvidence {
         &self.evidence
     }
 
     #[must_use]
+    /// Returns the immutable session plan.
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
     #[must_use]
+    /// Returns the plan-derived session-open request.
     pub const fn request(&self) -> &OpenSessionRequest {
         &self.request
     }
 
     #[must_use]
+    /// Returns the low-level WebSocket driver.
     pub fn low_level_driver(&self) -> XaiWebSocketDriver {
         XaiWebSocketDriver::new()
     }
 
+    /// Opens the bound serial Responses session.
     pub fn open_session(
         &self,
         services: HostServices,
@@ -47,6 +53,7 @@ impl XaiPreparedResponsesSession {
     }
 
     #[must_use]
+    /// Prepares fresh-session replacement after connection loss.
     pub fn prepare_working_state_restoration(
         &self,
         interrupted_turn_id: RuntimeTurnId,
@@ -60,6 +67,7 @@ impl XaiPreparedResponsesSession {
     }
 
     #[must_use]
+    /// Splits the prepared operation into evidence, plan, and request.
     pub fn into_parts(self) -> (XaiPreparedEvidence, PreflightPlan, OpenSessionRequest) {
         let plan = self.evidence.plan().clone();
         (self.evidence, plan, self.request)
@@ -67,6 +75,7 @@ impl XaiPreparedResponsesSession {
 }
 
 impl XaiPreparedIntegration {
+    /// Prepares a serial resource-free Responses WebSocket session.
     pub fn prepare_responses_session(
         &self,
         input: XaiSessionProfileInput,

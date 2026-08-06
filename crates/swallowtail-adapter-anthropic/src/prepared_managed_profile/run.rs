@@ -11,6 +11,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Bound prepared Anthropic Managed Agents run.
 pub struct AnthropicPreparedManagedAgentRun {
     evidence: AnthropicManagedPreparedEvidence,
     request: StructuredRunRequest,
@@ -18,25 +19,30 @@ pub struct AnthropicPreparedManagedAgentRun {
 
 impl AnthropicPreparedManagedAgentRun {
     #[must_use]
+    /// Returns the prepared operation evidence.
     pub const fn evidence(&self) -> &AnthropicManagedPreparedEvidence {
         &self.evidence
     }
 
     #[must_use]
+    /// Returns the immutable managed-run plan.
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
     #[must_use]
+    /// Returns the plan-derived structured-run request.
     pub const fn request(&self) -> &StructuredRunRequest {
         &self.request
     }
 
     #[must_use]
+    /// Returns the low-level Managed Agents driver.
     pub fn low_level_driver(&self) -> AnthropicManagedAgentDriver {
         AnthropicManagedAgentDriver::new()
     }
 
+    /// Starts the bound provider-managed run.
     pub fn start_run(
         &self,
         services: HostServices,
@@ -48,6 +54,7 @@ impl AnthropicPreparedManagedAgentRun {
     }
 
     #[must_use]
+    /// Splits the prepared operation into evidence, plan, and request.
     pub fn into_parts(
         self,
     ) -> (
@@ -61,6 +68,7 @@ impl AnthropicPreparedManagedAgentRun {
 }
 
 impl AnthropicManagedPreparedIntegration {
+    /// Prepares a durable managed-agent run with explicit policy acceptance.
     pub fn prepare_managed_run(
         &self,
         input: AnthropicManagedAgentRunInput,

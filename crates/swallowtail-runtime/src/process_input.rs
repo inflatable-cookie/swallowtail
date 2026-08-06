@@ -2,6 +2,11 @@ use crate::{EnvironmentRef, ExecutableRef, WorkingResourceRef};
 use std::fmt;
 
 #[derive(Clone, Eq, PartialEq)]
+/// Host-authorized child-process launch request.
+///
+/// Executable, environment, and working-resource values remain opaque host
+/// references. Arguments are available only to the process service and are
+/// redacted from formatting.
 pub struct ProcessRequest {
     executable: ExecutableRef,
     arguments: Vec<String>,
@@ -11,6 +16,7 @@ pub struct ProcessRequest {
 
 impl ProcessRequest {
     #[must_use]
+    /// Creates a process request for one opaque executable reference.
     pub fn new(executable: ExecutableRef) -> Self {
         Self {
             executable,
@@ -21,12 +27,14 @@ impl ProcessRequest {
     }
 
     #[must_use]
+    /// Replaces the driver-supplied argument suffix.
     pub fn with_arguments(mut self, arguments: impl IntoIterator<Item = String>) -> Self {
         self.arguments = arguments.into_iter().collect();
         self
     }
 
     #[must_use]
+    /// Replaces the explicit host environment references.
     pub fn with_environment(
         mut self,
         environment: impl IntoIterator<Item = EnvironmentRef>,
@@ -36,25 +44,30 @@ impl ProcessRequest {
     }
 
     #[must_use]
+    /// Sets the optional host-approved working resource.
     pub fn with_working_resource(mut self, resource: WorkingResourceRef) -> Self {
         self.working_resource = Some(resource);
         self
     }
 
     #[must_use]
+    /// Returns the opaque executable reference.
     pub const fn executable(&self) -> &ExecutableRef {
         &self.executable
     }
 
+    /// Iterates the driver-supplied process arguments in order.
     pub fn arguments(&self) -> impl ExactSizeIterator<Item = &str> {
         self.arguments.iter().map(String::as_str)
     }
 
+    /// Iterates the explicit environment references in order.
     pub fn environment(&self) -> impl ExactSizeIterator<Item = &EnvironmentRef> {
         self.environment.iter()
     }
 
     #[must_use]
+    /// Returns the optional host-approved working resource.
     pub const fn working_resource(&self) -> Option<&WorkingResourceRef> {
         self.working_resource.as_ref()
     }

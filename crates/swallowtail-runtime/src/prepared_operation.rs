@@ -1,3 +1,5 @@
+#![deny(missing_docs)]
+
 use crate::{PreparationFailure, PreparationStage, PreparedAccessEvidence};
 use swallowtail_core::{
     AdapterIdentity, ConfiguredInstanceId, Diagnostic, DriverRole, ExecutionHostId, ExecutionLayer,
@@ -42,51 +44,61 @@ impl PreparedOperationBinding {
     }
 
     #[must_use]
+    /// Returns the exact adapter driver identity.
     pub const fn driver_identity(&self) -> &AdapterIdentity {
         &self.driver_identity
     }
 
     #[must_use]
+    /// Returns the exact transport family.
     pub const fn transport_family(&self) -> &TransportFamilyId {
         &self.transport_family
     }
 
     #[must_use]
+    /// Returns the prepared driver role.
     pub const fn driver_role(&self) -> DriverRole {
         self.driver_role
     }
 
     #[must_use]
+    /// Returns the prepared execution layer.
     pub const fn execution_layer(&self) -> ExecutionLayer {
         self.execution_layer
     }
 
     #[must_use]
+    /// Returns the prepared operation shape.
     pub const fn operation_shape(&self) -> OperationShape {
         self.operation_shape
     }
 
     #[must_use]
+    /// Returns the configured-instance identity.
     pub const fn instance_id(&self) -> &ConfiguredInstanceId {
         &self.instance_id
     }
 
     #[must_use]
+    /// Returns the exact configured-instance revision.
     pub const fn instance_revision(&self) -> &InstanceRevision {
         &self.instance_revision
     }
 
     #[must_use]
+    /// Returns the authoritative execution host.
     pub const fn execution_host_id(&self) -> &ExecutionHostId {
         &self.execution_host_id
     }
 
     #[must_use]
+    /// Returns the safe host-approved target reference.
     pub const fn instance_target(&self) -> &InstanceTargetRef {
         &self.instance_target
     }
 
     #[must_use]
+    /// Returns the exact protocol facade.
     pub const fn protocol_facade_id(&self) -> &ProtocolFacadeId {
         &self.protocol_facade_id
     }
@@ -109,11 +121,13 @@ impl PreparedInterfaceCompatibility {
     }
 
     #[must_use]
+    /// Returns the exact provider-interface version binding.
     pub const fn binding(&self) -> &InterfaceVersionBinding {
         &self.binding
     }
 
     #[must_use]
+    /// Returns the visible compatibility assessment for that binding.
     pub const fn assessment(&self) -> &InterfaceCompatibilityAssessment {
         &self.assessment
     }
@@ -133,6 +147,7 @@ pub struct PreparedOperationEvidence {
 }
 
 impl PreparedOperationEvidence {
+    /// Creates prepared evidence and derives an applicable activity profile.
     pub fn from_plan(
         plan: PreflightPlan,
         access: PreparedAccessEvidence,
@@ -140,6 +155,7 @@ impl PreparedOperationEvidence {
         Self::prepare(plan, access, None)
     }
 
+    /// Creates prepared evidence with an exact supplied activity profile.
     pub fn from_plan_with_activity_profile(
         plan: PreflightPlan,
         access: PreparedAccessEvidence,
@@ -180,20 +196,24 @@ impl PreparedOperationEvidence {
     }
 
     #[must_use]
+    /// Returns safe identity evidence fixed by preparation.
     pub const fn binding(&self) -> &PreparedOperationBinding {
         &self.binding
     }
 
     #[must_use]
+    /// Returns the immutable expanded preflight plan.
     pub const fn plan(&self) -> &PreflightPlan {
         &self.plan
     }
 
     #[must_use]
+    /// Returns access status with its honest provenance.
     pub const fn access(&self) -> &PreparedAccessEvidence {
         &self.access
     }
 
+    /// Iterates exact provider-interface compatibility evidence.
     pub fn interface_compatibility(
         &self,
     ) -> impl ExactSizeIterator<Item = &PreparedInterfaceCompatibility> {
@@ -201,16 +221,19 @@ impl PreparedOperationEvidence {
     }
 
     #[must_use]
+    /// Returns the exact prepared observable-activity profile.
     pub const fn observable_activity(&self) -> &ObservableActivityProfile {
         &self.observable_activity
     }
 
     #[must_use]
+    /// Reports whether this evidence owns the exact supplied plan.
     pub fn matches_plan(&self, plan: &PreflightPlan) -> bool {
         self.plan == *plan
     }
 
     #[must_use]
+    /// Consumes the evidence and returns its immutable preflight plan.
     pub fn into_plan(self) -> PreflightPlan {
         self.plan
     }

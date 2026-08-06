@@ -7,10 +7,15 @@ use swallowtail_runtime::RuntimeFailure;
 
 use crate::failure::failure;
 
+/// Executable-version interface axis shared by installed Kimi Code routes.
 pub const KIMI_CODE_AXIS: &str = "kimi-code.executable";
+/// Oldest qualified Kimi Code ACP version.
 pub const KIMI_CODE_BASELINE_VERSION: &str = "0.28.1";
+/// Most recent qualified Kimi Code ACP version.
 pub const KIMI_CODE_LATEST_QUALIFIED_VERSION: &str = "0.31.1";
+/// Oldest qualified Kimi Code headless version.
 pub const KIMI_HEADLESS_BASELINE_VERSION: &str = "0.29.0";
+/// Most recent qualified Kimi Code headless version.
 pub const KIMI_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "0.31.1";
 
 const LEGACY_REASONING_BEHAVIOR: &str = "kimi.acp.reasoning.legacy-select-v1";
@@ -41,6 +46,7 @@ impl KimiPlanSelection {
 }
 
 #[must_use]
+/// Parses a Kimi Code semantic version into its interface binding.
 pub fn kimi_code_binding(value: &str) -> Option<InterfaceVersionBinding> {
     if value.is_empty()
         || value.len() > MAX_VERSION_BYTES
@@ -57,6 +63,7 @@ pub fn kimi_code_binding(value: &str) -> Option<InterfaceVersionBinding> {
 }
 
 #[must_use]
+/// Returns the qualified compatibility claim for Kimi Code ACP.
 pub fn kimi_acp_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
         InterfaceCompatibilityClaimId::new("kimi.acp.executable-window-4")
@@ -83,6 +90,7 @@ pub fn kimi_acp_claim() -> InterfaceCompatibilityClaim {
 }
 
 #[must_use]
+/// Returns the qualified compatibility claim for Kimi Code headless runs.
 pub fn kimi_headless_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
         InterfaceCompatibilityClaimId::new("kimi.headless.executable-window-3")

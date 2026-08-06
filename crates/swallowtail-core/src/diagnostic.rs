@@ -1,3 +1,5 @@
+#![deny(missing_docs)]
+
 use std::error::Error;
 use std::fmt;
 
@@ -12,6 +14,7 @@ pub struct SafeDiagnostic {
 }
 
 impl SafeDiagnostic {
+    /// Creates an operator-safe diagnostic with unknown portable classification.
     #[must_use]
     pub fn new(code: &'static str, message: impl Into<String>) -> Self {
         Self {
@@ -32,16 +35,19 @@ impl SafeDiagnostic {
     }
 
     #[must_use]
+    /// Returns the stable route-specific diagnostic code.
     pub const fn code(&self) -> &'static str {
         self.code
     }
 
     #[must_use]
+    /// Returns the operator-safe diagnostic message.
     pub fn message(&self) -> &str {
         &self.message
     }
 
     #[must_use]
+    /// Returns the portable failure classification carried alongside the code.
     pub const fn failure_classification(&self) -> FailureClassification {
         self.classification
     }
@@ -61,6 +67,7 @@ pub struct Diagnostic {
 }
 
 impl Diagnostic {
+    /// Creates a diagnostic without internal detail.
     #[must_use]
     pub const fn new(safe: SafeDiagnostic) -> Self {
         Self {
@@ -70,12 +77,14 @@ impl Diagnostic {
     }
 
     #[must_use]
+    /// Adds host-private detail excluded from default formatting.
     pub fn with_internal_detail(mut self, detail: impl Into<String>) -> Self {
         self.internal_detail = Some(detail.into());
         self
     }
 
     #[must_use]
+    /// Returns the operator-safe part of the diagnostic.
     pub const fn safe(&self) -> &SafeDiagnostic {
         &self.safe
     }
@@ -125,11 +134,13 @@ impl ValueRequired {
     }
 
     #[must_use]
+    /// Returns the contract field whose required text was absent.
     pub const fn field(&self) -> &'static str {
         self.field
     }
 
     #[must_use]
+    /// Returns the redacted missing-value diagnostic.
     pub const fn diagnostic(&self) -> &SafeDiagnostic {
         &self.diagnostic
     }

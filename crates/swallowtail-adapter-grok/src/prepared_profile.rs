@@ -17,6 +17,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Exact model route for a prepared Grok operation.
 pub struct GrokModelSelection {
     route_id: ModelRouteId,
     route_revision: ModelRouteRevision,
@@ -24,6 +25,7 @@ pub struct GrokModelSelection {
 }
 
 impl GrokModelSelection {
+    /// Creates an exact Grok model selection.
     #[must_use]
     pub const fn new(
         route_id: ModelRouteId,
@@ -39,6 +41,7 @@ impl GrokModelSelection {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer inputs for one prepared Grok interactive session.
 pub struct GrokSessionProfileInput {
     request_id: RequestId,
     model: GrokModelSelection,
@@ -47,6 +50,7 @@ pub struct GrokSessionProfileInput {
 }
 
 impl GrokSessionProfileInput {
+    /// Creates a Grok session profile with explicit model and options.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -64,6 +68,7 @@ impl GrokSessionProfileInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Portable evidence shared by prepared Grok sessions and runs.
 pub struct GrokPreparedEvidence {
     observation: swallowtail_core::InstalledExecutableObservation,
     environment: swallowtail_runtime::EnvironmentRef,
@@ -93,21 +98,25 @@ impl GrokPreparedEvidence {
         })
     }
 
+    /// Returns the qualified installed-executable observation.
     #[must_use]
     pub const fn observation(&self) -> &swallowtail_core::InstalledExecutableObservation {
         &self.observation
     }
 
+    /// Returns the prepared access evidence.
     #[must_use]
     pub const fn access(&self) -> &swallowtail_runtime::PreparedAccessEvidence {
         self.operation.access()
     }
 
+    /// Returns the complete prepared-operation evidence.
     #[must_use]
     pub const fn operation(&self) -> &PreparedOperationEvidence {
         &self.operation
     }
 
+    /// Returns the validated preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.operation.plan()
@@ -119,35 +128,42 @@ impl GrokPreparedEvidence {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared interactive Grok ACP session.
 pub struct GrokPreparedSession {
     evidence: GrokPreparedEvidence,
     request: OpenSessionRequest,
 }
 
+/// Future returned when a prepared Grok session is opened.
 pub type GrokPreparedSessionFuture =
     BoxFuture<'static, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>>;
 
 impl GrokPreparedSession {
+    /// Returns portable evidence for the prepared session.
     #[must_use]
     pub const fn evidence(&self) -> &GrokPreparedEvidence {
         &self.evidence
     }
 
+    /// Returns the validated preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
+    /// Returns the bound session-open request.
     #[must_use]
     pub const fn request(&self) -> &OpenSessionRequest {
         &self.request
     }
 
+    /// Creates the low-level driver bound to this session.
     #[must_use]
     pub fn low_level_driver(&self) -> GrokAcpDriver {
         self.evidence.low_level_driver()
     }
 
+    /// Opens the prepared session with caller-supplied host services.
     pub fn open_session(&self, services: HostServices) -> GrokPreparedSessionFuture {
         let driver = self.low_level_driver();
         let plan = self.plan().clone();
@@ -155,6 +171,7 @@ impl GrokPreparedSession {
         Box::pin(async move { driver.open_session(plan, request, services).await })
     }
 
+    /// Builds an exact provider-session attachment recovery request.
     pub fn attachment_recovery_request(
         &self,
         request_id: RequestId,
@@ -172,6 +189,7 @@ impl GrokPreparedSession {
         )
     }
 
+    /// Prepares bounded restoration of an interrupted turn by session attachment.
     pub fn prepare_working_state_restoration(
         &self,
         request_id: RequestId,
@@ -189,6 +207,7 @@ impl GrokPreparedSession {
         )
     }
 
+    /// Splits the prepared session into evidence, plan, and request.
     #[must_use]
     pub fn into_parts(self) -> (GrokPreparedEvidence, PreflightPlan, OpenSessionRequest) {
         let plan = self.evidence.plan().clone();
@@ -197,6 +216,7 @@ impl GrokPreparedSession {
 }
 
 impl GrokPreparedIntegration {
+    /// Prepares an interactive session from the admitted integration.
     pub fn prepare_session(
         &self,
         input: GrokSessionProfileInput,

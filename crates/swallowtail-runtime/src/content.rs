@@ -7,21 +7,25 @@ use std::fmt;
 pub struct OperationContent(String);
 
 impl OperationContent {
+    /// Creates nonempty operation content.
     pub fn new(value: impl Into<String>) -> Result<Self, InputValueRequired> {
         required_text("operation content", value).map(Self)
     }
 
     #[must_use]
+    /// Borrows the content for the authorized driver or consumer boundary.
     pub fn as_str(&self) -> &str {
         &self.0
     }
 
     #[must_use]
+    /// Consumes the value and returns its content.
     pub fn into_string(self) -> String {
         self.0
     }
 
     #[must_use]
+    /// Returns the UTF-8 content size in bytes.
     pub fn byte_len(&self) -> usize {
         self.0.len()
     }

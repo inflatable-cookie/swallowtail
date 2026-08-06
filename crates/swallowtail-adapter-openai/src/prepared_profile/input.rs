@@ -20,6 +20,7 @@ type OpenAiBackgroundRunParts = (
 );
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Exact model-route selection for an OpenAI background response.
 pub struct OpenAiBackgroundModelSelection {
     route_id: ModelRouteId,
     route_revision: ModelRouteRevision,
@@ -28,6 +29,7 @@ pub struct OpenAiBackgroundModelSelection {
 
 impl OpenAiBackgroundModelSelection {
     #[must_use]
+    /// Creates an exact route, route-revision, and model selection.
     pub const fn new(
         route_id: ModelRouteId,
         route_revision: ModelRouteRevision,
@@ -46,6 +48,7 @@ impl OpenAiBackgroundModelSelection {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Explicit policy and content for one provider-managed background run.
 pub struct OpenAiBackgroundRunProfileInput {
     request_id: RequestId,
     model: OpenAiBackgroundModelSelection,
@@ -63,6 +66,7 @@ pub struct OpenAiBackgroundRunProfileInput {
 impl OpenAiBackgroundRunProfileInput {
     #[must_use]
     #[allow(clippy::too_many_arguments)]
+    /// Creates background-run input without selecting policy defaults.
     pub const fn new(
         request_id: RequestId,
         model: OpenAiBackgroundModelSelection,
@@ -89,6 +93,7 @@ impl OpenAiBackgroundRunProfileInput {
     }
 
     #[must_use]
+    /// Creates the supported temporary-retention profile with one reattachment.
     pub fn background_with_temporary_retention_and_one_reattachment(
         request_id: RequestId,
         model: OpenAiBackgroundModelSelection,
@@ -109,18 +114,21 @@ impl OpenAiBackgroundRunProfileInput {
     }
 
     #[must_use]
+    /// Selects an optional provider reasoning mode.
     pub fn with_reasoning_mode(mut self, reasoning: ReasoningMode) -> Self {
         self.reasoning = Some(reasoning);
         self
     }
 
     #[must_use]
+    /// Requests provider-native structured output from one inline schema.
     pub fn with_structured_output(mut self, output: StructuredOutputDescriptor) -> Self {
         self.structured_output = Some(output);
         self
     }
 
     #[must_use]
+    /// Allows the active provider run to outlive the local attachment.
     pub const fn with_active_run_detachment(mut self) -> Self {
         self.active_run_detachment = true;
         self

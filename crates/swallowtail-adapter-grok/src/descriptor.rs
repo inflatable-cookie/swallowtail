@@ -6,6 +6,7 @@ use swallowtail_core::{
 const DRIVER_ID: &str = "swallowtail.grok-build.acp";
 
 #[must_use]
+/// Describes the installed Grok Build ACP route.
 pub fn grok_build_acp_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(
         AdapterIdentity::new(

@@ -14,17 +14,25 @@ use swallowtail_core::{
     SupportAuthority,
 };
 
+/// Exact WebSocket endpoint for the selected Gemini Live preview facade.
 pub const GEMINI_LIVE_ENDPOINT: &str = "wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent";
+/// Credential and network-grant audience for Gemini Live.
 pub const GEMINI_LIVE_ENDPOINT_AUDIENCE: &str = "generativelanguage.googleapis.com";
+/// Required project API-key access-profile identifier.
 pub const GEMINI_LIVE_ACCESS_PROFILE_ID: &str = "gemini.authorization-api-key.project";
+/// Stable configured-instance identifier for the hosted Live route.
 pub const GEMINI_LIVE_CONFIGURED_INSTANCE_ID: &str = "gemini.public.live-preview";
+/// Exact opaque protocol-facade revision qualified by this adapter.
 pub const GEMINI_LIVE_FACADE_REVISION: &str =
     "google.generativelanguage.v1beta.GenerativeService.BidiGenerateContent";
+/// Provider model identifier selected for the Live preview route.
 pub const GEMINI_LIVE_MODEL_ID: &str = "gemini-3.1-flash-live-preview";
+/// Stable Swallowtail model-route identifier for the Live preview model.
 pub const GEMINI_LIVE_MODEL_ROUTE_ID: &str = "gemini-3-1-flash-live-preview";
 
 const FACADE_AXIS: &str = "gemini.live-facade";
 
+/// Builds the provider-supported project API-key access profile.
 #[must_use]
 pub fn gemini_live_access_profile(credential: CredentialRef) -> AccessProfile {
     AccessProfile::new(
@@ -37,6 +45,7 @@ pub fn gemini_live_access_profile(credential: CredentialRef) -> AccessProfile {
     .with_credential_reference(credential)
 }
 
+/// Returns the exact interface binding for the qualified Live facade.
 #[must_use]
 pub fn gemini_live_facade_binding() -> InterfaceVersionBinding {
     InterfaceVersionBinding::new(
@@ -45,6 +54,7 @@ pub fn gemini_live_facade_binding() -> InterfaceVersionBinding {
     )
 }
 
+/// Returns the compatibility claim for the exact Live preview facade.
 #[must_use]
 pub fn gemini_live_facade_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
@@ -68,6 +78,7 @@ pub fn gemini_live_facade_claim() -> InterfaceCompatibilityClaim {
     .expect("static Gemini Live facade claim is valid")
 }
 
+/// Returns the fixed PCM media formats and bounded buffering contract.
 #[must_use]
 pub fn gemini_live_media_config() -> RealtimeMediaConfig {
     let input = MediaFormat::audio(
@@ -88,6 +99,7 @@ pub fn gemini_live_media_config() -> RealtimeMediaConfig {
     )
 }
 
+/// Permits exactly one planned connection rollover per prepared session.
 #[must_use]
 pub fn gemini_live_rollover_policy() -> PlannedConnectionRolloverPolicy {
     PlannedConnectionRolloverPolicy::Bounded(
@@ -95,6 +107,7 @@ pub fn gemini_live_rollover_policy() -> PlannedConnectionRolloverPolicy {
     )
 }
 
+/// Builds the externally attached configured instance for Gemini Live.
 #[must_use]
 pub fn gemini_live_instance(
     revision: InstanceRevision,
@@ -124,6 +137,7 @@ pub fn gemini_live_instance(
     .with_interface_versions([gemini_live_facade_binding()])
 }
 
+/// Builds the exact Live preview model route for a configured instance.
 #[must_use]
 pub fn gemini_live_model_route(
     instance_id: ConfiguredInstanceId,
@@ -139,6 +153,7 @@ pub fn gemini_live_model_route(
     .with_provider_id(id(ProviderId::new, "gemini"))
 }
 
+/// Declares host, access, capability, media, and rollover requirements.
 #[must_use]
 pub fn gemini_live_requirements(host: ExecutionHostId) -> OperationRequirements {
     OperationRequirements::new(

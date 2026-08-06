@@ -15,6 +15,7 @@ pub struct BedrockCatalogueBinding {
 
 impl BedrockCatalogueBinding {
     #[must_use]
+    /// Creates a control-plane binding without consulting ambient AWS state.
     pub const fn new(
         instance: ConfiguredInstanceId,
         access_profile: AccessProfileId,

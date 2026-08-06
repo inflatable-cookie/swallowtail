@@ -18,6 +18,7 @@ pub struct InterfaceVersionSegment {
 }
 
 impl InterfaceVersionSegment {
+    /// Creates an inclusive compatibility segment.
     #[must_use]
     pub const fn new(
         minimum: InterfaceVersion,
@@ -34,6 +35,7 @@ impl InterfaceVersionSegment {
     }
 
     #[must_use]
+    /// Creates a compatibility segment for one exact version.
     pub fn exact(
         version: InterfaceVersion,
         behavior_revision: InterfaceBehaviorRevision,
@@ -48,21 +50,25 @@ impl InterfaceVersionSegment {
     }
 
     #[must_use]
+    /// Returns the first included interface version.
     pub const fn minimum(&self) -> &InterfaceVersion {
         &self.minimum
     }
 
     #[must_use]
+    /// Returns the last included interface version.
     pub const fn maximum(&self) -> &InterfaceVersion {
         &self.maximum
     }
 
     #[must_use]
+    /// Returns the behavior revision shared by the segment.
     pub const fn behavior_revision(&self) -> &InterfaceBehaviorRevision {
         &self.behavior_revision
     }
 
     #[must_use]
+    /// Returns the maintainer support status for the segment.
     pub const fn support_status(&self) -> InterfaceSupportStatus {
         self.support_status
     }
@@ -80,6 +86,9 @@ pub struct InterfaceCompatibilityClaim {
 }
 
 impl InterfaceCompatibilityClaim {
+    /// Creates and validates a compatibility claim for one interface axis.
+    ///
+    /// Segments must be ordered, non-overlapping, and valid for `scheme`.
     pub fn new(
         id: InterfaceCompatibilityClaimId,
         axis: InterfaceVersionAxis,
@@ -101,26 +110,31 @@ impl InterfaceCompatibilityClaim {
     }
 
     #[must_use]
+    /// Returns the stable identity of this compatibility claim.
     pub const fn id(&self) -> &InterfaceCompatibilityClaimId {
         &self.id
     }
 
     #[must_use]
+    /// Returns the interface axis governed by the claim.
     pub const fn axis(&self) -> &InterfaceVersionAxis {
         &self.axis
     }
 
     #[must_use]
+    /// Returns the version-ordering scheme used by the claim.
     pub const fn scheme(&self) -> InterfaceVersionScheme {
         self.scheme
     }
 
     #[must_use]
+    /// Returns the policy for stable versions above the qualified window.
     pub const fn newer_version_posture(&self) -> InterfaceNewerVersionPosture {
         self.newer_version_posture
     }
 
     #[must_use]
+    /// Returns the first version in the qualified window.
     pub fn baseline(&self) -> &InterfaceVersion {
         self.segments
             .first()
@@ -129,6 +143,7 @@ impl InterfaceCompatibilityClaim {
     }
 
     #[must_use]
+    /// Returns the last version in the qualified window.
     pub fn latest_qualified(&self) -> &InterfaceVersion {
         self.segments
             .last()
@@ -136,15 +151,20 @@ impl InterfaceCompatibilityClaim {
             .maximum()
     }
 
+    /// Iterates behavior-milestone segments in ascending version order.
     pub fn milestones(&self) -> impl ExactSizeIterator<Item = &InterfaceVersionSegment> {
         self.segments.iter()
     }
 
+    /// Iterates explicitly excluded version points in stable order.
     pub fn exclusions(&self) -> impl ExactSizeIterator<Item = &InterfaceVersion> {
         self.exclusions.iter()
     }
 
     #[must_use]
+    /// Returns qualified behavior evidence for an exactly supported version.
+    ///
+    /// Unverified newer versions are deliberately not returned here.
     pub fn classify(&self, version: &InterfaceVersion) -> Option<InterfaceCompatibilityMatch> {
         if self.exclusions.contains(version) || validate_version(self.scheme, version).is_err() {
             return None;
@@ -173,11 +193,13 @@ impl InterfaceCompatibilityClaim {
     }
 
     #[must_use]
+    /// Reports whether `version` belongs to a qualified segment.
     pub fn supports(&self, version: &InterfaceVersion) -> bool {
         self.classify(version).is_some()
     }
 
     #[must_use]
+    /// Assesses `version` as qualified, unverified newer, or incompatible.
     pub fn assess(&self, version: &InterfaceVersion) -> InterfaceCompatibilityAssessment {
         if self.exclusions.contains(version) || validate_version(self.scheme, version).is_err() {
             return InterfaceCompatibilityAssessment::Incompatible;
@@ -202,6 +224,7 @@ impl InterfaceCompatibilityClaim {
     }
 
     #[must_use]
+    /// Reports whether the claim permits use of `version`.
     pub fn permits(&self, version: &InterfaceVersion) -> bool {
         self.assess(version).is_permitted()
     }

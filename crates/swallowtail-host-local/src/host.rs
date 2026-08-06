@@ -37,6 +37,7 @@ pub(crate) struct LocalApprovals {
     pub(crate) model_artifacts: HashMap<ModelArtifactRef, LocalModelArtifactApproval>,
 }
 
+/// Builder for an allowlisted local process and materialization host.
 pub struct LocalProcessHostBuilder {
     limits: LocalProcessLimits,
     materialization_limits: LocalMaterializationLimits,
@@ -46,6 +47,7 @@ pub struct LocalProcessHostBuilder {
 }
 
 impl LocalProcessHostBuilder {
+    /// Approves one exact executable path behind an opaque reference.
     #[must_use]
     pub fn approve_executable(
         mut self,
@@ -70,6 +72,7 @@ impl LocalProcessHostBuilder {
         self
     }
 
+    /// Approves an exact environment binding behind an opaque reference.
     #[must_use]
     pub fn approve_environment(
         mut self,
@@ -82,6 +85,7 @@ impl LocalProcessHostBuilder {
         self
     }
 
+    /// Approves an existing working-resource path behind an opaque reference.
     #[must_use]
     pub fn approve_working_resource(
         mut self,
@@ -94,6 +98,7 @@ impl LocalProcessHostBuilder {
         self
     }
 
+    /// Approves an attachment path behind an opaque reference.
     #[must_use]
     pub fn approve_attachment(
         mut self,
@@ -104,18 +109,21 @@ impl LocalProcessHostBuilder {
         self
     }
 
+    /// Approves a structured-output schema path behind an opaque reference.
     #[must_use]
     pub fn approve_schema(mut self, reference: SchemaRef, path: impl Into<PathBuf>) -> Self {
         self.approvals.schemas.insert(reference, path.into());
         self
     }
 
+    /// Replaces the default attachment and schema materialization limits.
     #[must_use]
     pub fn with_materialization_limits(mut self, limits: LocalMaterializationLimits) -> Self {
         self.materialization_limits = limits;
         self
     }
 
+    /// Builds the local host without composing a complete service registry.
     #[must_use]
     pub fn build(self) -> LocalProcessHost {
         LocalProcessHost {
@@ -132,6 +140,7 @@ impl LocalProcessHostBuilder {
     }
 }
 
+/// Local implementation of process, materialization, credential, and network services.
 #[derive(Clone)]
 pub struct LocalProcessHost {
     pub(crate) limits: LocalProcessLimits,
@@ -146,6 +155,7 @@ pub struct LocalProcessHost {
 }
 
 impl LocalProcessHost {
+    /// Starts a builder with explicit process limits and conservative defaults.
     #[must_use]
     pub fn builder(limits: LocalProcessLimits) -> LocalProcessHostBuilder {
         LocalProcessHostBuilder {

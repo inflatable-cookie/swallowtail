@@ -2,6 +2,7 @@ use swallowtail_core::{ModelId, ModelRouteId, ModelRouteRevision};
 use swallowtail_runtime::{Deadline, OperationContent, RequestId};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Exact xAI model-route selection supplied by the consumer.
 pub struct XaiModelSelection {
     route_id: ModelRouteId,
     route_revision: ModelRouteRevision,
@@ -9,6 +10,7 @@ pub struct XaiModelSelection {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer input for one xAI Responses structured run.
 pub struct XaiRunProfileInput {
     request_id: RequestId,
     model: XaiModelSelection,
@@ -18,6 +20,7 @@ pub struct XaiRunProfileInput {
 
 impl XaiRunProfileInput {
     #[must_use]
+    /// Creates a structured-run input with an optional exact deadline.
     pub const fn new(
         request_id: RequestId,
         model: XaiModelSelection,
@@ -46,6 +49,7 @@ impl XaiRunProfileInput {
 
 impl XaiModelSelection {
     #[must_use]
+    /// Creates an exact route, revision, and model selection.
     pub const fn new(
         route_id: ModelRouteId,
         route_revision: ModelRouteRevision,
@@ -64,6 +68,7 @@ impl XaiModelSelection {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer input for a serial xAI Responses session.
 pub struct XaiSessionProfileInput {
     request_id: RequestId,
     model: XaiModelSelection,
@@ -72,6 +77,7 @@ pub struct XaiSessionProfileInput {
 
 impl XaiSessionProfileInput {
     #[must_use]
+    /// Creates session input with an optional exact deadline.
     pub const fn new(
         request_id: RequestId,
         model: XaiModelSelection,

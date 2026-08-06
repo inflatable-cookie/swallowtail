@@ -17,6 +17,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs that qualify one installed Kimi Code ACP instance.
 pub struct KimiPreparationInput {
     instance_id: ConfiguredInstanceId,
     instance_revision: InstanceRevision,
@@ -29,6 +30,7 @@ pub struct KimiPreparationInput {
 }
 
 impl KimiPreparationInput {
+    /// Creates preparation input for an exact installed Kimi ACP target.
     #[must_use]
     pub const fn new(
         instance_id: ConfiguredInstanceId,
@@ -61,6 +63,7 @@ impl KimiPreparationInput {
 }
 
 #[derive(Clone, Debug)]
+/// Bounded discovery request used while preparing Kimi ACP.
 pub struct KimiPreparationProbe {
     request_id: RequestId,
     scope_id: ScopeId,
@@ -69,6 +72,7 @@ pub struct KimiPreparationProbe {
 }
 
 impl KimiPreparationProbe {
+    /// Creates a Kimi ACP preparation probe.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -86,6 +90,7 @@ impl KimiPreparationProbe {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Qualified Kimi ACP integration ready to prepare operations.
 pub struct KimiPreparedIntegration {
     environment: EnvironmentRef,
     target: InstalledExecutableTarget,
@@ -98,45 +103,54 @@ pub struct KimiPreparedIntegration {
 }
 
 impl KimiPreparedIntegration {
+    /// Returns the isolated execution environment.
     #[must_use]
     pub const fn environment(&self) -> &EnvironmentRef {
         &self.environment
     }
 
+    /// Returns the qualified installed-executable target.
     #[must_use]
     pub const fn target(&self) -> &InstalledExecutableTarget {
         &self.target
     }
 
+    /// Returns the executable observation admitted during preparation.
     #[must_use]
     pub const fn observation(&self) -> &InstalledExecutableObservation {
         &self.observation
     }
 
+    /// Returns the configured access profile.
     #[must_use]
     pub const fn access_profile(&self) -> &AccessProfile {
         &self.access_profile
     }
 
+    /// Returns the prepared access evidence.
     #[must_use]
     pub const fn access_evidence(&self) -> &PreparedAccessEvidence {
         &self.access_evidence
     }
 
+    /// Returns the exact configured provider instance.
     #[must_use]
     pub const fn instance(&self) -> &ConfiguredInstance {
         &self.instance
     }
 
+    /// Returns the optional provider-owned state root.
     #[must_use]
     pub const fn state_root(&self) -> Option<&WorkingResourceRef> {
         self.state_root.as_ref()
     }
 
+    /// Iterates over host services present when preparation succeeded.
     pub fn available_host_services(&self) -> impl ExactSizeIterator<Item = HostServiceKind> + '_ {
         self.available_host_services.iter().copied()
     }
 
+    /// Creates the low-level ACP driver bound to this integration.
     #[must_use]
     pub fn low_level_driver(&self) -> KimiAcpDriver {
         KimiAcpDriver::new(
@@ -148,6 +162,7 @@ impl KimiPreparedIntegration {
         )
     }
 
+    /// Rejects host or executable drift from the prepared target.
     pub fn validate_execution_binding(
         &self,
         execution_host_id: &ExecutionHostId,
@@ -164,6 +179,7 @@ impl KimiPreparedIntegration {
     }
 }
 
+/// Discovers, validates, and prepares one installed Kimi Code ACP instance.
 pub async fn prepare_kimi(
     input: KimiPreparationInput,
     probe: KimiPreparationProbe,

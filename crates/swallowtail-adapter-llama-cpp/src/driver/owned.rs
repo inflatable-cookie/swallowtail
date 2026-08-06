@@ -23,11 +23,13 @@ pub(super) const OWNED_DRIVER_ID: &str = "swallowtail.llama-cpp.owned-b10069-ope
 const EXECUTABLE_ARGUMENTS: usize = 11;
 
 #[derive(Clone)]
+/// Low-level lifecycle driver for a host-owned ephemeral llama.cpp server.
 pub struct LlamaCppOwnedDriver {
     facade: LlamaCppAttachedDriver,
 }
 
 impl LlamaCppOwnedDriver {
+    /// Creates the exact build-10069 owned-server facade.
     #[must_use]
     pub fn new() -> Self {
         Self {

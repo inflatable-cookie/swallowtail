@@ -1,3 +1,5 @@
+#![deny(missing_docs)]
+
 use crate::activity::{ActivityLifecycleTracker, ActivityTransitionFailure};
 use crate::{EventDelivery, RuntimeEvent, RuntimeEventKind};
 use std::collections::VecDeque;
@@ -5,22 +7,36 @@ use std::error::Error;
 use std::fmt;
 use swallowtail_core::SafeDiagnostic;
 
+/// Stable reason an ordered event buffer rejected an event.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum EventBufferFailureKind {
+    /// Buffer capacity must be positive.
     ZeroCapacity,
+    /// A semantic event arrived before the operation start event.
     MissingStart,
+    /// More than one operation start event was observed.
     DuplicateStart,
+    /// An event sequence did not increase monotonically.
     NonMonotonicSequence,
+    /// Capacity was exhausted without a replaceable coalescible event.
     SemanticOverflow,
+    /// An event arrived after terminal state.
     LateEvent,
+    /// An activity event also carried incompatible legacy content.
     ActivityEnvelopeInvalid,
+    /// One activity key was reused with conflicting identity dimensions.
     ActivityIdentityConflict,
+    /// An activity start arrived after a later phase.
     ActivityPhaseRegression,
+    /// An activity status regressed.
     ActivityStatusRegression,
+    /// One activity completed more than once.
     DuplicateActivityCompletion,
+    /// An activity observation arrived after completion.
     ActivityAfterCompletion,
 }
 
+/// Safe event-buffer rejection with a stable classification.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct EventBufferFailure {
     kind: EventBufferFailureKind,
@@ -36,11 +52,13 @@ impl EventBufferFailure {
     }
 
     #[must_use]
+    /// Returns the stable buffer-failure classification.
     pub const fn kind(&self) -> EventBufferFailureKind {
         self.kind
     }
 
     #[must_use]
+    /// Returns the bounded, redacted diagnostic.
     pub const fn diagnostic(&self) -> &SafeDiagnostic {
         &self.diagnostic
     }
@@ -67,6 +85,7 @@ pub struct OrderedEventBuffer {
 }
 
 impl OrderedEventBuffer {
+    /// Creates an ordered event buffer with a positive fixed capacity.
     pub fn new(capacity: usize) -> Result<Self, EventBufferFailure> {
         if capacity == 0 {
             return Err(EventBufferFailure::new(
@@ -85,6 +104,7 @@ impl OrderedEventBuffer {
         })
     }
 
+    /// Validates and appends an event, coalescing only declared replaceable events.
     pub fn push(&mut self, event: RuntimeEvent) -> Result<(), EventBufferFailure> {
         if self.terminal {
             self.quarantined_late_events.push(event);
@@ -109,24 +129,29 @@ impl OrderedEventBuffer {
     }
 
     #[must_use]
+    /// Removes and returns the oldest retained event.
     pub fn pop_front(&mut self) -> Option<RuntimeEvent> {
         self.events.pop_front()
     }
 
     #[must_use]
+    /// Returns the number of currently retained events.
     pub fn len(&self) -> usize {
         self.events.len()
     }
 
     #[must_use]
+    /// Reports whether no event is currently retained.
     pub fn is_empty(&self) -> bool {
         self.events.is_empty()
     }
 
+    /// Marks the operation terminal so later events are quarantined and rejected.
     pub fn mark_terminal(&mut self) {
         self.terminal = true;
     }
 
+    /// Iterates events quarantined after terminal state.
     pub fn quarantined_late_events(&self) -> impl ExactSizeIterator<Item = &RuntimeEvent> {
         self.quarantined_late_events.iter()
     }

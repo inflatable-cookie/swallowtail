@@ -1,5 +1,6 @@
 macro_rules! provider_session_reconciliation_driver_items {
     () => {
+        /// Observes an interrupted turn on one admitted provider session.
         fn reconcile_provider_session(
             &self,
             plan: ProviderSessionReconciliationPlan,

@@ -3,6 +3,7 @@ use swallowtail_core::{
     SupportAuthority,
 };
 
+/// Endpoint audience for Codex's provider-owned ChatGPT subscription login.
 pub const CODEX_CHATGPT_SUBSCRIPTION_AUDIENCE: &str = "codex";
 
 /// Describes provider-supported Codex access through a cached ChatGPT login.

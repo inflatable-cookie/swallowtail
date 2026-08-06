@@ -17,12 +17,14 @@ const DRIVER_ID: &str = "swallowtail.anthropic.direct";
 const MAX_CATALOGUE_PAGES: usize = 8;
 
 #[derive(Clone, Default)]
+/// Low-level Anthropic Messages catalogue, run, and continuation driver.
 pub struct AnthropicDirectDriver {
     transport: CurlTransport,
 }
 
 impl AnthropicDirectDriver {
     #[must_use]
+    /// Creates a driver using the package's bounded HTTP/SSE transport.
     pub fn new() -> Self {
         Self::default()
     }
@@ -47,6 +49,7 @@ impl AnthropicDirectDriver {
 }
 
 #[must_use]
+/// Returns the exact descriptor for the Anthropic Messages direct route.
 pub fn anthropic_direct_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(
         AdapterIdentity::new(

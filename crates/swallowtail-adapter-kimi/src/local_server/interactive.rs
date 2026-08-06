@@ -20,15 +20,20 @@ use swallowtail_runtime::{
     ResumeSessionRequest, SessionOptions, WorkingResourceRef,
 };
 
+/// Future returned when a prepared local-server session opens or resumes.
 pub type KimiLocalServerPreparedSessionFuture = BoxFuture<
     'static,
     Result<Box<dyn InteractiveSessionHandle>, swallowtail_runtime::RuntimeFailure>,
 >;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+/// Provider-defined permission policy for a Kimi local-server session.
 pub enum KimiLocalServerPermissionMode {
+    /// Ask before operations that require approval.
     Manual,
+    /// Apply the provider's automatic approval policy.
     Auto,
+    /// Allow operations without approval prompts.
     Yolo,
 }
 
@@ -43,6 +48,7 @@ impl KimiLocalServerPermissionMode {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Explicit provider configuration for Kimi local-server sessions and runs.
 pub struct KimiLocalServerSessionConfiguration {
     permission_mode: KimiLocalServerPermissionMode,
     profile: Option<String>,
@@ -53,6 +59,7 @@ pub struct KimiLocalServerSessionConfiguration {
 }
 
 impl KimiLocalServerSessionConfiguration {
+    /// Creates configuration with one explicit permission mode.
     #[must_use]
     pub const fn new(permission_mode: KimiLocalServerPermissionMode) -> Self {
         Self {
@@ -65,11 +72,13 @@ impl KimiLocalServerSessionConfiguration {
         }
     }
 
+    /// Selects a bounded non-empty provider profile name.
     pub fn with_profile(mut self, profile: impl Into<String>) -> Result<Self, PreparationFailure> {
         self.profile = Some(required_provider_text("profile", profile)?);
         Ok(self)
     }
 
+    /// Replaces the bounded set of provider tool names disabled for the operation.
     pub fn with_disabled_tools(
         mut self,
         tools: impl IntoIterator<Item = String>,
@@ -89,16 +98,19 @@ impl KimiLocalServerSessionConfiguration {
         Ok(self)
     }
 
+    /// Returns the selected permission mode.
     #[must_use]
     pub const fn permission_mode(&self) -> KimiLocalServerPermissionMode {
         self.permission_mode
     }
 
+    /// Returns the optional provider profile name.
     #[must_use]
     pub fn profile(&self) -> Option<&str> {
         self.profile.as_deref()
     }
 
+    /// Iterates over provider tool names disabled for the operation.
     pub fn disabled_tools(&self) -> impl ExactSizeIterator<Item = &str> {
         self.disabled_tools.iter().map(String::as_str)
     }
@@ -135,6 +147,7 @@ impl KimiLocalServerSessionConfiguration {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer inputs for one prepared Kimi local-server interactive session.
 pub struct KimiLocalServerSessionInput {
     request_id: RequestId,
     model: crate::KimiModelSelection,
@@ -146,6 +159,7 @@ pub struct KimiLocalServerSessionInput {
 }
 
 impl KimiLocalServerSessionInput {
+    /// Creates a session input with explicit model, resource, and provider configuration.
     #[must_use]
     pub fn new(
         request_id: RequestId,
@@ -164,18 +178,21 @@ impl KimiLocalServerSessionInput {
         }
     }
 
+    /// Adds a session-open deadline.
     #[must_use]
     pub const fn with_deadline(mut self, deadline: swallowtail_runtime::Deadline) -> Self {
         self.deadline = Some(deadline);
         self
     }
 
+    /// Selects the requested reasoning mode.
     #[must_use]
     pub fn with_reasoning(mut self, reasoning: ReasoningMode) -> Self {
         self.options = self.options.with_reasoning_mode(reasoning);
         self
     }
 
+    /// Explicitly admits an unverified-newer local-server implementation.
     #[must_use]
     pub const fn allow_unverified_newer(mut self) -> Self {
         self.allow_unverified_newer = true;
@@ -184,6 +201,7 @@ impl KimiLocalServerSessionInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared interactive Kimi local-server session.
 pub struct KimiLocalServerPreparedSession {
     evidence: swallowtail_runtime::PreparedOperationEvidence,
     request: swallowtail_runtime::OpenSessionRequest,
@@ -192,31 +210,37 @@ pub struct KimiLocalServerPreparedSession {
 }
 
 impl KimiLocalServerPreparedSession {
+    /// Returns portable evidence for the prepared session.
     #[must_use]
     pub const fn evidence(&self) -> &swallowtail_runtime::PreparedOperationEvidence {
         &self.evidence
     }
 
+    /// Returns the validated preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &swallowtail_core::PreflightPlan {
         self.evidence.plan()
     }
 
+    /// Returns the bound session-open request.
     #[must_use]
     pub const fn request(&self) -> &swallowtail_runtime::OpenSessionRequest {
         &self.request
     }
 
+    /// Returns the provider configuration bound to the session.
     #[must_use]
     pub const fn configuration(&self) -> &KimiLocalServerSessionConfiguration {
         &self.configuration
     }
 
+    /// Creates the low-level local-server driver bound to this session.
     #[must_use]
     pub fn low_level_driver(&self) -> super::KimiLocalServerDriver {
         super::KimiLocalServerDriver::with_session_configuration(self.configuration.clone())
     }
 
+    /// Opens a new local-server session with caller-supplied host services.
     pub fn open_session(
         &self,
         services: swallowtail_runtime::HostServices,
@@ -224,6 +248,7 @@ impl KimiLocalServerPreparedSession {
         prepared::open(self, services)
     }
 
+    /// Resumes an exact retained local-server session.
     pub fn resume_session(
         &self,
         request_id: RequestId,
@@ -234,6 +259,7 @@ impl KimiLocalServerPreparedSession {
         Ok(self.clone().resume_prepared_session(request, services))
     }
 
+    /// Builds an exact local-server resume request.
     pub fn resume_request(
         &self,
         request_id: RequestId,

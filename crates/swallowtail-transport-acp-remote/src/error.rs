@@ -2,19 +2,30 @@ use std::error::Error;
 use std::fmt;
 use swallowtail_core::SafeDiagnostic;
 
+/// Stable classification of a remote ACP transport failure.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum RemoteAcpErrorKind {
+    /// The connection request did not match its prepared binding.
     BindingRejected,
+    /// The endpoint was outside the exact network grant.
     EndpointRejected,
+    /// A required host service was unavailable.
     HostServiceMissing,
+    /// A configured transport capacity was exceeded.
     CapacityExceeded,
+    /// The peer violated the admitted ACP protocol boundary.
     ProtocolRejected,
+    /// The physical transport failed.
     TransportFailed,
+    /// The connection was cancelled.
     Cancelled,
+    /// The connection deadline elapsed.
     DeadlineExceeded,
+    /// Owned transport resources could not be cleaned up completely.
     CleanupFailed,
 }
 
+/// Safe remote ACP transport failure.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct RemoteAcpError {
     kind: RemoteAcpErrorKind,
@@ -29,11 +40,13 @@ impl RemoteAcpError {
         }
     }
 
+    /// Returns the stable failure classification.
     #[must_use]
     pub const fn kind(&self) -> RemoteAcpErrorKind {
         self.kind
     }
 
+    /// Returns the safe diagnostic suitable for consumer observation.
     #[must_use]
     pub const fn diagnostic(&self) -> &SafeDiagnostic {
         &self.diagnostic

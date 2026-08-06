@@ -1,6 +1,7 @@
 //! Codex harness drivers for Swallowtail.
 
 #![forbid(unsafe_code)]
+#![deny(missing_docs)]
 
 mod access;
 mod app_server;

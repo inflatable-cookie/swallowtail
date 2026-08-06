@@ -33,6 +33,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs for read-only reconciliation of one interrupted local-server turn.
 pub struct KimiLocalServerReconciliationInput {
     request_id: RequestId,
     model: crate::KimiModelSelection,
@@ -43,6 +44,7 @@ pub struct KimiLocalServerReconciliationInput {
 }
 
 impl KimiLocalServerReconciliationInput {
+    /// Creates bounded reconciliation input from exact binding and checkpoint evidence.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -61,6 +63,7 @@ impl KimiLocalServerReconciliationInput {
         }
     }
 
+    /// Adds a reconciliation deadline.
     #[must_use]
     pub const fn with_deadline(mut self, deadline: swallowtail_runtime::Deadline) -> Self {
         self.deadline = Some(deadline);
@@ -69,27 +72,32 @@ impl KimiLocalServerReconciliationInput {
 }
 
 #[derive(Clone, Debug)]
+/// Prepared read-only reconciliation of one interrupted local-server turn.
 pub struct KimiLocalServerPreparedReconciliation {
     evidence: PreparedProviderSessionReconciliationEvidence,
     request: ProviderSessionReconciliationRequest,
 }
 
 impl KimiLocalServerPreparedReconciliation {
+    /// Returns portable evidence for the prepared reconciliation.
     #[must_use]
     pub const fn evidence(&self) -> &PreparedProviderSessionReconciliationEvidence {
         &self.evidence
     }
 
+    /// Returns the exact reconciliation plan.
     #[must_use]
     pub const fn plan(&self) -> &ProviderSessionReconciliationPlan {
         self.evidence.plan()
     }
 
+    /// Returns the bound reconciliation request.
     #[must_use]
     pub const fn request(&self) -> &ProviderSessionReconciliationRequest {
         &self.request
     }
 
+    /// Observes retained provider truth for the interrupted turn.
     pub fn execute(
         &self,
         services: HostServices,
@@ -104,6 +112,7 @@ impl KimiLocalServerPreparedReconciliation {
         })
     }
 
+    /// Composes reconciliation with a separately prepared, binding-equal resume.
     pub fn prepare_settled_session_restoration(
         self,
         session: super::KimiLocalServerPreparedSession,
@@ -173,6 +182,7 @@ impl WorkingStateRestorationOperation for KimiLocalServerPreparedReconciliation 
 }
 
 impl crate::KimiLocalServerPreparedIntegration {
+    /// Prepares the strongest admitted working-state restoration for this server.
     pub fn prepare_working_state_restoration(
         &self,
         input: KimiLocalServerReconciliationInput,
@@ -183,6 +193,7 @@ impl crate::KimiLocalServerPreparedIntegration {
 }
 
 impl crate::KimiLocalServerPreparedIntegration {
+    /// Prepares read-only reconciliation for one interrupted retained session.
     pub fn prepare_session_reconciliation(
         &self,
         input: KimiLocalServerReconciliationInput,

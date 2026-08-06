@@ -4,12 +4,14 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs for one Oh My Pi model-catalogue request.
 pub struct OhMyPiCatalogueProfileInput {
     request_id: RequestId,
     deadline: Option<Deadline>,
 }
 
 impl OhMyPiCatalogueProfileInput {
+    /// Creates a catalogue input without a deadline.
     #[must_use]
     pub const fn new(request_id: RequestId) -> Self {
         Self {
@@ -18,6 +20,7 @@ impl OhMyPiCatalogueProfileInput {
         }
     }
 
+    /// Adds a caller-owned catalogue deadline.
     #[must_use]
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
@@ -30,6 +33,7 @@ impl OhMyPiCatalogueProfileInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Exact provider and model-route identity selected for RPC execution.
 pub struct OhMyPiModelSelection {
     route_id: ModelRouteId,
     route_revision: ModelRouteRevision,
@@ -38,6 +42,7 @@ pub struct OhMyPiModelSelection {
 }
 
 impl OhMyPiModelSelection {
+    /// Creates a model selection without inferring provider or model defaults.
     #[must_use]
     pub const fn new(
         route_id: ModelRouteId,
@@ -64,6 +69,7 @@ impl OhMyPiModelSelection {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs for one read-only Oh My Pi interactive session.
 pub struct OhMyPiSessionProfileInput {
     request_id: RequestId,
     model: OhMyPiModelSelection,
@@ -74,6 +80,7 @@ pub struct OhMyPiSessionProfileInput {
 }
 
 impl OhMyPiSessionProfileInput {
+    /// Creates a session with explicit model, workspace, and portable options.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -91,12 +98,14 @@ impl OhMyPiSessionProfileInput {
         }
     }
 
+    /// Adds a caller-owned session deadline.
     #[must_use]
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
         self
     }
 
+    /// Enables the route's bounded image-attachment capability.
     #[must_use]
     pub const fn with_image_attachments(mut self) -> Self {
         self.image_attachments = true;
@@ -125,6 +134,7 @@ impl OhMyPiSessionProfileInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs for one bounded Oh My Pi structured run.
 pub struct OhMyPiRunProfileInput {
     request_id: RequestId,
     model: OhMyPiModelSelection,
@@ -136,6 +146,7 @@ pub struct OhMyPiRunProfileInput {
 }
 
 impl OhMyPiRunProfileInput {
+    /// Creates a run with explicit model, content, workspace, and deadline.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -155,6 +166,7 @@ impl OhMyPiRunProfileInput {
         }
     }
 
+    /// Replaces the run's bounded attachment set.
     #[must_use]
     pub fn with_attachments(
         mut self,
@@ -164,6 +176,7 @@ impl OhMyPiRunProfileInput {
         self
     }
 
+    /// Selects an explicit portable reasoning mode.
     #[must_use]
     pub fn with_reasoning_mode(mut self, reasoning_mode: ReasoningMode) -> Self {
         self.reasoning_mode = Some(reasoning_mode);

@@ -3,6 +3,7 @@ use swallowtail_core::{ModelId, ModelRouteId, ModelRouteRevision, ReasoningMode}
 use swallowtail_runtime::{Deadline, OperationContent, RequestId};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer input for a prepared Kimi Platform catalogue observation.
 pub struct KimiPlatformCatalogueProfileInput {
     request_id: RequestId,
     deadline: Option<Deadline>,
@@ -10,6 +11,7 @@ pub struct KimiPlatformCatalogueProfileInput {
 
 impl KimiPlatformCatalogueProfileInput {
     #[must_use]
+    /// Creates catalogue input without a deadline.
     pub const fn new(request_id: RequestId) -> Self {
         Self {
             request_id,
@@ -18,6 +20,7 @@ impl KimiPlatformCatalogueProfileInput {
     }
 
     #[must_use]
+    /// Adds an exact host-monotonic deadline.
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
         self
@@ -29,6 +32,7 @@ impl KimiPlatformCatalogueProfileInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Exact Kimi Platform model-route selection supplied by the consumer.
 pub struct KimiPlatformModelSelection {
     route_id: ModelRouteId,
     route_revision: ModelRouteRevision,
@@ -37,6 +41,7 @@ pub struct KimiPlatformModelSelection {
 
 impl KimiPlatformModelSelection {
     #[must_use]
+    /// Creates an exact route, revision, and model selection.
     pub const fn new(
         route_id: ModelRouteId,
         route_revision: ModelRouteRevision,
@@ -55,6 +60,7 @@ impl KimiPlatformModelSelection {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer input for one prepared K3 inference attempt.
 pub struct KimiPlatformInferenceAttemptInput {
     request_id: RequestId,
     model: KimiPlatformModelSelection,
@@ -66,6 +72,7 @@ pub struct KimiPlatformInferenceAttemptInput {
 
 impl KimiPlatformInferenceAttemptInput {
     #[must_use]
+    /// Creates input with explicit model, content, reasoning, and output bound.
     pub const fn new(
         request_id: RequestId,
         model: KimiPlatformModelSelection,
@@ -84,6 +91,7 @@ impl KimiPlatformInferenceAttemptInput {
     }
 
     #[must_use]
+    /// Adds an exact host-monotonic deadline.
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
         self

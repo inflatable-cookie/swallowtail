@@ -5,10 +5,12 @@ use swallowtail_core::{AccessProfileId, ConfiguredInstanceId, ExecutionHostId};
 use swallowtail_runtime::{CredentialRef, RuntimeFailure};
 
 #[derive(Clone)]
+/// Opaque AWS credential provider delegated to the official SDK.
 pub struct BedrockCredentialProvider(SharedCredentialsProvider);
 
 impl BedrockCredentialProvider {
     #[must_use]
+    /// Wraps a credential provider without extracting credential material.
     pub fn new(provider: impl ProvideCredentials + 'static) -> Self {
         Self(SharedCredentialsProvider::new(provider))
     }
@@ -35,6 +37,7 @@ pub struct BedrockCloudClientConfig {
 
 impl BedrockCloudClientConfig {
     #[must_use]
+    /// Creates explicit SDK client configuration for one region.
     pub const fn new(
         region: BedrockRegion,
         credential_provider: BedrockCredentialProvider,
@@ -46,6 +49,7 @@ impl BedrockCloudClientConfig {
     }
 
     #[must_use]
+    /// Returns the configured AWS region.
     pub const fn region(&self) -> &BedrockRegion {
         &self.region
     }
@@ -56,9 +60,11 @@ impl BedrockCloudClientConfig {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Validated AWS region name used by a Bedrock SDK client.
 pub struct BedrockRegion(String);
 
 impl BedrockRegion {
+    /// Validates and creates a bounded AWS region name.
     pub fn new(value: impl Into<String>) -> Result<Self, RuntimeFailure> {
         let value = value.into();
         if value.is_empty()
@@ -76,12 +82,14 @@ impl BedrockRegion {
     }
 
     #[must_use]
+    /// Returns the validated region string.
     pub fn as_str(&self) -> &str {
         &self.0
     }
 }
 
 #[derive(Clone, Debug)]
+/// Exact Runtime driver binding across instance, access, host, region, and SDK credentials.
 pub struct BedrockDriverBinding {
     instance: ConfiguredInstanceId,
     access_profile: AccessProfileId,
@@ -93,6 +101,7 @@ pub struct BedrockDriverBinding {
 
 impl BedrockDriverBinding {
     #[must_use]
+    /// Creates a Runtime driver binding without consulting ambient AWS state.
     pub const fn new(
         instance: ConfiguredInstanceId,
         access_profile: AccessProfileId,

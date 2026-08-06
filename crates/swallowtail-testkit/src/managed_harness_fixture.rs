@@ -13,15 +13,22 @@ use swallowtail_core::{
     preflight,
 };
 
+/// Valid or intentionally incomplete managed-harness preflight scenario.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum ManagedHarnessPreflightCase {
+    /// Complete provider-managed harness requirements.
     Canonical,
+    /// Provider durable-retention capability is absent.
     MissingDurableRetention,
+    /// Provider-managed recovery capability is absent.
     MissingManagedRecovery,
+    /// Environment deletion authority is absent.
     MissingOwnedEnvironment,
+    /// Session deletion authority is absent.
     MissingOwnedSession,
 }
 
+/// Pure managed-harness preflight fixture with side-effect accounting.
 pub struct ManagedHarnessPreflightFixture {
     driver: DriverDescriptor,
     instance: ConfiguredInstance,
@@ -33,6 +40,7 @@ pub struct ManagedHarnessPreflightFixture {
 }
 
 impl ManagedHarnessPreflightFixture {
+    /// Builds one selected valid or intentionally incomplete scenario.
     #[must_use]
     pub fn for_case(case: ManagedHarnessPreflightCase) -> Self {
         let adapter_id = valid(AdapterId::new, "fixture.managed-harness");
@@ -138,10 +146,12 @@ impl ManagedHarnessPreflightFixture {
         }
     }
 
+    /// Runs pure preflight against the fixture context.
     pub fn preflight(&self) -> Result<PreflightPlan, PreflightFailure> {
         preflight(&self.context(), &self.requirements)
     }
 
+    /// Returns the exact driver, instance, route, access, and host context.
     #[must_use]
     pub fn context(&self) -> PreflightContext<'_> {
         PreflightContext::new(
@@ -160,11 +170,13 @@ impl ManagedHarnessPreflightFixture {
         .with_model_route(&self.route)
     }
 
+    /// Records one simulated provider-side effect.
     pub fn record_provider_side_effect(&self) {
         self.provider_side_effects
             .set(self.provider_side_effects.get() + 1);
     }
 
+    /// Returns the number of simulated provider-side effects.
     #[must_use]
     pub fn provider_side_effect_count(&self) -> usize {
         self.provider_side_effects.get()

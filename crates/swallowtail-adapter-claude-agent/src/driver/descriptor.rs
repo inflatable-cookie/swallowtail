@@ -1,6 +1,7 @@
 use super::*;
 
 #[must_use]
+/// Describes the Claude Agent ACP route.
 pub fn claude_agent_acp_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(
         AdapterIdentity::new(

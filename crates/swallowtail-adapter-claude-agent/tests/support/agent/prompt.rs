@@ -154,7 +154,7 @@ impl SharedAgent {
                     }}),
                 );
             }
-            Scenario::Cancellation => {}
+            Scenario::Cancellation | Scenario::ClosePending => {}
             Scenario::Disconnect => state.stopped = true,
             Scenario::DeleteMissing
             | Scenario::DeleteProviderFailure

@@ -12,35 +12,47 @@ use swallowtail_core::{
 use swallowtail_runtime::RuntimeFailure;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Immutable identity attached to each model observation in one probe.
 pub struct ObservationBinding {
+    /// Configured runtime instance being observed.
     pub instance_id: ConfiguredInstanceId,
+    /// Execution host that owns the attached runtime binding.
     pub execution_host_id: ExecutionHostId,
+    /// Exact observed runtime-version binding.
     pub runtime_version: InterfaceVersionBinding,
+    /// Host-supplied catalogue timestamp.
     pub observed_at: CatalogTimestamp,
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+/// Model capabilities admitted from the selected Ollama model detail.
 pub enum OllamaModelCapability {
+    /// Ordinary completion/chat generation is supported.
     Completion,
+    /// Native thinking control is supported.
     Thinking,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Selected-model observation paired with its admitted native capabilities.
 pub struct SelectedModelDetail {
     observation: AttachedModelObservation,
     capabilities: BTreeSet<OllamaModelCapability>,
 }
 
 impl SelectedModelDetail {
+    /// Returns the digest-bound selected-model observation.
     #[must_use]
     pub const fn observation(&self) -> &AttachedModelObservation {
         &self.observation
     }
 
+    /// Iterates admitted capabilities for the selected model.
     pub fn capabilities(&self) -> impl ExactSizeIterator<Item = OllamaModelCapability> + '_ {
         self.capabilities.iter().copied()
     }
 
+    /// Reports whether the selected model advertises one admitted capability.
     #[must_use]
     pub fn supports(&self, capability: OllamaModelCapability) -> bool {
         self.capabilities.contains(&capability)
@@ -51,6 +63,7 @@ impl SelectedModelDetail {
     }
 }
 
+/// Parses and qualifies an Ollama `/api/version` response.
 pub fn parse_version(response: &Response) -> Result<InterfaceVersionBinding, RuntimeFailure> {
     require_success(response, "version")?;
     let envelope: VersionEnvelope = bounded_json(&response.body, "version")?;
@@ -65,6 +78,7 @@ pub fn parse_version(response: &Response) -> Result<InterfaceVersionBinding, Run
     }
 }
 
+/// Parses installed or running local model inventory under one binding.
 pub fn parse_inventory(
     response: &Response,
     scope: AttachedModelObservationScope,
@@ -85,6 +99,7 @@ pub fn parse_inventory(
         .collect()
 }
 
+/// Parses detail for the exact selected local model tag and manifest digest.
 pub fn parse_model_detail(
     response: &Response,
     binding: &ObservationBinding,

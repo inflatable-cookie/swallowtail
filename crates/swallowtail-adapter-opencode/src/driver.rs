@@ -58,11 +58,13 @@ pub(crate) mod callback;
 pub(crate) mod input;
 
 #[derive(Clone, Default)]
+/// Low-level driver for one externally managed OpenCode HTTP server.
 pub struct OpenCodeHttpDriver {
     transport: CurlTransport,
 }
 
 impl OpenCodeHttpDriver {
+    /// Creates a driver using the adapter's bounded HTTP transport.
     #[must_use]
     pub fn new() -> Self {
         Self::default()
@@ -98,6 +100,7 @@ impl OpenCodeHttpDriver {
     }
 }
 
+/// Describes the attached OpenCode server's separately authorized roles.
 #[must_use]
 pub fn opencode_http_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(

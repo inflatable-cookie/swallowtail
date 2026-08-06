@@ -4,6 +4,7 @@
 //! consumer product concepts.
 
 #![forbid(unsafe_code)]
+#![deny(missing_docs)]
 
 mod access;
 mod attached_runtime;

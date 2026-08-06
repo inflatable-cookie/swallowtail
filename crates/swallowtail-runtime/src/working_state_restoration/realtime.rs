@@ -14,6 +14,7 @@ pub struct FreshRealtimeSessionReplacementOutcome {
 }
 
 impl FreshRealtimeSessionReplacementOutcome {
+    /// Creates a context-losing realtime replacement outcome.
     #[must_use]
     pub const fn new(
         interrupted_turn_id: RuntimeTurnId,
@@ -26,17 +27,20 @@ impl FreshRealtimeSessionReplacementOutcome {
     }
 
     #[must_use]
+    /// Returns the unresolved interrupted consumer turn.
     pub const fn interrupted_turn_id(&self) -> &RuntimeTurnId {
         &self.interrupted_turn_id
     }
 
     #[must_use]
+    /// Separates the interrupted turn identity from the new realtime session.
     pub fn into_parts(self) -> (RuntimeTurnId, Box<dyn RealtimeMediaSessionHandle>) {
         (self.interrupted_turn_id, self.session)
     }
 }
 
 impl PreparedWorkingStateRestoration {
+    /// Prepares a fresh realtime session with explicit connection-context loss.
     #[must_use]
     pub fn fresh_realtime_session_replacement(
         interrupted_turn_id: RuntimeTurnId,

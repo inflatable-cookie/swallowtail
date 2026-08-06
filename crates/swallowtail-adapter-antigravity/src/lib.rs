@@ -5,6 +5,7 @@
 //! driver.
 
 #![forbid(unsafe_code)]
+#![deny(missing_docs)]
 
 mod access;
 mod catalogue;

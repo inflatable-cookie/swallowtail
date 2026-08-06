@@ -20,6 +20,7 @@ use swallowtail_runtime::{
 const ENDPOINT_AUDIENCE: &str = "gemini-developer-api";
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs that bind one installed Gemini CLI ACP instance before discovery.
 pub struct GeminiPreparationInput {
     instance_id: ConfiguredInstanceId,
     instance_revision: InstanceRevision,
@@ -31,6 +32,7 @@ pub struct GeminiPreparationInput {
 }
 
 impl GeminiPreparationInput {
+    /// Creates an ACP preparation input with explicit host, target, and access evidence.
     #[must_use]
     pub const fn new(
         instance_id: ConfiguredInstanceId,
@@ -54,6 +56,7 @@ impl GeminiPreparationInput {
 }
 
 #[derive(Clone, Debug)]
+/// Caller-owned identity, deadline, and cancellation controls for discovery.
 pub struct GeminiPreparationProbe {
     request_id: RequestId,
     scope_id: ScopeId,
@@ -62,6 +65,7 @@ pub struct GeminiPreparationProbe {
 }
 
 impl GeminiPreparationProbe {
+    /// Creates one bounded installed-executable discovery probe.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -79,6 +83,7 @@ impl GeminiPreparationProbe {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Discovered and preflight-ready Gemini CLI ACP integration.
 pub struct GeminiPreparedIntegration {
     environment: EnvironmentRef,
     target: InstalledExecutableTarget,
@@ -90,40 +95,48 @@ pub struct GeminiPreparedIntegration {
 }
 
 impl GeminiPreparedIntegration {
+    /// Returns the host-private environment used to launch Gemini CLI.
     #[must_use]
     pub const fn environment(&self) -> &EnvironmentRef {
         &self.environment
     }
 
+    /// Returns the exact executable discovery target.
     #[must_use]
     pub const fn target(&self) -> &InstalledExecutableTarget {
         &self.target
     }
 
+    /// Returns the qualified installed-executable observation.
     #[must_use]
     pub const fn observation(&self) -> &InstalledExecutableObservation {
         &self.observation
     }
 
+    /// Returns the selected Developer API access profile.
     #[must_use]
     pub const fn access_profile(&self) -> &AccessProfile {
         &self.access_profile
     }
 
+    /// Returns the admitted access evidence used during preparation.
     #[must_use]
     pub const fn access_evidence(&self) -> &PreparedAccessEvidence {
         &self.access_evidence
     }
 
+    /// Returns the configured ACP instance created from discovery evidence.
     #[must_use]
     pub const fn instance(&self) -> &ConfiguredInstance {
         &self.instance
     }
 
+    /// Iterates the host services available when preparation completed.
     pub fn available_host_services(&self) -> impl ExactSizeIterator<Item = HostServiceKind> + '_ {
         self.available_host_services.iter().copied()
     }
 
+    /// Reconstructs the low-level ACP driver bound to prepared inputs.
     #[must_use]
     pub fn low_level_driver(&self) -> GeminiAcpDriver {
         GeminiAcpDriver::new(
@@ -135,6 +148,7 @@ impl GeminiPreparedIntegration {
         )
     }
 
+    /// Rejects execution after the selected host or target has drifted.
     pub fn validate_execution_binding(
         &self,
         execution_host_id: &ExecutionHostId,
@@ -151,6 +165,7 @@ impl GeminiPreparedIntegration {
     }
 }
 
+/// Discovers and prepares one exact installed Gemini CLI ACP route.
 pub async fn prepare_gemini_acp(
     input: GeminiPreparationInput,
     probe: GeminiPreparationProbe,

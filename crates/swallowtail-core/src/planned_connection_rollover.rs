@@ -7,13 +7,16 @@ use std::num::NonZeroU32;
 /// another at an idle turn boundary.
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
 pub enum PlannedConnectionRolloverPolicy {
+    /// Do not replace the active provider connection.
     #[default]
     Disabled,
+    /// Allow at most the given number of planned replacements.
     Bounded(NonZeroU32),
 }
 
 impl PlannedConnectionRolloverPolicy {
     #[must_use]
+    /// Returns the rollover bound, or `None` when disabled.
     pub const fn maximum_count(self) -> Option<NonZeroU32> {
         match self {
             Self::Disabled => None,

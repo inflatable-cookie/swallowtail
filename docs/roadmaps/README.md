@@ -13,8 +13,9 @@ shape.
 
 ## Next Task
 
-Reassess g03 only after a consumer defect, material non-deferred stable drift,
-or explicit operator promotion supplies new evidence.
+Complete g03 card 129: commit the reviewed v0.1.0 audit work, then bind the
+full deterministic gate and external consumer to that exact clean candidate.
+Do not prepare, tag, or push before the later operator authorization handoff.
 
 ## Index
 

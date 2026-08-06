@@ -4,6 +4,7 @@ use swallowtail_core::{
     HostServiceKind, IntegrationFamilyId, OperationShape, TransportFamilyId,
 };
 
+/// Describes catalogue and structured-run roles for attached serving.
 #[must_use]
 pub fn llama_cpp_attached_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(

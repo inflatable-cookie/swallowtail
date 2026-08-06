@@ -3,6 +3,7 @@ use swallowtail_core::{
     InterfaceVersionScheme,
 };
 
+/// Accepted and rejected samples around one closed semantic-version window.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ClosedSemanticWindowCase {
     baseline: InterfaceVersion,
@@ -12,6 +13,7 @@ pub struct ClosedSemanticWindowCase {
 }
 
 impl ClosedSemanticWindowCase {
+    /// Creates a case with exact baseline and latest-qualified boundaries.
     #[must_use]
     pub fn new(baseline: InterfaceVersion, latest_qualified: InterfaceVersion) -> Self {
         Self {
@@ -22,12 +24,14 @@ impl ClosedSemanticWindowCase {
         }
     }
 
+    /// Sets versions that must be classified as supported.
     #[must_use]
     pub fn with_accepted(mut self, versions: impl IntoIterator<Item = InterfaceVersion>) -> Self {
         self.accepted = versions.into_iter().collect();
         self
     }
 
+    /// Sets versions that must be rejected or remain unverified.
     #[must_use]
     pub fn with_rejected(mut self, versions: impl IntoIterator<Item = InterfaceVersion>) -> Self {
         self.rejected = versions.into_iter().collect();

@@ -24,6 +24,7 @@ use crate::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs that qualify one installed Grok Build instance.
 pub struct GrokPreparationInput {
     instance_id: ConfiguredInstanceId,
     instance_revision: InstanceRevision,
@@ -35,6 +36,7 @@ pub struct GrokPreparationInput {
 }
 
 impl GrokPreparationInput {
+    /// Creates preparation input for an exact installed Grok Build target.
     #[must_use]
     pub const fn new(
         instance_id: ConfiguredInstanceId,
@@ -58,6 +60,7 @@ impl GrokPreparationInput {
 }
 
 #[derive(Clone, Debug)]
+/// Bounded discovery request used while preparing Grok Build.
 pub struct GrokPreparationProbe {
     request_id: RequestId,
     scope_id: ScopeId,
@@ -66,6 +69,7 @@ pub struct GrokPreparationProbe {
 }
 
 impl GrokPreparationProbe {
+    /// Creates a Grok Build preparation probe.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -83,6 +87,7 @@ impl GrokPreparationProbe {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Qualified Grok Build integration ready to prepare ACP operations.
 pub struct GrokPreparedIntegration {
     environment: EnvironmentRef,
     target: InstalledExecutableTarget,
@@ -94,40 +99,48 @@ pub struct GrokPreparedIntegration {
 }
 
 impl GrokPreparedIntegration {
+    /// Returns the approved ambient execution environment.
     #[must_use]
     pub const fn environment(&self) -> &EnvironmentRef {
         &self.environment
     }
 
+    /// Returns the qualified installed-executable target.
     #[must_use]
     pub const fn target(&self) -> &InstalledExecutableTarget {
         &self.target
     }
 
+    /// Returns the executable observation admitted during preparation.
     #[must_use]
     pub const fn observation(&self) -> &InstalledExecutableObservation {
         &self.observation
     }
 
+    /// Returns the configured delegated OAuth access profile.
     #[must_use]
     pub const fn access_profile(&self) -> &AccessProfile {
         &self.access_profile
     }
 
+    /// Returns the prepared access evidence.
     #[must_use]
     pub const fn access_evidence(&self) -> &PreparedAccessEvidence {
         &self.access_evidence
     }
 
+    /// Returns the exact configured provider instance.
     #[must_use]
     pub const fn instance(&self) -> &ConfiguredInstance {
         &self.instance
     }
 
+    /// Iterates over host services present when preparation succeeded.
     pub fn available_host_services(&self) -> impl ExactSizeIterator<Item = HostServiceKind> + '_ {
         self.available_host_services.iter().copied()
     }
 
+    /// Creates the low-level driver bound to this integration.
     #[must_use]
     pub fn low_level_driver(&self) -> GrokAcpDriver {
         GrokAcpDriver::new(
@@ -139,6 +152,7 @@ impl GrokPreparedIntegration {
         )
     }
 
+    /// Rejects host or executable drift from the prepared target.
     pub fn validate_execution_binding(
         &self,
         execution_host_id: &ExecutionHostId,
@@ -155,6 +169,7 @@ impl GrokPreparedIntegration {
     }
 }
 
+/// Discovers, validates, and prepares one configured Grok Build instance.
 pub async fn prepare_grok_build(
     input: GrokPreparationInput,
     probe: GrokPreparationProbe,

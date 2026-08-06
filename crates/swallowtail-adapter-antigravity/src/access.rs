@@ -3,9 +3,11 @@ use swallowtail_core::{
     SupportAuthority,
 };
 
+/// Audience for provider-owned personal Google authentication.
 pub const ANTIGRAVITY_PERSONAL_GOOGLE_AUDIENCE: &str = "antigravity.personal-google";
 
 #[must_use]
+/// Builds a subscription-backed profile without exposing provider credentials.
 pub fn antigravity_personal_google_access_profile(id: AccessProfileId) -> AccessProfile {
     AccessProfile::new(
         id,

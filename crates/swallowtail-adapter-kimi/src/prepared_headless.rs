@@ -19,6 +19,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs that qualify one installed Kimi Code headless instance.
 pub struct KimiHeadlessPreparationInput {
     pub(crate) instance_id: ConfiguredInstanceId,
     pub(crate) instance_revision: InstanceRevision,
@@ -30,6 +31,7 @@ pub struct KimiHeadlessPreparationInput {
 }
 
 impl KimiHeadlessPreparationInput {
+    /// Creates preparation input for an exact installed headless target.
     #[must_use]
     pub const fn new(
         instance_id: ConfiguredInstanceId,
@@ -53,6 +55,7 @@ impl KimiHeadlessPreparationInput {
 }
 
 #[derive(Clone, Debug)]
+/// Bounded discovery request used while preparing Kimi headless.
 pub struct KimiHeadlessPreparationProbe {
     request_id: RequestId,
     scope_id: ScopeId,
@@ -61,6 +64,7 @@ pub struct KimiHeadlessPreparationProbe {
 }
 
 impl KimiHeadlessPreparationProbe {
+    /// Creates a Kimi headless preparation probe.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -78,6 +82,7 @@ impl KimiHeadlessPreparationProbe {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Qualified Kimi headless integration ready to prepare structured runs.
 pub struct KimiHeadlessPreparedIntegration {
     environment: EnvironmentRef,
     target: InstalledExecutableTarget,
@@ -89,40 +94,48 @@ pub struct KimiHeadlessPreparedIntegration {
 }
 
 impl KimiHeadlessPreparedIntegration {
+    /// Returns the approved execution environment.
     #[must_use]
     pub const fn environment(&self) -> &EnvironmentRef {
         &self.environment
     }
 
+    /// Returns the qualified installed-executable target.
     #[must_use]
     pub const fn target(&self) -> &InstalledExecutableTarget {
         &self.target
     }
 
+    /// Returns the executable observation admitted during preparation.
     #[must_use]
     pub const fn observation(&self) -> &InstalledExecutableObservation {
         &self.observation
     }
 
+    /// Returns the configured access profile.
     #[must_use]
     pub const fn access_profile(&self) -> &AccessProfile {
         &self.access_profile
     }
 
+    /// Returns the prepared access evidence.
     #[must_use]
     pub const fn access_evidence(&self) -> &PreparedAccessEvidence {
         &self.access_evidence
     }
 
+    /// Returns the exact configured provider instance.
     #[must_use]
     pub const fn instance(&self) -> &ConfiguredInstance {
         &self.instance
     }
 
+    /// Iterates over host services present when preparation succeeded.
     pub fn available_host_services(&self) -> impl ExactSizeIterator<Item = HostServiceKind> + '_ {
         self.available_host_services.iter().copied()
     }
 
+    /// Creates the low-level headless driver bound to this integration.
     #[must_use]
     pub fn low_level_driver(&self) -> crate::KimiHeadlessDriver {
         crate::KimiHeadlessDriver::new(
@@ -134,6 +147,7 @@ impl KimiHeadlessPreparedIntegration {
         )
     }
 
+    /// Rejects host or executable drift from the prepared target.
     pub fn validate_execution_binding(
         &self,
         execution_host_id: &ExecutionHostId,
@@ -150,6 +164,7 @@ impl KimiHeadlessPreparedIntegration {
     }
 }
 
+/// Discovers, validates, and prepares one installed Kimi headless instance.
 pub async fn prepare_kimi_headless(
     input: KimiHeadlessPreparationInput,
     probe: KimiHeadlessPreparationProbe,

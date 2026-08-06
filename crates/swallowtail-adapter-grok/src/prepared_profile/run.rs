@@ -1,4 +1,5 @@
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer inputs for one prepared Grok structured run.
 pub struct GrokRunProfileInput {
     request_id: RequestId,
     model: GrokModelSelection,
@@ -8,6 +9,7 @@ pub struct GrokRunProfileInput {
 }
 
 impl GrokRunProfileInput {
+    /// Creates a Grok run profile with an optional deadline.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -27,35 +29,42 @@ impl GrokRunProfileInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared one-shot Grok ACP structured run.
 pub struct GrokPreparedRun {
     evidence: GrokPreparedEvidence,
     request: swallowtail_runtime::StructuredRunRequest,
 }
 
+/// Future returned when a prepared Grok run starts.
 pub type GrokPreparedRunFuture =
     BoxFuture<'static, Result<Box<dyn swallowtail_runtime::RunHandle>, RuntimeFailure>>;
 
 impl GrokPreparedRun {
+    /// Returns portable evidence for the prepared run.
     #[must_use]
     pub const fn evidence(&self) -> &GrokPreparedEvidence {
         &self.evidence
     }
 
+    /// Returns the validated preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
+    /// Returns the bound structured-run request.
     #[must_use]
     pub const fn request(&self) -> &swallowtail_runtime::StructuredRunRequest {
         &self.request
     }
 
+    /// Creates the low-level driver bound to this run.
     #[must_use]
     pub fn low_level_driver(&self) -> GrokAcpDriver {
         self.evidence.low_level_driver()
     }
 
+    /// Starts the prepared run with caller-supplied host services.
     pub fn start_run(&self, services: HostServices) -> GrokPreparedRunFuture {
         use swallowtail_runtime::StructuredRunDriver;
         let driver = self.low_level_driver();
@@ -64,6 +73,7 @@ impl GrokPreparedRun {
         Box::pin(async move { driver.start_run(plan, request, services).await })
     }
 
+    /// Splits the prepared run into evidence, plan, and request.
     #[must_use]
     pub fn into_parts(
         self,
@@ -78,6 +88,7 @@ impl GrokPreparedRun {
 }
 
 impl GrokPreparedIntegration {
+    /// Prepares a structured run from the admitted integration.
     pub fn prepare_run(
         &self,
         input: GrokRunProfileInput,

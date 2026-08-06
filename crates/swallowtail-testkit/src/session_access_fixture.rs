@@ -20,16 +20,24 @@ const INSTANCE_ID: &str = "fixture.session.instance";
 const ROUTE_ID: &str = "fixture.session.route";
 const OBSERVED_EXTENSION: &str = "fixture.session/provider-request-v1";
 
+/// Session working-resource access scenario used by pure preflight fixtures.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum SessionAccessFixtureCase {
+    /// Session uses no working resource.
     ResourceFree,
+    /// Session receives read-only working-resource access.
     ReadOnly,
+    /// Session receives bounded read/write workspace access.
     BoundedWorkspace,
+    /// Instance omits the bounded-workspace write capability.
     MissingWriteCapability,
+    /// Host omits the working-resource service.
     MissingWorkingResourceService,
+    /// Requirements omit the provider-request extension namespace.
     UnboundProviderRequest,
 }
 
+/// Pure session-access preflight fixture with side-effect accounting.
 pub struct SessionAccessPreflightFixture {
     driver: DriverDescriptor,
     instance: ConfiguredInstance,
@@ -44,6 +52,7 @@ pub struct SessionAccessPreflightFixture {
 }
 
 impl SessionAccessPreflightFixture {
+    /// Builds one access scenario under an exact execution host.
     #[must_use]
     pub fn for_case(case: SessionAccessFixtureCase, host_id: ExecutionHostId) -> Self {
         let access_id = AccessProfileId::new(ACCESS_ID).expect("fixture access id is valid");
@@ -172,6 +181,7 @@ impl SessionAccessPreflightFixture {
         }
     }
 
+    /// Runs pure preflight against the fixture context.
     pub fn preflight(&self) -> Result<PreflightPlan, PreflightFailure> {
         preflight(
             &PreflightContext::new(
@@ -186,6 +196,7 @@ impl SessionAccessPreflightFixture {
         )
     }
 
+    /// Sets exact provider-state and harness-configuration plan echoes.
     #[must_use]
     pub fn with_session_plan_echoes(
         mut self,
@@ -202,21 +213,25 @@ impl SessionAccessPreflightFixture {
         self
     }
 
+    /// Returns the selected session access policy.
     #[must_use]
     pub const fn policy(&self) -> &SessionAccessPolicy {
         &self.policy
     }
 
+    /// Returns the opaque working-resource reference.
     #[must_use]
     pub const fn working_resource(&self) -> &WorkingResourceRef {
         &self.working_resource
     }
 
+    /// Records one simulated provider-side effect.
     pub fn record_provider_side_effect(&self) {
         self.provider_side_effects
             .set(self.provider_side_effects.get() + 1);
     }
 
+    /// Returns the number of simulated provider-side effects.
     #[must_use]
     pub fn provider_side_effect_count(&self) -> usize {
         self.provider_side_effects.get()

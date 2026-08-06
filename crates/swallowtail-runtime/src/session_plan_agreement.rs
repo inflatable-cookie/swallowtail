@@ -1,9 +1,12 @@
+#![deny(missing_docs)]
+
 use crate::{PreparationFailure, PreparationStage, RuntimeFailure, SessionAccessPolicy};
 use swallowtail_core::{
     Diagnostic, HarnessConfigurationPosture, PreflightPlan, SafeDiagnostic,
     SessionProviderStatePolicy,
 };
 
+/// Immutable session access, provider-state, and harness-configuration agreement.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SessionPlanAgreement {
     access_policy: SessionAccessPolicy,
@@ -13,6 +16,7 @@ pub struct SessionPlanAgreement {
 
 impl SessionPlanAgreement {
     #[must_use]
+    /// Creates an explicit low-level agreement from consumer-supplied plan echoes.
     pub const fn explicit(
         access_policy: SessionAccessPolicy,
         provider_state_policy: Option<SessionProviderStatePolicy>,
@@ -25,6 +29,7 @@ impl SessionPlanAgreement {
         }
     }
 
+    /// Derives the immutable session agreement from a validated preflight plan.
     pub fn from_plan(plan: &PreflightPlan) -> Result<Self, PreparationFailure> {
         let access_policy = plan
             .requirements()
@@ -48,21 +53,25 @@ impl SessionPlanAgreement {
     }
 
     #[must_use]
+    /// Returns the session resource-access and containment posture.
     pub const fn access_policy(&self) -> &SessionAccessPolicy {
         &self.access_policy
     }
 
     #[must_use]
+    /// Returns the provider-session retention and cleanup posture, when any.
     pub const fn provider_state_policy(&self) -> Option<SessionProviderStatePolicy> {
         self.provider_state_policy
     }
 
     #[must_use]
+    /// Returns the harness configuration posture, when applicable.
     pub const fn harness_configuration_posture(&self) -> Option<HarnessConfigurationPosture> {
         self.harness_configuration_posture
     }
 }
 
+/// Verifies that an explicit session agreement exactly repeats preflight state.
 pub fn validate_session_plan_agreement(
     plan: &PreflightPlan,
     agreement: &SessionPlanAgreement,

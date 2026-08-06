@@ -1,3 +1,5 @@
+#![deny(missing_docs)]
+
 use crate::{
     BoxFuture, HostServices, InteractiveSessionDriver, InteractiveSessionHandle, LoadedSession,
     OpenSessionRequest, ProviderRunReconciliationOutcome, ProviderSessionReconciliationOutcome,
@@ -11,11 +13,17 @@ pub use realtime::FreshRealtimeSessionReplacementOutcome;
 /// Route-qualified operation used by the common restart facade.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum WorkingStateRestorationMethod {
+    /// Read-only observation of an interrupted provider session turn.
     ProviderSessionReconciliation,
+    /// Read-only observation of an interrupted provider-owned run.
     ProviderRunReconciliation,
+    /// Stateful load with bounded replay and no interrupted-turn state claim.
     ProviderSessionContinuationRecovery,
+    /// Live attachment to the exact session without a replay claim.
     ProviderSessionAttachmentRecovery,
+    /// New interactive session with explicit provider-context loss.
     FreshSessionReplacement,
+    /// New realtime session with explicit connection-context loss.
     FreshRealtimeSessionReplacement,
 }
 
@@ -26,6 +34,7 @@ pub struct ProviderSessionAttachmentRecoveryOutcome {
 }
 
 impl ProviderSessionAttachmentRecoveryOutcome {
+    /// Creates an exact-session attachment outcome without replay evidence.
     #[must_use]
     pub const fn new(
         interrupted_turn_id: RuntimeTurnId,
@@ -38,11 +47,13 @@ impl ProviderSessionAttachmentRecoveryOutcome {
     }
 
     #[must_use]
+    /// Returns the unresolved interrupted consumer turn.
     pub const fn interrupted_turn_id(&self) -> &RuntimeTurnId {
         &self.interrupted_turn_id
     }
 
     #[must_use]
+    /// Separates the interrupted turn identity from the live session.
     pub fn into_parts(self) -> (RuntimeTurnId, Box<dyn InteractiveSessionHandle>) {
         (self.interrupted_turn_id, self.session)
     }
@@ -55,6 +66,7 @@ pub struct FreshSessionReplacementOutcome {
 }
 
 impl FreshSessionReplacementOutcome {
+    /// Creates a context-losing replacement outcome.
     #[must_use]
     pub const fn new(
         interrupted_turn_id: RuntimeTurnId,
@@ -67,11 +79,13 @@ impl FreshSessionReplacementOutcome {
     }
 
     #[must_use]
+    /// Returns the unresolved interrupted consumer turn.
     pub const fn interrupted_turn_id(&self) -> &RuntimeTurnId {
         &self.interrupted_turn_id
     }
 
     #[must_use]
+    /// Separates the interrupted turn identity from the new live session.
     pub fn into_parts(self) -> (RuntimeTurnId, Box<dyn InteractiveSessionHandle>) {
         (self.interrupted_turn_id, self.session)
     }
@@ -84,6 +98,7 @@ pub struct ProviderSessionContinuationRecoveryOutcome {
 }
 
 impl ProviderSessionContinuationRecoveryOutcome {
+    /// Creates a continuation-recovery outcome from one loaded session.
     #[must_use]
     pub const fn new(interrupted_turn_id: RuntimeTurnId, loaded: LoadedSession) -> Self {
         Self {
@@ -93,15 +108,18 @@ impl ProviderSessionContinuationRecoveryOutcome {
     }
 
     #[must_use]
+    /// Returns the unresolved interrupted consumer turn.
     pub const fn interrupted_turn_id(&self) -> &RuntimeTurnId {
         &self.interrupted_turn_id
     }
 
+    /// Iterates over the bounded replay supplied by the load operation.
     pub fn replay(&self) -> impl ExactSizeIterator<Item = &SessionReplayItem> {
         self.loaded.replay()
     }
 
     #[must_use]
+    /// Separates the interrupted turn identity from the loaded live session.
     pub fn into_parts(self) -> (RuntimeTurnId, LoadedSession) {
         (self.interrupted_turn_id, self.loaded)
     }
@@ -109,15 +127,22 @@ impl ProviderSessionContinuationRecoveryOutcome {
 
 /// Truth-preserving result of the route-selected restoration method.
 pub enum WorkingStateRestorationOutcome {
+    /// Read-only provider-session observation.
     SessionReconciled(ProviderSessionReconciliationOutcome),
+    /// Read-only provider-run observation.
     RunReconciled(ProviderRunReconciliationOutcome),
+    /// Stateful provider-session continuation recovery.
     SessionRecovered(ProviderSessionContinuationRecoveryOutcome),
+    /// Exact provider-session attachment without replay.
     SessionReattached(ProviderSessionAttachmentRecoveryOutcome),
+    /// Fresh interactive session with context loss.
     SessionReplaced(FreshSessionReplacementOutcome),
+    /// Fresh realtime session with context loss.
     RealtimeSessionReplaced(FreshRealtimeSessionReplacementOutcome),
 }
 
 impl WorkingStateRestorationOutcome {
+    /// Returns the exact route-selected method that produced this outcome.
     #[must_use]
     pub const fn method(&self) -> WorkingStateRestorationMethod {
         match self {
@@ -144,8 +169,10 @@ impl WorkingStateRestorationOutcome {
 /// The consuming receiver makes the common facade exact-once. Implementations
 /// must not widen authority or select another method after execution begins.
 pub trait WorkingStateRestorationOperation: Send + Sync {
+    /// Returns the prepared method without starting provider work.
     fn method(&self) -> WorkingStateRestorationMethod;
 
+    /// Consumes and executes the single prepared restoration method.
     fn restore(
         self: Box<Self>,
         services: HostServices,
@@ -158,6 +185,7 @@ pub struct PreparedWorkingStateRestoration {
 }
 
 impl PreparedWorkingStateRestoration {
+    /// Wraps one already prepared route-qualified restoration operation.
     #[must_use]
     pub fn new(operation: impl WorkingStateRestorationOperation + 'static) -> Self {
         Self {
@@ -166,6 +194,7 @@ impl PreparedWorkingStateRestoration {
     }
 
     #[must_use]
+    /// Prepares an exact-session attachment operation without replay.
     pub fn provider_session_attachment_recovery(
         interrupted_turn_id: RuntimeTurnId,
         driver: impl InteractiveSessionDriver + 'static,
@@ -181,6 +210,7 @@ impl PreparedWorkingStateRestoration {
     }
 
     #[must_use]
+    /// Prepares a fresh interactive session with explicit context loss.
     pub fn fresh_session_replacement(
         interrupted_turn_id: RuntimeTurnId,
         driver: impl InteractiveSessionDriver + 'static,
@@ -196,10 +226,12 @@ impl PreparedWorkingStateRestoration {
     }
 
     #[must_use]
+    /// Returns the selected method without executing it.
     pub fn method(&self) -> WorkingStateRestorationMethod {
         self.operation.method()
     }
 
+    /// Consumes and executes the prepared restoration operation.
     pub fn restore(
         self,
         services: HostServices,

@@ -29,10 +29,15 @@ const UNVERIFIED_VERSION: &str = "1.3.0";
 const INCOMPATIBLE_VERSION: &str = "0.9.0";
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+/// Interface-compatibility scenario selected by the management fixture.
 pub enum ProviderSessionManagementFixtureCase {
+    /// A qualified, supported interface version.
     Qualified,
+    /// A newer version without qualification evidence.
     UnverifiedNewer,
+    /// An interface version outside the compatible window.
     Incompatible,
+    /// The requested management action is not advertised.
     Unsupported,
 }
 
@@ -48,6 +53,7 @@ pub struct ProviderSessionManagementFixture {
 }
 
 impl ProviderSessionManagementFixture {
+    /// Builds a fixture for a local execution topology.
     #[must_use]
     pub fn local(
         case: ProviderSessionManagementFixtureCase,
@@ -56,6 +62,7 @@ impl ProviderSessionManagementFixture {
         Self::for_topology(ExecutionTopologyFixture::local(), case, action)
     }
 
+    /// Builds a fixture for an authoritative remote execution topology.
     #[must_use]
     pub fn remote_authoritative(
         case: ProviderSessionManagementFixtureCase,
@@ -68,6 +75,7 @@ impl ProviderSessionManagementFixture {
         )
     }
 
+    /// Builds a fixture for an explicit execution topology.
     #[must_use]
     pub fn for_topology(
         topology: ExecutionTopologyFixture,
@@ -150,6 +158,7 @@ impl ProviderSessionManagementFixture {
         }
     }
 
+    /// Runs provider-neutral preflight for the management operation.
     pub fn preflight(&self) -> Result<PreflightPlan, PreflightFailure> {
         preflight(
             &PreflightContext::new(
@@ -168,6 +177,7 @@ impl ProviderSessionManagementFixture {
         )
     }
 
+    /// Builds the retained provider-session binding used by the operation.
     pub fn binding(
         &self,
     ) -> Result<ProviderSessionManagementBinding, InvalidProviderSessionManagementBinding> {
@@ -187,6 +197,7 @@ impl ProviderSessionManagementFixture {
         )
     }
 
+    /// Builds a prepared management plan with the optional deadline.
     pub fn plan(
         &self,
         deadline: Option<Deadline>,
@@ -212,26 +223,31 @@ impl ProviderSessionManagementFixture {
     }
 
     #[must_use]
+    /// Returns the fixture driver descriptor.
     pub const fn driver(&self) -> &DriverDescriptor {
         &self.driver
     }
 
     #[must_use]
+    /// Returns the configured provider instance.
     pub const fn instance(&self) -> &ConfiguredInstance {
         &self.instance
     }
 
     #[must_use]
+    /// Returns the access profile bound to the instance.
     pub const fn access_profile(&self) -> &AccessProfile {
         &self.access_profile
     }
 
     #[must_use]
+    /// Returns the observed access status.
     pub const fn access_status(&self) -> &AccessStatus {
         &self.access_status
     }
 
     #[must_use]
+    /// Returns the operation requirements used by preflight.
     pub const fn requirements(&self) -> &OperationRequirements {
         &self.requirements
     }

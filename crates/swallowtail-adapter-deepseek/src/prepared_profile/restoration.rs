@@ -10,6 +10,7 @@ use swallowtail_runtime::{
 
 impl DeepSeekPreparedSession {
     #[must_use]
+    /// Prepares fresh-session replacement after private continuation is lost.
     pub fn prepare_working_state_restoration(
         &self,
         interrupted_turn_id: RuntimeTurnId,

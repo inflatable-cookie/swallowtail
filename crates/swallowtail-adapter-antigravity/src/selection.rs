@@ -7,9 +7,13 @@ use swallowtail_runtime::RuntimeFailure;
 
 use crate::failure::failure;
 
+/// Default executable name for host-approved Antigravity discovery.
 pub const ANTIGRAVITY_AUTOMATIC_EXECUTABLE_NAME: &str = "agy";
+/// Semantic-version axis used for installed Antigravity releases.
 pub const ANTIGRAVITY_RELEASE_AXIS: &str = "antigravity-cli.release";
+/// Oldest release in the current exact qualification window.
 pub const ANTIGRAVITY_BASELINE_VERSION: &str = "1.1.9";
+/// Latest release in the current exact qualification window.
 pub const ANTIGRAVITY_LATEST_QUALIFIED_VERSION: &str = "1.1.9";
 
 pub(crate) const ANTIGRAVITY_CATALOGUE_BEHAVIOR: &str =
@@ -19,6 +23,7 @@ pub(crate) const ANTIGRAVITY_HEADLESS_BEHAVIOR: &str =
 const MAX_VERSION_BYTES: usize = 64;
 
 #[must_use]
+/// Parses one stable installed release into its interface binding.
 pub fn antigravity_release_binding(value: &str) -> Option<InterfaceVersionBinding> {
     if value.is_empty()
         || value.len() > MAX_VERSION_BYTES
@@ -38,6 +43,7 @@ pub fn antigravity_release_binding(value: &str) -> Option<InterfaceVersionBindin
 }
 
 #[must_use]
+/// Returns the catalogue release compatibility claim.
 pub fn antigravity_catalogue_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
         InterfaceCompatibilityClaimId::new("antigravity.catalogue.release-window-1")
@@ -57,6 +63,7 @@ pub fn antigravity_catalogue_claim() -> InterfaceCompatibilityClaim {
 }
 
 #[must_use]
+/// Returns the headless execution release compatibility claim.
 pub fn antigravity_headless_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
         InterfaceCompatibilityClaimId::new("antigravity.headless.release-window-1")

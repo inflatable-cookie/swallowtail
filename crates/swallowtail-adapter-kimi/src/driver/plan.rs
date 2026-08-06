@@ -1,11 +1,13 @@
 mod reasoning;
 
+/// Low-level driver for installed Kimi Code ACP operations.
 pub struct KimiAcpDriver {
     isolated_environment: EnvironmentRef,
     credential: CredentialRef,
 }
 
 impl KimiAcpDriver {
+    /// Creates a Kimi ACP driver with isolated environment and opaque credential.
     #[must_use]
     pub const fn new(isolated_environment: EnvironmentRef, credential: CredentialRef) -> Self {
         Self {

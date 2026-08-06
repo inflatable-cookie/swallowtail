@@ -14,18 +14,21 @@ use swallowtail_runtime::{
 use super::transport::CurlTransport;
 
 #[derive(Clone, Default)]
+/// Low-level HTTP/WebSocket driver for a Kimi local-server endpoint.
 pub struct KimiLocalServerDriver {
     pub(super) transport: CurlTransport,
     pub(super) session_configuration: Option<super::KimiLocalServerSessionConfiguration>,
 }
 
 impl KimiLocalServerDriver {
+    /// Creates a driver without per-session provider configuration.
     #[must_use]
     pub fn new() -> Self {
         Self::default()
     }
 
     #[must_use]
+    /// Creates a driver with explicit local-server session configuration.
     pub fn with_session_configuration(
         configuration: super::KimiLocalServerSessionConfiguration,
     ) -> Self {

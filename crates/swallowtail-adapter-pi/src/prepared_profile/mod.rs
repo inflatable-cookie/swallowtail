@@ -15,6 +15,8 @@ pub use plan::PiPreparedEvidence;
 pub use run::PiPreparedRun;
 pub use session::PiPreparedSession;
 
+/// Future returned when a prepared Pi session is opened.
 pub type PiPreparedSessionFuture =
     BoxFuture<'static, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>>;
+/// Future returned when a prepared Pi structured run is started.
 pub type PiPreparedRunFuture = BoxFuture<'static, Result<Box<dyn RunHandle>, RuntimeFailure>>;

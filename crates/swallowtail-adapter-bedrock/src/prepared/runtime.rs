@@ -21,6 +21,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone)]
+/// Prepared Bedrock Runtime integration bound to one instance, host, and region.
 pub struct BedrockRuntimePreparedIntegration {
     instance: ConfiguredInstance,
     access: AccessProfile,
@@ -32,45 +33,54 @@ pub struct BedrockRuntimePreparedIntegration {
 
 impl BedrockRuntimePreparedIntegration {
     #[must_use]
+    /// Returns the configured Runtime instance.
     pub const fn instance(&self) -> &ConfiguredInstance {
         &self.instance
     }
 
     #[must_use]
+    /// Returns the delegated cloud-identity access profile.
     pub const fn access_profile(&self) -> &AccessProfile {
         &self.access
     }
 
     #[must_use]
+    /// Returns access evidence together with its provenance.
     pub const fn access_evidence(&self) -> &PreparedAccessEvidence {
         &self.evidence
     }
 
     #[must_use]
+    /// Returns the exact AWS region.
     pub const fn region(&self) -> &BedrockRegion {
         &self.region
     }
 
     #[must_use]
+    /// Returns the qualified Runtime SDK crate name.
     pub const fn sdk_crate(&self) -> &'static str {
         crate::SDK_CRATE
     }
 
     #[must_use]
+    /// Returns the qualified Runtime SDK version.
     pub const fn sdk_version(&self) -> &'static str {
         crate::SDK_VERSION
     }
 
     #[must_use]
+    /// Returns the qualified Runtime service API.
     pub const fn service_api(&self) -> &'static str {
         crate::SERVICE_API
     }
 
+    /// Iterates the host services present during preparation.
     pub fn available_host_services(&self) -> impl ExactSizeIterator<Item = HostServiceKind> + '_ {
         self.services.iter().copied()
     }
 
     #[must_use]
+    /// Returns the public low-level Runtime driver with its exact SDK binding.
     pub fn low_level_driver(&self) -> BedrockDirectDriver {
         BedrockDirectDriver::new(BedrockDriverBinding::new(
             self.instance.id().clone(),
@@ -85,6 +95,7 @@ impl BedrockRuntimePreparedIntegration {
         ))
     }
 
+    /// Rejects execution-host or endpoint drift from the prepared binding.
     pub fn validate_execution_binding(
         &self,
         execution_host: &ExecutionHostId,
@@ -99,6 +110,7 @@ impl BedrockRuntimePreparedIntegration {
         )
     }
 
+    /// Validates and prepares one SDK-native inference attempt.
     pub fn prepare_inference_attempt(
         &self,
         input: BedrockRuntimeProfileInput,
@@ -179,6 +191,7 @@ fn instance_with_capabilities(
     .with_interface_versions(base.interface_versions().cloned())
 }
 
+/// Prepares Bedrock Runtime without invoking the SDK.
 pub fn prepare_bedrock_runtime(
     input: BedrockRuntimePreparationInput,
     services: &HostServices,
@@ -219,6 +232,7 @@ pub fn prepare_bedrock_runtime(
 }
 
 #[derive(Clone)]
+/// Executable Bedrock Runtime attempt with exact plan and request agreement.
 pub struct BedrockPreparedInferenceAttempt {
     evidence: BedrockRuntimePreparedEvidence,
     request: StructuredRunRequest,
@@ -227,25 +241,30 @@ pub struct BedrockPreparedInferenceAttempt {
 
 impl BedrockPreparedInferenceAttempt {
     #[must_use]
+    /// Returns route-specific Runtime evidence.
     pub const fn evidence(&self) -> &BedrockRuntimePreparedEvidence {
         &self.evidence
     }
 
     #[must_use]
+    /// Returns the immutable Runtime preflight plan.
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
     #[must_use]
+    /// Returns the plan-derived structured-run request.
     pub const fn request(&self) -> &StructuredRunRequest {
         &self.request
     }
 
     #[must_use]
+    /// Returns the bound low-level Runtime driver.
     pub fn low_level_driver(&self) -> BedrockDirectDriver {
         self.driver.clone()
     }
 
+    /// Starts the single SDK inference attempt.
     pub fn start_run(
         &self,
         services: HostServices,
@@ -257,6 +276,7 @@ impl BedrockPreparedInferenceAttempt {
     }
 
     #[must_use]
+    /// Splits the prepared attempt into evidence, plan, request, and driver.
     pub fn into_parts(
         self,
     ) -> (

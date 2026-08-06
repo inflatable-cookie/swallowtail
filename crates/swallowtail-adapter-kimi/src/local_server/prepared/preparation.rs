@@ -18,6 +18,7 @@ use crate::local_server::protocol::{decode_health, decode_metadata};
 use crate::local_server::selection::corroborate_versions;
 use crate::local_server::transport::{CurlTransport, Request, require_loopback_endpoint};
 
+/// Probes and prepares one caller-owned attached Kimi local server.
 pub async fn prepare_kimi_local_server_attached(
     input: KimiLocalServerAttachedInput,
     probe: KimiLocalServerPreparationProbe,

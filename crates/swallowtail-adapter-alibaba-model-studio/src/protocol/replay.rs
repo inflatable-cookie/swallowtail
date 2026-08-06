@@ -5,13 +5,19 @@ use std::collections::BTreeSet;
 use swallowtail_core::SessionRef;
 use swallowtail_runtime::{OperationContent, SessionReplayItem, SessionReplayKind};
 
+/// Maximum replay items accepted from one provider page.
 pub const MAXIMUM_REPLAY_PAGE_ITEMS: usize = 100;
+/// Maximum encoded bytes accepted from one replay page.
 pub const MAXIMUM_REPLAY_PAGE_BYTES: usize = 512 * 1024;
+/// Maximum provider pages loaded before session readiness.
 pub const MAXIMUM_REPLAY_PAGES: usize = 10;
+/// Maximum replay items accepted across all pages.
 pub const MAXIMUM_REPLAY_ITEMS: usize = MAXIMUM_REPLAY_PAGE_ITEMS * MAXIMUM_REPLAY_PAGES;
+/// Maximum decoded content bytes accepted across all pages.
 pub const MAXIMUM_REPLAY_BYTES: usize = 4 * 1024 * 1024;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// One validated ordered page of retained conversation replay.
 pub struct ConversationReplayPage {
     replay: Vec<SessionReplayItem>,
     item_ids: Vec<ItemRef>,
@@ -20,30 +26,36 @@ pub struct ConversationReplayPage {
 }
 
 impl ConversationReplayPage {
+    /// Iterates projected replay items in provider order.
     pub fn replay(&self) -> impl ExactSizeIterator<Item = &SessionReplayItem> {
         self.replay.iter()
     }
 
+    /// Iterates the provider item identities in page order.
     pub fn item_ids(&self) -> impl ExactSizeIterator<Item = &ItemRef> {
         self.item_ids.iter()
     }
 
     #[must_use]
+    /// Returns the cursor for the next page, when the provider reports more.
     pub const fn next_after(&self) -> Option<&ItemRef> {
         self.next_after.as_ref()
     }
 
     #[must_use]
+    /// Returns the decoded content bytes in this page.
     pub const fn content_bytes(&self) -> usize {
         self.content_bytes
     }
 
     #[must_use]
+    /// Consumes the page and returns its ordered replay items.
     pub fn into_replay(self) -> Vec<SessionReplayItem> {
         self.replay
     }
 }
 
+/// Parses and bounds one ascending retained-conversation replay page.
 pub fn parse_replay_page(
     input: &[u8],
     conversation: &ConversationRef,

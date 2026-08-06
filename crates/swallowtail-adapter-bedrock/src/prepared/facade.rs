@@ -20,6 +20,7 @@ pub struct BedrockFacadePreparationInput {
 
 impl BedrockFacadePreparationInput {
     #[must_use]
+    /// Creates shared facade input without selecting a Bedrock route.
     pub const fn new(
         execution_host: ExecutionHostId,
         cloud_client: BedrockCloudClientConfig,
@@ -48,6 +49,7 @@ pub struct BedrockCatalogueRouteInput {
 
 impl BedrockCatalogueRouteInput {
     #[must_use]
+    /// Creates explicit control-plane catalogue route input.
     pub const fn new(
         instance_id: ConfiguredInstanceId,
         instance_revision: InstanceRevision,
@@ -96,6 +98,7 @@ pub struct BedrockRuntimeRouteInput {
 
 impl BedrockRuntimeRouteInput {
     #[must_use]
+    /// Creates explicit Runtime inference route input.
     pub const fn new(
         instance_id: ConfiguredInstanceId,
         instance_revision: InstanceRevision,
@@ -144,15 +147,18 @@ pub struct BedrockFacade {
 
 impl BedrockFacade {
     #[must_use]
+    /// Returns the execution host shared by both facade branches.
     pub const fn execution_host_id(&self) -> &ExecutionHostId {
         &self.execution_host
     }
 
     #[must_use]
+    /// Returns the explicit AWS region shared by both facade branches.
     pub const fn region(&self) -> &crate::BedrockRegion {
         self.cloud_client.region()
     }
 
+    /// Prepares the control-plane catalogue branch.
     pub fn catalogue(
         &self,
         input: BedrockCatalogueRouteInput,
@@ -174,6 +180,7 @@ impl BedrockFacade {
         )
     }
 
+    /// Prepares the Runtime inference branch.
     pub fn runtime(
         &self,
         input: BedrockRuntimeRouteInput,

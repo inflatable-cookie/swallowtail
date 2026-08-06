@@ -1,5 +1,6 @@
 macro_rules! interactive_session_driver_items {
     () => {
+            /// Opens a fresh interactive provider session.
             fn open_session(
                 &self,
                 plan: PreflightPlan,
@@ -7,6 +8,7 @@ macro_rules! interactive_session_driver_items {
                 services: HostServices,
             ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>>;
         
+            /// Resumes an admitted provider session.
             fn resume_session(
                 &self,
                 plan: PreflightPlan,
@@ -14,6 +16,7 @@ macro_rules! interactive_session_driver_items {
                 services: HostServices,
             ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>>;
         
+            /// Loads a provider session transcript when the route supports it.
             fn load_session(
                 &self,
                 _plan: PreflightPlan,
@@ -28,6 +31,7 @@ macro_rules! interactive_session_driver_items {
                 })
             }
 
+            /// Re-establishes an attachment to an admitted provider session.
             fn recover_session_attachment(
                 &self,
                 _plan: PreflightPlan,
@@ -42,6 +46,7 @@ macro_rules! interactive_session_driver_items {
                 })
             }
         
+            /// Opens a replacement session from portable direct-continuation state.
             fn open_direct_continuation_session(
                 &self,
                 _plan: PreflightPlan,

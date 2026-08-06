@@ -28,6 +28,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug)]
+/// Prepared, working-resource-scoped catalogue of retained OpenCode sessions.
 pub struct OpenCodePreparedSessionCatalogue {
     prepared: OpenCodePreparedIntegration,
     evidence: PreparedProviderSessionCatalogueEvidence,
@@ -35,23 +36,28 @@ pub struct OpenCodePreparedSessionCatalogue {
 }
 
 impl OpenCodePreparedSessionCatalogue {
+    /// Returns the session-catalogue preparation evidence.
     #[must_use]
     pub const fn evidence(&self) -> &PreparedProviderSessionCatalogueEvidence {
         &self.evidence
     }
+    /// Returns the immutable session-catalogue plan.
     #[must_use]
     pub const fn plan(&self) -> &ProviderSessionCataloguePlan {
         self.evidence.plan()
     }
+    /// Returns the first-page catalogue request.
     #[must_use]
     pub const fn request(&self) -> &ProviderSessionCatalogueRequest {
         &self.request
     }
+    /// Creates the stateless low-level HTTP driver.
     #[must_use]
     pub fn low_level_driver(&self) -> OpenCodeHttpDriver {
         self.prepared.low_level_driver()
     }
 
+    /// Lists the first prepared page of retained sessions.
     pub fn list_sessions(
         &self,
         services: HostServices,
@@ -60,6 +66,7 @@ impl OpenCodePreparedSessionCatalogue {
         self.list_page(self.request.clone(), services)
     }
 
+    /// Lists one explicitly supplied page under the prepared bounds.
     pub fn list_page(
         &self,
         request: ProviderSessionCatalogueRequest,
@@ -71,6 +78,7 @@ impl OpenCodePreparedSessionCatalogue {
         Box::pin(async move { driver.list_provider_sessions(plan, request, services).await })
     }
 
+    /// Builds a continuation request for an opaque provider cursor.
     pub fn next_page_request(
         &self,
         request_id: swallowtail_runtime::RequestId,
@@ -88,6 +96,7 @@ impl OpenCodePreparedSessionCatalogue {
 }
 
 #[derive(Clone, Debug)]
+/// Prepared import of one candidate selected from a session catalogue.
 pub struct OpenCodePreparedSessionImport {
     prepared: OpenCodePreparedIntegration,
     evidence: PreparedProviderSessionImportEvidence,
@@ -95,6 +104,7 @@ pub struct OpenCodePreparedSessionImport {
 }
 
 #[derive(Clone, Debug)]
+/// Prepared read-only reconciliation of one exact retained provider session.
 pub struct OpenCodePreparedSessionReconciliation {
     prepared: OpenCodePreparedIntegration,
     evidence: PreparedProviderSessionReconciliationEvidence,
@@ -102,21 +112,25 @@ pub struct OpenCodePreparedSessionReconciliation {
 }
 
 impl OpenCodePreparedSessionReconciliation {
+    /// Returns the reconciliation preparation evidence.
     #[must_use]
     pub const fn evidence(&self) -> &PreparedProviderSessionReconciliationEvidence {
         &self.evidence
     }
 
+    /// Returns the immutable reconciliation plan.
     #[must_use]
     pub const fn plan(&self) -> &ProviderSessionReconciliationPlan {
         self.evidence.plan()
     }
 
+    /// Returns the exact reconciliation request.
     #[must_use]
     pub const fn request(&self) -> &ProviderSessionReconciliationRequest {
         &self.request
     }
 
+    /// Observes the retained session within the prepared replay bounds.
     pub fn reconcile(
         &self,
         services: HostServices,
@@ -134,6 +148,7 @@ impl OpenCodePreparedSessionReconciliation {
         })
     }
 
+    /// Composes reconciliation with a separately prepared bounded replay load.
     pub fn prepare_settled_session_restoration(
         self,
         session: OpenCodePreparedSession,
@@ -206,6 +221,7 @@ impl WorkingStateRestorationOperation for OpenCodePreparedSessionReconciliation 
 }
 
 impl OpenCodePreparedIntegration {
+    /// Prepares the strongest route-supported post-crash restoration operation.
     pub fn prepare_working_state_restoration(
         &self,
         input: OpenCodeSessionReconciliationInput,
@@ -216,23 +232,28 @@ impl OpenCodePreparedIntegration {
 }
 
 impl OpenCodePreparedSessionImport {
+    /// Returns the import preparation evidence.
     #[must_use]
     pub const fn evidence(&self) -> &PreparedProviderSessionImportEvidence {
         &self.evidence
     }
+    /// Returns the immutable import plan.
     #[must_use]
     pub const fn plan(&self) -> &ProviderSessionImportPlan {
         self.evidence.plan()
     }
+    /// Returns the exact import request.
     #[must_use]
     pub const fn request(&self) -> &ProviderSessionImportRequest {
         &self.request
     }
+    /// Creates the stateless low-level HTTP driver.
     #[must_use]
     pub fn low_level_driver(&self) -> OpenCodeHttpDriver {
         self.prepared.low_level_driver()
     }
 
+    /// Revalidates and imports the selected provider-session candidate.
     pub fn import_session(
         &self,
         services: HostServices,
@@ -250,6 +271,7 @@ impl OpenCodePreparedSessionImport {
 }
 
 impl OpenCodePreparedIntegration {
+    /// Validates and prepares read-only retained-session reconciliation.
     pub fn prepare_session_reconciliation(
         &self,
         input: OpenCodeSessionReconciliationInput,
@@ -333,6 +355,7 @@ impl OpenCodePreparedIntegration {
         })
     }
 
+    /// Validates and prepares a bounded retained-session catalogue.
     pub fn prepare_session_catalogue(
         &self,
         input: OpenCodeSessionCatalogueInput,
@@ -385,6 +408,7 @@ impl OpenCodePreparedIntegration {
         })
     }
 
+    /// Validates and prepares import authority for one catalogue candidate.
     pub fn prepare_session_import(
         &self,
         catalogue: &OpenCodePreparedSessionCatalogue,

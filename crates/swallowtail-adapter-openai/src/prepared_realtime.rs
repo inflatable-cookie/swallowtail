@@ -8,6 +8,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Host, endpoint, and access evidence used to prepare OpenAI Realtime.
 pub struct OpenAiRealtimePreparationInput {
     instance_revision: InstanceRevision,
     execution_host_id: ExecutionHostId,
@@ -18,6 +19,7 @@ pub struct OpenAiRealtimePreparationInput {
 
 impl OpenAiRealtimePreparationInput {
     #[must_use]
+    /// Creates preparation input for one exact Realtime endpoint.
     pub const fn new(
         instance_revision: InstanceRevision,
         execution_host_id: ExecutionHostId,
@@ -36,6 +38,7 @@ impl OpenAiRealtimePreparationInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared OpenAI Realtime integration bound to one instance and host.
 pub struct OpenAiRealtimePreparedIntegration {
     access_profile: AccessProfile,
     access_evidence: PreparedAccessEvidence,
@@ -45,29 +48,35 @@ pub struct OpenAiRealtimePreparedIntegration {
 
 impl OpenAiRealtimePreparedIntegration {
     #[must_use]
+    /// Returns the selected public API-key access profile.
     pub const fn access_profile(&self) -> &AccessProfile {
         &self.access_profile
     }
 
     #[must_use]
+    /// Returns access evidence together with its provenance.
     pub const fn access_evidence(&self) -> &PreparedAccessEvidence {
         &self.access_evidence
     }
 
     #[must_use]
+    /// Returns the configured Realtime instance.
     pub const fn instance(&self) -> &ConfiguredInstance {
         &self.instance
     }
 
+    /// Iterates the host services present during preparation.
     pub fn available_host_services(&self) -> impl ExactSizeIterator<Item = HostServiceKind> + '_ {
         self.available_host_services.iter().copied()
     }
 
     #[must_use]
+    /// Returns the public low-level Realtime driver.
     pub fn low_level_driver(&self) -> crate::OpenAiRealtimeDriver {
         crate::OpenAiRealtimeDriver::new()
     }
 
+    /// Rejects execution-host or endpoint drift from the prepared binding.
     pub fn validate_execution_binding(
         &self,
         host: &ExecutionHostId,
@@ -84,6 +93,7 @@ impl OpenAiRealtimePreparedIntegration {
     }
 }
 
+/// Prepares OpenAI Realtime without opening a WebSocket.
 pub fn prepare_openai_realtime(
     input: OpenAiRealtimePreparationInput,
     services: &HostServices,

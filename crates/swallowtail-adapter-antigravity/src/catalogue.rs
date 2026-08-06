@@ -17,17 +17,20 @@ const MAXIMUM_OUTPUT_BYTES: usize = 512 * 1024;
 const MAXIMUM_STDERR_BYTES: usize = 4 * 1024;
 const MAXIMUM_LINE_BYTES: usize = 256;
 
+/// Low-level driver for Antigravity's authenticated installed model catalogue.
 pub struct AntigravityCatalogueDriver {
     environment: EnvironmentRef,
 }
 
 impl AntigravityCatalogueDriver {
     #[must_use]
+    /// Creates a catalogue driver with one approved process environment.
     pub const fn new(environment: EnvironmentRef) -> Self {
         Self { environment }
     }
 
     #[must_use]
+    /// Returns the approved process environment.
     pub const fn environment(&self) -> &EnvironmentRef {
         &self.environment
     }

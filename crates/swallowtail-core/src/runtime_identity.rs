@@ -3,14 +3,17 @@ use std::fmt;
 
 macro_rules! text_identity {
     ($name:ident, $field:literal) => {
+        #[doc = concat!("Validated, non-empty ", $field, ".")]
         #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
         pub struct $name(String);
 
         impl $name {
+            #[doc = concat!("Creates a ", $field, " after rejecting blank text.")]
             pub fn new(value: impl Into<String>) -> Result<Self, ValueRequired> {
                 required_text($field, value).map(Self)
             }
 
+            /// Returns the validated text.
             #[must_use]
             pub fn as_str(&self) -> &str {
                 &self.0
@@ -36,6 +39,7 @@ text_identity!(EndpointAudience, "endpoint audience");
 pub struct InstanceTargetRef(String);
 
 impl InstanceTargetRef {
+    /// Creates an opaque target reference after rejecting blank text.
     pub fn new(value: impl Into<String>) -> Result<Self, ValueRequired> {
         required_text("instance target reference", value).map(Self)
     }
@@ -52,6 +56,7 @@ impl InstanceTargetRef {
 pub struct CredentialRef(String);
 
 impl CredentialRef {
+    /// Creates an opaque credential reference after rejecting blank text.
     pub fn new(value: impl Into<String>) -> Result<Self, ValueRequired> {
         required_text("credential reference", value).map(Self)
     }
@@ -81,61 +86,104 @@ impl fmt::Debug for InstanceTargetRef {
     }
 }
 
+/// Provider interaction layer used by one route.
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum ExecutionLayer {
+    /// A provider or third-party agent harness owns model interaction.
     HarnessInteraction,
+    /// Swallowtail calls a model inference API directly.
     DirectModelInference,
 }
 
+/// Runtime lifecycle shape exposed by one driver role.
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum OperationShape {
+    /// One bounded run produces one terminal outcome.
     StructuredRun,
+    /// A reusable session accepts multiple turns.
     InteractiveSession,
+    /// An inactive provider session is archived, restored, or deleted.
     ProviderSessionManagement,
+    /// Provider sessions are listed without importing them.
     ProviderSessionCatalogue,
+    /// One observed provider session is validated for ordinary attachment.
     ProviderSessionImport,
+    /// An interrupted provider-session turn is observed after restart.
     ProviderSessionReconciliation,
+    /// An interrupted retained run is observed after restart.
     ProviderRunReconciliation,
+    /// A separately admitted recovered provider resource is cleaned up.
     ProviderRecoveredResourceCleanup,
 }
 
+/// Which boundary owns the configured provider instance.
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum InstanceOwnership {
+    /// The runtime attaches to an independently owned instance.
     ExternalAttached,
+    /// The host starts and stops an operation-scoped instance.
     HostOwnedEphemeral,
+    /// The host owns an instance that persists across operations.
     HostOwnedPersistent,
 }
 
+/// Portable role implemented by a registered driver.
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum DriverRole {
+    /// Observe an approved provider target and compatibility.
     Discovery,
+    /// List models without selecting an inference operation.
     ModelCatalog,
+    /// Execute one bounded run.
     StructuredRun,
+    /// Open or attach to a reusable session.
     InteractiveSession,
+    /// Open a realtime duplex media session.
     RealtimeMediaSession,
+    /// Attach to or own a serving instance lifecycle.
     ServingInstanceLifecycle,
+    /// Mutate an inactive provider session lifecycle.
     ProviderSessionManagement,
+    /// List provider sessions.
     ProviderSessionCatalogue,
+    /// Validate one provider session for attachment.
     ProviderSessionImport,
+    /// Reconcile one interrupted provider-session turn.
     ProviderSessionReconciliation,
+    /// Reconcile one interrupted retained run.
     ProviderRunReconciliation,
+    /// Clean up an admitted recovered provider resource.
     ProviderRecoveredResourceCleanup,
 }
 
+/// Host service capability required by a preflight plan.
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum HostServiceKind {
+    /// Scoped asynchronous task execution.
     Task,
+    /// Scoped blocking-work execution.
     BlockingWork,
+    /// Monotonic time and deadline observation.
     Time,
+    /// Approved child-process execution.
     Process,
+    /// Approved network access.
     Network,
+    /// Credential lease resolution.
     Credential,
+    /// Working-resource materialization.
     WorkingResource,
+    /// Bounded working-resource reads and writes.
     WorkingResourceIo,
+    /// Attachment materialization.
     Attachment,
+    /// Model-artifact materialization.
     ModelArtifact,
+    /// Serving-endpoint allocation or observation.
     ServingEndpoint,
+    /// Structured-output schema materialization.
     Schema,
+    /// Safe diagnostic observation.
     DiagnosticObserver,
 }
 

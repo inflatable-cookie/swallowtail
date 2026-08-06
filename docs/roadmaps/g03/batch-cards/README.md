@@ -2,15 +2,21 @@
 
 ## Active
 
+- `129-v0-1-0-source-candidate.md`
 
 ## Ready
 
-
 ## Planned
 
+- `130-v0-1-0-tag-authorization-handoff.md`
 
 ## Completed
 
+- `128-source-release-ci-and-candidate-gate.md`
+- `127-consumer-front-door-and-release-copy.md`
+- `126-public-api-review-and-rustdoc.md`
+- `125-bedrock-tls-and-dependency-policy.md`
+- `124-v0-1-0-readiness-audit-and-contract.md`
 - `123-integration-guide-coverage-acceptance.md`
 - `122-cross-cutting-feature-runbooks.md`
 - `121-hosted-local-and-realtime-guide-deepening.md`

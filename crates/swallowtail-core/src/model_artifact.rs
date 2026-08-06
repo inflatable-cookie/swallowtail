@@ -3,14 +3,17 @@ use std::fmt;
 
 macro_rules! artifact_text {
     ($name:ident, $field:literal) => {
+        #[doc = concat!("Validated, non-empty ", $field, ".")]
         #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
         pub struct $name(String);
 
         impl $name {
+            #[doc = concat!("Creates a ", $field, " after rejecting blank text.")]
             pub fn new(value: impl Into<String>) -> Result<Self, ValueRequired> {
                 required_text($field, value).map(Self)
             }
 
+            /// Returns the validated text.
             #[must_use]
             pub fn as_str(&self) -> &str {
                 &self.0
@@ -29,6 +32,7 @@ artifact_text!(ModelArtifactDigest, "model artifact digest");
 pub struct ModelArtifactRef(String);
 
 impl ModelArtifactRef {
+    /// Creates an opaque artifact reference after rejecting blank text.
     pub fn new(value: impl Into<String>) -> Result<Self, ValueRequired> {
         required_text("model artifact reference", value).map(Self)
     }
@@ -60,6 +64,7 @@ pub struct ModelArtifactDescriptor {
 }
 
 impl ModelArtifactDescriptor {
+    /// Creates an exact artifact descriptor without optional quantization metadata.
     #[must_use]
     pub const fn new(
         id: ModelArtifactId,
@@ -76,6 +81,7 @@ impl ModelArtifactDescriptor {
         }
     }
 
+    /// Adds the artifact's validated quantization label.
     pub fn with_quantization(
         mut self,
         quantization: impl Into<String>,
@@ -84,26 +90,31 @@ impl ModelArtifactDescriptor {
         Ok(self)
     }
 
+    /// Returns the provider- or host-scoped artifact identity.
     #[must_use]
     pub const fn id(&self) -> &ModelArtifactId {
         &self.id
     }
 
+    /// Returns the artifact format.
     #[must_use]
     pub const fn format(&self) -> &ModelArtifactFormat {
         &self.format
     }
 
+    /// Returns the exact artifact revision.
     #[must_use]
     pub const fn revision(&self) -> &ModelArtifactRevision {
         &self.revision
     }
 
+    /// Returns the expected content digest.
     #[must_use]
     pub const fn digest(&self) -> &ModelArtifactDigest {
         &self.digest
     }
 
+    /// Returns optional quantization metadata.
     #[must_use]
     pub fn quantization(&self) -> Option<&str> {
         self.quantization.as_deref()
@@ -118,6 +129,7 @@ pub struct ModelArtifactBinding {
 }
 
 impl ModelArtifactBinding {
+    /// Binds an opaque host reference to its safe expected descriptor.
     #[must_use]
     pub const fn new(reference: ModelArtifactRef, descriptor: ModelArtifactDescriptor) -> Self {
         Self {
@@ -126,11 +138,13 @@ impl ModelArtifactBinding {
         }
     }
 
+    /// Returns the opaque host reference.
     #[must_use]
     pub const fn reference(&self) -> &ModelArtifactRef {
         &self.reference
     }
 
+    /// Returns the expected artifact descriptor.
     #[must_use]
     pub const fn descriptor(&self) -> &ModelArtifactDescriptor {
         &self.descriptor

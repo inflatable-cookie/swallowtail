@@ -32,32 +32,38 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared read-only OpenCode model-catalogue request.
 pub struct OpenCodePreparedCatalogue {
     evidence: OpenCodePreparedEvidence,
     request: ModelCatalogRequest,
 }
 
 impl OpenCodePreparedCatalogue {
+    /// Returns the operation's preparation evidence.
     #[must_use]
     pub const fn evidence(&self) -> &OpenCodePreparedEvidence {
         &self.evidence
     }
 
+    /// Returns the immutable preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
+    /// Returns the model-catalogue request.
     #[must_use]
     pub const fn request(&self) -> &ModelCatalogRequest {
         &self.request
     }
 
+    /// Creates the stateless low-level HTTP driver.
     #[must_use]
     pub fn low_level_driver(&self) -> OpenCodeHttpDriver {
         OpenCodeHttpDriver::new()
     }
 
+    /// Dispatches the prepared model-catalogue request.
     pub fn list_models(
         &self,
         services: HostServices,
@@ -68,6 +74,7 @@ impl OpenCodePreparedCatalogue {
         Box::pin(async move { driver.list_models(plan, request, services).await })
     }
 
+    /// Consumes the prepared request into evidence, plan, and request.
     #[must_use]
     pub fn into_parts(self) -> (OpenCodePreparedEvidence, PreflightPlan, ModelCatalogRequest) {
         let plan = self.evidence.plan().clone();
@@ -76,6 +83,7 @@ impl OpenCodePreparedCatalogue {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared interactive OpenCode session with separate lifecycle authority.
 pub struct OpenCodePreparedSession {
     evidence: OpenCodePreparedEvidence,
     request: OpenSessionRequest,
@@ -83,32 +91,38 @@ pub struct OpenCodePreparedSession {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared OpenCode structured run ready for explicit dispatch.
 pub struct OpenCodePreparedRun {
     evidence: OpenCodePreparedEvidence,
     request: StructuredRunRequest,
 }
 
 impl OpenCodePreparedRun {
+    /// Returns the operation's preparation evidence.
     #[must_use]
     pub const fn evidence(&self) -> &OpenCodePreparedEvidence {
         &self.evidence
     }
 
+    /// Returns the immutable preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
+    /// Returns the structured run request.
     #[must_use]
     pub const fn request(&self) -> &StructuredRunRequest {
         &self.request
     }
 
+    /// Creates the stateless low-level HTTP driver.
     #[must_use]
     pub fn low_level_driver(&self) -> OpenCodeHttpDriver {
         OpenCodeHttpDriver::new()
     }
 
+    /// Starts the prepared structured run.
     pub fn start_run(&self, services: HostServices) -> OpenCodePreparedRunFuture {
         let driver = self.low_level_driver();
         let plan = self.plan().clone();
@@ -116,6 +130,7 @@ impl OpenCodePreparedRun {
         Box::pin(async move { driver.start_run(plan, request, services).await })
     }
 
+    /// Consumes the prepared run into evidence, plan, and request.
     #[must_use]
     pub fn into_parts(
         self,
@@ -130,26 +145,31 @@ impl OpenCodePreparedRun {
 }
 
 impl OpenCodePreparedSession {
+    /// Returns the operation's preparation evidence.
     #[must_use]
     pub const fn evidence(&self) -> &OpenCodePreparedEvidence {
         &self.evidence
     }
 
+    /// Returns the immutable preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
+    /// Returns the open-session request.
     #[must_use]
     pub const fn request(&self) -> &OpenSessionRequest {
         &self.request
     }
 
+    /// Creates the stateless low-level HTTP driver.
     #[must_use]
     pub fn low_level_driver(&self) -> OpenCodeHttpDriver {
         OpenCodeHttpDriver::new()
     }
 
+    /// Opens a new provider session and binds its lifecycle management handle.
     pub fn open_session(&self, services: HostServices) -> OpenCodePreparedSessionFuture {
         let driver = self.low_level_driver();
         let plan = self.plan().clone();
@@ -169,6 +189,7 @@ impl OpenCodePreparedSession {
         })
     }
 
+    /// Builds an exact retained-session load request with bounded replay.
     pub fn load_request(
         &self,
         request_id: swallowtail_runtime::RequestId,
@@ -186,6 +207,7 @@ impl OpenCodePreparedSession {
         )
     }
 
+    /// Loads a retained session and returns replay plus a live handle.
     pub fn load_session(
         &self,
         request_id: swallowtail_runtime::RequestId,
@@ -225,6 +247,7 @@ impl OpenCodePreparedSession {
         })
     }
 
+    /// Builds an exact retained-session resume request without replay.
     pub fn resume_request(
         &self,
         request_id: swallowtail_runtime::RequestId,
@@ -242,6 +265,7 @@ impl OpenCodePreparedSession {
         )
     }
 
+    /// Resumes a retained session and binds its lifecycle management handle.
     pub fn resume_session(
         &self,
         request_id: swallowtail_runtime::RequestId,
@@ -268,6 +292,7 @@ impl OpenCodePreparedSession {
         }))
     }
 
+    /// Consumes the prepared session into evidence, plan, and request.
     #[must_use]
     pub fn into_parts(self) -> (OpenCodePreparedEvidence, PreflightPlan, OpenSessionRequest) {
         let plan = self.evidence.plan().clone();
@@ -276,27 +301,32 @@ impl OpenCodePreparedSession {
 }
 
 #[derive(Clone, Debug)]
+/// Prepared, separately authorized deletion of one inactive provider session.
 pub struct OpenCodePreparedDelete {
     evidence: PreparedProviderSessionManagementEvidence,
     request: DeleteProviderSessionRequest,
 }
 
 impl OpenCodePreparedDelete {
+    /// Returns the management preparation evidence.
     #[must_use]
     pub const fn evidence(&self) -> &PreparedProviderSessionManagementEvidence {
         &self.evidence
     }
 
+    /// Returns the immutable management plan.
     #[must_use]
     pub const fn plan(&self) -> &ProviderSessionManagementPlan {
         self.evidence.plan()
     }
 
+    /// Returns the exact delete request.
     #[must_use]
     pub const fn request(&self) -> &DeleteProviderSessionRequest {
         &self.request
     }
 
+    /// Executes the prepared inactive-session deletion.
     pub fn execute(
         &self,
         services: HostServices,
@@ -309,6 +339,7 @@ impl OpenCodePreparedDelete {
 }
 
 impl OpenCodePreparedIntegration {
+    /// Validates and prepares a model-catalogue request.
     pub fn prepare_catalogue(
         &self,
         input: OpenCodeCatalogueProfileInput,
@@ -316,6 +347,7 @@ impl OpenCodePreparedIntegration {
         self.prepare_catalogue_inner(input)
     }
 
+    /// Validates and prepares an interactive session.
     pub fn prepare_session(
         &self,
         input: OpenCodeSessionProfileInput,
@@ -323,6 +355,7 @@ impl OpenCodePreparedIntegration {
         self.prepare_session_inner(input)
     }
 
+    /// Validates and prepares a structured run.
     pub fn prepare_run(
         &self,
         input: OpenCodeRunProfileInput,
@@ -330,6 +363,7 @@ impl OpenCodePreparedIntegration {
         self.prepare_run_inner(input)
     }
 
+    /// Validates and prepares separate inactive-session deletion authority.
     pub fn prepare_delete_session(
         &self,
         input: OpenCodeSessionManagementInput,

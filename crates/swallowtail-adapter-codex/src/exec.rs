@@ -18,11 +18,13 @@ use swallowtail_runtime::{
 
 const EVENT_CAPACITY: usize = 256;
 
+/// Low-level driver for one-shot Codex exec JSONL runs.
 pub struct CodexExecDriver {
     environment: EnvironmentRef,
 }
 
 impl CodexExecDriver {
+    /// Creates an exec driver using the approved execution environment.
     #[must_use]
     pub const fn new(environment: EnvironmentRef) -> Self {
         Self { environment }
@@ -30,6 +32,7 @@ impl CodexExecDriver {
 }
 
 #[must_use]
+/// Describes Codex's one-shot exec JSONL route.
 pub fn codex_exec_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(
         AdapterIdentity::new(

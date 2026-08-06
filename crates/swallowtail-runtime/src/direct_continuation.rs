@@ -1,3 +1,12 @@
+//! Resource-free direct-model tool continuation.
+//!
+//! A consumer authorizes each inference attempt, executes returned tools, and
+//! submits the exact correlated result set. Provider-private continuation state
+//! remains session-bound, redacted, non-serializable, and unusable after the
+//! session is invalidated or closed.
+
+#![deny(missing_docs)]
+
 mod binding;
 mod exchange;
 mod request;

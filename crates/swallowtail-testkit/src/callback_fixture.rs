@@ -4,6 +4,7 @@ use swallowtail_runtime::{
     CallbackWaitState, Deadline, RuntimeEvent, RuntimeEventKind,
 };
 
+/// Deterministic exact-once callback wait and response fixture.
 pub struct CallbackExchangeFixture {
     request: CallbackRequest,
     event: RuntimeEvent,
@@ -11,6 +12,7 @@ pub struct CallbackExchangeFixture {
 }
 
 impl CallbackExchangeFixture {
+    /// Starts a waiting exchange for one callback request.
     #[must_use]
     pub fn new(request: CallbackRequest) -> Self {
         let event = RuntimeEvent::new(
@@ -24,21 +26,25 @@ impl CallbackExchangeFixture {
         }
     }
 
+    /// Returns the admitted callback request.
     #[must_use]
     pub const fn request(&self) -> &CallbackRequest {
         &self.request
     }
 
+    /// Returns the corresponding portable callback-requested event.
     #[must_use]
     pub const fn event(&self) -> &RuntimeEvent {
         &self.event
     }
 
+    /// Returns the current callback wait state.
     #[must_use]
     pub const fn state(&self) -> CallbackWaitState {
         self.state
     }
 
+    /// Accepts the first exactly correlated response and rejects later answers.
     pub fn respond(&mut self, response: CallbackResponse) -> Result<(), SafeDiagnostic> {
         if self.state != CallbackWaitState::Waiting {
             return Err(failure(
@@ -58,6 +64,7 @@ impl CallbackExchangeFixture {
         Ok(())
     }
 
+    /// Abandons a waiting callback exactly once.
     pub fn abandon(&mut self, reason: CallbackAbandonment) -> Result<(), SafeDiagnostic> {
         if self.state != CallbackWaitState::Waiting {
             return Err(failure(
@@ -69,6 +76,7 @@ impl CallbackExchangeFixture {
         Ok(())
     }
 
+    /// Returns the callback deadline when one was requested.
     #[must_use]
     pub const fn deadline(&self) -> Option<Deadline> {
         self.request.deadline()
@@ -76,6 +84,7 @@ impl CallbackExchangeFixture {
 }
 
 #[must_use]
+/// Builds a successful response exactly correlated to a fixture request.
 pub fn successful_callback_response(request: &CallbackRequest) -> CallbackResponse {
     CallbackResponse::new(
         request.callback_id().clone(),

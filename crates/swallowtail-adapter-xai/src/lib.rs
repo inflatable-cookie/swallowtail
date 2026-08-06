@@ -4,6 +4,7 @@
 //! does not enable provider storage, reconnect, retry, or durable resume.
 
 #![forbid(unsafe_code)]
+#![deny(missing_docs)]
 
 mod activity;
 mod catalogue;
@@ -39,13 +40,19 @@ pub const RESPONSES_WEBSOCKET_PATH: &str = "/v1/responses";
 /// Exact scale used by xAI's provider-authored billed-cost observation.
 pub const USD_TICKS_PER_USD: u64 = 10_000_000_000;
 
+/// Official xAI origin used by the read-only models route.
 pub const XAI_MODELS_ENDPOINT: &str = "https://api.x.ai";
+/// Endpoint audience required by xAI Models credential leases.
 pub const XAI_MODELS_ENDPOINT_AUDIENCE: &str = XAI_RESPONSES_ENDPOINT_AUDIENCE;
+/// Public API-key profile admitted by the xAI Models route.
 pub const XAI_MODELS_ACCESS_PROFILE_ID: &str = XAI_RESPONSES_ACCESS_PROFILE_ID;
+/// Stable configured-instance identity for the xAI Models route.
 pub const XAI_MODELS_CONFIGURED_INSTANCE_ID: &str = "xai.public.language-models";
+/// Exact opaque xAI Models facade revision.
 pub const XAI_MODELS_FACADE_REVISION: &str = "xai-language-models-2026-07-27";
 
 #[must_use]
+/// Returns the exact xAI Models facade version binding.
 pub fn xai_models_facade_binding() -> swallowtail_core::InterfaceVersionBinding {
     swallowtail_core::InterfaceVersionBinding::new(
         swallowtail_core::InterfaceVersionAxis::new("xai.models-facade")
@@ -56,6 +63,7 @@ pub fn xai_models_facade_binding() -> swallowtail_core::InterfaceVersionBinding 
 }
 
 #[must_use]
+/// Returns the qualified-only compatibility claim for the Models facade.
 pub fn xai_models_facade_claim() -> swallowtail_core::InterfaceCompatibilityClaim {
     swallowtail_core::InterfaceCompatibilityClaim::new(
         swallowtail_core::InterfaceCompatibilityClaimId::new("xai.models-window-1")

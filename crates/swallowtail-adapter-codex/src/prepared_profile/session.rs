@@ -14,6 +14,7 @@ use management_handle::{lifecycle_management_instance, wrap_management_handle};
 mod preparation;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared interactive Codex app-server session.
 pub struct CodexPreparedSession {
     kind: CodexPreparedSessionKind,
     evidence: CodexPreparedEvidence,
@@ -22,31 +23,37 @@ pub struct CodexPreparedSession {
 }
 
 impl CodexPreparedSession {
+    /// Returns the admitted session access posture.
     #[must_use]
     pub const fn kind(&self) -> CodexPreparedSessionKind {
         self.kind
     }
 
+    /// Returns portable evidence for the prepared session.
     #[must_use]
     pub const fn evidence(&self) -> &CodexPreparedEvidence {
         &self.evidence
     }
 
+    /// Returns the validated preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
+    /// Returns the bound session-open request.
     #[must_use]
     pub const fn request(&self) -> &OpenSessionRequest {
         &self.request
     }
 
+    /// Creates the low-level app-server driver bound to this session.
     #[must_use]
     pub fn low_level_driver(&self) -> CodexAppServerDriver {
         CodexAppServerDriver::new(self.evidence.environment().clone())
     }
 
+    /// Opens a new provider thread with caller-supplied host services.
     pub fn open_session(&self, services: HostServices) -> CodexPreparedSessionFuture {
         let driver = self.low_level_driver();
         let plan = self.plan().clone();
@@ -66,12 +73,14 @@ impl CodexPreparedSession {
         })
     }
 
+    /// Splits the prepared session into evidence, plan, and request.
     #[must_use]
     pub fn into_parts(self) -> (CodexPreparedEvidence, PreflightPlan, OpenSessionRequest) {
         let plan = self.evidence.plan().clone();
         (self.evidence, plan, self.request)
     }
 
+    /// Builds an exact provider-thread resume request without replay.
     pub fn resume_request(
         &self,
         request_id: swallowtail_runtime::RequestId,
@@ -96,6 +105,7 @@ impl CodexPreparedSession {
         .with_options(self.request.options().clone()))
     }
 
+    /// Builds an exact provider-thread load request with bounded replay.
     pub fn load_request(
         &self,
         request_id: swallowtail_runtime::RequestId,
@@ -120,6 +130,7 @@ impl CodexPreparedSession {
         .with_options(self.request.options().clone()))
     }
 
+    /// Loads a retained thread and returns replay plus an interactive handle.
     pub fn load_session(
         &self,
         request_id: swallowtail_runtime::RequestId,
@@ -159,6 +170,7 @@ impl CodexPreparedSession {
         })
     }
 
+    /// Resumes a retained thread without replaying prior transcript content.
     pub fn resume_session(
         &self,
         request_id: swallowtail_runtime::RequestId,
@@ -187,6 +199,7 @@ impl CodexPreparedSession {
 }
 
 impl crate::CodexPreparedIntegration {
+    /// Prepares a read-only app-server session.
     pub fn prepare_read_only_session(
         &self,
         input: super::input::CodexSessionProfileInput,
@@ -194,6 +207,7 @@ impl crate::CodexPreparedIntegration {
         preparation::prepare_session(self, CodexPreparedSessionKind::ReadOnly, input)
     }
 
+    /// Prepares an app-server session admitted to one bounded writable workspace.
     pub fn prepare_bounded_workspace_session(
         &self,
         input: super::input::CodexSessionProfileInput,

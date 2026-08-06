@@ -16,18 +16,27 @@ use swallowtail_core::{
     OperationRequirements, OperationShape, ProtocolFacadeId, RuntimeReadiness, SupportAuthority,
 };
 
+/// Endpoint audience for Bedrock Runtime calls.
 pub const BEDROCK_RUNTIME_ENDPOINT_AUDIENCE: &str = "bedrock-runtime";
+/// Endpoint audience for Bedrock control-plane calls.
 pub const BEDROCK_CONTROL_PLANE_ENDPOINT_AUDIENCE: &str = "bedrock";
+/// Canonical delegated-identity access-profile id for Runtime.
 pub const BEDROCK_RUNTIME_ACCESS_PROFILE_ID: &str =
     "amazon-bedrock.runtime.cloud-provider-identity";
+/// Canonical delegated-identity access-profile id for the catalogue.
 pub const BEDROCK_CATALOGUE_ACCESS_PROFILE_ID: &str =
     "amazon-bedrock.catalogue.cloud-provider-identity";
+/// Exact qualified Bedrock Runtime facade revision.
 pub const BEDROCK_RUNTIME_FACADE_REVISION: &str = "bedrock-converse-stream";
+/// Exact qualified Bedrock catalogue facade revision.
 pub const BEDROCK_CATALOGUE_FACADE_REVISION: &str = "bedrock-list-foundation-models";
+/// Instance policy id for delegated Runtime access.
 pub const BEDROCK_RUNTIME_INSTANCE_POLICY_ID: &str = "aws-delegated-runtime";
+/// Instance policy id for delegated catalogue access.
 pub const BEDROCK_CATALOGUE_INSTANCE_POLICY_ID: &str = "aws-delegated-catalogue";
 
 #[must_use]
+/// Builds the provider-supported Runtime cloud-identity access profile.
 pub fn bedrock_runtime_access_profile(credential: CredentialRef) -> AccessProfile {
     access_profile(
         BEDROCK_RUNTIME_ACCESS_PROFILE_ID,
@@ -37,6 +46,7 @@ pub fn bedrock_runtime_access_profile(credential: CredentialRef) -> AccessProfil
 }
 
 #[must_use]
+/// Builds the provider-supported control-plane cloud-identity access profile.
 pub fn bedrock_catalogue_access_profile(credential: CredentialRef) -> AccessProfile {
     access_profile(
         BEDROCK_CATALOGUE_ACCESS_PROFILE_ID,

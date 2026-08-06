@@ -4,5 +4,6 @@
 #[non_exhaustive]
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum HarnessMode {
+    /// Harness plans without ordinary execution authority.
     Plan,
 }

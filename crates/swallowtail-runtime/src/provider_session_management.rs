@@ -1,3 +1,5 @@
+#![deny(missing_docs)]
+
 use crate::{PreparedAccessEvidence, WorkingResourceRef};
 use std::error::Error;
 use std::fmt;
@@ -9,14 +11,21 @@ use swallowtail_core::{
 };
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+/// Reason a provider-session management binding could not be admitted.
 pub enum InvalidProviderSessionManagementBindingKind {
+    /// The observed driver differs from the configured instance driver.
     DriverMismatch,
+    /// Prepared access evidence belongs to a different access profile.
     AccessProfileMismatch,
+    /// The configured instance has no exact provider-interface version.
     MissingInterfaceVersion,
+    /// At least one bound provider-interface version is incompatible.
     IncompatibleInterfaceVersion,
+    /// The route advertises no archive, restore, or delete capability.
     MissingManagementCapability,
 }
 
+/// Safe failure returned when inactive-session management authority is invalid.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct InvalidProviderSessionManagementBinding {
     kind: InvalidProviderSessionManagementBindingKind,
@@ -35,11 +44,13 @@ impl InvalidProviderSessionManagementBinding {
     }
 
     #[must_use]
+    /// Returns the stable binding-failure classification.
     pub const fn kind(&self) -> InvalidProviderSessionManagementBindingKind {
         self.kind
     }
 
     #[must_use]
+    /// Returns the bounded, redacted diagnostic.
     pub const fn diagnostic(&self) -> &SafeDiagnostic {
         &self.diagnostic
     }
@@ -77,6 +88,10 @@ pub struct ProviderSessionManagementBinding {
 }
 
 impl ProviderSessionManagementBinding {
+    /// Admits management authority for one exact bound provider session.
+    ///
+    /// The binding contains only lifecycle capabilities proven by the observed
+    /// driver and configured instance. It does not grant resume authority.
     pub fn from_bound_session(
         provider_session_ref: SessionRef,
         driver: &DriverDescriptor,
@@ -162,55 +177,66 @@ impl ProviderSessionManagementBinding {
     }
 
     #[must_use]
+    /// Returns the opaque provider-session target.
     pub const fn provider_session_ref(&self) -> &SessionRef {
         &self.provider_session_ref
     }
 
     #[must_use]
+    /// Returns the exact adapter driver identity.
     pub const fn driver_identity(&self) -> &AdapterIdentity {
         &self.driver_identity
     }
 
     #[must_use]
+    /// Returns the integration family bound to the session.
     pub const fn integration_family(&self) -> &IntegrationFamilyId {
         &self.integration_family
     }
 
     #[must_use]
+    /// Returns the transport family bound to the session.
     pub const fn transport_family(&self) -> &TransportFamilyId {
         &self.transport_family
     }
 
     #[must_use]
+    /// Returns the configured instance bound to the session.
     pub const fn configured_instance_id(&self) -> &ConfiguredInstanceId {
         &self.configured_instance_id
     }
 
     #[must_use]
+    /// Returns the exact configured-instance revision.
     pub const fn instance_revision(&self) -> &InstanceRevision {
         &self.instance_revision
     }
 
     #[must_use]
+    /// Returns the execution host on which management may run.
     pub const fn execution_host_id(&self) -> &ExecutionHostId {
         &self.execution_host_id
     }
 
     #[must_use]
+    /// Returns the safe instance target reference.
     pub const fn instance_target(&self) -> &InstanceTargetRef {
         &self.instance_target
     }
 
     #[must_use]
+    /// Returns the exact protocol facade bound to management.
     pub const fn protocol_facade_id(&self) -> &ProtocolFacadeId {
         &self.protocol_facade_id
     }
 
     #[must_use]
+    /// Returns the prepared access evidence required for management.
     pub const fn access(&self) -> &PreparedAccessEvidence {
         &self.access
     }
 
+    /// Iterates the exact provider-interface compatibility evidence.
     pub fn interface_compatibility(
         &self,
     ) -> impl ExactSizeIterator<Item = &ProviderSessionInterfaceCompatibility> {
@@ -218,25 +244,30 @@ impl ProviderSessionManagementBinding {
     }
 
     #[must_use]
+    /// Reports whether this binding grants a lifecycle capability.
     pub fn supports(&self, capability: Capability) -> bool {
         self.capabilities.supports(capability)
     }
 
+    /// Iterates the lifecycle capabilities granted by this binding.
     pub fn capabilities(&self) -> impl ExactSizeIterator<Item = Capability> + '_ {
         self.capabilities.iter()
     }
 
     #[must_use]
+    /// Returns the exact working resource, when the session is resource-bound.
     pub const fn working_resource(&self) -> Option<&WorkingResourceRef> {
         self.working_resource.as_ref()
     }
 
     #[must_use]
+    /// Returns how the provider session entered Swallowtail's authority.
     pub const fn origin(&self) -> ProviderSessionBindingOrigin {
         self.origin
     }
 
     #[must_use]
+    /// Reports whether the binding matches every immutable route dimension.
     pub fn matches_preflight_plan(&self, plan: &PreflightPlan) -> bool {
         &self.driver_identity == plan.driver_identity()
             && &self.integration_family == plan.integration_family()

@@ -5,12 +5,14 @@ use swallowtail_core::{
 use swallowtail_runtime::{Deadline, OperationContent, RequestId, SessionOptions, ToolDeclaration};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer input for a prepared DeepSeek catalogue observation.
 pub struct DeepSeekCatalogueProfileInput {
     request_id: RequestId,
     deadline: Option<Deadline>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer input for one tool-free DeepSeek structured run.
 pub struct DeepSeekRunProfileInput {
     request_id: RequestId,
     model: DeepSeekModelSelection,
@@ -23,6 +25,7 @@ pub struct DeepSeekRunProfileInput {
 
 impl DeepSeekRunProfileInput {
     #[must_use]
+    /// Creates input with exact route, reasoning, output, and cache policy.
     pub const fn new(
         request_id: RequestId,
         model: DeepSeekModelSelection,
@@ -43,6 +46,7 @@ impl DeepSeekRunProfileInput {
     }
 
     #[must_use]
+    /// Adds an exact host-monotonic deadline.
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
         self
@@ -73,6 +77,7 @@ impl DeepSeekRunProfileInput {
 
 impl DeepSeekCatalogueProfileInput {
     #[must_use]
+    /// Creates catalogue input without a deadline.
     pub const fn new(request_id: RequestId) -> Self {
         Self {
             request_id,
@@ -81,6 +86,7 @@ impl DeepSeekCatalogueProfileInput {
     }
 
     #[must_use]
+    /// Adds an exact host-monotonic deadline.
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
         self
@@ -92,6 +98,7 @@ impl DeepSeekCatalogueProfileInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Exact DeepSeek model-route selection supplied by the consumer.
 pub struct DeepSeekModelSelection {
     route_id: ModelRouteId,
     route_revision: ModelRouteRevision,
@@ -100,6 +107,7 @@ pub struct DeepSeekModelSelection {
 
 impl DeepSeekModelSelection {
     #[must_use]
+    /// Creates an exact route, revision, and model selection.
     pub const fn new(
         route_id: ModelRouteId,
         route_revision: ModelRouteRevision,
@@ -118,6 +126,7 @@ impl DeepSeekModelSelection {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer input for a resource-free DeepSeek continuation session.
 pub struct DeepSeekSessionProfileInput {
     request_id: RequestId,
     model: DeepSeekModelSelection,
@@ -128,6 +137,7 @@ pub struct DeepSeekSessionProfileInput {
 
 impl DeepSeekSessionProfileInput {
     #[must_use]
+    /// Creates input with explicit reasoning, tools, and cache acceptance.
     pub fn new(
         request_id: RequestId,
         model: DeepSeekModelSelection,

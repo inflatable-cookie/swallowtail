@@ -3,6 +3,7 @@ use swallowtail_core::{ModelId, ModelRouteId, ModelRouteRevision, ReasoningMode}
 use swallowtail_runtime::{Deadline, OperationContent, RequestId, StructuredOutputDescriptor};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Exact local model route selected for the attached runtime.
 pub struct OllamaModelSelection {
     route_id: ModelRouteId,
     route_revision: ModelRouteRevision,
@@ -10,6 +11,7 @@ pub struct OllamaModelSelection {
 }
 
 impl OllamaModelSelection {
+    /// Creates a model selection without inferring a local tag or route.
     #[must_use]
     pub const fn new(
         route_id: ModelRouteId,
@@ -29,12 +31,14 @@ impl OllamaModelSelection {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs for one fresh observation of attached model inventory.
 pub struct OllamaInventoryProfileInput {
     request_id: RequestId,
     deadline: Option<Deadline>,
 }
 
 impl OllamaInventoryProfileInput {
+    /// Creates an inventory input without a deadline.
     #[must_use]
     pub const fn new(request_id: RequestId) -> Self {
         Self {
@@ -43,6 +47,7 @@ impl OllamaInventoryProfileInput {
         }
     }
 
+    /// Adds a caller-owned inventory deadline.
     #[must_use]
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
@@ -55,6 +60,7 @@ impl OllamaInventoryProfileInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs for one bounded, resource-free native inference attempt.
 pub struct OllamaInferenceAttemptInput {
     request_id: RequestId,
     content: OperationContent,
@@ -65,12 +71,14 @@ pub struct OllamaInferenceAttemptInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs for one resource-free interactive Ollama session.
 pub struct OllamaSessionProfileInput {
     request_id: RequestId,
     deadline: Option<Deadline>,
 }
 
 impl OllamaSessionProfileInput {
+    /// Creates a session profile without a deadline.
     #[must_use]
     pub const fn new(request_id: RequestId) -> Self {
         Self {
@@ -79,6 +87,7 @@ impl OllamaSessionProfileInput {
         }
     }
 
+    /// Adds a caller-owned session deadline.
     #[must_use]
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
@@ -91,6 +100,7 @@ impl OllamaSessionProfileInput {
 }
 
 impl OllamaInferenceAttemptInput {
+    /// Creates an attempt with explicit content and output-token bound.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -107,18 +117,21 @@ impl OllamaInferenceAttemptInput {
         }
     }
 
+    /// Adds a caller-owned attempt deadline.
     #[must_use]
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
         self
     }
 
+    /// Selects an explicit native reasoning mode.
     #[must_use]
     pub fn with_reasoning_mode(mut self, reasoning: ReasoningMode) -> Self {
         self.reasoning = Some(reasoning);
         self
     }
 
+    /// Requests provider-native inline JSON Schema output.
     #[must_use]
     pub fn with_structured_output(mut self, output: StructuredOutputDescriptor) -> Self {
         self.structured_output = Some(output);

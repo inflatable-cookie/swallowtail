@@ -10,6 +10,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug)]
+/// Prepared cross-transport import of Kimi ACP session authority.
 pub struct KimiLocalServerPreparedBindingImport {
     pub(super) request_id: swallowtail_runtime::RequestId,
     pub(super) target: KimiLocalServerBindingImportTarget,
@@ -18,11 +19,13 @@ pub struct KimiLocalServerPreparedBindingImport {
 }
 
 impl KimiLocalServerPreparedBindingImport {
+    /// Returns the request identity bound to this import.
     #[must_use]
     pub const fn request_id(&self) -> &swallowtail_runtime::RequestId {
         &self.request_id
     }
 
+    /// Executes the bounded binding import and returns ordinary resume authority.
     pub fn execute(
         &self,
         services: HostServices,

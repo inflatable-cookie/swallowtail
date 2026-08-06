@@ -17,27 +17,32 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug)]
+/// Prepared archive operation for one inactive Kimi local-server session.
 pub struct KimiLocalServerPreparedArchive {
     evidence: PreparedProviderSessionManagementEvidence,
     request: ArchiveProviderSessionRequest,
 }
 
 impl KimiLocalServerPreparedArchive {
+    /// Returns portable evidence for the prepared management operation.
     #[must_use]
     pub const fn evidence(&self) -> &PreparedProviderSessionManagementEvidence {
         &self.evidence
     }
 
+    /// Returns the exact management plan.
     #[must_use]
     pub const fn plan(&self) -> &ProviderSessionManagementPlan {
         self.evidence.plan()
     }
 
+    /// Returns the bound archive request.
     #[must_use]
     pub const fn request(&self) -> &ArchiveProviderSessionRequest {
         &self.request
     }
 
+    /// Executes the prepared archive operation.
     pub fn execute(
         &self,
         services: HostServices,
@@ -50,27 +55,32 @@ impl KimiLocalServerPreparedArchive {
 }
 
 #[derive(Clone, Debug)]
+/// Prepared restore operation for one inactive Kimi local-server session.
 pub struct KimiLocalServerPreparedRestore {
     evidence: PreparedProviderSessionManagementEvidence,
     request: RestoreProviderSessionRequest,
 }
 
 impl KimiLocalServerPreparedRestore {
+    /// Returns portable evidence for the prepared management operation.
     #[must_use]
     pub const fn evidence(&self) -> &PreparedProviderSessionManagementEvidence {
         &self.evidence
     }
 
+    /// Returns the exact management plan.
     #[must_use]
     pub const fn plan(&self) -> &ProviderSessionManagementPlan {
         self.evidence.plan()
     }
 
+    /// Returns the bound restore request.
     #[must_use]
     pub const fn request(&self) -> &RestoreProviderSessionRequest {
         &self.request
     }
 
+    /// Executes the prepared restore operation.
     pub fn execute(
         &self,
         services: HostServices,
@@ -83,6 +93,7 @@ impl KimiLocalServerPreparedRestore {
 }
 
 impl KimiLocalServerPreparedIntegration {
+    /// Prepares archival of one exact inactive local-server session.
     pub fn prepare_archive_session(
         &self,
         input: KimiLocalServerSessionManagementInput,
@@ -103,6 +114,7 @@ impl KimiLocalServerPreparedIntegration {
         })
     }
 
+    /// Prepares restoration of one exact archived local-server session.
     pub fn prepare_restore_session(
         &self,
         input: KimiLocalServerSessionManagementInput,

@@ -14,6 +14,7 @@ use swallowtail_runtime::{
     validate_session_plan_agreement,
 };
 
+/// Runs common prepared-plan, evidence, access, and failure-stage assertions.
 pub fn assert_prepared_integration_primitives() {
     assert_plan_derivation_and_mismatch();
     assert_missing_plan_echo_fails_safely();
@@ -23,6 +24,7 @@ pub fn assert_prepared_integration_primitives() {
     assert_evidence_mismatch_fails_before_effects();
 }
 
+/// Proves prepared operation evidence exactly echoes its admitted plan.
 pub fn assert_prepared_operation_evidence_matches_plan(
     evidence: &PreparedOperationEvidence,
     plan: &PreflightPlan,
@@ -76,6 +78,7 @@ pub fn assert_prepared_operation_evidence_matches_plan(
     }
 }
 
+/// Proves preparation failed at the expected stage before provider effects.
 pub fn assert_prepared_failure_before_effects<T>(
     result: &Result<T, PreparationFailure>,
     provider_effect_count: usize,

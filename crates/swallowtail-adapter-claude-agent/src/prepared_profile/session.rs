@@ -20,6 +20,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared interactive Claude Agent ACP session.
 pub struct ClaudeAgentPreparedSession {
     evidence: ClaudeAgentPreparedEvidence,
     request: OpenSessionRequest,
@@ -27,26 +28,31 @@ pub struct ClaudeAgentPreparedSession {
 }
 
 impl ClaudeAgentPreparedSession {
+    /// Returns portable evidence for the prepared session.
     #[must_use]
     pub const fn evidence(&self) -> &ClaudeAgentPreparedEvidence {
         &self.evidence
     }
 
+    /// Returns the validated preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &swallowtail_core::PreflightPlan {
         self.evidence.plan()
     }
 
+    /// Returns the bound session-open request.
     #[must_use]
     pub const fn request(&self) -> &OpenSessionRequest {
         &self.request
     }
 
+    /// Creates the low-level ACP driver bound to this session.
     #[must_use]
     pub fn low_level_driver(&self) -> ClaudeAgentAcpDriver {
         self.evidence.low_level_driver()
     }
 
+    /// Opens a new provider-owned session with caller-supplied host services.
     pub fn open_session(&self, services: HostServices) -> ClaudeAgentPreparedSessionFuture {
         let driver = self.low_level_driver();
         let plan = self.plan().clone();
@@ -66,6 +72,7 @@ impl ClaudeAgentPreparedSession {
         })
     }
 
+    /// Builds an exact provider-session load request with bounded replay.
     pub fn load_request(
         &self,
         request_id: swallowtail_runtime::RequestId,
@@ -84,6 +91,7 @@ impl ClaudeAgentPreparedSession {
         )
     }
 
+    /// Loads a retained session and returns replay plus an interactive handle.
     pub fn load_session(
         &self,
         request_id: swallowtail_runtime::RequestId,
@@ -115,6 +123,7 @@ impl ClaudeAgentPreparedSession {
         }))
     }
 
+    /// Prepares exact continuation recovery for an interrupted consumer turn.
     pub fn prepare_working_state_restoration(
         &self,
         request_id: swallowtail_runtime::RequestId,
@@ -134,6 +143,7 @@ impl ClaudeAgentPreparedSession {
         ))
     }
 
+    /// Builds an exact provider-session resume request without replay.
     pub fn resume_request(
         &self,
         request_id: swallowtail_runtime::RequestId,
@@ -152,6 +162,7 @@ impl ClaudeAgentPreparedSession {
         )
     }
 
+    /// Resumes a retained provider session without replaying prior content.
     pub fn resume_session(
         &self,
         request_id: swallowtail_runtime::RequestId,
@@ -178,6 +189,7 @@ impl ClaudeAgentPreparedSession {
         }))
     }
 
+    /// Splits the prepared session into evidence, plan, and request.
     #[must_use]
     pub fn into_parts(
         self,
@@ -244,6 +256,7 @@ impl WorkingStateRestorationOperation for ClaudeAgentContinuationRecovery {
 }
 
 impl ClaudeAgentPreparedIntegration {
+    /// Prepares an interactive session through the admitted ACP integration.
     pub fn prepare_session(
         &self,
         input: ClaudeAgentSessionProfileInput,

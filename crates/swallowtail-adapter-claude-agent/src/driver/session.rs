@@ -55,7 +55,7 @@ impl ClaudeAgentSessionHandle {
         if let Some(active) = active.as_mut()
             && !active.turn.is_finished()
         {
-            active.turn.mark_cancelled();
+            active.turn.finish_for_session_close();
         }
         let native_close =
             close_provider_session(&self.connection, &self.provider_id, self.native_close).await;

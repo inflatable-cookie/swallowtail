@@ -9,6 +9,7 @@ use swallowtail_core::{
 use swallowtail_runtime::{PreparationFailure, PreparationStage, PreparedOperationEvidence};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Portable evidence shared by prepared Claude Agent operations.
 pub struct ClaudeAgentPreparedEvidence {
     observation: swallowtail_core::InstalledExecutableObservation,
     environment: swallowtail_runtime::EnvironmentRef,
@@ -34,21 +35,25 @@ impl ClaudeAgentPreparedEvidence {
         })
     }
 
+    /// Returns the qualified installed-executable observation.
     #[must_use]
     pub const fn observation(&self) -> &swallowtail_core::InstalledExecutableObservation {
         &self.observation
     }
 
+    /// Returns the prepared access evidence.
     #[must_use]
     pub const fn access(&self) -> &swallowtail_runtime::PreparedAccessEvidence {
         self.operation.access()
     }
 
+    /// Returns the complete prepared-operation evidence.
     #[must_use]
     pub const fn operation(&self) -> &PreparedOperationEvidence {
         &self.operation
     }
 
+    /// Returns the validated preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.operation.plan()

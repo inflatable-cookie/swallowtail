@@ -4,6 +4,7 @@ use swallowtail_core::{
 };
 
 #[must_use]
+/// Describes the installed Cursor model-catalogue route.
 pub fn cursor_catalogue_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(
         AdapterIdentity::new(
@@ -35,6 +36,7 @@ pub fn cursor_catalogue_descriptor() -> DriverDescriptor {
 }
 
 #[must_use]
+/// Describes Cursor's interactive ACP route.
 pub fn cursor_acp_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(
         AdapterIdentity::new(
@@ -70,6 +72,7 @@ pub fn cursor_acp_descriptor() -> DriverDescriptor {
 }
 
 #[must_use]
+/// Describes Cursor's one-shot stream-JSON route.
 pub fn cursor_headless_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(
         AdapterIdentity::new(

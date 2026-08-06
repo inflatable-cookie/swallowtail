@@ -2,6 +2,7 @@ use swallowtail_core::{ModelId, ModelRouteId, ModelRouteRevision, ProviderId};
 use swallowtail_runtime::{Deadline, OperationContent, RequestId, WorkingResourceRef};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Exact provider and model route for a Qwen operation.
 pub struct QwenModelSelection {
     route_id: ModelRouteId,
     route_revision: ModelRouteRevision,
@@ -10,6 +11,7 @@ pub struct QwenModelSelection {
 }
 
 impl QwenModelSelection {
+    /// Creates an exact Qwen model selection.
     #[must_use]
     pub const fn new(
         route_id: ModelRouteId,
@@ -36,6 +38,7 @@ impl QwenModelSelection {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer inputs for one prepared Qwen structured run.
 pub struct QwenRunProfileInput {
     request_id: RequestId,
     model: QwenModelSelection,
@@ -45,6 +48,7 @@ pub struct QwenRunProfileInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer inputs for one prepared Qwen interactive session.
 pub struct QwenSessionProfileInput {
     request_id: RequestId,
     model: QwenModelSelection,
@@ -53,6 +57,7 @@ pub struct QwenSessionProfileInput {
 }
 
 impl QwenSessionProfileInput {
+    /// Creates a Qwen session profile without a deadline.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -67,6 +72,7 @@ impl QwenSessionProfileInput {
         }
     }
 
+    /// Adds a deadline to the turn-scoped session.
     #[must_use]
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
@@ -91,6 +97,7 @@ impl QwenSessionProfileInput {
 }
 
 impl QwenRunProfileInput {
+    /// Creates a bounded Qwen structured-run profile.
     #[must_use]
     pub const fn new(
         request_id: RequestId,

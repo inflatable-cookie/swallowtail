@@ -4,57 +4,82 @@ use std::error::Error;
 use std::fmt;
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+/// Working-resource access granted to an interactive session.
 pub enum ResourceAccess {
+    /// Read without mutation authority.
     Read,
+    /// Read and write within the declared boundary.
     ReadWrite,
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+/// Representation used to expose a working resource.
 pub enum ResourceRepresentation {
+    /// Incremental byte stream.
     Stream,
+    /// Complete content under an explicit byte bound.
     BoundedBytes,
+    /// Host-managed temporary file.
     TemporaryFile,
+    /// Direct filesystem access.
     Filesystem,
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+/// Filesystem scope granted to a session.
 pub enum FilesystemBoundary {
+    /// Only the selected working resource.
     WorkingResource,
 }
 
 /// How a local harness process is isolated from execution-host resources.
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum HarnessIsolation {
+    /// Harness inherits the ambient host environment without an isolation claim.
     AmbientHost,
+    /// Harness itself enforces the declared resource boundary.
     ProviderEnforced,
+    /// Consumer host enforces the declared resource boundary.
     HostEnforced,
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+/// Policy for provider requests requiring operator approval.
 pub enum ProviderApprovalPolicy {
+    /// Reject approval requests rather than pausing for a consumer.
     Never,
+    /// Route approval requests through a typed consumer exchange.
     ConsumerMediated,
 }
 
 /// Permission for provider-side access beyond the selected provider route.
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum ExternalNetworkPolicy {
+    /// Provider-side external network access is forbidden.
     Denied,
+    /// Host explicitly approved provider-side network access.
     HostApproved,
+    /// Ambient harness inherits the host's existing network posture.
     AmbientHost,
 }
 
 /// Whether the operation may ask the provider or harness to search externally.
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum ExternalSearchPolicy {
+    /// External search is not requested.
     Disabled,
+    /// External search is requested under compatible network policy.
     Enabled,
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+/// Handling selected for one provider-owned request namespace.
 pub enum ProviderRequestHandling {
+    /// Reject the request as outside admitted authority.
     Reject,
+    /// Observe the request and stop without answering it.
     ObserveAndStop,
+    /// Permit an exactly correlated consumer response exchange.
     Exchange,
 }
 
@@ -66,12 +91,14 @@ pub struct ProviderRequestPolicy {
 }
 
 impl ProviderRequestPolicy {
+    /// Creates a policy rejecting every provider request.
     #[must_use]
     pub fn reject_all() -> Self {
         Self::default()
     }
 
     #[must_use]
+    /// Observes listed namespaces but grants no answer authority.
     pub fn observe_and_stop(namespaces: impl IntoIterator<Item = ExtensionNamespace>) -> Self {
         Self {
             observe_and_stop: namespaces.into_iter().collect(),
@@ -90,6 +117,7 @@ impl ProviderRequestPolicy {
     }
 
     #[must_use]
+    /// Combines observation-only and exchange-enabled namespaces.
     pub fn observe_and_exchange(
         observed: impl IntoIterator<Item = ExtensionNamespace>,
         exchanged: impl IntoIterator<Item = ExtensionNamespace>,
@@ -101,6 +129,7 @@ impl ProviderRequestPolicy {
     }
 
     #[must_use]
+    /// Returns the exact handling admitted for `namespace`.
     pub fn handling_for(&self, namespace: &ExtensionNamespace) -> ProviderRequestHandling {
         if self.exchange.contains(namespace) {
             ProviderRequestHandling::Exchange
@@ -111,10 +140,12 @@ impl ProviderRequestPolicy {
         }
     }
 
+    /// Iterates observation-only namespaces in stable order.
     pub fn observed_extensions(&self) -> impl ExactSizeIterator<Item = &ExtensionNamespace> {
         self.observe_and_stop.iter()
     }
 
+    /// Iterates exchange-enabled namespaces in stable order.
     pub fn exchanged_extensions(&self) -> impl ExactSizeIterator<Item = &ExtensionNamespace> {
         self.exchange.iter()
     }
@@ -133,6 +164,7 @@ pub struct SessionAccessPolicy {
 }
 
 impl SessionAccessPolicy {
+    /// Creates and validates an isolated, resource-bound session policy.
     pub fn new(
         resource_access: ResourceAccess,
         filesystem_boundary: FilesystemBoundary,
@@ -162,6 +194,7 @@ impl SessionAccessPolicy {
     }
 
     #[must_use]
+    /// Returns the canonical isolated read-only policy.
     pub fn read_only() -> Self {
         Self::new(
             ResourceAccess::Read,
@@ -223,6 +256,7 @@ impl SessionAccessPolicy {
     }
 
     #[must_use]
+    /// Returns an isolated read-write workspace policy with observation-only callbacks.
     pub fn bounded_workspace(
         observed_provider_requests: impl IntoIterator<Item = ExtensionNamespace>,
     ) -> Self {
@@ -239,42 +273,50 @@ impl SessionAccessPolicy {
     }
 
     #[must_use]
+    /// Replaces provider-request handling without changing other authority.
     pub fn with_provider_requests(mut self, provider_requests: ProviderRequestPolicy) -> Self {
         self.provider_requests = provider_requests;
         self
     }
 
     #[must_use]
+    /// Returns granted working-resource access, when any.
     pub const fn resource_access(&self) -> Option<ResourceAccess> {
         self.resource_access
     }
 
     #[must_use]
+    /// Returns the filesystem boundary, when one is claimed.
     pub const fn filesystem_boundary(&self) -> Option<FilesystemBoundary> {
         self.filesystem_boundary
     }
 
     #[must_use]
+    /// Returns the harness isolation posture, when applicable.
     pub const fn harness_isolation(&self) -> Option<HarnessIsolation> {
         self.harness_isolation
     }
 
     #[must_use]
+    /// Returns provider approval handling.
     pub const fn approval_policy(&self) -> ProviderApprovalPolicy {
         self.approval_policy
     }
 
     #[must_use]
+    /// Returns provider-side external network policy.
     pub const fn external_network(&self) -> ExternalNetworkPolicy {
         self.external_network
     }
 
     #[must_use]
+    /// Returns external search policy.
     pub const fn external_search(&self) -> ExternalSearchPolicy {
         self.external_search
     }
 
     #[must_use]
+    /// Returns exact provider-request namespace policy.
     pub const fn provider_requests(&self) -> &ProviderRequestPolicy {
         &self.provider_requests
     }
@@ -287,6 +329,7 @@ impl Default for SessionAccessPolicy {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Rejection raised for contradictory session access authority.
 pub struct IncompatibleSessionAccessPolicy {
     diagnostic: SafeDiagnostic,
 }
@@ -311,6 +354,7 @@ impl IncompatibleSessionAccessPolicy {
     }
 
     #[must_use]
+    /// Returns the redacted policy-rejection diagnostic.
     pub const fn diagnostic(&self) -> &SafeDiagnostic {
         &self.diagnostic
     }

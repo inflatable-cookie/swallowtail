@@ -2,6 +2,7 @@ use crate::{CodecLimits, ProtocolError, ProtocolErrorKind};
 use serde_json::{Map, Value};
 use std::collections::BTreeMap;
 
+/// One structural chat message with bounded provider-extension support.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ChatMessage {
     role: String,
@@ -10,6 +11,7 @@ pub struct ChatMessage {
 }
 
 impl ChatMessage {
+    /// Creates a message with explicit role and text content.
     #[must_use]
     pub fn new(role: impl Into<String>, content: impl Into<String>) -> Self {
         Self {
@@ -19,6 +21,7 @@ impl ChatMessage {
         }
     }
 
+    /// Creates a message whose encoded `content` value is JSON `null`.
     #[must_use]
     pub fn without_content(role: impl Into<String>) -> Self {
         Self {
@@ -28,6 +31,7 @@ impl ChatMessage {
         }
     }
 
+    /// Adds one provider extension without replacing known or existing fields.
     pub fn insert_extension(
         &mut self,
         name: impl Into<String>,
@@ -45,6 +49,7 @@ impl ChatMessage {
     }
 }
 
+/// Structural compatible-chat request independent of provider policy.
 #[derive(Clone, Debug, PartialEq)]
 pub struct ChatRequest {
     model: String,
@@ -55,6 +60,7 @@ pub struct ChatRequest {
 }
 
 impl ChatRequest {
+    /// Creates a request with explicit streaming and usage-reporting choices.
     #[must_use]
     pub fn new(
         model: impl Into<String>,
@@ -71,6 +77,7 @@ impl ChatRequest {
         }
     }
 
+    /// Adds one top-level provider extension without replacing known fields.
     pub fn insert_extension(
         &mut self,
         name: impl Into<String>,
@@ -85,6 +92,7 @@ impl ChatRequest {
     }
 }
 
+/// Validates and encodes one request within the supplied codec limits.
 pub fn encode_request(
     request: &ChatRequest,
     limits: CodecLimits,

@@ -4,6 +4,7 @@
 //! execution and the decision to continue remain with the consumer.
 
 #![forbid(unsafe_code)]
+#![deny(missing_docs)]
 
 mod activity;
 mod driver;

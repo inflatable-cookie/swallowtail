@@ -3,22 +3,30 @@ use crate::{Capability, InterfaceCompatibilityAssessment, InterfaceVersionBindin
 /// How an opaque provider-session management binding was obtained.
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum ProviderSessionBindingOrigin {
+    /// Session was created by the current prepared route.
     Created,
+    /// Existing session was loaded from exact provider state.
     Loaded,
+    /// Existing session was resumed from a retained binding.
     Resumed,
+    /// Session was selected through explicit catalogue import.
     ExplicitlyImported,
 }
 
 /// One exact provider-session management action.
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum ProviderSessionManagementAction {
+    /// Move the session to archived state.
     Archive,
+    /// Restore the session to unarchived state.
     Restore,
+    /// Delete session data at the requested strength.
     Delete(ProviderSessionDeletionStrength),
 }
 
 impl ProviderSessionManagementAction {
     #[must_use]
+    /// Returns the independent capability required by this action.
     pub const fn required_capability(self) -> Capability {
         match self {
             Self::Archive => Capability::ProviderSessionArchive,
@@ -28,6 +36,7 @@ impl ProviderSessionManagementAction {
     }
 
     #[must_use]
+    /// Returns the lifecycle state targeted by this action.
     pub const fn target_state(self) -> ProviderSessionLifecycleState {
         match self {
             Self::Archive => ProviderSessionLifecycleState::Archived,
@@ -37,6 +46,7 @@ impl ProviderSessionManagementAction {
     }
 
     #[must_use]
+    /// Returns requested deletion strength for delete actions only.
     pub const fn deletion_strength(self) -> Option<ProviderSessionDeletionStrength> {
         match self {
             Self::Archive | Self::Restore => None,
@@ -50,54 +60,73 @@ impl ProviderSessionManagementAction {
 /// `Unarchived` does not mean that a runtime attachment is active.
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum ProviderSessionLifecycleState {
+    /// Session exists and is not archived.
     Unarchived,
+    /// Session exists in provider archive state.
     Archived,
+    /// Session target is deleted or confirmed absent.
     Deleted,
 }
 
 /// Provider state accepted before one planned action.
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum ProviderSessionInitialStateRequirement {
+    /// Action requires an unarchived target.
     Unarchived,
+    /// Action requires an archived target.
     Archived,
+    /// Action accepts either existing lifecycle state.
     UnarchivedOrArchived,
 }
 
 /// Explicit evidence that the caller has closed its runtime attachment.
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum ProviderSessionActivityEvidence {
+    /// Caller asserts its runtime attachment is closed and inactive.
     CallerAssertedInactive,
 }
 
 /// Cancellation behavior promised by one exact management route.
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum ProviderSessionCancellationPosture {
+    /// Cancellation is trustworthy only before provider dispatch.
     BeforeDispatchOnly,
+    /// Provider exposes native post-dispatch cancellation.
     ProviderNative,
 }
 
 /// Strongest deletion semantics promised by one exact provider route.
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum ProviderSessionDeletionStrength {
+    /// Retained visible history is removed without broader deletion truth.
     HistoryRemoved,
+    /// Provider-owned session data is deleted.
     ProviderDataDeleted,
+    /// Provider promises its strongest hard-delete semantics.
     ProviderHardDeleted,
 }
 
 /// Provider resources whose state the action is documented to affect.
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum ProviderSessionAffectedScope {
+    /// Only the exact bound session is affected.
     TargetOnly,
+    /// Provider-defined descendant resources are also affected.
     ProviderDefinedDescendants,
 }
 
 /// Truth known after one provider-session management attempt.
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum ProviderSessionEffectTruth {
+    /// Requested effect was confirmed applied.
     Applied,
+    /// Target already had the requested lifecycle state.
     AlreadyInTargetState,
+    /// Delete target was already absent.
     TargetAlreadyAbsent,
+    /// Attempt failed before any provider effect.
     FailedBeforeEffect,
+    /// Dispatch may have caused an effect but confirmation was lost.
     UnconfirmedAfterEffect,
 }
 
@@ -114,6 +143,7 @@ pub struct ProviderSessionManagementEffect {
 
 impl ProviderSessionManagementEffect {
     #[must_use]
+    /// Records a confirmed applied action and affected scope.
     pub const fn applied(
         action: ProviderSessionManagementAction,
         affected_scope: ProviderSessionAffectedScope,
@@ -126,6 +156,7 @@ impl ProviderSessionManagementEffect {
     }
 
     #[must_use]
+    /// Records a session already in archived state.
     pub const fn already_archived(affected_scope: ProviderSessionAffectedScope) -> Self {
         Self {
             action: ProviderSessionManagementAction::Archive,
@@ -135,6 +166,7 @@ impl ProviderSessionManagementEffect {
     }
 
     #[must_use]
+    /// Records a session already in unarchived state.
     pub const fn already_unarchived(affected_scope: ProviderSessionAffectedScope) -> Self {
         Self {
             action: ProviderSessionManagementAction::Restore,
@@ -144,6 +176,7 @@ impl ProviderSessionManagementEffect {
     }
 
     #[must_use]
+    /// Records a delete target already absent at the requested strength.
     pub const fn target_already_absent(
         deletion_strength: ProviderSessionDeletionStrength,
         affected_scope: ProviderSessionAffectedScope,
@@ -156,6 +189,7 @@ impl ProviderSessionManagementEffect {
     }
 
     #[must_use]
+    /// Records a diagnosed failure known to precede provider effect.
     pub const fn failed_before_effect(action: ProviderSessionManagementAction) -> Self {
         Self {
             action,
@@ -165,6 +199,7 @@ impl ProviderSessionManagementEffect {
     }
 
     #[must_use]
+    /// Records uncertain truth after a potentially effective dispatch.
     pub const fn unconfirmed_after_effect(action: ProviderSessionManagementAction) -> Self {
         Self {
             action,
@@ -174,16 +209,19 @@ impl ProviderSessionManagementEffect {
     }
 
     #[must_use]
+    /// Returns the attempted management action.
     pub const fn action(self) -> ProviderSessionManagementAction {
         self.action
     }
 
     #[must_use]
+    /// Returns confirmed or uncertain effect truth.
     pub const fn truth(self) -> ProviderSessionEffectTruth {
         self.truth
     }
 
     #[must_use]
+    /// Returns confirmed resulting lifecycle state, when known.
     pub const fn resulting_state(self) -> Option<ProviderSessionLifecycleState> {
         match self.truth {
             ProviderSessionEffectTruth::Applied
@@ -195,6 +233,7 @@ impl ProviderSessionManagementEffect {
     }
 
     #[must_use]
+    /// Returns confirmed affected scope, when known.
     pub const fn affected_scope(self) -> Option<ProviderSessionAffectedScope> {
         self.affected_scope
     }
@@ -221,6 +260,7 @@ pub struct ProviderSessionInterfaceCompatibility {
 
 impl ProviderSessionInterfaceCompatibility {
     #[must_use]
+    /// Couples one interface binding with its visible compatibility assessment.
     pub const fn new(
         binding: InterfaceVersionBinding,
         assessment: InterfaceCompatibilityAssessment,
@@ -232,11 +272,13 @@ impl ProviderSessionInterfaceCompatibility {
     }
 
     #[must_use]
+    /// Returns the exact observed interface binding.
     pub const fn binding(&self) -> &InterfaceVersionBinding {
         &self.binding
     }
 
     #[must_use]
+    /// Returns its qualified, unverified, or incompatible assessment.
     pub const fn assessment(&self) -> &InterfaceCompatibilityAssessment {
         &self.assessment
     }

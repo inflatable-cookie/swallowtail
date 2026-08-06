@@ -11,6 +11,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Bound prepared DeepSeek direct-continuation session.
 pub struct DeepSeekPreparedSession {
     evidence: DeepSeekPreparedEvidence,
     request: OpenDirectContinuationSessionRequest,
@@ -18,25 +19,30 @@ pub struct DeepSeekPreparedSession {
 
 impl DeepSeekPreparedSession {
     #[must_use]
+    /// Returns the prepared operation evidence.
     pub const fn evidence(&self) -> &DeepSeekPreparedEvidence {
         &self.evidence
     }
 
     #[must_use]
+    /// Returns the immutable continuation-session plan.
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
     #[must_use]
+    /// Returns the plan-derived session-open request.
     pub const fn request(&self) -> &OpenDirectContinuationSessionRequest {
         &self.request
     }
 
     #[must_use]
+    /// Returns the low-level direct driver.
     pub fn low_level_driver(&self) -> DeepSeekDirectDriver {
         DeepSeekDirectDriver::new()
     }
 
+    /// Opens the bound resource-free continuation session.
     pub fn open_session(
         &self,
         services: HostServices,
@@ -52,6 +58,7 @@ impl DeepSeekPreparedSession {
     }
 
     #[must_use]
+    /// Splits the prepared operation into evidence, plan, and request.
     pub fn into_parts(
         self,
     ) -> (
@@ -65,6 +72,7 @@ impl DeepSeekPreparedSession {
 }
 
 impl DeepSeekPreparedIntegration {
+    /// Prepares a resource-free V4 continuation session.
     pub fn prepare_session(
         &self,
         input: DeepSeekSessionProfileInput,

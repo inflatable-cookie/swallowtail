@@ -32,6 +32,8 @@ swallowtail-adapter-kimi-platform	swallowtail-runtime	^0.1.0
 swallowtail-adapter-llama-cpp	swallowtail-core	^0.1.0
 swallowtail-adapter-llama-cpp	swallowtail-protocol-openai-chat	^0.1.0
 swallowtail-adapter-llama-cpp	swallowtail-runtime	^0.1.0
+swallowtail-adapter-oh-my-pi	swallowtail-core	^0.1.0
+swallowtail-adapter-oh-my-pi	swallowtail-runtime	^0.1.0
 swallowtail-adapter-ollama	swallowtail-core	^0.1.0
 swallowtail-adapter-ollama	swallowtail-runtime	^0.1.0
 swallowtail-adapter-openai	swallowtail-core	^0.1.0

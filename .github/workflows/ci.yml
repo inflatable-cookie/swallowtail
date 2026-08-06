@@ -1,0 +1,119 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  stable:
+    name: Stable format, lint, test, and guides
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+      - uses: taiki-e/install-action@cargo-nextest
+      - name: Format
+        run: cargo fmt --all -- --check
+      - name: Clippy (all features)
+        run: cargo clippy --workspace --all-targets --all-features --locked -- -D warnings
+      - name: Clippy (no default features)
+        run: cargo clippy --workspace --all-targets --no-default-features --locked -- -D warnings
+      - name: Test
+        run: cargo nextest run --workspace --all-features --locked
+      - name: Examples
+        run: cargo check --workspace --examples --locked
+      - name: Package metadata and topology
+        run: bash scripts/check-package-metadata.sh
+      - name: Route and guide contracts
+        run: |
+          bash scripts/check-provider-route-matrix.sh
+          python3 scripts/check-integration-guide-coverage.py
+          python3 scripts/check-consumer-front-door.py
+
+  docs-and-api:
+    name: Documentation and semantic API
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: nightly-2026-08-05
+      - uses: Swatinem/rust-cache@v2
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-public-api@0.52.0
+      - name: Deny missing public documentation
+        run: RUSTDOCFLAGS='-D missing_docs' cargo doc --workspace --all-features --no-deps --locked
+      - name: Semantic public API baseline
+        run: bash scripts/check-public-api.sh
+
+  general-floor:
+    name: Rust 1.90 floor
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.90.0
+          components: clippy
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: rust-1.90
+      - name: Clippy
+        run: cargo clippy --workspace --exclude swallowtail-adapter-bedrock --all-targets --all-features --locked -- -D warnings
+      - name: Test
+        run: cargo test --workspace --exclude swallowtail-adapter-bedrock --all-features --locked
+
+  bedrock-floor:
+    name: Bedrock Rust 1.94.1 floor
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.94.1
+          components: clippy
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: rust-1.94.1-bedrock
+      - name: Clippy
+        run: cargo clippy --package swallowtail-adapter-bedrock --all-targets --all-features --locked -- -D warnings
+      - name: Test
+        run: cargo test --package swallowtail-adapter-bedrock --all-features --locked
+
+  supply-chain:
+    name: Dependency security, licenses, and sources
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          cache-targets: false
+      - uses: taiki-e/install-action@cargo-deny
+      - run: cargo deny check advisories licenses sources
+
+  external-source:
+    name: External Git-source consumer
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: bash scripts/verify-source-consumer.sh

@@ -19,12 +19,14 @@ use swallowtail_runtime::{
 pub(crate) const DRIVER_ID: &str = "swallowtail.kimi.headless";
 const EVENT_CAPACITY: usize = 4098;
 
+/// Low-level driver for one-shot Kimi Code stream-JSON runs.
 pub struct KimiHeadlessDriver {
     environment: EnvironmentRef,
     credential: CredentialRef,
 }
 
 impl KimiHeadlessDriver {
+    /// Creates a headless driver with approved environment and opaque credential.
     #[must_use]
     pub const fn new(environment: EnvironmentRef, credential: CredentialRef) -> Self {
         Self {
@@ -35,6 +37,7 @@ impl KimiHeadlessDriver {
 }
 
 #[must_use]
+/// Describes Kimi Code's one-shot headless route.
 pub fn kimi_headless_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(
         AdapterIdentity::new(

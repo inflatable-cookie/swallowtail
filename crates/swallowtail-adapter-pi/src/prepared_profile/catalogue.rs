@@ -12,32 +12,38 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared Pi model-catalogue request.
 pub struct PiPreparedCatalogue {
     evidence: PiPreparedEvidence,
     request: ModelCatalogRequest,
 }
 
 impl PiPreparedCatalogue {
+    /// Returns the catalogue's preparation evidence.
     #[must_use]
     pub const fn evidence(&self) -> &PiPreparedEvidence {
         &self.evidence
     }
 
+    /// Returns the immutable preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
+    /// Returns the model-catalogue request.
     #[must_use]
     pub const fn request(&self) -> &ModelCatalogRequest {
         &self.request
     }
 
+    /// Reconstructs the low-level driver from prepared evidence.
     #[must_use]
     pub fn low_level_driver(&self) -> PiRpcDriver {
         self.evidence.low_level_driver()
     }
 
+    /// Dispatches the prepared model-catalogue request.
     pub fn list_models(
         &self,
         services: HostServices,
@@ -48,6 +54,7 @@ impl PiPreparedCatalogue {
         Box::pin(async move { driver.list_models(plan, request, services).await })
     }
 
+    /// Consumes the prepared catalogue into evidence, plan, and request.
     #[must_use]
     pub fn into_parts(self) -> (PiPreparedEvidence, PreflightPlan, ModelCatalogRequest) {
         let plan = self.evidence.plan().clone();
@@ -56,6 +63,7 @@ impl PiPreparedCatalogue {
 }
 
 impl PiPreparedIntegration {
+    /// Validates and prepares a model-catalogue request.
     pub fn prepare_catalogue(
         &self,
         input: PiCatalogueProfileInput,

@@ -1,12 +1,14 @@
 use std::error::Error;
 use std::fmt;
 
+/// Failure returned when a runtime identity is blank.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct RuntimeIdentityRequired {
     field: &'static str,
 }
 
 impl RuntimeIdentityRequired {
+    /// Returns the invalid identity field.
     #[must_use]
     pub const fn field(&self) -> &'static str {
         self.field
@@ -23,10 +25,12 @@ impl Error for RuntimeIdentityRequired {}
 
 macro_rules! runtime_identity {
     ($name:ident, $field:literal) => {
+        #[doc = concat!("Non-empty, debug-redacted ", $field, ".")]
         #[derive(Clone, Eq, Hash, Ord, PartialEq, PartialOrd)]
         pub struct $name(String);
 
         impl $name {
+            #[doc = concat!("Creates a ", $field, " after rejecting blank text.")]
             pub fn new(value: impl Into<String>) -> Result<Self, RuntimeIdentityRequired> {
                 let value = value.into();
                 if value.trim().is_empty() {
@@ -36,6 +40,7 @@ macro_rules! runtime_identity {
                 }
             }
 
+            /// Returns the exact identity for protocol correlation.
             #[must_use]
             pub fn as_str(&self) -> &str {
                 &self.0

@@ -19,12 +19,14 @@ use swallowtail_runtime::RuntimeFailure;
 pub(crate) const DRIVER_ID: &str = "swallowtail.deepseek.direct";
 
 #[derive(Clone, Default)]
+/// Low-level DeepSeek catalogue, structured-run, and continuation driver.
 pub struct DeepSeekDirectDriver {
     transport: CurlTransport,
 }
 
 impl DeepSeekDirectDriver {
     #[must_use]
+    /// Creates a driver using the package's bounded HTTP/SSE transport.
     pub fn new() -> Self {
         Self::default()
     }
@@ -56,6 +58,7 @@ impl DeepSeekDirectDriver {
 }
 
 #[must_use]
+/// Returns the exact descriptor for the DeepSeek V4 direct route.
 pub fn deepseek_direct_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(
         AdapterIdentity::new(

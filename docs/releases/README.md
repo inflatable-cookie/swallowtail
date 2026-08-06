@@ -1,30 +1,29 @@
 # Releases
 
-Release notes describe candidate or published crate compatibility. They do not
-authorize registry, tag, push, GitHub release, workflow, or consumer mutations.
+Release notes describe candidate or tagged source compatibility. They do not
+authorize registry, tag, push, GitHub Release, workflow, consumer, or provider
+mutations.
 
-## Candidates
+## Current Candidate
 
-- [0.1.0](0.1.0.md) — retained non-published post-hardening 23-package
-  compatibility snapshot
-- [Nucleus 0.1.0 handoff](0.1.0-nucleus-handoff.md) — prepared app-server
-  adoption
-- [Nucleus provider-session lifecycle handoff](0.1.0-nucleus-provider-session-lifecycle-handoff.md)
-  — separate local and optional provider lifecycle adoption
-- [Nucleus external-thread import handoff](0.1.0-nucleus-provider-session-import-handoff.md)
-  — explicit browse, import, replay, persistence, and continuation adoption
-- [Nucleus observable-activity handoff](0.1.0-nucleus-observable-activity-handoff.md)
-  — separate durable message, collapsible work, and child-navigation
-  projections
-- [Soundcheck 0.1.0 handoff](0.1.0-soundcheck-handoff.md) — prepared
-  app-server catalogue and structured-exec adoption
-- [Soundcheck observable-activity handoff](0.1.0-soundcheck-observable-activity-handoff.md)
-  — optional portable structured-run progress with unchanged final output
+- [Swallowtail 0.1.0](0.1.0.md) — 27-package, 33-route Git source-tag
+  candidate; the tag has not been created
 
-The earlier compile-only, provisional, and parentless provider-wide candidates
-remain frozen as superseded evidence. No candidate grants publication
-authority.
+The initial distribution is an annotated `v0.1.0` tag on the canonical GitHub
+repository. It includes no crates.io publication, GitHub Release object,
+binary, sidecar, installer, or model artifact.
 
-There is no active publication lane. Registry work may return only through a
-new operator-authorized roadmap after months of working-application usage
-evidence.
+## Consumer Handoffs
+
+These records preserve bounded adoption evidence. They supplement the current
+route and feature guides and do not define the release package set.
+
+- [Nucleus prepared integration](0.1.0-nucleus-handoff.md)
+- [Nucleus provider-session lifecycle](0.1.0-nucleus-provider-session-lifecycle-handoff.md)
+- [Nucleus external-session import](0.1.0-nucleus-provider-session-import-handoff.md)
+- [Nucleus observable activity](0.1.0-nucleus-observable-activity-handoff.md)
+- [Soundcheck prepared integration](0.1.0-soundcheck-handoff.md)
+- [Soundcheck observable activity](0.1.0-soundcheck-observable-activity-handoff.md)
+
+Historical `.crate` candidates remain superseded evidence. They are not the
+current source-tag candidate and grant no publication authority.

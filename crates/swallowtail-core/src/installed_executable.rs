@@ -9,8 +9,11 @@ use std::fmt;
 /// Classification of one exact installed executable against one driver claim.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum InstalledExecutableCompatibility {
+    /// Version belongs to a qualified behavior segment.
     Qualified(InterfaceCompatibilityMatch),
+    /// Stable newer version is permitted without qualified evidence.
     UnverifiedNewer(InterfaceUnverifiedNewer),
+    /// Version is invalid, excluded, or unsupported.
     Incompatible,
 }
 
@@ -24,6 +27,7 @@ pub struct InstalledExecutableObservation {
 }
 
 impl InstalledExecutableObservation {
+    /// Classifies one exact host observation against a matching claim axis.
     pub fn classify(
         execution_host_id: ExecutionHostId,
         version: InterfaceVersionBinding,
@@ -52,26 +56,31 @@ impl InstalledExecutableObservation {
     }
 
     #[must_use]
+    /// Returns the host on which the executable was observed.
     pub const fn execution_host_id(&self) -> &ExecutionHostId {
         &self.execution_host_id
     }
 
     #[must_use]
+    /// Returns exact observed interface version.
     pub const fn version(&self) -> &InterfaceVersionBinding {
         &self.version
     }
 
     #[must_use]
+    /// Returns compatibility claim used for classification.
     pub const fn claim_id(&self) -> &InterfaceCompatibilityClaimId {
         &self.claim_id
     }
 
     #[must_use]
+    /// Returns qualified, unverified, or incompatible evidence.
     pub const fn compatibility(&self) -> &InstalledExecutableCompatibility {
         &self.compatibility
     }
 
     #[must_use]
+    /// Reports whether the version has qualified behavior evidence.
     pub const fn is_qualified(&self) -> bool {
         matches!(
             self.compatibility,
@@ -80,6 +89,7 @@ impl InstalledExecutableObservation {
     }
 
     #[must_use]
+    /// Reports whether policy permits this exact executable.
     pub const fn is_permitted(&self) -> bool {
         matches!(
             self.compatibility,
@@ -90,6 +100,7 @@ impl InstalledExecutableObservation {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Rejection raised when executable evidence and claim axes differ.
 pub struct InvalidInstalledExecutableObservation {
     diagnostic: SafeDiagnostic,
 }
@@ -105,6 +116,7 @@ impl InvalidInstalledExecutableObservation {
     }
 
     #[must_use]
+    /// Returns the redacted observation diagnostic.
     pub const fn diagnostic(&self) -> &SafeDiagnostic {
         &self.diagnostic
     }

@@ -1,6 +1,7 @@
 const MAX_EVENT_BYTES: usize = 1_048_576;
 
 #[derive(Clone, Eq, PartialEq)]
+/// One bounded named SSE frame with redacted payload bytes.
 pub struct SseFrame {
     name: String,
     data: Vec<u8>,
@@ -8,6 +9,7 @@ pub struct SseFrame {
 
 impl SseFrame {
     #[must_use]
+    /// Returns the provider event name.
     pub fn name(&self) -> &str {
         &self.name
     }
@@ -29,11 +31,13 @@ impl std::fmt::Debug for SseFrame {
 }
 
 #[derive(Default)]
+/// Incremental bounded decoder for Model Studio SSE frames.
 pub struct SseDecoder {
     buffer: Vec<u8>,
 }
 
 impl SseDecoder {
+    /// Accepts one transport chunk and returns every complete decoded frame.
     pub fn push(&mut self, chunk: &[u8]) -> Result<Vec<SseFrame>, AlibabaProtocolFailure> {
         if self.buffer.len().saturating_add(chunk.len()) > MAX_EVENT_BYTES {
             return Err(AlibabaProtocolFailure::invalid("SSE event bound"));
@@ -50,6 +54,7 @@ impl SseDecoder {
         Ok(frames)
     }
 
+    /// Verifies that disconnect left no partial semantic frame buffered.
     pub fn finish(self) -> Result<(), AlibabaProtocolFailure> {
         if self.buffer.iter().all(u8::is_ascii_whitespace) {
             Ok(())

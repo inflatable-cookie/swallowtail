@@ -22,11 +22,13 @@ use swallowtail_runtime::{
     validate_session_plan_agreement,
 };
 
+/// Low-level driver for Codex app-server sessions and thread operations.
 pub struct CodexAppServerDriver {
     environment: EnvironmentRef,
 }
 
 impl CodexAppServerDriver {
+    /// Creates an app-server driver using the approved execution environment.
     #[must_use]
     pub const fn new(environment: EnvironmentRef) -> Self {
         Self { environment }
@@ -34,6 +36,7 @@ impl CodexAppServerDriver {
 }
 
 #[must_use]
+/// Describes Codex's interactive app-server route.
 pub fn codex_app_server_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(
         AdapterIdentity::new(

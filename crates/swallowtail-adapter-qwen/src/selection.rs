@@ -7,8 +7,11 @@ use swallowtail_runtime::RuntimeFailure;
 
 use crate::validation::failure;
 
+/// Package-version interface axis used by Qwen Code.
 pub const QWEN_CODE_AXIS: &str = "qwen-code.package";
+/// Oldest qualified Qwen Code package version.
 pub const QWEN_CODE_BASELINE_VERSION: &str = "0.19.11";
+/// Most recent qualified Qwen Code package version.
 pub const QWEN_CODE_LATEST_QUALIFIED_VERSION: &str = "0.21.2";
 
 const BASELINE_BEHAVIOR: &str = "qwen-code.headless.v0.19.11";
@@ -27,6 +30,7 @@ impl QwenPlanSelection {
 }
 
 #[must_use]
+/// Parses a Qwen Code semantic version into its interface binding.
 pub fn qwen_code_binding(value: &str) -> Option<InterfaceVersionBinding> {
     if value.is_empty()
         || value.len() > MAX_VERSION_BYTES
@@ -43,6 +47,7 @@ pub fn qwen_code_binding(value: &str) -> Option<InterfaceVersionBinding> {
 }
 
 #[must_use]
+/// Returns the qualified compatibility claim for Qwen Code operations.
 pub fn qwen_headless_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
         InterfaceCompatibilityClaimId::new("qwen-code.headless.package-window-2")

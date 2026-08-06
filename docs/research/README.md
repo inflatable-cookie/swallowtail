@@ -118,3 +118,4 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [108 Provider-Wide Session Usability Restoration](108-provider-wide-session-usability-restoration.md)
 - [109 Oh My Pi RPC Route Qualification](109-oh-my-pi-rpc-route-qualification.md)
 - [110 Integration Guide Coverage Audit](110-integration-guide-coverage-audit.md)
+- [111 v0.1.0 Source Release Readiness Audit](111-v0-1-0-source-release-readiness-audit.md)

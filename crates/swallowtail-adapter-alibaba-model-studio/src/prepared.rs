@@ -12,6 +12,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Host, workspace endpoint, and access evidence used for route preparation.
 pub struct AlibabaModelStudioPreparationInput {
     instance_revision: InstanceRevision,
     execution_host_id: ExecutionHostId,
@@ -21,6 +22,7 @@ pub struct AlibabaModelStudioPreparationInput {
 
 impl AlibabaModelStudioPreparationInput {
     #[must_use]
+    /// Creates workspace preparation input without provider effects.
     pub const fn new(
         instance_revision: InstanceRevision,
         execution_host_id: ExecutionHostId,
@@ -37,6 +39,7 @@ impl AlibabaModelStudioPreparationInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared Model Studio workspace integration bound to one instance and host.
 pub struct AlibabaModelStudioPreparedIntegration {
     access_profile: AccessProfile,
     access_evidence: PreparedAccessEvidence,
@@ -46,29 +49,35 @@ pub struct AlibabaModelStudioPreparedIntegration {
 
 impl AlibabaModelStudioPreparedIntegration {
     #[must_use]
+    /// Returns the selected workspace API-key access profile.
     pub const fn access_profile(&self) -> &AccessProfile {
         &self.access_profile
     }
 
     #[must_use]
+    /// Returns access evidence together with its provenance.
     pub const fn access_evidence(&self) -> &PreparedAccessEvidence {
         &self.access_evidence
     }
 
     #[must_use]
+    /// Returns the configured workspace instance.
     pub const fn instance(&self) -> &ConfiguredInstance {
         &self.instance
     }
 
+    /// Iterates the host services present during preparation.
     pub fn available_host_services(&self) -> impl ExactSizeIterator<Item = HostServiceKind> + '_ {
         self.available_host_services.iter().copied()
     }
 
     #[must_use]
+    /// Returns the public low-level workspace driver.
     pub fn low_level_driver(&self) -> crate::AlibabaModelStudioDriver {
         crate::AlibabaModelStudioDriver::new()
     }
 
+    /// Rejects execution-host or workspace-endpoint drift.
     pub fn validate_execution_binding(
         &self,
         execution_host_id: &ExecutionHostId,
@@ -87,6 +96,7 @@ impl AlibabaModelStudioPreparedIntegration {
     }
 }
 
+/// Prepares a Model Studio workspace integration without provider effects.
 pub fn prepare_alibaba_model_studio(
     input: AlibabaModelStudioPreparationInput,
     services: &HostServices,

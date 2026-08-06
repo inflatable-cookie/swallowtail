@@ -13,32 +13,38 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared Kimi local-server model-catalogue operation.
 pub struct KimiLocalServerPreparedCatalogue {
     evidence: PreparedOperationEvidence,
     request: ModelCatalogRequest,
 }
 
 impl KimiLocalServerPreparedCatalogue {
+    /// Returns portable evidence for the prepared catalogue.
     #[must_use]
     pub const fn evidence(&self) -> &PreparedOperationEvidence {
         &self.evidence
     }
 
+    /// Returns the validated preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
+    /// Returns the bound model-catalogue request.
     #[must_use]
     pub const fn request(&self) -> &ModelCatalogRequest {
         &self.request
     }
 
+    /// Creates the low-level local-server driver bound to this catalogue.
     #[must_use]
     pub fn low_level_driver(&self) -> crate::KimiLocalServerDriver {
         crate::KimiLocalServerDriver::new()
     }
 
+    /// Starts model discovery with caller-supplied host services.
     pub fn list_models(
         &self,
         services: HostServices,
@@ -51,6 +57,7 @@ impl KimiLocalServerPreparedCatalogue {
 }
 
 impl KimiLocalServerPreparedIntegration {
+    /// Prepares a model-catalogue request through the admitted server.
     pub fn prepare_catalogue(
         &self,
         input: KimiLocalServerCatalogueInput,

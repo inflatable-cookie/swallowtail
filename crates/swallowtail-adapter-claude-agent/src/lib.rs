@@ -1,6 +1,10 @@
-//! Claude Agent ACP integration for Swallowtail.
+//! Claude integrations for Swallowtail.
+//!
+//! The third-party Claude Agent ACP route and the native one-shot
+//! `claude -p` stream-JSON route remain separate prepared integrations.
 
 #![forbid(unsafe_code)]
+#![deny(missing_docs)]
 
 mod acp_activity;
 mod claude_code;

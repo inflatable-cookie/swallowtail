@@ -17,12 +17,14 @@ use swallowtail_runtime::{
 const DRIVER_ID: &str = "swallowtail.kimi-platform.direct-chat";
 
 #[derive(Clone, Default)]
+/// Low-level Kimi Platform model-catalogue and structured-run driver.
 pub struct KimiPlatformDirectDriver {
     transport: CurlTransport,
 }
 
 impl KimiPlatformDirectDriver {
     #[must_use]
+    /// Creates a driver using the package's bounded HTTP/SSE transport.
     pub fn new() -> Self {
         Self::default()
     }
@@ -51,6 +53,7 @@ impl KimiPlatformDirectDriver {
 }
 
 #[must_use]
+/// Returns the exact descriptor for the Kimi Platform direct route.
 pub fn kimi_platform_direct_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(
         AdapterIdentity::new(

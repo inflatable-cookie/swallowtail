@@ -1,3 +1,5 @@
+#![deny(missing_docs)]
+
 mod candidate;
 mod catalogue;
 mod failure;

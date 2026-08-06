@@ -6,13 +6,13 @@ bundles and `.crate` archives stay under `.effigy/release-candidates/`.
 Candidate evidence grants no publication, registry, tag, push, release,
 workflow, or consumer authority.
 
-The active candidate is the post-hardening local soak baseline. All package,
-route, isolated-consumer, and accepted application evidence passes. It is not
-a publication authorization.
+The source-tag candidate is prepared through `effigy release`; it does not
+live in this directory. Everything retained here is historical registry-era
+evidence and is not a current candidate or publication authorization.
 
 ## Candidates
 
-- `0.1.0/` — active non-published post-hardening 23-package candidate
+- `0.1.0/` — historical non-published post-hardening 23-package candidate
 - `.effigy/release-candidates/superseded/0.1.0-5326e6f4b24d/` — superseded
   technically passing rebuild with stale packaged currentness
 - `.effigy/release-candidates/superseded/0.1.0-f142d927767f/` — superseded
@@ -26,5 +26,4 @@ a publication authorization.
 - `.effigy/release-candidates/superseded/0.1.0-e9ead4d35fb7/` — superseded
   canonical-history candidate with stale packaged release wording
 
-Only the exact `0.1.0/` path is active. Superseded directories are immutable
-historical evidence.
+All listed directories are immutable historical evidence.

@@ -28,11 +28,13 @@ mod session;
 const EVENT_CAPACITY: usize = 64;
 
 #[derive(Clone, Default)]
+/// Low-level driver for one externally managed Ollama native HTTP runtime.
 pub struct OllamaNativeAttachedDriver {
     transport: CurlTransport,
 }
 
 impl OllamaNativeAttachedDriver {
+    /// Creates a driver using the adapter's bounded HTTP transport.
     #[must_use]
     pub fn new() -> Self {
         Self::default()

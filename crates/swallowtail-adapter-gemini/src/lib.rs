@@ -1,6 +1,11 @@
-//! Gemini CLI ACP integration for Swallowtail.
+//! Gemini CLI, Developer API model-catalogue, and Live media integration.
+//!
+//! The installed CLI ACP and headless routes, hosted model catalogue, and
+//! hosted realtime-media route are prepared independently. A prepared value
+//! never implies that another Gemini route is configured or authorized.
 
 #![forbid(unsafe_code)]
+#![deny(missing_docs)]
 
 mod acp_activity;
 mod catalogue;
@@ -71,12 +76,18 @@ pub use selection::{
     gemini_cli_headless_binding, gemini_cli_headless_claim,
 };
 
+/// Exact Gemini Developer API origin used by the model-catalogue route.
 pub const GEMINI_MODELS_ENDPOINT: &str = "https://generativelanguage.googleapis.com";
+/// Credential audience required by the Gemini model-catalogue route.
 pub const GEMINI_MODELS_ENDPOINT_AUDIENCE: &str = "generativelanguage.googleapis.com";
+/// Access-profile identifier shared by the hosted Gemini API-key routes.
 pub const GEMINI_MODELS_ACCESS_PROFILE_ID: &str = GEMINI_LIVE_ACCESS_PROFILE_ID;
+/// Stable configured-instance identifier for the hosted model catalogue.
 pub const GEMINI_MODELS_CONFIGURED_INSTANCE_ID: &str = "gemini.public.models";
+/// Exact opaque facade revision for the Developer API models endpoint.
 pub const GEMINI_MODELS_FACADE_REVISION: &str = "google.generativelanguage.v1beta.models.list";
 
+/// Returns the exact interface binding for the hosted models facade.
 #[must_use]
 pub fn gemini_models_facade_binding() -> swallowtail_core::InterfaceVersionBinding {
     swallowtail_core::InterfaceVersionBinding::new(
@@ -87,6 +98,7 @@ pub fn gemini_models_facade_binding() -> swallowtail_core::InterfaceVersionBindi
     )
 }
 
+/// Returns the qualified compatibility claim for the hosted models facade.
 #[must_use]
 pub fn gemini_models_facade_claim() -> swallowtail_core::InterfaceCompatibilityClaim {
     swallowtail_core::InterfaceCompatibilityClaim::new(

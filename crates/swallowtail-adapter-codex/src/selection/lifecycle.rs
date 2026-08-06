@@ -120,6 +120,7 @@ pub(crate) fn classify_lifecycle_version(
 }
 
 #[must_use]
+/// Returns the qualified compatibility claim for app-server thread lifecycle operations.
 pub fn codex_app_server_lifecycle_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
         InterfaceCompatibilityClaimId::new("codex.app-server.lifecycle-window-1")

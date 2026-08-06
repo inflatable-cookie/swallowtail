@@ -1,6 +1,7 @@
 //! Anthropic integration drivers for Swallowtail.
 //!
 #![forbid(unsafe_code)]
+#![deny(missing_docs)]
 
 mod activity;
 mod driver;

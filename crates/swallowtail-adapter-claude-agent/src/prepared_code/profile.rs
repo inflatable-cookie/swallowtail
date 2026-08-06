@@ -16,6 +16,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Exact model route for a native Claude Code headless run.
 pub struct ClaudeCodeModelSelection {
     route_id: ModelRouteId,
     route_revision: ModelRouteRevision,
@@ -23,6 +24,7 @@ pub struct ClaudeCodeModelSelection {
 }
 
 impl ClaudeCodeModelSelection {
+    /// Creates an exact native Claude Code model selection.
     #[must_use]
     pub const fn new(
         route_id: ModelRouteId,
@@ -42,6 +44,7 @@ impl ClaudeCodeModelSelection {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer inputs for one native `claude -p` structured run.
 pub struct ClaudeCodeRunProfileInput {
     request_id: RequestId,
     model: ClaudeCodeModelSelection,
@@ -52,6 +55,7 @@ pub struct ClaudeCodeRunProfileInput {
 }
 
 impl ClaudeCodeRunProfileInput {
+    /// Creates a bounded native headless run profile.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -70,6 +74,7 @@ impl ClaudeCodeRunProfileInput {
         }
     }
 
+    /// Selects the requested reasoning mode.
     #[must_use]
     pub fn with_reasoning_mode(mut self, reasoning_mode: ReasoningMode) -> Self {
         self.reasoning_mode = Some(reasoning_mode);
@@ -98,6 +103,7 @@ impl ClaudeCodeRunProfileInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Portable evidence for a prepared native Claude Code run.
 pub struct ClaudeCodePreparedEvidence {
     observation: swallowtail_core::InstalledExecutableObservation,
     environment: swallowtail_runtime::EnvironmentRef,
@@ -121,26 +127,31 @@ impl ClaudeCodePreparedEvidence {
         })
     }
 
+    /// Returns the qualified installed-executable observation.
     #[must_use]
     pub const fn observation(&self) -> &swallowtail_core::InstalledExecutableObservation {
         &self.observation
     }
 
+    /// Returns the prepared access evidence.
     #[must_use]
     pub const fn access(&self) -> &swallowtail_runtime::PreparedAccessEvidence {
         self.operation.access()
     }
 
+    /// Returns the complete prepared-operation evidence.
     #[must_use]
     pub const fn operation(&self) -> &PreparedOperationEvidence {
         &self.operation
     }
 
+    /// Returns the admitted observable-activity profile.
     #[must_use]
     pub const fn observable_activity(&self) -> &swallowtail_core::ObservableActivityProfile {
         self.operation.observable_activity()
     }
 
+    /// Returns the validated preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.operation.plan()
@@ -152,32 +163,38 @@ impl ClaudeCodePreparedEvidence {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared one-shot native Claude Code structured run.
 pub struct ClaudeCodePreparedRun {
     evidence: ClaudeCodePreparedEvidence,
     request: StructuredRunRequest,
 }
 
 impl ClaudeCodePreparedRun {
+    /// Returns portable evidence for the prepared run.
     #[must_use]
     pub const fn evidence(&self) -> &ClaudeCodePreparedEvidence {
         &self.evidence
     }
 
+    /// Returns the validated preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
+    /// Returns the bound structured-run request.
     #[must_use]
     pub const fn request(&self) -> &StructuredRunRequest {
         &self.request
     }
 
+    /// Creates the low-level native headless driver bound to this run.
     #[must_use]
     pub fn low_level_driver(&self) -> crate::ClaudeCodeHeadlessDriver {
         self.evidence.low_level_driver()
     }
 
+    /// Starts the prepared run with caller-supplied host services.
     pub fn start_run(
         &self,
         services: HostServices,
@@ -188,6 +205,7 @@ impl ClaudeCodePreparedRun {
         Box::pin(async move { driver.start_run(plan, request, services).await })
     }
 
+    /// Splits the prepared run into evidence, plan, and request.
     #[must_use]
     pub fn into_parts(
         self,
@@ -202,6 +220,7 @@ impl ClaudeCodePreparedRun {
 }
 
 impl ClaudeCodePreparedIntegration {
+    /// Prepares a native `claude -p` structured run.
     pub fn prepare_run(
         &self,
         input: ClaudeCodeRunProfileInput,

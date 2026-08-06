@@ -7,13 +7,17 @@ use swallowtail_runtime::RuntimeFailure;
 
 use crate::failure::failure;
 
+/// Semantic-version axis reported by the installed Oh My Pi package.
 pub const OH_MY_PI_PACKAGE_AXIS: &str = "oh-my-pi.package";
+/// Oldest Oh My Pi package version qualified for RPC v2.
 pub const OH_MY_PI_PACKAGE_BASELINE_VERSION: &str = "17.2.9";
+/// Newest Oh My Pi package version behaviorally qualified for RPC v2.
 pub const OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION: &str = "17.2.9";
 
 const BASELINE_BEHAVIOR: &str = "oh-my-pi.rpc-v2-v17.2.9";
 const MAX_VERSION_BYTES: usize = 64;
 
+/// Parses one exact Oh My Pi package semantic-version binding.
 #[must_use]
 pub fn oh_my_pi_package_binding(value: &str) -> Option<InterfaceVersionBinding> {
     if value.is_empty()
@@ -30,6 +34,7 @@ pub fn oh_my_pi_package_binding(value: &str) -> Option<InterfaceVersionBinding> 
     ))
 }
 
+/// Returns the qualified Oh My Pi RPC package compatibility window.
 #[must_use]
 pub fn oh_my_pi_rpc_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(

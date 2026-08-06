@@ -35,6 +35,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug)]
+/// Prepared read-only catalogue of retained Codex threads.
 pub struct CodexPreparedSessionCatalogue {
     codex: CodexPreparedEvidence,
     evidence: PreparedProviderSessionCatalogueEvidence,
@@ -42,31 +43,37 @@ pub struct CodexPreparedSessionCatalogue {
 }
 
 impl CodexPreparedSessionCatalogue {
+    /// Returns portable evidence for the prepared catalogue.
     #[must_use]
     pub const fn evidence(&self) -> &PreparedProviderSessionCatalogueEvidence {
         &self.evidence
     }
 
+    /// Returns the underlying prepared Codex evidence.
     #[must_use]
     pub const fn codex_evidence(&self) -> &CodexPreparedEvidence {
         &self.codex
     }
 
+    /// Returns the exact provider-session catalogue plan.
     #[must_use]
     pub const fn plan(&self) -> &ProviderSessionCataloguePlan {
         self.evidence.plan()
     }
 
+    /// Returns the initial catalogue-page request.
     #[must_use]
     pub const fn request(&self) -> &ProviderSessionCatalogueRequest {
         &self.request
     }
 
+    /// Creates the low-level app-server driver bound to this catalogue.
     #[must_use]
     pub fn low_level_driver(&self) -> CodexAppServerDriver {
         CodexAppServerDriver::new(self.codex.environment().clone())
     }
 
+    /// Lists the initial page of retained Codex threads.
     pub fn list_sessions(
         &self,
         services: HostServices,
@@ -75,6 +82,7 @@ impl CodexPreparedSessionCatalogue {
         self.list_page(self.request.clone(), services)
     }
 
+    /// Lists one explicitly supplied catalogue page.
     pub fn list_page(
         &self,
         request: ProviderSessionCatalogueRequest,
@@ -86,6 +94,7 @@ impl CodexPreparedSessionCatalogue {
         Box::pin(async move { driver.list_provider_sessions(plan, request, services).await })
     }
 
+    /// Builds a continuation request from an opaque provider cursor.
     pub fn next_page_request(
         &self,
         request_id: swallowtail_runtime::RequestId,
@@ -103,6 +112,7 @@ impl CodexPreparedSessionCatalogue {
 }
 
 #[derive(Clone, Debug)]
+/// Prepared read-only import of one retained Codex thread.
 pub struct CodexPreparedSessionImport {
     codex: CodexPreparedEvidence,
     evidence: PreparedProviderSessionImportEvidence,
@@ -110,6 +120,7 @@ pub struct CodexPreparedSessionImport {
 }
 
 #[derive(Clone, Debug)]
+/// Prepared read-only reconciliation of one interrupted Codex thread turn.
 pub struct CodexPreparedSessionReconciliation {
     codex: CodexPreparedEvidence,
     evidence: PreparedProviderSessionReconciliationEvidence,
@@ -117,26 +128,31 @@ pub struct CodexPreparedSessionReconciliation {
 }
 
 impl CodexPreparedSessionReconciliation {
+    /// Returns portable evidence for the prepared reconciliation.
     #[must_use]
     pub const fn evidence(&self) -> &PreparedProviderSessionReconciliationEvidence {
         &self.evidence
     }
 
+    /// Returns the underlying prepared Codex evidence.
     #[must_use]
     pub const fn codex_evidence(&self) -> &CodexPreparedEvidence {
         &self.codex
     }
 
+    /// Returns the exact reconciliation plan.
     #[must_use]
     pub const fn plan(&self) -> &ProviderSessionReconciliationPlan {
         self.evidence.plan()
     }
 
+    /// Returns the bound reconciliation request.
     #[must_use]
     pub const fn request(&self) -> &ProviderSessionReconciliationRequest {
         &self.request
     }
 
+    /// Observes retained provider truth for the interrupted turn.
     pub fn reconcile(
         &self,
         services: HostServices,
@@ -154,6 +170,7 @@ impl CodexPreparedSessionReconciliation {
         })
     }
 
+    /// Composes reconciliation with a separately prepared, binding-equal load.
     pub fn prepare_settled_session_restoration(
         self,
         session: CodexPreparedSession,
@@ -227,6 +244,7 @@ impl WorkingStateRestorationOperation for CodexPreparedSessionReconciliation {
 }
 
 impl CodexPreparedIntegration {
+    /// Prepares the strongest admitted working-state restoration for Codex.
     pub fn prepare_working_state_restoration(
         &self,
         input: CodexSessionReconciliationInput,
@@ -237,31 +255,37 @@ impl CodexPreparedIntegration {
 }
 
 impl CodexPreparedSessionImport {
+    /// Returns portable evidence for the prepared import.
     #[must_use]
     pub const fn evidence(&self) -> &PreparedProviderSessionImportEvidence {
         &self.evidence
     }
 
+    /// Returns the underlying prepared Codex evidence.
     #[must_use]
     pub const fn codex_evidence(&self) -> &CodexPreparedEvidence {
         &self.codex
     }
 
+    /// Returns the exact provider-session import plan.
     #[must_use]
     pub const fn plan(&self) -> &ProviderSessionImportPlan {
         self.evidence.plan()
     }
 
+    /// Returns the bound import request.
     #[must_use]
     pub const fn request(&self) -> &ProviderSessionImportRequest {
         &self.request
     }
 
+    /// Creates the low-level app-server driver bound to this import.
     #[must_use]
     pub fn low_level_driver(&self) -> CodexAppServerDriver {
         CodexAppServerDriver::new(self.codex.environment().clone())
     }
 
+    /// Revalidates and imports the selected retained thread as resume authority.
     pub fn import_session(
         &self,
         services: HostServices,
@@ -279,6 +303,7 @@ impl CodexPreparedSessionImport {
 }
 
 impl CodexPreparedIntegration {
+    /// Prepares read-only reconciliation for one interrupted retained thread.
     pub fn prepare_session_reconciliation(
         &self,
         input: CodexSessionReconciliationInput,
@@ -378,6 +403,7 @@ impl CodexPreparedIntegration {
         })
     }
 
+    /// Prepares a bounded working-resource-scoped retained-thread catalogue.
     pub fn prepare_session_catalogue(
         &self,
         input: CodexSessionCatalogueInput,
@@ -439,6 +465,7 @@ impl CodexPreparedIntegration {
         })
     }
 
+    /// Prepares read-only import of one candidate from the bound catalogue.
     pub fn prepare_read_only_session_import(
         &self,
         catalogue: &CodexPreparedSessionCatalogue,
@@ -453,6 +480,7 @@ impl CodexPreparedIntegration {
         )
     }
 
+    /// Prepares bounded-workspace import of one candidate from the bound catalogue.
     pub fn prepare_bounded_workspace_session_import(
         &self,
         catalogue: &CodexPreparedSessionCatalogue,

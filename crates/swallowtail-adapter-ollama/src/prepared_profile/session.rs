@@ -14,32 +14,38 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared resource-free Ollama session ready for explicit opening.
 pub struct OllamaPreparedSession {
     evidence: OllamaPreparedEvidence,
     request: OpenSessionRequest,
 }
 
 impl OllamaPreparedSession {
+    /// Returns the session's preparation evidence.
     #[must_use]
     pub const fn evidence(&self) -> &OllamaPreparedEvidence {
         &self.evidence
     }
 
+    /// Returns the immutable preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &swallowtail_core::PreflightPlan {
         self.evidence.plan()
     }
 
+    /// Returns the open-session request.
     #[must_use]
     pub const fn request(&self) -> &OpenSessionRequest {
         &self.request
     }
 
+    /// Creates the stateless low-level native HTTP driver.
     #[must_use]
     pub fn low_level_driver(&self) -> OllamaNativeAttachedDriver {
         OllamaNativeAttachedDriver::new()
     }
 
+    /// Opens the prepared resource-free session.
     pub fn open_session(
         &self,
         services: HostServices,
@@ -50,6 +56,7 @@ impl OllamaPreparedSession {
         Box::pin(async move { driver.open_session(plan, request, services).await })
     }
 
+    /// Prepares a fresh session after interruption, with private history lost.
     #[must_use]
     pub fn prepare_working_state_restoration(
         &self,
@@ -63,6 +70,7 @@ impl OllamaPreparedSession {
         )
     }
 
+    /// Consumes the prepared session into evidence, plan, and request.
     #[must_use]
     pub fn into_parts(
         self,
@@ -77,6 +85,7 @@ impl OllamaPreparedSession {
 }
 
 impl OllamaPreparedIntegration {
+    /// Validates and prepares a resource-free interactive session.
     pub fn prepare_session(
         &self,
         input: OllamaSessionProfileInput,

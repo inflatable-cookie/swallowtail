@@ -4,22 +4,27 @@ use swallowtail_core::{
     InterfaceVersionBinding, InterfaceVersionScheme, InterfaceVersionSegment,
 };
 
+/// Opaque runtime revision qualified for externally attached serving.
 pub const LLAMA_CPP_ATTACHED_RUNTIME_REVISION: &str = "b9910-f5525f7e7";
+/// Opaque runtime revision qualified for host-owned serving.
 pub const LLAMA_CPP_OWNED_RUNTIME_REVISION: &str = "b10069-178a6c449";
 
 const ATTACHED_AXIS: &str = "llama.cpp.attached-runtime";
 const OWNED_AXIS: &str = "llama.cpp.owned-runtime";
 
+/// Returns the exact attached-runtime interface binding.
 #[must_use]
 pub fn llama_cpp_attached_runtime_binding() -> InterfaceVersionBinding {
     binding(ATTACHED_AXIS, LLAMA_CPP_ATTACHED_RUNTIME_REVISION)
 }
 
+/// Returns the exact owned-runtime interface binding.
 #[must_use]
 pub fn llama_cpp_owned_runtime_binding() -> InterfaceVersionBinding {
     binding(OWNED_AXIS, LLAMA_CPP_OWNED_RUNTIME_REVISION)
 }
 
+/// Returns the exact qualified attached-runtime compatibility claim.
 #[must_use]
 pub fn llama_cpp_attached_runtime_claim() -> InterfaceCompatibilityClaim {
     exact_claim(
@@ -30,6 +35,7 @@ pub fn llama_cpp_attached_runtime_claim() -> InterfaceCompatibilityClaim {
     )
 }
 
+/// Returns the exact qualified owned-runtime compatibility claim.
 #[must_use]
 pub fn llama_cpp_owned_runtime_claim() -> InterfaceCompatibilityClaim {
     exact_claim(

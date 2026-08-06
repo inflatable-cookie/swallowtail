@@ -7,14 +7,18 @@ use swallowtail_runtime::RuntimeFailure;
 
 use crate::failure::failure;
 
+/// CLI-version interface axis used by native Claude Code headless runs.
 pub const CLAUDE_CODE_HEADLESS_AXIS: &str = "claude-code.headless-stream-json";
+/// Oldest qualified native Claude Code headless version.
 pub const CLAUDE_CODE_HEADLESS_BASELINE_VERSION: &str = "2.1.220";
+/// Most recent qualified native Claude Code headless version.
 pub const CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "2.1.220";
 
 const HEADLESS_BEHAVIOR: &str = "claude-code.headless.stream-json.v1";
 const MAX_VERSION_BYTES: usize = 64;
 
 #[must_use]
+/// Parses a native Claude Code version into its interface binding.
 pub fn claude_code_headless_binding(value: &str) -> Option<InterfaceVersionBinding> {
     if value.is_empty()
         || value.len() > MAX_VERSION_BYTES
@@ -31,6 +35,7 @@ pub fn claude_code_headless_binding(value: &str) -> Option<InterfaceVersionBindi
 }
 
 #[must_use]
+/// Returns the qualified compatibility claim for native headless runs.
 pub fn claude_code_headless_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
         InterfaceCompatibilityClaimId::new("claude-code.headless.range-v1")

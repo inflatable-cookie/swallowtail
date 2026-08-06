@@ -20,6 +20,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Persisted checkpoint and bounds for one background-run reconciliation.
 pub struct OpenAiBackgroundReconciliationInput {
     request_id: RequestId,
     model: OpenAiBackgroundModelSelection,
@@ -30,6 +31,7 @@ pub struct OpenAiBackgroundReconciliationInput {
 
 impl OpenAiBackgroundReconciliationInput {
     #[must_use]
+    /// Creates reconciliation input for one exact route and checkpoint.
     pub const fn new(
         request_id: RequestId,
         model: OpenAiBackgroundModelSelection,
@@ -48,6 +50,7 @@ impl OpenAiBackgroundReconciliationInput {
 }
 
 #[derive(Clone, Debug)]
+/// Executable observe-only reconciliation for an existing background response.
 pub struct OpenAiPreparedBackgroundReconciliation {
     evidence: PreparedProviderRunReconciliationEvidence,
     request: ProviderRunReconciliationRequest,
@@ -55,20 +58,24 @@ pub struct OpenAiPreparedBackgroundReconciliation {
 
 impl OpenAiPreparedBackgroundReconciliation {
     #[must_use]
+    /// Returns the prepared reconciliation evidence.
     pub const fn evidence(&self) -> &PreparedProviderRunReconciliationEvidence {
         &self.evidence
     }
 
     #[must_use]
+    /// Returns the immutable reconciliation plan.
     pub const fn plan(&self) -> &ProviderRunReconciliationPlan {
         self.evidence.plan()
     }
 
     #[must_use]
+    /// Returns the plan-derived reconciliation request.
     pub const fn request(&self) -> &ProviderRunReconciliationRequest {
         &self.request
     }
 
+    /// Observes the provider run without creating or cancelling it.
     pub fn reconcile(
         &self,
         services: HostServices,
@@ -99,6 +106,7 @@ impl WorkingStateRestorationOperation for OpenAiPreparedBackgroundReconciliation
 }
 
 impl OpenAiBackgroundPreparedIntegration {
+    /// Wraps supported background reconciliation as working-state restoration.
     pub fn prepare_working_state_restoration(
         &self,
         input: OpenAiBackgroundReconciliationInput,
@@ -109,6 +117,7 @@ impl OpenAiBackgroundPreparedIntegration {
 }
 
 impl OpenAiBackgroundPreparedIntegration {
+    /// Prepares exact response reconciliation from a durable checkpoint.
     pub fn prepare_run_reconciliation(
         &self,
         input: OpenAiBackgroundReconciliationInput,

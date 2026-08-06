@@ -30,13 +30,18 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+/// Exact Antigravity route selected before installed discovery.
 pub enum AntigravityPreparedDriver {
+    /// Authenticated installed model catalogue.
     Catalogue,
+    /// One-shot stream-JSON structured execution.
     Headless,
+    /// Durable provider-session continuation through headless execution.
     Continuation,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Route, target, environment, instance, and access inputs for preparation.
 pub struct AntigravityPreparationInput {
     driver: AntigravityPreparedDriver,
     instance_id: ConfiguredInstanceId,
@@ -51,6 +56,7 @@ pub struct AntigravityPreparationInput {
 impl AntigravityPreparationInput {
     #[must_use]
     #[allow(clippy::too_many_arguments)]
+    /// Creates explicit preparation input without target or route discovery.
     pub const fn new(
         driver: AntigravityPreparedDriver,
         instance_id: ConfiguredInstanceId,
@@ -74,12 +80,14 @@ impl AntigravityPreparationInput {
     }
 
     #[must_use]
+    /// Returns the selected prepared route.
     pub const fn driver(&self) -> AntigravityPreparedDriver {
         self.driver
     }
 }
 
 #[derive(Clone, Debug)]
+/// Bounded installed-executable probe inputs used during preparation.
 pub struct AntigravityPreparationProbe {
     request_id: RequestId,
     scope_id: ScopeId,
@@ -89,6 +97,7 @@ pub struct AntigravityPreparationProbe {
 
 impl AntigravityPreparationProbe {
     #[must_use]
+    /// Creates a cancellable, deadline-bound discovery probe.
     pub const fn new(
         request_id: RequestId,
         scope_id: ScopeId,
@@ -105,14 +114,19 @@ impl AntigravityPreparationProbe {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared Antigravity integration retaining the exact selected route.
 pub enum AntigravityPreparedIntegration {
+    /// Prepared installed catalogue route.
     Catalogue(AntigravityPreparedCatalogueIntegration),
+    /// Prepared one-shot headless route.
     Headless(AntigravityPreparedHeadlessIntegration),
+    /// Prepared durable continuation route.
     Continuation(AntigravityPreparedContinuationIntegration),
 }
 
 impl AntigravityPreparedIntegration {
     #[must_use]
+    /// Returns the route represented by this prepared value.
     pub const fn driver(&self) -> AntigravityPreparedDriver {
         match self {
             Self::Catalogue(_) => AntigravityPreparedDriver::Catalogue,
@@ -123,42 +137,51 @@ impl AntigravityPreparedIntegration {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared installed catalogue integration.
 pub struct AntigravityPreparedCatalogueIntegration(PreparedState);
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared one-shot headless integration.
 pub struct AntigravityPreparedHeadlessIntegration(PreparedState);
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared durable continuation integration.
 pub struct AntigravityPreparedContinuationIntegration(PreparedState);
 
 macro_rules! integration_accessors {
     ($type:ty) => {
         impl $type {
+            /// Returns the approved execution environment.
             #[must_use]
             pub const fn environment(&self) -> &EnvironmentRef {
                 &self.0.environment
             }
 
+            /// Returns the executable observation admitted during preparation.
             #[must_use]
             pub const fn observation(&self) -> &InstalledExecutableObservation {
                 &self.0.observation
             }
 
+            /// Returns the configured access profile.
             #[must_use]
             pub const fn access_profile(&self) -> &AccessProfile {
                 &self.0.access_profile
             }
 
+            /// Returns the prepared access evidence.
             #[must_use]
             pub const fn access_evidence(&self) -> &PreparedAccessEvidence {
                 &self.0.access_evidence
             }
 
+            /// Returns the exact configured provider instance.
             #[must_use]
             pub const fn instance(&self) -> &ConfiguredInstance {
                 &self.0.instance
             }
 
+            /// Iterates over host services present when preparation succeeded.
             pub fn available_host_services(
                 &self,
             ) -> impl ExactSizeIterator<Item = HostServiceKind> + '_ {
@@ -182,6 +205,7 @@ struct PreparedState {
     available_host_services: BTreeSet<HostServiceKind>,
 }
 
+/// Discovers and prepares exactly one selected Antigravity route.
 pub async fn prepare_antigravity(
     input: AntigravityPreparationInput,
     probe: AntigravityPreparationProbe,

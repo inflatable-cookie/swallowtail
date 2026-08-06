@@ -7,6 +7,7 @@ use swallowtail_core::{EndpointAudience, ExecutionHostId};
 pub struct ObservedServingEndpoint(String);
 
 impl ObservedServingEndpoint {
+    /// Creates a nonempty opaque endpoint observation from an owned child.
     pub fn new(value: impl Into<String>) -> Result<Self, InputValueRequired> {
         required_text("observed serving endpoint", value).map(Self)
     }
@@ -35,6 +36,7 @@ pub struct ServingEndpointBinding {
 
 impl ServingEndpointBinding {
     #[must_use]
+    /// Creates a safe binding for one scope, host, endpoint, and audience.
     pub const fn new(
         scope: ScopeId,
         execution_host_id: ExecutionHostId,
@@ -50,44 +52,53 @@ impl ServingEndpointBinding {
     }
 
     #[must_use]
+    /// Returns the serving scope that owns this binding.
     pub const fn scope(&self) -> &ScopeId {
         &self.scope
     }
 
     #[must_use]
+    /// Returns the authoritative execution host.
     pub const fn execution_host_id(&self) -> &ExecutionHostId {
         &self.execution_host_id
     }
 
     #[must_use]
+    /// Returns the opaque host-issued endpoint reference.
     pub const fn endpoint(&self) -> &EndpointRef {
         &self.endpoint
     }
 
     #[must_use]
+    /// Returns the exact endpoint audience.
     pub const fn audience(&self) -> &EndpointAudience {
         &self.audience
     }
 }
 
 #[derive(Debug, Eq, PartialEq)]
+/// Operation-scoped lease for a published serving endpoint binding.
 pub struct ServingEndpointLease {
     binding: ServingEndpointBinding,
 }
 
 impl ServingEndpointLease {
     #[must_use]
+    /// Creates a lease around a host-published binding.
     pub const fn new(binding: ServingEndpointBinding) -> Self {
         Self { binding }
     }
 
     #[must_use]
+    /// Returns the safe host-scoped endpoint binding.
     pub const fn binding(&self) -> &ServingEndpointBinding {
         &self.binding
     }
 }
 
+/// Host boundary for validating, publishing, and releasing owned endpoints.
 pub trait ServingEndpointService: Send + Sync {
+    /// Validates an observed child endpoint and publishes an opaque binding.
     fn publish(
         &self,
         scope: ScopeId,
@@ -96,6 +107,7 @@ pub trait ServingEndpointService: Send + Sync {
         observed: ObservedServingEndpoint,
     ) -> BoxFuture<'static, Result<ServingEndpointLease, RuntimeFailure>>;
 
+    /// Releases a previously published endpoint after owned-child cleanup.
     fn release(&self, lease: ServingEndpointLease) -> BoxFuture<'static, CleanupOutcome>;
 }
 

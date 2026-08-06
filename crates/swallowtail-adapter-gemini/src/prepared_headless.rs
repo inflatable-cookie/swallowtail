@@ -25,6 +25,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs that bind one installed Gemini CLI headless instance before discovery.
 pub struct GeminiHeadlessPreparationInput {
     pub(crate) instance_id: ConfiguredInstanceId,
     pub(crate) instance_revision: InstanceRevision,
@@ -36,6 +37,7 @@ pub struct GeminiHeadlessPreparationInput {
 }
 
 impl GeminiHeadlessPreparationInput {
+    /// Creates a headless preparation input with explicit target and access evidence.
     #[must_use]
     pub const fn new(
         instance_id: ConfiguredInstanceId,
@@ -59,6 +61,7 @@ impl GeminiHeadlessPreparationInput {
 }
 
 #[derive(Clone, Debug)]
+/// Caller-owned controls for bounded headless executable discovery.
 pub struct GeminiHeadlessPreparationProbe {
     request_id: RequestId,
     scope_id: ScopeId,
@@ -67,6 +70,7 @@ pub struct GeminiHeadlessPreparationProbe {
 }
 
 impl GeminiHeadlessPreparationProbe {
+    /// Creates one bounded installed-executable discovery probe.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -84,6 +88,7 @@ impl GeminiHeadlessPreparationProbe {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Discovered and preflight-ready Gemini CLI headless integration.
 pub struct GeminiHeadlessPreparedIntegration {
     environment: EnvironmentRef,
     target: InstalledExecutableTarget,
@@ -95,40 +100,48 @@ pub struct GeminiHeadlessPreparedIntegration {
 }
 
 impl GeminiHeadlessPreparedIntegration {
+    /// Returns the host-private launch environment.
     #[must_use]
     pub const fn environment(&self) -> &EnvironmentRef {
         &self.environment
     }
 
+    /// Returns the exact executable discovery target.
     #[must_use]
     pub const fn target(&self) -> &InstalledExecutableTarget {
         &self.target
     }
 
+    /// Returns the qualified installed-executable observation.
     #[must_use]
     pub const fn observation(&self) -> &InstalledExecutableObservation {
         &self.observation
     }
 
+    /// Returns the selected Developer API access profile.
     #[must_use]
     pub const fn access_profile(&self) -> &AccessProfile {
         &self.access_profile
     }
 
+    /// Returns the admitted access evidence.
     #[must_use]
     pub const fn access_evidence(&self) -> &PreparedAccessEvidence {
         &self.access_evidence
     }
 
+    /// Returns the configured headless instance.
     #[must_use]
     pub const fn instance(&self) -> &ConfiguredInstance {
         &self.instance
     }
 
+    /// Iterates the host services available when preparation completed.
     pub fn available_host_services(&self) -> impl ExactSizeIterator<Item = HostServiceKind> + '_ {
         self.available_host_services.iter().copied()
     }
 
+    /// Reconstructs the low-level headless driver from prepared inputs.
     #[must_use]
     pub fn low_level_driver(&self) -> crate::GeminiHeadlessDriver {
         crate::GeminiHeadlessDriver::new(
@@ -140,6 +153,7 @@ impl GeminiHeadlessPreparedIntegration {
         )
     }
 
+    /// Rejects execution after the selected host or target has drifted.
     pub fn validate_execution_binding(
         &self,
         execution_host_id: &ExecutionHostId,
@@ -156,6 +170,7 @@ impl GeminiHeadlessPreparedIntegration {
     }
 }
 
+/// Discovers and prepares one exact installed Gemini CLI headless route.
 pub async fn prepare_gemini_headless(
     input: GeminiHeadlessPreparationInput,
     probe: GeminiHeadlessPreparationProbe,

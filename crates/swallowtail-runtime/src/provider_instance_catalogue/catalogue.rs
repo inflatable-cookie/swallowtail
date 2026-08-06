@@ -7,12 +7,14 @@ use super::{
     ConfiguredProviderInstanceRecord, MAX_CONFIGURED_PROVIDER_INSTANCES,
 };
 
+/// Bounded immutable snapshot of consumer-admitted provider instances.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ConfiguredProviderInstanceCatalogue {
     instances: Vec<ConfiguredProviderInstanceRecord>,
 }
 
 impl ConfiguredProviderInstanceCatalogue {
+    /// Creates a catalogue after enforcing the instance bound and unique ids.
     pub fn new(
         instances: impl IntoIterator<Item = ConfiguredProviderInstanceRecord>,
     ) -> Result<Self, ConfiguredProviderInstanceCatalogueFailure> {
@@ -38,11 +40,13 @@ impl ConfiguredProviderInstanceCatalogue {
         Ok(Self { instances })
     }
 
+    /// Iterates configured instances in consumer-supplied order.
     pub fn instances(&self) -> impl ExactSizeIterator<Item = &ConfiguredProviderInstanceRecord> {
         self.instances.iter()
     }
 
     #[must_use]
+    /// Finds an admitted instance by its exact configured-instance id.
     pub fn get(
         &self,
         instance_id: &ConfiguredInstanceId,

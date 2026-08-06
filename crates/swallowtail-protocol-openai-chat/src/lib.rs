@@ -1,6 +1,7 @@
 //! Provider-neutral structural codec for compatible Chat Completions wires.
 
 #![forbid(unsafe_code)]
+#![deny(missing_docs)]
 
 mod error;
 mod json;
@@ -26,6 +27,7 @@ pub const DEFAULT_MAX_MESSAGES: usize = 256;
 /// Default bound for one structural string.
 pub const DEFAULT_MAX_STRING_BYTES: usize = 262_144;
 
+/// Explicit safety limits applied while decoding and encoding chat wires.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct CodecLimits {
     maximum_wire_bytes: usize,
@@ -36,6 +38,7 @@ pub struct CodecLimits {
 }
 
 impl CodecLimits {
+    /// Creates an exact set of wire, object, choice, message, and string limits.
     #[must_use]
     pub const fn new(
         maximum_wire_bytes: usize,
@@ -53,26 +56,31 @@ impl CodecLimits {
         }
     }
 
+    /// Returns the maximum encoded document or buffered SSE record size.
     #[must_use]
     pub const fn maximum_wire_bytes(self) -> usize {
         self.maximum_wire_bytes
     }
 
+    /// Returns the maximum fields retained from any one JSON object.
     #[must_use]
     pub const fn maximum_fields(self) -> usize {
         self.maximum_fields
     }
 
+    /// Returns the maximum choices accepted in one completion chunk.
     #[must_use]
     pub const fn maximum_choices(self) -> usize {
         self.maximum_choices
     }
 
+    /// Returns the maximum messages accepted in one request.
     #[must_use]
     pub const fn maximum_messages(self) -> usize {
         self.maximum_messages
     }
 
+    /// Returns the maximum bytes accepted in one structural string.
     #[must_use]
     pub const fn maximum_string_bytes(self) -> usize {
         self.maximum_string_bytes

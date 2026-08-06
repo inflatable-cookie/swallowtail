@@ -24,11 +24,13 @@ mod session;
 mod startup;
 pub(crate) mod validation;
 
+/// Low-level driver for the installed Oh My Pi JSONL RPC harness.
 pub struct OhMyPiRpcDriver {
     environment: EnvironmentRef,
 }
 
 impl OhMyPiRpcDriver {
+    /// Binds the host-private environment used to launch Oh My Pi.
     #[must_use]
     pub const fn new(environment: EnvironmentRef) -> Self {
         Self { environment }

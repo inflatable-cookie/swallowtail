@@ -11,18 +11,26 @@ use swallowtail_core::{
     ProviderId, RuntimeReadiness, SupportAuthority,
 };
 
+/// Exact OpenAI public API origin used by background Responses.
 pub const OPENAI_BACKGROUND_ENDPOINT: &str = "https://api.openai.com";
+/// Credential audience required by background Responses.
 pub const OPENAI_BACKGROUND_ENDPOINT_AUDIENCE: &str = "api.openai.com";
+/// Canonical public API-key access-profile identity.
 pub const OPENAI_BACKGROUND_ACCESS_PROFILE_ID: &str = "openai.public-api.api-key.payg";
+/// Canonical configured-instance identity for background Responses.
 pub const OPENAI_BACKGROUND_CONFIGURED_INSTANCE_ID: &str = "openai.public.responses-background";
+/// Exact qualified revision of the background Responses facade.
 pub const OPENAI_BACKGROUND_FACADE_REVISION: &str = "openai-responses-background-2026-07-21";
+/// Exact model identity qualified for the background route.
 pub const OPENAI_BACKGROUND_MODEL_ID: &str = "gpt-5.6";
+/// Canonical model-route identity for background Responses.
 pub const OPENAI_BACKGROUND_MODEL_ROUTE_ID: &str = "openai.public.gpt-5.6.background";
 
 const OPENAI_PROVIDER_ID: &str = "openai";
 const OPENAI_BACKGROUND_FACADE_AXIS: &str = "openai.responses-background-facade";
 
 #[must_use]
+/// Builds the provider-supported public API-key access profile.
 pub fn openai_background_access_profile(credential: CredentialRef) -> AccessProfile {
     AccessProfile::new(
         id(AccessProfileId::new, OPENAI_BACKGROUND_ACCESS_PROFILE_ID),
@@ -35,6 +43,7 @@ pub fn openai_background_access_profile(credential: CredentialRef) -> AccessProf
 }
 
 #[must_use]
+/// Returns the exact interface-version binding for background Responses.
 pub fn openai_background_facade_binding() -> InterfaceVersionBinding {
     InterfaceVersionBinding::new(
         id(InterfaceVersionAxis::new, OPENAI_BACKGROUND_FACADE_AXIS),
@@ -43,6 +52,7 @@ pub fn openai_background_facade_binding() -> InterfaceVersionBinding {
 }
 
 #[must_use]
+/// Returns the qualified-only background Responses compatibility claim.
 pub fn openai_background_facade_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
         id(
@@ -66,6 +76,7 @@ pub fn openai_background_facade_claim() -> InterfaceCompatibilityClaim {
 }
 
 #[must_use]
+/// Builds the configured background Responses instance for one host and origin.
 pub fn openai_background_instance(
     revision: InstanceRevision,
     host: ExecutionHostId,
@@ -98,6 +109,7 @@ pub fn openai_background_instance(
 }
 
 #[must_use]
+/// Builds the exact GPT-5.6 background model route.
 pub fn openai_background_model_route(
     instance_id: ConfiguredInstanceId,
     revision: ModelRouteRevision,
@@ -113,6 +125,7 @@ pub fn openai_background_model_route(
 }
 
 #[must_use]
+/// Builds requirements for one explicitly retained background run.
 pub fn openai_background_requirements(
     host: ExecutionHostId,
     capabilities: impl IntoIterator<Item = CapabilityRequirement>,

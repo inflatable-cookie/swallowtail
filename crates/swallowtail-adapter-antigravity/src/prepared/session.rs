@@ -11,6 +11,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Exact model, working resource, and deadline for durable continuation.
 pub struct AntigravityContinuationProfileInput {
     request_id: RequestId,
     model: AntigravityHeadlessModelSelection,
@@ -20,6 +21,7 @@ pub struct AntigravityContinuationProfileInput {
 
 impl AntigravityContinuationProfileInput {
     #[must_use]
+    /// Creates continuation input with no deadline.
     pub const fn new(
         request_id: RequestId,
         model: AntigravityHeadlessModelSelection,
@@ -34,6 +36,7 @@ impl AntigravityContinuationProfileInput {
     }
 
     #[must_use]
+    /// Adds the session-open deadline.
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
         self
@@ -41,6 +44,7 @@ impl AntigravityContinuationProfileInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Executable durable continuation with exact plan and environment agreement.
 pub struct AntigravityPreparedContinuation {
     evidence: PreparedOperationEvidence,
     request: OpenSessionRequest,
@@ -48,6 +52,7 @@ pub struct AntigravityPreparedContinuation {
 }
 
 impl AntigravityPreparedContinuationIntegration {
+    /// Validates and prepares one read-only durable provider session.
     pub fn prepare_session(
         &self,
         input: AntigravityContinuationProfileInput,
@@ -120,20 +125,24 @@ impl AntigravityPreparedContinuationIntegration {
 
 impl AntigravityPreparedContinuation {
     #[must_use]
+    /// Returns prepared operation and activity evidence.
     pub const fn evidence(&self) -> &PreparedOperationEvidence {
         &self.evidence
     }
 
     #[must_use]
+    /// Returns the immutable continuation preflight plan.
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
     #[must_use]
+    /// Returns the plan-derived session-open request.
     pub const fn request(&self) -> &OpenSessionRequest {
         &self.request
     }
 
+    /// Opens the prepared durable continuation session.
     pub fn open_session(
         &self,
         services: HostServices,
@@ -145,6 +154,7 @@ impl AntigravityPreparedContinuation {
     }
 
     #[must_use]
+    /// Prepares context-losing replacement after an interrupted turn.
     pub fn prepare_working_state_restoration(
         &self,
         interrupted_turn_id: RuntimeTurnId,

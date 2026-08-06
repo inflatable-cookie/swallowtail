@@ -7,6 +7,7 @@ use swallowtail_core::{
 use swallowtail_runtime::{Deadline, OperationContent, PreparedAccessEvidence, RequestId};
 
 #[derive(Clone)]
+/// Instance, access, host, region, and delegated SDK inputs for Runtime preparation.
 pub struct BedrockRuntimePreparationInput {
     instance_id: ConfiguredInstanceId,
     instance_revision: InstanceRevision,
@@ -19,6 +20,7 @@ pub struct BedrockRuntimePreparationInput {
 
 impl BedrockRuntimePreparationInput {
     #[must_use]
+    /// Creates Runtime preparation input without provider effects.
     pub const fn new(
         instance_id: ConfiguredInstanceId,
         instance_revision: InstanceRevision,
@@ -63,6 +65,7 @@ impl BedrockRuntimePreparationInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Exact provider, model, and route selection for one Runtime attempt.
 pub struct BedrockModelSelection {
     route_id: ModelRouteId,
     route_revision: ModelRouteRevision,
@@ -72,6 +75,7 @@ pub struct BedrockModelSelection {
 
 impl BedrockModelSelection {
     #[must_use]
+    /// Creates one exact model-route selection.
     pub const fn new(
         route_id: ModelRouteId,
         route_revision: ModelRouteRevision,
@@ -97,6 +101,7 @@ impl BedrockModelSelection {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Content and output bounds for one Bedrock Runtime inference attempt.
 pub struct BedrockRuntimeProfileInput {
     request_id: RequestId,
     model: BedrockModelSelection,
@@ -107,6 +112,7 @@ pub struct BedrockRuntimeProfileInput {
 
 impl BedrockRuntimeProfileInput {
     #[must_use]
+    /// Creates inference input with no deadline.
     pub const fn new(
         request_id: RequestId,
         model: BedrockModelSelection,
@@ -123,6 +129,7 @@ impl BedrockRuntimeProfileInput {
     }
 
     #[must_use]
+    /// Adds the operation deadline.
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
         self

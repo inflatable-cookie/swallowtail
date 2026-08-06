@@ -24,18 +24,21 @@ const MAXIMUM_PAGES_PER_SOURCE: u32 = 32;
 const MAXIMUM_TEXT_BYTES: usize = 512;
 
 #[derive(Clone, Default)]
+/// Low-level driver for the bounded international deployable-model catalogue.
 pub struct AlibabaDeployableModelsDriver {
     transport: CurlTransport,
 }
 
 impl AlibabaDeployableModelsDriver {
     #[must_use]
+    /// Creates a catalogue driver using the adapter's HTTP transport.
     pub fn new() -> Self {
         Self::default()
     }
 }
 
 #[must_use]
+/// Returns the descriptor for Alibaba deployable-model discovery.
 pub fn alibaba_deployable_models_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(
         AdapterIdentity::new(

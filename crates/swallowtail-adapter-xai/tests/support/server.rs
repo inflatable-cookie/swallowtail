@@ -57,10 +57,8 @@ impl FixtureServer {
             stream
                 .set_read_timeout(Some(Duration::from_secs(2)))
                 .expect("read timeout sets");
-            #[expect(
-                clippy::result_large_err,
-                reason = "the tungstenite handshake callback fixes this response type"
-            )]
+            // The tungstenite callback contract fixes this response type.
+            #[allow(clippy::result_large_err)]
             let callback = |request: &Request, response: Response| {
                 verify_handshake(request, response, &server_handshake)
             };
@@ -234,10 +232,8 @@ fn send_error(
     let _ = socket.close(None);
 }
 
-#[expect(
-    clippy::result_large_err,
-    reason = "the tungstenite handshake callback fixes this response type"
-)]
+// The tungstenite callback contract fixes this response type.
+#[allow(clippy::result_large_err)]
 fn verify_handshake(
     request: &Request,
     response: Response,

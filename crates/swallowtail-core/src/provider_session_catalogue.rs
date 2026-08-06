@@ -3,48 +3,74 @@ use std::error::Error;
 use std::fmt;
 use std::num::NonZeroU32;
 
+/// Portable maximum candidates in one provider-session page.
 pub const MAX_PROVIDER_SESSION_PAGE_SIZE: u32 = 1_000;
+/// Portable maximum candidates traversed by one catalogue operation.
 pub const MAX_PROVIDER_SESSION_TOTAL_CANDIDATES: u32 = 10_000;
+/// Portable maximum bytes in an opaque catalogue cursor.
 pub const MAX_PROVIDER_SESSION_CURSOR_BYTES: u32 = 4_096;
+/// Portable maximum bytes in candidate display content.
 pub const MAX_PROVIDER_SESSION_CONTENT_BYTES: u32 = 16_384;
+/// Portable maximum bytes in an opaque provider-session reference.
 pub const MAX_PROVIDER_SESSION_REFERENCE_BYTES: u32 = 4_096;
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+/// Resource scope within which provider sessions are discovered.
 pub enum ProviderSessionDiscoveryScope {
+    /// Sessions associated with the exact working resource.
     WorkingResource,
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+/// Provider-reported activity state of a retained session candidate.
 pub enum ProviderSessionActivityState {
+    /// Activity state could not be established.
     Unknown,
+    /// Session is known not to have active work.
     Inactive,
+    /// Session has active provider work.
     Active,
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+/// Reason a discovered provider session cannot be imported.
 pub enum ProviderSessionImportUnavailableReason {
+    /// Session currently has active work.
     Active,
+    /// Session is archived.
     Archived,
+    /// Required retained history is incomplete.
     IncompleteHistory,
+    /// Session interface is incompatible.
     IncompatibleInterface,
+    /// Session belongs to another working resource.
     ResourceMismatch,
+    /// Provider explicitly reported import unavailable.
     ProviderReportedUnavailable,
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+/// Import availability reported for one catalogue candidate.
 pub enum ProviderSessionImportAvailability {
+    /// Candidate may proceed to separately validated import.
     Available,
+    /// Candidate is visible but cannot currently be imported.
     Unavailable(ProviderSessionImportUnavailableReason),
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+/// Machine-readable category for an invalid catalogue record.
 pub enum InvalidProviderSessionCatalogueRecordKind {
+    /// A portable size or count ceiling was exceeded.
     LimitExceeded,
+    /// Bounds contradict one another.
     InvalidBounds,
+    /// Optional display content contains an empty value.
     EmptyContent,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Rejection raised for invalid bounded provider-session catalogue evidence.
 pub struct InvalidProviderSessionCatalogueRecord {
     kind: InvalidProviderSessionCatalogueRecordKind,
     diagnostic: SafeDiagnostic,
@@ -63,11 +89,13 @@ impl InvalidProviderSessionCatalogueRecord {
     }
 
     #[must_use]
+    /// Returns the machine-readable rejection category.
     pub const fn kind(&self) -> InvalidProviderSessionCatalogueRecordKind {
         self.kind
     }
 
     #[must_use]
+    /// Returns the redacted catalogue-record diagnostic.
     pub const fn diagnostic(&self) -> &SafeDiagnostic {
         &self.diagnostic
     }
@@ -82,6 +110,7 @@ impl fmt::Display for InvalidProviderSessionCatalogueRecord {
 impl Error for InvalidProviderSessionCatalogueRecord {}
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+/// Portable page, traversal, cursor, content, and reference bounds.
 pub struct ProviderSessionCatalogueBounds {
     maximum_page_size: NonZeroU32,
     maximum_total_candidates: NonZeroU32,
@@ -91,6 +120,7 @@ pub struct ProviderSessionCatalogueBounds {
 }
 
 impl ProviderSessionCatalogueBounds {
+    /// Creates bounds after checking portable ceilings and internal ordering.
     pub fn new(
         maximum_page_size: NonZeroU32,
         maximum_total_candidates: NonZeroU32,
@@ -127,38 +157,45 @@ impl ProviderSessionCatalogueBounds {
     }
 
     #[must_use]
+    /// Returns the maximum candidates in one page.
     pub const fn maximum_page_size(self) -> NonZeroU32 {
         self.maximum_page_size
     }
 
     #[must_use]
+    /// Returns the maximum candidates traversed by the operation.
     pub const fn maximum_total_candidates(self) -> NonZeroU32 {
         self.maximum_total_candidates
     }
 
     #[must_use]
+    /// Returns the maximum opaque cursor size.
     pub const fn maximum_cursor_bytes(self) -> NonZeroU32 {
         self.maximum_cursor_bytes
     }
 
     #[must_use]
+    /// Returns the maximum candidate display-content size.
     pub const fn maximum_content_bytes(self) -> NonZeroU32 {
         self.maximum_content_bytes
     }
 
     #[must_use]
+    /// Returns the maximum opaque provider-reference size.
     pub const fn maximum_provider_reference_bytes(self) -> NonZeroU32 {
         self.maximum_provider_reference_bytes
     }
 }
 
 #[derive(Clone, Eq, PartialEq)]
+/// Optional provider title and preview, redacted from default debugging.
 pub struct ProviderSessionDisplayContent {
     title: Option<String>,
     preview: Option<String>,
 }
 
 impl ProviderSessionDisplayContent {
+    /// Creates bounded display content after rejecting empty optional fields.
     pub fn new(
         title: Option<String>,
         preview: Option<String>,
@@ -186,6 +223,7 @@ impl ProviderSessionDisplayContent {
     }
 
     #[must_use]
+    /// Returns display content with neither title nor preview.
     pub const fn empty() -> Self {
         Self {
             title: None,
@@ -194,16 +232,19 @@ impl ProviderSessionDisplayContent {
     }
 
     #[must_use]
+    /// Returns the provider title, when supplied.
     pub fn title(&self) -> Option<&str> {
         self.title.as_deref()
     }
 
     #[must_use]
+    /// Returns the provider preview, when supplied.
     pub fn preview(&self) -> Option<&str> {
         self.preview.as_deref()
     }
 
     #[must_use]
+    /// Returns combined title and preview byte length.
     pub fn byte_len(&self) -> usize {
         self.title.as_ref().map_or(0, String::len) + self.preview.as_ref().map_or(0, String::len)
     }

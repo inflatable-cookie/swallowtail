@@ -7,8 +7,11 @@ use swallowtail_runtime::RuntimeFailure;
 
 use crate::failure::failure;
 
+/// Semantic-version axis reported by the installed Pi package.
 pub const PI_PACKAGE_AXIS: &str = "pi.package";
+/// Oldest Pi package version qualified for the RPC route.
 pub const PI_PACKAGE_BASELINE_VERSION: &str = "0.80.10";
+/// Newest Pi package version behaviorally qualified for the RPC route.
 pub const PI_PACKAGE_LATEST_QUALIFIED_VERSION: &str = "0.83.0";
 
 const BASELINE_BEHAVIOR: &str = "pi.rpc.strict-lf-v0.80.10";
@@ -18,6 +21,7 @@ const BASH_CORRELATION_BEHAVIOR: &str = "pi.rpc.strict-lf-v0.82.0-bash-correlati
 const BASH_EXTENSION_BEHAVIOR: &str = "pi.rpc.strict-lf-v0.83.0-bash-extension-hook";
 const MAX_VERSION_BYTES: usize = 64;
 
+/// Parses one exact Pi package semantic-version binding.
 #[must_use]
 pub fn pi_package_binding(value: &str) -> Option<InterfaceVersionBinding> {
     if value.is_empty()
@@ -34,6 +38,7 @@ pub fn pi_package_binding(value: &str) -> Option<InterfaceVersionBinding> {
     ))
 }
 
+/// Returns the qualified Pi RPC package compatibility window.
 #[must_use]
 pub fn pi_rpc_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(

@@ -22,12 +22,14 @@ use swallowtail_runtime::{
 
 const DRIVER_ID: &str = "swallowtail.gemini.acp";
 
+/// Low-level interactive driver for the installed Gemini CLI ACP agent.
 pub struct GeminiAcpDriver {
     isolated_environment: EnvironmentRef,
     credential: CredentialRef,
 }
 
 impl GeminiAcpDriver {
+    /// Binds the isolated launch environment and Developer API credential.
     #[must_use]
     pub const fn new(isolated_environment: EnvironmentRef, credential: CredentialRef) -> Self {
         Self {
@@ -71,6 +73,7 @@ impl GeminiAcpDriver {
     }
 }
 
+/// Describes the installed Gemini CLI ACP discovery and session roles.
 #[must_use]
 pub fn gemini_acp_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(

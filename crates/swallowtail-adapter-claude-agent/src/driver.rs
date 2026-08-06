@@ -25,6 +25,7 @@ const ENDPOINT_AUDIENCE: &str = "api.anthropic.com";
 
 use self::validation::{validate_attachment, validate_open, validate_plan};
 
+/// Low-level driver for Claude Agent ACP discovery, runs, and sessions.
 pub struct ClaudeAgentAcpDriver {
     environment: EnvironmentRef,
     credential: Option<CredentialRef>,

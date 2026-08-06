@@ -8,8 +8,11 @@ use swallowtail_runtime::RuntimeFailure;
 
 use crate::failure::failure;
 
+/// Adapter-version interface axis used by Claude Agent ACP.
 pub const CLAUDE_AGENT_ACP_AXIS: &str = "claude-agent.acp-adapter";
+/// Oldest qualified Claude Agent ACP version.
 pub const CLAUDE_AGENT_ACP_BASELINE_VERSION: &str = "0.53.0";
+/// Most recent qualified Claude Agent ACP version.
 pub const CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION: &str = "0.64.0";
 
 const BASELINE_BEHAVIOR: &str = "claude-agent.acp.baseline-v1";
@@ -66,6 +69,7 @@ pub(crate) fn version_supports_config_options(version: &InterfaceVersion) -> boo
 }
 
 #[must_use]
+/// Parses a Claude Agent ACP semantic version into its interface binding.
 pub fn claude_agent_acp_binding(value: &str) -> Option<InterfaceVersionBinding> {
     if value.is_empty()
         || value.len() > MAX_VERSION_BYTES
@@ -82,6 +86,7 @@ pub fn claude_agent_acp_binding(value: &str) -> Option<InterfaceVersionBinding> 
 }
 
 #[must_use]
+/// Returns the qualified compatibility claim for Claude Agent ACP.
 pub fn claude_agent_acp_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
         InterfaceCompatibilityClaimId::new("claude-agent.acp.range-v2")

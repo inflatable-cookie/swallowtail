@@ -3,17 +3,20 @@ use std::fmt;
 use swallowtail_core::{FailureClassification, SafeDiagnostic};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Safe provider-neutral runtime failure retaining an exact diagnostic.
 pub struct RuntimeFailure {
     diagnostic: SafeDiagnostic,
 }
 
 impl RuntimeFailure {
     #[must_use]
+    /// Creates a runtime failure from a redacted safe diagnostic.
     pub const fn new(diagnostic: SafeDiagnostic) -> Self {
         Self { diagnostic }
     }
 
     #[must_use]
+    /// Returns the exact safe diagnostic and optional portable classification.
     pub const fn diagnostic(&self) -> &SafeDiagnostic {
         &self.diagnostic
     }

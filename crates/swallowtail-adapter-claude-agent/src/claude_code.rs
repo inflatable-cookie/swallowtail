@@ -19,11 +19,13 @@ pub(crate) const DRIVER_ID: &str = "swallowtail.claude-code.headless";
 const EVENT_CAPACITY: usize = 4098;
 pub(crate) const ENDPOINT_AUDIENCE: &str = "anthropic-claude-code";
 
+/// Low-level driver for native one-shot `claude -p` stream-JSON runs.
 pub struct ClaudeCodeHeadlessDriver {
     environment: EnvironmentRef,
 }
 
 impl ClaudeCodeHeadlessDriver {
+    /// Creates a headless driver using the approved execution environment.
     #[must_use]
     pub const fn new(environment: EnvironmentRef) -> Self {
         Self { environment }
@@ -31,6 +33,7 @@ impl ClaudeCodeHeadlessDriver {
 }
 
 #[must_use]
+/// Describes the native Claude Code headless route.
 pub fn claude_code_headless_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(
         AdapterIdentity::new(

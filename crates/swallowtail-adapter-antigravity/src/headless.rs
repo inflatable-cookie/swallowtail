@@ -12,17 +12,20 @@ use swallowtail_runtime::{
 
 const EVENT_CAPACITY: usize = 4098;
 
+/// Low-level driver for Antigravity stream-JSON headless execution.
 pub struct AntigravityHeadlessDriver {
     environment: EnvironmentRef,
 }
 
 impl AntigravityHeadlessDriver {
     #[must_use]
+    /// Creates a headless driver with one approved process environment.
     pub const fn new(environment: EnvironmentRef) -> Self {
         Self { environment }
     }
 
     #[must_use]
+    /// Returns the approved process environment.
     pub const fn environment(&self) -> &EnvironmentRef {
         &self.environment
     }

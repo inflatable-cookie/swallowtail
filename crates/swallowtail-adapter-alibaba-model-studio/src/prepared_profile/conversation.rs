@@ -14,6 +14,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Executable delete-on-close conversation with exact plan agreement.
 pub struct AlibabaModelStudioPreparedConversation {
     evidence: AlibabaModelStudioPreparedEvidence,
     request: OpenSessionRequest,
@@ -21,25 +22,30 @@ pub struct AlibabaModelStudioPreparedConversation {
 
 impl AlibabaModelStudioPreparedConversation {
     #[must_use]
+    /// Returns route-specific prepared evidence.
     pub const fn evidence(&self) -> &AlibabaModelStudioPreparedEvidence {
         &self.evidence
     }
 
     #[must_use]
+    /// Returns the immutable conversation preflight plan.
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
     #[must_use]
+    /// Returns the plan-derived session-open request.
     pub const fn request(&self) -> &OpenSessionRequest {
         &self.request
     }
 
     #[must_use]
+    /// Returns the public low-level workspace driver.
     pub fn low_level_driver(&self) -> AlibabaModelStudioDriver {
         AlibabaModelStudioDriver::new()
     }
 
+    /// Opens the prepared delete-on-close conversation.
     pub fn open_session(
         &self,
         services: HostServices,
@@ -51,6 +57,7 @@ impl AlibabaModelStudioPreparedConversation {
     }
 
     #[must_use]
+    /// Splits the prepared value into evidence, plan, and request.
     pub fn into_parts(
         self,
     ) -> (
@@ -64,6 +71,7 @@ impl AlibabaModelStudioPreparedConversation {
 }
 
 impl AlibabaModelStudioPreparedIntegration {
+    /// Validates and prepares one operation-owned delete-on-close conversation.
     pub fn prepare_conversation(
         &self,
         input: AlibabaConversationProfileInput,

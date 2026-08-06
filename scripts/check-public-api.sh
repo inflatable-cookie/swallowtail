@@ -4,23 +4,29 @@ set -euo pipefail
 release_repo_root=$(cd "$(dirname "$0")/.." && pwd)
 cd "$release_repo_root"
 
-release_actual=$(mktemp)
-trap 'rm -f "$release_actual"' EXIT
+release_baseline_dir=release-baselines/public-api-0.1.0
+release_toolchain=nightly-2026-08-05
+release_tool_version='cargo-public-api 0.52.0'
 
-for release_crate_dir in crates/*; do
-  release_crate_name=${release_crate_dir##*/}
-  release_api_hash=$(
-    rg --no-heading --no-line-number --with-filename -g '*.rs' \
-      '^\s*pub\s+((async|const|unsafe)\s+)*(mod|use|struct|enum|trait|type|fn|const|static|extern|macro)' \
-      "$release_crate_dir/src" |
-      sed "s|$release_crate_dir/src/||" |
-      sed -E 's/[[:space:]]+/ /g' |
-      LC_ALL=C sort |
-      shasum -a 256 |
-      awk '{print $1}'
-  )
-  printf '%s\t%s\n' "$release_crate_name" "$release_api_hash" >> "$release_actual"
-done
+if ! command -v cargo-public-api >/dev/null 2>&1; then
+  printf 'cargo-public-api 0.52.0 is required; install it with cargo install cargo-public-api --version 0.52.0 --locked\n' >&2
+  exit 1
+fi
 
-diff -u release-baselines/public-api-0.1.0.sha256 "$release_actual"
-printf 'public API declaration baseline passed for 26 crates\n'
+if [[ $(cargo-public-api --version) != "$release_tool_version" ]]; then
+  printf 'expected %s, found %s\n' "$release_tool_version" "$(cargo-public-api --version)" >&2
+  exit 1
+fi
+
+if ! rustup run "$release_toolchain" rustc --version >/dev/null 2>&1; then
+  printf '%s is required; install it with rustup toolchain install %s --profile minimal\n' \
+    "$release_toolchain" "$release_toolchain" >&2
+  exit 1
+fi
+
+release_actual_dir=$(mktemp -d)
+trap 'rm -rf "$release_actual_dir"' EXIT
+
+bash scripts/generate-public-api-baseline.sh "$release_actual_dir"
+diff -ru "$release_baseline_dir" "$release_actual_dir"
+printf 'semantic public API baseline passed for 27 crates\n'

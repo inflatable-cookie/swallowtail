@@ -9,5 +9,6 @@ pub use input::GeminiSessionProfileInput;
 pub use plan::GeminiPreparedEvidence;
 pub use session::GeminiPreparedSession;
 
+/// Future returned when an already prepared ACP session is opened.
 pub type GeminiPreparedSessionFuture =
     BoxFuture<'static, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>>;

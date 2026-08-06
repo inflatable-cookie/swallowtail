@@ -4,6 +4,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Exact route and provider-state policy for a delete-on-close conversation.
 pub struct AlibabaConversationProfileInput {
     request_id: RequestId,
     route_id: ModelRouteId,
@@ -14,6 +15,7 @@ pub struct AlibabaConversationProfileInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Exact route, content, and deadline for one unstored structured response.
 pub struct AlibabaRunProfileInput {
     request_id: RequestId,
     route_id: ModelRouteId,
@@ -24,6 +26,7 @@ pub struct AlibabaRunProfileInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Exact route and deadline for a retained loadable conversation.
 pub struct AlibabaRetainedConversationProfileInput {
     request_id: RequestId,
     route_id: ModelRouteId,
@@ -33,6 +36,7 @@ pub struct AlibabaRetainedConversationProfileInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Exact inactive-session binding for retained conversation deletion.
 pub struct AlibabaSessionManagementInput {
     request_id: RequestId,
     binding: ProviderSessionManagementBinding,
@@ -41,6 +45,7 @@ pub struct AlibabaSessionManagementInput {
 
 impl AlibabaRetainedConversationProfileInput {
     #[must_use]
+    /// Creates retained-conversation input with no deadline.
     pub const fn new(
         request_id: RequestId,
         route_id: ModelRouteId,
@@ -57,6 +62,7 @@ impl AlibabaRetainedConversationProfileInput {
     }
 
     #[must_use]
+    /// Adds the operation deadline.
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
         self
@@ -83,6 +89,7 @@ impl AlibabaRetainedConversationProfileInput {
 
 impl AlibabaSessionManagementInput {
     #[must_use]
+    /// Creates deletion input for one exact inactive-session binding.
     pub const fn new(request_id: RequestId, binding: ProviderSessionManagementBinding) -> Self {
         Self {
             request_id,
@@ -92,6 +99,7 @@ impl AlibabaSessionManagementInput {
     }
 
     #[must_use]
+    /// Adds the management deadline.
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
         self
@@ -110,6 +118,7 @@ impl AlibabaSessionManagementInput {
 
 impl AlibabaRunProfileInput {
     #[must_use]
+    /// Creates one structured-response attempt with no deadline.
     pub const fn new(
         request_id: RequestId,
         route_id: ModelRouteId,
@@ -128,6 +137,7 @@ impl AlibabaRunProfileInput {
     }
 
     #[must_use]
+    /// Adds the operation deadline.
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
         self
@@ -156,6 +166,7 @@ impl AlibabaRunProfileInput {
 
 impl AlibabaConversationProfileInput {
     #[must_use]
+    /// Creates explicit conversation input with no deadline.
     pub const fn new(
         request_id: RequestId,
         route_id: ModelRouteId,
@@ -174,6 +185,7 @@ impl AlibabaConversationProfileInput {
     }
 
     #[must_use]
+    /// Adds the session-open deadline.
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
         self

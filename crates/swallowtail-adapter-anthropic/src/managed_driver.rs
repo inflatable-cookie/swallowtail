@@ -39,12 +39,14 @@ const DRIVER_ID: &str = "swallowtail.anthropic.managed-agent";
 const EVENT_CAPACITY: usize = 64;
 
 #[derive(Clone, Default)]
+/// Low-level Anthropic Managed Agents run, reconciliation, and cleanup driver.
 pub struct AnthropicManagedAgentDriver {
     transport: ManagedCurlTransport,
 }
 
 impl AnthropicManagedAgentDriver {
     #[must_use]
+    /// Creates a driver using the bounded Managed Agents transport.
     pub fn new() -> Self {
         Self::default()
     }
@@ -70,6 +72,7 @@ impl AnthropicManagedAgentDriver {
 }
 
 #[must_use]
+/// Returns the exact descriptor for the Anthropic Managed Agents route.
 pub fn anthropic_managed_agent_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(
         AdapterIdentity::new(

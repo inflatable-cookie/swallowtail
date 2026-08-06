@@ -20,6 +20,7 @@ pub struct ActivityKindProfile {
 }
 
 impl ActivityKindProfile {
+    /// Creates and validates maximum fidelity for one activity kind.
     pub fn new(
         kind: ActivityKindClass,
         lifecycle: ActivityLifecycleFidelity,
@@ -42,28 +43,34 @@ impl ActivityKindProfile {
     }
 
     #[must_use]
+    /// Returns the portable activity kind.
     pub const fn kind(&self) -> ActivityKindClass {
         self.kind
     }
 
     #[must_use]
+    /// Returns maximum lifecycle fidelity.
     pub const fn lifecycle(&self) -> ActivityLifecycleFidelity {
         self.lifecycle
     }
 
+    /// Iterates guaranteed content streams in stable order.
     pub fn content_streams(&self) -> impl ExactSizeIterator<Item = ActivityContentStream> + '_ {
         self.content_streams.iter().copied()
     }
 
     #[must_use]
+    /// Returns the content disclosure posture.
     pub const fn disclosure(&self) -> ActivityDisclosure {
         self.disclosure
     }
 
+    /// Iterates available correlation kinds in stable order.
     pub fn correlations(&self) -> impl ExactSizeIterator<Item = ActivityCorrelationKind> + '_ {
         self.correlations.iter().copied()
     }
 
+    /// Declares complete task-list snapshots for plan or task activity.
     pub fn with_task_list_snapshots(mut self) -> Result<Self, InvalidObservableActivityProfile> {
         self.task_list_snapshots = true;
         self.validate()?;
@@ -71,10 +78,12 @@ impl ActivityKindProfile {
     }
 
     #[must_use]
+    /// Reports whether complete task-list snapshots are guaranteed.
     pub const fn task_list_snapshots(&self) -> bool {
         self.task_list_snapshots
     }
 
+    /// Adds child-agent observation fidelity to collaboration activity.
     pub fn with_subagent_observation(
         mut self,
         fidelity: SubagentObservationFidelity,
@@ -84,6 +93,7 @@ impl ActivityKindProfile {
         Ok(self)
     }
 
+    /// Adds provider-observed child-control actions.
     pub fn with_subagent_control_actions(
         mut self,
         actions: impl IntoIterator<Item = SubagentControlActionKind>,
@@ -94,10 +104,12 @@ impl ActivityKindProfile {
     }
 
     #[must_use]
+    /// Returns maximum child-agent observation fidelity.
     pub const fn subagent_observation(&self) -> Option<SubagentObservationFidelity> {
         self.subagent_observation
     }
 
+    /// Iterates observed child-control actions in stable order.
     pub fn subagent_control_actions(
         &self,
     ) -> impl ExactSizeIterator<Item = SubagentControlActionKind> + '_ {

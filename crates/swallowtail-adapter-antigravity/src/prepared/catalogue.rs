@@ -10,6 +10,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Request identity and optional deadline for model discovery.
 pub struct AntigravityCatalogueProfileInput {
     request_id: RequestId,
     deadline: Option<Deadline>,
@@ -17,6 +18,7 @@ pub struct AntigravityCatalogueProfileInput {
 
 impl AntigravityCatalogueProfileInput {
     #[must_use]
+    /// Creates catalogue input with no deadline.
     pub const fn new(request_id: RequestId) -> Self {
         Self {
             request_id,
@@ -25,6 +27,7 @@ impl AntigravityCatalogueProfileInput {
     }
 
     #[must_use]
+    /// Adds the operation deadline.
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
         self
@@ -32,6 +35,7 @@ impl AntigravityCatalogueProfileInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Executable catalogue operation with exact plan and environment agreement.
 pub struct AntigravityPreparedCatalogue {
     evidence: PreparedOperationEvidence,
     request: ModelCatalogRequest,
@@ -39,6 +43,7 @@ pub struct AntigravityPreparedCatalogue {
 }
 
 impl AntigravityPreparedCatalogueIntegration {
+    /// Builds one bounded catalogue operation without starting the harness.
     pub fn prepare_catalogue(
         &self,
         input: AntigravityCatalogueProfileInput,
@@ -84,20 +89,24 @@ impl AntigravityPreparedCatalogueIntegration {
 
 impl AntigravityPreparedCatalogue {
     #[must_use]
+    /// Returns prepared operation and access evidence.
     pub const fn evidence(&self) -> &PreparedOperationEvidence {
         &self.evidence
     }
 
     #[must_use]
+    /// Returns the immutable catalogue preflight plan.
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
     #[must_use]
+    /// Returns the plan-derived catalogue request.
     pub const fn request(&self) -> &ModelCatalogRequest {
         &self.request
     }
 
+    /// Executes installed model discovery through the low-level driver.
     pub fn list_models(
         &self,
         services: HostServices,

@@ -114,6 +114,7 @@ impl ServingInstanceDriver for RecordingRejectingDriver {
     }
 }
 
+/// Verifies dynamic host-role registration and routed service calls.
 pub fn assert_dynamic_role_registration_and_calls() {
     let fixture = RuntimePreflightFixture::canonical();
     let driver = Arc::new(RecordingRejectingDriver {
@@ -231,6 +232,7 @@ pub fn assert_dynamic_role_registration_and_calls() {
     assert_eq!(calls.load(std::sync::atomic::Ordering::SeqCst), 6);
 }
 
+/// Verifies that calls to unregistered host roles fail explicitly.
 pub fn assert_missing_roles_are_explicit() {
     let fixture = RuntimePreflightFixture::canonical();
     let registration = DriverRegistration::new(fixture.driver_descriptor().clone());
@@ -253,6 +255,7 @@ pub fn assert_missing_roles_are_explicit() {
     ));
 }
 
+/// Verifies cleanup outcomes preserve their distinct terminal states.
 pub fn assert_cleanup_states_remain_distinct() {
     let failure = SafeDiagnostic::new("fixture.cleanup", "Cleanup failed");
     assert_ne!(CleanupOutcome::Clean, CleanupOutcome::Failed(failure));

@@ -30,6 +30,7 @@ mod descriptor;
 pub use descriptor::llama_cpp_attached_descriptor;
 
 #[derive(Clone)]
+/// Low-level catalogue and inference driver for an attached llama.cpp server.
 pub struct LlamaCppAttachedDriver {
     transport: CurlTransport,
     driver_id: &'static str,
@@ -44,6 +45,7 @@ impl Default for LlamaCppAttachedDriver {
 }
 
 impl LlamaCppAttachedDriver {
+    /// Creates the exact build-9910 attached-server facade.
     #[must_use]
     pub fn new() -> Self {
         Self::for_facade(DRIVER_ID, ATTACHED_VERSION, "llama-cpp-attached")

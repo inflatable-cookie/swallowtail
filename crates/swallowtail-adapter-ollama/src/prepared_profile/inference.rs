@@ -15,32 +15,38 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared Ollama inference attempt ready for explicit dispatch.
 pub struct OllamaPreparedInferenceAttempt {
     evidence: OllamaPreparedEvidence,
     request: StructuredRunRequest,
 }
 
 impl OllamaPreparedInferenceAttempt {
+    /// Returns the operation's preparation evidence.
     #[must_use]
     pub const fn evidence(&self) -> &OllamaPreparedEvidence {
         &self.evidence
     }
 
+    /// Returns the immutable preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
+    /// Returns the structured run request.
     #[must_use]
     pub const fn request(&self) -> &StructuredRunRequest {
         &self.request
     }
 
+    /// Creates the stateless low-level native HTTP driver.
     #[must_use]
     pub fn low_level_driver(&self) -> OllamaNativeAttachedDriver {
         OllamaNativeAttachedDriver::new()
     }
 
+    /// Starts the prepared inference attempt.
     pub fn start_run(
         &self,
         services: HostServices,
@@ -51,6 +57,7 @@ impl OllamaPreparedInferenceAttempt {
         Box::pin(async move { driver.start_run(plan, request, services).await })
     }
 
+    /// Consumes the attempt into evidence, plan, and request.
     #[must_use]
     pub fn into_parts(self) -> (OllamaPreparedEvidence, PreflightPlan, StructuredRunRequest) {
         let plan = self.evidence.plan().clone();
@@ -59,6 +66,7 @@ impl OllamaPreparedInferenceAttempt {
 }
 
 impl OllamaPreparedIntegration {
+    /// Validates model capabilities and prepares one inference attempt.
     pub fn prepare_inference_attempt(
         &self,
         input: OllamaInferenceAttemptInput,

@@ -13,6 +13,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Host, endpoint, and access evidence used to prepare model discovery.
 pub struct AlibabaDeployableModelsPreparationInput {
     instance_revision: InstanceRevision,
     execution_host_id: ExecutionHostId,
@@ -23,6 +24,7 @@ pub struct AlibabaDeployableModelsPreparationInput {
 
 impl AlibabaDeployableModelsPreparationInput {
     #[must_use]
+    /// Creates preparation input for the exact international catalogue origin.
     pub const fn new(
         instance_revision: InstanceRevision,
         execution_host_id: ExecutionHostId,
@@ -41,6 +43,7 @@ impl AlibabaDeployableModelsPreparationInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared deployable-model integration bound to one instance and host.
 pub struct AlibabaDeployableModelsPreparedIntegration {
     access_profile: AccessProfile,
     access_evidence: PreparedAccessEvidence,
@@ -49,6 +52,7 @@ pub struct AlibabaDeployableModelsPreparedIntegration {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Turn-scoped input for one bounded deployable-model request.
 pub struct AlibabaDeployableModelsProfileInput {
     request_id: RequestId,
     deadline: Option<Deadline>,
@@ -56,6 +60,7 @@ pub struct AlibabaDeployableModelsProfileInput {
 
 impl AlibabaDeployableModelsProfileInput {
     #[must_use]
+    /// Creates catalogue input with no deadline.
     pub const fn new(request_id: RequestId) -> Self {
         Self {
             request_id,
@@ -64,6 +69,7 @@ impl AlibabaDeployableModelsProfileInput {
     }
 
     #[must_use]
+    /// Adds the operation deadline.
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
         self
@@ -71,6 +77,7 @@ impl AlibabaDeployableModelsProfileInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Executable deployable-model operation with immutable plan agreement.
 pub struct AlibabaPreparedDeployableModels {
     evidence: PreparedOperationEvidence,
     request: ModelCatalogRequest,
@@ -78,24 +85,29 @@ pub struct AlibabaPreparedDeployableModels {
 
 impl AlibabaDeployableModelsPreparedIntegration {
     #[must_use]
+    /// Returns the configured catalogue instance.
     pub const fn instance(&self) -> &ConfiguredInstance {
         &self.instance
     }
 
     #[must_use]
+    /// Returns the selected international API-key access profile.
     pub const fn access_profile(&self) -> &AccessProfile {
         &self.access_profile
     }
 
     #[must_use]
+    /// Returns access evidence together with its provenance.
     pub const fn access_evidence(&self) -> &PreparedAccessEvidence {
         &self.access_evidence
     }
 
+    /// Iterates the host services present during preparation.
     pub fn available_host_services(&self) -> impl ExactSizeIterator<Item = HostServiceKind> + '_ {
         self.available_host_services.iter().copied()
     }
 
+    /// Builds one bounded catalogue operation without provider effects.
     pub fn prepare_catalogue(
         &self,
         input: AlibabaDeployableModelsProfileInput,
@@ -146,20 +158,24 @@ impl AlibabaDeployableModelsPreparedIntegration {
 
 impl AlibabaPreparedDeployableModels {
     #[must_use]
+    /// Returns the prepared operation and access evidence.
     pub const fn evidence(&self) -> &PreparedOperationEvidence {
         &self.evidence
     }
 
     #[must_use]
+    /// Returns the immutable catalogue preflight plan.
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
     #[must_use]
+    /// Returns the plan-derived catalogue request.
     pub const fn request(&self) -> &ModelCatalogRequest {
         &self.request
     }
 
+    /// Executes deployable-model discovery through the low-level driver.
     pub fn list_models(
         &self,
         services: HostServices,
@@ -171,6 +187,7 @@ impl AlibabaPreparedDeployableModels {
     }
 }
 
+/// Prepares deployable-model discovery without provider effects.
 pub fn prepare_alibaba_deployable_models(
     input: AlibabaDeployableModelsPreparationInput,
     services: &HostServices,

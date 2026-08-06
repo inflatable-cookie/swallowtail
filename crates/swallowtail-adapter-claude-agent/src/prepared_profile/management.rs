@@ -9,6 +9,7 @@ use swallowtail_runtime::{
 mod preparation;
 
 #[derive(Clone, Debug)]
+/// Prepared delete operation for one inactive Claude Agent session.
 pub struct ClaudeAgentPreparedDelete {
     environment: EnvironmentRef,
     credential: Option<swallowtail_core::CredentialRef>,
@@ -17,21 +18,25 @@ pub struct ClaudeAgentPreparedDelete {
 }
 
 impl ClaudeAgentPreparedDelete {
+    /// Returns portable evidence for the prepared management operation.
     #[must_use]
     pub const fn evidence(&self) -> &PreparedProviderSessionManagementEvidence {
         &self.evidence
     }
 
+    /// Returns the exact management plan.
     #[must_use]
     pub const fn plan(&self) -> &ProviderSessionManagementPlan {
         self.evidence.plan()
     }
 
+    /// Returns the bound delete request.
     #[must_use]
     pub const fn request(&self) -> &DeleteProviderSessionRequest {
         &self.request
     }
 
+    /// Executes the prepared session deletion.
     pub fn execute(
         &self,
         services: HostServices,

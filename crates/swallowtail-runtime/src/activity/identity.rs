@@ -4,10 +4,12 @@ use std::fmt;
 const MAX_ACTIVITY_ID_BYTES: usize = 256;
 const MAX_ACTIVITY_NAMESPACE_BYTES: usize = 128;
 
+/// Bounded operation-local identity for one observable activity.
 #[derive(Clone, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct ActivityId(String);
 
 impl ActivityId {
+    /// Creates an identity from a non-empty, control-free bounded value.
     pub fn new(value: impl Into<String>) -> Result<Self, InvalidActivityRecord> {
         bounded_identity(
             value,
@@ -18,6 +20,7 @@ impl ActivityId {
     }
 
     #[must_use]
+    /// Returns the unredacted identity for correlation and persistence.
     pub fn as_str(&self) -> &str {
         &self.0
     }
@@ -43,6 +46,7 @@ impl fmt::Display for ActivityId {
 pub struct ActivityNamespace(String);
 
 impl ActivityNamespace {
+    /// Creates a bounded namespace for an otherwise unknown activity kind.
     pub fn new(value: impl Into<String>) -> Result<Self, InvalidActivityRecord> {
         bounded_identity(
             value,
@@ -53,6 +57,7 @@ impl ActivityNamespace {
     }
 
     #[must_use]
+    /// Returns the unredacted namespace value.
     pub fn as_str(&self) -> &str {
         &self.0
     }

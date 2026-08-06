@@ -11,6 +11,7 @@ use swallowtail_runtime::{
 
 impl AlibabaModelStudioPreparedConversation {
     #[must_use]
+    /// Prepares context-losing replacement for an interrupted delete-on-close session.
     pub fn prepare_working_state_restoration(
         &self,
         interrupted_turn_id: RuntimeTurnId,
@@ -25,6 +26,7 @@ impl AlibabaModelStudioPreparedConversation {
 }
 
 impl AlibabaModelStudioPreparedRetainedConversation {
+    /// Prepares replay-backed continuation recovery for an interrupted retained session.
     pub fn prepare_working_state_restoration(
         &self,
         request_id: swallowtail_runtime::RequestId,

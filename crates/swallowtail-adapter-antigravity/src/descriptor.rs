@@ -4,6 +4,7 @@ use swallowtail_core::{
 };
 
 #[must_use]
+/// Returns the installed discovery and model-catalogue descriptor.
 pub fn antigravity_catalogue_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(
         AdapterIdentity::new(
@@ -36,6 +37,7 @@ pub fn antigravity_catalogue_descriptor() -> DriverDescriptor {
 }
 
 #[must_use]
+/// Returns the separate headless run and continuation descriptor.
 pub fn antigravity_headless_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(
         AdapterIdentity::new(

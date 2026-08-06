@@ -1,20 +1,33 @@
+#![deny(missing_docs)]
+
 use std::error::Error;
 use std::fmt;
 use swallowtail_core::Diagnostic;
 
+/// Machine-distinct stage at which provider integration preparation failed.
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub enum PreparationStage {
+    /// Host-approved executable, endpoint, SDK, or service target selection.
     TargetSelection,
+    /// Preparation-owned process creation.
     ProcessSpawn,
+    /// Bounded preparation output collection.
     BoundedOutput,
+    /// Preparation-owned process exit observation.
     ProcessExit,
+    /// Installed or service interface version parsing.
     VersionParse,
+    /// Exact interface compatibility classification.
     CompatibilityClassification,
+    /// Access status and provenance admission.
     AccessEvidence,
+    /// Immutable operation preflight construction or validation.
     Preflight,
+    /// Joining or releasing preparation-owned work.
     Cleanup,
 }
 
+/// Safe staged failure chain returned by prepared integration construction.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct PreparationFailure {
     stage: PreparationStage,
@@ -24,6 +37,7 @@ pub struct PreparationFailure {
 
 impl PreparationFailure {
     #[must_use]
+    /// Creates a preparation failure at one exact stage.
     pub const fn new(stage: PreparationStage, diagnostic: Diagnostic) -> Self {
         Self {
             stage,
@@ -33,22 +47,26 @@ impl PreparationFailure {
     }
 
     #[must_use]
+    /// Attaches an earlier safe preparation failure as the cause.
     pub fn with_cause(mut self, cause: Self) -> Self {
         self.cause = Some(Box::new(cause));
         self
     }
 
     #[must_use]
+    /// Returns the stage at which this failure was observed.
     pub const fn stage(&self) -> PreparationStage {
         self.stage
     }
 
     #[must_use]
+    /// Returns the safe diagnostic, retaining restricted detail only by policy.
     pub const fn diagnostic(&self) -> &Diagnostic {
         &self.diagnostic
     }
 
     #[must_use]
+    /// Returns the earlier safe preparation failure, when present.
     pub fn cause(&self) -> Option<&Self> {
         self.cause.as_deref()
     }

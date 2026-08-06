@@ -4,15 +4,21 @@
 /// uncertain effect therefore cannot be mistaken for complete cleanup.
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum ProviderRecoveredResourceCleanupEffect {
+    /// Every required owned resource was confirmed cleaned.
     Applied,
+    /// Cleanup was rejected because operation activity was active or unknown.
     RejectedActiveOrUnknown,
+    /// Attempt failed before any cleanup effect.
     FailedBeforeEffect,
+    /// Some resources were cleaned before failure.
     PartiallyApplied,
+    /// Cleanup may have occurred but terminal truth is unavailable.
     UnconfirmedAfterEffect,
 }
 
 impl ProviderRecoveredResourceCleanupEffect {
     #[must_use]
+    /// Reports whether complete cleanup was confirmed.
     pub const fn is_complete(self) -> bool {
         matches!(self, Self::Applied)
     }

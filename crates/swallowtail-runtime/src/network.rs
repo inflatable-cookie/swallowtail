@@ -3,9 +3,11 @@ use crate::{BoxFuture, EndpointRef, InputValueRequired, RuntimeFailure, ScopeId}
 use std::fmt;
 use swallowtail_core::EndpointAudience;
 
+/// Redacted endpoint value approved by the execution host for one transport.
 pub struct AuthorizedEndpoint(String);
 
 impl AuthorizedEndpoint {
+    /// Creates a nonempty authorized endpoint value.
     pub fn new(value: impl Into<String>) -> Result<Self, InputValueRequired> {
         required_text("authorized endpoint", value).map(Self)
     }
@@ -30,6 +32,7 @@ impl fmt::Display for AuthorizedEndpoint {
 }
 
 #[derive(Debug)]
+/// Operation-scoped transport authority for one endpoint and audience.
 pub struct NetworkGrant {
     scope: ScopeId,
     endpoint: EndpointRef,
@@ -39,6 +42,7 @@ pub struct NetworkGrant {
 
 impl NetworkGrant {
     #[must_use]
+    /// Creates a grant from exact scope, endpoint, audience, and resolved value.
     pub const fn new(
         scope: ScopeId,
         endpoint: EndpointRef,
@@ -54,27 +58,35 @@ impl NetworkGrant {
     }
 
     #[must_use]
+    /// Returns the operation scope that owns the grant.
     pub const fn scope(&self) -> &ScopeId {
         &self.scope
     }
 
     #[must_use]
+    /// Returns the opaque endpoint reference approved by the host.
     pub const fn endpoint(&self) -> &EndpointRef {
         &self.endpoint
     }
 
     #[must_use]
+    /// Returns the exact endpoint audience.
     pub const fn audience(&self) -> &EndpointAudience {
         &self.audience
     }
 
     #[must_use]
+    /// Returns the redacted, driver-usable endpoint value.
     pub const fn authorized(&self) -> &AuthorizedEndpoint {
         &self.authorized
     }
 }
 
+/// Execution-host boundary for operation-scoped transport authorization.
+///
+/// A network grant does not enable provider-side tools or external search.
 pub trait NetworkPolicyService: Send + Sync {
+    /// Authorizes one opaque endpoint reference for an exact scope and audience.
     fn authorize(
         &self,
         scope: ScopeId,

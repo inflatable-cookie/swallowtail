@@ -1,6 +1,7 @@
 //! Kimi Platform direct-inference driver for Swallowtail.
 
 #![forbid(unsafe_code)]
+#![deny(missing_docs)]
 
 mod activity;
 mod driver;

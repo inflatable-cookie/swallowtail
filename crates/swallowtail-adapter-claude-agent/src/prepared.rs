@@ -20,6 +20,7 @@ use swallowtail_runtime::{
 const ENDPOINT_AUDIENCE: &str = "api.anthropic.com";
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs that qualify one installed Claude Agent ACP instance.
 pub struct ClaudeAgentPreparationInput {
     instance_id: ConfiguredInstanceId,
     instance_revision: InstanceRevision,
@@ -31,6 +32,7 @@ pub struct ClaudeAgentPreparationInput {
 }
 
 impl ClaudeAgentPreparationInput {
+    /// Creates preparation input for an exact Claude Agent ACP target.
     #[must_use]
     pub const fn new(
         instance_id: ConfiguredInstanceId,
@@ -54,6 +56,7 @@ impl ClaudeAgentPreparationInput {
 }
 
 #[derive(Clone, Debug)]
+/// Bounded discovery request used while preparing Claude Agent ACP.
 pub struct ClaudeAgentPreparationProbe {
     request_id: RequestId,
     scope_id: ScopeId,
@@ -62,6 +65,7 @@ pub struct ClaudeAgentPreparationProbe {
 }
 
 impl ClaudeAgentPreparationProbe {
+    /// Creates a Claude Agent ACP preparation probe.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -79,6 +83,7 @@ impl ClaudeAgentPreparationProbe {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Qualified Claude Agent ACP integration ready to prepare operations.
 pub struct ClaudeAgentPreparedIntegration {
     environment: EnvironmentRef,
     target: InstalledExecutableTarget,
@@ -90,45 +95,54 @@ pub struct ClaudeAgentPreparedIntegration {
 }
 
 impl ClaudeAgentPreparedIntegration {
+    /// Returns the approved execution environment.
     #[must_use]
     pub const fn environment(&self) -> &EnvironmentRef {
         &self.environment
     }
 
+    /// Returns the qualified installed-executable target.
     #[must_use]
     pub const fn target(&self) -> &InstalledExecutableTarget {
         &self.target
     }
 
+    /// Returns the executable observation admitted during preparation.
     #[must_use]
     pub const fn observation(&self) -> &InstalledExecutableObservation {
         &self.observation
     }
 
+    /// Returns the configured API-key or provider-owned local-auth profile.
     #[must_use]
     pub const fn access_profile(&self) -> &AccessProfile {
         &self.access_profile
     }
 
+    /// Returns the prepared access evidence.
     #[must_use]
     pub const fn access_evidence(&self) -> &PreparedAccessEvidence {
         &self.access_evidence
     }
 
+    /// Returns the exact configured provider instance.
     #[must_use]
     pub const fn instance(&self) -> &ConfiguredInstance {
         &self.instance
     }
 
+    /// Iterates over host services present when preparation succeeded.
     pub fn available_host_services(&self) -> impl ExactSizeIterator<Item = HostServiceKind> + '_ {
         self.available_host_services.iter().copied()
     }
 
+    /// Creates the low-level ACP driver bound to this integration and access posture.
     #[must_use]
     pub fn low_level_driver(&self) -> ClaudeAgentAcpDriver {
         driver_for_access(self.environment.clone(), &self.access_profile)
     }
 
+    /// Rejects host or executable drift from the prepared target.
     pub fn validate_execution_binding(
         &self,
         execution_host_id: &ExecutionHostId,
@@ -145,6 +159,7 @@ impl ClaudeAgentPreparedIntegration {
     }
 }
 
+/// Discovers, validates, and prepares one Claude Agent ACP instance.
 pub async fn prepare_claude_agent(
     input: ClaudeAgentPreparationInput,
     probe: ClaudeAgentPreparationProbe,

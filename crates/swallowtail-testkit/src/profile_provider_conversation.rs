@@ -6,6 +6,7 @@ use swallowtail_runtime::{
     validate_session_plan_agreement, validate_session_provider_state_plan,
 };
 
+/// Runs common ephemeral provider-conversation boundary assertions.
 pub fn run_provider_conversation_boundary_assertions() {
     let fixture = ProviderConversationPreflightFixture::for_case(
         ProviderConversationPreflightCase::Canonical,
@@ -74,6 +75,7 @@ pub fn run_provider_conversation_boundary_assertions() {
     assert_eq!(raced.status(), &TerminalStatus::Cancelled);
 }
 
+/// Runs common retained provider-conversation lifecycle assertions.
 pub fn run_retained_provider_conversation_boundary_assertions() {
     let fixture = ProviderConversationPreflightFixture::for_case(
         ProviderConversationPreflightCase::CanonicalRetained,

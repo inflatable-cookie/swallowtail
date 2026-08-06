@@ -22,6 +22,7 @@ pub struct ModelCatalogObservations {
 }
 
 impl ModelCatalogObservations {
+    /// Starts an observation set tied to one exact integration source.
     #[must_use]
     pub fn new(source: IntegrationFamilyId) -> Self {
         Self {
@@ -38,6 +39,7 @@ impl ModelCatalogObservations {
         }
     }
 
+    /// Adds the provider's validated display name for the model.
     pub fn with_provider_display_name(
         mut self,
         provider_display_name: impl Into<String>,
@@ -50,6 +52,7 @@ impl ModelCatalogObservations {
     }
 
     #[must_use]
+    /// Records the complete observed set of accepted input modalities.
     pub fn with_input_modalities(
         mut self,
         modalities: impl IntoIterator<Item = CatalogObservation<ModelModality>>,
@@ -59,6 +62,7 @@ impl ModelCatalogObservations {
     }
 
     #[must_use]
+    /// Records the complete observed set of produced output modalities.
     pub fn with_output_modalities(
         mut self,
         modalities: impl IntoIterator<Item = CatalogObservation<ModelModality>>,
@@ -68,24 +72,28 @@ impl ModelCatalogObservations {
     }
 
     #[must_use]
+    /// Records whether the catalogue explicitly advertises reasoning.
     pub const fn with_reasoning_supported(mut self, supported: bool) -> Self {
         self.reasoning_supported = Some(supported);
         self
     }
 
     #[must_use]
+    /// Records whether the catalogue explicitly advertises tool calling.
     pub const fn with_tool_calling_supported(mut self, supported: bool) -> Self {
         self.tool_calling_supported = Some(supported);
         self
     }
 
     #[must_use]
+    /// Records whether the catalogue explicitly advertises response streaming.
     pub const fn with_response_streaming_supported(mut self, supported: bool) -> Self {
         self.response_streaming_supported = Some(supported);
         self
     }
 
     #[must_use]
+    /// Records the complete observed set of inference allocation types.
     pub fn with_inference_types(
         mut self,
         inference_types: impl IntoIterator<Item = CatalogObservation<ModelInferenceType>>,
@@ -95,6 +103,7 @@ impl ModelCatalogObservations {
     }
 
     #[must_use]
+    /// Records the complete observed set of customization techniques.
     pub fn with_customization_types(
         mut self,
         customization_types: impl IntoIterator<Item = CatalogObservation<ModelCustomizationType>>,
@@ -104,47 +113,56 @@ impl ModelCatalogObservations {
     }
 
     #[must_use]
+    /// Adds provider-reported lifecycle evidence.
     pub fn with_lifecycle(mut self, lifecycle: ModelLifecycleObservation) -> Self {
         self.lifecycle = Some(lifecycle);
         self
     }
 
     #[must_use]
+    /// Returns the integration family that supplied these observations.
     pub const fn source(&self) -> &IntegrationFamilyId {
         &self.source
     }
 
     #[must_use]
+    /// Returns the provider's model display name, when observed.
     pub fn provider_display_name(&self) -> Option<&str> {
         self.provider_display_name.as_deref()
     }
 
     #[must_use]
+    /// Returns observed input modalities; `None` means the source was silent.
     pub const fn input_modalities(&self) -> Option<&BTreeSet<CatalogObservation<ModelModality>>> {
         self.input_modalities.as_ref()
     }
 
     #[must_use]
+    /// Returns observed output modalities; `None` means the source was silent.
     pub const fn output_modalities(&self) -> Option<&BTreeSet<CatalogObservation<ModelModality>>> {
         self.output_modalities.as_ref()
     }
 
     #[must_use]
+    /// Returns explicit reasoning support evidence, when supplied.
     pub const fn reasoning_supported(&self) -> Option<bool> {
         self.reasoning_supported
     }
 
     #[must_use]
+    /// Returns explicit tool-calling support evidence, when supplied.
     pub const fn tool_calling_supported(&self) -> Option<bool> {
         self.tool_calling_supported
     }
 
     #[must_use]
+    /// Returns explicit response-streaming support evidence, when supplied.
     pub const fn response_streaming_supported(&self) -> Option<bool> {
         self.response_streaming_supported
     }
 
     #[must_use]
+    /// Returns observed inference allocation types, when supplied.
     pub const fn inference_types(
         &self,
     ) -> Option<&BTreeSet<CatalogObservation<ModelInferenceType>>> {
@@ -152,6 +170,7 @@ impl ModelCatalogObservations {
     }
 
     #[must_use]
+    /// Returns observed customization techniques, when supplied.
     pub const fn customization_types(
         &self,
     ) -> Option<&BTreeSet<CatalogObservation<ModelCustomizationType>>> {
@@ -159,6 +178,7 @@ impl ModelCatalogObservations {
     }
 
     #[must_use]
+    /// Returns provider-reported lifecycle evidence, when supplied.
     pub const fn lifecycle(&self) -> Option<&ModelLifecycleObservation> {
         self.lifecycle.as_ref()
     }

@@ -6,16 +6,26 @@ use std::task::Waker;
 use swallowtail_core::CancellationScope;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+/// Immediate acknowledgement of a local cancellation request.
+///
+/// This is not evidence that provider work has stopped or reached a terminal
+/// outcome.
 pub enum CancellationAcknowledgement {
+    /// This call recorded the first cancellation request.
     Requested,
+    /// Cancellation had already been requested.
     AlreadyRequested,
 }
 
+/// Operation-scoped cancellation request surface.
 pub trait CancellationControl: Send + Sync {
+    /// Returns the operation shape to which cancellation applies.
     fn scope(&self) -> CancellationScope;
+    /// Requests cancellation without claiming terminal provider truth.
     fn request(&self) -> BoxFuture<'_, Result<CancellationAcknowledgement, RuntimeFailure>>;
 }
 
+/// In-memory idempotent cancellation signal with waiter notification.
 pub struct ImmediateCancellation {
     scope: CancellationScope,
     requested: AtomicBool,
@@ -34,6 +44,7 @@ impl fmt::Debug for ImmediateCancellation {
 
 impl ImmediateCancellation {
     #[must_use]
+    /// Creates an unrequested signal for an exact cancellation scope.
     pub const fn new(scope: CancellationScope) -> Self {
         Self {
             scope,
@@ -43,10 +54,12 @@ impl ImmediateCancellation {
     }
 
     #[must_use]
+    /// Returns whether cancellation has been requested.
     pub fn is_requested(&self) -> bool {
         self.requested.load(Ordering::SeqCst)
     }
 
+    /// Resolves when cancellation is first requested.
     pub fn wait_requested(&self) -> BoxFuture<'_, ()> {
         Box::pin(std::future::poll_fn(|context| {
             if self.is_requested() {

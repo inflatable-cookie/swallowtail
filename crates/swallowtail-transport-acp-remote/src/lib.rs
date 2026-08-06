@@ -1,6 +1,7 @@
 //! Provider-neutral remote ACP physical transport.
 
 #![forbid(unsafe_code)]
+#![deny(missing_docs)]
 
 mod config;
 mod cookies;
@@ -32,6 +33,7 @@ use worker::{ReadySignal, WorkerCommand, WorkerEvent};
 
 pub use error::{RemoteAcpError, RemoteAcpErrorKind};
 
+/// Exact host-bound request to open one remote ACP transport connection.
 pub struct RemoteAcpConnectRequest {
     scope: ScopeId,
     endpoint: EndpointRef,
@@ -39,6 +41,7 @@ pub struct RemoteAcpConnectRequest {
 }
 
 impl RemoteAcpConnectRequest {
+    /// Creates a request without a connection deadline.
     #[must_use]
     pub const fn new(scope: ScopeId, endpoint: EndpointRef) -> Self {
         Self {
@@ -48,32 +51,38 @@ impl RemoteAcpConnectRequest {
         }
     }
 
+    /// Sets the absolute connection deadline.
     #[must_use]
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
         self
     }
 
+    /// Returns the operation scope that owns the connection.
     #[must_use]
     pub const fn scope(&self) -> &ScopeId {
         &self.scope
     }
 
+    /// Returns the opaque endpoint reference bound during preflight.
     #[must_use]
     pub const fn endpoint(&self) -> &EndpointRef {
         &self.endpoint
     }
 
+    /// Returns the optional absolute connection deadline.
     #[must_use]
     pub const fn deadline(&self) -> Option<Deadline> {
         self.deadline
     }
 }
 
+/// Stateless client for opening host-authorized remote ACP connections.
 #[derive(Clone, Copy, Debug, Default)]
 pub struct RemoteAcpClient;
 
 impl RemoteAcpClient {
+    /// Opens a connection after validating plan, endpoint, grant, and host services.
     pub fn connect<'a>(
         &'a self,
         plan: &'a PreflightPlan,
@@ -181,6 +190,7 @@ async fn connect_bound(
 }
 
 #[must_use = "remote ACP connections must be closed and joined"]
+/// Owned remote ACP connection with bounded send and receive streams.
 pub struct RemoteAcpConnection {
     commands: mpsc::Sender<WorkerCommand>,
     events: mpsc::Receiver<WorkerEvent>,
@@ -190,6 +200,7 @@ pub struct RemoteAcpConnection {
 }
 
 impl RemoteAcpConnection {
+    /// Sends one ACP message to the peer.
     pub async fn send(&mut self, message: Message) -> Result<(), RemoteAcpError> {
         self.commands
             .send(WorkerCommand::Send(message))
@@ -197,6 +208,7 @@ impl RemoteAcpConnection {
             .map_err(|_| transport_error())
     }
 
+    /// Waits for the next peer message or terminal transport failure.
     pub async fn next_event(&mut self) -> Option<Result<Message, RemoteAcpError>> {
         match self.events.next().await {
             Some(WorkerEvent::Message(message)) => Some(Ok(message)),
@@ -205,6 +217,7 @@ impl RemoteAcpConnection {
         }
     }
 
+    /// Requests cancellation of the connection worker.
     pub async fn cancel(&mut self) -> Result<(), RemoteAcpError> {
         self.commands
             .send(WorkerCommand::Cancel)
@@ -212,6 +225,7 @@ impl RemoteAcpConnection {
             .map_err(|_| transport_error())
     }
 
+    /// Closes the transport and joins all host-owned work.
     pub async fn close(mut self) -> CleanupOutcome {
         let _ = self.commands.send(WorkerCommand::Close).await;
         if let Some(done) = self.deadline_done.take() {

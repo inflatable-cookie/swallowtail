@@ -11,20 +11,29 @@ use swallowtail_core::{
     SessionProviderStatePolicy, SupportAuthority, TransportFamilyId,
 };
 
+/// Date of the protocol evidence qualifying this route.
 pub const EVIDENCE_DATE: &str = "2026-07-22";
+/// Exact Alibaba workspace region qualified by the adapter.
 pub const REGION: &str = "ap-southeast-1";
+/// Provider workspace endpoint template; the host supplies the approved expansion.
 pub const WORKSPACE_ENDPOINT_TEMPLATE: &str =
     "https://{WorkspaceId}.ap-southeast-1.maas.aliyuncs.com";
+/// Credential audience for the qualified Singapore workspace endpoint.
 pub const ENDPOINT_AUDIENCE: &str = "model-studio.workspace.ap-southeast-1";
+/// Exact model identity qualified for the workspace route.
 pub const EXACT_MODEL_ID: &str = "qwen3.7-plus-2026-05-26";
+/// Canonical workspace API-key access-profile identity.
 pub const ACCESS_PROFILE_ID: &str = "alibaba-model-studio.sg.workspace.api-key.payg";
 pub const FACADE_REVISION: &str = "model-studio-2026-07-22";
 
 const DRIVER_ID: &str = "swallowtail.alibaba-model-studio.conversations-responses";
+/// Canonical configured-instance identity for the dedicated workspace.
 pub const CONFIGURED_INSTANCE_ID: &str = "alibaba-model-studio.sg.workspace-dedicated";
+/// Canonical model-route identity for the qualified Qwen model.
 pub const MODEL_ROUTE_ID: &str = "alibaba-model-studio.sg.qwen3.7-plus-2026-05-26";
 
 #[must_use]
+/// Returns the descriptor for conversation, structured-run, and management roles.
 pub fn alibaba_model_studio_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(
         AdapterIdentity::new(
@@ -52,6 +61,7 @@ pub fn alibaba_model_studio_descriptor() -> DriverDescriptor {
 }
 
 #[must_use]
+/// Builds the provider-supported Singapore workspace API-key profile.
 pub fn alibaba_model_studio_access_profile() -> AccessProfile {
     AccessProfile::new(
         id(AccessProfileId::new, ACCESS_PROFILE_ID),
@@ -67,6 +77,7 @@ pub fn alibaba_model_studio_access_profile() -> AccessProfile {
 }
 
 #[must_use]
+/// Builds the configured workspace instance for one execution host.
 pub fn alibaba_model_studio_instance(host_id: ExecutionHostId) -> ConfiguredInstance {
     ConfiguredInstance::new(
         id(ConfiguredInstanceId::new, CONFIGURED_INSTANCE_ID),
@@ -88,6 +99,7 @@ pub fn alibaba_model_studio_instance(host_id: ExecutionHostId) -> ConfiguredInst
 }
 
 #[must_use]
+/// Returns the exact interface binding for the workspace Responses facade.
 pub fn alibaba_model_studio_facade_binding() -> swallowtail_core::InterfaceVersionBinding {
     swallowtail_core::InterfaceVersionBinding::new(
         swallowtail_core::InterfaceVersionAxis::new("alibaba-model-studio.responses-facade")
@@ -98,6 +110,7 @@ pub fn alibaba_model_studio_facade_binding() -> swallowtail_core::InterfaceVersi
 }
 
 #[must_use]
+/// Returns the qualified-only workspace Responses compatibility claim.
 pub fn alibaba_model_studio_facade_claim() -> swallowtail_core::InterfaceCompatibilityClaim {
     swallowtail_core::InterfaceCompatibilityClaim::new(
         swallowtail_core::InterfaceCompatibilityClaimId::new(
@@ -121,6 +134,7 @@ pub fn alibaba_model_studio_facade_claim() -> swallowtail_core::InterfaceCompati
 }
 
 #[must_use]
+/// Builds the exact configured model route.
 pub fn alibaba_model_studio_route() -> ModelRoute {
     ModelRoute::new(
         id(ModelRouteId::new, MODEL_ROUTE_ID),
@@ -132,6 +146,7 @@ pub fn alibaba_model_studio_route() -> ModelRoute {
 }
 
 #[must_use]
+/// Builds delete-on-close conversation requirements.
 pub fn alibaba_model_studio_requirements(host_id: ExecutionHostId) -> OperationRequirements {
     let access = AccessRequirement::new(id(AccessProfileId::new, ACCESS_PROFILE_ID))
         .with_credential_states([CredentialState::Ready])
@@ -157,6 +172,7 @@ pub fn alibaba_model_studio_requirements(host_id: ExecutionHostId) -> OperationR
 }
 
 #[must_use]
+/// Builds requirements for one unstored, tool-free structured response.
 pub fn alibaba_model_studio_run_requirements(host_id: ExecutionHostId) -> OperationRequirements {
     let access = AccessRequirement::new(id(AccessProfileId::new, ACCESS_PROFILE_ID))
         .with_credential_states([CredentialState::Ready])
@@ -178,6 +194,7 @@ pub fn alibaba_model_studio_run_requirements(host_id: ExecutionHostId) -> Operat
 }
 
 #[must_use]
+/// Builds requirements for a preserved, loadable conversation.
 pub fn alibaba_model_studio_retained_requirements(
     host_id: ExecutionHostId,
 ) -> OperationRequirements {
@@ -189,6 +206,7 @@ pub fn alibaba_model_studio_retained_requirements(
 }
 
 #[must_use]
+/// Builds inactive-session requirements for retained conversation deletion.
 pub fn alibaba_model_studio_management_requirements(
     host_id: ExecutionHostId,
 ) -> OperationRequirements {
@@ -213,6 +231,7 @@ pub fn alibaba_model_studio_management_requirements(
     )])
 }
 
+/// Validates that a plan matches one exact qualified workspace operation.
 pub fn validate_alibaba_model_studio_plan(
     plan: &PreflightPlan,
 ) -> Result<(), AlibabaProtocolFailure> {

@@ -70,6 +70,7 @@ pub(super) fn resume_prepared(
 }
 
 impl KimiLocalServerPreparedIntegration {
+    /// Prepares an interactive session through the admitted local server.
     pub fn prepare_session(
         &self,
         input: KimiLocalServerSessionInput,

@@ -11,12 +11,14 @@ use crate::transport::CurlTransport;
 use swallowtail_core::{CredentialMechanism, PreflightPlan};
 
 #[derive(Clone, Default)]
+/// Low-level driver for Model Studio conversation and structured-response routes.
 pub struct AlibabaModelStudioDriver {
     transport: CurlTransport,
 }
 
 impl AlibabaModelStudioDriver {
     #[must_use]
+    /// Creates a workspace driver using the adapter's HTTP transport.
     pub fn new() -> Self {
         Self::default()
     }

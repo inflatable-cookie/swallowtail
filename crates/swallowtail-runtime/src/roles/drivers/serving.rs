@@ -1,5 +1,6 @@
 macro_rules! serving_driver_items {
     () => {
+            /// Attaches to an already-running serving instance.
             fn attach(
                 &self,
                 plan: PreflightPlan,
@@ -7,6 +8,7 @@ macro_rules! serving_driver_items {
                 services: HostServices,
             ) -> BoxFuture<'_, Result<Box<dyn AttachedServingHandle>, RuntimeFailure>>;
         
+            /// Starts a host-owned serving instance.
             fn start(
                 &self,
                 plan: PreflightPlan,

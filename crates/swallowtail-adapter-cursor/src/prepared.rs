@@ -29,13 +29,18 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+/// Cursor route selected during preparation.
 pub enum CursorPreparedDriver {
+    /// Installed model-catalogue route.
     Catalogue,
+    /// Interactive ACP route.
     Acp,
+    /// One-shot stream-JSON route.
     Headless,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs that qualify one installed Cursor route and configured instance.
 pub struct CursorPreparationInput {
     driver: CursorPreparedDriver,
     instance_id: ConfiguredInstanceId,
@@ -48,6 +53,8 @@ pub struct CursorPreparationInput {
 }
 
 impl CursorPreparationInput {
+    /// Creates preparation input for an exact installed Cursor route.
+    /// Returns the selected Cursor route.
     #[must_use]
     #[allow(clippy::too_many_arguments)]
     pub const fn new(
@@ -72,6 +79,7 @@ impl CursorPreparationInput {
         }
     }
 
+    /// Returns the selected Cursor route.
     #[must_use]
     pub const fn driver(&self) -> CursorPreparedDriver {
         self.driver
@@ -79,6 +87,7 @@ impl CursorPreparationInput {
 }
 
 #[derive(Clone, Debug)]
+/// Bounded discovery request used while preparing Cursor.
 pub struct CursorPreparationProbe {
     request_id: RequestId,
     scope_id: ScopeId,
@@ -87,6 +96,7 @@ pub struct CursorPreparationProbe {
 }
 
 impl CursorPreparationProbe {
+    /// Creates a Cursor preparation probe.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -104,13 +114,18 @@ impl CursorPreparationProbe {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Successfully prepared Cursor integration, preserving its exact route.
 pub enum CursorPreparedIntegration {
+    /// Prepared model-catalogue integration.
     Catalogue(CursorPreparedCatalogueIntegration),
+    /// Prepared interactive ACP integration.
     Acp(CursorPreparedAcpIntegration),
+    /// Prepared one-shot stream-JSON integration.
     Headless(CursorPreparedHeadlessIntegration),
 }
 
 impl CursorPreparedIntegration {
+    /// Returns the prepared Cursor route.
     #[must_use]
     pub const fn driver(&self) -> CursorPreparedDriver {
         match self {
@@ -122,47 +137,57 @@ impl CursorPreparedIntegration {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Qualified Cursor model-catalogue integration.
 pub struct CursorPreparedCatalogueIntegration(PreparedState);
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Qualified Cursor interactive ACP integration.
 pub struct CursorPreparedAcpIntegration(PreparedState);
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Qualified Cursor one-shot stream-JSON integration.
 pub struct CursorPreparedHeadlessIntegration(PreparedState);
 
 macro_rules! integration_accessors {
     ($type:ty) => {
         impl $type {
+            /// Returns the approved execution environment.
             #[must_use]
             pub const fn environment(&self) -> &EnvironmentRef {
                 &self.0.environment
             }
 
+            /// Returns the qualified installed-executable target.
             #[must_use]
             pub const fn target(&self) -> &InstalledExecutableTarget {
                 &self.0.target
             }
 
+            /// Returns the executable observation admitted during preparation.
             #[must_use]
             pub const fn observation(&self) -> &InstalledExecutableObservation {
                 &self.0.observation
             }
 
+            /// Returns the configured access profile.
             #[must_use]
             pub const fn access_profile(&self) -> &AccessProfile {
                 &self.0.access_profile
             }
 
+            /// Returns the prepared access evidence.
             #[must_use]
             pub const fn access_evidence(&self) -> &PreparedAccessEvidence {
                 &self.0.access_evidence
             }
 
+            /// Returns the exact configured provider instance.
             #[must_use]
             pub const fn instance(&self) -> &ConfiguredInstance {
                 &self.0.instance
             }
 
+            /// Iterates over host services present when preparation succeeded.
             pub fn available_host_services(
                 &self,
             ) -> impl ExactSizeIterator<Item = HostServiceKind> + '_ {
@@ -187,6 +212,7 @@ struct PreparedState {
     available_host_services: BTreeSet<HostServiceKind>,
 }
 
+/// Discovers, validates, and prepares exactly one configured Cursor route.
 pub async fn prepare_cursor(
     input: CursorPreparationInput,
     probe: CursorPreparationProbe,

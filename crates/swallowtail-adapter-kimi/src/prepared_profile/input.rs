@@ -4,6 +4,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer inputs for a bounded Kimi ACP retained-session catalogue.
 pub struct KimiSessionCatalogueInput {
     request_id: RequestId,
     catalogue_id: ProviderSessionCatalogueId,
@@ -13,6 +14,7 @@ pub struct KimiSessionCatalogueInput {
 }
 
 impl KimiSessionCatalogueInput {
+    /// Creates a state-root-scoped retained-session catalogue request.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -29,6 +31,7 @@ impl KimiSessionCatalogueInput {
         }
     }
 
+    /// Adds a catalogue deadline.
     #[must_use]
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
@@ -55,6 +58,7 @@ impl KimiSessionCatalogueInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Exact model route for a prepared Kimi ACP session.
 pub struct KimiModelSelection {
     route_id: ModelRouteId,
     route_revision: ModelRouteRevision,
@@ -62,6 +66,7 @@ pub struct KimiModelSelection {
 }
 
 impl KimiModelSelection {
+    /// Creates an exact Kimi model selection.
     #[must_use]
     pub const fn new(
         route_id: ModelRouteId,
@@ -77,6 +82,7 @@ impl KimiModelSelection {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer inputs for one prepared Kimi ACP session.
 pub struct KimiSessionProfileInput {
     request_id: RequestId,
     model: KimiModelSelection,
@@ -85,6 +91,7 @@ pub struct KimiSessionProfileInput {
 }
 
 impl KimiSessionProfileInput {
+    /// Creates a Kimi ACP session profile bound to one working resource.
     #[must_use]
     pub const fn new(
         request_id: RequestId,

@@ -10,6 +10,7 @@ use swallowtail_runtime::{
     StartServingRequest, StructuredRunDriver, StructuredRunRequest,
 };
 
+/// Describes owned serving lifecycle, catalogue, and inference roles.
 #[must_use]
 pub fn llama_cpp_owned_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(

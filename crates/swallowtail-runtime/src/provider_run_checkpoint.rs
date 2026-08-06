@@ -1,3 +1,5 @@
+#![deny(missing_docs)]
+
 use crate::RuntimeRunId;
 use sha2::{Digest, Sha256};
 use std::error::Error;
@@ -21,6 +23,7 @@ pub struct ProviderRunCheckpoint {
 }
 
 impl ProviderRunCheckpoint {
+    /// Creates a checkpoint bound to an exact prepared route and provider run.
     pub fn new(
         plan: &PreflightPlan,
         runtime_run_id: RuntimeRunId,
@@ -40,11 +43,13 @@ impl ProviderRunCheckpoint {
     }
 
     #[must_use]
+    /// Returns the interrupted consumer run.
     pub const fn runtime_run_id(&self) -> &RuntimeRunId {
         &self.runtime_run_id
     }
 
     #[must_use]
+    /// Returns the exact provider run.
     pub const fn provider_run_ref(&self) -> &RunRef {
         &self.provider_run_ref
     }
@@ -55,6 +60,7 @@ impl ProviderRunCheckpoint {
         &self.cursor
     }
 
+    /// Exports an integrity-checked record bound to the current prepared route.
     pub fn export_persisted(
         &self,
         plan: &PreflightPlan,
@@ -88,6 +94,7 @@ impl ProviderRunCheckpoint {
         PersistedProviderRunCheckpoint::from_bytes(payload)
     }
 
+    /// Restores a record only when it matches the current prepared route.
     pub fn restore_persisted(
         record: &PersistedProviderRunCheckpoint,
         plan: &PreflightPlan,
@@ -116,10 +123,12 @@ impl fmt::Debug for ProviderRunCheckpoint {
     }
 }
 
+/// Versioned opaque persisted form of a provider run checkpoint.
 #[derive(Clone, Eq, PartialEq)]
 pub struct PersistedProviderRunCheckpoint(Vec<u8>);
 
 impl PersistedProviderRunCheckpoint {
+    /// Validates and copies an encoded checkpoint record.
     pub fn from_bytes(bytes: impl AsRef<[u8]>) -> Result<Self, ProviderRunCheckpointFailure> {
         let bytes = bytes.as_ref();
         decode_record(bytes)?;
@@ -127,6 +136,7 @@ impl PersistedProviderRunCheckpoint {
     }
 
     #[must_use]
+    /// Returns the opaque encoded record for consumer persistence.
     pub fn as_bytes(&self) -> &[u8] {
         &self.0
     }
@@ -138,15 +148,22 @@ impl fmt::Debug for PersistedProviderRunCheckpoint {
     }
 }
 
+/// Portable reason a provider run checkpoint was rejected.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum ProviderRunCheckpointFailureKind {
+    /// The record structure or one field was malformed.
     InvalidEncoding,
+    /// The record uses an unsupported encoding version.
     UnsupportedVersion,
+    /// The record or one field exceeded its bound.
     Oversized,
+    /// The record digest did not match its contents.
     IntegrityMismatch,
+    /// The checkpoint does not match the prepared route.
     AttachmentMismatch,
 }
 
+/// Safe failure returned while creating, exporting, or restoring a run checkpoint.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ProviderRunCheckpointFailure {
     kind: ProviderRunCheckpointFailureKind,
@@ -166,11 +183,13 @@ impl ProviderRunCheckpointFailure {
     }
 
     #[must_use]
+    /// Returns the portable failure kind.
     pub const fn kind(&self) -> ProviderRunCheckpointFailureKind {
         self.kind
     }
 
     #[must_use]
+    /// Returns the redacted diagnostic.
     pub const fn diagnostic(&self) -> &SafeDiagnostic {
         &self.diagnostic
     }

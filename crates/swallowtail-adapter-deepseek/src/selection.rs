@@ -14,16 +14,21 @@ use swallowtail_runtime::{
     OpenDirectContinuationSessionRequest, RuntimeFailure, validate_direct_continuation_plan,
 };
 
+/// Exact opaque DeepSeek OpenAI-compatible facade revision.
 pub const DEEPSEEK_FACADE_REVISION: &str = "deepseek-openai-chat-2026-07-22";
+/// Official DeepSeek endpoint admitted without an appended `/v1` path.
 pub const DEEPSEEK_ENDPOINT: &str = "https://api.deepseek.com";
+/// Exact V4 Pro model admitted by this route.
 pub const DEEPSEEK_MODEL_ID: &str = "deepseek-v4-pro";
 pub(crate) const DEEPSEEK_PROVIDER_ID: &str = "deepseek";
+/// Endpoint audience required by DeepSeek API-key leases.
 pub const DEEPSEEK_ENDPOINT_AUDIENCE: &str = "api.deepseek.com";
 #[cfg(test)]
 const DEEPSEEK_AUDIENCE: &str = DEEPSEEK_ENDPOINT_AUDIENCE;
 pub(crate) const DEEPSEEK_FACADE_AXIS: &str = "deepseek.openai-chat-facade";
 
 #[must_use]
+/// Returns the bounded direct-continuation configuration for DeepSeek V4 Pro.
 pub fn deepseek_v4_config() -> DirectContinuationConfig {
     DirectContinuationConfig::new(
         NonZeroU32::new(2).unwrap(),
@@ -44,6 +49,7 @@ pub fn deepseek_v4_config() -> DirectContinuationConfig {
 }
 
 #[must_use]
+/// Returns the exact DeepSeek facade version binding.
 pub fn deepseek_facade_binding() -> InterfaceVersionBinding {
     InterfaceVersionBinding::new(
         InterfaceVersionAxis::new(DEEPSEEK_FACADE_AXIS).unwrap(),
@@ -52,6 +58,7 @@ pub fn deepseek_facade_binding() -> InterfaceVersionBinding {
 }
 
 #[must_use]
+/// Returns the qualified-only compatibility claim for the facade revision.
 pub fn deepseek_facade_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
         InterfaceCompatibilityClaimId::new("deepseek.openai-chat-window-1").unwrap(),
@@ -69,6 +76,7 @@ pub fn deepseek_facade_claim() -> InterfaceCompatibilityClaim {
 }
 
 #[must_use]
+/// Returns requirements for the resource-free V4 continuation session.
 pub fn deepseek_v4_requirements(
     execution_host_id: ExecutionHostId,
     access_profile_id: AccessProfileId,
@@ -121,6 +129,7 @@ pub fn deepseek_v4_requirements(
 }
 
 #[must_use]
+/// Returns requirements for a one-attempt tool-free V4 structured run.
 pub fn deepseek_v4_run_requirements(
     execution_host_id: ExecutionHostId,
     access_profile_id: AccessProfileId,
@@ -168,6 +177,7 @@ pub fn deepseek_v4_run_requirements(
     .require_model_route()
 }
 
+/// Validates exact DeepSeek route and continuation request agreement.
 pub fn validate_deepseek_request_plan(
     plan: &swallowtail_core::PreflightPlan,
     request: &OpenDirectContinuationSessionRequest,

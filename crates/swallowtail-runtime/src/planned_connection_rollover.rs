@@ -1,6 +1,7 @@
 use crate::RuntimeFailure;
 use swallowtail_core::{PlannedConnectionRolloverPolicy, PreflightPlan, SafeDiagnostic};
 
+/// Validates exact planned-rollover policy agreement with immutable preflight.
 pub fn validate_planned_connection_rollover_plan(
     plan: &PreflightPlan,
     requested: PlannedConnectionRolloverPolicy,

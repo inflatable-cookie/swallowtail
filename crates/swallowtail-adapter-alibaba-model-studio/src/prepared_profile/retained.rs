@@ -16,6 +16,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Executable preserved conversation with bounded replay and resume support.
 pub struct AlibabaModelStudioPreparedRetainedConversation {
     evidence: AlibabaModelStudioPreparedEvidence,
     request: OpenSessionRequest,
@@ -24,21 +25,25 @@ pub struct AlibabaModelStudioPreparedRetainedConversation {
 
 impl AlibabaModelStudioPreparedRetainedConversation {
     #[must_use]
+    /// Returns route-specific prepared evidence.
     pub const fn evidence(&self) -> &AlibabaModelStudioPreparedEvidence {
         &self.evidence
     }
 
     #[must_use]
+    /// Returns the immutable retained-conversation preflight plan.
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
     #[must_use]
+    /// Returns the plan-derived new-session request.
     pub const fn request(&self) -> &OpenSessionRequest {
         &self.request
     }
 
     #[must_use]
+    /// Returns the public low-level workspace driver.
     pub fn low_level_driver(&self) -> AlibabaModelStudioDriver {
         AlibabaModelStudioDriver::new()
     }
@@ -48,6 +53,7 @@ impl AlibabaModelStudioPreparedRetainedConversation {
         &self.management_instance
     }
 
+    /// Opens a new preserved conversation and binds later management authority.
     pub fn open_session(
         &self,
         services: HostServices,
@@ -69,6 +75,7 @@ impl AlibabaModelStudioPreparedRetainedConversation {
         })
     }
 
+    /// Builds a replaying load request from one exact resume binding.
     pub fn load_request(
         &self,
         request_id: swallowtail_runtime::RequestId,
@@ -82,6 +89,7 @@ impl AlibabaModelStudioPreparedRetainedConversation {
         )
     }
 
+    /// Loads bounded replay before returning the live retained session.
     pub fn load_session(
         &self,
         request_id: swallowtail_runtime::RequestId,
@@ -120,6 +128,7 @@ pub(super) async fn load_retained_session(
 }
 
 impl AlibabaModelStudioPreparedIntegration {
+    /// Validates and prepares one preserved, loadable conversation.
     pub fn prepare_retained_conversation(
         &self,
         input: AlibabaRetainedConversationProfileInput,

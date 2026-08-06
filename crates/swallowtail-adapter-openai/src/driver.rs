@@ -12,12 +12,14 @@ use swallowtail_runtime::{
 const DRIVER_ID: &str = "swallowtail.openai.background";
 
 #[derive(Clone, Default)]
+/// Low-level driver for one provider-managed OpenAI background response.
 pub struct OpenAiBackgroundDriver {
     transport: CurlTransport,
 }
 
 impl OpenAiBackgroundDriver {
     #[must_use]
+    /// Creates a background Responses driver using the adapter transport.
     pub fn new() -> Self {
         Self::default()
     }
@@ -43,6 +45,7 @@ impl OpenAiBackgroundDriver {
 }
 
 #[must_use]
+/// Returns the descriptor for background Responses execution and reconciliation.
 pub fn openai_background_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(
         AdapterIdentity::new(

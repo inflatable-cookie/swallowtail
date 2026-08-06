@@ -18,6 +18,7 @@ pub struct InstalledExecutableTarget {
 
 impl InstalledExecutableTarget {
     #[must_use]
+    /// Creates an exact target from an opaque host-approved executable reference.
     pub const fn new(executable: ExecutableRef, version_axis: InterfaceVersionAxis) -> Self {
         Self {
             executable,
@@ -26,17 +27,20 @@ impl InstalledExecutableTarget {
     }
 
     #[must_use]
+    /// Returns the opaque executable reference selected by the host.
     pub const fn executable(&self) -> &ExecutableRef {
         &self.executable
     }
 
     #[must_use]
+    /// Returns the exact interface-version axis to observe.
     pub const fn version_axis(&self) -> &InterfaceVersionAxis {
         &self.version_axis
     }
 }
 
 #[derive(Clone)]
+/// Shared operation-scoped cancellation signal for an executable probe.
 pub struct DiscoveryCancellation {
     state: Arc<DiscoveryCancellationState>,
 }
@@ -48,6 +52,7 @@ struct DiscoveryCancellationState {
 
 impl DiscoveryCancellation {
     #[must_use]
+    /// Creates a cancellation signal in the not-requested state.
     pub fn new() -> Self {
         Self {
             state: Arc::new(DiscoveryCancellationState {
@@ -58,10 +63,12 @@ impl DiscoveryCancellation {
     }
 
     #[must_use]
+    /// Returns whether cancellation has been requested.
     pub fn is_requested(&self) -> bool {
         self.state.requested.load(Ordering::SeqCst)
     }
 
+    /// Resolves once cancellation is requested.
     pub fn wait_requested(&self) -> BoxFuture<'static, ()> {
         let state = Arc::clone(&self.state);
         Box::pin(poll_fn(move |context| {
@@ -135,6 +142,7 @@ pub struct InstalledExecutableDiscoveryRequest {
 
 impl InstalledExecutableDiscoveryRequest {
     #[must_use]
+    /// Creates a request bound to one scope, host, target, deadline, and signal.
     pub const fn new(
         request_id: RequestId,
         scope_id: ScopeId,
@@ -154,36 +162,45 @@ impl InstalledExecutableDiscoveryRequest {
     }
 
     #[must_use]
+    /// Returns the consumer request identity.
     pub const fn request_id(&self) -> &RequestId {
         &self.request_id
     }
 
     #[must_use]
+    /// Returns the operation scope that owns probe work and cleanup.
     pub const fn scope_id(&self) -> &ScopeId {
         &self.scope_id
     }
 
     #[must_use]
+    /// Returns the authoritative execution host for the probe.
     pub const fn execution_host_id(&self) -> &ExecutionHostId {
         &self.execution_host_id
     }
 
     #[must_use]
+    /// Returns the single host-approved executable target.
     pub const fn target(&self) -> &InstalledExecutableTarget {
         &self.target
     }
 
     #[must_use]
+    /// Returns the exact monotonic probe deadline.
     pub const fn deadline(&self) -> Deadline {
         self.deadline
     }
 
     #[must_use]
+    /// Returns the shared operation-scoped cancellation signal.
     pub const fn cancellation(&self) -> &DiscoveryCancellation {
         &self.cancellation
     }
 }
 
+/// Validates host identity and required services before an executable probe.
+///
+/// This performs no executable resolution, process start, or provider work.
 pub fn validate_installed_executable_discovery_services(
     request: &InstalledExecutableDiscoveryRequest,
     services: &HostServices,

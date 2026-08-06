@@ -13,32 +13,38 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared Codex app-server model-catalogue operation.
 pub struct CodexPreparedCatalogue {
     evidence: CodexPreparedEvidence,
     request: ModelCatalogRequest,
 }
 
 impl CodexPreparedCatalogue {
+    /// Returns portable evidence for the prepared operation.
     #[must_use]
     pub const fn evidence(&self) -> &CodexPreparedEvidence {
         &self.evidence
     }
 
+    /// Returns the validated preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
+    /// Returns the bound model-catalogue request.
     #[must_use]
     pub const fn request(&self) -> &ModelCatalogRequest {
         &self.request
     }
 
+    /// Creates the low-level app-server driver bound to this operation.
     #[must_use]
     pub fn low_level_driver(&self) -> CodexAppServerDriver {
         CodexAppServerDriver::new(self.evidence.environment().clone())
     }
 
+    /// Starts model discovery with caller-supplied host services.
     pub fn list_models(
         &self,
         services: HostServices,
@@ -49,6 +55,7 @@ impl CodexPreparedCatalogue {
         Box::pin(async move { driver.list_models(plan, request, services).await })
     }
 
+    /// Splits the prepared catalogue into evidence, plan, and request.
     #[must_use]
     pub fn into_parts(self) -> (CodexPreparedEvidence, PreflightPlan, ModelCatalogRequest) {
         let plan = self.evidence.plan().clone();
@@ -57,6 +64,7 @@ impl CodexPreparedCatalogue {
 }
 
 impl CodexPreparedIntegration {
+    /// Prepares an app-server model-catalogue request.
     pub fn prepare_catalogue(
         &self,
         request_id: swallowtail_runtime::RequestId,

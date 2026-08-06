@@ -10,6 +10,7 @@ use swallowtail_runtime::{
 };
 
 impl LocalProcessHostBuilder {
+    /// Replaces the root used for operation-scoped temporary materialization.
     #[must_use]
     pub fn with_temporary_root(mut self, path: impl Into<PathBuf>) -> Self {
         self.temporary_root = path.into();

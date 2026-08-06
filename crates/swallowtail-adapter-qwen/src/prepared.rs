@@ -21,6 +21,7 @@ const ACCESS_NAMESPACE: &str = "qwen-code/delegated-harness-auth";
 const ENDPOINT_AUDIENCE: &str = "qwen-code";
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs that qualify one installed Qwen Code instance.
 pub struct QwenPreparationInput {
     pub(crate) instance_id: ConfiguredInstanceId,
     pub(crate) instance_revision: InstanceRevision,
@@ -32,6 +33,7 @@ pub struct QwenPreparationInput {
 }
 
 impl QwenPreparationInput {
+    /// Creates preparation input for an exact installed Qwen target.
     #[must_use]
     pub const fn new(
         instance_id: ConfiguredInstanceId,
@@ -55,6 +57,7 @@ impl QwenPreparationInput {
 }
 
 #[derive(Clone, Debug)]
+/// Bounded discovery request used while preparing Qwen Code.
 pub struct QwenPreparationProbe {
     request_id: RequestId,
     scope_id: ScopeId,
@@ -63,6 +66,7 @@ pub struct QwenPreparationProbe {
 }
 
 impl QwenPreparationProbe {
+    /// Creates a Qwen preparation probe.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -80,6 +84,7 @@ impl QwenPreparationProbe {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Qualified Qwen integration ready to prepare catalogue, run, or session work.
 pub struct QwenPreparedIntegration {
     environment: EnvironmentRef,
     target: InstalledExecutableTarget,
@@ -91,45 +96,54 @@ pub struct QwenPreparedIntegration {
 }
 
 impl QwenPreparedIntegration {
+    /// Returns the approved execution environment.
     #[must_use]
     pub const fn environment(&self) -> &EnvironmentRef {
         &self.environment
     }
 
+    /// Returns the qualified installed-executable target.
     #[must_use]
     pub const fn target(&self) -> &InstalledExecutableTarget {
         &self.target
     }
 
+    /// Returns the executable observation admitted during preparation.
     #[must_use]
     pub const fn observation(&self) -> &InstalledExecutableObservation {
         &self.observation
     }
 
+    /// Returns the configured delegated harness-auth profile.
     #[must_use]
     pub const fn access_profile(&self) -> &AccessProfile {
         &self.access_profile
     }
 
+    /// Returns the prepared access evidence.
     #[must_use]
     pub const fn access_evidence(&self) -> &PreparedAccessEvidence {
         &self.access_evidence
     }
 
+    /// Returns the exact configured provider instance.
     #[must_use]
     pub const fn instance(&self) -> &ConfiguredInstance {
         &self.instance
     }
 
+    /// Iterates over host services present when preparation succeeded.
     pub fn available_host_services(&self) -> impl ExactSizeIterator<Item = HostServiceKind> + '_ {
         self.available_host_services.iter().copied()
     }
 
+    /// Creates the low-level driver bound to this integration.
     #[must_use]
     pub fn low_level_driver(&self) -> QwenHeadlessDriver {
         QwenHeadlessDriver::new(self.environment.clone())
     }
 
+    /// Rejects host or executable drift from the prepared target.
     pub fn validate_execution_binding(
         &self,
         execution_host_id: &ExecutionHostId,
@@ -146,6 +160,7 @@ impl QwenPreparedIntegration {
     }
 }
 
+/// Discovers, validates, and prepares one configured Qwen Code instance.
 pub async fn prepare_qwen_headless(
     input: QwenPreparationInput,
     probe: QwenPreparationProbe,

@@ -6,12 +6,16 @@ use swallowtail_core::{
     TransportFamilyId,
 };
 
+/// Oldest Ollama runtime release qualified for the native text facade.
 pub const OLLAMA_BASELINE_VERSION: &str = "0.14.0";
+/// Newest Ollama runtime release qualified for the native text facade.
 pub const OLLAMA_LATEST_QUALIFIED_VERSION: &str = "0.32.1";
 pub(crate) const OLLAMA_RUNTIME_AXIS: &str = "ollama.runtime";
 pub(crate) const OLLAMA_DRIVER_ID: &str = "swallowtail.ollama.native-attached";
+/// Exact text-only native API facade selected by this adapter.
 pub const OLLAMA_NATIVE_FACADE: &str = "ollama.native-api.text-v1";
 
+/// Binds an observed Ollama runtime version to its semantic-version axis.
 #[must_use]
 pub fn ollama_runtime_binding(version: &str) -> InterfaceVersionBinding {
     InterfaceVersionBinding::new(
@@ -20,6 +24,7 @@ pub fn ollama_runtime_binding(version: &str) -> InterfaceVersionBinding {
     )
 }
 
+/// Returns the maintained runtime window and known excluded version.
 #[must_use]
 pub fn ollama_runtime_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
@@ -40,6 +45,7 @@ pub fn ollama_runtime_claim() -> InterfaceCompatibilityClaim {
     .expect("static Ollama compatibility claim is valid")
 }
 
+/// Describes the attached runtime's catalogue, run, and session roles.
 #[must_use]
 pub fn ollama_native_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(

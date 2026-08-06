@@ -3,6 +3,7 @@ use std::error::Error;
 use std::fmt;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Rejection raised for an invalid compatibility claim or version value.
 pub struct InvalidInterfaceCompatibilityClaim {
     diagnostic: SafeDiagnostic,
 }
@@ -18,6 +19,7 @@ impl InvalidInterfaceCompatibilityClaim {
     }
 
     #[must_use]
+    /// Returns the redacted diagnostic describing the rejection.
     pub const fn diagnostic(&self) -> &SafeDiagnostic {
         &self.diagnostic
     }

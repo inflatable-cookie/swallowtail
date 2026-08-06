@@ -3,6 +3,7 @@ use swallowtail_runtime::{
     SessionLifecycleOperation, SessionOptions, prepare_negotiated_reasoning_setup,
 };
 
+/// Proves requested and effective reasoning remain separately observable.
 pub fn assert_negotiated_reasoning_setup_contract(
     plan: &PreflightPlan,
     requested: ReasoningMode,

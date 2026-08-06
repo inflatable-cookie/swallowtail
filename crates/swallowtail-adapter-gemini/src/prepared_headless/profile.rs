@@ -17,13 +17,17 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
+/// Provider transcript-retention posture for one headless run.
 pub enum GeminiHeadlessRunRetention {
+    /// Allows the provider-owned transcript to remain after completion.
     #[default]
     Durable,
+    /// Requests a temporary transcript and cleanup by this adapter.
     TemporaryWithOwnedTranscriptCleanup,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Exact provider and model-route identity for a headless run.
 pub struct GeminiHeadlessModelSelection {
     route_id: ModelRouteId,
     route_revision: ModelRouteRevision,
@@ -32,6 +36,7 @@ pub struct GeminiHeadlessModelSelection {
 }
 
 impl GeminiHeadlessModelSelection {
+    /// Creates one explicit Gemini model selection without choosing defaults.
     #[must_use]
     pub const fn new(
         route_id: ModelRouteId,
@@ -58,6 +63,7 @@ impl GeminiHeadlessModelSelection {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer inputs for preparing one bounded Gemini CLI headless run.
 pub struct GeminiHeadlessRunProfileInput {
     request_id: RequestId,
     model: GeminiHeadlessModelSelection,
@@ -68,6 +74,7 @@ pub struct GeminiHeadlessRunProfileInput {
 }
 
 impl GeminiHeadlessRunProfileInput {
+    /// Creates a durable-transcript run profile.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -86,6 +93,7 @@ impl GeminiHeadlessRunProfileInput {
         }
     }
 
+    /// Changes the profile to adapter-owned temporary transcript cleanup.
     #[must_use]
     pub const fn with_owned_transcript_cleanup(mut self) -> Self {
         self.retention = GeminiHeadlessRunRetention::TemporaryWithOwnedTranscriptCleanup;
@@ -114,6 +122,7 @@ impl GeminiHeadlessRunProfileInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Immutable executable, access, activity, and preflight evidence for a run.
 pub struct GeminiHeadlessPreparedEvidence {
     observation: swallowtail_core::InstalledExecutableObservation,
     environment: swallowtail_runtime::EnvironmentRef,
@@ -143,26 +152,31 @@ impl GeminiHeadlessPreparedEvidence {
         })
     }
 
+    /// Returns the qualified Gemini CLI observation.
     #[must_use]
     pub const fn observation(&self) -> &swallowtail_core::InstalledExecutableObservation {
         &self.observation
     }
 
+    /// Returns the admitted access evidence.
     #[must_use]
     pub const fn access(&self) -> &swallowtail_runtime::PreparedAccessEvidence {
         self.operation.access()
     }
 
+    /// Returns the complete prepared operation evidence.
     #[must_use]
     pub const fn operation(&self) -> &PreparedOperationEvidence {
         &self.operation
     }
 
+    /// Returns the observable activity contract selected for the run.
     #[must_use]
     pub const fn observable_activity(&self) -> &swallowtail_core::ObservableActivityProfile {
         self.operation.observable_activity()
     }
 
+    /// Returns the immutable preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.operation.plan()
@@ -174,32 +188,38 @@ impl GeminiHeadlessPreparedEvidence {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared Gemini headless run ready for explicit dispatch.
 pub struct GeminiHeadlessPreparedRun {
     evidence: GeminiHeadlessPreparedEvidence,
     request: StructuredRunRequest,
 }
 
 impl GeminiHeadlessPreparedRun {
+    /// Returns the run's preparation evidence.
     #[must_use]
     pub const fn evidence(&self) -> &GeminiHeadlessPreparedEvidence {
         &self.evidence
     }
 
+    /// Returns the immutable preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
+    /// Returns the structured run request.
     #[must_use]
     pub const fn request(&self) -> &StructuredRunRequest {
         &self.request
     }
 
+    /// Reconstructs the low-level driver from prepared evidence.
     #[must_use]
     pub fn low_level_driver(&self) -> crate::GeminiHeadlessDriver {
         self.evidence.low_level_driver()
     }
 
+    /// Starts the prepared run using the supplied host services.
     pub fn start_run(
         &self,
         services: HostServices,
@@ -210,6 +230,7 @@ impl GeminiHeadlessPreparedRun {
         Box::pin(async move { driver.start_run(plan, request, services).await })
     }
 
+    /// Consumes the prepared run into evidence, plan, and request.
     #[must_use]
     pub fn into_parts(
         self,
@@ -224,6 +245,7 @@ impl GeminiHeadlessPreparedRun {
 }
 
 impl GeminiHeadlessPreparedIntegration {
+    /// Validates and prepares a run without starting provider work.
     pub fn prepare_run(
         &self,
         input: GeminiHeadlessRunProfileInput,

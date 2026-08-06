@@ -17,6 +17,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Executable OpenAI background run with exact plan and request agreement.
 pub struct OpenAiPreparedBackgroundRun {
     evidence: OpenAiBackgroundPreparedEvidence,
     request: StructuredRunRequest,
@@ -24,25 +25,30 @@ pub struct OpenAiPreparedBackgroundRun {
 
 impl OpenAiPreparedBackgroundRun {
     #[must_use]
+    /// Returns the route-specific prepared evidence.
     pub const fn evidence(&self) -> &OpenAiBackgroundPreparedEvidence {
         &self.evidence
     }
 
     #[must_use]
+    /// Returns the immutable preflight plan.
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
     #[must_use]
+    /// Returns the plan-derived structured-run request.
     pub const fn request(&self) -> &StructuredRunRequest {
         &self.request
     }
 
     #[must_use]
+    /// Returns the public low-level background driver.
     pub fn low_level_driver(&self) -> OpenAiBackgroundDriver {
         OpenAiBackgroundDriver::new()
     }
 
+    /// Starts the single provider inference attempt.
     pub fn start_run(
         &self,
         services: HostServices,
@@ -54,6 +60,7 @@ impl OpenAiPreparedBackgroundRun {
     }
 
     #[must_use]
+    /// Splits the prepared value into evidence, plan, and request.
     pub fn into_parts(
         self,
     ) -> (
@@ -67,6 +74,7 @@ impl OpenAiPreparedBackgroundRun {
 }
 
 impl OpenAiBackgroundPreparedIntegration {
+    /// Validates and prepares one explicitly retained background run.
     pub fn prepare_background_run(
         &self,
         input: OpenAiBackgroundRunProfileInput,

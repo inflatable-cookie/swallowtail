@@ -1,0 +1,25 @@
+# Source-only release configuration for Swallowtail's virtual Cargo workspace.
+[release]
+version-file = "Cargo.toml"
+version-path = "workspace.package.version"
+changelog = "CHANGELOG.md"
+# Cargo.lock is intentionally not a sync file. Dependency selection is updated
+# and validated before release preparation; regenerating it after the gates
+# would introduce untested dependency changes.
+tag-format = "v{version}"
+initial-tag-current-version = true
+
+# Local release gates are credential-free. Heavy Rust lanes run at reduced
+# scheduling priority so the developer machine remains usable.
+[release.gates]
+fmt = "cargo fmt --all -- --check"
+lint = "nice -n 5 cargo clippy --workspace --all-targets --all-features --locked -- -D warnings"
+"lint:no-features" = "nice -n 5 cargo clippy --workspace --all-targets --no-default-features --locked -- -D warnings"
+test = "nice -n 5 cargo nextest run --workspace --all-features --locked"
+qa = "effigy qa:docs && effigy qa:routes"
+docs = "effigy package:docs"
+metadata = "effigy package:metadata"
+api = "effigy package:api"
+security = "effigy security:dependencies"
+floor = "effigy package:release-floor"
+source = "effigy package:source-consumer"

@@ -15,6 +15,7 @@ impl ScriptedAppServerHandle {
                 .lock()
                 .expect("messages lock is available")
                 .push(message.clone());
+            self.state.messages_changed.notify_all();
             self.respond(&message);
         }
     }

@@ -22,6 +22,7 @@ pub fn assert_contract_kernel(fixture: &ContractKernelFixture) {
     assert_extension_policies(fixture.event_with_extension());
 }
 
+/// Proves that declared capabilities pass and undeclared capabilities fail safely.
 pub fn assert_capability_rejection(
     manifest: &CapabilityManifest,
     supported: Capability,
@@ -47,6 +48,7 @@ pub fn assert_capability_rejection(
     );
 }
 
+/// Proves provider session and run references remain opaque in debug output.
 pub fn assert_reference_opacity(session_ref: &SessionRef, run_ref: &RunRef) {
     let session_debug = format!("{session_ref:?}");
     let run_debug = format!("{run_ref:?}");
@@ -65,6 +67,7 @@ pub fn assert_reference_opacity(session_ref: &SessionRef, run_ref: &RunRef) {
     );
 }
 
+/// Proves safe display and debug output omit a diagnostic's internal detail.
 pub fn assert_diagnostic_redaction(diagnostic: &Diagnostic) {
     let internal_detail = diagnostic
         .internal_detail()
@@ -84,6 +87,7 @@ pub fn assert_diagnostic_redaction(diagnostic: &Diagnostic) {
     );
 }
 
+/// Proves extension payload bytes do not leak through event debug output.
 pub fn assert_extension_isolation(event: &EventEnvelope) {
     let extension = event
         .extension()
@@ -107,6 +111,7 @@ pub fn assert_extension_isolation(event: &EventEnvelope) {
     );
 }
 
+/// Proves preserve, ignore, and reject extension policies remain distinct.
 pub fn assert_extension_policies(event: &EventEnvelope) {
     let extension = event
         .extension()

@@ -3,6 +3,7 @@ use swallowtail_core::{PlannedConnectionRolloverPolicy, RealtimeMediaConfig};
 use swallowtail_runtime::{Deadline, RequestId};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Explicit media, deadline, rollover, and output bounds for a Realtime session.
 pub struct OpenAiRealtimeSessionProfileInput {
     request_id: RequestId,
     config: RealtimeMediaConfig,
@@ -13,6 +14,7 @@ pub struct OpenAiRealtimeSessionProfileInput {
 
 impl OpenAiRealtimeSessionProfileInput {
     #[must_use]
+    /// Creates session input without changing the supplied media or rollover policy.
     pub const fn new(
         request_id: RequestId,
         config: RealtimeMediaConfig,
@@ -29,12 +31,14 @@ impl OpenAiRealtimeSessionProfileInput {
     }
 
     #[must_use]
+    /// Adds an optional provider output-token maximum.
     pub const fn with_maximum_output_tokens(mut self, maximum: NonZeroU64) -> Self {
         self.maximum_output_tokens = Some(maximum);
         self
     }
 
     #[must_use]
+    /// Creates the supported two-turn manual PCM profile.
     pub fn manual_pcm_two_turns(request_id: RequestId, deadline: Option<Deadline>) -> Self {
         Self::new(
             request_id,

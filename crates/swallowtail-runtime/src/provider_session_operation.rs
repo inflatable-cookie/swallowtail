@@ -1,3 +1,5 @@
+#![deny(missing_docs)]
+
 use crate::{
     CancellationControl, HostServices, ImmediateCancellation, PreparationFailure,
     PreparedOperationEvidence, ProviderSessionManagementBinding, RateLimitObservation, RequestId,
@@ -24,6 +26,7 @@ pub struct ProviderSessionManagementAgreement {
 }
 
 impl ProviderSessionManagementAgreement {
+    /// Creates the immutable authorization shared by a plan and request.
     #[must_use]
     #[allow(clippy::too_many_arguments)]
     pub const fn new(
@@ -47,36 +50,43 @@ impl ProviderSessionManagementAgreement {
     }
 
     #[must_use]
+    /// Returns the exact inactive-session management binding.
     pub const fn binding(&self) -> &ProviderSessionManagementBinding {
         &self.binding
     }
 
     #[must_use]
+    /// Returns the typed lifecycle action.
     pub const fn action(&self) -> ProviderSessionManagementAction {
         self.action
     }
 
     #[must_use]
+    /// Returns the provider lifecycle state required before dispatch.
     pub const fn initial_state(&self) -> ProviderSessionInitialStateRequirement {
         self.initial_state
     }
 
     #[must_use]
+    /// Returns the target or provider-defined descendant scope.
     pub const fn affected_scope(&self) -> ProviderSessionAffectedScope {
         self.affected_scope
     }
 
     #[must_use]
+    /// Returns the evidence that the target is inactive.
     pub const fn activity(&self) -> ProviderSessionActivityEvidence {
         self.activity
     }
 
     #[must_use]
+    /// Returns the cancellation posture fixed before effects.
     pub const fn cancellation(&self) -> ProviderSessionCancellationPosture {
         self.cancellation
     }
 
     #[must_use]
+    /// Returns the optional operation deadline.
     pub const fn deadline(&self) -> Option<crate::Deadline> {
         self.deadline
     }
@@ -90,6 +100,7 @@ pub struct ProviderSessionManagementPlan {
 }
 
 impl ProviderSessionManagementPlan {
+    /// Validates and creates a side-effect-free management plan.
     pub fn new(
         preflight: PreflightPlan,
         agreement: ProviderSessionManagementAgreement,
@@ -102,18 +113,21 @@ impl ProviderSessionManagementPlan {
     }
 
     #[must_use]
+    /// Returns the exact route preflight plan.
     pub const fn preflight(&self) -> &PreflightPlan {
         &self.preflight
     }
 
     #[must_use]
+    /// Returns the immutable lifecycle agreement.
     pub const fn agreement(&self) -> &ProviderSessionManagementAgreement {
         &self.agreement
     }
 }
 
 macro_rules! typed_request {
-    ($name:ident, $matches:pat, $message:literal) => {
+    ($name:ident, $documentation:literal, $matches:pat, $message:literal) => {
+        #[doc = $documentation]
         #[derive(Clone, Debug)]
         pub struct $name {
             request_id: RequestId,
@@ -122,6 +136,7 @@ macro_rules! typed_request {
         }
 
         impl $name {
+            /// Creates a typed request after validating action and cancellation scope.
             pub fn new(
                 request_id: RequestId,
                 agreement: ProviderSessionManagementAgreement,
@@ -146,6 +161,7 @@ macro_rules! typed_request {
                 })
             }
 
+            /// Creates a typed request from a validated management plan.
             pub fn from_plan(
                 request_id: RequestId,
                 plan: &ProviderSessionManagementPlan,
@@ -159,16 +175,19 @@ macro_rules! typed_request {
                 )
             }
 
+            /// Returns the consumer-unique request identity.
             #[must_use]
             pub const fn request_id(&self) -> &RequestId {
                 &self.request_id
             }
 
+            /// Returns the immutable management agreement.
             #[must_use]
             pub const fn agreement(&self) -> &ProviderSessionManagementAgreement {
                 &self.agreement
             }
 
+            /// Returns the request cancellation control.
             #[must_use]
             pub const fn cancellation(&self) -> &Arc<ImmediateCancellation> {
                 &self.cancellation
@@ -179,16 +198,19 @@ macro_rules! typed_request {
 
 typed_request!(
     ArchiveProviderSessionRequest,
+    "Typed request to archive one inactive provider session.",
     ProviderSessionManagementAction::Archive,
     "Archive request does not contain an archive agreement"
 );
 typed_request!(
     RestoreProviderSessionRequest,
+    "Typed request to restore one inactive provider session.",
     ProviderSessionManagementAction::Restore,
     "Restore request does not contain a restore agreement"
 );
 typed_request!(
     DeleteProviderSessionRequest,
+    "Typed request to delete provider-session data at the agreed strength.",
     ProviderSessionManagementAction::Delete(_),
     "Delete request does not contain a delete agreement"
 );
@@ -204,6 +226,7 @@ pub struct ProviderSessionManagementOutcome {
 }
 
 impl ProviderSessionManagementOutcome {
+    /// Creates an outcome from exact provider effect truth.
     #[must_use]
     pub const fn new(
         binding: ProviderSessionManagementBinding,
@@ -219,12 +242,14 @@ impl ProviderSessionManagementOutcome {
     }
 
     #[must_use]
+    /// Attaches the safe provider request reference, when observed.
     pub fn with_provider_request_ref(mut self, reference: ProviderRequestRef) -> Self {
         self.provider_request_ref = Some(reference);
         self
     }
 
     #[must_use]
+    /// Attaches safe rate-limit observations.
     pub fn with_rate_limits(
         mut self,
         observations: impl IntoIterator<Item = RateLimitObservation>,
@@ -234,31 +259,37 @@ impl ProviderSessionManagementOutcome {
     }
 
     #[must_use]
+    /// Attaches a bounded diagnostic without changing effect truth.
     pub fn with_diagnostic(mut self, diagnostic: SafeDiagnostic) -> Self {
         self.diagnostic = Some(diagnostic);
         self
     }
 
     #[must_use]
+    /// Returns the exact managed-session binding.
     pub const fn binding(&self) -> &ProviderSessionManagementBinding {
         &self.binding
     }
 
     #[must_use]
+    /// Returns the provider effect reported by the adapter.
     pub const fn effect(&self) -> ProviderSessionManagementEffect {
         self.effect
     }
 
     #[must_use]
+    /// Returns the safe provider request reference, when observed.
     pub const fn provider_request_ref(&self) -> Option<&ProviderRequestRef> {
         self.provider_request_ref.as_ref()
     }
 
+    /// Iterates safe rate-limit observations.
     pub fn rate_limits(&self) -> impl ExactSizeIterator<Item = &RateLimitObservation> {
         self.rate_limits.iter()
     }
 
     #[must_use]
+    /// Returns the optional bounded diagnostic.
     pub const fn diagnostic(&self) -> Option<&SafeDiagnostic> {
         self.diagnostic.as_ref()
     }
@@ -272,6 +303,7 @@ pub struct PreparedProviderSessionManagementEvidence {
 }
 
 impl PreparedProviderSessionManagementEvidence {
+    /// Builds prepared evidence from a validated management plan.
     pub fn from_plan(plan: ProviderSessionManagementPlan) -> Result<Self, PreparationFailure> {
         let operation = PreparedOperationEvidence::from_plan(
             plan.preflight().clone(),
@@ -281,16 +313,19 @@ impl PreparedProviderSessionManagementEvidence {
     }
 
     #[must_use]
+    /// Returns the shared prepared-operation evidence.
     pub const fn operation(&self) -> &PreparedOperationEvidence {
         &self.operation
     }
 
     #[must_use]
+    /// Returns the validated management plan.
     pub const fn plan(&self) -> &ProviderSessionManagementPlan {
         &self.plan
     }
 }
 
+/// Verifies that a typed request matches its plan and available host services.
 pub fn validate_provider_session_management_request(
     plan: &ProviderSessionManagementPlan,
     agreement: &ProviderSessionManagementAgreement,

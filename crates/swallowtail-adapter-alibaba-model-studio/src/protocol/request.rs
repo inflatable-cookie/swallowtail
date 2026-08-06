@@ -11,13 +11,18 @@ mod options;
 pub use options::TurnOptions;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+/// HTTP method used by a bounded workspace request.
 pub enum Method {
+    /// Retrieves a provider resource.
     Get,
+    /// Creates a resource or submits inference.
     Post,
+    /// Deletes a provider resource.
     Delete,
 }
 
 #[derive(Clone, Eq, PartialEq)]
+/// Redacted, validated HTTP request for the qualified Model Studio subset.
 pub struct WireRequest {
     method: Method,
     path: String,
@@ -51,6 +56,7 @@ impl WireRequest {
     }
 
     #[must_use]
+    /// Builds a conversation-creation request.
     pub fn create_conversation() -> Self {
         Self {
             method: Method::Post,
@@ -61,6 +67,7 @@ impl WireRequest {
     }
 
     #[must_use]
+    /// Builds an exact conversation-retrieval request.
     pub fn retrieve_conversation(conversation: &ConversationRef) -> Self {
         Self {
             method: Method::Get,
@@ -73,6 +80,7 @@ impl WireRequest {
         }
     }
 
+    /// Builds a streamed turn inside an existing conversation.
     pub fn response(
         conversation: &ConversationRef,
         input: &OperationContent,
@@ -94,6 +102,7 @@ impl WireRequest {
         })
     }
 
+    /// Builds one unstored, conversation-free structured response.
     pub fn structured_response(input: &OperationContent) -> Result<Self, AlibabaProtocolFailure> {
         Ok(Self {
             method: Method::Post,
@@ -110,11 +119,13 @@ impl WireRequest {
     }
 
     #[must_use]
+    /// Builds a first page request for complete ordered conversation items.
     pub fn list_items(conversation: &ConversationRef) -> Self {
         Self::list_items_after(conversation, None)
     }
 
     #[must_use]
+    /// Builds an ordered item-page request after an optional cursor.
     pub fn list_items_after(conversation: &ConversationRef, after: Option<&ItemRef>) -> Self {
         let mut path = format!(
             "/compatible-mode/v1/conversations/{}/items?limit=100&order=asc",
@@ -133,6 +144,7 @@ impl WireRequest {
     }
 
     #[must_use]
+    /// Builds deletion of one exact conversation item.
     pub fn delete_item(conversation: &ConversationRef, item: &ItemRef) -> Self {
         Self {
             method: Method::Delete,
@@ -147,6 +159,7 @@ impl WireRequest {
     }
 
     #[must_use]
+    /// Builds deletion of one exact conversation.
     pub fn delete_conversation(conversation: &ConversationRef) -> Self {
         Self {
             method: Method::Delete,
@@ -160,21 +173,25 @@ impl WireRequest {
     }
 
     #[must_use]
+    /// Returns the HTTP method.
     pub const fn method(&self) -> Method {
         self.method
     }
 
     #[must_use]
+    /// Returns the provider-relative request path.
     pub fn path(&self) -> &str {
         &self.path
     }
 
     #[must_use]
+    /// Returns the optional JSON request body.
     pub const fn body(&self) -> Option<&Value> {
         self.body.as_ref()
     }
 
     #[must_use]
+    /// Returns whether provider session caching was requested.
     pub const fn session_cache_enabled(&self) -> bool {
         self.session_cache
     }

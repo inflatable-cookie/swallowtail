@@ -6,7 +6,9 @@ impl SharedAgent {
         state: &mut AgentState,
         id: Option<u64>,
     ) -> Result<(), RuntimeFailure> {
-        self.cancel(state)?;
+        if self.scenario != Scenario::ClosePending {
+            self.cancel(state)?;
+        }
         Self::enqueue(state, json!({"jsonrpc": "2.0", "id": id, "result": {}}));
         Ok(())
     }

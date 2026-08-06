@@ -1,7 +1,7 @@
 use super::ObservedProcessRequest;
 use std::collections::VecDeque;
 use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Condvar, Mutex};
 use std::thread;
 use swallowtail_runtime::{
     BoxFuture, ProcessExit, ProcessHandle, ProcessInputChunk, ProcessOutputChunk,
@@ -50,6 +50,7 @@ pub enum ThreadCatalogueMode {
 pub struct AppServerState {
     request: Mutex<Option<ObservedProcessRequest>>,
     messages: Mutex<Vec<serde_json::Value>>,
+    messages_changed: Condvar,
     output: Mutex<VecDeque<ProcessOutputChunk>>,
     input: Mutex<Vec<u8>>,
     active_thread: Mutex<Option<String>>,
@@ -89,6 +90,28 @@ impl AppServerState {
             .lock()
             .expect("messages lock is available")
             .clone()
+    }
+
+    pub fn wait_for_message(
+        &self,
+        predicate: impl Fn(&serde_json::Value) -> bool,
+    ) -> serde_json::Value {
+        let messages = self.messages.lock().expect("messages lock is available");
+        let (messages, timeout) = self
+            .messages_changed
+            .wait_timeout_while(messages, std::time::Duration::from_secs(2), |messages| {
+                !messages.iter().any(&predicate)
+            })
+            .expect("messages wait lock is available");
+        assert!(
+            !timeout.timed_out(),
+            "expected fixture message did not arrive"
+        );
+        messages
+            .iter()
+            .find(|message| predicate(message))
+            .cloned()
+            .expect("waited fixture message exists")
     }
 
     pub fn forced(&self) -> bool {

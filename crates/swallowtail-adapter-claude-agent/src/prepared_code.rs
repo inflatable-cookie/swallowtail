@@ -22,6 +22,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs that qualify one installed native Claude Code headless instance.
 pub struct ClaudeCodePreparationInput {
     pub(crate) instance_id: ConfiguredInstanceId,
     pub(crate) instance_revision: InstanceRevision,
@@ -33,6 +34,7 @@ pub struct ClaudeCodePreparationInput {
 }
 
 impl ClaudeCodePreparationInput {
+    /// Creates preparation input for an exact native Claude Code target.
     #[must_use]
     pub const fn new(
         instance_id: ConfiguredInstanceId,
@@ -56,6 +58,7 @@ impl ClaudeCodePreparationInput {
 }
 
 #[derive(Clone, Debug)]
+/// Bounded discovery request used while preparing native Claude Code.
 pub struct ClaudeCodePreparationProbe {
     request_id: RequestId,
     scope_id: ScopeId,
@@ -64,6 +67,7 @@ pub struct ClaudeCodePreparationProbe {
 }
 
 impl ClaudeCodePreparationProbe {
+    /// Creates a native Claude Code preparation probe.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -81,6 +85,7 @@ impl ClaudeCodePreparationProbe {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Qualified native Claude Code integration ready to prepare headless runs.
 pub struct ClaudeCodePreparedIntegration {
     environment: EnvironmentRef,
     target: InstalledExecutableTarget,
@@ -92,45 +97,54 @@ pub struct ClaudeCodePreparedIntegration {
 }
 
 impl ClaudeCodePreparedIntegration {
+    /// Returns the approved execution environment.
     #[must_use]
     pub const fn environment(&self) -> &EnvironmentRef {
         &self.environment
     }
 
+    /// Returns the qualified installed-executable target.
     #[must_use]
     pub const fn target(&self) -> &InstalledExecutableTarget {
         &self.target
     }
 
+    /// Returns the executable observation admitted during preparation.
     #[must_use]
     pub const fn observation(&self) -> &InstalledExecutableObservation {
         &self.observation
     }
 
+    /// Returns the provider-owned local-auth access profile.
     #[must_use]
     pub const fn access_profile(&self) -> &AccessProfile {
         &self.access_profile
     }
 
+    /// Returns the prepared access evidence.
     #[must_use]
     pub const fn access_evidence(&self) -> &PreparedAccessEvidence {
         &self.access_evidence
     }
 
+    /// Returns the exact configured provider instance.
     #[must_use]
     pub const fn instance(&self) -> &ConfiguredInstance {
         &self.instance
     }
 
+    /// Iterates over host services present when preparation succeeded.
     pub fn available_host_services(&self) -> impl ExactSizeIterator<Item = HostServiceKind> + '_ {
         self.available_host_services.iter().copied()
     }
 
+    /// Creates the low-level native headless driver bound to this integration.
     #[must_use]
     pub fn low_level_driver(&self) -> crate::ClaudeCodeHeadlessDriver {
         crate::ClaudeCodeHeadlessDriver::new(self.environment.clone())
     }
 
+    /// Rejects host or executable drift from the prepared target.
     pub fn validate_execution_binding(
         &self,
         execution_host_id: &ExecutionHostId,
@@ -147,6 +161,7 @@ impl ClaudeCodePreparedIntegration {
     }
 }
 
+/// Discovers, validates, and prepares one native Claude Code headless instance.
 pub async fn prepare_claude_code_headless(
     input: ClaudeCodePreparationInput,
     probe: ClaudeCodePreparationProbe,

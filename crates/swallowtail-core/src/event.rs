@@ -1,15 +1,25 @@
+#![deny(missing_docs)]
+
 use crate::diagnostic::{SafeDiagnostic, ValueRequired, required_text};
 use std::error::Error;
 use std::fmt;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+/// Common lifecycle or output category for a portable event envelope.
 pub enum EventKind {
+    /// Operation or activity began.
     Started,
+    /// Operation made non-output progress.
     Progress,
+    /// New output is available to consume.
     OutputAvailable,
+    /// Provider requested a tool call.
     ToolCallRequested,
+    /// Operation completed successfully.
     Completed,
+    /// Operation failed.
     Failed,
+    /// Operation ended through interruption.
     Interrupted,
 }
 
@@ -18,11 +28,13 @@ pub enum EventKind {
 pub struct ExtensionNamespace(String);
 
 impl ExtensionNamespace {
+    /// Creates a namespace after rejecting blank text.
     pub fn new(value: impl Into<String>) -> Result<Self, ValueRequired> {
         required_text("extension namespace", value).map(Self)
     }
 
     #[must_use]
+    /// Returns the provider-owned namespace text.
     pub fn as_str(&self) -> &str {
         &self.0
     }
@@ -36,12 +48,14 @@ pub struct ProviderExtension {
 }
 
 impl ProviderExtension {
+    /// Creates an opaque extension payload owned by `namespace`.
     #[must_use]
     pub const fn new(namespace: ExtensionNamespace, payload: Vec<u8>) -> Self {
         Self { namespace, payload }
     }
 
     #[must_use]
+    /// Returns the namespace that owns payload interpretation.
     pub const fn namespace(&self) -> &ExtensionNamespace {
         &self.namespace
     }
@@ -67,12 +81,16 @@ impl fmt::Debug for ProviderExtension {
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+/// Consumer policy for events carrying provider extensions.
 pub enum ExtensionPolicy {
+    /// Retain opaque extension bytes for provider-aware code.
     Preserve,
+    /// Reject any event carrying an extension.
     Reject,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Sequenced portable event with an optional opaque provider extension.
 pub struct EventEnvelope {
     sequence: u64,
     kind: EventKind,
@@ -80,6 +98,7 @@ pub struct EventEnvelope {
 }
 
 impl EventEnvelope {
+    /// Creates an event containing only common vocabulary.
     #[must_use]
     pub const fn common(sequence: u64, kind: EventKind) -> Self {
         Self {
@@ -90,6 +109,7 @@ impl EventEnvelope {
     }
 
     #[must_use]
+    /// Creates an event with an opaque provider extension.
     pub const fn with_extension(
         sequence: u64,
         kind: EventKind,
@@ -103,20 +123,24 @@ impl EventEnvelope {
     }
 
     #[must_use]
+    /// Returns the provider-local event sequence number.
     pub const fn sequence(&self) -> u64 {
         self.sequence
     }
 
     #[must_use]
+    /// Returns the common event category.
     pub const fn kind(&self) -> EventKind {
         self.kind
     }
 
     #[must_use]
+    /// Returns the opaque provider extension, when present.
     pub const fn extension(&self) -> Option<&ProviderExtension> {
         self.extension.as_ref()
     }
 
+    /// Applies explicit preserve-or-reject policy to an extension-bearing event.
     pub fn apply_extension_policy(
         self,
         policy: ExtensionPolicy,
@@ -131,6 +155,7 @@ impl EventEnvelope {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Rejection raised when policy forbids a provider extension.
 pub struct ExtensionRejected {
     namespace: ExtensionNamespace,
     diagnostic: SafeDiagnostic,
@@ -148,11 +173,13 @@ impl ExtensionRejected {
     }
 
     #[must_use]
+    /// Returns the rejected provider namespace.
     pub const fn namespace(&self) -> &ExtensionNamespace {
         &self.namespace
     }
 
     #[must_use]
+    /// Returns the redacted extension-rejection diagnostic.
     pub const fn diagnostic(&self) -> &SafeDiagnostic {
         &self.diagnostic
     }

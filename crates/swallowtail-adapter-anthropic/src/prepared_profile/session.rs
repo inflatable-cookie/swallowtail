@@ -17,6 +17,7 @@ use swallowtail_runtime::{
 };
 
 #[must_use]
+/// Returns the bounded Anthropic Messages direct-continuation configuration.
 pub fn anthropic_messages_continuation_config() -> DirectContinuationConfig {
     DirectContinuationConfig::new(
         NonZeroU32::new(2).unwrap(),
@@ -37,6 +38,7 @@ pub fn anthropic_messages_continuation_config() -> DirectContinuationConfig {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Bound prepared Anthropic Messages direct-continuation session.
 pub struct AnthropicPreparedSession {
     evidence: AnthropicPreparedEvidence,
     request: OpenDirectContinuationSessionRequest,
@@ -44,20 +46,24 @@ pub struct AnthropicPreparedSession {
 
 impl AnthropicPreparedSession {
     #[must_use]
+    /// Returns the prepared operation evidence.
     pub const fn evidence(&self) -> &AnthropicPreparedEvidence {
         &self.evidence
     }
 
     #[must_use]
+    /// Returns the immutable continuation-session plan.
     pub const fn plan(&self) -> &swallowtail_core::PreflightPlan {
         self.evidence.plan()
     }
 
     #[must_use]
+    /// Returns the plan-derived session-open request.
     pub const fn request(&self) -> &OpenDirectContinuationSessionRequest {
         &self.request
     }
 
+    /// Opens the bound resource-free continuation session.
     pub fn open_session(
         &self,
         services: HostServices,
@@ -74,6 +80,7 @@ impl AnthropicPreparedSession {
 }
 
 impl AnthropicPreparedIntegration {
+    /// Prepares a resource-free Messages tool-continuation session.
     pub fn prepare_session(
         &self,
         input: AnthropicSessionProfileInput,

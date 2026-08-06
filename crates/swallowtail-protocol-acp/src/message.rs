@@ -3,6 +3,7 @@ use super::{
 };
 use serde_json::json;
 
+/// Encodes one typed ACP message as a bounded NDJSON frame.
 pub fn encode_message(message: &Message) -> Result<Vec<u8>, ProtocolError> {
     let value = match message {
         Message::Request { id, method, params } => {
@@ -23,6 +24,7 @@ pub fn encode_message(message: &Message) -> Result<Vec<u8>, ProtocolError> {
     encode(value)
 }
 
+/// Decodes one complete ACP JSON-RPC frame without a newline delimiter.
 pub fn decode_message(frame: &[u8]) -> Result<Message, ProtocolError> {
     if frame.len() > DEFAULT_MAX_FRAME_BYTES {
         return Err(ProtocolError::new(ProtocolErrorKind::FrameLimitExceeded));

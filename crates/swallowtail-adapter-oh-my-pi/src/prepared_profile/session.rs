@@ -12,32 +12,38 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared Oh My Pi session ready for explicit opening.
 pub struct OhMyPiPreparedSession {
     evidence: OhMyPiPreparedEvidence,
     request: OpenSessionRequest,
 }
 
 impl OhMyPiPreparedSession {
+    /// Returns the session's preparation evidence.
     #[must_use]
     pub const fn evidence(&self) -> &OhMyPiPreparedEvidence {
         &self.evidence
     }
 
+    /// Returns the immutable preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &swallowtail_core::PreflightPlan {
         self.evidence.plan()
     }
 
+    /// Returns the open-session request.
     #[must_use]
     pub const fn request(&self) -> &OpenSessionRequest {
         &self.request
     }
 
+    /// Reconstructs the low-level driver from prepared evidence.
     #[must_use]
     pub fn low_level_driver(&self) -> OhMyPiRpcDriver {
         self.evidence.low_level_driver()
     }
 
+    /// Opens the prepared session.
     pub fn open_session(&self, services: HostServices) -> OhMyPiPreparedSessionFuture {
         let driver = self.low_level_driver();
         let plan = self.plan().clone();
@@ -45,6 +51,7 @@ impl OhMyPiPreparedSession {
         Box::pin(async move { driver.open_session(plan, request, services).await })
     }
 
+    /// Prepares a fresh session after interruption, with prior context lost.
     #[must_use]
     pub fn prepare_working_state_restoration(
         &self,
@@ -58,6 +65,7 @@ impl OhMyPiPreparedSession {
         )
     }
 
+    /// Consumes the prepared session into evidence, plan, and request.
     #[must_use]
     pub fn into_parts(
         self,
@@ -72,6 +80,7 @@ impl OhMyPiPreparedSession {
 }
 
 impl OhMyPiPreparedIntegration {
+    /// Validates portable options and prepares an interactive session.
     pub fn prepare_session(
         &self,
         input: OhMyPiSessionProfileInput,

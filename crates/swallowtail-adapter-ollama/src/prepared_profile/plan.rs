@@ -8,6 +8,7 @@ use swallowtail_core::{
 use swallowtail_runtime::{PreparationFailure, PreparationStage, PreparedOperationEvidence};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Immutable runtime, access, activity, and preflight evidence for an operation.
 pub struct OllamaPreparedEvidence {
     runtime: crate::OllamaPreparedRuntimeObservation,
     operation: PreparedOperationEvidence,
@@ -42,26 +43,31 @@ impl OllamaPreparedEvidence {
         })
     }
 
+    /// Returns the runtime and selected-model observations used at preflight.
     #[must_use]
     pub const fn runtime(&self) -> &crate::OllamaPreparedRuntimeObservation {
         &self.runtime
     }
 
+    /// Returns the admitted access evidence.
     #[must_use]
     pub const fn access(&self) -> &swallowtail_runtime::PreparedAccessEvidence {
         self.operation.access()
     }
 
+    /// Returns the complete prepared operation evidence.
     #[must_use]
     pub const fn operation(&self) -> &PreparedOperationEvidence {
         &self.operation
     }
 
+    /// Returns the observable activity contract selected for the operation.
     #[must_use]
     pub const fn observable_activity(&self) -> &swallowtail_core::ObservableActivityProfile {
         self.operation.observable_activity()
     }
 
+    /// Returns the immutable preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.operation.plan()

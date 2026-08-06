@@ -1,6 +1,7 @@
 //! Alibaba Model Studio Conversations and Responses direct-session driver.
 
 #![forbid(unsafe_code)]
+#![deny(missing_docs)]
 
 mod activity;
 mod catalogue;
@@ -48,16 +49,22 @@ pub use selection::{
     alibaba_model_studio_run_requirements, validate_alibaba_model_studio_plan,
 };
 
+/// Exact international Model Studio origin used by deployable-model discovery.
 pub const ALIBABA_DEPLOYABLE_MODELS_ENDPOINT: &str = "https://dashscope-intl.aliyuncs.com";
+/// Credential audience for the international deployable-model catalogue.
 pub const ALIBABA_DEPLOYABLE_MODELS_ENDPOINT_AUDIENCE: &str = "dashscope-intl.aliyuncs.com";
+/// Canonical API-key access-profile identity for deployable-model discovery.
 pub const ALIBABA_DEPLOYABLE_MODELS_ACCESS_PROFILE_ID: &str =
     "alibaba-model-studio.intl.api-key.payg";
+/// Canonical configured-instance identity for deployable-model discovery.
 pub const ALIBABA_DEPLOYABLE_MODELS_CONFIGURED_INSTANCE_ID: &str =
     "alibaba-model-studio.intl.deployable-models";
+/// Exact qualified revision of the deployable-model catalogue facade.
 pub const ALIBABA_DEPLOYABLE_MODELS_FACADE_REVISION: &str =
     "alibaba-deployable-models-v1.0-2026-06-06";
 
 #[must_use]
+/// Returns the exact interface binding for deployable-model discovery.
 pub fn alibaba_deployable_models_facade_binding() -> swallowtail_core::InterfaceVersionBinding {
     swallowtail_core::InterfaceVersionBinding::new(
         swallowtail_core::InterfaceVersionAxis::new(
@@ -70,6 +77,7 @@ pub fn alibaba_deployable_models_facade_binding() -> swallowtail_core::Interface
 }
 
 #[must_use]
+/// Returns the qualified-only claim for deployable-model discovery.
 pub fn alibaba_deployable_models_facade_claim() -> swallowtail_core::InterfaceCompatibilityClaim {
     swallowtail_core::InterfaceCompatibilityClaim::new(
         swallowtail_core::InterfaceCompatibilityClaimId::new("alibaba-deployable-models-window-1")

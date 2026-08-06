@@ -11,6 +11,7 @@ pub struct ExecutionTopologyFixture {
 }
 
 impl ExecutionTopologyFixture {
+    /// Creates a canonical local execution topology.
     #[must_use]
     pub fn local() -> Self {
         Self::new(
@@ -21,6 +22,7 @@ impl ExecutionTopologyFixture {
         )
     }
 
+    /// Creates a remote-authoritative execution topology.
     #[must_use]
     pub fn remote_authoritative() -> Self {
         Self::new(
@@ -43,21 +45,25 @@ impl ExecutionTopologyFixture {
         }
     }
 
+    /// Returns the host that owns execution.
     #[must_use]
     pub const fn execution_host_id(&self) -> &ExecutionHostId {
         &self.execution_host_id
     }
 
+    /// Returns the configured provider instance identity.
     #[must_use]
     pub const fn configured_instance_id(&self) -> &ConfiguredInstanceId {
         &self.configured_instance_id
     }
 
+    /// Returns the opaque provider target reference.
     #[must_use]
     pub const fn instance_target(&self) -> &InstanceTargetRef {
         &self.instance_target
     }
 
+    /// Returns the opaque working-resource reference.
     #[must_use]
     pub const fn working_resource(&self) -> &WorkingResourceRef {
         &self.working_resource

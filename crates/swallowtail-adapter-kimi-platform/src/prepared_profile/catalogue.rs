@@ -13,6 +13,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Bound prepared Kimi Platform catalogue operation.
 pub struct KimiPlatformPreparedCatalogue {
     evidence: KimiPlatformPreparedEvidence,
     request: ModelCatalogRequest,
@@ -20,25 +21,30 @@ pub struct KimiPlatformPreparedCatalogue {
 
 impl KimiPlatformPreparedCatalogue {
     #[must_use]
+    /// Returns the prepared operation evidence.
     pub const fn evidence(&self) -> &KimiPlatformPreparedEvidence {
         &self.evidence
     }
 
     #[must_use]
+    /// Returns the immutable catalogue preflight plan.
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
     #[must_use]
+    /// Returns the plan-derived catalogue request.
     pub const fn request(&self) -> &ModelCatalogRequest {
         &self.request
     }
 
     #[must_use]
+    /// Returns the low-level direct driver.
     pub fn low_level_driver(&self) -> KimiPlatformDirectDriver {
         KimiPlatformDirectDriver::new()
     }
 
+    /// Executes the bound model-catalogue observation.
     pub fn list_models(
         &self,
         services: HostServices,
@@ -50,6 +56,7 @@ impl KimiPlatformPreparedCatalogue {
     }
 
     #[must_use]
+    /// Splits the prepared operation into evidence, plan, and request.
     pub fn into_parts(
         self,
     ) -> (
@@ -63,6 +70,7 @@ impl KimiPlatformPreparedCatalogue {
 }
 
 impl KimiPlatformPreparedIntegration {
+    /// Prepares a bound model-catalogue observation.
     pub fn prepare_catalogue(
         &self,
         input: KimiPlatformCatalogueProfileInput,

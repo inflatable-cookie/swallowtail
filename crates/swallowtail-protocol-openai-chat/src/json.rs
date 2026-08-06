@@ -2,6 +2,7 @@ use crate::{CodecLimits, ProtocolError, ProtocolErrorKind};
 use serde_json::{Map, Value};
 use std::fmt;
 
+/// One bounded provider field not recognized by the structural codec.
 #[derive(Clone, PartialEq)]
 pub struct UnknownField {
     name: String,
@@ -9,11 +10,13 @@ pub struct UnknownField {
 }
 
 impl UnknownField {
+    /// Returns the provider field name.
     #[must_use]
     pub fn name(&self) -> &str {
         &self.name
     }
 
+    /// Returns the retained provider value.
     #[must_use]
     pub const fn value(&self) -> &Value {
         &self.value
@@ -30,57 +33,90 @@ impl fmt::Debug for UnknownField {
     }
 }
 
+/// One decoded compatible chat response payload.
 #[derive(Clone, Debug, PartialEq)]
 pub enum Payload {
+    /// A streamed completion chunk.
     Chunk(Chunk),
+    /// A provider error envelope.
     Error(ErrorEnvelope),
 }
 
+/// Provider-neutral structural view of one streamed completion chunk.
 #[derive(Clone, Debug, PartialEq)]
 pub struct Chunk {
+    /// Optional provider response identity.
     pub id: Option<String>,
+    /// Optional provider object discriminator.
     pub object: Option<String>,
+    /// Optional provider creation timestamp.
     pub created: Option<u64>,
+    /// Optional reported model identity.
     pub model: Option<String>,
+    /// Bounded completion choices.
     pub choices: Vec<Choice>,
+    /// Optional token usage reported by the provider.
     pub usage: Option<Usage>,
+    /// Bounded unrecognized top-level provider fields.
     pub unknown_fields: Vec<UnknownField>,
 }
 
+/// One indexed streamed completion choice.
 #[derive(Clone, Debug, PartialEq)]
 pub struct Choice {
+    /// Provider-supplied choice index.
     pub index: u64,
+    /// Incremental content carried by this choice.
     pub delta: Delta,
+    /// Optional provider finish reason.
     pub finish_reason: Option<String>,
+    /// Bounded unrecognized choice fields.
     pub unknown_fields: Vec<UnknownField>,
 }
 
+/// Incremental role or text content from one streamed choice.
 #[derive(Clone, Debug, PartialEq)]
 pub struct Delta {
+    /// Optional provider role.
     pub role: Option<String>,
+    /// Optional incremental text content.
     pub content: Option<String>,
+    /// Bounded unrecognized delta fields, including provider extensions.
     pub unknown_fields: Vec<UnknownField>,
 }
 
+/// Optional token accounting carried by a compatible provider.
 #[derive(Clone, Debug, PartialEq)]
 pub struct Usage {
+    /// Input token count when reported.
     pub prompt_tokens: Option<u64>,
+    /// Generated token count when reported.
     pub completion_tokens: Option<u64>,
+    /// Total token count when reported.
     pub total_tokens: Option<u64>,
+    /// Bounded unrecognized usage fields.
     pub unknown_fields: Vec<UnknownField>,
 }
 
+/// Provider error plus bounded unrecognized envelope fields.
 #[derive(Clone, Debug, PartialEq)]
 pub struct ErrorEnvelope {
+    /// Decoded provider error body.
     pub error: ProviderError,
+    /// Bounded unrecognized envelope fields.
     pub unknown_fields: Vec<UnknownField>,
 }
 
+/// Provider-originated error content; message text is not a safe diagnostic.
 #[derive(Clone, PartialEq)]
 pub struct ProviderError {
+    /// Provider error type.
     pub kind: String,
+    /// Optional provider error code in its original JSON form.
     pub code: Option<Value>,
+    /// Provider message, redacted from `Debug` output.
     pub message: String,
+    /// Bounded unrecognized provider-error fields.
     pub unknown_fields: Vec<UnknownField>,
 }
 
@@ -96,6 +132,7 @@ impl fmt::Debug for ProviderError {
     }
 }
 
+/// Decodes one bounded compatible chat chunk or error document.
 pub fn decode_payload(bytes: &[u8], limits: CodecLimits) -> Result<Payload, ProtocolError> {
     if bytes.len() > limits.maximum_wire_bytes() {
         return Err(ProtocolError::new(ProtocolErrorKind::WireLimitExceeded));

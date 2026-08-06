@@ -1,3 +1,5 @@
+#![deny(missing_docs)]
+
 use crate::access::{AccessProfile, AccessStatus};
 use crate::diagnostic::SafeDiagnostic;
 use crate::instance::{ConfiguredInstance, ModelRoute};
@@ -23,6 +25,7 @@ mod validation;
 
 use validation::validate;
 
+/// Borrowed provider, route, access, and host evidence evaluated before dispatch.
 pub struct PreflightContext<'a> {
     driver: &'a DriverDescriptor,
     instance: &'a ConfiguredInstance,
@@ -35,6 +38,7 @@ pub struct PreflightContext<'a> {
 }
 
 impl<'a> PreflightContext<'a> {
+    /// Creates a context without optional model or attached-runtime evidence.
     #[must_use]
     pub fn new(
         driver: &'a DriverDescriptor,
@@ -56,12 +60,14 @@ impl<'a> PreflightContext<'a> {
     }
 
     #[must_use]
+    /// Binds the exact model route selected for the operation.
     pub const fn with_model_route(mut self, model_route: &'a ModelRoute) -> Self {
         self.model_route = Some(model_route);
         self
     }
 
     #[must_use]
+    /// Binds observations from the exact attached model runtime.
     pub const fn with_attached_model_observation(
         mut self,
         observation: &'a AttachedModelObservation,
@@ -72,35 +78,62 @@ impl<'a> PreflightContext<'a> {
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+/// Admission dimension responsible for a preflight rejection.
 pub enum PreflightDimension {
+    /// Driver identity or descriptor mismatch.
     Driver,
+    /// Configured provider instance mismatch.
     Instance,
+    /// Required runtime role is absent.
     Role,
+    /// Execution layer does not match the operation.
     ExecutionLayer,
+    /// Operation shape is unsupported.
     OperationShape,
+    /// Model route is absent or mismatched.
     ModelRoute,
+    /// Model artifact is absent or mismatched.
     ModelArtifact,
+    /// Access evidence does not meet the requirement.
     Access,
+    /// Support authority does not meet the requirement.
     SupportAuthority,
+    /// Configured-instance ownership is not admitted.
     Ownership,
+    /// Execution host or target topology is inconsistent.
     Topology,
+    /// Required host service is unavailable.
     HostService,
+    /// Required capability is unavailable.
     Capability,
+    /// Capability parameter is unavailable or mismatched.
     Constraint,
+    /// Provider extension namespace is not admitted.
     Extension,
+    /// Harness isolation does not meet the requirement.
     HarnessIsolation,
+    /// Session resource or permission access is incompatible.
     SessionAccess,
+    /// Session provider-state policy is incompatible.
     SessionProviderState,
+    /// Realtime-media configuration is incompatible.
     RealtimeMedia,
+    /// Planned connection rollover is incompatible.
     PlannedConnectionRollover,
+    /// Direct tool-continuation requirements are incompatible.
     DirectContinuation,
+    /// Attached-runtime evidence is incompatible.
     AttachedRuntime,
+    /// Interface version is unsupported or unverified where forbidden.
     InterfaceVersion,
+    /// Harness-RPC policy is incompatible.
     HarnessRpcPolicy,
+    /// Harness-configuration posture is incompatible.
     HarnessConfiguration,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Safe pre-dispatch rejection tied to one admission dimension.
 pub struct PreflightFailure {
     dimension: PreflightDimension,
     diagnostic: SafeDiagnostic,
@@ -115,11 +148,13 @@ impl PreflightFailure {
     }
 
     #[must_use]
+    /// Returns the admission dimension that rejected the operation.
     pub const fn dimension(&self) -> PreflightDimension {
         self.dimension
     }
 
     #[must_use]
+    /// Returns the redacted preflight diagnostic.
     pub const fn diagnostic(&self) -> &SafeDiagnostic {
         &self.diagnostic
     }
@@ -166,6 +201,7 @@ pub struct PreflightPlan {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Rejection raised when current evidence no longer matches a prepared plan.
 pub struct StalePreflightPlan {
     diagnostic: SafeDiagnostic,
 }
@@ -193,6 +229,7 @@ impl StalePreflightPlan {
     }
 
     #[must_use]
+    /// Returns the redacted stale-plan diagnostic.
     pub const fn diagnostic(&self) -> &SafeDiagnostic {
         &self.diagnostic
     }
@@ -206,6 +243,9 @@ impl fmt::Display for StalePreflightPlan {
 
 impl Error for StalePreflightPlan {}
 
+/// Validates exact requirements and freezes the successful selection as a plan.
+///
+/// This function performs no provider or host side effects.
 pub fn preflight(
     context: &PreflightContext<'_>,
     requirements: &OperationRequirements,

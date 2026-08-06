@@ -12,12 +12,14 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer inputs for one prepared Qwen model-catalogue request.
 pub struct QwenCatalogueProfileInput {
     request_id: RequestId,
     deadline: Option<Deadline>,
 }
 
 impl QwenCatalogueProfileInput {
+    /// Creates a catalogue request without a deadline.
     #[must_use]
     pub const fn new(request_id: RequestId) -> Self {
         Self {
@@ -26,6 +28,7 @@ impl QwenCatalogueProfileInput {
         }
     }
 
+    /// Adds a catalogue discovery deadline.
     #[must_use]
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
@@ -34,6 +37,7 @@ impl QwenCatalogueProfileInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared Qwen model-catalogue operation.
 pub struct QwenPreparedCatalogue {
     evidence: PreparedOperationEvidence,
     request: ModelCatalogRequest,
@@ -41,21 +45,25 @@ pub struct QwenPreparedCatalogue {
 }
 
 impl QwenPreparedCatalogue {
+    /// Returns the validated preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
+    /// Returns the bound catalogue request.
     #[must_use]
     pub const fn request(&self) -> &ModelCatalogRequest {
         &self.request
     }
 
+    /// Returns portable evidence for the prepared operation.
     #[must_use]
     pub const fn evidence(&self) -> &PreparedOperationEvidence {
         &self.evidence
     }
 
+    /// Starts model discovery with caller-supplied host services.
     pub fn list_models(
         &self,
         services: HostServices,
@@ -67,6 +75,7 @@ impl QwenPreparedCatalogue {
     }
 }
 
+/// Prepares a model-catalogue request from an admitted Qwen integration.
 pub fn prepare_qwen_catalogue(
     prepared: &QwenPreparedIntegration,
     input: QwenCatalogueProfileInput,

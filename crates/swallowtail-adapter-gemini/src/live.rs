@@ -29,9 +29,11 @@ const PROTOCOL_FACADE: &str = crate::GEMINI_LIVE_FACADE_REVISION;
 const INSTANCE_POLICY: &str = "gemini-live-preview-authorization-key-manual-audio";
 
 #[derive(Clone, Default)]
+/// Low-level driver for Gemini Live preview realtime-media sessions.
 pub struct GeminiLiveDriver;
 
 impl GeminiLiveDriver {
+    /// Creates the stateless Live protocol driver.
     #[must_use]
     pub fn new() -> Self {
         Self
@@ -132,6 +134,7 @@ fn validate_capabilities(plan: &PreflightPlan) -> Result<(), RuntimeFailure> {
     Ok(())
 }
 
+/// Describes the hosted Gemini Live realtime-media role and host needs.
 #[must_use]
 pub fn gemini_live_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(

@@ -21,6 +21,7 @@ const ACCESS_NAMESPACE: &str = "pi/delegated-harness-auth";
 const ENDPOINT_AUDIENCE: &str = "pi-harness";
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs that bind one installed Pi package before discovery.
 pub struct PiPreparationInput {
     pub(crate) instance_id: ConfiguredInstanceId,
     pub(crate) instance_revision: InstanceRevision,
@@ -32,6 +33,7 @@ pub struct PiPreparationInput {
 }
 
 impl PiPreparationInput {
+    /// Creates explicit target, environment, and local-access inputs.
     #[must_use]
     pub const fn new(
         instance_id: ConfiguredInstanceId,
@@ -55,6 +57,7 @@ impl PiPreparationInput {
 }
 
 #[derive(Clone, Debug)]
+/// Caller-owned identity, deadline, and cancellation controls for discovery.
 pub struct PiPreparationProbe {
     request_id: RequestId,
     scope_id: ScopeId,
@@ -63,6 +66,7 @@ pub struct PiPreparationProbe {
 }
 
 impl PiPreparationProbe {
+    /// Creates one bounded installed-executable discovery probe.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -80,6 +84,7 @@ impl PiPreparationProbe {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Discovered Pi integration before operation-specific preflight.
 pub struct PiPreparedIntegration {
     environment: EnvironmentRef,
     target: InstalledExecutableTarget,
@@ -91,40 +96,48 @@ pub struct PiPreparedIntegration {
 }
 
 impl PiPreparedIntegration {
+    /// Returns the host-private launch environment.
     #[must_use]
     pub const fn environment(&self) -> &EnvironmentRef {
         &self.environment
     }
 
+    /// Returns the exact executable discovery target.
     #[must_use]
     pub const fn target(&self) -> &InstalledExecutableTarget {
         &self.target
     }
 
+    /// Returns the qualified installed-package observation.
     #[must_use]
     pub const fn observation(&self) -> &InstalledExecutableObservation {
         &self.observation
     }
 
+    /// Returns the local harness access profile.
     #[must_use]
     pub const fn access_profile(&self) -> &AccessProfile {
         &self.access_profile
     }
 
+    /// Returns the admitted access evidence.
     #[must_use]
     pub const fn access_evidence(&self) -> &PreparedAccessEvidence {
         &self.access_evidence
     }
 
+    /// Returns the configured RPC instance.
     #[must_use]
     pub const fn instance(&self) -> &ConfiguredInstance {
         &self.instance
     }
 
+    /// Iterates host services available when preparation completed.
     pub fn available_host_services(&self) -> impl ExactSizeIterator<Item = HostServiceKind> + '_ {
         self.available_host_services.iter().copied()
     }
 
+    /// Reconstructs the low-level RPC driver from prepared inputs.
     #[must_use]
     pub fn low_level_driver(&self) -> PiRpcDriver {
         PiRpcDriver::new(
@@ -136,6 +149,7 @@ impl PiPreparedIntegration {
         )
     }
 
+    /// Rejects execution after the selected host or target has drifted.
     pub fn validate_execution_binding(
         &self,
         execution_host_id: &ExecutionHostId,
@@ -152,6 +166,7 @@ impl PiPreparedIntegration {
     }
 }
 
+/// Discovers and prepares one exact installed Pi RPC route.
 pub async fn prepare_pi_rpc(
     input: PiPreparationInput,
     probe: PiPreparationProbe,

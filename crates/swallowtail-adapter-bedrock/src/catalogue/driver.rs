@@ -23,6 +23,7 @@ use tokio::sync::watch;
 const DRIVER_ID: &str = "swallowtail.amazon-bedrock.catalogue";
 
 #[derive(Clone)]
+/// Low-level SDK-native Bedrock control-plane catalogue driver.
 pub struct BedrockCatalogueDriver {
     binding: BedrockCatalogueBinding,
     executor: Arc<dyn CatalogueSdkExecutor>,
@@ -30,6 +31,7 @@ pub struct BedrockCatalogueDriver {
 
 impl BedrockCatalogueDriver {
     #[must_use]
+    /// Creates a catalogue driver from an exact control-plane binding.
     pub fn new(binding: BedrockCatalogueBinding) -> Self {
         Self {
             binding,
@@ -68,6 +70,7 @@ impl BedrockCatalogueDriver {
 }
 
 #[must_use]
+/// Returns the descriptor for Bedrock foundation-model discovery.
 pub fn bedrock_catalogue_descriptor() -> DriverDescriptor {
     let [sdk_claim, service_claim] = crate::bedrock_catalogue_interface_claims();
     DriverDescriptor::new(

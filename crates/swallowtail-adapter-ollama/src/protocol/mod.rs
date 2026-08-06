@@ -19,15 +19,22 @@ const MAX_CATALOG_MODELS: usize = 256;
 const MAX_RESPONSE_BYTES: usize = 1_048_576;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// One bounded native Ollama HTTP request.
 pub struct Request {
+    /// HTTP method selected by the native endpoint.
     pub method: Method,
+    /// Static native API path.
     pub path: &'static str,
+    /// Optional JSON request body.
     pub body: Option<Vec<u8>>,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+/// HTTP methods used by the qualified native facade.
 pub enum Method {
+    /// Read-only GET request.
     Get,
+    /// JSON POST request.
     Post,
 }
 
@@ -54,18 +61,22 @@ impl ChatMessage {
 }
 
 impl Request {
+    /// Builds a runtime-version observation request.
     pub const fn version() -> Self {
         Self::get("/api/version")
     }
 
+    /// Builds an installed-model inventory request.
     pub const fn installed_models() -> Self {
         Self::get("/api/tags")
     }
 
+    /// Builds a running-model inventory request.
     pub const fn running_models() -> Self {
         Self::get("/api/ps")
     }
 
+    /// Builds a selected-model detail request.
     pub fn show(model: &str) -> Result<Self, RuntimeFailure> {
         encode_json(
             "/api/show",
@@ -75,6 +86,9 @@ impl Request {
         )
     }
 
+    /// Builds a streaming chat request for one prompt.
+    ///
+    /// Reasoning and inline structured output remain explicit optional inputs.
     pub fn chat(
         model: &str,
         content: &str,
@@ -152,11 +166,15 @@ impl Request {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Raw native HTTP response returned by the host transport.
 pub struct Response {
+    /// Numeric HTTP status code.
     pub status: u32,
+    /// Bounded raw response body.
     pub body: Vec<u8>,
 }
 
+/// Requires a successful HTTP status and classifies known provider failures.
 pub fn require_success(
     response: &Response,
     _operation: &'static str,

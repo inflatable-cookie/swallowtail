@@ -19,32 +19,38 @@ use swallowtail_runtime::{
 const JSON_SCHEMA_MEDIA_TYPE: &str = "application/schema+json";
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared one-shot Codex exec structured run.
 pub struct CodexPreparedExec {
     evidence: CodexPreparedEvidence,
     request: StructuredRunRequest,
 }
 
 impl CodexPreparedExec {
+    /// Returns portable evidence for the prepared run.
     #[must_use]
     pub const fn evidence(&self) -> &CodexPreparedEvidence {
         &self.evidence
     }
 
+    /// Returns the validated preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
+    /// Returns the bound structured-run request.
     #[must_use]
     pub const fn request(&self) -> &StructuredRunRequest {
         &self.request
     }
 
+    /// Creates the low-level exec driver bound to this run.
     #[must_use]
     pub fn low_level_driver(&self) -> CodexExecDriver {
         CodexExecDriver::new(self.evidence.environment().clone())
     }
 
+    /// Starts the prepared run with caller-supplied host services.
     pub fn start_run(
         &self,
         services: HostServices,
@@ -55,6 +61,7 @@ impl CodexPreparedExec {
         Box::pin(async move { driver.start_run(plan, request, services).await })
     }
 
+    /// Splits the prepared run into evidence, plan, and request.
     #[must_use]
     pub fn into_parts(self) -> (CodexPreparedEvidence, PreflightPlan, StructuredRunRequest) {
         let plan = self.evidence.plan().clone();
@@ -63,6 +70,7 @@ impl CodexPreparedExec {
 }
 
 impl CodexPreparedIntegration {
+    /// Prepares a one-shot structured exec run.
     pub fn prepare_structured_exec(
         &self,
         input: CodexExecProfileInput,

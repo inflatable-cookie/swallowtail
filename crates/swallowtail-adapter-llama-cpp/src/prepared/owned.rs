@@ -20,6 +20,7 @@ use swallowtail_runtime::{
 };
 
 #[derive(Clone)]
+/// Admitted owned-server executable and artifact before lifecycle preflight.
 pub struct LlamaCppOwnedPreparedIntegration {
     instance: ConfiguredInstance,
     access: AccessProfile,
@@ -30,45 +31,54 @@ pub struct LlamaCppOwnedPreparedIntegration {
 }
 
 impl LlamaCppOwnedPreparedIntegration {
+    /// Returns the configured host-owned ephemeral instance.
     #[must_use]
     pub const fn instance(&self) -> &ConfiguredInstance {
         &self.instance
     }
 
+    /// Returns the selected local-unauthenticated access profile.
     #[must_use]
     pub const fn access_profile(&self) -> &AccessProfile {
         &self.access
     }
 
+    /// Returns the admitted access evidence.
     #[must_use]
     pub const fn access_evidence(&self) -> &PreparedAccessEvidence {
         &self.evidence
     }
 
+    /// Returns the exact model artifact binding selected for acquisition.
     #[must_use]
     pub const fn artifact(&self) -> &ModelArtifactBinding {
         &self.artifact
     }
 
+    /// Returns the exact owned llama.cpp build expected at launch.
     #[must_use]
     pub const fn expected_build(&self) -> &'static str {
         crate::LLAMA_CPP_OWNED_BUILD
     }
 
+    /// Returns the exact owned llama.cpp commit expected at launch.
     #[must_use]
     pub const fn expected_commit(&self) -> &'static str {
         crate::LLAMA_CPP_OWNED_COMMIT
     }
 
+    /// Iterates host services available when preparation completed.
     pub fn available_host_services(&self) -> impl ExactSizeIterator<Item = HostServiceKind> + '_ {
         self.services.iter().copied()
     }
 
+    /// Creates the exact low-level owned-server lifecycle driver.
     #[must_use]
     pub fn low_level_driver(&self) -> LlamaCppOwnedDriver {
         LlamaCppOwnedDriver::new()
     }
 
+    /// Prepares artifact acquisition, process launch, readiness, and cleanup authority.
     pub fn prepare_serving_start(
         &self,
         scope: ScopeId,
@@ -110,6 +120,7 @@ impl LlamaCppOwnedPreparedIntegration {
     }
 }
 
+/// Admits one owned llama.cpp executable, artifact, and model route.
 pub fn prepare_llama_cpp_owned(
     input: LlamaCppOwnedPreparationInput,
     services: &HostServices,
@@ -142,6 +153,7 @@ pub fn prepare_llama_cpp_owned(
 }
 
 #[derive(Clone)]
+/// Prepared host-owned serving start ready for explicit launch.
 pub struct LlamaCppPreparedServingStart {
     evidence: LlamaCppOwnedPreparedEvidence,
     request: StartServingRequest,
@@ -149,26 +161,31 @@ pub struct LlamaCppPreparedServingStart {
 }
 
 impl LlamaCppPreparedServingStart {
+    /// Returns the lifecycle operation's preparation evidence.
     #[must_use]
     pub const fn evidence(&self) -> &LlamaCppOwnedPreparedEvidence {
         &self.evidence
     }
 
+    /// Returns the immutable lifecycle preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &PreflightPlan {
         self.evidence.plan()
     }
 
+    /// Returns the exact start-serving request.
     #[must_use]
     pub const fn request(&self) -> &StartServingRequest {
         &self.request
     }
 
+    /// Returns the bound low-level owned-server driver.
     #[must_use]
     pub fn low_level_driver(&self) -> LlamaCppOwnedDriver {
         self.driver.clone()
     }
 
+    /// Acquires the artifact, launches the server, and returns its owned handle.
     pub fn start(
         &self,
         services: HostServices,

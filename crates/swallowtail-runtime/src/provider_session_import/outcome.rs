@@ -12,6 +12,7 @@ use swallowtail_core::{
     SafeDiagnostic, SessionRef,
 };
 
+/// One bounded provider-session catalogue page and its continuation evidence.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ProviderSessionCatalogueOutcome {
     candidates: Vec<ProviderSessionCandidate>,
@@ -20,6 +21,7 @@ pub struct ProviderSessionCatalogueOutcome {
 }
 
 impl ProviderSessionCatalogueOutcome {
+    /// Validates and creates a complete catalogue-page outcome.
     pub fn new(
         plan: &ProviderSessionCataloguePlan,
         request: &ProviderSessionCatalogueRequest,
@@ -106,21 +108,25 @@ impl ProviderSessionCatalogueOutcome {
         })
     }
 
+    /// Iterates candidates in provider-supplied page order.
     pub fn candidates(&self) -> impl ExactSizeIterator<Item = &ProviderSessionCandidate> {
         self.candidates.iter()
     }
 
     #[must_use]
+    /// Returns the next bounded cursor, when more provider data is available.
     pub const fn next_cursor(&self) -> Option<&ProviderSessionCursor> {
         self.next_cursor.as_ref()
     }
 
     #[must_use]
+    /// Returns operation cleanup truth.
     pub const fn cleanup(&self) -> &CleanupOutcome {
         &self.cleanup
     }
 }
 
+/// Exact read-only evidence observed while revalidating an import candidate.
 #[derive(Clone, Eq, PartialEq)]
 pub struct ProviderSessionImportRevalidation {
     candidate_id: crate::ProviderSessionCandidateId,
@@ -131,6 +137,7 @@ pub struct ProviderSessionImportRevalidation {
 }
 
 impl ProviderSessionImportRevalidation {
+    /// Creates exact revalidation evidence for the selected candidate.
     #[must_use]
     pub const fn new(
         candidate_id: crate::ProviderSessionCandidateId,
@@ -149,16 +156,19 @@ impl ProviderSessionImportRevalidation {
     }
 
     #[must_use]
+    /// Returns the revalidated operation-local candidate identity.
     pub const fn candidate_id(&self) -> &crate::ProviderSessionCandidateId {
         &self.candidate_id
     }
 
     #[must_use]
+    /// Returns the revalidated provider-session activity state.
     pub const fn activity(&self) -> ProviderSessionActivityState {
         self.activity
     }
 
     #[must_use]
+    /// Returns the revalidated import availability.
     pub const fn availability(&self) -> ProviderSessionImportAvailability {
         self.availability
     }
@@ -177,6 +187,7 @@ impl fmt::Debug for ProviderSessionImportRevalidation {
     }
 }
 
+/// Successful explicit import result containing separately usable resume authority.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ProviderSessionImportOutcome {
     binding: SessionResumeBinding,
@@ -185,6 +196,7 @@ pub struct ProviderSessionImportOutcome {
 }
 
 impl ProviderSessionImportOutcome {
+    /// Validates revalidation evidence and issues one exact resume binding.
     pub fn new(
         plan: &ProviderSessionImportPlan,
         request: &ProviderSessionImportRequest,
@@ -246,16 +258,19 @@ impl ProviderSessionImportOutcome {
     }
 
     #[must_use]
+    /// Returns the exact imported session-resume binding.
     pub const fn binding(&self) -> &SessionResumeBinding {
         &self.binding
     }
 
     #[must_use]
+    /// Returns the read-only evidence used to issue the binding.
     pub const fn revalidation(&self) -> &ProviderSessionImportRevalidation {
         &self.revalidation
     }
 
     #[must_use]
+    /// Returns operation cleanup truth.
     pub const fn cleanup(&self) -> &CleanupOutcome {
         &self.cleanup
     }

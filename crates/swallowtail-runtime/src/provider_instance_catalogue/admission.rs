@@ -3,6 +3,10 @@ use swallowtail_core::{AccessProfile, ConfiguredInstance, DriverDescriptor};
 
 use super::ConfiguredProviderModelCatalogueInput;
 
+/// Authority-bearing input used to project one safe configured-instance record.
+///
+/// Admission validates every supplied route and optional model catalogue before
+/// discarding executable handles, credentials, and raw target references.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ConfiguredProviderInstanceAdmission {
     pub(super) driver: DriverDescriptor,
@@ -14,6 +18,7 @@ pub struct ConfiguredProviderInstanceAdmission {
 }
 
 impl ConfiguredProviderInstanceAdmission {
+    /// Creates admission input for an exact driver, instance, and access profile.
     #[must_use]
     pub const fn new(
         driver: DriverDescriptor,
@@ -32,6 +37,7 @@ impl ConfiguredProviderInstanceAdmission {
     }
 
     #[must_use]
+    /// Adds the exact prepared routes to expose as non-executable evidence.
     pub fn with_prepared_routes(
         mut self,
         routes: impl IntoIterator<Item = PreparedOperationEvidence>,
@@ -41,6 +47,7 @@ impl ConfiguredProviderInstanceAdmission {
     }
 
     #[must_use]
+    /// Adds an available or unavailable model-catalogue result and its source.
     pub fn with_model_catalogue(
         mut self,
         catalogue: ConfiguredProviderModelCatalogueInput,

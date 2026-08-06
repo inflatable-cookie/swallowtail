@@ -304,14 +304,13 @@ remote ACP operations -> swallowtail-transport-acp-remote -> core/runtime/protoc
 ```
 
 The active public release topology is recorded in
-`release-and-package-topology.md` and governed by Contract 036. All 26
+`release-and-package-topology.md` and governed by Contract 036. All 27
 workspace libraries are separately consumable public packages under one
-coordinated pre-1.0 version. The three-stage publication order is core plus
-protocols, then runtime, then support, transport, and adapters. Current
-manifests realize the compatible registry dependencies, resolver 3,
-Rust-version floors, and package metadata rules. Roadmap g02.001 card 003 adds
-the deterministic local metadata, API-declaration, documentation, MSRV,
-content, clean-snapshot assembly, and extracted-package-family gates.
+coordinated pre-1.0 version. The initial release is an exact GitHub source tag,
+not a registry publication. Current manifests realize the acyclic workspace
+dependencies, resolver 3, Rust-version floors, and shared package metadata.
+Roadmap g03.043 replaces the stale registry candidate path with semantic API,
+documentation, dependency-policy, source-consumer, and exact-tag evidence.
 
 Crate status:
 

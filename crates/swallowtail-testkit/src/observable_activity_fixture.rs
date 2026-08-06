@@ -5,17 +5,28 @@ mod interaction;
 mod lifecycle;
 mod support;
 
+/// Observable-activity fidelity or semantic scenario represented by a trace.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum ObservableActivityFixtureCase {
+    /// Started, updated, and completed lifecycle.
     CompleteLifecycle,
+    /// Update and completion without an explicit start.
     UpdateAndCompletion,
+    /// Completion-only lifecycle.
     CompletionOnly,
+    /// Route without observable activity.
     Unavailable,
+    /// Activity correlated to a provider callback.
     CallbackCorrelation,
+    /// Activity correlated to a consumer-owned direct tool.
     DirectToolCorrelation,
+    /// Non-terminal assistant text.
     IntermediateAssistant,
+    /// Terminal assistant answer text.
     FinalAssistant,
+    /// Provider-safe reasoning summary.
     ReasoningSummary,
+    /// Namespaced unmodelled semantic activity.
     UnknownSemantic,
 }
 
@@ -27,6 +38,7 @@ pub struct ObservableActivityTraceFixture {
 }
 
 impl ObservableActivityTraceFixture {
+    /// Builds the prepared profile and event trace for one scenario.
     #[must_use]
     pub fn for_case(case: ObservableActivityFixtureCase) -> Self {
         match case {
@@ -47,11 +59,13 @@ impl ObservableActivityTraceFixture {
         }
     }
 
+    /// Returns the route's prepared observable-activity profile.
     #[must_use]
     pub const fn profile(&self) -> &ObservableActivityProfile {
         &self.profile
     }
 
+    /// Returns the projected operation events in observation order.
     #[must_use]
     pub fn events(&self) -> &[RuntimeEvent] {
         &self.events

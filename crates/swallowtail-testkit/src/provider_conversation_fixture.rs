@@ -15,19 +15,30 @@ use swallowtail_runtime::{
     LoadSessionRequest, OpenSessionRequest, RequestId, SessionResumeBinding,
 };
 
+/// Valid or intentionally incomplete provider-conversation preflight scenario.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum ProviderConversationPreflightCase {
+    /// Delete-on-close conversation with complete requirements.
     Canonical,
+    /// Preserved durable conversation with complete requirements.
     CanonicalRetained,
+    /// Provider session state is prohibited by policy.
     PolicyProhibited,
+    /// Requirements omit durable retention.
     MissingDurableRequirement,
+    /// Requirements omit conversation deletion authority.
     MissingConversationDeletionRequirement,
+    /// Requirements omit item deletion authority.
     MissingItemDeletionRequirement,
+    /// Advertised capabilities omit durable retention.
     AdvertisedMissingDurable,
+    /// Advertised capabilities omit conversation deletion.
     AdvertisedMissingConversationDeletion,
+    /// Advertised capabilities omit item deletion.
     AdvertisedMissingItemDeletion,
 }
 
+/// Pure provider-conversation preflight and request fixture.
 pub struct ProviderConversationPreflightFixture {
     driver: DriverDescriptor,
     instance: ConfiguredInstance,
@@ -39,6 +50,7 @@ pub struct ProviderConversationPreflightFixture {
 }
 
 impl ProviderConversationPreflightFixture {
+    /// Builds one selected conversation policy and capability scenario.
     #[must_use]
     pub fn for_case(case: ProviderConversationPreflightCase) -> Self {
         let adapter_id = valid(AdapterId::new, "fixture.provider-conversation");
@@ -131,10 +143,12 @@ impl ProviderConversationPreflightFixture {
         }
     }
 
+    /// Runs pure preflight against the fixture context.
     pub fn preflight(&self) -> Result<PreflightPlan, PreflightFailure> {
         preflight(&self.context(), &self.requirements)
     }
 
+    /// Builds a resource-free open request from the fixture plan.
     #[must_use]
     pub fn open_request(&self) -> OpenSessionRequest {
         OpenSessionRequest::resource_free_from_plan(
@@ -147,6 +161,7 @@ impl ProviderConversationPreflightFixture {
         .expect("conversation request derives from plan")
     }
 
+    /// Builds a durable resource-free resume binding from the fixture plan.
     #[must_use]
     pub fn retained_binding(&self) -> SessionResumeBinding {
         let plan = self
@@ -167,6 +182,7 @@ impl ProviderConversationPreflightFixture {
         )
     }
 
+    /// Builds a retained-conversation load request from the fixture plan.
     #[must_use]
     pub fn retained_load_request(&self) -> LoadSessionRequest {
         let plan = self
@@ -181,11 +197,13 @@ impl ProviderConversationPreflightFixture {
         .expect("retained load request derives from plan")
     }
 
+    /// Records one simulated provider-side effect.
     pub fn record_provider_side_effect(&self) {
         self.provider_side_effects
             .set(self.provider_side_effects.get() + 1);
     }
 
+    /// Returns the number of simulated provider-side effects.
     #[must_use]
     pub fn provider_side_effect_count(&self) -> usize {
         self.provider_side_effects.get()

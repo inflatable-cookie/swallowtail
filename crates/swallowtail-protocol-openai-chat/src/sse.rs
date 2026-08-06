@@ -1,17 +1,22 @@
 use crate::{CodecLimits, ProtocolError, ProtocolErrorKind};
 
+/// One decoded server-sent event from a compatible chat stream.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum SseRecord {
+    /// Bounded bytes from one or more `data` lines.
     Data(Vec<u8>),
+    /// The exact `[DONE]` stream sentinel.
     Done,
 }
 
+/// Incremental, bounded decoder for compatible chat SSE records.
 pub struct SseDecoder {
     limits: CodecLimits,
     pending: Vec<u8>,
 }
 
 impl SseDecoder {
+    /// Creates an empty decoder with explicit limits.
     #[must_use]
     pub fn new(limits: CodecLimits) -> Self {
         Self {
@@ -20,6 +25,7 @@ impl SseDecoder {
         }
     }
 
+    /// Adds bytes and returns every complete record now available.
     pub fn push(&mut self, input: &[u8]) -> Result<Vec<SseRecord>, ProtocolError> {
         if self.pending.len().saturating_add(input.len()) > self.limits.maximum_wire_bytes() {
             return Err(ProtocolError::new(ProtocolErrorKind::BufferLimitExceeded));
@@ -39,6 +45,7 @@ impl SseDecoder {
         Ok(records)
     }
 
+    /// Verifies that the input ended outside a partial SSE record.
     pub fn finish(self) -> Result<(), ProtocolError> {
         if self.pending.iter().all(u8::is_ascii_whitespace) {
             Ok(())

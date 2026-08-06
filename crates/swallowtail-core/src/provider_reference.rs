@@ -6,10 +6,12 @@ const MAX_PROVIDER_ACTIVITY_REF_BYTES: usize = 512;
 
 macro_rules! opaque_provider_reference {
     ($name:ident, $field:literal) => {
+        #[doc = concat!("Opaque provider-owned ", $field, ".")]
         #[derive(Clone, Eq, Hash, Ord, PartialEq, PartialOrd)]
         pub struct $name(String);
 
         impl $name {
+            #[doc = concat!("Creates a ", $field, " after rejecting blank text.")]
             pub fn new(value: impl Into<String>) -> Result<Self, ValueRequired> {
                 required_text($field, value).map(Self)
             }
@@ -39,7 +41,9 @@ opaque_provider_reference!(TurnRef, "turn reference");
 /// Qualified scalar representation of an opaque provider request reference.
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum ProviderRequestRepresentation {
+    /// A non-empty provider string.
     Text,
+    /// A provider signed integer preserved in canonical decimal form.
     SignedInteger,
 }
 
@@ -96,6 +100,7 @@ impl fmt::Debug for ProviderRequestRef {
 pub struct ProviderActivityRef(String);
 
 impl ProviderActivityRef {
+    /// Creates a bounded provider activity reference without exposing its value.
     pub fn new(value: impl Into<String>) -> Result<Self, InvalidProviderActivityRef> {
         let value = value.into();
         if value.trim().is_empty() {
@@ -135,6 +140,7 @@ impl fmt::Display for ProviderActivityRef {
     }
 }
 
+/// Safe validation failure for a provider activity reference.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct InvalidProviderActivityRef {
     diagnostic: SafeDiagnostic,
@@ -147,6 +153,7 @@ impl InvalidProviderActivityRef {
         }
     }
 
+    /// Returns the safe diagnostic describing the rejected reference.
     #[must_use]
     pub const fn diagnostic(&self) -> &SafeDiagnostic {
         &self.diagnostic

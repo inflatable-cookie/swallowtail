@@ -23,18 +23,21 @@ const MAXIMUM_MODELS: usize = 2_048;
 const MAXIMUM_TEXT_BYTES: usize = 256;
 
 #[derive(Clone, Default)]
+/// Low-level driver for the bounded OpenAI Models catalogue.
 pub struct OpenAiModelsDriver {
     transport: CurlTransport,
 }
 
 impl OpenAiModelsDriver {
     #[must_use]
+    /// Creates a Models driver using the adapter's HTTP transport.
     pub fn new() -> Self {
         Self::default()
     }
 }
 
 #[must_use]
+/// Returns the descriptor for OpenAI public model discovery.
 pub fn openai_models_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(
         AdapterIdentity::new(

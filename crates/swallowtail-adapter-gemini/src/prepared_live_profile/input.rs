@@ -2,6 +2,7 @@ use swallowtail_core::{PlannedConnectionRolloverPolicy, RealtimeMediaConfig};
 use swallowtail_runtime::{Deadline, RequestId};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Consumer inputs for one bounded Gemini Live media session.
 pub struct GeminiLiveSessionProfileInput {
     request_id: RequestId,
     config: RealtimeMediaConfig,
@@ -10,6 +11,7 @@ pub struct GeminiLiveSessionProfileInput {
 }
 
 impl GeminiLiveSessionProfileInput {
+    /// Creates a profile with explicit media and rollover policy.
     #[must_use]
     pub const fn new(
         request_id: RequestId,
@@ -25,6 +27,7 @@ impl GeminiLiveSessionProfileInput {
         }
     }
 
+    /// Creates the qualified manual PCM profile with one planned rollover.
     #[must_use]
     pub fn manual_pcm_with_one_rollover(request_id: RequestId, deadline: Option<Deadline>) -> Self {
         Self::new(

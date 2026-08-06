@@ -18,39 +18,69 @@ use swallowtail_runtime::{
 mod serving;
 mod working_resource_io;
 
+/// One host-service interaction recorded by [`RecordingHostServices`].
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum RecordedHostCall {
+    /// A scoped task was spawned.
     TaskSpawn,
+    /// A scoped task handle was joined.
     TaskJoin,
+    /// Blocking work was requested.
     BlockingWork,
+    /// Monotonic time was observed.
     TimeNow,
+    /// A deadline wait was requested.
     TimeWaitUntil,
+    /// A child process was started.
     ProcessStart,
+    /// Graceful process stop was requested.
     ProcessGracefulStop,
+    /// Forced process stop was requested.
     ProcessForceStop,
+    /// Process completion was awaited.
     ProcessWait,
+    /// Network access was authorized.
     NetworkAuthorize,
+    /// A credential lease was acquired.
     CredentialAcquire,
+    /// A credential lease was released.
     CredentialRelease,
+    /// A working resource was resolved.
     WorkingResourceResolve,
+    /// A temporary working resource was created.
     WorkingResourceCreateTemporary,
+    /// A working-resource lease was released.
     WorkingResourceRelease,
+    /// Text was read through working-resource I/O.
     WorkingResourceReadText,
+    /// Text was written through working-resource I/O.
     WorkingResourceWriteText,
+    /// An attachment was materialized as a file.
     AttachmentMaterializeFile,
+    /// A materialized attachment was released.
     AttachmentFileRelease,
+    /// A model-artifact lease was acquired.
     ModelArtifactAcquire,
+    /// A model-artifact lease was released.
     ModelArtifactRelease,
+    /// A serving endpoint was published.
     ServingEndpointPublish,
+    /// A serving endpoint was released.
     ServingEndpointRelease,
+    /// A schema was materialized as a file.
     SchemaMaterializeFile,
+    /// A materialized schema was released.
     SchemaFileRelease,
+    /// A safe diagnostic was observed.
     DiagnosticObserve,
 }
 
+/// Configured result returned by recording host services.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum RecordingOutcome {
+    /// Every fallible service interaction succeeds.
     Succeed,
+    /// Every fallible service interaction returns this safe diagnostic.
     Fail(SafeDiagnostic),
 }
 
@@ -349,12 +379,14 @@ impl DiagnosticObserver for RecordingService {
     }
 }
 
+/// Complete in-memory host service registry that records every interaction.
 pub struct RecordingHostServices {
     state: Arc<RecordingState>,
     services: HostServices,
 }
 
 impl RecordingHostServices {
+    /// Creates recording services under the canonical fixture host identity.
     #[must_use]
     pub fn new(outcome: RecordingOutcome) -> Self {
         Self::for_host(
@@ -363,6 +395,7 @@ impl RecordingHostServices {
         )
     }
 
+    /// Creates recording services under an explicit execution host identity.
     #[must_use]
     pub fn for_host(execution_host_id: ExecutionHostId, outcome: RecordingOutcome) -> Self {
         let state = Arc::new(RecordingState::default());
@@ -387,16 +420,19 @@ impl RecordingHostServices {
         Self { state, services }
     }
 
+    /// Returns the provider-neutral host service registry.
     #[must_use]
     pub const fn services(&self) -> &HostServices {
         &self.services
     }
 
+    /// Returns an ordered snapshot of all recorded calls.
     #[must_use]
     pub fn calls(&self) -> Vec<RecordedHostCall> {
         self.state.calls()
     }
 
+    /// Counts occurrences of one host-service interaction.
     #[must_use]
     pub fn count(&self, call: RecordedHostCall) -> usize {
         self.calls().iter().filter(|seen| **seen == call).count()
@@ -409,6 +445,7 @@ impl Default for RecordingHostServices {
     }
 }
 
+/// Resolves a fixture future that is required to be immediately ready.
 pub fn poll_immediate<T>(future: impl Future<Output = T>) -> T {
     let mut future = Box::pin(future);
     let mut context = Context::from_waker(Waker::noop());

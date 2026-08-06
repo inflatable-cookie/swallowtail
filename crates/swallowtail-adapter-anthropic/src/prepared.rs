@@ -15,6 +15,7 @@ use swallowtail_runtime::{
 pub(crate) const ENDPOINT_AUDIENCE: &str = "api.anthropic.com";
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Explicit host, endpoint, and API-key evidence used for Messages preparation.
 pub struct AnthropicPreparationInput {
     instance_id: ConfiguredInstanceId,
     instance_revision: InstanceRevision,
@@ -26,6 +27,7 @@ pub struct AnthropicPreparationInput {
 
 impl AnthropicPreparationInput {
     #[must_use]
+    /// Creates preparation input without performing provider work.
     pub const fn new(
         instance_id: ConfiguredInstanceId,
         instance_revision: InstanceRevision,
@@ -46,6 +48,7 @@ impl AnthropicPreparationInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Prepared Anthropic Messages integration bound to one instance and host.
 pub struct AnthropicPreparedIntegration {
     access_profile: AccessProfile,
     access_evidence: PreparedAccessEvidence,
@@ -55,29 +58,35 @@ pub struct AnthropicPreparedIntegration {
 
 impl AnthropicPreparedIntegration {
     #[must_use]
+    /// Returns the exact public API-key access profile.
     pub const fn access_profile(&self) -> &AccessProfile {
         &self.access_profile
     }
 
     #[must_use]
+    /// Returns the access evidence and its provenance.
     pub const fn access_evidence(&self) -> &PreparedAccessEvidence {
         &self.access_evidence
     }
 
     #[must_use]
+    /// Returns the prepared configured instance.
     pub const fn instance(&self) -> &ConfiguredInstance {
         &self.instance
     }
 
+    /// Iterates the host services present during preparation.
     pub fn available_host_services(&self) -> impl ExactSizeIterator<Item = HostServiceKind> + '_ {
         self.available_host_services.iter().copied()
     }
 
     #[must_use]
+    /// Returns the public low-level Messages driver.
     pub fn low_level_driver(&self) -> crate::AnthropicDirectDriver {
         crate::AnthropicDirectDriver::new()
     }
 
+    /// Rejects execution-host or endpoint drift from the prepared binding.
     pub fn validate_execution_binding(
         &self,
         execution_host_id: &ExecutionHostId,
@@ -96,6 +105,7 @@ impl AnthropicPreparedIntegration {
     }
 }
 
+/// Prepares Anthropic Messages integration without provider effects.
 pub fn prepare_anthropic_direct(
     input: AnthropicPreparationInput,
     services: &HostServices,

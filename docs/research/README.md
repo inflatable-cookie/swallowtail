@@ -119,3 +119,4 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [109 Oh My Pi RPC Route Qualification](109-oh-my-pi-rpc-route-qualification.md)
 - [110 Integration Guide Coverage Audit](110-integration-guide-coverage-audit.md)
 - [111 v0.1.0 Source Release Readiness Audit](111-v0-1-0-source-release-readiness-audit.md)
+- [112 Muse Code Installed Route Qualification](112-muse-code-installed-route-qualification.md)

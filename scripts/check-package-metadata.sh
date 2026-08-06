@@ -7,12 +7,14 @@ cd "$release_repo_root"
 release_metadata=$(mktemp)
 release_edges=$(mktemp)
 release_names=$(mktemp)
-trap 'rm -f "$release_metadata" "$release_edges" "$release_names"' EXIT
+release_expected_names=$(mktemp)
+release_expected_edges=$(mktemp)
+trap 'rm -f "$release_metadata" "$release_edges" "$release_names" "$release_expected_names" "$release_expected_edges"' EXIT
 
 cargo metadata --no-deps --format-version 1 > "$release_metadata"
 
 jq -e '
-  (.packages | length) == 27 and
+  (.packages | length) == 28 and
   all(.packages[];
     .version == "0.1.1" and
     .edition == "2024" and
@@ -30,6 +32,7 @@ jq -e '
          .name == "swallowtail-adapter-opencode" or
          .name == "swallowtail-adapter-ollama" or
          .name == "swallowtail-adapter-oh-my-pi" or
+         .name == "swallowtail-adapter-muse" or
          .name == "swallowtail-adapter-pi" or
          .name == "swallowtail-adapter-qwen") and
         .features == {"live-probes":[]}
@@ -49,7 +52,11 @@ jq -e '
 ' "$release_metadata" > /dev/null
 
 jq -r '.packages[].name' "$release_metadata" | LC_ALL=C sort > "$release_names"
-diff -u release-baselines/public-api-0.1.0/packages.txt "$release_names"
+{
+  cat release-baselines/public-api-0.1.0/packages.txt
+  printf 'swallowtail-adapter-muse\n'
+} | LC_ALL=C sort > "$release_expected_names"
+diff -u "$release_expected_names" "$release_names"
 
 jq -r '
   .packages[] as $package |
@@ -59,6 +66,11 @@ jq -r '
   @tsv
 ' "$release_metadata" | LC_ALL=C sort > "$release_edges"
 
-diff -u release-baselines/internal-dependencies-0.1.1.tsv "$release_edges"
+{
+  cat release-baselines/internal-dependencies-0.1.1.tsv
+  printf 'swallowtail-adapter-muse\tswallowtail-core\t^0.1.1\n'
+  printf 'swallowtail-adapter-muse\tswallowtail-runtime\t^0.1.1\n'
+} | LC_ALL=C sort > "$release_expected_edges"
+diff -u "$release_expected_edges" "$release_edges"
 
-printf 'package metadata and dependency topology passed for 27 crates\n'
+printf 'current-source metadata passed for 28 crates; immutable release baseline remains 27\n'

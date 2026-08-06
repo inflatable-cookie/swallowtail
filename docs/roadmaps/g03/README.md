@@ -46,6 +46,7 @@ visible as unverified newer unless exact evidence requires rejection.
 | Give agents and operators deep traceable instructions for every production route and portable feature. | completed | Contracts 037, 044-052 | `g03.042` |
 | Prepare the 27-package workspace for an initial `v0.1.0` GitHub source tag without registry publication. | completed | Contracts 009, 022, 029, 036-037, 052; Research 111 | `g03.043` |
 | Ship compatible post-tag repairs as an exact CI-green `v0.1.1` source tag. | completed | Contracts 001, 009, 022, 036, 049, 052 | `g03.044` |
+| Add Meta Muse Code through its exact installed headless event protocol without chasing every new harness. | completed | Contracts 005-006, 009-010, 023, 029, 032-033, 036-037, 039-041, 044-045, 051-052 | `g03.045` |
 | Periodically reconcile deferred gates, route truth, and generation capacity. | planned | Contract 001 | recurring checkpoints |
 
 ## Current Checkpoint
@@ -472,8 +473,28 @@ visible as unverified newer unless exact evidence requires rejection.
 - [042 Complete Integration Guide System](042-complete-integration-guide-system.md) — completed
 - [043 v0.1.0 Source Release Readiness](043-v0-1-0-source-release-readiness.md) — completed
 - [044 v0.1.1 Source Patch Release](044-v0-1-1-source-patch-release.md) — completed
+- [045 Muse Code Headless Foundation](045-muse-code-headless-foundation.md) — completed
 
 ## Checkpoint
+
+Research 112 qualifies exact Muse Code `0.1.0-R708.1` for one dedicated
+read-only headless route. Card 135 freezes the signed payload, mutable launcher,
+command surface, complete echo stream, sanitized Meta success projection,
+strict event bounds, and ten fail-closed mutations. The package-independent
+corpus validator passes without another authenticated request. Card 136 adds
+the exact-payload discovery and low-level structured-run driver with strict
+ownership, model, task, terminal, bounds, cancellation, deadline, exit-source,
+and joined-cleanup evidence. Card 137 adds provider-owned local Meta account
+access without credential extraction, exact prepared provider/model/effort,
+read-only resource and lifecycle agreement, immutable evidence, and a low-level
+escape hatch. Card 138 adds the 28th current-source package and 34th production
+route without changing the immutable 27-package, 33-route tag baselines. Guide,
+example, matrix, Rustdoc, semantic API, focused, extracted-package, installed,
+and operator-authorized Meta/Spark/low gates pass. Live evidence also preserves
+a bounded post-terminal workspace-branch observation as non-authoritative
+unknown activity. The direct Meta Model API, retained sessions, recovery,
+task-list snapshots, and subagent authority remain separate later gates. The
+generation returns to its evidence gate.
 
 Roadmaps g03.035 through g03.038 are complete. Research 106 promotes a weaker
 exact attachment boundary plus explicit fresh replacement; Contract 050 also

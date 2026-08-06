@@ -85,13 +85,16 @@ if documented_packages != expected_packages:
     extra = sorted(documented_packages - expected_packages)
     fail(f"release package inventory drifted; missing={missing}, extra={extra}")
 
-expected_routes = set(
+current_routes = set(
     re.findall(
         r"^\| `([^`]+)` \| `swallowtail-adapter-[^`]+`;",
         matrix,
         re.MULTILINE,
     )
 )
+expected_routes = set(read("release-baselines/production-routes-0.1.1.txt").splitlines())
+if not expected_routes <= current_routes or "muse-code.headless" not in current_routes:
+    fail("current route inventory lost tagged routes or the additive Muse route")
 release_route_section = section(release, "## Production Routes", "## Highlights")
 documented_routes = set(re.findall(r"^- `([^`]+)`$", release_route_section, re.MULTILINE))
 if documented_routes != expected_routes:
@@ -113,5 +116,6 @@ if "security/advisories/new" not in read("SECURITY.md"):
 
 print(
     "consumer front door passed: "
-    f"{len(expected_packages)} packages, {len(expected_routes)} routes, exact source tag"
+    f"{len(expected_packages)} tagged packages, {len(expected_routes)} tagged routes, "
+    f"{len(current_routes)} current routes, exact source tag"
 )

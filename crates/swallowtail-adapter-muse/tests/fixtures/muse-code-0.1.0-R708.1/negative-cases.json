@@ -1,0 +1,15 @@
+{
+  "fixture_schema": 1,
+  "cases": [
+    {"name": "malformed_json", "mutation": "invalid-json", "expected": "malformed_record"},
+    {"name": "oversized_record", "mutation": "record-over-maximum", "expected": "record_limit_exceeded"},
+    {"name": "oversized_stream", "mutation": "stream-over-maximum", "expected": "stream_limit_exceeded"},
+    {"name": "too_many_records", "mutation": "record-count-over-maximum", "expected": "record_count_exceeded"},
+    {"name": "reordered_sequence", "mutation": "swap-adjacent-records", "expected": "sequence_mismatch"},
+    {"name": "cross_session", "mutation": "replace-one-session-id", "expected": "session_mismatch"},
+    {"name": "cross_command", "mutation": "replace-one-causation-id", "expected": "causation_mismatch"},
+    {"name": "post_terminal", "mutation": "append-record-after-terminal", "expected": "post_terminal_record"},
+    {"name": "mismatched_model", "mutation": "replace-model-id", "expected": "model_mismatch"},
+    {"name": "unknown_oversized", "mutation": "unknown-payload-over-maximum", "expected": "unknown_payload_limit_exceeded"}
+  ]
+}

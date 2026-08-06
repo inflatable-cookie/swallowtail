@@ -1,0 +1,32 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-08-06",
+  "release": "0.1.0-R708.1",
+  "reported_version": "Muse Code 0.1.0 (0.1.0-R708.1)",
+  "launcher": {
+    "basename": "muse",
+    "kind": "bash-launcher",
+    "size_bytes": 33118,
+    "sha256": "21c66e550a71cac2e4af081cc33d10bec81993d0043ec492761fc449e6c440f6",
+    "may_update_before_delegation": true,
+    "selected_as_runtime_artifact": false
+  },
+  "payload": {
+    "basename": "muse-bin-0.1.0-R708.1",
+    "kind": "mach-o-arm64-executable",
+    "size_bytes": 101945920,
+    "sha256": "4290bfafa5bbb81a6fd493aaea12f848c789b1d22edfa0c4b849151deba3e70c",
+    "code_sign_identifier": "muse-arm64",
+    "code_sign_authority": "Developer ID Application: Meta Platforms, Inc. (V9WTTPBFK9)",
+    "team_identifier": "V9WTTPBFK9",
+    "runtime_version": "26.5.0",
+    "selected_as_runtime_artifact": true
+  },
+  "direct_payload_probe": {
+    "version_succeeded": true,
+    "help_succeeded": true,
+    "echo_jsonl_succeeded": true,
+    "launcher_update_path_executed": false,
+    "launcher_private_mutable_state_required": false
+  }
+}

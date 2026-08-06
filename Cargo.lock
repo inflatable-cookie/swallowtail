@@ -2890,6 +2890,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "swallowtail-adapter-muse"
+version = "0.1.1"
+dependencies = [
+ "futures-channel",
+ "futures-executor",
+ "futures-util",
+ "serde_json",
+ "swallowtail-core",
+ "swallowtail-host-local",
+ "swallowtail-runtime",
+ "swallowtail-testkit",
+]
+
+[[package]]
 name = "swallowtail-adapter-oh-my-pi"
 version = "0.1.1"
 dependencies = [

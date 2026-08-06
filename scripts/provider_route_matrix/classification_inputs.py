@@ -1,4 +1,5 @@
 no_classification_overrides = {
+    ("usage_evidence", "muse-code.headless"): "selected_surface_absence",
     (
         "usage_evidence",
         "kimi-code.acp + kimi-code.headless",
@@ -11,6 +12,8 @@ no_classification_overrides = {
     ("provider_session_import", "oh-my-pi.rpc"): "selected_surface_absence",
 }
 generation_control_classifications = {
+    ("output_token_limit", "muse-code.headless"): "selected_surface_absence",
+    ("structured_output", "muse-code.headless"): "selected_surface_absence",
     ("output_token_limit", "oh-my-pi.rpc"): "selected_surface_absence",
     ("structured_output", "oh-my-pi.rpc"): "selected_surface_absence",
     ("output_token_limit", "antigravity.catalogue + antigravity.headless"): "upstream_unsupported",
@@ -63,6 +66,11 @@ generation_control_classifications = {
     ("structured_output", "grok-build.acp"): "upstream_unsupported",
 }
 input_callback_classifications = {
+    ("attachments", "muse-code.headless"): "selected_surface_absence",
+    ("consumer_tool_exchange", "muse-code.headless"): "selected_surface_absence",
+    ("permission_exchange", "muse-code.headless"): "selected_surface_absence",
+    ("question_exchange", "muse-code.headless"): "selected_surface_absence",
+    ("external_search", "muse-code.headless"): "selected_surface_absence",
     ("consumer_tool_exchange", "oh-my-pi.rpc"): "selected_surface_absence",
     ("permission_exchange", "oh-my-pi.rpc"): "selected_surface_absence",
     ("external_search", "oh-my-pi.rpc"): "selected_surface_absence",
@@ -170,6 +178,9 @@ input_callback_classifications = {
     ("question_exchange", "grok-build.acp"): "upstream_unsupported",
 }
 session_continuity_classifications = {
+    ("load_session", "muse-code.headless"): "operation_shape_not_applicable",
+    ("resume_session", "muse-code.headless"): "operation_shape_not_applicable",
+    ("native_session_close", "muse-code.headless"): "operation_shape_not_applicable",
     ("load_session", "oh-my-pi.rpc"): "operation_shape_not_applicable",
     ("resume_session", "oh-my-pi.rpc"): "operation_shape_not_applicable",
     ("native_session_close", "oh-my-pi.rpc"): "operation_shape_not_applicable",
@@ -236,6 +247,7 @@ session_continuity_classifications = {
     ("native_session_close", "grok-build.acp"): "upstream_unsupported",
 }
 provider_retention_not_applicable = {
+    "muse-code.headless",
     "oh-my-pi.rpc",
     "qwen.headless",
     "bedrock.catalogue; bedrock.runtime",

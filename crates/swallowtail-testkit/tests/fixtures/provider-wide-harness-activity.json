@@ -1,12 +1,13 @@
 {
   "fixture_schema": 1,
-  "evidence_checked": "2026-08-05",
+  "evidence_checked": "2026-08-06",
   "contract": "044-observable-agent-activity-and-disclosure",
   "source_inventories": [
     "064-codex-observable-activity-range-evidence",
     "065-acp-observable-activity-currentness-and-corpus",
     "066-non-acp-harness-observable-activity-inventory",
-    "109-oh-my-pi-rpc-route-qualification"
+    "109-oh-my-pi-rpc-route-qualification",
+    "112-muse-code-installed-route-qualification"
   ],
   "routes": [
     {
@@ -216,6 +217,19 @@
       "not_applicable_operations": ["model-catalogue", "provider-session-management"],
       "unknown_posture": "preserve-namespaced",
       "exact_absences": ["assistant provider item identity beyond turn and offset", "hidden reasoning", "callback-as-tool activity"]
+    },
+    {
+      "id": "muse-code.headless",
+      "driver": "swallowtail.muse-code.headless",
+      "transport": "muse-code-event-jsonl-stdio",
+      "qualified": "0.1.0-R708.1",
+      "prepared_profiles": [
+        {"operation": "structured-run", "availability": "available"}
+      ],
+      "unavailable_operations": [],
+      "not_applicable_operations": [],
+      "unknown_posture": "preserve-namespaced",
+      "exact_absences": ["assistant activity", "task-list snapshots", "subagent topology", "usage"]
     },
     {
       "id": "oh-my-pi.rpc",

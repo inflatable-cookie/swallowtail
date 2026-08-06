@@ -1,4 +1,7 @@
 retained_execution_classifications = {
+    ("retained_background_execution", "muse-code.headless"): "operation_shape_not_applicable",
+    ("stream_reattachment", "muse-code.headless"): "operation_shape_not_applicable",
+    ("provider_managed_recovery", "muse-code.headless"): "selected_surface_absence",
     ("retained_background_execution", "oh-my-pi.rpc"): "operation_shape_not_applicable",
     ("stream_reattachment", "oh-my-pi.rpc"): "operation_shape_not_applicable",
     ("provider_managed_recovery", "oh-my-pi.rpc"): "upstream_unsupported",
@@ -71,6 +74,7 @@ retained_execution_classifications = {
 }
 
 working_resource_write_classifications = {
+    ("bounded_workspace_text_write", "muse-code.headless"): "selected_surface_absence",
     ("bounded_workspace_text_write", "oh-my-pi.rpc"): "selected_surface_absence",
     ("bounded_workspace_text_write", "qwen.headless"): "upstream_unsupported",
     ("working_resource", "alibaba.conversations"): "operation_shape_not_applicable",
@@ -107,6 +111,7 @@ working_resource_write_classifications = {
 }
 
 owned_runtime_not_applicable = {
+    "muse-code.headless",
     "oh-my-pi.rpc",
     "antigravity.catalogue + antigravity.headless",
     "cursor-agent.catalogue + cursor-agent.acp + cursor-agent.headless",
@@ -133,6 +138,7 @@ owned_runtime_not_applicable = {
     "xai.responses-websocket",
 }
 rollover_not_applicable = {
+    "muse-code.headless",
     "oh-my-pi.rpc",
     "antigravity.catalogue + antigravity.headless",
     "cursor-agent.catalogue + cursor-agent.acp + cursor-agent.headless",
@@ -187,6 +193,9 @@ residual_interface_not_runtime_ordered = {
         "xai.responses-websocket",
     }
 }
+residual_exact_release_only = {
+    ("unverified_newer_allowed", "muse-code.headless"),
+}
 residual_contract_or_corpus = {
     ("interactive_session", "qwen.headless"),
     ("interactive_session", "bedrock.catalogue; bedrock.runtime"),
@@ -227,6 +236,7 @@ residual_operation_not_applicable = {
         "opencode.http",
         "grok-build.acp",
         "oh-my-pi.rpc",
+        "muse-code.headless",
     }
 }
 residual_separate_route = {
@@ -243,6 +253,7 @@ residual_no_provider_billing = {
         "kimi-code.local-server",
         "ollama.attached",
         "oh-my-pi.rpc",
+        "muse-code.headless",
     }
 }
 residual_selected_surface_absence = {
@@ -263,7 +274,7 @@ residual_selected_surface_absence = {
         "openai.background",
         "cursor-agent.catalogue + cursor-agent.acp + cursor-agent.headless",
     }
-}
+} | {("interactive_session", "muse-code.headless")}
 residual_non_authoritative_cost = {
     ("billed_cost_evidence", route)
     for route in {
@@ -277,6 +288,10 @@ residual_feature_classifications = {
     **{
         cell: "interface_axis_not_runtime_ordered"
         for cell in residual_interface_not_runtime_ordered
+    },
+    **{
+        cell: "exact_release_only"
+        for cell in residual_exact_release_only
     },
     **{
         cell: "contract_or_corpus_required"

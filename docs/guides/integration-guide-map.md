@@ -12,7 +12,7 @@ Coverage states:
 - **missing** — no canonical task-oriented guide exists
 - **complete** — guide, example, and coverage validation meet Contract 052
 
-All 33 production route rows and every portable feature family have completed
+All 34 production route rows and every portable feature family have completed
 the checklist. Coverage state describes documentation evidence, not the
 underlying production capability.
 
@@ -34,6 +34,7 @@ underlying production capability.
 | `grok-build.acp` | [Grok Build](grok-build-prepared-integration.md) | [prepared run and session](../../crates/swallowtail-adapter-grok/examples/prepared_grok_build_acp.rs) | complete |
 | `kimi-code.acp` | [Kimi Code](kimi-prepared-integration.md) | [prepared ACP](../../crates/swallowtail-adapter-kimi/examples/prepared_acp.rs) | complete |
 | `kimi-code.headless` | [Kimi Code](kimi-prepared-integration.md) | [prepared headless](../../crates/swallowtail-adapter-kimi/examples/prepared_headless.rs) | complete |
+| `muse-code.headless` | [Muse Code](muse-code-prepared-integration.md) | [prepared headless](../../crates/swallowtail-adapter-muse/examples/prepared_muse_headless.rs) | complete |
 | `oh-my-pi.rpc` | [Oh My Pi](oh-my-pi-prepared-integration.md) | [prepared RPC](../../crates/swallowtail-adapter-oh-my-pi/examples/prepared_oh_my_pi_rpc.rs) | complete |
 | `pi.rpc` | [Pi RPC](pi-rpc-prepared-integration.md) | [prepared RPC](../../crates/swallowtail-adapter-pi/examples/prepared_pi_rpc.rs) | complete |
 | `qwen.headless` | [Qwen](qwen-headless-prepared-integration.md) | [prepared headless](../../crates/swallowtail-adapter-qwen/examples/prepared_qwen_headless.rs) | complete |

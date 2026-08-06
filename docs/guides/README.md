@@ -23,6 +23,7 @@ contracts or architecture.
 - [Kimi Local Server Prepared Integration](kimi-local-server-prepared-integration.md)
 - [Kimi Platform Prepared Integration](kimi-platform-prepared-integration.md)
 - [llama.cpp Prepared Integration](llama-cpp-prepared-integration.md)
+- [Muse Code Prepared Integration](muse-code-prepared-integration.md)
 - [Ollama Attached Prepared Integration](ollama-attached-prepared-integration.md)
 - [Oh My Pi Prepared Integration](oh-my-pi-prepared-integration.md)
 - [Observable Activity](observable-activity.md)

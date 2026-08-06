@@ -1,13 +1,14 @@
-if len(residual_feature_classifications) != 68:
-    raise SystemExit("residual feature starting inventory must contain exactly 68 cells")
+if len(residual_feature_classifications) != 72:
+    raise SystemExit("residual feature starting inventory must contain exactly 72 cells")
 if Counter(residual_feature_classifications.values()) != Counter(
     {
         "interface_axis_not_runtime_ordered": 10,
+        "exact_release_only": 1,
         "contract_or_corpus_required": 9,
-        "operation_shape_not_applicable": 22,
+        "operation_shape_not_applicable": 23,
         "separate_route_and_contract_required": 3,
-        "no_provider_billing_boundary": 6,
-        "selected_surface_absence": 14,
+        "no_provider_billing_boundary": 7,
+        "selected_surface_absence": 15,
         "non_authoritative_cost_evidence": 4,
     }
 ):
@@ -45,7 +46,7 @@ for cell, classification in residual_feature_classifications.items():
         )
 if Counter(
     residual_feature_values[cell] for cell in residual_feature_classifications
-) != Counter({"Not applicable": 38, "No": 28, "Yes": 2}):
+) != Counter({"Not applicable": 40, "No": 30, "Yes": 2}):
     raise SystemExit("residual feature final counts changed")
 
 provider_retention_values = {
@@ -58,11 +59,11 @@ provider_retention_values = {
         "owned_remote_resource_cleanup",
     ]
 }
-if len(provider_retention_classifications) != 91:
-    raise SystemExit("provider-retention starting inventory must contain 91 cells")
+if len(provider_retention_classifications) != 95:
+    raise SystemExit("provider-retention starting inventory must contain 95 cells")
 if Counter(provider_retention_classifications.values()) != Counter(
     {
-        "operation_shape_not_applicable": 61,
+        "operation_shape_not_applicable": 65,
         "upstream_unsupported": 24,
         "separate_transport_and_corpus_required": 1,
         "selected_surface_absence": 1,
@@ -92,7 +93,7 @@ provider_retention_final_counts = Counter(
     provider_retention_values[cell] for cell in provider_retention_classifications
 )
 if provider_retention_final_counts != Counter(
-    {"Not applicable": 61, "No": 25, "Yes": 5}
+    {"Not applicable": 65, "No": 25, "Yes": 5}
 ):
     raise SystemExit(
         "provider-retention final counts changed: "
@@ -108,14 +109,15 @@ retained_execution_values = {
         "provider_managed_recovery",
     ]
 }
-if len(retained_execution_classifications) != 69:
-    raise SystemExit("retained-execution starting inventory must contain exactly 69 cells")
+if len(retained_execution_classifications) != 72:
+    raise SystemExit("retained-execution starting inventory must contain exactly 72 cells")
 if Counter(retained_execution_classifications.values()) != Counter(
     {
-        "operation_shape_not_applicable": 38,
+        "operation_shape_not_applicable": 40,
         "upstream_unsupported": 25,
         "separate_route_and_contract_required": 2,
         "shared_contract_and_corpus_required": 4,
+        "selected_surface_absence": 1,
     }
 ):
     raise SystemExit("retained-execution classification counts changed")
@@ -140,7 +142,7 @@ retained_execution_final_counts = Counter(
     retained_execution_values[cell] for cell in retained_execution_classifications
 )
 if retained_execution_final_counts != Counter(
-    {"Not applicable": 38, "No": 27, "Yes": 3, "Partial": 1}
+    {"Not applicable": 40, "No": 28, "Yes": 3, "Partial": 1}
 ):
     raise SystemExit(
         "retained-execution final counts changed: "
@@ -152,14 +154,14 @@ working_resource_write_values = {
     for row in rows
     for feature in ["working_resource", "bounded_workspace_text_write"]
 }
-if len(working_resource_write_classifications) != 33:
-    raise SystemExit("working-resource/write starting inventory must contain exactly 33 cells")
+if len(working_resource_write_classifications) != 34:
+    raise SystemExit("working-resource/write starting inventory must contain exactly 34 cells")
 if Counter(working_resource_write_classifications.values()) != Counter(
     {
         "operation_shape_not_applicable": 24,
         "upstream_unsupported": 7,
         "contract_or_corpus_required": 1,
-        "selected_surface_absence": 1,
+        "selected_surface_absence": 2,
     }
 ):
     raise SystemExit("working-resource/write classification counts changed")
@@ -178,7 +180,7 @@ for cell, classification in working_resource_write_classifications.items():
 if Counter(
     working_resource_write_values[cell]
     for cell in working_resource_write_classifications
-) != Counter({"Not applicable": 24, "No": 8, "Yes": 1}):
+) != Counter({"Not applicable": 24, "No": 9, "Yes": 1}):
     raise SystemExit("working-resource/write final counts changed")
 
 runtime_rollover_values = {
@@ -189,11 +191,11 @@ runtime_rollover_values = {
         "planned_connection_rollover",
     ]
 }
-if len(runtime_rollover_classifications) != 48:
-    raise SystemExit("runtime-ownership/rollover inventory must contain exactly 48 cells")
+if len(runtime_rollover_classifications) != 50:
+    raise SystemExit("runtime-ownership/rollover inventory must contain exactly 50 cells")
 if Counter(runtime_rollover_classifications.values()) != Counter(
     {
-        "operation_shape_not_applicable": 47,
+        "operation_shape_not_applicable": 49,
         "selected_surface_absence": 1,
     }
 ):
@@ -212,7 +214,7 @@ for cell, classification in runtime_rollover_classifications.items():
 if Counter(
     runtime_rollover_values[cell]
     for cell in runtime_rollover_classifications
-) != Counter({"Not applicable": 47, "No": 1}):
+) != Counter({"Not applicable": 49, "No": 1}):
     raise SystemExit("runtime-ownership/rollover final counts changed")
 
 generation_control_no_cells = {
@@ -221,8 +223,8 @@ generation_control_no_cells = {
     for feature in ["output_token_limit", "reasoning_selection", "structured_output"]
     if row[feature] == "No"
 }
-if len(generation_control_no_cells) != 50:
-    raise SystemExit("generation-control inventory must contain exactly 50 No cells")
+if len(generation_control_no_cells) != 52:
+    raise SystemExit("generation-control inventory must contain exactly 52 No cells")
 if generation_control_no_cells != set(generation_control_classifications):
     raise SystemExit("generation-control No classifications changed")
 
@@ -238,8 +240,8 @@ input_callback_no_cells = {
     ]
     if row[feature] == "No"
 }
-if len(input_callback_no_cells) != 105:
-    raise SystemExit("input/callback inventory must contain exactly 105 No cells")
+if len(input_callback_no_cells) != 110:
+    raise SystemExit("input/callback inventory must contain exactly 110 No cells")
 if input_callback_no_cells != set(input_callback_classifications):
     raise SystemExit("input/callback No classifications changed")
 
@@ -249,8 +251,8 @@ session_continuity_no_cells = {
     for feature in ["load_session", "resume_session", "native_session_close"]
     if row[feature] == "No"
 }
-if len(session_continuity_no_cells) != 64:
-    raise SystemExit("session-continuity inventory must contain exactly 64 No cells")
+if len(session_continuity_no_cells) != 67:
+    raise SystemExit("session-continuity inventory must contain exactly 67 No cells")
 if session_continuity_no_cells != set(session_continuity_classifications):
     raise SystemExit("session-continuity No classifications changed")
 
@@ -277,15 +279,16 @@ if classification_counts != Counter(
     {
         "contract_or_corpus_required": 72,
         "upstream_unsupported": 142,
-        "operation_shape_not_applicable": 48,
+        "operation_shape_not_applicable": 51,
         "ready_existing_contract": 4,
         "ready_operator_hold": 6,
         "composite_partial_only": 6,
         "shared_contract_expansion_required": 2,
         "upstream_ordering_blocked": 1,
         "separate_route_and_contract_required": 5,
-        "selected_surface_absence": 25,
+        "selected_surface_absence": 36,
         "non_authoritative_cost_evidence": 4,
+        "exact_release_only": 1,
         "missing_shared_contract_or_currentness_evidence": 10,
     }
 ):
@@ -298,5 +301,5 @@ route_ids = [
     for row in rows
     for route in re.split(r"\s*(?:;|\+)\s*", row["route_id"])
 ]
-if len(route_ids) != 33 or len(set(route_ids)) != 33:
-    raise SystemExit("provider solution matrix must cover 33 unique route identities")
+if len(route_ids) != 34 or len(set(route_ids)) != 34:
+    raise SystemExit("provider solution matrix must cover 34 unique route identities")

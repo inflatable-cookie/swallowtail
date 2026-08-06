@@ -8,6 +8,10 @@
 
 ## Completed
 
+- `138-muse-code-package-and-route-acceptance.md`
+- `137-muse-code-prepared-facade.md`
+- `136-muse-code-headless-driver-core.md`
+- `135-muse-code-artifact-and-event-corpus.md`
 - `134-v0-1-1-annotated-source-tag.md`
 - `133-v0-1-1-exact-ci-candidate.md`
 - `132-v0-1-1-repair-and-source-candidate.md`

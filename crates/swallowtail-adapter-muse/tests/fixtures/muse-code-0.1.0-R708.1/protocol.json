@@ -1,0 +1,83 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-08-06",
+  "route_id": "muse-code.headless",
+  "artifact_revision": "0.1.0-R708.1",
+  "compatibility_revision": "muse-code.headless-0.1.0-R708.1-exact",
+  "protocol_facade_revision": "muse-code.events-v1",
+  "argv_prefix": [
+    "muse-bin-0.1.0-R708.1",
+    "exec",
+    "--json"
+  ],
+  "bounds": {
+    "maximum_record_bytes": 1048576,
+    "maximum_stream_bytes": 8388608,
+    "maximum_records": 4096,
+    "maximum_unknown_payload_bytes": 65536,
+    "maximum_output_bytes": 262144
+  },
+  "identity": {
+    "session_stream_kind": "session",
+    "run_stream_kind": "run",
+    "task_stream_kind": "task",
+    "run_stream_id_equals_command_id": true,
+    "causation_id_equals_command_id": true,
+    "one_session_per_invocation": true,
+    "one_terminal_per_run": true,
+    "post_terminal_unknown_observations": true
+  },
+  "known_payload_types": [
+    "runtime.command.accepted",
+    "session.run.linked",
+    "run.model.configured",
+    "turn.input.user",
+    "run.lifecycle.started",
+    "run.output.delta",
+    "run.terminal.completed",
+    "run.terminal.failed",
+    "run.terminal.cancelled",
+    "task.stream.linked",
+    "task.lifecycle.proposed",
+    "task.lifecycle.accepted",
+    "task.lifecycle.rejected",
+    "task.lifecycle.scheduled",
+    "task.lifecycle.side_effect_intent",
+    "task.lifecycle.started",
+    "task.lifecycle.status",
+    "task.lifecycle.output",
+    "task.lifecycle.tool_delta",
+    "task.lifecycle.tool_output_ref",
+    "task.lifecycle.completed",
+    "task.lifecycle.failed",
+    "task.lifecycle.cancelled",
+    "task.lifecycle.timed_out"
+  ],
+  "unknown_payload": {
+    "observation_namespace_prefix": "muse-code.headless.event.",
+    "semantic_authority": false,
+    "terminal_authority": false,
+    "callback_authority": false
+  },
+  "meta_success": {
+    "source_record_count": 26,
+    "provider_id": "meta",
+    "profile_id": "profile-redacted",
+    "model_id": "muse-spark-1.2",
+    "reasoning_effort": "low",
+    "model_steps": 1,
+    "usage_record_observed": false
+  },
+  "unselected": [
+    "interactive-tui",
+    "session-resume",
+    "session-export",
+    "provider-tools",
+    "workspace-writes",
+    "permission-callbacks",
+    "typed-questions",
+    "subagents",
+    "usage-accounting",
+    "meta-model-api"
+  ]
+}

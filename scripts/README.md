@@ -36,8 +36,8 @@ Release-preparation scripts:
   use an explicitly reported synthetic Git snapshot
 - `generate-public-api-baseline.sh` — generate the reviewed semantic Rust API
   inventory with pinned `cargo-public-api` and nightly versions
-- `check-public-api.sh` — compare all 27 packages with the reviewed semantic
-  API baseline
+- `check-public-api.sh` — compare 27 immutable release packages plus separately
+  baselined unreleased Muse source with reviewed semantic API evidence
 - `check-msrv.sh` — general floor, Bedrock floor, and current stable checks
 
 Historical registry-candidate scripts:

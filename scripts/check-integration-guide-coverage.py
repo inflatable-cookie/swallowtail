@@ -107,9 +107,9 @@ def production_routes() -> list[str]:
         "<!-- provider-session-lifecycle-matrix:start -->", 1
     )[0]
     routes = ROUTE_PATTERN.findall(ordinary_routes)
-    if len(routes) != 33:
+    if len(routes) != 34:
         raise CoverageFailure(
-            f"provider route matrix contains {len(routes)} production routes instead of 33"
+            f"provider route matrix contains {len(routes)} production routes instead of 34"
         )
     duplicates = sorted(route for route, count in Counter(routes).items() if count > 1)
     if duplicates:

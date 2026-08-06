@@ -13,8 +13,9 @@ shape.
 
 ## Next Task
 
-Select the next substantial g03 compatibility-maintenance milestone from
-consumer-proven evidence. No batch card is currently ready.
+Hold at the g03 evidence gate. The next operator choice is whether to qualify
+Muse retained-session continuation/recovery, assess the direct Meta Model API,
+or return to ordinary provider-compatibility evidence.
 
 ## Index
 

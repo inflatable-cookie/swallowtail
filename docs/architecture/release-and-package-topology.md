@@ -2,14 +2,15 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-05
+Updated: 2026-08-06
 Realization: roadmap g02.001; g03.043
 
 ## Boundary
 
-Swallowtail is a coordinated 27-package Rust workspace. The initial external
-release is the GitHub source tag `v0.1.0`. No crate is published to crates.io
-in this release lane.
+Swallowtail current source is a coordinated 28-package Rust workspace. The
+immutable `v0.1.0` and `v0.1.1` Git source tags contain 27 packages. The
+additive `swallowtail-adapter-muse` package is unreleased source after
+`v0.1.1`. No crate is published to crates.io in this release lane.
 
 Each package remains independently selectable from the tagged Git source.
 There is no umbrella crate or private implementation package.
@@ -47,6 +48,7 @@ Adapters:
 - `swallowtail-adapter-kimi`
 - `swallowtail-adapter-kimi-platform`
 - `swallowtail-adapter-llama-cpp`
+- `swallowtail-adapter-muse` (unreleased after `v0.1.1`)
 - `swallowtail-adapter-opencode`
 - `swallowtail-adapter-ollama`
 - `swallowtail-adapter-oh-my-pi`
@@ -77,6 +79,11 @@ Compatible-chat adapters also depend on
 No normal internal edge points upward. Workspace paths keep the source tag
 self-contained. Compatible version requirements preserve coordinated package
 identity without claiming registry availability.
+
+Current-source metadata, dependency topology, and semantic API checks include
+all 28 packages. Immutable tag inventories retain their 27 packages and 33
+routes. Adding Muse does not rewrite release notes, tag contents, or historical
+candidate evidence.
 
 ## Version And Toolchains
 
@@ -116,7 +123,8 @@ evidence:
 
 - exact commit and parent
 - clean worktree
-- 27-package metadata and topology
+- 28-package current-source metadata and topology plus immutable 27-package
+  tag evidence
 - semantic public API baseline
 - documented public API
 - dependency and security policy

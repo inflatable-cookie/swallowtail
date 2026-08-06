@@ -204,6 +204,14 @@ spine:
   decoding. Its first catalogue, run, and session subset omits write tools,
   permission exchange, session switching, host-tool injection, and subagent
   authority
+- `swallowtail-adapter-muse` implements exact signed Muse Code payload
+  `0.1.0-R708.1` as one read-only `muse-code.headless` structured-run route.
+  Its prepared facade binds provider-owned local Meta account state without a
+  credential lease, exact `meta` / `muse-spark-1.2`, one of seven explicit
+  efforts, provider-enforced sandboxing, ambient account configuration, and a
+  read-only filesystem resource. The mutable update launcher, model catalogue,
+  sessions, callbacks, recovery, task-list snapshots, subagents, usage, shell,
+  writes, and web tools remain outside the route
 - `swallowtail-adapter-llama-cpp` implements attached llama.cpp build `9910`
   readiness, catalogue, and bounded Chat Completions direct inference without
   owning the model artifact or server; its exact request and text-only semantic
@@ -304,10 +312,11 @@ remote ACP operations -> swallowtail-transport-acp-remote -> core/runtime/protoc
 ```
 
 The active public release topology is recorded in
-`release-and-package-topology.md` and governed by Contract 036. All 27
-workspace libraries are separately consumable public packages under one
-coordinated pre-1.0 version. The initial release is an exact GitHub source tag,
-not a registry publication. Current manifests realize the acyclic workspace
+`release-and-package-topology.md` and governed by Contract 036. The immutable
+source tags contain 27 separately consumable packages. Current source adds the
+separately baselined, unreleased Muse package for 28 under the coordinated
+pre-1.0 version. The initial release is an exact GitHub source tag, not a
+registry publication. Current manifests realize the acyclic workspace
 dependencies, resolver 3, Rust-version floors, and shared package metadata.
 Roadmap g03.043 replaces the stale registry candidate path with semantic API,
 documentation, dependency-policy, source-consumer, and exact-tag evidence.
@@ -932,7 +941,7 @@ session, background run, managed agent, realtime media, SDK, attached runtime,
 and owned-serving operations remain separate types and methods. There is no
 generic prompt method.
 
-The current 33 production routes form six facade implementation families:
+The current 34 production routes form six facade implementation families:
 installed harness, attached harness network, hosted direct and provider-owned
 state, realtime connection, embedded SDK, and local model runtime. Family
 helpers may share host and preparation mechanics. They cannot select a

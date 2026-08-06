@@ -131,8 +131,9 @@ Contract 035 adds an opt-in experimental remote ACP transport over one exact
 host-approved HTTP/SSE or WebSocket endpoint. It keeps transport separate from
 provider identity, scopes connection and affinity state, excludes
 authentication and implicit recovery, and requires explicit joined close.
-Contract 036 fixes the 27 public source packages, coordinated pre-1.0 version,
-Rust 1.90/1.94.1 floors, semantic and documented API evidence, dependency
+Contract 036 fixes the 27 tagged public source packages, admits the separately
+baselined unreleased Muse package as current source number 28, and governs the
+coordinated pre-1.0 version, Rust 1.90/1.94.1 floors, semantic and documented API evidence, dependency
 policy, exact Git-tag consumption, consumer proof, and explicit human authority
 for every external release mutation. The initial release excludes crates.io
 and a GitHub Release object. Crate versions remain separate from Contract 029

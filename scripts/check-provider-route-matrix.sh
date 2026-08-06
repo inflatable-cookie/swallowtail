@@ -42,6 +42,7 @@ kimi-code.local-server
 kimi-platform.chat
 llama-cpp.attached
 llama-cpp.owned
+muse-code.headless
 ollama.attached
 openai.background
 openai.realtime
@@ -52,8 +53,8 @@ qwen.headless
 xai.responses-websocket
 EOF
 
-if [ "$(wc -l < "$route_matrix_actual" | tr -d ' ')" -ne 33 ]; then
-  printf 'provider route matrix must contain exactly 33 route rows\n' >&2
+if [ "$(wc -l < "$route_matrix_actual" | tr -d ' ')" -ne 34 ]; then
+  printf 'provider route matrix must contain exactly 34 route rows\n' >&2
   exit 1
 fi
 
@@ -73,8 +74,8 @@ sed -n \
 sed -n 's/^| `\([^`]*\)` |.*$/\1/p' "$route_lifecycle_rows" |
   LC_ALL=C sort > "$route_lifecycle_actual"
 
-if [ "$(wc -l < "$route_lifecycle_actual" | tr -d ' ')" -ne 33 ]; then
-  printf 'provider session lifecycle matrix must contain exactly 33 route rows\n' >&2
+if [ "$(wc -l < "$route_lifecycle_actual" | tr -d ' ')" -ne 34 ]; then
+  printf 'provider session lifecycle matrix must contain exactly 34 route rows\n' >&2
   exit 1
 fi
 
@@ -140,6 +141,7 @@ kimi-code.local-server|supported|yes|supported|supported|unsupported|unsupported
 kimi-platform.chat|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
 llama-cpp.attached|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
 llama-cpp.owned|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
+muse-code.headless|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
 ollama.attached|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
 openai.background|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
 openai.realtime|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
@@ -158,4 +160,4 @@ python3 "$route_matrix_repo_root/scripts/provider_route_matrix/validate.py" \
 
 python3 "$route_matrix_repo_root/scripts/check-provider-activity-matrix.py"
 
-printf 'provider route, lifecycle, 26-solution feature, and activity matrices passed\n'
+printf 'provider route, lifecycle, 27-solution/34-route feature, and activity matrices passed\n'

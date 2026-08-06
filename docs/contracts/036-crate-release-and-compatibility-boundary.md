@@ -36,7 +36,10 @@ workspace checkout.
 
 ## Public Package Set
 
-All 27 workspace libraries are public source packages.
+The immutable `v0.1.0` and `v0.1.1` tags contain 27 public source packages.
+Current source contains one reviewed additive package,
+`swallowtail-adapter-muse`, for 28 total. Muse is unreleased and must not be
+presented as part of either tag.
 
 Foundations:
 
@@ -69,6 +72,7 @@ Opt-in adapters:
 - `swallowtail-adapter-kimi`
 - `swallowtail-adapter-kimi-platform`
 - `swallowtail-adapter-llama-cpp`
+- `swallowtail-adapter-muse` (unreleased source after `v0.1.1`)
 - `swallowtail-adapter-opencode`
 - `swallowtail-adapter-ollama`
 - `swallowtail-adapter-oh-my-pi`
@@ -83,7 +87,9 @@ to use another, install a harness, acquire a model, start a server,
 authenticate, select billing, or claim provider support.
 
 A package addition, removal, merge, or private role requires architecture and
-contract review before manifest work.
+contract review before manifest work. Additive unreleased packages receive a
+separate source inventory and semantic API baseline. Historical tag package,
+dependency, API, route, and release-note inventories remain immutable.
 
 ## Dependency Topology
 
@@ -184,7 +190,9 @@ the current release candidate.
 
 ## Public API And Documentation
 
-The first tag creates the compatibility baseline for all 27 packages.
+The first tag creates the compatibility baseline for its 27 packages. An
+additive post-tag package creates a separate unreleased API baseline until an
+operator authorizes a later source release containing it.
 
 Before the tag:
 
@@ -250,7 +258,8 @@ not every provider behavior.
 Credential-free release checks sit behind explicit Effigy selectors and cover:
 
 - clean source and exact commit identity
-- 27-package metadata and dependency topology
+- 28-package current-source metadata and dependency topology, kept distinct
+  from the immutable 27-package tag baseline
 - semantic public API baseline
 - denied missing public documentation
 - dependency advisory, license, and source policy
@@ -294,7 +303,9 @@ GitHub Release creation, consumer edits, and provider work remain separate.
 
 ## Acceptance
 
-- all 27 packages are separately consumable from one exact tag
+- all 27 tagged packages are separately consumable from one exact tag
+- the 28th current-source Muse package is visibly unreleased and consumable
+  only from an explicitly approved commit
 - `publish = false` prevents accidental registry publication
 - internal dependency direction is exact
 - `0.1.0` compatibility and provider-interface versions remain separate

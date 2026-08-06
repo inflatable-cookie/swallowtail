@@ -20,7 +20,9 @@ The canonical `v0.1.1` tag resolves to the reviewed release commit. Later
 unreleased work must use an explicitly approved commit revision and must not
 be presented as part of that immutable release.
 
-All 27 packages share version `0.1.1`. The immutable `v0.1.0` tag established
+The 27 tagged packages share version `0.1.1`. Current source adds the unreleased
+`swallowtail-adapter-muse` package as number 28. It requires an explicitly
+approved commit and is not part of either immutable tag. `v0.1.0` established
 the pre-1.0 API and guaranteed-behavior baseline; `v0.1.1` is a compatible
 repair, not an API 1.0 promise.
 
@@ -29,7 +31,7 @@ repair, not an API 1.0 promise.
 Swallowtail does not choose a provider, model, credential, endpoint, executable,
 billing arrangement, or fallback.
 
-1. Choose one of the [33 production routes](docs/guides/provider-route-matrix.md).
+1. Choose one of the [34 current production routes](docs/guides/provider-route-matrix.md).
 2. Read its canonical guide through the
    [integration guide map](docs/guides/integration-guide-map.md).
 3. Add only the adapter and shared packages your application imports.
@@ -74,7 +76,7 @@ There is no umbrella crate. Every package is independently selectable.
 | Portable contracts and execution | `swallowtail-core`, `swallowtail-runtime` |
 | Host integration and conformance | `swallowtail-host-local`, `swallowtail-testkit` |
 | Protocols and transport | `swallowtail-protocol-acp`, `swallowtail-protocol-openai-chat`, `swallowtail-transport-acp-remote` |
-| Installed agent harnesses | `swallowtail-adapter-antigravity`, `swallowtail-adapter-claude-agent`, `swallowtail-adapter-codex`, `swallowtail-adapter-cursor`, `swallowtail-adapter-grok`, `swallowtail-adapter-kimi`, `swallowtail-adapter-oh-my-pi`, `swallowtail-adapter-opencode`, `swallowtail-adapter-pi`, `swallowtail-adapter-qwen` |
+| Installed agent harnesses | `swallowtail-adapter-antigravity`, `swallowtail-adapter-claude-agent`, `swallowtail-adapter-codex`, `swallowtail-adapter-cursor`, `swallowtail-adapter-grok`, `swallowtail-adapter-kimi`, `swallowtail-adapter-muse` (unreleased), `swallowtail-adapter-oh-my-pi`, `swallowtail-adapter-opencode`, `swallowtail-adapter-pi`, `swallowtail-adapter-qwen` |
 | Hosted APIs and SDKs | `swallowtail-adapter-alibaba-model-studio`, `swallowtail-adapter-anthropic`, `swallowtail-adapter-bedrock`, `swallowtail-adapter-deepseek`, `swallowtail-adapter-gemini`, `swallowtail-adapter-kimi-platform`, `swallowtail-adapter-openai`, `swallowtail-adapter-xai` |
 | Local model runtimes | `swallowtail-adapter-llama-cpp`, `swallowtail-adapter-ollama` |
 

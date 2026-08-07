@@ -173,7 +173,6 @@ impl ActiveTurn {
     }
 }
 
-
 mod notifications;
 mod provider_requests;
 #[cfg(test)]

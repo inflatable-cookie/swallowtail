@@ -1,7 +1,7 @@
-use super::catalogue::OpenCodePreparedSessionCatalogue;
-use super::{provider_session_requirements, require_qualified};
 use super::super::input::OpenCodeSessionProfileInput;
 use super::super::plan::{build_plan, failure, instance_with_capabilities};
+use super::catalogue::OpenCodePreparedSessionCatalogue;
+use super::{provider_session_requirements, require_qualified};
 use crate::{OpenCodeHttpDriver, OpenCodePreparedIntegration};
 use swallowtail_core::{
     Capability, CapabilityProfile, CapabilityRequirement, DriverRole, ModelRoute, OperationShape,
@@ -21,7 +21,6 @@ pub struct OpenCodePreparedSessionImport {
     pub(super) evidence: PreparedProviderSessionImportEvidence,
     pub(super) request: ProviderSessionImportRequest,
 }
-
 
 impl OpenCodePreparedSessionImport {
     /// Returns the import preparation evidence.

@@ -1,6 +1,7 @@
 use super::ui;
 use super::{
-    OhMyPiAgentEvent, OhMyPiRpcProtocolFailure, OhMyPiRpcProtocolFailureKind, OhMyPiRpcRecord, OhMyPiRpcResponse,
+    OhMyPiAgentEvent, OhMyPiRpcProtocolFailure, OhMyPiRpcProtocolFailureKind, OhMyPiRpcRecord,
+    OhMyPiRpcResponse,
 };
 use serde_json::Value;
 use swallowtail_runtime::TokenUsage;
@@ -31,7 +32,8 @@ pub(super) fn decode_ready(value: &Value) -> Result<OhMyPiRpcRecord, OhMyPiRpcPr
         .ok_or_else(|| failure(OhMyPiRpcProtocolFailureKind::UnknownRecord))?;
     if value.get("protocolVersion").and_then(Value::as_u64) != Some(1)
         || supported.as_slice() != [Value::from(1), Value::from(2)]
-        || value.get("maxFrameBytes").and_then(Value::as_u64) != Some(super::MAXIMUM_RECORD_BYTES as u64)
+        || value.get("maxFrameBytes").and_then(Value::as_u64)
+            != Some(super::MAXIMUM_RECORD_BYTES as u64)
         || value
             .get("maxReassembledFrameBytes")
             .and_then(Value::as_u64)
@@ -42,7 +44,9 @@ pub(super) fn decode_ready(value: &Value) -> Result<OhMyPiRpcRecord, OhMyPiRpcPr
     Ok(OhMyPiRpcRecord::Lifecycle)
 }
 
-pub(super) fn decode_response(value: &Value) -> Result<OhMyPiRpcResponse, OhMyPiRpcProtocolFailure> {
+pub(super) fn decode_response(
+    value: &Value,
+) -> Result<OhMyPiRpcResponse, OhMyPiRpcProtocolFailure> {
     Ok(OhMyPiRpcResponse {
         id: required_text(value, "id", OhMyPiRpcProtocolFailureKind::InvalidResponse)?.to_owned(),
         command: required_text(
@@ -59,7 +63,10 @@ pub(super) fn decode_response(value: &Value) -> Result<OhMyPiRpcResponse, OhMyPi
     })
 }
 
-pub(super) fn decode_event(kind: &str, value: &Value) -> Result<OhMyPiAgentEvent, OhMyPiRpcProtocolFailure> {
+pub(super) fn decode_event(
+    kind: &str,
+    value: &Value,
+) -> Result<OhMyPiAgentEvent, OhMyPiRpcProtocolFailure> {
     match kind {
         "agent_start" => Ok(OhMyPiAgentEvent::Started),
         "message_start" => decode_message_start(value),
@@ -88,7 +95,9 @@ pub(super) fn decode_event(kind: &str, value: &Value) -> Result<OhMyPiAgentEvent
     }
 }
 
-pub(super) fn decode_message_end(value: &Value) -> Result<OhMyPiAgentEvent, OhMyPiRpcProtocolFailure> {
+pub(super) fn decode_message_end(
+    value: &Value,
+) -> Result<OhMyPiAgentEvent, OhMyPiRpcProtocolFailure> {
     let message = value
         .get("message")
         .ok_or_else(|| failure(OhMyPiRpcProtocolFailureKind::UnknownRecord))?;
@@ -112,7 +121,9 @@ pub(super) fn decode_message_end(value: &Value) -> Result<OhMyPiAgentEvent, OhMy
     )))
 }
 
-pub(super) fn decode_message_start(value: &Value) -> Result<OhMyPiAgentEvent, OhMyPiRpcProtocolFailure> {
+pub(super) fn decode_message_start(
+    value: &Value,
+) -> Result<OhMyPiAgentEvent, OhMyPiRpcProtocolFailure> {
     let message = value
         .get("message")
         .ok_or_else(|| failure(OhMyPiRpcProtocolFailureKind::UnknownRecord))?;
@@ -123,7 +134,9 @@ pub(super) fn decode_message_start(value: &Value) -> Result<OhMyPiAgentEvent, Oh
     }
 }
 
-pub(super) fn decode_message_update(value: &Value) -> Result<OhMyPiAgentEvent, OhMyPiRpcProtocolFailure> {
+pub(super) fn decode_message_update(
+    value: &Value,
+) -> Result<OhMyPiAgentEvent, OhMyPiRpcProtocolFailure> {
     let event = value
         .get("assistantMessageEvent")
         .ok_or_else(|| failure(OhMyPiRpcProtocolFailureKind::UnknownRecord))?;

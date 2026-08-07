@@ -16,10 +16,11 @@ const MAX_VERSION_STDERR_BYTES: usize = 1_024;
 const MAX_SAFE_STDERR_CHARS: usize = 240;
 
 mod probe;
-use probe::{
-    ProbeSignal, exit_failed, next_output, outcome, parse_version, staged_outcome, stop_and_classify,
-};
 pub(crate) use probe::sanitized_stderr;
+use probe::{
+    ProbeSignal, exit_failed, next_output, outcome, parse_version, staged_outcome,
+    stop_and_classify,
+};
 
 impl DiscoveryDriver for AntigravityCatalogueDriver {
     fn discover(

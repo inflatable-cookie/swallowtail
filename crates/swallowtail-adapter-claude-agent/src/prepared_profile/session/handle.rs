@@ -2,8 +2,7 @@ use swallowtail_core::ProviderSessionBindingOrigin;
 use swallowtail_runtime::{
     BoxFuture, CancellationControl, CleanupOutcome, DirectContinuationTurnRequest, HostServices,
     InteractiveSessionHandle, PreparedAccessEvidence, ProviderSessionManagementBinding,
-    RuntimeFailure, SessionResumeBinding, TurnHandle, TurnRequest,
-    WorkingResourceRef,
+    RuntimeFailure, SessionResumeBinding, TurnHandle, TurnRequest, WorkingResourceRef,
 };
 
 pub(super) async fn wrap_management_handle(
@@ -85,4 +84,3 @@ impl InteractiveSessionHandle for ManagedClaudeAgentSessionHandle {
         self.inner.close()
     }
 }
-

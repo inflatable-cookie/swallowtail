@@ -1,13 +1,13 @@
+use super::super::protocol::project_revalidation;
 use super::control::{Controlled, wait_controlled};
 use super::resource::ScopedResource;
 use super::{
     cancel_and_release, cleanup_or, close_and_release, control_before_dispatch, control_failure,
     deadline_wait, finish, from_runtime, require_catalogue_version,
 };
+use crate::CodexAppServerDriver;
 use crate::app_server::scope;
 use crate::session_replay::project_thread_history;
-use crate::CodexAppServerDriver;
-use super::super::protocol::project_revalidation;
 use swallowtail_runtime::{
     HostServices, ProviderSessionImportOutcome, ProviderSessionImportPlan,
     ProviderSessionImportRequest, ProviderSessionOperationFailure,
@@ -129,5 +129,4 @@ impl CodexAppServerDriver {
         let revalidation = finish(revalidation, cleanup.clone())?;
         ProviderSessionImportOutcome::new(&plan, &request, revalidation, cleanup)
     }
-
 }

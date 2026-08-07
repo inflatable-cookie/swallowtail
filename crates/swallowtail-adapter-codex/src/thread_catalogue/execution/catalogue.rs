@@ -1,12 +1,12 @@
+use super::super::protocol::project_page;
 use super::control::{Controlled, wait_controlled};
 use super::resource::ScopedResource;
 use super::{
     cancel_and_release, cleanup_or, close_and_release, control_before_dispatch, control_failure,
     deadline_wait, finish, from_runtime, require_catalogue_version,
 };
-use crate::app_server::scope;
 use crate::CodexAppServerDriver;
-use super::super::protocol::project_page;
+use crate::app_server::scope;
 use swallowtail_runtime::{
     HostServices, ProviderSessionCatalogueOutcome, ProviderSessionCataloguePlan,
     ProviderSessionCatalogueRequest, ProviderSessionOperationFailure,
@@ -127,5 +127,4 @@ impl CodexAppServerDriver {
             cleanup,
         )
     }
-
 }

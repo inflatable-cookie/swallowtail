@@ -1,13 +1,11 @@
-use super::{read_only_working_resource_capability, require_catalogue_version};
+use super::super::CodexPreparedSession;
 use super::super::input::CodexSessionReconciliationInput;
 use super::super::plan::{
-    CodexPreparedEvidence, build_plan, descriptor, failure, instance_with_capabilities, model_route,
-    require_driver, requirements,
+    CodexPreparedEvidence, build_plan, descriptor, failure, instance_with_capabilities,
+    model_route, require_driver, requirements,
 };
-use super::super::CodexPreparedSession;
-use crate::{
-    CodexAppServerDriver, CodexPreparedDriver, CodexPreparedIntegration,
-};
+use super::{read_only_working_resource_capability, require_catalogue_version};
+use crate::{CodexAppServerDriver, CodexPreparedDriver, CodexPreparedIntegration};
 use swallowtail_core::{
     Capability, CapabilityConstraint, CapabilityProfile, CapabilityRequirement, DriverRole,
     HarnessConfigurationPosture, HostServiceKind, OperationShape, ResourceAccess,
@@ -161,7 +159,7 @@ impl CodexPreparedIntegration {
 }
 
 impl CodexPreparedIntegration {
-/// Prepares read-only reconciliation for one interrupted retained thread.
+    /// Prepares read-only reconciliation for one interrupted retained thread.
     pub fn prepare_session_reconciliation(
         &self,
         input: CodexSessionReconciliationInput,

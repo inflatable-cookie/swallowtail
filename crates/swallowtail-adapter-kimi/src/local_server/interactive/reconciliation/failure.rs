@@ -1,8 +1,6 @@
 use crate::failure::failure;
 use swallowtail_core::Diagnostic;
-use swallowtail_runtime::{
-    CleanupOutcome, PreparationFailure, PreparationStage, RuntimeFailure,
-};
+use swallowtail_runtime::{CleanupOutcome, PreparationFailure, PreparationStage, RuntimeFailure};
 
 pub(super) fn preparation_failure(code: &'static str, message: &'static str) -> PreparationFailure {
     PreparationFailure::new(

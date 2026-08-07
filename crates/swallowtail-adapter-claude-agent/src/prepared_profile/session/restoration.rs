@@ -59,4 +59,3 @@ impl WorkingStateRestorationOperation for ClaudeAgentContinuationRecovery {
         })
     }
 }
-

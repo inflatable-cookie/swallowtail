@@ -1,9 +1,9 @@
-use super::{read_only_working_resource_capability, require_catalogue_version};
 use super::super::input::CodexSessionCatalogueInput;
 use super::super::plan::{
-    CodexPreparedEvidence, build_plan, descriptor, failure, instance_with_capabilities, require_driver,
-    requirements,
+    CodexPreparedEvidence, build_plan, descriptor, failure, instance_with_capabilities,
+    require_driver, requirements,
 };
+use super::{read_only_working_resource_capability, require_catalogue_version};
 use crate::{CodexAppServerDriver, CodexPreparedDriver, CodexPreparedIntegration};
 use swallowtail_core::{
     Capability, CapabilityProfile, CapabilityRequirement, DriverRole, HarnessConfigurationPosture,
@@ -12,7 +12,8 @@ use swallowtail_core::{
 use swallowtail_runtime::{
     BoxFuture, HostServices, PreparationFailure, PreparedProviderSessionCatalogueEvidence,
     ProviderSessionCatalogueDriver, ProviderSessionCatalogueOutcome, ProviderSessionCataloguePlan,
-    ProviderSessionCatalogueRequest, ProviderSessionCatalogueScope, ProviderSessionOperationFailure,
+    ProviderSessionCatalogueRequest, ProviderSessionCatalogueScope,
+    ProviderSessionOperationFailure,
 };
 
 #[derive(Clone, Debug)]
@@ -93,7 +94,7 @@ impl CodexPreparedSessionCatalogue {
 }
 
 impl CodexPreparedIntegration {
-/// Prepares a bounded working-resource-scoped retained-thread catalogue.
+    /// Prepares a bounded working-resource-scoped retained-thread catalogue.
     pub fn prepare_session_catalogue(
         &self,
         input: CodexSessionCatalogueInput,

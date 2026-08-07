@@ -9,10 +9,8 @@ use swallowtail_core::{
     Capability, CapabilityProfile, CapabilityRequirement, ModelRoute, ProviderSessionBindingOrigin,
 };
 use swallowtail_runtime::{
-    HostServices,
-    InteractiveSessionDriver, LoadSessionRequest, LoadedSession,
-    OpenSessionRequest, PreparationFailure,
-    PreparedWorkingStateRestoration, ResumeSessionRequest, RuntimeTurnId,
+    HostServices, InteractiveSessionDriver, LoadSessionRequest, LoadedSession, OpenSessionRequest,
+    PreparationFailure, PreparedWorkingStateRestoration, ResumeSessionRequest, RuntimeTurnId,
     SessionOptions, SessionResumeBinding,
 };
 
@@ -304,7 +302,9 @@ pub(super) fn validate_options(
     Ok(())
 }
 
-pub(super) fn reject_attachment_reasoning(options: &SessionOptions) -> Result<(), PreparationFailure> {
+pub(super) fn reject_attachment_reasoning(
+    options: &SessionOptions,
+) -> Result<(), PreparationFailure> {
     if options.reasoning_mode().is_some() {
         Err(failure(
             "swallowtail.claude_agent.preparation.attachment_reasoning_unsupported",

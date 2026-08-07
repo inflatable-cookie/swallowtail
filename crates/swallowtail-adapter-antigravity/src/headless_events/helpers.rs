@@ -20,7 +20,9 @@ pub(super) fn token_usage(value: &Value) -> Result<Option<TokenUsage>, RuntimeFa
     ))
 }
 
-pub(super) fn subagents(value: &Value) -> Result<Option<Vec<super::SubagentEvidence>>, RuntimeFailure> {
+pub(super) fn subagents(
+    value: &Value,
+) -> Result<Option<Vec<super::SubagentEvidence>>, RuntimeFailure> {
     let Some(info) = value.get("subagent_info") else {
         return Ok(None);
     };

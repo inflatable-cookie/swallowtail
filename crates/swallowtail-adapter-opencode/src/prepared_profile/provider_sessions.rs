@@ -2,8 +2,8 @@ use super::plan::failure;
 use crate::OpenCodePreparedIntegration;
 use swallowtail_core::{
     AccessRequirement, CapabilityRequirement, CredentialState, DriverRole, EndpointAuthorization,
-    EntitlementState, ExecutionLayer, HarnessConfigurationPosture, HarnessIsolation, HostServiceKind,
-    OperationRequirements, OperationShape, RuntimeReadiness, SessionAccessPolicy,
+    EntitlementState, ExecutionLayer, HarnessConfigurationPosture, HarnessIsolation,
+    HostServiceKind, OperationRequirements, OperationShape, RuntimeReadiness, SessionAccessPolicy,
     SessionProviderStatePolicy,
 };
 use swallowtail_runtime::PreparationFailure;
@@ -16,7 +16,9 @@ pub use catalogue::OpenCodePreparedSessionCatalogue;
 pub use import::OpenCodePreparedSessionImport;
 pub use reconciliation::OpenCodePreparedSessionReconciliation;
 
-pub(super) fn require_qualified(prepared: &OpenCodePreparedIntegration) -> Result<(), PreparationFailure> {
+pub(super) fn require_qualified(
+    prepared: &OpenCodePreparedIntegration,
+) -> Result<(), PreparationFailure> {
     if prepared.server().is_qualified() {
         Ok(())
     } else {

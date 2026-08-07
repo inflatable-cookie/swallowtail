@@ -1,18 +1,18 @@
-#[path = "execution/control.rs"]
-mod control;
-#[path = "execution/resource.rs"]
-mod resource;
 #[path = "execution/catalogue.rs"]
 mod catalogue;
+#[path = "execution/control.rs"]
+mod control;
 #[path = "execution/import.rs"]
 mod import;
 #[path = "execution/reconciliation.rs"]
 mod reconciliation;
+#[path = "execution/resource.rs"]
+mod resource;
 
+use crate::app_server::close_connection;
+use crate::rpc::RpcConnection;
 use crate::selection::supports_thread_catalogue_version;
 use resource::ScopedResource;
-use crate::rpc::RpcConnection;
-use crate::app_server::close_connection;
 use std::sync::Arc;
 use swallowtail_core::SafeDiagnostic;
 use swallowtail_runtime::{

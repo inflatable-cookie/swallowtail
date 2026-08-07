@@ -1,14 +1,16 @@
-use super::{provider_session_requirements, require_qualified};
 use super::super::input::OpenCodeSessionCatalogueInput;
 use super::super::plan::{build_plan, failure, instance_with_capabilities};
+use super::{provider_session_requirements, require_qualified};
 use crate::{OpenCodeHttpDriver, OpenCodePreparedIntegration};
 use swallowtail_core::{
-    Capability, CapabilityProfile, CapabilityRequirement, DriverRole, OperationShape, ResourceAccess,
+    Capability, CapabilityProfile, CapabilityRequirement, DriverRole, OperationShape,
+    ResourceAccess,
 };
 use swallowtail_runtime::{
     BoxFuture, HostServices, PreparationFailure, PreparedProviderSessionCatalogueEvidence,
     ProviderSessionCatalogueDriver, ProviderSessionCatalogueOutcome, ProviderSessionCataloguePlan,
-    ProviderSessionCatalogueRequest, ProviderSessionCatalogueScope, ProviderSessionOperationFailure,
+    ProviderSessionCatalogueRequest, ProviderSessionCatalogueScope,
+    ProviderSessionOperationFailure,
 };
 
 #[derive(Clone, Debug)]
@@ -79,7 +81,6 @@ impl OpenCodePreparedSessionCatalogue {
     }
 }
 
-
 impl OpenCodePreparedIntegration {
     /// Validates and prepares a bounded retained-session catalogue.
     pub fn prepare_session_catalogue(
@@ -133,5 +134,4 @@ impl OpenCodePreparedIntegration {
             request,
         })
     }
-
 }

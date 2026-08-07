@@ -1,6 +1,8 @@
 use super::plan::failure;
 use crate::{CodexPreparedIntegration, selection::supports_thread_catalogue_version};
-use swallowtail_core::{Capability, CapabilityConstraint, CapabilityRequirement, ResourceAccess, ResourceRepresentation};
+use swallowtail_core::{
+    Capability, CapabilityConstraint, CapabilityRequirement, ResourceAccess, ResourceRepresentation,
+};
 use swallowtail_runtime::PreparationFailure;
 
 mod catalogue;

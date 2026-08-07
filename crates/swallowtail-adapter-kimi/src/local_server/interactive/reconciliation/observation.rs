@@ -1,4 +1,4 @@
-use super::super::access::{SecretMaterial};
+use super::super::access::SecretMaterial;
 use super::super::checkpoint::KimiCursorCheckpoint;
 use super::super::websocket::{Subscription, SubscriptionInput};
 use super::failure::{
@@ -274,8 +274,8 @@ pub(super) fn control(
 
 #[cfg(test)]
 mod tests {
-    use super::apply_reconciliation_frame;
     use super::super::super::checkpoint::KimiCursorCheckpoint;
+    use super::apply_reconciliation_frame;
     use swallowtail_runtime::InterruptedTurnState;
 
     #[test]

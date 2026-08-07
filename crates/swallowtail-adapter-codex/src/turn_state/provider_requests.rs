@@ -174,5 +174,4 @@ impl ActiveTurn {
             ProviderRequestObservation::new(callback_id, namespace, provider_request_ref),
         ))
     }
-
 }

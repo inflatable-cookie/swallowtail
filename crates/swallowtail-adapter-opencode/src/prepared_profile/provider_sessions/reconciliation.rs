@@ -1,6 +1,6 @@
-use super::{provider_session_requirements, require_reconciliation_qualified};
 use super::super::input::OpenCodeSessionReconciliationInput;
 use super::super::plan::{build_plan, failure, instance_with_capabilities};
+use super::{provider_session_requirements, require_reconciliation_qualified};
 use crate::{OpenCodePreparedIntegration, OpenCodePreparedSession};
 use swallowtail_core::{
     Capability, CapabilityConstraint, CapabilityProfile, CapabilityRequirement, DriverRole,
@@ -25,7 +25,6 @@ pub struct OpenCodePreparedSessionReconciliation {
     pub(super) evidence: PreparedProviderSessionReconciliationEvidence,
     pub(super) request: ProviderSessionReconciliationRequest,
 }
-
 
 impl OpenCodePreparedSessionReconciliation {
     /// Returns the reconciliation preparation evidence.
@@ -231,5 +230,4 @@ impl OpenCodePreparedIntegration {
             request,
         })
     }
-
 }

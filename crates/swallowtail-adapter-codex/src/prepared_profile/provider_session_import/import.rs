@@ -1,18 +1,18 @@
-use super::catalogue::CodexPreparedSessionCatalogue;
-use super::{read_only_working_resource_capability, require_catalogue_version};
+use super::super::CodexPreparedSessionKind;
 use super::super::input::CodexSessionProfileInput;
 use super::super::plan::{
-    CodexPreparedEvidence, build_plan, descriptor, failure, instance_with_capabilities, model_route,
-    require_driver, requirements,
+    CodexPreparedEvidence, build_plan, descriptor, failure, instance_with_capabilities,
+    model_route, require_driver, requirements,
 };
+use super::super::session_capabilities::behavior_revision;
 use super::super::session_capabilities::{session_capabilities, supports_harness_mode};
-use super::super::{CodexPreparedSessionKind};
+use super::catalogue::CodexPreparedSessionCatalogue;
+use super::{read_only_working_resource_capability, require_catalogue_version};
 use crate::selection::CODEX_APP_SERVER_WORKSPACE_BEHAVIOR;
 use crate::{
     CodexAppServerDriver, CodexPreparedDriver, CodexPreparedIntegration,
     codex_bounded_workspace_capability,
 };
-use super::super::session_capabilities::behavior_revision;
 use swallowtail_core::{
     Capability, CapabilityProfile, CapabilityRequirement, DriverRole, HarnessConfigurationPosture,
     HostServiceKind, OperationShape, SessionProviderStatePolicy,
@@ -81,7 +81,7 @@ impl CodexPreparedSessionImport {
 }
 
 impl CodexPreparedIntegration {
-/// Prepares read-only import of one candidate from the bound catalogue.
+    /// Prepares read-only import of one candidate from the bound catalogue.
     pub fn prepare_read_only_session_import(
         &self,
         catalogue: &CodexPreparedSessionCatalogue,
@@ -97,7 +97,7 @@ impl CodexPreparedIntegration {
     }
 
     /// Prepares bounded-workspace import of one candidate from the bound catalogue.
-/// Prepares bounded-workspace import of one candidate from the bound catalogue.
+    /// Prepares bounded-workspace import of one candidate from the bound catalogue.
     pub fn prepare_bounded_workspace_session_import(
         &self,
         catalogue: &CodexPreparedSessionCatalogue,

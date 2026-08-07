@@ -1,5 +1,7 @@
 use swallowtail_core::SafeDiagnostic;
-use swallowtail_runtime::{CleanupOutcome, OperationContent, ProcessExit, TerminalOutcome, TerminalStatus};
+use swallowtail_runtime::{
+    CleanupOutcome, OperationContent, ProcessExit, TerminalOutcome, TerminalStatus,
+};
 
 pub(crate) struct ParsedTerminal {
     final_output: Option<OperationContent>,
@@ -70,4 +72,3 @@ impl ParsedTerminal {
         }
     }
 }
-

@@ -3,8 +3,8 @@ use base64::Engine as _;
 use serde_json::Value;
 use swallowtail_runtime::TokenUsage;
 
-mod ui;
 mod decode;
+mod ui;
 use decode::*;
 
 const MAXIMUM_RECORD_BYTES: usize = 1024 * 1024;

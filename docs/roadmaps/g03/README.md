@@ -49,9 +49,20 @@ visible as unverified newer unless exact evidence requires rejection.
 | Add Meta Muse Code through its exact installed headless event protocol without chasing every new harness. | completed | Contracts 005-006, 009-010, 023, 029, 032-033, 036-037, 039-041, 044-045, 051-052 | `g03.045` |
 | Ship Muse and the breaking unified Rust 1.95 floor as exact-source `v0.2.0` without carrying Muse's two new structural errors. | completed | Contracts 001, 023, 029, 032-033, 036-037, 044-045, 051-052 | `g03.046` |
 | Periodically reconcile deferred gates, route truth, and generation capacity. | planned | Contract 001 | recurring checkpoints |
+| Close the verified hang class in process supervision, runtime coordination, and the remote ACP transport. | planned | Contracts 009, 010, 035, 051 | `g03.049` |
+| Close provider-reachable panic paths and keep version-parse expectations literal-only. | planned | Contracts 029, 037, 051 | `g03.050` |
+| Make docs indexes and doc-policy gates machine-checked in CI and single-source the route inventory. | planned | Contracts 001, 036, 052 | `g03.051` |
+| Extract provider-neutral adapter scaffolding into shared crates to remove cross-adapter duplication. | planned | Contracts 011, 029, 037 | `g03.052` |
+| Unify version-claim semantics and close facade-surface inconsistencies. | planned | Contracts 003, 029, 037, 047 | `g03.053` |
 
 ## Current Checkpoint
 
+- the operator opened the internal-hardening suite g03.049-g03.053 from the
+  verified deep audit: hang closure, provider-reachable panic closure,
+  validation machinery and index closure, shared adapter scaffolding, and
+  claim and surface consistency; card 144 is the first ready card; the suite
+  resumes its evidence gate at the g03.051 planning checkpoint, and the
+  `v0.2.1` source tag remains a separate operator-authorized step
 - g03.048 is complete: Nucleus proved Codex app-server `0.147.0` emits
   `item/started` before `item/tool/call`, so a dynamic tool's activity
   identity was established without its callback correlation and the runtime
@@ -498,6 +509,11 @@ visible as unverified newer unless exact evidence requires rejection.
 - [046 v0.2.0 Muse And Rust-Floor Source Release](046-v0-2-0-muse-and-rust-floor-source-release.md) — completed
 - [047 Codex Malformed-Inbound Failure Diagnostics](047-codex-malformed-inbound-failure-diagnostics.md) — completed
 - [048 Late Activity Correlation Adoption](048-late-activity-correlation-adoption.md) — completed
+- [049 Hang And Deadline Closure](049-hang-and-deadline-closure.md) — planned
+- [050 Provider-Reachable Panic Closure](050-provider-reachable-panic-closure.md) — planned
+- [051 Validation Machinery And Index Closure](051-validation-machinery-and-index-closure.md) — planned
+- [052 Shared Adapter Scaffolding](052-shared-adapter-scaffolding.md) — planned
+- [053 Claim And Surface Consistency](053-claim-and-surface-consistency.md) — planned
 
 ## Checkpoint
 
@@ -584,3 +600,8 @@ g03 begins at roadmap 001 and normally runs for 30-50 numbered roadmaps. A
 consumer defect, provider release, or completed maintenance tranche does not
 create another generation. Rollover needs a substantial run plus an explicit
 sequencing reset.
+
+The operator authorized extending g03 through roadmap 053 for the
+internal-hardening suite. After the suite closes, the generation returns to
+its evidence gate and the rollover decision is revisited with the full
+generation run accounted.

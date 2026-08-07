@@ -4,7 +4,30 @@
 
 ## Ready
 
+- `144-process-supervision-reader-join-bound.md`
+
 ## Planned
+
+- `145-force-stop-truth-and-task-drop-disposition.md`
+- `146-waiter-slot-and-sender-close-standardization.md`
+- `147-remote-acp-deadline-closure.md`
+- `148-total-version-binding-helpers.md`
+- `149-fail-closed-exhaustiveness-and-dead-match-removal.md`
+- `150-provider-reachable-expect-sweep.md`
+- `151-literal-only-version-parse-expect-rule.md`
+- `152-docs-index-checks-and-drift-repair.md`
+- `153-doc-policy-and-msrv-tasks-in-ci.md`
+- `154-route-inventory-single-sourcing.md`
+- `155-retired-script-and-constant-consolidation.md`
+- `156-shared-probe-binding-and-stage-helpers.md`
+- `157-prepared-plan-builder-extraction.md`
+- `158-run-loop-and-activity-projector-extraction.md`
+- `159-transport-and-catalogue-wrapper-consolidation.md`
+- `160-provider-wide-scaffolding-migration.md`
+- `161-version-claim-semantics-decision.md`
+- `162-claim-identity-and-claim-less-posture.md`
+- `163-runtime-plan-family-consolidation.md`
+- `164-facade-surface-gap-closure.md`
 
 ## Completed
 

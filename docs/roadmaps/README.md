@@ -13,11 +13,11 @@ shape.
 
 ## Next Task
 
-Pause at g03's evidence gate. g03.047 closed the Nucleus-proven Codex
-`0.147.0` malformed-notification diagnostics defect; the `v0.2.1` source tag
-is a separate operator-authorized step. Resume only for a consumer-proven
-compatibility defect, material provider drift, or an explicit
-operator-selected route.
+Implement g03.049 Hang And Deadline Closure next. The operator opened the
+five-roadmap internal-hardening suite (g03.049-g03.053) from the verified deep
+audit; card 144 is the first ready card. The generation resumes its evidence
+gate at the g03.051 planning checkpoint. The `v0.2.1` source tag remains a
+separate operator-authorized step.
 
 ## Index
 

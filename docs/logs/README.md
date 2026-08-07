@@ -3,6 +3,22 @@
 Logs record decisions, evidence, and validation that matter after a work session
 ends. They do not replace contracts or roadmaps.
 
+## How To Browse
+
+Entries are chronological, newest first; the top entry is the latest milestone.
+Each entry is one decision or validation record from a work session. Logs
+cluster by delivery generation:
+
+- **g01** — foundation: contract kernel, runtime records, Codex proof drivers
+- **g02** — stabilization: provider-wide prepared facades, activity,
+  compatibility, lifecycle, and release discipline
+- **g03** — active: compatibility maintenance and consumer-proven hardening
+
+Titles name the topic. To trace one subject, grep the index for a route id,
+contract number, or feature name and read the entries in date order. A single
+feature usually has a short chain: selection evidence, contract, implementation,
+then conformance closeout.
+
 ## Entries
 
 - [2026-08-07 Codex Malformed-Inbound Failure Diagnostics](2026-08-07-codex-malformed-inbound-failure-diagnostics.md)

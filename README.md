@@ -8,6 +8,15 @@ host services, protocol codecs, and opt-in adapters. Applications keep their
 prompts, tools, permissions, routing, fallback policy, persistence, billing,
 and product state.
 
+## Quick Start
+
+New here? Two short reads get you from zero to a working run:
+
+- [Key Concepts](docs/guides/key-concepts.md) — the shared vocabulary in plain
+  English, before the type names pile up
+- [Quick Start](docs/guides/quickstart.md) — one Codex structured run, end to
+  end, with a minimal example
+
 ## Release Posture
 
 `v0.2.0` is the current supported source identity. Releases are distributed

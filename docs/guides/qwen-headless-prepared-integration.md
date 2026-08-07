@@ -3,6 +3,7 @@
 Use `swallowtail-adapter-qwen` for the installed `qwen` harness. The production
 route is `qwen.headless`, driver ID `swallowtail.qwen.headless`, over Qwen's
 structured CLI stream JSON protocol.
+New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
 Choose it for an authenticated model catalogue, one bounded prompt, or a
 turn-scoped interactive continuation that privately reuses Qwen's exact

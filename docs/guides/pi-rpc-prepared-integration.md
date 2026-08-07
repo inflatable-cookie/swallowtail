@@ -4,6 +4,7 @@ Use the prepared facade for Pi's maintained strict-LF RPC subprocess. It probes
 one host-approved executable and derives the configured instance, exact
 version binding, restrictive RPC policy, preflight plan, and open-session
 request.
+New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
 The route is `pi.rpc` in `swallowtail-adapter-pi`, with driver ID
 `swallowtail.pi.rpc` and strict-LF JSONL RPC over stdio. Choose it for Pi's

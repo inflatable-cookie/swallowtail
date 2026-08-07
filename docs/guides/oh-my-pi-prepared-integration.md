@@ -4,6 +4,7 @@ Use `swallowtail-adapter-oh-my-pi` for the separately qualified Oh My Pi
 coding-agent package. `oh-my-pi.rpc` does not alias `pi.rpc`: artifact,
 executable, auth state, protocol, framing, models, and capability truth remain
 independent.
+New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
 The driver ID is `swallowtail.oh-my-pi.rpc`.
 

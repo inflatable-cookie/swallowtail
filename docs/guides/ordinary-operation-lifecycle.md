@@ -3,6 +3,7 @@
 Use this runbook after selecting and preparing one exact route. It covers the
 shared lifecycle of structured runs and interactive sessions without
 flattening their provider-specific operations.
+New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
 ## Choose The Operation Shape
 

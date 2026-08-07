@@ -2,6 +2,7 @@
 
 Use portable classification for ordinary application behavior. Keep the exact
 safe diagnostic for logs and support.
+New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
 The boundary applies to every production route. A route may classify only the
 failure evidence it can prove. Missing provider detail remains `Unknown`; one

@@ -2,7 +2,8 @@
 
 Controlled detachment ends one qualified local observation attachment without
 asking the provider to stop its work. It is not cancellation, completion,
-stream reattachment, session resume, or crash reconciliation.
+stream reattachment, session resume, or crash reconciliation. New to the
+shared vocabulary? Read [Key Concepts](key-concepts.md) first.
 
 ## Admission
 
@@ -66,3 +67,36 @@ provider-managed recovery.
 
 Contract 049 is authoritative for lifecycle truth. Contract 048 defines the
 later observation-only reconciliation step.
+
+## Example Shape
+
+The only production mapping is the read-only OpenCode interactive session
+profile. The shape of a detachment is fixed regardless of route:
+
+```rust
+// Select a callback-free, durable profile before dispatch.
+let prepared_session = opencode.prepare_session(
+    OpenCodeSessionProfileInput::new(/* model, resource, instructions */)
+        .with_active_turn_detachment(),
+)?;
+let handle = prepared_session.open_session(services).await?;
+// On shutdown: request, await Detached terminal, then close.
+handle.detachment().unwrap().request();
+// await TerminalStatus::Detached, then handle.close().await?
+```
+
+This is illustrative, not a standalone compile target. Use the
+[OpenCode guide](opencode-attached-prepared-integration.md) for the exact
+constructor and the full shutdown sequence above for the order of operations.
+
+## Validation
+
+Validate without provider work:
+
+```sh
+effigy check:examples
+effigy qa:docs
+```
+
+Live controlled shutdown against an attached OpenCode server remains a
+separately operator-gated probe, never deterministic acceptance.

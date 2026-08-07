@@ -2,6 +2,7 @@
 
 Use `swallowtail-adapter-grok` for the installed Grok Build ACP harness. It is
 separate from xAI's hosted Responses WebSocket route.
+New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
 The route is `grok-build.acp`, driver ID `swallowtail.grok-build.acp`, over
 ACP v1 stdio. Choose it for the installed subscription harness and reject it

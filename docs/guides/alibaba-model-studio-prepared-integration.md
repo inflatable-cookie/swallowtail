@@ -5,6 +5,7 @@ Responses route. It binds one configured workspace instance, exact regional
 audience, general API-key access profile, and Qwen route. Conversation
 ownership is selected explicitly: operation-owned delete-on-close or retained
 provider state with separate cleanup authority.
+New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
 The production route is `alibaba.conversations` in
 `swallowtail-adapter-alibaba-model-studio`, driver ID

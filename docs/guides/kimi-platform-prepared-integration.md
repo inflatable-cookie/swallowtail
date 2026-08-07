@@ -5,6 +5,7 @@ Use `swallowtail-adapter-kimi-platform` route `kimi-platform.chat`, driver ID
 Platform API over HTTPS/SSE. Choose it for account-scoped model observation or
 one explicit K3 attempt. Reject it when the application needs Kimi Membership,
 Kimi Code, tools, a reusable session, or provider-state management.
+New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
 ## Operator Prerequisites
 

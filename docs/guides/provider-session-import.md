@@ -3,6 +3,7 @@
 Use this flow when a consumer wants to browse harness-origin sessions under one
 approved working resource, import one explicitly, replay its history, then
 continue it. Swallowtail does not synchronize harness and consumer databases.
+New to the shared vocabulary? Read [Key Concepts](key-concepts.md) first.
 
 ## Supported Routes
 

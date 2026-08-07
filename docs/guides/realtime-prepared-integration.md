@@ -1,6 +1,7 @@
 # Realtime Prepared Integration
 
 Swallowtail exposes three separate prepared connection surfaces:
+New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
 | Route | Package and driver ID | Bound operation | Native shape |
 | --- | --- | --- | --- |

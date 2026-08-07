@@ -5,6 +5,9 @@ Choose one row explicitly. Swallowtail does not select a provider, driver,
 model, target, endpoint, credential, billing arrangement, execution host, or
 fallback route.
 
+New to the vocabulary? Read [Key Concepts](key-concepts.md) before the type
+names pile up.
+
 The companion
 [provider and feature CSV](provider-solution-feature-matrix.csv) groups
 complementary routes where one public solution facade exists, then compares
@@ -14,6 +17,23 @@ capability; the cells remain a solution-conversion scoreboard. Permission
 exchange and question exchange are separate columns: authorization stays
 provider-specific while losslessly representable questions use one typed
 runtime contract.
+
+### Feature Matrix Value Vocabulary
+
+The 34 feature columns use three plain values plus exact exceptions:
+
+- `yes` — the solution supports the feature
+- `no` — the solution does not support the feature
+- `not applicable` — the route's operation shape has no such concept
+
+The exceptions are deliberate and never generalize:
+
+- `model_catalog` uses `Caller-supplied` or `Session-negotiated` to say where
+  the model list comes from
+- `cancellation_or_interruption` and `provider_managed_recovery` use `Partial`
+  where only part of the feature is qualified
+- `persistent_session_posture` uses sentence values that name the exact
+  posture; treat each as its own truth, not a `yes` or `no`
 
 Every row has two public paths:
 

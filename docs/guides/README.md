@@ -3,8 +3,10 @@
 Guides explain how to use realized Swallowtail APIs. They do not override
 contracts or architecture.
 
-## Available
+## Start Here
 
+- [Key Concepts](key-concepts.md) — the shared vocabulary in plain English
+- [Quick Start](quickstart.md) — one Codex run, end to end
 - [Integration Guide Map](integration-guide-map.md) — route, feature, example,
   and missing-coverage front door
 - [Alibaba Model Studio Prepared Integration](alibaba-model-studio-prepared-integration.md)

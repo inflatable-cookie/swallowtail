@@ -2,7 +2,8 @@
 
 Use this runbook for continuation, discovery, restart recovery, provider
 session management, remote cleanup, and owned local runtimes. These are
-separate authorities. Support for one does not imply another.
+separate authorities. Support for one does not imply another. New to the
+shared vocabulary? Read [Key Concepts](key-concepts.md) first.
 
 ## Ordinary Continuation
 

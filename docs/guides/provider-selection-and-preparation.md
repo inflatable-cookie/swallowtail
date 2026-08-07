@@ -1,7 +1,8 @@
 # Provider Selection And Preparation
 
 Use this flow to present configured provider choices without inventing a
-provider registry or rebuilding adapter evidence in the application.
+provider registry or rebuilding adapter evidence in the application. New to
+the shared vocabulary? Read [Key Concepts](key-concepts.md) first.
 
 ## Assemble The Catalogue
 

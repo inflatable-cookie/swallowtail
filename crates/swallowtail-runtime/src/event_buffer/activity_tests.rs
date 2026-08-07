@@ -1,8 +1,8 @@
 use super::{EventBufferFailureKind, OrderedEventBuffer};
 use crate::{
-    ActivityDisclosure, ActivityId, ActivityKind, ActivityLifecyclePhase, ActivityObservation,
-    ActivityOperationId, ActivityStatus, OperationContent, RuntimeEvent, RuntimeEventKind,
-    RuntimeRunId, RuntimeTurnId,
+    ActivityCorrelation, ActivityDisclosure, ActivityId, ActivityKind, ActivityLifecyclePhase,
+    ActivityObservation, ActivityOperationId, ActivityStatus, OperationContent, RuntimeEvent,
+    RuntimeEventKind, RuntimeRunId, RuntimeTurnId,
 };
 
 fn activity(
@@ -218,6 +218,59 @@ fn activity_owner_and_envelope_cannot_change() {
         EventBufferFailureKind::ActivityEnvelopeInvalid
     );
     assert!(!failure.to_string().contains("legacy duplicate content"));
+}
+
+#[test]
+fn correlation_is_adopted_once_then_fixed() {
+    let mut buffer = OrderedEventBuffer::new(8).expect("capacity is valid");
+    buffer
+        .push(RuntimeEvent::new(1, RuntimeEventKind::Started))
+        .unwrap();
+    // Codex 0.147 emits item/started before item/tool/call, so the first
+    // observation of a consumer tool has no correlation yet.
+    buffer
+        .push(RuntimeEvent::new(
+            2,
+            RuntimeEventKind::Activity(activity(
+                "tool",
+                run_owner(),
+                ActivityLifecyclePhase::Started,
+                ActivityStatus::InProgress,
+            )),
+        ))
+        .unwrap();
+    let correlated = activity(
+        "tool",
+        run_owner(),
+        ActivityLifecyclePhase::Updated,
+        ActivityStatus::InProgress,
+    )
+    .with_correlation(ActivityCorrelation::Callback(
+        crate::CallbackId::new("callback-1").expect("callback id is valid"),
+    ));
+    buffer
+        .push(RuntimeEvent::new(3, RuntimeEventKind::Activity(correlated)))
+        .expect("learning the correlation later is not an identity change");
+    let conflicting = activity(
+        "tool",
+        run_owner(),
+        ActivityLifecyclePhase::Updated,
+        ActivityStatus::InProgress,
+    )
+    .with_correlation(ActivityCorrelation::Callback(
+        crate::CallbackId::new("callback-2").expect("callback id is valid"),
+    ));
+    let failure = buffer
+        .push(RuntimeEvent::new(
+            4,
+            RuntimeEventKind::Activity(conflicting),
+        ))
+        .expect_err("an established correlation cannot change");
+    assert_eq!(
+        failure.kind(),
+        EventBufferFailureKind::ActivityIdentityConflict
+    );
+    assert!(failure.to_string().contains("tool"));
 }
 
 #[test]

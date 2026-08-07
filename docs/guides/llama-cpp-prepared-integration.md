@@ -1,6 +1,7 @@
 # llama.cpp Prepared Integration
 
 `swallowtail-adapter-llama-cpp` exposes two deliberately separate routes:
+New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
 | Route | Driver ID and transport | Choose it for | Reject it when |
 | --- | --- | --- | --- |

@@ -2,6 +2,7 @@
 
 Use `swallowtail-adapter-gemini` for the installed Gemini CLI. Select one
 branch before discovery; neither falls back to the other.
+New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
 ## Choose A Route
 

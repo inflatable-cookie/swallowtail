@@ -2,7 +2,8 @@
 
 Use this pattern when adding the adapter-local normal path required by
 Contract 037. The facade removes repeated low-level assembly. It does not
-choose consumer intent or flatten provider behavior.
+choose consumer intent or flatten provider behavior. New to the shared
+vocabulary? Read [Key Concepts](key-concepts.md) first.
 
 ## Two Phases
 
@@ -137,3 +138,62 @@ Before rollout:
 Kimi ACP, Anthropic direct, and Ollama native satisfy this pattern without a
 new shared lifecycle or access rule. The remaining adapter rollout can reuse
 the pattern while keeping each route's native operations and evidence local.
+
+## Worked Shape
+
+A facade is two thin layers over one unchanged low-level role. The shape below
+is illustrative, not a compile target; the compile-tested examples linked
+below are the ground truth:
+
+```rust
+// Phase 1: one prepare function for the whole integration.
+pub async fn prepare_<route>(
+    input: <Route>PreparationInput,
+    probe: <Route>PreparationProbe,
+    services: HostServices,
+) -> Result<<Route>PreparedIntegration, PreparationFailure> {
+    // observe the target only when the route requires it
+    // bind identity, host, target, access evidence, version evidence
+    // return one prepared value
+}
+
+// Phase 2: one operation per low-level role.
+impl <Route>PreparedIntegration {
+    pub fn prepare_structured_exec(
+        &self,
+        input: <Route>ExecProfileInput,
+    ) -> Result<<Route>PreparedExec, PreparationFailure> {
+        // derive the immutable plan, preflight, and request
+    }
+}
+
+impl <Route>PreparedExec {
+    pub async fn start_run(
+        &self,
+        services: HostServices,
+    ) -> Result<Box<dyn RunHandle>, RuntimeFailure> {
+        // delegate to the public low-level driver
+    }
+}
+```
+
+The three representative compile-tested examples show the real shape:
+
+- [Kimi ACP](../../crates/swallowtail-adapter-kimi/examples/prepared_acp.rs)
+- [Anthropic direct](../../crates/swallowtail-adapter-anthropic/examples/prepared_direct.rs)
+- [Ollama native](../../crates/swallowtail-adapter-ollama/examples/prepared_attached.rs)
+
+## Validation
+
+Follow the conformance checklist above, then prove the public surface
+deterministically:
+
+```sh
+effigy check:examples
+effigy validate:focused swallowtail-adapter-<route>
+effigy qa:docs
+effigy qa:routes
+```
+
+Live provider probes remain separately operator-gated and never replace the
+fixture and example evidence.

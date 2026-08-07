@@ -6,6 +6,7 @@ surface over OpenAI-compatible HTTPS/SSE. Choose it for catalogue observation,
 one bounded reasoning request, or consumer-owned direct tool continuation.
 Reject it when the application needs a durable provider thread, working
 resource, attachments, structured output, or managed recovery.
+New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
 ## Operator Prerequisites
 

@@ -1,6 +1,7 @@
 # Claude Agent Prepared Integration
 
 The adapter exposes two explicit local Claude routes:
+New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
 - `claude-agent.acp` for ACP structured runs, interactive sessions, and
   provider-session delete

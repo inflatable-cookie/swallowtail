@@ -2,7 +2,8 @@
 
 Use this facade when a consumer persisted an operation as active, lost its
 runtime handle, and wants the strongest qualified route-local path back to a
-usable state.
+usable state. New to the shared vocabulary? Read
+[Key Concepts](key-concepts.md) first.
 
 Do not choose between reconciliation and continuation recovery in the UI or
 persistence layer. Restore the exact provider facade and route-specific input,

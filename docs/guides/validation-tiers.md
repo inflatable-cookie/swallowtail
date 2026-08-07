@@ -2,6 +2,7 @@
 
 Use the smallest proof that owns the current change. Broader gates remain
 mandatory at their milestone; they are not normal per-edit feedback.
+New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
 All selectors in this guide are deterministic unless a command is explicitly
 named as a live probe. They do not authorize authentication, provider prompts,

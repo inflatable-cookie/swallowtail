@@ -3,6 +3,7 @@
 Use `swallowtail-adapter-cursor` for the installed `cursor-agent` harness. Do
 not substitute the colliding `agent` executable: that command may identify as
 Grok Build.
+New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
 ## Choose A Route
 

@@ -49,6 +49,13 @@ Code should:
 Documentation changes must keep contracts, route and feature matrices, guides,
 examples, release copy, and the sole roadmap next task consistent.
 
+New guides should follow the existing template: a plain "use this when" opener,
+a [Key Concepts](docs/guides/key-concepts.md) link for shared vocabulary, a
+compile-tested example link, and a validation section. Keep matrix facts in the
+matrices and link them rather than restating them; the
+[integration guide map](docs/guides/integration-guide-map.md) names which
+artifact owns which fact.
+
 ## Validation
 
 Use the narrowest accepted selector while developing. Before handoff, run the

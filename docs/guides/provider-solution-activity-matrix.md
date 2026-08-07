@@ -20,6 +20,9 @@ There is no unexplained whole-operation `unavailable` result. An
 `unavailable` feature cell means the operation is usable but its exact
 prepared activity profile does not promise that activity.
 
+The sections below define every column and every allowed value. Read them as
+the legend for the CSV; the CSV itself is machine-read and deliberately terse.
+
 ## Row Identity
 
 `provider` and `solution` are display grouping fields. `route_id` and

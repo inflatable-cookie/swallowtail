@@ -3,6 +3,7 @@
 Use the prepared facade to attach to an operator-managed Ollama native
 runtime. Swallowtail observes and invokes the selected deployment. It does not
 install Ollama, acquire models, own the server, or administer residency.
+New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
 The route is `ollama.attached` in `swallowtail-adapter-ollama`, driver ID
 `swallowtail.ollama.native-attached`, over native HTTP/NDJSON. Choose it for an

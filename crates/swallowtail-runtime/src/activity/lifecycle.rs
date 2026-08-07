@@ -31,8 +31,19 @@ impl ActivityLifecycleTracker {
             );
             return Ok(());
         };
-        if !state.matches_identity(observation) {
+        if !state.matches_fixed_identity(observation) {
             return Err(ActivityTransitionFailure::IdentityConflict);
+        }
+        // Correlation is learned over time: a provider may emit an item's
+        // start before the request that links it to a callback (Codex 0.147
+        // sends item/started before item/tool/call). Adopting the correlation
+        // once is not an identity change; changing an established one is.
+        match (&state.correlation, observation.correlation()) {
+            (Some(held), Some(next)) if held != next => {
+                return Err(ActivityTransitionFailure::IdentityConflict);
+            }
+            (None, Some(next)) => state.correlation = Some(next.clone()),
+            _ => {}
         }
         if state.completed {
             return Err(
@@ -53,6 +64,16 @@ impl ActivityLifecycleTracker {
         state.status = observation.status();
         state.completed = observation.phase() == ActivityLifecyclePhase::Completed;
         Ok(())
+    }
+
+    /// Returns the established identity dimensions for an activity, when any.
+    pub(crate) fn established(
+        &self,
+        activity_id: &ActivityId,
+    ) -> Option<(ActivityKind, ActivityDisclosure)> {
+        self.activities
+            .get(activity_id)
+            .map(|state| (state.kind.clone(), state.disclosure))
     }
 }
 
@@ -82,13 +103,12 @@ impl ObservedActivityState {
         }
     }
 
-    fn matches_identity(&self, observation: &ActivityObservation) -> bool {
+    fn matches_fixed_identity(&self, observation: &ActivityObservation) -> bool {
         self.operation_id == *observation.operation_id()
             && self.provider_activity_ref.as_ref() == observation.provider_activity_ref()
             && self.kind == *observation.kind()
             && self.assistant_phase == observation.assistant_phase()
             && self.disclosure == observation.disclosure()
-            && self.correlation.as_ref() == observation.correlation()
     }
 }
 

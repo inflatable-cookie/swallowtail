@@ -4,6 +4,7 @@ Use `swallowtail-adapter-muse` for Meta's installed Muse Code harness. The
 route is `muse-code.headless`; the driver ID is
 `swallowtail.muse-code.headless`. It owns one exact read-only structured run
 over Muse event JSONL stdio.
+New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
 This package is additive unreleased source after `v0.1.1`. Consumers must pin
 an explicitly reviewed commit containing it. Neither `v0.1.0` nor `v0.1.1`

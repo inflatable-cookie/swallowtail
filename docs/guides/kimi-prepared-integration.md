@@ -5,6 +5,7 @@ The caller selects `Acp` or `Headless` before discovery. The facade discovers
 one host-approved executable, preserves the route-specific compatibility
 result, and derives the configured instance, preflight plan, policy, and
 request echoes.
+New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
 Both routes live in `swallowtail-adapter-kimi`:
 

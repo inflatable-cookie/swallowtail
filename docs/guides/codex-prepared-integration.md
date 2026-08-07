@@ -2,6 +2,7 @@
 
 Use the prepared facade for normal Codex integration. Use the low-level drivers
 when an application needs a profile the facade does not provide.
+New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
 ## Choose A Route
 

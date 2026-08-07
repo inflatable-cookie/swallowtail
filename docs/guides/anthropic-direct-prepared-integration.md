@@ -6,6 +6,7 @@ API over HTTPS/SSE. Choose it for catalogue observation, one bounded Messages
 attempt, or a small resource-free consumer-tool continuation. Reject it when
 the application needs Claude subscription access, provider-hosted agent state,
 durable continuation, a working resource, or provider-session management.
+New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
 ## Operator Prerequisites
 

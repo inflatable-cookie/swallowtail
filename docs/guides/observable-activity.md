@@ -2,7 +2,8 @@
 
 Swallowtail carries provider-visible agent work on the existing ordered run or
 turn event stream. It does not add a transcript API, second event bus, global
-recorder, or consumer-specific facade.
+recorder, or consumer-specific facade. New to the shared vocabulary? Read
+[Key Concepts](key-concepts.md) first.
 
 ## Inspect Before Effects
 

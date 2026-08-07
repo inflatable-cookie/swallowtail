@@ -1,7 +1,9 @@
 #![deny(missing_docs)]
 
 use crate::activity::{ActivityLifecycleTracker, ActivityTransitionFailure};
-use crate::{EventDelivery, RuntimeEvent, RuntimeEventKind};
+use crate::{
+    ActivityDisclosure, ActivityObservation, EventDelivery, RuntimeEvent, RuntimeEventKind,
+};
 use std::collections::VecDeque;
 use std::error::Error;
 use std::fmt;
@@ -48,6 +50,30 @@ impl EventBufferFailure {
         Self {
             kind,
             diagnostic: SafeDiagnostic::new("swallowtail.event_buffer_rejected", message),
+        }
+    }
+
+    /// Identity conflicts name the activity and both identities: activity ids
+    /// and kinds are protocol metadata, never user content, and without them
+    /// the conflict is undebuggable for consumers.
+    fn identity_conflict(
+        observation: &ActivityObservation,
+        established: Option<(crate::ActivityKind, ActivityDisclosure)>,
+    ) -> Self {
+        let established = established
+            .map(|(kind, disclosure)| format!("{kind:?}/{disclosure:?}"))
+            .unwrap_or_else(|| "none".to_owned());
+        Self {
+            kind: EventBufferFailureKind::ActivityIdentityConflict,
+            diagnostic: SafeDiagnostic::new(
+                "swallowtail.event_buffer_rejected",
+                format!(
+                    "Activity identity changed within one operation: {} (established {established}, incoming {:?}/{:?})",
+                    observation.activity_id().as_str(),
+                    observation.kind(),
+                    observation.disclosure(),
+                ),
+            ),
         }
     }
 
@@ -222,7 +248,15 @@ impl OrderedEventBuffer {
 
         self.activities
             .observe(observation)
-            .map_err(activity_transition_failure)
+            .map_err(|failure| match failure {
+                ActivityTransitionFailure::IdentityConflict => {
+                    EventBufferFailure::identity_conflict(
+                        observation,
+                        self.activities.established(observation.activity_id()),
+                    )
+                }
+                other => activity_transition_failure(other),
+            })
     }
 }
 

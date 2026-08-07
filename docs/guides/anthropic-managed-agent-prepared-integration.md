@@ -6,6 +6,7 @@ operator-owned agent version and model route, one driver-owned environment,
 one driver-owned session, durable provider retention, managed recovery,
 authoritative event reconciliation, callbacks, interruption, and ordered
 deletion.
+New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
 This is provider-hosted harness execution. It is not the Anthropic Messages
 direct-inference facade, Claude Agent SDK, Claude Code, a Claude subscription,

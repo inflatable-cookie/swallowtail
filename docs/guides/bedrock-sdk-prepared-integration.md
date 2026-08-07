@@ -1,6 +1,7 @@
 # Bedrock SDK Prepared Integration
 
 Amazon Bedrock uses two separate prepared surfaces:
+New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
 | Route | Driver ID and operation | Transport and SDK |
 | --- | --- | --- |

@@ -4,6 +4,7 @@ Use this facade when an application needs Kimi Code's documented foreground
 REST/WebSocket server, explicit approval and question exchange, or native
 archive and restore. Use the separate Kimi ACP facade for the smaller stdio
 path, provider load replay, or resume without local-server management.
+New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
 The route is `kimi-code.local-server` in `swallowtail-adapter-kimi`, with
 driver ID `swallowtail.kimi.local-server`. Its transport is authenticated

@@ -52,6 +52,13 @@ visible as unverified newer unless exact evidence requires rejection.
 
 ## Current Checkpoint
 
+- g03.048 is complete: Nucleus proved Codex app-server `0.147.0` emits
+  `item/started` before `item/tool/call`, so a dynamic tool's activity
+  identity was established without its callback correlation and the runtime
+  buffer rejected the later correlated observation. The lifecycle tracker now
+  adopts a correlation once (`None → Some`) and still rejects changes to an
+  established one; the conflict diagnostic names the activity and both
+  identities
 - g03.047 is complete: Nucleus proved Codex app-server `0.147.0` drift left
   consumers with an opaque `malformed_notification` then "connection is
   closed"; card 143 now re-issues malformed-inbound failures with the
@@ -490,6 +497,7 @@ visible as unverified newer unless exact evidence requires rejection.
 - [045 Muse Code Headless Foundation](045-muse-code-headless-foundation.md) — completed
 - [046 v0.2.0 Muse And Rust-Floor Source Release](046-v0-2-0-muse-and-rust-floor-source-release.md) — completed
 - [047 Codex Malformed-Inbound Failure Diagnostics](047-codex-malformed-inbound-failure-diagnostics.md) — completed
+- [048 Late Activity Correlation Adoption](048-late-activity-correlation-adoption.md) — completed
 
 ## Checkpoint
 

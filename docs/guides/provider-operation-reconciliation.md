@@ -1,7 +1,8 @@
 # Provider Operation Reconciliation
 
 Use this path when a consumer persisted a turn as active, then lost its
-Swallowtail runtime handle through process exit or crash.
+Swallowtail runtime handle through process exit or crash. New to the shared
+vocabulary? Read [Key Concepts](key-concepts.md) first.
 
 Do not send another prompt first. Do not import the session again. Do not infer
 completion from an idle provider session.
@@ -110,3 +111,21 @@ Consumers that need one restart execution API should use the
 [working-state restoration facade](working-state-restoration.md). It wraps
 these read-only mappings and the separately qualified Claude Agent ACP and
 Kimi ACP continuation-recovery paths without changing reconciliation truth.
+
+## Example And Validation
+
+The compile-tested
+[Anthropic Managed Agent example](../../crates/swallowtail-adapter-anthropic/examples/prepared_managed_agent.rs)
+shows the recoverable-run, reconciliation, and recovered-cleanup constructors
+together. The [working-state restoration guide](working-state-restoration.md)
+shows the prepared facade and its outcome match with an inline example.
+
+Validate without provider work:
+
+```sh
+effigy check:examples
+effigy qa:docs
+```
+
+Live reconciliation and cleanup against provider state remain separately
+operator-gated probes, never deterministic acceptance.

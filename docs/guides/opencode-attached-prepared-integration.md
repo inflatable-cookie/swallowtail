@@ -3,6 +3,7 @@
 Use the prepared facade to connect to an operator-managed OpenCode HTTP
 server. Swallowtail observes and invokes the selected service. It does not
 start, stop, configure, authenticate, update, or recover the server.
+New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
 The route is `opencode.http` in `swallowtail-adapter-opencode`, with driver ID
 `swallowtail.opencode.http`. Use it for an already running OpenCode server when

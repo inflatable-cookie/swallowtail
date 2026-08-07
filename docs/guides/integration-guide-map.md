@@ -16,6 +16,22 @@ All 34 production route rows and every portable feature family have completed
 the checklist. Coverage state describes documentation evidence, not the
 underlying production capability.
 
+## Where Facts Live
+
+Each artifact owns one kind of fact. When the same fact appears in two places,
+treat the authority below as the source:
+
+| Artifact | Owns | Read it for |
+| --- | --- | --- |
+| [Provider route matrix](provider-route-matrix.md) | route identity, driver, transport, access, version axes, lifecycle posture | which route exists and what it is capable of |
+| [Feature matrix CSV](provider-solution-feature-matrix.csv) | portable capability cells per solution | whether a feature is supported on a route |
+| [Activity matrix](provider-solution-activity-matrix.md) | observable-activity fidelity per route and operation | what agent work is visible, and how faithful it is |
+| Route guides | how to use one route: prerequisites, normal flow, failures | the exact preparation and execution sequence |
+| [Key Concepts](key-concepts.md) | plain-English definitions of shared terms | what the vocabulary means before you read a guide |
+
+Guides restate matrix facts for convenience. Prefer the matrix when a fact
+conflicts or when you are qualifying a new claim.
+
 ## Route Guides
 
 | Route | Canonical guide | Normal-path example | Coverage |

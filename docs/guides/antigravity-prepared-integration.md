@@ -3,6 +3,7 @@
 Use `swallowtail-adapter-antigravity` for Google's installed Antigravity CLI.
 It is the personal Google subscription harness route. It does not replace or
 fall back to Gemini CLI or Gemini Live.
+New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
 ## Choose A Route
 

@@ -3,7 +3,13 @@
 Use this runbook when an operation needs output limits, reasoning, structured
 output, attachments, tools, operator input, working-resource access, writes,
 or search. Support is exact per route. A `Yes` on one route never promotes
-another route from the same provider.
+another route from the same provider. New to the shared vocabulary? Read
+[Key Concepts](key-concepts.md) first.
+
+The compile-tested
+[typed-question consumer](../../crates/swallowtail-runtime/examples/harness_user_input_consumer.rs)
+shows the concrete callback shape end to end; the sections below name the
+controls and inputs each route accepts.
 
 ## Generation Controls
 

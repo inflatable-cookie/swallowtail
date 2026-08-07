@@ -5,6 +5,7 @@ It binds the public API endpoint, public API-key audience, API billing,
 provider support authority, exact GPT-5.6 route, temporary retention, one
 maximum stream reattachment, native cancellation, and optional controlled
 detachment followed by read-only restart reconciliation.
+New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
 The route is `openai.background` in `swallowtail-adapter-openai`, driver ID
 `swallowtail.openai.background`, over HTTPS/SSE Background Responses. Choose

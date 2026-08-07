@@ -220,6 +220,7 @@ include!("driver/session.rs");
 include!("driver/turn.rs");
 include!("driver/run.rs");
 include!("driver/lifecycle.rs");
+include!("driver/lifecycle_services.rs");
 include!("driver/session_management.rs");
 include!("driver/provider_session_import.rs");
 include!("driver/provider_session_reconciliation.rs");

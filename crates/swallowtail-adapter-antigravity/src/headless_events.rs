@@ -2,9 +2,8 @@ use crate::headless_activity::AntigravityActivityProjection;
 use serde_json::Value;
 use swallowtail_core::{ModelId, SafeDiagnostic};
 use swallowtail_runtime::{
-    ActivityObservation, ActivityOperationId, CleanupOutcome, OperationContent, ProcessExit,
-    ProviderObservation, RuntimeEvent, RuntimeEventKind, RuntimeFailure, TerminalOutcome,
-    TerminalStatus, TokenUsage,
+    ActivityObservation, ActivityOperationId, OperationContent, ProviderObservation, RuntimeEvent,
+    RuntimeEventKind, RuntimeFailure, TerminalStatus,
 };
 
 const MAXIMUM_LINE_BYTES: usize = 1024 * 1024;
@@ -12,6 +11,11 @@ const MAXIMUM_EVENT_COUNT: usize = 4096;
 const MAXIMUM_OUTPUT_BYTES: usize = 4 * 1024 * 1024;
 const MAXIMUM_SUBAGENTS: usize = 64;
 type SubagentEvidence = (String, Option<String>);
+
+mod helpers;
+mod terminal;
+use helpers::*;
+pub(crate) use terminal::ParsedTerminal;
 
 pub(crate) struct AntigravityEventParser {
     pending: Vec<u8>,
@@ -322,190 +326,10 @@ impl AntigravityEventParser {
     }
 }
 
-pub(crate) struct ParsedTerminal {
-    final_output: Option<OperationContent>,
-    status: Option<TerminalStatus>,
-    terminal_seen: bool,
-    conversation_id: Option<String>,
-}
-
-impl ParsedTerminal {
-    const fn new(
-        final_output: Option<OperationContent>,
-        status: Option<TerminalStatus>,
-        terminal_seen: bool,
-        conversation_id: Option<String>,
-    ) -> Self {
-        Self {
-            final_output,
-            status,
-            terminal_seen,
-            conversation_id,
-        }
-    }
-
-    pub(crate) fn conversation_id(&self) -> Option<&str> {
-        self.conversation_id.as_deref()
-    }
-
-    pub(crate) fn outcome(self, exit: ProcessExit) -> TerminalOutcome {
-        let status = if !self.terminal_seen {
-            TerminalStatus::RuntimeFailed(SafeDiagnostic::new(
-                "swallowtail.antigravity.headless.incomplete_stream",
-                "Antigravity headless stream ended without one terminal result",
-            ))
-        } else {
-            let parsed = self.status.unwrap_or_else(|| {
-                TerminalStatus::RuntimeFailed(SafeDiagnostic::new(
-                    "swallowtail.antigravity.headless.invalid_terminal_status",
-                    "Antigravity terminal result could not be classified",
-                ))
-            });
-            if parsed == TerminalStatus::Completed && !exit.success() {
-                TerminalStatus::ProviderFailed(
-                    SafeDiagnostic::new(
-                        "swallowtail.antigravity.headless.process_failed",
-                        match exit.code() {
-                            Some(code) => {
-                                format!("Antigravity headless process exited with status {code}")
-                            }
-                            None => "Antigravity headless process exited unsuccessfully".to_owned(),
-                        },
-                    )
-                    .with_failure_classification(
-                        swallowtail_core::FailureClassification::new(
-                            swallowtail_core::FailureOrigin::Harness,
-                            swallowtail_core::FailureKind::Unknown,
-                            swallowtail_core::FailureRecovery::Unknown,
-                        ),
-                    ),
-                )
-            } else {
-                parsed
-            }
-        };
-        let outcome = TerminalOutcome::new(status, CleanupOutcome::Clean);
-        match self.final_output {
-            Some(output) => outcome.with_output(output),
-            None => outcome,
-        }
-    }
-}
-
-fn token_usage(value: &Value) -> Result<Option<TokenUsage>, RuntimeFailure> {
-    let Some(usage) = value.get("usage") else {
-        return Ok(None);
-    };
-    let input = required_u64(usage, "input_tokens")?;
-    let output = required_u64(usage, "output_tokens")?;
-    let thinking = required_u64(usage, "thinking_tokens")?;
-    let cache_read = required_u64(usage, "cache_read_tokens")?;
-    let total = required_u64(usage, "total_tokens")?;
-    if input.checked_add(output) != Some(total) {
-        return Err(malformed_stream());
-    }
-    Ok(Some(
-        TokenUsage::new(Some(input), Some(output))
-            .with_reasoning_tokens(Some(thinking))
-            .with_cache_tokens(Some(cache_read), None),
-    ))
-}
-
-fn subagents(value: &Value) -> Result<Option<Vec<SubagentEvidence>>, RuntimeFailure> {
-    let Some(info) = value.get("subagent_info") else {
-        return Ok(None);
-    };
-    let children = info
-        .get("subagents")
-        .and_then(Value::as_array)
-        .ok_or_else(malformed_stream)?;
-    if children.is_empty() || children.len() > MAXIMUM_SUBAGENTS {
-        return Err(malformed_stream());
-    }
-    children
-        .iter()
-        .map(|child| {
-            let id = bounded_identity(required_text(child, "conversation_id")?)?.to_owned();
-            let label = child
-                .get("type_name")
-                .or_else(|| child.get("role"))
-                .and_then(Value::as_str)
-                .map(bounded_label)
-                .transpose()?
-                .map(str::to_owned);
-            Ok((id, label))
-        })
-        .collect::<Result<Vec<_>, RuntimeFailure>>()
-        .map(Some)
-}
-
-fn required_text<'a>(value: &'a Value, key: &str) -> Result<&'a str, RuntimeFailure> {
-    value
-        .get(key)
-        .and_then(Value::as_str)
-        .ok_or_else(malformed_stream)
-}
-
-fn required_u64(value: &Value, key: &str) -> Result<u64, RuntimeFailure> {
-    value
-        .get(key)
-        .and_then(Value::as_u64)
-        .ok_or_else(malformed_stream)
-}
-
-fn bounded_identity(value: &str) -> Result<&str, RuntimeFailure> {
-    if value.is_empty() || value.len() > 256 || value.chars().any(char::is_control) {
-        Err(malformed_stream())
-    } else {
-        Ok(value)
-    }
-}
-
-fn bounded_label(value: &str) -> Result<&str, RuntimeFailure> {
-    if value.trim().is_empty() || value.len() > 256 || value.chars().any(char::is_control) {
-        Err(malformed_stream())
-    } else {
-        Ok(value)
-    }
-}
-
-fn bounded_text(value: &str) -> Result<&str, RuntimeFailure> {
-    if value.len() > MAXIMUM_OUTPUT_BYTES {
-        Err(stream_limit())
-    } else {
-        Ok(value)
-    }
-}
-
-fn trim_newline(line: &[u8]) -> &[u8] {
-    let line = line.strip_suffix(b"\n").unwrap_or(line);
-    line.strip_suffix(b"\r").unwrap_or(line)
-}
-
-fn malformed_stream() -> RuntimeFailure {
-    crate::failure::failure(
-        "swallowtail.antigravity.headless.malformed_stream",
-        "Antigravity emitted malformed headless stream output",
-    )
-}
-
-fn conversation_mismatch() -> RuntimeFailure {
-    crate::failure::failure(
-        "swallowtail.antigravity.headless.conversation_mismatch",
-        "Antigravity returned a different conversation identity",
-    )
-}
-
-fn stream_limit() -> RuntimeFailure {
-    crate::failure::failure(
-        "swallowtail.antigravity.headless.stream_limit",
-        "Antigravity exceeded the bounded headless stream limit",
-    )
-}
-
 #[cfg(test)]
 mod failure_classification_tests {
     use super::*;
+    use swallowtail_runtime::ProcessExit;
 
     #[test]
     fn opaque_process_exit_remains_harness_unknown() {

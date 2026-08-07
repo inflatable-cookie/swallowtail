@@ -17,7 +17,8 @@ mod health;
 pub(crate) use health::observe_health;
 pub(crate) use health::require_health_matches;
 
-include!("protocol/catalogue_and_sessions.rs");
+include!("protocol/catalogue.rs");
+include!("protocol/sessions.rs");
 include!("protocol/prompt_and_callbacks.rs");
 
 include!("protocol/events.rs");

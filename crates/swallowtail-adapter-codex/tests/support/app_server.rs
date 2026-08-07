@@ -211,5 +211,7 @@ struct ScriptedAppServerHandle {
 }
 
 include!("app_server/handle.rs");
+include!("app_server/respond.rs");
+include!("app_server/turn_complete.rs");
 include!("app_server/process_handle.rs");
 include!("app_server/thread_catalogue.rs");

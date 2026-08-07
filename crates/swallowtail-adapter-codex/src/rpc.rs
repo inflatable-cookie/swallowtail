@@ -1,3 +1,4 @@
+use crate::safe_excerpt::{normalized_ascii, sanitize_stderr};
 use crate::turn_state::ActiveTurn;
 use serde_json::Value;
 use std::collections::{BTreeMap, BTreeSet};
@@ -24,6 +25,7 @@ pub(crate) struct RpcConnection {
     session_cancelled: AtomicBool,
     closed: AtomicBool,
     cleanup: Mutex<Option<CleanupOutcome>>,
+    stderr_tail: Mutex<Vec<u8>>,
 }
 
 impl RpcConnection {
@@ -40,6 +42,7 @@ impl RpcConnection {
             session_cancelled: AtomicBool::new(false),
             closed: AtomicBool::new(false),
             cleanup: Mutex::new(None),
+            stderr_tail: Mutex::new(Vec::new()),
         })
     }
 

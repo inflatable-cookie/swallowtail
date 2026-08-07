@@ -340,6 +340,24 @@ impl ScriptedAppServerHandle {
                             }
                         }));
                     }
+                    AppServerMode::MalformedNotification => {
+                        self.state.push_stderr(
+                            format!(
+                                "codex app-server warning: unrecognized plan delta field {}",
+                                "detail ".repeat(120)
+                            )
+                            .into_bytes(),
+                        );
+                        self.state.push(serde_json::json!({
+                            "method": "item/plan/delta",
+                            "params": {
+                                "threadId": thread_id,
+                                "turnId": "turn-provider-1",
+                                "itemId": "item-plan-1",
+                                "padding": "x".repeat(600)
+                            }
+                        }));
+                    }
                     AppServerMode::DisconnectTurn => {
                         self.state.closed.store(true, Ordering::SeqCst);
                     }

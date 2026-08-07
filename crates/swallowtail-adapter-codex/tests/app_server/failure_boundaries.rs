@@ -214,3 +214,66 @@ fn structured_output_is_rejected_before_turn_provider_work() {
     assert_eq!(state.methods(), methods_before_turn);
     assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
 }
+
+#[test]
+fn malformed_notification_carries_bounded_method_context_and_stderr_tail() {
+    let (process, state) = ScriptedAppServer::new(AppServerMode::MalformedNotification);
+    let services = host_services(process);
+    let mut session = block_on(driver().open_session(
+        app_server_plan(DriverRole::InteractiveSession),
+        read_only_open_request(
+            RequestId::new("session-malformed").expect("request id is valid"),
+            working_resource(),
+            None,
+        ),
+        services.clone(),
+    ))
+    .expect("session opens");
+    let mut turn = block_on(session.start_turn(
+        TurnRequest::new(
+            RuntimeTurnId::new("turn-malformed").expect("turn id is valid"),
+            OperationContent::new("drifted notification").expect("content is valid"),
+        ),
+        services.clone(),
+    ))
+    .expect("turn starts");
+    let terminal = block_on(
+        turn.take_terminal_outcome()
+            .expect("terminal outcome is available"),
+    );
+
+    let TerminalStatus::RuntimeFailed(diagnostic) = terminal.status() else {
+        panic!("malformed notification fails the turn");
+    };
+    assert_eq!(
+        diagnostic.code(),
+        "swallowtail.codex.app_server.malformed_notification"
+    );
+    let message = diagnostic.message();
+    assert!(message.contains("method `item/plan/delta`"));
+    assert!(message.contains("excerpt `"));
+    assert!(message.contains("; stderr: "));
+    assert!(message.contains("unrecognized plan delta field"));
+    assert!(message.contains("[stderr truncated]"));
+    assert!(!message.contains("xxx"));
+    assert!(message.chars().count() <= 640);
+
+    let result = block_on(session.start_turn(
+        TurnRequest::new(
+            RuntimeTurnId::new("turn-after-poison").expect("turn id is valid"),
+            OperationContent::new("after poison").expect("content is valid"),
+        ),
+        services,
+    ));
+    let error = result
+        .err()
+        .expect("poisoned session rejects the next request");
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.codex.app_server.connection_closed"
+    );
+    assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
+    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert!(state.forced());
+    assert!(state.waited());
+}

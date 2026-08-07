@@ -306,6 +306,13 @@ payloads, credentials, and provider payloads. A non-zero version probe keeps
 bounded sanitized stderr excerpt. Keep `PreparationStage` and the safe
 diagnostic code when projecting failures into application errors.
 
+A malformed app-server notification or protocol message keeps its exact
+`swallowtail.codex.app_server.malformed_notification` or
+`swallowtail.codex.app_server.malformed_message` code and appends the
+notification method plus a bounded sanitized excerpt of the raw line. A
+protocol terminal failure may also append a bounded sanitized app-server
+stderr tail. The offending payload itself stays out of the safe message.
+
 ## Low-Level Escape Hatch
 
 The facade is additive. `CodexExecDriver`, `CodexAppServerDriver`, discovery,

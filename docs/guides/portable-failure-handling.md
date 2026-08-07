@@ -102,6 +102,15 @@ not be parsed into an error class.
 automatic retry, fallback, provider switch, credential change, prompt rewrite,
 or harness update. Those decisions remain consumer policy.
 
+## Bounded Failure Context
+
+Malformed-inbound protocol diagnostics carry bounded context: the notification
+method plus a sanitized excerpt of the offending raw line, capped at 240
+ASCII-normalized characters with sensitive tokens redacted. A protocol
+terminal failure may also append a sanitized excerpt of the bounded harness
+stderr tail. The exact diagnostic code does not change, and raw provider
+payloads remain excluded.
+
 ## Consumer Boundary
 
 The consumer owns presentation, localization, logging retention, retry and

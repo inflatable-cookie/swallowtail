@@ -18,6 +18,7 @@ mod exec_validation;
 mod prepared;
 mod prepared_profile;
 mod rpc;
+mod safe_excerpt;
 mod selection;
 mod session;
 mod session_access;

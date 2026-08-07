@@ -5,6 +5,7 @@ ends. They do not replace contracts or roadmaps.
 
 ## Entries
 
+- [2026-08-07 Codex Malformed-Inbound Failure Diagnostics](2026-08-07-codex-malformed-inbound-failure-diagnostics.md)
 - [2026-08-06 v0.2.0 Source Release](2026-08-06-v0-2-0-source-release.md)
 - [2026-08-06 v0.2.0 Local Source Candidate](2026-08-06-v0-2-0-local-source-candidate.md)
 - [2026-08-06 Muse Release Structural Cleanup](2026-08-06-muse-release-structural-cleanup.md)

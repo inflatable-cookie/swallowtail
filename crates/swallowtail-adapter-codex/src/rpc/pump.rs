@@ -8,8 +8,9 @@ impl RpcConnection {
                     pending_bytes.extend_from_slice(chunk.bytes());
                     while let Some(newline) = pending_bytes.iter().position(|byte| *byte == b'\n') {
                         let line: Vec<_> = pending_bytes.drain(..=newline).collect();
-                        if let Err(error) = self.dispatch(trim_newline(&line)).await {
-                            protocol_failure = Some(error);
+                        let line = trim_newline(&line);
+                        if let Err(error) = self.dispatch(line).await {
+                            protocol_failure = Some(with_inbound_context(error, line));
                             break;
                         }
                     }
@@ -17,7 +18,7 @@ impl RpcConnection {
                         break;
                     }
                 }
-                Ok(Some(_)) => {}
+                Ok(Some(chunk)) => self.record_stderr(chunk.bytes()),
                 Ok(None) => break,
                 Err(error) => {
                     protocol_failure = Some(error);
@@ -29,7 +30,7 @@ impl RpcConnection {
             && !pending_bytes.is_empty()
             && let Err(error) = self.dispatch(&pending_bytes).await
         {
-            protocol_failure = Some(error);
+            protocol_failure = Some(with_inbound_context(error, &pending_bytes));
         }
         if protocol_failure.is_some() {
             let _ = self.process.force_stop().await;
@@ -49,7 +50,7 @@ impl RpcConnection {
         let terminal = if self.session_cancelled.load(Ordering::SeqCst) {
             TerminalStatus::Cancelled
         } else if let Some(error) = protocol_failure {
-            TerminalStatus::RuntimeFailed(error.diagnostic().clone())
+            TerminalStatus::RuntimeFailed(self.protocol_terminal(&error))
         } else if !self.closing.load(Ordering::SeqCst) {
             TerminalStatus::HostFailed(SafeDiagnostic::new(
                 "swallowtail.codex.app_server.connection_ended",
@@ -242,4 +243,75 @@ impl RpcConnection {
             sender.complete(Err(error.clone()));
         }
     }
+
+    fn record_stderr(&self, bytes: &[u8]) {
+        let mut tail = self
+            .stderr_tail
+            .lock()
+            .expect("RPC stderr-tail lock poisoned");
+        tail.extend_from_slice(bytes);
+        if tail.len() > MAX_STDERR_TAIL_BYTES {
+            let overflow = tail.len() - MAX_STDERR_TAIL_BYTES;
+            tail.drain(..overflow);
+        }
+    }
+
+    fn protocol_terminal(&self, error: &RuntimeFailure) -> SafeDiagnostic {
+        let diagnostic = error.diagnostic();
+        let tail = std::mem::take(
+            &mut *self
+                .stderr_tail
+                .lock()
+                .expect("RPC stderr-tail lock poisoned"),
+        );
+        let Some(excerpt) = sanitize_stderr(&tail, false) else {
+            return diagnostic.clone();
+        };
+        SafeDiagnostic::new(
+            diagnostic.code(),
+            format!("{}; stderr: {excerpt}", diagnostic.message()),
+        )
+        .with_failure_classification(diagnostic.failure_classification())
+    }
+}
+
+const MAX_STDERR_TAIL_BYTES: usize = 2048;
+const MAX_METHOD_CHARS: usize = 64;
+
+fn with_inbound_context(error: RuntimeFailure, line: &[u8]) -> RuntimeFailure {
+    let diagnostic = error.diagnostic();
+    if !matches!(
+        diagnostic.code(),
+        "swallowtail.codex.app_server.malformed_notification"
+            | "swallowtail.codex.app_server.malformed_message"
+    ) {
+        return error;
+    }
+    let method = match serde_json::from_slice::<Value>(line) {
+        Ok(message) => message
+            .get("method")
+            .and_then(Value::as_str)
+            .map_or_else(|| "<absent>".to_owned(), bounded_method),
+        Err(_) => "<unparseable>".to_owned(),
+    };
+    let excerpt = sanitize_stderr(line, false).unwrap_or_else(|| "<empty>".to_owned());
+    RuntimeFailure::new(
+        SafeDiagnostic::new(
+            diagnostic.code(),
+            format!(
+                "{} (method `{method}`, excerpt `{excerpt}`)",
+                diagnostic.message()
+            ),
+        )
+        .with_failure_classification(diagnostic.failure_classification()),
+    )
+}
+
+fn bounded_method(method: &str) -> String {
+    let normalized = normalized_ascii(method.as_bytes());
+    let mut bounded: String = normalized.chars().take(MAX_METHOD_CHARS).collect();
+    if normalized.chars().count() > MAX_METHOD_CHARS {
+        bounded.push_str("...");
+    }
+    bounded
 }

@@ -52,12 +52,19 @@ visible as unverified newer unless exact evidence requires rejection.
 
 ## Current Checkpoint
 
+- g03.047 is complete: Nucleus proved Codex app-server `0.147.0` drift left
+  consumers with an opaque `malformed_notification` then "connection is
+  closed"; card 143 now re-issues malformed-inbound failures with the
+  notification method and a bounded sanitized line excerpt, retains a
+  2048-byte stderr tail for protocol terminal diagnostics, and keeps codes,
+  poisoned-session behavior, and the public API unchanged
+- the generation is paused at its evidence gate pending a consumer-proven
+  defect, material provider drift, or explicit operator-selected route;
+  the `v0.2.1` source tag is a separate operator-authorized step
 - g03.046 is complete: all five GitHub CI jobs pass at exact release commit
   `0104b8948ad141f5c42ad752127203b9b1d72db5`; annotated `v0.2.0` tag object
   `643373ccb794c854a594297d823972dc3621fd3c` resolves to that commit, and
   `v0.1.0` plus `v0.1.1` remain unchanged
-- the generation is paused at its evidence gate pending a consumer-proven
-  defect, material provider drift, or explicit operator-selected route
 - the operator promoted initial `v0.1.0` source-tag preparation; crates.io and
   GitHub Release publication remain excluded
 - Research 111 finds deterministic QA and both Rust floors passing, then
@@ -482,6 +489,7 @@ visible as unverified newer unless exact evidence requires rejection.
 - [044 v0.1.1 Source Patch Release](044-v0-1-1-source-patch-release.md) — completed
 - [045 Muse Code Headless Foundation](045-muse-code-headless-foundation.md) — completed
 - [046 v0.2.0 Muse And Rust-Floor Source Release](046-v0-2-0-muse-and-rust-floor-source-release.md) — completed
+- [047 Codex Malformed-Inbound Failure Diagnostics](047-codex-malformed-inbound-failure-diagnostics.md) — completed
 
 ## Checkpoint
 

@@ -1,3 +1,17 @@
+use super::{
+    ActiveTurn, MAX_CALLBACK_ARGUMENT_BYTES, ProviderRequestDisposition,
+    canonical_provider_request_id, malformed_notification, required_text,
+};
+use crate::rpc::failure;
+use crate::session_access::provider_request_namespace;
+use serde_json::Value;
+use std::sync::atomic::Ordering;
+use swallowtail_core::{ProviderExtension, ProviderRequestHandling};
+use swallowtail_runtime::{
+    CallbackId, CallbackPayload, CallbackRequest, ProviderRequestObservation, RuntimeEvent,
+    RuntimeEventKind, RuntimeFailure,
+};
+
 impl ActiveTurn {
     pub(crate) fn handle_tool_call(
         &self,

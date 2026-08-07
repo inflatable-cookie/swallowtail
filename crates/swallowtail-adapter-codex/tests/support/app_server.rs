@@ -20,6 +20,7 @@ pub enum AppServerMode {
     ExchangeUserInputNumericRequestId,
     DynamicToolCall,
     HoldDynamicToolCall,
+    MalformedNotification,
     DisconnectTurn,
     MismatchedTurnSession,
     SubstituteResume,
@@ -129,6 +130,13 @@ impl AppServerState {
             .lock()
             .expect("output lock is available")
             .push_back(ProcessOutputChunk::new(ProcessOutputStream::Stdout, bytes));
+    }
+
+    fn push_stderr(&self, bytes: Vec<u8>) {
+        self.output
+            .lock()
+            .expect("output lock is available")
+            .push_back(ProcessOutputChunk::new(ProcessOutputStream::Stderr, bytes));
     }
 }
 

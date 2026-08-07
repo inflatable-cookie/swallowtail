@@ -13,8 +13,11 @@ shape.
 
 ## Next Task
 
-Pause at g03's evidence gate. Resume only for a consumer-proven compatibility
-defect, material provider drift, or an explicit operator-selected route.
+Pause at g03's evidence gate. g03.047 closed the Nucleus-proven Codex
+`0.147.0` malformed-notification diagnostics defect; the `v0.2.1` source tag
+is a separate operator-authorized step. Resume only for a consumer-proven
+compatibility defect, material provider drift, or an explicit
+operator-selected route.
 
 ## Index
 

@@ -6,18 +6,16 @@ mutations.
 
 ## Current Release
 
-- [Swallowtail 0.3.0](0.3.0.md) — 28-package, 34-route Git source release with
-  fail-closed version binding and the g03 hardening tranche
+- [Swallowtail 0.3.1](0.3.1.md) — compatible patch over `v0.3.0` adding
+  Contract 053 debug observation and Contract 054 provider-session history
+  pages
 
 ## Candidate
 
-- [Swallowtail 0.3.1](0.3.1.md) — compatible patch adding Contract 053 debug
-  observation and Contract 054 provider-session history pages
-
-Earlier immutable releases remain documented at [`v0.2.0`](0.2.0.md),
-[`v0.1.1`](0.1.1.md), and [`v0.1.0`](0.1.0.md). The release line includes no
-crates.io publication, GitHub Release object, binary, sidecar, installer, or
-model artifact.
+None. Earlier immutable releases remain documented at [`v0.3.0`](0.3.0.md),
+[`v0.2.0`](0.2.0.md), [`v0.1.1`](0.1.1.md), and [`v0.1.0`](0.1.0.md). The
+release line includes no crates.io publication, GitHub Release object, binary,
+sidecar, installer, or model artifact.
 
 ## Consumer Handoffs
 

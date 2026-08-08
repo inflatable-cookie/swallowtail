@@ -13,10 +13,9 @@ shape.
 
 ## Next Task
 
-Finish the `v0.3.1` source release: push the prepared candidate, prove
-canonical CI on that commit, then create annotated tag `v0.3.1` only after
-exact CI acceptance. Do not reopen history paging unless Research 115’s
-control-free wire gate is met.
+Return to the g03 evidence gate — inventory current harness drift and
+consumer friction before opening the next roadmap. `v0.3.1` is tagged; do not
+reopen history paging unless Research 115’s control-free wire gate is met.
 
 ## Index
 

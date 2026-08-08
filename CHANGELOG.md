@@ -8,8 +8,8 @@ annotated Git tags from the canonical repository.
 ## [0.3.1] - 2026-08-08
 
 ### Added
-- publish [v0.3.1 candidate release notes](docs/releases/0.3.1.md) for the
-  compatible debug-observation and provider-session history patch
+- publish [v0.3.1 release notes](docs/releases/0.3.1.md) for the compatible
+  debug-observation and provider-session history patch
 - add Contract 054 portable provider-session history pages: plan/request/
   response, plan-bound older cursors, `Exact` / `AtLeast` / `Unknown` totals,
   newest-first window helper, and a read-only driver role distinct from load

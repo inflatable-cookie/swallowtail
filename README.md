@@ -19,19 +19,18 @@ New here? Two short reads get you from zero to a working run:
 
 ## Release Posture
 
-`v0.3.0` is the current supported source identity. `v0.3.1` is the prepared
-compatible candidate and is not usable as a tag until exact CI acceptance and
-tag creation. Releases are distributed as annotated Git tags from the
+`v0.3.1` is the current supported source identity. Releases are distributed as
+annotated Git tags from the
 [canonical repository](https://github.com/inflatable-cookie/swallowtail).
 There is no crates.io publication, GitHub Release object, binary bundle, or
 installer in this release line.
 
-The canonical `v0.3.0` tag resolves to the reviewed release commit. Candidate
-work must use an explicitly approved commit revision and must not be presented
-as part of that immutable release.
+The canonical `v0.3.1` tag resolves to the reviewed release commit. Later
+candidate work must use an explicitly approved commit revision and must not be
+presented as part of that immutable release.
 
-The 28 tagged packages share version `0.3.0`; the `v0.3.1` candidate keeps the
-same 28 packages and 34 production routes while adding Contract 053 debug
+The 28 tagged packages share version `0.3.1` and keep 34 production routes.
+`v0.3.1` is a compatible patch over `v0.3.0` adding Contract 053 debug
 observation and Contract 054 provider-session history pages. It is not an API
 1.0 promise.
 
@@ -119,7 +118,7 @@ payloads in the consumer. Start with:
 
 ## Runtime Prerequisites
 
-- Rust `1.95.0` or newer for every `v0.3.1` candidate package
+- Rust `1.95.0` or newer for every `v0.3.1` package
 - Apple Silicon macOS is the verified release target; other targets are
   unverified, not prohibited
 - installed harnesses, attached services, model artifacts, authentication, and
@@ -151,7 +150,7 @@ Before 1.0:
   identity, or weakening lifecycle and authority truth is breaking
 
 See [Contract 036](docs/contracts/036-crate-release-and-compatibility-boundary.md)
-and the [v0.3.1 candidate release notes](docs/releases/0.3.1.md).
+and the [v0.3.1 release notes](docs/releases/0.3.1.md).
 
 ## Development
 

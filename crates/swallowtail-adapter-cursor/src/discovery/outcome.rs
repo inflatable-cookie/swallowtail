@@ -135,16 +135,19 @@ fn token_is_sensitive(token: &str) -> bool {
         .any(|shape| lower.contains(shape))
 }
 
+const SWALLOWTAIL_CURSOR_PROBE_CODES: swallowtail_runtime::InstalledProbeCodes =
+    swallowtail_runtime::installed_probe_codes!("swallowtail.cursor");
+
 const fn status_code(status: DiscoveryStatus) -> &'static str {
     match status {
-        DiscoveryStatus::Absent => "swallowtail.cursor.discovery_absent",
-        DiscoveryStatus::Discovered => "swallowtail.cursor.discovery_discovered",
-        DiscoveryStatus::Incompatible => "swallowtail.cursor.discovery_incompatible",
-        DiscoveryStatus::Malformed => "swallowtail.cursor.discovery_malformed",
-        DiscoveryStatus::TimedOut => "swallowtail.cursor.discovery_timed_out",
-        DiscoveryStatus::Cancelled => "swallowtail.cursor.discovery_cancelled",
-        DiscoveryStatus::Failed => "swallowtail.cursor.discovery_failed",
-        DiscoveryStatus::CleanupFailed => "swallowtail.cursor.discovery_cleanup_failed",
+        DiscoveryStatus::Absent => SWALLOWTAIL_CURSOR_PROBE_CODES.absent,
+        DiscoveryStatus::Discovered => SWALLOWTAIL_CURSOR_PROBE_CODES.discovered,
+        DiscoveryStatus::Incompatible => SWALLOWTAIL_CURSOR_PROBE_CODES.incompatible,
+        DiscoveryStatus::Malformed => SWALLOWTAIL_CURSOR_PROBE_CODES.malformed,
+        DiscoveryStatus::TimedOut => SWALLOWTAIL_CURSOR_PROBE_CODES.timed_out,
+        DiscoveryStatus::Cancelled => SWALLOWTAIL_CURSOR_PROBE_CODES.cancelled,
+        DiscoveryStatus::Failed => SWALLOWTAIL_CURSOR_PROBE_CODES.failed,
+        DiscoveryStatus::CleanupFailed => SWALLOWTAIL_CURSOR_PROBE_CODES.cleanup_failed,
     }
 }
 

@@ -63,16 +63,19 @@ pub(super) fn exit_failed(
     )
 }
 
+const SWALLOWTAIL_CODEX_PROBE_CODES: swallowtail_runtime::InstalledProbeCodes =
+    swallowtail_runtime::installed_probe_codes!("swallowtail.codex");
+
 const fn status_code(status: DiscoveryStatus) -> &'static str {
     match status {
-        DiscoveryStatus::Absent => "swallowtail.codex.discovery_absent",
-        DiscoveryStatus::Discovered => "swallowtail.codex.discovery_discovered",
-        DiscoveryStatus::Incompatible => "swallowtail.codex.discovery_incompatible",
-        DiscoveryStatus::Malformed => "swallowtail.codex.discovery_malformed",
-        DiscoveryStatus::TimedOut => "swallowtail.codex.discovery_timed_out",
-        DiscoveryStatus::Cancelled => "swallowtail.codex.discovery_cancelled",
-        DiscoveryStatus::Failed => "swallowtail.codex.discovery_failed",
-        DiscoveryStatus::CleanupFailed => "swallowtail.codex.discovery_cleanup_failed",
+        DiscoveryStatus::Absent => SWALLOWTAIL_CODEX_PROBE_CODES.absent,
+        DiscoveryStatus::Discovered => SWALLOWTAIL_CODEX_PROBE_CODES.discovered,
+        DiscoveryStatus::Incompatible => SWALLOWTAIL_CODEX_PROBE_CODES.incompatible,
+        DiscoveryStatus::Malformed => SWALLOWTAIL_CODEX_PROBE_CODES.malformed,
+        DiscoveryStatus::TimedOut => SWALLOWTAIL_CODEX_PROBE_CODES.timed_out,
+        DiscoveryStatus::Cancelled => SWALLOWTAIL_CODEX_PROBE_CODES.cancelled,
+        DiscoveryStatus::Failed => SWALLOWTAIL_CODEX_PROBE_CODES.failed,
+        DiscoveryStatus::CleanupFailed => SWALLOWTAIL_CODEX_PROBE_CODES.cleanup_failed,
     }
 }
 

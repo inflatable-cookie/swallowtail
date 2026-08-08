@@ -13,18 +13,17 @@ shape.
 
 ## Next Task
 
-Open the g03.053 suite planning checkpoint. Cards 161-164 closed Claim And
-Surface Consistency: Contract 029 records the support-status semantics
-(newest-revision segments `Maintained`, older revisions `Deprecated` by
-derivation); claim ids follow one dot scheme with kimi's drift corrected;
-the runtime plan family shares one core with per-role validation rule tables
-and the `plan_family!` skeleton macro; and every facade gap carries a
-recorded disposition (muse restoration, kimi frozen corpus, the two event
-vocabularies, and the three `into_parts`/`low_level_driver` omissions).
-The checkpoint decides remaining duplication targets and whether further
-consistency work needs new contracts before the generation returns to its
-evidence gate; the v0.3.0 release remains a separate operator-authorized
-step.
+Return to the g03 evidence gate. Milestone 054 Remaining Duplication
+Tranches closed: card 165 migrated the codex and cursor discovery code
+tables onto the shared `installed_probe_codes!` table; card 166 confirmed
+the catalogue parse/paginate disposition (card 159 measured evidence: the
+shared slice is the ~60-line validation family, extraction is net-negative);
+card 167 recorded the operator's decision that the ACP event projections
+stay adapter-local (no shared home under the recorded topology), cancelling
+card 168. The remaining duplication families are measured with recorded
+dispositions. The checkpoint decides whether the generation rolls or extends
+before the v0.3.0 release step; the release itself remains a separate
+operator-authorized step.
 
 ## Index
 

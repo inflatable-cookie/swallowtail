@@ -4,16 +4,19 @@
 
 ## Ready
 
-- [160-provider-wide-scaffolding-migration.md](./160-provider-wide-scaffolding-migration.md)
-
 ## Planned
 
-- [161-version-claim-semantics-decision.md](./161-version-claim-semantics-decision.md)
-- [162-claim-identity-and-claim-less-posture.md](./162-claim-identity-and-claim-less-posture.md)
-- [163-runtime-plan-family-consolidation.md](./163-runtime-plan-family-consolidation.md)
-- [164-facade-surface-gap-closure.md](./164-facade-surface-gap-closure.md)
-
 ## Completed
+
+- [168-acp-activity-projection-migration.md](./168-acp-activity-projection-migration.md) — cancelled
+- [167-acp-activity-projection-contract.md](./167-acp-activity-projection-contract.md)
+- [166-catalogue-parse-paginate-consolidation.md](./166-catalogue-parse-paginate-consolidation.md)
+- [165-discovery-failure-stage-mapper-consolidation.md](./165-discovery-failure-stage-mapper-consolidation.md)
+- [164-facade-surface-gap-closure.md](./164-facade-surface-gap-closure.md)
+- [163-runtime-plan-family-consolidation.md](./163-runtime-plan-family-consolidation.md)
+- [162-claim-identity-and-claim-less-posture.md](./162-claim-identity-and-claim-less-posture.md)
+- [161-version-claim-semantics-decision.md](./161-version-claim-semantics-decision.md)
+- [160-provider-wide-scaffolding-migration.md](./160-provider-wide-scaffolding-migration.md)
 
 - [159-transport-and-catalogue-wrapper-consolidation.md](./159-transport-and-catalogue-wrapper-consolidation.md)
 - [158-run-loop-and-activity-projector-extraction.md](./158-run-loop-and-activity-projector-extraction.md)

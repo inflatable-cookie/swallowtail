@@ -52,8 +52,9 @@ visible as unverified newer unless exact evidence requires rejection.
 | Close the verified hang class in process supervision, runtime coordination, and the remote ACP transport. | completed | Contracts 009, 010, 035, 051 | `g03.049` |
 | Close provider-reachable panic paths and keep version-parse expectations literal-only. | completed | Contracts 029, 037, 051 | `g03.050` |
 | Make docs indexes machine-checked, single-source the route inventory, and consolidate the validation machinery. | completed | Contracts 001, 036, 052 | `g03.051` |
-| Extract provider-neutral adapter scaffolding into shared crates to remove cross-adapter duplication. | planned | Contracts 011, 029, 037 | `g03.052` |
-| Unify version-claim semantics and close facade-surface inconsistencies. | planned | Contracts 003, 029, 037, 047 | `g03.053` |
+| Extract provider-neutral adapter scaffolding into shared crates to remove cross-adapter duplication. | completed | Contracts 011, 029, 037 | `g03.052` |
+| Unify version-claim semantics and close facade-surface inconsistencies. | completed | Contracts 003, 029, 037, 047 | `g03.053` |
+| Measure and dispose the remaining duplication tranches after the scaffolding extraction. | completed | Contracts 011, 029, 036-037, 039 | `g03.054` |
 
 ## Current Checkpoint
 
@@ -601,8 +602,9 @@ visible as unverified newer unless exact evidence requires rejection.
 - [049 Hang And Deadline Closure](./049-hang-and-deadline-closure.md) — completed
 - [050 Provider-Reachable Panic Closure](./050-provider-reachable-panic-closure.md) — completed
 - [051 Validation Machinery And Index Closure](./051-validation-machinery-and-index-closure.md) — planned
-- [052 Shared Adapter Scaffolding](./052-shared-adapter-scaffolding.md) — planned
-- [053 Claim And Surface Consistency](./053-claim-and-surface-consistency.md) — planned
+- [052 Shared Adapter Scaffolding](./052-shared-adapter-scaffolding.md) — completed
+- [053 Claim And Surface Consistency](./053-claim-and-surface-consistency.md) — completed
+- [054 Remaining Duplication Tranches](./054-remaining-duplication-tranches.md) — completed
 
 ## Checkpoint
 

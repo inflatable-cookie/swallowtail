@@ -22,8 +22,15 @@ pub(crate) async fn pump(
     parser: ExecEventParser,
     services: HostServices,
 ) -> TerminalOutcome {
-    let outcome =
-        pump_process(&process, &events, &cancellation, &mut deadline, parser, &services).await;
+    let outcome = pump_process(
+        &process,
+        &events,
+        &cancellation,
+        &mut deadline,
+        parser,
+        &services,
+    )
+    .await;
     with_cleanup(outcome, materializations.release().await)
 }
 

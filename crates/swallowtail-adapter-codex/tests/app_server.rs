@@ -2,18 +2,18 @@ use crate::support;
 
 use futures_executor::block_on;
 use futures_util::StreamExt;
+use std::sync::{Arc, Mutex};
 use support::app_server::{AppServerMode, ScriptedAppServer};
 use support::{
     app_server_plan, app_server_plan_with, host_services, host_services_with,
     session_resume_binding, working_resource,
 };
 use swallowtail_adapter_codex::CodexAppServerDriver;
+use swallowtail_core::Diagnostic;
 use swallowtail_core::{
     Capability, CapabilityConstraint, CapabilityRequirement, DriverRole, HarnessMode,
     HostServiceKind, ReasoningMode,
 };
-use std::sync::{Arc, Mutex};
-use swallowtail_core::Diagnostic;
 use swallowtail_runtime::{
     ActivityAssistantPhase, ActivityKind, CallbackPayload, CallbackRequestKind, CallbackResponse,
     CallbackResult, CancellationAcknowledgement, CleanupOutcome, Deadline, DebugObservation,

@@ -1,8 +1,8 @@
-use crate::driver::lifecycle::SessionCancellation;
 use super::replay_walk::{ReplayAccess, walk_conversation_replay};
 use super::{AlibabaSessionHandle, ConversationRetention, retention};
 use crate::driver::AlibabaModelStudioDriver;
 use crate::driver::access::AccessLeases;
+use crate::driver::lifecycle::SessionCancellation;
 use crate::failure::{failure, protocol, unsupported};
 use crate::protocol::ConversationRef;
 use std::sync::atomic::{AtomicBool, AtomicU8};

@@ -12,10 +12,7 @@ pub struct RecordingDebugObserver {
 
 impl RecordingDebugObserver {
     pub fn observations(&self) -> Vec<DebugObservation> {
-        self.observations
-            .lock()
-            .expect("observation lock")
-            .clone()
+        self.observations.lock().expect("observation lock").clone()
     }
 }
 
@@ -31,9 +28,7 @@ impl DiagnosticObserver for RecordingDebugObserver {
 }
 
 /// Ordinary hosts omit the observer; debug hosts register one explicitly.
-pub fn services_with_debug_observer(
-    observer: Arc<dyn DiagnosticObserver>,
-) -> HostServices {
+pub fn services_with_debug_observer(observer: Arc<dyn DiagnosticObserver>) -> HostServices {
     HostServices::new(ExecutionHostId::new("host.local").expect("host id is valid"))
         .with_diagnostic_observer(observer)
 }

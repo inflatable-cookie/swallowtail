@@ -6,8 +6,8 @@ use crate::protocol::{
 };
 use crate::transport::CurlTransport;
 use std::collections::BTreeSet;
-use std::sync::atomic::AtomicBool;
 use std::sync::Arc;
+use std::sync::atomic::AtomicBool;
 use swallowtail_runtime::{HostServices, RuntimeFailure, ScopeId, SessionReplayItem};
 
 pub(super) struct ReplayAccess {

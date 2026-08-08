@@ -17,17 +17,16 @@ impl ProviderSessionHistoryDriver for AlibabaModelStudioDriver {
         plan: ProviderSessionHistoryPlan,
         request: ProviderSessionHistoryRequest,
         services: HostServices,
-    ) -> swallowtail_runtime::BoxFuture<
-        '_,
-        Result<ProviderSessionHistoryPage, RuntimeFailure>,
-    > {
+    ) -> swallowtail_runtime::BoxFuture<'_, Result<ProviderSessionHistoryPage, RuntimeFailure>>
+    {
         Box::pin(async move {
             validate_provider_session_history_execution(&plan, &request, &services)?;
             Self::validate_plan(plan.preflight())?;
             validate_history(&plan, &request, &services)?;
             services.require_execution_host(plan.preflight().execution_host_id())?;
             let scope = history_scope(request.request_id())?;
-            let mut access = AccessLeases::acquire(plan.preflight(), scope.clone(), &services).await?;
+            let mut access =
+                AccessLeases::acquire(plan.preflight(), scope.clone(), &services).await?;
             let conversation = ConversationRef::new(
                 plan.agreement()
                     .binding()

@@ -1,5 +1,6 @@
 #![deny(missing_docs)]
 
+use crate::debug_observation::DebugObservation;
 use crate::{
     AttachmentDescriptor, AttachmentRef, BoxFuture, CleanupOutcome, CredentialLease, CredentialRef,
     Deadline, DeadlineObservation, LeaseCleanupAuthority, MaterializedFileRef,
@@ -7,7 +8,6 @@ use crate::{
     ProcessRequest, ResourceAccess, ResourceRepresentation, RuntimeFailure, SchemaDocument,
     ScopeId, WorkingResourceRef,
 };
-use crate::debug_observation::DebugObservation;
 use swallowtail_core::{CatalogTimestamp, Diagnostic, EndpointAudience, SafeDiagnostic};
 
 /// Join handle for one task created inside a runtime operation scope.

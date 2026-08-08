@@ -260,13 +260,7 @@ fn emit_catalogue_debug(services: &HostServices, error: &RuntimeFailure, stage: 
     } else {
         DebugObservationKind::WireInbound
     };
-    services.emit_failure_debug(
-        kind,
-        ROUTE,
-        stage,
-        diagnostic.code(),
-        diagnostic.message(),
-    );
+    services.emit_failure_debug(kind, ROUTE, stage, diagnostic.code(), diagnostic.message());
 }
 
 #[cfg(test)]

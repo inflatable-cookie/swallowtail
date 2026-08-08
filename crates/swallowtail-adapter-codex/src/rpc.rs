@@ -9,8 +9,9 @@ use std::sync::{Arc, Mutex};
 use std::task::{Context, Poll, Waker};
 use swallowtail_core::SafeDiagnostic;
 use swallowtail_runtime::{
-    CallbackId, CleanupOutcome, DebugObservation, DebugObservationKind, HostServices, ProcessHandle,
-    ProcessInputChunk, ProcessOutputStream, RuntimeFailure, RuntimeTurnId, TerminalStatus,
+    CallbackId, CleanupOutcome, DebugObservation, DebugObservationKind, HostServices,
+    ProcessHandle, ProcessInputChunk, ProcessOutputStream, RuntimeFailure, RuntimeTurnId,
+    TerminalStatus,
 };
 
 pub(crate) struct RpcConnection {

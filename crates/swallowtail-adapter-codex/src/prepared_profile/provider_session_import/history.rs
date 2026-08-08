@@ -171,14 +171,13 @@ impl CodexPreparedIntegration {
                 "Codex thread history plan could not be prepared",
             )
         })?;
-        let request = ProviderSessionHistoryRequest::from_plan(request_id, &plan, None).map_err(
-            |_| {
+        let request =
+            ProviderSessionHistoryRequest::from_plan(request_id, &plan, None).map_err(|_| {
                 failure(
                     "swallowtail.codex.preparation.thread_history_request_invalid",
                     "Codex thread history request could not be prepared",
                 )
-            },
-        )?;
+            })?;
         Ok(CodexPreparedSessionHistory {
             codex: CodexPreparedEvidence::from_prepared(self, preflight)?,
             evidence: PreparedProviderSessionHistoryEvidence::from_plan(

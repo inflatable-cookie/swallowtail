@@ -150,8 +150,10 @@ impl DriverFixture {
         let access = alibaba_model_studio_access_profile();
         let bounds = ProviderSessionHistoryBounds::new(
             std::num::NonZeroU32::new(page_items).expect("page items"),
-            std::num::NonZeroU64::new(swallowtail_adapter_alibaba_model_studio::MAXIMUM_REPLAY_PAGE_BYTES as u64)
-                .expect("page bytes"),
+            std::num::NonZeroU64::new(
+                swallowtail_adapter_alibaba_model_studio::MAXIMUM_REPLAY_PAGE_BYTES as u64,
+            )
+            .expect("page bytes"),
             std::num::NonZeroU32::new(64).expect("cursor bytes"),
             std::num::NonZeroU32::new(snapshot_items).expect("snapshot items"),
         );
@@ -188,7 +190,8 @@ impl DriverFixture {
                     [
                         swallowtail_core::CapabilityConstraint::ReplayMaximumItems(page_items),
                         swallowtail_core::CapabilityConstraint::ReplayMaximumBytes(
-                            swallowtail_adapter_alibaba_model_studio::MAXIMUM_REPLAY_PAGE_BYTES as u64,
+                            swallowtail_adapter_alibaba_model_studio::MAXIMUM_REPLAY_PAGE_BYTES
+                                as u64,
                         ),
                     ],
                 ),

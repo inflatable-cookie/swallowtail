@@ -141,21 +141,23 @@ fn stream_disconnect_emits_correlated_debug_observation_when_observer_registered
         OperationPolicy::offline(),
     )
     .with_maximum_output_tokens(NonZeroU64::new(64).expect("limit is nonzero"));
-    let mut run = block_on(AnthropicDirectDriver::new().start_run(
-        fixture.plan(DriverRole::StructuredRun),
-        request,
-        fixture
-            .services()
-            .with_diagnostic_observer(observer.clone()),
-    ))
+    let mut run = block_on(
+        AnthropicDirectDriver::new().start_run(
+            fixture.plan(DriverRole::StructuredRun),
+            request,
+            fixture
+                .services()
+                .with_diagnostic_observer(observer.clone()),
+        ),
+    )
     .expect("run starts");
     let _events = run.take_events().expect("events are available");
     let outcome = block_on(
         run.take_terminal_outcome()
             .expect("terminal outcome is available"),
     );
-    let (TerminalStatus::ProviderFailed(diagnostic)
-    | TerminalStatus::RuntimeFailed(diagnostic)) = outcome.status()
+    let (TerminalStatus::ProviderFailed(diagnostic) | TerminalStatus::RuntimeFailed(diagnostic)) =
+        outcome.status()
     else {
         panic!("disconnect must fail: {:?}", outcome.status());
     };

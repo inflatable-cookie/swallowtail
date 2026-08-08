@@ -52,12 +52,7 @@ impl ProviderSessionHistoryWindow {
         Option<ProviderSessionHistoryCursor>,
         ProviderSessionHistoryTotal,
     ) {
-        (
-            self.items,
-            self.has_older,
-            self.older_cursor,
-            self.total,
-        )
+        (self.items, self.has_older, self.older_cursor, self.total)
     }
 }
 
@@ -77,7 +72,8 @@ pub fn page_provider_session_history_window(
 ) -> Result<ProviderSessionHistoryWindow, RuntimeFailure> {
     validate_provider_session_history_request(plan, request)?;
     let bounds = plan.agreement().bounds();
-    let snapshot_limit = usize::try_from(bounds.maximum_snapshot_items().get()).unwrap_or(usize::MAX);
+    let snapshot_limit =
+        usize::try_from(bounds.maximum_snapshot_items().get()).unwrap_or(usize::MAX);
     if ascending_snapshot.len() > snapshot_limit {
         return Err(failure(
             "swallowtail.provider_session_history.snapshot_limit_exceeded",
@@ -173,7 +169,10 @@ fn validate_snapshot(
     Ok(())
 }
 
-fn validate_total(total: ProviderSessionHistoryTotal, snapshot_len: usize) -> Result<(), RuntimeFailure> {
+fn validate_total(
+    total: ProviderSessionHistoryTotal,
+    snapshot_len: usize,
+) -> Result<(), RuntimeFailure> {
     let snapshot_len = u32::try_from(snapshot_len).map_err(|_| {
         failure(
             "swallowtail.provider_session_history.total_invalid",

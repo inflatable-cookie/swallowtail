@@ -148,22 +148,12 @@ pub async fn probe_installed_executable_version(
     ) {
         Ok(task) => task,
         Err(_) => {
-            return Ok(outcome(
-                &services,
-                codes,
-                solution,
-                DiscoveryStatus::Failed,
-            ));
+            return Ok(outcome(&services, codes, solution, DiscoveryStatus::Failed));
         }
     };
-    let result = receiver.await.unwrap_or_else(|_| {
-        Ok(outcome(
-            &services,
-            codes,
-            solution,
-            DiscoveryStatus::Failed,
-        ))
-    });
+    let result = receiver
+        .await
+        .unwrap_or_else(|_| Ok(outcome(&services, codes, solution, DiscoveryStatus::Failed)));
     if task.join().await.is_err() {
         Ok(outcome(
             &services,
@@ -196,12 +186,7 @@ async fn probe_process(
     {
         Ok(process) => process,
         Err(_) => {
-            return Ok(outcome(
-                &services,
-                codes,
-                solution,
-                DiscoveryStatus::Failed,
-            ));
+            return Ok(outcome(&services, codes, solution, DiscoveryStatus::Failed));
         }
     };
     if process.close_stdin().await.is_err() {
@@ -284,12 +269,7 @@ async fn probe_process(
         }
     };
     if !exit.success() {
-        return Ok(outcome(
-            &services,
-            codes,
-            solution,
-            DiscoveryStatus::Failed,
-        ));
+        return Ok(outcome(&services, codes, solution, DiscoveryStatus::Failed));
     }
     let Some(binding) = parse(&stdout) else {
         return Ok(outcome(
@@ -353,12 +333,7 @@ async fn stop_and_classify(
     let forced = process.force_stop().await;
     let waited = process.wait().await;
     if graceful.is_err() || forced.is_err() || waited.is_err() {
-        outcome(
-            services,
-            codes,
-            solution,
-            DiscoveryStatus::CleanupFailed,
-        )
+        outcome(services, codes, solution, DiscoveryStatus::CleanupFailed)
     } else {
         outcome(services, codes, solution, status)
     }

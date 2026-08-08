@@ -171,7 +171,7 @@ fn respond(
                 | ServerScenario::RetainedForeign
                 | ServerScenario::RetainedMalformed
                 | ServerScenario::RetainedMissing
-                |                 ServerScenario::RetainedOversized
+                | ServerScenario::RetainedOversized
                 | ServerScenario::RetainedWaitForDeadline
                 | ServerScenario::RetainedEmptyHistory => {
                     write_response(stream, 200, "text/event-stream", SUCCESS)
@@ -208,9 +208,9 @@ fn respond(
                     | ServerScenario::RetainedSuccess
                     | ServerScenario::RetainedMalformed
                     | ServerScenario::RetainedMissing
-                | ServerScenario::RetainedOversized
-                | ServerScenario::RetainedWaitForDeadline
-                | ServerScenario::RetainedEmptyHistory
+                    | ServerScenario::RetainedOversized
+                    | ServerScenario::RetainedWaitForDeadline
+                    | ServerScenario::RetainedEmptyHistory
             ) =>
         {
             match scenario {

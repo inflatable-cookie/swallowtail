@@ -156,10 +156,7 @@ fn history_plan(
             .with_support_authorities([SupportAuthority::IntegrationMaintainerSupported]),
     )
     .with_ownership_modes([InstanceOwnership::ExternalAttached])
-    .with_host_services([
-        HostServiceKind::Time,
-        HostServiceKind::WorkingResource,
-    ])
+    .with_host_services([HostServiceKind::Time, HostServiceKind::WorkingResource])
     .with_capabilities([
         CapabilityRequirement::new(
             Capability::ProviderSessionHistory,
@@ -181,7 +178,9 @@ fn history_plan(
     .require_model_route()
     .with_harness_isolation(HarnessIsolation::AmbientHost)
     .with_session_access_policy(policy.clone())
-    .with_session_provider_state_policy(SessionProviderStatePolicy::DurableProviderSessionPreserved);
+    .with_session_provider_state_policy(
+        SessionProviderStatePolicy::DurableProviderSessionPreserved,
+    );
     let preflight = preflight(
         &PreflightContext::new(
             &fixture.driver,
@@ -282,10 +281,7 @@ fn first_page_returns_newest_window_and_older_continuation() {
 
     assert_eq!(sequences(&page), [2, 3]);
     assert!(page.has_older());
-    let older = page
-        .older_cursor()
-        .expect("older cursor")
-        .clone();
+    let older = page.older_cursor().expect("older cursor").clone();
     assert_eq!(older.older_end(), 2);
 
     let older_request = ProviderSessionHistoryRequest::from_plan(
@@ -329,7 +325,11 @@ fn cursor_from_another_plan_fails_closed() {
     let window = page_provider_session_history_window(
         &first,
         &first_request,
-        vec![replay_item(0, "a"), replay_item(1, "b"), replay_item(2, "c")],
+        vec![
+            replay_item(0, "a"),
+            replay_item(1, "b"),
+            replay_item(2, "c"),
+        ],
         ProviderSessionHistoryTotal::Exact(3),
     )
     .expect("window is valid");

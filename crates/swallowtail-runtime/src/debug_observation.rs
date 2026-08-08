@@ -270,7 +270,8 @@ fn bound_label(value: String) -> Option<String> {
 #[cfg(test)]
 mod tests {
     use super::{
-        DEBUG_DETAIL_TRUNCATED_SUFFIX, DebugObservation, DebugObservationKind, MAX_DEBUG_DETAIL_CHARS,
+        DEBUG_DETAIL_TRUNCATED_SUFFIX, DebugObservation, DebugObservationKind,
+        MAX_DEBUG_DETAIL_CHARS,
     };
     use crate::RequestId;
 
@@ -280,7 +281,11 @@ mod tests {
         let observation = DebugObservation::new(DebugObservationKind::WireInbound, detail);
 
         assert!(observation.detail_truncated());
-        assert!(observation.detail().ends_with(DEBUG_DETAIL_TRUNCATED_SUFFIX));
+        assert!(
+            observation
+                .detail()
+                .ends_with(DEBUG_DETAIL_TRUNCATED_SUFFIX)
+        );
         assert_eq!(
             observation
                 .detail()

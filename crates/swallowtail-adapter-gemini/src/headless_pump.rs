@@ -40,7 +40,15 @@ pub(crate) async fn pump(
     cleanup: Option<TranscriptCleanup>,
     services: HostServices,
 ) -> TerminalOutcome {
-    let outcome = pump_run(process, events, cancellation, deadline, projection, services).await;
+    let outcome = pump_run(
+        process,
+        events,
+        cancellation,
+        deadline,
+        projection,
+        services,
+    )
+    .await;
     let Some(cleanup) = cleanup else {
         return outcome;
     };

@@ -140,8 +140,8 @@ pub use identity::{
     AccessEvidenceSourceId, CallbackId, DirectInferenceAttemptId, DirectToolCallId,
     HarnessCommandId, HarnessQuestionId, HarnessQuestionOptionId, MediaStreamId,
     ProviderSessionCandidateId, ProviderSessionCatalogueId, ProviderSessionHistoryId, RequestId,
-    RuntimeIdentityRequired,
-    RuntimeRunId, RuntimeSessionId, RuntimeTurnId, ScopeId, ServingInstanceId,
+    RuntimeIdentityRequired, RuntimeRunId, RuntimeSessionId, RuntimeTurnId, ScopeId,
+    ServingInstanceId,
 };
 pub use input::{InputLimitExceeded, InputValueRequired};
 pub use installed_discovery::{
@@ -270,9 +270,8 @@ pub use roles::{
     ProviderRecoveredResourceCleanupDriver, ProviderRunReconciliationDriver,
     ProviderSessionCatalogueDriver, ProviderSessionHistoryDriver, ProviderSessionImportDriver,
     ProviderSessionManagementDriver, ProviderSessionReconciliationDriver,
-    RealtimeMediaSessionDriver, ResumeSessionRequest,
-    ServingInstanceDriver, StartServingRequest, StructuredRunDriver, StructuredRunRequest,
-    TurnRequest,
+    RealtimeMediaSessionDriver, ResumeSessionRequest, ServingInstanceDriver, StartServingRequest,
+    StructuredRunDriver, StructuredRunRequest, TurnRequest,
 };
 pub use run_loop::{cleanup_result, emit, emit_activity, emit_content, provider_status};
 pub use schema::{SchemaDocument, StructuredOutputDescriptor};

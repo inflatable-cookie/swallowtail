@@ -1,8 +1,6 @@
 #![deny(missing_docs)]
 
-use crate::debug_observation::{
-    DebugObservation, DebugObservationKind, failure_debug_observation,
-};
+use crate::debug_observation::{DebugObservation, DebugObservationKind, failure_debug_observation};
 use crate::{
     AttachmentService, BlockingWorkService, CredentialService, DiagnosticObserver,
     ModelArtifactService, NetworkPolicyService, ProcessService, RuntimeFailure, SchemaService,
@@ -275,9 +273,7 @@ impl HostServices {
         code: &'static str,
         detail: impl Into<String>,
     ) {
-        self.emit_debug_observation(&failure_debug_observation(
-            kind, route, stage, code, detail,
-        ));
+        self.emit_debug_observation(&failure_debug_observation(kind, route, stage, code, detail));
     }
 
     /// Returns the exact set of service kinds present in this registry.
@@ -357,9 +353,8 @@ mod tests {
 
     #[test]
     fn emit_helpers_noop_without_observer() {
-        let services = HostServices::new(
-            ExecutionHostId::new("host.local").expect("host id is valid"),
-        );
+        let services =
+            HostServices::new(ExecutionHostId::new("host.local").expect("host id is valid"));
         services.emit_diagnostic(&Diagnostic::new(SafeDiagnostic::new(
             "fixture.diagnostic",
             "Fixture diagnostic",
@@ -373,10 +368,9 @@ mod tests {
     #[test]
     fn emit_debug_observation_reaches_registered_observer() {
         let observer = Arc::new(CountingObserver::default());
-        let services = HostServices::new(
-            ExecutionHostId::new("host.local").expect("host id is valid"),
-        )
-        .with_diagnostic_observer(observer.clone());
+        let services =
+            HostServices::new(ExecutionHostId::new("host.local").expect("host id is valid"))
+                .with_diagnostic_observer(observer.clone());
 
         services.emit_debug_observation(
             &DebugObservation::new(DebugObservationKind::WireInbound, "method=x")
@@ -398,10 +392,9 @@ mod tests {
     #[test]
     fn emit_failure_debug_sets_route_stage_and_code() {
         let observer = Arc::new(CountingObserver::default());
-        let services = HostServices::new(
-            ExecutionHostId::new("host.local").expect("host id is valid"),
-        )
-        .with_diagnostic_observer(observer.clone());
+        let services =
+            HostServices::new(ExecutionHostId::new("host.local").expect("host id is valid"))
+                .with_diagnostic_observer(observer.clone());
 
         services.emit_failure_debug(
             DebugObservationKind::HostProcess,
@@ -428,10 +421,9 @@ mod tests {
 
     #[test]
     fn observer_panic_does_not_alter_terminal_or_cleanup_truth() {
-        let services = HostServices::new(
-            ExecutionHostId::new("host.local").expect("host id is valid"),
-        )
-        .with_diagnostic_observer(Arc::new(PanickingObserver));
+        let services =
+            HostServices::new(ExecutionHostId::new("host.local").expect("host id is valid"))
+                .with_diagnostic_observer(Arc::new(PanickingObserver));
 
         services.emit_diagnostic(&Diagnostic::new(SafeDiagnostic::new(
             "fixture.diagnostic",
@@ -442,10 +434,8 @@ mod tests {
             "cleanup context",
         ));
 
-        let status = TerminalStatus::RuntimeFailed(SafeDiagnostic::new(
-            "fixture.failure",
-            "Fixture failed",
-        ));
+        let status =
+            TerminalStatus::RuntimeFailed(SafeDiagnostic::new("fixture.failure", "Fixture failed"));
         let cleanup = CleanupOutcome::Failed(SafeDiagnostic::new(
             "fixture.cleanup_failed",
             "Cleanup failed",

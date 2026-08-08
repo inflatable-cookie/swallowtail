@@ -36,9 +36,7 @@ pub(super) fn validate_session_access(
             ));
         }
         (OperationShape::ProviderSessionHistory, None) => {
-            return Err(failure(
-                "Provider-session history access policy is missing",
-            ));
+            return Err(failure("Provider-session history access policy is missing"));
         }
         (OperationShape::InteractiveSession, None) => {}
         (_, Some(_)) => {

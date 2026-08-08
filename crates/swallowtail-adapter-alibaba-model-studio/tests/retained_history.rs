@@ -4,8 +4,8 @@ use futures_executor::block_on;
 use std::num::NonZeroU32;
 use support::{DriverFixture, ServerScenario};
 use swallowtail_adapter_alibaba_model_studio::{
-    AlibabaModelStudioDriver, AlibabaSessionHistoryInput, EXACT_MODEL_ID, MAXIMUM_REPLAY_PAGE_BYTES,
-    MODEL_ROUTE_ID, prepare_alibaba_model_studio,
+    AlibabaModelStudioDriver, AlibabaSessionHistoryInput, EXACT_MODEL_ID,
+    MAXIMUM_REPLAY_PAGE_BYTES, MODEL_ROUTE_ID, prepare_alibaba_model_studio,
 };
 use swallowtail_core::{ModelId, ModelRouteId, ModelRouteRevision, SessionRef};
 use swallowtail_runtime::{
@@ -42,8 +42,8 @@ fn retained_history_pages_newest_first_with_older_continuation() {
             first.older_cursor().expect("older cursor").clone(),
         )
         .expect("older request prepares");
-    let older = block_on(history.page(older_request, fixture.services()))
-        .expect("older page succeeds");
+    let older =
+        block_on(history.page(older_request, fixture.services())).expect("older page succeeds");
 
     assert_eq!(older.fetched_count(), 1);
     assert!(older.has_older());
@@ -76,18 +76,24 @@ fn retained_history_issues_no_live_handle_or_delete_side_effects() {
         None,
     )
     .expect("history request");
-    let page = block_on(AlibabaModelStudioDriver::new().page_provider_session_history(
-        plan,
-        request,
-        fixture.services(),
-    ))
+    let page = block_on(
+        AlibabaModelStudioDriver::new().page_provider_session_history(
+            plan,
+            request,
+            fixture.services(),
+        ),
+    )
     .expect("history page succeeds");
 
     assert_eq!(page.cleanup(), &CleanupOutcome::Clean);
     assert_eq!(page.fetched_count(), 2);
     let requests = fixture.requests();
     assert!(requests.iter().all(|request| request.method != "DELETE"));
-    assert!(requests.iter().all(|request| request.target != "/compatible-mode/v1/responses"));
+    assert!(
+        requests
+            .iter()
+            .all(|request| request.target != "/compatible-mode/v1/responses")
+    );
 }
 
 #[test]
@@ -96,7 +102,12 @@ fn retained_history_snapshot_overflow_fails_closed() {
     let prepared = prepare_alibaba_model_studio(fixture.preparation_input(), &fixture.services())
         .expect("integration prepares");
     let history = prepared
-        .prepare_session_history(history_input("overflow", binding(&fixture.retained_plan()), 1, 1))
+        .prepare_session_history(history_input(
+            "overflow",
+            binding(&fixture.retained_plan()),
+            1,
+            1,
+        ))
         .expect("history prepares");
     let failure = block_on(history.page_history(fixture.services())).expect_err("overflow fails");
 

@@ -8,10 +8,10 @@ use swallowtail_core::{
     Capability, CapabilityConstraint, CapabilityProfile, CapabilityRequirement,
 };
 use swallowtail_runtime::{
-    BoxFuture, HostServices, PreparationFailure, PreparationStage, PreparedProviderSessionHistoryEvidence,
-    ProviderSessionHistoryAgreement, ProviderSessionHistoryCursor, ProviderSessionHistoryDriver,
-    ProviderSessionHistoryPage, ProviderSessionHistoryPlan, ProviderSessionHistoryRequest,
-    RequestId, RuntimeFailure,
+    BoxFuture, HostServices, PreparationFailure, PreparationStage,
+    PreparedProviderSessionHistoryEvidence, ProviderSessionHistoryAgreement,
+    ProviderSessionHistoryCursor, ProviderSessionHistoryDriver, ProviderSessionHistoryPage,
+    ProviderSessionHistoryPlan, ProviderSessionHistoryRequest, RequestId, RuntimeFailure,
 };
 
 #[derive(Clone, Debug)]
@@ -101,7 +101,8 @@ impl AlibabaModelStudioPreparedIntegration {
     ) -> Result<AlibabaModelStudioPreparedSessionHistory, PreparationFailure> {
         let (request_id, history_id, route_id, route_revision, model_id, binding, bounds, deadline) =
             input.into_parts();
-        if route_id.as_str() != crate::MODEL_ROUTE_ID || model_id.as_str() != crate::EXACT_MODEL_ID {
+        if route_id.as_str() != crate::MODEL_ROUTE_ID || model_id.as_str() != crate::EXACT_MODEL_ID
+        {
             return Err(failure(
                 PreparationStage::Preflight,
                 "swallowtail.alibaba_model_studio.preparation.route_rejected",
@@ -142,16 +143,14 @@ impl AlibabaModelStudioPreparedIntegration {
                 "Alibaba Model Studio history plan could not be prepared",
             )
         })?;
-        let request =
-            ProviderSessionHistoryRequest::from_plan(request_id, &history_plan, None).map_err(
-                |_| {
-                    failure(
-                        PreparationStage::Preflight,
-                        "swallowtail.alibaba_model_studio.preparation.history_request_invalid",
-                        "Alibaba Model Studio history request could not be prepared",
-                    )
-                },
-            )?;
+        let request = ProviderSessionHistoryRequest::from_plan(request_id, &history_plan, None)
+            .map_err(|_| {
+                failure(
+                    PreparationStage::Preflight,
+                    "swallowtail.alibaba_model_studio.preparation.history_request_invalid",
+                    "Alibaba Model Studio history request could not be prepared",
+                )
+            })?;
         Ok(AlibabaModelStudioPreparedSessionHistory {
             evidence: AlibabaModelStudioPreparedEvidence::from_prepared(
                 self,

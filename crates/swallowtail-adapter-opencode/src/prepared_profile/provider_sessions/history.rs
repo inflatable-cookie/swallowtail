@@ -140,14 +140,13 @@ impl OpenCodePreparedIntegration {
                 "OpenCode session history plan could not be prepared",
             )
         })?;
-        let request = ProviderSessionHistoryRequest::from_plan(request_id, &plan, None).map_err(
-            |_| {
+        let request =
+            ProviderSessionHistoryRequest::from_plan(request_id, &plan, None).map_err(|_| {
                 failure(
                     "swallowtail.opencode.preparation.session_history_request_invalid",
                     "OpenCode session history request could not be prepared",
                 )
-            },
-        )?;
+            })?;
         Ok(OpenCodePreparedSessionHistory {
             prepared: self.clone(),
             evidence: PreparedProviderSessionHistoryEvidence::from_plan(

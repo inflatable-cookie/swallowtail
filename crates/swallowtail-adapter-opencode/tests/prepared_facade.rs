@@ -6,9 +6,9 @@ mod deletion_conformance;
 mod fixture;
 #[path = "prepared_facade/input_callbacks.rs"]
 mod input_callbacks;
-#[path = "prepared_facade/session_import.rs"]
-mod session_import;
 #[path = "prepared_facade/session_history.rs"]
 mod session_history;
+#[path = "prepared_facade/session_import.rs"]
+mod session_import;
 #[path = "prepared_facade/settled_session_restoration.rs"]
 mod settled_session_restoration;

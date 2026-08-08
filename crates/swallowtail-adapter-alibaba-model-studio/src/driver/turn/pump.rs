@@ -110,10 +110,7 @@ pub(super) async fn pump_turn(
                     );
                     cancellation.fail_remote_uncertain();
                     let _ = subscription.close().await;
-                    return uncertain(
-                        TerminalStatus::ProviderFailed(diagnostic.clone()),
-                        false,
-                    );
+                    return uncertain(TerminalStatus::ProviderFailed(diagnostic.clone()), false);
                 }
                 Ok(
                     ProviderEvent::Created(_)

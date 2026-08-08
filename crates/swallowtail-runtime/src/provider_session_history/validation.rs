@@ -12,8 +12,7 @@ use swallowtail_core::{
 };
 
 const PLAN_MISMATCH_CODE: &str = "swallowtail.provider_session_history.plan_mismatch";
-const PLAN_MISMATCH_MESSAGE: &str =
-    "Provider-session history does not match its immutable binding";
+const PLAN_MISMATCH_MESSAGE: &str = "Provider-session history does not match its immutable binding";
 
 const BOUND_MISMATCH_CODE: &str = "swallowtail.provider_session_history.bound_mismatch";
 const BOUND_MISMATCH_MESSAGE: &str =
@@ -71,17 +70,21 @@ const HISTORY_PLAN_RULES: [PlanRule<ProviderSessionHistoryAgreement>; 9] = [
             .capabilities()
             .any(|required| required.capability() == Capability::ProviderSessionHistory)
     }),
-    PlanRule::new(PLAN_MISMATCH_CODE, PLAN_MISMATCH_MESSAGE, |preflight, agreement| {
-        let declares_resource = preflight
-            .requirements()
-            .capabilities()
-            .any(|required| required.capability() == Capability::WorkingResource);
-        if agreement.binding().is_resource_free() {
-            !declares_resource
-        } else {
-            declares_resource
-        }
-    }),
+    PlanRule::new(
+        PLAN_MISMATCH_CODE,
+        PLAN_MISMATCH_MESSAGE,
+        |preflight, agreement| {
+            let declares_resource = preflight
+                .requirements()
+                .capabilities()
+                .any(|required| required.capability() == Capability::WorkingResource);
+            if agreement.binding().is_resource_free() {
+                !declares_resource
+            } else {
+                declares_resource
+            }
+        },
+    ),
     PlanRule::new(
         BOUND_MISMATCH_CODE,
         BOUND_MISMATCH_MESSAGE,

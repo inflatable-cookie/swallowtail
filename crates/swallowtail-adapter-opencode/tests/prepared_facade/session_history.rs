@@ -1,9 +1,7 @@
 use super::fixture::PreparedFixture;
 use futures_executor::block_on;
 use std::num::{NonZeroU32, NonZeroU64};
-use swallowtail_adapter_opencode::{
-    OpenCodeSessionHistoryInput, OpenCodeSessionProfileInput,
-};
+use swallowtail_adapter_opencode::{OpenCodeSessionHistoryInput, OpenCodeSessionProfileInput};
 use swallowtail_runtime::{
     OperationContent, ProviderSessionHistoryBounds, ProviderSessionHistoryId,
     ProviderSessionHistoryTotal, RequestId, SessionResumeBinding,
@@ -74,8 +72,8 @@ fn prepared_history_pages_newest_first_with_older_continuation() {
             first.older_cursor().expect("older cursor").clone(),
         )
         .expect("older request prepares");
-    let older = block_on(history.page(older_request, fixture.services()))
-        .expect("older page succeeds");
+    let older =
+        block_on(history.page(older_request, fixture.services())).expect("older page succeeds");
     assert_eq!(older.fetched_count(), 2);
     assert!(!older.has_older());
     assert_eq!(
@@ -88,7 +86,11 @@ fn prepared_history_pages_newest_first_with_older_continuation() {
 
     let requests = fixture.server.requests();
     assert!(!requests.iter().any(|request| request.starts_with("POST ")));
-    assert!(!requests.iter().any(|request| request.starts_with("DELETE ")));
+    assert!(
+        !requests
+            .iter()
+            .any(|request| request.starts_with("DELETE "))
+    );
 }
 
 #[test]

@@ -234,9 +234,7 @@ pub fn alibaba_model_studio_history_requirements(
         CapabilityRequirement::new(Capability::ProviderDurableRetention, []),
     ])
     .with_session_access_policy(SessionAccessPolicy::resource_free())
-    .with_session_provider_state_policy(
-        SessionProviderStatePolicy::DurableProviderSessionPreserved,
-    )
+    .with_session_provider_state_policy(SessionProviderStatePolicy::DurableProviderSessionPreserved)
     .require_model_route()
 }
 

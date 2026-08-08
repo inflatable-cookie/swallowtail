@@ -12,7 +12,8 @@ use swallowtail_runtime::ProviderSessionCatalogueId;
 use swallowtail_runtime::{
     ProviderSessionHistoryBounds, ProviderSessionHistoryId, ProviderSessionReconciliationBounds,
     RuntimeTurnId, SessionResumeBinding, SettledSessionAttachmentKind,
-    SettledSessionRestorationOutcome, WorkingStateRestorationMethod, WorkingStateRestorationOutcome,
+    SettledSessionRestorationOutcome, WorkingStateRestorationMethod,
+    WorkingStateRestorationOutcome,
 };
 use swallowtail_testkit::RecordedHostCall;
 

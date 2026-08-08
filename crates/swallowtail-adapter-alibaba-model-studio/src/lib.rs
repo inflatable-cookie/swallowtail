@@ -45,9 +45,10 @@ pub use selection::{
     MODEL_ROUTE_ID, REGION, WORKSPACE_ENDPOINT_TEMPLATE, alibaba_model_studio_access_profile,
     alibaba_model_studio_descriptor, alibaba_model_studio_facade_binding,
     alibaba_model_studio_facade_claim, alibaba_model_studio_history_requirements,
-    alibaba_model_studio_instance, alibaba_model_studio_management_requirements, alibaba_model_studio_requirements,
-    alibaba_model_studio_retained_requirements, alibaba_model_studio_route,
-    alibaba_model_studio_run_requirements, validate_alibaba_model_studio_plan,
+    alibaba_model_studio_instance, alibaba_model_studio_management_requirements,
+    alibaba_model_studio_requirements, alibaba_model_studio_retained_requirements,
+    alibaba_model_studio_route, alibaba_model_studio_run_requirements,
+    validate_alibaba_model_studio_plan,
 };
 
 /// Exact international Model Studio origin used by deployable-model discovery.

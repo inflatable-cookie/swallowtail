@@ -19,21 +19,22 @@ New here? Two short reads get you from zero to a working run:
 
 ## Release Posture
 
-`v0.2.0` is the current supported source identity. Releases are distributed
-as annotated Git tags from the
+`v0.2.0` is the current supported source identity. `v0.3.0` is the prepared
+candidate and is not usable as a tag until exact CI acceptance and tag
+creation. Releases are distributed as annotated Git tags from the
 [canonical repository](https://github.com/inflatable-cookie/swallowtail).
 There is no crates.io publication, GitHub Release object, binary bundle, or
 installer in this release line.
 
-The canonical `v0.2.0` tag resolves to the reviewed release commit. Later work
-must use an explicitly approved commit revision and must not be presented as
-part of that immutable release.
+The canonical `v0.2.0` tag resolves to the reviewed release commit. Candidate
+work must use an explicitly approved commit revision and must not be presented
+as part of that immutable release.
 
-The 28 tagged packages share version `0.2.0`, adding
-`swallowtail-adapter-muse`. `v0.1.0` established the
-pre-1.0 API and guaranteed-behavior baseline; `v0.1.1` is a compatible repair.
-`v0.2.0` is a minor release because it raises the unified Rust floor to
-`1.95.0`, not an API 1.0 promise.
+The 28 tagged packages share version `0.2.0`; the candidate keeps the same 28
+packages and 34 production routes. `v0.3.0` is a minor release because two
+public version-binding helpers now return `Option` and reject malformed
+provider-observed versions instead of treating parsing as infallible. It is
+not an API 1.0 promise.
 
 ## Choose A Route First
 
@@ -60,10 +61,10 @@ a typical application:
 <!-- source-install:start -->
 ```toml
 [dependencies]
-swallowtail-core = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.2.0" }
-swallowtail-runtime = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.2.0" }
-swallowtail-host-local = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.2.0" }
-swallowtail-adapter-codex = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.2.0" }
+swallowtail-core = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.3.0" }
+swallowtail-runtime = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.3.0" }
+swallowtail-host-local = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.3.0" }
+swallowtail-adapter-codex = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.3.0" }
 ```
 <!-- source-install:end -->
 
@@ -119,7 +120,7 @@ payloads in the consumer. Start with:
 
 ## Runtime Prerequisites
 
-- Rust `1.95.0` or newer for every `v0.2.0` package
+- Rust `1.95.0` or newer for every `v0.3.0` candidate package
 - Apple Silicon macOS is the verified release target; other targets are
   unverified, not prohibited
 - installed harnesses, attached services, model artifacts, authentication, and
@@ -151,7 +152,7 @@ Before 1.0:
   identity, or weakening lifecycle and authority truth is breaking
 
 See [Contract 036](docs/contracts/036-crate-release-and-compatibility-boundary.md)
-and the [v0.2.0 release notes](docs/releases/0.2.0.md).
+and the [v0.3.0 candidate release notes](docs/releases/0.3.0.md).
 
 ## Development
 

@@ -14,7 +14,7 @@ from provider_route_matrix.route_inventory import (  # noqa: E402
     production_routes as inventory_production_routes,
 )
 REPOSITORY = "https://github.com/inflatable-cookie/swallowtail"
-TAG = "v0.2.0"
+TAG = "v0.3.0"
 
 
 def fail(message: str) -> None:
@@ -38,7 +38,7 @@ def section(document: str, start: str, end: str) -> str:
 
 
 readme = read("README.md")
-release = read("docs/releases/0.2.0.md")
+release = read("docs/releases/0.3.0.md")
 changelog = read("CHANGELOG.md")
 
 for required in ("SECURITY.md", "SUPPORT.md", "CONTRIBUTING.md", "LICENSE"):
@@ -79,7 +79,7 @@ if set(dependencies) != expected_dependencies:
     fail("source-install example does not contain the expected direct package set")
 
 expected_packages = set(
-    read("release-baselines/public-api-0.2.0/packages.txt").splitlines()
+    read("release-baselines/public-api-0.3.0/packages.txt").splitlines()
 )
 release_package_section = section(release, "## Package Set", "## Production Routes")
 documented_packages = set(re.findall(r"`(swallowtail-[a-z0-9-]+)`", release_package_section))
@@ -91,7 +91,7 @@ if documented_packages != expected_packages:
 current_routes = set(inventory_production_routes())
 expected_routes = set(read("release-baselines/production-routes-0.2.0.txt").splitlines())
 if expected_routes != current_routes:
-    fail("current route inventory differs from the v0.2.0 candidate")
+    fail("current route inventory differs from the v0.2.0 release baseline")
 release_route_section = section(release, "## Production Routes", "## Highlights")
 documented_routes = set(re.findall(r"^- `([^`]+)`$", release_route_section, re.MULTILINE))
 if documented_routes != expected_routes:
@@ -101,12 +101,12 @@ if documented_routes != expected_routes:
 
 for relative, document in (
     ("README.md", readme),
-    ("docs/releases/0.2.0.md", release),
+    ("docs/releases/0.3.0.md", release),
 ):
     if REPOSITORY not in document or TAG not in document:
         fail(f"{relative} omits the canonical repository or exact tag")
 
-if "docs/releases/0.2.0.md" not in changelog:
+if "docs/releases/0.3.0.md" not in changelog:
     fail("CHANGELOG.md does not link to the current release notes")
 if "security/advisories/new" not in read("SECURITY.md"):
     fail("SECURITY.md does not name the private reporting path")

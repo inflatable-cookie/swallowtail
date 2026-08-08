@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-06
+Updated: 2026-08-08
 
 ## Purpose
 
@@ -37,9 +37,8 @@ workspace checkout.
 ## Public Package Set
 
 The immutable `v0.1.0` and `v0.1.1` tags contain 27 public source packages.
-The `v0.2.0` candidate contains 28, adding the reviewed
-`swallowtail-adapter-muse` package. Muse must not be presented as part of an
-immutable earlier tag or as tagged before exact release acceptance.
+`v0.2.0` contains 28, adding the reviewed `swallowtail-adapter-muse` package.
+The `v0.3.0` candidate keeps those 28 packages and 34 production routes.
 
 Foundations:
 
@@ -72,7 +71,7 @@ Opt-in adapters:
 - `swallowtail-adapter-kimi`
 - `swallowtail-adapter-kimi-platform`
 - `swallowtail-adapter-llama-cpp`
-- `swallowtail-adapter-muse` (`v0.2.0` candidate)
+- `swallowtail-adapter-muse`
 - `swallowtail-adapter-opencode`
 - `swallowtail-adapter-ollama`
 - `swallowtail-adapter-oh-my-pi`
@@ -137,12 +136,12 @@ The immutable `v0.1.x` verified floors are:
 - Rust `1.90.0` for every package except Bedrock
 - Rust `1.94.1` for `swallowtail-adapter-bedrock`
 
-Bedrock's historical higher floor follows its pinned AWS SDK graph. The
-`v0.2.0` candidate deliberately replaces that split with one Rust `1.95.0`
-floor for all 28 packages. This is a breaking MSRV raise and therefore uses a
-new pre-1.0 minor version.
+Bedrock's historical higher floor follows its pinned AWS SDK graph. `v0.2.0`
+deliberately replaces that split with one Rust `1.95.0` floor for all 28
+packages. This is a breaking MSRV raise and therefore uses a new pre-1.0 minor
+version. The `v0.3.0` candidate retains the same floor.
 
-The `v0.2.0` candidate must pass:
+The `v0.3.0` candidate must pass:
 
 - all 28 packages at Rust `1.95.0`
 - the complete workspace on the selected current stable toolchain
@@ -194,9 +193,11 @@ the current release candidate.
 
 The first tag creates the compatibility baseline for its 27 packages. An
 additive post-tag package receives separate candidate API evidence until an
-operator authorizes a later source release containing it. The `v0.2.0`
-candidate retains the 27-package `v0.1.0` baseline and adds Muse's first
-baseline without rewriting the earlier inventory.
+operator authorizes a later source release containing it. `v0.2.0` retains
+the 27-package `v0.1.0` baseline and adds Muse's first baseline without
+rewriting the earlier inventory. The `v0.3.0` baseline sanctions the breaking
+`Option<InterfaceVersionBinding>` return from `codex_cli_binding` and
+`ollama_runtime_binding`; the package and route inventories remain unchanged.
 
 Before the tag:
 
@@ -297,7 +298,7 @@ tag action against:
 
 - source commit
 - canonical branch and remote
-- tag name `v0.2.0`
+- tag name `v0.3.0`
 - annotated tag message
 - confirmation that no crate publication or GitHub Release is included
 
@@ -309,7 +310,8 @@ GitHub Release creation, consumer edits, and provider work remain separate.
 
 - all 28 candidate packages are separately consumable from one exact source
   identity
-- Muse is visibly candidate-only until the exact `v0.2.0` tag exists
+- the breaking binding-helper migration is explicit and limited to Codex and
+  Ollama callers
 - `publish = false` prevents accidental registry publication
 - internal dependency direction is exact
 - package compatibility and provider-interface versions remain separate

@@ -118,7 +118,8 @@ contract file owns the exact rules.
 ## Release, Prepared Integration, And Consumer Surfaces (036-052)
 
 - **036** fixes the 27-package `v0.1.x` source line, admits Muse as package 28
-  in the `v0.2.0` candidate, and governs the coordinated pre-1.0 version, the
+  in `v0.2.0`, sanctions the fail-closed binding API in the `v0.3.0`
+  candidate, and governs the coordinated pre-1.0 version, the
   unified Rust 1.95 floor, semantic and documented API evidence, dependency
   policy, exact Git-tag consumption, consumer proof, and explicit human
   authority for every external release mutation. The initial release excludes

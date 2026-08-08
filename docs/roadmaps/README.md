@@ -13,17 +13,13 @@ shape.
 
 ## Next Task
 
-Return to the g03 evidence gate. Milestone 054 Remaining Duplication
-Tranches closed: card 165 migrated the codex and cursor discovery code
-tables onto the shared `installed_probe_codes!` table; card 166 confirmed
-the catalogue parse/paginate disposition (card 159 measured evidence: the
-shared slice is the ~60-line validation family, extraction is net-negative);
-card 167 recorded the operator's decision that the ACP event projections
-stay adapter-local (no shared home under the recorded topology), cancelling
-card 168. The remaining duplication families are measured with recorded
-dispositions. The checkpoint decides whether the generation rolls or extends
-before the v0.3.0 release step; the release itself remains a separate
-operator-authorized step.
+Prepare the exact `v0.3.0` source candidate after the operator-authorized
+breaking release selection. Commit and push the prepared version, changelog,
+release notes, and candidate state; require exact-commit CI before separate
+tag authorization. The release keeps 28 packages, 34 routes, Rust `1.95.0`,
+and source-only distribution. Its breaking boundary is the fail-closed
+`Option<InterfaceVersionBinding>` return from the Codex and Ollama binding
+helpers.
 
 ## Index
 

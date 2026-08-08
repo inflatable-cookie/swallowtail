@@ -2,15 +2,15 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-06
+Updated: 2026-08-08
 Realization: roadmap g02.001; g03.043
 
 ## Boundary
 
 Swallowtail current source is a coordinated 28-package Rust workspace and the
-`v0.2.0` candidate. The immutable `v0.1.0` and `v0.1.1` Git source tags contain
-27 packages. `swallowtail-adapter-muse` is package 28. No crate is published to
-crates.io in this release lane.
+`v0.3.0` candidate. The immutable `v0.1.x` source tags contain 27 packages;
+`v0.2.0` contains 28 after adding `swallowtail-adapter-muse`. No crate is
+published to crates.io in this release lane.
 
 Each package remains independently selectable from the tagged Git source.
 There is no umbrella crate or private implementation package.
@@ -48,7 +48,7 @@ Adapters:
 - `swallowtail-adapter-kimi`
 - `swallowtail-adapter-kimi-platform`
 - `swallowtail-adapter-llama-cpp`
-- `swallowtail-adapter-muse` (`v0.2.0` candidate)
+- `swallowtail-adapter-muse`
 - `swallowtail-adapter-opencode`
 - `swallowtail-adapter-ollama`
 - `swallowtail-adapter-oh-my-pi`
@@ -82,20 +82,21 @@ identity without claiming registry availability.
 
 Candidate metadata, dependency topology, and semantic API checks include all
 28 packages. Immutable `v0.1.x` inventories retain their 27 packages and 33
-routes. Adding Muse does not rewrite release notes, tag contents, or historical
-candidate evidence.
+routes; `v0.2.0` retains its 28-package, 34-route inventory. Later candidates
+do not rewrite historical release notes, tag contents, or evidence.
 
 ## Version And Toolchains
 
-All candidate packages share version `0.2.0`.
+All candidate packages share version `0.3.0` after release preparation.
 
 - unified MSRV: Rust `1.95.0`
 - verified target: Apple Silicon macOS
 
 The immutable `v0.1.x` line used Rust `1.90.0` generally and Rust `1.94.1` for
-Bedrock. Raising and unifying that floor is the intentional breaking boundary
-that makes the candidate `v0.2.0`. The workspace lock and Cargo resolver 3
-retain reproducible, floor-aware selection.
+Bedrock. `v0.2.0` raised and unified the floor at Rust `1.95.0`. The `v0.3.0`
+candidate keeps that floor; its breaking boundary is the fail-closed optional
+return from the public Codex and Ollama version-binding helpers. The workspace
+lock and Cargo resolver 3 retain reproducible, floor-aware selection.
 
 ## Source-Tag Consumption
 
@@ -103,9 +104,9 @@ A consumer selects only the packages it needs:
 
 ```toml
 [dependencies]
-swallowtail-core = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.2.0" }
-swallowtail-runtime = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.2.0" }
-swallowtail-adapter-codex = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.2.0" }
+swallowtail-core = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.3.0" }
+swallowtail-runtime = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.3.0" }
+swallowtail-adapter-codex = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.3.0" }
 ```
 
 All selected packages must use the same tag. Consumers do not combine moving

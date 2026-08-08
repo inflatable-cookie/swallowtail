@@ -9,6 +9,11 @@ mutations.
 - [Swallowtail 0.2.0](0.2.0.md) — 28-package, 34-route Git source release
   containing Muse Code and a breaking unified Rust `1.95.0` floor
 
+## Candidate
+
+- [Swallowtail 0.3.0](0.3.0.md) — same package and route set, with fail-closed
+  version binding and the g03 hardening tranche
+
 Earlier immutable releases remain documented at [`v0.1.1`](0.1.1.md) and
 [`v0.1.0`](0.1.0.md). The release line includes no crates.io publication,
 GitHub Release object, binary, sidecar, installer, or model artifact.

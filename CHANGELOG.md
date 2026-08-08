@@ -5,6 +5,33 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-08-08
+
+### Added
+- expose shared runtime helpers for installed-executable discovery, prepared
+  plan construction, ordered event emission, and terminal projection
+- add exact malformed-inbound diagnostics and regression coverage across the
+  Codex app-server boundary
+
+### Changed
+- **Breaking:** make `codex_cli_binding` and `ollama_runtime_binding` return
+  `Option<InterfaceVersionBinding>` so malformed provider-observed versions
+  fail closed instead of reaching an infallible parse path
+- centralize repeated adapter discovery, preparation, run-loop, and runtime
+  plan-family machinery without changing the 28-package or 34-route set
+- publish [v0.3.0 candidate release notes](docs/releases/0.3.0.md) with the
+  exact API migration, rollback, and source-only distribution boundary
+
+### Fixed
+- bound local-process reader joins, preserve force-stop race truth, and close
+  runtime waiter and sender-drop paths without hangs
+- enforce remote ACP deadlines and joined worker cleanup across HTTP and
+  WebSocket transports
+- remove provider-reachable panic paths, reject malformed versions and
+  unexpected tool-call shapes safely, and preserve exact adapter diagnostics
+- make docs indexes, route inventory, MSRV selection, and literal-only version
+  parse checks deterministic release gates
+
 ## [0.2.0] - 2026-08-06
 
 ### Added

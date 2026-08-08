@@ -50,14 +50,17 @@ const HISTORY_PLAN_RULES: [PlanRule<ProviderSessionHistoryAgreement>; 9] = [
                 .requirements()
                 .host_services()
                 .any(|required| required == HostServiceKind::WorkingResource);
+            // Observe-only history matches reconciliation: resource-free bindings
+            // keep a resource-free plan; resource-bound bindings use ambient
+            // harness read even when the durable binding still carries the
+            // original session access policy (for example Codex read_only()).
             if agreement.binding().is_resource_free() {
                 policy == Some(&SessionAccessPolicy::resource_free())
                     && agreement.binding().access_policy() == &SessionAccessPolicy::resource_free()
                     && !working_resource
             } else {
                 policy == Some(&SessionAccessPolicy::ambient_harness(ResourceAccess::Read))
-                    && agreement.binding().access_policy()
-                        == &SessionAccessPolicy::ambient_harness(ResourceAccess::Read)
+                    && agreement.binding().working_resource().is_some()
                     && working_resource
             }
         },

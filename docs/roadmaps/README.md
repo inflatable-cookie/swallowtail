@@ -13,10 +13,10 @@ shape.
 
 ## Next Task
 
-Return to the g03 evidence gate — inventory current harness drift and
-consumer friction before opening the next roadmap. g03.058 multi-route
-provider history is complete. Research 115 negatively closed the remaining
-Claude/Kimi history-wire candidates; reopen only on new upstream artifacts.
+Finish the `v0.3.1` source release: push the prepared candidate, prove
+canonical CI on that commit, then create annotated tag `v0.3.1` only after
+exact CI acceptance. Do not reopen history paging unless Research 115’s
+control-free wire gate is met.
 
 ## Index
 

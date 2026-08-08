@@ -21,6 +21,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-08 v0.3.1 Local Source Candidate](./2026-08-08-v0-3-1-local-source-candidate.md)
 - [2026-08-08 Control-Free History Wire Gate](./2026-08-08-control-free-history-wire-gate.md)
 - [2026-08-08 Multi-Route Provider Session History](./2026-08-08-multi-route-provider-history.md)
 - [2026-08-08 Provider History Page Guide](./2026-08-08-provider-history-page-guide.md)

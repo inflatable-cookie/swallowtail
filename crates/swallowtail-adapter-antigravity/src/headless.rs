@@ -122,6 +122,7 @@ impl AntigravityHeadlessDriver {
                 let cancellation = Arc::clone(&cancellation);
                 let process = Arc::clone(&process);
                 let operation_id = ActivityOperationId::Run(run_id.clone());
+                let services = services.clone();
                 async move {
                     let outcome = pump(
                         process,
@@ -131,6 +132,7 @@ impl AntigravityHeadlessDriver {
                         model,
                         schema_expected,
                         operation_id,
+                        services,
                     )
                     .await;
                     let _ = terminal_sender.complete(outcome);

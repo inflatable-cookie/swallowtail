@@ -15,12 +15,13 @@ use swallowtail_core::{
     TransportFamilyId,
 };
 use swallowtail_runtime::{
-    BlockingJob, BoxFuture, CleanupOutcome, Deadline, HostServices, ModelCatalogDriver,
-    ModelCatalogRequest, RuntimeFailure, ScopeId,
+    BlockingJob, BoxFuture, CleanupOutcome, Deadline, DebugObservationKind, HostServices,
+    ModelCatalogDriver, ModelCatalogRequest, RuntimeFailure, ScopeId,
 };
 use tokio::sync::watch;
 
 const DRIVER_ID: &str = "swallowtail.amazon-bedrock.catalogue";
+const ROUTE: &str = "bedrock.catalogue";
 
 #[derive(Clone)]
 /// Low-level SDK-native Bedrock control-plane catalogue driver.
@@ -154,11 +155,18 @@ impl ModelCatalogDriver for BedrockCatalogueDriver {
             let cleanup = access.release(&services).await;
             match (result, cleanup) {
                 (Ok(models), CleanupOutcome::Clean | CleanupOutcome::NotApplicable) => Ok(models),
-                (Err(error), _) => Err(error),
-                (Ok(_), _) => Err(failure(
-                    "swallowtail.bedrock.catalogue_cleanup_failed",
-                    "Bedrock catalogue credential cleanup failed",
-                )),
+                (Err(error), _) => {
+                    emit_catalogue_debug(&services, &error, "sdk.catalogue");
+                    Err(error)
+                }
+                (Ok(_), _) => {
+                    let error = failure(
+                        "swallowtail.bedrock.catalogue_cleanup_failed",
+                        "Bedrock catalogue credential cleanup failed",
+                    );
+                    emit_catalogue_debug(&services, &error, "sdk.catalogue.cleanup");
+                    Err(error)
+                }
             }
         })
     }
@@ -240,6 +248,25 @@ fn operation_scope(id: &str) -> Result<ScopeId, RuntimeFailure> {
             "Bedrock catalogue operation scope was invalid",
         )
     })
+}
+
+fn emit_catalogue_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
+    let diagnostic = error.diagnostic();
+    let kind = if diagnostic.code().contains("projection")
+        || diagnostic.code().contains("entry_limit")
+        || diagnostic.code().contains("observation_limit")
+    {
+        DebugObservationKind::ProtocolParse
+    } else {
+        DebugObservationKind::WireInbound
+    };
+    services.emit_failure_debug(
+        kind,
+        ROUTE,
+        stage,
+        diagnostic.code(),
+        diagnostic.message(),
+    );
 }
 
 #[cfg(test)]

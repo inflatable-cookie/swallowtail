@@ -21,12 +21,17 @@ impl OhMyPiConnection {
                         Ok(records) => {
                             for record in records {
                                 if let Err(error) = self.dispatch(record) {
+                                    self.emit_protocol_debug(&error, "rpc.pump.dispatch");
                                     transport_failure = Some(error);
                                     break;
                                 }
                             }
                         }
-                        Err(_) => transport_failure = Some(protocol_failure()),
+                        Err(_) => {
+                            let error = protocol_failure();
+                            self.emit_protocol_debug(&error, "rpc.pump.decode");
+                            transport_failure = Some(error);
+                        }
                     }
                     if transport_failure.is_some() {
                         break;
@@ -35,13 +40,16 @@ impl OhMyPiConnection {
                 Ok(Some(_)) => {}
                 Ok(None) => break,
                 Err(error) => {
+                    self.emit_protocol_debug(&error, "rpc.pump.read");
                     transport_failure = Some(error);
                     break;
                 }
             }
         }
         if transport_failure.is_none() && decoder.finish().is_err() {
-            transport_failure = Some(protocol_failure());
+            let error = protocol_failure();
+            self.emit_protocol_debug(&error, "rpc.pump.finish");
+            transport_failure = Some(error);
         }
         if transport_failure.is_some() {
             let _ = self.process.force_stop().await;

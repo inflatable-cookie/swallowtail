@@ -1,13 +1,14 @@
 use crate::CodexAppServerDriver;
 use swallowtail_runtime::{
     BoxFuture, HostServices, ProviderSessionCatalogueDriver, ProviderSessionCatalogueOutcome,
-    ProviderSessionCataloguePlan, ProviderSessionCatalogueRequest, ProviderSessionImportDriver,
-    ProviderSessionImportOutcome, ProviderSessionImportPlan, ProviderSessionImportRequest,
-    ProviderSessionOperationFailure, ProviderSessionReconciliationDriver,
-    ProviderSessionReconciliationOutcome, ProviderSessionReconciliationPlan,
-    ProviderSessionReconciliationRequest, RuntimeFailure,
-    validate_provider_session_catalogue_execution, validate_provider_session_import_execution,
-    validate_provider_session_reconciliation_execution,
+    ProviderSessionCataloguePlan, ProviderSessionCatalogueRequest, ProviderSessionHistoryDriver,
+    ProviderSessionHistoryPage, ProviderSessionHistoryPlan, ProviderSessionHistoryRequest,
+    ProviderSessionImportDriver, ProviderSessionImportOutcome, ProviderSessionImportPlan,
+    ProviderSessionImportRequest, ProviderSessionOperationFailure,
+    ProviderSessionReconciliationDriver, ProviderSessionReconciliationOutcome,
+    ProviderSessionReconciliationPlan, ProviderSessionReconciliationRequest, RuntimeFailure,
+    validate_provider_session_catalogue_execution, validate_provider_session_history_execution,
+    validate_provider_session_import_execution, validate_provider_session_reconciliation_execution,
 };
 
 #[path = "thread_catalogue/execution.rs"]
@@ -55,6 +56,20 @@ impl ProviderSessionReconciliationDriver for CodexAppServerDriver {
             validate_provider_session_reconciliation_execution(&plan, &request, &services)?;
             self.execute_thread_reconciliation(plan, request, services)
                 .await
+        })
+    }
+}
+
+impl ProviderSessionHistoryDriver for CodexAppServerDriver {
+    fn page_provider_session_history(
+        &self,
+        plan: ProviderSessionHistoryPlan,
+        request: ProviderSessionHistoryRequest,
+        services: HostServices,
+    ) -> BoxFuture<'_, Result<ProviderSessionHistoryPage, RuntimeFailure>> {
+        Box::pin(async move {
+            validate_provider_session_history_execution(&plan, &request, &services)?;
+            self.execute_thread_history(plan, request, services).await
         })
     }
 }

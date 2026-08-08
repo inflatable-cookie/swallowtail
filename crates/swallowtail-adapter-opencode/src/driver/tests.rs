@@ -17,6 +17,7 @@ mod tests {
         assert!(descriptor.supports_role(DriverRole::InteractiveSession));
         assert!(descriptor.supports_role(DriverRole::ProviderSessionManagement));
         assert!(descriptor.supports_role(DriverRole::ProviderSessionReconciliation));
+        assert!(descriptor.supports_role(DriverRole::ProviderSessionHistory));
         assert!(descriptor.supports_role(DriverRole::StructuredRun));
         assert!(descriptor.supports_execution_layer(ExecutionLayer::HarnessInteraction));
         assert!(!descriptor.supports_execution_layer(ExecutionLayer::DirectModelInference));
@@ -27,6 +28,9 @@ mod tests {
         );
         assert!(
             descriptor.supports_operation_shape(OperationShape::ProviderSessionReconciliation)
+        );
+        assert!(
+            descriptor.supports_operation_shape(OperationShape::ProviderSessionHistory)
         );
         assert!(
             descriptor

@@ -47,6 +47,7 @@ async fn pump_managed_run(
     let mut final_state = 'run: loop {
         let exit = pump_attachment(
             &mut subscription,
+            &services,
             &events,
             &mut sequence,
             &run_id,
@@ -171,10 +172,12 @@ async fn pump_managed_run(
                         }
                     }
                     Ok(Some(_)) => {
-                        break ManagedFinal::status(provider_status(failure(
+                        let error = failure(
                             "swallowtail.anthropic.managed.recovery_state_invalid",
                             "Anthropic Managed Agents history recovery returned an invalid state",
-                        )));
+                        );
+                        emit_protocol_debug(&services, &error, "http.pump.recovery");
+                        break ManagedFinal::status(provider_status(error));
                     }
                     Ok(None) => match open_attachment(
                         &transport,
@@ -186,7 +189,10 @@ async fn pump_managed_run(
                         &cancellation,
                     ) {
                         Ok(next) => subscription = next,
-                        Err(error) => break ManagedFinal::status(provider_status(error)),
+                        Err(error) => {
+                            emit_wire_debug(&services, &error, "http.pump.transport");
+                            break ManagedFinal::status(provider_status(error));
+                        }
                     },
                     Err(error) if is_deadline_error(&error) => {
                         callbacks.abandon(CallbackAbandonment::TimedOut);
@@ -205,14 +211,19 @@ async fn pump_managed_run(
                         state.cancellation = Some(ProviderCancellationOutcome::Unconfirmed);
                         break state;
                     }
-                    Err(error) => break ManagedFinal::status(provider_status(error)),
+                    Err(error) => {
+                        emit_wire_debug(&services, &error, "http.pump.recovery");
+                        break ManagedFinal::status(provider_status(error));
+                    }
                 }
             }
             AttachmentExit::Disconnected => {
-                break ManagedFinal::status(provider_status(failure(
+                let error = failure(
                     "swallowtail.anthropic.managed.remote_state_unconfirmed",
                     "Anthropic Managed Agents state remained unconfirmed after bounded recovery",
-                )));
+                );
+                emit_wire_debug(&services, &error, "http.pump.transport");
+                break ManagedFinal::status(provider_status(error));
             }
         }
     };

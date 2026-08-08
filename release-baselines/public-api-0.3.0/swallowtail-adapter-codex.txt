@@ -19,6 +19,8 @@ impl swallowtail_runtime::roles::ModelCatalogDriver for swallowtail_adapter_code
 pub fn swallowtail_adapter_codex::CodexAppServerDriver::list_models(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
 impl swallowtail_runtime::roles::ProviderSessionCatalogueDriver for swallowtail_adapter_codex::CodexAppServerDriver
 pub fn swallowtail_adapter_codex::CodexAppServerDriver::list_provider_sessions(&self, swallowtail_runtime::provider_session_import::catalogue::ProviderSessionCataloguePlan, swallowtail_runtime::provider_session_import::catalogue::ProviderSessionCatalogueRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_runtime::provider_session_import::outcome::ProviderSessionCatalogueOutcome, swallowtail_runtime::provider_session_import::failure::ProviderSessionOperationFailure>>
+impl swallowtail_runtime::roles::ProviderSessionHistoryDriver for swallowtail_adapter_codex::CodexAppServerDriver
+pub fn swallowtail_adapter_codex::CodexAppServerDriver::page_provider_session_history(&self, swallowtail_runtime::provider_session_history::ProviderSessionHistoryPlan, swallowtail_runtime::provider_session_history::ProviderSessionHistoryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_runtime::provider_session_history::page::ProviderSessionHistoryPage, swallowtail_runtime::failure::RuntimeFailure>>
 impl swallowtail_runtime::roles::ProviderSessionImportDriver for swallowtail_adapter_codex::CodexAppServerDriver
 pub fn swallowtail_adapter_codex::CodexAppServerDriver::import_provider_session(&self, swallowtail_runtime::provider_session_import::import::ProviderSessionImportPlan, swallowtail_runtime::provider_session_import::import::ProviderSessionImportRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_runtime::provider_session_import::outcome::ProviderSessionImportOutcome, swallowtail_runtime::provider_session_import::failure::ProviderSessionOperationFailure>>
 impl swallowtail_runtime::roles::ProviderSessionManagementDriver for swallowtail_adapter_codex::CodexAppServerDriver
@@ -113,6 +115,8 @@ pub fn swallowtail_adapter_codex::CodexPreparedIntegration::prepare_catalogue(&s
 impl swallowtail_adapter_codex::CodexPreparedIntegration
 pub fn swallowtail_adapter_codex::CodexPreparedIntegration::prepare_session_catalogue(&self, swallowtail_adapter_codex::CodexSessionCatalogueInput) -> core::result::Result<swallowtail_adapter_codex::CodexPreparedSessionCatalogue, swallowtail_runtime::preparation::PreparationFailure>
 impl swallowtail_adapter_codex::CodexPreparedIntegration
+pub fn swallowtail_adapter_codex::CodexPreparedIntegration::prepare_session_history(&self, swallowtail_adapter_codex::CodexSessionHistoryInput) -> core::result::Result<swallowtail_adapter_codex::CodexPreparedSessionHistory, swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_codex::CodexPreparedIntegration
 pub fn swallowtail_adapter_codex::CodexPreparedIntegration::prepare_session_reconciliation(&self, swallowtail_adapter_codex::CodexSessionReconciliationInput) -> core::result::Result<swallowtail_adapter_codex::CodexPreparedSessionReconciliation, swallowtail_runtime::preparation::PreparationFailure>
 impl swallowtail_adapter_codex::CodexPreparedIntegration
 pub fn swallowtail_adapter_codex::CodexPreparedIntegration::prepare_structured_exec(&self, swallowtail_adapter_codex::CodexExecProfileInput) -> core::result::Result<swallowtail_adapter_codex::CodexPreparedExec, swallowtail_runtime::preparation::PreparationFailure>
@@ -147,6 +151,16 @@ pub fn swallowtail_adapter_codex::CodexPreparedSessionCatalogue::low_level_drive
 pub fn swallowtail_adapter_codex::CodexPreparedSessionCatalogue::next_page_request(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::provider_session_import::candidate::ProviderSessionCursor) -> core::result::Result<swallowtail_runtime::provider_session_import::catalogue::ProviderSessionCatalogueRequest, swallowtail_runtime::preparation::PreparationFailure>
 pub const fn swallowtail_adapter_codex::CodexPreparedSessionCatalogue::plan(&self) -> &swallowtail_runtime::provider_session_import::catalogue::ProviderSessionCataloguePlan
 pub const fn swallowtail_adapter_codex::CodexPreparedSessionCatalogue::request(&self) -> &swallowtail_runtime::provider_session_import::catalogue::ProviderSessionCatalogueRequest
+pub struct swallowtail_adapter_codex::CodexPreparedSessionHistory
+impl swallowtail_adapter_codex::CodexPreparedSessionHistory
+pub const fn swallowtail_adapter_codex::CodexPreparedSessionHistory::codex_evidence(&self) -> &swallowtail_adapter_codex::CodexPreparedEvidence
+pub const fn swallowtail_adapter_codex::CodexPreparedSessionHistory::evidence(&self) -> &swallowtail_runtime::provider_session_history::PreparedProviderSessionHistoryEvidence
+pub fn swallowtail_adapter_codex::CodexPreparedSessionHistory::low_level_driver(&self) -> swallowtail_adapter_codex::CodexAppServerDriver
+pub fn swallowtail_adapter_codex::CodexPreparedSessionHistory::older_page_request(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::provider_session_history::ProviderSessionHistoryCursor) -> core::result::Result<swallowtail_runtime::provider_session_history::ProviderSessionHistoryRequest, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_codex::CodexPreparedSessionHistory::page(&self, swallowtail_runtime::provider_session_history::ProviderSessionHistoryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_session_history::page::ProviderSessionHistoryPage, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_codex::CodexPreparedSessionHistory::page_history(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_session_history::page::ProviderSessionHistoryPage, swallowtail_runtime::failure::RuntimeFailure>>
+pub const fn swallowtail_adapter_codex::CodexPreparedSessionHistory::plan(&self) -> &swallowtail_runtime::provider_session_history::ProviderSessionHistoryPlan
+pub const fn swallowtail_adapter_codex::CodexPreparedSessionHistory::request(&self) -> &swallowtail_runtime::provider_session_history::ProviderSessionHistoryRequest
 pub struct swallowtail_adapter_codex::CodexPreparedSessionImport
 impl swallowtail_adapter_codex::CodexPreparedSessionImport
 pub const fn swallowtail_adapter_codex::CodexPreparedSessionImport::codex_evidence(&self) -> &swallowtail_adapter_codex::CodexPreparedEvidence
@@ -172,6 +186,10 @@ pub struct swallowtail_adapter_codex::CodexSessionCatalogueInput
 impl swallowtail_adapter_codex::CodexSessionCatalogueInput
 pub const fn swallowtail_adapter_codex::CodexSessionCatalogueInput::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ProviderSessionCatalogueId, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_core::provider_session_catalogue::ProviderSessionCatalogueBounds) -> Self
 pub const fn swallowtail_adapter_codex::CodexSessionCatalogueInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_adapter_codex::CodexSessionHistoryInput
+impl swallowtail_adapter_codex::CodexSessionHistoryInput
+pub const fn swallowtail_adapter_codex::CodexSessionHistoryInput::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ProviderSessionHistoryId, swallowtail_adapter_codex::CodexModelSelection, swallowtail_runtime::session_binding::SessionResumeBinding, swallowtail_runtime::provider_session_history::ProviderSessionHistoryBounds) -> Self
+pub const fn swallowtail_adapter_codex::CodexSessionHistoryInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
 pub struct swallowtail_adapter_codex::CodexSessionManagementInput
 impl swallowtail_adapter_codex::CodexSessionManagementInput
 pub const fn swallowtail_adapter_codex::CodexSessionManagementInput::allow_unverified_newer(self) -> Self

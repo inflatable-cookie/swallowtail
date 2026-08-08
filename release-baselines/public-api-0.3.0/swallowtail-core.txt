@@ -59,6 +59,7 @@ pub swallowtail_core::CancellationScope::OwnedServingInstance
 pub swallowtail_core::CancellationScope::ProviderRecoveredResourceCleanup
 pub swallowtail_core::CancellationScope::ProviderRunReconciliation
 pub swallowtail_core::CancellationScope::ProviderSessionCatalogue
+pub swallowtail_core::CancellationScope::ProviderSessionHistory
 pub swallowtail_core::CancellationScope::ProviderSessionImport
 pub swallowtail_core::CancellationScope::ProviderSessionManagement
 pub swallowtail_core::CancellationScope::ProviderSessionReconciliation
@@ -90,6 +91,7 @@ pub swallowtail_core::Capability::ProviderSessionArchive
 pub swallowtail_core::Capability::ProviderSessionAttachmentRecovery
 pub swallowtail_core::Capability::ProviderSessionCatalogue
 pub swallowtail_core::Capability::ProviderSessionDelete
+pub swallowtail_core::Capability::ProviderSessionHistory
 pub swallowtail_core::Capability::ProviderSessionImport
 pub swallowtail_core::Capability::ProviderSessionReconciliation
 pub swallowtail_core::Capability::ProviderSessionRestore
@@ -201,6 +203,7 @@ pub swallowtail_core::DriverRole::ModelCatalog
 pub swallowtail_core::DriverRole::ProviderRecoveredResourceCleanup
 pub swallowtail_core::DriverRole::ProviderRunReconciliation
 pub swallowtail_core::DriverRole::ProviderSessionCatalogue
+pub swallowtail_core::DriverRole::ProviderSessionHistory
 pub swallowtail_core::DriverRole::ProviderSessionImport
 pub swallowtail_core::DriverRole::ProviderSessionManagement
 pub swallowtail_core::DriverRole::ProviderSessionReconciliation
@@ -391,6 +394,7 @@ pub swallowtail_core::OperationShape::InteractiveSession
 pub swallowtail_core::OperationShape::ProviderRecoveredResourceCleanup
 pub swallowtail_core::OperationShape::ProviderRunReconciliation
 pub swallowtail_core::OperationShape::ProviderSessionCatalogue
+pub swallowtail_core::OperationShape::ProviderSessionHistory
 pub swallowtail_core::OperationShape::ProviderSessionImport
 pub swallowtail_core::OperationShape::ProviderSessionManagement
 pub swallowtail_core::OperationShape::ProviderSessionReconciliation

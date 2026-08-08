@@ -11,6 +11,7 @@ use crate::{
     ProviderRunReconciliationRequest,
     ProviderRecoveredResourceCleanupOutcome, ProviderRecoveredResourceCleanupPlan,
     ProviderRecoveredResourceCleanupRequest,
+    ProviderSessionHistoryPage, ProviderSessionHistoryPlan, ProviderSessionHistoryRequest,
     ProviderSessionReconciliationOutcome, ProviderSessionReconciliationPlan,
     ProviderSessionReconciliationRequest, RealtimeMediaSessionHandle,
     RequestId, RestoreProviderSessionRequest, RunHandle,

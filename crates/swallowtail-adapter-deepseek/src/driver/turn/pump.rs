@@ -22,10 +22,13 @@ use std::sync::atomic::AtomicBool;
 use std::sync::{Arc, Mutex};
 use swallowtail_core::{DirectContinuationConfig, PreflightPlan};
 use swallowtail_runtime::{
-    CleanupOutcome, DirectContinuationBinding, DirectContinuationState, DirectInferenceAttempt,
-    HostServices, OperationContent, ProviderPrivateContinuationRecord, RuntimeEventKind,
-    RuntimeEventSender, RuntimeFailure, RuntimeSessionId, ScopeId, TerminalOutcome, TerminalStatus,
+    CleanupOutcome, DebugObservationKind, DirectContinuationBinding, DirectContinuationState,
+    DirectInferenceAttempt, HostServices, OperationContent, ProviderPrivateContinuationRecord,
+    RuntimeEventKind, RuntimeEventSender, RuntimeFailure, RuntimeSessionId, ScopeId,
+    TerminalOutcome, TerminalStatus,
 };
+
+const ROUTE: &str = "deepseek.continuation";
 use tool_attempt::run_tool_turn;
 
 pub(super) struct TurnContext {
@@ -42,6 +45,28 @@ pub(super) struct TurnContext {
     scope: ScopeId,
     cancelled: Arc<AtomicBool>,
     cancel_receiver: oneshot::Receiver<()>,
+}
+
+fn emit_protocol_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
+    let diagnostic = error.diagnostic();
+    services.emit_failure_debug(
+        DebugObservationKind::ProtocolParse,
+        ROUTE,
+        stage,
+        diagnostic.code(),
+        diagnostic.message(),
+    );
+}
+
+fn emit_wire_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
+    let diagnostic = error.diagnostic();
+    services.emit_failure_debug(
+        DebugObservationKind::WireInbound,
+        ROUTE,
+        stage,
+        diagnostic.code(),
+        diagnostic.message(),
+    );
 }
 
 impl TurnContext {

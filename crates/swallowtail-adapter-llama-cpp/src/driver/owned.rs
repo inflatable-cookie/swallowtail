@@ -20,6 +20,7 @@ use startup::{
 };
 
 pub(super) const OWNED_DRIVER_ID: &str = "swallowtail.llama-cpp.owned-b10069-openai-chat";
+const OWNED_ROUTE: &str = "llama-cpp.owned";
 const EXECUTABLE_ARGUMENTS: usize = 11;
 
 #[derive(Clone)]
@@ -37,6 +38,7 @@ impl LlamaCppOwnedDriver {
                 OWNED_DRIVER_ID,
                 OWNED_VERSION,
                 "llama-cpp-owned-b10069",
+                OWNED_ROUTE,
             ),
         }
     }

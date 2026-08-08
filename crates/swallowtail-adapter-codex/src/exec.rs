@@ -159,6 +159,7 @@ impl CodexExecDriver {
                 let cancellation = Arc::clone(&cancellation);
                 let process = Arc::clone(&process);
                 let materializations = materializations.clone();
+                let services = services.clone();
                 async move {
                     let outcome = pump(
                         process,
@@ -167,6 +168,7 @@ impl CodexExecDriver {
                         deadline,
                         materializations,
                         parser,
+                        services,
                     )
                     .await;
                     let _ = terminal_sender.complete(outcome);

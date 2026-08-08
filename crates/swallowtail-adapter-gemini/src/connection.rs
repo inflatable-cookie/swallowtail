@@ -15,9 +15,10 @@ use swallowtail_protocol_acp::{
     is_session_scoped_metadata_update,
 };
 use swallowtail_runtime::{
-    CleanupOutcome, ProcessHandle, ProcessInputChunk, ProcessOutputStream, ResourceLease,
-    RuntimeFailure, WorkingResourceIoService, WorkingResourceLocator, WorkingResourceReadRequest,
-    WorkingResourceText, WorkingResourceWriteRequest,
+    CleanupOutcome, DebugObservationKind, HostServices, ProcessHandle, ProcessInputChunk,
+    ProcessOutputStream, ResourceLease, RuntimeFailure, WorkingResourceIoService,
+    WorkingResourceLocator, WorkingResourceReadRequest, WorkingResourceText,
+    WorkingResourceWriteRequest,
 };
 
 const MAXIMUM_PENDING_REQUESTS: usize = 32;
@@ -31,6 +32,7 @@ pub(crate) struct AcpConnection {
     resource: ResourceLease,
     resource_io: Arc<dyn WorkingResourceIoService>,
     write_enabled: bool,
+    services: HostServices,
     next_id: AtomicU64,
     pending: Mutex<BTreeMap<u64, ResponseSender>>,
     session_id: Mutex<Option<String>>,
@@ -47,12 +49,14 @@ impl AcpConnection {
         resource: ResourceLease,
         resource_io: Arc<dyn WorkingResourceIoService>,
         write_enabled: bool,
+        services: HostServices,
     ) -> Arc<Self> {
         Arc::new(Self {
             process,
             resource,
             resource_io,
             write_enabled,
+            services,
             next_id: AtomicU64::new(1),
             pending: Mutex::new(BTreeMap::new()),
             session_id: Mutex::new(None),
@@ -62,6 +66,17 @@ impl AcpConnection {
             closed: AtomicBool::new(false),
             cleanup: Mutex::new(None),
         })
+    }
+
+    pub(crate) fn emit_protocol_debug(&self, error: &RuntimeFailure, stage: &'static str) {
+        let diagnostic = error.diagnostic();
+        self.services.emit_failure_debug(
+            DebugObservationKind::ProtocolParse,
+            "gemini-cli.acp",
+            stage,
+            diagnostic.code(),
+            diagnostic.message(),
+        );
     }
 
     pub(crate) async fn initialize(&self) -> Result<Value, RuntimeFailure> {

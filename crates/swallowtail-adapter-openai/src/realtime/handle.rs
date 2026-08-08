@@ -182,6 +182,7 @@ impl OpenAiRealtimeSession {
             cancellation: Arc::clone(&cancellation),
             worker: self.worker.clone(),
             request_ref: self.worker.request_ref().clone(),
+            services: self.services.clone(),
         };
         let deadline = self.deadline.map(|deadline| {
             self.services

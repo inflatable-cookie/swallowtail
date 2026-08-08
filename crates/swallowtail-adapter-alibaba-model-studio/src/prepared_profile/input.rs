@@ -36,6 +36,75 @@ pub struct AlibabaRetainedConversationProfileInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+/// Exact route, binding, bounds, and deadline for retained conversation history.
+pub struct AlibabaSessionHistoryInput {
+    request_id: RequestId,
+    history_id: swallowtail_runtime::ProviderSessionHistoryId,
+    route_id: ModelRouteId,
+    route_revision: ModelRouteRevision,
+    model_id: ModelId,
+    binding: swallowtail_runtime::SessionResumeBinding,
+    bounds: swallowtail_runtime::ProviderSessionHistoryBounds,
+    deadline: Option<Deadline>,
+}
+
+impl AlibabaSessionHistoryInput {
+    #[must_use]
+    /// Creates bounded history input from one exact durable session binding.
+    pub const fn new(
+        request_id: RequestId,
+        history_id: swallowtail_runtime::ProviderSessionHistoryId,
+        route_id: ModelRouteId,
+        route_revision: ModelRouteRevision,
+        model_id: ModelId,
+        binding: swallowtail_runtime::SessionResumeBinding,
+        bounds: swallowtail_runtime::ProviderSessionHistoryBounds,
+    ) -> Self {
+        Self {
+            request_id,
+            history_id,
+            route_id,
+            route_revision,
+            model_id,
+            binding,
+            bounds,
+            deadline: None,
+        }
+    }
+
+    #[must_use]
+    /// Adds the history-page deadline.
+    pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
+        self.deadline = Some(deadline);
+        self
+    }
+
+    pub(super) fn into_parts(
+        self,
+    ) -> (
+        RequestId,
+        swallowtail_runtime::ProviderSessionHistoryId,
+        ModelRouteId,
+        ModelRouteRevision,
+        ModelId,
+        swallowtail_runtime::SessionResumeBinding,
+        swallowtail_runtime::ProviderSessionHistoryBounds,
+        Option<Deadline>,
+    ) {
+        (
+            self.request_id,
+            self.history_id,
+            self.route_id,
+            self.route_revision,
+            self.model_id,
+            self.binding,
+            self.bounds,
+            self.deadline,
+        )
+    }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
 /// Exact inactive-session binding for retained conversation deletion.
 pub struct AlibabaSessionManagementInput {
     request_id: RequestId,

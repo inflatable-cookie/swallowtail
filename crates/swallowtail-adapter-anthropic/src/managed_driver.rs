@@ -21,9 +21,9 @@ use swallowtail_runtime::{
     BoxCallbackStream, BoxEventStream, BoxFuture, CallbackAbandonment, CallbackExchange,
     CallbackFailureKind, CallbackId, CallbackPayload, CallbackRequest, CallbackResponder,
     CallbackResponse, CallbackResult, CancellationAcknowledgement, CancellationControl,
-    CleanupOutcome, CredentialLease, Deadline, DeadlineObservation, EndpointRef, HostServices,
-    ImmediateCancellation, InterruptedRunState, JoinedTask, OperationContent,
-    ProviderCancellationOutcome, ProviderExecutionPolicy, ProviderObservation,
+    CleanupOutcome, CredentialLease, Deadline, DeadlineObservation, DebugObservationKind,
+    EndpointRef, HostServices, ImmediateCancellation, InterruptedRunState, JoinedTask,
+    OperationContent, ProviderCancellationOutcome, ProviderExecutionPolicy, ProviderObservation,
     ProviderRecoveredResourceCleanupDriver, ProviderRecoveredResourceCleanupOutcome,
     ProviderRecoveredResourceCleanupPlan, ProviderRecoveredResourceCleanupRequest,
     ProviderRecoveryPolicy, ProviderRetentionPolicy, ProviderRunReconciliationDriver,
@@ -36,6 +36,7 @@ use swallowtail_runtime::{
 };
 
 const DRIVER_ID: &str = "swallowtail.anthropic.managed-agent";
+const ROUTE: &str = "anthropic.managed-agent";
 const EVENT_CAPACITY: usize = 64;
 
 #[derive(Clone, Default)]

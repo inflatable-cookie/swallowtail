@@ -54,25 +54,37 @@ async fn run_attempt(
                     .map_err(|error| TurnFailure::Runtime(error, CleanupOutcome::Clean))?;
             }
             StreamSignal::Item(Ok(StreamItem::Frame(frame))) => {
-                let event = parse_event(&frame)
-                    .map_err(|error| TurnFailure::Provider(error, CleanupOutcome::Clean))?;
-                parser
-                    .apply(event, events, sequence, activity)
-                    .map_err(|error| TurnFailure::Provider(error, CleanupOutcome::Clean))?;
+                let event = match parse_event(&frame) {
+                    Ok(event) => event,
+                    Err(error) => {
+                        super::emit_protocol_debug(
+                            &context.services,
+                            &error,
+                            "http.pump.decode",
+                        );
+                        return Err(TurnFailure::Provider(error, CleanupOutcome::Clean));
+                    }
+                };
+                if let Err(error) = parser.apply(event, events, sequence, activity) {
+                    super::emit_protocol_debug(&context.services, &error, "http.pump.map");
+                    return Err(TurnFailure::Provider(error, CleanupOutcome::Clean));
+                }
             }
             StreamSignal::Item(Err(error)) => {
                 let cleanup = cleanup_result(subscription.close().await);
                 return Err(if cancellation.is_requested() {
                     TurnFailure::Stopped(cancellation.stop_reason(), cleanup)
                 } else {
+                    super::emit_wire_debug(&context.services, &error, "http.pump.transport");
                     TurnFailure::Provider(error, cleanup)
                 });
             }
             StreamSignal::Closed => {
                 let cleanup = cleanup_result(subscription.close().await);
-                return parser
-                    .finish()
-                    .map_err(|error| TurnFailure::Provider(error, cleanup));
+                return parser.finish().map_err(|error| {
+                    super::emit_wire_debug(&context.services, &error, "http.pump.transport");
+                    TurnFailure::Provider(error, cleanup)
+                });
             }
             StreamSignal::Stopped(stop) => {
                 let cleanup = cleanup_result(subscription.close().await);

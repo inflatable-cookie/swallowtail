@@ -158,6 +158,7 @@ impl GeminiLiveSession {
             next_event_sequence: Arc::clone(&self.next_event_sequence),
             cancellation: Arc::clone(&cancellation),
             connections: self.connections.clone(),
+            services: self.services.clone(),
         };
         let deadline = self.deadline.map(|deadline| {
             self.services

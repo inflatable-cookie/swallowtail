@@ -3,9 +3,10 @@ use super::services::{CallLog, DriverCall, ThreadServices, TrackingCredential};
 use std::sync::{Arc, Mutex};
 use swallowtail_adapter_alibaba_model_studio::{
     AlibabaModelStudioPreparationInput, alibaba_model_studio_access_profile,
-    alibaba_model_studio_descriptor, alibaba_model_studio_instance,
-    alibaba_model_studio_requirements, alibaba_model_studio_retained_requirements,
-    alibaba_model_studio_route, alibaba_model_studio_run_requirements,
+    alibaba_model_studio_descriptor, alibaba_model_studio_history_requirements,
+    alibaba_model_studio_instance, alibaba_model_studio_requirements,
+    alibaba_model_studio_retained_requirements, alibaba_model_studio_route,
+    alibaba_model_studio_run_requirements,
 };
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessStatus, CredentialState, EndpointAuthorization,
@@ -15,7 +16,9 @@ use swallowtail_core::{
 use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{
     BlockingWorkService, CredentialService, EndpointRef, HostServices, NetworkPolicyService,
-    PreparedAccessEvidence, ScopedTaskService, TimeService,
+    PreparedAccessEvidence, ProviderSessionHistoryAgreement, ProviderSessionHistoryBounds,
+    ProviderSessionHistoryId, ProviderSessionHistoryPlan, ScopedTaskService, SessionResumeBinding,
+    TimeService,
 };
 
 pub struct DriverFixture {
@@ -134,6 +137,86 @@ impl DriverFixture {
             &requirements,
         )
         .expect("Alibaba retained conversation preflight succeeds")
+    }
+
+    pub fn history_plan(
+        &self,
+        history_id: &str,
+        binding: SessionResumeBinding,
+        page_items: u32,
+        snapshot_items: u32,
+    ) -> ProviderSessionHistoryPlan {
+        let descriptor = alibaba_model_studio_descriptor();
+        let access = alibaba_model_studio_access_profile();
+        let bounds = ProviderSessionHistoryBounds::new(
+            std::num::NonZeroU32::new(page_items).expect("page items"),
+            std::num::NonZeroU64::new(swallowtail_adapter_alibaba_model_studio::MAXIMUM_REPLAY_PAGE_BYTES as u64)
+                .expect("page bytes"),
+            std::num::NonZeroU32::new(64).expect("cursor bytes"),
+            std::num::NonZeroU32::new(snapshot_items).expect("snapshot items"),
+        );
+        let capabilities = swallowtail_core::CapabilityProfile::new([
+            swallowtail_core::CapabilityRequirement::new(
+                swallowtail_core::Capability::ProviderSessionHistory,
+                [
+                    swallowtail_core::CapabilityConstraint::ReplayMaximumItems(page_items),
+                    swallowtail_core::CapabilityConstraint::ReplayMaximumBytes(
+                        swallowtail_adapter_alibaba_model_studio::MAXIMUM_REPLAY_PAGE_BYTES as u64,
+                    ),
+                ],
+            ),
+            swallowtail_core::CapabilityRequirement::new(
+                swallowtail_core::Capability::ProviderDurableRetention,
+                [],
+            ),
+        ]);
+        let instance = swallowtail_runtime::instance_with_capabilities(
+            &alibaba_model_studio_instance(self.host_id.clone()),
+            capabilities.clone(),
+        );
+        let route = swallowtail_core::ModelRoute::new(
+            alibaba_model_studio_route().id().clone(),
+            alibaba_model_studio_route().revision().clone(),
+            instance.id().clone(),
+            alibaba_model_studio_route().model_id().clone(),
+            capabilities,
+        );
+        let requirements = alibaba_model_studio_history_requirements(self.host_id.clone())
+            .with_capabilities([
+                swallowtail_core::CapabilityRequirement::new(
+                    swallowtail_core::Capability::ProviderSessionHistory,
+                    [
+                        swallowtail_core::CapabilityConstraint::ReplayMaximumItems(page_items),
+                        swallowtail_core::CapabilityConstraint::ReplayMaximumBytes(
+                            swallowtail_adapter_alibaba_model_studio::MAXIMUM_REPLAY_PAGE_BYTES as u64,
+                        ),
+                    ],
+                ),
+                swallowtail_core::CapabilityRequirement::new(
+                    swallowtail_core::Capability::ProviderDurableRetention,
+                    [],
+                ),
+            ]);
+        let status = ready_status(access.id().clone());
+        let services: Vec<_> = descriptor
+            .required_host_services(swallowtail_core::DriverRole::ProviderSessionHistory)
+            .collect();
+        let preflight = preflight(
+            &PreflightContext::new(&descriptor, &instance, &access, &status, services)
+                .with_model_route(&route),
+            &requirements,
+        )
+        .expect("Alibaba history preflight succeeds");
+        ProviderSessionHistoryPlan::new(
+            preflight,
+            ProviderSessionHistoryAgreement::new(
+                ProviderSessionHistoryId::new(history_id).expect("history id"),
+                binding,
+                bounds,
+                None,
+            ),
+        )
+        .expect("Alibaba history plan succeeds")
     }
 
     pub fn preparation_input(&self) -> AlibabaModelStudioPreparationInput {

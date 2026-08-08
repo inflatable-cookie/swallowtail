@@ -18,7 +18,9 @@ use swallowtail_runtime::{
 };
 
 pub(super) mod cleanup;
+mod history;
 mod load;
+mod replay_walk;
 
 pub(super) struct AlibabaSessionHandle {
     pub(super) request_id: RequestId,

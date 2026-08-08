@@ -13,13 +13,10 @@ shape.
 
 ## Next Task
 
-Prepare the exact `v0.3.0` source candidate after the operator-authorized
-breaking release selection. Commit and push the prepared version, changelog,
-release notes, and candidate state; require exact-commit CI before separate
-tag authorization. The release keeps 28 packages, 34 routes, Rust `1.95.0`,
-and source-only distribution. Its breaking boundary is the fail-closed
-`Option<InterfaceVersionBinding>` return from the Codex and Ollama binding
-helpers.
+Return to the g03 evidence gate — inventory current harness drift and
+consumer friction before opening the next roadmap. g03.058 multi-route
+provider history is complete; do not reopen history paging unless a
+control-free ACP wire is evidenced.
 
 ## Index
 

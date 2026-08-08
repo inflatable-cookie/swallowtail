@@ -45,6 +45,7 @@ PORTABLE_FEATURES = {
     "subagent_topology",
     "subagent_control",
     "working_state_restoration",
+    "provider_session_history",
     "failure_classification",
     "operator_validation",
 }

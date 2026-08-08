@@ -12,6 +12,7 @@ async fn pump_attachment(
         swallowtail_runtime::BoxFuture<'static, swallowtail_runtime::DeadlineObservation>,
     >,
     activity: &crate::activity::OpenAiBackgroundActivityProjection,
+    services: &HostServices,
 ) -> AttachmentExit {
     loop {
         if cancellation.is_requested() {
@@ -36,6 +37,7 @@ async fn pump_attachment(
                 if detachment.is_some_and(RunDetachment::is_requested) {
                     return AttachmentExit::Detached;
                 }
+                emit_wire_debug(services, &error, "http.pump.transport");
                 return if matches!(
                     error.diagnostic().code(),
                     "swallowtail.openai.transport_failed"
@@ -58,6 +60,7 @@ async fn pump_attachment(
                 let event = match stream.apply(&frame) {
                     Ok(event) => event,
                     Err(error) => {
+                        emit_protocol_debug(services, &error, "http.pump.decode");
                         return AttachmentExit::Terminal(Box::new(FinalState::new(
                             provider_status(error),
                         )));

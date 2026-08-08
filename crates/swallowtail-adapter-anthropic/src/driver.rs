@@ -9,11 +9,12 @@ use swallowtail_core::{
     OperationShape, PreflightPlan, TransportFamilyId,
 };
 use swallowtail_runtime::{
-    BoxFuture, CleanupOutcome, CredentialLease, EndpointRef, HostServices, ModelCatalogDriver,
-    ModelCatalogRequest, RuntimeFailure, ScopeId,
+    BoxFuture, CleanupOutcome, CredentialLease, DebugObservationKind, EndpointRef, HostServices,
+    ModelCatalogDriver, ModelCatalogRequest, RuntimeFailure, ScopeId,
 };
 
 const DRIVER_ID: &str = "swallowtail.anthropic.direct";
+const ROUTE: &str = "anthropic.messages";
 const MAX_CATALOGUE_PAGES: usize = 8;
 
 #[derive(Clone, Default)]

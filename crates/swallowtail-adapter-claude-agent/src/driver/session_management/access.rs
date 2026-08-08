@@ -124,6 +124,7 @@ pub(super) async fn open_management_connection(
             .working_resource_io()
             .cloned()
             .expect("validated resource I/O service"),
+        services.clone(),
     );
     let pump = Arc::clone(&connection);
     let pump_task = match services

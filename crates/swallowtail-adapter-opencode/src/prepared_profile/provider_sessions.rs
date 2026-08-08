@@ -9,10 +9,12 @@ use swallowtail_core::{
 use swallowtail_runtime::PreparationFailure;
 
 mod catalogue;
+mod history;
 mod import;
 mod reconciliation;
 
 pub use catalogue::OpenCodePreparedSessionCatalogue;
+pub use history::OpenCodePreparedSessionHistory;
 pub use import::OpenCodePreparedSessionImport;
 pub use reconciliation::OpenCodePreparedSessionReconciliation;
 
@@ -38,6 +40,19 @@ pub(super) fn require_reconciliation_qualified(
         Err(failure(
             "swallowtail.opencode.preparation.session_reconciliation_version_unsupported",
             "OpenCode session reconciliation requires a qualified server version",
+        ))
+    }
+}
+
+pub(super) fn require_history_qualified(
+    prepared: &OpenCodePreparedIntegration,
+) -> Result<(), PreparationFailure> {
+    if prepared.server().is_qualified() {
+        Ok(())
+    } else {
+        Err(failure(
+            "swallowtail.opencode.preparation.session_history_version_unsupported",
+            "OpenCode session history requires a qualified server version",
         ))
     }
 }

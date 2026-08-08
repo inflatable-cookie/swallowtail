@@ -1,5 +1,7 @@
 async fn pump_run(
     mut subscription: Subscription,
+    services: HostServices,
+    route: &'static str,
     events: swallowtail_runtime::RuntimeEventSender,
     cancellation: Arc<RunCancellation>,
     mut deadline: Option<BoxFuture<'static, DeadlineObservation>>,
@@ -16,16 +18,26 @@ async fn pump_run(
                 break TerminalStatus::TimedOut;
             }
             RunSignal::Closed if cancellation.is_requested() => break TerminalStatus::Cancelled,
-            RunSignal::Closed => break provider_status(failure(
-                "swallowtail.llama_cpp.stream_disconnected",
-                "llama.cpp stream closed before completion",
-            )),
+            RunSignal::Closed => {
+                let error = failure(
+                    "swallowtail.llama_cpp.stream_disconnected",
+                    "llama.cpp stream closed before completion",
+                );
+                emit_wire_debug(&services, route, &error, "http.pump.transport");
+                break provider_status(error);
+            }
             RunSignal::Item(Err(_)) if cancellation.is_requested() => {
                 break TerminalStatus::Cancelled;
             }
-            RunSignal::Item(Err(error)) => break provider_status(error),
+            RunSignal::Item(Err(error)) => {
+                emit_wire_debug(&services, route, &error, "http.pump.transport");
+                break provider_status(error);
+            }
             RunSignal::Item(Ok(frame)) => match parse_event(&frame) {
-                Err(error) => break provider_status(error),
+                Err(error) => {
+                    emit_protocol_debug(&services, route, &error, "http.pump.decode");
+                    break provider_status(error);
+                }
                 Ok(event) => match apply_event(event, &mut state, &mut output) {
                     Ok(Applied::None) => {}
                     Ok(Applied::Started) => {
@@ -80,10 +92,12 @@ async fn pump_run(
                     }
                     Ok(Applied::Complete) => {
                         if output.is_empty() {
-                            break provider_status(failure(
+                            let error = failure(
                                 "swallowtail.llama_cpp.output_missing",
                                 "llama.cpp completed without text output",
-                            ));
+                            );
+                            emit_protocol_debug(&services, route, &error, "http.pump.map");
+                            break provider_status(error);
                         }
                         if let Err(error) = emit(
                             &events,
@@ -111,7 +125,10 @@ async fn pump_run(
                         }
                         break TerminalStatus::Completed;
                     }
-                    Err(error) => break provider_status(error),
+                    Err(error) => {
+                        emit_protocol_debug(&services, route, &error, "http.pump.map");
+                        break provider_status(error);
+                    }
                 },
             },
         }
@@ -192,4 +209,36 @@ fn emit(
 
 fn provider_status(error: RuntimeFailure) -> TerminalStatus {
     swallowtail_runtime::provider_status(error)
+}
+
+fn emit_protocol_debug(
+    services: &HostServices,
+    route: &'static str,
+    error: &RuntimeFailure,
+    stage: &'static str,
+) {
+    let diagnostic = error.diagnostic();
+    services.emit_failure_debug(
+        DebugObservationKind::ProtocolParse,
+        route,
+        stage,
+        diagnostic.code(),
+        diagnostic.message(),
+    );
+}
+
+fn emit_wire_debug(
+    services: &HostServices,
+    route: &'static str,
+    error: &RuntimeFailure,
+    stage: &'static str,
+) {
+    let diagnostic = error.diagnostic();
+    services.emit_failure_debug(
+        DebugObservationKind::WireInbound,
+        route,
+        stage,
+        diagnostic.code(),
+        diagnostic.message(),
+    );
 }

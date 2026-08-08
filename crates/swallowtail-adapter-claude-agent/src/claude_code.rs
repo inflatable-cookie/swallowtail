@@ -156,6 +156,7 @@ impl ClaudeCodeHeadlessDriver {
                 let cancellation = Arc::clone(&cancellation);
                 let process = Arc::clone(&process);
                 let operation_id = ActivityOperationId::Run(run_id.clone());
+                let services = services.clone();
                 async move {
                     let outcome = pump(
                         process,
@@ -164,6 +165,7 @@ impl ClaudeCodeHeadlessDriver {
                         deadline,
                         model,
                         operation_id,
+                        services,
                     )
                     .await;
                     let _ = terminal_sender.complete(outcome);

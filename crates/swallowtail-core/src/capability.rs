@@ -74,6 +74,8 @@ pub enum Capability {
     ProviderSessionImport,
     /// Reconcile retained provider-session truth after interruption.
     ProviderSessionReconciliation,
+    /// Read newest-first pages of provider-session history.
+    ProviderSessionHistory,
     /// Reconcile retained provider-run truth after interruption.
     ProviderRunReconciliation,
     /// Clean provider resources recovered from an interrupted run.

@@ -63,6 +63,7 @@ impl StructuredRunDriver for LlamaCppAttachedDriver {
             let pending = Arc::new(Mutex::new(Some(subscription)));
             let task_service = services.task().expect("validated task").clone();
             let activity_run_id = run_id.clone();
+            let route = self.route;
             let task = task_service.spawn(
                 scope,
                 Box::pin({
@@ -76,6 +77,8 @@ impl StructuredRunDriver for LlamaCppAttachedDriver {
                             .expect("llama.cpp pending work is available");
                         let outcome = pump_run(
                             subscription,
+                            services,
+                            route,
                             event_sender.clone(),
                             cancellation,
                             deadline,

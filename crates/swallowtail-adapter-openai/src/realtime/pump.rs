@@ -7,10 +7,10 @@ use std::sync::atomic::{AtomicBool, AtomicU64};
 use std::sync::{Arc, Mutex};
 use swallowtail_core::{MediaDirection, ProviderRequestRef, SafeDiagnostic};
 use swallowtail_runtime::{
-    BoxFuture, DeadlineObservation, MediaChunk, MediaStreamId, MediaTranscript,
-    ProviderCancellationOutcome, ProviderObservation, RealtimeMediaEvent, RealtimeMediaEventKind,
-    RealtimeMediaResponseStatus, RealtimeMediaSessionState, RuntimeFailure, RuntimeSessionId,
-    RuntimeTurnId, TerminalOutcome,
+    BoxFuture, DeadlineObservation, DebugObservationKind, HostServices, MediaChunk, MediaStreamId,
+    MediaTranscript, ProviderCancellationOutcome, ProviderObservation, RealtimeMediaEvent,
+    RealtimeMediaEventKind, RealtimeMediaResponseStatus, RealtimeMediaSessionState, RuntimeFailure,
+    RuntimeSessionId, RuntimeTurnId, TerminalOutcome,
 };
 
 mod outcome;
@@ -32,6 +32,7 @@ pub(super) struct PumpContext {
     pub(super) cancellation: Arc<ResponseCancellation>,
     pub(super) worker: WorkerHandle,
     pub(super) request_ref: ProviderRequestRef,
+    pub(super) services: HostServices,
 }
 
 pub(super) async fn pump_response(
@@ -65,6 +66,7 @@ pub(super) async fn pump_response(
         let event = match update {
             WorkerUpdate::Event(event) => event,
             WorkerUpdate::Failed(error) => {
+                emit_wire_debug(&context.services, &error, "ws.pump.transport");
                 let status = interrupted_or_failed(&context.cancellation, error.diagnostic());
                 return (
                     finish_terminal(&context, &mut events, status).await,
@@ -72,6 +74,17 @@ pub(super) async fn pump_response(
                 );
             }
             WorkerUpdate::Disconnected => {
+                let diagnostic = SafeDiagnostic::new(
+                    "swallowtail.openai.realtime_disconnected",
+                    "OpenAI Realtime disconnected before terminal response truth",
+                );
+                context.services.emit_failure_debug(
+                    DebugObservationKind::WireInbound,
+                    super::ROUTE,
+                    "ws.pump.transport",
+                    diagnostic.code(),
+                    diagnostic.message(),
+                );
                 let status = interrupted_or_disconnected(&context.cancellation);
                 return (
                     finish_terminal(&context, &mut events, status).await,
@@ -80,6 +93,7 @@ pub(super) async fn pump_response(
             }
         };
         if let Err(error) = provider_stream.apply(&event) {
+            emit_protocol_debug(&context.services, &error, "ws.pump.decode");
             return (
                 finish_terminal(
                     &context,
@@ -240,4 +254,26 @@ pub(super) async fn pump_response(
             }
         }
     }
+}
+
+fn emit_protocol_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
+    let diagnostic = error.diagnostic();
+    services.emit_failure_debug(
+        DebugObservationKind::ProtocolParse,
+        super::ROUTE,
+        stage,
+        diagnostic.code(),
+        diagnostic.message(),
+    );
+}
+
+fn emit_wire_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
+    let diagnostic = error.diagnostic();
+    services.emit_failure_debug(
+        DebugObservationKind::WireInbound,
+        super::ROUTE,
+        stage,
+        diagnostic.code(),
+        diagnostic.message(),
+    );
 }

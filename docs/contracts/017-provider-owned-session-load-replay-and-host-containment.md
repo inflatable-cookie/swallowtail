@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-05
+Updated: 2026-08-08
 
 ## Purpose
 
@@ -156,6 +156,12 @@ Replay transport does not assert that history is complete, accepted, or
 persisted by the consumer. Consumers decide whether and how to merge it with
 their own transcript. Replay items do not increment live-turn usage or trigger
 product effects.
+
+Newest-first consumer history browsing is a separate read-only page operation
+under Contract 054. It may reuse `SessionReplayItem` projection, bounds, and
+cursor helpers used by load, but it is not load readiness, must not return a
+live handle, and cannot replace complete-before-ready replay for routes that
+still require load.
 
 ## Filesystem Write Callbacks
 

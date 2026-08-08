@@ -74,6 +74,7 @@ runtime_identity!(DirectToolCallId, "direct tool call id");
 runtime_identity!(AccessEvidenceSourceId, "access evidence source id");
 runtime_identity!(ProviderSessionCatalogueId, "provider session catalogue id");
 runtime_identity!(ProviderSessionCandidateId, "provider session candidate id");
+runtime_identity!(ProviderSessionHistoryId, "provider session history id");
 
 #[cfg(test)]
 mod tests {

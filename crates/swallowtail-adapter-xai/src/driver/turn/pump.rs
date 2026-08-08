@@ -14,9 +14,11 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     BilledCostObservation, BoxFuture, CleanupOutcome, Currency, DeadlineObservation,
-    OperationContent, ProviderObservation, RuntimeEvent, RuntimeEventKind, RuntimeFailure,
-    RuntimeTurnId, TerminalOutcome, TerminalStatus,
+    DebugObservationKind, HostServices, OperationContent, ProviderObservation, RuntimeEvent,
+    RuntimeEventKind, RuntimeFailure, RuntimeTurnId, TerminalOutcome, TerminalStatus,
 };
+
+const ROUTE: &str = "xai.responses-websocket";
 
 pub(in crate::driver) struct PendingTurn {
     pub(in crate::driver) updates: mpsc::Receiver<TurnUpdate>,
@@ -36,6 +38,7 @@ pub(in crate::driver) async fn pump_turn(
     cancellation: Arc<TurnCancellation>,
     mut deadline: Option<BoxFuture<'static, DeadlineObservation>>,
     observation_context: TurnObservationContext,
+    services: HostServices,
 ) -> TerminalOutcome {
     let mut sequence = 1;
     let mut activity =
@@ -56,12 +59,23 @@ pub(in crate::driver) async fn pump_turn(
                     CancelReason::TimedOut => TerminalStatus::TimedOut,
                     CancelReason::None | CancelReason::Finished => {
                         TerminalStatus::RuntimeFailed(result.map_or_else(
-                            |error| error.diagnostic().clone(),
+                            |error| {
+                                emit_wire_debug(&services, &error, "ws.pump.transport");
+                                error.diagnostic().clone()
+                            },
                             |_| {
-                                SafeDiagnostic::new(
+                                let diagnostic = SafeDiagnostic::new(
                                     "swallowtail.xai.turn_disconnected",
                                     "xAI WebSocket turn ended before a terminal response",
-                                )
+                                );
+                                services.emit_failure_debug(
+                                    DebugObservationKind::WireInbound,
+                                    ROUTE,
+                                    "ws.pump.transport",
+                                    diagnostic.code(),
+                                    diagnostic.message(),
+                                );
+                                diagnostic
                             },
                         ))
                     }
@@ -129,9 +143,22 @@ pub(in crate::driver) async fn pump_turn(
                 sequence += 1;
             }
             TurnSignal::Update(TurnUpdate::ProviderFailed(kind)) => {
+                let status = provider_status(kind);
+                if let TerminalStatus::ProviderFailed(diagnostic) = &status {
+                    services.emit_failure_debug(
+                        DebugObservationKind::ProtocolParse,
+                        ROUTE,
+                        "ws.pump.map",
+                        diagnostic.code(),
+                        diagnostic.message(),
+                    );
+                }
                 let outcome = match pending.work.await {
-                    Ok(()) => TerminalOutcome::new(provider_status(kind), CleanupOutcome::Clean),
-                    Err(error) => runtime_failure(error.diagnostic().clone()),
+                    Ok(()) => TerminalOutcome::new(status, CleanupOutcome::Clean),
+                    Err(error) => {
+                        emit_wire_debug(&services, &error, "ws.pump.transport");
+                        runtime_failure(error.diagnostic().clone())
+                    }
                 };
                 return finish(&cancellation, outcome);
             }
@@ -285,6 +312,17 @@ fn finish(cancellation: &TurnCancellation, outcome: TerminalOutcome) -> Terminal
         }
         CancelReason::None | CancelReason::Finished => outcome,
     }
+}
+
+fn emit_wire_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
+    let diagnostic = error.diagnostic();
+    services.emit_failure_debug(
+        DebugObservationKind::WireInbound,
+        ROUTE,
+        stage,
+        diagnostic.code(),
+        diagnostic.message(),
+    );
 }
 
 #[cfg(test)]

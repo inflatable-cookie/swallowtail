@@ -27,7 +27,7 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     BoxEventStream, BoxFuture, CancellationAcknowledgement, CancellationControl, CleanupOutcome,
-    CredentialLease, Deadline, DeadlineObservation, EndpointRef, HostServices,
+    CredentialLease, Deadline, DeadlineObservation, DebugObservationKind, EndpointRef, HostServices,
     InteractiveSessionDriver, InteractiveSessionHandle, JoinedTask, LoadSessionRequest,
     LoadedSession, ModelCatalogDriver, ModelCatalogRequest, OpenSessionRequest,
     OperationDetachmentAcknowledgement, OperationDetachmentControl, ProviderExecutionPolicy,
@@ -36,18 +36,22 @@ use swallowtail_runtime::{
     ProviderSessionCataloguePlan, ProviderSessionCatalogueRequest, ProviderSessionImportDriver,
     ProviderSessionImportOutcome, ProviderSessionImportPlan, ProviderSessionImportRequest,
     ProviderSessionImportRevalidation, ProviderSessionOperationFailure,
-    ProviderSessionOperationFailureStage, ProviderSessionReconciliationDriver,
+    ProviderSessionOperationFailureStage, ProviderSessionHistoryDriver,
+    ProviderSessionHistoryPage, ProviderSessionHistoryPlan, ProviderSessionHistoryRequest,
+    ProviderSessionHistoryTotal, ProviderSessionReconciliationDriver,
     ProviderSessionReconciliationOutcome, ProviderSessionReconciliationPlan,
     ProviderSessionReconciliationRequest, RemoteResourceDeletionOutcome, RequestId, ResourceLease,
     ResumeSessionRequest, RunHandle, RuntimeEvent, RuntimeEventKind, RuntimeFailure, RuntimeRunId,
     RuntimeSessionId, RuntimeTurnId, ScopeId, SessionResumeBinding, StreamReattachmentPolicy,
     StructuredOutputDescriptor, StructuredRunDriver, StructuredRunRequest, TerminalOutcome,
     TerminalStatus, TurnHandle, TurnRequest, runtime_event_channel, terminal_outcome_channel,
-    validate_provider_session_catalogue_execution, validate_provider_session_import_execution,
-    validate_provider_session_reconciliation_execution, validate_session_resource_lease,
+    validate_provider_session_catalogue_execution, validate_provider_session_history_execution,
+    validate_provider_session_import_execution, validate_provider_session_reconciliation_execution,
+    validate_session_resource_lease, page_provider_session_history_window,
 };
 
 const DRIVER_ID: &str = "swallowtail.opencode.http";
+const ROUTE: &str = "opencode.http";
 const EVENT_CAPACITY: usize = 64;
 const CONTINUITY_PAGE_LIMIT: usize = 100;
 const CONTINUITY_MAXIMUM_PAGES: usize = 64;
@@ -120,6 +124,7 @@ pub fn opencode_http_descriptor() -> DriverDescriptor {
         DriverRole::ProviderSessionCatalogue,
         DriverRole::ProviderSessionImport,
         DriverRole::ProviderSessionReconciliation,
+        DriverRole::ProviderSessionHistory,
     ])
     .with_interface_compatibility(opencode_http_claim())
     .with_execution_layers([ExecutionLayer::HarnessInteraction])
@@ -130,6 +135,7 @@ pub fn opencode_http_descriptor() -> DriverDescriptor {
         OperationShape::ProviderSessionCatalogue,
         OperationShape::ProviderSessionImport,
         OperationShape::ProviderSessionReconciliation,
+        OperationShape::ProviderSessionHistory,
     ])
     .with_extension_namespaces([
         callback::permission_namespace(),
@@ -168,6 +174,17 @@ pub fn opencode_http_descriptor() -> DriverDescriptor {
     )
     .with_required_host_services(
         DriverRole::ProviderSessionReconciliation,
+        [
+            HostServiceKind::Task,
+            HostServiceKind::BlockingWork,
+            HostServiceKind::Time,
+            HostServiceKind::Network,
+            HostServiceKind::Credential,
+            HostServiceKind::WorkingResource,
+        ],
+    )
+    .with_required_host_services(
+        DriverRole::ProviderSessionHistory,
         [
             HostServiceKind::Task,
             HostServiceKind::BlockingWork,
@@ -224,4 +241,5 @@ include!("driver/lifecycle_services.rs");
 include!("driver/session_management.rs");
 include!("driver/provider_session_import.rs");
 include!("driver/provider_session_reconciliation.rs");
+include!("driver/provider_session_history.rs");
 include!("driver/tests.rs");

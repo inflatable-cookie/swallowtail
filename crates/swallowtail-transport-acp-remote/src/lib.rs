@@ -26,12 +26,14 @@ use std::sync::{Arc, Mutex};
 use swallowtail_core::{PreflightPlan, SafeDiagnostic};
 use swallowtail_protocol_acp::Message;
 use swallowtail_runtime::{
-    BlockingJob, CleanupOutcome, Deadline, EndpointRef, HostServices, JoinedTask, NetworkGrant,
-    ScopeId,
+    BlockingJob, CleanupOutcome, Deadline, DebugObservationKind, EndpointRef, HostServices,
+    JoinedTask, NetworkGrant, ScopeId,
 };
 use worker::{ReadySignal, WorkerCommand, WorkerEvent};
 
 pub use error::{RemoteAcpError, RemoteAcpErrorKind};
+
+pub(crate) const ROUTE: &str = "acp.remote";
 
 /// Exact host-bound request to open one remote ACP transport connection.
 pub struct RemoteAcpConnectRequest {
@@ -108,36 +110,71 @@ async fn connect_bound(
     deadline: Option<Deadline>,
     services: HostServices,
 ) -> Result<RemoteAcpConnection, RemoteAcpError> {
-    let task = services.task().cloned().ok_or_else(host_service_failure)?;
-    let blocking = services
-        .blocking_work()
-        .cloned()
-        .ok_or_else(host_service_failure)?;
-    let time = services.time().cloned().ok_or_else(host_service_failure)?;
+    let task = match services.task().cloned() {
+        Some(task) => task,
+        None => {
+            let error = host_service_failure();
+            emit_remote_failure_debug(&services, &error, "remote.acp.connect");
+            return Err(error);
+        }
+    };
+    let blocking = match services.blocking_work().cloned() {
+        Some(blocking) => blocking,
+        None => {
+            let error = host_service_failure();
+            emit_remote_failure_debug(&services, &error, "remote.acp.connect");
+            return Err(error);
+        }
+    };
+    let time = match services.time().cloned() {
+        Some(time) => time,
+        None => {
+            let error = host_service_failure();
+            emit_remote_failure_debug(&services, &error, "remote.acp.connect");
+            return Err(error);
+        }
+    };
     if services.network().is_none() {
-        return Err(host_service_failure());
+        let error = host_service_failure();
+        emit_remote_failure_debug(&services, &error, "remote.acp.connect");
+        return Err(error);
     }
     if let Some(deadline) = deadline
         && time.now() >= deadline.instant()
     {
-        return Err(worker::cancellation_error(true));
+        let error = worker::cancellation_error(true);
+        emit_remote_failure_debug(&services, &error, "remote.acp.connect");
+        return Err(error);
     }
-    let command_capacity = usize::try_from(config.bounds.maximum_pending_requests().get())
-        .map_err(|_| error::capacity_error())?;
-    let event_capacity = usize::try_from(
+    let command_capacity = match usize::try_from(config.bounds.maximum_pending_requests().get()) {
+        Ok(capacity) => capacity,
+        Err(_) => {
+            let error = error::capacity_error();
+            emit_remote_failure_debug(&services, &error, "remote.acp.connect");
+            return Err(error);
+        }
+    };
+    let event_capacity = match usize::try_from(
         config
             .bounds
             .maximum_connection_stream_events()
             .get()
             .saturating_add(config.bounds.maximum_session_stream_events().get()),
-    )
-    .map_err(|_| error::capacity_error())?;
+    ) {
+        Ok(capacity) => capacity,
+        Err(_) => {
+            let error = error::capacity_error();
+            emit_remote_failure_debug(&services, &error, "remote.acp.connect");
+            return Err(error);
+        }
+    };
     let (commands, command_rx) = mpsc::channel(command_capacity);
     let (event_tx, events) = mpsc::channel(event_capacity);
     let (ready_tx, ready_rx) = oneshot::channel();
     let ready: ReadySignal = Arc::new(Mutex::new(Some(ready_tx)));
     let ready_for_job = Arc::clone(&ready);
     let worker_time = Arc::clone(&time);
+    let worker_services = services.clone();
     let job = Box::new(move || {
         worker::run(
             config,
@@ -146,6 +183,7 @@ async fn connect_bound(
             ready_for_job,
             deadline,
             Some(worker_time),
+            worker_services,
         )
     }) as BlockingJob;
     let blocking_work = blocking.run(scope.clone(), job);
@@ -161,7 +199,11 @@ async fn connect_bound(
                 }
             }),
         )
-        .map_err(|_| host_service_failure())?;
+        .map_err(|_| {
+            let error = host_service_failure();
+            emit_remote_failure_debug(&services, &error, "remote.acp.connect");
+            error
+        })?;
 
     // Start the deadline task before the connect resolves, so a hanging
     // initial connect is interruptible; the connect itself is raced against
@@ -182,7 +224,11 @@ async fn connect_bound(
                     }
                 }),
             )
-            .map_err(|_| host_service_failure())?;
+            .map_err(|_| {
+                let error = host_service_failure();
+                emit_remote_failure_debug(&services, &error, "remote.acp.connect");
+                error
+            })?;
         (Some(done_tx), Some(deadline_task))
     } else {
         (None, None)
@@ -203,6 +249,7 @@ async fn connect_bound(
     match ready {
         Ok(Ok(())) => {}
         Ok(Err(error)) | Err(error) => {
+            emit_remote_failure_debug(&services, &error, "remote.acp.connect");
             if let Some(done) = deadline_done.take() {
                 let _ = done.send(());
             }
@@ -220,7 +267,19 @@ async fn connect_bound(
         connection_task: Some(connection_task),
         deadline_task,
         deadline_done,
+        // Retained so connect-scoped host services outlive worker setup.
+        _services: services,
     })
+}
+
+fn emit_remote_failure_debug(services: &HostServices, error: &RemoteAcpError, stage: &'static str) {
+    let diagnostic = error.diagnostic();
+    let kind = match error.kind() {
+        RemoteAcpErrorKind::ProtocolRejected => DebugObservationKind::ProtocolParse,
+        RemoteAcpErrorKind::HostServiceMissing => DebugObservationKind::HostProcess,
+        _ => DebugObservationKind::WireInbound,
+    };
+    services.emit_failure_debug(kind, ROUTE, stage, diagnostic.code(), diagnostic.message());
 }
 
 #[must_use = "remote ACP connections must be closed and joined"]
@@ -231,6 +290,7 @@ pub struct RemoteAcpConnection {
     connection_task: Option<Box<dyn JoinedTask>>,
     deadline_task: Option<Box<dyn JoinedTask>>,
     deadline_done: Option<oneshot::Sender<()>>,
+    _services: HostServices,
 }
 
 impl RemoteAcpConnection {

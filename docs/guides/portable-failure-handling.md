@@ -112,6 +112,11 @@ terminal failure may also append a sanitized excerpt of the bounded harness
 stderr tail. The exact diagnostic code does not change, and raw provider
 payloads remain excluded.
 
+Need a deeper restricted timeline (wire, stderr ring, parse stages) while
+debugging? Opt into the host
+[debug observation](debug-observation.md) sink. Ordinary apps leave it
+unregistered; it never replaces safe diagnostics or portable classification.
+
 ## Consumer Boundary
 
 The consumer owns presentation, localization, logging retention, retry and

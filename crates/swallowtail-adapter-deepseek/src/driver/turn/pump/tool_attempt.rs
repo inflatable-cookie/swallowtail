@@ -30,12 +30,18 @@ pub(super) async fn run_tool_turn(
     require_success(&response)
         .map_err(|kind| TurnFailure::Provider(provider(kind), CleanupOutcome::Clean))?;
     emit_request(events, sequence, &response.headers).map_err(runtime_failure)?;
-    let tool = parse_tool_attempt(
+    let tool = match parse_tool_attempt(
         &response.body,
         work.attempt.attempt_id().clone(),
         &context.config,
-    )
-    .map_err(|error| TurnFailure::Provider(protocol(error), CleanupOutcome::Clean))?;
+    ) {
+        Ok(tool) => tool,
+        Err(error) => {
+            let failure = protocol(error);
+            emit_protocol_debug(&context.services, &failure, "http.pump.decode");
+            return Err(TurnFailure::Provider(failure, CleanupOutcome::Clean));
+        }
+    };
     emit_usage(events, sequence, work.attempt.attempt_id(), tool.usage).map_err(runtime_failure)?;
     let call = tool.call.clone();
     context

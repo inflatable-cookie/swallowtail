@@ -45,7 +45,8 @@ appear throughout.
   under: approved executables, files, processes, credentials, and time. The
   application admits these explicitly. Swallowtail never searches for or
   installs an executable, starts an attached service, or acquires a model on
-  its own.
+  its own. An optional diagnostic observer may receive restricted
+  [debug observations](debug-observation.md); ordinary apps leave it off.
 - **Working resource** — the exact approved workspace a harness may read or
   write. It is opaque authority bound during preparation, and it does not
   grant arbitrary filesystem access.
@@ -63,6 +64,10 @@ appear throughout.
 - **Catalogue** — a bounded, non-authoritative inventory of models or
   provider sessions. It is display evidence for a consumer decision, never
   permission to run, hide, or select for the user.
+- **Provider session history page** — a read-only newest-first window of
+  provider-owned session history for UI scroll-back. It is not load readiness,
+  not reconciliation, and not the consumer transcript store. See
+  [provider session history pages](provider-session-history.md).
 - **Terminal outcome and cleanup** — two separate truths. Terminal is the
   operation's final status; cleanup is joining its child processes, streams,
   leases, and credentials. A terminal outcome never implies cleanup success.
@@ -71,7 +76,8 @@ appear throughout.
 
 - **Reconciliation** — a read-only operation that observes what happened to an
   interrupted turn or run after the process lost its handle. It sends no
-  prompt and grants no control.
+  prompt and grants no control. Its `replay_complete` flag means the
+  replacement snapshot fit agreed bounds, not that older history pages exist.
 - **Working-state restoration** — one prepared facade that picks the strongest
   qualified path back after restart: reconcile where supported, or a
   context-losing replacement otherwise. It never retries or replays a prompt.

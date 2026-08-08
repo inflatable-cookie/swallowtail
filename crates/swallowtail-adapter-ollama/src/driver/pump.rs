@@ -2,6 +2,7 @@ use crate::protocol::NativeEvent;
 
 async fn pump_run(
     mut subscription: Subscription,
+    services: HostServices,
     events: swallowtail_runtime::RuntimeEventSender,
     cancellation: Arc<AtomicBool>,
     mut deadline: Option<BoxFuture<'static, DeadlineObservation>>,
@@ -21,15 +22,20 @@ async fn pump_run(
                 break TerminalStatus::Cancelled;
             }
             RunSignal::Closed => {
-                break provider_status(failure(
+                let error = failure(
                     "swallowtail.ollama.stream_disconnected",
                     "Ollama stream closed before completion",
-                ));
+                );
+                emit_wire_debug(&services, &error, "http.pump.transport");
+                break provider_status(error);
             }
             RunSignal::Item(Err(_)) if cancellation.load(Ordering::SeqCst) => {
                 break TerminalStatus::Cancelled;
             }
-            RunSignal::Item(Err(error)) => break provider_status(error),
+            RunSignal::Item(Err(error)) => {
+                emit_wire_debug(&services, &error, "http.pump.transport");
+                break provider_status(error);
+            }
             RunSignal::Item(Ok(event)) => match apply_event(event, &mut state, &mut output) {
                 Ok(Applied::Usage(usage)) => {
                     let kind =
@@ -38,10 +44,12 @@ async fn pump_run(
                         break TerminalStatus::RuntimeFailed(error.diagnostic().clone());
                     }
                     if output.is_empty() {
-                        break provider_status(failure(
+                        let error = failure(
                             "swallowtail.ollama.output_missing",
                             "Ollama completed without text output",
-                        ));
+                        );
+                        emit_protocol_debug(&services, &error, "http.pump.map");
+                        break provider_status(error);
                     }
                     if let Err(error) = emit(
                         &events,
@@ -100,7 +108,10 @@ async fn pump_run(
                     }
                 }
                 Ok(Applied::None) => {}
-                Err(error) => break provider_status(error),
+                Err(error) => {
+                    emit_protocol_debug(&services, &error, "http.pump.map");
+                    break provider_status(error);
+                }
             },
         }
     };
@@ -164,4 +175,26 @@ fn emit(
 
 fn provider_status(error: RuntimeFailure) -> TerminalStatus {
     swallowtail_runtime::provider_status(error)
+}
+
+fn emit_protocol_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
+    let diagnostic = error.diagnostic();
+    services.emit_failure_debug(
+        DebugObservationKind::ProtocolParse,
+        ROUTE,
+        stage,
+        diagnostic.code(),
+        diagnostic.message(),
+    );
+}
+
+fn emit_wire_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
+    let diagnostic = error.diagnostic();
+    services.emit_failure_debug(
+        DebugObservationKind::WireInbound,
+        ROUTE,
+        stage,
+        diagnostic.code(),
+        diagnostic.message(),
+    );
 }

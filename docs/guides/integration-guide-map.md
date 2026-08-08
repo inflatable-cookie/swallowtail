@@ -83,6 +83,7 @@ conflicts or when you are qualifying a new claim.
 | inputs and authority | `attachments`, `consumer_tool_exchange`, `permission_exchange`, `question_exchange`, `working_resource`, `bounded_workspace_text_write`, `external_search` | [generation controls and input authority](generation-controls-and-input-authority.md) | complete |
 | operation control | `cancellation_or_interruption`, terminal status, cleanup | [ordinary lifecycle](ordinary-operation-lifecycle.md) | complete |
 | session continuation | `load_session`, `resume_session`, `persistent_session_posture`, native close | [provider state and resources](provider-state-and-resource-lifecycle.md) | complete |
+| provider history browse | `provider_session_history` | [session history pages](provider-session-history.md) | complete |
 | external session discovery | `provider_session_catalogue`, `provider_session_import` | [session import](provider-session-import.md) | complete |
 | retained work and restart | `retained_background_execution`, `stream_reattachment`, `provider_managed_recovery`, `working_state_restoration` | [provider state and resources](provider-state-and-resource-lifecycle.md), [restoration](working-state-restoration.md) | complete |
 | provider management and cleanup | `provider_session_archive`, `provider_session_restore`, `provider_session_delete`, `native_session_close`, `owned_remote_resource_cleanup`, `owned_runtime_lifecycle` | [provider state and resources](provider-state-and-resource-lifecycle.md) | complete |

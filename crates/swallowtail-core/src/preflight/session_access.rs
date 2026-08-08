@@ -14,7 +14,8 @@ pub(super) fn validate_session_access(
         (
             OperationShape::InteractiveSession
             | OperationShape::ProviderSessionImport
-            | OperationShape::ProviderSessionReconciliation,
+            | OperationShape::ProviderSessionReconciliation
+            | OperationShape::ProviderSessionHistory,
             Some(policy),
         ) => {
             validate_resource_access(requirements, policy)?;
@@ -32,6 +33,11 @@ pub(super) fn validate_session_access(
         (OperationShape::ProviderSessionReconciliation, None) => {
             return Err(failure(
                 "Provider-session reconciliation access policy is missing",
+            ));
+        }
+        (OperationShape::ProviderSessionHistory, None) => {
+            return Err(failure(
+                "Provider-session history access policy is missing",
             ));
         }
         (OperationShape::InteractiveSession, None) => {}

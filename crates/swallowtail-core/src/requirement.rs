@@ -46,6 +46,8 @@ pub enum CancellationScope {
     ProviderSessionImport,
     /// Cancel provider-session reconciliation.
     ProviderSessionReconciliation,
+    /// Cancel provider-session history paging.
+    ProviderSessionHistory,
     /// Cancel provider-run reconciliation.
     ProviderRunReconciliation,
     /// Cancel recovered-resource cleanup.

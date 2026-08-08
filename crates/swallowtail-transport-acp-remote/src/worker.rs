@@ -7,7 +7,9 @@ use std::future::Future;
 use std::sync::{Arc, Mutex};
 use swallowtail_core::RemoteAcpTransport;
 use swallowtail_protocol_acp::Message;
-use swallowtail_runtime::{Deadline, RuntimeFailure, TimeService};
+use swallowtail_runtime::{
+    Deadline, DebugObservationKind, HostServices, RuntimeFailure, TimeService,
+};
 
 pub(crate) enum WorkerCommand {
     Send(Message),
@@ -31,6 +33,7 @@ pub(crate) fn run(
     ready: ReadySignal,
     deadline: Option<Deadline>,
     time: Option<Arc<dyn TimeService>>,
+    services: HostServices,
 ) -> Result<(), RuntimeFailure> {
     let runtime = tokio::runtime::Builder::new_current_thread()
         .enable_all()
@@ -47,11 +50,28 @@ pub(crate) fn run(
             }
         };
         if let Err(error) = &result {
+            emit_worker_failure_debug(&services, error);
             let mut events = events;
             let _ = events.send(WorkerEvent::Failed(error.clone())).await;
         }
         result.map_err(runtime_failure)
     })
+}
+
+fn emit_worker_failure_debug(services: &HostServices, error: &RemoteAcpError) {
+    let diagnostic = error.diagnostic();
+    let kind = match error.kind() {
+        RemoteAcpErrorKind::ProtocolRejected => DebugObservationKind::ProtocolParse,
+        RemoteAcpErrorKind::HostServiceMissing => DebugObservationKind::HostProcess,
+        _ => DebugObservationKind::WireInbound,
+    };
+    services.emit_failure_debug(
+        kind,
+        crate::ROUTE,
+        "remote.acp.worker",
+        diagnostic.code(),
+        diagnostic.message(),
+    );
 }
 
 /// Races a worker future against the connection deadline.

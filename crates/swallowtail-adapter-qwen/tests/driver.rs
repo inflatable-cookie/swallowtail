@@ -6,17 +6,18 @@ use futures_executor::block_on;
 use futures_util::StreamExt;
 use serde_json::Value;
 use std::path::{Path, PathBuf};
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 use support::{
     FakeProcessService, ImmediateTimeService, PendingTimeService, ProcessState, host_services,
     plan, request,
 };
 use swallowtail_adapter_qwen::QwenHeadlessDriver;
-use swallowtail_core::HarnessIsolation;
+use swallowtail_core::{Diagnostic, HarnessIsolation};
 use swallowtail_runtime::{
-    CancellationAcknowledgement, CleanupOutcome, EnvironmentRef, OperationPolicy, ProcessExit,
-    ProviderObservation, ProviderRetentionPolicy, RuntimeEvent, RuntimeEventKind,
-    StructuredRunDriver, TerminalOutcome, TerminalStatus,
+    CancellationAcknowledgement, CleanupOutcome, DebugObservation, DebugObservationKind,
+    DiagnosticObserver, EnvironmentRef, OperationPolicy, ProcessExit, ProviderObservation,
+    ProviderRetentionPolicy, RuntimeEvent, RuntimeEventKind, StructuredRunDriver, TerminalOutcome,
+    TerminalStatus,
 };
 
 const ROOT: &str = "tests/fixtures/qwen-code-v0.19.11";

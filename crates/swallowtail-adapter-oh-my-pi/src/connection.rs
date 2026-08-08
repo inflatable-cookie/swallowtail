@@ -9,8 +9,8 @@ use std::sync::{Arc, Mutex};
 use std::task::{Context, Poll, Waker};
 use swallowtail_core::SafeDiagnostic;
 use swallowtail_runtime::{
-    CleanupOutcome, JoinedTask, ProcessHandle, ProcessInputChunk, RuntimeFailure,
-    ScopedTaskService, TimeService,
+    CleanupOutcome, DebugObservationKind, HostServices, JoinedTask, ProcessHandle,
+    ProcessInputChunk, RuntimeFailure, ScopedTaskService, TimeService,
 };
 
 mod pump;
@@ -26,6 +26,7 @@ pub(crate) struct OhMyPiConnection {
     process: Arc<dyn ProcessHandle>,
     task: Arc<dyn ScopedTaskService>,
     time: Arc<dyn TimeService>,
+    services: HostServices,
     callback_tasks: Mutex<Vec<Box<dyn JoinedTask>>>,
     pending: Mutex<BTreeMap<String, PendingCommand>>,
     used_ids: Mutex<BTreeSet<String>>,
@@ -39,11 +40,13 @@ impl OhMyPiConnection {
         process: Arc<dyn ProcessHandle>,
         task: Arc<dyn ScopedTaskService>,
         time: Arc<dyn TimeService>,
+        services: HostServices,
     ) -> Arc<Self> {
         Arc::new(Self {
             process,
             task,
             time,
+            services,
             callback_tasks: Mutex::new(Vec::new()),
             pending: Mutex::new(BTreeMap::new()),
             used_ids: Mutex::new(BTreeSet::new()),
@@ -51,6 +54,17 @@ impl OhMyPiConnection {
             closed: AtomicBool::new(false),
             cleanup: Mutex::new(None),
         })
+    }
+
+    pub(crate) fn emit_protocol_debug(&self, error: &RuntimeFailure, stage: &'static str) {
+        let diagnostic = error.diagnostic();
+        self.services.emit_failure_debug(
+            DebugObservationKind::ProtocolParse,
+            "oh-my-pi.rpc",
+            stage,
+            diagnostic.code(),
+            diagnostic.message(),
+        );
     }
 
     pub(crate) async fn command(

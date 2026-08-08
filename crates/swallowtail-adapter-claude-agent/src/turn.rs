@@ -30,6 +30,7 @@ pub(crate) struct ActiveTurn {
     activity: Mutex<crate::acp_activity::AcpActivityProjection>,
     deadline: Option<Deadline>,
     callbacks: crate::permission::CallbackHub,
+    connection: Weak<crate::connection::AcpConnection>,
     provider_observation: Mutex<Option<ProviderRequestObservation>>,
     cancelled: AtomicBool,
     timed_out: AtomicBool,
@@ -61,7 +62,7 @@ impl ActiveTurn {
             ProviderRequestHandling::Exchange
         );
         let (callbacks, callback_exchange) =
-            crate::permission::CallbackHub::new(connection, exchanges_permissions);
+            crate::permission::CallbackHub::new(connection.clone(), exchanges_permissions);
         Ok((
             Arc::new(Self {
                 runtime_id: runtime_id.clone(),
@@ -73,6 +74,7 @@ impl ActiveTurn {
                 activity: Mutex::new(crate::acp_activity::AcpActivityProjection::new(runtime_id)),
                 deadline,
                 callbacks,
+                connection,
                 provider_observation: Mutex::new(None),
                 cancelled: AtomicBool::new(false),
                 timed_out: AtomicBool::new(false),
@@ -284,6 +286,9 @@ impl ActiveTurn {
     }
 
     pub(crate) fn fail(&self, error: &RuntimeFailure) {
+        if let Some(connection) = self.connection.upgrade() {
+            connection.emit_protocol_debug(error, "acp.turn.fail");
+        }
         self.finish(TerminalStatus::RuntimeFailed(error.diagnostic().clone()));
     }
 

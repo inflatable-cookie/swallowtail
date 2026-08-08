@@ -25,10 +25,18 @@ async fn pump_run(
                     let content = match OperationContent::new(final_attempt.output) {
                         Ok(content) => content,
                         Err(_) => {
-                            break TerminalStatus::RuntimeFailed(SafeDiagnostic::new(
+                            let diagnostic = SafeDiagnostic::new(
                                 "swallowtail.deepseek.output_invalid",
                                 "DeepSeek emitted invalid output content",
-                            ));
+                            );
+                            services.emit_failure_debug(
+                                DebugObservationKind::ProtocolParse,
+                                ROUTE,
+                                "http.pump.map",
+                                diagnostic.code(),
+                                diagnostic.message(),
+                            );
+                            break TerminalStatus::RuntimeFailed(diagnostic);
                         }
                     };
                     let completed = match activity.assistant_completed(content.as_str()) {
@@ -54,12 +62,16 @@ async fn pump_run(
                     output = Some(content);
                     break TerminalStatus::Completed;
                 }
-                Err(error) => break TerminalStatus::ProviderFailed(error.diagnostic().clone()),
+                Err(error) => {
+                    emit_wire_debug(&services, &error, "http.pump.transport");
+                    break TerminalStatus::ProviderFailed(error.diagnostic().clone());
+                }
             },
             Signal::Item(Err(_)) if cancellation.cancelled.load(Ordering::SeqCst) => {
                 break TerminalStatus::Cancelled;
             }
             Signal::Item(Err(error)) => {
+                emit_wire_debug(&services, &error, "http.pump.transport");
                 break TerminalStatus::ProviderFailed(error.diagnostic().clone());
             }
             Signal::Item(Ok(StreamItem::Metadata(headers))) => {
@@ -69,7 +81,10 @@ async fn pump_run(
             }
             Signal::Item(Ok(StreamItem::Data(bytes))) => {
                 match parser.push(&bytes).map_err(protocol) {
-                    Err(error) => break TerminalStatus::ProviderFailed(error.diagnostic().clone()),
+                    Err(error) => {
+                        emit_protocol_debug(&services, &error, "http.pump.decode");
+                        break TerminalStatus::ProviderFailed(error.diagnostic().clone());
+                    }
                     Ok(updates) => {
                         for update in updates {
                             if let Err(error) =
@@ -203,4 +218,26 @@ async fn next_signal(
         Poll::Pending
     })
     .await
+}
+
+fn emit_protocol_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
+    let diagnostic = error.diagnostic();
+    services.emit_failure_debug(
+        DebugObservationKind::ProtocolParse,
+        ROUTE,
+        stage,
+        diagnostic.code(),
+        diagnostic.message(),
+    );
+}
+
+fn emit_wire_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
+    let diagnostic = error.diagnostic();
+    services.emit_failure_debug(
+        DebugObservationKind::WireInbound,
+        ROUTE,
+        stage,
+        diagnostic.code(),
+        diagnostic.message(),
+    );
 }

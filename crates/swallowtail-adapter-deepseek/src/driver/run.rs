@@ -19,14 +19,15 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     BoxEventStream, BoxFuture, CancellationAcknowledgement, CancellationControl, CleanupOutcome,
-    DeadlineObservation, HostServices, JoinedTask, OperationContent, ProviderExecutionPolicy,
-    ProviderObservation, ProviderRecoveryPolicy, ProviderRetentionPolicy, RequestId, RunHandle,
-    RuntimeEvent, RuntimeEventKind, RuntimeFailure, RuntimeRunId, StreamReattachmentPolicy,
-    StructuredRunDriver, StructuredRunRequest, TerminalOutcome, TerminalStatus, TokenUsage,
-    runtime_event_channel, terminal_outcome_channel,
+    DeadlineObservation, DebugObservationKind, HostServices, JoinedTask, OperationContent,
+    ProviderExecutionPolicy, ProviderObservation, ProviderRecoveryPolicy, ProviderRetentionPolicy,
+    RequestId, RunHandle, RuntimeEvent, RuntimeEventKind, RuntimeFailure, RuntimeRunId,
+    StreamReattachmentPolicy, StructuredRunDriver, StructuredRunRequest, TerminalOutcome,
+    TerminalStatus, TokenUsage, runtime_event_channel, terminal_outcome_channel,
 };
 
 const EVENT_CAPACITY: usize = 32;
+const ROUTE: &str = "deepseek.continuation";
 
 include!("run/start.rs");
 include!("run/handle.rs");

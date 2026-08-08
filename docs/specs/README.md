@@ -10,6 +10,8 @@ None.
 ## Promoted Specs
 
 - [002 Cross-Adapter Runtime Decisions](002-cross-adapter-runtime-decisions.md)
+- [003 Opt-In Debug Observation Seam](003-opt-in-debug-observation-seam.md)
+- [005 Paged Provider Session History](005-paged-provider-session-history.md)
 
 ## Archived Specs
 

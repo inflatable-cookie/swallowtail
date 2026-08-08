@@ -15,9 +15,10 @@ use swallowtail_protocol_acp::{
     is_session_scoped_metadata_update_kind,
 };
 use swallowtail_runtime::{
-    CleanupOutcome, OperationContent, ProcessHandle, ProcessInputChunk, ProcessOutputStream,
-    ResourceLease, RuntimeFailure, SessionReplayItem, SessionReplayKind, WorkingResourceIoService,
-    WorkingResourceLocator, WorkingResourceText, WorkingResourceWriteRequest,
+    CleanupOutcome, DebugObservationKind, HostServices, OperationContent, ProcessHandle,
+    ProcessInputChunk, ProcessOutputStream, ResourceLease, RuntimeFailure, SessionReplayItem,
+    SessionReplayKind, WorkingResourceIoService, WorkingResourceLocator, WorkingResourceText,
+    WorkingResourceWriteRequest,
 };
 
 const MAXIMUM_PENDING_REQUESTS: usize = 32;
@@ -43,6 +44,7 @@ pub(crate) struct AcpConnection {
     process: Arc<dyn ProcessHandle>,
     resource: ResourceLease,
     resource_io: Option<Arc<dyn WorkingResourceIoService>>,
+    services: HostServices,
     next_id: AtomicU64,
     pending: Mutex<BTreeMap<u64, ResponseSender>>,
     session_id: Mutex<Option<String>>,
@@ -57,11 +59,13 @@ impl AcpConnection {
         process: Arc<dyn ProcessHandle>,
         resource: ResourceLease,
         resource_io: Option<Arc<dyn WorkingResourceIoService>>,
+        services: HostServices,
     ) -> Arc<Self> {
         Arc::new(Self {
             process,
             resource,
             resource_io,
+            services,
             next_id: AtomicU64::new(1),
             pending: Mutex::new(BTreeMap::new()),
             session_id: Mutex::new(None),
@@ -70,6 +74,17 @@ impl AcpConnection {
             closed: AtomicBool::new(false),
             cleanup: Mutex::new(None),
         })
+    }
+
+    pub(crate) fn emit_protocol_debug(&self, error: &RuntimeFailure, stage: &'static str) {
+        let diagnostic = error.diagnostic();
+        self.services.emit_failure_debug(
+            DebugObservationKind::ProtocolParse,
+            "kimi-code.acp",
+            stage,
+            diagnostic.code(),
+            diagnostic.message(),
+        );
     }
 
     pub(crate) async fn request(

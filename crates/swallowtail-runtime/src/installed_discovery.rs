@@ -10,9 +10,9 @@
 #![deny(missing_docs)]
 
 use crate::{
-    BoxFuture, HostServices, InstalledExecutableDiscoveryRequest, PreparationFailure,
-    PreparationStage, ProcessHandle, ProcessOutputStream, ProcessRequest, RuntimeFailure,
-    validate_installed_executable_discovery_services,
+    BoxFuture, DebugObservationKind, HostServices, InstalledExecutableDiscoveryRequest,
+    PreparationFailure, PreparationStage, ProcessHandle, ProcessOutputStream, ProcessRequest,
+    RuntimeFailure, validate_installed_executable_discovery_services,
 };
 use futures_channel::oneshot;
 use std::future::poll_fn;
@@ -116,32 +116,61 @@ pub async fn probe_installed_executable_version(
 ) -> Result<DiscoveryOutcome, RuntimeFailure> {
     validate_installed_executable_discovery_services(&request, &services)?;
     if request.target().version_axis() != claim.axis() {
-        return Err(failure(
+        let message = format!("{solution} discovery target uses a different version axis");
+        services.emit_failure_debug(
+            DebugObservationKind::InterfaceVersion,
+            solution,
+            "installed_discovery.axis",
             codes.axis_mismatch,
-            format!("{solution} discovery target uses a different version axis"),
-        ));
+            message.as_str(),
+        );
+        return Err(failure(codes.axis_mismatch, message));
     }
     if request.cancellation().is_requested() {
-        return Ok(outcome(codes, solution, DiscoveryStatus::Cancelled));
+        return Ok(outcome(
+            &services,
+            codes,
+            solution,
+            DiscoveryStatus::Cancelled,
+        ));
     }
     let task_service = services.task().expect("validated task service").clone();
     let scope = request.scope_id().clone();
     let (sender, receiver) = oneshot::channel();
+    let probe_services = services.clone();
     let task = match task_service.spawn(
         scope,
         Box::pin(async move {
-            let result = probe_process(&request, services, claim, parse, codes, solution).await;
+            let result =
+                probe_process(&request, probe_services, claim, parse, codes, solution).await;
             let _ = sender.send(result);
         }),
     ) {
         Ok(task) => task,
-        Err(_) => return Ok(outcome(codes, solution, DiscoveryStatus::Failed)),
+        Err(_) => {
+            return Ok(outcome(
+                &services,
+                codes,
+                solution,
+                DiscoveryStatus::Failed,
+            ));
+        }
     };
-    let result = receiver
-        .await
-        .unwrap_or_else(|_| Ok(outcome(codes, solution, DiscoveryStatus::Failed)));
+    let result = receiver.await.unwrap_or_else(|_| {
+        Ok(outcome(
+            &services,
+            codes,
+            solution,
+            DiscoveryStatus::Failed,
+        ))
+    });
     if task.join().await.is_err() {
-        Ok(outcome(codes, solution, DiscoveryStatus::CleanupFailed))
+        Ok(outcome(
+            &services,
+            codes,
+            solution,
+            DiscoveryStatus::CleanupFailed,
+        ))
     } else {
         result
     }
@@ -166,12 +195,24 @@ async fn probe_process(
         .await
     {
         Ok(process) => process,
-        Err(_) => return Ok(outcome(codes, solution, DiscoveryStatus::Failed)),
+        Err(_) => {
+            return Ok(outcome(
+                &services,
+                codes,
+                solution,
+                DiscoveryStatus::Failed,
+            ));
+        }
     };
     if process.close_stdin().await.is_err() {
-        return Ok(
-            stop_and_classify(process.as_ref(), codes, solution, DiscoveryStatus::Failed).await,
-        );
+        return Ok(stop_and_classify(
+            process.as_ref(),
+            &services,
+            codes,
+            solution,
+            DiscoveryStatus::Failed,
+        )
+        .await);
     }
 
     let mut deadline = services
@@ -185,6 +226,7 @@ async fn probe_process(
             ProbeSignal::Cancelled => {
                 return Ok(stop_and_classify(
                     process.as_ref(),
+                    &services,
                     codes,
                     solution,
                     DiscoveryStatus::Cancelled,
@@ -194,6 +236,7 @@ async fn probe_process(
             ProbeSignal::TimedOut => {
                 return Ok(stop_and_classify(
                     process.as_ref(),
+                    &services,
                     codes,
                     solution,
                     DiscoveryStatus::TimedOut,
@@ -203,6 +246,7 @@ async fn probe_process(
             ProbeSignal::Output(Err(_)) => {
                 return Ok(stop_and_classify(
                     process.as_ref(),
+                    &services,
                     codes,
                     solution,
                     DiscoveryStatus::Failed,
@@ -215,6 +259,7 @@ async fn probe_process(
                 if stdout.len().saturating_add(chunk.bytes().len()) > MAX_VERSION_OUTPUT_BYTES {
                     return Ok(stop_and_classify(
                         process.as_ref(),
+                        &services,
                         codes,
                         solution,
                         DiscoveryStatus::Malformed,
@@ -229,13 +274,30 @@ async fn probe_process(
     }
     let exit = match process.wait().await {
         Ok(exit) => exit,
-        Err(_) => return Ok(outcome(codes, solution, DiscoveryStatus::CleanupFailed)),
+        Err(_) => {
+            return Ok(outcome(
+                &services,
+                codes,
+                solution,
+                DiscoveryStatus::CleanupFailed,
+            ));
+        }
     };
     if !exit.success() {
-        return Ok(outcome(codes, solution, DiscoveryStatus::Failed));
+        return Ok(outcome(
+            &services,
+            codes,
+            solution,
+            DiscoveryStatus::Failed,
+        ));
     }
     let Some(binding) = parse(&stdout) else {
-        return Ok(outcome(codes, solution, DiscoveryStatus::Malformed));
+        return Ok(outcome(
+            &services,
+            codes,
+            solution,
+            DiscoveryStatus::Malformed,
+        ));
     };
     let observation = InstalledExecutableObservation::classify(
         request.execution_host_id().clone(),
@@ -243,10 +305,15 @@ async fn probe_process(
         &claim,
     )
     .map_err(|_| {
-        failure(
+        let message = format!("{solution} version observation could not be classified");
+        services.emit_failure_debug(
+            DebugObservationKind::InterfaceVersion,
+            solution,
+            "installed_discovery.classify",
             codes.classification_failed,
-            format!("{solution} version observation could not be classified"),
-        )
+            message.as_str(),
+        );
+        failure(codes.classification_failed, message)
     })?;
     Ok(DiscoveryOutcome::installed_executable(observation))
 }
@@ -277,6 +344,7 @@ async fn next_output(
 
 async fn stop_and_classify(
     process: &dyn ProcessHandle,
+    services: &HostServices,
     codes: InstalledProbeCodes,
     solution: &'static str,
     status: DiscoveryStatus,
@@ -285,13 +353,19 @@ async fn stop_and_classify(
     let forced = process.force_stop().await;
     let waited = process.wait().await;
     if graceful.is_err() || forced.is_err() || waited.is_err() {
-        outcome(codes, solution, DiscoveryStatus::CleanupFailed)
+        outcome(
+            services,
+            codes,
+            solution,
+            DiscoveryStatus::CleanupFailed,
+        )
     } else {
-        outcome(codes, solution, status)
+        outcome(services, codes, solution, status)
     }
 }
 
 fn outcome(
+    services: &HostServices,
     codes: InstalledProbeCodes,
     solution: &'static str,
     status: DiscoveryStatus,
@@ -306,13 +380,27 @@ fn outcome(
         DiscoveryStatus::Failed => codes.failed,
         DiscoveryStatus::CleanupFailed => codes.cleanup_failed,
     };
-    DiscoveryOutcome::new(
-        status,
-        Some(SafeDiagnostic::new(
-            code,
-            format!("{solution} installed discovery did not produce a compatible observation"),
-        )),
-    )
+    let message =
+        format!("{solution} installed discovery did not produce a compatible observation");
+    let kind = match status {
+        DiscoveryStatus::Malformed | DiscoveryStatus::Incompatible => {
+            DebugObservationKind::InterfaceVersion
+        }
+        DiscoveryStatus::CleanupFailed => DebugObservationKind::Cleanup,
+        DiscoveryStatus::Failed
+        | DiscoveryStatus::TimedOut
+        | DiscoveryStatus::Cancelled
+        | DiscoveryStatus::Absent => DebugObservationKind::HostProcess,
+        DiscoveryStatus::Discovered => DebugObservationKind::Lifecycle,
+    };
+    services.emit_failure_debug(
+        kind,
+        solution,
+        "installed_discovery.probe",
+        code,
+        message.as_str(),
+    );
+    DiscoveryOutcome::new(status, Some(SafeDiagnostic::new(code, message)))
 }
 
 fn failure(code: &'static str, message: impl Into<String>) -> RuntimeFailure {

@@ -2,9 +2,10 @@ use super::{cleanup_or, control_failure, from_runtime};
 use std::sync::Arc;
 use swallowtail_core::{ResourceAccess, ResourceRepresentation};
 use swallowtail_runtime::{
-    CleanupOutcome, HostServices, ProviderSessionCataloguePlan, ProviderSessionImportPlan,
-    ProviderSessionOperationFailure, ProviderSessionOperationFailureStage,
-    ProviderSessionReconciliationPlan, ResourceLease, ScopeId, WorkingResourceService,
+    CleanupOutcome, HostServices, ProviderSessionCataloguePlan, ProviderSessionHistoryPlan,
+    ProviderSessionImportPlan, ProviderSessionOperationFailure,
+    ProviderSessionOperationFailureStage, ProviderSessionReconciliationPlan, ResourceLease,
+    ScopeId, WorkingResourceService,
 };
 
 pub(super) struct ScopedResource {
@@ -40,18 +41,42 @@ impl ScopedResource {
         scope: ScopeId,
         services: &HostServices,
     ) -> Result<Self, ProviderSessionOperationFailure> {
-        let working_resource = plan
-            .agreement()
-            .binding()
-            .working_resource()
-            .cloned()
-            .ok_or_else(|| {
-                control_failure(
-                    ProviderSessionOperationFailureStage::BeforeDispatch,
-                    "swallowtail.codex.thread_catalogue.working_resource_required",
-                    "Codex thread reconciliation requires a working resource",
-                )
-            })?;
+        Self::resolve_binding_resource(
+            plan.agreement().binding().working_resource().cloned(),
+            "Codex thread reconciliation requires a working resource",
+            scope,
+            services,
+        )
+        .await
+    }
+
+    pub(super) async fn resolve_history(
+        plan: &ProviderSessionHistoryPlan,
+        scope: ScopeId,
+        services: &HostServices,
+    ) -> Result<Self, ProviderSessionOperationFailure> {
+        Self::resolve_binding_resource(
+            plan.agreement().binding().working_resource().cloned(),
+            "Codex thread history requires a working resource",
+            scope,
+            services,
+        )
+        .await
+    }
+
+    async fn resolve_binding_resource(
+        working_resource: Option<swallowtail_runtime::WorkingResourceRef>,
+        missing_message: &'static str,
+        scope: ScopeId,
+        services: &HostServices,
+    ) -> Result<Self, ProviderSessionOperationFailure> {
+        let working_resource = working_resource.ok_or_else(|| {
+            control_failure(
+                ProviderSessionOperationFailureStage::BeforeDispatch,
+                "swallowtail.codex.thread_catalogue.working_resource_required",
+                missing_message,
+            )
+        })?;
         Self::resolve_reference(working_resource, scope, services).await
     }
 

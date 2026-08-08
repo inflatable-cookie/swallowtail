@@ -83,6 +83,13 @@ pub(crate) fn validate_execution_services(
         .host_services()
         .any(|required| !available.contains(&required))
     {
+        services.emit_failure_debug(
+            crate::DebugObservationKind::Lifecycle,
+            "prepared.plan",
+            "plan.validate_host_services",
+            code,
+            message,
+        );
         return Err(failure(code, message));
     }
     Ok(())

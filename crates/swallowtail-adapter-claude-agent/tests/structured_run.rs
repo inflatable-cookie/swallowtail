@@ -4,18 +4,19 @@ mod support;
 
 use futures_executor::block_on;
 use futures_util::StreamExt;
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 use support::selection::run_selection;
 use support::{FixtureHost, Scenario};
 use swallowtail_adapter_claude_agent::{ClaudeAgentAcpDriver, claude_agent_acp_descriptor};
 use swallowtail_core::{
-    CancellationScope, ExecutionHostId, HarnessConfigurationPosture, HarnessIsolation,
+    CancellationScope, Diagnostic, ExecutionHostId, HarnessConfigurationPosture, HarnessIsolation,
 };
 use swallowtail_runtime::{
-    CleanupOutcome, DriverRegistration, EnvironmentRef, InteractiveSessionDriver, MonotonicInstant,
-    OperationContent, OperationPolicy, ProviderObservation, ProviderRetentionPolicy, RequestId,
-    RunHandle, RuntimeEvent, RuntimeEventKind, SchemaDocument, StructuredRunDriver,
-    StructuredRunRequest, TerminalOutcome, TerminalStatus, ToolDeclaration,
+    CleanupOutcome, DebugObservation, DebugObservationKind, DiagnosticObserver, DriverRegistration,
+    EnvironmentRef, InteractiveSessionDriver, MonotonicInstant, OperationContent, OperationPolicy,
+    ProviderObservation, ProviderRetentionPolicy, RequestId, RunHandle, RuntimeEvent,
+    RuntimeEventKind, SchemaDocument, StructuredRunDriver, StructuredRunRequest, TerminalOutcome,
+    TerminalStatus, ToolDeclaration,
 };
 
 #[test]
@@ -173,6 +174,65 @@ fn malformed_prompt_usage_fails_closed_without_emitting_usage() {
         )
     }));
     assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
+}
+
+#[test]
+fn malformed_prompt_usage_emits_correlated_debug_observation_when_observer_registered() {
+    let host_id = ExecutionHostId::new("fixture.run.malformed-debug").expect("host id");
+    let selected = run_selection(host_id.clone(), "0.61.0");
+    let host = FixtureHost::new(Scenario::MalformedUsage, "0.61.0");
+    let observer = Arc::new(CapturingDebugObserver::default());
+    let services = host
+        .services(host_id)
+        .with_diagnostic_observer(observer.clone());
+    let mut run = block_on(driver(selected.credential).start_run(
+        selected.plan,
+        request("run-malformed-debug", selected.resource, None),
+        services,
+    ))
+    .expect("structured run starts");
+
+    let (_events, outcome) = complete(&mut run);
+    let TerminalStatus::RuntimeFailed(diagnostic) = outcome.status() else {
+        panic!("malformed usage must fail: {:?}", outcome.status());
+    };
+    assert_eq!(
+        diagnostic.code(),
+        "swallowtail.claude_agent.acp.malformed_response"
+    );
+    let observations = observer.observations();
+    assert!(
+        observations.iter().any(|observation| {
+            observation.kind() == DebugObservationKind::ProtocolParse
+                && observation.correlated_code()
+                    == Some("swallowtail.claude_agent.acp.malformed_response")
+                && observation.route() == Some("claude-agent.acp")
+        }),
+        "expected protocol-parse debug observation, got {observations:?}"
+    );
+    assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
+}
+
+#[derive(Default)]
+struct CapturingDebugObserver {
+    observations: Mutex<Vec<DebugObservation>>,
+}
+
+impl CapturingDebugObserver {
+    fn observations(&self) -> Vec<DebugObservation> {
+        self.observations.lock().expect("lock").clone()
+    }
+}
+
+impl DiagnosticObserver for CapturingDebugObserver {
+    fn observe(&self, _diagnostic: &Diagnostic) {}
+
+    fn observe_debug(&self, observation: &DebugObservation) {
+        self.observations
+            .lock()
+            .expect("lock")
+            .push(observation.clone());
+    }
 }
 
 #[test]

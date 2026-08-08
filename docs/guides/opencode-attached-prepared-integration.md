@@ -7,8 +7,8 @@ New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
 The route is `opencode.http` in `swallowtail-adapter-opencode`, with driver ID
 `swallowtail.opencode.http`. Use it for an already running OpenCode server when
-the application needs HTTP/SSE catalogue, run, session, import,
-reconciliation, callbacks, or inactive-session delete. Reject it when the
+the application needs HTTP/SSE catalogue, run, session, import, history
+pages, reconciliation, callbacks, or inactive-session delete. Reject it when the
 application must own server startup or shutdown, requires ACP, or cannot
 provide an approved endpoint and delegated credential lease.
 
@@ -159,6 +159,16 @@ callback, or granting attachment or management authority. A settled result
 may compose with the matching prepared session through
 `prepare_settled_session_restoration`; active or ambiguous work stays
 observational. This is qualified only on the maintained version range.
+
+For newest-first history browse without attaching a handle, build
+`OpenCodeSessionHistoryInput` with that exact binding, model, history id,
+page/cursor/snapshot bounds, and optional deadline. Then call
+`prepare_session_history` and `page_history`. Older pages use
+`older_page_request` plus `page`. The path walks session messages through the
+same replay helper as reconciliation, slices portable pages in-process, and
+issues no prompt, abort, status observation, or management call. Unverified
+newer servers do not prepare history. See
+[Provider Session History Pages](provider-session-history.md).
 
 ## Structured Run
 

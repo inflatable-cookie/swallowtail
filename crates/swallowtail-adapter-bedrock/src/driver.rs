@@ -17,14 +17,16 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     BlockingJob, BoxEventStream, BoxFuture, CleanupOutcome, CredentialLease, DeadlineObservation,
-    EndpointRef, HostServices, JoinedTask, OperationContent, ProviderObservation, RequestId,
-    RunHandle, RuntimeEvent, RuntimeEventKind, RuntimeFailure, RuntimeRunId, ScopeId,
-    StructuredRunDriver, StructuredRunRequest, TerminalOutcome, TerminalStatus,
-    TokenUsage as RuntimeTokenUsage, runtime_event_channel, terminal_outcome_channel,
+    DebugObservationKind, EndpointRef, HostServices, JoinedTask, OperationContent,
+    ProviderObservation, RequestId, RunHandle, RuntimeEvent, RuntimeEventKind, RuntimeFailure,
+    RuntimeRunId, ScopeId, StructuredRunDriver, StructuredRunRequest, TerminalOutcome,
+    TerminalStatus, TokenUsage as RuntimeTokenUsage, runtime_event_channel,
+    terminal_outcome_channel,
 };
 use tokio::sync::watch;
 
 const DRIVER_ID: &str = "swallowtail.amazon-bedrock.direct";
+const ROUTE: &str = "bedrock.runtime";
 const EVENT_CAPACITY: usize = 64;
 
 #[derive(Clone)]

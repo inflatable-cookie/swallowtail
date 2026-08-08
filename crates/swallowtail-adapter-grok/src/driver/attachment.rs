@@ -117,6 +117,7 @@ impl GrokAcpDriver {
                 .working_resource_io()
                 .cloned()
                 .expect("validated resource I/O service"),
+            services.clone(),
         );
         let pump = Arc::clone(&connection);
         let pump_task = match services

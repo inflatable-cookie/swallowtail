@@ -1,5 +1,8 @@
 #![deny(missing_docs)]
 
+use crate::debug_observation::{
+    DebugObservation, DebugObservationKind, failure_debug_observation,
+};
 use crate::{
     AttachmentService, BlockingWorkService, CredentialService, DiagnosticObserver,
     ModelArtifactService, NetworkPolicyService, ProcessService, RuntimeFailure, SchemaService,
@@ -7,8 +10,9 @@ use crate::{
     WorkingResourceService,
 };
 use std::collections::BTreeSet;
+use std::panic::{AssertUnwindSafe, catch_unwind};
 use std::sync::Arc;
-use swallowtail_core::{ExecutionHostId, HostServiceKind, SafeDiagnostic};
+use swallowtail_core::{Diagnostic, ExecutionHostId, HostServiceKind, SafeDiagnostic};
 
 /// Explicit host-service registry supplied to runtime roles.
 ///
@@ -242,6 +246,40 @@ impl HostServices {
         self.diagnostic_observer.as_ref()
     }
 
+    /// Emits one diagnostic to the registered observer, or no-ops when absent.
+    ///
+    /// Observer panics are swallowed so debug sinks cannot alter lifecycle truth.
+    pub fn emit_diagnostic(&self, diagnostic: &Diagnostic) {
+        let Some(observer) = self.diagnostic_observer.as_ref() else {
+            return;
+        };
+        let _ = catch_unwind(AssertUnwindSafe(|| observer.observe(diagnostic)));
+    }
+
+    /// Emits one debug observation to the registered observer, or no-ops when absent.
+    ///
+    /// Observer panics are swallowed so debug sinks cannot alter lifecycle truth.
+    pub fn emit_debug_observation(&self, observation: &DebugObservation) {
+        let Some(observer) = self.diagnostic_observer.as_ref() else {
+            return;
+        };
+        let _ = catch_unwind(AssertUnwindSafe(|| observer.observe_debug(observation)));
+    }
+
+    /// Emits one failure-path debug observation, or no-ops when no observer is registered.
+    pub fn emit_failure_debug(
+        &self,
+        kind: DebugObservationKind,
+        route: &'static str,
+        stage: &'static str,
+        code: &'static str,
+        detail: impl Into<String>,
+    ) {
+        self.emit_debug_observation(&failure_debug_observation(
+            kind, route, stage, code, detail,
+        ));
+    }
+
     /// Returns the exact set of service kinds present in this registry.
     #[must_use]
     pub fn available_kinds(&self) -> BTreeSet<HostServiceKind> {
@@ -292,7 +330,11 @@ impl HostServices {
 #[cfg(test)]
 mod tests {
     use super::HostServices;
-    use swallowtail_core::ExecutionHostId;
+    use crate::debug_observation::{DebugObservation, DebugObservationKind};
+    use crate::{CleanupOutcome, DiagnosticObserver, TerminalStatus};
+    use std::sync::atomic::{AtomicUsize, Ordering};
+    use std::sync::{Arc, Mutex};
+    use swallowtail_core::{Diagnostic, ExecutionHostId, SafeDiagnostic};
 
     #[test]
     fn service_registry_rejects_a_different_execution_host() {
@@ -311,5 +353,131 @@ mod tests {
             "swallowtail.execution_host_mismatch"
         );
         assert!(!format!("{failure}").contains(remote.as_str()));
+    }
+
+    #[test]
+    fn emit_helpers_noop_without_observer() {
+        let services = HostServices::new(
+            ExecutionHostId::new("host.local").expect("host id is valid"),
+        );
+        services.emit_diagnostic(&Diagnostic::new(SafeDiagnostic::new(
+            "fixture.diagnostic",
+            "Fixture diagnostic",
+        )));
+        services.emit_debug_observation(&DebugObservation::new(
+            DebugObservationKind::Lifecycle,
+            "prep started",
+        ));
+    }
+
+    #[test]
+    fn emit_debug_observation_reaches_registered_observer() {
+        let observer = Arc::new(CountingObserver::default());
+        let services = HostServices::new(
+            ExecutionHostId::new("host.local").expect("host id is valid"),
+        )
+        .with_diagnostic_observer(observer.clone());
+
+        services.emit_debug_observation(
+            &DebugObservation::new(DebugObservationKind::WireInbound, "method=x")
+                .with_correlated_code("fixture.code"),
+        );
+
+        assert_eq!(observer.debug_count.load(Ordering::SeqCst), 1);
+        assert_eq!(
+            observer
+                .last_debug
+                .lock()
+                .expect("lock")
+                .as_ref()
+                .map(DebugObservation::correlated_code),
+            Some(Some("fixture.code"))
+        );
+    }
+
+    #[test]
+    fn emit_failure_debug_sets_route_stage_and_code() {
+        let observer = Arc::new(CountingObserver::default());
+        let services = HostServices::new(
+            ExecutionHostId::new("host.local").expect("host id is valid"),
+        )
+        .with_diagnostic_observer(observer.clone());
+
+        services.emit_failure_debug(
+            DebugObservationKind::HostProcess,
+            "pi",
+            "installed_discovery.probe",
+            "swallowtail.pi.discovery_failed",
+            "pi installed discovery did not produce a compatible observation",
+        );
+
+        let observation = observer
+            .last_debug
+            .lock()
+            .expect("lock")
+            .clone()
+            .expect("observation");
+        assert_eq!(observation.kind(), DebugObservationKind::HostProcess);
+        assert_eq!(observation.route(), Some("pi"));
+        assert_eq!(observation.stage(), Some("installed_discovery.probe"));
+        assert_eq!(
+            observation.correlated_code(),
+            Some("swallowtail.pi.discovery_failed")
+        );
+    }
+
+    #[test]
+    fn observer_panic_does_not_alter_terminal_or_cleanup_truth() {
+        let services = HostServices::new(
+            ExecutionHostId::new("host.local").expect("host id is valid"),
+        )
+        .with_diagnostic_observer(Arc::new(PanickingObserver));
+
+        services.emit_diagnostic(&Diagnostic::new(SafeDiagnostic::new(
+            "fixture.diagnostic",
+            "Fixture diagnostic",
+        )));
+        services.emit_debug_observation(&DebugObservation::new(
+            DebugObservationKind::Cleanup,
+            "cleanup context",
+        ));
+
+        let status = TerminalStatus::RuntimeFailed(SafeDiagnostic::new(
+            "fixture.failure",
+            "Fixture failed",
+        ));
+        let cleanup = CleanupOutcome::Failed(SafeDiagnostic::new(
+            "fixture.cleanup_failed",
+            "Cleanup failed",
+        ));
+        assert!(matches!(status, TerminalStatus::RuntimeFailed(_)));
+        assert!(matches!(cleanup, CleanupOutcome::Failed(_)));
+    }
+
+    #[derive(Default)]
+    struct CountingObserver {
+        debug_count: AtomicUsize,
+        last_debug: Mutex<Option<DebugObservation>>,
+    }
+
+    impl DiagnosticObserver for CountingObserver {
+        fn observe(&self, _diagnostic: &Diagnostic) {}
+
+        fn observe_debug(&self, observation: &DebugObservation) {
+            self.debug_count.fetch_add(1, Ordering::SeqCst);
+            *self.last_debug.lock().expect("lock") = Some(observation.clone());
+        }
+    }
+
+    struct PanickingObserver;
+
+    impl DiagnosticObserver for PanickingObserver {
+        fn observe(&self, _diagnostic: &Diagnostic) {
+            panic!("observer must not control lifecycle");
+        }
+
+        fn observe_debug(&self, _observation: &DebugObservation) {
+            panic!("observer must not control lifecycle");
+        }
     }
 }

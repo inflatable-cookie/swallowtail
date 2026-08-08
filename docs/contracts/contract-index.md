@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-05
+Updated: 2026-08-08
 
 | Contract | Status | Scope |
 | --- | --- | --- |
@@ -58,3 +58,5 @@ Updated: 2026-08-05
 | [050 Working-State Restoration Facade](050-working-state-restoration-facade.md) | active | One exact-once prepared restart facade over route-qualified reconciliation or continuation recovery without flattening evidence strength |
 | [051 Portable Failure Classification](051-portable-failure-classification.md) | active | Evidence-bounded origin, kind, and recovery classification alongside exact safe diagnostics and lifecycle truth |
 | [052 Consumer And Operator Integration Documentation](052-consumer-and-operator-integration-documentation.md) | active | Traceable deep route, feature, example, operator, and consumer guidance without widening provider truth |
+| [053 Opt-In Debug Observation](053-opt-in-debug-observation.md) | active | Host-owned restricted debug observations across routes without weakening safe diagnostics or public events |
+| [054 Paged Provider Session History](054-paged-provider-session-history.md) | active | Newest-first read-only provider history pages with shared replay projection, distinct from load readiness and reconciliation |

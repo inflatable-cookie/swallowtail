@@ -26,6 +26,9 @@ use swallowtail_runtime::{
     PersistedSessionResumeBinding, ProviderObservation, ProviderSessionReconciliationAgreement,
     ProviderSessionReconciliationBounds, ProviderSessionReconciliationDriver,
     ProviderSessionReconciliationPlan, ProviderSessionReconciliationRequest, RequestId,
+    ProviderSessionHistoryAgreement, ProviderSessionHistoryBounds, ProviderSessionHistoryDriver,
+    ProviderSessionHistoryId, ProviderSessionHistoryPlan, ProviderSessionHistoryRequest,
+    ProviderSessionHistoryTotal,
     ResumeSessionRequest, RuntimeEventKind, RuntimeTurnId, ScopedTaskService, SessionPlanAgreement,
     SessionResumeBinding, SessionResumeBindingPersistenceFailureKind, TerminalStatus, TimeService,
     TurnRequest, WorkingResourceRef, WorkingResourceService,
@@ -67,3 +70,4 @@ include!("http_driver/fixture.rs");
 include!("http_driver/version_range.rs");
 include!("http_driver/continuity.rs");
 include!("http_driver/reconciliation.rs");
+include!("http_driver/history.rs");

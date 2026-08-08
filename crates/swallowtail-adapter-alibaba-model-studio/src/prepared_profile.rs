@@ -1,4 +1,5 @@
 mod conversation;
+mod history;
 mod input;
 mod lifecycle;
 mod plan;
@@ -7,9 +8,10 @@ mod retained;
 mod run;
 
 pub use conversation::AlibabaModelStudioPreparedConversation;
+pub use history::AlibabaModelStudioPreparedSessionHistory;
 pub use input::{
     AlibabaConversationProfileInput, AlibabaRetainedConversationProfileInput,
-    AlibabaRunProfileInput, AlibabaSessionManagementInput,
+    AlibabaRunProfileInput, AlibabaSessionHistoryInput, AlibabaSessionManagementInput,
 };
 pub use lifecycle::AlibabaModelStudioPreparedDelete;
 pub use plan::AlibabaModelStudioPreparedEvidence;

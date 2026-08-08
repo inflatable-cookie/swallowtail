@@ -10,7 +10,9 @@ impl RpcConnection {
                         let line: Vec<_> = pending_bytes.drain(..=newline).collect();
                         let line = trim_newline(&line);
                         if let Err(error) = self.dispatch(line).await {
-                            protocol_failure = Some(with_inbound_context(error, line));
+                            let error = with_inbound_context(error, line);
+                            self.emit_malformed_inbound_debug(&error, line);
+                            protocol_failure = Some(error);
                             break;
                         }
                     }
@@ -30,7 +32,9 @@ impl RpcConnection {
             && !pending_bytes.is_empty()
             && let Err(error) = self.dispatch(&pending_bytes).await
         {
-            protocol_failure = Some(with_inbound_context(error, &pending_bytes));
+            let error = with_inbound_context(error, &pending_bytes);
+            self.emit_malformed_inbound_debug(&error, &pending_bytes);
+            protocol_failure = Some(error);
         }
         if protocol_failure.is_some() {
             let _ = self.process.force_stop().await;
@@ -267,11 +271,57 @@ impl RpcConnection {
         let Some(excerpt) = sanitize_stderr(&tail, false) else {
             return diagnostic.clone();
         };
+        self.services.emit_debug_observation(
+            &DebugObservation::new(
+                DebugObservationKind::StderrRing,
+                format!("stderr={excerpt}"),
+            )
+            .with_route("codex.app_server")
+            .with_stage("rpc.pump.protocol_terminal")
+            .with_correlated_code(diagnostic.code()),
+        );
         SafeDiagnostic::new(
             diagnostic.code(),
             format!("{}; stderr: {excerpt}", diagnostic.message()),
         )
         .with_failure_classification(diagnostic.failure_classification())
+    }
+
+    fn emit_malformed_inbound_debug(&self, error: &RuntimeFailure, line: &[u8]) {
+        let diagnostic = error.diagnostic();
+        if !matches!(
+            diagnostic.code(),
+            "swallowtail.codex.app_server.malformed_notification"
+                | "swallowtail.codex.app_server.malformed_message"
+        ) {
+            return;
+        }
+        let method = match serde_json::from_slice::<Value>(line) {
+            Ok(message) => message
+                .get("method")
+                .and_then(Value::as_str)
+                .map_or_else(|| "<absent>".to_owned(), bounded_method),
+            Err(_) => "<unparseable>".to_owned(),
+        };
+        let excerpt = sanitize_stderr(line, false).unwrap_or_else(|| "<empty>".to_owned());
+        self.services.emit_debug_observation(
+            &DebugObservation::new(
+                DebugObservationKind::WireInbound,
+                format!("method={method}"),
+            )
+            .with_route("codex.app_server")
+            .with_stage("rpc.pump.inbound")
+            .with_correlated_code(diagnostic.code()),
+        );
+        self.services.emit_debug_observation(
+            &DebugObservation::new(
+                DebugObservationKind::ProtocolParse,
+                format!("method={method}; excerpt={excerpt}"),
+            )
+            .with_route("codex.app_server")
+            .with_stage("rpc.pump.inbound")
+            .with_correlated_code(diagnostic.code()),
+        );
     }
 }
 

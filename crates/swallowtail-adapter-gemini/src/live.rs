@@ -19,6 +19,7 @@ use swallowtail_runtime::{
 };
 
 pub(crate) const DRIVER_ID: &str = "swallowtail.gemini.live";
+pub(crate) const ROUTE: &str = "gemini.live";
 pub(crate) const MODEL_ID: &str = crate::GEMINI_LIVE_MODEL_ID;
 pub(crate) const MODEL_RESOURCE: &str = "models/gemini-3.1-flash-live-preview";
 pub(crate) const LIVE_PATH: &str =

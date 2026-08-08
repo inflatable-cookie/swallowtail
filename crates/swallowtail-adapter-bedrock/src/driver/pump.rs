@@ -56,6 +56,7 @@ async fn pump_run(
                 cancellation.request_signal();
             }
             PumpSignal::Update(Some(Err(error))) => {
+                emit_wire_debug(&services, &error, "http.pump.transport");
                 stream_failure = Some(error);
                 break;
             }
@@ -87,7 +88,12 @@ async fn pump_run(
                         sequence += 1;
                     }
                     Err(_) => {
-                        stream_failure = Some(failure("swallowtail.bedrock.empty_delta", "Bedrock Runtime returned an empty output delta"));
+                        let error = failure(
+                            "swallowtail.bedrock.empty_delta",
+                            "Bedrock Runtime returned an empty output delta",
+                        );
+                        emit_protocol_debug(&services, &error, "http.pump.map");
+                        stream_failure = Some(error);
                         cancellation.request_signal();
                         break;
                     }
@@ -137,10 +143,12 @@ async fn pump_run(
             }
             PumpSignal::Update(Some(Ok(StreamUpdate::MessageStopped(_)))) => {
                 if output.is_empty() {
-                    stream_failure = Some(failure(
+                    let error = failure(
                         "swallowtail.bedrock.empty_output",
                         "Bedrock Runtime completed without output",
-                    ));
+                    );
+                    emit_protocol_debug(&services, &error, "http.pump.map");
+                    stream_failure = Some(error);
                     cancellation.request_signal();
                     break;
                 }
@@ -171,10 +179,24 @@ async fn pump_run(
         TerminalStatus::TimedOut
     } else if cancellation.is_requested() {
         TerminalStatus::Cancelled
-    } else if let Some(error) = stream_failure.or_else(|| sdk_result.err()) {
+    } else if let Some(error) = stream_failure {
+        TerminalStatus::ProviderFailed(error.diagnostic().clone())
+    } else if let Err(error) = sdk_result {
+        emit_wire_debug(&services, &error, "http.pump.transport");
         TerminalStatus::ProviderFailed(error.diagnostic().clone())
     } else if !usage_seen {
-        TerminalStatus::ProviderFailed(SafeDiagnostic::new("swallowtail.bedrock.stream_incomplete", "Bedrock Runtime stream ended without final usage"))
+        let diagnostic = SafeDiagnostic::new(
+            "swallowtail.bedrock.stream_incomplete",
+            "Bedrock Runtime stream ended without final usage",
+        );
+        services.emit_failure_debug(
+            DebugObservationKind::ProtocolParse,
+            ROUTE,
+            "http.pump.map",
+            diagnostic.code(),
+            diagnostic.message(),
+        );
+        TerminalStatus::ProviderFailed(diagnostic)
     } else {
         TerminalStatus::Completed
     };
@@ -183,4 +205,26 @@ async fn pump_run(
         outcome = outcome.with_output(OperationContent::new(output).expect("non-empty output is valid"));
     }
     outcome
+}
+
+fn emit_protocol_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
+    let diagnostic = error.diagnostic();
+    services.emit_failure_debug(
+        DebugObservationKind::ProtocolParse,
+        ROUTE,
+        stage,
+        diagnostic.code(),
+        diagnostic.message(),
+    );
+}
+
+fn emit_wire_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
+    let diagnostic = error.diagnostic();
+    services.emit_failure_debug(
+        DebugObservationKind::WireInbound,
+        ROUTE,
+        stage,
+        diagnostic.code(),
+        diagnostic.message(),
+    );
 }

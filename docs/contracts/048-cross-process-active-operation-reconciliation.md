@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-04
+Updated: 2026-08-08
 
 ## Purpose
 
@@ -117,6 +117,12 @@ whole qualified snapshot within the agreed item and byte bounds.
 
 Consumers own durable merge and presentation. An incomplete snapshot cannot
 delete unmatched consumer records or prove provider history absence.
+
+`replay_complete` is not scroll-back pagination. Newest-first provider history
+pages, older cursors, and total-cardinality honesty belong to Contract 054.
+Reconciliation may reuse the same item projection and tail-bound helpers; it
+must not become the consumer history-page API and still grants no load,
+resume, import, or control authority.
 
 ## Authority Boundary
 

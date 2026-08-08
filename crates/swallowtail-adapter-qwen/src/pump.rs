@@ -5,11 +5,14 @@ use std::sync::Arc;
 use std::task::Poll;
 use swallowtail_core::{InterfaceVersion, ModelId, SafeDiagnostic};
 use swallowtail_runtime::{
-    ActivityOperationId, BoxFuture, CleanupOutcome, DeadlineObservation, ProcessHandle,
-    ProcessOutputChunk, ProcessOutputStream, RuntimeEventSender, RuntimeFailure, TerminalOutcome,
-    TerminalStatus,
+    ActivityOperationId, BoxFuture, CleanupOutcome, DeadlineObservation, DebugObservationKind,
+    HostServices, ProcessHandle, ProcessOutputChunk, ProcessOutputStream, RuntimeEventSender,
+    RuntimeFailure, TerminalOutcome, TerminalStatus,
 };
 
+const ROUTE: &str = "qwen.headless";
+
+#[allow(clippy::too_many_arguments)]
 pub(crate) async fn pump(
     process: Arc<dyn ProcessHandle>,
     events: RuntimeEventSender,
@@ -18,6 +21,7 @@ pub(crate) async fn pump(
     model: ModelId,
     expected_version: InterfaceVersion,
     operation_id: ActivityOperationId,
+    services: HostServices,
 ) -> TerminalOutcome {
     pump_with_session(
         process,
@@ -25,6 +29,7 @@ pub(crate) async fn pump(
         cancellation,
         deadline,
         QwenPumpContext::new(model, expected_version, None, operation_id),
+        services,
     )
     .await
     .outcome
@@ -64,6 +69,7 @@ pub(crate) async fn pump_with_session(
     cancellation: Arc<QwenProcessCancellation>,
     deadline: BoxFuture<'static, DeadlineObservation>,
     context: QwenPumpContext,
+    services: HostServices,
 ) -> QwenPumpResult {
     let mut parser = QwenEventParser::with_expected_session(
         context.model,
@@ -89,6 +95,7 @@ pub(crate) async fn pump_with_session(
                         }
                     }
                     Err(failure) => {
+                        emit_protocol_debug(&services, &failure, "headless.pump.decode");
                         let cleanup = force_cleanup(process.as_ref()).await;
                         return result(TerminalOutcome::new(
                             TerminalStatus::RuntimeFailed(failure.diagnostic().clone()),
@@ -100,6 +107,7 @@ pub(crate) async fn pump_with_session(
             NextOutput::Process(Ok(Some(_))) => {}
             NextOutput::Process(Ok(None)) => break,
             NextOutput::Process(Err(failure)) => {
+                emit_host_process_debug(&services, &failure, "headless.pump.read");
                 let cleanup = force_cleanup(process.as_ref()).await;
                 return result(TerminalOutcome::new(
                     TerminalStatus::HostFailed(failure.diagnostic().clone()),
@@ -127,18 +135,53 @@ pub(crate) async fn pump_with_session(
                 }
             }
         }
-        (Err(failure), exit) => result(TerminalOutcome::new(
-            TerminalStatus::RuntimeFailed(failure.diagnostic().clone()),
-            cleanup_from_wait(&exit),
-        )),
-        (_, Err(_)) => result(TerminalOutcome::new(
-            TerminalStatus::HostFailed(SafeDiagnostic::new(
+        (Err(failure), exit) => {
+            emit_protocol_debug(&services, &failure, "headless.pump.finish");
+            result(TerminalOutcome::new(
+                TerminalStatus::RuntimeFailed(failure.diagnostic().clone()),
+                cleanup_from_wait(&exit),
+            ))
+        }
+        (_, Err(_)) => {
+            let diagnostic = SafeDiagnostic::new(
                 "swallowtail.qwen.headless.process_wait_failed",
                 "Qwen headless process wait failed",
-            )),
-            process_cleanup_failed(),
-        )),
+            );
+            services.emit_failure_debug(
+                DebugObservationKind::HostProcess,
+                ROUTE,
+                "headless.pump.wait",
+                diagnostic.code(),
+                diagnostic.message(),
+            );
+            result(TerminalOutcome::new(
+                TerminalStatus::HostFailed(diagnostic),
+                process_cleanup_failed(),
+            ))
+        }
     }
+}
+
+fn emit_protocol_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
+    let diagnostic = error.diagnostic();
+    services.emit_failure_debug(
+        DebugObservationKind::ProtocolParse,
+        ROUTE,
+        stage,
+        diagnostic.code(),
+        diagnostic.message(),
+    );
+}
+
+fn emit_host_process_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
+    let diagnostic = error.diagnostic();
+    services.emit_failure_debug(
+        DebugObservationKind::HostProcess,
+        ROUTE,
+        stage,
+        diagnostic.code(),
+        diagnostic.message(),
+    );
 }
 
 fn result(outcome: TerminalOutcome) -> QwenPumpResult {

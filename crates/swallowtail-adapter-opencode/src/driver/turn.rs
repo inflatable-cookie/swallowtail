@@ -111,11 +111,18 @@ async fn pump_turn(pump: TurnPump) {
                 {
                     break (TerminalStatus::Detached, CleanupOutcome::Clean);
                 }
+                let diagnostic = SafeDiagnostic::new(
+                    "swallowtail.opencode.sse_disconnected",
+                    "OpenCode SSE stream disconnected before terminal state",
+                );
+                emit_wire_debug(
+                    &services,
+                    diagnostic.code(),
+                    diagnostic.message(),
+                    "http.pump.transport",
+                );
                 break (
-                    TerminalStatus::RuntimeFailed(SafeDiagnostic::new(
-                        "swallowtail.opencode.sse_disconnected",
-                        "OpenCode SSE stream disconnected before terminal state",
-                    )),
+                    TerminalStatus::RuntimeFailed(diagnostic),
                     CleanupOutcome::Clean,
                 );
             }
@@ -129,6 +136,12 @@ async fn pump_turn(pump: TurnPump) {
                 {
                     break (TerminalStatus::Detached, CleanupOutcome::Clean);
                 }
+                emit_wire_debug(
+                    &services,
+                    error.diagnostic().code(),
+                    error.diagnostic().message(),
+                    "http.pump.transport",
+                );
                 break (
                     TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
                     CleanupOutcome::Clean,
@@ -202,12 +215,20 @@ async fn pump_turn(pump: TurnPump) {
                 Ok(Event::ToolState { .. } | Event::Unknown(_)) => {}
                 Ok(Event::Usage(part_id, observed)) => {
                     if !usage_part_ids.insert(part_id) {
+                        let diagnostic = SafeDiagnostic::new(
+                            "swallowtail.opencode.usage_duplicate",
+                            "OpenCode repeated one token-usage record",
+                        );
+                        emit_debug(
+                            &services,
+                            DebugObservationKind::ProtocolParse,
+                            diagnostic.code(),
+                            diagnostic.message(),
+                            "http.pump.map",
+                        );
                         let abort = cancellation.request().await;
                         break (
-                            TerminalStatus::RuntimeFailed(SafeDiagnostic::new(
-                                "swallowtail.opencode.usage_duplicate",
-                                "OpenCode repeated one token-usage record",
-                            )),
+                            TerminalStatus::RuntimeFailed(diagnostic),
                             cleanup_from_result(abort.map(|_| ())),
                         );
                     }
@@ -232,11 +253,19 @@ async fn pump_turn(pump: TurnPump) {
                     break (TerminalStatus::Completed, CleanupOutcome::Clean);
                 }
                 Ok(Event::Idle) => {
+                    let diagnostic = SafeDiagnostic::new(
+                        "swallowtail.opencode.usage_missing",
+                        "OpenCode completed without required token usage",
+                    );
+                    emit_debug(
+                        &services,
+                        DebugObservationKind::ProtocolParse,
+                        diagnostic.code(),
+                        diagnostic.message(),
+                        "http.pump.map",
+                    );
                     break (
-                        TerminalStatus::RuntimeFailed(SafeDiagnostic::new(
-                            "swallowtail.opencode.usage_missing",
-                            "OpenCode completed without required token usage",
-                        )),
+                        TerminalStatus::RuntimeFailed(diagnostic),
                         CleanupOutcome::Clean,
                     );
                 }
@@ -290,6 +319,7 @@ async fn pump_turn(pump: TurnPump) {
                     }
                 }
                 Err(error) => {
+                    emit_protocol_debug(&services, &error, "http.pump.decode");
                     let abort = cancellation.request().await;
                     break (
                         TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
@@ -374,4 +404,40 @@ fn project_event(
         *sequence += 1;
     }
     Ok(event)
+}
+
+fn emit_protocol_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
+    let diagnostic = error.diagnostic();
+    emit_debug(
+        services,
+        DebugObservationKind::ProtocolParse,
+        diagnostic.code(),
+        diagnostic.message(),
+        stage,
+    );
+}
+
+fn emit_wire_debug(
+    services: &HostServices,
+    code: &'static str,
+    message: &str,
+    stage: &'static str,
+) {
+    emit_debug(
+        services,
+        DebugObservationKind::WireInbound,
+        code,
+        message,
+        stage,
+    );
+}
+
+fn emit_debug(
+    services: &HostServices,
+    kind: DebugObservationKind,
+    code: &'static str,
+    message: &str,
+    stage: &'static str,
+) {
+    services.emit_failure_debug(kind, ROUTE, stage, code, message);
 }

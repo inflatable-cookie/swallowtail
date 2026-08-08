@@ -12,7 +12,7 @@ Both routes are in `swallowtail-adapter-codex`; selection is explicit through
 | Route | Driver ID and transport | Choose it for | Reject it when |
 | --- | --- | --- | --- |
 | `codex.exec` | `swallowtail.codex.exec`; structured CLI JSONL over stdio | one bounded structured run, optional reasoning, one image, JSON Schema output, or host-approved search | the application needs a reusable session, callbacks, discovery/import, reconciliation, or management |
-| `codex.app-server` | `swallowtail.codex.app-server`; app-server JSONL RPC over stdio | model and thread catalogues, interactive sessions, tools, questions, plan mode, load/resume, reconciliation, or inactive-thread management | the application needs exec-only attachments, structured output, or external search |
+| `codex.app-server` | `swallowtail.codex.app-server`; app-server JSONL RPC over stdio | model and thread catalogues, interactive sessions, tools, questions, plan mode, load/resume, newest-first history pages, reconciliation, or inactive-thread management | the application needs exec-only attachments, structured output, or external search |
 
 There is no fallback between the drivers. A capability on one branch does not
 belong to the other.
@@ -100,6 +100,7 @@ status composition.
 | --- | --- | --- |
 | `prepare_catalogue` | app-server | request identity and optional deadline |
 | `prepare_session_catalogue` | app-server | catalogue identity, exact working resource, page/traversal/content/reference bounds, optional deadline |
+| `prepare_session_history` | app-server | history identity, exact durable binding, page/cursor/snapshot bounds, optional deadline |
 | `prepare_read_only_session_import` | app-server | one candidate from the prepared catalogue plus the future model, resource, and read-only session options |
 | `prepare_bounded_workspace_session_import` | app-server | the same explicit candidate and future session inputs plus bounded-workspace selection |
 | `prepare_read_only_session` | app-server | model route, model, working resource, instructions, reasoning, plan mode, tools, optional typed user-input exchange |
@@ -114,8 +115,9 @@ roles. Read-only and bounded workspace remain different methods. There is no
 generic prompt method.
 
 `CodexPreparedCatalogue`, `CodexPreparedSessionCatalogue`,
-`CodexPreparedSessionImport`, `CodexPreparedSession`, the three lifecycle
-values, and `CodexPreparedExec` retain:
+`CodexPreparedSessionHistory`, `CodexPreparedSessionImport`,
+`CodexPreparedSession`, the three lifecycle values, and `CodexPreparedExec`
+retain:
 
 - exact installed-version and compatibility evidence
 - access status and whether it was observed or caller-asserted
@@ -133,6 +135,7 @@ Prepared profiles expose only the runtime role they implement:
 | --- | --- |
 | `CodexPreparedCatalogue` | `list_models(services)` |
 | `CodexPreparedSessionCatalogue` | `list_sessions(services)` and bounded cursor continuation through `next_page_request` plus `list_page` |
+| `CodexPreparedSessionHistory` | `page_history(services)` and older-page continuation through `older_page_request` plus `page` |
 | `CodexPreparedSessionImport` | `import_session(services)` |
 | `CodexPreparedExec` | `start_run(services)` |
 | `CodexPreparedSession` | `open_session(services)` |
@@ -230,11 +233,19 @@ the exact prepared request from its driver. Extracting those parts only to
 reconstruct the same low-level role adds integration work and is not a second
 normal path.
 
-## Restart, Reconciliation, And Management
+## History Browse, Restart, Reconciliation, And Management
 
 Persist an app-server `SessionResumeBinding` only through its opaque export
 under the same prepared plan. On ordinary attachment, `load_session` returns
 bounded ordered replay and `resume_session` returns no replay.
+
+For UI scroll-back without treating browse as load readiness, prepare
+`CodexSessionHistoryInput` from the exact binding and page bounds, then call
+`prepare_session_history` and `page_history`. Later pages use the opaque
+older cursor from the same plan. Codex synthesizes newest-first pages over one
+bounded `thread/read(includeTurns: true)` under existing replay ceilings; it
+does not send turn start, interrupt, resume, archive, restore, or delete.
+See [Provider Session History Pages](provider-session-history.md).
 
 When the consumer has durable interrupted-turn evidence, build
 `CodexSessionReconciliationInput` from the exact binding and optional exact
@@ -248,9 +259,10 @@ post-terminal evidence fails closed.
 
 Archive, restore, and delete require the opaque inactive management binding
 from a matching app-server handle. They are separate effects, not cleanup on
-session close. Exec exposes no continuation, reconciliation, or management.
-See [Provider Operation Reconciliation](provider-operation-reconciliation.md)
-and [Working-State Restoration](working-state-restoration.md).
+session close. Exec exposes no continuation, history pages, reconciliation,
+or management. See
+[Provider Operation Reconciliation](provider-operation-reconciliation.md) and
+[Working-State Restoration](working-state-restoration.md).
 
 ## Explicit Limits
 
@@ -313,6 +325,13 @@ A malformed app-server notification or protocol message keeps its exact
 notification method plus a bounded sanitized excerpt of the raw line. A
 protocol terminal failure may also append a bounded sanitized app-server
 stderr tail. The offending payload itself stays out of the safe message.
+
+When the host registers a `DiagnosticObserver`, the same malformed-inbound
+path also emits correlated restricted
+[debug observations](debug-observation.md) (`WireInbound`, `ProtocolParse`,
+and `StderrRing` when a stderr tail was retained). Ordinary integrations
+leave the observer unregistered; debug emission never changes the safe code,
+classification, or poisoned-session behavior.
 
 ## Low-Level Escape Hatch
 

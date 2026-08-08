@@ -12,6 +12,7 @@ mod attachment;
 mod callback;
 mod cancellation;
 mod content;
+mod debug_observation;
 mod detachment;
 mod direct_continuation;
 mod event;
@@ -48,6 +49,7 @@ mod provider_recovered_resource_cleanup;
 mod provider_recovered_resource_cleanup_binding;
 mod provider_run_checkpoint;
 mod provider_run_reconciliation;
+mod provider_session_history;
 mod provider_session_import;
 mod provider_session_management;
 mod provider_session_operation;
@@ -95,6 +97,10 @@ pub use callback::{
 };
 pub use cancellation::{CancellationAcknowledgement, CancellationControl, ImmediateCancellation};
 pub use content::OperationContent;
+pub use debug_observation::{
+    DEBUG_DETAIL_TRUNCATED_SUFFIX, DebugObservation, DebugObservationKind, MAX_DEBUG_DETAIL_CHARS,
+    failure_debug_observation,
+};
 pub use detachment::{OperationDetachmentAcknowledgement, OperationDetachmentControl};
 pub use direct_continuation::{
     DirectAttemptAuthorizationKind, DirectContinuationBinding, DirectContinuationState,
@@ -133,7 +139,8 @@ pub use host_traits::{
 pub use identity::{
     AccessEvidenceSourceId, CallbackId, DirectInferenceAttemptId, DirectToolCallId,
     HarnessCommandId, HarnessQuestionId, HarnessQuestionOptionId, MediaStreamId,
-    ProviderSessionCandidateId, ProviderSessionCatalogueId, RequestId, RuntimeIdentityRequired,
+    ProviderSessionCandidateId, ProviderSessionCatalogueId, ProviderSessionHistoryId, RequestId,
+    RuntimeIdentityRequired,
     RuntimeRunId, RuntimeSessionId, RuntimeTurnId, ScopeId, ServingInstanceId,
 };
 pub use input::{InputLimitExceeded, InputValueRequired};
@@ -215,6 +222,13 @@ pub use provider_run_reconciliation::{
     ProviderRunReconciliationRequest, validate_provider_run_reconciliation_execution,
     validate_provider_run_reconciliation_request,
 };
+pub use provider_session_history::{
+    PreparedProviderSessionHistoryEvidence, ProviderSessionHistoryAgreement,
+    ProviderSessionHistoryBounds, ProviderSessionHistoryCursor, ProviderSessionHistoryPage,
+    ProviderSessionHistoryPlan, ProviderSessionHistoryRequest, ProviderSessionHistoryTotal,
+    ProviderSessionHistoryWindow, page_provider_session_history_window,
+    validate_provider_session_history_execution, validate_provider_session_history_request,
+};
 pub use provider_session_import::{
     PreparedProviderSessionCatalogueEvidence, PreparedProviderSessionImportEvidence,
     ProviderSessionCandidate, ProviderSessionCatalogueAgreement, ProviderSessionCatalogueOutcome,
@@ -254,8 +268,9 @@ pub use roles::{
     AttachServingRequest, DiscoveryDriver, DiscoveryRequest, InteractiveSessionDriver,
     LoadSessionRequest, LoadedSession, ModelCatalogDriver, ModelCatalogRequest, OpenSessionRequest,
     ProviderRecoveredResourceCleanupDriver, ProviderRunReconciliationDriver,
-    ProviderSessionCatalogueDriver, ProviderSessionImportDriver, ProviderSessionManagementDriver,
-    ProviderSessionReconciliationDriver, RealtimeMediaSessionDriver, ResumeSessionRequest,
+    ProviderSessionCatalogueDriver, ProviderSessionHistoryDriver, ProviderSessionImportDriver,
+    ProviderSessionManagementDriver, ProviderSessionReconciliationDriver,
+    RealtimeMediaSessionDriver, ResumeSessionRequest,
     ServingInstanceDriver, StartServingRequest, StructuredRunDriver, StructuredRunRequest,
     TurnRequest,
 };

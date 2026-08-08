@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-19
+Updated: 2026-08-08
 
 ## Purpose
 
@@ -52,7 +52,8 @@ Swallowtail runtime and adapter layers may own:
 - tool or callback declarations, calls, and response transport
 - structured-output descriptors, attachment transport, and terminal result
   envelopes
-- safe diagnostics with internal detail behind host policy
+- safe diagnostics with internal detail and structured debug observations
+  behind host diagnostic-observer policy (Contract 053)
 
 Owned versus external runtime mode must remain explicit. Swallowtail does not
 decide which host receives execution authority.

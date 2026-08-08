@@ -38,6 +38,60 @@ fn provider_and_protocol_failures_remain_distinct_and_redacted() {
 }
 
 #[test]
+fn malformed_stream_emits_correlated_debug_observation_when_observer_registered() {
+    let (process, _state) = FakeProcessService::completed(&fixture("malformed.jsonl"));
+    let observer = Arc::new(CapturingDebugObserver::default());
+    let services = host_services(process, Arc::new(PendingTimeService))
+        .with_diagnostic_observer(observer.clone());
+    let mut handle = block_on(driver().start_run(plan(), request("malformed-debug"), services))
+        .expect("run starts");
+    let terminal = block_on(
+        handle
+            .take_terminal_outcome()
+            .expect("terminal outcome is available"),
+    );
+    assert_status_code(
+        &terminal,
+        "swallowtail.qwen.headless.malformed_stream",
+        false,
+    );
+    let observations = observer.observations();
+    assert!(
+        observations.iter().any(|observation| {
+            observation.kind() == DebugObservationKind::ProtocolParse
+                && observation.correlated_code()
+                    == Some("swallowtail.qwen.headless.malformed_stream")
+                && observation.route() == Some("qwen.headless")
+                && observation.stage() == Some("headless.pump.decode")
+        }),
+        "expected protocol-parse debug observation, got {observations:?}"
+    );
+    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+}
+
+#[derive(Default)]
+struct CapturingDebugObserver {
+    observations: Mutex<Vec<DebugObservation>>,
+}
+
+impl CapturingDebugObserver {
+    fn observations(&self) -> Vec<DebugObservation> {
+        self.observations.lock().expect("lock").clone()
+    }
+}
+
+impl DiagnosticObserver for CapturingDebugObserver {
+    fn observe(&self, _diagnostic: &Diagnostic) {}
+
+    fn observe_debug(&self, observation: &DebugObservation) {
+        self.observations
+            .lock()
+            .expect("lock")
+            .push(observation.clone());
+    }
+}
+
+#[test]
 fn native_budget_exits_have_separate_provider_failure_codes() {
     for (exit, expected) in [
         (53, "swallowtail.qwen.headless.native_turn_limit"),

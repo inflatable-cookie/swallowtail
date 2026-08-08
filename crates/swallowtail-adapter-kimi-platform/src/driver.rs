@@ -10,11 +10,12 @@ use swallowtail_core::{
     OperationShape, PreflightPlan, TransportFamilyId,
 };
 use swallowtail_runtime::{
-    BoxFuture, CleanupOutcome, CredentialLease, EndpointRef, HostServices, ModelCatalogDriver,
-    ModelCatalogRequest, RuntimeFailure, ScopeId,
+    BoxFuture, CleanupOutcome, CredentialLease, DebugObservationKind, EndpointRef, HostServices,
+    ModelCatalogDriver, ModelCatalogRequest, RuntimeFailure, ScopeId,
 };
 
 const DRIVER_ID: &str = "swallowtail.kimi-platform.direct-chat";
+const ROUTE: &str = "kimi-platform.chat";
 
 #[derive(Clone, Default)]
 /// Low-level Kimi Platform model-catalogue and structured-run driver.

@@ -7,10 +7,10 @@ use std::sync::atomic::{AtomicBool, AtomicU64};
 use std::sync::{Arc, Mutex};
 use swallowtail_core::{MediaDirection, SafeDiagnostic};
 use swallowtail_runtime::{
-    BoxFuture, DeadlineObservation, MediaChunk, MediaStreamId, MediaTranscript,
-    ProviderCancellationOutcome, ProviderObservation, RealtimeMediaEvent, RealtimeMediaEventKind,
-    RealtimeMediaResponseStatus, RealtimeMediaSessionState, RuntimeFailure, RuntimeSessionId,
-    RuntimeTurnId, TerminalOutcome,
+    BoxFuture, DeadlineObservation, DebugObservationKind, HostServices, MediaChunk, MediaStreamId,
+    MediaTranscript, ProviderCancellationOutcome, ProviderObservation, RealtimeMediaEvent,
+    RealtimeMediaEventKind, RealtimeMediaResponseStatus, RealtimeMediaSessionState, RuntimeFailure,
+    RuntimeSessionId, RuntimeTurnId, TerminalOutcome,
 };
 
 mod failure;
@@ -34,6 +34,7 @@ pub(super) struct PumpContext {
     pub(super) next_event_sequence: Arc<AtomicU64>,
     pub(super) cancellation: Arc<ResponseCancellation>,
     pub(super) connections: ConnectionRegistry,
+    pub(super) services: HostServices,
 }
 
 pub(super) async fn pump_response(
@@ -61,15 +62,33 @@ pub(super) async fn pump_response(
                 }
             }
             Signal::Closed | Signal::Update(WorkerUpdate::Disconnected) => {
+                let diagnostic = SafeDiagnostic::new(
+                    "swallowtail.gemini.live_disconnected",
+                    "Gemini Live disconnected before terminal response truth",
+                );
+                context.services.emit_failure_debug(
+                    DebugObservationKind::WireInbound,
+                    super::ROUTE,
+                    "ws.pump.transport",
+                    diagnostic.code(),
+                    diagnostic.message(),
+                );
                 let status = interrupted_or_disconnected(&context.cancellation);
                 return (finish_terminal(&context, &mut events, status), updates);
             }
             Signal::Update(WorkerUpdate::Failed(error)) => {
+                emit_wire_debug(&context.services, &error, "ws.pump.transport");
                 let status = interrupted_or_failed(&context.cancellation, error.diagnostic());
                 return (finish_terminal(&context, &mut events, status), updates);
             }
             Signal::Update(WorkerUpdate::Event(event)) => match event {
                 ServerEvent::SetupComplete => {
+                    emit_protocol_code(
+                        &context.services,
+                        "swallowtail.gemini.live_protocol_failed",
+                        "Gemini Live response ordering violated the frozen protocol",
+                        "ws.pump.decode",
+                    );
                     return (protocol_failed(&context, &mut events), updates);
                 }
                 ServerEvent::ResumptionUpdate { resumable, handle } => context
@@ -203,4 +222,30 @@ fn ensure_started(
         *started = true;
     }
     Ok(())
+}
+
+fn emit_wire_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
+    let diagnostic = error.diagnostic();
+    services.emit_failure_debug(
+        DebugObservationKind::WireInbound,
+        super::ROUTE,
+        stage,
+        diagnostic.code(),
+        diagnostic.message(),
+    );
+}
+
+fn emit_protocol_code(
+    services: &HostServices,
+    code: &'static str,
+    message: &'static str,
+    stage: &'static str,
+) {
+    services.emit_failure_debug(
+        DebugObservationKind::ProtocolParse,
+        super::ROUTE,
+        stage,
+        code,
+        message,
+    );
 }

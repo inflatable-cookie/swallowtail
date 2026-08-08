@@ -55,8 +55,22 @@ visible as unverified newer unless exact evidence requires rejection.
 | Extract provider-neutral adapter scaffolding into shared crates to remove cross-adapter duplication. | completed | Contracts 011, 029, 037 | `g03.052` |
 | Unify version-claim semantics and close facade-surface inconsistencies. | completed | Contracts 003, 029, 037, 047 | `g03.053` |
 | Measure and dispose the remaining duplication tranches after the scaffolding extraction. | completed | Contracts 011, 029, 036-037, 039 | `g03.054` |
+| Give hosts one opt-in cross-route debug observation channel without weakening safe diagnostics. | completed | Contracts 003-004, 009-010, 044, 051, 053; Research 113 | `g03.055` |
+| Emit failure-path debug observations on every production route family. | completed | Contracts 010, 053; Research 113 | `g03.056` |
+| Expose newest-first provider-session history pages without weakening load or reconciliation. | completed | Contracts 017, 038, 044, 046, 048, 054; Research 114 | `g03.057` |
+| Extend history pages to every route that can page without a live control handle. | completed | Contracts 017, 025, 038, 044, 046, 048, 054 | `g03.058` |
 
 ## Current Checkpoint
+
+- g03.058 is complete: OpenCode HTTP and Alibaba retained advertise history
+  alongside Codex; Claude Agent ACP and Kimi ACP stay unsupported until a
+  control-free history wire exists. The generation returns to its evidence
+  gate.
+- g03.057 is complete: portable history pages, Codex synthetic proof, and the
+  first consumer guide landed.
+- g03.056 is complete: failure-path debug observations emit across shared
+  discovery/prep, ACP/RPC, headless, hosted HTTP/SSE/WS, and remote ACP; the
+  guide emitter inventory is current.
 
 - card 159 is complete: the transport and catalogue
   duplication was measured (curl driver 0.90-0.94 pair similarity across
@@ -605,6 +619,10 @@ visible as unverified newer unless exact evidence requires rejection.
 - [052 Shared Adapter Scaffolding](./052-shared-adapter-scaffolding.md) — completed
 - [053 Claim And Surface Consistency](./053-claim-and-surface-consistency.md) — completed
 - [054 Remaining Duplication Tranches](./054-remaining-duplication-tranches.md) — completed
+- [055 Opt-In Debug Observation Seam](./055-opt-in-debug-observation-seam.md) — completed
+- [056 Cross-Route Debug Observation Emissions](./056-cross-route-debug-observation-emissions.md) — completed
+- [057 Paged Provider Session History](./057-paged-provider-session-history.md) — completed
+- [058 Multi-Route Provider Session History](./058-multi-route-provider-session-history.md) — completed
 
 ## Checkpoint
 

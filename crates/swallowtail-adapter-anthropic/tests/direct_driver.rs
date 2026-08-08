@@ -3,24 +3,24 @@ mod support;
 use futures_executor::block_on;
 use futures_util::StreamExt;
 use std::num::NonZeroU64;
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 use support::{FixtureServer, StreamFixture, ThreadServices};
 use swallowtail_adapter_anthropic::{AnthropicDirectDriver, anthropic_direct_descriptor};
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessRequirement, AccessStatus, Capability, CapabilityProfile,
     CapabilityRequirement, ConfiguredInstance, ConfiguredInstanceId, CredentialMechanism,
-    CredentialState, DriverRole, EndpointAudience, EndpointAuthorization, EntitlementMetering,
-    EntitlementState, ExecutionHostId, ExecutionLayer, InstanceOwnership, InstancePolicyId,
-    InstanceRevision, InstanceTargetRef, ModelId, ModelRoute, ModelRouteId, ModelRouteRevision,
-    OperationRequirements, OperationShape, PreflightContext, ProtocolFacadeId, ProviderId,
-    RuntimeReadiness, SupportAuthority, preflight,
+    CredentialState, Diagnostic, DriverRole, EndpointAudience, EndpointAuthorization,
+    EntitlementMetering, EntitlementState, ExecutionHostId, ExecutionLayer, InstanceOwnership,
+    InstancePolicyId, InstanceRevision, InstanceTargetRef, ModelId, ModelRoute, ModelRouteId,
+    ModelRouteRevision, OperationRequirements, OperationShape, PreflightContext, ProtocolFacadeId,
+    ProviderId, RuntimeReadiness, SupportAuthority, preflight,
 };
 use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{
-    BlockingWorkService, CredentialRef, CredentialService, EndpointRef, HostServices,
-    ModelCatalogDriver, ModelCatalogRequest, NetworkPolicyService, OperationContent,
-    OperationPolicy, ProviderObservation, RequestId, ScopedTaskService, StructuredRunDriver,
-    StructuredRunRequest, TerminalStatus, TimeService,
+    BlockingWorkService, CredentialRef, CredentialService, DebugObservation, DebugObservationKind,
+    DiagnosticObserver, EndpointRef, HostServices, ModelCatalogDriver, ModelCatalogRequest,
+    NetworkPolicyService, OperationContent, OperationPolicy, ProviderObservation, RequestId,
+    ScopedTaskService, StructuredRunDriver, StructuredRunRequest, TerminalStatus, TimeService,
 };
 
 include!("direct_driver/fixture.rs");
@@ -129,6 +129,73 @@ fn midstream_error_fails_once_without_exposing_provider_payload() {
         block_on(run.close()),
         swallowtail_runtime::CleanupOutcome::Clean
     ));
+}
+
+#[test]
+fn stream_disconnect_emits_correlated_debug_observation_when_observer_registered() {
+    let fixture = Fixture::with_stream(StreamFixture::Disconnect);
+    let observer = Arc::new(CapturingDebugObserver::default());
+    let request = StructuredRunRequest::new(
+        RequestId::new("disconnect-debug").expect("request id is valid"),
+        OperationContent::new("fixture prompt").expect("content is valid"),
+        OperationPolicy::offline(),
+    )
+    .with_maximum_output_tokens(NonZeroU64::new(64).expect("limit is nonzero"));
+    let mut run = block_on(AnthropicDirectDriver::new().start_run(
+        fixture.plan(DriverRole::StructuredRun),
+        request,
+        fixture
+            .services()
+            .with_diagnostic_observer(observer.clone()),
+    ))
+    .expect("run starts");
+    let _events = run.take_events().expect("events are available");
+    let outcome = block_on(
+        run.take_terminal_outcome()
+            .expect("terminal outcome is available"),
+    );
+    let (TerminalStatus::ProviderFailed(diagnostic)
+    | TerminalStatus::RuntimeFailed(diagnostic)) = outcome.status()
+    else {
+        panic!("disconnect must fail: {:?}", outcome.status());
+    };
+    assert_eq!(diagnostic.code(), "swallowtail.anthropic.sse_disconnected");
+    let observations = observer.observations();
+    assert!(
+        observations.iter().any(|observation| {
+            observation.kind() == DebugObservationKind::WireInbound
+                && observation.correlated_code() == Some("swallowtail.anthropic.sse_disconnected")
+                && observation.route() == Some("anthropic.messages")
+                && observation.stage() == Some("http.pump.transport")
+        }),
+        "expected wire-inbound debug observation, got {observations:?}"
+    );
+    assert!(matches!(
+        block_on(run.close()),
+        swallowtail_runtime::CleanupOutcome::Clean
+    ));
+}
+
+#[derive(Default)]
+struct CapturingDebugObserver {
+    observations: Mutex<Vec<DebugObservation>>,
+}
+
+impl CapturingDebugObserver {
+    fn observations(&self) -> Vec<DebugObservation> {
+        self.observations.lock().expect("lock").clone()
+    }
+}
+
+impl DiagnosticObserver for CapturingDebugObserver {
+    fn observe(&self, _diagnostic: &Diagnostic) {}
+
+    fn observe_debug(&self, observation: &DebugObservation) {
+        self.observations
+            .lock()
+            .expect("lock")
+            .push(observation.clone());
+    }
 }
 
 #[test]

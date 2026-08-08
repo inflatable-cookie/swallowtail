@@ -277,3 +277,108 @@ fn malformed_notification_carries_bounded_method_context_and_stderr_tail() {
     assert!(state.forced());
     assert!(state.waited());
 }
+
+#[test]
+fn malformed_notification_emits_correlated_debug_observations_when_observer_registered() {
+    let (process, state) = ScriptedAppServer::new(AppServerMode::MalformedNotification);
+    let observer = Arc::new(CapturingDebugObserver::default());
+    let services = host_services(process).with_diagnostic_observer(observer.clone());
+    let mut session = block_on(driver().open_session(
+        app_server_plan(DriverRole::InteractiveSession),
+        read_only_open_request(
+            RequestId::new("session-malformed-debug").expect("request id is valid"),
+            working_resource(),
+            None,
+        ),
+        services.clone(),
+    ))
+    .expect("session opens");
+    let mut turn = block_on(session.start_turn(
+        TurnRequest::new(
+            RuntimeTurnId::new("turn-malformed-debug").expect("turn id is valid"),
+            OperationContent::new("drifted notification").expect("content is valid"),
+        ),
+        services.clone(),
+    ))
+    .expect("turn starts");
+    let terminal = block_on(
+        turn.take_terminal_outcome()
+            .expect("terminal outcome is available"),
+    );
+
+    let TerminalStatus::RuntimeFailed(diagnostic) = terminal.status() else {
+        panic!("malformed notification fails the turn");
+    };
+    assert_eq!(
+        diagnostic.code(),
+        "swallowtail.codex.app_server.malformed_notification"
+    );
+    assert!(diagnostic.message().contains("method `item/plan/delta`"));
+    assert!(!diagnostic.message().contains("xxx"));
+
+    let observations = observer.observations();
+    assert!(
+        observations.iter().any(|observation| {
+            observation.kind() == DebugObservationKind::ProtocolParse
+                && observation.correlated_code()
+                    == Some("swallowtail.codex.app_server.malformed_notification")
+                && observation.detail().contains("method=item/plan/delta")
+                && !observation.detail().contains("xxx")
+        }),
+        "expected protocol-parse debug observation, got {observations:?}"
+    );
+    assert!(
+        observations.iter().any(|observation| {
+            observation.kind() == DebugObservationKind::StderrRing
+                && observation.correlated_code()
+                    == Some("swallowtail.codex.app_server.malformed_notification")
+                && observation.detail().contains("unrecognized plan delta field")
+        }),
+        "expected stderr-ring debug observation, got {observations:?}"
+    );
+
+    let result = block_on(session.start_turn(
+        TurnRequest::new(
+            RuntimeTurnId::new("turn-after-poison-debug").expect("turn id is valid"),
+            OperationContent::new("after poison").expect("content is valid"),
+        ),
+        services,
+    ));
+    assert_eq!(
+        result
+            .err()
+            .expect("poisoned session rejects the next request")
+            .diagnostic()
+            .code(),
+        "swallowtail.codex.app_server.connection_closed"
+    );
+    assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
+    assert_eq!(block_on(session.close()), CleanupOutcome::Clean);
+    assert!(state.forced());
+    assert!(state.waited());
+}
+
+#[derive(Default)]
+struct CapturingDebugObserver {
+    observations: Mutex<Vec<DebugObservation>>,
+}
+
+impl CapturingDebugObserver {
+    fn observations(&self) -> Vec<DebugObservation> {
+        self.observations
+            .lock()
+            .expect("observation lock")
+            .clone()
+    }
+}
+
+impl DiagnosticObserver for CapturingDebugObserver {
+    fn observe(&self, _diagnostic: &Diagnostic) {}
+
+    fn observe_debug(&self, observation: &DebugObservation) {
+        self.observations
+            .lock()
+            .expect("observation lock")
+            .push(observation.clone());
+    }
+}

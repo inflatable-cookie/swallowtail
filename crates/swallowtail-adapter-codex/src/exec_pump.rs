@@ -6,9 +6,12 @@ use std::sync::Arc;
 use std::task::Poll;
 use swallowtail_core::SafeDiagnostic;
 use swallowtail_runtime::{
-    BoxFuture, CleanupOutcome, DeadlineObservation, ProcessHandle, ProcessOutputChunk,
-    ProcessOutputStream, RuntimeEventSender, RuntimeFailure, TerminalOutcome, TerminalStatus,
+    BoxFuture, CleanupOutcome, DeadlineObservation, DebugObservationKind, HostServices,
+    ProcessHandle, ProcessOutputChunk, ProcessOutputStream, RuntimeEventSender, RuntimeFailure,
+    TerminalOutcome, TerminalStatus,
 };
+
+const ROUTE: &str = "codex.exec";
 
 pub(crate) async fn pump(
     process: Arc<dyn ProcessHandle>,
@@ -17,8 +20,10 @@ pub(crate) async fn pump(
     mut deadline: Option<BoxFuture<'static, DeadlineObservation>>,
     materializations: SharedExecMaterializations,
     parser: ExecEventParser,
+    services: HostServices,
 ) -> TerminalOutcome {
-    let outcome = pump_process(&process, &events, &cancellation, &mut deadline, parser).await;
+    let outcome =
+        pump_process(&process, &events, &cancellation, &mut deadline, parser, &services).await;
     with_cleanup(outcome, materializations.release().await)
 }
 
@@ -28,6 +33,7 @@ async fn pump_process(
     cancellation: &Arc<ProcessCancellation>,
     deadline: &mut Option<BoxFuture<'static, DeadlineObservation>>,
     mut parser: ExecEventParser,
+    services: &HostServices,
 ) -> TerminalOutcome {
     loop {
         match next_output(process.as_ref(), cancellation, deadline).await {
@@ -54,6 +60,7 @@ async fn pump_process(
                         }
                     }
                     Err(failure) => {
+                        emit_protocol_debug(services, &failure, "exec.pump.decode");
                         let cleanup = force_cleanup(process.as_ref()).await;
                         return TerminalOutcome::new(
                             TerminalStatus::RuntimeFailed(failure.diagnostic().clone()),
@@ -65,6 +72,7 @@ async fn pump_process(
             NextOutput::Process(Ok(Some(_))) => {}
             NextOutput::Process(Ok(None)) => break,
             NextOutput::Process(Err(failure)) => {
+                emit_host_process_debug(services, &failure, "exec.pump.read");
                 let cleanup = force_cleanup(process.as_ref()).await;
                 return TerminalOutcome::new(
                     TerminalStatus::HostFailed(failure.diagnostic().clone()),
@@ -92,18 +100,53 @@ async fn pump_process(
             }
             parsed.outcome(exit.success())
         }
-        (Err(failure), exit) => TerminalOutcome::new(
-            TerminalStatus::RuntimeFailed(failure.diagnostic().clone()),
-            cleanup_from_wait(&exit),
-        ),
-        (_, Err(_)) => TerminalOutcome::new(
-            TerminalStatus::HostFailed(SafeDiagnostic::new(
+        (Err(failure), exit) => {
+            emit_protocol_debug(services, &failure, "exec.pump.finish");
+            TerminalOutcome::new(
+                TerminalStatus::RuntimeFailed(failure.diagnostic().clone()),
+                cleanup_from_wait(&exit),
+            )
+        }
+        (_, Err(_)) => {
+            let diagnostic = SafeDiagnostic::new(
                 "swallowtail.codex.exec.process_wait_failed",
                 "Codex exec process wait failed",
-            )),
-            process_cleanup_failed(),
-        ),
+            );
+            services.emit_failure_debug(
+                DebugObservationKind::HostProcess,
+                ROUTE,
+                "exec.pump.wait",
+                diagnostic.code(),
+                diagnostic.message(),
+            );
+            TerminalOutcome::new(
+                TerminalStatus::HostFailed(diagnostic),
+                process_cleanup_failed(),
+            )
+        }
     }
+}
+
+fn emit_protocol_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
+    let diagnostic = error.diagnostic();
+    services.emit_failure_debug(
+        DebugObservationKind::ProtocolParse,
+        ROUTE,
+        stage,
+        diagnostic.code(),
+        diagnostic.message(),
+    );
+}
+
+fn emit_host_process_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
+    let diagnostic = error.diagnostic();
+    services.emit_failure_debug(
+        DebugObservationKind::HostProcess,
+        ROUTE,
+        stage,
+        diagnostic.code(),
+        diagnostic.message(),
+    );
 }
 
 enum NextOutput {

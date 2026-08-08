@@ -1,10 +1,10 @@
-use super::{cleanup_failure, failure};
+use super::{OWNED_ROUTE, cleanup_failure, failure};
 use std::future::poll_fn;
 use std::sync::Arc;
 use std::task::Poll;
 use swallowtail_runtime::{
-    CleanupOutcome, Deadline, HostServices, ModelArtifactLease, MonotonicInstant, ProcessExit,
-    ProcessHandle, RuntimeFailure, ServingEndpointLease,
+    CleanupOutcome, Deadline, DebugObservationKind, HostServices, ModelArtifactLease,
+    MonotonicInstant, ProcessExit, ProcessHandle, RuntimeFailure, ServingEndpointLease,
 };
 
 const STOP_GRACE_TICKS: u64 = 1_000;
@@ -27,6 +27,14 @@ impl OwnedState {
     }
 
     pub async fn fail<T>(self, original: RuntimeFailure) -> Result<T, RuntimeFailure> {
+        let diagnostic = original.diagnostic();
+        self.services.emit_failure_debug(
+            DebugObservationKind::HostProcess,
+            OWNED_ROUTE,
+            "owned.startup",
+            diagnostic.code(),
+            diagnostic.message(),
+        );
         match self.cleanup().await {
             CleanupOutcome::Clean | CleanupOutcome::NotApplicable => Err(original),
             CleanupOutcome::Degraded(_) | CleanupOutcome::Failed(_) => Err(cleanup_failure()),

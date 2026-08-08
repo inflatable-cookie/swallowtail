@@ -162,6 +162,7 @@ pub swallowtail_testkit::RecordedHostCall::AttachmentMaterializeFile
 pub swallowtail_testkit::RecordedHostCall::BlockingWork
 pub swallowtail_testkit::RecordedHostCall::CredentialAcquire
 pub swallowtail_testkit::RecordedHostCall::CredentialRelease
+pub swallowtail_testkit::RecordedHostCall::DebugObserve
 pub swallowtail_testkit::RecordedHostCall::DiagnosticObserve
 pub swallowtail_testkit::RecordedHostCall::ModelArtifactAcquire
 pub swallowtail_testkit::RecordedHostCall::ModelArtifactRelease

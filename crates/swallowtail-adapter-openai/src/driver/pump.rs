@@ -47,6 +47,7 @@ async fn pump_run(
             detachment.as_deref(),
             &mut deadline,
             &activity,
+            &services,
         )
         .await;
         cleanup = merge_cleanup(cleanup, cleanup_result(subscription.close().await));

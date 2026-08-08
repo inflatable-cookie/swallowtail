@@ -9,12 +9,13 @@ use std::sync::{Arc, Mutex};
 use std::task::{Context, Poll, Waker};
 use swallowtail_core::SafeDiagnostic;
 use swallowtail_runtime::{
-    CallbackId, CleanupOutcome, ProcessHandle, ProcessInputChunk, ProcessOutputStream,
-    RuntimeFailure, RuntimeTurnId, TerminalStatus,
+    CallbackId, CleanupOutcome, DebugObservation, DebugObservationKind, HostServices, ProcessHandle,
+    ProcessInputChunk, ProcessOutputStream, RuntimeFailure, RuntimeTurnId, TerminalStatus,
 };
 
 pub(crate) struct RpcConnection {
     process: Arc<dyn ProcessHandle>,
+    services: HostServices,
     next_id: AtomicU64,
     next_callback_id: AtomicU64,
     pending: Mutex<BTreeMap<u64, ResponseSender>>,
@@ -29,9 +30,10 @@ pub(crate) struct RpcConnection {
 }
 
 impl RpcConnection {
-    pub(crate) fn new(process: Arc<dyn ProcessHandle>) -> Arc<Self> {
+    pub(crate) fn new(process: Arc<dyn ProcessHandle>, services: HostServices) -> Arc<Self> {
         Arc::new(Self {
             process,
+            services,
             next_id: AtomicU64::new(1),
             next_callback_id: AtomicU64::new(1),
             pending: Mutex::new(BTreeMap::new()),

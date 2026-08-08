@@ -14,14 +14,15 @@ use swallowtail_core::{
     InstanceOwnership, ModelCatalogEntry, PreflightPlan,
 };
 use swallowtail_runtime::{
-    BoxFuture, CleanupOutcome, Deadline, DeadlineObservation, EndpointRef, HostServices,
-    ModelCatalogDriver, ModelCatalogRequest, OperationContent, ProviderObservation, RunHandle,
-    RuntimeEvent, RuntimeEventKind, RuntimeFailure, RuntimeRunId, ScopeId, StructuredRunDriver,
-    StructuredRunRequest, TerminalOutcome, TerminalStatus, TokenUsage, runtime_event_channel,
-    terminal_outcome_channel,
+    BoxFuture, CleanupOutcome, Deadline, DeadlineObservation, DebugObservationKind, EndpointRef,
+    HostServices, ModelCatalogDriver, ModelCatalogRequest, OperationContent, ProviderObservation,
+    RunHandle, RuntimeEvent, RuntimeEventKind, RuntimeFailure, RuntimeRunId, ScopeId,
+    StructuredRunDriver, StructuredRunRequest, TerminalOutcome, TerminalStatus, TokenUsage,
+    runtime_event_channel, terminal_outcome_channel,
 };
 
 const DRIVER_ID: &str = "swallowtail.llama-cpp.attached-openai-chat";
+const ATTACHED_ROUTE: &str = "llama-cpp.attached";
 const EVENT_CAPACITY: usize = 64;
 
 mod owned;
@@ -36,6 +37,7 @@ pub struct LlamaCppAttachedDriver {
     driver_id: &'static str,
     version: ObservedVersion,
     run_id_prefix: &'static str,
+    route: &'static str,
 }
 
 impl Default for LlamaCppAttachedDriver {
@@ -48,19 +50,26 @@ impl LlamaCppAttachedDriver {
     /// Creates the exact build-9910 attached-server facade.
     #[must_use]
     pub fn new() -> Self {
-        Self::for_facade(DRIVER_ID, ATTACHED_VERSION, "llama-cpp-attached")
+        Self::for_facade(
+            DRIVER_ID,
+            ATTACHED_VERSION,
+            "llama-cpp-attached",
+            ATTACHED_ROUTE,
+        )
     }
 
     fn for_facade(
         driver_id: &'static str,
         version: ObservedVersion,
         run_id_prefix: &'static str,
+        route: &'static str,
     ) -> Self {
         Self {
             transport: CurlTransport,
             driver_id,
             version,
             run_id_prefix,
+            route,
         }
     }
 

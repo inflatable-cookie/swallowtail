@@ -6,12 +6,12 @@ use swallowtail_core::{Diagnostic, EndpointAudience, ExecutionHostId, SafeDiagno
 use swallowtail_runtime::{
     AttachmentDescriptor, AttachmentFileLease, AttachmentService, AuthorizedEndpoint, BlockingJob,
     BlockingWorkService, BoxFuture, CleanupOutcome, CredentialLease, CredentialRef,
-    CredentialService, Deadline, DeadlineObservation, DelegatedCredential, DiagnosticObserver,
-    EndpointRef, HostServices, JoinedTask, MaterializedFileRef, MaterializedResourceRef,
-    MonotonicInstant, NetworkGrant, NetworkPolicyService, ProcessExit, ProcessHandle,
-    ProcessInputChunk, ProcessOutputChunk, ProcessRequest, ProcessService, ResourceAccess,
-    ResourceLease, ResourceRepresentation, RuntimeFailure, SchemaDocument, SchemaFileLease,
-    SchemaService, ScopeId, ScopedTaskService, TimeService, WorkingResourceRef,
+    CredentialService, Deadline, DeadlineObservation, DebugObservation, DelegatedCredential,
+    DiagnosticObserver, EndpointRef, HostServices, JoinedTask, MaterializedFileRef,
+    MaterializedResourceRef, MonotonicInstant, NetworkGrant, NetworkPolicyService, ProcessExit,
+    ProcessHandle, ProcessInputChunk, ProcessOutputChunk, ProcessRequest, ProcessService,
+    ResourceAccess, ResourceLease, ResourceRepresentation, RuntimeFailure, SchemaDocument,
+    SchemaFileLease, SchemaService, ScopeId, ScopedTaskService, TimeService, WorkingResourceRef,
     WorkingResourceService,
 };
 
@@ -73,6 +73,8 @@ pub enum RecordedHostCall {
     SchemaFileRelease,
     /// A safe diagnostic was observed.
     DiagnosticObserve,
+    /// A structured debug observation was observed.
+    DebugObserve,
 }
 
 /// Configured result returned by recording host services.
@@ -376,6 +378,10 @@ impl SchemaService for RecordingService {
 impl DiagnosticObserver for RecordingService {
     fn observe(&self, _diagnostic: &Diagnostic) {
         self.state.record(RecordedHostCall::DiagnosticObserve);
+    }
+
+    fn observe_debug(&self, _observation: &DebugObservation) {
+        self.state.record(RecordedHostCall::DebugObserve);
     }
 }
 

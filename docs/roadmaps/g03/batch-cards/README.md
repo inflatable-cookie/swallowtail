@@ -8,6 +8,18 @@
 
 ## Completed
 
+- [180-multi-route-provider-history-docs.md](./180-multi-route-provider-history-docs.md)
+- [179-opencode-alibaba-provider-history.md](./179-opencode-alibaba-provider-history.md)
+- [178-provider-history-page-guide.md](./178-provider-history-page-guide.md)
+- [177-codex-provider-history-page-proof.md](./177-codex-provider-history-page-proof.md)
+- [176-runtime-provider-history-page.md](./176-runtime-provider-history-page.md)
+- [175-http-realtime-debug-emissions-closeout.md](./175-http-realtime-debug-emissions-closeout.md)
+- [174-headless-codex-exec-debug-emissions.md](./174-headless-codex-exec-debug-emissions.md)
+- [173-acp-rpc-debug-emissions.md](./173-acp-rpc-debug-emissions.md)
+- [172-shared-discovery-debug-emissions.md](./172-shared-discovery-debug-emissions.md)
+- [171-debug-observation-guide-and-example.md](./171-debug-observation-guide-and-example.md)
+- [170-codex-debug-observation-proof.md](./170-codex-debug-observation-proof.md)
+- [169-runtime-debug-observation-records.md](./169-runtime-debug-observation-records.md)
 - [168-acp-activity-projection-migration.md](./168-acp-activity-projection-migration.md) — cancelled
 - [167-acp-activity-projection-contract.md](./167-acp-activity-projection-contract.md)
 - [166-catalogue-parse-paginate-consolidation.md](./166-catalogue-parse-paginate-consolidation.md)

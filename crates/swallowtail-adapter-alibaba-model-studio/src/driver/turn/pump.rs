@@ -6,10 +6,13 @@ use std::sync::Arc;
 use std::task::Poll;
 use swallowtail_core::{OwnedRemoteResourceKind, SafeDiagnostic};
 use swallowtail_runtime::{
-    BoxFuture, CleanupOutcome, DeadlineObservation, OperationContent, ProviderCancellationOutcome,
-    ProviderObservation, RemoteResourceDeletionOutcome, RuntimeEvent, RuntimeEventKind,
-    RuntimeFailure, TerminalOutcome, TerminalStatus,
+    BoxFuture, CleanupOutcome, DeadlineObservation, DebugObservationKind, HostServices,
+    OperationContent, ProviderCancellationOutcome, ProviderObservation,
+    RemoteResourceDeletionOutcome, RuntimeEvent, RuntimeEventKind, RuntimeFailure, TerminalOutcome,
+    TerminalStatus,
 };
+
+const ROUTE: &str = "alibaba.conversations";
 
 pub(super) async fn pump_turn(
     mut subscription: Subscription,
@@ -17,6 +20,7 @@ pub(super) async fn pump_turn(
     cancellation: Arc<TurnCancellation>,
     mut deadline: Option<BoxFuture<'static, DeadlineObservation>>,
     turn_id: swallowtail_runtime::RuntimeTurnId,
+    services: HostServices,
 ) -> TerminalOutcome {
     let mut provider = ResponseStream::default();
     let mut sequence = 1;
@@ -55,9 +59,25 @@ pub(super) async fn pump_turn(
                     return uncertain(TerminalStatus::TimedOut, true);
                 }
                 cancellation.fail_remote_uncertain();
+                if let Err(error) = &result {
+                    emit_wire_debug(&services, error, "http.pump.transport");
+                } else {
+                    let diagnostic = SafeDiagnostic::new(
+                        "swallowtail.alibaba_model_studio.stream_disconnected",
+                        "Alibaba Model Studio stream closed before completion",
+                    );
+                    services.emit_failure_debug(
+                        DebugObservationKind::WireInbound,
+                        ROUTE,
+                        "http.pump.transport",
+                        diagnostic.code(),
+                        diagnostic.message(),
+                    );
+                }
                 return uncertain(provider_status(result), false);
             }
             Signal::Item(Err(error)) => {
+                emit_wire_debug(&services, &error, "http.pump.transport");
                 cancellation.fail_remote_uncertain();
                 let _ = subscription.close().await;
                 return uncertain(
@@ -80,10 +100,18 @@ pub(super) async fn pump_turn(
             }
             Signal::Item(Ok(StreamItem::Frame(frame))) => match provider.apply(&frame) {
                 Err(error) => {
+                    let diagnostic = error.diagnostic();
+                    services.emit_failure_debug(
+                        DebugObservationKind::ProtocolParse,
+                        ROUTE,
+                        "http.pump.decode",
+                        diagnostic.code(),
+                        diagnostic.message(),
+                    );
                     cancellation.fail_remote_uncertain();
                     let _ = subscription.close().await;
                     return uncertain(
-                        TerminalStatus::ProviderFailed(error.diagnostic().clone()),
+                        TerminalStatus::ProviderFailed(diagnostic.clone()),
                         false,
                     );
                 }
@@ -270,4 +298,15 @@ fn emit(
     kind: RuntimeEventKind,
 ) -> Result<(), RuntimeFailure> {
     swallowtail_runtime::emit(events, sequence, kind)
+}
+
+fn emit_wire_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
+    let diagnostic = error.diagnostic();
+    services.emit_failure_debug(
+        DebugObservationKind::WireInbound,
+        ROUTE,
+        stage,
+        diagnostic.code(),
+        diagnostic.message(),
+    );
 }

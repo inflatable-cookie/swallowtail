@@ -14,6 +14,7 @@ use swallowtail_core::{
 use swallowtail_runtime::{HostServices, OpenRealtimeMediaSessionRequest, RuntimeFailure};
 
 pub(crate) const DRIVER_ID: &str = "swallowtail.openai.realtime";
+pub(crate) const ROUTE: &str = "openai.realtime";
 pub(crate) const MODEL_ID: &str = "gpt-realtime-2.1";
 pub(crate) const REALTIME_PATH: &str = "/v1/realtime";
 

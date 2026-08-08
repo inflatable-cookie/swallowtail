@@ -109,6 +109,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [106 Provider-Wide Interactive Crash Recovery](./106-provider-wide-interactive-crash-recovery.md)
 - [107 Retained Session Candidate Currentness](./107-retained-session-candidate-currentness.md)
 - [108 Provider-Wide Session Usability Restoration](./108-provider-wide-session-usability-restoration.md)
+- [114 Paged Provider Session History](./114-paged-provider-session-history.md)
 
 ### Activity, Topology, And Control
 
@@ -119,6 +120,10 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [067 Direct Activity Applicability And Corpus](./067-direct-activity-applicability-and-corpus.md)
 - [072 Subagent Topology, Observation, And Control Evidence](./072-subagent-topology-observation-and-control-evidence.md)
 - [098 Portable Activity Key And Cross-Operation Isolation](./098-portable-activity-key-and-cross-operation-isolation.md)
+
+### Diagnostics And Debug Observation
+
+- [113 Opt-In Debug Observation Seam](./113-opt-in-debug-observation-seam.md)
 
 ### Feature Currentness And Contract Evidence
 

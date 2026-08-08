@@ -24,7 +24,9 @@ contract file owns the exact rules.
   - **009** defines the async operation lifecycle: scoped handles, events,
     cancellation, terminal outcomes, and cleanup.
   - **010** scopes execution-host authority: executable launch, credentials,
-    resources, attachments, schemas, and diagnostics.
+    resources, attachments, schemas, diagnostics, and the optional diagnostic
+    observer sink clarified by Contract 053. Contract 054 adds newest-first
+    history pages as a separate read role.
   - **011** defines deterministic cross-shape runtime conformance profiles.
   - **012** covers session instructions, reasoning selection, tool
     declarations, and correlated callback lifecycle.
@@ -44,7 +46,8 @@ contract file owns the exact rules.
   optional process containment. Its restart record is attachment-bound
   authority input, not a consumer database or provider-session management
   binding; exact deployed-runtime qualification applies only to an enforced
-  isolation claim.
+  isolation claim. Newest-first history browsing is Contract 054, not load
+  readiness.
 - **018** governs owned ephemeral serving, now realized by the llama.cpp
   proof.
 - **019** governs in-process SDK drivers, explicit cloud-client configuration,
@@ -115,7 +118,7 @@ contract file owns the exact rules.
   from provider identity, scopes connection and affinity state, excludes
   authentication and implicit recovery, and requires explicit joined close.
 
-## Release, Prepared Integration, And Consumer Surfaces (036-052)
+## Release, Prepared Integration, And Consumer Surfaces (036-054)
 
 - **036** fixes the 27-package `v0.1.x` source line, admits Muse as package 28
   in `v0.2.0`, sanctions the fail-closed binding API in the `v0.3.0`
@@ -220,6 +223,14 @@ contract file owns the exact rules.
   every production route and portable feature. Guides and examples explain
   realized truth without widening route capabilities, authority, access,
   versions, lifecycle, cleanup, or recovery.
+- **053** adds the opt-in host debug observation channel: structured
+  restricted observations through `DiagnosticObserver`, fail-soft when
+  unregistered, bounded redacted detail, and hard non-interference with safe
+  diagnostics, public events, classification, and lifecycle truth.
+- **054** adds newest-first read-only provider-session history pages that
+  reuse `SessionReplayItem` projection, bounds, and opaque cursors shared with
+  load and reconciliation, without granting load readiness, interrupted-turn
+  observation, or consumer transcript authority.
 
 ## Amendments
 

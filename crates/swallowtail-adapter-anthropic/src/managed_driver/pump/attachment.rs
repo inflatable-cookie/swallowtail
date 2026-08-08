@@ -16,6 +16,7 @@ enum AttachmentSignal {
 #[allow(clippy::too_many_arguments)]
 async fn pump_attachment(
     subscription: &mut ManagedSubscription,
+    services: &HostServices,
     events: &swallowtail_runtime::RuntimeEventSender,
     sequence: &mut u64,
     run_id: &RuntimeRunId,
@@ -37,10 +38,18 @@ async fn pump_attachment(
         match next_attachment_signal(subscription, cancellation, deadline).await {
             AttachmentSignal::Cancelled => return AttachmentExit::Cancelled,
             AttachmentSignal::Deadline => return deadline_exit(cancellation),
-            AttachmentSignal::Closed | AttachmentSignal::Item(Err(_)) => {
+            AttachmentSignal::Closed => {
                 return if cancellation.is_requested() {
                     AttachmentExit::Cancelled
                 } else {
+                    AttachmentExit::Disconnected
+                };
+            }
+            AttachmentSignal::Item(Err(error)) => {
+                return if cancellation.is_requested() {
+                    AttachmentExit::Cancelled
+                } else {
+                    emit_wire_debug(services, &error, "http.pump.transport");
                     AttachmentExit::Disconnected
                 };
             }
@@ -53,6 +62,7 @@ async fn pump_attachment(
                 let parsed = match crate::managed::parse_stream(&frame) {
                     Ok(parsed) => parsed,
                     Err(error) => {
+                        emit_protocol_debug(services, &error, "http.pump.decode");
                         return AttachmentExit::Terminal(ManagedFinal::status(provider_status(
                             error,
                         )));
@@ -61,11 +71,13 @@ async fn pump_attachment(
                 for event in parsed {
                     if let Some(existing) = live.iter().find(|known| known.id() == event.id()) {
                         if existing != &event {
+                            let error = failure(
+                                "swallowtail.anthropic.managed.event_conflict",
+                                "Anthropic Managed Agents repeated contradictory event evidence",
+                            );
+                            emit_protocol_debug(services, &error, "http.pump.map");
                             return AttachmentExit::Terminal(ManagedFinal::status(provider_status(
-                                failure(
-                                    "swallowtail.anthropic.managed.event_conflict",
-                                    "Anthropic Managed Agents repeated contradictory event evidence",
-                                ),
+                                error,
                             )));
                         }
                         continue;
@@ -92,6 +104,7 @@ async fn pump_attachment(
                             return AttachmentExit::Terminal(state);
                         }
                         Err(error) => {
+                            emit_protocol_debug(services, &error, "http.pump.map");
                             return AttachmentExit::Terminal(ManagedFinal::status(provider_status(
                                 error,
                             )));

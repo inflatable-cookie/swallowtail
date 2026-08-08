@@ -14,12 +14,14 @@ pub use catalogue::CodexPreparedCatalogue;
 pub use exec::CodexPreparedExec;
 pub use input::{
     CodexExecProfileInput, CodexModelSelection, CodexSessionCatalogueInput,
-    CodexSessionManagementInput, CodexSessionProfileInput, CodexSessionReconciliationInput,
+    CodexSessionHistoryInput, CodexSessionManagementInput, CodexSessionProfileInput,
+    CodexSessionReconciliationInput,
 };
 pub use management::{CodexPreparedArchive, CodexPreparedDelete, CodexPreparedRestore};
 pub use plan::CodexPreparedEvidence;
 pub use provider_session_import::{
-    CodexPreparedSessionCatalogue, CodexPreparedSessionImport, CodexPreparedSessionReconciliation,
+    CodexPreparedSessionCatalogue, CodexPreparedSessionHistory, CodexPreparedSessionImport,
+    CodexPreparedSessionReconciliation,
 };
 pub use session::CodexPreparedSession;
 

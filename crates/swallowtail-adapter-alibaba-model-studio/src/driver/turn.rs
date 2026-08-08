@@ -81,6 +81,7 @@ impl AlibabaSessionHandle {
         let task_terminal = Arc::clone(&terminal_flag);
         let completed_turns = Arc::clone(&self.completed_turns);
         let activity_turn_id = request.turn_id().clone();
+        let pump_services = self.services.clone();
         let deadline = request.deadline().map(|deadline| {
             self.services
                 .time()
@@ -101,6 +102,7 @@ impl AlibabaSessionHandle {
                     Arc::clone(&task_cancellation),
                     deadline,
                     activity_turn_id,
+                    pump_services,
                 )
                 .await;
                 if matches!(

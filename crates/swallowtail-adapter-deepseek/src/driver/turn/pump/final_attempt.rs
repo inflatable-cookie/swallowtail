@@ -40,9 +40,14 @@ async fn run_final_attempt(
                 emit_request(flow.events, flow.sequence, &headers).map_err(runtime_failure)?;
             }
             StreamSignal::Item(Ok(StreamItem::Data(bytes))) => {
-                let updates = parser.push(&bytes).map_err(|error| {
-                    TurnFailure::Provider(protocol(error), CleanupOutcome::Clean)
-                })?;
+                let updates = match parser.push(&bytes) {
+                    Ok(updates) => updates,
+                    Err(error) => {
+                        let failure = protocol(error);
+                        emit_protocol_debug(&flow.context.services, &failure, "http.pump.decode");
+                        return Err(TurnFailure::Provider(failure, CleanupOutcome::Clean));
+                    }
+                };
                 for update in updates {
                     emit_update(
                         flow.events,
@@ -59,14 +64,20 @@ async fn run_final_attempt(
                 return Err(if flow.cancellation.is_requested() {
                     TurnFailure::Stopped(stop_from_cancellation(flow.cancellation), cleanup)
                 } else {
+                    emit_wire_debug(&flow.context.services, &error, "http.pump.transport");
                     TurnFailure::Provider(error, cleanup)
                 });
             }
             StreamSignal::Closed => {
                 let cleanup = cleanup_result(subscription.close().await);
-                let final_attempt = parser.finish().map_err(|error| {
-                    TurnFailure::Provider(protocol(error), cleanup.clone())
-                })?;
+                let final_attempt = match parser.finish() {
+                    Ok(final_attempt) => final_attempt,
+                    Err(error) => {
+                        let failure = protocol(error);
+                        emit_wire_debug(&flow.context.services, &failure, "http.pump.transport");
+                        return Err(TurnFailure::Provider(failure, cleanup));
+                    }
+                };
                 return Ok((final_attempt, cleanup));
             }
             StreamSignal::Stopped(stop) => {

@@ -20,15 +20,25 @@ async fn pump_run(
                 break TerminalStatus::TimedOut;
             }
             RunSignal::Closed if cancellation.is_requested() => break TerminalStatus::Cancelled,
-            RunSignal::Closed => break provider_status(failure(
-                "swallowtail.kimi_platform.stream_disconnected",
-                "Kimi Platform stream closed before completion",
-            )),
+            RunSignal::Closed => {
+                let error = failure(
+                    "swallowtail.kimi_platform.stream_disconnected",
+                    "Kimi Platform stream closed before completion",
+                );
+                emit_wire_debug(&services, &error, "http.pump.transport");
+                break provider_status(error);
+            }
             RunSignal::Item(Err(_)) if cancellation.is_requested() => break TerminalStatus::Cancelled,
-            RunSignal::Item(Err(error)) => break provider_status(error),
+            RunSignal::Item(Err(error)) => {
+                emit_wire_debug(&services, &error, "http.pump.transport");
+                break provider_status(error);
+            }
             RunSignal::Item(Ok(StreamItem::Frame(frame))) => {
                 match parse_events(&frame, KIMI_PLATFORM_MODEL_ID) {
-                Err(error) => break provider_status(error),
+                Err(error) => {
+                    emit_protocol_debug(&services, &error, "http.pump.decode");
+                    break provider_status(error);
+                }
                 Ok(parsed) => {
                     let mut terminal = None;
                     for event in parsed {
@@ -109,6 +119,7 @@ async fn pump_run(
                                 break;
                             }
                             Err(error) => {
+                                emit_protocol_debug(&services, &error, "http.pump.map");
                                 terminal = Some(provider_status(error));
                                 break;
                             }
@@ -229,4 +240,26 @@ fn merge_cleanup(current: CleanupOutcome, next: CleanupOutcome) -> CleanupOutcom
         (CleanupOutcome::NotApplicable, CleanupOutcome::Clean) => next,
         _ => current,
     }
+}
+
+fn emit_protocol_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
+    let diagnostic = error.diagnostic();
+    services.emit_failure_debug(
+        DebugObservationKind::ProtocolParse,
+        ROUTE,
+        stage,
+        diagnostic.code(),
+        diagnostic.message(),
+    );
+}
+
+fn emit_wire_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
+    let diagnostic = error.diagnostic();
+    services.emit_failure_debug(
+        DebugObservationKind::WireInbound,
+        ROUTE,
+        stage,
+        diagnostic.code(),
+        diagnostic.message(),
+    );
 }

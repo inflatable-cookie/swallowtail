@@ -77,6 +77,7 @@ impl StructuredRunDriver for OllamaNativeAttachedDriver {
                             .expect("Ollama pending work is available");
                         let outcome = pump_run(
                             subscription,
+                            services,
                             event_sender.clone(),
                             task_cancelled,
                             deadline,

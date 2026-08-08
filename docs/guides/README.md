@@ -9,6 +9,8 @@ contracts or architecture.
 - [Quick Start](quickstart.md) — one Codex run, end to end
 - [Integration Guide Map](integration-guide-map.md) — route, feature, example,
   and missing-coverage front door
+- [Debug Observation](debug-observation.md) — opt-in host debug sink for
+  restricted wire and lifecycle context
 - [Alibaba Model Studio Prepared Integration](alibaba-model-studio-prepared-integration.md)
 - [Antigravity Prepared Integration](antigravity-prepared-integration.md)
 - [Anthropic Direct Prepared Integration](anthropic-direct-prepared-integration.md)
@@ -33,6 +35,7 @@ contracts or architecture.
 - [OpenAI Background Prepared Integration](openai-background-prepared-integration.md)
 - [OpenCode Attached Prepared Integration](opencode-attached-prepared-integration.md)
 - [Provider Session Catalogue And Explicit Import](provider-session-import.md)
+- [Provider Session History Pages](provider-session-history.md)
 - [Provider Operation Reconciliation](provider-operation-reconciliation.md)
 - [Provider Operation Detachment](provider-operation-detachment.md)
 - [Provider Selection And Preparation](provider-selection-and-preparation.md)

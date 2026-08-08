@@ -34,6 +34,14 @@ fn exact_versions_advertise_and_prepare_thread_catalogue_only_inside_the_corpus(
             expected,
             "reconciliation advertisement for {version}"
         );
+        assert_eq!(
+            prepared_app
+                .instance()
+                .capabilities()
+                .supports(Capability::ProviderSessionHistory),
+            expected,
+            "history advertisement for {version}"
+        );
         let result = prepared_app.prepare_session_catalogue(catalogue_input(version));
         assert_eq!(
             result.is_ok(),

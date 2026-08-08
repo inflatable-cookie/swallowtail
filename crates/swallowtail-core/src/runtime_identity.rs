@@ -110,6 +110,8 @@ pub enum OperationShape {
     ProviderSessionImport,
     /// An interrupted provider-session turn is observed after restart.
     ProviderSessionReconciliation,
+    /// One newest-first page of provider-session history is read.
+    ProviderSessionHistory,
     /// An interrupted retained run is observed after restart.
     ProviderRunReconciliation,
     /// A separately admitted recovered provider resource is cleaned up.
@@ -150,6 +152,8 @@ pub enum DriverRole {
     ProviderSessionImport,
     /// Reconcile one interrupted provider-session turn.
     ProviderSessionReconciliation,
+    /// Read one newest-first page of provider-session history.
+    ProviderSessionHistory,
     /// Reconcile one interrupted retained run.
     ProviderRunReconciliation,
     /// Clean up an admitted recovered provider resource.
@@ -183,7 +187,7 @@ pub enum HostServiceKind {
     ServingEndpoint,
     /// Structured-output schema materialization.
     Schema,
-    /// Safe diagnostic observation.
+    /// Opt-in diagnostic and debug observation.
     DiagnosticObserver,
 }
 

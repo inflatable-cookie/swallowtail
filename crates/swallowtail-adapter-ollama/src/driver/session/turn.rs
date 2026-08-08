@@ -119,6 +119,7 @@ impl OllamaSessionHandle {
                             .expect("Ollama pending work is available");
                         let mut outcome = pump_run(
                             subscription,
+                            services,
                             event_sender.clone(),
                             cancelled,
                             deadline,

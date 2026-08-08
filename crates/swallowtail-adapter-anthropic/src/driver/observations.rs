@@ -52,6 +52,28 @@ fn provider_status(error: RuntimeFailure) -> TerminalStatus {
     swallowtail_runtime::provider_status(error)
 }
 
+fn emit_protocol_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
+    let diagnostic = error.diagnostic();
+    services.emit_failure_debug(
+        DebugObservationKind::ProtocolParse,
+        ROUTE,
+        stage,
+        diagnostic.code(),
+        diagnostic.message(),
+    );
+}
+
+fn emit_wire_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
+    let diagnostic = error.diagnostic();
+    services.emit_failure_debug(
+        DebugObservationKind::WireInbound,
+        ROUTE,
+        stage,
+        diagnostic.code(),
+        diagnostic.message(),
+    );
+}
+
 fn cleanup_result(result: Result<(), RuntimeFailure>) -> CleanupOutcome {
     swallowtail_runtime::cleanup_result(result)
 }

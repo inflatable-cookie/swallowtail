@@ -1,4 +1,5 @@
 use crate::failure::AlibabaProtocolFailure;
+use crate::protocol::{MAXIMUM_REPLAY_PAGE_BYTES, MAXIMUM_REPLAY_PAGE_ITEMS};
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessRequirement, AdapterId, AdapterIdentity, AdapterVersion,
     Capability, CapabilityConstraint, CapabilityProfile, CapabilityRequirement, ConfiguredInstance,
@@ -48,16 +49,19 @@ pub fn alibaba_model_studio_descriptor() -> DriverDescriptor {
         DriverRole::InteractiveSession,
         DriverRole::StructuredRun,
         DriverRole::ProviderSessionManagement,
+        DriverRole::ProviderSessionHistory,
     ])
     .with_execution_layers([ExecutionLayer::DirectModelInference])
     .with_operation_shapes([
         OperationShape::InteractiveSession,
         OperationShape::StructuredRun,
         OperationShape::ProviderSessionManagement,
+        OperationShape::ProviderSessionHistory,
     ])
     .with_required_host_services(DriverRole::InteractiveSession, host_services())
     .with_required_host_services(DriverRole::StructuredRun, host_services())
     .with_required_host_services(DriverRole::ProviderSessionManagement, host_services())
+    .with_required_host_services(DriverRole::ProviderSessionHistory, host_services())
 }
 
 #[must_use]
@@ -206,6 +210,37 @@ pub fn alibaba_model_studio_retained_requirements(
 }
 
 #[must_use]
+/// Builds requirements for read-only retained conversation history pages.
+pub fn alibaba_model_studio_history_requirements(
+    host_id: ExecutionHostId,
+) -> OperationRequirements {
+    let access = AccessRequirement::new(id(AccessProfileId::new, ACCESS_PROFILE_ID))
+        .with_credential_states([CredentialState::Ready])
+        .with_entitlement_states([EntitlementState::Available])
+        .with_endpoint_authorizations([EndpointAuthorization::Allowed])
+        .with_runtime_readiness([RuntimeReadiness::Ready])
+        .with_support_authorities([SupportAuthority::ProviderSupported]);
+    OperationRequirements::new(
+        ExecutionLayer::DirectModelInference,
+        OperationShape::ProviderSessionHistory,
+        DriverRole::ProviderSessionHistory,
+        host_id,
+        access,
+    )
+    .with_ownership_modes([InstanceOwnership::ExternalAttached])
+    .with_host_services(host_services())
+    .with_capabilities([
+        history_capability(),
+        CapabilityRequirement::new(Capability::ProviderDurableRetention, []),
+    ])
+    .with_session_access_policy(SessionAccessPolicy::resource_free())
+    .with_session_provider_state_policy(
+        SessionProviderStatePolicy::DurableProviderSessionPreserved,
+    )
+    .require_model_route()
+}
+
+#[must_use]
 /// Builds inactive-session requirements for retained conversation deletion.
 pub fn alibaba_model_studio_management_requirements(
     host_id: ExecutionHostId,
@@ -260,6 +295,17 @@ pub fn validate_alibaba_model_studio_plan(
         && requirements
             .capabilities()
             .any(|required| required.capability() == Capability::ProviderSessionDelete);
+    let history = requirements.driver_role() == DriverRole::ProviderSessionHistory
+        && requirements.operation_shape() == OperationShape::ProviderSessionHistory
+        && requirements.session_access_policy() == Some(&SessionAccessPolicy::resource_free())
+        && requirements.session_provider_state_policy()
+            == Some(SessionProviderStatePolicy::DurableProviderSessionPreserved)
+        && requirements
+            .capabilities()
+            .any(|required| required.capability() == Capability::ProviderSessionHistory)
+        && !requirements
+            .capabilities()
+            .any(|required| required.capability() == Capability::LoadSession);
     if plan.driver_identity().id().as_str() != DRIVER_ID
         || plan.instance_id().as_str() != CONFIGURED_INSTANCE_ID
         || plan.instance_target_ref()
@@ -275,7 +321,7 @@ pub fn validate_alibaba_model_studio_plan(
                 || plan.model_id().map(ModelId::as_str) != Some(EXACT_MODEL_ID)))
         || (management && (plan.model_route_id().is_some() || plan.model_id().is_some()))
         || requirements.execution_layer() != ExecutionLayer::DirectModelInference
-        || !(interactive || structured || management)
+        || !(interactive || structured || management || history)
         || requirements
             .capabilities()
             .any(|requirement| requirement.capability() == Capability::Resume)
@@ -302,8 +348,19 @@ fn run_capabilities() -> Vec<CapabilityRequirement> {
 fn all_capabilities() -> Vec<CapabilityRequirement> {
     let mut requirements = capabilities();
     requirements.push(CapabilityRequirement::new(Capability::LoadSession, []));
+    requirements.push(history_capability());
     requirements.extend(run_capabilities());
     requirements
+}
+
+fn history_capability() -> CapabilityRequirement {
+    CapabilityRequirement::new(
+        Capability::ProviderSessionHistory,
+        [
+            CapabilityConstraint::ReplayMaximumItems(MAXIMUM_REPLAY_PAGE_ITEMS as u32),
+            CapabilityConstraint::ReplayMaximumBytes(MAXIMUM_REPLAY_PAGE_BYTES as u64),
+        ],
+    )
 }
 
 fn instance_capabilities() -> Vec<CapabilityRequirement> {

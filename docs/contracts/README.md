@@ -20,9 +20,10 @@ The contracts form three groups:
    access, hosts, and the async operation lifecycle.
 2. **State and transport (017-035)** — persistent sessions, serving, hosted
    transports, version qualification, and portable session options.
-3. **Consumer surfaces (036-052)** — releases, prepared integration, activity,
-   reconciliation, restoration, failure classification, and documentation.
+3. **Consumer surfaces (036-054)** — releases, prepared integration, activity,
+   reconciliation, restoration, failure classification, documentation,
+   opt-in debug observation, and paged provider history.
 
 Contracts 004-016 describe realized runtime and proof-driver structure.
-Contracts 017-052 add portable features and consumer-facing surfaces. Each
+Contracts 017-054 add portable features and consumer-facing surfaces. Each
 contract file owns the exact rules; the summaries above are only orientation.

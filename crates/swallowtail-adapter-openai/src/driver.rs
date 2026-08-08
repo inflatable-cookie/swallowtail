@@ -6,10 +6,12 @@ use swallowtail_core::{
     PreflightPlan, TransportFamilyId,
 };
 use swallowtail_runtime::{
-    CleanupOutcome, CredentialLease, EndpointRef, HostServices, RuntimeFailure, ScopeId,
+    CleanupOutcome, CredentialLease, DebugObservationKind, EndpointRef, HostServices,
+    RuntimeFailure, ScopeId,
 };
 
 const DRIVER_ID: &str = "swallowtail.openai.background";
+const ROUTE: &str = "openai.background";
 
 #[derive(Clone, Default)]
 /// Low-level driver for one provider-managed OpenAI background response.

@@ -2,17 +2,20 @@ use crate::support;
 
 use futures_executor::block_on;
 use futures_util::StreamExt;
+use std::sync::{Arc, Mutex};
 use support::{
     FakeProcessService, bind_current_exec_policy, current_exec_policy, host_services,
     host_services_with, plan, plan_with, working_resource,
 };
 use swallowtail_adapter_codex::CodexExecDriver;
 use swallowtail_core::{
-    Capability, CapabilityConstraint, CapabilityRequirement, HostServiceKind, ReasoningMode,
+    Capability, CapabilityConstraint, CapabilityRequirement, Diagnostic, HostServiceKind,
+    ReasoningMode,
 };
 use swallowtail_runtime::{
     ActivityAssistantPhase, ActivityKind, ActivityLifecyclePhase, AttachmentDescriptor,
-    AttachmentRef, AttachmentRole, CancellationAcknowledgement, Deadline, EnvironmentRef,
+    AttachmentRef, AttachmentRole, CancellationAcknowledgement, CleanupOutcome, Deadline,
+    DebugObservation, DebugObservationKind, DiagnosticObserver, EnvironmentRef,
     ExternalNetworkPolicy, ExternalSearchPolicy, MonotonicInstant, OperationContent,
     OperationPolicy, RequestId, RuntimeEventKind, SchemaDocument, StructuredOutputDescriptor,
     StructuredRunDriver, StructuredRunRequest, TerminalStatus,
@@ -305,6 +308,62 @@ fn cancellation_force_stops_and_joins_the_owned_process() {
     assert_eq!(cleanup, swallowtail_runtime::CleanupOutcome::Clean);
     assert!(state.force_stopped());
     assert!(state.waited());
+}
+
+#[test]
+fn malformed_jsonl_emits_correlated_debug_observation_when_observer_registered() {
+    let (process, _state) = FakeProcessService::completed("not-json\n");
+    let observer = Arc::new(CapturingDebugObserver::default());
+    let services = host_services(process).with_diagnostic_observer(observer.clone());
+    let request = StructuredRunRequest::new(
+        RequestId::new("request-malformed-debug").expect("request id is valid"),
+        OperationContent::new("private prompt").expect("content is valid"),
+        current_exec_policy(),
+    )
+    .with_working_resource(working_resource());
+    let mut handle = block_on(driver().start_run(plan(), request, services)).expect("run starts");
+    let terminal = block_on(
+        handle
+            .take_terminal_outcome()
+            .expect("terminal outcome is available"),
+    );
+    let TerminalStatus::RuntimeFailed(diagnostic) = terminal.status() else {
+        panic!("malformed jsonl must fail: {:?}", terminal.status());
+    };
+    assert_eq!(diagnostic.code(), "swallowtail.codex.exec.malformed_jsonl");
+    let observations = observer.observations();
+    assert!(
+        observations.iter().any(|observation| {
+            observation.kind() == DebugObservationKind::ProtocolParse
+                && observation.correlated_code() == Some("swallowtail.codex.exec.malformed_jsonl")
+                && observation.route() == Some("codex.exec")
+                && observation.stage() == Some("exec.pump.decode")
+        }),
+        "expected protocol-parse debug observation, got {observations:?}"
+    );
+    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+}
+
+#[derive(Default)]
+struct CapturingDebugObserver {
+    observations: Mutex<Vec<DebugObservation>>,
+}
+
+impl CapturingDebugObserver {
+    fn observations(&self) -> Vec<DebugObservation> {
+        self.observations.lock().expect("lock").clone()
+    }
+}
+
+impl DiagnosticObserver for CapturingDebugObserver {
+    fn observe(&self, _diagnostic: &Diagnostic) {}
+
+    fn observe_debug(&self, observation: &DebugObservation) {
+        self.observations
+            .lock()
+            .expect("lock")
+            .push(observation.clone());
+    }
 }
 
 fn driver() -> CodexExecDriver {

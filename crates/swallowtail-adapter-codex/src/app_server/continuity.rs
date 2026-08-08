@@ -67,7 +67,7 @@ impl CodexAppServerDriver {
                 .start(scope.clone(), process_request)
                 .await?,
         );
-        let connection = RpcConnection::new(Arc::clone(&process));
+        let connection = RpcConnection::new(Arc::clone(&process), services.clone());
         let pump_connection = Arc::clone(&connection);
         let task = match task_service
             .spawn(scope, Box::pin(async move { pump_connection.pump().await }))

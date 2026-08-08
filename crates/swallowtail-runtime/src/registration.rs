@@ -3,9 +3,9 @@
 use crate::{
     DiscoveryDriver, InteractiveSessionDriver, ModelCatalogDriver,
     ProviderRecoveredResourceCleanupDriver, ProviderRunReconciliationDriver,
-    ProviderSessionCatalogueDriver, ProviderSessionImportDriver, ProviderSessionManagementDriver,
-    ProviderSessionReconciliationDriver, RealtimeMediaSessionDriver, ServingInstanceDriver,
-    StructuredRunDriver,
+    ProviderSessionCatalogueDriver, ProviderSessionHistoryDriver, ProviderSessionImportDriver,
+    ProviderSessionManagementDriver, ProviderSessionReconciliationDriver,
+    RealtimeMediaSessionDriver, ServingInstanceDriver, StructuredRunDriver,
 };
 use std::error::Error;
 use std::fmt;
@@ -69,6 +69,7 @@ pub struct DriverRegistration {
     provider_session_catalogue: Option<Arc<dyn ProviderSessionCatalogueDriver>>,
     provider_session_import: Option<Arc<dyn ProviderSessionImportDriver>>,
     provider_session_reconciliation: Option<Arc<dyn ProviderSessionReconciliationDriver>>,
+    provider_session_history: Option<Arc<dyn ProviderSessionHistoryDriver>>,
     provider_run_reconciliation: Option<Arc<dyn ProviderRunReconciliationDriver>>,
     provider_recovered_resource_cleanup: Option<Arc<dyn ProviderRecoveredResourceCleanupDriver>>,
 }
@@ -89,6 +90,7 @@ impl DriverRegistration {
             provider_session_catalogue: None,
             provider_session_import: None,
             provider_session_reconciliation: None,
+            provider_session_history: None,
             provider_run_reconciliation: None,
             provider_recovered_resource_cleanup: None,
         }
@@ -194,6 +196,16 @@ impl DriverRegistration {
         Ok(self)
     }
 
+    /// Registers the declared provider-session history role.
+    pub fn with_provider_session_history(
+        mut self,
+        role: Arc<dyn ProviderSessionHistoryDriver>,
+    ) -> Result<Self, RegistrationFailure> {
+        self.require_declared(DriverRole::ProviderSessionHistory)?;
+        self.provider_session_history = Some(role);
+        Ok(self)
+    }
+
     /// Registers the declared provider-run reconciliation role.
     pub fn with_provider_run_reconciliation(
         mut self,
@@ -280,6 +292,12 @@ impl DriverRegistration {
         &self,
     ) -> Option<&Arc<dyn ProviderSessionReconciliationDriver>> {
         self.provider_session_reconciliation.as_ref()
+    }
+
+    /// Returns the provider-session history role when registered.
+    #[must_use]
+    pub fn provider_session_history(&self) -> Option<&Arc<dyn ProviderSessionHistoryDriver>> {
+        self.provider_session_history.as_ref()
     }
 
     /// Returns the provider-run reconciliation role when registered.

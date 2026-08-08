@@ -35,6 +35,7 @@ pub enum ServerScenario {
     RetainedMissing,
     RetainedOversized,
     RetainedWaitForDeadline,
+    RetainedEmptyHistory,
     ManagedDeleteFailure,
 }
 
@@ -170,8 +171,9 @@ fn respond(
                 | ServerScenario::RetainedForeign
                 | ServerScenario::RetainedMalformed
                 | ServerScenario::RetainedMissing
-                | ServerScenario::RetainedOversized
-                | ServerScenario::RetainedWaitForDeadline => {
+                |                 ServerScenario::RetainedOversized
+                | ServerScenario::RetainedWaitForDeadline
+                | ServerScenario::RetainedEmptyHistory => {
                     write_response(stream, 200, "text/event-stream", SUCCESS)
                 }
                 ServerScenario::ProviderError => {
@@ -206,8 +208,9 @@ fn respond(
                     | ServerScenario::RetainedSuccess
                     | ServerScenario::RetainedMalformed
                     | ServerScenario::RetainedMissing
-                    | ServerScenario::RetainedOversized
-                    | ServerScenario::RetainedWaitForDeadline
+                | ServerScenario::RetainedOversized
+                | ServerScenario::RetainedWaitForDeadline
+                | ServerScenario::RetainedEmptyHistory
             ) =>
         {
             match scenario {
@@ -218,6 +221,12 @@ fn respond(
                     let body = format!(r#"{{"padding":"{}"}}"#, "x".repeat(512 * 1024));
                     write_response(stream, 200, "application/json", &body);
                 }
+                ServerScenario::RetainedEmptyHistory => write_response(
+                    stream,
+                    200,
+                    "application/json",
+                    r#"{"data":[],"object":"list","has_more":false,"first_id":null,"last_id":null}"#,
+                ),
                 _ => write_response(stream, 200, "application/json", ITEMS_PAGE_1),
             }
         }

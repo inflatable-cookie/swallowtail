@@ -15,9 +15,12 @@ use std::task::Poll;
 use swallowtail_core::SafeDiagnostic;
 use swallowtail_runtime::{
     BoxFuture, CallbackAbandonment, CancellationControl, CleanupOutcome, Deadline,
-    DeadlineObservation, HostServices, OperationContent, ProviderCancellationOutcome,
-    RuntimeFailure, RuntimeTurnId, TerminalOutcome, TerminalOutcomeSender, TerminalStatus,
+    DeadlineObservation, DebugObservationKind, HostServices, OperationContent,
+    ProviderCancellationOutcome, RuntimeFailure, RuntimeTurnId, TerminalOutcome,
+    TerminalOutcomeSender, TerminalStatus,
 };
+
+const ROUTE: &str = "kimi-code.local-server";
 
 pub(super) struct PumpInput {
     pub(super) subscription: Option<Subscription>,
@@ -83,8 +86,10 @@ pub(super) async fn run(mut input: PumpInput) {
                 if reattach(&mut input).await.is_ok() {
                     continue;
                 }
+                let error = disconnected();
+                emit_wire_debug(&input.services, &error, "ws.pump.transport");
                 break (
-                    TerminalStatus::RuntimeFailed(disconnected().diagnostic().clone()),
+                    TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
                     CleanupOutcome::Clean,
                 );
             }
@@ -102,6 +107,7 @@ pub(super) async fn run(mut input: PumpInput) {
                 if reattach(&mut input).await.is_ok() {
                     continue;
                 }
+                emit_wire_debug(&input.services, &error, "ws.pump.transport");
                 break (
                     TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
                     CleanupOutcome::Clean,
@@ -141,6 +147,7 @@ pub(super) async fn run(mut input: PumpInput) {
                     }
                     Ok(None) => {}
                     Err(error) => {
+                        emit_protocol_debug(&input.services, &error, "ws.pump.decode");
                         let cleanup =
                             cleanup_from_result(input.cancellation.request().await.map(|_| ()));
                         break (
@@ -275,4 +282,26 @@ fn disconnected() -> RuntimeFailure {
         "swallowtail.kimi.local_server.websocket_disconnected",
         "Kimi local-server WebSocket disconnected before terminal truth",
     )
+}
+
+fn emit_protocol_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
+    let diagnostic = error.diagnostic();
+    services.emit_failure_debug(
+        DebugObservationKind::ProtocolParse,
+        ROUTE,
+        stage,
+        diagnostic.code(),
+        diagnostic.message(),
+    );
+}
+
+fn emit_wire_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
+    let diagnostic = error.diagnostic();
+    services.emit_failure_debug(
+        DebugObservationKind::WireInbound,
+        ROUTE,
+        stage,
+        diagnostic.code(),
+        diagnostic.message(),
+    );
 }

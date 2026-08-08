@@ -6,10 +6,12 @@ use swallowtail_core::{
 use swallowtail_runtime::PreparationFailure;
 
 mod catalogue;
+mod history;
 mod import;
 mod reconciliation;
 
 pub use catalogue::CodexPreparedSessionCatalogue;
+pub use history::CodexPreparedSessionHistory;
 pub use import::CodexPreparedSessionImport;
 pub use reconciliation::CodexPreparedSessionReconciliation;
 

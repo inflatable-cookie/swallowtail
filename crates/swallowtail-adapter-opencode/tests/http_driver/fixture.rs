@@ -96,6 +96,7 @@ impl Fixture {
             DriverRole::ProviderSessionReconciliation => {
                 Capability::ProviderSessionReconciliation
             }
+            DriverRole::ProviderSessionHistory => Capability::ProviderSessionHistory,
             _ => Capability::InteractiveSession,
         };
         let mut capability_requirements = vec![CapabilityRequirement::new(capability, [])];
@@ -128,6 +129,28 @@ impl Fixture {
                     [
                         swallowtail_core::CapabilityConstraint::ReplayMaximumItems(4),
                         swallowtail_core::CapabilityConstraint::ReplayMaximumBytes(1024),
+                    ],
+                ),
+                CapabilityRequirement::new(Capability::ProviderDurableRetention, []),
+                CapabilityRequirement::new(
+                    Capability::WorkingResource,
+                    [
+                        swallowtail_core::CapabilityConstraint::ResourceAccess(
+                            swallowtail_core::ResourceAccess::Read,
+                        ),
+                        swallowtail_core::CapabilityConstraint::ResourceRepresentation(
+                            swallowtail_core::ResourceRepresentation::Filesystem,
+                        ),
+                    ],
+                ),
+            ];
+        } else if role == DriverRole::ProviderSessionHistory {
+            capability_requirements = vec![
+                CapabilityRequirement::new(
+                    Capability::ProviderSessionHistory,
+                    [
+                        swallowtail_core::CapabilityConstraint::ReplayMaximumItems(2),
+                        swallowtail_core::CapabilityConstraint::ReplayMaximumBytes(4096),
                     ],
                 ),
                 CapabilityRequirement::new(Capability::ProviderDurableRetention, []),
@@ -192,10 +215,12 @@ impl Fixture {
         let host_services: Vec<_> = descriptor.required_host_services(role).collect();
         let requirements = OperationRequirements::new(
             ExecutionLayer::HarnessInteraction,
-            if role == DriverRole::ProviderSessionReconciliation {
-                OperationShape::ProviderSessionReconciliation
-            } else {
-                OperationShape::InteractiveSession
+            match role {
+                DriverRole::ProviderSessionReconciliation => {
+                    OperationShape::ProviderSessionReconciliation
+                }
+                DriverRole::ProviderSessionHistory => OperationShape::ProviderSessionHistory,
+                _ => OperationShape::InteractiveSession,
             },
             role,
             self.host_id.clone(),
@@ -214,7 +239,10 @@ impl Fixture {
             swallowtail_core::ResourceAccess::Read,
         ))
         .with_session_provider_state_policy(
-            if role == DriverRole::ProviderSessionReconciliation || active_turn_detachment {
+            if role == DriverRole::ProviderSessionReconciliation
+                || role == DriverRole::ProviderSessionHistory
+                || active_turn_detachment
+            {
                 SessionProviderStatePolicy::DurableProviderSessionPreserved
             } else {
                 SessionProviderStatePolicy::Prohibited

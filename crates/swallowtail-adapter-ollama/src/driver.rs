@@ -16,16 +16,17 @@ use swallowtail_core::{
     ModelCatalogEntry, ModelId, ModelMetadata, PreflightPlan, StructuredOutputEnforcement,
 };
 use swallowtail_runtime::{
-    BoxFuture, CleanupOutcome, Deadline, DeadlineObservation, EndpointRef, HostServices,
-    ModelCatalogDriver, ModelCatalogRequest, OperationContent, ProviderObservation, RunHandle,
-    RuntimeEvent, RuntimeEventKind, RuntimeFailure, RuntimeRunId, ScopeId, StructuredRunDriver,
-    StructuredRunRequest, TerminalOutcome, TerminalStatus, TokenUsage, runtime_event_channel,
-    terminal_outcome_channel,
+    BoxFuture, CleanupOutcome, Deadline, DeadlineObservation, DebugObservationKind, EndpointRef,
+    HostServices, ModelCatalogDriver, ModelCatalogRequest, OperationContent, ProviderObservation,
+    RunHandle, RuntimeEvent, RuntimeEventKind, RuntimeFailure, RuntimeRunId, ScopeId,
+    StructuredRunDriver, StructuredRunRequest, TerminalOutcome, TerminalStatus, TokenUsage,
+    runtime_event_channel, terminal_outcome_channel,
 };
 
 mod session;
 
 const EVENT_CAPACITY: usize = 64;
+const ROUTE: &str = "ollama.attached";
 
 #[derive(Clone, Default)]
 /// Low-level driver for one externally managed Ollama native HTTP runtime.

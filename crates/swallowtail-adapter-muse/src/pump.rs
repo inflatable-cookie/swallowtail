@@ -5,10 +5,12 @@ use std::sync::Arc;
 use std::task::Poll;
 use swallowtail_core::{ModelId, SafeDiagnostic};
 use swallowtail_runtime::{
-    ActivityOperationId, BoxFuture, CleanupOutcome, DeadlineObservation, ProcessHandle,
-    ProcessOutputChunk, ProcessOutputStream, RuntimeEventSender, RuntimeFailure, TerminalOutcome,
-    TerminalStatus,
+    ActivityOperationId, BoxFuture, CleanupOutcome, DeadlineObservation, DebugObservationKind,
+    HostServices, ProcessHandle, ProcessOutputChunk, ProcessOutputStream, RuntimeEventSender,
+    RuntimeFailure, TerminalOutcome, TerminalStatus,
 };
+
+const ROUTE: &str = "muse-code.headless";
 
 pub(crate) async fn pump(
     process: Arc<dyn ProcessHandle>,
@@ -17,6 +19,7 @@ pub(crate) async fn pump(
     deadline: BoxFuture<'static, DeadlineObservation>,
     model: ModelId,
     operation_id: ActivityOperationId,
+    services: HostServices,
 ) -> TerminalOutcome {
     let mut parser = MuseEventParser::new(operation_id, model);
     let mut deadline = Some(deadline);
@@ -37,6 +40,7 @@ pub(crate) async fn pump(
                         }
                     }
                     Err(failure) => {
+                        emit_protocol_debug(&services, &failure, "headless.pump.decode");
                         let cleanup = force_cleanup(process.as_ref()).await;
                         return TerminalOutcome::new(
                             TerminalStatus::RuntimeFailed(failure.diagnostic().clone()),
@@ -48,6 +52,7 @@ pub(crate) async fn pump(
             NextOutput::Process(Ok(Some(_))) => {}
             NextOutput::Process(Ok(None)) => break,
             NextOutput::Process(Err(failure)) => {
+                emit_host_process_debug(&services, &failure, "headless.pump.read");
                 let cleanup = force_cleanup(process.as_ref()).await;
                 return TerminalOutcome::new(
                     TerminalStatus::HostFailed(failure.diagnostic().clone()),
@@ -69,18 +74,53 @@ pub(crate) async fn pump(
                 parsed.outcome(exit)
             }
         }
-        (Err(failure), exit) => TerminalOutcome::new(
-            TerminalStatus::RuntimeFailed(failure.diagnostic().clone()),
-            cleanup_from_wait(&exit),
-        ),
-        (_, Err(_)) => TerminalOutcome::new(
-            TerminalStatus::HostFailed(SafeDiagnostic::new(
+        (Err(failure), exit) => {
+            emit_protocol_debug(&services, &failure, "headless.pump.finish");
+            TerminalOutcome::new(
+                TerminalStatus::RuntimeFailed(failure.diagnostic().clone()),
+                cleanup_from_wait(&exit),
+            )
+        }
+        (_, Err(_)) => {
+            let diagnostic = SafeDiagnostic::new(
                 "swallowtail.muse_code.headless.process_wait_failed",
                 "Muse Code process wait failed",
-            )),
-            process_cleanup_failed(),
-        ),
+            );
+            services.emit_failure_debug(
+                DebugObservationKind::HostProcess,
+                ROUTE,
+                "headless.pump.wait",
+                diagnostic.code(),
+                diagnostic.message(),
+            );
+            TerminalOutcome::new(
+                TerminalStatus::HostFailed(diagnostic),
+                process_cleanup_failed(),
+            )
+        }
     }
+}
+
+fn emit_protocol_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
+    let diagnostic = error.diagnostic();
+    services.emit_failure_debug(
+        DebugObservationKind::ProtocolParse,
+        ROUTE,
+        stage,
+        diagnostic.code(),
+        diagnostic.message(),
+    );
+}
+
+fn emit_host_process_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
+    let diagnostic = error.diagnostic();
+    services.emit_failure_debug(
+        DebugObservationKind::HostProcess,
+        ROUTE,
+        stage,
+        diagnostic.code(),
+        diagnostic.message(),
+    );
 }
 
 enum NextOutput {
@@ -165,6 +205,7 @@ mod tests {
     use std::collections::VecDeque;
     use std::sync::Mutex;
     use std::sync::atomic::{AtomicBool, Ordering};
+    use swallowtail_core::ExecutionHostId;
     use swallowtail_runtime::{
         ProcessExit, ProcessInputChunk, RuntimeRunId, runtime_event_channel,
     };
@@ -238,6 +279,10 @@ mod tests {
         Box::pin(pending())
     }
 
+    fn services() -> HostServices {
+        HostServices::new(ExecutionHostId::new("muse.pump.fixture").unwrap())
+    }
+
     #[test]
     fn pump_completes_exact_stream_and_preserves_nonzero_exit_truth() {
         for (exit, expected) in [
@@ -278,6 +323,7 @@ mod tests {
                 no_deadline(),
                 ModelId::new(crate::MUSE_SPARK_MODEL_ID).unwrap(),
                 operation(),
+                services(),
             ));
             assert_eq!(outcome.status(), &expected);
             drop(events);
@@ -305,6 +351,7 @@ mod tests {
             no_deadline(),
             ModelId::new(crate::MUSE_SPARK_MODEL_ID).unwrap(),
             operation(),
+            services(),
         ));
         assert!(matches!(outcome.status(), TerminalStatus::RuntimeFailed(_)));
         assert!(process.forced.load(Ordering::SeqCst));
@@ -334,6 +381,7 @@ mod tests {
             no_deadline(),
             ModelId::new(crate::MUSE_SPARK_MODEL_ID).unwrap(),
             operation(),
+            services(),
         ));
         assert_eq!(outcome.status(), &TerminalStatus::Cancelled);
         drop(events);

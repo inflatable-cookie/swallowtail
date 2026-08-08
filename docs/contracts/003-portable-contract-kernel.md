@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-19
+Updated: 2026-08-08
 
 ## Purpose
 
@@ -31,6 +31,8 @@ records.
 - common event metadata does not require exposing raw provider payloads
 - provider extensions are namespaced and optional
 - diagnostics separate a safe public message from internal source details
+- restricted internal or debug detail reaches a host observer only under
+  explicit policy; it never becomes the default public diagnostic surface
 - secrets, tokens, prompt bodies, and raw tool payloads are not included in
   default display or serialization paths
 - unknown provider additions can be preserved or rejected deliberately, never

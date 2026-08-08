@@ -9,6 +9,7 @@ impl AcpConnection {
                         Ok(messages) => {
                             for message in messages {
                                 if let Err(error) = self.dispatch(message).await {
+                                    self.emit_protocol_debug(&error, "acp.pump.dispatch");
                                     transport_failure = Some(error);
                                     break;
                                 }
@@ -17,7 +18,11 @@ impl AcpConnection {
                                 self.complete_attachment_recovery_batch();
                             }
                         }
-                        Err(_) => transport_failure = Some(protocol_failure()),
+                        Err(_) => {
+                            let error = protocol_failure();
+                            self.emit_protocol_debug(&error, "acp.pump.decode");
+                            transport_failure = Some(error);
+                        }
                     }
                     if transport_failure.is_some() {
                         break;
@@ -26,13 +31,16 @@ impl AcpConnection {
                 Ok(Some(_)) => {}
                 Ok(None) => break,
                 Err(error) => {
+                    self.emit_protocol_debug(&error, "acp.pump.read");
                     transport_failure = Some(error);
                     break;
                 }
             }
         }
         if transport_failure.is_none() && decoder.finish().is_err() {
-            transport_failure = Some(protocol_failure());
+            let error = protocol_failure();
+            self.emit_protocol_debug(&error, "acp.pump.finish");
+            transport_failure = Some(error);
         }
         if transport_failure.is_some() {
             let _ = self.process.force_stop().await;

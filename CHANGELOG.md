@@ -5,6 +5,29 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
+### Added
+- add Contract 054 portable provider-session history pages: plan/request/
+  response, plan-bound older cursors, `Exact` / `AtLeast` / `Unknown` totals,
+  newest-first window helper, and a read-only driver role distinct from load
+  and reconciliation
+- prove `codex.app-server` synthetic newest-first history pages over bounded
+  `thread/read(includeTurns: true)` without control side effects
+- prove `opencode.http` and retained `alibaba.conversations` history pages over
+  their existing ascending replay walks without live handles or control side
+  effects; runtime history plans accept resource-free DirectModelInference
+  posture as well as ambient working-resource harness routes
+- document provider-session history pages and the Codex, OpenCode, and Alibaba
+  retained mappings; ACP load-as-history routes stay unsupported
+- add Contract 053 opt-in debug observation: structured `DebugObservation`
+  records, defaulted `DiagnosticObserver::observe_debug`, and fail-soft
+  `HostServices` emit helpers for restricted wire and lifecycle context
+- emit failure-path debug observations across shared discovery/prep, ACP/RPC,
+  headless, hosted HTTP/SSE/WS, realtime, remote ACP, Anthropic managed-agent,
+  Ollama, llama.cpp attached/owned, and Bedrock catalogue surfaces without
+  changing safe diagnostics
+- document host opt-in wiring and the current emitter inventory in the
+  debug-observation guide and runtime example
+
 ## [0.3.0] - 2026-08-08
 
 ### Added

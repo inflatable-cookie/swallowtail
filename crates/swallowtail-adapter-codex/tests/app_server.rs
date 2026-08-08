@@ -12,13 +12,16 @@ use swallowtail_core::{
     Capability, CapabilityConstraint, CapabilityRequirement, DriverRole, HarnessMode,
     HostServiceKind, ReasoningMode,
 };
+use std::sync::{Arc, Mutex};
+use swallowtail_core::Diagnostic;
 use swallowtail_runtime::{
     ActivityAssistantPhase, ActivityKind, CallbackPayload, CallbackRequestKind, CallbackResponse,
-    CallbackResult, CancellationAcknowledgement, CleanupOutcome, Deadline, EnvironmentRef,
-    InteractiveSessionDriver, ModelCatalogDriver, ModelCatalogRequest, MonotonicInstant,
-    OperationContent, RequestId, RuntimeEventKind, RuntimeTurnId, SchemaDocument,
-    SessionAccessPolicy, SessionOptions, SessionPlanAgreement, SessionResumeBinding,
-    StructuredOutputDescriptor, TerminalStatus, ToolDeclaration, TurnRequest, WorkingResourceRef,
+    CallbackResult, CancellationAcknowledgement, CleanupOutcome, Deadline, DebugObservation,
+    DebugObservationKind, DiagnosticObserver, EnvironmentRef, InteractiveSessionDriver,
+    ModelCatalogDriver, ModelCatalogRequest, MonotonicInstant, OperationContent, RequestId,
+    RuntimeEventKind, RuntimeTurnId, SchemaDocument, SessionAccessPolicy, SessionOptions,
+    SessionPlanAgreement, SessionResumeBinding, StructuredOutputDescriptor, TerminalStatus,
+    ToolDeclaration, TurnRequest, WorkingResourceRef,
 };
 use swallowtail_testkit::RecordingHostServices;
 

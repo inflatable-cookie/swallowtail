@@ -153,6 +153,7 @@ fn validate_harness_isolation(
         OperationShape::InteractiveSession
             | OperationShape::ProviderSessionImport
             | OperationShape::ProviderSessionReconciliation
+            | OperationShape::ProviderSessionHistory
     ) {
         let session_isolation = requirements
             .session_access_policy()

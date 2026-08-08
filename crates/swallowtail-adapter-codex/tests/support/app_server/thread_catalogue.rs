@@ -112,6 +112,20 @@ impl ScriptedAppServerHandle {
         } else {
             1775000000_u64
         };
+        let turns = if matches!(mode, ThreadCatalogueMode::EmptyHistory) {
+            serde_json::json!([])
+        } else {
+            serde_json::json!([
+                {"id":"turn-1","status":"inProgress","items":[
+                    {"type":"userMessage","id":"item-1","clientId":null,"content":[
+                        {"type":"text","text":"Earlier question."}
+                    ]}
+                ]},
+                {"id":"turn-2","status":"completed","items":[
+                    {"type":"agentMessage","id":"item-2","text":"Earlier answer."}
+                ]}
+            ])
+        };
         self.state.push(serde_json::json!({
             "id": id,
             "result": {
@@ -121,16 +135,7 @@ impl ScriptedAppServerHandle {
                     "status": {"type": status},
                     "cwd": cwd,
                     "source": "cli",
-                    "turns": [
-                        {"id":"turn-1","status":"inProgress","items":[
-                            {"type":"userMessage","id":"item-1","clientId":null,"content":[
-                                {"type":"text","text":"Earlier question."}
-                            ]}
-                        ]},
-                        {"id":"turn-2","status":"completed","items":[
-                            {"type":"agentMessage","id":"item-2","text":"Earlier answer."}
-                        ]}
-                    ]
+                    "turns": turns
                 }
             }
         }));

@@ -9,16 +9,16 @@ use swallowtail_runtime::{
 
 pub use input::{
     OpenCodeCatalogueProfileInput, OpenCodeModelSelection, OpenCodeRunProfileInput,
-    OpenCodeSessionCatalogueInput, OpenCodeSessionManagementInput, OpenCodeSessionProfileInput,
-    OpenCodeSessionReconciliationInput,
+    OpenCodeSessionCatalogueInput, OpenCodeSessionHistoryInput, OpenCodeSessionManagementInput,
+    OpenCodeSessionProfileInput, OpenCodeSessionReconciliationInput,
 };
 pub use operations::{
     OpenCodePreparedCatalogue, OpenCodePreparedDelete, OpenCodePreparedRun, OpenCodePreparedSession,
 };
 pub use plan::OpenCodePreparedEvidence;
 pub use provider_sessions::{
-    OpenCodePreparedSessionCatalogue, OpenCodePreparedSessionImport,
-    OpenCodePreparedSessionReconciliation,
+    OpenCodePreparedSessionCatalogue, OpenCodePreparedSessionHistory,
+    OpenCodePreparedSessionImport, OpenCodePreparedSessionReconciliation,
 };
 
 /// Future returned when a prepared OpenCode session is opened or resumed.

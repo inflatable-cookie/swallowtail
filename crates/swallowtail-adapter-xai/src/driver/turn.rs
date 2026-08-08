@@ -94,6 +94,7 @@ impl XaiSessionHandle {
         let active_turn_id = turn_id.clone();
         let model_route_id = self.model_route_id.clone();
         let access_profile_id = self.access_profile_id.clone();
+        let pump_services = self.services.clone();
         let deadline = request.deadline();
         let time = self.services.time().cloned().expect("validated time");
         let task = task_service.spawn(
@@ -117,6 +118,7 @@ impl XaiSessionHandle {
                         model_route_id,
                         access_profile_id,
                     },
+                    pump_services,
                 )
                 .await;
                 events.mark_terminal();

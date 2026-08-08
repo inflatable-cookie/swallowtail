@@ -5,10 +5,12 @@ use std::sync::Arc;
 use std::task::Poll;
 use swallowtail_core::SafeDiagnostic;
 use swallowtail_runtime::{
-    ActivityOperationId, BoxFuture, CleanupOutcome, DeadlineObservation, ProcessHandle,
-    ProcessOutputChunk, ProcessOutputStream, RuntimeEventSender, RuntimeFailure, TerminalOutcome,
-    TerminalStatus,
+    ActivityOperationId, BoxFuture, CleanupOutcome, DeadlineObservation, DebugObservationKind,
+    HostServices, ProcessHandle, ProcessOutputChunk, ProcessOutputStream, RuntimeEventSender,
+    RuntimeFailure, TerminalOutcome, TerminalStatus,
 };
+
+const ROUTE: &str = "kimi.headless";
 
 pub(crate) async fn pump(
     process: Arc<dyn ProcessHandle>,
@@ -16,6 +18,7 @@ pub(crate) async fn pump(
     cancellation: Arc<KimiHeadlessCancellation>,
     deadline: BoxFuture<'static, DeadlineObservation>,
     operation_id: ActivityOperationId,
+    services: HostServices,
 ) -> TerminalOutcome {
     let mut parser = KimiHeadlessEventParser::new(operation_id);
     let mut deadline = Some(deadline);
@@ -36,6 +39,7 @@ pub(crate) async fn pump(
                         }
                     }
                     Err(error) => {
+                        emit_protocol_debug(&services, &error, "headless.pump.decode");
                         let cleanup = force_cleanup(process.as_ref()).await;
                         return TerminalOutcome::new(
                             TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
@@ -47,6 +51,7 @@ pub(crate) async fn pump(
             NextOutput::Process(Ok(Some(_))) => {}
             NextOutput::Process(Ok(None)) => break,
             NextOutput::Process(Err(error)) => {
+                emit_host_process_debug(&services, &error, "headless.pump.read");
                 let cleanup = force_cleanup(process.as_ref()).await;
                 return TerminalOutcome::new(
                     TerminalStatus::HostFailed(error.diagnostic().clone()),
@@ -67,18 +72,53 @@ pub(crate) async fn pump(
                 parsed.outcome(exit)
             }
         }
-        (Err(error), exit) => TerminalOutcome::new(
-            TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
-            cleanup_from_wait(&exit),
-        ),
-        (_, Err(_)) => TerminalOutcome::new(
-            TerminalStatus::HostFailed(SafeDiagnostic::new(
+        (Err(error), exit) => {
+            emit_protocol_debug(&services, &error, "headless.pump.finish");
+            TerminalOutcome::new(
+                TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
+                cleanup_from_wait(&exit),
+            )
+        }
+        (_, Err(_)) => {
+            let diagnostic = SafeDiagnostic::new(
                 "swallowtail.kimi.headless.process_wait_failed",
                 "Kimi headless process wait failed",
-            )),
-            process_cleanup_failed(),
-        ),
+            );
+            services.emit_failure_debug(
+                DebugObservationKind::HostProcess,
+                ROUTE,
+                "headless.pump.wait",
+                diagnostic.code(),
+                diagnostic.message(),
+            );
+            TerminalOutcome::new(
+                TerminalStatus::HostFailed(diagnostic),
+                process_cleanup_failed(),
+            )
+        }
     }
+}
+
+fn emit_protocol_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
+    let diagnostic = error.diagnostic();
+    services.emit_failure_debug(
+        DebugObservationKind::ProtocolParse,
+        ROUTE,
+        stage,
+        diagnostic.code(),
+        diagnostic.message(),
+    );
+}
+
+fn emit_host_process_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
+    let diagnostic = error.diagnostic();
+    services.emit_failure_debug(
+        DebugObservationKind::HostProcess,
+        ROUTE,
+        stage,
+        diagnostic.code(),
+        diagnostic.message(),
+    );
 }
 
 enum NextOutput {

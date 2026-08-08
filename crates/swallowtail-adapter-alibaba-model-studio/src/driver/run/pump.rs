@@ -26,16 +26,25 @@ async fn pump_run(
                 break if output.is_some() {
                     TerminalStatus::Completed
                 } else {
-                    TerminalStatus::ProviderFailed(SafeDiagnostic::new(
+                    let diagnostic = SafeDiagnostic::new(
                         "swallowtail.alibaba_model_studio.stream_disconnected",
                         "Alibaba Model Studio stream closed before completion",
-                    ))
+                    );
+                    services.emit_failure_debug(
+                        DebugObservationKind::WireInbound,
+                        ROUTE,
+                        "http.pump.transport",
+                        diagnostic.code(),
+                        diagnostic.message(),
+                    );
+                    TerminalStatus::ProviderFailed(diagnostic)
                 };
             }
             Signal::Item(Err(_)) if cancellation.cancelled.load(Ordering::SeqCst) => {
                 break TerminalStatus::Cancelled;
             }
             Signal::Item(Err(error)) => {
+                emit_wire_debug(&services, &error, "http.pump.transport");
                 break TerminalStatus::ProviderFailed(error.diagnostic().clone());
             }
             Signal::Item(Ok(StreamItem::Correlation(reference))) => {
@@ -51,7 +60,15 @@ async fn pump_run(
             }
             Signal::Item(Ok(StreamItem::Frame(frame))) => match provider.apply(&frame) {
                 Err(error) => {
-                    break TerminalStatus::ProviderFailed(error.diagnostic().clone());
+                    let diagnostic = error.diagnostic();
+                    services.emit_failure_debug(
+                        DebugObservationKind::ProtocolParse,
+                        ROUTE,
+                        "http.pump.decode",
+                        diagnostic.code(),
+                        diagnostic.message(),
+                    );
+                    break TerminalStatus::ProviderFailed(diagnostic.clone());
                 }
                 Ok(
                     ProviderEvent::Created(_)
@@ -183,4 +200,15 @@ fn emit(
     kind: RuntimeEventKind,
 ) -> Result<(), RuntimeFailure> {
     swallowtail_runtime::emit(events, sequence, kind)
+}
+
+fn emit_wire_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
+    let diagnostic = error.diagnostic();
+    services.emit_failure_debug(
+        DebugObservationKind::WireInbound,
+        ROUTE,
+        stage,
+        diagnostic.code(),
+        diagnostic.message(),
+    );
 }

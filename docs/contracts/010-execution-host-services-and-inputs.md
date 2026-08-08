@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-31
+Updated: 2026-08-08
 
 ## Purpose
 
@@ -247,6 +247,18 @@ delivery. A host diagnostic observer may receive restricted internal details
 under explicit policy. Raw provider payloads, prompts, outputs, stderr, tokens,
 secret values, credential-store paths, and sensitive host paths never enter
 public events or default formatting.
+
+`DiagnosticObserver` is optional host registration. When present, adapters and
+runtime helpers may emit:
+
+- `Diagnostic` records that carry safe public fields plus optional restricted
+  `internal_detail`
+- structured `DebugObservation` records governed by Contract 053
+
+When absent, emission is a no-op. Observer registration is never required for
+ordinary preparation or execution. Observer sink failure must not alter
+lifecycle, classification, cleanup, or route selection. Contract 053 owns the
+observation vocabulary, bounds, redaction, and non-interference rules.
 
 ## Extensions And Fallback
 

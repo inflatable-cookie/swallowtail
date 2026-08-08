@@ -23,21 +23,31 @@ async fn pump_run(
                 break TerminalStatus::TimedOut;
             }
             RunSignal::Closed if cancellation.is_requested() => break TerminalStatus::Cancelled,
-            RunSignal::Closed => break provider_status(failure(
-                "swallowtail.anthropic.stream_disconnected",
-                "Anthropic stream closed before message completion",
-            )),
+            RunSignal::Closed => {
+                let error = failure(
+                    "swallowtail.anthropic.stream_disconnected",
+                    "Anthropic stream closed before message completion",
+                );
+                emit_wire_debug(&services, &error, "http.pump.transport");
+                break provider_status(error);
+            }
             RunSignal::Item(Err(_)) if cancellation.is_requested() => {
                 break TerminalStatus::Cancelled;
             }
-            RunSignal::Item(Err(error)) => break provider_status(error),
+            RunSignal::Item(Err(error)) => {
+                emit_wire_debug(&services, &error, "http.pump.transport");
+                break provider_status(error);
+            }
             RunSignal::Item(Ok(StreamItem::Headers(headers))) => {
                 if let Err(error) = emit_headers(&events, &mut sequence, &headers) {
                     break TerminalStatus::RuntimeFailed(error.diagnostic().clone());
                 }
             }
             RunSignal::Item(Ok(StreamItem::Frame(frame))) => match parse_event(&frame) {
-                Err(error) => break provider_status(error),
+                Err(error) => {
+                    emit_protocol_debug(&services, &error, "http.pump.decode");
+                    break provider_status(error);
+                }
                 Ok(Event::Unknown) => {}
                 Ok(Event::Ping) => {
                     if let Err(error) = emit(&events, &mut sequence, RuntimeEventKind::Keepalive) {
@@ -195,7 +205,10 @@ async fn pump_run(
                         }
                         break TerminalStatus::Completed;
                     }
-                    Err(error) => break provider_status(error),
+                    Err(error) => {
+                        emit_protocol_debug(&services, &error, "http.pump.map");
+                        break provider_status(error);
+                    }
                 },
             },
         }

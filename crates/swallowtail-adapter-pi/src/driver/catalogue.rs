@@ -103,6 +103,7 @@ impl super::PiRpcDriver {
             Arc::clone(&process),
             services.task().cloned().expect("validated Pi task service"),
             services.time().cloned().expect("validated Pi time service"),
+            services.clone(),
         );
         let pump = Arc::clone(&connection);
         let pump_task = match services

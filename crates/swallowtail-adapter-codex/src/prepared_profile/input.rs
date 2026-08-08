@@ -4,10 +4,69 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     AttachmentDescriptor, Deadline, OperationContent, ProviderSessionCatalogueId,
-    ProviderSessionManagementBinding, ProviderSessionReconciliationBounds, RequestId,
-    RuntimeTurnId, SessionOptions, SessionResumeBinding, StructuredOutputDescriptor,
-    ToolDeclaration, WorkingResourceRef,
+    ProviderSessionHistoryBounds, ProviderSessionHistoryId, ProviderSessionManagementBinding,
+    ProviderSessionReconciliationBounds, RequestId, RuntimeTurnId, SessionOptions,
+    SessionResumeBinding, StructuredOutputDescriptor, ToolDeclaration, WorkingResourceRef,
 };
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs for one newest-first Codex provider-session history page plan.
+pub struct CodexSessionHistoryInput {
+    request_id: RequestId,
+    history_id: ProviderSessionHistoryId,
+    model: CodexModelSelection,
+    binding: SessionResumeBinding,
+    bounds: ProviderSessionHistoryBounds,
+    deadline: Option<Deadline>,
+}
+
+impl CodexSessionHistoryInput {
+    /// Creates bounded history-page input from an exact durable session binding.
+    #[must_use]
+    pub const fn new(
+        request_id: RequestId,
+        history_id: ProviderSessionHistoryId,
+        model: CodexModelSelection,
+        binding: SessionResumeBinding,
+        bounds: ProviderSessionHistoryBounds,
+    ) -> Self {
+        Self {
+            request_id,
+            history_id,
+            model,
+            binding,
+            bounds,
+            deadline: None,
+        }
+    }
+
+    /// Adds a history-page deadline.
+    #[must_use]
+    pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
+        self.deadline = Some(deadline);
+        self
+    }
+
+    pub(crate) fn into_parts(
+        self,
+    ) -> (
+        RequestId,
+        ProviderSessionHistoryId,
+        CodexModelSelection,
+        SessionResumeBinding,
+        ProviderSessionHistoryBounds,
+        Option<Deadline>,
+    ) {
+        (
+            self.request_id,
+            self.history_id,
+            self.model,
+            self.binding,
+            self.bounds,
+            self.deadline,
+        )
+    }
+}
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 /// Inputs for read-only reconciliation of one interrupted Codex thread turn.

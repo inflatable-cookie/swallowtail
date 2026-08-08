@@ -3,8 +3,8 @@ use crate::error::{
 };
 use crate::{RemoteAcpConnection, RemoteAcpErrorKind};
 use futures_channel::mpsc;
-use swallowtail_core::SafeDiagnostic;
-use swallowtail_runtime::{BoxFuture, CleanupOutcome, JoinedTask, RuntimeFailure};
+use swallowtail_core::{ExecutionHostId, SafeDiagnostic};
+use swallowtail_runtime::{BoxFuture, CleanupOutcome, HostServices, JoinedTask, RuntimeFailure};
 
 struct FailingJoin;
 
@@ -29,6 +29,9 @@ fn cleanup_failure_is_explicit_and_redacted() {
         connection_task: Some(Box::new(FailingJoin)),
         deadline_task: None,
         deadline_done: None,
+        _services: HostServices::new(
+            ExecutionHostId::new("host.remote-acp-fixture").expect("host id is valid"),
+        ),
     };
 
     let cleanup = futures_executor::block_on(connection.close());

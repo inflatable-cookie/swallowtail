@@ -22,6 +22,7 @@ include!("roles/drivers/provider_session_management.rs");
 include!("roles/drivers/provider_session_catalogue.rs");
 include!("roles/drivers/provider_session_import.rs");
 include!("roles/drivers/provider_session_reconciliation.rs");
+include!("roles/drivers/provider_session_history.rs");
 include!("roles/drivers/serving.rs");
 
 /// Discovers provider instances without starting an inference operation.
@@ -73,6 +74,14 @@ pub trait ProviderSessionImportDriver: Send + Sync {
 /// authority.
 pub trait ProviderSessionReconciliationDriver: Send + Sync {
     provider_session_reconciliation_driver_items!();
+}
+
+/// Read-only newest-first pages of provider-owned session history.
+///
+/// This role grants no turn start, resume, load, import, archive, delete, or
+/// callback authority, and returns no live session handle.
+pub trait ProviderSessionHistoryDriver: Send + Sync {
+    provider_session_history_driver_items!();
 }
 
 /// Read-only observation of one exact provider-owned structured run.

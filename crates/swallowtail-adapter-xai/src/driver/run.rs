@@ -127,6 +127,7 @@ impl StructuredRunDriver for XaiWebSocketDriver {
                                 model_route_id,
                                 access_profile_id,
                             },
+                            run_services.clone(),
                         )
                         .await;
                         let outcome = finish_run(

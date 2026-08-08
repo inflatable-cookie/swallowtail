@@ -2,6 +2,8 @@
 mod catalogue;
 #[path = "execution/control.rs"]
 mod control;
+#[path = "execution/history.rs"]
+mod history;
 #[path = "execution/import.rs"]
 mod import;
 #[path = "execution/reconciliation.rs"]

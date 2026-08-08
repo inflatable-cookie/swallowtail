@@ -37,6 +37,7 @@ pub enum AppServerMode {
 #[derive(Clone, Copy)]
 pub enum ThreadCatalogueMode {
     Available,
+    EmptyHistory,
     WrongResource,
     Missing,
     Active,

@@ -5,9 +5,69 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     AttachmentDescriptor, Deadline, OperationContent, ProviderSessionCatalogueId,
-    ProviderSessionManagementBinding, ProviderSessionReconciliationBounds, RequestId,
-    RuntimeTurnId, SessionResumeBinding, StructuredOutputDescriptor, WorkingResourceRef,
+    ProviderSessionHistoryBounds, ProviderSessionHistoryId, ProviderSessionManagementBinding,
+    ProviderSessionReconciliationBounds, RequestId, RuntimeTurnId, SessionResumeBinding,
+    StructuredOutputDescriptor, WorkingResourceRef,
 };
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+/// Inputs for one newest-first OpenCode provider-session history page plan.
+pub struct OpenCodeSessionHistoryInput {
+    request_id: RequestId,
+    history_id: ProviderSessionHistoryId,
+    model: OpenCodeModelSelection,
+    binding: SessionResumeBinding,
+    bounds: ProviderSessionHistoryBounds,
+    deadline: Option<Deadline>,
+}
+
+impl OpenCodeSessionHistoryInput {
+    /// Creates bounded history-page input from an exact durable session binding.
+    #[must_use]
+    pub const fn new(
+        request_id: RequestId,
+        history_id: ProviderSessionHistoryId,
+        model: OpenCodeModelSelection,
+        binding: SessionResumeBinding,
+        bounds: ProviderSessionHistoryBounds,
+    ) -> Self {
+        Self {
+            request_id,
+            history_id,
+            model,
+            binding,
+            bounds,
+            deadline: None,
+        }
+    }
+
+    /// Adds a history-page deadline.
+    #[must_use]
+    pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
+        self.deadline = Some(deadline);
+        self
+    }
+
+    pub(super) fn into_parts(
+        self,
+    ) -> (
+        RequestId,
+        ProviderSessionHistoryId,
+        OpenCodeModelSelection,
+        SessionResumeBinding,
+        ProviderSessionHistoryBounds,
+        Option<Deadline>,
+    ) {
+        (
+            self.request_id,
+            self.history_id,
+            self.model,
+            self.binding,
+            self.bounds,
+            self.deadline,
+        )
+    }
+}
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 /// Inputs for read-only reconciliation of one exact retained OpenCode session.

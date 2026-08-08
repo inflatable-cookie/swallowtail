@@ -80,6 +80,13 @@ before the live handle becomes ready. Its
 `ProviderSessionContinuationRecovery`; it preserves the interrupted consumer
 turn as unresolved. There is no replay-free resume or inferred terminal state.
 
+For newest-first history browse without a live handle, call
+`prepare_session_history` with `AlibabaSessionHistoryInput` (exact retained
+binding, history id, page/cursor/snapshot bounds, optional deadline) and
+`page_history`. The path reuses the ascending items walk, slices portable
+pages in-process, and returns no handle. It is not load readiness. See
+[Provider Session History Pages](provider-session-history.md).
+
 ## Resource-Free Structured Run
 
 `prepare_run` binds the same exact workspace, route, and model but creates no

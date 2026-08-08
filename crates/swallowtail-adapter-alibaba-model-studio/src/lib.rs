@@ -29,7 +29,8 @@ pub use prepared_profile::{
     AlibabaConversationProfileInput, AlibabaModelStudioPreparedConversation,
     AlibabaModelStudioPreparedDelete, AlibabaModelStudioPreparedEvidence,
     AlibabaModelStudioPreparedRetainedConversation, AlibabaModelStudioPreparedRun,
-    AlibabaRetainedConversationProfileInput, AlibabaRunProfileInput, AlibabaSessionManagementInput,
+    AlibabaModelStudioPreparedSessionHistory, AlibabaRetainedConversationProfileInput,
+    AlibabaRunProfileInput, AlibabaSessionHistoryInput, AlibabaSessionManagementInput,
 };
 pub use protocol::{
     ConversationInventory, ConversationMetadata, ConversationRef, ConversationReplayPage,
@@ -43,8 +44,8 @@ pub use selection::{
     ACCESS_PROFILE_ID, CONFIGURED_INSTANCE_ID, ENDPOINT_AUDIENCE, EVIDENCE_DATE, EXACT_MODEL_ID,
     MODEL_ROUTE_ID, REGION, WORKSPACE_ENDPOINT_TEMPLATE, alibaba_model_studio_access_profile,
     alibaba_model_studio_descriptor, alibaba_model_studio_facade_binding,
-    alibaba_model_studio_facade_claim, alibaba_model_studio_instance,
-    alibaba_model_studio_management_requirements, alibaba_model_studio_requirements,
+    alibaba_model_studio_facade_claim, alibaba_model_studio_history_requirements,
+    alibaba_model_studio_instance, alibaba_model_studio_management_requirements, alibaba_model_studio_requirements,
     alibaba_model_studio_retained_requirements, alibaba_model_studio_route,
     alibaba_model_studio_run_requirements, validate_alibaba_model_studio_plan,
 };

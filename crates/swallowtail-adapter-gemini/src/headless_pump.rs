@@ -5,11 +5,14 @@ use std::sync::Arc;
 use std::task::Poll;
 use swallowtail_core::{ModelId, OwnedRemoteResourceKind, SafeDiagnostic};
 use swallowtail_runtime::{
-    ActivityOperationId, BoxFuture, CleanupOutcome, DeadlineObservation, EnvironmentRef,
-    ExecutableRef, ProcessHandle, ProcessOutputChunk, ProcessOutputStream, ProcessRequest,
-    ProcessService, RemoteResourceDeletionOutcome, RuntimeEventSender, RuntimeFailure, ScopeId,
-    TerminalOutcome, TerminalStatus, WorkingResourceRef,
+    ActivityOperationId, BoxFuture, CleanupOutcome, DeadlineObservation, DebugObservationKind,
+    EnvironmentRef, ExecutableRef, HostServices, ProcessHandle, ProcessOutputChunk,
+    ProcessOutputStream, ProcessRequest, ProcessService, RemoteResourceDeletionOutcome,
+    RuntimeEventSender, RuntimeFailure, ScopeId, TerminalOutcome, TerminalStatus,
+    WorkingResourceRef,
 };
+
+const ROUTE: &str = "gemini.headless";
 
 const MANAGEMENT_OUTPUT_LIMIT: usize = 64 * 1024;
 
@@ -35,8 +38,9 @@ pub(crate) async fn pump(
     deadline: BoxFuture<'static, DeadlineObservation>,
     projection: HeadlessProjection,
     cleanup: Option<TranscriptCleanup>,
+    services: HostServices,
 ) -> TerminalOutcome {
-    let outcome = pump_run(process, events, cancellation, deadline, projection).await;
+    let outcome = pump_run(process, events, cancellation, deadline, projection, services).await;
     let Some(cleanup) = cleanup else {
         return outcome;
     };
@@ -51,6 +55,7 @@ async fn pump_run(
     cancellation: Arc<GeminiHeadlessCancellation>,
     deadline: BoxFuture<'static, DeadlineObservation>,
     projection: HeadlessProjection,
+    services: HostServices,
 ) -> TerminalOutcome {
     let mut parser = GeminiHeadlessEventParser::new(
         projection.model,
@@ -75,6 +80,7 @@ async fn pump_run(
                         }
                     }
                     Err(error) => {
+                        emit_protocol_debug(&services, &error, "headless.pump.decode");
                         let cleanup = force_cleanup(process.as_ref()).await;
                         return TerminalOutcome::new(
                             TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
@@ -86,6 +92,7 @@ async fn pump_run(
             NextOutput::Process(Ok(Some(_))) => {}
             NextOutput::Process(Ok(None)) => break,
             NextOutput::Process(Err(error)) => {
+                emit_host_process_debug(&services, &error, "headless.pump.read");
                 let cleanup = force_cleanup(process.as_ref()).await;
                 return TerminalOutcome::new(
                     TerminalStatus::HostFailed(error.diagnostic().clone()),
@@ -106,18 +113,53 @@ async fn pump_run(
                 parsed.outcome(exit)
             }
         }
-        (Err(error), exit) => TerminalOutcome::new(
-            TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
-            cleanup_from_wait(&exit),
-        ),
-        (_, Err(_)) => TerminalOutcome::new(
-            TerminalStatus::HostFailed(SafeDiagnostic::new(
+        (Err(error), exit) => {
+            emit_protocol_debug(&services, &error, "headless.pump.finish");
+            TerminalOutcome::new(
+                TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
+                cleanup_from_wait(&exit),
+            )
+        }
+        (_, Err(_)) => {
+            let diagnostic = SafeDiagnostic::new(
                 "swallowtail.gemini.headless.process_wait_failed",
                 "Gemini headless process wait failed",
-            )),
-            process_cleanup_failed(),
-        ),
+            );
+            services.emit_failure_debug(
+                DebugObservationKind::HostProcess,
+                ROUTE,
+                "headless.pump.wait",
+                diagnostic.code(),
+                diagnostic.message(),
+            );
+            TerminalOutcome::new(
+                TerminalStatus::HostFailed(diagnostic),
+                process_cleanup_failed(),
+            )
+        }
     }
+}
+
+fn emit_protocol_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
+    let diagnostic = error.diagnostic();
+    services.emit_failure_debug(
+        DebugObservationKind::ProtocolParse,
+        ROUTE,
+        stage,
+        diagnostic.code(),
+        diagnostic.message(),
+    );
+}
+
+fn emit_host_process_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
+    let diagnostic = error.diagnostic();
+    services.emit_failure_debug(
+        DebugObservationKind::HostProcess,
+        ROUTE,
+        stage,
+        diagnostic.code(),
+        diagnostic.message(),
+    );
 }
 
 async fn delete_transcript(

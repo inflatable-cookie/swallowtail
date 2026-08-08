@@ -121,6 +121,7 @@ impl AntigravitySessionHandle {
         let model = self.model.clone();
         let task_expected = expected_conversation;
         let task_turn_id = request.turn_id().clone();
+        let task_services = self.services.clone();
         let task = self.services.task().expect("validated task service").spawn(
             scope,
             Box::pin(async move {
@@ -133,6 +134,7 @@ impl AntigravitySessionHandle {
                     false,
                     task_expected,
                     ActivityOperationId::Turn(task_turn_id),
+                    task_services,
                 )
                 .await;
                 {

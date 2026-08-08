@@ -121,6 +121,7 @@ impl QwenSessionHandle {
         let expected_version = self.expected_version.clone();
         let task_expected = expected_session.clone();
         let task_turn_id = request.turn_id().clone();
+        let task_services = self.services.clone();
         let task = self.services.task().expect("validated Qwen task").spawn(
             scope,
             Box::pin(async move {
@@ -135,6 +136,7 @@ impl QwenSessionHandle {
                         task_expected,
                         ActivityOperationId::Turn(task_turn_id),
                     ),
+                    task_services,
                 )
                 .await;
                 {

@@ -156,6 +156,7 @@ impl OhMyPiRpcDriver {
                 .time()
                 .cloned()
                 .expect("validated OhMyPi time service"),
+            services.clone(),
         );
         let pump = Arc::clone(&connection);
         let pump_task = match services

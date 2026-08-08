@@ -21,6 +21,20 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-08 Multi-Route Provider Session History](./2026-08-08-multi-route-provider-history.md)
+- [2026-08-08 Provider History Page Guide](./2026-08-08-provider-history-page-guide.md)
+- [2026-08-08 Codex Provider History Page Proof](./2026-08-08-codex-provider-history-page-proof.md)
+- [2026-08-08 Runtime Provider History Page](./2026-08-08-runtime-provider-history-page.md)
+- [2026-08-08 Paged Provider Session History Planning](./2026-08-08-paged-provider-session-history-planning.md)
+- [2026-08-08 Remaining Route Debug Emissions](./2026-08-08-remaining-route-debug-emissions.md)
+- [2026-08-08 HTTP Realtime Debug Emissions And Guide Closeout](./2026-08-08-http-realtime-debug-emissions-closeout.md)
+- [2026-08-08 Headless And Codex Exec Debug Emissions](./2026-08-08-headless-codex-exec-debug-emissions.md)
+- [2026-08-08 ACP And Harness-RPC Debug Emissions](./2026-08-08-acp-rpc-debug-emissions.md)
+- [2026-08-08 Shared Discovery Debug Emissions](./2026-08-08-shared-discovery-debug-emissions.md)
+- [2026-08-08 Debug Observation Guide And Example](./2026-08-08-debug-observation-guide-and-example.md)
+- [2026-08-08 Codex Debug Observation Proof](./2026-08-08-codex-debug-observation-proof.md)
+- [2026-08-08 Runtime Debug Observation Records](./2026-08-08-runtime-debug-observation-records.md)
+- [2026-08-08 Opt-In Debug Observation Seam](./2026-08-08-opt-in-debug-observation-seam.md)
 - [2026-08-08 v0.3.0 Local Source Candidate](./2026-08-08-v0-3-0-local-source-candidate.md)
 - [2026-08-07 Codex Malformed-Inbound Failure Diagnostics](./2026-08-07-codex-malformed-inbound-failure-diagnostics.md)
 - [2026-08-06 v0.2.0 Source Release](./2026-08-06-v0-2-0-source-release.md)

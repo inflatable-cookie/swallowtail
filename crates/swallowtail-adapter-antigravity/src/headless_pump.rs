@@ -5,11 +5,14 @@ use std::sync::Arc;
 use std::task::Poll;
 use swallowtail_core::{ModelId, SafeDiagnostic};
 use swallowtail_runtime::{
-    ActivityOperationId, BoxFuture, CleanupOutcome, DeadlineObservation, ProcessHandle,
-    ProcessOutputChunk, ProcessOutputStream, RuntimeEventSender, RuntimeFailure, TerminalOutcome,
-    TerminalStatus,
+    ActivityOperationId, BoxFuture, CleanupOutcome, DeadlineObservation, DebugObservationKind,
+    HostServices, ProcessHandle, ProcessOutputChunk, ProcessOutputStream, RuntimeEventSender,
+    RuntimeFailure, TerminalOutcome, TerminalStatus,
 };
 
+const ROUTE: &str = "antigravity.headless";
+
+#[allow(clippy::too_many_arguments)]
 pub(crate) async fn pump(
     process: Arc<dyn ProcessHandle>,
     events: RuntimeEventSender,
@@ -18,6 +21,7 @@ pub(crate) async fn pump(
     model: ModelId,
     schema_expected: bool,
     operation_id: ActivityOperationId,
+    services: HostServices,
 ) -> TerminalOutcome {
     pump_with_conversation(
         process,
@@ -28,6 +32,7 @@ pub(crate) async fn pump(
         schema_expected,
         None,
         operation_id,
+        services,
     )
     .await
     .outcome
@@ -48,6 +53,7 @@ pub(crate) async fn pump_with_conversation(
     schema_expected: bool,
     expected_conversation_id: Option<String>,
     operation_id: ActivityOperationId,
+    services: HostServices,
 ) -> AntigravityPumpResult {
     let mut parser = AntigravityEventParser::with_expected_conversation(
         operation_id,
@@ -73,6 +79,7 @@ pub(crate) async fn pump_with_conversation(
                         }
                     }
                     Err(failure) => {
+                        emit_protocol_debug(&services, &failure, "headless.pump.decode");
                         let cleanup = force_cleanup(process.as_ref()).await;
                         return result(TerminalOutcome::new(
                             TerminalStatus::RuntimeFailed(failure.diagnostic().clone()),
@@ -84,6 +91,7 @@ pub(crate) async fn pump_with_conversation(
             NextOutput::Process(Ok(Some(_))) => {}
             NextOutput::Process(Ok(None)) => break,
             NextOutput::Process(Err(failure)) => {
+                emit_host_process_debug(&services, &failure, "headless.pump.read");
                 let cleanup = force_cleanup(process.as_ref()).await;
                 return result(TerminalOutcome::new(
                     TerminalStatus::HostFailed(failure.diagnostic().clone()),
@@ -112,18 +120,53 @@ pub(crate) async fn pump_with_conversation(
                 }
             }
         }
-        (Err(failure), exit) => result(TerminalOutcome::new(
-            TerminalStatus::RuntimeFailed(failure.diagnostic().clone()),
-            cleanup_from_wait(&exit),
-        )),
-        (_, Err(_)) => result(TerminalOutcome::new(
-            TerminalStatus::HostFailed(SafeDiagnostic::new(
+        (Err(failure), exit) => {
+            emit_protocol_debug(&services, &failure, "headless.pump.finish");
+            result(TerminalOutcome::new(
+                TerminalStatus::RuntimeFailed(failure.diagnostic().clone()),
+                cleanup_from_wait(&exit),
+            ))
+        }
+        (_, Err(_)) => {
+            let diagnostic = SafeDiagnostic::new(
                 "swallowtail.antigravity.headless.process_wait_failed",
                 "Antigravity headless process wait failed",
-            )),
-            process_cleanup_failed(),
-        )),
+            );
+            services.emit_failure_debug(
+                DebugObservationKind::HostProcess,
+                ROUTE,
+                "headless.pump.wait",
+                diagnostic.code(),
+                diagnostic.message(),
+            );
+            result(TerminalOutcome::new(
+                TerminalStatus::HostFailed(diagnostic),
+                process_cleanup_failed(),
+            ))
+        }
     }
+}
+
+fn emit_protocol_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
+    let diagnostic = error.diagnostic();
+    services.emit_failure_debug(
+        DebugObservationKind::ProtocolParse,
+        ROUTE,
+        stage,
+        diagnostic.code(),
+        diagnostic.message(),
+    );
+}
+
+fn emit_host_process_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
+    let diagnostic = error.diagnostic();
+    services.emit_failure_debug(
+        DebugObservationKind::HostProcess,
+        ROUTE,
+        stage,
+        diagnostic.code(),
+        diagnostic.message(),
+    );
 }
 
 fn result(outcome: TerminalOutcome) -> AntigravityPumpResult {

@@ -7,6 +7,7 @@ use crate::{
     ProcessRequest, ResourceAccess, ResourceRepresentation, RuntimeFailure, SchemaDocument,
     ScopeId, WorkingResourceRef,
 };
+use crate::debug_observation::DebugObservation;
 use swallowtail_core::{CatalogTimestamp, Diagnostic, EndpointAudience, SafeDiagnostic};
 
 /// Join handle for one task created inside a runtime operation scope.
@@ -328,8 +329,16 @@ pub trait SchemaService: Send + Sync {
     fn release_file(&self, lease: SchemaFileLease) -> BoxFuture<'static, CleanupOutcome>;
 }
 
-/// Optional sink for redacted runtime diagnostics.
+/// Optional sink for redacted runtime diagnostics and debug observations.
 pub trait DiagnosticObserver: Send + Sync {
     /// Observes one diagnostic without gaining control of the operation.
     fn observe(&self, diagnostic: &Diagnostic);
+
+    /// Observes one structured debug record without gaining control of the operation.
+    ///
+    /// The default implementation ignores the observation so existing hosts keep
+    /// compiling. Hosts that want restricted debug context override this method.
+    fn observe_debug(&self, observation: &DebugObservation) {
+        let _ = observation;
+    }
 }

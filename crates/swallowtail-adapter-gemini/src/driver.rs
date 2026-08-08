@@ -216,6 +216,7 @@ impl GeminiAcpDriver {
             resource.clone(),
             resource_io,
             resource_access == ResourceAccess::ReadWrite,
+            services.clone(),
         );
         let pump_connection = Arc::clone(&connection);
         let task_service = services.task().cloned().expect("validated task service");

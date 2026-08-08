@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-06
+Updated: 2026-08-08
 
 ## Realized State
 
@@ -74,6 +74,19 @@ spine:
   policy, grouping, and collapsed presentation; warning-or-error activity may
   carry the same safe portable failure classification without turning display
   content into diagnostic text
+- opt-in debug observation is a separate host sink, not a second public event
+  stream: when a host registers `DiagnosticObserver`, runtime and adapters may
+  emit structured restricted `DebugObservation` records (and optional
+  `Diagnostic.internal_detail`) for wire, lifecycle, process, parse, and
+  classification context under Contract 053; safe diagnostics and public
+  events stay redacted; missing observers are no-ops and never fail an
+  operation
+- provider-session history paging is a separate read-only role under Contract
+  054: newest-first pages reuse `SessionReplayItem` projection, bounds, and
+  opaque cursors shared with load replay and reconciliation snapshots, but do
+  not grant load readiness, interrupted-turn observation, or consumer
+  transcript authority; Codex app-server, OpenCode HTTP, and Alibaba retained
+  conversations advertise the role today
 - the runtime also owns one consuming prepared working-state restoration
   facade over existing session reconciliation, run reconciliation, or exact
   provider-session load. Route preparation fixes the strongest qualified

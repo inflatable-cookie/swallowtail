@@ -41,9 +41,10 @@ pub use prepared_profile::{
     CodexExecProfileInput, CodexModelSelection, CodexPreparedArchive, CodexPreparedCatalogue,
     CodexPreparedDelete, CodexPreparedEvidence, CodexPreparedExec, CodexPreparedRestore,
     CodexPreparedSession, CodexPreparedSessionCatalogue, CodexPreparedSessionFuture,
-    CodexPreparedSessionImport, CodexPreparedSessionKind, CodexPreparedSessionLoadFuture,
-    CodexPreparedSessionReconciliation, CodexSessionCatalogueInput, CodexSessionManagementInput,
-    CodexSessionProfileInput, CodexSessionReconciliationInput,
+    CodexPreparedSessionHistory, CodexPreparedSessionImport, CodexPreparedSessionKind,
+    CodexPreparedSessionLoadFuture, CodexPreparedSessionReconciliation, CodexSessionCatalogueInput,
+    CodexSessionHistoryInput, CodexSessionManagementInput, CodexSessionProfileInput,
+    CodexSessionReconciliationInput,
 };
 pub use selection::{
     CODEX_APP_SERVER_BASELINE_VERSION, CODEX_APP_SERVER_THREAD_CATALOGUE_BASELINE_VERSION,

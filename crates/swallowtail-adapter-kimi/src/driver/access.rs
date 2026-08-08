@@ -136,6 +136,7 @@ impl KimiAcpDriver {
             Arc::clone(&process),
             resource.clone(),
             resource_io,
+            services.clone(),
         );
         let pump = Arc::clone(&connection);
         let task = match services

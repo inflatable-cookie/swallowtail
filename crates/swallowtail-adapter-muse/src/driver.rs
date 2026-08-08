@@ -137,6 +137,7 @@ impl MuseHeadlessDriver {
                 let cancellation = Arc::clone(&cancellation);
                 let process = Arc::clone(&process);
                 let operation_id = ActivityOperationId::Run(run_id.clone());
+                let services = services.clone();
                 async move {
                     let outcome = crate::pump::pump(
                         process,
@@ -145,6 +146,7 @@ impl MuseHeadlessDriver {
                         time_service.wait_until(deadline),
                         model,
                         operation_id,
+                        services,
                     )
                     .await;
                     let _ = terminal_sender.complete(outcome);

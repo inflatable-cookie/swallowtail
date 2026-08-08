@@ -140,7 +140,9 @@ does not inherit from the synthetic Codex mapping.
 
 ACP routes whose only history wire is control-granting `session/load`
 (`claude-agent.acp`, `kimi-code.acp`) stay unsupported until a control-free
-history wire is qualified.
+history wire is qualified. `kimi-code.local-server` likewise stays unsupported
+until a control-free transcript or messages API is qualified — session
+lifecycle and WS activity catch-up are not that wire (Research 115).
 
 ## Conformance
 

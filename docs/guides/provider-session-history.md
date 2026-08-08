@@ -104,7 +104,10 @@ These routes may load or attach sessions, but they do **not** advertise
 | `kimi-code.local-server` | Reconciliation returns empty replay; no transcript history wire. |
 
 Do not derive history support from load, resume, catalogue, import, or
-reconciliation. A control-free ACP history wire is a separate qualification.
+reconciliation. Research
+[115](../research/115-control-free-provider-history-wire-gate.md) re-checked
+current Claude/Kimi artifacts and left this inventory blocked until a
+control-free wire appears upstream.
 
 This guide does not add a column to the main provider feature CSV. Support is
 route-specific; see the route matrix rows for the three advertising routes.

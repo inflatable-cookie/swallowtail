@@ -15,8 +15,8 @@ shape.
 
 Return to the g03 evidence gate — inventory current harness drift and
 consumer friction before opening the next roadmap. g03.058 multi-route
-provider history is complete; do not reopen history paging unless a
-control-free ACP wire is evidenced.
+provider history is complete. Research 115 negatively closed the remaining
+Claude/Kimi history-wire candidates; reopen only on new upstream artifacts.
 
 ## Index
 

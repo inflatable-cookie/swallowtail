@@ -68,14 +68,15 @@ fn binding(axis_value: &str, value: &str) -> Option<InterfaceVersionBinding> {
 #[must_use]
 pub fn gemini_cli_acp_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
-        InterfaceCompatibilityClaimId::new("gemini-cli.acp.range-v1")
+        InterfaceCompatibilityClaimId::new("gemini-cli.acp.window-1")
             .expect("static Gemini CLI claim id is valid"),
         axis(),
         InterfaceVersionScheme::Semantic,
         InterfaceNewerVersionPosture::AllowUnverified,
         [InterfaceVersionSegment::new(
-            version(GEMINI_CLI_ACP_BASELINE_VERSION),
-            version(GEMINI_CLI_ACP_LATEST_QUALIFIED_VERSION),
+            version(GEMINI_CLI_ACP_BASELINE_VERSION).expect("static Gemini CLI version is valid"),
+            version(GEMINI_CLI_ACP_LATEST_QUALIFIED_VERSION)
+                .expect("static Gemini CLI version is valid"),
             InterfaceBehaviorRevision::new(BASELINE_BEHAVIOR)
                 .expect("static Gemini behavior revision is valid"),
             InterfaceSupportStatus::Maintained,
@@ -89,14 +90,16 @@ pub fn gemini_cli_acp_claim() -> InterfaceCompatibilityClaim {
 #[must_use]
 pub fn gemini_cli_headless_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
-        InterfaceCompatibilityClaimId::new("gemini-cli.headless.range-v1")
+        InterfaceCompatibilityClaimId::new("gemini-cli.headless.window-1")
             .expect("static Gemini CLI headless claim id is valid"),
         headless_axis(),
         InterfaceVersionScheme::Semantic,
         InterfaceNewerVersionPosture::AllowUnverified,
         [InterfaceVersionSegment::new(
-            version(GEMINI_CLI_HEADLESS_BASELINE_VERSION),
-            version(GEMINI_CLI_HEADLESS_LATEST_QUALIFIED_VERSION),
+            version(GEMINI_CLI_HEADLESS_BASELINE_VERSION)
+                .expect("static Gemini CLI version is valid"),
+            version(GEMINI_CLI_HEADLESS_LATEST_QUALIFIED_VERSION)
+                .expect("static Gemini CLI version is valid"),
             InterfaceBehaviorRevision::new(HEADLESS_BEHAVIOR)
                 .expect("static Gemini headless behavior revision is valid"),
             InterfaceSupportStatus::Maintained,
@@ -195,8 +198,8 @@ fn headless_axis() -> InterfaceVersionAxis {
         .expect("static Gemini CLI headless axis is valid")
 }
 
-fn version(value: &str) -> InterfaceVersion {
-    InterfaceVersion::new(value).expect("static Gemini CLI version is valid")
+fn version(value: &str) -> Option<InterfaceVersion> {
+    InterfaceVersion::new(value).ok()
 }
 
 #[cfg(test)]

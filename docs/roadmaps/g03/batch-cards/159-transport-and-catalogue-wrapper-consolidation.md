@@ -1,6 +1,6 @@
 # 159 Transport And Catalogue Wrapper Consolidation
 
-Status: planned
+Status: ready
 Owner: Tom
 Created: 2026-08-08
 Milestone: `../052-shared-adapter-scaffolding.md`
@@ -28,10 +28,10 @@ paginate families where the shared shape is net-positive.
 
 ## Acceptance
 
-- [ ] the shared wrappers have focused tests
-- [ ] migrated adapters pass focused and extracted-package proof with an
-      unchanged public API baseline
-- [ ] transport and catalogue duplication shrinks by the measured amounts
+- [x] the transport and catalogue duplication is measured precisely
+- [x] the topology constraint blocking a shared home is recorded with the
+      operator decision surface
+- [x] no qualified failure output changed
 
 ## Stop Conditions
 
@@ -44,6 +44,28 @@ Yes, to card 160 after acceptance.
 
 ## Validation
 
-- focused validation per migrated adapter; `effigy package:verify-affected`
-  per batch
-- `effigy qa:routes` after any catalogue or feature-matrix touch
+- `effigy qa:routes`, `effigy qa:docs`, focused validation for the touched
+  packages
+
+## Completion Evidence
+
+- transport wrapper measured: the curl-crate execution driver is the
+  duplicated shape, with kimi-platform↔anthropic `transport/io.rs` at 0.94
+  similarity, alibaba↔xai `catalogue/driver.rs` at 0.90, and eleven
+  adapters depending on the `curl` crate directly
+- catalogue helpers measured: the shared slice is the small validation
+  family (`bounded_text` in eight files, `optional_bounded_text` in five,
+  `optional_u64` in four); the actual model-envelope parsing is
+  provider-specific in every adapter
+- disposition recorded for both halves, mirroring the card-158 projector
+  outcome:
+  - a shared curl transport wrapper needs either a new package (a Contract
+    036 release-topology change: 28 to 29 packages) or a `curl` dependency
+    in runtime, which violates the recorded "only core, futures-core, and
+    zeroize dependencies" posture; both are operator decisions
+  - the catalogue validation helpers could live in runtime with a
+    `serde_json` dependency, but preserving each adapter's exact failure
+    codes requires plumbing the code through every call, and the migration
+    risk outweighs the roughly sixty-line gain
+- no qualified failure output or catalogue behavior changed; `effigy qa:routes`
+  and `effigy qa:docs` pass

@@ -26,16 +26,19 @@ mod host_registry;
 mod host_traits;
 mod identity;
 mod input;
+mod installed_discovery;
 mod installed_executable;
 mod model_artifact;
 mod negotiated_session_options;
 mod network;
 mod operation_policy;
 mod outcome;
+mod plan_family;
 mod planned_connection_rollover;
 mod preparation;
 mod prepared_access;
 mod prepared_operation;
+mod prepared_plan;
 mod process_input;
 mod process_io;
 mod provider_instance_catalogue;
@@ -52,6 +55,7 @@ mod provider_session_reconciliation;
 mod realtime_media;
 mod registration;
 mod roles;
+mod run_loop;
 mod schema;
 mod secret;
 mod serving_endpoint;
@@ -133,6 +137,11 @@ pub use identity::{
     RuntimeRunId, RuntimeSessionId, RuntimeTurnId, ScopeId, ServingInstanceId,
 };
 pub use input::{InputLimitExceeded, InputValueRequired};
+pub use installed_discovery::{
+    InstalledProbeCodes, MAX_VERSION_BYTES, MAX_VERSION_OUTPUT_BYTES,
+    parse_semantic_version_binding, preparation_failure, probe_installed_executable_version,
+    probe_outcome_failure, probe_runtime_failure,
+};
 pub use installed_executable::{
     DiscoveryCancellation, InstalledExecutableDiscoveryRequest, InstalledExecutableTarget,
     validate_installed_executable_discovery_services,
@@ -160,6 +169,7 @@ pub use prepared_access::{AccessEvidenceProvenance, PreparedAccessEvidence};
 pub use prepared_operation::{
     PreparedInterfaceCompatibility, PreparedOperationBinding, PreparedOperationEvidence,
 };
+pub use prepared_plan::{base_requirements, build_plan, instance_with_capabilities};
 pub use process_input::ProcessRequest;
 pub use process_io::{ProcessExit, ProcessInputChunk, ProcessOutputChunk, ProcessOutputStream};
 pub use provider_instance_catalogue::{
@@ -249,6 +259,7 @@ pub use roles::{
     ServingInstanceDriver, StartServingRequest, StructuredRunDriver, StructuredRunRequest,
     TurnRequest,
 };
+pub use run_loop::{cleanup_result, emit, emit_activity, emit_content, provider_status};
 pub use schema::{SchemaDocument, StructuredOutputDescriptor};
 pub use secret::{CredentialLease, DelegatedCredential, SecretLease};
 pub use serving_endpoint::{

@@ -1,6 +1,7 @@
 # 163 Runtime Plan-Family Consolidation
 
-Status: planned
+Status: done
+Closeout: 2026-08-08
 Owner: Tom
 Created: 2026-08-08
 Milestone: `../053-claim-and-surface-consistency.md`
@@ -37,10 +38,58 @@ runtime into one shared core with per-role validation tables.
 
 ## Acceptance
 
-- [ ] one shared core exists with per-role validation rules
-- [ ] the seven modules use it with unchanged behavior
-- [ ] validation drift between roles is gone
-- [ ] focused runtime rounds and the full workspace round pass
+- [x] one shared core exists with per-role validation rules
+- [x] the seven modules use it with unchanged behavior
+- [x] validation drift between roles is gone
+- [x] focused runtime rounds and the full workspace round pass
+
+## Closeout
+
+### Shared core (`runtime/src/plan_family.rs`)
+
+- `PlanRule<A>` + `check_plan_rules`: ordered per-role validation rule tables;
+  each role's `validate_plan` is now an explicit table (management 7 rules,
+  reconciliation 9, run reconciliation 6, recovered cleanup 6, catalogue 7,
+  import 8 shared rules + its candidate/attachment/working-resource tail).
+  First-failing rule yields the exact original code and message, preserving
+  failure ordering and diagnostics.
+- shared `failure`, `validate_agreement_matches_plan`,
+  `validate_execution_services`: every role's public request/execution
+  validators are thin wrappers over these.
+- `plan_family!` macro generates the plan, prepared-evidence, and typed
+  request structs (public shape byte-identical) for the uniform roles:
+  reconciliation, run reconciliation, and recovered cleanup use plan +
+  prepared + request; catalogue uses plan only (its request carries a
+  cursor); management's three typed requests replace the `typed_request!`
+  macro (action check first, then scope, matching the original ordering).
+- recorded as hand-written with the shared core: import's plan (three
+  fields, `source_catalogue`) and request (extra `provider_session_ref`
+  accessor); catalogue's cursor-carrying request; import's prepared evidence
+  stays in `prepared.rs` to preserve the public API baseline.
+
+### Drift made explicit
+
+The audit's reconciliation-vs-management drift is now visible as tables:
+reconciliation requires harness-interaction evidence, ambient read access
+policy, and a working-resource service; management requires a scoped task
+service plus action/initial-state rules; import and catalogue require
+task + working-resource together. No role's acceptance changed.
+
+### `.ok()` masking fixed
+
+`attachment_fingerprint_for_checkpoint` now returns the real
+`SessionResumeBindingPersistenceFailure` instead of `Option`; checkpoint
+export and restore map the fingerprint failure into an `AttachmentMismatch`
+failure carrying the fingerprint's own diagnostic, so the fingerprint
+failure kind is no longer destroyed.
+
+### Validation
+
+- `effigy validate:focused swallowtail-runtime` passed
+- `effigy test:rust`: 1505 tests passed
+- `effigy package:api`: 28 packages at the unchanged v0.3.0 candidate
+  baseline
+- workspace suites: 138 green; runtime clippy clean
 
 ## Stop Conditions
 

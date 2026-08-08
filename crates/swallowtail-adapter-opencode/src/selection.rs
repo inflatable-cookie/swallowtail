@@ -168,8 +168,8 @@ pub(crate) fn classify_plan(plan: &PreflightPlan) -> Result<OpenCodePlanVersion,
 
 fn segment(minimum: &str, maximum: &str, surface: &str) -> InterfaceVersionSegment {
     InterfaceVersionSegment::new(
-        version(minimum),
-        version(maximum),
+        version(minimum).expect("static OpenCode version is valid"),
+        version(maximum).expect("static OpenCode version is valid"),
         InterfaceBehaviorRevision::new(format!("opencode.http-sse.{surface}"))
             .expect("static behavior revision is valid"),
         InterfaceSupportStatus::Maintained,
@@ -180,8 +180,8 @@ fn axis() -> InterfaceVersionAxis {
     InterfaceVersionAxis::new(OPENCODE_SERVER_AXIS).expect("static version axis is valid")
 }
 
-fn version(value: &str) -> InterfaceVersion {
-    InterfaceVersion::new(value).expect("static OpenCode version is valid")
+fn version(value: &str) -> Option<InterfaceVersion> {
+    InterfaceVersion::new(value).ok()
 }
 
 #[cfg(test)]

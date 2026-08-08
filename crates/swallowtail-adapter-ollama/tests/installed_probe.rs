@@ -12,8 +12,11 @@ fn installed_runtime_exposes_qualified_version_and_local_catalogue() {
     let value: serde_json::Value = serde_json::from_slice(&version).expect("version JSON parses");
     let version = value["version"].as_str().expect("version is present");
     assert!(
-        swallowtail_adapter_ollama::ollama_runtime_claim()
-            .supports(swallowtail_adapter_ollama::ollama_runtime_binding(version).version()),
+        swallowtail_adapter_ollama::ollama_runtime_claim().supports(
+            swallowtail_adapter_ollama::ollama_runtime_binding(version)
+                .expect("fixture Ollama version is valid")
+                .version()
+        ),
         "installed runtime version is qualified"
     );
 

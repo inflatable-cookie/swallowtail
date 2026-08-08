@@ -237,7 +237,8 @@ fn observation_binding() -> ObservationBinding {
     ObservationBinding {
         instance_id: ConfiguredInstanceId::new("fixture.ollama").unwrap(),
         execution_host_id: ExecutionHostId::new("fixture.host").unwrap(),
-        runtime_version: crate::selection::ollama_runtime_binding("0.30.0"),
+        runtime_version: crate::selection::ollama_runtime_binding("0.30.0")
+            .expect("fixture Ollama version is valid"),
         observed_at: CatalogTimestamp::new(1_700_000_000, 0).unwrap(),
     }
 }

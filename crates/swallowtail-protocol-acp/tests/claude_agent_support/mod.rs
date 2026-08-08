@@ -9,7 +9,7 @@ pub fn compatibility_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
         valid(
             InterfaceCompatibilityClaimId::new,
-            "claude-agent.acp.range-v2",
+            "claude-agent.acp.window-2",
         ),
         valid(InterfaceVersionAxis::new, "claude-agent.acp-adapter"),
         InterfaceVersionScheme::Semantic,

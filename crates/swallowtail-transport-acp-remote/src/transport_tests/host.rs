@@ -82,6 +82,48 @@ impl TimeService for ThreadServices {
     }
 }
 
+/// Test time service with nanosecond ticks from a local origin.
+///
+/// Mirrors the host-local convention so deadline tests can express absolute
+/// deadlines as offsets from service creation.
+pub(super) struct ElapsedTimeService {
+    origin: std::time::Instant,
+}
+
+impl ElapsedTimeService {
+    pub(super) fn new() -> Self {
+        Self {
+            origin: std::time::Instant::now(),
+        }
+    }
+
+    /// Returns an absolute deadline that elapses `offset` after creation.
+    pub(super) fn deadline(&self, offset: std::time::Duration) -> Deadline {
+        let ticks = u64::try_from(offset.as_nanos()).expect("fixture offset fits monotonic ticks");
+        Deadline::at(MonotonicInstant::from_ticks(ticks))
+    }
+}
+
+impl TimeService for ElapsedTimeService {
+    fn now(&self) -> MonotonicInstant {
+        MonotonicInstant::from_ticks(
+            u64::try_from(self.origin.elapsed().as_nanos()).unwrap_or(u64::MAX),
+        )
+    }
+
+    fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
+        let now = self.now();
+        if now >= deadline.instant() {
+            return Box::pin(async move { DeadlineObservation::new(deadline, now) });
+        }
+        let remaining = std::time::Duration::from_nanos(deadline.instant().ticks() - now.ticks());
+        Box::pin(async move {
+            tokio::time::sleep(remaining).await;
+            DeadlineObservation::new(deadline, deadline.instant())
+        })
+    }
+}
+
 impl NetworkPolicyService for ThreadServices {
     fn authorize(
         &self,

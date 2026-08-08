@@ -200,9 +200,7 @@ fn emit(
     sequence: &mut u64,
     kind: RuntimeEventKind,
 ) -> Result<(), RuntimeFailure> {
-    events.send(RuntimeEvent::new(*sequence, kind))?;
-    *sequence += 1;
-    Ok(())
+    swallowtail_runtime::emit(events, sequence, kind)
 }
 
 fn emit_activity(
@@ -210,22 +208,15 @@ fn emit_activity(
     sequence: &mut u64,
     observation: Result<swallowtail_runtime::ActivityObservation, RuntimeFailure>,
 ) -> Result<(), RuntimeFailure> {
-    emit(
-        events,
-        sequence,
-        RuntimeEventKind::Activity(observation?),
-    )
+    swallowtail_runtime::emit_activity(events, sequence, observation)
 }
 
 fn provider_status(error: RuntimeFailure) -> TerminalStatus {
-    TerminalStatus::ProviderFailed(error.diagnostic().clone())
+    swallowtail_runtime::provider_status(error)
 }
 
 fn cleanup_result(result: Result<(), RuntimeFailure>) -> CleanupOutcome {
-    match result {
-        Ok(()) => CleanupOutcome::Clean,
-        Err(error) => CleanupOutcome::Failed(error.diagnostic().clone()),
-    }
+    swallowtail_runtime::cleanup_result(result)
 }
 
 fn merge_cleanup(current: CleanupOutcome, next: CleanupOutcome) -> CleanupOutcome {

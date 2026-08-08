@@ -9,8 +9,8 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     BoxFuture, HostServices, InteractiveSessionDriver, InteractiveSessionHandle,
-    OpenSessionRequest, PreparationFailure, PreparedWorkingStateRestoration, RuntimeFailure,
-    RuntimeTurnId, SessionAccessPolicy,
+    OpenSessionRequest, PreparationFailure, PreparationStage, PreparedWorkingStateRestoration,
+    RuntimeFailure, RuntimeTurnId, SessionAccessPolicy,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -92,7 +92,12 @@ impl OllamaPreparedIntegration {
     ) -> Result<OllamaPreparedSession, PreparationFailure> {
         let (request_id, deadline) = input.into_parts();
         let capability_requirements = session_capabilities();
-        let activity = crate::activity::profile::activity_profile(self);
+        let activity = crate::activity::profile::activity_profile(self).map_err(|error| {
+            PreparationFailure::new(
+                PreparationStage::Preflight,
+                swallowtail_core::Diagnostic::new(error.diagnostic().clone()),
+            )
+        })?;
         let capabilities = crate::activity::profile::with_activity(
             CapabilityProfile::new(capability_requirements),
             &activity,

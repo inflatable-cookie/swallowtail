@@ -1,6 +1,6 @@
 # 152 Docs Index Checks And Drift Repair
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-08
 Milestone: `../051-validation-machinery-and-index-closure.md`
@@ -35,9 +35,9 @@ verified drift.
 
 ## Acceptance
 
-- [ ] `effigy docs check index` passes for logs, research, and roadmaps
-- [ ] every `.md` file under the three directories is indexed exactly once
-- [ ] no dangling links in the three indexes
+- [x] `effigy docs check index` passes for logs, research, and roadmaps
+- [x] every `.md` file under the three directories is indexed exactly once
+- [x] no dangling links in the three indexes
 
 ## Stop Conditions
 
@@ -51,3 +51,24 @@ Yes, to card 153 after acceptance.
 
 - `effigy qa:docs`
 - `effigy qa:northstar`
+
+## Completion Evidence
+
+- the effigy index check requires every file under a directory to be linked
+  with a `(./file.md)`-prefixed markdown link, so all three indexes were
+  converted: logs (410 links plus four new entries), research (112 links),
+  the roadmaps root Index section, the g01/g02/g03 Milestones sections,
+  the backlog items, and the g03 batch-cards index (157 entries converted
+  plus six previously unindexed cards 064-069 added)
+- drift repaired: the four missing log entries, the three missing g01
+  handoff records, and the missing g02 closeout milestone; the audit's
+  "two dangling g02 links" were re-verified as resolving correctly to
+  `../backlog/` files and needed no change
+- eight index policies wired in `effigy.toml` (logs, research, roadmaps,
+  g01, g02, g03, backlog, batch-cards) with per-directory excludes, and
+  eight `qa:docs:index:*` tasks added to the `qa:docs` sequence
+- the roadmaps next-action check now walks the index's linked files, so
+  `generation-index.md` and `long-term-plan.md` gained `## Next Task`
+  pointers to the front door
+- `qa:docs` runs all fifteen checks green, `qa:northstar` passes, and a
+  repo-wide link scan finds zero broken links across 2,465 links

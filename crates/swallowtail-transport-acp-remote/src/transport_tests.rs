@@ -38,6 +38,9 @@ fn remote_transport_lifecycles_run_sequentially() {
     run_scenario(websocket::websocket_cancel_and_deadline_close_owned_connection());
     run_scenario(websocket::websocket_disconnect_invalidates_without_recovery());
     run_scenario(websocket::websocket_runs_raw_corpus_callback_cancel_and_close());
+    run_scenario(http::http_non_responding_peer_fails_within_deadline());
+    run_scenario(websocket::websocket_hanging_connect_fails_within_deadline());
+    run_scenario(websocket::websocket_silent_peer_fails_within_deadline());
 }
 
 fn run_scenario(scenario: impl Future<Output = ()>) {

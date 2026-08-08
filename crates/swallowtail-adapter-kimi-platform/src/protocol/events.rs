@@ -50,13 +50,16 @@ pub(crate) fn parse_events(
     };
     let payload = decode_payload(data, CodecLimits::default())
         .map_err(|_| protocol_failure("stream event"))?;
-    let Payload::Chunk(chunk) = payload else {
-        let Payload::Error(error) = payload else {
-            unreachable!()
-        };
-        return Ok(vec![Event::ProviderFailed(classify_error(
-            &error.error.kind,
-        ))]);
+    // A plain two-arm match stays exhaustive at compile time, so a new
+    // variant in the shared compatible-chat Payload enum fails the build
+    // here instead of panicking on provider input at runtime.
+    let chunk = match payload {
+        Payload::Chunk(chunk) => chunk,
+        Payload::Error(error) => {
+            return Ok(vec![Event::ProviderFailed(classify_error(
+                &error.error.kind,
+            ))]);
+        }
     };
     if chunk.object.as_deref() != Some("chat.completion.chunk")
         || chunk.model.as_deref() != Some(expected_model)

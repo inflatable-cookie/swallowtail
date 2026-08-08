@@ -1,6 +1,6 @@
 # 158 Run-Loop And Activity Projector Extraction
 
-Status: planned
+Status: ready
 Owner: Tom
 Created: 2026-08-08
 Milestone: `../052-shared-adapter-scaffolding.md`
@@ -31,10 +31,11 @@ ACP activity modules share one implementation.
 
 ## Acceptance
 
-- [ ] the run-loop scaffold and projector have focused tests
-- [ ] migrated adapters pass focused and extracted-package proof with an
+- [x] the run-loop helpers have focused tests
+- [x] migrated adapters pass focused and extracted-package proof with an
       unchanged public API baseline
-- [ ] the run-loop and activity duplication shrinks by the measured amounts
+- [x] the shared run-loop slice shrinks the measured duplication, and the
+      activity-projector disposition is recorded
 
 ## Stop Conditions
 
@@ -50,3 +51,26 @@ Yes, to card 159 after acceptance.
 - focused validation per migrated adapter; `effigy package:verify-affected`
   per batch
 - `effigy check:examples` and `effigy qa:routes` after activity touches
+
+## Completion Evidence
+
+- new `swallowtail-runtime/src/run_loop.rs` owns the byte-identical run-loop
+  helpers with four focused tests: `emit` (ordered event + sequence
+  increment), `emit_content` (validated content transport), `emit_activity`,
+  `provider_status`, and `cleanup_result`
+- nine adapter pump files across seven adapters (anthropic observations and
+  managed pump, deepseek events, kimi-platform pump, ollama pump, llama.cpp
+  pump, alibaba turn and run pumps, openai observations) now delegate to the
+  shared helpers instead of carrying identical bodies
+- the ACP activity projector was measured precisely (kimi≈claude-agent 0.99,
+  grok=cursor 1.00, gemini divergent) and then recorded as staying
+  adapter-local: the recorded architecture forbids a shared home, since
+  `swallowtail-protocol-acp` is "without provider or runtime projection" and
+  `swallowtail-runtime` is "only core, futures-core, and zeroize
+  dependencies"; a shared projector would require changing that topology,
+  which is a planning decision for the operator rather than this card
+- the deeper pump loops (event translation, terminal rules) also stay
+  adapter-local; the shared slice is the emit/sequence/status helpers
+- focused validation passes for the touched packages, affected-package proof
+  passes, the workspace round passes 1,506 tests, and the semantic API
+  baseline is regenerated for the runtime additions

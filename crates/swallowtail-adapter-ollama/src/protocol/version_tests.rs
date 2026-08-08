@@ -38,3 +38,17 @@ fn selected_fixture_versions_are_semantic_values() {
         assert!(!InterfaceVersion::new(version).unwrap().as_str().is_empty());
     }
 }
+
+#[test]
+fn blank_runtime_version_fails_closed_instead_of_panicking() {
+    for version in ["", "   ", " \t ", "\n"] {
+        let body = format!(r#"{{"version":{version:?}}}"#);
+        let error = parse_version(&response(200, body.as_bytes()))
+            .expect_err("blank runtime version must fail closed");
+        assert_eq!(
+            error.diagnostic().code(),
+            "swallowtail.ollama.version_parse_failed"
+        );
+        assert_eq!(crate::selection::ollama_runtime_binding(version), None);
+    }
+}

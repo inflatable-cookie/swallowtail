@@ -10,11 +10,47 @@ dir = "docs/vision"
 section = "Vision Artifacts"
 exclude = ["history/**"]
 
+[docs_policy.indexes.logs]
+file = "docs/logs/README.md"
+dir = "docs/logs"
+section = "Entries"
+
+[docs_policy.indexes.research]
+file = "docs/research/README.md"
+dir = "docs/research"
+section = "Research Records"
+
 [docs_policy.indexes.roadmaps]
 file = "docs/roadmaps/README.md"
 dir = "docs/roadmaps"
 section = "Index"
-exclude = []
+exclude = ["g01/**", "g02/**", "g03/**", "backlog/**"]
+
+[docs_policy.indexes.roadmaps_g01]
+file = "docs/roadmaps/g01/README.md"
+dir = "docs/roadmaps/g01"
+section = "Milestones"
+exclude = ["batch-cards/**"]
+
+[docs_policy.indexes.roadmaps_g02]
+file = "docs/roadmaps/g02/README.md"
+dir = "docs/roadmaps/g02"
+section = "Milestones"
+exclude = ["batch-cards/**"]
+
+[docs_policy.indexes.roadmaps_g03]
+file = "docs/roadmaps/g03/README.md"
+dir = "docs/roadmaps/g03"
+section = "Milestones"
+exclude = ["batch-cards/**"]
+
+[docs_policy.indexes.roadmaps_backlog]
+file = "docs/roadmaps/backlog/README.md"
+dir = "docs/roadmaps/backlog"
+
+[docs_policy.indexes.roadmaps_batch_cards]
+file = "docs/roadmaps/g03/batch-cards/README.md"
+dir = "docs/roadmaps/g03/batch-cards"
 
 [docs_policy.next_actions.roadmaps]
 index = "roadmaps"
@@ -24,18 +60,36 @@ allowlist_file = "docs/policy/vision-next-task-verbs.txt"
 [tasks]
 "qa:docs:links" = "effigy docs check links README.md AGENTS.md CHANGELOG.md CONTRIBUTING.md SECURITY.md SUPPORT.md docs/README.md docs/releases/README.md docs/releases/0.1.0.md docs/releases/0.1.1.md docs/releases/0.2.0.md"
 "qa:docs:index:vision" = "effigy docs check index --policy-index vision"
+"qa:docs:index:logs" = "effigy docs check index --policy-index logs"
+"qa:docs:index:research" = "effigy docs check index --policy-index research"
+"qa:docs:index:roadmaps" = "effigy docs check index --policy-index roadmaps"
+"qa:docs:index:roadmaps:g01" = "effigy docs check index --policy-index roadmaps_g01"
+"qa:docs:index:roadmaps:g02" = "effigy docs check index --policy-index roadmaps_g02"
+"qa:docs:index:roadmaps:g03" = "effigy docs check index --policy-index roadmaps_g03"
+"qa:docs:index:roadmaps:backlog" = "effigy docs check index --policy-index roadmaps_backlog"
+"qa:docs:index:roadmaps:batch-cards" = "effigy docs check index --policy-index roadmaps_batch_cards"
 "qa:docs:next-action:roadmaps" = "effigy docs check next-action --policy roadmaps"
 "qa:docs:agent-defaults" = "effigy docs check forbidden AGENTS.md README.md docs/README.md --forbid '--repo .'"
 "qa:guides" = "python3 scripts/check-integration-guide-coverage.py"
 "qa:consumer-docs" = "python3 scripts/check-consumer-front-door.py"
+"qa:code:version-expects" = "python3 scripts/check-literal-version-expects.py"
 
 "qa:docs" = [
   { task = "qa:docs:links" },
   { task = "qa:docs:index:vision" },
+  { task = "qa:docs:index:logs" },
+  { task = "qa:docs:index:research" },
+  { task = "qa:docs:index:roadmaps" },
+  { task = "qa:docs:index:roadmaps:g01" },
+  { task = "qa:docs:index:roadmaps:g02" },
+  { task = "qa:docs:index:roadmaps:g03" },
+  { task = "qa:docs:index:roadmaps:backlog" },
+  { task = "qa:docs:index:roadmaps:batch-cards" },
   { task = "qa:docs:next-action:roadmaps" },
   { task = "qa:docs:agent-defaults" },
   { task = "qa:consumer-docs" },
   { task = "qa:guides" },
+  { task = "qa:code:version-expects" },
 ]
 
 "qa:northstar:spine" = "effigy docs check paths README.md AGENTS.md CHANGELOG.md CONTRIBUTING.md SECURITY.md SUPPORT.md docs/README.md docs/vision/README.md docs/architecture/README.md docs/contracts/README.md docs/specs/README.md docs/roadmaps/README.md docs/logs/README.md docs/policy/internal-writing-style.md docs/policy/vision-next-task-verbs.txt"

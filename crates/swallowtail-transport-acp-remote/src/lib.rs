@@ -137,8 +137,17 @@ async fn connect_bound(
     let (ready_tx, ready_rx) = oneshot::channel();
     let ready: ReadySignal = Arc::new(Mutex::new(Some(ready_tx)));
     let ready_for_job = Arc::clone(&ready);
-    let job =
-        Box::new(move || worker::run(config, command_rx, event_tx, ready_for_job)) as BlockingJob;
+    let worker_time = Arc::clone(&time);
+    let job = Box::new(move || {
+        worker::run(
+            config,
+            command_rx,
+            event_tx,
+            ready_for_job,
+            deadline,
+            Some(worker_time),
+        )
+    }) as BlockingJob;
     let blocking_work = blocking.run(scope.clone(), job);
     let ready_for_task = Arc::clone(&ready);
     let connection_task = task
@@ -153,13 +162,11 @@ async fn connect_bound(
             }),
         )
         .map_err(|_| host_service_failure())?;
-    let ready = ready_rx.await.map_err(|_| transport_error())?;
-    if let Err(error) = ready {
-        let _ = connection_task.join().await;
-        return Err(error);
-    }
 
-    let (deadline_done, deadline_task) = if let Some(deadline) = deadline {
+    // Start the deadline task before the connect resolves, so a hanging
+    // initial connect is interruptible; the connect itself is raced against
+    // the deadline inside the worker.
+    let (mut deadline_done, mut deadline_task) = if let Some(deadline) = deadline {
         let (done_tx, done_rx) = oneshot::channel();
         let mut commands = commands.clone();
         let wait = time.wait_until(deadline);
@@ -180,6 +187,33 @@ async fn connect_bound(
     } else {
         (None, None)
     };
+
+    let ready = match deadline {
+        Some(deadline) => {
+            let wait = time.wait_until(deadline);
+            match futures_util::future::select(Box::pin(ready_rx), wait).await {
+                futures_util::future::Either::Left((ready, _)) => {
+                    ready.map_err(|_| transport_error())
+                }
+                futures_util::future::Either::Right(_) => Err(worker::cancellation_error(true)),
+            }
+        }
+        None => ready_rx.await.map_err(|_| transport_error()),
+    };
+    match ready {
+        Ok(Ok(())) => {}
+        Ok(Err(error)) | Err(error) => {
+            if let Some(done) = deadline_done.take() {
+                let _ = done.send(());
+            }
+            if let Some(task) = deadline_task.take() {
+                let _ = task.join().await;
+            }
+            let _ = connection_task.join().await;
+            return Err(error);
+        }
+    }
+
     Ok(RemoteAcpConnection {
         commands,
         events,

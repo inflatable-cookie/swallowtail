@@ -91,7 +91,12 @@ pub(super) async fn run_tool_turn(
         .expect("continuation state lock poisoned")
         .authorize_tool_results(&results)
         .map_err(runtime_failure)?;
-    let result = results.first().expect("exact result exists");
+    let result = results.first().ok_or_else(|| {
+        runtime_failure(crate::failure::failure(
+            "swallowtail.deepseek.tool_result_missing",
+            "DeepSeek tool result exchange returned no result",
+        ))
+    })?;
     let observation = activity
         .tool_completed(call.call_id())
         .map_err(runtime_failure)?;

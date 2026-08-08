@@ -5,9 +5,9 @@ use swallowtail_core::{
     CapabilityProfile, CapabilityRequirement, ConfiguredInstance, CredentialState, Diagnostic,
     EndpointAuthorization, EntitlementState, ExecutionLayer, HarnessConfigurationPosture,
     HarnessIsolation, HostServiceKind, ModelId, ModelRoute, ModelRouteId, ModelRouteRevision,
-    ObservableActivityProfile, OperationRequirements, OperationShape, PreflightContext,
-    PreflightPlan, ResourceAccess, RuntimeReadiness, SafeDiagnostic, SessionAccessPolicy,
-    SessionProviderStatePolicy, preflight,
+    ObservableActivityProfile, OperationRequirements, OperationShape, PreflightPlan,
+    ResourceAccess, RuntimeReadiness, SafeDiagnostic, SessionAccessPolicy,
+    SessionProviderStatePolicy,
 };
 use swallowtail_runtime::{
     BoxFuture, HostServices, InteractiveSessionDriver, InteractiveSessionHandle,

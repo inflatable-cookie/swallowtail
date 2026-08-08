@@ -141,6 +141,7 @@ pub(super) async fn run_turn(
                 );
             }
             TerminalOutcome::new(TerminalStatus::Completed, cleanup).with_output(
+                // Guard: FinalStreamParser::finish rejects empty output.
                 OperationContent::new(output).expect("validated output remains non-empty"),
             )
         }

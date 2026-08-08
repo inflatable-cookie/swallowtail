@@ -83,13 +83,14 @@ pub fn grok_build_acp_claim() -> InterfaceCompatibilityClaim {
         InterfaceNewerVersionPosture::AllowUnverified,
         [
             InterfaceVersionSegment::new(
-                version(GROK_BUILD_ACP_BASELINE_VERSION),
-                version("0.2.116"),
+                version(GROK_BUILD_ACP_BASELINE_VERSION).expect("static Grok version is valid"),
+                version("0.2.116").expect("static Grok version is valid"),
                 behavior(GROK_BUILD_ACP_BEHAVIOR),
-                InterfaceSupportStatus::Maintained,
+                InterfaceSupportStatus::Deprecated,
             ),
             InterfaceVersionSegment::exact(
-                version(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION),
+                version(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION)
+                    .expect("static Grok version is valid"),
                 behavior(GROK_BUILD_ACP_TASK_CONTROL_BEHAVIOR),
                 InterfaceSupportStatus::Maintained,
             ),
@@ -145,8 +146,8 @@ fn axis() -> InterfaceVersionAxis {
     InterfaceVersionAxis::new(GROK_BUILD_ACP_AXIS).expect("static Grok axis is valid")
 }
 
-fn version(value: &str) -> InterfaceVersion {
-    InterfaceVersion::new(value).expect("static Grok version is valid")
+fn version(value: &str) -> Option<InterfaceVersion> {
+    InterfaceVersion::new(value).ok()
 }
 
 fn behavior(value: &str) -> InterfaceBehaviorRevision {

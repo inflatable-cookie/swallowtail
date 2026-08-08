@@ -1,4 +1,5 @@
 use super::{failure, requires_capability, requires_read_only_working_resource, requires_service};
+use crate::plan_family::{PlanRule, check_plan_rules};
 use crate::{
     CancellationControl, Deadline, ImmediateCancellation, ProviderSessionCatalogueId,
     ProviderSessionCursor, RequestId, RuntimeFailure, WorkingResourceRef,
@@ -90,36 +91,16 @@ impl ProviderSessionCatalogueAgreement {
     }
 }
 
-/// Side-effect-free plan for one bounded provider-session catalogue operation.
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub struct ProviderSessionCataloguePlan {
-    preflight: PreflightPlan,
-    agreement: ProviderSessionCatalogueAgreement,
-}
+use crate::plan_family::plan_family;
 
-impl ProviderSessionCataloguePlan {
-    /// Validates and creates a provider-session catalogue plan.
-    pub fn new(
-        preflight: PreflightPlan,
+plan_family! {
+    plan: {
+        plan_type: ProviderSessionCataloguePlan,
+        prepared_type: PreparedProviderSessionCatalogueEvidence,
         agreement: ProviderSessionCatalogueAgreement,
-    ) -> Result<Self, RuntimeFailure> {
-        validate_plan(&preflight, &agreement)?;
-        Ok(Self {
-            preflight,
-            agreement,
-        })
-    }
-
-    #[must_use]
-    /// Returns the exact route preflight plan.
-    pub const fn preflight(&self) -> &PreflightPlan {
-        &self.preflight
-    }
-
-    #[must_use]
-    /// Returns the immutable catalogue agreement.
-    pub const fn agreement(&self) -> &ProviderSessionCatalogueAgreement {
-        &self.agreement
+        plan_doc: "Side-effect-free plan for one bounded provider-session catalogue operation.",
+        prepared_doc: "Prepared route and access evidence for a bounded catalogue operation.",
+        agreement_doc: "Returns the immutable catalogue agreement.",
     }
 }
 
@@ -204,50 +185,67 @@ impl ProviderSessionCatalogueRequest {
     }
 }
 
+/// Ordered per-role validation rules for a provider-session catalogue plan.
+///
+/// Catalogue requires harness-interaction evidence, the exact catalogue
+/// capability with a read-only working-resource requirement, and scoped task
+/// and working-resource services.
+const CATALOGUE_PLAN_RULES: [PlanRule<ProviderSessionCatalogueAgreement>; 7] = [
+    PlanRule::new(
+        "swallowtail.provider_session_catalogue.plan_mismatch",
+        "Provider-session catalogue does not match its immutable plan",
+        |preflight, _| {
+            preflight.requirements().execution_layer() == ExecutionLayer::HarnessInteraction
+        },
+    ),
+    PlanRule::new(
+        "swallowtail.provider_session_catalogue.plan_mismatch",
+        "Provider-session catalogue does not match its immutable plan",
+        |preflight, _| {
+            preflight.requirements().driver_role() == DriverRole::ProviderSessionCatalogue
+        },
+    ),
+    PlanRule::new(
+        "swallowtail.provider_session_catalogue.plan_mismatch",
+        "Provider-session catalogue does not match its immutable plan",
+        |preflight, _| {
+            preflight.requirements().operation_shape() == OperationShape::ProviderSessionCatalogue
+        },
+    ),
+    PlanRule::new(
+        "swallowtail.provider_session_catalogue.capability_mismatch",
+        "Provider-session catalogue plan lacks its exact capabilities",
+        |preflight, _| {
+            requires_capability(preflight, Capability::ProviderSessionCatalogue)
+                && requires_read_only_working_resource(preflight)
+        },
+    ),
+    PlanRule::new(
+        "swallowtail.provider_session_catalogue.service_required",
+        "Provider-session catalogue requires scoped task and working-resource services",
+        |preflight, _| {
+            requires_service(preflight, HostServiceKind::Task)
+                && requires_service(preflight, HostServiceKind::WorkingResource)
+        },
+    ),
+    PlanRule::new(
+        "swallowtail.provider_session_catalogue.time_service_required",
+        "Deadline-bound provider-session catalogue requires time service",
+        |preflight, agreement| {
+            agreement.deadline().is_none()
+                || requires_service(preflight, HostServiceKind::Time)
+        },
+    ),
+    PlanRule::new(
+        "swallowtail.provider_session_catalogue.interface_version_required",
+        "Provider-session catalogue requires exact interface-version evidence",
+        |preflight, _| preflight.interface_versions().next().is_some(),
+    ),
+];
+
 fn validate_plan(
     preflight: &PreflightPlan,
     agreement: &ProviderSessionCatalogueAgreement,
 ) -> Result<(), RuntimeFailure> {
-    if preflight.requirements().execution_layer() != ExecutionLayer::HarnessInteraction
-        || preflight.requirements().driver_role() != DriverRole::ProviderSessionCatalogue
-        || preflight.requirements().operation_shape() != OperationShape::ProviderSessionCatalogue
-    {
-        return Err(plan_mismatch());
-    }
-    if !requires_capability(preflight, Capability::ProviderSessionCatalogue)
-        || !requires_read_only_working_resource(preflight)
-    {
-        return Err(failure(
-            "swallowtail.provider_session_catalogue.capability_mismatch",
-            "Provider-session catalogue plan lacks its exact capabilities",
-        ));
-    }
-    if !requires_service(preflight, HostServiceKind::Task)
-        || !requires_service(preflight, HostServiceKind::WorkingResource)
-    {
-        return Err(failure(
-            "swallowtail.provider_session_catalogue.service_required",
-            "Provider-session catalogue requires scoped task and working-resource services",
-        ));
-    }
-    if agreement.deadline().is_some() && !requires_service(preflight, HostServiceKind::Time) {
-        return Err(failure(
-            "swallowtail.provider_session_catalogue.time_service_required",
-            "Deadline-bound provider-session catalogue requires time service",
-        ));
-    }
-    if preflight.interface_versions().next().is_none() {
-        return Err(failure(
-            "swallowtail.provider_session_catalogue.interface_version_required",
-            "Provider-session catalogue requires exact interface-version evidence",
-        ));
-    }
-    Ok(())
-}
-
-fn plan_mismatch() -> RuntimeFailure {
-    failure(
-        "swallowtail.provider_session_catalogue.plan_mismatch",
-        "Provider-session catalogue does not match its immutable plan",
-    )
+    check_plan_rules(preflight, agreement, &CATALOGUE_PLAN_RULES)
 }

@@ -1,6 +1,7 @@
 # 164 Facade-Surface Gap Closure
 
-Status: planned
+Status: done
+Closeout: 2026-08-08
 Owner: Tom
 Created: 2026-08-08
 Milestone: `../053-claim-and-surface-consistency.md`
@@ -34,9 +35,42 @@ disposition for each.
 
 ## Acceptance
 
-- [ ] every gap is closed or has an explicit disposition in architecture or
+- [x] every gap is closed or has an explicit disposition in architecture or
       the route matrix
-- [ ] the authoring guide and realized facade surface agree
+- [x] the authoring guide and realized facade surface agree
+
+## Closeout
+
+Every audit gap received a disposition (two via operator decision):
+
+1. Muse `prepare_working_state_restoration`: recorded as replacement-only in
+   the muse guide and route matrix. Muse exposes no interactive session,
+   continuation, load, or resume route, so there is no interrupted working
+   state to restore; a restoration surface would be a new route
+   qualification, not a facade gap.
+2. Kimi frozen REST/WS corpus: kept frozen with the disposition recorded
+   (operator decision). The protocol module comment now records that the
+   corpus stays as card-061 evidence, the interactive lifecycle subset is
+   consumed, and the remaining decoders wait for a future interactive
+   activation card as a separate qualification.
+3. Event vocabulary: recorded as intentional in system architecture
+   (operator decision). `core::EventEnvelope` is the portable consumer-facing
+   envelope with extension governance; `runtime::RuntimeEvent` is the
+   runtime-internal sequenced event with typed evidence and delivery policy.
+   Consolidation in either direction would lose one responsibility.
+4. `into_parts`/`low_level_driver` surface: verified against the authoring
+   guide. Antigravity (neither), cursor (low-level only), and muse
+   (low-level only) are now recorded as permitted omissions in the guide and
+   route matrix; all other adapters expose the full surface.
+
+No route, provider, or public API change.
+
+### Validation
+
+- `effigy qa:routes` passed (route, lifecycle, 27-solution/34-route feature,
+  and activity matrices)
+- `effigy qa:docs` passed; `effigy check:examples` clean
+- kimi crate check clean (comment-only change)
 
 ## Stop Conditions
 

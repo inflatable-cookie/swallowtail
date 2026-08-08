@@ -935,6 +935,25 @@ billing, topology, writable access, network, search, tools, prompts, workflows,
 or persistence. Access status remains observed or visibly caller-asserted.
 Every expanded profile is inspectable before effects.
 
+## Event Vocabulary Posture
+
+Two event vocabularies coexist by recorded disposition, not duplication:
+
+- `core::EventEnvelope` and `EventKind` form the portable consumer-facing
+  envelope: kind, content, and policy-governed provider extensions
+  (`ExtensionNamespace`, `ExtensionPolicy`, `ExtensionRejected`). Its only
+  current consumers are core itself and `swallowtail-testkit` (fixture
+  builders and extension-isolation assertions).
+- `runtime::RuntimeEvent` and `RuntimeEventKind` form the runtime-internal
+  sequenced event: typed payloads (callbacks, direct tool calls, activity,
+  provider observations, checkpoints, cleanup bindings) plus the
+  Semantic/Coalescible delivery policy that drives buffering.
+
+The kind concept overlaps (Started, Progress, OutputAvailable), but the
+envelope carries extension governance while the runtime event carries typed
+evidence and delivery policy. Consolidation in either direction would lose
+one of those responsibilities; the boundary is intentional and recorded.
+
 Typed bound operations remove repeated driver and matching-request wiring, not
 role semantics. Catalogue, structured run, interactive session, direct
 session, background run, managed agent, realtime media, SDK, attached runtime,

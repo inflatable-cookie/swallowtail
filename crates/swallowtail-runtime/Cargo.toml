@@ -13,7 +13,9 @@ description = "Executor-neutral runtime contracts for Swallowtail drivers and ho
 doctest = false
 
 [dependencies]
+futures-channel = "0.3"
 futures-core = "0.3"
+semver = "1"
 sha2 = "0.10"
 swallowtail-core.workspace = true
 zeroize = "1"

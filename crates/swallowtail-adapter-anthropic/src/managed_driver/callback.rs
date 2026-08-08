@@ -91,6 +91,8 @@ impl ManagedCallbackHub {
                         "Anthropic Managed Agents requested an unknown callback",
                     )));
                 };
+                // Guard: by_provider_event and pending are populated
+                // together under the same lock.
                 let pending = state.pending.get(callback_id).expect("callback index agrees");
                 let Some(result) = pending.result.clone() else {
                     state.waiter = Some(context.waker().clone());

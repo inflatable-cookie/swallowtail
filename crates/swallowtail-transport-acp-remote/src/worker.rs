@@ -3,10 +3,11 @@ use crate::error::{RemoteAcpError, RemoteAcpErrorKind, transport_error};
 use crate::{http, websocket};
 use futures_channel::mpsc;
 use futures_util::SinkExt;
+use std::future::Future;
 use std::sync::{Arc, Mutex};
 use swallowtail_core::RemoteAcpTransport;
 use swallowtail_protocol_acp::Message;
-use swallowtail_runtime::RuntimeFailure;
+use swallowtail_runtime::{Deadline, RuntimeFailure, TimeService};
 
 pub(crate) enum WorkerCommand {
     Send(Message),
@@ -28,6 +29,8 @@ pub(crate) fn run(
     commands: mpsc::Receiver<WorkerCommand>,
     events: mpsc::Sender<WorkerEvent>,
     ready: ReadySignal,
+    deadline: Option<Deadline>,
+    time: Option<Arc<dyn TimeService>>,
 ) -> Result<(), RuntimeFailure> {
     let runtime = tokio::runtime::Builder::new_current_thread()
         .enable_all()
@@ -37,10 +40,10 @@ pub(crate) fn run(
         let ready = take_ready(&ready).ok_or_else(|| runtime_failure(transport_error()))?;
         let result = match config.transport {
             RemoteAcpTransport::StreamableHttpSse => {
-                http::run(config, commands, events.clone(), ready).await
+                http::run(config, commands, events.clone(), ready, deadline, time).await
             }
             RemoteAcpTransport::WebSocket => {
-                websocket::run(config, commands, events.clone(), ready).await
+                websocket::run(config, commands, events.clone(), ready, deadline, time).await
             }
         };
         if let Err(error) = &result {
@@ -49,6 +52,32 @@ pub(crate) fn run(
         }
         result.map_err(runtime_failure)
     })
+}
+
+/// Races a worker future against the connection deadline.
+///
+/// The host time service owns the deadline semantics, so this crate never
+/// assumes a tick rate. When the deadline elapses first, the future is
+/// dropped and a deadline failure is returned; a non-responding peer cannot
+/// outlive the connection deadline at any await point.
+pub(crate) async fn race_deadline<F, T>(
+    deadline: Option<Deadline>,
+    time: Option<&dyn TimeService>,
+    future: F,
+) -> Result<T, RemoteAcpError>
+where
+    F: Future<Output = T>,
+{
+    match (deadline, time) {
+        (Some(deadline), Some(time)) => {
+            let wait = time.wait_until(deadline);
+            tokio::select! {
+                value = future => Ok(value),
+                _ = wait => Err(cancellation_error(true)),
+            }
+        }
+        _ => Ok(future.await),
+    }
 }
 
 pub(crate) fn take_ready(

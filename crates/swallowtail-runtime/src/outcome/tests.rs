@@ -53,6 +53,46 @@ fn terminal_future_resolves_to_the_single_winner() {
 }
 
 #[test]
+fn dropping_the_last_sender_without_completion_resolves_with_a_failure() {
+    let (sender, mut future) = terminal_outcome_channel();
+    let second = sender.clone();
+    drop(second);
+    let mut context = Context::from_waker(Waker::noop());
+    assert_eq!(
+        Pin::new(&mut future).poll(&mut context),
+        Poll::Pending,
+        "a remaining sender keeps the future pending"
+    );
+    drop(sender);
+    let outcome = match Pin::new(&mut future).poll(&mut context) {
+        Poll::Ready(outcome) => outcome,
+        Poll::Pending => panic!("the last sender dropping must resolve the future"),
+    };
+    assert_eq!(
+        outcome.status(),
+        &TerminalStatus::RuntimeFailed(swallowtail_core::SafeDiagnostic::new(
+            "swallowtail.terminal_sender_dropped",
+            "Operation terminal outcome was not published",
+        ))
+    );
+}
+
+#[test]
+fn completing_before_drop_keeps_the_published_outcome() {
+    let (sender, mut future) = terminal_outcome_channel();
+    let expected = TerminalOutcome::new(TerminalStatus::Completed, CleanupOutcome::Clean);
+    sender
+        .complete(expected.clone())
+        .expect("terminal outcome completes once");
+    drop(sender);
+    let mut context = Context::from_waker(Waker::noop());
+    assert_eq!(
+        Pin::new(&mut future).poll(&mut context),
+        Poll::Ready(expected)
+    );
+}
+
+#[test]
 fn terminal_failure_dimensions_remain_distinct() {
     let diagnostic = swallowtail_core::SafeDiagnostic::new("fixture.failure", "Failed");
     let statuses = [

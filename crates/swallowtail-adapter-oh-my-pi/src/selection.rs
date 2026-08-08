@@ -15,23 +15,10 @@ pub const OH_MY_PI_PACKAGE_BASELINE_VERSION: &str = "17.2.9";
 pub const OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION: &str = "17.2.9";
 
 const BASELINE_BEHAVIOR: &str = "oh-my-pi.rpc-v2-v17.2.9";
-const MAX_VERSION_BYTES: usize = 64;
-
 /// Parses one exact Oh My Pi package semantic-version binding.
 #[must_use]
 pub fn oh_my_pi_package_binding(value: &str) -> Option<InterfaceVersionBinding> {
-    if value.is_empty()
-        || value.len() > MAX_VERSION_BYTES
-        || value.trim() != value
-        || value.chars().any(char::is_control)
-        || semver::Version::parse(value).is_err()
-    {
-        return None;
-    }
-    Some(InterfaceVersionBinding::new(
-        axis(),
-        InterfaceVersion::new(value).ok()?,
-    ))
+    swallowtail_runtime::parse_semantic_version_binding(&axis(), value)
 }
 
 /// Returns the qualified Oh My Pi RPC package compatibility window.
@@ -87,15 +74,15 @@ fn axis() -> InterfaceVersionAxis {
 
 fn segment(start: &str, end: &str, behavior: &str) -> InterfaceVersionSegment {
     InterfaceVersionSegment::new(
-        version(start),
-        version(end),
+        version(start).expect("static OhMyPi version is valid"),
+        version(end).expect("static OhMyPi version is valid"),
         InterfaceBehaviorRevision::new(behavior).expect("static OhMyPi behavior revision is valid"),
         InterfaceSupportStatus::Maintained,
     )
 }
 
-fn version(value: &str) -> InterfaceVersion {
-    InterfaceVersion::new(value).expect("static OhMyPi version is valid")
+fn version(value: &str) -> Option<InterfaceVersion> {
+    InterfaceVersion::new(value).ok()
 }
 
 #[cfg(test)]

@@ -3,6 +3,13 @@ use swallowtail_core::{ExecutionHostId, SafeDiagnostic};
 use swallowtail_runtime::{BoxFuture, JoinedTask, RuntimeFailure, ScopeId, ScopedTaskService};
 
 /// Per-host task service whose returned handles always own their worker thread.
+///
+/// Dropping a handle joins the worker thread; the task still completes and
+/// its effects stay deterministic, but the dropping consumer thread blocks
+/// until the task ends. A task that waits on an external condition can block
+/// its dropper indefinitely; consumers that need a bounded shutdown must
+/// bound the task itself (for example through the host deadline service) or
+/// join explicitly before dropping.
 #[derive(Clone)]
 pub struct LocalScopedTaskService {
     execution_host_id: ExecutionHostId,
@@ -59,6 +66,11 @@ impl JoinedTask for LocalJoinedTask {
 impl Drop for LocalJoinedTask {
     fn drop(&mut self) {
         if let Some(worker) = self.worker.take() {
+            // Joining on drop is deliberate: a dropped task still completes
+            // and its effects stay deterministic. The flip side is that the
+            // consumer thread blocks until the task ends; see the service
+            // docs for the bounded-shutdown guidance. Bounding or detaching
+            // here would let a dropped task keep running silently.
             let _ = worker.join();
         }
     }

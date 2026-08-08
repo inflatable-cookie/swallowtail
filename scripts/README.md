@@ -36,35 +36,19 @@ Release-preparation scripts:
   use an explicitly reported synthetic Git snapshot
 - `generate-public-api-baseline.sh` — generate the reviewed semantic Rust API
   inventory with pinned `cargo-public-api` and nightly versions
-- `check-public-api.sh` — compare the 27 immutable v0.1.0 package APIs plus
-  Muse's v0.2.0 baseline with reviewed semantic API evidence
+- `check-public-api.sh` — compare the 28-package current API against the
+  reviewed v0.3.0 candidate baseline
 - `check-msrv.sh` — unified Rust 1.95 floor and current stable checks
 
-Historical registry-candidate scripts:
+Archived registry-candidate scripts:
 
-- `verify-packages-local.sh` — credential-free package assembly, content audit,
-  checksums, extraction, patched local-workspace verification, and packaged
-  Kimi local-server protocol/lifecycle execution; an explicit output retains
-  one immutable candidate
-- `verify-release-candidate.sh` — checksum, source-bundle, and from-source
-  package reproducibility
-- `verify-candidate-consumers.sh` — isolated Nucleus and Soundcheck prepared-
-  runtime tests plus packaged Codex failure/lifecycle conformance against an
-  explicit candidate
-- `verify-candidate-provider-facades.sh` — execute deterministic prepared
-  facade suites for all 23 production routes from one extracted candidate
-- `verify-candidate-provider-lifecycle.sh` — execute the exact lifecycle
-  matrix and bound-management suites from one extracted candidate
-- `verify-packaged-consumer-runtime.sh` — assemble a transient candidate from
-  the current source snapshot and run the credential-free cross-consumer
-  runtime gate
-- `verify-packaged-provider-runtime.sh` — assemble one transient candidate,
-  reproduce it from its source bundle, run all packaged provider-facade
-  suites, then reuse it for the unchanged Nucleus and Soundcheck runtime proof
-- `release-package-set.sh` — one ordered 24-package and current-consumer set
-
-The registry-candidate scripts preserve earlier evidence. They are not called
-by the active source-tag release configuration or normal package selectors.
-
-These scripts do not upload, tag, push, read release credentials, change
-owners, create releases, or edit consumers.
+The `v0.1.x` registry-candidate machinery moved to
+`release-candidates/0.1.0/scripts/` as frozen evidence: `verify-packages-local.sh`,
+`verify-release-candidate.sh`, `verify-candidate-consumers.sh`,
+`verify-candidate-provider-facades.sh`, `verify-candidate-provider-lifecycle.sh`,
+`verify-packaged-consumer-runtime.sh`, `verify-packaged-provider-runtime.sh`,
+and `check-muse-code-corpus.py`. They held stale MSRV and route facts and
+re-implemented the shared archive audits; the active source-tag release path
+(`config/release.toml` gates through Effigy) never called them. The archived
+copies are immutable records, not inputs. `release-package-set.sh` stays live
+because `verify-affected-packages.sh` sources its package lists.

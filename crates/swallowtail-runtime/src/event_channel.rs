@@ -12,13 +12,39 @@ struct EventChannelState {
     failure: Option<RuntimeFailure>,
     terminal: bool,
     closed: bool,
-    waiter: Option<Waker>,
+    sender_count: usize,
+    waiters: Vec<Waker>,
 }
 
 /// Cloneable producer for one bounded ordered runtime-event stream.
-#[derive(Clone)]
+///
+/// The stream closes when the last sender clone is dropped, exactly like an
+/// explicit [`RuntimeEventSender::close`], so a producer that dies without
+/// closing cannot stall a consumer waiting for the stream to end.
 pub struct RuntimeEventSender {
     state: Arc<Mutex<EventChannelState>>,
+}
+
+impl Clone for RuntimeEventSender {
+    fn clone(&self) -> Self {
+        let mut state = self.state.lock().expect("event channel lock poisoned");
+        state.sender_count = state.sender_count.saturating_add(1);
+        drop(state);
+        Self {
+            state: Arc::clone(&self.state),
+        }
+    }
+}
+
+impl Drop for RuntimeEventSender {
+    fn drop(&mut self) {
+        let mut state = self.state.lock().expect("event channel lock poisoned");
+        state.sender_count = state.sender_count.saturating_sub(1);
+        if state.sender_count == 0 {
+            state.closed = true;
+            wake(&mut state);
+        }
+    }
 }
 
 impl RuntimeEventSender {
@@ -76,7 +102,13 @@ impl Stream for RuntimeEventStream {
         if state.closed || state.terminal {
             Poll::Ready(None)
         } else {
-            state.waiter = Some(context.waker().clone());
+            if !state
+                .waiters
+                .iter()
+                .any(|waiter| waiter.will_wake(context.waker()))
+            {
+                state.waiters.push(context.waker().clone());
+            }
             Poll::Pending
         }
     }
@@ -93,7 +125,8 @@ pub fn runtime_event_channel(
         failure: None,
         terminal: false,
         closed: false,
-        waiter: None,
+        sender_count: 1,
+        waiters: Vec::new(),
     }));
     Ok((
         RuntimeEventSender {
@@ -104,7 +137,7 @@ pub fn runtime_event_channel(
 }
 
 fn wake(state: &mut EventChannelState) {
-    if let Some(waiter) = state.waiter.take() {
+    for waiter in state.waiters.drain(..) {
         waiter.wake();
     }
 }
@@ -169,5 +202,44 @@ mod tests {
             Pin::new(&mut stream).poll_next(&mut context),
             Poll::Ready(Some(Err(_)))
         ));
+    }
+
+    #[test]
+    fn dropping_the_last_sender_closes_the_stream() {
+        let (sender, mut stream) = runtime_event_channel(2).expect("capacity is valid");
+        sender
+            .send(RuntimeEvent::new(1, RuntimeEventKind::Started))
+            .expect("start is accepted");
+        let second = sender.clone();
+        drop(second);
+        let mut context = Context::from_waker(Waker::noop());
+        assert!(matches!(
+            Pin::new(&mut stream).poll_next(&mut context),
+            Poll::Ready(Some(Ok(event))) if event.sequence() == 1
+        ));
+        assert_eq!(
+            Pin::new(&mut stream).poll_next(&mut context),
+            Poll::Pending,
+            "a remaining sender keeps the stream open"
+        );
+        drop(sender);
+        assert_eq!(
+            Pin::new(&mut stream).poll_next(&mut context),
+            Poll::Ready(None),
+            "the last sender closing resolves the pending stream"
+        );
+    }
+
+    #[test]
+    fn dropped_sender_wakes_a_pending_stream_consumer() {
+        let (sender, mut stream) = runtime_event_channel(2).expect("capacity is valid");
+        let mut context = Context::from_waker(Waker::noop());
+        assert_eq!(Pin::new(&mut stream).poll_next(&mut context), Poll::Pending);
+        drop(sender);
+        assert_eq!(
+            Pin::new(&mut stream).poll_next(&mut context),
+            Poll::Ready(None),
+            "the drop must wake the pending consumer"
+        );
     }
 }

@@ -16,42 +16,8 @@ sed '/<!-- provider-session-lifecycle-matrix:start -->/,$d' "$route_matrix_file"
   sed -n 's/^| `\([^`]*\)` |.*$/\1/p' |
   LC_ALL=C sort > "$route_matrix_actual"
 
-cat <<'EOF' | LC_ALL=C sort > "$route_matrix_expected"
-antigravity.catalogue
-antigravity.headless
-alibaba.conversations
-anthropic.managed-agent
-anthropic.messages
-bedrock.catalogue
-bedrock.runtime
-claude-agent.acp
-claude-code.headless
-codex.app-server
-codex.exec
-cursor-agent.acp
-cursor-agent.catalogue
-cursor-agent.headless
-deepseek.continuation
-gemini-cli.acp
-gemini-cli.headless
-gemini.live
-grok-build.acp
-kimi-code.acp
-kimi-code.headless
-kimi-code.local-server
-kimi-platform.chat
-llama-cpp.attached
-llama-cpp.owned
-muse-code.headless
-ollama.attached
-openai.background
-openai.realtime
-opencode.http
-oh-my-pi.rpc
-pi.rpc
-qwen.headless
-xai.responses-websocket
-EOF
+python3 "$route_matrix_repo_root/scripts/provider_route_matrix/route_inventory.py" |
+  LC_ALL=C sort > "$route_matrix_expected"
 
 if [ "$(wc -l < "$route_matrix_actual" | tr -d ' ')" -ne 34 ]; then
   printf 'provider route matrix must contain exactly 34 route rows\n' >&2
@@ -115,42 +81,8 @@ awk -F '|' '
   }
 ' "$route_lifecycle_rows" | LC_ALL=C sort > "$route_lifecycle_posture_actual"
 
-cat <<'EOF' | LC_ALL=C sort > "$route_lifecycle_posture_expected"
-antigravity.catalogue|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
-antigravity.headless|unsupported|no|unsupported|unsupported|unsupported|unsupported
-alibaba.conversations|supported|yes|unsupported|unsupported|supported|ProviderDataDeleted
-anthropic.managed-agent|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
-anthropic.messages|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
-bedrock.catalogue|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
-bedrock.runtime|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
-claude-agent.acp|supported|yes|unsupported|unsupported|supported|ProviderDataDeleted
-claude-code.headless|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
-codex.app-server|supported|yes|supported|supported|supported|ProviderHardDeleted
-codex.exec|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
-cursor-agent.acp|unsupported|no|unsupported|unsupported|unsupported|unsupported
-cursor-agent.catalogue|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
-cursor-agent.headless|unsupported|no|unsupported|unsupported|unsupported|unsupported
-deepseek.continuation|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
-gemini-cli.acp|unsupported|no|unsupported|unsupported|unsupported|unsupported
-gemini-cli.headless|unsupported|no|unsupported|unsupported|unsupported|unsupported
-gemini.live|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
-grok-build.acp|unsupported|no|unsupported|unsupported|unsupported|unsupported
-kimi-code.acp|unsupported|no|unsupported|unsupported|unsupported|unsupported
-kimi-code.headless|unsupported|no|unsupported|unsupported|unsupported|unsupported
-kimi-code.local-server|supported|yes|supported|supported|unsupported|unsupported
-kimi-platform.chat|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
-llama-cpp.attached|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
-llama-cpp.owned|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
-muse-code.headless|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
-ollama.attached|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
-openai.background|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
-openai.realtime|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
-opencode.http|supported|yes|unsupported|unsupported|supported|ProviderDataDeleted
-oh-my-pi.rpc|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
-pi.rpc|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
-qwen.headless|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
-xai.responses-websocket|not-applicable|no|not-applicable|not-applicable|not-applicable|not-applicable
-EOF
+python3 "$route_matrix_repo_root/scripts/provider_route_matrix/route_inventory.py" \
+  --lifecycle-postures | LC_ALL=C sort > "$route_lifecycle_posture_expected"
 
 diff -u "$route_lifecycle_posture_expected" "$route_lifecycle_posture_actual"
 

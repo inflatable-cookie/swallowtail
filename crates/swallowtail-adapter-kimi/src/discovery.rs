@@ -1,20 +1,15 @@
-use futures_channel::oneshot;
-use std::future::poll_fn;
-use std::task::Poll;
-use swallowtail_core::{
-    DiscoveryOutcome, DiscoveryStatus, InstalledExecutableObservation, InterfaceCompatibilityClaim,
-    SafeDiagnostic,
-};
+use swallowtail_core::DiscoveryOutcome;
 use swallowtail_runtime::{
-    BoxFuture, DiscoveryDriver, DiscoveryRequest, HostServices,
-    InstalledExecutableDiscoveryRequest, ProcessHandle, ProcessOutputStream, ProcessRequest,
-    RuntimeFailure, validate_installed_executable_discovery_services,
+    BoxFuture, DiscoveryDriver, DiscoveryRequest, HostServices, InstalledProbeCodes,
+    InstalledExecutableDiscoveryRequest, RuntimeFailure, installed_probe_codes,
+    probe_installed_executable_version as probe,
 };
 
 use crate::failure::failure;
 use crate::{KimiAcpDriver, kimi_acp_claim, kimi_code_binding};
 
-const MAX_VERSION_OUTPUT_BYTES: usize = 64;
+
+pub(crate) const KIMI_PROBE_CODES: InstalledProbeCodes = installed_probe_codes!("swallowtail.kimi");
 
 impl DiscoveryDriver for KimiAcpDriver {
     fn discover(
@@ -35,198 +30,24 @@ impl DiscoveryDriver for KimiAcpDriver {
         request: InstalledExecutableDiscoveryRequest,
         services: HostServices,
     ) -> BoxFuture<'_, Result<DiscoveryOutcome, RuntimeFailure>> {
-        Box::pin(probe_joined(request, services, kimi_acp_claim()))
+        Box::pin(probe(
+            request,
+            services,
+            kimi_acp_claim(),
+            parse_version,
+            KIMI_PROBE_CODES,
+            "Kimi",
+        ))
     }
 }
 
-pub(crate) async fn probe_joined(
-    request: InstalledExecutableDiscoveryRequest,
-    services: HostServices,
-    claim: InterfaceCompatibilityClaim,
-) -> Result<DiscoveryOutcome, RuntimeFailure> {
-    validate_installed_executable_discovery_services(&request, &services)?;
-    if request.target().version_axis() != claim.axis() {
-        return Err(failure(
-            "swallowtail.kimi.discovery_axis_mismatch",
-            "Kimi discovery target uses a different version axis",
-        ));
-    }
-    if request.cancellation().is_requested() {
-        return Ok(outcome(DiscoveryStatus::Cancelled));
-    }
-
-    let task_service = services
-        .task()
-        .expect("validated task service is present")
-        .clone();
-    let scope = request.scope_id().clone();
-    let (sender, receiver) = oneshot::channel();
-    let task = match task_service.spawn(
-        scope,
-        Box::pin(async move {
-            let result = probe_process(request, services, claim).await;
-            let _ = sender.send(result);
-        }),
-    ) {
-        Ok(task) => task,
-        Err(_) => return Ok(outcome(DiscoveryStatus::Failed)),
-    };
-    let result = receiver
-        .await
-        .unwrap_or_else(|_| Ok(outcome(DiscoveryStatus::Failed)));
-    if task.join().await.is_err() {
-        Ok(outcome(DiscoveryStatus::CleanupFailed))
-    } else {
-        result
-    }
-}
-
-async fn probe_process(
-    request: InstalledExecutableDiscoveryRequest,
-    services: HostServices,
-    claim: InterfaceCompatibilityClaim,
-) -> Result<DiscoveryOutcome, RuntimeFailure> {
-    let process = match services
-        .process()
-        .expect("validated process service is present")
-        .start(
-            request.scope_id().clone(),
-            ProcessRequest::new(request.target().executable().clone())
-                .with_arguments(["--version".to_owned()]),
-        )
-        .await
-    {
-        Ok(process) => process,
-        Err(_) => return Ok(outcome(DiscoveryStatus::Failed)),
-    };
-    if process.close_stdin().await.is_err() {
-        return Ok(stop_and_classify(process.as_ref(), DiscoveryStatus::Failed).await);
-    }
-
-    let mut deadline = services
-        .time()
-        .expect("validated time service is present")
-        .wait_until(request.deadline());
-    let mut cancelled = request.cancellation().wait_requested();
-    let mut stdout = Vec::new();
-    loop {
-        match next_output(process.as_ref(), &mut deadline, &mut cancelled).await {
-            ProbeSignal::Cancelled => {
-                return Ok(stop_and_classify(process.as_ref(), DiscoveryStatus::Cancelled).await);
-            }
-            ProbeSignal::TimedOut => {
-                return Ok(stop_and_classify(process.as_ref(), DiscoveryStatus::TimedOut).await);
-            }
-            ProbeSignal::Output(Err(_)) => {
-                return Ok(stop_and_classify(process.as_ref(), DiscoveryStatus::Failed).await);
-            }
-            ProbeSignal::Output(Ok(Some(chunk)))
-                if chunk.stream() == ProcessOutputStream::Stdout =>
-            {
-                if stdout.len().saturating_add(chunk.bytes().len()) > MAX_VERSION_OUTPUT_BYTES {
-                    return Ok(
-                        stop_and_classify(process.as_ref(), DiscoveryStatus::Malformed).await,
-                    );
-                }
-                stdout.extend_from_slice(chunk.bytes());
-            }
-            ProbeSignal::Output(Ok(Some(_))) => {}
-            ProbeSignal::Output(Ok(None)) => break,
-        }
-    }
-
-    let exit = match process.wait().await {
-        Ok(exit) => exit,
-        Err(_) => return Ok(outcome(DiscoveryStatus::CleanupFailed)),
-    };
-    if !exit.success() {
-        return Ok(outcome(DiscoveryStatus::Failed));
-    }
-    let Some(binding) = parse_version(&stdout) else {
-        return Ok(outcome(DiscoveryStatus::Malformed));
-    };
-    let observation = InstalledExecutableObservation::classify(
-        request.execution_host_id().clone(),
-        binding,
-        &claim,
-    )
-    .map_err(|_| {
-        failure(
-            "swallowtail.kimi.discovery_classification_failed",
-            "Kimi version observation could not be classified",
-        )
-    })?;
-    Ok(DiscoveryOutcome::installed_executable(observation))
-}
-
-enum ProbeSignal {
-    Output(Result<Option<swallowtail_runtime::ProcessOutputChunk>, RuntimeFailure>),
-    TimedOut,
-    Cancelled,
-}
-
-async fn next_output(
-    process: &dyn ProcessHandle,
-    deadline: &mut BoxFuture<'static, swallowtail_runtime::DeadlineObservation>,
-    cancelled: &mut BoxFuture<'static, ()>,
-) -> ProbeSignal {
-    let mut output = process.read_output();
-    poll_fn(|context| {
-        if cancelled.as_mut().poll(context).is_ready() {
-            return Poll::Ready(ProbeSignal::Cancelled);
-        }
-        if deadline.as_mut().poll(context).is_ready() {
-            return Poll::Ready(ProbeSignal::TimedOut);
-        }
-        output.as_mut().poll(context).map(ProbeSignal::Output)
-    })
-    .await
-}
-
-async fn stop_and_classify(
-    process: &dyn ProcessHandle,
-    status: DiscoveryStatus,
-) -> DiscoveryOutcome {
-    let graceful = process.request_stop().await;
-    let forced = process.force_stop().await;
-    let waited = process.wait().await;
-    if graceful.is_err() || forced.is_err() || waited.is_err() {
-        outcome(DiscoveryStatus::CleanupFailed)
-    } else {
-        outcome(status)
-    }
-}
-
-fn parse_version(output: &[u8]) -> Option<swallowtail_core::InterfaceVersionBinding> {
+pub(crate) fn parse_version(output: &[u8]) -> Option<swallowtail_core::InterfaceVersionBinding> {
     let output = std::str::from_utf8(output).ok()?;
     let value = output.strip_suffix('\n').unwrap_or(output);
     if value.bytes().any(|byte| byte.is_ascii_whitespace()) {
         return None;
     }
     kimi_code_binding(value)
-}
-
-fn outcome(status: DiscoveryStatus) -> DiscoveryOutcome {
-    DiscoveryOutcome::new(
-        status,
-        Some(SafeDiagnostic::new(
-            status_code(status),
-            "Kimi installed executable discovery did not produce a compatible observation",
-        )),
-    )
-}
-
-const fn status_code(status: DiscoveryStatus) -> &'static str {
-    match status {
-        DiscoveryStatus::Absent => "swallowtail.kimi.discovery_absent",
-        DiscoveryStatus::Discovered => "swallowtail.kimi.discovery_discovered",
-        DiscoveryStatus::Incompatible => "swallowtail.kimi.discovery_incompatible",
-        DiscoveryStatus::Malformed => "swallowtail.kimi.discovery_malformed",
-        DiscoveryStatus::TimedOut => "swallowtail.kimi.discovery_timed_out",
-        DiscoveryStatus::Cancelled => "swallowtail.kimi.discovery_cancelled",
-        DiscoveryStatus::Failed => "swallowtail.kimi.discovery_failed",
-        DiscoveryStatus::CleanupFailed => "swallowtail.kimi.discovery_cleanup_failed",
-    }
 }
 
 #[cfg(test)]

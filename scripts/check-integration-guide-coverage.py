@@ -11,6 +11,10 @@ from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(REPO_ROOT / "scripts"))
+from provider_route_matrix.route_inventory import (  # noqa: E402
+    production_routes as inventory_production_routes,
+)
 GUIDES_DIR = REPO_ROOT / "docs/guides"
 GUIDE_MAP = GUIDES_DIR / "integration-guide-map.md"
 GUIDE_INDEX = GUIDES_DIR / "README.md"
@@ -102,18 +106,19 @@ def require_file(target: str, expected_root: Path, suffix: str, role: str) -> Pa
 
 
 def production_routes() -> list[str]:
+    routes = inventory_production_routes()
     route_document = ROUTE_MATRIX.read_text()
     ordinary_routes = route_document.split(
         "<!-- provider-session-lifecycle-matrix:start -->", 1
     )[0]
-    routes = ROUTE_PATTERN.findall(ordinary_routes)
-    if len(routes) != 34:
+    documented = ROUTE_PATTERN.findall(ordinary_routes)
+    if set(documented) != set(routes) or len(documented) != len(routes):
+        missing = sorted(set(routes) - set(documented))
+        unexpected = sorted(set(documented) - set(routes))
         raise CoverageFailure(
-            f"provider route matrix contains {len(routes)} production routes instead of 34"
+            "provider route matrix routes differ from the feature matrix: "
+            f"missing={missing} unexpected={unexpected}"
         )
-    duplicates = sorted(route for route, count in Counter(routes).items() if count > 1)
-    if duplicates:
-        raise CoverageFailure(f"provider route matrix contains duplicate routes: {duplicates}")
     return routes
 
 

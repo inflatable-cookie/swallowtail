@@ -19,12 +19,13 @@ pub(crate) const MUSE_HEADLESS_BEHAVIOR: &str = "muse-code.events-v1";
 #[must_use]
 /// Parses the one qualified opaque release revision.
 pub fn muse_code_release_binding(value: &str) -> Option<InterfaceVersionBinding> {
-    (value == MUSE_CODE_RELEASE_REVISION).then(|| {
-        InterfaceVersionBinding::new(
-            axis(),
-            InterfaceVersion::new(value).expect("qualified Muse revision is valid"),
-        )
-    })
+    if value != MUSE_CODE_RELEASE_REVISION {
+        return None;
+    }
+    Some(InterfaceVersionBinding::new(
+        axis(),
+        InterfaceVersion::new(value).ok()?,
+    ))
 }
 
 #[must_use]

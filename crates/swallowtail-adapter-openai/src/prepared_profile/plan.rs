@@ -1,9 +1,9 @@
 use crate::OpenAiBackgroundPreparedIntegration;
 use swallowtail_core::{
-    CapabilityProfile, CapabilityRequirement, ConfiguredInstance, Diagnostic, ModelRoute,
-    PreflightContext, PreflightPlan, ProviderId, preflight,
+    CapabilityProfile, CapabilityRequirement, ConfiguredInstance, ModelRoute, PreflightPlan,
+    ProviderId,
 };
-use swallowtail_runtime::{PreparationFailure, PreparationStage, PreparedOperationEvidence};
+use swallowtail_runtime::{PreparationFailure, PreparedOperationEvidence};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 /// Prepared background-run evidence, including observable activity support.
@@ -71,21 +71,7 @@ pub(crate) fn instance_with_capabilities(
     prepared: &OpenAiBackgroundPreparedIntegration,
     capabilities: CapabilityProfile,
 ) -> ConfiguredInstance {
-    let base = prepared.instance();
-    ConfiguredInstance::new(
-        base.id().clone(),
-        base.revision().clone(),
-        base.driver_id().clone(),
-        base.execution_host_id().clone(),
-        base.target_reference().clone(),
-        base.ownership(),
-        base.access_profile_id().clone(),
-        base.support_authority(),
-        base.protocol_facade_id().clone(),
-        base.policy_id().clone(),
-        capabilities,
-    )
-    .with_interface_versions(base.interface_versions().cloned())
+    swallowtail_runtime::instance_with_capabilities(prepared.instance(), capabilities)
 }
 
 pub(super) fn build_plan(
@@ -94,26 +80,17 @@ pub(super) fn build_plan(
     route: &ModelRoute,
     capabilities: impl IntoIterator<Item = CapabilityRequirement>,
 ) -> Result<PreflightPlan, PreparationFailure> {
-    let descriptor = crate::openai_background_descriptor();
     let requirements = crate::openai_background_requirements(
         prepared.instance().execution_host_id().clone(),
         capabilities,
     );
-    preflight(
-        &PreflightContext::new(
-            &descriptor,
-            instance,
-            prepared.access_profile(),
-            prepared.access_evidence().status(),
-            prepared.available_host_services(),
-        )
-        .with_model_route(route),
+    swallowtail_runtime::build_plan(
+        &crate::openai_background_descriptor(),
+        instance,
+        Some(route),
         &requirements,
+        prepared.access_profile(),
+        prepared.access_evidence().status(),
+        prepared.available_host_services(),
     )
-    .map_err(|error| {
-        PreparationFailure::new(
-            PreparationStage::Preflight,
-            Diagnostic::new(error.diagnostic().clone()),
-        )
-    })
 }

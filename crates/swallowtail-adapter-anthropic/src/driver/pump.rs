@@ -257,6 +257,8 @@ fn apply_event(
         }
         (Event::ContentStart(crate::protocol::ContentBlock::Text), StreamState::Message | StreamState::AfterContent) => {
             *state = StreamState::TextContent;
+            // Guard: StreamState::Message is only reachable after
+            // Event::MessageStart set message_id.
             Ok(Applied::AssistantStarted(
                 message_id.clone().expect("message identity exists"),
             ))

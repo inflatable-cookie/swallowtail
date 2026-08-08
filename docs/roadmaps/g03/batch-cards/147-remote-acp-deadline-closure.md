@@ -1,6 +1,6 @@
 # 147 Remote ACP Deadline Closure
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-08
 Milestone: `../049-hang-and-deadline-closure.md`
@@ -32,10 +32,10 @@ actually fires against a hanging peer.
 
 ## Acceptance
 
-- [ ] a non-responding HTTP peer fails within the configured deadline
-- [ ] a non-responding WebSocket peer fails within the configured deadline
-- [ ] a hanging initial connect is interruptible
-- [ ] transport tests pass under `effigy validate:focused
+- [x] a non-responding HTTP peer fails within the configured deadline
+- [x] a non-responding WebSocket peer fails within the configured deadline
+- [x] a hanging initial connect is interruptible
+- [x] transport tests pass under `effigy validate:focused
       swallowtail-transport-acp-remote`
 
 ## Stop Conditions
@@ -51,3 +51,29 @@ Yes, to card 148 after acceptance and a focused transport round.
 
 - `effigy validate:focused swallowtail-transport-acp-remote`
 - `effigy test:rust`
+
+## Completion Evidence
+
+- `worker::run` and both transport `run` functions take the connection
+  deadline and host time service; `race_deadline` races every network await
+  against the host's own `wait_until(deadline)`, so the crate never assumes
+  a tick rate (`worker.rs`)
+- HTTP: the initial connect, every send, body reads, the SSE stream wait,
+  and the close DELETE are deadline-raced; a silent peer fails within the
+  deadline instead of hanging at any await point (`http.rs`)
+- WebSocket: `connect_async` is deadline-raced so a hanging initial connect
+  is interruptible; sends, pongs, the incoming wait, and closes are raced
+  too (`websocket.rs`)
+- `connect_bound` starts the deadline task before the connect resolves and
+  races the ready signal against the deadline; a deadline during connect
+  returns `DeadlineExceeded` with joined cleanup instead of hanging
+  (`lib.rs`)
+- three new scenarios: non-responding HTTP peer, hanging WebSocket connect,
+  and silent-after-handshake WebSocket peer, each asserting
+  `DeadlineExceeded` within the deadline (with a nanosecond-tick test time
+  service mirroring the host-local convention)
+- well-behaved peers observe the same flow; the existing corpus, cancel,
+  close, disconnect, and portability scenarios pass unchanged
+- no public API or diagnostic-code change; focused transport round (8),
+  workspace nextest (1,493 passed), examples, format, and warnings-denied
+  clippy all pass

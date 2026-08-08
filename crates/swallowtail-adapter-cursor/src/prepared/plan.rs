@@ -3,8 +3,8 @@ use swallowtail_core::{
     AccessProfile, AccessRequirement, Capability, CapabilityConstraint, CapabilityProfile,
     CapabilityRequirement, ConfiguredInstance, CredentialState, DriverDescriptor,
     EndpointAuthorization, EntitlementState, HarnessConfigurationPosture, InstanceOwnership,
-    PreflightContext, PreflightPlan, ResourceAccess, ResourceRepresentation, RuntimeReadiness,
-    SessionProviderStatePolicy, SupportAuthority, preflight,
+    PreflightPlan, ResourceAccess, ResourceRepresentation, RuntimeReadiness,
+    SessionProviderStatePolicy, SupportAuthority,
 };
 use swallowtail_runtime::{PreparationFailure, PreparationStage, PreparedAccessEvidence};
 
@@ -98,21 +98,8 @@ pub(crate) fn instance_with_capabilities(
     base: &ConfiguredInstance,
     capabilities: CapabilityProfile,
 ) -> ConfiguredInstance {
-    ConfiguredInstance::new(
-        base.id().clone(),
-        base.revision().clone(),
-        base.driver_id().clone(),
-        base.execution_host_id().clone(),
-        base.target_reference().clone(),
-        base.ownership(),
-        base.access_profile_id().clone(),
-        base.support_authority(),
-        base.protocol_facade_id().clone(),
-        base.policy_id().clone(),
-        capabilities,
-    )
-    .with_interface_versions(base.interface_versions().cloned())
-    .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient)
+    swallowtail_runtime::instance_with_capabilities(base, capabilities)
+        .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient)
 }
 
 pub(crate) fn access_requirement(profile: &AccessProfile) -> AccessRequirement {
@@ -140,22 +127,15 @@ pub(crate) fn build_plan(
             "Cursor prepared operations require host-owned ephemeral execution",
         ));
     }
-    let mut context = PreflightContext::new(
+    swallowtail_runtime::build_plan(
         descriptor,
         instance,
+        route,
+        requirements,
         access_profile,
         access_evidence.status(),
         available_services,
-    );
-    if let Some(route) = route {
-        context = context.with_model_route(route);
-    }
-    preflight(&context, requirements).map_err(|error| {
-        PreparationFailure::new(
-            PreparationStage::Preflight,
-            swallowtail_core::Diagnostic::new(error.diagnostic().clone()),
-        )
-    })
+    )
 }
 
 pub(crate) const ACP_PROVIDER_STATE: SessionProviderStatePolicy =

@@ -91,7 +91,12 @@ impl OllamaPreparedIntegration {
             reasoning.as_ref(),
             structured_output.as_ref(),
         );
-        let activity = crate::activity::profile::activity_profile(self);
+        let activity = crate::activity::profile::activity_profile(self).map_err(|error| {
+            PreparationFailure::new(
+                PreparationStage::Preflight,
+                swallowtail_core::Diagnostic::new(error.diagnostic().clone()),
+            )
+        })?;
         let capabilities = crate::activity::profile::with_activity(
             CapabilityProfile::new(capability_requirements),
             &activity,

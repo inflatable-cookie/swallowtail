@@ -68,9 +68,7 @@ fn emit(
     sequence: &mut u64,
     kind: RuntimeEventKind,
 ) -> Result<(), RuntimeFailure> {
-    events.send(RuntimeEvent::new(*sequence, kind))?;
-    *sequence += 1;
-    Ok(())
+    swallowtail_runtime::emit(events, sequence, kind)
 }
 
 fn emit_content(

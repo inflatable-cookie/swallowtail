@@ -29,6 +29,15 @@ pub(crate) fn classify_failure(status: u16) -> Option<ProviderFailureKind> {
     }
 }
 
+/// Requires exactly one element, failing closed instead of unwrapping
+/// provider-controlled vector contents.
+fn exact_one<T>(mut values: Vec<T>) -> Result<T, ProtocolFailure> {
+    if values.len() != 1 {
+        return Err(ProtocolFailure::new(ProtocolFailureKind::InvalidStructure));
+    }
+    Ok(values.remove(0))
+}
+
 pub(crate) struct ToolAttempt {
     pub(crate) call: DirectToolCall,
     pub(crate) reasoning: PrivateContinuation,
@@ -60,10 +69,7 @@ pub(crate) fn parse_tool_attempt(
     }
     let response: Completion = serde_json::from_slice(bytes)
         .map_err(|_| ProtocolFailure::new(ProtocolFailureKind::InvalidStructure))?;
-    if response.object != "chat.completion"
-        || response.model != DEEPSEEK_MODEL_ID
-        || response.choices.len() != 1
-    {
+    if response.object != "chat.completion" || response.model != DEEPSEEK_MODEL_ID {
         return Err(ProtocolFailure::new(
             if response.model != DEEPSEEK_MODEL_ID {
                 ProtocolFailureKind::ModelMismatch
@@ -72,16 +78,15 @@ pub(crate) fn parse_tool_attempt(
             },
         ));
     }
-    let choice = response.choices.into_iter().next().unwrap();
+    let choice = exact_one(response.choices)?;
     if choice.index != 0
         || choice.finish_reason != "tool_calls"
         || choice.message.role != "assistant"
         || choice.message.content.is_some()
-        || choice.message.tool_calls.len() != 1
     {
         return Err(ProtocolFailure::new(ProtocolFailureKind::InvalidStructure));
     }
-    let tool = choice.message.tool_calls.into_iter().next().unwrap();
+    let tool = exact_one(choice.message.tool_calls)?;
     if tool.kind != "function" {
         return Err(ProtocolFailure::new(ProtocolFailureKind::InvalidStructure));
     }

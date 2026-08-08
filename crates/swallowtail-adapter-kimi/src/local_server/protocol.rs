@@ -1,5 +1,8 @@
-// Card 061 froze the full REST/WS corpus. Card 062 consumes only the lifecycle
-// subset; card 064 will activate the remaining interactive decoder paths.
+// Disposition (recorded, card 164): the full REST/WS corpus stays frozen as
+// evidence from card 061. The interactive lifecycle subset is consumed
+// (callbacks, frame cursor, handle records, turn-end reasons); the remaining
+// decoder paths stay `#[allow(dead_code)]` for a future interactive
+// activation card, which is a separate qualification, not a facade change.
 #[allow(dead_code)]
 mod common;
 #[allow(dead_code)]

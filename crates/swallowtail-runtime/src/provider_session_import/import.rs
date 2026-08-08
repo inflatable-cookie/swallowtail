@@ -2,6 +2,7 @@ use super::{
     ProviderSessionCandidate, ProviderSessionCataloguePlan, failure, requires_capability,
     requires_service, same_catalogue_and_import_binding, same_working_resource,
 };
+use crate::plan_family::{PlanRule, check_plan_rules};
 use crate::{
     CancellationControl, Deadline, ImmediateCancellation, ProviderSessionCandidateId, RequestId,
     RuntimeFailure, SessionPlanAgreement, WorkingResourceRef, validate_session_plan_agreement,
@@ -178,55 +179,80 @@ impl ProviderSessionImportRequest {
     }
 }
 
+/// Ordered per-role validation rules for a provider-session import plan.
+///
+/// The shared rules cover the harness-interaction evidence, continuation
+/// capabilities, scoped services, exact model route, and interface-version
+/// evidence. The import-specific candidate, attachment, and working-resource
+/// rules follow below because they need the source catalogue plan.
+const IMPORT_PLAN_RULES: [PlanRule<ProviderSessionImportAgreement>; 8] = [
+    PlanRule::new(
+        "swallowtail.provider_session_import.plan_mismatch",
+        "Provider-session import does not match its immutable plan",
+        |preflight, _| {
+            preflight.requirements().execution_layer() == ExecutionLayer::HarnessInteraction
+        },
+    ),
+    PlanRule::new(
+        "swallowtail.provider_session_import.plan_mismatch",
+        "Provider-session import does not match its immutable plan",
+        |preflight, _| {
+            preflight.requirements().driver_role() == DriverRole::ProviderSessionImport
+        },
+    ),
+    PlanRule::new(
+        "swallowtail.provider_session_import.plan_mismatch",
+        "Provider-session import does not match its immutable plan",
+        |preflight, _| {
+            preflight.requirements().operation_shape() == OperationShape::ProviderSessionImport
+        },
+    ),
+    PlanRule::new(
+        "swallowtail.provider_session_import.capability_mismatch",
+        "Provider-session import plan lacks its complete continuation capabilities",
+        |preflight, _| {
+            [
+                Capability::ProviderSessionImport,
+                Capability::LoadSession,
+                Capability::Resume,
+            ]
+            .iter()
+            .all(|capability| requires_capability(preflight, *capability))
+        },
+    ),
+    PlanRule::new(
+        "swallowtail.provider_session_import.service_required",
+        "Provider-session import requires scoped task and working-resource services",
+        |preflight, _| {
+            requires_service(preflight, HostServiceKind::Task)
+                && requires_service(preflight, HostServiceKind::WorkingResource)
+        },
+    ),
+    PlanRule::new(
+        "swallowtail.provider_session_import.time_service_required",
+        "Deadline-bound provider-session import requires time service",
+        |preflight, agreement| {
+            agreement.deadline().is_none() || requires_service(preflight, HostServiceKind::Time)
+        },
+    ),
+    PlanRule::new(
+        "swallowtail.provider_session_import.model_route_required",
+        "Provider-session import requires an exact future model route",
+        |preflight, _| preflight.model_route_id().is_some() && preflight.model_id().is_some(),
+    ),
+    PlanRule::new(
+        "swallowtail.provider_session_import.interface_version_required",
+        "Provider-session import requires exact interface-version evidence",
+        |preflight, _| preflight.interface_versions().next().is_some(),
+    ),
+];
+
 fn validate_plan(
     preflight: &PreflightPlan,
     source_catalogue: &ProviderSessionCataloguePlan,
     agreement: &ProviderSessionImportAgreement,
 ) -> Result<(), RuntimeFailure> {
-    if preflight.requirements().execution_layer() != ExecutionLayer::HarnessInteraction
-        || preflight.requirements().driver_role() != DriverRole::ProviderSessionImport
-        || preflight.requirements().operation_shape() != OperationShape::ProviderSessionImport
-    {
-        return Err(plan_mismatch());
-    }
-    for capability in [
-        Capability::ProviderSessionImport,
-        Capability::LoadSession,
-        Capability::Resume,
-    ] {
-        if !requires_capability(preflight, capability) {
-            return Err(failure(
-                "swallowtail.provider_session_import.capability_mismatch",
-                "Provider-session import plan lacks its complete continuation capabilities",
-            ));
-        }
-    }
-    if !requires_service(preflight, HostServiceKind::Task)
-        || !requires_service(preflight, HostServiceKind::WorkingResource)
-    {
-        return Err(failure(
-            "swallowtail.provider_session_import.service_required",
-            "Provider-session import requires scoped task and working-resource services",
-        ));
-    }
-    if agreement.deadline().is_some() && !requires_service(preflight, HostServiceKind::Time) {
-        return Err(failure(
-            "swallowtail.provider_session_import.time_service_required",
-            "Deadline-bound provider-session import requires time service",
-        ));
-    }
-    if preflight.model_route_id().is_none() || preflight.model_id().is_none() {
-        return Err(failure(
-            "swallowtail.provider_session_import.model_route_required",
-            "Provider-session import requires an exact future model route",
-        ));
-    }
-    if preflight.interface_versions().next().is_none() {
-        return Err(failure(
-            "swallowtail.provider_session_import.interface_version_required",
-            "Provider-session import requires exact interface-version evidence",
-        ));
-    }
+    check_plan_rules(preflight, agreement, &IMPORT_PLAN_RULES)?;
     validate_session_plan_agreement(preflight, agreement.session())?;
     if !agreement
         .candidate()
@@ -259,11 +285,4 @@ fn validate_plan(
         ));
     }
     Ok(())
-}
-
-fn plan_mismatch() -> RuntimeFailure {
-    failure(
-        "swallowtail.provider_session_import.plan_mismatch",
-        "Provider-session import does not match its immutable plan",
-    )
 }

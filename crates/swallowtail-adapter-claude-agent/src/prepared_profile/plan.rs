@@ -1,10 +1,9 @@
 use crate::ClaudeAgentPreparedIntegration;
 use swallowtail_core::{
-    AccessRequirement, CapabilityProfile, CapabilityRequirement, ConfiguredInstance,
-    CredentialMechanism, CredentialState, Diagnostic, EndpointAuthorization, EntitlementState,
-    ExecutionLayer, HarnessConfigurationPosture, HarnessIsolation, HostServiceKind, ModelRoute,
-    OperationRequirements, OperationShape, PreflightContext, PreflightPlan, ResourceAccess,
-    RuntimeReadiness, SafeDiagnostic, SessionAccessPolicy, SessionProviderStatePolicy, preflight,
+    CapabilityProfile, CapabilityRequirement, ConfiguredInstance, CredentialMechanism,
+    CredentialState, Diagnostic, ExecutionLayer, HarnessConfigurationPosture, HarnessIsolation,
+    HostServiceKind, ModelRoute, OperationRequirements, OperationShape, PreflightPlan,
+    ResourceAccess, SafeDiagnostic, SessionAccessPolicy, SessionProviderStatePolicy,
 };
 use swallowtail_runtime::{PreparationFailure, PreparationStage, PreparedOperationEvidence};
 
@@ -73,22 +72,8 @@ pub(super) fn instance_with_capabilities(
     prepared: &ClaudeAgentPreparedIntegration,
     capabilities: CapabilityProfile,
 ) -> ConfiguredInstance {
-    let base = prepared.instance();
-    ConfiguredInstance::new(
-        base.id().clone(),
-        base.revision().clone(),
-        base.driver_id().clone(),
-        base.execution_host_id().clone(),
-        base.target_reference().clone(),
-        base.ownership(),
-        base.access_profile_id().clone(),
-        base.support_authority(),
-        base.protocol_facade_id().clone(),
-        base.policy_id().clone(),
-        capabilities,
-    )
-    .with_interface_versions(base.interface_versions().cloned())
-    .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient)
+    swallowtail_runtime::instance_with_capabilities(prepared.instance(), capabilities)
+        .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient)
 }
 
 pub(super) fn requirements(
@@ -96,16 +81,16 @@ pub(super) fn requirements(
     capabilities: impl IntoIterator<Item = CapabilityRequirement>,
     permission_handling: super::ClaudeAgentPermissionHandling,
 ) -> OperationRequirements {
-    let requirements = OperationRequirements::new(
+    let requirements = swallowtail_runtime::base_requirements(
         ExecutionLayer::HarnessInteraction,
         OperationShape::InteractiveSession,
         swallowtail_core::DriverRole::InteractiveSession,
-        prepared.instance().execution_host_id().clone(),
-        access_requirement(prepared),
+        prepared.instance(),
+        prepared.access_profile(),
+        claude_agent_credential_states(prepared),
+        capabilities,
     )
-    .with_ownership_modes([prepared.instance().ownership()])
     .with_host_services(operation_host_services(prepared))
-    .with_capabilities(capabilities)
     .with_interface_versions([prepared.observation().version().clone()])
     .with_harness_isolation(HarnessIsolation::AmbientHost)
     .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient)
@@ -130,16 +115,16 @@ pub(super) fn run_requirements(
     capabilities: impl IntoIterator<Item = CapabilityRequirement>,
     permission_handling: super::ClaudeAgentPermissionHandling,
 ) -> OperationRequirements {
-    let requirements = OperationRequirements::new(
+    let requirements = swallowtail_runtime::base_requirements(
         ExecutionLayer::HarnessInteraction,
         OperationShape::StructuredRun,
         swallowtail_core::DriverRole::StructuredRun,
-        prepared.instance().execution_host_id().clone(),
-        access_requirement(prepared),
+        prepared.instance(),
+        prepared.access_profile(),
+        claude_agent_credential_states(prepared),
+        capabilities,
     )
-    .with_ownership_modes([prepared.instance().ownership()])
     .with_host_services(operation_host_services(prepared))
-    .with_capabilities(capabilities)
     .with_interface_versions([prepared.observation().version().clone()])
     .with_harness_isolation(HarnessIsolation::AmbientHost)
     .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient)
@@ -152,18 +137,14 @@ pub(super) fn run_requirements(
     }
 }
 
-pub(super) fn access_requirement(prepared: &ClaudeAgentPreparedIntegration) -> AccessRequirement {
-    let credential_state = match prepared.access_profile().credential_mechanism() {
-        CredentialMechanism::ApiKey => CredentialState::Ready,
-        CredentialMechanism::LocalUnauthenticated => CredentialState::NotRequired,
+pub(super) fn claude_agent_credential_states(
+    prepared: &ClaudeAgentPreparedIntegration,
+) -> Vec<CredentialState> {
+    match prepared.access_profile().credential_mechanism() {
+        CredentialMechanism::ApiKey => vec![CredentialState::Ready],
+        CredentialMechanism::LocalUnauthenticated => vec![CredentialState::NotRequired],
         _ => unreachable!("Claude Agent preparation rejected the credential mechanism"),
-    };
-    AccessRequirement::new(prepared.access_profile().id().clone())
-        .with_credential_states([credential_state])
-        .with_entitlement_states([EntitlementState::Available])
-        .with_endpoint_authorizations([EndpointAuthorization::Allowed])
-        .with_runtime_readiness([RuntimeReadiness::Ready])
-        .with_support_authorities([prepared.access_profile().support_authority()])
+    }
 }
 
 pub(super) fn operation_host_services(
@@ -188,24 +169,15 @@ pub(super) fn build_plan(
     route: Option<&ModelRoute>,
     requirements: &OperationRequirements,
 ) -> Result<PreflightPlan, PreparationFailure> {
-    let descriptor = crate::claude_agent_acp_descriptor();
-    let context = PreflightContext::new(
-        &descriptor,
+    swallowtail_runtime::build_plan(
+        &crate::claude_agent_acp_descriptor(),
         instance,
+        route,
+        requirements,
         prepared.access_profile(),
         prepared.access_evidence().status(),
         prepared.available_host_services(),
-    );
-    let context = match route {
-        Some(route) => context.with_model_route(route),
-        None => context,
-    };
-    preflight(&context, requirements).map_err(|error| {
-        PreparationFailure::new(
-            PreparationStage::Preflight,
-            Diagnostic::new(error.diagnostic().clone()),
-        )
-    })
+    )
 }
 
 pub(super) fn failure(code: &'static str, message: &'static str) -> PreparationFailure {

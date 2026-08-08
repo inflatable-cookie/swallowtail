@@ -130,7 +130,7 @@ impl MuseEventParser {
             "runtime.command.accepted" => {
                 let events = self.command_accepted(payload)?;
                 if required_text(&record, "causation_id")?
-                    != self.command_id.as_deref().expect("command was accepted")
+                    != self.command_id.as_deref().ok_or_else(malformed)?
                 {
                     return Err(causation_mismatch());
                 }

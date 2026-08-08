@@ -6,11 +6,16 @@ from __future__ import annotations
 import csv
 import json
 import re
+import sys
 from collections import Counter
 from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(REPO_ROOT / "scripts"))
+from provider_route_matrix.route_inventory import (  # noqa: E402
+    production_routes as inventory_production_routes,
+)
 MATRIX = REPO_ROOT / "docs/guides/provider-solution-activity-matrix.csv"
 ROUTE_MATRIX = REPO_ROOT / "docs/guides/provider-route-matrix.md"
 HARNESS_INVENTORY = (
@@ -249,11 +254,17 @@ def expected_operations() -> dict[tuple[str, str], str]:
 
 
 def production_routes() -> set[str]:
+    routes = set(inventory_production_routes())
     source = ROUTE_MATRIX.read_text(encoding="utf-8")
     pre_lifecycle = source.split(
         "<!-- provider-session-lifecycle-matrix:start -->", maxsplit=1
     )[0]
-    return set(re.findall(r"^\| `([^`]+)` \|", pre_lifecycle, flags=re.MULTILINE))
+    documented = set(re.findall(r"^\| `([^`]+)` \|", pre_lifecycle, flags=re.MULTILINE))
+    if documented != routes:
+        raise SystemExit(
+            "provider route matrix route identities differ from the feature matrix"
+        )
+    return routes
 
 
 def referenced_path(value: str, *, row_key: tuple[str, str], column: str) -> Path:

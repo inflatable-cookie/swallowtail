@@ -142,7 +142,20 @@ pub(in crate::driver) async fn pump_turn(
                 cost_in_usd_ticks,
                 ..
             }) => {
-                let output = OperationContent::new(output).expect("completed output is non-empty");
+                let output = match OperationContent::new(output) {
+                    Ok(output) => output,
+                    Err(_) => {
+                        cancellation.abort();
+                        let _ = pending.work.await;
+                        return finish(
+                            &cancellation,
+                            runtime_failure(SafeDiagnostic::new(
+                                "swallowtail.xai.output_invalid",
+                                "xAI WebSocket completed with empty output content",
+                            )),
+                        );
+                    }
+                };
                 let observation = match activity.completed(&continuation, output.as_str()) {
                     Ok(observation) => observation,
                     Err(error) => {

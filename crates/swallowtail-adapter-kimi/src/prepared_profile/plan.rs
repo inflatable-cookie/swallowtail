@@ -3,8 +3,8 @@ use swallowtail_core::{
     AccessRequirement, CapabilityProfile, CapabilityRequirement, ConfiguredInstance,
     CredentialState, Diagnostic, EndpointAuthorization, EntitlementState, ExecutionLayer,
     HarnessConfigurationPosture, HarnessIsolation, HostServiceKind, ModelRoute,
-    OperationRequirements, OperationShape, PreflightContext, PreflightPlan, ResourceAccess,
-    RuntimeReadiness, SafeDiagnostic, SessionAccessPolicy, SessionProviderStatePolicy, preflight,
+    OperationRequirements, OperationShape, PreflightPlan, ResourceAccess, RuntimeReadiness,
+    SafeDiagnostic, SessionAccessPolicy, SessionProviderStatePolicy,
 };
 use swallowtail_runtime::{PreparationFailure, PreparationStage, PreparedOperationEvidence};
 
@@ -80,22 +80,8 @@ pub(super) fn instance_with_capabilities(
     prepared: &KimiPreparedIntegration,
     capabilities: CapabilityProfile,
 ) -> ConfiguredInstance {
-    let base = prepared.instance();
-    ConfiguredInstance::new(
-        base.id().clone(),
-        base.revision().clone(),
-        base.driver_id().clone(),
-        base.execution_host_id().clone(),
-        base.target_reference().clone(),
-        base.ownership(),
-        base.access_profile_id().clone(),
-        base.support_authority(),
-        base.protocol_facade_id().clone(),
-        base.policy_id().clone(),
-        capabilities,
-    )
-    .with_interface_versions(base.interface_versions().cloned())
-    .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient)
+    swallowtail_runtime::instance_with_capabilities(prepared.instance(), capabilities)
+        .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient)
 }
 
 pub(super) fn requirements(
@@ -157,24 +143,15 @@ fn build_plan_with_optional_route(
     requirements: &OperationRequirements,
 ) -> Result<PreflightPlan, PreparationFailure> {
     let descriptor = crate::kimi_acp_descriptor();
-    let context = PreflightContext::new(
+    swallowtail_runtime::build_plan(
         &descriptor,
         instance,
+        route,
+        requirements,
         prepared.access_profile(),
         prepared.access_evidence().status(),
         prepared.available_host_services(),
-    );
-    let context = if let Some(route) = route {
-        context.with_model_route(route)
-    } else {
-        context
-    };
-    preflight(&context, requirements).map_err(|error| {
-        PreparationFailure::new(
-            PreparationStage::Preflight,
-            Diagnostic::new(error.diagnostic().clone()),
-        )
-    })
+    )
 }
 
 pub(super) fn failure(code: &'static str, message: &'static str) -> PreparationFailure {

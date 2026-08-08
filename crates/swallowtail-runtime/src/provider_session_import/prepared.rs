@@ -25,7 +25,7 @@ impl PreparedProviderSessionCatalogueEvidence {
     }
 
     #[must_use]
-    /// Returns the validated catalogue plan.
+    /// Returns the validated plan.
     pub const fn plan(&self) -> &ProviderSessionCataloguePlan {
         &self.plan
     }

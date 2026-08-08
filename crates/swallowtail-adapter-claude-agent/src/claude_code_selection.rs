@@ -38,14 +38,16 @@ pub fn claude_code_headless_binding(value: &str) -> Option<InterfaceVersionBindi
 /// Returns the qualified compatibility claim for native headless runs.
 pub fn claude_code_headless_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
-        InterfaceCompatibilityClaimId::new("claude-code.headless.range-v1")
+        InterfaceCompatibilityClaimId::new("claude-code.headless.window-1")
             .expect("static Claude Code claim id is valid"),
         axis(),
         InterfaceVersionScheme::Semantic,
         InterfaceNewerVersionPosture::AllowUnverified,
         [InterfaceVersionSegment::new(
-            version(CLAUDE_CODE_HEADLESS_BASELINE_VERSION),
-            version(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION),
+            version(CLAUDE_CODE_HEADLESS_BASELINE_VERSION)
+                .expect("static Claude Code version is valid"),
+            version(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION)
+                .expect("static Claude Code version is valid"),
             InterfaceBehaviorRevision::new(HEADLESS_BEHAVIOR)
                 .expect("static Claude Code behavior revision is valid"),
             InterfaceSupportStatus::Maintained,
@@ -95,8 +97,8 @@ fn axis() -> InterfaceVersionAxis {
     InterfaceVersionAxis::new(CLAUDE_CODE_HEADLESS_AXIS).expect("static Claude Code axis is valid")
 }
 
-fn version(value: &str) -> InterfaceVersion {
-    InterfaceVersion::new(value).expect("static Claude Code version is valid")
+fn version(value: &str) -> Option<InterfaceVersion> {
+    InterfaceVersion::new(value).ok()
 }
 
 #[cfg(test)]

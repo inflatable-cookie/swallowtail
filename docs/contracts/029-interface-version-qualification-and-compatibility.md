@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-24
+Updated: 2026-08-08
 
 ## Purpose
 
@@ -41,6 +41,44 @@ interface axis. It records:
 - exact excluded releases inside an otherwise supported segment
 - whether exact ordered versions above the latest-qualified boundary may run
   as unverified newer releases
+
+## Segment Support Status
+
+One shared meaning governs support status across every adapter claim. Support
+status is derived automatically from the segment's behavior revision:
+
+- the segment carrying the claim's newest behavior revision is `Maintained`:
+  targeted for new integrations
+- every segment carrying an older behavior revision is `Deprecated` by
+  definition: retained for existing installed harnesses, not targeted for new
+  integrations
+
+Deprecated is not a per-segment maintainer judgment and does not require a
+scheduled removal date. It means the covered behavior revision is legacy
+within the claim: it passes preflight with visible deprecated status while
+old harnesses exist, and moving the baseline in a later Swallowtail release is
+a called-out compatibility-window change. A segment may also be deprecated
+explicitly before removal per the upgrade workflow, which is the same label.
+
+A single-revision claim is therefore `Maintained` throughout. A claim whose
+segments share the newest revision is `Maintained` throughout; a claim whose
+older-revision segments were labeled `Maintained` today is mislabeled and
+relabels under the migration rule below.
+
+### Migration Rule For Existing Claims
+
+Existing claims keep their segment boundaries, revisions, exclusions, and
+membership unchanged. Only support-status labels follow the rule:
+
+- the segment with the claim's newest behavior revision is labeled
+  `Maintained`
+- every other segment is labeled `Deprecated`
+
+Label-only relabeling of existing claims lands in card 162
+(claim identity and claim-less posture); no claim content changes in this
+decision card. The codex claims (old retained-search behavior as `Deprecated`)
+already conform. The kimi legacy-reasoning segment, currently labeled
+`Maintained`, relabels to `Deprecated` in that card.
 
 Segment starts are compatibility milestones. A new milestone is required when
 framing, schema, lifecycle, capability, invocation, authentication, failure,
@@ -122,8 +160,10 @@ inside the owning driver unless two adapters prove a shared protocol boundary.
 
 Discovery reports the exact safe version and its qualified,
 unverified-newer, or incompatible classification. Qualified observations carry
-their matching behavior revision and maintained or deprecated support status.
-Unverified-newer observations carry the latest-qualified boundary and the
+their matching behavior revision and the derived support status: `Maintained`
+for the claim's newest-revision segment, `Deprecated` for every
+older-revision segment (see Segment Support Status). Unverified-newer
+observations carry the latest-qualified boundary and the
 adapter-private behavior revision available for a forward attempt. Discovery
 does not install, upgrade, downgrade, authenticate, or choose another driver.
 
@@ -140,6 +180,10 @@ Hosted APIs with no trustworthy version observation use an exact dated facade
 or evidence revision. They do not invent a semantic version. Runtime capability
 negotiation may narrow qualified behavior or stop an unverified attempt; it
 cannot convert unverified evidence into qualified support.
+
+Claim-less surfaces (bedrock, llama-cpp) keep this posture by explicit
+recorded disposition rather than by silence: see the Claim-Less Disposition in
+the provider route matrix.
 
 ## Conformance
 

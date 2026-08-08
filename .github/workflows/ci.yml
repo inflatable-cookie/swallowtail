@@ -44,6 +44,7 @@ jobs:
           bash scripts/check-provider-route-matrix.sh
           python3 scripts/check-integration-guide-coverage.py
           python3 scripts/check-consumer-front-door.py
+          python3 scripts/check-literal-version-expects.py
 
   docs-and-api:
     name: Documentation and semantic API
@@ -64,21 +65,22 @@ jobs:
         run: bash scripts/check-public-api.sh
 
   rust-floor:
-    name: Rust 1.95 floor
+    name: Pinned MSRV floor
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: 1.95.0
-          components: clippy
+      - name: Install pinned MSRV from baseline
+        run: |
+          source release-baselines/rust-toolchains-0.2.0.env
+          echo "RUST_MSRV=$SWALLOWTAIL_MSRV" >> "$GITHUB_ENV"
+          rustup toolchain install "$SWALLOWTAIL_MSRV" --profile minimal --component clippy
       - uses: Swatinem/rust-cache@v2
         with:
-          key: rust-1.95
+          key: rust-${{ env.RUST_MSRV }}
       - name: Clippy
-        run: cargo clippy --workspace --all-targets --all-features --locked -- -D warnings
+        run: cargo +${{ env.RUST_MSRV }} clippy --workspace --all-targets --all-features --locked -- -D warnings
       - name: Test
-        run: cargo test --workspace --all-features --locked
+        run: cargo +${{ env.RUST_MSRV }} test --workspace --all-features --locked
 
   supply-chain:
     name: Dependency security, licenses, and sources

@@ -4,8 +4,7 @@ set -euo pipefail
 release_repo_root=$(cd "$(dirname "$0")/.." && pwd)
 cd "$release_repo_root"
 
-release_baseline_dir=release-baselines/public-api-0.1.0
-release_candidate_baseline_dir=release-baselines/public-api-0.2.0
+release_baseline_dir=release-baselines/public-api-0.3.0
 release_toolchain=nightly-2026-08-05
 release_tool_version='cargo-public-api 0.52.0'
 
@@ -29,13 +28,10 @@ release_actual_dir=$(mktemp -d)
 trap 'rm -rf "$release_actual_dir"' EXIT
 
 bash scripts/generate-public-api-baseline.sh "$release_actual_dir"
-diff -u "$release_candidate_baseline_dir/packages.txt" "$release_actual_dir/packages.txt"
+diff -u "$release_baseline_dir/packages.txt" "$release_actual_dir/packages.txt"
 while IFS= read -r release_package; do
   diff -u \
     "$release_baseline_dir/$release_package.txt" \
     "$release_actual_dir/$release_package.txt"
 done < "$release_baseline_dir/packages.txt"
-diff -u \
-  "$release_candidate_baseline_dir/swallowtail-adapter-muse.txt" \
-  "$release_actual_dir/swallowtail-adapter-muse.txt"
-printf 'semantic API passed: 27 v0.1.0-compatible packages plus Muse v0.2.0 baseline\n'
+printf 'semantic API passed: 28 packages at the v0.3.0 candidate baseline\n'

@@ -25,7 +25,7 @@ pub fn kimi_platform_facade_binding() -> swallowtail_core::InterfaceVersionBindi
 /// Returns the qualified-only compatibility claim for the facade revision.
 pub fn kimi_platform_facade_claim() -> swallowtail_core::InterfaceCompatibilityClaim {
     swallowtail_core::InterfaceCompatibilityClaim::new(
-        swallowtail_core::InterfaceCompatibilityClaimId::new("kimi-platform-chat-window-1")
+        swallowtail_core::InterfaceCompatibilityClaimId::new("kimi-platform.chat-window-1")
             .expect("static Kimi Platform compatibility claim is valid"),
         swallowtail_core::InterfaceVersionAxis::new("kimi-platform.chat-facade")
             .expect("static Kimi Platform interface axis is valid"),

@@ -85,9 +85,12 @@ pub enum InterfaceVersionScheme {
 /// Maintainer support status for one qualified interface segment.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum InterfaceSupportStatus {
-    /// Supported for new integrations.
+    /// The claim's newest-revision segment: targeted for new integrations.
     Maintained,
-    /// Still accepted but scheduled for eventual removal.
+    /// Retained for existing installed harnesses, not targeted for new
+    /// integrations. Every segment whose behavior revision is not the
+    /// claim's newest revision is deprecated by definition; removal is a
+    /// called-out compatibility-window change, not an immediate schedule.
     Deprecated,
 }
 

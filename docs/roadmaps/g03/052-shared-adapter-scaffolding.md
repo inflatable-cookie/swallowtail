@@ -1,13 +1,13 @@
 # 052 Shared Adapter Scaffolding
 
-Status: planned
+Status: done
 Owner: Tom
 Created: 2026-08-08
 Generation: g03
 Depends on: g03.051
 Vision tags: maintainability, provider-neutral core, regression safety
 Contract refs: 011, 029, 037
-Planning state: cards 156-160
+Planning state: cards 156-160 completed
 
 ## Problem
 
@@ -44,12 +44,24 @@ regexes, claim constants, request builders) stay adapter-local.
 
 ## Execution Plan
 
-- [ ] Execute card 156 (shared probe, binding-parse, and stage helpers;
+- [x] Execute card 156 (shared probe, binding-parse, and stage helpers;
       pi and oh-my-pi pilot).
-- [ ] Execute card 157 (prepared plan builder extraction).
-- [ ] Execute card 158 (run-loop scaffold and ACP activity projector).
-- [ ] Execute card 159 (transport and catalogue wrapper consolidation).
-- [ ] Execute card 160 (provider-wide migration and acceptance).
+- [x] Execute card 157 (prepared plan builder extraction).
+- [x] Execute card 158 (run-loop scaffold and ACP activity projector).
+- [x] Execute card 159 (transport and catalogue wrapper consolidation).
+- [x] Execute card 160 (provider-wide migration and acceptance).
+
+## Closeout
+
+Measured at card 160: 12 duplicated discovery-probe machinery files reduced
+to 4, all recorded as intentionally adapter-local (antigravity and cursor
+staged outcome codes, codex ProcessExit-class staging with stderr
+sanitization, grok stderr capture beyond the shared cap). The shared
+scaffold lives in `swallowtail-runtime/src/installed_discovery.rs` (465
+lines: codes macro, exact-version parse, bounded probe, outcome codes).
+Remaining duplication targets (prepared plan, run loops, transport,
+catalogue, projector, lifecycle locks) stay recorded as operator-level
+topology decisions for the suite planning checkpoint after g03.053.
 
 ## Boundaries
 

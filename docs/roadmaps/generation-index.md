@@ -35,3 +35,10 @@ g03 should normally run for 30-50 roadmaps. Provider releases, consumer
 defects, contract additions, or completed maintenance tranches do not create a
 new generation by themselves. Rollover requires a substantial run, clean
 disposition of unfinished work, and an explicit sequencing reset.
+
+
+## Next Task
+
+Implement the active roadmap card named by the
+[roadmaps front door](README.md#next-task). This index records generation
+status; the batch pointer stays in the front door.

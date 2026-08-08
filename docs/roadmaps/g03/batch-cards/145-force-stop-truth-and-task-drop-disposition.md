@@ -1,6 +1,6 @@
 # 145 Force-Stop Truth And Task Drop Disposition
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-08
 Milestone: `../049-hang-and-deadline-closure.md`
@@ -30,8 +30,8 @@ dispose of the consumer-thread-blocking task drop.
 
 ## Acceptance
 
-- [ ] a force-stop racing a clean exit reports the natural exit
-- [ ] the task-drop disposition is explicit and tested where it changes
+- [x] a force-stop racing a clean exit reports the natural exit
+- [x] the task-drop disposition is explicit and tested where it changes
       behavior
 
 ## Stop Conditions
@@ -46,3 +46,26 @@ Yes, to card 146 after acceptance and a focused host-local round.
 
 - `effigy validate:focused swallowtail-host-local`
 - `effigy test:rust`
+
+## Completion Evidence
+
+- the supervision loop checks `try_wait` before killing, so a natural exit
+  that raced the stop wins by construction; a stop is killed and retried
+  every tick while the child stays listed, and a child that survives 100
+  consecutive failed kills (one second) still reports
+  `force_stop_failed`, preserving the old failure surface for the
+  unkillable case (`process_exit.rs`)
+- `LocalJoinedTask::drop` joins deliberately; the blocking contract is now
+  documented on the service and the drop impl, with bounded-shutdown
+  guidance (bound the task or join explicitly). Bounding the drop would
+  detach running work and change drop semantics, so the disposition is
+  document-as-intentional, consistent with the crate's deterministic-join
+  posture (`task.rs`)
+- race fixture added: an immediately-exiting child raced by `force_stop`,
+  repeated twelve times; the invariant asserted is that `wait()` never
+  reports `force_stop_failed` on a racing clean exit
+- existing force-stop semantics unchanged: a genuinely running child is
+  still SIGKILLed and reports an unsuccessful exit
+- no public API or diagnostic-code change; focused host-local round,
+  workspace nextest (1,485 passed), format, and warnings-denied clippy all
+  pass

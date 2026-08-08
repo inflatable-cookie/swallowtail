@@ -4,15 +4,25 @@ use swallowtail_core::{
     ActivityKindProfile, ActivityLifecycleFidelity, ActivityUnknownEventPosture, CapabilityProfile,
     CapabilityRequirement, ObservableActivityProfile,
 };
+use swallowtail_runtime::RuntimeFailure;
 
-pub(crate) fn activity_profile(prepared: &OllamaPreparedIntegration) -> ObservableActivityProfile {
+pub(crate) fn activity_profile(
+    prepared: &OllamaPreparedIntegration,
+) -> Result<ObservableActivityProfile, RuntimeFailure> {
     let binding = prepared.runtime().runtime_version();
     let assessment = crate::ollama_runtime_claim().assess(binding.version());
+    // The prepared version is admitted, so a missing behavior revision is a
+    // drift anomaly, not a provider signal; fail closed instead of panicking.
     let behavior = assessment
         .behavior_revision()
-        .expect("prepared Ollama runtime version is admitted")
+        .ok_or_else(|| {
+            crate::failure::failure(
+                "swallowtail.ollama.activity_profile_unavailable",
+                "Ollama prepared runtime version has no qualified activity behavior",
+            )
+        })?
         .clone();
-    ObservableActivityProfile::available(
+    Ok(ObservableActivityProfile::available(
         [ActivityInterfaceBasis::new(
             binding.axis().clone(),
             behavior,
@@ -27,7 +37,7 @@ pub(crate) fn activity_profile(prepared: &OllamaPreparedIntegration) -> Observab
         .expect("static Ollama activity kind is valid")],
         ActivityUnknownEventPosture::FailClosed,
     )
-    .expect("static Ollama activity profile is valid")
+    .expect("static Ollama activity profile is valid"))
 }
 
 pub(crate) fn with_activity(

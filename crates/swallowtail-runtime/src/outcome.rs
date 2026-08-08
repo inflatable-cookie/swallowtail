@@ -272,16 +272,58 @@ impl TerminalOutcome {
     }
 }
 
-#[derive(Default)]
 struct TerminalState {
     outcome: Option<TerminalOutcome>,
+    sender_count: usize,
     waiters: Vec<Waker>,
 }
 
 /// Exactly-once completion end of a terminal outcome channel.
-#[derive(Clone)]
+///
+/// When the last sender clone is dropped without publishing an outcome, the
+/// pending future resolves to a `RuntimeFailed` outcome so a producer that
+/// died cannot stall its consumer forever.
 pub struct TerminalOutcomeSender {
     state: Arc<Mutex<TerminalState>>,
+}
+
+impl Clone for TerminalOutcomeSender {
+    fn clone(&self) -> Self {
+        let mut state = self.state.lock().expect("terminal state lock poisoned");
+        state.sender_count = state.sender_count.saturating_add(1);
+        drop(state);
+        Self {
+            state: Arc::clone(&self.state),
+        }
+    }
+}
+
+impl Drop for TerminalOutcomeSender {
+    fn drop(&mut self) {
+        let mut state = self.state.lock().expect("terminal state lock poisoned");
+        state.sender_count = state.sender_count.saturating_sub(1);
+        if state.sender_count == 0 && state.outcome.is_none() {
+            // Every producer is gone without publishing terminal truth. This
+            // is an anomaly; resolve the pending future with a visible
+            // failure instead of hanging it forever.
+            state.outcome = Some(dropped_without_outcome());
+            for waiter in state.waiters.drain(..) {
+                waiter.wake();
+            }
+        }
+    }
+}
+
+/// Synthesized terminal record for a sender dropped before publishing.
+fn dropped_without_outcome() -> TerminalOutcome {
+    let diagnostic = SafeDiagnostic::new(
+        "swallowtail.terminal_sender_dropped",
+        "Operation terminal outcome was not published",
+    );
+    TerminalOutcome::new(
+        TerminalStatus::RuntimeFailed(diagnostic.clone()),
+        CleanupOutcome::Failed(diagnostic),
+    )
 }
 
 impl TerminalOutcomeSender {
@@ -342,7 +384,11 @@ impl From<TerminalAlreadySet> for RuntimeFailure {
 #[must_use]
 /// Creates the exactly-once sender and future for one terminal outcome.
 pub fn terminal_outcome_channel() -> (TerminalOutcomeSender, TerminalOutcomeFuture) {
-    let state = Arc::new(Mutex::new(TerminalState::default()));
+    let state = Arc::new(Mutex::new(TerminalState {
+        outcome: None,
+        sender_count: 1,
+        waiters: Vec::new(),
+    }));
     (
         TerminalOutcomeSender {
             state: Arc::clone(&state),

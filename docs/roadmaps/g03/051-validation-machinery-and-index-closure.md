@@ -7,7 +7,7 @@ Generation: g03
 Depends on: g03.050
 Vision tags: validation, repository health, release discipline
 Contract refs: 001, 036, 052
-Planning state: cards 152-155
+Planning state: cards 152-155 completed; card 156 ready
 
 ## Problem
 
@@ -49,10 +49,10 @@ drift:
 
 ## Execution Plan
 
-- [ ] Execute card 152 (docs index checks and drift repair).
-- [ ] Execute card 153 (doc-policy and MSRV tasks into CI).
-- [ ] Execute card 154 (route inventory single-sourcing).
-- [ ] Execute card 155 (retired-script and constant consolidation).
+- [x] Execute card 152 (docs index checks and drift repair).
+- [x] Execute card 153 (doc-policy and tooling gate disposition).
+- [x] Execute card 154 (route inventory single-sourcing).
+- [x] Execute card 155 (retired-script and constant consolidation).
 
 ## Boundaries
 

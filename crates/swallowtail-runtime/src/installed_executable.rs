@@ -47,7 +47,7 @@ pub struct DiscoveryCancellation {
 
 struct DiscoveryCancellationState {
     requested: AtomicBool,
-    waiter: Mutex<Option<std::task::Waker>>,
+    waiters: Mutex<Vec<std::task::Waker>>,
 }
 
 impl DiscoveryCancellation {
@@ -57,7 +57,7 @@ impl DiscoveryCancellation {
         Self {
             state: Arc::new(DiscoveryCancellationState {
                 requested: AtomicBool::new(false),
-                waiter: Mutex::new(None),
+                waiters: Mutex::new(Vec::new()),
             }),
         }
     }
@@ -69,20 +69,28 @@ impl DiscoveryCancellation {
     }
 
     /// Resolves once cancellation is requested.
+    ///
+    /// Concurrent waiters are all notified; each registered waker is woken
+    /// exactly once when the request is recorded.
     pub fn wait_requested(&self) -> BoxFuture<'static, ()> {
         let state = Arc::clone(&self.state);
         Box::pin(poll_fn(move |context| {
             if state.requested.load(Ordering::SeqCst) {
                 Poll::Ready(())
             } else {
-                *state
-                    .waiter
+                let mut waiters = state
+                    .waiters
                     .lock()
-                    .expect("discovery cancellation waiter lock poisoned") =
-                    Some(context.waker().clone());
+                    .expect("discovery cancellation waiter lock poisoned");
                 if state.requested.load(Ordering::SeqCst) {
                     Poll::Ready(())
                 } else {
+                    if !waiters
+                        .iter()
+                        .any(|waiter| waiter.will_wake(context.waker()))
+                    {
+                        waiters.push(context.waker().clone());
+                    }
                     Poll::Pending
                 }
             }
@@ -114,13 +122,12 @@ impl CancellationControl for DiscoveryCancellation {
         let acknowledgement = if self.state.requested.swap(true, Ordering::SeqCst) {
             CancellationAcknowledgement::AlreadyRequested
         } else {
-            if let Some(waiter) = self
+            let mut waiters = self
                 .state
-                .waiter
+                .waiters
                 .lock()
-                .expect("discovery cancellation waiter lock poisoned")
-                .take()
-            {
+                .expect("discovery cancellation waiter lock poisoned");
+            for waiter in waiters.drain(..) {
                 waiter.wake();
             }
             CancellationAcknowledgement::Requested

@@ -209,6 +209,7 @@ pub(crate) fn parse_models(response: &Response) -> Result<Vec<ModelCatalogEntry>
     if list.object != "list" || list.data.len() != 1 || list.data[0].object != "model" {
         return Err(protocol_failure("single-model catalogue"));
     }
+    // Guard: list.data.len() == 1 was validated above.
     let model = list.data.into_iter().next().expect("one model exists");
     let id = ModelId::new(model.id).map_err(|_| protocol_failure("model identity"))?;
     Ok(vec![ModelCatalogEntry::new(id, ModelMetadata::default())])

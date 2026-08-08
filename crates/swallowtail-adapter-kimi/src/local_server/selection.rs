@@ -25,7 +25,7 @@ const REST_WS_V2_REFRESH_STABLE_BEHAVIOR: &str = "kimi.local-server.rest-ws-v2-r
 /// Returns the qualified compatibility claim for Kimi local-server.
 pub fn kimi_local_server_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
-        InterfaceCompatibilityClaimId::new("kimi.local-server.executable-window-4")
+        InterfaceCompatibilityClaimId::new("kimi.local-server.executable-window-2")
             .expect("static Kimi local-server claim id is valid"),
         axis(),
         InterfaceVersionScheme::Semantic,
@@ -34,14 +34,34 @@ pub fn kimi_local_server_claim() -> InterfaceCompatibilityClaim {
             exact_segment(
                 KIMI_LOCAL_SERVER_BASELINE_VERSION,
                 REST_WS_V2_BASELINE_BEHAVIOR,
-            ),
-            exact_segment("0.29.0", REST_WS_V2_PROFILE_TOOLS_BEHAVIOR),
-            segment("0.29.1", "0.30.0", REST_WS_V2_GLOBAL_EVENTS_BEHAVIOR),
-            exact_segment("0.31.0", REST_WS_V2_SUBAGENT_STATUS_BEHAVIOR),
+                InterfaceSupportStatus::Deprecated,
+            )
+            .expect("static Kimi exact segment is valid"),
+            exact_segment(
+                "0.29.0",
+                REST_WS_V2_PROFILE_TOOLS_BEHAVIOR,
+                InterfaceSupportStatus::Deprecated,
+            )
+            .expect("static Kimi exact segment is valid"),
+            segment(
+                "0.29.1",
+                "0.30.0",
+                REST_WS_V2_GLOBAL_EVENTS_BEHAVIOR,
+                InterfaceSupportStatus::Deprecated,
+            )
+            .expect("static Kimi segment is valid"),
+            exact_segment(
+                "0.31.0",
+                REST_WS_V2_SUBAGENT_STATUS_BEHAVIOR,
+                InterfaceSupportStatus::Deprecated,
+            )
+            .expect("static Kimi exact segment is valid"),
             exact_segment(
                 KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION,
                 REST_WS_V2_REFRESH_STABLE_BEHAVIOR,
-            ),
+                InterfaceSupportStatus::Maintained,
+            )
+            .expect("static Kimi exact segment is valid"),
         ],
         [],
     )
@@ -85,21 +105,30 @@ fn version_failure() -> RuntimeFailure {
     )
 }
 
-fn exact_segment(value: &str, behavior: &str) -> InterfaceVersionSegment {
-    InterfaceVersionSegment::exact(
-        InterfaceVersion::new(value).expect("static Kimi version is valid"),
+fn exact_segment(
+    value: &str,
+    behavior: &str,
+    status: InterfaceSupportStatus,
+) -> Option<InterfaceVersionSegment> {
+    Some(InterfaceVersionSegment::exact(
+        InterfaceVersion::new(value).ok()?,
         InterfaceBehaviorRevision::new(behavior).expect("static Kimi behavior is valid"),
-        InterfaceSupportStatus::Maintained,
-    )
+        status,
+    ))
 }
 
-fn segment(minimum: &str, maximum: &str, behavior: &str) -> InterfaceVersionSegment {
-    InterfaceVersionSegment::new(
-        InterfaceVersion::new(minimum).expect("static Kimi minimum version is valid"),
-        InterfaceVersion::new(maximum).expect("static Kimi maximum version is valid"),
+fn segment(
+    minimum: &str,
+    maximum: &str,
+    behavior: &str,
+    status: InterfaceSupportStatus,
+) -> Option<InterfaceVersionSegment> {
+    Some(InterfaceVersionSegment::new(
+        InterfaceVersion::new(minimum).ok()?,
+        InterfaceVersion::new(maximum).ok()?,
         InterfaceBehaviorRevision::new(behavior).expect("static Kimi behavior is valid"),
-        InterfaceSupportStatus::Maintained,
-    )
+        status,
+    ))
 }
 
 fn axis() -> InterfaceVersionAxis {

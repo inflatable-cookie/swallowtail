@@ -243,3 +243,10 @@ with OpenAPI, AsyncAPI, bearer authentication, exact metadata, reversible
 archive, and restore. Roadmap g02.020 adds that route separately from ACP.
 Deletion remains unsupported. Lifecycle lands before the larger interactive
 surface, and no container is required.
+
+
+## Next Task
+
+Implement the active roadmap card named by the
+[roadmaps front door](README.md#next-task). The long-term plan stays the
+staged adoption sequence; it does not own the current batch pointer.

@@ -57,15 +57,15 @@ pub fn qwen_headless_claim() -> InterfaceCompatibilityClaim {
         InterfaceNewerVersionPosture::AllowUnverified,
         [
             InterfaceVersionSegment::new(
-                version(QWEN_CODE_BASELINE_VERSION),
-                version("0.20.1"),
+                version(QWEN_CODE_BASELINE_VERSION).expect("static Qwen version is valid"),
+                version("0.20.1").expect("static Qwen version is valid"),
                 InterfaceBehaviorRevision::new(BASELINE_BEHAVIOR)
                     .expect("static Qwen behavior revision is valid"),
-                InterfaceSupportStatus::Maintained,
+                InterfaceSupportStatus::Deprecated,
             ),
             InterfaceVersionSegment::new(
-                version("0.21.0"),
-                version(QWEN_CODE_LATEST_QUALIFIED_VERSION),
+                version("0.21.0").expect("static Qwen version is valid"),
+                version(QWEN_CODE_LATEST_QUALIFIED_VERSION).expect("static Qwen version is valid"),
                 InterfaceBehaviorRevision::new(CATALOGUE_FILTER_BEHAVIOR)
                     .expect("static Qwen behavior revision is valid"),
                 InterfaceSupportStatus::Maintained,
@@ -119,8 +119,8 @@ fn axis() -> InterfaceVersionAxis {
     InterfaceVersionAxis::new(QWEN_CODE_AXIS).expect("static Qwen axis is valid")
 }
 
-fn version(value: &str) -> InterfaceVersion {
-    InterfaceVersion::new(value).expect("static Qwen version is valid")
+fn version(value: &str) -> Option<InterfaceVersion> {
+    InterfaceVersion::new(value).ok()
 }
 
 #[cfg(test)]

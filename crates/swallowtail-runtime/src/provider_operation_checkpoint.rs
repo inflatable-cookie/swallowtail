@@ -86,7 +86,7 @@ impl ProviderOperationCheckpoint {
             working_resource,
             binding.access_policy(),
         )
-        .ok_or_else(attachment_mismatch)?;
+        .map_err(|failure| fingerprint_mismatch(failure.diagnostic().clone()))?;
         let fields = [
             self.provider_session_ref.as_provider_value().as_bytes(),
             self.runtime_turn_id.as_str().as_bytes(),
@@ -126,7 +126,7 @@ impl ProviderOperationCheckpoint {
             working_resource,
             binding.access_policy(),
         )
-        .ok_or_else(attachment_mismatch)?;
+        .map_err(|failure| fingerprint_mismatch(failure.diagnostic().clone()))?;
         if decoded.fingerprint != current
             || decoded.provider_session_ref != binding.provider_session_ref().as_provider_value()
             || !binding.matches_attachment(plan, working_resource, binding.access_policy())
@@ -341,6 +341,13 @@ fn attachment_mismatch() -> ProviderOperationCheckpointFailure {
         "swallowtail.provider_operation_checkpoint.attachment_mismatch",
         "Provider operation checkpoint does not match the requested attachment",
     )
+}
+
+fn fingerprint_mismatch(diagnostic: SafeDiagnostic) -> ProviderOperationCheckpointFailure {
+    ProviderOperationCheckpointFailure {
+        kind: ProviderOperationCheckpointFailureKind::AttachmentMismatch,
+        diagnostic,
+    }
 }
 
 #[cfg(test)]

@@ -19,23 +19,10 @@ const THINKING_USAGE_BEHAVIOR: &str = "pi.rpc.strict-lf-v0.81.0-thinking-usage";
 const SUMMARY_RETRY_BEHAVIOR: &str = "pi.rpc.strict-lf-v0.81.1-summary-retry";
 const BASH_CORRELATION_BEHAVIOR: &str = "pi.rpc.strict-lf-v0.82.0-bash-correlation";
 const BASH_EXTENSION_BEHAVIOR: &str = "pi.rpc.strict-lf-v0.83.0-bash-extension-hook";
-const MAX_VERSION_BYTES: usize = 64;
-
 /// Parses one exact Pi package semantic-version binding.
 #[must_use]
 pub fn pi_package_binding(value: &str) -> Option<InterfaceVersionBinding> {
-    if value.is_empty()
-        || value.len() > MAX_VERSION_BYTES
-        || value.trim() != value
-        || value.chars().any(char::is_control)
-        || semver::Version::parse(value).is_err()
-    {
-        return None;
-    }
-    Some(InterfaceVersionBinding::new(
-        axis(),
-        InterfaceVersion::new(value).ok()?,
-    ))
+    swallowtail_runtime::parse_semantic_version_binding(&axis(), value)
 }
 
 /// Returns the qualified Pi RPC package compatibility window.
@@ -48,11 +35,36 @@ pub fn pi_rpc_claim() -> InterfaceCompatibilityClaim {
         InterfaceVersionScheme::Semantic,
         InterfaceNewerVersionPosture::AllowUnverified,
         [
-            segment("0.80.10", "0.80.10", BASELINE_BEHAVIOR),
-            segment("0.81.0", "0.81.0", THINKING_USAGE_BEHAVIOR),
-            segment("0.81.1", "0.81.1", SUMMARY_RETRY_BEHAVIOR),
-            segment("0.82.0", "0.82.1", BASH_CORRELATION_BEHAVIOR),
-            segment("0.83.0", "0.83.0", BASH_EXTENSION_BEHAVIOR),
+            segment(
+                "0.80.10",
+                "0.80.10",
+                BASELINE_BEHAVIOR,
+                InterfaceSupportStatus::Deprecated,
+            ),
+            segment(
+                "0.81.0",
+                "0.81.0",
+                THINKING_USAGE_BEHAVIOR,
+                InterfaceSupportStatus::Deprecated,
+            ),
+            segment(
+                "0.81.1",
+                "0.81.1",
+                SUMMARY_RETRY_BEHAVIOR,
+                InterfaceSupportStatus::Deprecated,
+            ),
+            segment(
+                "0.82.0",
+                "0.82.1",
+                BASH_CORRELATION_BEHAVIOR,
+                InterfaceSupportStatus::Deprecated,
+            ),
+            segment(
+                "0.83.0",
+                "0.83.0",
+                BASH_EXTENSION_BEHAVIOR,
+                InterfaceSupportStatus::Maintained,
+            ),
         ],
         [],
     )
@@ -102,17 +114,22 @@ fn axis() -> InterfaceVersionAxis {
     InterfaceVersionAxis::new(PI_PACKAGE_AXIS).expect("static Pi axis is valid")
 }
 
-fn segment(start: &str, end: &str, behavior: &str) -> InterfaceVersionSegment {
+fn segment(
+    start: &str,
+    end: &str,
+    behavior: &str,
+    status: InterfaceSupportStatus,
+) -> InterfaceVersionSegment {
     InterfaceVersionSegment::new(
-        version(start),
-        version(end),
+        version(start).expect("static Pi version is valid"),
+        version(end).expect("static Pi version is valid"),
         InterfaceBehaviorRevision::new(behavior).expect("static Pi behavior revision is valid"),
-        InterfaceSupportStatus::Maintained,
+        status,
     )
 }
 
-fn version(value: &str) -> InterfaceVersion {
-    InterfaceVersion::new(value).expect("static Pi version is valid")
+fn version(value: &str) -> Option<InterfaceVersion> {
+    InterfaceVersion::new(value).ok()
 }
 
 #[cfg(test)]

@@ -1,6 +1,6 @@
 # 146 Waiter-Slot And Sender-Close Standardization
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-08
 Milestone: `../049-hang-and-deadline-closure.md`
@@ -33,11 +33,11 @@ slots and senders that stall consumers when dropped.
 
 ## Acceptance
 
-- [ ] two concurrent waiters on one cancellation signal both wake exactly
+- [x] two concurrent waiters on one cancellation signal both wake exactly
       once
-- [ ] a dropped sender resolves the pending stream with terminal truth or a
+- [x] a dropped sender resolves the pending stream with terminal truth or a
       failure
-- [ ] no consumer can rely on a dropped sender stalling (document the change)
+- [x] no consumer can rely on a dropped sender stalling (document the change)
 
 ## Stop Conditions
 
@@ -52,3 +52,29 @@ Yes, to card 147 after acceptance and a focused runtime round.
 
 - `effigy validate:focused swallowtail-runtime`
 - `effigy test:rust`
+
+## Completion Evidence
+
+- `ImmediateCancellation` and `DiscoveryCancellation` now register
+  `Vec<Waker>` with `will_wake` dedup and wake all waiters exactly once on
+  the first request, closing the lost-wakeup stall for concurrent waiters
+  (`cancellation.rs`, `installed_executable.rs`)
+- `RuntimeEventSender` tracks a sender count with manual `Clone`/`Drop`; the
+  stream closes when the last sender clone drops, exactly like an explicit
+  `close()`, so a producer that dies without closing cannot stall a
+  consumer; the stream's own waiter slot is also a multi-waker vec
+  (`event_channel.rs`)
+- `TerminalOutcomeSender` tracks a sender count; when the last clone drops
+  without publishing, the pending future resolves to a `RuntimeFailed`
+  outcome with code `swallowtail.terminal_sender_dropped` instead of hanging
+  forever; a sender that completed first is untouched on drop
+  (`outcome.rs`)
+- eight new tests: concurrent multi-thread waiter wake-once, repeated-request
+  wake-once, no-registration after request, repoll dedup, last-sender stream
+  close, dropped-sender wake, terminal drop synthesis, and completion-wins
+- in-flight consumer drain semantics are unchanged: senders only close when
+  the last producer is gone, and pumps that complete before dropping behave
+  identically
+- no public API or diagnostic-code change; focused runtime round (150),
+  workspace nextest (1,493 passed), examples, format, and warnings-denied
+  clippy all pass

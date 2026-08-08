@@ -101,6 +101,8 @@ impl TurnState {
         self.response_id = Some(string(value, "/response/id")?.to_owned());
         self.phase = Phase::Created;
         Ok(TurnUpdate::Started {
+            // Guard: response_id was assigned immediately above from the
+            // same event.
             response_id: self
                 .response_id
                 .clone()

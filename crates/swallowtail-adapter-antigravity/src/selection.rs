@@ -52,7 +52,8 @@ pub fn antigravity_catalogue_claim() -> InterfaceCompatibilityClaim {
         InterfaceVersionScheme::Semantic,
         InterfaceNewerVersionPosture::AllowUnverified,
         [InterfaceVersionSegment::exact(
-            version(ANTIGRAVITY_LATEST_QUALIFIED_VERSION),
+            version(ANTIGRAVITY_LATEST_QUALIFIED_VERSION)
+                .expect("static Antigravity release is valid"),
             InterfaceBehaviorRevision::new(ANTIGRAVITY_CATALOGUE_BEHAVIOR)
                 .expect("static Antigravity behavior is valid"),
             InterfaceSupportStatus::Maintained,
@@ -72,7 +73,8 @@ pub fn antigravity_headless_claim() -> InterfaceCompatibilityClaim {
         InterfaceVersionScheme::Semantic,
         InterfaceNewerVersionPosture::AllowUnverified,
         [InterfaceVersionSegment::exact(
-            version(ANTIGRAVITY_LATEST_QUALIFIED_VERSION),
+            version(ANTIGRAVITY_LATEST_QUALIFIED_VERSION)
+                .expect("static Antigravity release is valid"),
             InterfaceBehaviorRevision::new(ANTIGRAVITY_HEADLESS_BEHAVIOR)
                 .expect("static Antigravity headless behavior is valid"),
             InterfaceSupportStatus::Maintained,
@@ -155,8 +157,8 @@ fn axis() -> InterfaceVersionAxis {
         .expect("static Antigravity release axis is valid")
 }
 
-fn version(value: &str) -> InterfaceVersion {
-    InterfaceVersion::new(value).expect("static Antigravity release is valid")
+fn version(value: &str) -> Option<InterfaceVersion> {
+    InterfaceVersion::new(value).ok()
 }
 
 #[cfg(test)]

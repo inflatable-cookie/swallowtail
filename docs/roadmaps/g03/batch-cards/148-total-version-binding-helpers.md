@@ -1,6 +1,6 @@
 # 148 Total Version-Binding Helpers
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-08
 Milestone: `../050-provider-reachable-panic-closure.md`
@@ -33,10 +33,10 @@ text, and lock it with a regression test.
 
 ## Acceptance
 
-- [ ] blank and whitespace-only Ollama versions produce a version diagnostic,
+- [x] blank and whitespace-only Ollama versions produce a version diagnostic,
       never a panic
-- [ ] the Codex helper is total with updated callers
-- [ ] focused adapter rounds pass
+- [x] the Codex helper is total with updated callers
+- [x] focused adapter rounds pass
 
 ## Stop Conditions
 
@@ -50,3 +50,28 @@ Yes, to card 149 after acceptance.
 
 - `effigy validate:focused swallowtail-adapter-ollama swallowtail-adapter-codex`
 - `effigy check:examples`
+
+## Completion Evidence
+
+- `ollama_runtime_binding` returns `Option<InterfaceVersionBinding>` and
+  rejects blank, oversized, trimmed, or control-character text; the
+  provider-flow caller `parse_version` maps `None` to the new
+  `swallowtail.ollama.version_parse_failed` diagnostic instead of panicking
+  (`adapter-ollama/src/selection.rs`, `protocol/catalog.rs`)
+- `codex_cli_binding` returns `Option<InterfaceVersionBinding>` with the
+  full sibling shape (empty, length, trim, control, semver) matching the
+  13 `Option`-returning adapters (`adapter-codex/src/selection.rs`)
+- all Codex test and fixture callers updated through file-local `binding`
+  helpers; all Ollama callers updated with fixture expects
+- a crate-wide sweep confirms no remaining provider-flow
+  `InterfaceVersion::new(...).expect` on non-literal input; remaining
+  expects are static-constant or fixture construction
+- regression tests: blank and whitespace-only Ollama versions fail with
+  `version_parse_failed`; Codex blank, whitespace, non-semantic, and
+  prefixed text all return `None`
+- qualified classification is unchanged: valid versions bind identically,
+  and well-formed out-of-window text (including the existing
+  `version-malformed.json` "current" case) still reports
+  `version_unsupported`
+- focused rounds (202 tests, warnings-denied clippy), workspace nextest
+  (1,495 passed), examples, and format all pass

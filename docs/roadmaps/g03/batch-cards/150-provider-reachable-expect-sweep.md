@@ -1,6 +1,6 @@
 # 150 Provider-Reachable Expect Sweep
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-08
 Milestone: `../050-provider-reachable-panic-closure.md`
@@ -33,9 +33,9 @@ convert every provider-reachable one to a fail-closed result.
 
 ## Acceptance
 
-- [ ] no adapter `expect` is reachable from provider-observed input
-- [ ] invariant expects carry comments stating their guard
-- [ ] focused rounds pass for every adapter touched
+- [x] no adapter `expect` is reachable from provider-observed input
+- [x] invariant expects carry comments stating their guard
+- [x] focused rounds pass for every adapter touched
 
 ## Stop Conditions
 
@@ -50,3 +50,35 @@ Yes, to card 151 after acceptance.
 
 - focused validation per touched adapter; `effigy check:examples`
 - `effigy qa:routes` after any failure-mapping touch
+
+## Completion Evidence
+
+- inventoried the adapter `.expect()` population programmatically: roughly
+  978 static-constant construction, 563 lock-poisoning, and 275
+  invariant/state sites across production source
+- converted every provider-reachable site found to fail-closed handling:
+  - Ollama activity profile: the admitted-version behavior-revision Option
+    now fails closed with `swallowtail.ollama.activity_profile_unavailable`
+    instead of panicking (`adapter-ollama/src/activity/profile.rs`)
+  - Anthropic and DeepSeek tool-result exchanges: `results.first().expect`
+    converted to an explicit exchange-failure (`turn.rs`,
+    `tool_attempt.rs`)
+  - DeepSeek response parsing: an `exact_one` helper replaces the guarded
+    `unwrap()`s on provider-controlled vectors (`protocol/response.rs`)
+  - xAI completion: empty completed output fails closed with
+    `swallowtail.xai.output_invalid` instead of panicking
+    (`driver/turn/pump.rs`)
+  - Muse command acceptance and Alibaba replay pagination: provider-ordering
+    and page-content Options now fail closed (`events.rs`, `protocol/replay.rs`)
+- verified and guard-commented the remaining provider-data-adjacent
+  invariant expects (anthropic state-machine message and search identity,
+  callback-map sync, deepseek final output via parser `finish()`, llama.cpp
+  single-model catalogue, xAI just-assigned response identity, OpenAI
+  cursor after identity consumption, and the `!delta.is_empty()`-guarded
+  delta family across kimi-platform, anthropic, ollama, llama.cpp, and
+  gemini transcripts)
+- no qualified failure classification changed; the delta, cursor, identity,
+  and output families keep their existing guarded outcomes
+- focused rounds for the six touched adapters, workspace nextest (1,495
+  passed across five consecutive runs), examples, route matrices, format,
+  and warnings-denied clippy all pass

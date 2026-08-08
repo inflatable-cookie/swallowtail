@@ -1,0 +1,116 @@
+pub mod swallowtail_adapter_oh_my_pi
+pub mod swallowtail_adapter_oh_my_pi::protocol
+pub enum swallowtail_adapter_oh_my_pi::protocol::OhMyPiRpcProtocolFailureKind
+pub swallowtail_adapter_oh_my_pi::protocol::OhMyPiRpcProtocolFailureKind::EmptyRecord
+pub swallowtail_adapter_oh_my_pi::protocol::OhMyPiRpcProtocolFailureKind::InvalidChunk
+pub swallowtail_adapter_oh_my_pi::protocol::OhMyPiRpcProtocolFailureKind::InvalidResponse
+pub swallowtail_adapter_oh_my_pi::protocol::OhMyPiRpcProtocolFailureKind::InvalidUiRequest
+pub swallowtail_adapter_oh_my_pi::protocol::OhMyPiRpcProtocolFailureKind::MalformedJson
+pub swallowtail_adapter_oh_my_pi::protocol::OhMyPiRpcProtocolFailureKind::MissingLfDelimiter
+pub swallowtail_adapter_oh_my_pi::protocol::OhMyPiRpcProtocolFailureKind::MissingType
+pub swallowtail_adapter_oh_my_pi::protocol::OhMyPiRpcProtocolFailureKind::RecordTooLarge
+pub swallowtail_adapter_oh_my_pi::protocol::OhMyPiRpcProtocolFailureKind::UnknownRecord
+pub enum swallowtail_adapter_oh_my_pi::protocol::OhMyPiRpcRecordKind
+pub swallowtail_adapter_oh_my_pi::protocol::OhMyPiRpcRecordKind::AgentEvent
+pub swallowtail_adapter_oh_my_pi::protocol::OhMyPiRpcRecordKind::ExtensionUiDialog
+pub swallowtail_adapter_oh_my_pi::protocol::OhMyPiRpcRecordKind::ExtensionUiDisplay
+pub swallowtail_adapter_oh_my_pi::protocol::OhMyPiRpcRecordKind::Lifecycle
+pub swallowtail_adapter_oh_my_pi::protocol::OhMyPiRpcRecordKind::Response
+pub struct swallowtail_adapter_oh_my_pi::protocol::OhMyPiRpcProtocolFailure
+impl swallowtail_adapter_oh_my_pi::protocol::OhMyPiRpcProtocolFailure
+pub const fn swallowtail_adapter_oh_my_pi::protocol::OhMyPiRpcProtocolFailure::kind(&self) -> swallowtail_adapter_oh_my_pi::protocol::OhMyPiRpcProtocolFailureKind
+impl core::error::Error for swallowtail_adapter_oh_my_pi::protocol::OhMyPiRpcProtocolFailure
+impl core::fmt::Display for swallowtail_adapter_oh_my_pi::protocol::OhMyPiRpcProtocolFailure
+pub fn swallowtail_adapter_oh_my_pi::protocol::OhMyPiRpcProtocolFailure::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub fn swallowtail_adapter_oh_my_pi::protocol::decode_records(&[u8]) -> core::result::Result<alloc::vec::Vec<swallowtail_adapter_oh_my_pi::protocol::OhMyPiRpcRecordKind>, swallowtail_adapter_oh_my_pi::protocol::OhMyPiRpcProtocolFailure>
+pub struct swallowtail_adapter_oh_my_pi::OhMyPiCatalogueProfileInput
+impl swallowtail_adapter_oh_my_pi::OhMyPiCatalogueProfileInput
+pub const fn swallowtail_adapter_oh_my_pi::OhMyPiCatalogueProfileInput::new(swallowtail_runtime::identity::RequestId) -> Self
+pub const fn swallowtail_adapter_oh_my_pi::OhMyPiCatalogueProfileInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_adapter_oh_my_pi::OhMyPiModelSelection
+impl swallowtail_adapter_oh_my_pi::OhMyPiModelSelection
+pub const fn swallowtail_adapter_oh_my_pi::OhMyPiModelSelection::new(swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ProviderId, swallowtail_core::model::ModelId) -> Self
+pub struct swallowtail_adapter_oh_my_pi::OhMyPiPreparationInput
+impl swallowtail_adapter_oh_my_pi::OhMyPiPreparationInput
+pub const fn swallowtail_adapter_oh_my_pi::OhMyPiPreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_runtime::installed_executable::InstalledExecutableTarget, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub struct swallowtail_adapter_oh_my_pi::OhMyPiPreparationProbe
+impl swallowtail_adapter_oh_my_pi::OhMyPiPreparationProbe
+pub const fn swallowtail_adapter_oh_my_pi::OhMyPiPreparationProbe::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::time::Deadline, swallowtail_runtime::installed_executable::DiscoveryCancellation) -> Self
+pub struct swallowtail_adapter_oh_my_pi::OhMyPiPreparedCatalogue
+impl swallowtail_adapter_oh_my_pi::OhMyPiPreparedCatalogue
+pub const fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedCatalogue::evidence(&self) -> &swallowtail_adapter_oh_my_pi::OhMyPiPreparedEvidence
+pub fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedCatalogue::into_parts(self) -> (swallowtail_adapter_oh_my_pi::OhMyPiPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest)
+pub fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedCatalogue::list_models(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedCatalogue::low_level_driver(&self) -> swallowtail_adapter_oh_my_pi::OhMyPiRpcDriver
+pub const fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedCatalogue::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedCatalogue::request(&self) -> &swallowtail_runtime::roles::ModelCatalogRequest
+pub struct swallowtail_adapter_oh_my_pi::OhMyPiPreparedEvidence
+impl swallowtail_adapter_oh_my_pi::OhMyPiPreparedEvidence
+pub const fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedEvidence::access(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedEvidence::observation(&self) -> &swallowtail_core::installed_executable::InstalledExecutableObservation
+pub const fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedEvidence::operation(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub const fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedEvidence::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub struct swallowtail_adapter_oh_my_pi::OhMyPiPreparedIntegration
+impl swallowtail_adapter_oh_my_pi::OhMyPiPreparedIntegration
+pub const fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedIntegration::environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
+pub const fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedIntegration::low_level_driver(&self) -> swallowtail_adapter_oh_my_pi::OhMyPiRpcDriver
+pub const fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedIntegration::observation(&self) -> &swallowtail_core::installed_executable::InstalledExecutableObservation
+pub const fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedIntegration::target(&self) -> &swallowtail_runtime::installed_executable::InstalledExecutableTarget
+pub fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedIntegration::validate_execution_binding(&self, &swallowtail_core::runtime_identity::ExecutionHostId, &swallowtail_runtime::installed_executable::InstalledExecutableTarget) -> core::result::Result<(), swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_oh_my_pi::OhMyPiPreparedIntegration
+pub fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedIntegration::prepare_catalogue(&self, swallowtail_adapter_oh_my_pi::OhMyPiCatalogueProfileInput) -> core::result::Result<swallowtail_adapter_oh_my_pi::OhMyPiPreparedCatalogue, swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_oh_my_pi::OhMyPiPreparedIntegration
+pub fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedIntegration::prepare_run(&self, swallowtail_adapter_oh_my_pi::OhMyPiRunProfileInput) -> core::result::Result<swallowtail_adapter_oh_my_pi::OhMyPiPreparedRun, swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_oh_my_pi::OhMyPiPreparedIntegration
+pub fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedIntegration::prepare_session(&self, swallowtail_adapter_oh_my_pi::OhMyPiSessionProfileInput) -> core::result::Result<swallowtail_adapter_oh_my_pi::OhMyPiPreparedSession, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_oh_my_pi::OhMyPiPreparedRun
+impl swallowtail_adapter_oh_my_pi::OhMyPiPreparedRun
+pub const fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedRun::evidence(&self) -> &swallowtail_adapter_oh_my_pi::OhMyPiPreparedEvidence
+pub fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedRun::into_parts(self) -> (swallowtail_adapter_oh_my_pi::OhMyPiPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest)
+pub fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedRun::low_level_driver(&self) -> swallowtail_adapter_oh_my_pi::OhMyPiRpcDriver
+pub const fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedRun::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedRun::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
+pub fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedRun::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_oh_my_pi::OhMyPiPreparedSession
+impl swallowtail_adapter_oh_my_pi::OhMyPiPreparedSession
+pub const fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedSession::evidence(&self) -> &swallowtail_adapter_oh_my_pi::OhMyPiPreparedEvidence
+pub fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedSession::into_parts(self) -> (swallowtail_adapter_oh_my_pi::OhMyPiPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest)
+pub fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedSession::low_level_driver(&self) -> swallowtail_adapter_oh_my_pi::OhMyPiRpcDriver
+pub fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedSession::open_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub const fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedSession::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedSession::prepare_working_state_restoration(&self, swallowtail_runtime::identity::RuntimeTurnId) -> swallowtail_runtime::working_state_restoration::PreparedWorkingStateRestoration
+pub const fn swallowtail_adapter_oh_my_pi::OhMyPiPreparedSession::request(&self) -> &swallowtail_runtime::roles::OpenSessionRequest
+pub struct swallowtail_adapter_oh_my_pi::OhMyPiRpcDriver
+impl swallowtail_adapter_oh_my_pi::OhMyPiRpcDriver
+pub const fn swallowtail_adapter_oh_my_pi::OhMyPiRpcDriver::new(swallowtail_runtime::host_reference::EnvironmentRef) -> Self
+impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_oh_my_pi::OhMyPiRpcDriver
+pub fn swallowtail_adapter_oh_my_pi::OhMyPiRpcDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_oh_my_pi::OhMyPiRpcDriver::discover_installed_executable(&self, swallowtail_runtime::installed_executable::InstalledExecutableDiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_core::registration::discovery::DiscoveryOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::InteractiveSessionDriver for swallowtail_adapter_oh_my_pi::OhMyPiRpcDriver
+pub fn swallowtail_adapter_oh_my_pi::OhMyPiRpcDriver::open_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_oh_my_pi::OhMyPiRpcDriver::resume_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::ModelCatalogDriver for swallowtail_adapter_oh_my_pi::OhMyPiRpcDriver
+pub fn swallowtail_adapter_oh_my_pi::OhMyPiRpcDriver::list_models(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::StructuredRunDriver for swallowtail_adapter_oh_my_pi::OhMyPiRpcDriver
+pub fn swallowtail_adapter_oh_my_pi::OhMyPiRpcDriver::start_run(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_oh_my_pi::OhMyPiRunProfileInput
+impl swallowtail_adapter_oh_my_pi::OhMyPiRunProfileInput
+pub const fn swallowtail_adapter_oh_my_pi::OhMyPiRunProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_oh_my_pi::OhMyPiModelSelection, swallowtail_runtime::content::OperationContent, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::time::Deadline) -> Self
+pub fn swallowtail_adapter_oh_my_pi::OhMyPiRunProfileInput::with_attachments(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_runtime::attachment::AttachmentDescriptor>) -> Self
+pub fn swallowtail_adapter_oh_my_pi::OhMyPiRunProfileInput::with_reasoning_mode(self, swallowtail_core::model::ReasoningMode) -> Self
+pub struct swallowtail_adapter_oh_my_pi::OhMyPiSessionProfileInput
+impl swallowtail_adapter_oh_my_pi::OhMyPiSessionProfileInput
+pub const fn swallowtail_adapter_oh_my_pi::OhMyPiSessionProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_oh_my_pi::OhMyPiModelSelection, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::session_options::SessionOptions) -> Self
+pub const fn swallowtail_adapter_oh_my_pi::OhMyPiSessionProfileInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub const fn swallowtail_adapter_oh_my_pi::OhMyPiSessionProfileInput::with_image_attachments(self) -> Self
+pub const swallowtail_adapter_oh_my_pi::OH_MY_PI_PACKAGE_AXIS: &str
+pub const swallowtail_adapter_oh_my_pi::OH_MY_PI_PACKAGE_BASELINE_VERSION: &str
+pub const swallowtail_adapter_oh_my_pi::OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION: &str
+pub fn swallowtail_adapter_oh_my_pi::oh_my_pi_package_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
+pub fn swallowtail_adapter_oh_my_pi::oh_my_pi_rpc_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_oh_my_pi::oh_my_pi_rpc_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub async fn swallowtail_adapter_oh_my_pi::prepare_oh_my_pi_rpc(swallowtail_adapter_oh_my_pi::OhMyPiPreparationInput, swallowtail_adapter_oh_my_pi::OhMyPiPreparationProbe, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_oh_my_pi::OhMyPiPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>

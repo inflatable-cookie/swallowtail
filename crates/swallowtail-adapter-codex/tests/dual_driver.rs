@@ -23,6 +23,10 @@ use swallowtail_testkit::{
     run_long_lived_rpc_profile, run_one_shot_structured_cli_profile,
 };
 
+fn binding(version: &str) -> swallowtail_core::InterfaceVersionBinding {
+    codex_cli_binding(version).expect("fixture Codex version is valid")
+}
+
 fn environment() -> EnvironmentRef {
     EnvironmentRef::new("codex-saved-login").expect("environment is valid")
 }
@@ -139,7 +143,7 @@ fn selected_profiles_keep_identical_common_assertions() {
 
 #[test]
 fn both_codex_transports_keep_newer_execution_outside_qualified_support() {
-    let version = codex_cli_binding("0.147.0");
+    let version = binding("0.147.0");
     assert_unverified_newer_execution(&codex_exec_claim(), version.version());
     assert_unverified_newer_execution(&codex_app_server_claim(), version.version());
 }

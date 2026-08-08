@@ -251,20 +251,21 @@ const fn qualified_release_builds() -> [(&'static str, &'static str); 2] {
 fn exact_milestones(behavior: &str) -> [InterfaceVersionSegment; 2] {
     [
         InterfaceVersionSegment::exact(
-            version(CURSOR_AGENT_BASELINE_VERSION),
+            version(CURSOR_AGENT_BASELINE_VERSION).expect("static Cursor release version is valid"),
             InterfaceBehaviorRevision::new(behavior).expect("static Cursor behavior is valid"),
             InterfaceSupportStatus::Maintained,
         ),
         InterfaceVersionSegment::exact(
-            version(CURSOR_AGENT_LATEST_QUALIFIED_VERSION),
+            version(CURSOR_AGENT_LATEST_QUALIFIED_VERSION)
+                .expect("static Cursor release version is valid"),
             InterfaceBehaviorRevision::new(behavior).expect("static Cursor behavior is valid"),
             InterfaceSupportStatus::Maintained,
         ),
     ]
 }
 
-fn version(value: &str) -> InterfaceVersion {
-    InterfaceVersion::new(value).expect("static Cursor release version is valid")
+fn version(value: &str) -> Option<InterfaceVersion> {
+    InterfaceVersion::new(value).ok()
 }
 
 #[cfg(test)]

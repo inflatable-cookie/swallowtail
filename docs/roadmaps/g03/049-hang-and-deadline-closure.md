@@ -1,13 +1,13 @@
 # 049 Hang And Deadline Closure
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-08
 Generation: g03
 Depends on: g03.048
 Vision tags: correctness, deadlines, safe termination
 Contract refs: 009, 010, 035, 051
-Planning state: cards 144-147; card 144 ready
+Planning state: cards 144-147 completed
 
 ## Problem
 
@@ -46,10 +46,10 @@ transport:
 
 ## Execution Plan
 
-- [ ] Execute card 144 (process supervision reader-join bound).
-- [ ] Execute card 145 (force-stop truth and task drop disposition).
-- [ ] Execute card 146 (waiter-slot and sender-close standardization).
-- [ ] Execute card 147 (remote ACP deadline closure).
+- [x] Execute card 144 (process supervision reader-join bound).
+- [x] Execute card 145 (force-stop truth and task drop disposition).
+- [x] Execute card 146 (waiter-slot and sender-close standardization).
+- [x] Execute card 147 (remote ACP deadline closure).
 
 ## Boundaries
 
@@ -60,13 +60,13 @@ transport:
 
 ## Acceptance Criteria
 
-- [ ] a fixture child that spawns a pipe-inheriting descendant cannot stall
+- [x] a fixture child that spawns a pipe-inheriting descendant cannot stall
       `wait()`, `read_output()`, or a drop
-- [ ] a force-stop racing a clean exit reports the natural exit
-- [ ] concurrent waiters on one cancellation signal all wake exactly once
-- [ ] a dropped sender resolves the pending stream instead of stalling
-- [ ] a non-responding remote ACP peer fails within the configured deadline
-- [ ] focused and workspace test rounds pass
+- [x] a force-stop racing a clean exit reports the natural exit
+- [x] concurrent waiters on one cancellation signal all wake exactly once
+- [x] a dropped sender resolves the pending stream instead of stalling
+- [x] a non-responding remote ACP peer fails within the configured deadline
+- [x] focused and workspace test rounds pass
 
 ## Next Planning Checkpoint
 

@@ -1,6 +1,6 @@
 # 144 Process Supervision Reader-Join Bound
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-08
 Milestone: `../049-hang-and-deadline-closure.md`
@@ -51,3 +51,21 @@ Yes, to card 145 after acceptance and a focused host-local round.
 
 - `effigy validate:focused swallowtail-host-local`
 - `effigy test:rust` and `effigy check:examples`
+
+## Completion Evidence
+
+- `supervise_child` joins both reader threads under a two-second bound
+  (`process_exit.rs`); a timed-out reader abandons output capture via
+  `OutputState::close_abandoned` and its handle is detached, so `wait()`
+  resolves and `read_output()` drains to terminal truth instead of stalling
+- `OutputFuture` latches terminal: an abandoned reader that later pushes
+  chunks or a failure cannot resume a closed stream (`output.rs`)
+- the supervisor-start failure path uses the same bounded joins (`child.rs`)
+- two deterministic fixtures added: a pipe-inheriting grandchild that
+  releases within the bound (`sleep 1`) and one that holds past it
+  (`sleep 5`); both terminate with `wait()` success and a drained terminal
+  stream, and the bounded fixture completes in roughly four seconds
+- no public API, diagnostic-code, or guaranteed-behavior change; normal
+  processes observe the same exit and output truth
+- focused host-local round, workspace nextest (1,484 passed), examples,
+  format, and warnings-denied clippy all pass

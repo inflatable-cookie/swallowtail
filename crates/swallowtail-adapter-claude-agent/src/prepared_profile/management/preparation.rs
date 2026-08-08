@@ -1,16 +1,13 @@
 use super::ClaudeAgentPreparedDelete;
 use crate::ClaudeAgentPreparedIntegration;
 use crate::prepared_profile::input::ClaudeAgentSessionManagementInput;
-use crate::prepared_profile::plan::{
-    access_requirement, build_plan, failure, instance_with_capabilities,
-};
+use crate::prepared_profile::plan::{build_plan, failure, instance_with_capabilities};
 use swallowtail_core::{
     Capability, CapabilityProfile, CapabilityRequirement, CredentialMechanism, DriverRole,
-    ExecutionLayer, HarnessConfigurationPosture, HarnessIsolation, HostServiceKind,
-    OperationRequirements, OperationShape, ProviderSessionActivityEvidence,
-    ProviderSessionAffectedScope, ProviderSessionCancellationPosture,
-    ProviderSessionDeletionStrength, ProviderSessionInitialStateRequirement,
-    ProviderSessionManagementAction,
+    ExecutionLayer, HarnessConfigurationPosture, HarnessIsolation, HostServiceKind, OperationShape,
+    ProviderSessionActivityEvidence, ProviderSessionAffectedScope,
+    ProviderSessionCancellationPosture, ProviderSessionDeletionStrength,
+    ProviderSessionInitialStateRequirement, ProviderSessionManagementAction,
 };
 use swallowtail_runtime::{
     DeleteProviderSessionRequest, PreparationFailure, PreparedProviderSessionManagementEvidence,
@@ -49,16 +46,16 @@ impl ClaudeAgentPreparedIntegration {
         if deadline.is_some() {
             host_services.push(HostServiceKind::Time);
         }
-        let requirements = OperationRequirements::new(
+        let requirements = swallowtail_runtime::base_requirements(
             ExecutionLayer::HarnessInteraction,
             OperationShape::ProviderSessionManagement,
             DriverRole::ProviderSessionManagement,
-            self.instance().execution_host_id().clone(),
-            access_requirement(self),
+            self.instance(),
+            self.access_profile(),
+            crate::prepared_profile::plan::claude_agent_credential_states(self),
+            [capability],
         )
-        .with_ownership_modes([self.instance().ownership()])
         .with_host_services(host_services)
-        .with_capabilities([capability])
         .with_interface_versions([self.observation().version().clone()])
         .with_harness_isolation(HarnessIsolation::AmbientHost)
         .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient);

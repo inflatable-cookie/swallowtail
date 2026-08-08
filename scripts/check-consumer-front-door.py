@@ -9,6 +9,10 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "scripts"))
+from provider_route_matrix.route_inventory import (  # noqa: E402
+    production_routes as inventory_production_routes,
+)
 REPOSITORY = "https://github.com/inflatable-cookie/swallowtail"
 TAG = "v0.2.0"
 
@@ -36,7 +40,6 @@ def section(document: str, start: str, end: str) -> str:
 readme = read("README.md")
 release = read("docs/releases/0.2.0.md")
 changelog = read("CHANGELOG.md")
-matrix = read("docs/guides/provider-route-matrix.md")
 
 for required in ("SECURITY.md", "SUPPORT.md", "CONTRIBUTING.md", "LICENSE"):
     read(required)
@@ -85,13 +88,7 @@ if documented_packages != expected_packages:
     extra = sorted(documented_packages - expected_packages)
     fail(f"release package inventory drifted; missing={missing}, extra={extra}")
 
-current_routes = set(
-    re.findall(
-        r"^\| `([^`]+)` \| `swallowtail-adapter-[^`]+`;",
-        matrix,
-        re.MULTILINE,
-    )
-)
+current_routes = set(inventory_production_routes())
 expected_routes = set(read("release-baselines/production-routes-0.2.0.txt").splitlines())
 if expected_routes != current_routes:
     fail("current route inventory differs from the v0.2.0 candidate")

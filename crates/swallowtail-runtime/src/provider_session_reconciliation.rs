@@ -1,13 +1,11 @@
 #![deny(missing_docs)]
 
 use crate::{
-    CancellationControl, Deadline, ImmediateCancellation, PreparationFailure,
-    PreparedAccessEvidence, PreparedOperationEvidence, ProviderOperationCheckpoint, RequestId,
-    RuntimeFailure, RuntimeTurnId, SessionReplayItem, SessionResumeBinding,
+    CancellationControl, Deadline, ProviderOperationCheckpoint, RuntimeFailure, RuntimeTurnId,
+    SessionReplayItem, SessionResumeBinding,
 };
 use std::num::{NonZeroU32, NonZeroU64};
-use std::sync::Arc;
-use swallowtail_core::{CancellationScope, PreflightPlan, TurnRef};
+use swallowtail_core::{CancellationScope, TurnRef};
 
 mod outcome;
 mod validation;
@@ -47,6 +45,13 @@ impl InterruptedTurnState {
     }
 }
 
+plan_family!(@prepared {
+    plan_type: ProviderSessionReconciliationPlan,
+    prepared_type: PreparedProviderSessionReconciliationEvidence,
+    agreement: ProviderSessionReconciliationAgreement,
+    prepared_doc: "Prepared route and access evidence for session reconciliation.",
+    agreement_doc: "Returns the immutable reconciliation agreement.",
+});
 /// Strength of provider attribution for an interrupted-turn observation.
 /// Strength of provider attribution for an interrupted-turn observation.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -175,130 +180,36 @@ impl ProviderSessionReconciliationAgreement {
     }
 }
 
-/// Validated preflight plan and immutable reconciliation agreement.
-/// Validated preflight plan and immutable reconciliation agreement.
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub struct ProviderSessionReconciliationPlan {
-    preflight: PreflightPlan,
-    agreement: ProviderSessionReconciliationAgreement,
-}
+use crate::plan_family::plan_family;
 
-/// Prepared route and access evidence for session reconciliation.
-/// Prepared route and access evidence for session reconciliation.
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub struct PreparedProviderSessionReconciliationEvidence {
-    operation: PreparedOperationEvidence,
-    plan: ProviderSessionReconciliationPlan,
-}
-
-impl PreparedProviderSessionReconciliationEvidence {
-    /// Binds prepared access evidence to a validated reconciliation plan.
-    pub fn from_plan(
-        plan: ProviderSessionReconciliationPlan,
-        access: PreparedAccessEvidence,
-    ) -> Result<Self, PreparationFailure> {
-        let operation = PreparedOperationEvidence::from_plan(plan.preflight().clone(), access)?;
-        Ok(Self { operation, plan })
-    }
-
-    #[must_use]
-    /// Returns the common prepared-operation evidence.
-    pub const fn operation(&self) -> &PreparedOperationEvidence {
-        &self.operation
-    }
-
-    #[must_use]
-    /// Returns the exact reconciliation plan.
-    pub const fn plan(&self) -> &ProviderSessionReconciliationPlan {
-        &self.plan
-    }
-}
-
-impl ProviderSessionReconciliationPlan {
-    /// Validates a preflight plan against the reconciliation agreement.
-    pub fn new(
-        preflight: PreflightPlan,
+plan_family! {
+    plan: {
+        plan_type: ProviderSessionReconciliationPlan,
+        prepared_type: PreparedProviderSessionReconciliationEvidence,
         agreement: ProviderSessionReconciliationAgreement,
-    ) -> Result<Self, RuntimeFailure> {
-        validate_plan(&preflight, &agreement)?;
-        Ok(Self {
-            preflight,
-            agreement,
-        })
+        plan_doc: "Validated preflight plan and immutable reconciliation agreement.",
+        prepared_doc: "Prepared route and access evidence for session reconciliation.",
+        agreement_doc: "Returns the immutable reconciliation agreement.",
     }
-
-    #[must_use]
-    /// Returns the immutable preflight plan.
-    pub const fn preflight(&self) -> &PreflightPlan {
-        &self.preflight
-    }
-
-    #[must_use]
-    /// Returns the immutable reconciliation agreement.
-    pub const fn agreement(&self) -> &ProviderSessionReconciliationAgreement {
-        &self.agreement
-    }
-}
-
-/// One execution request derived from a reconciliation plan.
-/// One execution request derived from a reconciliation plan.
-#[derive(Clone, Debug)]
-pub struct ProviderSessionReconciliationRequest {
-    request_id: RequestId,
-    agreement: ProviderSessionReconciliationAgreement,
-    cancellation: Arc<ImmediateCancellation>,
-}
-
-impl ProviderSessionReconciliationRequest {
-    /// Creates a request with an explicitly scoped cancellation control.
-    pub fn new(
-        request_id: RequestId,
-        plan: &ProviderSessionReconciliationPlan,
-        cancellation: Arc<ImmediateCancellation>,
-    ) -> Result<Self, RuntimeFailure> {
-        if cancellation.scope() != CancellationScope::ProviderSessionReconciliation {
-            return Err(failure(
-                "swallowtail.provider_session_reconciliation.cancellation_scope_mismatch",
-                "Provider-session reconciliation request has the wrong cancellation scope",
-            ));
-        }
-        Ok(Self {
-            request_id,
-            agreement: plan.agreement().clone(),
-            cancellation,
-        })
-    }
-
-    /// Creates a request with a fresh correctly scoped cancellation control.
-    pub fn from_plan(
-        request_id: RequestId,
-        plan: &ProviderSessionReconciliationPlan,
-    ) -> Result<Self, RuntimeFailure> {
-        Self::new(
-            request_id,
-            plan,
-            Arc::new(ImmediateCancellation::new(
-                CancellationScope::ProviderSessionReconciliation,
-            )),
-        )
-    }
-
-    #[must_use]
-    /// Returns the caller-assigned request identity.
-    pub const fn request_id(&self) -> &RequestId {
-        &self.request_id
-    }
-
-    #[must_use]
-    /// Returns the copied immutable agreement.
-    pub const fn agreement(&self) -> &ProviderSessionReconciliationAgreement {
-        &self.agreement
-    }
-
-    #[must_use]
-    /// Returns the reconciliation-scoped cancellation control.
-    pub const fn cancellation(&self) -> &Arc<ImmediateCancellation> {
-        &self.cancellation
+    requests: {
+        plan_type: ProviderSessionReconciliationPlan,
+        agreement: ProviderSessionReconciliationAgreement,
+        agreement_doc: "Returns the immutable reconciliation agreement.",
+        scope: CancellationScope::ProviderSessionReconciliation,
+        ns: "swallowtail.provider_session_reconciliation",
+        requests: [
+            ProviderSessionReconciliationRequest = "One execution request derived from a reconciliation plan." {
+                new_doc: "Creates a request with an explicitly scoped cancellation control.",
+                new_arg: plan: &ProviderSessionReconciliationPlan,
+                agreement_expr: plan.agreement().clone(),
+                from_plan_doc: "Creates a request with a fresh correctly scoped cancellation control.",
+                from_plan_arg: pass_plan,
+                request_id_doc: "Returns the caller-assigned request identity.",
+                extra: true,
+                extra_code: "swallowtail.provider_session_reconciliation.cancellation_scope_mismatch",
+                extra_message: "",
+            }
+        ]
     }
 }
 

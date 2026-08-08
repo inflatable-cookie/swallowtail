@@ -1,6 +1,6 @@
 # 154 Route Inventory Single-Sourcing
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-08
 Milestone: `../051-validation-machinery-and-index-closure.md`
@@ -32,9 +32,9 @@ Single-source the 34-route inventory so a route touch is one edit, not five.
 
 ## Acceptance
 
-- [ ] adding one route to the CSV updates every consumer without a second
+- [x] adding one route to the CSV updates every consumer without a second
       edit
-- [ ] `effigy qa:routes` and `effigy qa:docs` pass unchanged
+- [x] `effigy qa:routes` and `effigy qa:docs` pass unchanged
 
 ## Stop Conditions
 
@@ -47,3 +47,24 @@ Yes, to card 155 after acceptance.
 ## Validation
 
 - `effigy qa:routes`, `effigy qa:docs`, `effigy check:examples`
+
+## Completion Evidence
+
+- new `scripts/provider_route_matrix/route_inventory.py` owns the
+  authoritative 34-route inventory derived from the feature-matrix CSV
+  (splitting composite `route_id` cells like the previous parser) and
+  validates count and uniqueness on every call; it also owns the per-route
+  provider-session lifecycle posture table, failing loudly on a missing
+  route
+- `check-provider-route-matrix.sh` now generates both its expected lists
+  (route ids and lifecycle posture rows) from the module instead of the two
+  heredocs
+- `check-integration-guide-coverage.py` and `check-provider-activity-matrix.py`
+  derive from the module and keep their document regexes as a doc-versus-CSV
+  cross-check, so validation strength is unchanged
+- `check-consumer-front-door.py` compares the module inventory against the
+  frozen `v0.2.0` baseline instead of re-parsing the document
+- single-source property proven by mutating the CSV: every consumer reacted
+  to the change without an edit, then the matrix was restored byte-identical
+- `effigy qa:routes`, `effigy qa:docs` (all fifteen checks), and
+  `effigy check:examples` pass unchanged

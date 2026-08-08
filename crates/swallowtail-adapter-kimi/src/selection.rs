@@ -66,20 +66,20 @@ pub fn kimi_code_binding(value: &str) -> Option<InterfaceVersionBinding> {
 /// Returns the qualified compatibility claim for Kimi Code ACP.
 pub fn kimi_acp_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
-        InterfaceCompatibilityClaimId::new("kimi.acp.executable-window-4")
+        InterfaceCompatibilityClaimId::new("kimi.acp.executable-window-2")
             .expect("static Kimi claim id is valid"),
         axis(),
         InterfaceVersionScheme::Semantic,
         InterfaceNewerVersionPosture::AllowUnverified,
         [
             InterfaceVersionSegment::exact(
-                version(KIMI_CODE_BASELINE_VERSION),
+                version(KIMI_CODE_BASELINE_VERSION).expect("static Kimi version is valid"),
                 behavior(LEGACY_REASONING_BEHAVIOR),
-                InterfaceSupportStatus::Maintained,
+                InterfaceSupportStatus::Deprecated,
             ),
             InterfaceVersionSegment::new(
-                version("0.29.0"),
-                version(KIMI_CODE_LATEST_QUALIFIED_VERSION),
+                version("0.29.0").expect("static Kimi version is valid"),
+                version(KIMI_CODE_LATEST_QUALIFIED_VERSION).expect("static Kimi version is valid"),
                 behavior(DECLARED_EFFORT_BEHAVIOR),
                 InterfaceSupportStatus::Maintained,
             ),
@@ -93,14 +93,14 @@ pub fn kimi_acp_claim() -> InterfaceCompatibilityClaim {
 /// Returns the qualified compatibility claim for Kimi Code headless runs.
 pub fn kimi_headless_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
-        InterfaceCompatibilityClaimId::new("kimi.headless.executable-window-3")
+        InterfaceCompatibilityClaimId::new("kimi.headless.executable-window-2")
             .expect("static Kimi headless claim id is valid"),
         axis(),
         InterfaceVersionScheme::Semantic,
         InterfaceNewerVersionPosture::AllowUnverified,
         [InterfaceVersionSegment::new(
-            version(KIMI_HEADLESS_BASELINE_VERSION),
-            version(KIMI_HEADLESS_LATEST_QUALIFIED_VERSION),
+            version(KIMI_HEADLESS_BASELINE_VERSION).expect("static Kimi version is valid"),
+            version(KIMI_HEADLESS_LATEST_QUALIFIED_VERSION).expect("static Kimi version is valid"),
             behavior(HEADLESS_BEHAVIOR),
             InterfaceSupportStatus::Maintained,
         )],
@@ -197,8 +197,8 @@ fn axis() -> InterfaceVersionAxis {
     InterfaceVersionAxis::new(KIMI_CODE_AXIS).expect("static Kimi axis is valid")
 }
 
-fn version(value: &str) -> InterfaceVersion {
-    InterfaceVersion::new(value).expect("static Kimi version is valid")
+fn version(value: &str) -> Option<InterfaceVersion> {
+    InterfaceVersion::new(value).ok()
 }
 
 fn behavior(value: &str) -> InterfaceBehaviorRevision {

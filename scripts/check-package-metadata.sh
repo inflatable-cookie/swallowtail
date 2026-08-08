@@ -4,6 +4,9 @@ set -euo pipefail
 release_repo_root=$(cd "$(dirname "$0")/.." && pwd)
 cd "$release_repo_root"
 
+source release-baselines/rust-toolchains-0.2.0.env
+release_msrv_cargo=${SWALLOWTAIL_MSRV%.0}
+
 release_metadata=$(mktemp)
 release_edges=$(mktemp)
 release_names=$(mktemp)
@@ -14,7 +17,7 @@ trap 'rm -f "$release_metadata" "$release_edges" "$release_names" "$release_expe
 cargo metadata --no-deps --format-version 1 > "$release_metadata"
 release_version=$(jq -r '.packages[0].version' "$release_metadata")
 
-jq -e --arg version "$release_version" '
+jq -e --arg version "$release_version" --arg rust_msrv "$release_msrv_cargo" '
   (.packages | length) == 28 and
   all(.packages[];
     .version == $version and
@@ -41,14 +44,14 @@ jq -e --arg version "$release_version" '
     ) and
     all(.targets[]; all(.kind[]; . == "lib" or . == "test" or . == "example"))
   ) and
-  all(.packages[]; .rust_version == "1.95") and
+  all(.packages[]; .rust_version == $rust_msrv) and
   all(.packages[].dependencies[];
     if .path != null then .req == ("^" + $version) else true end
   )
 ' "$release_metadata" > /dev/null
 
 jq -r '.packages[].name' "$release_metadata" | LC_ALL=C sort > "$release_names"
-LC_ALL=C sort release-baselines/public-api-0.2.0/packages.txt \
+LC_ALL=C sort release-baselines/public-api-0.3.0/packages.txt \
   > "$release_expected_names"
 diff -u "$release_expected_names" "$release_names"
 
@@ -66,5 +69,5 @@ awk -F '\t' -v OFS='\t' -v requirement="^$release_version" \
   | LC_ALL=C sort > "$release_expected_edges"
 diff -u "$release_expected_edges" "$release_edges"
 
-printf 'coordinated metadata passed for 28 crates at %s and Rust 1.95\n' \
-  "$release_version"
+printf 'coordinated metadata passed for 28 crates at %s and Rust %s\n' \
+  "$release_version" "$release_msrv_cargo"

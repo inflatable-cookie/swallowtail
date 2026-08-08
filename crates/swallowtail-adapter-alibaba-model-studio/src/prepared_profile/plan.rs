@@ -1,9 +1,9 @@
 use crate::AlibabaModelStudioPreparedIntegration;
 use swallowtail_core::{
-    ConfiguredInstance, Diagnostic, ModelId, ModelRoute, ModelRouteId, ModelRouteRevision,
-    OperationRequirements, PreflightContext, PreflightPlan, preflight,
+    ConfiguredInstance, ModelId, ModelRoute, ModelRouteId, ModelRouteRevision,
+    OperationRequirements, PreflightPlan,
 };
-use swallowtail_runtime::{PreparationFailure, PreparationStage, PreparedOperationEvidence};
+use swallowtail_runtime::{PreparationFailure, PreparedOperationEvidence};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 /// Prepared operation, access, activity, and preflight evidence.
@@ -71,21 +71,7 @@ pub(super) fn instance_with_capabilities(
     prepared: &AlibabaModelStudioPreparedIntegration,
     capabilities: swallowtail_core::CapabilityProfile,
 ) -> ConfiguredInstance {
-    let base = prepared.instance();
-    ConfiguredInstance::new(
-        base.id().clone(),
-        base.revision().clone(),
-        base.driver_id().clone(),
-        base.execution_host_id().clone(),
-        base.target_reference().clone(),
-        base.ownership(),
-        base.access_profile_id().clone(),
-        base.support_authority(),
-        base.protocol_facade_id().clone(),
-        base.policy_id().clone(),
-        capabilities,
-    )
-    .with_interface_versions(base.interface_versions().cloned())
+    swallowtail_runtime::instance_with_capabilities(prepared.instance(), capabilities)
 }
 
 pub(super) fn build_plan(
@@ -94,24 +80,15 @@ pub(super) fn build_plan(
     route: &ModelRoute,
     requirements: &OperationRequirements,
 ) -> Result<PreflightPlan, PreparationFailure> {
-    let descriptor = crate::alibaba_model_studio_descriptor();
-    preflight(
-        &PreflightContext::new(
-            &descriptor,
-            instance,
-            prepared.access_profile(),
-            prepared.access_evidence().status(),
-            prepared.available_host_services(),
-        )
-        .with_model_route(route),
+    swallowtail_runtime::build_plan(
+        &crate::alibaba_model_studio_descriptor(),
+        instance,
+        Some(route),
         requirements,
+        prepared.access_profile(),
+        prepared.access_evidence().status(),
+        prepared.available_host_services(),
     )
-    .map_err(|error| {
-        PreparationFailure::new(
-            PreparationStage::Preflight,
-            Diagnostic::new(error.diagnostic().clone()),
-        )
-    })
 }
 
 pub(super) fn build_plan_without_route(
@@ -119,21 +96,13 @@ pub(super) fn build_plan_without_route(
     instance: &ConfiguredInstance,
     requirements: &OperationRequirements,
 ) -> Result<PreflightPlan, PreparationFailure> {
-    let descriptor = crate::alibaba_model_studio_descriptor();
-    preflight(
-        &PreflightContext::new(
-            &descriptor,
-            instance,
-            prepared.access_profile(),
-            prepared.access_evidence().status(),
-            prepared.available_host_services(),
-        ),
+    swallowtail_runtime::build_plan(
+        &crate::alibaba_model_studio_descriptor(),
+        instance,
+        None,
         requirements,
+        prepared.access_profile(),
+        prepared.access_evidence().status(),
+        prepared.available_host_services(),
     )
-    .map_err(|error| {
-        PreparationFailure::new(
-            PreparationStage::Preflight,
-            Diagnostic::new(error.diagnostic().clone()),
-        )
-    })
 }

@@ -1,15 +1,17 @@
 #![deny(missing_docs)]
 
+use crate::plan_family::{
+    PlanRule, check_plan_rules, failure as plan_failure, validate_agreement_matches_plan,
+    validate_execution_services,
+};
 use crate::{
-    CancellationControl, CleanupOutcome, Deadline, HostServices, ImmediateCancellation,
-    OperationContent, PreparationFailure, PreparedAccessEvidence, PreparedOperationEvidence,
-    ProviderRunCheckpoint, RequestId, RuntimeFailure, RuntimeRunId, TokenUsage,
+    CancellationControl, CleanupOutcome, Deadline, HostServices, OperationContent,
+    ProviderRunCheckpoint, RuntimeFailure, RuntimeRunId, TokenUsage,
 };
 use std::num::NonZeroU64;
-use std::sync::Arc;
 use swallowtail_core::{
     CancellationScope, Capability, CapabilityConstraint, DriverRole, OperationShape, PreflightPlan,
-    RunRef, SafeDiagnostic,
+    RunRef,
 };
 
 /// Read-only observed state of a structured run whose handle was lost.
@@ -39,6 +41,13 @@ impl InterruptedRunState {
     }
 }
 
+plan_family!(@prepared {
+    plan_type: ProviderRunReconciliationPlan,
+    prepared_type: PreparedProviderRunReconciliationEvidence,
+    agreement: ProviderRunReconciliationAgreement,
+    prepared_doc: "Prepared route and access evidence for run reconciliation.",
+    agreement_doc: "Returns the immutable run reconciliation agreement.",
+});
 /// Exact run checkpoint, recovered-output bound, and deadline to reconcile.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ProviderRunReconciliationAgreement {
@@ -93,127 +102,36 @@ impl ProviderRunReconciliationAgreement {
     }
 }
 
-/// Validated preflight plan and immutable run reconciliation agreement.
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub struct ProviderRunReconciliationPlan {
-    preflight: PreflightPlan,
-    agreement: ProviderRunReconciliationAgreement,
-}
+use crate::plan_family::plan_family;
 
-impl ProviderRunReconciliationPlan {
-    /// Validates a preflight plan against the run agreement.
-    pub fn new(
-        preflight: PreflightPlan,
+plan_family! {
+    plan: {
+        plan_type: ProviderRunReconciliationPlan,
+        prepared_type: PreparedProviderRunReconciliationEvidence,
         agreement: ProviderRunReconciliationAgreement,
-    ) -> Result<Self, RuntimeFailure> {
-        validate_plan(&preflight, &agreement)?;
-        Ok(Self {
-            preflight,
-            agreement,
-        })
+        plan_doc: "Validated preflight plan and immutable run reconciliation agreement.",
+        prepared_doc: "Prepared route and access evidence for run reconciliation.",
+        agreement_doc: "Returns the immutable run reconciliation agreement.",
     }
-
-    #[must_use]
-    /// Returns the immutable preflight plan.
-    pub const fn preflight(&self) -> &PreflightPlan {
-        &self.preflight
-    }
-
-    #[must_use]
-    /// Returns the immutable run reconciliation agreement.
-    pub const fn agreement(&self) -> &ProviderRunReconciliationAgreement {
-        &self.agreement
-    }
-}
-
-/// Prepared route and access evidence for run reconciliation.
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub struct PreparedProviderRunReconciliationEvidence {
-    operation: PreparedOperationEvidence,
-    plan: ProviderRunReconciliationPlan,
-}
-
-impl PreparedProviderRunReconciliationEvidence {
-    /// Binds prepared access evidence to a validated run plan.
-    pub fn from_plan(
-        plan: ProviderRunReconciliationPlan,
-        access: PreparedAccessEvidence,
-    ) -> Result<Self, PreparationFailure> {
-        let operation = PreparedOperationEvidence::from_plan(plan.preflight().clone(), access)?;
-        Ok(Self { operation, plan })
-    }
-
-    #[must_use]
-    /// Returns the common prepared-operation evidence.
-    pub const fn operation(&self) -> &PreparedOperationEvidence {
-        &self.operation
-    }
-
-    #[must_use]
-    /// Returns the exact run reconciliation plan.
-    pub const fn plan(&self) -> &ProviderRunReconciliationPlan {
-        &self.plan
-    }
-}
-
-/// One execution request derived from a run reconciliation plan.
-#[derive(Clone, Debug)]
-pub struct ProviderRunReconciliationRequest {
-    request_id: RequestId,
-    agreement: ProviderRunReconciliationAgreement,
-    cancellation: Arc<ImmediateCancellation>,
-}
-
-impl ProviderRunReconciliationRequest {
-    /// Creates a request with an explicitly scoped cancellation control.
-    pub fn new(
-        request_id: RequestId,
-        plan: &ProviderRunReconciliationPlan,
-        cancellation: Arc<ImmediateCancellation>,
-    ) -> Result<Self, RuntimeFailure> {
-        if cancellation.scope() != CancellationScope::ProviderRunReconciliation {
-            return Err(failure(
-                "swallowtail.provider_run_reconciliation.cancellation_scope_mismatch",
-                "Provider-run reconciliation request has the wrong cancellation scope",
-            ));
-        }
-        Ok(Self {
-            request_id,
-            agreement: plan.agreement().clone(),
-            cancellation,
-        })
-    }
-
-    /// Creates a request with a fresh correctly scoped cancellation control.
-    pub fn from_plan(
-        request_id: RequestId,
-        plan: &ProviderRunReconciliationPlan,
-    ) -> Result<Self, RuntimeFailure> {
-        Self::new(
-            request_id,
-            plan,
-            Arc::new(ImmediateCancellation::new(
-                CancellationScope::ProviderRunReconciliation,
-            )),
-        )
-    }
-
-    #[must_use]
-    /// Returns the caller-assigned request identity.
-    pub const fn request_id(&self) -> &RequestId {
-        &self.request_id
-    }
-
-    #[must_use]
-    /// Returns the copied immutable agreement.
-    pub const fn agreement(&self) -> &ProviderRunReconciliationAgreement {
-        &self.agreement
-    }
-
-    #[must_use]
-    /// Returns the reconciliation-scoped cancellation control.
-    pub const fn cancellation(&self) -> &Arc<ImmediateCancellation> {
-        &self.cancellation
+    requests: {
+        plan_type: ProviderRunReconciliationPlan,
+        agreement: ProviderRunReconciliationAgreement,
+        agreement_doc: "Returns the immutable run reconciliation agreement.",
+        scope: CancellationScope::ProviderRunReconciliation,
+        ns: "swallowtail.provider_run_reconciliation",
+        requests: [
+            ProviderRunReconciliationRequest = "One execution request derived from a run reconciliation plan." {
+                new_doc: "Creates a request with an explicitly scoped cancellation control.",
+                new_arg: plan: &ProviderRunReconciliationPlan,
+                agreement_expr: plan.agreement().clone(),
+                from_plan_doc: "Creates a request with a fresh correctly scoped cancellation control.",
+                from_plan_arg: pass_plan,
+                request_id_doc: "Returns the caller-assigned request identity.",
+                extra: true,
+                extra_code: "swallowtail.provider_run_reconciliation.cancellation_scope_mismatch",
+                extra_message: "",
+            }
+        ]
     }
 }
 
@@ -341,19 +259,78 @@ impl ProviderRunReconciliationOutcome {
     }
 }
 
+/// Ordered per-role validation rules for a run-reconciliation plan.
+const RUN_RECONCILIATION_PLAN_RULES: [PlanRule<ProviderRunReconciliationAgreement>; 6] = [
+    PlanRule::new(
+        "swallowtail.provider_run_reconciliation.plan_mismatch",
+        "Provider-run reconciliation does not match its immutable binding",
+        |preflight, _| {
+            preflight.requirements().driver_role() == DriverRole::ProviderRunReconciliation
+        },
+    ),
+    PlanRule::new(
+        "swallowtail.provider_run_reconciliation.plan_mismatch",
+        "Provider-run reconciliation does not match its immutable binding",
+        |preflight, _| {
+            preflight.requirements().operation_shape() == OperationShape::ProviderRunReconciliation
+        },
+    ),
+    PlanRule::new(
+        "swallowtail.provider_run_reconciliation.plan_mismatch",
+        "Provider-run reconciliation does not match its immutable binding",
+        |preflight, agreement| agreement.checkpoint().matches_plan(preflight),
+    ),
+    PlanRule::new(
+        "swallowtail.provider_run_reconciliation.plan_mismatch",
+        "Provider-run reconciliation capability is missing",
+        |preflight, _| {
+            preflight
+                .requirements()
+                .capabilities()
+                .any(|required| required.capability() == Capability::ProviderRunReconciliation)
+        },
+    ),
+    PlanRule::new(
+        "swallowtail.provider_run_reconciliation.bound_mismatch",
+        "Provider-run reconciliation output bound differs from its capability plan",
+        |preflight, agreement| {
+            let Some(capability) = preflight
+                .requirements()
+                .capabilities()
+                .find(|required| required.capability() == Capability::ProviderRunReconciliation)
+            else {
+                return false;
+            };
+            let expected = CapabilityConstraint::RecoveredOutputMaximumBytes(
+                agreement.maximum_output_bytes().get(),
+            );
+            capability.constraints().count() == 1
+                && capability.constraints().any(|actual| actual == &expected)
+        },
+    ),
+    PlanRule::new(
+        "swallowtail.provider_run_reconciliation.time_service_required",
+        "Deadline-bound provider-run reconciliation requires time service",
+        |preflight, agreement| {
+            agreement.deadline().is_none()
+                || preflight.requirements().host_services().any(|required| {
+                    required == swallowtail_core::HostServiceKind::Time
+                })
+        },
+    ),
+];
+
 /// Verifies that execution input still matches its immutable plan.
 pub fn validate_provider_run_reconciliation_request(
     plan: &ProviderRunReconciliationPlan,
     request: &ProviderRunReconciliationRequest,
 ) -> Result<(), RuntimeFailure> {
-    if plan.agreement() == request.agreement() {
-        Ok(())
-    } else {
-        Err(failure(
-            "swallowtail.provider_run_reconciliation.plan_mismatch",
-            "Provider-run reconciliation request does not match its immutable plan",
-        ))
-    }
+    validate_agreement_matches_plan(
+        plan.agreement(),
+        request.agreement(),
+        "swallowtail.provider_run_reconciliation.plan_mismatch",
+        "Provider-run reconciliation request does not match its immutable plan",
+    )
 }
 
 /// Verifies request, execution host, and required host-service availability.
@@ -363,68 +340,21 @@ pub fn validate_provider_run_reconciliation_execution(
     services: &HostServices,
 ) -> Result<(), RuntimeFailure> {
     validate_provider_run_reconciliation_request(plan, request)?;
-    services.require_execution_host(plan.preflight().execution_host_id())?;
-    let available = services.available_kinds();
-    if plan
-        .preflight()
-        .requirements()
-        .host_services()
-        .any(|required| !available.contains(&required))
-    {
-        return Err(failure(
-            "swallowtail.provider_run_reconciliation.service_unavailable",
-            "Provider-run reconciliation host services are unavailable",
-        ));
-    }
-    Ok(())
+    validate_execution_services(
+        plan.preflight(),
+        services,
+        "swallowtail.provider_run_reconciliation.service_unavailable",
+        "Provider-run reconciliation host services are unavailable",
+    )
 }
 
 fn validate_plan(
     preflight: &PreflightPlan,
     agreement: &ProviderRunReconciliationAgreement,
 ) -> Result<(), RuntimeFailure> {
-    let requirements = preflight.requirements();
-    if requirements.driver_role() != DriverRole::ProviderRunReconciliation
-        || requirements.operation_shape() != OperationShape::ProviderRunReconciliation
-        || !agreement.checkpoint().matches_plan(preflight)
-    {
-        return Err(failure(
-            "swallowtail.provider_run_reconciliation.plan_mismatch",
-            "Provider-run reconciliation does not match its immutable binding",
-        ));
-    }
-    let capability = requirements
-        .capabilities()
-        .find(|required| required.capability() == Capability::ProviderRunReconciliation)
-        .ok_or_else(|| {
-            failure(
-                "swallowtail.provider_run_reconciliation.plan_mismatch",
-                "Provider-run reconciliation capability is missing",
-            )
-        })?;
-    let expected =
-        CapabilityConstraint::RecoveredOutputMaximumBytes(agreement.maximum_output_bytes().get());
-    if capability.constraints().count() != 1
-        || !capability.constraints().any(|actual| actual == &expected)
-    {
-        return Err(failure(
-            "swallowtail.provider_run_reconciliation.bound_mismatch",
-            "Provider-run reconciliation output bound differs from its capability plan",
-        ));
-    }
-    if agreement.deadline().is_some()
-        && !requirements
-            .host_services()
-            .any(|required| required == swallowtail_core::HostServiceKind::Time)
-    {
-        return Err(failure(
-            "swallowtail.provider_run_reconciliation.time_service_required",
-            "Deadline-bound provider-run reconciliation requires time service",
-        ));
-    }
-    Ok(())
+    check_plan_rules(preflight, agreement, &RUN_RECONCILIATION_PLAN_RULES)
 }
 
 fn failure(code: &'static str, message: &'static str) -> RuntimeFailure {
-    RuntimeFailure::new(SafeDiagnostic::new(code, message))
+    plan_failure(code, message)
 }

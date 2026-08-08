@@ -90,10 +90,13 @@ impl DiscoveryDriver for KimiHeadlessDriver {
         request: InstalledExecutableDiscoveryRequest,
         services: HostServices,
     ) -> BoxFuture<'_, Result<swallowtail_core::DiscoveryOutcome, RuntimeFailure>> {
-        Box::pin(crate::discovery::probe_joined(
+        Box::pin(swallowtail_runtime::probe_installed_executable_version(
             request,
             services,
             crate::kimi_headless_claim(),
+            crate::discovery::parse_version,
+            crate::discovery::KIMI_PROBE_CODES,
+            "Kimi",
         ))
     }
 }

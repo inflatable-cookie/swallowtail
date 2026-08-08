@@ -3,11 +3,9 @@ use crate::{
     codex_exec_descriptor,
 };
 use swallowtail_core::{
-    AccessRequirement, CapabilityProfile, CapabilityRequirement, ConfiguredInstance,
-    CredentialState, Diagnostic, DriverDescriptor, EndpointAuthorization, EntitlementState,
-    ExecutionLayer, HostServiceKind, ModelRoute, ModelRouteId, ModelRouteRevision,
-    OperationRequirements, OperationShape, PreflightContext, PreflightPlan, RuntimeReadiness,
-    SafeDiagnostic, preflight,
+    CapabilityProfile, CapabilityRequirement, ConfiguredInstance, CredentialState, Diagnostic,
+    DriverDescriptor, ExecutionLayer, HostServiceKind, ModelRoute, ModelRouteId,
+    ModelRouteRevision, OperationRequirements, OperationShape, PreflightPlan, SafeDiagnostic,
 };
 use swallowtail_runtime::{PreparationFailure, PreparationStage};
 
@@ -108,24 +106,12 @@ pub(crate) fn instance_with_capabilities(
     capabilities: CapabilityProfile,
 ) -> ConfiguredInstance {
     let base = prepared.instance();
-    let mut instance = ConfiguredInstance::new(
-        base.id().clone(),
-        base.revision().clone(),
-        base.driver_id().clone(),
-        base.execution_host_id().clone(),
-        base.target_reference().clone(),
-        base.ownership(),
-        base.access_profile_id().clone(),
-        base.support_authority(),
-        base.protocol_facade_id().clone(),
-        base.policy_id().clone(),
-        capabilities,
-    )
-    .with_interface_versions(base.interface_versions().cloned());
+    let instance = swallowtail_runtime::instance_with_capabilities(base, capabilities);
     if let Some(posture) = base.harness_configuration_posture() {
-        instance = instance.with_harness_configuration_posture(posture);
+        instance.with_harness_configuration_posture(posture)
+    } else {
+        instance
     }
-    instance
 }
 
 pub(crate) fn model_route(
@@ -151,16 +137,16 @@ pub(crate) fn requirements(
     host_services: impl IntoIterator<Item = HostServiceKind>,
     capabilities: impl IntoIterator<Item = CapabilityRequirement>,
 ) -> OperationRequirements {
-    OperationRequirements::new(
+    swallowtail_runtime::base_requirements(
         ExecutionLayer::HarnessInteraction,
         shape,
         role,
-        prepared.instance().execution_host_id().clone(),
-        access_requirement(prepared),
+        prepared.instance(),
+        prepared.access_profile(),
+        [CredentialState::Ready],
+        capabilities,
     )
-    .with_ownership_modes([prepared.instance().ownership()])
     .with_host_services(host_services)
-    .with_capabilities(capabilities)
     .with_interface_versions([prepared.observation().version().clone()])
 }
 
@@ -171,32 +157,15 @@ pub(crate) fn build_plan(
     route: Option<&ModelRoute>,
     requirements: &OperationRequirements,
 ) -> Result<PreflightPlan, PreparationFailure> {
-    let context = PreflightContext::new(
+    swallowtail_runtime::build_plan(
         descriptor,
         instance,
+        route,
+        requirements,
         prepared.access_profile(),
         prepared.access_evidence().status(),
         prepared.available_host_services(),
-    );
-    let context = match route {
-        Some(route) => context.with_model_route(route),
-        None => context,
-    };
-    preflight(&context, requirements).map_err(|error| {
-        PreparationFailure::new(
-            PreparationStage::Preflight,
-            Diagnostic::new(error.diagnostic().clone()),
-        )
-    })
-}
-
-fn access_requirement(prepared: &CodexPreparedIntegration) -> AccessRequirement {
-    AccessRequirement::new(prepared.access_profile().id().clone())
-        .with_credential_states([CredentialState::Ready])
-        .with_entitlement_states([EntitlementState::Available])
-        .with_endpoint_authorizations([EndpointAuthorization::Allowed])
-        .with_runtime_readiness([RuntimeReadiness::Ready])
-        .with_support_authorities([prepared.access_profile().support_authority()])
+    )
 }
 
 pub(crate) fn failure(code: &'static str, message: &'static str) -> PreparationFailure {

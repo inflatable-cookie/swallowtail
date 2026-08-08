@@ -1,5 +1,7 @@
 use crate::output::{OutputState, failure};
-use crate::process_exit::{ChildCommand, ExitState, supervise_child};
+use crate::process_exit::{
+    ChildCommand, ExitState, READER_JOIN_BOUND, join_with_bound, supervise_child,
+};
 use crate::process_reader::spawn_reader;
 use std::io::Write;
 use std::process::{Child, ChildStderr, ChildStdin, ChildStdout};
@@ -66,6 +68,7 @@ impl LocalProcessHandle {
         let exit = Arc::new(ExitState::default());
         let (commands, command_receiver) = mpsc::channel();
         let supervisor_exit = Arc::clone(&exit);
+        let supervisor_output = Arc::clone(&output);
         let supervision_slot = Arc::new(Mutex::new(Some((child, stdout_reader, stderr_reader))));
         let supervisor_parts = Arc::clone(&supervision_slot);
         let supervisor = thread::Builder::new()
@@ -81,6 +84,7 @@ impl LocalProcessHandle {
                     command_receiver,
                     stdout_reader,
                     stderr_reader,
+                    &supervisor_output,
                     &supervisor_exit,
                 );
             });
@@ -92,8 +96,8 @@ impl LocalProcessHandle {
             {
                 let _ = child.kill();
                 let _ = child.wait();
-                let _ = stdout_reader.join();
-                let _ = stderr_reader.join();
+                let _ = join_with_bound(stdout_reader, READER_JOIN_BOUND);
+                let _ = join_with_bound(stderr_reader, READER_JOIN_BOUND);
             }
             return Err(failure(
                 "swallowtail.local_process.supervisor_start_failed",

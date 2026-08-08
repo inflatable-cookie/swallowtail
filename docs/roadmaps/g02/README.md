@@ -690,105 +690,106 @@ evidence-led provider work.
 
 ## Milestones
 
-- [001 Release Boundary And Package Readiness](001-release-boundary-and-package-readiness.md)
+- [001 Release Boundary And Package Readiness](./001-release-boundary-and-package-readiness.md)
   — completed
-- [002 Prepared Consumer Integration Boundary](002-prepared-consumer-integration-boundary.md)
+- [002 Prepared Consumer Integration Boundary](./002-prepared-consumer-integration-boundary.md)
   — completed
-- [003 Codex Prepared Integration Facade](003-codex-prepared-integration-facade.md)
+- [003 Codex Prepared Integration Facade](./003-codex-prepared-integration-facade.md)
   — completed
-- [004 Nucleus Prepared Facade Adoption](004-nucleus-prepared-facade-adoption.md)
+- [004 Nucleus Prepared Facade Adoption](./004-nucleus-prepared-facade-adoption.md)
   — completed
-- [005 Soundcheck Prepared Facade Adoption](005-soundcheck-prepared-facade-adoption.md)
+- [005 Soundcheck Prepared Facade Adoption](./005-soundcheck-prepared-facade-adoption.md)
   — completed
-- [006 Consumer Runtime Proof](006-consumer-runtime-proof-and-candidate-replacement.md)
+- [006 Consumer Runtime Proof](./006-consumer-runtime-proof-and-candidate-replacement.md)
   — completed; card 015 complete, card 016 superseded
-- [007 Provider-Wide Facade Contract And Foundation](007-provider-wide-facade-contract-and-foundation.md)
+- [007 Provider-Wide Facade Contract And Foundation](./007-provider-wide-facade-contract-and-foundation.md)
   — completed
-- [008 Representative Cross-Shape Facades](008-representative-cross-shape-facades.md)
+- [008 Representative Cross-Shape Facades](./008-representative-cross-shape-facades.md)
   — completed
-- [009 Remaining Harness Facades](009-remaining-harness-facades.md)
+- [009 Remaining Harness Facades](./009-remaining-harness-facades.md)
   — completed
-- [010 Hosted Direct And Provider-State Facades](010-hosted-direct-and-provider-state-facades.md)
+- [010 Hosted Direct And Provider-State Facades](./010-hosted-direct-and-provider-state-facades.md)
   — completed
-- [011 Specialized Runtime Facades](011-specialized-runtime-facades.md)
+- [011 Specialized Runtime Facades](./011-specialized-runtime-facades.md)
   — completed
-- [012 Provider-Wide Acceptance And Candidate Return](012-provider-wide-acceptance-and-candidate-return.md)
+- [012 Provider-Wide Acceptance And Candidate Return](./012-provider-wide-acceptance-and-candidate-return.md)
   — completed
-- [013 Canonical Source Provenance And Final Candidate](013-canonical-source-provenance-and-final-candidate.md)
+- [013 Canonical Source Provenance And Final Candidate](./013-canonical-source-provenance-and-final-candidate.md)
   — completed
-- [014 Consumer-Scale Application Proof And Hardening](014-consumer-scale-application-proof-and-hardening.md)
+- [014 Consumer-Scale Application Proof And Hardening](./014-consumer-scale-application-proof-and-hardening.md)
   — completed; cards 040-042, 044, and 045 complete, card 043 superseded by
   operator decision
-- [015 Provider Session Management Foundation](015-provider-session-management-foundation.md)
+- [015 Provider Session Management Foundation](./015-provider-session-management-foundation.md)
   — completed
-- [016 Codex Thread Lifecycle Proof](016-codex-thread-lifecycle-proof.md)
+- [016 Codex Thread Lifecycle Proof](./016-codex-thread-lifecycle-proof.md)
   — completed
-- [017 ACP Lifecycle And Claude Agent Proof](017-acp-lifecycle-and-claude-agent-proof.md)
+- [017 ACP Lifecycle And Claude Agent Proof](./017-acp-lifecycle-and-claude-agent-proof.md)
   — completed
-- [018 OpenCode Session Deletion Proof](018-opencode-session-deletion-proof.md)
+- [018 OpenCode Session Deletion Proof](./018-opencode-session-deletion-proof.md)
   — completed
-- [019 Provider Session Lifecycle Acceptance And Handoff](019-provider-session-lifecycle-acceptance-and-handoff.md)
+- [019 Provider Session Lifecycle Acceptance And Handoff](./019-provider-session-lifecycle-acceptance-and-handoff.md)
   — completed; cards 058 and 060 complete, card 059 superseded by card 136's
   broader packaged lifecycle evidence
-- [020 Kimi Code Local Server Route](020-kimi-code-local-server-route.md)
+- [020 Kimi Code Local Server Route](./020-kimi-code-local-server-route.md)
   — completed; cards 061-065 complete
-- [021 Model Catalogue Coverage](021-model-catalogue-coverage.md)
+- [021 Model Catalogue Coverage](./021-model-catalogue-coverage.md)
   — completed; cards 066-070 complete
-- [022 Structured Run Projection And Direct Coverage](022-structured-run-projection-and-direct-coverage.md)
+- [022 Structured Run Projection And Direct Coverage](./022-structured-run-projection-and-direct-coverage.md)
   — completed; cards 071-073 complete
-- [023 Installed And Attached Harness Structured Coverage](023-installed-and-attached-harness-structured-coverage.md)
+- [023 Installed And Attached Harness Structured Coverage](./023-installed-and-attached-harness-structured-coverage.md)
   — completed; cards 074-076 complete
-- [024 Kimi Structured Coverage And Matrix Closeout](024-kimi-structured-coverage-and-matrix-closeout.md)
+- [024 Kimi Structured Coverage And Matrix Closeout](./024-kimi-structured-coverage-and-matrix-closeout.md)
   — completed; cards 077-079 complete
-- [025 Provider Feature Matrix No-Closure Programme](025-provider-feature-matrix-no-closure-programme.md)
+- [025 Provider Feature Matrix No-Closure Programme](./025-provider-feature-matrix-no-closure-programme.md)
   — completed; cards 080-083 complete
-- [026 Generation-Control Feature Closure](026-generation-control-feature-closure.md)
+- [026 Generation-Control Feature Closure](./026-generation-control-feature-closure.md)
   — completed; cards 084-087 complete
-- [027 Input And Callback Feature Closure](027-input-and-callback-feature-closure.md)
+- [027 Input And Callback Feature Closure](./027-input-and-callback-feature-closure.md)
   — completed; cards 088-091 complete
-- [028 Session Continuity Feature Closure](028-session-continuity-feature-closure.md)
+- [028 Session Continuity Feature Closure](./028-session-continuity-feature-closure.md)
   — completed; cards 092-095 complete
-- [029 Pi RPC Session Continuity](029-pi-rpc-session-continuity.md)
+- [029 Pi RPC Session Continuity](./029-pi-rpc-session-continuity.md)
   — paused; card 096 complete, cards 097-098 paused behind the public Pi
   resource-binding gate
-- [030 Provider Retention Feature Closure](030-provider-retention-feature-closure.md)
+- [030 Provider Retention Feature Closure](./030-provider-retention-feature-closure.md)
   — completed; cards 099-102 complete
-- [031 Retained Execution And Recovery Feature Closure](031-retained-execution-and-recovery-feature-closure.md)
+- [031 Retained Execution And Recovery Feature Closure](./031-retained-execution-and-recovery-feature-closure.md)
   — completed; cards 103-106 complete
-- [032 Working Resource And Workspace Authority Feature Closure](032-working-resource-and-workspace-authority-feature-closure.md)
+- [032 Working Resource And Workspace Authority Feature Closure](./032-working-resource-and-workspace-authority-feature-closure.md)
   — completed; cards 107-110 complete
-- [033 Runtime Ownership And Connection Rollover Feature Closure](033-runtime-ownership-and-connection-rollover-feature-closure.md)
+- [033 Runtime Ownership And Connection Rollover Feature Closure](./033-runtime-ownership-and-connection-rollover-feature-closure.md)
   — completed; cards 111 and 114 complete, cards 112-113 superseded by the
   negative tranche
-- [034 Residual Feature Matrix Truth And Programme Checkpoint](034-residual-feature-matrix-truth-and-programme-checkpoint.md)
+- [034 Residual Feature Matrix Truth And Programme Checkpoint](./034-residual-feature-matrix-truth-and-programme-checkpoint.md)
   — completed; cards 115-118 complete
-- [035 Observable Agent Activity Kernel](035-observable-agent-activity-kernel.md)
+- [035 Observable Agent Activity Kernel](./035-observable-agent-activity-kernel.md)
   — completed; cards 119-121 complete
-- [036 Codex Observable Activity Fidelity](036-codex-observable-activity-fidelity.md)
+- [036 Codex Observable Activity Fidelity](./036-codex-observable-activity-fidelity.md)
   — completed; cards 122-124 complete
-- [037 ACP Observable Agent Activity](037-acp-observable-agent-activity.md)
+- [037 ACP Observable Agent Activity](./037-acp-observable-agent-activity.md)
   — completed; cards 125-127 complete
-- [038 Non-ACP Harness Activity Coverage](038-non-acp-harness-activity-coverage.md)
+- [038 Non-ACP Harness Activity Coverage](./038-non-acp-harness-activity-coverage.md)
   — completed; cards 128-131 complete
-- [039 Direct Inference Activity Truth](039-direct-inference-activity-truth.md)
+- [039 Direct Inference Activity Truth](./039-direct-inference-activity-truth.md)
   — completed; cards 132-134 complete
-- [040 Provider-Wide Activity Acceptance And Consumer Handoff](040-provider-wide-activity-acceptance-and-consumer-handoff.md)
+- [040 Provider-Wide Activity Acceptance And Consumer Handoff](./040-provider-wide-activity-acceptance-and-consumer-handoff.md)
   — completed; cards 135-137 complete
-- [041 Kimi Code 0.31 Range And Live Proof](041-kimi-code-0-31-range-and-live-proof.md)
+- [041 Kimi Code 0.31 Range And Live Proof](./041-kimi-code-0-31-range-and-live-proof.md)
   — completed; cards 138-139 complete
-- [042 Kimi Code 0.31 Local-Server Guarantee](042-kimi-code-0-31-local-server-guarantee.md)
+- [042 Kimi Code 0.31 Local-Server Guarantee](./042-kimi-code-0-31-local-server-guarantee.md)
   — completed; cards 140-141 complete
-- [043 Grok Build Maintained ACP Route](043-grok-build-maintained-acp-route.md)
+- [043 Grok Build Maintained ACP Route](./043-grok-build-maintained-acp-route.md)
   — completed; cards 142-145 complete
-- [044 Installed Harness Range Maintenance](044-installed-harness-range-maintenance.md)
+- [044 Installed Harness Range Maintenance](./044-installed-harness-range-maintenance.md)
   — completed; cards 146-149 complete
-- [045 Error-Level Structural Health Stabilization](045-error-level-structural-health-stabilization.md)
+- [045 Error-Level Structural Health Stabilization](./045-error-level-structural-health-stabilization.md)
   — completed; cards 150-155 complete
-- [046 Validation Latency And Proof Routing](046-validation-latency-and-proof-routing.md)
+- [046 Validation Latency And Proof Routing](./046-validation-latency-and-proof-routing.md)
   — completed; cards 156-158 complete
-- [047 Subagent Topology Acceptance And Consumer Handoff](047-subagent-topology-acceptance-and-consumer-handoff.md)
+- [047 Subagent Topology Acceptance And Consumer Handoff](./047-subagent-topology-acceptance-and-consumer-handoff.md)
   — completed; cards 159-161 complete
-- [048 Claude Agent Form Elicitation](048-claude-agent-form-elicitation.md)
+- [048 Claude Agent Form Elicitation](./048-claude-agent-form-elicitation.md)
+- [049 g02 Generation Closeout And g03 Cutover](./049-generation-closeout-and-g03-cutover.md)
   — completed; cards 162-164 complete
 
 ## Held Backlog

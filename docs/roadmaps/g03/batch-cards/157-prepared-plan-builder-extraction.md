@@ -1,6 +1,6 @@
 # 157 Prepared Plan Builder Extraction
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-08
 Milestone: `../052-shared-adapter-scaffolding.md`
@@ -32,11 +32,11 @@ sixteen adapter copies of `instance_with_capabilities`, `requirements`, and
 
 ## Acceptance
 
-- [ ] the shared builder has focused tests covering capability, requirement,
+- [x] the shared builder has focused tests covering capability, requirement,
       and drift paths
-- [ ] every migrated adapter passes focused and extracted-package proof with
+- [x] every migrated adapter passes focused and extracted-package proof with
       an unchanged public API baseline
-- [ ] the plan-family duplication shrinks by the measured amount
+- [x] the plan-family duplication shrinks by the measured amount
 
 ## Stop Conditions
 
@@ -52,3 +52,34 @@ Yes, to card 158 after acceptance.
 - focused validation per migrated adapter; `effigy package:verify-affected`
   per tranche
 - `effigy package:api` after each tranche
+
+## Completion Evidence
+
+- new `swallowtail-runtime/src/prepared_plan.rs` owns three provider-neutral
+  skeletons with three focused tests:
+  - `instance_with_capabilities(base, capabilities)` — the configured-
+    instance rebinding every adapter copied (adapter posture extensions
+    chain on the result)
+  - `base_requirements(layer, shape, role, instance, access_profile,
+    credential_states, capabilities)` — the base operation-requirements
+    record; credential states are an explicit parameter because claude-agent
+    maps `LocalUnauthenticated` to `NotRequired`
+  - `build_plan(descriptor, instance, route, requirements, access_profile,
+    access_status, available_host_services)` — the preflight build with
+    `PreflightStage::Preflight` failure mapping
+- all sixteen plan-family adapters migrated in two tranches (hosted direct:
+  alibaba, anthropic, deepseek, kimi-platform, openai, xai; installed
+  harness: codex, claude-agent, cursor, gemini, grok, kimi, qwen, pi,
+  oh-my-pi, antigravity); the claude-agent mechanism-derived credential
+  state and cursor/antigravity ownership pre-checks stayed adapter-local,
+  and openai's `openai_background_requirements` stayed in selection.rs
+  because it takes a different parameter shape
+- 573 adapter lines deleted across the fifteen plan modules; the shared
+  module is one copy of each skeleton
+- behavior parity: the previously-failing claude-agent local-subscription
+  test was caught by the full round and fixed via the credential-state
+  parameter; every migrated adapter's existing tests pass unchanged
+- focused validation passes for all eighteen packages, affected-package
+  proof passes for representative tranche pairs, the semantic API baseline
+  is unchanged for the adapters (runtime additions captured in the
+  regenerated v0.3.0 baseline), and the workspace round passes 1,502 tests

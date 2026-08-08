@@ -72,13 +72,27 @@ impl CodexAppServerBehavior {
     }
 }
 
-#[must_use]
+/// Maximum accepted observed Codex CLI-version text.
+const MAX_VERSION_BYTES: usize = 64;
+
 /// Converts an exact Codex CLI version into its interface binding.
-pub fn codex_cli_binding(version: &str) -> InterfaceVersionBinding {
-    InterfaceVersionBinding::new(
+///
+/// Returns `None` for blank, oversized, control-character, or non-semantic
+/// text, so observed CLI output can never panic a caller.
+#[must_use]
+pub fn codex_cli_binding(version: &str) -> Option<InterfaceVersionBinding> {
+    if version.is_empty()
+        || version.len() > MAX_VERSION_BYTES
+        || version.trim() != version
+        || version.chars().any(char::is_control)
+        || semver::Version::parse(version).is_err()
+    {
+        return None;
+    }
+    Some(InterfaceVersionBinding::new(
         InterfaceVersionAxis::new(CODEX_CLI_AXIS).expect("static Codex axis is valid"),
-        InterfaceVersion::new(version).expect("Codex version is required"),
-    )
+        InterfaceVersion::new(version).ok()?,
+    ))
 }
 
 #[must_use]
@@ -116,7 +130,10 @@ pub fn codex_exec_claim() -> InterfaceCompatibilityClaim {
                 InterfaceSupportStatus::Maintained,
             ),
         ],
-        [version("0.108.0"), version("0.109.0")],
+        [
+            version("0.108.0").expect("static Codex version is valid"),
+            version("0.109.0").expect("static Codex version is valid"),
+        ],
     )
     .expect("static Codex exec claim is valid")
 }
@@ -153,7 +170,7 @@ pub fn codex_app_server_claim() -> InterfaceCompatibilityClaim {
                 "0.110.0",
                 "0.130.0",
                 CODEX_APP_SERVER_BASE_BEHAVIOR,
-                InterfaceSupportStatus::Maintained,
+                InterfaceSupportStatus::Deprecated,
             ),
             segment(
                 CODEX_APP_SERVER_WORKSPACE_ROOTS_VERSION,
@@ -274,15 +291,15 @@ fn segment(
     status: InterfaceSupportStatus,
 ) -> InterfaceVersionSegment {
     InterfaceVersionSegment::new(
-        version(minimum),
-        version(maximum),
+        version(minimum).expect("static Codex version is valid"),
+        version(maximum).expect("static Codex version is valid"),
         InterfaceBehaviorRevision::new(behavior).expect("static behavior is valid"),
         status,
     )
 }
 
-fn version(value: &str) -> InterfaceVersion {
-    InterfaceVersion::new(value).expect("static Codex version is valid")
+fn version(value: &str) -> Option<InterfaceVersion> {
+    InterfaceVersion::new(value).ok()
 }
 
 #[cfg(test)]

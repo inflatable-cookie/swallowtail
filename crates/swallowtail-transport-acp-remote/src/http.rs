@@ -3,10 +3,12 @@ use crate::cookies::BoundedCookieStore;
 use crate::correlation::CorrelationState;
 use crate::error::{RemoteAcpError, capacity_error, protocol_error, transport_error};
 use crate::wire;
-use crate::worker::{WorkerCommand, WorkerEvent, cancellation_error};
+use crate::worker::{WorkerCommand, WorkerEvent, cancellation_error, race_deadline};
 use futures_channel::{mpsc, oneshot};
 use futures_util::{SinkExt, StreamExt};
+use std::sync::Arc;
 use swallowtail_protocol_acp::Message;
+use swallowtail_runtime::{Deadline, TimeService};
 use tokio::task::JoinSet;
 
 mod io;
@@ -35,6 +37,8 @@ struct HttpState {
     stream_tx: tokio::sync::mpsc::Sender<StreamItem>,
     connection_events: u32,
     session_events: u32,
+    deadline: Option<Deadline>,
+    time: Option<Arc<dyn TimeService>>,
 }
 
 pub(crate) async fn run(
@@ -42,6 +46,8 @@ pub(crate) async fn run(
     mut commands: mpsc::Receiver<WorkerCommand>,
     mut events: mpsc::Sender<WorkerEvent>,
     ready: oneshot::Sender<Result<(), RemoteAcpError>>,
+    deadline: Option<Deadline>,
+    time: Option<Arc<dyn TimeService>>,
 ) -> Result<(), RemoteAcpError> {
     let stream_capacity = usize::try_from(
         config
@@ -77,6 +83,8 @@ pub(crate) async fn run(
         stream_tx,
         connection_events: 0,
         session_events: 0,
+        deadline,
+        time,
     };
     let mut correlation =
         CorrelationState::new(maximum_pending_requests, maximum_pending_callbacks);
@@ -87,33 +95,59 @@ pub(crate) async fn run(
             command = commands.next() => {
                 match command {
                     Some(WorkerCommand::Send(message)) => {
-                        if let Err(error) =
-                            state.send(message, &mut correlation, &mut events).await
+                        let deadline = state.deadline;
+                        let time = state.time.clone();
+                        if let Err(error) = race_deadline(
+                            deadline,
+                            time.as_deref(),
+                            state.send(message, &mut correlation, &mut events),
+                        ).await
                         {
                             break Err(error);
                         }
                     }
                     Some(WorkerCommand::Cancel) => {
-                        let _ = state.close().await;
+                        let deadline = state.deadline;
+                        let time = state.time.clone();
+                        let _ = race_deadline(deadline, time.as_deref(), state.close()).await;
                         break Err(cancellation_error(false));
                     }
                     Some(WorkerCommand::Deadline) => {
-                        let _ = state.close().await;
+                        let deadline = state.deadline;
+                        let time = state.time.clone();
+                        let _ = race_deadline(deadline, time.as_deref(), state.close()).await;
                         break Err(cancellation_error(true));
                     }
-                    Some(WorkerCommand::Close) | None => break state.close().await,
+                    Some(WorkerCommand::Close) | None => {
+                        let deadline = state.deadline;
+                        let time = state.time.clone();
+                        match race_deadline(deadline, time.as_deref(), state.close()).await {
+                            Ok(Ok(())) => break Ok(()),
+                            Ok(Err(error)) | Err(error) => break Err(error),
+                        }
+                    }
                 }
             }
-            stream = stream_rx.recv(), if state.connection_id.is_some() => {
+            stream = race_deadline(
+                state.deadline,
+                state.time.as_deref(),
+                stream_rx.recv(),
+            ), if state.connection_id.is_some() => {
                 match stream {
-                    Some(StreamItem::Message { session, text }) => {
-                        if let Err(error) =
-                            state.receive_stream(session, text, &mut correlation, &mut events).await
+                    Ok(Some(StreamItem::Message { session, text })) => {
+                        let deadline = state.deadline;
+                        let time = state.time.clone();
+                        if let Err(error) = race_deadline(
+                            deadline,
+                            time.as_deref(),
+                            state.receive_stream(session, text, &mut correlation, &mut events),
+                        ).await
                         {
                             break Err(error);
                         }
                     }
-                    Some(StreamItem::Failed) | None => break Err(transport_error()),
+                    Ok(Some(StreamItem::Failed)) | Ok(None) => break Err(transport_error()),
+                    Err(error) => break Err(error),
                 }
             }
         }

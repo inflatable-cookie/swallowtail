@@ -2,22 +2,8 @@ fn instance_with_capabilities(
     prepared: &GrokPreparedIntegration,
     capabilities: CapabilityProfile,
 ) -> ConfiguredInstance {
-    let base = prepared.instance();
-    ConfiguredInstance::new(
-        base.id().clone(),
-        base.revision().clone(),
-        base.driver_id().clone(),
-        base.execution_host_id().clone(),
-        base.target_reference().clone(),
-        base.ownership(),
-        base.access_profile_id().clone(),
-        base.support_authority(),
-        base.protocol_facade_id().clone(),
-        base.policy_id().clone(),
-        capabilities,
-    )
-    .with_interface_versions(base.interface_versions().cloned())
-    .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient)
+    swallowtail_runtime::instance_with_capabilities(prepared.instance(), capabilities)
+        .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient)
 }
 
 fn operation_requirements(
@@ -97,21 +83,15 @@ fn build_plan(
     route: &ModelRoute,
     requirements: &OperationRequirements,
 ) -> Result<PreflightPlan, PreparationFailure> {
-    let descriptor = crate::grok_build_acp_descriptor();
-    let context = PreflightContext::new(
-        &descriptor,
+    swallowtail_runtime::build_plan(
+        &crate::grok_build_acp_descriptor(),
         instance,
+        Some(route),
+        requirements,
         prepared.access_profile(),
         prepared.access_evidence().status(),
         prepared.available_host_services(),
     )
-    .with_model_route(route);
-    preflight(&context, requirements).map_err(|error| {
-        PreparationFailure::new(
-            PreparationStage::Preflight,
-            Diagnostic::new(error.diagnostic().clone()),
-        )
-    })
 }
 
 fn activity_profile(

@@ -1,0 +1,151 @@
+pub mod swallowtail_adapter_ollama
+pub mod swallowtail_adapter_ollama::protocol
+pub enum swallowtail_adapter_ollama::protocol::Method
+pub swallowtail_adapter_ollama::protocol::Method::Get
+pub swallowtail_adapter_ollama::protocol::Method::Post
+pub enum swallowtail_adapter_ollama::protocol::NativeEvent
+pub swallowtail_adapter_ollama::protocol::NativeEvent::Finished(alloc::string::String)
+pub swallowtail_adapter_ollama::protocol::NativeEvent::OutputDelta(alloc::string::String)
+pub swallowtail_adapter_ollama::protocol::NativeEvent::ProviderFailed
+pub swallowtail_adapter_ollama::protocol::NativeEvent::Usage(swallowtail_runtime::provider_observation::TokenUsage)
+pub enum swallowtail_adapter_ollama::protocol::OllamaModelCapability
+pub swallowtail_adapter_ollama::protocol::OllamaModelCapability::Completion
+pub swallowtail_adapter_ollama::protocol::OllamaModelCapability::Thinking
+pub struct swallowtail_adapter_ollama::protocol::ChatDecoder
+impl swallowtail_adapter_ollama::protocol::ChatDecoder
+pub fn swallowtail_adapter_ollama::protocol::ChatDecoder::finish(self) -> core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_adapter_ollama::protocol::ChatDecoder::new(impl core::convert::Into<alloc::string::String>) -> Self
+pub fn swallowtail_adapter_ollama::protocol::ChatDecoder::push(&mut self, &[u8]) -> core::result::Result<alloc::vec::Vec<swallowtail_adapter_ollama::protocol::NativeEvent>, swallowtail_runtime::failure::RuntimeFailure>
+pub struct swallowtail_adapter_ollama::protocol::ObservationBinding
+pub swallowtail_adapter_ollama::protocol::ObservationBinding::execution_host_id: swallowtail_core::runtime_identity::ExecutionHostId
+pub swallowtail_adapter_ollama::protocol::ObservationBinding::instance_id: swallowtail_core::runtime_identity::ConfiguredInstanceId
+pub swallowtail_adapter_ollama::protocol::ObservationBinding::observed_at: swallowtail_core::model_catalog::lifecycle::CatalogTimestamp
+pub swallowtail_adapter_ollama::protocol::ObservationBinding::runtime_version: swallowtail_core::interface_version::InterfaceVersionBinding
+pub struct swallowtail_adapter_ollama::protocol::Request
+pub swallowtail_adapter_ollama::protocol::Request::body: core::option::Option<alloc::vec::Vec<u8>>
+pub swallowtail_adapter_ollama::protocol::Request::method: swallowtail_adapter_ollama::protocol::Method
+pub swallowtail_adapter_ollama::protocol::Request::path: &'static str
+impl swallowtail_adapter_ollama::protocol::Request
+pub fn swallowtail_adapter_ollama::protocol::Request::chat(&str, &str, u64, core::option::Option<&swallowtail_core::model::ReasoningMode>, core::option::Option<&swallowtail_runtime::schema::StructuredOutputDescriptor>) -> core::result::Result<Self, swallowtail_runtime::failure::RuntimeFailure>
+pub const fn swallowtail_adapter_ollama::protocol::Request::installed_models() -> Self
+pub const fn swallowtail_adapter_ollama::protocol::Request::running_models() -> Self
+pub fn swallowtail_adapter_ollama::protocol::Request::show(&str) -> core::result::Result<Self, swallowtail_runtime::failure::RuntimeFailure>
+pub const fn swallowtail_adapter_ollama::protocol::Request::version() -> Self
+pub struct swallowtail_adapter_ollama::protocol::Response
+pub swallowtail_adapter_ollama::protocol::Response::body: alloc::vec::Vec<u8>
+pub swallowtail_adapter_ollama::protocol::Response::status: u32
+pub struct swallowtail_adapter_ollama::protocol::SelectedModelDetail
+impl swallowtail_adapter_ollama::protocol::SelectedModelDetail
+pub fn swallowtail_adapter_ollama::protocol::SelectedModelDetail::capabilities(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_adapter_ollama::OllamaModelCapability> + '_
+pub const fn swallowtail_adapter_ollama::protocol::SelectedModelDetail::observation(&self) -> &swallowtail_core::attached_runtime::AttachedModelObservation
+pub fn swallowtail_adapter_ollama::protocol::SelectedModelDetail::supports(&self, swallowtail_adapter_ollama::OllamaModelCapability) -> bool
+pub fn swallowtail_adapter_ollama::protocol::parse_inventory(&swallowtail_adapter_ollama::protocol::Response, swallowtail_core::attached_runtime::AttachedModelObservationScope, &swallowtail_adapter_ollama::protocol::ObservationBinding) -> core::result::Result<alloc::vec::Vec<swallowtail_core::attached_runtime::AttachedModelObservation>, swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_adapter_ollama::protocol::parse_model_detail(&swallowtail_adapter_ollama::protocol::Response, &swallowtail_adapter_ollama::protocol::ObservationBinding, swallowtail_core::attached_runtime::AttachedModelTag, swallowtail_core::attached_runtime::ModelManifestDigest) -> core::result::Result<swallowtail_adapter_ollama::protocol::SelectedModelDetail, swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_adapter_ollama::protocol::parse_version(&swallowtail_adapter_ollama::protocol::Response) -> core::result::Result<swallowtail_core::interface_version::InterfaceVersionBinding, swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_adapter_ollama::protocol::require_success(&swallowtail_adapter_ollama::protocol::Response, &'static str) -> core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure>
+pub enum swallowtail_adapter_ollama::OllamaModelCapability
+pub swallowtail_adapter_ollama::OllamaModelCapability::Completion
+pub swallowtail_adapter_ollama::OllamaModelCapability::Thinking
+pub struct swallowtail_adapter_ollama::OllamaInferenceAttemptInput
+impl swallowtail_adapter_ollama::OllamaInferenceAttemptInput
+pub const fn swallowtail_adapter_ollama::OllamaInferenceAttemptInput::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::content::OperationContent, core::num::nonzero::NonZeroU64) -> Self
+pub const fn swallowtail_adapter_ollama::OllamaInferenceAttemptInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub fn swallowtail_adapter_ollama::OllamaInferenceAttemptInput::with_reasoning_mode(self, swallowtail_core::model::ReasoningMode) -> Self
+pub fn swallowtail_adapter_ollama::OllamaInferenceAttemptInput::with_structured_output(self, swallowtail_runtime::schema::StructuredOutputDescriptor) -> Self
+pub struct swallowtail_adapter_ollama::OllamaInventoryProfileInput
+impl swallowtail_adapter_ollama::OllamaInventoryProfileInput
+pub const fn swallowtail_adapter_ollama::OllamaInventoryProfileInput::new(swallowtail_runtime::identity::RequestId) -> Self
+pub const fn swallowtail_adapter_ollama::OllamaInventoryProfileInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_adapter_ollama::OllamaInventorySnapshot
+impl swallowtail_adapter_ollama::OllamaInventorySnapshot
+pub fn swallowtail_adapter_ollama::OllamaInventorySnapshot::entries(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = &swallowtail_core::model::ModelCatalogEntry>
+pub fn swallowtail_adapter_ollama::OllamaInventorySnapshot::installed(&self) -> impl core::iter::traits::iterator::Iterator<Item = &swallowtail_core::attached_runtime::AttachedModelObservation>
+pub fn swallowtail_adapter_ollama::OllamaInventorySnapshot::running(&self) -> impl core::iter::traits::iterator::Iterator<Item = &swallowtail_core::attached_runtime::AttachedModelObservation>
+pub fn swallowtail_adapter_ollama::OllamaInventorySnapshot::selected_detail(&self) -> core::option::Option<&swallowtail_core::attached_runtime::AttachedModelObservation>
+pub struct swallowtail_adapter_ollama::OllamaModelSelection
+impl swallowtail_adapter_ollama::OllamaModelSelection
+pub const fn swallowtail_adapter_ollama::OllamaModelSelection::new(swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId) -> Self
+pub struct swallowtail_adapter_ollama::OllamaNativeAttachedDriver
+impl swallowtail_adapter_ollama::OllamaNativeAttachedDriver
+pub fn swallowtail_adapter_ollama::OllamaNativeAttachedDriver::new() -> Self
+impl swallowtail_runtime::roles::InteractiveSessionDriver for swallowtail_adapter_ollama::OllamaNativeAttachedDriver
+pub fn swallowtail_adapter_ollama::OllamaNativeAttachedDriver::open_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_ollama::OllamaNativeAttachedDriver::resume_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::ModelCatalogDriver for swallowtail_adapter_ollama::OllamaNativeAttachedDriver
+pub fn swallowtail_adapter_ollama::OllamaNativeAttachedDriver::list_models(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::StructuredRunDriver for swallowtail_adapter_ollama::OllamaNativeAttachedDriver
+pub fn swallowtail_adapter_ollama::OllamaNativeAttachedDriver::start_run(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_ollama::OllamaPreparationInput
+impl swallowtail_adapter_ollama::OllamaPreparationInput
+pub const fn swallowtail_adapter_ollama::OllamaPreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence, swallowtail_adapter_ollama::OllamaModelSelection, swallowtail_core::attached_runtime::AttachedModelTag, swallowtail_core::attached_runtime::ModelManifestDigest) -> Self
+pub struct swallowtail_adapter_ollama::OllamaPreparationProbe
+impl swallowtail_adapter_ollama::OllamaPreparationProbe
+pub const fn swallowtail_adapter_ollama::OllamaPreparationProbe::new(swallowtail_runtime::identity::ScopeId, swallowtail_runtime::time::Deadline, swallowtail_runtime::installed_executable::DiscoveryCancellation) -> Self
+pub struct swallowtail_adapter_ollama::OllamaPreparedEvidence
+impl swallowtail_adapter_ollama::OllamaPreparedEvidence
+pub const fn swallowtail_adapter_ollama::OllamaPreparedEvidence::access(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_ollama::OllamaPreparedEvidence::observable_activity(&self) -> &swallowtail_core::observable_activity::route_profile::ObservableActivityProfile
+pub const fn swallowtail_adapter_ollama::OllamaPreparedEvidence::operation(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub const fn swallowtail_adapter_ollama::OllamaPreparedEvidence::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_ollama::OllamaPreparedEvidence::runtime(&self) -> &swallowtail_adapter_ollama::OllamaPreparedRuntimeObservation
+pub struct swallowtail_adapter_ollama::OllamaPreparedInferenceAttempt
+impl swallowtail_adapter_ollama::OllamaPreparedInferenceAttempt
+pub const fn swallowtail_adapter_ollama::OllamaPreparedInferenceAttempt::evidence(&self) -> &swallowtail_adapter_ollama::OllamaPreparedEvidence
+pub fn swallowtail_adapter_ollama::OllamaPreparedInferenceAttempt::into_parts(self) -> (swallowtail_adapter_ollama::OllamaPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest)
+pub fn swallowtail_adapter_ollama::OllamaPreparedInferenceAttempt::low_level_driver(&self) -> swallowtail_adapter_ollama::OllamaNativeAttachedDriver
+pub const fn swallowtail_adapter_ollama::OllamaPreparedInferenceAttempt::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_ollama::OllamaPreparedInferenceAttempt::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
+pub fn swallowtail_adapter_ollama::OllamaPreparedInferenceAttempt::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_ollama::OllamaPreparedIntegration
+impl swallowtail_adapter_ollama::OllamaPreparedIntegration
+pub const fn swallowtail_adapter_ollama::OllamaPreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_ollama::OllamaPreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_ollama::OllamaPreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_ollama::OllamaPreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_ollama::OllamaPreparedIntegration::low_level_driver(&self) -> swallowtail_adapter_ollama::OllamaNativeAttachedDriver
+pub const fn swallowtail_adapter_ollama::OllamaPreparedIntegration::model_selection(&self) -> &swallowtail_adapter_ollama::OllamaModelSelection
+pub const fn swallowtail_adapter_ollama::OllamaPreparedIntegration::runtime(&self) -> &swallowtail_adapter_ollama::OllamaPreparedRuntimeObservation
+pub fn swallowtail_adapter_ollama::OllamaPreparedIntegration::validate_execution_binding(&self, &swallowtail_core::runtime_identity::ExecutionHostId, &swallowtail_core::runtime_identity::InstanceTargetRef) -> core::result::Result<(), swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_ollama::OllamaPreparedIntegration
+pub fn swallowtail_adapter_ollama::OllamaPreparedIntegration::prepare_inference_attempt(&self, swallowtail_adapter_ollama::OllamaInferenceAttemptInput) -> core::result::Result<swallowtail_adapter_ollama::OllamaPreparedInferenceAttempt, swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_ollama::OllamaPreparedIntegration
+pub fn swallowtail_adapter_ollama::OllamaPreparedIntegration::prepare_inventory(&self, swallowtail_adapter_ollama::OllamaInventoryProfileInput) -> core::result::Result<swallowtail_adapter_ollama::OllamaPreparedInventory, swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_ollama::OllamaPreparedIntegration
+pub fn swallowtail_adapter_ollama::OllamaPreparedIntegration::prepare_session(&self, swallowtail_adapter_ollama::OllamaSessionProfileInput) -> core::result::Result<swallowtail_adapter_ollama::OllamaPreparedSession, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_ollama::OllamaPreparedInventory
+impl swallowtail_adapter_ollama::OllamaPreparedInventory
+pub const fn swallowtail_adapter_ollama::OllamaPreparedInventory::evidence(&self) -> &swallowtail_adapter_ollama::OllamaPreparedEvidence
+pub fn swallowtail_adapter_ollama::OllamaPreparedInventory::into_parts(self) -> (swallowtail_adapter_ollama::OllamaPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest)
+pub fn swallowtail_adapter_ollama::OllamaPreparedInventory::low_level_driver(&self) -> swallowtail_adapter_ollama::OllamaNativeAttachedDriver
+pub fn swallowtail_adapter_ollama::OllamaPreparedInventory::observe_inventory(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_adapter_ollama::OllamaInventorySnapshot, swallowtail_runtime::failure::RuntimeFailure>>
+pub const fn swallowtail_adapter_ollama::OllamaPreparedInventory::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_ollama::OllamaPreparedInventory::request(&self) -> &swallowtail_runtime::roles::ModelCatalogRequest
+pub struct swallowtail_adapter_ollama::OllamaPreparedRuntimeObservation
+impl swallowtail_adapter_ollama::OllamaPreparedRuntimeObservation
+pub const fn swallowtail_adapter_ollama::OllamaPreparedRuntimeObservation::compatibility(&self) -> &swallowtail_core::interface_version::assessment::InterfaceCompatibilityAssessment
+pub fn swallowtail_adapter_ollama::OllamaPreparedRuntimeObservation::installed(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = &swallowtail_core::attached_runtime::AttachedModelObservation>
+pub fn swallowtail_adapter_ollama::OllamaPreparedRuntimeObservation::running(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = &swallowtail_core::attached_runtime::AttachedModelObservation>
+pub const fn swallowtail_adapter_ollama::OllamaPreparedRuntimeObservation::runtime_version(&self) -> &swallowtail_core::interface_version::InterfaceVersionBinding
+pub fn swallowtail_adapter_ollama::OllamaPreparedRuntimeObservation::selected_capabilities(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_adapter_ollama::OllamaModelCapability> + '_
+pub const fn swallowtail_adapter_ollama::OllamaPreparedRuntimeObservation::selected_detail(&self) -> &swallowtail_core::attached_runtime::AttachedModelObservation
+pub fn swallowtail_adapter_ollama::OllamaPreparedRuntimeObservation::selected_model_supports(&self, swallowtail_adapter_ollama::OllamaModelCapability) -> bool
+pub struct swallowtail_adapter_ollama::OllamaPreparedSession
+impl swallowtail_adapter_ollama::OllamaPreparedSession
+pub const fn swallowtail_adapter_ollama::OllamaPreparedSession::evidence(&self) -> &swallowtail_adapter_ollama::OllamaPreparedEvidence
+pub fn swallowtail_adapter_ollama::OllamaPreparedSession::into_parts(self) -> (swallowtail_adapter_ollama::OllamaPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest)
+pub fn swallowtail_adapter_ollama::OllamaPreparedSession::low_level_driver(&self) -> swallowtail_adapter_ollama::OllamaNativeAttachedDriver
+pub fn swallowtail_adapter_ollama::OllamaPreparedSession::open_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub const fn swallowtail_adapter_ollama::OllamaPreparedSession::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub fn swallowtail_adapter_ollama::OllamaPreparedSession::prepare_working_state_restoration(&self, swallowtail_runtime::identity::RuntimeTurnId) -> swallowtail_runtime::working_state_restoration::PreparedWorkingStateRestoration
+pub const fn swallowtail_adapter_ollama::OllamaPreparedSession::request(&self) -> &swallowtail_runtime::roles::OpenSessionRequest
+pub struct swallowtail_adapter_ollama::OllamaSessionProfileInput
+impl swallowtail_adapter_ollama::OllamaSessionProfileInput
+pub const fn swallowtail_adapter_ollama::OllamaSessionProfileInput::new(swallowtail_runtime::identity::RequestId) -> Self
+pub const fn swallowtail_adapter_ollama::OllamaSessionProfileInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub const swallowtail_adapter_ollama::OLLAMA_BASELINE_VERSION: &str
+pub const swallowtail_adapter_ollama::OLLAMA_LATEST_QUALIFIED_VERSION: &str
+pub const swallowtail_adapter_ollama::OLLAMA_NATIVE_FACADE: &str
+pub fn swallowtail_adapter_ollama::ollama_native_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_ollama::ollama_runtime_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
+pub fn swallowtail_adapter_ollama::ollama_runtime_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub async fn swallowtail_adapter_ollama::prepare_ollama_attached(swallowtail_adapter_ollama::OllamaPreparationInput, swallowtail_adapter_ollama::OllamaPreparationProbe, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_ollama::OllamaPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>

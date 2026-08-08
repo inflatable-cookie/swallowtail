@@ -980,85 +980,88 @@ cross-adapter adoption without prematurely stabilizing the public API.
 
 ## Milestones
 
-- [001 Standalone Authority Foundation](001-standalone-authority-foundation.md)
+- [001 Standalone Authority Foundation](./001-standalone-authority-foundation.md)
   — completed
-- [002 Portable Contract Kernel](002-portable-contract-kernel.md) — completed
-- [003 Integration Landscape and Runtime Boundary](003-integration-landscape-and-runtime-boundary.md)
+- [002 Portable Contract Kernel](./002-portable-contract-kernel.md) — completed
+- [003 Integration Landscape and Runtime Boundary](./003-integration-landscape-and-runtime-boundary.md)
   — completed
-- [004 Runtime Records and Preflight](004-runtime-records-and-preflight.md) — completed
-- [005 Async Runtime and Conformance](005-async-runtime-and-conformance.md) — completed
-- [006 Codex Proof Drivers](006-codex-proof-drivers.md) — completed
-- [007 Soundcheck Structured-Run Readiness](007-soundcheck-structured-run-readiness.md)
+- [004 Runtime Records and Preflight](./004-runtime-records-and-preflight.md) — completed
+- [005 Async Runtime and Conformance](./005-async-runtime-and-conformance.md) — completed
+- [006 Codex Proof Drivers](./006-codex-proof-drivers.md) — completed
+- [007 Soundcheck Structured-Run Readiness](./007-soundcheck-structured-run-readiness.md)
   — completed
-- [008 Nucleus Interactive-Session Readiness](008-nucleus-interactive-session-readiness.md)
+- [008 Nucleus Interactive-Session Readiness](./008-nucleus-interactive-session-readiness.md)
   — completed
-- [009 Soundcheck Consumer Adoption](009-soundcheck-consumer-adoption.md) — completed
-- [010 Bounded Workspace Session Access](010-bounded-workspace-session-access.md) — completed
-- [011 Hosted Transport Foundations](011-hosted-transport-foundations.md) — completed
-- [012 OpenCode HTTP Harness Proof](012-opencode-http-harness-proof.md) — completed
-- [013 Anthropic Direct Inference Proof](013-anthropic-direct-inference-proof.md) — completed
-- [014 Gemini ACP Proof](014-gemini-acp-proof.md) — completed
-- [015 llama.cpp Attached Runtime Proof](015-llama-cpp-attached-runtime-proof.md) — completed
-- [016 Post-Tranche Coverage Checkpoint](016-post-tranche-coverage-checkpoint.md) — completed
-- [017 xAI Responses WebSocket Proof](017-xai-responses-websocket-proof.md) — completed
-- [018 Kimi Code ACP Portability Proof](018-kimi-code-acp-portability-proof.md) — completed
-- [019 Owned llama.cpp Serving Proof](019-owned-llama-cpp-serving-proof.md) — completed
-- [020 Post-Portability Coverage Expansion](020-post-portability-coverage-expansion.md) — completed
-- [021 Bedrock Control-Plane Catalogue Proof](021-bedrock-control-plane-catalogue-proof.md)
+- [009 Soundcheck Consumer Adoption](./009-soundcheck-consumer-adoption.md) — completed
+- [010 Bounded Workspace Session Access](./010-bounded-workspace-session-access.md) — completed
+- [011 Hosted Transport Foundations](./011-hosted-transport-foundations.md) — completed
+- [012 OpenCode HTTP Harness Proof](./012-opencode-http-harness-proof.md) — completed
+- [013 Anthropic Direct Inference Proof](./013-anthropic-direct-inference-proof.md) — completed
+- [014 Gemini ACP Proof](./014-gemini-acp-proof.md) — completed
+- [015 llama.cpp Attached Runtime Proof](./015-llama-cpp-attached-runtime-proof.md) — completed
+- [016 Post-Tranche Coverage Checkpoint](./016-post-tranche-coverage-checkpoint.md) — completed
+- [017 xAI Responses WebSocket Proof](./017-xai-responses-websocket-proof.md) — completed
+- [018 Kimi Code ACP Portability Proof](./018-kimi-code-acp-portability-proof.md) — completed
+- [019 Owned llama.cpp Serving Proof](./019-owned-llama-cpp-serving-proof.md) — completed
+- [020 Post-Portability Coverage Expansion](./020-post-portability-coverage-expansion.md) — completed
+- [021 Bedrock Control-Plane Catalogue Proof](./021-bedrock-control-plane-catalogue-proof.md)
   — completed
-- [022 Post-SDK Coverage Checkpoint](022-post-sdk-coverage-checkpoint.md) — completed
-- [023 OpenAI Background Responses Proof](023-openai-background-responses-proof.md)
+- [022 Post-SDK Coverage Checkpoint](./022-post-sdk-coverage-checkpoint.md) — completed
+- [023 OpenAI Background Responses Proof](./023-openai-background-responses-proof.md)
   — completed
-- [024 Post-Background Coverage Checkpoint](024-post-background-coverage-checkpoint.md)
+- [024 Post-Background Coverage Checkpoint](./024-post-background-coverage-checkpoint.md)
   — completed
-- [025 Claude Managed Agent Remote Harness Proof](025-claude-managed-agent-remote-harness-proof.md)
+- [025 Claude Managed Agent Remote Harness Proof](./025-claude-managed-agent-remote-harness-proof.md)
   — completed
-- [026 Qwen Headless Structured Harness Proof](026-qwen-headless-structured-harness-proof.md)
+- [026 Qwen Headless Structured Harness Proof](./026-qwen-headless-structured-harness-proof.md)
   — completed
-- [027 Direct Provider Compatible-Codec Checkpoint](027-direct-provider-compatible-codec-checkpoint.md)
+- [027 Direct Provider Compatible-Codec Checkpoint](./027-direct-provider-compatible-codec-checkpoint.md)
   — completed
-- [028 Kimi Platform K3 Direct Inference Proof](028-kimi-platform-k3-direct-inference-proof.md)
+- [028 Kimi Platform K3 Direct Inference Proof](./028-kimi-platform-k3-direct-inference-proof.md)
   — completed
-- [029 Remaining Direct Provider Breadth](029-remaining-direct-provider-breadth.md)
+- [029 Remaining Direct Provider Breadth](./029-remaining-direct-provider-breadth.md)
   — completed
-- [030 Post Direct Provider Breadth Coverage Checkpoint](030-post-direct-provider-breadth-coverage-checkpoint.md)
+- [030 Post Direct Provider Breadth Coverage Checkpoint](./030-post-direct-provider-breadth-coverage-checkpoint.md)
   — completed
-- [031 OpenAI Realtime Media Direct Session Proof](031-openai-realtime-media-direct-session-proof.md)
+- [031 OpenAI Realtime Media Direct Session Proof](./031-openai-realtime-media-direct-session-proof.md)
   — completed
-- [032 Post-Realtime Coverage Checkpoint](032-post-realtime-coverage-checkpoint.md)
+- [032 Post-Realtime Coverage Checkpoint](./032-post-realtime-coverage-checkpoint.md)
   — completed
-- [033 Gemini Live Realtime Portability Proof](033-gemini-live-realtime-portability-proof.md)
+- [033 Gemini Live Realtime Portability Proof](./033-gemini-live-realtime-portability-proof.md)
   — completed
-- [034 Post-Gemini-Live Coverage Checkpoint](034-post-gemini-live-coverage-checkpoint.md)
+- [034 Post-Gemini-Live Coverage Checkpoint](./034-post-gemini-live-coverage-checkpoint.md)
   — completed
-- [035 Pi RPC Harness Proof](035-pi-rpc-harness-proof.md) — completed
-- [036 DeepSeek Direct Continuation Proof](036-deepseek-direct-continuation-proof.md)
+- [035 Pi RPC Harness Proof](./035-pi-rpc-harness-proof.md) — completed
+- [036 DeepSeek Direct Continuation Proof](./036-deepseek-direct-continuation-proof.md)
   — completed
-- [037 Post-Continuation Coverage And Compatibility Checkpoint](037-post-continuation-coverage-and-compatibility-checkpoint.md)
+- [037 Post-Continuation Coverage And Compatibility Checkpoint](./037-post-continuation-coverage-and-compatibility-checkpoint.md)
   — completed
-- [038 Ollama Native Attached Runtime Proof](038-ollama-native-attached-runtime-proof.md)
+- [038 Ollama Native Attached Runtime Proof](./038-ollama-native-attached-runtime-proof.md)
   — completed
-- [039 Installed Harness Compatibility Range Audit](039-installed-harness-compatibility-range-audit.md)
+- [039 Installed Harness Compatibility Range Audit](./039-installed-harness-compatibility-range-audit.md)
   — completed
-- [040 Cross-Harness Compatibility Range Expansion](040-cross-harness-compatibility-range-expansion.md)
+- [040 Cross-Harness Compatibility Range Expansion](./040-cross-harness-compatibility-range-expansion.md)
   — completed
-- [041 Qualified Support And Newer-Version Execution](041-qualified-support-and-newer-version-execution.md)
+- [041 Qualified Support And Newer-Version Execution](./041-qualified-support-and-newer-version-execution.md)
   — completed
-- [042 Post-Forward-Compatibility Provider Coverage Checkpoint](042-post-forward-compatibility-provider-coverage-checkpoint.md)
+- [042 Post-Forward-Compatibility Provider Coverage Checkpoint](./042-post-forward-compatibility-provider-coverage-checkpoint.md)
   — completed
-- [043 Kimi Code Capability Range](043-kimi-code-capability-range.md) —
+- [043 Kimi Code Capability Range](./043-kimi-code-capability-range.md) —
   completed
-- [044 Post-Kimi-Range Provider Coverage Checkpoint](044-post-kimi-range-provider-coverage-checkpoint.md)
+- [044 Post-Kimi-Range Provider Coverage Checkpoint](./044-post-kimi-range-provider-coverage-checkpoint.md)
   — completed
-- [045 Remote ACP Transport Proof](045-remote-acp-transport-proof.md) —
+- [045 Remote ACP Transport Proof](./045-remote-acp-transport-proof.md) —
   completed
-- [046 Generation Boundary And Provider Coverage Checkpoint](046-generation-boundary-and-provider-coverage-checkpoint.md)
+- [046 Generation Boundary And Provider Coverage Checkpoint](./046-generation-boundary-and-provider-coverage-checkpoint.md)
   — completed
-- [047 Grok Build Maintained ACP Range](047-grok-build-maintained-acp-range.md)
+- [047 Grok Build Maintained ACP Range](./047-grok-build-maintained-acp-range.md)
   — moved to backlog
-- [048 Post-Grok-Hold Provider Coverage Continuation](048-post-grok-hold-provider-coverage-continuation.md)
+- [048 Post-Grok-Hold Provider Coverage Continuation](./048-post-grok-hold-provider-coverage-continuation.md)
   — completed
-- [049 g01 Generation Disposition Checkpoint](049-generation-disposition-checkpoint.md)
+- [049 g01 Generation Disposition Checkpoint](./049-generation-disposition-checkpoint.md)
+- [Nucleus Adoption Handoff](./nucleus-adoption-handoff.md) — prepared
+- [Nucleus Task Execution Handoff](./nucleus-task-execution-handoff.md) — prepared
+- [Soundcheck Adoption Handoff](./soundcheck-adoption-handoff.md) — prepared
   — completed
 
 ## Batch Shape

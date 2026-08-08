@@ -59,6 +59,19 @@ fn process_fixture() {
                 .expect("fixture writes inside the host-owned resource");
         }
         "sleep" => thread::sleep(Duration::from_secs(30)),
+        "exit-zero" => {}
+        "spawn-descendant" => {
+            spawn_descendant("sleep 1");
+            std::io::stdout()
+                .write_all(b"descendant-spawned\n")
+                .expect("fixture writes marker");
+        }
+        "spawn-long-descendant" => {
+            spawn_descendant("sleep 5");
+            std::io::stdout()
+                .write_all(b"long-descendant-spawned\n")
+                .expect("fixture writes marker");
+        }
         "version" => {
             std::io::stdout()
                 .write_all(b"fixture-harness 1.2.0\n")
@@ -66,6 +79,22 @@ fn process_fixture() {
         }
         _ => panic!("unknown fixture mode"),
     }
+}
+
+/// Spawns a grandchild that inherits this process's stdout and stderr pipes.
+///
+/// The grandchild is deliberately not waited on, so it keeps the pipe write
+/// ends open after this fixture exits. This reproduces a real installed
+/// harness spawning a background process that inherits the supervised pipes.
+#[allow(clippy::zombie_processes)]
+fn spawn_descendant(command: &str) {
+    std::process::Command::new("sh")
+        .arg("-c")
+        .arg(command)
+        .stdout(std::process::Stdio::inherit())
+        .stderr(std::process::Stdio::inherit())
+        .spawn()
+        .expect("fixture spawns a pipe-inheriting descendant");
 }
 
 pub(crate) fn fixture_host(

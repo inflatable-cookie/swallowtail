@@ -147,6 +147,17 @@ This route exposes no:
 - task-list snapshot
 - subagent topology, attribution, messaging, or control
 
+### Working-State Restoration Disposition
+
+Muse has no `prepare_working_state_restoration` on its prepared facade,
+unlike the interactive headless peers. The disposition is recorded rather
+than migrated: Muse exposes no interactive session, continuation, load, or
+resume route, so there is no interrupted working state to restore; every run
+is one exact-model structured run that disables the session log and admits no
+reusable provider-session identity. The route stays replacement-only, and a
+working-state restoration surface would be a new route qualification, not a
+facade gap.
+
 Help text for Muse's broader session, transcript, skill, trace, login, and
 cross-session features does not promote them into this route. The direct Meta
 Model API is a separate possible provider route.

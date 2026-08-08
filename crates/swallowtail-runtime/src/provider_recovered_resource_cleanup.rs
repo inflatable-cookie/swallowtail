@@ -1,12 +1,13 @@
 #![deny(missing_docs)]
 
+use crate::plan_family::{
+    PlanRule, check_plan_rules, validate_agreement_matches_plan, validate_execution_services,
+};
 use crate::{
-    CancellationControl, Deadline, HostServices, ImmediateCancellation, PreparationFailure,
-    PreparedAccessEvidence, PreparedOperationEvidence, ProviderRecoveredResourceCleanupBinding,
-    RequestId, RuntimeFailure,
+    CancellationControl, Deadline, HostServices, ProviderRecoveredResourceCleanupBinding,
+    RuntimeFailure,
 };
 use std::collections::BTreeSet;
-use std::sync::Arc;
 use swallowtail_core::{
     CancellationScope, Capability, CapabilityConstraint, DriverRole, OperationShape,
     OwnedRemoteResourceKind, PreflightPlan, ProviderRecoveredResourceCleanupEffect, SafeDiagnostic,
@@ -42,127 +43,43 @@ impl ProviderRecoveredResourceCleanupAgreement {
     }
 }
 
-/// Side-effect-free plan for cleaning resources left by one recovered run.
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub struct ProviderRecoveredResourceCleanupPlan {
-    preflight: PreflightPlan,
+plan_family!(@prepared {
+    plan_type: ProviderRecoveredResourceCleanupPlan,
+    prepared_type: PreparedProviderRecoveredResourceCleanupEvidence,
     agreement: ProviderRecoveredResourceCleanupAgreement,
-}
+    prepared_doc: "Prepared route and plan evidence for recovered-resource cleanup.",
+    agreement_doc: "Returns the immutable cleanup agreement.",
+});
+use crate::plan_family::plan_family;
 
-impl ProviderRecoveredResourceCleanupPlan {
-    /// Validates and creates a recovered-resource cleanup plan.
-    pub fn new(
-        preflight: PreflightPlan,
+plan_family! {
+    plan: {
+        plan_type: ProviderRecoveredResourceCleanupPlan,
+        prepared_type: PreparedProviderRecoveredResourceCleanupEvidence,
         agreement: ProviderRecoveredResourceCleanupAgreement,
-    ) -> Result<Self, RuntimeFailure> {
-        validate_plan(&preflight, &agreement)?;
-        Ok(Self {
-            preflight,
-            agreement,
-        })
+        plan_doc: "Side-effect-free plan for cleaning resources left by one recovered run.",
+        prepared_doc: "Prepared route and plan evidence for recovered-resource cleanup.",
+        agreement_doc: "Returns the immutable cleanup agreement.",
     }
-
-    #[must_use]
-    /// Returns the exact route preflight plan.
-    pub const fn preflight(&self) -> &PreflightPlan {
-        &self.preflight
-    }
-
-    #[must_use]
-    /// Returns the immutable cleanup agreement.
-    pub const fn agreement(&self) -> &ProviderRecoveredResourceCleanupAgreement {
-        &self.agreement
-    }
-}
-
-/// Prepared route and plan evidence for recovered-resource cleanup.
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub struct PreparedProviderRecoveredResourceCleanupEvidence {
-    operation: PreparedOperationEvidence,
-    plan: ProviderRecoveredResourceCleanupPlan,
-}
-
-impl PreparedProviderRecoveredResourceCleanupEvidence {
-    /// Builds prepared evidence from a validated plan and access evidence.
-    pub fn from_plan(
-        plan: ProviderRecoveredResourceCleanupPlan,
-        access: PreparedAccessEvidence,
-    ) -> Result<Self, PreparationFailure> {
-        let operation = PreparedOperationEvidence::from_plan(plan.preflight().clone(), access)?;
-        Ok(Self { operation, plan })
-    }
-
-    #[must_use]
-    /// Returns the shared prepared-operation evidence.
-    pub const fn operation(&self) -> &PreparedOperationEvidence {
-        &self.operation
-    }
-
-    #[must_use]
-    /// Returns the validated cleanup plan.
-    pub const fn plan(&self) -> &ProviderRecoveredResourceCleanupPlan {
-        &self.plan
-    }
-}
-
-/// Typed request to clean resources left by one recovered provider run.
-#[derive(Clone, Debug)]
-pub struct ProviderRecoveredResourceCleanupRequest {
-    request_id: RequestId,
-    agreement: ProviderRecoveredResourceCleanupAgreement,
-    cancellation: Arc<ImmediateCancellation>,
-}
-
-impl ProviderRecoveredResourceCleanupRequest {
-    /// Creates a request after validating its cancellation scope.
-    pub fn new(
-        request_id: RequestId,
-        plan: &ProviderRecoveredResourceCleanupPlan,
-        cancellation: Arc<ImmediateCancellation>,
-    ) -> Result<Self, RuntimeFailure> {
-        if cancellation.scope() != CancellationScope::ProviderRecoveredResourceCleanup {
-            return Err(failure(
-                "swallowtail.provider_recovered_resource_cleanup.cancellation_scope_mismatch",
-                "Recovered-resource cleanup request has the wrong cancellation scope",
-            ));
-        }
-        Ok(Self {
-            request_id,
-            agreement: plan.agreement().clone(),
-            cancellation,
-        })
-    }
-
-    /// Creates a request with a new cleanup-scoped cancellation control.
-    pub fn from_plan(
-        request_id: RequestId,
-        plan: &ProviderRecoveredResourceCleanupPlan,
-    ) -> Result<Self, RuntimeFailure> {
-        Self::new(
-            request_id,
-            plan,
-            Arc::new(ImmediateCancellation::new(
-                CancellationScope::ProviderRecoveredResourceCleanup,
-            )),
-        )
-    }
-
-    #[must_use]
-    /// Returns the consumer-unique request identity.
-    pub const fn request_id(&self) -> &RequestId {
-        &self.request_id
-    }
-
-    #[must_use]
-    /// Returns the immutable cleanup agreement.
-    pub const fn agreement(&self) -> &ProviderRecoveredResourceCleanupAgreement {
-        &self.agreement
-    }
-
-    #[must_use]
-    /// Returns the cleanup-scoped cancellation control.
-    pub const fn cancellation(&self) -> &Arc<ImmediateCancellation> {
-        &self.cancellation
+    requests: {
+        plan_type: ProviderRecoveredResourceCleanupPlan,
+        agreement: ProviderRecoveredResourceCleanupAgreement,
+        agreement_doc: "Returns the immutable cleanup agreement.",
+        scope: CancellationScope::ProviderRecoveredResourceCleanup,
+        ns: "swallowtail.provider_recovered_resource_cleanup",
+        requests: [
+            ProviderRecoveredResourceCleanupRequest = "Typed request to clean resources left by one recovered provider run." {
+                new_doc: "Creates a request after validating its cancellation scope.",
+                new_arg: plan: &ProviderRecoveredResourceCleanupPlan,
+                agreement_expr: plan.agreement().clone(),
+                from_plan_doc: "Creates a request with a new cleanup-scoped cancellation control.",
+                from_plan_arg: pass_plan,
+                request_id_doc: "Returns the caller-assigned request identity.",
+                extra: true,
+                extra_code: "swallowtail.provider_recovered_resource_cleanup.cancellation_scope_mismatch",
+                extra_message: "",
+            }
+        ]
     }
 }
 
@@ -220,14 +137,12 @@ pub fn validate_provider_recovered_resource_cleanup_request(
     plan: &ProviderRecoveredResourceCleanupPlan,
     request: &ProviderRecoveredResourceCleanupRequest,
 ) -> Result<(), RuntimeFailure> {
-    if plan.agreement() == request.agreement() {
-        Ok(())
-    } else {
-        Err(failure(
-            "swallowtail.provider_recovered_resource_cleanup.plan_mismatch",
-            "Recovered-resource cleanup request does not match its immutable plan",
-        ))
-    }
+    validate_agreement_matches_plan(
+        plan.agreement(),
+        request.agreement(),
+        "swallowtail.provider_recovered_resource_cleanup.plan_mismatch",
+        "Recovered-resource cleanup request does not match its immutable plan",
+    )
 }
 
 /// Verifies a cleanup request and the host services needed to execute it.
@@ -237,76 +152,96 @@ pub fn validate_provider_recovered_resource_cleanup_execution(
     services: &HostServices,
 ) -> Result<(), RuntimeFailure> {
     validate_provider_recovered_resource_cleanup_request(plan, request)?;
-    services.require_execution_host(plan.preflight().execution_host_id())?;
-    let available = services.available_kinds();
-    if plan
-        .preflight()
-        .requirements()
-        .host_services()
-        .any(|required| !available.contains(&required))
-    {
-        return Err(failure(
-            "swallowtail.provider_recovered_resource_cleanup.service_unavailable",
-            "Recovered-resource cleanup host services are unavailable",
-        ));
-    }
-    Ok(())
+    validate_execution_services(
+        plan.preflight(),
+        services,
+        "swallowtail.provider_recovered_resource_cleanup.service_unavailable",
+        "Recovered-resource cleanup host services are unavailable",
+    )
 }
+
+/// Ordered per-role validation rules for a recovered-resource cleanup plan.
+const CLEANUP_PLAN_RULES: [PlanRule<ProviderRecoveredResourceCleanupAgreement>; 6] = [
+    PlanRule::new(
+        "swallowtail.provider_recovered_resource_cleanup.plan_mismatch",
+        "Recovered-resource cleanup does not match its immutable binding",
+        |preflight, _| {
+            preflight.requirements().driver_role()
+                == DriverRole::ProviderRecoveredResourceCleanup
+        },
+    ),
+    PlanRule::new(
+        "swallowtail.provider_recovered_resource_cleanup.plan_mismatch",
+        "Recovered-resource cleanup does not match its immutable binding",
+        |preflight, _| {
+            preflight.requirements().operation_shape()
+                == OperationShape::ProviderRecoveredResourceCleanup
+        },
+    ),
+    PlanRule::new(
+        "swallowtail.provider_recovered_resource_cleanup.plan_mismatch",
+        "Recovered-resource cleanup does not match its immutable binding",
+        |preflight, agreement| agreement.binding().matches_plan(preflight),
+    ),
+    PlanRule::new(
+        "swallowtail.provider_recovered_resource_cleanup.plan_mismatch",
+        "Recovered-resource cleanup does not match its immutable binding",
+        |preflight, _| {
+            preflight
+                .requirements()
+                .capabilities()
+                .any(|required| {
+                    required.capability() == Capability::ProviderRecoveredResourceCleanup
+                })
+        },
+    ),
+    PlanRule::new(
+        "swallowtail.provider_recovered_resource_cleanup.resource_scope_mismatch",
+        "Recovered-resource cleanup scope differs from its capability plan",
+        |preflight, agreement| {
+            let Some(capability) = preflight
+                .requirements()
+                .capabilities()
+                .find(|required| {
+                    required.capability() == Capability::ProviderRecoveredResourceCleanup
+                })
+            else {
+                return false;
+            };
+            let declared = capability
+                .constraints()
+                .map(|constraint| match constraint {
+                    CapabilityConstraint::OwnedRemoteResource(kind) => Ok(*kind),
+                    _ => Err(()),
+                })
+                .collect::<Result<BTreeSet<OwnedRemoteResourceKind>, ()>>();
+            let Ok(declared) = declared else {
+                return false;
+            };
+            let bound = agreement
+                .binding()
+                .resource_kinds()
+                .collect::<BTreeSet<_>>();
+            declared == bound && capability.constraints().count() == bound.len()
+        },
+    ),
+    PlanRule::new(
+        "swallowtail.provider_recovered_resource_cleanup.time_service_required",
+        "Deadline-bound recovered-resource cleanup requires time service",
+        |preflight, agreement| {
+            agreement.deadline().is_none()
+                || preflight.requirements().host_services().any(|required| {
+                    required == swallowtail_core::HostServiceKind::Time
+                })
+        },
+    ),
+];
 
 fn validate_plan(
     preflight: &PreflightPlan,
     agreement: &ProviderRecoveredResourceCleanupAgreement,
 ) -> Result<(), RuntimeFailure> {
-    let requirements = preflight.requirements();
-    if requirements.driver_role() != DriverRole::ProviderRecoveredResourceCleanup
-        || requirements.operation_shape() != OperationShape::ProviderRecoveredResourceCleanup
-        || !agreement.binding().matches_plan(preflight)
-    {
-        return Err(plan_mismatch());
-    }
-    let capability = requirements
-        .capabilities()
-        .find(|required| required.capability() == Capability::ProviderRecoveredResourceCleanup)
-        .ok_or_else(plan_mismatch)?;
-    let declared = capability
-        .constraints()
-        .map(|constraint| match constraint {
-            CapabilityConstraint::OwnedRemoteResource(kind) => Ok(*kind),
-            _ => Err(plan_mismatch()),
-        })
-        .collect::<Result<BTreeSet<OwnedRemoteResourceKind>, RuntimeFailure>>()?;
-    let bound = agreement
-        .binding()
-        .resource_kinds()
-        .collect::<BTreeSet<_>>();
-    if declared != bound || capability.constraints().count() != bound.len() {
-        return Err(failure(
-            "swallowtail.provider_recovered_resource_cleanup.resource_scope_mismatch",
-            "Recovered-resource cleanup scope differs from its capability plan",
-        ));
-    }
-    if agreement.deadline().is_some()
-        && !requirements
-            .host_services()
-            .any(|required| required == swallowtail_core::HostServiceKind::Time)
-    {
-        return Err(failure(
-            "swallowtail.provider_recovered_resource_cleanup.time_service_required",
-            "Deadline-bound recovered-resource cleanup requires time service",
-        ));
-    }
-    Ok(())
-}
-
-fn plan_mismatch() -> RuntimeFailure {
-    failure(
-        "swallowtail.provider_recovered_resource_cleanup.plan_mismatch",
-        "Recovered-resource cleanup does not match its immutable binding",
-    )
-}
-
-fn failure(code: &'static str, message: &'static str) -> RuntimeFailure {
-    RuntimeFailure::new(SafeDiagnostic::new(code, message))
+    check_plan_rules(preflight, agreement, &CLEANUP_PLAN_RULES)
 }
 
 #[cfg(test)]

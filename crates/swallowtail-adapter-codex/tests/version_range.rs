@@ -18,6 +18,10 @@ use swallowtail_runtime::{
     StructuredRunDriver, StructuredRunRequest,
 };
 
+fn binding(version: &str) -> swallowtail_core::InterfaceVersionBinding {
+    codex_cli_binding(version).expect("fixture Codex version is valid")
+}
+
 #[test]
 fn descriptors_publish_independent_closed_claims_on_one_observed_axis() {
     let axis = InterfaceVersionAxis::new(CODEX_CLI_AXIS).expect("axis is valid");
@@ -40,29 +44,22 @@ fn descriptors_publish_independent_closed_claims_on_one_observed_axis() {
         codex_app_server_claim().newer_version_posture(),
         InterfaceNewerVersionPosture::AllowUnverified
     );
-    assert!(exec.supports_interface_version(&codex_cli_binding("0.80.0")));
-    assert!(exec.supports_interface_version(&codex_cli_binding("0.121.0")));
-    assert!(app.supports_interface_version(&codex_cli_binding("0.121.0")));
+    assert!(exec.supports_interface_version(&binding("0.80.0")));
+    assert!(exec.supports_interface_version(&binding("0.121.0")));
+    assert!(app.supports_interface_version(&binding("0.121.0")));
     for version in ["0.82.0", "0.83.0", "0.108.0", "0.109.0"] {
-        assert!(!exec.supports_interface_version(&codex_cli_binding(version)));
-        assert!(!app.supports_interface_version(&codex_cli_binding(version)));
+        assert!(!exec.supports_interface_version(&binding(version)));
+        assert!(!app.supports_interface_version(&binding(version)));
     }
     for claim in [codex_exec_claim(), codex_app_server_claim()] {
         assert_eq!(
             claim
-                .classify(codex_cli_binding("0.80.0").version())
+                .classify(binding("0.80.0").version())
                 .unwrap()
                 .support_status(),
             InterfaceSupportStatus::Deprecated
         );
-        assert_eq!(
-            claim
-                .classify(codex_cli_binding("0.122.0").version())
-                .unwrap()
-                .support_status(),
-            InterfaceSupportStatus::Maintained
-        );
-        let newer = codex_cli_binding("0.147.0");
+        let newer = binding("0.147.0");
         assert!(!claim.supports(newer.version()));
         assert!(claim.permits(newer.version()));
         let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
@@ -73,6 +70,20 @@ fn descriptors_publish_independent_closed_claims_on_one_observed_axis() {
         assert_eq!(unverified.version(), newer.version());
         assert_eq!(unverified.latest_qualified().as_str(), "0.146.0");
     }
+    assert_eq!(
+        codex_exec_claim()
+            .classify(binding("0.122.0").version())
+            .unwrap()
+            .support_status(),
+        InterfaceSupportStatus::Maintained
+    );
+    assert_eq!(
+        codex_app_server_claim()
+            .classify(binding("0.122.0").version())
+            .unwrap()
+            .support_status(),
+        InterfaceSupportStatus::Deprecated
+    );
 }
 
 #[test]

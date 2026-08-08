@@ -154,7 +154,15 @@ async fn run_turn(
                             .history
                             .lock()
                             .expect("history lock poisoned")
-                            .record_result(results.first().expect("exact result exists"))
+                            .record_result(results.first().ok_or_else(|| {
+                                TurnFailure::Runtime(
+                                    failure(
+                                        "swallowtail.anthropic.tool_result_missing",
+                                        "Anthropic tool result exchange returned no result",
+                                    ),
+                                    CleanupOutcome::Clean,
+                                )
+                            })?)
                             .map_err(|error| {
                                 TurnFailure::Runtime(error, CleanupOutcome::Clean)
                             })?;
@@ -199,16 +207,13 @@ async fn run_turn(
                 .await
             }
         }
-        Ok(AttemptOutcome::Tool(_)) => Err(TurnFailure::Provider(
-            failure(
-                "swallowtail.anthropic.tool_call_unexpected",
-                "Anthropic returned a tool call outside the qualified exchange",
-            ),
-            CleanupOutcome::Clean,
-        )),
         other => other,
     };
-    if result.is_err()
+    // A provider tool call outside the qualified direct-tool exchange is a
+    // turn failure: the exchange must not stay open, and the terminal match
+    // below owns the single conversion to the provider failure outcome.
+    let tool_failure = matches!(&result, Ok(AttemptOutcome::Tool(_)));
+    if (result.is_err() || tool_failure)
         && let Some(submitter) = work.submitter.as_ref()
     {
         submitter.abandon();
@@ -240,7 +245,20 @@ async fn run_turn(
             TerminalOutcome::new(TerminalStatus::Completed, CleanupOutcome::Clean)
                 .with_output(OperationContent::new(output).expect("final output is nonempty"))
         }
-        Ok(AttemptOutcome::Tool(_)) => unreachable!(),
+        Ok(AttemptOutcome::Tool(_)) => {
+            invalidate(&context);
+            TerminalOutcome::new(
+                TerminalStatus::ProviderFailed(
+                    failure(
+                        "swallowtail.anthropic.tool_call_unexpected",
+                        "Anthropic returned a tool call outside the qualified exchange",
+                    )
+                    .diagnostic()
+                    .clone(),
+                ),
+                CleanupOutcome::Clean,
+            )
+        }
         Err(TurnFailure::Stopped(stop, cleanup)) => {
             invalidate(&context);
             TerminalOutcome::new(

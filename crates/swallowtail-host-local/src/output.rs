@@ -11,6 +11,8 @@ struct OutputInner {
     chunks: VecDeque<ProcessOutputChunk>,
     failure: Option<RuntimeFailure>,
     closed_readers: u8,
+    abandoned: bool,
+    terminal: bool,
     waiters: Vec<Waker>,
 }
 
@@ -66,6 +68,20 @@ impl OutputState {
         wake_all(&mut inner.waiters);
     }
 
+    /// Marks output capture abandoned after the bounded reader-join window.
+    ///
+    /// Called by the supervisor when a reader thread is still blocked on a
+    /// pipe held by a descendant. The stream then drains to terminal truth
+    /// even though fewer than both readers have closed.
+    pub(crate) fn close_abandoned(&self) {
+        let mut inner = self
+            .inner
+            .lock()
+            .expect("local process output lock poisoned");
+        inner.abandoned = true;
+        wake_all(&mut inner.waiters);
+    }
+
     pub(crate) fn read(self: &Arc<Self>) -> OutputFuture {
         OutputFuture {
             state: Arc::clone(self),
@@ -86,11 +102,17 @@ impl Future for OutputFuture {
             .inner
             .lock()
             .expect("local process output lock poisoned");
-        if let Some(chunk) = inner.chunks.pop_front() {
+        if inner.terminal {
+            Poll::Ready(Ok(None))
+        } else if let Some(chunk) = inner.chunks.pop_front() {
             Poll::Ready(Ok(Some(chunk)))
         } else if let Some(failure) = inner.failure.take() {
             Poll::Ready(Err(failure))
-        } else if inner.closed_readers >= 2 {
+        } else if inner.closed_readers >= 2 || inner.abandoned {
+            // Terminal is latched: after the stream reports end, a reader
+            // abandoned on a descendant-held pipe can still push chunks or a
+            // failure, and those must not resume the stream.
+            inner.terminal = true;
             Poll::Ready(Ok(None))
         } else {
             if !inner

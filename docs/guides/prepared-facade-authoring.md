@@ -64,6 +64,19 @@ Prepared operation values expose `evidence`, `plan`, `request`,
 `low_level_driver`, and an ownership-preserving `into_parts` path where those
 parts exist. The low-level API stays public.
 
+### Recorded Surface Omissions
+
+Antigravity, cursor, and muse are the permitted omissions from the full
+`into_parts` and `low_level_driver` surface:
+
+- antigravity exposes neither `into_parts` nor `low_level_driver`: its routes
+  expose no prepared operation value that owns separable parts
+- cursor and muse omit `into_parts` while exposing `low_level_driver` on
+  their prepared routes; the routes own no separable ownership surface today
+
+These omissions are recorded dispositions, not drift: every other adapter's
+prepared facade follows the full surface.
+
 ## Preparation Effects
 
 Preparation effect shape follows the route:

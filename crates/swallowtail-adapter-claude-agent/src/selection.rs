@@ -89,20 +89,53 @@ pub fn claude_agent_acp_binding(value: &str) -> Option<InterfaceVersionBinding> 
 /// Returns the qualified compatibility claim for Claude Agent ACP.
 pub fn claude_agent_acp_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
-        InterfaceCompatibilityClaimId::new("claude-agent.acp.range-v2")
+        InterfaceCompatibilityClaimId::new("claude-agent.acp.window-2")
             .expect("static Claude Agent claim id is valid"),
         axis(),
         InterfaceVersionScheme::Semantic,
         InterfaceNewerVersionPosture::AllowUnverified,
         [
-            segment("0.53.0", "0.53.0", BASELINE_BEHAVIOR),
-            segment("0.54.0", "0.59.0", SESSION_CONFIG_BEHAVIOR),
-            segment("0.60.0", "0.60.0", PROVIDER_CAPABILITY_BEHAVIOR),
-            segment("0.61.0", "0.62.0", STEERING_METADATA_BEHAVIOR),
-            segment("0.63.0", "0.63.0", TOOL_SUBAGENT_CORRELATION_BEHAVIOR),
-            segment("0.64.0", "0.64.0", HOST_STEERING_FORM_MARKER_BEHAVIOR),
+            segment(
+                "0.53.0",
+                "0.53.0",
+                BASELINE_BEHAVIOR,
+                InterfaceSupportStatus::Deprecated,
+            ),
+            segment(
+                "0.54.0",
+                "0.59.0",
+                SESSION_CONFIG_BEHAVIOR,
+                InterfaceSupportStatus::Deprecated,
+            ),
+            segment(
+                "0.60.0",
+                "0.60.0",
+                PROVIDER_CAPABILITY_BEHAVIOR,
+                InterfaceSupportStatus::Deprecated,
+            ),
+            segment(
+                "0.61.0",
+                "0.62.0",
+                STEERING_METADATA_BEHAVIOR,
+                InterfaceSupportStatus::Deprecated,
+            ),
+            segment(
+                "0.63.0",
+                "0.63.0",
+                TOOL_SUBAGENT_CORRELATION_BEHAVIOR,
+                InterfaceSupportStatus::Deprecated,
+            ),
+            segment(
+                "0.64.0",
+                "0.64.0",
+                HOST_STEERING_FORM_MARKER_BEHAVIOR,
+                InterfaceSupportStatus::Maintained,
+            ),
         ],
-        [version("0.52.0"), version("0.58.0")],
+        [
+            version("0.52.0").expect("static Claude Agent version is valid"),
+            version("0.58.0").expect("static Claude Agent version is valid"),
+        ],
     )
     .expect("static Claude Agent compatibility claim is valid")
 }
@@ -170,16 +203,21 @@ fn axis() -> InterfaceVersionAxis {
     InterfaceVersionAxis::new(CLAUDE_AGENT_ACP_AXIS).expect("static Claude Agent axis is valid")
 }
 
-fn version(value: &str) -> InterfaceVersion {
-    InterfaceVersion::new(value).expect("static Claude Agent version is valid")
+fn version(value: &str) -> Option<InterfaceVersion> {
+    InterfaceVersion::new(value).ok()
 }
 
-fn segment(minimum: &str, maximum: &str, revision: &str) -> InterfaceVersionSegment {
+fn segment(
+    minimum: &str,
+    maximum: &str,
+    revision: &str,
+    status: InterfaceSupportStatus,
+) -> InterfaceVersionSegment {
     InterfaceVersionSegment::new(
-        version(minimum),
-        version(maximum),
+        version(minimum).expect("static Claude Agent version is valid"),
+        version(maximum).expect("static Claude Agent version is valid"),
         InterfaceBehaviorRevision::new(revision).expect("static behavior revision is valid"),
-        InterfaceSupportStatus::Maintained,
+        status,
     )
 }
 

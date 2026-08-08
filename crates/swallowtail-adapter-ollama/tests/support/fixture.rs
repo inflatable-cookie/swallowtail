@@ -99,7 +99,7 @@ impl Fixture {
     pub fn plan(&self, role: DriverRole) -> swallowtail_core::PreflightPlan {
         let descriptor = ollama_native_descriptor();
         let access_id = AccessProfileId::new("access.ollama").expect("access id is valid");
-        let version = ollama_runtime_binding("0.30.0");
+        let version = ollama_runtime_binding("0.30.0").expect("fixture Ollama version is valid");
         let tag = AttachedModelTag::new(MODEL).expect("tag is valid");
         let digest = ModelManifestDigest::new(DIGEST).expect("digest is valid");
         let capability_requirements = capability_requirements(role);

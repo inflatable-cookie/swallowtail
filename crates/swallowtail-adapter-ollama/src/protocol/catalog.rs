@@ -67,7 +67,12 @@ impl SelectedModelDetail {
 pub fn parse_version(response: &Response) -> Result<InterfaceVersionBinding, RuntimeFailure> {
     require_success(response, "version")?;
     let envelope: VersionEnvelope = bounded_json(&response.body, "version")?;
-    let binding = ollama_runtime_binding(&envelope.version);
+    let binding = ollama_runtime_binding(&envelope.version).ok_or_else(|| {
+        crate::failure::failure(
+            "swallowtail.ollama.version_parse_failed",
+            "Ollama runtime version could not be parsed",
+        )
+    })?;
     if ollama_runtime_claim().permits(binding.version()) {
         Ok(binding)
     } else {

@@ -3065,7 +3065,9 @@ dependencies = [
 name = "swallowtail-runtime"
 version = "0.2.0"
 dependencies = [
+ "futures-channel",
  "futures-core",
+ "semver",
  "sha2 0.10.9",
  "swallowtail-core",
  "zeroize",

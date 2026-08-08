@@ -215,7 +215,9 @@ fn bind_instance_version(
     version: Option<&str>,
 ) -> ConfiguredInstance {
     version.map_or(instance.clone(), |version| {
-        instance.with_interface_versions([codex_cli_binding(version)])
+        instance.with_interface_versions([
+            codex_cli_binding(version).expect("fixture Codex version is valid")
+        ])
     })
 }
 
@@ -224,7 +226,9 @@ fn bind_required_version(
     version: Option<&str>,
 ) -> OperationRequirements {
     version.map_or(requirements.clone(), |version| {
-        requirements.with_interface_versions([codex_cli_binding(version)])
+        requirements.with_interface_versions([
+            codex_cli_binding(version).expect("fixture Codex version is valid")
+        ])
     })
 }
 

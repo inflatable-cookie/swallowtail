@@ -49,14 +49,103 @@ visible as unverified newer unless exact evidence requires rejection.
 | Add Meta Muse Code through its exact installed headless event protocol without chasing every new harness. | completed | Contracts 005-006, 009-010, 023, 029, 032-033, 036-037, 039-041, 044-045, 051-052 | `g03.045` |
 | Ship Muse and the breaking unified Rust 1.95 floor as exact-source `v0.2.0` without carrying Muse's two new structural errors. | completed | Contracts 001, 023, 029, 032-033, 036-037, 044-045, 051-052 | `g03.046` |
 | Periodically reconcile deferred gates, route truth, and generation capacity. | planned | Contract 001 | recurring checkpoints |
-| Close the verified hang class in process supervision, runtime coordination, and the remote ACP transport. | planned | Contracts 009, 010, 035, 051 | `g03.049` |
-| Close provider-reachable panic paths and keep version-parse expectations literal-only. | planned | Contracts 029, 037, 051 | `g03.050` |
-| Make docs indexes and doc-policy gates machine-checked in CI and single-source the route inventory. | planned | Contracts 001, 036, 052 | `g03.051` |
+| Close the verified hang class in process supervision, runtime coordination, and the remote ACP transport. | completed | Contracts 009, 010, 035, 051 | `g03.049` |
+| Close provider-reachable panic paths and keep version-parse expectations literal-only. | completed | Contracts 029, 037, 051 | `g03.050` |
+| Make docs indexes machine-checked, single-source the route inventory, and consolidate the validation machinery. | completed | Contracts 001, 036, 052 | `g03.051` |
 | Extract provider-neutral adapter scaffolding into shared crates to remove cross-adapter duplication. | planned | Contracts 011, 029, 037 | `g03.052` |
 | Unify version-claim semantics and close facade-surface inconsistencies. | planned | Contracts 003, 029, 037, 047 | `g03.053` |
 
 ## Current Checkpoint
 
+- card 159 is complete: the transport and catalogue
+  duplication was measured (curl driver 0.90-0.94 pair similarity across
+  eleven curl-dependent adapters; small bounded-value helpers in four to
+  eight files) and both halves recorded as operator-level topology
+  decisions, mirroring the projector outcome; card 160 is ready
+- card 158 is complete: the run-loop emit/sequence
+  and terminal-status helpers are shared in runtime with nine adapter pump
+  files delegating; the ACP activity projector was measured and recorded
+  as staying adapter-local because the recorded architecture forbids a
+  shared home (protocol-acp has no runtime projection, runtime is
+  core-only-deps) — a topology decision for the operator; card 159 is
+  ready
+- card 157 is complete: the sixteen-adapter
+  plan family now delegates its instance rebinding, base requirements, and
+  preflight build to `prepared_plan` in runtime (573 adapter lines
+  deleted); the claude-agent mechanism-derived credential state stayed
+  adapter-local after the full round caught it; card 158 is ready
+- card 156 is complete: the scaffolding pilot landed a
+  465-line shared `installed_discovery` module in runtime (probe scaffold,
+  semantic binding parse, stage mappers) with four focused tests; pi and
+  oh-my-pi dropped ~460 duplicated lines and keep unchanged public APIs
+  with full parity; card 157 is ready
+- card 155 and g03.051 are complete: the eight
+  retired registry-candidate scripts are archived as frozen evidence with
+  dispositions, MSRV is consumed solely from the baseline env in the gates
+  and CI, and the operator authorized the v0.3.0 aim with a fresh
+  `public-api-0.3.0` baseline capturing the sanctioned API change;
+  `effigy package:check` passes in full and card 156 is ready
+- card 154 is complete: the 34-route inventory is
+  single-sourced from the feature-matrix CSV through
+  `scripts/provider_route_matrix/route_inventory.py`, with the shell
+  heredocs, both document parsers, and the front-door baseline comparison
+  consuming it (posture data moved into the module and cross-checks kept);
+  a CSV mutation propagated to every consumer without an edit; card 155 is
+  ready
+- card 153 is complete: re-examining the audit's
+  not-in-CI finding showed none of the flagged gates needs per-commit CI
+  (MSRV is already covered by the rust-floor job, release-floor is a
+  release-prepare gate by design, northstar is tautological, and qa:docs
+  now runs at the milestone gate where the repo places broad validation);
+  card 154 is ready
+- card 152 is complete: logs, research, and the roadmaps
+  index tree are machine-checked through eight `qa:docs:index:*` gates
+  (with the link-format conversion and all verified drift repaired), the
+  next-action check now validates real pointers, and card 153 is ready
+- card 151 and g03.050 are complete: the
+  `qa:code:version-expects` source scan now fails any non-literal
+  version-parse expect (including `.ok().expect`), runs in CI, and exposed
+  and closed sixteen latent binding-helper traps across thirteen adapters;
+  the provider-reachable panic milestone is done and card 152 is ready
+- card 150 is complete: the provider-reachable expect
+  sweep classified the adapter expect population (~978 constant, ~563
+  lock, ~275 invariant), converted every provider-reachable site to
+  fail-closed handling (Ollama activity profile, Anthropic and DeepSeek
+  tool exchanges, DeepSeek exact-one parsing, xAI empty output, Muse
+  command ordering, Alibaba pagination), and guard-commented the verified
+  provider-data-adjacent invariants; card 151 is ready
+- card 149 is complete: Kimi Platform decodes the shared chat
+  `Payload` enum through a compile-time-exhaustive match (a new shared
+  variant fails the build instead of panicking at runtime), and Anthropic
+  turn handling owns one tool-outcome conversion with the dead arm removed
+  and identical abandon and terminal behavior; card 150 is ready
+- card 148 is complete: the Ollama and Codex version-binding helpers are
+  total (`Option`-returning, sibling-aligned), blank and whitespace-only
+  provider versions fail closed with `swallowtail.ollama.version_parse_failed`
+  instead of panicking, and a crate-wide sweep found no remaining
+  provider-flow version-parse expects; qualified classification is unchanged
+  and card 149 is ready
+- card 147 and g03.049 are complete: the remote ACP transport races every network await against the host's own deadline semantics (never assuming a tick rate), a hanging connect is interruptible, and non-responding HTTP and WebSocket peers fail with `DeadlineExceeded` within the deadline; the hang and deadline closure milestone is done and card 148 is ready
+- card 146 is complete: cancellation waiters now wake every concurrent
+  waiter exactly once (`Vec<Waker>` + `will_wake`), and both sender channels
+  close or resolve when the last sender clone drops, so a producer that dies
+  silently can no longer stall a consumer; a dropped terminal sender without
+  a published outcome resolves as `swallowtail.terminal_sender_dropped`;
+  eight new tests, focused runtime (150), workspace nextest (1,493),
+  examples, format, and warnings-denied clippy pass; card 147 is ready
+- card 145 is complete: the supervision loop now checks `try_wait` before
+  killing, so a natural exit racing a force stop wins by construction while
+  the unkillable-case `force_stop_failed` surface stays bounded at one
+  second of retries; the task-drop blocking join is documented as
+  deliberate with bounded-shutdown guidance; a twelve-iteration race fixture
+  proves the misreport is impossible; focused host-local, workspace nextest
+  (1,485), format, and warnings-denied clippy pass; card 146 is ready
+- card 144 is complete: host-local process supervision now joins its output
+  readers under a two-second bound; a pipe-inheriting descendant can no
+  longer stall `wait()`, `read_output()`, or the supervisor thread, and the
+  output stream latches terminal after abandonment; two deterministic
+  descendant fixtures, focused host-local, workspace nextest (1,484),
+  examples, format, and warnings-denied clippy all pass; card 145 is ready
 - the operator opened the internal-hardening suite g03.049-g03.053 from the
   verified deep audit: hang closure, provider-reachable panic closure,
   validation machinery and index closure, shared adapter scaffolding, and
@@ -461,59 +550,59 @@ visible as unverified newer unless exact evidence requires rejection.
 
 ## Milestones
 
-- [001 Installed Harness And Protocol Currentness Baseline](001-installed-harness-and-protocol-currentness-baseline.md) — completed
-- [002 Claude And Gemini ACP Range Maintenance](002-claude-and-gemini-acp-range-maintenance.md) — superseded
-- [003 Codex Request-ID Canonicalization](003-codex-request-id-canonicalization.md) — completed
-- [004 Provider Request Reference Representation](004-provider-request-reference-representation.md) — completed
-- [005 Cursor Installed Dual-Route Foundation](005-cursor-installed-dual-route-foundation.md) — completed
-- [006 Antigravity Personal Harness Foundation](006-antigravity-personal-harness-foundation.md) — completed
-- [007 Codex Operation-Local Child Activity Ownership](007-codex-operation-local-child-activity-ownership.md) — completed
-- [008 Codex Child Turn Lifecycle Ownership](008-codex-child-turn-lifecycle-ownership.md) — completed
-- [009 Qwen Code Installed Range Closure](009-qwen-code-installed-range-closure.md) — completed
-- [010 Pi RPC Installed Range Closure](010-pi-rpc-installed-range-closure.md) — completed
-- [011 Host-Approved Interpreted Executable Launch](011-host-approved-interpreted-executable-launch.md) — completed
-- [012 Grok Build 0.2.117 Range Maintenance](012-grok-build-0-2-117-range-maintenance.md) — completed
-- [013 Kimi Code 0.31.1 Range Maintenance](013-kimi-code-0-31-1-range-maintenance.md) — completed
-- [014 Cursor Agent 2026.07.23 Range Maintenance](014-cursor-agent-2026-07-23-range-maintenance.md) — completed
-- [015 Claude Agent 0.64 Standalone Range Maintenance](015-claude-agent-0-64-standalone-range-maintenance.md) — completed
-- [016 Attached Harness Probe Compatibility Truth](016-attached-harness-probe-compatibility-truth.md) — completed
-- [017 Prepared Facade Multi-Consumer Usability](017-prepared-facade-multi-consumer-usability.md) — completed
-- [018 Codex Exec Queryless Navigation Lifecycle](018-codex-exec-queryless-navigation-lifecycle.md) — completed
-- [019 Provider Session Catalogue And Import Foundation](019-provider-session-catalogue-and-import-foundation.md) — completed
-- [020 Codex External Thread Discovery And Import](020-codex-external-thread-discovery-and-import.md) — completed
-- [021 ACP Session List And Kimi Import](021-acp-session-list-and-kimi-import.md) — completed
-- [022 OpenCode External Session Discovery And Import](022-opencode-external-session-discovery-and-import.md) — completed
-- [023 Provider Session Import Acceptance And Handoff](023-provider-session-import-acceptance-and-handoff.md) — completed
-- [024 Configured Provider Instance Catalogue](024-configured-provider-instance-catalogue.md) — completed
-- [025 Durable Session Resume-Binding Persistence](025-durable-session-resume-binding-persistence.md) — completed
-- [026 Portable Activity Key And Cross-Operation Isolation](026-portable-activity-key-and-cross-operation-isolation.md) — completed
-- [027 Cross-Process Active Operation Reconciliation](027-cross-process-active-operation-reconciliation.md) — completed
-- [028 Controlled Shutdown Active Operation Detachment](028-controlled-shutdown-active-operation-detachment.md) — completed
-- [029 Kimi Operation Checkpoint, Reconciliation, And Detachment](029-kimi-operation-checkpoint-reconciliation-and-detachment.md) — completed
-- [030 OpenAI Background Run Reconciliation And Detachment](030-openai-background-run-reconciliation-and-detachment.md) — completed
-- [031 ACP Retained History Reconciliation Qualification](031-acp-retained-history-reconciliation-qualification.md) — completed
-- [032 Retained Operation Reconciliation Candidate Gate](032-retained-operation-reconciliation-candidate-gate.md) — completed
-- [033 Anthropic Managed Run Reconciliation And Recovered Cleanup](033-anthropic-managed-run-reconciliation-and-recovered-cleanup.md) — completed
-- [034 Working-State Restoration Facade](034-working-state-restoration-facade.md) — completed
-- [035 ACP Continuation Recovery Expansion](035-acp-continuation-recovery-expansion.md) — completed negatively
-- [036 Reconciliation Then Attachment Composition](036-reconciliation-then-attachment-composition.md) — completed
-- [037 Retained Session Recovery Promotion](037-retained-session-recovery-promotion.md) — completed
-- [038 Provider-Wide Interactive Crash Recovery](038-provider-wide-interactive-crash-recovery.md) — completed
-- [039 Provider-Wide Session Usability Restoration](039-provider-wide-session-usability-restoration.md) — completed
-- [040 Oh My Pi RPC Foundation](040-oh-my-pi-rpc-foundation.md) — completed
-- [041 Portable Failure Classification](041-portable-failure-classification.md) — completed
-- [042 Complete Integration Guide System](042-complete-integration-guide-system.md) — completed
-- [043 v0.1.0 Source Release Readiness](043-v0-1-0-source-release-readiness.md) — completed
-- [044 v0.1.1 Source Patch Release](044-v0-1-1-source-patch-release.md) — completed
-- [045 Muse Code Headless Foundation](045-muse-code-headless-foundation.md) — completed
-- [046 v0.2.0 Muse And Rust-Floor Source Release](046-v0-2-0-muse-and-rust-floor-source-release.md) — completed
-- [047 Codex Malformed-Inbound Failure Diagnostics](047-codex-malformed-inbound-failure-diagnostics.md) — completed
-- [048 Late Activity Correlation Adoption](048-late-activity-correlation-adoption.md) — completed
-- [049 Hang And Deadline Closure](049-hang-and-deadline-closure.md) — planned
-- [050 Provider-Reachable Panic Closure](050-provider-reachable-panic-closure.md) — planned
-- [051 Validation Machinery And Index Closure](051-validation-machinery-and-index-closure.md) — planned
-- [052 Shared Adapter Scaffolding](052-shared-adapter-scaffolding.md) — planned
-- [053 Claim And Surface Consistency](053-claim-and-surface-consistency.md) — planned
+- [001 Installed Harness And Protocol Currentness Baseline](./001-installed-harness-and-protocol-currentness-baseline.md) — completed
+- [002 Claude And Gemini ACP Range Maintenance](./002-claude-and-gemini-acp-range-maintenance.md) — superseded
+- [003 Codex Request-ID Canonicalization](./003-codex-request-id-canonicalization.md) — completed
+- [004 Provider Request Reference Representation](./004-provider-request-reference-representation.md) — completed
+- [005 Cursor Installed Dual-Route Foundation](./005-cursor-installed-dual-route-foundation.md) — completed
+- [006 Antigravity Personal Harness Foundation](./006-antigravity-personal-harness-foundation.md) — completed
+- [007 Codex Operation-Local Child Activity Ownership](./007-codex-operation-local-child-activity-ownership.md) — completed
+- [008 Codex Child Turn Lifecycle Ownership](./008-codex-child-turn-lifecycle-ownership.md) — completed
+- [009 Qwen Code Installed Range Closure](./009-qwen-code-installed-range-closure.md) — completed
+- [010 Pi RPC Installed Range Closure](./010-pi-rpc-installed-range-closure.md) — completed
+- [011 Host-Approved Interpreted Executable Launch](./011-host-approved-interpreted-executable-launch.md) — completed
+- [012 Grok Build 0.2.117 Range Maintenance](./012-grok-build-0-2-117-range-maintenance.md) — completed
+- [013 Kimi Code 0.31.1 Range Maintenance](./013-kimi-code-0-31-1-range-maintenance.md) — completed
+- [014 Cursor Agent 2026.07.23 Range Maintenance](./014-cursor-agent-2026-07-23-range-maintenance.md) — completed
+- [015 Claude Agent 0.64 Standalone Range Maintenance](./015-claude-agent-0-64-standalone-range-maintenance.md) — completed
+- [016 Attached Harness Probe Compatibility Truth](./016-attached-harness-probe-compatibility-truth.md) — completed
+- [017 Prepared Facade Multi-Consumer Usability](./017-prepared-facade-multi-consumer-usability.md) — completed
+- [018 Codex Exec Queryless Navigation Lifecycle](./018-codex-exec-queryless-navigation-lifecycle.md) — completed
+- [019 Provider Session Catalogue And Import Foundation](./019-provider-session-catalogue-and-import-foundation.md) — completed
+- [020 Codex External Thread Discovery And Import](./020-codex-external-thread-discovery-and-import.md) — completed
+- [021 ACP Session List And Kimi Import](./021-acp-session-list-and-kimi-import.md) — completed
+- [022 OpenCode External Session Discovery And Import](./022-opencode-external-session-discovery-and-import.md) — completed
+- [023 Provider Session Import Acceptance And Handoff](./023-provider-session-import-acceptance-and-handoff.md) — completed
+- [024 Configured Provider Instance Catalogue](./024-configured-provider-instance-catalogue.md) — completed
+- [025 Durable Session Resume-Binding Persistence](./025-durable-session-resume-binding-persistence.md) — completed
+- [026 Portable Activity Key And Cross-Operation Isolation](./026-portable-activity-key-and-cross-operation-isolation.md) — completed
+- [027 Cross-Process Active Operation Reconciliation](./027-cross-process-active-operation-reconciliation.md) — completed
+- [028 Controlled Shutdown Active Operation Detachment](./028-controlled-shutdown-active-operation-detachment.md) — completed
+- [029 Kimi Operation Checkpoint, Reconciliation, And Detachment](./029-kimi-operation-checkpoint-reconciliation-and-detachment.md) — completed
+- [030 OpenAI Background Run Reconciliation And Detachment](./030-openai-background-run-reconciliation-and-detachment.md) — completed
+- [031 ACP Retained History Reconciliation Qualification](./031-acp-retained-history-reconciliation-qualification.md) — completed
+- [032 Retained Operation Reconciliation Candidate Gate](./032-retained-operation-reconciliation-candidate-gate.md) — completed
+- [033 Anthropic Managed Run Reconciliation And Recovered Cleanup](./033-anthropic-managed-run-reconciliation-and-recovered-cleanup.md) — completed
+- [034 Working-State Restoration Facade](./034-working-state-restoration-facade.md) — completed
+- [035 ACP Continuation Recovery Expansion](./035-acp-continuation-recovery-expansion.md) — completed negatively
+- [036 Reconciliation Then Attachment Composition](./036-reconciliation-then-attachment-composition.md) — completed
+- [037 Retained Session Recovery Promotion](./037-retained-session-recovery-promotion.md) — completed
+- [038 Provider-Wide Interactive Crash Recovery](./038-provider-wide-interactive-crash-recovery.md) — completed
+- [039 Provider-Wide Session Usability Restoration](./039-provider-wide-session-usability-restoration.md) — completed
+- [040 Oh My Pi RPC Foundation](./040-oh-my-pi-rpc-foundation.md) — completed
+- [041 Portable Failure Classification](./041-portable-failure-classification.md) — completed
+- [042 Complete Integration Guide System](./042-complete-integration-guide-system.md) — completed
+- [043 v0.1.0 Source Release Readiness](./043-v0-1-0-source-release-readiness.md) — completed
+- [044 v0.1.1 Source Patch Release](./044-v0-1-1-source-patch-release.md) — completed
+- [045 Muse Code Headless Foundation](./045-muse-code-headless-foundation.md) — completed
+- [046 v0.2.0 Muse And Rust-Floor Source Release](./046-v0-2-0-muse-and-rust-floor-source-release.md) — completed
+- [047 Codex Malformed-Inbound Failure Diagnostics](./047-codex-malformed-inbound-failure-diagnostics.md) — completed
+- [048 Late Activity Correlation Adoption](./048-late-activity-correlation-adoption.md) — completed
+- [049 Hang And Deadline Closure](./049-hang-and-deadline-closure.md) — completed
+- [050 Provider-Reachable Panic Closure](./050-provider-reachable-panic-closure.md) — completed
+- [051 Validation Machinery And Index Closure](./051-validation-machinery-and-index-closure.md) — planned
+- [052 Shared Adapter Scaffolding](./052-shared-adapter-scaffolding.md) — planned
+- [053 Claim And Surface Consistency](./053-claim-and-surface-consistency.md) — planned
 
 ## Checkpoint
 

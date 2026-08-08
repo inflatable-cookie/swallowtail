@@ -4,6 +4,8 @@ set -euo pipefail
 release_repo_root=$(cd "$(dirname "$0")/.." && pwd)
 cd "$release_repo_root"
 
+source release-baselines/rust-toolchains-0.2.0.env
+
 release_tmp=$(mktemp -d)
 trap 'rm -rf "$release_tmp"' EXIT
 
@@ -56,7 +58,7 @@ name = "swallowtail-source-consumer"
 version = "0.0.0"
 edition = "2024"
 publish = false
-rust-version = "1.95"
+rust-version = "$SWALLOWTAIL_MSRV"
 
 [dependencies]
 swallowtail-core = { git = "$release_source_url", rev = "$release_source_commit" }

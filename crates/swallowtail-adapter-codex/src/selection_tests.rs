@@ -6,6 +6,10 @@ use super::*;
 use swallowtail_core::{InterfaceSupportStatus, InterfaceVersion};
 use swallowtail_testkit::{ClosedSemanticWindowCase, assert_closed_semantic_compatibility_window};
 
+fn binding(version: &str) -> InterfaceVersionBinding {
+    codex_cli_binding(version).expect("fixture Codex version is valid")
+}
+
 #[test]
 fn exec_claim_is_closed_at_the_corpus_boundaries() {
     let case = ClosedSemanticWindowCase::new(
@@ -35,7 +39,7 @@ fn exec_claim_is_closed_at_the_corpus_boundaries() {
     assert_closed_semantic_compatibility_window(&codex_exec_claim(), &case);
     assert_eq!(
         codex_exec_claim()
-            .classify(codex_cli_binding("0.121.0").version())
+            .classify(binding("0.121.0").version())
             .unwrap()
             .support_status(),
         InterfaceSupportStatus::Deprecated
@@ -46,9 +50,7 @@ fn exec_claim_is_closed_at_the_corpus_boundaries() {
 fn app_server_claim_dispatches_at_workspace_root_milestone() {
     let claim = codex_app_server_claim();
     for version in ["0.80.0", "0.81.0", "0.84.0", "0.94.0", "0.99.0"] {
-        let matched = claim
-            .classify(codex_cli_binding(version).version())
-            .unwrap();
+        let matched = claim.classify(binding(version).version()).unwrap();
         assert_eq!(
             matched.behavior_revision().as_str(),
             CODEX_APP_SERVER_LEGACY_DEFAULT_BEHAVIOR
@@ -56,9 +58,7 @@ fn app_server_claim_dispatches_at_workspace_root_milestone() {
         assert_eq!(matched.support_status(), InterfaceSupportStatus::Deprecated);
     }
     for version in ["0.100.0", "0.107.0"] {
-        let matched = claim
-            .classify(codex_cli_binding(version).version())
-            .unwrap();
+        let matched = claim.classify(binding(version).version()).unwrap();
         assert_eq!(
             matched.behavior_revision().as_str(),
             CODEX_APP_SERVER_LEGACY_EXPLICIT_BEHAVIOR
@@ -68,7 +68,7 @@ fn app_server_claim_dispatches_at_workspace_root_milestone() {
     for version in ["0.110.0", "0.120.0", "0.130.0"] {
         assert_eq!(
             claim
-                .classify(codex_cli_binding(version).version())
+                .classify(binding(version).version())
                 .unwrap()
                 .behavior_revision()
                 .as_str(),
@@ -78,7 +78,7 @@ fn app_server_claim_dispatches_at_workspace_root_milestone() {
     for version in ["0.131.0", "0.140.0", "0.144.6", "0.145.0", "0.146.0"] {
         assert_eq!(
             claim
-                .classify(codex_cli_binding(version).version())
+                .classify(binding(version).version())
                 .unwrap()
                 .behavior_revision()
                 .as_str(),
@@ -94,7 +94,7 @@ fn app_server_claim_dispatches_at_workspace_root_milestone() {
         "0.146.0-alpha.4",
         "0.147.0",
     ] {
-        assert!(!claim.supports(codex_cli_binding(version).version()));
+        assert!(!claim.supports(binding(version).version()));
     }
 }
 
@@ -151,7 +151,7 @@ fn app_server_lifecycle_claim_preserves_session_range_with_narrower_capabilities
 
     for (version, behavior, status) in cases {
         let matched = claim
-            .classify(codex_cli_binding(version).version())
+            .classify(binding(version).version())
             .expect("qualified version has a lifecycle segment");
         assert_eq!(matched.behavior_revision().as_str(), behavior);
         assert_eq!(matched.support_status(), status);
@@ -159,16 +159,28 @@ fn app_server_lifecycle_claim_preserves_session_range_with_narrower_capabilities
 
     for version in ["0.82.0", "0.83.0", "0.108.0", "0.109.0"] {
         assert!(
-            codex_app_server_claim().supports(codex_cli_binding(version).version())
-                == claim.supports(codex_cli_binding(version).version())
+            codex_app_server_claim().supports(binding(version).version())
+                == claim.supports(binding(version).version())
         );
-        assert!(!claim.supports(codex_cli_binding(version).version()));
+        assert!(!claim.supports(binding(version).version()));
     }
 
-    let unverified = claim.assess(codex_cli_binding("0.147.0").version());
+    let unverified = claim.assess(binding("0.147.0").version());
     assert!(unverified.is_permitted());
     assert_eq!(
         unverified.behavior_revision().unwrap().as_str(),
         HARD_DELETE_BEHAVIOR
     );
+}
+
+#[test]
+fn blank_or_non_semantic_version_text_fails_closed_instead_of_panicking() {
+    for version in ["", "   ", " \t ", "\n", "current", "v0.146.0", "0.146.0\n"] {
+        assert_eq!(
+            codex_cli_binding(version),
+            None,
+            "provider-observed text must never panic the binding helper"
+        );
+    }
+    assert!(codex_cli_binding("0.146.0").is_some());
 }

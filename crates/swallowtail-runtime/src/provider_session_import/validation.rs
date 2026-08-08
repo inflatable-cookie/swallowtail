@@ -3,6 +3,9 @@ use super::{
     ProviderSessionImportRequest, ProviderSessionOperationFailure,
     ProviderSessionOperationFailureStage, failure,
 };
+use crate::plan_family::{
+    validate_agreement_matches_plan, validate_execution_services,
+};
 use crate::{HostServices, RuntimeFailure};
 
 /// Verifies that a catalogue request matches its immutable plan and cursor.
@@ -10,10 +13,15 @@ pub fn validate_provider_session_catalogue_request(
     plan: &ProviderSessionCataloguePlan,
     request: &ProviderSessionCatalogueRequest,
 ) -> Result<(), RuntimeFailure> {
-    if plan.agreement() == request.agreement()
-        && request
-            .cursor()
-            .is_none_or(|cursor| cursor.matches_plan(plan))
+    validate_agreement_matches_plan(
+        plan.agreement(),
+        request.agreement(),
+        "swallowtail.provider_session_catalogue.plan_mismatch",
+        "Provider-session catalogue request does not match its immutable plan",
+    )?;
+    if request
+        .cursor()
+        .is_none_or(|cursor| cursor.matches_plan(plan))
     {
         Ok(())
     } else {
@@ -29,14 +37,12 @@ pub fn validate_provider_session_import_request(
     plan: &ProviderSessionImportPlan,
     request: &ProviderSessionImportRequest,
 ) -> Result<(), RuntimeFailure> {
-    if plan.agreement() == request.agreement() {
-        Ok(())
-    } else {
-        Err(failure(
-            "swallowtail.provider_session_import.plan_mismatch",
-            "Provider-session import request does not match its immutable plan",
-        ))
-    }
+    validate_agreement_matches_plan(
+        plan.agreement(),
+        request.agreement(),
+        "swallowtail.provider_session_import.plan_mismatch",
+        "Provider-session import request does not match its immutable plan",
+    )
 }
 
 /// Verifies a catalogue request and the host services needed to execute it.
@@ -63,24 +69,13 @@ fn validate_services(
     plan: &swallowtail_core::PreflightPlan,
     services: &HostServices,
 ) -> Result<(), ProviderSessionOperationFailure> {
-    services
-        .require_execution_host(plan.execution_host_id())
-        .map_err(before_dispatch_failure)?;
-    let available = services.available_kinds();
-    if plan
-        .requirements()
-        .host_services()
-        .any(|required| !available.contains(&required))
-    {
-        return Err(ProviderSessionOperationFailure::new(
-            ProviderSessionOperationFailureStage::BeforeDispatch,
-            swallowtail_core::SafeDiagnostic::new(
-                "swallowtail.provider_session_operation.service_unavailable",
-                "Provider-session operation host services are unavailable",
-            ),
-        ));
-    }
-    Ok(())
+    validate_execution_services(
+        plan,
+        services,
+        "swallowtail.provider_session_operation.service_unavailable",
+        "Provider-session operation host services are unavailable",
+    )
+    .map_err(before_dispatch_failure)
 }
 
 fn before_dispatch_failure(failure: RuntimeFailure) -> ProviderSessionOperationFailure {

@@ -1,6 +1,6 @@
 #[path = "discovery/probe.rs"]
 mod probe;
-use probe::{ProbeRoute, probe_joined};
+use probe::{probe_acp, probe_headless};
 use swallowtail_core::DiscoveryOutcome;
 use swallowtail_runtime::{
     BoxFuture, DiscoveryDriver, DiscoveryRequest, HostServices,
@@ -29,7 +29,7 @@ impl DiscoveryDriver for GeminiAcpDriver {
         request: InstalledExecutableDiscoveryRequest,
         services: HostServices,
     ) -> BoxFuture<'_, Result<DiscoveryOutcome, RuntimeFailure>> {
-        Box::pin(probe_joined(request, services, ProbeRoute::Acp))
+        probe_acp(request, services)
     }
 }
 
@@ -52,6 +52,6 @@ impl DiscoveryDriver for GeminiHeadlessDriver {
         request: InstalledExecutableDiscoveryRequest,
         services: HostServices,
     ) -> BoxFuture<'_, Result<DiscoveryOutcome, RuntimeFailure>> {
-        Box::pin(probe_joined(request, services, ProbeRoute::Headless))
+        probe_headless(request, services)
     }
 }

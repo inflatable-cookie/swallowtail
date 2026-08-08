@@ -1,12 +1,10 @@
 use crate::AnthropicPreparedIntegration;
 use swallowtail_core::{
-    AccessRequirement, CapabilityProfile, CapabilityRequirement, ConfiguredInstance,
-    CredentialState, Diagnostic, DriverRole, EndpointAuthorization, EntitlementState,
+    CapabilityProfile, CapabilityRequirement, ConfiguredInstance, CredentialState, DriverRole,
     ExecutionLayer, HostServiceKind, ModelRoute, OperationRequirements, OperationShape,
-    PreflightContext, PreflightPlan, ProviderId, RuntimeReadiness, SessionAccessPolicy,
-    SessionProviderStatePolicy, preflight,
+    PreflightPlan, ProviderId, SessionAccessPolicy, SessionProviderStatePolicy,
 };
-use swallowtail_runtime::{PreparationFailure, PreparationStage, PreparedOperationEvidence};
+use swallowtail_runtime::{PreparationFailure, PreparedOperationEvidence};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 /// Inspectable prepared evidence for one Anthropic Messages operation.
@@ -70,21 +68,7 @@ pub(super) fn instance_with_capabilities(
     prepared: &AnthropicPreparedIntegration,
     capabilities: CapabilityProfile,
 ) -> ConfiguredInstance {
-    let base = prepared.instance();
-    ConfiguredInstance::new(
-        base.id().clone(),
-        base.revision().clone(),
-        base.driver_id().clone(),
-        base.execution_host_id().clone(),
-        base.target_reference().clone(),
-        base.ownership(),
-        base.access_profile_id().clone(),
-        base.support_authority(),
-        base.protocol_facade_id().clone(),
-        base.policy_id().clone(),
-        capabilities,
-    )
-    .with_interface_versions(base.interface_versions().cloned())
+    swallowtail_runtime::instance_with_capabilities(prepared.instance(), capabilities)
 }
 
 pub(super) fn model_route(
@@ -112,7 +96,7 @@ pub(super) fn requirements(
     let descriptor = crate::anthropic_direct_descriptor();
     let mut host_services: Vec<_> = descriptor.required_host_services(role).collect();
     host_services.extend(extra_host_services);
-    let mut requirements = OperationRequirements::new(
+    let mut requirements = swallowtail_runtime::base_requirements(
         ExecutionLayer::DirectModelInference,
         if role == DriverRole::InteractiveSession {
             OperationShape::InteractiveSession
@@ -120,17 +104,12 @@ pub(super) fn requirements(
             OperationShape::StructuredRun
         },
         role,
-        prepared.instance().execution_host_id().clone(),
-        AccessRequirement::new(prepared.access_profile().id().clone())
-            .with_credential_states([CredentialState::Ready])
-            .with_entitlement_states([EntitlementState::Available])
-            .with_endpoint_authorizations([EndpointAuthorization::Allowed])
-            .with_runtime_readiness([RuntimeReadiness::Ready])
-            .with_support_authorities([prepared.access_profile().support_authority()]),
+        prepared.instance(),
+        prepared.access_profile(),
+        [CredentialState::Ready],
+        capabilities,
     )
-    .with_ownership_modes([prepared.instance().ownership()])
-    .with_host_services(host_services)
-    .with_capabilities(capabilities);
+    .with_host_services(host_services);
     requirements =
         requirements.with_interface_versions([crate::anthropic_messages_facade_binding()]);
     if role == DriverRole::InteractiveSession {
@@ -147,22 +126,13 @@ pub(super) fn build_plan(
     route: Option<&ModelRoute>,
     requirements: &OperationRequirements,
 ) -> Result<PreflightPlan, PreparationFailure> {
-    let descriptor = crate::anthropic_direct_descriptor();
-    let context = PreflightContext::new(
-        &descriptor,
+    swallowtail_runtime::build_plan(
+        &crate::anthropic_direct_descriptor(),
         instance,
+        route,
+        requirements,
         prepared.access_profile(),
         prepared.access_evidence().status(),
         prepared.available_host_services(),
-    );
-    let context = match route {
-        Some(route) => context.with_model_route(route),
-        None => context,
-    };
-    preflight(&context, requirements).map_err(|error| {
-        PreparationFailure::new(
-            PreparationStage::Preflight,
-            Diagnostic::new(error.diagnostic().clone()),
-        )
-    })
+    )
 }

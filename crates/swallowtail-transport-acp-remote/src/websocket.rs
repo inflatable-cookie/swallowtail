@@ -3,18 +3,22 @@ use crate::cookies::BoundedCookieStore;
 use crate::correlation::CorrelationState;
 use crate::error::{RemoteAcpError, capacity_error, protocol_error, transport_error};
 use crate::wire;
-use crate::worker::{WorkerCommand, WorkerEvent, cancellation_error};
+use crate::worker::{WorkerCommand, WorkerEvent, cancellation_error, race_deadline};
 use async_tungstenite::tungstenite::Message as WebSocketMessage;
 use futures_channel::{mpsc, oneshot};
 use futures_util::{SinkExt, StreamExt};
 use serde_json::Value;
+use std::sync::Arc;
 use swallowtail_protocol_acp::Message;
+use swallowtail_runtime::{Deadline, TimeService};
 
 pub(crate) async fn run(
     config: TransportConfig,
     mut commands: mpsc::Receiver<WorkerCommand>,
     mut events: mpsc::Sender<WorkerEvent>,
     ready: oneshot::Sender<Result<(), RemoteAcpError>>,
+    deadline: Option<Deadline>,
+    time: Option<Arc<dyn TimeService>>,
 ) -> Result<(), RemoteAcpError> {
     let maximum_frame_bytes =
         usize::try_from(config.bounds.maximum_frame_bytes().get()).map_err(|_| capacity_error())?;
@@ -27,11 +31,22 @@ pub(crate) async fn run(
     let mut cookies =
         BoundedCookieStore::new(config.maximum_cookie_count, config.maximum_cookie_bytes)?;
     let cookie_endpoint = cookie_endpoint(&config.endpoint)?;
-    let connection = async_tungstenite::tokio::connect_async(config.endpoint.as_str()).await;
+    // The initial connect is raced against the deadline so a hanging
+    // handshake is interruptible.
+    let connection = match race_deadline(
+        deadline,
+        time.as_deref(),
+        async_tungstenite::tokio::connect_async(config.endpoint.as_str()),
+    )
+    .await
+    {
+        Ok(Ok(connection)) => Ok(connection),
+        Ok(Err(_)) => Err(transport_error()),
+        Err(error) => Err(error),
+    };
     let (mut socket, response) = match connection {
         Ok(connection) => connection,
-        Err(_) => {
-            let error = transport_error();
+        Err(error) => {
             let _ = ready.send(Err(error.clone()));
             return Err(error);
         }
@@ -56,25 +71,35 @@ pub(crate) async fn run(
                         }
                         correlation.outbound(&message)?;
                         let encoded = wire::encode(&message, maximum_frame_bytes)?;
-                        socket.send(WebSocketMessage::Text(encoded.into()))
-                            .await
-                            .map_err(|_| transport_error())?;
+                        let sent: Result<(), _> = race_deadline(
+                            deadline,
+                            time.as_deref(),
+                            socket.send(WebSocketMessage::Text(encoded.into())),
+                        )
+                        .await?;
+                        sent.map_err(|_| transport_error())?;
                     }
                     Some(WorkerCommand::Cancel) => {
-                        let _ = socket.close(None).await;
+                        let _ = race_deadline(deadline, time.as_deref(), socket.close(None)).await;
                         return Err(cancellation_error(false));
                     }
                     Some(WorkerCommand::Deadline) => {
-                        let _ = socket.close(None).await;
+                        let _ = race_deadline(deadline, time.as_deref(), socket.close(None)).await;
                         return Err(cancellation_error(true));
                     }
                     Some(WorkerCommand::Close) | None => {
-                        socket.close(None).await.map_err(|_| transport_error())?;
-                        return Ok(());
+                        match race_deadline(deadline, time.as_deref(), socket.close(None)).await {
+                            Ok(Ok(())) => return Ok(()),
+                            Ok(Err(_)) | Err(_) => return Err(transport_error()),
+                        }
                     }
                 }
             }
-            incoming = socket.next() => {
+            incoming = race_deadline(deadline, time.as_deref(), socket.next()) => {
+                let incoming = match incoming {
+                    Ok(incoming) => incoming,
+                    Err(error) => return Err(error),
+                };
                 match incoming {
                     Some(Ok(WebSocketMessage::Text(text))) => {
                         let message = wire::decode(text.as_str(), maximum_frame_bytes)?;
@@ -88,9 +113,13 @@ pub(crate) async fn run(
                             .map_err(|_| transport_error())?;
                     }
                     Some(Ok(WebSocketMessage::Ping(payload))) => {
-                        socket.send(WebSocketMessage::Pong(payload))
-                            .await
-                            .map_err(|_| transport_error())?;
+                        let ponged: Result<(), _> = race_deadline(
+                            deadline,
+                            time.as_deref(),
+                            socket.send(WebSocketMessage::Pong(payload)),
+                        )
+                        .await?;
+                        ponged.map_err(|_| transport_error())?;
                     }
                     Some(Ok(WebSocketMessage::Pong(_))) => {}
                     Some(Ok(WebSocketMessage::Close(_))) | Some(Err(_)) | None => {

@@ -1,13 +1,13 @@
 # 053 Claim And Surface Consistency
 
-Status: planned
+Status: done
 Owner: Tom
 Created: 2026-08-08
 Generation: g03
 Depends on: g03.052
 Vision tags: consistency, compatibility truth, maintainability
 Contract refs: 003, 029, 037, 047
-Planning state: cards 161-164
+Planning state: cards 161-164 completed
 
 ## Problem
 
@@ -48,10 +48,10 @@ different things per adapter:
 
 ## Execution Plan
 
-- [ ] Execute card 161 (version-claim semantics decision).
-- [ ] Execute card 162 (claim identity standardization and claim-less
+- [x] Execute card 161 (version-claim semantics decision).
+- [x] Execute card 162 (claim identity standardization and claim-less
       posture).
-- [ ] Execute card 163 (runtime plan-family consolidation).
+- [x] Execute card 163 (runtime plan-family consolidation).
 - [ ] Execute card 164 (facade-surface gap closure).
 
 ## Boundaries
@@ -64,11 +64,11 @@ different things per adapter:
 
 ## Acceptance Criteria
 
-- [ ] one documented semantics governs support status across all adapters
-- [ ] claim ids and windows follow one scheme; claim-less adapters either gain
+- [x] one documented semantics governs support status across all adapters
+- [x] claim ids and windows follow one scheme; claim-less adapters either gain
       claims or carry an explicit disposition
-- [ ] the runtime plan family shares one core with per-role validation tables
-- [ ] facade gaps are closed or explicitly disposed in architecture
+- [x] the runtime plan family shares one core with per-role validation tables
+- [x] facade gaps are closed or explicitly disposed in architecture
 
 ## Next Planning Checkpoint
 

@@ -1,31 +1,20 @@
-use swallowtail_core::{Diagnostic, DiscoveryOutcome, DiscoveryStatus, SafeDiagnostic};
-use swallowtail_runtime::{PreparationFailure, PreparationStage, RuntimeFailure};
+use swallowtail_core::DiscoveryOutcome;
+use swallowtail_runtime::{
+    PreparationFailure, PreparationStage, RuntimeFailure,
+    preparation_failure as shared_preparation_failure, probe_outcome_failure,
+    probe_runtime_failure,
+};
 
 pub(super) fn discovery_runtime_failure(error: RuntimeFailure) -> PreparationFailure {
-    let stage = match error.diagnostic().code() {
-        "swallowtail.pi.discovery_axis_mismatch"
-        | "swallowtail.installed_executable.host_services_missing"
-        | "swallowtail.execution_host_mismatch" => PreparationStage::TargetSelection,
-        _ => PreparationStage::ProcessSpawn,
-    };
-    PreparationFailure::new(stage, Diagnostic::new(error.diagnostic().clone()))
+    probe_runtime_failure(&error, "swallowtail.pi.discovery_axis_mismatch")
 }
 
 pub(super) fn discovery_outcome_failure(outcome: &DiscoveryOutcome) -> PreparationFailure {
-    let stage = match outcome.status() {
-        DiscoveryStatus::Malformed => PreparationStage::VersionParse,
-        DiscoveryStatus::Incompatible => PreparationStage::CompatibilityClassification,
-        DiscoveryStatus::CleanupFailed => PreparationStage::Cleanup,
-        DiscoveryStatus::TimedOut | DiscoveryStatus::Cancelled => PreparationStage::BoundedOutput,
-        _ => PreparationStage::ProcessSpawn,
-    };
-    let diagnostic = outcome.diagnostic().cloned().unwrap_or_else(|| {
-        SafeDiagnostic::new(
-            "swallowtail.pi.preparation.discovery_rejected",
-            "Pi installed executable discovery was not promotable",
-        )
-    });
-    PreparationFailure::new(stage, Diagnostic::new(diagnostic))
+    probe_outcome_failure(
+        outcome,
+        "swallowtail.pi.preparation.discovery_rejected",
+        "Pi installed executable discovery was not promotable",
+    )
 }
 
 pub(super) fn preparation_failure(
@@ -33,5 +22,5 @@ pub(super) fn preparation_failure(
     code: &'static str,
     message: &'static str,
 ) -> PreparationFailure {
-    PreparationFailure::new(stage, Diagnostic::new(SafeDiagnostic::new(code, message)))
+    shared_preparation_failure(stage, code, message)
 }

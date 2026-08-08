@@ -1,6 +1,7 @@
 # 161 Version-Claim Semantics Decision
 
-Status: planned
+Status: done
+Closeout: 2026-08-08
 Owner: Tom
 Created: 2026-08-08
 Milestone: `../053-claim-and-surface-consistency.md`
@@ -32,9 +33,26 @@ adapters.
 
 ## Acceptance
 
-- [ ] one documented semantics governs support status across all adapters
-- [ ] the decision is recorded in the contract surface
-- [ ] no claim content changes in this card
+- [x] one documented semantics governs support status across all adapters
+- [x] the decision is recorded in the contract surface
+- [x] no claim content changes in this card
+
+## Closeout
+
+Operator decision (2026-08-08):
+
+1. A segment whose behavior revision is not the claim's newest revision is
+   `Deprecated` by definition: retained for existing installed harnesses,
+   not targeted for new integrations. The newest-revision segment is
+   `Maintained`.
+2. Status is derived automatically from the behavior revision, not a manual
+   per-segment judgment; explicit deprecation before removal uses the same
+   label.
+
+Recorded in Contract 029 (`Segment Support Status`, migration rule for
+existing claims: label-only, deferred to card 162). Core enum doc strings
+sharpened to match; no signature or claim content change. `cargo check` and
+the core suite (65 tests) pass.
 
 ## Stop Conditions
 

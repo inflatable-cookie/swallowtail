@@ -1,13 +1,13 @@
 # 050 Provider-Reachable Panic Closure
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-08
 Generation: g03
 Depends on: g03.049
 Vision tags: safe diagnostics, fail-closed, compatibility maintenance
 Contract refs: 029, 037, 051
-Planning state: cards 148-151
+Planning state: cards 148-151 completed
 
 ## Problem
 
@@ -33,19 +33,19 @@ that is only latent today:
 
 ## Goals
 
-- [ ] make version-binding helpers total: no adapter panics on observed
+- [x] make version-binding helpers total: no adapter panics on observed
       provider text
-- [ ] fail closed wherever a shared enum can grow
-- [ ] remove dead unreachable arms that must be kept in sync by hand
-- [ ] add a CI rule that keeps version-parse expects on literals only
+- [x] fail closed wherever a shared enum can grow
+- [x] remove dead unreachable arms that must be kept in sync by hand
+- [x] add a CI rule that keeps version-parse expects on literals only
 
 ## Execution Plan
 
-- [ ] Execute card 148 (total version-binding helpers and blank-version
+- [x] Execute card 148 (total version-binding helpers and blank-version
       regression).
-- [ ] Execute card 149 (fail-closed exhaustiveness and dead-match removal).
-- [ ] Execute card 150 (provider-reachable expect sweep).
-- [ ] Execute card 151 (literal-only version-parse expect rule).
+- [x] Execute card 149 (fail-closed exhaustiveness and dead-match removal).
+- [x] Execute card 150 (provider-reachable expect sweep).
+- [x] Execute card 151 (literal-only version-parse expect rule).
 
 ## Boundaries
 
@@ -56,12 +56,12 @@ that is only latent today:
 
 ## Acceptance Criteria
 
-- [ ] blank and whitespace-only provider versions fail closed with a version
+- [x] blank and whitespace-only provider versions fail closed with a version
       diagnostic across every adapter with an observed version axis
-- [ ] shared-enum growth cannot reach a provider-triggered panic
-- [ ] no dead unreachable arm remains behind an upstream conversion
-- [ ] the CI rule fails any non-literal `InterfaceVersion::new(...).expect`
-- [ ] focused and workspace test rounds pass
+- [x] shared-enum growth cannot reach a provider-triggered panic
+- [x] no dead unreachable arm remains behind an upstream conversion
+- [x] the CI rule fails any non-literal `InterfaceVersion::new(...).expect`
+- [x] focused and workspace test rounds pass
 
 ## Next Planning Checkpoint
 

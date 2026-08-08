@@ -1,11 +1,12 @@
 #![deny(missing_docs)]
 
-use crate::{
-    CancellationControl, HostServices, ImmediateCancellation, PreparationFailure,
-    PreparedOperationEvidence, ProviderSessionManagementBinding, RateLimitObservation, RequestId,
-    RuntimeFailure,
+use crate::plan_family::{
+    PlanRule, check_plan_rules, validate_agreement_matches_plan, validate_execution_services,
 };
-use std::sync::Arc;
+use crate::{
+    CancellationControl, HostServices, PreparationFailure, PreparedOperationEvidence,
+    ProviderSessionManagementBinding, RateLimitObservation, RuntimeFailure,
+};
 use swallowtail_core::{
     CancellationScope, DriverRole, HostServiceKind, OperationShape, PreflightPlan,
     ProviderRequestRef, ProviderSessionActivityEvidence, ProviderSessionAffectedScope,
@@ -125,95 +126,52 @@ impl ProviderSessionManagementPlan {
     }
 }
 
-macro_rules! typed_request {
-    ($name:ident, $documentation:literal, $matches:pat, $message:literal) => {
-        #[doc = $documentation]
-        #[derive(Clone, Debug)]
-        pub struct $name {
-            request_id: RequestId,
-            agreement: ProviderSessionManagementAgreement,
-            cancellation: Arc<ImmediateCancellation>,
-        }
+use crate::plan_family::plan_family;
 
-        impl $name {
-            /// Creates a typed request after validating action and cancellation scope.
-            pub fn new(
-                request_id: RequestId,
-                agreement: ProviderSessionManagementAgreement,
-                cancellation: Arc<ImmediateCancellation>,
-            ) -> Result<Self, RuntimeFailure> {
-                if !matches!(agreement.action(), $matches) {
-                    return Err(failure(
-                        "swallowtail.provider_session_management.request_action_mismatch",
-                        $message,
-                    ));
-                }
-                if cancellation.scope() != CancellationScope::ProviderSessionManagement {
-                    return Err(failure(
-                        "swallowtail.provider_session_management.cancellation_scope_mismatch",
-                        "Provider-session request has the wrong cancellation scope",
-                    ));
-                }
-                Ok(Self {
-                    request_id,
-                    agreement,
-                    cancellation,
-                })
+plan_family! {
+    requests: {
+        plan_type: ProviderSessionManagementPlan,
+        agreement: ProviderSessionManagementAgreement,
+        agreement_doc: "Returns the immutable management agreement.",
+        scope: CancellationScope::ProviderSessionManagement,
+        ns: "swallowtail.provider_session_management",
+        requests: [
+            ArchiveProviderSessionRequest = "Typed request to archive one inactive provider session." {
+                new_doc: "Creates a typed request after validating action and cancellation scope.",
+                new_arg: agreement: ProviderSessionManagementAgreement,
+                agreement_expr: agreement.clone(),
+                from_plan_doc: "Creates a typed request from a validated management plan.",
+                from_plan_arg: plan_agreement,
+                request_id_doc: "Returns the consumer-unique request identity.",
+                extra: matches!(agreement.action(), ProviderSessionManagementAction::Archive),
+                extra_code: "swallowtail.provider_session_management.request_action_mismatch",
+                extra_message: "Archive request does not contain an archive agreement",
             }
-
-            /// Creates a typed request from a validated management plan.
-            pub fn from_plan(
-                request_id: RequestId,
-                plan: &ProviderSessionManagementPlan,
-            ) -> Result<Self, RuntimeFailure> {
-                Self::new(
-                    request_id,
-                    plan.agreement().clone(),
-                    Arc::new(ImmediateCancellation::new(
-                        CancellationScope::ProviderSessionManagement,
-                    )),
-                )
+            RestoreProviderSessionRequest = "Typed request to restore one inactive provider session." {
+                new_doc: "Creates a typed request after validating action and cancellation scope.",
+                new_arg: agreement: ProviderSessionManagementAgreement,
+                agreement_expr: agreement.clone(),
+                from_plan_doc: "Creates a typed request from a validated management plan.",
+                from_plan_arg: plan_agreement,
+                request_id_doc: "Returns the consumer-unique request identity.",
+                extra: matches!(agreement.action(), ProviderSessionManagementAction::Restore),
+                extra_code: "swallowtail.provider_session_management.request_action_mismatch",
+                extra_message: "Restore request does not contain a restore agreement",
             }
-
-            /// Returns the consumer-unique request identity.
-            #[must_use]
-            pub const fn request_id(&self) -> &RequestId {
-                &self.request_id
+            DeleteProviderSessionRequest = "Typed request to delete provider-session data at the agreed strength." {
+                new_doc: "Creates a typed request after validating action and cancellation scope.",
+                new_arg: agreement: ProviderSessionManagementAgreement,
+                agreement_expr: agreement.clone(),
+                from_plan_doc: "Creates a typed request from a validated management plan.",
+                from_plan_arg: plan_agreement,
+                request_id_doc: "Returns the consumer-unique request identity.",
+                extra: matches!(agreement.action(), ProviderSessionManagementAction::Delete(_)),
+                extra_code: "swallowtail.provider_session_management.request_action_mismatch",
+                extra_message: "Delete request does not contain a delete agreement",
             }
-
-            /// Returns the immutable management agreement.
-            #[must_use]
-            pub const fn agreement(&self) -> &ProviderSessionManagementAgreement {
-                &self.agreement
-            }
-
-            /// Returns the request cancellation control.
-            #[must_use]
-            pub const fn cancellation(&self) -> &Arc<ImmediateCancellation> {
-                &self.cancellation
-            }
-        }
-    };
+        ]
+    }
 }
-
-typed_request!(
-    ArchiveProviderSessionRequest,
-    "Typed request to archive one inactive provider session.",
-    ProviderSessionManagementAction::Archive,
-    "Archive request does not contain an archive agreement"
-);
-typed_request!(
-    RestoreProviderSessionRequest,
-    "Typed request to restore one inactive provider session.",
-    ProviderSessionManagementAction::Restore,
-    "Restore request does not contain a restore agreement"
-);
-typed_request!(
-    DeleteProviderSessionRequest,
-    "Typed request to delete provider-session data at the agreed strength.",
-    ProviderSessionManagementAction::Delete(_),
-    "Delete request does not contain a delete agreement"
-);
 
 /// Exact provider effect truth plus safe request and rate evidence.
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -331,81 +289,91 @@ pub fn validate_provider_session_management_request(
     agreement: &ProviderSessionManagementAgreement,
     services: &HostServices,
 ) -> Result<(), RuntimeFailure> {
-    if plan.agreement() != agreement {
-        return Err(failure(
-            "swallowtail.provider_session_management.plan_mismatch",
-            "Provider-session request does not match its immutable management plan",
-        ));
-    }
-    services.require_execution_host(plan.preflight().execution_host_id())?;
-    let available = services.available_kinds();
-    if plan
-        .preflight()
-        .requirements()
-        .host_services()
-        .any(|required| !available.contains(&required))
-    {
-        return Err(failure(
-            "swallowtail.provider_session_management.service_unavailable",
-            "Provider-session management host services are unavailable",
-        ));
-    }
-    Ok(())
+    validate_agreement_matches_plan(
+        agreement,
+        plan.agreement(),
+        "swallowtail.provider_session_management.plan_mismatch",
+        "Provider-session request does not match its immutable management plan",
+    )?;
+    validate_execution_services(
+        plan.preflight(),
+        services,
+        "swallowtail.provider_session_management.service_unavailable",
+        "Provider-session management host services are unavailable",
+    )
 }
+
+/// Ordered per-role validation rules for a provider-session management plan.
+///
+/// Management requires a scoped task service and action-specific
+/// initial-state rules in addition to the shared role, shape, binding, and
+/// capability checks.
+const MANAGEMENT_PLAN_RULES: [PlanRule<ProviderSessionManagementAgreement>; 7] = [
+    PlanRule::new(
+        "swallowtail.provider_session_management.plan_mismatch",
+        "Provider-session management binding does not match its immutable preflight plan",
+        |preflight, _| {
+            preflight.requirements().driver_role() == DriverRole::ProviderSessionManagement
+        },
+    ),
+    PlanRule::new(
+        "swallowtail.provider_session_management.plan_mismatch",
+        "Provider-session management binding does not match its immutable preflight plan",
+        |preflight, _| {
+            preflight.requirements().operation_shape()
+                == OperationShape::ProviderSessionManagement
+        },
+    ),
+    PlanRule::new(
+        "swallowtail.provider_session_management.plan_mismatch",
+        "Provider-session management binding does not match its immutable preflight plan",
+        |preflight, agreement| agreement.binding().matches_preflight_plan(preflight),
+    ),
+    PlanRule::new(
+        "swallowtail.provider_session_management.capability_mismatch",
+        "Provider-session plan does not authorize the requested action",
+        |preflight, agreement| {
+            let capability = agreement.action().required_capability();
+            agreement.binding().supports(capability)
+                && preflight
+                    .requirements()
+                    .capabilities()
+                    .any(|required| required.capability() == capability)
+        },
+    ),
+    PlanRule::new(
+        "swallowtail.provider_session_management.initial_state_mismatch",
+        "Provider-session initial state does not match the requested action",
+        |_, agreement| initial_state_matches_action(agreement.action(), agreement.initial_state()),
+    ),
+    PlanRule::new(
+        "swallowtail.provider_session_management.task_service_required",
+        "Provider-session management requires scoped task service",
+        |preflight, _| {
+            preflight
+                .requirements()
+                .host_services()
+                .any(|service| service == HostServiceKind::Task)
+        },
+    ),
+    PlanRule::new(
+        "swallowtail.provider_session_management.time_service_required",
+        "Deadline-bound provider-session management requires time service",
+        |preflight, agreement| {
+            agreement.deadline().is_none()
+                || preflight
+                    .requirements()
+                    .host_services()
+                    .any(|service| service == HostServiceKind::Time)
+        },
+    ),
+];
 
 fn validate_plan(
     preflight: &PreflightPlan,
     agreement: &ProviderSessionManagementAgreement,
 ) -> Result<(), RuntimeFailure> {
-    if preflight.requirements().driver_role() != DriverRole::ProviderSessionManagement
-        || preflight.requirements().operation_shape() != OperationShape::ProviderSessionManagement
-    {
-        return Err(plan_mismatch());
-    }
-    if !agreement.binding().matches_preflight_plan(preflight) {
-        return Err(plan_mismatch());
-    }
-
-    let capability = agreement.action().required_capability();
-    if !agreement.binding().supports(capability)
-        || !preflight
-            .requirements()
-            .capabilities()
-            .any(|required| required.capability() == capability)
-    {
-        return Err(failure(
-            "swallowtail.provider_session_management.capability_mismatch",
-            "Provider-session plan does not authorize the requested action",
-        ));
-    }
-    if !initial_state_matches_action(agreement.action(), agreement.initial_state()) {
-        return Err(failure(
-            "swallowtail.provider_session_management.initial_state_mismatch",
-            "Provider-session initial state does not match the requested action",
-        ));
-    }
-    if !preflight
-        .requirements()
-        .host_services()
-        .any(|service| service == HostServiceKind::Task)
-    {
-        return Err(failure(
-            "swallowtail.provider_session_management.task_service_required",
-            "Provider-session management requires scoped task service",
-        ));
-    }
-    if agreement.deadline().is_some()
-        && !preflight
-            .requirements()
-            .host_services()
-            .any(|service| service == HostServiceKind::Time)
-    {
-        return Err(failure(
-            "swallowtail.provider_session_management.time_service_required",
-            "Deadline-bound provider-session management requires time service",
-        ));
-    }
-    Ok(())
+    check_plan_rules(preflight, agreement, &MANAGEMENT_PLAN_RULES)
 }
 
 const fn initial_state_matches_action(
@@ -429,16 +397,6 @@ const fn initial_state_matches_action(
     )
 }
 
-fn plan_mismatch() -> RuntimeFailure {
-    failure(
-        "swallowtail.provider_session_management.plan_mismatch",
-        "Provider-session management binding does not match its immutable preflight plan",
-    )
-}
-
-fn failure(code: &'static str, message: &'static str) -> RuntimeFailure {
-    RuntimeFailure::new(SafeDiagnostic::new(code, message))
-}
 
 #[cfg(test)]
 #[path = "provider_session_operation/tests.rs"]

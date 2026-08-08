@@ -265,7 +265,7 @@ async fn pump_managed_run(
 }
 
 fn provider_status(error: RuntimeFailure) -> TerminalStatus {
-    TerminalStatus::ProviderFailed(error.diagnostic().clone())
+    swallowtail_runtime::provider_status(error)
 }
 
 fn is_deadline_error(error: &RuntimeFailure) -> bool {

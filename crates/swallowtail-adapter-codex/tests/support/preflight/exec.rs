@@ -113,7 +113,11 @@ pub fn bind_current_exec_policy(policy: OperationPolicy) -> OperationPolicy {
 }
 
 pub fn exec_policy_for_version(version: &str) -> OperationPolicy {
-    let assessment = codex_exec_claim().assess(codex_cli_binding(version).version());
+    let assessment = codex_exec_claim().assess(
+        codex_cli_binding(version)
+            .expect("fixture Codex version is valid")
+            .version(),
+    );
     let retention = if assessment
         .behavior_revision()
         .expect("fixture version is permitted")
@@ -132,7 +136,11 @@ pub fn exec_policy_for_version(version: &str) -> OperationPolicy {
 fn exec_posture(version: Option<&str>) -> HarnessConfigurationPosture {
     let version = version.unwrap_or(CODEX_LATEST_QUALIFIED_VERSION);
     if codex_exec_claim()
-        .classify(codex_cli_binding(version).version())
+        .classify(
+            codex_cli_binding(version)
+                .expect("fixture Codex version is valid")
+                .version(),
+        )
         .is_some_and(|matched| matched.support_status() == InterfaceSupportStatus::Deprecated)
     {
         HarnessConfigurationPosture::Ambient

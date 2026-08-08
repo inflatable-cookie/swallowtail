@@ -14,14 +14,27 @@ pub(crate) const OLLAMA_RUNTIME_AXIS: &str = "ollama.runtime";
 pub(crate) const OLLAMA_DRIVER_ID: &str = "swallowtail.ollama.native-attached";
 /// Exact text-only native API facade selected by this adapter.
 pub const OLLAMA_NATIVE_FACADE: &str = "ollama.native-api.text-v1";
+/// Maximum accepted observed Ollama runtime-version text.
+const MAX_VERSION_BYTES: usize = 64;
 
 /// Binds an observed Ollama runtime version to its semantic-version axis.
+///
+/// Returns `None` for blank, oversized, or control-character text, so a
+/// malformed provider version can never panic a caller. Classification of
+/// well-formed but out-of-window text stays with the compatibility claim.
 #[must_use]
-pub fn ollama_runtime_binding(version: &str) -> InterfaceVersionBinding {
-    InterfaceVersionBinding::new(
+pub fn ollama_runtime_binding(version: &str) -> Option<InterfaceVersionBinding> {
+    if version.is_empty()
+        || version.len() > MAX_VERSION_BYTES
+        || version.trim() != version
+        || version.chars().any(char::is_control)
+    {
+        return None;
+    }
+    Some(InterfaceVersionBinding::new(
         InterfaceVersionAxis::new(OLLAMA_RUNTIME_AXIS).expect("static version axis is valid"),
-        InterfaceVersion::new(version).expect("runtime version is required"),
-    )
+        InterfaceVersion::new(version).ok()?,
+    ))
 }
 
 /// Returns the maintained runtime window and known excluded version.
@@ -110,17 +123,23 @@ mod tests {
         for version in ["0.14.0", "0.18.0", "0.30.0", "0.32.1"] {
             assert_eq!(
                 descriptor
-                    .classify_interface_version(&ollama_runtime_binding(version))
+                    .classify_interface_version(
+                        &ollama_runtime_binding(version).expect("fixture Ollama version is valid"),
+                    )
                     .expect("qualification point is supported")
                     .support_status(),
                 InterfaceSupportStatus::Maintained
             );
         }
         for version in ["0.13.5", "0.18.0-rc.1", "0.32.2", "0.32.3-rc.0"] {
-            assert!(!descriptor.supports_interface_version(&ollama_runtime_binding(version)));
+            assert!(!descriptor.supports_interface_version(
+                &ollama_runtime_binding(version).expect("fixture Ollama version is valid"),
+            ));
         }
         assert!(matches!(
-            descriptor.assess_interface_version(&ollama_runtime_binding("0.33.0")),
+            descriptor.assess_interface_version(
+                &ollama_runtime_binding("0.33.0").expect("fixture Ollama version is valid"),
+            ),
             swallowtail_core::InterfaceCompatibilityAssessment::UnverifiedNewer(_)
         ));
     }

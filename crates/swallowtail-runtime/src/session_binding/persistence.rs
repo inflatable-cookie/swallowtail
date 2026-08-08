@@ -15,8 +15,8 @@ pub(crate) fn attachment_fingerprint_for_checkpoint(
     plan: &PreflightPlan,
     working_resource: &WorkingResourceRef,
     access_policy: &SessionAccessPolicy,
-) -> Option<[u8; 32]> {
-    attachment_fingerprint(plan, working_resource, access_policy).ok()
+) -> Result<[u8; 32], SessionResumeBindingPersistenceFailure> {
+    attachment_fingerprint(plan, working_resource, access_policy)
 }
 
 const MAGIC: &[u8; 16] = b"SWST-RESUME-BIND";

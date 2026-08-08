@@ -109,6 +109,8 @@ pub(super) async fn websocket_runs_raw_corpus_callback_cancel_and_close() {
         command_rx,
         event_tx,
         ready_tx,
+        None,
+        None,
     ));
     ready_rx.await.unwrap().unwrap();
 
@@ -143,6 +145,8 @@ pub(super) async fn websocket_disconnect_invalidates_without_recovery() {
         command_rx,
         event_tx,
         ready_tx,
+        None,
+        None,
     ));
     ready_rx.await.unwrap().unwrap();
     send(&mut commands, initialize()).await;
@@ -170,6 +174,8 @@ pub(super) async fn websocket_cancel_and_deadline_close_owned_connection() {
             command_rx,
             event_tx,
             ready_tx,
+            None,
+            None,
         ));
         ready_rx.await.unwrap().unwrap();
         commands.send(command).await.unwrap();
@@ -180,6 +186,74 @@ pub(super) async fn websocket_cancel_and_deadline_close_owned_connection() {
         assert_eq!(error.kind(), expected);
         assert!(server.await.unwrap(), "fixture peer observed close");
     }
+}
+
+pub(super) async fn websocket_hanging_connect_fails_within_deadline() {
+    let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let address = listener.local_addr().unwrap();
+    let server = tokio::spawn(async move {
+        // Accept the TCP connection, hold it open, and never answer the
+        // upgrade handshake.
+        let (stream, _) = listener.accept().await.unwrap();
+        let _open = stream;
+        tokio::time::sleep(std::time::Duration::from_secs(2)).await;
+    });
+    let time = Arc::new(super::host::ElapsedTimeService::new());
+    let deadline = time.deadline(std::time::Duration::from_millis(500));
+    let endpoint = Url::parse(&format!("ws://{address}/acp")).unwrap();
+    let (_commands, command_rx, event_tx, _events, ready_tx, _ready_rx) = channels().await;
+    let worker = tokio::spawn(crate::websocket::run(
+        config(endpoint, RemoteAcpTransport::WebSocket),
+        command_rx,
+        event_tx,
+        ready_tx,
+        Some(deadline),
+        Some(time),
+    ));
+    let error = tokio::time::timeout(std::time::Duration::from_secs(5), worker)
+        .await
+        .expect("hanging WebSocket connect fails within the deadline")
+        .unwrap()
+        .expect_err("hanging WebSocket connect fails transport");
+    assert_eq!(error.kind(), RemoteAcpErrorKind::DeadlineExceeded);
+    server.await.unwrap();
+}
+
+pub(super) async fn websocket_silent_peer_fails_within_deadline() {
+    let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let address = listener.local_addr().unwrap();
+    let server = tokio::spawn(async move {
+        let (stream, _) = listener.accept().await.unwrap();
+        let _socket = async_tungstenite::tokio::accept_hdr_async(
+            stream,
+            UpgradeCallback(Arc::new(Mutex::new(ServerEvidence::default()))),
+        )
+        .await
+        .unwrap();
+        // Hold the connection open without answering any message.
+        tokio::time::sleep(std::time::Duration::from_secs(2)).await;
+    });
+    let time = Arc::new(super::host::ElapsedTimeService::new());
+    let deadline = time.deadline(std::time::Duration::from_millis(500));
+    let endpoint = Url::parse(&format!("ws://{address}/acp")).unwrap();
+    let (mut commands, command_rx, event_tx, _events, ready_tx, ready_rx) = channels().await;
+    let worker = tokio::spawn(crate::websocket::run(
+        config(endpoint, RemoteAcpTransport::WebSocket),
+        command_rx,
+        event_tx,
+        ready_tx,
+        Some(deadline),
+        Some(time),
+    ));
+    ready_rx.await.unwrap().unwrap();
+    send(&mut commands, initialize()).await;
+    let error = tokio::time::timeout(std::time::Duration::from_secs(5), worker)
+        .await
+        .expect("silent WebSocket peer fails within the deadline")
+        .unwrap()
+        .expect_err("silent WebSocket peer fails transport");
+    assert_eq!(error.kind(), RemoteAcpErrorKind::DeadlineExceeded);
+    server.await.unwrap();
 }
 
 pub(super) async fn termination_server(

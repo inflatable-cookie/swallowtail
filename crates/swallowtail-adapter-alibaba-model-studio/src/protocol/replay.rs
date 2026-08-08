@@ -152,7 +152,16 @@ pub fn parse_replay_page(
     {
         return Err(invalid("conversation replay page bounds"));
     }
-    let next_after = has_more.then(|| item_ids.last().expect("nonempty page checked").clone());
+    let next_after = if has_more {
+        Some(
+            item_ids
+                .last()
+                .ok_or_else(|| invalid("conversation replay page is empty"))?
+                .clone(),
+        )
+    } else {
+        None
+    };
     Ok(ConversationReplayPage {
         replay,
         item_ids,

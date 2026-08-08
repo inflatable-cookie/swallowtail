@@ -1,15 +1,14 @@
 use swallowtail_core::DiscoveryOutcome;
 use swallowtail_runtime::{
-    BoxFuture, DiscoveryDriver, DiscoveryRequest, HostServices, InstalledProbeCodes,
-    InstalledExecutableDiscoveryRequest, RuntimeFailure, installed_probe_codes,
-    probe_installed_executable_version,
+    BoxFuture, DiscoveryDriver, DiscoveryRequest, HostServices,
+    InstalledExecutableDiscoveryRequest, InstalledProbeCodes, RuntimeFailure,
+    installed_probe_codes, probe_installed_executable_version,
 };
 
 use crate::{MuseHeadlessDriver, muse_code_release_binding, muse_headless_claim};
 
-
-
-const SWALLOWTAIL_MUSE_PROBE_CODES: InstalledProbeCodes = installed_probe_codes!("swallowtail.muse");
+const SWALLOWTAIL_MUSE_PROBE_CODES: InstalledProbeCodes =
+    installed_probe_codes!("swallowtail.muse");
 impl DiscoveryDriver for MuseHeadlessDriver {
     fn discover(
         &self,

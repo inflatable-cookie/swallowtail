@@ -320,8 +320,7 @@ const MANAGEMENT_PLAN_RULES: [PlanRule<ProviderSessionManagementAgreement>; 7] =
         "swallowtail.provider_session_management.plan_mismatch",
         "Provider-session management binding does not match its immutable preflight plan",
         |preflight, _| {
-            preflight.requirements().operation_shape()
-                == OperationShape::ProviderSessionManagement
+            preflight.requirements().operation_shape() == OperationShape::ProviderSessionManagement
         },
     ),
     PlanRule::new(
@@ -396,7 +395,6 @@ const fn initial_state_matches_action(
         )
     )
 }
-
 
 #[cfg(test)]
 #[path = "provider_session_operation/tests.rs"]

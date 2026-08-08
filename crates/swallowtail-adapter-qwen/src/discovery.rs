@@ -1,8 +1,8 @@
 use swallowtail_core::DiscoveryOutcome;
 use swallowtail_runtime::{
-    BoxFuture, DiscoveryDriver, DiscoveryRequest, HostServices, InstalledProbeCodes,
-    InstalledExecutableDiscoveryRequest, RuntimeFailure, installed_probe_codes,
-    probe_installed_executable_version,
+    BoxFuture, DiscoveryDriver, DiscoveryRequest, HostServices,
+    InstalledExecutableDiscoveryRequest, InstalledProbeCodes, RuntimeFailure,
+    installed_probe_codes, probe_installed_executable_version,
 };
 
 use crate::validation::failure;

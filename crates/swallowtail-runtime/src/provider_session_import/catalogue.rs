@@ -232,8 +232,7 @@ const CATALOGUE_PLAN_RULES: [PlanRule<ProviderSessionCatalogueAgreement>; 7] = [
         "swallowtail.provider_session_catalogue.time_service_required",
         "Deadline-bound provider-session catalogue requires time service",
         |preflight, agreement| {
-            agreement.deadline().is_none()
-                || requires_service(preflight, HostServiceKind::Time)
+            agreement.deadline().is_none() || requires_service(preflight, HostServiceKind::Time)
         },
     ),
     PlanRule::new(

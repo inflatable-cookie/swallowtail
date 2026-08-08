@@ -20,8 +20,7 @@ const BOUND_MISMATCH_CODE: &str = "swallowtail.provider_session_reconciliation.b
 const BOUND_MISMATCH_MESSAGE: &str =
     "Provider-session reconciliation bounds differ from its capability plan";
 
-const TIME_SERVICE_CODE: &str =
-    "swallowtail.provider_session_reconciliation.time_service_required";
+const TIME_SERVICE_CODE: &str = "swallowtail.provider_session_reconciliation.time_service_required";
 const TIME_SERVICE_MESSAGE: &str =
     "Deadline-bound provider-session reconciliation requires time service";
 
@@ -33,23 +32,20 @@ const TIME_SERVICE_MESSAGE: &str =
 /// explicit rules the audit asked to surface rather than hand-rolled
 /// validator differences.
 const RECONCILIATION_PLAN_RULES: [PlanRule<ProviderSessionReconciliationAgreement>; 9] = [
-    PlanRule::new(
-        PLAN_MISMATCH_CODE,
-        PLAN_MISMATCH_MESSAGE,
-        |preflight, _| {
-            preflight.requirements().execution_layer() == ExecutionLayer::HarnessInteraction
-        },
-    ),
+    PlanRule::new(PLAN_MISMATCH_CODE, PLAN_MISMATCH_MESSAGE, |preflight, _| {
+        preflight.requirements().execution_layer() == ExecutionLayer::HarnessInteraction
+    }),
     PlanRule::new(PLAN_MISMATCH_CODE, PLAN_MISMATCH_MESSAGE, |preflight, _| {
         preflight.requirements().driver_role() == DriverRole::ProviderSessionReconciliation
     }),
     PlanRule::new(PLAN_MISMATCH_CODE, PLAN_MISMATCH_MESSAGE, |preflight, _| {
-        preflight.requirements().operation_shape()
-            == OperationShape::ProviderSessionReconciliation
+        preflight.requirements().operation_shape() == OperationShape::ProviderSessionReconciliation
     }),
-    PlanRule::new(PLAN_MISMATCH_CODE, PLAN_MISMATCH_MESSAGE, |preflight, agreement| {
-        agreement.binding().matches_plan(preflight)
-    }),
+    PlanRule::new(
+        PLAN_MISMATCH_CODE,
+        PLAN_MISMATCH_MESSAGE,
+        |preflight, agreement| agreement.binding().matches_plan(preflight),
+    ),
     PlanRule::new(PLAN_MISMATCH_CODE, PLAN_MISMATCH_MESSAGE, |preflight, _| {
         preflight.requirements().session_access_policy()
             == Some(&SessionAccessPolicy::ambient_harness(ResourceAccess::Read))
@@ -66,28 +62,37 @@ const RECONCILIATION_PLAN_RULES: [PlanRule<ProviderSessionReconciliationAgreemen
             .host_services()
             .any(|required| required == HostServiceKind::WorkingResource)
     }),
-    PlanRule::new(BOUND_MISMATCH_CODE, BOUND_MISMATCH_MESSAGE, |preflight, agreement| {
-        let capability = preflight
-            .requirements()
-            .capabilities()
-            .find(|required| required.capability() == Capability::ProviderSessionReconciliation)
-            .expect("checked capability");
-        let bounds = agreement.bounds();
-        let expected = [
-            CapabilityConstraint::ReplayMaximumItems(bounds.maximum_replay_items().get()),
-            CapabilityConstraint::ReplayMaximumBytes(bounds.maximum_replay_bytes().get()),
-        ];
-        expected.iter().all(|constraint| {
-            capability.constraints().any(|actual| actual == constraint)
-        }) && capability.constraints().count() == expected.len()
-    }),
-    PlanRule::new(TIME_SERVICE_CODE, TIME_SERVICE_MESSAGE, |preflight, agreement| {
-        agreement.deadline().is_none()
-            || preflight
+    PlanRule::new(
+        BOUND_MISMATCH_CODE,
+        BOUND_MISMATCH_MESSAGE,
+        |preflight, agreement| {
+            let capability = preflight
                 .requirements()
-                .host_services()
-                .any(|required| required == HostServiceKind::Time)
-    }),
+                .capabilities()
+                .find(|required| required.capability() == Capability::ProviderSessionReconciliation)
+                .expect("checked capability");
+            let bounds = agreement.bounds();
+            let expected = [
+                CapabilityConstraint::ReplayMaximumItems(bounds.maximum_replay_items().get()),
+                CapabilityConstraint::ReplayMaximumBytes(bounds.maximum_replay_bytes().get()),
+            ];
+            expected
+                .iter()
+                .all(|constraint| capability.constraints().any(|actual| actual == constraint))
+                && capability.constraints().count() == expected.len()
+        },
+    ),
+    PlanRule::new(
+        TIME_SERVICE_CODE,
+        TIME_SERVICE_MESSAGE,
+        |preflight, agreement| {
+            agreement.deadline().is_none()
+                || preflight
+                    .requirements()
+                    .host_services()
+                    .any(|required| required == HostServiceKind::Time)
+        },
+    ),
 ];
 
 /// Verifies that execution input still matches its immutable plan.

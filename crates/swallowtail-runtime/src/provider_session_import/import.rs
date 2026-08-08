@@ -196,9 +196,7 @@ const IMPORT_PLAN_RULES: [PlanRule<ProviderSessionImportAgreement>; 8] = [
     PlanRule::new(
         "swallowtail.provider_session_import.plan_mismatch",
         "Provider-session import does not match its immutable plan",
-        |preflight, _| {
-            preflight.requirements().driver_role() == DriverRole::ProviderSessionImport
-        },
+        |preflight, _| preflight.requirements().driver_role() == DriverRole::ProviderSessionImport,
     ),
     PlanRule::new(
         "swallowtail.provider_session_import.plan_mismatch",

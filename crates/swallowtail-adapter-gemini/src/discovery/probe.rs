@@ -61,10 +61,7 @@ pub(super) fn probe_headless(
     ))
 }
 
-fn parse_version(
-    output: &[u8],
-    route: ProbeRoute,
-) -> Option<InterfaceVersionBinding> {
+fn parse_version(output: &[u8], route: ProbeRoute) -> Option<InterfaceVersionBinding> {
     let output = std::str::from_utf8(output).ok()?;
     let value = output.strip_suffix('\n').unwrap_or(output);
     if value.bytes().any(|byte| byte.is_ascii_whitespace()) {

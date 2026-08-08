@@ -3,9 +3,7 @@ use super::{
     ProviderSessionImportRequest, ProviderSessionOperationFailure,
     ProviderSessionOperationFailureStage, failure,
 };
-use crate::plan_family::{
-    validate_agreement_matches_plan, validate_execution_services,
-};
+use crate::plan_family::{validate_agreement_matches_plan, validate_execution_services};
 use crate::{HostServices, RuntimeFailure};
 
 /// Verifies that a catalogue request matches its immutable plan and cursor.

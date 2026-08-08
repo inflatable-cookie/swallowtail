@@ -80,8 +80,10 @@ pub fn alibaba_deployable_models_facade_binding() -> swallowtail_core::Interface
 /// Returns the qualified-only claim for deployable-model discovery.
 pub fn alibaba_deployable_models_facade_claim() -> swallowtail_core::InterfaceCompatibilityClaim {
     swallowtail_core::InterfaceCompatibilityClaim::new(
-        swallowtail_core::InterfaceCompatibilityClaimId::new("alibaba-model-studio.deployable-models-window-1")
-            .expect("static claim id is valid"),
+        swallowtail_core::InterfaceCompatibilityClaimId::new(
+            "alibaba-model-studio.deployable-models-window-1",
+        )
+        .expect("static claim id is valid"),
         swallowtail_core::InterfaceVersionAxis::new(
             "alibaba-model-studio.deployable-models-facade",
         )

@@ -1,15 +1,15 @@
 use swallowtail_core::DiscoveryOutcome;
 use swallowtail_runtime::{
-    BoxFuture, DiscoveryDriver, DiscoveryRequest, HostServices, InstalledProbeCodes,
-    InstalledExecutableDiscoveryRequest, RuntimeFailure, installed_probe_codes,
-    probe_installed_executable_version,
+    BoxFuture, DiscoveryDriver, DiscoveryRequest, HostServices,
+    InstalledExecutableDiscoveryRequest, InstalledProbeCodes, RuntimeFailure,
+    installed_probe_codes, probe_installed_executable_version,
 };
 
 use crate::claude_code::ClaudeCodeHeadlessDriver;
 use crate::failure::failure;
 
-
-const SWALLOWTAIL_CLAUDE_CODE_PROBE_CODES: InstalledProbeCodes = installed_probe_codes!("swallowtail.claude_code");
+const SWALLOWTAIL_CLAUDE_CODE_PROBE_CODES: InstalledProbeCodes =
+    installed_probe_codes!("swallowtail.claude_code");
 impl DiscoveryDriver for ClaudeCodeHeadlessDriver {
     fn discover(
         &self,

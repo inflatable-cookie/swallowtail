@@ -313,9 +313,10 @@ const RUN_RECONCILIATION_PLAN_RULES: [PlanRule<ProviderRunReconciliationAgreemen
         "Deadline-bound provider-run reconciliation requires time service",
         |preflight, agreement| {
             agreement.deadline().is_none()
-                || preflight.requirements().host_services().any(|required| {
-                    required == swallowtail_core::HostServiceKind::Time
-                })
+                || preflight
+                    .requirements()
+                    .host_services()
+                    .any(|required| required == swallowtail_core::HostServiceKind::Time)
         },
     ),
 ];

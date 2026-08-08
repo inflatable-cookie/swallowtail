@@ -166,8 +166,7 @@ const CLEANUP_PLAN_RULES: [PlanRule<ProviderRecoveredResourceCleanupAgreement>; 
         "swallowtail.provider_recovered_resource_cleanup.plan_mismatch",
         "Recovered-resource cleanup does not match its immutable binding",
         |preflight, _| {
-            preflight.requirements().driver_role()
-                == DriverRole::ProviderRecoveredResourceCleanup
+            preflight.requirements().driver_role() == DriverRole::ProviderRecoveredResourceCleanup
         },
     ),
     PlanRule::new(
@@ -187,25 +186,18 @@ const CLEANUP_PLAN_RULES: [PlanRule<ProviderRecoveredResourceCleanupAgreement>; 
         "swallowtail.provider_recovered_resource_cleanup.plan_mismatch",
         "Recovered-resource cleanup does not match its immutable binding",
         |preflight, _| {
-            preflight
-                .requirements()
-                .capabilities()
-                .any(|required| {
-                    required.capability() == Capability::ProviderRecoveredResourceCleanup
-                })
+            preflight.requirements().capabilities().any(|required| {
+                required.capability() == Capability::ProviderRecoveredResourceCleanup
+            })
         },
     ),
     PlanRule::new(
         "swallowtail.provider_recovered_resource_cleanup.resource_scope_mismatch",
         "Recovered-resource cleanup scope differs from its capability plan",
         |preflight, agreement| {
-            let Some(capability) = preflight
-                .requirements()
-                .capabilities()
-                .find(|required| {
-                    required.capability() == Capability::ProviderRecoveredResourceCleanup
-                })
-            else {
+            let Some(capability) = preflight.requirements().capabilities().find(|required| {
+                required.capability() == Capability::ProviderRecoveredResourceCleanup
+            }) else {
                 return false;
             };
             let declared = capability
@@ -230,9 +222,10 @@ const CLEANUP_PLAN_RULES: [PlanRule<ProviderRecoveredResourceCleanupAgreement>; 
         "Deadline-bound recovered-resource cleanup requires time service",
         |preflight, agreement| {
             agreement.deadline().is_none()
-                || preflight.requirements().host_services().any(|required| {
-                    required == swallowtail_core::HostServiceKind::Time
-                })
+                || preflight
+                    .requirements()
+                    .host_services()
+                    .any(|required| required == swallowtail_core::HostServiceKind::Time)
         },
     ),
 ];

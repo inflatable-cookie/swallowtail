@@ -1,15 +1,15 @@
 use swallowtail_core::DiscoveryOutcome;
 use swallowtail_runtime::{
-    BoxFuture, DiscoveryDriver, DiscoveryRequest, HostServices, InstalledProbeCodes,
-    InstalledExecutableDiscoveryRequest, RuntimeFailure, installed_probe_codes,
-    probe_installed_executable_version,
+    BoxFuture, DiscoveryDriver, DiscoveryRequest, HostServices,
+    InstalledExecutableDiscoveryRequest, InstalledProbeCodes, RuntimeFailure,
+    installed_probe_codes, probe_installed_executable_version,
 };
 
 use crate::failure::failure;
 use crate::{ClaudeAgentAcpDriver, claude_agent_acp_binding, claude_agent_acp_claim};
 
-
-const SWALLOWTAIL_CLAUDE_AGENT_PROBE_CODES: InstalledProbeCodes = installed_probe_codes!("swallowtail.claude_agent");
+const SWALLOWTAIL_CLAUDE_AGENT_PROBE_CODES: InstalledProbeCodes =
+    installed_probe_codes!("swallowtail.claude_agent");
 impl DiscoveryDriver for ClaudeAgentAcpDriver {
     fn discover(
         &self,

@@ -1,13 +1,12 @@
 use swallowtail_core::DiscoveryOutcome;
 use swallowtail_runtime::{
-    BoxFuture, DiscoveryDriver, DiscoveryRequest, HostServices, InstalledProbeCodes,
-    InstalledExecutableDiscoveryRequest, RuntimeFailure, installed_probe_codes,
-    probe_installed_executable_version as probe,
+    BoxFuture, DiscoveryDriver, DiscoveryRequest, HostServices,
+    InstalledExecutableDiscoveryRequest, InstalledProbeCodes, RuntimeFailure,
+    installed_probe_codes, probe_installed_executable_version as probe,
 };
 
 use crate::failure::failure;
 use crate::{KimiAcpDriver, kimi_acp_claim, kimi_code_binding};
-
 
 pub(crate) const KIMI_PROBE_CODES: InstalledProbeCodes = installed_probe_codes!("swallowtail.kimi");
 

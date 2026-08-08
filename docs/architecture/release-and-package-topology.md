@@ -8,9 +8,10 @@ Realization: roadmap g02.001; g03.043
 ## Boundary
 
 Swallowtail current source is a coordinated 28-package Rust workspace and the
-`v0.3.0` candidate. The immutable `v0.1.x` source tags contain 27 packages;
-`v0.2.0` contains 28 after adding `swallowtail-adapter-muse`. No crate is
-published to crates.io in this release lane.
+`v0.3.1` candidate over the immutable `v0.3.0` tag. The immutable `v0.1.x`
+source tags contain 27 packages; `v0.2.0` and later contain 28 after adding
+`swallowtail-adapter-muse`. No crate is published to crates.io in this release
+lane.
 
 Each package remains independently selectable from the tagged Git source.
 There is no umbrella crate or private implementation package.
@@ -87,16 +88,17 @@ do not rewrite historical release notes, tag contents, or evidence.
 
 ## Version And Toolchains
 
-All candidate packages share version `0.3.0` after release preparation.
+All candidate packages share version `0.3.1` after release preparation.
 
 - unified MSRV: Rust `1.95.0`
 - verified target: Apple Silicon macOS
 
 The immutable `v0.1.x` line used Rust `1.90.0` generally and Rust `1.94.1` for
 Bedrock. `v0.2.0` raised and unified the floor at Rust `1.95.0`. The `v0.3.0`
-candidate keeps that floor; its breaking boundary is the fail-closed optional
-return from the public Codex and Ollama version-binding helpers. The workspace
-lock and Cargo resolver 3 retain reproducible, floor-aware selection.
+tag keeps that floor with the fail-closed optional return from the public
+Codex and Ollama version-binding helpers. The `v0.3.1` candidate is a
+compatible patch on that baseline. The workspace lock and Cargo resolver 3
+retain reproducible, floor-aware selection.
 
 ## Source-Tag Consumption
 
@@ -104,9 +106,9 @@ A consumer selects only the packages it needs:
 
 ```toml
 [dependencies]
-swallowtail-core = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.3.0" }
-swallowtail-runtime = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.3.0" }
-swallowtail-adapter-codex = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.3.0" }
+swallowtail-core = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.3.1" }
+swallowtail-runtime = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.3.1" }
+swallowtail-adapter-codex = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.3.1" }
 ```
 
 All selected packages must use the same tag. Consumers do not combine moving

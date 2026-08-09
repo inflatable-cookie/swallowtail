@@ -1,6 +1,6 @@
 #![deny(missing_docs)]
 
-use crate::{InputValueRequired, OperationContent, SchemaDocument};
+use crate::{IdiomSessionOption, InputValueRequired, OperationContent, SchemaDocument};
 use swallowtail_core::{HarnessMode, ReasoningMode};
 
 /// Consumer-owned tool declaration transported to an interactive harness.
@@ -84,6 +84,7 @@ pub struct SessionOptions {
     reasoning_mode: Option<ReasoningMode>,
     harness_mode: Option<HarnessMode>,
     tools: Vec<ToolDeclaration>,
+    idioms: Option<IdiomSessionOption>,
 }
 
 impl SessionOptions {
@@ -94,6 +95,7 @@ impl SessionOptions {
             && self.reasoning_mode.is_none()
             && self.harness_mode.is_none()
             && self.tools.is_empty()
+            && self.idioms.is_none()
     }
 
     #[must_use]
@@ -128,6 +130,19 @@ impl SessionOptions {
     /// Returns opaque developer instructions, when supplied.
     pub const fn developer_instructions(&self) -> Option<&OperationContent> {
         self.developer_instructions.as_ref()
+    }
+
+    #[must_use]
+    /// Adds the idioms session opt-in under Contract 056.
+    pub fn with_idioms(mut self, idioms: IdiomSessionOption) -> Self {
+        self.idioms = Some(idioms);
+        self
+    }
+
+    #[must_use]
+    /// Returns the idioms session opt-in, when supplied.
+    pub const fn idioms(&self) -> Option<&IdiomSessionOption> {
+        self.idioms.as_ref()
     }
 
     #[must_use]

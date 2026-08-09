@@ -11,6 +11,7 @@ use std::collections::BTreeSet;
 use std::panic::{AssertUnwindSafe, catch_unwind};
 use std::sync::Arc;
 use swallowtail_core::{Diagnostic, ExecutionHostId, HostServiceKind, SafeDiagnostic};
+use swallowtail_idioms::{IdiomSignal, IdiomSink, IdiomSource};
 
 /// Explicit host-service registry supplied to runtime roles.
 ///
@@ -33,6 +34,8 @@ pub struct HostServices {
     serving_endpoint: Option<Arc<dyn ServingEndpointService>>,
     schema: Option<Arc<dyn SchemaService>>,
     diagnostic_observer: Option<Arc<dyn DiagnosticObserver>>,
+    idiom_source: Option<Arc<dyn IdiomSource>>,
+    idiom_recorder: Option<Arc<dyn IdiomSink>>,
 }
 
 impl HostServices {
@@ -54,6 +57,8 @@ impl HostServices {
             serving_endpoint: None,
             schema: None,
             diagnostic_observer: None,
+            idiom_source: None,
+            idiom_recorder: None,
         }
     }
 
@@ -166,6 +171,20 @@ impl HostServices {
         self
     }
 
+    /// Registers the opt-in idiom selection source.
+    #[must_use]
+    pub fn with_idiom_source(mut self, service: Arc<dyn IdiomSource>) -> Self {
+        self.idiom_source = Some(service);
+        self
+    }
+
+    /// Registers the opt-in fail-soft idiom signal recorder.
+    #[must_use]
+    pub fn with_idiom_recorder(mut self, service: Arc<dyn IdiomSink>) -> Self {
+        self.idiom_recorder = Some(service);
+        self
+    }
+
     /// Returns the scoped task service when registered.
     #[must_use]
     pub fn task(&self) -> Option<&Arc<dyn ScopedTaskService>> {
@@ -244,6 +263,27 @@ impl HostServices {
         self.diagnostic_observer.as_ref()
     }
 
+    /// Returns the idiom selection source when registered.
+    #[must_use]
+    pub fn idiom_source(&self) -> Option<&Arc<dyn IdiomSource>> {
+        self.idiom_source.as_ref()
+    }
+
+    /// Returns the fail-soft idiom recorder when registered.
+    #[must_use]
+    pub fn idiom_recorder(&self) -> Option<&Arc<dyn IdiomSink>> {
+        self.idiom_recorder.as_ref()
+    }
+
+    /// Records one idiom signal to the registered recorder, or no-ops when
+    /// absent or when the recorder panics.
+    pub fn record_idiom_signal(&self, signal: IdiomSignal) {
+        let Some(recorder) = self.idiom_recorder.as_ref() else {
+            return;
+        };
+        let _ = catch_unwind(AssertUnwindSafe(|| recorder.record(&signal)));
+    }
+
     /// Emits one diagnostic to the registered observer, or no-ops when absent.
     ///
     /// Observer panics are swallowed so debug sinks cannot alter lifecycle truth.
@@ -318,6 +358,12 @@ impl HostServices {
         }
         if self.diagnostic_observer.is_some() {
             kinds.insert(HostServiceKind::DiagnosticObserver);
+        }
+        if self.idiom_source.is_some() {
+            kinds.insert(HostServiceKind::IdiomSource);
+        }
+        if self.idiom_recorder.is_some() {
+            kinds.insert(HostServiceKind::IdiomRecorder);
         }
         kinds
     }

@@ -2756,6 +2756,7 @@ dependencies = [
  "semver",
  "serde_json",
  "swallowtail-core",
+ "swallowtail-idioms",
  "swallowtail-runtime",
  "swallowtail-testkit",
 ]
@@ -3092,6 +3093,7 @@ dependencies = [
  "semver",
  "sha2 0.10.9",
  "swallowtail-core",
+ "swallowtail-idioms",
  "zeroize",
 ]
 

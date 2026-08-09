@@ -25,6 +25,7 @@ swallowtail-runtime.workspace = true
 [dev-dependencies]
 futures-executor = "0.3"
 futures-util = "0.3"
+swallowtail-idioms.workspace = true
 swallowtail-testkit.workspace = true
 
 [lints]

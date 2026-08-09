@@ -237,6 +237,11 @@ contract file owns the exact rules.
   fail-soft signal sink; a registry client without transport authority; and
   hard boundaries keeping prompt composition, permission authority, and any
   learned-model backend consumer- and host-owned.
+- **056** adds the route-path idioms opt-in: optional host-registered
+  source and recorder ports, an optional session field bound in prepared
+  plans, a fixed bounded fold of selected idioms into the
+  developer-instructions channel, and a capability gate rejecting the
+  opt-in on non-advertising routes before provider work.
 
 ## Amendments
 

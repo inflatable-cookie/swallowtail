@@ -70,6 +70,7 @@ pub use failure_assertions::assert_portable_failure_classification_contract;
 pub use fixture::ContractKernelFixture;
 pub use idiom_assertions::{
     assert_idiom_engine_contract, assert_idiom_static_rules_delivery_contract,
+    assert_idioms_route_opt_in_contract,
 };
 pub use installed_executable_assertions::assert_installed_executable_observation_contract;
 pub use interface_compatibility_assertions::{

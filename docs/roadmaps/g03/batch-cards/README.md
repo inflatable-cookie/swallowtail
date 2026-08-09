@@ -6,6 +6,10 @@
 
 ## Planned
 
+- [193-idioms-route-opt-in-runtime-surface.md](./193-idioms-route-opt-in-runtime-surface.md)
+- [194-idioms-route-opt-in-binding-and-codex-proof.md](./194-idioms-route-opt-in-binding-and-codex-proof.md)
+- [195-nucleus-idioms-adoption-delta.md](./195-nucleus-idioms-adoption-delta.md)
+- [196-idioms-route-opt-in-acceptance.md](./196-idioms-route-opt-in-acceptance.md)
 - [189-idiom-records-and-merge-foundation.md](./189-idiom-records-and-merge-foundation.md)
 - [190-idiom-engine-trait-and-conformance.md](./190-idiom-engine-trait-and-conformance.md)
 - [191-idiom-static-rules-backend-and-delivery.md](./191-idiom-static-rules-backend-and-delivery.md)

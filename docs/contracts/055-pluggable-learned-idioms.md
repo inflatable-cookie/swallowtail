@@ -85,6 +85,13 @@ taste-style pull/push:
 Network transport is host-owned through existing host ports; the crate has
 no HTTP client and no raw network authority.
 
+## Amendment
+
+- **056 (draft)** opens one host-gated exception to the no-prompt-composition
+  boundary: a route-path opt-in may render selected idioms into the opted-in
+  developer-instructions field under a fixed bounded rule. Record, merge,
+  lint, selection, and fail-soft semantics here are unchanged.
+
 ## Conformance
 
 Portable and route tests must cover:

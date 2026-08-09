@@ -67,6 +67,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [112 Muse Code Installed Route Qualification](./112-muse-code-installed-route-qualification.md)
 - [116 Command Code Harness Integration Assessment](./116-command-code-harness-integration-assessment.md)
 - [117 Command Code Taste Mechanism Evidence](./117-command-code-taste-mechanism-evidence.md)
+- [119 Route-Path Idioms Opt-In Evidence](./119-route-path-idioms-opt-in-evidence.md)
 - [118 Command Code Session Continuity And Export](./118-command-code-session-continuity-and-export.md)
 
 ### Hosted APIs And SDKs

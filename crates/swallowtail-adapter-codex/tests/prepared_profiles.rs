@@ -5,8 +5,8 @@ use crate::support;
 use futures_executor::block_on;
 use support::app_server::{AppServerMode, ScriptedAppServer};
 use support::{
-    FakeProcessService, host_services_for, host_services_with, host_services_with_for,
-    working_resource,
+    FakeProcessService, host_services, host_services_for, host_services_with,
+    host_services_with_for, working_resource,
 };
 use swallowtail_adapter_codex::{
     CODEX_CLI_AXIS, CodexExecProfileInput, CodexModelSelection, CodexPreparationInput,
@@ -214,3 +214,76 @@ impl TimeService for PendingTime {
 }
 
 use std::sync::Arc;
+
+#[test]
+fn idioms_session_option_binds_into_the_plan_and_folds_into_developer_instructions() {
+    use swallowtail_idioms::{
+        BoundedText, Idiom, IdiomConstraint, IdiomId, IdiomScope, MonotonicInstant as IdiomClock,
+        Provenance, StaticRulesSource,
+    };
+    use swallowtail_runtime::IdiomSessionOption;
+    use swallowtail_testkit::assert_idioms_route_opt_in_contract;
+
+    assert_idioms_route_opt_in_contract();
+
+    let recording = RecordingHostServices::default();
+    let prepared_app = prepared(CodexPreparedDriver::AppServer, "0.145.0", &recording, false);
+    let options = SessionOptions::default()
+        .with_developer_instructions(OperationContent::new("consumer text").unwrap())
+        .with_idioms(IdiomSessionOption::new(IdiomScope::Project, 8).unwrap());
+    let session = prepared_app
+        .prepare_read_only_session(CodexSessionProfileInput::new(
+            RequestId::new("idioms-session").unwrap(),
+            model(),
+            working_resource(),
+            None,
+            options,
+        ))
+        .expect("read-only session with idioms prepares");
+    assert!(
+        session
+            .plan()
+            .requirements()
+            .capabilities()
+            .any(|requirement| requirement.capability() == Capability::IdiomsSessionOption),
+        "the prepared plan must bind the idioms session option"
+    );
+
+    let rule = Idiom::new(
+        IdiomId::new("named-exports").unwrap(),
+        IdiomScope::Project,
+        IdiomConstraint::text("use named exports").unwrap(),
+        90,
+        IdiomClock::from_ticks(0),
+        Provenance::Static(BoundedText::new("team rules", 256).unwrap()),
+    )
+    .unwrap();
+    let source = StaticRulesSource::new(vec![rule]);
+
+    let (process, state) = ScriptedAppServer::new(AppServerMode::CompleteTurn);
+    let services = host_services(process).with_idiom_source(Arc::new(source));
+    let handle = block_on(session.open_session(services.clone())).expect("prepared session opens");
+    let _ = block_on(handle.close());
+
+    let start = state
+        .messages()
+        .into_iter()
+        .find(|message| {
+            message.get("method").and_then(|value| value.as_str()) == Some("thread/start")
+        })
+        .expect("thread/start is captured");
+    let params = start.get("params").expect("params are captured");
+    let instructions = params
+        .get("developerInstructions")
+        .and_then(|value| value.as_str())
+        .expect("developer instructions are folded in");
+    assert!(
+        instructions.starts_with("consumer text"),
+        "consumer instructions stay first"
+    );
+    assert!(
+        instructions.contains("[idioms]")
+            && instructions.contains("[project static] use named exports"),
+        "the folded idioms block is appended under its labeled header"
+    );
+}

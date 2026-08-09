@@ -6,6 +6,7 @@ architecture, contracts, roadmaps, or logs.
 ## Active Specs
 
 - [006 Pluggable Learned Idioms](006-pluggable-learned-idioms.md)
+- [007 Route-Path Idioms Opt-In](007-route-path-idioms-opt-in.md)
 
 ## Promoted Specs
 

@@ -53,6 +53,12 @@ pub(super) fn session_capabilities(
             [CapabilityConstraint::harness_mode(mode)],
         ));
     }
+    if options.idioms().is_some() {
+        capabilities.push(CapabilityRequirement::new(
+            Capability::IdiomsSessionOption,
+            [],
+        ));
+    }
     let tools = options.tools().collect::<Vec<_>>();
     if !tools.is_empty() {
         capabilities.push(tool_capability(tools)?);

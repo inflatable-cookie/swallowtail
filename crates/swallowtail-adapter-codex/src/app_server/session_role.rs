@@ -10,7 +10,7 @@ impl InteractiveSessionDriver for CodexAppServerDriver {
             validate_session_plan_agreement(&plan, request.plan_agreement())?;
             let behavior = self.validate_plan(&plan)?;
             validate_workspace_behavior(&behavior, request.access_policy())?;
-            let session_input = CodexSessionInput::for_open(&plan, request.options())?;
+            let session_input = CodexSessionInput::for_open(&plan, request.options(), &services)?;
             let deadline_planned = plan
                 .requirements()
                 .host_services()
@@ -80,7 +80,7 @@ impl InteractiveSessionDriver for CodexAppServerDriver {
             require_continuity_capabilities(&plan, Capability::LoadSession)?;
             let behavior = self.validate_plan(&plan)?;
             validate_workspace_behavior(&behavior, request.access_policy())?;
-            let session_input = CodexSessionInput::for_resume(&plan, request.options())?;
+            let session_input = CodexSessionInput::for_resume(&plan, request.options(), &services)?;
             let working_resource = request.working_resource().ok_or_else(|| {
                 failure(
                     "swallowtail.codex.app_server.workspace_required",
@@ -166,7 +166,7 @@ impl InteractiveSessionDriver for CodexAppServerDriver {
             validate_session_plan_agreement(&plan, request.plan_agreement())?;
             let behavior = self.validate_plan(&plan)?;
             validate_workspace_behavior(&behavior, request.access_policy())?;
-            let session_input = CodexSessionInput::for_resume(&plan, request.options())?;
+            let session_input = CodexSessionInput::for_resume(&plan, request.options(), &services)?;
             require_continuity_capabilities(&plan, Capability::Resume)?;
             validate_attachment_binding(
                 &plan,

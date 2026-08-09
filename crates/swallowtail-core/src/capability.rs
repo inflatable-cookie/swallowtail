@@ -92,6 +92,8 @@ pub enum Capability {
     DirectToolContinuation,
     /// Select or manage provider-owned inference caching.
     ProviderManagedInferenceCache,
+    /// Fold selected idioms into the session's developer instructions.
+    IdiomsSessionOption,
 }
 
 #[derive(Clone, Debug, Default, Eq, PartialEq)]

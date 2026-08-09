@@ -1,12 +1,16 @@
 use std::cmp::Reverse;
 use std::sync::Arc;
-use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 
-use swallowtail_core::SafeDiagnostic;
+use swallowtail_core::{ExecutionHostId, SafeDiagnostic};
 use swallowtail_idioms::{
     BoundedText, Idiom, IdiomConstraint, IdiomContext, IdiomId, IdiomRecorder, IdiomScope,
     IdiomSet, IdiomSignal, IdiomSink, IdiomSource, MonotonicInstant, Provenance, SignalKind,
     StaticRulesSource, merge, prepare_session_idioms, select_bounded,
+};
+use swallowtail_runtime::{
+    HostServices, IdiomSessionOption, IdiomSourceUnavailable, OperationContent, ZeroIdiomMaximum,
+    append_folded_idioms, fold_idioms, fold_idioms_with_bound, resolve_idiom_instructions,
 };
 
 fn at(ticks: u64) -> MonotonicInstant {
@@ -18,10 +22,26 @@ fn static_source() -> Provenance {
 }
 
 fn idiom(id: &str, scope: IdiomScope, confidence: u8, at_ticks: u64) -> Idiom {
+    idiom_with_constraint(
+        id,
+        scope,
+        IdiomConstraint::text("use named exports").expect("constraint"),
+        confidence,
+        at_ticks,
+    )
+}
+
+fn idiom_with_constraint(
+    id: &str,
+    scope: IdiomScope,
+    constraint: IdiomConstraint,
+    confidence: u8,
+    at_ticks: u64,
+) -> Idiom {
     Idiom::new(
         IdiomId::new(id).expect("id"),
         scope,
-        IdiomConstraint::text("use named exports").expect("constraint"),
+        constraint,
         confidence,
         at(at_ticks),
         static_source(),
@@ -67,6 +87,176 @@ pub fn assert_idiom_engine_contract() {
     assert_source_honors_context_bound();
     assert_recorder_noop_and_forward();
     assert_failing_sink_does_not_interfere();
+}
+
+/// Runs assertions for the Contract 056 route opt-in surface.
+pub fn assert_idioms_route_opt_in_contract() {
+    assert_session_option_bounds();
+    assert_fold_rule_determinism_and_bounds();
+    assert_fold_append_order();
+    assert_host_port_registration_and_noop();
+    assert_resolve_fails_closed_without_source();
+    assert_resolve_folds_registered_source();
+}
+
+fn assert_session_option_bounds() {
+    assert_eq!(
+        IdiomSessionOption::new(IdiomScope::Project, 0).expect_err("zero maximum"),
+        ZeroIdiomMaximum
+    );
+    assert_eq!(
+        IdiomSessionOption::new(IdiomScope::Project, 8)
+            .expect("option")
+            .maximum(),
+        8
+    );
+}
+
+fn assert_fold_rule_determinism_and_bounds() {
+    let set = IdiomSet::new(
+        vec![
+            idiom_with_constraint(
+                "a",
+                IdiomScope::Project,
+                IdiomConstraint::text("use named exports").expect("constraint"),
+                90,
+                0,
+            ),
+            idiom_with_constraint(
+                "b",
+                IdiomScope::User,
+                IdiomConstraint::tool("edit_*").expect("constraint"),
+                80,
+                0,
+            ),
+        ],
+        false,
+    );
+    let first = fold_idioms(&set);
+    assert_eq!(first, fold_idioms(&set), "fold must be deterministic");
+    assert!(first.contains("[project static] use named exports"));
+    assert!(first.contains("[user static] tool: edit_*"));
+
+    let long_set = IdiomSet::new(
+        vec![
+            idiom_with_constraint(
+                "a",
+                IdiomScope::Project,
+                IdiomConstraint::text("x".repeat(100)).expect("constraint"),
+                90,
+                0,
+            ),
+            idiom_with_constraint(
+                "b",
+                IdiomScope::Project,
+                IdiomConstraint::text("y".repeat(100)).expect("constraint"),
+                80,
+                0,
+            ),
+        ],
+        false,
+    );
+    let bounded = fold_idioms_with_bound(&long_set, 64);
+    assert!(
+        bounded.ends_with("… [idioms truncated]"),
+        "overflow must carry an explicit marker"
+    );
+    assert!(bounded.len() < 200, "fold output must stay near the bound");
+}
+
+fn assert_resolve_fails_closed_without_source() {
+    let host_id = ExecutionHostId::new("fixture.idioms.host").expect("host id is valid");
+    let services = HostServices::new(host_id);
+    let options = swallowtail_runtime::SessionOptions::default()
+        .with_idioms(IdiomSessionOption::new(IdiomScope::Project, 8).expect("option"));
+    assert_eq!(
+        resolve_idiom_instructions(&services, &options)
+            .expect_err("missing source must fail closed"),
+        IdiomSourceUnavailable
+    );
+}
+
+fn assert_resolve_folds_registered_source() {
+    let host_id = ExecutionHostId::new("fixture.idioms.host").expect("host id is valid");
+    let source = StaticRulesSource::new(vec![idiom("named-exports", IdiomScope::Project, 90, 0)]);
+    let services = HostServices::new(host_id).with_idiom_source(Arc::new(source));
+    let instructions = OperationContent::new("consumer guidance".to_owned()).expect("content");
+    let options = swallowtail_runtime::SessionOptions::default()
+        .with_developer_instructions(instructions)
+        .with_idioms(IdiomSessionOption::new(IdiomScope::Project, 8).expect("option"));
+    let resolved = resolve_idiom_instructions(&services, &options)
+        .expect("registered source resolves")
+        .expect("combined instructions");
+    assert!(resolved.as_str().starts_with("consumer guidance"));
+    assert!(
+        resolved
+            .as_str()
+            .contains("[project static] use named exports")
+    );
+
+    let plain = swallowtail_runtime::SessionOptions::default();
+    assert!(
+        resolve_idiom_instructions(&services, &plain)
+            .expect("no opt-in resolves")
+            .is_none(),
+        "no option means no idioms work"
+    );
+}
+
+fn assert_fold_append_order() {
+    let instructions = OperationContent::new("consumer guidance".to_owned()).expect("content");
+    let set = IdiomSet::new(
+        vec![idiom_with_constraint(
+            "a",
+            IdiomScope::Project,
+            IdiomConstraint::text("use named exports").expect("constraint"),
+            90,
+            0,
+        )],
+        false,
+    );
+    let combined =
+        append_folded_idioms(Some(instructions), fold_idioms(&set)).expect("combined content");
+    assert!(
+        combined.as_str().starts_with("consumer guidance"),
+        "consumer instructions must stay first"
+    );
+    assert!(combined.as_str().contains("\n\n[idioms]\n"));
+
+    assert!(
+        append_folded_idioms(None, String::new()).is_none(),
+        "empty fold with no instructions must produce nothing"
+    );
+}
+
+fn assert_host_port_registration_and_noop() {
+    let host_id = ExecutionHostId::new("fixture.idioms.host").expect("host id is valid");
+    let services = HostServices::new(host_id.clone());
+    assert!(services.idiom_source().is_none(), "no source by default");
+    assert!(
+        services.idiom_recorder().is_none(),
+        "no recorder by default"
+    );
+
+    let calls = Arc::new(AtomicUsize::new(0));
+    let sink = CountingSink {
+        calls: Arc::clone(&calls),
+    };
+    let services = HostServices::new(host_id.clone()).with_idiom_recorder(Arc::new(sink));
+    services.record_idiom_signal(signal(1));
+    assert_eq!(
+        calls.load(Ordering::Relaxed),
+        1,
+        "registered recorder receives signals"
+    );
+
+    let quiet = HostServices::new(host_id);
+    quiet.record_idiom_signal(signal(2));
+    assert_eq!(
+        calls.load(Ordering::Relaxed),
+        1,
+        "missing recorder is a no-op"
+    );
 }
 
 /// Runs consumer-style assertions for static-rules session delivery

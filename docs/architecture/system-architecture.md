@@ -33,7 +33,8 @@ spine:
   and remote ACP operations may bind exact transport, connection-affinity,
   bounded-state, and independent wire/RFD/SDK version evidence; portable
   unauthenticated access remains distinct from local topology
-- `swallowtail-runtime` depends on core plus `futures-core` and `zeroize` and owns
+- `swallowtail-runtime` depends on core plus `futures-core`, `zeroize`, and
+  `swallowtail-idioms` (Contract 056 host ports) and owns
   executor-neutral dynamic roles, lifecycle handles, bounded events, terminal
   outcomes, one route-neutral borrowed terminal-failure view, explicit
   operation policy, typed usage/rate/quota observations;
@@ -365,7 +366,8 @@ Crate status:
   and callback fixtures, recording runtime host services, and thirteen composable
   provider-free conformance profile runners
 - `swallowtail-runtime` — realized under Contracts 008-010, 012, and 026 with
-  only core, `futures-core`, and `zeroize` dependencies
+  only core, `futures-core`, `zeroize`, and `swallowtail-idioms` (Contract
+  056 host ports) dependencies
 - `swallowtail-protocol-acp` — realized for bounded ACP v1 NDJSON framing,
   request/notification/response classification, safe error responses,
   independent raw HTTP/SSE plus WebSocket remote-transport fixtures, and exact

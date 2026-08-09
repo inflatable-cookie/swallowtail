@@ -189,6 +189,10 @@ pub enum HostServiceKind {
     Schema,
     /// Opt-in diagnostic and debug observation.
     DiagnosticObserver,
+    /// Opt-in idiom selection source.
+    IdiomSource,
+    /// Opt-in fail-soft idiom signal recorder.
+    IdiomRecorder,
 }
 
 #[cfg(test)]

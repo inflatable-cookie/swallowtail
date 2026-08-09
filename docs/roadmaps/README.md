@@ -13,12 +13,11 @@ shape.
 
 ## Next Task
 
-Return to the operator. g03.062 Pluggable Idioms Static-Rules Foundation is
-complete: cards 189-192 landed `swallowtail-idioms` (records, decay, merge,
-lint, engine trait, static rules, delivery, registry merge) with conformance
-and acceptance evidence. Learned-backend selection and the Soundcheck
-correction-loop proxy await exact evidence before any second tranche. Select
-the next lane from g03 capacity.
+g03.063 Route-Path Idioms Opt-In is active: cards 193-194 (runtime surface;
+prepared binding, capability gate, Codex proof) are complete. Card 195 is a
+Nucleus-repo adoption delta: register one idiom source on Nucleus's host and
+opt into the session option on its interactive Codex path — work in
+`../nucleus` with a bounded Swallowtail-side review.
 
 ## Index
 

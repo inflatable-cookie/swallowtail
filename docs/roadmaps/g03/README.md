@@ -63,9 +63,14 @@ visible as unverified newer unless exact evidence requires rejection.
 | Add Command Code Contract 043 exact-id interactive continuity without ambient continue or fake catalogue. | completed | Contracts 005-006, 009-010, 017, 023, 032-033, 039-041, 043-046, 051-052; Research 118 | `g03.060` |
 | Freeze Command Code catalogue/export as unsupported on 1.15.1 unless a machine list/export appears. | completed | Contracts 017, 038, 043, 046, 052; Research 118 | `g03.061` |
 | Realize the pluggable idioms mechanism: records, decay and merge, bounded selection, fail-soft sink, static-rules backend, and registry merge without transport. | completed | Contract 055; Research 117; Spec 006 | `g03.062` |
+| Add the route-path idioms opt-in: host ports, bound session option, fixed fold rule, capability gate, Codex proof, and a Nucleus adoption delta. | active | Contract 056; Research 119; Spec 007 | `g03.063` |
 
 ## Current Checkpoint
 
+- g03.063 is active: Contract 056 and Research 119 sequence the route-path
+  idioms opt-in with Nucleus as the testbed. Cards 193-196 own runtime
+  surface, prepared binding and Codex proof, the Nucleus adoption delta, and
+  acceptance.
 - g03.062 is complete: the pluggable idioms mechanism landed as
   `swallowtail-idioms` (records, fixture-clock decay, merge, lint, bounded
   selection, fail-soft recorder, static rules, delivery, registry pull/push
@@ -645,6 +650,7 @@ visible as unverified newer unless exact evidence requires rejection.
 - [060 Command Code Interactive Continuity](./060-command-code-interactive-continuity.md) — completed
 - [061 Command Code Session Catalogue And Export Disposition](./061-command-code-session-catalogue-export-disposition.md) — completed
 - [062 Pluggable Idioms Static-Rules Foundation](./062-pluggable-idioms-static-rules-foundation.md) — completed
+- [063 Route-Path Idioms Opt-In](./063-route-path-idioms-opt-in.md) — active
 
 ## Checkpoint
 

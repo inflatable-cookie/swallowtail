@@ -5,7 +5,10 @@ use swallowtail_core::{
     Capability, CapabilityConstraint, CapabilityRequirement, HarnessMode, PreflightPlan,
     ProviderRequestPolicy,
 };
-use swallowtail_runtime::{RuntimeFailure, SchemaDocument, SessionOptions, ToolDeclaration};
+use swallowtail_runtime::{
+    HostServices, RuntimeFailure, SchemaDocument, SessionOptions, ToolDeclaration,
+    resolve_idiom_instructions,
+};
 
 const JSON_SCHEMA_MEDIA_TYPE: &str = "application/schema+json";
 
@@ -30,20 +33,23 @@ impl CodexSessionInput {
     pub(crate) fn for_open(
         plan: &PreflightPlan,
         options: &SessionOptions,
+        services: &HostServices,
     ) -> Result<Self, RuntimeFailure> {
-        Self::prepare(plan, options, true)
+        Self::prepare(plan, options, services, true)
     }
 
     pub(crate) fn for_resume(
         plan: &PreflightPlan,
         options: &SessionOptions,
+        services: &HostServices,
     ) -> Result<Self, RuntimeFailure> {
-        Self::prepare(plan, options, false)
+        Self::prepare(plan, options, services, false)
     }
 
     fn prepare(
         plan: &PreflightPlan,
         options: &SessionOptions,
+        services: &HostServices,
         allows_tools: bool,
     ) -> Result<Self, RuntimeFailure> {
         let tools = options.tools().collect::<Vec<_>>();
@@ -58,6 +64,12 @@ impl CodexSessionInput {
             options.harness_mode().is_some(),
             Capability::HarnessModeSelection,
             "harness mode selection",
+        )?;
+        validate_feature_binding(
+            plan,
+            options.idioms().is_some(),
+            Capability::IdiomsSessionOption,
+            "idioms session option",
         )?;
         validate_feature_binding(
             plan,
@@ -85,8 +97,13 @@ impl CodexSessionInput {
             })
             .collect::<Result<Vec<_>, _>>()?;
 
-        let developer_instructions = options
-            .developer_instructions()
+        let developer_instructions = resolve_idiom_instructions(services, options)
+            .map_err(|unavailable| {
+                failure(
+                    "swallowtail.codex.app_server.idiom_source_missing",
+                    unavailable.to_string(),
+                )
+            })?
             .map(|content| content.as_str().to_owned());
         let reasoning_effort = options
             .reasoning_mode()

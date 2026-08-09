@@ -26,6 +26,7 @@ mod host_reference;
 mod host_registry;
 mod host_traits;
 mod identity;
+mod idioms;
 mod input;
 mod installed_discovery;
 mod installed_executable;
@@ -142,6 +143,10 @@ pub use identity::{
     ProviderSessionCandidateId, ProviderSessionCatalogueId, ProviderSessionHistoryId, RequestId,
     RuntimeIdentityRequired, RuntimeRunId, RuntimeSessionId, RuntimeTurnId, ScopeId,
     ServingInstanceId,
+};
+pub use idioms::{
+    DEFAULT_MAX_FOLD_BYTES, IdiomSessionOption, IdiomSourceUnavailable, ZeroIdiomMaximum,
+    append_folded_idioms, fold_idioms, fold_idioms_with_bound, resolve_idiom_instructions,
 };
 pub use input::{InputLimitExceeded, InputValueRequired};
 pub use installed_discovery::{

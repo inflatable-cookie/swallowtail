@@ -1,0 +1,51 @@
+pub mod swallowtail_adapter_command_code
+pub struct swallowtail_adapter_command_code::CommandCodeHeadlessDriver
+impl swallowtail_adapter_command_code::CommandCodeHeadlessDriver
+pub const fn swallowtail_adapter_command_code::CommandCodeHeadlessDriver::environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
+pub const fn swallowtail_adapter_command_code::CommandCodeHeadlessDriver::new(swallowtail_runtime::host_reference::EnvironmentRef) -> Self
+impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_command_code::CommandCodeHeadlessDriver
+pub fn swallowtail_adapter_command_code::CommandCodeHeadlessDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_command_code::CommandCodeHeadlessDriver::discover_installed_executable(&self, swallowtail_runtime::installed_executable::InstalledExecutableDiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_core::registration::discovery::DiscoveryOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::StructuredRunDriver for swallowtail_adapter_command_code::CommandCodeHeadlessDriver
+pub fn swallowtail_adapter_command_code::CommandCodeHeadlessDriver::start_run(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_command_code::CommandCodeHeadlessModelSelection
+impl swallowtail_adapter_command_code::CommandCodeHeadlessModelSelection
+pub const fn swallowtail_adapter_command_code::CommandCodeHeadlessModelSelection::new(swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ProviderId, swallowtail_core::model::ModelId) -> Self
+pub struct swallowtail_adapter_command_code::CommandCodePreparationInput
+impl swallowtail_adapter_command_code::CommandCodePreparationInput
+pub const fn swallowtail_adapter_command_code::CommandCodePreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_runtime::installed_executable::InstalledExecutableTarget, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub struct swallowtail_adapter_command_code::CommandCodePreparationProbe
+impl swallowtail_adapter_command_code::CommandCodePreparationProbe
+pub const fn swallowtail_adapter_command_code::CommandCodePreparationProbe::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::time::Deadline, swallowtail_runtime::installed_executable::DiscoveryCancellation) -> Self
+pub struct swallowtail_adapter_command_code::CommandCodePreparedIntegration
+impl swallowtail_adapter_command_code::CommandCodePreparedIntegration
+pub const fn swallowtail_adapter_command_code::CommandCodePreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_command_code::CommandCodePreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_command_code::CommandCodePreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_command_code::CommandCodePreparedIntegration::environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
+pub const fn swallowtail_adapter_command_code::CommandCodePreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_command_code::CommandCodePreparedIntegration::low_level_driver(&self) -> swallowtail_adapter_command_code::CommandCodeHeadlessDriver
+pub const fn swallowtail_adapter_command_code::CommandCodePreparedIntegration::observation(&self) -> &swallowtail_core::installed_executable::InstalledExecutableObservation
+pub const fn swallowtail_adapter_command_code::CommandCodePreparedIntegration::target(&self) -> &swallowtail_runtime::installed_executable::InstalledExecutableTarget
+pub fn swallowtail_adapter_command_code::CommandCodePreparedIntegration::validate_execution_binding(&self, &swallowtail_core::runtime_identity::ExecutionHostId, &swallowtail_runtime::installed_executable::InstalledExecutableTarget) -> core::result::Result<(), swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_command_code::CommandCodePreparedIntegration
+pub fn swallowtail_adapter_command_code::CommandCodePreparedIntegration::prepare_run(&self, swallowtail_adapter_command_code::CommandCodeRunProfileInput) -> core::result::Result<swallowtail_adapter_command_code::CommandCodePreparedRun, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_command_code::CommandCodePreparedRun
+impl swallowtail_adapter_command_code::CommandCodePreparedRun
+pub const fn swallowtail_adapter_command_code::CommandCodePreparedRun::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub fn swallowtail_adapter_command_code::CommandCodePreparedRun::low_level_driver(&self) -> swallowtail_adapter_command_code::CommandCodeHeadlessDriver
+pub const fn swallowtail_adapter_command_code::CommandCodePreparedRun::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_command_code::CommandCodePreparedRun::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
+pub fn swallowtail_adapter_command_code::CommandCodePreparedRun::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_command_code::CommandCodeRunProfileInput
+impl swallowtail_adapter_command_code::CommandCodeRunProfileInput
+pub const fn swallowtail_adapter_command_code::CommandCodeRunProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_command_code::CommandCodeHeadlessModelSelection, swallowtail_runtime::content::OperationContent, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::time::Deadline) -> Self
+pub const swallowtail_adapter_command_code::COMMAND_CODE_EXECUTABLE_NAME: &str
+pub const swallowtail_adapter_command_code::COMMAND_CODE_LOCAL_ACCOUNT_AUDIENCE: &str
+pub const swallowtail_adapter_command_code::COMMAND_CODE_RELEASE_AXIS: &str
+pub const swallowtail_adapter_command_code::COMMAND_CODE_RELEASE_VERSION: &str
+pub fn swallowtail_adapter_command_code::command_code_headless_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_command_code::command_code_headless_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_command_code::command_code_local_account_access_profile(swallowtail_core::runtime_identity::AccessProfileId) -> swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_command_code::command_code_release_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
+pub async fn swallowtail_adapter_command_code::prepare_command_code_headless(swallowtail_adapter_command_code::CommandCodePreparationInput, swallowtail_adapter_command_code::CommandCodePreparationProbe, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_command_code::CommandCodePreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>

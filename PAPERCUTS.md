@@ -5,6 +5,16 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] npm shebang harness probes fail when PATH is stripped — 2026-08-09
+- Friction: Approving a Node shebang launcher (`#!/usr/bin/env node`) as a
+  native executable fails once the local process host clears ambient `PATH`.
+- Impact: Installed discovery returns `Failed` for otherwise exact payloads
+  (Command Code `command-code` bin → `dist/index.mjs`).
+- Possible fix: Default npm-harness live hosts and guides to
+  `approve_installed_executable_launch` with exact `node` plus the resolved
+  script prefix, matching Pi / Oh My Pi.
+- Surface: `swallowtail-host-local` installed launches; npm adapter live probes.
+
 ### [ ] Release prepare omits coordinated workspace dependency versions — 2026-08-08
 - Friction: Effigy updates `workspace.package.version` before gates but leaves
   versioned path entries under `workspace.dependencies` at the previous release.

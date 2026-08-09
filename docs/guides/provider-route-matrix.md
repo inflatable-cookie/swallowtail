@@ -1,6 +1,6 @@
 # Provider Route Matrix
 
-This is the integration front door for Swallowtail's 34 production routes.
+This is the integration front door for Swallowtail's 35 production routes.
 Choose one row explicitly. Swallowtail does not select a provider, driver,
 model, target, endpoint, credential, billing arrangement, execution host, or
 fallback route.
@@ -11,7 +11,7 @@ names pile up.
 The companion
 [provider and feature CSV](provider-solution-feature-matrix.csv) groups
 complementary routes where one public solution facade exists, then compares
-runtime posture, version posture, and qualified feature coverage across all 34
+runtime posture, version posture, and qualified feature coverage across all 35
 routes. Composite-row notes name the branch that owns each route-specific
 capability; the cells remain a solution-conversion scoreboard. Permission
 exchange and question exchange are separate columns: authorization stays
@@ -64,16 +64,18 @@ ACP adapters may compose instead of their stdio transport.
 | `kimi-code.acp` | `swallowtail-adapter-kimi`; `swallowtail.kimi.acp` | resource-scoped provider-session catalogue/import plus persistent interactive session with negotiated model options; ACP v1 stdio | approved executable; delegated Kimi membership OAuth reference; explicit opaque state-root identity for catalogue/import | `kimi-code.executable`; exact `0.28.1` plus qualified `0.29.0..=0.31.1`, then permitted unverified-newer stable points; unverified-newer does not inherit import | `prepare_kimi_code(Acp)` → `prepare_session_catalogue`/`prepare_session_import` or `prepare_session` → typed operation; imported bindings then use ordinary `load_session` or `resume_session` | `KimiAcpDriver`; `ProviderSessionCatalogueDriver`, `ProviderSessionImportDriver`, and `InteractiveSessionDriver` |
 | `kimi-code.headless` | `swallowtail-adapter-kimi`; `swallowtail.kimi.headless` | one-prompt structured run; stream-json stdio | approved executable and audited default-engine environment; delegated Kimi membership OAuth reference; explicit ambient harness configuration and durable provider retention | `kimi-code.executable`; exact `0.29.0..=0.31.1`, then permitted unverified-newer stable points | `prepare_kimi_code(Headless)` → `prepare_run` → `start_run` | `KimiHeadlessDriver`; `StructuredRunDriver` |
 | `muse-code.headless` | `swallowtail-adapter-muse`; `swallowtail.muse-code.headless` | exact-model read-only structured run; Muse event JSONL over one joined stdio child | approved signed payload and environment; provider-supported local Meta account state without a credential lease; provider-enforced sandbox and read-only working resource | `muse-code.signed-payload`; exact opaque `0.1.0-R708.1`; no unverified-newer execution | `prepare_muse_headless` → `prepare_run` → `start_run` | `MuseHeadlessDriver`; `StructuredRunDriver` |
-
-`muse-code.headless` carries no `prepare_working_state_restoration`: it has no
-interactive session, continuation, load, or resume route, so there is no
-interrupted working state to restore (disposition recorded in the muse guide).
-`into_parts` and, for the headless route, `low_level_driver` are omitted per
-the prepared-facade authoring guide's recorded omissions (antigravity,
-cursor, muse).
+| `command-code.headless` | `swallowtail-adapter-command-code`; `swallowtail.command-code.headless` | explicit-model read-only structured run or Contract 043 interactive turns with thinking, text, tool, result, and usage events; Command Code AgentEvent NDJSON over stdio | approved executable and environment; provider-supported local Command Code account state without a credential lease; plan-mode read-only working resource; structured `--no-session` or interactive exact private `--resume` | `command-code.npm`; exact `1.15.1`; no unverified-newer execution | `prepare_command_code_headless` → `prepare_run` / `prepare_session` → `start_run` / `open_session`; prepared sessions expose fresh context-losing restoration | `CommandCodeHeadlessDriver`; `StructuredRunDriver` and `InteractiveSessionDriver` |
 | `oh-my-pi.rpc` | `swallowtail-adapter-oh-my-pi`; `swallowtail.oh-my-pi.rpc` | catalogue, one-prompt structured run, and interactive session with exact model/reasoning selection, typed questions, and optional bounded PNG input; negotiated RPC v2 chunked JSONL stdio | approved executable and environment; provider-supported local OMP authentication state; explicit ambient read authority and a provider-suppressed tool set | `oh-my-pi.package`; exact `17.2.9`, then permitted visible unverified-newer stable points | `prepare_oh_my_pi_rpc` → catalogue, run, or session profile → `list_models`, `start_run`, or `open_session`; prepared sessions expose fresh context-losing restoration | `OhMyPiRpcDriver`; `ModelCatalogDriver`, `StructuredRunDriver`, and `InteractiveSessionDriver` |
 | `pi.rpc` | `swallowtail-adapter-pi`; `swallowtail.pi.rpc` | catalogue, one-prompt structured run, and interactive session with optional bounded PNG input; strict LF JSONL RPC stdio | approved executable; maintainer-supported `pi/delegated-harness-auth` profile | `pi.package`; maintained range plus permitted unverified-newer stable points | `prepare_pi_rpc` → catalogue, run, or session profile → `list_models`, `start_run`, or `open_session`; run inputs carry attachments and session inputs opt into image-bearing turns | `PiRpcDriver`; `ModelCatalogDriver`, `StructuredRunDriver`, and `InteractiveSessionDriver` |
 | `qwen.headless` | `swallowtail-adapter-qwen`; `swallowtail.qwen.headless` | catalogue, structured run, and turn-scoped interactive continuation; structured CLI stream JSON with one joined child per run or turn | approved executable; maintainer-supported `qwen-code/delegated-harness-auth` profile | `qwen-code.package`; maintained `0.19.11..=0.20.1` plus `0.21.0..=0.21.2`, then permitted unverified-newer stable points | `prepare_qwen_catalogue` → `list_models`, or `prepare_qwen_headless` → run or session profile → `start_run` or `open_session`; later turns privately use the exact observed provider session ID | `QwenHeadlessDriver`; `ModelCatalogDriver`, `StructuredRunDriver`, and `InteractiveSessionDriver` |
+
+`muse-code.headless` carries no `prepare_working_state_restoration` (no
+interactive route). `command-code.headless` interactive continuity is private
+exact-id only; prepared sessions expose only fresh context-losing restoration
+and no public load/resume. Dispositions are in their guides. `into_parts` and,
+for these headless routes, `low_level_driver` are omitted per the
+prepared-facade authoring guide's recorded omissions (antigravity, cursor,
+muse, command-code).
 
 ## Attached Harness Network
 
@@ -93,7 +95,7 @@ resource binding, activity truth, and exact version evidence.
 | supported (3) | `codex.app-server`; `kimi-code.acp`; `opencode.http` | complete production profile |
 | attachment-only (2) | `claude-agent.acp`; `kimi-code.local-server` | qualified catalogue plus exact list-to-attachment revalidation; Kimi also needs bounded transcript replay |
 | blocked (3) | `cursor-agent.acp`; `gemini-cli.headless`; `pi.rpc` | Cursor needs an exact list/load/resume corpus; Gemini needs a side-effect-free list or export before lookup/history qualification; Pi needs provable stored-cwd equality with the host lease |
-| not applicable (13) | `codex.exec`; `kimi-code.headless`; `claude-code.headless`; `cursor-agent.catalogue`; `cursor-agent.headless`; `qwen.headless`; `antigravity.catalogue`; `antigravity.headless`; `gemini-cli.acp`; `grok-build.acp`; `muse-code.headless`; `oh-my-pi.rpc`; `anthropic.managed-agent` | selected route exposes no reusable external provider-session identity |
+| not applicable (14) | `codex.exec`; `kimi-code.headless`; `claude-code.headless`; `cursor-agent.catalogue`; `cursor-agent.headless`; `qwen.headless`; `antigravity.catalogue`; `antigravity.headless`; `gemini-cli.acp`; `grok-build.acp`; `muse-code.headless`; `command-code.headless`; `oh-my-pi.rpc`; `anthropic.managed-agent` | selected route exposes no reusable external provider-session identity |
 
 No row inherits capability from another transport or provider family. See
 [the import guide](provider-session-import.md) and
@@ -108,9 +110,9 @@ reattachment are not equivalent. See the
 interactive harness route now exposes one static post-restart action: Codex,
 OpenCode, and Kimi local reconcile; Claude Agent ACP and Kimi ACP recover with
 complete bounded replay; Cursor and Grok attach to the exact provider session
-while discarding non-authoritative replay; Antigravity continuation, Gemini
-ACP, Oh My Pi RPC, Pi RPC, and Qwen continuation create an explicitly context-losing
-replacement. Hosted Anthropic and DeepSeek continuation, xAI WebSocket,
+while discarding non-authoritative replay; Antigravity continuation, Command
+Code interactive, Gemini ACP, Oh My Pi RPC, Pi RPC, and Qwen continuation
+create an explicitly context-losing replacement. Hosted Anthropic and DeepSeek continuation, xAI WebSocket,
 attached Ollama, and ordinary Alibaba conversations also create a
 context-losing replacement. OpenAI Realtime and Gemini Live create a fresh
 media connection with no media-state claim. One-prompt routes never auto-retry
@@ -200,6 +202,7 @@ delete.
 | `kimi-code.headless` | `unsupported` | `no` | `unsupported` | `unsupported` | `unsupported` | `unsupported` | exact qualified `0.29.0..=0.31.1`; later stable points may be visible `UnverifiedNewer`; each run may retain provider-owned session state without exposing its identity | process and task cleanup only; provider state is preserved |
 | `kimi-code.local-server` | `supported` | `yes` | `supported` | `supported` | `unsupported` | `unsupported` | exact qualified `0.28.1` plus `0.29.0..=0.31.1`; profile and disabled-tool controls require `0.29.0`; `0.31.0` has a distinct subagent-status revision and `0.31.1` a refresh-stable revision; later stable points may be visible `UnverifiedNewer` | joins WebSocket and task work, releases the server-bearer lease, preserves provider state, and stops only an owned foreground child |
 | `muse-code.headless` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | exact opaque `0.1.0-R708.1`; every run disables the session log and admits no reusable provider-session identity | process and task cleanup only; local Meta account/config state is preserved |
+| `command-code.headless` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | exact `1.15.1`; structured runs use `--no-session`; interactive turns privately retain only an exact session id with no public load/resume binding | process and task cleanup only; local Command Code account/config state and project transcripts are preserved |
 | `oh-my-pi.rpc` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | exact `17.2.9`; later stable points may be visible `UnverifiedNewer` | operation process and materialized attachment cleanup only; local OMP auth/config state is preserved |
 | `pi.rpc` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | accepted `pi.package` segments; current RPC operation has no management binding | attachment and process cleanup only |
 | `qwen.headless` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | maintained `0.19.11..=0.20.1` plus `0.21.0..=0.21.2`; current structured-run operation has no provider session | run and process cleanup only |
@@ -318,6 +321,7 @@ All examples compile from their adapter crate's public API under
   [Kimi Code ACP](../../crates/swallowtail-adapter-kimi/examples/prepared_acp.rs),
   [Kimi Code headless](../../crates/swallowtail-adapter-kimi/examples/prepared_headless.rs),
   [Muse Code](../../crates/swallowtail-adapter-muse/examples/prepared_muse_headless.rs),
+  [Command Code](../../crates/swallowtail-adapter-command-code/examples/prepared_command_code_headless.rs),
   [Pi](../../crates/swallowtail-adapter-pi/examples/prepared_pi_rpc.rs), and
   [Qwen](../../crates/swallowtail-adapter-qwen/examples/prepared_qwen_headless.rs)
 - Attached harnesses:

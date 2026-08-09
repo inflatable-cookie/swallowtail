@@ -59,13 +59,24 @@ visible as unverified newer unless exact evidence requires rejection.
 | Emit failure-path debug observations on every production route family. | completed | Contracts 010, 053; Research 113 | `g03.056` |
 | Expose newest-first provider-session history pages without weakening load or reconciliation. | completed | Contracts 017, 038, 044, 046, 048, 054; Research 114 | `g03.057` |
 | Extend history pages to every route that can page without a live control handle. | completed | Contracts 017, 025, 038, 044, 046, 048, 054 | `g03.058` |
+| Add Command Code through its exact installed headless NDJSON event protocol without chasing every new harness. | completed | Contracts 005-006, 009-010, 023, 029, 032-033, 036-037, 039-041, 044-045, 051-052; Research 116 | `g03.059` |
+| Add Command Code Contract 043 exact-id interactive continuity without ambient continue or fake catalogue. | completed | Contracts 005-006, 009-010, 017, 023, 032-033, 039-041, 043-046, 051-052; Research 118 | `g03.060` |
+| Freeze Command Code catalogue/export as unsupported on 1.15.1 unless a machine list/export appears. | completed | Contracts 017, 038, 043, 046, 052; Research 118 | `g03.061` |
+| Realize the pluggable idioms mechanism: records, decay and merge, bounded selection, fail-soft sink, static-rules backend, and registry merge without transport. | planned (candidate lane; awaits operator selection) | Contract 055; Research 117; Spec 006 | `g03.062` |
 
 ## Current Checkpoint
 
+- g03.061 is complete: catalogue/import/export stay unsupported on Command Code
+  `1.15.1`; promotion waits for a non-TTY machine list/export. Provider API
+  remains operator-deferred.
+- g03.060 is complete: Contract 043 private exact `--resume` interactive
+  continuity on `command-code.headless`; ambient `--continue` /
+  `--fork-session` rejected.
+- g03.059 is complete: additive unreleased `command-code.headless` structured
+  runs at exact npm `1.15.1`.
 - g03.058 is complete: OpenCode HTTP and Alibaba retained advertise history
   alongside Codex; Claude Agent ACP and Kimi ACP stay unsupported until a
-  control-free history wire exists. The generation returns to its evidence
-  gate.
+  control-free history wire exists.
 - g03.057 is complete: portable history pages, Codex synthetic proof, and the
   first consumer guide landed.
 - g03.056 is complete: failure-path debug observations emit across shared
@@ -623,6 +634,10 @@ visible as unverified newer unless exact evidence requires rejection.
 - [056 Cross-Route Debug Observation Emissions](./056-cross-route-debug-observation-emissions.md) — completed
 - [057 Paged Provider Session History](./057-paged-provider-session-history.md) — completed
 - [058 Multi-Route Provider Session History](./058-multi-route-provider-session-history.md) — completed
+- [059 Command Code Headless Foundation](./059-command-code-headless-foundation.md) — completed
+- [060 Command Code Interactive Continuity](./060-command-code-interactive-continuity.md) — completed
+- [061 Command Code Session Catalogue And Export Disposition](./061-command-code-session-catalogue-export-disposition.md) — completed
+- [062 Pluggable Idioms Static-Rules Foundation](./062-pluggable-idioms-static-rules-foundation.md) — planned (candidate lane)
 
 ## Checkpoint
 

@@ -1,0 +1,100 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-08-09",
+  "route_id": "command-code.headless",
+  "artifact_revision": "1.15.1",
+  "compatibility_revision": "command-code.headless-window-1",
+  "protocol_facade_revision": "command-code.agent-event-ndjson-v1",
+  "argv": [
+    "-p",
+    "--output-format",
+    "json",
+    "--permission-mode",
+    "plan",
+    "--skip-onboarding",
+    "--no-session",
+    "--no-auto-update",
+    "--trust",
+    "--no-skills",
+    "--max-turns",
+    "8",
+    "-m",
+    "<model>"
+  ],
+  "prompt_transport": "stdin",
+  "bounds": {
+    "maximum_line_bytes": 1048576,
+    "maximum_events": 4096,
+    "maximum_output_bytes": 4194304
+  },
+  "known_event_types": [
+    "run_start",
+    "turn_start",
+    "message_start",
+    "model_request_start",
+    "model_trace",
+    "thinking_start",
+    "thinking_delta",
+    "thinking_end",
+    "text_delta",
+    "message_update",
+    "model_request_end",
+    "message_end",
+    "tool_queued",
+    "tool_running",
+    "tool_completed",
+    "turn_end",
+    "run_end",
+    "run_error"
+  ],
+  "projected_event_types": [
+    "run_start",
+    "thinking_start",
+    "thinking_delta",
+    "thinking_end",
+    "text_delta",
+    "tool_queued",
+    "tool_running",
+    "tool_completed",
+    "model_request_end"
+  ],
+  "ignored_lifecycle_event_types": [
+    "turn_start",
+    "turn_end",
+    "message_start",
+    "message_update",
+    "message_end",
+    "model_request_start",
+    "model_trace",
+    "run_end",
+    "run_error"
+  ],
+  "unknown_payload": {
+    "observation_namespace_prefix": "command-code.headless.event.",
+    "semantic_authority": false,
+    "terminal_authority": false
+  },
+  "result_success_keys": [
+    "type",
+    "subtype",
+    "sessionId",
+    "stopReason",
+    "usage",
+    "durationMs",
+    "finalText"
+  ],
+  "usage_keys": [
+    "inputTokens",
+    "outputTokens",
+    "cacheReadTokens",
+    "cacheWriteTokens"
+  ],
+  "credit_failure": {
+    "process_exit_code": 10,
+    "result_subtype": "error"
+  },
+  "notes": {
+    "run_end_result_next_state": "run_end.result carries a private nextState (messages, cwd, git). Never parsed or projected.",
+    "tool_bodies": "tool_queued/tool_running/tool_completed input and result bodies are never projected; only toolCallId and toolName as a safe label."
+  }
+}

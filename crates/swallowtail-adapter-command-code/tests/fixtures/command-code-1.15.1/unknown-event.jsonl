@@ -1,0 +1,5 @@
+{"type":"event","event":{"type":"run_start","sessionId":"00000000-0000-4000-8000-000000000004"}}
+{"type":"event","event":{"type":"future_experimental_event","payload":"opaque"}}
+{"type":"event","event":{"type":"text_delta","delta":"pong"}}
+{"type":"event","event":{"type":"run_end"}}
+{"type":"result","subtype":"success","sessionId":"00000000-0000-4000-8000-000000000004","finalText":"pong"}

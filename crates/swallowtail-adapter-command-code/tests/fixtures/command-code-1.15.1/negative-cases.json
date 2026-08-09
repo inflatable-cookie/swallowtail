@@ -1,0 +1,27 @@
+{
+  "fixture_schema": 1,
+  "notes": {
+    "project_transcript_root": "~/.commandcode/projects/",
+    "project_transcript_scope": "same-cwd durable transcript retention; do not copy private JSONL into the repo",
+    "forbidden_selectors": [
+      {"name": "continue", "argument": "--continue", "expected": "never-emitted"},
+      {"name": "fork_session", "argument": "--fork-session", "expected": "never-emitted"},
+      {"name": "resume_missing", "mutation": "resume-without-prior-clean-sessionId", "expected": "session_unusable-or-no-resume-selector"},
+      {"name": "cross_cwd_resume", "mutation": "resume-id-from-different-working-resource", "expected": "preparation-or-provider-rejection"}
+    ]
+  },
+  "cases": [
+    {"name": "malformed_json", "mutation": "invalid-json-line", "expected": "malformed_stream"},
+    {"name": "missing_type", "mutation": "line-without-top-level-type", "expected": "malformed_stream"},
+    {"name": "missing_session_id", "mutation": "run_start-without-sessionId", "expected": "malformed_stream"},
+    {"name": "duplicate_run_start", "mutation": "second-run_start-record", "expected": "malformed_stream"},
+    {"name": "mismatched_session_id", "mutation": "result-sessionId-differs-from-run_start", "expected": "malformed_stream"},
+    {"name": "resume_session_mismatch", "mutation": "run_start-sessionId-differs-from-private-resume-id", "expected": "session_mismatch"},
+    {"name": "unmatched_tool_running", "mutation": "tool_running-without-tool_queued", "expected": "activity_invalid"},
+    {"name": "duplicate_tool_queued", "mutation": "tool_queued-repeated-toolCallId", "expected": "activity_invalid"},
+    {"name": "missing_final_text", "mutation": "result-success-without-finalText", "expected": "malformed_stream"},
+    {"name": "oversized_line", "mutation": "line-over-1MiB", "expected": "stream_limit"},
+    {"name": "too_many_events", "mutation": "event-count-over-4096", "expected": "stream_limit"},
+    {"name": "output_mismatch", "mutation": "finalText-differs-from-streamed-text_delta", "expected": "output_mismatch"}
+  ]
+}

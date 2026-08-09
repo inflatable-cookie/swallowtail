@@ -225,6 +225,16 @@ spine:
   read-only filesystem resource. The mutable update launcher, model catalogue,
   sessions, callbacks, recovery, task-list snapshots, subagents, usage, shell,
   writes, and web tools remain outside the route
+- `swallowtail-adapter-command-code` implements exact npm Command Code
+  `1.15.1` as one read-only `command-code.headless` route family. Structured
+  runs bind `--no-session` and prohibit provider retention. Interactive turns
+  follow Contract 043: first turn retains a project-scoped transcript; later
+  turns pass only the exact private `--resume <sessionId>` observed from the
+  prior clean turn; ambient `--continue` and `--fork-session` stay forbidden.
+  Catalogue, provider export, taste/mods, Provider API, `--yolo`, shell/write
+  authority, and ingestion of `run_end.result.nextState` or tool bodies remain
+  outside the route. On-disk `~/.commandcode/projects/…` trees are private
+  provider state, not a Swallowtail catalogue
 - `swallowtail-adapter-llama-cpp` implements attached llama.cpp build `9910`
   readiness, catalogue, and bounded Chat Completions direct inference without
   owning the model artifact or server; its exact request and text-only semantic
@@ -975,7 +985,7 @@ session, background run, managed agent, realtime media, SDK, attached runtime,
 and owned-serving operations remain separate types and methods. There is no
 generic prompt method.
 
-The current 34 production routes form six facade implementation families:
+The current 35 production routes form six facade implementation families:
 installed harness, attached harness network, hosted direct and provider-owned
 state, realtime connection, embedded SDK, and local model runtime. Family
 helpers may share host and preparation mechanics. They cannot select a

@@ -21,6 +21,8 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-09 Command Code Interactive Continuity And Catalogue Disposition](./2026-08-09-command-code-interactive-continuity.md)
+- [2026-08-09 Command Code Headless Foundation](./2026-08-09-command-code-headless-foundation.md)
 - [2026-08-08 v0.3.1 Source Release](./2026-08-08-v0-3-1-source-release.md)
 - [2026-08-08 v0.3.1 Local Source Candidate](./2026-08-08-v0-3-1-local-source-candidate.md)
 - [2026-08-08 Control-Free History Wire Gate](./2026-08-08-control-free-history-wire-gate.md)

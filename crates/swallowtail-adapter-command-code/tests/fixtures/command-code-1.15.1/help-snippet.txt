@@ -1,0 +1,12 @@
+Usage: command-code [options] [command]
+
+  -p, --print                 print response and exit (non-interactive)
+      --output-format <fmt>   output format for -p: text | json | stream-json
+      --permission-mode <m>   plan | dont-ask | yolo
+      --skip-onboarding       skip the first-run onboarding flow
+      --no-session            do not retain a session transcript
+      --no-auto-update        do not check for or apply updates
+      --trust                 trust the current working directory
+      --no-skills             do not load project or user skills
+      --max-turns <n>         maximum agentic turns for this run
+  -m, --model <id>            exact model id for this run

@@ -38,7 +38,11 @@ workspace checkout.
 
 The immutable `v0.1.0` and `v0.1.1` tags contain 27 public source packages.
 `v0.2.0` contains 28, adding the reviewed `swallowtail-adapter-muse` package.
-The `v0.3.0` candidate keeps those 28 packages and 34 production routes.
+The `v0.3.0` / `v0.3.1` tags keep those 28 packages and 34 production routes.
+Current source adds one reviewed additive package,
+`swallowtail-adapter-command-code`, for 29 packages and 35 production routes.
+Command Code is unreleased and must not be presented as part of any tagged
+inventory.
 
 Foundations:
 
@@ -64,6 +68,7 @@ Opt-in adapters:
 - `swallowtail-adapter-bedrock`
 - `swallowtail-adapter-claude-agent`
 - `swallowtail-adapter-codex`
+- `swallowtail-adapter-command-code` (unreleased source after `v0.3.1`)
 - `swallowtail-adapter-cursor`
 - `swallowtail-adapter-deepseek`
 - `swallowtail-adapter-gemini`
@@ -137,13 +142,13 @@ The immutable `v0.1.x` verified floors are:
 - Rust `1.94.1` for `swallowtail-adapter-bedrock`
 
 Bedrock's historical higher floor follows its pinned AWS SDK graph. `v0.2.0`
-deliberately replaces that split with one Rust `1.95.0` floor for all 28
+deliberately replaces that split with one Rust `1.95.0` floor for all
 packages. This is a breaking MSRV raise and therefore uses a new pre-1.0 minor
 version. The `v0.3.0` candidate retains the same floor.
 
 The `v0.3.0` candidate must pass:
 
-- all 28 packages at Rust `1.95.0`
+- all current-source packages at Rust `1.95.0`
 - the complete workspace on the selected current stable toolchain
 
 Apple Silicon macOS is the initial verified target. Other targets may work and
@@ -263,9 +268,12 @@ not every provider behavior.
 Credential-free release checks sit behind explicit Effigy selectors and cover:
 
 - clean source and exact commit identity
-- exact 28-package candidate metadata and dependency topology, kept distinct
-  from the immutable 27-package `v0.1.x` baselines
-- semantic public API baseline
+- 29-package current-source metadata and dependency topology, kept distinct
+  from the immutable 28-package `v0.2.0` / `v0.3.1` and 27-package `v0.1.x`
+  baselines
+- semantic public API baseline, with the additive Command Code package on a
+  separate unreleased inventory until an operator authorizes a later source
+  release containing it
 - denied missing public documentation
 - dependency advisory, license, and source policy
 - Rust `1.95.0` floor and current stable
@@ -308,8 +316,10 @@ GitHub Release creation, consumer edits, and provider work remain separate.
 
 ## Acceptance
 
-- all 28 candidate packages are separately consumable from one exact source
+- all 28 tagged packages are separately consumable from one exact source
   identity
+- the 29th current-source Command Code package is visibly unreleased and
+  consumable only from an explicitly approved commit
 - the breaking binding-helper migration is explicit and limited to Codex and
   Ollama callers
 - `publish = false` prevents accidental registry publication

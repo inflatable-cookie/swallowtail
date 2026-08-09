@@ -108,6 +108,7 @@ Failure-path emissions only. Happy-path wire spam is not enabled.
 | --- | --- |
 | `qwen.headless` | Decode/process failures |
 | `muse-code.headless` | Decode/process failures |
+| `command-code.headless` | Decode/process failures |
 | `antigravity.headless` | Decode/process failures |
 | `cursor-agent.headless` | Decode/process failures |
 | `claude-code.headless` | Decode/process failures |

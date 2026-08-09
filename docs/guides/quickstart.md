@@ -129,7 +129,7 @@ normal examples compile without touching a provider.
 ## Next Steps
 
 - [Key Concepts](key-concepts.md) — the shared vocabulary
-- [Provider Route Matrix](provider-route-matrix.md) — all 34 routes, and how
+- [Provider Route Matrix](provider-route-matrix.md) — all production routes, and how
   to pick one
 - [Integration Guide Map](integration-guide-map.md) — the guide and example
   for your chosen route

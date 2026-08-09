@@ -18,6 +18,7 @@ contracts or architecture.
 - [Bedrock SDK Prepared Integration](bedrock-sdk-prepared-integration.md)
 - [Claude Agent Prepared Integration](claude-agent-prepared-integration.md)
 - [Codex Prepared Integration](codex-prepared-integration.md)
+- [Command Code Prepared Integration](command-code-prepared-integration.md)
 - [Cursor Prepared Integration](cursor-prepared-integration.md)
 - [DeepSeek Prepared Integration](deepseek-prepared-integration.md)
 - [Gemini CLI Prepared Integration](gemini-cli-prepared-integration.md)

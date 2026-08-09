@@ -1,0 +1,30 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-08-09",
+  "release": "1.15.1",
+  "reported_version": "1.15.1",
+  "launchers": ["command-code", "cmd", "cmdc"],
+  "preferred_bin": "command-code",
+  "entrypoint": {
+    "path": "dist/index.mjs",
+    "sha256": "157feefa0140e78f060ef2c1f9c50d10de702196ea229dc73db6bbcc39a0bcbb",
+    "size_bytes": 1836
+  },
+  "payload": {
+    "path": "dist/cli.mjs",
+    "sha256": "c1b62bc030128ee41b22f950c78be5132bdf8e306f8b4ff889ef5a8935471c5c",
+    "size_bytes": 2359072
+  },
+  "package_json_sha256": "3fce9812137c0523e6c6a1331a0d0d36cc842a1d8654bf5352314a5cb0608377",
+  "engines": {
+    "node": ">=22"
+  },
+  "license": "UNLICENSED",
+  "direct_probe": {
+    "version_succeeded": true,
+    "help_succeeded": true,
+    "no_tool_headless_succeeded": true,
+    "tool_headless_succeeded": true,
+    "credit_failure_exit_code": 10
+  }
+}

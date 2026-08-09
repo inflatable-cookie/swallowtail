@@ -65,6 +65,9 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [091 g03 Evidence-Gated Maintenance Checkpoint](./091-g03-evidence-gated-maintenance-checkpoint.md)
 - [109 Oh My Pi RPC Route Qualification](./109-oh-my-pi-rpc-route-qualification.md)
 - [112 Muse Code Installed Route Qualification](./112-muse-code-installed-route-qualification.md)
+- [116 Command Code Harness Integration Assessment](./116-command-code-harness-integration-assessment.md)
+- [117 Command Code Taste Mechanism Evidence](./117-command-code-taste-mechanism-evidence.md)
+- [118 Command Code Session Continuity And Export](./118-command-code-session-continuity-and-export.md)
 
 ### Hosted APIs And SDKs
 

@@ -60,3 +60,4 @@ Updated: 2026-08-08
 | [052 Consumer And Operator Integration Documentation](052-consumer-and-operator-integration-documentation.md) | active | Traceable deep route, feature, example, operator, and consumer guidance without widening provider truth |
 | [053 Opt-In Debug Observation](053-opt-in-debug-observation.md) | active | Host-owned restricted debug observations across routes without weakening safe diagnostics or public events |
 | [054 Paged Provider Session History](054-paged-provider-session-history.md) | active | Newest-first read-only provider history pages with shared replay projection, distinct from load readiness and reconciliation |
+| [055 Pluggable Learned Idioms](055-pluggable-learned-idioms.md) | active | Provider-neutral learned-preference mechanism: portable idiom records, confidence decay and merge, bounded selection, fail-soft signal sink, and host-owned prompt and transport boundaries |

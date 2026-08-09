@@ -13,9 +13,10 @@ shape.
 
 ## Next Task
 
-Return to the g03 evidence gate — inventory current harness drift and
-consumer friction before opening the next roadmap. `v0.3.1` is tagged; do not
-reopen history paging unless Research 115’s control-free wire gate is met.
+Return to the operator. Command Code interactive continuity (g03.060) and
+catalogue/export disposition (g03.061) are complete. Provider API stays
+deferred. Select the next lane from g03 capacity (for example idioms g03.062
+candidate, compatibility maintenance, or another operator-chosen surface).
 
 ## Index
 

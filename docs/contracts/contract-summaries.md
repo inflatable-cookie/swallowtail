@@ -231,6 +231,12 @@ contract file owns the exact rules.
   reuse `SessionReplayItem` projection, bounds, and opaque cursors shared with
   load and reconciliation, without granting load readiness, interrupted-turn
   observation, or consumer transcript authority.
+- **055** adds the pluggable learned-idioms mechanism: portable idiom records
+  with typed constraints, provenance, and scope; deterministic confidence
+  decay and merge; bounded scope- and confidence-ordered selection; a
+  fail-soft signal sink; a registry client without transport authority; and
+  hard boundaries keeping prompt composition, permission authority, and any
+  learned-model backend consumer- and host-owned.
 
 ## Amendments
 

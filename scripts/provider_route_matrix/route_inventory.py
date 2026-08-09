@@ -1,7 +1,7 @@
 """Authoritative production route inventory derived from the feature matrix.
 
 The feature-matrix CSV is the single source for route identity. Every
-consumer of the 34-route inventory derives from this module: the shell
+consumer of the production-route inventory derives from this module: the shell
 route-matrix check, the integration-guide and activity-matrix parsers, and
 the consumer front door. Provider-session lifecycle posture is per-route
 data that must be supplied explicitly; missing entries fail loudly.
@@ -16,7 +16,7 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
 FEATURE_MATRIX = REPO / "docs" / "guides" / "provider-solution-feature-matrix.csv"
-EXPECTED_ROUTE_COUNT = 34
+EXPECTED_ROUTE_COUNT = 35
 
 # Provider-session lifecycle posture per route:
 # (persistent-session posture, management binding, archive, restore, delete,
@@ -49,6 +49,7 @@ LIFECYCLE_POSTURES: dict[str, tuple[str, str, str, str, str, str]] = {
     "llama-cpp.attached": ("not-applicable", "no", "not-applicable", "not-applicable", "not-applicable", "not-applicable"),
     "llama-cpp.owned": ("not-applicable", "no", "not-applicable", "not-applicable", "not-applicable", "not-applicable"),
     "muse-code.headless": ("not-applicable", "no", "not-applicable", "not-applicable", "not-applicable", "not-applicable"),
+    "command-code.headless": ("not-applicable", "no", "not-applicable", "not-applicable", "not-applicable", "not-applicable"),
     "ollama.attached": ("not-applicable", "no", "not-applicable", "not-applicable", "not-applicable", "not-applicable"),
     "openai.background": ("not-applicable", "no", "not-applicable", "not-applicable", "not-applicable", "not-applicable"),
     "openai.realtime": ("not-applicable", "no", "not-applicable", "not-applicable", "not-applicable", "not-applicable"),
@@ -61,7 +62,7 @@ LIFECYCLE_POSTURES: dict[str, tuple[str, str, str, str, str, str]] = {
 
 
 def production_routes() -> list[str]:
-    """Returns the 34 production route identities from the feature matrix."""
+    """Returns the production route identities from the feature matrix."""
     with FEATURE_MATRIX.open(newline="", encoding="utf-8") as source:
         rows = list(csv.DictReader(source))
     routes = [

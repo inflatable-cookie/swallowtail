@@ -1,0 +1,27 @@
+{"type":"event","event":{"type":"run_start","sessionId":"00000000-0000-4000-8000-000000000002"}}
+{"type":"event","event":{"type":"turn_start"}}
+{"type":"event","event":{"type":"message_start"}}
+{"type":"event","event":{"type":"model_request_start"}}
+{"type":"event","event":{"type":"thinking_start"}}
+{"type":"event","event":{"type":"thinking_delta","delta":"I should read the file first."}}
+{"type":"event","event":{"type":"thinking_end"}}
+{"type":"event","event":{"type":"tool_queued","toolCallId":"call-1","toolName":"read_file","input":{"file_path":"<redacted>"}}}
+{"type":"event","event":{"type":"tool_running","toolCallId":"call-1","description":null}}
+{"type":"event","event":{"type":"tool_completed","toolCallId":"call-1","result":[{"type":"text","text":"<redacted>"}]}}
+{"type":"event","event":{"type":"message_update"}}
+{"type":"event","event":{"type":"model_request_end","stopReason":"tool_calls","usage":{"inputTokens":40,"outputTokens":8,"cacheReadTokens":0,"cacheWriteTokens":0}}}
+{"type":"event","event":{"type":"message_end"}}
+{"type":"event","event":{"type":"turn_end","hadToolCalls":true}}
+{"type":"event","event":{"type":"turn_start"}}
+{"type":"event","event":{"type":"message_start"}}
+{"type":"event","event":{"type":"model_request_start"}}
+{"type":"event","event":{"type":"thinking_start"}}
+{"type":"event","event":{"type":"thinking_delta","delta":"The file confirms the answer."}}
+{"type":"event","event":{"type":"thinking_end"}}
+{"type":"event","event":{"type":"text_delta","delta":"Done reading."}}
+{"type":"event","event":{"type":"message_update"}}
+{"type":"event","event":{"type":"model_request_end","stopReason":"stop","usage":{"inputTokens":55,"outputTokens":6,"cacheReadTokens":40,"cacheWriteTokens":0}}}
+{"type":"event","event":{"type":"message_end"}}
+{"type":"event","event":{"type":"turn_end","hadToolCalls":false}}
+{"type":"event","event":{"type":"run_end"}}
+{"type":"result","subtype":"success","sessionId":"00000000-0000-4000-8000-000000000002","stopReason":"stop","usage":{"inputTokens":95,"outputTokens":14,"cacheReadTokens":40,"cacheWriteTokens":0},"durationMs":1930,"finalText":"Done reading."}

@@ -1,0 +1,14 @@
+{"type":"event","event":{"type":"run_start","sessionId":"00000000-0000-4000-8000-000000000001"}}
+{"type":"event","event":{"type":"turn_start"}}
+{"type":"event","event":{"type":"message_start"}}
+{"type":"event","event":{"type":"model_request_start"}}
+{"type":"event","event":{"type":"thinking_start"}}
+{"type":"event","event":{"type":"thinking_delta","delta":"Considering the reply."}}
+{"type":"event","event":{"type":"thinking_end"}}
+{"type":"event","event":{"type":"text_delta","delta":"pong"}}
+{"type":"event","event":{"type":"message_update"}}
+{"type":"event","event":{"type":"model_request_end","stopReason":"end_turn","usage":{"inputTokens":12,"outputTokens":3,"cacheReadTokens":0,"cacheWriteTokens":0}}}
+{"type":"event","event":{"type":"message_end"}}
+{"type":"event","event":{"type":"turn_end","hadToolCalls":false}}
+{"type":"event","event":{"type":"run_end"}}
+{"type":"result","subtype":"success","sessionId":"00000000-0000-4000-8000-000000000001","stopReason":"end_turn","usage":{"inputTokens":12,"outputTokens":3,"cacheReadTokens":0,"cacheWriteTokens":0},"durationMs":842,"finalText":"pong"}

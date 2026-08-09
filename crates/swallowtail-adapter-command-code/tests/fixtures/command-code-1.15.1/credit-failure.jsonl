@@ -1,0 +1,5 @@
+{"type":"event","event":{"type":"run_start","sessionId":"00000000-0000-4000-8000-000000000003"}}
+{"type":"event","event":{"type":"turn_start"}}
+{"type":"event","event":{"type":"run_error","message":"insufficient credits to complete this request"}}
+{"type":"event","event":{"type":"run_end"}}
+{"type":"result","subtype":"error","sessionId":"00000000-0000-4000-8000-000000000003","error":"insufficient credits"}

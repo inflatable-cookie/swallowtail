@@ -5,7 +5,7 @@ architecture, contracts, roadmaps, or logs.
 
 ## Active Specs
 
-None.
+- [006 Pluggable Learned Idioms](006-pluggable-learned-idioms.md)
 
 ## Promoted Specs
 

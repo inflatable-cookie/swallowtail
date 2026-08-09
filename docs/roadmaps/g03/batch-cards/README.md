@@ -6,8 +6,21 @@
 
 ## Planned
 
+- [189-idiom-records-and-merge-foundation.md](./189-idiom-records-and-merge-foundation.md)
+- [190-idiom-engine-trait-and-conformance.md](./190-idiom-engine-trait-and-conformance.md)
+- [191-idiom-static-rules-backend-and-delivery.md](./191-idiom-static-rules-backend-and-delivery.md)
+- [192-idiom-registry-client-and-package-acceptance.md](./192-idiom-registry-client-and-package-acceptance.md)
+
 ## Completed
 
+- [188-command-code-session-catalogue-export-disposition.md](./188-command-code-session-catalogue-export-disposition.md)
+- [187-command-code-interactive-acceptance.md](./187-command-code-interactive-acceptance.md)
+- [186-command-code-interactive-session-driver.md](./186-command-code-interactive-session-driver.md)
+- [185-command-code-interactive-continuity-corpus.md](./185-command-code-interactive-continuity-corpus.md)
+- [184-command-code-package-and-route-acceptance.md](./184-command-code-package-and-route-acceptance.md)
+- [183-command-code-prepared-facade.md](./183-command-code-prepared-facade.md)
+- [182-command-code-headless-driver-core.md](./182-command-code-headless-driver-core.md)
+- [181-command-code-artifact-and-event-corpus.md](./181-command-code-artifact-and-event-corpus.md)
 - [180-multi-route-provider-history-docs.md](./180-multi-route-provider-history-docs.md)
 - [179-opencode-alibaba-provider-history.md](./179-opencode-alibaba-provider-history.md)
 - [178-provider-history-page-guide.md](./178-provider-history-page-guide.md)

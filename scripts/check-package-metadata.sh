@@ -18,7 +18,7 @@ cargo metadata --no-deps --format-version 1 > "$release_metadata"
 release_version=$(jq -r '.packages[0].version' "$release_metadata")
 
 jq -e --arg version "$release_version" --arg rust_msrv "$release_msrv_cargo" '
-  (.packages | length) == 28 and
+  (.packages | length) == 29 and
   all(.packages[];
     .version == $version and
     .edition == "2024" and
@@ -37,6 +37,7 @@ jq -e --arg version "$release_version" --arg rust_msrv "$release_msrv_cargo" '
          .name == "swallowtail-adapter-ollama" or
          .name == "swallowtail-adapter-oh-my-pi" or
          .name == "swallowtail-adapter-muse" or
+         .name == "swallowtail-adapter-command-code" or
          .name == "swallowtail-adapter-pi" or
          .name == "swallowtail-adapter-qwen") and
         .features == {"live-probes":[]}
@@ -51,8 +52,10 @@ jq -e --arg version "$release_version" --arg rust_msrv "$release_msrv_cargo" '
 ' "$release_metadata" > /dev/null
 
 jq -r '.packages[].name' "$release_metadata" | LC_ALL=C sort > "$release_names"
-LC_ALL=C sort release-baselines/public-api-0.3.0/packages.txt \
-  > "$release_expected_names"
+{
+  cat release-baselines/public-api-0.3.0/packages.txt
+  printf 'swallowtail-adapter-command-code\n'
+} | LC_ALL=C sort > "$release_expected_names"
 diff -u "$release_expected_names" "$release_names"
 
 jq -r '
@@ -63,11 +66,14 @@ jq -r '
   @tsv
 ' "$release_metadata" | LC_ALL=C sort > "$release_edges"
 
-awk -F '\t' -v OFS='\t' -v requirement="^$release_version" \
-  '{$3 = requirement; print}' \
-  release-baselines/internal-dependencies-0.2.0.tsv \
-  | LC_ALL=C sort > "$release_expected_edges"
+{
+  awk -F '\t' -v OFS='\t' -v requirement="^$release_version" \
+    '{$3 = requirement; print}' \
+    release-baselines/internal-dependencies-0.2.0.tsv
+  printf 'swallowtail-adapter-command-code\tswallowtail-core\t^%s\n' "$release_version"
+  printf 'swallowtail-adapter-command-code\tswallowtail-runtime\t^%s\n' "$release_version"
+} | LC_ALL=C sort > "$release_expected_edges"
 diff -u "$release_expected_edges" "$release_edges"
 
-printf 'coordinated metadata passed for 28 crates at %s and Rust %s\n' \
+printf 'current-source metadata passed for 29 crates at %s and Rust %s; immutable release baseline remains 28\n' \
   "$release_version" "$release_msrv_cargo"

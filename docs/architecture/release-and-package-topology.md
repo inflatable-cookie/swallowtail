@@ -2,15 +2,17 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-08
-Realization: roadmap g02.001; g03.043
+Updated: 2026-08-09
+Realization: roadmap g02.001; g03.043; g03.059
 
 ## Boundary
 
-Swallowtail current source is a coordinated 28-package Rust workspace at the
-immutable `v0.3.1` tag. The immutable `v0.1.x` source tags contain 27 packages;
-`v0.2.0` and later contain 28 after adding `swallowtail-adapter-muse`. No crate
-is published to crates.io in this release lane.
+Swallowtail current source is a coordinated 29-package Rust workspace, one
+package ahead of the immutable `v0.3.1` tag's 28 packages. The immutable
+`v0.1.x` source tags contain 27 packages; `v0.2.0` and later immutable tags
+contain 28 after adding `swallowtail-adapter-muse`. `swallowtail-adapter-command-code`
+is additive, unreleased current-source work; it has not yet been captured in
+an immutable tag. No crate is published to crates.io in this release lane.
 
 Each package remains independently selectable from the tagged Git source.
 There is no umbrella crate or private implementation package.
@@ -41,6 +43,7 @@ Adapters:
 - `swallowtail-adapter-bedrock`
 - `swallowtail-adapter-claude-agent`
 - `swallowtail-adapter-codex`
+- `swallowtail-adapter-command-code`
 - `swallowtail-adapter-cursor`
 - `swallowtail-adapter-deepseek`
 - `swallowtail-adapter-gemini`
@@ -80,10 +83,11 @@ No normal internal edge points upward. Workspace paths keep the source tag
 self-contained. Compatible version requirements preserve coordinated package
 identity without claiming registry availability.
 
-Candidate metadata, dependency topology, and semantic API checks include all
-28 packages. Immutable `v0.1.x` inventories retain their 27 packages and 33
-routes; `v0.2.0` retains its 28-package, 34-route inventory. Later candidates
-do not rewrite historical release notes, tag contents, or evidence.
+Candidate metadata, dependency topology, and semantic API checks cover the
+current 29-package source. Immutable `v0.1.x` inventories retain their 27
+packages and 33 routes; `v0.2.0` and `v0.3.1` retain their 28-package,
+34-route inventory. Later candidates do not rewrite historical release notes,
+tag contents, or evidence.
 
 ## Version And Toolchains
 
@@ -126,9 +130,10 @@ evidence:
 
 - exact commit and parent
 - clean worktree
-- 28-package candidate metadata and topology plus immutable 27-package
-  `v0.1.x` evidence
-- semantic public API baseline
+- 29-package current-source metadata and topology plus immutable 28-package
+  `v0.2.0` / `v0.3.1` and 27-package `v0.1.x` evidence
+- semantic public API baseline, with Command Code on a separate unreleased
+  inventory until a later source release contains it
 - documented public API
 - dependency and security policy
 - MSRV and current-stable checks

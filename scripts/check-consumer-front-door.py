@@ -90,8 +90,10 @@ if documented_packages != expected_packages:
 
 current_routes = set(inventory_production_routes())
 expected_routes = set(read("release-baselines/production-routes-0.2.0.txt").splitlines())
-if expected_routes != current_routes:
-    fail("current route inventory differs from the v0.2.0 release baseline")
+if not expected_routes <= current_routes or "command-code.headless" not in current_routes:
+    fail(
+        "current route inventory lost tagged routes or the additive Command Code route"
+    )
 release_route_section = section(release, "## Production Routes", "## Highlights")
 documented_routes = set(re.findall(r"^- `([^`]+)`$", release_route_section, re.MULTILINE))
 if documented_routes != expected_routes:

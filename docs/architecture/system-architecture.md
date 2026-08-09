@@ -96,6 +96,14 @@ spine:
   static-rules backend with session-preparation delivery, and registry
   pull/push merge without transport authority; the mechanism never composes
   prompts, enforces permissions, or absorbs a learned-model dependency
+- the route-path idioms opt-in under Contract 056 extends the runtime: the
+  execution-host service set carries optional `IdiomSource` and `IdiomSink`
+  ports; `SessionOptions` carries an optional `IdiomSessionOption` bound into
+  prepared plans with the `IdiomsSessionOption` capability gate; at session
+  open the runtime resolves the registered source and folds the selected
+  set after consumer-supplied developer instructions under one bounded,
+  labeled rule. Codex app-server advertises the capability and proves the
+  fold; Nucleus adopted the seam as the testbed consumer
 - the runtime also owns one consuming prepared working-state restoration
   facade over existing session reconciliation, run reconciliation, or exact
   provider-session load. Route preparation fixes the strongest qualified

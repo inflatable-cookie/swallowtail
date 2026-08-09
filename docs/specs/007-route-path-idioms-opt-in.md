@@ -58,9 +58,9 @@ Settled 2026-08-09:
 - [x] Research 119 records evidence and recommendation
 - [x] Contract 056 and amendments to 010/012/037/055 govern the surface
 - [x] spec records the host-gated fold exception to the 055 boundary
-- [ ] roadmap and ready cards sequence runtime, Codex proof, and Nucleus
-      adoption
-- [ ] conformance covers fold determinism, redaction and bounds, fail-closed
+- [x] roadmap and ready cards sequence runtime, Codex proof, and Nucleus
+      adoption (g03.063, cards 193-196, complete)
+- [x] conformance covers fold determinism, redaction and bounds, fail-closed
       preflight, and missing-source rejection
 
 ## Promotion Targets

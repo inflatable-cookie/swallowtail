@@ -13,11 +13,11 @@ shape.
 
 ## Next Task
 
-g03.063 Route-Path Idioms Opt-In is active: cards 193-194 (runtime surface;
-prepared binding, capability gate, Codex proof) are complete. Card 195 is a
-Nucleus-repo adoption delta: register one idiom source on Nucleus's host and
-opt into the session option on its interactive Codex path — work in
-`../nucleus` with a bounded Swallowtail-side review.
+Return to the operator. g03.063 Route-Path Idioms Opt-In is complete: cards
+193-196 landed the runtime host ports, session option, fold rule, capability
+gate, Codex proof, and a bounded Nucleus adoption delta. The correction-loop
+proxy and learned-backend selection await Nucleus evidence. Select the next
+lane from g03 capacity.
 
 ## Index
 

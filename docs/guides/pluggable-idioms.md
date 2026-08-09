@@ -50,6 +50,39 @@ scope, ordered by scope then effective confidence, never exceeding the
 bound. Headless routes have no accept/reject loop, so they receive static
 rules only.
 
+## Route-Path Opt-In (Contract 056)
+
+The same delivery can ride the ordinary route path: one host registration
+and one session-option field, no per-session wiring.
+
+Register the source and an optional signal recorder once on the host
+service set:
+
+```rust
+use std::sync::Arc;
+use swallowtail_runtime::HostServices;
+
+let services = HostServices::new(host_id)
+    .with_idiom_source(Arc::new(source))
+    .with_idiom_recorder(Arc::new(recorder)); // optional; missing = no-op
+```
+
+Then opt into one session with the portable option:
+
+```rust
+use swallowtail_runtime::{IdiomSessionOption, SessionOptions};
+
+let options = SessionOptions::default()
+    .with_developer_instructions(consumer_text)      // stays first
+    .with_idioms(IdiomSessionOption::new(IdiomScope::Project, 8)?);
+```
+
+At session open the runtime selects from the registered source and folds
+the result after your instructions under a labeled `[idioms]` block —
+bounded, deterministic, and pinned by conformance. Missing source, plan
+mismatch, or a route that does not advertise the capability fail closed
+before provider work. No option means no idioms work anywhere.
+
 ## Recording Signals
 
 Recording is optional and fail-soft: no registered sink means no recording,
@@ -78,5 +111,7 @@ let package = RegistryPackage::new(
 let outcome = pull_package(&local_store, &package, now);
 ```
 
-See the compiled example in the package (`examples/prepared_session.rs`) for
-the full consumer path.
+See the compiled examples: `examples/prepared_session.rs` in
+`swallowtail-idioms` for the consumer path, and
+`examples/idioms_route_opt_in.rs` in `swallowtail-runtime` for the
+route-path opt-in.

@@ -1,6 +1,6 @@
 # 063 Route-Path Idioms Opt-In
 
-Status: active
+Status: completed
 Owner: Tom
 Created: 2026-08-09
 Depends on: Research 119, Spec 007, Contract 056
@@ -24,20 +24,20 @@ the g03 evidence gate until the operator selects it. Nucleus is the testbed.
       fold rule, and conformance fixtures
 - [x] card 194: realize the prepared binding and capability gate, then the
       Codex app-server proof
-- [ ] card 195: bounded Nucleus adoption delta on its interactive session
+- [x] card 195: bounded Nucleus adoption delta on its interactive session
       path
-- [ ] card 196: package, guide, matrix, architecture, and acceptance
+- [x] card 196: package, guide, matrix, architecture, and acceptance
       evidence
 
 ## Goals
 
-- [ ] one host registration and one session-option field replaces per-session
+- [x] one host registration and one session-option field replaces per-session
       idioms wiring
-- [ ] fail-closed preflight for missing source, plan mismatch, and
+- [x] fail-closed preflight for missing source, plan mismatch, and
       non-advertising routes
-- [ ] deterministic fold rule pinned by conformance
-- [ ] Codex app-server fixture proof and a bounded Nucleus adoption handoff
-- [ ] default behavior unchanged: no option, no idioms work
+- [x] deterministic fold rule pinned by conformance
+- [x] Codex app-server fixture proof and a bounded Nucleus adoption handoff
+- [x] default behavior unchanged: no option, no idioms work
 
 ## Boundaries
 
@@ -48,15 +48,16 @@ the g03 evidence gate until the operator selects it. Nucleus is the testbed.
 
 ## Acceptance Criteria
 
-- [ ] Contract 056 and amendments to 010/012/037/055 govern the surface
-- [ ] conformance covers fold determinism, bounds, fail-closed preflight,
+- [x] Contract 056 and amendments to 010/012/037/055 govern the surface
+- [x] conformance covers fold determinism, bounds, fail-closed preflight,
       and recorder no-op
-- [ ] Codex app-server proof passes deterministic fixtures without live
+- [x] Codex app-server proof passes deterministic fixtures without live
       provider work
-- [ ] Nucleus adopts the surface without importing product policy
-- [ ] focused and extracted-package validation pass
+- [x] Nucleus adopts the surface without importing product policy
+- [x] focused and extracted-package validation pass
 
 ## Planning Checkpoint
 
-After card 196, reassess the correction-loop proxy and learned-backend
-selection with Nucleus evidence before any second tranche.
+The lane is complete. Reassess the correction-loop proxy and
+learned-backend selection with Nucleus evidence before any second tranche.
+Return to the operator for the next lane.

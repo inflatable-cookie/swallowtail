@@ -1,6 +1,6 @@
 # 195 Nucleus Idioms Adoption Delta
 
-Status: ready
+Status: completed
 Owner: Tom
 Updated: 2026-08-09
 
@@ -25,11 +25,18 @@ importing product policy into Swallowtail.
 
 ## Acceptance Criteria
 
-- the adoption delta compiles against released Swallowtail surface
-- folded delivery and recorder no-op prove on Nucleus's interactive path
-- no Swallowtail contract change driven by the adoption
+- [x] the adoption delta compiles against released Swallowtail surface
+      (pinned rev `1b19ccfe` carries the opt-in; tag pinning restores after
+      the next source release)
+- [x] folded delivery and recorder no-op prove on Nucleus's interactive path
+- [x] no Swallowtail contract change driven by the adoption
 
 ## Validation
 
-- Nucleus focused tests through its consumer path
-- `effigy validate:focused swallowtail-adapter-codex swallowtail-runtime`
+- [x] Nucleus focused `nucleus-agent-adapters` nextest: 28 passed, 2 skipped
+      (includes the fold fixture)
+- [x] `nucleus-agent-protocol` and `nucleus-server` compile on the pinned rev
+- [x] Nucleus `effigy qa:docs` passes
+- [x] production task path unchanged: opt-in stays unwired until the Nucleus
+      product supplies a rules store
+- [x] adoption recorded in the Nucleus log (`2026-08-09-swallowtail-idioms-route-opt-in-adoption.md`)

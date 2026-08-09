@@ -239,7 +239,8 @@ fn promote(
         .ok_or_else(|| discovery_outcome_failure(&outcome))?;
     if observation.execution_host_id() != &input.execution_host_id
         || observation.version().axis() != input.target.version_axis()
-        || observation.version().version().as_str() != crate::selection::COMMAND_CODE_RELEASE_VERSION
+        || observation.version().version().as_str()
+            != crate::selection::COMMAND_CODE_RELEASE_VERSION
     {
         return Err(failure(
             PreparationStage::CompatibilityClassification,
@@ -274,7 +275,10 @@ fn configured_instance(
     Ok(ConfiguredInstance::new(
         input.instance_id.clone(),
         input.instance_revision.clone(),
-        crate::command_code_headless_descriptor().identity().id().clone(),
+        crate::command_code_headless_descriptor()
+            .identity()
+            .id()
+            .clone(),
         input.execution_host_id.clone(),
         target,
         InstanceOwnership::HostOwnedEphemeral,

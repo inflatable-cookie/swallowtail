@@ -369,7 +369,8 @@ impl ParsedTerminal {
         }
         match self.subtype {
             Some(ResultSubtype::Success) => {
-                let outcome = TerminalOutcome::new(TerminalStatus::Completed, CleanupOutcome::Clean);
+                let outcome =
+                    TerminalOutcome::new(TerminalStatus::Completed, CleanupOutcome::Clean);
                 match self.final_output {
                     Some(output) => outcome.with_output(output),
                     None => outcome,
@@ -489,7 +490,10 @@ fn required_text<'a>(value: &'a Value, key: &str) -> Result<&'a str, RuntimeFail
 /// Like [`required_text`] but tolerates a legitimately empty string (for
 /// example, an empty `finalText` or a zero-length streamed delta).
 fn required_string<'a>(value: &'a Value, key: &str) -> Result<&'a str, RuntimeFailure> {
-    value.get(key).and_then(Value::as_str).ok_or_else(malformed_stream)
+    value
+        .get(key)
+        .and_then(Value::as_str)
+        .ok_or_else(malformed_stream)
 }
 
 fn bounded_identifier(value: &str) -> Result<&str, RuntimeFailure> {

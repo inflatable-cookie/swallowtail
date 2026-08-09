@@ -1,12 +1,8 @@
-use super::common::{
-    host_id, model, prepare,
-};
+use super::common::{host_id, model, prepare};
 use super::support;
 use futures_executor::block_on;
 use swallowtail_adapter_command_code::CommandCodeSessionProfileInput;
-use swallowtail_core::{
-    Capability, DriverRole, SessionProviderStatePolicy,
-};
+use swallowtail_core::{Capability, DriverRole, SessionProviderStatePolicy};
 use swallowtail_runtime::{
     CleanupOutcome, Deadline, MonotonicInstant, OperationContent, RequestId, RuntimeTurnId,
     TerminalStatus, TurnRequest, WorkingResourceRef,
@@ -73,14 +69,16 @@ fn prepared_session_uses_exact_resume_on_later_turns_without_ambient_selectors()
     assert!(handle.resume_binding().is_none());
 
     for (index, prompt) in ["first prompt", "second prompt"].into_iter().enumerate() {
-        let mut turn = block_on(handle.start_turn(
-            TurnRequest::new(
-                RuntimeTurnId::new(format!("command-code-turn-{}", index + 1)).expect("turn"),
-                OperationContent::new(prompt).expect("prompt"),
-            )
-            .with_deadline(Deadline::at(MonotonicInstant::from_ticks(1_000))),
-            services.clone(),
-        ))
+        let mut turn = block_on(
+            handle.start_turn(
+                TurnRequest::new(
+                    RuntimeTurnId::new(format!("command-code-turn-{}", index + 1)).expect("turn"),
+                    OperationContent::new(prompt).expect("prompt"),
+                )
+                .with_deadline(Deadline::at(MonotonicInstant::from_ticks(1_000))),
+                services.clone(),
+            ),
+        )
         .expect("turn starts");
         let terminal = block_on(turn.take_terminal_outcome().expect("terminal"));
         assert_eq!(terminal.status(), &TerminalStatus::Completed);
@@ -115,9 +113,7 @@ fn structured_run_still_binds_no_session_and_prohibited_retention() {
         .prepare_run(super::common::run_input(model(), "structured-retained"))
         .expect("run prepares");
     assert!(
-        run.request()
-            .policy()
-            .provider_retention()
+        run.request().policy().provider_retention()
             == swallowtail_runtime::ProviderRetentionPolicy::Prohibited
     );
     let host = support::FixtureHost::scripted([super::common::NO_TOOL_SUCCESS]);

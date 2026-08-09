@@ -23,9 +23,7 @@ mod selection;
 mod session;
 mod validation;
 
-pub use access::{
-    COMMAND_CODE_LOCAL_ACCOUNT_AUDIENCE, command_code_local_account_access_profile,
-};
+pub use access::{COMMAND_CODE_LOCAL_ACCOUNT_AUDIENCE, command_code_local_account_access_profile};
 pub use driver::{CommandCodeHeadlessDriver, command_code_headless_descriptor};
 pub use prepared::{
     CommandCodeHeadlessModelSelection, CommandCodePreparationInput, CommandCodePreparationProbe,

@@ -205,22 +205,20 @@ fn configured_command_code_completes_two_interactive_turns_with_exact_resume() {
         ("1", "COMMAND_CODE_LIVE_TURN_1"),
         ("2", "COMMAND_CODE_LIVE_TURN_2"),
     ] {
-        let mut turn_handle = block_on(handle.start_turn(
-            TurnRequest::new(
-                RuntimeTurnId::new(format!("live-command-code-turn-{turn}")).expect("turn id"),
-                OperationContent::new(format!(
-                    "Reply exactly {expected}. Do not use tools."
-                ))
-                .expect("prompt"),
-            )
-            .with_deadline(local.deadline_after(Duration::from_secs(90))),
-            local.services().clone(),
-        ))
+        let mut turn_handle = block_on(
+            handle.start_turn(
+                TurnRequest::new(
+                    RuntimeTurnId::new(format!("live-command-code-turn-{turn}")).expect("turn id"),
+                    OperationContent::new(format!("Reply exactly {expected}. Do not use tools."))
+                        .expect("prompt"),
+                )
+                .with_deadline(local.deadline_after(Duration::from_secs(90))),
+                local.services().clone(),
+            ),
+        )
         .expect("interactive turn starts");
         let mut events = turn_handle.take_events().expect("turn events");
-        let terminal = turn_handle
-            .take_terminal_outcome()
-            .expect("turn terminal");
+        let terminal = turn_handle.take_terminal_outcome().expect("turn terminal");
         let outcome = block_on(async {
             while let Some(event) = events.next().await {
                 event.expect("live interactive event remains valid");
@@ -265,8 +263,8 @@ fn live_host() -> (
         .expect("Node interpreter resolves exactly");
     let environment = EnvironmentRef::new("live.command-code.local-account-environment")
         .expect("environment is valid");
-    let working_resource =
-        WorkingResourceRef::new("live.command-code.read-only-workspace").expect("resource is valid");
+    let working_resource = WorkingResourceRef::new("live.command-code.read-only-workspace")
+        .expect("resource is valid");
     let execution_host_id = ExecutionHostId::new("live.command-code.local-host").expect("host id");
     let executable =
         ExecutableRef::new("live.command-code.installed").expect("executable ref is valid");

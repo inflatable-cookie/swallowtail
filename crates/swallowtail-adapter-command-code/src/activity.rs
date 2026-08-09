@@ -153,7 +153,11 @@ impl CommandCodeHeadlessActivityProjection {
         &mut self,
         tool_call_id: &str,
     ) -> Result<Vec<ActivityObservation>, RuntimeFailure> {
-        let activity = self.tools.get(tool_call_id).cloned().ok_or_else(activity_drift)?;
+        let activity = self
+            .tools
+            .get(tool_call_id)
+            .cloned()
+            .ok_or_else(activity_drift)?;
         Ok(vec![self.observation(
             &activity,
             ActivityLifecyclePhase::Updated,
@@ -166,10 +170,7 @@ impl CommandCodeHeadlessActivityProjection {
         &mut self,
         tool_call_id: &str,
     ) -> Result<Vec<ActivityObservation>, RuntimeFailure> {
-        let activity = self
-            .tools
-            .remove(tool_call_id)
-            .ok_or_else(activity_drift)?;
+        let activity = self.tools.remove(tool_call_id).ok_or_else(activity_drift)?;
         Ok(vec![self.observation(
             &activity,
             ActivityLifecyclePhase::Completed,

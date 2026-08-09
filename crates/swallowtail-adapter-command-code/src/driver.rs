@@ -185,9 +185,7 @@ pub(crate) async fn write_prompt(
     content: &swallowtail_runtime::OperationContent,
 ) -> Result<(), RuntimeFailure> {
     process
-        .write_stdin(ProcessInputChunk::new(
-            content.as_str().as_bytes().to_vec(),
-        ))
+        .write_stdin(ProcessInputChunk::new(content.as_str().as_bytes().to_vec()))
         .await?;
     process.close_stdin().await.map_err(|_| {
         crate::failure::failure(

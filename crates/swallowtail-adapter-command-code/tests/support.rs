@@ -30,9 +30,7 @@ impl FixtureHost {
     pub fn scripted(outputs: impl IntoIterator<Item = &'static str>) -> Self {
         let outputs = outputs
             .into_iter()
-            .map(|output| {
-                VecDeque::from([stdout_chunk(output.as_bytes().to_vec())])
-            })
+            .map(|output| VecDeque::from([stdout_chunk(output.as_bytes().to_vec())]))
             .collect::<VecDeque<_>>();
         Self::from_scripted(outputs, ProcessExit::new(true, Some(0)), false)
     }
@@ -45,11 +43,7 @@ impl FixtureHost {
         outputs: impl IntoIterator<Item = ProcessOutputChunk>,
         exit: ProcessExit,
     ) -> Self {
-        Self::from_scripted(
-            VecDeque::from([outputs.into_iter().collect()]),
-            exit,
-            false,
-        )
+        Self::from_scripted(VecDeque::from([outputs.into_iter().collect()]), exit, false)
     }
 
     pub fn held_open() -> Self {

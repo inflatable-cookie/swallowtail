@@ -2,9 +2,9 @@ mod lifecycle;
 mod turn;
 
 use self::lifecycle::{ActiveSlot, SessionCancellation, close_active};
+use crate::CommandCodeHeadlessDriver;
 use crate::failure::{failure, unsupported};
 use crate::validation::validate_session;
-use crate::CommandCodeHeadlessDriver;
 use std::sync::{Arc, Mutex};
 use swallowtail_core::{PreflightPlan, SessionRef};
 use swallowtail_runtime::{

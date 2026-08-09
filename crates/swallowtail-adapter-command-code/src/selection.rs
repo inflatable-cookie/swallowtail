@@ -116,7 +116,10 @@ mod tests {
             "1.15.1 ",
             "command-code 1.15.1",
         ] {
-            assert!(command_code_release_binding(rejected).is_none(), "{rejected}");
+            assert!(
+                command_code_release_binding(rejected).is_none(),
+                "{rejected}"
+            );
         }
     }
 

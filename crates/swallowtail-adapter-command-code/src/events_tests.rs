@@ -47,10 +47,7 @@ fn no_tool_success_stream_projects_output_and_completes() {
     )));
     let outcome = terminal.outcome(ProcessExit::new(true, Some(0)));
     assert_eq!(outcome.status(), &TerminalStatus::Completed);
-    assert_eq!(
-        outcome.output().map(OperationContent::as_str),
-        Some("pong")
-    );
+    assert_eq!(outcome.output().map(OperationContent::as_str), Some("pong"));
 }
 
 #[test]

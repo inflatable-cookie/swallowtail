@@ -62,7 +62,9 @@ fn prepared_run_uses_local_account_ambient_host_and_exact_read_only_cli_binding(
     assert!(!events.is_empty());
     assert_eq!(terminal.status(), &TerminalStatus::Completed);
     assert_eq!(
-        terminal.output().map(swallowtail_runtime::OperationContent::as_str),
+        terminal
+            .output()
+            .map(swallowtail_runtime::OperationContent::as_str),
         Some("pong")
     );
     assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
@@ -95,7 +97,12 @@ fn prepared_run_uses_local_account_ambient_host_and_exact_read_only_cli_binding(
             "fixture-model",
         ]
     );
-    assert!(!process.arguments.iter().any(|argument| argument == "--yolo"));
+    assert!(
+        !process
+            .arguments
+            .iter()
+            .any(|argument| argument == "--yolo")
+    );
     assert!(!process.arguments.iter().any(|argument| {
         argument.contains("token") || argument.contains("credential") || argument.contains("auth")
     }));
@@ -204,7 +211,10 @@ fn descriptor_and_common_profile_keep_unsupported_surfaces_unavailable() {
     let descriptor = swallowtail_adapter_command_code::command_code_headless_descriptor();
     assert!(descriptor.supports_role(DriverRole::StructuredRun));
     assert!(descriptor.supports_role(DriverRole::InteractiveSession));
-    for role in [DriverRole::ModelCatalog, DriverRole::ProviderSessionCatalogue] {
+    for role in [
+        DriverRole::ModelCatalog,
+        DriverRole::ProviderSessionCatalogue,
+    ] {
         assert!(!descriptor.supports_role(role));
     }
     let prepared = prepare(host_id());

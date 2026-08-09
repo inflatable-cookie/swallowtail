@@ -121,7 +121,7 @@ terminal evidence. Replacement is not recovery of provider state.
 | Kimi local server | exact-turn reconciliation; optional settled reconcile then replay-free resume |
 | Claude Agent ACP, Kimi ACP | complete continuation recovery |
 | Cursor ACP, Grok ACP | exact attachment; replay discarded |
-| Antigravity continuation, Gemini ACP, Pi RPC, Qwen continuation | fresh replacement; context lost |
+| Antigravity continuation, Command Code interactive, Gemini ACP, Oh My Pi RPC, Pi RPC, Qwen continuation | fresh replacement; context lost |
 | Anthropic Messages, DeepSeek continuation, Ollama attached, xAI Responses WebSocket | fresh replacement; context lost |
 | OpenAI Realtime, Gemini Live | fresh realtime replacement; connection context lost |
 

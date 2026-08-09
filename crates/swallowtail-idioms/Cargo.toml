@@ -1,0 +1,19 @@
+[package]
+name = "swallowtail-idioms"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+readme.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+description = "Provider-neutral learned-preference idiom records for Swallowtail"
+
+[lib]
+doctest = false
+
+[dependencies]
+swallowtail-core = { workspace = true }
+
+[lints]
+workspace = true

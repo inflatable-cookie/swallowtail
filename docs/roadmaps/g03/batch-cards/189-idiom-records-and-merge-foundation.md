@@ -1,6 +1,6 @@
 # 189 Idiom Records And Merge Foundation
 
-Status: ready
+Status: completed
 Owner: Tom
 Updated: 2026-08-09
 
@@ -29,12 +29,15 @@ Contract 055.
 
 ## Acceptance Criteria
 
-- records compile in the extracted package with core-only dependencies
-- decay determinism fixtures pass under fixture clocks
-- merge fixture matrix covers all four outcomes
-- lint rejects malformed records and out-of-range confidence
+- [x] records compile in the extracted package with core-only dependencies
+- [x] decay determinism fixtures pass under fixture clocks
+- [x] merge fixture matrix covers all four outcomes
+- [x] lint rejects malformed records and out-of-range confidence
 
 ## Validation
 
-- `effigy validate:focused swallowtail-idioms`
-- `effigy package:verify-affected swallowtail-idioms`
+- [x] `effigy validate:focused swallowtail-idioms` — 19 tests pass
+- [x] `effigy package:verify-affected swallowtail-idioms` — extracted package
+      proof passes
+- [x] `cargo fmt --check` and warnings-denied clippy pass
+- [x] `effigy doctor` shows no finding from the new package

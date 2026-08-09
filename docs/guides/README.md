@@ -42,6 +42,7 @@ contracts or architecture.
 - [Provider Selection And Preparation](provider-selection-and-preparation.md)
 - [Provider State And Resource Lifecycle](provider-state-and-resource-lifecycle.md)
 - [Pi RPC Prepared Integration](pi-rpc-prepared-integration.md)
+- [Pluggable Idioms](pluggable-idioms.md)
 - [Portable Failure Handling](portable-failure-handling.md)
 - [Prepared Facade Authoring](prepared-facade-authoring.md)
 - [Provider Solution Activity Matrix](provider-solution-activity-matrix.md)

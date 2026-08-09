@@ -12,6 +12,7 @@ mod callback_fixture;
 mod direct_continuation_fixture;
 mod failure_assertions;
 mod fixture;
+mod idiom_assertions;
 mod installed_executable_assertions;
 mod interface_compatibility_assertions;
 mod managed_harness_fixture;
@@ -67,6 +68,9 @@ pub use assertions::{
 pub use callback_fixture::{CallbackExchangeFixture, successful_callback_response};
 pub use failure_assertions::assert_portable_failure_classification_contract;
 pub use fixture::ContractKernelFixture;
+pub use idiom_assertions::{
+    assert_idiom_engine_contract, assert_idiom_static_rules_delivery_contract,
+};
 pub use installed_executable_assertions::assert_installed_executable_observation_contract;
 pub use interface_compatibility_assertions::{
     ClosedSemanticWindowCase, assert_closed_semantic_compatibility_window,

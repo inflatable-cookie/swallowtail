@@ -3,6 +3,7 @@ release_version=0.2.0
 release_internal_patch_packages=(
   swallowtail-core
   swallowtail-host-local
+  swallowtail-idioms
   swallowtail-protocol-acp
   swallowtail-protocol-openai-chat
   swallowtail-runtime

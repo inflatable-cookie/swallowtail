@@ -24,6 +24,7 @@ members = [
   "crates/swallowtail-adapter-xai",
   "crates/swallowtail-core",
   "crates/swallowtail-host-local",
+  "crates/swallowtail-idioms",
   "crates/swallowtail-protocol-acp",
   "crates/swallowtail-protocol-openai-chat",
   "crates/swallowtail-runtime",
@@ -44,6 +45,7 @@ rust-version = "1.95"
 [workspace.dependencies]
 swallowtail-core = { path = "crates/swallowtail-core", version = "0.3.1" }
 swallowtail-host-local = { path = "crates/swallowtail-host-local", version = "0.3.1" }
+swallowtail-idioms = { path = "crates/swallowtail-idioms", version = "0.3.1" }
 swallowtail-protocol-acp = { path = "crates/swallowtail-protocol-acp", version = "0.3.1" }
 swallowtail-protocol-openai-chat = { path = "crates/swallowtail-protocol-openai-chat", version = "0.3.1" }
 swallowtail-runtime = { path = "crates/swallowtail-runtime", version = "0.3.1" }

@@ -11,7 +11,7 @@ fn every_production_harness_route_has_exact_prepared_activity_truth() {
         "044-observable-agent-activity-and-disclosure"
     );
     let routes = inventory["routes"].as_array().expect("routes are an array");
-    assert_eq!(routes.len(), 21);
+    assert_eq!(routes.len(), 22);
 
     let ids = routes
         .iter()
@@ -27,6 +27,7 @@ fn every_production_harness_route_has_exact_prepared_activity_truth() {
             "claude-code.headless",
             "codex.app-server",
             "codex.exec",
+            "command-code.headless",
             "cursor-agent.acp",
             "cursor-agent.catalogue",
             "cursor-agent.headless",
@@ -85,12 +86,14 @@ fn every_production_harness_route_has_exact_prepared_activity_truth() {
         }
     }
 
-    assert_eq!(profiles.len(), 27);
+    assert_eq!(profiles.len(), 29);
     for expected in [
         ("antigravity.headless", "structured-run"),
         ("antigravity.headless", "interactive-session"),
         ("claude-agent.acp", "structured-run"),
         ("claude-agent.acp", "interactive-session"),
+        ("command-code.headless", "structured-run"),
+        ("command-code.headless", "interactive-session"),
         ("grok-build.acp", "structured-run"),
         ("grok-build.acp", "interactive-session"),
         ("kimi-code.local-server", "structured-run"),

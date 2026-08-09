@@ -62,10 +62,17 @@ visible as unverified newer unless exact evidence requires rejection.
 | Add Command Code through its exact installed headless NDJSON event protocol without chasing every new harness. | completed | Contracts 005-006, 009-010, 023, 029, 032-033, 036-037, 039-041, 044-045, 051-052; Research 116 | `g03.059` |
 | Add Command Code Contract 043 exact-id interactive continuity without ambient continue or fake catalogue. | completed | Contracts 005-006, 009-010, 017, 023, 032-033, 039-041, 043-046, 051-052; Research 118 | `g03.060` |
 | Freeze Command Code catalogue/export as unsupported on 1.15.1 unless a machine list/export appears. | completed | Contracts 017, 038, 043, 046, 052; Research 118 | `g03.061` |
-| Realize the pluggable idioms mechanism: records, decay and merge, bounded selection, fail-soft sink, static-rules backend, and registry merge without transport. | planned (candidate lane; awaits operator selection) | Contract 055; Research 117; Spec 006 | `g03.062` |
+| Realize the pluggable idioms mechanism: records, decay and merge, bounded selection, fail-soft sink, static-rules backend, and registry merge without transport. | completed | Contract 055; Research 117; Spec 006 | `g03.062` |
 
 ## Current Checkpoint
 
+- g03.062 is complete: the pluggable idioms mechanism landed as
+  `swallowtail-idioms` (records, fixture-clock decay, merge, lint, bounded
+  selection, fail-soft recorder, static rules, delivery, registry pull/push
+  without transport) with testkit conformance, guide, example, architecture
+  notes, and the internal patch-set registration. Learned-backend selection
+  and the Soundcheck correction-loop proxy await exact evidence; the
+  generation returns to its evidence gate.
 - g03.061 is complete: catalogue/import/export stay unsupported on Command Code
   `1.15.1`; promotion waits for a non-TTY machine list/export. Provider API
   remains operator-deferred.
@@ -637,7 +644,7 @@ visible as unverified newer unless exact evidence requires rejection.
 - [059 Command Code Headless Foundation](./059-command-code-headless-foundation.md) — completed
 - [060 Command Code Interactive Continuity](./060-command-code-interactive-continuity.md) — completed
 - [061 Command Code Session Catalogue And Export Disposition](./061-command-code-session-catalogue-export-disposition.md) — completed
-- [062 Pluggable Idioms Static-Rules Foundation](./062-pluggable-idioms-static-rules-foundation.md) — planned (candidate lane)
+- [062 Pluggable Idioms Static-Rules Foundation](./062-pluggable-idioms-static-rules-foundation.md) — completed
 
 ## Checkpoint
 

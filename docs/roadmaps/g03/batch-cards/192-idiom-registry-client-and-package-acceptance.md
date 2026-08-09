@@ -1,6 +1,6 @@
 # 192 Idiom Registry Client And Package Acceptance
 
-Status: ready
+Status: completed
 Owner: Tom
 Updated: 2026-08-09
 
@@ -28,12 +28,27 @@ close package acceptance for the lane under Contracts 036 and 055.
 
 ## Acceptance Criteria
 
-- registry merge fixtures pass without transport authority
-- Contract 036 package review passes for the new package
-- guide, example, matrix, and architecture stay mutually honest
-- focused and extracted-package validation pass
+- [x] registry merge fixtures pass without transport authority
+- [x] Contract 036 package review passes for the new package
+- [x] guide, example, matrix, and architecture stay mutually honest
+- [x] focused and extracted-package validation pass
 
 ## Validation
 
-- `effigy validate:focused swallowtail-idioms`
-- `effigy package:verify-affected swallowtail-idioms`
+- [x] `effigy validate:focused swallowtail-idioms swallowtail-testkit` —
+      118 tests pass
+- [x] `effigy package:verify-affected swallowtail-idioms swallowtail-testkit`
+      — extracted package proof passes
+- [x] `effigy qa:docs` passes: indexes, next-action, consumer front door, and
+      integration guide coverage (idioms stays out of the pinned 34-column
+      provider feature inventory, matching the debug-observation precedent)
+- [x] workspace `cargo fmt --check` and warnings-denied clippy pass
+- [x] example `prepared_session.rs` compiles and runs the delivery and pull
+      path
+- [x] release-baseline handling: `scripts/release-package-set.sh` internal
+      patch set carries `swallowtail-idioms`; release topology and system
+      architecture record the 30-package current source; guide registered in
+      `docs/guides/README.md`; guide map and feature inventory untouched
+- [x] repaired one pre-existing format drift line in
+      `swallowtail-adapter-command-code` activity code left by the prior
+      lane commit

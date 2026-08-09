@@ -1,6 +1,6 @@
 # 191 Idiom Static-Rules Backend And Delivery
 
-Status: ready
+Status: completed
 Owner: Tom
 Updated: 2026-08-09
 
@@ -25,11 +25,16 @@ under Contract 055.
 
 ## Acceptance Criteria
 
-- static selection proof passes deterministic fixtures
-- delivery seam is documented and compile-checked; no prompt mutation
-- headless posture holds: no signals, no learned layer
+- [x] static selection proof passes deterministic fixtures
+- [x] delivery seam is documented and compile-checked; no prompt mutation
+- [x] headless posture holds: no signals, no learned layer
 
 ## Validation
 
-- `effigy validate:focused swallowtail-idioms`
-- `effigy package:verify-affected swallowtail-idioms`
+- [x] `effigy validate:focused swallowtail-idioms swallowtail-testkit` —
+      112 tests pass
+- [x] `effigy package:verify-affected swallowtail-idioms swallowtail-testkit`
+      — extracted package proof passes
+- [x] `cargo fmt --check` and warnings-denied clippy pass
+- [x] `prepare_session_idioms` delivery fixture proves user-plus-scope
+      selection, session bounding, and record immutability

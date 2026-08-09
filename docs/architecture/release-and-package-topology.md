@@ -7,12 +7,13 @@ Realization: roadmap g02.001; g03.043; g03.059
 
 ## Boundary
 
-Swallowtail current source is a coordinated 29-package Rust workspace, one
-package ahead of the immutable `v0.3.1` tag's 28 packages. The immutable
+Swallowtail current source is a coordinated 30-package Rust workspace, two
+packages ahead of the immutable `v0.3.1` tag's 28 packages. The immutable
 `v0.1.x` source tags contain 27 packages; `v0.2.0` and later immutable tags
 contain 28 after adding `swallowtail-adapter-muse`. `swallowtail-adapter-command-code`
-is additive, unreleased current-source work; it has not yet been captured in
-an immutable tag. No crate is published to crates.io in this release lane.
+and `swallowtail-idioms` are additive, unreleased current-source work; they
+have not yet been captured in an immutable tag. No crate is published to
+crates.io in this release lane.
 
 Each package remains independently selectable from the tagged Git source.
 There is no umbrella crate or private implementation package.
@@ -27,6 +28,7 @@ Foundations:
 Support:
 
 - `swallowtail-host-local`
+- `swallowtail-idioms`
 - `swallowtail-testkit`
 
 Protocols and transport:
@@ -130,10 +132,10 @@ evidence:
 
 - exact commit and parent
 - clean worktree
-- 29-package current-source metadata and topology plus immutable 28-package
+- 30-package current-source metadata and topology plus immutable 28-package
   `v0.2.0` / `v0.3.1` and 27-package `v0.1.x` evidence
-- semantic public API baseline, with Command Code on a separate unreleased
-  inventory until a later source release contains it
+- semantic public API baseline, with Command Code and idioms on a separate
+  unreleased inventory until a later source release contains them
 - documented public API
 - dependency and security policy
 - MSRV and current-stable checks

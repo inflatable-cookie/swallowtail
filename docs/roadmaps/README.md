@@ -13,10 +13,12 @@ shape.
 
 ## Next Task
 
-Return to the operator. Command Code interactive continuity (g03.060) and
-catalogue/export disposition (g03.061) are complete. Provider API stays
-deferred. Select the next lane from g03 capacity (for example idioms g03.062
-candidate, compatibility maintenance, or another operator-chosen surface).
+Return to the operator. g03.062 Pluggable Idioms Static-Rules Foundation is
+complete: cards 189-192 landed `swallowtail-idioms` (records, decay, merge,
+lint, engine trait, static rules, delivery, registry merge) with conformance
+and acceptance evidence. Learned-backend selection and the Soundcheck
+correction-loop proxy await exact evidence before any second tranche. Select
+the next lane from g03 capacity.
 
 ## Index
 

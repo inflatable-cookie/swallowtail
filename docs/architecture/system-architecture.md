@@ -6,7 +6,7 @@ Updated: 2026-08-08
 
 ## Realized State
 
-Swallowtail has a twenty-eight-crate Rust workspace plus its strict Northstar authority
+Swallowtail has a thirty-crate Rust workspace plus its strict Northstar authority
 spine:
 
 - `swallowtail-core` owns pure provider-neutral contract records, including
@@ -87,6 +87,14 @@ spine:
   not grant load readiness, interrupted-turn observation, or consumer
   transcript authority; Codex app-server, OpenCode HTTP, and Alibaba retained
   conversations advertise the role today
+- pluggable learned idioms are a separate consumer mechanism under Contract
+  055: `swallowtail-idioms` owns portable idiom records, fixture-clock
+  deterministic confidence decay, effective-confidence merge outcomes, lint,
+  bounded scope- and confidence-ordered selection through `IdiomSource`, a
+  fail-soft `IdiomSink` recorder on the `DiagnosticObserver` model, a
+  static-rules backend with session-preparation delivery, and registry
+  pull/push merge without transport authority; the mechanism never composes
+  prompts, enforces permissions, or absorbs a learned-model dependency
 - the runtime also owns one consuming prepared working-state restoration
   facade over existing session reconciliation, run reconciliation, or exact
   provider-session load. Route preparation fixes the strongest qualified
@@ -349,6 +357,10 @@ documentation, dependency-policy, source-consumer, and exact-tag evidence.
 Crate status:
 
 - `swallowtail-core` — realized
+- `swallowtail-idioms` — realized under Contract 055 with only
+  `swallowtail-core` dependencies: portable idiom records, fixture-clock
+  decay, merge outcomes, lint, bounded selection, fail-soft recorder, static
+  rules, and registry pull/push merge without transport
 - `swallowtail-testkit` — realized with reusable contract-kernel, preflight,
   and callback fixtures, recording runtime host services, and thirteen composable
   provider-free conformance profile runners

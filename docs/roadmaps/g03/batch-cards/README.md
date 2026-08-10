@@ -2,14 +2,12 @@
 
 ## Active
 
-- [198-contract-045-spawn-confirmation-admission.md](./198-contract-045-spawn-confirmation-admission.md) — worker thread
-  `thread/198-contract-045-spawn-confirmation-admission`
+- [199-codex-spawn-confirmation-admission.md](./199-codex-spawn-confirmation-admission.md) — worker thread
+  `thread/199-codex-spawn-confirmation-admission`
 
 ## Ready
 
 ## Planned
-
-- [199-codex-spawn-confirmation-admission.md](./199-codex-spawn-confirmation-admission.md) — waits for card 198
 
 ## Planned
 
@@ -24,6 +22,7 @@
 
 ## Completed
 
+- [198-contract-045-spawn-confirmation-admission.md](./198-contract-045-spawn-confirmation-admission.md)
 - [197-codex-collab-spawn-admission-evidence.md](./197-codex-collab-spawn-admission-evidence.md)
 - [188-command-code-session-catalogue-export-disposition.md](./188-command-code-session-catalogue-export-disposition.md)
 - [187-command-code-interactive-acceptance.md](./187-command-code-interactive-acceptance.md)

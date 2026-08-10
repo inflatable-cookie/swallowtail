@@ -1,6 +1,6 @@
 # 198 Contract 045 Subagent Spawn-Confirmation Admission Amendment
 
-Status: dispatched
+Status: completed
 Owner: Tom
 Created: 2026-08-10
 Milestone: none yet (consumer-proven hardening)
@@ -62,11 +62,21 @@ contract.
 
 ## Acceptance
 
-- [ ] contract 045 Admission paragraph states the widened evidence set and
+- [x] contract 045 Admission paragraph states the widened evidence set and
   ordering tolerance, additive and observation-only
-- [ ] contract index/summary surfaces updated per convention
-- [ ] drift gates pass
-- [ ] batch log committed and pushed
+- [x] contract index/summary surfaces updated per convention
+- [x] drift gates pass
+- [x] batch log committed and pushed
+
+## Closeout
+
+Merged to main as `1d3e7c4b` (worker commit `75f70fc7`, grok medium, clean
+first run). The amendment matches research note 120's proposal verbatim in
+substance: spawn-confirmation observation (`subAgentActivity` kind=started
+with exact `agentThreadId`) joins the admission evidence set; no assumed
+ordering between child-lifecycle envelopes and admission evidence;
+never-observed ids still fail closed. The docs gates also required indexing
+research 120 and the 197 evidence log — done on the branch.
 
 ## Evidence
 

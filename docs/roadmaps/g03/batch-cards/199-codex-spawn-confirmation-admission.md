@@ -1,6 +1,6 @@
 # 199 Codex Subagent Spawn-Confirmation Admission Implementation
 
-Status: planned
+Status: dispatched
 Owner: Tom
 Created: 2026-08-10
 Milestone: none yet (consumer-proven hardening)

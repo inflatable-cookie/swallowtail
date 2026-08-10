@@ -2,9 +2,10 @@
 
 ## Active
 
-## Ready
+- [197-codex-collab-spawn-admission-evidence.md](./197-codex-collab-spawn-admission-evidence.md) — worker thread
+  `thread/197-codex-collab-spawn-admission-evidence`
 
-- [197-codex-collab-spawn-admission-evidence.md](./197-codex-collab-spawn-admission-evidence.md)
+## Ready
 
 ## Planned
 

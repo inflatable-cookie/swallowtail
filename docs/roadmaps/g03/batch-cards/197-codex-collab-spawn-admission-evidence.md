@@ -1,6 +1,6 @@
 # 197 Codex Collab Spawn Child-Thread Admission Evidence
 
-Status: ready
+Status: dispatched
 Owner: Tom
 Created: 2026-08-10
 Milestone: none yet (consumer-proven hardening)

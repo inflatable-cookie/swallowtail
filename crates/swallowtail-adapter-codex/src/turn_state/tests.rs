@@ -13,6 +13,80 @@ use swallowtail_runtime::{
 
 const CORPUS: &str = include_str!("../../tests/fixtures/activity/app-server.jsonl");
 
+/// EVIDENCE (card 197): reproduces the live 2026-08-10 0.147.0 collab-spawn
+/// ordering where the child `turn/started` arrives before the parent's
+/// spawnAgent collab item/completed (the only current admission source).
+/// Today this fails the whole turn with `lifecycle_owner_mismatch`; the
+/// implementation card flips this assertion. Not a fix.
+#[test]
+fn evidence_197_collab_child_lifecycle_precedes_spawn_completion() {
+    let (turn, _events) = turn("operation-197-evidence", "thread-fixture");
+
+    let sub_agent_activity = serde_json::json!({
+        "threadId": "thread-fixture",
+        "turnId": "turn-fixture",
+        "item": {
+            "id": "subagent-ui-ping-one",
+            "type": "subAgentActivity",
+            "kind": "started",
+            "agentThreadId": "thread-child",
+            "agentPath": "/root/ui_ping_one"
+        }
+    });
+    turn.handle_notification("item/completed", &sub_agent_activity)
+        .expect("parent-envelope subAgentActivity is observed");
+    assert!(
+        !turn
+            .admitted_child_threads
+            .lock()
+            .unwrap()
+            .contains("thread-child"),
+        "EVIDENCE: subAgentActivity does not admit today, so the child is not in the set"
+    );
+
+    let child_turn_started = serde_json::json!({
+        "threadId": "thread-child",
+        "turn": {
+            "id": "turn-child",
+            "items": [],
+            "itemsView": "notLoaded",
+            "status": "inProgress",
+            "error": null,
+            "startedAt": 1,
+            "completedAt": null,
+            "durationMs": null
+        }
+    });
+    assert_lifecycle_owner_mismatch(
+        turn.handle_notification("turn/started", &child_turn_started)
+            .expect_err("EVIDENCE: child lifecycle before spawn completion fails the turn"),
+    );
+
+    let spawn_completed_late = serde_json::json!({
+        "threadId": "thread-fixture",
+        "turnId": "turn-fixture",
+        "item": {
+            "id": "collab-spawn",
+            "type": "collabAgentToolCall",
+            "tool": "spawnAgent",
+            "status": "completed",
+            "senderThreadId": "thread-fixture",
+            "receiverThreadIds": ["thread-child"],
+            "prompt": "Inspect",
+            "agentsStates": {"thread-child": {"status": "running"}}
+        }
+    });
+    turn.handle_notification("item/completed", &spawn_completed_late)
+        .expect("spawn completion arriving after the lifecycle would have admitted");
+    assert!(
+        turn.admitted_child_threads
+            .lock()
+            .unwrap()
+            .contains("thread-child"),
+        "EVIDENCE: admission source works; only the ordering raced"
+    );
+}
+
 #[test]
 fn admitted_child_lifecycle_is_observed_without_mutating_the_root_turn() {
     let messages = child_lifecycle_messages();

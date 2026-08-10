@@ -21,6 +21,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-10 Codex Spawn-Confirmation Admission](./2026-08-10-codex-spawn-confirmation-admission.md)
 - [2026-08-10 Contract 045 Spawn-Confirmation Admission Amendment](./2026-08-10-contract-045-spawn-confirmation-admission.md)
 - [2026-08-10 Codex Collab Spawn Child-Thread Admission Evidence](./2026-08-10-codex-collab-spawn-admission-evidence.md)
 - [2026-08-09 Command Code Interactive Continuity And Catalogue Disposition](./2026-08-09-command-code-interactive-continuity.md)

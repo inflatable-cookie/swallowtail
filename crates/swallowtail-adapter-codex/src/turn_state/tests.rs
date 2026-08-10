@@ -13,14 +13,14 @@ use swallowtail_runtime::{
 
 const CORPUS: &str = include_str!("../../tests/fixtures/activity/app-server.jsonl");
 
-/// EVIDENCE (card 197): reproduces the live 2026-08-10 0.147.0 collab-spawn
-/// ordering where the child `turn/started` arrives before the parent's
-/// spawnAgent collab item/completed (the only current admission source).
-/// Today this fails the whole turn with `lifecycle_owner_mismatch`; the
-/// implementation card flips this assertion. Not a fix.
+/// Regression (card 199): reproduces the live 2026-08-10 0.147.0 collab-spawn
+/// ordering where the child `turn/started` races ahead of the parent's
+/// spawnAgent collab item/completed. The parent-envelope `subAgentActivity`
+/// (`kind=started`) is spawn-confirmation admission evidence (contract 045),
+/// so the child lifecycle is admitted and observed instead of failing the turn.
 #[test]
-fn evidence_197_collab_child_lifecycle_precedes_spawn_completion() {
-    let (turn, _events) = turn("operation-197-evidence", "thread-fixture");
+fn collab_child_lifecycle_precedes_spawn_completion_is_admitted() {
+    let (turn, _events) = turn("operation-199-admission", "thread-fixture");
 
     let sub_agent_activity = serde_json::json!({
         "threadId": "thread-fixture",
@@ -34,14 +34,13 @@ fn evidence_197_collab_child_lifecycle_precedes_spawn_completion() {
         }
     });
     turn.handle_notification("item/completed", &sub_agent_activity)
-        .expect("parent-envelope subAgentActivity is observed");
+        .expect("parent-envelope subAgentActivity is observed and admits the child");
     assert!(
-        !turn
-            .admitted_child_threads
+        turn.admitted_child_threads
             .lock()
             .unwrap()
             .contains("thread-child"),
-        "EVIDENCE: subAgentActivity does not admit today, so the child is not in the set"
+        "spawn-confirmation admission puts the child in the set before the lifecycle arrives"
     );
 
     let child_turn_started = serde_json::json!({
@@ -57,9 +56,15 @@ fn evidence_197_collab_child_lifecycle_precedes_spawn_completion() {
             "durationMs": null
         }
     });
-    assert_lifecycle_owner_mismatch(
-        turn.handle_notification("turn/started", &child_turn_started)
-            .expect_err("EVIDENCE: child lifecycle before spawn completion fails the turn"),
+    turn.handle_notification("turn/started", &child_turn_started)
+        .expect("spawn-confirmation admission lets the racing child lifecycle through");
+    assert_eq!(
+        turn.active_child_turns
+            .lock()
+            .unwrap()
+            .get("thread-child")
+            .map(String::as_str),
+        Some("turn-child")
     );
 
     let spawn_completed_late = serde_json::json!({
@@ -77,13 +82,155 @@ fn evidence_197_collab_child_lifecycle_precedes_spawn_completion() {
         }
     });
     turn.handle_notification("item/completed", &spawn_completed_late)
-        .expect("spawn completion arriving after the lifecycle would have admitted");
+        .expect("late spawn completion stays admissible");
     assert!(
         turn.admitted_child_threads
             .lock()
             .unwrap()
             .contains("thread-child"),
-        "EVIDENCE: admission source works; only the ordering raced"
+        "collab item/completed admission still applies alongside spawn confirmation"
+    );
+}
+
+#[test]
+fn never_observed_child_lifecycle_still_fails_closed_after_spawn_confirmation() {
+    let (turn, _events) = turn("operation-199-never-observed", "thread-fixture");
+
+    let sub_agent_activity = serde_json::json!({
+        "threadId": "thread-fixture",
+        "turnId": "turn-fixture",
+        "item": {
+            "id": "subagent-ui-ping-one",
+            "type": "subAgentActivity",
+            "kind": "started",
+            "agentThreadId": "thread-child",
+            "agentPath": "/root/ui_ping_one"
+        }
+    });
+    turn.handle_notification("item/completed", &sub_agent_activity)
+        .expect("parent-envelope subAgentActivity admits its child");
+    assert!(
+        turn.admitted_child_threads
+            .lock()
+            .unwrap()
+            .contains("thread-child")
+    );
+
+    let other_child_started = serde_json::json!({
+        "threadId": "thread-other",
+        "turn": {
+            "id": "turn-other",
+            "items": [],
+            "itemsView": "notLoaded",
+            "status": "inProgress",
+            "error": null,
+            "startedAt": 1,
+            "completedAt": null,
+            "durationMs": null
+        }
+    });
+    assert_lifecycle_owner_mismatch(
+        turn.handle_notification("turn/started", &other_child_started)
+            .expect_err("never-observed child ids still fail closed"),
+    );
+}
+
+#[test]
+fn interacted_subagent_activity_is_observation_only_and_does_not_admit() {
+    let (turn, _events) = turn("operation-199-interacted", "thread-fixture");
+
+    let interacted = serde_json::json!({
+        "threadId": "thread-fixture",
+        "turnId": "turn-fixture",
+        "item": {
+            "id": "subagent-ui-ping-one",
+            "type": "subAgentActivity",
+            "kind": "interacted",
+            "agentThreadId": "thread-child",
+            "agentPath": "/root/ui_ping_one"
+        }
+    });
+    turn.handle_notification("item/completed", &interacted)
+        .expect("interacted subAgentActivity stays observable");
+    assert!(
+        !turn
+            .admitted_child_threads
+            .lock()
+            .unwrap()
+            .contains("thread-child"),
+        "only kind=started is spawn-confirmation evidence"
+    );
+
+    let child_turn_started = serde_json::json!({
+        "threadId": "thread-child",
+        "turn": {
+            "id": "turn-child",
+            "items": [],
+            "itemsView": "notLoaded",
+            "status": "inProgress",
+            "error": null,
+            "startedAt": 1,
+            "completedAt": null,
+            "durationMs": null
+        }
+    });
+    assert_lifecycle_owner_mismatch(
+        turn.handle_notification("turn/started", &child_turn_started)
+            .expect_err("kind=interacted is not spawn-confirmation admission"),
+    );
+}
+
+#[test]
+fn spawn_confirmation_admission_is_cleared_at_operation_terminal() {
+    let (turn, _events) = turn("operation-199-terminal", "thread-fixture");
+
+    let sub_agent_activity = serde_json::json!({
+        "threadId": "thread-fixture",
+        "turnId": "turn-fixture",
+        "item": {
+            "id": "subagent-ui-ping-one",
+            "type": "subAgentActivity",
+            "kind": "started",
+            "agentThreadId": "thread-child",
+            "agentPath": "/root/ui_ping_one"
+        }
+    });
+    turn.handle_notification("item/completed", &sub_agent_activity)
+        .expect("parent-envelope subAgentActivity admits its child");
+
+    let child_turn_started = serde_json::json!({
+        "threadId": "thread-child",
+        "turn": {
+            "id": "turn-child",
+            "items": [],
+            "itemsView": "notLoaded",
+            "status": "inProgress",
+            "error": null,
+            "startedAt": 1,
+            "completedAt": null,
+            "durationMs": null
+        }
+    });
+    turn.handle_notification("turn/started", &child_turn_started)
+        .expect("admitted child lifecycle starts");
+
+    turn.handle_notification(
+        "turn/completed",
+        &serde_json::json!({
+            "threadId": "thread-fixture",
+            "turn": {"id": "turn-fixture", "status": "completed"}
+        }),
+    )
+    .expect("root completion retains root authority");
+    assert!(turn.is_finished());
+    assert!(
+        turn.admitted_child_threads.lock().unwrap().is_empty(),
+        "spawn-confirmation admission does not survive the operation"
+    );
+    assert!(turn.active_child_turns.lock().unwrap().is_empty());
+    assert_child_lifecycle_after_terminal(
+        turn.handle_notification("turn/started", &child_turn_started)
+            .expect_err("terminated operation does not retain spawn-confirmation admission"),
     );
 }
 

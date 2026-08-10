@@ -177,10 +177,12 @@ contract file owns the exact rules.
   transport. Consumers retain message and activity persistence, grouping,
   collapsed presentation, and transcript policy.
 - **045** adds bounded provider-owned child-work snapshots, parent topology,
-  child activity attribution, and typed provider collaboration actions. It
-  keeps visible harness actions separate from operator authority; whole-turn
-  cancellation and main-turn messaging cannot stand in for targeted child
-  control.
+  child activity attribution, typed provider collaboration actions, and
+  operation-local child admission from completed spawn collaboration or
+  provider spawn-confirmation evidence without assumed lifecycle ordering.
+  It keeps visible harness actions separate from operator authority;
+  whole-turn cancellation and main-turn messaging cannot stand in for
+  targeted child control.
 - **046** adds a read-only provider-session catalogue and a separate
   consumer-authorized import operation. Candidates remain non-authoritative;
   import revalidates exact route, host, access, version, model, resource, and

@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-08
+Updated: 2026-08-10
 
 | Contract | Status | Scope |
 | --- | --- | --- |
@@ -50,7 +50,7 @@ Updated: 2026-08-08
 | [042 Harness-Managed Recovery And Active-Turn Reattachment](042-harness-managed-recovery-and-active-turn-reattachment.md) | active | Explicit harness retry acceptance, same-turn cursor reattachment, no prompt replay, uncertainty, and joined cleanup |
 | [043 Turn-Scoped Interactive Continuity](043-turn-scoped-interactive-continuity.md) | active | Restarted harness continuation versus consumer-owned transactional transcript replay across turn-scoped provider work |
 | [044 Observable Agent Activity And Disclosure](044-observable-agent-activity-and-disclosure.md) | active | Composite operation-local activity identity, lifecycle, disclosure, content streams, route fidelity, and consumer projection ownership |
-| [045 Subagent Topology, Observation, And Control](045-subagent-topology-observation-and-control.md) | active | Child-work graph identity, parentage, lifecycle, attribution, provider collaboration actions, and direct-control qualification |
+| [045 Subagent Topology, Observation, And Control](045-subagent-topology-observation-and-control.md) | active | Child-work graph identity, parentage, lifecycle, attribution, operation-local admission, provider collaboration actions, and direct-control qualification |
 | [046 Provider Session Catalogue And Explicit Import](046-provider-session-catalogue-and-explicit-import.md) | active | Bounded provider-session discovery, non-authoritative candidates, explicit revalidated import, ordinary load replay, and downstream persistence ownership |
 | [047 Configured Provider Instance Catalogue](047-configured-provider-instance-catalogue.md) | active | Consumer-assembled configured-instance, access, route, and model-catalogue projection without routing or credential authority |
 | [048 Cross-Process Active Operation Reconciliation](048-cross-process-active-operation-reconciliation.md) | active | Read-only restart observation of interrupted provider work without import, retry, callback, or control authority |

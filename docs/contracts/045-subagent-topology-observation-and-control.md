@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-31
+Updated: 2026-08-10
 
 ## Purpose
 
@@ -108,15 +108,23 @@ to another route, configured instance, operation, or host as authority.
 A route whose native activity envelope is child-owned may keep one bounded
 operation-local admission set. The root thread remains admitted. A child enters
 the set only after an earlier qualified topology observation establishes its
-exact id for that operation. A child-owned envelope is then attributed to that
-child even when the activity item carries no separate child field.
+exact id for that operation. Qualified admission evidence includes a completed
+spawn collaboration item and the provider's spawn-confirmation observation.
+For Codex app-server, that confirmation is the parent-envelope
+`subAgentActivity` (`kind=started`) carrying the exact `agentThreadId`. A
+child-owned envelope is then attributed to that child even when the activity
+item carries no separate child field.
 
 Admission covers ordinary child activity and, only where the qualified wire
 reuses root lifecycle methods for child work, the exact child-local turn start
-and completion envelopes. The adapter retains the child-local turn id beside
-the admitted child and requires subsequent child activity to match it. Child
-lifecycle is emitted as attributed observation; it never sets or replaces the
-root provider turn id and never completes or fails the root operation.
+and completion envelopes. The adapter may not assume ordering between
+child-lifecycle envelopes and admission evidence. Child lifecycle for an id
+already established by spawn-confirmation topology evidence is admitted and
+observed without failing the operation. Never-observed ids still fail closed.
+The adapter retains the child-local turn id beside the admitted child and
+requires subsequent child activity to match it. Child lifecycle is emitted as
+attributed observation; it never sets or replaces the root provider turn id
+and never completes or fails the root operation.
 
 Admission does not authorize callbacks, provider requests, root terminal
 events, root-turn output, provider-session operations, or direct child

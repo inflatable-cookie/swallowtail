@@ -47,7 +47,7 @@ impl ActiveTurn {
                     .collect(),
                 None => activities,
             };
-            self.admit_spawned_children(&activities)?;
+            self.admit_spawned_children(&activities, params)?;
             activities
         } else {
             Vec::new()
@@ -303,8 +303,9 @@ impl ActiveTurn {
     fn admit_spawned_children(
         &self,
         activities: &[ActivityObservation],
+        params: &Value,
     ) -> Result<(), RuntimeFailure> {
-        let candidates = activities
+        let mut candidates = activities
             .iter()
             .filter(|activity| {
                 activity.subagent_control()
@@ -315,6 +316,9 @@ impl ActiveTurn {
             .flat_map(ActivityObservation::subagents)
             .map(|child| child.id().as_str().to_owned())
             .collect::<BTreeSet<_>>();
+        if let Some(child) = self.spawn_confirmation_thread(params)? {
+            candidates.insert(child);
+        }
         if candidates.is_empty() {
             return Ok(());
         }
@@ -334,5 +338,30 @@ impl ActiveTurn {
         }
         admitted.extend(candidates);
         Ok(())
+    }
+
+    /// The provider's spawn-confirmation observation (contract 045, card 199):
+    /// the parent-envelope `subAgentActivity` (`kind=started`) carrying the
+    /// exact `agentThreadId`. The item was already validated by the activity
+    /// projection; this reads the same wire data to qualify it as admission
+    /// evidence. Only the root envelope admits; a child-envelope item stays
+    /// observation-only, and `interacted`/`interrupted` never admit.
+    fn spawn_confirmation_thread(&self, params: &Value) -> Result<Option<String>, RuntimeFailure> {
+        let Some(item) = params.get("item") else {
+            return Ok(None);
+        };
+        if item.get("type").and_then(Value::as_str) != Some("subAgentActivity") {
+            return Ok(None);
+        }
+        if item.get("kind").and_then(Value::as_str) != Some("started") {
+            return Ok(None);
+        }
+        if required_text(params, "threadId")? != self.provider_thread_id {
+            return Ok(None);
+        }
+        let child = required_text(item, "agentThreadId")?;
+        SubagentId::new(child)
+            .map(|id| Some(id.as_str().to_owned()))
+            .map_err(|_| malformed_notification())
     }
 }

@@ -4,6 +4,8 @@
 
 ## Ready
 
+- [197-codex-collab-spawn-admission-evidence.md](./197-codex-collab-spawn-admission-evidence.md)
+
 ## Planned
 
 - [193-idioms-route-opt-in-runtime-surface.md](./193-idioms-route-opt-in-runtime-surface.md)

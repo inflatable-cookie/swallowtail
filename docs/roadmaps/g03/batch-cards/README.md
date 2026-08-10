@@ -2,7 +2,14 @@
 
 ## Active
 
+- [198-contract-045-spawn-confirmation-admission.md](./198-contract-045-spawn-confirmation-admission.md) — worker thread
+  `thread/198-contract-045-spawn-confirmation-admission`
+
 ## Ready
+
+## Planned
+
+- [199-codex-spawn-confirmation-admission.md](./199-codex-spawn-confirmation-admission.md) — waits for card 198
 
 ## Planned
 

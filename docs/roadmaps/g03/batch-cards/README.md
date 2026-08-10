@@ -2,12 +2,7 @@
 
 ## Active
 
-- [199-codex-spawn-confirmation-admission.md](./199-codex-spawn-confirmation-admission.md) — worker thread
-  `thread/199-codex-spawn-confirmation-admission`
-
 ## Ready
-
-## Planned
 
 ## Planned
 
@@ -22,6 +17,7 @@
 
 ## Completed
 
+- [199-codex-spawn-confirmation-admission.md](./199-codex-spawn-confirmation-admission.md)
 - [198-contract-045-spawn-confirmation-admission.md](./198-contract-045-spawn-confirmation-admission.md)
 - [197-codex-collab-spawn-admission-evidence.md](./197-codex-collab-spawn-admission-evidence.md)
 - [188-command-code-session-catalogue-export-disposition.md](./188-command-code-session-catalogue-export-disposition.md)

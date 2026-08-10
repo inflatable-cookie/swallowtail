@@ -1,6 +1,6 @@
 # 199 Codex Subagent Spawn-Confirmation Admission Implementation
 
-Status: dispatched
+Status: completed
 Owner: Tom
 Created: 2026-08-10
 Milestone: none yet (consumer-proven hardening)
@@ -59,11 +59,23 @@ materializes — see Stop Conditions), consumer (nucleus) changes.
 
 ## Acceptance
 
-- [ ] child admitted on parent-envelope `subAgentActivity` (`kind=started`)
-- [ ] lifecycle-before-completion ordering admitted and observed; unknown
+- [x] child admitted on parent-envelope `subAgentActivity` (`kind=started`)
+- [x] lifecycle-before-completion ordering admitted and observed; unknown
   ids still fail closed
-- [ ] evidence test flipped and renamed; new ordering fixtures pass
-- [ ] adapter suite + standard validation green; batch log pushed
+- [x] evidence test flipped and renamed; new ordering fixtures pass
+- [x] adapter suite + standard validation green; batch log pushed
+
+## Closeout
+
+Merged to main as `07d4d018` (worker commit `460bc5f1`, deepseek flash
+xhigh, clean first run). Only the root envelope's `subAgentActivity`
+(`kind=started`) admits — child-envelope items and `interacted` /
+`interrupted` stay observation-only; the admission set clears at operation
+terminal; never-observed ids still fail closed (all fixture-tested).
+Validation: adapter suite (9/9 turn_state), nextest + clippy `-D warnings`,
+package verify, fmt, docs gates. Remaining: operator live retest of the
+Nucleus collab spawn; the residual-race fallback (bounded deferral) is its
+own card only if a capture shows lifecycle beating even the confirmation.
 
 ## Evidence
 

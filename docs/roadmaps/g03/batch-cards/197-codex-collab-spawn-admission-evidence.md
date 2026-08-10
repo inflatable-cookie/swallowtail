@@ -1,6 +1,6 @@
 # 197 Codex Collab Spawn Child-Thread Admission Evidence
 
-Status: dispatched
+Status: completed
 Owner: Tom
 Created: 2026-08-10
 Milestone: none yet (consumer-proven hardening)
@@ -74,10 +74,23 @@ contract amendments (recommend them; do not write them).
 
 ## Acceptance
 
-- [ ] the collab-spawn notification sequence is documented with citations
-- [ ] the exact admission gap is named (missing observation vs. ordering)
-- [ ] a card split for the fix is proposed with contract impact stated
-- [ ] research note + batch log committed and pushed
+- [x] the collab-spawn notification sequence is documented with citations
+- [x] the exact admission gap is named (missing observation vs. ordering)
+- [x] a card split for the fix is proposed with contract impact stated
+- [x] research note + batch log committed and pushed
+
+## Closeout
+
+Merged to main as `370105d1` (worker commit `c1e02eb7`, deepseek flash
+medium, clean first run). Finding: ordering race, not a missing item type —
+the only admission source is the spawn `collabAgentToolCall` item/completed,
+but 0.147.0 emits the child `turn/started` from inside the spawn call. Fix
+direction: admit on the parent-envelope `subAgentActivity` (`kind=started`),
+keep the collab completion admission, amend contract 045's admission
+paragraph. Evidence test
+`evidence_197_collab_child_lifecycle_precedes_spawn_completion` reproduces
+the live ordering and documents today's fail-closed behavior; the
+implementation card flips it.
 
 ## Evidence
 

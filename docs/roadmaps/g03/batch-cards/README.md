@@ -2,9 +2,6 @@
 
 ## Active
 
-- [197-codex-collab-spawn-admission-evidence.md](./197-codex-collab-spawn-admission-evidence.md) — worker thread
-  `thread/197-codex-collab-spawn-admission-evidence`
-
 ## Ready
 
 ## Planned
@@ -20,6 +17,7 @@
 
 ## Completed
 
+- [197-codex-collab-spawn-admission-evidence.md](./197-codex-collab-spawn-admission-evidence.md)
 - [188-command-code-session-catalogue-export-disposition.md](./188-command-code-session-catalogue-export-disposition.md)
 - [187-command-code-interactive-acceptance.md](./187-command-code-interactive-acceptance.md)
 - [186-command-code-interactive-session-driver.md](./186-command-code-interactive-session-driver.md)

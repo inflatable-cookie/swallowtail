@@ -125,6 +125,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [067 Direct Activity Applicability And Corpus](./067-direct-activity-applicability-and-corpus.md)
 - [072 Subagent Topology, Observation, And Control Evidence](./072-subagent-topology-observation-and-control-evidence.md)
 - [098 Portable Activity Key And Cross-Operation Isolation](./098-portable-activity-key-and-cross-operation-isolation.md)
+- [120 Codex Collab Spawn Child-Thread Admission Evidence](./120-codex-collab-spawn-admission-evidence.md)
 
 ### Diagnostics And Debug Observation
 

@@ -9,7 +9,6 @@
 
 ## Planned
 
-- [213-v0-3-2-annotated-source-tag.md](./213-v0-3-2-annotated-source-tag.md)
 - [193-idioms-route-opt-in-runtime-surface.md](./193-idioms-route-opt-in-runtime-surface.md)
 - [194-idioms-route-opt-in-binding-and-codex-proof.md](./194-idioms-route-opt-in-binding-and-codex-proof.md)
 - [195-nucleus-idioms-adoption-delta.md](./195-nucleus-idioms-adoption-delta.md)
@@ -21,6 +20,7 @@
 
 ## Completed
 
+- [213-v0-3-2-annotated-source-tag.md](./213-v0-3-2-annotated-source-tag.md)
 - [212-v0-3-2-exact-ci-candidate.md](./212-v0-3-2-exact-ci-candidate.md)
 - [211-v0-3-2-local-source-candidate.md](./211-v0-3-2-local-source-candidate.md)
 - [210-v0-3-2-release-inventory-and-gates.md](./210-v0-3-2-release-inventory-and-gates.md)

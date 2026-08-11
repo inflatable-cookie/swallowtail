@@ -14,7 +14,7 @@ from provider_route_matrix.route_inventory import (  # noqa: E402
     production_routes as inventory_production_routes,
 )
 REPOSITORY = "https://github.com/inflatable-cookie/swallowtail"
-CANDIDATE_TAG = "v0.3.2"
+RELEASE_TAG = "v0.3.2"
 
 
 def fail(message: str) -> None:
@@ -67,7 +67,7 @@ if not install_lines or install_lines.pop(0) != "[dependencies]":
     fail("source-install example does not start with a dependencies table")
 dependency_pattern = re.compile(
     rf'^(swallowtail-[a-z0-9-]+) = \{{ git = "{re.escape(REPOSITORY)}", '
-    rf'tag = "{re.escape(CANDIDATE_TAG)}" \}}$'
+    rf'tag = "{re.escape(RELEASE_TAG)}" \}}$'
 )
 dependencies = {}
 for line in install_lines:
@@ -91,7 +91,7 @@ if documented_packages != expected_packages:
 current_routes = set(inventory_production_routes())
 expected_routes = set(read("release-baselines/production-routes-0.3.2.txt").splitlines())
 if expected_routes != current_routes:
-    fail("candidate route baseline and current route inventory differ")
+    fail("release route baseline and current route inventory differ")
 release_route_section = section(release, "## Production Routes", "## Highlights")
 documented_routes = set(re.findall(r"^- `([^`]+)`$", release_route_section, re.MULTILINE))
 if documented_routes != expected_routes:
@@ -103,16 +103,16 @@ for relative, document in (
     ("README.md", readme),
     ("docs/releases/0.3.2.md", release),
 ):
-    if REPOSITORY not in document or CANDIDATE_TAG not in document:
-        fail(f"{relative} omits the canonical repository or exact candidate tag")
+    if REPOSITORY not in document or RELEASE_TAG not in document:
+        fail(f"{relative} omits the canonical repository or exact release tag")
 
 if "docs/releases/0.3.2.md" not in changelog:
-    fail("CHANGELOG.md does not link to the candidate release notes")
+    fail("CHANGELOG.md does not link to the release notes")
 if "security/advisories/new" not in read("SECURITY.md"):
     fail("SECURITY.md does not name the private reporting path")
 
 print(
     "consumer front door passed: "
-    f"{len(expected_packages)} candidate packages, {len(expected_routes)} candidate routes, "
-    "exact future source tag"
+    f"{len(expected_packages)} release packages, {len(expected_routes)} release routes, "
+    "exact source tag"
 )

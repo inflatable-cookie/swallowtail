@@ -1,6 +1,6 @@
 # 067 v0.3.2 Source Patch Release
 
-Status: active
+Status: completed
 Owner: Tom
 Created: 2026-08-11
 Depends on: g03.059-g03.066; operator package selection
@@ -11,8 +11,8 @@ Contract refs: 001, 009, 022-023, 029, 036-037, 039, 044-045, 051-056
 
 Current source adds Command Code, idioms, Codex spawn admission, Claude
 response-only execution, and two host/tooling fixes over immutable `v0.3.1`.
-The complete local candidate is prepared and green. Exact commit, canonical CI,
-and tag identity remain operator-gated.
+The exact candidate passed local and canonical CI, then shipped as immutable
+annotated source tag `v0.3.2`.
 
 ## Generation Runway
 
@@ -28,7 +28,7 @@ source-only distribution boundary.
       pass all configured credential-free gates
 - [x] card 212: after operator acceptance, commit and push the candidate and
       require canonical CI at the exact SHA
-- [ ] card 213: after separate exact authorization, create and push one
+- [x] card 213: after separate exact authorization, create and push one
       annotated immutable `v0.3.2` tag
 
 ## Goals
@@ -38,7 +38,7 @@ source-only distribution boundary.
       `claude-code.response-only`
 - [x] preserve the `v0.3.1` public API, Rust `1.95.0` floor, verified target,
       source-only distribution, and exact provider boundaries
-- [ ] bind version, changelog, release notes, package graph, API evidence, CI,
+- [x] bind version, changelog, release notes, package graph, API evidence, CI,
       and tag to one exact source identity
 
 ## Boundaries
@@ -59,7 +59,7 @@ source-only distribution boundary.
 - [x] canonical CI passes at the exact candidate commit
 - [x] release notes contain upgrade, rollback, payload, limits, and unchanged
       distribution posture
-- [ ] annotated `v0.3.2` resolves locally and remotely to the green commit
+- [x] annotated `v0.3.2` resolves locally and remotely to the green commit
 
 ## Planning Checkpoint
 

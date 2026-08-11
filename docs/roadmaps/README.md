@@ -13,10 +13,10 @@ shape.
 
 ## Next Task
 
-Await separate exact operator authorization for card 213. If authorized,
-create and push one annotated `v0.3.2` tag at the exact CI-green candidate
-commit, then prove the tag-triggered workflow at that same commit. Do not
-create a GitHub Release, publish packages, or mutate consumers or providers.
+Execute card 206 in Figmatic: replace the linked Swallowtail revision with
+immutable tag `v0.3.2`, replay unit `fc335758-3c1a-4bda-bb71-a8c6119fe876`,
+and record downstream parsing and responsive-gate evidence. Do not change
+Swallowtail provider, authority, or structured-output claims.
 
 ## Index
 

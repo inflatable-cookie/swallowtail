@@ -67,18 +67,19 @@ visible as unverified newer unless exact evidence requires rejection.
 | Qualify Claude Code for a tool-free, schema-constrained, response-only consumer boundary. | completed negatively | Contracts 039-040; Research 121 | `g03.064` |
 | Add exact Claude Code tool-free text response through local subscription access. | completed | Contract 039; Research 122 | `g03.065` |
 | Classify exact Claude Code response-only thinking progress without disclosing thought content. | completed | Contracts 039, 044; Research 123 | `g03.066` |
-| Ship the compatible 30-package, 36-route current source as an exact `v0.3.2` source tag. | active | Contracts 036, 055-056 | `g03.067` |
+| Ship the compatible 30-package, 36-route current source as an exact `v0.3.2` source tag. | completed | Contracts 036, 055-056 | `g03.067` |
 
 ## Current Checkpoint
 
-- g03.067 is active. Cards 211-212 prepared, committed, pushed, and proved the
-  complete `v0.3.2` candidate through canonical CI:
+- g03.067 is complete. Cards 210-213 prepared, proved, and shipped immutable
+  source tag `v0.3.2`:
   nine changelog entries, 30 packages, 36 routes, exact release order, 28
   immutable plus two first-release API baselines, and candidate release notes.
   All 11 configured gates pass with Effigy commit `53a4971d`, including 1,625
   workspace tests and the isolated source consumer. All five canonical CI jobs
-  pass at the exact candidate commit. No `v0.3.2` tag exists; card 213 remains
-  separately operator-gated.
+  passed at exact commit `a859d56b`; annotated tag object `702f3556` peels to
+  that commit, and all five tag-triggered CI jobs pass. Card 206 now points
+  Figmatic at the immutable tag for downstream replay.
 - g03.066 is complete at code commit `71db67be`: exact `2.1.227`
   thinking-token estimates become bounded content-free progress; the empty
   private thinking envelope is validated and discarded before one text result.
@@ -683,7 +684,7 @@ visible as unverified newer unless exact evidence requires rejection.
 - [064 Claude Code Response-Only Structured Route Disposition](./064-claude-code-response-only-disposition.md) — completed negatively
 - [065 Claude Code Tool-Free Text Route](./065-claude-code-tool-free-text-route.md) — completed
 - [066 Claude Code Response-Only Thinking Progress](./066-claude-code-response-only-thinking-progress.md) — completed
-- [067 v0.3.2 Source Patch Release](./067-v0-3-2-source-patch-release.md) — active
+- [067 v0.3.2 Source Patch Release](./067-v0-3-2-source-patch-release.md) — completed
 
 ## Checkpoint
 

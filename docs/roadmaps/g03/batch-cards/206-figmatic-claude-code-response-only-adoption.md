@@ -12,7 +12,8 @@ or acceptance authority.
 
 ## Source Identity
 
-- Swallowtail commit: `71db67be4f8929199afe3b2d9b3db8d432f79169`
+- Swallowtail tag: `v0.3.2`
+- peeled commit: `a859d56b47b1bc2975df7d0516ca96fd8e485b35`
 - package: `swallowtail-adapter-claude-agent`
 - route: `claude-code.response-only`
 - executable claim: exact Claude Code `2.1.227`
@@ -43,7 +44,7 @@ Use the compile-tested
   validation, deterministic compilation, gates, and operator acceptance
 - no retry, continuation, fallback, or alternate route is selected
 - replay Figmatic unit `fc335758-3c1a-4bda-bb71-a8c6119fe876` after relinking
-  the exact commit
+  the exact tag
 
 ## Out Of Scope
 

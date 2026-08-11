@@ -2,18 +2,17 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-09
+Updated: 2026-08-11
 Realization: roadmap g02.001; g03.043; g03.059
 
 ## Boundary
 
-Swallowtail's prepared `v0.3.2` candidate is a coordinated 30-package Rust
-workspace, two packages ahead of the immutable `v0.3.1` tag's 28 packages.
+Swallowtail's immutable `v0.3.2` source tag is a coordinated 30-package Rust
+workspace, two packages ahead of the `v0.3.1` tag's 28 packages.
 The immutable `v0.1.x` source tags contain 27 packages; `v0.2.0` and later tags
 contain 28 after adding `swallowtail-adapter-muse`. `swallowtail-adapter-command-code`
-and `swallowtail-idioms` are candidate-only; they have not yet been captured
-in an immutable tag. No crate is published to
-crates.io in this release lane.
+and `swallowtail-idioms` first appear in `v0.3.2`. No crate is published to
+crates.io in this release line.
 
 Each package remains independently selectable from the tagged Git source.
 There is no umbrella crate or private implementation package.
@@ -85,7 +84,7 @@ No normal internal edge points upward. Workspace paths keep the source tag
 self-contained. Compatible version requirements preserve coordinated package
 identity without claiming registry availability.
 
-Candidate metadata, dependency topology, and semantic API checks cover the
+Release metadata, dependency topology, and semantic API checks cover the
 current 30-package source. Immutable `v0.1.x` inventories retain their 27
 packages and 33 routes; `v0.2.0` and `v0.3.1` retain their 28-package,
 34-route inventory. Later candidates do not rewrite historical release notes,
@@ -93,7 +92,7 @@ tag contents, or evidence.
 
 ## Version And Toolchains
 
-All packages in the current source tag share version `0.3.1`.
+All packages in the current source tag share version `0.3.2`.
 
 - unified MSRV: Rust `1.95.0`
 - verified target: Apple Silicon macOS
@@ -101,9 +100,9 @@ All packages in the current source tag share version `0.3.1`.
 The immutable `v0.1.x` line used Rust `1.90.0` generally and Rust `1.94.1` for
 Bedrock. `v0.2.0` raised and unified the floor at Rust `1.95.0`. The `v0.3.0`
 tag keeps that floor with the fail-closed optional return from the public
-Codex and Ollama version-binding helpers. `v0.3.1` is a compatible patch on
-that baseline. The workspace lock and Cargo resolver 3 retain reproducible,
-floor-aware selection.
+Codex and Ollama version-binding helpers. `v0.3.1` and `v0.3.2` are compatible
+patches on that baseline. The workspace lock and Cargo resolver 3 retain
+reproducible, floor-aware selection.
 
 ## Source-Tag Consumption
 
@@ -111,9 +110,9 @@ A consumer selects only the packages it needs:
 
 ```toml
 [dependencies]
-swallowtail-core = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.3.1" }
-swallowtail-runtime = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.3.1" }
-swallowtail-adapter-codex = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.3.1" }
+swallowtail-core = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.3.2" }
+swallowtail-runtime = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.3.2" }
+swallowtail-adapter-codex = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.3.2" }
 ```
 
 All selected packages must use the same tag. Consumers do not combine moving
@@ -125,19 +124,18 @@ dependencies. In particular, the Claude Agent ACP npm sidecar is pinned by the
 consuming application and resolved from its local `.bin`; it is not embedded
 in a Rust source tag.
 
-## Candidate Shape
+## v0.3.2 Release Shape
 
-The prepared candidate version is `0.3.2`. Its release package order places
+The release version is `0.3.2`. Its package order places
 core and protocols first, idioms before runtime, then host support, testkit,
 transport, and adapters. This keeps the
 runtime-to-idioms dependency resolvable from independently packaged source.
 
-The release candidate is one clean canonical commit plus deterministic
-evidence:
+The release is one clean canonical commit plus deterministic evidence:
 
 - exact commit and parent
 - clean worktree
-- 30-package candidate metadata and topology plus immutable 28-package
+- 30-package release metadata and topology plus immutable 28-package
   `v0.2.0` / `v0.3.1` and 27-package `v0.1.x` evidence
 - frozen 30-package `v0.3.2` semantic API inventory, with removals from the
   immutable 28-package `v0.3.0` baseline forbidden
@@ -149,7 +147,7 @@ evidence:
 - current changelog, release notes, license, and security policy
 
 Historical `.crate` candidates remain evidence for earlier registry work.
-They are not the current candidate and do not constrain the source-tag gate.
+They do not constrain the current source release.
 
 ## Release Authority
 

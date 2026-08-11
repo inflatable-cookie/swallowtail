@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-08
+Updated: 2026-08-11
 
 ## Purpose
 
@@ -39,11 +39,9 @@ workspace checkout.
 The immutable `v0.1.0` and `v0.1.1` tags contain 27 public source packages.
 `v0.2.0` contains 28, adding the reviewed `swallowtail-adapter-muse` package.
 The `v0.3.0` / `v0.3.1` tags keep those 28 packages and 34 production routes.
-Current source adds two reviewed additive packages,
+`v0.3.2` adds two reviewed additive packages,
 `swallowtail-adapter-command-code` and `swallowtail-idioms`, for 30 packages
-and 36 production routes. Both are selected for the next source release but
-belong to the prepared `v0.3.2` candidate; they remain unreleased until its
-exact tag is separately authorized.
+and 36 production routes.
 
 Foundations:
 
@@ -53,7 +51,7 @@ Foundations:
 Support:
 
 - `swallowtail-host-local`
-- `swallowtail-idioms` (`v0.3.2` candidate)
+- `swallowtail-idioms`
 - `swallowtail-testkit`
 
 Protocols and transport:
@@ -70,7 +68,7 @@ Opt-in adapters:
 - `swallowtail-adapter-bedrock`
 - `swallowtail-adapter-claude-agent`
 - `swallowtail-adapter-codex`
-- `swallowtail-adapter-command-code` (`v0.3.2` candidate)
+- `swallowtail-adapter-command-code`
 - `swallowtail-adapter-cursor`
 - `swallowtail-adapter-deepseek`
 - `swallowtail-adapter-gemini`
@@ -128,7 +126,7 @@ Patch-compatible changes may include additive public items, internal
 refactoring, safety fixes preserving documented behavior, additive safe
 diagnostics, and newly qualified provider-interface versions.
 
-The next selected source release is `v0.3.2`. Its two additive packages,
+The current source release is `v0.3.2`. Its two additive packages,
 additive routes and public items, stricter fail-closed projections, and tooling
 repairs preserve the `v0.3.1` public and guaranteed-behavior baseline. No
 breaking API, capability removal, range shrink, MSRV raise, or verified-target
@@ -279,7 +277,7 @@ Credential-free release checks sit behind explicit Effigy selectors and cover:
 - 30-package current-source metadata and dependency topology, kept distinct
   from the immutable 28-package `v0.2.0` / `v0.3.1` and 27-package `v0.1.x`
   baselines
-- semantic public API baseline, with the 30-package `v0.3.2` candidate frozen
+- semantic public API baseline, with the 30-package `v0.3.2` release frozen
   separately from the immutable 28-package `v0.3.0` compatibility baseline
 - denied missing public documentation
 - dependency advisory, license, and source policy
@@ -324,10 +322,9 @@ GitHub Release creation, consumer edits, and provider work remain separate.
 
 ## Acceptance
 
-- all 28 tagged packages are separately consumable from one exact source
+- all 30 tagged packages are separately consumable from one exact source
   identity
-- the 29th and 30th Command Code and idioms packages are visibly candidate-only
-  and consumable only from an explicitly approved commit until tagging
+- the 29th and 30th Command Code and idioms packages first appear in `v0.3.2`
 - the breaking binding-helper migration is explicit and limited to Codex and
   Ollama callers
 - `publish = false` prevents accidental registry publication
@@ -339,5 +336,5 @@ GitHub Release creation, consumer edits, and provider work remain separate.
 - dependency and security policy passes
 - deterministic QA and external source-consumer proof pass
 - an accepted working-application smoke remains recorded
-- release notes and consumer instructions match the candidate
+- release notes and consumer instructions match the tagged source
 - tag creation and push remain explicitly authorized external mutations

@@ -78,5 +78,5 @@ awk -F '\t' -v OFS='\t' -v requirement="^$release_version" \
   | LC_ALL=C sort > "$release_expected_edges"
 diff -u "$release_expected_edges" "$release_edges"
 
-printf 'v0.3.2 candidate metadata passed for 30 crates at %s and Rust %s\n' \
+printf 'v0.3.2 release metadata passed for 30 crates at %s and Rust %s\n' \
   "$release_version" "$release_msrv_cargo"

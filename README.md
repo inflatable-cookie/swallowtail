@@ -19,28 +19,27 @@ New here? Two short reads get you from zero to a working run:
 
 ## Release Posture
 
-`v0.3.1` is the current supported source identity. `v0.3.2` is the compatible
-CI-green candidate and is not usable as a tag until separate tag authorization
-and creation. Releases are distributed as annotated Git tags from the
+`v0.3.2` is the current supported source identity. Releases are distributed as
+annotated Git tags from the
 [canonical repository](https://github.com/inflatable-cookie/swallowtail).
 There is no crates.io publication, GitHub Release object, binary bundle, or
 installer in this release line.
 
-The canonical `v0.3.1` tag resolves to the reviewed release commit. Candidate
-work must use an explicitly approved commit revision and must not be presented
-as part of that immutable release.
+The canonical `v0.3.2` tag resolves to the reviewed CI-green release commit.
+Post-tag work must use an explicitly approved revision and must not be
+presented as part of that immutable release.
 
-The 28 tagged packages share version `0.3.1` and keep 34 production routes.
-The `v0.3.2` candidate has 30 packages and 36 production routes, adding Command
-Code, idioms, Codex spawn admission, and Claude Code response-only execution.
-It preserves the Rust `1.95.0` floor and is not an API 1.0 promise.
+The 30 tagged packages share version `0.3.2` and provide 36 production routes,
+including Command Code, idioms, Codex spawn admission, and Claude Code
+response-only execution. The release preserves the Rust `1.95.0` floor and is
+not an API 1.0 promise.
 
 ## Choose A Route First
 
 Swallowtail does not choose a provider, model, credential, endpoint, executable,
 billing arrangement, or fallback.
 
-1. Choose one of the [36 candidate production routes](docs/guides/provider-route-matrix.md).
+1. Choose one of the [36 production routes](docs/guides/provider-route-matrix.md).
 2. Read its canonical guide through the
    [integration guide map](docs/guides/integration-guide-map.md).
 3. Add only the adapter and shared packages your application imports.
@@ -67,9 +66,7 @@ swallowtail-adapter-codex = { git = "https://github.com/inflatable-cookie/swallo
 ```
 <!-- source-install:end -->
 
-Do not use the candidate tag until canonical CI and exact tag identity are
-recorded in the release notes. Replace the Codex adapter with the route package
-you selected. Keep the shared
+Replace the Codex adapter with the route package you selected. Keep the shared
 packages only when your code imports them directly. Cargo resolves their
 internal workspace dependencies from the same tagged source.
 
@@ -121,7 +118,7 @@ payloads in the consumer. Start with:
 
 ## Runtime Prerequisites
 
-- Rust `1.95.0` or newer for every `v0.3.2` candidate package
+- Rust `1.95.0` or newer for every `v0.3.2` package
 - Apple Silicon macOS is the verified release target; other targets are
   unverified, not prohibited
 - installed harnesses, attached services, model artifacts, authentication, and
@@ -153,7 +150,7 @@ Before 1.0:
   identity, or weakening lifecycle and authority truth is breaking
 
 See [Contract 036](docs/contracts/036-crate-release-and-compatibility-boundary.md)
-and the [v0.3.2 candidate release notes](docs/releases/0.3.2.md).
+and the [v0.3.2 release notes](docs/releases/0.3.2.md).
 
 ## Development
 

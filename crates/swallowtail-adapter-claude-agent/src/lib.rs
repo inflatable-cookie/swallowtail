@@ -14,6 +14,14 @@ mod claude_code_discovery;
 mod claude_code_events;
 mod claude_code_handle;
 mod claude_code_pump;
+mod claude_code_response;
+mod claude_code_response_activity;
+mod claude_code_response_command;
+mod claude_code_response_discovery;
+mod claude_code_response_events;
+mod claude_code_response_pump;
+mod claude_code_response_selection;
+mod claude_code_response_validation;
 mod claude_code_selection;
 mod claude_code_validation;
 mod connection;
@@ -25,10 +33,18 @@ mod permission;
 mod prepared;
 mod prepared_code;
 mod prepared_profile;
+mod prepared_response;
 mod selection;
 mod turn;
 
 pub use claude_code::{ClaudeCodeHeadlessDriver, claude_code_headless_descriptor};
+pub use claude_code_response::{
+    ClaudeCodeResponseOnlyDriver, claude_code_response_only_descriptor,
+};
+pub use claude_code_response_selection::{
+    CLAUDE_CODE_RESPONSE_ONLY_AXIS, CLAUDE_CODE_RESPONSE_ONLY_VERSION,
+    claude_code_response_only_binding, claude_code_response_only_claim,
+};
 pub use claude_code_selection::{
     CLAUDE_CODE_HEADLESS_AXIS, CLAUDE_CODE_HEADLESS_BASELINE_VERSION,
     CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, claude_code_headless_binding,
@@ -51,6 +67,12 @@ pub use prepared_profile::{
     ClaudeAgentPreparedSessionFuture, ClaudeAgentPreparedSessionLoadFuture,
     ClaudeAgentRunProfileInput, ClaudeAgentRunRetention, ClaudeAgentSessionManagementInput,
     ClaudeAgentSessionProfileInput,
+};
+pub use prepared_response::{
+    ClaudeCodeResponseModelSelection, ClaudeCodeResponsePreparationInput,
+    ClaudeCodeResponsePreparationProbe, ClaudeCodeResponsePreparedEvidence,
+    ClaudeCodeResponsePreparedIntegration, ClaudeCodeResponsePreparedRun,
+    ClaudeCodeResponseProfileInput, prepare_claude_code_response_only,
 };
 
 const MAXIMUM_REPLAY_ITEMS: usize = 64;

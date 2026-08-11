@@ -4,6 +4,8 @@
 
 ## Ready
 
+- [206-figmatic-claude-code-response-only-adoption.md](./206-figmatic-claude-code-response-only-adoption.md)
+
 ## Planned
 
 - [193-idioms-route-opt-in-runtime-surface.md](./193-idioms-route-opt-in-runtime-surface.md)
@@ -17,6 +19,12 @@
 
 ## Completed
 
+- [205-claude-code-tool-free-text-acceptance.md](./205-claude-code-tool-free-text-acceptance.md)
+- [204-claude-code-tool-free-text-prepared-api.md](./204-claude-code-tool-free-text-prepared-api.md)
+- [203-claude-code-tool-free-text-driver.md](./203-claude-code-tool-free-text-driver.md)
+- [202-claude-code-tool-free-text-contract.md](./202-claude-code-tool-free-text-contract.md)
+- [201-claude-code-response-only-negative-closeout.md](./201-claude-code-response-only-negative-closeout.md)
+- [200-claude-code-response-only-live-qualification.md](./200-claude-code-response-only-live-qualification.md)
 - [199-codex-spawn-confirmation-admission.md](./199-codex-spawn-confirmation-admission.md)
 - [198-contract-045-spawn-confirmation-admission.md](./198-contract-045-spawn-confirmation-admission.md)
 - [197-codex-collab-spawn-admission-evidence.md](./197-codex-collab-spawn-admission-evidence.md)

@@ -126,6 +126,8 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [072 Subagent Topology, Observation, And Control Evidence](./072-subagent-topology-observation-and-control-evidence.md)
 - [098 Portable Activity Key And Cross-Operation Isolation](./098-portable-activity-key-and-cross-operation-isolation.md)
 - [120 Codex Collab Spawn Child-Thread Admission Evidence](./120-codex-collab-spawn-admission-evidence.md)
+- [121 Claude Code Response-Only Structured Route](./121-claude-code-response-only-structured-route.md)
+- [122 Claude Code Tool-Free Text Route](./122-claude-code-tool-free-text-route.md)
 
 ### Diagnostics And Debug Observation
 

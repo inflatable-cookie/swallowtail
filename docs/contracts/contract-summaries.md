@@ -144,7 +144,8 @@ contract file owns the exact rules.
   restore separate from ACP, requires explicit cross-transport binding import,
   and qualifies no deletion.
 - **039** permits exact provider routes to project one operation-private
-  session, connection, process, or provider resource into a bounded structured
+  plain-text or schema-bearing session, connection, process, or provider
+  resource into a bounded structured
   run. It requires independent role qualification, exact request support,
   explicit retention, one terminal outcome, and joined cleanup. Close never
   implies deletion; realtime media and serving lifecycle inherit no structured

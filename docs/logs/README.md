@@ -21,6 +21,8 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-11 Claude Code Tool-Free Text Route](./2026-08-11-claude-code-tool-free-text-route.md)
+- [2026-08-11 Claude Code Response-Only Structured Route Disposition](./2026-08-11-claude-code-response-only-disposition.md)
 - [2026-08-10 Codex Spawn-Confirmation Admission](./2026-08-10-codex-spawn-confirmation-admission.md)
 - [2026-08-10 Contract 045 Spawn-Confirmation Admission Amendment](./2026-08-10-contract-045-spawn-confirmation-admission.md)
 - [2026-08-10 Codex Collab Spawn Child-Thread Admission Evidence](./2026-08-10-codex-collab-spawn-admission-evidence.md)

@@ -13,11 +13,12 @@ shape.
 
 ## Next Task
 
-Return to the operator. g03.063 Route-Path Idioms Opt-In is complete: cards
-193-196 landed the runtime host ports, session option, fold rule, capability
-gate, Codex proof, and a bounded Nucleus adoption delta. The correction-loop
-proxy and learned-backend selection await Nucleus evidence. Select the next
-lane from g03 capacity.
+Execute card 206: adopt the exact g03.065
+`claude-code.response-only` source identity in Figmatic. Pass one prompt and
+exact model, drain one ordinary text result, preserve local Max/OAuth process
+state, and keep extraction, schema-v4 validation, compilation, gates, and
+operator acceptance downstream. Do not add retry, continuation, fallback, or
+a Swallowtail release without separate authorization.
 
 ## Index
 

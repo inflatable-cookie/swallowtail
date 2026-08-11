@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-28
+Updated: 2026-08-11
 
 ## Purpose
 
@@ -79,6 +79,11 @@ credential, session, connection, conversation, or model effects.
 An adapter cannot emulate unsupported structured output by prompt injection,
 execute consumer tools, infer a model, or reuse ambient session state.
 
+Plain text remains a valid structured-run result when the exact route
+qualifies only the bounded one-turn operation shape. JSON-looking text does not
+become `StructuredOutput`: the request carries no descriptor, the capability
+is absent, and the consumer owns all parsing and validation.
+
 ## Direct Request Projection
 
 A resource-free hosted direct route may perform one buffered or streamed
@@ -125,6 +130,26 @@ history deletion. Process exit does not imply transcript deletion.
 
 The run keeps harness interaction as its execution layer. It does not become
 direct model inference because the consumer submits only one prompt.
+
+An exact tool-free harness text projection may omit a working resource and all
+callbacks when its prepared plan advertises neither authority. Its invocation
+must suppress every model-visible built-in, extension, and MCP tool surface;
+the stream must confirm empty tools and MCP servers before assistant output.
+The driver rejects provider tool calls, user/tool-result records, a second
+assistant response, more than one reported turn, or missing terminal text.
+The operation exposes no provider session binding even when the harness uses
+one private non-persistent operation id internally.
+
+The first mapping is the distinct `claude-code.response-only` route at exact
+Claude Code `2.1.227`. It uses print mode, text stdin, stream JSON, empty tools,
+safe mode, disabled slash commands and Chrome, strict empty MCP configuration,
+disabled prompt suggestions, and no session persistence. It binds
+provider-suppressed configuration and ambient-host isolation: the tool posture
+removes model-visible filesystem authority but does not sandbox the harness
+process or its local subscription authentication. It requires only Task,
+Process, and Time host services and advertises no working-resource, callback,
+tool, session, continuation, retry, fallback, or structured-output capability.
+The existing `claude-code.headless` read-only Plan profile remains unchanged.
 
 Provider-managed recovery and active-turn stream reattachment remain
 prohibited unless the exact route independently satisfies Contract 042.
@@ -262,6 +287,8 @@ The projection assertion pack proves:
 - exact request-plan agreement
 - unsupported input rejection before effects
 - one provider turn or response only
+- tool-free profiles confirm empty tool and MCP surfaces and reject any
+  provider tool, user-result, or multi-turn record
 - ordered events, callbacks, usage, and terminal outcome
 - cancellation and deadline invalidation
 - explicit retention agreement
@@ -283,5 +310,7 @@ close, deletion or non-deletion, connection, and process behavior.
 - durable retention is permitted only by explicit policy
 - close never implies delete
 - unsupported request features fail before effects
+- JSON-looking text is never promoted to schema enforcement or portable
+  structured output without a descriptor and qualified capability
 - realtime media and serving lifecycle do not inherit structured execution
 - no provider, model, access, transport, or fallback choice is implicit

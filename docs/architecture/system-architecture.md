@@ -169,7 +169,10 @@ spine:
   versions remain visible and unverified, while separate local-subscription
   and public-API-key profiles, model confirmation, ambient configuration,
   ambient-host isolation, permission rejection, cancellation, deadlines, and
-  joined cleanup stay driver-owned
+  joined cleanup stay driver-owned; distinct native Claude Code drivers keep
+  the exact `2.1.220` read-only headless profile separate from exact `2.1.227`
+  response only, whose provider-suppressed tool/MCP surface has no working
+  resource or structured-output capability
 - `swallowtail-adapter-deepseek` implements the exact
   `deepseek-openai-chat-2026-07-22` V4 Pro locally continued session over
   host-approved HTTP/SSE, including authenticated catalogue, consumer-owned
@@ -415,7 +418,10 @@ Crate status:
   choice-and-Other form elicitation with richer-form decline, explicit
   structured-run edit acceptance, unexpected-permission rejection,
   cancellation, deadlines, disconnect classification, native close without
-  deletion, and joined resource plus optional credential cleanup
+  deletion, and joined resource plus optional credential cleanup; the same
+  crate also realizes independent Claude Code headless and response-only
+  stream-JSON routes, with exact version axes, prepared facades, bounded
+  process ownership, and no implicit selection between them
 - `swallowtail-adapter-deepseek` — realized for one exact opaque facade
   revision, V4 Pro catalogue and selection, buffered tool response, streaming
   finals, private continuation, cache usage, consumer-authorized attempts,
@@ -1414,6 +1420,8 @@ alone.
 - Gemini CLI headless maps assistant deltas and completion-only correlated
   tool records. Claude Code headless retains completion-only assistant and
   tool fidelity because its selected command omits partial messages.
+- Claude Code response only maps one completion-only final assistant record.
+  Its exact tool-free stream rejects provider tools and unknown event shapes.
 - Kimi Code headless maps completion-only assistant and correlated tool
   records. Retry metadata is namespaced activity; resume hints remain session
   metadata and never become activity.

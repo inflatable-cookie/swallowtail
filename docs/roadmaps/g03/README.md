@@ -64,9 +64,22 @@ visible as unverified newer unless exact evidence requires rejection.
 | Freeze Command Code catalogue/export as unsupported on 1.15.1 unless a machine list/export appears. | completed | Contracts 017, 038, 043, 046, 052; Research 118 | `g03.061` |
 | Realize the pluggable idioms mechanism: records, decay and merge, bounded selection, fail-soft sink, static-rules backend, and registry merge without transport. | completed | Contract 055; Research 117; Spec 006 | `g03.062` |
 | Add the route-path idioms opt-in: host ports, bound session option, fixed fold rule, capability gate, Codex proof, and a Nucleus adoption delta. | completed | Contract 056; Research 119; Spec 007 | `g03.063` |
+| Qualify Claude Code for a tool-free, schema-constrained, response-only consumer boundary. | completed negatively | Contracts 039-040; Research 121 | `g03.064` |
+| Add exact Claude Code tool-free text response through local subscription access. | completed | Contract 039; Research 122 | `g03.065` |
 
 ## Current Checkpoint
 
+- g03.065 is complete: exact `2.1.227` `claude-code.response-only` returns one
+  bounded tool-free text result through local Max/OAuth, with no working
+  resource or structured-output claim. Deterministic, package, guide, route,
+  example, normal live, and live cancellation gates passed. Card 206 is ready
+  for the downstream Figmatic adoption; release remains operator-gated.
+- g03.064 is complete negatively: exact Claude Code `2.1.227` keeps ordinary
+  text runs tool-free, but `--json-schema` injects `StructuredOutput`; an
+  unsatisfiable schema retried four tool calls across six turns and exited
+  successfully with no structured result. No route or capability was added,
+  `claude-code.headless` remains unchanged, and Figmatic integration is blocked
+  under the selected boundary.
 - g03.063 is complete: the route-path idioms opt-in landed (host ports,
   `IdiomSessionOption`, fold rule, `IdiomsSessionOption` capability gate,
   Codex app-server proof, and a bounded Nucleus adoption delta on the pinned
@@ -652,6 +665,8 @@ visible as unverified newer unless exact evidence requires rejection.
 - [061 Command Code Session Catalogue And Export Disposition](./061-command-code-session-catalogue-export-disposition.md) — completed
 - [062 Pluggable Idioms Static-Rules Foundation](./062-pluggable-idioms-static-rules-foundation.md) — completed
 - [063 Route-Path Idioms Opt-In](./063-route-path-idioms-opt-in.md) — completed
+- [064 Claude Code Response-Only Structured Route Disposition](./064-claude-code-response-only-disposition.md) — completed negatively
+- [065 Claude Code Tool-Free Text Route](./065-claude-code-tool-free-text-route.md) — completed
 
 ## Checkpoint
 

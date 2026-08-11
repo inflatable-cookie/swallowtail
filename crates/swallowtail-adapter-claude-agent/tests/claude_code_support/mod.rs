@@ -8,7 +8,9 @@ pub use time::{ImmediateTimeService, PendingTimeService};
 
 use std::sync::Arc;
 use swallowtail_adapter_claude_agent::{
-    CLAUDE_CODE_HEADLESS_AXIS, ClaudeCodePreparationInput, ClaudeCodePreparationProbe,
+    CLAUDE_CODE_HEADLESS_AXIS, CLAUDE_CODE_RESPONSE_ONLY_AXIS, ClaudeCodePreparationInput,
+    ClaudeCodePreparationProbe, ClaudeCodeResponsePreparationInput,
+    ClaudeCodeResponsePreparationProbe,
 };
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessStatus, ConfiguredInstanceId, CredentialMechanism,
@@ -61,6 +63,34 @@ pub fn preparation_probe() -> ClaudeCodePreparationProbe {
     )
 }
 
+#[allow(dead_code)]
+pub fn response_preparation_input(host: ExecutionHostId) -> ClaudeCodeResponsePreparationInput {
+    let access = access_profile();
+    ClaudeCodeResponsePreparationInput::new(
+        ConfiguredInstanceId::new("claude-code.response-only.fixture").expect("instance is valid"),
+        InstanceRevision::new("1").expect("revision is valid"),
+        host,
+        InstalledExecutableTarget::new(
+            ExecutableRef::new("claude.fixture.executable").expect("executable is valid"),
+            InterfaceVersionAxis::new(CLAUDE_CODE_RESPONSE_ONLY_AXIS).expect("axis is valid"),
+        ),
+        EnvironmentRef::new("claude.fixture.local-subscription-environment")
+            .expect("environment is valid"),
+        access.clone(),
+        PreparedAccessEvidence::caller_asserted(access_status(&access)),
+    )
+}
+
+#[allow(dead_code)]
+pub fn response_preparation_probe() -> ClaudeCodeResponsePreparationProbe {
+    ClaudeCodeResponsePreparationProbe::new(
+        RequestId::new("claude-code-response-preparation").expect("request is valid"),
+        ScopeId::new("claude-code-response-preparation").expect("scope is valid"),
+        Deadline::at(MonotonicInstant::from_ticks(1_000)),
+        DiscoveryCancellation::new(),
+    )
+}
+
 pub fn access_profile() -> AccessProfile {
     AccessProfile::new(
         AccessProfileId::new("claude-code.local-subscription").expect("access id is valid"),
@@ -85,6 +115,14 @@ fn access_status(access: &AccessProfile) -> AccessStatus {
 pub fn fixture(name: &str) -> String {
     let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("tests/fixtures/claude-code-2.1.220")
+        .join(name);
+    std::fs::read_to_string(path).unwrap_or_else(|error| panic!("failed to read {name}: {error}"))
+}
+
+#[allow(dead_code)]
+pub fn response_fixture(name: &str) -> String {
+    let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("tests/fixtures/claude-code-2.1.227")
         .join(name);
     std::fs::read_to_string(path).unwrap_or_else(|error| panic!("failed to read {name}: {error}"))
 }

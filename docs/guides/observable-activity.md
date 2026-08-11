@@ -241,6 +241,7 @@ missing kinds remain `Unavailable` inside that exact route profile.
 | `opencode.http` | structured run, interactive session | range-segmented SSE message, reasoning, tool, step, warning, and unknown lifecycle; exact `1.14.51` remains thinner |
 | `anthropic.managed-agent` | structured run | authoritative persisted completions only; provider and MCP tools are provider-owned, custom tools remain callbacks |
 | `claude-code.headless` | structured run | completion-only assistant and provider-tool records; no selected partial or readable-reasoning channel |
+| `claude-code.response-only` | structured run | one completion-only final assistant record; tools and unknown stream events fail closed |
 | `gemini-cli.headless` | structured run | assistant updates plus completion-only correlated tool records; tool parameters and output excluded |
 | `kimi-code.headless` | structured run | completion-only assistant and correlated tool records; retry is namespaced activity and resume prose is metadata |
 

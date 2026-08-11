@@ -9,6 +9,9 @@ publish.workspace = true
 rust-version.workspace = true
 description = "Claude Agent ACP and Claude Code headless harness drivers for Swallowtail"
 
+[features]
+live-probes = []
+
 [lib]
 doctest = false
 
@@ -27,7 +30,13 @@ futures-executor = "0.3"
 futures-util = "0.3"
 swallowtail-testkit.workspace = true
 swallowtail-transport-acp-remote.workspace = true
+swallowtail-host-local.workspace = true
 tokio = { version = "1.52", default-features = false, features = ["macros", "net", "rt", "sync", "time"] }
 
 [lints]
 workspace = true
+
+[[test]]
+name = "live_response_only_probe"
+path = "tests/live_response_only_probe.rs"
+required-features = ["live-probes"]

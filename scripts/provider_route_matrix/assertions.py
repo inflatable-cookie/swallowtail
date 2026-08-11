@@ -301,5 +301,5 @@ route_ids = [
     for row in rows
     for route in re.split(r"\s*(?:;|\+)\s*", row["route_id"])
 ]
-if len(route_ids) != 35 or len(set(route_ids)) != 35:
-    raise SystemExit("provider solution matrix must cover 35 unique route identities")
+if len(route_ids) != 36 or len(set(route_ids)) != 36:
+    raise SystemExit("provider solution matrix must cover 36 unique route identities")

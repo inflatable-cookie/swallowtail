@@ -1,12 +1,14 @@
 # Claude Agent Prepared Integration
 
-The adapter exposes two explicit local Claude routes:
+The adapter exposes three explicit local Claude routes:
 New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
 - `claude-agent.acp` for ACP structured runs, interactive sessions, and
   provider-session delete
 - `claude-code.headless` for a smaller one-prompt `claude -p` structured run
   with no bridge dependency
+- `claude-code.response-only` for one tool-free text response with no
+  working-resource authority
 
 Neither route is an implicit fallback for the other.
 
@@ -16,6 +18,7 @@ Both live in `swallowtail-adapter-claude-agent`:
 | --- | --- | --- | --- |
 | `claude-agent.acp` | `swallowtail.claude-agent.acp`; ACP v1 over stdio | structured runs or reusable sessions with model/reasoning configuration, plan mode, activity, usage, typed questions, optional one-shot permissions, load/resume, and delete | the application cannot package the ACP sidecar or needs the smaller subscription-only read-only path |
 | `claude-code.headless` | `swallowtail.claude-code.headless`; Claude Code stream JSON over stdio | one read-only plan-mode prompt using local Claude subscription state | the application needs callbacks, writes, reusable sessions, management, or API-key billing |
+| `claude-code.response-only` | `swallowtail.claude-code.response-only`; strict Claude Code stream JSON over stdio | one bounded assistant text response with no tools, MCP, session persistence, or working resource | the application needs schema enforcement, callbacks, filesystem authority, continuation, retry, fallback, or API-key billing |
 
 The host supplies the approved executable, explicit environment, configured
 instance and host identity, matching access evidence, and the task, process,
@@ -180,6 +183,64 @@ versions remain visible `UnverifiedNewer`.
 See the compile-tested
 [`prepared_claude_code_headless` example](../../crates/swallowtail-adapter-claude-agent/examples/prepared_claude_code_headless.rs).
 
+## Claude Code Response Only
+
+`prepare_claude_code_response_only` qualifies an exact host-approved Claude
+Code `2.1.227` executable and provider-supported local subscription access.
+It is a distinct route. It does not weaken or replace
+`claude-code.headless`.
+
+`ClaudeCodeResponseProfileInput::new` accepts only request identity, an exact
+caller-selected model route, one prompt, and a deadline. Optional qualified
+reasoning may be added with `with_reasoning_mode`. The profile has no working
+resource, attachment, tool, callback, schema, output-token, session,
+continuation, retry, or fallback input.
+
+The driver writes the prompt to stdin and invokes:
+
+```text
+claude -p
+  --input-format text
+  --output-format stream-json
+  --verbose
+  --no-session-persistence
+  --model <caller-selected-model>
+  [--effort <caller-selected-effort>]
+  --tools ""
+  --safe-mode
+  --disable-slash-commands
+  --no-chrome
+  --prompt-suggestions false
+  --mcp-config {"mcpServers":{}}
+  --strict-mcp-config
+```
+
+Exact `2.1.227` evidence requires an init event with empty `tools` and
+`mcp_servers`, one text-only assistant message, and one matching success
+result with `num_turns: 1` and null or absent `structured_output`. Any tool,
+user, extra assistant, second result, version/model drift, non-text block, or
+post-terminal event fails closed. The route emits the matching bounded text as
+ordinary `OperationContent`; JSON-shaped text carries no JSON or schema claim.
+
+The prepared plan records `ProviderSuppressed` harness configuration and
+`AmbientHost` isolation. The first says exact provider flags suppress tools
+and MCP configuration. The second says those flags are not an OS sandbox.
+No working resource is passed to the process. The execution host still needs
+a launch directory, but that host process detail creates no portable
+filesystem authority.
+
+Local macOS proof required the approved environment to preserve `HOME`,
+`USER`, and `LOGNAME` for Claude's OAuth/keychain lookup. It excludes
+`ANTHROPIC_API_KEY`; the live auth surface reported `claude.ai` and `max`.
+Do not clear required subscription state or widen the approved environment
+without new evidence.
+
+The route exposes one completion-only assistant activity and one terminal
+text result. Consumers must drain events and the terminal outcome
+concurrently, close the handle, and validate or parse the text themselves.
+See the compile-tested
+[`prepared_claude_code_response_only` example](../../crates/swallowtail-adapter-claude-agent/examples/prepared_claude_code_response_only.rs).
+
 ## Repo-Local ACP Sidecar
 
 Swallowtail pins `@agentclientprotocol/claude-agent-acp` in the root
@@ -286,7 +347,7 @@ delete is separately prepared from the opaque inactive management binding;
 it reports provider-data deletion, not secure erasure. Archive and restore are
 unsupported.
 
-Claude Code headless sets `--no-session-persistence`; closing joins only the
+Both Claude Code routes set `--no-session-persistence`; closing joins only the
 owned run process and exposes no binding or lifecycle authority.
 
 ## Failures, Unsupported Capabilities, And Promotion
@@ -300,7 +361,8 @@ success. Terminal and cleanup outcomes remain distinct.
 Claude Agent ACP has no standalone model catalogue, attachments, structured
 output, output-token limit, external search, archive, restore, or
 provider-session import. Claude Code headless has no callbacks, writes,
-consumer tools, durable state, continuation, or management. Provider tool,
+consumer tools, durable state, continuation, or management. Response only
+also has no working resource or structured-output capability. Provider tool,
 plan, task, and child observations grant no control authority.
 
 A new capability needs exact adapter and provider-version evidence, an
@@ -319,3 +381,9 @@ These compile and test the prepared paths without auth or prompts. The
 repository-local sidecar bootstrap and managed probe above are separately
 gated operator work; authenticated Claude prompts are not required for
 deterministic acceptance.
+
+The response-only authenticated probe is separately gated:
+
+```sh
+effigy probe:claude-code-response-only
+```

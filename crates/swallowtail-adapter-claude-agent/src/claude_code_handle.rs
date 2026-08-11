@@ -49,6 +49,8 @@ pub(crate) struct ClaudeCodeRunHandle {
     terminal: Option<BoxFuture<'static, TerminalOutcome>>,
     cancellation: Arc<ClaudeCodeCancellation>,
     task: Box<dyn JoinedTask>,
+    task_join_code: &'static str,
+    task_join_message: &'static str,
 }
 
 impl ClaudeCodeRunHandle {
@@ -67,6 +69,28 @@ impl ClaudeCodeRunHandle {
             terminal: Some(terminal),
             cancellation,
             task,
+            task_join_code: "swallowtail.claude_code.headless.task_join_failed",
+            task_join_message: "Claude Code headless operation task could not be joined",
+        }
+    }
+
+    pub(crate) fn new_response_only(
+        request_id: RequestId,
+        run_id: RuntimeRunId,
+        events: BoxEventStream,
+        terminal: BoxFuture<'static, TerminalOutcome>,
+        cancellation: Arc<ClaudeCodeCancellation>,
+        task: Box<dyn JoinedTask>,
+    ) -> Self {
+        Self {
+            request_id,
+            run_id,
+            events: Some(events),
+            terminal: Some(terminal),
+            cancellation,
+            task,
+            task_join_code: "swallowtail.claude_code.response_only.task_join_failed",
+            task_join_message: "Claude Code response-only task could not be joined",
         }
     }
 }
@@ -101,8 +125,8 @@ impl RunHandle for ClaudeCodeRunHandle {
             match self.task.join().await {
                 Ok(()) => CleanupOutcome::Clean,
                 Err(_) => CleanupOutcome::Failed(SafeDiagnostic::new(
-                    "swallowtail.claude_code.headless.task_join_failed",
-                    "Claude Code headless operation task could not be joined",
+                    self.task_join_code,
+                    self.task_join_message,
                 )),
             }
         })

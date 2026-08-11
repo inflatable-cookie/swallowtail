@@ -28,6 +28,17 @@ impl LocalExecutableLaunch {
         }
     }
 
+    /// Approves an interpreted script: exact interpreter plus the script path
+    /// as the immutable first argument.
+    ///
+    /// Use this for npm/`env` shebang launchers. Approving the script alone
+    /// fails once ambient `PATH` is cleared.
+    #[must_use]
+    pub fn interpreted_script(interpreter: impl Into<PathBuf>, script: impl Into<PathBuf>) -> Self {
+        let script = script.into();
+        Self::new(interpreter).with_prefix_arguments([OsString::from(script.as_os_str())])
+    }
+
     /// Fixes arguments that the host places before driver-owned arguments.
     #[must_use]
     pub fn with_prefix_arguments(mut self, arguments: impl IntoIterator<Item = OsString>) -> Self {

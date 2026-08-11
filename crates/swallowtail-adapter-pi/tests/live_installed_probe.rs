@@ -1,5 +1,4 @@
 use futures_executor::block_on;
-use std::ffi::OsString;
 use std::io::Read;
 use std::path::PathBuf;
 use swallowtail_adapter_pi::{
@@ -31,8 +30,7 @@ fn installed_pi_is_exactly_classified() {
 
     let execution_host_id = ExecutionHostId::new("live.pi.local-host").expect("host id is valid");
     let executable = ExecutableRef::new("live.pi.installed").expect("executable ref is valid");
-    let launch = LocalExecutableLaunch::new(node)
-        .with_prefix_arguments([OsString::from(script.as_os_str())]);
+    let launch = LocalExecutableLaunch::interpreted_script(node, script);
     let (builder, target) = LocalProcessHost::builder(LocalProcessLimits::default())
         .approve_installed_executable_launch(
             executable,

@@ -58,9 +58,9 @@ Construct `CommandCodePreparationInput` with:
 - local-account profile and matching evidence
 
 The npm `command-code` bin is a Node shebang launcher. Local hosts must approve
-an interpreted launch: exact `node` program plus the resolved launcher script
-as a fixed prefix argument. Approving the script alone fails when the process
-environment has no `PATH` for `env node`.
+an interpreted launch via `LocalExecutableLaunch::interpreted_script(node, script)`
+(or `approve_installed_executable_launch` with that recipe). Approving the
+script alone fails closed: ambient `PATH` is cleared, so `env node` cannot run.
 
 Construct `CommandCodePreparationProbe` with a request ID, scope, deadline, and
 `DiscoveryCancellation`. Then call `prepare_command_code_headless`.

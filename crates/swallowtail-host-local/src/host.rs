@@ -12,7 +12,8 @@ use crate::output::failure;
 use crate::serving_endpoint::LocalServingEndpointState;
 use std::collections::HashMap;
 use std::ffi::OsString;
-use std::path::PathBuf;
+use std::io::Read;
+use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 use std::sync::Arc;
 use std::time::Instant;
@@ -184,6 +185,7 @@ impl LocalProcessHost {
                 )
             })?;
         self.validate_launch(launch, &request)?;
+        reject_env_shebang_without_interpreter(launch)?;
         let mut command = Command::new(launch.program());
         command
             .args(launch.prefix_arguments())
@@ -327,6 +329,47 @@ impl LocalProcessHost {
         }
         Ok(())
     }
+}
+
+const MAXIMUM_SHEBANG_BYTES: u64 = 256;
+
+/// npm and similar launchers use `#!/usr/bin/env …`. Spawning that path with a
+/// cleared environment cannot find the interpreter. Refuse the zero-prefix
+/// case with an explicit recipe hint instead of a silent discovery failure.
+fn reject_env_shebang_without_interpreter(
+    launch: &LocalExecutableLaunch,
+) -> Result<(), RuntimeFailure> {
+    if !launch.prefix_arguments().is_empty() {
+        return Ok(());
+    }
+    if !uses_env_shebang(launch.program()) {
+        return Ok(());
+    }
+    Err(failure(
+        "swallowtail.local_process.interpreted_launcher_requires_host_recipe",
+        "Approved executable uses #!/usr/bin/env; approve an interpreted launch \
+         with the exact interpreter and script prefix. Ambient PATH is cleared.",
+    ))
+}
+
+fn uses_env_shebang(program: &Path) -> bool {
+    let mut bytes = Vec::new();
+    let Ok(file) = std::fs::File::open(program) else {
+        return false;
+    };
+    if file
+        .take(MAXIMUM_SHEBANG_BYTES)
+        .read_to_end(&mut bytes)
+        .is_err()
+    {
+        return false;
+    }
+    let first_line = bytes.split(|byte| *byte == b'\n').next().unwrap_or(&bytes);
+    let Ok(line) = std::str::from_utf8(first_line) else {
+        return false;
+    };
+    let line = line.trim_end_matches('\r');
+    line.starts_with("#!/usr/bin/env ") || line.starts_with("#!/bin/env ")
 }
 
 impl ProcessService for LocalProcessHost {

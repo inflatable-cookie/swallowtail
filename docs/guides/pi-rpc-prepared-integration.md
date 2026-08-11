@@ -55,12 +55,12 @@ and uses the latest qualified behavior mapping. Unpublished gaps, older points,
 and prereleases do not prepare.
 
 The installed npm form may use an interpreted launcher such as
-`#!/usr/bin/env node`. `swallowtail-host-local` represents that shape through
-`LocalExecutableLaunch`: host selection fixes the exact interpreter, script
-prefix, and any bounded bootstrap environment before approving the unchanged
-opaque executable target. Ambient environment remains cleared. The Pi adapter
-does not search PATH, inspect npm layouts, or substitute a launcher. Exact
-installed `0.83.0` discovery is proven through this path.
+`#!/usr/bin/env node`. Prefer `LocalExecutableLaunch::interpreted_script` (exact
+interpreter plus script prefix) before `approve_installed_executable_launch`.
+Approving the script as a native executable fails with
+`interpreted_launcher_requires_host_recipe` because ambient `PATH` is cleared.
+The Pi adapter does not search PATH, inspect npm layouts, or substitute a
+launcher. Exact installed `0.83.0` discovery is proven through this path.
 
 ## Execution Boundary
 

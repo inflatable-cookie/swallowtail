@@ -114,6 +114,38 @@ fn installed_version_probe_uses_only_the_explicit_approved_target_and_joins() {
 }
 
 #[test]
+fn env_shebang_without_interpreter_prefix_fails_with_host_recipe_hint() {
+    let directory = std::env::temp_dir().join(format!(
+        "swallowtail-shebang-fixture-{}",
+        std::process::id()
+    ));
+    std::fs::create_dir_all(&directory).expect("fixture directory");
+    let script = directory.join("npm-launcher");
+    std::fs::write(&script, "#!/usr/bin/env node\nconsole.log('unreachable')\n")
+        .expect("fixture script is written");
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        let mut permissions = std::fs::metadata(&script).expect("metadata").permissions();
+        permissions.set_mode(0o755);
+        std::fs::set_permissions(&script, permissions).expect("executable bit");
+    }
+
+    let executable = executable_ref();
+    let host = LocalProcessHost::builder(LocalProcessLimits::new(3, 1024, 64, 1024, 1024))
+        .approve_executable(executable.clone(), script)
+        .build();
+    assert_failure_code(
+        start(
+            &host,
+            ProcessRequest::new(executable).with_arguments(["--version".to_owned()]),
+        ),
+        "swallowtail.local_process.interpreted_launcher_requires_host_recipe",
+    );
+    let _ = std::fs::remove_dir_all(directory);
+}
+
+#[test]
 fn interpreted_launch_orders_prefix_and_driver_arguments_under_one_limit() {
     let executable = executable_ref();
     let launch =

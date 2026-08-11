@@ -47,8 +47,7 @@ fn installed_omp_is_exactly_classified() {
 
     let execution_host_id = ExecutionHostId::new("live.omp.local-host").expect("host id is valid");
     let executable = ExecutableRef::new("live.omp.installed").expect("executable ref is valid");
-    let launch =
-        LocalExecutableLaunch::new(bun).with_prefix_arguments([OsString::from(script.as_os_str())]);
+    let launch = LocalExecutableLaunch::interpreted_script(bun, script);
     let (builder, target) = LocalProcessHost::builder(LocalProcessLimits::default())
         .approve_installed_executable_launch(
             executable,
@@ -243,8 +242,7 @@ fn live_host() -> (
         WorkingResourceRef::new("live.omp.read-only-workspace").expect("resource is valid");
     let execution_host_id = ExecutionHostId::new("live.omp.local-host").expect("host id is valid");
     let executable = ExecutableRef::new("live.omp.installed").expect("executable ref is valid");
-    let launch =
-        LocalExecutableLaunch::new(bun).with_prefix_arguments([OsString::from(script.as_os_str())]);
+    let launch = LocalExecutableLaunch::interpreted_script(bun, script);
     let (builder, target) = LocalProcessHost::builder(LocalProcessLimits::default())
         .approve_installed_executable_launch(
             executable,

@@ -268,8 +268,7 @@ fn live_host() -> (
     let execution_host_id = ExecutionHostId::new("live.command-code.local-host").expect("host id");
     let executable =
         ExecutableRef::new("live.command-code.installed").expect("executable ref is valid");
-    let launch = LocalExecutableLaunch::new(node)
-        .with_prefix_arguments([OsString::from(script.as_os_str())]);
+    let launch = LocalExecutableLaunch::interpreted_script(node, script);
     let (builder, target) = LocalProcessHost::builder(LocalProcessLimits::default())
         .approve_installed_executable_launch(
             executable,

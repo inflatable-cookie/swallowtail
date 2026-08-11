@@ -21,6 +21,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-11 v0.3.2 Exact CI Candidate](./2026-08-11-v0-3-2-exact-ci-candidate.md)
 - [2026-08-11 v0.3.2 Local Source Candidate](./2026-08-11-v0-3-2-local-source-candidate.md)
 - [2026-08-11 v0.3.2 Release Inventory](./2026-08-11-v0-3-2-release-inventory.md)
 - [2026-08-11 Claude Code Response-Only Thinking Progress](./2026-08-11-claude-code-response-thinking-progress.md)

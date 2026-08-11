@@ -26,7 +26,7 @@ source-only distribution boundary.
       order, metadata, and separate unreleased API baselines
 - [x] card 211: write release notes, prepare the exact local candidate, and
       pass all configured credential-free gates
-- [ ] card 212: after operator acceptance, commit and push the candidate and
+- [x] card 212: after operator acceptance, commit and push the candidate and
       require canonical CI at the exact SHA
 - [ ] card 213: after separate exact authorization, create and push one
       annotated immutable `v0.3.2` tag
@@ -56,7 +56,7 @@ source-only distribution boundary.
 - [x] old 28 package APIs remain compatible and both new packages receive
       exact first-release API baselines
 - [x] all configured local gates and isolated source-consumer proof pass
-- [ ] canonical CI passes at the exact candidate commit
+- [x] canonical CI passes at the exact candidate commit
 - [x] release notes contain upgrade, rollback, payload, limits, and unchanged
       distribution posture
 - [ ] annotated `v0.3.2` resolves locally and remotely to the green commit

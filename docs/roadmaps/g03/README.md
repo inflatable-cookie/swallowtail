@@ -71,12 +71,14 @@ visible as unverified newer unless exact evidence requires rejection.
 
 ## Current Checkpoint
 
-- g03.067 is active. Card 211 prepared the complete local `v0.3.2` candidate:
+- g03.067 is active. Cards 211-212 prepared, committed, pushed, and proved the
+  complete `v0.3.2` candidate through canonical CI:
   nine changelog entries, 30 packages, 36 routes, exact release order, 28
   immutable plus two first-release API baselines, and candidate release notes.
   All 11 configured gates pass with Effigy commit `53a4971d`, including 1,625
-  workspace tests and the isolated source consumer. No candidate commit or tag
-  exists. Card 212 commit, push, and canonical CI remain operator-gated.
+  workspace tests and the isolated source consumer. All five canonical CI jobs
+  pass at the exact candidate commit. No `v0.3.2` tag exists; card 213 remains
+  separately operator-gated.
 - g03.066 is complete at code commit `71db67be`: exact `2.1.227`
   thinking-token estimates become bounded content-free progress; the empty
   private thinking envelope is validated and discarded before one text result.

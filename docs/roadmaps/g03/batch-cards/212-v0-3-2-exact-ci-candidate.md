@@ -1,6 +1,6 @@
 # 212 v0.3.2 Exact CI Candidate
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-11
 Milestone: `../067-v0-3-2-source-patch-release.md`
@@ -13,9 +13,17 @@ SHA without creating a tag.
 
 ## Acceptance
 
-- [ ] local and remote canonical branch resolve to the accepted commit
-- [ ] every canonical CI job passes against that SHA
-- [ ] no tag, GitHub Release, registry, consumer, or provider mutation runs
+- [x] local and remote canonical branch resolve to the accepted commit
+- [x] every canonical CI job passes against that SHA
+- [x] no tag, GitHub Release, registry, consumer, or provider mutation runs
+
+## Completion Evidence
+
+- the accepted candidate was committed and pushed to canonical `main`
+- the unchanged `CI` workflow ran by explicit dispatch because branch pushes
+  do not trigger it; all five jobs passed at the exact candidate SHA
+- local `HEAD`, remote `main`, and the workflow head SHA matched
+- no local or remote `v0.3.2` tag exists
 
 ## Auto-Continuation
 

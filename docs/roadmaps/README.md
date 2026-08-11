@@ -13,10 +13,10 @@ shape.
 
 ## Next Task
 
-Await operator review of the complete local `v0.3.2` candidate. After explicit
-authorization, execute card 212: commit and push the accepted tree, then prove
-canonical CI at that exact SHA. Do not tag, mutate consumers or providers, or
-broaden the source-only release boundary.
+Await separate exact operator authorization for card 213. If authorized,
+create and push one annotated `v0.3.2` tag at the exact CI-green candidate
+commit, then prove the tag-triggered workflow at that same commit. Do not
+create a GitHub Release, publish packages, or mutate consumers or providers.
 
 ## Index
 

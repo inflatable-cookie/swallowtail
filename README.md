@@ -19,9 +19,9 @@ New here? Two short reads get you from zero to a working run:
 
 ## Release Posture
 
-`v0.3.1` is the current supported source identity. `v0.3.2` is the prepared
-compatible candidate and is not usable as a tag until exact CI acceptance and
-tag creation. Releases are distributed as annotated Git tags from the
+`v0.3.1` is the current supported source identity. `v0.3.2` is the compatible
+CI-green candidate and is not usable as a tag until separate tag authorization
+and creation. Releases are distributed as annotated Git tags from the
 [canonical repository](https://github.com/inflatable-cookie/swallowtail).
 There is no crates.io publication, GitHub Release object, binary bundle, or
 installer in this release line.

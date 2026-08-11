@@ -14,8 +14,12 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   dependency requirements and synchronize only workspace package lock entries.
 - Surface: Effigy Cargo-workspace release preparation.
 
-### [ ] Bootstrap papercuts before an exact-SHA release lane — 2026-08-06
+## Closed
+
+### [x] Bootstrap papercuts before an exact-SHA release lane — 2026-08-06
 - Friction: Northstar first required this file after the release candidate had already passed exact-commit CI.
 - Impact: Adding the repository hygiene file during tag closeout would invalidate the clean-tree release check or move the tag beyond the green SHA.
-- Possible fix: Install `PAPERCUTS.md` when adopting or upgrading Northstar, before release-candidate preparation.
+- Fix: Northstar adopt/upgrade and release-posture guidance now seed
+  `PAPERCUTS.md` before exact-SHA / clean-tree release prep (skill repo-contract,
+  normalize-docs, bundle-docs/papercuts.md, template-bundle).
 - Surface: Northstar adoption and tagged-release preparation.

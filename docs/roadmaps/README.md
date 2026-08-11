@@ -13,11 +13,10 @@ shape.
 
 ## Next Task
 
-Execute card 206: relink Figmatic to exact Swallowtail code commit
-`71db67be4f8929199afe3b2d9b3db8d432f79169`, then replay packaged unit
-`fc335758-3c1a-4bda-bb71-a8c6119fe876`. Keep Figmatic's parsing, validation,
-compilation, gates, and acceptance downstream. Do not create a Swallowtail
-release without operator authorization.
+Await operator review of the complete local `v0.3.2` candidate. After explicit
+authorization, execute card 212: commit and push the accepted tree, then prove
+canonical CI at that exact SHA. Do not tag, mutate consumers or providers, or
+broaden the source-only release boundary.
 
 ## Index
 

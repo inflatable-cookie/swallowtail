@@ -1,5 +1,3 @@
-release_version=0.2.0
-
 release_internal_patch_packages=(
   swallowtail-core
   swallowtail-host-local
@@ -28,24 +26,33 @@ release_stage_1=(
 )
 
 release_stage_2=(
-  swallowtail-runtime
+  swallowtail-idioms
 )
 
 release_stage_3=(
+  swallowtail-runtime
+)
+
+release_stage_4=(
   swallowtail-host-local
   swallowtail-testkit
   swallowtail-transport-acp-remote
   swallowtail-adapter-alibaba-model-studio
   swallowtail-adapter-anthropic
+  swallowtail-adapter-antigravity
   swallowtail-adapter-bedrock
   swallowtail-adapter-claude-agent
   swallowtail-adapter-codex
+  swallowtail-adapter-command-code
+  swallowtail-adapter-cursor
   swallowtail-adapter-deepseek
   swallowtail-adapter-gemini
   swallowtail-adapter-grok
   swallowtail-adapter-kimi
   swallowtail-adapter-kimi-platform
   swallowtail-adapter-llama-cpp
+  swallowtail-adapter-muse
+  swallowtail-adapter-oh-my-pi
   swallowtail-adapter-opencode
   swallowtail-adapter-ollama
   swallowtail-adapter-openai
@@ -58,6 +65,7 @@ release_packages=(
   "${release_stage_1[@]}"
   "${release_stage_2[@]}"
   "${release_stage_3[@]}"
+  "${release_stage_4[@]}"
 )
 
 release_consumer_packages=(

@@ -5,19 +5,19 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
-### [ ] Roadmap docs policy resolves child links and next pointers incorrectly — 2026-08-11
+## Closed
+
+### [x] Roadmap docs policy applies parent checks to excluded child indexes — 2026-08-11
 - Friction: `effigy qa:docs` reports existing `g01/README.md`, `g02/README.md`,
   `g03/README.md`, and `backlog/README.md` links as missing even though they
   exist under `docs/roadmaps/`.
 - Impact: the broad docs selector cannot certify an otherwise indexable docs
   change; its next-action gate also requires `## Next Task` in every generation
   and backlog index, contrary to this repo's single front-door pointer rule.
-- Possible fix: resolve policy-index child links relative to the indexed file's
-  directory and scope the roadmaps next-action policy to
-  `docs/roadmaps/README.md`.
+- Fix: Effigy commit `53a4971da31344c0f1f3bb24308e78ee2e85ec3c`
+  applies index exclusions to collected links for both index and next-action
+  checks. Swallowtail's unchanged roadmap policy and all release gates pass.
 - Surface: Effigy roadmap index and next-action docs policies.
-
-## Closed
 
 ### [x] Release prepare omits coordinated workspace dependency versions — 2026-08-08
 - Friction: Effigy updated `workspace.package.version` before gates but left

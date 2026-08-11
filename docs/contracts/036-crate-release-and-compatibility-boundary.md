@@ -39,10 +39,11 @@ workspace checkout.
 The immutable `v0.1.0` and `v0.1.1` tags contain 27 public source packages.
 `v0.2.0` contains 28, adding the reviewed `swallowtail-adapter-muse` package.
 The `v0.3.0` / `v0.3.1` tags keep those 28 packages and 34 production routes.
-Current source adds one reviewed additive package,
-`swallowtail-adapter-command-code`, for 29 packages and 35 production routes.
-Command Code is unreleased and must not be presented as part of any tagged
-inventory.
+Current source adds two reviewed additive packages,
+`swallowtail-adapter-command-code` and `swallowtail-idioms`, for 30 packages
+and 36 production routes. Both are selected for the next source release but
+belong to the prepared `v0.3.2` candidate; they remain unreleased until its
+exact tag is separately authorized.
 
 Foundations:
 
@@ -52,6 +53,7 @@ Foundations:
 Support:
 
 - `swallowtail-host-local`
+- `swallowtail-idioms` (`v0.3.2` candidate)
 - `swallowtail-testkit`
 
 Protocols and transport:
@@ -68,7 +70,7 @@ Opt-in adapters:
 - `swallowtail-adapter-bedrock`
 - `swallowtail-adapter-claude-agent`
 - `swallowtail-adapter-codex`
-- `swallowtail-adapter-command-code` (unreleased source after `v0.3.1`)
+- `swallowtail-adapter-command-code` (`v0.3.2` candidate)
 - `swallowtail-adapter-cursor`
 - `swallowtail-adapter-deepseek`
 - `swallowtail-adapter-gemini`
@@ -125,6 +127,12 @@ Before 1.0:
 Patch-compatible changes may include additive public items, internal
 refactoring, safety fixes preserving documented behavior, additive safe
 diagnostics, and newly qualified provider-interface versions.
+
+The next selected source release is `v0.3.2`. Its two additive packages,
+additive routes and public items, stricter fail-closed projections, and tooling
+repairs preserve the `v0.3.1` public and guaranteed-behavior baseline. No
+breaking API, capability removal, range shrink, MSRV raise, or verified-target
+removal is selected, so Contract 036 requires a patch rather than `v0.4.0`.
 
 Breaking changes include removing or incompatibly changing public items,
 raising MSRV, shrinking a guaranteed provider range, removing a capability or
@@ -268,12 +276,11 @@ not every provider behavior.
 Credential-free release checks sit behind explicit Effigy selectors and cover:
 
 - clean source and exact commit identity
-- 29-package current-source metadata and dependency topology, kept distinct
+- 30-package current-source metadata and dependency topology, kept distinct
   from the immutable 28-package `v0.2.0` / `v0.3.1` and 27-package `v0.1.x`
   baselines
-- semantic public API baseline, with the additive Command Code package on a
-  separate unreleased inventory until an operator authorizes a later source
-  release containing it
+- semantic public API baseline, with the 30-package `v0.3.2` candidate frozen
+  separately from the immutable 28-package `v0.3.0` compatibility baseline
 - denied missing public documentation
 - dependency advisory, license, and source policy
 - Rust `1.95.0` floor and current stable
@@ -306,11 +313,12 @@ tag action against:
 
 - source commit
 - canonical branch and remote
-- tag name `v0.3.0`
+- tag name `v0.3.2`
 - annotated tag message
 - confirmation that no crate publication or GitHub Release is included
 
-Creating the local tag and pushing it are separate mutations unless one
+This version selection does not authorize candidate preparation, tag creation,
+or push. Creating the local tag and pushing it are separate mutations unless one
 approval names both. Branch push, workflow edit, crates.io publication,
 GitHub Release creation, consumer edits, and provider work remain separate.
 
@@ -318,8 +326,8 @@ GitHub Release creation, consumer edits, and provider work remain separate.
 
 - all 28 tagged packages are separately consumable from one exact source
   identity
-- the 29th current-source Command Code package is visibly unreleased and
-  consumable only from an explicitly approved commit
+- the 29th and 30th Command Code and idioms packages are visibly candidate-only
+  and consumable only from an explicitly approved commit until tagging
 - the breaking binding-helper migration is explicit and limited to Codex and
   Ollama callers
 - `publish = false` prevents accidental registry publication

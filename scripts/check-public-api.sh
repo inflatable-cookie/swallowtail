@@ -4,8 +4,8 @@ set -euo pipefail
 release_repo_root=$(cd "$(dirname "$0")/.." && pwd)
 cd "$release_repo_root"
 
-release_baseline_dir=release-baselines/public-api-0.3.0
-release_unreleased_baseline=release-baselines/public-api-unreleased/swallowtail-adapter-command-code.txt
+release_immutable_baseline_dir=release-baselines/public-api-0.3.0
+release_candidate_baseline_dir=release-baselines/public-api-0.3.2
 release_toolchain=nightly-2026-08-05
 release_tool_version='cargo-public-api 0.52.0'
 
@@ -30,17 +30,19 @@ trap 'rm -rf "$release_actual_dir"' EXIT
 
 bash scripts/generate-public-api-baseline.sh "$release_actual_dir"
 release_expected_packages="$release_actual_dir/expected-packages.txt"
-{
-  cat "$release_baseline_dir/packages.txt"
-  printf 'swallowtail-adapter-command-code\n'
-} | LC_ALL=C sort > "$release_expected_packages"
+cat "$release_candidate_baseline_dir/packages.txt" > "$release_expected_packages"
 diff -u "$release_expected_packages" "$release_actual_dir/packages.txt"
 while IFS= read -r release_package; do
+  release_candidate_api="$release_candidate_baseline_dir/$release_package.txt"
+  if [[ -f "$release_immutable_baseline_dir/$release_package.txt" ]] &&
+    grep -Fvx -f "$release_candidate_api" \
+      "$release_immutable_baseline_dir/$release_package.txt" | grep -q .
+  then
+    printf 'v0.3.2 candidate API removes an immutable item: %s\n' "$release_package" >&2
+    exit 1
+  fi
   diff -u \
-    "$release_baseline_dir/$release_package.txt" \
+    "$release_candidate_api" \
     "$release_actual_dir/$release_package.txt"
-done < "$release_baseline_dir/packages.txt"
-diff -u \
-  "$release_unreleased_baseline" \
-  "$release_actual_dir/swallowtail-adapter-command-code.txt"
-printf 'semantic API passed: 28 immutable release packages plus 1 unreleased source package\n'
+done < "$release_candidate_baseline_dir/packages.txt"
+printf 'v0.3.2 candidate semantic API passed: 30 packages; v0.3.0 removals remain forbidden\n'

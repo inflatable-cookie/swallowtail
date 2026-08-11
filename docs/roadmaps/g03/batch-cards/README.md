@@ -2,7 +2,6 @@
 
 ## Active
 
-
 ## Ready
 
 - [206-figmatic-claude-code-response-only-adoption.md](./206-figmatic-claude-code-response-only-adoption.md)
@@ -10,6 +9,8 @@
 
 ## Planned
 
+- [212-v0-3-2-exact-ci-candidate.md](./212-v0-3-2-exact-ci-candidate.md)
+- [213-v0-3-2-annotated-source-tag.md](./213-v0-3-2-annotated-source-tag.md)
 - [193-idioms-route-opt-in-runtime-surface.md](./193-idioms-route-opt-in-runtime-surface.md)
 - [194-idioms-route-opt-in-binding-and-codex-proof.md](./194-idioms-route-opt-in-binding-and-codex-proof.md)
 - [195-nucleus-idioms-adoption-delta.md](./195-nucleus-idioms-adoption-delta.md)
@@ -21,6 +22,8 @@
 
 ## Completed
 
+- [211-v0-3-2-local-source-candidate.md](./211-v0-3-2-local-source-candidate.md)
+- [210-v0-3-2-release-inventory-and-gates.md](./210-v0-3-2-release-inventory-and-gates.md)
 - [209-claude-code-response-thinking-acceptance.md](./209-claude-code-response-thinking-acceptance.md)
 - [208-claude-code-response-thinking-corpus.md](./208-claude-code-response-thinking-corpus.md)
 - [207-claude-code-response-thinking-contract.md](./207-claude-code-response-thinking-contract.md)

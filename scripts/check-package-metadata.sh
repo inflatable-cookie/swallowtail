@@ -12,13 +12,14 @@ release_edges=$(mktemp)
 release_names=$(mktemp)
 release_expected_names=$(mktemp)
 release_expected_edges=$(mktemp)
-trap 'rm -f "$release_metadata" "$release_edges" "$release_names" "$release_expected_names" "$release_expected_edges"' EXIT
+release_order_names=$(mktemp)
+trap 'rm -f "$release_metadata" "$release_edges" "$release_names" "$release_expected_names" "$release_expected_edges" "$release_order_names"' EXIT
 
 cargo metadata --no-deps --format-version 1 > "$release_metadata"
 release_version=$(jq -r '.packages[0].version' "$release_metadata")
 
 jq -e --arg version "$release_version" --arg rust_msrv "$release_msrv_cargo" '
-  (.packages | length) == 29 and
+  (.packages | length) == 30 and
   all(.packages[];
     .version == $version and
     .edition == "2024" and
@@ -30,7 +31,8 @@ jq -e --arg version "$release_version" --arg rust_msrv "$release_msrv_cargo" '
     (
       (.features | length == 0) or
       (
-        (.name == "swallowtail-adapter-gemini" or
+        (.name == "swallowtail-adapter-claude-agent" or
+         .name == "swallowtail-adapter-gemini" or
          .name == "swallowtail-adapter-grok" or
          .name == "swallowtail-adapter-kimi" or
          .name == "swallowtail-adapter-opencode" or
@@ -52,11 +54,15 @@ jq -e --arg version "$release_version" --arg rust_msrv "$release_msrv_cargo" '
 ' "$release_metadata" > /dev/null
 
 jq -r '.packages[].name' "$release_metadata" | LC_ALL=C sort > "$release_names"
-{
-  cat release-baselines/public-api-0.3.0/packages.txt
-  printf 'swallowtail-adapter-command-code\n'
-} | LC_ALL=C sort > "$release_expected_names"
+cat release-baselines/public-api-0.3.2/packages.txt > "$release_expected_names"
 diff -u "$release_expected_names" "$release_names"
+
+source scripts/release-package-set.sh
+printf '%s\n' "${release_packages[@]}" | LC_ALL=C sort > "$release_order_names"
+diff -u "$release_names" "$release_order_names"
+[[ ${#release_packages[@]} -eq 30 ]]
+[[ "${release_stage_2[*]}" == "swallowtail-idioms" ]]
+[[ "${release_stage_3[*]}" == "swallowtail-runtime" ]]
 
 jq -r '
   .packages[] as $package |
@@ -66,14 +72,11 @@ jq -r '
   @tsv
 ' "$release_metadata" | LC_ALL=C sort > "$release_edges"
 
-{
-  awk -F '\t' -v OFS='\t' -v requirement="^$release_version" \
-    '{$3 = requirement; print}' \
-    release-baselines/internal-dependencies-0.2.0.tsv
-  printf 'swallowtail-adapter-command-code\tswallowtail-core\t^%s\n' "$release_version"
-  printf 'swallowtail-adapter-command-code\tswallowtail-runtime\t^%s\n' "$release_version"
-} | LC_ALL=C sort > "$release_expected_edges"
+awk -F '\t' -v OFS='\t' -v requirement="^$release_version" \
+  '{$3 = requirement; print}' \
+  release-baselines/internal-dependencies-0.3.2.tsv \
+  | LC_ALL=C sort > "$release_expected_edges"
 diff -u "$release_expected_edges" "$release_edges"
 
-printf 'current-source metadata passed for 29 crates at %s and Rust %s; immutable release baseline remains 28\n' \
+printf 'v0.3.2 candidate metadata passed for 30 crates at %s and Rust %s\n' \
   "$release_version" "$release_msrv_cargo"

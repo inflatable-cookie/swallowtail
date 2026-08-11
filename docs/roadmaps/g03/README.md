@@ -67,9 +67,16 @@ visible as unverified newer unless exact evidence requires rejection.
 | Qualify Claude Code for a tool-free, schema-constrained, response-only consumer boundary. | completed negatively | Contracts 039-040; Research 121 | `g03.064` |
 | Add exact Claude Code tool-free text response through local subscription access. | completed | Contract 039; Research 122 | `g03.065` |
 | Classify exact Claude Code response-only thinking progress without disclosing thought content. | completed | Contracts 039, 044; Research 123 | `g03.066` |
+| Ship the compatible 30-package, 36-route current source as an exact `v0.3.2` source tag. | active | Contracts 036, 055-056 | `g03.067` |
 
 ## Current Checkpoint
 
+- g03.067 is active. Card 211 prepared the complete local `v0.3.2` candidate:
+  nine changelog entries, 30 packages, 36 routes, exact release order, 28
+  immutable plus two first-release API baselines, and candidate release notes.
+  All 11 configured gates pass with Effigy commit `53a4971d`, including 1,625
+  workspace tests and the isolated source consumer. No candidate commit or tag
+  exists. Card 212 commit, push, and canonical CI remain operator-gated.
 - g03.066 is complete at code commit `71db67be`: exact `2.1.227`
   thinking-token estimates become bounded content-free progress; the empty
   private thinking envelope is validated and discarded before one text result.
@@ -674,6 +681,7 @@ visible as unverified newer unless exact evidence requires rejection.
 - [064 Claude Code Response-Only Structured Route Disposition](./064-claude-code-response-only-disposition.md) — completed negatively
 - [065 Claude Code Tool-Free Text Route](./065-claude-code-tool-free-text-route.md) — completed
 - [066 Claude Code Response-Only Thinking Progress](./066-claude-code-response-only-thinking-progress.md) — completed
+- [067 v0.3.2 Source Patch Release](./067-v0-3-2-source-patch-release.md) — active
 
 ## Checkpoint
 

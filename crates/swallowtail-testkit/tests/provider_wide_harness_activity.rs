@@ -11,7 +11,7 @@ fn every_production_harness_route_has_exact_prepared_activity_truth() {
         "044-observable-agent-activity-and-disclosure"
     );
     let routes = inventory["routes"].as_array().expect("routes are an array");
-    assert_eq!(routes.len(), 22);
+    assert_eq!(routes.len(), 23);
 
     let ids = routes
         .iter()
@@ -25,6 +25,7 @@ fn every_production_harness_route_has_exact_prepared_activity_truth() {
             "anthropic.managed-agent",
             "claude-agent.acp",
             "claude-code.headless",
+            "claude-code.response-only",
             "codex.app-server",
             "codex.exec",
             "command-code.headless",
@@ -54,7 +55,12 @@ fn every_production_harness_route_has_exact_prepared_activity_truth() {
                 route["id"]
             );
         }
-        assert_eq!(route["unknown_posture"], "preserve-namespaced");
+        let expected_unknown_posture = if route["id"] == "claude-code.response-only" {
+            "fail-closed"
+        } else {
+            "preserve-namespaced"
+        };
+        assert_eq!(route["unknown_posture"], expected_unknown_posture);
         assert!(
             route["unavailable_operations"]
                 .as_array()
@@ -86,7 +92,7 @@ fn every_production_harness_route_has_exact_prepared_activity_truth() {
         }
     }
 
-    assert_eq!(profiles.len(), 29);
+    assert_eq!(profiles.len(), 30);
     for expected in [
         ("antigravity.headless", "structured-run"),
         ("antigravity.headless", "interactive-session"),

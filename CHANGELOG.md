@@ -5,6 +5,41 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
+## [0.3.2] - 2026-08-11
+
+### Added
+- add the separately selectable `swallowtail-adapter-command-code` package and
+  exact Command Code `1.15.1` headless route with plan-mode one-shot runs,
+  bounded NDJSON activity and usage, local provider account access, and
+  explicit retained interactive continuity through exact session resume
+- add the separately selectable `swallowtail-idioms` package with portable
+  idiom records, deterministic confidence decay and merge, lint, bounded
+  selection, fail-soft signal recording, a static-rules backend, and registry
+  pull/push merge without transport authority
+- add opt-in route-path idiom delivery through runtime host ports, fixed
+  caller/provider/route/session folding, capability gating, and Codex
+  app-server conformance
+- add the exact Claude Code `2.1.227` `claude-code.response-only` route for one
+  bounded text response through local Max/OAuth with empty tools and MCP, no
+  working resource or retained session, and no structured-output claim
+
+### Changed
+- classify exact Claude Code medium-effort thinking-token estimates as
+  content-free coalescible progress while validating and discarding the empty
+  private-thinking envelope before the single assistant text result
+- admit Codex app-server child activity from the exact root
+  `subAgentActivity(kind=started)` spawn confirmation without weakening
+  fail-closed handling for unobserved child identities
+- advance current source to 30 packages and 36 production routes while
+  preserving the immutable `v0.3.1` 28-package, 34-route baseline; publish
+  [v0.3.2 candidate release notes](docs/releases/0.3.2.md) with upgrade,
+  rollback, package, route, and source-only distribution truth
+
+### Fixed
+- diagnose approved npm shebang launches that require an exact host-side
+  interpreter recipe when ambient `PATH` is intentionally absent
+- keep Effigy doctor health routing cheap instead of invoking broad validation
+
 ## [0.3.1] - 2026-08-08
 
 ### Added

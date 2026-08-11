@@ -19,28 +19,28 @@ New here? Two short reads get you from zero to a working run:
 
 ## Release Posture
 
-`v0.3.1` is the current supported source identity. Releases are distributed as
-annotated Git tags from the
+`v0.3.1` is the current supported source identity. `v0.3.2` is the prepared
+compatible candidate and is not usable as a tag until exact CI acceptance and
+tag creation. Releases are distributed as annotated Git tags from the
 [canonical repository](https://github.com/inflatable-cookie/swallowtail).
 There is no crates.io publication, GitHub Release object, binary bundle, or
 installer in this release line.
 
-The canonical `v0.3.1` tag resolves to the reviewed release commit. Later
-candidate work must use an explicitly approved commit revision and must not be
-presented as part of that immutable release.
+The canonical `v0.3.1` tag resolves to the reviewed release commit. Candidate
+work must use an explicitly approved commit revision and must not be presented
+as part of that immutable release.
 
 The 28 tagged packages share version `0.3.1` and keep 34 production routes.
-Current source may add unreleased packages and routes ahead of the next tag.
-`v0.3.1` is a compatible patch over `v0.3.0` adding Contract 053 debug
-observation and Contract 054 provider-session history pages. It is not an API
-1.0 promise.
+The `v0.3.2` candidate has 30 packages and 36 production routes, adding Command
+Code, idioms, Codex spawn admission, and Claude Code response-only execution.
+It preserves the Rust `1.95.0` floor and is not an API 1.0 promise.
 
 ## Choose A Route First
 
 Swallowtail does not choose a provider, model, credential, endpoint, executable,
 billing arrangement, or fallback.
 
-1. Choose one of the [current production routes](docs/guides/provider-route-matrix.md).
+1. Choose one of the [36 candidate production routes](docs/guides/provider-route-matrix.md).
 2. Read its canonical guide through the
    [integration guide map](docs/guides/integration-guide-map.md).
 3. Add only the adapter and shared packages your application imports.
@@ -60,14 +60,16 @@ a typical application:
 <!-- source-install:start -->
 ```toml
 [dependencies]
-swallowtail-core = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.3.1" }
-swallowtail-runtime = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.3.1" }
-swallowtail-host-local = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.3.1" }
-swallowtail-adapter-codex = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.3.1" }
+swallowtail-core = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.3.2" }
+swallowtail-runtime = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.3.2" }
+swallowtail-host-local = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.3.2" }
+swallowtail-adapter-codex = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.3.2" }
 ```
 <!-- source-install:end -->
 
-Replace the Codex adapter with the route package you selected. Keep the shared
+Do not use the candidate tag until canonical CI and exact tag identity are
+recorded in the release notes. Replace the Codex adapter with the route package
+you selected. Keep the shared
 packages only when your code imports them directly. Cargo resolves their
 internal workspace dependencies from the same tagged source.
 
@@ -83,7 +85,7 @@ There is no umbrella crate. Every package is independently selectable.
 | Purpose | Packages |
 | --- | --- |
 | Portable contracts and execution | `swallowtail-core`, `swallowtail-runtime` |
-| Host integration and conformance | `swallowtail-host-local`, `swallowtail-testkit` |
+| Host integration, idioms, and conformance | `swallowtail-host-local`, `swallowtail-idioms`, `swallowtail-testkit` |
 | Protocols and transport | `swallowtail-protocol-acp`, `swallowtail-protocol-openai-chat`, `swallowtail-transport-acp-remote` |
 | Installed agent harnesses | `swallowtail-adapter-antigravity`, `swallowtail-adapter-claude-agent`, `swallowtail-adapter-codex`, `swallowtail-adapter-command-code`, `swallowtail-adapter-cursor`, `swallowtail-adapter-grok`, `swallowtail-adapter-kimi`, `swallowtail-adapter-muse`, `swallowtail-adapter-oh-my-pi`, `swallowtail-adapter-opencode`, `swallowtail-adapter-pi`, `swallowtail-adapter-qwen` |
 | Hosted APIs and SDKs | `swallowtail-adapter-alibaba-model-studio`, `swallowtail-adapter-anthropic`, `swallowtail-adapter-bedrock`, `swallowtail-adapter-deepseek`, `swallowtail-adapter-gemini`, `swallowtail-adapter-kimi-platform`, `swallowtail-adapter-openai`, `swallowtail-adapter-xai` |
@@ -119,7 +121,7 @@ payloads in the consumer. Start with:
 
 ## Runtime Prerequisites
 
-- Rust `1.95.0` or newer for every `v0.3.1` package
+- Rust `1.95.0` or newer for every `v0.3.2` candidate package
 - Apple Silicon macOS is the verified release target; other targets are
   unverified, not prohibited
 - installed harnesses, attached services, model artifacts, authentication, and
@@ -151,7 +153,7 @@ Before 1.0:
   identity, or weakening lifecycle and authority truth is breaking
 
 See [Contract 036](docs/contracts/036-crate-release-and-compatibility-boundary.md)
-and the [v0.3.1 release notes](docs/releases/0.3.1.md).
+and the [v0.3.2 candidate release notes](docs/releases/0.3.2.md).
 
 ## Development
 

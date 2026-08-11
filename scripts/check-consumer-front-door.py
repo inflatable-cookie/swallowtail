@@ -14,7 +14,7 @@ from provider_route_matrix.route_inventory import (  # noqa: E402
     production_routes as inventory_production_routes,
 )
 REPOSITORY = "https://github.com/inflatable-cookie/swallowtail"
-TAG = "v0.3.1"
+CANDIDATE_TAG = "v0.3.2"
 
 
 def fail(message: str) -> None:
@@ -38,7 +38,7 @@ def section(document: str, start: str, end: str) -> str:
 
 
 readme = read("README.md")
-release = read("docs/releases/0.3.1.md")
+release = read("docs/releases/0.3.2.md")
 changelog = read("CHANGELOG.md")
 
 for required in ("SECURITY.md", "SUPPORT.md", "CONTRIBUTING.md", "LICENSE"):
@@ -67,7 +67,7 @@ if not install_lines or install_lines.pop(0) != "[dependencies]":
     fail("source-install example does not start with a dependencies table")
 dependency_pattern = re.compile(
     rf'^(swallowtail-[a-z0-9-]+) = \{{ git = "{re.escape(REPOSITORY)}", '
-    rf'tag = "{re.escape(TAG)}" \}}$'
+    rf'tag = "{re.escape(CANDIDATE_TAG)}" \}}$'
 )
 dependencies = {}
 for line in install_lines:
@@ -79,7 +79,7 @@ if set(dependencies) != expected_dependencies:
     fail("source-install example does not contain the expected direct package set")
 
 expected_packages = set(
-    read("release-baselines/public-api-0.3.0/packages.txt").splitlines()
+    read("release-baselines/public-api-0.3.2/packages.txt").splitlines()
 )
 release_package_section = section(release, "## Package Set", "## Production Routes")
 documented_packages = set(re.findall(r"`(swallowtail-[a-z0-9-]+)`", release_package_section))
@@ -89,11 +89,9 @@ if documented_packages != expected_packages:
     fail(f"release package inventory drifted; missing={missing}, extra={extra}")
 
 current_routes = set(inventory_production_routes())
-expected_routes = set(read("release-baselines/production-routes-0.2.0.txt").splitlines())
-if not expected_routes <= current_routes or "command-code.headless" not in current_routes:
-    fail(
-        "current route inventory lost tagged routes or the additive Command Code route"
-    )
+expected_routes = set(read("release-baselines/production-routes-0.3.2.txt").splitlines())
+if expected_routes != current_routes:
+    fail("candidate route baseline and current route inventory differ")
 release_route_section = section(release, "## Production Routes", "## Highlights")
 documented_routes = set(re.findall(r"^- `([^`]+)`$", release_route_section, re.MULTILINE))
 if documented_routes != expected_routes:
@@ -103,18 +101,18 @@ if documented_routes != expected_routes:
 
 for relative, document in (
     ("README.md", readme),
-    ("docs/releases/0.3.1.md", release),
+    ("docs/releases/0.3.2.md", release),
 ):
-    if REPOSITORY not in document or TAG not in document:
-        fail(f"{relative} omits the canonical repository or exact tag")
+    if REPOSITORY not in document or CANDIDATE_TAG not in document:
+        fail(f"{relative} omits the canonical repository or exact candidate tag")
 
-if "docs/releases/0.3.1.md" not in changelog:
-    fail("CHANGELOG.md does not link to the current release notes")
+if "docs/releases/0.3.2.md" not in changelog:
+    fail("CHANGELOG.md does not link to the candidate release notes")
 if "security/advisories/new" not in read("SECURITY.md"):
     fail("SECURITY.md does not name the private reporting path")
 
 print(
     "consumer front door passed: "
-    f"{len(expected_packages)} tagged packages, {len(expected_routes)} tagged routes, "
-    f"{len(current_routes)} current routes, exact source tag"
+    f"{len(expected_packages)} candidate packages, {len(expected_routes)} candidate routes, "
+    "exact future source tag"
 )

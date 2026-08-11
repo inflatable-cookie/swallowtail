@@ -12,7 +12,10 @@ mutations.
 
 ## Candidate
 
-None. Earlier immutable releases remain documented at [`v0.3.0`](0.3.0.md),
+- [Swallowtail 0.3.2](0.3.2.md) — prepared compatible candidate adding Command
+  Code, idioms, Codex spawn admission, and Claude Code response-only execution
+
+Earlier immutable releases remain documented at [`v0.3.0`](0.3.0.md),
 [`v0.2.0`](0.2.0.md), [`v0.1.1`](0.1.1.md), and [`v0.1.0`](0.1.0.md). The
 release line includes no crates.io publication, GitHub Release object, binary,
 sidecar, installer, or model artifact.

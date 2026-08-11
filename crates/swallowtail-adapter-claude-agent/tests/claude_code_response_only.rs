@@ -16,7 +16,7 @@ use swallowtail_adapter_claude_agent::{
 };
 use swallowtail_core::{
     Capability, HarnessConfigurationPosture, HarnessIsolation, ModelId, ModelRouteId,
-    ModelRouteRevision, ObservableActivityAvailability,
+    ModelRouteRevision, ObservableActivityAvailability, ReasoningMode,
 };
 use swallowtail_runtime::{
     CleanupOutcome, Deadline, MonotonicInstant, OperationContent, ProcessExit, RequestId,
@@ -87,6 +87,10 @@ fn prepared_route_returns_one_ordinary_text_result_without_authority() {
         Some(r#"{"decision":"accept","score":7}"#)
     );
     assert_eq!(
+        outcome.output().map(OperationContent::as_str),
+        Some(r#"{"decision":"accept","score":7}"#)
+    );
+    assert_eq!(
         events
             .iter()
             .filter(|event| event.kind() == &RuntimeEventKind::OutputAvailable)
@@ -149,6 +153,72 @@ fn prepared_route_returns_one_ordinary_text_result_without_authority() {
 }
 
 #[test]
+fn medium_effort_projects_bounded_progress_and_one_text_response() {
+    let host = swallowtail_core::ExecutionHostId::new("host.thinking").expect("host is valid");
+    let prepared = prepared(host.clone());
+    let run = profile_with_reasoning(&prepared, "thinking", "medium");
+    let (process, state) =
+        FakeProcessService::completed(&response_fixture("response-thinking-progress.jsonl"));
+    let (services, task) = host_services(host, process, Arc::new(PendingTimeService));
+    let mut handle = block_on(run.start_run(services)).expect("response-only run starts");
+    let events = block_on(
+        handle
+            .take_events()
+            .expect("event stream is available")
+            .collect::<Vec<_>>(),
+    )
+    .into_iter()
+    .collect::<Result<Vec<_>, _>>()
+    .expect("events are valid");
+    let outcome = block_on(
+        handle
+            .take_terminal_outcome()
+            .expect("terminal outcome is available"),
+    );
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    let progress = events
+        .iter()
+        .filter(|event| event.kind() == &RuntimeEventKind::ProgressSnapshot)
+        .collect::<Vec<_>>();
+    assert!(!progress.is_empty());
+    assert!(progress.iter().all(|event| event.content().is_none()));
+    assert!(
+        events
+            .windows(2)
+            .all(|pair| pair[0].sequence() < pair[1].sequence())
+    );
+    assert_eq!(
+        events
+            .iter()
+            .filter(|event| matches!(event.kind(), RuntimeEventKind::Activity(_)))
+            .count(),
+        1
+    );
+    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    assert!(state.waited());
+    assert!(task.joined());
+    let request = state.request();
+    assert!(
+        request
+            .arguments
+            .windows(2)
+            .any(|pair| pair == ["--effort", "medium"])
+    );
+    assert!(
+        request
+            .arguments
+            .windows(2)
+            .any(|pair| pair == ["--tools", ""])
+    );
+    assert!(
+        request
+            .arguments
+            .windows(2)
+            .any(|pair| pair == ["--mcp-config", r#"{"mcpServers":{}}"#])
+    );
+}
+
+#[test]
 fn response_stream_fails_closed_on_authority_or_turn_drift() {
     let cases = [
         (r#""tools":[]"#, r#""tools":["Read"]"#),
@@ -188,6 +258,55 @@ fn response_stream_fails_closed_on_authority_or_turn_drift() {
     assert_malformed(base.replacen(r#""text":"{\"decision\""#, r#""missing":"{\"decision\""#, 1));
     assert_malformed("{".to_owned());
     assert_malformed(format!("{{\"padding\":\"{}\"}}\n", "x".repeat(1024 * 1024)));
+}
+
+#[test]
+fn thinking_progress_fails_closed_on_session_sequence_numeric_or_shape_drift() {
+    let base = response_fixture("response-thinking-progress.jsonl");
+    for mutated in [
+        base.replacen(
+            &format!(
+                r#""estimated_tokens_delta":50,"session_id":"{}""#,
+                "fixture-response-session"
+            ),
+            r#""estimated_tokens_delta":50,"session_id":"wrong""#,
+            1,
+        ),
+        base.replacen(
+            r#""estimated_tokens_delta":150"#,
+            r#""estimated_tokens_delta":149"#,
+            1,
+        ),
+        base.replacen(r#""estimated_tokens":50"#, r#""estimated_tokens":0"#, 1),
+        base.replacen(
+            r#""estimated_tokens":50"#,
+            r#""estimated_tokens":1000001"#,
+            1,
+        ),
+        base.replacen(r#""estimated_tokens":50"#, r#""estimated_tokens":50.5"#, 1),
+        base.replacen(r#","estimated_tokens_delta":50"#, "", 1),
+        base.replacen(
+            r#""subtype":"thinking_tokens""#,
+            r#""subtype":"thinking_else""#,
+            1,
+        ),
+        base.replacen(r#""signature":"fixture-signature""#, r#""signature":"""#, 1),
+        base.replacen(r#""thinking":"""#, r#""thinking":"private""#, 1),
+        base.replacen(r#""id":"msg_fixture_thinking""#, r#""id":"msg_other""#, 1),
+    ] {
+        assert_malformed(mutated);
+    }
+
+    let lines = base.lines().collect::<Vec<_>>();
+    assert_malformed(format!("{}\n{}\n", lines[1], lines[0]));
+    assert_malformed(format!(
+        "{}\n{}\n{}\n{}\n{}\n{}\n",
+        lines[0], lines[1], lines[2], lines[4], lines[1], lines[5]
+    ));
+    assert_malformed(format!(
+        "{}\n{}\n{}\n{}\n{}\n{}\n{}\n",
+        lines[0], lines[1], lines[2], lines[3], lines[3], lines[4], lines[5]
+    ));
 }
 
 #[test]
@@ -307,6 +426,29 @@ fn profile(
             OperationContent::new("return JSON-shaped text").expect("content is valid"),
             Deadline::at(MonotonicInstant::from_ticks(1_000)),
         ))
+        .expect("response-only run prepares")
+}
+
+fn profile_with_reasoning(
+    prepared: &ClaudeCodeResponsePreparedIntegration,
+    id: &str,
+    mode: &str,
+) -> ClaudeCodeResponsePreparedRun {
+    prepared
+        .prepare_run(
+            ClaudeCodeResponseProfileInput::new(
+                RequestId::new(format!("claude-code-response-{id}")).expect("request is valid"),
+                ClaudeCodeResponseModelSelection::new(
+                    ModelRouteId::new(format!("claude-code-response.{id}"))
+                        .expect("route is valid"),
+                    ModelRouteRevision::new("1").expect("route revision is valid"),
+                    ModelId::new("claude-sonnet-5").expect("model is valid"),
+                ),
+                OperationContent::new("return JSON-shaped text").expect("content is valid"),
+                Deadline::at(MonotonicInstant::from_ticks(1_000)),
+            )
+            .with_reasoning_mode(ReasoningMode::new(mode).expect("reasoning mode is valid")),
+        )
         .expect("response-only run prepares")
 }
 

@@ -13,12 +13,10 @@ shape.
 
 ## Next Task
 
-Execute card 206: adopt the exact g03.065
-`claude-code.response-only` source identity in Figmatic. Pass one prompt and
-exact model, drain one ordinary text result, preserve local Max/OAuth process
-state, and keep extraction, schema-v4 validation, compilation, gates, and
-operator acceptance downstream. Do not add retry, continuation, fallback, or
-a Swallowtail release without separate authorization.
+Execute card 209: run final focused, affected-package, docs, route, and live
+acceptance for exact Claude Code `2.1.227` response-only thinking progress.
+Record the exact code commit for Figmatic relink. Keep
+`claude-code.headless` unchanged and do not create a release.
 
 ## Index
 

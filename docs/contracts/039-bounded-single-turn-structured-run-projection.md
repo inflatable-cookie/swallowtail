@@ -140,6 +140,16 @@ assistant response, more than one reported turn, or missing terminal text.
 The operation exposes no provider session binding even when the harness uses
 one private non-persistent operation id internally.
 
+Exact qualified harness progress does not create another response. A
+provider-native cumulative token estimate may project as a content-free,
+coalescible `ProgressSnapshot` only when its event family, session identity,
+position, integer fields, bounds, and cumulative delta are all validated.
+It is neither token usage nor readable reasoning. A provider-private thinking
+envelope may be validated and discarded when required to reach the single
+text response; thought text must never be accepted or exposed as reasoning
+activity, output, observation, or a second response. Unknown system or
+assistant shapes still fail closed.
+
 The first mapping is the distinct `claude-code.response-only` route at exact
 Claude Code `2.1.227`. It uses print mode, text stdin, stream JSON, empty tools,
 safe mode, disabled slash commands and Chrome, strict empty MCP configuration,
@@ -150,6 +160,17 @@ process or its local subscription authentication. It requires only Task,
 Process, and Time host services and advertises no working-resource, callback,
 tool, session, continuation, retry, fallback, or structured-output capability.
 The existing `claude-code.headless` read-only Plan profile remains unchanged.
+
+For exact Claude Code `2.1.227`, `system/thinking_tokens` is qualified only
+after init and before assistant text. `estimated_tokens` and
+`estimated_tokens_delta` are positive integers no greater than 1,000,000;
+the total increases exactly by the delta from zero. Each valid frame emits one
+content-free `ProgressSnapshot`. An exact assistant message containing one
+`thinking` block with empty thinking text and a non-empty opaque signature may
+follow those estimates and is discarded after session, model, message, role,
+stop-reason, and ordering validation. At most
+one such private-thinking record may precede the one text assistant record.
+No thought text or estimate is promoted to portable reasoning or usage.
 
 Provider-managed recovery and active-turn stream reattachment remain
 prohibited unless the exact route independently satisfies Contract 042.

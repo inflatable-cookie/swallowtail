@@ -12,6 +12,13 @@ New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
 Neither route is an implicit fallback for the other.
 
+At exact Claude Code `2.1.227`, medium-effort response-only runs may emit
+validated cumulative thinking-token estimates. Swallowtail projects them only
+as content-free coalescible progress snapshots. The related empty private
+thinking block and opaque signature are validated and discarded; neither is
+readable reasoning, usage, or output. Unknown system and assistant shapes
+still fail closed.
+
 Both live in `swallowtail-adapter-claude-agent`:
 
 | Route | Driver ID and transport | Choose it for | Reject it when |

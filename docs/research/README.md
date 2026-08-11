@@ -128,6 +128,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [120 Codex Collab Spawn Child-Thread Admission Evidence](./120-codex-collab-spawn-admission-evidence.md)
 - [121 Claude Code Response-Only Structured Route](./121-claude-code-response-only-structured-route.md)
 - [122 Claude Code Tool-Free Text Route](./122-claude-code-tool-free-text-route.md)
+- [123 Claude Code Response-Only Thinking Progress](./123-claude-code-response-only-thinking-progress.md)
 
 ### Diagnostics And Debug Observation
 

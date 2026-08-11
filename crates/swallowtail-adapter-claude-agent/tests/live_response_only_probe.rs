@@ -13,14 +13,14 @@ use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessStatus, ConfiguredInstanceId, CredentialMechanism,
     CredentialState, EndpointAudience, EndpointAuthorization, EntitlementMetering,
     EntitlementState, ExecutionHostId, InstanceRevision, InterfaceVersionAxis, ModelId,
-    ModelRouteId, ModelRouteRevision, RuntimeReadiness, SupportAuthority,
+    ModelRouteId, ModelRouteRevision, ReasoningMode, RuntimeReadiness, SupportAuthority,
 };
 use swallowtail_host_local::{
     LocalExecutableLaunch, LocalHostServices, LocalProcessHost, LocalProcessLimits,
 };
 use swallowtail_runtime::{
     CleanupOutcome, DiscoveryCancellation, EnvironmentRef, ExecutableRef, OperationContent,
-    PreparedAccessEvidence, RequestId, ScopeId, TerminalStatus,
+    PreparedAccessEvidence, RequestId, RuntimeEventKind, ScopeId, TerminalStatus,
 };
 
 #[test]
@@ -109,6 +109,63 @@ fn configured_claude_code_returns_one_tool_free_text_response() {
     );
     assert_eq!(outcome.cleanup(), &CleanupOutcome::Clean);
     assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+
+    let medium = prepared
+        .prepare_run(
+            ClaudeCodeResponseProfileInput::new(
+                RequestId::new("live-claude-code-response-medium").expect("request id"),
+                ClaudeCodeResponseModelSelection::new(
+                    ModelRouteId::new("live.claude-code.response-only.medium")
+                        .expect("route id"),
+                    ModelRouteRevision::new(CLAUDE_CODE_RESPONSE_ONLY_VERSION)
+                        .expect("route revision"),
+                    ModelId::new("claude-sonnet-5").expect("model id"),
+                ),
+                OperationContent::new(
+                    "Solve carefully: find the lexicographically smallest permutation of A B C D E F such that C immediately follows A, E precedes B, F precedes B, B precedes D, and F is neither first nor last. Return only the permutation.",
+                )
+                .expect("prompt"),
+                local.deadline_after(Duration::from_secs(90)),
+            )
+            .with_reasoning_mode(ReasoningMode::new("medium").expect("reasoning mode")),
+        )
+        .expect("medium response-only run prepares");
+    let mut medium_handle = block_on(medium.start_run(local.services().clone()))
+        .expect("authenticated medium response-only run starts");
+    let medium_events = block_on(
+        medium_handle
+            .take_events()
+            .expect("medium event stream")
+            .collect::<Vec<_>>(),
+    )
+    .into_iter()
+    .collect::<Result<Vec<_>, _>>()
+    .expect("medium response events remain valid");
+    let medium_outcome = block_on(
+        medium_handle
+            .take_terminal_outcome()
+            .expect("medium terminal outcome"),
+    );
+    assert_eq!(medium_outcome.status(), &TerminalStatus::Completed);
+    assert!(medium_outcome.output().is_some());
+    assert!(medium_events.iter().any(|event| {
+        event.kind() == &RuntimeEventKind::ProgressSnapshot && event.content().is_none()
+    }));
+    assert_eq!(
+        medium_events
+            .iter()
+            .filter(|event| matches!(event.kind(), RuntimeEventKind::Activity(_)))
+            .count(),
+        1
+    );
+    assert_eq!(
+        medium_events
+            .iter()
+            .filter(|event| event.kind() == &RuntimeEventKind::OutputAvailable)
+            .count(),
+        1
+    );
+    assert_eq!(block_on(medium_handle.close()), CleanupOutcome::Clean);
 
     let cancellable = prepared
         .prepare_run(ClaudeCodeResponseProfileInput::new(

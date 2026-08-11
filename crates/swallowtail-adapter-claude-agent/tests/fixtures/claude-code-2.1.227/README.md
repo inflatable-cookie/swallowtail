@@ -9,3 +9,10 @@ The route parser requires an exact init envelope with empty `tools` and
 `mcp_servers`, one text-only assistant message with the observed null stop
 reason, and one matching success
 result with `num_turns: 1` and no structured output.
+
+`response-thinking-progress.jsonl` records the separately observed
+medium-effort sequence: exact cumulative integer progress, one empty private
+thinking block carrying an opaque signature, one text record with the same
+message id, and the matching terminal result. The synthetic signature and
+session contain no provider data. The private block is validation evidence,
+not disclosed reasoning.

@@ -14,6 +14,7 @@ use swallowtail_runtime::{
 const MAXIMUM_LINE_BYTES: usize = 1024 * 1024;
 const MAXIMUM_EVENT_COUNT: usize = 4096;
 const MAXIMUM_OUTPUT_BYTES: usize = 64 * 1024;
+const MAXIMUM_ESTIMATED_THINKING_TOKENS: u64 = 1_000_000;
 
 pub(crate) struct ClaudeCodeResponseEventParser {
     model: ModelId,
@@ -25,6 +26,8 @@ pub(crate) struct ClaudeCodeResponseEventParser {
     final_output: Option<OperationContent>,
     provider_failure: Option<SafeDiagnostic>,
     init_seen: bool,
+    estimated_thinking_tokens: u64,
+    private_thinking_message_id: Option<String>,
     terminal_seen: bool,
     operation_id: ActivityOperationId,
 }
@@ -41,6 +44,8 @@ impl ClaudeCodeResponseEventParser {
             final_output: None,
             provider_failure: None,
             init_seen: false,
+            estimated_thinking_tokens: 0,
+            private_thinking_message_id: None,
             terminal_seen: false,
             operation_id,
         }
@@ -121,6 +126,11 @@ impl ClaudeCodeResponseEventParser {
             Some("system") if payload.get("subtype").and_then(Value::as_str) == Some("init") => {
                 self.parse_init(&payload)
             }
+            Some("system")
+                if payload.get("subtype").and_then(Value::as_str) == Some("thinking_tokens") =>
+            {
+                self.parse_thinking_tokens(&payload)
+            }
             Some("assistant") => self.parse_assistant(&payload),
             Some("result") => self.parse_result(&payload),
             Some("rate_limit_event") => {
@@ -129,6 +139,33 @@ impl ClaudeCodeResponseEventParser {
             }
             _ => Err(malformed_stream()),
         }
+    }
+
+    fn parse_thinking_tokens(
+        &mut self,
+        payload: &Value,
+    ) -> Result<Vec<RuntimeEvent>, RuntimeFailure> {
+        self.require_session(payload)?;
+        let estimated = payload
+            .get("estimated_tokens")
+            .and_then(Value::as_u64)
+            .ok_or_else(malformed_stream)?;
+        let delta = payload
+            .get("estimated_tokens_delta")
+            .and_then(Value::as_u64)
+            .ok_or_else(malformed_stream)?;
+        if self.assistant_text.is_some()
+            || self.private_thinking_message_id.is_some()
+            || estimated == 0
+            || delta == 0
+            || estimated > MAXIMUM_ESTIMATED_THINKING_TOKENS
+            || delta > MAXIMUM_ESTIMATED_THINKING_TOKENS
+            || self.estimated_thinking_tokens.checked_add(delta) != Some(estimated)
+        {
+            return Err(malformed_stream());
+        }
+        self.estimated_thinking_tokens = estimated;
+        Ok(vec![self.event(RuntimeEventKind::ProgressSnapshot)])
     }
 
     fn parse_init(&mut self, payload: &Value) -> Result<Vec<RuntimeEvent>, RuntimeFailure> {
@@ -158,17 +195,20 @@ impl ClaudeCodeResponseEventParser {
 
     fn parse_assistant(&mut self, payload: &Value) -> Result<Vec<RuntimeEvent>, RuntimeFailure> {
         self.require_session(payload)?;
-        if self.assistant_text.is_some()
-            || payload.get("error").is_some_and(|value| !value.is_null())
-        {
+        if payload.get("error").is_some_and(|value| !value.is_null()) {
             return Err(malformed_stream());
         }
         let message = payload.get("message").ok_or_else(malformed_stream)?;
-        if message.get("role").and_then(Value::as_str) != Some("assistant")
+        if message.get("type").and_then(Value::as_str) != Some("message")
+            || message.get("role").and_then(Value::as_str) != Some("assistant")
             || message.get("model").and_then(Value::as_str) != Some(self.model.as_str())
             || message
                 .get("stop_reason")
                 .is_some_and(|value| !value.is_null())
+            || payload
+                .get("parent_tool_use_id")
+                .is_some_and(|value| !value.is_null())
+            || non_empty_string(payload, "uuid").is_none()
         {
             return Err(malformed_stream());
         }
@@ -176,7 +216,11 @@ impl ClaudeCodeResponseEventParser {
             .get("content")
             .and_then(Value::as_array)
             .ok_or_else(malformed_stream)?;
+        if blocks.len() == 1 && blocks[0].get("type").and_then(Value::as_str) == Some("thinking") {
+            return self.parse_private_thinking(message, &blocks[0]);
+        }
         if blocks.is_empty()
+            || self.assistant_text.is_some()
             || blocks
                 .iter()
                 .any(|block| block.get("type").and_then(Value::as_str) != Some("text"))
@@ -201,9 +245,34 @@ impl ClaudeCodeResponseEventParser {
             ));
         }
         let activity = self.assistant_activity(message, &text)?;
+        if self
+            .private_thinking_message_id
+            .as_deref()
+            .is_some_and(|id| non_empty_string(message, "id") != Some(id))
+        {
+            return Err(malformed_stream());
+        }
         self.assistant_text = Some(text);
         events.push(self.event(RuntimeEventKind::Activity(activity)));
         Ok(events)
+    }
+
+    fn parse_private_thinking(
+        &mut self,
+        message: &Value,
+        block: &Value,
+    ) -> Result<Vec<RuntimeEvent>, RuntimeFailure> {
+        let message_id = non_empty_string(message, "id").ok_or_else(malformed_stream)?;
+        if self.estimated_thinking_tokens == 0
+            || self.private_thinking_message_id.is_some()
+            || self.assistant_text.is_some()
+            || block.get("thinking").and_then(Value::as_str) != Some("")
+            || non_empty_string(block, "signature").is_none()
+        {
+            return Err(malformed_stream());
+        }
+        self.private_thinking_message_id = Some(message_id.to_owned());
+        Ok(Vec::new())
     }
 
     fn parse_result(&mut self, payload: &Value) -> Result<Vec<RuntimeEvent>, RuntimeFailure> {

@@ -2,9 +2,10 @@
 
 ## Active
 
+- [209-claude-code-response-thinking-acceptance.md](./209-claude-code-response-thinking-acceptance.md)
+
 ## Ready
 
-- [206-figmatic-claude-code-response-only-adoption.md](./206-figmatic-claude-code-response-only-adoption.md)
 
 ## Planned
 
@@ -19,6 +20,8 @@
 
 ## Completed
 
+- [208-claude-code-response-thinking-corpus.md](./208-claude-code-response-thinking-corpus.md)
+- [207-claude-code-response-thinking-contract.md](./207-claude-code-response-thinking-contract.md)
 - [205-claude-code-tool-free-text-acceptance.md](./205-claude-code-tool-free-text-acceptance.md)
 - [204-claude-code-tool-free-text-prepared-api.md](./204-claude-code-tool-free-text-prepared-api.md)
 - [203-claude-code-tool-free-text-driver.md](./203-claude-code-tool-free-text-driver.md)

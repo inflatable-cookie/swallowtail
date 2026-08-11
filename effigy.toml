@@ -160,7 +160,9 @@ allowlist_file = "docs/policy/vision-next-task-verbs.txt"
   { task = "test:rust" },
 ]
 
+# Cheap orientation for `effigy doctor`. Full board is `effigy qa`.
+# Never alias health to qa (or qa:northstar).
 "health" = [
-  { task = "qa:northstar" },
-  { task = "check:rust" },
+  { task = "qa:docs:agent-defaults" },
+  { task = "format:check" },
 ]

@@ -12,7 +12,7 @@ or acceptance authority.
 
 ## Source Identity
 
-- Swallowtail commit: `d8f9aae41b3604283676dc52c85b307723060f80`
+- Swallowtail commit: `71db67be4f8929199afe3b2d9b3db8d432f79169`
 - package: `swallowtail-adapter-claude-agent`
 - route: `claude-code.response-only`
 - executable claim: exact Claude Code `2.1.227`
@@ -26,6 +26,8 @@ or acceptance authority.
 - `ClaudeCodeResponseProfileInput::new(request_id, model, prompt, deadline)`
 - `ClaudeCodeResponsePreparedRun::start_run`
 - terminal `OperationContent` is untrusted text
+- medium effort may emit content-free `ProgressSnapshot` events before the
+  one assistant text result; consumers need not interpret them
 
 Use the compile-tested
 [`prepared_claude_code_response_only` example](../../../../crates/swallowtail-adapter-claude-agent/examples/prepared_claude_code_response_only.rs).
@@ -40,6 +42,8 @@ Use the compile-tested
 - Figmatic performs JSON extraction, schema-v4 deserialization, identity/value
   validation, deterministic compilation, gates, and operator acceptance
 - no retry, continuation, fallback, or alternate route is selected
+- replay Figmatic unit `fc335758-3c1a-4bda-bb71-a8c6119fe876` after relinking
+  the exact commit
 
 ## Out Of Scope
 

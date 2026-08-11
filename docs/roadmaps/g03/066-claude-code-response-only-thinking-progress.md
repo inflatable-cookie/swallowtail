@@ -1,6 +1,6 @@
 # 066 Claude Code Response-Only Thinking Progress
 
-Status: active
+Status: completed
 Owner: Tom
 Created: 2026-08-11
 Depends on: Research 123; Contract 039 amendment; g03.065
@@ -16,7 +16,7 @@ first frame before the otherwise qualified terminal text.
 
 - [x] card 207: promote exact live evidence and Contract 039 authority
 - [x] card 208: add the exact corpus, parser validation, and deterministic run
-- [ ] card 209: run focused, affected-package, docs, and live acceptance;
+- [x] card 209: run focused, affected-package, docs, and live acceptance;
       record the Figmatic relink commit
 
 ## Boundaries

@@ -66,14 +66,15 @@ visible as unverified newer unless exact evidence requires rejection.
 | Add the route-path idioms opt-in: host ports, bound session option, fixed fold rule, capability gate, Codex proof, and a Nucleus adoption delta. | completed | Contract 056; Research 119; Spec 007 | `g03.063` |
 | Qualify Claude Code for a tool-free, schema-constrained, response-only consumer boundary. | completed negatively | Contracts 039-040; Research 121 | `g03.064` |
 | Add exact Claude Code tool-free text response through local subscription access. | completed | Contract 039; Research 122 | `g03.065` |
-| Classify exact Claude Code response-only thinking progress without disclosing thought content. | active | Contracts 039, 044; Research 123 | `g03.066` |
+| Classify exact Claude Code response-only thinking progress without disclosing thought content. | completed | Contracts 039, 044; Research 123 | `g03.066` |
 
 ## Current Checkpoint
 
-- g03.066 is active after Figmatic consumer unit
-  `fc335758-3c1a-4bda-bb71-a8c6119fe876` exposed exact `2.1.227`
-  thinking-progress frames. Contract 039 now authorizes bounded content-free
-  progress plus validation and discard of the related private thinking record.
+- g03.066 is complete at code commit `71db67be`: exact `2.1.227`
+  thinking-token estimates become bounded content-free progress; the empty
+  private thinking envelope is validated and discarded before one text result.
+  Focused, affected-package, guide, route, and live medium/cancellation gates
+  pass. Card 206 now points Figmatic at the exact relink and replay task.
 - g03.065 is complete: exact `2.1.227` `claude-code.response-only` returns one
   bounded tool-free text result through local Max/OAuth, with no working
   resource or structured-output claim. Deterministic, package, guide, route,
@@ -672,7 +673,7 @@ visible as unverified newer unless exact evidence requires rejection.
 - [063 Route-Path Idioms Opt-In](./063-route-path-idioms-opt-in.md) — completed
 - [064 Claude Code Response-Only Structured Route Disposition](./064-claude-code-response-only-disposition.md) — completed negatively
 - [065 Claude Code Tool-Free Text Route](./065-claude-code-tool-free-text-route.md) — completed
-- [066 Claude Code Response-Only Thinking Progress](./066-claude-code-response-only-thinking-progress.md) — active
+- [066 Claude Code Response-Only Thinking Progress](./066-claude-code-response-only-thinking-progress.md) — completed
 
 ## Checkpoint
 

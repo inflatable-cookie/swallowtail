@@ -13,10 +13,11 @@ shape.
 
 ## Next Task
 
-Execute card 209: run final focused, affected-package, docs, route, and live
-acceptance for exact Claude Code `2.1.227` response-only thinking progress.
-Record the exact code commit for Figmatic relink. Keep
-`claude-code.headless` unchanged and do not create a release.
+Execute card 206: relink Figmatic to exact Swallowtail code commit
+`71db67be4f8929199afe3b2d9b3db8d432f79169`, then replay packaged unit
+`fc335758-3c1a-4bda-bb71-a8c6119fe876`. Keep Figmatic's parsing, validation,
+compilation, gates, and acceptance downstream. Do not create a Swallowtail
+release without operator authorization.
 
 ## Index
 

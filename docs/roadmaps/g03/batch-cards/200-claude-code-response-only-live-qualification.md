@@ -39,4 +39,3 @@ boundary before any contract or runtime implementation.
 - [x] unsatisfiable schema: four tool attempts; six turns; success with null
 - [x] malformed schema: exit `1`; no artifact
 - [x] termination: exit `143`; no remaining child; no artifact
-

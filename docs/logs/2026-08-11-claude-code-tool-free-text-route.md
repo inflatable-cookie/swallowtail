@@ -70,3 +70,6 @@ warning.
 
 No version bump, tag, release, registry publication, or Figmatic edit was
 performed.
+
+Figmatic should adopt implementation commit
+`d8f9aae41b3604283676dc52c85b307723060f80` through the API named in card 206.

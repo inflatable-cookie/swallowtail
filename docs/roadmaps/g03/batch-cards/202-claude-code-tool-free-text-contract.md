@@ -33,4 +33,3 @@ before Rust behavior exists.
 - [x] live stream: one init, one assistant text, one result, `num_turns=1`
 - [x] empty tools and MCP, zero user/tool events, no artifacts
 - [x] `git diff --check`
-

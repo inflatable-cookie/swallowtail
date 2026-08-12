@@ -1,4 +1,4 @@
-# Claude Code 2.1.227 response-only fixtures
+# Claude Code 2.1.228 response-only fixtures
 
 `response-complete.jsonl` records the qualified stream shape for one
 tool-free assistant text response. The fixture is synthetic and contains no

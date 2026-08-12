@@ -1,8 +1,12 @@
 # 206 Figmatic Claude Code Response-Only Adoption
 
-Status: ready
+Status: superseded by card 215
 Owner: Tom
-Updated: 2026-08-11
+Updated: 2026-08-12
+
+Exact Claude Code `2.1.228` replaced this `v0.3.2` / `2.1.227` adoption
+target before Figmatic completed the card. Card 215 carries the current exact
+source identity and packaged `g04.005` smoke.
 
 ## Goal
 

@@ -121,7 +121,7 @@
       "id": "claude-code.response-only",
       "driver": "swallowtail.claude-code.response-only",
       "transport": "strict-lf-jsonl-stdio",
-      "qualified": "2.1.227",
+      "qualified": "2.1.228",
       "prepared_profiles": [
         {
           "operation": "structured-run",

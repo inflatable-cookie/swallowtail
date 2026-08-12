@@ -10,7 +10,7 @@ use crate::failure::failure;
 /// CLI-version axis for tool-free Claude Code response-only runs.
 pub const CLAUDE_CODE_RESPONSE_ONLY_AXIS: &str = "claude-code.response-only-stream-json";
 /// Exact Claude Code version qualified for response-only runs.
-pub const CLAUDE_CODE_RESPONSE_ONLY_VERSION: &str = "2.1.227";
+pub const CLAUDE_CODE_RESPONSE_ONLY_VERSION: &str = "2.1.228";
 
 const RESPONSE_ONLY_BEHAVIOR: &str = "claude-code.response-only.stream-json.v1";
 const MAX_VERSION_BYTES: usize = 64;
@@ -96,13 +96,14 @@ mod tests {
     use super::*;
 
     #[test]
-    fn only_exact_2_1_227_is_qualified() {
-        assert!(claude_code_response_only_binding("2.1.227").is_some());
-        for rejected in ["", "2.1.220", "2.1.228", "v2.1.227", "2.1.227\n"] {
+    fn only_exact_2_1_228_is_qualified() {
+        assert!(claude_code_response_only_binding("2.1.228").is_some());
+        for rejected in ["", "2.1.220", "2.1.227", "2.1.229", "v2.1.228", "2.1.228\n"] {
             assert!(claude_code_response_only_binding(rejected).is_none());
         }
         let claim = claude_code_response_only_claim();
-        assert!(claim.supports(&InterfaceVersion::new("2.1.227").unwrap()));
-        assert!(!claim.permits(&InterfaceVersion::new("2.1.228").unwrap()));
+        assert!(claim.supports(&InterfaceVersion::new("2.1.228").unwrap()));
+        assert!(!claim.permits(&InterfaceVersion::new("2.1.227").unwrap()));
+        assert!(!claim.permits(&InterfaceVersion::new("2.1.229").unwrap()));
     }
 }

@@ -1,4 +1,4 @@
-{"type":"system","subtype":"init","session_id":"fixture-response-session","model":"claude-sonnet-5","permissionMode":"default","claude_code_version":"2.1.227","tools":[],"mcp_servers":[]}
+{"type":"system","subtype":"init","session_id":"fixture-response-session","model":"claude-sonnet-5","permissionMode":"default","claude_code_version":"2.1.228","tools":[],"mcp_servers":[]}
 {"type":"system","subtype":"thinking_tokens","estimated_tokens":50,"estimated_tokens_delta":50,"session_id":"fixture-response-session"}
 {"type":"system","subtype":"thinking_tokens","estimated_tokens":200,"estimated_tokens_delta":150,"session_id":"fixture-response-session"}
 {"type":"assistant","message":{"id":"msg_fixture_thinking","type":"message","role":"assistant","model":"claude-sonnet-5","content":[{"type":"thinking","thinking":"","signature":"fixture-signature"}],"stop_reason":null,"usage":{"input_tokens":12,"output_tokens":20}},"parent_tool_use_id":null,"uuid":"thinking-fixture","session_id":"fixture-response-session"}

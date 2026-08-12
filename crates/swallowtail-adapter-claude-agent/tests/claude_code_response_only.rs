@@ -229,8 +229,8 @@ fn response_stream_fails_closed_on_authority_or_turn_drift() {
         (r#""num_turns":1"#, r#""num_turns":2"#),
         (r#""structured_output":null"#, r#""structured_output":{}"#),
         (
-            r#""claude_code_version":"2.1.227""#,
             r#""claude_code_version":"2.1.228""#,
+            r#""claude_code_version":"2.1.227""#,
         ),
     ];
     for (from, to) in cases {
@@ -397,7 +397,7 @@ fn deadline_stops_and_reaps_the_provider_process() {
 }
 
 fn prepared(host: swallowtail_core::ExecutionHostId) -> ClaudeCodeResponsePreparedIntegration {
-    let (process, state) = FakeProcessService::completed("2.1.227 (Claude Code)\n");
+    let (process, state) = FakeProcessService::completed("2.1.228 (Claude Code)\n");
     let (services, task) = host_services(host.clone(), process, Arc::new(PendingTimeService));
     let prepared = block_on(prepare_claude_code_response_only(
         response_preparation_input(host),

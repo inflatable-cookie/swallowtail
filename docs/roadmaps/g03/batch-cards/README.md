@@ -4,6 +4,10 @@
 
 ## Ready
 
+- [215-figmatic-claude-code-2-1-228-adoption.md](./215-figmatic-claude-code-2-1-228-adoption.md)
+
+## Superseded
+
 - [206-figmatic-claude-code-response-only-adoption.md](./206-figmatic-claude-code-response-only-adoption.md)
 
 
@@ -20,6 +24,7 @@
 
 ## Completed
 
+- [214-claude-code-response-only-2-1-228-qualification.md](./214-claude-code-response-only-2-1-228-qualification.md)
 - [213-v0-3-2-annotated-source-tag.md](./213-v0-3-2-annotated-source-tag.md)
 - [212-v0-3-2-exact-ci-candidate.md](./212-v0-3-2-exact-ci-candidate.md)
 - [211-v0-3-2-local-source-candidate.md](./211-v0-3-2-local-source-candidate.md)

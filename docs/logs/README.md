@@ -21,6 +21,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-12 Claude Code Response-Only 2.1.228 Qualification](./2026-08-12-claude-code-response-only-2-1-228.md)
 - [2026-08-11 v0.3.2 Source Release](./2026-08-11-v0-3-2-source-release.md)
 - [2026-08-11 v0.3.2 Exact CI Candidate](./2026-08-11-v0-3-2-exact-ci-candidate.md)
 - [2026-08-11 v0.3.2 Local Source Candidate](./2026-08-11-v0-3-2-local-source-candidate.md)

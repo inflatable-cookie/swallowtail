@@ -5,6 +5,12 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
+### Changed
+- requalify `claude-code.response-only` for exact Claude Code `2.1.228` only,
+  preserving the prepared API, ordinary text projection, empty tool and MCP
+  boundary, discarded private-thinking envelopes, and Max/OAuth access without
+  an API key
+
 ## [0.3.2] - 2026-08-11
 
 ### Added

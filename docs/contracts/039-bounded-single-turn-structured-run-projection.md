@@ -151,7 +151,7 @@ activity, output, observation, or a second response. Unknown system or
 assistant shapes still fail closed.
 
 The first mapping is the distinct `claude-code.response-only` route at exact
-Claude Code `2.1.227`. It uses print mode, text stdin, stream JSON, empty tools,
+Claude Code `2.1.228`. It uses print mode, text stdin, stream JSON, empty tools,
 safe mode, disabled slash commands and Chrome, strict empty MCP configuration,
 disabled prompt suggestions, and no session persistence. It binds
 provider-suppressed configuration and ambient-host isolation: the tool posture
@@ -161,7 +161,12 @@ Process, and Time host services and advertises no working-resource, callback,
 tool, session, continuation, retry, fallback, or structured-output capability.
 The existing `claude-code.headless` read-only Plan profile remains unchanged.
 
-For exact Claude Code `2.1.227`, `system/thinking_tokens` is qualified only
+The maintained response-only compatibility segment contains only exact
+`2.1.228`. Exact `2.1.227`, exact `2.1.229`, and every other version remain
+incompatible with this route; no range or unverified-newer execution is
+implied.
+
+For exact Claude Code `2.1.228`, `system/thinking_tokens` is qualified only
 after init and before assistant text. `estimated_tokens` and
 `estimated_tokens_delta` are positive integers no greater than 1,000,000;
 the total increases exactly by the delta from zero. Each valid frame emits one

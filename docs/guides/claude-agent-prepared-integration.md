@@ -12,7 +12,7 @@ New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
 Neither route is an implicit fallback for the other.
 
-At exact Claude Code `2.1.227`, medium-effort response-only runs may emit
+At exact Claude Code `2.1.228`, medium-effort response-only runs may emit
 validated cumulative thinking-token estimates. Swallowtail projects them only
 as content-free coalescible progress snapshots. The related empty private
 thinking block and opaque signature are validated and discarded; neither is
@@ -193,7 +193,7 @@ See the compile-tested
 ## Claude Code Response Only
 
 `prepare_claude_code_response_only` qualifies an exact host-approved Claude
-Code `2.1.227` executable and provider-supported local subscription access.
+Code `2.1.228` executable and provider-supported local subscription access.
 It is a distinct route. It does not weaken or replace
 `claude-code.headless`.
 
@@ -222,7 +222,7 @@ claude -p
   --strict-mcp-config
 ```
 
-Exact `2.1.227` evidence requires an init event with empty `tools` and
+Exact `2.1.228` evidence requires an init event with empty `tools` and
 `mcp_servers`, one text-only assistant message, and one matching success
 result with `num_turns: 1` and null or absent `structured_output`. Any tool,
 user, extra assistant, second result, version/model drift, non-text block, or

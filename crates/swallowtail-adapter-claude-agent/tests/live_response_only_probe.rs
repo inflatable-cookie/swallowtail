@@ -24,7 +24,7 @@ use swallowtail_runtime::{
 };
 
 #[test]
-#[ignore = "requires SWALLOWTAIL_LIVE_CLAUDE_CODE_RESPONSE_ONLY=1, Claude Code 2.1.227, and local Max/OAuth state"]
+#[ignore = "requires SWALLOWTAIL_LIVE_CLAUDE_CODE_RESPONSE_ONLY=1, Claude Code 2.1.228, and local Max/OAuth state"]
 fn configured_claude_code_returns_one_tool_free_text_response() {
     assert_eq!(
         std::env::var("SWALLOWTAIL_LIVE_CLAUDE_CODE_RESPONSE_ONLY").as_deref(),

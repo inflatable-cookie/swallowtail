@@ -13,10 +13,10 @@ shape.
 
 ## Next Task
 
-Execute card 206 in Figmatic: replace the linked Swallowtail revision with
-immutable tag `v0.3.2`, replay unit `fc335758-3c1a-4bda-bb71-a8c6119fe876`,
-and record downstream parsing and responsive-gate evidence. Do not change
-Swallowtail provider, authority, or structured-output claims.
+Execute card 215 in Figmatic: check out Swallowtail implementation commit
+`IMPLEMENTATION_COMMIT_PENDING`, link it through `effigy deps link`, then run
+the packaged `g04.005` mutation-runway smoke. Preserve the existing prepared
+API, response-only authority, and downstream acceptance boundary.
 
 ## Index
 

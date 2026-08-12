@@ -170,7 +170,7 @@ spine:
   and public-API-key profiles, model confirmation, ambient configuration,
   ambient-host isolation, permission rejection, cancellation, deadlines, and
   joined cleanup stay driver-owned; distinct native Claude Code drivers keep
-  the exact `2.1.220` read-only headless profile separate from exact `2.1.227`
+  the exact `2.1.220` read-only headless profile separate from exact `2.1.228`
   response only, whose provider-suppressed tool/MCP surface has no working
   resource or structured-output capability
 - `swallowtail-adapter-deepseek` implements the exact

@@ -8,7 +8,8 @@ Contracts: 029, 039, 044
 
 `swallowtail.claude-code.response-only` now selects by validated protocol
 compatibility instead of exact patch equality. The prepared Figmatic-facing API
-is unchanged. The implementation commit is `IMPLEMENTATION_COMMIT`.
+is unchanged. The implementation commit is
+`fd2d95e83f6d7f8bdfe7852d3393eb6031d15cf2`.
 
 The policy is:
 
@@ -73,6 +74,7 @@ release, tag, registry publication, or Figmatic mutation was performed.
 ## Next Task
 
 In Figmatic, check out Swallowtail implementation commit
-`IMPLEMENTATION_COMMIT`, link it through `effigy deps link`, and run packaged
+`fd2d95e83f6d7f8bdfe7852d3393eb6031d15cf2`, link it through
+`effigy deps link`, and run packaged
 `g04.005` under card 217. The route must report the installed Claude version in
 diagnostics and fail closed if the live transcript departs from Contract 039.

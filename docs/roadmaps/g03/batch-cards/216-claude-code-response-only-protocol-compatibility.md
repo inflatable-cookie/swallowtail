@@ -31,7 +31,7 @@ validation.
 
 ## Evidence
 
-- implementation commit: `IMPLEMENTATION_COMMIT_PENDING`
+- implementation commit: `fd2d95e83f6d7f8bdfe7852d3393eb6031d15cf2`
 - focused validation: 166 tests passed across the adapter and testkit
 - affected-package archives, dependency closures, and extracted compilation
   passed for both packages

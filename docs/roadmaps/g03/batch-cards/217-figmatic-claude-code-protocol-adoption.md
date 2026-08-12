@@ -12,7 +12,7 @@ Figmatic and resume the packaged `g04.005` mutation-runway smoke.
 
 ## Source Identity
 
-- Swallowtail commit: `IMPLEMENTATION_COMMIT_PENDING`
+- Swallowtail commit: `fd2d95e83f6d7f8bdfe7852d3393eb6031d15cf2`
 - package: `swallowtail-adapter-claude-agent`
 - route: `swallowtail.claude-code.response-only`
 - compatibility: qualified from `2.1.227` through the latest evidenced point;

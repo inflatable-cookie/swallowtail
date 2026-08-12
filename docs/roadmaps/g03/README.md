@@ -74,7 +74,8 @@ visible as unverified newer unless exact evidence requires rejection.
 
 - g03.068 is active under corrected Contract 039 authority. Card 214's exact-
   `2.1.228` replacement and card 215's downstream pointer are superseded.
-  Card 216 completed at `IMPLEMENTATION_COMMIT_PENDING`: `2.1.227` is the
+  Card 216 completed at `fd2d95e83f6d7f8bdfe7852d3393eb6031d15cf2`:
+  `2.1.227` is the
   baseline, stable newer releases enter provisionally, init and diagnostics
   bind the observed version, and protocol drift still fails closed. Card 217 is
   ready for Figmatic's linked `g04.005` adoption.

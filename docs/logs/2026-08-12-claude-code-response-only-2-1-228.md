@@ -8,7 +8,7 @@ Contracts: 039, 044
 
 Exact Claude Code `2.1.228` replaces exact `2.1.227` as the sole maintained
 release for `swallowtail.claude-code.response-only`. The implementation commit
-is `IMPLEMENTATION_COMMIT_PENDING`.
+is `6a3fe2aaeb0ccae8fc53598d90509b0280412182`.
 
 The prepared API, route identity, command arguments, model selection,
 host-service requirements, access posture, and output projection do not
@@ -56,5 +56,5 @@ mutation was performed.
 ## Next Task
 
 In Figmatic, check out Swallowtail implementation commit
-`IMPLEMENTATION_COMMIT_PENDING`, link it through `effigy deps link`, and run
+`6a3fe2aaeb0ccae8fc53598d90509b0280412182`, link it through `effigy deps link`, and run
 the packaged `g04.005` mutation-runway smoke under card 215.

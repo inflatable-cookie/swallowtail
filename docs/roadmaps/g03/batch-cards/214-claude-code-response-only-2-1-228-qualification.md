@@ -32,7 +32,7 @@ qualified Claude Code release without changing the prepared integration.
 - the full docs selector passed links, all indexes, next action, agent defaults,
   consumer front door, guides, and literal version expectations
 - live validation: one gated test passed in 18.59 seconds
-- implementation commit: `IMPLEMENTATION_COMMIT_PENDING`
+- implementation commit: `6a3fe2aaeb0ccae8fc53598d90509b0280412182`
 
 ## Stop Conditions
 

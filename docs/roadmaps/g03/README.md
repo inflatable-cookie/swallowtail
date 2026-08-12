@@ -72,7 +72,8 @@ visible as unverified newer unless exact evidence requires rejection.
 
 ## Current Checkpoint
 
-- g03.068 is complete at implementation commit `IMPLEMENTATION_COMMIT_PENDING`:
+- g03.068 is complete at implementation commit
+  `6a3fe2aaeb0ccae8fc53598d90509b0280412182`:
   exact Claude Code `2.1.228` replaces `2.1.227` as the sole qualified
   `claude-code.response-only` release. The prepared API and command stay
   unchanged. Deterministic, focused, affected-package, guide, route, docs,

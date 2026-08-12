@@ -13,7 +13,7 @@ or downstream acceptance authority.
 
 ## Source Identity
 
-- Swallowtail commit: `IMPLEMENTATION_COMMIT_PENDING`
+- Swallowtail commit: `6a3fe2aaeb0ccae8fc53598d90509b0280412182`
 - package: `swallowtail-adapter-claude-agent`
 - route: `swallowtail.claude-code.response-only`
 - executable claim: exact Claude Code `2.1.228`

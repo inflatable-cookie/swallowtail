@@ -16,9 +16,9 @@ use swallowtail_core::{
     InstalledExecutableObservation, InstanceRevision,
 };
 use swallowtail_runtime::{
-    Deadline, DiscoveryCancellation, DiscoveryDriver, EnvironmentRef, HostServices,
-    InstalledExecutableDiscoveryRequest, InstalledExecutableTarget, PreparationFailure,
-    PreparationStage, PreparedAccessEvidence, RequestId, ScopeId,
+    Deadline, DebugObservation, DebugObservationKind, DiscoveryCancellation, DiscoveryDriver,
+    EnvironmentRef, HostServices, InstalledExecutableDiscoveryRequest, InstalledExecutableTarget,
+    PreparationFailure, PreparationStage, PreparedAccessEvidence, RequestId, ScopeId,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -34,7 +34,7 @@ pub struct ClaudeCodeResponsePreparationInput {
 }
 
 impl ClaudeCodeResponsePreparationInput {
-    /// Creates preparation input for an exact response-only target.
+    /// Creates preparation input for one approved response-only target.
     #[must_use]
     pub const fn new(
         instance_id: ConfiguredInstanceId,
@@ -85,7 +85,7 @@ impl ClaudeCodeResponsePreparationProbe {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
-/// Qualified Claude Code integration ready to prepare response-only runs.
+/// Admitted Claude Code integration ready to prepare response-only runs.
 pub struct ClaudeCodeResponsePreparedIntegration {
     environment: EnvironmentRef,
     target: InstalledExecutableTarget,
@@ -103,7 +103,7 @@ impl ClaudeCodeResponsePreparedIntegration {
         &self.environment
     }
 
-    /// Returns the qualified executable target.
+    /// Returns the approved executable target.
     #[must_use]
     pub const fn target(&self) -> &InstalledExecutableTarget {
         &self.target
@@ -169,6 +169,8 @@ pub async fn prepare_claude_code_response_only(
 ) -> Result<ClaudeCodeResponsePreparedIntegration, PreparationFailure> {
     preparation::validate_input(&input)?;
     let available_host_services = services.available_kinds();
+    let debug_request_id = probe.request_id.clone();
+    let debug_scope_id = probe.scope_id.clone();
     let request = InstalledExecutableDiscoveryRequest::new(
         probe.request_id,
         probe.scope_id,
@@ -179,8 +181,30 @@ pub async fn prepare_claude_code_response_only(
     );
     let driver = crate::ClaudeCodeResponseOnlyDriver::new(input.environment.clone());
     let outcome = driver
-        .discover_installed_executable(request, services)
+        .discover_installed_executable(request, services.clone())
         .await
         .map_err(preparation::discovery_runtime_failure)?;
+    if let Some(observation) = outcome.installed_executable_observation() {
+        let posture = match observation.compatibility() {
+            swallowtail_core::InstalledExecutableCompatibility::Qualified(_) => "qualified",
+            swallowtail_core::InstalledExecutableCompatibility::UnverifiedNewer(_) => {
+                "unverified-newer"
+            }
+            swallowtail_core::InstalledExecutableCompatibility::Incompatible => "incompatible",
+        };
+        services.emit_debug_observation(
+            &DebugObservation::new(
+                DebugObservationKind::InterfaceVersion,
+                format!(
+                    "observed_version={}; compatibility={posture}",
+                    observation.version().version().as_str()
+                ),
+            )
+            .with_request_id(debug_request_id)
+            .with_scope_id(debug_scope_id)
+            .with_route("claude-code.response-only")
+            .with_stage("response-only.preparation.discovery"),
+        );
+    }
     preparation::promote(input, outcome, available_host_services)
 }

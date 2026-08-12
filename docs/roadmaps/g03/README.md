@@ -68,18 +68,16 @@ visible as unverified newer unless exact evidence requires rejection.
 | Add exact Claude Code tool-free text response through local subscription access. | completed | Contract 039; Research 122 | `g03.065` |
 | Classify exact Claude Code response-only thinking progress without disclosing thought content. | completed | Contracts 039, 044; Research 123 | `g03.066` |
 | Ship the compatible 30-package, 36-route current source as an exact `v0.3.2` source tag. | completed | Contracts 036, 055-056 | `g03.067` |
-| Requalify Claude Code response-only at exact `2.1.228` without widening its executable or output boundary. | completed | Contracts 039, 044; Figmatic `g04.005` evidence | `g03.068` |
+| Replace Claude Code response-only patch equality with a fail-closed protocol-compatible baseline and provisional-newer policy. | active | Contracts 039, 044; Figmatic `g04.005` evidence | `g03.068` |
 
 ## Current Checkpoint
 
-- g03.068 is complete at implementation commit
-  `6a3fe2aaeb0ccae8fc53598d90509b0280412182`:
-  exact Claude Code `2.1.228` replaces `2.1.227` as the sole qualified
-  `claude-code.response-only` release. The prepared API and command stay
-  unchanged. Deterministic, focused, affected-package, guide, route, docs,
-  and Max/OAuth live evidence pass with empty tools and MCP, discarded private
-  thinking, one ordinary text result, no API key, and clean cancellation.
-  Card 215 is ready for Figmatic's packaged `g04.005` mutation-runway smoke.
+- g03.068 is active under corrected Contract 039 authority. Card 214's exact-
+  `2.1.228` replacement and card 215's downstream pointer are superseded.
+  Card 216 completed at `IMPLEMENTATION_COMMIT_PENDING`: `2.1.227` is the
+  baseline, stable newer releases enter provisionally, init and diagnostics
+  bind the observed version, and protocol drift still fails closed. Card 217 is
+  ready for Figmatic's linked `g04.005` adoption.
 - g03.067 is complete. Cards 210-213 prepared, proved, and shipped immutable
   source tag `v0.3.2`:
   nine changelog entries, 30 packages, 36 routes, exact release order, 28
@@ -694,7 +692,7 @@ visible as unverified newer unless exact evidence requires rejection.
 - [065 Claude Code Tool-Free Text Route](./065-claude-code-tool-free-text-route.md) — completed
 - [066 Claude Code Response-Only Thinking Progress](./066-claude-code-response-only-thinking-progress.md) — completed
 - [067 v0.3.2 Source Patch Release](./067-v0-3-2-source-patch-release.md) — completed
-- [068 Claude Code Response-Only 2.1.228 Qualification](./068-claude-code-response-only-2-1-228-qualification.md) — completed
+- [068 Claude Code Response-Only Protocol Compatibility](./068-claude-code-response-only-protocol-compatibility.md) — active
 
 ## Checkpoint
 

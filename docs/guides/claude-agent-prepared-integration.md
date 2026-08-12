@@ -12,7 +12,7 @@ New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
 Neither route is an implicit fallback for the other.
 
-At exact Claude Code `2.1.228`, medium-effort response-only runs may emit
+At live-proven Claude Code `2.1.228`, medium-effort response-only runs may emit
 validated cumulative thinking-token estimates. Swallowtail projects them only
 as content-free coalescible progress snapshots. The related empty private
 thinking block and opaque signature are validated and discarded; neither is
@@ -192,9 +192,11 @@ See the compile-tested
 
 ## Claude Code Response Only
 
-`prepare_claude_code_response_only` qualifies an exact host-approved Claude
-Code `2.1.228` executable and provider-supported local subscription access.
-It is a distinct route. It does not weaken or replace
+`prepare_claude_code_response_only` accepts a host-approved stable Claude Code
+executable at or above the proven `2.1.227` protocol floor, except any release
+on the route's explicit known-bad deny-list. `2.1.227` and `2.1.228` are
+qualified; later stable releases run provisionally as `UnverifiedNewer` under
+the same runtime validation. It is a distinct route. It does not weaken or replace
 `claude-code.headless`.
 
 `ClaudeCodeResponseProfileInput::new` accepts only request identity, an exact
@@ -222,12 +224,22 @@ claude -p
   --strict-mcp-config
 ```
 
-Exact `2.1.228` evidence requires an init event with empty `tools` and
-`mcp_servers`, one text-only assistant message, and one matching success
-result with `num_turns: 1` and null or absent `structured_output`. Any tool,
-user, extra assistant, second result, version/model drift, non-text block, or
-post-terminal event fails closed. The route emits the matching bounded text as
-ordinary `OperationContent`; JSON-shaped text carries no JSON or schema claim.
+Every accepted version must emit an init event whose executable version equals
+the version observed during preparation, with empty `tools` and `mcp_servers`,
+one text-only assistant message, and one matching success result with
+`num_turns: 1` and null or absent `structured_output`. Any tool, user, extra
+assistant, second result, version/model drift, non-text block, malformed or
+non-cumulative thinking estimate, usage mismatch, missing terminal frame, or
+post-terminal event fails closed. The route emits exactly one matching bounded
+text as ordinary `OperationContent`; JSON-shaped text carries no JSON or schema
+claim.
+
+Preparation and run-start debug observations expose the exact executable
+version and its `Qualified` or `UnverifiedNewer` posture. Prepared evidence
+also remains version-bound. There is no patch range that silently confers
+qualification: the qualified segment ends at `2.1.228`, while newer stable
+versions are provisional until evidence moves that boundary. The static
+deny-list is empty as of 2026-08-12.
 
 The prepared plan records `ProviderSuppressed` harness configuration and
 `AmbientHost` isolation. The first says exact provider flags suppress tools

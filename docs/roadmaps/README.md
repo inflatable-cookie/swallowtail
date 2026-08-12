@@ -13,10 +13,10 @@ shape.
 
 ## Next Task
 
-Execute card 215 in Figmatic: check out Swallowtail implementation commit
-`6a3fe2aaeb0ccae8fc53598d90509b0280412182`, link it through `effigy deps link`, then run
-the packaged `g04.005` mutation-runway smoke. Preserve the existing prepared
-API, response-only authority, and downstream acceptance boundary.
+Execute card 217 in Figmatic: adopt Swallowtail implementation commit
+`IMPLEMENTATION_COMMIT_PENDING` through `effigy deps link cargo`, then run the
+packaged `g04.005` mutation-runway smoke. Preserve the existing prepared API and
+record the observed executable-version diagnostics.
 
 ## Index
 

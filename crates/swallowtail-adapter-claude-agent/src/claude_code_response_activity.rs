@@ -11,17 +11,18 @@ pub(crate) fn activity_profile(
     prepared: &ClaudeCodeResponsePreparedIntegration,
 ) -> Result<ObservableActivityProfile, PreparationFailure> {
     let behavior_revision = match prepared.observation().compatibility() {
-        InstalledExecutableCompatibility::Qualified(assessment) => {
-            assessment.behavior_revision().clone()
+        InstalledExecutableCompatibility::Qualified(assessment) => assessment.behavior_revision(),
+        InstalledExecutableCompatibility::UnverifiedNewer(assessment) => {
+            assessment.behavior_revision()
         }
-        InstalledExecutableCompatibility::UnverifiedNewer(_)
-        | InstalledExecutableCompatibility::Incompatible => {
+        InstalledExecutableCompatibility::Incompatible => {
             return Err(failure(
                 "swallowtail.claude_code.response_only.preparation.activity_version_incompatible",
-                "Claude Code response-only activity requires the exact qualified version",
+                "Claude Code response-only activity requires a permitted protocol version",
             ));
         }
-    };
+    }
+    .clone();
     ObservableActivityProfile::available(
         [ActivityInterfaceBasis::new(
             prepared.observation().version().axis().clone(),

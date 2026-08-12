@@ -3,11 +3,11 @@ use crate::claude_code_response_events::ClaudeCodeResponseEventParser;
 use std::future::poll_fn;
 use std::sync::Arc;
 use std::task::Poll;
-use swallowtail_core::{ModelId, SafeDiagnostic};
+use swallowtail_core::SafeDiagnostic;
 use swallowtail_runtime::{
-    ActivityOperationId, BoxFuture, CleanupOutcome, DeadlineObservation, DebugObservationKind,
-    HostServices, ProcessHandle, ProcessOutputChunk, ProcessOutputStream, RuntimeEventSender,
-    RuntimeFailure, RuntimeRunId, TerminalOutcome, TerminalStatus,
+    BoxFuture, CleanupOutcome, DeadlineObservation, DebugObservationKind, HostServices,
+    ProcessHandle, ProcessOutputChunk, ProcessOutputStream, RuntimeEventSender, RuntimeFailure,
+    TerminalOutcome, TerminalStatus,
 };
 
 const ROUTE: &str = "claude-code.response-only";
@@ -17,11 +17,9 @@ pub(crate) async fn pump(
     events: RuntimeEventSender,
     cancellation: Arc<ClaudeCodeCancellation>,
     deadline: BoxFuture<'static, DeadlineObservation>,
-    model: ModelId,
-    run_id: RuntimeRunId,
+    mut parser: ClaudeCodeResponseEventParser,
     services: HostServices,
 ) -> TerminalOutcome {
-    let mut parser = ClaudeCodeResponseEventParser::new(model, ActivityOperationId::Run(run_id));
     let mut deadline = Some(deadline);
     loop {
         match next_output(process.as_ref(), cancellation.as_ref(), &mut deadline).await {

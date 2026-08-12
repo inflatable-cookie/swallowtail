@@ -170,9 +170,11 @@ spine:
   and public-API-key profiles, model confirmation, ambient configuration,
   ambient-host isolation, permission rejection, cancellation, deadlines, and
   joined cleanup stay driver-owned; distinct native Claude Code drivers keep
-  the exact `2.1.220` read-only headless profile separate from exact `2.1.228`
-  response only, whose provider-suppressed tool/MCP surface has no working
-  resource or structured-output capability
+  the exact `2.1.220` read-only headless profile separate from response only.
+  Response only has a proven `2.1.227` floor, live evidence through `2.1.228`,
+  provisional stable-newer execution, explicit known-bad exclusions, and a
+  fail-closed provider-suppressed tool/MCP surface with no working resource or
+  structured-output capability
 - `swallowtail-adapter-deepseek` implements the exact
   `deepseek-openai-chat-2026-07-22` V4 Pro locally continued session over
   host-approved HTTP/SSE, including authenticated catalogue, consumer-owned

@@ -1,9 +1,12 @@
 # 215 Figmatic Claude Code 2.1.228 Adoption
 
-Status: ready
+Status: superseded by card 217
 Owner: Tom
 Created: 2026-08-12
-Milestone: `../068-claude-code-response-only-2-1-228-qualification.md`
+Milestone: `../068-claude-code-response-only-protocol-compatibility.md`
+
+Card 217 replaces this stale exact-patch adoption pointer after card 216
+produces the protocol-compatible implementation commit.
 
 ## Goal
 

@@ -48,6 +48,32 @@ mod tests {
             &ModelId::new("claude-sonnet-5").unwrap(),
             Some(&ReasoningMode::new("low").unwrap()),
         );
+        assert_eq!(
+            arguments,
+            [
+                "-p",
+                "--input-format",
+                "text",
+                "--output-format",
+                "stream-json",
+                "--verbose",
+                "--no-session-persistence",
+                "--model",
+                "claude-sonnet-5",
+                "--effort",
+                "low",
+                "--tools",
+                "",
+                "--safe-mode",
+                "--disable-slash-commands",
+                "--no-chrome",
+                "--prompt-suggestions",
+                "false",
+                "--mcp-config",
+                r#"{"mcpServers":{}}"#,
+                "--strict-mcp-config",
+            ]
+        );
         assert!(arguments.windows(2).any(|pair| pair == ["--tools", ""]));
         assert!(arguments.iter().any(|value| value == "--safe-mode"));
         assert!(

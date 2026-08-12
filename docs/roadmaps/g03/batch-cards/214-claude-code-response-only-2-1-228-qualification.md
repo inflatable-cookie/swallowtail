@@ -1,9 +1,12 @@
 # 214 Claude Code Response-Only 2.1.228 Qualification
 
-Status: completed
+Status: superseded by card 216
 Owner: Tom
 Created: 2026-08-12
-Milestone: `../068-claude-code-response-only-2-1-228-qualification.md`
+Milestone: `../068-claude-code-response-only-protocol-compatibility.md`
+
+The exact-patch policy proved operationally wrong before Figmatic adoption.
+Card 216 replaces it with the operator-approved protocol-compatible boundary.
 
 ## Goal
 

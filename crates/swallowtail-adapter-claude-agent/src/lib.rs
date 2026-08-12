@@ -42,8 +42,10 @@ pub use claude_code_response::{
     ClaudeCodeResponseOnlyDriver, claude_code_response_only_descriptor,
 };
 pub use claude_code_response_selection::{
-    CLAUDE_CODE_RESPONSE_ONLY_AXIS, CLAUDE_CODE_RESPONSE_ONLY_VERSION,
-    claude_code_response_only_binding, claude_code_response_only_claim,
+    CLAUDE_CODE_RESPONSE_ONLY_AXIS, CLAUDE_CODE_RESPONSE_ONLY_BASELINE_VERSION,
+    CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS, CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
+    CLAUDE_CODE_RESPONSE_ONLY_VERSION, claude_code_response_only_binding,
+    claude_code_response_only_claim,
 };
 pub use claude_code_selection::{
     CLAUDE_CODE_HEADLESS_AXIS, CLAUDE_CODE_HEADLESS_BASELINE_VERSION,

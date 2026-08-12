@@ -6,10 +6,12 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Changed
-- requalify `claude-code.response-only` for exact Claude Code `2.1.228` only,
-  preserving the prepared API, ordinary text projection, empty tool and MCP
-  boundary, discarded private-thinking envelopes, and Max/OAuth access without
-  an API key
+- replace the `claude-code.response-only` patch-version equality gate with a
+  protocol-compatibility policy: `2.1.227` remains the proven floor,
+  `2.1.228` adds live evidence, later stable releases may run provisionally,
+  known-bad releases can be denied explicitly, and every run still fails
+  closed on command, init, tool/MCP, thinking, usage, assistant, or terminal
+  drift
 
 ## [0.3.2] - 2026-08-11
 

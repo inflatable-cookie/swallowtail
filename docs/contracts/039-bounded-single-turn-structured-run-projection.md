@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-11
+Updated: 2026-08-12
 
 ## Purpose
 
@@ -150,8 +150,9 @@ text response; thought text must never be accepted or exposed as reasoning
 activity, output, observation, or a second response. Unknown system or
 assistant shapes still fail closed.
 
-The first mapping is the distinct `claude-code.response-only` route at exact
-Claude Code `2.1.228`. It uses print mode, text stdin, stream JSON, empty tools,
+The first mapping is the distinct `claude-code.response-only` protocol route
+with Claude Code `2.1.227` as its minimum proven baseline. It uses print mode,
+text stdin, stream JSON, empty tools,
 safe mode, disabled slash commands and Chrome, strict empty MCP configuration,
 disabled prompt suggestions, and no session persistence. It binds
 provider-suppressed configuration and ambient-host isolation: the tool posture
@@ -161,12 +162,23 @@ Process, and Time host services and advertises no working-resource, callback,
 tool, session, continuation, retry, fallback, or structured-output capability.
 The existing `claude-code.headless` read-only Plan profile remains unchanged.
 
-The maintained response-only compatibility segment contains only exact
-`2.1.228`. Exact `2.1.227`, exact `2.1.229`, and every other version remain
-incompatible with this route; no range or unverified-newer execution is
-implied.
+The qualified response-only compatibility segment begins at exact `2.1.227`;
+exact `2.1.228` carries separately observed live evidence for the same protocol
+revision. Stable semantic releases above the latest qualified point may execute
+as explicitly unverified newer, except releases on the route's static known-bad
+deny-list. Releases below the baseline, prereleases, build-qualified versions,
+malformed version output, and denied releases remain incompatible. Provisional
+execution does not widen qualified support.
 
-For exact Claude Code `2.1.228`, `system/thinking_tokens` is qualified only
+Every prepared operation binds the exact observed executable version into its
+instance, plan, and run evidence. The stream init frame must echo that same
+version. Preparation and run-start debug observations expose the exact version
+and qualified or provisional posture to an opt-in diagnostic observer. A
+version that parses and passes admission still gains no protocol trust: any
+argument, init, tool, MCP, thinking, token-accounting, assistant, result,
+terminal, cardinality, or ordering drift fails the run closed.
+
+For this protocol revision, `system/thinking_tokens` is qualified only
 after init and before assistant text. `estimated_tokens` and
 `estimated_tokens_delta` are positive integers no greater than 1,000,000;
 the total increases exactly by the delta from zero. Each valid frame emits one

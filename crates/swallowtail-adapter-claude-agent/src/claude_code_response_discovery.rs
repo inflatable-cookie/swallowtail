@@ -53,19 +53,18 @@ mod tests {
     use super::parse_version;
 
     #[test]
-    fn parser_accepts_only_exact_response_only_version_output() {
+    fn parser_accepts_only_strict_stable_version_output() {
         assert_eq!(
-            parse_version(b"2.1.228 (Claude Code)\n")
+            parse_version(b"2.1.229 (Claude Code)\n")
                 .expect("version parses")
                 .version()
                 .as_str(),
-            "2.1.228"
+            "2.1.229"
         );
         for output in [
-            b"2.1.220 (Claude Code)\n".as_slice(),
-            b"2.1.227 (Claude Code)\n".as_slice(),
             b"2.1.228".as_slice(),
             b"Claude Code 2.1.228\n".as_slice(),
+            b"2.1.229-rc.1 (Claude Code)\n".as_slice(),
         ] {
             assert!(parse_version(output).is_none());
         }

@@ -122,7 +122,7 @@ impl ClaudeCodeResponsePreparedEvidence {
         })
     }
 
-    /// Returns the qualified installed-executable observation.
+    /// Returns the installed-executable observation admitted during preparation.
     #[must_use]
     pub const fn observation(&self) -> &swallowtail_core::InstalledExecutableObservation {
         &self.observation

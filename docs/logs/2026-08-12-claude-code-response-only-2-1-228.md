@@ -4,6 +4,10 @@ Date: 2026-08-12
 Roadmap: g03.068
 Contracts: 039, 044
 
+Status: superseded the same day by
+[Claude Code Response-Only Protocol Compatibility](./2026-08-12-claude-code-response-only-protocol-compatibility.md).
+The exact-patch adoption below is retained only as historical evidence.
+
 ## Outcome
 
 Exact Claude Code `2.1.228` replaces exact `2.1.227` as the sole maintained

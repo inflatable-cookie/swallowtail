@@ -1,5 +1,6 @@
 use crate::claude_code_handle::{ClaudeCodeCancellation, ClaudeCodeRunHandle};
 use crate::claude_code_response_command::arguments;
+use crate::claude_code_response_events::ClaudeCodeResponseEventParser;
 use crate::claude_code_response_pump::{cleanup_failed_start, pump};
 use crate::failure::failure;
 use std::sync::Arc;
@@ -8,10 +9,10 @@ use swallowtail_core::{
     HostServiceKind, IntegrationFamilyId, OperationShape, PreflightPlan, TransportFamilyId,
 };
 use swallowtail_runtime::{
-    BoxFuture, EnvironmentRef, ExecutableRef, HostServices, ProcessHandle, ProcessInputChunk,
-    ProcessRequest, RunHandle, RuntimeEvent, RuntimeEventKind, RuntimeFailure, RuntimeRunId,
-    ScopeId, StructuredRunDriver, StructuredRunRequest, runtime_event_channel,
-    terminal_outcome_channel,
+    ActivityOperationId, BoxFuture, DebugObservation, DebugObservationKind, EnvironmentRef,
+    ExecutableRef, HostServices, ProcessHandle, ProcessInputChunk, ProcessRequest, RunHandle,
+    RuntimeEvent, RuntimeEventKind, RuntimeFailure, RuntimeRunId, ScopeId, StructuredRunDriver,
+    StructuredRunRequest, runtime_event_channel, terminal_outcome_channel,
 };
 
 pub(crate) const DRIVER_ID: &str = "swallowtail.claude-code.response-only";
@@ -31,7 +32,7 @@ impl ClaudeCodeResponseOnlyDriver {
 }
 
 #[must_use]
-/// Describes the exact Claude Code response-only route.
+/// Describes the Claude Code response-only protocol route.
 pub fn claude_code_response_only_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(
         AdapterIdentity::new(
@@ -84,7 +85,8 @@ impl ClaudeCodeResponseOnlyDriver {
         request: StructuredRunRequest,
         services: HostServices,
     ) -> Result<Box<dyn RunHandle>, RuntimeFailure> {
-        crate::claude_code_response_validation::validate(&plan, &request, &services)?;
+        let observed_version =
+            crate::claude_code_response_validation::validate(&plan, &request, &services)?;
         let task_service = services.task().cloned().expect("validated task service");
         let process_service = services
             .process()
@@ -113,6 +115,27 @@ impl ClaudeCodeResponseOnlyDriver {
                 "Claude Code response-only operation scope was invalid",
             )
         })?;
+        let assessment = plan.assess_interface_version(&observed_version);
+        let posture = match assessment {
+            swallowtail_core::InterfaceCompatibilityAssessment::Qualified(_) => "qualified",
+            swallowtail_core::InterfaceCompatibilityAssessment::UnverifiedNewer(_) => {
+                "unverified-newer"
+            }
+            swallowtail_core::InterfaceCompatibilityAssessment::Incompatible => "incompatible",
+        };
+        services.emit_debug_observation(
+            &DebugObservation::new(
+                DebugObservationKind::InterfaceVersion,
+                format!(
+                    "observed_version={}; compatibility={posture}",
+                    observed_version.version().as_str()
+                ),
+            )
+            .with_request_id(request.request_id().clone())
+            .with_run_id(run_id.clone())
+            .with_route("claude-code.response-only")
+            .with_stage("response-only.run.start"),
+        );
         let (event_sender, event_stream) = runtime_event_channel(EVENT_CAPACITY)?;
         let process_request = ProcessRequest::new(ExecutableRef::from_instance_target(
             plan.instance_target_ref(),
@@ -136,6 +159,11 @@ impl ClaudeCodeResponseOnlyDriver {
         let (terminal_sender, terminal_future) = terminal_outcome_channel();
         let cancellation = Arc::new(ClaudeCodeCancellation::new(Arc::clone(&process)));
         let pump_run_id = run_id.clone();
+        let parser = ClaudeCodeResponseEventParser::new(
+            model,
+            observed_version.version().clone(),
+            ActivityOperationId::Run(pump_run_id),
+        );
         let task = task_service.spawn(
             scope,
             Box::pin({
@@ -148,8 +176,7 @@ impl ClaudeCodeResponseOnlyDriver {
                         event_sender.clone(),
                         cancellation,
                         deadline,
-                        model,
-                        pump_run_id,
+                        parser,
                         services,
                     )
                     .await;

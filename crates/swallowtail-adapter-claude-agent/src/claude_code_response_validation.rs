@@ -2,7 +2,7 @@ use crate::failure::failure;
 use swallowtail_core::{
     CancellationScope, Capability, CapabilityConstraint, CredentialMechanism,
     HarnessConfigurationPosture, HarnessIsolation, HostServiceKind, InstanceOwnership,
-    PreflightPlan,
+    InterfaceVersionBinding, PreflightPlan,
 };
 use swallowtail_runtime::{
     ExternalNetworkPolicy, ExternalSearchPolicy, HostServices, ProviderExecutionPolicy,
@@ -14,8 +14,8 @@ pub(crate) fn validate(
     plan: &PreflightPlan,
     request: &StructuredRunRequest,
     services: &HostServices,
-) -> Result<(), RuntimeFailure> {
-    validate_plan(plan)?;
+) -> Result<InterfaceVersionBinding, RuntimeFailure> {
+    let observed_version = validate_plan(plan)?;
     services.require_execution_host(plan.execution_host_id())?;
     for (available, service, name) in [
         (services.task().is_some(), HostServiceKind::Task, "task"),
@@ -96,10 +96,13 @@ pub(crate) fn validate(
         plan,
         Capability::Interruption,
         CapabilityConstraint::CancellationScope(CancellationScope::StructuredRun),
-    )
+    )?;
+    Ok(observed_version)
 }
 
-pub(crate) fn validate_plan(plan: &PreflightPlan) -> Result<(), RuntimeFailure> {
+pub(crate) fn validate_plan(
+    plan: &PreflightPlan,
+) -> Result<InterfaceVersionBinding, RuntimeFailure> {
     if plan.driver_identity().id().as_str() != crate::claude_code_response::DRIVER_ID {
         return Err(failure(
             "swallowtail.claude_code.response_only.plan_driver_mismatch",

@@ -4,23 +4,24 @@ mod claude_code_support;
 
 use claude_code_support::{
     FakeProcessService, ImmediateTimeService, PendingTimeService, host_services, response_fixture,
-    response_preparation_input, response_preparation_probe,
+    response_fixture_at, response_preparation_input, response_preparation_probe,
 };
 use futures_executor::block_on;
 use futures_util::StreamExt;
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 use swallowtail_adapter_claude_agent::{
     ClaudeCodeResponseModelSelection, ClaudeCodeResponsePreparedIntegration,
     ClaudeCodeResponsePreparedRun, ClaudeCodeResponseProfileInput,
     prepare_claude_code_response_only,
 };
 use swallowtail_core::{
-    Capability, HarnessConfigurationPosture, HarnessIsolation, ModelId, ModelRouteId,
-    ModelRouteRevision, ObservableActivityAvailability, ReasoningMode,
+    Capability, Diagnostic, HarnessConfigurationPosture, HarnessIsolation,
+    InstalledExecutableCompatibility, ModelId, ModelRouteId, ModelRouteRevision,
+    ObservableActivityAvailability, ReasoningMode,
 };
 use swallowtail_runtime::{
-    CleanupOutcome, Deadline, MonotonicInstant, OperationContent, ProcessExit, RequestId,
-    RuntimeEventKind, TerminalStatus,
+    CleanupOutcome, Deadline, DebugObservation, DebugObservationKind, DiagnosticObserver,
+    MonotonicInstant, OperationContent, ProcessExit, RequestId, RuntimeEventKind, TerminalStatus,
 };
 
 #[test]
@@ -153,6 +154,90 @@ fn prepared_route_returns_one_ordinary_text_result_without_authority() {
 }
 
 #[test]
+fn baseline_private_thinking_remains_qualified_and_fail_closed() {
+    let host = swallowtail_core::ExecutionHostId::new("host.baseline").expect("host is valid");
+    let prepared = prepared_at(host.clone(), "2.1.227", None);
+    assert!(matches!(
+        prepared.observation().compatibility(),
+        InstalledExecutableCompatibility::Qualified(_)
+    ));
+    let run = profile_with_reasoning(&prepared, "baseline-thinking", "medium");
+    let (process, state) = FakeProcessService::completed(&response_fixture_at(
+        "2.1.227",
+        "response-thinking-progress.jsonl",
+    ));
+    let (services, task) = host_services(host, process, Arc::new(PendingTimeService));
+    let mut handle = block_on(run.start_run(services)).expect("baseline run starts");
+    let events = block_on(
+        handle
+            .take_events()
+            .expect("event stream")
+            .collect::<Vec<_>>(),
+    )
+    .into_iter()
+    .collect::<Result<Vec<_>, _>>()
+    .expect("baseline events remain valid");
+    let outcome = block_on(handle.take_terminal_outcome().expect("terminal outcome"));
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    assert!(events.iter().any(|event| {
+        event.kind() == &RuntimeEventKind::ProgressSnapshot && event.content().is_none()
+    }));
+    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    assert!(state.waited());
+    assert!(task.joined());
+}
+
+#[test]
+fn provisional_newer_binds_init_and_exposes_version_diagnostics() {
+    let host = swallowtail_core::ExecutionHostId::new("host.provisional").expect("host is valid");
+    let observer = Arc::new(CapturingDebugObserver::default());
+    let prepared = prepared_at(host.clone(), "2.1.229", Some(Arc::clone(&observer)));
+    assert!(matches!(
+        prepared.observation().compatibility(),
+        InstalledExecutableCompatibility::UnverifiedNewer(_)
+    ));
+    assert_eq!(
+        prepared.observation().version().version().as_str(),
+        "2.1.229"
+    );
+    let run = profile(&prepared, "provisional");
+    assert_eq!(
+        run.evidence().observation().version().version().as_str(),
+        "2.1.229"
+    );
+    let output = response_fixture("response-complete.jsonl").replacen("2.1.228", "2.1.229", 1);
+    let (process, state) = FakeProcessService::completed(&output);
+    let (services, task) = host_services(host, process, Arc::new(PendingTimeService));
+    let services = services.with_diagnostic_observer(observer.clone());
+    let mut handle = block_on(run.start_run(services)).expect("provisional run starts");
+    let _events = block_on(
+        handle
+            .take_events()
+            .expect("event stream")
+            .collect::<Vec<_>>(),
+    );
+    let outcome = block_on(handle.take_terminal_outcome().expect("terminal outcome"));
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    assert!(state.waited());
+    assert!(task.joined());
+
+    let observations = observer.observations();
+    for stage in [
+        "response-only.preparation.discovery",
+        "response-only.run.start",
+    ] {
+        assert!(observations.iter().any(|observation| {
+            observation.kind() == DebugObservationKind::InterfaceVersion
+                && observation.route() == Some("claude-code.response-only")
+                && observation.stage() == Some(stage)
+                && observation.detail()
+                    == "observed_version=2.1.229; compatibility=unverified-newer"
+        }));
+    }
+}
+
+#[test]
 fn medium_effort_projects_bounded_progress_and_one_text_response() {
     let host = swallowtail_core::ExecutionHostId::new("host.thinking").expect("host is valid");
     let prepared = prepared(host.clone());
@@ -229,6 +314,11 @@ fn response_stream_fails_closed_on_authority_or_turn_drift() {
         (r#""num_turns":1"#, r#""num_turns":2"#),
         (r#""structured_output":null"#, r#""structured_output":{}"#),
         (
+            r#""permissionMode":"default""#,
+            r#""permissionMode":"plan""#,
+        ),
+        (r#""model":"claude-sonnet-5""#, r#""model":"claude-opus-5""#),
+        (
             r#""claude_code_version":"2.1.228""#,
             r#""claude_code_version":"2.1.227""#,
         ),
@@ -256,6 +346,11 @@ fn response_stream_fails_closed_on_authority_or_turn_drift() {
         1,
     ));
     assert_malformed(base.replacen(r#""text":"{\"decision\""#, r#""missing":"{\"decision\""#, 1));
+    assert_malformed(format!(
+        "{}\n",
+        base.lines().take(2).collect::<Vec<_>>().join("\n")
+    ));
+    assert_malformed(format!("{base}{{\"type\":\"unknown\"}}\n"));
     assert_malformed("{".to_owned());
     assert_malformed(format!("{{\"padding\":\"{}\"}}\n", "x".repeat(1024 * 1024)));
 }
@@ -397,8 +492,20 @@ fn deadline_stops_and_reaps_the_provider_process() {
 }
 
 fn prepared(host: swallowtail_core::ExecutionHostId) -> ClaudeCodeResponsePreparedIntegration {
-    let (process, state) = FakeProcessService::completed("2.1.228 (Claude Code)\n");
+    prepared_at(host, "2.1.228", None)
+}
+
+fn prepared_at(
+    host: swallowtail_core::ExecutionHostId,
+    version: &str,
+    observer: Option<Arc<CapturingDebugObserver>>,
+) -> ClaudeCodeResponsePreparedIntegration {
+    let (process, state) = FakeProcessService::completed(&format!("{version} (Claude Code)\n"));
     let (services, task) = host_services(host.clone(), process, Arc::new(PendingTimeService));
+    let services = match observer {
+        Some(observer) => services.with_diagnostic_observer(observer),
+        None => services,
+    };
     let prepared = block_on(prepare_claude_code_response_only(
         response_preparation_input(host),
         response_preparation_probe(),
@@ -409,6 +516,28 @@ fn prepared(host: swallowtail_core::ExecutionHostId) -> ClaudeCodeResponsePrepar
     assert!(state.waited());
     assert!(task.joined());
     prepared
+}
+
+#[derive(Default)]
+struct CapturingDebugObserver {
+    observations: Mutex<Vec<DebugObservation>>,
+}
+
+impl CapturingDebugObserver {
+    fn observations(&self) -> Vec<DebugObservation> {
+        self.observations.lock().expect("lock").clone()
+    }
+}
+
+impl DiagnosticObserver for CapturingDebugObserver {
+    fn observe(&self, _diagnostic: &Diagnostic) {}
+
+    fn observe_debug(&self, observation: &DebugObservation) {
+        self.observations
+            .lock()
+            .expect("lock")
+            .push(observation.clone());
+    }
 }
 
 fn profile(

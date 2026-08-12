@@ -121,8 +121,13 @@ pub fn fixture(name: &str) -> String {
 
 #[allow(dead_code)]
 pub fn response_fixture(name: &str) -> String {
+    response_fixture_at("2.1.228", name)
+}
+
+#[allow(dead_code)]
+pub fn response_fixture_at(version: &str, name: &str) -> String {
     let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
-        .join("tests/fixtures/claude-code-2.1.228")
+        .join(format!("tests/fixtures/claude-code-{version}"))
         .join(name);
     std::fs::read_to_string(path).unwrap_or_else(|error| panic!("failed to read {name}: {error}"))
 }

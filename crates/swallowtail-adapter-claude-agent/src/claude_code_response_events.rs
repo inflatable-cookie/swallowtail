@@ -2,7 +2,7 @@ use crate::failure::failure;
 use serde_json::Value;
 use swallowtail_core::{
     ActivityContentStream, ActivityDisclosure, FailureClassification, FailureKind, FailureOrigin,
-    FailureRecovery, ModelId, ProviderActivityRef, SafeDiagnostic,
+    FailureRecovery, InterfaceVersion, ModelId, ProviderActivityRef, SafeDiagnostic,
 };
 use swallowtail_runtime::{
     ActivityAssistantPhase, ActivityContent, ActivityContentChangeKind, ActivityContentUpdate,
@@ -18,6 +18,7 @@ const MAXIMUM_ESTIMATED_THINKING_TOKENS: u64 = 1_000_000;
 
 pub(crate) struct ClaudeCodeResponseEventParser {
     model: ModelId,
+    executable_version: InterfaceVersion,
     session_id: Option<String>,
     pending: Vec<u8>,
     sequence: u64,
@@ -33,9 +34,14 @@ pub(crate) struct ClaudeCodeResponseEventParser {
 }
 
 impl ClaudeCodeResponseEventParser {
-    pub(crate) fn new(model: ModelId, operation_id: ActivityOperationId) -> Self {
+    pub(crate) fn new(
+        model: ModelId,
+        executable_version: InterfaceVersion,
+        operation_id: ActivityOperationId,
+    ) -> Self {
         Self {
             model,
+            executable_version,
             session_id: None,
             pending: Vec::new(),
             sequence: 1,
@@ -182,7 +188,7 @@ impl ClaudeCodeResponseEventParser {
             || payload.get("model").and_then(Value::as_str) != Some(self.model.as_str())
             || payload.get("permissionMode").and_then(Value::as_str) != Some("default")
             || payload.get("claude_code_version").and_then(Value::as_str)
-                != Some(crate::CLAUDE_CODE_RESPONSE_ONLY_VERSION)
+                != Some(self.executable_version.as_str())
             || !tools.is_empty()
             || !mcp.is_empty()
         {

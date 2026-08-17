@@ -24,7 +24,7 @@ payload, a documented automation wire, and live turn/tool/usage evidence.
 
 - [x] card 218: freeze exact runtime-bin artifact, JSON-RPC, session-log,
       failure, and private-state boundaries
-- [ ] card 219: implement discovery, compatibility, decode, idle fold,
+- [x] card 219: implement discovery, compatibility, decode, idle fold,
       activity, process-kill cancellation, deadline, and cleanup
 - [ ] card 220: expose host-approved preparation and an exact structured-run
       facade with explicit provider, model, config, and cwd

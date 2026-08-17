@@ -51,3 +51,22 @@ predecessor lands.
 Validation: `python3 scripts/check-deepseek-harness-corpus.py -v` passed 12
 tests; `effigy qa:northstar` passed. The sole roadmap pointer now names card
 219; cards 220-221 remain planned.
+
+## Card 219 closeout
+
+Card 219 completed on worker commit `9bbf4f61`:
+
+- added the separately selectable `swallowtail-adapter-deepseek-harness`
+  workspace package and exact rc6 runtime-bin claim
+- added target-bound installed discovery with exact executable basename and
+  opaque `0.1.0rc6` compatibility parsing
+- added bounded JSON-RPC initialize/prompt/shutdown handling, session-event
+  decoding, content-free reasoning progress, text, harness-owned tool
+  activity, usage, idle folding, safe failure, and namespaced unknowns
+- joined host deadline, process-kill cancellation, terminal delivery, and
+  cleanup without claiming a native JSON-RPC cancel method
+
+Validation: `effigy validate:focused
+swallowtail-adapter-deepseek-harness` passed 8 tests; `cargo fmt --all
+-- --check` passed; warnings-denied Clippy passed for the package and all
+targets. Card 220 is now the sole roadmap pointer; card 221 remains planned.

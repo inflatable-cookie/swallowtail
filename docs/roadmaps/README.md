@@ -13,8 +13,9 @@ shape.
 
 ## Next Task
 
-Implement card 219: build the DeepSeek Harness JSON-RPC discovery and bounded
-driver core against the frozen exact runtime-bin `0.1.0rc6` corpus.
+Implement card 220: expose the host-approved DeepSeek Harness JSON-RPC
+prepared facade with explicit provider, model, Cordis config, cwd, and host
+services.
 
 ## Index
 

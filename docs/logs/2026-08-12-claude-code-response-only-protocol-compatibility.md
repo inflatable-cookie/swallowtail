@@ -78,3 +78,9 @@ In Figmatic, check out Swallowtail implementation commit
 `effigy deps link`, and run packaged
 `g04.005` under card 217. The route must report the installed Claude version in
 diagnostics and fail closed if the live transcript departs from Contract 039.
+
+## Downstream closeout
+
+2026-08-17: card 217 closed from the Figmatic thread. Packaged `g04.005` ran
+against this pin. Figmatic remains the smoke evidence owner. No Figmatic
+mutation landed in Swallowtail.

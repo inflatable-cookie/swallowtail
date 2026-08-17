@@ -49,5 +49,4 @@ recorded here.
 ## Next
 
 Reassess session-id continuity, ACP, and Web `/api` as separate later
-surfaces. Keep `deepseek-official` unqualified. Card 217 remains ready for
-Figmatic `g04.005`.
+surfaces. Keep `deepseek-official` unqualified.

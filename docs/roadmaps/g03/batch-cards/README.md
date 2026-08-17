@@ -1,9 +1,5 @@
 # g03 Batch Cards
 
-## Ready
-
-- [217-figmatic-claude-code-protocol-adoption.md](./217-figmatic-claude-code-protocol-adoption.md)
-
 ## Superseded
 
 - [215-figmatic-claude-code-2-1-228-adoption.md](./215-figmatic-claude-code-2-1-228-adoption.md)
@@ -28,6 +24,7 @@
 - [220-deepseek-harness-prepared-facade.md](./220-deepseek-harness-prepared-facade.md)
 - [219-deepseek-harness-jsonrpc-driver-core.md](./219-deepseek-harness-jsonrpc-driver-core.md)
 - [218-deepseek-harness-artifact-and-event-corpus.md](./218-deepseek-harness-artifact-and-event-corpus.md)
+- [217-figmatic-claude-code-protocol-adoption.md](./217-figmatic-claude-code-protocol-adoption.md)
 - [216-claude-code-response-only-protocol-compatibility.md](./216-claude-code-response-only-protocol-compatibility.md)
 - [213-v0-3-2-annotated-source-tag.md](./213-v0-3-2-annotated-source-tag.md)
 - [212-v0-3-2-exact-ci-candidate.md](./212-v0-3-2-exact-ci-candidate.md)

@@ -1,8 +1,9 @@
 # 217 Figmatic Claude Code Protocol Adoption
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-12
+Updated: 2026-08-17
 Milestone: `../068-claude-code-response-only-protocol-compatibility.md`
 
 ## Goal
@@ -20,10 +21,16 @@ Figmatic and resume the packaged `g04.005` mutation-runway smoke.
 
 ## Acceptance
 
-- link the exact source through `effigy deps link cargo`
-- Figmatic reaches generation through its unchanged prepared facade
-- observed executable-version diagnostics are retained with smoke evidence
-- returned text stays under Figmatic's existing parsing, validation,
-  compilation, gates, and operator acceptance
-- no API key, schema, tool, MCP, retry, continuation, fallback, alternate route,
-  or new provider authority is added
+- [x] link the exact source through `effigy deps link cargo`
+- [x] Figmatic reaches generation through its unchanged prepared facade
+- [x] observed executable-version diagnostics are retained with smoke evidence
+- [x] returned text stays under Figmatic's existing parsing, validation,
+      compilation, gates, and operator acceptance
+- [x] no API key, schema, tool, MCP, retry, continuation, fallback, alternate
+      route, or new provider authority is added
+
+## Evidence
+
+Operator closeout from the Figmatic thread: packaged `g04.005` mutation-runway
+smoke ran against Swallowtail pin `fd2d95e83f6d7f8bdfe7852d3393eb6031d15cf2`.
+Figmatic remains the evidence owner. This repository was not mutated.

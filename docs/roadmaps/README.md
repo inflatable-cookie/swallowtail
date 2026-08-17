@@ -14,8 +14,7 @@ shape.
 ## Next Task
 
 Reassess g03.069 follow-on surfaces: session-id continuity, ACP, and Web
-`/api` as separate later routes. Keep `deepseek-official` unqualified. Card
-217 remains ready for Figmatic `g04.005`.
+`/api` as separate later routes. Keep `deepseek-official` unqualified.
 
 ## Index
 

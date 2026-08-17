@@ -1,6 +1,6 @@
 # 068 Claude Code Response-Only Protocol Compatibility
 
-Status: active
+Status: completed
 Owner: Tom
 Created: 2026-08-12
 Depends on: g03.066; Figmatic `g04.005` preparation evidence
@@ -26,7 +26,7 @@ strict runtime validator without manufacturing qualified evidence.
 
 ## Downstream Handoff
 
-- [ ] card 217: link the exact implementation commit in Figmatic and run the
+- [x] card 217: link the exact implementation commit in Figmatic and run the
       packaged `g04.005` mutation-runway smoke
 
 ## Goals
@@ -63,3 +63,7 @@ strict runtime validator without manufacturing qualified evidence.
 - no edit to immutable `v0.3.2`, historical research, release, or prior
   qualification records
 - no Figmatic mutation in this repository
+
+Card 217 closed 2026-08-17 from the Figmatic thread. Packaged `g04.005`
+ran against Swallowtail pin `fd2d95e83f6d7f8bdfe7852d3393eb6031d15cf2`.
+Figmatic remains the smoke evidence owner.

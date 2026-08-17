@@ -21,6 +21,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-17 Figmatic Claude Code Protocol Adoption Closeout](./2026-08-17-figmatic-claude-code-protocol-adoption.md)
 - [2026-08-17 DeepSeek Harness JSON-RPC Live Acceptance](./2026-08-17-deepseek-harness-jsonrpc-live-acceptance.md)
 - [2026-08-17 DeepSeek Harness JSON-RPC Planning](./2026-08-17-deepseek-harness-jsonrpc-planning.md)
 - [2026-08-12 Claude Code Response-Only Protocol Compatibility](./2026-08-12-claude-code-response-only-protocol-compatibility.md)

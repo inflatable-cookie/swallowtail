@@ -33,8 +33,7 @@ Live proof may use host-local Ollama; that does not qualify
 ## Next
 
 g03.069 is complete. Reassess session-id continuity, ACP, and Web `/api` as
-separate later surfaces. Keep `deepseek-official` unqualified. Card 217
-remains ready for Figmatic `g04.005`.
+separate later surfaces. Keep `deepseek-official` unqualified.
 
 ## Merge
 

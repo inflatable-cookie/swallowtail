@@ -78,6 +78,5 @@ installed and prepared-facade live probes later passed on the host-approved
 
 ## Planning Checkpoint
 
-After card 221, reassess session-id continuity, ACP cancel/permission, and
-Web `/api` catalogue/history as separate identity-bearing surfaces. Promote
-only with exact evidence. DeepSeek-official live remains a later gate.
+g03.070 now owns Web `/api` as `deepseek-harness.local-server`. Session-id
+continuity, ACP, and DeepSeek-official live remain later gates.

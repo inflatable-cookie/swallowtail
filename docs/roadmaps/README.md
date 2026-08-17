@@ -13,8 +13,9 @@ shape.
 
 ## Next Task
 
-Reassess g03.069 follow-on surfaces: session-id continuity, ACP, and Web
-`/api` as separate later routes. Keep `deepseek-official` unqualified.
+Implement card 222: freeze the DeepSeek Harness Web `/api` artifact, loopback
+fence, method allowlist, and redacted corpus at exact
+`@deepseek-ai/dsh@0.1.0-rc.6`.
 
 ## Index
 

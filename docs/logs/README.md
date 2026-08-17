@@ -21,6 +21,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-17 DeepSeek Harness Web `/api` Planning](./2026-08-17-deepseek-harness-web-api-planning.md)
 - [2026-08-17 Figmatic Claude Code Protocol Adoption Closeout](./2026-08-17-figmatic-claude-code-protocol-adoption.md)
 - [2026-08-17 DeepSeek Harness JSON-RPC Live Acceptance](./2026-08-17-deepseek-harness-jsonrpc-live-acceptance.md)
 - [2026-08-17 DeepSeek Harness JSON-RPC Planning](./2026-08-17-deepseek-harness-jsonrpc-planning.md)

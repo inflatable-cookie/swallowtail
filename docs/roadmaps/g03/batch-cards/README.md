@@ -1,5 +1,9 @@
 # g03 Batch Cards
 
+## Ready
+
+- [222-deepseek-harness-web-api-corpus.md](./222-deepseek-harness-web-api-corpus.md)
+
 ## Superseded
 
 - [215-figmatic-claude-code-2-1-228-adoption.md](./215-figmatic-claude-code-2-1-228-adoption.md)
@@ -9,6 +13,9 @@
 
 ## Planned
 
+- [225-deepseek-harness-web-api-acceptance.md](./225-deepseek-harness-web-api-acceptance.md)
+- [224-deepseek-harness-web-api-prepared-facade.md](./224-deepseek-harness-web-api-prepared-facade.md)
+- [223-deepseek-harness-web-api-driver-core.md](./223-deepseek-harness-web-api-driver-core.md)
 - [193-idioms-route-opt-in-runtime-surface.md](./193-idioms-route-opt-in-runtime-surface.md)
 - [194-idioms-route-opt-in-binding-and-codex-proof.md](./194-idioms-route-opt-in-binding-and-codex-proof.md)
 - [195-nucleus-idioms-adoption-delta.md](./195-nucleus-idioms-adoption-delta.md)

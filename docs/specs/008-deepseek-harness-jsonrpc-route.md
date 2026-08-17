@@ -33,7 +33,7 @@ In:
 Out:
 
 - `deepseek.continuation` changes
-- ACP, headless CLI, and Web `/api` routes
+- ACP, headless CLI, and Web `/api` routes (Web `/api` is Spec 009 / g03.070)
 - session-id interactive continuity
 - subagent topology
 - model catalogue, load, import, archive

@@ -1,9 +1,9 @@
 use super::transport::{WebApiTransport, require_loopback_endpoint};
 use super::{
     DEEPSEEK_HARNESS_WEB_RELEASE_AXIS, DEEPSEEK_HARNESS_WEB_RELEASE_VERSION, WebMethod,
-    parse_archive, parse_cancel, parse_fork, parse_history, parse_host_description, parse_models,
-    parse_prompt, parse_search, parse_session_create, parse_session_list, matching_workspace,
-    request_body,
+    matching_workspace, parse_archive, parse_cancel, parse_fork, parse_history,
+    parse_host_description, parse_models, parse_prompt, parse_search, parse_session_create,
+    parse_session_list, request_body,
 };
 use serde_json::{Value, json};
 use std::sync::Arc;

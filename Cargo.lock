@@ -3064,6 +3064,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "swallowtail-adapter-zcode"
+version = "0.3.2"
+dependencies = [
+ "futures-executor",
+ "futures-util",
+ "serde_json",
+ "sha2 0.10.9",
+ "swallowtail-core",
+ "swallowtail-host-local",
+ "swallowtail-runtime",
+]
+
+[[package]]
 name = "swallowtail-core"
 version = "0.3.2"
 dependencies = [

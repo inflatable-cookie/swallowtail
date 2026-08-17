@@ -8,6 +8,9 @@ retained_execution_classifications = {
     ("retained_background_execution", "deepseek-harness.jsonrpc"): "operation_shape_not_applicable",
     ("stream_reattachment", "deepseek-harness.jsonrpc"): "operation_shape_not_applicable",
     ("provider_managed_recovery", "deepseek-harness.jsonrpc"): "selected_surface_absence",
+    ("retained_background_execution", "zcode.app-server"): "operation_shape_not_applicable",
+    ("stream_reattachment", "zcode.app-server"): "operation_shape_not_applicable",
+    ("provider_managed_recovery", "zcode.app-server"): "selected_surface_absence",
     ("provider_managed_recovery", "deepseek-harness.local-server"): "selected_surface_absence",
     ("retained_background_execution", "oh-my-pi.rpc"): "operation_shape_not_applicable",
     ("stream_reattachment", "oh-my-pi.rpc"): "operation_shape_not_applicable",
@@ -84,6 +87,7 @@ working_resource_write_classifications = {
     ("bounded_workspace_text_write", "muse-code.headless"): "selected_surface_absence",
     ("bounded_workspace_text_write", "command-code.headless"): "selected_surface_absence",
     ("bounded_workspace_text_write", "deepseek-harness.jsonrpc"): "selected_surface_absence",
+    ("bounded_workspace_text_write", "zcode.app-server"): "selected_surface_absence",
     ("bounded_workspace_text_write", "deepseek-harness.local-server"): "selected_surface_absence",
     ("bounded_workspace_text_write", "oh-my-pi.rpc"): "selected_surface_absence",
     ("bounded_workspace_text_write", "qwen.headless"): "upstream_unsupported",
@@ -153,6 +157,7 @@ rollover_not_applicable = {
     "command-code.headless",
     "deepseek-harness.jsonrpc",
     "deepseek-harness.local-server",
+    "zcode.app-server",
     "oh-my-pi.rpc",
     "antigravity.catalogue + antigravity.headless",
     "cursor-agent.catalogue + cursor-agent.acp + cursor-agent.headless",
@@ -212,6 +217,7 @@ residual_exact_release_only = {
     ("unverified_newer_allowed", "command-code.headless"),
     ("unverified_newer_allowed", "deepseek-harness.jsonrpc"),
     ("unverified_newer_allowed", "deepseek-harness.local-server"),
+    ("unverified_newer_allowed", "zcode.app-server"),
 }
 residual_contract_or_corpus = {
     ("interactive_session", "qwen.headless"),
@@ -232,6 +238,7 @@ residual_operation_not_applicable = {
         "openai.background",
         "deepseek-harness.jsonrpc",
         "deepseek-harness.local-server",
+        "zcode.app-server",
     }
 } | {
     ("realtime_media_session", route)
@@ -246,6 +253,7 @@ residual_operation_not_applicable = {
         "deepseek.continuation",
         "deepseek-harness.jsonrpc",
         "deepseek-harness.local-server",
+        "zcode.app-server",
         "gemini-cli.acp + gemini-cli.headless",
         "llama-cpp.attached",
         "kimi-code.acp + kimi-code.headless",

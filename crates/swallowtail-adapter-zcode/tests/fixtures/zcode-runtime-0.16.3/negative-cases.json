@@ -1,0 +1,55 @@
+{
+  "fixture_schema": 1,
+  "cases": [
+    {
+      "name": "malformed_json",
+      "mutation": "invalid-json-line",
+      "expected": "malformed_stream"
+    },
+    {
+      "name": "jsonrpc_field_present",
+      "mutation": "frame-includes-jsonrpc-2.0",
+      "expected": "malformed_stream"
+    },
+    {
+      "name": "oversized_frame",
+      "mutation": "line-over-maximum-frame-bytes",
+      "expected": "stream_limit"
+    },
+    {
+      "name": "too_many_records",
+      "mutation": "notification-count-over-live-bound",
+      "expected": "stream_limit"
+    },
+    {
+      "name": "post_terminal_event",
+      "mutation": "event-after-turn-completed",
+      "expected": "lifecycle_invalid"
+    },
+    {
+      "name": "mismatched_runtime",
+      "mutation": "create-result-runtime-differs-from-artifact",
+      "expected": "runtime_mismatch"
+    },
+    {
+      "name": "mismatched_session",
+      "mutation": "event-session-id-differs-from-create",
+      "expected": "session_mismatch"
+    },
+    {
+      "name": "unknown_unscoped_event",
+      "mutation": "unknown-event-without-zcode-namespace",
+      "expected": "content_free_progress"
+    },
+    {
+      "name": "create_without_preferences_reply",
+      "mutation": "create-result-before-runtime-preferences-reply",
+      "expected": "lifecycle_invalid"
+    },
+    {
+      "name": "tool_result_without_call",
+      "mutation": "result-call-id-not-admitted",
+      "expected": "correlation_invalid"
+    }
+  ]
+}

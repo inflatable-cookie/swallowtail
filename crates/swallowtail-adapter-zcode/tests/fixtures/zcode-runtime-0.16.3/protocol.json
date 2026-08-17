@@ -1,0 +1,91 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-08-17",
+  "route_id": "zcode.app-server",
+  "driver_id": "swallowtail.zcode.app-server",
+  "family": "zcode",
+  "artifact_revision": "0.16.3",
+  "version_axis": "zcode.runtime",
+  "compatibility_revision": "zcode.app-server-0.16.3-1",
+  "protocol_facade_revision": "zcode.protocol-stdio-v1",
+  "qualification": "qualified-only",
+  "transport": {
+    "kind": "owned-process",
+    "framing": "ndjson",
+    "protocol": "line-delimited-json",
+    "jsonrpc_field": false,
+    "stdout": "protocol-only",
+    "stderr": "host-owned-diagnostic-channel"
+  },
+  "client_methods": [
+    "session/create",
+    "session/subscribe",
+    "session/send"
+  ],
+  "server_requests": [
+    "session/requestRuntimePreferences"
+  ],
+  "server_notifications": [
+    "session/event"
+  ],
+  "deferred_methods": [
+    "session/stop",
+    "session/list",
+    "session/resume",
+    "session/read",
+    "session/messages"
+  ],
+  "rules": {
+    "create_blocks_on_runtime_preferences": true,
+    "prompt_result": "enqueue-receipt-only",
+    "prompt_result_field": "accepted",
+    "idle_owner": "swallowtail",
+    "cancel": "force-stop-owned-process",
+    "native_cancel": false,
+    "session_close": false,
+    "terminal_event": "turn.completed-or-turn.failed",
+    "unknown_projection": "namespaced-observation-or-content-free-progress",
+    "unknown_namespace": "zcode/",
+    "unscoped_unknown_events": "content-free-progress",
+    "non_session_notifications": "content-free-progress",
+    "reasoning_projection": "content-free-progress",
+    "create_result_is_snapshot_not_event_stream": true
+  },
+  "bounds": {
+    "maximum_frame_bytes": 65536,
+    "maximum_live_notifications": 8192,
+    "maximum_durable_records": 4096,
+    "maximum_stream_bytes": 8388608,
+    "maximum_text_bytes": 4194304,
+    "maximum_tool_records": 256
+  },
+  "known_event_types": [
+    "turn.started",
+    "model.streaming",
+    "tool.updated",
+    "turn.completed",
+    "turn.failed",
+    "session.updated",
+    "turn.terminal"
+  ],
+  "stream_cardinality": {
+    "handshake_live_messages": 4,
+    "prompt_lifecycle": "reconstructed-from-protocol",
+    "relationship": "create_result_snapshot_is_not_the_event_stream"
+  },
+  "redaction": {
+    "prompt": "<redacted-prompt>",
+    "reasoning_delta": "",
+    "tool_input": {},
+    "private_paths": "never-emitted"
+  },
+  "runtime_preferences": {
+    "nativeSearchEnhancementsEnabled": false,
+    "memoryEnabled": false,
+    "askUserQuestionAutoResolutionEnabled": false
+  },
+  "runtime_preference_scopes": [
+    "runtime-materialization",
+    "user-execution"
+  ]
+}

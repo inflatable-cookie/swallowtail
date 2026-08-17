@@ -297,9 +297,8 @@ pub(crate) fn parse_workspace_list(
     value: &Value,
     expected_path: &str,
 ) -> Result<WorkspaceSummary, RuntimeFailure> {
-    matching_workspace(value, expected_path)?.ok_or_else(|| {
-        malformed("workspace.list has no matching workspace")
-    })
+    matching_workspace(value, expected_path)?
+        .ok_or_else(|| malformed("workspace.list has no matching workspace"))
 }
 
 pub(crate) fn matching_workspace(

@@ -12,6 +12,9 @@ Normal validation scripts:
 - `check-deepseek-harness-web-corpus.py` — package-independent redacted Web
   `/api` fixture, loopback trust, method allowlist, history, correlation,
   carrier, and bound validation for the pinned DeepSeek Harness web evidence
+- `check-zcode-app-server-corpus.py` — package-independent redacted
+  app-server fixture, handshake, lifecycle, correlation, and bound
+  validation for the pinned ZCode runtime evidence
 - `check-integration-guide-coverage.py` — Contract 052 production-route,
   feature-header, canonical-guide, index, coverage-state, and compiling-example
   traceability behind `effigy qa:guides`

@@ -575,6 +575,31 @@
         "hidden reasoning",
         "raw tool input and result"
       ]
+    },
+    {
+      "id": "zcode.app-server",
+      "driver": "swallowtail.zcode.app-server",
+      "transport": "zcode-app-server-ldjson-stdio",
+      "qualified": "0.16.3",
+      "prepared_profiles": [
+        {
+          "operation": "structured-run",
+          "availability": "available"
+        }
+      ],
+      "unavailable_operations": [],
+      "not_applicable_operations": [],
+      "unknown_posture": "preserve-namespaced",
+      "exact_absences": [
+        "interactive session continuity",
+        "model catalogue",
+        "consumer tool exchange",
+        "permission exchange",
+        "native session/stop",
+        "provider session management",
+        "subagent topology",
+        "reasoning content"
+      ]
     }
   ]
 }

@@ -20,7 +20,7 @@ cargo metadata --no-deps --format-version 1 > "$release_metadata"
 release_version=$(jq -r '.packages[0].version' "$release_metadata")
 
 jq -e --arg version "$release_version" --arg rust_msrv "$release_msrv_cargo" '
-  (.packages | length) == 31 and
+  (.packages | length) == 32 and
   all(.packages[];
     .version == $version and
     .edition == "2024" and
@@ -42,6 +42,7 @@ jq -e --arg version "$release_version" --arg rust_msrv "$release_msrv_cargo" '
          .name == "swallowtail-adapter-muse" or
          .name == "swallowtail-adapter-command-code" or
          .name == "swallowtail-adapter-deepseek-harness" or
+         .name == "swallowtail-adapter-zcode" or
          .name == "swallowtail-adapter-pi" or
          .name == "swallowtail-adapter-qwen") and
         .features == {"live-probes":[]}
@@ -59,12 +60,13 @@ jq -r '.packages[].name' "$release_metadata" | LC_ALL=C sort > "$release_names"
 {
   cat release-baselines/public-api-0.3.2/packages.txt
   printf 'swallowtail-adapter-deepseek-harness\n'
+  printf 'swallowtail-adapter-zcode\n'
 } | LC_ALL=C sort > "$release_expected_names"
 diff -u "$release_expected_names" "$release_names"
 
 source scripts/release-package-set.sh
 printf '%s\n' "${release_packages[@]}" | LC_ALL=C sort > "$release_order_names"
-grep -Fvx 'swallowtail-adapter-deepseek-harness' "$release_names" > "$release_tag_names"
+grep -Fvx -e 'swallowtail-adapter-deepseek-harness' -e 'swallowtail-adapter-zcode' "$release_names" > "$release_tag_names"
 diff -u "$release_tag_names" "$release_order_names"
 [[ ${#release_packages[@]} -eq 30 ]]
 [[ "${release_stage_2[*]}" == "swallowtail-idioms" ]]
@@ -84,9 +86,11 @@ jq -r '
     release-baselines/internal-dependencies-0.3.2.tsv
   printf 'swallowtail-adapter-deepseek-harness\tswallowtail-core\t^%s\n' "$release_version"
   printf 'swallowtail-adapter-deepseek-harness\tswallowtail-runtime\t^%s\n' "$release_version"
+  printf 'swallowtail-adapter-zcode\tswallowtail-core\t^%s\n' "$release_version"
+  printf 'swallowtail-adapter-zcode\tswallowtail-runtime\t^%s\n' "$release_version"
 } \
   | LC_ALL=C sort > "$release_expected_edges"
 diff -u "$release_expected_edges" "$release_edges"
 
-printf 'current-source metadata passed for 31 crates at %s and Rust %s; immutable v0.3.2 baseline remains 30\n' \
+printf 'current-source metadata passed for 32 crates at %s and Rust %s; immutable v0.3.2 baseline remains 30\n' \
   "$release_version" "$release_msrv_cargo"

@@ -1,27 +1,27 @@
 expected_no_counts = Counter(
     {
-        "unverified_newer_allowed": 6,
+        "unverified_newer_allowed": 7,
         "structured_run": 2,
         "interactive_session": 6,
         "realtime_media_session": 3,
         "usage_evidence": 4,
         "billed_cost_evidence": 18,
-        "output_token_limit": 21,
-        "reasoning_selection": 16,
-        "structured_output": 24,
-        "attachments": 24,
-        "consumer_tool_exchange": 25,
-        "permission_exchange": 26,
-        "question_exchange": 23,
+        "output_token_limit": 22,
+        "reasoning_selection": 17,
+        "structured_output": 25,
+        "attachments": 25,
+        "consumer_tool_exchange": 26,
+        "permission_exchange": 27,
+        "question_exchange": 24,
         "load_session": 23,
         "resume_session": 23,
         "provider_session_catalogue": 6,
         "provider_session_import": 7,
-        "bounded_workspace_text_write": 12,
-        "external_search": 27,
+        "bounded_workspace_text_write": 13,
+        "external_search": 28,
         "retained_background_execution": 5,
         "stream_reattachment": 3,
-        "provider_managed_recovery": 23,
+        "provider_managed_recovery": 24,
         "provider_session_archive": 8,
         "provider_session_restore": 9,
         "provider_session_delete": 7,
@@ -47,11 +47,11 @@ audited_value_counts = Counter(
 )
 if audited_value_counts != Counter(
     {
-        "Yes": 276,
-        "No": 382,
-        "Not applicable": 321,
+        "Yes": 282,
+        "No": 393,
+        "Not applicable": 336,
         "Partial": 2,
-        "Caller-supplied": 6,
+        "Caller-supplied": 7,
         "Session-negotiated": 3,
     }
 ):
@@ -62,5 +62,5 @@ if actual_no_counts != expected_no_counts:
     raise SystemExit(
         f"provider solution No inventory changed: {dict(actual_no_counts)}"
     )
-if len(no_cells) != 382 or len(no_cells) != len(set(no_cells)):
-    raise SystemExit("provider solution No inventory must contain 382 unique cells")
+if len(no_cells) != 393 or len(no_cells) != len(set(no_cells)):
+    raise SystemExit("provider solution No inventory must contain 393 unique cells")

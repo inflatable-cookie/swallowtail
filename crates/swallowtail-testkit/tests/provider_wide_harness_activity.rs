@@ -11,7 +11,7 @@ fn every_production_harness_route_has_exact_prepared_activity_truth() {
         "044-observable-agent-activity-and-disclosure"
     );
     let routes = inventory["routes"].as_array().expect("routes are an array");
-    assert_eq!(routes.len(), 25);
+    assert_eq!(routes.len(), 26);
 
     let ids = routes
         .iter()
@@ -45,6 +45,7 @@ fn every_production_harness_route_has_exact_prepared_activity_truth() {
             "opencode.http",
             "pi.rpc",
             "qwen.headless",
+            "zcode.app-server",
         ])
     );
 
@@ -94,7 +95,7 @@ fn every_production_harness_route_has_exact_prepared_activity_truth() {
         }
     }
 
-    assert_eq!(profiles.len(), 32);
+    assert_eq!(profiles.len(), 33);
     for expected in [
         ("antigravity.headless", "structured-run"),
         ("antigravity.headless", "interactive-session"),

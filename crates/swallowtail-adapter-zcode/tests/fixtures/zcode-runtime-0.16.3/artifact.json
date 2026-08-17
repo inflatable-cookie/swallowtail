@@ -1,0 +1,50 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-08-17",
+  "product": "ZCode",
+  "license": "upstream-desktop-plus-mit-launcher",
+  "published_identity": "0.16.3",
+  "version_axis": "zcode.runtime",
+  "qualification": "qualified-only",
+  "unverified_newer": false,
+  "probe_package": {
+    "distribution": "zcode-app-cli",
+    "version": "3.7.7-13",
+    "is_compatibility_axis": false
+  },
+  "desktop": {
+    "about": "3.7.7",
+    "is_compatibility_axis": false
+  },
+  "executable": {
+    "basename": "zcode.cjs",
+    "size_bytes": 13135488,
+    "sha256": "3e3433d90fa502e5d02498dfde6c2090df898331359bcfe5f3dbc9a1d00b685f"
+  },
+  "launcher": {
+    "basename": "zcode.js",
+    "sha256": "36b9cb48bb79eab0c568909fb9830750f68f701a5aab16cb181c735909555362",
+    "shebang": "#!/usr/bin/env node",
+    "is_compatibility_axis": false
+  },
+  "package_json": {
+    "sha256": "3503bcbfe812aa8a6d663db649ec4b2e4d45571e049ad5d40723798c5200ee8f"
+  },
+  "spawn": {
+    "kind": "interpreted-script",
+    "runtime": "node",
+    "payload": "zcode.cjs",
+    "args": ["app-server"]
+  },
+  "extraction": {
+    "app_version": "3.7.7",
+    "cli_version": "0.16.3",
+    "source": "ZCode-3.7.7-linux-x64.deb"
+  },
+  "doctor": {
+    "cli_name": "zcode",
+    "cli_version": "0.16.3",
+    "packaging": "node-bundle",
+    "version_is_compatibility_axis": true
+  }
+}

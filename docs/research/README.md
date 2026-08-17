@@ -71,6 +71,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [118 Command Code Session Continuity And Export](./118-command-code-session-continuity-and-export.md)
 - [124 DeepSeek Harness JSON-RPC Route Qualification](./124-deepseek-harness-jsonrpc-route-qualification.md)
 - [125 DeepSeek Harness Web `/api` Route Qualification](./125-deepseek-harness-web-api-route-qualification.md)
+- [126 ZCode App-Server Route Qualification](./126-zcode-app-server-route-qualification.md)
 
 ### Hosted APIs And SDKs
 

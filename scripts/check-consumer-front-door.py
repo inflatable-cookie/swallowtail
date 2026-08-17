@@ -90,8 +90,8 @@ if documented_packages != expected_packages:
 
 current_routes = set(inventory_production_routes())
 expected_routes = set(read("release-baselines/production-routes-0.3.2.txt").splitlines())
-if not expected_routes <= current_routes or "deepseek-harness.jsonrpc" not in current_routes:
-    fail("current route inventory lost tagged routes or the additive DeepSeek Harness route")
+if not expected_routes <= current_routes or "deepseek-harness.jsonrpc" not in current_routes or "zcode.app-server" not in current_routes:
+    fail("current route inventory lost tagged routes or the additive DeepSeek Harness or ZCode routes")
 release_route_section = section(release, "## Production Routes", "## Highlights")
 documented_routes = set(re.findall(r"^- `([^`]+)`$", release_route_section, re.MULTILINE))
 if documented_routes != expected_routes:

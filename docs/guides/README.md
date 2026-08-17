@@ -55,3 +55,4 @@ contracts or architecture.
 - [Realtime Prepared Integration](realtime-prepared-integration.md)
 - [Validation Tiers](validation-tiers.md)
 - [Working-State Restoration](working-state-restoration.md)
+- [ZCode App-Server Prepared Integration](zcode-app-server-prepared-integration.md)

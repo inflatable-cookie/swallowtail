@@ -6,10 +6,10 @@ Updated: 2026-08-17
 
 ## Realized State
 
-Swallowtail has a thirty-one-package current-source Rust workspace plus its
+Swallowtail has a thirty-two-package current-source Rust workspace plus its
 strict Northstar authority spine. The immutable `v0.3.2` tag remains a
-thirty-package source baseline; the current tree adds one unreleased reviewed
-adapter with two route surfaces.
+thirty-package source baseline; the current tree adds two unreleased reviewed
+adapters with three additional route surfaces.
 
 - `swallowtail-core` owns pure provider-neutral contract records, including
   runtime identities, access state, configured instances, model routes,
@@ -190,6 +190,12 @@ adapter with two route surfaces.
   models, control-free history, native cancel/fork, and target-only archive.
   Neither route qualifies ACP, browser UI, interactive continuity, or
   DeepSeek-official SSE behavior.
+- `swallowtail-adapter-zcode` implements one exact `0.16.3` app-server route
+  over host-owned line-delimited JSON stdio on an interpreted `node` plus
+  `zcode.cjs` child. The route owns bounded idle-folded structured runs,
+  a required runtime-preferences reply during create, and process-kill
+  cancellation. It does not qualify OpenCode HTTP, hosted GLM / Z.AI
+  official, `--print`, ACP, or native `session/stop`.
 - `swallowtail-adapter-opencode` implements version-bound OpenCode
   `1.14.48..=1.18.10` model discovery and ambient-host interactive sessions with
   read-only tool permissions over host-approved HTTP and bounded SSE; exact
@@ -281,6 +287,10 @@ adapter with two route surfaces.
   continuation or serial interactive turns with private continuation; both
   retain exact billed cost and connection-ending cancellation, while a
   separate language-models driver exposes bounded hosted catalogue evidence
+- `swallowtail-adapter-zcode` implements exact installed `zcode.cjs` discovery
+  by payload digest, host-approved Node interpretation, host settings, and
+  one structured app-server run with explicit provider, model, and `plan` or
+  `build` mode
 - `swallowtail-adapter-grok` realizes maintained installed Grok Build
   `0.2.114..=0.2.117` discovery with exact source-revision binding, delegated
   subscription access preparation, ambient configuration, durable-retention
@@ -447,6 +457,12 @@ Crate status:
   provider-session catalogue/history, native cancel/fork/archive, and joined
   process cleanup. The package remains an unreleased additive candidate after
   `v0.3.2`.
+- `swallowtail-adapter-zcode` — realized for the exact `0.16.3` runtime
+  app-server structured-run route. The branch binds host-approved Node,
+  `zcode.cjs`, settings, explicit provider/model, host-supplied `plan` or
+  `build`, bounded stream parsing, namespaced unknown observations,
+  process-kill cancellation, and joined cleanup. The package remains an
+  unreleased additive candidate after `v0.3.2`.
 - `swallowtail-adapter-opencode` — realized for attached model catalogue and
   read-only interactive sessions over a six-route HTTP/SSE subset with exact
   delegated-auth, version, provider/model, abort, deadline, and cleanup bounds

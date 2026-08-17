@@ -2,6 +2,7 @@
 
 ## Active
 
+None.
 
 ## Superseded
 
@@ -23,6 +24,10 @@
 
 ## Completed
 
+- [229-zcode-app-server-acceptance.md](./229-zcode-app-server-acceptance.md)
+- [228-zcode-app-server-prepared-facade.md](./228-zcode-app-server-prepared-facade.md)
+- [227-zcode-app-server-driver-core.md](./227-zcode-app-server-driver-core.md)
+- [226-zcode-app-server-corpus.md](./226-zcode-app-server-corpus.md)
 - [225-deepseek-harness-web-api-acceptance.md](./225-deepseek-harness-web-api-acceptance.md)
 - [224-deepseek-harness-web-api-prepared-facade.md](./224-deepseek-harness-web-api-prepared-facade.md)
 - [223-deepseek-harness-web-api-driver-core.md](./223-deepseek-harness-web-api-driver-core.md)

@@ -1,0 +1,12 @@
+{"id":1,"method":"session/create","params":{"workspace":{"workspacePath":"<fixture-cwd>","workspaceKey":"<fixture-cwd>"},"mode":"plan"}}
+{"id":"server-5","method":"session/requestRuntimePreferences","params":{"sessionId":"fixture-session-5","scope":"runtime-materialization"}}
+{"id":"server-5","result":{"nativeSearchEnhancementsEnabled":false,"memoryEnabled":false,"askUserQuestionAutoResolutionEnabled":false}}
+{"id":1,"result":{"messages":[],"projection":{"status":"idle"},"protocol":{"name":"zcode-app-server"},"runtime":{"cliVersion":"0.16.3"},"session":{"sessionId":"fixture-session-5","sessionKind":"local","status":"idle","mode":"plan","model":"fixture-model","title":"","traceId":"fixture-trace-5","target":null,"workspace":{"workspacePath":"<fixture-cwd>","workspaceKey":"<fixture-cwd>"},"createdAt":"2026-01-01T00:00:00.000Z","updatedAt":"2026-01-01T00:00:00.000Z"},"settings":{"mode":{"current":"plan"},"model":{"current":{"modelId":"fixture-model"}}},"slashCommands":[],"todoGroups":[],"todos":[]}}
+{"id":2,"method":"session/subscribe","params":{"sessionId":"fixture-session-5","deliveryKind":"desktop-continuous","includeSnapshot":false,"afterSeq":0}}
+{"id":2,"result":{"eventSeq":0}}
+{"id":3,"method":"session/send","params":{"sessionId":"fixture-session-5","content":"<redacted-prompt>"}}
+{"id":3,"result":{"accepted":true}}
+{"method":"session/event","params":{"sessionId":"fixture-session-5","seq":1,"type":"turn.started","payload":{}}}
+{"method":"session/event","params":{"sessionId":"fixture-session-5","seq":2,"type":"zcode/future.notice","payload":{"observation":"<redacted-observation>"}}}
+{"method":"session/event","params":{"sessionId":"fixture-session-5","seq":3,"type":"model.streaming","payload":{"kind":"text_delta","delta":"fixture future-compatible response"}}}
+{"method":"session/event","params":{"sessionId":"fixture-session-5","seq":4,"type":"turn.completed","payload":{"resultType":"success","usage":{"inputTokens":12,"outputTokens":5,"totalTokens":17}}}}

@@ -1,0 +1,10 @@
+{"id":1,"method":"session/create","params":{"workspace":{"workspacePath":"<fixture-cwd>","workspaceKey":"<fixture-cwd>"},"mode":"plan"}}
+{"id":"server-4","method":"session/requestRuntimePreferences","params":{"sessionId":"fixture-session-4","scope":"runtime-materialization"}}
+{"id":"server-4","result":{"nativeSearchEnhancementsEnabled":false,"memoryEnabled":false,"askUserQuestionAutoResolutionEnabled":false}}
+{"id":1,"result":{"messages":[],"projection":{"status":"idle"},"protocol":{"name":"zcode-app-server"},"runtime":{"cliVersion":"0.16.3"},"session":{"sessionId":"fixture-session-4","sessionKind":"local","status":"idle","mode":"plan","model":"fixture-model","title":"","traceId":"fixture-trace-4","target":null,"workspace":{"workspacePath":"<fixture-cwd>","workspaceKey":"<fixture-cwd>"},"createdAt":"2026-01-01T00:00:00.000Z","updatedAt":"2026-01-01T00:00:00.000Z"},"settings":{"mode":{"current":"plan"},"model":{"current":{"modelId":"fixture-model"}}},"slashCommands":[],"todoGroups":[],"todos":[]}}
+{"id":2,"method":"session/subscribe","params":{"sessionId":"fixture-session-4","deliveryKind":"desktop-continuous","includeSnapshot":false,"afterSeq":0}}
+{"id":2,"result":{"eventSeq":0}}
+{"id":3,"method":"session/send","params":{"sessionId":"fixture-session-4","content":"<redacted-prompt>"}}
+{"id":3,"result":{"accepted":true}}
+{"method":"session/event","params":{"sessionId":"fixture-session-4","seq":1,"type":"turn.started","payload":{}}}
+{"method":"session/event","params":{"sessionId":"fixture-session-4","seq":2,"type":"turn.failed","payload":{"error":{"code":"MISSING_CREDENTIAL"}}}}

@@ -21,6 +21,9 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-17 ZCode App-Server Live Acceptance](./2026-08-17-zcode-app-server-acceptance.md)
+- [2026-08-17 ZCode App-Server Driver And Prepared Facade](./2026-08-17-zcode-app-server-driver-and-facade.md)
+- [2026-08-17 ZCode App-Server Planning](./2026-08-17-zcode-app-server-planning.md)
 - [2026-08-17 DeepSeek Harness Web `/api` Live Acceptance](./2026-08-17-deepseek-harness-web-api-live-acceptance.md)
 - [2026-08-17 DeepSeek Harness Web `/api` Planning](./2026-08-17-deepseek-harness-web-api-planning.md)
 - [2026-08-17 Figmatic Claude Code Protocol Adoption Closeout](./2026-08-17-figmatic-claude-code-protocol-adoption.md)

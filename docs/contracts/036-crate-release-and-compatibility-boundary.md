@@ -44,9 +44,11 @@ The `v0.3.0` / `v0.3.1` tags keep those 28 packages and 34 production routes.
 and 36 production routes.
 The current source additionally carries the reviewed additive
 `swallowtail-adapter-deepseek-harness` package and
-`deepseek-harness.jsonrpc` and `deepseek-harness.local-server` routes, for 31
-current-source packages and 38 production routes. It is unreleased and is not
-part of the immutable `v0.3.2` inventories.
+`deepseek-harness.jsonrpc` and `deepseek-harness.local-server` routes, plus
+the reviewed additive `swallowtail-adapter-zcode` package and
+`zcode.app-server` route, for 32 current-source packages and 39 production
+routes. They are unreleased and are not part of the immutable `v0.3.2`
+inventories.
 
 Foundations:
 
@@ -90,6 +92,7 @@ Opt-in adapters:
 - `swallowtail-adapter-pi`
 - `swallowtail-adapter-qwen`
 - `swallowtail-adapter-xai`
+- `swallowtail-adapter-zcode`
 
 There is no umbrella crate or intentionally private implementation crate.
 Every package remains separately selectable. Selecting one grants no authority
@@ -282,13 +285,13 @@ not every provider behavior.
 Credential-free release checks sit behind explicit Effigy selectors and cover:
 
 - clean source and exact commit identity
-- 31-package current-source metadata and dependency topology, kept distinct
+- 32-package current-source metadata and dependency topology, kept distinct
   from the immutable 30-package `v0.3.2`, 28-package `v0.2.0` / `v0.3.1`, and
   27-package `v0.1.x` baselines
 - semantic public API baseline, with the immutable 30-package `v0.3.2`
   release frozen separately from the reviewed current-source overrides in
   `release-baselines/public-api-unreleased/` (including Claude response-only
-  compatibility and the DeepSeek Harness package) and the immutable
+  compatibility, the DeepSeek Harness package, and the ZCode package) and the immutable
   28-package `v0.3.0` compatibility baseline
 - denied missing public documentation
 - dependency advisory, license, and source policy
@@ -335,8 +338,9 @@ GitHub Release creation, consumer edits, and provider work remain separate.
 
 - all 30 tagged packages are separately consumable from one exact source
   identity
-- the current source exposes the reviewed 31st DeepSeek Harness package and
-  route as unreleased additive candidate state; it is not presented as tagged
+- the current source exposes the reviewed DeepSeek Harness and ZCode
+  packages and routes as unreleased additive candidate state; they are not
+  presented as tagged
 - the 29th and 30th Command Code and idioms packages first appear in `v0.3.2`
 - the breaking binding-helper migration is explicit and limited to Codex and
   Ollama callers

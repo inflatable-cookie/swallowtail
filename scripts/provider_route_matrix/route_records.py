@@ -1,5 +1,5 @@
 structured = Counter(row["structured_run"] for row in rows)
-if structured != Counter({"Yes": 27, "No": 2, "Not applicable": 1}):
+if structured != Counter({"Yes": 28, "No": 2, "Not applicable": 1}):
     raise SystemExit(
         f"provider solution structured_run dispositions changed: {dict(structured)}"
     )

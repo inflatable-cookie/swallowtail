@@ -13,9 +13,9 @@ shape.
 
 ## Next Task
 
-Reassess Contract 054 live promotion, ACP, JSON-RPC session-id continuity,
-and DeepSeek-official as separate later gates. Keep `deepseek-official`
-unqualified.
+Reassess native `session/stop`, `--print`, history, ACP, and Z.AI official as
+separate later gates after g03.071. Keep OpenCode and hosted GLM HTTP outside
+the first ZCode route.
 
 ## Index
 

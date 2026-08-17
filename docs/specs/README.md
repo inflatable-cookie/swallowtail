@@ -9,6 +9,7 @@ architecture, contracts, roadmaps, or logs.
 - [007 Route-Path Idioms Opt-In](007-route-path-idioms-opt-in.md)
 - [008 DeepSeek Harness JSON-RPC Route](008-deepseek-harness-jsonrpc-route.md)
 - [009 DeepSeek Harness Web `/api` Route](009-deepseek-harness-web-api-route.md)
+- [010 ZCode App-Server Route](010-zcode-app-server-route.md)
 
 ## Promoted Specs
 

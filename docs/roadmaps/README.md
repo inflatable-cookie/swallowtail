@@ -13,9 +13,8 @@ shape.
 
 ## Next Task
 
-Implement card 222: freeze the DeepSeek Harness Web `/api` artifact, loopback
-fence, method allowlist, and redacted corpus at exact
-`@deepseek-ai/dsh@0.1.0-rc.6`.
+Implement card 225: close DeepSeek Harness Web `/api` route truth, operator
+guidance, and deterministic plus separately gated live acceptance.
 
 ## Index
 

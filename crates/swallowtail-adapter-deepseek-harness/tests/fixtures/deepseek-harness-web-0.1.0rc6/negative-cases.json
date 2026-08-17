@@ -1,0 +1,32 @@
+{
+  "fixture_schema": 1,
+  "denied_methods": [
+    {"method": "settings.get", "reason": "not-in-allowlist", "provider_work_invocations": 0},
+    {"method": "credentials.read", "reason": "not-in-allowlist", "provider_work_invocations": 0},
+    {"method": "llm.configure", "reason": "not-in-allowlist", "provider_work_invocations": 0},
+    {"method": "host.pickDirectory", "reason": "not-in-allowlist", "provider_work_invocations": 0},
+    {"method": "session.export", "reason": "not-in-allowlist", "provider_work_invocations": 0},
+    {"method": "session.restore", "reason": "not-in-allowlist", "provider_work_invocations": 0},
+    {"method": "session.delete", "reason": "not-in-allowlist", "provider_work_invocations": 0},
+    {"method": "subagent.spawn", "reason": "not-in-allowlist", "provider_work_invocations": 0},
+    {"method": "skill.invoke", "reason": "not-in-allowlist", "provider_work_invocations": 0},
+    {"method": "goal.create", "reason": "not-in-allowlist", "provider_work_invocations": 0},
+    {"method": "command.run", "reason": "not-in-allowlist", "provider_work_invocations": 0}
+  ],
+  "trust_fence": [
+    {"name": "non-loopback-endpoint", "endpoint": "http://192.0.2.9:3080", "accepted": false, "provider_work_invocations": 0},
+    {"name": "cross-site-fetch", "endpoint": "http://127.0.0.1:3080", "headers": {"sec-fetch-site": "cross-site"}, "accepted": false, "provider_work_invocations": 0},
+    {"name": "foreign-origin", "endpoint": "http://127.0.0.1:3080", "headers": {"origin": "http://fixture-origin.invalid"}, "accepted": false, "provider_work_invocations": 0},
+    {"name": "null-origin", "endpoint": "http://127.0.0.1:3080", "headers": {"origin": "null"}, "accepted": false, "provider_work_invocations": 0},
+    {"name": "bearer-credential", "endpoint": "http://127.0.0.1:3080", "bearer_present": true, "accepted": false, "provider_work_invocations": 0}
+  ],
+  "identity_cases": [
+    {"name": "redacted-upstream-id", "upstream_identity": "<redacted-random-identity>", "correlation_id": "fixture-rpc-randomized", "response_correlation_id": "fixture-rpc-randomized", "accepted": true},
+    {"name": "stable-session-correlation", "session_id": "fixture-session-1", "list_session_id": "fixture-session-1", "history_session_id": "fixture-session-1", "accepted": true}
+  ],
+  "protocol_cases": [
+    {"name": "client-message-on-mux-downlink", "wire_type": "client-request", "accepted": false, "provider_work_invocations": 0},
+    {"name": "unknown-server-frame", "wire_type": "server-request", "frame_type": "session/unknown", "accepted": false, "provider_work_invocations": 0},
+    {"name": "history-resume-flag", "method": "session.history", "payload": {"sessionId": "fixture-session-1", "resume": true}, "accepted": false, "provider_work_invocations": 0}
+  ]
+}

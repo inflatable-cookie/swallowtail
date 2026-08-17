@@ -44,9 +44,9 @@ The `v0.3.0` / `v0.3.1` tags keep those 28 packages and 34 production routes.
 and 36 production routes.
 The current source additionally carries the reviewed additive
 `swallowtail-adapter-deepseek-harness` package and
-`deepseek-harness.jsonrpc` route, for 31 current-source packages and 37
-production routes. It is unreleased and is not part of the immutable
-`v0.3.2` inventories.
+`deepseek-harness.jsonrpc` and `deepseek-harness.local-server` routes, for 31
+current-source packages and 38 production routes. It is unreleased and is not
+part of the immutable `v0.3.2` inventories.
 
 Foundations:
 

@@ -10,6 +10,7 @@ no_classification_overrides = {
     ("structured_run", "openai.realtime"): "operation_shape_not_applicable",
     ("provider_session_catalogue", "oh-my-pi.rpc"): "selected_surface_absence",
     ("provider_session_import", "oh-my-pi.rpc"): "selected_surface_absence",
+    ("provider_session_import", "deepseek-harness.local-server"): "selected_surface_absence",
 }
 generation_control_classifications = {
     ("output_token_limit", "muse-code.headless"): "selected_surface_absence",
@@ -20,6 +21,9 @@ generation_control_classifications = {
     ("output_token_limit", "deepseek-harness.jsonrpc"): "selected_surface_absence",
     ("reasoning_selection", "deepseek-harness.jsonrpc"): "selected_surface_absence",
     ("structured_output", "deepseek-harness.jsonrpc"): "selected_surface_absence",
+    ("output_token_limit", "deepseek-harness.local-server"): "selected_surface_absence",
+    ("reasoning_selection", "deepseek-harness.local-server"): "selected_surface_absence",
+    ("structured_output", "deepseek-harness.local-server"): "selected_surface_absence",
     ("output_token_limit", "oh-my-pi.rpc"): "selected_surface_absence",
     ("structured_output", "oh-my-pi.rpc"): "selected_surface_absence",
     ("output_token_limit", "antigravity.catalogue + antigravity.headless"): "upstream_unsupported",
@@ -87,6 +91,11 @@ input_callback_classifications = {
     ("permission_exchange", "deepseek-harness.jsonrpc"): "selected_surface_absence",
     ("question_exchange", "deepseek-harness.jsonrpc"): "selected_surface_absence",
     ("external_search", "deepseek-harness.jsonrpc"): "selected_surface_absence",
+    ("attachments", "deepseek-harness.local-server"): "selected_surface_absence",
+    ("consumer_tool_exchange", "deepseek-harness.local-server"): "selected_surface_absence",
+    ("permission_exchange", "deepseek-harness.local-server"): "selected_surface_absence",
+    ("question_exchange", "deepseek-harness.local-server"): "selected_surface_absence",
+    ("external_search", "deepseek-harness.local-server"): "selected_surface_absence",
     ("consumer_tool_exchange", "oh-my-pi.rpc"): "selected_surface_absence",
     ("permission_exchange", "oh-my-pi.rpc"): "selected_surface_absence",
     ("external_search", "oh-my-pi.rpc"): "selected_surface_absence",
@@ -232,6 +241,9 @@ session_continuity_classifications = {
     ("load_session", "deepseek.continuation"): "operation_shape_not_applicable",
     ("resume_session", "deepseek.continuation"): "operation_shape_not_applicable",
     ("native_session_close", "deepseek.continuation"): "operation_shape_not_applicable",
+    ("load_session", "deepseek-harness.local-server"): "selected_surface_absence",
+    ("resume_session", "deepseek-harness.local-server"): "selected_surface_absence",
+    ("native_session_close", "deepseek-harness.local-server"): "selected_surface_absence",
     ("load_session", "gemini-cli.acp + gemini-cli.headless"): "upstream_ordering_blocked",
     ("resume_session", "gemini-cli.acp + gemini-cli.headless"): "upstream_unsupported",
     ("native_session_close", "gemini-cli.acp + gemini-cli.headless"): "upstream_unsupported",
@@ -332,6 +344,10 @@ provider_retention_classifications[
 provider_retention_classifications[
     ("provider_session_delete", "alibaba.conversations")
 ] = "shared_contract_and_corpus_required"
+for feature in ["provider_session_restore", "provider_session_delete"]:
+    provider_retention_classifications[(feature, "deepseek-harness.local-server")] = (
+        "selected_surface_absence"
+    )
 for route in owned_cleanup_not_applicable:
     provider_retention_classifications[("owned_remote_resource_cleanup", route)] = (
         "operation_shape_not_applicable"

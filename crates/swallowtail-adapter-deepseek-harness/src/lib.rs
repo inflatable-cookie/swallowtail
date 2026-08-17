@@ -1,8 +1,10 @@
-//! Exact installed DeepSeek Harness JSON-RPC integration for Swallowtail.
+//! Exact installed DeepSeek Harness integrations for Swallowtail.
 //!
-//! The first surface owns one bundled JSON-RPC stdio process and projects one
-//! bounded structured run. It does not wrap the Python SDK, expose ACP/Web
-//! routes, retain sessions, or claim a native cancellation method.
+//! The JSON-RPC surface owns one bundled stdio process and projects one
+//! bounded structured run. The separate Web surface owns one loopback `dsh
+//! web` child and exposes its prepared structured-run and provider-session
+//! operations. Neither surface wraps the Python SDK or retains sessions; the
+//! JSON-RPC surface also has no native cancellation method.
 
 #![forbid(unsafe_code)]
 #![deny(missing_docs)]
@@ -18,6 +20,8 @@ mod protocol;
 mod pump;
 mod selection;
 mod validation;
+mod web;
+mod web_prepared;
 
 pub use access::{DEEPSEEK_HARNESS_CONFIG_AUDIENCE, deepseek_harness_access_profile};
 pub use driver::{DeepSeekHarnessJsonRpcDriver, deepseek_harness_jsonrpc_descriptor};
@@ -32,6 +36,21 @@ pub use selection::{
     DEEPSEEK_HARNESS_RELEASE_AXIS, DEEPSEEK_HARNESS_RELEASE_VERSION,
     DEEPSEEK_HARNESS_SPAWN_HELPER_SHA256, deepseek_harness_jsonrpc_claim,
     deepseek_harness_release_binding,
+};
+pub use web::{
+    DEEPSEEK_HARNESS_WEB_EXECUTABLE_BASENAME, DEEPSEEK_HARNESS_WEB_RELEASE_AXIS,
+    DEEPSEEK_HARNESS_WEB_RELEASE_VERSION, DeepSeekHarnessWebDriver, DeepSeekHarnessWebModel,
+    deepseek_harness_web_claim, deepseek_harness_web_descriptor,
+};
+pub use web_prepared::{
+    DeepSeekHarnessWebForkInput, DeepSeekHarnessWebModelSelection,
+    DeepSeekHarnessWebPreparationInput, DeepSeekHarnessWebPreparationProbe,
+    DeepSeekHarnessWebPreparedArchive, DeepSeekHarnessWebPreparedEvidence,
+    DeepSeekHarnessWebPreparedFork, DeepSeekHarnessWebPreparedIntegration,
+    DeepSeekHarnessWebPreparedRun, DeepSeekHarnessWebPreparedSessionCatalogue,
+    DeepSeekHarnessWebPreparedSessionHistory, DeepSeekHarnessWebRunProfileInput,
+    DeepSeekHarnessWebSessionCatalogueInput, DeepSeekHarnessWebSessionHistoryInput,
+    DeepSeekHarnessWebSessionManagementInput, prepare_deepseek_harness_web,
 };
 
 pub(crate) const DRIVER_ID: &str = "swallowtail.deepseek-harness.jsonrpc";

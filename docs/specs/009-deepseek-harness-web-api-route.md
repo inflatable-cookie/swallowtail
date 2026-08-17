@@ -66,13 +66,18 @@ move.
 
 ## Acceptance Criteria
 
-- [ ] Research 125 remains the evidence owner for the pin, fence, and
+- [x] Research 125 remains the evidence owner for the pin, fence, and
       allowlist
-- [ ] milestone g03.070 sequences corpus, driver, facade, and acceptance
-- [ ] public route truth keeps `deepseek-harness.jsonrpc` unchanged
-- [ ] first live selector is separately gated and credential-honest
-- [ ] redacted fixtures contain no prompts, reasoning text, tool bodies,
+- [x] milestone g03.070 sequences corpus, driver, facade, and acceptance
+- [x] public route truth keeps `deepseek-harness.jsonrpc` unchanged
+- [x] first live selector is separately gated and credential-honest
+- [x] redacted fixtures contain no prompts, reasoning text, tool bodies,
       secrets, or raw export bytes
+
+The deterministic acceptance surfaces are in place. Card 225 still has one
+operator-gated installed/live smoke pending exact local `dsh`, Cordis, cwd,
+provider, and model inputs; that gate does not promote this draft to a live
+provider qualification.
 
 ## Promotion Targets
 

@@ -1,0 +1,40 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-08-17",
+  "route_id": "deepseek-harness.local-server",
+  "driver_id": "swallowtail.deepseek-harness.local-server",
+  "family": "deepseek-harness",
+  "artifact_revision": "0.1.0-rc.6",
+  "version_axis": "deepseek-harness.web",
+  "compatibility_revision": "deepseek-harness.web-rc6-1",
+  "protocol_facade_revision": "deepseek-harness.apiproxy-v1",
+  "qualification": "qualified-only",
+  "npm": {
+    "package": "@deepseek-ai/dsh",
+    "version": "0.1.0-rc.6"
+  },
+  "cli": {
+    "executable": "dsh",
+    "arguments": ["web"],
+    "default_bind": "127.0.0.1",
+    "default_port": 3080,
+    "host_flag": "--host",
+    "trusted_host_flag": "--trusted-host"
+  },
+  "source_evidence": {
+    "repository": "deepseek-ai/deepseek-harness",
+    "revision": "47f943859bef60e4160492346772ded9b24f765a",
+    "purpose": "web-api wire-shape evidence only"
+  },
+  "compatibility_axis_rules": {
+    "launcher_version_output": "not-an-axis",
+    "host_describe": "not-an-axis",
+    "jsonrpc_payload_digest": "not-an-axis"
+  },
+  "startup": {
+    "process_owned": true,
+    "browser": false,
+    "jsonrpc_binary": false,
+    "network_bind": "loopback-only"
+  }
+}

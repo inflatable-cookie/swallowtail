@@ -125,6 +125,7 @@ Routes that advertise history today:
 | `codex.app-server` | bounded `thread/read(includeTurns: true)` | first proof; synthetic newest-first pages; ambient working resource |
 | `opencode.http` | ascending `session_messages` via shared load-replay helper | synthetic pages; ambient working resource; same qualified-server gate as import/reconcile |
 | `alibaba.conversations` (retained) | ascending conversation items walk shared with load | synthetic pages; resource-free; no live handle |
+| `deepseek-harness.local-server` | direct unary `session.history` pages using `beforeSeq` | pinned RC6 corpus proves control-free paging; complete bounded walks yield `Exact(n)`; live smoke remains operator-gated |
 
 Shared rules for those mappings:
 
@@ -166,3 +167,5 @@ Portable and route tests must cover:
 - totals remain honest when counts are unknown
 - Codex, OpenCode, and Alibaba retained fixtures prove synthetic newest-first
   paging under existing bounds where the route can page without a live handle
+- DeepSeek Web fixtures prove a control-free unary history walk with no resume
+  or live handle; its live qualification remains a separate gated selector

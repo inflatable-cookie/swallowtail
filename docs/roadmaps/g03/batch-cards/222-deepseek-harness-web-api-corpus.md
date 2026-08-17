@@ -1,6 +1,6 @@
 # 222 DeepSeek Harness Web Artifact And `/api` Corpus
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-17
 Milestone: `../070-deepseek-harness-web-api-foundation.md`
@@ -33,12 +33,12 @@ evidence before production Rust behavior exists.
 
 ## Acceptance Criteria
 
-- [ ] fixtures contain no credentials, account identifiers, private paths,
+- [x] fixtures contain no credentials, account identifiers, private paths,
       prompts, reasoning bodies, tool bodies, or export bytes
-- [ ] history fixtures show inspect-without-resume and keep page bounds
-- [ ] denied methods fail closed without calling provider work
-- [ ] random identities are sanitized without weakening correlation
-- [ ] the pin is CLI/npm identity, not JSON-RPC payload digest and not
+- [x] history fixtures show inspect-without-resume and keep page bounds
+- [x] denied methods fail closed without calling provider work
+- [x] random identities are sanitized without weakening correlation
+- [x] the pin is CLI/npm identity, not JSON-RPC payload digest and not
       `host.describe`
 
 ## Validation
@@ -59,3 +59,10 @@ evidence before production Rust behavior exists.
 
 Continue to card 223 once the shared fixture tree is ready for the Rust
 driver.
+
+## Evidence
+
+- implementation commit: `66d5bf93`
+- package-independent Web corpus validation: 15 tests passed
+- `effigy qa:northstar` passed
+- no `dsh web` process, browser, account, credential, or live model was used

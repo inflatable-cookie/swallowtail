@@ -1,6 +1,6 @@
 # 223 DeepSeek Harness Web `/api` Driver Core
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-17
 Milestone: `../070-deepseek-harness-web-api-foundation.md`
@@ -28,11 +28,11 @@ archive, deadline, and cleanup.
 
 ## Acceptance Criteria
 
-- [ ] unknown, denied, and malformed methods fail closed
-- [ ] history projection does not resume an Agent
-- [ ] cancel aborts the active turn without advertising JSON-RPC wire cancel
-- [ ] fork and archive use native methods and do not claim restore or delete
-- [ ] deadline and process-kill cleanup remain joined
+- [x] unknown, denied, and malformed methods fail closed
+- [x] history projection does not resume an Agent
+- [x] cancel aborts the active turn without advertising JSON-RPC wire cancel
+- [x] fork and archive use native methods and do not claim restore or delete
+- [x] deadline and process-kill cleanup remain joined
 
 ## Validation
 
@@ -47,3 +47,14 @@ archive, deadline, and cleanup.
 ## Auto-Continuation
 
 Continue to card 224 after focused package validation passes.
+
+## Evidence
+
+- implementation commit: `01004db0`
+- `cargo test -p swallowtail-adapter-deepseek-harness` — 20 tests passed
+- `effigy validate:focused swallowtail-adapter-deepseek-harness` passed
+- Web transport is loopback-only, bounded, host/origin-fenced, and joins its
+  blocking HTTP/WebSocket workers before returning deadline or cleanup errors
+- history uses `session.history` only; structured runs use native
+  `session.cancel`, `session.fork`, and `workspace.archiveSession`
+- no browser, credential, account, or live model was used

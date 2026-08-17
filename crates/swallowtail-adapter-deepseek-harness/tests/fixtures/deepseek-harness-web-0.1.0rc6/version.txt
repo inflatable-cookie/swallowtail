@@ -1,0 +1,3 @@
+@deepseek-ai/dsh 0.1.0-rc.6
+command dsh web
+axis deepseek-harness.web

@@ -68,10 +68,12 @@ mismatch, bound overflow, and dishonest totals fail closed.
 | `codex.app-server` | `prepare_session_history` / `CodexSessionHistoryInput` | bounded `thread/read(includeTurns: true)`, synthetic newest-first pages | ambient harness working resource |
 | `opencode.http` | `prepare_session_history` / `OpenCodeSessionHistoryInput` | ascending `session_messages` walk via the same `load_replay` helper as reconciliation, then synthetic pages | ambient harness working resource; qualified server gate matches import/reconcile |
 | `alibaba.conversations` (retained) | `prepare_session_history` / `AlibabaSessionHistoryInput` | ascending conversation items walk shared with load, then synthetic pages | resource-free; no live handle |
+| `deepseek-harness.local-server` | `prepare_session_history` / `DeepSeekHarnessWebSessionHistoryInput` | direct unary `session.history` pages with `beforeSeq`, then portable newest-first pages | pinned RC6 corpus proves control-free paging; complete bounded walks return `Exact(n)`; live smoke remains operator-gated |
 
-All three return `Exact` totals for the projected snapshot, fail closed on
-snapshot overflow, and issue no control, import, load, resume, archive,
-restore, or delete.
+All four return `Exact` totals for a complete projected snapshot, fail closed
+on snapshot overflow, and issue no control, import, load, resume, archive,
+restore, or delete. The DeepSeek Web claim currently rests on the pinned
+corpus and prepared implementation; its live selector remains gated.
 
 ### Codex notes
 
@@ -110,7 +112,7 @@ current Claude/Kimi artifacts and left this inventory blocked until a
 control-free wire appears upstream.
 
 This guide does not add a column to the main provider feature CSV. Support is
-route-specific; see the route matrix rows for the three advertising routes.
+route-specific; see the route matrix rows for the four advertising routes.
 
 ## Validation
 
@@ -119,6 +121,7 @@ effigy validate:focused swallowtail-runtime
 effigy validate:focused swallowtail-adapter-codex
 effigy validate:focused swallowtail-adapter-opencode
 effigy validate:focused swallowtail-adapter-alibaba-model-studio
+effigy validate:focused swallowtail-adapter-deepseek-harness
 effigy qa:docs
 ```
 

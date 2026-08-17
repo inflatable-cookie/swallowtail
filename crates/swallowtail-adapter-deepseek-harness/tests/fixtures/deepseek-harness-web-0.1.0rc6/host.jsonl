@@ -1,0 +1,4 @@
+{"type":"server-request","rpcId":"fixture-host-added","method":"host/session-added","payload":{"type":"host/session-added","sessionId":"fixture-session-1","blank":false,"cwd":"<fixture-cwd>","agentPreset":"fixture-default"}}
+{"type":"server-request","rpcId":"fixture-host-status","method":"host/session-status","payload":{"type":"host/session-status","sessionId":"fixture-session-1","running":false}}
+{"type":"server-request","rpcId":"fixture-host-workspace","method":"host/workspace-changed","payload":{"type":"host/workspace-changed","workspace":{"workspaceId":"fixture-workspace-1","path":"<fixture-workspace-path>","title":"fixture-workspace","sessionIds":["fixture-session-1"],"createdAt":"2000-01-01T00:00:00.000Z","updatedAt":"2000-01-01T00:00:01.000Z"}}}
+{"type":"server-request","rpcId":"fixture-host-archive","method":"host/archived-sessions-changed","payload":{"type":"host/archived-sessions-changed","archivedSessionIds":["fixture-session-1"]}}

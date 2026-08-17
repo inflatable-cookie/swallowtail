@@ -22,6 +22,7 @@ contracts or architecture.
 - [Cursor Prepared Integration](cursor-prepared-integration.md)
 - [DeepSeek Prepared Integration](deepseek-prepared-integration.md)
 - [DeepSeek Harness JSON-RPC Prepared Integration](deepseek-harness-prepared-integration.md)
+- [DeepSeek Harness Web Prepared Integration](deepseek-harness-web-prepared-integration.md)
 - [Gemini CLI Prepared Integration](gemini-cli-prepared-integration.md)
 - [Generation Controls And Input Authority](generation-controls-and-input-authority.md)
 - [Grok Build Prepared Integration](grok-build-prepared-integration.md)

@@ -32,9 +32,15 @@ Live proof may use host-local Ollama; that does not qualify
 
 ## Next
 
-Card 218 completed on worker commit `e5aa7b9f`. Card 219 is the next ready
-card; cards 220-221 continue only through their auto-continuation after the
-predecessor lands.
+Prove card 221 live smoke with the host-approved `0.1.0rc6` executable and
+Cordis config. Keep `deepseek-official` unqualified.
+
+## Merge
+
+Deterministic g03.069 work merged on `52263993` (PR 1). Payload-digest
+admission landed at `96db297e`. MSRV failed once on an unrelated OpenCode
+fixture flake, then passed on rerun. Card 221 remains active for the live
+probe only.
 
 ## Card 218 closeout
 

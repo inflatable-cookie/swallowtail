@@ -73,18 +73,12 @@ visible as unverified newer unless exact evidence requires rejection.
 
 ## Current Checkpoint
 
-- g03.069 is active. Research 124 and Spec 008 select exact runtime-bin
-  `0.1.0rc6` JSON-RPC as `deepseek-harness.jsonrpc`, distinct from
-  `deepseek.continuation`. Card 218 completed at `e5aa7b9f` with the pinned
-  redacted corpus and package-independent validator. Card 219 completed at
-  `9bbf4f61` with the exact discovery and bounded JSON-RPC driver core. Card
-  220 completed at `1c053dbb` with the prepared facade. Card 221 now has the
-  package, route, guide, matrix, release-baseline, Rustdoc, example, focused,
-  extracted, and deterministic acceptance evidence for current-source 31
-  packages and 37 routes in worker commit `158b188c`; its exact
-  installed/live probe remains pending the host-approved runtime binary and
-  Cordis configuration.
-  Card 217 remains ready for Figmatic's linked `g04.005` adoption.
+- g03.069 is active. Deterministic cards 218-221 merged on
+  `52263993` (PR 1), including payload-digest admission at `96db297e`.
+  Current source is 31 packages and 37 routes; immutable `v0.3.2` stays 30
+  and 36. Card 221 live smoke remains operator-gated: exact
+  `dsh-jsonrpc-agent-pkg-macos-arm64` plus Cordis config. Card 217 remains
+  ready for Figmatic's linked `g04.005` adoption.
 - g03.068 is active under corrected Contract 039 authority. Card 214's exact-
   `2.1.228` replacement and card 215's downstream pointer are superseded.
   Card 216 completed at `fd2d95e83f6d7f8bdfe7852d3393eb6031d15cf2`:

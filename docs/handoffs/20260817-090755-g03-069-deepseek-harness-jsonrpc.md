@@ -5,10 +5,10 @@ handoff_mode: worker-pr-loop
 worker_mode: implementation
 dispatch_authority: orchestrator
 handoff: single-file-path-only
-status: ready-to-launch
+status: merged
 owner: Tom
 created: 2026-08-17
-updated: 2026-08-17 09:07:55 +0100
+updated: 2026-08-17 11:36:00 +0100
 handoff_path: /Users/tom/Dev/projects/swallowtail/docs/handoffs/20260817-090755-g03-069-deepseek-harness-jsonrpc.md
 base_required: pushed-main
 tags: [coordination, handoff, worker, pr]

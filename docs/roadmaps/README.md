@@ -13,8 +13,9 @@ shape.
 
 ## Next Task
 
-Implement card 221: complete the DeepSeek Harness package, route truth, guide,
-matrices, additive release-baseline handling, and separately gated acceptance.
+Prove card 221 live smoke: run the gated DeepSeek Harness installed and
+prepared-facade probes with the host-approved `0.1.0rc6` executable and Cordis
+config, keeping `deepseek-official` unqualified.
 
 ## Index
 

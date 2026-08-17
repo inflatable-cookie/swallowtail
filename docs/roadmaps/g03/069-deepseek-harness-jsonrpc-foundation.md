@@ -70,9 +70,10 @@ payload, a documented automation wire, and live turn/tool/usage evidence.
 - [x] route matrix, feature matrix, guide map, example, architecture, package
       contract, and release tooling remain mutually honest
 
-Card 221's package and deterministic acceptance work is complete. The live
-probe remains operator-gated because this host has no exact packaged
-`dsh-jsonrpc-agent-pkg-macos-arm64` executable or Cordis configuration.
+Card 221's package and deterministic acceptance work merged on `52263993`
+(PR 1), including payload-digest admission at `96db297e`. The live probe
+remains operator-gated until the host supplies the exact packaged
+`dsh-jsonrpc-agent-pkg-macos-arm64` executable and Cordis configuration.
 
 ## Planning Checkpoint
 

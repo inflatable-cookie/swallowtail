@@ -1,0 +1,139 @@
+{
+  "fixture_schema": 1,
+  "route_id": "deepseek-harness.local-server",
+  "driver_id": "swallowtail.deepseek-harness.local-server",
+  "family": "deepseek-harness",
+  "artifact_revision": "0.1.0-rc.6",
+  "version_axis": "deepseek-harness.web",
+  "compatibility_revision": "deepseek-harness.web-rc6-1",
+  "protocol_facade_revision": "deepseek-harness.apiproxy-v1",
+  "qualification": "qualified-only",
+  "transport": {
+    "kind": "owned-process",
+    "command": ["dsh", "web"],
+    "http_method": "POST",
+    "http_path_prefix": "/api/",
+    "websocket_paths": ["/api/events.mux", "/api/events.host"],
+    "request_framing": "one JSON client-request envelope per POST",
+    "response_framing": "one JSON server-response envelope per POST",
+    "downlink_framing": "one JSON server-request envelope per WebSocket message"
+  },
+  "envelopes": [
+    "client-request",
+    "server-response",
+    "server-request",
+    "client-response"
+  ],
+  "client_methods": [
+    "session.list",
+    "session.search",
+    "session.create",
+    "session.history",
+    "session.models",
+    "session.prompt",
+    "session.cancel",
+    "session.fork",
+    "workspace.list",
+    "workspace.archiveSession",
+    "host.describe"
+  ],
+  "server_mux_frames": [
+    "session/subscribed",
+    "session/event",
+    "stream/error"
+  ],
+  "server_host_frames": [
+    "host/session-added",
+    "host/session-removed",
+    "host/session-status",
+    "host/agent-error",
+    "host/workspace-changed",
+    "host/workspace-removed",
+    "host/workspace-order-changed",
+    "host/archived-sessions-changed",
+    "host/remote-event",
+    "stream/error"
+  ],
+  "denied_exact": [
+    "settings.get",
+    "settings.set",
+    "credentials.read",
+    "credentials.write",
+    "llm.models",
+    "llm.configure",
+    "host.pickDirectory",
+    "host.listDirectory",
+    "host.createDirectory",
+    "host.openPath",
+    "session.export",
+    "session.attachment",
+    "session.updateQueue",
+    "session.restore",
+    "session.delete",
+    "subagent.spawn",
+    "skill.invoke",
+    "goal.create",
+    "command.run"
+  ],
+  "denied_prefixes": [
+    "settings.",
+    "credentials.",
+    "llm.",
+    "directory.",
+    "subagent.",
+    "skill.",
+    "goal.",
+    "command."
+  ],
+  "carrier_status": {
+    "business_error": 200,
+    "unknown_path": 404,
+    "unsupported_media_type": 415,
+    "malformed_json": 400,
+    "oversized_body": 413,
+    "handler_failure": 500
+  },
+  "trust_fence": {
+    "allowed_endpoint_hosts": ["127.0.0.1", "localhost", "::1"],
+    "loopback_only": true,
+    "same_origin_if_present": true,
+    "reject_fetch_site_cross_site": true,
+    "bearer_auth": false,
+    "origin_null": false
+  },
+  "rules": {
+    "path_method_must_agree": true,
+    "business_errors_use_http_200": true,
+    "unknown_paths_are_carrier_failures": true,
+    "downlinks_are_server_only": true,
+    "history_is_control_free": true,
+    "history_page_order": "ascending-seq-within-page",
+    "history_before_seq_moves_older": true,
+    "native_cancel": true,
+    "native_fork": true,
+    "native_archive": true,
+    "restore": false,
+    "hard_delete": false
+  },
+  "bounds": {
+    "maximum_http_body_bytes": 262144,
+    "maximum_websocket_frame_bytes": 262144,
+    "maximum_rpc_id_bytes": 128,
+    "maximum_history_entries": 64,
+    "maximum_search_items": 64,
+    "maximum_sessions": 512,
+    "maximum_live_events": 8192
+  },
+  "redaction": {
+    "prompt": "<redacted-prompt>",
+    "search_query": "<redacted-search-query>",
+    "search_snippet": "<redacted-search-snippet>",
+    "assistant_text": "",
+    "reasoning_body": "never-emitted",
+    "tool_arguments": "never-emitted",
+    "tool_result": "never-emitted",
+    "credentials": "never-emitted",
+    "private_paths": "never-emitted",
+    "export_bytes": "never-emitted"
+  }
+}

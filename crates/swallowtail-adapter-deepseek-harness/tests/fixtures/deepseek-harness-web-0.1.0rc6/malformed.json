@@ -1,0 +1,42 @@
+{
+  "fixture_schema": 1,
+  "carrier_cases": [
+    {
+      "name": "unknown-path",
+      "request": {"method": "POST", "path": "/api/not-a-method", "headers": {"content-type": "application/json"}, "raw_body": "{}"},
+      "expected_status": 404,
+      "provider_work_invocations": 0
+    },
+    {
+      "name": "unsupported-media-type",
+      "request": {"method": "POST", "path": "/api/session.list", "headers": {"content-type": "text/plain"}, "raw_body": "{}"},
+      "expected_status": 415,
+      "provider_work_invocations": 0
+    },
+    {
+      "name": "malformed-json",
+      "request": {"method": "POST", "path": "/api/session.list", "headers": {"content-type": "application/json"}, "raw_body": "{"},
+      "expected_status": 400,
+      "provider_work_invocations": 0
+    },
+    {
+      "name": "method-path-mismatch",
+      "request": {"method": "POST", "path": "/api/session.list", "headers": {"content-type": "application/json"}, "body": {"type": "client-request", "rpcId": "fixture-malformed-mismatch", "method": "session.search", "payload": {"query": "<redacted-search-query>"}}},
+      "expected_status": 200,
+      "business_error_code": "bad-request",
+      "provider_work_invocations": 0
+    },
+    {
+      "name": "oversized-body",
+      "request": {"method": "POST", "path": "/api/session.list", "headers": {"content-type": "application/json"}, "body_bytes": 262145},
+      "expected_status": 413,
+      "provider_work_invocations": 0
+    }
+  ],
+  "business_error_case": {
+    "request": {"type": "client-request", "rpcId": "fixture-business-error", "method": "session.models", "payload": {"sessionId": "fixture-session-missing"}},
+    "response": {"type": "server-response", "rpcId": "fixture-business-error", "result": {"ok": false, "error": {"code": "not-found", "message": "<redacted-safe-error>"}}},
+    "http_status": 200,
+    "provider_work_invocations": 0
+  }
+}

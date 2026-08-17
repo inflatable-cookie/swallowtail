@@ -1,0 +1,151 @@
+{
+  "fixture_schema": 1,
+  "session_id": "fixture-session-1",
+  "page_bound": 2,
+  "pages": [
+    {
+      "request": {
+        "type": "client-request",
+        "rpcId": "fixture-history-1",
+        "method": "session.history",
+        "payload": {
+          "sessionId": "fixture-session-1",
+          "maxMessages": 2
+        }
+      },
+      "response": {
+        "type": "server-response",
+        "rpcId": "fixture-history-1",
+        "result": {
+          "ok": true,
+          "value": {
+            "events": [
+              {
+                "event": {
+                  "type": "step/end",
+                  "seq": 4,
+                  "time": 1700000000004,
+                  "data": {"turn": 1, "step": 1}
+                }
+              },
+              {
+                "event": {
+                  "type": "turn/end",
+                  "seq": 5,
+                  "time": 1700000000005,
+                  "data": {"turn": 1, "reason": {"kind": "completed"}}
+                }
+              }
+            ],
+            "hasMore": true
+          }
+        }
+      },
+      "effects": {
+        "agent_started": false,
+        "prompt_dispatched": false,
+        "provider_work_invocations": 0,
+        "interactive_handle_created": false
+      }
+    },
+    {
+      "request": {
+        "type": "client-request",
+        "rpcId": "fixture-history-2",
+        "method": "session.history",
+        "payload": {
+          "sessionId": "fixture-session-1",
+          "beforeSeq": 4,
+          "maxMessages": 2
+        }
+      },
+      "response": {
+        "type": "server-response",
+        "rpcId": "fixture-history-2",
+        "result": {
+          "ok": true,
+          "value": {
+            "events": [
+              {
+                "event": {
+                  "type": "step/start",
+                  "seq": 2,
+                  "time": 1700000000002,
+                  "data": {"turn": 1, "step": 1}
+                }
+              },
+              {
+                "event": {
+                  "type": "assistant/chunk",
+                  "seq": 3,
+                  "time": 1700000000003,
+                  "data": {"turn": 1, "step": 1, "chunk": {"type": "text", "text": ""}}
+                }
+              }
+            ],
+            "hasMore": true
+          }
+        }
+      },
+      "effects": {
+        "agent_started": false,
+        "prompt_dispatched": false,
+        "provider_work_invocations": 0,
+        "interactive_handle_created": false
+      }
+    },
+    {
+      "request": {
+        "type": "client-request",
+        "rpcId": "fixture-history-3",
+        "method": "session.history",
+        "payload": {
+          "sessionId": "fixture-session-1",
+          "beforeSeq": 2,
+          "maxMessages": 2
+        }
+      },
+      "response": {
+        "type": "server-response",
+        "rpcId": "fixture-history-3",
+        "result": {
+          "ok": true,
+          "value": {
+            "events": [
+              {
+                "event": {
+                  "type": "turn/start",
+                  "seq": 0,
+                  "time": 1700000000000,
+                  "data": {"turn": 1}
+                }
+              },
+              {
+                "event": {
+                  "type": "user/message",
+                  "seq": 1,
+                  "time": 1700000000001,
+                  "data": {"content": [{"type": "text", "text": "<redacted-prompt>"}]}
+                }
+              }
+            ],
+            "hasMore": false
+          }
+        }
+      },
+      "effects": {
+        "agent_started": false,
+        "prompt_dispatched": false,
+        "provider_work_invocations": 0,
+        "interactive_handle_created": false
+      }
+    }
+  ],
+  "proof": {
+    "reads_persisted_log": true,
+    "resumes_agent": false,
+    "publishes_prompt": false,
+    "provider_work_invocations": 0,
+    "interactive_handle_created": false
+  }
+}

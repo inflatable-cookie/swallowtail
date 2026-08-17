@@ -11,7 +11,7 @@ fn every_production_harness_route_has_exact_prepared_activity_truth() {
         "044-observable-agent-activity-and-disclosure"
     );
     let routes = inventory["routes"].as_array().expect("routes are an array");
-    assert_eq!(routes.len(), 24);
+    assert_eq!(routes.len(), 25);
 
     let ids = routes
         .iter()
@@ -33,6 +33,7 @@ fn every_production_harness_route_has_exact_prepared_activity_truth() {
             "cursor-agent.catalogue",
             "cursor-agent.headless",
             "deepseek-harness.jsonrpc",
+            "deepseek-harness.local-server",
             "gemini-cli.acp",
             "gemini-cli.headless",
             "grok-build.acp",
@@ -93,7 +94,7 @@ fn every_production_harness_route_has_exact_prepared_activity_truth() {
         }
     }
 
-    assert_eq!(profiles.len(), 31);
+    assert_eq!(profiles.len(), 32);
     for expected in [
         ("antigravity.headless", "structured-run"),
         ("antigravity.headless", "interactive-session"),
@@ -149,6 +150,12 @@ fn catalogue_and_management_roles_are_not_misreported_as_ordinary_activity() {
             ("codex.app-server", "model-catalogue"),
             ("codex.app-server", "provider-session-management"),
             ("cursor-agent.catalogue", "model-catalogue"),
+            ("deepseek-harness.local-server", "interactive-session"),
+            ("deepseek-harness.local-server", "model-catalogue"),
+            (
+                "deepseek-harness.local-server",
+                "provider-session-management",
+            ),
             ("gemini-cli.headless", "provider-session-management"),
             ("kimi-code.local-server", "model-catalogue"),
             ("kimi-code.local-server", "provider-session-management"),

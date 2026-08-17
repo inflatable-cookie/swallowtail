@@ -18,6 +18,7 @@ mod protocol;
 mod pump;
 mod selection;
 mod validation;
+mod web;
 
 pub use access::{DEEPSEEK_HARNESS_CONFIG_AUDIENCE, deepseek_harness_access_profile};
 pub use driver::{DeepSeekHarnessJsonRpcDriver, deepseek_harness_jsonrpc_descriptor};
@@ -32,6 +33,10 @@ pub use selection::{
     DEEPSEEK_HARNESS_RELEASE_AXIS, DEEPSEEK_HARNESS_RELEASE_VERSION,
     DEEPSEEK_HARNESS_SPAWN_HELPER_SHA256, deepseek_harness_jsonrpc_claim,
     deepseek_harness_release_binding,
+};
+pub use web::{
+    DEEPSEEK_HARNESS_WEB_RELEASE_AXIS, DEEPSEEK_HARNESS_WEB_RELEASE_VERSION,
+    DeepSeekHarnessWebDriver, deepseek_harness_web_claim, deepseek_harness_web_descriptor,
 };
 
 pub(crate) const DRIVER_ID: &str = "swallowtail.deepseek-harness.jsonrpc";

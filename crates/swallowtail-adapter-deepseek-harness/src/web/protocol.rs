@@ -643,6 +643,9 @@ fn extract_text_delta(event: &Map<String, Value>) -> Result<Option<String>, Runt
         text.len() <= MAX_TEXT_BYTES,
         "assistant text delta exceeds its bound",
     )?;
+    if text.is_empty() {
+        return Ok(None);
+    }
     Ok(Some(text.to_owned()))
 }
 
@@ -890,7 +893,8 @@ mod tests {
         assert!(matches!(decoded.last(), Some(MuxFrame::Event(event)) if event.terminal));
         assert!(decoded.iter().any(|frame| matches!(
             frame,
-            MuxFrame::Event(event) if event.output_delta.as_deref() == Some("")
+            MuxFrame::Event(event)
+                if event.event_type == "assistant/chunk" && event.output_delta.is_none()
         )));
     }
 

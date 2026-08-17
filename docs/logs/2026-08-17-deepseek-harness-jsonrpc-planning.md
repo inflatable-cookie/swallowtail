@@ -90,8 +90,8 @@ targets. Card 221 is now the sole roadmap pointer.
 
 ## Card 221 implementation closeout
 
-Card 221's package and deterministic acceptance slice is implemented on the
-worker branch:
+Card 221's package and deterministic acceptance slice is implemented on
+worker commit `158b188c`:
 
 - added the public prepared-integration example and exact operator guide
 - promoted `deepseek-harness.jsonrpc` through the feature, activity, lifecycle,

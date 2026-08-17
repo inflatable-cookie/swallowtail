@@ -40,6 +40,7 @@ truth, operator guidance, and deterministic plus live acceptance evidence.
 
 ## Evidence
 
+- implementation commit: `158b188c`
 - current source contains 31 packages and 37 production routes; immutable
   `v0.3.2` remains 30 packages and 36 routes
 - package metadata distinguishes the current 31-package source from the

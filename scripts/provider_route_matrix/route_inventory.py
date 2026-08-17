@@ -16,7 +16,7 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
 FEATURE_MATRIX = REPO / "docs" / "guides" / "provider-solution-feature-matrix.csv"
-EXPECTED_ROUTE_COUNT = 37
+EXPECTED_ROUTE_COUNT = 38
 
 # Provider-session lifecycle posture per route:
 # (persistent-session posture, management binding, archive, restore, delete,
@@ -40,6 +40,7 @@ LIFECYCLE_POSTURES: dict[str, tuple[str, str, str, str, str, str]] = {
     "cursor-agent.headless": ("unsupported", "no", "unsupported", "unsupported", "unsupported", "unsupported"),
     "deepseek.continuation": ("not-applicable", "no", "not-applicable", "not-applicable", "not-applicable", "not-applicable"),
     "deepseek-harness.jsonrpc": ("not-applicable", "no", "not-applicable", "not-applicable", "not-applicable", "not-applicable"),
+    "deepseek-harness.local-server": ("supported", "yes", "supported", "unsupported", "unsupported", "unsupported"),
     "gemini-cli.acp": ("unsupported", "no", "unsupported", "unsupported", "unsupported", "unsupported"),
     "gemini-cli.headless": ("unsupported", "no", "unsupported", "unsupported", "unsupported", "unsupported"),
     "gemini.live": ("not-applicable", "no", "not-applicable", "not-applicable", "not-applicable", "not-applicable"),

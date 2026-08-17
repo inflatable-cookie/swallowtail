@@ -10,8 +10,9 @@ collapsing it onto JSON-RPC or Open Platform continuation:
 
 - Research 125
 - Spec 009
-- Milestone g03.070 with completed card 222, ready card 223, and planned
-  cards 224-225
+- Milestone g03.070 with completed cards 222-224 and active card 225; its
+  deterministic acceptance is complete and its operator-gated Web live smoke
+  remains pending
 
 JSON-RPC `deepseek-harness.jsonrpc` stays the live-proven one-shot stdio run.
 The second route is `deepseek-harness.local-server` on the same package,
@@ -42,6 +43,12 @@ outside.
 
 ## Next
 
-Implement card 223: add the owned-process Web `/api` driver with loopback
-admission, allowlisted decode, history, prompt, native cancel, fork, archive,
-deadline, and cleanup.
+Card 223 completed at `01004db0`: the owned-process Web `/api` driver now has
+loopback admission, allowlisted/bounded unary and WebSocket decode, catalogue
+pagination, control-free history, structured prompt events and usage,
+native cancel, fork, archive, deadline, and joined cleanup. Focused package
+validation passed without network credentials or a live process.
+
+Next: run the operator-gated Web installed classification and one prepared
+facade prompt smoke with exact host inputs, then reassess the Contract 054 /
+ACP / JSON-RPC continuity checkpoint.

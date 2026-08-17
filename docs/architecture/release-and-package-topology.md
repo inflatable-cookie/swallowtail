@@ -10,8 +10,9 @@ Realization: roadmap g02.001; g03.043; g03.059
 Swallowtail's immutable `v0.3.2` source tag is a coordinated 30-package Rust
 workspace, two packages ahead of the `v0.3.1` tag's 28 packages. Current source
 adds the reviewed but unreleased `swallowtail-adapter-deepseek-harness`
-package and `deepseek-harness.jsonrpc` route, for 31 packages and 37
-production routes in the candidate tree.
+package and its two routes, `deepseek-harness.jsonrpc` and
+`deepseek-harness.local-server`, for 31 packages and 38 production routes in
+the candidate tree.
 The immutable `v0.1.x` source tags contain 27 packages; `v0.2.0` and later tags
 contain 28 after adding `swallowtail-adapter-muse`. `swallowtail-adapter-command-code`
 and `swallowtail-idioms` first appear in `v0.3.2`. No crate is published to

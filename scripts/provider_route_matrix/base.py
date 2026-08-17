@@ -6,8 +6,8 @@ from collections import Counter
 with open(sys.argv[1], newline="", encoding="utf-8") as feature_file:
     rows = list(csv.DictReader(feature_file))
 
-if len(rows) != 29:
-    raise SystemExit("provider solution feature matrix must contain exactly 29 rows")
+if len(rows) != 30:
+    raise SystemExit("provider solution feature matrix must contain exactly 30 rows")
 
 providers = [row["provider"] for row in rows]
 if providers != sorted(providers, key=str.casefold):
@@ -15,7 +15,7 @@ if providers != sorted(providers, key=str.casefold):
 
 expected = Counter(
     {
-        "Yes": 19,
+        "Yes": 20,
         "Session-negotiated": 3,
         "Not applicable": 2,
         "Caller-supplied": 5,

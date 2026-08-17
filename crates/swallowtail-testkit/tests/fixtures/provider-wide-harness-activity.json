@@ -443,6 +443,35 @@
       ]
     },
     {
+      "id": "deepseek-harness.local-server",
+      "driver": "swallowtail.deepseek-harness.local-server",
+      "transport": "deepseek-harness-local-server-http-ws-v1",
+      "qualified": "0.1.0-rc.6",
+      "prepared_profiles": [
+        {
+          "operation": "structured-run",
+          "availability": "available"
+        }
+      ],
+      "unavailable_operations": [],
+      "not_applicable_operations": [
+        "model-catalogue",
+        "interactive-session",
+        "provider-session-management"
+      ],
+      "unknown_posture": "preserve-namespaced",
+      "exact_absences": [
+        "configuration-plane methods",
+        "attachments",
+        "consumer tool exchange",
+        "permission exchange",
+        "question exchange",
+        "load/resume",
+        "restore/delete",
+        "billing evidence"
+      ]
+    },
+    {
       "id": "oh-my-pi.rpc",
       "driver": "swallowtail.oh-my-pi.rpc",
       "transport": "oh-my-pi-rpc-v2-jsonl-stdio",

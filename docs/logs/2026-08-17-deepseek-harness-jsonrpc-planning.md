@@ -70,3 +70,20 @@ Validation: `effigy validate:focused
 swallowtail-adapter-deepseek-harness` passed 8 tests; `cargo fmt --all
 -- --check` passed; warnings-denied Clippy passed for the package and all
 targets. Card 220 is now the sole roadmap pointer; card 221 remains planned.
+
+## Card 220 closeout
+
+Card 220 completed on worker commit `1c053dbb`:
+
+- exposed `prepare_deepseek_harness_jsonrpc` with exact target, opaque
+  host-approved Cordis configuration, access evidence, and bounded discovery
+- added immutable prepared integration and operation evidence
+- added explicit provider/model route selection and `prepare_run` →
+  `start_run`
+- bound ambient Cordis configuration, host-owned isolation, read-only working
+  resource, Task/Process/Time services, and no provider retention/recovery
+
+Validation: `effigy validate:focused
+swallowtail-adapter-deepseek-harness` passed 10 tests; `cargo fmt --all
+-- --check` passed; warnings-denied Clippy passed for the package and all
+targets. Card 221 is now the sole roadmap pointer.

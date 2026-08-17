@@ -1,6 +1,6 @@
 # 220 DeepSeek Harness Prepared Facade
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-17
 Milestone: `../069-deepseek-harness-jsonrpc-foundation.md`
@@ -30,15 +30,30 @@ defaults.
 
 ## Acceptance Criteria
 
-- [ ] preparation fails closed on version drift, missing executable, missing
+- [x] preparation fails closed on version drift, missing executable, missing
       config, or missing provider/model
-- [ ] activity-affecting options are immutable prepared evidence
-- [ ] no default model, provider, or Cordis composition is invented
-- [ ] deterministic prepared-facade tests pass without network credentials
+- [x] activity-affecting options are immutable prepared evidence
+- [x] no default model, provider, or Cordis composition is invented
+- [x] deterministic prepared-facade tests pass without network credentials
 
 ## Validation
 
 - `effigy validate:focused swallowtail-adapter-deepseek-harness`
+
+## Evidence
+
+- implementation commit: `1c053dbb`
+- added host-approved preparation, exact observation promotion, immutable
+  prepared evidence, explicit provider/model selection, and `start_run`
+- prepared plans bind ambient Cordis configuration, host-owned isolation,
+  read-only working resource, Task/Process/Time services, and prohibited
+  provider retention/recovery
+- blank host references are rejected by the runtime constructors; target and
+  release drift fail closed before process work
+- focused validation: 10 tests passed
+- warnings-denied Clippy passed for the package and all targets
+- no default provider, model, credentials, or `danger-full-access` posture was
+  added
 
 ## Stop Conditions
 

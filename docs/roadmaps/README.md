@@ -13,9 +13,8 @@ shape.
 
 ## Next Task
 
-Implement card 220: expose the host-approved DeepSeek Harness JSON-RPC
-prepared facade with explicit provider, model, Cordis config, cwd, and host
-services.
+Implement card 221: complete the DeepSeek Harness package, route truth, guide,
+matrices, additive release-baseline handling, and separately gated acceptance.
 
 ## Index
 

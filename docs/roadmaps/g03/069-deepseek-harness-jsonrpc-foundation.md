@@ -26,7 +26,7 @@ payload, a documented automation wire, and live turn/tool/usage evidence.
       failure, and private-state boundaries
 - [x] card 219: implement discovery, compatibility, decode, idle fold,
       activity, process-kill cancellation, deadline, and cleanup
-- [ ] card 220: expose host-approved preparation and an exact structured-run
+- [x] card 220: expose host-approved preparation and an exact structured-run
       facade with explicit provider, model, config, and cwd
 - [ ] card 221: complete package, guide, example, matrices, live acceptance,
       release-baseline handling, and closeout evidence

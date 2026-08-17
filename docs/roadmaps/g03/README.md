@@ -77,8 +77,9 @@ visible as unverified newer unless exact evidence requires rejection.
   `0.1.0rc6` JSON-RPC as `deepseek-harness.jsonrpc`, distinct from
   `deepseek.continuation`. Card 218 completed at `e5aa7b9f` with the pinned
   redacted corpus and package-independent validator. Card 219 completed at
-  `9bbf4f61` with the exact discovery and bounded JSON-RPC driver core; card
-  220 is ready and card 221 remains planned.
+  `9bbf4f61` with the exact discovery and bounded JSON-RPC driver core. Card
+  220 completed at `1c053dbb` with the prepared facade; card 221 is ready for
+  package, route, guide, matrix, and acceptance evidence.
   Card 217 remains ready for Figmatic's linked `g04.005` adoption.
 - g03.068 is active under corrected Contract 039 authority. Card 214's exact-
   `2.1.228` replacement and card 215's downstream pointer are superseded.

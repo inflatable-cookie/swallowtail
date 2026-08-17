@@ -120,6 +120,12 @@ pub(crate) struct SessionListPage {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) struct WorkspaceSummary {
+    pub(crate) workspace_id: String,
+    pub(crate) path: String,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) struct SessionCreateResult {
     pub(crate) session_id: String,
 }
@@ -271,6 +277,36 @@ pub(crate) fn parse_session_list(value: &Value) -> Result<SessionListPage, Runti
         Some(_) => return Err(malformed("session.list nextCursor is invalid")),
     };
     Ok(SessionListPage { items, next_cursor })
+}
+
+pub(crate) fn parse_workspace_list(
+    value: &Value,
+    expected_path: &str,
+) -> Result<WorkspaceSummary, RuntimeFailure> {
+    require_safe_text(expected_path, "workspace path")?;
+    let items = value
+        .get("items")
+        .and_then(Value::as_array)
+        .ok_or_else(|| malformed("workspace.list items are missing"))?;
+    if items.len() > MAX_SESSIONS {
+        return Err(limit_failure("workspace.list exceeds its workspace bound"));
+    }
+    let mut matching = None;
+    for item in items {
+        let item = require_object(item, "workspace summary")?;
+        let workspace = WorkspaceSummary {
+            workspace_id: bounded_id(item.get("workspaceId"), "workspace id")?,
+            path: bounded_text(item.get("path"), "workspace path")?.to_owned(),
+        };
+        if workspace.path == expected_path {
+            require(
+                matching.is_none(),
+                "workspace.list has duplicate matching workspace paths",
+            )?;
+            matching = Some(workspace);
+        }
+    }
+    matching.ok_or_else(|| malformed("workspace.list has no matching workspace"))
 }
 
 pub(crate) fn parse_session_create(value: &Value) -> Result<SessionCreateResult, RuntimeFailure> {
@@ -593,7 +629,10 @@ fn extract_text_delta(event: &Map<String, Value>) -> Result<Option<String>, Runt
         .get("chunk")
         .and_then(Value::as_object)
         .ok_or_else(|| malformed("assistant chunk payload is missing"))?;
-    if chunk.get("type").and_then(Value::as_str) != Some("text-delta") {
+    if !matches!(
+        chunk.get("type").and_then(Value::as_str),
+        Some("text" | "text-delta")
+    ) {
         return Ok(None);
     }
     let text = chunk
@@ -773,7 +812,8 @@ fn carrier_failure(status: u16) -> RuntimeFailure {
 mod tests {
     use super::{
         MuxFrame, WebMethod, decode_host_frame, decode_mux_frame, decode_unary_response,
-        parse_archive, parse_history, parse_host_description, parse_models, request_body,
+        parse_archive, parse_history, parse_host_description, parse_models, parse_workspace_list,
+        request_body,
     };
     use serde_json::Value;
 
@@ -848,6 +888,10 @@ mod tests {
             MuxFrame::Subscribed { last_seq: -1, .. }
         ));
         assert!(matches!(decoded.last(), Some(MuxFrame::Event(event)) if event.terminal));
+        assert!(decoded.iter().any(|frame| matches!(
+            frame,
+            MuxFrame::Event(event) if event.output_delta.as_deref() == Some("")
+        )));
     }
 
     #[test]
@@ -885,5 +929,13 @@ mod tests {
             "fixture-session-1",
         )
         .expect("archive confirms target");
+        let (status, body, rpc_id) = unary_pair("workspace.list");
+        let workspaces = decode_unary_response(status, &body, &rpc_id).expect("workspace response");
+        assert_eq!(
+            parse_workspace_list(&workspaces, "<fixture-workspace-path>")
+                .expect("workspace list resolves the path")
+                .workspace_id,
+            "fixture-workspace-1"
+        );
     }
 }

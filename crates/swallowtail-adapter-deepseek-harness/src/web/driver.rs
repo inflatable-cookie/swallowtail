@@ -2,7 +2,8 @@ use super::transport::{WebApiTransport, require_loopback_endpoint};
 use super::{
     DEEPSEEK_HARNESS_WEB_RELEASE_AXIS, DEEPSEEK_HARNESS_WEB_RELEASE_VERSION, WebMethod,
     parse_archive, parse_cancel, parse_fork, parse_history, parse_host_description, parse_models,
-    parse_prompt, parse_search, parse_session_create, parse_session_list, request_body,
+    parse_prompt, parse_search, parse_session_create, parse_session_list, parse_workspace_list,
+    request_body,
 };
 use serde_json::{Value, json};
 use std::sync::Arc;
@@ -1068,6 +1069,7 @@ fn validate_web_structured(
 }
 
 const MAX_RUN_OUTPUT_BYTES: usize = super::protocol::MAX_HTTP_BODY_BYTES;
+const DEFAULT_AGENT_PRESET: &str = "standard";
 
 #[allow(clippy::too_many_arguments)]
 async fn run_web_operation(
@@ -1141,7 +1143,7 @@ async fn run_web_prompt(
     services: HostServices,
     events: swallowtail_runtime::RuntimeEventSender,
 ) -> Result<Option<OperationContent>, RuntimeFailure> {
-    let host = call_web(
+    let host = call_web_until_ready(
         &transport,
         scope.clone(),
         endpoint.clone(),
@@ -1167,12 +1169,34 @@ async fn run_web_prompt(
             "DeepSeek Harness Web run was cancelled before session creation",
         ));
     }
+    let workspaces = call_web(
+        &transport,
+        scope.clone(),
+        endpoint.clone(),
+        WebMethod::WorkspaceList,
+        json!({}),
+        &request_id,
+        &services,
+        Some(deadline),
+        Arc::new(AtomicBool::new(false)),
+    )
+    .await?;
+    let workspace_id = parse_workspace_list(&workspaces, &cwd)?.workspace_id;
+    if cancellation.is_requested() {
+        return Err(failure(
+            "swallowtail.deepseek_harness.web.cancelled",
+            "DeepSeek Harness Web run was cancelled before session creation",
+        ));
+    }
     let created = call_web(
         &transport,
         scope.clone(),
         endpoint.clone(),
         WebMethod::SessionCreate,
-        json!({ "cwd": cwd }),
+        json!({
+            "workspaceId": workspace_id,
+            "agentPreset": DEFAULT_AGENT_PRESET,
+        }),
         &request_id,
         &services,
         Some(deadline),
@@ -1360,6 +1384,38 @@ async fn call_web(
     let body = request_body(method, &rpc_id, payload)?;
     transport
         .post_json(
+            scope,
+            endpoint,
+            format!("/api/{}", method.as_str()),
+            body,
+            rpc_id,
+            services,
+            deadline,
+            cancelled,
+        )
+        .await
+}
+
+#[allow(clippy::too_many_arguments)]
+async fn call_web_until_ready(
+    transport: &WebApiTransport,
+    scope: ScopeId,
+    endpoint: String,
+    method: WebMethod,
+    payload: Value,
+    request_id: &RequestId,
+    services: &HostServices,
+    deadline: Option<swallowtail_runtime::Deadline>,
+    cancelled: Arc<AtomicBool>,
+) -> Result<Value, RuntimeFailure> {
+    let rpc_id = format!(
+        "dsh-web-{}-{}",
+        method.as_str().replace('.', "-"),
+        request_id.as_str()
+    );
+    let body = request_body(method, &rpc_id, payload)?;
+    transport
+        .post_json_until_ready(
             scope,
             endpoint,
             format!("/api/{}", method.as_str()),

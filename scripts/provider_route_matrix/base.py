@@ -15,10 +15,10 @@ if providers != sorted(providers, key=str.casefold):
 
 expected = Counter(
     {
-        "Yes": 20,
+        "Yes": 19,
         "Session-negotiated": 3,
         "Not applicable": 2,
-        "Caller-supplied": 5,
+        "Caller-supplied": 6,
     }
 )
 actual = Counter(row["model_catalog"] for row in rows)

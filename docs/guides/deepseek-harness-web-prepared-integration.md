@@ -42,10 +42,12 @@ allowlist, access status, host services, and qualified release binding.
 | fork | prepared catalogue → `prepare_fork` → `execute` | `session.fork` | native route-local operation; no invented provider-neutral fork shape or resume authority |
 | archive | `prepare_archive_session` → `execute` | `workspace.archiveSession` | target-only, inactive-session, before-dispatch cancellation posture |
 
-The Web `session.create` payload carries the working directory, not a
-provider/model override. The prepared run therefore requires the ambient
-Cordis host configuration to report the selected provider and model through
-`host.describe`; a mismatch is rejected before session creation.
+The Web run resolves the exact working resource through `workspace.list`, then
+creates with `workspaceId` and the pinned `standard` `agentPreset`. It does not
+send `cwd` or call preset-authoring/configuration methods. The prepared run
+still requires the ambient Cordis host configuration to report the selected
+provider and model through `host.describe`; a mismatch is rejected before
+session creation.
 
 The Web method allowlist is `session.list`, `session.search`,
 `session.create`, `session.history`, `session.models`, `session.prompt`,

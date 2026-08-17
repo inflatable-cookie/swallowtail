@@ -1,8 +1,10 @@
-//! Exact installed DeepSeek Harness JSON-RPC integration for Swallowtail.
+//! Exact installed DeepSeek Harness integrations for Swallowtail.
 //!
-//! The first surface owns one bundled JSON-RPC stdio process and projects one
-//! bounded structured run. It does not wrap the Python SDK, expose ACP/Web
-//! routes, retain sessions, or claim a native cancellation method.
+//! The JSON-RPC surface owns one bundled stdio process and projects one
+//! bounded structured run. The separate Web surface owns one loopback `dsh
+//! web` child and exposes its prepared structured-run and provider-session
+//! operations. Neither surface wraps the Python SDK or retains sessions; the
+//! JSON-RPC surface also has no native cancellation method.
 
 #![forbid(unsafe_code)]
 #![deny(missing_docs)]

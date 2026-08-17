@@ -280,6 +280,13 @@ def validate_unary(protocol: dict[str, Any], *, frames: list[dict[str, Any]] | N
         payload = request["body"]["payload"]
         if method == "session.search":
             require(payload.get("query") == "<redacted-search-query>", "search query was not redacted")
+        elif method == "session.create":
+            require(
+                payload == {"workspaceId": "fixture-workspace-1", "agentPreset": "fixture-default"},
+                "session.create payload drifted from the frozen workspace/preset shape",
+            )
+        elif method == "workspace.list":
+            require(payload == {}, "workspace.list payload must remain empty")
         elif method == "session.prompt":
             require(payload.get("mode") in {"queue", "steer"}, "prompt mode drifted")
             content = payload.get("content")

@@ -20,6 +20,8 @@ use url::{Host, Url};
 use super::protocol::{MAX_HTTP_BODY_BYTES, MAX_WEBSOCKET_FRAME_BYTES, decode_unary_response};
 
 const HTTP_PATH_PREFIX: &str = "/api/";
+const READY_RETRY_DELAY: Duration = Duration::from_millis(10);
+const TRANSPORT_FAILURE_CODE: &str = "swallowtail.deepseek_harness.web.transport_failed";
 
 #[derive(Clone, Default)]
 pub(crate) struct WebApiTransport;
@@ -38,7 +40,7 @@ impl WebApiTransport {
         cancelled: Arc<AtomicBool>,
     ) -> Result<Value, RuntimeFailure> {
         let response = self
-            .request(
+            .request_with_policy(
                 scope,
                 endpoint,
                 path,
@@ -46,13 +48,41 @@ impl WebApiTransport {
                 services,
                 deadline,
                 Arc::clone(&cancelled),
+                false,
             )
             .await?;
         decode_unary_response(response.status, &response.body, &rpc_id)
     }
 
     #[allow(clippy::too_many_arguments)]
-    async fn request(
+    pub(crate) async fn post_json_until_ready(
+        &self,
+        scope: ScopeId,
+        endpoint: String,
+        path: String,
+        body: Vec<u8>,
+        rpc_id: String,
+        services: &HostServices,
+        deadline: Option<Deadline>,
+        cancelled: Arc<AtomicBool>,
+    ) -> Result<Value, RuntimeFailure> {
+        let response = self
+            .request_with_policy(
+                scope,
+                endpoint,
+                path,
+                body,
+                services,
+                deadline,
+                Arc::clone(&cancelled),
+                true,
+            )
+            .await?;
+        decode_unary_response(response.status, &response.body, &rpc_id)
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    async fn request_with_policy(
         &self,
         scope: ScopeId,
         endpoint: String,
@@ -61,6 +91,7 @@ impl WebApiTransport {
         services: &HostServices,
         deadline: Option<Deadline>,
         cancelled: Arc<AtomicBool>,
+        retry_until_ready: bool,
     ) -> Result<Response, RuntimeFailure> {
         validate_path(&path)?;
         let blocking = services.blocking_work().cloned().ok_or_else(|| {
@@ -77,7 +108,11 @@ impl WebApiTransport {
         let work = blocking.run(
             scope,
             Box::new(move || {
-                let result = perform_request(&job_endpoint, &job_path, &job_body, &job_cancelled);
+                let result = if retry_until_ready {
+                    perform_request_until_ready(&job_endpoint, &job_path, &job_body, &job_cancelled)
+                } else {
+                    perform_request(&job_endpoint, &job_path, &job_body, &job_cancelled)
+                };
                 let _ = sender.send(result);
                 Ok(())
             }),
@@ -402,6 +437,29 @@ fn perform_request(
         status,
         body: response_body,
     })
+}
+
+fn perform_request_until_ready(
+    endpoint: &str,
+    path: &str,
+    body: &[u8],
+    cancelled: &Arc<AtomicBool>,
+) -> Result<Response, RuntimeFailure> {
+    loop {
+        match perform_request(endpoint, path, body, cancelled) {
+            Ok(response) if response.status == 404 => {}
+            Ok(response) => return Ok(response),
+            Err(error) if error.diagnostic().code() == TRANSPORT_FAILURE_CODE => {}
+            Err(error) => return Err(error),
+        }
+        if cancelled.load(Ordering::SeqCst) {
+            return Err(failure(
+                "swallowtail.deepseek_harness.web.request_cancelled",
+                "DeepSeek Harness Web readiness request was cancelled",
+            ));
+        }
+        std::thread::sleep(READY_RETRY_DELAY);
+    }
 }
 
 async fn wait_blocking(

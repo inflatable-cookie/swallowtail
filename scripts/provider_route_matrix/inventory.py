@@ -47,11 +47,11 @@ audited_value_counts = Counter(
 )
 if audited_value_counts != Counter(
     {
-        "Yes": 277,
+        "Yes": 276,
         "No": 382,
         "Not applicable": 321,
         "Partial": 2,
-        "Caller-supplied": 5,
+        "Caller-supplied": 6,
         "Session-negotiated": 3,
     }
 ):

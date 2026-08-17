@@ -1,0 +1,37 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-08-17",
+  "product": "DeepSeek Harness (dsh)",
+  "license": "MIT",
+  "published_identity": "0.1.0rc6",
+  "version_axis": "deepseek-harness.runtime-bin",
+  "qualification": "qualified-only",
+  "unverified_newer": false,
+  "probe_sdk": {
+    "distribution": "deepseek-harness-sdk",
+    "version": "0.1.0rc6"
+  },
+  "runtime_wheel": {
+    "distribution": "deepseek-harness-runtime-bin",
+    "version": "0.1.0rc6",
+    "platform": "py3-none-macosx_14_0_arm64"
+  },
+  "executable": {
+    "basename": "dsh-jsonrpc-agent-pkg-macos-arm64",
+    "size_bytes": 200248448,
+    "sha256": "ac1c91462518427467bd0a0ca3bf1049df62be0dbe8b0ee8014c6761cb8f80bf"
+  },
+  "spawn_helper": {
+    "basename": "dsh-jsonrpc-agent",
+    "sha256": "21c589109bca43e287df884f3c34ab888033a83927ea7d273949ac5030583f26"
+  },
+  "source": {
+    "repository": "deepseek-ai/deepseek-harness",
+    "clone": "47f943859bef60e4160492346772ded9b24f765a"
+  },
+  "server_info": {
+    "name": "deepseek-harness-sdk-runtime",
+    "version": "0.0.1",
+    "version_is_compatibility_axis": false
+  }
+}

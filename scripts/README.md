@@ -6,6 +6,9 @@ in application code.
 
 Normal validation scripts:
 
+- `check-deepseek-harness-corpus.py` — package-independent redacted
+  JSON-RPC fixture, lifecycle, correlation, and bound validation for the
+  pinned DeepSeek Harness runtime evidence
 - `check-integration-guide-coverage.py` — Contract 052 production-route,
   feature-header, canonical-guide, index, coverage-state, and compiling-example
   traceability behind `effigy qa:guides`

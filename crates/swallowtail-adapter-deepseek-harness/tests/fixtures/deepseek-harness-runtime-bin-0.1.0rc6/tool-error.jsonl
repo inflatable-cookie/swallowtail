@@ -1,0 +1,24 @@
+{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"cwd":"<fixture-cwd>","provider":"local-ollama","model":"fixture-model"}}
+{"jsonrpc":"2.0","id":1,"result":{"serverInfo":{"name":"deepseek-harness-sdk-runtime","version":"0.0.1"}}}
+{"jsonrpc":"2.0","id":2,"method":"session/prompt","params":{"sessionId":"fixture-session-3","contentBlocks":[{"type":"text","text":"<redacted-prompt>"}]}}
+{"jsonrpc":"2.0","id":2,"result":{"messageId":"fixture-message-3"}}
+{"jsonrpc":"2.0","method":"session.status","params":{"sessionId":"fixture-session-3","status":"running"}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-3","event":{"type":"turn/start","seq":1,"time":1700000201,"data":{"turn":"fixture-turn-3"}}}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-3","event":{"type":"step/start","seq":2,"time":1700000202,"data":{"turn":"fixture-turn-3","step":"fixture-step-1"}}}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-3","event":{"type":"user/message","seq":3,"time":1700000203,"data":{"turn":"fixture-turn-3","step":"fixture-step-1","message":{"role":"user","content":[{"type":"text","text":"<redacted-prompt>"}]}}}}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-3","event":{"type":"request/header","seq":4,"time":1700000204,"data":{"turn":"fixture-turn-3","step":"fixture-step-1","provider":"local-ollama","model":"fixture-model"}}}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-3","event":{"type":"tool/call","seq":5,"time":1700000205,"data":{"turn":"fixture-turn-3","step":"fixture-step-1","callId":"fixture-call-2","name":"str_replace_editor","arguments":""}}}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-3","event":{"type":"tool/result","seq":6,"time":1700000206,"data":{"turn":"fixture-turn-3","step":"fixture-step-1","callId":"fixture-call-2","message":{"role":"tool","content":[]},"error":{"code":"FS_NOT_FOUND","name":"FS_NOT_FOUND"}}}}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-3","event":{"type":"assistant/chunk","seq":7,"time":1700000207,"data":{"turn":"fixture-turn-3","step":"fixture-step-1","chunk":{"type":"usage","usage":{"inputTokens":44,"outputTokens":7,"reasoningTokens":0}}}}}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-3","event":{"type":"assistant/chunk","seq":8,"time":1700000208,"data":{"turn":"fixture-turn-3","step":"fixture-step-1","chunk":{"type":"finish","finishReason":"tool-calls"}}}}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-3","event":{"type":"step/end","seq":9,"time":1700000209,"data":{"turn":"fixture-turn-3","step":"fixture-step-1","status":"tool-calls"}}}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-3","event":{"type":"step/start","seq":10,"time":1700000210,"data":{"turn":"fixture-turn-3","step":"fixture-step-2"}}}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-3","event":{"type":"assistant/chunk","seq":11,"time":1700000211,"data":{"turn":"fixture-turn-3","step":"fixture-step-2","chunk":{"type":"text-delta","contentIndex":0,"delta":"fixture recovered"}}}}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-3","event":{"type":"assistant/chunk","seq":12,"time":1700000212,"data":{"turn":"fixture-turn-3","step":"fixture-step-2","chunk":{"type":"usage","usage":{"inputTokens":70,"outputTokens":9,"reasoningTokens":0}}}}}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-3","event":{"type":"assistant/chunk","seq":13,"time":1700000213,"data":{"turn":"fixture-turn-3","step":"fixture-step-2","chunk":{"type":"finish","finishReason":"stop"}}}}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-3","event":{"type":"assistant/message","seq":14,"time":1700000214,"data":{"turn":"fixture-turn-3","step":"fixture-step-2","message":{"role":"assistant","content":[{"type":"text","text":"fixture recovered"}]},"usage":{"inputTokens":70,"outputTokens":9,"reasoningTokens":0}}}}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-3","event":{"type":"step/end","seq":15,"time":1700000215,"data":{"turn":"fixture-turn-3","step":"fixture-step-2","status":"stop"}}}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-3","event":{"type":"turn/end","seq":16,"time":1700000216,"data":{"turn":"fixture-turn-3","status":"completed","stopReason":"stop"}}}}
+{"jsonrpc":"2.0","method":"session.status","params":{"sessionId":"fixture-session-3","status":"idle"}}
+{"jsonrpc":"2.0","id":3,"method":"shutdown","params":{}}
+{"jsonrpc":"2.0","id":3,"result":{}}

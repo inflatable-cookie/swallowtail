@@ -1,0 +1,24 @@
+{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"cwd":"<fixture-cwd>","provider":"local-ollama","model":"fixture-model"}}
+{"jsonrpc":"2.0","id":1,"result":{"serverInfo":{"name":"deepseek-harness-sdk-runtime","version":"0.0.1"}}}
+{"jsonrpc":"2.0","id":2,"method":"session/prompt","params":{"sessionId":"fixture-session-1","contentBlocks":[{"type":"text","text":"<redacted-prompt>"}]}}
+{"jsonrpc":"2.0","id":2,"result":{"messageId":"fixture-message-1"}}
+{"jsonrpc":"2.0","method":"session.status","params":{"sessionId":"fixture-session-1","status":"running"}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-1","event":{"type":"turn/start","seq":1,"time":1700000001,"data":{"turn":"fixture-turn-1"}}}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-1","event":{"type":"step/start","seq":2,"time":1700000002,"data":{"turn":"fixture-turn-1","step":"fixture-step-1"}}}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-1","event":{"type":"user/message","seq":3,"time":1700000003,"data":{"turn":"fixture-turn-1","step":"fixture-step-1","message":{"role":"user","content":[{"type":"text","text":"<redacted-prompt>"}]}}}}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-1","event":{"type":"request/header","seq":4,"time":1700000004,"data":{"turn":"fixture-turn-1","step":"fixture-step-1","provider":"local-ollama","model":"fixture-model"}}}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-1","event":{"type":"request/context","seq":5,"time":1700000005,"data":{"turn":"fixture-turn-1","step":"fixture-step-1","provider":"local-ollama","model":"fixture-model","system":"<redacted-system-prompt>","tools":[]}}}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-1","event":{"type":"assistant/chunk","seq":6,"time":1700000006,"data":{"turn":"fixture-turn-1","step":"fixture-step-1","chunk":{"type":"block-start","contentIndex":0,"contentBlock":{"type":"reasoning"}}}}}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-1","event":{"type":"assistant/chunk","seq":7,"time":1700000007,"data":{"turn":"fixture-turn-1","step":"fixture-step-1","chunk":{"type":"reasoning-delta","contentIndex":0,"delta":""}}}}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-1","event":{"type":"assistant/chunk","seq":8,"time":1700000008,"data":{"turn":"fixture-turn-1","step":"fixture-step-1","chunk":{"type":"block-end","contentIndex":0}}}}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-1","event":{"type":"assistant/chunk","seq":9,"time":1700000009,"data":{"turn":"fixture-turn-1","step":"fixture-step-1","chunk":{"type":"block-start","contentIndex":1,"contentBlock":{"type":"text"}}}}}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-1","event":{"type":"assistant/chunk","seq":10,"time":1700000010,"data":{"turn":"fixture-turn-1","step":"fixture-step-1","chunk":{"type":"text-delta","contentIndex":1,"delta":"fixture response"}}}}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-1","event":{"type":"assistant/chunk","seq":11,"time":1700000011,"data":{"turn":"fixture-turn-1","step":"fixture-step-1","chunk":{"type":"block-end","contentIndex":1}}}}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-1","event":{"type":"assistant/chunk","seq":12,"time":1700000012,"data":{"turn":"fixture-turn-1","step":"fixture-step-1","chunk":{"type":"usage","usage":{"inputTokens":12,"outputTokens":3,"reasoningTokens":0}}}}}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-1","event":{"type":"assistant/chunk","seq":13,"time":1700000013,"data":{"turn":"fixture-turn-1","step":"fixture-step-1","chunk":{"type":"finish","finishReason":"stop"}}}}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-1","event":{"type":"assistant/message","seq":14,"time":1700000014,"data":{"turn":"fixture-turn-1","step":"fixture-step-1","message":{"role":"assistant","content":[{"type":"text","text":"fixture response"}]},"usage":{"inputTokens":12,"outputTokens":3,"reasoningTokens":0}}}}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-1","event":{"type":"step/end","seq":15,"time":1700000015,"data":{"turn":"fixture-turn-1","step":"fixture-step-1","status":"stop"}}}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-1","event":{"type":"turn/end","seq":16,"time":1700000016,"data":{"turn":"fixture-turn-1","status":"completed","stopReason":"stop"}}}}
+{"jsonrpc":"2.0","method":"session.status","params":{"sessionId":"fixture-session-1","status":"idle"}}
+{"jsonrpc":"2.0","id":3,"method":"shutdown","params":{}}
+{"jsonrpc":"2.0","id":3,"result":{}}

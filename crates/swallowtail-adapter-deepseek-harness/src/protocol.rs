@@ -250,9 +250,12 @@ impl JsonRpcParser {
                     .ok_or_else(malformed_stream)?;
                 require(
                     server_info.get("name").and_then(Value::as_str)
-                        == Some("deepseek-harness-sdk-runtime")
-                        && server_info.get("version").and_then(Value::as_str) == Some("0.0.1"),
-                    "initialize server identity does not match the pinned runtime",
+                        == Some("deepseek-harness-sdk-runtime"),
+                    "initialize server name does not match the expected runtime",
+                )?;
+                require(
+                    server_info.get("version").and_then(Value::as_str).is_some(),
+                    "initialize server version is malformed",
                 )?;
                 self.phase = Phase::AwaitPrompt;
                 self.pending_request = Some((2, RequestKind::Prompt));
@@ -964,6 +967,13 @@ mod tests {
     };
 
     fn parse_fixture(name: &str) -> (JsonRpcParser, Vec<swallowtail_runtime::RuntimeEvent>) {
+        parse_fixture_with_server_info_version(name, None)
+    }
+
+    fn parse_fixture_with_server_info_version(
+        name: &str,
+        server_info_version: Option<&str>,
+    ) -> (JsonRpcParser, Vec<swallowtail_runtime::RuntimeEvent>) {
         let operation = ActivityOperationId::Run(
             RuntimeRunId::new("deepseek-harness.fixture-run").expect("run id"),
         );
@@ -1009,11 +1019,25 @@ mod tests {
         };
         let mut output = Vec::new();
         for (line_number, line) in bytes.split_inclusive(|byte| *byte == b'\n').enumerate() {
-            let frame: serde_json::Value = serde_json::from_slice(line).expect("fixture JSON");
+            let mut frame: serde_json::Value = serde_json::from_slice(line).expect("fixture JSON");
+            if let Some(version) = server_info_version
+                && frame.get("result").is_some()
+                && frame.get("id").and_then(serde_json::Value::as_i64) == Some(1)
+            {
+                frame["result"]["serverInfo"]["version"] =
+                    serde_json::Value::String(version.to_owned());
+            }
             if frame.get("method").is_some() && frame.get("id").is_some() {
                 continue;
             }
-            let parsed = parser.push(line).unwrap_or_else(|error| {
+            let frame = if server_info_version.is_some() {
+                let mut frame = serde_json::to_vec(&frame).expect("fixture JSON serializes");
+                frame.push(b'\n');
+                frame
+            } else {
+                line.to_vec()
+            };
+            let parsed = parser.push(&frame).unwrap_or_else(|error| {
                 panic!("{name} server frame {line_number} failed: {error}")
             });
             output.extend(parsed.events);
@@ -1039,6 +1063,15 @@ mod tests {
                 .iter()
                 .any(|event| matches!(event.kind(), RuntimeEventKind::OutputDelta))
         );
+    }
+
+    #[test]
+    fn initialize_server_info_version_is_wire_metadata_not_release_qualification() {
+        let (parser, _) = parse_fixture_with_server_info_version("text-success", Some("9.9.9"));
+        let terminal = parser
+            .finish(ProcessExit::new(true, Some(0)))
+            .expect("alternate wire version remains compatible");
+        assert_eq!(terminal.status, TerminalStatus::Completed);
     }
 
     #[test]

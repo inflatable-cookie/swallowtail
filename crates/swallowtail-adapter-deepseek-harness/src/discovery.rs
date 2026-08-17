@@ -5,7 +5,7 @@ use swallowtail_runtime::{
     installed_probe_codes, probe_installed_executable_version,
 };
 
-use crate::selection::target_is_exact;
+use crate::selection::validate_target_payload;
 use crate::{
     DeepSeekHarnessJsonRpcDriver, deepseek_harness_jsonrpc_claim, deepseek_harness_release_binding,
 };
@@ -32,13 +32,8 @@ impl DiscoveryDriver for DeepSeekHarnessJsonRpcDriver {
         request: InstalledExecutableDiscoveryRequest,
         services: HostServices,
     ) -> BoxFuture<'_, Result<DiscoveryOutcome, RuntimeFailure>> {
-        if !target_is_exact(request.target().executable().as_host_value()) {
-            return Box::pin(async {
-                Err(crate::failure::failure(
-                    "swallowtail.deepseek_harness.target_not_pinned",
-                    "DeepSeek Harness discovery requires the exact packaged runtime target",
-                ))
-            });
+        if let Err(error) = validate_target_payload(request.target().executable().as_host_value()) {
+            return Box::pin(async move { Err(error) });
         }
         Box::pin(probe_installed_executable_version(
             request,

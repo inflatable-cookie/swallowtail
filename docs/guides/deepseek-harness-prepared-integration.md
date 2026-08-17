@@ -26,9 +26,10 @@ Preparation requires all of the following:
 - explicit provider, model, read-only working resource, and deadline
 - host services for task, process, and time ownership
 
-`serverInfo.version` (`0.0.1`) is a handshake identity, not the compatibility
-axis. The runtime claim is qualified-only for `0.1.0rc6`; newer RC points do not
-inherit this route.
+`serverInfo.version` (`0.0.1`) is wire metadata, not the compatibility axis.
+Preparation stream-hashes the host-approved executable before version
+qualification, and execution re-checks the same digest. The runtime claim is
+qualified-only for `0.1.0rc6`; newer RC points do not inherit this route.
 
 Call `prepare_deepseek_harness_jsonrpc` with
 `DeepSeekHarnessPreparationInput` and `DeepSeekHarnessPreparationProbe`. The

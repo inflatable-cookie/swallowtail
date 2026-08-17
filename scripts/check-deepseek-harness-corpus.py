@@ -241,12 +241,16 @@ def validate_stream(
             if operation == "initialize":
                 require(not initialized, "duplicate initialize response")
                 require(isinstance(result, dict), "initialize result is not an object")
+                server_info = result.get("serverInfo")
                 require(
-                    result.get("serverInfo") == {
-                        "name": artifact["server_info"]["name"],
-                        "version": artifact["server_info"]["version"],
-                    },
-                    "initialize serverInfo does not match the pinned runtime",
+                    isinstance(server_info, dict)
+                    and server_info.get("name") == artifact["server_info"]["name"],
+                    "initialize server name does not match the expected runtime",
+                )
+                require(
+                    isinstance(server_info.get("version"), str)
+                    and bool(server_info["version"]),
+                    "initialize server version is malformed",
                 )
                 initialized = True
             elif operation == "prompt":
@@ -552,6 +556,21 @@ class CorpusTests(unittest.TestCase):
                     expect_unknown=expect_unknown,
                 )
                 self.assertEqual(result["terminal"], terminal)
+
+    def test_server_info_version_is_wire_metadata(self) -> None:
+        frames = load_frames("text-success.jsonl", self.protocol)
+        initialize = next(
+            frame
+            for frame in frames
+            if frame.get("id") == 1 and "result" in frame
+        )
+        initialize["result"]["serverInfo"]["version"] = "9.9.9"
+        result = validate_stream(
+            frames,
+            self.protocol,
+            expected_terminal="completed",
+        )
+        self.assertEqual(result["terminal"], "completed")
 
     def test_negative_cases_are_declared(self) -> None:
         negative = load_json(FIXTURE_ROOT / "negative-cases.json")

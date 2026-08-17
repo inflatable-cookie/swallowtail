@@ -32,5 +32,22 @@ Live proof may use host-local Ollama; that does not qualify
 
 ## Next
 
-Card 218 is ready for a worker. Cards 219-221 continue only through their
-auto-continuation after the predecessor lands.
+Card 218 completed on worker commit `e5aa7b9f`. Card 219 is the next ready
+card; cards 220-221 continue only through their auto-continuation after the
+predecessor lands.
+
+## Card 218 closeout
+
+- froze exact runtime-bin `0.1.0rc6`, package identities, Apple Silicon
+  executable and spawn-helper digests, and the non-axis `serverInfo.version`
+- added redacted JSON-RPC fixtures for text success, tool success, tool error,
+  missing credential, and namespaced unknown events
+- recorded the qualified-only compatibility and protocol-facade revisions,
+  live-versus-durable cardinality split, stream bounds, idle ownership, and
+  force-stop cancellation boundary
+- added a package-independent validator covering framing, lifecycle,
+  correlation, redaction, usage, terminal ordering, and safe rejection cases
+
+Validation: `python3 scripts/check-deepseek-harness-corpus.py -v` passed 12
+tests; `effigy qa:northstar` passed. The sole roadmap pointer now names card
+219; cards 220-221 remain planned.

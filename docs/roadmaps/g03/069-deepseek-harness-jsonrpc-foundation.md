@@ -22,7 +22,7 @@ payload, a documented automation wire, and live turn/tool/usage evidence.
 
 ## Execution Plan
 
-- [ ] card 218: freeze exact runtime-bin artifact, JSON-RPC, session-log,
+- [x] card 218: freeze exact runtime-bin artifact, JSON-RPC, session-log,
       failure, and private-state boundaries
 - [ ] card 219: implement discovery, compatibility, decode, idle fold,
       activity, process-kill cancellation, deadline, and cleanup

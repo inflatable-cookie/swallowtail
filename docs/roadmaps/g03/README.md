@@ -75,7 +75,9 @@ visible as unverified newer unless exact evidence requires rejection.
 
 - g03.069 is active. Research 124 and Spec 008 select exact runtime-bin
   `0.1.0rc6` JSON-RPC as `deepseek-harness.jsonrpc`, distinct from
-  `deepseek.continuation`. Card 218 is ready; cards 219-221 are planned.
+  `deepseek.continuation`. Card 218 completed at `e5aa7b9f` with the pinned
+  redacted corpus and package-independent validator; card 219 is ready and
+  cards 220-221 remain planned.
   Card 217 remains ready for Figmatic's linked `g04.005` adoption.
 - g03.068 is active under corrected Contract 039 authority. Card 214's exact-
   `2.1.228` replacement and card 215's downstream pointer are superseded.

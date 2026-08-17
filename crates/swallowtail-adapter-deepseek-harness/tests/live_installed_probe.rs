@@ -2,6 +2,7 @@ use futures_executor::block_on;
 use futures_util::StreamExt;
 use std::ffi::OsString;
 use std::path::PathBuf;
+use std::sync::Arc;
 use std::time::Duration;
 use swallowtail_adapter_deepseek_harness::{
     DEEPSEEK_HARNESS_EXECUTABLE_BASENAME, DEEPSEEK_HARNESS_RELEASE_AXIS,
@@ -20,11 +21,14 @@ use swallowtail_core::{
     InterfaceVersionAxis, ModelId, ModelRouteId, ModelRouteRevision, ProviderId, RuntimeReadiness,
     SupportAuthority,
 };
-use swallowtail_host_local::{LocalHostServices, LocalProcessHost, LocalProcessLimits};
+use swallowtail_host_local::{
+    LocalExecutableLaunch, LocalHostServices, LocalProcessHost, LocalProcessLimits,
+};
 use swallowtail_runtime::{
-    DiscoveryCancellation, DiscoveryDriver, EndpointRef, EnvironmentRef, ExecutableRef,
-    InstalledExecutableDiscoveryRequest, OperationContent, PreparedAccessEvidence, RequestId,
-    ScopeId, TerminalStatus, WorkingResourceRef,
+    BlockingJob, BlockingWorkService, BoxFuture, DiscoveryCancellation, DiscoveryDriver,
+    EndpointRef, EnvironmentRef, ExecutableRef, HostServices, InstalledExecutableDiscoveryRequest,
+    OperationContent, PreparedAccessEvidence, RequestId, RuntimeFailure, ScopeId, TerminalStatus,
+    WorkingResourceRef,
 };
 
 #[test]
@@ -197,6 +201,7 @@ fn configured_deepseek_harness_web_completes_one_prompt_through_prepared_facade(
         std::env::var("SWALLOWTAIL_DEEPSEEK_HARNESS_PROVIDER").expect("explicit live provider");
     let model = std::env::var("SWALLOWTAIL_DEEPSEEK_HARNESS_MODEL").expect("explicit live model");
     let (local, target, environment, working_resource, execution_host_id) = live_web_host();
+    let services = live_web_services(&local);
     let access_id = AccessProfileId::new("live.deepseek-harness.host-config").expect("access id");
     let prepared = block_on(prepare_deepseek_harness_web(
         DeepSeekHarnessWebPreparationInput::new(
@@ -221,7 +226,7 @@ fn configured_deepseek_harness_web_completes_one_prompt_through_prepared_facade(
             local.deadline_after(Duration::from_secs(5)),
             DiscoveryCancellation::new(),
         ),
-        local.services().clone(),
+        services.clone(),
     ))
     .expect("installed DeepSeek Harness Web prepares");
     let run = prepared
@@ -240,8 +245,7 @@ fn configured_deepseek_harness_web_completes_one_prompt_through_prepared_facade(
         ))
         .expect("DeepSeek Harness Web run prepares");
 
-    let mut handle =
-        block_on(run.start_run(local.services().clone())).expect("DeepSeek Harness Web run starts");
+    let mut handle = block_on(run.start_run(services)).expect("DeepSeek Harness Web run starts");
     let mut events = handle.take_events().expect("event stream");
     let terminal = handle.take_terminal_outcome().expect("terminal outcome");
     let outcome = block_on(async {
@@ -313,8 +317,14 @@ fn live_host_for(
         Some(expected_basename),
         "the live executable must be the exact packaged runtime basename"
     );
-    let cordis_path = std::env::var_os("SWALLOWTAIL_DEEPSEEK_HARNESS_CORDIS")
-        .expect("host-approved Cordis config path");
+    let cordis_path = PathBuf::from(
+        std::env::var_os("SWALLOWTAIL_DEEPSEEK_HARNESS_CORDIS")
+            .expect("host-approved Cordis config path"),
+    );
+    assert!(
+        cordis_path.is_file(),
+        "host-approved Cordis config path is a file"
+    );
     let cwd = PathBuf::from(
         std::env::var_os("SWALLOWTAIL_DEEPSEEK_HARNESS_CWD")
             .expect("host-approved DeepSeek Harness cwd"),
@@ -324,28 +334,59 @@ fn live_host_for(
         "host-approved DeepSeek Harness cwd is a directory"
     );
 
-    let environment =
-        EnvironmentRef::new("live.deepseek-harness.cordis").expect("environment is valid");
+    let environment = if approve_web_endpoint {
+        EnvironmentRef::new(cordis_path.to_string_lossy().into_owned())
+            .expect("Web Cordis overlay path is a valid environment reference")
+    } else {
+        EnvironmentRef::new("live.deepseek-harness.cordis").expect("environment is valid")
+    };
     let working_resource = WorkingResourceRef::new(cwd.to_string_lossy().to_string())
         .expect("working resource is valid");
     let execution_host_id =
         ExecutionHostId::new("live.deepseek-harness.local-host").expect("host id");
     let executable = ExecutableRef::new(executable_path.to_string_lossy().to_string())
         .expect("executable ref is valid");
-    let (builder, target) = LocalProcessHost::builder(LocalProcessLimits::default())
-        .approve_installed_executable(
+    let axis = InterfaceVersionAxis::new(release_axis).expect("release axis");
+    let (builder, target) = if approve_web_endpoint {
+        let node = std::env::var_os("PATH")
+            .into_iter()
+            .flat_map(|path| std::env::split_paths(&path).collect::<Vec<_>>())
+            .map(|directory| directory.join("node"))
+            .find(|candidate| candidate.is_file())
+            .expect("Web live probe requires node on PATH");
+        let node = std::fs::canonicalize(node).expect("Node interpreter resolves exactly");
+        let launch = LocalExecutableLaunch::interpreted_script(node, executable_path);
+        LocalProcessHost::builder(LocalProcessLimits::default())
+            .approve_installed_executable_launch(executable, axis, launch)
+    } else {
+        LocalProcessHost::builder(LocalProcessLimits::default()).approve_installed_executable(
             executable,
-            InterfaceVersionAxis::new(release_axis).expect("release axis"),
+            axis,
             executable_path,
-        );
+        )
+    };
     let home = std::env::var_os("HOME").expect("DeepSeek Harness live probe requires HOME");
     let mut environment_values = vec![
         (OsString::from("HOME"), home),
-        (OsString::from("DSH_CORDIS_CONFIG"), cordis_path),
+        (
+            OsString::from("DSH_CORDIS_CONFIG"),
+            cordis_path.clone().into_os_string(),
+        ),
         (OsString::from("DSH_CWD"), cwd.clone().into_os_string()),
     ];
     if let Some(provider_key) = std::env::var_os("OLLAMA_API_KEY") {
         environment_values.push((OsString::from("OLLAMA_API_KEY"), provider_key));
+    }
+    if approve_web_endpoint {
+        if let Some(path) = std::env::var_os("PATH") {
+            environment_values.push((OsString::from("PATH"), path));
+        }
+        let dsh_home = cordis_path
+            .parent()
+            .expect("Cordis overlay has a parent directory")
+            .join("web-dsh-home");
+        std::fs::create_dir_all(&dsh_home).expect("isolated DSH_HOME is writable");
+        environment_values.push((OsString::from("DSH_HOME"), dsh_home.into_os_string()));
     }
     let builder = if approve_web_endpoint {
         builder.approve_endpoint(
@@ -367,4 +408,42 @@ fn live_host_for(
         working_resource,
         execution_host_id,
     )
+}
+
+fn live_web_services(local: &LocalHostServices) -> HostServices {
+    local
+        .services()
+        .clone()
+        .with_blocking_work(Arc::new(LiveWebBlockingWork))
+}
+
+struct LiveWebBlockingWork;
+
+impl BlockingWorkService for LiveWebBlockingWork {
+    fn run(
+        &self,
+        _scope: ScopeId,
+        job: BlockingJob,
+    ) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+        let (sender, receiver) = futures_channel::oneshot::channel();
+        let thread = std::thread::spawn(move || {
+            let result = job();
+            let _ = sender.send(result);
+        });
+        Box::pin(async move {
+            let result = receiver.await.map_err(|_| {
+                RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
+                    "swallowtail.deepseek_harness.web.live_blocking_missing",
+                    "Live Web blocking work did not return",
+                ))
+            })?;
+            thread.join().map_err(|_| {
+                RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
+                    "swallowtail.deepseek_harness.web.live_blocking_join_failed",
+                    "Live Web blocking work did not join",
+                ))
+            })?;
+            result
+        })
+    }
 }

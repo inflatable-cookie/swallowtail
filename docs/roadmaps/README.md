@@ -13,9 +13,9 @@ shape.
 
 ## Next Task
 
-Validate card 225: run the gated DeepSeek Harness Web installed classification
-and prepared-facade live prompt with host-approved `dsh`, Cordis, cwd,
-provider, and model.
+Reassess Contract 054 live promotion, ACP, JSON-RPC session-id continuity,
+and DeepSeek-official as separate later gates. Keep `deepseek-official`
+unqualified.
 
 ## Index
 

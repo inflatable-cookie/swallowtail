@@ -70,16 +70,16 @@ visible as unverified newer unless exact evidence requires rejection.
 | Ship the compatible 30-package, 36-route current source as an exact `v0.3.2` source tag. | completed | Contracts 036, 055-056 | `g03.067` |
 | Replace Claude Code response-only patch equality with a fail-closed protocol-compatible baseline and provisional-newer policy. | completed | Contracts 039, 044; Figmatic `g04.005` evidence | `g03.068` |
 | Add DeepSeek Harness through its exact JSON-RPC stdio runtime without flattening onto Open Platform continuation or chasing ACP/Web. | completed | Contracts 005-006, 009-010, 023, 029, 032-033, 036-037, 039-041, 044-045, 051-052; Research 124; Spec 008 | `g03.069` |
-| Add DeepSeek Harness Web `/api` as a second local-server route without flattening onto JSON-RPC or chasing ACP. | active | Contracts 005-006, 009-010, 017, 023, 029, 032-033, 036-039, 044-045, 051-052, 054; Research 125; Spec 009 | `g03.070` |
+| Add DeepSeek Harness Web `/api` as a second local-server route without flattening onto JSON-RPC or chasing ACP. | completed | Contracts 005-006, 009-010, 017, 023, 029, 032-033, 036-039, 044-045, 051-052, 054; Research 125; Spec 009 | `g03.070` |
 
 ## Current Checkpoint
 
-- g03.070 is active. Deterministic cards 222-225 merged on `a1efabbe`
-  (PR 2), including review fixes at `23bb5e1c` and empty mux-chunk skip at
-  `bfbcb1a6`. Current source is 31 packages and 38 routes; immutable
-  `v0.3.2` stays 30 and 36. JSON-RPC stays the live-proven one-shot stdio
-  run. Card 225 still needs operator-gated Web installed/live smoke.
-  ACP, JSON-RPC session-id continuity, and `deepseek-official` stay later.
+- g03.070 is complete. Deterministic cards 222-225 merged on `a1efabbe`
+  (PR 2). Card 225 live smoke passed through the prepared facade on
+  host-local Ollama and does not qualify `deepseek-official`. Current source
+  is 31 packages and 38 routes; immutable `v0.3.2` stays 30 and 36.
+  Contract 054, ACP, JSON-RPC session-id continuity, and DeepSeek-official
+  remain later gates.
 - g03.069 is complete. Deterministic cards 218-221 merged on
   `52263993` (PR 1), including payload-digest admission at `96db297e`.
   Current source is 31 packages and 38 routes; immutable `v0.3.2` stays 30
@@ -709,7 +709,7 @@ visible as unverified newer unless exact evidence requires rejection.
 - [067 v0.3.2 Source Patch Release](./067-v0-3-2-source-patch-release.md) — completed
 - [068 Claude Code Response-Only Protocol Compatibility](./068-claude-code-response-only-protocol-compatibility.md) — completed
 - [069 DeepSeek Harness JSON-RPC Foundation](./069-deepseek-harness-jsonrpc-foundation.md) — completed
-- [070 DeepSeek Harness Web `/api` Foundation](./070-deepseek-harness-web-api-foundation.md) — active
+- [070 DeepSeek Harness Web `/api` Foundation](./070-deepseek-harness-web-api-foundation.md) — completed
 
 ## Checkpoint
 

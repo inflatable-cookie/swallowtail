@@ -1,6 +1,6 @@
 # 070 DeepSeek Harness Web `/api` Foundation
 
-Status: active
+Status: completed
 Owner: Tom
 Created: 2026-08-17
 Depends on: Research 125; Spec 009; g03.069
@@ -32,7 +32,7 @@ methods. JSON-RPC stays the one-shot stdio run.
       history, prompt, native cancel, fork, archive, deadline, and cleanup
 - [x] card 224: expose host-approved preparation and exact catalogue,
       history, structured-run, fork, and archive facades
-- [ ] card 225: complete route truth, operator guidance, and deterministic
+- [x] card 225: complete route truth, operator guidance, and deterministic
       plus live acceptance evidence
 
 ## Goals
@@ -73,9 +73,13 @@ methods. JSON-RPC stays the one-shot stdio run.
       provider, model, resource, and host services
 - [x] focused and extracted-package validation pass without network
       credentials
-- [ ] one separately gated live smoke passes through the prepared facade
+- [x] one separately gated live smoke passes through the prepared facade
 - [x] route matrix, feature matrix, guide map, example, architecture, package
       contract, and release tooling remain mutually honest with JSON-RPC
+
+Card 225 live smoke passed through the prepared facade on host-local Ollama.
+Exact npm `0.1.0-rc.6` is live-proven for one structured Web run. That does
+not qualify `deepseek-official`. Contract 054 stays corpus-qualified only.
 
 ## Planning Checkpoint
 

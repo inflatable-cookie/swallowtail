@@ -20,7 +20,7 @@ publication, or harness installation in this route.
 
 - exact host-approved `dsh` target and `deepseek-harness.web` axis
 - exact `0.1.0-rc.6` Web release evidence
-- host-approved Cordis environment reference
+- host-approved Web `--patch` overlay path as the environment reference
 - loopback endpoint, defaulting to `http://127.0.0.1:3080`
 - local unauthenticated access evidence with no credential reference or lease
 - explicit provider, model, read-only working resource, and deadline for a
@@ -42,12 +42,13 @@ allowlist, access status, host services, and qualified release binding.
 | fork | prepared catalogue → `prepare_fork` → `execute` | `session.fork` | native route-local operation; no invented provider-neutral fork shape or resume authority |
 | archive | `prepare_archive_session` → `execute` | `workspace.archiveSession` | target-only, inactive-session, before-dispatch cancellation posture |
 
-The Web run resolves the exact working resource through `workspace.list`, then
-creates with `workspaceId` and the pinned `standard` `agentPreset`. It does not
-send `cwd` or call preset-authoring/configuration methods. The prepared run
-still requires the ambient Cordis host configuration to report the selected
-provider and model through `host.describe`; a mismatch is rejected before
-session creation.
+The Web run resolves the exact working resource through `workspace.list`. A
+matching workspace creates with `workspaceId` and the pinned `standard`
+`agentPreset`. A fresh host with no matching workspace creates with `cwd`
+instead. It does not send both, and it does not call preset-authoring or
+configuration methods. The prepared run still requires the ambient Cordis host
+configuration to report the selected provider and model through `host.describe`;
+a mismatch is rejected before session creation.
 
 The Web method allowlist is `session.list`, `session.search`,
 `session.create`, `session.history`, `session.models`, `session.prompt`,
@@ -64,8 +65,9 @@ history, native fork, and archive subset.
 
 ## Process and network boundary
 
-The structured operation starts `dsh web` with the exact `web` argument and
-host-approved Cordis environment. HTTP is JSON-only POST to `/api/<method>`;
+The structured operation starts `dsh web --patch <overlay>` with the host-approved
+Web Cordis overlay path. That overlay is not the JSON-RPC runtime plugin tree.
+HTTP is JSON-only POST to `/api/<method>`;
 WebSocket downlinks are limited to the mux and host channels. The endpoint is
 loopback-only, the host network grant is audience-bound, redirects and proxy
 use are disabled, and Origin plus same-origin request headers are checked.
@@ -84,7 +86,7 @@ that does not qualify `deepseek-official`.
 
 ```sh
 export SWALLOWTAIL_DEEPSEEK_HARNESS_EXECUTABLE=/absolute/path/dsh
-export SWALLOWTAIL_DEEPSEEK_HARNESS_CORDIS=/absolute/path/to/cordis-config
+export SWALLOWTAIL_DEEPSEEK_HARNESS_CORDIS=/absolute/path/to/web-patch.cordis.yml
 export SWALLOWTAIL_DEEPSEEK_HARNESS_CWD=/absolute/path/to/read-only-workspace
 export SWALLOWTAIL_DEEPSEEK_HARNESS_PROVIDER=local-ollama
 export SWALLOWTAIL_DEEPSEEK_HARNESS_MODEL=operator-selected-model

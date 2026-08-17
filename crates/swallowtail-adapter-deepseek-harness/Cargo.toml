@@ -29,6 +29,7 @@ tungstenite = { version = "0.30", features = ["rustls-tls-native-roots"] }
 url = "2"
 
 [dev-dependencies]
+futures-channel = "0.3"
 futures-executor = "0.3"
 futures-util = "0.3"
 swallowtail-host-local.workspace = true

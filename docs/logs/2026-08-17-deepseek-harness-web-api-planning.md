@@ -43,8 +43,9 @@ outside.
 
 ## Next
 
-Validate card 225 live smoke: host-approved `dsh`, Cordis, cwd, provider, and
-model through the prepared facade. Keep `deepseek-official` unqualified.
+Reassess Contract 054 live promotion, ACP, JSON-RPC session-id continuity,
+and DeepSeek-official as separate later gates. Keep `deepseek-official`
+unqualified.
 
 ## Merge
 

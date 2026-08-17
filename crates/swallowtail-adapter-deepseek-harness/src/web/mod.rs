@@ -13,9 +13,9 @@ mod transport;
 pub(crate) use transport::require_loopback_endpoint;
 
 pub(crate) use protocol::{
-    MuxFrame, WebMethod, decode_mux_frame, method_allowlist, parse_archive, parse_cancel,
-    parse_fork, parse_history, parse_host_description, parse_models, parse_prompt, parse_search,
-    parse_session_create, parse_session_list, parse_workspace_list, request_body,
+    MuxFrame, WebMethod, decode_mux_frame, matching_workspace, method_allowlist, parse_archive,
+    parse_cancel, parse_fork, parse_history, parse_host_description, parse_models, parse_prompt,
+    parse_search, parse_session_create, parse_session_list, request_body,
 };
 pub(crate) use selection::{target_is_exact, validate_plan, web_claim};
 

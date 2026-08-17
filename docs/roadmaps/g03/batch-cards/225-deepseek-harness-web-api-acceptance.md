@@ -1,6 +1,6 @@
 # 225 DeepSeek Harness Web `/api` Package And Route Acceptance
 
-Status: active
+Status: completed
 Owner: Tom
 Created: 2026-08-17
 Milestone: `../070-deepseek-harness-web-api-foundation.md`
@@ -31,7 +31,7 @@ tagged inventories.
 - [x] current source and immutable tagged-release route counts stay distinct
 - [x] every unsupported configuration-plane method remains an explicit `No`
 - [x] deterministic validation is credential-free
-- [ ] one operator-authorized live smoke passes through the prepared facade
+- [x] one operator-authorized live smoke passes through the prepared facade
 - [x] the closeout does not imply publication or DeepSeek-official support
 
 ## Validation
@@ -67,13 +67,12 @@ checkpoint.
 - `effigy qa:guides`, `effigy qa:routes`, `effigy qa:docs`, and example checks
   passed
 - Web guide, example, prepared entry, installed probe, and separate live
-  selectors are present; no live process, account, credential, or model was
-  used in this workspace
+  selectors are present
+- `effigy probe:deepseek-harness-web-installed` passed
+- `effigy probe:deepseek-harness-web-live` passed through the prepared facade
+  on host-local Ollama; that does not qualify `deepseek-official`
+- live spawn binds `dsh web --patch`, cwd create fallback, ignored mux
+  snapshots, unknown session events as progress, and local runtime event
+  sequence
 
-## Pending Operator Gate
-
-The Web installed/live selectors compile but were not run. The operator must
-provide the exact `dsh` path, Cordis configuration, read-only cwd, provider,
-and model, then run the two Web selectors. Keep host-local Ollama evidence
-separate from `deepseek-official`; do not promote Contract 054, ACP, or
-JSON-RPC continuity from this smoke.
+See `docs/logs/2026-08-17-deepseek-harness-web-api-live-acceptance.md`.

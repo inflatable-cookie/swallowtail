@@ -2,7 +2,6 @@
 
 ## Active
 
-- [225-deepseek-harness-web-api-acceptance.md](./225-deepseek-harness-web-api-acceptance.md)
 
 ## Superseded
 
@@ -24,6 +23,7 @@
 
 ## Completed
 
+- [225-deepseek-harness-web-api-acceptance.md](./225-deepseek-harness-web-api-acceptance.md)
 - [224-deepseek-harness-web-api-prepared-facade.md](./224-deepseek-harness-web-api-prepared-facade.md)
 - [223-deepseek-harness-web-api-driver-core.md](./223-deepseek-harness-web-api-driver-core.md)
 - [222-deepseek-harness-web-api-corpus.md](./222-deepseek-harness-web-api-corpus.md)

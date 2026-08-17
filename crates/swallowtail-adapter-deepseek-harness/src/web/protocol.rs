@@ -42,7 +42,14 @@ pub(crate) const fn method_allowlist() -> &'static [&'static str] {
     ]
 }
 
-const MUX_FRAMES: &[&str] = &["session/subscribed", "session/event", "stream/error"];
+const MUX_FRAMES: &[&str] = &[
+    "session/subscribed",
+    "session/event",
+    "session/queue",
+    "session/jobs",
+    "session/projection",
+    "stream/error",
+];
 #[allow(dead_code)]
 const HOST_FRAMES: &[&str] = &[
     "host/session-added",
@@ -69,6 +76,11 @@ const SESSION_EVENT_TYPES: &[&str] = &[
     "tool/call",
     "tool/result",
     "session/title",
+    "session/end-seed",
+    "agent-preset/selected",
+    "permission/preset",
+    "sandbox/mode",
+    "agent/inbox/spliced",
 ];
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -171,6 +183,7 @@ pub(crate) struct MuxEvent {
 pub(crate) enum MuxFrame {
     Subscribed { session_id: String, last_seq: i64 },
     Event(MuxEvent),
+    Ignored,
 }
 
 /// Builds one allowlisted Web RPC request envelope.
@@ -279,10 +292,20 @@ pub(crate) fn parse_session_list(value: &Value) -> Result<SessionListPage, Runti
     Ok(SessionListPage { items, next_cursor })
 }
 
+#[cfg(test)]
 pub(crate) fn parse_workspace_list(
     value: &Value,
     expected_path: &str,
 ) -> Result<WorkspaceSummary, RuntimeFailure> {
+    matching_workspace(value, expected_path)?.ok_or_else(|| {
+        malformed("workspace.list has no matching workspace")
+    })
+}
+
+pub(crate) fn matching_workspace(
+    value: &Value,
+    expected_path: &str,
+) -> Result<Option<WorkspaceSummary>, RuntimeFailure> {
     require_safe_text(expected_path, "workspace path")?;
     let items = value
         .get("items")
@@ -306,7 +329,7 @@ pub(crate) fn parse_workspace_list(
             matching = Some(workspace);
         }
     }
-    matching.ok_or_else(|| malformed("workspace.list has no matching workspace"))
+    Ok(matching)
 }
 
 pub(crate) fn parse_session_create(value: &Value) -> Result<SessionCreateResult, RuntimeFailure> {
@@ -523,12 +546,13 @@ pub(crate) fn decode_mux_frame(bytes: &[u8]) -> Result<MuxFrame, RuntimeFailure>
                 .and_then(Value::as_u64)
                 .ok_or_else(|| malformed("mux event sequence is invalid"))?;
             let event_type = bounded_text(event.get("type"), "mux event type")?;
-            require(
-                SESSION_EVENT_TYPES.contains(&event_type),
-                "mux event type is not allowlisted",
-            )?;
-            let output_delta = extract_text_delta(event)?;
-            let usage = extract_usage(event)?;
+            let known = SESSION_EVENT_TYPES.contains(&event_type);
+            let output_delta = if known {
+                extract_text_delta(event)?
+            } else {
+                None
+            };
+            let usage = if known { extract_usage(event)? } else { None };
             Ok(MuxFrame::Event(MuxEvent {
                 session_id,
                 sequence,
@@ -542,6 +566,7 @@ pub(crate) fn decode_mux_frame(bytes: &[u8]) -> Result<MuxFrame, RuntimeFailure>
             "swallowtail.deepseek_harness.web.stream_error",
             "DeepSeek Harness Web event stream reported a safe failure",
         )),
+        "session/queue" | "session/jobs" | "session/projection" => Ok(MuxFrame::Ignored),
         _ => Err(malformed("mux frame method is not handled")),
     }
 }
@@ -818,7 +843,7 @@ mod tests {
         parse_archive, parse_history, parse_host_description, parse_models, parse_workspace_list,
         request_body,
     };
-    use serde_json::Value;
+    use serde_json::{Value, json};
 
     fn fixture(path: &str) -> Vec<u8> {
         let root = concat!(
@@ -896,6 +921,52 @@ mod tests {
             MuxFrame::Event(event)
                 if event.event_type == "assistant/chunk" && event.output_delta.is_none()
         )));
+    }
+
+    #[test]
+    fn mux_control_snapshots_are_ignored_without_reading_bodies() {
+        let frame = serde_json::to_vec(&json!({
+            "type": "server-request",
+            "rpcId": "fixture-mux-queue",
+            "method": "session/queue",
+            "payload": {
+                "type": "session/queue",
+                "sessionId": "fixture-session-1",
+                "items": []
+            }
+        }))
+        .expect("queue frame encodes");
+        assert!(matches!(
+            decode_mux_frame(&frame).expect("queue frame decodes"),
+            MuxFrame::Ignored
+        ));
+    }
+
+    #[test]
+    fn mux_unknown_session_event_is_content_free_progress() {
+        let frame = serde_json::to_vec(&json!({
+            "type": "server-request",
+            "rpcId": "fixture-mux-title-request",
+            "method": "session/event",
+            "payload": {
+                "type": "session/event",
+                "sessionId": "fixture-session-1",
+                "event": {
+                    "type": "session/title-llm-request",
+                    "seq": 1,
+                    "time": 1_700_000_000_001_i64,
+                    "data": {}
+                }
+            }
+        }))
+        .expect("unknown event encodes");
+        assert!(matches!(
+            decode_mux_frame(&frame).expect("unknown event decodes"),
+            MuxFrame::Event(event)
+                if event.event_type == "session/title-llm-request"
+                    && event.output_delta.is_none()
+                    && !event.terminal
+        ));
     }
 
     #[test]

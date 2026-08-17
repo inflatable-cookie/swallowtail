@@ -74,10 +74,9 @@ move.
 - [x] redacted fixtures contain no prompts, reasoning text, tool bodies,
       secrets, or raw export bytes
 
-The deterministic acceptance surfaces are in place. Card 225 still has one
-operator-gated installed/live smoke pending exact local `dsh`, Cordis, cwd,
-provider, and model inputs; that gate does not promote this draft to a live
-provider qualification.
+The deterministic acceptance surfaces are in place. Card 225 live smoke
+passed through the prepared facade on host-local Ollama; that does not
+promote this draft to a DeepSeek-official qualification.
 
 ## Promotion Targets
 

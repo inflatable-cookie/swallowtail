@@ -2,7 +2,7 @@ use super::transport::{WebApiTransport, require_loopback_endpoint};
 use super::{
     DEEPSEEK_HARNESS_WEB_RELEASE_AXIS, DEEPSEEK_HARNESS_WEB_RELEASE_VERSION, WebMethod,
     parse_archive, parse_cancel, parse_fork, parse_history, parse_host_description, parse_models,
-    parse_prompt, parse_search, parse_session_create, parse_session_list, parse_workspace_list,
+    parse_prompt, parse_search, parse_session_create, parse_session_list, matching_workspace,
     request_body,
 };
 use serde_json::{Value, json};
@@ -896,7 +896,11 @@ impl DeepSeekHarnessWebDriver {
         let process_request = ProcessRequest::new(ExecutableRef::from_instance_target(
             plan.instance_target_ref(),
         ))
-        .with_arguments(["web".to_owned()])
+        .with_arguments([
+            "web".to_owned(),
+            "--patch".to_owned(),
+            self.environment.as_host_value().to_owned(),
+        ])
         .with_environment([self.environment.clone()])
         .with_working_resource(working_resource.clone());
         let process: Arc<dyn ProcessHandle> = Arc::from(
@@ -1181,7 +1185,16 @@ async fn run_web_prompt(
         Arc::new(AtomicBool::new(false)),
     )
     .await?;
-    let workspace_id = parse_workspace_list(&workspaces, &cwd)?.workspace_id;
+    let create_payload = match matching_workspace(&workspaces, &cwd)? {
+        Some(workspace) => json!({
+            "workspaceId": workspace.workspace_id,
+            "agentPreset": DEFAULT_AGENT_PRESET,
+        }),
+        None => json!({
+            "cwd": cwd,
+            "agentPreset": DEFAULT_AGENT_PRESET,
+        }),
+    };
     if cancellation.is_requested() {
         return Err(failure(
             "swallowtail.deepseek_harness.web.cancelled",
@@ -1193,10 +1206,7 @@ async fn run_web_prompt(
         scope.clone(),
         endpoint.clone(),
         WebMethod::SessionCreate,
-        json!({
-            "workspaceId": workspace_id,
-            "agentPreset": DEFAULT_AGENT_PRESET,
-        }),
+        create_payload,
         &request_id,
         &services,
         Some(deadline),
@@ -1252,6 +1262,7 @@ async fn run_web_prompt(
     let loop_result = async {
         let mut subscribed = false;
         let mut previous_sequence = None;
+        let mut runtime_seq = 1u64;
         let mut output = String::new();
         let mut completed = false;
         let mut usage_seen = false;
@@ -1261,6 +1272,7 @@ async fn run_web_prompt(
                 break;
             };
             match super::decode_mux_frame(&bytes)? {
+                super::MuxFrame::Ignored => continue,
                 super::MuxFrame::Subscribed {
                     session_id: subscribed_session,
                     last_seq,
@@ -1272,7 +1284,8 @@ async fn run_web_prompt(
                             ));
                         }
                         subscribed = true;
-                        events.send(RuntimeEvent::new(1, RuntimeEventKind::Progress))?;
+                        events.send(RuntimeEvent::new(runtime_seq, RuntimeEventKind::Progress))?;
+                        runtime_seq = runtime_seq.saturating_add(1);
                     }
                 }
                 super::MuxFrame::Event(event) => {
@@ -1301,11 +1314,12 @@ async fn run_web_prompt(
                     {
                         usage_seen = true;
                         events.send(RuntimeEvent::new(
-                            event.sequence,
+                            runtime_seq,
                             RuntimeEventKind::ProviderObservation(
                                 swallowtail_runtime::ProviderObservation::Usage(usage),
                             ),
                         ))?;
+                        runtime_seq = runtime_seq.saturating_add(1);
                     }
                     if let Some(delta) = event.output_delta {
                         if output.len().saturating_add(delta.len()) > MAX_RUN_OUTPUT_BYTES {
@@ -1318,15 +1332,14 @@ async fn run_web_prompt(
                             malformed("DeepSeek Harness Web output content is invalid")
                         })?;
                         events.send(RuntimeEvent::with_content(
-                            event.sequence,
+                            runtime_seq,
                             RuntimeEventKind::OutputDelta,
                             content,
                         ))?;
+                        runtime_seq = runtime_seq.saturating_add(1);
                     } else {
-                        events.send(RuntimeEvent::new(
-                            event.sequence,
-                            RuntimeEventKind::Progress,
-                        ))?;
+                        events.send(RuntimeEvent::new(runtime_seq, RuntimeEventKind::Progress))?;
+                        runtime_seq = runtime_seq.saturating_add(1);
                     }
                     if event.terminal {
                         completed = true;

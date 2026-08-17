@@ -13,6 +13,7 @@ mod discovery;
 mod driver;
 mod failure;
 mod handle;
+mod prepared;
 mod protocol;
 mod pump;
 mod selection;
@@ -20,6 +21,12 @@ mod validation;
 
 pub use access::{DEEPSEEK_HARNESS_CONFIG_AUDIENCE, deepseek_harness_access_profile};
 pub use driver::{DeepSeekHarnessJsonRpcDriver, deepseek_harness_jsonrpc_descriptor};
+pub use prepared::{
+    DeepSeekHarnessModelSelection, DeepSeekHarnessPreparationInput,
+    DeepSeekHarnessPreparationProbe, DeepSeekHarnessPreparedEvidence,
+    DeepSeekHarnessPreparedIntegration, DeepSeekHarnessPreparedRun, DeepSeekHarnessRunProfileInput,
+    prepare_deepseek_harness_jsonrpc,
+};
 pub use selection::{
     DEEPSEEK_HARNESS_EXECUTABLE_BASENAME, DEEPSEEK_HARNESS_PAYLOAD_SHA256,
     DEEPSEEK_HARNESS_RELEASE_AXIS, DEEPSEEK_HARNESS_RELEASE_VERSION,

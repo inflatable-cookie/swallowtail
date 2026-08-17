@@ -5,10 +5,10 @@ use swallowtail_runtime::{
     installed_probe_codes, probe_installed_executable_version,
 };
 
+use crate::selection::target_is_exact;
 use crate::{
     DeepSeekHarnessJsonRpcDriver, deepseek_harness_jsonrpc_claim, deepseek_harness_release_binding,
 };
-use crate::selection::target_is_exact;
 
 const SWALLOWTAIL_DEEPSEEK_HARNESS_PROBE_CODES: InstalledProbeCodes =
     installed_probe_codes!("swallowtail.deepseek_harness");

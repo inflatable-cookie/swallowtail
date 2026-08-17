@@ -26,7 +26,7 @@ methods. JSON-RPC stays the one-shot stdio run.
 
 ## Execution Plan
 
-- [ ] card 222: freeze exact `dsh` web artifact, loopback trust fence, method
+- [x] card 222: freeze exact `dsh` web artifact, loopback trust fence, method
       allowlist, unary and mux corpus, and private-state boundaries
 - [ ] card 223: implement discovery, compatibility, allowlisted decode,
       history, prompt, native cancel, fork, archive, deadline, and cleanup

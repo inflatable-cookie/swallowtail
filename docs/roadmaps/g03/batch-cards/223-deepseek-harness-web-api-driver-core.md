@@ -1,6 +1,6 @@
 # 223 DeepSeek Harness Web `/api` Driver Core
 
-Status: planned
+Status: ready
 Owner: Tom
 Created: 2026-08-17
 Milestone: `../070-deepseek-harness-web-api-foundation.md`

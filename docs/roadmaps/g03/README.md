@@ -77,9 +77,11 @@ visible as unverified newer unless exact evidence requires rejection.
 - g03.070 is active. Research 125 and Spec 009 select exact
   `@deepseek-ai/dsh@0.1.0-rc.6` Web `/api` as `deepseek-harness.local-server`,
   distinct from `deepseek-harness.jsonrpc` and `deepseek.continuation`. Card
-  222 is ready; cards 223-225 are planned. JSON-RPC stays the live-proven
-  one-shot stdio run. ACP, session-id continuity, and `deepseek-official`
-  stay later and distinct.
+  222 is complete and card 223 is ready; cards 224-225 are planned. The
+  redacted corpus freezes the CLI/npm pin, loopback fence, 11-method allowlist,
+  server-only mux/host downlinks, carrier-status split, and control-free
+  history pages. JSON-RPC stays the live-proven one-shot stdio run. ACP,
+  session-id continuity, and `deepseek-official` stay later and distinct.
 - g03.069 is complete. Deterministic cards 218-221 merged on
   `52263993` (PR 1), including payload-digest admission at `96db297e`.
   Current source is 31 packages and 37 routes; immutable `v0.3.2` stays 30

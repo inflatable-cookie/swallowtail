@@ -200,6 +200,9 @@ pub const swallowtail_adapter_claude_agent::CLAUDE_CODE_HEADLESS_AXIS: &str
 pub const swallowtail_adapter_claude_agent::CLAUDE_CODE_HEADLESS_BASELINE_VERSION: &str
 pub const swallowtail_adapter_claude_agent::CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION: &str
 pub const swallowtail_adapter_claude_agent::CLAUDE_CODE_RESPONSE_ONLY_AXIS: &str
+pub const swallowtail_adapter_claude_agent::CLAUDE_CODE_RESPONSE_ONLY_BASELINE_VERSION: &str
+pub const swallowtail_adapter_claude_agent::CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS: &[&str]
+pub const swallowtail_adapter_claude_agent::CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION: &str
 pub const swallowtail_adapter_claude_agent::CLAUDE_CODE_RESPONSE_ONLY_VERSION: &str
 pub fn swallowtail_adapter_claude_agent::claude_agent_acp_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
 pub fn swallowtail_adapter_claude_agent::claude_agent_acp_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim

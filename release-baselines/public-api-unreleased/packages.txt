@@ -1,0 +1,2 @@
+swallowtail-adapter-claude-agent
+swallowtail-adapter-deepseek-harness

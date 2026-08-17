@@ -2814,9 +2814,11 @@ dependencies = [
 name = "swallowtail-adapter-deepseek-harness"
 version = "0.3.2"
 dependencies = [
+ "futures-executor",
  "futures-util",
  "serde_json",
  "swallowtail-core",
+ "swallowtail-host-local",
  "swallowtail-runtime",
  "swallowtail-testkit",
 ]

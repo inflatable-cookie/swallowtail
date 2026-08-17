@@ -2,12 +2,14 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-08
+Updated: 2026-08-17
 
 ## Realized State
 
-Swallowtail has a thirty-crate Rust workspace plus its strict Northstar authority
-spine:
+Swallowtail has a thirty-one-package current-source Rust workspace plus its
+strict Northstar authority spine. The immutable `v0.3.2` tag remains a
+thirty-package source baseline; the current tree adds one unreleased reviewed
+adapter and route.
 
 - `swallowtail-core` owns pure provider-neutral contract records, including
   runtime identities, access state, configured instances, model routes,
@@ -180,6 +182,13 @@ spine:
   host-approved HTTP/SSE, including authenticated catalogue, consumer-owned
   tool exchange, private reasoning continuation, and joined credential-last
   cleanup
+- `swallowtail-adapter-deepseek-harness` implements the exact `0.1.0rc6`
+  packaged DeepSeek Harness JSON-RPC runtime-bin over one host-owned NDJSON
+  stdio process, with explicit provider/model selection, bounded idle-folded
+  structured runs, content-free reasoning progress, harness-owned tool
+  lifecycle, and force-stop cancellation; it does not extend the Open Platform
+  route or qualify ACP, Web `/api`, interactive continuity, or DeepSeek-official
+  SSE behavior
 - `swallowtail-adapter-opencode` implements version-bound OpenCode
   `1.14.48..=1.18.10` model discovery and ambient-host interactive sessions with
   read-only tool permissions over host-approved HTTP and bounded SSE; exact
@@ -428,6 +437,11 @@ Crate status:
   revision, V4 Pro catalogue and selection, buffered tool response, streaming
   finals, private continuation, cache usage, consumer-authorized attempts,
   failure, cancellation, disconnect, drift, and both host topologies
+- `swallowtail-adapter-deepseek-harness` — realized for the exact `0.1.0rc6`
+  runtime-bin JSON-RPC structured-run route with host-approved Cordis
+  configuration, explicit provider/model, bounded stream parsing, namespaced
+  unknown observations, process-kill cancellation, and joined cleanup; the
+  package remains an unreleased additive candidate after `v0.3.2`
 - `swallowtail-adapter-opencode` — realized for attached model catalogue and
   read-only interactive sessions over a six-route HTTP/SSE subset with exact
   delegated-auth, version, provider/model, abort, deadline, and cleanup bounds

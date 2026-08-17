@@ -67,11 +67,11 @@ No remaining product-policy forks block the first tranche.
 
 ## Acceptance Criteria
 
-- [ ] Research 124 remains the evidence owner for the pin and live smokes
-- [ ] milestone g03.069 sequences corpus, driver, facade, and acceptance
-- [ ] public route truth keeps `deepseek.continuation` unchanged
-- [ ] first live selector is separately gated and credential-honest
-- [ ] redacted fixtures contain no prompts, reasoning text, tool bodies, or
+- [x] Research 124 remains the evidence owner for the pin and live smokes
+- [x] milestone g03.069 sequences corpus, driver, facade, and acceptance
+- [x] public route truth keeps `deepseek.continuation` unchanged
+- [x] first live selector is separately gated and credential-honest
+- [x] redacted fixtures contain no prompts, reasoning text, tool bodies, or
       secrets
 
 ## Promotion Targets

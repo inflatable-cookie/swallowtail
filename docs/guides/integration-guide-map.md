@@ -12,7 +12,7 @@ Coverage states:
 - **missing** — no canonical task-oriented guide exists
 - **complete** — guide, example, and coverage validation meet Contract 052
 
-All 36 production route rows and every portable feature family have completed
+All 37 production route rows and every portable feature family have completed
 the checklist. Coverage state describes documentation evidence, not the
 underlying production capability.
 
@@ -61,6 +61,7 @@ conflicts or when you are qualifying a new claim.
 | `anthropic.messages` | [Anthropic Direct](anthropic-direct-prepared-integration.md) | [prepared direct](../../crates/swallowtail-adapter-anthropic/examples/prepared_direct.rs) | complete |
 | `kimi-platform.chat` | [Kimi Platform](kimi-platform-prepared-integration.md) | [prepared direct](../../crates/swallowtail-adapter-kimi-platform/examples/prepared_kimi_platform_direct.rs) | complete |
 | `deepseek.continuation` | [DeepSeek](deepseek-prepared-integration.md) | [prepared continuation](../../crates/swallowtail-adapter-deepseek/examples/prepared_direct_continuation.rs) | complete |
+| `deepseek-harness.jsonrpc` | [DeepSeek Harness JSON-RPC](deepseek-harness-prepared-integration.md) | [prepared JSON-RPC](../../crates/swallowtail-adapter-deepseek-harness/examples/prepared_deepseek_harness_jsonrpc.rs) | complete |
 | `alibaba.conversations` | [Alibaba Model Studio](alibaba-model-studio-prepared-integration.md) | [prepared conversation](../../crates/swallowtail-adapter-alibaba-model-studio/examples/prepared_provider_conversation.rs) | complete |
 | `openai.background` | [OpenAI Background](openai-background-prepared-integration.md) | [prepared response](../../crates/swallowtail-adapter-openai/examples/prepared_background_response.rs) | complete |
 | `anthropic.managed-agent` | [Anthropic Managed Agent](anthropic-managed-agent-prepared-integration.md) | [prepared managed agent](../../crates/swallowtail-adapter-anthropic/examples/prepared_managed_agent.rs) | complete |

@@ -39,9 +39,10 @@ Release-preparation scripts:
   use an explicitly reported synthetic Git snapshot
 - `generate-public-api-baseline.sh` — generate the reviewed semantic Rust API
   inventory with pinned `cargo-public-api` and nightly versions
-- `check-public-api.sh` — compare the 30-package candidate API against the
-  reviewed `v0.3.2` baseline while forbidding removals from immutable
-  `v0.3.0`
+- `check-public-api.sh` — compare the immutable 30-package `v0.3.2` API and
+  the reviewed current-source overrides listed in
+  `release-baselines/public-api-unreleased/packages.txt`, while forbidding
+  removals from immutable `v0.3.0`
 - `check-msrv.sh` — unified Rust 1.95 floor and current stable checks
 
 Archived registry-candidate scripts:

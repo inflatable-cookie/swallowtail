@@ -9,6 +9,7 @@ members = [
   "crates/swallowtail-adapter-command-code",
   "crates/swallowtail-adapter-cursor",
   "crates/swallowtail-adapter-deepseek",
+  "crates/swallowtail-adapter-deepseek-harness",
   "crates/swallowtail-adapter-gemini",
   "crates/swallowtail-adapter-grok",
   "crates/swallowtail-adapter-kimi",

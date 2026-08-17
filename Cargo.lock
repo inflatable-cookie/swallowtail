@@ -2811,6 +2811,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "swallowtail-adapter-deepseek-harness"
+version = "0.3.2"
+dependencies = [
+ "futures-util",
+ "serde_json",
+ "swallowtail-core",
+ "swallowtail-runtime",
+ "swallowtail-testkit",
+]
+
+[[package]]
 name = "swallowtail-adapter-gemini"
 version = "0.3.2"
 dependencies = [

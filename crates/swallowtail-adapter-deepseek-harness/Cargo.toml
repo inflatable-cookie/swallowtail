@@ -1,0 +1,26 @@
+[package]
+name = "swallowtail-adapter-deepseek-harness"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+readme.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+description = "DeepSeek Harness JSON-RPC driver for Swallowtail"
+autotests = false
+
+[lib]
+doctest = false
+
+[dependencies]
+futures-util = "0.3"
+serde_json = "1"
+swallowtail-core.workspace = true
+swallowtail-runtime.workspace = true
+
+[dev-dependencies]
+swallowtail-testkit.workspace = true
+
+[lints]
+workspace = true

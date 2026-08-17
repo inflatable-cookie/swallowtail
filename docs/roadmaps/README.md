@@ -13,8 +13,8 @@ shape.
 
 ## Next Task
 
-Implement card 218: freeze the DeepSeek Harness JSON-RPC artifact, protocol,
-and redacted event corpus at exact runtime-bin `0.1.0rc6`.
+Implement card 221: complete the DeepSeek Harness package, route truth, guide,
+matrices, additive release-baseline handling, and separately gated acceptance.
 
 ## Index
 

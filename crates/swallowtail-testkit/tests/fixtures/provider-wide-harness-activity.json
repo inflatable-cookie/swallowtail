@@ -418,6 +418,31 @@
       ]
     },
     {
+      "id": "deepseek-harness.jsonrpc",
+      "driver": "swallowtail.deepseek-harness.jsonrpc",
+      "transport": "deepseek-harness-jsonrpc-ndjson-stdio",
+      "qualified": "0.1.0rc6",
+      "prepared_profiles": [
+        {
+          "operation": "structured-run",
+          "availability": "available"
+        }
+      ],
+      "unavailable_operations": [],
+      "not_applicable_operations": [],
+      "unknown_posture": "preserve-namespaced",
+      "exact_absences": [
+        "interactive session continuity",
+        "model catalogue",
+        "consumer tool exchange",
+        "permission exchange",
+        "native JSON-RPC cancel",
+        "provider session management",
+        "subagent topology",
+        "reasoning content"
+      ]
+    },
+    {
       "id": "oh-my-pi.rpc",
       "driver": "swallowtail.oh-my-pi.rpc",
       "transport": "oh-my-pi-rpc-v2-jsonl-stdio",

@@ -10,16 +10,17 @@ release_msrv_cargo=${SWALLOWTAIL_MSRV%.0}
 release_metadata=$(mktemp)
 release_edges=$(mktemp)
 release_names=$(mktemp)
+release_tag_names=$(mktemp)
 release_expected_names=$(mktemp)
 release_expected_edges=$(mktemp)
 release_order_names=$(mktemp)
-trap 'rm -f "$release_metadata" "$release_edges" "$release_names" "$release_expected_names" "$release_expected_edges" "$release_order_names"' EXIT
+trap 'rm -f "$release_metadata" "$release_edges" "$release_names" "$release_tag_names" "$release_expected_names" "$release_expected_edges" "$release_order_names"' EXIT
 
 cargo metadata --no-deps --format-version 1 > "$release_metadata"
 release_version=$(jq -r '.packages[0].version' "$release_metadata")
 
 jq -e --arg version "$release_version" --arg rust_msrv "$release_msrv_cargo" '
-  (.packages | length) == 30 and
+  (.packages | length) == 31 and
   all(.packages[];
     .version == $version and
     .edition == "2024" and
@@ -40,6 +41,7 @@ jq -e --arg version "$release_version" --arg rust_msrv "$release_msrv_cargo" '
          .name == "swallowtail-adapter-oh-my-pi" or
          .name == "swallowtail-adapter-muse" or
          .name == "swallowtail-adapter-command-code" or
+         .name == "swallowtail-adapter-deepseek-harness" or
          .name == "swallowtail-adapter-pi" or
          .name == "swallowtail-adapter-qwen") and
         .features == {"live-probes":[]}
@@ -54,12 +56,16 @@ jq -e --arg version "$release_version" --arg rust_msrv "$release_msrv_cargo" '
 ' "$release_metadata" > /dev/null
 
 jq -r '.packages[].name' "$release_metadata" | LC_ALL=C sort > "$release_names"
-cat release-baselines/public-api-0.3.2/packages.txt > "$release_expected_names"
+{
+  cat release-baselines/public-api-0.3.2/packages.txt
+  printf 'swallowtail-adapter-deepseek-harness\n'
+} | LC_ALL=C sort > "$release_expected_names"
 diff -u "$release_expected_names" "$release_names"
 
 source scripts/release-package-set.sh
 printf '%s\n' "${release_packages[@]}" | LC_ALL=C sort > "$release_order_names"
-diff -u "$release_names" "$release_order_names"
+grep -Fvx 'swallowtail-adapter-deepseek-harness' "$release_names" > "$release_tag_names"
+diff -u "$release_tag_names" "$release_order_names"
 [[ ${#release_packages[@]} -eq 30 ]]
 [[ "${release_stage_2[*]}" == "swallowtail-idioms" ]]
 [[ "${release_stage_3[*]}" == "swallowtail-runtime" ]]
@@ -72,11 +78,15 @@ jq -r '
   @tsv
 ' "$release_metadata" | LC_ALL=C sort > "$release_edges"
 
-awk -F '\t' -v OFS='\t' -v requirement="^$release_version" \
-  '{$3 = requirement; print}' \
-  release-baselines/internal-dependencies-0.3.2.tsv \
+{
+  awk -F '\t' -v OFS='\t' -v requirement="^$release_version" \
+    '{$3 = requirement; print}' \
+    release-baselines/internal-dependencies-0.3.2.tsv
+  printf 'swallowtail-adapter-deepseek-harness\tswallowtail-core\t^%s\n' "$release_version"
+  printf 'swallowtail-adapter-deepseek-harness\tswallowtail-runtime\t^%s\n' "$release_version"
+} \
   | LC_ALL=C sort > "$release_expected_edges"
 diff -u "$release_expected_edges" "$release_edges"
 
-printf 'v0.3.2 release metadata passed for 30 crates at %s and Rust %s\n' \
+printf 'current-source metadata passed for 31 crates at %s and Rust %s; immutable v0.3.2 baseline remains 30\n' \
   "$release_version" "$release_msrv_cargo"

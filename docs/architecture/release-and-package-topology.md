@@ -2,13 +2,16 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-11
+Updated: 2026-08-17
 Realization: roadmap g02.001; g03.043; g03.059
 
 ## Boundary
 
 Swallowtail's immutable `v0.3.2` source tag is a coordinated 30-package Rust
-workspace, two packages ahead of the `v0.3.1` tag's 28 packages.
+workspace, two packages ahead of the `v0.3.1` tag's 28 packages. Current source
+adds the reviewed but unreleased `swallowtail-adapter-deepseek-harness`
+package and `deepseek-harness.jsonrpc` route, for 31 packages and 37
+production routes in the candidate tree.
 The immutable `v0.1.x` source tags contain 27 packages; `v0.2.0` and later tags
 contain 28 after adding `swallowtail-adapter-muse`. `swallowtail-adapter-command-code`
 and `swallowtail-idioms` first appear in `v0.3.2`. No crate is published to
@@ -47,6 +50,7 @@ Adapters:
 - `swallowtail-adapter-command-code`
 - `swallowtail-adapter-cursor`
 - `swallowtail-adapter-deepseek`
+- `swallowtail-adapter-deepseek-harness`
 - `swallowtail-adapter-gemini`
 - `swallowtail-adapter-grok`
 - `swallowtail-adapter-kimi`
@@ -84,8 +88,9 @@ No normal internal edge points upward. Workspace paths keep the source tag
 self-contained. Compatible version requirements preserve coordinated package
 identity without claiming registry availability.
 
-Release metadata, dependency topology, and semantic API checks cover the
-current 30-package source. Immutable `v0.1.x` inventories retain their 27
+Release metadata, dependency topology, and semantic API checks distinguish the
+31-package current candidate from the immutable 30-package `v0.3.2` source.
+Immutable `v0.1.x` inventories retain their 27
 packages and 33 routes; `v0.2.0` and `v0.3.1` retain their 28-package,
 34-route inventory. Later candidates do not rewrite historical release notes,
 tag contents, or evidence.
@@ -135,9 +140,12 @@ The release is one clean canonical commit plus deterministic evidence:
 
 - exact commit and parent
 - clean worktree
-- 30-package release metadata and topology plus immutable 28-package
+- 30-package immutable release metadata and topology plus the 31-package
+  unreleased candidate, immutable 28-package
   `v0.2.0` / `v0.3.1` and 27-package `v0.1.x` evidence
-- frozen 30-package `v0.3.2` semantic API inventory, with removals from the
+- frozen 30-package `v0.3.2` semantic API inventory plus separate reviewed
+  current-source overrides for post-tag API surfaces, including DeepSeek
+  Harness, with removals from the
   immutable 28-package `v0.3.0` baseline forbidden
 - documented public API
 - dependency and security policy

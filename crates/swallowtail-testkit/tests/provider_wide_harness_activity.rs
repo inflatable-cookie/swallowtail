@@ -11,7 +11,7 @@ fn every_production_harness_route_has_exact_prepared_activity_truth() {
         "044-observable-agent-activity-and-disclosure"
     );
     let routes = inventory["routes"].as_array().expect("routes are an array");
-    assert_eq!(routes.len(), 23);
+    assert_eq!(routes.len(), 24);
 
     let ids = routes
         .iter()
@@ -32,6 +32,7 @@ fn every_production_harness_route_has_exact_prepared_activity_truth() {
             "cursor-agent.acp",
             "cursor-agent.catalogue",
             "cursor-agent.headless",
+            "deepseek-harness.jsonrpc",
             "gemini-cli.acp",
             "gemini-cli.headless",
             "grok-build.acp",
@@ -92,7 +93,7 @@ fn every_production_harness_route_has_exact_prepared_activity_truth() {
         }
     }
 
-    assert_eq!(profiles.len(), 30);
+    assert_eq!(profiles.len(), 31);
     for expected in [
         ("antigravity.headless", "structured-run"),
         ("antigravity.headless", "interactive-session"),

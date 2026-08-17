@@ -1,0 +1,94 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-08-17",
+  "route_id": "deepseek-harness.jsonrpc",
+  "driver_id": "swallowtail.deepseek-harness.jsonrpc",
+  "family": "deepseek-harness",
+  "artifact_revision": "0.1.0rc6",
+  "version_axis": "deepseek-harness.runtime-bin",
+  "compatibility_revision": "deepseek-harness.jsonrpc-rc6-1",
+  "protocol_facade_revision": "deepseek-harness.sdk-jsonrpc-v1",
+  "qualification": "qualified-only",
+  "transport": {
+    "kind": "owned-process",
+    "framing": "ndjson",
+    "protocol": "jsonrpc-2.0",
+    "stdout": "protocol-only",
+    "stderr": "host-owned-diagnostic-channel"
+  },
+  "client_methods": [
+    "initialize",
+    "session/prompt",
+    "shutdown"
+  ],
+  "server_notifications": [
+    "session.event",
+    "session.status",
+    "subagent.started",
+    "subagent.finished"
+  ],
+  "rules": {
+    "prompt_result": "enqueue-receipt-only",
+    "prompt_result_field": "messageId",
+    "idle_owner": "swallowtail",
+    "cancel": "force-stop-owned-process",
+    "native_cancel": false,
+    "session_close": false,
+    "terminal_event": "turn/end",
+    "terminal_requires_idle": true,
+    "unknown_projection": "namespaced-observation-only",
+    "unknown_namespace": "deepseek-harness/",
+    "reasoning_projection": "content-free-progress"
+  },
+  "bounds": {
+    "maximum_frame_bytes": 65536,
+    "maximum_live_notifications": 8192,
+    "maximum_durable_records": 4096,
+    "maximum_stream_bytes": 8388608,
+    "maximum_text_bytes": 4194304,
+    "maximum_tool_records": 256
+  },
+  "known_event_types": [
+    "turn/start",
+    "turn/end",
+    "step/start",
+    "step/end",
+    "user/message",
+    "request/header",
+    "request/context",
+    "assistant/chunk",
+    "assistant/message",
+    "tool/call",
+    "tool/result"
+  ],
+  "durable_jsonl_types": [
+    "session",
+    "agent/inbox/spliced",
+    "turn/start",
+    "turn/end",
+    "step/start",
+    "step/end",
+    "user/message",
+    "session/title",
+    "request/header",
+    "request/context",
+    "assistant/chunk",
+    "reasoning-chunks",
+    "text-chunks",
+    "assistant/message",
+    "tool/call",
+    "tool/result"
+  ],
+  "stream_cardinality": {
+    "live_probe_events": 4626,
+    "durable_jsonl_records": 668,
+    "relationship": "live_notifications_unpack_deltas_durable_jsonl_packs"
+  },
+  "redaction": {
+    "prompt": "<redacted-prompt>",
+    "reasoning_delta": "",
+    "tool_arguments": "",
+    "tool_result_content": [],
+    "private_paths": "never-emitted"
+  }
+}

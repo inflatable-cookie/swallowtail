@@ -1,0 +1,65 @@
+{
+  "fixture_schema": 1,
+  "cases": [
+    {
+      "name": "malformed_json",
+      "mutation": "invalid-json-line",
+      "expected": "malformed_stream"
+    },
+    {
+      "name": "missing_jsonrpc",
+      "mutation": "request-without-jsonrpc-version",
+      "expected": "malformed_stream"
+    },
+    {
+      "name": "wrong_jsonrpc_version",
+      "mutation": "jsonrpc-version-is-1.0",
+      "expected": "malformed_stream"
+    },
+    {
+      "name": "oversized_frame",
+      "mutation": "line-over-maximum-frame-bytes",
+      "expected": "stream_limit"
+    },
+    {
+      "name": "too_many_records",
+      "mutation": "notification-count-over-live-bound",
+      "expected": "stream_limit"
+    },
+    {
+      "name": "post_terminal_event",
+      "mutation": "event-after-turn-end-before-idle",
+      "expected": "lifecycle_invalid"
+    },
+    {
+      "name": "mismatched_model",
+      "mutation": "request-header-model-differs-from-initialize",
+      "expected": "model_mismatch"
+    },
+    {
+      "name": "mismatched_session",
+      "mutation": "notification-session-id-differs-from-prompt",
+      "expected": "session_mismatch"
+    },
+    {
+      "name": "unknown_unscoped_event",
+      "mutation": "unknown-event-without-deepseek-harness-namespace",
+      "expected": "unknown_event"
+    },
+    {
+      "name": "idle_before_terminal",
+      "mutation": "status-idle-before-turn-end",
+      "expected": "lifecycle_invalid"
+    },
+    {
+      "name": "usage-after-finish",
+      "mutation": "usage-chunk-after-finish-chunk",
+      "expected": "lifecycle_invalid"
+    },
+    {
+      "name": "tool-result-without-call",
+      "mutation": "result-call-id-not-admitted",
+      "expected": "correlation_invalid"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+pub mod swallowtail_adapter_deepseek_harness
+pub struct swallowtail_adapter_deepseek_harness::DeepSeekHarnessJsonRpcDriver
+impl swallowtail_adapter_deepseek_harness::DeepSeekHarnessJsonRpcDriver
+pub const fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessJsonRpcDriver::environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
+pub const fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessJsonRpcDriver::new(swallowtail_runtime::host_reference::EnvironmentRef) -> Self
+impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_deepseek_harness::DeepSeekHarnessJsonRpcDriver
+pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessJsonRpcDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessJsonRpcDriver::discover_installed_executable(&self, swallowtail_runtime::installed_executable::InstalledExecutableDiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_core::registration::discovery::DiscoveryOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::StructuredRunDriver for swallowtail_adapter_deepseek_harness::DeepSeekHarnessJsonRpcDriver
+pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessJsonRpcDriver::start_run(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_deepseek_harness::DeepSeekHarnessModelSelection
+impl swallowtail_adapter_deepseek_harness::DeepSeekHarnessModelSelection
+pub const fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessModelSelection::new(swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ProviderId, swallowtail_core::model::ModelId) -> Self
+pub struct swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparationInput
+impl swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparationInput
+pub const fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_runtime::installed_executable::InstalledExecutableTarget, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub struct swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparationProbe
+impl swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparationProbe
+pub const fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparationProbe::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::time::Deadline, swallowtail_runtime::installed_executable::DiscoveryCancellation) -> Self
+pub struct swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedEvidence
+impl swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedEvidence
+pub const fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedEvidence::access(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedEvidence::environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
+pub const fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedEvidence::observable_activity(&self) -> &swallowtail_core::observable_activity::route_profile::ObservableActivityProfile
+pub const fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedEvidence::observation(&self) -> &swallowtail_core::installed_executable::InstalledExecutableObservation
+pub const fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedEvidence::operation(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub const fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedEvidence::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub struct swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedIntegration
+impl swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedIntegration
+pub const fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedIntegration::environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
+pub const fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedIntegration::low_level_driver(&self) -> swallowtail_adapter_deepseek_harness::DeepSeekHarnessJsonRpcDriver
+pub const fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedIntegration::observation(&self) -> &swallowtail_core::installed_executable::InstalledExecutableObservation
+pub const fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedIntegration::target(&self) -> &swallowtail_runtime::installed_executable::InstalledExecutableTarget
+pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedIntegration::validate_execution_binding(&self, &swallowtail_core::runtime_identity::ExecutionHostId, &swallowtail_runtime::installed_executable::InstalledExecutableTarget) -> core::result::Result<(), swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedIntegration
+pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedIntegration::prepare_run(&self, swallowtail_adapter_deepseek_harness::DeepSeekHarnessRunProfileInput) -> core::result::Result<swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedRun, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedRun
+impl swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedRun
+pub const fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedRun::evidence(&self) -> &swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedEvidence
+pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedRun::into_parts(self) -> (swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest)
+pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedRun::low_level_driver(&self) -> swallowtail_adapter_deepseek_harness::DeepSeekHarnessJsonRpcDriver
+pub const fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedRun::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedRun::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
+pub fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedRun::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_deepseek_harness::DeepSeekHarnessRunProfileInput
+impl swallowtail_adapter_deepseek_harness::DeepSeekHarnessRunProfileInput
+pub const fn swallowtail_adapter_deepseek_harness::DeepSeekHarnessRunProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_deepseek_harness::DeepSeekHarnessModelSelection, swallowtail_runtime::content::OperationContent, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::time::Deadline) -> Self
+pub const swallowtail_adapter_deepseek_harness::DEEPSEEK_HARNESS_CONFIG_AUDIENCE: &str
+pub const swallowtail_adapter_deepseek_harness::DEEPSEEK_HARNESS_EXECUTABLE_BASENAME: &str
+pub const swallowtail_adapter_deepseek_harness::DEEPSEEK_HARNESS_PAYLOAD_SHA256: &str
+pub const swallowtail_adapter_deepseek_harness::DEEPSEEK_HARNESS_RELEASE_AXIS: &str
+pub const swallowtail_adapter_deepseek_harness::DEEPSEEK_HARNESS_RELEASE_VERSION: &str
+pub const swallowtail_adapter_deepseek_harness::DEEPSEEK_HARNESS_SPAWN_HELPER_SHA256: &str
+pub fn swallowtail_adapter_deepseek_harness::deepseek_harness_access_profile(swallowtail_core::runtime_identity::AccessProfileId) -> swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_deepseek_harness::deepseek_harness_jsonrpc_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_deepseek_harness::deepseek_harness_jsonrpc_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_deepseek_harness::deepseek_harness_release_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
+pub async fn swallowtail_adapter_deepseek_harness::prepare_deepseek_harness_jsonrpc(swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparationInput, swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparationProbe, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_deepseek_harness::DeepSeekHarnessPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>

@@ -90,7 +90,7 @@ cargo metadata \
 #
 # `select(.source != null)` *excluded* a path-resolved package instead of
 # failing on it -- the leak being hunted became invisible, leaving only the
-# count. Swallowtail has 28 workspace crates against 4 probes, so
+# count. Swallowtail has 31 workspace crates against 4 probes, so
 # twenty-four could leak to path and the count would still clear. Measured on signal
 # by pointing one probe at a path: the old filter printed "external source
 # consumer passed"; this one fails. `cargo check` succeeded in both, which is

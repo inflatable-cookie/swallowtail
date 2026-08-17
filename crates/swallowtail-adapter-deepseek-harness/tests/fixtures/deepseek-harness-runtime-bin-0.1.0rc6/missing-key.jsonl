@@ -1,0 +1,14 @@
+{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"cwd":"<fixture-cwd>","provider":"local-ollama","model":"fixture-model"}}
+{"jsonrpc":"2.0","id":1,"result":{"serverInfo":{"name":"deepseek-harness-sdk-runtime","version":"0.0.1"}}}
+{"jsonrpc":"2.0","id":2,"method":"session/prompt","params":{"sessionId":"fixture-session-4","contentBlocks":[{"type":"text","text":"<redacted-prompt>"}]}}
+{"jsonrpc":"2.0","id":2,"result":{"messageId":"fixture-message-4"}}
+{"jsonrpc":"2.0","method":"session.status","params":{"sessionId":"fixture-session-4","status":"running"}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-4","event":{"type":"turn/start","seq":1,"time":1700000301,"data":{"turn":"fixture-turn-4"}}}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-4","event":{"type":"step/start","seq":2,"time":1700000302,"data":{"turn":"fixture-turn-4","step":"fixture-step-1"}}}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-4","event":{"type":"user/message","seq":3,"time":1700000303,"data":{"turn":"fixture-turn-4","step":"fixture-step-1","message":{"role":"user","content":[{"type":"text","text":"<redacted-prompt>"}]}}}}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-4","event":{"type":"request/header","seq":4,"time":1700000304,"data":{"turn":"fixture-turn-4","step":"fixture-step-1","provider":"local-ollama","model":"fixture-model"}}}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-4","event":{"type":"step/end","seq":5,"time":1700000305,"data":{"turn":"fixture-turn-4","step":"fixture-step-1","status":"error"}}}}
+{"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-4","event":{"type":"turn/end","seq":6,"time":1700000306,"data":{"turn":"fixture-turn-4","status":"error","stopReason":"error","error":{"code":"MISSING_CREDENTIAL"}}}}}
+{"jsonrpc":"2.0","method":"session.status","params":{"sessionId":"fixture-session-4","status":"idle"}}
+{"jsonrpc":"2.0","id":3,"method":"shutdown","params":{}}
+{"jsonrpc":"2.0","id":3,"result":{}}

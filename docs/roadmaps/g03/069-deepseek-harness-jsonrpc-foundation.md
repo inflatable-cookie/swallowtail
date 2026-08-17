@@ -22,27 +22,27 @@ payload, a documented automation wire, and live turn/tool/usage evidence.
 
 ## Execution Plan
 
-- [ ] card 218: freeze exact runtime-bin artifact, JSON-RPC, session-log,
+- [x] card 218: freeze exact runtime-bin artifact, JSON-RPC, session-log,
       failure, and private-state boundaries
-- [ ] card 219: implement discovery, compatibility, decode, idle fold,
+- [x] card 219: implement discovery, compatibility, decode, idle fold,
       activity, process-kill cancellation, deadline, and cleanup
-- [ ] card 220: expose host-approved preparation and an exact structured-run
+- [x] card 220: expose host-approved preparation and an exact structured-run
       facade with explicit provider, model, config, and cwd
 - [ ] card 221: complete package, guide, example, matrices, live acceptance,
       release-baseline handling, and closeout evidence
 
 ## Goals
 
-- [ ] add one separately selectable `swallowtail-adapter-deepseek-harness`
+- [x] add one separately selectable `swallowtail-adapter-deepseek-harness`
       package
-- [ ] qualify only exact runtime-bin `0.1.0rc6` on axis
+- [x] qualify only exact runtime-bin `0.1.0rc6` on axis
       `deepseek-harness.runtime-bin`
-- [ ] spawn the host-approved `dsh-jsonrpc-agent` payload, not a Python SDK
+- [x] spawn the host-approved `dsh-jsonrpc-agent` payload, not a Python SDK
       wrapper
-- [ ] bind host-approved Cordis config, cwd, provider, and model
-- [ ] preserve JSON-RPC stream ownership, thinking progress, text, tool
+- [x] bind host-approved Cordis config, cwd, provider, and model
+- [x] preserve JSON-RPC stream ownership, thinking progress, text, tool
       lifecycle, usage, and terminal evidence
-- [ ] keep ACP, Web `/api`, headless CLI, and `deepseek.continuation` outside
+- [x] keep ACP, Web `/api`, headless CLI, and `deepseek.continuation` outside
       the first route
 
 ## Boundaries
@@ -59,16 +59,20 @@ payload, a documented automation wire, and live turn/tool/usage evidence.
 
 ## Acceptance Criteria
 
-- [ ] the route rejects version or payload drift before provider work
-- [ ] deterministic fixtures cover text success, tool success, tool error,
+- [x] the route rejects version or payload drift before provider work
+- [x] deterministic fixtures cover text success, tool success, tool error,
       missing credential, unknown events, bounds, and malformed input
-- [ ] the prepared facade binds exact executable, config, provider, model,
+- [x] the prepared facade binds exact executable, config, provider, model,
       resource, and host services
-- [ ] focused and extracted-package validation pass without network
+- [x] focused and extracted-package validation pass without network
       credentials
 - [ ] one separately gated live probe passes through the prepared facade
-- [ ] route matrix, feature matrix, guide map, example, architecture, package
+- [x] route matrix, feature matrix, guide map, example, architecture, package
       contract, and release tooling remain mutually honest
+
+Card 221's package and deterministic acceptance work is complete. The live
+probe remains operator-gated because this host has no exact packaged
+`dsh-jsonrpc-agent-pkg-macos-arm64` executable or Cordis configuration.
 
 ## Planning Checkpoint
 

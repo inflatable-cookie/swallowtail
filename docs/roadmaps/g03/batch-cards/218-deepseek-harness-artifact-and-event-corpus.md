@@ -1,6 +1,6 @@
 # 218 DeepSeek Harness Artifact And Event Corpus
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-17
 Milestone: `../069-deepseek-harness-jsonrpc-foundation.md`
@@ -31,15 +31,15 @@ Rust behavior exists.
 
 ## Acceptance Criteria
 
-- [ ] fixtures contain no credentials, account identifiers, private paths,
+- [x] fixtures contain no credentials, account identifiers, private paths,
       prompts, reasoning bodies, or tool input/result bodies
-- [ ] random identities are consistently sanitized without weakening
+- [x] random identities are consistently sanitized without weakening
       correlation evidence
-- [ ] live-stream cardinality is recorded as distinct from durable JSONL
+- [x] live-stream cardinality is recorded as distinct from durable JSONL
       packing
-- [ ] malformed, oversized, post-terminal, and mismatched-model records fail
+- [x] malformed, oversized, post-terminal, and mismatched-model records fail
       safely
-- [ ] unknown event types remain namespaced observations
+- [x] unknown event types remain namespaced observations
 
 ## Validation
 
@@ -60,6 +60,9 @@ driver.
 
 ## Evidence
 
+- implementation commit: `e5aa7b9f`
+- package-independent corpus validation: 12 tests passed
+- `effigy qa:northstar` passed
 - Research 124
 - Spec 008
 - isolated probe captures remain outside the repository until redacted

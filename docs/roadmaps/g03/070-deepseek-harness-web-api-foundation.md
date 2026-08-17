@@ -28,9 +28,9 @@ methods. JSON-RPC stays the one-shot stdio run.
 
 - [x] card 222: freeze exact `dsh` web artifact, loopback trust fence, method
       allowlist, unary and mux corpus, and private-state boundaries
-- [ ] card 223: implement discovery, compatibility, allowlisted decode,
+- [x] card 223: implement discovery, compatibility, allowlisted decode,
       history, prompt, native cancel, fork, archive, deadline, and cleanup
-- [ ] card 224: expose host-approved preparation and exact catalogue,
+- [x] card 224: expose host-approved preparation and exact catalogue,
       history, structured-run, fork, and archive facades
 - [ ] card 225: complete route truth, operator guidance, and deterministic
       plus live acceptance evidence

@@ -1,8 +1,8 @@
 # g03 Batch Cards
 
-## Ready
+## Active
 
-- [222-deepseek-harness-web-api-corpus.md](./222-deepseek-harness-web-api-corpus.md)
+- [225-deepseek-harness-web-api-acceptance.md](./225-deepseek-harness-web-api-acceptance.md)
 
 ## Superseded
 
@@ -13,9 +13,6 @@
 
 ## Planned
 
-- [225-deepseek-harness-web-api-acceptance.md](./225-deepseek-harness-web-api-acceptance.md)
-- [224-deepseek-harness-web-api-prepared-facade.md](./224-deepseek-harness-web-api-prepared-facade.md)
-- [223-deepseek-harness-web-api-driver-core.md](./223-deepseek-harness-web-api-driver-core.md)
 - [193-idioms-route-opt-in-runtime-surface.md](./193-idioms-route-opt-in-runtime-surface.md)
 - [194-idioms-route-opt-in-binding-and-codex-proof.md](./194-idioms-route-opt-in-binding-and-codex-proof.md)
 - [195-nucleus-idioms-adoption-delta.md](./195-nucleus-idioms-adoption-delta.md)
@@ -27,6 +24,9 @@
 
 ## Completed
 
+- [224-deepseek-harness-web-api-prepared-facade.md](./224-deepseek-harness-web-api-prepared-facade.md)
+- [223-deepseek-harness-web-api-driver-core.md](./223-deepseek-harness-web-api-driver-core.md)
+- [222-deepseek-harness-web-api-corpus.md](./222-deepseek-harness-web-api-corpus.md)
 - [221-deepseek-harness-package-and-route-acceptance.md](./221-deepseek-harness-package-and-route-acceptance.md)
 - [220-deepseek-harness-prepared-facade.md](./220-deepseek-harness-prepared-facade.md)
 - [219-deepseek-harness-jsonrpc-driver-core.md](./219-deepseek-harness-jsonrpc-driver-core.md)

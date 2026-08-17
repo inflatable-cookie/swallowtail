@@ -1,6 +1,6 @@
 # 224 DeepSeek Harness Web `/api` Prepared Facade
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-17
 Milestone: `../070-deepseek-harness-web-api-foundation.md`
@@ -27,11 +27,11 @@ fork, and archive facades for `deepseek-harness.local-server`.
 
 ## Acceptance Criteria
 
-- [ ] prepared evidence names the web axis, CLI pin, loopback bind, and
+- [x] prepared evidence names the web axis, CLI pin, loopback bind, and
       allowlist
-- [ ] structured-run preparation does not imply JSON-RPC transport
-- [ ] history preparation does not imply resume or interactive handle
-- [ ] no credential lease is minted
+- [x] structured-run preparation does not imply JSON-RPC transport
+- [x] history preparation does not imply resume or interactive handle
+- [x] no credential lease is minted
 
 ## Validation
 
@@ -45,3 +45,18 @@ fork, and archive facades for `deepseek-harness.local-server`.
 ## Auto-Continuation
 
 Continue to card 225 after focused package validation passes.
+
+## Evidence
+
+- prepared Web facade implementation is included in the card-224 change
+- `cargo test -p swallowtail-adapter-deepseek-harness` — 22 tests passed
+- `effigy validate:focused swallowtail-adapter-deepseek-harness` passed
+- preparation binds the Web axis, exact `dsh` target, loopback endpoint,
+  protocol facade, 11-method allowlist, and local unauthenticated access
+- structured-run startup checks `host.describe` against the prepared
+  provider/model route before creating a session; the Web create payload only
+  carries the bound cwd
+- structured run, catalogue/search/models, control-free history, native fork,
+  and target-only archive remain route-specific; history exposes no resume
+  handle and fork does not invent a provider-neutral fork contract
+- no credential lease, browser, account, or live model was used

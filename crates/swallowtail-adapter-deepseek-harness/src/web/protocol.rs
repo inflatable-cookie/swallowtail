@@ -26,6 +26,22 @@ const ALLOWLIST: &[WebMethod] = &[
     WebMethod::HostDescribe,
 ];
 
+pub(crate) const fn method_allowlist() -> &'static [&'static str] {
+    &[
+        "session.list",
+        "session.search",
+        "session.create",
+        "session.history",
+        "session.models",
+        "session.prompt",
+        "session.cancel",
+        "session.fork",
+        "workspace.list",
+        "workspace.archiveSession",
+        "host.describe",
+    ]
+}
+
 const MUX_FRAMES: &[&str] = &["session/subscribed", "session/event", "stream/error"];
 #[allow(dead_code)]
 const HOST_FRAMES: &[&str] = &[
@@ -106,6 +122,12 @@ pub(crate) struct SessionListPage {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) struct SessionCreateResult {
     pub(crate) session_id: String,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) struct HostDescription {
+    pub(crate) provider: Option<String>,
+    pub(crate) model: Option<String>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -254,6 +276,13 @@ pub(crate) fn parse_session_list(value: &Value) -> Result<SessionListPage, Runti
 pub(crate) fn parse_session_create(value: &Value) -> Result<SessionCreateResult, RuntimeFailure> {
     let session_id = bounded_id(value.get("sessionId"), "session.create session id")?;
     Ok(SessionCreateResult { session_id })
+}
+
+pub(crate) fn parse_host_description(value: &Value) -> Result<HostDescription, RuntimeFailure> {
+    let value = require_object(value, "host description")?;
+    let provider = optional_text(value.get("provider"), "host provider")?;
+    let model = optional_text(value.get("model"), "host model")?;
+    Ok(HostDescription { provider, model })
 }
 
 pub(crate) fn parse_search(
@@ -674,6 +703,17 @@ fn bounded_text<'a>(value: Option<&'a Value>, label: &str) -> Result<&'a str, Ru
     Ok(value)
 }
 
+fn optional_text(value: Option<&Value>, label: &str) -> Result<Option<String>, RuntimeFailure> {
+    match value {
+        None | Some(Value::Null) => Ok(None),
+        Some(Value::String(value)) => {
+            require_safe_text(value, label)?;
+            Ok(Some(value.clone()))
+        }
+        Some(_) => Err(malformed("Web optional text field is invalid")),
+    }
+}
+
 fn require_safe_text(value: &str, _label: &str) -> Result<(), RuntimeFailure> {
     if value.is_empty()
         || value.len() > MAX_TEXT_BYTES
@@ -733,7 +773,7 @@ fn carrier_failure(status: u16) -> RuntimeFailure {
 mod tests {
     use super::{
         MuxFrame, WebMethod, decode_host_frame, decode_mux_frame, decode_unary_response,
-        parse_archive, parse_history, parse_models, request_body,
+        parse_archive, parse_history, parse_host_description, parse_models, request_body,
     };
     use serde_json::Value;
 
@@ -819,6 +859,14 @@ mod tests {
         {
             decode_host_frame(line).expect("host frame decodes");
         }
+        let host_description = unary_pair("host.describe");
+        let description = parse_host_description(
+            &decode_unary_response(host_description.0, &host_description.1, &host_description.2)
+                .expect("host description response"),
+        )
+        .expect("host description decodes");
+        assert_eq!(description.provider.as_deref(), Some("fixture-provider"));
+        assert_eq!(description.model.as_deref(), Some("fixture-model"));
         let history: Value =
             serde_json::from_slice(&fixture("history.json")).expect("history JSON");
         let first = &history["pages"][0]["response"]["result"]["value"];

@@ -13,9 +13,8 @@ shape.
 
 ## Next Task
 
-Implement card 223: implement the DeepSeek Harness Web `/api` owned-process
-driver with loopback admission, allowlisted decode, history, prompt, native
-cancel, fork, archive, deadline, and cleanup.
+Implement card 225: close DeepSeek Harness Web `/api` route truth, operator
+guidance, and deterministic plus separately gated live acceptance.
 
 ## Index
 

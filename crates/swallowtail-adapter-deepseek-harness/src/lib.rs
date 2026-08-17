@@ -19,6 +19,7 @@ mod pump;
 mod selection;
 mod validation;
 mod web;
+mod web_prepared;
 
 pub use access::{DEEPSEEK_HARNESS_CONFIG_AUDIENCE, deepseek_harness_access_profile};
 pub use driver::{DeepSeekHarnessJsonRpcDriver, deepseek_harness_jsonrpc_descriptor};
@@ -35,8 +36,19 @@ pub use selection::{
     deepseek_harness_release_binding,
 };
 pub use web::{
-    DEEPSEEK_HARNESS_WEB_RELEASE_AXIS, DEEPSEEK_HARNESS_WEB_RELEASE_VERSION,
-    DeepSeekHarnessWebDriver, deepseek_harness_web_claim, deepseek_harness_web_descriptor,
+    DEEPSEEK_HARNESS_WEB_EXECUTABLE_BASENAME, DEEPSEEK_HARNESS_WEB_RELEASE_AXIS,
+    DEEPSEEK_HARNESS_WEB_RELEASE_VERSION, DeepSeekHarnessWebDriver, DeepSeekHarnessWebModel,
+    deepseek_harness_web_claim, deepseek_harness_web_descriptor,
+};
+pub use web_prepared::{
+    DeepSeekHarnessWebForkInput, DeepSeekHarnessWebModelSelection,
+    DeepSeekHarnessWebPreparationInput, DeepSeekHarnessWebPreparationProbe,
+    DeepSeekHarnessWebPreparedArchive, DeepSeekHarnessWebPreparedEvidence,
+    DeepSeekHarnessWebPreparedFork, DeepSeekHarnessWebPreparedIntegration,
+    DeepSeekHarnessWebPreparedRun, DeepSeekHarnessWebPreparedSessionCatalogue,
+    DeepSeekHarnessWebPreparedSessionHistory, DeepSeekHarnessWebRunProfileInput,
+    DeepSeekHarnessWebSessionCatalogueInput, DeepSeekHarnessWebSessionHistoryInput,
+    DeepSeekHarnessWebSessionManagementInput, prepare_deepseek_harness_web,
 };
 
 pub(crate) const DRIVER_ID: &str = "swallowtail.deepseek-harness.jsonrpc";

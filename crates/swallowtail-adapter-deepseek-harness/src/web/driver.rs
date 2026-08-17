@@ -1,7 +1,8 @@
 use super::transport::{WebApiTransport, require_loopback_endpoint};
 use super::{
-    WebMethod, parse_archive, parse_cancel, parse_fork, parse_history, parse_prompt, parse_search,
-    parse_session_create, parse_session_list, request_body,
+    DEEPSEEK_HARNESS_WEB_RELEASE_AXIS, DEEPSEEK_HARNESS_WEB_RELEASE_VERSION, WebMethod,
+    parse_archive, parse_cancel, parse_fork, parse_history, parse_host_description, parse_models,
+    parse_prompt, parse_search, parse_session_create, parse_session_list, request_body,
 };
 use serde_json::{Value, json};
 use std::sync::Arc;
@@ -125,6 +126,34 @@ pub struct DeepSeekHarnessWebDriver {
     transport: WebApiTransport,
 }
 
+#[derive(Clone, Debug, Eq, PartialEq)]
+/// One bounded model option returned by the native Web session model method.
+pub struct DeepSeekHarnessWebModel {
+    provider: String,
+    model: String,
+    name: String,
+}
+
+impl DeepSeekHarnessWebModel {
+    #[must_use]
+    /// Returns the provider namespace for this model option.
+    pub fn provider(&self) -> &str {
+        &self.provider
+    }
+
+    #[must_use]
+    /// Returns the provider model identifier.
+    pub fn model(&self) -> &str {
+        &self.model
+    }
+
+    #[must_use]
+    /// Returns the bounded display name supplied by the Web API.
+    pub fn name(&self) -> &str {
+        &self.name
+    }
+}
+
 impl DeepSeekHarnessWebDriver {
     /// Creates a driver using the loopback Web API default endpoint.
     pub fn new(environment: EnvironmentRef) -> Self {
@@ -209,6 +238,45 @@ impl DeepSeekHarnessWebDriver {
             .collect()
     }
 
+    /// Lists models available to one provider-owned session.
+    pub async fn list_session_models(
+        &self,
+        plan: &PreflightPlan,
+        request_id: &RequestId,
+        session: &SessionRef,
+        services: &HostServices,
+        deadline: Option<swallowtail_runtime::Deadline>,
+    ) -> Result<Vec<DeepSeekHarnessWebModel>, RuntimeFailure> {
+        validate_web_route(plan)?;
+        require_web_services(services, false)?;
+        let scope = operation_scope("models", request_id)?;
+        let endpoint = self
+            .authorize_endpoint(plan, scope.clone(), services)
+            .await?;
+        let value = call_web(
+            &self.transport,
+            scope,
+            endpoint,
+            WebMethod::SessionModels,
+            json!({ "sessionId": session.as_provider_value() }),
+            request_id,
+            services,
+            deadline,
+            Arc::new(AtomicBool::new(false)),
+        )
+        .await?;
+        parse_models(&value).map(|models| {
+            models
+                .into_iter()
+                .map(|model| DeepSeekHarnessWebModel {
+                    provider: model.provider,
+                    model: model.model,
+                    name: model.name,
+                })
+                .collect()
+        })
+    }
+
     /// Forks one provider-owned session through the native Web API method.
     pub async fn fork_session(
         &self,
@@ -291,9 +359,9 @@ impl DiscoveryDriver for DeepSeekHarnessWebDriver {
                 ));
             }
             let binding = InterfaceVersionBinding::new(
-                InterfaceVersionAxis::new(super::DEEPSEEK_HARNESS_WEB_RELEASE_AXIS)
+                InterfaceVersionAxis::new(DEEPSEEK_HARNESS_WEB_RELEASE_AXIS)
                     .expect("static Web version axis is valid"),
-                InterfaceVersion::new(super::DEEPSEEK_HARNESS_WEB_RELEASE_VERSION)
+                InterfaceVersion::new(DEEPSEEK_HARNESS_WEB_RELEASE_VERSION)
                     .expect("static Web version is valid"),
             );
             let observation = InstalledExecutableObservation::classify(
@@ -809,6 +877,16 @@ impl DeepSeekHarnessWebDriver {
             .cloned()
             .expect("validated working resource");
         let deadline = request.deadline().expect("validated deadline");
+        let expected_provider = plan
+            .provider_id()
+            .expect("validated provider route")
+            .as_str()
+            .to_owned();
+        let expected_model = plan
+            .model_id()
+            .expect("validated model route")
+            .as_str()
+            .to_owned();
         let run_id = RuntimeRunId::new(format!(
             "deepseek-harness-web:{}",
             request.request_id().as_str()
@@ -858,6 +936,8 @@ impl DeepSeekHarnessWebDriver {
                     task_request_id,
                     task_cwd,
                     task_prompt,
+                    expected_provider,
+                    expected_model,
                     deadline,
                     task_services,
                     task_events.clone(),
@@ -999,6 +1079,8 @@ async fn run_web_operation(
     request_id: RequestId,
     cwd: String,
     prompt: String,
+    expected_provider: String,
+    expected_model: String,
     deadline: swallowtail_runtime::Deadline,
     services: HostServices,
     events: swallowtail_runtime::RuntimeEventSender,
@@ -1011,6 +1093,8 @@ async fn run_web_operation(
         request_id,
         cwd,
         prompt,
+        expected_provider,
+        expected_model,
         deadline,
         services.clone(),
         events,
@@ -1051,6 +1135,8 @@ async fn run_web_prompt(
     request_id: RequestId,
     cwd: String,
     prompt: String,
+    expected_provider: String,
+    expected_model: String,
     deadline: swallowtail_runtime::Deadline,
     services: HostServices,
     events: swallowtail_runtime::RuntimeEventSender,
@@ -1067,9 +1153,12 @@ async fn run_web_prompt(
         Arc::new(AtomicBool::new(false)),
     )
     .await?;
-    if !host.is_object() {
+    let host = parse_host_description(&host)?;
+    if host.provider.as_deref() != Some(expected_provider.as_str())
+        || host.model.as_deref() != Some(expected_model.as_str())
+    {
         return Err(malformed(
-            "DeepSeek Harness Web host description is invalid",
+            "DeepSeek Harness Web host model does not match its prepared route",
         ));
     }
     if cancellation.is_requested() {

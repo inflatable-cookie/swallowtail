@@ -1,6 +1,6 @@
 # 221 DeepSeek Harness Package And Route Acceptance
 
-Status: active
+Status: completed
 Owner: Tom
 Created: 2026-08-17
 Milestone: `../069-deepseek-harness-jsonrpc-foundation.md`
@@ -34,7 +34,7 @@ truth, operator guidance, and deterministic plus live acceptance evidence.
 - [x] every unsupported feature remains an explicit `No`, `Not applicable`, or
       qualified note
 - [x] deterministic validation is credential-free
-- [ ] one operator-authorized live smoke passes through the prepared facade
+- [x] one operator-authorized live smoke passes through the prepared facade
 - [x] the closeout records exact source state and does not imply publication
 - [x] Spec 008 acceptance boxes that this milestone owns are checked
 
@@ -55,9 +55,12 @@ truth, operator guidance, and deterministic plus live acceptance evidence.
   swallowtail-adapter-deepseek-harness` passed extracted compilation
 - `effigy package:docs`, `effigy check:examples`, `effigy qa:guides`,
   `effigy qa:routes`, `effigy qa:docs`, and `effigy qa:consumer-docs` passed
-- the installed and live selectors are compiled and separately gated, but no
-  exact host-approved `dsh-jsonrpc-agent-pkg-macos-arm64` executable or Cordis
-  configuration is present on this host, so no live smoke was claimed or run
+- the installed and live selectors are compiled and separately gated
+- `effigy probe:deepseek-harness-installed` classified exact `0.1.0rc6`
+- `effigy probe:deepseek-harness-live` completed one prepared-facade prompt
+  through host-local Ollama; `deepseek-official` stays unqualified
+- discovery hashes the payload and does not spawn `--version`
+- the parser admits the installed `0.1.0rc6` JSON-RPC order and field names
 - no version bump, tag, GitHub Release, registry publication, or immutable
   release-baseline mutation ran
 
@@ -70,9 +73,9 @@ truth, operator guidance, and deterministic plus live acceptance evidence.
 - `effigy qa:docs`
 - separately gated installed and live DeepSeek Harness probes
 
-The installed and live probes remain pending until the operator supplies the
-exact packaged executable, Cordis configuration, read-only cwd, provider, and
-model. The documented local-Ollama path keeps `deepseek-official` unqualified.
+The installed and live probes passed on the host-approved `0.1.0rc6`
+executable and Cordis configuration. The documented local-Ollama path keeps
+`deepseek-official` unqualified.
 
 ## Stop Conditions
 
@@ -84,5 +87,5 @@ model. The documented local-Ollama path keeps `deepseek-official` unqualified.
 
 ## Auto-Continuation
 
-No. Return to the operator with route evidence and the ACP / Web `/api` /
-session-id checkpoint plus the exact live-probe prerequisite.
+No. Return to the operator with the ACP / Web `/api` / session-id checkpoint.
+Do not start those routes.

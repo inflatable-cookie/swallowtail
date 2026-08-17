@@ -182,11 +182,17 @@ fn live_host() -> (
             InterfaceVersionAxis::new(DEEPSEEK_HARNESS_RELEASE_AXIS).expect("release axis"),
             executable_path,
         );
+    let home = std::env::var_os("HOME").expect("DeepSeek Harness live probe requires HOME");
+    let mut environment_values = vec![
+        (OsString::from("HOME"), home),
+        (OsString::from("DSH_CORDIS_CONFIG"), cordis_path),
+        (OsString::from("DSH_CWD"), cwd.clone().into_os_string()),
+    ];
+    if let Some(provider_key) = std::env::var_os("OLLAMA_API_KEY") {
+        environment_values.push((OsString::from("OLLAMA_API_KEY"), provider_key));
+    }
     let local = builder
-        .approve_environment(
-            environment.clone(),
-            [(OsString::from("DSH_CORDIS_CONFIG"), cordis_path)],
-        )
+        .approve_environment(environment.clone(), environment_values)
         .approve_working_resource(working_resource.clone(), cwd)
         .build_services(execution_host_id.clone());
     (

@@ -1,17 +1,14 @@
-use swallowtail_core::DiscoveryOutcome;
+use swallowtail_core::{DiscoveryOutcome, DiscoveryStatus, InstalledExecutableObservation};
 use swallowtail_runtime::{
-    BoxFuture, DiscoveryDriver, DiscoveryRequest, HostServices,
-    InstalledExecutableDiscoveryRequest, InstalledProbeCodes, RuntimeFailure,
-    installed_probe_codes, probe_installed_executable_version,
+    BoxFuture, DebugObservationKind, DiscoveryDriver, DiscoveryRequest, HostServices,
+    InstalledExecutableDiscoveryRequest, RuntimeFailure,
+    validate_installed_executable_discovery_services,
 };
 
-use crate::selection::validate_target_payload;
+use crate::selection::{DEEPSEEK_HARNESS_RELEASE_VERSION, validate_target_payload};
 use crate::{
     DeepSeekHarnessJsonRpcDriver, deepseek_harness_jsonrpc_claim, deepseek_harness_release_binding,
 };
-
-const SWALLOWTAIL_DEEPSEEK_HARNESS_PROBE_CODES: InstalledProbeCodes =
-    installed_probe_codes!("swallowtail.deepseek_harness");
 
 impl DiscoveryDriver for DeepSeekHarnessJsonRpcDriver {
     fn discover(
@@ -32,55 +29,82 @@ impl DiscoveryDriver for DeepSeekHarnessJsonRpcDriver {
         request: InstalledExecutableDiscoveryRequest,
         services: HostServices,
     ) -> BoxFuture<'_, Result<DiscoveryOutcome, RuntimeFailure>> {
-        if let Err(error) = validate_target_payload(request.target().executable().as_host_value()) {
-            return Box::pin(async move { Err(error) });
-        }
-        Box::pin(probe_installed_executable_version(
-            request,
-            services,
-            deepseek_harness_jsonrpc_claim(),
-            parse_version,
-            SWALLOWTAIL_DEEPSEEK_HARNESS_PROBE_CODES,
-            "DeepSeek Harness",
-        ))
+        Box::pin(async move { classify_pinned_payload(request, services) })
     }
 }
 
-fn parse_version(output: &[u8]) -> Option<swallowtail_core::InterfaceVersionBinding> {
-    let output = std::str::from_utf8(output).ok()?;
-    let exact = output.strip_suffix('\n').unwrap_or(output);
-    deepseek_harness_release_binding(exact)
+fn classify_pinned_payload(
+    request: InstalledExecutableDiscoveryRequest,
+    services: HostServices,
+) -> Result<DiscoveryOutcome, RuntimeFailure> {
+    validate_target_payload(request.target().executable().as_host_value())?;
+    validate_installed_executable_discovery_services(&request, &services)?;
+    let claim = deepseek_harness_jsonrpc_claim();
+    if request.target().version_axis() != claim.axis() {
+        return Err(crate::failure::failure(
+            "swallowtail.deepseek_harness.discovery_axis_mismatch",
+            "DeepSeek Harness discovery target uses a different version axis",
+        ));
+    }
+    if request.cancellation().is_requested() {
+        return Ok(DiscoveryOutcome::new(
+            DiscoveryStatus::Cancelled,
+            Some(swallowtail_core::SafeDiagnostic::new(
+                "swallowtail.deepseek_harness.discovery_cancelled",
+                "DeepSeek Harness installed discovery was cancelled",
+            )),
+        ));
+    }
+    let binding = deepseek_harness_release_binding(DEEPSEEK_HARNESS_RELEASE_VERSION)
+        .expect("static DeepSeek Harness release binds");
+    let observation = InstalledExecutableObservation::classify(
+        request.execution_host_id().clone(),
+        binding,
+        &claim,
+    )
+    .map_err(|_| {
+        let message = "DeepSeek Harness version observation could not be classified";
+        services.emit_failure_debug(
+            DebugObservationKind::InterfaceVersion,
+            "DeepSeek Harness",
+            "installed_discovery.classify",
+            "swallowtail.deepseek_harness.discovery_classification_failed",
+            message,
+        );
+        crate::failure::failure(
+            "swallowtail.deepseek_harness.discovery_classification_failed",
+            message,
+        )
+    })?;
+    Ok(DiscoveryOutcome::installed_executable(observation))
 }
 
 #[cfg(test)]
 mod tests {
-    use super::parse_version;
+    use super::deepseek_harness_release_binding;
+    use crate::DEEPSEEK_HARNESS_RELEASE_VERSION;
 
     #[test]
-    fn parser_requires_the_exact_runtime_bin_release_line() {
+    fn pin_text_is_the_discovery_version_not_cli_output() {
         assert_eq!(
-            parse_version(b"0.1.0rc6\n")
-                .expect("exact runtime version parses")
-                .version()
-                .as_str(),
-            "0.1.0rc6"
-        );
-        assert_eq!(
-            parse_version(b"0.1.0rc6")
-                .expect("exact runtime version without newline parses")
+            deepseek_harness_release_binding(DEEPSEEK_HARNESS_RELEASE_VERSION)
+                .expect("exact runtime version binds")
                 .version()
                 .as_str(),
             "0.1.0rc6"
         );
         for rejected in [
-            b"0.1.0rc5\n".as_slice(),
-            b"0.1.0rc7\n".as_slice(),
-            b"dsh-jsonrpc-agent 0.1.0rc6\n".as_slice(),
-            b"0.1.0rc6 \n".as_slice(),
-            b"0.1.0rc6\n\n".as_slice(),
-            b"".as_slice(),
+            "",
+            "0.1.0rc5",
+            "0.1.0rc7",
+            "dsh-jsonrpc-agent 0.1.0rc6",
+            "0.1.0rc6 ",
+            "0.1.0rc6\n",
         ] {
-            assert!(parse_version(rejected).is_none());
+            assert!(
+                deepseek_harness_release_binding(rejected).is_none(),
+                "{rejected:?}"
+            );
         }
     }
 }

@@ -1,9 +1,5 @@
 # g03 Batch Cards
 
-## Active
-
-- [221-deepseek-harness-package-and-route-acceptance.md](./221-deepseek-harness-package-and-route-acceptance.md)
-
 ## Ready
 
 - [217-figmatic-claude-code-protocol-adoption.md](./217-figmatic-claude-code-protocol-adoption.md)
@@ -28,6 +24,7 @@
 
 ## Completed
 
+- [221-deepseek-harness-package-and-route-acceptance.md](./221-deepseek-harness-package-and-route-acceptance.md)
 - [220-deepseek-harness-prepared-facade.md](./220-deepseek-harness-prepared-facade.md)
 - [219-deepseek-harness-jsonrpc-driver-core.md](./219-deepseek-harness-jsonrpc-driver-core.md)
 - [218-deepseek-harness-artifact-and-event-corpus.md](./218-deepseek-harness-artifact-and-event-corpus.md)

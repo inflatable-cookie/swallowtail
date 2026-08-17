@@ -69,16 +69,17 @@ visible as unverified newer unless exact evidence requires rejection.
 | Classify exact Claude Code response-only thinking progress without disclosing thought content. | completed | Contracts 039, 044; Research 123 | `g03.066` |
 | Ship the compatible 30-package, 36-route current source as an exact `v0.3.2` source tag. | completed | Contracts 036, 055-056 | `g03.067` |
 | Replace Claude Code response-only patch equality with a fail-closed protocol-compatible baseline and provisional-newer policy. | active | Contracts 039, 044; Figmatic `g04.005` evidence | `g03.068` |
-| Add DeepSeek Harness through its exact JSON-RPC stdio runtime without flattening onto Open Platform continuation or chasing ACP/Web. | active | Contracts 005-006, 009-010, 023, 029, 032-033, 036-037, 039-041, 044-045, 051-052; Research 124; Spec 008 | `g03.069` |
+| Add DeepSeek Harness through its exact JSON-RPC stdio runtime without flattening onto Open Platform continuation or chasing ACP/Web. | completed | Contracts 005-006, 009-010, 023, 029, 032-033, 036-037, 039-041, 044-045, 051-052; Research 124; Spec 008 | `g03.069` |
 
 ## Current Checkpoint
 
-- g03.069 is active. Deterministic cards 218-221 merged on
+- g03.069 is complete. Deterministic cards 218-221 merged on
   `52263993` (PR 1), including payload-digest admission at `96db297e`.
   Current source is 31 packages and 37 routes; immutable `v0.3.2` stays 30
-  and 36. Card 221 live smoke remains operator-gated: exact
-  `dsh-jsonrpc-agent-pkg-macos-arm64` plus Cordis config. Card 217 remains
-  ready for Figmatic's linked `g04.005` adoption.
+  and 36. Card 221 live smoke passed through the prepared facade on
+  host-local Ollama and does not qualify `deepseek-official`. Follow-on
+  session-id continuity, ACP, and Web `/api` stay later and distinct. Card
+  217 remains ready for Figmatic's linked `g04.005` adoption.
 - g03.068 is active under corrected Contract 039 authority. Card 214's exact-
   `2.1.228` replacement and card 215's downstream pointer are superseded.
   Card 216 completed at `fd2d95e83f6d7f8bdfe7852d3393eb6031d15cf2`:
@@ -701,7 +702,7 @@ visible as unverified newer unless exact evidence requires rejection.
 - [066 Claude Code Response-Only Thinking Progress](./066-claude-code-response-only-thinking-progress.md) — completed
 - [067 v0.3.2 Source Patch Release](./067-v0-3-2-source-patch-release.md) — completed
 - [068 Claude Code Response-Only Protocol Compatibility](./068-claude-code-response-only-protocol-compatibility.md) — active
-- [069 DeepSeek Harness JSON-RPC Foundation](./069-deepseek-harness-jsonrpc-foundation.md) — active
+- [069 DeepSeek Harness JSON-RPC Foundation](./069-deepseek-harness-jsonrpc-foundation.md) — completed
 
 ## Checkpoint
 

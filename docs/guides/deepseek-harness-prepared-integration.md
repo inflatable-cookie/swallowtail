@@ -33,8 +33,10 @@ qualified-only for `0.1.0rc6`; newer RC points do not inherit this route.
 
 Call `prepare_deepseek_harness_jsonrpc` with
 `DeepSeekHarnessPreparationInput` and `DeepSeekHarnessPreparationProbe`. The
-probe runs only the bounded executable version check. It does not send a
-prompt, acquire credentials, choose a model, or inspect the Cordis file.
+probe stream-hashes the host-approved executable and classifies exact
+`0.1.0rc6`. The JSON-RPC binary has no `--version` CLI and requires Cordis
+only when a run starts; discovery does not spawn it, send a prompt, acquire
+credentials, choose a model, or inspect the Cordis file.
 
 The prepared integration binds the execution host, exact target, observation,
 host configuration reference, access profile, and preflight evidence. Validate
@@ -54,8 +56,14 @@ The driver owns one joined process and performs this sequence:
 
 1. send `initialize` with the host cwd, provider, and model
 2. send `session/prompt` and treat its `{ messageId }` response as enqueue
-3. fold `session.status` until the selected turn is idle
+3. fold `session.event` / `session.status` until the selected turn is idle
 4. send `shutdown` and join process and task cleanup
+
+Exact `0.1.0rc6` stdout can emit `agent/inbox/spliced` and `session.status`
+running before the prompt RPC result. Turn and step ids may be numbers.
+Reasoning and text deltas may use `text` instead of `delta`. `turn/end` may
+use `reason.kind` instead of `status`. Those frames stay content-free in
+diagnostics; they do not change the Cordis or pin rules.
 
 The JSON-RPC stream is bounded. Unknown namespaced observations may remain
 namespaced and correlated; raw envelopes do not become diagnostics. Assistant
@@ -85,6 +93,10 @@ export SWALLOWTAIL_DEEPSEEK_HARNESS_CWD=/absolute/path/to/read-only-workspace
 export SWALLOWTAIL_DEEPSEEK_HARNESS_PROVIDER=local-ollama
 export SWALLOWTAIL_DEEPSEEK_HARNESS_MODEL=operator-selected-model
 ```
+
+If the host Cordis composition names a provider key environment variable, export
+that variable in the probe process. The local host clears ambient environment
+and only forwards approved bindings; Swallowtail does not lease the key.
 
 The installed probe and configured prompt smoke are separate Effigy selectors.
 Neither selector logs the Cordis path, provider credentials, prompt, tool

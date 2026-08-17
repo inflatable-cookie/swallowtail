@@ -59,7 +59,9 @@
     "assistant/chunk",
     "assistant/message",
     "tool/call",
-    "tool/result"
+    "tool/result",
+    "agent/inbox/spliced",
+    "session/title"
   ],
   "durable_jsonl_types": [
     "session",

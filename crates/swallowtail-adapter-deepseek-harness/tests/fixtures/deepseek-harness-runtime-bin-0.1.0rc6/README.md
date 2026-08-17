@@ -13,6 +13,13 @@ record counts. The live probe observed 4,626 SDK events while the persisted
 run contained 668 records. The adapter must bound the live stream and project
 only the stable lifecycle fields.
 
+The redacted JSONL success fixtures keep string turn/step ids and a
+prompt-receipt-before-events order for corpus mutations. The installed
+`0.1.0rc6` JSON-RPC wire emits `agent/inbox/spliced` at seq 0 and
+`session.status` running before the prompt `{ messageId }` result, uses
+numeric turn/step ids, and names delta/finish/terminal fields as `text`,
+`reason.kind`, and `turn/end.reason.kind`. The driver accepts both shapes.
+
 `check-deepseek-harness-corpus.py` validates every fixture and mutates the
 success corpus in memory for malformed, oversized, post-terminal, and
 mismatched-model rejection tests. It is package-independent so the corpus can

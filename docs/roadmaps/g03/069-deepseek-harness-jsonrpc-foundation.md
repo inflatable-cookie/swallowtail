@@ -1,6 +1,6 @@
 # 069 DeepSeek Harness JSON-RPC Foundation
 
-Status: active
+Status: completed
 Owner: Tom
 Created: 2026-08-17
 Depends on: Research 124; Spec 008
@@ -28,7 +28,7 @@ payload, a documented automation wire, and live turn/tool/usage evidence.
       activity, process-kill cancellation, deadline, and cleanup
 - [x] card 220: expose host-approved preparation and an exact structured-run
       facade with explicit provider, model, config, and cwd
-- [ ] card 221: complete package, guide, example, matrices, live acceptance,
+- [x] card 221: complete package, guide, example, matrices, live acceptance,
       release-baseline handling, and closeout evidence
 
 ## Goals
@@ -66,14 +66,15 @@ payload, a documented automation wire, and live turn/tool/usage evidence.
       resource, and host services
 - [x] focused and extracted-package validation pass without network
       credentials
-- [ ] one separately gated live probe passes through the prepared facade
+- [x] one separately gated live probe passes through the prepared facade
 - [x] route matrix, feature matrix, guide map, example, architecture, package
       contract, and release tooling remain mutually honest
 
 Card 221's package and deterministic acceptance work merged on `52263993`
-(PR 1), including payload-digest admission at `96db297e`. The live probe
-remains operator-gated until the host supplies the exact packaged
-`dsh-jsonrpc-agent-pkg-macos-arm64` executable and Cordis configuration.
+(PR 1), including payload-digest admission at `96db297e`. The gated
+installed and prepared-facade live probes later passed on the host-approved
+`0.1.0rc6` payload through local Ollama. That does not qualify
+`deepseek-official`.
 
 ## Planning Checkpoint
 

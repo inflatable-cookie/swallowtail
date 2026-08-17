@@ -26,6 +26,8 @@ const KNOWN_EVENT_TYPES: &[&str] = &[
     "assistant/message",
     "tool/call",
     "tool/result",
+    "agent/inbox/spliced",
+    "session/title",
 ];
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -332,7 +334,8 @@ impl JsonRpcParser {
         match status {
             "running" => {
                 require(
-                    self.phase == Phase::Running && !self.status_running,
+                    matches!(self.phase, Phase::AwaitPrompt | Phase::Running)
+                        && !self.status_running,
                     "invalid running status",
                 )?;
                 self.status_running = true;
@@ -362,8 +365,8 @@ impl JsonRpcParser {
         let params = params.as_object().ok_or_else(malformed_stream)?;
         self.require_session(params.get("sessionId").and_then(Value::as_str))?;
         require(
-            self.status_running,
-            "session event arrived before running status",
+            matches!(self.phase, Phase::AwaitPrompt | Phase::Running),
+            "session event arrived before prompt dispatch",
         )?;
         require(
             self.terminal.is_none(),
@@ -382,7 +385,7 @@ impl JsonRpcParser {
             .and_then(Value::as_u64)
             .ok_or_else(malformed_stream)?;
         require(
-            sequence == self.event_sequence + 1,
+            sequence == self.event_sequence + 1 || (self.event_sequence == 0 && sequence == 0),
             "session event sequence is not contiguous",
         )?;
         self.event_sequence = sequence;
@@ -413,7 +416,7 @@ impl JsonRpcParser {
 
     fn subagent(&mut self, method: &str) -> Result<ParserOutput, RuntimeFailure> {
         require(
-            self.status_running && self.terminal.is_none(),
+            matches!(self.phase, Phase::AwaitPrompt | Phase::Running) && self.terminal.is_none(),
             "subagent notification is outside the active run",
         )?;
         let observation = self.activity.unknown(method)?;
@@ -428,30 +431,41 @@ impl JsonRpcParser {
         event_type: &str,
         data: &serde_json::Map<String, Value>,
     ) -> Result<ParserOutput, RuntimeFailure> {
-        if event_type == "turn/start" {
-            require(self.turn_id.is_none(), "duplicate turn/start")?;
-            self.turn_id = Some(identifier(data.get("turn").and_then(Value::as_str))?.to_owned());
+        if event_type == "agent/inbox/spliced" || event_type == "session/title" {
             return Ok(self.progress());
         }
-        let turn = data.get("turn").and_then(Value::as_str);
-        require(turn == self.turn_id.as_deref(), "turn correlation failed")?;
+        if event_type == "turn/start" {
+            require(self.turn_id.is_none(), "duplicate turn/start")?;
+            self.turn_id = Some(correlation_id(data.get("turn"))?);
+            return Ok(self.progress());
+        }
+        if let Some(turn) = data.get("turn") {
+            require(
+                Some(correlation_id(Some(turn))?.as_str()) == self.turn_id.as_deref(),
+                "turn correlation failed",
+            )?;
+        }
         match event_type {
             "step/start" => {
                 require(
                     self.step_id.is_none() && self.step_ended,
                     "step/start overlaps an active step",
                 )?;
-                self.step_id =
-                    Some(identifier(data.get("step").and_then(Value::as_str))?.to_owned());
+                self.step_id = Some(correlation_id(data.get("step"))?);
                 self.step_ended = false;
                 self.finish_seen = false;
                 self.usage_seen = false;
                 Ok(self.progress())
             }
             "user/message" => {
-                self.require_step(data)?;
+                self.require_active_step()?;
+                let message = data
+                    .get("message")
+                    .and_then(Value::as_object)
+                    .unwrap_or(data);
                 require(
-                    data.get("message").and_then(Value::as_object).is_some(),
+                    message.get("role").and_then(Value::as_str) == Some("user")
+                        && message.get("content").and_then(Value::as_array).is_some(),
                     "user message is malformed",
                 )?;
                 Ok(self.progress())
@@ -540,10 +554,12 @@ impl JsonRpcParser {
             }
             "step/end" => {
                 self.require_step(data)?;
-                require(
-                    data.get("status").and_then(Value::as_str).is_some(),
-                    "step status is missing",
-                )?;
+                if let Some(status) = data.get("status").and_then(Value::as_str) {
+                    require(
+                        matches!(status, "stop" | "tool-calls" | "error"),
+                        "step status is missing",
+                    )?;
+                }
                 self.step_id = None;
                 self.step_ended = true;
                 Ok(self.progress())
@@ -556,6 +572,12 @@ impl JsonRpcParser {
                 let status = data
                     .get("status")
                     .and_then(Value::as_str)
+                    .or_else(|| {
+                        data.get("reason")
+                            .and_then(Value::as_object)
+                            .and_then(|reason| reason.get("kind"))
+                            .and_then(Value::as_str)
+                    })
                     .ok_or_else(malformed_stream)?;
                 let terminal = match status {
                     "completed" => TerminalStatus::Completed,
@@ -599,20 +621,14 @@ impl JsonRpcParser {
                 writes: Vec::new(),
             }),
             "reasoning-delta" => {
-                require(
-                    chunk.get("delta").and_then(Value::as_str).is_some(),
-                    "reasoning delta is malformed",
-                )?;
+                require(chunk_text(chunk).is_some(), "reasoning delta is malformed")?;
                 Ok(ParserOutput {
                     events: vec![self.event(RuntimeEventKind::ReasoningProgress)],
                     writes: Vec::new(),
                 })
             }
             "text-delta" => {
-                let text = chunk
-                    .get("delta")
-                    .and_then(Value::as_str)
-                    .ok_or_else(malformed_stream)?;
+                let text = chunk_text(chunk).ok_or_else(malformed_stream)?;
                 self.record_streamed_text(text)?;
                 let mut events = vec![self.event_with(RuntimeEventKind::OutputDelta, text)?];
                 events.extend(
@@ -648,10 +664,7 @@ impl JsonRpcParser {
             "finish" => {
                 require(self.usage_seen, "finish arrived before usage")?;
                 require(
-                    matches!(
-                        chunk.get("finishReason").and_then(Value::as_str),
-                        Some("stop" | "tool-calls")
-                    ),
+                    matches!(finish_reason(chunk), Some("stop" | "tool-calls")),
                     "unsupported finish reason",
                 )?;
                 self.finish_seen = true;
@@ -681,25 +694,45 @@ impl JsonRpcParser {
         )
     }
 
-    fn require_step(&self, data: &serde_json::Map<String, Value>) -> Result<(), RuntimeFailure> {
+    fn require_active_step(&self) -> Result<(), RuntimeFailure> {
         require(
             self.step_id.is_some() && !self.step_ended,
             "event arrived outside an active step",
-        )?;
-        require(
-            data.get("step").and_then(Value::as_str) == self.step_id.as_deref(),
-            "step correlation failed",
         )
+    }
+
+    fn require_step(&self, data: &serde_json::Map<String, Value>) -> Result<(), RuntimeFailure> {
+        self.require_active_step()?;
+        match data.get("step") {
+            None => Ok(()),
+            Some(value) => require(
+                Some(correlation_id(Some(value))?.as_str()) == self.step_id.as_deref(),
+                "step correlation failed",
+            ),
+        }
     }
 
     fn require_model_binding(
         &self,
         data: &serde_json::Map<String, Value>,
     ) -> Result<(), RuntimeFailure> {
-        if let Some(provider) = data.get("provider").and_then(Value::as_str) {
+        let config = data
+            .get("header")
+            .and_then(Value::as_object)
+            .and_then(|header| header.get("config"))
+            .and_then(Value::as_object);
+        let provider = data
+            .get("provider")
+            .and_then(Value::as_str)
+            .or_else(|| config.and_then(|config| config.get("provider").and_then(Value::as_str)));
+        let model = data
+            .get("model")
+            .and_then(Value::as_str)
+            .or_else(|| config.and_then(|config| config.get("model").and_then(Value::as_str)));
+        if let Some(provider) = provider {
             require(provider == self.provider, "provider binding mismatch")?;
         }
-        if let Some(model) = data.get("model").and_then(Value::as_str) {
+        if let Some(model) = model {
             require(model == self.model, "model binding mismatch")?;
         }
         Ok(())
@@ -808,15 +841,7 @@ fn assistant_text(content: &Value) -> Result<String, RuntimeFailure> {
                     .and_then(Value::as_str)
                     .ok_or_else(malformed_stream)?,
             ),
-            Some("reasoning") => {
-                require(
-                    block
-                        .get("text")
-                        .and_then(Value::as_str)
-                        .is_some_and(str::is_empty),
-                    "reasoning content was retained",
-                )?;
-            }
+            Some("reasoning" | "thinking") => {}
             Some("tool-call") | Some("tool-result") => {}
             _ => return Err(malformed_stream()),
         }
@@ -867,6 +892,37 @@ fn identifier(value: Option<&str>) -> Result<&str, RuntimeFailure> {
         "provider identity is malformed",
     )?;
     Ok(value)
+}
+
+fn correlation_id(value: Option<&Value>) -> Result<String, RuntimeFailure> {
+    match value {
+        Some(Value::String(text)) => Ok(identifier(Some(text))?.to_owned()),
+        Some(Value::Number(number)) => {
+            let text = number.to_string();
+            Ok(identifier(Some(&text))?.to_owned())
+        }
+        _ => Err(malformed_stream()),
+    }
+}
+
+fn chunk_text(chunk: &serde_json::Map<String, Value>) -> Option<&str> {
+    chunk
+        .get("delta")
+        .and_then(Value::as_str)
+        .or_else(|| chunk.get("text").and_then(Value::as_str))
+}
+
+fn finish_reason(chunk: &serde_json::Map<String, Value>) -> Option<&str> {
+    chunk
+        .get("finishReason")
+        .and_then(Value::as_str)
+        .or_else(|| {
+            chunk
+                .get("reason")
+                .and_then(Value::as_object)
+                .and_then(|reason| reason.get("kind"))
+                .and_then(Value::as_str)
+        })
 }
 
 fn trim_newline(line: &[u8]) -> &[u8] {
@@ -962,8 +1018,10 @@ fn unsupported_notification() -> RuntimeFailure {
 #[cfg(test)]
 mod tests {
     use super::JsonRpcParser;
+    use serde_json::json;
     use swallowtail_runtime::{
-        ActivityOperationId, ProcessExit, RuntimeEventKind, RuntimeRunId, TerminalStatus,
+        ActivityOperationId, OperationContent, ProcessExit, RuntimeEventKind, RuntimeRunId,
+        TerminalStatus,
     };
 
     fn parse_fixture(name: &str) -> (JsonRpcParser, Vec<swallowtail_runtime::RuntimeEvent>) {
@@ -1114,5 +1172,69 @@ mod tests {
         assert!(events.iter().any(|event| {
             matches!(event.kind(), RuntimeEventKind::Activity(activity) if matches!(activity.kind(), swallowtail_runtime::ActivityKind::Unknown(_)))
         }));
+    }
+
+    #[test]
+    fn live_wire_shape_allows_inbox_before_prompt_receipt_and_numeric_ids() {
+        let operation = ActivityOperationId::Run(
+            RuntimeRunId::new("deepseek-harness.live-wire").expect("run id"),
+        );
+        let mut parser = JsonRpcParser::new(
+            operation,
+            "<fixture-cwd>".to_owned(),
+            "local-ollama".to_owned(),
+            "fixture-model".to_owned(),
+            "<redacted-prompt>".to_owned(),
+            "fixture-session-live".to_owned(),
+        );
+        parser.initialize_request().expect("initialize request");
+        let frames = [
+            json!({"jsonrpc":"2.0","id":1,"result":{"serverInfo":{"name":"deepseek-harness-sdk-runtime","version":"0.0.1"}}}),
+            json!({"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-live","event":{"type":"agent/inbox/spliced","seq":0,"time":1,"data":{"target":"next-turn","start":0,"inserted":[{"id":"fixture-message-live"}]}}}}),
+            json!({"jsonrpc":"2.0","method":"session.status","params":{"sessionId":"fixture-session-live","status":"running"}}),
+            json!({"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-live","event":{"type":"turn/start","seq":1,"time":2,"data":{"turn":1}}}}),
+            json!({"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-live","event":{"type":"agent/inbox/spliced","seq":2,"time":3,"data":{"target":"next-turn","start":0,"inserted":[],"removedCount":0}}}}),
+            json!({"jsonrpc":"2.0","id":2,"result":{"messageId":"fixture-message-live"}}),
+            json!({"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-live","event":{"type":"step/start","seq":3,"time":4,"data":{"turn":1,"step":1}}}}),
+            json!({"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-live","event":{"type":"user/message","seq":4,"time":5,"data":{"id":"fixture-message-live","role":"user","content":[{"type":"text","text":"<redacted-prompt>"}],"source":{"kind":"user"}}}}}),
+            json!({"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-live","event":{"type":"session/title","seq":5,"time":6,"data":{"title":"<redacted-title>","source":{"kind":"derived"},"messageSeqs":[4]}}}}),
+            json!({"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-live","event":{"type":"request/header","seq":6,"time":7,"data":{"reason":"prompt","header":{"config":{"provider":"local-ollama","model":"fixture-model","maxTokens":1024},"system":"<redacted-system-prompt>","adapterDefaults":{"maxTokens":false}}}}}}),
+            json!({"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-live","event":{"type":"request/context","seq":7,"time":8,"data":{"provider":"local-ollama","model":"fixture-model","contextWindow":8192}}}}),
+            json!({"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-live","event":{"type":"assistant/chunk","seq":8,"time":9,"data":{"turn":1,"step":1,"chunk":{"type":"block-start","index":0,"blockType":"reasoning"}}}}}),
+            json!({"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-live","event":{"type":"assistant/chunk","seq":9,"time":10,"data":{"turn":1,"step":1,"chunk":{"type":"reasoning-delta","index":0,"text":"<redacted-reasoning>"}}}}}),
+            json!({"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-live","event":{"type":"assistant/chunk","seq":10,"time":11,"data":{"turn":1,"step":1,"chunk":{"type":"block-end","index":0,"block":{"type":"reasoning","text":"<redacted-reasoning>"}}}}}}),
+            json!({"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-live","event":{"type":"assistant/chunk","seq":11,"time":12,"data":{"turn":1,"step":1,"chunk":{"type":"block-start","index":1,"blockType":"text"}}}}}),
+            json!({"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-live","event":{"type":"assistant/chunk","seq":12,"time":13,"data":{"turn":1,"step":1,"chunk":{"type":"text-delta","index":1,"text":"live ok"}}}}}),
+            json!({"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-live","event":{"type":"assistant/chunk","seq":13,"time":14,"data":{"turn":1,"step":1,"chunk":{"type":"block-end","index":1,"block":{"type":"text","text":"live ok"}}}}}}),
+            json!({"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-live","event":{"type":"assistant/chunk","seq":14,"time":15,"data":{"turn":1,"step":1,"chunk":{"type":"usage","usage":{"inputTokens":12,"outputTokens":2}}}}}}),
+            json!({"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-live","event":{"type":"assistant/chunk","seq":15,"time":16,"data":{"turn":1,"step":1,"chunk":{"type":"finish","reason":{"kind":"stop"}}}}}}),
+            json!({"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-live","event":{"type":"assistant/message","seq":16,"time":17,"data":{"turn":1,"step":1,"message":{"role":"assistant","content":[{"type":"reasoning","text":"<redacted-reasoning>"},{"type":"text","text":"live ok"}]},"usage":{"inputTokens":12,"outputTokens":2}}}}}),
+            json!({"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-live","event":{"type":"step/end","seq":17,"time":18,"data":{"turn":1,"step":1}}}}),
+            json!({"jsonrpc":"2.0","method":"session.event","params":{"sessionId":"fixture-session-live","event":{"type":"turn/end","seq":18,"time":19,"data":{"turn":1,"reason":{"kind":"completed"}}}}}),
+            json!({"jsonrpc":"2.0","method":"session.status","params":{"sessionId":"fixture-session-live","status":"idle"}}),
+            json!({"jsonrpc":"2.0","id":3,"result":{}}),
+        ];
+        let mut events = Vec::new();
+        for (index, frame) in frames.iter().enumerate() {
+            let mut bytes = serde_json::to_vec(frame).expect("frame serializes");
+            bytes.push(b'\n');
+            let parsed = parser
+                .push(&bytes)
+                .unwrap_or_else(|error| panic!("live-shape frame {index} failed: {error}"));
+            events.extend(parsed.events);
+        }
+        let terminal = parser
+            .finish(ProcessExit::new(true, Some(0)))
+            .expect("live wire shape completes");
+        assert_eq!(terminal.status, TerminalStatus::Completed);
+        assert_eq!(
+            terminal.output.as_ref().map(OperationContent::as_str),
+            Some("live ok")
+        );
+        assert!(
+            events
+                .iter()
+                .any(|event| matches!(event.kind(), RuntimeEventKind::ReasoningProgress))
+        );
     }
 }

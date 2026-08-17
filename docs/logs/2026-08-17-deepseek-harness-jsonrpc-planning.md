@@ -32,8 +32,9 @@ Live proof may use host-local Ollama; that does not qualify
 
 ## Next
 
-Prove card 221 live smoke with the host-approved `0.1.0rc6` executable and
-Cordis config. Keep `deepseek-official` unqualified.
+g03.069 is complete. Reassess session-id continuity, ACP, and Web `/api` as
+separate later surfaces. Keep `deepseek-official` unqualified. Card 217
+remains ready for Figmatic `g04.005`.
 
 ## Merge
 
@@ -127,3 +128,13 @@ were not claimed as passed. The next operator action is to supply those
 host-approved inputs and run the two separate selectors. ACP, Web `/api`,
 session-id continuity, DeepSeek-official qualification, version/tag/release,
 and registry work remain out of scope.
+
+## Card 221 live closeout
+
+The gated installed and prepared-facade probes passed on the host-approved
+`0.1.0rc6` payload. Discovery hashes the executable instead of spawning
+`--version`. The parser admits the installed JSON-RPC order and field names
+without ingesting prompts, reasoning, or tool bodies. Live proof used
+host-local Ollama and does not qualify `deepseek-official`.
+
+See `docs/logs/2026-08-17-deepseek-harness-jsonrpc-live-acceptance.md`.

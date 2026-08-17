@@ -13,9 +13,9 @@ shape.
 
 ## Next Task
 
-Prove card 221 live smoke: run the gated DeepSeek Harness installed and
-prepared-facade probes with the host-approved `0.1.0rc6` executable and Cordis
-config, keeping `deepseek-official` unqualified.
+Reassess g03.069 follow-on surfaces: session-id continuity, ACP, and Web
+`/api` as separate later routes. Keep `deepseek-official` unqualified. Card
+217 remains ready for Figmatic `g04.005`.
 
 ## Index
 

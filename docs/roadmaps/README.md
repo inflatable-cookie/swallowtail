@@ -13,8 +13,9 @@ shape.
 
 ## Next Task
 
-Implement card 225: close DeepSeek Harness Web `/api` route truth, operator
-guidance, and deterministic plus separately gated live acceptance.
+Validate card 225: run the gated DeepSeek Harness Web installed classification
+and prepared-facade live prompt with host-approved `dsh`, Cordis, cwd,
+provider, and model.
 
 ## Index
 

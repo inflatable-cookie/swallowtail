@@ -74,18 +74,15 @@ visible as unverified newer unless exact evidence requires rejection.
 
 ## Current Checkpoint
 
-- g03.070 is active. Research 125 and Spec 009 select exact
-  `@deepseek-ai/dsh@0.1.0-rc.6` Web `/api` as `deepseek-harness.local-server`,
-  distinct from `deepseek-harness.jsonrpc` and `deepseek.continuation`. Card
-  222-224 are complete and card 225 is active. The
-  redacted corpus and driver freeze the CLI/npm pin, loopback fence,
-  11-method allowlist, server-only mux/host downlinks, carrier-status split,
-  bounded usage/event projection, and control-free history pages. JSON-RPC
-  stays the live-proven one-shot stdio run. ACP, session-id continuity, and
-  `deepseek-official` stay later and distinct.
+- g03.070 is active. Deterministic cards 222-225 merged on `a1efabbe`
+  (PR 2), including review fixes at `23bb5e1c` and empty mux-chunk skip at
+  `bfbcb1a6`. Current source is 31 packages and 38 routes; immutable
+  `v0.3.2` stays 30 and 36. JSON-RPC stays the live-proven one-shot stdio
+  run. Card 225 still needs operator-gated Web installed/live smoke.
+  ACP, JSON-RPC session-id continuity, and `deepseek-official` stay later.
 - g03.069 is complete. Deterministic cards 218-221 merged on
   `52263993` (PR 1), including payload-digest admission at `96db297e`.
-  Current source is 31 packages and 37 routes; immutable `v0.3.2` stays 30
+  Current source is 31 packages and 38 routes; immutable `v0.3.2` stays 30
   and 36. Card 221 live smoke passed through the prepared facade on
   host-local Ollama and does not qualify `deepseek-official`. Web `/api`
   moved to g03.070.

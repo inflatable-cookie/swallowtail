@@ -43,12 +43,13 @@ outside.
 
 ## Next
 
-Card 223 completed at `01004db0`: the owned-process Web `/api` driver now has
-loopback admission, allowlisted/bounded unary and WebSocket decode, catalogue
-pagination, control-free history, structured prompt events and usage,
-native cancel, fork, archive, deadline, and joined cleanup. Focused package
-validation passed without network credentials or a live process.
+Validate card 225 live smoke: host-approved `dsh`, Cordis, cwd, provider, and
+model through the prepared facade. Keep `deepseek-official` unqualified.
 
-Next: run the operator-gated Web installed classification and one prepared
-facade prompt smoke with exact host inputs, then reassess the Contract 054 /
-ACP / JSON-RPC continuity checkpoint.
+## Merge
+
+Deterministic g03.070 work merged on `a1efabbe` (PR 2). Review fixes landed
+at `23bb5e1c`; empty mux-chunk skip at `bfbcb1a6`. MSRV failed once on an
+unrelated OpenCode fixture flake, then passed on rerun. Card 225 remains
+active for the live probes only. Current source is 31 packages and 38
+routes; immutable `v0.3.2` stays 30 and 36.

@@ -37,16 +37,16 @@ methods. JSON-RPC stays the one-shot stdio run.
 
 ## Goals
 
-- [ ] add route `deepseek-harness.local-server` on
+- [x] add route `deepseek-harness.local-server` on
       `swallowtail-adapter-deepseek-harness`
-- [ ] qualify only exact `@deepseek-ai/dsh@0.1.0-rc.6` on axis
+- [x] qualify only exact `@deepseek-ai/dsh@0.1.0-rc.6` on axis
       `deepseek-harness.web`
-- [ ] spawn host-approved `dsh web` on loopback, not a browser and not the
+- [x] spawn host-approved `dsh web` on loopback, not a browser and not the
       JSON-RPC binary
-- [ ] bind host-approved Cordis patch, cwd, provider, and model
-- [ ] preserve catalogue, control-free history candidate, mux events, native
+- [x] bind host-approved Cordis patch, cwd, provider, and model
+- [x] preserve catalogue, control-free history candidate, mux events, native
       cancel, fork, and archive
-- [ ] keep JSON-RPC, ACP, headless CLI, credentials/settings, and
+- [x] keep JSON-RPC, ACP, headless CLI, credentials/settings, and
       `deepseek.continuation` outside this route
 
 ## Boundaries
@@ -59,22 +59,22 @@ methods. JSON-RPC stays the one-shot stdio run.
 - no non-loopback bind and no invented bearer token
 - no ingestion of tool bodies, reasoning text, prompts, or raw export bytes
       into stable diagnostics
-- no Contract 054 support claim until history proof
+- no Contract 054 live claim; corpus-qualified history remains operator-gated
 - no claim of DeepSeek-official SSE behavior
 - no version bump, tag, GitHub Release, or registry mutation
 
 ## Acceptance Criteria
 
-- [ ] the route rejects version or method-allowlist drift before provider work
-- [ ] deterministic fixtures cover list, history, prompt, cancel, fork,
+- [x] the route rejects version or method-allowlist drift before provider work
+- [x] deterministic fixtures cover list, history, prompt, cancel, fork,
       archive, denied methods, bounds, and malformed input
-- [ ] `session.history` fixtures prove no Agent resume
-- [ ] the prepared facade binds exact CLI, config, loopback endpoint,
+- [x] `session.history` fixtures prove no Agent resume
+- [x] the prepared facade binds exact CLI, config, loopback endpoint,
       provider, model, resource, and host services
-- [ ] focused and extracted-package validation pass without network
+- [x] focused and extracted-package validation pass without network
       credentials
 - [ ] one separately gated live smoke passes through the prepared facade
-- [ ] route matrix, feature matrix, guide map, example, architecture, package
+- [x] route matrix, feature matrix, guide map, example, architecture, package
       contract, and release tooling remain mutually honest with JSON-RPC
 
 ## Planning Checkpoint

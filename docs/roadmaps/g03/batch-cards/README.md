@@ -4,6 +4,7 @@
 
 ## Ready
 
+- [218-deepseek-harness-artifact-and-event-corpus.md](./218-deepseek-harness-artifact-and-event-corpus.md)
 - [217-figmatic-claude-code-protocol-adoption.md](./217-figmatic-claude-code-protocol-adoption.md)
 
 ## Superseded
@@ -15,6 +16,9 @@
 
 ## Planned
 
+- [221-deepseek-harness-package-and-route-acceptance.md](./221-deepseek-harness-package-and-route-acceptance.md)
+- [220-deepseek-harness-prepared-facade.md](./220-deepseek-harness-prepared-facade.md)
+- [219-deepseek-harness-jsonrpc-driver-core.md](./219-deepseek-harness-jsonrpc-driver-core.md)
 - [193-idioms-route-opt-in-runtime-surface.md](./193-idioms-route-opt-in-runtime-surface.md)
 - [194-idioms-route-opt-in-binding-and-codex-proof.md](./194-idioms-route-opt-in-binding-and-codex-proof.md)
 - [195-nucleus-idioms-adoption-delta.md](./195-nucleus-idioms-adoption-delta.md)

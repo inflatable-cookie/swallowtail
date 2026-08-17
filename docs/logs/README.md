@@ -21,6 +21,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-17 DeepSeek Harness JSON-RPC Planning](./2026-08-17-deepseek-harness-jsonrpc-planning.md)
 - [2026-08-12 Claude Code Response-Only Protocol Compatibility](./2026-08-12-claude-code-response-only-protocol-compatibility.md)
 - [2026-08-12 Claude Code Response-Only 2.1.228 Qualification](./2026-08-12-claude-code-response-only-2-1-228.md)
 - [2026-08-11 v0.3.2 Source Release](./2026-08-11-v0-3-2-source-release.md)

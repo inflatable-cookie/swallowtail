@@ -69,6 +69,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [117 Command Code Taste Mechanism Evidence](./117-command-code-taste-mechanism-evidence.md)
 - [119 Route-Path Idioms Opt-In Evidence](./119-route-path-idioms-opt-in-evidence.md)
 - [118 Command Code Session Continuity And Export](./118-command-code-session-continuity-and-export.md)
+- [124 DeepSeek Harness JSON-RPC Route Qualification](./124-deepseek-harness-jsonrpc-route-qualification.md)
 
 ### Hosted APIs And SDKs
 

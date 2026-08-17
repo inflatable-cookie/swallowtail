@@ -13,11 +13,8 @@ shape.
 
 ## Next Task
 
-Execute card 217 in Figmatic: adopt Swallowtail implementation commit
-`fd2d95e83f6d7f8bdfe7852d3393eb6031d15cf2` through
-`effigy deps link cargo`, then run the packaged `g04.005` mutation-runway smoke.
-Preserve the existing prepared API and record the observed executable-version
-diagnostics.
+Implement card 218: freeze the DeepSeek Harness JSON-RPC artifact, protocol,
+and redacted event corpus at exact runtime-bin `0.1.0rc6`.
 
 ## Index
 

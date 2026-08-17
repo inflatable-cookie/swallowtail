@@ -7,6 +7,7 @@ architecture, contracts, roadmaps, or logs.
 
 - [006 Pluggable Learned Idioms](006-pluggable-learned-idioms.md)
 - [007 Route-Path Idioms Opt-In](007-route-path-idioms-opt-in.md)
+- [008 DeepSeek Harness JSON-RPC Route](008-deepseek-harness-jsonrpc-route.md)
 
 ## Promoted Specs
 

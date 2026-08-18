@@ -73,6 +73,21 @@ visible as unverified newer unless exact evidence requires rejection.
 | Add DeepSeek Harness Web `/api` as a second local-server route without flattening onto JSON-RPC or chasing ACP. | completed | Contracts 005-006, 009-010, 017, 023, 029, 032-033, 036-039, 044-045, 051-052, 054; Research 125; Spec 009 | `g03.070` |
 | Add ZCode through its exact app-server stdio runtime without flattening onto OpenCode or chasing ACP/`--print`. | completed | Contracts 005-006, 009-010, 023, 029, 032-033, 036-037, 039-041, 044-045, 051-052; Research 126; Spec 010 | `g03.071` |
 
+## Planned Next Roadmaps
+
+- [g03.086 Cline ACP Route](086-cline-acp-route.md) — primary `cline.acp`
+- [g03.087 Cline Headless Route](087-cline-headless-route.md) — primary `cline.headless`
+- [g03.088 Goose ACP Route](088-goose-acp-route.md) — primary `goose.acp`
+- [g03.089 GitHub Copilot CLI ACP Route](089-copilot-cli-acp-route.md) — primary `copilot-cli.acp`
+- [g03.090 Mistral Vibe Headless Route](090-mistral-vibe-headless-route.md) — primary `mistral-vibe.headless`
+- [g03.091 Qoder Headless Route](091-qoder-headless-route.md) — primary `qoder.headless`
+- [g03.092 Pi ACP Route](092-pi-acp-route.md) — primary `pi.acp`
+- [g03.093 OpenHands Agent Server Route](093-openhands-agent-server-route.md) — secondary `openhands.agent-server`
+- [g03.094 Kiro Headless Route](094-kiro-headless-route.md) — secondary `kiro.headless`
+- [g03.095 Aider Headless Route](095-aider-headless-route.md) — secondary `aider.headless`
+- [g03.096 Deep Agents ACP Route](096-deep-agents-acp-route.md) — secondary `deepagents.acp`
+- [g03.097 Harness Route Expansion Intake And Watchlist](097-harness-route-expansion-intake-and-watchlist.md) — shared source/disposition gate
+
 ## Current Checkpoint
 
 - g03.085 is complete. Cards 258-259 froze Antigravity host `1.1.9` and

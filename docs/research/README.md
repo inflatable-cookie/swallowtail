@@ -78,6 +78,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [133 Claude Code Response-Only 2.1.234 Identity](./133-claude-code-response-only-2-1-234-identity.md)
 - [134 Oh My Pi 17.3.7 Identity](./134-oh-my-pi-17-3-7-identity.md)
 - [142 Antigravity 1.1.14 Identity](./142-antigravity-1-1-14-identity.md)
+- [143 New Harness Route Expansion Selection](./143-new-harness-route-expansion-selection.md)
 - [141 Qwen Headless 0.21.13 Identity](./141-qwen-headless-0-21-13-identity.md)
 - [140 Pi RPC 0.84.2 Identity](./140-pi-rpc-0-84-2-identity.md)
 - [139 Claude Agent ACP 0.69.0 Identity](./139-claude-agent-acp-0-69-0-identity.md)

@@ -31,7 +31,8 @@ fn exact_and_unverified_versions_probe_only_the_approved_target_on_both_topologi
             ("grok 0.2.115 (dd16b5eb7d50) [stable]\n", "0.2.115", true),
             ("grok 0.2.116 (99b387d2cc0e) [stable]\n", "0.2.116", true),
             ("grok 0.2.117 (f1c06093089f) [stable]\n", "0.2.117", true),
-            ("grok 0.2.118 (123456789abc) [stable]\n", "0.2.118", false),
+            ("grok 1.0.4 (d846eb93d94d) [stable]\n", "1.0.4", true),
+            ("grok 1.0.6 (abcdef123456) [stable]\n", "1.0.6", false),
         ] {
             let host = topology.execution_host_id().clone();
             let executable = ExecutableRef::from_instance_target(topology.instance_target());
@@ -59,7 +60,7 @@ fn exact_and_unverified_versions_probe_only_the_approved_target_on_both_topologi
                 else {
                     panic!("later stable version remains unverified");
                 };
-                assert_eq!(unverified.latest_qualified().as_str(), "0.2.117");
+                assert_eq!(unverified.latest_qualified().as_str(), "1.0.4");
             }
             let captured = state.request();
             assert_eq!(captured.executable, executable.as_host_value());

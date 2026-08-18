@@ -6,9 +6,9 @@ use swallowtail_core::{
 use swallowtail_runtime::RuntimeFailure;
 
 /// Exact opaque installed Muse Code payload revision.
-pub const MUSE_CODE_RELEASE_REVISION: &str = "0.1.0-R708.1";
+pub const MUSE_CODE_RELEASE_REVISION: &str = "0.2.1-R1215.1";
 /// Basename of the signed versioned payload selected for execution.
-pub const MUSE_CODE_PAYLOAD_BASENAME: &str = "muse-bin-0.1.0-R708.1";
+pub const MUSE_CODE_PAYLOAD_BASENAME: &str = "muse-bin-0.2.1-R1215.1";
 /// Opaque version axis for signed Muse Code payloads.
 pub const MUSE_CODE_RELEASE_AXIS: &str = "muse-code.signed-payload";
 /// Exact Meta model qualified through the installed route.
@@ -105,12 +105,18 @@ mod tests {
     #[test]
     fn only_the_exact_opaque_payload_is_qualified() {
         assert!(muse_code_release_binding(MUSE_CODE_RELEASE_REVISION).is_some());
-        for rejected in ["0.1.0", "0.1.0-R708.2", "Muse Code 0.1.0", " 0.1.0-R708.1"] {
+        for rejected in [
+            "0.1.0",
+            "0.1.0-R708.1",
+            "0.2.1-R1215.2",
+            "Muse Code 0.2.1",
+            " 0.2.1-R1215.1",
+        ] {
             assert!(muse_code_release_binding(rejected).is_none());
         }
         let claim = muse_headless_claim();
         assert!(claim.supports(&InterfaceVersion::new(MUSE_CODE_RELEASE_REVISION).unwrap()));
-        assert!(!claim.permits(&InterfaceVersion::new("0.1.0-R708.2").unwrap()));
+        assert!(!claim.permits(&InterfaceVersion::new("0.1.0-R708.1").unwrap()));
         assert!(is_versioned_payload_target(&format!(
             "/fixture/bin/{MUSE_CODE_PAYLOAD_BASENAME}"
         )));

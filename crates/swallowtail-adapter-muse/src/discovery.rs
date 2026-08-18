@@ -5,7 +5,9 @@ use swallowtail_runtime::{
     installed_probe_codes, probe_installed_executable_version,
 };
 
-use crate::{MuseHeadlessDriver, muse_code_release_binding, muse_headless_claim};
+use crate::{
+    MUSE_CODE_RELEASE_REVISION, MuseHeadlessDriver, muse_code_release_binding, muse_headless_claim,
+};
 
 const SWALLOWTAIL_MUSE_PROBE_CODES: InstalledProbeCodes =
     installed_probe_codes!("swallowtail.muse");
@@ -42,7 +44,12 @@ impl DiscoveryDriver for MuseHeadlessDriver {
 fn parse_version(output: &[u8]) -> Option<swallowtail_core::InterfaceVersionBinding> {
     let output = std::str::from_utf8(output).ok()?;
     let exact = output.strip_suffix('\n').unwrap_or(output);
-    let revision = exact.strip_prefix("Muse Code 0.1.0 (")?.strip_suffix(')')?;
+    let rest = exact.strip_prefix("Muse Code ")?;
+    let (_display, revision_part) = rest.split_once(" (")?;
+    let revision = revision_part.strip_suffix(')')?;
+    if revision != MUSE_CODE_RELEASE_REVISION {
+        return None;
+    }
     muse_code_release_binding(revision)
 }
 
@@ -53,16 +60,17 @@ mod tests {
     #[test]
     fn parser_requires_the_exact_direct_payload_version_line() {
         assert_eq!(
-            parse_version(b"Muse Code 0.1.0 (0.1.0-R708.1)\n")
+            parse_version(b"Muse Code 0.2.1 (0.2.1-R1215.1)\n")
                 .expect("exact version parses")
                 .version()
                 .as_str(),
-            "0.1.0-R708.1"
+            "0.2.1-R1215.1"
         );
         for rejected in [
-            b"Muse Code 0.1.0 (0.1.0-R708.2)\n".as_slice(),
-            b"muse 0.1.0-R708.1\n".as_slice(),
-            b"Muse Code 0.1.0 (0.1.0-R708.1) extra\n".as_slice(),
+            b"Muse Code 0.1.0 (0.1.0-R708.1)\n".as_slice(),
+            b"Muse Code 0.2.1 (0.2.1-R1215.2)\n".as_slice(),
+            b"muse 0.2.1-R1215.1\n".as_slice(),
+            b"Muse Code 0.2.1 (0.2.1-R1215.1) extra\n".as_slice(),
         ] {
             assert!(parse_version(rejected).is_none());
         }

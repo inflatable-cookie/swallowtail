@@ -29,9 +29,9 @@ separate explicit profiles.
 
 Swallowtail does not install Codex, search `PATH`, log in, choose a model,
 select billing, read an auth store, or infer a writable workspace. Exec admits
-`0.80.0..=0.81.0`, `0.84.0..=0.107.0`, and `0.110.0..=0.146.0`; support is
+`0.80.0..=0.81.0`, `0.84.0..=0.107.0`, and `0.110.0..=0.147.0`; support is
 deprecated through `0.121.0` and maintained from `0.122.0`. App-server admits
-`0.80.0..=0.81.0`, `0.84.0..=0.107.0`, and `0.110.0..=0.146.0`; support is
+`0.80.0..=0.81.0`, `0.84.0..=0.107.0`, and `0.110.0..=0.147.0`; support is
 maintained from `0.110.0`. Exact feature milestones remain narrower. Later
 stable versions may remain visible `UnverifiedNewer` without gaining
 capabilities.
@@ -164,7 +164,7 @@ do not grant response authority.
 ## External Thread Import
 
 Codex app-server versions `0.105.0..=0.107.0` and
-`0.110.0..=0.146.0` expose the complete selected import chain. Earlier
+`0.110.0..=0.147.0` expose the complete selected import chain. Earlier
 supported app-server versions keep their existing operations without
 advertising catalogue or import. Later versions remain visible as unverified
 newer but do not gain this exact capability.

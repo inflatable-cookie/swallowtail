@@ -92,6 +92,8 @@ contract file owns the exact rules.
   evidence-backed milestones, deprecation states, and exact exclusions.
   Ordered claims may separately permit exact unverified-newer attempts without
   extending their guaranteed support window; opaque claims remain exact-only.
+  All-route currentness is a named operator-triggered checkpoint that records
+  drift; claim changes stay one family at a time through the upgrade workflow.
 - **030** adds a locally continued direct-session profile. Every provider
   attempt needs explicit consumer authorization; tool execution remains
   downstream while provider-private continuation stays bounded, redacted,

@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "record_count": 23,
+  "payload_types": [
+    "runtime.command.accepted",
+    "session.run.linked",
+    "turn.input.user",
+    "run.lifecycle.started",
+    "task.stream.linked",
+    "task.lifecycle.proposed",
+    "task.lifecycle.accepted",
+    "task.lifecycle.started",
+    "task.stream.linked",
+    "task.lifecycle.proposed",
+    "task.lifecycle.accepted",
+    "task.lifecycle.scheduled",
+    "task.lifecycle.side_effect_intent",
+    "task.lifecycle.started",
+    "run.output.delta",
+    "task.lifecycle.completed",
+    "task.stream.linked",
+    "task.lifecycle.proposed",
+    "task.lifecycle.accepted",
+    "task.lifecycle.started",
+    "task.lifecycle.failed",
+    "task.lifecycle.failed",
+    "run.terminal.completed"
+  ],
+  "terminal": "completed",
+  "terminal_text_prefix": "echo:",
+  "provider_prompt_sent": false,
+  "meta_provider_used": false
+}

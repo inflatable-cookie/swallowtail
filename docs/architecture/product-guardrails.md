@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-19
+Updated: 2026-08-17
 
 ## Non-Negotiables
 
@@ -29,6 +29,7 @@ Updated: 2026-07-19
 - treating provider wire payloads as stable public API
 - assuming every provider supports tools, resume, streaming, or schemas
 - treating one provider name as one adapter when it exposes several transports
+- treating registry `latest` or a local `--version` as qualified support
 - treating a direct model API as an agent harness without lifecycle evidence
 - treating a harness subscription token as a general provider API credential
 - silently crossing execution layer, credential, entitlement, endpoint,

@@ -21,6 +21,15 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-18 Muse Code 0.2.1 Pin Move](./2026-08-18-muse-code-0-2-1-pin-move.md)
+- [2026-08-18 Muse Code 0.2.1 Host Payload Identity](./2026-08-18-muse-code-0-2-1-identity-corpus.md)
+- [2026-08-17 Grok 1.0.4 Milestone Claim](./2026-08-17-grok-1-0-4-milestone-claim.md)
+- [2026-08-17 Grok 1.0.x Support Correction](./2026-08-17-grok-1-0-support-correction.md)
+- [2026-08-17 Grok 1.0.x Identity Corpus](./2026-08-17-grok-1-0-identity-corpus.md)
+- [2026-08-17 Codex 0.147.0 Claim And Acceptance](./2026-08-17-codex-0-147-claim-and-acceptance.md)
+- [2026-08-17 Codex 0.147.0 Range Corpus](./2026-08-17-codex-0-147-range-corpus.md)
+- [2026-08-17 Recurring Version Currentness Process](./2026-08-17-recurring-version-currentness-process.md)
+- [2026-08-17 All-Route Version Currentness Checkpoint](./2026-08-17-all-route-version-currentness-checkpoint.md)
 - [2026-08-17 ZCode App-Server Live Acceptance](./2026-08-17-zcode-app-server-acceptance.md)
 - [2026-08-17 ZCode App-Server Driver And Prepared Facade](./2026-08-17-zcode-app-server-driver-and-facade.md)
 - [2026-08-17 ZCode App-Server Planning](./2026-08-17-zcode-app-server-planning.md)

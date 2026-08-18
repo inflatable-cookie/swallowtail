@@ -1,8 +1,9 @@
-use super::{EXPECTED_MODEL, validate_initialize};
+use crate::selection::{GROK_BUILD_MODEL_4_5, GROK_BUILD_MODEL_4_6};
+use super::validate_initialize;
 use serde_json::json;
 use swallowtail_core::InterfaceVersion;
 
-fn initialize(version: &str) -> serde_json::Value {
+fn initialize(version: &str, model: &str) -> serde_json::Value {
     json!({
         "protocolVersion": 1,
         "agentCapabilities": {
@@ -17,9 +18,9 @@ fn initialize(version: &str) -> serde_json::Value {
             "defaultAuthMethodId": "cached_token",
             "agentVersion": version,
             "modelState": {
-                "currentModelId": "grok-4.5",
+                "currentModelId": model,
                 "availableModels": [
-                    {"modelId": "grok-4.5", "name": "Grok 4.5"}
+                    {"modelId": model, "name": model}
                 ]
             }
         }
@@ -27,15 +28,19 @@ fn initialize(version: &str) -> serde_json::Value {
 }
 
 #[test]
-fn exact_initialize_binds_both_behavior_segments() {
-    for version in ["0.2.114", "0.2.117"] {
+fn exact_initialize_binds_0_2_and_1_0_behavior_segments() {
+    for (version, model) in [
+        ("0.2.114", GROK_BUILD_MODEL_4_5),
+        ("0.2.117", GROK_BUILD_MODEL_4_5),
+        ("1.0.4", GROK_BUILD_MODEL_4_6),
+    ] {
         let options = validate_initialize(
-            &initialize(version),
+            &initialize(version, model),
             &InterfaceVersion::new(version).expect("version"),
-            EXPECTED_MODEL,
+            model,
         )
         .expect("qualified initialize");
-        assert_eq!(options.current_value(), "grok-4.5");
+        assert_eq!(options.current_value(), model);
         assert_eq!(options.options().count(), 1);
     }
 }
@@ -50,24 +55,24 @@ fn initialize_drift_fails_without_exposing_provider_payload() {
             "cached_token_unavailable",
         ),
     ] {
-        let mut response = initialize("0.2.114");
+        let mut response = initialize("0.2.114", GROK_BUILD_MODEL_4_5);
         response["_meta"][field] = json!(value);
         let error = validate_initialize(
             &response,
             &InterfaceVersion::new("0.2.114").expect("version"),
-            EXPECTED_MODEL,
+            GROK_BUILD_MODEL_4_5,
         )
         .expect_err("drift rejects");
         assert!(error.diagnostic().code().ends_with(code));
         assert!(!format!("{error:?}").contains("grok.com"));
     }
 
-    let mut response = initialize("0.2.114");
+    let mut response = initialize("0.2.114", GROK_BUILD_MODEL_4_5);
     response["_meta"]["modelState"]["currentModelId"] = json!("private-unexpected-model");
     let error = validate_initialize(
         &response,
         &InterfaceVersion::new("0.2.114").expect("version"),
-        EXPECTED_MODEL,
+        GROK_BUILD_MODEL_4_5,
     )
     .expect_err("model drift rejects");
     assert_eq!(

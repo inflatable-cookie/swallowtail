@@ -93,12 +93,7 @@ impl GrokPreparedIntegration {
         &self,
         input: GrokRunProfileInput,
     ) -> Result<GrokPreparedRun, PreparationFailure> {
-        if input.model.model_id.as_str() != "grok-4.5" {
-            return Err(preparation_failure(
-                "swallowtail.grok.preparation.model_unsupported",
-                "Grok prepared runs require the qualified grok-4.5 model",
-            ));
-        }
+        validate_prepared_model(self, input.model.model_id.as_str())?;
         let activity_profile = activity_profile(self)?;
         let capabilities = with_activity(crate::prepared::run_capabilities(), &activity_profile);
         let instance = instance_with_capabilities(self, capabilities.clone());

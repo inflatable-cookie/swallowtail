@@ -97,9 +97,17 @@ impl Agent {
                                 "defaultAuthMethodId": "cached_token",
                                 "agentVersion": self.version,
                                 "modelState": {
-                                    "currentModelId": "grok-4.5",
+                                    "currentModelId": if self.version.starts_with('1') {
+                                        "grok-4.6"
+                                    } else {
+                                        "grok-4.5"
+                                    },
                                     "availableModels": [
-                                        {"modelId": "grok-4.5", "name": "Grok 4.5"}
+                                        if self.version.starts_with('1') {
+                                            json!({"modelId": "grok-4.6", "name": "Grok 4.6"})
+                                        } else {
+                                            json!({"modelId": "grok-4.5", "name": "Grok 4.5"})
+                                        }
                                     ]
                                 }
                             }

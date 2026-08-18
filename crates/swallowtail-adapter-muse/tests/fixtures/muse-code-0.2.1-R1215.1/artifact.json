@@ -1,0 +1,54 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-08-18",
+  "release": "0.2.1-R1215.1",
+  "reported_version": "Muse Code 0.2.1 (0.2.1-R1215.1)",
+  "launcher": {
+    "basename": "muse",
+    "kind": "bash-launcher",
+    "size_bytes": 33118,
+    "sha256": "21c66e550a71cac2e4af081cc33d10bec81993d0043ec492761fc449e6c440f6",
+    "may_update_before_delegation": true,
+    "selected_as_runtime_artifact": false
+  },
+  "payload": {
+    "basename": "muse-bin-0.2.1-R1215.1",
+    "kind": "mach-o-arm64-executable",
+    "size_bytes": 166797968,
+    "sha256": "b67f181fb7a519007146104c56fad372f47428da9608ade59835899160f2d6e9",
+    "code_sign_identifier": "muse-arm64",
+    "code_sign_authority": "Developer ID Application: Meta Platforms, Inc. (V9WTTPBFK9)",
+    "team_identifier": "V9WTTPBFK9",
+    "runtime_version": "26.5.0",
+    "selected_as_runtime_artifact": true
+  },
+  "direct_payload_probe": {
+    "version_succeeded": true,
+    "help_succeeded": true,
+    "exec_help_succeeded": true,
+    "echo_jsonl_succeeded": true,
+    "launcher_update_path_executed": false,
+    "meta_provider_used": false,
+    "provider_prompt_sent": false
+  },
+  "claim_at_observation": {
+    "axis": "muse-code.signed-payload",
+    "qualified_revision": "0.1.0-R708.1",
+    "posture": "qualified_only",
+    "scheme": "opaque",
+    "host_classification": "incompatible"
+  },
+  "identity_decision": {
+    "shape": "opaque-pin-move",
+    "keep_both_opaque_segments": false,
+    "reason": "opaque claims permit one exact segment only",
+    "reuse_behavior_revision": "muse-code.events-v1",
+    "material_help_deltas": [
+      "exec --expand-file-mentions",
+      "root config subcommand",
+      "enable-shell-tool help wording"
+    ],
+    "echo_payload_type_sequence_unchanged": true,
+    "discovery_parser_blocked": "hardcoded Muse Code 0.1.0 prefix"
+  }
+}

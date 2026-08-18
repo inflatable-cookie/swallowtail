@@ -54,5 +54,6 @@ contracts or architecture.
 - [Qwen Headless Prepared Integration](qwen-headless-prepared-integration.md)
 - [Realtime Prepared Integration](realtime-prepared-integration.md)
 - [Validation Tiers](validation-tiers.md)
+- [Version Currentness Checkpoint](version-currentness-checkpoint.md)
 - [Working-State Restoration](working-state-restoration.md)
 - [ZCode App-Server Prepared Integration](zcode-app-server-prepared-integration.md)

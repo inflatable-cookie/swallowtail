@@ -93,7 +93,12 @@ fn selection_for(host: ExecutionHostId, version: &str, structured: bool) -> Fixt
         ModelRouteId::new("grok.fixture.route").expect("route"),
         ModelRouteRevision::new("grok.fixture.route-r1").expect("route revision"),
         instance_id,
-        ModelId::new("grok-4.5").expect("model"),
+        ModelId::new(if version.version().as_str().starts_with('1') {
+            "grok-4.6"
+        } else {
+            "grok-4.5"
+        })
+        .expect("model"),
         capabilities.clone(),
     );
     let shape = if structured {

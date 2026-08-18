@@ -13,9 +13,9 @@ shape.
 
 ## Next Task
 
-Reassess native `session/stop`, `--print`, history, ACP, and Z.AI official as
-separate later gates after g03.071. Keep OpenCode and hosted GLM HTTP outside
-the first ZCode route.
+Reassess remaining Research 127 families one at a time. Rank after completed
+Muse `0.2.1-R1215.1` opaque pin: AllowUnverified cluster, including Claude
+Code headless useful newer support. Gemini stays deferred.
 
 ## Index
 

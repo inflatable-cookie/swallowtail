@@ -22,7 +22,6 @@ use swallowtail_runtime::{
 use crate::GrokAcpDriver;
 
 const DRIVER_ID: &str = "swallowtail.grok-build.acp";
-const EXPECTED_MODEL: &str = "grok-4.5";
 const AUTH_METHOD: &str = "cached_token";
 
 impl GrokAcpDriver {
@@ -79,16 +78,17 @@ impl GrokAcpDriver {
                 "Grok Build requires explicit durable provider retention",
             ));
         }
+        let selected = crate::selection::select_grok_acp_plan(plan)?;
         if plan
             .model_id()
-            .is_none_or(|model| model.as_str() != EXPECTED_MODEL)
+            .is_none_or(|model| model.as_str() != selected.expected_model())
         {
             return Err(failure(
                 "swallowtail.grok.acp.model_rejected",
                 "Grok Build requires the preflight-bound qualified model",
             ));
         }
-        crate::selection::select_grok_acp_plan(plan)
+        Ok(selected)
     }
 }
 
@@ -138,8 +138,11 @@ impl InteractiveSessionDriver for GrokAcpDriver {
                 .await?;
             let recovered = async {
                 let initialize = attachment.connection.initialize().await?;
-                let model_options =
-                    validate_initialize(&initialize, selected.version(), EXPECTED_MODEL)?;
+                let model_options = validate_initialize(
+                    &initialize,
+                    selected.version(),
+                    selected.expected_model(),
+                )?;
                 attachment.connection.activate_cached_token().await?;
                 let provider_ref = request.provider_session_ref().clone();
                 let response = attachment
@@ -210,8 +213,11 @@ impl GrokAcpDriver {
             .await?;
         let opened = async {
             let initialize = attachment.connection.initialize().await?;
-            let model_options =
-                validate_initialize(&initialize, selected.version(), EXPECTED_MODEL)?;
+            let model_options = validate_initialize(
+                &initialize,
+                selected.version(),
+                selected.expected_model(),
+            )?;
             attachment.connection.activate_cached_token().await?;
             let response = attachment
                 .connection

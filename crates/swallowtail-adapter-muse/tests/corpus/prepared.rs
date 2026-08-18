@@ -2,7 +2,7 @@ use super::common::{SUCCESS, exact_model, host_id, model, prepare, run_input};
 use super::support;
 use futures_executor::block_on;
 use futures_util::StreamExt;
-use swallowtail_adapter_muse::MUSE_LOCAL_META_ACCOUNT_AUDIENCE;
+use swallowtail_adapter_muse::{MUSE_CODE_PAYLOAD_BASENAME, MUSE_LOCAL_META_ACCOUNT_AUDIENCE};
 use swallowtail_core::{
     Capability, CapabilityConstraint, DriverRole, HarnessIsolation, ObservableActivityAvailability,
     ReasoningMode, ResourceAccess,
@@ -92,7 +92,7 @@ fn prepared_run_uses_local_account_and_exact_read_only_cli_binding() {
     let observed = host.observations();
     assert_eq!(observed.len(), 1);
     let process = &observed[0];
-    assert!(process.executable.ends_with("muse-bin-0.1.0-R708.1"));
+    assert!(process.executable.ends_with(MUSE_CODE_PAYLOAD_BASENAME));
     assert_eq!(process.environments, ["muse.fixture.environment"]);
     assert_eq!(
         process.working_resource.as_deref(),

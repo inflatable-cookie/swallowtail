@@ -215,6 +215,26 @@ fn profile_requirements(capabilities: &CapabilityProfile) -> Vec<CapabilityRequi
         .collect()
 }
 
+fn validate_prepared_model(
+    prepared: &GrokPreparedIntegration,
+    model_id: &str,
+) -> Result<(), PreparationFailure> {
+    let expected = crate::grok_build_model_for_version(prepared.observation().version().version())
+        .ok_or_else(|| {
+            preparation_failure(
+                "swallowtail.grok.preparation.model_unsupported",
+                "Grok prepared operations require a permitted executable version",
+            )
+        })?;
+    if model_id != expected {
+        return Err(preparation_failure(
+            "swallowtail.grok.preparation.model_unsupported",
+            "Grok prepared operations require the qualified model for this executable behavior",
+        ));
+    }
+    Ok(())
+}
+
 fn validate_options(options: &SessionOptions) -> Result<(), PreparationFailure> {
     if !options.is_empty() {
         return Err(preparation_failure(

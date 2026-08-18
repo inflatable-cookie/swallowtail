@@ -17,9 +17,9 @@ use swallowtail_runtime::{
     WorkingResourceRef,
 };
 
-pub(super) const ARTIFACT: &str = include_str!("../fixtures/muse-code-0.1.0-R708.1/artifact.json");
-pub(super) const PROTOCOL: &str = include_str!("../fixtures/muse-code-0.1.0-R708.1/protocol.json");
-pub(super) const VERSION: &str = include_str!("../fixtures/muse-code-0.1.0-R708.1/version.txt");
+pub(super) const ARTIFACT: &str = include_str!("../fixtures/muse-code-0.2.1-R1215.1/artifact.json");
+pub(super) const PROTOCOL: &str = include_str!("../fixtures/muse-code-0.2.1-R1215.1/protocol.json");
+pub(super) const VERSION: &str = include_str!("../fixtures/muse-code-0.2.1-R1215.1/version.txt");
 pub(super) const SUCCESS: &str =
     include_str!("../fixtures/muse-code-0.1.0-R708.1/meta-success.jsonl");
 

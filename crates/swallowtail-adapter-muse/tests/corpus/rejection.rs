@@ -142,7 +142,7 @@ fn facade_rejects_selection_access_target_and_binding_drift_before_model_executi
     assert!(!target_host.started());
 
     let access_id = AccessProfileId::new("muse.fixture.access").unwrap();
-    let release_host = support::FixtureHost::scripted(["Muse Code 0.1.0 (0.1.0-R708.2)\n"]);
+    let release_host = support::FixtureHost::scripted(["Muse Code 0.1.0 (0.1.0-R708.1)\n"]);
     let error = block_on(prepare_muse_headless(
         preparation_input(
             host_id.clone(),

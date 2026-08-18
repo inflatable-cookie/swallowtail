@@ -14,7 +14,7 @@ contains the package or route.
 
 The route selects:
 
-- exact signed payload `muse-bin-0.1.0-R708.1`
+- exact signed payload `muse-bin-0.2.1-R1215.1`
 - opaque release axis `muse-code.signed-payload`
 - exact provider `meta`
 - exact model `muse-spark-1.2`
@@ -60,7 +60,7 @@ Construct `MusePreparationProbe` with a request ID, scope, deadline, and
 `DiscoveryCancellation`. Then call `prepare_muse_headless`.
 
 Preparation runs only the approved payload with `--version`. It requires the
-exact line `Muse Code 0.1.0 (0.1.0-R708.1)`, binds the resulting compatibility
+exact line `Muse Code 0.2.1 (0.2.1-R1215.1)`, binds the resulting compatibility
 observation, and returns `MusePreparedIntegration`. It sends no prompt and does
 not test account access. A launcher target, wrong axis, wrong version, wrong
 host, unavailable discovery result, or mismatched access profile fails closed.

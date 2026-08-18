@@ -82,6 +82,13 @@ to a new generation because a phase, contract set, or implementation layer
 changes. Extend the active generation until it approaches that range or the
 operator explicitly authorizes a structural rollover.
 
+## Version Currentness Rule
+
+Revalidate every production route family through the named Contract 029
+checkpoint and `docs/guides/version-currentness-checkpoint.md`. The
+checkpoint writes research; it does not change claims. Extend one family at
+a time through the Upgrade Workflow. Do not bulk-bump from `latest`.
+
 ## Planning Ambiguity Rule
 
 When the authority surfaces do not settle a direction, ask the operator rather

@@ -9,8 +9,10 @@ const APP_SERVER_THREAD_CATALOGUE: &str =
     include_str!("fixtures/compatibility/app-server-thread-catalogue.json");
 const APP_SERVER_THREAD_RECONCILIATION: &str =
     include_str!("fixtures/compatibility/app-server-thread-reconciliation.json");
+const CODEX_0_147_RANGE: &str = include_str!("fixtures/compatibility/codex-0-147-range.json");
 
 include!("compatibility_corpus/exec.rs");
 include!("compatibility_corpus/app_server.rs");
 include!("compatibility_corpus/thread.rs");
 include!("compatibility_corpus/support.rs");
+include!("compatibility_corpus/range_0_147.rs");

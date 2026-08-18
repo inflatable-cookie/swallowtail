@@ -1,5 +1,8 @@
 # Muse Code 0.1.0-R708.1 corpus
 
+Historical events-v1 specimen. Production pin moved to `0.2.1-R1215.1` on
+g03.074 card 236. Keep this corpus for decoder and echo-sequence comparison.
+
 Secret-free qualification evidence for the exact installed Muse Code payload
 `0.1.0-R708.1` and selected route `muse-code.headless`.
 

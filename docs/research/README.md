@@ -72,6 +72,11 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [124 DeepSeek Harness JSON-RPC Route Qualification](./124-deepseek-harness-jsonrpc-route-qualification.md)
 - [125 DeepSeek Harness Web `/api` Route Qualification](./125-deepseek-harness-web-api-route-qualification.md)
 - [126 ZCode App-Server Route Qualification](./126-zcode-app-server-route-qualification.md)
+- [127 All-Route Version Currentness Checkpoint](./127-all-route-version-currentness-checkpoint.md)
+- [128 Codex 0.147.0 Range Corpus](./128-codex-0-147-range-corpus.md)
+- [131 Muse Code 0.2.1-R1215.1 Host Payload Drift](./131-muse-code-0-2-1-host-payload-drift.md)
+- [130 Grok 1.0.4 Milestone Handshake](./130-grok-1-0-4-milestone-handshake.md)
+- [129 Grok 1.0.x Identity Corpus](./129-grok-1-0-identity-corpus.md)
 
 ### Hosted APIs And SDKs
 

@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-08
+Updated: 2026-08-17
 
 ## Purpose
 
@@ -155,6 +155,43 @@ unverified newer attempts. This keeps routine qualification small while
 retaining old installed harnesses deliberately. It also prevents compatibility
 shims from accumulating in core. Provider-specific decoding and migration stay
 inside the owning driver unless two adapters prove a shared protocol boundary.
+
+## Recurring Currentness Checkpoint
+
+Swallowtail revalidates every production route family against official stable
+points through a named currentness checkpoint, not through calendar CI or
+registry `latest`.
+
+A checkpoint:
+
+1. observes safe local `--version` where a tool is on `PATH`
+2. records official npm, GitHub, crates.io, or vendor-registry stable points
+3. compares those points to each adapter claim and the production
+   feature-matrix bound
+4. classifies each family as unchanged, visible unverified-newer, record-only
+   deferred, or a material candidate for a dedicated range card
+5. writes a research record; it does not itself change a claim
+
+The checkpoint covers installed harnesses, attached runtimes, owned serving,
+hosted API facades, embedded SDK pins, and shared ACP schema. Preview,
+nightly, alpha, and development channels do not change stable truth. A hosted
+"latest model" is not an interface axis. Packaging, desktop About, and
+unofficial launchers do not substitute for the named compatibility axis.
+
+Cadence is operator-triggered: after a consumer defect on an unverified-newer
+point, after a cluster of stables move, or when the operator asks. It is not
+a required CI job and not an install, update, login, or prompt session.
+
+Claim changes follow the Upgrade Workflow on one family at a time. Exact-pin
+and qualified-only claims stay rejected above the pin until that family has
+its own corpus. A major-line reset on the same package is an identity
+investigation, not an unverified-newer default. When the product remains in
+scope, the normal outcome is a same-axis milestone segment after corpus
+evidence, not fail-closed refusal and not silent inheritance from the prior
+major window.
+
+Research 091 and 127 are the method specimens. The operator runbook is
+[Version Currentness Checkpoint](../guides/version-currentness-checkpoint.md).
 
 ## Preflight And Discovery
 

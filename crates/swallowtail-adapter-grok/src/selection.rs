@@ -14,7 +14,7 @@ pub const GROK_BUILD_ACP_AXIS: &str = "grok-build.executable";
 /// Oldest qualified Grok Build version.
 pub const GROK_BUILD_ACP_BASELINE_VERSION: &str = "0.2.114";
 /// Most recent qualified Grok Build version.
-pub const GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION: &str = "0.2.117";
+pub const GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION: &str = "1.0.4";
 /// Stable identifier for Grok Build delegated subscription access.
 pub const GROK_BUILD_SUBSCRIPTION_ACCESS_PROFILE_ID: &str =
     "grok-build.subscription.delegated-oauth";
@@ -24,16 +24,25 @@ pub const GROK_BUILD_SUBSCRIPTION_AUDIENCE: &str = "grok-build.subscription";
 pub(crate) const GROK_BUILD_ACP_BEHAVIOR: &str = "grok-build.acp-v1.cached-token-activation-v1";
 pub(crate) const GROK_BUILD_ACP_TASK_CONTROL_BEHAVIOR: &str =
     "grok-build.acp-v1.cached-token-task-control-v2";
+pub(crate) const GROK_BUILD_ACP_MODEL_4_6_BEHAVIOR: &str =
+    "grok-build.acp-v1.cached-token-model-4-6-v3";
+pub(crate) const GROK_BUILD_MODEL_4_5: &str = "grok-4.5";
+pub(crate) const GROK_BUILD_MODEL_4_6: &str = "grok-4.6";
 const MAX_VERSION_BYTES: usize = 64;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) struct GrokPlanSelection {
     version: InterfaceVersion,
+    expected_model: &'static str,
 }
 
 impl GrokPlanSelection {
     pub(crate) const fn version(&self) -> &InterfaceVersion {
         &self.version
+    }
+
+    pub(crate) const fn expected_model(&self) -> &'static str {
+        self.expected_model
     }
 }
 
@@ -89,15 +98,39 @@ pub fn grok_build_acp_claim() -> InterfaceCompatibilityClaim {
                 InterfaceSupportStatus::Deprecated,
             ),
             InterfaceVersionSegment::exact(
+                version("0.2.117").expect("static Grok version is valid"),
+                behavior(GROK_BUILD_ACP_TASK_CONTROL_BEHAVIOR),
+                InterfaceSupportStatus::Deprecated,
+            ),
+            InterfaceVersionSegment::exact(
                 version(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION)
                     .expect("static Grok version is valid"),
-                behavior(GROK_BUILD_ACP_TASK_CONTROL_BEHAVIOR),
+                behavior(GROK_BUILD_ACP_MODEL_4_6_BEHAVIOR),
                 InterfaceSupportStatus::Maintained,
             ),
         ],
         [],
     )
     .expect("static Grok compatibility claim is valid")
+}
+
+#[must_use]
+/// Returns the qualified model id bound to a Grok behavior revision.
+pub fn grok_build_model_for_behavior(behavior_revision: &str) -> Option<&'static str> {
+    match behavior_revision {
+        GROK_BUILD_ACP_BEHAVIOR | GROK_BUILD_ACP_TASK_CONTROL_BEHAVIOR => Some(GROK_BUILD_MODEL_4_5),
+        GROK_BUILD_ACP_MODEL_4_6_BEHAVIOR => Some(GROK_BUILD_MODEL_4_6),
+        _ => None,
+    }
+}
+
+#[must_use]
+/// Returns the qualified model id for a permitted Grok executable version.
+pub fn grok_build_model_for_version(version: &InterfaceVersion) -> Option<&'static str> {
+    grok_build_acp_claim()
+        .assess(version)
+        .behavior_revision()
+        .and_then(|revision| grok_build_model_for_behavior(revision.as_str()))
 }
 
 pub(crate) fn select_grok_acp_plan(
@@ -126,19 +159,21 @@ pub(crate) fn select_grok_acp_plan(
             "Grok Build executable version is incompatible with this driver",
         ));
     }
-    if assessment.behavior_revision().is_none_or(|revision| {
-        !matches!(
-            revision.as_str(),
-            GROK_BUILD_ACP_BEHAVIOR | GROK_BUILD_ACP_TASK_CONTROL_BEHAVIOR
-        )
-    }) {
-        return Err(failure(
+    let behavior_revision = assessment.behavior_revision().ok_or_else(|| {
+        failure(
             "swallowtail.grok.acp.behavior_incompatible",
             "Grok Build ACP behavior is not mapped by this driver",
-        ));
-    }
+        )
+    })?;
+    let expected_model = grok_build_model_for_behavior(behavior_revision.as_str()).ok_or_else(|| {
+        failure(
+            "swallowtail.grok.acp.behavior_incompatible",
+            "Grok Build ACP behavior is not mapped by this driver",
+        )
+    })?;
     Ok(GrokPlanSelection {
         version: binding.version().clone(),
+        expected_model,
     })
 }
 
@@ -157,15 +192,16 @@ fn behavior(value: &str) -> InterfaceBehaviorRevision {
 #[cfg(test)]
 mod tests {
     use super::{
-        GROK_BUILD_ACP_AXIS, GROK_BUILD_ACP_BEHAVIOR, GROK_BUILD_ACP_TASK_CONTROL_BEHAVIOR,
-        grok_build_acp_binding, grok_build_acp_claim,
+        GROK_BUILD_ACP_AXIS, GROK_BUILD_ACP_BEHAVIOR, GROK_BUILD_ACP_MODEL_4_6_BEHAVIOR,
+        GROK_BUILD_ACP_TASK_CONTROL_BEHAVIOR, GROK_BUILD_MODEL_4_5, GROK_BUILD_MODEL_4_6,
+        grok_build_acp_binding, grok_build_acp_claim, grok_build_model_for_version,
     };
     use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
 
     #[test]
-    fn both_segments_are_qualified_and_later_stable_is_unverified() {
+    fn segments_cover_0_2_windows_and_exact_1_0_4_milestone() {
         let claim = grok_build_acp_claim();
-        for candidate in ["0.2.114", "0.2.115", "0.2.116", "0.2.117"] {
+        for candidate in ["0.2.114", "0.2.115", "0.2.116", "0.2.117", "1.0.4"] {
             assert!(claim.supports(&version(candidate)), "missing {candidate}");
         }
         for (candidate, behavior) in [
@@ -173,6 +209,7 @@ mod tests {
             ("0.2.115", GROK_BUILD_ACP_BEHAVIOR),
             ("0.2.116", GROK_BUILD_ACP_BEHAVIOR),
             ("0.2.117", GROK_BUILD_ACP_TASK_CONTROL_BEHAVIOR),
+            ("1.0.4", GROK_BUILD_ACP_MODEL_4_6_BEHAVIOR),
         ] {
             assert_eq!(
                 claim
@@ -183,17 +220,39 @@ mod tests {
                 behavior
             );
         }
-        for rejected in ["0.2.0", "0.2.111", "0.2.112", "0.2.113", "0.2.114-alpha.1"] {
-            assert!(!claim.permits(&version(rejected)));
+        for rejected in [
+            "0.2.0",
+            "0.2.111",
+            "0.2.112",
+            "0.2.113",
+            "0.2.114-alpha.1",
+            "0.2.118",
+            "0.2.121",
+            "1.0.0",
+            "1.0.3",
+        ] {
+            assert!(!claim.permits(&version(rejected)), "unexpected permit {rejected}");
         }
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("0.2.118"))
+            claim.assess(&version("1.0.6"))
         else {
             panic!("later stable release remains unverified");
         };
         assert_eq!(
             newer.behavior_revision().as_str(),
-            GROK_BUILD_ACP_TASK_CONTROL_BEHAVIOR
+            GROK_BUILD_ACP_MODEL_4_6_BEHAVIOR
+        );
+        assert_eq!(
+            grok_build_model_for_version(&version("0.2.117")),
+            Some(GROK_BUILD_MODEL_4_5)
+        );
+        assert_eq!(
+            grok_build_model_for_version(&version("1.0.4")),
+            Some(GROK_BUILD_MODEL_4_6)
+        );
+        assert_eq!(
+            grok_build_model_for_version(&version("1.0.6")),
+            Some(GROK_BUILD_MODEL_4_6)
         );
     }
 
@@ -206,6 +265,7 @@ mod tests {
                 .as_str(),
             GROK_BUILD_ACP_AXIS
         );
+        assert!(grok_build_acp_binding("1.0.4").is_some());
         for rejected in [
             "",
             " 0.2.114",

@@ -2,8 +2,6 @@
 
 ## Active
 
-None.
-
 ## Superseded
 
 - [215-figmatic-claude-code-2-1-228-adoption.md](./215-figmatic-claude-code-2-1-228-adoption.md)
@@ -24,6 +22,13 @@ None.
 
 ## Completed
 
+- [236-muse-code-0-2-1-pin-move.md](./236-muse-code-0-2-1-pin-move.md)
+- [235-muse-code-0-2-1-identity-corpus.md](./235-muse-code-0-2-1-identity-corpus.md)
+- [234-grok-1-0-milestone-claim.md](./234-grok-1-0-milestone-claim.md)
+- [233-grok-1-0-identity-corpus.md](./233-grok-1-0-identity-corpus.md)
+- [232-codex-0-147-claim-and-acceptance.md](./232-codex-0-147-claim-and-acceptance.md)
+- [231-codex-0-147-range-corpus.md](./231-codex-0-147-range-corpus.md)
+- [230-recurring-version-currentness-process.md](./230-recurring-version-currentness-process.md)
 - [229-zcode-app-server-acceptance.md](./229-zcode-app-server-acceptance.md)
 - [228-zcode-app-server-prepared-facade.md](./228-zcode-app-server-prepared-facade.md)
 - [227-zcode-app-server-driver-core.md](./227-zcode-app-server-driver-core.md)

@@ -5,7 +5,7 @@ fn exec_corpus_freezes_baseline_checkpoints_and_rejections() {
     assert_eq!(
         strings(&corpus["candidate_versions"]),
         [
-            "0.122.0", "0.130.0", "0.140.0", "0.144.6", "0.145.0", "0.146.0"
+            "0.122.0", "0.130.0", "0.140.0", "0.144.6", "0.145.0", "0.146.0", "0.147.0"
         ]
     );
     let required_argv = string_set(&corpus["required_argv"]);

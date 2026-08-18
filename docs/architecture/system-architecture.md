@@ -256,7 +256,7 @@ adapters with three additional route surfaces.
   permission exchange, session switching, host-tool injection, and subagent
   authority
 - `swallowtail-adapter-muse` implements exact signed Muse Code payload
-  `0.1.0-R708.1` as one read-only `muse-code.headless` structured-run route.
+  `0.2.1-R1215.1` as one read-only `muse-code.headless` structured-run route.
   Its prepared facade binds provider-owned local Meta account state without a
   credential lease, exact `meta` / `muse-spark-1.2`, one of seven explicit
   efforts, provider-enforced sandboxing, ambient account configuration, and a
@@ -829,7 +829,11 @@ revision. Such execution is allowed, not guaranteed. Below-baseline points,
 in-range gaps, explicit exclusions, non-qualified prereleases, malformed
 values, and qualified-only claims remain incompatible. Moving the baseline or
 latest-qualified boundary is an explicit later-release change. No open-ended
-`latest` value participates in routing.
+`latest` value participates in routing. All-route currentness is a named
+Contract 029 checkpoint: local `--version` plus official stable metadata
+against every production claim, classified without changing the claim.
+Family qualification follows the Upgrade Workflow. The operator runbook is
+the version-currentness checkpoint guide.
 
 The OpenCode HTTP adapter has a closed qualified server-version boundary.
 Tagged OpenAPI evidence for 51 stable releases from `1.14.48` through

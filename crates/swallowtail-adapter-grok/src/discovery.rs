@@ -15,11 +15,12 @@ use crate::failure::failure;
 use crate::{grok_build_acp_binding, grok_build_acp_claim};
 
 const MAX_VERSION_OUTPUT_BYTES: usize = 96;
-const QUALIFIED_SOURCE_REVISIONS: [(&str, &str); 4] = [
+const QUALIFIED_SOURCE_REVISIONS: [(&str, &str); 5] = [
     ("0.2.114", "0c785038798"),
     ("0.2.115", "dd16b5eb7d50"),
     ("0.2.116", "99b387d2cc0e"),
     ("0.2.117", "f1c06093089f"),
+    ("1.0.4", "d846eb93d94d"),
 ];
 
 /// Low-level installed discovery and ACP operation driver for Grok Build.
@@ -290,7 +291,9 @@ mod tests {
             ("grok 0.2.115 (dd16b5eb7d50) [stable]\n", "0.2.115"),
             ("grok 0.2.116 (99b387d2cc0e) [stable]\n", "0.2.116"),
             ("grok 0.2.117 (f1c06093089f) [stable]\n", "0.2.117"),
+            ("grok 1.0.4 (d846eb93d94d) [stable]\n", "1.0.4"),
             ("grok 0.2.118 (123456789abc) [stable]\n", "0.2.118"),
+            ("grok 1.0.6 (abcdef123456) [stable]\n", "1.0.6"),
         ] {
             assert_eq!(
                 parse_version(output.as_bytes())
@@ -305,6 +308,7 @@ mod tests {
             b"grok 0.2.115 (0c785038798) [stable]\n".as_slice(),
             b"grok 0.2.116 (dd16b5eb7d50) [stable]\n".as_slice(),
             b"grok 0.2.117 (99b387d2cc0e) [stable]\n".as_slice(),
+            b"grok 1.0.4 (f1c06093089f) [stable]\n".as_slice(),
             b"grok 0.2.114 (0c785038798) [alpha]\n".as_slice(),
             b"grok 0.2.114 (0c785038798)\n".as_slice(),
             b"0.2.114\n".as_slice(),

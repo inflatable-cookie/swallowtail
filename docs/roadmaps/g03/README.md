@@ -18,7 +18,7 @@ visible as unverified newer unless exact evidence requires rejection.
 | Goal | State | Governing refs | First milestone |
 | --- | --- | --- | --- |
 | Establish a repeatable currentness inventory for installed harnesses and shared protocols. | completed | Contracts 011, 029, 036 | `g03.001` |
-| Extend exact compatibility segments only where current evidence finds material drift or useful newer support. | active | Contracts 011, 029, 037 | `g03.002`, `g03.012`-`g03.015` |
+| Extend exact compatibility segments only where current evidence finds material drift or useful newer support. | active | Contracts 011, 029, 037 | `g03.002`, `g03.012`-`g03.015`, `g03.072`, `g03.073`, `g03.074` |
 | Add high-value installed harnesses through explicit catalogue, interactive, structured, and continuation roles. | completed | Contracts 005-006, 015, 020, 029, 037, 039, 043-045 | `g03.005` |
 | Close useful installed-version gaps against exact current artifacts without forcing per-provider releases. | completed | Contracts 011, 029, 032, 037 | `g03.009` |
 | Keep deterministic corpora and conformance aligned with behavior milestones rather than package semver alone. | completed | Contracts 011, 029, 036 | `g03.010` |
@@ -48,7 +48,7 @@ visible as unverified newer unless exact evidence requires rejection.
 | Ship compatible post-tag repairs as an exact CI-green `v0.1.1` source tag. | completed | Contracts 001, 009, 022, 036, 049, 052 | `g03.044` |
 | Add Meta Muse Code through its exact installed headless event protocol without chasing every new harness. | completed | Contracts 005-006, 009-010, 023, 029, 032-033, 036-037, 039-041, 044-045, 051-052 | `g03.045` |
 | Ship Muse and the breaking unified Rust 1.95 floor as exact-source `v0.2.0` without carrying Muse's two new structural errors. | completed | Contracts 001, 023, 029, 032-033, 036-037, 044-045, 051-052 | `g03.046` |
-| Periodically reconcile deferred gates, route truth, and generation capacity. | planned | Contract 001 | recurring checkpoints |
+| Periodically reconcile deferred gates, route truth, and generation capacity. | active | Contracts 001, 029 | `g03.072` |
 | Close the verified hang class in process supervision, runtime coordination, and the remote ACP transport. | completed | Contracts 009, 010, 035, 051 | `g03.049` |
 | Close provider-reachable panic paths and keep version-parse expectations literal-only. | completed | Contracts 029, 037, 051 | `g03.050` |
 | Make docs indexes machine-checked, single-source the route inventory, and consolidate the validation machinery. | completed | Contracts 001, 036, 052 | `g03.051` |
@@ -75,6 +75,23 @@ visible as unverified newer unless exact evidence requires rejection.
 
 ## Current Checkpoint
 
+- g03.074 is complete. Cards 235-236 froze Muse `0.2.1-R1215.1` identity and
+  moved the opaque QualifiedOnly pin, reusing `muse-code.events-v1`. Old
+  `0.1.0-R708.1` is incompatible. Remaining Research 127 rows stay
+  one-family-later.
+- g03.073 is complete. Cards 233-234 froze Grok `1.0.4` identity and
+  qualified it as same-axis milestone
+  `grok-build.acp-v1.cached-token-model-4-6-v3` (model `grok-4.6`). Deprecated
+  `0.2.114..=0.2.117` remain permitted. Remaining Research 127 rows stay
+  one-family-later.
+- g03.072 is complete. Cards 230-232 named the recurring currentness
+  checkpoint and qualified Codex `0.147.0` as a compatible extension of the
+  existing exec, app-server, lifecycle, and thread-catalogue revisions.
+  Later Codex stables stay AllowUnverified at synthetic `0.148.0`.
+- Research 127 is the 2026-08-17 all-route version sweep. Most installed
+  harnesses now sit above their qualified ceiling. No bound moves in the
+  checkpoint itself. Hosted facade ids and ACP schema `v1.20.0` are
+  unchanged. Gemini requalification stays deferred.
 - g03.071 is complete. Cards 226-229 added `swallowtail-adapter-zcode` with
   exact `0.16.3` corpus, app-server driver, prepared facade, and live smoke
   through host-local Ollama. That does not qualify Z.AI official. Current
@@ -718,6 +735,9 @@ visible as unverified newer unless exact evidence requires rejection.
 - [069 DeepSeek Harness JSON-RPC Foundation](./069-deepseek-harness-jsonrpc-foundation.md) — completed
 - [070 DeepSeek Harness Web `/api` Foundation](./070-deepseek-harness-web-api-foundation.md) — completed
 - [071 ZCode App-Server Foundation](./071-zcode-app-server-foundation.md) — completed
+- [072 Recurring Version Currentness And Codex 0.147.0](./072-recurring-version-currentness-and-codex-0-147.md) — completed
+- [073 Grok 1.0.x Identity](./073-grok-1-0-identity.md) — completed
+- [074 Muse Code 0.2.1 Signed-Payload Pin Move](./074-muse-code-0-2-1-signed-payload-pin.md) — completed
 
 ## Checkpoint
 

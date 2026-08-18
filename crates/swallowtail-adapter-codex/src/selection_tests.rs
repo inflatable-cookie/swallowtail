@@ -14,7 +14,7 @@ fn binding(version: &str) -> InterfaceVersionBinding {
 fn exec_claim_is_closed_at_the_corpus_boundaries() {
     let case = ClosedSemanticWindowCase::new(
         InterfaceVersion::new("0.80.0").unwrap(),
-        InterfaceVersion::new("0.146.0").unwrap(),
+        InterfaceVersion::new("0.147.0").unwrap(),
     )
     .with_accepted([
         InterfaceVersion::new("0.81.0").unwrap(),
@@ -26,6 +26,7 @@ fn exec_claim_is_closed_at_the_corpus_boundaries() {
         InterfaceVersion::new("0.130.0").unwrap(),
         InterfaceVersion::new("0.144.6").unwrap(),
         InterfaceVersion::new("0.145.0").unwrap(),
+        InterfaceVersion::new("0.146.0").unwrap(),
     ])
     .with_rejected([
         InterfaceVersion::new("0.79.0").unwrap(),
@@ -34,7 +35,7 @@ fn exec_claim_is_closed_at_the_corpus_boundaries() {
         InterfaceVersion::new("0.108.0").unwrap(),
         InterfaceVersion::new("0.109.0").unwrap(),
         InterfaceVersion::new("0.146.0-alpha.4").unwrap(),
-        InterfaceVersion::new("0.147.0").unwrap(),
+        InterfaceVersion::new("0.148.0").unwrap(),
     ]);
     assert_closed_semantic_compatibility_window(&codex_exec_claim(), &case);
     assert_eq!(
@@ -75,7 +76,7 @@ fn app_server_claim_dispatches_at_workspace_root_milestone() {
             CODEX_APP_SERVER_BASE_BEHAVIOR
         );
     }
-    for version in ["0.131.0", "0.140.0", "0.144.6", "0.145.0", "0.146.0"] {
+    for version in ["0.131.0", "0.140.0", "0.144.6", "0.145.0", "0.146.0", "0.147.0"] {
         assert_eq!(
             claim
                 .classify(binding(version).version())
@@ -92,7 +93,7 @@ fn app_server_claim_dispatches_at_workspace_root_milestone() {
         "0.108.0",
         "0.109.0",
         "0.146.0-alpha.4",
-        "0.147.0",
+        "0.148.0",
     ] {
         assert!(!claim.supports(binding(version).version()));
     }
@@ -147,6 +148,11 @@ fn app_server_lifecycle_claim_preserves_session_range_with_narrower_capabilities
             HARD_DELETE_BEHAVIOR,
             InterfaceSupportStatus::Maintained,
         ),
+        (
+            "0.147.0",
+            HARD_DELETE_BEHAVIOR,
+            InterfaceSupportStatus::Maintained,
+        ),
     ];
 
     for (version, behavior, status) in cases {
@@ -165,7 +171,7 @@ fn app_server_lifecycle_claim_preserves_session_range_with_narrower_capabilities
         assert!(!claim.supports(binding(version).version()));
     }
 
-    let unverified = claim.assess(binding("0.147.0").version());
+    let unverified = claim.assess(binding("0.148.0").version());
     assert!(unverified.is_permitted());
     assert_eq!(
         unverified.behavior_revision().unwrap().as_str(),

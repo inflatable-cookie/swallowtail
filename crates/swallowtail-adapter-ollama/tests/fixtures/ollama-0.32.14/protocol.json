@@ -1,0 +1,34 @@
+{
+  "selected_routes": [
+    "GET /api/version",
+    "GET /api/tags",
+    "GET /api/ps",
+    "POST /api/show",
+    "POST /api/chat"
+  ],
+  "selected_structs_identical_0_32_1_through_0_32_14": true,
+  "chat_request_sha256": "d7035a0da458f5ab354f771d2ee3eb9239f1ff40dae6700bdcd8e9806b18ae14",
+  "chat_response_sha256": "f9deac910407655aa7ecbded4820f8de5d404bb2f49e261b1a64b7db56f2b936",
+  "message_sha256": "bfc165a63e64996e5b843072e8be965a9798e214dfc1c88cc5974bc802d0c9f9",
+  "list_response_sha256": "3bd9321282acf137960e6480b523b2575f585ee0f7ea928301def363b426c6b9",
+  "process_response_sha256": "caaa50bff293aefb1d2702bf411dab49fe933225ef76a5f5591bdc8ffae1072d",
+  "show_request_sha256": "698cdcb3a9942de50bf9be2e65525e945a9ee3613d8309d2c3435b1db207852e",
+  "show_response_sha256": "eeba5938770c1ff3181e1f183a3ef9217dd44635688fd29b0940ea2ce68d7a71",
+  "options_sha256": "c615649cf6298722a03719706c4533308fa8a86e944bfeb936aad4c919ad02b7",
+  "types_go_file_hashes": {
+    "v0.32.1": "a54975f59ef7240841744bead00efe4158eb0369860a65e46bf1853f2a67b592",
+    "v0.32.9": "2155658af3cdb27fc0f44d772ce94a7b52f8da1b51d7b26aa0d158d08ee5791d",
+    "v0.32.14": "032fe8c044429afd42fd9f898c6bbd6efc5977ffeeec4dd3c5a04035e9c3d0b1"
+  },
+  "routes_go_file_hashes": {
+    "v0.32.1": "217a3e0fe283fa633a6547b71112b2c8a0d17e9c4a0e8acfb7218444f3e62d64",
+    "v0.32.9": "47b8e89a73ef76d118c89c101dbd9f74b0a63777ba3cbac153b46002b5397ec2",
+    "v0.32.14": "fc6a8a980168973dd1aec86aafde7ab8bbc12f56aa2f71e04a7773dc95916c42"
+  },
+  "whole_file_delta": "unselected",
+  "new_public_selected_operation": false,
+  "decoder_corpus": "ollama-native-v0.14.0-v0.32.1",
+  "provider_prompt_sent": false,
+  "attached_server_started": false,
+  "host_install_changed": false
+}

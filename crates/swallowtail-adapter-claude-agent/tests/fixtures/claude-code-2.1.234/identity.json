@@ -1,0 +1,35 @@
+{
+  "axis": "claude-code.headless-stream-json",
+  "version": "2.1.234",
+  "observed_at": "2026-08-18",
+  "npm_package": "@anthropic-ai/claude-code",
+  "npm_latest": true,
+  "published_at": "2026-08-17T18:19:13.187Z",
+  "npm_integrity": "sha512-Q53mRcFLqPAWfkvqn7vOzTtMHprzwKdKGRW4OS/Kgr/Tsa+2pyVwVetLb7DRZxhBkYsYld2l8Eo4SX76YoNOOA==",
+  "npm_shasum": "eea30699ec57eb975d3b11e29d6f180c25555665",
+  "local_cli": "2.1.234 (Claude Code)",
+  "local_executable_sha256": "08d8700313697cbe730a25420c908a299ce52d56f0eb2cf4fac94cab5109bc57",
+  "local_executable_size": 310740672,
+  "agent_sdk_package": "@anthropic-ai/claude-agent-sdk",
+  "agent_sdk_latest": "0.3.234",
+  "agent_sdk_latest_integrity": "sha512-988d+JfICQoIIDwcnQm9ivJ3CXfKUhDJ43XSQXiwa4PMnc/+NwAK71JUnOipXgGJNVu+znfzk42CV+wUeX25dg==",
+  "frozen_corpus_version": "2.1.220",
+  "frozen_agent_sdk": "0.3.220",
+  "research_127_host": "2.1.233",
+  "claim_at_observation": {
+    "baseline": "2.1.220",
+    "latest_qualified": "2.1.220",
+    "posture": "allow_unverified",
+    "classification_of_2_1_234": "unverified_newer"
+  },
+  "identity_decision": {
+    "shape": "compatible-extension",
+    "reuse_behavior_revision": "claude-code.headless.stream-json.v1",
+    "raise_latest_qualified_to": "2.1.234",
+    "keep_baseline": "2.1.220",
+    "qualify_intermediates": true,
+    "new_milestone": false,
+    "mix_response_only_axis": false,
+    "provider_prompt_sent": false
+  }
+}

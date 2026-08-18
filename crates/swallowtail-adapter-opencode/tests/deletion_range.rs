@@ -38,7 +38,7 @@ fn deletion_closure_covers_the_unchanged_qualified_release_set() {
 
     assert_eq!(deletion["baseline"], execution["baseline"]);
     assert_eq!(deletion["latest_qualified"], execution["latest_qualified"]);
-    assert_eq!(deletion_releases.len(), 51);
+    assert_eq!(deletion_releases.len(), 59);
     assert_eq!(deletion_releases.len(), execution_releases.len());
     assert_eq!(
         execution["selected_routes"]
@@ -52,7 +52,7 @@ fn deletion_closure_covers_the_unchanged_qualified_release_set() {
             .as_array()
             .expect("execution surfaces")
             .len(),
-        18
+        19
     );
 
     for (deletion_release, execution_release) in deletion_releases.iter().zip(execution_releases) {

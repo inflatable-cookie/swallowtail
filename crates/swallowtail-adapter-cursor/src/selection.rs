@@ -15,10 +15,18 @@ pub const CURSOR_AGENT_RELEASE_AXIS: &str = "cursor-agent.release-date";
 pub const CURSOR_AGENT_BASELINE_VERSION: &str = "2026-07-01";
 /// Qualified build revision for [`CURSOR_AGENT_BASELINE_VERSION`].
 pub const CURSOR_AGENT_BASELINE_BUILD_REVISION: &str = "41b2de7";
+/// Second exact Cursor Agent milestone date.
+pub const CURSOR_AGENT_JULY_23_VERSION: &str = "2026-07-23";
+/// Qualified build revision for [`CURSOR_AGENT_JULY_23_VERSION`].
+pub const CURSOR_AGENT_JULY_23_BUILD_REVISION: &str = "e383d2b";
+/// Host-observed exact Cursor Agent milestone date.
+pub const CURSOR_AGENT_AUGUST_04_VERSION: &str = "2026-08-04";
+/// Qualified build revision for [`CURSOR_AGENT_AUGUST_04_VERSION`].
+pub const CURSOR_AGENT_AUGUST_04_BUILD_REVISION: &str = "aaa8809";
 /// Most recent qualified Cursor Agent release date.
-pub const CURSOR_AGENT_LATEST_QUALIFIED_VERSION: &str = "2026-07-23";
+pub const CURSOR_AGENT_LATEST_QUALIFIED_VERSION: &str = "2026-08-11";
 /// Qualified build revision for [`CURSOR_AGENT_LATEST_QUALIFIED_VERSION`].
-pub const CURSOR_AGENT_LATEST_QUALIFIED_BUILD_REVISION: &str = "e383d2b";
+pub const CURSOR_AGENT_LATEST_QUALIFIED_BUILD_REVISION: &str = "e8db854";
 
 pub(crate) const CURSOR_CATALOGUE_BEHAVIOR: &str = "cursor-agent.catalogue.calendar-release-v1";
 pub(crate) const CURSOR_ACP_BEHAVIOR: &str = "cursor-agent.acp-v1.interactive-v1";
@@ -88,7 +96,7 @@ const fn valid_calendar_date(year: u16, month: u8, day: u8) -> bool {
 /// Returns the compatibility claim for Cursor model discovery.
 pub fn cursor_catalogue_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
-        InterfaceCompatibilityClaimId::new("cursor-agent.catalogue.release-window-2")
+        InterfaceCompatibilityClaimId::new("cursor-agent.catalogue.release-window-3")
             .expect("static Cursor claim id is valid"),
         axis(),
         InterfaceVersionScheme::CalendarDate,
@@ -103,7 +111,7 @@ pub fn cursor_catalogue_claim() -> InterfaceCompatibilityClaim {
 /// Returns the compatibility claim for Cursor ACP sessions.
 pub fn cursor_acp_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
-        InterfaceCompatibilityClaimId::new("cursor-agent.acp.release-window-2")
+        InterfaceCompatibilityClaimId::new("cursor-agent.acp.release-window-3")
             .expect("static Cursor ACP claim id is valid"),
         axis(),
         InterfaceVersionScheme::CalendarDate,
@@ -118,7 +126,7 @@ pub fn cursor_acp_claim() -> InterfaceCompatibilityClaim {
 /// Returns the compatibility claim for Cursor stream-JSON runs.
 pub fn cursor_headless_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
-        InterfaceCompatibilityClaimId::new("cursor-agent.headless.release-window-2")
+        InterfaceCompatibilityClaimId::new("cursor-agent.headless.release-window-3")
             .expect("static Cursor headless claim id is valid"),
         axis(),
         InterfaceVersionScheme::CalendarDate,
@@ -235,11 +243,19 @@ fn axis() -> InterfaceVersionAxis {
         .expect("static Cursor release axis is valid")
 }
 
-const fn qualified_release_builds() -> [(&'static str, &'static str); 2] {
+const fn qualified_release_builds() -> [(&'static str, &'static str); 4] {
     [
         (
             CURSOR_AGENT_BASELINE_VERSION,
             CURSOR_AGENT_BASELINE_BUILD_REVISION,
+        ),
+        (
+            CURSOR_AGENT_JULY_23_VERSION,
+            CURSOR_AGENT_JULY_23_BUILD_REVISION,
+        ),
+        (
+            CURSOR_AGENT_AUGUST_04_VERSION,
+            CURSOR_AGENT_AUGUST_04_BUILD_REVISION,
         ),
         (
             CURSOR_AGENT_LATEST_QUALIFIED_VERSION,
@@ -248,20 +264,14 @@ const fn qualified_release_builds() -> [(&'static str, &'static str); 2] {
     ]
 }
 
-fn exact_milestones(behavior: &str) -> [InterfaceVersionSegment; 2] {
-    [
+fn exact_milestones(behavior: &str) -> [InterfaceVersionSegment; 4] {
+    qualified_release_builds().map(|(date, _build)| {
         InterfaceVersionSegment::exact(
-            version(CURSOR_AGENT_BASELINE_VERSION).expect("static Cursor release version is valid"),
+            version(date).expect("static Cursor release version is valid"),
             InterfaceBehaviorRevision::new(behavior).expect("static Cursor behavior is valid"),
             InterfaceSupportStatus::Maintained,
-        ),
-        InterfaceVersionSegment::exact(
-            version(CURSOR_AGENT_LATEST_QUALIFIED_VERSION)
-                .expect("static Cursor release version is valid"),
-            InterfaceBehaviorRevision::new(behavior).expect("static Cursor behavior is valid"),
-            InterfaceSupportStatus::Maintained,
-        ),
-    ]
+        )
+    })
 }
 
 fn version(value: &str) -> Option<InterfaceVersion> {
@@ -281,14 +291,18 @@ mod tests {
         let claim = cursor_catalogue_claim();
         assert!(claim.supports(&version("2026-07-01")));
         assert!(claim.supports(&version("2026-07-23")));
+        assert!(claim.supports(&version("2026-08-04")));
+        assert!(claim.supports(&version("2026-08-11")));
         assert!(!claim.permits(&version("2026-06-30")));
         assert!(!claim.permits(&version("2026-07-15")));
+        assert!(!claim.permits(&version("2026-07-24")));
+        assert!(!claim.permits(&version("2026-08-05")));
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("2026-07-24"))
+            claim.assess(&version("2026-08-12"))
         else {
             panic!("later Cursor release remains visibly unverified");
         };
-        assert_eq!(newer.latest_qualified().as_str(), "2026-07-23");
+        assert_eq!(newer.latest_qualified().as_str(), "2026-08-11");
     }
 
     #[test]
@@ -311,9 +325,12 @@ mod tests {
             .expect("installed Cursor version parses");
         assert_eq!(local.axis().as_str(), CURSOR_AGENT_RELEASE_AXIS);
         assert_eq!(local.version().as_str(), "2026-07-01");
-        let registry = cursor_agent_release_binding("2026.07.23-e383d2b")
+        let registry = cursor_agent_release_binding("2026.08.11-e8db854")
             .expect("registry Cursor version parses");
-        assert_eq!(registry.version().as_str(), "2026-07-23");
+        assert_eq!(registry.version().as_str(), "2026-08-11");
+        let host = cursor_agent_release_binding("2026.08.04-aaa8809")
+            .expect("host Cursor version parses");
+        assert_eq!(host.version().as_str(), "2026-08-04");
 
         for rejected in [
             "",
@@ -322,6 +339,8 @@ mod tests {
             "2026.07.01-41B2DE7",
             "2026.07.01-deadbee",
             "2026.07.23-deadbee",
+            "2026.08.04-deadbee",
+            "2026.08.11-deadbee",
             "2026.07.01-41b2de",
             "2026.02.30-41b2de7",
             " 2026.07.01-41b2de7",

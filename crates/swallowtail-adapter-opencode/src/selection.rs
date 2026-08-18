@@ -11,7 +11,7 @@ pub const OPENCODE_SERVER_AXIS: &str = "opencode.server";
 /// Oldest OpenCode server release qualified by the HTTP facade.
 pub const OPENCODE_BASELINE_VERSION: &str = "1.14.48";
 /// Newest OpenCode server release behaviorally qualified by the HTTP facade.
-pub const OPENCODE_LATEST_QUALIFIED_VERSION: &str = "1.18.10";
+pub const OPENCODE_LATEST_QUALIFIED_VERSION: &str = "1.18.18";
 const MAX_SERVER_VERSION_BYTES: usize = 64;
 
 /// Parses one exact OpenCode server semantic-version binding.
@@ -58,7 +58,8 @@ pub fn opencode_http_claim() -> InterfaceCompatibilityClaim {
         ("1.17.10", "1.17.10", "surface-16"),
         ("1.17.11", "1.17.11", "surface-17"),
         ("1.17.12", "1.17.20", "surface-18"),
-        ("1.18.0", OPENCODE_LATEST_QUALIFIED_VERSION, "surface-18"),
+        ("1.18.0", "1.18.10", "surface-18"),
+        ("1.18.11", OPENCODE_LATEST_QUALIFIED_VERSION, "surface-19"),
     ]
     .into_iter()
     .map(|(minimum, maximum, surface)| segment(minimum, maximum, surface));
@@ -155,7 +156,8 @@ pub(crate) fn classify_plan(plan: &PreflightPlan) -> Result<OpenCodePlanVersion,
         | "opencode.http-sse.surface-15"
         | "opencode.http-sse.surface-16"
         | "opencode.http-sse.surface-17"
-        | "opencode.http-sse.surface-18" => Ok(OpenCodePlanVersion {
+        | "opencode.http-sse.surface-18"
+        | "opencode.http-sse.surface-19" => Ok(OpenCodePlanVersion {
             binding: binding.clone(),
             assessment,
         }),

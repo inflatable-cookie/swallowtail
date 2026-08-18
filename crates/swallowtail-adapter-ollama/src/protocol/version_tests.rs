@@ -13,7 +13,7 @@ fn exact_version_codec_separates_qualified_unverified_and_incompatible_points() 
     }
     let newer = parse_version(&response(200, fixture_bytes!("version-newer.json")))
         .expect("stable newer version is preserved for an unverified attempt");
-    assert_eq!(newer.version().as_str(), "0.33.0");
+    assert_eq!(newer.version().as_str(), "0.32.15");
     assert!(matches!(
         crate::selection::ollama_runtime_claim().assess(newer.version()),
         swallowtail_core::InterfaceCompatibilityAssessment::UnverifiedNewer(_)
@@ -21,6 +21,7 @@ fn exact_version_codec_separates_qualified_unverified_and_incompatible_points() 
     for body in [
         fixture_bytes!("version-below.json").as_slice(),
         fixture_bytes!("version-above.json").as_slice(),
+        fixture_bytes!("version-0.32.10.json").as_slice(),
         fixture_bytes!("version-prerelease.json").as_slice(),
         fixture_bytes!("version-malformed.json").as_slice(),
     ] {

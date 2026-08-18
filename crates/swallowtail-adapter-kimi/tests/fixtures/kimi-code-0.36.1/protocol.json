@@ -1,0 +1,64 @@
+{
+  "help_selected_flags_present": [
+    "-p",
+    "--prompt",
+    "--output-format",
+    "-m",
+    "--model",
+    "acp",
+    "web"
+  ],
+  "output_format_choices": ["text", "stream-json"],
+  "selected_headless": {
+    "prompt": true,
+    "output_format": "stream-json",
+    "experimental_v2_selected": false
+  },
+  "selected_acp_command": "acp",
+  "selected_local_server_command": "web",
+  "acp_initialize": {
+    "host_and_official_capability_keys_identical": true,
+    "protocol_version": 1,
+    "auth_methods": ["login"],
+    "auth_method_count": 1,
+    "capability_keys": [
+      "auth",
+      "loadSession",
+      "mcpCapabilities",
+      "promptCapabilities",
+      "sessionCapabilities"
+    ],
+    "session_capabilities_advertised": [
+      "additionalDirectories",
+      "close",
+      "delete",
+      "fork",
+      "list",
+      "resume"
+    ],
+    "advertised_close_delete_mapped": false,
+    "stderr_bytes": 0
+  },
+  "selected_source": {
+    "events_map_blob_unchanged_0_31_1_through_0_36_1": "0448f2eb9cb111755c5b0855f5ec72bf4d6bcd4c",
+    "acp_server_blob_unchanged_0_31_1_through_0_36_1": "6707fd4cae43708cd2e9aeeb0eb01a4659c18d85",
+    "stream_json_renderer_blob_unchanged": "0e2f35238db066a13b53ad2cfff11bdff2f76724",
+    "cli_options_blob_unchanged": "004fd7cabdf622dba31ec8c5c3037c0b797fdb95",
+    "bearer_middleware_blob_unchanged": "96add593c6ed5c146268d36cd381170917a33851",
+    "model_catalogue_protocol_blob_unchanged": "9327ef3505257b16e226006cf5654f8efcc67ae3",
+    "ws_control_blob_0_31_1_through_0_34_0": "4fef9de57a8467d7c492d1546ca3c7efeb58515b",
+    "ws_control_blob_0_35_0_through_0_36_1": "536a1dccfe04b5bb38622ea703c375a958cf20a8",
+    "run_prompt_delta": "comment-only-experimental-v2-path",
+    "rest_meta_delta": "optional-experimental-flags",
+    "rest_prompt_delta": "local-message-schema-import",
+    "local_server_heartbeat": "application-ping-pong-from-0.35.0"
+  },
+  "decoder_corpus": {
+    "acp": "kimi-code-acp-v0.28.1-v0.31.0",
+    "headless": "kimi-code-0.29.1-0.29.2",
+    "local_server": "kimi-local-server-0.28.1-0.29.0"
+  },
+  "provider_prompt_sent": false,
+  "local_server_started": false,
+  "host_install_changed": false
+}

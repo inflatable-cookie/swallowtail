@@ -1,0 +1,35 @@
+{
+  "selected_routes": [
+    "initialize",
+    "session/new",
+    "session/prompt",
+    "session/cancel",
+    "session/load",
+    "session/resume",
+    "session/close",
+    "session/delete",
+    "session/request_permission",
+    "elicitation/create"
+  ],
+  "elicitation_js_identical_0_64_0_through_0_69_0": true,
+  "elicitation_sha256": "d40be7d05a0ca9f65621a54fd61aa1a903875d5afcd95051c1f86b561abdd095",
+  "initialize_selected_session_capabilities_unchanged": true,
+  "protocol_version": 1,
+  "acp_sdk_unchanged": "1.3.0",
+  "permission_kinds_unchanged": ["allow_once", "allow_always", "reject_once"],
+  "allow_always_still_unmapped": true,
+  "unmapped_initialize_meta": {
+    "goal_from": "0.66.0",
+    "air_session_failure_from": "0.67.0",
+    "file_change_report_from": "0.69.0"
+  },
+  "tools_js_restored_to_0_64_0_at": "0.64.2",
+  "tools_js_changed_at": "0.67.0",
+  "decoder_corpus": [
+    "claude-agent-acp-v0.53.0-v0.61.0",
+    "claude-agent-acp-v0.62.0-v0.64.0"
+  ],
+  "provider_prompt_sent": false,
+  "live_acp_initialize": false,
+  "host_install_changed": false
+}

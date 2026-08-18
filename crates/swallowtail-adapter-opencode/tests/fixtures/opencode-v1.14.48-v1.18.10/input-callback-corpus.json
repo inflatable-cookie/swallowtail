@@ -2,8 +2,8 @@
   "fixture_schema": 1,
   "interface": "opencode.server",
   "baseline": "1.14.48",
-  "latest_qualified": "1.18.10",
-  "qualified_release_count": 51,
+  "latest_qualified": "1.18.18",
+  "qualified_release_count": 59,
   "surface_segments": [
     {
       "minimum": "1.14.48",
@@ -22,7 +22,7 @@
     },
     {
       "minimum": "1.16.0",
-      "maximum": "1.18.10",
+      "maximum": "1.18.18",
       "sha256": "adb7a50444a1711454cb6d28d70262d9575f067da97bd0d9740612b07f025e44"
     }
   ],

@@ -1,7 +1,7 @@
 use crate::support;
 
 use futures_executor::block_on;
-use support::{CleanupEvent, FixtureHost, Scenario, selection, version_selection};
+use support::{selection, version_selection, CleanupEvent, FixtureHost, Scenario};
 use swallowtail_adapter_kimi::KimiAcpDriver;
 use swallowtail_core::{ExecutionHostId, ResourceAccess, SessionProviderStatePolicy, SessionRef};
 use swallowtail_runtime::{

@@ -1,0 +1,74 @@
+{
+  "axis": "qwen-code.package",
+  "observed_at": "2026-08-18",
+  "npm_package": "@qwen-code/qwen-code",
+  "npm_latest": true,
+  "host": {
+    "version": "0.21.2",
+    "source": "installed-provider-artifact",
+    "artifact_kind": "posix-launcher",
+    "executable_sha256": "08d28a806f88eb00351fd32f32f891ae5c17d39d28c2538a57a8f8b931684a13",
+    "executable_size": 71,
+    "shebang": "#!/usr/bin/env sh",
+    "github_commit": "456fc9b02d7ed69357dd87db8fe4bcd7e2e55ac1"
+  },
+  "official": {
+    "version": "0.21.13",
+    "source": "official-npm-tarball",
+    "published_at": "2026-08-17T02:10:18.724Z",
+    "github_published_at": "2026-08-17T02:11:15Z",
+    "npm_integrity": "sha512-xXyOK166EEeTjHUh9BEdH4h7Afhz53k+jJAv5mgFxQYJbHf25oxif6WRk6jvYGwMxpEdL3vaoURP/QQiplN9lQ==",
+    "npm_shasum": "ca3ec34b0cd6179fe08ed757b861241c28178460",
+    "github_commit": "d959015974302fb60ebd99adb81a68c2f482eaa3",
+    "tarball_sha256": "b0bfd51d89c21ddbe214c568a7afb93ebc14b1dcf79967ac84bffdc01cb1ec53",
+    "package_json_sha256": "d20c402c20af35f3208056d5b16ee16a631aa29d7301842dda60013757753883",
+    "extracted_cli_sha256": "809636be9048ca9bc6e85858e26ae03e61f629c1613508942e64550938ef077b",
+    "extracted_cli_size": 12950
+  },
+  "research_127_host": "0.21.2",
+  "research_127_npm_latest": "0.21.13",
+  "published_stables_from_previous_ceiling": [
+    "0.21.3",
+    "0.21.4",
+    "0.21.5",
+    "0.21.6",
+    "0.21.7",
+    "0.21.8",
+    "0.21.9",
+    "0.21.10",
+    "0.21.11",
+    "0.21.12",
+    "0.21.13"
+  ],
+  "unpublished_stable_0_20_2": true,
+  "unpublished_0_21_14": true,
+  "selected_blobs_at_0_21_13": {
+    "stream_types": "53801c8b14f50a7ece0ea7d649b7f228fcd7d85b",
+    "catalogue_controller": "69dd23662534ed827abb2871e58953027c3c5bf3",
+    "config": "bf538d25955bdacc664352d5beeba66d54c41c7a"
+  },
+  "frozen_stream_types_blob_through_0_21_3": "6c7eb0d366f36ba0965fcf6b2fe7c840691f7e71",
+  "frozen_corpus_ceiling": "0.21.2",
+  "claim_at_observation": {
+    "baseline": "0.19.11",
+    "latest_qualified": "0.21.2",
+    "posture": "allow_unverified",
+    "classification_of_0_21_2": "qualified_maintained",
+    "classification_of_0_21_13": "unverified_newer"
+  },
+  "identity_decision": {
+    "shape": "compatible-extension",
+    "reuse_behavior_revision": "qwen-code.headless.v0.21.0-catalogue-filter",
+    "raise_latest_qualified_to": "0.21.13",
+    "keep_baseline": "0.19.11",
+    "qualify_intermediates": true,
+    "new_milestone": false,
+    "keep_0_20_2_incompatible": true,
+    "map_goal_state": false,
+    "map_initialize_effort_status": false,
+    "provider_prompt_sent": false,
+    "live_catalogue": false,
+    "live_headless_session": false,
+    "host_install_changed": false
+  }
+}

@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-29
+Updated: 2026-08-18
 
 ## Purpose
 
@@ -163,9 +163,9 @@ They do not prove process isolation.
 The first consumer-replay proof binds:
 
 - `ollama.attached`
-- native Ollama API `0.14.0..=0.32.1` through the existing four qualification
-  points and `ollama.native-text-v1` behavior
-- exact exclusion `0.32.2`
+- native Ollama API `0.14.0..=0.32.14` through the existing four qualification
+  points plus official `0.32.14`, `ollama.native-text-v1` behavior
+- exact exclusions `0.32.2` and `0.32.10`
 - direct inference through one approved attached loopback endpoint
 - one exact operator-selected model tag and digest
 - resource-free, credential-free local access

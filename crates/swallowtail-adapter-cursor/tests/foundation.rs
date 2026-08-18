@@ -26,7 +26,9 @@ fn exact_and_newer_cursor_releases_probe_only_the_host_approved_target() {
     for (host_value, release, qualified) in [
         ("fixture.cursor.local", "2026.07.01-41b2de7", true),
         ("fixture.cursor.remote", "2026.07.23-e383d2b", true),
-        ("fixture.cursor.newer", "2026.07.24-a1b2c3d", false),
+        ("fixture.cursor.host", "2026.08.04-aaa8809", true),
+        ("fixture.cursor.registry", "2026.08.11-e8db854", true),
+        ("fixture.cursor.newer", "2026.08.12-a1b2c3d", false),
     ] {
         let host_id = ExecutionHostId::new(host_value).expect("valid host id");
         let host = support::FixtureHost::completed([stdout(&format!("{release}\n"))]);

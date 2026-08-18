@@ -1,0 +1,63 @@
+{
+  "axis": "cursor-agent.release-date",
+  "observed_at": "2026-08-18",
+  "npm_package_note": "npm cursor-agent@1.0.3 is a different axis",
+  "host": {
+    "version": "2026.08.04-aaa8809",
+    "release_date": "2026-08-04",
+    "build_revision": "aaa8809",
+    "source": "installed-provider-artifact",
+    "artifact_kind": "installed-runtime-index",
+    "runtime_index_sha256": "65cb83494b6134b1b1c78139f24ac77d12943d3ba2e540d24e45eef17ee10bef",
+    "acp_chunk": "8869.index.js",
+    "acp_chunk_sha256": "5c702c38a79ca379d19b6aaf7cf13545fc5b8d887842e90f02e3e942fb5da178",
+    "headless_chunk": "5859.index.js",
+    "headless_chunk_sha256": "9656406210421a9e9538135b6bdff5dc4a9ebaff1a7c0c15aa4f1821fd1487f1",
+    "acp_sdk_chunk": "8096.index.js",
+    "acp_sdk_chunk_sha256": "05be7f7005e3e0025f3de79de667b9fffc561ce0614d425055e47c0e0bcbd07c"
+  },
+  "official": {
+    "version": "2026.08.11-e8db854",
+    "release_date": "2026-08-11",
+    "build_revision": "e8db854",
+    "source": "official-acp-registry-artifact",
+    "registry_id": "cursor",
+    "registry_version": "2026.08.11",
+    "artifact_kind": "darwin-arm64-archive",
+    "archive_url": "https://downloads.cursor.com/lab/2026.08.11-e8db854/darwin/arm64/agent-cli-package.tar.gz",
+    "artifact_sha256": "46044d6d7bcbd7b49a0cf1cd01aa4ca79aaa2ea5f2c7a32965fc0ebe29841790",
+    "runtime_index_sha256": "6aceb24b7c7ecddb1993946ebb18a7dd4d025842e6efda955eb0c13255b1e5f0",
+    "acp_chunk": "2996.index.js",
+    "acp_chunk_sha256": "db023030987a1c0a54b2c7102e27faea657a4ad1320b2da153ed590ddd21eb39",
+    "headless_chunk": "6260.index.js",
+    "headless_chunk_sha256": "285e3f24126b457872064e9661d76ab0e35a0059256ffa4ab44507821efe334e",
+    "acp_sdk_chunk": "8096.index.js",
+    "acp_sdk_chunk_sha256": "236a94fa25f1a936c00b7a9dde5555aa72e9b4336250b0ae127403231a82b2f3"
+  },
+  "research_127_host": "2026.08.04-aaa8809",
+  "research_127_registry": "2026.08.11",
+  "claim_at_observation": {
+    "baseline": "2026-07-01",
+    "latest_qualified": "2026-07-23",
+    "posture": "allow_unverified",
+    "classification_of_2026_08_04": "unverified_newer",
+    "classification_of_2026_08_11": "unverified_newer"
+  },
+  "identity_decision": {
+    "shape": "exact-milestones",
+    "reuse_behaviors": [
+      "cursor-agent.catalogue.calendar-release-v1",
+      "cursor-agent.acp-v1.interactive-v1",
+      "cursor-agent.stream-json.structured-v1"
+    ],
+    "keep_baseline": "2026.07.01-41b2de7",
+    "keep_july_23": "2026.07.23-e383d2b",
+    "add_host_milestone": "2026.08.04-aaa8809",
+    "raise_latest_qualified_to": "2026.08.11-e8db854",
+    "infer_calendar_gap": false,
+    "new_behavior_revision": false,
+    "mix_npm_cursor_agent_axis": false,
+    "provider_prompt_sent": false,
+    "host_install_changed": false
+  }
+}

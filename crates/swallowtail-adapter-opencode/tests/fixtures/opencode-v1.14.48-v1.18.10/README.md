@@ -1,7 +1,7 @@
 # OpenCode HTTP/SSE Compatibility Corpus
 
 Offline compatibility evidence for stable OpenCode `1.14.48` through
-`1.18.10`. Captured through 2026-07-30 from maintained GitHub release tags and each
+`1.18.18`. Captured through 2026-08-18 from maintained GitHub release tags and each
 tag's `packages/sdk/openapi.json`.
 
 The selected surface starts from six exact operations:
@@ -19,7 +19,7 @@ The manifest records the full OpenAPI digest, closed-surface digest, component
 count, event-schema count, tag commit, publication date, and behavior
 revision.
 
-Fifty-one stable releases produce 18 closed surfaces and 20 contiguous
+Fifty-nine stable releases produce 19 closed surfaces and 21 contiguous
 semantic-version segments. Separate segments preserve unpublished `1.15.8`,
 `1.16.1`, and cross-minor gaps. No syntactically possible but unpublished
 version is inferred into the candidate claim.
@@ -30,12 +30,12 @@ driver exists. The delete operation plus its complete local-reference closure
 has two schema revisions:
 
 - `delete-01`: `1.14.48` through `1.15.5`
-- `delete-02`: `1.15.6` through `1.18.10`
+- `delete-02`: `1.15.6` through `1.18.18`
 
 Eight semantic-version segments preserve unpublished patch and cross-minor
 gaps. Two runtime evidence revisions remain separate from schema shape.
 `1.14.48..=1.14.50` recursively deletes descendants without a provider busy
-guard or background-job cancellation. `1.14.51..=1.18.10` adds background-job
+guard or background-job cancellation. `1.14.51..=1.18.18` adds background-job
 cancellation but still has no busy guard. Swallowtail therefore keeps its
 inactive-target rule.
 
@@ -48,7 +48,7 @@ evidence.
 
 `usage.sse` freezes two disjoint `step-finish` parts followed by session idle.
 The required input, output, reasoning, cache-read, cache-write, and cost shape
-is present at both `1.14.48` and `1.18.10` boundaries. Cost remains separate
+is present at both `1.14.48` and `1.18.18` boundaries. Cost remains separate
 from token usage.
 
 `generation-controls-prompt-request.json` freezes the exact prompt `variant`
@@ -59,14 +59,14 @@ variants and zero-retry schema dispatch across the qualified range and visible
 unverified-newer execution.
 
 `input-callback-corpus.json` freezes file parts plus permission and question
-requests across all 51 qualified releases. Four exact closed-surface revisions
+requests across all 59 qualified releases. Four exact closed-surface revisions
 capture response-error and message-id schema changes. The portable subset
 accepts only `once` or `reject`; upstream `always` remains visible but cannot
 be selected. File input uses bounded host-materialized bytes encoded as a data
 URL and grants no client path or arbitrary URL authority.
 
 `session-import.json` extends the existing load/resume closure with exact
-`session.list` and `session.status` operations. All 51 qualified releases map
+`session.list` and `session.status` operations. All 59 qualified releases map
 to seven recursive five-operation closures and the same 12 published-version
 segments as continuity. `session-import-success.json` freezes directory-bound
 offset pagination, root/child/active projection, exact lookup, and ordered
@@ -86,7 +86,7 @@ content.
 `activity-rich.sse` freezes message, reasoning, tool-state, and step lifecycle
 from the selected event schema. `activity-gap-1.14.51.sse` freezes the exact
 `1.14.51` segment: text delta and session close remain available, but typed
-tool and reasoning part replacement do not. The 51-release
+tool and reasoning part replacement do not. The 59-release
 compatibility manifest is the version-coverage authority for both fixtures.
 
 Exact `1.18.8` adds optional `iss` to an OAuth callback request outside every
@@ -94,9 +94,15 @@ selected transitive closure. `1.18.9` removes it. The full OpenAPI digests
 retain that artifact delta; execution, deletion, continuity, callback, usage,
 generation-control, and activity behavior stay on their existing revisions.
 
+Exact `1.18.11` through `1.18.18` share one OpenAPI digest. The six selected
+operation objects, delete, import, and continuity closures are unchanged.
+`GET /provider`'s transitive `Model.capabilities.interleaved.field` enum
+adds `reasoning_text` plus a free string, so execution moves to private
+`surface-19`. Swallowtail does not map that field.
+
 Sources:
 
 - <https://github.com/anomalyco/opencode/releases>
 - <https://github.com/anomalyco/opencode/tree/v1.14.48>
-- <https://github.com/anomalyco/opencode/tree/v1.18.10>
+- <https://github.com/anomalyco/opencode/tree/v1.18.18>
 - <https://opencode.ai/docs/server/>

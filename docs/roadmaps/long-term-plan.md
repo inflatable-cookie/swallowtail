@@ -230,7 +230,7 @@ proves qualified native close and provider-data deletion through production
 stdio plus the same lifecycle records over explicit remote ACP without
 fallback. Research 039 and card 055 qualify OpenCode provider-data deletion
 with provider-defined descendants across every exact
-`1.14.48..=1.18.10` release while preserving gaps and unverified-newer truth.
+`1.14.48..=1.18.18` release while preserving gaps and unverified-newer truth.
 Roadmap g02.018 is complete. Its bound driver, prepared facade, exact segment
 matrix, local and remote-authoritative host proof, failure boundary, and full
 regression suite pass. Roadmap g02.019 now owns provider-wide classification,

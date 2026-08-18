@@ -89,7 +89,7 @@ explicit owner. Detachment never manufactures an owner.
 ## First Production Mapping
 
 `opencode.http` implements active-turn detachment for explicitly selected
-read-only interactive sessions across qualified `1.14.48..=1.18.10` segments.
+read-only interactive sessions across qualified `1.14.48..=1.18.18` segments.
 The profile requires durable provider-session preservation, a persisted
 `SessionResumeBinding`, and the existing session-scoped reconciliation path.
 
@@ -102,7 +102,7 @@ server and provider session remain external.
 
 `kimi-code.local-server` implements active-turn detachment for explicitly
 selected interactive sessions on qualified externally attached
-`0.28.1..=0.31.1` servers. The turn must have emitted an exact persisted
+`0.28.1..=0.36.1` servers. The turn must have emitted an exact persisted
 Contract 048 operation checkpoint before local ownership can be recovered.
 
 Detachment closes and joins only the WebSocket observer. It sends no `abort`,

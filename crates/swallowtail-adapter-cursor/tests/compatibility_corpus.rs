@@ -1,8 +1,7 @@
 use serde_json::Value;
 use swallowtail_adapter_cursor::{
-    CURSOR_AGENT_BASELINE_BUILD_REVISION, CURSOR_AGENT_BASELINE_VERSION,
-    CURSOR_AGENT_LATEST_QUALIFIED_BUILD_REVISION, CURSOR_AGENT_LATEST_QUALIFIED_VERSION,
-    cursor_acp_claim, cursor_agent_release_binding, cursor_catalogue_claim, cursor_headless_claim,
+    CURSOR_AGENT_BASELINE_BUILD_REVISION, CURSOR_AGENT_BASELINE_VERSION, cursor_acp_claim,
+    cursor_agent_release_binding, cursor_catalogue_claim, cursor_headless_claim,
 };
 use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
 
@@ -33,12 +32,9 @@ fn corpus_freezes_both_exact_release_and_build_identities() {
     );
     assert_eq!(
         releases[1]["release_date"],
-        CURSOR_AGENT_LATEST_QUALIFIED_VERSION
+        "2026-07-23"
     );
-    assert_eq!(
-        releases[1]["build_revision"],
-        CURSOR_AGENT_LATEST_QUALIFIED_BUILD_REVISION
-    );
+    assert_eq!(releases[1]["build_revision"], "e383d2b");
     for release in releases {
         for field in [
             "artifact_sha256",
@@ -72,7 +68,7 @@ fn selected_route_evidence_retains_three_behaviors_and_no_new_authority() {
 }
 
 #[test]
-fn production_claims_use_two_singletons_and_keep_later_dates_unverified() {
+fn production_claims_use_four_singletons_and_keep_later_dates_unverified() {
     for claim in [
         cursor_catalogue_claim(),
         cursor_acp_claim(),
@@ -80,9 +76,12 @@ fn production_claims_use_two_singletons_and_keep_later_dates_unverified() {
     ] {
         assert!(claim.supports(&version("2026-07-01")));
         assert!(claim.supports(&version("2026-07-23")));
+        assert!(claim.supports(&version("2026-08-04")));
+        assert!(claim.supports(&version("2026-08-11")));
         assert!(!claim.permits(&version("2026-07-15")));
+        assert!(!claim.permits(&version("2026-07-24")));
         assert!(matches!(
-            claim.assess(&version("2026-07-24")),
+            claim.assess(&version("2026-08-12")),
             InterfaceCompatibilityAssessment::UnverifiedNewer(_)
         ));
     }
@@ -90,13 +89,23 @@ fn production_claims_use_two_singletons_and_keep_later_dates_unverified() {
 
 #[test]
 fn every_qualified_date_requires_its_exact_build_revision() {
-    for accepted in ["2026.07.01-41b2de7", "2026.07.23-e383d2b"] {
+    for accepted in [
+        "2026.07.01-41b2de7",
+        "2026.07.23-e383d2b",
+        "2026.08.04-aaa8809",
+        "2026.08.11-e8db854",
+    ] {
         assert!(cursor_agent_release_binding(accepted).is_some());
     }
-    for rejected in ["2026.07.01-deadbee", "2026.07.23-deadbee"] {
+    for rejected in [
+        "2026.07.01-deadbee",
+        "2026.07.23-deadbee",
+        "2026.08.04-deadbee",
+        "2026.08.11-deadbee",
+    ] {
         assert!(cursor_agent_release_binding(rejected).is_none());
     }
-    assert!(cursor_agent_release_binding("2026.07.24-a1b2c3d").is_some());
+    assert!(cursor_agent_release_binding("2026.08.12-a1b2c3d").is_some());
 }
 
 #[test]

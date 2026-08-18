@@ -4,7 +4,7 @@
   "axis": "opencode.server",
   "scheme": "semantic",
   "baseline": "1.14.48",
-  "latest_qualified": "1.18.10",
+  "latest_qualified": "1.18.18",
   "support_authority": "swallowtail_maintainer_qualified",
   "selected_routes": ["global.health", "provider.list", "session.create", "session.prompt_async", "event.subscribe", "session.abort"],
   "surface_revisions": [
@@ -25,7 +25,8 @@
     {"id":"surface-15","sha256":"4a763a5e67716af9738f7a00861310b19504167687c548f1cf3b66414a40d185","component_count":164,"event_schema_count":88},
     {"id":"surface-16","sha256":"66443b28e5f0f6451f1df33bfe54cef1928b855c3913dc576f949034dfe8232c","component_count":163,"event_schema_count":87},
     {"id":"surface-17","sha256":"5f619a83bb642c5fb5f9811e57bdbad0df03af0969aa1fad7a86d3e43b2dc539","component_count":167,"event_schema_count":90},
-    {"id":"surface-18","sha256":"c821175d4c156e9079006c6b3e27f4a9495f42626daf0711d7ba8ab760417d25","component_count":175,"event_schema_count":90}
+    {"id":"surface-18","sha256":"c821175d4c156e9079006c6b3e27f4a9495f42626daf0711d7ba8ab760417d25","component_count":175,"event_schema_count":90},
+    {"id":"surface-19","sha256":"d283a8ce2f78ad9cda218be1eba29f083ddb92ffa042cc74db7ba042f9f3e5eb","component_count":175,"event_schema_count":90}
   ],
   "segments": [
     {"minimum":"1.14.48","maximum":"1.14.48","surface":"surface-01","behavior":"opencode.http-sse.surface-01"},
@@ -47,7 +48,8 @@
     {"minimum":"1.17.10","maximum":"1.17.10","surface":"surface-16","behavior":"opencode.http-sse.surface-16"},
     {"minimum":"1.17.11","maximum":"1.17.11","surface":"surface-17","behavior":"opencode.http-sse.surface-17"},
     {"minimum":"1.17.12","maximum":"1.17.20","surface":"surface-18","behavior":"opencode.http-sse.surface-18"},
-    {"minimum":"1.18.0","maximum":"1.18.10","surface":"surface-18","behavior":"opencode.http-sse.surface-18"}
+    {"minimum":"1.18.0","maximum":"1.18.10","surface":"surface-18","behavior":"opencode.http-sse.surface-18"},
+    {"minimum":"1.18.11","maximum":"1.18.18","surface":"surface-19","behavior":"opencode.http-sse.surface-19"}
   ],
   "releases": [
     {"version":"1.14.48","commit":"4d8ac17c263c0e58fb99c25cc636684dffb45a50","published":"2026-05-11","openapi_sha256":"eefb285b34e40995dee18fbc032cfe23814fb9db9ab7c3fdacf24b42c0f0446a","surface":"surface-01"},
@@ -100,8 +102,16 @@
     {"version":"1.18.7","commit":"02981844b88aed33f06f1527da6c58d137975069","published":"2026-07-27","openapi_sha256":"063e1cc745665f3846be7911e1eb793dcfe45bca5ae3cc425ab246b80eeec4ce","surface":"surface-18"},
     {"version":"1.18.8","commit":"3c81a5d1ddceab377d9ad71c14899e6935333fdd","published":"2026-07-28","openapi_sha256":"dc9509d59a06a1c27603ee815c78c144edf11205e590eaf5443f799048ff3462","surface":"surface-18","artifact_delta":"unselected-oauth-callback-optional-iss"},
     {"version":"1.18.9","commit":"4da7bb44c84e013fa53e9c5d02ac753d1435c81a","published":"2026-07-28","openapi_sha256":"063e1cc745665f3846be7911e1eb793dcfe45bca5ae3cc425ab246b80eeec4ce","surface":"surface-18","artifact_delta":"unselected-oauth-callback-optional-iss-reverted"},
-    {"version":"1.18.10","commit":"7902e04c3a67f7c69726bc955efb46e29214c797","published":"2026-07-30","openapi_sha256":"063e1cc745665f3846be7911e1eb793dcfe45bca5ae3cc425ab246b80eeec4ce","surface":"surface-18"}
+    {"version":"1.18.10","commit":"7902e04c3a67f7c69726bc955efb46e29214c797","published":"2026-07-30","openapi_sha256":"063e1cc745665f3846be7911e1eb793dcfe45bca5ae3cc425ab246b80eeec4ce","surface":"surface-18"},
+    {"version":"1.18.11","commit":"012c2f57f976489d88bd4598a056b4bdcdd428ee","published":"2026-08-01","openapi_sha256":"5bbd6493a1a488ef4294889341c896e420f814ecea95822100aaa9f3f95ab2d1","surface":"surface-19","artifact_delta":"selected-model-interleaved-field-enum"},
+    {"version":"1.18.12","commit":"0dd6950d1b06958fbcdcadf0ad56258257ab7fdb","published":"2026-08-04","openapi_sha256":"5bbd6493a1a488ef4294889341c896e420f814ecea95822100aaa9f3f95ab2d1","surface":"surface-19"},
+    {"version":"1.18.13","commit":"a105350812f05f914c768e468559dbd6bd508d8e","published":"2026-08-04","openapi_sha256":"5bbd6493a1a488ef4294889341c896e420f814ecea95822100aaa9f3f95ab2d1","surface":"surface-19"},
+    {"version":"1.18.14","commit":"65cf14df16c191f3e9684f0d9a8bae69103ced6d","published":"2026-08-05","openapi_sha256":"5bbd6493a1a488ef4294889341c896e420f814ecea95822100aaa9f3f95ab2d1","surface":"surface-19"},
+    {"version":"1.18.15","commit":"d7b115f623760e68a4749d16508a9eca350f246f","published":"2026-08-07","openapi_sha256":"5bbd6493a1a488ef4294889341c896e420f814ecea95822100aaa9f3f95ab2d1","surface":"surface-19"},
+    {"version":"1.18.16","commit":"a3647eb025c7615159d417dcc49fc39fdaeba65b","published":"2026-08-10","openapi_sha256":"5bbd6493a1a488ef4294889341c896e420f814ecea95822100aaa9f3f95ab2d1","surface":"surface-19"},
+    {"version":"1.18.17","commit":"02546dfc2e4515a4f90aaf9ceb3890df2ac2b479","published":"2026-08-12","openapi_sha256":"5bbd6493a1a488ef4294889341c896e420f814ecea95822100aaa9f3f95ab2d1","surface":"surface-19"},
+    {"version":"1.18.18","commit":"31406ccc51b4bd2a4e1e086b2bcaa5f7f804f26d","published":"2026-08-13","openapi_sha256":"5bbd6493a1a488ef4294889341c896e420f814ecea95822100aaa9f3f95ab2d1","surface":"surface-19"}
   ],
-  "rejections": ["1.14.47", "1.14.52", "1.15.8", "1.15.14", "1.16.1", "1.16.3", "1.17.21", "1.18.4-rc.1", "1.18.11", "1.18.11-rc.1", "missing", "malformed", "unhealthy", "session_version_mismatch"],
+  "rejections": ["1.14.47", "1.14.52", "1.15.8", "1.15.14", "1.16.1", "1.16.3", "1.17.21", "1.18.4-rc.1", "1.18.19", "1.18.11-rc.1", "missing", "malformed", "unhealthy", "session_version_mismatch"],
   "closure": {"algorithm": "selected operations plus transitive local JSON references; recursively closed; object keys sorted before SHA-256", "external_references": false}
 }

@@ -25,7 +25,7 @@ provider, model, credential, workspace, billing route, sandbox, or fallback.
 The delegated credential is an opaque scoped lease. Ambient harness
 configuration and `--safe-mode` do not prove host containment.
 
-Qualified versions are `0.19.11..=0.20.1` and `0.21.0..=0.21.2`; the second
+Qualified versions are `0.19.11..=0.20.1` and `0.21.0..=0.21.13`; the second
 segment has the image-only catalogue filter. Later stable releases may remain
 visible `UnverifiedNewer` under the latest qualified behavior. The unpublished
 `0.20.2` gap, older versions, and prereleases do not prepare.

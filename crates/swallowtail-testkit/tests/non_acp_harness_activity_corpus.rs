@@ -245,14 +245,14 @@ fn exact_opencode_release_window_and_malformed_cases_are_machine_checked() {
             .as_array()
             .expect("release array")
             .len(),
-        51
+        59
     );
     assert_eq!(
         compatibility["surface_revisions"]
             .as_array()
             .expect("surface revisions are an array")
             .len(),
-        18
+        19
     );
     assert!(
         compatibility["segments"]

@@ -3,9 +3,7 @@ use std::io::{Read, Write};
 use std::process::{Command, Stdio};
 use std::thread;
 use std::time::{Duration, Instant};
-use swallowtail_adapter_qwen::{
-    QWEN_CODE_LATEST_QUALIFIED_VERSION, qwen_code_binding, qwen_headless_claim,
-};
+use swallowtail_adapter_qwen::{qwen_code_binding, qwen_headless_claim};
 
 const MAXIMUM_OUTPUT_BYTES: usize = 2 * 1024 * 1024;
 const MAXIMUM_RUNTIME: Duration = Duration::from_secs(45);
@@ -19,7 +17,6 @@ fn installed_qwen_code_is_exactly_classified() {
     let version = std::str::from_utf8(&output.stdout)
         .expect("Qwen version output is UTF-8")
         .trim();
-    assert_eq!(version, QWEN_CODE_LATEST_QUALIFIED_VERSION);
     let binding = qwen_code_binding(version).expect("Qwen emits one semantic version");
     assert!(
         qwen_headless_claim().supports(binding.version()),

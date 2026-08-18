@@ -1,0 +1,32 @@
+{
+  "help_source": "official-1.1.14-mac-arm64-binary",
+  "help_selected_flags_present": [
+    "--print",
+    "--output-format",
+    "--model",
+    "--mode",
+    "--sandbox",
+    "--effort",
+    "--json-schema",
+    "--conversation"
+  ],
+  "selected_catalogue_command": "models",
+  "selected_output_format": "stream-json",
+  "selected_permission_mode": "request-review",
+  "dangerously_skip_permissions_selected": false,
+  "continue_selected": false,
+  "input_format_present": true,
+  "map_input_format": false,
+  "models_help_lists_output_format": false,
+  "decoder_corpus": "antigravity-cli-1.1.9",
+  "unused_deltas": [
+    "--input-format",
+    "GEMINI_API_KEY",
+    "enterprise-sign-in",
+    "models --output-format"
+  ],
+  "provider_prompt_sent": false,
+  "live_catalogue": false,
+  "live_print_run": false,
+  "host_install_changed": false
+}

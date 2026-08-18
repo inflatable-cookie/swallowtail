@@ -15,7 +15,7 @@
   "unsupported": [
     {"case":"child_session","parentID":"ses_parent","result":"unavailable"},
     {"case":"foreign_directory","directory":"/workspace/other","result":"reject"},
-    {"case":"unverified_newer","version":"1.18.11","result":"capability_unavailable"},
+    {"case":"unverified_newer","version":"1.18.19","result":"capability_unavailable"},
     {"case":"semantic_gap","version":"1.15.8","result":"capability_unavailable"}
   ],
   "diagnostic_forbidden": ["session_id","directory","title","message_content","raw_http_body","credential"]

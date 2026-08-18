@@ -1,0 +1,49 @@
+{
+  "help_selected_flags_present": [
+    "-p",
+    "--print",
+    "--output-format",
+    "--model",
+    "--trust",
+    "--mode"
+  ],
+  "output_format_choices": ["text", "json", "stream-json"],
+  "mode_choices": ["plan", "ask"],
+  "selected_headless": {
+    "print": true,
+    "output_format": "stream-json",
+    "trust": true,
+    "plan_mode_for_read": true,
+    "force": false,
+    "yolo": false,
+    "sandbox": false,
+    "stream_partial_output": false
+  },
+  "selected_catalogue_command": "models",
+  "selected_acp_command": "acp",
+  "acp_initialize": {
+    "host_and_official_identical": true,
+    "protocol_version": 1,
+    "auth_methods": ["cursor_login"],
+    "load_session_advertised": true,
+    "session_list_advertised": true,
+    "image_prompt_advertised": true,
+    "mcp_http_sse_advertised": true,
+    "agent_info": null,
+    "stderr_bytes": 0
+  },
+  "unused_help_deltas": [
+    "--auto-review",
+    "worker",
+    "create-chat",
+    "generate-rule",
+    "--stream-partial-output",
+    "--force",
+    "--yolo",
+    "--sandbox"
+  ],
+  "decoder_corpus": "cursor-agent-2026.07.01-41b2de7",
+  "continuation_recovery": "blocked",
+  "provider_prompt_sent": false,
+  "authenticated_catalogue_called": false
+}

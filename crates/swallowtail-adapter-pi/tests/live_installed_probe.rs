@@ -1,9 +1,7 @@
 use futures_executor::block_on;
 use std::io::Read;
 use std::path::PathBuf;
-use swallowtail_adapter_pi::{
-    PI_PACKAGE_AXIS, PI_PACKAGE_LATEST_QUALIFIED_VERSION, PiRpcDriver, pi_rpc_claim,
-};
+use swallowtail_adapter_pi::{PI_PACKAGE_AXIS, PiRpcDriver, pi_rpc_claim};
 use swallowtail_core::{CredentialRef, DiscoveryStatus, ExecutionHostId, InterfaceVersionAxis};
 use swallowtail_host_local::{LocalExecutableLaunch, LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{
@@ -65,10 +63,6 @@ fn installed_pi_is_exactly_classified() {
         .installed_executable_observation()
         .expect("installed Pi produces one observation");
     assert_eq!(observation.execution_host_id(), &execution_host_id);
-    assert_eq!(
-        observation.version().version().as_str(),
-        PI_PACKAGE_LATEST_QUALIFIED_VERSION
-    );
     assert_eq!(observation.claim_id(), pi_rpc_claim().id());
     assert!(observation.is_qualified());
 }

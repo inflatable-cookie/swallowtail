@@ -6,12 +6,38 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Changed
+- raise the Antigravity catalogue and headless qualified ceiling through
+  official GitHub `google-antigravity/antigravity-cli` `1.1.14`:
+  `1.1.9..=1.1.14`, `1.1.8` stays independently unqualified, and
+  `--input-format` plus Gemini API-key sign-in stay unmapped
+- raise the Qwen headless qualified ceiling through official npm
+  `@qwen-code/qwen-code` `0.21.13`: `0.19.11..=0.20.1` and
+  `0.21.0..=0.21.13`, unpublished stable `0.20.2` stays incompatible, and
+  `0.21.4` nested `goal_state` stays unmapped
+- raise the Pi RPC qualified ceiling through official npm
+  `@earendil-works/pi-coding-agent` `0.84.2`: exact published points
+  `0.80.10` through `0.84.2`, unpublished `0.83.1` stays incompatible, and
+  `0.84.0` adds private message-update-delta; streaming `usage` on
+  `message_update` stays unmapped
+- raise the Claude Agent ACP qualified ceiling through official npm
+  `@agentclientprotocol/claude-agent-acp` `0.69.0`: `0.53.0..=0.69.0` excluding
+  unpublished `0.58.0`, with Deprecated v6 through `0.65.0` and Maintained
+  initialize-meta-extensions-v7 from `0.66.0`; goal, Air, and file-change
+  initialize `_meta` stay unmapped
+- raise the Ollama attached native runtime qualified ceiling through official
+  GitHub `v0.32.14`: `0.14.0..=0.32.14` reuses `ollama.native-text-v1`, keeps
+  `0.32.2` excluded, and adds GitHub-prerelease `0.32.10`
+- raise Kimi Code ACP, headless, and local-server qualified ceilings through
+  official `@moonshot-ai/kimi-code` `0.36.1`: ACP and headless reuse declared-effort
+  and stream-json through `0.29.0..=0.36.1`; local-server adds
+  `0.32.0..=0.34.0` optional-meta-flags and `0.35.0..=0.36.1` heartbeat-ping,
+  answering application WebSocket ping with pong
 - replace the `claude-code.response-only` patch-version equality gate with a
   protocol-compatibility policy: `2.1.227` remains the proven floor,
-  `2.1.228` adds live evidence, later stable releases may run provisionally,
-  known-bad releases can be denied explicitly, and every run still fails
-  closed on command, init, tool/MCP, thinking, usage, assistant, or terminal
-  drift
+  `2.1.228` adds live evidence, the qualified ceiling is `2.1.234`, later
+  stable releases may run provisionally, known-bad releases can be denied
+  explicitly, and every run still fails closed on command, init, tool/MCP,
+  thinking, usage, assistant, or terminal drift
 
 ## [0.3.2] - 2026-08-11
 

@@ -18,7 +18,7 @@ visible as unverified newer unless exact evidence requires rejection.
 | Goal | State | Governing refs | First milestone |
 | --- | --- | --- | --- |
 | Establish a repeatable currentness inventory for installed harnesses and shared protocols. | completed | Contracts 011, 029, 036 | `g03.001` |
-| Extend exact compatibility segments only where current evidence finds material drift or useful newer support. | active | Contracts 011, 029, 037 | `g03.002`, `g03.012`-`g03.015`, `g03.072`, `g03.073`, `g03.074` |
+| Extend exact compatibility segments only where current evidence finds material drift or useful newer support. | active | Contracts 011, 029, 037 | `g03.002`, `g03.012`-`g03.015`, `g03.072`, `g03.073`, `g03.074`, `g03.075`, `g03.076`, `g03.077`, `g03.078`, `g03.079`, `g03.080`, `g03.081`, `g03.082`, `g03.083`, `g03.084`, `g03.085` |
 | Add high-value installed harnesses through explicit catalogue, interactive, structured, and continuation roles. | completed | Contracts 005-006, 015, 020, 029, 037, 039, 043-045 | `g03.005` |
 | Close useful installed-version gaps against exact current artifacts without forcing per-provider releases. | completed | Contracts 011, 029, 032, 037 | `g03.009` |
 | Keep deterministic corpora and conformance aligned with behavior milestones rather than package semver alone. | completed | Contracts 011, 029, 036 | `g03.010` |
@@ -75,6 +75,89 @@ visible as unverified newer unless exact evidence requires rejection.
 
 ## Current Checkpoint
 
+- g03.085 is complete. Cards 258-259 froze Antigravity host `1.1.9` and
+  official GitHub `1.1.14` identity and raised `antigravity-cli.release`
+  through `1.1.9..=1.1.14` on the existing catalogue and stream-json
+  revisions. `1.1.8` stays independently unqualified. `--input-format` and
+  Gemini API-key stay unmapped. Host `1.1.9` sits inside the window. Later
+  stables stay AllowUnverified at synthetic `1.1.15`. Research 127
+  AllowUnverified families except deferred Gemini now sit on current
+  official stables. Gemini stays deferred.
+- g03.084 is complete. Cards 256-257 froze Qwen host `0.21.2` and official
+  npm `0.21.13` identity and raised `qwen-code.package` through
+  `0.21.0..=0.21.13` on catalogue-filter. Unpublished stable `0.20.2`
+  stays incompatible. Nested `goal_state` stays unmapped. Host `0.21.2`
+  sits inside the window. Later stables stay AllowUnverified at synthetic
+  `0.21.14`. Remaining Research 127 rows stay one-family-later and should
+  qualify useful-newer support, not leave the current host/official stable
+  unqualified. Next rank: Antigravity. Gemini stays deferred.
+- g03.083 is complete. Cards 254-255 froze Pi RPC host `0.83.0` and official
+  npm `0.84.2` identity and raised `pi.package` through exact published
+  `0.84.2`. Unpublished `0.83.1` stays incompatible. Maintained
+  `0.84.0..=0.84.2` sits on message-update-delta. Later stables stay
+  AllowUnverified at synthetic `0.84.3`. Remaining Research 127 rows stay
+  one-family-later and should qualify useful-newer support, not leave the
+  current host/official stable unqualified. Next rank: Qwen headless.
+  Gemini stays deferred.
+- g03.082 is complete. Cards 252-253 froze Claude Agent ACP host `0.63.0`
+  and official npm `0.69.0` identity and raised `claude-agent.acp-adapter`
+  to `0.53.0..=0.69.0` excluding unpublished `0.58.0`. v6 extends through
+  `0.65.0`. Maintained v7 covers `0.66.0..=0.69.0` initialize-meta-extensions.
+  Later stables stay AllowUnverified at synthetic `0.70.0`. Remaining
+  Research 127 rows stay one-family-later and should qualify useful-newer
+  support, not leave the current host/official stable unqualified. Next
+  rank: Pi RPC. Gemini stays deferred.
+- g03.081 is complete. Cards 250-251 froze Ollama host `0.32.9` and official
+  GitHub `v0.32.14` identity and raised `ollama.runtime` to
+  `0.14.0..=0.32.14` on `ollama.native-text-v1`. Exact `0.32.2` and
+  `0.32.10` stay excluded as GitHub prereleases. Later stables stay
+  AllowUnverified at synthetic `0.32.15`. Remaining Research 127 rows stay
+  one-family-later and should qualify useful-newer support, not leave the
+  current host/official stable unqualified. Next rank: Claude Agent ACP.
+  Gemini stays deferred.
+- g03.080 is complete. Cards 248-249 froze Kimi host `0.34.0` and official
+  npm/GitHub `0.36.1` identity and raised ACP, headless, and local-server
+  through `0.36.1`. ACP and headless reuse declared-effort and stream-json.
+  Local-server adds `0.32.0..=0.34.0` optional-meta-flags and
+  `0.35.0..=0.36.1` heartbeat-ping. Later stables stay AllowUnverified at
+  synthetic `0.37.0`. Remaining Research 127 rows stay one-family-later
+  and should qualify useful-newer support, not leave the current
+  host/official stable unqualified. Next rank: Ollama. Gemini stays
+  deferred.
+- g03.079 is complete. Cards 246-247 froze OpenCode host/npm `1.18.18`
+  identity and raised the qualified ceiling through published segments
+  `1.14.48..=1.18.18`. `1.18.11..=1.18.18` sit on private `surface-19`.
+  Unpublished gaps stay closed. Later stables stay AllowUnverified at
+  synthetic `1.18.19`. Remaining Research 127 rows stay one-family-later
+  and should qualify useful-newer support, not leave the current
+  host/official stable unqualified. Next rank: Kimi. Gemini stays
+  deferred.
+- g03.078 is complete. Cards 244-245 froze Cursor Agent host
+  `2026.08.04-aaa8809` and ACP-registry `2026.08.11-e8db854` identity and
+  added those exact calendar/build pairs beside the July milestones. The
+  gap is not inferred. Later dates stay AllowUnverified at synthetic
+  `2026-08-12`. Remaining Research 127 rows stay one-family-later and
+  should qualify useful-newer support, not leave the current host/official
+  stable unqualified. Gemini stays deferred.
+- g03.077 is complete. Cards 242-243 froze Oh My Pi npm `17.3.7` and host
+  `omp/17.2.15` identity and raised the qualified ceiling to
+  `17.2.9..=17.3.7` on `oh-my-pi.rpc-v2-v17.2.9`. Later stables stay
+  AllowUnverified at synthetic `17.3.8`. `pi.package` stays a separate
+  axis. Remaining Research 127 rows stay one-family-later and should
+  qualify useful-newer support, not leave the current host/official stable
+  unqualified. Gemini stays deferred.
+- g03.076 is complete. Cards 239-241 froze Claude Code response-only
+  `2.1.234` identity and raised the qualified ceiling to
+  `2.1.227..=2.1.234` after operator correction of the keep-provisional
+  closeout. Later stables stay AllowUnverified at synthetic `2.1.235`.
+  Headless stays a separate axis. Remaining Research 127 rows stay
+  one-family-later and should qualify useful-newer support, not leave the
+  current host/official stable unqualified. Gemini stays deferred.
+- g03.075 is complete. Cards 237-238 froze Claude Code headless `2.1.234`
+  identity and raised the qualified ceiling to `2.1.220..=2.1.234` on
+  `claude-code.headless.stream-json.v1`. Later stables stay AllowUnverified
+  at synthetic `2.1.235`. Response-only is now `2.1.227..=2.1.234`. Remaining
+  Research 127 rows stay one-family-later. Gemini stays deferred.
 - g03.074 is complete. Cards 235-236 froze Muse `0.2.1-R1215.1` identity and
   moved the opaque QualifiedOnly pin, reusing `muse-code.events-v1`. Old
   `0.1.0-R708.1` is incompatible. Remaining Research 127 rows stay
@@ -738,6 +821,17 @@ visible as unverified newer unless exact evidence requires rejection.
 - [072 Recurring Version Currentness And Codex 0.147.0](./072-recurring-version-currentness-and-codex-0-147.md) — completed
 - [073 Grok 1.0.x Identity](./073-grok-1-0-identity.md) — completed
 - [074 Muse Code 0.2.1 Signed-Payload Pin Move](./074-muse-code-0-2-1-signed-payload-pin.md) — completed
+- [075 Claude Code Headless 2.1.234 Useful Newer](./075-claude-code-headless-2-1-234-useful-newer.md) — completed
+- [076 Claude Code Response-Only 2.1.234 Provisional Keep](./076-claude-code-response-only-2-1-234-provisional.md) — completed
+- [077 Oh My Pi 17.3.7 Useful Newer](./077-oh-my-pi-17-3-7-useful-newer.md) — completed
+- [078 Cursor Agent 2026.08 Exact Milestones](./078-cursor-agent-2026-08-exact-milestones.md) — completed
+- [085 Antigravity 1.1.14 Useful Newer](./085-antigravity-1-1-14-useful-newer.md) — completed
+- [084 Qwen Headless 0.21.13 Useful Newer](./084-qwen-headless-0-21-13-useful-newer.md) — completed
+- [083 Pi RPC 0.84.2 Useful Newer](./083-pi-rpc-0-84-2-useful-newer.md) — completed
+- [082 Claude Agent ACP 0.69.0 Useful Newer](./082-claude-agent-acp-0-69-0-useful-newer.md) — completed
+- [081 Ollama 0.32.14 Useful Newer](./081-ollama-0-32-14-useful-newer.md) — completed
+- [080 Kimi Code 0.36.1 Useful Newer](./080-kimi-code-0-36-1-useful-newer.md) — completed
+- [079 OpenCode HTTP 1.18.18 Useful Newer](./079-opencode-http-1-18-18-useful-newer.md) — completed
 
 ## Checkpoint
 

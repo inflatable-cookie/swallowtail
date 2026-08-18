@@ -1,0 +1,69 @@
+{
+  "axis": "ollama.runtime",
+  "observed_at": "2026-08-18",
+  "github_repo": "ollama/ollama",
+  "not_ollama_cloud": true,
+  "host": {
+    "version": "0.32.9",
+    "source": "installed-provider-artifact",
+    "artifact_kind": "mach-o-universal",
+    "executable_sha256": "ee63fd25df47b95b5ff762d28b40734699b6d61f88de6348946c9dd507c103d9",
+    "executable_size": 67927040,
+    "github_commit": "1d5febee105f00c430e19214b7b7b620cf186f98",
+    "github_tree": "c9ea21194f70ccc7e3525ce1e245110ea2a900d7",
+    "signer": "Infra Technologies, Inc",
+    "team_id": "3MU9H2V9Y9",
+    "cli_identifier": "ai.ollama.ollama",
+    "app_short_version": "0.32.9"
+  },
+  "official": {
+    "version": "0.32.14",
+    "source": "official-github-tag",
+    "published_at": "2026-08-15T19:41:23Z",
+    "prerelease": false,
+    "github_tag": "v0.32.14",
+    "github_commit": "d67ad83426633195089509347ffd4fe795120198",
+    "github_tree": "5111fd6297e195cc4ba2abece091721a9c5737a8"
+  },
+  "research_127_host": "0.32.9",
+  "research_127_github_latest": "0.32.14",
+  "published_stables_from_previous_ceiling": [
+    "0.32.3",
+    "0.32.4",
+    "0.32.5",
+    "0.32.6",
+    "0.32.7",
+    "0.32.8",
+    "0.32.9",
+    "0.32.11",
+    "0.32.12",
+    "0.32.13",
+    "0.32.14"
+  ],
+  "unpublished_patch_in_0_32_3_through_0_32_14": false,
+  "github_prerelease_plain_versions": ["0.32.2", "0.32.10"],
+  "frozen_corpus_ceiling": "0.32.1",
+  "claim_at_observation": {
+    "baseline": "0.14.0",
+    "latest_qualified": "0.32.1",
+    "behavior_revision": "ollama.native-text-v1",
+    "posture": "allow_unverified",
+    "excluded": ["0.32.2"],
+    "classification_of_0_32_9": "unverified_newer",
+    "classification_of_0_32_14": "unverified_newer"
+  },
+  "identity_decision": {
+    "shape": "compatible-extension",
+    "reuse_behavior": "ollama.native-text-v1",
+    "raise_latest_qualified_to": "0.32.14",
+    "keep_baseline": "0.14.0",
+    "keep_exclusion_0_32_2": true,
+    "add_exclusion_0_32_10": true,
+    "new_public_operation": false,
+    "flatten_to_cloud_or_generate": false,
+    "provider_prompt_sent": false,
+    "attached_server_started": false,
+    "host_install_changed": false,
+    "official_app_archive_downloaded": false
+  }
+}

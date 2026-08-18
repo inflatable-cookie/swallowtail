@@ -10,7 +10,7 @@ fn every_qualified_claude_segment_has_exact_activity_provenance() {
     let segments = range["qualified_segments"]
         .as_array()
         .expect("segments are an array");
-    assert_eq!(segments.len(), 6);
+    assert_eq!(segments.len(), 7);
     for segment in segments {
         assert!(segment["range"].is_string());
         assert!(segment["acp_sdk"].is_string());
@@ -26,6 +26,15 @@ fn every_qualified_claude_segment_has_exact_activity_provenance() {
     assert_eq!(
         range["current_external_releases"][2]["profile"],
         "0.64.0-guarantee"
+    );
+    assert_eq!(range["current_external_releases"][3]["version"], "0.69.0");
+    assert_eq!(
+        range["current_external_releases"][3]["classification"],
+        "qualified"
+    );
+    assert_eq!(
+        range["current_external_releases"][3]["profile"],
+        "0.69.0-guarantee"
     );
 }
 

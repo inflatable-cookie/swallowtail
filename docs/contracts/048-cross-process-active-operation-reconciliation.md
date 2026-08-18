@@ -163,7 +163,7 @@ is `Unknown`; an absent requested turn fails closed. No `turn/start`,
 `turn/interrupt`, `thread/resume`, or lifecycle method is dispatched.
 
 `opencode.http` implements session-scoped reconciliation for qualified
-`1.14.48..=1.18.10` server segments. It revalidates health, exact session,
+`1.14.48..=1.18.18` server segments. It revalidates health, exact session,
 directory, version, status, and bounded retained history. It issues no prompt,
 abort, delete, callback, import, load, or resume request.
 
@@ -171,7 +171,7 @@ OpenCode `prompt_async` supplies no exact prompt/turn reference. `Active` and
 `InactiveUnresolved` are therefore honest; terminal states are unavailable.
 
 `kimi-code.local-server` implements exact-turn reconciliation for qualified
-externally attached `0.28.1..=0.31.1` servers. The restored checkpoint supplies
+externally attached `0.28.1..=0.36.1` servers. The restored checkpoint supplies
 the exact `{seq, epoch}` position and turn. One read-only session lookup and
 one WebSocket subscription must match the bound session and cwd. Subscription
 acknowledgement fixes a finite current sequence; accepted durable events are

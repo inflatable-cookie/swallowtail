@@ -40,7 +40,9 @@ fn revision_specific_options_require_the_qualified_milestone() {
 
 #[test]
 fn profile_and_tool_options_remain_available_across_later_milestones() {
-    for version in ["0.29.0", "0.29.1", "0.29.2", "0.30.0", "0.31.0", "0.31.1"] {
+    for version in [
+        "0.29.0", "0.29.1", "0.29.2", "0.30.0", "0.31.0", "0.31.1", "0.34.0", "0.36.1",
+    ] {
         let server =
             InteractiveFixtureServer::start_with_version(InteractiveScenario::Complete, version);
         let host = FixtureHost::for_endpoint(server.endpoint());
@@ -77,22 +79,20 @@ fn callback_bearing_sessions_reject_detachment_before_dispatch() {
         error.diagnostic().safe().code(),
         "swallowtail.kimi.local_server.preparation.detachment_unsupported"
     );
-    assert!(
-        server
-            .requests()
-            .iter()
-            .all(|request| { !request.contains("/sessions/interactive-session/prompts") })
-    );
+    assert!(server
+        .requests()
+        .iter()
+        .all(|request| { !request.contains("/sessions/interactive-session/prompts") }));
 }
 
 #[test]
 fn unverified_newer_session_cannot_opt_into_detachment() {
     let server =
-        InteractiveFixtureServer::start_with_version(InteractiveScenario::Complete, "0.32.0");
+        InteractiveFixtureServer::start_with_version(InteractiveScenario::Complete, "0.37.0");
     let host = FixtureHost::for_endpoint(server.endpoint());
     let execution_host = id(ExecutionHostId::new, "fixture.kimi.newer-detachment");
     let services = host.services(execution_host.clone(), false);
-    let prepared = prepare(execution_host, services, "0.32.0");
+    let prepared = prepare(execution_host, services, "0.37.0");
     let error = prepared
         .prepare_session(
             session_input(

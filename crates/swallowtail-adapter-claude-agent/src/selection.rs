@@ -13,7 +13,7 @@ pub const CLAUDE_AGENT_ACP_AXIS: &str = "claude-agent.acp-adapter";
 /// Oldest qualified Claude Agent ACP version.
 pub const CLAUDE_AGENT_ACP_BASELINE_VERSION: &str = "0.53.0";
 /// Most recent qualified Claude Agent ACP version.
-pub const CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION: &str = "0.64.0";
+pub const CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION: &str = "0.69.0";
 
 const BASELINE_BEHAVIOR: &str = "claude-agent.acp.baseline-v1";
 const SESSION_CONFIG_BEHAVIOR: &str = "claude-agent.acp.session-config-v2";
@@ -21,6 +21,7 @@ const PROVIDER_CAPABILITY_BEHAVIOR: &str = "claude-agent.acp.provider-capability
 const STEERING_METADATA_BEHAVIOR: &str = "claude-agent.acp.steering-metadata-v4";
 const TOOL_SUBAGENT_CORRELATION_BEHAVIOR: &str = "claude-agent.acp.tool-subagent-correlation-v5";
 const HOST_STEERING_FORM_MARKER_BEHAVIOR: &str = "claude-agent.acp.host-steering-form-marker-v6";
+const INITIALIZE_META_EXTENSIONS_BEHAVIOR: &str = "claude-agent.acp.initialize-meta-extensions-v7";
 const MAX_VERSION_BYTES: usize = 64;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -31,6 +32,7 @@ pub(crate) enum ClaudeAgentBehavior {
     SteeringMetadata,
     ToolSubagentCorrelation,
     HostSteeringFormMarker,
+    InitializeMetaExtensions,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -127,8 +129,14 @@ pub fn claude_agent_acp_claim() -> InterfaceCompatibilityClaim {
             ),
             segment(
                 "0.64.0",
-                "0.64.0",
+                "0.65.0",
                 HOST_STEERING_FORM_MARKER_BEHAVIOR,
+                InterfaceSupportStatus::Deprecated,
+            ),
+            segment(
+                "0.66.0",
+                "0.69.0",
+                INITIALIZE_META_EXTENSIONS_BEHAVIOR,
                 InterfaceSupportStatus::Maintained,
             ),
         ],
@@ -195,6 +203,7 @@ fn behavior(revision: &InterfaceBehaviorRevision) -> Option<ClaudeAgentBehavior>
         STEERING_METADATA_BEHAVIOR => Some(ClaudeAgentBehavior::SteeringMetadata),
         TOOL_SUBAGENT_CORRELATION_BEHAVIOR => Some(ClaudeAgentBehavior::ToolSubagentCorrelation),
         HOST_STEERING_FORM_MARKER_BEHAVIOR => Some(ClaudeAgentBehavior::HostSteeringFormMarker),
+        INITIALIZE_META_EXTENSIONS_BEHAVIOR => Some(ClaudeAgentBehavior::InitializeMetaExtensions),
         _ => None,
     }
 }
@@ -224,19 +233,20 @@ fn segment(
 #[cfg(test)]
 mod tests {
     use super::{
-        CLAUDE_AGENT_ACP_AXIS, HOST_STEERING_FORM_MARKER_BEHAVIOR, claude_agent_acp_binding,
+        CLAUDE_AGENT_ACP_AXIS, INITIALIZE_META_EXTENSIONS_BEHAVIOR, claude_agent_acp_binding,
         claude_agent_acp_claim, version_supports_config_options,
     };
     use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
 
     #[test]
-    fn claim_preserves_six_milestones_exclusions_and_visible_newer_execution() {
+    fn claim_preserves_seven_milestones_exclusions_and_visible_newer_execution() {
         let claim = claude_agent_acp_claim();
         assert_eq!(claim.baseline().as_str(), "0.53.0");
-        assert_eq!(claim.latest_qualified().as_str(), "0.64.0");
-        assert_eq!(claim.milestones().len(), 6);
+        assert_eq!(claim.latest_qualified().as_str(), "0.69.0");
+        assert_eq!(claim.milestones().len(), 7);
         for qualified in [
             "0.53.0", "0.54.1", "0.58.1", "0.59.0", "0.61.0", "0.62.0", "0.63.0", "0.64.0",
+            "0.64.1", "0.65.0", "0.66.0", "0.69.0",
         ] {
             assert!(claim.supports(&version(qualified)));
         }
@@ -244,13 +254,13 @@ mod tests {
             assert!(!claim.permits(&version(incompatible)));
         }
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("0.65.0"))
+            claim.assess(&version("0.70.0"))
         else {
             panic!("newer stable version remains unverified");
         };
         assert_eq!(
             newer.behavior_revision().as_str(),
-            HOST_STEERING_FORM_MARKER_BEHAVIOR
+            INITIALIZE_META_EXTENSIONS_BEHAVIOR
         );
     }
 
@@ -280,6 +290,7 @@ mod tests {
         assert!(version_supports_config_options(&version("0.54.0")));
         assert!(version_supports_config_options(&version("0.61.0")));
         assert!(version_supports_config_options(&version("0.63.0")));
+        assert!(version_supports_config_options(&version("0.69.0")));
     }
 
     fn version(value: &str) -> InterfaceVersion {

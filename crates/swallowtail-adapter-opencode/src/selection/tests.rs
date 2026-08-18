@@ -27,7 +27,7 @@ fn claim_matches_every_frozen_release_and_surface() {
     );
 
     let releases = fixture["releases"].as_array().expect("release array");
-    assert_eq!(releases.len(), 51);
+    assert_eq!(releases.len(), 59);
     let mut versions = BTreeSet::new();
     for release in releases {
         let version = release["version"].as_str().expect("release version");
@@ -75,6 +75,15 @@ fn claim_matches_every_frozen_release_and_surface() {
         release("1.18.8")["openapi_sha256"],
         release("1.18.10")["openapi_sha256"]
     );
+    assert_eq!(
+        release("1.18.11")["artifact_delta"],
+        "selected-model-interleaved-field-enum"
+    );
+    assert_eq!(release("1.18.11")["surface"], release("1.18.18")["surface"]);
+    assert_ne!(
+        release("1.18.11")["openapi_sha256"],
+        release("1.18.10")["openapi_sha256"]
+    );
 }
 
 #[test]
@@ -95,7 +104,7 @@ fn claim_preserves_unpublished_and_outer_gaps() {
         assert!(!claim.supports(binding.version()), "{rejected} passed");
         assert!(!claim.permits(binding.version()), "{rejected} permitted");
     }
-    let newer = opencode_server_binding("1.18.11").expect("newer version is safe");
+    let newer = opencode_server_binding("1.18.19").expect("newer version is safe");
     assert!(!claim.supports(newer.version()));
     assert!(claim.permits(newer.version()));
     let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
@@ -104,10 +113,10 @@ fn claim_preserves_unpublished_and_outer_gaps() {
         panic!("newer stable version must remain unverified");
     };
     assert_eq!(unverified.version(), newer.version());
-    assert_eq!(unverified.latest_qualified().as_str(), "1.18.10");
+    assert_eq!(unverified.latest_qualified().as_str(), "1.18.18");
     assert_eq!(
         unverified.behavior_revision().as_str(),
-        "opencode.http-sse.surface-18"
+        "opencode.http-sse.surface-19"
     );
     for malformed in ["", " current", "current ", "current", "1.18.10\n"] {
         assert!(opencode_server_binding(malformed).is_none());
@@ -131,6 +140,6 @@ fn candidate_segments_match_the_recursively_closed_manifest() {
             .as_array()
             .expect("surface revisions")
             .len(),
-        18
+        19
     );
 }

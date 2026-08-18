@@ -223,7 +223,7 @@ fn active_turn_detachment_is_an_explicit_durable_callback_free_session_profile()
 
 #[test]
 fn unverified_newer_server_does_not_inherit_active_turn_detachment() {
-    let fixture = PreparedFixture::new("opencode.prepared.detachment-newer", "1.18.11");
+    let fixture = PreparedFixture::new("opencode.prepared.detachment-newer", "1.18.19");
     let failure = fixture
         .prepared()
         .prepare_session(

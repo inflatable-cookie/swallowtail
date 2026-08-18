@@ -12,13 +12,14 @@ pub const PI_PACKAGE_AXIS: &str = "pi.package";
 /// Oldest Pi package version qualified for the RPC route.
 pub const PI_PACKAGE_BASELINE_VERSION: &str = "0.80.10";
 /// Newest Pi package version behaviorally qualified for the RPC route.
-pub const PI_PACKAGE_LATEST_QUALIFIED_VERSION: &str = "0.83.0";
+pub const PI_PACKAGE_LATEST_QUALIFIED_VERSION: &str = "0.84.2";
 
 const BASELINE_BEHAVIOR: &str = "pi.rpc.strict-lf-v0.80.10";
 const THINKING_USAGE_BEHAVIOR: &str = "pi.rpc.strict-lf-v0.81.0-thinking-usage";
 const SUMMARY_RETRY_BEHAVIOR: &str = "pi.rpc.strict-lf-v0.81.1-summary-retry";
 const BASH_CORRELATION_BEHAVIOR: &str = "pi.rpc.strict-lf-v0.82.0-bash-correlation";
 const BASH_EXTENSION_BEHAVIOR: &str = "pi.rpc.strict-lf-v0.83.0-bash-extension-hook";
+const MESSAGE_UPDATE_DELTA_BEHAVIOR: &str = "pi.rpc.strict-lf-v0.84.0-message-update-delta";
 /// Parses one exact Pi package semantic-version binding.
 #[must_use]
 pub fn pi_package_binding(value: &str) -> Option<InterfaceVersionBinding> {
@@ -63,6 +64,12 @@ pub fn pi_rpc_claim() -> InterfaceCompatibilityClaim {
                 "0.83.0",
                 "0.83.0",
                 BASH_EXTENSION_BEHAVIOR,
+                InterfaceSupportStatus::Deprecated,
+            ),
+            segment(
+                "0.84.0",
+                "0.84.2",
+                MESSAGE_UPDATE_DELTA_BEHAVIOR,
                 InterfaceSupportStatus::Maintained,
             ),
         ],
@@ -99,6 +106,7 @@ pub(crate) fn validate_pi_plan_version(plan: &PreflightPlan) -> Result<(), Runti
                     | SUMMARY_RETRY_BEHAVIOR
                     | BASH_CORRELATION_BEHAVIOR
                     | BASH_EXTENSION_BEHAVIOR
+                    | MESSAGE_UPDATE_DELTA_BEHAVIOR
             )
         })
     {
@@ -140,7 +148,10 @@ mod tests {
     #[test]
     fn claim_qualifies_exact_milestones_and_keeps_later_stable_unverified() {
         let claim = pi_rpc_claim();
-        for candidate in ["0.80.10", "0.81.0", "0.81.1", "0.82.0", "0.82.1", "0.83.0"] {
+        for candidate in [
+            "0.80.10", "0.81.0", "0.81.1", "0.82.0", "0.82.1", "0.83.0", "0.84.0", "0.84.1",
+            "0.84.2",
+        ] {
             assert!(claim.supports(&version(candidate)), "missing {candidate}");
         }
         for (candidate, behavior) in [
@@ -150,6 +161,8 @@ mod tests {
             ("0.82.0", "pi.rpc.strict-lf-v0.82.0-bash-correlation"),
             ("0.82.1", "pi.rpc.strict-lf-v0.82.0-bash-correlation"),
             ("0.83.0", "pi.rpc.strict-lf-v0.83.0-bash-extension-hook"),
+            ("0.84.0", "pi.rpc.strict-lf-v0.84.0-message-update-delta"),
+            ("0.84.2", "pi.rpc.strict-lf-v0.84.0-message-update-delta"),
         ] {
             assert_eq!(
                 claim
@@ -160,25 +173,26 @@ mod tests {
                 behavior
             );
         }
-        for unsupported in ["0.80.11", "0.81.2", "0.82.2"] {
+        for unsupported in ["0.80.11", "0.81.2", "0.82.2", "0.83.1"] {
             assert!(!claim.permits(&version(unsupported)));
         }
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("0.83.1"))
+            claim.assess(&version("0.84.3"))
         else {
             panic!("later stable Pi remains unverified");
         };
         assert_eq!(
             newer.behavior_revision().as_str(),
-            "pi.rpc.strict-lf-v0.83.0-bash-extension-hook"
+            "pi.rpc.strict-lf-v0.84.0-message-update-delta"
         );
-        assert!(!claim.permits(&version("0.83.1-rc.1")));
+        assert!(!claim.permits(&version("0.84.3-rc.1")));
     }
 
     #[test]
     fn binding_accepts_only_one_bare_semver() {
         assert!(pi_package_binding("0.80.10").is_some());
         assert!(pi_package_binding("0.83.0").is_some());
+        assert!(pi_package_binding("0.84.2").is_some());
         for value in ["", " 0.80.10", "pi 0.80.10", "latest"] {
             assert!(pi_package_binding(value).is_none());
         }

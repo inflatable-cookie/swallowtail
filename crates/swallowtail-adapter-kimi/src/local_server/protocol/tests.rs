@@ -1,12 +1,12 @@
 use super::rest::{
-    MAX_HTTP_BODY_BYTES, RestFailureKind, RestReply, ServerMetadata, decode_archive, decode_health,
-    decode_metadata, decode_rest, decode_session, inspect_asyncapi, inspect_openapi,
+    decode_archive, decode_health, decode_metadata, decode_rest, decode_session, inspect_asyncapi,
+    inspect_openapi, RestFailureKind, RestReply, ServerMetadata, MAX_HTTP_BODY_BYTES,
 };
 use super::ws::{
-    ResyncReason, TurnEndReason, WsCloseKind, WsCursor, WsEvent, WsEventEnvelope, WsFrame,
-    classify_ws_close, decode_ws_frame,
+    classify_ws_close, decode_ws_frame, encode_pong, ResyncReason, TurnEndReason, WsCloseKind,
+    WsCursor, WsEvent, WsEventEnvelope, WsFrame,
 };
-use serde_json::{Value, json};
+use serde_json::{json, Value};
 
 const FIXTURE_ROOT: &str = "../../../tests/fixtures/kimi-local-server-0.28.1-0.29.0";
 
@@ -287,6 +287,25 @@ fn websocket_v2_frames_keep_lifecycle_and_sync_meanings_distinct() {
     assert_eq!(classify_ws_close(1000), WsCloseKind::Normal);
     assert_eq!(classify_ws_close(1001), WsCloseKind::GoingAway);
     assert_eq!(classify_ws_close(1011), WsCloseKind::Unexpected);
+}
+
+#[test]
+fn application_ping_decodes_without_session_seq_and_encodes_matching_pong() {
+    assert_eq!(
+        decode_ws_frame(
+            br#"{"type":"ping","timestamp":"2026-08-14T00:00:00.000Z","payload":{"nonce":"n1"}}"#
+        )
+        .expect("ping decodes"),
+        WsFrame::Ping {
+            nonce: "n1".to_owned()
+        }
+    );
+    let pong: Value = serde_json::from_str(&encode_pong("n1")).expect("pong encodes JSON");
+    assert_eq!(pong, json!({"type":"pong","payload":{"nonce":"n1"}}));
+    assert!(decode_ws_frame(
+        br#"{"type":"ping","timestamp":"2026-08-14T00:00:00.000Z","payload":{}}"#
+    )
+    .is_err());
 }
 
 #[test]

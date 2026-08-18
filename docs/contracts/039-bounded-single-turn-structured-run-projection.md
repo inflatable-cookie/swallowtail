@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-12
+Updated: 2026-08-18
 
 ## Purpose
 
@@ -162,9 +162,10 @@ Process, and Time host services and advertises no working-resource, callback,
 tool, session, continuation, retry, fallback, or structured-output capability.
 The existing `claude-code.headless` read-only Plan profile remains unchanged.
 
-The qualified response-only compatibility segment begins at exact `2.1.227`;
-exact `2.1.228` carries separately observed live evidence for the same protocol
-revision. Stable semantic releases above the latest qualified point may execute
+The qualified response-only compatibility segment begins at exact `2.1.227`
+and currently extends through exact `2.1.234`; exact `2.1.228` carries
+separately observed live evidence for the same protocol revision. Stable
+semantic releases above the latest qualified point may execute
 as explicitly unverified newer, except releases on the route's static known-bad
 deny-list. Releases below the baseline, prereleases, build-qualified versions,
 malformed version output, and denied releases remain incompatible. Provisional

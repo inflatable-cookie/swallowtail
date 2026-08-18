@@ -9,7 +9,7 @@ use swallowtail_core::{
 /// Oldest Ollama runtime release qualified for the native text facade.
 pub const OLLAMA_BASELINE_VERSION: &str = "0.14.0";
 /// Newest Ollama runtime release qualified for the native text facade.
-pub const OLLAMA_LATEST_QUALIFIED_VERSION: &str = "0.32.1";
+pub const OLLAMA_LATEST_QUALIFIED_VERSION: &str = "0.32.14";
 pub(crate) const OLLAMA_RUNTIME_AXIS: &str = "ollama.runtime";
 pub(crate) const OLLAMA_DRIVER_ID: &str = "swallowtail.ollama.native-attached";
 /// Exact text-only native API facade selected by this adapter.
@@ -37,7 +37,7 @@ pub fn ollama_runtime_binding(version: &str) -> Option<InterfaceVersionBinding> 
     ))
 }
 
-/// Returns the maintained runtime window and known excluded version.
+/// Returns the maintained runtime window and known excluded versions.
 #[must_use]
 pub fn ollama_runtime_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
@@ -53,7 +53,10 @@ pub fn ollama_runtime_claim() -> InterfaceCompatibilityClaim {
                 .expect("static behavior revision is valid"),
             InterfaceSupportStatus::Maintained,
         )],
-        [InterfaceVersion::new("0.32.2").expect("known exclusion is valid")],
+        [
+            InterfaceVersion::new("0.32.2").expect("known exclusion is valid"),
+            InterfaceVersion::new("0.32.10").expect("known exclusion is valid"),
+        ],
     )
     .expect("static Ollama compatibility claim is valid")
 }
@@ -120,7 +123,7 @@ mod tests {
         assert!(descriptor.supports_role(DriverRole::ModelCatalog));
         assert!(descriptor.supports_role(DriverRole::StructuredRun));
         assert!(descriptor.supports_role(DriverRole::InteractiveSession));
-        for version in ["0.14.0", "0.18.0", "0.30.0", "0.32.1"] {
+        for version in ["0.14.0", "0.18.0", "0.30.0", "0.32.1", "0.32.9", "0.32.14"] {
             assert_eq!(
                 descriptor
                     .classify_interface_version(
@@ -131,14 +134,14 @@ mod tests {
                 InterfaceSupportStatus::Maintained
             );
         }
-        for version in ["0.13.5", "0.18.0-rc.1", "0.32.2", "0.32.3-rc.0"] {
+        for version in ["0.13.5", "0.18.0-rc.1", "0.32.2", "0.32.10", "0.32.3-rc.0"] {
             assert!(!descriptor.supports_interface_version(
                 &ollama_runtime_binding(version).expect("fixture Ollama version is valid"),
             ));
         }
         assert!(matches!(
             descriptor.assess_interface_version(
-                &ollama_runtime_binding("0.33.0").expect("fixture Ollama version is valid"),
+                &ollama_runtime_binding("0.32.15").expect("fixture Ollama version is valid"),
             ),
             swallowtail_core::InterfaceCompatibilityAssessment::UnverifiedNewer(_)
         ));
@@ -148,16 +151,19 @@ mod tests {
     fn reusable_testkit_asserts_the_same_closed_window() {
         let case = swallowtail_testkit::ClosedSemanticWindowCase::new(
             InterfaceVersion::new("0.14.0").unwrap(),
-            InterfaceVersion::new("0.32.1").unwrap(),
+            InterfaceVersion::new("0.32.14").unwrap(),
         )
         .with_accepted([
             InterfaceVersion::new("0.18.0").unwrap(),
             InterfaceVersion::new("0.30.0").unwrap(),
+            InterfaceVersion::new("0.32.1").unwrap(),
+            InterfaceVersion::new("0.32.9").unwrap(),
         ])
         .with_rejected([
             InterfaceVersion::new("0.13.5").unwrap(),
             InterfaceVersion::new("0.18.0-rc.1").unwrap(),
             InterfaceVersion::new("0.32.2").unwrap(),
+            InterfaceVersion::new("0.32.10").unwrap(),
         ]);
         swallowtail_testkit::assert_closed_semantic_compatibility_window(
             &ollama_runtime_claim(),
@@ -165,7 +171,7 @@ mod tests {
         );
         swallowtail_testkit::assert_unverified_newer_execution(
             &ollama_runtime_claim(),
-            &InterfaceVersion::new("0.33.0").unwrap(),
+            &InterfaceVersion::new("0.32.15").unwrap(),
         );
     }
 }

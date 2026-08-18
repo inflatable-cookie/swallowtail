@@ -13,9 +13,9 @@ shape.
 
 ## Next Task
 
-Reassess remaining Research 127 families one at a time. Rank after completed
-Muse `0.2.1-R1215.1` opaque pin: AllowUnverified cluster, including Claude
-Code headless useful newer support. Gemini stays deferred.
+Define the next g03 maintenance card now that remaining Research 127
+AllowUnverified families except deferred Gemini sit on current official
+stables.
 
 ## Index
 

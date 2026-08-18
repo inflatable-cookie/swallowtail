@@ -251,6 +251,10 @@ plan bind that exact point separately from strict-LF RPC framing, Pi's
 downstream provider and model, Swallowtail's adapter version, and the instance
 revision.
 
+The qualified package window currently extends through exact published
+`0.84.2` on `pi.rpc.package-window-2`, with unpublished `0.83.1` remaining
+incompatible. Later stable Pi releases remain unverified newer.
+
 A later compatible Pi release can extend the latest-qualified boundary after
 its corpus passes the same assertions. A behavior change adds a milestone and
 retains the older segment while its baseline remains supported. A public
@@ -265,9 +269,11 @@ the `oh-my-pi.rpc-v2-v17.2.9` behavior revision. Exact npm integrity, release
 commit, RPC negotiation, frame bounds, pre-turn lifecycle, and terminal event
 are frozen together.
 
-Later stable OMP releases remain unverified newer. They do not extend the
-guarantee or inherit new command, tool, session, or subagent authority.
-`pi.rpc` and `oh-my-pi.rpc` cannot substitute for each other.
+The qualified package window currently extends through exact `17.3.7` on that
+same behavior revision. Later stable OMP releases remain unverified newer.
+They do not extend the guarantee or inherit new command, tool, session, or
+subagent authority. `pi.rpc` and `oh-my-pi.rpc` cannot substitute for each
+other.
 
 ## Acceptance
 

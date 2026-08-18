@@ -25,9 +25,7 @@ fn exact_session_list_range_fixture_names_every_qualified_milestone() {
         .collect::<Vec<_>>();
     assert_eq!(
         versions,
-        [
-            "0.28.1", "0.29.0", "0.29.1", "0.29.2", "0.30.0", "0.31.0", "0.31.1"
-        ]
+        ["0.28.1", "0.29.0", "0.29.1", "0.29.2", "0.30.0", "0.31.0", "0.31.1"]
     );
     assert_eq!(
         fixture["later_stable_posture"]["session_import"],
@@ -109,11 +107,9 @@ fn prepared_catalogue_import_and_load_preserve_state_and_replay_boundaries() {
             "Previous answer."
         );
         assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
-        assert!(
-            load_host
-                .wire_methods()
-                .contains(&"session/load".to_owned())
-        );
+        assert!(load_host
+            .wire_methods()
+            .contains(&"session/load".to_owned()));
     }
 }
 
@@ -121,7 +117,7 @@ fn prepared_catalogue_import_and_load_preserve_state_and_replay_boundaries() {
 fn missing_state_root_and_unverified_newer_fail_before_catalogue_dispatch() {
     let host_id = ExecutionHostId::new("fixture.kimi.import.newer").unwrap();
     let host = FixtureHost::new(Scenario::ReasoningNewerSuccess);
-    let prepared = prepared(&host, host_id, "0.32.0");
+    let prepared = prepared(&host, host_id, "0.37.0");
     let failure = prepared
         .prepare_session_catalogue(catalogue_input("unverified"))
         .expect_err("unverified newer cannot inherit catalogue support");

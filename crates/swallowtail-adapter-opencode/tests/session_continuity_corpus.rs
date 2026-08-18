@@ -17,7 +17,7 @@ fn every_qualified_release_maps_to_one_continuity_segment() {
         serde_json::from_str(CONTINUITY).expect("continuity corpus");
     let releases = execution["releases"].as_array().expect("releases");
     let segments = continuity["segments"].as_array().expect("segments");
-    assert_eq!(releases.len(), 51);
+    assert_eq!(releases.len(), 59);
     assert_eq!(segments.len(), 12);
     assert_eq!(continuity["baseline"], execution["baseline"]);
     assert_eq!(

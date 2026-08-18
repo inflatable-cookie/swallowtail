@@ -48,8 +48,9 @@ sandbox.
 ## Version Posture
 
 Pi `0.80.10` is the qualified strict-LF RPC baseline. Exact published
-`0.81.0`, `0.81.1`, `0.82.0`, `0.82.1`, and `0.83.0` are also maintained with
-their own behavior milestones. Discovery records the exact installed version.
+`0.81.0`, `0.81.1`, `0.82.0`, `0.82.1`, `0.83.0`, `0.84.0`, `0.84.1`, and
+`0.84.2` are also qualified with their own behavior milestones. Unpublished
+`0.83.1` does not prepare. Discovery records the exact installed version.
 A later stable release is admitted as unverified, remains visible in evidence,
 and uses the latest qualified behavior mapping. Unpublished gaps, older points,
 and prereleases do not prepare.
@@ -60,7 +61,8 @@ interpreter plus script prefix) before `approve_installed_executable_launch`.
 Approving the script as a native executable fails with
 `interpreted_launcher_requires_host_recipe` because ambient `PATH` is cleared.
 The Pi adapter does not search PATH, inspect npm layouts, or substitute a
-launcher. Exact installed `0.83.0` discovery is proven through this path.
+launcher. Exact installed `0.83.0` and later qualified `0.84.2` discovery use
+this path.
 
 ## Execution Boundary
 

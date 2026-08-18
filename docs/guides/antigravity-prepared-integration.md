@@ -34,9 +34,9 @@ Swallowtail does not install Antigravity, start login, inspect its auth store,
 or acquire a credential. The access profile is provider-supported local auth
 with subscription allowance and no credential reference.
 
-Exact `1.1.9` is qualified on `antigravity-cli.release`. Later stable versions
-remain visible as unverified newer. `1.1.8` is not silently accepted from the
-shared documentation tag.
+Qualified versions are `1.1.9..=1.1.14` on `antigravity-cli.release`.
+Later stable versions remain visible as unverified newer. `1.1.8` is not
+silently accepted from the shared documentation tag.
 
 ## Prepare The Installation
 

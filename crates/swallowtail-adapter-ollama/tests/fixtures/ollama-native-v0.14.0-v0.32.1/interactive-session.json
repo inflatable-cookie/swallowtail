@@ -21,7 +21,8 @@
     }
   ],
   "excluded_versions": [
-    "0.32.2"
+    "0.32.2",
+    "0.32.10"
   ],
   "route": {
     "execution_layer": "direct_model_inference",

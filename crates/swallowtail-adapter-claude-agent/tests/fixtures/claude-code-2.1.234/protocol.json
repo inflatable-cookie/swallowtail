@@ -1,0 +1,43 @@
+{
+  "version": "2.1.234",
+  "help_selected_flags_present": [
+    "-p",
+    "--print",
+    "--input-format",
+    "--output-format",
+    "--verbose",
+    "--no-session-persistence",
+    "--model",
+    "--effort",
+    "--permission-mode",
+    "--tools",
+    "--setting-sources",
+    "--mcp-config",
+    "--strict-mcp-config"
+  ],
+  "input_format_choices": ["text", "stream-json"],
+  "output_format_choices": ["text", "json", "stream-json"],
+  "effort_choices": ["low", "medium", "high", "xhigh", "max"],
+  "permission_mode_choices": [
+    "acceptEdits",
+    "auto",
+    "bypassPermissions",
+    "manual",
+    "dontAsk",
+    "plan"
+  ],
+  "selected_permission_mode": "plan",
+  "selected_tools": "Read,Glob,Grep",
+  "selected_setting_sources": "user,project,local",
+  "include_partial_messages_selected": false,
+  "unused_help_deltas": [
+    "--bare",
+    "--brief",
+    "--cloud",
+    "--include-hook-events",
+    "--include-partial-messages",
+    "--forward-subagent-text"
+  ],
+  "decoder_corpus": "claude-code-2.1.220",
+  "provider_prompt_sent": false
+}

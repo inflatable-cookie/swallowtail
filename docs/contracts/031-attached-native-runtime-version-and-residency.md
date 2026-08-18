@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-25
+Updated: 2026-08-18
 
 ## Purpose
 
@@ -116,12 +116,13 @@ The first driver may publish this claim only after the required corpus and
 conformance pass. Its qualification target binds:
 
 - native Ollama API
-- semantic runtime versions `0.14.0` through `0.32.1`, inclusive
-- qualification points `0.14.0`, `0.18.0`, `0.30.0`, and `0.32.1`
+- semantic runtime versions `0.14.0` through `0.32.14`, inclusive
+- qualification points `0.14.0`, `0.18.0`, `0.30.0`, `0.32.1`, and `0.32.14`
 - one maintained text-only behavior segment
 - unverified attempts for exact later stable versions through the latest
   qualified text behavior
-- exact exclusion `0.32.2`; semantic prereleases remain incompatible
+- exact exclusions `0.32.2` and `0.32.10`; semantic prereleases remain
+  incompatible
 - exact `/api/version` observation
 - bounded `/api/tags`, `/api/ps`, and `/api/show`
 - one host-approved loopback endpoint and local unauthenticated access profile
@@ -135,10 +136,11 @@ keep-alive administration, or compatible-facade fields. It uses no Ollama
 Cloud route, sign-in state, cloud model, API key, model mutation, or owned
 server lifecycle.
 
-`0.32.2`, `0.32.3-rc0`, other prereleases, older versions, gaps, and malformed
-versions fail compatibility preflight. Exact later stable versions retain
-their identity and unverified-newer assessment. A later claim revision may
-extend the guaranteed window only after corpus and conformance qualification.
+`0.32.2`, `0.32.10`, `0.32.3-rc0`, other prereleases, older versions, gaps, and
+malformed versions fail compatibility preflight. Exact later stable versions
+retain their identity and unverified-newer assessment. A later claim revision
+may extend the guaranteed window only after corpus and conformance
+qualification.
 
 ## Conformance
 

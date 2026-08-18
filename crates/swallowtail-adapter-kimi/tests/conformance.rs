@@ -4,9 +4,8 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::SessionOptions;
 use swallowtail_testkit::{
-    ClosedSemanticWindowCase, ConformanceAssertion, SyntheticProfile,
     assert_closed_semantic_compatibility_window, assert_unverified_newer_execution,
-    run_persistent_acp_profile,
+    run_persistent_acp_profile, ClosedSemanticWindowCase, ConformanceAssertion, SyntheticProfile,
 };
 
 #[test]
@@ -31,17 +30,21 @@ fn unchanged_persistent_acp_profile_covers_kimi_authority_boundaries() {
 #[test]
 fn qualified_kimi_milestones_compose_with_shared_compatibility_assertions() {
     let claim = kimi_acp_claim();
-    let case = ClosedSemanticWindowCase::new(version("0.28.1"), version("0.31.1"))
+    let case = ClosedSemanticWindowCase::new(version("0.28.1"), version("0.36.1"))
         .with_accepted([
             version("0.29.0"),
             version("0.29.1"),
             version("0.29.2"),
             version("0.30.0"),
             version("0.31.0"),
+            version("0.31.1"),
+            version("0.32.0"),
+            version("0.34.0"),
+            version("0.36.0"),
         ])
         .with_rejected([version("0.28.0"), version("0.28.2"), version("0.29.0-rc.1")]);
     assert_closed_semantic_compatibility_window(&claim, &case);
-    assert_unverified_newer_execution(&claim, &version("0.32.0"));
+    assert_unverified_newer_execution(&claim, &version("0.37.0"));
 }
 
 #[test]

@@ -1,0 +1,39 @@
+{
+  "version": "1.18.18",
+  "help_source": "host-opencode-1.18.18",
+  "help_selected_commands_present": ["serve", "attach"],
+  "help_selected_flags_present": ["--hostname", "--port", "--version"],
+  "selected_routes": [
+    "global.health",
+    "provider.list",
+    "session.create",
+    "session.prompt_async",
+    "event.subscribe",
+    "session.abort"
+  ],
+  "selected_route_paths_unchanged": true,
+  "selected_operation_objects_unchanged": true,
+  "delete_closure_unchanged": true,
+  "import_closure_unchanged": true,
+  "continuity_closure_unchanged": true,
+  "selected_closure_delta": {
+    "schema": "Model",
+    "field": "capabilities.interleaved.field",
+    "from": ["reasoning", "reasoning_content", "reasoning_details"],
+    "to": ["reasoning", "reasoning_content", "reasoning_text", "free-string"],
+    "swallowtail_maps_interleaved_field": false
+  },
+  "unselected_help_deltas": [
+    "acp",
+    "web",
+    "upgrade",
+    "uninstall",
+    "--auto",
+    "--mdns",
+    "plugin",
+    "github"
+  ],
+  "decoder_corpus": "opencode-1.14.48",
+  "provider_prompt_sent": false,
+  "attached_server_started": false
+}

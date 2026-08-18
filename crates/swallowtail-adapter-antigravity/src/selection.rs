@@ -11,10 +11,10 @@ use crate::failure::failure;
 pub const ANTIGRAVITY_AUTOMATIC_EXECUTABLE_NAME: &str = "agy";
 /// Semantic-version axis used for installed Antigravity releases.
 pub const ANTIGRAVITY_RELEASE_AXIS: &str = "antigravity-cli.release";
-/// Oldest release in the current exact qualification window.
+/// Oldest release in the current maintained qualification window.
 pub const ANTIGRAVITY_BASELINE_VERSION: &str = "1.1.9";
-/// Latest release in the current exact qualification window.
-pub const ANTIGRAVITY_LATEST_QUALIFIED_VERSION: &str = "1.1.9";
+/// Latest release in the current maintained qualification window.
+pub const ANTIGRAVITY_LATEST_QUALIFIED_VERSION: &str = "1.1.14";
 
 pub(crate) const ANTIGRAVITY_CATALOGUE_BEHAVIOR: &str =
     "antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1";
@@ -51,7 +51,8 @@ pub fn antigravity_catalogue_claim() -> InterfaceCompatibilityClaim {
         axis(),
         InterfaceVersionScheme::Semantic,
         InterfaceNewerVersionPosture::AllowUnverified,
-        [InterfaceVersionSegment::exact(
+        [InterfaceVersionSegment::new(
+            version(ANTIGRAVITY_BASELINE_VERSION).expect("static Antigravity release is valid"),
             version(ANTIGRAVITY_LATEST_QUALIFIED_VERSION)
                 .expect("static Antigravity release is valid"),
             InterfaceBehaviorRevision::new(ANTIGRAVITY_CATALOGUE_BEHAVIOR)
@@ -72,7 +73,8 @@ pub fn antigravity_headless_claim() -> InterfaceCompatibilityClaim {
         axis(),
         InterfaceVersionScheme::Semantic,
         InterfaceNewerVersionPosture::AllowUnverified,
-        [InterfaceVersionSegment::exact(
+        [InterfaceVersionSegment::new(
+            version(ANTIGRAVITY_BASELINE_VERSION).expect("static Antigravity release is valid"),
             version(ANTIGRAVITY_LATEST_QUALIFIED_VERSION)
                 .expect("static Antigravity release is valid"),
             InterfaceBehaviorRevision::new(ANTIGRAVITY_HEADLESS_BEHAVIOR)
@@ -173,9 +175,10 @@ mod tests {
     fn exact_installed_release_is_qualified_and_newer_is_visible() {
         let claim = antigravity_catalogue_claim();
         assert!(claim.supports(&version("1.1.9")));
+        assert!(claim.supports(&version("1.1.14")));
         assert!(!claim.permits(&version("1.1.8")));
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("1.1.10"))
+            claim.assess(&version("1.1.15"))
         else {
             panic!("later Antigravity release remains visibly unverified");
         };
@@ -194,6 +197,7 @@ mod tests {
                 .as_str(),
             ANTIGRAVITY_RELEASE_AXIS
         );
+        assert!(antigravity_release_binding("1.1.14").is_some());
         for rejected in [
             "",
             " 1.1.9",

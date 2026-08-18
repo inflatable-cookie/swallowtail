@@ -1,0 +1,48 @@
+{
+  "selected_commands": [
+    "prompt",
+    "steer",
+    "follow_up",
+    "abort",
+    "get_state",
+    "get_available_models",
+    "set_auto_compaction",
+    "set_auto_retry",
+    "set_steering_mode",
+    "set_follow_up_mode"
+  ],
+  "selected_absences": [
+    "bash",
+    "switch_session",
+    "fork",
+    "clone",
+    "extensions"
+  ],
+  "help_selected_flags_present": [
+    "--mode",
+    "--no-session",
+    "--offline",
+    "--provider",
+    "--model",
+    "--tools",
+    "--no-extensions",
+    "--no-skills",
+    "--no-prompt-templates",
+    "--no-themes",
+    "--no-context-files",
+    "--no-tools"
+  ],
+  "selected_mode": "rpc",
+  "rpc_types_identical_0_81_0_through_0_84_2": true,
+  "jsonl_identical_0_83_0_through_0_84_2": true,
+  "session_cwd_identical": true,
+  "message_update_drops_cumulative_snapshot_from": "0.84.0",
+  "message_update_usage_sibling_from": "0.84.2",
+  "decoder_maps_assistant_message_event_delta_only": true,
+  "qualified_usage_still_from_message_end": true,
+  "decoder_corpus": "pi-rpc-0.80.10",
+  "unused_help_deltas": ["--use-theme", "defaultTools"],
+  "provider_prompt_sent": false,
+  "live_rpc_session": false,
+  "host_install_changed": false
+}

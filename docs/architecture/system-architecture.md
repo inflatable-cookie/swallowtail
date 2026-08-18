@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-17
+Updated: 2026-08-18
 
 ## Realized State
 
@@ -166,15 +166,16 @@ adapters with three additional route surfaces.
   bounded-workspace app-server interactive sessions through runtime host ports
 - `swallowtail-adapter-claude-agent` implements installed discovery,
   ambient read-write one-prompt structured runs and read-only interactive
-  sessions for Claude Agent ACP `0.53.0..=0.64.0`, excluding `0.58.0`, over
+  sessions for Claude Agent ACP `0.53.0..=0.69.0`, excluding `0.58.0`, over
   ACP v1 stdio; stable newer
   versions remain visible and unverified, while separate local-subscription
   and public-API-key profiles, model confirmation, ambient configuration,
   ambient-host isolation, permission rejection, cancellation, deadlines, and
   joined cleanup stay driver-owned; distinct native Claude Code drivers keep
-  the exact `2.1.220` read-only headless profile separate from response only.
+  the `2.1.220..=2.1.234` read-only headless profile separate from response only.
   Response only has a proven `2.1.227` floor, live evidence through `2.1.228`,
-  provisional stable-newer execution, explicit known-bad exclusions, and a
+  qualified `2.1.227..=2.1.234`, later stables UnverifiedNewer, explicit
+  known-bad exclusions, and a
   fail-closed provider-suppressed tool/MCP surface with no working resource or
   structured-output capability
 - `swallowtail-adapter-deepseek` implements the exact
@@ -197,10 +198,10 @@ adapters with three additional route surfaces.
   cancellation. It does not qualify OpenCode HTTP, hosted GLM / Z.AI
   official, `--print`, ACP, or native `session/stop`.
 - `swallowtail-adapter-opencode` implements version-bound OpenCode
-  `1.14.48..=1.18.10` model discovery and ambient-host interactive sessions with
+  `1.14.48..=1.18.18` model discovery and ambient-host interactive sessions with
   read-only tool permissions over host-approved HTTP and bounded SSE; exact
   stable newer releases may run as visibly unverified without extending
-  guaranteed support; a separate 51-release deletion corpus freezes two
+  guaranteed support; a separate 59-release deletion corpus freezes two
   delete-schema revisions, recursive provider-defined descendants, missing-
   target rejection, inactive-target requirements, and post-dispatch
   uncertainty without yet advertising production deletion
@@ -229,7 +230,7 @@ adapters with three additional route surfaces.
   latest private handle, one planned raw-WebSocket rollover, local-only
   interruption, and joined two-generation cleanup under both host identities
 - `swallowtail-adapter-kimi` implements exact Kimi Code `0.28.1` and
-  route-specific `0.29.0..=0.31.1` behavior segments. Its ACP route owns ambient-host
+  route-specific `0.29.0..=0.36.1` behavior segments. Its ACP route owns ambient-host
   interactive new, load-with-replay, replay-free resume, bounded writes, and
   negotiated model evidence. Its separate headless route owns one default-
   engine stream-JSON prompt with durable provider retention and joined process
@@ -243,12 +244,13 @@ adapters with three additional route surfaces.
   it shares only structural compatible-chat encoding and decoding with
   llama.cpp and owns its access, reasoning, error, usage, and lifecycle mapping
 - `swallowtail-adapter-pi` implements maintained Pi
-  `0.80.10`, `0.81.0`, `0.81.1`, `0.82.0`, `0.82.1`, and `0.83.0` restrictive
+  `0.80.10`, `0.81.0`, `0.81.1`, `0.82.0`, `0.82.1`, `0.83.0`, `0.84.0`,
+  `0.84.1`, and `0.84.2` restrictive
   ambient-host RPC subset over supervised strict-LF JSONL stdio with exact
   downstream provider/model routing, prompt, steering, follow-up, correlated
   extension UI, native abort, deadlines, joined credential-last cleanup, and
   a separate provider-suppressed `get_available_models` operation
-- `swallowtail-adapter-oh-my-pi` implements the distinct OMP `17.2.9` package
+- `swallowtail-adapter-oh-my-pi` implements the distinct OMP `17.2.9..=17.3.7` package
   and `omp` executable over negotiated RPC v2 JSONL stdio. It uses OMP local
   auth without a Swallowtail credential lease, binds exact provider, model,
   and optional reasoning selection, and owns bounded physical/logical frame
@@ -279,7 +281,7 @@ adapters with three additional route surfaces.
   mapping now use the common compatible-chat framing and envelope codec
 - `swallowtail-adapter-ollama` implements attach-only native Ollama API
   catalogue and text structured runs across qualified stable releases
-  `0.14.0..=0.32.1`; exact runtime, installed and running model observations,
+  `0.14.0..=0.32.14`; exact runtime, installed and running model observations,
   NDJSON output, and inference-caused residency remain distinct, with no
   installation, model acquisition, cloud access, unload, or server ownership
 - `swallowtail-adapter-xai` implements resource-free direct inference over one
@@ -298,28 +300,32 @@ adapters with three additional route surfaces.
   later-stable unverified posture; exact `0.2.117` carries a distinct private
   task-control behavior revision without adding public task-control authority
 - `swallowtail-adapter-cursor` realizes exact Cursor Agent milestones
-  `2026.07.01-41b2de7` and `2026.07.23-e383d2b` through three separate routes:
+  `2026.07.01-41b2de7`, `2026.07.23-e383d2b`, `2026.08.04-aaa8809`, and
+  `2026.08.11-e8db854` through three separate routes:
   authenticated catalogue,
   ACP v1 interactive sessions, and headless stream-JSON structured runs. The
   headless route binds an explicit model and workspace authority, sends prompts
   on stdin, uses plan mode for read-only execution, projects exact assistant,
   thinking, correlated tool, usage, and terminal evidence, and joins every
-  cancellation, deadline, success, or failure path. Both qualified calendar
+  cancellation, deadline, success, or failure path. All four qualified calendar
   dates retain exact opaque build gates; the gap is not inferred and later
   dates remain visibly unverified. Raw tool payloads and stderr remain private;
   force flags, implicit sandboxing, and partial-output duplication are not
   selected
 - `swallowtail-adapter-antigravity` begins Google's separate personal-account
-  harness family with exact Google-signed `agy` `1.1.9` discovery and an
+  harness family with Google-signed `agy` `1.1.9..=1.1.14` discovery and an
   authenticated `agy models` catalogue plus a separate headless stream-JSON
   structured driver. The access profile represents
   provider-owned local Google Sign-In without credential extraction. Catalogue
   entries preserve only opaque model identity and do not imply entitlement or
   invocability. The official `1.1.8` documentation tag and installed `1.1.9`
-  tag share one source commit; only the observed `1.1.9` artifact is qualified.
-  Headless runs bind exact model, read or write authority, optional provider
-  sandboxing, optional effort, optional inline JSON Schema, request-review
-  permission mode, typed activity and usage, cancellation, deadline, and
+  tag share one source commit; `1.1.8` is not independently qualified.
+  Later published stables through `1.1.14` reuse the same catalogue and
+  stream-JSON revisions. `--input-format` stdin turns and Gemini API-key
+  sign-in stay unmapped. Headless runs bind exact model, read or write
+  authority, optional provider sandboxing, optional effort, optional inline
+  JSON Schema, request-review permission mode, typed activity and usage,
+  cancellation, deadline, and
   joined cleanup. The same driver exposes a separate ambient read-intent
   interactive role for restarted turn-scoped continuity: the first turn
   captures one private conversation id, later turns select only exact
@@ -341,7 +347,7 @@ adapters with three additional route surfaces.
   cancellation uncertainty remain distinct. A separate public Models branch
   reports key-visible entries without inferring background or Realtime support
 - `swallowtail-adapter-qwen` implements maintained Qwen Code
-  `0.19.11..=0.20.1` and `0.21.0..=0.21.2` headless behavior segments with
+  `0.19.11..=0.20.1` and `0.21.0..=0.21.13` headless behavior segments with
   exact read-only argv, text stdin, bounded
   stream JSON, typed usage, explicit native budgets, durable local retention,
   redacted terminal classifications, host deadline and cancellation, joined
@@ -750,14 +756,14 @@ installed `0.51.0` probe is separately gated and ignored by default.
 The original Claude Agent lifecycle corpus freezes close and delete through
 `0.61.0` plus the unpublished-package exclusion. Exact source deltas and
 adapter conformance carry that unchanged mapping through the newer private
-`0.62.0`, `0.63.0`, and `0.64.0` behavior milestones.
+`0.62.0` through `0.69.0` behavior milestones.
 Qualified close tears down only active in-memory resources and preserves
 history. Qualified delete tears down an active target when present, then uses
 the exact Agent SDK path that removes the primary local transcript and sibling
 session directory. That evidence supports provider-data deletion with
 provider-defined descendants, but no hard-erasure or Anthropic API service-data
-claim. Exact `0.62.0` retains the `0.61.0` behavior; exact `0.63.0` and
-`0.64.0` add private behavior revisions without changing deletion truth.
+claim. Exact `0.62.0` retains the `0.61.0` behavior; exact `0.63.0` through
+`0.69.0` add private behavior revisions without changing deletion truth.
 Later stable versions remain visible and unverified.
 
 The Claude Agent stdio driver now realizes the qualified mapping. Initialization
@@ -836,14 +842,14 @@ Family qualification follows the Upgrade Workflow. The operator runbook is
 the version-currentness checkpoint guide.
 
 The OpenCode HTTP adapter has a closed qualified server-version boundary.
-Tagged OpenAPI evidence for 51 stable releases from `1.14.48` through
-`1.18.10` closes six selected operations through every transitive local schema
-reference. Eighteen closed surfaces map to 20 contiguous segments so
+Tagged OpenAPI evidence for 59 stable releases from `1.14.48` through
+`1.18.18` closes six selected operations through every transitive local schema
+reference. Nineteen closed surfaces map to 21 contiguous segments so
 unpublished patches and cross-minor synthetic versions remain unsupported.
 The production descriptor publishes the `opencode.server` claim. Configured
 instances, requirements, and immutable plans must bind one matching exact
-release. Stable exact releases above `1.18.10` may execute as unverified through
-surface 18 without widening the qualified range. `GET /global/health` produces
+release. Stable exact releases above `1.18.18` may execute as unverified through
+surface 19 without widening the qualified range. `GET /global/health` produces
 only that safe binding and three-way assessment; no endpoint, credential, raw
 payload, configured instance, or execution authority enters the observation.
 Catalogue and session work stop unless health matches the exact plan, and
@@ -897,13 +903,14 @@ posture remains unmigrated state, not an ambient alias; no posture falls back
 to another.
 
 The Pi RPC records compose with the existing long-lived RPC profile. Exact
-published points from baseline `0.80.10` through `0.83.0` now form five
-maintained behavior segments. They retain strict-LF framing while separately
+published points from baseline `0.80.10` through `0.84.2` now form six
+behavior segments. They retain strict-LF framing while separately
 recording thinking-level and nested-usage evidence, summarization-retry events,
-direct-bash correlation, and the later direct-bash extension hook. Swallowtail
+direct-bash correlation, the later direct-bash extension hook, and the `0.84.0`
+message-update delta shape. Swallowtail
 does not expose direct bash or extensions, and retry evidence still fails under
 the disabled-retry policy. Later stable points remain visible unverified;
-unpublished gaps and prereleases remain incompatible. One
+unpublished gaps including `0.83.1` and prereleases remain incompatible. One
 restrictive policy binds one active operation, two completed prompts, one
 pending steering message, one pending follow-up, no ambient customization, no
 update, telemetry, package, or automatic-retry action, and explicit
@@ -928,7 +935,8 @@ without weakening terminal provider truth.
 
 Pi provider-session continuity remains outside the production descriptor.
 Research 053 plus the g03.010 range corpus check every stable point from
-`0.80.10` through `0.83.0`.
+`0.80.10` through `0.83.0`. Research 140 plus g03.083 add published
+`0.84.0` through `0.84.2` without closing unpublished `0.83.1`.
 Public RPC session switching recreates runtime services from the cwd stored in
 the session file, checks only that the directory exists, and exposes no
 effective cwd for host-resource corroboration. The current ephemeral profile
@@ -1260,9 +1268,9 @@ installed inventory, running inventory, and selected-model detail without
 inference or model mutation. Prepared inventory and one-attempt inference stay
 separate. Inference declares runtime-managed residency but grants no pull,
 unload, restoration, process, or server authority. Exact endpoint and runtime
-drift fail before operation effects. The guaranteed `0.14.0` through `0.32.1`
-window, exact `0.32.2` exclusion, prerelease closure, and visibly unverified
-later stable execution remain explicit.
+drift fail before operation effects. The guaranteed `0.14.0` through `0.32.14`
+window, exact `0.32.2` and `0.32.10` exclusions, prerelease closure, and
+visibly unverified later stable execution remain explicit.
 
 llama.cpp completes the local-runtime family with deliberately separate
 prepared types. `prepare_llama_cpp_attached` binds one host-approved external
@@ -1348,13 +1356,15 @@ provider-documented foreground `kimi web --no-open` process, local REST,
 WebSocket protocol version `2`, exact server metadata, and an opaque bearer
 credential lease. Attached and owned-foreground topologies remain distinct.
 The implementation qualifies reversible archive and restore across exact Kimi
-Code `0.28.1`, exact `0.29.0`, `0.29.1..=0.30.0`, exact `0.31.0`, and exact
-`0.31.1`. The
+Code `0.28.1`, exact `0.29.0`, `0.29.1..=0.30.0`, exact `0.31.0`, exact
+`0.31.1`, `0.32.0..=0.34.0`, and `0.35.0..=0.36.1`. The
 middle range has a separate behavior revision for global WebSocket event
 fan-out and filtered configured-model discovery. Exact `0.31.0` adds full
 subagent status snapshots and derived-model display aliases. Exact `0.31.1`
 uses workspace-scoped session lookup, stabilizes provider-model refresh, and
-may add optional turn-interruption detail. Swallowtail keeps status records as
+may add optional turn-interruption detail. `0.32.0..=0.34.0` adds optional
+experimental-flag metadata and extra unknown events. `0.35.0..=0.36.1` requires
+application WebSocket ping/pong. Swallowtail keeps status records as
 non-rendered progress, retains required terminal reason as authority, and
 derives portable subagent activity from dedicated lifecycle events. The route does not qualify deletion or
 change the unsupported ACP mapping. Attached preparation preserves the

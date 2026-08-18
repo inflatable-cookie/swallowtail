@@ -1,0 +1,67 @@
+{
+  "axis": "pi.package",
+  "observed_at": "2026-08-18",
+  "npm_package": "@earendil-works/pi-coding-agent",
+  "npm_latest": true,
+  "not_oh_my_pi": true,
+  "host": {
+    "version": "0.83.0",
+    "source": "installed-provider-artifact",
+    "artifact_kind": "node-dist-js",
+    "executable_sha256": "af302f231437eaf6f37691bce4b34234fcb626bcb5eb3910d4fc3f6519bf78ca",
+    "executable_size": 681,
+    "shebang": "#!/usr/bin/env node",
+    "github_commit": "845d6ff1f6643aba440341cce877ce1c43ebbc39"
+  },
+  "official": {
+    "version": "0.84.2",
+    "source": "official-npm-tarball",
+    "published_at": "2026-08-14T10:09:06.966Z",
+    "npm_integrity": "sha512-l4E+B7hgXKWddRo8bC/eSue2aWZjEgJ9xIpf5p0Og+lq8a2TArCwJ0HCoCPCgaBP/tN4zbYH/wOwvx9pJpeLCA==",
+    "npm_shasum": "e4d4c1e769963c816959f5cea02a0a10ccc0495a",
+    "github_commit": "914cf1472e715297caa30db4b9535d534a9eb718",
+    "tarball_sha256": "95b899cd7b1a0c1f0174c7bf33ab427435e3553a7d1f4756661aa9c7f1a68ffa",
+    "package_json_sha256": "820f4adc6d61f2cefbc29ce17e9dfd9aa482248d54be5d0dfa2a868ca000c7b0",
+    "extracted_cli_sha256": "840d1e8e689ed9e4937bcb00b9a810e02a8567d9afb10a47097f11ca93ea1521",
+    "extracted_cli_size": 710
+  },
+  "research_127_host": "0.83.0",
+  "research_127_npm_latest": "0.84.2",
+  "published_stables_from_previous_ceiling": ["0.84.0", "0.84.1", "0.84.2"],
+  "unpublished_0_83_1": true,
+  "unpublished_0_84_3": true,
+  "npm_0_84_0_git_head": "8199aca40c9cf27aff3de7ba852e420985a54bf5",
+  "github_0_84_0_tag_commit": "a5f43bf8aff3c55752432655f7334e3dafd1e256",
+  "selected_blobs_at_0_84_2": {
+    "rpc_docs": "fc4c69867e54af20e6821e40144e65146f3b3b8f",
+    "rpc_types": "5957eebc717658694592b27d047a20089851e7ae",
+    "rpc_mode": "1b5d8a6567b948ad1bbf06862800ab6555d615bd",
+    "jsonl": "8962c734021eee0d39d3a35ad8b5c020b0c2c14b",
+    "session_cwd": "79960df1f7d4bebffa8fecfcb2aca3a3044bdd92",
+    "json_event": "f300b17a91c55bf11350949609ed529169352249"
+  },
+  "frozen_corpus_ceiling": "0.83.0",
+  "claim_at_observation": {
+    "baseline": "0.80.10",
+    "latest_qualified": "0.83.0",
+    "posture": "allow_unverified",
+    "classification_of_0_83_0": "qualified_maintained",
+    "classification_of_0_84_2": "unverified_newer"
+  },
+  "identity_decision": {
+    "shape": "compatible-extension",
+    "keep_v0_83_0_exact": true,
+    "add_private_v0_84_0": "0.84.0..=0.84.2",
+    "v0_84_0_behavior": "pi.rpc.strict-lf-v0.84.0-message-update-delta",
+    "raise_latest_qualified_to": "0.84.2",
+    "keep_baseline": "0.80.10",
+    "keep_unpublished_0_83_1": true,
+    "map_streaming_usage": false,
+    "map_bash_or_session_switch": false,
+    "flatten_to_oh_my_pi": false,
+    "new_public_mapped_operation": false,
+    "provider_prompt_sent": false,
+    "live_rpc_session": false,
+    "host_install_changed": false
+  }
+}

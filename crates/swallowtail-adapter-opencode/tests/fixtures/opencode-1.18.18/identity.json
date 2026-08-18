@@ -1,0 +1,53 @@
+{
+  "axis": "opencode.server",
+  "version": "1.18.18",
+  "observed_at": "2026-08-18",
+  "npm_package": "opencode-ai",
+  "npm_latest": true,
+  "published_at": "2026-08-13T01:13:43.814Z",
+  "npm_integrity": "sha512-J+5HFq8tf+wPBBpBpMPSNjSytF2/EkNWYfFZh4si1d9auFbQriqDyqZv+vFUsLWERfdMU32Eajwuiq3rKBvZLQ==",
+  "npm_shasum": "a78971b6affe7ed27a207218465d1a80e36a018c",
+  "npm_git_head": null,
+  "github_tag": "v1.18.18",
+  "github_tag_commit": "31406ccc51b4bd2a4e1e086b2bcaa5f7f804f26d",
+  "local_cli": "1.18.18",
+  "local_executable": "/Users/tom/.opencode/bin/opencode",
+  "local_executable_sha256": "4f5979c2dadb06fbff1335335afaaea274e58f92e79aa43cf2ed98618d555422",
+  "local_executable_size": 143182562,
+  "local_artifact_kind": "mach-o",
+  "frozen_corpus_ceiling": "1.18.10",
+  "frozen_openapi_sha256_1_18_10": "063e1cc745665f3846be7911e1eb793dcfe45bca5ae3cc425ab246b80eeec4ce",
+  "openapi_sha256_1_18_11_through_1_18_18": "5bbd6493a1a488ef4294889341c896e420f814ecea95822100aaa9f3f95ab2d1",
+  "research_127_host": "1.18.18",
+  "research_127_npm_latest": "1.18.18",
+  "published_stables_from_previous_ceiling": [
+    "1.18.11",
+    "1.18.12",
+    "1.18.13",
+    "1.18.14",
+    "1.18.15",
+    "1.18.16",
+    "1.18.17",
+    "1.18.18"
+  ],
+  "unpublished_gap_in_1_18_11_through_1_18_18": false,
+  "claim_at_observation": {
+    "baseline": "1.14.48",
+    "latest_qualified": "1.18.10",
+    "posture": "allow_unverified",
+    "classification_of_1_18_18": "unverified_newer"
+  },
+  "identity_decision": {
+    "shape": "compatible-extension",
+    "keep_surfaces_01_through_18": true,
+    "add_private_surface": "surface-19",
+    "raise_latest_qualified_to": "1.18.18",
+    "keep_baseline": "1.14.48",
+    "keep_unpublished_gaps": true,
+    "flatten_to_single_interval": false,
+    "new_public_operation": false,
+    "provider_prompt_sent": false,
+    "attached_server_started": false,
+    "host_install_changed": false
+  }
+}

@@ -25,6 +25,9 @@ pub(crate) enum WsFrame {
         resync_count: usize,
         cursors: Vec<WsCursor>,
     },
+    Ping {
+        nonce: String,
+    },
     Event(WsEventEnvelope),
     ResyncRequired {
         reason: ResyncReason,
@@ -247,6 +250,13 @@ pub(crate) fn decode_ws_frame(bytes: &[u8]) -> Result<WsFrame, RuntimeFailure> {
                     .ok_or_else(malformed)?,
             })
         }
+        "ping" => {
+            required_string(&object, "timestamp")?;
+            let payload = required_object(&object, "payload")?;
+            Ok(WsFrame::Ping {
+                nonce: required_string(payload, "nonce")?.to_owned(),
+            })
+        }
         _ => {
             let durable_seq = required_u64(&object, "seq")?;
             required_string(&object, "timestamp")?;
@@ -278,3 +288,11 @@ pub(crate) fn decode_ws_frame(bytes: &[u8]) -> Result<WsFrame, RuntimeFailure> {
 }
 
 include!("ws/events.rs");
+
+pub(crate) fn encode_pong(nonce: &str) -> String {
+    serde_json::json!({
+        "type": "pong",
+        "payload": { "nonce": nonce }
+    })
+    .to_string()
+}

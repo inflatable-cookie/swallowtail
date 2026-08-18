@@ -4,7 +4,7 @@
   "claim_id": "opencode.http.session-continuity-window-1",
   "axis": "opencode.server",
   "baseline": "1.14.48",
-  "latest_qualified": "1.18.10",
+  "latest_qualified": "1.18.18",
   "support_authority": "swallowtail_maintainer_qualified",
   "selected_routes": [
     {"operation_id":"session.get","method":"GET","path":"/session/{sessionID}"},
@@ -32,7 +32,7 @@
     {"minimum":"1.16.2","maximum":"1.16.2","surface":"continuity-06"},
     {"minimum":"1.17.0","maximum":"1.17.3","surface":"continuity-06"},
     {"minimum":"1.17.4","maximum":"1.17.20","surface":"continuity-07"},
-    {"minimum":"1.18.0","maximum":"1.18.10","surface":"continuity-07"}
+    {"minimum":"1.18.0","maximum":"1.18.18","surface":"continuity-07"}
   ],
   "message_query_parameters": ["sessionID","directory","workspace","limit","before"],
   "load": {
@@ -96,6 +96,6 @@
   },
   "source": {
     "baseline_openapi": "https://github.com/anomalyco/opencode/blob/v1.14.48/packages/sdk/openapi.json",
-    "latest_openapi": "https://github.com/anomalyco/opencode/blob/v1.18.10/packages/sdk/openapi.json"
+    "latest_openapi": "https://github.com/anomalyco/opencode/blob/v1.18.18/packages/sdk/openapi.json"
   }
 }

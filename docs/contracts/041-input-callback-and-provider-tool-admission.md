@@ -191,7 +191,7 @@ separate host-scoped configuration contract permits it.
 The first implementation covers:
 
 - Pi RPC `0.80.10` image attachment input
-- OpenCode HTTP `1.14.48..=1.18.10` file-part input plus one-shot permission
+- OpenCode HTTP `1.14.48..=1.18.18` file-part input plus one-shot permission
   and question exchange
 - Anthropic Messages `2023-06-01` image input, client-tool continuation under
   Contract 030, and provider-owned web search

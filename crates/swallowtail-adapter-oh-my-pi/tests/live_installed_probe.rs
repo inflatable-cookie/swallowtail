@@ -5,9 +5,9 @@ use std::io::Read;
 use std::path::PathBuf;
 use std::time::Duration;
 use swallowtail_adapter_oh_my_pi::{
-    OH_MY_PI_PACKAGE_AXIS, OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION, OhMyPiCatalogueProfileInput,
-    OhMyPiModelSelection, OhMyPiPreparationInput, OhMyPiPreparationProbe, OhMyPiRpcDriver,
-    OhMyPiRunProfileInput, oh_my_pi_rpc_claim, prepare_oh_my_pi_rpc,
+    OH_MY_PI_PACKAGE_AXIS, OhMyPiCatalogueProfileInput, OhMyPiModelSelection,
+    OhMyPiPreparationInput, OhMyPiPreparationProbe, OhMyPiRpcDriver, OhMyPiRunProfileInput,
+    oh_my_pi_rpc_claim, prepare_oh_my_pi_rpc,
 };
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessStatus, ConfiguredInstanceId, CredentialMechanism,
@@ -81,11 +81,8 @@ fn installed_omp_is_exactly_classified() {
         .installed_executable_observation()
         .expect("installed OhMyPi produces one observation");
     assert_eq!(observation.execution_host_id(), &execution_host_id);
-    assert_eq!(
-        observation.version().version().as_str(),
-        OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION
-    );
     assert_eq!(observation.claim_id(), oh_my_pi_rpc_claim().id());
+    assert!(oh_my_pi_rpc_claim().supports(observation.version().version()));
     assert!(observation.is_qualified());
 }
 

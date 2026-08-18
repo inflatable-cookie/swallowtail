@@ -87,7 +87,10 @@ operator explicitly authorizes a structural rollover.
 Revalidate every production route family through the named Contract 029
 checkpoint and `docs/guides/version-currentness-checkpoint.md`. The
 checkpoint writes research; it does not change claims. Extend one family at
-a time through the Upgrade Workflow. Do not bulk-bump from `latest`.
+a time through the Upgrade Workflow. Do not bulk-bump from `latest`. Do not
+leave the current host or official stable UnverifiedNewer without a named
+incompatible reason. Execute the lane through the repo skill
+`version-currentness` at `.cursor/skills/version-currentness/`.
 
 ## Planning Ambiguity Rule
 

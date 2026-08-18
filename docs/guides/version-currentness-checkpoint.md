@@ -63,8 +63,12 @@ named compatibility axis.
 
 ## After The Record
 
-Compile one-family range work only for material candidates, using Contract
-029's Upgrade Workflow:
+A checkpoint row of `visible unverified-newer` is research, not permission
+to skip the family. Do not leave the current host or official stable
+UnverifiedNewer without a named incompatible reason. g03.068
+provisional-newer is only for stables above the latest qualified point.
+
+Compile one-family range work using Contract 029's Upgrade Workflow:
 
 1. observe the exact interface versions and capability surface
 2. add or update a frozen corpus for changed behavior
@@ -78,7 +82,9 @@ above the pin until that family has its own corpus. A major-line reset on
 the same package is an identity investigation, not an unverified-newer
 default.
 
-Gemini requalification stays deferred until the operator lifts that gate.
+Execute that upgrade loop through the repo skill `version-currentness`
+(`.cursor/skills/version-currentness/`). Gemini requalification stays
+deferred until the operator lifts that gate.
 
 ## Sources
 

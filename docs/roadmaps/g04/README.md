@@ -24,26 +24,26 @@ and selection policy.
 | Fold inventory into Spec 011 and name contract targets without facade code. | completed | Spec 011; Research 168 | `g04.002` |
 | Pin the post-g03 source tree as an immutable tag before facade implementation. | completed | Contract 036 | `g04.003` |
 | Promote the readiness/admission contract after that tag. | completed | Contract 057; 006, 008, 010, 014, 015, 017, 029, 032, 037, 047 | `g04.004` |
-| Realize the persistence port and optional simple adapter. | planned | Contract 057 | after contract |
-| Realize addable-route catalog, admission, and config field descriptors. | planned | Contract 057 | after contract |
-| Realize library-max sign-in loops through host ports. | planned | Contracts 057, 006, 010, 014, 017 | after contract |
-| Realize readiness refresh, authenticated-subject observation, and Contract 029 updates. | planned | Contracts 057, 006, 029, 032, 047 | after contract |
-| Realize the model-presentation overlay without flattening catalogues. | planned | Contracts 057, 020 | after contract |
+| Realize the persistence port and optional simple adapter. | planned | Contract 057 | `g04.005` |
+| Realize addable-route catalog, admission, and config field descriptors. | planned | Contract 057 | `g04.006` |
+| Realize library-max sign-in loops through host ports. | planned | Contracts 057, 006, 010, 014, 017 | `g04.007` |
+| Realize readiness refresh, authenticated-subject observation, and Contract 029 updates. | planned | Contracts 057, 006, 029, 032, 047 | after sign-in |
+| Realize the model-presentation overlay without flattening catalogues. | planned | Contracts 057, 020 | after sign-in |
 | Prove representative hosted, installed, and local-runtime shapes and publish a consumer path. | planned | Contracts 011, 037, 052, 057 | later |
 | Continue Contract 029 currentness as a maintenance lane, not the title programme. | recurring | Contract 029 | evidence-gated |
 
 ## Planned Next Roadmaps
 
-Compile the first Contract 057 implementation roadmaps. No implementation card
-is ready until that compilation.
+- [g04.005 Connection Lifecycle Kernel](005-connection-lifecycle-kernel.md) — ready cards 013-015
+- [g04.006 Addable Catalog, Admission, And Config Fields](006-addable-catalog-admission-and-config-fields.md) — planned behind 005
+- [g04.007 Sign-In Loop And Host Ports](007-sign-in-loop-and-host-ports.md) — planned behind 006
 
 ## Current Checkpoint
 
-- g04.001 through g04.004 are complete
-- Contract 057 is active; Spec 011 is archived
-- annotated `v0.3.3` peels to `51d186208e75dca4c04f077dd7179ec3c2fafae9`
-- facade implementation remains planned until implementation roadmaps are
-  compiled against 057
+- g04.001 through g04.004 are complete. Contract 057 is active
+- g04.005 cards 013-015 are ready: core records, store trait, simple adapters
+- catalog, sign-in, refresh, overlay, and first-proof stay behind that kernel
+- `v0.3.3` remains `51d18620`
 
 ## Milestones
 
@@ -51,3 +51,6 @@ is ready until that compilation.
 - [002 Route Readiness Spec And Contract Targets](./002-route-readiness-spec-and-contract-targets.md) — completed
 - [003 Current Source Tag Before Readiness](./003-current-source-tag-before-readiness.md) — completed
 - [004 Readiness And Admission Contract Promotion](./004-readiness-admission-contract-promotion.md) — completed
+- [005 Connection Lifecycle Kernel](./005-connection-lifecycle-kernel.md) — planned
+- [006 Addable Catalog, Admission, And Config Fields](./006-addable-catalog-admission-and-config-fields.md) — planned
+- [007 Sign-In Loop And Host Ports](./007-sign-in-loop-and-host-ports.md) — planned

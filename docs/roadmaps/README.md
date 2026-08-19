@@ -14,7 +14,7 @@ shape.
 
 ## Next Task
 
-Compile the first Contract 057 implementation roadmaps.
+Execute the connection-lifecycle kernel starting at g04.005 card 013.
 
 ## Index
 

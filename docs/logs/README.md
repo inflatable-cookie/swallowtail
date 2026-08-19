@@ -23,6 +23,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-19 Connection Lifecycle Implementation Runway](./2026-08-19-connection-lifecycle-implementation-runway.md)
 - [2026-08-19 Readiness And Admission Contract Promotion](./2026-08-19-readiness-admission-contract-promotion.md)
 - [2026-08-19 Current Source Annotated Tag](./2026-08-19-current-source-annotated-tag.md)
 - [2026-08-19 Current Source Canonical CI](./2026-08-19-current-source-canonical-ci.md)

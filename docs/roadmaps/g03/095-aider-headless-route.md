@@ -1,13 +1,13 @@
 # 095 Aider Headless Route
 
-Status: planned
+Status: deferred
 Owner: Tom
 Created: 2026-08-18
 Wave: Secondary
-Depends on: g03.094; g03.097 intake card 286; Research 143
-Research: 143
+Depends on: g03.094; g03.097 intake card 286; Research 143; Research 153
+Research: 143; 153
 Route id: `aider.headless`
-Planning state: cards 295-298 planned
+Planning state: cards 295-298 remain planned and unstarted
 
 ## Purpose
 
@@ -67,6 +67,10 @@ survive the evidence gate.
 
 Aider headless is not an ACP route and must not inherit structured event claims it does not expose.
 
+Card 286 deferred this roadmap: official scripting is still text/Git
+(`aider --message`) without a structured event protocol. Do not start
+identity until that surface exists.
+
 ## Stop Conditions
 
 Stop before implementation if the route is undocumented, prompt-only, UI-only,
@@ -80,4 +84,5 @@ truth diverges. Record deferred or negative evidence instead of widening scope.
 ## Sources
 
 - Research 143: `docs/research/143-new-harness-route-expansion-selection.md`
+- Research 153: `docs/research/153-secondary-wave-source-and-disposition.md`
 - [Aider scripting](https://aider.chat/docs/scripting.html)

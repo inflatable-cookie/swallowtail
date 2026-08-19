@@ -1,6 +1,6 @@
 #[test]
 fn later_releases_ignore_unsolicited_global_events_from_other_sessions() {
-    for version in ["0.29.1", "0.29.2", "0.30.0", "0.31.0", "0.31.1", "0.36.1"] {
+    for version in ["0.29.1", "0.29.2", "0.30.0", "0.31.0", "0.31.1", "0.36.1", "0.37.2"] {
         let server =
             InteractiveFixtureServer::start_with_version(InteractiveScenario::GlobalNoise, version);
         let host = FixtureHost::for_endpoint(server.endpoint());

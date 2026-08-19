@@ -1,0 +1,4 @@
+{"schema_derived_not_live":true,"kind":"AgentErrorEvent","id":"opaque-fixture-agent-error","source":"agent","tool_name":"opaque-tool","tool_call_id":"opaque-tool-call","error":"OpenHands agent error."}
+{"schema_derived_not_live":true,"kind":"ConversationErrorEvent","id":"opaque-fixture-conversation-error","source":"environment","code":"opaque-code","detail":"OpenHands conversation error."}
+{"schema_derived_not_live":true,"kind":"ServerErrorEvent","id":"opaque-fixture-server-error","source":"environment","code":"opaque-code","detail":"OpenHands server error."}
+{"schema_derived_not_live":true,"kind":"ConversationStateUpdateEvent","id":"opaque-fixture-state-error","source":"environment","key":"execution_status","value":"error"}

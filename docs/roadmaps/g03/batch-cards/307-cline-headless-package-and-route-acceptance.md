@@ -1,6 +1,6 @@
 # 307 Cline Headless Package And Route Acceptance
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-18
 Milestone: `../087-cline-headless-route.md`
@@ -20,10 +20,10 @@ Cline ACP documentation, release publication, registry publication, consumer edi
 
 ## Acceptance Criteria
 
-- [ ] focused and affected-package validation pass
-- [ ] `effigy check:examples` and `effigy qa:docs` pass
-- [ ] route, feature, guide, package, and architecture indexes agree
-- [ ] closeout records accepted, deferred, or rejected headless truth
+- [x] focused and affected-package validation pass
+- [x] `effigy check:examples` and `effigy qa:docs` pass
+- [x] route, feature, guide, package, and architecture indexes agree
+- [x] closeout records accepted, deferred, or rejected headless truth
 
 ## Validation
 

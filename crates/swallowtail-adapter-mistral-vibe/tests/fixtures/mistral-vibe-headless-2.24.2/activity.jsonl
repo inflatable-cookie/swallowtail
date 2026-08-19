@@ -1,0 +1,13 @@
+{"case":"assistant-text","entry":{"type":"message","role":"assistant","generationStatus":"completed","content":[{"type":"text","text":"Vibe display text."}]},"expected":{"semantics":"content_delta","portable":"assistant_message"}}
+{"case":"user-prompt","entry":{"type":"message","role":"user","generationStatus":"completed","content":[{"type":"text","text":"opaque fixture prompt"}]},"expected":{"portable":"run_metadata","agent_activity":false}}
+{"case":"reasoning","entry":{"type":"reasoning","generationStatus":"completed","text":"Vibe readable thought update."},"expected":{"semantics":"content_delta","portable":"reasoning_summary_candidate","disclosure":"provider_display_content"}}
+{"case":"effect-tool","entry":{"type":"effect","generationStatus":"completed","title":"read","detail":{"private":"excluded"},"state":{"status":"completed"}},"expected":{"semantics":"terminal_update","portable":"provider_tool","rawInput":"excluded","rawOutput":"excluded"}}
+{"case":"callback-deny","entry":{"type":"callback","generationStatus":"completed","callbackId":"opaque-fixture-callback","title":"approval","state":{"status":"open"}},"expected":{"semantics":"observe_and_deny","allow":false}}
+{"case":"notice-status","entry":{"type":"notice","generationStatus":"completed","level":"info","message":"opaque fixture notice"},"expected":{"portable":"run_metadata","agent_activity":false}}
+{"case":"in-progress-not-streamed","entry":{"type":"message","role":"assistant","generationStatus":"in_progress","content":[{"type":"text","text":"partial"}]},"expected":{"semantics":"not_emitted_on_selected_wire"}}
+{"case":"unknown-entry-type","entry":{"type":"vibe_future_entry","generationStatus":"completed"},"expected":{"semantics":"fail_closed_framing"}}
+{"case":"acp-jsonrpc-is-not-headless","entry":{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}},"expected":{"semantics":"reject_as_vibe_acp_not_this_route"}}
+{"case":"json-dump-array-wrong-wire","entry":[{"type":"message","role":"assistant"}],"expected":{"semantics":"fail_closed_wrong_wire"}}
+{"case":"teleport-wrap-unmapped","entry":{"history":[],"teleportUrl":"opaque"},"expected":{"semantics":"fail_closed_wrong_wire","unmapped":true}}
+{"case":"limit-stderr","stderr":"The configured conversation limit was reached","exit":1,"expected":{"semantics":"separate_terminal_truth","stop_reason":"bounded_limit"}}
+{"case":"host-abort","expected":{"semantics":"separate_terminal_truth","stop_reason":"cancelled"}}

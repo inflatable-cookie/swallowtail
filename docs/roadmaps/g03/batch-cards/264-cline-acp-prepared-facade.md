@@ -1,6 +1,6 @@
 # 264 Cline ACP Prepared Facade
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-18
 Milestone: `../086-cline-acp-route.md`
@@ -20,10 +20,10 @@ generic routing, automatic model/provider selection, public session management, 
 
 ## Acceptance Criteria
 
-- [ ] preparation fails closed on missing or mismatched authority
-- [ ] preflight names exact ACP route and version axis
-- [ ] operation drains bounded events to terminal cleanup truth
-- [ ] prepared-facade tests pass
+- [x] preparation fails closed on missing or mismatched authority
+- [x] preflight names exact ACP route and version axis
+- [x] operation drains bounded events to terminal cleanup truth
+- [x] prepared-facade tests pass
 
 ## Validation
 

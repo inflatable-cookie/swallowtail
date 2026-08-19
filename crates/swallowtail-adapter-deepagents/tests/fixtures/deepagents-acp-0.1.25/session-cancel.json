@@ -1,0 +1,9 @@
+{
+  "notification": {
+    "jsonrpc": "2.0",
+    "method": "session/cancel",
+    "params": { "sessionId": "opaque-fixture-session" }
+  },
+  "process_cleanup": ["join-or-kill"],
+  "source": "deepagents-acp@0.1.25 dist/cli.js handleCancel AbortController"
+}

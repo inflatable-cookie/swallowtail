@@ -1,0 +1,102 @@
+{
+  "cases": [
+    {
+      "id": "malformed-json",
+      "input": "{",
+      "expected": "fail_closed_framing"
+    },
+    {
+      "id": "invalid-jsonrpc-version",
+      "input": { "jsonrpc": "1.0", "id": 1, "method": "initialize", "params": {} },
+      "expected": "fail_closed_framing"
+    },
+    {
+      "id": "unknown-method",
+      "input": { "jsonrpc": "2.0", "id": 1, "method": "session/list", "params": {} },
+      "expected": "method_not_found_or_unmapped"
+    },
+    {
+      "id": "prompt-unknown-session",
+      "input": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "method": "session/prompt",
+        "params": { "sessionId": "missing", "prompt": [{ "type": "text", "text": "x" }] }
+      },
+      "expected": "fail_closed"
+    },
+    {
+      "id": "docs-content-field-rejected",
+      "input": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "method": "session/prompt",
+        "params": { "sessionId": "opaque-fixture-session", "content": [{ "type": "text", "text": "x" }] }
+      },
+      "expected": "fail_closed_prompt_field_required"
+    },
+    {
+      "id": "oversized-frame",
+      "expected": "fail_closed_bounds"
+    },
+    {
+      "id": "post-terminal-extra",
+      "expected": "fail_closed_or_ignore_after_terminal"
+    },
+    {
+      "id": "headless-is-not-stdio-acp",
+      "argv": ["kiro-cli", "chat", "--no-interactive"],
+      "expected": "reject_as_kiro_headless_not_this_route"
+    },
+    {
+      "id": "cloud-unmapped",
+      "argv": ["kiro-cli", "acp", "--cloud"],
+      "expected": "do_not_select_as_swallowtail_argv"
+    },
+    {
+      "id": "agent-flag-unmapped",
+      "argv": ["kiro-cli", "acp", "--agent", "my-agent"],
+      "expected": "do_not_select_as_swallowtail_argv"
+    },
+    {
+      "id": "trust-all-tools-not-swallowtail-authority",
+      "argv": ["kiro-cli", "chat", "--no-interactive", "--trust-all-tools"],
+      "expected": "do_not_select_as_swallowtail_authority"
+    },
+    {
+      "id": "session-load-unmapped",
+      "method": "session/load",
+      "expected": "unmapped_on_first_driver"
+    },
+    {
+      "id": "set-mode-unmapped",
+      "method": "session/set_mode",
+      "expected": "unmapped_on_first_driver"
+    },
+    {
+      "id": "set-model-unmapped",
+      "method": "session/set_model",
+      "expected": "unmapped_on_first_driver"
+    },
+    {
+      "id": "kiro-dev-extensions-unmapped",
+      "method": "_kiro.dev/commands/execute",
+      "expected": "unmapped_on_first_driver"
+    },
+    {
+      "id": "login-not-swallowtail",
+      "command": "kiro-cli login",
+      "expected": "host_owned_not_adapter_login"
+    },
+    {
+      "id": "npm-kiro-cli-not-official",
+      "package": "kiro-cli",
+      "expected": "reject_as_unofficial_npm_name"
+    },
+    {
+      "id": "chat-binary-is-not-acp",
+      "argv": ["kiro-cli-chat"],
+      "expected": "reject_as_tui_not_this_route"
+    }
+  ]
+}

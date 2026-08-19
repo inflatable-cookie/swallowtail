@@ -1,0 +1,77 @@
+{
+  "axis": "qoder.package",
+  "route": "qoder.headless",
+  "observed_at": "2026-08-19",
+  "npm_package": "@qoder-ai/qodercli",
+  "host": {
+    "present": false,
+    "qoder": false,
+    "qodercli": false
+  },
+  "official": {
+    "version": "1.1.25",
+    "source": "official-npm-tarball",
+    "published_at": "2026-08-18T10:57:38.729Z",
+    "latest_on": "2026-08-19",
+    "tarball_sha256": "627749221c609bfb5514f4486fb42f464597cf49472ed52c087c36a1d2fbb4ab",
+    "integrity": "sha512-Z1U7W+RBtnHVxiqt8eCySMwxkGXaGzkFQNFbI5QPpkGSAY4Mz2WTLrI+1l2x5tnK4ftru/PkS1jEDnogJV8Tpw==",
+    "shasum": "16374dc8b576e263a74f934c10a00a07d03fcd63",
+    "file_count": 33,
+    "unpacked_size": 62086670,
+    "bin_qodercli": "bundle/qodercli.js",
+    "bin_qoder": "bundle/qoder-npm-dispatcher.cjs",
+    "git_head": null,
+    "repository": null,
+    "acp_registry_id": "qoder",
+    "acp_registry_version": "0.2.14",
+    "acp_registry_package": "@qoder-ai/qodercli@0.2.14",
+    "acp_registry_args": ["--acp"],
+    "optional_ripgrep_not_extracted": {
+      "darwin-arm64": {
+        "package": "@qoder-ai/qodercli-ripgrep-darwin-arm64@1.1.25",
+        "integrity": "sha512-L7i4wufeBtsMqDEo41zbOTLIFNzBF69P0kNHqBVHVFfCjMgTLwZl4t2UZeWgt2v/Y0YCbJpbEo5/kcUU67ONlQ==",
+        "extracted": false
+      }
+    }
+  },
+  "tagged_headless_sources": {
+    "package.json": "459d820e451a6bdfd34c9799a841f2bcb66eaae155316e497cb1b12d44b53310",
+    "bundle/qoder-npm-dispatcher.cjs": "f8aabc49f26ec4a8c98302cf239d5e1a6e4c1efaccea18cdf8b2ad147de6cb6a",
+    "bundle/qodercli.js": "77f7387974d5df79c7127bb41c9c7be8aad82aa567512ca2d9f780b2e3f73d52",
+    "postinstall.cjs": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220"
+  },
+  "identity_decision": {
+    "shape": "new-route",
+    "entrypoint": [
+      "qodercli",
+      "--print",
+      "--output-format",
+      "stream-json",
+      "--permission-mode",
+      "dont_ask",
+      "--max-turns",
+      "--no-session-persistence"
+    ],
+    "prompt_argv_operand": true,
+    "hidden_prompt_flag_unselected": true,
+    "stdin_prompt_unselected": true,
+    "selected_output": "stream-json",
+    "json_dump_at_end_sibling": true,
+    "flatten_onto_acp": false,
+    "flatten_onto_sdk_stdio": false,
+    "flatten_onto_tui": false,
+    "flatten_onto_continue_or_resume": false,
+    "pass_yolo_or_bypass": false,
+    "omit_permission_mode_inherits_host_default": true,
+    "pass_permission_mode_dont_ask": true,
+    "require_max_turns": true,
+    "require_no_session_persistence": true,
+    "run_login": false,
+    "bind_pat_credential_lease": false,
+    "provider_prompt_sent": false,
+    "live_prompt_run": false,
+    "host_install_changed": false,
+    "platform_ripgrep_extracted": false,
+    "claim_change_in_card": false
+  }
+}

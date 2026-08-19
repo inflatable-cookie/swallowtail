@@ -1,6 +1,6 @@
 # 293 Kiro Headless Prepared Facade
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-18
 Milestone: `../094-kiro-headless-route.md`
@@ -8,7 +8,7 @@ Depends on: Card 292; Contracts 005-006, 009-011, 017, 023, 029, 032-033, 036-03
 
 ## Goal
 
-Expose `kiro.headless` through an adapter-local prepared constructor only after authority and cleanup are proven.
+Expose `kiro.acp` through an adapter-local prepared constructor only after authority and cleanup are proven.
 
 ## Scope
 
@@ -20,10 +20,10 @@ consumer product workflows, automatic route selection, generic provider options,
 
 ## Acceptance Criteria
 
-- [ ] Preparation fails closed on missing or mismatched authority.
-- [ ] Preflight records route, topology, version axis, and cleanup posture.
-- [ ] Operation reaches terminal truth with bounded event delivery.
-- [ ] Host identity and remote attachment rules are explicit where relevant.
+- [x] Preparation fails closed on missing or mismatched authority.
+- [x] Preflight records route, topology, version axis, and cleanup posture.
+- [x] Operation reaches terminal truth with bounded event delivery.
+- [x] Host identity and remote attachment rules are explicit where relevant.
 
 ## Validation
 
@@ -39,4 +39,7 @@ Continue to card 294 after prepared-facade tests pass.
 
 ## Evidence
 
-Cards 291-292; Contracts 005-006, 009-011, 017, 023, 029, 032-033, 036-037, 039-045, 051-052
+Cards 291-292; Research 156; `docs/logs/2026-08-19-kiro-acp-prepared-facade.md`.
+`effigy validate:focused swallowtail-adapter-kiro` passed (30 tests,
+Clippy warnings denied). `effigy package:verify-affected swallowtail-adapter-kiro`
+passed. No live install, login, or prompt. Production claim stays card 294.

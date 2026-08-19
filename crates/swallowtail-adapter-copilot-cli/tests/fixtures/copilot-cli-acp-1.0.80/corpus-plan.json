@@ -1,0 +1,20 @@
+{
+  "package": "swallowtail-adapter-copilot-cli",
+  "route": "copilot-cli.acp",
+  "decoder_corpus": "copilot-cli-acp-1.0.80",
+  "maturity": "public-preview",
+  "card_271_must_cover": [
+    "identity.json",
+    "protocol.json",
+    "initialize.json",
+    "session-new.json",
+    "session-prompt.json",
+    "session-cancel.json",
+    "permission.json",
+    "activity.jsonl",
+    "negative-cases.json"
+  ],
+  "first_driver_op": "initialize plus session/new plus one bounded session/prompt",
+  "create_package_in_card": 271,
+  "no_production_claim_in_card": 270
+}

@@ -1,0 +1,7 @@
+{
+  "method": "session/request_permission",
+  "official_example_outcome": "cancelled",
+  "options_not_recovered_from_public_source": true,
+  "swallowtail_default": "observe and cancel; do not auto-select allow_always, allow_all, or --yolo",
+  "source": "official ACP server docs requestPermission cancelled outcome at Copilot CLI 1.0.80 identity"
+}

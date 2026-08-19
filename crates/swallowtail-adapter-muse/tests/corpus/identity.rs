@@ -2,10 +2,8 @@ use serde_json::Value;
 use swallowtail_adapter_muse::{MUSE_CODE_RELEASE_REVISION, muse_headless_claim};
 use swallowtail_core::InterfaceVersion;
 
-const CANDIDATE: &str =
-    include_str!("../fixtures/muse-code-0.2.1-R1215.1/artifact.json");
-const ECHO_SUMMARY: &str =
-    include_str!("../fixtures/muse-code-0.2.1-R1215.1/echo-summary.json");
+const CANDIDATE: &str = include_str!("../fixtures/muse-code-0.2.1-R1215.1/artifact.json");
+const ECHO_SUMMARY: &str = include_str!("../fixtures/muse-code-0.2.1-R1215.1/echo-summary.json");
 const VERSION: &str = include_str!("../fixtures/muse-code-0.2.1-R1215.1/version.txt");
 const OLD_ECHO: &str = include_str!("../fixtures/muse-code-0.1.0-R708.1/echo-success.jsonl");
 
@@ -16,7 +14,10 @@ fn host_0_2_1_identity_is_the_opaque_qualified_pin() {
 
     assert_eq!(VERSION.trim(), "Muse Code 0.2.1 (0.2.1-R1215.1)");
     assert_eq!(artifact["release"], "0.2.1-R1215.1");
-    assert_eq!(artifact["reported_version"], "Muse Code 0.2.1 (0.2.1-R1215.1)");
+    assert_eq!(
+        artifact["reported_version"],
+        "Muse Code 0.2.1 (0.2.1-R1215.1)"
+    );
     assert_eq!(artifact["payload"]["basename"], "muse-bin-0.2.1-R1215.1");
     assert_eq!(
         artifact["payload"]["sha256"],
@@ -25,18 +26,33 @@ fn host_0_2_1_identity_is_the_opaque_qualified_pin() {
     assert_eq!(artifact["payload"]["team_identifier"], "V9WTTPBFK9");
     assert_eq!(artifact["payload"]["selected_as_runtime_artifact"], true);
     assert_eq!(artifact["launcher"]["selected_as_runtime_artifact"], false);
-    assert_eq!(artifact["direct_payload_probe"]["echo_jsonl_succeeded"], true);
-    assert_eq!(artifact["direct_payload_probe"]["meta_provider_used"], false);
-    assert_eq!(artifact["direct_payload_probe"]["provider_prompt_sent"], false);
-
-    assert_eq!(artifact["claim_at_observation"]["qualified_revision"], "0.1.0-R708.1");
-    assert_eq!(artifact["claim_at_observation"]["posture"], "qualified_only");
-    assert_eq!(artifact["claim_at_observation"]["scheme"], "opaque");
     assert_eq!(
-        artifact["identity_decision"]["shape"],
-        "opaque-pin-move"
+        artifact["direct_payload_probe"]["echo_jsonl_succeeded"],
+        true
     );
-    assert_eq!(artifact["identity_decision"]["keep_both_opaque_segments"], false);
+    assert_eq!(
+        artifact["direct_payload_probe"]["meta_provider_used"],
+        false
+    );
+    assert_eq!(
+        artifact["direct_payload_probe"]["provider_prompt_sent"],
+        false
+    );
+
+    assert_eq!(
+        artifact["claim_at_observation"]["qualified_revision"],
+        "0.1.0-R708.1"
+    );
+    assert_eq!(
+        artifact["claim_at_observation"]["posture"],
+        "qualified_only"
+    );
+    assert_eq!(artifact["claim_at_observation"]["scheme"], "opaque");
+    assert_eq!(artifact["identity_decision"]["shape"], "opaque-pin-move");
+    assert_eq!(
+        artifact["identity_decision"]["keep_both_opaque_segments"],
+        false
+    );
     assert_eq!(
         artifact["identity_decision"]["reuse_behavior_revision"],
         "muse-code.events-v1"
@@ -74,11 +90,9 @@ fn host_0_2_1_identity_is_the_opaque_qualified_pin() {
 
     assert_eq!(MUSE_CODE_RELEASE_REVISION, "0.2.1-R1215.1");
     assert!(
-        muse_headless_claim()
-            .supports(&InterfaceVersion::new("0.2.1-R1215.1").expect("new pin"))
+        muse_headless_claim().supports(&InterfaceVersion::new("0.2.1-R1215.1").expect("new pin"))
     );
     assert!(
-        !muse_headless_claim()
-            .permits(&InterfaceVersion::new("0.1.0-R708.1").expect("old pin"))
+        !muse_headless_claim().permits(&InterfaceVersion::new("0.1.0-R708.1").expect("old pin"))
     );
 }

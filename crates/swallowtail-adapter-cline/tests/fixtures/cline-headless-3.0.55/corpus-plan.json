@@ -1,0 +1,19 @@
+{
+  "package": "swallowtail-adapter-cline",
+  "route": "cline.headless",
+  "decoder_corpus": "cline-headless-3.0.55",
+  "reuse_existing_package": true,
+  "card_305_must_cover": [
+    "identity.json",
+    "protocol.json",
+    "command.json",
+    "success.jsonl",
+    "abort.jsonl",
+    "stderr-error.jsonl",
+    "activity.jsonl",
+    "negative-cases.json"
+  ],
+  "first_driver_op": "one bounded cline --json --auto-approve false print run",
+  "no_production_claim_in_card": 304,
+  "no_headless_claim_until_card": 305
+}

@@ -1,0 +1,59 @@
+{
+  "axis": "deepagents-acp.package",
+  "route": "deepagents.acp",
+  "observed_at": "2026-08-19",
+  "host": {
+    "present": false
+  },
+  "official": {
+    "version": "0.1.25",
+    "source": "official-npm-package",
+    "npm_package": "deepagents-acp",
+    "published": "2026-08-14T16:43:46.024Z",
+    "integrity": "sha512-5S6Rpd74vV3YKVxAEqQkXKek+y1ChTpL0D2xf+WLaAYneJQZ9haZ4lPgjPy2VvszqErVsSr+T5tq8vdjuAWShQ==",
+    "tarball_url": "https://registry.npmjs.org/deepagents-acp/-/deepagents-acp-0.1.25.tgz",
+    "tarball_sha256": "6a56fa60e985a0681217cd20b1e21c0f7782fb10ebed6728f2865346ba137141",
+    "package_json_sha256": "cddb5563aafc9fc22e67760c2ac906187c69e83d1ed73c36ae13db04c35cdb5e",
+    "cli_js_sha256": "68b7d6cb31d181a399f623a4c6486892bf7d408aec61cac0a3ea9e033baa2319",
+    "acp_docs_url": "https://docs.langchain.com/oss/javascript/deepagents/acp",
+    "acp_docs_html_sha256": "1fb8f2821788368e4b1667f2dfae6edfa3071ce943480ea5f3ff0c3f28809663",
+    "repository": "https://github.com/langchain-ai/deepagentsjs",
+    "binary": "deepagents-acp",
+    "bin_path": "dist/cli.js",
+    "runtime_dependencies": {
+      "@agentclientprotocol/sdk": "^1.1.0",
+      "deepagents": "1.12.4"
+    },
+    "acp_registry_id": "deepagents",
+    "acp_registry_version": "0.1.7",
+    "acp_registry_npx_package": "deepagents-acp@0.1.7",
+    "acp_registry_sha256": "2365b837490cdb35f828d8bc5d25ea1bdb8aaf1c0dd5b5fbea239c1b1c2b8ba4",
+    "tarball_extracted_for_inspection": true,
+    "tarball_installed": false
+  },
+  "identity_decision": {
+    "shape": "new-route",
+    "entrypoint": ["deepagents-acp"],
+    "wrap_npx": false,
+    "wrap_library_start_server": false,
+    "wrap_custom_tsx": false,
+    "wrap_python_deepagents": false,
+    "pass_name_flag": false,
+    "pass_model_flag": false,
+    "pass_workspace_flag": false,
+    "pass_skills_flag": false,
+    "pass_memory_flag": false,
+    "pass_debug_flag": false,
+    "bind_anthropic_api_key_lease": false,
+    "bind_openai_api_key_lease": false,
+    "map_session_load": false,
+    "map_session_set_mode": false,
+    "map_slash_commands": false,
+    "select_allow_always": false,
+    "treat_agentinfo_version_as_package": false,
+    "inherit_registry_0_1_7": false,
+    "provider_prompt_sent": false,
+    "live_acp_initialize": false,
+    "host_install_changed": false
+  }
+}

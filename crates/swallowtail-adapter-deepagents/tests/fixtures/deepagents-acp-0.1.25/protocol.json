@@ -1,0 +1,81 @@
+{
+  "selected_command": ["deepagents-acp"],
+  "transport": "stdio-jsonrpc",
+  "protocol_version": 1,
+  "first_op": ["initialize", "session/new", "session/prompt"],
+  "selected_methods": [
+    "initialize",
+    "session/new",
+    "session/prompt",
+    "session/cancel"
+  ],
+  "advertised_unmapped": [
+    "session/load",
+    "session/set_mode",
+    "authenticate",
+    "available_commands_update"
+  ],
+  "initialize": {
+    "result_recovered_from_public_source": true,
+    "cli_agent_info": {
+      "name": "deepagents-acp",
+      "version": "0.0.1",
+      "version_is_constructor_default_not_npm": true
+    },
+    "official_capabilities": {
+      "loadSession": true,
+      "promptCapabilities": {
+        "image": true,
+        "audio": false,
+        "embeddedContext": true
+      },
+      "mcpCapabilities": { "http": false, "sse": false },
+      "sessionCapabilities": { "modes": true, "commands": true }
+    },
+    "swallowtail_request_advertises_host_fs_and_terminal_false": true
+  },
+  "authority": {
+    "credential": "host-owned ANTHROPIC_API_KEY or OPENAI_API_KEY in isolated env; Swallowtail does not authenticate",
+    "working_resource": "owned child cwd; session/new cwd is ignored by the server",
+    "cleanup": "cancel in-flight prompt, join or kill owned child",
+    "session_state": "in-process Map plus MemorySaver; not durable across process restart",
+    "swallowtail_passes_npx": false,
+    "swallowtail_passes_model_flag": false,
+    "swallowtail_passes_workspace_flag": false,
+    "swallowtail_selects_allow_always": false
+  },
+  "prompt": {
+    "field": "prompt",
+    "text_blocks_selected": true,
+    "image_advertised_unmapped": true
+  },
+  "permission": {
+    "options_recovered_from_public_source": [
+      "allow-once",
+      "allow-always",
+      "reject-once",
+      "reject-always"
+    ],
+    "allow_always_unselected": true,
+    "source_allow_on_permission_error_not_swallowtail_policy": true
+  },
+  "session_updates_mapped": [
+    "agent_message_chunk",
+    "tool_call",
+    "tool_call_update"
+  ],
+  "unmapped_cli": [
+    "npx",
+    "--name",
+    "--model",
+    "--workspace",
+    "--skills",
+    "--memory",
+    "--debug",
+    "--log-file"
+  ],
+  "decoder_corpus": "deepagents-acp-0.1.25",
+  "provider_prompt_sent": false,
+  "live_acp_initialize": false,
+  "host_install_changed": false
+}

@@ -1,6 +1,6 @@
 # 276 Mistral Vibe Headless Prepared Facade
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-18
 Milestone: `../090-mistral-vibe-headless-route.md`
@@ -20,10 +20,10 @@ consumer workflow policy, generic routing, automatic model/provider selection, p
 
 ## Acceptance Criteria
 
-- [ ] Preparation fails closed on missing or mismatched authority.
-- [ ] Preflight names exact route and version axis.
-- [ ] Prepared operation drains bounded events to terminal cleanup truth.
-- [ ] Local and remote-authoritative host behavior is explicit where supported.
+- [x] Preparation fails closed on missing or mismatched authority.
+- [x] Preflight names exact route and version axis.
+- [x] Prepared operation drains bounded events to terminal cleanup truth.
+- [x] Local and remote-authoritative host behavior is explicit where supported.
 
 ## Validation
 

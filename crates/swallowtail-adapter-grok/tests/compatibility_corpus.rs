@@ -1,13 +1,17 @@
 use serde_json::Value;
 use std::collections::BTreeSet;
 use swallowtail_adapter_grok::{GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, grok_build_acp_claim};
-use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceSupportStatus, InterfaceVersion};
+use swallowtail_core::{
+    InterfaceCompatibilityAssessment, InterfaceSupportStatus, InterfaceVersion,
+};
 
 const CORPUS: &str = include_str!("fixtures/grok-build-0.2.114-0.2.117/compatibility.json");
 const RECOVERY_CORPUS: &str =
     include_str!("fixtures/grok-build-0.2.114-0.2.117/continuation-recovery.json");
 const IDENTITY_1_0_4: &str = include_str!("fixtures/grok-1-0-4-identity.json");
 const HANDSHAKE_1_0_4: &str = include_str!("fixtures/grok-1-0-4/compatibility.json");
+const IDENTITY_1_0_5: &str = include_str!("fixtures/grok-1-0-5-identity.json");
+const HANDSHAKE_1_0_5: &str = include_str!("fixtures/grok-1-0-5/compatibility.json");
 
 fn corpus() -> Value {
     serde_json::from_str(CORPUS).expect("Grok Build compatibility corpus is valid JSON")
@@ -103,9 +107,9 @@ fn task_control_behavior_changes_only_at_0_2_117_without_new_authority() {
 
 #[test]
 fn production_claim_matches_the_frozen_segments() {
-    assert_eq!(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, "1.0.4");
+    assert_eq!(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, "1.0.5");
     let claim = grok_build_acp_claim();
-    for candidate in ["0.2.114", "0.2.115", "0.2.116", "0.2.117", "1.0.4"] {
+    for candidate in ["0.2.114", "0.2.115", "0.2.116", "0.2.117", "1.0.4", "1.0.5"] {
         assert!(claim.supports(&version(candidate)));
     }
     assert!(matches!(
@@ -115,6 +119,11 @@ fn production_claim_matches_the_frozen_segments() {
     ));
     assert!(matches!(
         claim.assess(&version("1.0.4")),
+        InterfaceCompatibilityAssessment::Qualified(matched)
+            if matched.support_status() == InterfaceSupportStatus::Maintained
+    ));
+    assert!(matches!(
+        claim.assess(&version("1.0.5")),
         InterfaceCompatibilityAssessment::Qualified(matched)
             if matched.support_status() == InterfaceSupportStatus::Maintained
     ));
@@ -178,7 +187,7 @@ fn identity_and_handshake_qualify_1_0_4_as_same_axis_milestone() {
     assert_eq!(handshake["provider_prompt_sent"], false);
     assert_eq!(handshake["session_resume_qualified"], false);
 
-    assert_eq!(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, "1.0.4");
+    assert_eq!(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, "1.0.5");
     let claim = grok_build_acp_claim();
     assert!(matches!(
         claim.assess(&version("1.0.4")),
@@ -187,6 +196,84 @@ fn identity_and_handshake_qualify_1_0_4_as_same_axis_milestone() {
     assert_eq!(
         claim
             .assess(&version("1.0.4"))
+            .behavior_revision()
+            .unwrap()
+            .as_str(),
+        "grok-build.acp-v1.cached-token-model-4-6-v3"
+    );
+}
+
+#[test]
+fn identity_and_handshake_qualify_1_0_5_as_compatible_extension() {
+    let identity: Value =
+        serde_json::from_str(IDENTITY_1_0_5).expect("Grok 1.0.5 identity corpus is valid JSON");
+    assert_eq!(identity["axis"], "grok-build.executable");
+    assert_eq!(identity["version"], "1.0.5");
+    assert_eq!(identity["npm_package"], "@xai-official/grok");
+    assert_eq!(identity["npm_latest"], true);
+    assert_eq!(
+        identity["npm_integrity"],
+        "sha512-kk5hez+Oz5CvWonDGkMNmL483CWRIGRF2ki8jQzpIXH56P0fhCgaX9lrr0IUoFCKh/rYAm5vfCPgQsdIIYLu8Q=="
+    );
+    assert_eq!(identity["source_revision"], "5115b46bc909");
+    assert_eq!(identity["local_cli"], "grok 1.0.5 (5115b46bc909) [stable]");
+    assert_eq!(identity["alpha_ignored"], "1.0.6");
+    assert!(is_sha256(
+        identity["local_executable_sha256"]
+            .as_str()
+            .expect("executable digest is text")
+    ));
+    let decision = &identity["identity_decision"];
+    assert_eq!(decision["shape"], "compatible-extension");
+    assert_eq!(
+        decision["reuse_behavior_revision"],
+        "grok-build.acp-v1.cached-token-model-4-6-v3"
+    );
+    assert_eq!(decision["raise_latest_qualified_to"], "1.0.5");
+    assert_eq!(decision["keep_1_0_4_floor"], true);
+    assert_eq!(decision["ignore_alpha_1_0_6"], true);
+    assert_eq!(decision["new_milestone"], false);
+    assert_eq!(decision["provider_prompt_sent"], false);
+    assert_eq!(
+        identity["claim_at_observation"]["latest_qualified_before"],
+        "1.0.4"
+    );
+
+    let handshake: Value =
+        serde_json::from_str(HANDSHAKE_1_0_5).expect("Grok 1.0.5 handshake corpus is valid JSON");
+    assert_eq!(handshake["version"], "1.0.5");
+    assert_eq!(handshake["acp_protocol_version"], 1);
+    assert_eq!(handshake["agent_version"], "1.0.5");
+    assert_eq!(handshake["load_session"], true);
+    assert_eq!(
+        handshake["auth_methods"],
+        serde_json::json!(["cached_token", "grok.com"])
+    );
+    assert_eq!(handshake["default_auth_method"], "cached_token");
+    assert_eq!(handshake["models"], serde_json::json!(["grok-4.6"]));
+    assert_eq!(
+        handshake["efforts"],
+        serde_json::json!(["xhigh", "high", "medium", "low"])
+    );
+    assert_eq!(
+        handshake["candidate_behavior_revision"],
+        "grok-build.acp-v1.cached-token-model-4-6-v3"
+    );
+    assert_eq!(handshake["authenticate_ok"], true);
+    assert_eq!(handshake["session_new_ok"], true);
+    assert_eq!(handshake["provider_prompt_sent"], false);
+    assert_eq!(handshake["session_resume_qualified"], false);
+
+    assert_eq!(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, "1.0.5");
+    let claim = grok_build_acp_claim();
+    assert!(matches!(
+        claim.assess(&version("1.0.5")),
+        InterfaceCompatibilityAssessment::Qualified(matched)
+            if matched.support_status() == InterfaceSupportStatus::Maintained
+    ));
+    assert_eq!(
+        claim
+            .assess(&version("1.0.5"))
             .behavior_revision()
             .unwrap()
             .as_str(),

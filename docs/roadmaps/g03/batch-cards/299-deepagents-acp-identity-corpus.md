@@ -1,10 +1,10 @@
 # 299 Deep Agents ACP Identity Corpus
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-18
 Milestone: `../096-deep-agents-acp-route.md`
-Depends on: Card 286; Research 143
+Depends on: Card 286; Research 153; g03.094 closeout
 
 ## Goal
 
@@ -20,10 +20,10 @@ driver implementation, prepared API, production matrix changes, live provider wo
 
 ## Acceptance Criteria
 
-- [ ] Source identity and route disposition are explicit.
-- [ ] Route adds material information gain or records why it does not.
-- [ ] Authority and cleanup boundaries are named.
-- [ ] No claim changes before driver work.
+- [x] Source identity and route disposition are explicit.
+- [x] Route adds material information gain or records why it does not.
+- [x] Authority and cleanup boundaries are named.
+- [x] No claim changes before driver work.
 
 ## Validation
 
@@ -39,4 +39,6 @@ Continue to card 300 only after route identity is admitted.
 
 ## Evidence
 
-Research 143; https://github.com/langchain-ai/deepagents; https://cdn.agentclientprotocol.com/registry/v1/latest/registry.json
+Research 157; `docs/logs/2026-08-19-deepagents-acp-0-1-25-identity.md`;
+fixtures under `crates/swallowtail-adapter-deepagents/tests/fixtures/deepagents-acp-0.1.25/`.
+Admitted first-party npm `deepagents-acp@0.1.25` stdio ACP. No production claim.

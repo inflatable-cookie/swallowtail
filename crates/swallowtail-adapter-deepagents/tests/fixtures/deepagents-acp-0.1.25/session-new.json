@@ -1,0 +1,22 @@
+{
+  "request": {
+    "jsonrpc": "2.0",
+    "id": 2,
+    "method": "session/new",
+    "params": {
+      "cwd": "/tmp/swallowtail-fixture-cwd",
+      "mcpServers": []
+    }
+  },
+  "response_shape": {
+    "sessionId": "opaque-fixture-session",
+    "modes": {
+      "currentModeId": "agent"
+    }
+  },
+  "cwd_gate": "server ignores session/new cwd; working resource is owned child cwd at spawn",
+  "mcp_servers_empty_on_first_driver": true,
+  "auth_gate": "requires host ANTHROPIC_API_KEY for default Claude model; Swallowtail does not authenticate",
+  "source": "deepagents-acp@0.1.25 dist/cli.js handleNewSession",
+  "live_acp_initialize": false
+}

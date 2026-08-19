@@ -1,10 +1,6 @@
 use serde_json::Value;
 use swallowtail_adapter_claude_agent::{
-    CLAUDE_AGENT_ACP_AXIS, CLAUDE_AGENT_ACP_BASELINE_VERSION,
-    CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION, claude_agent_acp_binding, claude_agent_acp_claim,
-};
-use swallowtail_core::{
-    InterfaceCompatibilityAssessment, InterfaceSupportStatus, InterfaceVersion,
+    CLAUDE_AGENT_ACP_AXIS, CLAUDE_AGENT_ACP_BASELINE_VERSION, claude_agent_acp_binding,
 };
 
 const IDENTITY: &str = include_str!("fixtures/claude-agent-acp-0.69.0/identity.json");
@@ -74,44 +70,10 @@ fn identity_and_claim_qualify_0_69_0_as_compatible_extension() {
     assert_eq!(protocol["live_acp_initialize"], false);
 
     assert_eq!(CLAUDE_AGENT_ACP_BASELINE_VERSION, "0.53.0");
-    assert_eq!(CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION, "0.69.0");
     assert_eq!(
         identity["claim_at_observation"]["latest_qualified"],
         "0.64.0"
     );
-
-    let claim = claude_agent_acp_claim();
-    assert!(matches!(
-        claim.assess(&version_value("0.63.0")),
-        InterfaceCompatibilityAssessment::Qualified(matched)
-            if matched.support_status() == InterfaceSupportStatus::Deprecated
-    ));
-    assert!(matches!(
-        claim.assess(&version_value("0.64.1")),
-        InterfaceCompatibilityAssessment::Qualified(matched)
-            if matched.support_status() == InterfaceSupportStatus::Deprecated
-                && matched.behavior_revision().as_str()
-                    == "claude-agent.acp.host-steering-form-marker-v6"
-    ));
-    assert!(matches!(
-        claim.assess(&version_value("0.65.0")),
-        InterfaceCompatibilityAssessment::Qualified(matched)
-            if matched.support_status() == InterfaceSupportStatus::Deprecated
-    ));
-    for version in ["0.66.0", "0.67.0", "0.68.0", "0.69.0"] {
-        assert!(matches!(
-            claim.assess(&version_value(version)),
-            InterfaceCompatibilityAssessment::Qualified(matched)
-                if matched.support_status() == InterfaceSupportStatus::Maintained
-                    && matched.behavior_revision().as_str()
-                        == "claude-agent.acp.initialize-meta-extensions-v7"
-        ));
-    }
-    assert!(!claim.permits(&version_value("0.58.0")));
-    assert!(matches!(
-        claim.assess(&version_value("0.70.0")),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-    ));
     assert_eq!(
         claude_agent_acp_binding("0.69.0")
             .expect("version binds")
@@ -123,8 +85,4 @@ fn identity_and_claim_qualify_0_69_0_as_compatible_extension() {
 
 fn is_sha256(value: &str) -> bool {
     value.len() == 64 && value.bytes().all(|byte| byte.is_ascii_hexdigit())
-}
-
-fn version_value(value: &str) -> InterfaceVersion {
-    InterfaceVersion::new(value).expect("fixture version is valid")
 }

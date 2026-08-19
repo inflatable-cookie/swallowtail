@@ -191,21 +191,21 @@ fn baseline_private_thinking_remains_qualified_and_fail_closed() {
 fn provisional_newer_binds_init_and_exposes_version_diagnostics() {
     let host = swallowtail_core::ExecutionHostId::new("host.provisional").expect("host is valid");
     let observer = Arc::new(CapturingDebugObserver::default());
-    let prepared = prepared_at(host.clone(), "2.1.235", Some(Arc::clone(&observer)));
+    let prepared = prepared_at(host.clone(), "2.1.236", Some(Arc::clone(&observer)));
     assert!(matches!(
         prepared.observation().compatibility(),
         InstalledExecutableCompatibility::UnverifiedNewer(_)
     ));
     assert_eq!(
         prepared.observation().version().version().as_str(),
-        "2.1.235"
+        "2.1.236"
     );
     let run = profile(&prepared, "provisional");
     assert_eq!(
         run.evidence().observation().version().version().as_str(),
-        "2.1.235"
+        "2.1.236"
     );
-    let output = response_fixture("response-complete.jsonl").replacen("2.1.228", "2.1.235", 1);
+    let output = response_fixture("response-complete.jsonl").replacen("2.1.228", "2.1.236", 1);
     let (process, state) = FakeProcessService::completed(&output);
     let (services, task) = host_services(host, process, Arc::new(PendingTimeService));
     let services = services.with_diagnostic_observer(observer.clone());
@@ -232,7 +232,7 @@ fn provisional_newer_binds_init_and_exposes_version_diagnostics() {
                 && observation.route() == Some("claude-code.response-only")
                 && observation.stage() == Some(stage)
                 && observation.detail()
-                    == "observed_version=2.1.235; compatibility=unverified-newer"
+                    == "observed_version=2.1.236; compatibility=unverified-newer"
         }));
     }
 }

@@ -14,7 +14,7 @@ pub const GROK_BUILD_ACP_AXIS: &str = "grok-build.executable";
 /// Oldest qualified Grok Build version.
 pub const GROK_BUILD_ACP_BASELINE_VERSION: &str = "0.2.114";
 /// Most recent qualified Grok Build version.
-pub const GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION: &str = "1.0.4";
+pub const GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION: &str = "1.0.5";
 /// Stable identifier for Grok Build delegated subscription access.
 pub const GROK_BUILD_SUBSCRIPTION_ACCESS_PROFILE_ID: &str =
     "grok-build.subscription.delegated-oauth";
@@ -102,7 +102,8 @@ pub fn grok_build_acp_claim() -> InterfaceCompatibilityClaim {
                 behavior(GROK_BUILD_ACP_TASK_CONTROL_BEHAVIOR),
                 InterfaceSupportStatus::Deprecated,
             ),
-            InterfaceVersionSegment::exact(
+            InterfaceVersionSegment::new(
+                version("1.0.4").expect("static Grok version is valid"),
                 version(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION)
                     .expect("static Grok version is valid"),
                 behavior(GROK_BUILD_ACP_MODEL_4_6_BEHAVIOR),
@@ -118,7 +119,9 @@ pub fn grok_build_acp_claim() -> InterfaceCompatibilityClaim {
 /// Returns the qualified model id bound to a Grok behavior revision.
 pub fn grok_build_model_for_behavior(behavior_revision: &str) -> Option<&'static str> {
     match behavior_revision {
-        GROK_BUILD_ACP_BEHAVIOR | GROK_BUILD_ACP_TASK_CONTROL_BEHAVIOR => Some(GROK_BUILD_MODEL_4_5),
+        GROK_BUILD_ACP_BEHAVIOR | GROK_BUILD_ACP_TASK_CONTROL_BEHAVIOR => {
+            Some(GROK_BUILD_MODEL_4_5)
+        }
         GROK_BUILD_ACP_MODEL_4_6_BEHAVIOR => Some(GROK_BUILD_MODEL_4_6),
         _ => None,
     }
@@ -165,12 +168,13 @@ pub(crate) fn select_grok_acp_plan(
             "Grok Build ACP behavior is not mapped by this driver",
         )
     })?;
-    let expected_model = grok_build_model_for_behavior(behavior_revision.as_str()).ok_or_else(|| {
-        failure(
-            "swallowtail.grok.acp.behavior_incompatible",
-            "Grok Build ACP behavior is not mapped by this driver",
-        )
-    })?;
+    let expected_model =
+        grok_build_model_for_behavior(behavior_revision.as_str()).ok_or_else(|| {
+            failure(
+                "swallowtail.grok.acp.behavior_incompatible",
+                "Grok Build ACP behavior is not mapped by this driver",
+            )
+        })?;
     Ok(GrokPlanSelection {
         version: binding.version().clone(),
         expected_model,
@@ -199,9 +203,9 @@ mod tests {
     use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
 
     #[test]
-    fn segments_cover_0_2_windows_and_exact_1_0_4_milestone() {
+    fn segments_cover_0_2_windows_and_1_0_4_through_1_0_5() {
         let claim = grok_build_acp_claim();
-        for candidate in ["0.2.114", "0.2.115", "0.2.116", "0.2.117", "1.0.4"] {
+        for candidate in ["0.2.114", "0.2.115", "0.2.116", "0.2.117", "1.0.4", "1.0.5"] {
             assert!(claim.supports(&version(candidate)), "missing {candidate}");
         }
         for (candidate, behavior) in [
@@ -210,6 +214,7 @@ mod tests {
             ("0.2.116", GROK_BUILD_ACP_BEHAVIOR),
             ("0.2.117", GROK_BUILD_ACP_TASK_CONTROL_BEHAVIOR),
             ("1.0.4", GROK_BUILD_ACP_MODEL_4_6_BEHAVIOR),
+            ("1.0.5", GROK_BUILD_ACP_MODEL_4_6_BEHAVIOR),
         ] {
             assert_eq!(
                 claim
@@ -231,7 +236,10 @@ mod tests {
             "1.0.0",
             "1.0.3",
         ] {
-            assert!(!claim.permits(&version(rejected)), "unexpected permit {rejected}");
+            assert!(
+                !claim.permits(&version(rejected)),
+                "unexpected permit {rejected}"
+            );
         }
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
             claim.assess(&version("1.0.6"))
@@ -251,6 +259,10 @@ mod tests {
             Some(GROK_BUILD_MODEL_4_6)
         );
         assert_eq!(
+            grok_build_model_for_version(&version("1.0.5")),
+            Some(GROK_BUILD_MODEL_4_6)
+        );
+        assert_eq!(
             grok_build_model_for_version(&version("1.0.6")),
             Some(GROK_BUILD_MODEL_4_6)
         );
@@ -266,6 +278,7 @@ mod tests {
             GROK_BUILD_ACP_AXIS
         );
         assert!(grok_build_acp_binding("1.0.4").is_some());
+        assert!(grok_build_acp_binding("1.0.5").is_some());
         for rejected in [
             "",
             " 0.2.114",

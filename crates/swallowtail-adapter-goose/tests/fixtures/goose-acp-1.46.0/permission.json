@@ -1,0 +1,11 @@
+{
+  "method": "session/request_permission",
+  "options": [
+    { "optionId": "allow_always", "name": "allow_always", "kind": "allow_always" },
+    { "optionId": "allow_once", "name": "allow_once", "kind": "allow_once" },
+    { "optionId": "reject_once", "name": "reject_once", "kind": "reject_once" },
+    { "optionId": "reject_always", "name": "reject_always", "kind": "reject_always" }
+  ],
+  "swallowtail_default": "do not auto-select allow_always, reject_always, or GooseMode auto",
+  "source": "crates/goose/src/acp/server.rs handle_tool_permission_request at v1.46.0"
+}

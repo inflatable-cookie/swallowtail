@@ -36,6 +36,15 @@ fn every_qualified_claude_segment_has_exact_activity_provenance() {
         range["current_external_releases"][3]["profile"],
         "0.69.0-guarantee"
     );
+    assert_eq!(range["current_external_releases"][4]["version"], "0.70.0");
+    assert_eq!(
+        range["current_external_releases"][4]["classification"],
+        "qualified"
+    );
+    assert_eq!(
+        range["current_external_releases"][4]["profile"],
+        "0.70.0-guarantee"
+    );
 }
 
 #[test]

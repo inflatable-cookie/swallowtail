@@ -1,0 +1,15 @@
+{
+  "schema_derived_not_live": true,
+  "kind": "MessageEvent",
+  "id": "opaque-fixture-message",
+  "source": "agent",
+  "llm_message": {
+    "role": "assistant",
+    "content": [
+      {
+        "type": "text",
+        "text": "OpenHands display text."
+      }
+    ]
+  }
+}

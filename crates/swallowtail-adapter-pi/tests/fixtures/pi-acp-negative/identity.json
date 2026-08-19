@@ -1,0 +1,67 @@
+{
+  "axis": "pi.package",
+  "route": "pi.acp",
+  "observed_at": "2026-08-19",
+  "disposition": "negative",
+  "official_npm_package": "@earendil-works/pi-coding-agent",
+  "community_npm_package": "pi-acp",
+  "host": {
+    "present": true,
+    "version": "0.83.0",
+    "source": "installed-provider-artifact",
+    "artifact_kind": "node-dist-js",
+    "executable_sha256": "af302f231437eaf6f37691bce4b34234fcb626bcb5eb3910d4fc3f6519bf78ca",
+    "executable_size": 681,
+    "shebang": "#!/usr/bin/env node"
+  },
+  "official": {
+    "version": "0.84.2",
+    "source": "official-npm-tarball-metadata",
+    "npm_integrity": "sha512-l4E+B7hgXKWddRo8bC/eSue2aWZjEgJ9xIpf5p0Og+lq8a2TArCwJ0HCoCPCgaBP/tN4zbYH/wOwvx9pJpeLCA==",
+    "npm_shasum": "e4d4c1e769963c816959f5cea02a0a10ccc0495a",
+    "git_head": "914cf1472e715297caa30db4b9535d534a9eb718",
+    "repository": "https://github.com/earendil-works/pi",
+    "bin": "pi",
+    "native_acp_mode": false
+  },
+  "community": {
+    "version": "0.0.33",
+    "source": "community-npm-wrapper-tarball",
+    "published_at": "2026-07-30T17:06:15.441Z",
+    "npm_latest": true,
+    "npm_integrity": "sha512-vX9kY1tK14E72G4dBAx+RGCk/k7XPjTHls6dLUxA8WSkBav6B6JHuSBv3eusp50LCR/GTRsR2kIKsG0Z5jANzw==",
+    "npm_shasum": "7bc24263dba2e08a7a3899a21709cf66f5490604",
+    "tarball_sha256": "9fdeb8a6780c056b32c07242f359084472007308e1ab57757f3339dd9630de4b",
+    "tarball_bytes": 75138,
+    "file_count": 5,
+    "unpacked_size": 323108,
+    "git_head": "1bfcb394088ed879db8fd936b570bb626017f878",
+    "repository": "https://github.com/svkozak/pi-acp",
+    "bin": "pi-acp",
+    "package_json_sha256": "6f8b68504dd56e376a812a8efe8d0486bca7daf16ec191f6e3a40a8a87fdfe83",
+    "readme_sha256": "cffa8e56b23111dae5c7e43afd7232b86e41a1c3bfd665a90f49cf545dbe7b8f",
+    "dist_index_js_sha256": "24ff73fda6e3c76ddce2d359a79f5c4b8f292eb290e4d2ab85aac94676b2c2dc"
+  },
+  "acp_registry": {
+    "id": "pi-acp",
+    "version": "0.0.33",
+    "repository": "https://github.com/svkozak/pi-acp",
+    "npx_package": "pi-acp@0.0.33",
+    "first_party": false
+  },
+  "identity_decision": {
+    "shape": "negative-collapse-onto-existing-route",
+    "collapses_onto": "pi.rpc",
+    "keep_swallowtail_adapter_pi": true,
+    "add_wrapper_package": false,
+    "wrap_community_pi_acp": false,
+    "official_native_acp": false,
+    "start_driver_cards": false,
+    "provider_prompt_sent": false,
+    "live_acp_initialize": false,
+    "live_rpc_session": false,
+    "run_pi_auth": false,
+    "host_install_changed": false,
+    "claim_change_in_card": false
+  }
+}

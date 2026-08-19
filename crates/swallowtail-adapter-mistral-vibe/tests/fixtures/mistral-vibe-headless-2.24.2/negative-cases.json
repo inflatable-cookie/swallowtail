@@ -1,0 +1,107 @@
+{
+  "cases": [
+    {
+      "id": "malformed-json",
+      "input": "{",
+      "expected": "fail_closed_framing"
+    },
+    {
+      "id": "missing-entry-type",
+      "input": {"id": "opaque", "generationStatus": "completed"},
+      "expected": "fail_closed_framing"
+    },
+    {
+      "id": "json-dump-array-wrong-wire",
+      "input": [{"type": "message", "role": "assistant"}],
+      "expected": "fail_closed_wrong_wire"
+    },
+    {
+      "id": "acp-jsonrpc-is-not-headless",
+      "input": {"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {}},
+      "expected": "reject_as_vibe_acp_not_this_route"
+    },
+    {
+      "id": "vibe-acp-binary-is-not-headless",
+      "argv": ["vibe-acp"],
+      "expected": "reject_as_vibe_acp_not_this_route"
+    },
+    {
+      "id": "output-json-is-not-streaming-decoder",
+      "argv": ["vibe", "--prompt", "opaque fixture prompt", "--output", "json", "--max-turns", "1", "--trust", "--agent", "plan"],
+      "expected": "do_not_select_as_streaming_decoder"
+    },
+    {
+      "id": "output-text-unselected",
+      "argv": ["vibe", "--prompt", "opaque fixture prompt", "--output", "text", "--max-turns", "1", "--trust", "--agent", "plan"],
+      "expected": "do_not_select_as_swallowtail_authority"
+    },
+    {
+      "id": "omit-output-inherits-text",
+      "argv": ["vibe", "--prompt", "opaque fixture prompt", "--max-turns", "1", "--trust", "--agent", "plan"],
+      "expected": "do_not_select_as_swallowtail_authority"
+    },
+    {
+      "id": "auto-approve-not-swallowtail-authority",
+      "argv": ["vibe", "--prompt", "opaque fixture prompt", "--output", "streaming", "--max-turns", "1", "--trust", "--agent", "plan", "--auto-approve"],
+      "expected": "do_not_select_as_swallowtail_authority"
+    },
+    {
+      "id": "yolo-not-swallowtail-authority",
+      "argv": ["vibe", "--prompt", "opaque fixture prompt", "--output", "streaming", "--max-turns", "1", "--trust", "--agent", "plan", "--yolo"],
+      "expected": "do_not_select_as_swallowtail_authority"
+    },
+    {
+      "id": "omit-agent-inherits-default-agent",
+      "argv": ["vibe", "--prompt", "opaque fixture prompt", "--output", "streaming", "--max-turns", "1", "--trust"],
+      "expected": "do_not_select_as_swallowtail_authority"
+    },
+    {
+      "id": "omit-trust",
+      "argv": ["vibe", "--prompt", "opaque fixture prompt", "--output", "streaming", "--max-turns", "1", "--agent", "plan"],
+      "expected": "do_not_select_as_swallowtail_authority"
+    },
+    {
+      "id": "omit-max-turns-unbounded",
+      "argv": ["vibe", "--prompt", "opaque fixture prompt", "--output", "streaming", "--trust", "--agent", "plan"],
+      "expected": "do_not_select_as_swallowtail_authority"
+    },
+    {
+      "id": "continue-unmapped",
+      "argv": ["vibe", "--prompt", "opaque fixture prompt", "--output", "streaming", "--max-turns", "1", "--trust", "--agent", "plan", "--continue"],
+      "expected": "unmapped"
+    },
+    {
+      "id": "resume-unmapped",
+      "argv": ["vibe", "--prompt", "opaque fixture prompt", "--output", "streaming", "--max-turns", "1", "--trust", "--agent", "plan", "--resume", "opaque"],
+      "expected": "unmapped"
+    },
+    {
+      "id": "teleport-unmapped",
+      "argv": ["vibe", "--prompt", "opaque fixture prompt", "--output", "streaming", "--max-turns", "1", "--trust", "--agent", "plan", "--teleport"],
+      "expected": "unmapped"
+    },
+    {
+      "id": "tui-unmapped",
+      "argv": ["vibe"],
+      "expected": "unmapped"
+    },
+    {
+      "id": "setup-not-swallowtail",
+      "argv": ["vibe", "--setup"],
+      "expected": "host_owned_not_adapter_login"
+    },
+    {
+      "id": "missing-prompt-fails",
+      "argv": ["vibe", "--prompt", "--output", "streaming", "--max-turns", "1", "--trust", "--agent", "plan"],
+      "expected": "fail_closed_preflight"
+    },
+    {
+      "id": "oversized-frame",
+      "expected": "fail_closed_bounds"
+    },
+    {
+      "id": "post-terminal-extra",
+      "expected": "fail_closed_or_ignore_after_terminal"
+    }
+  ]
+}

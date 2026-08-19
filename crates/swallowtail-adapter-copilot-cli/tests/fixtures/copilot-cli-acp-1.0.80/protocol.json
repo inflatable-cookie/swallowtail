@@ -1,0 +1,81 @@
+{
+  "selected_command": ["copilot", "--acp", "--stdio"],
+  "transport": "stdio-ndjson-jsonrpc",
+  "protocol_version": 1,
+  "maturity": "public-preview",
+  "first_op": ["initialize", "session/new", "session/prompt"],
+  "selected_methods": [
+    "initialize",
+    "session/new",
+    "session/prompt",
+    "session/cancel"
+  ],
+  "advertised_unmapped": [
+    "session/load",
+    "session/close",
+    "authenticate",
+    "slash-as-prompt",
+    "session/set_config_option"
+  ],
+  "initialize": {
+    "result_recovered_from_public_source": false,
+    "official_example_client_capabilities": {},
+    "swallowtail_request_advertises_host_fs_and_terminal_false": true
+  },
+  "authority": {
+    "stdio_is_acp_default": true,
+    "stdio_and_port_mutually_exclusive": true,
+    "swallowtail_passes_stdio": true,
+    "swallowtail_passes_port": false,
+    "credential": "host-owned GitHub Copilot login, GH_TOKEN/GITHUB_TOKEN, or BYOK COPILOT_PROVIDER_*; Swallowtail does not authenticate",
+    "working_resource": "session/new cwd",
+    "cleanup": "cancel in-flight prompt, join or kill owned child",
+    "server_start_tool_filter_and_effort_unmapped": true
+  },
+  "prompt": {
+    "text_blocks_selected": true,
+    "slash_commands_not_swallowtail_operations": true,
+    "finish_reason_from_official_example": {
+      "completed": "end_turn"
+    }
+  },
+  "permission": {
+    "official_example_outcome": "cancelled",
+    "allow_always_unselected": true,
+    "allow_all_config_unselected": true,
+    "yolo_unselected": true
+  },
+  "session_updates_mapped": [
+    "agent_message_chunk"
+  ],
+  "session_updates_metadata_unmapped_as_operations": [
+    "available_commands_update"
+  ],
+  "session_updates_not_claimed_as_portable_usage": [
+    "usage_update"
+  ],
+  "unmapped_cli": [
+    "--port",
+    "--available-tools",
+    "--excluded-tools",
+    "--effort",
+    "--reasoning-effort",
+    "--yolo",
+    "--allow-all",
+    "login"
+  ],
+  "interactive_only_slash_unmapped": [
+    "/diff",
+    "/resume",
+    "/theme",
+    "/settings",
+    "/login",
+    "/help",
+    "/tasks",
+    "/undo"
+  ],
+  "decoder_corpus": "copilot-cli-acp-1.0.80",
+  "provider_prompt_sent": false,
+  "live_acp_initialize": false,
+  "host_install_changed": false
+}

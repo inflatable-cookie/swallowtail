@@ -1,0 +1,61 @@
+{
+  "axis": "antigravity-cli.release",
+  "observed_at": "2026-08-19",
+  "github_repo": "google-antigravity/antigravity-cli",
+  "github_latest": true,
+  "not_gemini_cli": true,
+  "host": {
+    "version": "1.1.9",
+    "source": "installed-provider-artifact",
+    "artifact_kind": "mach-o-arm64",
+    "executable_sha256": "a27bff8d7c47fe5407e6740f14ecef73e86fb65ec73fec77b0765f8849024383",
+    "executable_size": 164873872,
+    "signature_authority": "Developer ID Application: Google LLC (EQHXZ8M8AV)",
+    "github_commit": "03e095ac3619462ecd0928f3f5470387dbda6a00"
+  },
+  "official": {
+    "version": "1.1.15",
+    "source": "official-github-release",
+    "published_at": "2026-08-19T04:11:33Z",
+    "github_commit": "76ff39c65b5d52482172b6408c27ded9b17c303d",
+    "asset": "agy_cli_mac_arm64.tar.gz",
+    "tarball_sha256": "66b784680c07c78df44e7bdffd6de3395385edc333ce8eb259d3719dca76485f",
+    "extracted_cli_sha256": "6f84ffdab59b64e00d8ef74c766917a3fab77c14200e83071e56fae595d9aa2c",
+    "extracted_cli_size": 177531792,
+    "extracted_version": "1.1.15",
+    "signature_authority": "Developer ID Application: Google LLC (EQHXZ8M8AV)",
+    "signature_timestamp": "2026-08-19T02:54:17"
+  },
+  "research_159_host": "1.1.9",
+  "research_159_github_latest": "1.1.15",
+  "published_stables_from_previous_ceiling": ["1.1.15"],
+  "public_git_1_1_14_to_1_1_15": "changelog-only",
+  "changelog_heading_still_1_1_14": true,
+  "unpublished_1_1_16": true,
+  "keep_1_1_8_incompatible": true,
+  "frozen_corpus_ceiling": "1.1.14",
+  "claim_at_observation": {
+    "baseline": "1.1.9",
+    "latest_qualified": "1.1.14",
+    "posture": "allow_unverified",
+    "classification_of_1_1_9": "qualified_maintained",
+    "classification_of_1_1_14": "qualified_maintained",
+    "classification_of_1_1_15": "unverified_newer"
+  },
+  "identity_decision": {
+    "shape": "compatible-extension",
+    "reuse_catalogue_behavior": "antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1",
+    "reuse_headless_behavior": "antigravity.stream-json.cli-1.1.8-artifact-1.1.9-v1",
+    "raise_latest_qualified_to": "1.1.15",
+    "keep_baseline": "1.1.9",
+    "qualify_intermediates": true,
+    "new_milestone": false,
+    "keep_1_1_8_incompatible": true,
+    "map_input_format": false,
+    "flatten_to_gemini_api_key": false,
+    "provider_prompt_sent": false,
+    "live_catalogue": false,
+    "live_print_run": false,
+    "host_install_changed": false
+  }
+}

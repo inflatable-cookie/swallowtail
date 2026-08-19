@@ -38,8 +38,8 @@ required by the immutable plan. ACP import also requires the opaque state-root
 identity. The membership OAuth credential remains a scoped opaque lease;
 Swallowtail never exposes or persists its value.
 
-ACP exact `0.28.1` and `0.29.0..=0.36.1` are qualified. Headless exact
-`0.29.0..=0.36.1` is qualified. Later stable releases remain visible
+ACP exact `0.28.1` and `0.29.0..=0.37.2` are qualified. Headless exact
+`0.29.0..=0.37.2` is qualified. Later stable releases remain visible
 `UnverifiedNewer`; they do not inherit ACP catalogue/import support. Older,
 excluded, and prerelease observations do not prepare.
 
@@ -82,7 +82,7 @@ Import remains a separate operation:
 The catalogue and import must retain the same configured instance, execution
 host, exact qualified Kimi version, access evidence, opaque state root, working
 resource, model route, and session policy. Missing, changed, active, or
-cross-plan candidates issue no binding. Versions above qualified `0.36.1` may
+cross-plan candidates issue no binding. Versions above qualified `0.37.2` may
 still run other unverified-newer Kimi operations, but cannot inherit catalogue
 or import support.
 

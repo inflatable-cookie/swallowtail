@@ -1,6 +1,6 @@
 # 263 Cline ACP Driver Core
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-18
 Milestone: `../086-cline-acp-route.md`
@@ -20,10 +20,10 @@ Cline headless, ACP continuation not proved by fixtures, teams, scheduling, sess
 
 ## Acceptance Criteria
 
-- [ ] ACP drift is rejected before provider work
-- [ ] fixtures cover success, failure, malformed/unknown input, bounds, cancellation/deadline, and cleanup
-- [ ] native fields do not leak into stable diagnostics
-- [ ] focused package tests pass without credentials
+- [x] ACP drift is rejected before provider work
+- [x] fixtures cover success, failure, malformed/unknown input, bounds, cancellation/deadline, and cleanup
+- [x] native fields do not leak into stable diagnostics
+- [x] focused package tests pass without credentials
 
 ## Validation
 

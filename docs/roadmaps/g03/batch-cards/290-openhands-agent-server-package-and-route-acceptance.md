@@ -1,6 +1,6 @@
 # 290 OpenHands Agent Server Package And Route Acceptance
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-18
 Milestone: `../093-openhands-agent-server-route.md`
@@ -20,10 +20,10 @@ release publication, registry publication, consumer edits, and broad live qualif
 
 ## Acceptance Criteria
 
-- [ ] Focused and affected-package validation pass.
-- [ ] `effigy check:examples` and `effigy qa:docs` pass.
-- [ ] Route, feature, guide, package, and architecture indexes agree.
-- [ ] Deferred/negative decisions do not enter the production route matrix.
+- [x] Focused and affected-package validation pass.
+- [x] `effigy check:examples` and `effigy qa:docs` pass.
+- [x] Route, feature, guide, package, and architecture indexes agree.
+- [x] Deferred/negative decisions do not enter the production route matrix.
 
 ## Validation
 
@@ -35,8 +35,10 @@ Stop and record disposition if authority, cleanup, or route identity is not hone
 
 ## Auto-Continuation
 
-Return to roadmap 087 and recompute the remaining secondary wave.
+Continue to card 291 Kiro ACP identity after this closeout.
 
 ## Evidence
 
-Cards 287-289; Research 143; Contract 052
+Cards 287-289; Research 155; `docs/logs/2026-08-19-openhands-agent-server-package-and-route-acceptance.md`.
+Deferred: live HTTP/WebSocket conversation stays unwired. Package kept.
+No production route, guide, example, or matrix row.

@@ -1,6 +1,6 @@
 # 305 Cline Headless Driver Core
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-18
 Milestone: `../087-cline-headless-route.md`
@@ -20,10 +20,10 @@ ACP continuation, teams, scheduling, session import, retries, browser/UI behavio
 
 ## Acceptance Criteria
 
-- [ ] framing and process drift are rejected before provider work
-- [ ] fixtures cover success, failure, malformed/unknown input, bounds, cancellation/deadline, and cleanup
-- [ ] native output does not leak into stable diagnostics
-- [ ] focused package tests pass without credentials
+- [x] framing and process drift are rejected before provider work
+- [x] fixtures cover success, failure, malformed/unknown input, bounds, cancellation/deadline, and cleanup
+- [x] native output does not leak into stable diagnostics
+- [x] focused package tests pass without credentials
 
 ## Validation
 

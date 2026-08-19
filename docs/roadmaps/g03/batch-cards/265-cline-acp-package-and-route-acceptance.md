@@ -1,6 +1,6 @@
 # 265 Cline ACP Package And Route Acceptance
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-18
 Milestone: `../086-cline-acp-route.md`
@@ -20,10 +20,10 @@ Cline headless documentation, release publication, registry publication, consume
 
 ## Acceptance Criteria
 
-- [ ] focused and affected-package validation pass
-- [ ] `effigy check:examples` and `effigy qa:docs` pass
-- [ ] route, feature, guide, package, and architecture indexes agree
-- [ ] closeout records accepted, deferred, or rejected ACP truth
+- [x] focused and affected-package validation pass
+- [x] `effigy check:examples` and `effigy qa:docs` pass
+- [x] route, feature, guide, package, and architecture indexes agree
+- [x] closeout records accepted, deferred, or rejected ACP truth
 
 ## Validation
 

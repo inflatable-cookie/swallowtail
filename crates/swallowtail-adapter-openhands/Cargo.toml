@@ -1,0 +1,40 @@
+[package]
+name = "swallowtail-adapter-openhands"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+readme.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+description = "OpenHands Agent Server harness driver for Swallowtail"
+autotests = false
+
+[lib]
+doctest = false
+
+[dependencies]
+curl = "0.4.50"
+futures-channel = "0.3"
+futures-core = "0.3"
+semver = "1"
+serde_json = "1"
+swallowtail-core.workspace = true
+swallowtail-runtime.workspace = true
+url = "2"
+
+[dev-dependencies]
+futures-executor = "0.3"
+futures-util = "0.3"
+swallowtail-testkit.workspace = true
+
+[lints]
+workspace = true
+
+[[test]]
+name = "openhands_identity"
+path = "tests/openhands_identity.rs"
+
+[[test]]
+name = "activity_corpus"
+path = "tests/activity_corpus.rs"

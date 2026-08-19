@@ -1,0 +1,19 @@
+{
+  "request": {
+    "jsonrpc": "2.0",
+    "id": 2,
+    "method": "session/new",
+    "params": {
+      "cwd": "/tmp/swallowtail-fixture-cwd",
+      "mcpServers": []
+    }
+  },
+  "response_shape": {
+    "sessionId": "opaque-fixture-session"
+  },
+  "does_not_carry_tool_filter_or_effort": true,
+  "mcp_servers_empty_on_first_driver": true,
+  "auth_gate": "requires host GitHub Copilot login, GH_TOKEN/GITHUB_TOKEN, or BYOK COPILOT_PROVIDER_*; Swallowtail does not authenticate",
+  "source": "official ACP server docs newSession({cwd, mcpServers: []}) at Copilot CLI 1.0.80 identity",
+  "live_acp_initialize": false
+}

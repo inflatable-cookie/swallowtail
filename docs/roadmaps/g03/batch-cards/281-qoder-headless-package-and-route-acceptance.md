@@ -1,6 +1,6 @@
 # 281 Qoder Headless Package And Route Acceptance
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-18
 Milestone: `../091-qoder-headless-route.md`
@@ -20,11 +20,11 @@ release publication, registry publication, consumer edits, and unbounded live qu
 
 ## Acceptance Criteria
 
-- [ ] Focused and affected-package validation pass.
-- [ ] `effigy check:examples` and `effigy qa:docs` pass.
-- [ ] Route matrix, feature matrix, guide map, README, architecture, and package contract agree.
-- [ ] Live evidence is opt-in and cannot widen the deterministic claim silently.
-- [ ] Closeout records accepted, deferred, or rejected route truth.
+- [x] Focused and affected-package validation pass.
+- [x] `effigy check:examples` and `effigy qa:docs` pass.
+- [x] Route matrix, feature matrix, guide map, README, architecture, and package contract agree.
+- [x] Live evidence is opt-in and cannot widen the deterministic claim silently.
+- [x] Closeout records accepted, deferred, or rejected route truth.
 
 ## Validation
 

@@ -1,0 +1,28 @@
+{
+  "request": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "initialize",
+    "params": {
+      "protocolVersion": 1,
+      "clientCapabilities": {
+        "fs": { "readTextFile": false, "writeTextFile": false },
+        "terminal": false
+      },
+      "clientInfo": { "name": "swallowtail", "version": "fixture" }
+    }
+  },
+  "response_recovered_from_public_source": true,
+  "cli_result_shape": {
+    "protocolVersion": 1,
+    "agentInfo": { "name": "deepagents-acp", "version": "0.0.1" },
+    "agentCapabilities": {
+      "loadSession": true,
+      "promptCapabilities": { "image": true, "audio": false, "embeddedContext": true },
+      "mcpCapabilities": { "http": false, "sse": false },
+      "sessionCapabilities": { "modes": true, "commands": true }
+    }
+  },
+  "source": "deepagents-acp@0.1.25 dist/cli.js handleInitialize; CLI omits serverVersion so agentInfo.version is constructor default 0.0.1, not npm 0.1.25",
+  "live_acp_initialize": false
+}

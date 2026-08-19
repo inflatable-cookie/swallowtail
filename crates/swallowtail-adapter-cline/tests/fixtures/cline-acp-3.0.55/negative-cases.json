@@ -1,0 +1,62 @@
+{
+  "cases": [
+    {
+      "id": "malformed-json",
+      "input": "{",
+      "expected": "fail_closed_framing"
+    },
+    {
+      "id": "invalid-jsonrpc-version",
+      "input": { "jsonrpc": "1.0", "id": 1, "method": "initialize", "params": {} },
+      "expected": "fail_closed_framing"
+    },
+    {
+      "id": "unknown-method",
+      "input": { "jsonrpc": "2.0", "id": 1, "method": "session/list", "params": {} },
+      "expected": "method_not_found_or_unmapped"
+    },
+    {
+      "id": "prompt-unknown-session",
+      "input": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "method": "session/prompt",
+        "params": { "sessionId": "missing", "prompt": [{ "type": "text", "text": "x" }] }
+      },
+      "expected": "fail_closed"
+    },
+    {
+      "id": "oversized-frame",
+      "expected": "fail_closed_bounds"
+    },
+    {
+      "id": "post-terminal-extra",
+      "expected": "fail_closed_or_ignore_after_terminal"
+    },
+    {
+      "id": "json-flag-is-not-acp",
+      "argv": ["cline", "--json"],
+      "expected": "reject_as_cline_headless_not_this_route"
+    },
+    {
+      "id": "auto-approve-true-not-default",
+      "argv": ["cline", "--acp", "--auto-approve", "true"],
+      "expected": "do_not_select_as_swallowtail_authority"
+    },
+    {
+      "id": "id-resume-unmapped",
+      "argv": ["cline", "--acp", "--id", "opaque"],
+      "expected": "unmapped"
+    },
+    {
+      "id": "session-load-unmapped",
+      "method": "session/load",
+      "expected": "unmapped_on_first_driver"
+    },
+    {
+      "id": "authenticate-oauth-not-swallowtail",
+      "method": "authenticate",
+      "expected": "host_owned_not_adapter_login"
+    }
+  ]
+}

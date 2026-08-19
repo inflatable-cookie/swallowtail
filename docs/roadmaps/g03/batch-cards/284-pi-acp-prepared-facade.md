@@ -1,10 +1,11 @@
 # 284 Pi ACP Prepared Facade
 
-Status: planned
+Status: superseded
 Owner: Tom
 Created: 2026-08-18
 Milestone: `../092-pi-acp-route.md`
 Depends on: Card 283; Contracts 005-006, 009-011, 023, 029, 032-033, 036-037, 039-041, 043-045, 051-052
+Note: superseded by card 282; official Pi has no native ACP wire.
 
 ## Goal
 

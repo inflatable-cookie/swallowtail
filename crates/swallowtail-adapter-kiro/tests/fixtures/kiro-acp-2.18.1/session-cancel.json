@@ -1,0 +1,9 @@
+{
+  "notification": {
+    "jsonrpc": "2.0",
+    "method": "session/cancel",
+    "params": { "sessionId": "opaque-fixture-session" }
+  },
+  "process_cleanup": ["join-or-kill"],
+  "source": "ACP session/cancel plus official docs method list at Kiro CLI 2.18.1 identity"
+}

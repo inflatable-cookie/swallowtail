@@ -30,7 +30,9 @@ fn attached_run_completes_once_and_preserves_provider_session_in_both_topologies
         ExecutionTopologyFixture::local(),
         ExecutionTopologyFixture::remote_authoritative(),
     ] {
-        for version in ["0.29.1", "0.29.2", "0.30.0", "0.31.0", "0.31.1", "0.36.1"] {
+        for version in [
+            "0.29.1", "0.29.2", "0.30.0", "0.31.0", "0.31.1", "0.36.1", "0.37.2",
+        ] {
             let server = InteractiveFixtureServer::start_with_version(
                 InteractiveScenario::Complete,
                 version,

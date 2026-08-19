@@ -1,0 +1,77 @@
+{
+  "axis": "openhands-agent-server.package",
+  "route": "openhands.agent-server",
+  "observed_at": "2026-08-19",
+  "pypi_package": "openhands-agent-server",
+  "host": {
+    "present": false,
+    "python3_version": "3.9.6",
+    "python3_can_import_openhands_agent_server": false,
+    "agent_server_console_script": false,
+    "requires_python": ">=3.12"
+  },
+  "official": {
+    "version": "1.42.1",
+    "source": "official-pypi-wheel",
+    "published_at": "2026-08-12T14:04:35.031755Z",
+    "wheel_filename": "openhands_agent_server-1.42.1-py3-none-any.whl",
+    "wheel_sha256": "772a73b19684acab5f9f61b1c244f156052625ade51a5e48a424b3c13039f7a7",
+    "sdist_sha256": "449a62da7a16ec4cd90c611812b763d6e02ee331b412e09316fa6ab5c289afcc",
+    "console_script": "agent-server = openhands.agent_server.__main__:main",
+    "module": "openhands.agent_server",
+    "requires_python": ">=3.12",
+    "requires_dist_unpinned": ["openhands-sdk"],
+    "companion_pypi_latest_same_day": {
+      "openhands-sdk": "1.42.1"
+    },
+    "github_tag": "v1.42.1",
+    "github_commit": "167c1f924ac8a8acbeb0432bf9b1fcf77d5c2497",
+    "openapi_asset_sha256": "d548f9d1589f72f556a849e8382a49f6b836c8b35ad63d70d575aff2066860e9",
+    "openapi_info_version": "1.42.1",
+    "openapi_title": "OpenHands Agent Server",
+    "openapi_path_count": 95,
+    "wheel_py_files": 80
+  },
+  "tagged_sources": {
+    "openhands/agent_server/__main__.py": "22acff7c66798ddd7276ed349a5af1e2c99c31a4804fc7cc787a67ff6f8cc730",
+    "openhands/agent_server/config.py": "3f86519676ef2c15459bb1a8b230e7b0ef065e17f7ae92b252765c04c34c6fb8",
+    "openhands/agent_server/api.py": "cdb0db74338f275eb601b14f69d22f6e51c5893222914cb4a982f0f0176876f5",
+    "openhands/agent_server/sockets.py": "aa4496c0e05248a22906a1e9a2ec59ec366e8ab32ed903bdebe984cb97958110",
+    "openhands/agent_server/conversation_router.py": "e1b8b0dd3437e0bf054104edc11135b29c974b4964a9c06356119904c2d31e96",
+    "openhands/agent_server/server_details_router.py": "df53c3f1ff120e734ea23e6b7be1e51999d387713dee15e86451357ea96d84de",
+    "openhands/agent_server/middleware.py": "59980d01f3965b8f64411e131e90854aad2b43d62664a0f93e91cb86f46ffd14"
+  },
+  "identity_decision": {
+    "shape": "new-route",
+    "entrypoint": [
+      "python",
+      "-m",
+      "openhands.agent_server",
+      "--host",
+      "127.0.0.1",
+      "--port"
+    ],
+    "require_explicit_loopback_host": true,
+    "default_host_without_auth_is_loopback": true,
+    "default_host_with_auth_is_wildcard": true,
+    "swallowtail_never_binds_wildcard": true,
+    "console_script_alias": "agent-server",
+    "standalone_github_binaries_unselected": true,
+    "flatten_onto_v0_socketio": false,
+    "flatten_onto_contract_035_remote_acp": false,
+    "flatten_onto_python_sdk": false,
+    "flatten_onto_switch_acp_model": false,
+    "flatten_onto_docker_sandbox": false,
+    "flatten_onto_hosted_api_sandbox": false,
+    "inherit_ambient_session_api_keys": false,
+    "inherit_ambient_oh_secret_key": false,
+    "inherit_ambient_llm_api_key": false,
+    "confirmation_policy_swallowtail": "AlwaysConfirm",
+    "mint_session_api_keys": false,
+    "run_subscription_login": false,
+    "provider_prompt_sent": false,
+    "live_server_started": false,
+    "host_install_changed": false,
+    "claim_change_in_card": false
+  }
+}

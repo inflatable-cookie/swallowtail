@@ -1,0 +1,43 @@
+{
+  "axis": "claude-code.headless-stream-json",
+  "version": "2.1.235",
+  "observed_at": "2026-08-19",
+  "npm_package": "@anthropic-ai/claude-code",
+  "npm_latest": true,
+  "published_at": "2026-08-18T18:24:10.210Z",
+  "npm_integrity": "sha512-poJ4l/nro9NEZEoLU1txUGMMw92m5P3o6Nh86GfaQuPryvOdKIz/ChlPaq3FDetiaXmoNit3ZkEgnQ1PN7z/dQ==",
+  "npm_shasum": "c82eb033efe6148a49edad03948249ad9299ed57",
+  "npm_tarball_sha256": "a048adbd153529ef4137ffb945580080e716e6a8b320baa73b6a5777e31f6e34",
+  "local_cli": "2.1.235 (Claude Code)",
+  "local_executable_sha256": "83b8f806f6f2eea316cfe246628e6c23374711d868f1fd0409db551b877b7748",
+  "local_executable_size": 313334608,
+  "agent_sdk_package": "@anthropic-ai/claude-agent-sdk",
+  "agent_sdk_latest": "0.3.235",
+  "agent_sdk_latest_integrity": "sha512-qnTcUOxi5H18LaXSoIrZN7pmzgfjcbXxQvleb1c3Cr9YCAqMhc9rmKofLTNyYhTntixQFxqpTzAsbujaZNUuVQ==",
+  "frozen_corpus_version": "2.1.220",
+  "frozen_agent_sdk": "0.3.220",
+  "research_159_host": "2.1.235",
+  "published_stables_from_previous_ceiling": ["2.1.235"],
+  "unpublished_2_1_236": true,
+  "claim_at_observation": {
+    "headless_baseline": "2.1.220",
+    "headless_latest_qualified": "2.1.234",
+    "response_only_baseline": "2.1.227",
+    "response_only_latest_qualified": "2.1.234",
+    "posture": "allow_unverified",
+    "classification_of_2_1_235": "unverified_newer"
+  },
+  "identity_decision": {
+    "shape": "compatible-extension",
+    "reuse_behavior_revision": "claude-code.headless.stream-json.v1",
+    "raise_latest_qualified_to": "2.1.235",
+    "keep_baseline": "2.1.220",
+    "qualify_intermediates": true,
+    "new_milestone": false,
+    "mix_response_only_axis": false,
+    "flatten_to_claude_agent_acp": false,
+    "later_unverified_after_qualification": "2.1.236",
+    "provider_prompt_sent": false,
+    "host_install_changed": false
+  }
+}

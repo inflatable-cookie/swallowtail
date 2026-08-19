@@ -1,6 +1,6 @@
 # 262 Cline ACP Identity Corpus
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-18
 Milestone: `../086-cline-acp-route.md`
@@ -20,10 +20,10 @@ headless JSON execution, driver code, prepared API, production claims, installat
 
 ## Acceptance Criteria
 
-- [ ] exact ACP source identity and version axis are recorded
-- [ ] ACP messages/events and drift-rejecting fixtures are named
-- [ ] authority, cancellation, and cleanup limits are explicit
-- [ ] no claim changes before card 263
+- [x] exact ACP source identity and version axis are recorded
+- [x] ACP messages/events and drift-rejecting fixtures are named
+- [x] authority, cancellation, and cleanup limits are explicit
+- [x] no claim changes before card 263
 
 ## Validation
 

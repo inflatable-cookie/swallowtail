@@ -6,12 +6,12 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::RuntimeFailure;
 
-use crate::{failure::failure, kimi_code_binding, KIMI_CODE_AXIS};
+use crate::{KIMI_CODE_AXIS, failure::failure, kimi_code_binding};
 
 /// Oldest qualified Kimi local-server version.
 pub const KIMI_LOCAL_SERVER_BASELINE_VERSION: &str = "0.28.1";
 /// Most recent qualified Kimi local-server version.
-pub const KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION: &str = "0.36.1";
+pub const KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION: &str = "0.37.2";
 
 const REST_WS_V2_BASELINE_BEHAVIOR: &str = "kimi.local-server.rest-ws-v2-baseline";
 const REST_WS_V2_PROFILE_TOOLS_BEHAVIOR: &str = "kimi.local-server.rest-ws-v2-profile-tools";
@@ -157,12 +157,12 @@ fn axis() -> InterfaceVersionAxis {
 #[cfg(test)]
 mod tests {
     use super::{
-        corroborate_versions, kimi_local_server_claim, supports_profile_tools,
         KIMI_LOCAL_SERVER_BASELINE_VERSION, KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION,
         REST_WS_V2_BASELINE_BEHAVIOR, REST_WS_V2_GLOBAL_EVENTS_BEHAVIOR,
         REST_WS_V2_HEARTBEAT_PING_BEHAVIOR, REST_WS_V2_OPTIONAL_META_FLAGS_BEHAVIOR,
         REST_WS_V2_PROFILE_TOOLS_BEHAVIOR, REST_WS_V2_REFRESH_STABLE_BEHAVIOR,
-        REST_WS_V2_SUBAGENT_STATUS_BEHAVIOR,
+        REST_WS_V2_SUBAGENT_STATUS_BEHAVIOR, corroborate_versions, kimi_local_server_claim,
+        supports_profile_tools,
     };
     use crate::kimi_code_binding;
     use swallowtail_core::InterfaceCompatibilityAssessment;
@@ -194,6 +194,9 @@ mod tests {
             ("0.35.0", REST_WS_V2_HEARTBEAT_PING_BEHAVIOR),
             ("0.36.0", REST_WS_V2_HEARTBEAT_PING_BEHAVIOR),
             ("0.36.1", REST_WS_V2_HEARTBEAT_PING_BEHAVIOR),
+            ("0.37.0", REST_WS_V2_HEARTBEAT_PING_BEHAVIOR),
+            ("0.37.1", REST_WS_V2_HEARTBEAT_PING_BEHAVIOR),
+            ("0.37.2", REST_WS_V2_HEARTBEAT_PING_BEHAVIOR),
         ] {
             let binding = kimi_code_binding(qualified).expect("fixture version binds");
             let InterfaceCompatibilityAssessment::Qualified(matched) =
@@ -208,9 +211,9 @@ mod tests {
             );
         }
 
-        let newer = kimi_code_binding("0.37.0").expect("fixture version binds");
+        let newer = kimi_code_binding("0.37.3").expect("fixture version binds");
         assert!(matches!(
-            corroborate_versions(&newer, "0.37.0").expect("newer version remains permitted"),
+            corroborate_versions(&newer, "0.37.3").expect("newer version remains permitted"),
             InterfaceCompatibilityAssessment::UnverifiedNewer(_)
         ));
     }

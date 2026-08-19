@@ -328,8 +328,8 @@ mod tests {
         let registry = cursor_agent_release_binding("2026.08.11-e8db854")
             .expect("registry Cursor version parses");
         assert_eq!(registry.version().as_str(), "2026-08-11");
-        let host = cursor_agent_release_binding("2026.08.04-aaa8809")
-            .expect("host Cursor version parses");
+        let host =
+            cursor_agent_release_binding("2026.08.04-aaa8809").expect("host Cursor version parses");
         assert_eq!(host.version().as_str(), "2026-08-04");
 
         for rejected in [

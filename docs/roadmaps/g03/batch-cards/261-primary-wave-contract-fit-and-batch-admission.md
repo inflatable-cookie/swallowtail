@@ -1,6 +1,6 @@
 # 261 Primary Wave Contract Fit And Batch Admission
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-18
 Milestone: `../097-harness-route-expansion-intake-and-watchlist.md`
@@ -20,10 +20,10 @@ generic option maps, automatic routing, consumer policy, foreign SDK ownership, 
 
 ## Acceptance Criteria
 
-- [ ] Each admitted route maps to an existing contract or names a promoted prerequisite.
-- [ ] Route identities are not flattened by provider or protocol alone.
-- [ ] Cards 262-285 have explicit route-specific boundaries.
-- [ ] Blocked candidates remain blocked before driver work.
+- [x] Each admitted route maps to an existing contract or names a promoted prerequisite.
+- [x] Route identities are not flattened by provider or protocol alone.
+- [x] Cards 262-285 have explicit route-specific boundaries.
+- [x] Blocked candidates remain blocked before driver work.
 
 ## Validation
 

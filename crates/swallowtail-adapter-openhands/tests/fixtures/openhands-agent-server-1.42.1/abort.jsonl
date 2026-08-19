@@ -1,0 +1,3 @@
+{"schema_derived_not_live":true,"kind":"PauseEvent","id":"opaque-fixture-pause","source":"user"}
+{"schema_derived_not_live":true,"kind":"InterruptEvent","id":"opaque-fixture-interrupt","source":"user"}
+{"schema_derived_not_live":true,"kind":"ConversationStateUpdateEvent","id":"opaque-fixture-state-paused","source":"environment","key":"execution_status","value":"paused"}

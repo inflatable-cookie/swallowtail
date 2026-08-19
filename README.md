@@ -39,7 +39,7 @@ not an API 1.0 promise.
 Swallowtail does not choose a provider, model, credential, endpoint, executable,
 billing arrangement, or fallback.
 
-1. Choose one of the [36 production routes](docs/guides/provider-route-matrix.md).
+1. Choose one of the [47 production routes](docs/guides/provider-route-matrix.md).
 2. Read its canonical guide through the
    [integration guide map](docs/guides/integration-guide-map.md).
 3. Add only the adapter and shared packages your application imports.
@@ -84,7 +84,7 @@ There is no umbrella crate. Every package is independently selectable.
 | Portable contracts and execution | `swallowtail-core`, `swallowtail-runtime` |
 | Host integration, idioms, and conformance | `swallowtail-host-local`, `swallowtail-idioms`, `swallowtail-testkit` |
 | Protocols and transport | `swallowtail-protocol-acp`, `swallowtail-protocol-openai-chat`, `swallowtail-transport-acp-remote` |
-| Installed agent harnesses | `swallowtail-adapter-antigravity`, `swallowtail-adapter-claude-agent`, `swallowtail-adapter-codex`, `swallowtail-adapter-command-code`, `swallowtail-adapter-cursor`, `swallowtail-adapter-grok`, `swallowtail-adapter-kimi`, `swallowtail-adapter-muse`, `swallowtail-adapter-oh-my-pi`, `swallowtail-adapter-opencode`, `swallowtail-adapter-pi`, `swallowtail-adapter-qwen` |
+| Installed agent harnesses | `swallowtail-adapter-antigravity`, `swallowtail-adapter-claude-agent`, `swallowtail-adapter-cline`, `swallowtail-adapter-codex`, `swallowtail-adapter-command-code`, `swallowtail-adapter-copilot-cli`, `swallowtail-adapter-cursor`, `swallowtail-adapter-deepagents`, `swallowtail-adapter-deepseek-harness`, `swallowtail-adapter-goose`, `swallowtail-adapter-grok`, `swallowtail-adapter-kimi`, `swallowtail-adapter-kiro`, `swallowtail-adapter-mistral-vibe`, `swallowtail-adapter-muse`, `swallowtail-adapter-oh-my-pi`, `swallowtail-adapter-opencode`, `swallowtail-adapter-openhands`, `swallowtail-adapter-pi`, `swallowtail-adapter-qoder`, `swallowtail-adapter-qwen`, `swallowtail-adapter-zcode` |
 | Hosted APIs and SDKs | `swallowtail-adapter-alibaba-model-studio`, `swallowtail-adapter-anthropic`, `swallowtail-adapter-bedrock`, `swallowtail-adapter-deepseek`, `swallowtail-adapter-gemini`, `swallowtail-adapter-kimi-platform`, `swallowtail-adapter-openai`, `swallowtail-adapter-xai` |
 | Local model runtimes | `swallowtail-adapter-llama-cpp`, `swallowtail-adapter-ollama` |
 

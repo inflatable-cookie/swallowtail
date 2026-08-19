@@ -12,7 +12,7 @@ pub const OH_MY_PI_PACKAGE_AXIS: &str = "oh-my-pi.package";
 /// Oldest Oh My Pi package version qualified for RPC v2.
 pub const OH_MY_PI_PACKAGE_BASELINE_VERSION: &str = "17.2.9";
 /// Newest Oh My Pi package version behaviorally qualified for RPC v2.
-pub const OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION: &str = "17.3.7";
+pub const OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION: &str = "17.3.8";
 
 const BASELINE_BEHAVIOR: &str = "oh-my-pi.rpc-v2-v17.2.9";
 /// Parses one exact Oh My Pi package semantic-version binding.
@@ -95,22 +95,23 @@ mod tests {
     use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
 
     #[test]
-    fn claim_qualifies_17_2_9_through_17_3_7_and_keeps_later_stable_unverified() {
+    fn claim_qualifies_17_2_9_through_17_3_8_and_keeps_later_stable_unverified() {
         let claim = oh_my_pi_rpc_claim();
         assert!(claim.supports(&version("17.2.9")));
         assert!(claim.supports(&version("17.2.15")));
         assert!(claim.supports(&version("17.3.7")));
+        assert!(claim.supports(&version("17.3.8")));
         assert!(!claim.permits(&version("17.2.8")));
         assert_eq!(
             claim
-                .assess(&version("17.3.7"))
+                .assess(&version("17.3.8"))
                 .behavior_revision()
                 .unwrap()
                 .as_str(),
             "oh-my-pi.rpc-v2-v17.2.9"
         );
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("17.3.8"))
+            claim.assess(&version("17.3.9"))
         else {
             panic!("later stable OhMyPi remains unverified");
         };
@@ -118,7 +119,7 @@ mod tests {
             newer.behavior_revision().as_str(),
             "oh-my-pi.rpc-v2-v17.2.9"
         );
-        assert!(!claim.permits(&version("17.3.8-rc.1")));
+        assert!(!claim.permits(&version("17.3.9-rc.1")));
     }
 
     #[test]

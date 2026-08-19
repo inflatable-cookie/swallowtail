@@ -1,6 +1,6 @@
 # 301 Deep Agents ACP Prepared Facade
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-18
 Milestone: `../096-deep-agents-acp-route.md`
@@ -20,10 +20,10 @@ consumer product workflows, automatic route selection, generic provider options,
 
 ## Acceptance Criteria
 
-- [ ] Preparation fails closed on missing or mismatched authority.
-- [ ] Preflight records route, topology, version axis, and cleanup posture.
-- [ ] Operation reaches terminal truth with bounded event delivery.
-- [ ] Host identity and remote attachment rules are explicit where relevant.
+- [x] Preparation fails closed on missing or mismatched authority.
+- [x] Preflight records route, topology, version axis, and cleanup posture.
+- [x] Operation reaches terminal truth with bounded event delivery.
+- [x] Host identity and remote attachment rules are explicit where relevant.
 
 ## Validation
 
@@ -39,4 +39,7 @@ Continue to card 302 after prepared-facade tests pass.
 
 ## Evidence
 
-Cards 299-300; Contracts 005-006, 009-011, 017, 023, 029, 032-033, 036-037, 039-045, 051-052
+Cards 299-300; Research 157; `docs/logs/2026-08-19-deepagents-acp-prepared-facade.md`.
+`effigy validate:focused swallowtail-adapter-deepagents` passed (31 tests,
+Clippy warnings denied). `effigy package:verify-affected swallowtail-adapter-deepagents`
+passed. No live install, prompt, or API-key use. Production claim stays card 302.

@@ -1,0 +1,19 @@
+{
+  "package": "swallowtail-adapter-goose",
+  "route": "goose.acp",
+  "decoder_corpus": "goose-acp-1.46.0",
+  "card_267_must_cover": [
+    "identity.json",
+    "protocol.json",
+    "initialize.json",
+    "session-new.json",
+    "session-prompt.json",
+    "session-cancel.json",
+    "permission.json",
+    "activity.jsonl",
+    "negative-cases.json"
+  ],
+  "first_driver_op": "initialize plus session/new plus one bounded session/prompt",
+  "create_package_in_card": 267,
+  "no_production_claim_in_card": 266
+}

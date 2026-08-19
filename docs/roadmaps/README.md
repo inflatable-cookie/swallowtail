@@ -13,7 +13,8 @@ shape.
 
 ## Next Task
 
-Begin at [g03.097 Harness Route Expansion Intake And Watchlist](g03/097-harness-route-expansion-intake-and-watchlist.md): card 260, the shared source gate. After admission, the first route-specific roadmap is [g03.086 Cline ACP Route](g03/086-cline-acp-route.md).
+Define the next g03 maintenance card now that remaining currentness AllowUnverified families except deferred Gemini sit on current official stables.
+
 ## Index
 
 - [generation-index.md](./generation-index.md) — generation status

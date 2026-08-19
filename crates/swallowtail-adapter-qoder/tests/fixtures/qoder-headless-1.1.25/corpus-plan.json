@@ -1,0 +1,19 @@
+{
+  "package": "swallowtail-adapter-qoder",
+  "route": "qoder.headless",
+  "decoder_corpus": "qoder-headless-1.1.25",
+  "create_package_in_card": 279,
+  "card_279_must_cover": [
+    "identity.json",
+    "protocol.json",
+    "command.json",
+    "success.jsonl",
+    "json-dump.json",
+    "abort.jsonl",
+    "limit.jsonl",
+    "activity.jsonl",
+    "negative-cases.json"
+  ],
+  "first_driver_op": "one bounded qodercli --print --output-format stream-json --permission-mode dont_ask --max-turns --no-session-persistence run",
+  "no_production_claim_in_card": 278
+}

@@ -24,6 +24,7 @@ fn qualified_milestones_and_unverified_newer_use_one_exact_read_only_session_sha
     ] {
         for version in [
             "0.53.0", "0.54.1", "0.60.0", "0.61.0", "0.62.0", "0.63.0", "0.64.0", "0.69.0",
+            "0.70.0",
         ] {
             let host_id = ExecutionHostId::new(host_name).expect("valid host");
             let selected = selection(host_id.clone(), version);
@@ -109,7 +110,7 @@ fn qualified_milestones_and_unverified_newer_use_one_exact_read_only_session_sha
 fn qualified_versions_load_ordered_replay_and_resume_without_replay() {
     for version in [
         "0.53.0", "0.54.0", "0.54.1", "0.55.0", "0.56.0", "0.57.0", "0.58.1", "0.59.0", "0.60.0",
-        "0.61.0", "0.62.0", "0.63.0", "0.64.0", "0.69.0",
+        "0.61.0", "0.62.0", "0.63.0", "0.64.0", "0.69.0", "0.70.0",
     ] {
         let host_id =
             ExecutionHostId::new(format!("fixture.host.continuity-{version}")).expect("valid host");

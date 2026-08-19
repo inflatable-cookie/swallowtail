@@ -213,11 +213,8 @@ impl GrokAcpDriver {
             .await?;
         let opened = async {
             let initialize = attachment.connection.initialize().await?;
-            let model_options = validate_initialize(
-                &initialize,
-                selected.version(),
-                selected.expected_model(),
-            )?;
+            let model_options =
+                validate_initialize(&initialize, selected.version(), selected.expected_model())?;
             attachment.connection.activate_cached_token().await?;
             let response = attachment
                 .connection

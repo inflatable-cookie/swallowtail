@@ -1,0 +1,48 @@
+{
+  "axis": "claude-code.response-only-stream-json",
+  "version": "2.1.235",
+  "observed_at": "2026-08-19",
+  "package_identity": "identity.json",
+  "qualified_decoder_corpus": ["claude-code-2.1.227", "claude-code-2.1.228"],
+  "help_selected_flags_present": [
+    "-p",
+    "--input-format",
+    "--output-format",
+    "--verbose",
+    "--no-session-persistence",
+    "--model",
+    "--effort",
+    "--tools",
+    "--safe-mode",
+    "--disable-slash-commands",
+    "--no-chrome",
+    "--prompt-suggestions",
+    "--mcp-config",
+    "--strict-mcp-config"
+  ],
+  "selected_tools": "",
+  "selected_prompt_suggestions": "false",
+  "prompt_suggestion_help_documents_print_sdk_message": true,
+  "include_partial_messages_selected": false,
+  "provider_prompt_sent": false,
+  "claim_at_observation": {
+    "baseline": "2.1.227",
+    "latest_qualified": "2.1.234",
+    "posture": "allow_unverified",
+    "deny_list": [],
+    "classification_of_2_1_235": "unverified_newer"
+  },
+  "identity_decision": {
+    "shape": "compatible-extension",
+    "reuse_behavior_revision": "claude-code.response-only.stream-json.v1",
+    "raise_latest_qualified": true,
+    "raise_latest_qualified_to": "2.1.235",
+    "keep_baseline": "2.1.227",
+    "qualify_intermediates": true,
+    "deny_2_1_235": false,
+    "mix_headless_axis": false,
+    "flatten_to_claude_agent_acp": false,
+    "later_unverified_after_qualification": "2.1.236",
+    "provider_prompt_sent": false
+  }
+}

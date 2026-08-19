@@ -1,0 +1,48 @@
+pub mod swallowtail_adapter_mistral_vibe
+pub struct swallowtail_adapter_mistral_vibe::MistralVibeHeadlessDriver
+impl swallowtail_adapter_mistral_vibe::MistralVibeHeadlessDriver
+pub const fn swallowtail_adapter_mistral_vibe::MistralVibeHeadlessDriver::environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
+pub const fn swallowtail_adapter_mistral_vibe::MistralVibeHeadlessDriver::new(swallowtail_runtime::host_reference::EnvironmentRef) -> Self
+impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_mistral_vibe::MistralVibeHeadlessDriver
+pub fn swallowtail_adapter_mistral_vibe::MistralVibeHeadlessDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_mistral_vibe::MistralVibeHeadlessDriver::discover_installed_executable(&self, swallowtail_runtime::installed_executable::InstalledExecutableDiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_core::registration::discovery::DiscoveryOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::StructuredRunDriver for swallowtail_adapter_mistral_vibe::MistralVibeHeadlessDriver
+pub fn swallowtail_adapter_mistral_vibe::MistralVibeHeadlessDriver::start_run(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparationInput
+impl swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparationInput
+pub const fn swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_runtime::installed_executable::InstalledExecutableTarget, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub struct swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparationProbe
+impl swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparationProbe
+pub const fn swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparationProbe::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::time::Deadline, swallowtail_runtime::installed_executable::DiscoveryCancellation) -> Self
+pub struct swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparedIntegration
+impl swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparedIntegration
+pub const fn swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparedIntegration::environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
+pub const fn swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparedIntegration::low_level_driver(&self) -> swallowtail_adapter_mistral_vibe::MistralVibeHeadlessDriver
+pub const fn swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparedIntegration::observation(&self) -> &swallowtail_core::installed_executable::InstalledExecutableObservation
+pub const fn swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparedIntegration::target(&self) -> &swallowtail_runtime::installed_executable::InstalledExecutableTarget
+pub fn swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparedIntegration::validate_execution_binding(&self, &swallowtail_core::runtime_identity::ExecutionHostId, &swallowtail_runtime::installed_executable::InstalledExecutableTarget) -> core::result::Result<(), swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparedIntegration
+pub fn swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparedIntegration::prepare_run(&self, swallowtail_adapter_mistral_vibe::MistralVibeHeadlessRunProfileInput) -> core::result::Result<swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparedRun, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparedRun
+impl swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparedRun
+pub const fn swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparedRun::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub fn swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparedRun::low_level_driver(&self) -> swallowtail_adapter_mistral_vibe::MistralVibeHeadlessDriver
+pub const fn swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparedRun::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparedRun::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
+pub fn swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparedRun::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_mistral_vibe::MistralVibeHeadlessRunProfileInput
+impl swallowtail_adapter_mistral_vibe::MistralVibeHeadlessRunProfileInput
+pub const fn swallowtail_adapter_mistral_vibe::MistralVibeHeadlessRunProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::content::OperationContent, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::time::Deadline) -> Self
+pub const swallowtail_adapter_mistral_vibe::MISTRAL_VIBE_EXECUTABLE_NAME: &str
+pub const swallowtail_adapter_mistral_vibe::MISTRAL_VIBE_LOCAL_ACCOUNT_AUDIENCE: &str
+pub const swallowtail_adapter_mistral_vibe::MISTRAL_VIBE_RELEASE_AXIS: &str
+pub const swallowtail_adapter_mistral_vibe::MISTRAL_VIBE_RELEASE_VERSION: &str
+pub fn swallowtail_adapter_mistral_vibe::mistral_vibe_headless_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_mistral_vibe::mistral_vibe_headless_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_mistral_vibe::mistral_vibe_local_config_access_profile(swallowtail_core::runtime_identity::AccessProfileId) -> swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_mistral_vibe::mistral_vibe_release_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
+pub async fn swallowtail_adapter_mistral_vibe::prepare_mistral_vibe_headless(swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparationInput, swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparationProbe, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_mistral_vibe::MistralVibeHeadlessPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>

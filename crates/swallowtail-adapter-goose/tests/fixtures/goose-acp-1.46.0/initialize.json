@@ -1,0 +1,45 @@
+{
+  "request": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "initialize",
+    "params": {
+      "protocolVersion": 1,
+      "clientCapabilities": {
+        "fs": { "readTextFile": false, "writeTextFile": false },
+        "terminal": false
+      },
+      "clientInfo": { "name": "swallowtail", "version": "fixture" }
+    }
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "result": {
+      "protocolVersion": 1,
+      "agentCapabilities": {
+        "loadSession": true,
+        "promptCapabilities": {
+          "image": true,
+          "audio": false,
+          "embeddedContext": true
+        },
+        "mcpCapabilities": { "http": true },
+        "sessionCapabilities": {
+          "list": {},
+          "close": {}
+        }
+      },
+      "agentInfo": { "name": "goose", "version": "1.46.0" },
+      "authMethods": [
+        {
+          "id": "goose-provider",
+          "name": "Configure Provider",
+          "description": "Run `goose configure` to set up your AI provider and API key"
+        }
+      ]
+    }
+  },
+  "source": "crates/goose/src/acp/server.rs GooseAcpAgent::on_initialize at v1.46.0",
+  "live_acp_initialize": false
+}

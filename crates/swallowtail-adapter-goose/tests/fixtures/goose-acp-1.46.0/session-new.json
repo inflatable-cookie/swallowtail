@@ -1,0 +1,31 @@
+{
+  "request": {
+    "jsonrpc": "2.0",
+    "id": 2,
+    "method": "session/new",
+    "params": {
+      "cwd": "/tmp/swallowtail-fixture-cwd",
+      "mcpServers": []
+    }
+  },
+  "response_shape": {
+    "sessionId": "opaque-fixture-session",
+    "modes": {
+      "availableModes": [
+        { "id": "auto", "name": "auto", "description": "Automatically approve tool calls" },
+        { "id": "approve", "name": "approve" },
+        { "id": "smart_approve", "name": "smart_approve" },
+        { "id": "chat", "name": "chat" }
+      ],
+      "currentModeId": "host-owned-goose-mode"
+    },
+    "configOptions": "host-provider-and-model-inventory-private"
+  },
+  "cwd_gate": "fails unless cwd is an absolute existing directory",
+  "auth_gate": "fails with internal error unless host Goose config already has provider and model; Swallowtail does not run goose configure or authenticate",
+  "auto_mode_unselected": true,
+  "mcp_servers_empty_on_first_driver": true,
+  "meta_hidden_recipe_provider_unmapped": true,
+  "source": "crates/goose/src/acp/server/new_session.rs handle_new_session at v1.46.0",
+  "live_acp_initialize": false
+}

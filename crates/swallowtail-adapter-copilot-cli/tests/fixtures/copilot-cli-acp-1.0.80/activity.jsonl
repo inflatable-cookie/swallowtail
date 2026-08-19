@@ -1,0 +1,8 @@
+{"case":"assistant-message","update":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"Copilot display text."}},"expected":{"semantics":"content_delta","portable":"assistant_message"}}
+{"case":"available-commands","update":{"sessionUpdate":"available_commands_update","availableCommands":[{"name":"context","description":"fixture"}]},"expected":{"portable":"session_metadata","agent_activity":false,"swallowtail_slash_operation":false}}
+{"case":"usage-update-unclaimed","update":{"sessionUpdate":"usage_update"},"expected":{"portable":"unmapped_usage","usage_evidence":false}}
+{"case":"permission","method":"session/request_permission","params":{"sessionId":"opaque-fixture-session","toolCall":{"toolCallId":"tool-copilot","status":"pending"}},"expected":{"semantics":"separate_callback_exchange","allow_always":"unselected","official_example_outcome":"cancelled"}}
+{"case":"completion","result":{"stopReason":"end_turn"},"expected":{"semantics":"separate_terminal_truth"}}
+{"case":"cancelled","result":{"stopReason":"cancelled"},"expected":{"semantics":"separate_terminal_truth"}}
+{"case":"unknown-safe","update":{"sessionUpdate":"copilot_future_activity"},"expected":{"semantics":"bounded_namespaced_unknown","raw_payload":"excluded"}}
+{"case":"interactive-slash-unmapped","prompt":{"type":"text","text":"/login"},"expected":{"semantics":"unmapped_interactive_slash","swallowtail_operation":false}}

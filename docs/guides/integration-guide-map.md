@@ -12,7 +12,7 @@ Coverage states:
 - **missing** — no canonical task-oriented guide exists
 - **complete** — guide, example, and coverage validation meet Contract 052
 
-All 39 production route rows and every portable feature family have completed
+All 47 production route rows and every portable feature family have completed
 the checklist. Coverage state describes documentation evidence, not the
 underlying production capability.
 
@@ -53,6 +53,14 @@ conflicts or when you are qualifying a new claim.
 | `kimi-code.headless` | [Kimi Code](kimi-prepared-integration.md) | [prepared headless](../../crates/swallowtail-adapter-kimi/examples/prepared_headless.rs) | complete |
 | `muse-code.headless` | [Muse Code](muse-code-prepared-integration.md) | [prepared headless](../../crates/swallowtail-adapter-muse/examples/prepared_muse_headless.rs) | complete |
 | `command-code.headless` | [Command Code](command-code-prepared-integration.md) | [prepared headless](../../crates/swallowtail-adapter-command-code/examples/prepared_command_code_headless.rs) | complete |
+| `cline.acp` | [Cline ACP](cline-acp-prepared-integration.md) | [prepared ACP](../../crates/swallowtail-adapter-cline/examples/prepared_cline_acp.rs) | complete |
+| `cline.headless` | [Cline Headless](cline-headless-prepared-integration.md) | [prepared headless](../../crates/swallowtail-adapter-cline/examples/prepared_cline_headless.rs) | complete |
+| `goose.acp` | [Goose ACP](goose-acp-prepared-integration.md) | [prepared ACP](../../crates/swallowtail-adapter-goose/examples/prepared_goose_acp.rs) | complete |
+| `kiro.acp` | [Kiro ACP](kiro-acp-prepared-integration.md) | [prepared ACP](../../crates/swallowtail-adapter-kiro/examples/prepared_kiro_acp.rs) | complete |
+| `deepagents.acp` | [Deep Agents ACP](deepagents-acp-prepared-integration.md) | [prepared ACP](../../crates/swallowtail-adapter-deepagents/examples/prepared_deepagents_acp.rs) | complete |
+| `copilot-cli.acp` | [Copilot CLI ACP](copilot-cli-acp-prepared-integration.md) | [prepared ACP](../../crates/swallowtail-adapter-copilot-cli/examples/prepared_copilot_cli_acp.rs) | complete |
+| `mistral-vibe.headless` | [Mistral Vibe Headless](mistral-vibe-headless-prepared-integration.md) | [prepared headless](../../crates/swallowtail-adapter-mistral-vibe/examples/prepared_mistral_vibe_headless.rs) | complete |
+| `qoder.headless` | [Qoder Headless](qoder-headless-prepared-integration.md) | [prepared headless](../../crates/swallowtail-adapter-qoder/examples/prepared_qoder_headless.rs) | complete |
 | `oh-my-pi.rpc` | [Oh My Pi](oh-my-pi-prepared-integration.md) | [prepared RPC](../../crates/swallowtail-adapter-oh-my-pi/examples/prepared_oh_my_pi_rpc.rs) | complete |
 | `pi.rpc` | [Pi RPC](pi-rpc-prepared-integration.md) | [prepared RPC](../../crates/swallowtail-adapter-pi/examples/prepared_pi_rpc.rs) | complete |
 | `qwen.headless` | [Qwen](qwen-headless-prepared-integration.md) | [prepared headless](../../crates/swallowtail-adapter-qwen/examples/prepared_qwen_headless.rs) | complete |

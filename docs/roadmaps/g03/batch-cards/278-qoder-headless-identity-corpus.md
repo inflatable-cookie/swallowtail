@@ -1,6 +1,6 @@
 # 278 Qoder Headless Identity Corpus
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-18
 Milestone: `../091-qoder-headless-route.md`
@@ -20,10 +20,10 @@ driver implementation, prepared API, production matrix changes, live provider wo
 
 ## Acceptance Criteria
 
-- [ ] Exact source identity and route disposition are recorded.
-- [ ] Protocol/event evidence is saved in an adapter-local corpus plan.
-- [ ] Authentication, authority, isolation, cancellation, and cleanup limits are explicit.
-- [ ] No claim changes before the next card.
+- [x] Exact source identity and route disposition are recorded.
+- [x] Protocol/event evidence is saved in an adapter-local corpus plan.
+- [x] Authentication, authority, isolation, cancellation, and cleanup limits are explicit.
+- [x] No claim changes before the next card.
 
 ## Validation
 
@@ -39,4 +39,6 @@ Continue to card 279 after the route and corpus shape are named.
 
 ## Evidence
 
-Research 143; https://docs.qoder.com/cli/overview; https://docs.qoder.com/cli/run-in-scripts
+Research 151; `docs/logs/2026-08-19-qoder-headless-1-1-25-identity.md`;
+fixtures under `crates/swallowtail-adapter-qoder/tests/fixtures/qoder-headless-1.1.25/`.
+`effigy qa:northstar` passed. No production claim.

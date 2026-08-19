@@ -1,0 +1,78 @@
+{
+  "selected_command": ["kiro-cli", "acp"],
+  "transport": "stdio-jsonrpc",
+  "protocol_version": 1,
+  "first_op": ["initialize", "session/new", "session/prompt"],
+  "selected_methods": [
+    "initialize",
+    "session/new",
+    "session/prompt",
+    "session/cancel"
+  ],
+  "advertised_unmapped": [
+    "session/load",
+    "session/set_mode",
+    "session/set_model",
+    "_kiro.dev/commands/execute",
+    "_kiro.dev/commands/options",
+    "_kiro.dev/commands/available",
+    "_kiro.dev/mcp/oauth_request",
+    "_kiro.dev/mcp/server_initialized",
+    "_kiro.dev/compaction/status",
+    "_kiro.dev/clear/status",
+    "_session/terminate"
+  ],
+  "initialize": {
+    "result_recovered_from_public_source": false,
+    "official_example": {
+      "protocolVersion": 1,
+      "agentCapabilities": {
+        "loadSession": true,
+        "promptCapabilities": { "image": true }
+      },
+      "agentInfo": { "name": "kiro-cli", "version": "1.5.0" },
+      "agentInfo_version_is_stale_example": true
+    },
+    "swallowtail_request_advertises_host_fs_and_terminal_false": true
+  },
+  "authority": {
+    "credential": "host-owned kiro-cli login or KIRO_API_KEY; Swallowtail does not authenticate",
+    "working_resource": "session/new cwd",
+    "cleanup": "cancel in-flight prompt, join or kill owned child",
+    "session_files": "~/.kiro/sessions/cli/ provider-owned; not Swallowtail retention",
+    "swallowtail_passes_agent_flag": false,
+    "swallowtail_passes_cloud": false,
+    "swallowtail_passes_trust_all_tools": false
+  },
+  "prompt": {
+    "field": "prompt",
+    "docs_example_field_content_rejected": true,
+    "text_blocks_selected": true,
+    "image_advertised_unmapped": true
+  },
+  "permission": {
+    "options_not_recovered_from_public_source": true,
+    "allow_always_unselected": true,
+    "trust_all_tools_unselected": true
+  },
+  "session_updates_mapped": [
+    "agent_message_chunk",
+    "tool_call",
+    "tool_call_update"
+  ],
+  "docs_session_notification_names_are_not_decoder_keys": true,
+  "turn_end_not_substitute_for_prompt_rpc_result": true,
+  "unmapped_cli": [
+    "chat --no-interactive",
+    "--cloud",
+    "--resume-id",
+    "--agent",
+    "--trust-all-tools",
+    "login",
+    "kiro-cli-chat"
+  ],
+  "decoder_corpus": "kiro-acp-2.18.1",
+  "provider_prompt_sent": false,
+  "live_acp_initialize": false,
+  "host_install_changed": false
+}

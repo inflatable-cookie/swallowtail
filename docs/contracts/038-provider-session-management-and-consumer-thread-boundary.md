@@ -196,7 +196,7 @@ that evidence authoritative.
 
 ### Claude Agent ACP
 
-The qualified Claude Agent ACP `0.53.0..=0.69.0` range advertises independent
+The qualified Claude Agent ACP `0.53.0..=0.70.0` range advertises independent
 close and delete capabilities at every supported point. Exact tagged handler,
 test, ACP SDK, and Agent SDK evidence qualifies:
 
@@ -210,7 +210,7 @@ test, ACP SDK, and Agent SDK evidence qualifies:
 This classification does not claim secure erasure or deletion of Anthropic API
 service data, account analytics, logs, or backups. It is not
 `ProviderHardDeleted`. Exact `0.62.0` retains the prior behavior, while exact
-`0.63.0` through `0.69.0` add no stronger lifecycle authority. Later stable
+`0.63.0` through `0.70.0` add no stronger lifecycle authority. Later stable
 versions remain visible and unverified.
 
 ### OpenCode HTTP/SSE

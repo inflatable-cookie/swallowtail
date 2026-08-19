@@ -1,0 +1,154 @@
+{
+  "selected_command": [
+    "python",
+    "-m",
+    "openhands.agent_server",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "0"
+  ],
+  "port_zero_note": "fixture placeholder; driver binds an explicit loopback port from host-approved allocation, not necessarily 8000",
+  "transport": "owned-loopback-http-plus-websocket",
+  "framing": {
+    "health": "application/json objects on GET /health /alive /ready /server_info",
+    "rest": "application/json under /api",
+    "events": "JSON objects with kind discriminator over WebSocket /sockets/events/{conversation_id}"
+  },
+  "health": {
+    "alive": {"path": "/alive", "status_field": "status", "ok": "ok"},
+    "health": {"path": "/health", "status_field": "status", "ok": "ok"},
+    "ready": {
+      "path": "/ready",
+      "ok": {"status": "ready"},
+      "initializing": {"http": 503, "status": "initializing"}
+    },
+    "server_info": {
+      "path": "/server_info",
+      "version_field": "version",
+      "expected_package_version": "1.42.1",
+      "also_reports": [
+        "sdk_version",
+        "tools_version",
+        "workspace_version",
+        "build_git_sha",
+        "usable_tools"
+      ]
+    },
+    "auth_not_required": true
+  },
+  "rest_prefix": "/api",
+  "session_api_header": "X-Session-API-Key",
+  "session_api_cookie_unselected": "oh_workspace_session_key",
+  "first_op": [
+    "spawn owned child with explicit --host 127.0.0.1",
+    "GET /health and GET /ready",
+    "GET /server_info version 1.42.1",
+    "optional POST /api/conversations then POST /run",
+    "join or kill owned child"
+  ],
+  "conversation_create": {
+    "method": "POST",
+    "path": "/api/conversations",
+    "schema": "StartConversationRequest",
+    "required": ["workspace"],
+    "workspace_kind": "LocalWorkspace",
+    "workspace_required": ["working_dir"],
+    "max_iterations_server_default": 500,
+    "max_iterations_required_by_swallowtail": true,
+    "confirmation_policy_server_default": "NeverConfirm",
+    "confirmation_policy_swallowtail": "AlwaysConfirm",
+    "omit_confirmation_policy_forbidden": true,
+    "initial_message_optional": true,
+    "openapi_example_includes_llm_api_key_placeholder": true
+  },
+  "conversation_control": {
+    "run": "POST /api/conversations/{conversation_id}/run",
+    "pause": "POST /api/conversations/{conversation_id}/pause",
+    "interrupt": "POST /api/conversations/{conversation_id}/interrupt",
+    "delete": "DELETE /api/conversations/{conversation_id}",
+    "send_message": "POST /api/conversations/{conversation_id}/events"
+  },
+  "websocket": {
+    "path": "/sockets/events/{conversation_id}",
+    "not_the_docs_readme_path": "/conversations/{conversation_id}/events/socket",
+    "not_v0_socketio": true,
+    "auth_first_frame": {"type": "auth", "session_api_key": "opaque"},
+    "auth_header": "X-Session-API-Key",
+    "auth_query_deprecated": "session_api_key",
+    "payload": "event.model_dump JSON with kind",
+    "unknown_kind_fail_closed": true
+  },
+  "selected_event_kinds": [
+    "MessageEvent",
+    "StreamingDeltaEvent",
+    "ConversationStateUpdateEvent",
+    "InterruptEvent",
+    "PauseEvent",
+    "FinishAction",
+    "AgentErrorEvent",
+    "ConversationErrorEvent",
+    "ServerErrorEvent"
+  ],
+  "execution_status": [
+    "idle",
+    "running",
+    "paused",
+    "waiting_for_confirmation",
+    "finished",
+    "error",
+    "stuck",
+    "deleting"
+  ],
+  "finish_reason_map": {
+    "execution_status_finished": "end_turn",
+    "interrupt_or_kill": "cancelled",
+    "execution_status_error": "error",
+    "execution_status_stuck": "bounded_limit",
+    "max_iterations": "bounded_limit"
+  },
+  "openapi_kind_count": 135,
+  "openapi_omits_health_and_sockets": true,
+  "health_and_sockets_from_wheel_source": true,
+  "native_metrics_and_secrets_private": true,
+  "authority": {
+    "loopback_only": true,
+    "swallowtail_passes_wildcard_host": false,
+    "swallowtail_inherits_ambient_session_keys": false,
+    "swallowtail_inherits_ambient_oh_secret_key": false,
+    "swallowtail_inherits_ambient_llm_api_key": false,
+    "swallowtail_runs_subscription_login": false,
+    "swallowtail_passes_never_confirm_by_default": false,
+    "swallowtail_omits_confirmation_policy": false,
+    "confirmation_policy_server_default": "NeverConfirm",
+    "confirmation_policy_swallowtail": "AlwaysConfirm",
+    "swallowtail_passes_browser_tool_set": false,
+    "swallowtail_mints_session_api_keys": false,
+    "credential": "caller-supplied LLM credential reference on StartConversationRequest.agent.llm; optional host-granted X-Session-API-Key; Swallowtail does not mint keys or log in",
+    "working_resource": "LocalWorkspace.working_dir opaque host path",
+    "cleanup": "join or kill owned child; DELETE conversation is extra and does not replace process cleanup",
+    "isolation": "ambient-host filesystem of the owned child cwd plus working_dir"
+  },
+  "unmapped": [
+    "V0 Socket.IO /api/conversations InitSessionRequest",
+    "Contract 035 remote ACP",
+    "POST /api/conversations/{id}/switch_acp_model",
+    "Python SDK Conversation/Workspace",
+    "Docker sandbox",
+    "hosted API sandbox",
+    "/sockets/bash-events",
+    "bash/file/git routers",
+    "settings/secrets",
+    "openai subscription device login",
+    "vscode/desktop",
+    "plugins/marketplace",
+    "RemoteWorkspace",
+    "browser_tool_set",
+    "CORS 0.0.0.0 bind"
+  ],
+  "decoder_corpus": "openhands-agent-server-1.42.1",
+  "events_are_schema_derived_not_live": true,
+  "provider_prompt_sent": false,
+  "live_server_started": false,
+  "host_install_changed": false
+}

@@ -1,0 +1,14 @@
+{"case":"assistant-message","update":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"Cline display text."}},"expected":{"semantics":"content_delta","portable":"assistant_message"}}
+{"case":"thought-display","update":{"sessionUpdate":"agent_thought_chunk","content":{"type":"text","text":"Cline readable thought update."}},"expected":{"semantics":"content_delta","portable":"reasoning_summary_candidate","disclosure":"provider_display_content"}}
+{"case":"tool-create","update":{"sessionUpdate":"tool_call","toolCallId":"tool-cline","title":"fixture tool","kind":"other","status":"pending","rawInput":{"private":"excluded"}},"expected":{"semantics":"create","portable":"provider_tool","rawInput":"excluded"}}
+{"case":"tool-complete","update":{"sessionUpdate":"tool_call_update","toolCallId":"tool-cline","status":"completed","rawOutput":"excluded"},"expected":{"semantics":"terminal_update","portable":"provider_tool","rawOutput":"excluded"}}
+{"case":"tool-failed","update":{"sessionUpdate":"tool_call_update","toolCallId":"tool-cline","status":"failed"},"expected":{"semantics":"terminal_update","portable":"provider_tool"}}
+{"case":"mode","update":{"sessionUpdate":"current_mode_update","currentModeId":"plan"},"expected":{"portable":"session_metadata","agent_activity":false}}
+{"case":"config","update":{"sessionUpdate":"config_option_update","configOptions":[]},"expected":{"portable":"session_metadata","agent_activity":false}}
+{"case":"session-info","update":{"sessionUpdate":"session_info_update","updatedAt":"2026-08-18T00:00:00.000Z"},"expected":{"portable":"session_metadata","agent_activity":false}}
+{"case":"permission","method":"session/request_permission","params":{"sessionId":"opaque-fixture-session","toolCall":{"toolCallId":"tool-cline","status":"pending"},"options":[{"optionId":"allow_once","kind":"allow_once"},{"optionId":"allow_always","kind":"allow_always"},{"optionId":"reject_once","kind":"reject_once"}]},"expected":{"semantics":"separate_callback_exchange","allow_always":"unselected"}}
+{"case":"completion","result":{"stopReason":"end_turn"},"expected":{"semantics":"separate_terminal_truth"}}
+{"case":"cancelled","result":{"stopReason":"cancelled"},"expected":{"semantics":"separate_terminal_truth"}}
+{"case":"unknown-safe","update":{"sessionUpdate":"cline_future_activity"},"expected":{"semantics":"bounded_namespaced_unknown","raw_payload":"excluded"}}
+{"case":"malformed-tool","update":{"sessionUpdate":"tool_call_update","status":"completed"},"expected":{"semantics":"fail_closed","reason":"tool_identity_missing"}}
+{"case":"usage-not-forwarded","event":{"type":"usage"},"expected":{"session_update":false}}

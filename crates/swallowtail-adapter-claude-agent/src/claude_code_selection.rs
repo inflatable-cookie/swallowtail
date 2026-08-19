@@ -12,7 +12,7 @@ pub const CLAUDE_CODE_HEADLESS_AXIS: &str = "claude-code.headless-stream-json";
 /// Oldest qualified native Claude Code headless version.
 pub const CLAUDE_CODE_HEADLESS_BASELINE_VERSION: &str = "2.1.220";
 /// Most recent qualified native Claude Code headless version.
-pub const CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "2.1.234";
+pub const CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "2.1.235";
 
 const HEADLESS_BEHAVIOR: &str = "claude-code.headless.stream-json.v1";
 const MAX_VERSION_BYTES: usize = 64;
@@ -109,18 +109,19 @@ mod tests {
     use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
 
     #[test]
-    fn qualified_window_covers_2_1_220_through_2_1_234() {
+    fn qualified_window_covers_2_1_220_through_2_1_235() {
         let claim = claude_code_headless_claim();
         assert!(claim.supports(&version("2.1.220")));
         assert!(claim.supports(&version("2.1.221")));
         assert!(claim.supports(&version("2.1.234")));
+        assert!(claim.supports(&version("2.1.235")));
         assert!(!claim.permits(&version("2.1.219")));
         assert!(matches!(
-            claim.assess(&version("2.1.235")),
+            claim.assess(&version("2.1.236")),
             InterfaceCompatibilityAssessment::UnverifiedNewer(_)
         ));
         assert_eq!(
-            claude_code_headless_binding("2.1.234")
+            claude_code_headless_binding("2.1.235")
                 .expect("version binds")
                 .axis()
                 .as_str(),

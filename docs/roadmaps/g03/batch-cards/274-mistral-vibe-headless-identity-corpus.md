@@ -1,6 +1,6 @@
 # 274 Mistral Vibe Headless Identity Corpus
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-18
 Milestone: `../090-mistral-vibe-headless-route.md`
@@ -20,10 +20,10 @@ driver implementation, prepared API, production matrix changes, live provider wo
 
 ## Acceptance Criteria
 
-- [ ] Exact source identity and route disposition are recorded.
-- [ ] Protocol/event evidence is saved in an adapter-local corpus plan.
-- [ ] Authentication, authority, isolation, cancellation, and cleanup limits are explicit.
-- [ ] No claim changes before the next card.
+- [x] Exact source identity and route disposition are recorded.
+- [x] Protocol/event evidence is saved in an adapter-local corpus plan.
+- [x] Authentication, authority, isolation, cancellation, and cleanup limits are explicit.
+- [x] No claim changes before the next card.
 
 ## Validation
 
@@ -39,4 +39,6 @@ Continue to card 275 after the route and corpus shape are named.
 
 ## Evidence
 
-Research 143; https://github.com/mistralai/mistral-vibe; https://docs.mistral.ai/vibe/code/cli/work-with-cli
+Research 150; `docs/logs/2026-08-19-mistral-vibe-headless-2-24-2-identity.md`;
+fixtures under `crates/swallowtail-adapter-mistral-vibe/tests/fixtures/mistral-vibe-headless-2.24.2/`.
+`effigy qa:northstar` passed. No production claim.

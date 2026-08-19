@@ -2,8 +2,8 @@ use super::failure::{
     backpressure, credential_failure, disconnected, endpoint_failure, protocol_failure,
     resync_failure,
 };
-use super::{Command, Update, FRAME_LIMIT};
-use crate::local_server::protocol::{decode_ws_frame, encode_pong, WsFrame};
+use super::{Command, FRAME_LIMIT, Update};
+use crate::local_server::protocol::{WsFrame, decode_ws_frame, encode_pong};
 use futures_channel::{mpsc, oneshot};
 use std::net::TcpStream;
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -11,8 +11,8 @@ use std::sync::mpsc as sync_mpsc;
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 use swallowtail_runtime::RuntimeFailure;
-use tungstenite::client::{connect_with_config, IntoClientRequest};
-use tungstenite::http::{header::AUTHORIZATION, HeaderValue};
+use tungstenite::client::{IntoClientRequest, connect_with_config};
+use tungstenite::http::{HeaderValue, header::AUTHORIZATION};
 use tungstenite::protocol::WebSocketConfig;
 use tungstenite::stream::MaybeTlsStream;
 use tungstenite::{Error, Message, WebSocket};

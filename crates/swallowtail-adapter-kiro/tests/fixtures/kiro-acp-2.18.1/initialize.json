@@ -1,0 +1,26 @@
+{
+  "request": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "initialize",
+    "params": {
+      "protocolVersion": 1,
+      "clientCapabilities": {
+        "fs": { "readTextFile": false, "writeTextFile": false },
+        "terminal": false
+      },
+      "clientInfo": { "name": "swallowtail", "version": "fixture" }
+    }
+  },
+  "response_recovered_from_public_source": false,
+  "official_example": {
+    "protocolVersion": 1,
+    "agentCapabilities": {
+      "loadSession": true,
+      "promptCapabilities": { "image": true }
+    },
+    "agentInfo": { "name": "kiro-cli", "version": "1.5.0" }
+  },
+  "source": "https://kiro.dev/docs/cli/acp/ initialize example at Kiro CLI 2.18.1 identity; agentInfo.version is a stale docs example",
+  "live_acp_initialize": false
+}

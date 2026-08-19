@@ -1,0 +1,92 @@
+{
+  "selected_command": ["cline", "--json", "--auto-approve", "false"],
+  "transport": "stdio-ndjson-envelopes",
+  "framing": {
+    "stdout": "one-json-object-per-line",
+    "envelope_ts": "iso-8601-from-nowIso",
+    "encoder": "emitJsonLine"
+  },
+  "first_op": ["spawn", "one prompt operand", "drain envelopes", "join or kill"],
+  "selected_envelope_types": [
+    "run_start",
+    "agent_event",
+    "run_result",
+    "run_abort_requested",
+    "run_aborted"
+  ],
+  "stderr_envelope_types": ["error"],
+  "unmapped_envelope_types": ["team_event", "team_restored"],
+  "docs_ask_say_schema": "stale-documentation-not-this-wire",
+  "agent_event_nested_types": [
+    "iteration_start",
+    "iteration_end",
+    "content_start",
+    "content_end",
+    "done",
+    "error",
+    "notice"
+  ],
+  "content_start_types": ["text", "reasoning", "tool"],
+  "run_start_fields": [
+    "providerId",
+    "modelId",
+    "catalog",
+    "thinking",
+    "mode",
+    "sessionId"
+  ],
+  "run_result_fields": [
+    "finishReason",
+    "iterations",
+    "usage",
+    "aggregateUsage",
+    "durationMs",
+    "text",
+    "model"
+  ],
+  "finish_reason_map": {
+    "completed": "end_turn",
+    "aborted": "cancelled"
+  },
+  "non_completed_finish_exit_code": 1,
+  "timeout_exit_code": 1,
+  "missing_prompt_exit_code": 1,
+  "authority": {
+    "cli_auto_approve_help_default": true,
+    "startup_default_tool_auto_approve": true,
+    "explicit_false_overrides_persisted_and_default": true,
+    "swallowtail_passes_auto_approve_true": false,
+    "swallowtail_passes_auto_approve_false": true,
+    "credential": "host-owned CLINE_API_KEY or persisted provider settings; Swallowtail does not authenticate; json mode skips browser OAuth",
+    "working_resource": "-c/--cwd else process cwd",
+    "cleanup": "SIGINT/SIGTERM then join or kill owned child"
+  },
+  "prompt": {
+    "argv_operand": true,
+    "piped_stdin_unselected": true,
+    "interactive_unsupported": true
+  },
+  "unmapped_cli": [
+    "--acp",
+    "-i",
+    "--tui",
+    "--id",
+    "-z",
+    "--zen",
+    "hub",
+    "kanban",
+    "schedule",
+    "--worktree",
+    "--yolo",
+    "-k",
+    "--key",
+    "-p",
+    "--plan"
+  ],
+  "optional_unmapped_until_driver": ["--timeout", "-m", "--model", "--thinking"],
+  "acp_is_mutually_exclusive": true,
+  "decoder_corpus": "cline-headless-3.0.55",
+  "provider_prompt_sent": false,
+  "live_json_run": false,
+  "host_install_changed": false
+}

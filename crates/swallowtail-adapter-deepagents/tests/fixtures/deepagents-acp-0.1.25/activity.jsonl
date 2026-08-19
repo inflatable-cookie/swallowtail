@@ -1,0 +1,9 @@
+{"case":"assistant-message","update":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"Deep Agents display text."}},"expected":{"semantics":"content_delta","portable":"assistant_message"}}
+{"case":"tool-create","update":{"sessionUpdate":"tool_call","toolCallId":"tool-deepagents","title":"fixture tool","kind":"other","status":"pending","rawInput":{"private":"excluded"}},"expected":{"semantics":"create","portable":"provider_tool","rawInput":"excluded"}}
+{"case":"tool-complete","update":{"sessionUpdate":"tool_call_update","toolCallId":"tool-deepagents","status":"completed","rawOutput":"excluded"},"expected":{"semantics":"terminal_update","portable":"provider_tool","rawOutput":"excluded"}}
+{"case":"permission","method":"session/request_permission","params":{"sessionId":"opaque-fixture-session","toolCall":{"toolCallId":"tool-deepagents","status":"pending"}},"expected":{"semantics":"separate_callback_exchange","allow_always":"unselected"}}
+{"case":"completion","result":{"stopReason":"end_turn"},"expected":{"semantics":"separate_terminal_truth"}}
+{"case":"cancelled","result":{"stopReason":"cancelled"},"expected":{"semantics":"separate_terminal_truth"}}
+{"case":"unknown-safe","update":{"sessionUpdate":"deepagents_future_activity"},"expected":{"semantics":"bounded_namespaced_unknown","raw_payload":"excluded"}}
+{"case":"slash-command-unmapped","prompt":"/plan","expected":{"semantics":"unmapped","raw_payload":"excluded"}}
+{"case":"content-field-rejected","method":"session/prompt","params":{"sessionId":"opaque-fixture-session","content":[{"type":"text","text":"x"}]},"expected":{"semantics":"fail_closed","reason":"prompt_field_required"}}

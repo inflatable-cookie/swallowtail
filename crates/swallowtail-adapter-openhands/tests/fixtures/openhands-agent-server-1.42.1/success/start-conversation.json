@@ -1,0 +1,11 @@
+{
+  "schema_derived_not_live": true,
+  "workspace": {
+    "kind": "LocalWorkspace",
+    "working_dir": "opaque-working-resource"
+  },
+  "max_iterations": 1,
+  "confirmation_policy": {
+    "kind": "AlwaysConfirm"
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "selected_command": ["goose", "acp"],
+  "transport": "stdio-jsonrpc",
+  "protocol_version": 1,
+  "first_op": ["initialize", "session/new", "session/prompt"],
+  "selected_methods": [
+    "initialize",
+    "session/new",
+    "session/prompt",
+    "session/cancel"
+  ],
+  "advertised_unmapped": [
+    "session/load",
+    "session/list",
+    "session/close",
+    "session/fork",
+    "session/steer",
+    "session/set_model",
+    "authenticate"
+  ],
+  "initialize": {
+    "agent_capabilities": {
+      "loadSession": true,
+      "sessionCapabilities": {
+        "list": true,
+        "close": true
+      }
+    },
+    "prompt_capabilities": {
+      "image": true,
+      "audio": false,
+      "embeddedContext": true
+    },
+    "mcp_capabilities": {
+      "http": true
+    },
+    "agent_info": {
+      "name": "goose",
+      "version": "1.46.0"
+    },
+    "auth_methods": [
+      {
+        "id": "goose-provider",
+        "name": "Configure Provider",
+        "description": "Run `goose configure` to set up your AI provider and API key"
+      }
+    ]
+  },
+  "authority": {
+    "stdio_with_builtin_clap_default": false,
+    "serve_with_builtin_omitted_defaults_to_developer": true,
+    "swallowtail_passes_with_builtin": false,
+    "enable_scheduler_default": false,
+    "credential": "host-owned goose configure / ~/.config/goose; Swallowtail does not authenticate",
+    "working_resource": "session/new absolute existing cwd",
+    "cleanup": "cancel in-flight prompt, join or kill owned child"
+  },
+  "prompt": {
+    "text_blocks_selected": true,
+    "image_and_embedded_advertised_unmapped": true,
+    "audio_dropped": true,
+    "finish_reason_map": {
+      "completed": "end_turn",
+      "cancelled": "cancelled",
+      "output_token_limit": "max_tokens"
+    },
+    "unknown_session": "error",
+    "cwd_must_be_absolute_existing_directory": true
+  },
+  "permission_kinds": [
+    "allow_once",
+    "allow_always",
+    "reject_once",
+    "reject_always"
+  ],
+  "allow_always_unselected": true,
+  "auto_mode_unselected": true,
+  "session_updates_mapped": [
+    "agent_message_chunk",
+    "agent_thought_chunk",
+    "user_message_chunk",
+    "tool_call",
+    "tool_call_update"
+  ],
+  "session_updates_not_claimed_as_portable_usage": [
+    "usage_update"
+  ],
+  "session_updates_metadata": [
+    "config_option_update",
+    "session_info_update"
+  ],
+  "custom_goose_notifications_unmapped": true,
+  "unmapped_cli": [
+    "serve",
+    "--with-builtin",
+    "--enable-scheduler",
+    "--dangerously-unauthenticated",
+    "desktop",
+    "tui",
+    "recipe"
+  ],
+  "decoder_corpus": "goose-acp-1.46.0",
+  "provider_prompt_sent": false,
+  "live_acp_initialize": false,
+  "host_install_changed": false
+}

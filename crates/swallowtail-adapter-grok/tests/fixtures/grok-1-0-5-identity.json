@@ -1,0 +1,46 @@
+{
+  "axis": "grok-build.executable",
+  "version": "1.0.5",
+  "observed_at": "2026-08-19",
+  "npm_package": "@xai-official/grok",
+  "npm_latest": true,
+  "published_at": "2026-08-16T00:25:35.078Z",
+  "npm_integrity": "sha512-kk5hez+Oz5CvWonDGkMNmL483CWRIGRF2ki8jQzpIXH56P0fhCgaX9lrr0IUoFCKh/rYAm5vfCPgQsdIIYLu8Q==",
+  "npm_shasum": "ceb86ba13935478692a29724e2b53f1396e8fe3f",
+  "git_head": "5115b46bc909ae5c7f5fc064455197440e796b6b",
+  "platform_package": "@xai-official/grok-darwin-arm64",
+  "platform_npm_integrity": "sha512-akEtE93V7nOHEMfj16kkl3Nxl/AjcNaRkZCnY5HoIayy3VR6qQ6VTsQdUka4ZgT1bGJCZff4UIcTVpFGDaMAQQ==",
+  "local_cli": "grok 1.0.5 (5115b46bc909) [stable]",
+  "source_revision": "5115b46bc909",
+  "local_executable_sha256": "3dfa7f04fbb5427a8fbead286591543aaecb478b3a0ab222c4329eca1a3b2f86",
+  "local_executable_size": 134349648,
+  "alpha_ignored": "1.0.6",
+  "unpublished_1_0_7": true,
+  "last_0_2_stable": "0.2.121",
+  "first_1_0_stable": "1.0.0",
+  "published_stables_from_previous_ceiling": ["1.0.5"],
+  "invocation": {
+    "version": ["--no-auto-update", "--version"],
+    "acp_stdio_advertised": ["agent", "stdio"]
+  },
+  "claim_at_observation": {
+    "latest_qualified_before": "1.0.4",
+    "posture": "allow_unverified",
+    "classification_of_1_0_5": "unverified_newer"
+  },
+  "identity_decision": {
+    "shape": "compatible-extension",
+    "reuse_behavior_revision": "grok-build.acp-v1.cached-token-model-4-6-v3",
+    "raise_latest_qualified_to": "1.0.5",
+    "keep_1_0_4_floor": true,
+    "keep_0_2_window": true,
+    "mid_gap_0_2_118_through_0_2_121": "incompatible",
+    "unprobed_1_0_0_through_1_0_3": "incompatible",
+    "ignore_alpha_1_0_6": true,
+    "new_milestone": false,
+    "flatten_as_0_2_unverified_newer": false,
+    "later_unverified_after_qualification": "1.0.6",
+    "provider_prompt_sent": false,
+    "host_install_changed": false
+  }
+}

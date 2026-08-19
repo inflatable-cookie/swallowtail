@@ -1,0 +1,11 @@
+{
+  "method": "session/request_permission",
+  "options_recovered_from_public_source": [
+    { "optionId": "allow-once", "kind": "allow_once" },
+    { "optionId": "allow-always", "kind": "allow_always" },
+    { "optionId": "reject-once", "kind": "reject_once" },
+    { "optionId": "reject-always", "kind": "reject_always" }
+  ],
+  "swallowtail_default": "observe and cancel; never select allow_always; do not inherit source allow-on-permission-error",
+  "source": "deepagents-acp@0.1.25 dist/cli.js requestToolPermission"
+}

@@ -1,0 +1,6 @@
+{
+  "method": "session/request_permission",
+  "options_not_recovered_from_public_source": true,
+  "swallowtail_default": "do not auto-select allow_always or map --trust-all-tools onto ACP",
+  "source": "ACP permission callback; kinds unrecovered from public Kiro CLI 2.18.1 identity"
+}

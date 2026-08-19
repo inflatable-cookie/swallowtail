@@ -1,0 +1,5 @@
+{"ts":"2026-08-18T00:00:00.000Z","type":"run_start","providerId":"opaque-fixture-provider","modelId":"opaque-fixture-model","catalog":"bundled","thinking":"off","mode":"act","sessionId":"opaque-fixture-session"}
+{"ts":"2026-08-18T00:00:00.001Z","type":"agent_event","event":{"type":"content_start","contentType":"text","text":"Cline display text."}}
+{"ts":"2026-08-18T00:00:00.002Z","type":"agent_event","event":{"type":"content_end","contentType":"text"}}
+{"ts":"2026-08-18T00:00:00.003Z","type":"agent_event","event":{"type":"done","reason":"completed","iterations":1,"text":"Cline display text."}}
+{"ts":"2026-08-18T00:00:00.004Z","type":"run_result","finishReason":"completed","iterations":1,"durationMs":1,"text":"Cline display text.","model":"opaque-fixture-model"}

@@ -1,0 +1,10 @@
+{
+  "notification": {
+    "jsonrpc": "2.0",
+    "method": "session/cancel",
+    "params": { "sessionId": "opaque-fixture-session" }
+  },
+  "unknown_session": "warn-and-ok",
+  "no_active_prompt": "ok",
+  "source": "crates/goose/src/acp/server.rs GooseAcpAgent::on_cancel at v1.46.0"
+}

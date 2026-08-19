@@ -1,7 +1,7 @@
 #[test]
 fn qualified_behavior_segments_execute() {
     let claim = swallowtail_adapter_grok::grok_build_acp_claim();
-    for candidate in ["0.2.114", "0.2.117", "1.0.4"] {
+    for candidate in ["0.2.114", "0.2.117", "1.0.4", "1.0.5"] {
         let version = swallowtail_core::InterfaceVersion::new(candidate).expect("version");
         assert!(claim.supports(&version));
         let host = FixtureHost::with_version(Scenario::Success, candidate);

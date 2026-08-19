@@ -1,0 +1,38 @@
+{
+  "request": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "initialize",
+    "params": {
+      "protocolVersion": 1,
+      "clientCapabilities": {
+        "fs": { "readTextFile": false, "writeTextFile": false },
+        "terminal": false
+      },
+      "clientInfo": { "name": "swallowtail", "version": "fixture" }
+    }
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "result": {
+      "protocolVersion": 1,
+      "agentCapabilities": {
+        "loadSession": true,
+        "promptCapabilities": {
+          "image": true,
+          "audio": false,
+          "embeddedContext": false
+        }
+      },
+      "agentInfo": { "name": "cline", "version": "3.0.55" },
+      "authMethods": [
+        { "id": "cline", "name": "Sign in with Cline" },
+        { "id": "cline-pass", "name": "Sign in with ClinePass" },
+        { "id": "openai-codex", "name": "Sign in with ChatGPT Subscription" }
+      ]
+    }
+  },
+  "source": "apps/cli/src/acp/acpAgent.ts initialize at cli-v3.0.55",
+  "live_acp_initialize": false
+}

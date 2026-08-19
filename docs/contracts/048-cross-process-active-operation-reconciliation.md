@@ -155,7 +155,7 @@ and route proof; it cannot be inferred from reconciliation support.
 ## Current Production Mappings
 
 `codex.app-server` implements exact-turn and session-scoped reconciliation for
-the qualified thread-catalogue range `0.105.0..=0.147.0`. One read-only
+the qualified thread-catalogue range `0.105.0..=0.148.0`. One read-only
 `thread/read(includeTurns: true)` response must match the exact thread, cwd,
 source, and optional requested turn id. Exact `inProgress`, `completed`,
 `failed`, `interrupted`, and `cancelled` statuses map directly. Absent status
@@ -171,7 +171,7 @@ OpenCode `prompt_async` supplies no exact prompt/turn reference. `Active` and
 `InactiveUnresolved` are therefore honest; terminal states are unavailable.
 
 `kimi-code.local-server` implements exact-turn reconciliation for qualified
-externally attached `0.28.1..=0.36.1` servers. The restored checkpoint supplies
+externally attached `0.28.1..=0.37.2` servers. The restored checkpoint supplies
 the exact `{seq, epoch}` position and turn. One read-only session lookup and
 one WebSocket subscription must match the bound session and cwd. Subscription
 acknowledgement fixes a finite current sequence; accepted durable events are

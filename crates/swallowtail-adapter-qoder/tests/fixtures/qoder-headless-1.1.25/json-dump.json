@@ -1,0 +1,14 @@
+{
+  "type": "result",
+  "subtype": "success",
+  "uuid": "opaque-fixture-result",
+  "session_id": "opaque-fixture-session",
+  "is_error": false,
+  "duration_ms": 1,
+  "duration_api_ms": 1,
+  "num_turns": 1,
+  "result": "Qoder display text.",
+  "stop_reason": "end_turn",
+  "permission_denials": [],
+  "fast_mode_state": "off"
+}

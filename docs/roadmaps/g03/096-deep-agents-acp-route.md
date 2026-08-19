@@ -1,13 +1,13 @@
 # 096 Deep Agents ACP Route
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-18
 Wave: Secondary
-Depends on: g03.095; g03.097 intake card 286; Research 143
-Research: 143
+Depends on: g03.094; g03.097 intake card 286; Research 143; Research 153
+Research: 143; 153; 157
 Route id: `deepagents.acp`
-Planning state: cards 299-302 planned
+Planning state: cards 299-302 completed
 
 ## Purpose
 
@@ -27,10 +27,10 @@ provider router or import consumer workflow policy.
 
 ## Work Breakdown
 
-- [299](batch-cards/299-deepagents-acp-identity-corpus.md)
-- [300](batch-cards/300-deepagents-acp-driver-core.md)
-- [301](batch-cards/301-deepagents-acp-prepared-facade.md)
-- [302](batch-cards/302-deepagents-acp-package-and-route-acceptance.md)
+- [x] [299](batch-cards/299-deepagents-acp-identity-corpus.md)
+- [x] [300](batch-cards/300-deepagents-acp-driver-core.md)
+- [x] [301](batch-cards/301-deepagents-acp-prepared-facade.md)
+- [x] [302](batch-cards/302-deepagents-acp-package-and-route-acceptance.md)
 
 The first identity card freezes the exact executable/protocol evidence before
 driver work. The final card may close the route as accepted, deferred, or
@@ -39,18 +39,21 @@ survive the evidence gate.
 
 ## Required Proof
 
-- [ ] exact executable, server, or protocol identity and version axis
-- [ ] deterministic corpus for success, failure, malformed/unknown input,
+- [x] exact executable, server, or protocol identity and version axis
+- [x] deterministic corpus for success, failure, malformed/unknown input,
       bounds, cancellation/deadline, activity, and joined cleanup
-- [ ] explicit authentication, working-resource, isolation, and remote/local
+- [x] explicit authentication, working-resource, isolation, and remote/local
       authority posture
-- [ ] bounded event and terminal-outcome mapping without native-field leakage
-- [ ] prepared facade with immutable preflight evidence and fail-closed
+- [x] bounded event and terminal-outcome mapping without native-field leakage
+- [x] prepared facade with immutable preflight evidence and fail-closed
       selection
-- [ ] route-specific guide, compiling normal-path example, matrices, package
+- [x] route-specific guide, compiling normal-path example, matrices, package
       index, and README truth if the route is accepted
-- [ ] separately gated live evidence that cannot silently widen deterministic
+- [x] separately gated live evidence that cannot silently widen deterministic
       claims
+
+Live install, `npx`, and prompt were not justified: this host has no
+`deepagents-acp`. Deterministic acceptance stands alone.
 
 ## Boundaries
 
@@ -80,5 +83,7 @@ truth diverges. Record deferred or negative evidence instead of widening scope.
 ## Sources
 
 - Research 143: `docs/research/143-new-harness-route-expansion-selection.md`
-- [Deep Agents repository](https://github.com/langchain-ai/deepagents)
+- Research 153: `docs/research/153-secondary-wave-source-and-disposition.md`
+- Research 157: `docs/research/157-deepagents-acp-0-1-25-identity.md`
+- [Deep Agents ACP](https://docs.langchain.com/oss/javascript/deepagents/acp)
 - [ACP latest registry](https://cdn.agentclientprotocol.com/registry/v1/latest/registry.json)

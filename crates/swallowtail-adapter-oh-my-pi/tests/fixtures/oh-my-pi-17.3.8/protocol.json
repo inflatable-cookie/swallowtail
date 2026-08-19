@@ -1,0 +1,74 @@
+{
+  "version": "17.3.8",
+  "help_source": "host-omp-17.2.15-and-extracted-17.3.8-cli-strings",
+  "help_selected_flags_present": [
+    "--mode",
+    "--no-session",
+    "--provider",
+    "--model",
+    "--tools",
+    "--no-extensions",
+    "--no-skills",
+    "--no-rules",
+    "--no-prewalk",
+    "--approval-mode",
+    "--no-tools"
+  ],
+  "mode_choices": ["text", "json", "rpc", "rpc-ui"],
+  "selected_mode": "rpc",
+  "selected_approval_mode": "always-ask",
+  "selected_tools": "read,grep,glob,todo,ask",
+  "catalogue_omits_provider_model_tools": true,
+  "startup_commands": [
+    "negotiate_protocol",
+    "set_model",
+    "set_auto_retry",
+    "set_auto_compaction",
+    "set_steering_mode",
+    "set_follow_up_mode",
+    "set_interrupt_mode",
+    "get_state"
+  ],
+  "selected_commands_still_documented": [
+    "negotiate_protocol",
+    "prompt",
+    "steer",
+    "follow_up",
+    "abort",
+    "get_state",
+    "get_available_models",
+    "set_model",
+    "set_thinking_level",
+    "set_steering_mode",
+    "set_follow_up_mode",
+    "set_interrupt_mode",
+    "set_auto_compaction",
+    "set_auto_retry"
+  ],
+  "unused_help_deltas": [
+    "--advisor",
+    "--from-claude",
+    "--from-codex",
+    "acp"
+  ],
+  "unused_rpc_deltas": [
+    "abort_and_prompt",
+    "new_session",
+    "set_fast_mode",
+    "get_available_commands",
+    "set_todos",
+    "set_host_tools",
+    "set_host_uri_schemes",
+    "set_subagent_subscription",
+    "switch_session",
+    "branch"
+  ],
+  "unused_changelog_deltas": [
+    "providers.cacheRetention",
+    "read-tool-single-pass-materialize",
+    "bash.patterns-eval-note"
+  ],
+  "rpc_md_unchanged_from_v17_3_7": true,
+  "decoder_corpus": "oh-my-pi-rpc-17.2.9",
+  "provider_prompt_sent": false
+}

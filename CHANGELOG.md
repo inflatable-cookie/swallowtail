@@ -5,7 +5,68 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
+### Added
+- add the separately selectable `swallowtail-adapter-deepagents` package and
+  exact Deep Agents ACP `0.1.25` route with qualified-only claim, empty extra
+  argv, and host-owned provider API keys without a credential lease
+- add the separately selectable `swallowtail-adapter-kiro` package and exact
+  Kiro CLI ACP `2.18.1` route with qualified-only claim and local-account
+  access
+- add the separately selectable `swallowtail-adapter-openhands` package for
+  exact OpenHands Agent Server `1.42.1` identity, driver, and prepared
+  facade; `openhands.agent-server` is not a production route because live
+  HTTP/WebSocket conversation stays unwired
+- add the separately selectable `swallowtail-adapter-cline` package and exact
+  Cline `3.0.55` ACP and headless routes with qualified-only claims,
+  local-account access, and no credential lease
+- add the separately selectable `swallowtail-adapter-goose` package and exact
+  Goose `1.46.0` ACP route with qualified-only claim and local-config access
+- add the separately selectable `swallowtail-adapter-copilot-cli` package and
+  exact Copilot CLI `1.0.80` ACP route with qualified-only claim, visible
+  public preview, and host-account access
+- add the separately selectable `swallowtail-adapter-mistral-vibe` package
+  and exact Mistral Vibe `2.24.2` headless route with qualified-only claim
+  and local-config access
+- add the separately selectable `swallowtail-adapter-qoder` package and exact
+  Qoder CLI `1.1.25` headless route with qualified-only claim and
+  local-config access
+
 ### Changed
+- raise the Antigravity catalogue and headless qualified ceiling through
+  official GitHub `google-antigravity/antigravity-cli` `1.1.15`:
+  `1.1.9..=1.1.15`, `1.1.8` stays independently unqualified, and
+  `--input-format` plus Gemini API-key sign-in stay unmapped
+- raise the Oh My Pi RPC qualified ceiling through official npm
+  `@oh-my-pi/pi-coding-agent` `17.3.8`: maintained `17.2.9..=17.3.8` on
+  `oh-my-pi.rpc-v2-v17.2.9`; unpublished `17.3.6` stays; `providers.cacheRetention`,
+  advisor, ACP, session switching, and subagent authority stay unmapped
+- raise Kimi Code ACP, headless, and local-server qualified ceilings through
+  official `@moonshot-ai/kimi-code` `0.37.2`: ACP and headless reuse
+  declared-effort and stream-json through `0.29.0..=0.37.2`; local-server
+  heartbeat-ping extends to `0.35.0..=0.37.2`; advertised ACP close/delete,
+  `acp --login`, terminal-auth metadata, and watch-fs `runtime_id` stay
+  unmapped
+- raise the Qwen headless qualified ceiling through official npm
+  `@qwen-code/qwen-code` `0.21.14`: `0.19.11..=0.20.1` and
+  `0.21.0..=0.21.14`, unpublished stable `0.20.2` stays incompatible, and
+  `qwen sessions ps` / `/advisor` / live-session registry stay unmapped
+- raise the Grok Build ACP qualified ceiling through official npm
+  `@xai-official/grok` `1.0.5`: maintained `1.0.4..=1.0.5` on
+  cached-token-model-4-6-v3; alpha `1.0.6` stays UnverifiedNewer and is not
+  official latest; `--leader-socket` and vendor `_x.ai/*` notifications stay
+  unmapped
+- raise the Claude Code headless and response-only qualified ceilings through
+  official npm `@anthropic-ai/claude-code` `2.1.235`: headless
+  `2.1.220..=2.1.235`, response-only `2.1.227..=2.1.235`; later stables stay
+  AllowUnverified, and spellcheck plus unused help flags stay unmapped
+- raise the Claude Agent ACP qualified ceiling through official npm
+  `@agentclientprotocol/claude-agent-acp` `0.70.0`: `0.53.0..=0.70.0`
+  excluding unpublished `0.58.0`; Providers API, goal, Air, and file-change
+  initialize `_meta` stay unmapped
+- raise the Codex exec, app-server, lifecycle, and thread-catalogue qualified
+  ceiling through official npm `@openai/codex` `0.148.0`; later stables stay
+  AllowUnverified, existing gaps stay incompatible, and `fork` / `thread/fork`
+  / Bedrock stay unmapped
 - raise the Antigravity catalogue and headless qualified ceiling through
   official GitHub `google-antigravity/antigravity-cli` `1.1.14`:
   `1.1.9..=1.1.14`, `1.1.8` stays independently unqualified, and

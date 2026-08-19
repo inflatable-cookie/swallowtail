@@ -6,7 +6,7 @@ use swallowtail_runtime::CancellationControl;
 #[test]
 fn qualified_behavior_segments_share_one_delete_and_cleanup_contract() {
     for version in [
-        "0.53.0", "0.54.0", "0.60.0", "0.61.0", "0.62.0", "0.63.0", "0.64.0", "0.69.0",
+        "0.53.0", "0.54.0", "0.60.0", "0.61.0", "0.62.0", "0.63.0", "0.64.0", "0.69.0", "0.70.0",
     ] {
         let (prepared, binding, host_id) = prepared_binding(version, version);
         let delete = prepared

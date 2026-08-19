@@ -1,6 +1,6 @@
 # 306 Cline Headless Prepared Facade
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-18
 Milestone: `../087-cline-headless-route.md`
@@ -20,10 +20,10 @@ generic routing, automatic model/provider selection, public session management, 
 
 ## Acceptance Criteria
 
-- [ ] preparation fails closed on missing or mismatched authority
-- [ ] preflight names exact headless route and version axis
-- [ ] process reaches terminal cleanup truth
-- [ ] prepared-facade tests pass
+- [x] preparation fails closed on missing or mismatched authority
+- [x] preflight names exact headless route and version axis
+- [x] process reaches terminal cleanup truth
+- [x] prepared-facade tests pass
 
 ## Validation
 

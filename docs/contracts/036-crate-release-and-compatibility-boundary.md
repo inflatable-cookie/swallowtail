@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-17
+Updated: 2026-08-19
 
 ## Purpose
 
@@ -45,10 +45,14 @@ and 36 production routes.
 The current source additionally carries the reviewed additive
 `swallowtail-adapter-deepseek-harness` package and
 `deepseek-harness.jsonrpc` and `deepseek-harness.local-server` routes, plus
-the reviewed additive `swallowtail-adapter-zcode` package and
-`zcode.app-server` route, for 32 current-source packages and 39 production
-routes. They are unreleased and are not part of the immutable `v0.3.2`
-inventories.
+the reviewed additive `swallowtail-adapter-zcode`,
+`swallowtail-adapter-cline`, `swallowtail-adapter-goose`,
+`swallowtail-adapter-copilot-cli`, `swallowtail-adapter-mistral-vibe`, `swallowtail-adapter-qoder`,
+`swallowtail-adapter-openhands`, `swallowtail-adapter-kiro`, and
+`swallowtail-adapter-deepagents`. Current source is 40 packages and 47
+production routes. OpenHands Agent Server is deferred: that package exists
+without a production route. The additive packages are unreleased and are
+not part of the immutable `v0.3.2` inventories.
 
 Foundations:
 
@@ -74,22 +78,30 @@ Opt-in adapters:
 - `swallowtail-adapter-antigravity`
 - `swallowtail-adapter-bedrock`
 - `swallowtail-adapter-claude-agent`
+- `swallowtail-adapter-cline`
 - `swallowtail-adapter-codex`
 - `swallowtail-adapter-command-code`
+- `swallowtail-adapter-copilot-cli`
 - `swallowtail-adapter-cursor`
+- `swallowtail-adapter-deepagents`
 - `swallowtail-adapter-deepseek`
 - `swallowtail-adapter-deepseek-harness`
 - `swallowtail-adapter-gemini`
+- `swallowtail-adapter-goose`
 - `swallowtail-adapter-grok`
 - `swallowtail-adapter-kimi`
 - `swallowtail-adapter-kimi-platform`
+- `swallowtail-adapter-kiro`
 - `swallowtail-adapter-llama-cpp`
+- `swallowtail-adapter-mistral-vibe`
 - `swallowtail-adapter-muse`
 - `swallowtail-adapter-opencode`
 - `swallowtail-adapter-ollama`
 - `swallowtail-adapter-oh-my-pi`
 - `swallowtail-adapter-openai`
+- `swallowtail-adapter-openhands`
 - `swallowtail-adapter-pi`
+- `swallowtail-adapter-qoder`
 - `swallowtail-adapter-qwen`
 - `swallowtail-adapter-xai`
 - `swallowtail-adapter-zcode`
@@ -285,13 +297,14 @@ not every provider behavior.
 Credential-free release checks sit behind explicit Effigy selectors and cover:
 
 - clean source and exact commit identity
-- 32-package current-source metadata and dependency topology, kept distinct
+- 36-package current-source metadata and dependency topology, kept distinct
   from the immutable 30-package `v0.3.2`, 28-package `v0.2.0` / `v0.3.1`, and
   27-package `v0.1.x` baselines
 - semantic public API baseline, with the immutable 30-package `v0.3.2`
   release frozen separately from the reviewed current-source overrides in
   `release-baselines/public-api-unreleased/` (including Claude response-only
-  compatibility, the DeepSeek Harness package, and the ZCode package) and the immutable
+  the DeepSeek Harness, ZCode, Cline, Goose, Copilot CLI, and Mistral Vibe
+  packages) and the immutable
   28-package `v0.3.0` compatibility baseline
 - denied missing public documentation
 - dependency advisory, license, and source policy

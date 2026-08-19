@@ -1,0 +1,89 @@
+pub mod swallowtail_adapter_cline
+pub struct swallowtail_adapter_cline::ClineAcpDriver
+impl swallowtail_adapter_cline::ClineAcpDriver
+pub const fn swallowtail_adapter_cline::ClineAcpDriver::new(swallowtail_runtime::host_reference::EnvironmentRef) -> Self
+impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_cline::ClineAcpDriver
+pub fn swallowtail_adapter_cline::ClineAcpDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_cline::ClineAcpDriver::discover_installed_executable(&self, swallowtail_runtime::installed_executable::InstalledExecutableDiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_core::registration::discovery::DiscoveryOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::InteractiveSessionDriver for swallowtail_adapter_cline::ClineAcpDriver
+pub fn swallowtail_adapter_cline::ClineAcpDriver::open_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_cline::ClineAcpDriver::resume_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_cline::ClineHeadlessDriver
+impl swallowtail_adapter_cline::ClineHeadlessDriver
+pub const fn swallowtail_adapter_cline::ClineHeadlessDriver::environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
+pub const fn swallowtail_adapter_cline::ClineHeadlessDriver::new(swallowtail_runtime::host_reference::EnvironmentRef) -> Self
+impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_cline::ClineHeadlessDriver
+pub fn swallowtail_adapter_cline::ClineHeadlessDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_cline::ClineHeadlessDriver::discover_installed_executable(&self, swallowtail_runtime::installed_executable::InstalledExecutableDiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_core::registration::discovery::DiscoveryOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::StructuredRunDriver for swallowtail_adapter_cline::ClineHeadlessDriver
+pub fn swallowtail_adapter_cline::ClineHeadlessDriver::start_run(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_cline::ClineHeadlessPreparationInput
+impl swallowtail_adapter_cline::ClineHeadlessPreparationInput
+pub const fn swallowtail_adapter_cline::ClineHeadlessPreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_runtime::installed_executable::InstalledExecutableTarget, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub struct swallowtail_adapter_cline::ClineHeadlessPreparationProbe
+impl swallowtail_adapter_cline::ClineHeadlessPreparationProbe
+pub const fn swallowtail_adapter_cline::ClineHeadlessPreparationProbe::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::time::Deadline, swallowtail_runtime::installed_executable::DiscoveryCancellation) -> Self
+pub struct swallowtail_adapter_cline::ClineHeadlessPreparedIntegration
+impl swallowtail_adapter_cline::ClineHeadlessPreparedIntegration
+pub const fn swallowtail_adapter_cline::ClineHeadlessPreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_cline::ClineHeadlessPreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_cline::ClineHeadlessPreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_cline::ClineHeadlessPreparedIntegration::environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
+pub const fn swallowtail_adapter_cline::ClineHeadlessPreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_cline::ClineHeadlessPreparedIntegration::low_level_driver(&self) -> swallowtail_adapter_cline::ClineHeadlessDriver
+pub const fn swallowtail_adapter_cline::ClineHeadlessPreparedIntegration::observation(&self) -> &swallowtail_core::installed_executable::InstalledExecutableObservation
+pub const fn swallowtail_adapter_cline::ClineHeadlessPreparedIntegration::target(&self) -> &swallowtail_runtime::installed_executable::InstalledExecutableTarget
+pub fn swallowtail_adapter_cline::ClineHeadlessPreparedIntegration::validate_execution_binding(&self, &swallowtail_core::runtime_identity::ExecutionHostId, &swallowtail_runtime::installed_executable::InstalledExecutableTarget) -> core::result::Result<(), swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_cline::ClineHeadlessPreparedIntegration
+pub fn swallowtail_adapter_cline::ClineHeadlessPreparedIntegration::prepare_run(&self, swallowtail_adapter_cline::ClineHeadlessRunProfileInput) -> core::result::Result<swallowtail_adapter_cline::ClineHeadlessPreparedRun, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_cline::ClineHeadlessPreparedRun
+impl swallowtail_adapter_cline::ClineHeadlessPreparedRun
+pub const fn swallowtail_adapter_cline::ClineHeadlessPreparedRun::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub fn swallowtail_adapter_cline::ClineHeadlessPreparedRun::low_level_driver(&self) -> swallowtail_adapter_cline::ClineHeadlessDriver
+pub const fn swallowtail_adapter_cline::ClineHeadlessPreparedRun::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_cline::ClineHeadlessPreparedRun::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
+pub fn swallowtail_adapter_cline::ClineHeadlessPreparedRun::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_cline::ClineHeadlessRunProfileInput
+impl swallowtail_adapter_cline::ClineHeadlessRunProfileInput
+pub const fn swallowtail_adapter_cline::ClineHeadlessRunProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::content::OperationContent, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_adapter_cline::ClinePreparationInput
+impl swallowtail_adapter_cline::ClinePreparationInput
+pub const fn swallowtail_adapter_cline::ClinePreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_runtime::installed_executable::InstalledExecutableTarget, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub struct swallowtail_adapter_cline::ClinePreparationProbe
+impl swallowtail_adapter_cline::ClinePreparationProbe
+pub const fn swallowtail_adapter_cline::ClinePreparationProbe::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::time::Deadline, swallowtail_runtime::installed_executable::DiscoveryCancellation) -> Self
+pub struct swallowtail_adapter_cline::ClinePreparedIntegration
+impl swallowtail_adapter_cline::ClinePreparedIntegration
+pub const fn swallowtail_adapter_cline::ClinePreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_cline::ClinePreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_cline::ClinePreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_cline::ClinePreparedIntegration::environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
+pub const fn swallowtail_adapter_cline::ClinePreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_cline::ClinePreparedIntegration::low_level_driver(&self) -> swallowtail_adapter_cline::ClineAcpDriver
+pub const fn swallowtail_adapter_cline::ClinePreparedIntegration::observation(&self) -> &swallowtail_core::installed_executable::InstalledExecutableObservation
+pub const fn swallowtail_adapter_cline::ClinePreparedIntegration::target(&self) -> &swallowtail_runtime::installed_executable::InstalledExecutableTarget
+pub fn swallowtail_adapter_cline::ClinePreparedIntegration::validate_execution_binding(&self, &swallowtail_core::runtime_identity::ExecutionHostId, &swallowtail_runtime::installed_executable::InstalledExecutableTarget) -> core::result::Result<(), swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_cline::ClinePreparedIntegration
+pub fn swallowtail_adapter_cline::ClinePreparedIntegration::prepare_session(&self, swallowtail_adapter_cline::ClineSessionProfileInput) -> core::result::Result<swallowtail_adapter_cline::ClinePreparedSession, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_cline::ClinePreparedSession
+impl swallowtail_adapter_cline::ClinePreparedSession
+pub const fn swallowtail_adapter_cline::ClinePreparedSession::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub fn swallowtail_adapter_cline::ClinePreparedSession::open_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub const fn swallowtail_adapter_cline::ClinePreparedSession::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub fn swallowtail_adapter_cline::ClinePreparedSession::prepare_working_state_restoration(&self, swallowtail_runtime::identity::RuntimeTurnId) -> swallowtail_runtime::working_state_restoration::PreparedWorkingStateRestoration
+pub const fn swallowtail_adapter_cline::ClinePreparedSession::request(&self) -> &swallowtail_runtime::roles::OpenSessionRequest
+pub struct swallowtail_adapter_cline::ClineSessionProfileInput
+impl swallowtail_adapter_cline::ClineSessionProfileInput
+pub const fn swallowtail_adapter_cline::ClineSessionProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::host_reference::WorkingResourceRef) -> Self
+pub const swallowtail_adapter_cline::CLINE_EXECUTABLE_NAME: &str
+pub const swallowtail_adapter_cline::CLINE_LOCAL_ACCOUNT_AUDIENCE: &str
+pub const swallowtail_adapter_cline::CLINE_PACKAGE_AXIS: &str
+pub const swallowtail_adapter_cline::CLINE_PACKAGE_VERSION: &str
+pub fn swallowtail_adapter_cline::cline_acp_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_cline::cline_acp_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_cline::cline_headless_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_cline::cline_headless_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_cline::cline_local_account_access_profile(swallowtail_core::runtime_identity::AccessProfileId) -> swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_cline::cline_package_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
+pub async fn swallowtail_adapter_cline::prepare_cline_acp(swallowtail_adapter_cline::ClinePreparationInput, swallowtail_adapter_cline::ClinePreparationProbe, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_cline::ClinePreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
+pub async fn swallowtail_adapter_cline::prepare_cline_headless(swallowtail_adapter_cline::ClineHeadlessPreparationInput, swallowtail_adapter_cline::ClineHeadlessPreparationProbe, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_cline::ClineHeadlessPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>

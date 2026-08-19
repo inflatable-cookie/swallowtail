@@ -1,0 +1,31 @@
+{
+  "executable": "cline",
+  "selected_flags": ["--json", "--auto-approve", "false"],
+  "cwd_flag": "-c",
+  "prompt": "argv-operand",
+  "example_argv": [
+    "cline",
+    "--json",
+    "--auto-approve",
+    "false",
+    "-c",
+    "opaque-working-resource",
+    "opaque fixture prompt"
+  ],
+  "forbidden_argv": [
+    "--acp",
+    "--id",
+    "--yolo",
+    "--zen",
+    "--tui",
+    "-i",
+    "hub",
+    "kanban",
+    "-k",
+    "--key"
+  ],
+  "auto_approve_true_forbidden": ["--auto-approve", "true"],
+  "stdin": "not-the-prompt-channel",
+  "stdout": "envelope-ndjson",
+  "stderr": "json-error-envelopes-or-diagnostics"
+}

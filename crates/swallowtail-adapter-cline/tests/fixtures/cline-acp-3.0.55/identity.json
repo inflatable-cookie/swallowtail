@@ -1,0 +1,57 @@
+{
+  "axis": "cline.package",
+  "route": "cline.acp",
+  "observed_at": "2026-08-18",
+  "npm_package": "cline",
+  "npm_latest": true,
+  "host": {
+    "present": false
+  },
+  "official": {
+    "version": "3.0.55",
+    "source": "official-npm-wrapper-tarball",
+    "published_at": "2026-08-14T07:55:21.353Z",
+    "npm_integrity": "sha512-3JQ5vPl8/BIyTShTpn0VDX59lbzFhGxRwYqZmAVLOPcX83ETaHbgH2fc9iJYv1pB2ChIpXQEXmFHowgz8F1GgQ==",
+    "npm_shasum": "88172d7b7ace564811185858da42b8f62a56751b",
+    "tarball_sha256": "7eec2ad80d8dfa27b9baaa22c7340ebe861850f6057b9e2e80a5dd9d2ef2f5ef",
+    "wrapper_file_count": 6,
+    "wrapper_unpacked_size": 46371,
+    "wrapper_bin_sha256": "71d1b27aeeebdaa0b91c4babddd1f635eb7f5783257c2b3324a2cb22924cf60f",
+    "github_tag": "cli-v3.0.55",
+    "github_annotated_tag": "c238103e631d492b97bf9e63b060390f1bb8a8a6",
+    "github_commit": "ad442cbb6a81d21773ceabc1398ea5eb58170718",
+    "acp_registry_id": "cline",
+    "acp_registry_version": "3.0.55",
+    "acp_sdk_dep": "^0.16.1",
+    "platform_optional": {
+      "@cline/cli-darwin-arm64": {
+        "version": "3.0.55",
+        "npm_integrity": "sha512-9qSF6jH5hOYsWC8s3YgraNcJkOBZ8Aa+ia4uZ0iuPY8pOEzcWZEhtOITtfGzitk1aPJxNKegnTASOkQunJnHJw==",
+        "extracted": false
+      }
+    }
+  },
+  "tagged_acp_sources": {
+    "apps/cli/src/acp/index.ts": "8cbcf4c04bb9b01ccc877c661210346380732a32b796ac8335663b5d141adbb7",
+    "apps/cli/src/acp/acpAgent.ts": "248092d41e330ef1898f98b99d35c6713574a7b9305d95601177c07e64db9e71",
+    "apps/cli/src/acp/auth.ts": "ad46c0b5cd79e561de5bbbb0ef8e513339f73618b2ce733c3d88448c0023024d",
+    "apps/cli/src/acp/auto-approve.ts": "165fbc83c78cf316afc1169c97a7772d3f561d6967c1e42c4e3ef568dcbbe118",
+    "apps/cli/src/acp/permissions.ts": "386a98a88ed03146ec611151b1b87f1a1ff2605d96067ae1c7451a814e51552b",
+    "apps/cli/src/acp/session-load.ts": "90bf351aaab8a1dd37b89df609b195af914b6a8e0a70a5cfa167a3a1e37dea38",
+    "apps/cli/src/acp/session-updates.ts": "e7f8beca5101fcdfc8079025980b479918c4959fcc34728452ed94f4e1e18fe0"
+  },
+  "identity_decision": {
+    "shape": "new-route",
+    "entrypoint": ["cline", "--acp"],
+    "flatten_onto_headless_json": false,
+    "flatten_onto_tui_hub_or_id_resume": false,
+    "default_auto_approve": false,
+    "pass_auto_approve_true": false,
+    "run_authenticate_oauth": false,
+    "map_session_load": false,
+    "provider_prompt_sent": false,
+    "live_acp_initialize": false,
+    "host_install_changed": false,
+    "platform_binary_extracted": false
+  }
+}

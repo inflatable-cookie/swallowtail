@@ -1,5 +1,5 @@
-use crate::selection::{GROK_BUILD_MODEL_4_5, GROK_BUILD_MODEL_4_6};
 use super::validate_initialize;
+use crate::selection::{GROK_BUILD_MODEL_4_5, GROK_BUILD_MODEL_4_6};
 use serde_json::json;
 use swallowtail_core::InterfaceVersion;
 
@@ -33,6 +33,7 @@ fn exact_initialize_binds_0_2_and_1_0_behavior_segments() {
         ("0.2.114", GROK_BUILD_MODEL_4_5),
         ("0.2.117", GROK_BUILD_MODEL_4_5),
         ("1.0.4", GROK_BUILD_MODEL_4_6),
+        ("1.0.5", GROK_BUILD_MODEL_4_6),
     ] {
         let options = validate_initialize(
             &initialize(version, model),

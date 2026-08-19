@@ -1,0 +1,20 @@
+{
+  "request": {
+    "jsonrpc": "2.0",
+    "id": 3,
+    "method": "session/prompt",
+    "params": {
+      "sessionId": "opaque-fixture-session",
+      "prompt": [{ "type": "text", "text": "fixture prompt" }]
+    }
+  },
+  "success_result": { "stopReason": "end_turn" },
+  "cancelled_result": { "stopReason": "cancelled" },
+  "max_tokens_result": { "stopReason": "max_tokens" },
+  "unknown_session": "error",
+  "text_blocks_selected": true,
+  "image_and_embedded_advertised_unmapped": true,
+  "audio_dropped": true,
+  "source": "crates/goose/src/acp/server.rs GooseAcpAgent::on_prompt at v1.46.0",
+  "live_prompt": false
+}

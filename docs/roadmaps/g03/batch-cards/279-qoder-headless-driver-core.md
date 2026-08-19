@@ -1,6 +1,6 @@
 # 279 Qoder Headless Driver Core
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-18
 Milestone: `../091-qoder-headless-route.md`
@@ -20,10 +20,10 @@ interactive continuation, catalogue/import, session lifecycle, subagents, callba
 
 ## Acceptance Criteria
 
-- [ ] Driver rejects identity/protocol drift before provider work.
-- [ ] Fixtures cover success, failure, malformed/unknown input, bounds, cancellation/deadline, and cleanup.
-- [ ] Provider payloads do not leak into stable diagnostics.
-- [ ] Focused package tests pass without credentials.
+- [x] Driver rejects identity/protocol drift before provider work.
+- [x] Fixtures cover success, failure, malformed/unknown input, bounds, cancellation/deadline, and cleanup.
+- [x] Provider payloads do not leak into stable diagnostics.
+- [x] Focused package tests pass without credentials.
 
 ## Validation
 
@@ -39,4 +39,7 @@ Continue to card 280 after deterministic driver and fixture tests pass.
 
 ## Evidence
 
-Card 278; Contracts 005-006, 009-010, 023, 029, 032-033, 039-041, 044-045, 051
+Card 278; Research 151; `docs/logs/2026-08-19-qoder-headless-driver-core.md`.
+`effigy validate:focused swallowtail-adapter-qoder` passed (25 tests,
+Clippy warnings denied). No live install or prompt. Production claim stays
+card 281.

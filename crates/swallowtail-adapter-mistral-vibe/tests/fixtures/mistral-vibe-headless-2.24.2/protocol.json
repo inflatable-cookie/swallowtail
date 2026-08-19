@@ -1,0 +1,107 @@
+{
+  "selected_command": [
+    "vibe",
+    "--prompt",
+    "opaque fixture prompt",
+    "--output",
+    "streaming",
+    "--max-turns",
+    "1",
+    "--trust",
+    "--agent",
+    "plan",
+    "--workdir",
+    "opaque-working-resource"
+  ],
+  "transport": "stdio-ndjson-public-history",
+  "framing": {
+    "stdout": "one-completed-public-history-entry-per-line",
+    "serialize": "pydantic-model-dump-json-by-alias",
+    "generation_status_emitted": "completed"
+  },
+  "first_op": ["spawn", "one --prompt TEXT", "drain completed history NDJSON", "join or kill"],
+  "selected_entry_types": [
+    "message",
+    "reasoning",
+    "effect",
+    "callback",
+    "checkpoint",
+    "notice"
+  ],
+  "message_roles": ["user", "assistant"],
+  "system_messages_not_required": true,
+  "content_block_types": ["text", "image", "resource"],
+  "selected_content_block": "text",
+  "camel_case_fields": [
+    "sessionId",
+    "turnId",
+    "createdAt",
+    "updatedAt",
+    "generationStatus",
+    "relatedEntryId"
+  ],
+  "json_dump_at_end": {
+    "flag": "--output json",
+    "shape": "indent-2-array-of-history",
+    "teleport_wrap": {"history": "array", "teleportUrl": "string"},
+    "not_the_streaming_decoder": true
+  },
+  "text_output_unselected": true,
+  "stderr": "plain-text-errors-or-untrusted-warning",
+  "missing_prompt_stderr": "Error: No prompt provided for programmatic mode",
+  "missing_prompt_exit_code": 1,
+  "limit_stderr_default": "The configured conversation limit was reached",
+  "limit_exit_code": 1,
+  "success_exit_code": 0,
+  "runtime_error_stderr_prefix": "Error: ",
+  "runtime_error_exit_code": 1,
+  "finish_reason_map": {
+    "exit_0": "end_turn",
+    "host_kill": "cancelled",
+    "limit_exit_1": "bounded_limit"
+  },
+  "callbacks": "observe-and-deny",
+  "programmatic_always_disables": ["ask_user_question", "exit_plan_mode"],
+  "headless_session_option": true,
+  "authority": {
+    "cli_output_default": "text",
+    "cli_agent_default": null,
+    "schema_default_agent": "accept-edits",
+    "docs_programmatic_auto_approve_default": "stale",
+    "swallowtail_passes_auto_approve": false,
+    "swallowtail_passes_yolo": false,
+    "swallowtail_passes_agent_plan": true,
+    "require_trust": true,
+    "trust_persisted": false,
+    "require_max_turns": true,
+    "max_turns_argparse_default": null,
+    "credential": "host-owned MISTRAL_API_KEY or ~/.vibe config; Swallowtail does not authenticate; --setup is unmapped",
+    "working_resource": "--workdir else process cwd after chdir",
+    "cleanup": "join or kill owned child; session.close in finally"
+  },
+  "prompt": {
+    "flag_text_required": true,
+    "piped_stdin_unselected": true,
+    "interactive_positional_unselected": true
+  },
+  "unmapped_cli": [
+    "vibe-acp",
+    "--continue",
+    "-c",
+    "--resume",
+    "--teleport",
+    "--max-price",
+    "--worktree",
+    "--add-dir",
+    "--setup",
+    "--auto-approve",
+    "--yolo",
+    "--output text",
+    "--output json"
+  ],
+  "acp_is_separate_binary": true,
+  "decoder_corpus": "mistral-vibe-headless-2.24.2",
+  "provider_prompt_sent": false,
+  "live_prompt_run": false,
+  "host_install_changed": false
+}

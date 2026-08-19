@@ -1,0 +1,31 @@
+{
+  "official_help_modes": ["text", "json", "rpc"],
+  "official_acp_mode": false,
+  "community_readme": "ACP JSON-RPC 2.0 over stdio; spawns pi --mode rpc",
+  "community_spawn": {
+    "executable": "pi",
+    "windows_executable": "pi.cmd",
+    "env_override": "PI_ACP_PI_COMMAND",
+    "args": ["--mode", "rpc", "--no-themes"],
+    "optional_session_flag": "--session"
+  },
+  "community_login_flag": "--terminal-login",
+  "selected_absences": [
+    "official pi --mode acp",
+    "first-party ACP registry args",
+    "Swallowtail pi.acp driver"
+  ],
+  "authority": {
+    "swallowtail_wraps_pi_acp": false,
+    "swallowtail_runs_pi_auth": false,
+    "swallowtail_runs_terminal_login": false,
+    "credential_lease": false,
+    "access": "not-a-route; Pi local provider config stays outside Swallowtail"
+  },
+  "cleanup": "not-a-route; would have been join/kill of wrapper plus RPC child",
+  "isolation": "not-a-route; community adapter inherits ambient host PATH and env",
+  "cancellation": "not-a-route",
+  "provider_prompt_sent": false,
+  "live_acp_initialize": false,
+  "live_rpc_session": false
+}

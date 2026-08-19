@@ -1,0 +1,12 @@
+{"case":"run-start","envelope":{"type":"run_start"},"expected":{"portable":"run_metadata","agent_activity":false}}
+{"case":"assistant-text","envelope":{"type":"agent_event","event":{"type":"content_start","contentType":"text","text":"Cline display text."}},"expected":{"semantics":"content_delta","portable":"assistant_message"}}
+{"case":"thought-display","envelope":{"type":"agent_event","event":{"type":"content_start","contentType":"reasoning","reasoning":"Cline readable thought update."}},"expected":{"semantics":"content_delta","portable":"reasoning_summary_candidate","disclosure":"provider_display_content"}}
+{"case":"tool-start","envelope":{"type":"agent_event","event":{"type":"content_start","contentType":"tool","toolName":"read_files","input":{"private":"excluded"}}},"expected":{"semantics":"create","portable":"provider_tool","rawInput":"excluded"}}
+{"case":"tool-end","envelope":{"type":"agent_event","event":{"type":"content_end","contentType":"tool","toolName":"read_files","output":"excluded"}},"expected":{"semantics":"terminal_update","portable":"provider_tool","rawOutput":"excluded"}}
+{"case":"notice-status","envelope":{"type":"agent_event","event":{"type":"notice","displayRole":"status","message":"compacting"}},"expected":{"portable":"run_metadata","agent_activity":false}}
+{"case":"run-result-completed","envelope":{"type":"run_result","finishReason":"completed"},"expected":{"semantics":"separate_terminal_truth","stop_reason":"end_turn"}}
+{"case":"run-aborted","envelope":{"type":"run_aborted","reason":"local_abort"},"expected":{"semantics":"separate_terminal_truth","stop_reason":"cancelled"}}
+{"case":"usage-excluded","envelope":{"type":"run_result","usage":{"private":"excluded"}},"expected":{"stable_diagnostics":false,"raw_payload":"excluded"}}
+{"case":"team-event-unmapped","envelope":{"type":"team_event"},"expected":{"session_update":false,"unmapped":true}}
+{"case":"unknown-envelope","envelope":{"type":"cline_future_envelope"},"expected":{"semantics":"fail_closed_framing"}}
+{"case":"docs-ask-say-wrong-wire","envelope":{"type":"say","text":"not this encoder","ts":0,"say":"text"},"expected":{"semantics":"fail_closed_wrong_wire"}}

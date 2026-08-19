@@ -1,0 +1,57 @@
+{
+  "exec_help_source": "official-extracted-0.148.0-darwin-arm64",
+  "exec_help_sha256": "23e8b383723998a8ae8427c449ebe77a88ac82b04b4f8a18aad62925b9d3d0ee",
+  "host_exec_help_sha256": "444f5b0c9ccbf961a3ba12ad3099074106b5ff757df854dd718f93b4dcd3a174",
+  "jsonl_processor_sha256": "d43476319a61c53369055fdbbd7c093100b23bc93f9b01365db0af4c96df3e2c",
+  "exec_events_sha256": "c404928e0f2a463e19d1b263081c9d5e0380aec9f651a05ee0766f7bb7527f32",
+  "exec_selected_flags_present": [
+    "exec",
+    "--json",
+    "--ephemeral",
+    "--ignore-user-config",
+    "--ignore-rules",
+    "--skip-git-repo-check",
+    "--sandbox",
+    "read-only"
+  ],
+  "app_server_selected_flags_present": [
+    "app-server",
+    "--listen",
+    "stdio://"
+  ],
+  "schema": {
+    "generator": "codex app-server generate-json-schema --out",
+    "v2_bundle_sha256": "e5a20eb7211c21540a2d4e0106479285e13778e9c53d5837cfc735a71316a51e",
+    "experimental_bundle_sha256": "819fe7b47288cc74da5190743390c8d1faef403f5401a1868b306dac195b1944",
+    "model_list_params_sha256": "de29a536c00a5b8f46f34dba417dabd93365305571a8ed200e33bea85db68b5a",
+    "methods_present": [
+      "initialize",
+      "model/list",
+      "thread/list",
+      "thread/read",
+      "thread/start",
+      "thread/resume",
+      "thread/archive",
+      "thread/delete",
+      "turn/start",
+      "turn/interrupt",
+      "item/started",
+      "item/completed",
+      "item/plan/delta",
+      "subAgentActivity",
+      "collabAgentToolCall"
+    ]
+  },
+  "decoder_corpus": "existing-codex-jsonl-and-app-server-v2",
+  "unused_deltas": [
+    "exec fork",
+    "top-level fork",
+    "thread/fork",
+    "amazon-bedrock-builtin-provider",
+    "tui /export",
+    "async-hooks"
+  ],
+  "provider_prompt_sent": false,
+  "live_session": false,
+  "host_install_changed": false
+}

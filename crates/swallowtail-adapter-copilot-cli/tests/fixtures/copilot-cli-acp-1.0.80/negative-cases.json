@@ -1,0 +1,92 @@
+{
+  "cases": [
+    {
+      "id": "malformed-json",
+      "input": "{",
+      "expected": "fail_closed_framing"
+    },
+    {
+      "id": "invalid-jsonrpc-version",
+      "input": { "jsonrpc": "1.0", "id": 1, "method": "initialize", "params": {} },
+      "expected": "fail_closed_framing"
+    },
+    {
+      "id": "unknown-method",
+      "input": { "jsonrpc": "2.0", "id": 1, "method": "session/list", "params": {} },
+      "expected": "method_not_found_or_unmapped"
+    },
+    {
+      "id": "prompt-unknown-session",
+      "input": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "method": "session/prompt",
+        "params": { "sessionId": "missing", "prompt": [{ "type": "text", "text": "x" }] }
+      },
+      "expected": "fail_closed"
+    },
+    {
+      "id": "oversized-frame",
+      "expected": "fail_closed_bounds"
+    },
+    {
+      "id": "post-terminal-extra",
+      "expected": "fail_closed_or_ignore_after_terminal"
+    },
+    {
+      "id": "tcp-port-is-not-stdio-acp",
+      "argv": ["copilot", "--acp", "--port", "3000"],
+      "expected": "reject_as_tcp_listener_not_this_route"
+    },
+    {
+      "id": "stdio-and-port-rejected",
+      "argv": ["copilot", "--acp", "--stdio", "--port", "3000"],
+      "expected": "reject_mutually_exclusive_transports"
+    },
+    {
+      "id": "available-tools-unmapped",
+      "argv": ["copilot", "--acp", "--stdio", "--available-tools", "bash,view"],
+      "expected": "do_not_select_as_swallowtail_argv"
+    },
+    {
+      "id": "effort-unmapped",
+      "argv": ["copilot", "--acp", "--stdio", "--effort", "max"],
+      "expected": "do_not_select_as_swallowtail_argv"
+    },
+    {
+      "id": "yolo-not-swallowtail-authority",
+      "argv": ["copilot", "--acp", "--stdio", "--yolo"],
+      "expected": "do_not_select_as_swallowtail_authority"
+    },
+    {
+      "id": "allow-all-not-swallowtail-authority",
+      "argv": ["copilot", "--acp", "--stdio", "--allow-all"],
+      "expected": "do_not_select_as_swallowtail_authority"
+    },
+    {
+      "id": "session-load-unmapped",
+      "method": "session/load",
+      "expected": "unmapped_on_first_driver"
+    },
+    {
+      "id": "close-session-unmapped-on-first-driver",
+      "method": "session/close",
+      "expected": "unmapped_on_first_driver"
+    },
+    {
+      "id": "login-not-swallowtail",
+      "command": "copilot login",
+      "expected": "host_owned_not_adapter_login"
+    },
+    {
+      "id": "interactive-slash-login-unmapped",
+      "prompt": "/login",
+      "expected": "unmapped_interactive_slash"
+    },
+    {
+      "id": "prerelease-ignored",
+      "version": "1.0.81-1",
+      "expected": "ignore_prerelease_not_identity"
+    }
+  ]
+}

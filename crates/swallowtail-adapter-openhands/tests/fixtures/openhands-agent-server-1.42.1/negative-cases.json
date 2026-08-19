@@ -1,0 +1,134 @@
+{
+  "cases": [
+    {
+      "id": "malformed-json",
+      "input": "{",
+      "expected": "fail_closed_framing"
+    },
+    {
+      "id": "missing-kind",
+      "input": {"id": "opaque-fixture-event"},
+      "expected": "fail_closed_framing"
+    },
+    {
+      "id": "unknown-kind-fail-closed",
+      "input": {"kind": "NotARealEventKind", "id": "opaque-fixture-event"},
+      "expected": "fail_closed_unknown_kind"
+    },
+    {
+      "id": "acp-jsonrpc-is-not-this-route",
+      "input": {"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {}},
+      "expected": "reject_as_contract_035_or_acp_not_this_route"
+    },
+    {
+      "id": "v0-socketio-init-session-unmapped",
+      "input": {"action": "init", "args": {}},
+      "expected": "reject_as_v0_socketio_not_this_route"
+    },
+    {
+      "id": "docs-readme-websocket-path-unmapped",
+      "path": "/conversations/{conversation_id}/events/socket",
+      "expected": "reject_stale_docs_path_not_wheel_wire"
+    },
+    {
+      "id": "switch-acp-model-unmapped",
+      "path": "/api/conversations/{conversation_id}/switch_acp_model",
+      "expected": "unmapped"
+    },
+    {
+      "id": "bash-events-socket-unmapped",
+      "path": "/sockets/bash-events",
+      "expected": "unmapped"
+    },
+    {
+      "id": "python-sdk-conversation-not-this-route",
+      "surface": "openhands.sdk.Conversation",
+      "expected": "reject_as_python_sdk_not_this_route"
+    },
+    {
+      "id": "wildcard-host-not-swallowtail-authority",
+      "argv": ["python", "-m", "openhands.agent_server", "--host", "0.0.0.0", "--port", "8000"],
+      "expected": "do_not_select_as_swallowtail_authority"
+    },
+    {
+      "id": "omit-host-when-session-key-set-binds-wildcard",
+      "argv": ["python", "-m", "openhands.agent_server", "--port", "8000"],
+      "env": ["SESSION_API_KEY"],
+      "expected": "do_not_select_as_swallowtail_authority"
+    },
+    {
+      "id": "never-confirm-not-swallowtail-authority",
+      "body": {"workspace": {"kind": "LocalWorkspace", "working_dir": "opaque-working-resource"}, "confirmation_policy": {"kind": "NeverConfirm"}, "max_iterations": 1},
+      "expected": "do_not_select_as_swallowtail_authority"
+    },
+    {
+      "id": "omit-confirmation-policy-inherits-never-confirm",
+      "body": {"workspace": {"kind": "LocalWorkspace", "working_dir": "opaque-working-resource"}, "max_iterations": 1},
+      "expected": "do_not_select_as_swallowtail_authority"
+    },
+    {
+      "id": "omit-max-iterations-inherits-500",
+      "body": {"workspace": {"kind": "LocalWorkspace", "working_dir": "opaque-working-resource"}, "confirmation_policy": {"kind": "AlwaysConfirm"}},
+      "expected": "do_not_select_as_swallowtail_authority"
+    },
+    {
+      "id": "confirm-risky-unmapped",
+      "body": {"workspace": {"kind": "LocalWorkspace", "working_dir": "opaque-working-resource"}, "confirmation_policy": {"kind": "ConfirmRisky"}, "max_iterations": 1},
+      "expected": "unmapped"
+    },
+    {
+      "id": "browser-tool-set-unmapped",
+      "expected": "unmapped"
+    },
+    {
+      "id": "docker-sandbox-unmapped",
+      "expected": "unmapped"
+    },
+    {
+      "id": "hosted-api-sandbox-unmapped",
+      "expected": "unmapped"
+    },
+    {
+      "id": "remote-workspace-unmapped",
+      "body": {"workspace": {"kind": "RemoteWorkspace"}, "confirmation_policy": {"kind": "AlwaysConfirm"}, "max_iterations": 1},
+      "expected": "unmapped"
+    },
+    {
+      "id": "inherit-ambient-session-api-key",
+      "env": ["SESSION_API_KEY"],
+      "expected": "do_not_inherit_ambient_env"
+    },
+    {
+      "id": "inherit-ambient-oh-secret-key",
+      "env": ["OH_SECRET_KEY"],
+      "expected": "do_not_inherit_ambient_env"
+    },
+    {
+      "id": "inherit-ambient-llm-api-key",
+      "env": ["LLM_API_KEY"],
+      "expected": "do_not_inherit_ambient_env"
+    },
+    {
+      "id": "subscription-login-not-swallowtail",
+      "expected": "host_owned_not_adapter_login"
+    },
+    {
+      "id": "host-python-3-9-cannot-run",
+      "interpreter": "3.9.6",
+      "expected": "fail_closed_preflight"
+    },
+    {
+      "id": "oversized-frame",
+      "expected": "fail_closed_bounds"
+    },
+    {
+      "id": "post-terminal-extra",
+      "expected": "fail_closed_or_ignore_after_terminal"
+    },
+    {
+      "id": "query-session-api-key-deprecated",
+      "query": "session_api_key",
+      "expected": "do_not_select_as_swallowtail_authority"
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+{
+  "selected_command": ["cline", "--acp"],
+  "transport": "stdio-ndjson-jsonrpc",
+  "protocol_version": 1,
+  "first_op": ["initialize", "session/new", "session/prompt"],
+  "selected_methods": [
+    "initialize",
+    "session/new",
+    "session/prompt",
+    "session/cancel"
+  ],
+  "advertised_unmapped": [
+    "session/load",
+    "session/set_mode",
+    "session/set_config_option",
+    "unstable/set_session_model",
+    "authenticate"
+  ],
+  "initialize": {
+    "agent_capabilities": {
+      "loadSession": true
+    },
+    "prompt_capabilities": {
+      "image": true,
+      "audio": false,
+      "embeddedContext": false
+    },
+    "mcp_capabilities_advertised": false,
+    "session_capabilities_advertised": false,
+    "agent_info": {
+      "name": "cline",
+      "version": "3.0.55"
+    },
+    "auth_methods": [
+      { "id": "cline", "name": "Sign in with Cline" },
+      { "id": "cline-pass", "name": "Sign in with ClinePass" },
+      { "id": "openai-codex", "name": "Sign in with ChatGPT Subscription" }
+    ]
+  },
+  "authority": {
+    "cli_auto_approve_help_default": true,
+    "acp_auto_approve_default": false,
+    "acp_auto_approve_only_when_override_true": true,
+    "swallowtail_passes_auto_approve_true": false,
+    "credential": "host-owned CLINE_API_KEY or persisted provider settings; Swallowtail does not authenticate",
+    "working_resource": "session/new cwd",
+    "cleanup": "abort in-flight prompt, shutdown/dispose, join or kill owned child"
+  },
+  "prompt": {
+    "text_blocks_only": true,
+    "empty_text_stop_reason": "end_turn",
+    "finish_reason_map": {
+      "completed": "end_turn",
+      "aborted": "cancelled",
+      "max_iterations": "max_turn_requests",
+      "mistake_limit": "end_turn"
+    },
+    "fatal_auth_error": "auth_required",
+    "fatal_other_error": "internalError"
+  },
+  "permission_options": [
+    { "optionId": "allow_once", "kind": "allow_once" },
+    { "optionId": "allow_always", "kind": "allow_always" },
+    { "optionId": "reject_once", "kind": "reject_once" }
+  ],
+  "allow_always_unselected": true,
+  "session_updates_mapped": [
+    "agent_message_chunk",
+    "agent_thought_chunk",
+    "tool_call",
+    "tool_call_update",
+    "current_mode_update",
+    "config_option_update",
+    "session_info_update"
+  ],
+  "session_updates_not_forwarded": [
+    "usage",
+    "iteration_start",
+    "iteration_end",
+    "error",
+    "done"
+  ],
+  "unmapped_cli": [
+    "--json",
+    "--tui",
+    "--id",
+    "--zen",
+    "hub",
+    "kanban",
+    "schedule",
+    "--worktree",
+    "--yolo"
+  ],
+  "decoder_corpus": "cline-acp-3.0.55",
+  "provider_prompt_sent": false,
+  "live_acp_initialize": false,
+  "host_install_changed": false
+}

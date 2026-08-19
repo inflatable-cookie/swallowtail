@@ -2,14 +2,15 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-18
+Updated: 2026-08-19
 
 ## Realized State
 
-Swallowtail has a thirty-two-package current-source Rust workspace plus its
+Swallowtail has a forty-package current-source Rust workspace plus its
 strict Northstar authority spine. The immutable `v0.3.2` tag remains a
-thirty-package source baseline; the current tree adds two unreleased reviewed
-adapters with three additional route surfaces.
+thirty-package source baseline; the current tree adds ten unreleased reviewed
+adapters. Those ten contribute eleven additional production route surfaces.
+OpenHands adds a package without a production route.
 
 - `swallowtail-core` owns pure provider-neutral contract records, including
   runtime identities, access state, configured instances, model routes,
@@ -166,15 +167,15 @@ adapters with three additional route surfaces.
   bounded-workspace app-server interactive sessions through runtime host ports
 - `swallowtail-adapter-claude-agent` implements installed discovery,
   ambient read-write one-prompt structured runs and read-only interactive
-  sessions for Claude Agent ACP `0.53.0..=0.69.0`, excluding `0.58.0`, over
+  sessions for Claude Agent ACP `0.53.0..=0.70.0`, excluding `0.58.0`, over
   ACP v1 stdio; stable newer
   versions remain visible and unverified, while separate local-subscription
   and public-API-key profiles, model confirmation, ambient configuration,
   ambient-host isolation, permission rejection, cancellation, deadlines, and
   joined cleanup stay driver-owned; distinct native Claude Code drivers keep
-  the `2.1.220..=2.1.234` read-only headless profile separate from response only.
+  the `2.1.220..=2.1.235` read-only headless profile separate from response only.
   Response only has a proven `2.1.227` floor, live evidence through `2.1.228`,
-  qualified `2.1.227..=2.1.234`, later stables UnverifiedNewer, explicit
+  qualified `2.1.227..=2.1.235`, later stables UnverifiedNewer, explicit
   known-bad exclusions, and a
   fail-closed provider-suppressed tool/MCP surface with no working resource or
   structured-output capability
@@ -197,6 +198,46 @@ adapters with three additional route surfaces.
   a required runtime-preferences reply during create, and process-kill
   cancellation. It does not qualify OpenCode HTTP, hosted GLM / Z.AI
   official, `--print`, ACP, or native `session/stop`.
+- `swallowtail-adapter-cline` implements two exact `3.0.55` routes: ACP v1
+  stdio on `cline --acp`, and envelope-NDJSON headless on
+  `cline --json --auto-approve false`. Credentials stay host-owned
+  `LocalUnauthenticated`. `--auto-approve true`, `--id`, hub/TUI, and
+  flattening one family onto the other stay out.
+- `swallowtail-adapter-goose` implements exact GitHub `1.46.0` ACP on
+  `goose acp`. Credentials stay host-owned local config.
+  `--with-builtin`, `goose configure`, `goose serve`, and `GooseMode`
+  `auto` stay out.
+- `swallowtail-adapter-copilot-cli` implements exact npm `1.0.80` ACP on
+  `copilot --acp --stdio`. Public preview stays visible. Credentials stay
+  host-owned. `--port`, `--yolo`, `--allow-all`, login, and Copilot
+  IDE/API flattening stay out.
+- `swallowtail-adapter-mistral-vibe` implements exact GitHub/PyPI `2.24.2`
+  discovery and one bounded `vibe --prompt --output streaming` structured
+  run with `--max-turns 8 --trust --agent plan --workdir` through
+  `prepare_mistral_vibe_headless`. `vibe-acp`, TUI, `--continue`/`--resume`,
+  teleport, and `--auto-approve`/`--yolo` stay out.
+- `swallowtail-adapter-qoder` implements exact npm `1.1.25` discovery and one
+  bounded `qodercli --print --output-format stream-json` structured run with
+  `--permission-mode dont_ask --max-turns 8 --no-session-persistence --cwd`
+  through `prepare_qoder_headless`. `--acp`, SDK stdio, TUI, `--yolo` /
+  `bypass_permissions` / `accept_edits`, and the `qoder` IDE dispatcher stay
+  out.
+- `swallowtail-adapter-openhands` holds exact PyPI `1.42.1` discovery, owned
+  loopback spawn `python -m openhands.agent_server --host 127.0.0.1`, and
+  `prepare_openhands_agent_server`. `openhands.agent-server` is not a
+  production route: live HTTP/WebSocket conversation stays unwired and
+  `start_run` fail-closes. V0 Socket.IO, Contract 035 remote ACP, the
+  Python SDK, Docker/hosted sandbox, and `NeverConfirm` stay out.
+- `swallowtail-adapter-kiro` implements exact installer-manifest `2.18.1` ACP
+  on `kiro-cli acp` through `prepare_kiro_acp`. Credentials stay host-owned
+  local account. `--cloud`, `--agent`, `kiro-cli chat --no-interactive`,
+  `session/load`, and docs `session/prompt` field `content` stay out.
+- `swallowtail-adapter-deepagents` implements exact npm `0.1.25` ACP on
+  host-approved `deepagents-acp` with no extra argv through
+  `prepare_deepagents_acp`. Working resource is the child cwd. CLI
+  `agentInfo.version` `0.0.1` is not the package axis. `npx`,
+  `--workspace` / `--model`, `session/load`, and field `content` stay
+  out. `deepagents.acp` is a production route.
 - `swallowtail-adapter-opencode` implements version-bound OpenCode
   `1.14.48..=1.18.18` model discovery and ambient-host interactive sessions with
   read-only tool permissions over host-approved HTTP and bounded SSE; exact
@@ -230,7 +271,7 @@ adapters with three additional route surfaces.
   latest private handle, one planned raw-WebSocket rollover, local-only
   interruption, and joined two-generation cleanup under both host identities
 - `swallowtail-adapter-kimi` implements exact Kimi Code `0.28.1` and
-  route-specific `0.29.0..=0.36.1` behavior segments. Its ACP route owns ambient-host
+  route-specific `0.29.0..=0.37.2` behavior segments. Its ACP route owns ambient-host
   interactive new, load-with-replay, replay-free resume, bounded writes, and
   negotiated model evidence. Its separate headless route owns one default-
   engine stream-JSON prompt with durable provider retention and joined process
@@ -250,7 +291,7 @@ adapters with three additional route surfaces.
   downstream provider/model routing, prompt, steering, follow-up, correlated
   extension UI, native abort, deadlines, joined credential-last cleanup, and
   a separate provider-suppressed `get_available_models` operation
-- `swallowtail-adapter-oh-my-pi` implements the distinct OMP `17.2.9..=17.3.7` package
+- `swallowtail-adapter-oh-my-pi` implements the distinct OMP `17.2.9..=17.3.8` package
   and `omp` executable over negotiated RPC v2 JSONL stdio. It uses OMP local
   auth without a Swallowtail credential lease, binds exact provider, model,
   and optional reasoning selection, and owns bounded physical/logical frame
@@ -293,12 +334,13 @@ adapters with three additional route surfaces.
   by payload digest, host-approved Node interpretation, host settings, and
   one structured app-server run with explicit provider, model, and `plan` or
   `build` mode
-- `swallowtail-adapter-grok` realizes maintained installed Grok Build
-  `0.2.114..=0.2.117` discovery with exact source-revision binding, delegated
-  subscription access preparation, ambient configuration, durable-retention
-  capability, structured and interactive ACP execution, and visible
-  later-stable unverified posture; exact `0.2.117` carries a distinct private
-  task-control behavior revision without adding public task-control authority
+- `swallowtail-adapter-grok` realizes installed Grok Build discovery with
+  exact source-revision binding, delegated subscription access preparation,
+  ambient configuration, durable-retention capability, structured and
+  interactive ACP execution, and visible later-stable unverified posture;
+  deprecated `0.2.114..=0.2.117` remain, exact `0.2.117` carries a distinct
+  private task-control behavior revision without adding public task-control
+  authority, and maintained `1.0.4..=1.0.5` bind `grok-4.6`
 - `swallowtail-adapter-cursor` realizes exact Cursor Agent milestones
   `2026.07.01-41b2de7`, `2026.07.23-e383d2b`, `2026.08.04-aaa8809`, and
   `2026.08.11-e8db854` through three separate routes:
@@ -313,14 +355,14 @@ adapters with three additional route surfaces.
   force flags, implicit sandboxing, and partial-output duplication are not
   selected
 - `swallowtail-adapter-antigravity` begins Google's separate personal-account
-  harness family with Google-signed `agy` `1.1.9..=1.1.14` discovery and an
+  harness family with Google-signed `agy` `1.1.9..=1.1.15` discovery and an
   authenticated `agy models` catalogue plus a separate headless stream-JSON
   structured driver. The access profile represents
   provider-owned local Google Sign-In without credential extraction. Catalogue
   entries preserve only opaque model identity and do not imply entitlement or
   invocability. The official `1.1.8` documentation tag and installed `1.1.9`
   tag share one source commit; `1.1.8` is not independently qualified.
-  Later published stables through `1.1.14` reuse the same catalogue and
+  Later published stables through `1.1.15` reuse the same catalogue and
   stream-JSON revisions. `--input-format` stdin turns and Gemini API-key
   sign-in stay unmapped. Headless runs bind exact model, read or write
   authority, optional provider sandboxing, optional effort, optional inline
@@ -347,7 +389,7 @@ adapters with three additional route surfaces.
   cancellation uncertainty remain distinct. A separate public Models branch
   reports key-visible entries without inferring background or Realtime support
 - `swallowtail-adapter-qwen` implements maintained Qwen Code
-  `0.19.11..=0.20.1` and `0.21.0..=0.21.13` headless behavior segments with
+  `0.19.11..=0.20.1` and `0.21.0..=0.21.14` headless behavior segments with
   exact read-only argv, text stdin, bounded
   stream JSON, typed usage, explicit native budgets, durable local retention,
   redacted terminal classifications, host deadline and cancellation, joined
@@ -469,6 +511,40 @@ Crate status:
   `build`, bounded stream parsing, namespaced unknown observations,
   process-kill cancellation, and joined cleanup. The package remains an
   unreleased additive candidate after `v0.3.2`.
+- `swallowtail-adapter-cline` — realized for exact npm `3.0.55` ACP and
+  headless print-run routes with separate constructors, qualified-only
+  claims, local-account access, and no credential lease. The package
+  remains an unreleased additive candidate after `v0.3.2`.
+- `swallowtail-adapter-goose` — realized for exact GitHub `1.46.0` ACP
+  with qualified-only claim, local-config access, and no credential lease.
+  The package remains an unreleased additive candidate after `v0.3.2`.
+- `swallowtail-adapter-copilot-cli` — realized for exact npm `1.0.80` ACP
+  with qualified-only claim, visible public preview, host-account access,
+  and no credential lease. The package remains an unreleased additive
+  candidate after `v0.3.2`.
+- `swallowtail-adapter-mistral-vibe` — realized for exact GitHub/PyPI
+  `2.24.2` headless discovery, one bounded streaming-NDJSON structured
+  run, and `prepare_mistral_vibe_headless`. The package remains an
+  unreleased additive candidate after `v0.3.2`.
+- `swallowtail-adapter-qoder` — realized for exact npm `1.1.25` headless
+  discovery, one bounded stream-json structured run, and
+  `prepare_qoder_headless`. The package remains an unreleased additive
+  candidate after `v0.3.2`.
+- `swallowtail-adapter-openhands` — realized for exact PyPI `1.42.1`
+  Agent Server discovery, owned loopback spawn, and
+  `prepare_openhands_agent_server`. `openhands.agent-server` is deferred:
+  live HTTP/WebSocket conversation is unwired. The package remains an
+  unreleased additive candidate after `v0.3.2`.
+- `swallowtail-adapter-kiro` — realized for exact installer-manifest
+  `2.18.1` ACP with qualified-only claim, local-account access, no
+  credential lease, and `prepare_kiro_acp`. `kiro.acp` is a production
+  route. The package remains an unreleased additive candidate after
+  `v0.3.2`.
+- `swallowtail-adapter-deepagents` — realized for exact npm `0.1.25` ACP
+  discovery and stdio driver with qualified-only claim, host-owned
+  provider API keys, no credential lease, empty extra argv, and
+  `prepare_deepagents_acp`. `deepagents.acp` is a production route.
+  The package remains an unreleased additive candidate after `v0.3.2`.
 - `swallowtail-adapter-opencode` — realized for attached model catalogue and
   read-only interactive sessions over a six-route HTTP/SSE subset with exact
   delegated-auth, version, provider/model, abort, deadline, and cleanup bounds
@@ -756,14 +832,14 @@ installed `0.51.0` probe is separately gated and ignored by default.
 The original Claude Agent lifecycle corpus freezes close and delete through
 `0.61.0` plus the unpublished-package exclusion. Exact source deltas and
 adapter conformance carry that unchanged mapping through the newer private
-`0.62.0` through `0.69.0` behavior milestones.
+`0.62.0` through `0.70.0` behavior milestones.
 Qualified close tears down only active in-memory resources and preserves
 history. Qualified delete tears down an active target when present, then uses
 the exact Agent SDK path that removes the primary local transcript and sibling
 session directory. That evidence supports provider-data deletion with
 provider-defined descendants, but no hard-erasure or Anthropic API service-data
 claim. Exact `0.62.0` retains the `0.61.0` behavior; exact `0.63.0` through
-`0.69.0` add private behavior revisions without changing deletion truth.
+`0.70.0` add private behavior revisions without changing deletion truth.
 Later stable versions remain visible and unverified.
 
 The Claude Agent stdio driver now realizes the qualified mapping. Initialization
@@ -1062,7 +1138,7 @@ session, background run, managed agent, realtime media, SDK, attached runtime,
 and owned-serving operations remain separate types and methods. There is no
 generic prompt method.
 
-The current 35 production routes form six facade implementation families:
+The current 47 production routes form six facade implementation families:
 installed harness, attached harness network, hosted direct and provider-owned
 state, realtime connection, embedded SDK, and local model runtime. Family
 helpers may share host and preparation mechanics. They cannot select a
@@ -1357,13 +1433,13 @@ WebSocket protocol version `2`, exact server metadata, and an opaque bearer
 credential lease. Attached and owned-foreground topologies remain distinct.
 The implementation qualifies reversible archive and restore across exact Kimi
 Code `0.28.1`, exact `0.29.0`, `0.29.1..=0.30.0`, exact `0.31.0`, exact
-`0.31.1`, `0.32.0..=0.34.0`, and `0.35.0..=0.36.1`. The
+`0.31.1`, `0.32.0..=0.34.0`, and `0.35.0..=0.37.2`. The
 middle range has a separate behavior revision for global WebSocket event
 fan-out and filtered configured-model discovery. Exact `0.31.0` adds full
 subagent status snapshots and derived-model display aliases. Exact `0.31.1`
 uses workspace-scoped session lookup, stabilizes provider-model refresh, and
 may add optional turn-interruption detail. `0.32.0..=0.34.0` adds optional
-experimental-flag metadata and extra unknown events. `0.35.0..=0.36.1` requires
+experimental-flag metadata and extra unknown events. `0.35.0..=0.37.2` requires
 application WebSocket ping/pong. Swallowtail keeps status records as
 non-rendered progress, retains required terminal reason as authority, and
 derives portable subagent activity from dedicated lifecycle events. The route does not qualify deletion or

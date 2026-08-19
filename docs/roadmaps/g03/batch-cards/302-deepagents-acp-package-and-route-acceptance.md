@@ -1,6 +1,6 @@
 # 302 Deep Agents ACP Package And Route Acceptance
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-18
 Milestone: `../096-deep-agents-acp-route.md`
@@ -20,14 +20,14 @@ release publication, registry publication, consumer edits, and broad live qualif
 
 ## Acceptance Criteria
 
-- [ ] Focused and affected-package validation pass.
-- [ ] `effigy check:examples` and `effigy qa:docs` pass.
-- [ ] Route, feature, guide, package, and architecture indexes agree.
-- [ ] Deferred/negative decisions do not enter the production route matrix.
+- [x] Focused and affected-package validation pass.
+- [x] `effigy check:examples` and `effigy qa:docs` pass.
+- [x] Route, feature, guide, package, and architecture indexes agree.
+- [x] Deferred/negative decisions do not enter the production route matrix.
 
 ## Validation
 
-`effigy validate:focused swallowtail-adapter-deepagents`; `effigy package:verify-affected swallowtail-adapter-deepagents`; `effigy check:examples`; `effigy qa:docs`.
+`effigy validate:focused swallowtail-adapter-deepagents swallowtail-testkit`; `effigy package:verify-affected swallowtail-adapter-deepagents`; `effigy check:examples`; `effigy qa:docs`; `effigy qa:routes`; `effigy qa:guides`.
 
 ## Stop Conditions
 
@@ -39,4 +39,8 @@ Return to roadmap 087 and recompute the remaining secondary wave.
 
 ## Evidence
 
-Cards 299-301; Research 143; Contract 052
+Cards 299-301; Research 157; Contract 052;
+`docs/logs/2026-08-19-deepagents-acp-package-and-route-acceptance.md`.
+Accepted `deepagents.acp` as an unreleased additive production route. Current
+source is 40 packages and 47 routes. Immutable `v0.3.2` stays 30 packages and
+36 routes. Live install, `npx`, and prompt were not justified.

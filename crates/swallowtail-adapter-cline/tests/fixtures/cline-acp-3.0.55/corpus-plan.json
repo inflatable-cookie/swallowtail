@@ -1,0 +1,19 @@
+{
+  "package": "swallowtail-adapter-cline",
+  "route": "cline.acp",
+  "decoder_corpus": "cline-acp-3.0.55",
+  "card_263_must_cover": [
+    "identity.json",
+    "protocol.json",
+    "initialize.json",
+    "session-new.json",
+    "session-prompt.json",
+    "session-cancel.json",
+    "permission.json",
+    "activity.jsonl",
+    "negative-cases.json"
+  ],
+  "first_driver_op": "initialize plus session/new plus one bounded session/prompt",
+  "create_package_in_card": 263,
+  "no_production_claim_in_card": 262
+}

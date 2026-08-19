@@ -1,0 +1,19 @@
+{
+  "package": "swallowtail-adapter-deepagents",
+  "route": "deepagents.acp",
+  "decoder_corpus": "deepagents-acp-0.1.25",
+  "card_300_must_cover": [
+    "identity.json",
+    "protocol.json",
+    "initialize.json",
+    "session-new.json",
+    "session-prompt.json",
+    "session-cancel.json",
+    "permission.json",
+    "activity.jsonl",
+    "negative-cases.json"
+  ],
+  "first_driver_op": "initialize plus session/new plus one bounded session/prompt",
+  "create_package_in_card": 300,
+  "no_production_claim_in_card": 299
+}

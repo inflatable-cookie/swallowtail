@@ -184,7 +184,7 @@ stream-JSON output and usage, supports `default`, `low`, `medium`, `high`,
 `xhigh`, and `max` reasoning selections, and requires the initialized and
 assistant model to match the caller selection. Its fixed `HarnessMode::Plan`
 posture is present in both operation policy and immutable preflight
-capabilities. It currently qualifies Claude Code `2.1.220` through `2.1.234`; later stable
+capabilities. It currently qualifies Claude Code `2.1.220` through `2.1.235`; later stable
 versions remain visible `UnverifiedNewer`.
 
 See the compile-tested
@@ -194,7 +194,7 @@ See the compile-tested
 
 `prepare_claude_code_response_only` accepts a host-approved stable Claude Code
 executable at or above the proven `2.1.227` protocol floor, except any release
-on the route's explicit known-bad deny-list. `2.1.227` through `2.1.234` are
+on the route's explicit known-bad deny-list. `2.1.227` through `2.1.235` are
 qualified; later stable releases run provisionally as `UnverifiedNewer` under
 the same runtime validation. It is a distinct route. It does not weaken or replace
 `claude-code.headless`.
@@ -237,7 +237,7 @@ claim.
 Preparation and run-start debug observations expose the exact executable
 version and its `Qualified` or `UnverifiedNewer` posture. Prepared evidence
 also remains version-bound. There is no patch range that silently confers
-qualification: the qualified segment ends at `2.1.234`, while newer stable
+qualification: the qualified segment ends at `2.1.235`, while newer stable
 versions are provisional until evidence moves that boundary. The static
 deny-list is empty as of 2026-08-18.
 
@@ -284,7 +284,7 @@ integration.
 ## ACP Version Posture
 
 Discovery records the exact Claude Agent ACP wrapper version. Qualified
-wrappers are `0.53.0..=0.69.0`, excluding unpublished `0.58.0`. Those
+wrappers are `0.53.0..=0.70.0`, excluding unpublished `0.58.0`. Those
 milestones remain guaranteed. A newer stable release is admitted as
 unverified, remains inspectable in evidence, and must identify itself as that
 same exact version during ACP initialization. Excluded and older versions do

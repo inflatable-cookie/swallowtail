@@ -18,7 +18,7 @@ visible as unverified newer unless exact evidence requires rejection.
 | Goal | State | Governing refs | First milestone |
 | --- | --- | --- | --- |
 | Establish a repeatable currentness inventory for installed harnesses and shared protocols. | completed | Contracts 011, 029, 036 | `g03.001` |
-| Extend exact compatibility segments only where current evidence finds material drift or useful newer support. | active | Contracts 011, 029, 037 | `g03.002`, `g03.012`-`g03.015`, `g03.072`, `g03.073`, `g03.074`, `g03.075`, `g03.076`, `g03.077`, `g03.078`, `g03.079`, `g03.080`, `g03.081`, `g03.082`, `g03.083`, `g03.084`, `g03.085` |
+| Extend exact compatibility segments only where current evidence finds material drift or useful newer support. | active | Contracts 011, 029, 037 | `g03.002`, `g03.012`-`g03.015`, `g03.072`, `g03.073`, `g03.074`, `g03.075`, `g03.076`, `g03.077`, `g03.078`, `g03.079`, `g03.080`, `g03.081`, `g03.082`, `g03.083`, `g03.084`, `g03.085`, `g03.098`, `g03.099`, `g03.100`, `g03.101`, `g03.102`, `g03.103`, `g03.104`, `g03.105` |
 | Add high-value installed harnesses through explicit catalogue, interactive, structured, and continuation roles. | completed | Contracts 005-006, 015, 020, 029, 037, 039, 043-045 | `g03.005` |
 | Close useful installed-version gaps against exact current artifacts without forcing per-provider releases. | completed | Contracts 011, 029, 032, 037 | `g03.009` |
 | Keep deterministic corpora and conformance aligned with behavior milestones rather than package semver alone. | completed | Contracts 011, 029, 036 | `g03.010` |
@@ -75,21 +75,95 @@ visible as unverified newer unless exact evidence requires rejection.
 
 ## Planned Next Roadmaps
 
-- [g03.086 Cline ACP Route](086-cline-acp-route.md) — primary `cline.acp`
-- [g03.087 Cline Headless Route](087-cline-headless-route.md) — primary `cline.headless`
-- [g03.088 Goose ACP Route](088-goose-acp-route.md) — primary `goose.acp`
-- [g03.089 GitHub Copilot CLI ACP Route](089-copilot-cli-acp-route.md) — primary `copilot-cli.acp`
-- [g03.090 Mistral Vibe Headless Route](090-mistral-vibe-headless-route.md) — primary `mistral-vibe.headless`
-- [g03.091 Qoder Headless Route](091-qoder-headless-route.md) — primary `qoder.headless`
-- [g03.092 Pi ACP Route](092-pi-acp-route.md) — primary `pi.acp`
-- [g03.093 OpenHands Agent Server Route](093-openhands-agent-server-route.md) — secondary `openhands.agent-server`
-- [g03.094 Kiro Headless Route](094-kiro-headless-route.md) — secondary `kiro.headless`
-- [g03.095 Aider Headless Route](095-aider-headless-route.md) — secondary `aider.headless`
-- [g03.096 Deep Agents ACP Route](096-deep-agents-acp-route.md) — secondary `deepagents.acp`
-- [g03.097 Harness Route Expansion Intake And Watchlist](097-harness-route-expansion-intake-and-watchlist.md) — shared source/disposition gate
+- [g03.095 Aider Headless Route](095-aider-headless-route.md) — deferred `aider.headless`
 
 ## Current Checkpoint
 
+- g03.105 is complete. Cards 322-323 qualified Antigravity catalogue and
+  headless `1.1.9..=1.1.15` as a compatible extension of the existing
+  catalogue and stream-json revisions. Host `1.1.9` stays Qualified.
+  `1.1.8` stays independently unqualified. Later stables stay
+  AllowUnverified at synthetic `1.1.16`. `--input-format` and Gemini
+  API-key sign-in stay unmapped. Research 159 AllowUnverified families
+  except deferred Gemini now sit on current official stables. Gemini
+  stays deferred. Exact-pin drift stays closed. `aider.headless` and
+  `kiro.headless` stay deferred.
+- g03.104 is complete. Cards 320-321 qualified Oh My Pi RPC
+  `17.2.9..=17.3.8` as a compatible extension of
+  `oh-my-pi.rpc-v2-v17.2.9`. Host `17.2.15` stays Qualified. Later
+  stables stay AllowUnverified at synthetic `17.3.9`. Unpublished
+  `17.3.6` stays. `providers.cacheRetention`, advisor, ACP, session
+  switching, and subagent authority stay unmapped. Next Upgrade Workflow
+  family is Antigravity `1.1.15`. Remaining AllowUnverified drift:
+  Antigravity `1.1.15`. Gemini stays deferred. Exact-pin drift stays
+  closed. `aider.headless` and `kiro.headless` stay deferred.
+- g03.103 is complete. Cards 318-319 qualified Kimi Code ACP, headless,
+  and local-server through `0.37.2` as a compatible extension of
+  declared-effort, stream-json, and heartbeat-ping. Host `0.34.0` stays
+  Qualified. Later stables stay AllowUnverified at synthetic `0.37.3`.
+  Advertised ACP close/delete, `acp --login`, terminal-auth metadata, and
+  watch-fs `runtime_id` stay unmapped. Next Upgrade Workflow family is
+  Oh My Pi `17.3.8`. Remaining AllowUnverified drift: Oh My Pi `17.3.8`,
+  Antigravity `1.1.15`. Gemini stays deferred. Exact-pin drift stays
+  closed. `aider.headless` and `kiro.headless` stay deferred.
+- g03.102 is complete. Cards 316-317 qualified Qwen headless
+  `0.21.0..=0.21.14` as a compatible extension of catalogue-filter.
+  Unpublished `0.20.2` stays incompatible. Later stables stay
+  AllowUnverified at synthetic `0.21.15`. Preview `0.21.14-preview.0` is
+  ignored. `qwen sessions ps`, `/advisor`, and the live-session registry
+  stay unmapped. Kimi is now through `0.37.2`. Remaining AllowUnverified
+  drift: Oh My Pi `17.3.8`, Antigravity `1.1.15`. Gemini stays deferred.
+  Exact-pin drift stays closed. `aider.headless` and `kiro.headless` stay
+  deferred.
+- g03.101 is complete. Cards 314-315 qualified Grok Build
+  `1.0.4..=1.0.5` as a compatible extension of
+  cached-token-model-4-6-v3. Alpha `1.0.6` stays UnverifiedNewer and is
+  not official latest. Gaps `0.2.118..=0.2.121` and `1.0.0..=1.0.3` stay
+  incompatible. `--leader-socket` and vendor `_x.ai/*` notifications stay
+  unmapped. Qwen is now `0.21.0..=0.21.14`. Remaining AllowUnverified
+  drift: Kimi `0.37.2`, Oh My Pi `17.3.8`, Antigravity `1.1.15`. Gemini
+  stays deferred. Exact-pin drift stays closed. `aider.headless` and
+  `kiro.headless` stay deferred.
+- g03.100 is complete. Cards 312-313 qualified Claude Code headless
+  `2.1.220..=2.1.235` and response-only `2.1.227..=2.1.235` as compatible
+  extensions of the existing stream-JSON behaviors. Later stables stay
+  AllowUnverified at synthetic `2.1.236`. Spellcheck, unused help flags,
+  and sdk-tools artifact fields stay unmapped. Grok is now
+  `1.0.4..=1.0.5`. Remaining AllowUnverified drift: Qwen `0.21.14`, Kimi
+  `0.37.2`, Oh My Pi `17.3.8`, Antigravity `1.1.15`. Gemini stays
+  deferred. Exact-pin drift stays closed. `aider.headless` and
+  `kiro.headless` stay deferred.
+- g03.099 is complete. Cards 310-311 qualified Claude Agent ACP `0.70.0`
+  as a compatible extension of initialize-meta-extensions-v7. Host
+  `0.63.0` remains Qualified. Later stables stay AllowUnverified at
+  synthetic `0.70.1`. Providers API stays unmapped. Claude Code is now
+  `2.1.220..=2.1.235` / `2.1.227..=2.1.235`. Remaining AllowUnverified
+  drift: Grok `1.0.5`, Qwen `0.21.14`, Kimi `0.37.2`, Oh My Pi `17.3.8`,
+  Antigravity `1.1.15`. Gemini stays deferred. Exact-pin drift stays
+  closed. `aider.headless` and `kiro.headless` stay deferred.
+- g03.086-g03.097 are complete except deferred `aider.headless`.
+  Cards 262-277, 304-307, and 278-281 admitted and accepted `cline.acp`,
+  `cline.headless`, `goose.acp`, `copilot-cli.acp`,
+  `mistral-vibe.headless`, and `qoder.headless`. Card 282 closed
+  `pi.acp` as negative evidence. Card 286 admitted secondary identity
+  lanes for `openhands.agent-server`, `kiro.acp`, and `deepagents.acp`;
+  deferred `aider.headless` and `kiro.headless`. Cards 287-289
+  froze OpenHands Agent Server `1.42.1` identity, driver, and
+  `prepare_openhands_agent_server`. Card 290 deferred the production
+  route: live HTTP/WebSocket stays unwired and `start_run` fail-closes.
+  Keep `swallowtail-adapter-openhands`. Cards 291-294 accepted
+  `kiro.acp` at installer-manifest `2.18.1` (`kiro-cli acp`) as an
+  unreleased additive production route. `kiro.headless` stays deferred.
+  Card 299 froze Deep Agents ACP identity at npm `deepagents-acp@0.1.25`
+  (`deepagents-acp` with no extra argv). Card 300 added package
+  `swallowtail-adapter-deepagents` and the stdio driver. Card 301 added
+  `prepare_deepagents_acp`. Card 302 accepted `deepagents.acp` as an
+  unreleased additive production route. Card 303 / Research 158 closed
+  the watchlist: add none; reject community wrappers and Agoragentic;
+  defer Crush, Continue, MiMo, Kilo, Roo, and remaining registry-only
+  leads. No new package or production row. Current source is 40 packages
+  and 47 production routes. Immutable `v0.3.2` stays 30 packages and 36
+  routes. `aider.headless` stays deferred.
 - g03.085 is complete. Cards 258-259 froze Antigravity host `1.1.9` and
   official GitHub `1.1.14` identity and raised `antigravity-cli.release`
   through `1.1.9..=1.1.14` on the existing catalogue and stream-json
@@ -847,6 +921,26 @@ visible as unverified newer unless exact evidence requires rejection.
 - [081 Ollama 0.32.14 Useful Newer](./081-ollama-0-32-14-useful-newer.md) — completed
 - [080 Kimi Code 0.36.1 Useful Newer](./080-kimi-code-0-36-1-useful-newer.md) — completed
 - [079 OpenCode HTTP 1.18.18 Useful Newer](./079-opencode-http-1-18-18-useful-newer.md) — completed
+- [086 Cline ACP Route](./086-cline-acp-route.md) — completed
+- [087 Cline Headless Route](./087-cline-headless-route.md) — completed
+- [088 Goose ACP Route](./088-goose-acp-route.md) — completed
+- [089 GitHub Copilot CLI ACP Route](./089-copilot-cli-acp-route.md) — completed
+- [090 Mistral Vibe Headless Route](./090-mistral-vibe-headless-route.md) — completed
+- [091 Qoder Headless Route](./091-qoder-headless-route.md) — completed
+- [092 Pi ACP Route](./092-pi-acp-route.md) — completed negatively
+- [093 OpenHands Agent Server Route](./093-openhands-agent-server-route.md) — completed deferred
+- [094 Kiro ACP Route](./094-kiro-headless-route.md) — completed
+- [095 Aider Headless Route](./095-aider-headless-route.md) — deferred
+- [096 Deep Agents ACP Route](./096-deep-agents-acp-route.md) — completed
+- [097 Harness Route Expansion Intake And Watchlist](./097-harness-route-expansion-intake-and-watchlist.md) — completed
+- [098 Codex 0.148.0 Useful Newer](./098-codex-0-148-useful-newer.md) — completed
+- [099 Claude Agent ACP 0.70.0 Useful Newer](./099-claude-agent-acp-0-70-0-useful-newer.md) — completed
+- [100 Claude Code 2.1.235 Useful Newer](./100-claude-code-2-1-235-useful-newer.md) — completed
+- [105 Antigravity 1.1.15 Useful Newer](./105-antigravity-1-1-15-useful-newer.md) — completed
+- [104 Oh My Pi 17.3.8 Useful Newer](./104-oh-my-pi-17-3-8-useful-newer.md) — completed
+- [103 Kimi Code 0.37.2 Useful Newer](./103-kimi-code-0-37-2-useful-newer.md) — completed
+- [102 Qwen Headless 0.21.14 Useful Newer](./102-qwen-headless-0-21-14-useful-newer.md) — completed
+- [101 Grok 1.0.5 Useful Newer](./101-grok-1-0-5-useful-newer.md) — completed
 
 ## Checkpoint
 

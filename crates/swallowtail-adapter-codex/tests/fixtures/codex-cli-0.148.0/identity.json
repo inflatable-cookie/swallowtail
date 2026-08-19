@@ -1,0 +1,55 @@
+{
+  "axis": "codex.cli",
+  "observed_at": "2026-08-19",
+  "npm_package": "@openai/codex",
+  "npm_latest": true,
+  "host": {
+    "version": "0.147.0",
+    "cli": "codex-cli 0.147.0",
+    "executable_sha256": "19c4f144c5226a9f17c58e6f0fa854843b0f77a6eb420f40e2745a12f10f5d37",
+    "executable_size": 219997536
+  },
+  "official": {
+    "version": "0.148.0",
+    "cli": "codex-cli 0.148.0",
+    "source": "official-npm-tarball",
+    "published_at": "2026-08-18T22:30:14.842Z",
+    "github_published_at": "2026-08-18T22:26:03Z",
+    "npm_integrity": "sha512-bh5kH9+BMrFaHGmLeoSansPdfRksvr4UXzjQInns/KRO7r8VJ+6AAW+SqUsE8XcG3+OW/mI4EEy8Gpo9UDXGvQ==",
+    "npm_shasum": "069f15c77cf3b26c62c129bc6ca1ff269a226c09",
+    "tarball_sha256": "74be73c8a50cc01bce978cc6fec9274564f529a50e9f256b3608a7012437cebe",
+    "darwin_arm64_tarball_sha256": "b20357817b1b11dab7a6696b051965aaad4311a690f2bac7d87678a92aa8bead",
+    "extracted_cli_sha256": "b0308517b20543012fa2171aa3d46ce455a7456c4eb2a552ab9468ba4eeb1e50",
+    "extracted_cli_size": 214716336,
+    "git_tag": "rust-v0.148.0",
+    "tag_commit": "3ba0f711642a888aec92a611a3f3b2211157ff89"
+  },
+  "published_stables_from_previous_ceiling": ["0.148.0"],
+  "unpublished_0_147_1": true,
+  "unpublished_0_148_1": true,
+  "alpha_ignored": "0.149.0-alpha.1",
+  "claim_at_observation": {
+    "latest_qualified": "0.147.0",
+    "posture": "allow_unverified",
+    "classification_of_0_147_0": "qualified_maintained",
+    "classification_of_0_148_0": "unverified_newer"
+  },
+  "identity_decision": {
+    "shape": "compatible-extension",
+    "exec_behavior": "codex.exec.jsonl-v1",
+    "app_server_behavior": "codex.app-server.v2.workspace-roots",
+    "lifecycle_behavior": "codex.app-server.lifecycle.v1.strict-descendant-hard-delete",
+    "raise_latest_qualified_to": "0.148.0",
+    "keep_baseline": true,
+    "qualify_intermediates": true,
+    "new_milestone": false,
+    "keep_gaps": ["0.82.0..=0.83.0", "0.108.0", "0.109.0"],
+    "later_unverified_after_qualification": "0.148.1",
+    "map_exec_fork": false,
+    "map_thread_fork": false,
+    "map_top_level_fork": false,
+    "provider_prompt_sent": false,
+    "live_session": false,
+    "host_install_changed": false
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "method": "session/request_permission",
+  "options": [
+    { "optionId": "allow_once", "name": "Allow once", "kind": "allow_once" },
+    { "optionId": "allow_always", "name": "Allow always", "kind": "allow_always" },
+    { "optionId": "reject_once", "name": "Reject", "kind": "reject_once" }
+  ],
+  "swallowtail_default": "do not auto-select allow_always or auto-approve",
+  "source": "apps/cli/src/acp/permissions.ts at cli-v3.0.55"
+}

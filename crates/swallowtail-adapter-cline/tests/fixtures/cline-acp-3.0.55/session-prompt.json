@@ -1,0 +1,17 @@
+{
+  "request": {
+    "jsonrpc": "2.0",
+    "id": 3,
+    "method": "session/prompt",
+    "params": {
+      "sessionId": "opaque-fixture-session",
+      "prompt": [{ "type": "text", "text": "fixture prompt" }]
+    }
+  },
+  "success_result": { "stopReason": "end_turn" },
+  "empty_text_result": { "stopReason": "end_turn" },
+  "unknown_session": "error",
+  "cancelled_result": { "stopReason": "cancelled" },
+  "source": "apps/cli/src/acp/acpAgent.ts prompt at cli-v3.0.55",
+  "live_prompt": false
+}

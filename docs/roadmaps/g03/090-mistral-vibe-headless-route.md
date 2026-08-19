@@ -1,13 +1,13 @@
 # 090 Mistral Vibe Headless Route
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-18
 Wave: Primary
 Depends on: g03.089; g03.097 intake cards 260-261; Research 143
 Research: 143
 Route id: `mistral-vibe.headless`
-Planning state: cards 274-277 planned
+Planning state: cards 274-277 completed
 
 ## Purpose
 
@@ -39,17 +39,17 @@ survive the evidence gate.
 
 ## Required Proof
 
-- [ ] exact executable, server, or protocol identity and version axis
-- [ ] deterministic corpus for success, failure, malformed/unknown input,
+- [x] exact executable, server, or protocol identity and version axis
+- [x] deterministic corpus for success, failure, malformed/unknown input,
       bounds, cancellation/deadline, activity, and joined cleanup
-- [ ] explicit authentication, working-resource, isolation, and remote/local
+- [x] explicit authentication, working-resource, isolation, and remote/local
       authority posture
-- [ ] bounded event and terminal-outcome mapping without native-field leakage
-- [ ] prepared facade with immutable preflight evidence and fail-closed
+- [x] bounded event and terminal-outcome mapping without native-field leakage
+- [x] prepared facade with immutable preflight evidence and fail-closed
       selection
-- [ ] route-specific guide, compiling normal-path example, matrices, package
+- [x] route-specific guide, compiling normal-path example, matrices, package
       index, and README truth if the route is accepted
-- [ ] separately gated live evidence that cannot silently widen deterministic
+- [x] separately gated live evidence that cannot silently widen deterministic
       claims
 
 ## Boundaries

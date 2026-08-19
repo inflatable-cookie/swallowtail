@@ -1,12 +1,12 @@
 use super::rest::{
-    decode_archive, decode_health, decode_metadata, decode_rest, decode_session, inspect_asyncapi,
-    inspect_openapi, RestFailureKind, RestReply, ServerMetadata, MAX_HTTP_BODY_BYTES,
+    MAX_HTTP_BODY_BYTES, RestFailureKind, RestReply, ServerMetadata, decode_archive, decode_health,
+    decode_metadata, decode_rest, decode_session, inspect_asyncapi, inspect_openapi,
 };
 use super::ws::{
-    classify_ws_close, decode_ws_frame, encode_pong, ResyncReason, TurnEndReason, WsCloseKind,
-    WsCursor, WsEvent, WsEventEnvelope, WsFrame,
+    ResyncReason, TurnEndReason, WsCloseKind, WsCursor, WsEvent, WsEventEnvelope, WsFrame,
+    classify_ws_close, decode_ws_frame, encode_pong,
 };
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 const FIXTURE_ROOT: &str = "../../../tests/fixtures/kimi-local-server-0.28.1-0.29.0";
 
@@ -302,10 +302,10 @@ fn application_ping_decodes_without_session_seq_and_encodes_matching_pong() {
     );
     let pong: Value = serde_json::from_str(&encode_pong("n1")).expect("pong encodes JSON");
     assert_eq!(pong, json!({"type":"pong","payload":{"nonce":"n1"}}));
-    assert!(decode_ws_frame(
-        br#"{"type":"ping","timestamp":"2026-08-14T00:00:00.000Z","payload":{}}"#
-    )
-    .is_err());
+    assert!(
+        decode_ws_frame(br#"{"type":"ping","timestamp":"2026-08-14T00:00:00.000Z","payload":{}}"#)
+            .is_err()
+    );
 }
 
 #[test]

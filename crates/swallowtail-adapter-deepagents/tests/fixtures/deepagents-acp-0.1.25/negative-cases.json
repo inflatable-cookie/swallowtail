@@ -1,0 +1,102 @@
+{
+  "cases": [
+    {
+      "id": "malformed-json",
+      "input": "{",
+      "expected": "fail_closed_framing"
+    },
+    {
+      "id": "invalid-jsonrpc-version",
+      "input": { "jsonrpc": "1.0", "id": 1, "method": "initialize", "params": {} },
+      "expected": "fail_closed_framing"
+    },
+    {
+      "id": "unknown-method",
+      "input": { "jsonrpc": "2.0", "id": 1, "method": "session/list", "params": {} },
+      "expected": "method_not_found_or_unmapped"
+    },
+    {
+      "id": "prompt-unknown-session",
+      "input": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "method": "session/prompt",
+        "params": { "sessionId": "missing", "prompt": [{ "type": "text", "text": "x" }] }
+      },
+      "expected": "fail_closed"
+    },
+    {
+      "id": "content-field-rejected",
+      "input": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "method": "session/prompt",
+        "params": { "sessionId": "opaque-fixture-session", "content": [{ "type": "text", "text": "x" }] }
+      },
+      "expected": "fail_closed_prompt_field_required"
+    },
+    {
+      "id": "oversized-frame",
+      "expected": "fail_closed_bounds"
+    },
+    {
+      "id": "post-terminal-extra",
+      "expected": "fail_closed_or_ignore_after_terminal"
+    },
+    {
+      "id": "npx-is-not-swallowtail-spawn",
+      "argv": ["npx", "deepagents-acp"],
+      "expected": "reject_npx_wrapper"
+    },
+    {
+      "id": "library-embed-unmapped",
+      "api": "startServer",
+      "expected": "reject_as_library_not_this_route"
+    },
+    {
+      "id": "custom-tsx-unmapped",
+      "argv": ["npx", "tsx", "./server.ts"],
+      "expected": "reject_as_custom_server_not_this_route"
+    },
+    {
+      "id": "model-flag-unmapped",
+      "argv": ["deepagents-acp", "--model", "claude-sonnet-4-5-20250929"],
+      "expected": "do_not_select_as_swallowtail_argv"
+    },
+    {
+      "id": "workspace-flag-unmapped",
+      "argv": ["deepagents-acp", "--workspace", "/tmp/swallowtail-fixture-cwd"],
+      "expected": "do_not_select_as_swallowtail_argv"
+    },
+    {
+      "id": "session-load-unmapped",
+      "method": "session/load",
+      "expected": "unmapped_on_first_driver"
+    },
+    {
+      "id": "set-mode-unmapped",
+      "method": "session/set_mode",
+      "expected": "unmapped_on_first_driver"
+    },
+    {
+      "id": "slash-commands-unmapped",
+      "prompt": "/status",
+      "expected": "unmapped_on_first_driver"
+    },
+    {
+      "id": "allow-always-unselected",
+      "optionId": "allow-always",
+      "expected": "do_not_select"
+    },
+    {
+      "id": "api-key-not-swallowtail-lease",
+      "env": "ANTHROPIC_API_KEY",
+      "expected": "host_owned_not_adapter_credential"
+    },
+    {
+      "id": "registry-0-1-7-not-frozen-package",
+      "registry_version": "0.1.7",
+      "expected": "bind_npm_0_1_25_not_registry"
+    }
+  ]
+}

@@ -7,13 +7,13 @@ It is a compiled consumer reference. The exact
 `PreparedOperationEvidence::observable_activity()` returned for a prepared
 operation remains the runtime source of truth.
 
-The inventory contains 76 route-operation rows:
+The inventory contains 84 route-operation rows:
 
-- 47 ordinary structured-run or interactive-session profiles with
+- 55 ordinary structured-run or interactive-session profiles with
   `available` activity
 - 29 catalogue, inventory, provider-session-management, realtime-media, or
   serving operations where ordinary agent activity is `not-applicable`
-- all 39 production route identities
+- all 47 production route identities
 - four auxiliary hosted catalogue identities
 
 There is no unexplained whole-operation `unavailable` result. An

@@ -1,10 +1,10 @@
 # 287 OpenHands Agent Server Identity Corpus
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-18
 Milestone: `../093-openhands-agent-server-route.md`
-Depends on: Card 286; Research 143
+Depends on: Card 286; Research 153
 
 ## Goal
 
@@ -12,7 +12,7 @@ Freeze source and route-shape evidence for OpenHands Agent Server. Candidate rou
 
 ## Scope
 
-Record official executable/server identity, transport, selected help/schema/event samples, authentication and working-resource authority, topology, persistence, cancellation, cleanup, and overlap with existing routes. Name the smallest deterministic corpus.
+Record official executable/server identity, transport, selected help/schema/event samples, authentication and working-resource authority, topology, persistence, cancellation, cleanup, and overlap with existing routes. Name the smallest deterministic corpus. First topology is an owned local loopback child, not Docker/hosted sandbox or Contract 035 remote ACP.
 
 ## Out Of Scope
 
@@ -20,10 +20,10 @@ driver implementation, prepared API, production matrix changes, live provider wo
 
 ## Acceptance Criteria
 
-- [ ] Source identity and route disposition are explicit.
-- [ ] Route adds material information gain or records why it does not.
-- [ ] Authority and cleanup boundaries are named.
-- [ ] No claim changes before driver work.
+- [x] Source identity and route disposition are explicit.
+- [x] Route adds material information gain or records why it does not.
+- [x] Authority and cleanup boundaries are named.
+- [x] No claim changes before driver work.
 
 ## Validation
 
@@ -39,4 +39,6 @@ Continue to card 288 only after route identity is admitted.
 
 ## Evidence
 
-Research 143; https://docs.openhands.dev/sdk/arch/agent-server; https://github.com/All-Hands-AI/OpenHands
+Research 154; `docs/logs/2026-08-19-openhands-agent-server-1-42-1-identity.md`;
+fixtures under `crates/swallowtail-adapter-openhands/tests/fixtures/openhands-agent-server-1.42.1/`.
+`effigy qa:northstar` passed. No production claim.

@@ -27,7 +27,7 @@ use swallowtail_runtime::{
 #[test]
 fn attached_archive_and_restore_work_on_local_and_remote_authoritative_hosts() {
     for version in [
-        "0.28.1", "0.29.0", "0.29.1", "0.29.2", "0.30.0", "0.31.0", "0.31.1", "0.36.1",
+        "0.28.1", "0.29.0", "0.29.1", "0.29.2", "0.30.0", "0.31.0", "0.31.1", "0.36.1", "0.37.2",
     ] {
         for host_name in ["host.local", "host.remote-authoritative"] {
             let server = FixtureServer::start_with_version(version);
@@ -114,7 +114,7 @@ fn attached_archive_and_restore_work_on_local_and_remote_authoritative_hosts() {
 #[test]
 fn attached_catalogue_lists_configured_aliases_without_session_or_refresh() {
     for version in [
-        "0.28.1", "0.29.0", "0.29.1", "0.29.2", "0.30.0", "0.31.0", "0.31.1", "0.36.1",
+        "0.28.1", "0.29.0", "0.29.1", "0.29.2", "0.30.0", "0.31.0", "0.31.1", "0.36.1", "0.37.2",
     ] {
         let server = FixtureServer::start_with_version(version);
         let host = FixtureHost::new(&server);

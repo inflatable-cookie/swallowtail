@@ -4,11 +4,11 @@ Status: planned
 Owner: Tom
 Created: 2026-08-18
 Milestone: `../095-aider-headless-route.md`
-Depends on: Card 286; Research 143
+Depends on: Card 286; Research 153
 
 ## Goal
 
-Freeze source and route-shape evidence for Aider Headless. Candidate route is `aider.headless`. Do not edit production claims.
+Freeze source and route-shape evidence for Aider Headless. Candidate route is `aider.headless`. Do not edit production claims. Card 286 deferred this lane until a structured event surface exists.
 
 ## Scope
 
@@ -39,4 +39,4 @@ Continue to card 296 only after route identity is admitted.
 
 ## Evidence
 
-Research 143; https://aider.chat/docs/scripting.html
+Research 153; https://aider.chat/docs/scripting.html

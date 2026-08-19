@@ -307,10 +307,10 @@ def main() -> None:
             f"missing={missing}, extra={extra}, changed={changed}"
         )
 
-    if len(rows) != 76:
-        raise SystemExit("provider activity matrix must contain exactly 76 rows")
+    if len(rows) != 84:
+        raise SystemExit("provider activity matrix must contain exactly 84 rows")
     counts = Counter(row["activity_profile"] for row in rows)
-    if counts != Counter({"available": 47, "not-applicable": 29}):
+    if counts != Counter({"available": 55, "not-applicable": 29}):
         raise SystemExit(
             f"provider activity dispositions changed: {dict(counts)}"
         )
@@ -412,8 +412,8 @@ def main() -> None:
 
     print(
         "provider activity matrix passed: "
-        "76 operations, 47 available, 29 not-applicable, "
-        "39 production routes, 4 auxiliary catalogues, "
+        "84 operations, 55 available, 29 not-applicable, "
+        "47 production routes, 4 auxiliary catalogues, "
         "6 topology-capable operations, 0 operator-control operations"
     )
 

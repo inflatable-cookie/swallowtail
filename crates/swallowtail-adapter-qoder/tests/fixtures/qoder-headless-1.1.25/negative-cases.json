@@ -1,0 +1,122 @@
+{
+  "cases": [
+    {
+      "id": "malformed-json",
+      "input": "{",
+      "expected": "fail_closed_framing"
+    },
+    {
+      "id": "missing-envelope-type",
+      "input": {"session_id": "opaque-fixture-session"},
+      "expected": "fail_closed_framing"
+    },
+    {
+      "id": "acp-jsonrpc-is-not-headless",
+      "input": {"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {}},
+      "expected": "reject_as_qoder_acp_not_this_route"
+    },
+    {
+      "id": "acp-flag-is-not-headless",
+      "argv": ["qodercli", "--acp"],
+      "expected": "reject_as_qoder_acp_not_this_route"
+    },
+    {
+      "id": "print-plus-acp-is-acp",
+      "argv": ["qodercli", "--print", "--acp", "opaque fixture prompt"],
+      "expected": "reject_as_qoder_acp_not_this_route"
+    },
+    {
+      "id": "sdk-input-stream-json-unmapped",
+      "argv": ["qodercli", "--print", "--input-format", "stream-json", "--output-format", "stream-json", "--permission-mode", "dont_ask", "--max-turns", "1", "--no-session-persistence", "opaque fixture prompt"],
+      "expected": "unmapped_sdk_stdio_not_this_route"
+    },
+    {
+      "id": "output-json-is-not-streaming-decoder",
+      "argv": ["qodercli", "--print", "--output-format", "json", "--permission-mode", "dont_ask", "--max-turns", "1", "--no-session-persistence", "opaque fixture prompt"],
+      "expected": "do_not_select_as_streaming_decoder"
+    },
+    {
+      "id": "output-text-unselected",
+      "argv": ["qodercli", "--print", "--output-format", "text", "--permission-mode", "dont_ask", "--max-turns", "1", "--no-session-persistence", "opaque fixture prompt"],
+      "expected": "do_not_select_as_swallowtail_authority"
+    },
+    {
+      "id": "omit-output-inherits-text",
+      "argv": ["qodercli", "--print", "--permission-mode", "dont_ask", "--max-turns", "1", "--no-session-persistence", "opaque fixture prompt"],
+      "expected": "do_not_select_as_swallowtail_authority"
+    },
+    {
+      "id": "yolo-not-swallowtail-authority",
+      "argv": ["qodercli", "--print", "--output-format", "stream-json", "--permission-mode", "dont_ask", "--max-turns", "1", "--no-session-persistence", "--yolo", "opaque fixture prompt"],
+      "expected": "do_not_select_as_swallowtail_authority"
+    },
+    {
+      "id": "bypass-not-swallowtail-authority",
+      "argv": ["qodercli", "--print", "--output-format", "stream-json", "--permission-mode", "bypass_permissions", "--max-turns", "1", "--no-session-persistence", "opaque fixture prompt"],
+      "expected": "do_not_select_as_swallowtail_authority"
+    },
+    {
+      "id": "accept-edits-not-swallowtail-authority",
+      "argv": ["qodercli", "--print", "--output-format", "stream-json", "--permission-mode", "accept_edits", "--max-turns", "1", "--no-session-persistence", "opaque fixture prompt"],
+      "expected": "do_not_select_as_swallowtail_authority"
+    },
+    {
+      "id": "omit-permission-mode-inherits-host-default",
+      "argv": ["qodercli", "--print", "--output-format", "stream-json", "--max-turns", "1", "--no-session-persistence", "opaque fixture prompt"],
+      "expected": "do_not_select_as_swallowtail_authority"
+    },
+    {
+      "id": "omit-max-turns-unbounded",
+      "argv": ["qodercli", "--print", "--output-format", "stream-json", "--permission-mode", "dont_ask", "--no-session-persistence", "opaque fixture prompt"],
+      "expected": "do_not_select_as_swallowtail_authority"
+    },
+    {
+      "id": "omit-no-session-persistence",
+      "argv": ["qodercli", "--print", "--output-format", "stream-json", "--permission-mode", "dont_ask", "--max-turns", "1", "opaque fixture prompt"],
+      "expected": "do_not_select_as_swallowtail_authority"
+    },
+    {
+      "id": "continue-unmapped",
+      "argv": ["qodercli", "--print", "--output-format", "stream-json", "--permission-mode", "dont_ask", "--max-turns", "1", "--no-session-persistence", "--continue", "opaque fixture prompt"],
+      "expected": "unmapped"
+    },
+    {
+      "id": "resume-unmapped",
+      "argv": ["qodercli", "--print", "--output-format", "stream-json", "--permission-mode", "dont_ask", "--max-turns", "1", "--no-session-persistence", "--resume", "opaque", "opaque fixture prompt"],
+      "expected": "unmapped"
+    },
+    {
+      "id": "session-id-unmapped",
+      "argv": ["qodercli", "--print", "--output-format", "stream-json", "--permission-mode", "dont_ask", "--max-turns", "1", "--no-session-persistence", "--session-id", "opaque", "opaque fixture prompt"],
+      "expected": "unmapped"
+    },
+    {
+      "id": "tui-unmapped",
+      "argv": ["qodercli"],
+      "expected": "unmapped"
+    },
+    {
+      "id": "ide-dispatcher-not-this-route",
+      "argv": ["qoder", "ide"],
+      "expected": "reject_as_qoder_ide_not_this_route"
+    },
+    {
+      "id": "login-not-swallowtail",
+      "argv": ["qodercli", "login"],
+      "expected": "host_owned_not_adapter_login"
+    },
+    {
+      "id": "missing-prompt-fails",
+      "argv": ["qodercli", "--print", "--output-format", "stream-json", "--permission-mode", "dont_ask", "--max-turns", "1", "--no-session-persistence"],
+      "expected": "fail_closed_preflight"
+    },
+    {
+      "id": "oversized-frame",
+      "expected": "fail_closed_bounds"
+    },
+    {
+      "id": "post-terminal-extra",
+      "expected": "fail_closed_or_ignore_after_terminal"
+    }
+  ]
+}

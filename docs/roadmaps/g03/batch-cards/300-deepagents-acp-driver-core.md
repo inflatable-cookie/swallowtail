@@ -1,6 +1,6 @@
 # 300 Deep Agents ACP Driver Core
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-18
 Milestone: `../096-deep-agents-acp-route.md`
@@ -20,10 +20,10 @@ automatic workspace/repository mutation policy, session import or management, re
 
 ## Acceptance Criteria
 
-- [ ] Fixtures cover success, failure, malformed/unknown input, bounds, cancellation/deadline, and cleanup.
-- [ ] Remote or local resource ownership is testable.
-- [ ] Driver rejects protocol/version drift before provider work.
-- [ ] Focused package tests pass without credentials.
+- [x] Fixtures cover success, failure, malformed/unknown input, bounds, cancellation/deadline, and cleanup.
+- [x] Remote or local resource ownership is testable.
+- [x] Driver rejects protocol/version drift before provider work.
+- [x] Focused package tests pass without credentials.
 
 ## Validation
 
@@ -39,4 +39,7 @@ Continue to card 301 after deterministic tests pass.
 
 ## Evidence
 
-Card 299; Contracts 005-006, 009-011, 017, 023, 029, 032-033, 039-041, 044-045, 051
+Card 299; Research 157; `docs/logs/2026-08-19-deepagents-acp-driver-core.md`.
+`effigy validate:focused swallowtail-adapter-deepagents` passed (28 tests,
+Clippy warnings denied). No live install, prompt, or API-key use. Production
+claim stays card 302.

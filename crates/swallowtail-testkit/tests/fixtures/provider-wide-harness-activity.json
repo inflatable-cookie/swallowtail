@@ -13,6 +13,26 @@
   ],
   "routes": [
     {
+      "id": "anthropic.managed-agent",
+      "driver": "swallowtail.anthropic.managed-agent",
+      "transport": "https-sse",
+      "qualified": "managed-agents-2026-04-01 beta",
+      "prepared_profiles": [
+        {
+          "operation": "structured-run",
+          "availability": "available"
+        }
+      ],
+      "unavailable_operations": [],
+      "not_applicable_operations": [],
+      "unknown_posture": "preserve-namespaced",
+      "exact_absences": [
+        "preview deltas",
+        "readable thinking",
+        "custom-tool execution activity"
+      ]
+    },
+    {
       "id": "antigravity.catalogue",
       "driver": "swallowtail.antigravity.catalogue",
       "transport": "antigravity-cli-models-stdio",
@@ -49,26 +69,6 @@
         "raw tool input",
         "raw tool output",
         "subagent workspace and log URIs"
-      ]
-    },
-    {
-      "id": "anthropic.managed-agent",
-      "driver": "swallowtail.anthropic.managed-agent",
-      "transport": "https-sse",
-      "qualified": "managed-agents-2026-04-01 beta",
-      "prepared_profiles": [
-        {
-          "operation": "structured-run",
-          "availability": "available"
-        }
-      ],
-      "unavailable_operations": [],
-      "not_applicable_operations": [],
-      "unknown_posture": "preserve-namespaced",
-      "exact_absences": [
-        "preview deltas",
-        "readable thinking",
-        "custom-tool execution activity"
       ]
     },
     {
@@ -138,6 +138,50 @@
       ]
     },
     {
+      "id": "cline.acp",
+      "driver": "swallowtail.cline.acp",
+      "transport": "acp-v1-stdio",
+      "qualified": "3.0.55",
+      "prepared_profiles": [
+        {
+          "operation": "interactive-session",
+          "availability": "available"
+        }
+      ],
+      "unavailable_operations": [],
+      "not_applicable_operations": [],
+      "unknown_posture": "preserve-namespaced",
+      "exact_absences": [
+        "raw tool input",
+        "raw tool output",
+        "child topology",
+        "public load or resume"
+      ]
+    },
+    {
+      "id": "cline.headless",
+      "driver": "swallowtail.cline.headless",
+      "transport": "cline-envelope-ndjson-stdio",
+      "qualified": "3.0.55",
+      "prepared_profiles": [
+        {
+          "operation": "structured-run",
+          "availability": "available"
+        }
+      ],
+      "unavailable_operations": [],
+      "not_applicable_operations": [],
+      "unknown_posture": "preserve-namespaced",
+      "exact_absences": [
+        "interactive session continuity",
+        "model catalogue",
+        "consumer tool exchange",
+        "permission exchange",
+        "readable reasoning",
+        "provider session management"
+      ]
+    },
+    {
       "id": "codex.app-server",
       "driver": "swallowtail.codex.app-server",
       "transport": "jsonl-rpc-stdio",
@@ -181,18 +225,51 @@
       ]
     },
     {
-      "id": "cursor-agent.catalogue",
-      "driver": "swallowtail.cursor-agent.catalogue",
-      "transport": "cursor-cli-models-stdio",
-      "qualified": "2026.07.01-41b2de7",
-      "prepared_profiles": [],
-      "unavailable_operations": [],
-      "not_applicable_operations": [
-        "model-catalogue"
+      "id": "command-code.headless",
+      "driver": "swallowtail.command-code.headless",
+      "transport": "command-code-agent-event-ndjson-stdio",
+      "qualified": "1.15.1",
+      "prepared_profiles": [
+        {
+          "operation": "structured-run",
+          "availability": "available"
+        },
+        {
+          "operation": "interactive-session",
+          "availability": "available"
+        }
       ],
+      "unavailable_operations": [],
+      "not_applicable_operations": [],
       "unknown_posture": "preserve-namespaced",
       "exact_absences": [
-        "ordinary agent activity"
+        "public load/resume",
+        "catalogue",
+        "import",
+        "provider export",
+        "tool body ingestion",
+        "run_end.result.nextState"
+      ]
+    },
+    {
+      "id": "copilot-cli.acp",
+      "driver": "swallowtail.copilot-cli.acp",
+      "transport": "acp-v1-stdio",
+      "qualified": "1.0.80",
+      "prepared_profiles": [
+        {
+          "operation": "interactive-session",
+          "availability": "available"
+        }
+      ],
+      "unavailable_operations": [],
+      "not_applicable_operations": [],
+      "unknown_posture": "preserve-namespaced",
+      "exact_absences": [
+        "raw tool input",
+        "raw tool output",
+        "child topology",
+        "public load or resume"
       ]
     },
     {
@@ -216,6 +293,21 @@
       ]
     },
     {
+      "id": "cursor-agent.catalogue",
+      "driver": "swallowtail.cursor-agent.catalogue",
+      "transport": "cursor-cli-models-stdio",
+      "qualified": "2026.07.01-41b2de7",
+      "prepared_profiles": [],
+      "unavailable_operations": [],
+      "not_applicable_operations": [
+        "model-catalogue"
+      ],
+      "unknown_posture": "preserve-namespaced",
+      "exact_absences": [
+        "ordinary agent activity"
+      ]
+    },
+    {
       "id": "cursor-agent.headless",
       "driver": "swallowtail.cursor-agent.headless",
       "transport": "cursor-stream-json-stdio",
@@ -233,6 +325,81 @@
         "raw tool input",
         "raw tool output",
         "child topology"
+      ]
+    },
+    {
+      "id": "deepagents.acp",
+      "driver": "swallowtail.deepagents.acp",
+      "transport": "acp-v1-stdio",
+      "qualified": "0.1.25",
+      "prepared_profiles": [
+        {
+          "operation": "interactive-session",
+          "availability": "available"
+        }
+      ],
+      "unavailable_operations": [],
+      "not_applicable_operations": [],
+      "unknown_posture": "preserve-namespaced",
+      "exact_absences": [
+        "raw tool input",
+        "raw tool output",
+        "child topology",
+        "public load or resume"
+      ]
+    },
+    {
+      "id": "deepseek-harness.jsonrpc",
+      "driver": "swallowtail.deepseek-harness.jsonrpc",
+      "transport": "deepseek-harness-jsonrpc-ndjson-stdio",
+      "qualified": "0.1.0rc6",
+      "prepared_profiles": [
+        {
+          "operation": "structured-run",
+          "availability": "available"
+        }
+      ],
+      "unavailable_operations": [],
+      "not_applicable_operations": [],
+      "unknown_posture": "preserve-namespaced",
+      "exact_absences": [
+        "interactive session continuity",
+        "model catalogue",
+        "consumer tool exchange",
+        "permission exchange",
+        "native JSON-RPC cancel",
+        "provider session management",
+        "subagent topology",
+        "reasoning content"
+      ]
+    },
+    {
+      "id": "deepseek-harness.local-server",
+      "driver": "swallowtail.deepseek-harness.local-server",
+      "transport": "deepseek-harness-local-server-http-ws-v1",
+      "qualified": "0.1.0-rc.6",
+      "prepared_profiles": [
+        {
+          "operation": "structured-run",
+          "availability": "available"
+        }
+      ],
+      "unavailable_operations": [],
+      "not_applicable_operations": [
+        "model-catalogue",
+        "interactive-session",
+        "provider-session-management"
+      ],
+      "unknown_posture": "preserve-namespaced",
+      "exact_absences": [
+        "configuration-plane methods",
+        "attachments",
+        "consumer tool exchange",
+        "permission exchange",
+        "question exchange",
+        "load/resume",
+        "restore/delete",
+        "billing evidence"
       ]
     },
     {
@@ -275,6 +442,27 @@
         "assistant provider identity",
         "tool progress",
         "readable reasoning"
+      ]
+    },
+    {
+      "id": "goose.acp",
+      "driver": "swallowtail.goose.acp",
+      "transport": "acp-v1-stdio",
+      "qualified": "1.46.0",
+      "prepared_profiles": [
+        {
+          "operation": "interactive-session",
+          "availability": "available"
+        }
+      ],
+      "unavailable_operations": [],
+      "not_applicable_operations": [],
+      "unknown_posture": "preserve-namespaced",
+      "exact_absences": [
+        "raw tool input",
+        "raw tool output",
+        "child topology",
+        "public load or resume"
       ]
     },
     {
@@ -370,6 +558,51 @@
       ]
     },
     {
+      "id": "kiro.acp",
+      "driver": "swallowtail.kiro.acp",
+      "transport": "acp-v1-stdio",
+      "qualified": "2.18.1",
+      "prepared_profiles": [
+        {
+          "operation": "interactive-session",
+          "availability": "available"
+        }
+      ],
+      "unavailable_operations": [],
+      "not_applicable_operations": [],
+      "unknown_posture": "preserve-namespaced",
+      "exact_absences": [
+        "raw tool input",
+        "raw tool output",
+        "child topology",
+        "public load or resume"
+      ]
+    },
+    {
+      "id": "mistral-vibe.headless",
+      "driver": "swallowtail.mistral-vibe.headless",
+      "transport": "mistral-vibe-streaming-ndjson-stdio",
+      "qualified": "2.24.2",
+      "prepared_profiles": [
+        {
+          "operation": "structured-run",
+          "availability": "available"
+        }
+      ],
+      "unavailable_operations": [],
+      "not_applicable_operations": [],
+      "unknown_posture": "preserve-namespaced",
+      "exact_absences": [
+        "interactive session continuity",
+        "model catalogue",
+        "consumer tool exchange",
+        "permission exchange",
+        "raw tool input",
+        "raw tool output",
+        "public load or resume"
+      ]
+    },
+    {
       "id": "muse-code.headless",
       "driver": "swallowtail.muse-code.headless",
       "transport": "muse-code-event-jsonl-stdio",
@@ -388,87 +621,6 @@
         "task-list snapshots",
         "subagent topology",
         "usage"
-      ]
-    },
-    {
-      "id": "command-code.headless",
-      "driver": "swallowtail.command-code.headless",
-      "transport": "command-code-agent-event-ndjson-stdio",
-      "qualified": "1.15.1",
-      "prepared_profiles": [
-        {
-          "operation": "structured-run",
-          "availability": "available"
-        },
-        {
-          "operation": "interactive-session",
-          "availability": "available"
-        }
-      ],
-      "unavailable_operations": [],
-      "not_applicable_operations": [],
-      "unknown_posture": "preserve-namespaced",
-      "exact_absences": [
-        "public load/resume",
-        "catalogue",
-        "import",
-        "provider export",
-        "tool body ingestion",
-        "run_end.result.nextState"
-      ]
-    },
-    {
-      "id": "deepseek-harness.jsonrpc",
-      "driver": "swallowtail.deepseek-harness.jsonrpc",
-      "transport": "deepseek-harness-jsonrpc-ndjson-stdio",
-      "qualified": "0.1.0rc6",
-      "prepared_profiles": [
-        {
-          "operation": "structured-run",
-          "availability": "available"
-        }
-      ],
-      "unavailable_operations": [],
-      "not_applicable_operations": [],
-      "unknown_posture": "preserve-namespaced",
-      "exact_absences": [
-        "interactive session continuity",
-        "model catalogue",
-        "consumer tool exchange",
-        "permission exchange",
-        "native JSON-RPC cancel",
-        "provider session management",
-        "subagent topology",
-        "reasoning content"
-      ]
-    },
-    {
-      "id": "deepseek-harness.local-server",
-      "driver": "swallowtail.deepseek-harness.local-server",
-      "transport": "deepseek-harness-local-server-http-ws-v1",
-      "qualified": "0.1.0-rc.6",
-      "prepared_profiles": [
-        {
-          "operation": "structured-run",
-          "availability": "available"
-        }
-      ],
-      "unavailable_operations": [],
-      "not_applicable_operations": [
-        "model-catalogue",
-        "interactive-session",
-        "provider-session-management"
-      ],
-      "unknown_posture": "preserve-namespaced",
-      "exact_absences": [
-        "configuration-plane methods",
-        "attachments",
-        "consumer tool exchange",
-        "permission exchange",
-        "question exchange",
-        "load/resume",
-        "restore/delete",
-        "billing evidence"
       ]
     },
     {
@@ -548,6 +700,30 @@
         "bash execution updates",
         "summarization retry activity",
         "durable non-tool provider identity"
+      ]
+    },
+    {
+      "id": "qoder.headless",
+      "driver": "swallowtail.qoder.headless",
+      "transport": "qoder-stream-json-stdio",
+      "qualified": "1.1.25",
+      "prepared_profiles": [
+        {
+          "operation": "structured-run",
+          "availability": "available"
+        }
+      ],
+      "unavailable_operations": [],
+      "not_applicable_operations": [],
+      "unknown_posture": "fail-closed",
+      "exact_absences": [
+        "interactive session continuity",
+        "model catalogue",
+        "consumer tool exchange",
+        "permission exchange",
+        "readable reasoning",
+        "provider tool lifecycle",
+        "public load or resume"
       ]
     },
     {

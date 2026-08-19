@@ -1,0 +1,20 @@
+{
+  "package": "swallowtail-adapter-mistral-vibe",
+  "route": "mistral-vibe.headless",
+  "decoder_corpus": "mistral-vibe-headless-2.24.2",
+  "create_package_in_card": 275,
+  "card_275_must_cover": [
+    "identity.json",
+    "protocol.json",
+    "command.json",
+    "success.jsonl",
+    "json-dump.json",
+    "abort.jsonl",
+    "stderr-error.txt",
+    "limit-stderr.txt",
+    "activity.jsonl",
+    "negative-cases.json"
+  ],
+  "first_driver_op": "one bounded vibe --prompt --output streaming --max-turns --trust --agent plan run",
+  "no_production_claim_in_card": 274
+}

@@ -1,0 +1,53 @@
+{
+  "executable": "qodercli",
+  "dispatcher_alias": "qoder",
+  "selected_flags": [
+    "--print",
+    "--output-format",
+    "stream-json",
+    "--permission-mode",
+    "dont_ask",
+    "--max-turns",
+    "--no-session-persistence"
+  ],
+  "cwd_flag": "--cwd",
+  "cwd_short_flag": "-w",
+  "print_short_flag": "-p",
+  "prompt": "argv-operand",
+  "example_argv": [
+    "qodercli",
+    "--print",
+    "--output-format",
+    "stream-json",
+    "--permission-mode",
+    "dont_ask",
+    "--max-turns",
+    "1",
+    "--no-session-persistence",
+    "--cwd",
+    "opaque-working-resource",
+    "opaque fixture prompt"
+  ],
+  "forbidden_argv": [
+    "--acp",
+    "--yolo",
+    "--dangerously-skip-permissions",
+    "--continue",
+    "--resume",
+    "--session-id",
+    "--teleport",
+    "--remote",
+    "--worktree",
+    "--input-format",
+    "stream-json",
+    "login",
+    "ide"
+  ],
+  "yolo_forbidden": ["--yolo", "--dangerously-skip-permissions"],
+  "omit_permission_mode_forbidden": true,
+  "omit_max_turns_forbidden": true,
+  "omit_no_session_persistence_forbidden": true,
+  "stdin": "not-the-prompt-channel",
+  "stdout": "stream-json-ndjson",
+  "stderr": "diagnostics-not-selected-decoder"
+}

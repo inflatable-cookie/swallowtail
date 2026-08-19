@@ -1,13 +1,13 @@
 # 089 GitHub Copilot CLI ACP Route
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-18
 Wave: Primary
 Depends on: g03.088; g03.097 intake cards 260-261; Research 143
 Research: 143
 Route id: `copilot-cli.acp`
-Planning state: cards 270-273 planned
+Planning state: cards 270-273 completed
 
 ## Purpose
 

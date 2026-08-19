@@ -1,0 +1,7 @@
+{
+  "schema_derived_not_live": true,
+  "kind": "StreamingDeltaEvent",
+  "id": "opaque-fixture-delta",
+  "source": "agent",
+  "content": "OpenHands"
+}

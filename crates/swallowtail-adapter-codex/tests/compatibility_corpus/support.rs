@@ -50,7 +50,7 @@ fn assert_exact_evidence(release: &Value) {
 
 fn assert_unverified_newer(corpus: &Value) {
     let release = &corpus["unverified_newer"];
-    assert_eq!(release["version"], "0.148.0");
+    assert_eq!(release["version"], "0.148.1");
     assert_eq!(
         release["execution"],
         "permitted-with-explicit-unverified-status"

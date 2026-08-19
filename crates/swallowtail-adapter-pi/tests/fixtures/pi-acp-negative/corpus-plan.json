@@ -1,0 +1,13 @@
+{
+  "package": "swallowtail-adapter-pi",
+  "route": "pi.acp",
+  "disposition": "negative",
+  "decoder_corpus": null,
+  "collapses_onto": "pi.rpc",
+  "card_283_must_cover": [],
+  "first_driver_op": "none",
+  "create_package_in_card": null,
+  "no_production_claim_in_card": 282,
+  "start_cards": [],
+  "supersede_cards": [283, 284, 285]
+}

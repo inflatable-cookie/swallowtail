@@ -1,0 +1,60 @@
+{
+  "axis": "goose.release",
+  "route": "goose.acp",
+  "observed_at": "2026-08-18",
+  "github_repository_canonical": "https://github.com/block/goose",
+  "github_repository_current": "aaif-goose/goose",
+  "host": {
+    "present": false
+  },
+  "official": {
+    "version": "1.46.0",
+    "source": "official-github-tag-sources",
+    "published_at": "2026-08-12T16:05:13Z",
+    "github_tag": "v1.46.0",
+    "github_tag_object": "98c11ce2ee7b9b302978aa64b1eab7d0895607c7",
+    "github_tag_object_type": "commit",
+    "github_commit": "98c11ce2ee7b9b302978aa64b1eab7d0895607c7",
+    "workspace_version": "1.46.0",
+    "acp_registry_id": "goose",
+    "acp_registry_version": "1.46.0",
+    "acp_registry_args": ["acp"],
+    "agent_client_protocol": "1.0",
+    "agent_client_protocol_schema": "1.1",
+    "platform_archive_not_extracted": {
+      "darwin-aarch64": {
+        "archive": "goose-aarch64-apple-darwin.tar.bz2",
+        "sha256": "de263fb06839de31345dff08aeba999ba165b023cd3cec7ec3bef20f6f4f7e73",
+        "extracted": false
+      }
+    }
+  },
+  "tagged_acp_sources": {
+    "crates/goose-cli/src/cli.rs": "b7f45c9204319fecd593a05584952e1c008b5e11879c6509c29785d7baede1f4",
+    "crates/goose/src/acp/mod.rs": "879f5fdb61b896072a13dd19b6a8408d6242c594e35b9d36c04aee3a2f5e95c7",
+    "crates/goose/src/acp/server.rs": "3eb611c4ae0f37a1d4affde82a4c29a5d56e9d70cb796d8cc7cc6082bc13b47f",
+    "crates/goose/src/acp/response_builder.rs": "b1a18f5ec51f49a2bc5bf45cbc86a1c2fcb2fdbfd1d5524cc4b243b5bbece571",
+    "crates/goose/src/acp/common.rs": "0c02366eef5bb590097312387d722a2aca4f8f373ae5eace678c6b24eafc276f",
+    "crates/goose/src/acp/server/new_session.rs": "10146d0e24a148f5d89bbdb3447f4720cff74b2fdb62d80b8febf2cc3e2a6dad",
+    "crates/goose/src/acp/server/prompts.rs": "2d8c4dce604944673669ae435b2f7592041998d4141d4651d5a0396ad996e750",
+    "crates/goose/src/acp/server/load_session.rs": "13e538ff9cde0314d7fc6b78b49c2325075363d4c01230b9b14e894068ab6997",
+    "crates/goose/src/acp/server/extensions.rs": "54b727253fa1774d5ba16a6e507fce0cb68042607a884080652944843f5f61af",
+    "documentation/docs/guides/acp-clients.md": "9db93def1b6920317463cf20949b0979c96520ce8b57cf557b44a727c41143bf"
+  },
+  "identity_decision": {
+    "shape": "new-route",
+    "entrypoint": ["goose", "acp"],
+    "flatten_onto_goose_serve": false,
+    "flatten_onto_with_builtin": false,
+    "flatten_onto_desktop_or_tui": false,
+    "flatten_onto_acp_providers": false,
+    "pass_with_builtin": false,
+    "enable_scheduler": false,
+    "run_goose_configure": false,
+    "map_session_load": false,
+    "provider_prompt_sent": false,
+    "live_acp_initialize": false,
+    "host_install_changed": false,
+    "platform_archive_extracted": false
+  }
+}

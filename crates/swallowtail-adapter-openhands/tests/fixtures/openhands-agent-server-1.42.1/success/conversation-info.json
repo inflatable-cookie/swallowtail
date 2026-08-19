@@ -1,0 +1,10 @@
+{
+  "schema_derived_not_live": true,
+  "note": "ConversationInfo also requires agent; fixtures omit native agent/llm fields as private.",
+  "id": "00000000-0000-4000-8000-000000000001",
+  "execution_status": "idle",
+  "workspace": {
+    "kind": "LocalWorkspace",
+    "working_dir": "opaque-working-resource"
+  }
+}

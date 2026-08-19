@@ -245,9 +245,10 @@ impl AppServerParser {
             .and_then(Value::as_object)
             .ok_or_else(malformed_stream)?;
         require(
-            params.get("scope").and_then(Value::as_str).is_some_and(|scope| {
-                ADMITTED_PREFERENCE_SCOPES.contains(&scope)
-            }),
+            params
+                .get("scope")
+                .and_then(Value::as_str)
+                .is_some_and(|scope| ADMITTED_PREFERENCE_SCOPES.contains(&scope)),
             "runtime-preferences scope is invalid",
         )?;
         let session_id = identifier(params.get("sessionId").and_then(Value::as_str))?;
@@ -1197,10 +1198,12 @@ mod tests {
                 }
             })))
             .expect("unscoped unknown events are content-free progress");
-        assert!(parsed.events.iter().any(|event| matches!(
-            event.kind(),
-            RuntimeEventKind::Progress
-        )));
+        assert!(
+            parsed
+                .events
+                .iter()
+                .any(|event| matches!(event.kind(), RuntimeEventKind::Progress))
+        );
     }
 
     #[test]
@@ -1218,12 +1221,16 @@ mod tests {
             parser.push(line).expect("handshake frames parse");
         }
         let parsed = parser
-            .push(&encode(&json!({"method":"v4/telemetry/event","params":{"kind":"<redacted>"}})))
+            .push(&encode(
+                &json!({"method":"v4/telemetry/event","params":{"kind":"<redacted>"}}),
+            ))
             .expect("non-session notifications are content-free progress");
-        assert!(parsed.events.iter().any(|event| matches!(
-            event.kind(),
-            RuntimeEventKind::Progress
-        )));
+        assert!(
+            parsed
+                .events
+                .iter()
+                .any(|event| matches!(event.kind(), RuntimeEventKind::Progress))
+        );
     }
 
     #[test]
@@ -1276,10 +1283,12 @@ mod tests {
                 }
             })))
             .expect("installed create result is admitted");
-        assert!(parsed
-            .writes
-            .iter()
-            .any(|write| write_contains(write, b"session/subscribe")));
+        assert!(
+            parsed
+                .writes
+                .iter()
+                .any(|write| write_contains(write, b"session/subscribe"))
+        );
     }
 
     #[test]
@@ -1303,14 +1312,18 @@ mod tests {
                 "params":{"sessionId":"fixture-session-0","scope":"runtime-materialization"}
             })))
             .expect("later preferences stay on the admitted session");
-        assert!(parsed
-            .events
-            .iter()
-            .any(|event| matches!(event.kind(), RuntimeEventKind::Progress)));
-        assert!(parsed.writes.iter().any(|write| write_contains(
-            write,
-            br#""nativeSearchEnhancementsEnabled":false"#
-        )));
+        assert!(
+            parsed
+                .events
+                .iter()
+                .any(|event| matches!(event.kind(), RuntimeEventKind::Progress))
+        );
+        assert!(
+            parsed
+                .writes
+                .iter()
+                .any(|write| write_contains(write, br#""nativeSearchEnhancementsEnabled":false"#))
+        );
     }
 
     #[test]
@@ -1334,13 +1347,17 @@ mod tests {
                 "params":{"sessionId":"fixture-session-0","scope":"user-execution"}
             })))
             .expect("user-execution preferences stay on the admitted session");
-        assert!(parsed
-            .events
-            .iter()
-            .any(|event| matches!(event.kind(), RuntimeEventKind::Progress)));
-        assert!(parsed
-            .writes
-            .iter()
-            .any(|write| write_contains(write, br#""memoryEnabled":false"#)));
+        assert!(
+            parsed
+                .events
+                .iter()
+                .any(|event| matches!(event.kind(), RuntimeEventKind::Progress))
+        );
+        assert!(
+            parsed
+                .writes
+                .iter()
+                .any(|write| write_contains(write, br#""memoryEnabled":false"#))
+        );
     }
 }

@@ -30,10 +30,7 @@ fn corpus_freezes_both_exact_release_and_build_identities() {
         releases[0]["build_revision"],
         CURSOR_AGENT_BASELINE_BUILD_REVISION
     );
-    assert_eq!(
-        releases[1]["release_date"],
-        "2026-07-23"
-    );
+    assert_eq!(releases[1]["release_date"], "2026-07-23");
     assert_eq!(releases[1]["build_revision"], "e383d2b");
     for release in releases {
         for field in [

@@ -1,6 +1,6 @@
 # 280 Qoder Headless Prepared Facade
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-18
 Milestone: `../091-qoder-headless-route.md`
@@ -20,10 +20,10 @@ consumer workflow policy, generic routing, automatic model/provider selection, p
 
 ## Acceptance Criteria
 
-- [ ] Preparation fails closed on missing or mismatched authority.
-- [ ] Preflight names exact route and version axis.
-- [ ] Prepared operation drains bounded events to terminal cleanup truth.
-- [ ] Local and remote-authoritative host behavior is explicit where supported.
+- [x] Preparation fails closed on missing or mismatched authority.
+- [x] Preflight names exact route and version axis.
+- [x] Prepared operation drains bounded events to terminal cleanup truth.
+- [x] Local and remote-authoritative host behavior is explicit where supported.
 
 ## Validation
 
@@ -39,4 +39,7 @@ Continue to card 281 after prepared-facade tests pass.
 
 ## Evidence
 
-Cards 278-279; Contracts 005-006, 009-011, 023, 029, 032-033, 036-037, 039-041, 043-045, 051-052
+Cards 278-279; `docs/logs/2026-08-19-qoder-headless-prepared-facade.md`.
+`effigy validate:focused swallowtail-adapter-qoder` passed (28 tests,
+Clippy warnings denied). `effigy package:verify-affected swallowtail-adapter-qoder`
+passed. No live install or prompt. Production claim stays card 281.

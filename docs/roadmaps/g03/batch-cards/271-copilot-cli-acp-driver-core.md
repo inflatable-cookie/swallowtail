@@ -1,6 +1,6 @@
 # 271 GitHub Copilot CLI ACP Driver Core
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-18
 Milestone: `../089-copilot-cli-acp-route.md`
@@ -20,10 +20,10 @@ interactive continuation, catalogue/import, session lifecycle, subagents, callba
 
 ## Acceptance Criteria
 
-- [ ] Driver rejects identity/protocol drift before provider work.
-- [ ] Fixtures cover success, failure, malformed/unknown input, bounds, cancellation/deadline, and cleanup.
-- [ ] Provider payloads do not leak into stable diagnostics.
-- [ ] Focused package tests pass without credentials.
+- [x] Driver rejects identity/protocol drift before provider work.
+- [x] Fixtures cover success, failure, malformed/unknown input, bounds, cancellation/deadline, and cleanup.
+- [x] Provider payloads do not leak into stable diagnostics.
+- [x] Focused package tests pass without credentials.
 
 ## Validation
 

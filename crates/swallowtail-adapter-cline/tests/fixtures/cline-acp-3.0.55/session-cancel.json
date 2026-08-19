@@ -1,0 +1,9 @@
+{
+  "notification": {
+    "jsonrpc": "2.0",
+    "method": "session/cancel",
+    "params": { "sessionId": "opaque-fixture-session" }
+  },
+  "unknown_session": "no-op",
+  "source": "apps/cli/src/acp/acpAgent.ts cancel at cli-v3.0.55"
+}

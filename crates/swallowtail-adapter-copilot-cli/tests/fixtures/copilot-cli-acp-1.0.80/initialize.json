@@ -1,0 +1,22 @@
+{
+  "request": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "initialize",
+    "params": {
+      "protocolVersion": 1,
+      "clientCapabilities": {
+        "fs": { "readTextFile": false, "writeTextFile": false },
+        "terminal": false
+      },
+      "clientInfo": { "name": "swallowtail", "version": "fixture" }
+    }
+  },
+  "response_recovered_from_public_source": false,
+  "official_example": {
+    "protocolVersion": "ACP SDK PROTOCOL_VERSION",
+    "clientCapabilities": {}
+  },
+  "source": "https://docs.github.com/en/copilot/reference/copilot-cli-reference/acp-server example initialize at Copilot CLI 1.0.80 identity",
+  "live_acp_initialize": false
+}

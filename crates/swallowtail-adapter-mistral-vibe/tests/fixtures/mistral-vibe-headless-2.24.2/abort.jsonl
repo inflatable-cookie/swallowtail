@@ -1,0 +1,2 @@
+{"id":"opaque-fixture-user","sessionId":"opaque-fixture-session","turnId":"opaque-fixture-turn","createdAt":0,"updatedAt":0,"generationStatus":"completed","type":"message","role":"user","content":[{"type":"text","text":"opaque fixture prompt"}]}
+{"id":"opaque-fixture-assistant","sessionId":"opaque-fixture-session","type":"message"

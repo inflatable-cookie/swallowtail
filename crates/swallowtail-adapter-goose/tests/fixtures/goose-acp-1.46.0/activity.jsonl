@@ -1,0 +1,16 @@
+{"case":"assistant-message","update":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"Goose display text."}},"expected":{"semantics":"content_delta","portable":"assistant_message"}}
+{"case":"thought-display","update":{"sessionUpdate":"agent_thought_chunk","content":{"type":"text","text":"Goose readable thought update."}},"expected":{"semantics":"content_delta","portable":"reasoning_summary_candidate","disclosure":"provider_display_content"}}
+{"case":"user-echo","update":{"sessionUpdate":"user_message_chunk","content":{"type":"text","text":"fixture prompt"}},"expected":{"semantics":"content_delta","portable":"user_message_echo","agent_activity":false}}
+{"case":"tool-create","update":{"sessionUpdate":"tool_call","toolCallId":"tool-goose","title":"fixture tool","kind":"other","status":"pending","rawInput":{"private":"excluded"}},"expected":{"semantics":"create","portable":"provider_tool","rawInput":"excluded"}}
+{"case":"tool-complete","update":{"sessionUpdate":"tool_call_update","toolCallId":"tool-goose","status":"completed","rawOutput":"excluded"},"expected":{"semantics":"terminal_update","portable":"provider_tool","rawOutput":"excluded"}}
+{"case":"tool-failed","update":{"sessionUpdate":"tool_call_update","toolCallId":"tool-goose","status":"failed"},"expected":{"semantics":"terminal_update","portable":"provider_tool"}}
+{"case":"config","update":{"sessionUpdate":"config_option_update","configOptions":[]},"expected":{"portable":"session_metadata","agent_activity":false}}
+{"case":"session-info","update":{"sessionUpdate":"session_info_update"},"expected":{"portable":"session_metadata","agent_activity":false}}
+{"case":"usage-update-unclaimed","update":{"sessionUpdate":"usage_update","used":1,"size":1},"expected":{"portable":"unmapped_usage","usage_evidence":false}}
+{"case":"permission","method":"session/request_permission","params":{"sessionId":"opaque-fixture-session","toolCall":{"toolCallId":"tool-goose","status":"pending"},"options":[{"optionId":"allow_always","kind":"allow_always"},{"optionId":"allow_once","kind":"allow_once"},{"optionId":"reject_once","kind":"reject_once"},{"optionId":"reject_always","kind":"reject_always"}]},"expected":{"semantics":"separate_callback_exchange","allow_always":"unselected"}}
+{"case":"completion","result":{"stopReason":"end_turn"},"expected":{"semantics":"separate_terminal_truth"}}
+{"case":"cancelled","result":{"stopReason":"cancelled"},"expected":{"semantics":"separate_terminal_truth"}}
+{"case":"max-tokens","result":{"stopReason":"max_tokens"},"expected":{"semantics":"separate_terminal_truth"}}
+{"case":"unknown-safe","update":{"sessionUpdate":"goose_future_activity"},"expected":{"semantics":"bounded_namespaced_unknown","raw_payload":"excluded"}}
+{"case":"custom-goose-notification","method":"_goose/unstable/session/update","expected":{"semantics":"unmapped","raw_payload":"excluded"}}
+{"case":"malformed-tool","update":{"sessionUpdate":"tool_call_update","status":"completed"},"expected":{"semantics":"fail_closed","reason":"tool_identity_missing"}}

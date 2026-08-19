@@ -1,0 +1,54 @@
+{
+  "axis": "kiro-cli.release",
+  "route": "kiro.acp",
+  "observed_at": "2026-08-19",
+  "host": {
+    "present": false
+  },
+  "official": {
+    "version": "2.18.1",
+    "source": "official-stable-installer-manifest",
+    "changelog_headline": "2.18.0",
+    "changelog_date": "2026-08-12",
+    "install_script_url": "https://cli.kiro.dev/install",
+    "install_script_sha256": "91a21bfa05cd7b58601cb83e0f1f187a9d0084726e5b824d4a4cf60306250908",
+    "manifest_url": "https://prod.download.cli.kiro.dev/stable/latest/manifest.json",
+    "manifest_sha256": "a79ea0db26bc43848ff83e80a1873fd32649a485c16cc6df9b8fd15f8b884e5f",
+    "acp_docs_url": "https://kiro.dev/docs/cli/acp/",
+    "acp_docs_updated": "2026-08-18",
+    "acp_docs_html_sha256": "7ff8826ab0f7bbb1cbca636d3fd27ba4c640f6604298ec47dbe8242e6e6135c5",
+    "binary": "kiro-cli",
+    "macos_cli_path": "Contents/MacOS/kiro-cli",
+    "acp_registry_id": null,
+    "platform_archive_not_extracted": {
+      "darwin-universal-dmg": {
+        "download": "2.18.1/Kiro CLI.dmg",
+        "sha256": "07893e9477c8d296ebc653192648772fd305718da4bf3a97583718e122c47061",
+        "extracted": false
+      },
+      "linux-aarch64-tar-xz": {
+        "download": "2.18.1/kirocli-aarch64-linux.tar.xz",
+        "sha256": "c1f860b63f6656501dbcf8995e2687c3e31142b95755c76ce99f8d18000017df",
+        "extracted": false
+      }
+    }
+  },
+  "identity_decision": {
+    "shape": "new-route",
+    "entrypoint": ["kiro-cli", "acp"],
+    "flatten_onto_kiro_headless": false,
+    "flatten_onto_cloud": false,
+    "flatten_onto_tui_chat_binary": false,
+    "pass_agent_flag": false,
+    "wrap_npm_or_pypi_kiro_cli": false,
+    "run_kiro_login": false,
+    "bind_kiro_api_key_lease": false,
+    "map_session_load": false,
+    "map_kiro_dev_extensions": false,
+    "send_prompt_field_content": false,
+    "provider_prompt_sent": false,
+    "live_acp_initialize": false,
+    "host_install_changed": false,
+    "platform_archive_extracted": false
+  }
+}

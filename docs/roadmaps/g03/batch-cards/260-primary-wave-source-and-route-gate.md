@@ -1,6 +1,6 @@
 # 260 Primary Wave Source And Route Gate
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-18
 Milestone: `../097-harness-route-expansion-intake-and-watchlist.md`
@@ -20,10 +20,10 @@ driver code, new packages, production descriptors, provider prompts, installatio
 
 ## Acceptance Criteria
 
-- [ ] Every candidate has a source-backed route disposition.
-- [ ] No candidate is promoted solely from ACP registry membership.
-- [ ] Proposed package and route identities are explicit but provisional.
-- [ ] Cards 261-285 have candidate-specific dependencies and stop conditions.
+- [x] Every candidate has a source-backed route disposition.
+- [x] No candidate is promoted solely from ACP registry membership.
+- [x] Proposed package and route identities are explicit but provisional.
+- [x] Cards 261-285 have candidate-specific dependencies and stop conditions.
 
 ## Validation
 

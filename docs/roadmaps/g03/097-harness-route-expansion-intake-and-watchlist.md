@@ -1,10 +1,10 @@
 # 097 Harness Route Expansion Intake And Watchlist
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-18
 Depends on: Research 143; g03.085
-Planning state: cards 260-261, 286, and 303 planned
+Planning state: cards 260-261, 286, and 303 completed
 
 ## Purpose
 
@@ -23,7 +23,7 @@ secondary/watchlist disposition.
 - [g03.091 Qoder Headless Route](091-qoder-headless-route.md)
 - [g03.092 Pi ACP Route](092-pi-acp-route.md)
 - [g03.093 OpenHands Agent Server Route](093-openhands-agent-server-route.md)
-- [g03.094 Kiro Headless Route](094-kiro-headless-route.md)
+- [g03.094 Kiro ACP Route](094-kiro-headless-route.md)
 - [g03.095 Aider Headless Route](095-aider-headless-route.md)
 - [g03.096 Deep Agents ACP Route](096-deep-agents-acp-route.md)
 
@@ -55,14 +55,16 @@ recomputed. Card 303 may close the watchlist independently.
 
 ## Acceptance
 
-- [ ] every route ID in the suite has exactly one route-specific roadmap
-- [ ] primary and secondary ordering is explicit
-- [ ] every candidate has an evidence-backed stop condition
-- [ ] watchlist entries remain outside the production route matrix
-- [ ] route-specific roadmaps own their own implementation and acceptance cards
+- [x] every route ID in the suite has exactly one route-specific roadmap
+- [x] primary and secondary ordering is explicit
+- [x] every candidate has an evidence-backed stop condition
+- [x] watchlist entries remain outside the production route matrix
+- [x] route-specific roadmaps own their own implementation and acceptance cards
 
 ## Sources
 
 - Research 143: `docs/research/143-new-harness-route-expansion-selection.md`
+- Research 153: `docs/research/153-secondary-wave-source-and-disposition.md`
+- Research 158: `docs/research/158-watchlist-and-registry-only-disposition.md`
 - Current route matrix: `docs/guides/provider-route-matrix.md`
 - ACP registry: https://cdn.agentclientprotocol.com/registry/v1/latest/registry.json

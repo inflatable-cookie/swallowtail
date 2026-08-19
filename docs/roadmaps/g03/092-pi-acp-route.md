@@ -1,13 +1,13 @@
 # 092 Pi ACP Route
 
-Status: planned
+Status: completed negatively
 Owner: Tom
 Created: 2026-08-18
 Wave: Primary
 Depends on: g03.091; g03.097 intake cards 260-261; Research 143
-Research: 143
+Research: 143; 152
 Route id: `pi.acp`
-Planning state: cards 282-285 planned
+Planning state: card 282 completed; cards 283-285 superseded
 
 ## Purpose
 
@@ -27,22 +27,19 @@ provider router or import consumer workflow policy.
 
 ## Work Breakdown
 
-- [282](batch-cards/282-pi-acp-identity-corpus.md)
-- [283](batch-cards/283-pi-acp-driver-core.md)
-- [284](batch-cards/284-pi-acp-prepared-facade.md)
-- [285](batch-cards/285-pi-acp-package-and-route-acceptance.md)
-
-The first identity card freezes the exact executable/protocol evidence before
-driver work. The final card may close the route as accepted, deferred, or
-negative evidence; it is not required to create a package if the route does not
-survive the evidence gate.
+- [x] [282](batch-cards/282-pi-acp-identity-corpus.md): freeze identity; close
+      as negative evidence
+- [x] [283](batch-cards/283-pi-acp-driver-core.md): superseded; no native ACP
+      wire
+- [x] [284](batch-cards/284-pi-acp-prepared-facade.md): superseded
+- [x] [285](batch-cards/285-pi-acp-package-and-route-acceptance.md): superseded
 
 ## Required Proof
 
-- [ ] exact executable, server, or protocol identity and version axis
+- [x] exact executable, server, or protocol identity and version axis
 - [ ] deterministic corpus for success, failure, malformed/unknown input,
       bounds, cancellation/deadline, activity, and joined cleanup
-- [ ] explicit authentication, working-resource, isolation, and remote/local
+- [x] explicit authentication, working-resource, isolation, and remote/local
       authority posture
 - [ ] bounded event and terminal-outcome mapping without native-field leakage
 - [ ] prepared facade with immutable preflight evidence and fail-closed
@@ -51,6 +48,15 @@ survive the evidence gate.
       index, and README truth if the route is accepted
 - [ ] separately gated live evidence that cannot silently widen deterministic
       claims
+
+Identity card 282 closed the candidate as negative evidence: official Pi
+has no native ACP wire, and registry `pi-acp` collapses onto `pi.rpc`.
+Driver, facade, acceptance, and live proof stay unmet on purpose.
+
+## Lane Runway
+
+Complete negatively. Keep `swallowtail-adapter-pi` and `pi.rpc`. Do not wrap
+community `pi-acp`. Continue to g03.097 card 286.
 
 ## Boundaries
 
@@ -80,5 +86,6 @@ truth diverges. Record deferred or negative evidence instead of widening scope.
 ## Sources
 
 - Research 143: `docs/research/143-new-harness-route-expansion-selection.md`
-- [Pi repository](https://github.com/badlogic/pi-mono)
+- Research 152: `docs/research/152-pi-acp-identity-negative.md`
+- [Official Pi repository](https://github.com/earendil-works/pi)
 - [ACP latest registry](https://cdn.agentclientprotocol.com/registry/v1/latest/registry.json)

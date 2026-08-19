@@ -1,0 +1,7 @@
+{"schema_derived_not_live":true,"kind":"ConversationStateUpdateEvent","id":"opaque-fixture-state-idle","source":"environment","key":"execution_status","value":"idle"}
+{"schema_derived_not_live":true,"kind":"MessageEvent","id":"opaque-fixture-user","source":"user","llm_message":{"role":"user","content":[{"type":"text","text":"opaque fixture prompt"}]}}
+{"schema_derived_not_live":true,"kind":"ConversationStateUpdateEvent","id":"opaque-fixture-state-running","source":"environment","key":"execution_status","value":"running"}
+{"schema_derived_not_live":true,"kind":"StreamingDeltaEvent","id":"opaque-fixture-delta","source":"agent","content":"OpenHands display text."}
+{"schema_derived_not_live":true,"kind":"MessageEvent","id":"opaque-fixture-agent","source":"agent","llm_message":{"role":"assistant","content":[{"type":"text","text":"OpenHands display text."}]}}
+{"schema_derived_not_live":true,"kind":"FinishAction","message":"OpenHands display text."}
+{"schema_derived_not_live":true,"kind":"ConversationStateUpdateEvent","id":"opaque-fixture-state-finished","source":"environment","key":"execution_status","value":"finished"}

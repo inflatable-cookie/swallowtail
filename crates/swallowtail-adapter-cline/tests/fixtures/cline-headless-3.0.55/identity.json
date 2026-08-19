@@ -1,0 +1,60 @@
+{
+  "axis": "cline.package",
+  "route": "cline.headless",
+  "observed_at": "2026-08-18",
+  "npm_package": "cline",
+  "npm_latest": true,
+  "host": {
+    "present": false
+  },
+  "official": {
+    "version": "3.0.55",
+    "source": "official-npm-wrapper-tarball",
+    "published_at": "2026-08-14T07:55:21.353Z",
+    "npm_integrity": "sha512-3JQ5vPl8/BIyTShTpn0VDX59lbzFhGxRwYqZmAVLOPcX83ETaHbgH2fc9iJYv1pB2ChIpXQEXmFHowgz8F1GgQ==",
+    "npm_shasum": "88172d7b7ace564811185858da42b8f62a56751b",
+    "tarball_sha256": "7eec2ad80d8dfa27b9baaa22c7340ebe861850f6057b9e2e80a5dd9d2ef2f5ef",
+    "wrapper_file_count": 6,
+    "wrapper_unpacked_size": 46371,
+    "wrapper_bin_sha256": "71d1b27aeeebdaa0b91c4babddd1f635eb7f5783257c2b3324a2cb22924cf60f",
+    "github_tag": "cli-v3.0.55",
+    "github_annotated_tag": "c238103e631d492b97bf9e63b060390f1bb8a8a6",
+    "github_commit": "ad442cbb6a81d21773ceabc1398ea5eb58170718",
+    "platform_optional": {
+      "@cline/cli-darwin-arm64": {
+        "version": "3.0.55",
+        "npm_integrity": "sha512-9qSF6jH5hOYsWC8s3YgraNcJkOBZ8Aa+ia4uZ0iuPY8pOEzcWZEhtOITtfGzitk1aPJxNKegnTASOkQunJnHJw==",
+        "extracted": false
+      }
+    }
+  },
+  "tagged_headless_sources": {
+    "apps/cli/src/main.ts": "1b7a0a5b680aa6f3f736826c449f64e9a62dbe7b57e0b55cbc74379d45f37274",
+    "apps/cli/src/runtime/run-agent.ts": "34d6dfc8e7324ad91f6e6a9daa032d11aeed36fbd9e1e790af3d9f3c828de5e6",
+    "apps/cli/src/runtime/session-events.ts": "547c3d9a79a80790681bc6c1d414183c7ca6debe3fdb67ea0d3ed6d7b98088ba",
+    "apps/cli/src/runtime/tool-policies.ts": "a98391c0feeacbce3dd9425568c296c4ba9538091913b1b0477e32e3712f54fb",
+    "apps/cli/src/utils/output.ts": "f1b8131f50d69dcacc773d7e968c363c2db3ab508048691a67916c073e257a5e",
+    "apps/cli/src/utils/events.ts": "17c46995ebe368936e5907a9548999ad9445171f139ade7e4ddbbbe4afcb1757",
+    "apps/cli/src/utils/startup-settings.ts": "ca5868e8d82202d9f57e215ca1f3b857c968bc4e361761a4321131780993fcf7",
+    "apps/cli/src/utils/helpers.ts": "61330c996391129868de943cd04d093532c4e4bee865f4b0b44aca521666488e"
+  },
+  "identity_decision": {
+    "shape": "new-route",
+    "entrypoint": ["cline", "--json", "--auto-approve", "false"],
+    "prompt_operand_required": true,
+    "stdin_prompt_unselected": true,
+    "flatten_onto_acp": false,
+    "flatten_onto_tui_hub_or_id_resume": false,
+    "flatten_onto_docs_ask_say_schema": false,
+    "cli_auto_approve_default": true,
+    "pass_auto_approve_true": false,
+    "pass_auto_approve_false": true,
+    "run_oauth_login": false,
+    "map_id_resume": false,
+    "provider_prompt_sent": false,
+    "live_json_run": false,
+    "host_install_changed": false,
+    "platform_binary_extracted": false,
+    "claim_change_in_card": false
+  }
+}

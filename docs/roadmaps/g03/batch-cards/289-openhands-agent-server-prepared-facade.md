@@ -1,6 +1,6 @@
 # 289 OpenHands Agent Server Prepared Facade
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-18
 Milestone: `../093-openhands-agent-server-route.md`
@@ -20,10 +20,10 @@ consumer product workflows, automatic route selection, generic provider options,
 
 ## Acceptance Criteria
 
-- [ ] Preparation fails closed on missing or mismatched authority.
-- [ ] Preflight records route, topology, version axis, and cleanup posture.
-- [ ] Operation reaches terminal truth with bounded event delivery.
-- [ ] Host identity and remote attachment rules are explicit where relevant.
+- [x] Preparation fails closed on missing or mismatched authority.
+- [x] Preflight records route, topology, version axis, and cleanup posture.
+- [x] Operation reaches terminal truth with bounded event delivery.
+- [x] Host identity and remote attachment rules are explicit where relevant.
 
 ## Validation
 
@@ -39,4 +39,7 @@ Continue to card 290 after prepared-facade tests pass.
 
 ## Evidence
 
-Cards 287-288; Contracts 005-006, 009-011, 017, 023, 029, 032-033, 036-037, 039-045, 051-052
+Cards 287-288; `docs/logs/2026-08-19-openhands-agent-server-prepared-facade.md`.
+`effigy validate:focused swallowtail-adapter-openhands` passed (31 tests,
+Clippy warnings denied). `effigy package:verify-affected swallowtail-adapter-openhands`
+passed. No live install or prompt. Production claim stays card 290.

@@ -1,0 +1,37 @@
+{
+  "interpreter": "host-approved-python-gte-3.12",
+  "module": "openhands.agent_server",
+  "console_script_alias": "agent-server",
+  "host_python3_on_this_machine": "3.9.6-cannot-run",
+  "selected_flags": ["--host", "127.0.0.1", "--port"],
+  "example_argv": [
+    "python",
+    "-m",
+    "openhands.agent_server",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "opaque-loopback-port"
+  ],
+  "require_explicit_loopback_host": true,
+  "omit_host_forbidden_when_session_key_set": true,
+  "default_port_if_omitted": 8000,
+  "swallowtail_uses_host_approved_port": true,
+  "forbidden_argv": [
+    "0.0.0.0",
+    "::",
+    "[::]",
+    "--cors-origins",
+    "subscription_login"
+  ],
+  "forbidden_env_inherit": [
+    "SESSION_API_KEY",
+    "OH_SESSION_API_KEYS_0",
+    "OH_SECRET_KEY",
+    "LLM_API_KEY"
+  ],
+  "stdin": "not-the-control-channel",
+  "stdout": "startup-banner-not-selected-decoder",
+  "stderr": "diagnostics-not-selected-decoder",
+  "control_channel": "loopback-http-plus-websocket"
+}

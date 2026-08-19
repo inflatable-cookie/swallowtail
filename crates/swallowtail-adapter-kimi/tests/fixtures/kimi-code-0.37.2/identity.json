@@ -1,0 +1,72 @@
+{
+  "axis": "kimi-code.executable",
+  "observed_at": "2026-08-19",
+  "npm_package": "@moonshot-ai/kimi-code",
+  "npm_latest": true,
+  "not_python_kimi_cli": true,
+  "host": {
+    "version": "0.34.0",
+    "source": "installed-provider-artifact",
+    "artifact_kind": "mach-o",
+    "executable_sha256": "9f4337e10da47843f6b550474012a53ba8b30dd665f83b176a5cd479c5f7e859",
+    "executable_size": 176894272,
+    "github_commit": "f0614c53e59f7e1e257412063b059b9eb82764cf",
+    "signer": "Beijing Moonshot Technology Co., Ltd",
+    "team_id": "2J9472RW75"
+  },
+  "official": {
+    "version": "0.37.2",
+    "source": "official-github-darwin-arm64-archive",
+    "published_at": "2026-08-18T17:40:35.134Z",
+    "github_published_at": "2026-08-18T17:40:37Z",
+    "npm_integrity": "sha512-TAteYb84mV44MEzCaAlfz5f3TiN2yMHuwj9Kd0ePEIMBUqgjlqV1w7PvMT9TN0t87LYfv7BhIYz+ZCHDOM5aJw==",
+    "npm_shasum": "87aca1f03d31102c5d6bebe4e3f5dff6d90951f2",
+    "github_annotated_tag": "d81accc5aeef55c1c5b395565af560f3a9d17ac7",
+    "github_commit": "c41fadf0f78b35ecaf3d613ca26580a9a093de80",
+    "github_tree": "8bf72746a5e3947a694f0eb6f3cf3eeb7436775b",
+    "darwin_arm64_zip_sha256": "d5256d7dc5f43bda1cddbdccd810d247becbc4884d6c971e465044e3a6999c7a",
+    "extracted_executable_sha256": "47180f84b94278ffd1903ead3087f6a7065d1768ce8ce9fdba0a3a6347418b67",
+    "extracted_executable_size": 179189440,
+    "signer": "Beijing Moonshot Technology Co., Ltd",
+    "team_id": "2J9472RW75"
+  },
+  "research_159_host": "0.34.0",
+  "research_159_npm_latest": "0.37.2",
+  "published_stables_from_previous_ceiling": [
+    "0.37.0",
+    "0.37.1",
+    "0.37.2"
+  ],
+  "unpublished_0_37_3": true,
+  "unpublished_0_36_2": true,
+  "frozen_corpus_ceiling": "0.36.1",
+  "claim_at_observation": {
+    "baseline_acp": "0.28.1",
+    "baseline_headless": "0.29.0",
+    "baseline_local_server": "0.28.1",
+    "latest_qualified": "0.36.1",
+    "posture": "allow_unverified",
+    "classification_of_0_34_0": "qualified_maintained",
+    "classification_of_0_37_2": "unverified_newer"
+  },
+  "identity_decision": {
+    "shape": "compatible-extension",
+    "acp_reuse_behavior": "kimi.acp.reasoning.declared-effort-v2",
+    "headless_reuse_behavior": "kimi.headless.stream-json.v1",
+    "local_server_keep_heartbeat_ping": "0.35.0..=0.37.2",
+    "raise_latest_qualified_to": "0.37.2",
+    "qualify_intermediates": ["0.37.0", "0.37.1"],
+    "keep_baseline_acp": "0.28.1",
+    "keep_baseline_headless": "0.29.0",
+    "keep_baseline_local_server": "0.28.1",
+    "new_public_operation": false,
+    "map_watch_fs_runtime_id": false,
+    "map_acp_login_flag": false,
+    "map_terminal_auth_meta": false,
+    "mix_python_kimi_cli_axis": false,
+    "flatten_acp_onto_local_server": false,
+    "provider_prompt_sent": false,
+    "local_server_started": false,
+    "host_install_changed": false
+  }
+}

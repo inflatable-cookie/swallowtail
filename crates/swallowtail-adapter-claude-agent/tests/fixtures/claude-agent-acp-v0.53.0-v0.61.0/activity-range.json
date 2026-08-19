@@ -60,7 +60,7 @@
       "revision": "host-steering-option-and-form-marker-display"
     },
     {
-      "range": "0.66.0..=0.69.0",
+      "range": "0.66.0..=0.70.0",
       "introduced_by": "0.66.0",
       "tag_commit": "59a7e9367b3931a50178de4783cf6074b20060cd",
       "acp_sdk": "1.3.0",
@@ -103,6 +103,15 @@
       "classification": "qualified",
       "profile": "0.69.0-guarantee",
       "activity_delta": "initialize-meta-extensions-unmapped"
+    },
+    {
+      "version": "0.70.0",
+      "published_at": "2026-08-18T13:19:04.016Z",
+      "tag_commit": "d0aafb1ca26427285ffaeac8d8a4452fff28e9c3",
+      "source_sha256": "f0cbbe408bb758cc4bacdae9a244bcac6efbdb6413f680195d017648abc6d816",
+      "classification": "qualified",
+      "profile": "0.70.0-guarantee",
+      "activity_delta": "providers-api-unmapped"
     }
   ],
   "emitted_updates": [

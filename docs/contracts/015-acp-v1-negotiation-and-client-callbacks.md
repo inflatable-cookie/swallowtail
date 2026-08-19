@@ -250,7 +250,7 @@ advertises `clientCapabilities.elicitation.form = {}` and handles
 `elicitation/create`. This grants no URL, browser, credential, MCP,
 provider-tool, model-switch, or persistent configuration authority.
 
-Claude Agent ACP `0.53.0..=0.69.0`, excluding `0.58.0`, qualifies one common
+Claude Agent ACP `0.53.0..=0.70.0`, excluding `0.58.0`, qualifies one common
 typed subset. Stable newer wrappers inherit it only as unverified behavior
 under Contract 029. The driver accepts only choice forms that map losslessly
 to Contract 012:

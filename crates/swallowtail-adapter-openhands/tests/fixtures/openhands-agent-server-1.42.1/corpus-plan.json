@@ -1,0 +1,24 @@
+{
+  "package": "swallowtail-adapter-openhands",
+  "route": "openhands.agent-server",
+  "decoder_corpus": "openhands-agent-server-1.42.1",
+  "create_package_in_card": 288,
+  "card_288_must_cover": [
+    "identity.json",
+    "protocol.json",
+    "command.json",
+    "success/health.json",
+    "success/alive.json",
+    "success/ready.json",
+    "success/server_info.json",
+    "success/start-conversation.json",
+    "success/message-event.json",
+    "success/conversation-state-update.json",
+    "activity.jsonl",
+    "abort.jsonl",
+    "limit.jsonl",
+    "negative-cases.json"
+  ],
+  "first_driver_op": "spawn owned loopback child with explicit --host 127.0.0.1, GET /health and /ready, optional one bounded POST /api/conversations with max_iterations and AlwaysConfirm, join or kill",
+  "no_production_claim_in_card": 287
+}

@@ -11,7 +11,7 @@ fn every_production_harness_route_has_exact_prepared_activity_truth() {
         "044-observable-agent-activity-and-disclosure"
     );
     let routes = inventory["routes"].as_array().expect("routes are an array");
-    assert_eq!(routes.len(), 26);
+    assert_eq!(routes.len(), 34);
 
     let ids = routes
         .iter()
@@ -26,24 +26,32 @@ fn every_production_harness_route_has_exact_prepared_activity_truth() {
             "claude-agent.acp",
             "claude-code.headless",
             "claude-code.response-only",
+            "cline.acp",
+            "cline.headless",
             "codex.app-server",
             "codex.exec",
             "command-code.headless",
+            "copilot-cli.acp",
             "cursor-agent.acp",
             "cursor-agent.catalogue",
             "cursor-agent.headless",
+            "deepagents.acp",
             "deepseek-harness.jsonrpc",
             "deepseek-harness.local-server",
             "gemini-cli.acp",
             "gemini-cli.headless",
+            "goose.acp",
             "grok-build.acp",
             "kimi-code.acp",
             "kimi-code.headless",
             "kimi-code.local-server",
+            "kiro.acp",
+            "mistral-vibe.headless",
             "muse-code.headless",
             "oh-my-pi.rpc",
             "opencode.http",
             "pi.rpc",
+            "qoder.headless",
             "qwen.headless",
             "zcode.app-server",
         ])
@@ -58,7 +66,10 @@ fn every_production_harness_route_has_exact_prepared_activity_truth() {
                 route["id"]
             );
         }
-        let expected_unknown_posture = if route["id"] == "claude-code.response-only" {
+        let expected_unknown_posture = if matches!(
+            route["id"].as_str(),
+            Some("claude-code.response-only" | "qoder.headless")
+        ) {
             "fail-closed"
         } else {
             "preserve-namespaced"
@@ -95,7 +106,7 @@ fn every_production_harness_route_has_exact_prepared_activity_truth() {
         }
     }
 
-    assert_eq!(profiles.len(), 33);
+    assert_eq!(profiles.len(), 41);
     for expected in [
         ("antigravity.headless", "structured-run"),
         ("antigravity.headless", "interactive-session"),

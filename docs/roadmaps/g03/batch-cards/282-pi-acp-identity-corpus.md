@@ -1,6 +1,6 @@
 # 282 Pi ACP Identity Corpus
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-18
 Milestone: `../092-pi-acp-route.md`
@@ -20,10 +20,10 @@ driver implementation, prepared API, production matrix changes, live provider wo
 
 ## Acceptance Criteria
 
-- [ ] Exact source identity and route disposition are recorded.
-- [ ] Protocol/event evidence is saved in an adapter-local corpus plan.
-- [ ] Authentication, authority, isolation, cancellation, and cleanup limits are explicit.
-- [ ] No claim changes before the next card.
+- [x] Exact source identity and route disposition are recorded.
+- [x] Protocol/event evidence is saved in an adapter-local corpus plan.
+- [x] Authentication, authority, isolation, cancellation, and cleanup limits are explicit.
+- [x] No claim changes before the next card.
 
 ## Validation
 
@@ -35,8 +35,11 @@ Stop if the route is undocumented, prompt-only, UI-only, or requires hidden cred
 
 ## Auto-Continuation
 
-Continue to card 283 after the route and corpus shape are named.
+Continue to card 286. Cards 283-285 stay superseded unless official native ACP appears.
 
 ## Evidence
 
-Research 143; https://cdn.agentclientprotocol.com/registry/v1/latest/registry.json; https://github.com/badlogic/pi-mono
+Research 152; `docs/logs/2026-08-19-pi-acp-identity-negative.md`;
+fixtures under `crates/swallowtail-adapter-pi/tests/fixtures/pi-acp-negative/`.
+`effigy qa:northstar` passed. `effigy validate:focused swallowtail-adapter-pi`
+passed (44 tests). No production claim. `pi.rpc` unchanged.

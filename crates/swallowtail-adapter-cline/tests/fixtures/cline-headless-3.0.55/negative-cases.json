@@ -1,0 +1,72 @@
+{
+  "cases": [
+    {
+      "id": "malformed-json",
+      "input": "{",
+      "expected": "fail_closed_framing"
+    },
+    {
+      "id": "missing-envelope-type",
+      "input": {"ts": "2026-08-18T00:00:00.000Z"},
+      "expected": "fail_closed_framing"
+    },
+    {
+      "id": "docs-ask-say-wrong-wire",
+      "input": {"type": "say", "text": "docs schema", "ts": 0, "say": "text"},
+      "expected": "fail_closed_wrong_wire"
+    },
+    {
+      "id": "acp-jsonrpc-is-not-headless",
+      "input": {"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {}},
+      "expected": "reject_as_cline_acp_not_this_route"
+    },
+    {
+      "id": "oversized-frame",
+      "expected": "fail_closed_bounds"
+    },
+    {
+      "id": "post-terminal-extra",
+      "expected": "fail_closed_or_ignore_after_terminal"
+    },
+    {
+      "id": "acp-flag-is-not-headless",
+      "argv": ["cline", "--acp"],
+      "expected": "reject_as_cline_acp_not_this_route"
+    },
+    {
+      "id": "json-plus-acp-is-acp",
+      "argv": ["cline", "--json", "--acp", "opaque fixture prompt"],
+      "expected": "reject_as_cline_acp_not_this_route"
+    },
+    {
+      "id": "auto-approve-true-not-default",
+      "argv": ["cline", "--json", "--auto-approve", "true", "opaque fixture prompt"],
+      "expected": "do_not_select_as_swallowtail_authority"
+    },
+    {
+      "id": "omit-auto-approve-inherits-cli-true",
+      "argv": ["cline", "--json", "opaque fixture prompt"],
+      "expected": "do_not_select_as_swallowtail_authority"
+    },
+    {
+      "id": "id-resume-unmapped",
+      "argv": ["cline", "--json", "--auto-approve", "false", "--id", "opaque"],
+      "expected": "unmapped"
+    },
+    {
+      "id": "tui-unmapped",
+      "argv": ["cline", "--json", "-i"],
+      "expected": "unmapped"
+    },
+    {
+      "id": "yolo-unmapped",
+      "argv": ["cline", "--yolo", "--json", "opaque fixture prompt"],
+      "expected": "unmapped"
+    },
+    {
+      "id": "missing-prompt-fails",
+      "argv": ["cline", "--json", "--auto-approve", "false"],
+      "expected": "fail_closed_preflight"
+    }
+  ]
+}

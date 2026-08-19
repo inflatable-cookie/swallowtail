@@ -1,6 +1,6 @@
 # 304 Cline Headless Identity Corpus
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-18
 Milestone: `../087-cline-headless-route.md`
@@ -20,10 +20,10 @@ ACP execution, driver code, prepared API, production claims, installation, login
 
 ## Acceptance Criteria
 
-- [ ] exact headless executable and version axis are recorded
-- [ ] JSON/stream/process fixtures and drift rejection are named
-- [ ] input, workspace, cancellation, and cleanup limits are explicit
-- [ ] no claim changes before card 305
+- [x] exact headless executable and version axis are recorded
+- [x] JSON/stream/process fixtures and drift rejection are named
+- [x] input, workspace, cancellation, and cleanup limits are explicit
+- [x] no claim changes before card 305
 
 ## Validation
 

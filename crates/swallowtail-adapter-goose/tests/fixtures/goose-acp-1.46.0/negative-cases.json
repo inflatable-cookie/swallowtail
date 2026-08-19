@@ -1,0 +1,91 @@
+{
+  "cases": [
+    {
+      "id": "malformed-json",
+      "input": "{",
+      "expected": "fail_closed_framing"
+    },
+    {
+      "id": "invalid-jsonrpc-version",
+      "input": { "jsonrpc": "1.0", "id": 1, "method": "initialize", "params": {} },
+      "expected": "fail_closed_framing"
+    },
+    {
+      "id": "unknown-method",
+      "input": { "jsonrpc": "2.0", "id": 1, "method": "session/list", "params": {} },
+      "expected": "method_not_found_or_unmapped"
+    },
+    {
+      "id": "prompt-unknown-session",
+      "input": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "method": "session/prompt",
+        "params": { "sessionId": "missing", "prompt": [{ "type": "text", "text": "x" }] }
+      },
+      "expected": "fail_closed"
+    },
+    {
+      "id": "oversized-frame",
+      "expected": "fail_closed_bounds"
+    },
+    {
+      "id": "post-terminal-extra",
+      "expected": "fail_closed_or_ignore_after_terminal"
+    },
+    {
+      "id": "serve-is-not-stdio-acp",
+      "argv": ["goose", "serve"],
+      "expected": "reject_as_http_websocket_not_this_route"
+    },
+    {
+      "id": "with-builtin-unmapped",
+      "argv": ["goose", "acp", "--with-builtin", "developer"],
+      "expected": "do_not_select_as_swallowtail_argv"
+    },
+    {
+      "id": "enable-scheduler-unmapped",
+      "argv": ["goose", "acp", "--enable-scheduler"],
+      "expected": "unmapped"
+    },
+    {
+      "id": "session-load-unmapped",
+      "method": "session/load",
+      "expected": "unmapped_on_first_driver"
+    },
+    {
+      "id": "session-list-unmapped",
+      "method": "session/list",
+      "expected": "unmapped_on_first_driver"
+    },
+    {
+      "id": "session-close-unmapped-on-first-driver",
+      "method": "session/close",
+      "expected": "unmapped_on_first_driver"
+    },
+    {
+      "id": "configure-not-swallowtail",
+      "command": "goose configure",
+      "expected": "host_owned_not_adapter_login"
+    },
+    {
+      "id": "authenticate-configure-not-swallowtail",
+      "method": "authenticate",
+      "expected": "host_owned_not_adapter_login"
+    },
+    {
+      "id": "acp-providers-not-this-route",
+      "expected": "reject_as_goose_wrapping_other_agents"
+    },
+    {
+      "id": "auto-mode-not-swallowtail-authority",
+      "modeId": "auto",
+      "expected": "do_not_select_as_swallowtail_authority"
+    },
+    {
+      "id": "relative-cwd",
+      "params": { "cwd": "relative/path", "mcpServers": [] },
+      "expected": "fail_closed_invalid_params"
+    }
+  ]
+}

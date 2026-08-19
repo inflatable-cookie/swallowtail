@@ -102,7 +102,7 @@ server and provider session remain external.
 
 `kimi-code.local-server` implements active-turn detachment for explicitly
 selected interactive sessions on qualified externally attached
-`0.28.1..=0.36.1` servers. The turn must have emitted an exact persisted
+`0.28.1..=0.37.2` servers. The turn must have emitted an exact persisted
 Contract 048 operation checkpoint before local ownership can be recovered.
 
 Detachment closes and joins only the WebSocket observer. It sends no `abort`,

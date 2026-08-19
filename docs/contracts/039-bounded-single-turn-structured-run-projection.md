@@ -163,7 +163,7 @@ tool, session, continuation, retry, fallback, or structured-output capability.
 The existing `claude-code.headless` read-only Plan profile remains unchanged.
 
 The qualified response-only compatibility segment begins at exact `2.1.227`
-and currently extends through exact `2.1.234`; exact `2.1.228` carries
+and currently extends through exact `2.1.235`; exact `2.1.228` carries
 separately observed live evidence for the same protocol revision. Stable
 semantic releases above the latest qualified point may execute
 as explicitly unverified newer, except releases on the route's static known-bad

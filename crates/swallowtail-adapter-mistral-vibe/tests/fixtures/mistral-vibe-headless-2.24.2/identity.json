@@ -1,0 +1,82 @@
+{
+  "axis": "mistral-vibe.release",
+  "route": "mistral-vibe.headless",
+  "observed_at": "2026-08-19",
+  "github_repository": "https://github.com/mistralai/mistral-vibe",
+  "pypi_project": "mistral-vibe",
+  "host": {
+    "present": false
+  },
+  "official": {
+    "version": "2.24.2",
+    "source": "official-github-tag-and-pypi-sdist",
+    "published_at": "2026-08-18T14:13:33Z",
+    "github_tag": "v2.24.2",
+    "github_tag_object": "5e6aa0f6beb3454454f4c1de74a7652ba577ab05",
+    "github_tag_object_type": "commit",
+    "github_commit": "5e6aa0f6beb3454454f4c1de74a7652ba577ab05",
+    "pypi_version": "2.24.2",
+    "pypi_yanked": false,
+    "pypi_sdist_sha256": "be62b3148a9640ab2d72ab9849a40499d1680aa59589b01deb62c5eb08df269d",
+    "pypi_wheel_sha256": "52536350059bcbffa3fd7a2e7ce50b3087b2839f26b9170c6bd3a63501e19e30",
+    "console_script": "vibe = vibe.cli.entrypoint:main",
+    "acp_registry_id": "mistral-vibe",
+    "acp_registry_version": "2.24.1",
+    "acp_registry_cmd": "./vibe-acp",
+    "platform_archive_not_extracted": {
+      "darwin-aarch64": {
+        "archive": "vibe-darwin-aarch64-2.24.2.zip",
+        "sha256": "924069bab01afbf697981151f4c29e38e594506cf18c44e94b4a5185f6704125",
+        "extracted": false
+      }
+    }
+  },
+  "tagged_headless_sources": {
+    "vibe/__init__.py": "41c0fa288f4ddc698170cf5146f3140cb5a638232433b1973d11408b70816560",
+    "vibe/cli/entrypoint.py": "b1d17309da8f2b24c2232a18549ca4e19522be66e689f08f2271a760422136df",
+    "vibe/cli/cli.py": "295ce3994f8bb73ae53af8a129fdcc66b889ebfd0b7a1c68d3a9192093fff1dc",
+    "vibe/cli/programmatic.py": "36a5008914136714a851880b3c6921f6ba196371e28422f58a45c8a728b25b34",
+    "vibe/app_server/models.py": "c4f507711b96feb6b21d60ede74f1d56c4bbe9d404f418db83da062d0dd8f1a5",
+    "vibe/app_server/_model.py": "77ea8bd7f201cd819a327ecd9909762f9c1a64d0bf8007dd8793113b67778dcd",
+    "vibe/core/agents/models.py": "d80dd5cfc04d51a826fd7c23b866f3004b3ee9266c3448ef32a3c06fbce5b227",
+    "vibe/core/config/vibe_schema.py": "8e7b3042430fdac5497604ac268d423302e64f4880894ada46e97cae881a0e97",
+    "vibe.spec": "d6134619a9555b1ebec6bad0f074496dce2b862458fb763625809605c1b50322",
+    "vibe-acp.spec": "28f6998aa1a42318e2ea9b8b48df8b6e94c74ab31a61291120ecab9e05bb7d96",
+    "pyproject.toml": "a188d51f3a6c490d160826212617d91ee74df40a0eae8d5c58970eafa135fa9b",
+    "docs/acp-setup.md": "8af0d8cb47fd803e5ee1a216d41b07282541675dafb906f776c4b69fd2c6059a"
+  },
+  "identity_decision": {
+    "shape": "new-route",
+    "entrypoint": [
+      "vibe",
+      "--prompt",
+      "--output",
+      "streaming",
+      "--max-turns",
+      "--trust",
+      "--agent",
+      "plan"
+    ],
+    "prompt_flag_text_required": true,
+    "stdin_prompt_unselected": true,
+    "selected_output": "streaming",
+    "json_dump_at_end_sibling": true,
+    "flatten_onto_vibe_acp": false,
+    "flatten_onto_tui": false,
+    "flatten_onto_continue_or_resume": false,
+    "flatten_onto_teleport": false,
+    "pass_auto_approve_or_yolo": false,
+    "omit_agent_inherits_default_agent": true,
+    "schema_default_agent": "accept-edits",
+    "docs_programmatic_auto_approve_default": "stale-documentation-not-this-source",
+    "pass_agent_plan": true,
+    "require_trust": true,
+    "require_max_turns": true,
+    "run_setup_login": false,
+    "provider_prompt_sent": false,
+    "live_prompt_run": false,
+    "host_install_changed": false,
+    "platform_archive_extracted": false,
+    "claim_change_in_card": false
+  }
+}

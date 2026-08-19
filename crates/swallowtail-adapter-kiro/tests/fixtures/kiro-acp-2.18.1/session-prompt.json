@@ -1,0 +1,18 @@
+{
+  "request": {
+    "jsonrpc": "2.0",
+    "id": 3,
+    "method": "session/prompt",
+    "params": {
+      "sessionId": "opaque-fixture-session",
+      "prompt": [{ "type": "text", "text": "fixture prompt" }]
+    }
+  },
+  "success_result": { "stopReason": "end_turn" },
+  "cancelled_result": { "stopReason": "cancelled" },
+  "text_blocks_selected": true,
+  "docs_example_uses_content_not_prompt": true,
+  "selected_field": "prompt",
+  "source": "ACP session/prompt field prompt; official docs example content rejected at Kiro CLI 2.18.1 identity; kirodotdev/Kiro#7144",
+  "live_prompt": false
+}

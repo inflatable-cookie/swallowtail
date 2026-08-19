@@ -1,10 +1,11 @@
 # 283 Pi ACP Driver Core
 
-Status: planned
+Status: superseded
 Owner: Tom
 Created: 2026-08-18
 Milestone: `../092-pi-acp-route.md`
 Depends on: Card 282; Contracts 005-006, 009-010, 023, 029, 032-033, 039-041, 044-045, 051
+Note: superseded by card 282; official Pi has no native ACP wire.
 
 ## Goal
 

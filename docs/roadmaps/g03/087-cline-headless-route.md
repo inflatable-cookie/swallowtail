@@ -1,13 +1,13 @@
 # 087 Cline Headless Route
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-18
 Wave: Primary
 Depends on: g03.086 Cline ACP Route; g03.097 intake cards 260-261; Research 143
 Research: 143
 Route id: `cline.headless`
-Planning state: cards 304-307 planned
+Planning state: cards 304-307 completed
 
 ## Purpose
 

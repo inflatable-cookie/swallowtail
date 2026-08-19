@@ -1,13 +1,13 @@
 # 088 Goose ACP Route
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-18
 Wave: Primary
 Depends on: g03.087; g03.097 intake cards 260-261; Research 143
 Research: 143
 Route id: `goose.acp`
-Planning state: cards 266-269 planned
+Planning state: cards 266-269 completed
 
 ## Purpose
 

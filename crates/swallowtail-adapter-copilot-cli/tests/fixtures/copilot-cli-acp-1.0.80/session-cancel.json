@@ -1,0 +1,9 @@
+{
+  "notification": {
+    "jsonrpc": "2.0",
+    "method": "session/cancel",
+    "params": { "sessionId": "opaque-fixture-session" }
+  },
+  "process_cleanup": ["close-stdin", "SIGTERM", "join-or-kill"],
+  "source": "ACP session/cancel plus official example stdin.end and SIGTERM at Copilot CLI 1.0.80 identity"
+}

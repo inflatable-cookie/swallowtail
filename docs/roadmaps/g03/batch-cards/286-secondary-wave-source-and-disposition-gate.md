@@ -1,10 +1,10 @@
 # 286 Secondary Wave Source And Disposition Gate
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-18
 Milestone: `../097-harness-route-expansion-intake-and-watchlist.md`
-Depends on: Research 143; g03.086
+Depends on: Research 143; g03.086-g03.092; cards 260-261
 
 ## Goal
 
@@ -20,10 +20,10 @@ new packages, implementation, live work, provider login, and automatic promotion
 
 ## Acceptance Criteria
 
-- [ ] Every candidate has add/defer/reject/revisit disposition.
-- [ ] OpenHands, Kiro, Aider, and Deep Agents have explicit route candidates or blockers.
-- [ ] Watchlist entries do not appear in the production route matrix.
-- [ ] New contract/spec requirements are named before implementation.
+- [x] Every candidate has add/defer/reject/revisit disposition.
+- [x] OpenHands, Kiro, Aider, and Deep Agents have explicit route candidates or blockers.
+- [x] Watchlist entries do not appear in the production route matrix.
+- [x] New contract/spec requirements are named before implementation.
 
 ## Validation
 
@@ -35,8 +35,9 @@ Stop if a candidate has no maintained machine-facing surface or only duplicates 
 
 ## Auto-Continuation
 
-Continue only to the first admitted secondary candidate; card 303 may close the watchlist independently.
+Continue to card 287. Card 303 may close the watchlist independently.
 
 ## Evidence
 
-Research 143; current route matrix; existing ACP, OpenCode, Pi, and remote transport contracts
+Research 153; `docs/logs/2026-08-19-secondary-wave-source-and-disposition.md`.
+`effigy qa:northstar` passed. No production claim. No new provider-neutral contract.

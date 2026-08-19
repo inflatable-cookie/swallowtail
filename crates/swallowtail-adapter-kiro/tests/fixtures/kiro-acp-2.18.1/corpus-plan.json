@@ -1,0 +1,19 @@
+{
+  "package": "swallowtail-adapter-kiro",
+  "route": "kiro.acp",
+  "decoder_corpus": "kiro-acp-2.18.1",
+  "card_292_must_cover": [
+    "identity.json",
+    "protocol.json",
+    "initialize.json",
+    "session-new.json",
+    "session-prompt.json",
+    "session-cancel.json",
+    "permission.json",
+    "activity.jsonl",
+    "negative-cases.json"
+  ],
+  "first_driver_op": "initialize plus session/new plus one bounded session/prompt",
+  "create_package_in_card": 292,
+  "no_production_claim_in_card": 291
+}

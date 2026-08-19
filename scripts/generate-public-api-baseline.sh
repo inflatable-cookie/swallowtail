@@ -12,7 +12,7 @@ fi
 release_output_dir=$1
 release_toolchain=nightly-2026-08-05
 release_tool_version='cargo-public-api 0.52.0'
-release_expected_packages=32
+release_expected_packages=40
 
 if ! command -v cargo-public-api >/dev/null 2>&1; then
   printf 'cargo-public-api 0.52.0 is required; install it with cargo install cargo-public-api --version 0.52.0 --locked\n' >&2

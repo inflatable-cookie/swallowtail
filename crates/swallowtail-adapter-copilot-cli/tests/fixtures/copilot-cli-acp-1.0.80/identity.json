@@ -1,0 +1,62 @@
+{
+  "axis": "copilot-cli.package",
+  "route": "copilot-cli.acp",
+  "observed_at": "2026-08-18",
+  "npm_package": "@github/copilot",
+  "npm_latest": true,
+  "maturity": "public-preview",
+  "host": {
+    "present": false
+  },
+  "official": {
+    "version": "1.0.80",
+    "source": "official-npm-wrapper-tarball",
+    "published_at": "2026-08-14T02:30:35.923Z",
+    "npm_integrity": "sha512-6tf93ZF56KOiTTAjK/UhLZkl1W543IzaTQly288kockJZFswpRTnQEI00Yvacpb39DTvTYu3/ha9SeKpo/pgZQ==",
+    "npm_shasum": "5f18fe4252bfe70ce86a4d186f6cadfdf920fae1",
+    "tarball_sha256": "799457937f8f87de6fdc95599380de5f5a0f761ab2fdfbba7f8d1c82d2988892",
+    "wrapper_file_count": 4,
+    "wrapper_unpacked_size": 12967,
+    "wrapper_loader_sha256": "0ea824a86be5757533fdb092eff7050871bd7a711a46babde0ffe0e44ac5ad88",
+    "wrapper_build_git_commit": "a3a2697",
+    "github_tag": "v1.0.80",
+    "github_tag_object": "ef627e1baad937d3c8da45f8a5541c6fc3c97b6a",
+    "github_tag_object_type": "commit",
+    "github_commit": "ef627e1baad937d3c8da45f8a5541c6fc3c97b6a",
+    "github_release_published_at": "2026-08-14T02:28:39Z",
+    "github_release_prerelease": false,
+    "acp_registry_id": "github-copilot-cli",
+    "acp_registry_version": "1.0.80",
+    "acp_registry_args": ["--acp"],
+    "ignored_prerelease": ["1.0.81-0", "1.0.81-1"],
+    "platform_optional": {
+      "@github/copilot-darwin-arm64": {
+        "version": "1.0.80",
+        "npm_integrity": "sha512-fzn4PnSx3+O/a3ip72KVsjnzORsEygK+0i21bFAnFBYS+0Wi1Pk+o/CmNsJ7aRbf1enSJrcH8UDVkyc9pMGEBg==",
+        "extracted": false
+      }
+    }
+  },
+  "tagged_wrapper_sources": {
+    "npm-loader.js": "0ea824a86be5757533fdb092eff7050871bd7a711a46babde0ffe0e44ac5ad88"
+  },
+  "identity_decision": {
+    "shape": "new-route",
+    "entrypoint": ["copilot", "--acp", "--stdio"],
+    "maturity": "public-preview",
+    "flatten_onto_tcp_port": false,
+    "pass_stdio_and_port": false,
+    "pass_available_tools": false,
+    "pass_excluded_tools": false,
+    "pass_effort": false,
+    "pass_yolo_or_allow_all": false,
+    "run_copilot_login": false,
+    "send_slash_as_swallowtail_operation": false,
+    "map_session_load": false,
+    "map_close_session_management": false,
+    "provider_prompt_sent": false,
+    "live_acp_initialize": false,
+    "host_install_changed": false,
+    "platform_binary_extracted": false
+  }
+}

@@ -1,6 +1,7 @@
 # 095 Aider Headless Route
 
 Status: deferred
+Backlog: `docs/roadmaps/backlog/aider-headless-route.md`
 Owner: Tom
 Created: 2026-08-18
 Wave: Secondary

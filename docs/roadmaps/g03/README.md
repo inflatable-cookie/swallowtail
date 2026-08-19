@@ -1,8 +1,9 @@
 # g03 Compatibility Maintenance And Consumer-Proven Hardening
 
-Status: active
+Status: completed
 Owner: Tom
 Created: 2026-07-31
+Disposition: closed at 106 roadmaps; g04 active
 
 ## Purpose
 
@@ -18,12 +19,12 @@ visible as unverified newer unless exact evidence requires rejection.
 | Goal | State | Governing refs | First milestone |
 | --- | --- | --- | --- |
 | Establish a repeatable currentness inventory for installed harnesses and shared protocols. | completed | Contracts 011, 029, 036 | `g03.001` |
-| Extend exact compatibility segments only where current evidence finds material drift or useful newer support. | active | Contracts 011, 029, 037 | `g03.002`, `g03.012`-`g03.015`, `g03.072`, `g03.073`, `g03.074`, `g03.075`, `g03.076`, `g03.077`, `g03.078`, `g03.079`, `g03.080`, `g03.081`, `g03.082`, `g03.083`, `g03.084`, `g03.085`, `g03.098`, `g03.099`, `g03.100`, `g03.101`, `g03.102`, `g03.103`, `g03.104`, `g03.105` |
+| Extend exact compatibility segments only where current evidence finds material drift or useful newer support. | completed | Contracts 011, 029, 037 | `g03.002`, `g03.012`-`g03.015`, `g03.072`, `g03.073`, `g03.074`, `g03.075`, `g03.076`, `g03.077`, `g03.078`, `g03.079`, `g03.080`, `g03.081`, `g03.082`, `g03.083`, `g03.084`, `g03.085`, `g03.098`, `g03.099`, `g03.100`, `g03.101`, `g03.102`, `g03.103`, `g03.104`, `g03.105` |
 | Add high-value installed harnesses through explicit catalogue, interactive, structured, and continuation roles. | completed | Contracts 005-006, 015, 020, 029, 037, 039, 043-045 | `g03.005` |
 | Close useful installed-version gaps against exact current artifacts without forcing per-provider releases. | completed | Contracts 011, 029, 032, 037 | `g03.009` |
 | Keep deterministic corpora and conformance aligned with behavior milestones rather than package semver alone. | completed | Contracts 011, 029, 036 | `g03.010` |
 | Support host-approved interpreted installed harnesses without ambient environment inheritance. | completed | Contracts 010, 032; Research 084 | `g03.011` |
-| Turn consumer-reproduced defects and integration friction into portable regression evidence. | active | Contracts 002, 037, 044-045 | `g03.003` |
+| Turn consumer-reproduced defects and integration friction into portable regression evidence. | completed | Contracts 002, 037, 044-045 | `g03.003` |
 | Reassess prepared-facade usability from multi-consumer proof without importing product policy. | completed | Contracts 002, 010, 037 | `g03.017` |
 | Allow explicit discovery and import of harness-origin sessions without owning consumer persistence or synchronization. | completed | Contracts 017, 029, 037, 046 | `g03.019` |
 | Expose configured provider instances for explicit consumer selection without central routing policy. | completed | Contracts 005-006, 008, 014, 020, 037, 047 | `g03.024` |
@@ -48,7 +49,7 @@ visible as unverified newer unless exact evidence requires rejection.
 | Ship compatible post-tag repairs as an exact CI-green `v0.1.1` source tag. | completed | Contracts 001, 009, 022, 036, 049, 052 | `g03.044` |
 | Add Meta Muse Code through its exact installed headless event protocol without chasing every new harness. | completed | Contracts 005-006, 009-010, 023, 029, 032-033, 036-037, 039-041, 044-045, 051-052 | `g03.045` |
 | Ship Muse and the breaking unified Rust 1.95 floor as exact-source `v0.2.0` without carrying Muse's two new structural errors. | completed | Contracts 001, 023, 029, 032-033, 036-037, 044-045, 051-052 | `g03.046` |
-| Periodically reconcile deferred gates, route truth, and generation capacity. | active | Contracts 001, 029 | `g03.072` |
+| Periodically reconcile deferred gates, route truth, and generation capacity. | completed | Contracts 001, 029 | `g03.072` |
 | Close the verified hang class in process supervision, runtime coordination, and the remote ACP transport. | completed | Contracts 009, 010, 035, 051 | `g03.049` |
 | Close provider-reachable panic paths and keep version-parse expectations literal-only. | completed | Contracts 029, 037, 051 | `g03.050` |
 | Make docs indexes machine-checked, single-source the route inventory, and consolidate the validation machinery. | completed | Contracts 001, 036, 052 | `g03.051` |
@@ -75,10 +76,15 @@ visible as unverified newer unless exact evidence requires rejection.
 
 ## Planned Next Roadmaps
 
-- [g03.095 Aider Headless Route](095-aider-headless-route.md) — deferred `aider.headless`
+None. g03 is closed. Deferred Aider, Kiro headless, and OpenHands production
+wiring live in the shared backlog.
 
 ## Current Checkpoint
 
+- g03 closed at 106 roadmaps. Roadmap 106 and cards 324-326 rehomed Aider,
+  Kiro headless, and OpenHands production wiring, opened g04, and left only
+  g04 card 001 ready. Recurring currentness continues as a Contract 029
+  maintenance lane inside g04.
 - g03.105 is complete. Cards 322-323 qualified Antigravity catalogue and
   headless `1.1.9..=1.1.15` as a compatible extension of the existing
   catalogue and stream-json revisions. Host `1.1.9` stays Qualified.
@@ -886,7 +892,7 @@ visible as unverified newer unless exact evidence requires rejection.
 - [048 Late Activity Correlation Adoption](./048-late-activity-correlation-adoption.md) — completed
 - [049 Hang And Deadline Closure](./049-hang-and-deadline-closure.md) — completed
 - [050 Provider-Reachable Panic Closure](./050-provider-reachable-panic-closure.md) — completed
-- [051 Validation Machinery And Index Closure](./051-validation-machinery-and-index-closure.md) — planned
+- [051 Validation Machinery And Index Closure](./051-validation-machinery-and-index-closure.md) — completed
 - [052 Shared Adapter Scaffolding](./052-shared-adapter-scaffolding.md) — completed
 - [053 Claim And Surface Consistency](./053-claim-and-surface-consistency.md) — completed
 - [054 Remaining Duplication Tranches](./054-remaining-duplication-tranches.md) — completed
@@ -941,6 +947,7 @@ visible as unverified newer unless exact evidence requires rejection.
 - [103 Kimi Code 0.37.2 Useful Newer](./103-kimi-code-0-37-2-useful-newer.md) — completed
 - [102 Qwen Headless 0.21.14 Useful Newer](./102-qwen-headless-0-21-14-useful-newer.md) — completed
 - [101 Grok 1.0.5 Useful Newer](./101-grok-1-0-5-useful-newer.md) — completed
+- [106 g03 Generation Closeout And g04 Cutover](./106-generation-closeout-and-g04-cutover.md) — completed
 
 ## Checkpoint
 

@@ -1,6 +1,6 @@
 # 051 Validation Machinery And Index Closure
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-08
 Generation: g03

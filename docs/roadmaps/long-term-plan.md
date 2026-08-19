@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-01
+Updated: 2026-08-19
 
 ## Sequence
 
@@ -244,6 +244,24 @@ archive, and restore. Roadmap g02.020 adds that route separately from ACP.
 Deletion remains unsupported. Lifecycle lands before the larger interactive
 surface, and no container is required.
 
+
+## g03 Disposition And g04 Programme
+
+g03 closed at 106 roadmaps after operator-authorized rollover. Compatibility
+maintenance, consumer-proven hardening, recovery facades, source tags, harness
+expansion, and the recurring currentness sweep are complete or rehomed.
+
+Aider headless, Kiro headless, and OpenHands production wiring moved to the
+shared backlog. Gemini requalification, Pi RPC continuity, and provider-session
+management binding persistence remain deferred. Registry publication remains
+outside the active roadmap.
+
+g04 prioritizes a portable route-readiness and connection-admission library
+surface. Consuming applications should be able to list addable routes, collect
+or launch required credentials, admit configured instances, observe readiness
+and updates, and expose the models those instances can run. Swallowtail does
+not become a connection server, credential store, UI, or router. Recurring
+currentness continues as a Contract 029 maintenance lane inside g04.
 
 ## Next Task
 

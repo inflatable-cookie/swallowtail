@@ -12,7 +12,9 @@ cluster by delivery generation:
 - **g01** — foundation: contract kernel, runtime records, Codex proof drivers
 - **g02** — stabilization: provider-wide prepared facades, activity,
   compatibility, lifecycle, and release discipline
-- **g03** — active: compatibility maintenance and consumer-proven hardening
+- **g04** — active: route readiness, connection admission, and consumer-driven
+  model selection
+- **g03** — completed: compatibility maintenance and consumer-proven hardening
 
 Titles name the topic. To trace one subject, grep the index for a route id,
 contract number, or feature name and read the entries in date order. A single
@@ -21,6 +23,8 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-19 Route Readiness Decisions And g04 Run](./2026-08-19-route-readiness-decisions-and-g04-run.md)
+- [2026-08-19 g03 Generation Closeout And g04 Open](./2026-08-19-g03-generation-closeout-and-g04-open.md)
 - [2026-08-19 Antigravity 1.1.15 Claim And Acceptance](./2026-08-19-antigravity-1-1-15-claim.md)
 - [2026-08-19 Antigravity 1.1.15 Identity](./2026-08-19-antigravity-1-1-15-identity.md)
 - [2026-08-19 Oh My Pi 17.3.8 Claim And Acceptance](./2026-08-19-oh-my-pi-17-3-8-claim.md)

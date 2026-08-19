@@ -1,6 +1,6 @@
 # 007 Route-Path Idioms Opt-In
 
-Status: draft
+Status: promoted
 Owner: Tom
 Updated: 2026-08-09
 

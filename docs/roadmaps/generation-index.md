@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-31
+Updated: 2026-08-19
 
 ## Generations
 
@@ -10,7 +10,8 @@ Updated: 2026-07-31
 | --- | --- | --- |
 | `g01` | completed | Standalone authority, runtime kernel, integration landscape, representative drivers, consumer adoption, compatibility foundations, and broad provider coverage. |
 | `g02` | completed | API stabilization, prepared facades, packaging, consumer upgrade proof, lifecycle management, feature-matrix closure, observable activity, and structural/validation hardening. |
-| `g03` | active | Compatibility maintenance across real interface ranges and consumer-proven hardening without release chasing. |
+| `g03` | completed | Compatibility maintenance across real interface ranges and consumer-proven hardening without release chasing. |
+| `g04` | active | Route availability, connection admission, credential and sign-in descriptors, readiness refresh, and consumer-driven model selection without a Swallowtail server. |
 
 ## Generation Size
 
@@ -23,16 +24,23 @@ disposition and cutover, plus one backlog move. Roadmap g02.029 and cards
 097-098 remain recoverable as shared backlog evidence behind the Pi cwd-bound
 attachment gate.
 
-g03 resets roadmap and batch-card numbering. Its sequencing baseline is
-compatibility maintenance and consumer-proven hardening. It begins with a
-repository-local inventory, then current authoritative evidence, then a
-bounded implementation-tranche decision. It does not imply provider
-selection, consumer edits, publication, or a release per upstream version.
+g03 closed at 106 roadmaps after operator-authorized rollover. Compatibility
+maintenance, consumer-proven hardening, recovery, source tags, harness
+expansion, and the currentness sweep are complete or rehomed. Aider headless,
+Kiro headless, and OpenHands production wiring join the shared backlog.
+Gemini requalification, Pi continuity, and binding persistence stay deferred.
+
+g04 resets roadmap and batch-card numbering. Its sequencing baseline is route
+readiness and connection admission for consuming applications. It begins with
+a repository-local inventory of existing Swallowtail records against the
+consumer connection lifecycle. It does not imply a connection server,
+credential store, UI, router, or implementation before evidence and operator
+decisions agree.
 
 ## Rollover Rule
 
-g03 should normally run for 30-50 roadmaps. Provider releases, consumer
-defects, contract additions, or completed maintenance tranches do not create a
+g04 should normally run for 30-50 roadmaps. Provider releases, consumer
+defects, contract additions, or completed readiness tranches do not create a
 new generation by themselves. Rollover requires a substantial run, clean
 disposition of unfinished work, and an explicit sequencing reset.
 

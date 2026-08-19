@@ -1,6 +1,6 @@
 # 006 Pluggable Learned Idioms
 
-Status: draft
+Status: promoted
 Owner: Tom
 Updated: 2026-08-09
 

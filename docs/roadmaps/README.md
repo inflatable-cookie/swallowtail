@@ -5,7 +5,8 @@ shape.
 
 ## Current Generation
 
-- [g03 Compatibility Maintenance And Consumer-Proven Hardening](g03/README.md) — active
+- [g04 Route Readiness And Connection Admission](g04/README.md) — active
+- [g03 Compatibility Maintenance And Consumer-Proven Hardening](g03/README.md) — completed
 - [g02 Swallowtail Stabilization And Release Discipline](g02/README.md) — completed
 - [g01 Swallowtail Foundation](g01/README.md) — completed
 - [Generation Index](generation-index.md)
@@ -13,7 +14,7 @@ shape.
 
 ## Next Task
 
-Define the next g03 maintenance card now that remaining currentness AllowUnverified families except deferred Gemini sit on current official stables.
+Map existing Swallowtail instance, access, discovery, and catalogue records against the consumer connection-lifecycle surfaces.
 
 ## Index
 
@@ -23,8 +24,10 @@ Define the next g03 maintenance card now that remaining currentness AllowUnverif
 - [g01/README.md](g01/README.md) — completed foundation generation
 - [g02/README.md](g02/README.md) — completed stabilization, provider-wide
   facade, activity, compatibility, and lifecycle generation
-- [g03/README.md](g03/README.md) — active compatibility-maintenance and
+- [g03/README.md](g03/README.md) — completed compatibility-maintenance and
   consumer-proven hardening generation
+- [g04/README.md](g04/README.md) — active route-readiness and
+  connection-admission generation
 
 ## Generation Shape
 

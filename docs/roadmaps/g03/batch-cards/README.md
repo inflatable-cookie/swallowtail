@@ -2,14 +2,16 @@
 
 ## Active
 
-No ready cards. Harness-route expansion intake is closed.
+None. g03 is closed.
 
-## Planned
+## Deferred
 
 - [295-aider-headless-identity-corpus.md](./295-aider-headless-identity-corpus.md)
 - [296-aider-headless-driver-core.md](./296-aider-headless-driver-core.md)
 - [297-aider-headless-prepared-facade.md](./297-aider-headless-prepared-facade.md)
 - [298-aider-headless-package-and-route-acceptance.md](./298-aider-headless-package-and-route-acceptance.md)
+
+Unstarted. Promotion lives in `docs/roadmaps/backlog/aider-headless-route.md`.
 
 ## Superseded
 
@@ -34,6 +36,9 @@ No ready cards. Harness-route expansion intake is closed.
 
 ## Completed
 
+- [326-g04-route-readiness-runway-compilation.md](./326-g04-route-readiness-runway-compilation.md)
+- [325-g03-closure-and-g04-generation-open.md](./325-g03-closure-and-g04-generation-open.md)
+- [324-g03-closeout-inventory-and-deferred-disposition.md](./324-g03-closeout-inventory-and-deferred-disposition.md)
 - [323-antigravity-1-1-15-claim.md](./323-antigravity-1-1-15-claim.md)
 - [322-antigravity-1-1-15-identity-corpus.md](./322-antigravity-1-1-15-identity-corpus.md)
 - [321-oh-my-pi-17-3-8-claim.md](./321-oh-my-pi-17-3-8-claim.md)

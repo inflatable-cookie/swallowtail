@@ -19,6 +19,9 @@ historical evidence.
 - [Gemini CLI Range Requalification](./gemini-cli-range-requalification.md)
 - [Provider-Session Management Binding Persistence](./provider-session-management-binding-persistence.md)
 - [Pi RPC Session Continuity](./pi-rpc-session-continuity.md)
+- [Aider Headless Route](./aider-headless-route.md)
+- [Kiro Headless Route](./kiro-headless-route.md)
+- [OpenHands Agent Server Production Wiring](./openhands-agent-server-production-wiring.md)
 
 ## Completed
 

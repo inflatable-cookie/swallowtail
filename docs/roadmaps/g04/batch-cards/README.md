@@ -4,11 +4,11 @@
 
 ## Planned
 
-- [008-current-source-canonical-ci.md](./008-current-source-canonical-ci.md)
 - [009-current-source-annotated-tag.md](./009-current-source-annotated-tag.md)
 
 ## Completed
 
+- [008-current-source-canonical-ci.md](./008-current-source-canonical-ci.md)
 - [007-current-source-local-candidate.md](./007-current-source-local-candidate.md)
 - [006-current-source-release-inventory.md](./006-current-source-release-inventory.md)
 - [005-readiness-contract-targets.md](./005-readiness-contract-targets.md)

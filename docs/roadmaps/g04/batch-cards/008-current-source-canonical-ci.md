@@ -1,6 +1,6 @@
 # 008 Current Source Canonical CI
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-19
 Milestone: `../003-current-source-tag-before-readiness.md`
@@ -25,8 +25,8 @@ SHA.
 
 ## Acceptance Criteria
 
-- [ ] canonical CI passes at the exact candidate commit
-- [ ] `HEAD` matches the recorded SHA
+- [x] canonical CI passes at the exact candidate commit
+- [x] `HEAD` matches the recorded SHA
 
 ## Validation
 
@@ -35,3 +35,15 @@ Canonical CI jobs at the exact SHA.
 ## Auto-Continuation
 
 No. Card 009 requires separate exact tag authorization.
+
+## Evidence
+
+- operator accepted the local candidate and authorized merge
+- PR 3 fast-forwarded onto canonical `main` at
+  `51d186208e75dca4c04f077dd7179ec3c2fafae9`
+- `CI` workflow dispatched against `main` because branch pushes do not
+  trigger it; run
+  https://github.com/inflatable-cookie/swallowtail/actions/runs/32308431817
+- all five jobs passed at head SHA `51d186208e75dca4c04f077dd7179ec3c2fafae9`
+- local `HEAD`, remote `main`, and the workflow head matched that SHA
+- no local or remote `v0.3.3` tag exists

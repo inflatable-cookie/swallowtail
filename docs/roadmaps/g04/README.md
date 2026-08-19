@@ -40,8 +40,9 @@ and selection policy.
 
 - g04.001 and g04.002 are complete. Research 168 and Spec 011 name a new
   lifecycle contract in front of 047, with seam amendments only
-- g04.003 cards 006-007 completed: compatible patch `v0.3.3` local candidate
-  passed all 11 credential-free gates. Cards 008-009 stay operator-gated
+- g04.003 cards 006-008 completed: `v0.3.3` candidate
+  `51d186208e75dca4c04f077dd7179ec3c2fafae9` is on `main` with all five
+  dispatched CI jobs green. Card 009 stays behind tag authorization
 - no facade implementation card becomes ready before that tag
 
 ## Milestones

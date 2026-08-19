@@ -14,7 +14,7 @@ shape.
 
 ## Next Task
 
-Validate the local v0.3.3 source candidate before authorizing card 008 canonical CI.
+Close the annotated v0.3.3 source tag at the CI-green candidate commit.
 
 ## Index
 

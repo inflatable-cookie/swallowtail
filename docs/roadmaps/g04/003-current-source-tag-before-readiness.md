@@ -6,7 +6,7 @@ Created: 2026-08-19
 Depends on: g04.002
 Vision tags: source release, compatibility maintenance
 Contract refs: 001, 029, 036-037, 052
-Planning state: cards 006-007 completed (`0.3.3` local candidate); cards 008-009 planned behind operator gates
+Planning state: cards 006-008 completed at `51d18620`; card 009 planned behind tag authorization
 
 ## Problem
 
@@ -57,8 +57,8 @@ facade implementation. This is packaging of current work, not the facade.
 
 ### Batch 3.3 — Canonical CI
 
-- [ ] Execute card 008 after operator acceptance of the local candidate.
-- [ ] commit, push, and require canonical CI at the exact SHA
+- [x] Execute card 008 after operator acceptance of the local candidate.
+- [x] commit, push, and require canonical CI at the exact SHA
 
 ### Batch 3.4 — Annotated Tag
 

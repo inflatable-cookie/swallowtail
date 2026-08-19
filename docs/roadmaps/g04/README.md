@@ -41,7 +41,8 @@ and selection policy.
 ## Current Checkpoint
 
 - g04.001 through g04.004 are complete. Contract 057 is active
-- g04.005 cards 013-015 are ready: core records, store trait, simple adapters
+- g04.005 worker dispatched: cards 013-015, handoff
+  `docs/handoffs/20260820-000805-g04-005-connection-lifecycle-kernel.md`
 - catalog, sign-in, refresh, overlay, and first-proof stay behind that kernel
 - `v0.3.3` remains `51d18620`
 

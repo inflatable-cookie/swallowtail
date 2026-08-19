@@ -14,7 +14,8 @@ shape.
 
 ## Next Task
 
-Execute the connection-lifecycle kernel starting at g04.005 card 013.
+Worker in flight: g04.005 cards 013-015. Handoff
+`docs/handoffs/20260820-000805-g04-005-connection-lifecycle-kernel.md`.
 
 ## Index
 

@@ -6,7 +6,7 @@ Created: 2026-08-19
 Depends on: g04.002
 Vision tags: source release, compatibility maintenance
 Contract refs: 001, 029, 036-037, 052
-Planning state: cards 006-009 planned
+Planning state: cards 006-007 ready; cards 008-009 planned behind operator gates
 
 ## Problem
 

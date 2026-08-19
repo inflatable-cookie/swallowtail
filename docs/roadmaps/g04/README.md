@@ -40,7 +40,8 @@ and selection policy.
 
 - g04.001 and g04.002 are complete. Research 168 and Spec 011 name a new
   lifecycle contract in front of 047, with seam amendments only
-- no g04 card is ready. g04.003 remains the source-tag lane
+- g04.003 cards 006-007 are ready for a worker PR: inventory, version class,
+  and local candidate. Cards 008-009 stay operator-gated
 - source-tag hypothesis is `v0.3.3` unless Contract 036 finds a break
 - no facade implementation card becomes ready before that tag
 

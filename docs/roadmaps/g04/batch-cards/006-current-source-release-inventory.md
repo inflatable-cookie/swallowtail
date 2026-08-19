@@ -1,6 +1,6 @@
 # 006 Current Source Release Inventory
 
-Status: planned
+Status: ready
 Owner: Tom
 Created: 2026-08-19
 Milestone: `../003-current-source-tag-before-readiness.md`

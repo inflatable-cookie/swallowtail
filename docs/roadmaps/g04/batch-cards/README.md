@@ -2,12 +2,11 @@
 
 ## Active
 
-None. Next lane is g04.003; its cards stay planned until worker dispatch.
+- [006-current-source-release-inventory.md](./006-current-source-release-inventory.md) — ready
+- [007-current-source-local-candidate.md](./007-current-source-local-candidate.md) — ready after 006
 
 ## Planned
 
-- [006-current-source-release-inventory.md](./006-current-source-release-inventory.md)
-- [007-current-source-local-candidate.md](./007-current-source-local-candidate.md)
 - [008-current-source-canonical-ci.md](./008-current-source-canonical-ci.md)
 - [009-current-source-annotated-tag.md](./009-current-source-annotated-tag.md)
 

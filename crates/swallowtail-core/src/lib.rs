@@ -9,6 +9,7 @@
 mod access;
 mod attached_runtime;
 mod capability;
+mod connection_lifecycle;
 mod diagnostic;
 mod direct_continuation;
 mod event;
@@ -50,6 +51,13 @@ pub use attached_runtime::{
     ModelManifestDigest,
 };
 pub use capability::{Capability, CapabilityManifest, UnsupportedCapability};
+pub use connection_lifecycle::{
+    AddableRouteAvailability, AddableRouteDescriptor, AddableRouteId,
+    AddableRouteMissingRequirement, AdmittedInstanceRecord, AuthenticatedSubjectObservation,
+    ConfigFieldDescriptor, ConfigFieldId, ConfigFieldKind, CredentialFieldDescriptor,
+    CredentialFieldId, CredentialFieldVisibility, EnvironmentVariableName, FieldLabel,
+    InstanceEnablement, InstanceLabel, OverlayMarker, RouteTopology, SubjectDisclosure,
+};
 pub use diagnostic::{Diagnostic, SafeDiagnostic, ValueRequired};
 pub use direct_continuation::{
     DirectAttemptTransport, DirectContinuationConfig, DirectContinuationRequirements,
@@ -142,10 +150,10 @@ pub use requirement::{
     OperationRequirements, StructuredOutputEnforcement,
 };
 pub use runtime_identity::{
-    AccessProfileId, ConfiguredInstanceId, CredentialRef, DriverRole, EndpointAudience,
-    ExecutionHostId, ExecutionLayer, HostServiceKind, InstanceOwnership, InstancePolicyId,
-    InstanceRevision, InstanceTargetRef, IntegrationFamilyId, ModelRouteId, ModelRouteRevision,
-    OperationShape, ProtocolFacadeId, TransportFamilyId,
+    AccessProfileId, ConfigFieldRef, ConfiguredInstanceId, CredentialRef, DriverRole,
+    EndpointAudience, ExecutionHostId, ExecutionLayer, HostServiceKind, InstanceOwnership,
+    InstancePolicyId, InstanceRevision, InstanceTargetRef, IntegrationFamilyId, ModelRouteId,
+    ModelRouteRevision, OperationShape, ProtocolFacadeId, TransportFamilyId,
 };
 pub use session_access::{
     ExternalNetworkPolicy, ExternalSearchPolicy, FilesystemBoundary, HarnessIsolation,

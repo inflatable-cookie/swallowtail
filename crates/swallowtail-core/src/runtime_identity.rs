@@ -68,10 +68,38 @@ impl CredentialRef {
     }
 }
 
+/// Host-owned reference to one per-instance config value.
+///
+/// The referenced path, URL, or environment body stays host-private.
+#[derive(Clone, Eq, Hash, Ord, PartialEq, PartialOrd)]
+pub struct ConfigFieldRef(String);
+
+impl ConfigFieldRef {
+    /// Creates an opaque config-field reference after rejecting blank text.
+    pub fn new(value: impl Into<String>) -> Result<Self, ValueRequired> {
+        required_text("config field reference", value).map(Self)
+    }
+
+    /// Passes the opaque reference back to the execution host.
+    #[must_use]
+    pub fn as_host_value(&self) -> &str {
+        &self.0
+    }
+}
+
 impl fmt::Debug for CredentialRef {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         formatter
             .debug_tuple("CredentialRef")
+            .field(&"<opaque>")
+            .finish()
+    }
+}
+
+impl fmt::Debug for ConfigFieldRef {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter
+            .debug_tuple("ConfigFieldRef")
             .field(&"<opaque>")
             .finish()
     }
@@ -197,7 +225,7 @@ pub enum HostServiceKind {
 
 #[cfg(test)]
 mod tests {
-    use super::{ConfiguredInstanceId, InstanceTargetRef};
+    use super::{ConfigFieldRef, ConfiguredInstanceId, InstanceTargetRef};
 
     #[test]
     fn runtime_identity_rejects_blank_text() {
@@ -213,6 +241,15 @@ mod tests {
             .expect("target reference is valid");
 
         assert_eq!(format!("{reference:?}"), "InstanceTargetRef(\"<opaque>\")");
+        assert!(!format!("{reference:?}").contains(reference.as_host_value()));
+    }
+
+    #[test]
+    fn config_field_reference_is_opaque_by_default() {
+        let reference =
+            ConfigFieldRef::new("/host/private/bin/provider").expect("config reference is valid");
+
+        assert_eq!(format!("{reference:?}"), "ConfigFieldRef(\"<opaque>\")");
         assert!(!format!("{reference:?}").contains(reference.as_host_value()));
     }
 }

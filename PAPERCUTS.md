@@ -5,6 +5,19 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] DeepSeek stream-cancellation test flakes as ProviderFailed — 2026-08-19
+- Friction: `swallowtail-adapter-deepseek::driver::active_stream_cancellation_joins_before_session_credential_release`
+  expected `Cancelled` and observed `ProviderFailed` with
+  `swallowtail.deepseek.stream_incomplete` / `TransportInterrupted` on tag CI
+  run `32309276223` attempt 1. The same SHA had already passed PR and
+  dispatched CI; the in-place rerun passed.
+- Impact: tag-triggered CI can fail a green SHA without a product change,
+  tempting a retag.
+- Fix: make the cancellation join deterministic, or accept
+  `TransportInterrupted` as a documented cancellation race at the stream
+  boundary.
+- Surface: DeepSeek driver cancellation test; tag CI Stable job.
+
 ## Closed
 
 ### [x] Roadmap docs policy applies parent checks to excluded child indexes — 2026-08-11

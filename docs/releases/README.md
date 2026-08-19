@@ -6,8 +6,8 @@ mutations.
 
 ## Current Release
 
-- [Swallowtail 0.3.3](0.3.3.md) — compatible patch adding ten adapters and
-  eleven production routes over immutable `v0.3.2`
+- [Swallowtail 0.3.3](0.3.3.md) — tagged compatible patch adding ten adapters
+  and eleven production routes over immutable `v0.3.2`
 
 Earlier immutable releases remain documented at [`v0.3.2`](0.3.2.md),
 [`v0.3.1`](0.3.1.md), [`v0.3.0`](0.3.0.md),

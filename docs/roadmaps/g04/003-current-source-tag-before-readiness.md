@@ -1,12 +1,12 @@
 # 003 Current Source Tag Before Readiness Implementation
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-19
 Depends on: g04.002
 Vision tags: source release, compatibility maintenance
 Contract refs: 001, 029, 036-037, 052
-Planning state: cards 006-008 completed at `51d18620`; card 009 planned behind tag authorization
+Planning state: cards 006-009 completed; `v0.3.3` tagged at `51d18620`
 
 ## Problem
 
@@ -31,7 +31,7 @@ facade implementation. This is packaging of current work, not the facade.
 - [x] inventory unreleased packages, routes, and public API against `v0.3.2`
 - [x] classify patch `0.3.3` or minor `0.4.0` under Contract 036
 - [x] prepare one exact source-tag candidate
-- [ ] ship the annotated tag only after separate operator authorization
+- [x] ship the annotated tag only after separate operator authorization
 
 ## Non-Goals
 
@@ -62,9 +62,9 @@ facade implementation. This is packaging of current work, not the facade.
 
 ### Batch 3.4 — Annotated Tag
 
-- [ ] Execute card 009 after separate exact authorization.
-- [ ] create and push one annotated immutable tag
-- [ ] only then may later g04 implementation cards become ready
+- [x] Execute card 009 after separate exact authorization.
+- [x] create and push one annotated immutable tag
+- [x] only then may later g04 implementation cards become ready
 
 ## Acceptance Criteria
 
@@ -72,7 +72,7 @@ facade implementation. This is packaging of current work, not the facade.
 - [x] historical `v0.3.2` inventories remain immutable
 - [x] OpenHands remains fail-closed in release notes
 - [x] no readiness-facade types ship in this tag
-- [ ] annotated tag resolves to the green commit
+- [x] annotated tag resolves to the green commit
 - [x] later implementation roadmaps stay planned until this tag exists
 
 ## Decision Gates

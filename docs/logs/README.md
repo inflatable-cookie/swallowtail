@@ -23,6 +23,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-19 Current Source Annotated Tag](./2026-08-19-current-source-annotated-tag.md)
 - [2026-08-19 Current Source Canonical CI](./2026-08-19-current-source-canonical-ci.md)
 - [2026-08-19 Current Source Local Candidate](./2026-08-19-current-source-local-candidate.md)
 - [2026-08-19 Current Source Release Inventory](./2026-08-19-current-source-release-inventory.md)

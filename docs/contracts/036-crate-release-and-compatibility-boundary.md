@@ -42,14 +42,14 @@ The `v0.3.0` / `v0.3.1` tags keep those 28 packages and 34 production routes.
 `v0.3.2` adds two reviewed additive packages,
 `swallowtail-adapter-command-code` and `swallowtail-idioms`, for 30 packages
 and 36 production routes.
-The `v0.3.3` candidate additionally carries the reviewed additive
+`v0.3.3` additionally carries the reviewed additive
 `swallowtail-adapter-deepseek-harness` package and
 `deepseek-harness.jsonrpc` and `deepseek-harness.local-server` routes, plus
 the reviewed additive `swallowtail-adapter-zcode`,
 `swallowtail-adapter-cline`, `swallowtail-adapter-goose`,
 `swallowtail-adapter-copilot-cli`, `swallowtail-adapter-mistral-vibe`, `swallowtail-adapter-qoder`,
 `swallowtail-adapter-openhands`, `swallowtail-adapter-kiro`, and
-`swallowtail-adapter-deepagents`. The candidate is 40 packages and 47
+`swallowtail-adapter-deepagents`. The tag is 40 packages and 47
 production routes. OpenHands Agent Server is deferred: that package exists
 without a production route. The additive packages are not part of the
 immutable `v0.3.2` inventories.
@@ -330,23 +330,26 @@ mutation.
 No manifest version, passing gate, changelog, clean commit, or generated
 candidate grants authority to mutate external state.
 
-After candidate acceptance, the operator must explicitly authorize the exact
-tag action against:
+Current tagged identity is `v0.3.3` at
+`51d186208e75dca4c04f077dd7179ec3c2fafae9`. Later candidates require a
+strictly greater version, an absent matching tag, and explicit operator
+authorization of:
 
 - source commit
 - canonical branch and remote
-- tag name `v0.3.3`
+- the selected later tag name
 - annotated tag message
 - confirmation that no crate publication or GitHub Release is included
 
-This version selection does not authorize candidate preparation, tag creation,
-or push. Creating the local tag and pushing it are separate mutations unless one
-approval names both. Branch push, workflow edit, crates.io publication,
-GitHub Release creation, consumer edits, and provider work remain separate.
+A passing gate, changelog, or closeout commit does not authorize candidate
+preparation, tag creation, or push. Creating the local tag and pushing it are
+separate mutations unless one approval names both. Branch push, workflow
+edit, crates.io publication, GitHub Release creation, consumer edits, and
+provider work remain separate. Do not move or recreate an existing tag.
 
 ## Acceptance
 
-- all 40 candidate packages are separately consumable from one exact source
+- all 40 `v0.3.3` packages are separately consumable from one exact source
   identity
 - OpenHands exists as a package without a production route
 - the 29th and 30th Command Code and idioms packages first appear in `v0.3.2`

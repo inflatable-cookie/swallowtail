@@ -14,7 +14,7 @@ shape.
 
 ## Next Task
 
-Close the annotated v0.3.3 source tag at the CI-green candidate commit.
+Promote Spec 011 into Contract 057 (g04.004 card 010).
 
 ## Index
 

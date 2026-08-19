@@ -22,8 +22,8 @@ and selection policy.
 | --- | --- | --- | --- |
 | Inventory existing instance, access, discovery, catalogue, version, and prepared-facade records against the consumer connection lifecycle. | completed | Contracts 005-006, 008, 014, 020, 029, 032, 037, 047; Spec 011 | `g04.001` |
 | Fold inventory into Spec 011 and name contract targets without facade code. | completed | Spec 011; Research 168 | `g04.002` |
-| Pin the post-g03 source tree as an immutable tag before facade implementation. | planned | Contract 036 | `g04.003` |
-| Promote the readiness/admission contract after that tag. | planned | Spec 011; Contracts 006, 008, 037, 047 | after `g04.003` |
+| Pin the post-g03 source tree as an immutable tag before facade implementation. | completed | Contract 036 | `g04.003` |
+| Promote the readiness/admission contract after that tag. | planned | Spec 011; Contracts 006, 008, 037, 047 | `g04.004` |
 | Realize the persistence port and optional simple adapter. | planned | Spec 011 | after contract |
 | Realize addable-route catalog, admission, and config field descriptors. | planned | Spec 011 | after contract |
 | Realize library-max sign-in loops through host ports. | planned | Spec 011; Contracts 006, 010, 014, 017 | after contract |
@@ -34,19 +34,19 @@ and selection policy.
 
 ## Planned Next Roadmaps
 
-- [g04.003 Current Source Tag Before Readiness](003-current-source-tag-before-readiness.md) — blocks facade implementation
+- [g04.004 Readiness And Admission Contract Promotion](004-readiness-admission-contract-promotion.md) — writes Contract 057; no facade code
 
 ## Current Checkpoint
 
-- g04.001 and g04.002 are complete. Research 168 and Spec 011 name a new
-  lifecycle contract in front of 047, with seam amendments only
-- g04.003 cards 006-008 completed: `v0.3.3` candidate
-  `51d186208e75dca4c04f077dd7179ec3c2fafae9` is on `main` with all five
-  dispatched CI jobs green. Card 009 stays behind tag authorization
-- no facade implementation card becomes ready before that tag
+- g04.001 through g04.003 are complete. Annotated `v0.3.3` peels to
+  `51d186208e75dca4c04f077dd7179ec3c2fafae9`
+- g04.004 cards 010-012 are ready: promote Spec 011 into Contract 057 and
+  amend only the named seams
+- no facade implementation card is ready until 057 is active
 
 ## Milestones
 
 - [001 Route Availability And Readiness Evidence](./001-route-availability-and-readiness-evidence.md) — completed
 - [002 Route Readiness Spec And Contract Targets](./002-route-readiness-spec-and-contract-targets.md) — completed
-- [003 Current Source Tag Before Readiness](./003-current-source-tag-before-readiness.md) — planned
+- [003 Current Source Tag Before Readiness](./003-current-source-tag-before-readiness.md) — completed
+- [004 Readiness And Admission Contract Promotion](./004-readiness-admission-contract-promotion.md) — planned

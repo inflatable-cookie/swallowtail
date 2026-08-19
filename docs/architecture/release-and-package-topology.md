@@ -3,19 +3,19 @@
 Status: active
 Owner: Tom
 Updated: 2026-08-19
-Realization: roadmap g02.001; g03.043; g03.059
+Realization: roadmap g02.001; g03.043; g03.059; g04.003
 
 ## Boundary
 
 Swallowtail's immutable `v0.3.2` source tag is a coordinated 30-package Rust
-workspace. The `v0.3.3` candidate is the 40-package current source: it adds
+workspace. Immutable `v0.3.3` is the 40-package current source: it adds
 `swallowtail-adapter-deepseek-harness` and its two routes,
 `deepseek-harness.jsonrpc` and `deepseek-harness.local-server`, plus
 `swallowtail-adapter-zcode`, `swallowtail-adapter-cline`,
 `swallowtail-adapter-goose`, `swallowtail-adapter-copilot-cli`,
 `swallowtail-adapter-mistral-vibe`, `swallowtail-adapter-qoder`,
 `swallowtail-adapter-openhands`, `swallowtail-adapter-kiro`, and
-`swallowtail-adapter-deepagents`. That candidate is 40 packages and 47
+`swallowtail-adapter-deepagents`. That tag is 40 packages and 47
 production routes. OpenHands Agent Server is deferred: that package exists
 without a production route. Immutable `v0.3.2` inventories stay 30 packages
 and 36 routes.
@@ -105,7 +105,7 @@ self-contained. Compatible version requirements preserve coordinated package
 identity without claiming registry availability.
 
 Release metadata, dependency topology, and semantic API checks distinguish the
-40-package `v0.3.3` candidate from the immutable 30-package `v0.3.2` source.
+40-package `v0.3.3` tag from the immutable 30-package `v0.3.2` source.
 Immutable `v0.1.x` inventories retain their 27
 packages and 33 routes; `v0.2.0` and `v0.3.1` retain their 28-package,
 34-route inventory. Later candidates do not rewrite historical release notes,

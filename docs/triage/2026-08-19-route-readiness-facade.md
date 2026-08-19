@@ -69,8 +69,9 @@ Also: cut a current-source tag before building the facade.
 
 ## Disposition
 
-Promoted into Spec 011 and g04.002-g04.003. Authenticated subject, library-max
+Promoted into Spec 011 and g04.002-g04.004. Authenticated subject, library-max
 sign-in, persistence port, overlay, and the pre-facade tag are no longer open
-product questions. Remaining design is crate placement, first-proof routes,
-optional 047 presentation metadata, and `0.3.3` versus `0.4.0` under Contract
-036.
+product questions. `v0.3.3` is tagged at `51d18620`. Crate placement and
+first-proof routes are named in Spec 011. Remaining work is Contract 057 plus
+the named seam amendments. Optional 047 overlay presentation metadata stays
+later and must not change `Ready` / `NotReady`.

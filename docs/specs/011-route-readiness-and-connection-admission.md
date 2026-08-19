@@ -110,8 +110,9 @@ First-proof routes, pending the post-tag implementation tranche:
 047 may later carry optional overlay presentation metadata. That must not
 change `Ready` / `NotReady`. Accent color stays consumer-only.
 
-The pre-facade source tag remains g04.003. Contract 036's hypothesis is
-`v0.3.3` unless that inventory finds a break.
+The pre-facade source tag is annotated `v0.3.3` at
+`51d186208e75dca4c04f077dd7179ec3c2fafae9`. Contract promotion is g04.004.
+Facade implementation stays planned until that contract is active.
 
 ## Contract Targets
 
@@ -147,14 +148,14 @@ Amendments, only to keep seams:
 - 047 snapshots stay free of emails, tokens, and targets
 - enablement and readiness remain independent
 - no implementation of this surface ships before the current-source tag named
-  by g04.003
+  by g04.003; that tag now exists
 - display color, composer routing, and gateway flattening stay consumer-owned
 
 ## Promotion Targets
 
 - architecture: planned connection-lifecycle placement beside 037 and 047
   (noted in system architecture; not realized)
-- contracts: new readiness/admission contract after the g04.003 tag;
+- contracts: new readiness/admission contract in g04.004;
   006/008/010/014/015/017/029/032/037/047 amendments only at the named seams
-- roadmaps: g04.003 source tag, then contract and implementation
+- roadmaps: g04.003 tagged; g04.004 contract promotion, then implementation
 - logs: inventory and contract-target closeout

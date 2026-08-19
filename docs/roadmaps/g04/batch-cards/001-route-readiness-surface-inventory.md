@@ -1,6 +1,6 @@
 # 001 Route Readiness Surface Inventory
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-19
 Milestone: `../001-route-availability-and-readiness-evidence.md`
@@ -34,14 +34,15 @@ selecting a new contract or changing provider behavior.
 
 ## Acceptance Criteria
 
-- [ ] every mapped consumer surface names an existing Swallowtail record, an
+- [x] every mapped consumer surface names an existing Swallowtail record, an
       explicit gap, or a consumer overlay
-- [ ] Contract 047 is classified as a selection snapshot, not an add-connection
+- [x] Contract 047 is classified as a selection snapshot, not an add-connection
       facade
-- [ ] no credential reference, account secret, or raw provider payload is
+- [x] no credential reference, account secret, or raw provider payload is
       proposed as a public record
-- [ ] remaining operator decisions are listed, not settled
-- [ ] no production code changes
+- [x] remaining design (crate placement, first-proof routes, tag class) is
+      listed; Spec 011 product decisions stay settled
+- [x] no production code changes
 
 ## Validation
 
@@ -60,4 +61,10 @@ selecting a new contract or changing provider behavior.
 
 ## Auto-Continuation
 
-No. Card 002 stays planned until this inventory is accepted.
+Yes, into card 002.
+
+## Evidence
+
+Research 168. `SignInAction` is unused in production. Discovery is per selected
+driver. 047 already projects readiness chips without emails or targets. ACP
+authenticate is not login.

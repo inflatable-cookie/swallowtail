@@ -1113,6 +1113,29 @@ billing, topology, writable access, network, search, tools, prompts, workflows,
 or persistence. Access status remains observed or visibly caller-asserted.
 Every expanded profile is inspectable before effects.
 
+## Planned Connection Lifecycle
+
+Spec 011 and Research 168 place a consuming connection-lifecycle facade in
+front of prepared integration and the Contract 047 selection snapshot. It is
+not realized.
+
+The intended direction is:
+
+```text
+adapter-local addable-route descriptors
+  -> consumer-assembled addable-route catalog
+  -> credential-field descriptors or library-owned sign-in loop via host ports
+  -> admitted configured instance in a consumer store
+  -> readiness refresh, optional authenticated-subject observation, version
+  -> Contract 047 selection snapshot and bound model catalogue
+  -> existing prepared facade
+```
+
+Core would own the new records. Runtime would own lifecycle roles and the
+store trait. Host-local would own optional simple store adapters. Addable
+descriptors stay adapter-local. 047 remains a snapshot without emails, tokens,
+or targets. No umbrella registry crate.
+
 ## Event Vocabulary Posture
 
 Two event vocabularies coexist by recorded disposition, not duplication:

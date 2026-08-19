@@ -1,6 +1,6 @@
 # 002 Route Readiness Gap And Contract Fit
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-19
 Milestone: `../001-route-availability-and-readiness-evidence.md`
@@ -30,10 +30,10 @@ consumer-owned overlay.
 
 ## Acceptance Criteria
 
-- [ ] every gap has one classification against Spec 011
-- [ ] overlapping 047/037/008 responsibilities stay explicit
-- [ ] no implementation roadmap is marked ready
-- [ ] g04.002 and g04.003 remain the follow-ons
+- [x] every gap has one classification against Spec 011
+- [x] overlapping 047/037/008 responsibilities stay explicit
+- [x] no implementation roadmap is marked ready
+- [x] g04.002 and g04.003 remain the follow-ons
 
 ## Validation
 
@@ -45,3 +45,8 @@ consumer-owned overlay.
 ## Auto-Continuation
 
 Yes, into card 003.
+
+## Evidence
+
+Research 168 contract-fit table. New lifecycle contract; 047 stays a snapshot;
+006/008/010/014/015/017/029/032/037/047 named as seam amendments only.

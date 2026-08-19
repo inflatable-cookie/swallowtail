@@ -1,6 +1,6 @@
 # 003 Follow-On Roadmap Confirmation
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-19
 Milestone: `../001-route-availability-and-readiness-evidence.md`
@@ -28,10 +28,9 @@ keep facade implementation planned until that tag exists.
 
 ## Acceptance Criteria
 
-- [ ] g04.002 and g04.003 remain the next named roadmaps
-- [ ] facade implementation stays planned until g04.003 tags
-- [ ] inventory contradictions, if any, are written into Spec 011 or a later
-      roadmap rather than silently dropped
+- [x] g04.002 and g04.003 remain the next named roadmaps
+- [x] facade implementation stays planned until g04.003 tags
+- [x] inventory facts are written into Spec 011 rather than silently dropped
 
 ## Validation
 
@@ -43,3 +42,8 @@ keep facade implementation planned until that tag exists.
 ## Auto-Continuation
 
 No. Roadmap g04.001 closes. Continue through g04.002.
+
+## Evidence
+
+Spec 011 inventory fold. Follow-ons unchanged. No facade implementation card
+is ready.

@@ -1,12 +1,12 @@
 # 002 Route Readiness Spec And Contract Targets
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-19
 Depends on: g04.001
 Vision tags: consumer integration, route readiness, explicit selection
 Contract refs: 005-006, 008, 010, 014, 017, 020, 029, 032, 037, 047
-Planning state: cards 004-005 planned
+Planning state: cards 004-005 completed
 
 ## Problem
 
@@ -22,9 +22,9 @@ code or selecting a source tag.
 
 ## Goals
 
-- [ ] fold g04.001 inventory into Spec 011
-- [ ] name contract targets and 047/006/008 amendment bounds
-- [ ] keep implementation and the source tag on later roadmaps
+- [x] fold g04.001 inventory into Spec 011
+- [x] name contract targets and 047/006/008 amendment bounds
+- [x] keep implementation and the source tag on later roadmaps
 
 ## Non-Goals
 
@@ -37,23 +37,23 @@ code or selecting a source tag.
 
 ### Batch 2.1 — Inventory Into Spec
 
-- [ ] Execute card 004 after g04.001 card 003.
-- [ ] replace remaining spec unknowns with inventory facts
-- [ ] keep the four settled operator decisions intact
+- [x] Execute card 004 after g04.001 card 003.
+- [x] replace remaining spec unknowns with inventory facts
+- [x] keep the four settled operator decisions intact
 
 ### Batch 2.2 — Contract Targets
 
-- [ ] Execute card 005 after card 004.
-- [ ] name the new contract versus amendments
-- [ ] record crate-placement and first-proof-route questions that still
+- [x] Execute card 005 after card 004.
+- [x] name the new contract versus amendments
+- [x] record crate-placement and first-proof-route questions that still
       belong to implementation roadmaps
 
 ## Acceptance Criteria
 
-- [ ] Spec 011 is ready to promote once the source tag exists
-- [ ] 047 remains a selection snapshot
-- [ ] no facade implementation card is ready
-- [ ] g04.003 remains the source-tag gate before building
+- [x] Spec 011 is ready to promote once the source tag exists
+- [x] 047 remains a selection snapshot
+- [x] no facade implementation card is ready
+- [x] g04.003 remains the source-tag gate before building
 
 ## Decision Gates
 

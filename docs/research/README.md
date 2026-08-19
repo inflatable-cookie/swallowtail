@@ -199,6 +199,10 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [061 Residual Feature Matrix `No` Currentness And Tranche Selection](./061-residual-feature-matrix-no-currentness-and-tranche-selection.md)
 - [062 Qwen And Ollama Interactive Contract Fit And Corpora](./062-qwen-and-ollama-interactive-contract-fit-and-corpora.md)
 
+### Connection And Readiness
+
+- [168 Route Readiness Surface Inventory](./168-route-readiness-surface-inventory.md)
+
 ### Release, Docs, And Consumer Front Door
 
 - [090 Prepared Facade Multi-Consumer Usability Reassessment](./090-prepared-facade-multi-consumer-usability-reassessment.md)

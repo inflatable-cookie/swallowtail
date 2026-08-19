@@ -14,7 +14,7 @@ shape.
 
 ## Next Task
 
-Map existing Swallowtail instance, access, discovery, and catalogue records against the consumer connection-lifecycle surfaces.
+Define the current-source release inventory for the pre-facade tag.
 
 ## Index
 

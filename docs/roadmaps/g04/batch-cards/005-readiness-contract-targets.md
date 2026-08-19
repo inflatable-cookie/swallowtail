@@ -1,6 +1,6 @@
 # 005 Readiness Contract Targets
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-19
 Milestone: `../002-route-readiness-spec-and-contract-targets.md`
@@ -26,9 +26,9 @@ the contract text as executable authority.
 
 ## Acceptance Criteria
 
-- [ ] architecture notes the lifecycle placement
-- [ ] contract ids or amendment bounds are named
-- [ ] g04.003 remains the implementation gate
+- [x] architecture notes the lifecycle placement
+- [x] contract ids or amendment bounds are named
+- [x] g04.003 remains the implementation gate
 
 ## Validation
 
@@ -39,3 +39,9 @@ the contract text as executable authority.
 ## Auto-Continuation
 
 No. Continue through g04.003 only after this roadmap closes.
+
+## Evidence
+
+System architecture planned connection-lifecycle section. Spec 011 names a new
+contract after 056 and seam amendments to 006, 008, 010, 014, 015, 017, 029,
+032, 037, and 047.

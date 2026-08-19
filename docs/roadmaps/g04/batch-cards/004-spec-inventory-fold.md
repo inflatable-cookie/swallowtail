@@ -1,6 +1,6 @@
 # 004 Spec Inventory Fold
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-19
 Milestone: `../002-route-readiness-spec-and-contract-targets.md`
@@ -27,9 +27,9 @@ settled operator decisions.
 
 ## Acceptance Criteria
 
-- [ ] Spec 011 cites the inventory research note
-- [ ] no settled decision is silently reversed
-- [ ] remaining questions cannot change product policy
+- [x] Spec 011 cites the inventory research note
+- [x] no settled decision is silently reversed
+- [x] remaining questions cannot change product policy
 
 ## Validation
 
@@ -40,3 +40,8 @@ settled operator decisions.
 ## Auto-Continuation
 
 Yes, into card 005.
+
+## Evidence
+
+Spec 011 inventory fold: unused `SignInAction`, per-driver discovery, crate
+placement, and first-proof routes.

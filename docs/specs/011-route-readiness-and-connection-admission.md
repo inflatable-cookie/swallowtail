@@ -3,6 +3,7 @@
 Status: draft
 Owner: Tom
 Updated: 2026-08-19
+Research: 168
 
 ## Purpose
 
@@ -76,15 +77,67 @@ Out:
    distinct from the consumer-default marker. Mixed gateway rows remain
    consumer assembly of several catalogues.
 
-## Remaining Design, Not Product Policy
+## Inventory Fold
 
-- crate placement for the store port and simple adapter
-- exact sign-in action vocabulary versus today's discovery sign-in actions
-- which production routes prove the first tranche (hosted API key, hosted
-  OAuth, installed, local runtime)
-- whether 047 later admits optional presentation metadata from the overlay
-  without changing selection readiness
-- `0.3.3` versus `0.4.0` for the pre-facade source tag, under Contract 036
+Research 168 maps each consumer surface onto an existing record, a gap, or a
+consumer overlay. The whole lifecycle is not already covered. 047 stays the
+selection snapshot.
+
+Material facts:
+
+- `SignInAction` is unused by production adapters
+- `DiscoveryDriver` cannot list addable routes; consumers import adapter crates
+- `AccessStatus` / 047 credential posture already match readiness chips
+- ACP `authenticate` is not login
+- `ExecutionLayer` is not Hosted / Installed / Local runtime
+- no host port exists for browser, loopback callback, or device-code display
+
+Crate placement, pending implementation:
+
+- records in `swallowtail-core`
+- roles and store trait in `swallowtail-runtime`
+- optional in-memory and JSON-file adapters in `swallowtail-host-local`
+- addable descriptors adapter-local, like prepared facades
+
+First-proof routes, pending the post-tag implementation tranche:
+
+- hosted API key: Anthropic Messages
+- hosted interactive OAuth: Anthropic or Claude subscription, whichever can
+  be proved without extracting secrets
+- installed: Codex app-server
+- local runtime: Ollama attach
+
+047 may later carry optional overlay presentation metadata. That must not
+change `Ready` / `NotReady`. Accent color stays consumer-only.
+
+The pre-facade source tag remains g04.003. Contract 036's hypothesis is
+`v0.3.3` unless that inventory finds a break.
+
+## Contract Targets
+
+New contract, next after 056, owning:
+
+- addable-route catalog
+- credential-field descriptors
+- sign-in loop through host ports
+- store port
+- readiness refresh
+- authenticated-subject observation
+- config-field descriptors
+- model-presentation overlay
+
+Amendments, only to keep seams:
+
+| Contract | Bound |
+| --- | --- |
+| 006 | subject observation and sign-in loop versus credential status |
+| 008 | addable route versus discovered candidate versus configured instance |
+| 010 | host ports for URL open, loopback callback, device-code display |
+| 014 | field descriptors versus credential leases |
+| 015 / 017 | delegated harness activation stays distinct from login |
+| 029 / 032 | instance update observation reuses claims |
+| 037 | preparation remains after admission |
+| 047 | no emails, tokens, or targets; overlay does not change selection readiness |
 
 ## Acceptance Criteria
 
@@ -99,9 +152,9 @@ Out:
 
 ## Promotion Targets
 
-- architecture: connection-lifecycle placement beside 037 and 047
-- contracts: new readiness/admission contract; 006/008/014/047 amendments
-  only where the selection snapshot and connection facade must stay distinct
-- roadmaps: g04.002 spec closeout, g04.003 source tag, then implementation
-  after that tag
-- logs: operator decisions above
+- architecture: planned connection-lifecycle placement beside 037 and 047
+  (noted in system architecture; not realized)
+- contracts: new readiness/admission contract after the g04.003 tag;
+  006/008/010/014/015/017/029/032/037/047 amendments only at the named seams
+- roadmaps: g04.003 source tag, then contract and implementation
+- logs: inventory and contract-target closeout

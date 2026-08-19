@@ -1,13 +1,13 @@
 # 001 Route Availability And Readiness Evidence
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-19
 Depends on: completed g03
 Vision tags: consumer integration, route readiness, explicit selection
 Contract refs: 005-006, 008, 014, 020, 029, 032, 037, 047
 Spec: 011
-Planning state: card 001 ready; cards 002-003 planned
+Planning state: cards 001-003 completed
 
 ## Problem
 
@@ -35,13 +35,13 @@ or overlay policy.
 
 ## Goals
 
-- [ ] inventory every existing Swallowtail record that already covers part of
+- [x] inventory every existing Swallowtail record that already covers part of
       the connection lifecycle
-- [ ] map Poodle and T3 Code surfaces onto those records without copying UI
+- [x] map Poodle and T3 Code surfaces onto those records without copying UI
       policy
-- [ ] classify missing, overlapping, or over-reaching surfaces against Spec 011
-- [ ] confirm g04.002 and g04.003 remain the next roadmaps
-- [ ] keep facade implementation planned until the g04.003 tag exists
+- [x] classify missing, overlapping, or over-reaching surfaces against Spec 011
+- [x] confirm g04.002 and g04.003 remain the next roadmaps
+- [x] keep facade implementation planned until the g04.003 tag exists
 
 ## Non-Goals
 
@@ -59,37 +59,37 @@ or overlay policy.
 
 ### Batch 1.1 — Surface Inventory
 
-- [ ] Execute card 001.
-- [ ] derive the exact existing record and facade inventory from canonical
+- [x] Execute card 001.
+- [x] derive the exact existing record and facade inventory from canonical
       repository surfaces
-- [ ] map addable-route, credential, admission, readiness, config, auth, update,
+- [x] map addable-route, credential, admission, readiness, config, auth, update,
       and model-list needs onto those records
-- [ ] rank gaps without selecting a contract shape
+- [x] rank gaps without selecting a contract shape
 
 ### Batch 1.2 — Gap Classification And Contract Fit
 
-- [ ] Execute card 002 after card 001 fixes the bounded source set.
-- [ ] classify reuse, amendment, new contract, or consumer-owned overlay
+- [x] Execute card 002 after card 001 fixes the bounded source set.
+- [x] classify reuse, amendment, new contract, or consumer-owned overlay
       using Spec 011's settled decisions
-- [ ] confirm no implementation card is compiled before the g04.003 tag
-- [ ] reopen an operator decision only if inventory contradicts it
+- [x] confirm no implementation card is compiled before the g04.003 tag
+- [x] reopen an operator decision only if inventory contradicts it
 
 ### Batch 1.3 — Follow-On Confirmation
 
-- [ ] Execute card 003 after current evidence agrees with Spec 011.
-- [ ] confirm g04.002 spec closeout and g04.003 source tag as the next
+- [x] Execute card 003 after current evidence agrees with Spec 011.
+- [x] confirm g04.002 spec closeout and g04.003 source tag as the next
       roadmaps
-- [ ] leave facade implementation planned until that tag exists
+- [x] leave facade implementation planned until that tag exists
 
 ## Acceptance Criteria
 
-- [ ] every inventoried consumer surface identifies the Swallowtail record that
+- [x] every inventoried consumer surface identifies the Swallowtail record that
       already covers it, the gap, or the consumer overlay
-- [ ] Contract 047 remains a selection snapshot, not the whole lifecycle
-- [ ] credential, UI, routing, and secret-storage authority stay explicit
-- [ ] no readiness contract is promoted from this roadmap alone
-- [ ] only card 001 starts ready
-- [ ] g04.002 and g04.003 remain the compiled follow-ons
+- [x] Contract 047 remains a selection snapshot, not the whole lifecycle
+- [x] credential, UI, routing, and secret-storage authority stay explicit
+- [x] no readiness contract is promoted from this roadmap alone
+- [x] only card 001 starts ready
+- [x] g04.002 and g04.003 remain the compiled follow-ons
 
 ## Decision Gates
 

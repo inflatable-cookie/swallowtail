@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-31
+Updated: 2026-08-19
 
 ## Purpose
 
@@ -60,6 +60,11 @@ Harness-owned authentication never authorizes extracting its credential for a
 direct endpoint. Public API keys, workload identities, subscription OAuth,
 server basic auth, and provider credentials delegated to a harness remain
 separate access mechanisms.
+
+Contract 057 credential-field descriptors describe what a host should collect.
+They are not leases. A completed 057 sign-in loop materializes an opaque
+`CredentialRef`; this contract still owns acquire, audience binding, redaction,
+and awaited release. Field descriptors never carry secret bytes.
 
 ## Structured Direct Inference
 
@@ -190,6 +195,7 @@ repository QA.
   endpoint in public records
 - a credential cannot cross scope or endpoint audience
 - delegated harness auth exposes no secret
+- 057 field descriptors never substitute for a scoped lease
 - direct inference runs without a fake working resource
 - a provider-required output-token bound stays explicit and consumer-owned
 - no implicit inference retry occurs

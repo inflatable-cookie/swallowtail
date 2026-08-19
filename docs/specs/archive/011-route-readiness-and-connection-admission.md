@@ -1,9 +1,10 @@
 # 011 Route Readiness And Connection Admission
 
-Status: draft
+Status: promoted
 Owner: Tom
 Updated: 2026-08-19
 Research: 168
+Promoted to: Contract 057
 
 ## Purpose
 
@@ -111,8 +112,9 @@ First-proof routes, pending the post-tag implementation tranche:
 change `Ready` / `NotReady`. Accent color stays consumer-only.
 
 The pre-facade source tag is annotated `v0.3.3` at
-`51d186208e75dca4c04f077dd7179ec3c2fafae9`. Contract promotion is g04.004.
-Facade implementation stays planned until that contract is active.
+`51d186208e75dca4c04f077dd7179ec3c2fafae9`. This spec is promoted to Contract
+057. Facade implementation stays planned until implementation roadmaps are
+compiled against that contract.
 
 ## Contract Targets
 
@@ -155,7 +157,7 @@ Amendments, only to keep seams:
 
 - architecture: planned connection-lifecycle placement beside 037 and 047
   (noted in system architecture; not realized)
-- contracts: new readiness/admission contract in g04.004;
-  006/008/010/014/015/017/029/032/037/047 amendments only at the named seams
-- roadmaps: g04.003 tagged; g04.004 contract promotion, then implementation
-- logs: inventory and contract-target closeout
+- contracts: Contract 057; 006/008/010/014/015/017/029/032/037/047
+  amendments only at the named seams
+- roadmaps: g04.004 contract promotion, then implementation
+- logs: inventory, contract-target, and promotion closeout

@@ -5,7 +5,7 @@ architecture, contracts, roadmaps, or logs.
 
 ## Active Specs
 
-- [011 Route Readiness And Connection Admission](011-route-readiness-and-connection-admission.md)
+None. Spec 011 is promoted to Contract 057.
 
 ## Promoted Specs
 
@@ -14,6 +14,7 @@ architecture, contracts, roadmaps, or logs.
 - [005 Paged Provider Session History](005-paged-provider-session-history.md)
 - [006 Pluggable Learned Idioms](006-pluggable-learned-idioms.md)
 - [007 Route-Path Idioms Opt-In](007-route-path-idioms-opt-in.md)
+- [011 Route Readiness And Connection Admission](archive/011-route-readiness-and-connection-admission.md)
 
 ## Archived Specs
 
@@ -25,6 +26,7 @@ architecture, contracts, roadmaps, or logs.
 - [008 DeepSeek Harness JSON-RPC Route](archive/008-deepseek-harness-jsonrpc-route.md)
 - [009 DeepSeek Harness Web `/api` Route](archive/009-deepseek-harness-web-api-route.md)
 - [010 ZCode App-Server Route](archive/010-zcode-app-server-route.md)
+- [011 Route Readiness And Connection Admission](archive/011-route-readiness-and-connection-admission.md)
 
 ## Support
 

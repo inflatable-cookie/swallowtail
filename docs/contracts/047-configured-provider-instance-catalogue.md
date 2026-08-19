@@ -3,6 +3,7 @@
 Status: active
 Owner: Tom
 Created: 2026-08-04
+Updated: 2026-08-19
 
 ## Purpose
 
@@ -46,8 +47,10 @@ Provider identity remains the provider id attached to each model-catalogue
 entry. The catalogue does not invent one provider id for a multi-provider
 gateway, infer one from an adapter name, or merge model and provider identity.
 
-Display names, ordering, grouping, favourites, and product labels remain
-downstream presentation.
+Display names, grouping chrome, and product labels remain downstream
+presentation. Contract 057 may store bound overlay markers for hide, ordinal,
+consumer-default, and favourite. Those markers are not this snapshot's fields
+and cannot change `Ready` / `NotReady`.
 
 ## Credential And Availability Posture
 
@@ -61,8 +64,9 @@ The projection retains only safe access posture:
 - support authority
 - access-evidence provenance
 
-It never retains a credential reference, lease, token, account identifier, or
-raw probe response.
+It never retains a credential reference, lease, token, account identifier,
+email, or raw probe response. Authenticated-subject observation belongs to
+Contract 057, redacted by default, and does not enter this snapshot.
 
 The exact dimensions remain independently observable. Catalogue selection
 readiness is conservative and derived, not caller supplied. An instance is
@@ -125,8 +129,12 @@ than silently merged.
 The catalogue is an immutable snapshot of supplied evidence. It provides no
 watcher, registry persistence, refresh loop, hot reload, health probe, routing
 policy, default selection, failover, or fallback. A consumer replaces the
-snapshot after separately authorized discovery, preparation, or catalogue
-work.
+snapshot after separately authorized discovery, preparation, catalogue work,
+or a Contract 057 readiness refresh.
+
+Contract 057 owns addable-route listing, admission, sign-in, store, subject
+observation, and the model-presentation overlay. This catalogue stays the
+selection snapshot. Overlay markers must not make `NotReady` selectable.
 
 ## Consumer Ownership
 
@@ -147,7 +155,8 @@ new ready snapshot.
 
 - exact prepared route and model-catalogue bindings survive projection
 - unavailable instances remain visible and never report `Ready`
-- credentials, target references, provider payloads, and handles are absent
+- credentials, target references, emails, provider payloads, and handles are absent
+- overlay markers cannot change `Ready` / `NotReady`
 - arbitrary cross-instance, cross-facade, cross-access, and cross-driver
   evidence is rejected
 - model and provider ids remain separate

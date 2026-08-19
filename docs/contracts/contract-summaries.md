@@ -120,7 +120,7 @@ contract file owns the exact rules.
   from provider identity, scopes connection and affinity state, excludes
   authentication and implicit recovery, and requires explicit joined close.
 
-## Release, Prepared Integration, And Consumer Surfaces (036-054)
+## Release, Prepared Integration, And Consumer Surfaces (036-057)
 
 - **036** fixes the 27-package `v0.1.x` source line, admits Muse as package 28
   in `v0.2.0`, sanctions the fail-closed binding API in the `v0.3.0`
@@ -247,6 +247,12 @@ contract file owns the exact rules.
   plans, a fixed bounded fold of selected idioms into the
   developer-instructions channel, and a capability gate rejecting the
   opt-in on non-advertising routes before provider work.
+- **057** owns the pre-session connection lifecycle in front of 047:
+  consumer-assembled addable-route catalog, admission, credential-field
+  descriptors, library-max sign-in through host ports, a persistence port,
+  readiness refresh distinct from enablement, redacted-by-default subject
+  observation, config-field descriptors, and a bound model-presentation
+  overlay. 047 stays a selection snapshot.
 
 ## Amendments
 
@@ -257,3 +263,10 @@ contract file owns the exact rules.
   qualifies unstable ACP form negotiation for the Claude choice-and-Other
   subset. Richer forms are declined; URL authority and invented context remain
   absent.
+- **006, 008, 010, 014, 015, 017, 029, 032, 037, and 047** record Contract
+  057 seams only: subject and sign-in versus credential status; addable route
+  versus discovered candidate versus configured instance; URL, loopback, and
+  device-code host ports; field descriptors versus leases; ACP authenticate
+  and delegated login distinct from add-connection sign-in; update
+  observation reusing 029/032; preparation after admission; 047 remaining a
+  snapshot without emails, tokens, targets, or overlay-changed readiness.

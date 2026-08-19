@@ -1,6 +1,6 @@
 # 012 Readiness Spec Promotion
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-19
 Milestone: `../004-readiness-admission-contract-promotion.md`
@@ -26,10 +26,10 @@ until 057 is active.
 
 ## Acceptance Criteria
 
-- [ ] Spec 011 is archived and listed as promoted
-- [ ] Contract 057 appears in the index and summaries
-- [ ] architecture still records the lifecycle as planned, now citing 057
-- [ ] no implementation card is ready
+- [x] Spec 011 is archived and listed as promoted
+- [x] Contract 057 appears in the index and summaries
+- [x] architecture still records the lifecycle as planned, now citing 057
+- [x] no implementation card is ready
 
 ## Validation
 
@@ -45,3 +45,10 @@ No. Compile implementation roadmaps only after g04.004 closes.
 
 - Stop if Spec 011 still holds an unsettled product decision.
 - Stop if architecture would claim the facade is realized.
+
+## Evidence
+
+Spec 011 archived at
+`docs/specs/archive/011-route-readiness-and-connection-admission.md`.
+Contract index, summaries, and README include 057. Planned connection
+lifecycle cites 057 and remains unrealized. No implementation card is ready.

@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-25
+Updated: 2026-08-19
 
 ## Purpose
 
@@ -24,6 +24,10 @@ The low-level layer remains public and independently usable for advanced
 consumers, custom hosts, remote-authoritative topology, and conformance.
 Prepared integrations are additive. They do not replace or weaken the
 low-level roles.
+
+Contract 057 admits a configured instance and refreshes readiness. Preparation
+starts after that instance exists. This contract does not list addable routes,
+run sign-in, persist instances, or own the model-presentation overlay.
 
 Prepared integrations belong to their adapter crates. Shared plan-derivation,
 preparation-evidence, and diagnostic records belong in

@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-01
+Updated: 2026-08-19
 
 ## Purpose
 
@@ -190,6 +190,10 @@ browser or device flow, terminal action, external helper, API key, endpoint,
 billing, or authentication-method fallback. Provider-private response metadata
 is ignored. It cannot change public access evidence or enter stable
 diagnostics.
+
+Contract 057 owns the add-connection sign-in loop through host ports. ACP
+`authenticate` remains activation of one already authorized harness
+credential. It is not 057 login.
 
 The first qualified mapping is Grok Build `0.2.114` with pre-existing
 subscription OAuth, adapter-private `cached_token`, and

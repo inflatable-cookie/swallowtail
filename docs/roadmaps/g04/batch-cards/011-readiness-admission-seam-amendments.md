@@ -1,6 +1,6 @@
 # 011 Readiness And Admission Seam Amendments
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-19
 Milestone: `../004-readiness-admission-contract-promotion.md`
@@ -35,13 +35,13 @@ Amend, only at the named bound:
 
 ## Acceptance Criteria
 
-- [ ] each named contract records the 057 seam without absorbing 057's
+- [x] each named contract records the 057 seam without absorbing 057's
       ownership
-- [ ] 015 / 017 still distinguish authenticate and delegated login from the
+- [x] 015 / 017 still distinguish authenticate and delegated login from the
       connection sign-in loop
-- [ ] 047 still forbids emails, tokens, and targets
-- [ ] overlay markers cannot change `Ready` / `NotReady`
-- [ ] no unnamed contract is edited
+- [x] 047 still forbids emails, tokens, and targets
+- [x] overlay markers cannot change `Ready` / `NotReady`
+- [x] no unnamed contract is edited
 
 ## Validation
 
@@ -58,3 +58,9 @@ Yes, into card 012.
 - Stop if an amendment would let 047 carry account identifiers or change
   selection readiness.
 - Stop if login and ACP authenticate collapse into one role.
+
+## Evidence
+
+Named seam paragraphs added to 006, 008, 010, 014, 015, 017, 029, 032, 037,
+and 047. 047 still excludes emails, tokens, and targets. Overlay markers
+cannot change selection readiness. No unnamed contract was edited.

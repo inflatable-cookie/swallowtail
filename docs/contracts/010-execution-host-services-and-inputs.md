@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-08
+Updated: 2026-08-19
 
 ## Purpose
 
@@ -149,6 +149,20 @@ Contract 014 requires exact operation-scope and audience binding plus an
 explicit awaited release boundary. Delegated harness authentication still
 exposes no secret.
 
+## Interactive Sign-In Ports
+
+Contract 057 sign-in loops require optional host service kinds that do not
+collapse into Credential, Process, or Network:
+
+- open a host-approved URL
+- bind a loopback callback for one sign-in operation
+- display a device code
+
+Spawning an approved login helper stays process authority. These ports never
+return secret bytes to portable records, never embed a browser or keychain,
+and never start sign-in by being registered. A loop that needs a missing port
+fails closed.
+
 ## Working Resources
 
 Consumers identify product resources. The host resolves them into scoped
@@ -274,6 +288,8 @@ billing, support authority, privacy posture, ownership, or topology.
 - a hosted API driver executes without process service
 - a one-shot CLI fails preflight without process service
 - delegated harness authentication does not require secret extraction
+- interactive sign-in ports do not embed a browser, keychain, or secret
+- a 057 sign-in loop fails closed when a required port is missing
 - raw paths and secrets are absent from portable requests and diagnostics
 - native and interpreted launches both clear ambient environment
 - immutable launcher prefix arguments participate in host argument limits

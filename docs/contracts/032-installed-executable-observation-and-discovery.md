@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-31
+Updated: 2026-08-19
 
 ## Purpose
 
@@ -68,6 +68,10 @@ An observation cannot create a configured instance, revise an instance,
 authorize execution, select a route, authenticate, or prove model access,
 entitlement, catalogue freshness, or provider availability. Promotion remains
 an explicit consumer or host configuration action outside discovery.
+
+Contract 057 may project an update affordance from this observation plus a
+Contract 029 claim. The observation still cannot admit an instance or start
+sign-in.
 
 ## Outcomes
 

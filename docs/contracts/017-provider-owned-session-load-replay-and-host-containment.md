@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-08
+Updated: 2026-08-19
 
 ## Purpose
 
@@ -270,6 +270,12 @@ execute. Starting it requires explicit host and operator authorization,
 executable and environment validation, and an isolated provider-state scope.
 Authentication success only refreshes evidence for the same configured
 instance and endpoint audience.
+
+Contract 057 owns library-max add-connection sign-in: start, poll, complete,
+cancel, and timeout through host ports, including admission of a new
+instance. This delegated path remains harness-owned activation or refresh for
+an already configured instance. It is not the 057 add-connection facade and
+still exposes no token.
 
 One harness may accept several credential mechanisms or downstream providers.
 Each combination remains a separate configured instance and access profile.

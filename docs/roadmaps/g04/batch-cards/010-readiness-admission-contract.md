@@ -1,6 +1,6 @@
 # 010 Readiness And Admission Contract
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-19
 Milestone: `../004-readiness-admission-contract-promotion.md`
@@ -29,12 +29,12 @@ Write Contract 057 from Spec 011 without implementing the facade.
 
 ## Acceptance Criteria
 
-- [ ] Contract 057 exists and is the owner of the named surfaces
-- [ ] 047 remains a selection snapshot
-- [ ] enablement and readiness stay independent
-- [ ] host ports cover URL open, loopback callback, and device-code display
+- [x] Contract 057 exists and is the owner of the named surfaces
+- [x] 047 remains a selection snapshot
+- [x] enablement and readiness stay independent
+- [x] host ports cover URL open, loopback callback, and device-code display
       without embedding a browser, keychain, or OAuth client secret
-- [ ] no production code changes
+- [x] no production code changes
 
 ## Validation
 
@@ -51,3 +51,8 @@ Yes, into card 011.
 - Stop if the draft would store raw secrets or require a Swallowtail server.
 - Stop if crate placement or first-proof routes would reopen a settled
   operator decision.
+
+## Evidence
+
+Contract 057 is active. Crate placement and first-proof routes remain later
+implementation notes. No Rust types were added.

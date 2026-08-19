@@ -1,13 +1,13 @@
 # 004 Readiness And Admission Contract Promotion
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-19
 Depends on: g04.003
 Vision tags: consumer integration, route readiness, explicit selection
-Contract refs: 006, 008, 010, 014, 015, 017, 020, 029, 032, 036-037, 047, 056
-Spec: 011
-Planning state: cards 010-012 ready
+Contract refs: 006, 008, 010, 014, 015, 017, 020, 029, 032, 036-037, 047, 056-057
+Spec: archived 011
+Planning state: cards 010-012 completed
 
 ## Problem
 
@@ -28,10 +28,10 @@ facade code.
 
 ## Goals
 
-- [ ] write Contract 057 from Spec 011
-- [ ] amend 006, 008, 010, 014, 015, 017, 029, 032, 037, and 047 only at the
+- [x] write Contract 057 from Spec 011
+- [x] amend 006, 008, 010, 014, 015, 017, 029, 032, 037, and 047 only at the
       named seams
-- [ ] archive Spec 011 and leave implementation planned until this contract
+- [x] archive Spec 011 and leave implementation planned until this contract
       is active
 
 ## Non-Goals
@@ -47,31 +47,31 @@ facade code.
 
 ### Batch 4.1 — New Contract
 
-- [ ] Execute card 010.
-- [ ] write Contract 057 as the owner of the lifecycle in front of 047
-- [ ] keep crate placement and first-proof routes as implementation notes,
+- [x] Execute card 010.
+- [x] write Contract 057 as the owner of the lifecycle in front of 047
+- [x] keep crate placement and first-proof routes as implementation notes,
       not as realized architecture
 
 ### Batch 4.2 — Seam Amendments
 
-- [ ] Execute card 011 after card 010.
-- [ ] amend only the named seams
-- [ ] keep 047 a selection snapshot and keep ACP authenticate and delegated
+- [x] Execute card 011 after card 010.
+- [x] amend only the named seams
+- [x] keep 047 a selection snapshot and keep ACP authenticate and delegated
       harness activation distinct from login
 
 ### Batch 4.3 — Spec Promotion
 
-- [ ] Execute card 012 after card 011.
-- [ ] archive Spec 011, update indexes, and point architecture at 057
-- [ ] leave implementation roadmaps uncompiled until this milestone closes
+- [x] Execute card 012 after card 011.
+- [x] archive Spec 011, update indexes, and point architecture at 057
+- [x] leave implementation roadmaps uncompiled until this milestone closes
 
 ## Acceptance Criteria
 
-- [ ] Contract 057 is active and owns the named lifecycle surfaces
-- [ ] 047 remains a selection snapshot without emails, tokens, or targets
-- [ ] enablement and readiness remain independent
-- [ ] no facade implementation ships from this roadmap
-- [ ] Spec 011 is archived after promotion
+- [x] Contract 057 is active and owns the named lifecycle surfaces
+- [x] 047 remains a selection snapshot without emails, tokens, or targets
+- [x] enablement and readiness remain independent
+- [x] no facade implementation ships from this roadmap
+- [x] Spec 011 is archived after promotion
 
 ## Decision Gates
 

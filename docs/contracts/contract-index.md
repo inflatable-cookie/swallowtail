@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-18
+Updated: 2026-08-19
 
 | Contract | Status | Scope |
 | --- | --- | --- |
@@ -62,3 +62,4 @@ Updated: 2026-08-18
 | [054 Paged Provider Session History](054-paged-provider-session-history.md) | active | Newest-first read-only provider history pages with shared replay projection, distinct from load readiness and reconciliation |
 | [055 Pluggable Learned Idioms](055-pluggable-learned-idioms.md) | active | Provider-neutral learned-preference mechanism: portable idiom records, confidence decay and merge, bounded selection, fail-soft signal sink, and host-owned prompt and transport boundaries |
 | [056 Route-Path Idioms Opt-In](056-route-path-idioms-opt-in.md) | active | Opt-in route feature: host-registered source and recorder ports, bound session option, fixed fold rule into developer instructions, capability-gated preflight, and a host-gated exception to the 055 prompt boundary |
+| [057 Route Readiness And Connection Admission](057-route-readiness-and-connection-admission.md) | active | Pre-session addable-route catalog, admission, sign-in through host ports, store port, readiness refresh, subject observation, and bound model overlay in front of 047 |

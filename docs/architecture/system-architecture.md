@@ -8,7 +8,7 @@ Updated: 2026-08-19
 
 Swallowtail has a forty-package current-source Rust workspace plus its
 strict Northstar authority spine. The immutable `v0.3.2` tag remains a
-thirty-package source baseline; the current tree adds ten unreleased reviewed
+thirty-package source baseline; immutable `v0.3.3` adds ten reviewed
 adapters. Those ten contribute eleven additional production route surfaces.
 OpenHands adds a package without a production route.
 
@@ -1115,9 +1115,9 @@ Every expanded profile is inspectable before effects.
 
 ## Planned Connection Lifecycle
 
-Spec 011 and Research 168 place a consuming connection-lifecycle facade in
-front of prepared integration and the Contract 047 selection snapshot. It is
-not realized.
+Contract 057 and Research 168 place a consuming connection-lifecycle facade
+in front of prepared integration and the Contract 047 selection snapshot. It
+is not realized.
 
 The intended direction is:
 
@@ -1134,7 +1134,8 @@ adapter-local addable-route descriptors
 Core would own the new records. Runtime would own lifecycle roles and the
 store trait. Host-local would own optional simple store adapters. Addable
 descriptors stay adapter-local. 047 remains a snapshot without emails, tokens,
-or targets. No umbrella registry crate.
+or targets. Overlay markers cannot change `Ready` / `NotReady`. No umbrella
+registry crate.
 
 ## Event Vocabulary Posture
 

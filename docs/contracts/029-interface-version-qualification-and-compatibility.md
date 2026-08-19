@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-17
+Updated: 2026-08-19
 
 ## Purpose
 
@@ -203,6 +203,10 @@ older-revision segment (see Segment Support Status). Unverified-newer
 observations carry the latest-qualified boundary and the
 adapter-private behavior revision available for a forward attempt. Discovery
 does not install, upgrade, downgrade, authenticate, or choose another driver.
+
+Contract 057 may derive an instance update observation from these claims and
+from Contract 032 observations. It does not create a second currentness
+system, install, or authenticate.
 
 Preflight checks every required exact interface point against the configured
 instance and selected driver claim before provider work. Missing, substituted,

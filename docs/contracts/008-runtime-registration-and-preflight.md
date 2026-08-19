@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-24
+Updated: 2026-08-19
 
 ## Purpose
 
@@ -91,6 +91,12 @@ resolves them.
 A discovered candidate is not a configured instance. Discovery may report
 absent, discovered, incompatible, or failed without authenticating, mutating
 configuration, starting persistent services, or choosing defaults.
+
+Contract 057 addable-route descriptors are a separate catalog. They list
+routes a consumer might admit. They are not discovery candidates and not
+configured instances. `SignInAction` remains an advertisement; 057 owns the
+start, poll, complete, cancel, and timeout loop. Admission through the 057
+store produces a configured instance; discovery still cannot.
 
 ## Access State
 

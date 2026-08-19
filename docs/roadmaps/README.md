@@ -14,7 +14,7 @@ shape.
 
 ## Next Task
 
-Promote Spec 011 into Contract 057 (g04.004 card 010).
+Compile the first Contract 057 implementation roadmaps.
 
 ## Index
 

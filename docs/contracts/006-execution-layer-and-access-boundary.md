@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-19
+Updated: 2026-08-19
 
 ## Purpose
 
@@ -105,6 +105,13 @@ The execution host owns:
 Swallowtail may expose safe auth status, supported sign-in actions, access
 profile metadata, and credential requirements. Stable public records never
 contain secret material.
+
+Contract 057 owns the library sign-in loop and optional authenticated-subject
+observation. Credential, entitlement, endpoint, and runtime dimensions stay
+here. A disclosed email, login, or plan label is not credential state, not an
+instance id, and not a 047 selection field. Hosted, installed, and
+local-runtime grouping in 057 is presentation topology, not a third
+execution layer.
 
 The consumer owns:
 

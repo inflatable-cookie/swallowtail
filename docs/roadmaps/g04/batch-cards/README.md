@@ -2,14 +2,13 @@
 
 ## Active
 
-- [010-readiness-admission-contract.md](./010-readiness-admission-contract.md)
-- [011-readiness-admission-seam-amendments.md](./011-readiness-admission-seam-amendments.md)
-- [012-readiness-spec-promotion.md](./012-readiness-spec-promotion.md)
-
 ## Planned
 
 ## Completed
 
+- [012-readiness-spec-promotion.md](./012-readiness-spec-promotion.md)
+- [011-readiness-admission-seam-amendments.md](./011-readiness-admission-seam-amendments.md)
+- [010-readiness-admission-contract.md](./010-readiness-admission-contract.md)
 - [009-current-source-annotated-tag.md](./009-current-source-annotated-tag.md)
 - [008-current-source-canonical-ci.md](./008-current-source-canonical-ci.md)
 - [007-current-source-local-candidate.md](./007-current-source-local-candidate.md)

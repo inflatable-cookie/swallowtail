@@ -5,7 +5,7 @@ release_repo_root=$(cd "$(dirname "$0")/.." && pwd)
 cd "$release_repo_root"
 
 release_immutable_baseline_dir=release-baselines/public-api-0.3.0
-release_baseline_dir=release-baselines/public-api-0.3.2
+release_baseline_dir=release-baselines/public-api-0.3.3
 release_unreleased_baseline_dir=release-baselines/public-api-unreleased
 release_unreleased_packages="$release_unreleased_baseline_dir/packages.txt"
 release_toolchain=nightly-2026-08-05
@@ -47,11 +47,11 @@ while IFS= read -r release_package; do
     grep -Fvx -f "$release_api" \
       "$release_immutable_baseline_dir/$release_package.txt" | grep -q .
   then
-    printf 'v0.3.2 release API removes an immutable item: %s\n' "$release_package" >&2
+    printf 'v0.3.3 release API removes an immutable v0.3.0 item: %s\n' "$release_package" >&2
     exit 1
   fi
   diff -u \
     "$release_api" \
     "$release_actual_dir/$release_package.txt"
 done < "$release_expected_packages"
-printf 'semantic API passed: 30 immutable v0.3.2 packages plus 13 reviewed unreleased API surfaces; v0.3.0 removals remain forbidden\n'
+printf 'semantic API passed: 40 packages at v0.3.3; immutable v0.3.2 remains 30; v0.3.0 removals remain forbidden\n'

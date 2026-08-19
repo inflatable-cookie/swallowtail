@@ -14,7 +14,7 @@ shape.
 
 ## Next Task
 
-Implement the current-source local candidate for the pre-facade tag.
+Validate the local v0.3.3 source candidate before authorizing card 008 canonical CI.
 
 ## Index
 

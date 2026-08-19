@@ -8,18 +8,17 @@ Realization: roadmap g02.001; g03.043; g03.059
 ## Boundary
 
 Swallowtail's immutable `v0.3.2` source tag is a coordinated 30-package Rust
-workspace, two packages ahead of the `v0.3.1` tag's 28 packages. Current source
-adds the reviewed but unreleased `swallowtail-adapter-deepseek-harness`
-package and its two routes, `deepseek-harness.jsonrpc` and
-`deepseek-harness.local-server`, plus the reviewed but unreleased
+workspace. The `v0.3.3` candidate is the 40-package current source: it adds
+`swallowtail-adapter-deepseek-harness` and its two routes,
+`deepseek-harness.jsonrpc` and `deepseek-harness.local-server`, plus
 `swallowtail-adapter-zcode`, `swallowtail-adapter-cline`,
 `swallowtail-adapter-goose`, `swallowtail-adapter-copilot-cli`,
 `swallowtail-adapter-mistral-vibe`, `swallowtail-adapter-qoder`,
 `swallowtail-adapter-openhands`, `swallowtail-adapter-kiro`, and
-`swallowtail-adapter-deepagents`. Current
-source is 40 packages and 47 production routes in the candidate tree.
-OpenHands Agent Server is deferred: that package exists without a production
-route.
+`swallowtail-adapter-deepagents`. That candidate is 40 packages and 47
+production routes. OpenHands Agent Server is deferred: that package exists
+without a production route. Immutable `v0.3.2` inventories stay 30 packages
+and 36 routes.
 The immutable `v0.1.x` source tags contain 27 packages; `v0.2.0` and later tags
 contain 28 after adding `swallowtail-adapter-muse`. `swallowtail-adapter-command-code`
 and `swallowtail-idioms` first appear in `v0.3.2`. No crate is published to
@@ -106,7 +105,7 @@ self-contained. Compatible version requirements preserve coordinated package
 identity without claiming registry availability.
 
 Release metadata, dependency topology, and semantic API checks distinguish the
-40-package current candidate from the immutable 30-package `v0.3.2` source.
+40-package `v0.3.3` candidate from the immutable 30-package `v0.3.2` source.
 Immutable `v0.1.x` inventories retain their 27
 packages and 33 routes; `v0.2.0` and `v0.3.1` retain their 28-package,
 34-route inventory. Later candidates do not rewrite historical release notes,
@@ -114,7 +113,7 @@ tag contents, or evidence.
 
 ## Version And Toolchains
 
-All packages in the current source tag share version `0.3.2`.
+All packages in the current source tag share version `0.3.3`.
 
 - unified MSRV: Rust `1.95.0`
 - verified target: Apple Silicon macOS
@@ -132,9 +131,9 @@ A consumer selects only the packages it needs:
 
 ```toml
 [dependencies]
-swallowtail-core = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.3.2" }
-swallowtail-runtime = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.3.2" }
-swallowtail-adapter-codex = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.3.2" }
+swallowtail-core = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.3.3" }
+swallowtail-runtime = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.3.3" }
+swallowtail-adapter-codex = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.3.3" }
 ```
 
 All selected packages must use the same tag. Consumers do not combine moving
@@ -146,9 +145,9 @@ dependencies. In particular, the Claude Agent ACP npm sidecar is pinned by the
 consuming application and resolved from its local `.bin`; it is not embedded
 in a Rust source tag.
 
-## v0.3.2 Release Shape
+## v0.3.3 Release Shape
 
-The release version is `0.3.2`. Its package order places
+The release version is `0.3.3`. Its package order places
 core and protocols first, idioms before runtime, then host support, testkit,
 transport, and adapters. This keeps the
 runtime-to-idioms dependency resolvable from independently packaged source.
@@ -157,13 +156,11 @@ The release is one clean canonical commit plus deterministic evidence:
 
 - exact commit and parent
 - clean worktree
-- 30-package immutable release metadata and topology plus the 40-package
-  unreleased candidate, immutable 28-package
+- 40-package `v0.3.3` release metadata and topology, kept distinct from the
+  immutable 30-package `v0.3.2`, 28-package
   `v0.2.0` / `v0.3.1` and 27-package `v0.1.x` evidence
-- frozen 30-package `v0.3.2` semantic API inventory plus separate reviewed
-  current-source overrides for post-tag API surfaces, including the ten
-  additive packages and compatible Claude Agent, Cursor, and Grok additions,
-  with removals from the
+- frozen 40-package `v0.3.3` semantic API inventory; historical `v0.3.2`
+  files stay immutable, with removals from the
   immutable 28-package `v0.3.0` baseline forbidden
 - documented public API
 - dependency and security policy

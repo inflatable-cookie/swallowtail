@@ -1,0 +1,331 @@
+pub mod swallowtail_adapter_kimi
+pub enum swallowtail_adapter_kimi::KimiCodePreparedDriver
+pub swallowtail_adapter_kimi::KimiCodePreparedDriver::Acp
+pub swallowtail_adapter_kimi::KimiCodePreparedDriver::Headless
+pub enum swallowtail_adapter_kimi::KimiCodePreparedIntegration
+pub swallowtail_adapter_kimi::KimiCodePreparedIntegration::Acp(swallowtail_adapter_kimi::KimiPreparedIntegration)
+pub swallowtail_adapter_kimi::KimiCodePreparedIntegration::Headless(swallowtail_adapter_kimi::KimiHeadlessPreparedIntegration)
+impl swallowtail_adapter_kimi::KimiCodePreparedIntegration
+pub const fn swallowtail_adapter_kimi::KimiCodePreparedIntegration::driver(&self) -> swallowtail_adapter_kimi::KimiCodePreparedDriver
+pub enum swallowtail_adapter_kimi::KimiLocalServerPermissionMode
+pub swallowtail_adapter_kimi::KimiLocalServerPermissionMode::Auto
+pub swallowtail_adapter_kimi::KimiLocalServerPermissionMode::Manual
+pub swallowtail_adapter_kimi::KimiLocalServerPermissionMode::Yolo
+pub struct swallowtail_adapter_kimi::KimiAcpDriver
+impl swallowtail_adapter_kimi::KimiAcpDriver
+pub const fn swallowtail_adapter_kimi::KimiAcpDriver::new(swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::runtime_identity::CredentialRef) -> Self
+impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_kimi::KimiAcpDriver
+pub fn swallowtail_adapter_kimi::KimiAcpDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_kimi::KimiAcpDriver::discover_installed_executable(&self, swallowtail_runtime::installed_executable::InstalledExecutableDiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_core::registration::discovery::DiscoveryOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::InteractiveSessionDriver for swallowtail_adapter_kimi::KimiAcpDriver
+pub fn swallowtail_adapter_kimi::KimiAcpDriver::load_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::LoadSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_runtime::roles::LoadedSession, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_kimi::KimiAcpDriver::open_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_kimi::KimiAcpDriver::resume_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::ProviderSessionCatalogueDriver for swallowtail_adapter_kimi::KimiAcpDriver
+pub fn swallowtail_adapter_kimi::KimiAcpDriver::list_provider_sessions(&self, swallowtail_runtime::provider_session_import::catalogue::ProviderSessionCataloguePlan, swallowtail_runtime::provider_session_import::catalogue::ProviderSessionCatalogueRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_runtime::provider_session_import::outcome::ProviderSessionCatalogueOutcome, swallowtail_runtime::provider_session_import::failure::ProviderSessionOperationFailure>>
+impl swallowtail_runtime::roles::ProviderSessionImportDriver for swallowtail_adapter_kimi::KimiAcpDriver
+pub fn swallowtail_adapter_kimi::KimiAcpDriver::import_provider_session(&self, swallowtail_runtime::provider_session_import::import::ProviderSessionImportPlan, swallowtail_runtime::provider_session_import::import::ProviderSessionImportRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_runtime::provider_session_import::outcome::ProviderSessionImportOutcome, swallowtail_runtime::provider_session_import::failure::ProviderSessionOperationFailure>>
+pub struct swallowtail_adapter_kimi::KimiAcpSessionImportAuthority
+pub struct swallowtail_adapter_kimi::KimiCodePreparationInput
+impl swallowtail_adapter_kimi::KimiCodePreparationInput
+pub const fn swallowtail_adapter_kimi::KimiCodePreparationInput::driver(&self) -> swallowtail_adapter_kimi::KimiCodePreparedDriver
+pub const fn swallowtail_adapter_kimi::KimiCodePreparationInput::new(swallowtail_adapter_kimi::KimiCodePreparedDriver, swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_runtime::installed_executable::InstalledExecutableTarget, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub fn swallowtail_adapter_kimi::KimiCodePreparationInput::with_state_root(self, swallowtail_runtime::host_reference::WorkingResourceRef) -> Self
+pub struct swallowtail_adapter_kimi::KimiCodePreparationProbe
+impl swallowtail_adapter_kimi::KimiCodePreparationProbe
+pub const fn swallowtail_adapter_kimi::KimiCodePreparationProbe::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::time::Deadline, swallowtail_runtime::installed_executable::DiscoveryCancellation) -> Self
+pub struct swallowtail_adapter_kimi::KimiHeadlessDriver
+impl swallowtail_adapter_kimi::KimiHeadlessDriver
+pub const fn swallowtail_adapter_kimi::KimiHeadlessDriver::new(swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::runtime_identity::CredentialRef) -> Self
+impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_kimi::KimiHeadlessDriver
+pub fn swallowtail_adapter_kimi::KimiHeadlessDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_kimi::KimiHeadlessDriver::discover_installed_executable(&self, swallowtail_runtime::installed_executable::InstalledExecutableDiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_core::registration::discovery::DiscoveryOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::StructuredRunDriver for swallowtail_adapter_kimi::KimiHeadlessDriver
+pub fn swallowtail_adapter_kimi::KimiHeadlessDriver::start_run(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_kimi::KimiHeadlessPreparationInput
+impl swallowtail_adapter_kimi::KimiHeadlessPreparationInput
+pub const fn swallowtail_adapter_kimi::KimiHeadlessPreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_runtime::installed_executable::InstalledExecutableTarget, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub struct swallowtail_adapter_kimi::KimiHeadlessPreparationProbe
+impl swallowtail_adapter_kimi::KimiHeadlessPreparationProbe
+pub const fn swallowtail_adapter_kimi::KimiHeadlessPreparationProbe::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::time::Deadline, swallowtail_runtime::installed_executable::DiscoveryCancellation) -> Self
+pub struct swallowtail_adapter_kimi::KimiHeadlessPreparedEvidence
+impl swallowtail_adapter_kimi::KimiHeadlessPreparedEvidence
+pub const fn swallowtail_adapter_kimi::KimiHeadlessPreparedEvidence::access(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_kimi::KimiHeadlessPreparedEvidence::observable_activity(&self) -> &swallowtail_core::observable_activity::route_profile::ObservableActivityProfile
+pub const fn swallowtail_adapter_kimi::KimiHeadlessPreparedEvidence::observation(&self) -> &swallowtail_core::installed_executable::InstalledExecutableObservation
+pub const fn swallowtail_adapter_kimi::KimiHeadlessPreparedEvidence::operation(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub const fn swallowtail_adapter_kimi::KimiHeadlessPreparedEvidence::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub struct swallowtail_adapter_kimi::KimiHeadlessPreparedIntegration
+impl swallowtail_adapter_kimi::KimiHeadlessPreparedIntegration
+pub const fn swallowtail_adapter_kimi::KimiHeadlessPreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_kimi::KimiHeadlessPreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_kimi::KimiHeadlessPreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_kimi::KimiHeadlessPreparedIntegration::environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
+pub const fn swallowtail_adapter_kimi::KimiHeadlessPreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_kimi::KimiHeadlessPreparedIntegration::low_level_driver(&self) -> swallowtail_adapter_kimi::KimiHeadlessDriver
+pub const fn swallowtail_adapter_kimi::KimiHeadlessPreparedIntegration::observation(&self) -> &swallowtail_core::installed_executable::InstalledExecutableObservation
+pub const fn swallowtail_adapter_kimi::KimiHeadlessPreparedIntegration::target(&self) -> &swallowtail_runtime::installed_executable::InstalledExecutableTarget
+pub fn swallowtail_adapter_kimi::KimiHeadlessPreparedIntegration::validate_execution_binding(&self, &swallowtail_core::runtime_identity::ExecutionHostId, &swallowtail_runtime::installed_executable::InstalledExecutableTarget) -> core::result::Result<(), swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_kimi::KimiHeadlessPreparedIntegration
+pub fn swallowtail_adapter_kimi::KimiHeadlessPreparedIntegration::prepare_run(&self, swallowtail_adapter_kimi::KimiHeadlessRunInput) -> core::result::Result<swallowtail_adapter_kimi::KimiHeadlessPreparedRun, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_kimi::KimiHeadlessPreparedRun
+impl swallowtail_adapter_kimi::KimiHeadlessPreparedRun
+pub const fn swallowtail_adapter_kimi::KimiHeadlessPreparedRun::evidence(&self) -> &swallowtail_adapter_kimi::KimiHeadlessPreparedEvidence
+pub fn swallowtail_adapter_kimi::KimiHeadlessPreparedRun::low_level_driver(&self) -> swallowtail_adapter_kimi::KimiHeadlessDriver
+pub const fn swallowtail_adapter_kimi::KimiHeadlessPreparedRun::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_kimi::KimiHeadlessPreparedRun::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
+pub fn swallowtail_adapter_kimi::KimiHeadlessPreparedRun::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_kimi::KimiHeadlessRunInput
+impl swallowtail_adapter_kimi::KimiHeadlessRunInput
+pub const fn swallowtail_adapter_kimi::KimiHeadlessRunInput::accept_managed_recovery(self) -> Self
+pub const fn swallowtail_adapter_kimi::KimiHeadlessRunInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_kimi::KimiModelSelection, swallowtail_runtime::content::OperationContent, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_adapter_kimi::KimiLocalServerAttachedInput
+impl swallowtail_adapter_kimi::KimiLocalServerAttachedInput
+pub const fn swallowtail_adapter_kimi::KimiLocalServerAttachedInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_core::interface_version::InterfaceVersionBinding) -> Self
+pub struct swallowtail_adapter_kimi::KimiLocalServerBindingImportInput
+impl swallowtail_adapter_kimi::KimiLocalServerBindingImportInput
+pub const fn swallowtail_adapter_kimi::KimiLocalServerBindingImportInput::allow_unverified_newer(self) -> Self
+pub const fn swallowtail_adapter_kimi::KimiLocalServerBindingImportInput::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ScopeId, swallowtail_adapter_kimi::KimiAcpSessionImportAuthority, swallowtail_adapter_kimi::KimiLocalServerBindingImportTarget, swallowtail_runtime::time::Deadline, swallowtail_runtime::installed_executable::DiscoveryCancellation) -> Self
+pub struct swallowtail_adapter_kimi::KimiLocalServerBindingImportTarget
+pub struct swallowtail_adapter_kimi::KimiLocalServerCatalogueInput
+impl swallowtail_adapter_kimi::KimiLocalServerCatalogueInput
+pub const fn swallowtail_adapter_kimi::KimiLocalServerCatalogueInput::allow_unverified_newer(self) -> Self
+pub const fn swallowtail_adapter_kimi::KimiLocalServerCatalogueInput::new(swallowtail_runtime::identity::RequestId) -> Self
+pub const fn swallowtail_adapter_kimi::KimiLocalServerCatalogueInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_adapter_kimi::KimiLocalServerDriver
+impl swallowtail_adapter_kimi::KimiLocalServerDriver
+pub fn swallowtail_adapter_kimi::KimiLocalServerDriver::new() -> Self
+pub fn swallowtail_adapter_kimi::KimiLocalServerDriver::with_session_configuration(swallowtail_adapter_kimi::KimiLocalServerSessionConfiguration) -> Self
+impl swallowtail_runtime::roles::InteractiveSessionDriver for swallowtail_adapter_kimi::KimiLocalServerDriver
+pub fn swallowtail_adapter_kimi::KimiLocalServerDriver::open_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_kimi::KimiLocalServerDriver::resume_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::ModelCatalogDriver for swallowtail_adapter_kimi::KimiLocalServerDriver
+pub fn swallowtail_adapter_kimi::KimiLocalServerDriver::list_models(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::ProviderSessionManagementDriver for swallowtail_adapter_kimi::KimiLocalServerDriver
+pub fn swallowtail_adapter_kimi::KimiLocalServerDriver::archive_session(&self, swallowtail_runtime::provider_session_operation::ProviderSessionManagementPlan, swallowtail_runtime::provider_session_operation::ArchiveProviderSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_runtime::provider_session_operation::ProviderSessionManagementOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_kimi::KimiLocalServerDriver::delete_session(&self, swallowtail_runtime::provider_session_operation::ProviderSessionManagementPlan, swallowtail_runtime::provider_session_operation::DeleteProviderSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_runtime::provider_session_operation::ProviderSessionManagementOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_kimi::KimiLocalServerDriver::restore_session(&self, swallowtail_runtime::provider_session_operation::ProviderSessionManagementPlan, swallowtail_runtime::provider_session_operation::RestoreProviderSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_runtime::provider_session_operation::ProviderSessionManagementOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::ProviderSessionReconciliationDriver for swallowtail_adapter_kimi::KimiLocalServerDriver
+pub fn swallowtail_adapter_kimi::KimiLocalServerDriver::reconcile_provider_session(&self, swallowtail_runtime::provider_session_reconciliation::ProviderSessionReconciliationPlan, swallowtail_runtime::provider_session_reconciliation::ProviderSessionReconciliationRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_runtime::provider_session_reconciliation::outcome::ProviderSessionReconciliationOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::StructuredRunDriver for swallowtail_adapter_kimi::KimiLocalServerDriver
+pub fn swallowtail_adapter_kimi::KimiLocalServerDriver::start_run(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_kimi::KimiLocalServerObservation
+impl swallowtail_adapter_kimi::KimiLocalServerObservation
+pub const fn swallowtail_adapter_kimi::KimiLocalServerObservation::binding(&self) -> &swallowtail_core::interface_version::InterfaceVersionBinding
+pub const fn swallowtail_adapter_kimi::KimiLocalServerObservation::compatibility(&self) -> &swallowtail_core::interface_version::assessment::InterfaceCompatibilityAssessment
+pub const fn swallowtail_adapter_kimi::KimiLocalServerObservation::is_qualified(&self) -> bool
+pub struct swallowtail_adapter_kimi::KimiLocalServerOwnedHandle
+impl swallowtail_adapter_kimi::KimiLocalServerOwnedHandle
+pub async fn swallowtail_adapter_kimi::KimiLocalServerOwnedHandle::close(self) -> swallowtail_runtime::outcome::CleanupOutcome
+pub const fn swallowtail_adapter_kimi::KimiLocalServerOwnedHandle::prepared(&self) -> &swallowtail_adapter_kimi::KimiLocalServerPreparedIntegration
+pub struct swallowtail_adapter_kimi::KimiLocalServerOwnedInput
+impl swallowtail_adapter_kimi::KimiLocalServerOwnedInput
+pub const fn swallowtail_adapter_kimi::KimiLocalServerOwnedInput::new(swallowtail_adapter_kimi::KimiLocalServerAttachedInput, swallowtail_core::runtime_identity::InstanceTargetRef) -> Self
+pub struct swallowtail_adapter_kimi::KimiLocalServerPreparationProbe
+impl swallowtail_adapter_kimi::KimiLocalServerPreparationProbe
+pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparationProbe::new(swallowtail_runtime::identity::ScopeId, swallowtail_runtime::time::Deadline, swallowtail_runtime::installed_executable::DiscoveryCancellation) -> Self
+pub struct swallowtail_adapter_kimi::KimiLocalServerPreparedArchive
+impl swallowtail_adapter_kimi::KimiLocalServerPreparedArchive
+pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedArchive::evidence(&self) -> &swallowtail_runtime::provider_session_operation::PreparedProviderSessionManagementEvidence
+pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedArchive::execute(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_session_operation::ProviderSessionManagementOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedArchive::plan(&self) -> &swallowtail_runtime::provider_session_operation::ProviderSessionManagementPlan
+pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedArchive::request(&self) -> &swallowtail_runtime::provider_session_operation::ArchiveProviderSessionRequest
+pub struct swallowtail_adapter_kimi::KimiLocalServerPreparedBindingImport
+impl swallowtail_adapter_kimi::KimiLocalServerPreparedBindingImport
+pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedBindingImport::execute(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_session_management::ProviderSessionManagementBinding, swallowtail_runtime::preparation::PreparationFailure>>
+pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedBindingImport::request_id(&self) -> &swallowtail_runtime::identity::RequestId
+pub struct swallowtail_adapter_kimi::KimiLocalServerPreparedCatalogue
+impl swallowtail_adapter_kimi::KimiLocalServerPreparedCatalogue
+pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedCatalogue::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedCatalogue::list_models(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedCatalogue::low_level_driver(&self) -> swallowtail_adapter_kimi::KimiLocalServerDriver
+pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedCatalogue::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedCatalogue::request(&self) -> &swallowtail_runtime::roles::ModelCatalogRequest
+pub struct swallowtail_adapter_kimi::KimiLocalServerPreparedIntegration
+impl swallowtail_adapter_kimi::KimiLocalServerPreparedIntegration
+pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedIntegration::executable_target(&self) -> core::option::Option<&swallowtail_core::runtime_identity::InstanceTargetRef>
+pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedIntegration::low_level_driver(&self) -> swallowtail_adapter_kimi::KimiLocalServerDriver
+pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedIntegration::server(&self) -> &swallowtail_adapter_kimi::KimiLocalServerObservation
+pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedIntegration::state_root(&self) -> &swallowtail_runtime::host_reference::WorkingResourceRef
+impl swallowtail_adapter_kimi::KimiLocalServerPreparedIntegration
+pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedIntegration::binding_import_target(&self) -> swallowtail_adapter_kimi::KimiLocalServerBindingImportTarget
+impl swallowtail_adapter_kimi::KimiLocalServerPreparedIntegration
+pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedIntegration::prepare_archive_session(&self, swallowtail_adapter_kimi::KimiLocalServerSessionManagementInput) -> core::result::Result<swallowtail_adapter_kimi::KimiLocalServerPreparedArchive, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedIntegration::prepare_restore_session(&self, swallowtail_adapter_kimi::KimiLocalServerSessionManagementInput) -> core::result::Result<swallowtail_adapter_kimi::KimiLocalServerPreparedRestore, swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_kimi::KimiLocalServerPreparedIntegration
+pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedIntegration::prepare_binding_import(&self, swallowtail_adapter_kimi::KimiLocalServerBindingImportInput) -> core::result::Result<swallowtail_adapter_kimi::KimiLocalServerPreparedBindingImport, swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_kimi::KimiLocalServerPreparedIntegration
+pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedIntegration::prepare_catalogue(&self, swallowtail_adapter_kimi::KimiLocalServerCatalogueInput) -> core::result::Result<swallowtail_adapter_kimi::KimiLocalServerPreparedCatalogue, swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_kimi::KimiLocalServerPreparedIntegration
+pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedIntegration::prepare_run(&self, swallowtail_adapter_kimi::KimiLocalServerRunInput) -> core::result::Result<swallowtail_adapter_kimi::KimiLocalServerPreparedRun, swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_kimi::KimiLocalServerPreparedIntegration
+pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedIntegration::prepare_session(&self, swallowtail_adapter_kimi::KimiLocalServerSessionInput) -> core::result::Result<swallowtail_adapter_kimi::KimiLocalServerPreparedSession, swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_kimi::KimiLocalServerPreparedIntegration
+pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedIntegration::prepare_session_reconciliation(&self, swallowtail_adapter_kimi::KimiLocalServerReconciliationInput) -> core::result::Result<swallowtail_adapter_kimi::KimiLocalServerPreparedReconciliation, swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_kimi::KimiLocalServerPreparedIntegration
+pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedIntegration::prepare_working_state_restoration(&self, swallowtail_adapter_kimi::KimiLocalServerReconciliationInput) -> core::result::Result<swallowtail_runtime::working_state_restoration::PreparedWorkingStateRestoration, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_kimi::KimiLocalServerPreparedReconciliation
+impl swallowtail_adapter_kimi::KimiLocalServerPreparedReconciliation
+pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedReconciliation::evidence(&self) -> &swallowtail_runtime::provider_session_reconciliation::PreparedProviderSessionReconciliationEvidence
+pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedReconciliation::execute(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_session_reconciliation::outcome::ProviderSessionReconciliationOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedReconciliation::plan(&self) -> &swallowtail_runtime::provider_session_reconciliation::ProviderSessionReconciliationPlan
+pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedReconciliation::prepare_settled_session_restoration(self, swallowtail_adapter_kimi::KimiLocalServerPreparedSession, swallowtail_runtime::identity::RequestId) -> core::result::Result<swallowtail_runtime::settled_session_restoration::PreparedSettledSessionRestoration, swallowtail_runtime::preparation::PreparationFailure>
+pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedReconciliation::request(&self) -> &swallowtail_runtime::provider_session_reconciliation::ProviderSessionReconciliationRequest
+impl swallowtail_runtime::settled_session_restoration::SettledSessionReconciliationOperation for swallowtail_adapter_kimi::KimiLocalServerPreparedReconciliation
+pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedReconciliation::reconcile(alloc::boxed::Box<Self>, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_session_reconciliation::outcome::ProviderSessionReconciliationOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::working_state_restoration::WorkingStateRestorationOperation for swallowtail_adapter_kimi::KimiLocalServerPreparedReconciliation
+pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedReconciliation::method(&self) -> swallowtail_runtime::working_state_restoration::WorkingStateRestorationMethod
+pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedReconciliation::restore(alloc::boxed::Box<Self>, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::working_state_restoration::WorkingStateRestorationOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_kimi::KimiLocalServerPreparedRestore
+impl swallowtail_adapter_kimi::KimiLocalServerPreparedRestore
+pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedRestore::evidence(&self) -> &swallowtail_runtime::provider_session_operation::PreparedProviderSessionManagementEvidence
+pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedRestore::execute(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_session_operation::ProviderSessionManagementOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedRestore::plan(&self) -> &swallowtail_runtime::provider_session_operation::ProviderSessionManagementPlan
+pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedRestore::request(&self) -> &swallowtail_runtime::provider_session_operation::RestoreProviderSessionRequest
+pub struct swallowtail_adapter_kimi::KimiLocalServerPreparedRun
+impl swallowtail_adapter_kimi::KimiLocalServerPreparedRun
+pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedRun::configuration(&self) -> &swallowtail_adapter_kimi::KimiLocalServerSessionConfiguration
+pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedRun::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedRun::low_level_driver(&self) -> swallowtail_adapter_kimi::KimiLocalServerDriver
+pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedRun::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedRun::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
+pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedRun::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_kimi::KimiLocalServerPreparedSession
+impl swallowtail_adapter_kimi::KimiLocalServerPreparedSession
+pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedSession::configuration(&self) -> &swallowtail_adapter_kimi::KimiLocalServerSessionConfiguration
+pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedSession::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedSession::low_level_driver(&self) -> swallowtail_adapter_kimi::KimiLocalServerDriver
+pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedSession::open_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_adapter_kimi::KimiLocalServerPreparedSessionFuture
+pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedSession::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_kimi::KimiLocalServerPreparedSession::request(&self) -> &swallowtail_runtime::roles::OpenSessionRequest
+pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedSession::resume_request(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding) -> core::result::Result<swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_kimi::KimiLocalServerPreparedSession::resume_session(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_kimi::KimiLocalServerPreparedSessionFuture, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_kimi::KimiLocalServerReconciliationInput
+impl swallowtail_adapter_kimi::KimiLocalServerReconciliationInput
+pub const fn swallowtail_adapter_kimi::KimiLocalServerReconciliationInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_kimi::KimiModelSelection, swallowtail_runtime::session_binding::SessionResumeBinding, swallowtail_runtime::provider_operation_checkpoint::PersistedProviderOperationCheckpoint, swallowtail_runtime::provider_session_reconciliation::ProviderSessionReconciliationBounds) -> Self
+pub const fn swallowtail_adapter_kimi::KimiLocalServerReconciliationInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_adapter_kimi::KimiLocalServerRunInput
+impl swallowtail_adapter_kimi::KimiLocalServerRunInput
+pub const fn swallowtail_adapter_kimi::KimiLocalServerRunInput::accept_managed_recovery(self) -> Self
+pub const fn swallowtail_adapter_kimi::KimiLocalServerRunInput::allow_unverified_newer(self) -> Self
+pub const fn swallowtail_adapter_kimi::KimiLocalServerRunInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_kimi::KimiModelSelection, swallowtail_runtime::content::OperationContent, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::time::Deadline, swallowtail_adapter_kimi::KimiLocalServerSessionConfiguration) -> Self
+pub const fn swallowtail_adapter_kimi::KimiLocalServerRunInput::with_one_stream_reattachment(self) -> Self
+pub fn swallowtail_adapter_kimi::KimiLocalServerRunInput::with_reasoning(self, swallowtail_core::model::ReasoningMode) -> Self
+pub struct swallowtail_adapter_kimi::KimiLocalServerSessionConfiguration
+impl swallowtail_adapter_kimi::KimiLocalServerSessionConfiguration
+pub fn swallowtail_adapter_kimi::KimiLocalServerSessionConfiguration::disabled_tools(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = &str>
+pub const fn swallowtail_adapter_kimi::KimiLocalServerSessionConfiguration::new(swallowtail_adapter_kimi::KimiLocalServerPermissionMode) -> Self
+pub const fn swallowtail_adapter_kimi::KimiLocalServerSessionConfiguration::permission_mode(&self) -> swallowtail_adapter_kimi::KimiLocalServerPermissionMode
+pub fn swallowtail_adapter_kimi::KimiLocalServerSessionConfiguration::profile(&self) -> core::option::Option<&str>
+pub const fn swallowtail_adapter_kimi::KimiLocalServerSessionConfiguration::with_active_turn_detachment(self) -> Self
+pub fn swallowtail_adapter_kimi::KimiLocalServerSessionConfiguration::with_disabled_tools(self, impl core::iter::traits::collect::IntoIterator<Item = alloc::string::String>) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_kimi::KimiLocalServerSessionConfiguration::with_profile(self, impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_kimi::KimiLocalServerSessionInput
+impl swallowtail_adapter_kimi::KimiLocalServerSessionInput
+pub const fn swallowtail_adapter_kimi::KimiLocalServerSessionInput::allow_unverified_newer(self) -> Self
+pub fn swallowtail_adapter_kimi::KimiLocalServerSessionInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_kimi::KimiModelSelection, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_adapter_kimi::KimiLocalServerSessionConfiguration) -> Self
+pub const fn swallowtail_adapter_kimi::KimiLocalServerSessionInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub fn swallowtail_adapter_kimi::KimiLocalServerSessionInput::with_reasoning(self, swallowtail_core::model::ReasoningMode) -> Self
+pub struct swallowtail_adapter_kimi::KimiLocalServerSessionManagementInput
+impl swallowtail_adapter_kimi::KimiLocalServerSessionManagementInput
+pub const fn swallowtail_adapter_kimi::KimiLocalServerSessionManagementInput::allow_unverified_newer(self) -> Self
+pub const fn swallowtail_adapter_kimi::KimiLocalServerSessionManagementInput::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::provider_session_management::ProviderSessionManagementBinding) -> Self
+pub const fn swallowtail_adapter_kimi::KimiLocalServerSessionManagementInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_adapter_kimi::KimiModelSelection
+impl swallowtail_adapter_kimi::KimiModelSelection
+pub const fn swallowtail_adapter_kimi::KimiModelSelection::new(swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId) -> Self
+pub struct swallowtail_adapter_kimi::KimiPreparationInput
+impl swallowtail_adapter_kimi::KimiPreparationInput
+pub const fn swallowtail_adapter_kimi::KimiPreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_runtime::installed_executable::InstalledExecutableTarget, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub fn swallowtail_adapter_kimi::KimiPreparationInput::with_state_root(self, swallowtail_runtime::host_reference::WorkingResourceRef) -> Self
+pub struct swallowtail_adapter_kimi::KimiPreparationProbe
+impl swallowtail_adapter_kimi::KimiPreparationProbe
+pub const fn swallowtail_adapter_kimi::KimiPreparationProbe::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::time::Deadline, swallowtail_runtime::installed_executable::DiscoveryCancellation) -> Self
+pub struct swallowtail_adapter_kimi::KimiPreparedEvidence
+impl swallowtail_adapter_kimi::KimiPreparedEvidence
+pub const fn swallowtail_adapter_kimi::KimiPreparedEvidence::access(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_kimi::KimiPreparedEvidence::observation(&self) -> &swallowtail_core::installed_executable::InstalledExecutableObservation
+pub const fn swallowtail_adapter_kimi::KimiPreparedEvidence::operation(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub const fn swallowtail_adapter_kimi::KimiPreparedEvidence::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_kimi::KimiPreparedEvidence::state_root(&self) -> core::option::Option<&swallowtail_runtime::host_reference::WorkingResourceRef>
+pub struct swallowtail_adapter_kimi::KimiPreparedIntegration
+impl swallowtail_adapter_kimi::KimiPreparedIntegration
+pub const fn swallowtail_adapter_kimi::KimiPreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_kimi::KimiPreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_kimi::KimiPreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_kimi::KimiPreparedIntegration::environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
+pub const fn swallowtail_adapter_kimi::KimiPreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_kimi::KimiPreparedIntegration::low_level_driver(&self) -> swallowtail_adapter_kimi::KimiAcpDriver
+pub const fn swallowtail_adapter_kimi::KimiPreparedIntegration::observation(&self) -> &swallowtail_core::installed_executable::InstalledExecutableObservation
+pub const fn swallowtail_adapter_kimi::KimiPreparedIntegration::state_root(&self) -> core::option::Option<&swallowtail_runtime::host_reference::WorkingResourceRef>
+pub const fn swallowtail_adapter_kimi::KimiPreparedIntegration::target(&self) -> &swallowtail_runtime::installed_executable::InstalledExecutableTarget
+pub fn swallowtail_adapter_kimi::KimiPreparedIntegration::validate_execution_binding(&self, &swallowtail_core::runtime_identity::ExecutionHostId, &swallowtail_runtime::installed_executable::InstalledExecutableTarget) -> core::result::Result<(), swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_kimi::KimiPreparedIntegration
+pub fn swallowtail_adapter_kimi::KimiPreparedIntegration::prepare_session(&self, swallowtail_adapter_kimi::KimiSessionProfileInput) -> core::result::Result<swallowtail_adapter_kimi::KimiPreparedSession, swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_kimi::KimiPreparedIntegration
+pub fn swallowtail_adapter_kimi::KimiPreparedIntegration::prepare_session_catalogue(&self, swallowtail_adapter_kimi::KimiSessionCatalogueInput) -> core::result::Result<swallowtail_adapter_kimi::KimiPreparedSessionCatalogue, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_kimi::KimiPreparedIntegration::prepare_session_import(&self, &swallowtail_adapter_kimi::KimiPreparedSessionCatalogue, swallowtail_runtime::provider_session_import::candidate::ProviderSessionCandidate, swallowtail_adapter_kimi::KimiSessionProfileInput) -> core::result::Result<swallowtail_adapter_kimi::KimiPreparedSessionImport, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_kimi::KimiPreparedSession
+impl swallowtail_adapter_kimi::KimiPreparedSession
+pub fn swallowtail_adapter_kimi::KimiPreparedSession::authorize_local_server_import(&self, swallowtail_runtime::session_binding::SessionResumeBinding) -> core::result::Result<swallowtail_adapter_kimi::KimiAcpSessionImportAuthority, swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_kimi::KimiPreparedSession
+pub const fn swallowtail_adapter_kimi::KimiPreparedSession::evidence(&self) -> &swallowtail_adapter_kimi::KimiPreparedEvidence
+pub fn swallowtail_adapter_kimi::KimiPreparedSession::into_parts(self) -> (swallowtail_adapter_kimi::KimiPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest)
+pub fn swallowtail_adapter_kimi::KimiPreparedSession::load_request(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding) -> core::result::Result<swallowtail_runtime::roles::LoadSessionRequest, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_kimi::KimiPreparedSession::load_session(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_kimi::KimiPreparedSessionLoadFuture, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_kimi::KimiPreparedSession::low_level_driver(&self) -> swallowtail_adapter_kimi::KimiAcpDriver
+pub fn swallowtail_adapter_kimi::KimiPreparedSession::open_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_adapter_kimi::KimiPreparedSessionFuture
+pub const fn swallowtail_adapter_kimi::KimiPreparedSession::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub fn swallowtail_adapter_kimi::KimiPreparedSession::prepare_working_state_restoration(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding, swallowtail_runtime::identity::RuntimeTurnId) -> core::result::Result<swallowtail_runtime::working_state_restoration::PreparedWorkingStateRestoration, swallowtail_runtime::preparation::PreparationFailure>
+pub const fn swallowtail_adapter_kimi::KimiPreparedSession::request(&self) -> &swallowtail_runtime::roles::OpenSessionRequest
+pub fn swallowtail_adapter_kimi::KimiPreparedSession::resume_request(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding) -> core::result::Result<swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_kimi::KimiPreparedSession::resume_session(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_kimi::KimiPreparedSessionFuture, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_kimi::KimiPreparedSessionCatalogue
+impl swallowtail_adapter_kimi::KimiPreparedSessionCatalogue
+pub const fn swallowtail_adapter_kimi::KimiPreparedSessionCatalogue::evidence(&self) -> &swallowtail_runtime::provider_session_import::prepared::PreparedProviderSessionCatalogueEvidence
+pub fn swallowtail_adapter_kimi::KimiPreparedSessionCatalogue::list_page(&self, swallowtail_runtime::provider_session_import::catalogue::ProviderSessionCatalogueRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_session_import::outcome::ProviderSessionCatalogueOutcome, swallowtail_runtime::provider_session_import::failure::ProviderSessionOperationFailure>>
+pub fn swallowtail_adapter_kimi::KimiPreparedSessionCatalogue::list_sessions(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_session_import::outcome::ProviderSessionCatalogueOutcome, swallowtail_runtime::provider_session_import::failure::ProviderSessionOperationFailure>>
+pub fn swallowtail_adapter_kimi::KimiPreparedSessionCatalogue::low_level_driver(&self) -> swallowtail_adapter_kimi::KimiAcpDriver
+pub fn swallowtail_adapter_kimi::KimiPreparedSessionCatalogue::next_page_request(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::provider_session_import::candidate::ProviderSessionCursor) -> core::result::Result<swallowtail_runtime::provider_session_import::catalogue::ProviderSessionCatalogueRequest, swallowtail_runtime::preparation::PreparationFailure>
+pub const fn swallowtail_adapter_kimi::KimiPreparedSessionCatalogue::plan(&self) -> &swallowtail_runtime::provider_session_import::catalogue::ProviderSessionCataloguePlan
+pub const fn swallowtail_adapter_kimi::KimiPreparedSessionCatalogue::request(&self) -> &swallowtail_runtime::provider_session_import::catalogue::ProviderSessionCatalogueRequest
+pub struct swallowtail_adapter_kimi::KimiPreparedSessionImport
+impl swallowtail_adapter_kimi::KimiPreparedSessionImport
+pub const fn swallowtail_adapter_kimi::KimiPreparedSessionImport::evidence(&self) -> &swallowtail_runtime::provider_session_import::prepared::PreparedProviderSessionImportEvidence
+pub fn swallowtail_adapter_kimi::KimiPreparedSessionImport::import_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_session_import::outcome::ProviderSessionImportOutcome, swallowtail_runtime::provider_session_import::failure::ProviderSessionOperationFailure>>
+pub fn swallowtail_adapter_kimi::KimiPreparedSessionImport::low_level_driver(&self) -> swallowtail_adapter_kimi::KimiAcpDriver
+pub const fn swallowtail_adapter_kimi::KimiPreparedSessionImport::plan(&self) -> &swallowtail_runtime::provider_session_import::import::ProviderSessionImportPlan
+pub const fn swallowtail_adapter_kimi::KimiPreparedSessionImport::request(&self) -> &swallowtail_runtime::provider_session_import::import::ProviderSessionImportRequest
+pub struct swallowtail_adapter_kimi::KimiSessionCatalogueInput
+impl swallowtail_adapter_kimi::KimiSessionCatalogueInput
+pub const fn swallowtail_adapter_kimi::KimiSessionCatalogueInput::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ProviderSessionCatalogueId, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_core::provider_session_catalogue::ProviderSessionCatalogueBounds) -> Self
+pub const fn swallowtail_adapter_kimi::KimiSessionCatalogueInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_adapter_kimi::KimiSessionProfileInput
+impl swallowtail_adapter_kimi::KimiSessionProfileInput
+pub const fn swallowtail_adapter_kimi::KimiSessionProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_kimi::KimiModelSelection, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::session_options::SessionOptions) -> Self
+pub const swallowtail_adapter_kimi::KIMI_CODE_AXIS: &str
+pub const swallowtail_adapter_kimi::KIMI_CODE_BASELINE_VERSION: &str
+pub const swallowtail_adapter_kimi::KIMI_CODE_LATEST_QUALIFIED_VERSION: &str
+pub const swallowtail_adapter_kimi::KIMI_HEADLESS_BASELINE_VERSION: &str
+pub const swallowtail_adapter_kimi::KIMI_HEADLESS_LATEST_QUALIFIED_VERSION: &str
+pub const swallowtail_adapter_kimi::KIMI_LOCAL_SERVER_BASELINE_VERSION: &str
+pub const swallowtail_adapter_kimi::KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION: &str
+pub fn swallowtail_adapter_kimi::kimi_acp_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_kimi::kimi_acp_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_kimi::kimi_code_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
+pub fn swallowtail_adapter_kimi::kimi_headless_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_kimi::kimi_headless_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_kimi::kimi_local_server_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_kimi::kimi_local_server_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub async fn swallowtail_adapter_kimi::prepare_kimi(swallowtail_adapter_kimi::KimiPreparationInput, swallowtail_adapter_kimi::KimiPreparationProbe, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_kimi::KimiPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
+pub async fn swallowtail_adapter_kimi::prepare_kimi_code(swallowtail_adapter_kimi::KimiCodePreparationInput, swallowtail_adapter_kimi::KimiCodePreparationProbe, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_kimi::KimiCodePreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
+pub async fn swallowtail_adapter_kimi::prepare_kimi_headless(swallowtail_adapter_kimi::KimiHeadlessPreparationInput, swallowtail_adapter_kimi::KimiHeadlessPreparationProbe, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_kimi::KimiHeadlessPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
+pub async fn swallowtail_adapter_kimi::prepare_kimi_local_server_attached(swallowtail_adapter_kimi::KimiLocalServerAttachedInput, swallowtail_adapter_kimi::KimiLocalServerPreparationProbe, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_kimi::KimiLocalServerPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
+pub async fn swallowtail_adapter_kimi::start_kimi_local_server_owned(swallowtail_adapter_kimi::KimiLocalServerOwnedInput, swallowtail_adapter_kimi::KimiLocalServerPreparationProbe, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_kimi::KimiLocalServerOwnedHandle, swallowtail_runtime::preparation::PreparationFailure>
+pub type swallowtail_adapter_kimi::KimiLocalServerPreparedSessionFuture = swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub type swallowtail_adapter_kimi::KimiPreparedSessionFuture = swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub type swallowtail_adapter_kimi::KimiPreparedSessionLoadFuture = swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::roles::LoadedSession, swallowtail_runtime::failure::RuntimeFailure>>

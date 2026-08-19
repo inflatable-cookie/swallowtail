@@ -6,11 +6,11 @@ mutations.
 
 ## Current Release
 
-- [Swallowtail 0.3.2](0.3.2.md) — compatible patch adding Command
-  Code, idioms, Codex spawn admission, and Claude Code response-only execution
+- [Swallowtail 0.3.3](0.3.3.md) — compatible patch adding ten adapters and
+  eleven production routes over immutable `v0.3.2`
 
-Earlier immutable releases remain documented at [`v0.3.1`](0.3.1.md),
-[`v0.3.0`](0.3.0.md),
+Earlier immutable releases remain documented at [`v0.3.2`](0.3.2.md),
+[`v0.3.1`](0.3.1.md), [`v0.3.0`](0.3.0.md),
 [`v0.2.0`](0.2.0.md), [`v0.1.1`](0.1.1.md), and [`v0.1.0`](0.1.0.md). The
 release line includes no crates.io publication, GitHub Release object, binary,
 sidecar, installer, or model artifact.

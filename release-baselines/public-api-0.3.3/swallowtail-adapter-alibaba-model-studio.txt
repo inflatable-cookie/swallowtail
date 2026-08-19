@@ -1,0 +1,280 @@
+pub mod swallowtail_adapter_alibaba_model_studio
+pub enum swallowtail_adapter_alibaba_model_studio::DeletionKind
+pub swallowtail_adapter_alibaba_model_studio::DeletionKind::Conversation
+pub swallowtail_adapter_alibaba_model_studio::DeletionKind::ConversationItem
+pub enum swallowtail_adapter_alibaba_model_studio::Method
+pub swallowtail_adapter_alibaba_model_studio::Method::Delete
+pub swallowtail_adapter_alibaba_model_studio::Method::Get
+pub swallowtail_adapter_alibaba_model_studio::Method::Post
+pub enum swallowtail_adapter_alibaba_model_studio::ProviderEvent
+pub swallowtail_adapter_alibaba_model_studio::ProviderEvent::AssistantStarted(alloc::string::String)
+pub swallowtail_adapter_alibaba_model_studio::ProviderEvent::Completed
+pub swallowtail_adapter_alibaba_model_studio::ProviderEvent::Completed::item: alloc::string::String
+pub swallowtail_adapter_alibaba_model_studio::ProviderEvent::Completed::output: swallowtail_runtime::content::OperationContent
+pub swallowtail_adapter_alibaba_model_studio::ProviderEvent::Completed::response: swallowtail_adapter_alibaba_model_studio::ResponseRef
+pub swallowtail_adapter_alibaba_model_studio::ProviderEvent::Completed::usage: swallowtail_runtime::provider_observation::TokenUsage
+pub swallowtail_adapter_alibaba_model_studio::ProviderEvent::Created(swallowtail_adapter_alibaba_model_studio::ResponseRef)
+pub swallowtail_adapter_alibaba_model_studio::ProviderEvent::Progress(alloc::string::String)
+pub swallowtail_adapter_alibaba_model_studio::ProviderEvent::TextDelta
+pub swallowtail_adapter_alibaba_model_studio::ProviderEvent::TextDelta::content: swallowtail_runtime::content::OperationContent
+pub swallowtail_adapter_alibaba_model_studio::ProviderEvent::TextDelta::item: alloc::string::String
+pub swallowtail_adapter_alibaba_model_studio::ProviderEvent::TextDone
+pub swallowtail_adapter_alibaba_model_studio::ProviderEvent::TextDone::content: swallowtail_runtime::content::OperationContent
+pub swallowtail_adapter_alibaba_model_studio::ProviderEvent::TextDone::item: alloc::string::String
+pub swallowtail_adapter_alibaba_model_studio::ProviderEvent::Unknown(alloc::string::String)
+pub struct swallowtail_adapter_alibaba_model_studio::AlibabaConversationProfileInput
+impl swallowtail_adapter_alibaba_model_studio::AlibabaConversationProfileInput
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaConversationProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId, swallowtail_core::session_provider_state::SessionProviderStatePolicy) -> Self
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaConversationProfileInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_adapter_alibaba_model_studio::AlibabaDeployableModelsDriver
+impl swallowtail_adapter_alibaba_model_studio::AlibabaDeployableModelsDriver
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaDeployableModelsDriver::new() -> Self
+impl swallowtail_runtime::roles::ModelCatalogDriver for swallowtail_adapter_alibaba_model_studio::AlibabaDeployableModelsDriver
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaDeployableModelsDriver::list_models(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_alibaba_model_studio::AlibabaDeployableModelsPreparationInput
+impl swallowtail_adapter_alibaba_model_studio::AlibabaDeployableModelsPreparationInput
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaDeployableModelsPreparationInput::new(swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub struct swallowtail_adapter_alibaba_model_studio::AlibabaDeployableModelsPreparedIntegration
+impl swallowtail_adapter_alibaba_model_studio::AlibabaDeployableModelsPreparedIntegration
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaDeployableModelsPreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaDeployableModelsPreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaDeployableModelsPreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaDeployableModelsPreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaDeployableModelsPreparedIntegration::prepare_catalogue(&self, swallowtail_adapter_alibaba_model_studio::AlibabaDeployableModelsProfileInput) -> core::result::Result<swallowtail_adapter_alibaba_model_studio::AlibabaPreparedDeployableModels, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_alibaba_model_studio::AlibabaDeployableModelsProfileInput
+impl swallowtail_adapter_alibaba_model_studio::AlibabaDeployableModelsProfileInput
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaDeployableModelsProfileInput::new(swallowtail_runtime::identity::RequestId) -> Self
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaDeployableModelsProfileInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioDriver
+impl swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioDriver
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioDriver::new() -> Self
+impl swallowtail_runtime::roles::InteractiveSessionDriver for swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioDriver
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioDriver::load_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::LoadSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_runtime::roles::LoadedSession, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioDriver::open_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioDriver::resume_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::ProviderSessionHistoryDriver for swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioDriver
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioDriver::page_provider_session_history(&self, swallowtail_runtime::provider_session_history::ProviderSessionHistoryPlan, swallowtail_runtime::provider_session_history::ProviderSessionHistoryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_runtime::provider_session_history::page::ProviderSessionHistoryPage, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::ProviderSessionManagementDriver for swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioDriver
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioDriver::archive_session(&self, swallowtail_runtime::provider_session_operation::ProviderSessionManagementPlan, swallowtail_runtime::provider_session_operation::ArchiveProviderSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_runtime::provider_session_operation::ProviderSessionManagementOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioDriver::delete_session(&self, swallowtail_runtime::provider_session_operation::ProviderSessionManagementPlan, swallowtail_runtime::provider_session_operation::DeleteProviderSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_runtime::provider_session_operation::ProviderSessionManagementOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioDriver::restore_session(&self, swallowtail_runtime::provider_session_operation::ProviderSessionManagementPlan, swallowtail_runtime::provider_session_operation::RestoreProviderSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_runtime::provider_session_operation::ProviderSessionManagementOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::StructuredRunDriver for swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioDriver
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioDriver::start_run(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparationInput
+impl swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparationInput
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparationInput::new(swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub struct swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedConversation
+impl swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedConversation
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedConversation::evidence(&self) -> &swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedEvidence
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedConversation::into_parts(self) -> (swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest)
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedConversation::low_level_driver(&self) -> swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioDriver
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedConversation::open_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedConversation::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedConversation::request(&self) -> &swallowtail_runtime::roles::OpenSessionRequest
+impl swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedConversation
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedConversation::prepare_working_state_restoration(&self, swallowtail_runtime::identity::RuntimeTurnId) -> swallowtail_runtime::working_state_restoration::PreparedWorkingStateRestoration
+pub struct swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedDelete
+impl swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedDelete
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedDelete::evidence(&self) -> &swallowtail_runtime::provider_session_operation::PreparedProviderSessionManagementEvidence
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedDelete::execute(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_session_operation::ProviderSessionManagementOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedDelete::plan(&self) -> &swallowtail_runtime::provider_session_operation::ProviderSessionManagementPlan
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedDelete::request(&self) -> &swallowtail_runtime::provider_session_operation::DeleteProviderSessionRequest
+pub struct swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedEvidence
+impl swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedEvidence
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedEvidence::access(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedEvidence::observable_activity(&self) -> &swallowtail_core::observable_activity::route_profile::ObservableActivityProfile
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedEvidence::operation(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedEvidence::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub struct swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedIntegration
+impl swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedIntegration
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedIntegration::low_level_driver(&self) -> swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioDriver
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedIntegration::validate_execution_binding(&self, &swallowtail_core::runtime_identity::ExecutionHostId, &swallowtail_core::runtime_identity::InstanceTargetRef) -> core::result::Result<(), swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedIntegration
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedIntegration::prepare_conversation(&self, swallowtail_adapter_alibaba_model_studio::AlibabaConversationProfileInput) -> core::result::Result<swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedConversation, swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedIntegration
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedIntegration::prepare_delete_retained_conversation(&self, swallowtail_adapter_alibaba_model_studio::AlibabaSessionManagementInput) -> core::result::Result<swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedDelete, swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedIntegration
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedIntegration::prepare_retained_conversation(&self, swallowtail_adapter_alibaba_model_studio::AlibabaRetainedConversationProfileInput) -> core::result::Result<swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedRetainedConversation, swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedIntegration
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedIntegration::prepare_run(&self, swallowtail_adapter_alibaba_model_studio::AlibabaRunProfileInput) -> core::result::Result<swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedRun, swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedIntegration
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedIntegration::prepare_session_history(&self, swallowtail_adapter_alibaba_model_studio::AlibabaSessionHistoryInput) -> core::result::Result<swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedSessionHistory, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedRetainedConversation
+impl swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedRetainedConversation
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedRetainedConversation::evidence(&self) -> &swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedEvidence
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedRetainedConversation::load_request(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding) -> core::result::Result<swallowtail_runtime::roles::LoadSessionRequest, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedRetainedConversation::load_session(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::roles::LoadedSession, swallowtail_runtime::failure::RuntimeFailure>>, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedRetainedConversation::low_level_driver(&self) -> swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioDriver
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedRetainedConversation::open_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedRetainedConversation::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedRetainedConversation::request(&self) -> &swallowtail_runtime::roles::OpenSessionRequest
+impl swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedRetainedConversation
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedRetainedConversation::prepare_working_state_restoration(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding, swallowtail_runtime::identity::RuntimeTurnId) -> core::result::Result<swallowtail_runtime::working_state_restoration::PreparedWorkingStateRestoration, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedRun
+impl swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedRun
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedRun::evidence(&self) -> &swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedEvidence
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedRun::into_parts(self) -> (swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest)
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedRun::low_level_driver(&self) -> swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioDriver
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedRun::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedRun::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedRun::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedSessionHistory
+impl swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedSessionHistory
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedSessionHistory::alibaba_evidence(&self) -> &swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedEvidence
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedSessionHistory::evidence(&self) -> &swallowtail_runtime::provider_session_history::PreparedProviderSessionHistoryEvidence
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedSessionHistory::low_level_driver(&self) -> swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioDriver
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedSessionHistory::older_page_request(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::provider_session_history::ProviderSessionHistoryCursor) -> core::result::Result<swallowtail_runtime::provider_session_history::ProviderSessionHistoryRequest, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedSessionHistory::page(&self, swallowtail_runtime::provider_session_history::ProviderSessionHistoryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_session_history::page::ProviderSessionHistoryPage, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedSessionHistory::page_history(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_session_history::page::ProviderSessionHistoryPage, swallowtail_runtime::failure::RuntimeFailure>>
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedSessionHistory::plan(&self) -> &swallowtail_runtime::provider_session_history::ProviderSessionHistoryPlan
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedSessionHistory::request(&self) -> &swallowtail_runtime::provider_session_history::ProviderSessionHistoryRequest
+pub struct swallowtail_adapter_alibaba_model_studio::AlibabaPreparedDeployableModels
+impl swallowtail_adapter_alibaba_model_studio::AlibabaPreparedDeployableModels
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaPreparedDeployableModels::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaPreparedDeployableModels::list_models(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaPreparedDeployableModels::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaPreparedDeployableModels::request(&self) -> &swallowtail_runtime::roles::ModelCatalogRequest
+pub struct swallowtail_adapter_alibaba_model_studio::AlibabaProtocolFailure
+impl swallowtail_adapter_alibaba_model_studio::AlibabaProtocolFailure
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaProtocolFailure::diagnostic(&self) -> &swallowtail_core::diagnostic::SafeDiagnostic
+impl core::error::Error for swallowtail_adapter_alibaba_model_studio::AlibabaProtocolFailure
+impl core::fmt::Display for swallowtail_adapter_alibaba_model_studio::AlibabaProtocolFailure
+pub fn swallowtail_adapter_alibaba_model_studio::AlibabaProtocolFailure::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_adapter_alibaba_model_studio::AlibabaRetainedConversationProfileInput
+impl swallowtail_adapter_alibaba_model_studio::AlibabaRetainedConversationProfileInput
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaRetainedConversationProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId) -> Self
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaRetainedConversationProfileInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_adapter_alibaba_model_studio::AlibabaRunProfileInput
+impl swallowtail_adapter_alibaba_model_studio::AlibabaRunProfileInput
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaRunProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId, swallowtail_runtime::content::OperationContent) -> Self
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaRunProfileInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_adapter_alibaba_model_studio::AlibabaSessionHistoryInput
+impl swallowtail_adapter_alibaba_model_studio::AlibabaSessionHistoryInput
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaSessionHistoryInput::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ProviderSessionHistoryId, swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId, swallowtail_runtime::session_binding::SessionResumeBinding, swallowtail_runtime::provider_session_history::ProviderSessionHistoryBounds) -> Self
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaSessionHistoryInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_adapter_alibaba_model_studio::AlibabaSessionManagementInput
+impl swallowtail_adapter_alibaba_model_studio::AlibabaSessionManagementInput
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaSessionManagementInput::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::provider_session_management::ProviderSessionManagementBinding) -> Self
+pub const fn swallowtail_adapter_alibaba_model_studio::AlibabaSessionManagementInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_adapter_alibaba_model_studio::ConversationInventory
+impl swallowtail_adapter_alibaba_model_studio::ConversationInventory
+pub fn swallowtail_adapter_alibaba_model_studio::ConversationInventory::items(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = &swallowtail_adapter_alibaba_model_studio::ItemRef>
+pub struct swallowtail_adapter_alibaba_model_studio::ConversationMetadata
+impl swallowtail_adapter_alibaba_model_studio::ConversationMetadata
+pub const fn swallowtail_adapter_alibaba_model_studio::ConversationMetadata::conversation(&self) -> &swallowtail_adapter_alibaba_model_studio::ConversationRef
+pub const fn swallowtail_adapter_alibaba_model_studio::ConversationMetadata::created_at(&self) -> u64
+pub struct swallowtail_adapter_alibaba_model_studio::ConversationRef(_)
+impl swallowtail_adapter_alibaba_model_studio::ConversationRef
+pub fn swallowtail_adapter_alibaba_model_studio::ConversationRef::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_adapter_alibaba_model_studio::AlibabaProtocolFailure>
+impl core::fmt::Debug for swallowtail_adapter_alibaba_model_studio::ConversationRef
+pub fn swallowtail_adapter_alibaba_model_studio::ConversationRef::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_adapter_alibaba_model_studio::ConversationReplayPage
+impl swallowtail_adapter_alibaba_model_studio::ConversationReplayPage
+pub const fn swallowtail_adapter_alibaba_model_studio::ConversationReplayPage::content_bytes(&self) -> usize
+pub fn swallowtail_adapter_alibaba_model_studio::ConversationReplayPage::into_replay(self) -> alloc::vec::Vec<swallowtail_runtime::session_replay::SessionReplayItem>
+pub fn swallowtail_adapter_alibaba_model_studio::ConversationReplayPage::item_ids(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = &swallowtail_adapter_alibaba_model_studio::ItemRef>
+pub const fn swallowtail_adapter_alibaba_model_studio::ConversationReplayPage::next_after(&self) -> core::option::Option<&swallowtail_adapter_alibaba_model_studio::ItemRef>
+pub fn swallowtail_adapter_alibaba_model_studio::ConversationReplayPage::replay(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = &swallowtail_runtime::session_replay::SessionReplayItem>
+pub struct swallowtail_adapter_alibaba_model_studio::DeletionConfirmation
+impl swallowtail_adapter_alibaba_model_studio::DeletionConfirmation
+pub const fn swallowtail_adapter_alibaba_model_studio::DeletionConfirmation::kind(&self) -> swallowtail_adapter_alibaba_model_studio::DeletionKind
+pub struct swallowtail_adapter_alibaba_model_studio::ItemRef(_)
+impl swallowtail_adapter_alibaba_model_studio::ItemRef
+pub fn swallowtail_adapter_alibaba_model_studio::ItemRef::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_adapter_alibaba_model_studio::AlibabaProtocolFailure>
+impl core::fmt::Debug for swallowtail_adapter_alibaba_model_studio::ItemRef
+pub fn swallowtail_adapter_alibaba_model_studio::ItemRef::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_adapter_alibaba_model_studio::ResponseRef(_)
+impl swallowtail_adapter_alibaba_model_studio::ResponseRef
+pub fn swallowtail_adapter_alibaba_model_studio::ResponseRef::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_adapter_alibaba_model_studio::AlibabaProtocolFailure>
+impl core::fmt::Debug for swallowtail_adapter_alibaba_model_studio::ResponseRef
+pub fn swallowtail_adapter_alibaba_model_studio::ResponseRef::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_adapter_alibaba_model_studio::ResponseStream
+impl swallowtail_adapter_alibaba_model_studio::ResponseStream
+pub fn swallowtail_adapter_alibaba_model_studio::ResponseStream::apply(&mut self, &swallowtail_adapter_alibaba_model_studio::SseFrame) -> core::result::Result<swallowtail_adapter_alibaba_model_studio::ProviderEvent, swallowtail_adapter_alibaba_model_studio::AlibabaProtocolFailure>
+pub struct swallowtail_adapter_alibaba_model_studio::SseDecoder
+impl swallowtail_adapter_alibaba_model_studio::SseDecoder
+pub fn swallowtail_adapter_alibaba_model_studio::SseDecoder::finish(self) -> core::result::Result<(), swallowtail_adapter_alibaba_model_studio::AlibabaProtocolFailure>
+pub fn swallowtail_adapter_alibaba_model_studio::SseDecoder::push(&mut self, &[u8]) -> core::result::Result<alloc::vec::Vec<swallowtail_adapter_alibaba_model_studio::SseFrame>, swallowtail_adapter_alibaba_model_studio::AlibabaProtocolFailure>
+pub struct swallowtail_adapter_alibaba_model_studio::SseFrame
+impl swallowtail_adapter_alibaba_model_studio::SseFrame
+pub fn swallowtail_adapter_alibaba_model_studio::SseFrame::name(&self) -> &str
+impl core::fmt::Debug for swallowtail_adapter_alibaba_model_studio::SseFrame
+pub fn swallowtail_adapter_alibaba_model_studio::SseFrame::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_adapter_alibaba_model_studio::TurnOptions
+impl swallowtail_adapter_alibaba_model_studio::TurnOptions
+pub fn swallowtail_adapter_alibaba_model_studio::TurnOptions::frozen() -> Self
+pub const fn swallowtail_adapter_alibaba_model_studio::TurnOptions::with_background(self, bool) -> Self
+pub const fn swallowtail_adapter_alibaba_model_studio::TurnOptions::with_fallback(self, bool) -> Self
+pub const fn swallowtail_adapter_alibaba_model_studio::TurnOptions::with_maximum_output_tokens(self, u64) -> Self
+pub fn swallowtail_adapter_alibaba_model_studio::TurnOptions::with_model(self, impl core::convert::Into<alloc::string::String>) -> Self
+pub const fn swallowtail_adapter_alibaba_model_studio::TurnOptions::with_previous_response(self, bool) -> Self
+pub fn swallowtail_adapter_alibaba_model_studio::TurnOptions::with_reasoning_effort(self, impl core::convert::Into<alloc::string::String>) -> Self
+pub const fn swallowtail_adapter_alibaba_model_studio::TurnOptions::with_retries(self, u32) -> Self
+pub const fn swallowtail_adapter_alibaba_model_studio::TurnOptions::with_session_cache(self, bool) -> Self
+pub const fn swallowtail_adapter_alibaba_model_studio::TurnOptions::with_store(self, bool) -> Self
+pub const fn swallowtail_adapter_alibaba_model_studio::TurnOptions::with_stream(self, bool) -> Self
+pub const fn swallowtail_adapter_alibaba_model_studio::TurnOptions::with_tools(self, usize) -> Self
+impl core::default::Default for swallowtail_adapter_alibaba_model_studio::TurnOptions
+pub fn swallowtail_adapter_alibaba_model_studio::TurnOptions::default() -> Self
+pub struct swallowtail_adapter_alibaba_model_studio::WireRequest
+impl swallowtail_adapter_alibaba_model_studio::WireRequest
+pub const fn swallowtail_adapter_alibaba_model_studio::WireRequest::body(&self) -> core::option::Option<&serde_json::value::Value>
+pub fn swallowtail_adapter_alibaba_model_studio::WireRequest::create_conversation() -> Self
+pub fn swallowtail_adapter_alibaba_model_studio::WireRequest::delete_conversation(&swallowtail_adapter_alibaba_model_studio::ConversationRef) -> Self
+pub fn swallowtail_adapter_alibaba_model_studio::WireRequest::delete_item(&swallowtail_adapter_alibaba_model_studio::ConversationRef, &swallowtail_adapter_alibaba_model_studio::ItemRef) -> Self
+pub fn swallowtail_adapter_alibaba_model_studio::WireRequest::list_items(&swallowtail_adapter_alibaba_model_studio::ConversationRef) -> Self
+pub fn swallowtail_adapter_alibaba_model_studio::WireRequest::list_items_after(&swallowtail_adapter_alibaba_model_studio::ConversationRef, core::option::Option<&swallowtail_adapter_alibaba_model_studio::ItemRef>) -> Self
+pub const fn swallowtail_adapter_alibaba_model_studio::WireRequest::method(&self) -> swallowtail_adapter_alibaba_model_studio::Method
+pub fn swallowtail_adapter_alibaba_model_studio::WireRequest::path(&self) -> &str
+pub fn swallowtail_adapter_alibaba_model_studio::WireRequest::response(&swallowtail_adapter_alibaba_model_studio::ConversationRef, &swallowtail_runtime::content::OperationContent, &swallowtail_adapter_alibaba_model_studio::TurnOptions) -> core::result::Result<Self, swallowtail_adapter_alibaba_model_studio::AlibabaProtocolFailure>
+pub fn swallowtail_adapter_alibaba_model_studio::WireRequest::retrieve_conversation(&swallowtail_adapter_alibaba_model_studio::ConversationRef) -> Self
+pub const fn swallowtail_adapter_alibaba_model_studio::WireRequest::session_cache_enabled(&self) -> bool
+pub fn swallowtail_adapter_alibaba_model_studio::WireRequest::structured_response(&swallowtail_runtime::content::OperationContent) -> core::result::Result<Self, swallowtail_adapter_alibaba_model_studio::AlibabaProtocolFailure>
+impl core::fmt::Debug for swallowtail_adapter_alibaba_model_studio::WireRequest
+pub fn swallowtail_adapter_alibaba_model_studio::WireRequest::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub const swallowtail_adapter_alibaba_model_studio::ACCESS_PROFILE_ID: &str
+pub const swallowtail_adapter_alibaba_model_studio::ALIBABA_DEPLOYABLE_MODELS_ACCESS_PROFILE_ID: &str
+pub const swallowtail_adapter_alibaba_model_studio::ALIBABA_DEPLOYABLE_MODELS_CONFIGURED_INSTANCE_ID: &str
+pub const swallowtail_adapter_alibaba_model_studio::ALIBABA_DEPLOYABLE_MODELS_ENDPOINT: &str
+pub const swallowtail_adapter_alibaba_model_studio::ALIBABA_DEPLOYABLE_MODELS_ENDPOINT_AUDIENCE: &str
+pub const swallowtail_adapter_alibaba_model_studio::ALIBABA_DEPLOYABLE_MODELS_FACADE_REVISION: &str
+pub const swallowtail_adapter_alibaba_model_studio::CONFIGURED_INSTANCE_ID: &str
+pub const swallowtail_adapter_alibaba_model_studio::ENDPOINT_AUDIENCE: &str
+pub const swallowtail_adapter_alibaba_model_studio::EVIDENCE_DATE: &str
+pub const swallowtail_adapter_alibaba_model_studio::EXACT_MODEL_ID: &str
+pub const swallowtail_adapter_alibaba_model_studio::MAXIMUM_REPLAY_BYTES: usize
+pub const swallowtail_adapter_alibaba_model_studio::MAXIMUM_REPLAY_ITEMS: usize
+pub const swallowtail_adapter_alibaba_model_studio::MAXIMUM_REPLAY_PAGES: usize
+pub const swallowtail_adapter_alibaba_model_studio::MAXIMUM_REPLAY_PAGE_BYTES: usize
+pub const swallowtail_adapter_alibaba_model_studio::MAXIMUM_REPLAY_PAGE_ITEMS: usize
+pub const swallowtail_adapter_alibaba_model_studio::MODEL_ROUTE_ID: &str
+pub const swallowtail_adapter_alibaba_model_studio::REGION: &str
+pub const swallowtail_adapter_alibaba_model_studio::WORKSPACE_ENDPOINT_TEMPLATE: &str
+pub fn swallowtail_adapter_alibaba_model_studio::alibaba_deployable_models_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_alibaba_model_studio::alibaba_deployable_models_facade_binding() -> swallowtail_core::interface_version::InterfaceVersionBinding
+pub fn swallowtail_adapter_alibaba_model_studio::alibaba_deployable_models_facade_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_alibaba_model_studio::alibaba_model_studio_access_profile() -> swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_alibaba_model_studio::alibaba_model_studio_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_alibaba_model_studio::alibaba_model_studio_facade_binding() -> swallowtail_core::interface_version::InterfaceVersionBinding
+pub fn swallowtail_adapter_alibaba_model_studio::alibaba_model_studio_facade_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_alibaba_model_studio::alibaba_model_studio_history_requirements(swallowtail_core::runtime_identity::ExecutionHostId) -> swallowtail_core::requirement::operation::OperationRequirements
+pub fn swallowtail_adapter_alibaba_model_studio::alibaba_model_studio_instance(swallowtail_core::runtime_identity::ExecutionHostId) -> swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_alibaba_model_studio::alibaba_model_studio_management_requirements(swallowtail_core::runtime_identity::ExecutionHostId) -> swallowtail_core::requirement::operation::OperationRequirements
+pub fn swallowtail_adapter_alibaba_model_studio::alibaba_model_studio_requirements(swallowtail_core::runtime_identity::ExecutionHostId) -> swallowtail_core::requirement::operation::OperationRequirements
+pub fn swallowtail_adapter_alibaba_model_studio::alibaba_model_studio_retained_requirements(swallowtail_core::runtime_identity::ExecutionHostId) -> swallowtail_core::requirement::operation::OperationRequirements
+pub fn swallowtail_adapter_alibaba_model_studio::alibaba_model_studio_route() -> swallowtail_core::instance::ModelRoute
+pub fn swallowtail_adapter_alibaba_model_studio::alibaba_model_studio_run_requirements(swallowtail_core::runtime_identity::ExecutionHostId) -> swallowtail_core::requirement::operation::OperationRequirements
+pub fn swallowtail_adapter_alibaba_model_studio::parse_conversation(&[u8]) -> core::result::Result<swallowtail_adapter_alibaba_model_studio::ConversationRef, swallowtail_adapter_alibaba_model_studio::AlibabaProtocolFailure>
+pub fn swallowtail_adapter_alibaba_model_studio::parse_conversation_retrieval(&[u8], &swallowtail_adapter_alibaba_model_studio::ConversationRef) -> core::result::Result<swallowtail_adapter_alibaba_model_studio::ConversationMetadata, swallowtail_adapter_alibaba_model_studio::AlibabaProtocolFailure>
+pub fn swallowtail_adapter_alibaba_model_studio::parse_deletion(&[u8], &str, swallowtail_adapter_alibaba_model_studio::DeletionKind) -> core::result::Result<swallowtail_adapter_alibaba_model_studio::DeletionConfirmation, swallowtail_adapter_alibaba_model_studio::AlibabaProtocolFailure>
+pub fn swallowtail_adapter_alibaba_model_studio::parse_inventory(&[u8]) -> core::result::Result<swallowtail_adapter_alibaba_model_studio::ConversationInventory, swallowtail_adapter_alibaba_model_studio::AlibabaProtocolFailure>
+pub fn swallowtail_adapter_alibaba_model_studio::parse_provider_failure(&[u8]) -> core::result::Result<swallowtail_adapter_alibaba_model_studio::AlibabaProtocolFailure, swallowtail_adapter_alibaba_model_studio::AlibabaProtocolFailure>
+pub fn swallowtail_adapter_alibaba_model_studio::parse_replay_page(&[u8], &swallowtail_adapter_alibaba_model_studio::ConversationRef, u64) -> core::result::Result<swallowtail_adapter_alibaba_model_studio::ConversationReplayPage, swallowtail_adapter_alibaba_model_studio::AlibabaProtocolFailure>
+pub fn swallowtail_adapter_alibaba_model_studio::parse_request_correlation(&[u8]) -> core::result::Result<swallowtail_core::provider_reference::ProviderRequestRef, swallowtail_adapter_alibaba_model_studio::AlibabaProtocolFailure>
+pub fn swallowtail_adapter_alibaba_model_studio::prepare_alibaba_deployable_models(swallowtail_adapter_alibaba_model_studio::AlibabaDeployableModelsPreparationInput, &swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_alibaba_model_studio::AlibabaDeployableModelsPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_alibaba_model_studio::prepare_alibaba_model_studio(swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparationInput, &swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_alibaba_model_studio::AlibabaModelStudioPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_alibaba_model_studio::validate_alibaba_model_studio_plan(&swallowtail_core::preflight::PreflightPlan) -> core::result::Result<(), swallowtail_adapter_alibaba_model_studio::AlibabaProtocolFailure>

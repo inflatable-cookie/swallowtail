@@ -42,23 +42,33 @@ release_stage_4=(
   swallowtail-adapter-antigravity
   swallowtail-adapter-bedrock
   swallowtail-adapter-claude-agent
+  swallowtail-adapter-cline
   swallowtail-adapter-codex
   swallowtail-adapter-command-code
+  swallowtail-adapter-copilot-cli
   swallowtail-adapter-cursor
+  swallowtail-adapter-deepagents
   swallowtail-adapter-deepseek
+  swallowtail-adapter-deepseek-harness
   swallowtail-adapter-gemini
+  swallowtail-adapter-goose
   swallowtail-adapter-grok
   swallowtail-adapter-kimi
   swallowtail-adapter-kimi-platform
+  swallowtail-adapter-kiro
   swallowtail-adapter-llama-cpp
+  swallowtail-adapter-mistral-vibe
   swallowtail-adapter-muse
   swallowtail-adapter-oh-my-pi
   swallowtail-adapter-opencode
   swallowtail-adapter-ollama
   swallowtail-adapter-openai
+  swallowtail-adapter-openhands
   swallowtail-adapter-pi
+  swallowtail-adapter-qoder
   swallowtail-adapter-qwen
   swallowtail-adapter-xai
+  swallowtail-adapter-zcode
 )
 
 release_packages=(

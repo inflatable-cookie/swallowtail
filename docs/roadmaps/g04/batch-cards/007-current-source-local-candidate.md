@@ -1,6 +1,6 @@
 # 007 Current Source Local Candidate
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-19
 Milestone: `../003-current-source-tag-before-readiness.md`
@@ -24,9 +24,18 @@ Prepare the exact local source-tag candidate and pass credential-free gates.
 
 ## Acceptance Criteria
 
-- [ ] all current-source packages share the selected version
-- [ ] existing-package APIs stay compatible or the break is reclassified
-- [ ] all configured credential-free gates pass
+- [x] all current-source packages share the selected version
+- [x] existing-package APIs stay compatible or the break is reclassified
+- [x] all configured credential-free gates pass
+
+## Evidence
+
+- coordinated version `0.3.3` on all 40 packages
+- `effigy release prepare --yes --check-gates --version 0.3.3` prepared the
+  local candidate and passed all 11 configured gates
+- isolated source consumer passed; `.release-prepared.json` is local state
+  and is not a source identity
+- no annotated tag, GitHub Release, or crates.io mutation
 
 ## Validation
 

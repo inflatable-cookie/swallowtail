@@ -57,26 +57,13 @@ jq -e --arg version "$release_version" --arg rust_msrv "$release_msrv_cargo" '
 ' "$release_metadata" > /dev/null
 
 jq -r '.packages[].name' "$release_metadata" | LC_ALL=C sort > "$release_names"
-{
-  cat release-baselines/public-api-0.3.2/packages.txt
-  printf 'swallowtail-adapter-deepseek-harness\n'
-  printf 'swallowtail-adapter-zcode\n'
-  printf 'swallowtail-adapter-cline\n'
-  printf 'swallowtail-adapter-goose\n'
-  printf 'swallowtail-adapter-copilot-cli\n'
-  printf 'swallowtail-adapter-mistral-vibe\n'
-  printf 'swallowtail-adapter-qoder\n'
-  printf 'swallowtail-adapter-openhands\n'
-  printf 'swallowtail-adapter-kiro\n'
-  printf 'swallowtail-adapter-deepagents\n'
-} | LC_ALL=C sort > "$release_expected_names"
+LC_ALL=C sort release-baselines/public-api-0.3.3/packages.txt > "$release_expected_names"
 diff -u "$release_expected_names" "$release_names"
 
 source scripts/release-package-set.sh
 printf '%s\n' "${release_packages[@]}" | LC_ALL=C sort > "$release_order_names"
-grep -Fvx -e 'swallowtail-adapter-deepseek-harness' -e 'swallowtail-adapter-zcode' -e 'swallowtail-adapter-cline' -e 'swallowtail-adapter-goose' -e 'swallowtail-adapter-copilot-cli' -e 'swallowtail-adapter-mistral-vibe' -e 'swallowtail-adapter-qoder' -e 'swallowtail-adapter-openhands' -e 'swallowtail-adapter-kiro' -e 'swallowtail-adapter-deepagents' "$release_names" > "$release_tag_names"
-diff -u "$release_tag_names" "$release_order_names"
-[[ ${#release_packages[@]} -eq 30 ]]
+diff -u "$release_names" "$release_order_names"
+[[ ${#release_packages[@]} -eq 40 ]]
 [[ "${release_stage_2[*]}" == "swallowtail-idioms" ]]
 [[ "${release_stage_3[*]}" == "swallowtail-runtime" ]]
 
@@ -88,36 +75,9 @@ jq -r '
   @tsv
 ' "$release_metadata" | LC_ALL=C sort > "$release_edges"
 
-{
-  awk -F '\t' -v OFS='\t' -v requirement="^$release_version" \
-    '{$3 = requirement; print}' \
-    release-baselines/internal-dependencies-0.3.2.tsv
-  printf 'swallowtail-adapter-deepseek-harness\tswallowtail-core\t^%s\n' "$release_version"
-  printf 'swallowtail-adapter-deepseek-harness\tswallowtail-runtime\t^%s\n' "$release_version"
-  printf 'swallowtail-adapter-zcode\tswallowtail-core\t^%s\n' "$release_version"
-  printf 'swallowtail-adapter-zcode\tswallowtail-runtime\t^%s\n' "$release_version"
-  printf 'swallowtail-adapter-cline\tswallowtail-core\t^%s\n' "$release_version"
-  printf 'swallowtail-adapter-cline\tswallowtail-runtime\t^%s\n' "$release_version"
-  printf 'swallowtail-adapter-cline\tswallowtail-protocol-acp\t^%s\n' "$release_version"
-  printf 'swallowtail-adapter-goose\tswallowtail-core\t^%s\n' "$release_version"
-  printf 'swallowtail-adapter-goose\tswallowtail-runtime\t^%s\n' "$release_version"
-  printf 'swallowtail-adapter-goose\tswallowtail-protocol-acp\t^%s\n' "$release_version"
-  printf 'swallowtail-adapter-copilot-cli\tswallowtail-core\t^%s\n' "$release_version"
-  printf 'swallowtail-adapter-copilot-cli\tswallowtail-runtime\t^%s\n' "$release_version"
-  printf 'swallowtail-adapter-copilot-cli\tswallowtail-protocol-acp\t^%s\n' "$release_version"
-  printf 'swallowtail-adapter-mistral-vibe\tswallowtail-core\t^%s\n' "$release_version"
-  printf 'swallowtail-adapter-mistral-vibe\tswallowtail-runtime\t^%s\n' "$release_version"
-  printf 'swallowtail-adapter-qoder\tswallowtail-core\t^%s\n' "$release_version"
-  printf 'swallowtail-adapter-qoder\tswallowtail-runtime\t^%s\n' "$release_version"
-  printf 'swallowtail-adapter-openhands\tswallowtail-core\t^%s\n' "$release_version"
-  printf 'swallowtail-adapter-openhands\tswallowtail-runtime\t^%s\n' "$release_version"
-  printf 'swallowtail-adapter-kiro\tswallowtail-core\t^%s\n' "$release_version"
-  printf 'swallowtail-adapter-kiro\tswallowtail-runtime\t^%s\n' "$release_version"
-  printf 'swallowtail-adapter-kiro\tswallowtail-protocol-acp\t^%s\n' "$release_version"
-  printf 'swallowtail-adapter-deepagents\tswallowtail-core\t^%s\n' "$release_version"
-  printf 'swallowtail-adapter-deepagents\tswallowtail-runtime\t^%s\n' "$release_version"
-  printf 'swallowtail-adapter-deepagents\tswallowtail-protocol-acp\t^%s\n' "$release_version"
-} \
+awk -F '\t' -v OFS='\t' -v requirement="^$release_version" \
+  '{$3 = requirement; print}' \
+  release-baselines/internal-dependencies-0.3.3.tsv \
   | LC_ALL=C sort > "$release_expected_edges"
 diff -u "$release_expected_edges" "$release_edges"
 

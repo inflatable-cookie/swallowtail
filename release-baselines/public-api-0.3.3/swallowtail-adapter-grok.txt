@@ -1,0 +1,83 @@
+pub mod swallowtail_adapter_grok
+pub struct swallowtail_adapter_grok::GrokAcpDriver
+impl swallowtail_adapter_grok::GrokAcpDriver
+pub const fn swallowtail_adapter_grok::GrokAcpDriver::ambient_environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
+pub const fn swallowtail_adapter_grok::GrokAcpDriver::credential(&self) -> &swallowtail_core::runtime_identity::CredentialRef
+pub const fn swallowtail_adapter_grok::GrokAcpDriver::new(swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::runtime_identity::CredentialRef) -> Self
+impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_grok::GrokAcpDriver
+pub fn swallowtail_adapter_grok::GrokAcpDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_grok::GrokAcpDriver::discover_installed_executable(&self, swallowtail_runtime::installed_executable::InstalledExecutableDiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_core::registration::discovery::DiscoveryOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::InteractiveSessionDriver for swallowtail_adapter_grok::GrokAcpDriver
+pub fn swallowtail_adapter_grok::GrokAcpDriver::open_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_grok::GrokAcpDriver::recover_session_attachment(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_grok::GrokAcpDriver::resume_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::StructuredRunDriver for swallowtail_adapter_grok::GrokAcpDriver
+pub fn swallowtail_adapter_grok::GrokAcpDriver::start_run(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_grok::GrokModelSelection
+impl swallowtail_adapter_grok::GrokModelSelection
+pub const fn swallowtail_adapter_grok::GrokModelSelection::new(swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId) -> Self
+pub struct swallowtail_adapter_grok::GrokPreparationInput
+impl swallowtail_adapter_grok::GrokPreparationInput
+pub const fn swallowtail_adapter_grok::GrokPreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_runtime::installed_executable::InstalledExecutableTarget, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub struct swallowtail_adapter_grok::GrokPreparationProbe
+impl swallowtail_adapter_grok::GrokPreparationProbe
+pub const fn swallowtail_adapter_grok::GrokPreparationProbe::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::time::Deadline, swallowtail_runtime::installed_executable::DiscoveryCancellation) -> Self
+pub struct swallowtail_adapter_grok::GrokPreparedEvidence
+impl swallowtail_adapter_grok::GrokPreparedEvidence
+pub const fn swallowtail_adapter_grok::GrokPreparedEvidence::access(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_grok::GrokPreparedEvidence::observation(&self) -> &swallowtail_core::installed_executable::InstalledExecutableObservation
+pub const fn swallowtail_adapter_grok::GrokPreparedEvidence::operation(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub const fn swallowtail_adapter_grok::GrokPreparedEvidence::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub struct swallowtail_adapter_grok::GrokPreparedIntegration
+impl swallowtail_adapter_grok::GrokPreparedIntegration
+pub const fn swallowtail_adapter_grok::GrokPreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_grok::GrokPreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_grok::GrokPreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_grok::GrokPreparedIntegration::environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
+pub const fn swallowtail_adapter_grok::GrokPreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_grok::GrokPreparedIntegration::low_level_driver(&self) -> swallowtail_adapter_grok::GrokAcpDriver
+pub const fn swallowtail_adapter_grok::GrokPreparedIntegration::observation(&self) -> &swallowtail_core::installed_executable::InstalledExecutableObservation
+pub const fn swallowtail_adapter_grok::GrokPreparedIntegration::target(&self) -> &swallowtail_runtime::installed_executable::InstalledExecutableTarget
+pub fn swallowtail_adapter_grok::GrokPreparedIntegration::validate_execution_binding(&self, &swallowtail_core::runtime_identity::ExecutionHostId, &swallowtail_runtime::installed_executable::InstalledExecutableTarget) -> core::result::Result<(), swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_grok::GrokPreparedIntegration
+pub fn swallowtail_adapter_grok::GrokPreparedIntegration::prepare_run(&self, swallowtail_adapter_grok::GrokRunProfileInput) -> core::result::Result<swallowtail_adapter_grok::GrokPreparedRun, swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_grok::GrokPreparedIntegration
+pub fn swallowtail_adapter_grok::GrokPreparedIntegration::prepare_session(&self, swallowtail_adapter_grok::GrokSessionProfileInput) -> core::result::Result<swallowtail_adapter_grok::GrokPreparedSession, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_grok::GrokPreparedRun
+impl swallowtail_adapter_grok::GrokPreparedRun
+pub const fn swallowtail_adapter_grok::GrokPreparedRun::evidence(&self) -> &swallowtail_adapter_grok::GrokPreparedEvidence
+pub fn swallowtail_adapter_grok::GrokPreparedRun::into_parts(self) -> (swallowtail_adapter_grok::GrokPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest)
+pub fn swallowtail_adapter_grok::GrokPreparedRun::low_level_driver(&self) -> swallowtail_adapter_grok::GrokAcpDriver
+pub const fn swallowtail_adapter_grok::GrokPreparedRun::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_grok::GrokPreparedRun::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
+pub fn swallowtail_adapter_grok::GrokPreparedRun::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_adapter_grok::GrokPreparedRunFuture
+pub struct swallowtail_adapter_grok::GrokPreparedSession
+impl swallowtail_adapter_grok::GrokPreparedSession
+pub fn swallowtail_adapter_grok::GrokPreparedSession::attachment_recovery_request(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding) -> core::result::Result<swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::preparation::PreparationFailure>
+pub const fn swallowtail_adapter_grok::GrokPreparedSession::evidence(&self) -> &swallowtail_adapter_grok::GrokPreparedEvidence
+pub fn swallowtail_adapter_grok::GrokPreparedSession::into_parts(self) -> (swallowtail_adapter_grok::GrokPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest)
+pub fn swallowtail_adapter_grok::GrokPreparedSession::low_level_driver(&self) -> swallowtail_adapter_grok::GrokAcpDriver
+pub fn swallowtail_adapter_grok::GrokPreparedSession::open_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_adapter_grok::GrokPreparedSessionFuture
+pub const fn swallowtail_adapter_grok::GrokPreparedSession::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub fn swallowtail_adapter_grok::GrokPreparedSession::prepare_working_state_restoration(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding, swallowtail_runtime::identity::RuntimeTurnId) -> core::result::Result<swallowtail_runtime::working_state_restoration::PreparedWorkingStateRestoration, swallowtail_runtime::preparation::PreparationFailure>
+pub const fn swallowtail_adapter_grok::GrokPreparedSession::request(&self) -> &swallowtail_runtime::roles::OpenSessionRequest
+pub struct swallowtail_adapter_grok::GrokRunProfileInput
+impl swallowtail_adapter_grok::GrokRunProfileInput
+pub const fn swallowtail_adapter_grok::GrokRunProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_grok::GrokModelSelection, swallowtail_runtime::content::OperationContent, swallowtail_runtime::host_reference::WorkingResourceRef, core::option::Option<swallowtail_runtime::time::Deadline>) -> Self
+pub struct swallowtail_adapter_grok::GrokSessionProfileInput
+impl swallowtail_adapter_grok::GrokSessionProfileInput
+pub const fn swallowtail_adapter_grok::GrokSessionProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_grok::GrokModelSelection, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::session_options::SessionOptions) -> Self
+pub const swallowtail_adapter_grok::GROK_BUILD_ACP_AXIS: &str
+pub const swallowtail_adapter_grok::GROK_BUILD_ACP_BASELINE_VERSION: &str
+pub const swallowtail_adapter_grok::GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION: &str
+pub const swallowtail_adapter_grok::GROK_BUILD_SUBSCRIPTION_ACCESS_PROFILE_ID: &str
+pub const swallowtail_adapter_grok::GROK_BUILD_SUBSCRIPTION_AUDIENCE: &str
+pub fn swallowtail_adapter_grok::grok_build_acp_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
+pub fn swallowtail_adapter_grok::grok_build_acp_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_grok::grok_build_acp_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_grok::grok_build_model_for_behavior(&str) -> core::option::Option<&'static str>
+pub fn swallowtail_adapter_grok::grok_build_model_for_version(&swallowtail_core::interface_version::InterfaceVersion) -> core::option::Option<&'static str>
+pub fn swallowtail_adapter_grok::grok_build_subscription_access_profile(swallowtail_core::runtime_identity::CredentialRef) -> swallowtail_core::access::AccessProfile
+pub async fn swallowtail_adapter_grok::prepare_grok_build(swallowtail_adapter_grok::GrokPreparationInput, swallowtail_adapter_grok::GrokPreparationProbe, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_grok::GrokPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
+pub type swallowtail_adapter_grok::GrokPreparedRunFuture = swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub type swallowtail_adapter_grok::GrokPreparedSessionFuture = swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>

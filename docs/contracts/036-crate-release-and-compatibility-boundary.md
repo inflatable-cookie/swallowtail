@@ -42,17 +42,17 @@ The `v0.3.0` / `v0.3.1` tags keep those 28 packages and 34 production routes.
 `v0.3.2` adds two reviewed additive packages,
 `swallowtail-adapter-command-code` and `swallowtail-idioms`, for 30 packages
 and 36 production routes.
-The current source additionally carries the reviewed additive
+The `v0.3.3` candidate additionally carries the reviewed additive
 `swallowtail-adapter-deepseek-harness` package and
 `deepseek-harness.jsonrpc` and `deepseek-harness.local-server` routes, plus
 the reviewed additive `swallowtail-adapter-zcode`,
 `swallowtail-adapter-cline`, `swallowtail-adapter-goose`,
 `swallowtail-adapter-copilot-cli`, `swallowtail-adapter-mistral-vibe`, `swallowtail-adapter-qoder`,
 `swallowtail-adapter-openhands`, `swallowtail-adapter-kiro`, and
-`swallowtail-adapter-deepagents`. Current source is 40 packages and 47
+`swallowtail-adapter-deepagents`. The candidate is 40 packages and 47
 production routes. OpenHands Agent Server is deferred: that package exists
-without a production route. The additive packages are unreleased and are
-not part of the immutable `v0.3.2` inventories.
+without a production route. The additive packages are not part of the
+immutable `v0.3.2` inventories.
 
 Foundations:
 
@@ -297,13 +297,11 @@ not every provider behavior.
 Credential-free release checks sit behind explicit Effigy selectors and cover:
 
 - clean source and exact commit identity
-- 40-package current-source metadata and dependency topology, kept distinct
+- 40-package `v0.3.3` metadata and dependency topology, kept distinct
   from the immutable 30-package `v0.3.2`, 28-package `v0.2.0` / `v0.3.1`, and
   27-package `v0.1.x` baselines
-- semantic public API baseline, with the immutable 30-package `v0.3.2`
-  release frozen separately from the reviewed current-source overrides in
-  `release-baselines/public-api-unreleased/` (ten additive packages plus
-  compatible Claude Agent, Cursor, and Grok additions) and the immutable
+- semantic public API baseline, with the 40-package `v0.3.3` release frozen
+  separately from historical `v0.3.2` files and the immutable
   28-package `v0.3.0` compatibility baseline
 - denied missing public documentation
 - dependency advisory, license, and source policy
@@ -337,7 +335,7 @@ tag action against:
 
 - source commit
 - canonical branch and remote
-- tag name `v0.3.2`
+- tag name `v0.3.3`
 - annotated tag message
 - confirmation that no crate publication or GitHub Release is included
 
@@ -348,14 +346,9 @@ GitHub Release creation, consumer edits, and provider work remain separate.
 
 ## Acceptance
 
-- all 30 tagged packages are separately consumable from one exact source
+- all 40 candidate packages are separately consumable from one exact source
   identity
-- the current source exposes ten reviewed additive packages and eleven
-  additive production routes as unreleased candidate state; they are not
-  presented as tagged. OpenHands exists as a package without a production
-  route
-- the selected next coordinated version is patch `0.3.3` unless later
-  evidence records a Contract 036 break
+- OpenHands exists as a package without a production route
 - the 29th and 30th Command Code and idioms packages first appear in `v0.3.2`
 - the breaking binding-helper migration is explicit and limited to Codex and
   Ollama callers

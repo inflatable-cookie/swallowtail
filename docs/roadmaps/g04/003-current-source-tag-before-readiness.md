@@ -6,7 +6,7 @@ Created: 2026-08-19
 Depends on: g04.002
 Vision tags: source release, compatibility maintenance
 Contract refs: 001, 029, 036-037, 052
-Planning state: card 006 completed (`0.3.3`); card 007 ready; cards 008-009 planned behind operator gates
+Planning state: cards 006-007 completed (`0.3.3` local candidate); cards 008-009 planned behind operator gates
 
 ## Problem
 
@@ -30,7 +30,7 @@ facade implementation. This is packaging of current work, not the facade.
 
 - [x] inventory unreleased packages, routes, and public API against `v0.3.2`
 - [x] classify patch `0.3.3` or minor `0.4.0` under Contract 036
-- [ ] prepare one exact source-tag candidate
+- [x] prepare one exact source-tag candidate
 - [ ] ship the annotated tag only after separate operator authorization
 
 ## Non-Goals
@@ -52,8 +52,8 @@ facade implementation. This is packaging of current work, not the facade.
 
 ### Batch 3.2 — Local Candidate
 
-- [ ] Execute card 007 after card 006.
-- [ ] changelog, notes, coordinated version, and credential-free gates
+- [x] Execute card 007 after card 006.
+- [x] changelog, notes, coordinated version, and credential-free gates
 
 ### Batch 3.3 — Canonical CI
 
@@ -68,12 +68,12 @@ facade implementation. This is packaging of current work, not the facade.
 
 ## Acceptance Criteria
 
-- [ ] all current-source packages share the selected coordinated version
-- [ ] historical `v0.3.2` inventories remain immutable
-- [ ] OpenHands remains fail-closed in release notes
-- [ ] no readiness-facade types ship in this tag
+- [x] all current-source packages share the selected coordinated version
+- [x] historical `v0.3.2` inventories remain immutable
+- [x] OpenHands remains fail-closed in release notes
+- [x] no readiness-facade types ship in this tag
 - [ ] annotated tag resolves to the green commit
-- [ ] later implementation roadmaps stay planned until this tag exists
+- [x] later implementation roadmaps stay planned until this tag exists
 
 ## Decision Gates
 

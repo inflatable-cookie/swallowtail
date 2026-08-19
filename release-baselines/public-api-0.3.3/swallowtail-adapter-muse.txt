@@ -1,0 +1,53 @@
+pub mod swallowtail_adapter_muse
+pub struct swallowtail_adapter_muse::MuseHeadlessDriver
+impl swallowtail_adapter_muse::MuseHeadlessDriver
+pub const fn swallowtail_adapter_muse::MuseHeadlessDriver::environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
+pub const fn swallowtail_adapter_muse::MuseHeadlessDriver::new(swallowtail_runtime::host_reference::EnvironmentRef) -> Self
+impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_muse::MuseHeadlessDriver
+pub fn swallowtail_adapter_muse::MuseHeadlessDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_muse::MuseHeadlessDriver::discover_installed_executable(&self, swallowtail_runtime::installed_executable::InstalledExecutableDiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_core::registration::discovery::DiscoveryOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::StructuredRunDriver for swallowtail_adapter_muse::MuseHeadlessDriver
+pub fn swallowtail_adapter_muse::MuseHeadlessDriver::start_run(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_muse::MuseHeadlessModelSelection
+impl swallowtail_adapter_muse::MuseHeadlessModelSelection
+pub const fn swallowtail_adapter_muse::MuseHeadlessModelSelection::new(swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ProviderId, swallowtail_core::model::ModelId) -> Self
+pub struct swallowtail_adapter_muse::MusePreparationInput
+impl swallowtail_adapter_muse::MusePreparationInput
+pub const fn swallowtail_adapter_muse::MusePreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_runtime::installed_executable::InstalledExecutableTarget, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub struct swallowtail_adapter_muse::MusePreparationProbe
+impl swallowtail_adapter_muse::MusePreparationProbe
+pub const fn swallowtail_adapter_muse::MusePreparationProbe::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::time::Deadline, swallowtail_runtime::installed_executable::DiscoveryCancellation) -> Self
+pub struct swallowtail_adapter_muse::MusePreparedIntegration
+impl swallowtail_adapter_muse::MusePreparedIntegration
+pub const fn swallowtail_adapter_muse::MusePreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_muse::MusePreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_muse::MusePreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_muse::MusePreparedIntegration::environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
+pub const fn swallowtail_adapter_muse::MusePreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_muse::MusePreparedIntegration::low_level_driver(&self) -> swallowtail_adapter_muse::MuseHeadlessDriver
+pub const fn swallowtail_adapter_muse::MusePreparedIntegration::observation(&self) -> &swallowtail_core::installed_executable::InstalledExecutableObservation
+pub const fn swallowtail_adapter_muse::MusePreparedIntegration::target(&self) -> &swallowtail_runtime::installed_executable::InstalledExecutableTarget
+pub fn swallowtail_adapter_muse::MusePreparedIntegration::validate_execution_binding(&self, &swallowtail_core::runtime_identity::ExecutionHostId, &swallowtail_runtime::installed_executable::InstalledExecutableTarget) -> core::result::Result<(), swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_muse::MusePreparedIntegration
+pub fn swallowtail_adapter_muse::MusePreparedIntegration::prepare_run(&self, swallowtail_adapter_muse::MuseRunProfileInput) -> core::result::Result<swallowtail_adapter_muse::MusePreparedRun, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_muse::MusePreparedRun
+impl swallowtail_adapter_muse::MusePreparedRun
+pub const fn swallowtail_adapter_muse::MusePreparedRun::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub fn swallowtail_adapter_muse::MusePreparedRun::low_level_driver(&self) -> swallowtail_adapter_muse::MuseHeadlessDriver
+pub const fn swallowtail_adapter_muse::MusePreparedRun::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_muse::MusePreparedRun::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
+pub fn swallowtail_adapter_muse::MusePreparedRun::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_muse::MuseRunProfileInput
+impl swallowtail_adapter_muse::MuseRunProfileInput
+pub const fn swallowtail_adapter_muse::MuseRunProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_muse::MuseHeadlessModelSelection, swallowtail_runtime::content::OperationContent, swallowtail_core::model::ReasoningMode, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::time::Deadline) -> Self
+pub const swallowtail_adapter_muse::MUSE_CODE_PAYLOAD_BASENAME: &str
+pub const swallowtail_adapter_muse::MUSE_CODE_RELEASE_AXIS: &str
+pub const swallowtail_adapter_muse::MUSE_CODE_RELEASE_REVISION: &str
+pub const swallowtail_adapter_muse::MUSE_LOCAL_META_ACCOUNT_AUDIENCE: &str
+pub const swallowtail_adapter_muse::MUSE_META_PROVIDER_ID: &str
+pub const swallowtail_adapter_muse::MUSE_SPARK_MODEL_ID: &str
+pub fn swallowtail_adapter_muse::muse_code_release_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
+pub fn swallowtail_adapter_muse::muse_headless_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_muse::muse_headless_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_muse::muse_local_meta_account_access_profile(swallowtail_core::runtime_identity::AccessProfileId) -> swallowtail_core::access::AccessProfile
+pub async fn swallowtail_adapter_muse::prepare_muse_headless(swallowtail_adapter_muse::MusePreparationInput, swallowtail_adapter_muse::MusePreparationProbe, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_muse::MusePreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>

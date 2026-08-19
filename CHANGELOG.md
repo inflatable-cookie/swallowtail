@@ -5,6 +5,8 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
+## [0.3.3] - 2026-08-19
+
 ### Added
 - add the separately selectable `swallowtail-adapter-deepagents` package and
   exact Deep Agents ACP `0.1.25` route with qualified-only claim, empty extra
@@ -30,6 +32,13 @@ annotated Git tags from the canonical repository.
 - add the separately selectable `swallowtail-adapter-qoder` package and exact
   Qoder CLI `1.1.25` headless route with qualified-only claim and
   local-config access
+- add the separately selectable `swallowtail-adapter-zcode` package and exact
+  ZCode app-server `0.16.3` route with qualified-only claim, host-approved
+  Node payload, and no credential lease
+- add the separately selectable `swallowtail-adapter-deepseek-harness` package
+  and exact DeepSeek Harness JSON-RPC `0.1.0rc6` and local-server `0.1.0-rc.6`
+  routes with qualified-only claims, host-owned Cordis configuration, and no
+  credential lease
 
 ### Changed
 - raise the Antigravity catalogue and headless qualified ceiling through
@@ -67,38 +76,31 @@ annotated Git tags from the canonical repository.
   ceiling through official npm `@openai/codex` `0.148.0`; later stables stay
   AllowUnverified, existing gaps stay incompatible, and `fork` / `thread/fork`
   / Bedrock stay unmapped
-- raise the Antigravity catalogue and headless qualified ceiling through
-  official GitHub `google-antigravity/antigravity-cli` `1.1.14`:
-  `1.1.9..=1.1.14`, `1.1.8` stays independently unqualified, and
-  `--input-format` plus Gemini API-key sign-in stay unmapped
-- raise the Qwen headless qualified ceiling through official npm
-  `@qwen-code/qwen-code` `0.21.13`: `0.19.11..=0.20.1` and
-  `0.21.0..=0.21.13`, unpublished stable `0.20.2` stays incompatible, and
-  `0.21.4` nested `goal_state` stays unmapped
 - raise the Pi RPC qualified ceiling through official npm
   `@earendil-works/pi-coding-agent` `0.84.2`: exact published points
   `0.80.10` through `0.84.2`, unpublished `0.83.1` stays incompatible, and
   `0.84.0` adds private message-update-delta; streaming `usage` on
   `message_update` stays unmapped
-- raise the Claude Agent ACP qualified ceiling through official npm
-  `@agentclientprotocol/claude-agent-acp` `0.69.0`: `0.53.0..=0.69.0` excluding
-  unpublished `0.58.0`, with Deprecated v6 through `0.65.0` and Maintained
-  initialize-meta-extensions-v7 from `0.66.0`; goal, Air, and file-change
-  initialize `_meta` stay unmapped
 - raise the Ollama attached native runtime qualified ceiling through official
   GitHub `v0.32.14`: `0.14.0..=0.32.14` reuses `ollama.native-text-v1`, keeps
   `0.32.2` excluded, and adds GitHub-prerelease `0.32.10`
-- raise Kimi Code ACP, headless, and local-server qualified ceilings through
-  official `@moonshot-ai/kimi-code` `0.36.1`: ACP and headless reuse declared-effort
-  and stream-json through `0.29.0..=0.36.1`; local-server adds
-  `0.32.0..=0.34.0` optional-meta-flags and `0.35.0..=0.36.1` heartbeat-ping,
-  answering application WebSocket ping with pong
+- add exact Cursor Agent catalogue, ACP, and headless milestones
+  `2026.07.23-e383d2b`, `2026.08.04-aaa8809`, and `2026.08.11-e8db854`;
+  calendar gaps stay unsupported
 - replace the `claude-code.response-only` patch-version equality gate with a
   protocol-compatibility policy: `2.1.227` remains the proven floor,
-  `2.1.228` adds live evidence, the qualified ceiling is `2.1.234`, later
+  `2.1.228` adds live evidence, the qualified ceiling is `2.1.235`, later
   stable releases may run provisionally, known-bad releases can be denied
   explicitly, and every run still fails closed on command, init, tool/MCP,
   thinking, usage, assistant, or terminal drift
+- advance current source to 40 packages and 47 production routes while
+  preserving the immutable `v0.3.2` 30-package, 36-route baseline; publish
+  [v0.3.3 candidate release notes](docs/releases/0.3.3.md) with upgrade,
+  rollback, package, route, and source-only distribution truth
+
+### Fixed
+- upgrade transitive `h2` `0.4.15` to `0.4.17` for RUSTSEC-2026-0258
+  unbounded empty DATA frames
 
 ## [0.3.2] - 2026-08-11
 

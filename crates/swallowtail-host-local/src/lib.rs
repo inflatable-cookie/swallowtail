@@ -9,6 +9,7 @@
 
 mod attachment;
 mod child;
+mod connection_lifecycle;
 mod credential;
 mod deadline;
 mod executable_launch;
@@ -29,6 +30,7 @@ mod task;
 mod working_resource;
 mod working_resource_io;
 
+pub use connection_lifecycle::{JsonFileConnectionLifecycleStore, MemoryConnectionLifecycleStore};
 pub use executable_launch::LocalExecutableLaunch;
 pub use host::{LocalProcessHost, LocalProcessHostBuilder};
 pub use limits::{LocalMaterializationLimits, LocalProcessLimits};

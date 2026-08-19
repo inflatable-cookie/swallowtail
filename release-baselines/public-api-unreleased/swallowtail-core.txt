@@ -42,6 +42,14 @@ pub swallowtail_core::ActivityLifecycleFidelity::UpdateAndCompletion
 pub enum swallowtail_core::ActivityUnknownEventPosture
 pub swallowtail_core::ActivityUnknownEventPosture::FailClosed
 pub swallowtail_core::ActivityUnknownEventPosture::PreserveNamespaced
+pub enum swallowtail_core::AddableRouteAvailability
+pub swallowtail_core::AddableRouteAvailability::Available
+pub swallowtail_core::AddableRouteAvailability::Unavailable(swallowtail_core::AddableRouteMissingRequirement)
+pub swallowtail_core::AddableRouteAvailability::Unsupported
+pub enum swallowtail_core::AddableRouteMissingRequirement
+pub swallowtail_core::AddableRouteMissingRequirement::HostService
+pub swallowtail_core::AddableRouteMissingRequirement::Install
+pub swallowtail_core::AddableRouteMissingRequirement::Runtime
 pub enum swallowtail_core::AttachedModelObservationScope
 pub swallowtail_core::AttachedModelObservationScope::InstalledInventory
 pub swallowtail_core::AttachedModelObservationScope::RunningInventory
@@ -162,6 +170,13 @@ pub fn swallowtail_core::CapabilityConstraint::tool_schema_dialect(impl core::co
 pub enum swallowtail_core::CatalogObservation<T>
 pub swallowtail_core::CatalogObservation::Known(T)
 pub swallowtail_core::CatalogObservation::ProviderDefined(swallowtail_core::ProviderCatalogValue)
+pub enum swallowtail_core::ConfigFieldKind
+pub swallowtail_core::ConfigFieldKind::ApiEndpoint
+pub swallowtail_core::ConfigFieldKind::BinaryPath
+pub swallowtail_core::ConfigFieldKind::Environment
+pub enum swallowtail_core::CredentialFieldVisibility
+pub swallowtail_core::CredentialFieldVisibility::Public
+pub swallowtail_core::CredentialFieldVisibility::Secret
 pub enum swallowtail_core::CredentialMechanism
 pub swallowtail_core::CredentialMechanism::ApiKey
 pub swallowtail_core::CredentialMechanism::AutomationToken
@@ -335,6 +350,9 @@ pub enum swallowtail_core::InstalledExecutableCompatibility
 pub swallowtail_core::InstalledExecutableCompatibility::Incompatible
 pub swallowtail_core::InstalledExecutableCompatibility::Qualified(swallowtail_core::InterfaceCompatibilityMatch)
 pub swallowtail_core::InstalledExecutableCompatibility::UnverifiedNewer(swallowtail_core::InterfaceUnverifiedNewer)
+pub enum swallowtail_core::InstanceEnablement
+pub swallowtail_core::InstanceEnablement::Disabled
+pub swallowtail_core::InstanceEnablement::Enabled
 pub enum swallowtail_core::InstanceOwnership
 pub swallowtail_core::InstanceOwnership::ExternalAttached
 pub swallowtail_core::InstanceOwnership::HostOwnedEphemeral
@@ -539,6 +557,10 @@ pub swallowtail_core::ResourceRepresentation::BoundedBytes
 pub swallowtail_core::ResourceRepresentation::Filesystem
 pub swallowtail_core::ResourceRepresentation::Stream
 pub swallowtail_core::ResourceRepresentation::TemporaryFile
+pub enum swallowtail_core::RouteTopology
+pub swallowtail_core::RouteTopology::Hosted
+pub swallowtail_core::RouteTopology::Installed
+pub swallowtail_core::RouteTopology::LocalRuntime
 pub enum swallowtail_core::RuntimeReadiness
 pub swallowtail_core::RuntimeReadiness::Degraded
 pub swallowtail_core::RuntimeReadiness::Ready
@@ -568,6 +590,15 @@ pub enum swallowtail_core::SubagentObservationFidelity
 pub swallowtail_core::SubagentObservationFidelity::AttributedActivity
 pub swallowtail_core::SubagentObservationFidelity::IdentityAndLifecycle
 pub swallowtail_core::SubagentObservationFidelity::ParentAndMetadata
+pub enum swallowtail_core::SubjectDisclosure
+pub swallowtail_core::SubjectDisclosure::Absent
+pub swallowtail_core::SubjectDisclosure::Redacted
+pub swallowtail_core::SubjectDisclosure::Revealed(alloc::string::String)
+impl swallowtail_core::SubjectDisclosure
+pub const fn swallowtail_core::SubjectDisclosure::is_revealed(&self) -> bool
+pub fn swallowtail_core::SubjectDisclosure::revealed_text(&self) -> core::option::Option<&str>
+impl core::fmt::Debug for swallowtail_core::SubjectDisclosure
+pub fn swallowtail_core::SubjectDisclosure::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub enum swallowtail_core::SupportAuthority
 pub swallowtail_core::SupportAuthority::ExperimentalObserved
 pub swallowtail_core::SupportAuthority::IntegrationMaintainerSupported
@@ -642,6 +673,41 @@ pub struct swallowtail_core::AdapterVersion(_)
 impl swallowtail_core::AdapterVersion
 pub fn swallowtail_core::AdapterVersion::as_str(&self) -> &str
 pub fn swallowtail_core::AdapterVersion::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::AddableRouteDescriptor
+impl swallowtail_core::AddableRouteDescriptor
+pub const fn swallowtail_core::AddableRouteDescriptor::availability(&self) -> swallowtail_core::AddableRouteAvailability
+pub fn swallowtail_core::AddableRouteDescriptor::config_fields(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = &swallowtail_core::ConfigFieldDescriptor>
+pub fn swallowtail_core::AddableRouteDescriptor::credential_fields(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = &swallowtail_core::CredentialFieldDescriptor>
+pub const fn swallowtail_core::AddableRouteDescriptor::driver(&self) -> &swallowtail_core::AdapterIdentity
+pub const fn swallowtail_core::AddableRouteDescriptor::id(&self) -> &swallowtail_core::AddableRouteId
+pub fn swallowtail_core::AddableRouteDescriptor::new(swallowtail_core::AddableRouteId, swallowtail_core::AdapterIdentity, swallowtail_core::RouteTopology, swallowtail_core::AddableRouteAvailability) -> Self
+pub fn swallowtail_core::AddableRouteDescriptor::sign_in_actions(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::SignInAction>
+pub const fn swallowtail_core::AddableRouteDescriptor::topology(&self) -> swallowtail_core::RouteTopology
+pub fn swallowtail_core::AddableRouteDescriptor::with_config_fields(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::ConfigFieldDescriptor>) -> Self
+pub fn swallowtail_core::AddableRouteDescriptor::with_credential_fields(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::CredentialFieldDescriptor>) -> Self
+pub fn swallowtail_core::AddableRouteDescriptor::with_sign_in_actions(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::SignInAction>) -> Self
+pub struct swallowtail_core::AddableRouteId(_)
+impl swallowtail_core::AddableRouteId
+pub fn swallowtail_core::AddableRouteId::as_str(&self) -> &str
+pub fn swallowtail_core::AddableRouteId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::AdmittedInstanceRecord
+impl swallowtail_core::AdmittedInstanceRecord
+pub const fn swallowtail_core::AdmittedInstanceRecord::access_status(&self) -> core::option::Option<&swallowtail_core::AccessStatus>
+pub fn swallowtail_core::AdmittedInstanceRecord::config_refs(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = (&swallowtail_core::ConfigFieldId, &swallowtail_core::ConfigFieldRef)>
+pub fn swallowtail_core::AdmittedInstanceRecord::credential_refs(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = (&swallowtail_core::CredentialFieldId, &swallowtail_core::CredentialRef)>
+pub const fn swallowtail_core::AdmittedInstanceRecord::driver(&self) -> &swallowtail_core::AdapterIdentity
+pub const fn swallowtail_core::AdmittedInstanceRecord::enablement(&self) -> swallowtail_core::InstanceEnablement
+pub const fn swallowtail_core::AdmittedInstanceRecord::family(&self) -> &swallowtail_core::IntegrationFamilyId
+pub const fn swallowtail_core::AdmittedInstanceRecord::id(&self) -> &swallowtail_core::ConfiguredInstanceId
+pub const fn swallowtail_core::AdmittedInstanceRecord::label(&self) -> core::option::Option<&swallowtail_core::InstanceLabel>
+pub fn swallowtail_core::AdmittedInstanceRecord::new(swallowtail_core::ConfiguredInstanceId, swallowtail_core::IntegrationFamilyId, swallowtail_core::AddableRouteId, swallowtail_core::AdapterIdentity, swallowtail_core::RouteTopology) -> Self
+pub const fn swallowtail_core::AdmittedInstanceRecord::route_id(&self) -> &swallowtail_core::AddableRouteId
+pub const fn swallowtail_core::AdmittedInstanceRecord::topology(&self) -> swallowtail_core::RouteTopology
+pub fn swallowtail_core::AdmittedInstanceRecord::with_access_status(self, swallowtail_core::AccessStatus) -> Self
+pub fn swallowtail_core::AdmittedInstanceRecord::with_config_refs(self, impl core::iter::traits::collect::IntoIterator<Item = (swallowtail_core::ConfigFieldId, swallowtail_core::ConfigFieldRef)>) -> Self
+pub fn swallowtail_core::AdmittedInstanceRecord::with_credential_refs(self, impl core::iter::traits::collect::IntoIterator<Item = (swallowtail_core::CredentialFieldId, swallowtail_core::CredentialRef)>) -> Self
+pub const fn swallowtail_core::AdmittedInstanceRecord::with_enablement(self, swallowtail_core::InstanceEnablement) -> Self
+pub fn swallowtail_core::AdmittedInstanceRecord::with_label(self, swallowtail_core::InstanceLabel) -> Self
 pub struct swallowtail_core::AttachedModelObservation
 impl swallowtail_core::AttachedModelObservation
 pub const fn swallowtail_core::AttachedModelObservation::execution_host_id(&self) -> &swallowtail_core::ExecutionHostId
@@ -665,6 +731,21 @@ pub const fn swallowtail_core::AttachedRuntimeRequirements::model_tag(&self) -> 
 pub const fn swallowtail_core::AttachedRuntimeRequirements::new(swallowtail_core::InterfaceVersionBinding, swallowtail_core::ModelId, swallowtail_core::AttachedModelTag, swallowtail_core::ModelManifestDigest, swallowtail_core::AttachedRuntimeResidency) -> Self
 pub const fn swallowtail_core::AttachedRuntimeRequirements::residency(&self) -> swallowtail_core::AttachedRuntimeResidency
 pub const fn swallowtail_core::AttachedRuntimeRequirements::runtime_version(&self) -> &swallowtail_core::InterfaceVersionBinding
+pub struct swallowtail_core::AuthenticatedSubjectObservation
+impl swallowtail_core::AuthenticatedSubjectObservation
+pub const fn swallowtail_core::AuthenticatedSubjectObservation::email(&self) -> &swallowtail_core::SubjectDisclosure
+pub const fn swallowtail_core::AuthenticatedSubjectObservation::is_redacted(&self) -> bool
+pub const fn swallowtail_core::AuthenticatedSubjectObservation::login(&self) -> &swallowtail_core::SubjectDisclosure
+pub const fn swallowtail_core::AuthenticatedSubjectObservation::plan(&self) -> &swallowtail_core::SubjectDisclosure
+pub const fn swallowtail_core::AuthenticatedSubjectObservation::redacted() -> Self
+pub fn swallowtail_core::AuthenticatedSubjectObservation::reveal_email(self, impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub fn swallowtail_core::AuthenticatedSubjectObservation::reveal_login(self, impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub fn swallowtail_core::AuthenticatedSubjectObservation::reveal_plan(self, impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub fn swallowtail_core::AuthenticatedSubjectObservation::with_email_disclosed(self) -> Self
+pub fn swallowtail_core::AuthenticatedSubjectObservation::with_login_disclosed(self) -> Self
+pub fn swallowtail_core::AuthenticatedSubjectObservation::with_plan_disclosed(self) -> Self
+impl core::default::Default for swallowtail_core::AuthenticatedSubjectObservation
+pub fn swallowtail_core::AuthenticatedSubjectObservation::default() -> Self
 pub struct swallowtail_core::CapabilityManifest
 impl swallowtail_core::CapabilityManifest
 pub fn swallowtail_core::CapabilityManifest::iter(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::Capability> + '_
@@ -687,6 +768,22 @@ impl swallowtail_core::CatalogTimestamp
 pub const fn swallowtail_core::CatalogTimestamp::epoch_seconds(&self) -> i64
 pub fn swallowtail_core::CatalogTimestamp::new(i64, u32) -> core::result::Result<Self, swallowtail_core::InvalidCatalogObservation>
 pub const fn swallowtail_core::CatalogTimestamp::subsecond_nanos(&self) -> u32
+pub struct swallowtail_core::ConfigFieldDescriptor
+impl swallowtail_core::ConfigFieldDescriptor
+pub const fn swallowtail_core::ConfigFieldDescriptor::id(&self) -> &swallowtail_core::ConfigFieldId
+pub const fn swallowtail_core::ConfigFieldDescriptor::kind(&self) -> swallowtail_core::ConfigFieldKind
+pub const fn swallowtail_core::ConfigFieldDescriptor::label(&self) -> &swallowtail_core::FieldLabel
+pub const fn swallowtail_core::ConfigFieldDescriptor::new(swallowtail_core::ConfigFieldId, swallowtail_core::FieldLabel, swallowtail_core::ConfigFieldKind) -> Self
+pub struct swallowtail_core::ConfigFieldId(_)
+impl swallowtail_core::ConfigFieldId
+pub fn swallowtail_core::ConfigFieldId::as_str(&self) -> &str
+pub fn swallowtail_core::ConfigFieldId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::ConfigFieldRef(_)
+impl swallowtail_core::ConfigFieldRef
+pub fn swallowtail_core::ConfigFieldRef::as_host_value(&self) -> &str
+pub fn swallowtail_core::ConfigFieldRef::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+impl core::fmt::Debug for swallowtail_core::ConfigFieldRef
+pub fn swallowtail_core::ConfigFieldRef::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub struct swallowtail_core::ConfiguredInstance
 impl swallowtail_core::ConfiguredInstance
 pub const fn swallowtail_core::ConfiguredInstance::access_profile_id(&self) -> &swallowtail_core::AccessProfileId
@@ -714,6 +811,18 @@ pub struct swallowtail_core::ConfiguredInstanceId(_)
 impl swallowtail_core::ConfiguredInstanceId
 pub fn swallowtail_core::ConfiguredInstanceId::as_str(&self) -> &str
 pub fn swallowtail_core::ConfiguredInstanceId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::CredentialFieldDescriptor
+impl swallowtail_core::CredentialFieldDescriptor
+pub const fn swallowtail_core::CredentialFieldDescriptor::environment_name(&self) -> core::option::Option<&swallowtail_core::EnvironmentVariableName>
+pub const fn swallowtail_core::CredentialFieldDescriptor::id(&self) -> &swallowtail_core::CredentialFieldId
+pub const fn swallowtail_core::CredentialFieldDescriptor::label(&self) -> &swallowtail_core::FieldLabel
+pub const fn swallowtail_core::CredentialFieldDescriptor::new(swallowtail_core::CredentialFieldId, swallowtail_core::FieldLabel, swallowtail_core::CredentialFieldVisibility) -> Self
+pub const fn swallowtail_core::CredentialFieldDescriptor::visibility(&self) -> swallowtail_core::CredentialFieldVisibility
+pub fn swallowtail_core::CredentialFieldDescriptor::with_environment_name(self, swallowtail_core::EnvironmentVariableName) -> Self
+pub struct swallowtail_core::CredentialFieldId(_)
+impl swallowtail_core::CredentialFieldId
+pub fn swallowtail_core::CredentialFieldId::as_str(&self) -> &str
+pub fn swallowtail_core::CredentialFieldId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
 pub struct swallowtail_core::CredentialRef(_)
 impl swallowtail_core::CredentialRef
 pub fn swallowtail_core::CredentialRef::as_host_value(&self) -> &str
@@ -790,6 +899,10 @@ pub struct swallowtail_core::EndpointAudience(_)
 impl swallowtail_core::EndpointAudience
 pub fn swallowtail_core::EndpointAudience::as_str(&self) -> &str
 pub fn swallowtail_core::EndpointAudience::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::EnvironmentVariableName(_)
+impl swallowtail_core::EnvironmentVariableName
+pub fn swallowtail_core::EnvironmentVariableName::as_str(&self) -> &str
+pub fn swallowtail_core::EnvironmentVariableName::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
 pub struct swallowtail_core::EventEnvelope
 impl swallowtail_core::EventEnvelope
 pub fn swallowtail_core::EventEnvelope::apply_extension_policy(self, swallowtail_core::ExtensionPolicy) -> core::result::Result<Self, swallowtail_core::ExtensionRejected>
@@ -823,6 +936,10 @@ pub const fn swallowtail_core::FailureClassification::recovery(self) -> swallowt
 pub const fn swallowtail_core::FailureClassification::unknown() -> Self
 impl core::default::Default for swallowtail_core::FailureClassification
 pub fn swallowtail_core::FailureClassification::default() -> Self
+pub struct swallowtail_core::FieldLabel(_)
+impl swallowtail_core::FieldLabel
+pub fn swallowtail_core::FieldLabel::as_str(&self) -> &str
+pub fn swallowtail_core::FieldLabel::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
 pub struct swallowtail_core::HarnessRpcPolicy
 impl swallowtail_core::HarnessRpcPolicy
 pub fn swallowtail_core::HarnessRpcPolicy::permits_background_action(&self, swallowtail_core::HarnessBackgroundAction) -> bool
@@ -853,6 +970,10 @@ pub const fn swallowtail_core::InstalledExecutableObservation::execution_host_id
 pub const fn swallowtail_core::InstalledExecutableObservation::is_permitted(&self) -> bool
 pub const fn swallowtail_core::InstalledExecutableObservation::is_qualified(&self) -> bool
 pub const fn swallowtail_core::InstalledExecutableObservation::version(&self) -> &swallowtail_core::InterfaceVersionBinding
+pub struct swallowtail_core::InstanceLabel(_)
+impl swallowtail_core::InstanceLabel
+pub fn swallowtail_core::InstanceLabel::as_str(&self) -> &str
+pub fn swallowtail_core::InstanceLabel::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
 pub struct swallowtail_core::InstancePolicyId(_)
 impl swallowtail_core::InstancePolicyId
 pub fn swallowtail_core::InstancePolicyId::as_str(&self) -> &str
@@ -1163,6 +1284,20 @@ pub fn swallowtail_core::OperationRequirements::with_realtime_media(self, swallo
 pub fn swallowtail_core::OperationRequirements::with_remote_acp(self, swallowtail_core::RemoteAcpRequirements) -> Self
 pub fn swallowtail_core::OperationRequirements::with_session_access_policy(self, swallowtail_core::SessionAccessPolicy) -> Self
 pub const fn swallowtail_core::OperationRequirements::with_session_provider_state_policy(self, swallowtail_core::SessionProviderStatePolicy) -> Self
+pub struct swallowtail_core::OverlayMarker
+impl swallowtail_core::OverlayMarker
+pub const fn swallowtail_core::OverlayMarker::consumer_default(&self) -> bool
+pub const fn swallowtail_core::OverlayMarker::favourite(&self) -> bool
+pub const fn swallowtail_core::OverlayMarker::hidden(&self) -> bool
+pub const fn swallowtail_core::OverlayMarker::instance_id(&self) -> &swallowtail_core::ConfiguredInstanceId
+pub const fn swallowtail_core::OverlayMarker::model_id(&self) -> &swallowtail_core::ModelId
+pub const fn swallowtail_core::OverlayMarker::new(swallowtail_core::ConfiguredInstanceId, swallowtail_core::ProviderId, swallowtail_core::ModelId) -> Self
+pub const fn swallowtail_core::OverlayMarker::ordinal(&self) -> core::option::Option<u32>
+pub const fn swallowtail_core::OverlayMarker::provider_id(&self) -> &swallowtail_core::ProviderId
+pub const fn swallowtail_core::OverlayMarker::with_consumer_default(self, bool) -> Self
+pub const fn swallowtail_core::OverlayMarker::with_favourite(self, bool) -> Self
+pub const fn swallowtail_core::OverlayMarker::with_hidden(self, bool) -> Self
+pub const fn swallowtail_core::OverlayMarker::with_ordinal(self, core::option::Option<u32>) -> Self
 pub struct swallowtail_core::PreflightContext<'a>
 impl<'a> swallowtail_core::PreflightContext<'a>
 pub fn swallowtail_core::PreflightContext<'a>::new(&'a swallowtail_core::DriverDescriptor, &'a swallowtail_core::ConfiguredInstance, &'a swallowtail_core::AccessProfile, &'a swallowtail_core::AccessStatus, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::HostServiceKind>) -> Self

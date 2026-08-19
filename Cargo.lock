@@ -3215,6 +3215,8 @@ name = "swallowtail-host-local"
 version = "0.3.3"
 dependencies = [
  "futures-executor",
+ "serde",
+ "serde_json",
  "sha2 0.10.9",
  "swallowtail-core",
  "swallowtail-runtime",

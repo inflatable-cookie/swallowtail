@@ -7,6 +7,7 @@ pub use swallowtail_runtime::ActivityKindClass
 pub use swallowtail_runtime::ActivityKindProfile
 pub use swallowtail_runtime::ActivityLifecycleFidelity
 pub use swallowtail_runtime::ActivityUnknownEventPosture
+pub use swallowtail_runtime::AdmittedInstanceRecord
 pub use swallowtail_runtime::AttachedRuntimeResidency
 pub use swallowtail_runtime::CredentialRef
 pub use swallowtail_runtime::ExternalNetworkPolicy
@@ -14,6 +15,7 @@ pub use swallowtail_runtime::ExternalSearchPolicy
 pub use swallowtail_runtime::FilesystemBoundary
 pub use swallowtail_runtime::HarnessIsolation
 pub use swallowtail_runtime::IncompatibleSessionAccessPolicy
+pub use swallowtail_runtime::InstanceEnablement
 pub use swallowtail_runtime::InvalidObservableActivityProfile
 pub use swallowtail_runtime::ModelArtifactBinding
 pub use swallowtail_runtime::ModelArtifactDescriptor
@@ -25,6 +27,7 @@ pub use swallowtail_runtime::ModelArtifactRevision
 pub use swallowtail_runtime::ObservableActivityAvailability
 pub use swallowtail_runtime::ObservableActivityProfile
 pub use swallowtail_runtime::OperationDetachmentScope
+pub use swallowtail_runtime::OverlayMarker
 pub use swallowtail_runtime::OwnedRemoteResourceKind
 pub use swallowtail_runtime::PlannedConnectionRolloverPolicy
 pub use swallowtail_runtime::ProviderActivityRef
@@ -778,6 +781,13 @@ pub const fn swallowtail_runtime::ConfiguredProviderModelRoute::model_id(&self) 
 pub const fn swallowtail_runtime::ConfiguredProviderModelRoute::provider_id(&self) -> core::option::Option<&swallowtail_core::model::ProviderId>
 pub const fn swallowtail_runtime::ConfiguredProviderModelRoute::route_id(&self) -> &swallowtail_core::runtime_identity::ModelRouteId
 pub const fn swallowtail_runtime::ConfiguredProviderModelRoute::route_revision(&self) -> &swallowtail_core::runtime_identity::ModelRouteRevision
+pub struct swallowtail_runtime::ConnectionLifecycleStoreFailure
+impl swallowtail_runtime::ConnectionLifecycleStoreFailure
+pub const fn swallowtail_runtime::ConnectionLifecycleStoreFailure::diagnostic(&self) -> &swallowtail_core::diagnostic::SafeDiagnostic
+pub fn swallowtail_runtime::ConnectionLifecycleStoreFailure::new(&'static str, impl core::convert::Into<alloc::string::String>) -> Self
+impl core::error::Error for swallowtail_runtime::ConnectionLifecycleStoreFailure
+impl core::fmt::Display for swallowtail_runtime::ConnectionLifecycleStoreFailure
+pub fn swallowtail_runtime::ConnectionLifecycleStoreFailure::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub struct swallowtail_runtime::Deadline(_)
 impl swallowtail_runtime::Deadline
 pub const fn swallowtail_runtime::Deadline::at(swallowtail_runtime::MonotonicInstant) -> Self
@@ -2392,6 +2402,12 @@ pub fn swallowtail_runtime::DiscoveryCancellation::scope(&self) -> swallowtail_c
 impl swallowtail_runtime::CancellationControl for swallowtail_runtime::ImmediateCancellation
 pub fn swallowtail_runtime::ImmediateCancellation::request(&self) -> swallowtail_runtime::BoxFuture<'_, core::result::Result<swallowtail_runtime::CancellationAcknowledgement, swallowtail_runtime::RuntimeFailure>>
 pub fn swallowtail_runtime::ImmediateCancellation::scope(&self) -> swallowtail_core::requirement::CancellationScope
+pub trait swallowtail_runtime::ConnectionLifecycleStore: core::marker::Send + core::marker::Sync
+pub fn swallowtail_runtime::ConnectionLifecycleStore::get_instance(&self, &swallowtail_core::runtime_identity::ConfiguredInstanceId) -> core::result::Result<core::option::Option<swallowtail_core::connection_lifecycle::records::AdmittedInstanceRecord>, swallowtail_runtime::ConnectionLifecycleStoreFailure>
+pub fn swallowtail_runtime::ConnectionLifecycleStore::list_instances(&self) -> core::result::Result<alloc::vec::Vec<swallowtail_core::connection_lifecycle::records::AdmittedInstanceRecord>, swallowtail_runtime::ConnectionLifecycleStoreFailure>
+pub fn swallowtail_runtime::ConnectionLifecycleStore::list_overlay_markers(&self) -> core::result::Result<alloc::vec::Vec<swallowtail_core::connection_lifecycle::records::OverlayMarker>, swallowtail_runtime::ConnectionLifecycleStoreFailure>
+pub fn swallowtail_runtime::ConnectionLifecycleStore::put_instance(&self, swallowtail_core::connection_lifecycle::records::AdmittedInstanceRecord) -> core::result::Result<(), swallowtail_runtime::ConnectionLifecycleStoreFailure>
+pub fn swallowtail_runtime::ConnectionLifecycleStore::put_overlay_marker(&self, swallowtail_core::connection_lifecycle::records::OverlayMarker) -> core::result::Result<(), swallowtail_runtime::ConnectionLifecycleStoreFailure>
 pub trait swallowtail_runtime::CredentialService: core::marker::Send + core::marker::Sync
 pub fn swallowtail_runtime::CredentialService::acquire(&self, swallowtail_runtime::ScopeId, swallowtail_core::runtime_identity::CredentialRef, swallowtail_core::runtime_identity::EndpointAudience) -> swallowtail_runtime::BoxFuture<'static, core::result::Result<swallowtail_runtime::CredentialLease, swallowtail_runtime::RuntimeFailure>>
 pub fn swallowtail_runtime::CredentialService::release(&self, swallowtail_runtime::CredentialLease) -> swallowtail_runtime::BoxFuture<'static, swallowtail_runtime::CleanupOutcome>

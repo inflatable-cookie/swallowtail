@@ -1,4 +1,16 @@
 pub mod swallowtail_host_local
+pub struct swallowtail_host_local::JsonFileConnectionLifecycleStore
+impl swallowtail_host_local::JsonFileConnectionLifecycleStore
+pub fn swallowtail_host_local::JsonFileConnectionLifecycleStore::open(impl core::convert::Into<std::path::PathBuf>) -> core::result::Result<Self, swallowtail_runtime::connection_lifecycle::ConnectionLifecycleStoreFailure>
+pub fn swallowtail_host_local::JsonFileConnectionLifecycleStore::path(&self) -> &std::path::Path
+impl core::fmt::Debug for swallowtail_host_local::JsonFileConnectionLifecycleStore
+pub fn swallowtail_host_local::JsonFileConnectionLifecycleStore::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl swallowtail_runtime::connection_lifecycle::ConnectionLifecycleStore for swallowtail_host_local::JsonFileConnectionLifecycleStore
+pub fn swallowtail_host_local::JsonFileConnectionLifecycleStore::get_instance(&self, &swallowtail_core::runtime_identity::ConfiguredInstanceId) -> core::result::Result<core::option::Option<swallowtail_core::connection_lifecycle::records::AdmittedInstanceRecord>, swallowtail_runtime::connection_lifecycle::ConnectionLifecycleStoreFailure>
+pub fn swallowtail_host_local::JsonFileConnectionLifecycleStore::list_instances(&self) -> core::result::Result<alloc::vec::Vec<swallowtail_core::connection_lifecycle::records::AdmittedInstanceRecord>, swallowtail_runtime::connection_lifecycle::ConnectionLifecycleStoreFailure>
+pub fn swallowtail_host_local::JsonFileConnectionLifecycleStore::list_overlay_markers(&self) -> core::result::Result<alloc::vec::Vec<swallowtail_core::connection_lifecycle::records::OverlayMarker>, swallowtail_runtime::connection_lifecycle::ConnectionLifecycleStoreFailure>
+pub fn swallowtail_host_local::JsonFileConnectionLifecycleStore::put_instance(&self, swallowtail_core::connection_lifecycle::records::AdmittedInstanceRecord) -> core::result::Result<(), swallowtail_runtime::connection_lifecycle::ConnectionLifecycleStoreFailure>
+pub fn swallowtail_host_local::JsonFileConnectionLifecycleStore::put_overlay_marker(&self, swallowtail_core::connection_lifecycle::records::OverlayMarker) -> core::result::Result<(), swallowtail_runtime::connection_lifecycle::ConnectionLifecycleStoreFailure>
 pub struct swallowtail_host_local::LocalExecutableLaunch
 impl swallowtail_host_local::LocalExecutableLaunch
 pub fn swallowtail_host_local::LocalExecutableLaunch::interpreted_script(impl core::convert::Into<std::path::PathBuf>, impl core::convert::Into<std::path::PathBuf>) -> Self
@@ -93,3 +105,14 @@ pub const fn swallowtail_host_local::LocalScopedTaskService::execution_host_id(&
 pub const fn swallowtail_host_local::LocalScopedTaskService::new(swallowtail_core::runtime_identity::ExecutionHostId) -> Self
 impl swallowtail_runtime::host_traits::ScopedTaskService for swallowtail_host_local::LocalScopedTaskService
 pub fn swallowtail_host_local::LocalScopedTaskService::spawn(&self, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::async_types::BoxFuture<'static, ()>) -> core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::host_traits::JoinedTask>, swallowtail_runtime::failure::RuntimeFailure>
+pub struct swallowtail_host_local::MemoryConnectionLifecycleStore
+impl swallowtail_host_local::MemoryConnectionLifecycleStore
+pub fn swallowtail_host_local::MemoryConnectionLifecycleStore::new() -> Self
+impl core::fmt::Debug for swallowtail_host_local::MemoryConnectionLifecycleStore
+pub fn swallowtail_host_local::MemoryConnectionLifecycleStore::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl swallowtail_runtime::connection_lifecycle::ConnectionLifecycleStore for swallowtail_host_local::MemoryConnectionLifecycleStore
+pub fn swallowtail_host_local::MemoryConnectionLifecycleStore::get_instance(&self, &swallowtail_core::runtime_identity::ConfiguredInstanceId) -> core::result::Result<core::option::Option<swallowtail_core::connection_lifecycle::records::AdmittedInstanceRecord>, swallowtail_runtime::connection_lifecycle::ConnectionLifecycleStoreFailure>
+pub fn swallowtail_host_local::MemoryConnectionLifecycleStore::list_instances(&self) -> core::result::Result<alloc::vec::Vec<swallowtail_core::connection_lifecycle::records::AdmittedInstanceRecord>, swallowtail_runtime::connection_lifecycle::ConnectionLifecycleStoreFailure>
+pub fn swallowtail_host_local::MemoryConnectionLifecycleStore::list_overlay_markers(&self) -> core::result::Result<alloc::vec::Vec<swallowtail_core::connection_lifecycle::records::OverlayMarker>, swallowtail_runtime::connection_lifecycle::ConnectionLifecycleStoreFailure>
+pub fn swallowtail_host_local::MemoryConnectionLifecycleStore::put_instance(&self, swallowtail_core::connection_lifecycle::records::AdmittedInstanceRecord) -> core::result::Result<(), swallowtail_runtime::connection_lifecycle::ConnectionLifecycleStoreFailure>
+pub fn swallowtail_host_local::MemoryConnectionLifecycleStore::put_overlay_marker(&self, swallowtail_core::connection_lifecycle::records::OverlayMarker) -> core::result::Result<(), swallowtail_runtime::connection_lifecycle::ConnectionLifecycleStoreFailure>

@@ -11,6 +11,7 @@ mod async_types;
 mod attachment;
 mod callback;
 mod cancellation;
+mod connection_lifecycle;
 mod content;
 mod debug_observation;
 mod detachment;
@@ -97,6 +98,7 @@ pub use callback::{
     CallbackResult, CallbackWaitState,
 };
 pub use cancellation::{CancellationAcknowledgement, CancellationControl, ImmediateCancellation};
+pub use connection_lifecycle::{ConnectionLifecycleStore, ConnectionLifecycleStoreFailure};
 pub use content::OperationContent;
 pub use debug_observation::{
     DEBUG_DETAIL_TRUNCATED_SUFFIX, DebugObservation, DebugObservationKind, MAX_DEBUG_DETAIL_CHARS,
@@ -307,12 +309,13 @@ pub use subagent_directory::{
 };
 pub use swallowtail_core::{
     ActivityCorrelationKind, ActivityInterfaceBasis, ActivityKindClass, ActivityKindProfile,
-    ActivityLifecycleFidelity, ActivityUnknownEventPosture, AttachedRuntimeResidency,
-    CredentialRef, ExternalNetworkPolicy, ExternalSearchPolicy, FilesystemBoundary,
-    HarnessIsolation, IncompatibleSessionAccessPolicy, InvalidObservableActivityProfile,
-    ModelArtifactBinding, ModelArtifactDescriptor, ModelArtifactDigest, ModelArtifactFormat,
-    ModelArtifactId, ModelArtifactRef, ModelArtifactRevision, ObservableActivityAvailability,
-    ObservableActivityProfile, OperationDetachmentScope, OwnedRemoteResourceKind,
+    ActivityLifecycleFidelity, ActivityUnknownEventPosture, AdmittedInstanceRecord,
+    AttachedRuntimeResidency, CredentialRef, ExternalNetworkPolicy, ExternalSearchPolicy,
+    FilesystemBoundary, HarnessIsolation, IncompatibleSessionAccessPolicy, InstanceEnablement,
+    InvalidObservableActivityProfile, ModelArtifactBinding, ModelArtifactDescriptor,
+    ModelArtifactDigest, ModelArtifactFormat, ModelArtifactId, ModelArtifactRef,
+    ModelArtifactRevision, ObservableActivityAvailability, ObservableActivityProfile,
+    OperationDetachmentScope, OverlayMarker, OwnedRemoteResourceKind,
     PlannedConnectionRolloverPolicy, ProviderActivityRef, ProviderApprovalPolicy,
     ProviderInferenceCachePolicy, ProviderRequestHandling, ProviderRequestPolicy,
     ProviderSessionActivityEvidence, ProviderSessionActivityState, ProviderSessionAffectedScope,

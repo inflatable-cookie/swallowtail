@@ -6,7 +6,7 @@ Created: 2026-08-19
 Depends on: g04.002
 Vision tags: source release, compatibility maintenance
 Contract refs: 001, 029, 036-037, 052
-Planning state: cards 006-007 ready; cards 008-009 planned behind operator gates
+Planning state: card 006 completed (`0.3.3`); card 007 ready; cards 008-009 planned behind operator gates
 
 ## Problem
 
@@ -28,8 +28,8 @@ facade implementation. This is packaging of current work, not the facade.
 
 ## Goals
 
-- [ ] inventory unreleased packages, routes, and public API against `v0.3.2`
-- [ ] classify patch `0.3.3` or minor `0.4.0` under Contract 036
+- [x] inventory unreleased packages, routes, and public API against `v0.3.2`
+- [x] classify patch `0.3.3` or minor `0.4.0` under Contract 036
 - [ ] prepare one exact source-tag candidate
 - [ ] ship the annotated tag only after separate operator authorization
 
@@ -45,10 +45,10 @@ facade implementation. This is packaging of current work, not the facade.
 
 ### Batch 3.1 — Release Inventory And Contract
 
-- [ ] Execute card 006.
-- [ ] freeze package, route, and API inventories
-- [ ] confirm patch versus minor
-- [ ] keep OpenHands as a package without a production route
+- [x] Execute card 006.
+- [x] freeze package, route, and API inventories
+- [x] confirm patch versus minor
+- [x] keep OpenHands as a package without a production route
 
 ### Batch 3.2 — Local Candidate
 

@@ -54,4 +54,4 @@ while IFS= read -r release_package; do
     "$release_api" \
     "$release_actual_dir/$release_package.txt"
 done < "$release_expected_packages"
-printf 'semantic API passed: 30 immutable v0.3.2 packages plus 11 reviewed unreleased API surfaces; v0.3.0 removals remain forbidden\n'
+printf 'semantic API passed: 30 immutable v0.3.2 packages plus 13 reviewed unreleased API surfaces; v0.3.0 removals remain forbidden\n'

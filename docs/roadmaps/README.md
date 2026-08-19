@@ -14,7 +14,7 @@ shape.
 
 ## Next Task
 
-Implement the current-source release inventory and local candidate for the pre-facade tag.
+Implement the current-source local candidate for the pre-facade tag.
 
 ## Index
 

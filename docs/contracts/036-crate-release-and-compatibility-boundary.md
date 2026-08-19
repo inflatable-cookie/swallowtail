@@ -147,13 +147,13 @@ Patch-compatible changes may include additive public items, internal
 refactoring, safety fixes preserving documented behavior, additive safe
 diagnostics, and newly qualified provider-interface versions.
 
-The immutable current source release is `v0.3.2`. Its two additive packages,
-additive routes and public items, stricter fail-closed projections, and tooling
-repairs preserve the `v0.3.1` public and guaranteed-behavior baseline. The
-post-tag DeepSeek Harness candidate is separately reviewed and does not alter
-the immutable release. No
-breaking API, capability removal, range shrink, MSRV raise, or verified-target
-removal is selected, so Contract 036 requires a patch rather than `v0.4.0`.
+The immutable tagged release remains `v0.3.2`. The selected next coordinated
+source version is compatible patch `0.3.3`. Ten additive packages, eleven
+additive production routes, additive public items on existing packages, newly
+qualified provider-interface versions, and fail-closed OpenHands-without-a-route
+preserve the `v0.3.2` public and guaranteed-behavior baseline. No breaking API,
+capability removal, range shrink, MSRV raise, or verified-target removal is
+selected, so Contract 036 requires a patch rather than `v0.4.0`.
 
 Breaking changes include removing or incompatibly changing public items,
 raising MSRV, shrinking a guaranteed provider range, removing a capability or
@@ -297,14 +297,13 @@ not every provider behavior.
 Credential-free release checks sit behind explicit Effigy selectors and cover:
 
 - clean source and exact commit identity
-- 36-package current-source metadata and dependency topology, kept distinct
+- 40-package current-source metadata and dependency topology, kept distinct
   from the immutable 30-package `v0.3.2`, 28-package `v0.2.0` / `v0.3.1`, and
   27-package `v0.1.x` baselines
 - semantic public API baseline, with the immutable 30-package `v0.3.2`
   release frozen separately from the reviewed current-source overrides in
-  `release-baselines/public-api-unreleased/` (including Claude response-only
-  the DeepSeek Harness, ZCode, Cline, Goose, Copilot CLI, and Mistral Vibe
-  packages) and the immutable
+  `release-baselines/public-api-unreleased/` (ten additive packages plus
+  compatible Claude Agent, Cursor, and Grok additions) and the immutable
   28-package `v0.3.0` compatibility baseline
 - denied missing public documentation
 - dependency advisory, license, and source policy
@@ -351,9 +350,12 @@ GitHub Release creation, consumer edits, and provider work remain separate.
 
 - all 30 tagged packages are separately consumable from one exact source
   identity
-- the current source exposes the reviewed DeepSeek Harness and ZCode
-  packages and routes as unreleased additive candidate state; they are not
-  presented as tagged
+- the current source exposes ten reviewed additive packages and eleven
+  additive production routes as unreleased candidate state; they are not
+  presented as tagged. OpenHands exists as a package without a production
+  route
+- the selected next coordinated version is patch `0.3.3` unless later
+  evidence records a Contract 036 break
 - the 29th and 30th Command Code and idioms packages first appear in `v0.3.2`
 - the breaking binding-helper migration is explicit and limited to Codex and
   Ollama callers

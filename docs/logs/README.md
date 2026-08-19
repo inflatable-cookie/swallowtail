@@ -23,6 +23,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-19 Current Source Release Inventory](./2026-08-19-current-source-release-inventory.md)
 - [2026-08-19 g04.001 Inventory And g04.002 Contract Targets](./2026-08-19-g04-001-002-readiness-inventory-and-contract-targets.md)
 - [2026-08-19 Route Readiness Decisions And g04 Run](./2026-08-19-route-readiness-decisions-and-g04-run.md)
 - [2026-08-19 g03 Generation Closeout And g04 Open](./2026-08-19-g03-generation-closeout-and-g04-open.md)

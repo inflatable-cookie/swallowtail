@@ -1,6 +1,6 @@
 # 006 Current Source Release Inventory
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-19
 Milestone: `../003-current-source-tag-before-readiness.md`
@@ -26,15 +26,31 @@ classify `0.3.3` versus `0.4.0` under Contract 036.
 
 ## Acceptance Criteria
 
-- [ ] package and route counts match architecture and Contract 036
-- [ ] patch versus minor is explicit
-- [ ] no facade implementation is in the candidate set
+- [x] package and route counts match architecture and Contract 036
+- [x] patch versus minor is explicit
+- [x] no facade implementation is in the candidate set
+
+## Evidence
+
+- current source: 40 packages, 47 production routes, Rust `1.95.0`
+- immutable `v0.3.2`: 30 packages, 36 routes
+- ten additive packages; eleven additive production routes; OpenHands has no
+  production route
+- existing-package APIs: 27 identical to `v0.3.2`; Claude Agent, Cursor, and
+  Grok are additive-only; zero removals
+- selected coordinated version: patch `0.3.3`, not `0.4.0`
+- `[Unreleased]` still omits DeepSeek Harness and ZCode; card 007 must add
+  those entries before promotion
+- no Spec 011 facade types in the candidate set
 
 ## Validation
 
+- `effigy package:metadata` — 40 crates at `0.3.2`, Rust `1.95`
+- `effigy package:api` — 30 immutable `v0.3.2` packages plus 13 reviewed
+  unreleased API surfaces
 - `effigy qa:docs`
 - `effigy qa:northstar`
-- `effigy qa:routes`
+- `effigy qa:routes` — 47 production routes
 - `git diff --check`
 
 ## Auto-Continuation

@@ -2,7 +2,6 @@
 
 ## Active
 
-- [006-current-source-release-inventory.md](./006-current-source-release-inventory.md) — ready
 - [007-current-source-local-candidate.md](./007-current-source-local-candidate.md) — ready after 006
 
 ## Planned
@@ -12,6 +11,7 @@
 
 ## Completed
 
+- [006-current-source-release-inventory.md](./006-current-source-release-inventory.md)
 - [005-readiness-contract-targets.md](./005-readiness-contract-targets.md)
 - [004-spec-inventory-fold.md](./004-spec-inventory-fold.md)
 - [003-first-route-readiness-tranche-selection.md](./003-first-route-readiness-tranche-selection.md)

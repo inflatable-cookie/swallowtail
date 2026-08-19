@@ -106,7 +106,7 @@ self-contained. Compatible version requirements preserve coordinated package
 identity without claiming registry availability.
 
 Release metadata, dependency topology, and semantic API checks distinguish the
-38-package current candidate from the immutable 30-package `v0.3.2` source.
+40-package current candidate from the immutable 30-package `v0.3.2` source.
 Immutable `v0.1.x` inventories retain their 27
 packages and 33 routes; `v0.2.0` and `v0.3.1` retain their 28-package,
 34-route inventory. Later candidates do not rewrite historical release notes,
@@ -157,12 +157,13 @@ The release is one clean canonical commit plus deterministic evidence:
 
 - exact commit and parent
 - clean worktree
-- 30-package immutable release metadata and topology plus the 36-package
+- 30-package immutable release metadata and topology plus the 40-package
   unreleased candidate, immutable 28-package
   `v0.2.0` / `v0.3.1` and 27-package `v0.1.x` evidence
 - frozen 30-package `v0.3.2` semantic API inventory plus separate reviewed
-  current-source overrides for post-tag API surfaces, including DeepSeek
-  Harness and ZCode, with removals from the
+  current-source overrides for post-tag API surfaces, including the ten
+  additive packages and compatible Claude Agent, Cursor, and Grok additions,
+  with removals from the
   immutable 28-package `v0.3.0` baseline forbidden
 - documented public API
 - dependency and security policy

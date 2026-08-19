@@ -14,8 +14,8 @@ shape.
 
 ## Next Task
 
-Worker in flight: g04.005 cards 013-015. Handoff
-`docs/handoffs/20260820-000805-g04-005-connection-lifecycle-kernel.md`.
+Await merge of the g04.005 kernel PR. Then g04.006 addable catalog,
+admission, and config-field wiring.
 
 ## Index
 

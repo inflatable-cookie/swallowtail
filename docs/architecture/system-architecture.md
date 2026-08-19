@@ -1113,13 +1113,24 @@ billing, topology, writable access, network, search, tools, prompts, workflows,
 or persistence. Access status remains observed or visibly caller-asserted.
 Every expanded profile is inspectable before effects.
 
-## Planned Connection Lifecycle
+## Connection Lifecycle
 
 Contract 057 and Research 168 place a consuming connection-lifecycle facade
-in front of prepared integration and the Contract 047 selection snapshot. It
-is not realized.
+in front of prepared integration and the Contract 047 selection snapshot.
 
-The intended direction is:
+The kernel is realized: portable records in `swallowtail-core`, the store
+trait in `swallowtail-runtime`, and optional in-memory and JSON-file adapters
+in `swallowtail-host-local`. Topology grouping is hosted / installed /
+local-runtime; it is not `ExecutionLayer`. The store holds references,
+enablement, labels, and overlay markers. It does not require raw secrets.
+Enablement does not change 047 `Ready` / `NotReady`. Subject records default
+to redacted and do not enter 047.
+
+Not yet realized: addable-route catalog assembly, admission API, sign-in
+loop, host ports, readiness refresh, subject observation as a facade, overlay
+projection, and first-proof Anthropic, Codex, or Ollama wiring.
+
+The remaining direction is:
 
 ```text
 adapter-local addable-route descriptors
@@ -1131,11 +1142,9 @@ adapter-local addable-route descriptors
   -> existing prepared facade
 ```
 
-Core would own the new records. Runtime would own lifecycle roles and the
-store trait. Host-local would own optional simple store adapters. Addable
-descriptors stay adapter-local. 047 remains a snapshot without emails, tokens,
-or targets. Overlay markers cannot change `Ready` / `NotReady`. No umbrella
-registry crate.
+Addable descriptors stay adapter-local. 047 remains a snapshot without emails,
+tokens, or targets. Overlay markers cannot change `Ready` / `NotReady`. No
+umbrella registry crate.
 
 ## Event Vocabulary Posture
 

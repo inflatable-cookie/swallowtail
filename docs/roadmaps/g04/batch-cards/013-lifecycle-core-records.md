@@ -1,6 +1,6 @@
 # 013 Lifecycle Core Records
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-19
 Milestone: `../005-connection-lifecycle-kernel.md`
@@ -34,12 +34,12 @@ sign-in loop, or adapter descriptors.
 
 ## Acceptance Criteria
 
-- [ ] records live in `swallowtail-core` with no runtime or host dependency
-- [ ] topology is not an `ExecutionLayer` alias
-- [ ] field descriptors and overlay markers carry no secret bytes or paths
-- [ ] overlay markers cannot be constructed with an empty model id
-- [ ] subject records default to redacted
-- [ ] `PlannedConnectionRolloverPolicy` is untouched
+- [x] records live in `swallowtail-core` with no runtime or host dependency
+- [x] topology is not an `ExecutionLayer` alias
+- [x] field descriptors and overlay markers carry no secret bytes or paths
+- [x] overlay markers cannot be constructed with an empty model id
+- [x] subject records default to redacted
+- [x] `PlannedConnectionRolloverPolicy` is untouched
 
 ## Validation
 

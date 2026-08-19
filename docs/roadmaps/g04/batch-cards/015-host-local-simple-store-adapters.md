@@ -1,6 +1,6 @@
 # 015 Host-Local Simple Store Adapters
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-19
 Milestone: `../005-connection-lifecycle-kernel.md`
@@ -29,11 +29,11 @@ Ship optional in-memory and JSON-file store adapters in
 
 ## Acceptance Criteria
 
-- [ ] both adapters implement the runtime store trait
-- [ ] JSON-file adapter refuses to write secret bytes
-- [ ] multiple instances of one family round-trip as distinct ids
-- [ ] `public-api-0.3.3` files are unchanged
-- [ ] no production adapter crate changes
+- [x] both adapters implement the runtime store trait
+- [x] JSON-file adapter refuses to write secret bytes
+- [x] multiple instances of one family round-trip as distinct ids
+- [x] `public-api-0.3.3` files are unchanged
+- [x] no production adapter crate changes
 
 ## Validation
 

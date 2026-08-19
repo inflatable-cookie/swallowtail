@@ -1,12 +1,12 @@
 # 005 Connection Lifecycle Kernel
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-19
 Depends on: g04.004
 Vision tags: consumer integration, route readiness, explicit selection
 Contract refs: 006, 008, 014, 020, 036, 047, 057
-Planning state: cards 013-015 ready
+Planning state: cards 013-015 completed
 
 ## Problem
 
@@ -25,11 +25,11 @@ Realize the persistence port and optional simple adapter.
 
 ## Goals
 
-- [ ] add portable 057 records in `swallowtail-core`
-- [ ] add the store trait and lifecycle roles in `swallowtail-runtime`
-- [ ] ship optional in-memory and JSON-file adapters in
+- [x] add portable 057 records in `swallowtail-core`
+- [x] add the store trait and lifecycle roles in `swallowtail-runtime`
+- [x] ship optional in-memory and JSON-file adapters in
       `swallowtail-host-local`
-- [ ] keep 047 a snapshot and keep secrets out of portable records
+- [x] keep 047 a snapshot and keep secrets out of portable records
 
 ## Non-Goals
 
@@ -45,34 +45,34 @@ Realize the persistence port and optional simple adapter.
 
 ### Batch 5.1 — Core Records
 
-- [ ] Execute card 013.
-- [ ] add topology, descriptor, field, enablement, overlay-marker, and
+- [x] Execute card 013.
+- [x] add topology, descriptor, field, enablement, overlay-marker, and
       redacted-subject records
-- [ ] keep topology distinct from `ExecutionLayer`
+- [x] keep topology distinct from `ExecutionLayer`
 
 ### Batch 5.2 — Store Port
 
-- [ ] Execute card 014 after card 013.
-- [ ] add the runtime store trait for instance records, secret references,
+- [x] Execute card 014 after card 013.
+- [x] add the runtime store trait for instance records, secret references,
       enablement, labels, and overlay markers
-- [ ] prove enablement is independent of access status
+- [x] prove enablement is independent of access status
 
 ### Batch 5.3 — Simple Adapters
 
-- [ ] Execute card 015 after card 014.
-- [ ] add in-memory and JSON-file adapters
-- [ ] prove JSON on disk carries references, not secret bytes
+- [x] Execute card 015 after card 014.
+- [x] add in-memory and JSON-file adapters
+- [x] prove JSON on disk carries references, not secret bytes
 
 ## Acceptance Criteria
 
-- [ ] core records compile without host, runtime, or adapter dependencies
-- [ ] the store trait never requires raw secrets
-- [ ] enablement does not change 047 `Ready` / `NotReady`
-- [ ] overlay marker records cannot invent a model id
-- [ ] subject records default to redacted and do not enter 047
-- [ ] `public-api-0.3.3` stays immutable; additive API uses unreleased
+- [x] core records compile without host, runtime, or adapter dependencies
+- [x] the store trait never requires raw secrets
+- [x] enablement does not change 047 `Ready` / `NotReady`
+- [x] overlay marker records cannot invent a model id
+- [x] subject records default to redacted and do not enter 047
+- [x] `public-api-0.3.3` stays immutable; additive API uses unreleased
       snapshots
-- [ ] no production adapter crate changes
+- [x] no production adapter crate changes
 
 ## Lane Runway
 

@@ -1,6 +1,6 @@
 # 014 Lifecycle Store Port
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-19
 Milestone: `../005-connection-lifecycle-kernel.md`
@@ -30,13 +30,13 @@ Add the Contract 057 store trait and lifecycle roles in
 
 ## Acceptance Criteria
 
-- [ ] runtime owns the store trait and depends on the new core records
-- [ ] put/get/list round-trip references, labels, enablement, and overlay
+- [x] runtime owns the store trait and depends on the new core records
+- [x] put/get/list round-trip references, labels, enablement, and overlay
       markers
-- [ ] a disabled instance can still be stored with ready access dimensions
-- [ ] an enabled instance can still be stored with not-ready access
+- [x] a disabled instance can still be stored with ready access dimensions
+- [x] an enabled instance can still be stored with not-ready access
       dimensions
-- [ ] the trait API has no secret-bytes parameter or return
+- [x] the trait API has no secret-bytes parameter or return
 
 ## Validation
 

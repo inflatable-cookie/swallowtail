@@ -24,7 +24,7 @@ and selection policy.
 | Fold inventory into Spec 011 and name contract targets without facade code. | completed | Spec 011; Research 168 | `g04.002` |
 | Pin the post-g03 source tree as an immutable tag before facade implementation. | completed | Contract 036 | `g04.003` |
 | Promote the readiness/admission contract after that tag. | completed | Contract 057; 006, 008, 010, 014, 015, 017, 029, 032, 037, 047 | `g04.004` |
-| Realize the persistence port and optional simple adapter. | planned | Contract 057 | `g04.005` |
+| Realize the persistence port and optional simple adapter. | completed | Contract 057 | `g04.005` |
 | Realize addable-route catalog, admission, and config field descriptors. | planned | Contract 057 | `g04.006` |
 | Realize library-max sign-in loops through host ports. | planned | Contracts 057, 006, 010, 014, 017 | `g04.007` |
 | Realize readiness refresh, authenticated-subject observation, and Contract 029 updates. | planned | Contracts 057, 006, 029, 032, 047 | after sign-in |
@@ -34,16 +34,15 @@ and selection policy.
 
 ## Planned Next Roadmaps
 
-- [g04.005 Connection Lifecycle Kernel](005-connection-lifecycle-kernel.md) — ready cards 013-015
+- [g04.005 Connection Lifecycle Kernel](005-connection-lifecycle-kernel.md) — completed; PR pending merge
 - [g04.006 Addable Catalog, Admission, And Config Fields](006-addable-catalog-admission-and-config-fields.md) — planned behind 005
 - [g04.007 Sign-In Loop And Host Ports](007-sign-in-loop-and-host-ports.md) — planned behind 006
 
 ## Current Checkpoint
 
-- g04.001 through g04.004 are complete. Contract 057 is active
-- g04.005 worker dispatched: cards 013-015, handoff
-  `docs/handoffs/20260820-000805-g04-005-connection-lifecycle-kernel.md`
-- catalog, sign-in, refresh, overlay, and first-proof stay behind that kernel
+- g04.001 through g04.005 are complete. Contract 057 kernel records, store
+  trait, and simple adapters exist
+- catalog, sign-in, refresh, overlay, and first-proof stay behind g04.006
 - `v0.3.3` remains `51d18620`
 
 ## Milestones
@@ -52,6 +51,6 @@ and selection policy.
 - [002 Route Readiness Spec And Contract Targets](./002-route-readiness-spec-and-contract-targets.md) — completed
 - [003 Current Source Tag Before Readiness](./003-current-source-tag-before-readiness.md) — completed
 - [004 Readiness And Admission Contract Promotion](./004-readiness-admission-contract-promotion.md) — completed
-- [005 Connection Lifecycle Kernel](./005-connection-lifecycle-kernel.md) — planned
+- [005 Connection Lifecycle Kernel](./005-connection-lifecycle-kernel.md) — completed
 - [006 Addable Catalog, Admission, And Config Fields](./006-addable-catalog-admission-and-config-fields.md) — planned
 - [007 Sign-In Loop And Host Ports](./007-sign-in-loop-and-host-ports.md) — planned

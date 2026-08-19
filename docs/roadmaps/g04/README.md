@@ -34,7 +34,7 @@ and selection policy.
 
 ## Planned Next Roadmaps
 
-- [g04.005 Connection Lifecycle Kernel](005-connection-lifecycle-kernel.md) — completed; PR pending merge
+- [g04.005 Connection Lifecycle Kernel](005-connection-lifecycle-kernel.md) — completed; [PR #4](https://github.com/inflatable-cookie/swallowtail/pull/4) pending merge
 - [g04.006 Addable Catalog, Admission, And Config Fields](006-addable-catalog-admission-and-config-fields.md) — planned behind 005
 - [g04.007 Sign-In Loop And Host Ports](007-sign-in-loop-and-host-ports.md) — planned behind 006
 

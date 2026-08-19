@@ -14,8 +14,9 @@ shape.
 
 ## Next Task
 
-Await merge of the g04.005 kernel PR. Then g04.006 addable catalog,
-admission, and config-field wiring.
+Await merge of [PR #4](https://github.com/inflatable-cookie/swallowtail/pull/4)
+(g04.005 kernel). Then g04.006 addable catalog, admission, and config-field
+wiring.
 
 ## Index
 

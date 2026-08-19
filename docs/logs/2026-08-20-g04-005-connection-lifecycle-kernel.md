@@ -29,7 +29,9 @@ adapter crate changed. `PlannedConnectionRolloverPolicy` is untouched.
 Worker worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-81ea2a8a`
 Worker branch: `t3code/connection-lifecycle-kernel`
 
+PR: https://github.com/inflatable-cookie/swallowtail/pull/4
+
 ## Next
 
-Open the reviewable PR against current `main`. Do not merge. g04.006 stays
-planned until this kernel lands.
+Await review and operator-authorised merge. g04.006 stays planned until this
+kernel lands.

@@ -97,7 +97,7 @@ impl ClaudeAgentPreparationInput {
             execution_host_id,
             InstalledExecutableTarget::new(
                 ExecutableRef::from_config_field(binary),
-                InterfaceVersionAxis::new(crate::CLAUDE_AGENT_ACP_AXIS)
+                InterfaceVersionAxis::new(CLAUDE_AGENT_ACP_AXIS)
                     .expect("static Claude Agent version axis is valid"),
             ),
             EnvironmentRef::from_config_field(environment),

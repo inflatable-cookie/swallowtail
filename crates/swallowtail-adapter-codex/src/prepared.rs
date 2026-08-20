@@ -108,7 +108,7 @@ impl CodexPreparationInput {
             execution_host_id,
             InstalledExecutableTarget::new(
                 ExecutableRef::from_config_field(binary),
-                InterfaceVersionAxis::new(crate::CODEX_CLI_AXIS)
+                InterfaceVersionAxis::new(CODEX_CLI_AXIS)
                     .expect("static Codex version axis is valid"),
             ),
             EnvironmentRef::from_config_field(environment),

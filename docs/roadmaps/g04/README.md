@@ -34,15 +34,14 @@ and selection policy.
 
 ## Planned Next Roadmaps
 
-- [g04.009 Model Presentation Overlay](009-model-presentation-overlay.md) — planned behind 008
+- [g04.009 Model Presentation Overlay](009-model-presentation-overlay.md) — ready cards 025-026
 
 ## Current Checkpoint
 
-- g04.001 through g04.008 are complete on this branch
-- g04.008 PR https://github.com/inflatable-cookie/swallowtail/pull/7 pending
-  review; merge is operator-authorised
-- overlay and first-proof stay behind that merge
-- `v0.3.3` remains `51d18620`
+- g04.001 through g04.008 are complete. PR 7 is on `main` at `8f4e3884`
+- g04.009 worker dispatched: cards 025-026, handoff
+  `docs/handoffs/20260820-111700-g04-009-model-presentation-overlay.md`
+- first-proof stays behind that overlay
 - `v0.3.3` remains `51d18620`
 
 ## Milestones

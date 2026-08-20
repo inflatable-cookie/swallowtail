@@ -36,5 +36,5 @@ PR: https://github.com/inflatable-cookie/swallowtail/pull/7
 
 ## Next
 
-g04.008 PR awaiting review. Merge is operator-authorised. g04.009 overlay
-stays planned.
+PR 7 fast-forwarded onto `main` at `8f4e3884`. g04.009 cards 025-026 are
+ready. First-proof stays planned.

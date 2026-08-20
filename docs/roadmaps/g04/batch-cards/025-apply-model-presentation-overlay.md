@@ -1,6 +1,6 @@
 # 025 Apply Model Presentation Overlay
 
-Status: planned
+Status: ready
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../009-model-presentation-overlay.md`
@@ -37,7 +37,7 @@ Apply stored overlay markers to one bound catalogue result without changing
 
 ## Auto-Continuation
 
-Yes, into card 026, after this card is marked ready.
+Yes, into card 026.
 
 ## Stop Conditions
 

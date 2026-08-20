@@ -3,10 +3,10 @@
 Status: planned
 Owner: Tom
 Created: 2026-08-20
-Depends on: g04.008
+Depends on: completed g04.008
 Vision tags: consumer integration, route readiness, explicit selection
 Contract refs: 020, 047, 057
-Planning state: cards 025-026 planned behind g04.008
+Planning state: cards 025-026 ready
 
 ## Problem
 

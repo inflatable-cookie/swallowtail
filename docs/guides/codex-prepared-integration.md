@@ -17,6 +17,36 @@ Both routes are in `swallowtail-adapter-codex`; selection is explicit through
 There is no fallback between the drivers. A capability on one branch does not
 belong to the other.
 
+## Add The App-Server Connection
+
+Only `codex.app-server` currently exports an addable descriptor.
+`codex.exec` stays on the prepared-facade path below. Topology is
+**installed**. It is not `ExecutionLayer`. Follow
+[connection lifecycle](connection-lifecycle.md) before `prepare_codex`.
+
+1. Assemble `AddableRouteCatalog` from
+   `codex_app_server_addable_route_descriptor`. The row is `Available` when
+   the host exposes the Process service; otherwise
+   `Unavailable(HostService)`. Discovery of the executable stays Contract
+   008 on the selected driver.
+2. `admit_instance` writes the configured instance with opaque config refs
+   for `binary_path` and `environment`. Admission does not prepare.
+3. There is no credential field. ChatGPT access is cached local login.
+   Swallowtail does not extract tokens, open a URL, or run hosted OAuth.
+4. `refresh_readiness` writes host-supplied `AccessStatus`. Enablement stays
+   independent of 047 `Ready` / `NotReady`.
+5. `observe_authenticated_subject` is `Absent`.
+6. `observe_instance_update` reuses `codex_app_server_claim` and optional
+   Contract 032 installed-executable observation.
+7. Codex catalogue rows omit `provider_id`. Overlay cannot mark them. Do
+   not invent a catalogue provider id.
+8. Then `prepare_codex` with `CodexPreparedDriver::AppServer`, an
+   `InstalledExecutableTarget`, and an `EnvironmentRef`. Stored config refs
+   do not feed prepare.
+
+A Contract 057 example will compile beside this sequence. The canonical
+route-map example remains `prepared_discovery`.
+
 ## Operator Prerequisites
 
 The host supplies one approved `codex` executable target, explicit process

@@ -33,6 +33,37 @@ by discovery and operations. No endpoint value enters stable evidence.
 Resource-free inference grants no filesystem or process authority and makes no
 sandbox claim.
 
+## Add The Attached Connection
+
+`ollama.attached` currently exports an addable descriptor. Topology is
+**local-runtime**. It is not `ExecutionLayer`. Follow
+[connection lifecycle](connection-lifecycle.md) before
+`prepare_ollama_attached`. Swallowtail does not install, start, or pull
+Ollama.
+
+1. Assemble `AddableRouteCatalog` from
+   `ollama_attached_addable_route_descriptor`. The row is `Available` when
+   the host exposes the Network service; otherwise
+   `Unavailable(HostService)`. Runtime reachability stays preparation, not
+   the addable row.
+2. `admit_instance` writes the configured instance with an opaque
+   `endpoint` `ApiEndpoint` `ConfigFieldRef`. Admission does not prepare.
+3. There is no credential field and no sign-in loop.
+4. `refresh_readiness` writes host-supplied `AccessStatus`. Enablement stays
+   independent of 047 `Ready` / `NotReady`.
+5. `observe_authenticated_subject` is `Absent`.
+6. `observe_instance_update` reuses `ollama_runtime_claim`. Contract 032
+   stays unobserved unless an executable is supplied. Runtime version comes
+   from preparation's `/api/version` observation.
+7. Ollama catalogue rows omit `provider_id`. Overlay cannot mark them. Do
+   not invent a catalogue provider id.
+8. Then `prepare_ollama_attached` with a host-approved endpoint target.
+   Stored config refs do not feed prepare. Model tag and digest stay
+   prepare-time identities, not admission identity.
+
+A Contract 057 example will compile beside this sequence. The canonical
+route-map example remains `prepared_attached`.
+
 ## Prepare The Attached Runtime
 
 Call `prepare_ollama_attached` with `OllamaPreparationInput`,

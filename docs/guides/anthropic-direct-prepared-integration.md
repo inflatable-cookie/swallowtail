@@ -8,6 +8,36 @@ the application needs Claude subscription access, provider-hosted agent state,
 durable continuation, a working resource, or provider-session management.
 New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
+## Add The Connection
+
+`anthropic.messages` currently exports an addable descriptor. Topology is
+**hosted**. It is not `ExecutionLayer`. Follow
+[connection lifecycle](connection-lifecycle.md) before the prepared facade.
+
+1. Assemble `AddableRouteCatalog` from
+   `anthropic_messages_addable_route_descriptor`. The row is `Available` when
+   the host exposes the Credential service; otherwise
+   `Unavailable(HostService)`.
+2. `admit_instance` writes the configured instance. Admission does not
+   prepare.
+3. Collect the secret API-key field `api_key` as `CredentialRef`. The
+   advertised environment name `ANTHROPIC_API_KEY` is a name, not a resolved
+   value. Host stores the bytes. The library-owned API-key loop does not
+   use URL-open, loopback, or device-code ports.
+4. Config field `endpoint` is an opaque `ApiEndpoint` `ConfigFieldRef`.
+5. `refresh_readiness` writes host-supplied `AccessStatus`. Enablement stays
+   independent of 047 `Ready` / `NotReady`.
+6. `observe_authenticated_subject` is `Absent`. Do not probe Messages for
+   identity.
+7. Overlay may mark catalogue rows whose `provider_id` is `anthropic`.
+   Overlay copies readiness and cannot change it.
+8. Then `prepare_anthropic_direct` with a host-approved
+   `InstanceTargetRef`. Stored config refs do not feed prepare.
+
+A Contract 057 example will compile beside this sequence. The canonical
+route-map example remains `prepared_direct`. Hosted interactive OAuth is not
+a realized path on this route.
+
 ## Operator Prerequisites
 
 Preparation requires one configured-instance revision, execution host,

@@ -193,9 +193,13 @@ pub struct swallowtail_adapter_claude_agent::ClaudeCodeRunProfileInput
 impl swallowtail_adapter_claude_agent::ClaudeCodeRunProfileInput
 pub const fn swallowtail_adapter_claude_agent::ClaudeCodeRunProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_claude_agent::ClaudeCodeModelSelection, swallowtail_runtime::content::OperationContent, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::time::Deadline) -> Self
 pub fn swallowtail_adapter_claude_agent::ClaudeCodeRunProfileInput::with_reasoning_mode(self, swallowtail_core::model::ReasoningMode) -> Self
+pub const swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_ADDABLE_ROUTE_ID: &str
 pub const swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_AXIS: &str
 pub const swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_BASELINE_VERSION: &str
+pub const swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_BINARY_PATH_FIELD_ID: &str
+pub const swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_ENVIRONMENT_FIELD_ID: &str
 pub const swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION: &str
+pub const swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_SUBSCRIPTION_AUDIENCE: &str
 pub const swallowtail_adapter_claude_agent::CLAUDE_CODE_HEADLESS_AXIS: &str
 pub const swallowtail_adapter_claude_agent::CLAUDE_CODE_HEADLESS_BASELINE_VERSION: &str
 pub const swallowtail_adapter_claude_agent::CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION: &str
@@ -204,9 +208,11 @@ pub const swallowtail_adapter_claude_agent::CLAUDE_CODE_RESPONSE_ONLY_BASELINE_V
 pub const swallowtail_adapter_claude_agent::CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS: &[&str]
 pub const swallowtail_adapter_claude_agent::CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION: &str
 pub const swallowtail_adapter_claude_agent::CLAUDE_CODE_RESPONSE_ONLY_VERSION: &str
+pub fn swallowtail_adapter_claude_agent::claude_agent_acp_addable_route_descriptor(&swallowtail_runtime::host_registry::HostServices) -> swallowtail_core::connection_lifecycle::descriptor::AddableRouteDescriptor
 pub fn swallowtail_adapter_claude_agent::claude_agent_acp_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
 pub fn swallowtail_adapter_claude_agent::claude_agent_acp_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
 pub fn swallowtail_adapter_claude_agent::claude_agent_acp_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_claude_agent::claude_agent_acp_subscription_access_profile(swallowtail_core::runtime_identity::AccessProfileId) -> swallowtail_core::access::AccessProfile
 pub fn swallowtail_adapter_claude_agent::claude_agent_permission_namespace() -> swallowtail_core::event::ExtensionNamespace
 pub fn swallowtail_adapter_claude_agent::claude_code_headless_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
 pub fn swallowtail_adapter_claude_agent::claude_code_headless_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim

@@ -6,7 +6,9 @@
 #![forbid(unsafe_code)]
 #![deny(missing_docs)]
 
+mod access;
 mod acp_activity;
+mod addable;
 mod claude_code;
 mod claude_code_activity;
 mod claude_code_command;
@@ -37,6 +39,13 @@ mod prepared_response;
 mod selection;
 mod turn;
 
+pub use access::{
+    CLAUDE_AGENT_ACP_SUBSCRIPTION_AUDIENCE, claude_agent_acp_subscription_access_profile,
+};
+pub use addable::{
+    CLAUDE_AGENT_ACP_ADDABLE_ROUTE_ID, CLAUDE_AGENT_ACP_BINARY_PATH_FIELD_ID,
+    CLAUDE_AGENT_ACP_ENVIRONMENT_FIELD_ID, claude_agent_acp_addable_route_descriptor,
+};
 pub use claude_code::{ClaudeCodeHeadlessDriver, claude_code_headless_descriptor};
 pub use claude_code_response::{
     ClaudeCodeResponseOnlyDriver, claude_code_response_only_descriptor,

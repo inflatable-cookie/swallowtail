@@ -33,6 +33,42 @@ time, working-resource, credential, and attachment services required by the
 selected plan. Swallowtail does not install either executable, perform login,
 choose a model, select billing, search `PATH`, or infer workspace authority.
 
+## Add The ACP Connection
+
+Only `claude-agent.acp` currently exports an addable descriptor.
+`claude-code.headless` and `claude-code.response-only` stay on the prepared
+facade path below. Topology is **installed**. It is not `ExecutionLayer`.
+Follow [connection lifecycle](connection-lifecycle.md) before
+`prepare_claude_agent`.
+
+1. Assemble `AddableRouteCatalog` from
+   `claude_agent_acp_addable_route_descriptor`. The row is `Available` when
+   the host exposes the Process service; otherwise
+   `Unavailable(HostService)`. Discovery of the executable stays Contract
+   008 on the selected driver.
+2. `admit_instance` writes the configured instance with opaque config refs
+   for `binary_path` and `environment`. Admission does not prepare.
+3. There is no credential field. Local Claude subscription is inherited
+   process login state. Swallowtail does not extract keychain bytes, open a
+   URL, or run hosted OAuth. API-key billing stays a separate explicit
+   profile, not this addable row.
+4. `refresh_readiness` writes host-supplied `AccessStatus`. Enablement stays
+   independent of 047 `Ready` / `NotReady`.
+5. `observe_authenticated_subject` is `Absent`. Do not scrape Claude account
+   email.
+6. `observe_instance_update` reuses `claude_agent_acp_claim` and optional
+   Contract 032 installed-executable observation.
+7. Session-negotiated ACP model rows omit `provider_id`. Overlay cannot
+   mark them. Do not invent a catalogue provider id.
+8. Then `prepare_claude_agent` with an `InstalledExecutableTarget` and an
+   `EnvironmentRef`. Stored config refs do not feed prepare.
+
+The compile-tested
+[`connection_lifecycle` example](../../crates/swallowtail-adapter-claude-agent/examples/connection_lifecycle.rs)
+shows catalog through prepare for `claude-agent.acp`. The canonical
+route-map example remains
+[`prepared_claude_agent_acp`](../../crates/swallowtail-adapter-claude-agent/examples/prepared_claude_agent_acp.rs).
+
 ## Claude Agent ACP Inputs
 
 Preparation requires:

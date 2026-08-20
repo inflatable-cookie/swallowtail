@@ -1,4 +1,5 @@
 swallowtail-adapter-anthropic
+swallowtail-adapter-claude-agent
 swallowtail-adapter-codex
 swallowtail-adapter-deepseek
 swallowtail-adapter-ollama

@@ -11,13 +11,14 @@ persistence, UI, and selection policy, and keep secret bytes on the host.
 
 ## Route Applicability
 
-Four production routes currently export an `AddableRouteDescriptor`:
+Five production routes currently export an `AddableRouteDescriptor`:
 
 | Route | Topology | Host service for Available | Credential |
 | --- | --- | --- | --- |
 | `anthropic.messages` | hosted | Credential | secret API-key field `api_key`; env name `ANTHROPIC_API_KEY` is a name, not a value |
 | `deepseek.continuation` | hosted | Credential | secret API-key field `api_key`; no environment name |
 | `codex.app-server` | installed | Process | none; cached local ChatGPT login |
+| `claude-agent.acp` | installed | Process | none; inherited local Claude subscription |
 | `ollama.attached` | local-runtime | Network | none; local unauthenticated |
 
 Topology grouping is hosted / installed / local-runtime. It is not
@@ -52,6 +53,7 @@ prepare will use:
 - `anthropic_messages_addable_route_descriptor`
 - `deepseek_continuation_addable_route_descriptor`
 - `codex_app_server_addable_route_descriptor`
+- `claude_agent_acp_addable_route_descriptor`
 - `ollama_attached_addable_route_descriptor`
 
 Then `AddableRouteCatalog::from_descriptors`. There is no umbrella registry
@@ -102,8 +104,9 @@ or device-code ports. Presence of a port does not start sign-in. Missing
 ports fail the loop that requires them. A loop that would change mechanism,
 account, endpoint audience, or billing authority fails closed.
 
-Codex app-server and Ollama attach advertise no credential field. Do not
-extract ChatGPT tokens or invent a local-runtime secret.
+Codex app-server, Claude Agent ACP, and Ollama attach advertise no
+credential field. Do not extract ChatGPT tokens or Claude keychain bytes,
+or invent a local-runtime secret.
 
 Hosted interactive OAuth through URL-open and loopback is not a realized
 consumer path. Do not treat Claude subscription or Codex ChatGPT cached
@@ -139,8 +142,9 @@ never a default diagnostic, and never a routing key.
 `observe_instance_update` reuses a Contract 029 claim and optional Contract
 032 installed-executable observation. It does not install, upgrade,
 authenticate, or admit. Codex app-server can reuse `codex_app_server_claim`
-plus a prepared 032 observation. Ollama reuses `ollama_runtime_claim`; 032
-stays unobserved unless an executable is supplied.
+plus a prepared 032 observation. Claude Agent ACP reuses
+`claude_agent_acp_claim` the same way. Ollama reuses `ollama_runtime_claim`;
+032 stays unobserved unless an executable is supplied.
 
 ## Overlay And Prepared Handoff
 
@@ -149,8 +153,8 @@ consumer-default, and favourite markers onto one bound 047 catalogue
 result. Markers key to exact configured-instance, provider, and model ids.
 Provider catalogue defaults stay distinct from the consumer-default marker.
 Unknown models and cross-instance markers fail closed. Catalogue rows
-without `provider_id` stay unmarked; do not invent a Codex or Ollama
-provider id. Overlay copies `Ready` / `NotReady` and cannot make
+without `provider_id` stay unmarked; do not invent a Codex, Claude Agent,
+or Ollama provider id. Overlay copies `Ready` / `NotReady` and cannot make
 `NotReady` selectable.
 
 Then call the existing prepare entry with host-owned targets:
@@ -158,6 +162,7 @@ Then call the existing prepare entry with host-owned targets:
 - `prepare_anthropic_direct`
 - `prepare_deepseek_direct`
 - `prepare_codex` with `CodexPreparedDriver::AppServer`
+- `prepare_claude_agent`
 - `prepare_ollama_attached`
 
 Stored `ConfigFieldRef` values do not feed `prepare_*`. Model tag and
@@ -182,7 +187,7 @@ Forbidden inferences:
 - overlay is not a catalogue and does not change selection readiness
 - subject is not an instance id or routing key
 - a discovered candidate is not an addable row
-- remaining production routes are not addable because four proofs exist
+- remaining production routes are not addable because five proofs exist
 
 ## Failures
 
@@ -200,6 +205,7 @@ Compile-tested Contract 057 examples:
 - [Anthropic Messages](../../crates/swallowtail-adapter-anthropic/examples/connection_lifecycle.rs)
 - [DeepSeek continuation](../../crates/swallowtail-adapter-deepseek/examples/connection_lifecycle.rs)
 - [Codex app-server](../../crates/swallowtail-adapter-codex/examples/connection_lifecycle.rs)
+- [Claude Agent ACP](../../crates/swallowtail-adapter-claude-agent/examples/connection_lifecycle.rs)
 - [Ollama attach](../../crates/swallowtail-adapter-ollama/examples/connection_lifecycle.rs)
 
 Realized addable-route sequences:
@@ -208,6 +214,8 @@ Realized addable-route sequences:
 - [DeepSeek continuation](deepseek-prepared-integration.md)
 - [Codex app-server](codex-prepared-integration.md); `codex.exec` is not
   addable
+- [Claude Agent ACP](claude-agent-prepared-integration.md);
+  `claude-code.headless` and `claude-code.response-only` are not addable
 - [Ollama attach](ollama-attached-prepared-integration.md)
 
 Those route guides keep their existing prepared-facade examples as the

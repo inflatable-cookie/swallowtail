@@ -2,10 +2,10 @@
 
 use crate::debug_observation::{DebugObservation, DebugObservationKind, failure_debug_observation};
 use crate::{
-    AttachmentService, BlockingWorkService, CredentialService, DiagnosticObserver,
-    ModelArtifactService, NetworkPolicyService, ProcessService, RuntimeFailure, SchemaService,
-    ScopedTaskService, ServingEndpointService, TimeService, WorkingResourceIoService,
-    WorkingResourceService,
+    AttachmentService, BlockingWorkService, CredentialService, DeviceCodeDisplayService,
+    DiagnosticObserver, LoopbackCallbackService, ModelArtifactService, NetworkPolicyService,
+    ProcessService, RuntimeFailure, SchemaService, ScopedTaskService, ServingEndpointService,
+    TimeService, UrlOpenService, WorkingResourceIoService, WorkingResourceService,
 };
 use std::collections::BTreeSet;
 use std::panic::{AssertUnwindSafe, catch_unwind};
@@ -36,6 +36,9 @@ pub struct HostServices {
     diagnostic_observer: Option<Arc<dyn DiagnosticObserver>>,
     idiom_source: Option<Arc<dyn IdiomSource>>,
     idiom_recorder: Option<Arc<dyn IdiomSink>>,
+    url_open: Option<Arc<dyn UrlOpenService>>,
+    loopback_callback: Option<Arc<dyn LoopbackCallbackService>>,
+    device_code_display: Option<Arc<dyn DeviceCodeDisplayService>>,
 }
 
 impl HostServices {
@@ -59,6 +62,9 @@ impl HostServices {
             diagnostic_observer: None,
             idiom_source: None,
             idiom_recorder: None,
+            url_open: None,
+            loopback_callback: None,
+            device_code_display: None,
         }
     }
 
@@ -185,6 +191,27 @@ impl HostServices {
         self
     }
 
+    /// Registers the interactive URL-open port. Registration does not start sign-in.
+    #[must_use]
+    pub fn with_url_open(mut self, service: Arc<dyn UrlOpenService>) -> Self {
+        self.url_open = Some(service);
+        self
+    }
+
+    /// Registers the sign-in loopback-callback port. Registration does not start sign-in.
+    #[must_use]
+    pub fn with_loopback_callback(mut self, service: Arc<dyn LoopbackCallbackService>) -> Self {
+        self.loopback_callback = Some(service);
+        self
+    }
+
+    /// Registers the device-code display port. Registration does not start sign-in.
+    #[must_use]
+    pub fn with_device_code_display(mut self, service: Arc<dyn DeviceCodeDisplayService>) -> Self {
+        self.device_code_display = Some(service);
+        self
+    }
+
     /// Returns the scoped task service when registered.
     #[must_use]
     pub fn task(&self) -> Option<&Arc<dyn ScopedTaskService>> {
@@ -273,6 +300,24 @@ impl HostServices {
     #[must_use]
     pub fn idiom_recorder(&self) -> Option<&Arc<dyn IdiomSink>> {
         self.idiom_recorder.as_ref()
+    }
+
+    /// Returns the URL-open port when registered.
+    #[must_use]
+    pub fn url_open(&self) -> Option<&Arc<dyn UrlOpenService>> {
+        self.url_open.as_ref()
+    }
+
+    /// Returns the loopback-callback port when registered.
+    #[must_use]
+    pub fn loopback_callback(&self) -> Option<&Arc<dyn LoopbackCallbackService>> {
+        self.loopback_callback.as_ref()
+    }
+
+    /// Returns the device-code display port when registered.
+    #[must_use]
+    pub fn device_code_display(&self) -> Option<&Arc<dyn DeviceCodeDisplayService>> {
+        self.device_code_display.as_ref()
     }
 
     /// Records one idiom signal to the registered recorder, or no-ops when
@@ -364,6 +409,15 @@ impl HostServices {
         }
         if self.idiom_recorder.is_some() {
             kinds.insert(HostServiceKind::IdiomRecorder);
+        }
+        if self.url_open.is_some() {
+            kinds.insert(HostServiceKind::UrlOpen);
+        }
+        if self.loopback_callback.is_some() {
+            kinds.insert(HostServiceKind::LoopbackCallback);
+        }
+        if self.device_code_display.is_some() {
+            kinds.insert(HostServiceKind::DeviceCodeDisplay);
         }
         kinds
     }
@@ -463,6 +517,137 @@ mod tests {
             observation.correlated_code(),
             Some("swallowtail.pi.discovery_failed")
         );
+    }
+
+    #[test]
+    fn sign_in_ports_are_optional_and_registration_does_not_start_sign_in() {
+        use swallowtail_core::HostServiceKind;
+
+        let idle = Arc::new(IdleSignInPorts);
+        let empty =
+            HostServices::new(ExecutionHostId::new("host.local").expect("host id is valid"));
+        assert!(!empty.available_kinds().contains(&HostServiceKind::UrlOpen));
+        assert!(
+            !empty
+                .available_kinds()
+                .contains(&HostServiceKind::LoopbackCallback)
+        );
+        assert!(
+            !empty
+                .available_kinds()
+                .contains(&HostServiceKind::DeviceCodeDisplay)
+        );
+
+        let services =
+            HostServices::new(ExecutionHostId::new("host.local").expect("host id is valid"))
+                .with_url_open(idle.clone())
+                .with_loopback_callback(idle.clone())
+                .with_device_code_display(idle);
+        assert!(
+            services
+                .available_kinds()
+                .contains(&HostServiceKind::UrlOpen)
+        );
+        assert!(
+            services
+                .available_kinds()
+                .contains(&HostServiceKind::LoopbackCallback)
+        );
+        assert!(
+            services
+                .available_kinds()
+                .contains(&HostServiceKind::DeviceCodeDisplay)
+        );
+        assert!(
+            !services
+                .available_kinds()
+                .contains(&HostServiceKind::Credential)
+        );
+        assert!(
+            !services
+                .available_kinds()
+                .contains(&HostServiceKind::Process)
+        );
+        assert!(
+            !services
+                .available_kinds()
+                .contains(&HostServiceKind::Network)
+        );
+    }
+
+    struct IdleSignInPorts;
+
+    impl crate::UrlOpenService for IdleSignInPorts {
+        fn open(
+            &self,
+            _scope: crate::ScopeId,
+            _url: crate::ApprovedUrlRef,
+        ) -> crate::BoxFuture<'static, Result<(), crate::RuntimeFailure>> {
+            panic!("registering a URL-open port must not start sign-in");
+        }
+    }
+
+    impl crate::LoopbackCallbackService for IdleSignInPorts {
+        fn bind(
+            &self,
+            _scope: crate::ScopeId,
+        ) -> crate::BoxFuture<'static, Result<crate::LoopbackCallbackLease, crate::RuntimeFailure>>
+        {
+            panic!("registering a loopback port must not start sign-in");
+        }
+
+        fn poll(
+            &self,
+            _lease: &crate::LoopbackCallbackLease,
+        ) -> crate::BoxFuture<
+            'static,
+            Result<Option<crate::LoopbackCallbackReceipt>, crate::RuntimeFailure>,
+        > {
+            panic!("registering a loopback port must not start sign-in");
+        }
+
+        fn materialize_credential(
+            &self,
+            _receipt: &crate::LoopbackCallbackReceipt,
+            _audience: &swallowtail_core::EndpointAudience,
+        ) -> Result<crate::CredentialRef, crate::RuntimeFailure> {
+            panic!("registering a loopback port must not start sign-in");
+        }
+
+        fn release(
+            &self,
+            _lease: crate::LoopbackCallbackLease,
+        ) -> crate::BoxFuture<'static, crate::CleanupOutcome> {
+            panic!("registering a loopback port must not start sign-in");
+        }
+    }
+
+    impl crate::DeviceCodeDisplayService for IdleSignInPorts {
+        fn display(
+            &self,
+            _scope: crate::ScopeId,
+            _prompt: crate::DeviceCodePrompt,
+        ) -> crate::BoxFuture<'static, Result<(), crate::RuntimeFailure>> {
+            panic!("registering a device-code port must not start sign-in");
+        }
+
+        fn poll_authorization(
+            &self,
+            _scope: &crate::ScopeId,
+        ) -> crate::BoxFuture<
+            'static,
+            Result<Option<crate::DeviceAuthorizationReceipt>, crate::RuntimeFailure>,
+        > {
+            panic!("registering a device-code port must not start sign-in");
+        }
+
+        fn materialize_credential(
+            &self,
+            _receipt: &crate::DeviceAuthorizationReceipt,
+            _audience: &swallowtail_core::EndpointAudience,
+        ) -> Result<crate::CredentialRef, crate::RuntimeFailure> {
+            panic!("registering a device-code port must not start sign-in");
+        }
     }
 
     #[test]

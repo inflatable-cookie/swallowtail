@@ -75,6 +75,8 @@ runtime_identity!(AccessEvidenceSourceId, "access evidence source id");
 runtime_identity!(ProviderSessionCatalogueId, "provider session catalogue id");
 runtime_identity!(ProviderSessionCandidateId, "provider session candidate id");
 runtime_identity!(ProviderSessionHistoryId, "provider session history id");
+runtime_identity!(LoopbackCallbackId, "loopback callback id");
+runtime_identity!(DeviceAuthorizationId, "device authorization id");
 
 #[cfg(test)]
 mod tests {

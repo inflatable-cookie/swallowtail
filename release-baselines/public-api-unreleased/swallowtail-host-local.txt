@@ -1,4 +1,13 @@
 pub mod swallowtail_host_local
+pub enum swallowtail_host_local::LocalSignInCall
+pub swallowtail_host_local::LocalSignInCall::DeviceDisplay
+pub swallowtail_host_local::LocalSignInCall::DeviceMaterialize
+pub swallowtail_host_local::LocalSignInCall::DevicePoll
+pub swallowtail_host_local::LocalSignInCall::LoopbackBind
+pub swallowtail_host_local::LocalSignInCall::LoopbackMaterialize
+pub swallowtail_host_local::LocalSignInCall::LoopbackPoll
+pub swallowtail_host_local::LocalSignInCall::LoopbackRelease
+pub swallowtail_host_local::LocalSignInCall::UrlOpen
 pub struct swallowtail_host_local::JsonFileConnectionLifecycleStore
 impl swallowtail_host_local::JsonFileConnectionLifecycleStore
 pub fn swallowtail_host_local::JsonFileConnectionLifecycleStore::open(impl core::convert::Into<std::path::PathBuf>) -> core::result::Result<Self, swallowtail_runtime::connection_lifecycle::ConnectionLifecycleStoreFailure>
@@ -105,6 +114,24 @@ pub const fn swallowtail_host_local::LocalScopedTaskService::execution_host_id(&
 pub const fn swallowtail_host_local::LocalScopedTaskService::new(swallowtail_core::runtime_identity::ExecutionHostId) -> Self
 impl swallowtail_runtime::host_traits::ScopedTaskService for swallowtail_host_local::LocalScopedTaskService
 pub fn swallowtail_host_local::LocalScopedTaskService::spawn(&self, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::async_types::BoxFuture<'static, ()>) -> core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::host_traits::JoinedTask>, swallowtail_runtime::failure::RuntimeFailure>
+pub struct swallowtail_host_local::LocalSignInPorts
+impl swallowtail_host_local::LocalSignInPorts
+pub fn swallowtail_host_local::LocalSignInPorts::calls(&self) -> alloc::vec::Vec<swallowtail_host_local::LocalSignInCall>
+pub fn swallowtail_host_local::LocalSignInPorts::count(&self, swallowtail_host_local::LocalSignInCall) -> usize
+pub fn swallowtail_host_local::LocalSignInPorts::deliver_device(&self, swallowtail_core::runtime_identity::EndpointAudience, swallowtail_core::runtime_identity::CredentialRef)
+pub fn swallowtail_host_local::LocalSignInPorts::deliver_loopback(&self, swallowtail_core::runtime_identity::EndpointAudience, swallowtail_core::runtime_identity::CredentialRef)
+pub fn swallowtail_host_local::LocalSignInPorts::new() -> Self
+impl swallowtail_runtime::sign_in_ports::DeviceCodeDisplayService for swallowtail_host_local::LocalSignInPorts
+pub fn swallowtail_host_local::LocalSignInPorts::display(&self, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::sign_in_ports::DeviceCodePrompt) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_host_local::LocalSignInPorts::materialize_credential(&self, &swallowtail_runtime::sign_in_ports::DeviceAuthorizationReceipt, &swallowtail_core::runtime_identity::EndpointAudience) -> core::result::Result<swallowtail_core::runtime_identity::CredentialRef, swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_host_local::LocalSignInPorts::poll_authorization(&self, &swallowtail_runtime::identity::ScopeId) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<core::option::Option<swallowtail_runtime::sign_in_ports::DeviceAuthorizationReceipt>, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::sign_in_ports::LoopbackCallbackService for swallowtail_host_local::LocalSignInPorts
+pub fn swallowtail_host_local::LocalSignInPorts::bind(&self, swallowtail_runtime::identity::ScopeId) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::sign_in_ports::LoopbackCallbackLease, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_host_local::LocalSignInPorts::materialize_credential(&self, &swallowtail_runtime::sign_in_ports::LoopbackCallbackReceipt, &swallowtail_core::runtime_identity::EndpointAudience) -> core::result::Result<swallowtail_core::runtime_identity::CredentialRef, swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_host_local::LocalSignInPorts::poll(&self, &swallowtail_runtime::sign_in_ports::LoopbackCallbackLease) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<core::option::Option<swallowtail_runtime::sign_in_ports::LoopbackCallbackReceipt>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_host_local::LocalSignInPorts::release(&self, swallowtail_runtime::sign_in_ports::LoopbackCallbackLease) -> swallowtail_runtime::async_types::BoxFuture<'static, swallowtail_runtime::outcome::CleanupOutcome>
+impl swallowtail_runtime::sign_in_ports::UrlOpenService for swallowtail_host_local::LocalSignInPorts
+pub fn swallowtail_host_local::LocalSignInPorts::open(&self, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::host_reference::ApprovedUrlRef) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure>>
 pub struct swallowtail_host_local::MemoryConnectionLifecycleStore
 impl swallowtail_host_local::MemoryConnectionLifecycleStore
 pub fn swallowtail_host_local::MemoryConnectionLifecycleStore::new() -> Self

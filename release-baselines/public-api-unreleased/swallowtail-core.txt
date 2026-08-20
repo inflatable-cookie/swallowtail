@@ -334,9 +334,11 @@ pub enum swallowtail_core::HostServiceKind
 pub swallowtail_core::HostServiceKind::Attachment
 pub swallowtail_core::HostServiceKind::BlockingWork
 pub swallowtail_core::HostServiceKind::Credential
+pub swallowtail_core::HostServiceKind::DeviceCodeDisplay
 pub swallowtail_core::HostServiceKind::DiagnosticObserver
 pub swallowtail_core::HostServiceKind::IdiomRecorder
 pub swallowtail_core::HostServiceKind::IdiomSource
+pub swallowtail_core::HostServiceKind::LoopbackCallback
 pub swallowtail_core::HostServiceKind::ModelArtifact
 pub swallowtail_core::HostServiceKind::Network
 pub swallowtail_core::HostServiceKind::Process
@@ -344,6 +346,7 @@ pub swallowtail_core::HostServiceKind::Schema
 pub swallowtail_core::HostServiceKind::ServingEndpoint
 pub swallowtail_core::HostServiceKind::Task
 pub swallowtail_core::HostServiceKind::Time
+pub swallowtail_core::HostServiceKind::UrlOpen
 pub swallowtail_core::HostServiceKind::WorkingResource
 pub swallowtail_core::HostServiceKind::WorkingResourceIo
 pub enum swallowtail_core::InstalledExecutableCompatibility

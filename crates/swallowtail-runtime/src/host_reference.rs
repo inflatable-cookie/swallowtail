@@ -45,6 +45,7 @@ opaque_host_reference!(
     MaterializedModelArtifactRef,
     "materialized model artifact reference"
 );
+opaque_host_reference!(ApprovedUrlRef, "approved URL reference");
 
 impl ExecutableRef {
     /// Preserves the opaque configured-instance target for host resolution.

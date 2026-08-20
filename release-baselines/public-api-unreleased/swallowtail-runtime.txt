@@ -467,6 +467,43 @@ pub swallowtail_runtime::SettledSessionRestorationOutcome::Attached(swallowtail_
 pub swallowtail_runtime::SettledSessionRestorationOutcome::Observed(swallowtail_runtime::ProviderSessionReconciliationOutcome)
 impl swallowtail_runtime::SettledSessionRestorationOutcome
 pub const fn swallowtail_runtime::SettledSessionRestorationOutcome::reconciliation(&self) -> &swallowtail_runtime::ProviderSessionReconciliationOutcome
+pub enum swallowtail_runtime::SignInFailureKind
+pub swallowtail_runtime::SignInFailureKind::AccountMismatch
+pub swallowtail_runtime::SignInFailureKind::AudienceMismatch
+pub swallowtail_runtime::SignInFailureKind::BillingMismatch
+pub swallowtail_runtime::SignInFailureKind::HostPort
+pub swallowtail_runtime::SignInFailureKind::Incomplete
+pub swallowtail_runtime::SignInFailureKind::InstanceAbsent
+pub swallowtail_runtime::SignInFailureKind::InvalidState
+pub swallowtail_runtime::SignInFailureKind::MechanismMismatch
+pub swallowtail_runtime::SignInFailureKind::MissingHostPort
+pub swallowtail_runtime::SignInFailureKind::Store
+pub swallowtail_runtime::SignInFailureKind::UnknownCredentialField
+pub enum swallowtail_runtime::SignInKind
+pub swallowtail_runtime::SignInKind::ApiKeyCollection
+pub swallowtail_runtime::SignInKind::DelegatedCliLogin
+pub swallowtail_runtime::SignInKind::DeviceOauth
+pub swallowtail_runtime::SignInKind::InteractiveOauth
+pub enum swallowtail_runtime::SignInMethod
+pub swallowtail_runtime::SignInMethod::ApiKeyCollection
+pub swallowtail_runtime::SignInMethod::ApiKeyCollection::fields: alloc::vec::Vec<swallowtail_core::connection_lifecycle::descriptor::CredentialFieldDescriptor>
+pub swallowtail_runtime::SignInMethod::DelegatedCliLogin
+pub swallowtail_runtime::SignInMethod::DelegatedCliLogin::credential: swallowtail_core::runtime_identity::CredentialRef
+pub swallowtail_runtime::SignInMethod::DelegatedCliLogin::credential_field: swallowtail_core::connection_lifecycle::identity::CredentialFieldId
+pub swallowtail_runtime::SignInMethod::DelegatedCliLogin::process: swallowtail_runtime::ProcessRequest
+pub swallowtail_runtime::SignInMethod::DeviceOauth
+pub swallowtail_runtime::SignInMethod::DeviceOauth::credential_field: swallowtail_core::connection_lifecycle::identity::CredentialFieldId
+pub swallowtail_runtime::SignInMethod::DeviceOauth::prompt: swallowtail_runtime::DeviceCodePrompt
+pub swallowtail_runtime::SignInMethod::InteractiveOauth
+pub swallowtail_runtime::SignInMethod::InteractiveOauth::authorize_url: swallowtail_runtime::ApprovedUrlRef
+pub swallowtail_runtime::SignInMethod::InteractiveOauth::credential_field: swallowtail_core::connection_lifecycle::identity::CredentialFieldId
+pub enum swallowtail_runtime::SignInStatus
+pub swallowtail_runtime::SignInStatus::Cancelled
+pub swallowtail_runtime::SignInStatus::Completed
+pub swallowtail_runtime::SignInStatus::InProgress
+pub swallowtail_runtime::SignInStatus::ReadyToComplete
+pub swallowtail_runtime::SignInStatus::Started
+pub swallowtail_runtime::SignInStatus::TimedOut
 pub enum swallowtail_runtime::StreamReattachmentPolicy
 pub swallowtail_runtime::StreamReattachmentPolicy::Bounded(core::num::nonzero::NonZeroU32)
 pub swallowtail_runtime::StreamReattachmentPolicy::Disabled
@@ -626,6 +663,12 @@ pub const fn swallowtail_runtime::AddableRouteCatalogFailure::kind(&self) -> swa
 impl core::error::Error for swallowtail_runtime::AddableRouteCatalogFailure
 impl core::fmt::Display for swallowtail_runtime::AddableRouteCatalogFailure
 pub fn swallowtail_runtime::AddableRouteCatalogFailure::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_runtime::ApprovedUrlRef(_)
+impl swallowtail_runtime::ApprovedUrlRef
+pub fn swallowtail_runtime::ApprovedUrlRef::as_host_value(&self) -> &str
+pub fn swallowtail_runtime::ApprovedUrlRef::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_runtime::InputValueRequired>
+impl core::fmt::Debug for swallowtail_runtime::ApprovedUrlRef
+pub fn swallowtail_runtime::ApprovedUrlRef::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub struct swallowtail_runtime::ArchiveProviderSessionRequest
 impl swallowtail_runtime::ArchiveProviderSessionRequest
 pub const fn swallowtail_runtime::ArchiveProviderSessionRequest::agreement(&self) -> &swallowtail_runtime::ProviderSessionManagementAgreement
@@ -860,6 +903,24 @@ pub const fn swallowtail_runtime::DeleteProviderSessionRequest::cancellation(&se
 pub fn swallowtail_runtime::DeleteProviderSessionRequest::from_plan(swallowtail_runtime::RequestId, &swallowtail_runtime::ProviderSessionManagementPlan) -> core::result::Result<Self, swallowtail_runtime::RuntimeFailure>
 pub fn swallowtail_runtime::DeleteProviderSessionRequest::new(swallowtail_runtime::RequestId, swallowtail_runtime::ProviderSessionManagementAgreement, alloc::sync::Arc<swallowtail_runtime::ImmediateCancellation>) -> core::result::Result<Self, swallowtail_runtime::RuntimeFailure>
 pub const fn swallowtail_runtime::DeleteProviderSessionRequest::request_id(&self) -> &swallowtail_runtime::RequestId
+pub struct swallowtail_runtime::DeviceAuthorizationId(_)
+impl swallowtail_runtime::DeviceAuthorizationId
+pub fn swallowtail_runtime::DeviceAuthorizationId::as_str(&self) -> &str
+pub fn swallowtail_runtime::DeviceAuthorizationId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_runtime::RuntimeIdentityRequired>
+impl core::fmt::Debug for swallowtail_runtime::DeviceAuthorizationId
+pub fn swallowtail_runtime::DeviceAuthorizationId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_runtime::DeviceAuthorizationReceipt
+impl swallowtail_runtime::DeviceAuthorizationReceipt
+pub const fn swallowtail_runtime::DeviceAuthorizationReceipt::authorization_id(&self) -> &swallowtail_runtime::DeviceAuthorizationId
+pub const fn swallowtail_runtime::DeviceAuthorizationReceipt::new(swallowtail_runtime::DeviceAuthorizationId) -> Self
+pub struct swallowtail_runtime::DeviceCodePrompt
+impl swallowtail_runtime::DeviceCodePrompt
+pub fn swallowtail_runtime::DeviceCodePrompt::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_runtime::InputValueRequired>
+pub fn swallowtail_runtime::DeviceCodePrompt::user_code(&self) -> &str
+pub const fn swallowtail_runtime::DeviceCodePrompt::verification_url(&self) -> core::option::Option<&swallowtail_runtime::ApprovedUrlRef>
+pub fn swallowtail_runtime::DeviceCodePrompt::with_verification_url(self, swallowtail_runtime::ApprovedUrlRef) -> Self
+impl core::fmt::Debug for swallowtail_runtime::DeviceCodePrompt
+pub fn swallowtail_runtime::DeviceCodePrompt::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub struct swallowtail_runtime::DirectAttemptFinishObservation
 impl swallowtail_runtime::DirectAttemptFinishObservation
 pub const fn swallowtail_runtime::DirectAttemptFinishObservation::attempt_id(&self) -> &swallowtail_runtime::DirectInferenceAttemptId
@@ -1107,6 +1168,7 @@ pub fn swallowtail_runtime::HostServices::attachment(&self) -> core::option::Opt
 pub fn swallowtail_runtime::HostServices::available_kinds(&self) -> alloc::collections::btree::set::BTreeSet<swallowtail_core::runtime_identity::HostServiceKind>
 pub fn swallowtail_runtime::HostServices::blocking_work(&self) -> core::option::Option<&alloc::sync::Arc<dyn swallowtail_runtime::BlockingWorkService>>
 pub fn swallowtail_runtime::HostServices::credential(&self) -> core::option::Option<&alloc::sync::Arc<dyn swallowtail_runtime::CredentialService>>
+pub fn swallowtail_runtime::HostServices::device_code_display(&self) -> core::option::Option<&alloc::sync::Arc<dyn swallowtail_runtime::DeviceCodeDisplayService>>
 pub fn swallowtail_runtime::HostServices::diagnostic_observer(&self) -> core::option::Option<&alloc::sync::Arc<dyn swallowtail_runtime::DiagnosticObserver>>
 pub fn swallowtail_runtime::HostServices::emit_debug_observation(&self, &swallowtail_runtime::DebugObservation)
 pub fn swallowtail_runtime::HostServices::emit_diagnostic(&self, &swallowtail_core::diagnostic::Diagnostic)
@@ -1114,6 +1176,7 @@ pub fn swallowtail_runtime::HostServices::emit_failure_debug(&self, swallowtail_
 pub const fn swallowtail_runtime::HostServices::execution_host_id(&self) -> &swallowtail_core::runtime_identity::ExecutionHostId
 pub fn swallowtail_runtime::HostServices::idiom_recorder(&self) -> core::option::Option<&alloc::sync::Arc<dyn swallowtail_idioms::engine::IdiomSink>>
 pub fn swallowtail_runtime::HostServices::idiom_source(&self) -> core::option::Option<&alloc::sync::Arc<dyn swallowtail_idioms::engine::IdiomSource>>
+pub fn swallowtail_runtime::HostServices::loopback_callback(&self) -> core::option::Option<&alloc::sync::Arc<dyn swallowtail_runtime::LoopbackCallbackService>>
 pub fn swallowtail_runtime::HostServices::model_artifact(&self) -> core::option::Option<&alloc::sync::Arc<dyn swallowtail_runtime::ModelArtifactService>>
 pub fn swallowtail_runtime::HostServices::network(&self) -> core::option::Option<&alloc::sync::Arc<dyn swallowtail_runtime::NetworkPolicyService>>
 pub fn swallowtail_runtime::HostServices::new(swallowtail_core::runtime_identity::ExecutionHostId) -> Self
@@ -1124,12 +1187,15 @@ pub fn swallowtail_runtime::HostServices::schema(&self) -> core::option::Option<
 pub fn swallowtail_runtime::HostServices::serving_endpoint(&self) -> core::option::Option<&alloc::sync::Arc<dyn swallowtail_runtime::ServingEndpointService>>
 pub fn swallowtail_runtime::HostServices::task(&self) -> core::option::Option<&alloc::sync::Arc<dyn swallowtail_runtime::ScopedTaskService>>
 pub fn swallowtail_runtime::HostServices::time(&self) -> core::option::Option<&alloc::sync::Arc<dyn swallowtail_runtime::TimeService>>
+pub fn swallowtail_runtime::HostServices::url_open(&self) -> core::option::Option<&alloc::sync::Arc<dyn swallowtail_runtime::UrlOpenService>>
 pub fn swallowtail_runtime::HostServices::with_attachment(self, alloc::sync::Arc<dyn swallowtail_runtime::AttachmentService>) -> Self
 pub fn swallowtail_runtime::HostServices::with_blocking_work(self, alloc::sync::Arc<dyn swallowtail_runtime::BlockingWorkService>) -> Self
 pub fn swallowtail_runtime::HostServices::with_credential(self, alloc::sync::Arc<dyn swallowtail_runtime::CredentialService>) -> Self
+pub fn swallowtail_runtime::HostServices::with_device_code_display(self, alloc::sync::Arc<dyn swallowtail_runtime::DeviceCodeDisplayService>) -> Self
 pub fn swallowtail_runtime::HostServices::with_diagnostic_observer(self, alloc::sync::Arc<dyn swallowtail_runtime::DiagnosticObserver>) -> Self
 pub fn swallowtail_runtime::HostServices::with_idiom_recorder(self, alloc::sync::Arc<dyn swallowtail_idioms::engine::IdiomSink>) -> Self
 pub fn swallowtail_runtime::HostServices::with_idiom_source(self, alloc::sync::Arc<dyn swallowtail_idioms::engine::IdiomSource>) -> Self
+pub fn swallowtail_runtime::HostServices::with_loopback_callback(self, alloc::sync::Arc<dyn swallowtail_runtime::LoopbackCallbackService>) -> Self
 pub fn swallowtail_runtime::HostServices::with_model_artifact(self, alloc::sync::Arc<dyn swallowtail_runtime::ModelArtifactService>) -> Self
 pub fn swallowtail_runtime::HostServices::with_network(self, alloc::sync::Arc<dyn swallowtail_runtime::NetworkPolicyService>) -> Self
 pub fn swallowtail_runtime::HostServices::with_process(self, alloc::sync::Arc<dyn swallowtail_runtime::ProcessService>) -> Self
@@ -1137,6 +1203,7 @@ pub fn swallowtail_runtime::HostServices::with_schema(self, alloc::sync::Arc<dyn
 pub fn swallowtail_runtime::HostServices::with_serving_endpoint(self, alloc::sync::Arc<dyn swallowtail_runtime::ServingEndpointService>) -> Self
 pub fn swallowtail_runtime::HostServices::with_task(self, alloc::sync::Arc<dyn swallowtail_runtime::ScopedTaskService>) -> Self
 pub fn swallowtail_runtime::HostServices::with_time(self, alloc::sync::Arc<dyn swallowtail_runtime::TimeService>) -> Self
+pub fn swallowtail_runtime::HostServices::with_url_open(self, alloc::sync::Arc<dyn swallowtail_runtime::UrlOpenService>) -> Self
 pub fn swallowtail_runtime::HostServices::with_working_resource(self, alloc::sync::Arc<dyn swallowtail_runtime::WorkingResourceService>) -> Self
 pub fn swallowtail_runtime::HostServices::with_working_resource_io(self, alloc::sync::Arc<dyn swallowtail_runtime::WorkingResourceIoService>) -> Self
 pub fn swallowtail_runtime::HostServices::working_resource(&self) -> core::option::Option<&alloc::sync::Arc<dyn swallowtail_runtime::WorkingResourceService>>
@@ -1261,6 +1328,21 @@ impl swallowtail_runtime::LoadedSession
 pub fn swallowtail_runtime::LoadedSession::into_parts(self) -> (alloc::vec::Vec<swallowtail_runtime::SessionReplayItem>, alloc::boxed::Box<dyn swallowtail_runtime::InteractiveSessionHandle>)
 pub fn swallowtail_runtime::LoadedSession::new(alloc::vec::Vec<swallowtail_runtime::SessionReplayItem>, alloc::boxed::Box<dyn swallowtail_runtime::InteractiveSessionHandle>) -> Self
 pub fn swallowtail_runtime::LoadedSession::replay(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = &swallowtail_runtime::SessionReplayItem>
+pub struct swallowtail_runtime::LoopbackCallbackId(_)
+impl swallowtail_runtime::LoopbackCallbackId
+pub fn swallowtail_runtime::LoopbackCallbackId::as_str(&self) -> &str
+pub fn swallowtail_runtime::LoopbackCallbackId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_runtime::RuntimeIdentityRequired>
+impl core::fmt::Debug for swallowtail_runtime::LoopbackCallbackId
+pub fn swallowtail_runtime::LoopbackCallbackId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_runtime::LoopbackCallbackLease
+impl swallowtail_runtime::LoopbackCallbackLease
+pub const fn swallowtail_runtime::LoopbackCallbackLease::callback_id(&self) -> &swallowtail_runtime::LoopbackCallbackId
+pub const fn swallowtail_runtime::LoopbackCallbackLease::new(swallowtail_runtime::ScopeId, swallowtail_runtime::LoopbackCallbackId) -> Self
+pub const fn swallowtail_runtime::LoopbackCallbackLease::scope(&self) -> &swallowtail_runtime::ScopeId
+pub struct swallowtail_runtime::LoopbackCallbackReceipt
+impl swallowtail_runtime::LoopbackCallbackReceipt
+pub const fn swallowtail_runtime::LoopbackCallbackReceipt::callback_id(&self) -> &swallowtail_runtime::LoopbackCallbackId
+pub const fn swallowtail_runtime::LoopbackCallbackReceipt::new(swallowtail_runtime::LoopbackCallbackId) -> Self
 pub struct swallowtail_runtime::MaterializedFileRef(_)
 impl swallowtail_runtime::MaterializedFileRef
 pub fn swallowtail_runtime::MaterializedFileRef::as_driver_value(&self) -> &str
@@ -2214,6 +2296,42 @@ impl swallowtail_runtime::SettledSessionAttachmentOutcome
 pub const fn swallowtail_runtime::SettledSessionAttachmentOutcome::attachment(&self) -> &swallowtail_runtime::SettledSessionAttachment
 pub fn swallowtail_runtime::SettledSessionAttachmentOutcome::into_parts(self) -> (swallowtail_runtime::ProviderSessionReconciliationOutcome, swallowtail_runtime::SettledSessionAttachment)
 pub const fn swallowtail_runtime::SettledSessionAttachmentOutcome::reconciliation(&self) -> &swallowtail_runtime::ProviderSessionReconciliationOutcome
+pub struct swallowtail_runtime::SignInAuthorityBinding
+impl swallowtail_runtime::SignInAuthorityBinding
+pub const fn swallowtail_runtime::SignInAuthorityBinding::account(&self) -> core::option::Option<&swallowtail_core::runtime_identity::AccessProfileId>
+pub const fn swallowtail_runtime::SignInAuthorityBinding::audience(&self) -> &swallowtail_core::runtime_identity::EndpointAudience
+pub const fn swallowtail_runtime::SignInAuthorityBinding::billing(&self) -> &swallowtail_core::access::EntitlementMetering
+pub const fn swallowtail_runtime::SignInAuthorityBinding::existing_credential(&self) -> core::option::Option<&swallowtail_core::runtime_identity::CredentialRef>
+pub const fn swallowtail_runtime::SignInAuthorityBinding::mechanism(&self) -> &swallowtail_core::access::CredentialMechanism
+pub fn swallowtail_runtime::SignInAuthorityBinding::new(swallowtail_core::access::CredentialMechanism, swallowtail_core::runtime_identity::EndpointAudience, swallowtail_core::access::EntitlementMetering) -> Self
+pub fn swallowtail_runtime::SignInAuthorityBinding::with_account(self, swallowtail_core::runtime_identity::AccessProfileId) -> Self
+pub fn swallowtail_runtime::SignInAuthorityBinding::with_existing_credential(self, swallowtail_core::runtime_identity::CredentialRef) -> Self
+pub struct swallowtail_runtime::SignInFailure
+impl swallowtail_runtime::SignInFailure
+pub const fn swallowtail_runtime::SignInFailure::diagnostic(&self) -> &swallowtail_core::diagnostic::SafeDiagnostic
+pub const fn swallowtail_runtime::SignInFailure::kind(&self) -> swallowtail_runtime::SignInFailureKind
+impl core::error::Error for swallowtail_runtime::SignInFailure
+impl core::fmt::Display for swallowtail_runtime::SignInFailure
+pub fn swallowtail_runtime::SignInFailure::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_runtime::SignInOutcome
+impl swallowtail_runtime::SignInOutcome
+pub const fn swallowtail_runtime::SignInOutcome::audience(&self) -> &swallowtail_core::runtime_identity::EndpointAudience
+pub const fn swallowtail_runtime::SignInOutcome::billing(&self) -> &swallowtail_core::access::EntitlementMetering
+pub fn swallowtail_runtime::SignInOutcome::credential_refs(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = (&swallowtail_core::connection_lifecycle::identity::CredentialFieldId, &swallowtail_core::runtime_identity::CredentialRef)>
+pub const fn swallowtail_runtime::SignInOutcome::instance_id(&self) -> &swallowtail_core::runtime_identity::ConfiguredInstanceId
+pub const fn swallowtail_runtime::SignInOutcome::mechanism(&self) -> &swallowtail_core::access::CredentialMechanism
+pub const fn swallowtail_runtime::SignInOutcome::route_id(&self) -> &swallowtail_core::connection_lifecycle::identity::AddableRouteId
+pub struct swallowtail_runtime::SignInSession
+impl swallowtail_runtime::SignInSession
+pub const fn swallowtail_runtime::SignInSession::binding(&self) -> &swallowtail_runtime::SignInAuthorityBinding
+pub const fn swallowtail_runtime::SignInSession::kind(&self) -> swallowtail_runtime::SignInKind
+pub const fn swallowtail_runtime::SignInSession::status(&self) -> swallowtail_runtime::SignInStatus
+impl core::fmt::Debug for swallowtail_runtime::SignInSession
+pub fn swallowtail_runtime::SignInSession::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_runtime::SignInStartRequest
+impl swallowtail_runtime::SignInStartRequest
+pub fn swallowtail_runtime::SignInStartRequest::new(swallowtail_runtime::ScopeId, swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::IntegrationFamilyId, swallowtail_core::connection_lifecycle::identity::AddableRouteId, swallowtail_runtime::SignInAuthorityBinding, swallowtail_runtime::SignInMethod) -> Self
+pub const fn swallowtail_runtime::SignInStartRequest::with_deadline(self, swallowtail_runtime::Deadline) -> Self
 pub struct swallowtail_runtime::StartServingRequest
 impl swallowtail_runtime::StartServingRequest
 pub const fn swallowtail_runtime::StartServingRequest::artifact(&self) -> &swallowtail_core::model_artifact::ModelArtifactBinding
@@ -2456,6 +2574,10 @@ pub fn swallowtail_runtime::ConnectionLifecycleStore::put_overlay_marker(&self, 
 pub trait swallowtail_runtime::CredentialService: core::marker::Send + core::marker::Sync
 pub fn swallowtail_runtime::CredentialService::acquire(&self, swallowtail_runtime::ScopeId, swallowtail_core::runtime_identity::CredentialRef, swallowtail_core::runtime_identity::EndpointAudience) -> swallowtail_runtime::BoxFuture<'static, core::result::Result<swallowtail_runtime::CredentialLease, swallowtail_runtime::RuntimeFailure>>
 pub fn swallowtail_runtime::CredentialService::release(&self, swallowtail_runtime::CredentialLease) -> swallowtail_runtime::BoxFuture<'static, swallowtail_runtime::CleanupOutcome>
+pub trait swallowtail_runtime::DeviceCodeDisplayService: core::marker::Send + core::marker::Sync
+pub fn swallowtail_runtime::DeviceCodeDisplayService::display(&self, swallowtail_runtime::ScopeId, swallowtail_runtime::DeviceCodePrompt) -> swallowtail_runtime::BoxFuture<'static, core::result::Result<(), swallowtail_runtime::RuntimeFailure>>
+pub fn swallowtail_runtime::DeviceCodeDisplayService::materialize_credential(&self, &swallowtail_runtime::DeviceAuthorizationReceipt, &swallowtail_core::runtime_identity::EndpointAudience) -> core::result::Result<swallowtail_core::runtime_identity::CredentialRef, swallowtail_runtime::RuntimeFailure>
+pub fn swallowtail_runtime::DeviceCodeDisplayService::poll_authorization(&self, &swallowtail_runtime::ScopeId) -> swallowtail_runtime::BoxFuture<'static, core::result::Result<core::option::Option<swallowtail_runtime::DeviceAuthorizationReceipt>, swallowtail_runtime::RuntimeFailure>>
 pub trait swallowtail_runtime::DiagnosticObserver: core::marker::Send + core::marker::Sync
 pub fn swallowtail_runtime::DiagnosticObserver::observe(&self, &swallowtail_core::diagnostic::Diagnostic)
 pub fn swallowtail_runtime::DiagnosticObserver::observe_debug(&self, &swallowtail_runtime::DebugObservation)
@@ -2483,6 +2605,11 @@ pub fn swallowtail_runtime::InteractiveSessionHandle::start_direct_continuation_
 pub fn swallowtail_runtime::InteractiveSessionHandle::start_turn<'a>(&'a mut self, swallowtail_runtime::TurnRequest, swallowtail_runtime::HostServices) -> swallowtail_runtime::BoxFuture<'a, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::TurnHandle>, swallowtail_runtime::RuntimeFailure>>
 pub trait swallowtail_runtime::JoinedTask: core::marker::Send
 pub fn swallowtail_runtime::JoinedTask::join(alloc::boxed::Box<Self>) -> swallowtail_runtime::BoxFuture<'static, core::result::Result<(), swallowtail_runtime::RuntimeFailure>>
+pub trait swallowtail_runtime::LoopbackCallbackService: core::marker::Send + core::marker::Sync
+pub fn swallowtail_runtime::LoopbackCallbackService::bind(&self, swallowtail_runtime::ScopeId) -> swallowtail_runtime::BoxFuture<'static, core::result::Result<swallowtail_runtime::LoopbackCallbackLease, swallowtail_runtime::RuntimeFailure>>
+pub fn swallowtail_runtime::LoopbackCallbackService::materialize_credential(&self, &swallowtail_runtime::LoopbackCallbackReceipt, &swallowtail_core::runtime_identity::EndpointAudience) -> core::result::Result<swallowtail_core::runtime_identity::CredentialRef, swallowtail_runtime::RuntimeFailure>
+pub fn swallowtail_runtime::LoopbackCallbackService::poll(&self, &swallowtail_runtime::LoopbackCallbackLease) -> swallowtail_runtime::BoxFuture<'static, core::result::Result<core::option::Option<swallowtail_runtime::LoopbackCallbackReceipt>, swallowtail_runtime::RuntimeFailure>>
+pub fn swallowtail_runtime::LoopbackCallbackService::release(&self, swallowtail_runtime::LoopbackCallbackLease) -> swallowtail_runtime::BoxFuture<'static, swallowtail_runtime::CleanupOutcome>
 pub trait swallowtail_runtime::ModelArtifactService: core::marker::Send + core::marker::Sync
 pub fn swallowtail_runtime::ModelArtifactService::acquire(&self, swallowtail_runtime::ScopeId, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::model_artifact::ModelArtifactBinding) -> swallowtail_runtime::BoxFuture<'static, core::result::Result<swallowtail_runtime::ModelArtifactLease, swallowtail_runtime::RuntimeFailure>>
 pub fn swallowtail_runtime::ModelArtifactService::release(&self, swallowtail_runtime::ModelArtifactLease) -> swallowtail_runtime::BoxFuture<'static, swallowtail_runtime::CleanupOutcome>
@@ -2583,6 +2710,8 @@ pub fn swallowtail_runtime::TurnHandle::take_direct_tool_exchange(&mut self) -> 
 pub fn swallowtail_runtime::TurnHandle::take_events(&mut self) -> core::option::Option<swallowtail_runtime::BoxEventStream>
 pub fn swallowtail_runtime::TurnHandle::take_terminal_outcome(&mut self) -> core::option::Option<swallowtail_runtime::BoxFuture<'static, swallowtail_runtime::TerminalOutcome>>
 pub fn swallowtail_runtime::TurnHandle::turn_id(&self) -> &swallowtail_runtime::RuntimeTurnId
+pub trait swallowtail_runtime::UrlOpenService: core::marker::Send + core::marker::Sync
+pub fn swallowtail_runtime::UrlOpenService::open(&self, swallowtail_runtime::ScopeId, swallowtail_runtime::ApprovedUrlRef) -> swallowtail_runtime::BoxFuture<'static, core::result::Result<(), swallowtail_runtime::RuntimeFailure>>
 pub trait swallowtail_runtime::WorkingResourceIoService: core::marker::Send + core::marker::Sync
 pub fn swallowtail_runtime::WorkingResourceIoService::read_text(&self, &swallowtail_runtime::ResourceLease, swallowtail_runtime::WorkingResourceReadRequest) -> swallowtail_runtime::BoxFuture<'static, core::result::Result<swallowtail_runtime::WorkingResourceText, swallowtail_runtime::RuntimeFailure>>
 pub fn swallowtail_runtime::WorkingResourceIoService::write_text(&self, &swallowtail_runtime::ResourceLease, swallowtail_runtime::WorkingResourceWriteRequest) -> swallowtail_runtime::BoxFuture<'static, core::result::Result<(), swallowtail_runtime::RuntimeFailure>>
@@ -2598,7 +2727,9 @@ pub fn swallowtail_runtime::append_folded_idioms(core::option::Option<swallowtai
 pub fn swallowtail_runtime::base_requirements(swallowtail_core::runtime_identity::ExecutionLayer, swallowtail_core::runtime_identity::OperationShape, swallowtail_core::runtime_identity::DriverRole, &swallowtail_core::instance::ConfiguredInstance, &swallowtail_core::access::AccessProfile, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::access::CredentialState>, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::requirement::CapabilityRequirement>) -> swallowtail_core::requirement::operation::OperationRequirements
 pub fn swallowtail_runtime::bound_provider_session_replay_tail(alloc::vec::Vec<swallowtail_runtime::SessionReplayItem>, swallowtail_runtime::ProviderSessionReconciliationBounds) -> (alloc::vec::Vec<swallowtail_runtime::SessionReplayItem>, bool)
 pub fn swallowtail_runtime::build_plan(&swallowtail_core::registration::DriverDescriptor, &swallowtail_core::instance::ConfiguredInstance, core::option::Option<&swallowtail_core::instance::ModelRoute>, &swallowtail_core::requirement::operation::OperationRequirements, &swallowtail_core::access::AccessProfile, &swallowtail_core::access::AccessStatus, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::runtime_identity::HostServiceKind>) -> core::result::Result<swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::PreparationFailure>
+pub fn swallowtail_runtime::cancel_sign_in(swallowtail_runtime::SignInSession, &swallowtail_runtime::HostServices) -> core::result::Result<swallowtail_runtime::SignInStatus, swallowtail_runtime::SignInFailure>
 pub fn swallowtail_runtime::cleanup_result(core::result::Result<(), swallowtail_runtime::RuntimeFailure>) -> swallowtail_runtime::CleanupOutcome
+pub fn swallowtail_runtime::complete_sign_in(swallowtail_runtime::SignInSession, &swallowtail_runtime::HostServices, core::option::Option<&dyn swallowtail_runtime::ConnectionLifecycleStore>) -> core::result::Result<swallowtail_runtime::SignInOutcome, swallowtail_runtime::SignInFailure>
 pub fn swallowtail_runtime::emit(&swallowtail_runtime::RuntimeEventSender, &mut u64, swallowtail_runtime::RuntimeEventKind) -> core::result::Result<(), swallowtail_runtime::RuntimeFailure>
 pub fn swallowtail_runtime::emit_activity(&swallowtail_runtime::RuntimeEventSender, &mut u64, core::result::Result<swallowtail_runtime::ActivityObservation, swallowtail_runtime::RuntimeFailure>) -> core::result::Result<(), swallowtail_runtime::RuntimeFailure>
 pub fn swallowtail_runtime::emit_content(&swallowtail_runtime::RuntimeEventSender, &mut u64, swallowtail_runtime::RuntimeEventKind, swallowtail_runtime::OperationContent) -> core::result::Result<(), swallowtail_runtime::RuntimeFailure>
@@ -2608,6 +2739,7 @@ pub fn swallowtail_runtime::fold_idioms_with_bound(&swallowtail_idioms::engine::
 pub fn swallowtail_runtime::instance_with_capabilities(&swallowtail_core::instance::ConfiguredInstance, swallowtail_core::requirement::CapabilityProfile) -> swallowtail_core::instance::ConfiguredInstance
 pub fn swallowtail_runtime::page_provider_session_history_window(&swallowtail_runtime::ProviderSessionHistoryPlan, &swallowtail_runtime::ProviderSessionHistoryRequest, alloc::vec::Vec<swallowtail_runtime::SessionReplayItem>, swallowtail_runtime::ProviderSessionHistoryTotal) -> core::result::Result<swallowtail_runtime::ProviderSessionHistoryWindow, swallowtail_runtime::RuntimeFailure>
 pub fn swallowtail_runtime::parse_semantic_version_binding(&swallowtail_core::interface_version::InterfaceVersionAxis, &str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
+pub fn swallowtail_runtime::poll_sign_in(&mut swallowtail_runtime::SignInSession, &swallowtail_runtime::HostServices) -> core::result::Result<swallowtail_runtime::SignInStatus, swallowtail_runtime::SignInFailure>
 pub fn swallowtail_runtime::preparation_failure(swallowtail_runtime::PreparationStage, &'static str, &'static str) -> swallowtail_runtime::PreparationFailure
 pub fn swallowtail_runtime::prepare_negotiated_reasoning_setup(&swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::SessionLifecycleOperation, &swallowtail_runtime::SessionOptions) -> core::result::Result<core::option::Option<swallowtail_runtime::NegotiatedReasoningSetup>, swallowtail_runtime::RuntimeFailure>
 pub async fn swallowtail_runtime::probe_installed_executable_version(swallowtail_runtime::InstalledExecutableDiscoveryRequest, swallowtail_runtime::HostServices, swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim, impl core::ops::function::Fn(&[u8]) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding> + core::marker::Send + 'static, swallowtail_runtime::InstalledProbeCodes, &'static str) -> core::result::Result<swallowtail_core::registration::discovery::DiscoveryOutcome, swallowtail_runtime::RuntimeFailure>
@@ -2617,6 +2749,8 @@ pub fn swallowtail_runtime::provider_status(swallowtail_runtime::RuntimeFailure)
 pub fn swallowtail_runtime::resolve_idiom_instructions(&swallowtail_runtime::HostServices, &swallowtail_runtime::SessionOptions) -> core::result::Result<core::option::Option<swallowtail_runtime::OperationContent>, swallowtail_runtime::IdiomSourceUnavailable>
 pub fn swallowtail_runtime::runtime_event_channel(usize) -> core::result::Result<(swallowtail_runtime::RuntimeEventSender, swallowtail_runtime::RuntimeEventStream), swallowtail_runtime::RuntimeFailure>
 pub fn swallowtail_runtime::settled_session_plans_share_binding(&swallowtail_core::preflight::PreflightPlan, &swallowtail_core::preflight::PreflightPlan) -> bool
+pub fn swallowtail_runtime::start_sign_in(&swallowtail_runtime::HostServices, swallowtail_runtime::SignInStartRequest) -> core::result::Result<swallowtail_runtime::SignInSession, swallowtail_runtime::SignInFailure>
+pub fn swallowtail_runtime::submit_sign_in_credential_field(&mut swallowtail_runtime::SignInSession, swallowtail_core::connection_lifecycle::identity::CredentialFieldId, swallowtail_core::runtime_identity::CredentialRef) -> core::result::Result<swallowtail_runtime::SignInStatus, swallowtail_runtime::SignInFailure>
 pub fn swallowtail_runtime::terminal_outcome_channel() -> (swallowtail_runtime::TerminalOutcomeSender, swallowtail_runtime::TerminalOutcomeFuture)
 pub fn swallowtail_runtime::validate_attached_runtime_residency_policy(&swallowtail_core::preflight::PreflightPlan, &swallowtail_runtime::OperationPolicy) -> core::result::Result<(), swallowtail_runtime::IncompatibleOperationPolicy>
 pub fn swallowtail_runtime::validate_direct_continuation_plan(&swallowtail_core::preflight::PreflightPlan, &swallowtail_runtime::OpenDirectContinuationSessionRequest) -> core::result::Result<(), swallowtail_runtime::RuntimeFailure>

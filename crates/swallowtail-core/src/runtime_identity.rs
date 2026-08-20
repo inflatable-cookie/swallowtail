@@ -221,6 +221,12 @@ pub enum HostServiceKind {
     IdiomSource,
     /// Opt-in fail-soft idiom signal recorder.
     IdiomRecorder,
+    /// Open a host-approved URL for one interactive sign-in.
+    UrlOpen,
+    /// Bind a loopback callback for one sign-in operation.
+    LoopbackCallback,
+    /// Display a device code for one sign-in operation.
+    DeviceCodeDisplay,
 }
 
 #[cfg(test)]

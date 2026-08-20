@@ -4,14 +4,17 @@ use std::sync::{Arc, Mutex};
 use std::task::{Context, Poll, Waker};
 use swallowtail_core::{Diagnostic, EndpointAudience, ExecutionHostId, SafeDiagnostic};
 use swallowtail_runtime::{
-    AttachmentDescriptor, AttachmentFileLease, AttachmentService, AuthorizedEndpoint, BlockingJob,
-    BlockingWorkService, BoxFuture, CleanupOutcome, CredentialLease, CredentialRef,
-    CredentialService, Deadline, DeadlineObservation, DebugObservation, DelegatedCredential,
-    DiagnosticObserver, EndpointRef, HostServices, JoinedTask, MaterializedFileRef,
-    MaterializedResourceRef, MonotonicInstant, NetworkGrant, NetworkPolicyService, ProcessExit,
-    ProcessHandle, ProcessInputChunk, ProcessOutputChunk, ProcessRequest, ProcessService,
-    ResourceAccess, ResourceLease, ResourceRepresentation, RuntimeFailure, SchemaDocument,
-    SchemaFileLease, SchemaService, ScopeId, ScopedTaskService, TimeService, WorkingResourceRef,
+    ApprovedUrlRef, AttachmentDescriptor, AttachmentFileLease, AttachmentService,
+    AuthorizedEndpoint, BlockingJob, BlockingWorkService, BoxFuture, CleanupOutcome,
+    CredentialLease, CredentialRef, CredentialService, Deadline, DeadlineObservation,
+    DebugObservation, DelegatedCredential, DeviceAuthorizationId, DeviceAuthorizationReceipt,
+    DeviceCodeDisplayService, DeviceCodePrompt, DiagnosticObserver, EndpointRef, HostServices,
+    JoinedTask, LoopbackCallbackId, LoopbackCallbackLease, LoopbackCallbackReceipt,
+    LoopbackCallbackService, MaterializedFileRef, MaterializedResourceRef, MonotonicInstant,
+    NetworkGrant, NetworkPolicyService, ProcessExit, ProcessHandle, ProcessInputChunk,
+    ProcessOutputChunk, ProcessRequest, ProcessService, ResourceAccess, ResourceLease,
+    ResourceRepresentation, RuntimeFailure, SchemaDocument, SchemaFileLease, SchemaService,
+    ScopeId, ScopedTaskService, TimeService, UrlOpenService, WorkingResourceRef,
     WorkingResourceService,
 };
 
@@ -75,6 +78,22 @@ pub enum RecordedHostCall {
     DiagnosticObserve,
     /// A structured debug observation was observed.
     DebugObserve,
+    /// A host-approved sign-in URL was opened.
+    UrlOpen,
+    /// A sign-in loopback callback was bound.
+    LoopbackBind,
+    /// Sign-in loopback arrival was polled.
+    LoopbackPoll,
+    /// A credential reference was materialized from a loopback receipt.
+    LoopbackMaterialize,
+    /// A sign-in loopback lease was released.
+    LoopbackRelease,
+    /// A device code was displayed.
+    DeviceCodeDisplay,
+    /// Device authorization was polled.
+    DevicePoll,
+    /// A credential reference was materialized from a device receipt.
+    DeviceMaterialize,
 }
 
 /// Configured result returned by recording host services.
@@ -385,9 +404,94 @@ impl DiagnosticObserver for RecordingService {
     }
 }
 
+impl UrlOpenService for RecordingService {
+    fn open(
+        &self,
+        _scope: ScopeId,
+        _url: ApprovedUrlRef,
+    ) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+        let result = self.record(RecordedHostCall::UrlOpen);
+        Box::pin(async move { result })
+    }
+}
+
+impl LoopbackCallbackService for RecordingService {
+    fn bind(
+        &self,
+        scope: ScopeId,
+    ) -> BoxFuture<'static, Result<LoopbackCallbackLease, RuntimeFailure>> {
+        let result = self.record(RecordedHostCall::LoopbackBind).map(|()| {
+            LoopbackCallbackLease::new(
+                scope,
+                LoopbackCallbackId::new("recording.loopback").expect("callback id is valid"),
+            )
+        });
+        Box::pin(async move { result })
+    }
+
+    fn poll(
+        &self,
+        lease: &LoopbackCallbackLease,
+    ) -> BoxFuture<'static, Result<Option<LoopbackCallbackReceipt>, RuntimeFailure>> {
+        let result = self
+            .record(RecordedHostCall::LoopbackPoll)
+            .map(|()| Some(LoopbackCallbackReceipt::new(lease.callback_id().clone())));
+        Box::pin(async move { result })
+    }
+
+    fn materialize_credential(
+        &self,
+        _receipt: &LoopbackCallbackReceipt,
+        _audience: &swallowtail_core::EndpointAudience,
+    ) -> Result<CredentialRef, RuntimeFailure> {
+        self.record(RecordedHostCall::LoopbackMaterialize)?;
+        Ok(CredentialRef::new("recording.sign-in.credential")
+            .expect("recording credential is valid"))
+    }
+
+    fn release(&self, _lease: LoopbackCallbackLease) -> BoxFuture<'static, CleanupOutcome> {
+        let outcome = self.cleanup(RecordedHostCall::LoopbackRelease);
+        Box::pin(async move { outcome })
+    }
+}
+
+impl DeviceCodeDisplayService for RecordingService {
+    fn display(
+        &self,
+        _scope: ScopeId,
+        _prompt: DeviceCodePrompt,
+    ) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+        let result = self.record(RecordedHostCall::DeviceCodeDisplay);
+        Box::pin(async move { result })
+    }
+
+    fn poll_authorization(
+        &self,
+        _scope: &ScopeId,
+    ) -> BoxFuture<'static, Result<Option<DeviceAuthorizationReceipt>, RuntimeFailure>> {
+        let result = self.record(RecordedHostCall::DevicePoll).map(|()| {
+            Some(DeviceAuthorizationReceipt::new(
+                DeviceAuthorizationId::new("recording.device").expect("authorization id is valid"),
+            ))
+        });
+        Box::pin(async move { result })
+    }
+
+    fn materialize_credential(
+        &self,
+        _receipt: &DeviceAuthorizationReceipt,
+        _audience: &swallowtail_core::EndpointAudience,
+    ) -> Result<CredentialRef, RuntimeFailure> {
+        self.record(RecordedHostCall::DeviceMaterialize)?;
+        Ok(CredentialRef::new("recording.sign-in.credential")
+            .expect("recording credential is valid"))
+    }
+}
+
 /// Complete in-memory host service registry that records every interaction.
 pub struct RecordingHostServices {
     state: Arc<RecordingState>,
+    outcome: RecordingOutcome,
     services: HostServices,
 }
 
@@ -407,7 +511,7 @@ impl RecordingHostServices {
         let state = Arc::new(RecordingState::default());
         let service = Arc::new(RecordingService {
             state: Arc::clone(&state),
-            outcome,
+            outcome: outcome.clone(),
         });
         let services = HostServices::new(execution_host_id)
             .with_task(service.clone())
@@ -423,7 +527,26 @@ impl RecordingHostServices {
             .with_serving_endpoint(service.clone())
             .with_schema(service.clone())
             .with_diagnostic_observer(service);
-        Self { state, services }
+        Self {
+            state,
+            outcome,
+            services,
+        }
+    }
+
+    /// Registers interactive sign-in ports. Registration does not start sign-in.
+    #[must_use]
+    pub fn with_sign_in_ports(mut self) -> Self {
+        let service = Arc::new(RecordingService {
+            state: Arc::clone(&self.state),
+            outcome: self.outcome.clone(),
+        });
+        self.services = self
+            .services
+            .with_url_open(service.clone())
+            .with_loopback_callback(service.clone())
+            .with_device_code_display(service);
+        self
     }
 
     /// Returns the provider-neutral host service registry.
@@ -458,5 +581,45 @@ pub fn poll_immediate<T>(future: impl Future<Output = T>) -> T {
     match Pin::as_mut(&mut future).poll(&mut context) {
         Poll::Ready(value) => value,
         Poll::Pending => panic!("recording fixture future was not immediately ready"),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{RecordedHostCall, RecordingHostServices};
+    use swallowtail_core::HostServiceKind;
+
+    #[test]
+    fn sign_in_ports_are_opt_in_and_registration_records_no_calls() {
+        let default_host = RecordingHostServices::default();
+        assert!(
+            !default_host
+                .services()
+                .available_kinds()
+                .contains(&HostServiceKind::UrlOpen)
+        );
+
+        let recording = RecordingHostServices::default().with_sign_in_ports();
+        assert!(
+            recording
+                .services()
+                .available_kinds()
+                .contains(&HostServiceKind::UrlOpen)
+        );
+        assert!(
+            recording
+                .services()
+                .available_kinds()
+                .contains(&HostServiceKind::LoopbackCallback)
+        );
+        assert!(
+            recording
+                .services()
+                .available_kinds()
+                .contains(&HostServiceKind::DeviceCodeDisplay)
+        );
+        assert_eq!(recording.count(RecordedHostCall::UrlOpen), 0);
+        assert_eq!(recording.count(RecordedHostCall::LoopbackBind), 0);
+        assert_eq!(recording.count(RecordedHostCall::DeviceCodeDisplay), 0);
     }
 }

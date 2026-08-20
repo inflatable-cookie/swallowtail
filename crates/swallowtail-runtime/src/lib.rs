@@ -71,6 +71,7 @@ mod session_plan_agreement;
 mod session_provider_state;
 mod session_replay;
 mod settled_session_restoration;
+mod sign_in_ports;
 mod subagent_directory;
 mod time;
 mod working_resource_io;
@@ -101,7 +102,10 @@ pub use cancellation::{CancellationAcknowledgement, CancellationControl, Immedia
 pub use connection_lifecycle::{
     AddableRouteCatalog, AddableRouteCatalogFailure, AddableRouteCatalogFailureKind,
     ConnectionLifecycleStore, ConnectionLifecycleStoreFailure, InstanceAdmissionFailure,
-    InstanceAdmissionFailureKind, InstanceAdmissionRequest, admit_instance,
+    InstanceAdmissionFailureKind, InstanceAdmissionRequest, SignInAuthorityBinding, SignInFailure,
+    SignInFailureKind, SignInKind, SignInMethod, SignInOutcome, SignInSession, SignInStartRequest,
+    SignInStatus, admit_instance, cancel_sign_in, complete_sign_in, poll_sign_in, start_sign_in,
+    submit_sign_in_credential_field,
 };
 pub use content::OperationContent;
 pub use debug_observation::{
@@ -134,7 +138,7 @@ pub use harness_user_input::{
     HarnessUserInputRequest, HarnessUserInputResponse,
 };
 pub use host_reference::{
-    AttachmentRef, EndpointRef, EnvironmentRef, ExecutableRef, MaterializedFileRef,
+    ApprovedUrlRef, AttachmentRef, EndpointRef, EnvironmentRef, ExecutableRef, MaterializedFileRef,
     MaterializedModelArtifactRef, MaterializedResourceRef, SchemaRef, WorkingResourceRef,
 };
 pub use host_registry::HostServices;
@@ -144,11 +148,11 @@ pub use host_traits::{
     SchemaService, ScopedTaskService, TimeService, WorkingResourceService,
 };
 pub use identity::{
-    AccessEvidenceSourceId, CallbackId, DirectInferenceAttemptId, DirectToolCallId,
-    HarnessCommandId, HarnessQuestionId, HarnessQuestionOptionId, MediaStreamId,
-    ProviderSessionCandidateId, ProviderSessionCatalogueId, ProviderSessionHistoryId, RequestId,
-    RuntimeIdentityRequired, RuntimeRunId, RuntimeSessionId, RuntimeTurnId, ScopeId,
-    ServingInstanceId,
+    AccessEvidenceSourceId, CallbackId, DeviceAuthorizationId, DirectInferenceAttemptId,
+    DirectToolCallId, HarnessCommandId, HarnessQuestionId, HarnessQuestionOptionId,
+    LoopbackCallbackId, MediaStreamId, ProviderSessionCandidateId, ProviderSessionCatalogueId,
+    ProviderSessionHistoryId, RequestId, RuntimeIdentityRequired, RuntimeRunId, RuntimeSessionId,
+    RuntimeTurnId, ScopeId, ServingInstanceId,
 };
 pub use idioms::{
     DEFAULT_MAX_FOLD_BYTES, IdiomSessionOption, IdiomSourceUnavailable, ZeroIdiomMaximum,
@@ -306,6 +310,10 @@ pub use settled_session_restoration::{
     SettledSessionReconciliationOperation, SettledSessionRestorationFailure,
     SettledSessionRestorationFailurePhase, SettledSessionRestorationOutcome,
     settled_session_plans_share_binding,
+};
+pub use sign_in_ports::{
+    DeviceAuthorizationReceipt, DeviceCodeDisplayService, DeviceCodePrompt, LoopbackCallbackLease,
+    LoopbackCallbackReceipt, LoopbackCallbackService, UrlOpenService,
 };
 pub use subagent_directory::{
     SubagentDirectoryChange, SubagentDirectoryChangeKind, SubagentDirectoryDelta,

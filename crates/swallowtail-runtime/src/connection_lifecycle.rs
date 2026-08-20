@@ -1,13 +1,15 @@
-//! Connection-lifecycle catalog, admission, and store port for Contract 057.
+//! Connection-lifecycle catalog, admission, store port, and sign-in loop for
+//! Contract 057.
 //!
-//! Runtime owns catalog assembly, instance admission, and the persistence
-//! trait. Optional in-memory and JSON-file adapters live in
-//! `swallowtail-host-local`. This surface never requires raw secrets and does
-//! not project 047 readiness.
+//! Runtime owns catalog assembly, instance admission, the persistence trait,
+//! and library-owned sign-in. Optional in-memory, JSON-file, and sign-in
+//! test-double adapters live in `swallowtail-host-local`. This surface never
+//! requires raw secrets and does not project 047 readiness.
 
 mod admission;
 mod catalog;
 mod failure;
+mod sign_in;
 
 use std::error::Error;
 use std::fmt;
@@ -20,6 +22,11 @@ pub use catalog::AddableRouteCatalog;
 pub use failure::{
     AddableRouteCatalogFailure, AddableRouteCatalogFailureKind, InstanceAdmissionFailure,
     InstanceAdmissionFailureKind,
+};
+pub use sign_in::{
+    SignInAuthorityBinding, SignInFailure, SignInFailureKind, SignInKind, SignInMethod,
+    SignInOutcome, SignInSession, SignInStartRequest, SignInStatus, cancel_sign_in,
+    complete_sign_in, poll_sign_in, start_sign_in, submit_sign_in_credential_field,
 };
 
 /// Rejection raised by a connection-lifecycle store adapter.
@@ -91,6 +98,9 @@ mod admission_tests;
 #[cfg(test)]
 #[path = "connection_lifecycle/catalog_tests.rs"]
 mod catalog_tests;
+#[cfg(test)]
+#[path = "connection_lifecycle/sign_in_tests.rs"]
+mod sign_in_tests;
 #[cfg(test)]
 #[path = "connection_lifecycle/tests.rs"]
 mod tests;

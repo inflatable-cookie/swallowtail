@@ -163,7 +163,14 @@ pub swallowtail_testkit::RecordedHostCall::BlockingWork
 pub swallowtail_testkit::RecordedHostCall::CredentialAcquire
 pub swallowtail_testkit::RecordedHostCall::CredentialRelease
 pub swallowtail_testkit::RecordedHostCall::DebugObserve
+pub swallowtail_testkit::RecordedHostCall::DeviceCodeDisplay
+pub swallowtail_testkit::RecordedHostCall::DeviceMaterialize
+pub swallowtail_testkit::RecordedHostCall::DevicePoll
 pub swallowtail_testkit::RecordedHostCall::DiagnosticObserve
+pub swallowtail_testkit::RecordedHostCall::LoopbackBind
+pub swallowtail_testkit::RecordedHostCall::LoopbackMaterialize
+pub swallowtail_testkit::RecordedHostCall::LoopbackPoll
+pub swallowtail_testkit::RecordedHostCall::LoopbackRelease
 pub swallowtail_testkit::RecordedHostCall::ModelArtifactAcquire
 pub swallowtail_testkit::RecordedHostCall::ModelArtifactRelease
 pub swallowtail_testkit::RecordedHostCall::NetworkAuthorize
@@ -179,6 +186,7 @@ pub swallowtail_testkit::RecordedHostCall::TaskJoin
 pub swallowtail_testkit::RecordedHostCall::TaskSpawn
 pub swallowtail_testkit::RecordedHostCall::TimeNow
 pub swallowtail_testkit::RecordedHostCall::TimeWaitUntil
+pub swallowtail_testkit::RecordedHostCall::UrlOpen
 pub swallowtail_testkit::RecordedHostCall::WorkingResourceCreateTemporary
 pub swallowtail_testkit::RecordedHostCall::WorkingResourceReadText
 pub swallowtail_testkit::RecordedHostCall::WorkingResourceRelease
@@ -309,6 +317,7 @@ pub fn swallowtail_testkit::RecordingHostServices::count(&self, swallowtail_test
 pub fn swallowtail_testkit::RecordingHostServices::for_host(swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_testkit::RecordingOutcome) -> Self
 pub fn swallowtail_testkit::RecordingHostServices::new(swallowtail_testkit::RecordingOutcome) -> Self
 pub const fn swallowtail_testkit::RecordingHostServices::services(&self) -> &swallowtail_runtime::host_registry::HostServices
+pub fn swallowtail_testkit::RecordingHostServices::with_sign_in_ports(self) -> Self
 impl core::default::Default for swallowtail_testkit::RecordingHostServices
 pub fn swallowtail_testkit::RecordingHostServices::default() -> Self
 pub struct swallowtail_testkit::RemoteAcpPreflightFixture

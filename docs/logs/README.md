@@ -23,6 +23,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-20 g04.006 Addable Catalog, Admission, And Config Fields](./2026-08-20-g04-006-addable-catalog-admission.md)
 - [2026-08-20 g04.006 Catalog Worker Dispatch](./2026-08-20-g04-006-catalog-worker-dispatch.md)
 - [2026-08-20 g04.005 Kernel Merged](./2026-08-20-g04-005-kernel-merged.md)
 - [2026-08-20 g04.005 Connection Lifecycle Kernel](./2026-08-20-g04-005-connection-lifecycle-kernel.md)

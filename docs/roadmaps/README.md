@@ -14,8 +14,8 @@ shape.
 
 ## Next Task
 
-Worker in flight: g04.006 cards 016-018. Handoff
-`docs/handoffs/20260820-010002-g04-006-addable-catalog-admission.md`.
+g04.006 PR awaiting review. g04.007 stays planned until catalog and
+admission merge.
 
 ## Index
 

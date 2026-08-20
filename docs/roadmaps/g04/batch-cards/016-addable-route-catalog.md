@@ -1,6 +1,6 @@
 # 016 Addable Route Catalog
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-19
 Milestone: `../006-addable-catalog-admission-and-config-fields.md`
@@ -27,10 +27,10 @@ descriptors without a registry crate.
 
 ## Acceptance Criteria
 
-- [ ] absence of a descriptor means the consumer did not link that adapter
-- [ ] unavailable can name a missing install, runtime, or host service
-- [ ] unsupported is distinct from unavailable
-- [ ] discovery candidates are not catalog rows
+- [x] absence of a descriptor means the consumer did not link that adapter
+- [x] unavailable can name a missing install, runtime, or host service
+- [x] unsupported is distinct from unavailable
+- [x] discovery candidates are not catalog rows
 
 ## Validation
 
@@ -45,3 +45,9 @@ Yes, into card 017.
 
 - Stop if an umbrella registry crate appears.
 - Stop if topology is folded into `ExecutionLayer`.
+
+## Evidence
+
+`AddableRouteCatalog` assembles adapter-local descriptors. Testkit fixtures
+stand in for production adapters. Topology grouping stays hosted / installed /
+local-runtime. Discovery outcomes are not catalog rows.

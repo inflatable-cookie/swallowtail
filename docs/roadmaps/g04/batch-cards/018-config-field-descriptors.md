@@ -1,6 +1,6 @@
 # 018 Config Field Descriptors
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-19
 Milestone: `../006-addable-catalog-admission-and-config-fields.md`
@@ -26,9 +26,9 @@ references.
 
 ## Acceptance Criteria
 
-- [ ] admitted instances can name config-field descriptors
-- [ ] portable records expose no path, URL, or env body
-- [ ] host-local tests keep values behind opaque refs
+- [x] admitted instances can name config-field descriptors
+- [x] portable records expose no path, URL, or env body
+- [x] host-local tests keep values behind opaque refs
 
 ## Validation
 
@@ -42,3 +42,9 @@ No. g04.006 closes. g04.007 stays planned until catalog and admission exist.
 ## Stop Conditions
 
 - Stop if config values leak into diagnostics or 047.
+
+## Evidence
+
+Admission attaches `ConfigFieldRef` values that match advertised
+`ConfigFieldDescriptor` ids. JSON-file and debug records carry references,
+not paths, URLs, or env bodies.

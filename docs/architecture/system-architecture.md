@@ -1118,17 +1118,22 @@ Every expanded profile is inspectable before effects.
 Contract 057 and Research 168 place a consuming connection-lifecycle facade
 in front of prepared integration and the Contract 047 selection snapshot.
 
-The kernel is realized: portable records in `swallowtail-core`, the store
-trait in `swallowtail-runtime`, and optional in-memory and JSON-file adapters
-in `swallowtail-host-local`. Topology grouping is hosted / installed /
-local-runtime; it is not `ExecutionLayer`. The store holds references,
-enablement, labels, and overlay markers. It does not require raw secrets.
-Enablement does not change 047 `Ready` / `NotReady`. Subject records default
-to redacted and do not enter 047.
+The kernel, addable-route catalog, and admission API are realized: portable
+records in `swallowtail-core`, catalog assembly and the store trait in
+`swallowtail-runtime`, and optional in-memory and JSON-file adapters in
+`swallowtail-host-local`. Topology grouping is hosted / installed /
+local-runtime; it is not `ExecutionLayer`. Consumers assemble
+`AddableRouteCatalog` from adapter-local descriptors. Testkit fixtures stand
+in until first-proof routes. `admit_instance` writes
+`AdmittedInstanceRecord` through the store. Config fields stay opaque
+`ConfigFieldRef` values. The store holds references, enablement, labels, and
+overlay markers. It does not require raw secrets. Enablement does not change
+047 `Ready` / `NotReady`. Subject records default to redacted and do not
+enter 047.
 
-Not yet realized: addable-route catalog assembly, admission API, sign-in
-loop, host ports, readiness refresh, subject observation as a facade, overlay
-projection, and first-proof Anthropic, Codex, or Ollama wiring.
+Not yet realized: sign-in loop, host ports, readiness refresh, subject
+observation as a facade, overlay projection, and first-proof Anthropic,
+Codex, or Ollama wiring.
 
 The remaining direction is:
 

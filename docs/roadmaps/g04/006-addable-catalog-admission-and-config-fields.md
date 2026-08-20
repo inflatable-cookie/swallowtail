@@ -1,12 +1,12 @@
 # 006 Addable Catalog, Admission, And Config Fields
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-19
 Depends on: g04.005
 Vision tags: consumer integration, route readiness, explicit selection
 Contract refs: 006, 008, 014, 037, 047, 057
-Planning state: cards 016-018 ready
+Planning state: cards 016-018 completed
 
 ## Problem
 
@@ -20,10 +20,10 @@ Realize addable-route catalog, admission, and config field descriptors.
 
 ## Goals
 
-- [ ] assemble an addable-route catalog from adapter-local descriptors
-- [ ] admit configured instances, including several of one family
-- [ ] attach config-field descriptors as opaque host-owned references
-- [ ] keep discovery candidates distinct from addable rows and instances
+- [x] assemble an addable-route catalog from adapter-local descriptors
+- [x] admit configured instances, including several of one family
+- [x] attach config-field descriptors as opaque host-owned references
+- [x] keep discovery candidates distinct from addable rows and instances
 
 ## Non-Goals
 
@@ -37,31 +37,31 @@ Realize addable-route catalog, admission, and config field descriptors.
 
 ### Batch 6.1 — Catalog Assembly
 
-- [ ] Execute card 016 after g04.005.
-- [ ] consumer-assembled catalog from adapter-local descriptors
-- [ ] available, unavailable, and unsupported observations
-- [ ] testkit fixtures only; no production adapter crate
+- [x] Execute card 016 after g04.005.
+- [x] consumer-assembled catalog from adapter-local descriptors
+- [x] available, unavailable, and unsupported observations
+- [x] testkit fixtures only; no production adapter crate
 
 ### Batch 6.2 — Admission
 
-- [ ] Execute card 017 after card 016.
-- [ ] write an admitted configured instance through the store
-- [ ] several instances of one family remain distinct ids
-- [ ] admission does not prepare or change 047 readiness
+- [x] Execute card 017 after card 016.
+- [x] write an admitted configured instance through the store
+- [x] several instances of one family remain distinct ids
+- [x] admission does not prepare or change 047 readiness
 
 ### Batch 6.3 — Config Fields
 
-- [ ] Execute card 018 after card 017.
-- [ ] config-field descriptors on admitted instances
-- [ ] values stay host-private
+- [x] Execute card 018 after card 017.
+- [x] config-field descriptors on admitted instances
+- [x] values stay host-private
 
 ## Acceptance Criteria
 
-- [ ] catalog assembly needs no umbrella registry
-- [ ] topology grouping is not `ExecutionLayer`
-- [ ] a discovered candidate cannot be admitted as if it were an addable row
-- [ ] admission does not call Contract 037 preparation
-- [ ] public records still carry no paths, URLs, or secret bytes
+- [x] catalog assembly needs no umbrella registry
+- [x] topology grouping is not `ExecutionLayer`
+- [x] a discovered candidate cannot be admitted as if it were an addable row
+- [x] admission does not call Contract 037 preparation
+- [x] public records still carry no paths, URLs, or secret bytes
 
 ## Lane Runway
 

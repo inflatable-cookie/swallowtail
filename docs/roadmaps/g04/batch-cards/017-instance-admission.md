@@ -1,6 +1,6 @@
 # 017 Instance Admission
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-19
 Milestone: `../006-addable-catalog-admission-and-config-fields.md`
@@ -27,10 +27,10 @@ configuration, written through the store port.
 
 ## Acceptance Criteria
 
-- [ ] admission writes a `ConfiguredInstance` through the store
-- [ ] two instances of one family remain distinct ids
-- [ ] a discovered candidate still cannot execute
-- [ ] 047 snapshots are unchanged by admission
+- [x] admission writes a `ConfiguredInstance` through the store
+- [x] two instances of one family remain distinct ids
+- [x] a discovered candidate still cannot execute
+- [x] 047 snapshots are unchanged by admission
 
 ## Validation
 
@@ -45,3 +45,10 @@ Yes, into card 018.
 
 - Stop if admission prepares or mutates 047.
 - Stop if instance ids collide for one family.
+
+## Evidence
+
+`admit_instance` writes `AdmittedInstanceRecord` through
+`ConnectionLifecycleStore`. Two instances of one family keep distinct ids.
+A discovered candidate id is `RouteAbsent`. Admission does not write access
+status or change 047 `Ready` / `NotReady`.

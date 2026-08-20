@@ -40,7 +40,7 @@ and selection policy.
 
 - g04.001 through g04.013 are complete. PR 11 is on `main` at `e23e795f`
 - Research 169: hosted OAuth stays a remaining gate
-- g04.014 cards 039-041 executed on `t3code/connection-lifecycle-consumer-path`
+- g04.014 cards 039-041 executed; PR 12 awaiting review
 - Hosted OAuth stays a remaining gate after this consumer path
 - `v0.3.3` remains `51d18620`
 

@@ -38,7 +38,7 @@ Worker branch: `t3code/connection-lifecycle-consumer-path`
 Validation: `effigy qa:docs`, `effigy qa:guides`, `effigy check:examples`,
 `git diff --check`.
 
-PR: pending
+PR: https://github.com/inflatable-cookie/swallowtail/pull/12
 
 ## Next
 

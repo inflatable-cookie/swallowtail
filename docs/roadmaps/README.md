@@ -14,9 +14,10 @@ shape.
 
 ## Next Task
 
-Awaiting review of g04.014 consumer-path PR on
-`t3code/connection-lifecycle-consumer-path`. Hosted OAuth stays a remaining
-gate. Do not merge without operator authorisation.
+Awaiting review of g04.014 consumer-path PR
+https://github.com/inflatable-cookie/swallowtail/pull/12.
+Hosted OAuth stays a remaining gate. Do not merge without operator
+authorisation.
 
 ## Index
 

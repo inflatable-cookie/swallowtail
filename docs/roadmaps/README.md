@@ -14,8 +14,8 @@ shape.
 
 ## Next Task
 
-Worker in flight: g04.018 cards 050-052. Handoff
-`docs/handoffs/20260820-192054-g04-018-installed-claude-agent-acp.md`.
+Await review of g04.018 cards 050-052. Do not merge without operator
+authorisation.
 
 ## Index
 

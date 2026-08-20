@@ -1,6 +1,6 @@
 # 050 Claude Agent ACP Addable Descriptor
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../018-installed-claude-agent-acp.md`
@@ -34,11 +34,11 @@ Expose an adapter-local installed addable-route descriptor for
 
 ## Acceptance Criteria
 
-- [ ] descriptor topology is installed
-- [ ] config fields carry no paths or env bodies
-- [ ] subscription path has no secret credential field
-- [ ] `ExecutionLayer::HarnessInteraction` is unchanged
-- [ ] discovery candidates are not catalog rows
+- [x] descriptor topology is installed
+- [x] config fields carry no paths or env bodies
+- [x] subscription path has no secret credential field
+- [x] `ExecutionLayer::HarnessInteraction` is unchanged
+- [x] discovery candidates are not catalog rows
 
 ## Validation
 

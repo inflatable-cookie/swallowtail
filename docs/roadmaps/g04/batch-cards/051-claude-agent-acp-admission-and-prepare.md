@@ -1,6 +1,6 @@
 # 051 Claude Agent ACP Admission And Prepare
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../018-installed-claude-agent-acp.md`
@@ -32,10 +32,10 @@ Admit a Claude Agent ACP instance through Contract 057 and reuse
 
 ## Acceptance Criteria
 
-- [ ] admission writes `AdmittedInstanceRecord` through the store
-- [ ] stored records carry no secret bytes and no credential refs
-- [ ] missing browser ports do not fail this subscription path
-- [ ] `prepare_claude_agent` still accepts the admitted identity and
+- [x] admission writes `AdmittedInstanceRecord` through the store
+- [x] stored records carry no secret bytes and no credential refs
+- [x] missing browser ports do not fail this subscription path
+- [x] `prepare_claude_agent` still accepts the admitted identity and
       subscription access profile
 
 ## Validation

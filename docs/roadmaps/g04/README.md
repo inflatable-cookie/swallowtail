@@ -35,13 +35,12 @@ and selection policy.
 
 ## Planned Next Roadmaps
 
-- [g04.018 Installed Claude Agent ACP](018-installed-claude-agent-acp.md) — ready cards 050-052
+- [g04.018 Installed Claude Agent ACP](018-installed-claude-agent-acp.md) — cards 050-052 executed, awaiting review
 
 ## Current Checkpoint
 
 - g04.001 through g04.017 are complete. PR 13 is on `main` at `fa33de15`
-- g04.018 worker dispatched: cards 050-052, handoff
-  `docs/handoffs/20260820-192054-g04-018-installed-claude-agent-acp.md`
+- g04.018 cards 050-052 executed; awaiting review
 - Hosted OAuth stays a remaining gate
 - `v0.3.3` remains `51d18620`
 

@@ -6,7 +6,7 @@ Created: 2026-08-20
 Depends on: completed g04.013
 Vision tags: consumer integration, route readiness, explicit selection
 Contract refs: 011, 037, 047, 052, 057
-Planning state: cards 039-041 ready
+Planning state: cards 039-041 executed; awaiting merge
 Research: 169
 
 ## Problem
@@ -26,11 +26,11 @@ addable descriptors.
 
 ## Goals
 
-- [ ] publish a Contract 052 feature guide for the realized 057 lifecycle
-- [ ] amend the Anthropic Messages, Codex app-server, and Ollama attach
+- [x] publish a Contract 052 feature guide for the realized 057 lifecycle
+- [x] amend the Anthropic Messages, Codex app-server, and Ollama attach
       route guides with addable-route and admission sequences
-- [ ] ship compiling normal-path 057 examples for those three routes
-- [ ] map the new feature family in the integration guide map without
+- [x] ship compiling normal-path 057 examples for those three routes
+- [x] map the new feature family in the integration guide map without
       claiming the remaining production routes have addable descriptors
 
 ## Non-Goals
@@ -50,40 +50,40 @@ addable descriptors.
 
 ### Batch 14.1 — Feature Guide
 
-- [ ] Execute card 039.
-- [ ] write `docs/guides/connection-lifecycle.md`
-- [ ] index it from `docs/guides/README.md` and point Key Concepts at it
-- [ ] do not add the guide-map family row yet; `qa:guides` requires
+- [x] Execute card 039.
+- [x] write `docs/guides/connection-lifecycle.md`
+- [x] index it from `docs/guides/README.md` and point Key Concepts at it
+- [x] do not add the guide-map family row yet; `qa:guides` requires
       complete coverage and an exact portable-feature token inventory
 
 ### Batch 14.2 — First-Proof Route Amendments
 
-- [ ] Execute card 040 after card 039.
-- [ ] amend the three first-proof route guides with 057 sequences
-- [ ] keep the remaining production route guides on the prepared-facade
+- [x] Execute card 040 after card 039.
+- [x] amend the three first-proof route guides with 057 sequences
+- [x] keep the remaining production route guides on the prepared-facade
       path; they have no addable descriptor
 
 ### Batch 14.3 — Examples And Guide Map
 
-- [ ] Execute card 041 after card 040.
-- [ ] add compiling examples for the three first-proofs
-- [ ] add portable feature token `connection_lifecycle` and the complete
+- [x] Execute card 041 after card 040.
+- [x] add compiling examples for the three first-proofs
+- [x] add portable feature token `connection_lifecycle` and the complete
       feature-family row
-- [ ] record in architecture that the 052 path exists for those three
+- [x] record in architecture that the 052 path exists for those three
       routes only
 
 ## Acceptance Criteria
 
-- [ ] a consumer can follow the feature guide from catalog assembly to the
+- [x] a consumer can follow the feature guide from catalog assembly to the
       existing prepared facade without reading adapter tests
-- [ ] Anthropic, Codex app-server, and Ollama attach route guides name
+- [x] Anthropic, Codex app-server, and Ollama attach route guides name
       their 057 addable, admission, credential, refresh, subject, update,
       and overlay facts
-- [ ] remaining production routes are not documented as addable
-- [ ] compiling examples exist and pass `effigy check:examples`
-- [ ] `effigy qa:guides` passes with the new complete feature family
-- [ ] no secret bytes, live probes, or hosted OAuth
-- [ ] `public-api-0.3.3` stays immutable
+- [x] remaining production routes are not documented as addable
+- [x] compiling examples exist and pass `effigy check:examples`
+- [x] `effigy qa:guides` passes with the new complete feature family
+- [x] no secret bytes, live probes, or hosted OAuth
+- [x] `public-api-0.3.3` stays immutable
 
 ## Lane Runway
 

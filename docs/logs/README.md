@@ -23,6 +23,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-20 g04.014 Connection Lifecycle Consumer Path](./2026-08-20-g04-014-connection-lifecycle-consumer-path.md)
 - [2026-08-20 g04.014 Consumer Path Worker Dispatch](./2026-08-20-g04-014-consumer-path-worker-dispatch.md)
 - [2026-08-20 g04.013 Ollama Attach Merged](./2026-08-20-g04-013-ollama-attach-merged.md)
 - [2026-08-20 g04.013 Ollama Attach Worker Dispatch](./2026-08-20-g04-013-ollama-attach-worker-dispatch.md)

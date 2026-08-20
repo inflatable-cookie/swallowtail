@@ -1,6 +1,6 @@
 # 040 First-Proof Route Guide Amendments
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../014-connection-lifecycle-consumer-path.md`
@@ -47,14 +47,14 @@ prepared facade.
 
 ## Acceptance Criteria
 
-- [ ] each first-proof route guide names addable id, topology, host
+- [x] each first-proof route guide names addable id, topology, host
       service, credential or its absence, config fields, refresh,
       subject, update, overlay, and the prepare handoff
-- [ ] `codex.exec` is not documented as addable
-- [ ] remaining production route guides are unchanged
-- [ ] no secret bytes, endpoint URLs, or ChatGPT tokens appear as
+- [x] `codex.exec` is not documented as addable
+- [x] remaining production route guides are unchanged
+- [x] no secret bytes, endpoint URLs, or ChatGPT tokens appear as
       portable records
-- [ ] `qa:guides` still passes
+- [x] `qa:guides` still passes
 
 ## Validation
 

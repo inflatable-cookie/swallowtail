@@ -1,6 +1,6 @@
 # 041 Connection Lifecycle Examples And Guide Map
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../014-connection-lifecycle-consumer-path.md`
@@ -53,12 +53,12 @@ Contract 052 traceability for the new feature family.
 
 ## Acceptance Criteria
 
-- [ ] the three examples compile through `effigy check:examples`
-- [ ] `effigy qa:guides` passes with the new complete family
-- [ ] no guide or map row claims addable coverage beyond the three
+- [x] the three examples compile through `effigy check:examples`
+- [x] `effigy qa:guides` passes with the new complete family
+- [x] no guide or map row claims addable coverage beyond the three
       first-proofs
-- [ ] examples contain no secret bytes
-- [ ] `public-api-0.3.3` is unchanged
+- [x] examples contain no secret bytes
+- [x] `public-api-0.3.3` is unchanged
 
 ## Validation
 

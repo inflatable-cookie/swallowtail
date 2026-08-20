@@ -1,6 +1,6 @@
 # 039 Connection Lifecycle Feature Guide
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../014-connection-lifecycle-consumer-path.md`
@@ -48,12 +48,12 @@ connection lifecycle.
 
 ## Acceptance Criteria
 
-- [ ] the feature guide names the portable 057 records, roles, and
+- [x] the feature guide names the portable 057 records, roles, and
       prepared-facade handoff
-- [ ] only the three first-proof routes are listed as addable
-- [ ] Key Concepts and the guides index link the new file
-- [ ] `qa:guides` still passes because the family row is not added yet
-- [ ] the guide does not invent a router, credential workflow, or
+- [x] only the three first-proof routes are listed as addable
+- [x] Key Concepts and the guides index link the new file
+- [x] `qa:guides` still passes because the family row is not added yet
+- [x] the guide does not invent a router, credential workflow, or
       persistence model
 
 ## Validation

@@ -14,8 +14,9 @@ shape.
 
 ## Next Task
 
-Worker in flight: g04.014 cards 039-041. Handoff
-`docs/handoffs/20260820-163734-g04-014-connection-lifecycle-consumer-path.md`.
+Awaiting review of g04.014 consumer-path PR on
+`t3code/connection-lifecycle-consumer-path`. Hosted OAuth stays a remaining
+gate. Do not merge without operator authorisation.
 
 ## Index
 

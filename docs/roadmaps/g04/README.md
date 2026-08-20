@@ -34,15 +34,14 @@ and selection policy.
 
 ## Planned Next Roadmaps
 
-- [g04.014 Connection Lifecycle Consumer Path](014-connection-lifecycle-consumer-path.md) — ready cards 039-041
+- [g04.014 Connection Lifecycle Consumer Path](014-connection-lifecycle-consumer-path.md) — cards 039-041 executed; awaiting merge
 
 ## Current Checkpoint
 
 - g04.001 through g04.013 are complete. PR 11 is on `main` at `e23e795f`
 - Research 169: hosted OAuth stays a remaining gate
-- g04.014 worker dispatched: cards 039-041, handoff
-  `docs/handoffs/20260820-163734-g04-014-connection-lifecycle-consumer-path.md`
-- Hosted OAuth stays behind the Contract 052 consumer path
+- g04.014 cards 039-041 executed on `t3code/connection-lifecycle-consumer-path`
+- Hosted OAuth stays a remaining gate after this consumer path
 - `v0.3.3` remains `51d18620`
 
 ## Milestones

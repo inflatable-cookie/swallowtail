@@ -1,6 +1,6 @@
 # 016 Addable Route Catalog
 
-Status: planned
+Status: ready
 Owner: Tom
 Created: 2026-08-19
 Milestone: `../006-addable-catalog-admission-and-config-fields.md`
@@ -39,7 +39,7 @@ descriptors without a registry crate.
 
 ## Auto-Continuation
 
-Yes, into card 017, after this card is marked ready.
+Yes, into card 017.
 
 ## Stop Conditions
 

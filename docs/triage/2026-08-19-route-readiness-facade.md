@@ -72,8 +72,8 @@ Also: cut a current-source tag before building the facade.
 Promoted into Contract 057. Authenticated subject, library-max sign-in,
 persistence port, overlay, the pre-facade tag, and the named seam amendments
 are no longer open product questions. `v0.3.3` is tagged at `51d18620`. Spec
-011 is archived. g04.005-007 are compiled: kernel cards 013-015 are ready;
-catalog/admission and sign-in stay planned. Remaining compile work is
-refresh, subject, overlay projection, and first-proof routes. Optional 047
+011 is archived. g04.005 is merged (PR 4, `c64bd64d`). g04.006 cards 016-018 are ready.
+Sign-in stays planned. Remaining compile work is refresh, subject, overlay
+projection, and first-proof routes. Optional 047
 overlay presentation metadata stays later and must not change `Ready` /
 `NotReady`.

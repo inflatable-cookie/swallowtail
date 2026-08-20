@@ -33,5 +33,5 @@ PR: https://github.com/inflatable-cookie/swallowtail/pull/4
 
 ## Next
 
-Await review and operator-authorised merge. g04.006 stays planned until this
-kernel lands.
+PR 4 fast-forwarded onto `main` at `c64bd64d`. g04.006 cards 016-018 are
+ready.

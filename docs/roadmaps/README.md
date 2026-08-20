@@ -14,9 +14,8 @@ shape.
 
 ## Next Task
 
-Await merge of [PR #4](https://github.com/inflatable-cookie/swallowtail/pull/4)
-(g04.005 kernel). Then g04.006 addable catalog, admission, and config-field
-wiring.
+Worker in flight: g04.006 cards 016-018. Handoff
+`docs/handoffs/20260820-010002-g04-006-addable-catalog-admission.md`.
 
 ## Index
 

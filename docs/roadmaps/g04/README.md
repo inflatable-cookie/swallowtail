@@ -34,15 +34,15 @@ and selection policy.
 
 ## Planned Next Roadmaps
 
-- [g04.005 Connection Lifecycle Kernel](005-connection-lifecycle-kernel.md) — completed; [PR #4](https://github.com/inflatable-cookie/swallowtail/pull/4) pending merge
-- [g04.006 Addable Catalog, Admission, And Config Fields](006-addable-catalog-admission-and-config-fields.md) — planned behind 005
+- [g04.006 Addable Catalog, Admission, And Config Fields](006-addable-catalog-admission-and-config-fields.md) — ready cards 016-018
 - [g04.007 Sign-In Loop And Host Ports](007-sign-in-loop-and-host-ports.md) — planned behind 006
 
 ## Current Checkpoint
 
-- g04.001 through g04.005 are complete. Contract 057 kernel records, store
-  trait, and simple adapters exist
-- catalog, sign-in, refresh, overlay, and first-proof stay behind g04.006
+- g04.001 through g04.005 are complete. PR 4 is on `main` at `c64bd64d`
+- g04.006 worker dispatched: cards 016-018, handoff
+  `docs/handoffs/20260820-010002-g04-006-addable-catalog-admission.md`
+- sign-in, refresh, overlay, and first-proof stay behind that catalog
 - `v0.3.3` remains `51d18620`
 
 ## Milestones

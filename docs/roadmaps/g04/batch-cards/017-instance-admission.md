@@ -1,6 +1,6 @@
 # 017 Instance Admission
 
-Status: planned
+Status: ready
 Owner: Tom
 Created: 2026-08-19
 Milestone: `../006-addable-catalog-admission-and-config-fields.md`
@@ -39,7 +39,7 @@ configuration, written through the store port.
 
 ## Auto-Continuation
 
-Yes, into card 018, after this card is marked ready.
+Yes, into card 018.
 
 ## Stop Conditions
 

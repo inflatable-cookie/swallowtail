@@ -1,6 +1,6 @@
 # 018 Config Field Descriptors
 
-Status: planned
+Status: ready
 Owner: Tom
 Created: 2026-08-19
 Milestone: `../006-addable-catalog-admission-and-config-fields.md`

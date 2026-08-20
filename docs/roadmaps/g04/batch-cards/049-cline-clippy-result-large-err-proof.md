@@ -8,44 +8,40 @@ Depends on: card 048
 
 ## Goal
 
-Prove Clippy 1.98-style `-D warnings` on the Cline package no longer
-reports `result_large_err`, and close the papercut.
+Prove Clippy 1.98-style workspace `-D warnings` no longer reports
+`result_large_err` on ACP `start_session` helpers, and close the papercut.
 
 ## Scope
 
 1. Run
-   `cargo clippy -p swallowtail-adapter-cline --all-targets --all-features -- -D warnings`.
-2. Mark
-   `Stable clippy result_large_err on unchanged Cline driver` closed in
-   `PAPERCUTS.md` with the PR SHA once known, or leave the close note for
-   merge closeout if the SHA is the merge commit.
+   `cargo clippy --workspace --all-targets --all-features --locked -- -D warnings`.
+2. Mark the Cline/ACP `result_large_err` papercut closed, or leave the
+   merge SHA for orchestrator closeout.
 3. Do not restack PR 13 in this lane.
 
 ## Out Of Scope
 
-- workspace-wide clippy
 - DeepSeek
 - other open papercuts
 
 ## Acceptance Criteria
 
-- [ ] the named clippy command exits 0
-- [ ] the Cline papercut is marked closed, or the PR says the orchestrator
+- [ ] the named workspace clippy command exits 0
+- [ ] the papercut is marked closed, or the PR says the orchestrator
       will close it on merge
 - [ ] `public-api-0.3.3` is unchanged
 
 ## Validation
 
-- `cargo clippy -p swallowtail-adapter-cline --all-targets --all-features -- -D warnings`
-- `effigy validate:focused swallowtail-adapter-cline`
+- `cargo clippy --workspace --all-targets --all-features --locked -- -D warnings`
 - `git diff --check`
 
 ## Auto-Continuation
 
 No. After this PR lands, restack g04.016 / PR 13. Do not start Claude
-Agent ACP or llama.cpp.
+Agent ACP addable or llama.cpp.
 
 ## Stop Conditions
 
-- Stop if clippy still fails on `start_session`.
+- Stop if clippy still fails on any `start_session` Err pair.
 - Stop if a workspace-wide allow is about to land.

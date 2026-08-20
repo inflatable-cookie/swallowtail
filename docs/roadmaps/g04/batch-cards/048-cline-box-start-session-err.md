@@ -8,16 +8,17 @@ Depends on: none
 
 ## Goal
 
-Box the `ClineAcpDriver::start_session` Err pair so Clippy 1.98.0
-`result_large_err` is quiet.
+Box every production ACP `start_session` Err pair of
+`(RuntimeFailure, ResourceLease)` so Clippy 1.98.0 `result_large_err`
+is quiet.
 
 ## Scope
 
-1. Change the return type to
-   `Result<ClineSessionHandle, Box<(RuntimeFailure, ResourceLease)>>`.
-2. Update every `return Err((error, resource))` and the
+1. Apply the Cline boxing to Goose, Copilot CLI, Gemini, Kiro, and Deep
+   Agents: `Result<Handle, Box<(RuntimeFailure, ResourceLease)>>`.
+2. Update every `return Err((error, resource))` and each
    `map_err(|_| (malformed(), resource.clone()))` site.
-3. Update the `open_session` match so it still destructures the pair and
+3. Update each `open_session` match so it still destructures the pair and
    releases the lease on failure.
 4. Do not allow the lint. Do not change `RuntimeFailure` or
    `ResourceLease`.
@@ -30,15 +31,15 @@ Box the `ClineAcpDriver::start_session` Err pair so Clippy 1.98.0
 
 ## Acceptance Criteria
 
-- [ ] `start_session` no longer returns a 128-byte Err tuple by value
-- [ ] `open_session` still releases the working-resource lease on
+- [ ] no production `start_session` returns a 128-byte Err tuple by value
+- [ ] each `open_session` still releases the working-resource lease on
       `start_session` failure
-- [ ] no files outside `swallowtail-adapter-cline` change
+- [ ] no DeepSeek or g04.016 files change
 
 ## Validation
 
-- `effigy validate:focused swallowtail-adapter-cline`
 - `git diff --check`
+- `cargo test --locked -p swallowtail-adapter-goose -p swallowtail-adapter-copilot-cli -p swallowtail-adapter-gemini -p swallowtail-adapter-kiro -p swallowtail-adapter-deepagents`
 
 ## Auto-Continuation
 
@@ -47,4 +48,5 @@ Yes, into card 049.
 ## Stop Conditions
 
 - Stop if session-start behavior would change beyond the Err type.
-- Stop if another adapter is edited.
+- Stop if a seventh adapter is edited that does not have this Err pair.
+- Stop if the lint is allowed instead of boxed.

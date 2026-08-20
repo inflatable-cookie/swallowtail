@@ -35,12 +35,13 @@ and selection policy.
 
 ## Planned Next Roadmaps
 
-- [g04.018 Installed Claude Agent ACP](018-installed-claude-agent-acp.md) — cards 050-052 executed, awaiting review
+- [g04.019 Local llama.cpp Attached](019-local-llama-cpp-attached.md) — ready cards 053-055
 
 ## Current Checkpoint
 
-- g04.001 through g04.017 are complete. PR 13 is on `main` at `fa33de15`
-- g04.018 cards 050-052 executed; PR 15 awaiting review
+- g04.001 through g04.018 are complete. PR 15 is on `main` at `349c6eba`
+- g04.019 worker dispatched: cards 053-055, handoff
+  `docs/handoffs/20260820-195253-g04-019-llama-cpp-attached.md`
 - Hosted OAuth stays a remaining gate
 - `v0.3.3` remains `51d18620`
 
@@ -63,4 +64,5 @@ and selection policy.
 - [015 Second-Proof Addable Inventory](./015-second-proof-addable-inventory.md) — completed
 - [016 Hosted API-Key DeepSeek Continuation](./016-hosted-api-key-deepseek-continuation.md) — completed
 - [017 Cline Stable Clippy Result Large Err](./017-cline-stable-clippy-result-large-err.md) — completed
-- [018 Installed Claude Agent ACP](./018-installed-claude-agent-acp.md) — planned
+- [018 Installed Claude Agent ACP](./018-installed-claude-agent-acp.md) — completed
+- [019 Local llama.cpp Attached](./019-local-llama-cpp-attached.md) — planned

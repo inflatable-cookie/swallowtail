@@ -1,6 +1,6 @@
 # 018 Installed Claude Agent ACP
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Depends on: completed g04.016
@@ -83,7 +83,8 @@ Expand addable-route coverage on the proved installed shape, then reuse
 
 - previous: g04.016 hosted API-key DeepSeek continuation
 - this milestone: installed Claude Agent ACP
-- later: llama.cpp attached, hosted OAuth gate
+- next: g04.019 llama.cpp attached
+- later: hosted OAuth gate
 
 ## Decision Gates
 

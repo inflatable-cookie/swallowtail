@@ -23,6 +23,8 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-20 g04.019 llama.cpp Attached Worker Dispatch](./2026-08-20-g04-019-llama-cpp-attached-worker-dispatch.md)
+- [2026-08-20 g04.018 Claude Agent ACP Merged](./2026-08-20-g04-018-claude-agent-acp-merged.md)
 - [2026-08-20 g04.018 Installed Claude Agent ACP](./2026-08-20-g04-018-installed-claude-agent-acp.md)
 - [2026-08-20 g04.018 Claude Agent ACP Worker Dispatch](./2026-08-20-g04-018-claude-agent-acp-worker-dispatch.md)
 - [2026-08-20 g04.016 DeepSeek Continuation Merged](./2026-08-20-g04-016-deepseek-continuation-merged.md)

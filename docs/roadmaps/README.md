@@ -14,8 +14,8 @@ shape.
 
 ## Next Task
 
-Await review of g04.018 PR 15. Do not merge without operator
-authorisation.
+Worker in flight: g04.019 cards 053-055. Handoff
+`docs/handoffs/20260820-195253-g04-019-llama-cpp-attached.md`.
 
 ## Index
 

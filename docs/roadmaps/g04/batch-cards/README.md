@@ -2,13 +2,13 @@
 
 ## Active
 
-None. llama.cpp attached stays behind g04.018 review. Hosted OAuth stays a
-remaining gate.
+- [053-llama-cpp-attached-addable-descriptor.md](./053-llama-cpp-attached-addable-descriptor.md)
+- [054-llama-cpp-attached-admission-and-prepare.md](./054-llama-cpp-attached-admission-and-prepare.md)
+- [055-llama-cpp-attached-refresh-update-and-subject.md](./055-llama-cpp-attached-refresh-update-and-subject.md)
 
 ## Planned
 
-None. llama.cpp attached stays behind g04.018. Hosted OAuth stays a
-remaining gate.
+None. Hosted OAuth stays a remaining gate.
 
 ## Completed
 

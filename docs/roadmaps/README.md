@@ -14,8 +14,9 @@ shape.
 
 ## Next Task
 
-Reassess g04 closeout now that currentness is a standing Contract 029 lane
-and hosted OAuth is parked.
+Define the next g04 lane. The readiness facade is realized, hosted OAuth is
+parked, and currentness is standing. Do not roll the generation before
+30-50 roadmaps.
 
 ## Standing Lanes
 

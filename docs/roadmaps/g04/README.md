@@ -34,9 +34,9 @@ and selection policy.
 
 ## Planned Next Roadmaps
 
-None. Hosted OAuth is parked in
-[backlog/hosted-interactive-oauth.md](../backlog/hosted-interactive-oauth.md)
-until a named production route requires URL-open plus loopback.
+The next g04 lane is not yet defined. Do not roll over: 19 numbered
+roadmaps, target 30-50. Hosted OAuth stays parked in
+[backlog/hosted-interactive-oauth.md](../backlog/hosted-interactive-oauth.md).
 
 ## Current Checkpoint
 
@@ -44,6 +44,8 @@ until a named production route requires URL-open plus loopback.
 - Title programme is complete. Second-proof addable-route expansion is complete
 - Hosted OAuth is parked, not the next card
 - Contract 029 currentness is a standing lane, not a g04 goal
+- Generation stays active. Rollover waits for 30-50 roadmaps or an
+  explicit sequencing reset
 - `v0.3.3` remains `51d18620`
 
 ## Milestones

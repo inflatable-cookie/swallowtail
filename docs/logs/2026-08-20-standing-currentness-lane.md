@@ -19,5 +19,5 @@ parked.
 
 ## Next
 
-Reassess g04 closeout now that currentness is standing and hosted OAuth is
-parked.
+Define the next g04 lane. Do not roll the generation before 30-50
+roadmaps.

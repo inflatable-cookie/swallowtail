@@ -2773,6 +2773,7 @@ dependencies = [
  "semver",
  "serde_json",
  "swallowtail-core",
+ "swallowtail-host-local",
  "swallowtail-idioms",
  "swallowtail-runtime",
  "swallowtail-testkit",

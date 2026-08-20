@@ -28,6 +28,8 @@ adapter-local descriptors. No production adapter crate changed.
 Worker worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-d429e52f`
 Worker branch: `t3code/addable-catalog-admission`
 
+PR: https://github.com/inflatable-cookie/swallowtail/pull/5
+
 ## Next
 
-Open the review PR. Merge stays operator-authorised. g04.007 stays planned.
+Merge stays operator-authorised. g04.007 stays planned.

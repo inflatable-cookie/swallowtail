@@ -14,8 +14,9 @@ shape.
 
 ## Next Task
 
-g04.006 PR awaiting review. g04.007 stays planned until catalog and
-admission merge.
+g04.006 PR awaiting review:
+https://github.com/inflatable-cookie/swallowtail/pull/5.
+g04.007 stays planned until catalog and admission merge.
 
 ## Index
 

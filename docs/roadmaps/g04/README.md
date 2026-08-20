@@ -38,7 +38,8 @@ and selection policy.
 
 ## Current Checkpoint
 
-- g04.001 through g04.006 are complete on this branch. PR pending review.
+- g04.001 through g04.006 are complete on this branch. PR
+  https://github.com/inflatable-cookie/swallowtail/pull/5 awaits review.
 - g04.007 stays planned until catalog and admission land on `main`
 - sign-in, refresh, overlay, and first-proof stay behind that merge
 - `v0.3.3` remains `51d18620`

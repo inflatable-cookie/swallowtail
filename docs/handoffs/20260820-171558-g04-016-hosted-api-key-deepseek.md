@@ -101,11 +101,9 @@ Here is the state the worker is inheriting:
   `git diff --check`. If public types are added, update
   `release-baselines/public-api-unreleased/` and run `effigy package:api`
   before opening the PR.
-- **PR base/head:** `main` / selected worker branch
-  (`g04-016-hosted-api-key-deepseek` unless the launcher supplied a different
-  dedicated branch)
-- **PR URL:** pending
-- **Review state:** awaiting worker PR
+- **PR base/head:** `main` / `t3code/hosted-deepseek-api-key`
+- **PR URL:** https://github.com/inflatable-cookie/swallowtail/pull/13
+- **Review state:** awaiting orchestrator review
 - **Merge authorisation:** not granted; merge is a separate operator-authorised
   action
 

@@ -39,7 +39,8 @@ and selection policy.
 ## Current Checkpoint
 
 - g04.001 through g04.008 are complete on this branch
-- g04.008 PR pending review; merge is operator-authorised
+- g04.008 PR https://github.com/inflatable-cookie/swallowtail/pull/7 pending
+  review; merge is operator-authorised
 - overlay and first-proof stay behind that merge
 - `v0.3.3` remains `51d18620`
 - `v0.3.3` remains `51d18620`

@@ -14,7 +14,8 @@ shape.
 
 ## Next Task
 
-g04.008 PR awaiting review. Next after merge: g04.009 overlay projection.
+g04.008 PR https://github.com/inflatable-cookie/swallowtail/pull/7 awaiting
+review. Next after merge: g04.009 overlay projection.
 
 ## Index
 

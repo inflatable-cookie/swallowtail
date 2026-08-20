@@ -32,7 +32,7 @@ Host-local JSON and memory stores persist refreshed access status.
 Worker worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-7881116e`
 Worker branch: `t3code/readiness-refresh-subject-updates`
 
-PR: pending
+PR: https://github.com/inflatable-cookie/swallowtail/pull/7
 
 ## Next
 

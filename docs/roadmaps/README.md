@@ -14,8 +14,8 @@ shape.
 
 ## Next Task
 
-Worker in flight: g04.019 cards 053-055. Handoff
-`docs/handoffs/20260820-195253-g04-019-llama-cpp-attached.md`.
+Await review of g04.019 llama.cpp attached. Hosted OAuth stays a remaining
+gate.
 
 ## Index
 

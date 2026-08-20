@@ -11,6 +11,42 @@ New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 Neither route uses credentials or billing. Local unauthenticated access is not
 permission to discover endpoints, executables, artifacts, or models.
 
+## Add The Attached Connection
+
+Only `llama-cpp.attached` currently exports an addable descriptor.
+`llama-cpp.owned` stays on the prepared facade path below. Topology is
+**local-runtime**. It is not `ExecutionLayer`. Follow
+[connection lifecycle](connection-lifecycle.md) before
+`prepare_llama_cpp_attached`. Swallowtail does not start or stop the
+operator-owned server.
+
+1. Assemble `AddableRouteCatalog` from
+   `llama_cpp_attached_addable_route_descriptor`. The row is `Available`
+   when the host exposes the Network service; otherwise
+   `Unavailable(HostService)`. Runtime reachability stays preparation, not
+   the addable row. The addable row does not probe `/health`.
+2. `admit_instance` writes the configured instance with an opaque
+   `endpoint` `ApiEndpoint` `ConfigFieldRef`. Admission does not prepare.
+3. There is no credential field and no sign-in loop. Reuse
+   `llama_cpp_attached_access_profile`. Do not use
+   `llama_cpp_owned_access_profile` on this row.
+4. `refresh_readiness` writes host-supplied `AccessStatus`. Enablement stays
+   independent of 047 `Ready` / `NotReady`. There is no credential
+   dimension.
+5. `observe_authenticated_subject` is `Absent`.
+6. `observe_instance_update` reuses `llama_cpp_attached_runtime_claim`.
+   Contract 032 stays unobserved unless an executable is supplied. Exact
+   opaque b9910/f5525f7e7 binding stays prepare-time. No unverified-newer.
+7. llama.cpp catalogue rows omit `provider_id`. Overlay cannot mark them.
+   Do not invent a catalogue provider id.
+8. Then `prepare_llama_cpp_attached` with a host-approved
+   `InstanceTargetRef`. Stored config refs do not feed prepare.
+
+The compile-tested
+[`connection_lifecycle` example](../../crates/swallowtail-adapter-llama-cpp/examples/connection_lifecycle.rs)
+shows catalog through prepare. The canonical route-map example remains
+[`prepared_llama_cpp_attached`](../../crates/swallowtail-adapter-llama-cpp/examples/prepared_llama_cpp_attached.rs).
+
 ## Attached Runtime
 
 `prepare_llama_cpp_attached` requires configured-instance and authoritative

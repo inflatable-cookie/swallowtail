@@ -30,18 +30,17 @@ and selection policy.
 | Realize readiness refresh, authenticated-subject observation, and Contract 029 updates. | completed | Contracts 057, 006, 029, 032, 047 | `g04.008` |
 | Realize the model-presentation overlay without flattening catalogues. | completed | Contracts 057, 020 | `g04.009` |
 | Prove representative hosted, installed, and local-runtime shapes and publish a consumer path. | completed | Contracts 011, 037, 052, 057 | `g04.010` |
-| Expand addable-route coverage on the proved hosted, installed, and local-runtime shapes. | planned | Contracts 011, 037, 052, 057 | `g04.015` |
+| Expand addable-route coverage on the proved hosted, installed, and local-runtime shapes. | completed | Contracts 011, 037, 052, 057 | `g04.015` |
 | Continue Contract 029 currentness as a maintenance lane, not the title programme. | recurring | Contract 029 | evidence-gated |
 
 ## Planned Next Roadmaps
 
-- [g04.019 Local llama.cpp Attached](019-local-llama-cpp-attached.md) — ready cards 053-055
+- Hosted OAuth remains a remaining gate. Do not compile it from this closeout.
 
 ## Current Checkpoint
 
-- g04.001 through g04.018 are complete. PR 15 is on `main` at `349c6eba`
-- g04.019 worker dispatched: cards 053-055, handoff
-  `docs/handoffs/20260820-195253-g04-019-llama-cpp-attached.md`
+- g04.001 through g04.019 are complete on this worker branch
+- g04.019 llama.cpp attached addable route awaits review
 - Hosted OAuth stays a remaining gate
 - `v0.3.3` remains `51d18620`
 
@@ -65,4 +64,4 @@ and selection policy.
 - [016 Hosted API-Key DeepSeek Continuation](./016-hosted-api-key-deepseek-continuation.md) — completed
 - [017 Cline Stable Clippy Result Large Err](./017-cline-stable-clippy-result-large-err.md) — completed
 - [018 Installed Claude Agent ACP](./018-installed-claude-agent-acp.md) — completed
-- [019 Local llama.cpp Attached](./019-local-llama-cpp-attached.md) — planned
+- [019 Local llama.cpp Attached](./019-local-llama-cpp-attached.md) — completed

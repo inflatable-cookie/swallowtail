@@ -1,6 +1,6 @@
 # 053 llama.cpp Attached Addable Descriptor
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../019-local-llama-cpp-attached.md`
@@ -33,12 +33,12 @@ Expose an adapter-local local-runtime addable-route descriptor for
 
 ## Acceptance Criteria
 
-- [ ] descriptor topology is local-runtime
-- [ ] config field carries no URL
-- [ ] no secret credential field
-- [ ] `ExecutionLayer::DirectModelInference` is unchanged
-- [ ] the addable row does not probe the runtime
-- [ ] the row is not `llama-cpp.owned`
+- [x] descriptor topology is local-runtime
+- [x] config field carries no URL
+- [x] no secret credential field
+- [x] `ExecutionLayer::DirectModelInference` is unchanged
+- [x] the addable row does not probe the runtime
+- [x] the row is not `llama-cpp.owned`
 
 ## Validation
 

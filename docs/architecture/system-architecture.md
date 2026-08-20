@@ -1161,16 +1161,18 @@ bytes.
 First-proof hosted API-key Anthropic Messages, installed Codex
 app-server, and local Ollama attach are realized. DeepSeek continuation is
 the second hosted API-key proof. Claude Agent ACP is the second installed
-proof. Anthropic and DeepSeek collect
-`CredentialRef`; DeepSeek does not advertise an environment name. Overlay
-keys `anthropic` and `deepseek` catalogue rows. Codex admits
-the ChatGPT subscription profile with no credential field and reuses 029/032
-update observation. Claude Agent ACP admits the local subscription profile
-with no credential field and reuses 029/032 the same way. Ollama admits a
-local-unauthenticated attached runtime with no credential field. Catalogue
-rows without `provider_id` stay unmarked. The Contract 052 consumer path is
-realized for those five routes. Remaining production routes have no addable
-descriptors. Hosted interactive OAuth is still not realized.
+proof. llama.cpp attached is the second local-runtime proof. Anthropic and
+DeepSeek collect `CredentialRef`; DeepSeek does not advertise an
+environment name. Overlay keys `anthropic` and `deepseek` catalogue rows.
+Codex admits the ChatGPT subscription profile with no credential field and
+reuses 029/032 update observation. Claude Agent ACP admits the local
+subscription profile with no credential field and reuses 029/032 the same
+way. Ollama and llama.cpp attached admit a local-unauthenticated attached
+runtime with no credential field. llama.cpp attached does not advertise
+`llama-cpp.owned`. Catalogue rows without `provider_id` stay unmarked. The
+Contract 052 consumer path is realized for those six routes. Remaining
+production routes have no addable descriptors. Hosted interactive OAuth is
+still not realized.
 
 The realized consumer path is:
 

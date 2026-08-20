@@ -1,6 +1,6 @@
 # 054 llama.cpp Attached Admission And Prepare
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../019-local-llama-cpp-attached.md`
@@ -35,10 +35,10 @@ Admit a llama.cpp attached instance through Contract 057 and reuse
 
 ## Acceptance Criteria
 
-- [ ] admission writes `AdmittedInstanceRecord` through the store
-- [ ] stored records carry no secret bytes and no credential refs
-- [ ] missing browser ports do not fail this path
-- [ ] `prepare_llama_cpp_attached` still accepts the admitted identity and
+- [x] admission writes `AdmittedInstanceRecord` through the store
+- [x] stored records carry no secret bytes and no credential refs
+- [x] missing browser ports do not fail this path
+- [x] `prepare_llama_cpp_attached` still accepts the admitted identity and
       attached access profile
 
 ## Validation

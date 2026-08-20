@@ -1,12 +1,12 @@
 # 019 Local llama.cpp Attached
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Depends on: completed g04.018
 Vision tags: consumer integration, route readiness, explicit selection
 Contract refs: 011, 014, 029, 037, 047, 057
-Planning state: cards 053-055 ready
+Planning state: cards 053-055 completed
 Research: 170
 
 ## Problem
@@ -24,11 +24,11 @@ Expand addable-route coverage on the proved local-runtime shape, then reuse
 
 ## Goals
 
-- [ ] expose an adapter-local local-runtime addable descriptor for
+- [x] expose an adapter-local local-runtime addable descriptor for
       `llama-cpp.attached`
-- [ ] admit through the 057 store with no credential field
-- [ ] reuse `prepare_llama_cpp_attached` after admission
-- [ ] refresh access status, project 029 update observation, and keep
+- [x] admit through the 057 store with no credential field
+- [x] reuse `prepare_llama_cpp_attached` after admission
+- [x] refresh access status, project 029 update observation, and keep
       subject Absent
 
 ## Non-Goals
@@ -45,36 +45,36 @@ Expand addable-route coverage on the proved local-runtime shape, then reuse
 
 ### Batch 19.1 — Addable Descriptor
 
-- [ ] Execute card 053.
-- [ ] ship `AddableRouteDescriptor` from `swallowtail-adapter-llama-cpp`
-- [ ] topology local-runtime; config field API endpoint; no credential
+- [x] Execute card 053.
+- [x] ship `AddableRouteDescriptor` from `swallowtail-adapter-llama-cpp`
+- [x] topology local-runtime; config field API endpoint; no credential
       field
 
 ### Batch 19.2 — Admission And Prepare
 
-- [ ] Execute card 054 after card 053.
-- [ ] admit through the 057 store with an opaque endpoint config ref
-- [ ] no sign-in loop; reuse `llama_cpp_attached_access_profile`
-- [ ] `prepare_llama_cpp_attached` still prepares after admission with
+- [x] Execute card 054 after card 053.
+- [x] admit through the 057 store with an opaque endpoint config ref
+- [x] no sign-in loop; reuse `llama_cpp_attached_access_profile`
+- [x] `prepare_llama_cpp_attached` still prepares after admission with
       host `InstanceTargetRef`
 
 ### Batch 19.3 — Refresh, Update, And Subject
 
-- [ ] Execute card 055 after card 054.
-- [ ] refresh host-supplied `AccessStatus`; subject stays Absent
-- [ ] `observe_instance_update` reuses `llama_cpp_attached_runtime_claim`;
+- [x] Execute card 055 after card 054.
+- [x] refresh host-supplied `AccessStatus`; subject stays Absent
+- [x] `observe_instance_update` reuses `llama_cpp_attached_runtime_claim`;
       032 stays unobserved unless an executable is supplied
-- [ ] unmarked catalogue rows stay unmarked; do not invent a provider id
+- [x] unmarked catalogue rows stay unmarked; do not invent a provider id
 
 ## Acceptance Criteria
 
-- [ ] a consumer can assemble a catalog that includes llama.cpp attached by
+- [x] a consumer can assemble a catalog that includes llama.cpp attached by
       linking the adapter
-- [ ] admission writes no secret bytes and no credential refs
-- [ ] `prepare_llama_cpp_attached` still runs after admission
-- [ ] update observation reuses 029
-- [ ] no live server start, stop, or health probe from the addable row
-- [ ] `public-api-0.3.3` stays immutable
+- [x] admission writes no secret bytes and no credential refs
+- [x] `prepare_llama_cpp_attached` still runs after admission
+- [x] update observation reuses 029
+- [x] no live server start, stop, or health probe from the addable row
+- [x] `public-api-0.3.3` stays immutable
 
 ## Lane Runway
 

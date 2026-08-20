@@ -1,6 +1,6 @@
 # 055 llama.cpp Attached Refresh, Update, And Subject
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../019-local-llama-cpp-attached.md`
@@ -32,11 +32,11 @@ authenticated subject Absent for an admitted llama.cpp attached instance.
 
 ## Acceptance Criteria
 
-- [ ] a disabled instance can refresh to ready access dimensions
-- [ ] subject fields are Absent, not 047 fields
-- [ ] update observation reuses 029; 032 may be unobserved
-- [ ] overlay does not invent a llama.cpp catalogue provider id
-- [ ] `public-api-0.3.3` stays immutable
+- [x] a disabled instance can refresh to ready access dimensions
+- [x] subject fields are Absent, not 047 fields
+- [x] update observation reuses 029; 032 may be unobserved
+- [x] overlay does not invent a llama.cpp catalogue provider id
+- [x] `public-api-0.3.3` stays immutable
 
 ## Validation
 

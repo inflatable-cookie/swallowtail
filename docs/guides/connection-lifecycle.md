@@ -11,7 +11,7 @@ persistence, UI, and selection policy, and keep secret bytes on the host.
 
 ## Route Applicability
 
-Five production routes currently export an `AddableRouteDescriptor`:
+Six production routes currently export an `AddableRouteDescriptor`:
 
 | Route | Topology | Host service for Available | Credential |
 | --- | --- | --- | --- |
@@ -20,15 +20,17 @@ Five production routes currently export an `AddableRouteDescriptor`:
 | `codex.app-server` | installed | Process | none; cached local ChatGPT login |
 | `claude-agent.acp` | installed | Process | none; inherited local Claude subscription |
 | `ollama.attached` | local-runtime | Network | none; local unauthenticated |
+| `llama-cpp.attached` | local-runtime | Network | none; local unauthenticated |
 
 Topology grouping is hosted / installed / local-runtime. It is not
 `ExecutionLayer` and must not be collapsed onto harness versus direct
 inference.
 
-Every other production route, including `codex.exec`, stays on the
-[prepared-facade](provider-selection-and-preparation.md) path. Absence of a
-descriptor means that adapter was not linked, not that the route is
-unsupported. Hosted interactive OAuth is not a realized consumer path.
+Every other production route, including `codex.exec` and `llama-cpp.owned`,
+stays on the [prepared-facade](provider-selection-and-preparation.md) path.
+Absence of a descriptor means that adapter was not linked, not that the
+route is unsupported. Hosted interactive OAuth is not a realized consumer
+path.
 
 ## Ordering
 
@@ -55,6 +57,7 @@ prepare will use:
 - `codex_app_server_addable_route_descriptor`
 - `claude_agent_acp_addable_route_descriptor`
 - `ollama_attached_addable_route_descriptor`
+- `llama_cpp_attached_addable_route_descriptor`
 
 Then `AddableRouteCatalog::from_descriptors`. There is no umbrella registry
 and no runtime inventory of every production route. Duplicate route ids fail
@@ -104,9 +107,9 @@ or device-code ports. Presence of a port does not start sign-in. Missing
 ports fail the loop that requires them. A loop that would change mechanism,
 account, endpoint audience, or billing authority fails closed.
 
-Codex app-server, Claude Agent ACP, and Ollama attach advertise no
-credential field. Do not extract ChatGPT tokens or Claude keychain bytes,
-or invent a local-runtime secret.
+Codex app-server, Claude Agent ACP, Ollama attach, and llama.cpp attached
+advertise no credential field. Do not extract ChatGPT tokens or Claude
+keychain bytes, or invent a local-runtime secret.
 
 Hosted interactive OAuth through URL-open and loopback is not a realized
 consumer path. Do not treat Claude subscription or Codex ChatGPT cached
@@ -144,7 +147,9 @@ never a default diagnostic, and never a routing key.
 authenticate, or admit. Codex app-server can reuse `codex_app_server_claim`
 plus a prepared 032 observation. Claude Agent ACP reuses
 `claude_agent_acp_claim` the same way. Ollama reuses `ollama_runtime_claim`;
-032 stays unobserved unless an executable is supplied.
+llama.cpp attached reuses `llama_cpp_attached_runtime_claim`. For both
+local-runtime routes, 032 stays unobserved unless an executable is
+supplied.
 
 ## Overlay And Prepared Handoff
 
@@ -154,7 +159,7 @@ result. Markers key to exact configured-instance, provider, and model ids.
 Provider catalogue defaults stay distinct from the consumer-default marker.
 Unknown models and cross-instance markers fail closed. Catalogue rows
 without `provider_id` stay unmarked; do not invent a Codex, Claude Agent,
-or Ollama provider id. Overlay copies `Ready` / `NotReady` and cannot make
+Ollama, or llama.cpp provider id. Overlay copies `Ready` / `NotReady` and cannot make
 `NotReady` selectable.
 
 Then call the existing prepare entry with host-owned targets:
@@ -164,9 +169,11 @@ Then call the existing prepare entry with host-owned targets:
 - `prepare_codex` with `CodexPreparedDriver::AppServer`
 - `prepare_claude_agent`
 - `prepare_ollama_attached`
+- `prepare_llama_cpp_attached`
 
 Stored `ConfigFieldRef` values do not feed `prepare_*`. Model tag and
 digest for Ollama stay prepare-time identities, not admission identity.
+Exact opaque b9910/f5525f7e7 for llama.cpp attached stays prepare-time.
 After prepare, continue through the route guide and
 [provider selection](provider-selection-and-preparation.md).
 
@@ -207,6 +214,7 @@ Compile-tested Contract 057 examples:
 - [Codex app-server](../../crates/swallowtail-adapter-codex/examples/connection_lifecycle.rs)
 - [Claude Agent ACP](../../crates/swallowtail-adapter-claude-agent/examples/connection_lifecycle.rs)
 - [Ollama attach](../../crates/swallowtail-adapter-ollama/examples/connection_lifecycle.rs)
+- [llama.cpp attached](../../crates/swallowtail-adapter-llama-cpp/examples/connection_lifecycle.rs)
 
 Realized addable-route sequences:
 
@@ -217,6 +225,8 @@ Realized addable-route sequences:
 - [Claude Agent ACP](claude-agent-prepared-integration.md);
   `claude-code.headless` and `claude-code.response-only` are not addable
 - [Ollama attach](ollama-attached-prepared-integration.md)
+- [llama.cpp attached](llama-cpp-prepared-integration.md);
+  `llama-cpp.owned` is not addable
 
 Those route guides keep their existing prepared-facade examples as the
 canonical route-map examples.

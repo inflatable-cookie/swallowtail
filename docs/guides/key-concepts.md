@@ -39,10 +39,11 @@ facade. See [connection lifecycle](connection-lifecycle.md).
 
 - **Addable route** — one adapter-local `AddableRouteDescriptor` a consumer
   may offer to add. Only `anthropic.messages`, `deepseek.continuation`,
-  `codex.app-server`, `claude-agent.acp`, and `ollama.attached` currently
-  export one. Remaining production routes, including `codex.exec`, stay on
-  the prepared-facade path. Topology is hosted, installed, or local-runtime;
-  it is not `ExecutionLayer`.
+  `codex.app-server`, `claude-agent.acp`, `ollama.attached`, and
+  `llama-cpp.attached` currently export one. Remaining production routes,
+  including `codex.exec` and `llama-cpp.owned`, stay on the prepared-facade
+  path. Topology is hosted, installed, or local-runtime; it is not
+  `ExecutionLayer`.
 - **Addable-route catalog** — the consumer-assembled list of those
   descriptors. There is no umbrella registry. Absence means the adapter was
   not linked, not that the route is unsupported.

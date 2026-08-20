@@ -36,6 +36,5 @@ PR: https://github.com/inflatable-cookie/swallowtail/pull/6
 
 ## Next
 
-PR 6 awaits review. Merge stays a separate operator-authorised action.
-After merge, compile readiness refresh, subject observation, and overlay
-projection.
+PR 6 fast-forwarded onto `main` at `91e14e3d`. g04.008 cards 022-024 are
+ready. Overlay stays planned.

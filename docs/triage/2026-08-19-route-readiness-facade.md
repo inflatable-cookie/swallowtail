@@ -73,7 +73,7 @@ Promoted into Contract 057. Authenticated subject, library-max sign-in,
 persistence port, overlay, the pre-facade tag, and the named seam amendments
 are no longer open product questions. `v0.3.3` is tagged at `51d18620`. Spec
 011 is archived. g04.005 is merged (PR 4, `c64bd64d`). g04.006 is merged (PR 5,
-`5cdffebb`). g04.007 cards 019-021 are ready. Remaining compile work is
-refresh, subject, overlay projection, and first-proof routes. Optional 047
+`5cdffebb`). g04.007 is merged (PR 6, `91e14e3d`). g04.008 cards 022-024 are ready.
+Overlay stays planned. Remaining compile work is first-proof routes. Optional 047
 overlay presentation metadata stays later and must not change `Ready` /
 `NotReady`.

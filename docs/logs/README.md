@@ -23,6 +23,8 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-20 g04.008 Refresh Worker Dispatch](./2026-08-20-g04-008-refresh-worker-dispatch.md)
+- [2026-08-20 g04.007 Sign-In Merged](./2026-08-20-g04-007-sign-in-merged.md)
 - [2026-08-20 g04.007 Sign-In Loop And Host Ports](./2026-08-20-g04-007-sign-in-loop-and-host-ports.md)
 - [2026-08-20 g04.007 Sign-In Worker Dispatch](./2026-08-20-g04-007-sign-in-worker-dispatch.md)
 - [2026-08-20 g04.006 Catalog Merged](./2026-08-20-g04-006-catalog-merged.md)

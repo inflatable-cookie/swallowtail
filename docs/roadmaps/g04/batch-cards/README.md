@@ -2,14 +2,20 @@
 
 ## Active
 
-- [019-interactive-sign-in-host-ports.md](./019-interactive-sign-in-host-ports.md)
-- [020-sign-in-loop.md](./020-sign-in-loop.md)
-- [021-sign-in-fail-closed-and-api-key-collection.md](./021-sign-in-fail-closed-and-api-key-collection.md)
+- [022-readiness-refresh.md](./022-readiness-refresh.md)
+- [023-authenticated-subject-observation.md](./023-authenticated-subject-observation.md)
+- [024-instance-update-observation.md](./024-instance-update-observation.md)
 
 ## Planned
 
+- [025-apply-model-presentation-overlay.md](./025-apply-model-presentation-overlay.md)
+- [026-overlay-refusals.md](./026-overlay-refusals.md)
+
 ## Completed
 
+- [021-sign-in-fail-closed-and-api-key-collection.md](./021-sign-in-fail-closed-and-api-key-collection.md)
+- [020-sign-in-loop.md](./020-sign-in-loop.md)
+- [019-interactive-sign-in-host-ports.md](./019-interactive-sign-in-host-ports.md)
 - [018-config-field-descriptors.md](./018-config-field-descriptors.md)
 - [017-instance-admission.md](./017-instance-admission.md)
 - [016-addable-route-catalog.md](./016-addable-route-catalog.md)

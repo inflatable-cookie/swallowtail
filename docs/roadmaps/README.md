@@ -14,9 +14,8 @@ shape.
 
 ## Next Task
 
-Awaiting review of [PR 6](https://github.com/inflatable-cookie/swallowtail/pull/6).
-Do not merge without operator authorisation. After merge, compile readiness
-refresh, subject observation, and overlay projection.
+Worker in flight: g04.008 cards 022-024. Handoff
+`docs/handoffs/20260820-102815-g04-008-readiness-refresh-subject-updates.md`.
 
 ## Index
 

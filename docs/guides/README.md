@@ -19,6 +19,7 @@ contracts or architecture.
 - [Claude Agent Prepared Integration](claude-agent-prepared-integration.md)
 - [Codex Prepared Integration](codex-prepared-integration.md)
 - [Command Code Prepared Integration](command-code-prepared-integration.md)
+- [Connection Lifecycle](connection-lifecycle.md)
 - [Cline ACP Prepared Integration](cline-acp-prepared-integration.md)
 - [Cline Headless Prepared Integration](cline-headless-prepared-integration.md)
 - [Copilot CLI ACP Prepared Integration](copilot-cli-acp-prepared-integration.md)

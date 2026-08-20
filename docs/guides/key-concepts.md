@@ -32,6 +32,31 @@ appear throughout.
   [Contract 047](../contracts/047-configured-provider-instance-catalogue.md)
   governs the instance catalogue.
 
+## Connection Lifecycle
+
+The pre-session path that admits a configured instance before the prepared
+facade. See [connection lifecycle](connection-lifecycle.md).
+
+- **Addable route** — one adapter-local `AddableRouteDescriptor` a consumer
+  may offer to add. Only `anthropic.messages`, `codex.app-server`, and
+  `ollama.attached` currently export one. Remaining production routes,
+  including `codex.exec`, stay on the prepared-facade path. Topology is
+  hosted, installed, or local-runtime; it is not `ExecutionLayer`.
+- **Addable-route catalog** — the consumer-assembled list of those
+  descriptors. There is no umbrella registry. Absence means the adapter was
+  not linked, not that the route is unsupported.
+- **Admission** — writing a configured instance through the store port.
+  Admission does not prepare, select a model, or change 047 readiness.
+- **Enablement** — a host preference on an admitted instance. Independent of
+  access-status dimensions and of 047 `Ready` / `NotReady`.
+- **Authenticated subject** — optional provider-disclosed email, login, or
+  plan label, redacted by default. It is never an instance id, 047 field,
+  default diagnostic, or routing key.
+- **Model-presentation overlay** — hide, ordinal, consumer-default, and
+  favourite markers keyed to exact catalogue identity. Overlay copies
+  `Ready` / `NotReady` and cannot change it. Catalogue rows without
+  `provider_id` stay unmarked.
+
 ## Access And Environment
 
 - **Access profile** — the explicit authority a route runs under: credential
@@ -105,5 +130,7 @@ appear throughout.
 - [Integration guide map](integration-guide-map.md) — the guide and example
   front door
 - [Quick Start](quickstart.md) — one Codex run, end to end
+- [Connection lifecycle](connection-lifecycle.md) — addable catalog, admission,
+  credentials, refresh, overlay, then prepare
 - [Portable failure handling](portable-failure-handling.md) — what happens
   when something fails, in plain terms

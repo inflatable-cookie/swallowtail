@@ -27,9 +27,7 @@ pub const OLLAMA_ATTACHED_ENDPOINT_FIELD_ID: &str = "endpoint";
 /// [`swallowtail_core::ExecutionLayer`]. Runtime reachability stays
 /// `prepare_ollama_attached`; the addable row does not probe the runtime.
 #[must_use]
-pub fn ollama_attached_addable_route_descriptor(
-    services: &HostServices,
-) -> AddableRouteDescriptor {
+pub fn ollama_attached_addable_route_descriptor(services: &HostServices) -> AddableRouteDescriptor {
     let availability = if services.network().is_some() {
         AddableRouteAvailability::Available
     } else {

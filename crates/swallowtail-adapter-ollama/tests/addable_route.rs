@@ -28,10 +28,7 @@ fn descriptor_is_local_runtime_and_matches_the_native_driver() {
     assert_eq!(descriptor.id().as_str(), OLLAMA_ATTACHED_ADDABLE_ROUTE_ID);
     assert_eq!(descriptor.id().as_str(), "ollama.attached");
     assert_eq!(descriptor.topology(), RouteTopology::LocalRuntime);
-    assert_eq!(
-        descriptor.driver(),
-        ollama_native_descriptor().identity()
-    );
+    assert_eq!(descriptor.driver(), ollama_native_descriptor().identity());
     assert_eq!(
         descriptor.availability(),
         AddableRouteAvailability::Available
@@ -92,7 +89,9 @@ fn direct_model_inference_execution_layer_is_unchanged() {
     assert!(
         ollama_native_descriptor().supports_execution_layer(ExecutionLayer::DirectModelInference)
     );
-    assert!(!ollama_native_descriptor().supports_execution_layer(ExecutionLayer::HarnessInteraction));
+    assert!(
+        !ollama_native_descriptor().supports_execution_layer(ExecutionLayer::HarnessInteraction)
+    );
 }
 
 #[test]

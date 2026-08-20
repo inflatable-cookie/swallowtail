@@ -31,7 +31,7 @@ Validation:
 Local clippy is 1.97.1; CI Stable is rust-clippy 1.98.0. Boxing is the
 Clippy-suggested fix.
 
-PR: pending
+PR: https://github.com/inflatable-cookie/swallowtail/pull/14
 
 ## Next
 

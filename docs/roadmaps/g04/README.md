@@ -40,7 +40,7 @@ and selection policy.
 
 ## Current Checkpoint
 
-- g04.017 awaiting review: boxed Cline `start_session` Err pair
+- g04.017 awaiting review (PR 14): boxed Cline `start_session` Err pair
 - Restack g04.016 / PR 13 after g04.017 lands
 - Hosted OAuth stays a remaining gate
 - `v0.3.3` remains `51d18620`

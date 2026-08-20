@@ -2,7 +2,7 @@
 
 ## Active
 
-None. Await review of g04.017. After merge, restack g04.016 / PR 13.
+None. Await review of g04.017 PR 14. After merge, restack g04.016 / PR 13.
 
 ## Planned
 

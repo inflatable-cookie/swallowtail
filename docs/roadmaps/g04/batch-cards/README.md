@@ -2,8 +2,7 @@
 
 ## Active
 
-- [048-cline-box-start-session-err.md](./048-cline-box-start-session-err.md)
-- [049-cline-clippy-result-large-err-proof.md](./049-cline-clippy-result-large-err-proof.md)
+None. Await review of g04.017. After merge, restack g04.016 / PR 13.
 
 ## Planned
 
@@ -16,6 +15,8 @@ remaining gate.
 
 ## Completed
 
+- [049-cline-clippy-result-large-err-proof.md](./049-cline-clippy-result-large-err-proof.md)
+- [048-cline-box-start-session-err.md](./048-cline-box-start-session-err.md)
 - [044-second-proof-tranche-confirmation.md](./044-second-proof-tranche-confirmation.md)
 - [043-second-proof-gap-classification.md](./043-second-proof-gap-classification.md)
 - [042-second-proof-surface-inventory.md](./042-second-proof-surface-inventory.md)

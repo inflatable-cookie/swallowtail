@@ -35,16 +35,13 @@ and selection policy.
 
 ## Planned Next Roadmaps
 
-- [g04.017 Cline Stable Clippy Result Large Err](017-cline-stable-clippy-result-large-err.md) — ready cards 048-049
-- [g04.016 Hosted API-Key DeepSeek Continuation](016-hosted-api-key-deepseek-continuation.md) — PR 13 paused on Stable clippy
+- [g04.017 Cline Stable Clippy Result Large Err](017-cline-stable-clippy-result-large-err.md) — awaiting review
+- [g04.016 Hosted API-Key DeepSeek Continuation](016-hosted-api-key-deepseek-continuation.md) — PR 13 paused until g04.017 lands
 
 ## Current Checkpoint
 
-- g04.016 / PR 13 is card-complete and paused: Stable clippy 1.98.0 fails
-  on unchanged Cline `start_session`
-- g04.017 worker dispatched: cards 048-049, handoff
-  `docs/handoffs/20260820-180328-g04-017-cline-stable-clippy.md`
-- Restack PR 13 after g04.017 lands
+- g04.017 awaiting review: boxed Cline `start_session` Err pair
+- Restack g04.016 / PR 13 after g04.017 lands
 - Hosted OAuth stays a remaining gate
 - `v0.3.3` remains `51d18620`
 
@@ -66,4 +63,4 @@ and selection policy.
 - [014 Connection Lifecycle Consumer Path](./014-connection-lifecycle-consumer-path.md) — completed
 - [015 Second-Proof Addable Inventory](./015-second-proof-addable-inventory.md) — completed
 - [016 Hosted API-Key DeepSeek Continuation](./016-hosted-api-key-deepseek-continuation.md) — planned
-- [017 Cline Stable Clippy Result Large Err](./017-cline-stable-clippy-result-large-err.md) — planned
+- [017 Cline Stable Clippy Result Large Err](./017-cline-stable-clippy-result-large-err.md) — executed, awaiting review

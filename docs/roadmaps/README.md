@@ -14,9 +14,8 @@ shape.
 
 ## Next Task
 
-Worker in flight: g04.017 cards 048-049. Handoff
-`docs/handoffs/20260820-180328-g04-017-cline-stable-clippy.md`.
-g04.016 / PR 13 is paused until this papercut lands.
+Await review of g04.017 (cards 048-049). After merge, restack
+g04.016 / PR 13. Do not start Claude Agent ACP or llama.cpp.
 
 ## Index
 

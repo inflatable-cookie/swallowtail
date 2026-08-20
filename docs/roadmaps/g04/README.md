@@ -34,15 +34,15 @@ and selection policy.
 
 ## Planned Next Roadmaps
 
-- [g04.012 Installed Codex App-Server](012-installed-codex-app-server.md) — ready cards 033-035
+- [g04.013 Local Ollama Attach](013-local-ollama-attach.md) — ready cards 036-038
 
 ## Current Checkpoint
 
-- g04.001 through g04.011 are complete. PR 9 is on `main` at `b5d6a076`
+- g04.001 through g04.012 are complete. PR 10 is on `main` at `33a35749`
 - Research 169: hosted OAuth stays a remaining gate
-- g04.012 worker dispatched: cards 033-035, handoff
-  `docs/handoffs/20260820-152526-g04-012-installed-codex-app-server.md`
-- Ollama and hosted OAuth stay behind that installed proof
+- g04.013 worker dispatched: cards 036-038, handoff
+  `docs/handoffs/20260820-161601-g04-013-local-ollama-attach.md`
+- Hosted OAuth stays behind that local-runtime proof
 - `v0.3.3` remains `51d18620`
 
 ## Milestones
@@ -58,4 +58,5 @@ and selection policy.
 - [009 Model Presentation Overlay](./009-model-presentation-overlay.md) — completed
 - [010 First-Proof Route Inventory](./010-first-proof-route-inventory.md) — completed
 - [011 Hosted API-Key Anthropic Messages](./011-hosted-api-key-anthropic-messages.md) — completed
-- [012 Installed Codex App-Server](./012-installed-codex-app-server.md) — planned
+- [012 Installed Codex App-Server](./012-installed-codex-app-server.md) — completed
+- [013 Local Ollama Attach](./013-local-ollama-attach.md) — planned

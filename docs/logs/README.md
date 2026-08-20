@@ -23,6 +23,8 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-20 g04.013 Ollama Attach Worker Dispatch](./2026-08-20-g04-013-ollama-attach-worker-dispatch.md)
+- [2026-08-20 g04.012 Codex App-Server Merged](./2026-08-20-g04-012-codex-app-server-merged.md)
 - [2026-08-20 g04.012 Codex App-Server Worker Dispatch](./2026-08-20-g04-012-codex-app-server-worker-dispatch.md)
 - [2026-08-20 g04.011 Anthropic Messages Merged](./2026-08-20-g04-011-anthropic-messages-merged.md)
 - [2026-08-20 g04.011 Anthropic Messages Worker Dispatch](./2026-08-20-g04-011-anthropic-messages-worker-dispatch.md)

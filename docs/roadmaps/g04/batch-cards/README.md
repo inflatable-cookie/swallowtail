@@ -2,16 +2,19 @@
 
 ## Active
 
-- [033-codex-app-server-addable-descriptor.md](./033-codex-app-server-addable-descriptor.md)
-- [034-codex-app-server-admission-and-prepare.md](./034-codex-app-server-admission-and-prepare.md)
-- [035-codex-app-server-refresh-update-and-subject.md](./035-codex-app-server-refresh-update-and-subject.md)
+- [036-ollama-attach-addable-descriptor.md](./036-ollama-attach-addable-descriptor.md)
+- [037-ollama-attach-admission-and-prepare.md](./037-ollama-attach-admission-and-prepare.md)
+- [038-ollama-attach-refresh-update-and-subject.md](./038-ollama-attach-refresh-update-and-subject.md)
 
 ## Planned
 
-None. Ollama and hosted OAuth stay behind g04.012.
+None. Hosted OAuth stays a remaining gate behind g04.013.
 
 ## Completed
 
+- [035-codex-app-server-refresh-update-and-subject.md](./035-codex-app-server-refresh-update-and-subject.md)
+- [034-codex-app-server-admission-and-prepare.md](./034-codex-app-server-admission-and-prepare.md)
+- [033-codex-app-server-addable-descriptor.md](./033-codex-app-server-addable-descriptor.md)
 - [032-anthropic-messages-refresh-subject-and-047.md](./032-anthropic-messages-refresh-subject-and-047.md)
 - [031-anthropic-messages-admission-and-api-key.md](./031-anthropic-messages-admission-and-api-key.md)
 - [030-anthropic-messages-addable-descriptor.md](./030-anthropic-messages-addable-descriptor.md)

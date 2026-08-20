@@ -1,6 +1,6 @@
 # 034 Codex App-Server Admission And Prepare
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../012-installed-codex-app-server.md`

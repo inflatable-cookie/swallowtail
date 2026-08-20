@@ -14,8 +14,8 @@ shape.
 
 ## Next Task
 
-Worker in flight: g04.012 cards 033-035. Handoff
-`docs/handoffs/20260820-152526-g04-012-installed-codex-app-server.md`.
+Worker in flight: g04.013 cards 036-038. Handoff
+`docs/handoffs/20260820-161601-g04-013-local-ollama-attach.md`.
 
 ## Index
 

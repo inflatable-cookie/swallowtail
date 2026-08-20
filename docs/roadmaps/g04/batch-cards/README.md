@@ -2,13 +2,23 @@
 
 ## Active
 
-None. Hosted OAuth is parked until a named production route requires
-URL-open plus loopback.
+- [056-prepare-input-versus-stored-refs.md](./056-prepare-input-versus-stored-refs.md)
+- [057-portable-config-ref-handoff.md](./057-portable-config-ref-handoff.md)
+- [058-six-addable-prepare-handoff.md](./058-six-addable-prepare-handoff.md)
 
 ## Planned
 
-None. Hosted OAuth is parked until a named production route requires
-URL-open plus loopback.
+- [059-unmarked-overlay-classification.md](./059-unmarked-overlay-classification.md)
+- [060-unmarked-overlay-rule.md](./060-unmarked-overlay-rule.md)
+- [061-unmarked-addable-overlay-proof.md](./061-unmarked-addable-overlay-proof.md)
+- [062-remaining-addable-surface-inventory.md](./062-remaining-addable-surface-inventory.md)
+- [063-remaining-addable-gap-classification.md](./063-remaining-addable-gap-classification.md)
+- [064-further-addable-tranche-confirmation.md](./064-further-addable-tranche-confirmation.md)
+- [065-047-presentation-field-inventory.md](./065-047-presentation-field-inventory.md)
+- [066-047-presentation-contract-amendment.md](./066-047-presentation-contract-amendment.md)
+- [067-047-presentation-fields.md](./067-047-presentation-fields.md)
+
+Hosted OAuth stays parked.
 
 ## Completed
 

@@ -43,7 +43,8 @@ goal and does not keep g04 or any later generation open. See
 
 ## Rollover Rule
 
-g04 should normally run for 30-50 roadmaps. It is at 19. A completed
+g04 should normally run for 30-50 roadmaps. It is at 19 numbered
+completed roadmaps, with 020-023 compiled behind them. A completed
 readiness tranche, parked OAuth, or standing currentness does not create a
 new generation. Rollover requires a substantial run, clean disposition of
 unfinished work, and an explicit sequencing reset.

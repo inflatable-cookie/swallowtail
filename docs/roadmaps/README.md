@@ -14,9 +14,9 @@ shape.
 
 ## Next Task
 
-Define the next g04 lane. The readiness facade is realized, hosted OAuth is
-parked, and currentness is standing. Do not roll the generation before
-30-50 roadmaps.
+Implement g04.020 stored config-ref prepare handoff. Cards 056-058 are
+ready. Do not start 021-023 until 020 closes. Do not roll the generation
+before 30-50 roadmaps.
 
 ## Standing Lanes
 

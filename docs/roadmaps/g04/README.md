@@ -31,21 +31,24 @@ and selection policy.
 | Realize the model-presentation overlay without flattening catalogues. | completed | Contracts 057, 020 | `g04.009` |
 | Prove representative hosted, installed, and local-runtime shapes and publish a consumer path. | completed | Contracts 011, 037, 052, 057 | `g04.010` |
 | Expand addable-route coverage on the proved hosted, installed, and local-runtime shapes. | completed | Contracts 011, 037, 052, 057 | `g04.015` |
+| Close remaining 057/047 seams and expand addable coverage on proved shapes. | planned | Contracts 020, 037, 047, 057 | `g04.020` |
 
 ## Planned Next Roadmaps
 
-The next g04 lane is not yet defined. Do not roll over: 19 numbered
-roadmaps, target 30-50. Hosted OAuth stays parked in
-[backlog/hosted-interactive-oauth.md](../backlog/hosted-interactive-oauth.md).
+- [g04.020 Config-Ref Prepare Handoff](020-config-ref-prepare-handoff.md) — ready cards 056-058
+- [g04.021 Unmarked Overlay Rows](021-unmarked-overlay-rows.md) — planned pending 020
+- [g04.022 Further Addable Inventory](022-further-addable-inventory.md) — planned pending 021
+- [g04.023 047 Presentation Metadata](023-047-presentation-metadata.md) — planned pending 022
+
+Do not roll over: 19 numbered roadmaps now, 23 when this queue is filed,
+target 30-50. Hosted OAuth stays parked.
 
 ## Current Checkpoint
 
 - g04.001 through g04.019 are complete. PR 16 is on `main` at `576184e9`
-- Title programme is complete. Second-proof addable-route expansion is complete
-- Hosted OAuth is parked, not the next card
-- Contract 029 currentness is a standing lane, not a g04 goal
-- Generation stays active. Rollover waits for 30-50 roadmaps or an
-  explicit sequencing reset
+- Next lane: g04.020 config-ref prepare handoff, cards 056-058
+- Hosted OAuth is parked. Contract 029 currentness is standing
+- Generation stays active. Rollover waits for 30-50 roadmaps
 - `v0.3.3` remains `51d18620`
 
 ## Milestones
@@ -69,3 +72,7 @@ roadmaps, target 30-50. Hosted OAuth stays parked in
 - [017 Cline Stable Clippy Result Large Err](./017-cline-stable-clippy-result-large-err.md) — completed
 - [018 Installed Claude Agent ACP](./018-installed-claude-agent-acp.md) — completed
 - [019 Local llama.cpp Attached](./019-local-llama-cpp-attached.md) — completed
+- [020 Config-Ref Prepare Handoff](./020-config-ref-prepare-handoff.md) — planned
+- [021 Unmarked Overlay Rows](./021-unmarked-overlay-rows.md) — planned
+- [022 Further Addable Inventory](./022-further-addable-inventory.md) — planned
+- [023 047 Presentation Metadata](./023-047-presentation-metadata.md) — planned

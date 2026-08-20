@@ -25,7 +25,7 @@ is unchanged. No production adapter crate changed.
 Worker worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-d4a5fc8c`
 Worker branch: `t3code/read-model-presentation-overlay-handoff`
 
-PR: pending
+PR: https://github.com/inflatable-cookie/swallowtail/pull/8
 
 ## Next
 

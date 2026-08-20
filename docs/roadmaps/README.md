@@ -14,9 +14,8 @@ shape.
 
 ## Next Task
 
-Awaiting review: g04.009 cards 025-026 on
-`t3code/read-model-presentation-overlay-handoff`. First-proof stays behind
-merge.
+Awaiting review: g04.009 PR https://github.com/inflatable-cookie/swallowtail/pull/8.
+First-proof stays behind merge.
 
 ## Index
 

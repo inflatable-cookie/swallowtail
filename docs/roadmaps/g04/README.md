@@ -38,7 +38,8 @@ and selection policy.
 
 ## Current Checkpoint
 
-- g04.001 through g04.009 are complete on this branch; awaiting review
+- g04.001 through g04.009 are complete on this branch; awaiting review of
+  [PR 8](https://github.com/inflatable-cookie/swallowtail/pull/8)
 - first-proof stays behind merge
 - `v0.3.3` remains `51d18620`
 

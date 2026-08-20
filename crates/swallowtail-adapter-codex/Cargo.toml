@@ -40,5 +40,9 @@ name = "app_server"
 path = "tests/app_server_suite.rs"
 
 [[test]]
+name = "connection_lifecycle"
+path = "tests/connection_lifecycle_suite.rs"
+
+[[test]]
 name = "prepared_profiles"
 path = "tests/exec_suite.rs"

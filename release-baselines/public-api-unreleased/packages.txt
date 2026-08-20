@@ -1,4 +1,5 @@
 swallowtail-adapter-anthropic
+swallowtail-adapter-codex
 swallowtail-core
 swallowtail-host-local
 swallowtail-runtime

@@ -18,19 +18,20 @@ use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessRequirement, AccessStatus,
     AuthenticatedSubjectObservation, Capability, CapabilityRequirement, ConfigFieldId,
     ConfigFieldRef, ConfiguredInstanceId, CredentialState, DriverRole, EndpointAuthorization,
-    EntitlementState, ExecutionHostId, ExecutionLayer, HarnessConfigurationPosture, HostServiceKind,
-    InstalledExecutableCompatibility, InstanceEnablement, InstanceRevision, IntegrationFamilyId,
-    InterfaceVersionAxis, ModelCatalogEntry, ModelId, ModelMetadata, OperationRequirements,
-    OperationShape, OverlayMarker, PreflightContext, ProviderId, RuntimeReadiness,
-    SessionAccessPolicy, SessionProviderStatePolicy, SubjectDisclosure, SupportAuthority, preflight,
+    EntitlementState, ExecutionHostId, ExecutionLayer, HarnessConfigurationPosture,
+    HostServiceKind, InstalledExecutableCompatibility, InstanceEnablement, InstanceRevision,
+    IntegrationFamilyId, InterfaceVersionAxis, ModelCatalogEntry, ModelId, ModelMetadata,
+    OperationRequirements, OperationShape, OverlayMarker, PreflightContext, ProviderId,
+    RuntimeReadiness, SessionAccessPolicy, SessionProviderStatePolicy, SubjectDisclosure,
+    SupportAuthority, preflight,
 };
 use swallowtail_host_local::MemoryConnectionLifecycleStore;
 use swallowtail_runtime::{
     AddableRouteCatalog, BoxFuture, ConfiguredProviderInstanceAdmission,
     ConfiguredProviderInstanceRecord, ConfiguredProviderInstanceSelectionReadiness,
     ConfiguredProviderModelCatalogueInput, ConnectionLifecycleStore, Deadline, DeadlineObservation,
-    DiscoveryCancellation, EnvironmentRef, ExecutableRef, HostServices, InstanceAdmissionRequest,
-    InstalledExecutableTarget, ModelPresentationOverlayFailureKind, MonotonicInstant,
+    DiscoveryCancellation, EnvironmentRef, ExecutableRef, HostServices, InstalledExecutableTarget,
+    InstanceAdmissionRequest, ModelPresentationOverlayFailureKind, MonotonicInstant,
     PreparedAccessEvidence, PreparedOperationEvidence, ReadinessRefreshRequest, RequestId, ScopeId,
     TimeService, admit_instance, apply_stored_model_presentation_overlay,
     observe_authenticated_subject, observe_instance_update, refresh_readiness,
@@ -89,8 +90,7 @@ fn admitted_record(
     admit_instance(
         &catalog,
         store,
-        InstanceAdmissionRequest::new(instance_id(), family(), route_id)
-        .with_config_refs([
+        InstanceAdmissionRequest::new(instance_id(), family(), route_id).with_config_refs([
             (
                 ConfigFieldId::new(CODEX_APP_SERVER_BINARY_PATH_FIELD_ID)
                     .expect("config id is valid"),
@@ -143,7 +143,10 @@ fn admission_writes_a_record_without_secret_bytes() {
     assert_eq!(record.id(), &instance_id());
     assert_eq!(record.family().as_str(), "codex");
     assert_eq!(record.route_id().as_str(), "codex.app-server");
-    assert_eq!(record.topology(), swallowtail_core::RouteTopology::Installed);
+    assert_eq!(
+        record.topology(),
+        swallowtail_core::RouteTopology::Installed
+    );
     assert_eq!(record.credential_refs().len(), 0);
     assert_eq!(record.config_refs().len(), 2);
     let stored = store
@@ -238,7 +241,13 @@ fn prepared_route_evidence(
     .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited)
     .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient);
     let plan = preflight(
-        &PreflightContext::new(driver, instance, profile, status, services.available_kinds()),
+        &PreflightContext::new(
+            driver,
+            instance,
+            profile,
+            status,
+            services.available_kinds(),
+        ),
         &requirements,
     )
     .expect("preflight succeeds for the prepared route");
@@ -266,7 +275,8 @@ fn snapshot_record(
     ))
     .expect("admitted instance prepares");
     let driver = codex_app_server_descriptor();
-    let route = prepared_route_evidence(services, &driver, prepared.instance(), &profile, &evidence);
+    let route =
+        prepared_route_evidence(services, &driver, prepared.instance(), &profile, &evidence);
     ConfiguredProviderInstanceRecord::admit(
         ConfiguredProviderInstanceAdmission::new(
             driver,

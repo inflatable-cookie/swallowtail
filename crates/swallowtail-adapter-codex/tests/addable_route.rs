@@ -65,14 +65,12 @@ fn config_fields_are_opaque_references_not_paths_or_env_bodies() {
     let descriptor = codex_app_server_addable_route_descriptor(&services_with_process());
     let binary_path = descriptor
         .config_field(
-            &ConfigFieldId::new(CODEX_APP_SERVER_BINARY_PATH_FIELD_ID)
-                .expect("config id is valid"),
+            &ConfigFieldId::new(CODEX_APP_SERVER_BINARY_PATH_FIELD_ID).expect("config id is valid"),
         )
         .expect("binary path field is advertised");
     let environment = descriptor
         .config_field(
-            &ConfigFieldId::new(CODEX_APP_SERVER_ENVIRONMENT_FIELD_ID)
-                .expect("config id is valid"),
+            &ConfigFieldId::new(CODEX_APP_SERVER_ENVIRONMENT_FIELD_ID).expect("config id is valid"),
         )
         .expect("environment field is advertised");
 

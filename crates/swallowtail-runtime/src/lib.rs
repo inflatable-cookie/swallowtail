@@ -102,12 +102,15 @@ pub use cancellation::{CancellationAcknowledgement, CancellationControl, Immedia
 pub use connection_lifecycle::{
     AddableRouteCatalog, AddableRouteCatalogFailure, AddableRouteCatalogFailureKind,
     ConnectionLifecycleStore, ConnectionLifecycleStoreFailure, InstanceAdmissionFailure,
-    InstanceAdmissionFailureKind, InstanceAdmissionRequest, ReadinessRefreshFailure,
-    ReadinessRefreshFailureKind, ReadinessRefreshRequest, SignInAuthorityBinding, SignInFailure,
-    SignInFailureKind, SignInKind, SignInMethod, SignInOutcome, SignInSession, SignInStartRequest,
-    SignInStatus, SubjectObservationFailure, SubjectObservationFailureKind, admit_instance,
-    cancel_sign_in, complete_sign_in, observe_authenticated_subject, observe_instance_update,
-    poll_sign_in, refresh_readiness, start_sign_in, submit_sign_in_credential_field,
+    InstanceAdmissionFailureKind, InstanceAdmissionRequest, ModelPresentationOverlay,
+    ModelPresentationOverlayEntry, ModelPresentationOverlayFailure,
+    ModelPresentationOverlayFailureKind, ReadinessRefreshFailure, ReadinessRefreshFailureKind,
+    ReadinessRefreshRequest, SignInAuthorityBinding, SignInFailure, SignInFailureKind, SignInKind,
+    SignInMethod, SignInOutcome, SignInSession, SignInStartRequest, SignInStatus,
+    SubjectObservationFailure, SubjectObservationFailureKind, admit_instance,
+    apply_model_presentation_overlay, cancel_sign_in, complete_sign_in,
+    observe_authenticated_subject, observe_instance_update, poll_sign_in, refresh_readiness,
+    start_sign_in, submit_sign_in_credential_field,
 };
 pub use content::OperationContent;
 pub use debug_observation::{

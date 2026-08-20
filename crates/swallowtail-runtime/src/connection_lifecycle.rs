@@ -1,16 +1,17 @@
 //! Connection-lifecycle catalog, admission, store port, sign-in loop,
-//! readiness refresh, subject observation, and update observation for
-//! Contract 057.
+//! readiness refresh, subject observation, update observation, and model-
+//! presentation overlay for Contract 057.
 //!
 //! Runtime owns catalog assembly, instance admission, the persistence trait,
 //! library-owned sign-in, refresh of access dimensions, optional subject
-//! observation, and derived update observation. Optional in-memory, JSON-file,
-//! and sign-in test-double adapters live in `swallowtail-host-local`. This
-//! surface never requires raw secrets and does not project 047 readiness.
-
+//! observation, derived update observation, and overlay projection. Optional
+//! in-memory, JSON-file, and sign-in test-double adapters live in
+//! `swallowtail-host-local`. This surface never requires raw secrets and does
+//! not change 047 readiness.
 mod admission;
 mod catalog;
 mod failure;
+mod overlay;
 mod refresh;
 mod sign_in;
 mod subject;
@@ -28,6 +29,10 @@ pub use failure::{
     AddableRouteCatalogFailure, AddableRouteCatalogFailureKind, InstanceAdmissionFailure,
     InstanceAdmissionFailureKind, ReadinessRefreshFailure, ReadinessRefreshFailureKind,
     SubjectObservationFailure, SubjectObservationFailureKind,
+};
+pub use overlay::{
+    ModelPresentationOverlay, ModelPresentationOverlayEntry, ModelPresentationOverlayFailure,
+    ModelPresentationOverlayFailureKind, apply_model_presentation_overlay,
 };
 pub use refresh::{ReadinessRefreshRequest, refresh_readiness};
 pub use sign_in::{
@@ -107,6 +112,9 @@ mod admission_tests;
 #[cfg(test)]
 #[path = "connection_lifecycle/catalog_tests.rs"]
 mod catalog_tests;
+#[cfg(test)]
+#[path = "connection_lifecycle/overlay_tests.rs"]
+mod overlay_tests;
 #[cfg(test)]
 #[path = "connection_lifecycle/refresh_tests.rs"]
 mod refresh_tests;

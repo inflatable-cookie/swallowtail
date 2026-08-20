@@ -2,9 +2,7 @@
 
 ## Active
 
-- [053-llama-cpp-attached-addable-descriptor.md](./053-llama-cpp-attached-addable-descriptor.md)
-- [054-llama-cpp-attached-admission-and-prepare.md](./054-llama-cpp-attached-admission-and-prepare.md)
-- [055-llama-cpp-attached-refresh-update-and-subject.md](./055-llama-cpp-attached-refresh-update-and-subject.md)
+None. Hosted OAuth stays a remaining gate.
 
 ## Planned
 
@@ -12,6 +10,9 @@ None. Hosted OAuth stays a remaining gate.
 
 ## Completed
 
+- [055-llama-cpp-attached-refresh-update-and-subject.md](./055-llama-cpp-attached-refresh-update-and-subject.md)
+- [054-llama-cpp-attached-admission-and-prepare.md](./054-llama-cpp-attached-admission-and-prepare.md)
+- [053-llama-cpp-attached-addable-descriptor.md](./053-llama-cpp-attached-addable-descriptor.md)
 - [052-claude-agent-acp-refresh-update-and-subject.md](./052-claude-agent-acp-refresh-update-and-subject.md)
 - [051-claude-agent-acp-admission-and-prepare.md](./051-claude-agent-acp-admission-and-prepare.md)
 - [050-claude-agent-acp-addable-descriptor.md](./050-claude-agent-acp-addable-descriptor.md)

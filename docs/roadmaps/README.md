@@ -14,8 +14,8 @@ shape.
 
 ## Next Task
 
-Await review of [PR 16](https://github.com/inflatable-cookie/swallowtail/pull/16).
-Hosted OAuth stays a remaining gate.
+Second-proof addable-route expansion is complete. Hosted OAuth stays a
+remaining gate.
 
 ## Index
 

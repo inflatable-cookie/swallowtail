@@ -194,7 +194,7 @@ Forbidden inferences:
 - overlay is not a catalogue and does not change selection readiness
 - subject is not an instance id or routing key
 - a discovered candidate is not an addable row
-- remaining production routes are not addable because five proofs exist
+- remaining production routes are not addable because six proofs exist
 
 ## Failures
 

@@ -80,7 +80,7 @@ Expand addable-route coverage on the proved local-runtime shape, then reuse
 
 - previous: g04.018 installed Claude Agent ACP
 - this milestone: local llama.cpp attached
-- later: hosted OAuth gate
+- later: hosted OAuth gate; do not compile it from this closeout
 
 ## Decision Gates
 

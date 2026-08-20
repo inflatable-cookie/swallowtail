@@ -23,6 +23,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-20 g04.019 llama.cpp Attached Merged](./2026-08-20-g04-019-llama-cpp-attached-merged.md)
 - [2026-08-20 g04.019 Local llama.cpp Attached](./2026-08-20-g04-019-local-llama-cpp-attached.md)
 - [2026-08-20 g04.019 llama.cpp Attached Worker Dispatch](./2026-08-20-g04-019-llama-cpp-attached-worker-dispatch.md)
 - [2026-08-20 g04.018 Claude Agent ACP Merged](./2026-08-20-g04-018-claude-agent-acp-merged.md)

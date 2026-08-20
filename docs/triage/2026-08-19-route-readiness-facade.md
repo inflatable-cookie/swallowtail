@@ -82,7 +82,8 @@ installed or delegated logins; hosted routes are API keys. Do not reclassify
 those as the 057 hosted-OAuth first-proof. Second-proof inventory (Research
 170) names DeepSeek continuation, Claude Agent ACP subscription-only, and
 llama.cpp attached. g04.016 is merged (PR 13, `fa33de15`). g04.018 is merged (PR 15,
-`349c6eba`). g04.019 cards 053-055 are ready for llama.cpp attached.
+`349c6eba`). g04.019 is merged (PR 16, `576184e9`). The second-proof
+addable-route expansion is complete. Hosted OAuth stays a remaining gate.
 Optional 047
 overlay presentation metadata stays later and must not change `Ready` /
 `NotReady`.

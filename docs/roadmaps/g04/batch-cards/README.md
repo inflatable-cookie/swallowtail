@@ -2,14 +2,20 @@
 
 ## Active
 
-None.
+- [045-deepseek-continuation-addable-descriptor.md](./045-deepseek-continuation-addable-descriptor.md)
+- [046-deepseek-continuation-admission-and-api-key.md](./046-deepseek-continuation-admission-and-api-key.md)
+- [047-deepseek-continuation-refresh-subject-and-047.md](./047-deepseek-continuation-refresh-subject-and-047.md)
 
 ## Planned
 
-None. Hosted OAuth stays a remaining gate.
+None. Claude Agent ACP and llama.cpp attached stay behind g04.016.
+Hosted OAuth stays a remaining gate.
 
 ## Completed
 
+- [044-second-proof-tranche-confirmation.md](./044-second-proof-tranche-confirmation.md)
+- [043-second-proof-gap-classification.md](./043-second-proof-gap-classification.md)
+- [042-second-proof-surface-inventory.md](./042-second-proof-surface-inventory.md)
 - [041-connection-lifecycle-examples-and-guide-map.md](./041-connection-lifecycle-examples-and-guide-map.md)
 - [040-first-proof-route-guide-amendments.md](./040-first-proof-route-guide-amendments.md)
 - [039-connection-lifecycle-feature-guide.md](./039-connection-lifecycle-feature-guide.md)

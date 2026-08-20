@@ -30,22 +30,20 @@ and selection policy.
 | Realize readiness refresh, authenticated-subject observation, and Contract 029 updates. | completed | Contracts 057, 006, 029, 032, 047 | `g04.008` |
 | Realize the model-presentation overlay without flattening catalogues. | completed | Contracts 057, 020 | `g04.009` |
 | Prove representative hosted, installed, and local-runtime shapes and publish a consumer path. | completed | Contracts 011, 037, 052, 057 | `g04.010` |
+| Expand addable-route coverage on the proved hosted, installed, and local-runtime shapes. | planned | Contracts 011, 037, 052, 057 | `g04.015` |
 | Continue Contract 029 currentness as a maintenance lane, not the title programme. | recurring | Contract 029 | evidence-gated |
 
 ## Planned Next Roadmaps
 
-None. Hosted interactive OAuth stays a remaining gate. Contract 029
-currentness remains a recurring maintenance lane.
+- [g04.016 Hosted API-Key DeepSeek Continuation](016-hosted-api-key-deepseek-continuation.md) — ready cards 045-047
 
 ## Current Checkpoint
 
-- g04.001 through g04.014 are complete. PR 12 is on `main` at `7810453f`
-- The g04.010 first-proof-plus-consumer-path goal is complete
-- 2026-08-20 reassessment: hosted URL-open OAuth still has no production
-  candidate. Claude, Codex, Grok, Kimi, Cursor, and Antigravity are
-  installed or delegated logins. Hosted routes are API keys.
-- Do not compile hosted OAuth without a named route and a no-secret-extraction
-  proof
+- g04.001 through g04.015 are complete. Research 170 names DeepSeek,
+  Claude Agent ACP, and llama.cpp attached
+- g04.016 worker dispatched: cards 045-047, handoff
+  `docs/handoffs/20260820-171558-g04-016-hosted-api-key-deepseek.md`
+- Hosted OAuth stays a remaining gate
 - `v0.3.3` remains `51d18620`
 
 ## Milestones
@@ -64,3 +62,5 @@ currentness remains a recurring maintenance lane.
 - [012 Installed Codex App-Server](./012-installed-codex-app-server.md) — completed
 - [013 Local Ollama Attach](./013-local-ollama-attach.md) — completed
 - [014 Connection Lifecycle Consumer Path](./014-connection-lifecycle-consumer-path.md) — completed
+- [015 Second-Proof Addable Inventory](./015-second-proof-addable-inventory.md) — completed
+- [016 Hosted API-Key DeepSeek Continuation](./016-hosted-api-key-deepseek-continuation.md) — planned

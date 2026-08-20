@@ -14,8 +14,8 @@ shape.
 
 ## Next Task
 
-Define the next g04 lane. Hosted interactive OAuth stays a remaining gate.
-Do not compile it without a named route and a no-secret-extraction proof.
+Worker in flight: g04.016 cards 045-047. Handoff
+`docs/handoffs/20260820-171558-g04-016-hosted-api-key-deepseek.md`.
 
 ## Index
 

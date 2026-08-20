@@ -79,5 +79,8 @@ are no longer open product questions. `v0.3.3` is tagged at `51d18620`. Spec
 stays a remaining gate. 2026-08-20 reassessment: no production adapter does
 hosted URL-open plus loopback. Claude/Codex/Grok/Kimi/Cursor/Antigravity are
 installed or delegated logins; hosted routes are API keys. Do not reclassify
-those as the 057 hosted-OAuth first-proof. Optional 047 overlay presentation
-metadata stays later and must not change `Ready` / `NotReady`.
+those as the 057 hosted-OAuth first-proof. Second-proof inventory (Research
+170) names DeepSeek continuation, Claude Agent ACP subscription-only, and
+llama.cpp attached. g04.016 DeepSeek cards 045-047 are ready. Optional 047
+overlay presentation metadata stays later and must not change `Ready` /
+`NotReady`.

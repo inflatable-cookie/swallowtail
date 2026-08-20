@@ -35,12 +35,13 @@ and selection policy.
 
 ## Planned Next Roadmaps
 
-- [g04.016 Hosted API-Key DeepSeek Continuation](016-hosted-api-key-deepseek-continuation.md) — restacked; awaiting re-review
+- [g04.018 Installed Claude Agent ACP](018-installed-claude-agent-acp.md) — ready cards 050-052
 
 ## Current Checkpoint
 
-- g04.017 is complete. PR 14 is on `main` at `47b94efc`
-- g04.016 cards 045-047 restacked onto `ada7529b`. PR 13 awaiting re-review
+- g04.001 through g04.017 are complete. PR 13 is on `main` at `fa33de15`
+- g04.018 worker dispatched: cards 050-052, handoff
+  `docs/handoffs/20260820-192054-g04-018-installed-claude-agent-acp.md`
 - Hosted OAuth stays a remaining gate
 - `v0.3.3` remains `51d18620`
 
@@ -61,5 +62,6 @@ and selection policy.
 - [013 Local Ollama Attach](./013-local-ollama-attach.md) — completed
 - [014 Connection Lifecycle Consumer Path](./014-connection-lifecycle-consumer-path.md) — completed
 - [015 Second-Proof Addable Inventory](./015-second-proof-addable-inventory.md) — completed
-- [016 Hosted API-Key DeepSeek Continuation](./016-hosted-api-key-deepseek-continuation.md) — completed; awaiting re-review
+- [016 Hosted API-Key DeepSeek Continuation](./016-hosted-api-key-deepseek-continuation.md) — completed
 - [017 Cline Stable Clippy Result Large Err](./017-cline-stable-clippy-result-large-err.md) — completed
+- [018 Installed Claude Agent ACP](./018-installed-claude-agent-acp.md) — planned

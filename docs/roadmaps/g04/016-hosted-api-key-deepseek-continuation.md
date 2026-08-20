@@ -79,7 +79,8 @@ reuse `prepare_deepseek_direct`.
 
 - previous: g04.015 second-proof inventory
 - this milestone: hosted API-key DeepSeek continuation
-- later: Claude Agent ACP, llama.cpp attached, hosted OAuth gate
+- next: g04.018 installed Claude Agent ACP
+- later: llama.cpp attached, hosted OAuth gate
 
 ## Decision Gates
 

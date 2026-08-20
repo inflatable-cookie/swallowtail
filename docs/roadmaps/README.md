@@ -14,9 +14,8 @@ shape.
 
 ## Next Task
 
-Validate restacked g04.016 PR 13
-https://github.com/inflatable-cookie/swallowtail/pull/13. Hosted OAuth
-stays gated. Do not start Claude Agent ACP addable or llama.cpp.
+Worker in flight: g04.018 cards 050-052. Handoff
+`docs/handoffs/20260820-192054-g04-018-installed-claude-agent-acp.md`.
 
 ## Index
 

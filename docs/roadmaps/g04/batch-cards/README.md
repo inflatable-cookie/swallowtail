@@ -2,16 +2,20 @@
 
 ## Active
 
-- [047-deepseek-continuation-refresh-subject-and-047.md](./047-deepseek-continuation-refresh-subject-and-047.md)
-- [046-deepseek-continuation-admission-and-api-key.md](./046-deepseek-continuation-admission-and-api-key.md)
-- [045-deepseek-continuation-addable-descriptor.md](./045-deepseek-continuation-addable-descriptor.md)
+- [050-claude-agent-acp-addable-descriptor.md](./050-claude-agent-acp-addable-descriptor.md)
+- [051-claude-agent-acp-admission-and-prepare.md](./051-claude-agent-acp-admission-and-prepare.md)
+- [052-claude-agent-acp-refresh-update-and-subject.md](./052-claude-agent-acp-refresh-update-and-subject.md)
 
 ## Planned
 
-None. Restack PR 13 onto `47b94efc`. Hosted OAuth stays a remaining gate.
+None. llama.cpp attached stays behind g04.018. Hosted OAuth stays a
+remaining gate.
 
 ## Completed
 
+- [047-deepseek-continuation-refresh-subject-and-047.md](./047-deepseek-continuation-refresh-subject-and-047.md)
+- [046-deepseek-continuation-admission-and-api-key.md](./046-deepseek-continuation-admission-and-api-key.md)
+- [045-deepseek-continuation-addable-descriptor.md](./045-deepseek-continuation-addable-descriptor.md)
 - [049-cline-clippy-result-large-err-proof.md](./049-cline-clippy-result-large-err-proof.md)
 - [048-cline-box-start-session-err.md](./048-cline-box-start-session-err.md)
 - [044-second-proof-tranche-confirmation.md](./044-second-proof-tranche-confirmation.md)

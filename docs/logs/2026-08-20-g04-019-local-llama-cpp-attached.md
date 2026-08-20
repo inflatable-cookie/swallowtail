@@ -32,12 +32,16 @@ Worker branch: `t3code/llama-cpp-attached-route`
 
 Validation:
 
-- card 053: `effigy validate:focused swallowtail-adapter-llama-cpp swallowtail-runtime`, `git diff --check`
-- card 054: `effigy validate:focused swallowtail-adapter-llama-cpp swallowtail-runtime swallowtail-host-local`, `git diff --check`
-- card 055: `effigy validate:focused swallowtail-adapter-llama-cpp swallowtail-runtime swallowtail-testkit`, `git diff --check`
+- cards 053-055 combined:
+  `effigy validate:focused swallowtail-adapter-llama-cpp swallowtail-runtime swallowtail-host-local swallowtail-testkit`
+  (411 tests)
+- `git diff --check`
 - `effigy package:api`
+- `effigy qa:docs:index:logs`, `effigy qa:docs:next-action:roadmaps`,
+  `effigy qa:docs:index:roadmaps:g04`,
+  `effigy qa:docs:index:roadmaps:batch-cards`
 
-PR: pending
+PR: https://github.com/inflatable-cookie/swallowtail/pull/16
 
 ## Next
 

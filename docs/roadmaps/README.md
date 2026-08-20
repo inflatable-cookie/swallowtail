@@ -14,8 +14,8 @@ shape.
 
 ## Next Task
 
-Await review of g04.019 llama.cpp attached. Hosted OAuth stays a remaining
-gate.
+Await review of [PR 16](https://github.com/inflatable-cookie/swallowtail/pull/16).
+Hosted OAuth stays a remaining gate.
 
 ## Index
 

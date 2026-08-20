@@ -40,7 +40,8 @@ and selection policy.
 ## Current Checkpoint
 
 - g04.001 through g04.019 are complete on this worker branch
-- g04.019 llama.cpp attached addable route awaits review
+- g04.019 llama.cpp attached awaits review as
+  [PR 16](https://github.com/inflatable-cookie/swallowtail/pull/16)
 - Hosted OAuth stays a remaining gate
 - `v0.3.3` remains `51d18620`
 

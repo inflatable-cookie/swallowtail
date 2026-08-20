@@ -14,8 +14,8 @@ shape.
 
 ## Next Task
 
-Worker in flight: g04.011 cards 030-032. Handoff
-`docs/handoffs/20260820-142930-g04-011-hosted-api-key-anthropic-messages.md`.
+Worker in flight: g04.012 cards 033-035. Handoff
+`docs/handoffs/20260820-152526-g04-012-installed-codex-app-server.md`.
 
 ## Index
 

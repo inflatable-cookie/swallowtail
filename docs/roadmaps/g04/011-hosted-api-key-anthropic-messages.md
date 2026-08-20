@@ -1,12 +1,12 @@
 # 011 Hosted API-Key Anthropic Messages
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Depends on: completed g04.010
 Vision tags: consumer integration, route readiness, explicit selection
 Contract refs: 011, 014, 020, 037, 047, 057
-Planning state: cards 030-032 ready
+Planning state: cards 030-032 completed
 Research: 169
 
 ## Problem
@@ -23,13 +23,13 @@ existing Anthropic prepared path.
 
 ## Goals
 
-- [ ] expose an adapter-local hosted addable descriptor for
+- [x] expose an adapter-local hosted addable descriptor for
       `anthropic.messages`
-- [ ] collect a secret API-key field as `CredentialRef` and an opaque
+- [x] collect a secret API-key field as `CredentialRef` and an opaque
       endpoint config ref
-- [ ] admit the instance through the 057 store, then reuse
+- [x] admit the instance through the 057 store, then reuse
       `prepare_anthropic_direct`
-- [ ] refresh access status and observe subject as Absent without changing
+- [x] refresh access status and observe subject as Absent without changing
       047 `Ready` / `NotReady`
 
 ## Non-Goals
@@ -46,32 +46,32 @@ existing Anthropic prepared path.
 
 ### Batch 11.1 — Addable Descriptor
 
-- [ ] Execute card 030.
-- [ ] ship `AddableRouteDescriptor` from `swallowtail-adapter-anthropic`
-- [ ] topology hosted; credential field secret API key; config field
+- [x] Execute card 030.
+- [x] ship `AddableRouteDescriptor` from `swallowtail-adapter-anthropic`
+- [x] topology hosted; credential field secret API key; config field
       endpoint
 
 ### Batch 11.2 — Admission And API-Key Collection
 
-- [ ] Execute card 031 after card 030.
-- [ ] admit through the 057 store with `CredentialRef` collection
-- [ ] no URL-open, loopback, or device-code ports
+- [x] Execute card 031 after card 030.
+- [x] admit through the 057 store with `CredentialRef` collection
+- [x] no URL-open, loopback, or device-code ports
 
 ### Batch 11.3 — Refresh, Subject, And 047 Path
 
-- [ ] Execute card 032 after card 031.
-- [ ] refresh host-supplied `AccessStatus`; subject stays Absent
-- [ ] 047 snapshot plus overlay keys; `Ready` / `NotReady` unchanged
+- [x] Execute card 032 after card 031.
+- [x] refresh host-supplied `AccessStatus`; subject stays Absent
+- [x] 047 snapshot plus overlay keys; `Ready` / `NotReady` unchanged
 
 ## Acceptance Criteria
 
-- [ ] a consumer can assemble a catalog that includes Anthropic Messages by
+- [x] a consumer can assemble a catalog that includes Anthropic Messages by
       linking the adapter
-- [ ] API-key collection writes `CredentialRef`, never secret bytes
-- [ ] `prepare_anthropic_direct` still runs after admission
-- [ ] overlay can key Anthropic catalogue rows
-- [ ] no live provider probe
-- [ ] `public-api-0.3.3` stays immutable
+- [x] API-key collection writes `CredentialRef`, never secret bytes
+- [x] `prepare_anthropic_direct` still runs after admission
+- [x] overlay can key Anthropic catalogue rows
+- [x] no live provider probe
+- [x] `public-api-0.3.3` stays immutable
 
 ## Lane Runway
 

@@ -1,6 +1,6 @@
 # 031 Anthropic Messages Admission And API-Key Collection
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../011-hosted-api-key-anthropic-messages.md`

@@ -1156,7 +1156,13 @@ start, poll, complete, cancel, and timeout. Missing required ports fail
 closed. API-key collection writes opaque `CredentialRef` values, never secret
 bytes.
 
-Not yet realized: first-proof Anthropic, Codex, or Ollama wiring.
+First-proof hosted API-key Anthropic Messages is realized:
+`anthropic_messages_addable_route_descriptor` is adapter-local, topology
+hosted, API-key collection writes `CredentialRef`, and
+`prepare_anthropic_direct` still runs after 057 admission. Subject stays
+Absent. Overlay keys existing `anthropic` catalogue provider ids. Not yet
+realized: installed Codex app-server, local Ollama attach, or hosted
+interactive OAuth.
 
 The remaining direction is:
 

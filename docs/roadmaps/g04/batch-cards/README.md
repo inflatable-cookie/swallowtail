@@ -2,16 +2,19 @@
 
 ## Active
 
-- [030-anthropic-messages-addable-descriptor.md](./030-anthropic-messages-addable-descriptor.md)
-- [031-anthropic-messages-admission-and-api-key.md](./031-anthropic-messages-admission-and-api-key.md)
-- [032-anthropic-messages-refresh-subject-and-047.md](./032-anthropic-messages-refresh-subject-and-047.md)
+- [033-codex-app-server-addable-descriptor.md](./033-codex-app-server-addable-descriptor.md)
+- [034-codex-app-server-admission-and-prepare.md](./034-codex-app-server-admission-and-prepare.md)
+- [035-codex-app-server-refresh-update-and-subject.md](./035-codex-app-server-refresh-update-and-subject.md)
 
 ## Planned
 
-None. Codex, Ollama, and hosted OAuth stay behind g04.011.
+None. Ollama and hosted OAuth stay behind g04.012.
 
 ## Completed
 
+- [032-anthropic-messages-refresh-subject-and-047.md](./032-anthropic-messages-refresh-subject-and-047.md)
+- [031-anthropic-messages-admission-and-api-key.md](./031-anthropic-messages-admission-and-api-key.md)
+- [030-anthropic-messages-addable-descriptor.md](./030-anthropic-messages-addable-descriptor.md)
 - [029-first-proof-tranche-confirmation.md](./029-first-proof-tranche-confirmation.md)
 - [028-first-proof-gap-and-oauth-evidence.md](./028-first-proof-gap-and-oauth-evidence.md)
 - [027-first-proof-surface-inventory.md](./027-first-proof-surface-inventory.md)

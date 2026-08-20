@@ -34,15 +34,15 @@ and selection policy.
 
 ## Planned Next Roadmaps
 
-- [g04.011 Hosted API-Key Anthropic Messages](011-hosted-api-key-anthropic-messages.md) — ready cards 030-032
+- [g04.012 Installed Codex App-Server](012-installed-codex-app-server.md) — ready cards 033-035
 
 ## Current Checkpoint
 
-- g04.001 through g04.010 are complete. PR 8 is on `main` at `84f6aa5d`
+- g04.001 through g04.011 are complete. PR 9 is on `main` at `b5d6a076`
 - Research 169: hosted OAuth stays a remaining gate
-- g04.011 worker dispatched: cards 030-032, handoff
-  `docs/handoffs/20260820-142930-g04-011-hosted-api-key-anthropic-messages.md`
-- Codex, Ollama, and hosted OAuth stay behind that first proof
+- g04.012 worker dispatched: cards 033-035, handoff
+  `docs/handoffs/20260820-152526-g04-012-installed-codex-app-server.md`
+- Ollama and hosted OAuth stay behind that installed proof
 - `v0.3.3` remains `51d18620`
 
 ## Milestones
@@ -57,4 +57,5 @@ and selection policy.
 - [008 Readiness Refresh, Subject, And Updates](./008-readiness-refresh-subject-and-updates.md) — completed
 - [009 Model Presentation Overlay](./009-model-presentation-overlay.md) — completed
 - [010 First-Proof Route Inventory](./010-first-proof-route-inventory.md) — completed
-- [011 Hosted API-Key Anthropic Messages](./011-hosted-api-key-anthropic-messages.md) — planned
+- [011 Hosted API-Key Anthropic Messages](./011-hosted-api-key-anthropic-messages.md) — completed
+- [012 Installed Codex App-Server](./012-installed-codex-app-server.md) — planned

@@ -73,7 +73,7 @@ Promoted into Contract 057. Authenticated subject, library-max sign-in,
 persistence port, overlay, the pre-facade tag, and the named seam amendments
 are no longer open product questions. `v0.3.3` is tagged at `51d18620`. Spec
 011 is archived. g04.005 is merged (PR 4, `c64bd64d`). g04.006 is merged (PR 5,
-`5cdffebb`). g04.007 is merged (PR 6, `91e14e3d`). g04.010 inventory is complete (Research 169). g04.011 cards 030-032 are
-ready. Hosted OAuth stays a remaining gate. Codex and Ollama stay behind
-Anthropic Messages. Optional 047 overlay presentation metadata stays later
-and must not change `Ready` / `NotReady`.
+`5cdffebb`). g04.007 is merged (PR 6, `91e14e3d`). g04.011 is merged (PR 9, `b5d6a076`). g04.012 cards 033-035 are ready.
+Hosted OAuth stays a remaining gate. Ollama stays behind Codex. Optional
+047 overlay presentation metadata stays later and must not change `Ready` /
+`NotReady`.

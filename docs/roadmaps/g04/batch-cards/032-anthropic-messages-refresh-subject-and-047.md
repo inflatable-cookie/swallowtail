@@ -1,6 +1,6 @@
 # 032 Anthropic Messages Refresh, Subject, And 047
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../011-hosted-api-key-anthropic-messages.md`

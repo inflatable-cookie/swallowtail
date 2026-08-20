@@ -1,6 +1,6 @@
 # 030 Anthropic Messages Addable Descriptor
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../011-hosted-api-key-anthropic-messages.md`

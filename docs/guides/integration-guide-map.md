@@ -103,6 +103,7 @@ conflicts or when you are qualifying a new claim.
 | activity, plans, tasks, and child work | `observable_activity`, `plan_mode`, `task_lists`, `subagent_topology`, `subagent_control` | [observable activity](observable-activity.md), [activity matrix](provider-solution-activity-matrix.md) | complete |
 | failures | `failure_classification`; exact diagnostics, preparation, terminal, activity, and cleanup failures | [portable failure handling](portable-failure-handling.md) | complete |
 | operator validation | `operator_validation`; deterministic tiers, package proof, optional live probes | [validation tiers](validation-tiers.md) | complete |
+| connection lifecycle | `connection_lifecycle` | [connection lifecycle](connection-lifecycle.md) | complete |
 
 ## Maintainer Guidance
 

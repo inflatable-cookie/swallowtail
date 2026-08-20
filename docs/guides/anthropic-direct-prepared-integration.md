@@ -34,9 +34,11 @@ New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 8. Then `prepare_anthropic_direct` with a host-approved
    `InstanceTargetRef`. Stored config refs do not feed prepare.
 
-A Contract 057 example will compile beside this sequence. The canonical
-route-map example remains `prepared_direct`. Hosted interactive OAuth is not
-a realized path on this route.
+The compile-tested
+[`connection_lifecycle` example](../../crates/swallowtail-adapter-anthropic/examples/connection_lifecycle.rs)
+shows catalog through prepare. The canonical route-map example remains
+[`prepared_direct`](../../crates/swallowtail-adapter-anthropic/examples/prepared_direct.rs).
+Hosted interactive OAuth is not a realized path on this route.
 
 ## Operator Prerequisites
 

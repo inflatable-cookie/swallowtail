@@ -44,8 +44,11 @@ Only `codex.app-server` currently exports an addable descriptor.
    `InstalledExecutableTarget`, and an `EnvironmentRef`. Stored config refs
    do not feed prepare.
 
-A Contract 057 example will compile beside this sequence. The canonical
-route-map example remains `prepared_discovery`.
+The compile-tested
+[`connection_lifecycle` example](../../crates/swallowtail-adapter-codex/examples/connection_lifecycle.rs)
+shows catalog through prepare for `codex.app-server`. The canonical
+route-map example remains
+[`prepared_discovery`](../../crates/swallowtail-adapter-codex/examples/prepared_discovery.rs).
 
 ## Operator Prerequisites
 

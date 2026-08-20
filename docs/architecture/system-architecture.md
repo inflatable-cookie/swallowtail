@@ -1129,8 +1129,9 @@ assembly, the store trait, host-port traits, the sign-in loop,
 in-memory, JSON-file, and sign-in test-double adapters in
 `swallowtail-host-local`. Topology grouping is hosted / installed /
 local-runtime; it is not `ExecutionLayer`. Consumers assemble
-`AddableRouteCatalog` from adapter-local descriptors. Testkit fixtures stand
-in until first-proof routes. `admit_instance` writes
+`AddableRouteCatalog` from adapter-local descriptors. First-proof descriptors
+exist for Anthropic Messages, Codex app-server, and Ollama attach. Testkit
+fixtures remain for portable catalog tests. `admit_instance` writes
 `AdmittedInstanceRecord` through the store. Config fields stay opaque
 `ConfigFieldRef` values. The store holds references, enablement, labels, and
 overlay markers. It does not require raw secrets. Enablement does not change
@@ -1162,10 +1163,11 @@ app-server, and local Ollama attach are realized. Anthropic collects
 the ChatGPT subscription profile with no credential field and reuses 029/032
 update observation. Ollama admits a local-unauthenticated attached runtime
 with no credential field. Catalogue rows without `provider_id` stay unmarked.
-Not yet realized: hosted interactive OAuth, or a Contract 052 consumer path
-for the 057 lifecycle.
+The Contract 052 consumer path is realized for those three routes only.
+Remaining production routes have no addable descriptors. Hosted interactive
+OAuth is still not realized.
 
-The remaining direction is:
+The realized consumer path is:
 
 ```text
 adapter-local addable-route descriptors

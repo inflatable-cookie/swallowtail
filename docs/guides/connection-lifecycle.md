@@ -192,7 +192,13 @@ after this handoff; this facade does not start a session.
 
 ## Examples And Validation
 
-First-proof sequences:
+Compile-tested Contract 057 examples:
+
+- [Anthropic Messages](../../crates/swallowtail-adapter-anthropic/examples/connection_lifecycle.rs)
+- [Codex app-server](../../crates/swallowtail-adapter-codex/examples/connection_lifecycle.rs)
+- [Ollama attach](../../crates/swallowtail-adapter-ollama/examples/connection_lifecycle.rs)
+
+First-proof route sequences:
 
 - [Anthropic Messages](anthropic-direct-prepared-integration.md)
 - [Codex app-server](codex-prepared-integration.md); `codex.exec` is not
@@ -200,12 +206,12 @@ First-proof sequences:
 - [Ollama attach](ollama-attached-prepared-integration.md)
 
 Those route guides keep their existing prepared-facade examples as the
-canonical route-map examples. Compiling Contract 057 examples are part of
-this feature family once the guide map lists it.
+canonical route-map examples.
 
 Deterministic acceptance:
 
 ```sh
+effigy check:examples
 effigy qa:guides
 effigy qa:docs
 ```

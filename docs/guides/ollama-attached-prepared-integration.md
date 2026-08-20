@@ -61,8 +61,10 @@ Ollama.
    Stored config refs do not feed prepare. Model tag and digest stay
    prepare-time identities, not admission identity.
 
-A Contract 057 example will compile beside this sequence. The canonical
-route-map example remains `prepared_attached`.
+The compile-tested
+[`connection_lifecycle` example](../../crates/swallowtail-adapter-ollama/examples/connection_lifecycle.rs)
+shows catalog through prepare. The canonical route-map example remains
+[`prepared_attached`](../../crates/swallowtail-adapter-ollama/examples/prepared_attached.rs).
 
 ## Prepare The Attached Runtime
 

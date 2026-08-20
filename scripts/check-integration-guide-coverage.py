@@ -48,6 +48,7 @@ PORTABLE_FEATURES = {
     "provider_session_history",
     "failure_classification",
     "operator_validation",
+    "connection_lifecycle",
 }
 
 LINK_PATTERN = re.compile(r"\[[^\]]+\]\(([^)]+)\)")

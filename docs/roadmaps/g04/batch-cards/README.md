@@ -2,16 +2,17 @@
 
 ## Active
 
-- [039-connection-lifecycle-feature-guide.md](./039-connection-lifecycle-feature-guide.md)
-- [040-first-proof-route-guide-amendments.md](./040-first-proof-route-guide-amendments.md)
-- [041-connection-lifecycle-examples-and-guide-map.md](./041-connection-lifecycle-examples-and-guide-map.md)
+None.
 
 ## Planned
 
-None. Hosted OAuth stays a remaining gate behind g04.014.
+None. Hosted OAuth stays a remaining gate.
 
 ## Completed
 
+- [041-connection-lifecycle-examples-and-guide-map.md](./041-connection-lifecycle-examples-and-guide-map.md)
+- [040-first-proof-route-guide-amendments.md](./040-first-proof-route-guide-amendments.md)
+- [039-connection-lifecycle-feature-guide.md](./039-connection-lifecycle-feature-guide.md)
 - [038-ollama-attach-refresh-update-and-subject.md](./038-ollama-attach-refresh-update-and-subject.md)
 - [037-ollama-attach-admission-and-prepare.md](./037-ollama-attach-admission-and-prepare.md)
 - [036-ollama-attach-addable-descriptor.md](./036-ollama-attach-addable-descriptor.md)

@@ -29,19 +29,20 @@ and selection policy.
 | Realize library-max sign-in loops through host ports. | completed | Contracts 057, 006, 010, 014, 017 | `g04.007` |
 | Realize readiness refresh, authenticated-subject observation, and Contract 029 updates. | completed | Contracts 057, 006, 029, 032, 047 | `g04.008` |
 | Realize the model-presentation overlay without flattening catalogues. | completed | Contracts 057, 020 | `g04.009` |
-| Prove representative hosted, installed, and local-runtime shapes and publish a consumer path. | planned | Contracts 011, 037, 052, 057 | `g04.010` |
+| Prove representative hosted, installed, and local-runtime shapes and publish a consumer path. | completed | Contracts 011, 037, 052, 057 | `g04.010` |
 | Continue Contract 029 currentness as a maintenance lane, not the title programme. | recurring | Contract 029 | evidence-gated |
 
 ## Planned Next Roadmaps
 
-- [g04.014 Connection Lifecycle Consumer Path](014-connection-lifecycle-consumer-path.md) — cards 039-041 executed; awaiting merge
+None. Hosted interactive OAuth stays a remaining gate. Contract 029
+currentness remains a recurring maintenance lane.
 
 ## Current Checkpoint
 
-- g04.001 through g04.013 are complete. PR 11 is on `main` at `e23e795f`
+- g04.001 through g04.014 are complete. PR 12 is on `main` at `7810453f`
+- The g04.010 first-proof-plus-consumer-path goal is complete
 - Research 169: hosted OAuth stays a remaining gate
-- g04.014 cards 039-041 executed; PR 12 awaiting review
-- Hosted OAuth stays a remaining gate after this consumer path
+- Do not compile hosted OAuth without a no-secret-extraction proof
 - `v0.3.3` remains `51d18620`
 
 ## Milestones
@@ -59,4 +60,4 @@ and selection policy.
 - [011 Hosted API-Key Anthropic Messages](./011-hosted-api-key-anthropic-messages.md) — completed
 - [012 Installed Codex App-Server](./012-installed-codex-app-server.md) — completed
 - [013 Local Ollama Attach](./013-local-ollama-attach.md) — completed
-- [014 Connection Lifecycle Consumer Path](./014-connection-lifecycle-consumer-path.md) — planned
+- [014 Connection Lifecycle Consumer Path](./014-connection-lifecycle-consumer-path.md) — completed

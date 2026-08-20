@@ -14,10 +14,9 @@ shape.
 
 ## Next Task
 
-Awaiting review of g04.014 consumer-path PR
-https://github.com/inflatable-cookie/swallowtail/pull/12.
-Hosted OAuth stays a remaining gate. Do not merge without operator
-authorisation.
+Reassess hosted interactive OAuth. It stays a remaining gate until a
+no-secret-extraction proof exists. Do not compile addable descriptors for
+the remaining production routes.
 
 ## Index
 

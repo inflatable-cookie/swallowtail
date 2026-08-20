@@ -1,12 +1,12 @@
 # 014 Connection Lifecycle Consumer Path
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Depends on: completed g04.013
 Vision tags: consumer integration, route readiness, explicit selection
 Contract refs: 011, 037, 047, 052, 057
-Planning state: cards 039-041 executed; awaiting merge
+Planning state: cards 039-041 completed
 Research: 169
 
 ## Problem
@@ -89,8 +89,8 @@ addable descriptors.
 
 - previous: g04.013 local Ollama attach
 - this milestone: Contract 052 consumer path for the 057 lifecycle
-- later: hosted OAuth remains a remaining gate; this closes the
-      g04.010 first-proof-plus-consumer-path goal after merge
+- next: hosted interactive OAuth remains a remaining gate
+- later: Contract 029 currentness stays a recurring maintenance lane
 
 ## Decision Gates
 

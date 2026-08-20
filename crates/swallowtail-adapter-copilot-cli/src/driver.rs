@@ -154,7 +154,8 @@ impl InteractiveSessionDriver for CopilotCliAcpDriver {
                 .await;
             match result {
                 Ok(session) => Ok(Box::new(session) as Box<dyn InteractiveSessionHandle>),
-                Err((error, resource)) => {
+                Err(pair) => {
+                    let (error, resource) = *pair;
                     let _ = resource_service.release(resource).await;
                     Err(error)
                 }
@@ -181,7 +182,7 @@ impl CopilotCliAcpDriver {
         scope: ScopeId,
         resource: ResourceLease,
         selected: crate::selection::CopilotCliPlanSelection,
-    ) -> Result<CopilotCliSessionHandle, (RuntimeFailure, ResourceLease)> {
+    ) -> Result<CopilotCliSessionHandle, Box<(RuntimeFailure, ResourceLease)>> {
         let cwd = resource
             .filesystem()
             .expect("validated filesystem lease")
@@ -205,7 +206,7 @@ impl CopilotCliAcpDriver {
         let process: Arc<dyn ProcessHandle> =
             match process_service.start(scope.clone(), process_request).await {
                 Ok(process) => Arc::from(process),
-                Err(error) => return Err((error, resource)),
+                Err(error) => return Err(Box::new((error, resource))),
             };
         let connection = AcpConnection::new(Arc::clone(&process), services.clone());
         let pump_connection = Arc::clone(&connection);
@@ -217,7 +218,7 @@ impl CopilotCliAcpDriver {
             Err(error) => {
                 let _ = process.force_stop().await;
                 let _ = process.wait().await;
-                return Err((error, resource));
+                return Err(Box::new((error, resource)));
             }
         };
         let opened = async {
@@ -234,25 +235,25 @@ impl CopilotCliAcpDriver {
             Err(error) => {
                 connection.begin_close().await;
                 let _ = pump_task.join().await;
-                return Err((error, resource));
+                return Err(Box::new((error, resource)));
             }
         };
         if let Err(error) = connection.set_session_id(provider_id.clone()) {
             connection.begin_close().await;
             let _ = pump_task.join().await;
-            return Err((error, resource));
+            return Err(Box::new((error, resource)));
         }
         let provider_ref = match SessionRef::new(&provider_id) {
             Ok(provider_ref) => provider_ref,
             Err(_) => {
                 connection.begin_close().await;
                 let _ = pump_task.join().await;
-                return Err((malformed(), resource));
+                return Err(Box::new((malformed(), resource)));
             }
         };
         let runtime_id =
             RuntimeSessionId::new(format!("copilot-cli-acp:{}", request.request_id().as_str()))
-                .map_err(|_| (malformed(), resource.clone()))?;
+                .map_err(|_| Box::new((malformed(), resource.clone())))?;
         let active = Arc::new(Mutex::new(None));
         Ok(CopilotCliSessionHandle {
             request_id: request.request_id().clone(),

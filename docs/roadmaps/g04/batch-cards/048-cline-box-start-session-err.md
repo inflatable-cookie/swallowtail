@@ -1,6 +1,6 @@
 # 048 Cline Box Start-Session Err
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../017-cline-stable-clippy-result-large-err.md`
@@ -31,10 +31,10 @@ is quiet.
 
 ## Acceptance Criteria
 
-- [ ] no production `start_session` returns a 128-byte Err tuple by value
-- [ ] each `open_session` still releases the working-resource lease on
+- [x] no production `start_session` returns a 128-byte Err tuple by value
+- [x] each `open_session` still releases the working-resource lease on
       `start_session` failure
-- [ ] no DeepSeek or g04.016 files change
+- [x] no DeepSeek or g04.016 files change
 
 ## Validation
 

@@ -151,7 +151,8 @@ impl InteractiveSessionDriver for DeepAgentsAcpDriver {
                 .await;
             match result {
                 Ok(session) => Ok(Box::new(session) as Box<dyn InteractiveSessionHandle>),
-                Err((error, resource)) => {
+                Err(pair) => {
+                    let (error, resource) = *pair;
                     let _ = resource_service.release(resource).await;
                     Err(error)
                 }
@@ -177,7 +178,7 @@ impl DeepAgentsAcpDriver {
         services: &HostServices,
         scope: ScopeId,
         resource: ResourceLease,
-    ) -> Result<DeepAgentsSessionHandle, (RuntimeFailure, ResourceLease)> {
+    ) -> Result<DeepAgentsSessionHandle, Box<(RuntimeFailure, ResourceLease)>> {
         let cwd = resource
             .filesystem()
             .expect("validated filesystem lease")
@@ -201,7 +202,7 @@ impl DeepAgentsAcpDriver {
         let process: Arc<dyn ProcessHandle> =
             match process_service.start(scope.clone(), process_request).await {
                 Ok(process) => Arc::from(process),
-                Err(error) => return Err((error, resource)),
+                Err(error) => return Err(Box::new((error, resource))),
             };
         let connection = AcpConnection::new(Arc::clone(&process), services.clone());
         let pump_connection = Arc::clone(&connection);
@@ -213,7 +214,7 @@ impl DeepAgentsAcpDriver {
             Err(error) => {
                 let _ = process.force_stop().await;
                 let _ = process.wait().await;
-                return Err((error, resource));
+                return Err(Box::new((error, resource)));
             }
         };
         let opened = async {
@@ -230,25 +231,25 @@ impl DeepAgentsAcpDriver {
             Err(error) => {
                 connection.begin_close().await;
                 let _ = pump_task.join().await;
-                return Err((error, resource));
+                return Err(Box::new((error, resource)));
             }
         };
         if let Err(error) = connection.set_session_id(provider_id.clone()) {
             connection.begin_close().await;
             let _ = pump_task.join().await;
-            return Err((error, resource));
+            return Err(Box::new((error, resource)));
         }
         let provider_ref = match SessionRef::new(&provider_id) {
             Ok(provider_ref) => provider_ref,
             Err(_) => {
                 connection.begin_close().await;
                 let _ = pump_task.join().await;
-                return Err((malformed(), resource));
+                return Err(Box::new((malformed(), resource)));
             }
         };
         let runtime_id =
             RuntimeSessionId::new(format!("deepagents-acp:{}", request.request_id().as_str()))
-                .map_err(|_| (malformed(), resource.clone()))?;
+                .map_err(|_| Box::new((malformed(), resource.clone())))?;
         let active = Arc::new(Mutex::new(None));
         Ok(DeepAgentsSessionHandle {
             request_id: request.request_id().clone(),

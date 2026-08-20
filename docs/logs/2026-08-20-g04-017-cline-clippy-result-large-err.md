@@ -8,25 +8,28 @@ Handoff: `../handoffs/20260820-180328-g04-017-cline-stable-clippy.md`
 
 ## Result
 
-`ClineAcpDriver::start_session` now returns
-`Result<ClineSessionHandle, Box<(RuntimeFailure, ResourceLease)>>`.
+ACP `start_session` helpers on Cline, Goose, Copilot CLI, Gemini, Kiro,
+and Deep Agents now return
+`Result<Handle, Box<(RuntimeFailure, ResourceLease)>>`. Each
 `open_session` still destructures the pair and releases the
 working-resource lease on failure. DeepSeek and g04.016 files are
 unchanged. `public-api-0.3.3` is unchanged.
 
-The Cline papercut is closed in `PAPERCUTS.md`. Orchestrator records the
-merge SHA at closeout.
+The ACP `result_large_err` papercut is closed in `PAPERCUTS.md`.
+Orchestrator records the merge SHA at closeout.
 
 Worker worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-8d619c23`
 Worker branch: `t3code/follow-cline-stable-clippy-handoff`
+Rebased onto `c779cc4b`.
 
 Validation:
 
-- Card 048: `effigy validate:focused swallowtail-adapter-cline` (49 tests
-  passed), `git diff --check`
-- Card 049: `cargo clippy -p swallowtail-adapter-cline --all-targets
-  --all-features -- -D warnings` (rustc 1.97.1, exit 0),
-  `effigy validate:focused swallowtail-adapter-cline`, `git diff --check`
+- Card 048: `cargo test --locked -p swallowtail-adapter-goose -p
+  swallowtail-adapter-copilot-cli -p swallowtail-adapter-gemini -p
+  swallowtail-adapter-kiro -p swallowtail-adapter-deepagents` (exit 0),
+  `git diff --check`
+- Card 049: `cargo clippy --workspace --all-targets --all-features
+  --locked -- -D warnings` (rustc 1.97.1, exit 0), `git diff --check`
 
 Local clippy is 1.97.1; CI Stable is rust-clippy 1.98.0. Boxing is the
 Clippy-suggested fix.

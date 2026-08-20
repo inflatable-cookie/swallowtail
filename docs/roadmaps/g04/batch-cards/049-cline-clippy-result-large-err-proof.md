@@ -1,6 +1,6 @@
 # 049 Cline Clippy Result Large Err Proof
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../017-cline-stable-clippy-result-large-err.md`
@@ -26,10 +26,10 @@ Prove Clippy 1.98-style workspace `-D warnings` no longer reports
 
 ## Acceptance Criteria
 
-- [ ] the named workspace clippy command exits 0
-- [ ] the papercut is marked closed, or the PR says the orchestrator
+- [x] the named workspace clippy command exits 0
+- [x] the papercut is marked closed, or the PR says the orchestrator
       will close it on merge
-- [ ] `public-api-0.3.3` is unchanged
+- [x] `public-api-0.3.3` is unchanged
 
 ## Validation
 

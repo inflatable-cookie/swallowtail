@@ -35,13 +35,16 @@ and selection policy.
 
 ## Planned Next Roadmaps
 
-None. Hosted OAuth stays a remaining gate.
+None. Hosted OAuth is parked in
+[backlog/hosted-interactive-oauth.md](../backlog/hosted-interactive-oauth.md)
+until a named production route requires URL-open plus loopback.
 
 ## Current Checkpoint
 
 - g04.001 through g04.019 are complete. PR 16 is on `main` at `576184e9`
-- Second-proof addable-route expansion is complete
-- Hosted OAuth stays a remaining gate
+- Title programme is complete. Second-proof addable-route expansion is complete
+- Hosted OAuth is parked, not the next card
+- Contract 029 currentness stays evidence-gated
 - `v0.3.3` remains `51d18620`
 
 ## Milestones

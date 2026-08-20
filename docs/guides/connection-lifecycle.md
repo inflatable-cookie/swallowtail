@@ -112,8 +112,9 @@ advertise no credential field. Do not extract ChatGPT tokens or Claude
 keychain bytes, or invent a local-runtime secret.
 
 Hosted interactive OAuth through URL-open and loopback is not a realized
-consumer path. Do not treat Claude subscription or Codex ChatGPT cached
-login as that path.
+consumer path. It is parked until a named production route requires that
+loop. Do not treat Claude subscription or Codex ChatGPT cached login as
+that path.
 
 ## Store Port
 

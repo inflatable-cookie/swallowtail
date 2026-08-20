@@ -22,6 +22,7 @@ historical evidence.
 - [Aider Headless Route](./aider-headless-route.md)
 - [Kiro Headless Route](./kiro-headless-route.md)
 - [OpenHands Agent Server Production Wiring](./openhands-agent-server-production-wiring.md)
+- [Hosted Interactive OAuth](./hosted-interactive-oauth.md)
 
 ## Completed
 

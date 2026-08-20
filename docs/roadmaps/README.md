@@ -14,8 +14,8 @@ shape.
 
 ## Next Task
 
-Second-proof addable-route expansion is complete. Hosted OAuth stays a
-remaining gate.
+g04 title programme is complete. Hosted OAuth is parked until a named
+production route requires URL-open plus loopback.
 
 ## Index
 

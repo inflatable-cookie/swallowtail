@@ -2,11 +2,13 @@
 
 ## Active
 
-None. Hosted OAuth stays a remaining gate.
+None. Hosted OAuth is parked until a named production route requires
+URL-open plus loopback.
 
 ## Planned
 
-None. Hosted OAuth stays a remaining gate.
+None. Hosted OAuth is parked until a named production route requires
+URL-open plus loopback.
 
 ## Completed
 

@@ -1172,7 +1172,8 @@ runtime with no credential field. llama.cpp attached does not advertise
 `llama-cpp.owned`. Catalogue rows without `provider_id` stay unmarked. The
 Contract 052 consumer path is realized for those six routes. Remaining
 production routes have no addable descriptors. Hosted interactive OAuth is
-still not realized.
+still not realized. It is parked until a named production route requires
+URL-open plus loopback.
 
 The realized consumer path is:
 

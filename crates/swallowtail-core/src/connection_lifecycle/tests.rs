@@ -102,6 +102,27 @@ fn subject_records_default_to_redacted() {
 }
 
 #[test]
+fn subject_fields_can_be_absent_redacted_or_revealed() {
+    let observation = AuthenticatedSubjectObservation::undisclosed()
+        .with_email_disclosed()
+        .with_login_absent()
+        .reveal_plan("pro")
+        .expect("plan is valid");
+
+    assert_eq!(observation.email(), &SubjectDisclosure::Redacted);
+    assert_eq!(observation.login(), &SubjectDisclosure::Absent);
+    assert_eq!(observation.plan().revealed_text(), Some("pro"));
+    assert!(!observation.is_redacted());
+    assert!(!format!("{observation:?}").contains("pro"));
+
+    let concealed = observation.without_revealed_text();
+    assert_eq!(concealed.email(), &SubjectDisclosure::Redacted);
+    assert_eq!(concealed.login(), &SubjectDisclosure::Absent);
+    assert_eq!(concealed.plan(), &SubjectDisclosure::Redacted);
+    assert!(concealed.is_redacted());
+}
+
+#[test]
 fn addable_route_descriptor_keeps_topology_and_sign_in_requirements() {
     let descriptor = AddableRouteDescriptor::new(
         AddableRouteId::new("anthropic-messages").expect("route id is valid"),

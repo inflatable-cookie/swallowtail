@@ -600,6 +600,7 @@ pub swallowtail_core::SubjectDisclosure::Revealed(alloc::string::String)
 impl swallowtail_core::SubjectDisclosure
 pub const fn swallowtail_core::SubjectDisclosure::is_revealed(&self) -> bool
 pub fn swallowtail_core::SubjectDisclosure::revealed_text(&self) -> core::option::Option<&str>
+pub const fn swallowtail_core::SubjectDisclosure::without_revealed_text(&self) -> Self
 impl core::fmt::Debug for swallowtail_core::SubjectDisclosure
 pub fn swallowtail_core::SubjectDisclosure::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub enum swallowtail_core::SupportAuthority
@@ -746,9 +747,14 @@ pub const fn swallowtail_core::AuthenticatedSubjectObservation::redacted() -> Se
 pub fn swallowtail_core::AuthenticatedSubjectObservation::reveal_email(self, impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
 pub fn swallowtail_core::AuthenticatedSubjectObservation::reveal_login(self, impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
 pub fn swallowtail_core::AuthenticatedSubjectObservation::reveal_plan(self, impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub const fn swallowtail_core::AuthenticatedSubjectObservation::undisclosed() -> Self
+pub fn swallowtail_core::AuthenticatedSubjectObservation::with_email_absent(self) -> Self
 pub fn swallowtail_core::AuthenticatedSubjectObservation::with_email_disclosed(self) -> Self
+pub fn swallowtail_core::AuthenticatedSubjectObservation::with_login_absent(self) -> Self
 pub fn swallowtail_core::AuthenticatedSubjectObservation::with_login_disclosed(self) -> Self
+pub fn swallowtail_core::AuthenticatedSubjectObservation::with_plan_absent(self) -> Self
 pub fn swallowtail_core::AuthenticatedSubjectObservation::with_plan_disclosed(self) -> Self
+pub const fn swallowtail_core::AuthenticatedSubjectObservation::without_revealed_text(&self) -> Self
 impl core::default::Default for swallowtail_core::AuthenticatedSubjectObservation
 pub fn swallowtail_core::AuthenticatedSubjectObservation::default() -> Self
 pub struct swallowtail_core::CapabilityManifest
@@ -993,6 +999,13 @@ pub fn swallowtail_core::InstanceTargetRef::as_host_value(&self) -> &str
 pub fn swallowtail_core::InstanceTargetRef::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
 impl core::fmt::Debug for swallowtail_core::InstanceTargetRef
 pub fn swallowtail_core::InstanceTargetRef::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::InstanceUpdateObservation
+impl swallowtail_core::InstanceUpdateObservation
+pub const fn swallowtail_core::InstanceUpdateObservation::claim_id(&self) -> &swallowtail_core::InterfaceCompatibilityClaimId
+pub const fn swallowtail_core::InstanceUpdateObservation::compatibility(&self) -> core::option::Option<&swallowtail_core::InstalledExecutableCompatibility>
+pub fn swallowtail_core::InstanceUpdateObservation::from_claim(&swallowtail_core::InterfaceCompatibilityClaim, core::option::Option<swallowtail_core::InstalledExecutableObservation>) -> core::result::Result<Self, swallowtail_core::InvalidInstanceUpdateObservation>
+pub const fn swallowtail_core::InstanceUpdateObservation::installed(&self) -> core::option::Option<&swallowtail_core::InstalledExecutableObservation>
+pub const fn swallowtail_core::InstanceUpdateObservation::is_unobserved(&self) -> bool
 pub struct swallowtail_core::IntegrationFamilyId(_)
 impl swallowtail_core::IntegrationFamilyId
 pub fn swallowtail_core::IntegrationFamilyId::as_str(&self) -> &str
@@ -1068,6 +1081,12 @@ pub const fn swallowtail_core::InvalidInstalledExecutableObservation::diagnostic
 impl core::error::Error for swallowtail_core::InvalidInstalledExecutableObservation
 impl core::fmt::Display for swallowtail_core::InvalidInstalledExecutableObservation
 pub fn swallowtail_core::InvalidInstalledExecutableObservation::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::InvalidInstanceUpdateObservation
+impl swallowtail_core::InvalidInstanceUpdateObservation
+pub const fn swallowtail_core::InvalidInstanceUpdateObservation::diagnostic(&self) -> &swallowtail_core::SafeDiagnostic
+impl core::error::Error for swallowtail_core::InvalidInstanceUpdateObservation
+impl core::fmt::Display for swallowtail_core::InvalidInstanceUpdateObservation
+pub fn swallowtail_core::InvalidInstanceUpdateObservation::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub struct swallowtail_core::InvalidInterfaceCompatibilityClaim
 impl swallowtail_core::InvalidInterfaceCompatibilityClaim
 pub const fn swallowtail_core::InvalidInterfaceCompatibilityClaim::diagnostic(&self) -> &swallowtail_core::SafeDiagnostic

@@ -48,6 +48,15 @@ impl SubjectDisclosure {
     pub const fn is_revealed(&self) -> bool {
         matches!(self, Self::Revealed(_))
     }
+
+    #[must_use]
+    /// Collapses revealed text to redacted. Absent stays absent.
+    pub const fn without_revealed_text(&self) -> Self {
+        match self {
+            Self::Absent => Self::Absent,
+            Self::Redacted | Self::Revealed(_) => Self::Redacted,
+        }
+    }
 }
 
 impl fmt::Debug for SubjectDisclosure {
@@ -85,6 +94,16 @@ impl AuthenticatedSubjectObservation {
         }
     }
 
+    /// Creates an observation where the provider disclosed no subject fields.
+    #[must_use]
+    pub const fn undisclosed() -> Self {
+        Self {
+            email: SubjectDisclosure::Absent,
+            login: SubjectDisclosure::Absent,
+            plan: SubjectDisclosure::Absent,
+        }
+    }
+
     #[must_use]
     /// Marks email as disclosed by the provider and still redacted.
     pub fn with_email_disclosed(mut self) -> Self {
@@ -104,6 +123,37 @@ impl AuthenticatedSubjectObservation {
     pub fn with_plan_disclosed(mut self) -> Self {
         self.plan = SubjectDisclosure::Redacted;
         self
+    }
+
+    #[must_use]
+    /// Marks email as not disclosed by the provider.
+    pub fn with_email_absent(mut self) -> Self {
+        self.email = SubjectDisclosure::Absent;
+        self
+    }
+
+    #[must_use]
+    /// Marks login as not disclosed by the provider.
+    pub fn with_login_absent(mut self) -> Self {
+        self.login = SubjectDisclosure::Absent;
+        self
+    }
+
+    #[must_use]
+    /// Marks plan as not disclosed by the provider.
+    pub fn with_plan_absent(mut self) -> Self {
+        self.plan = SubjectDisclosure::Absent;
+        self
+    }
+
+    #[must_use]
+    /// Returns a copy with revealed text collapsed. Absent stays absent.
+    pub const fn without_revealed_text(&self) -> Self {
+        Self {
+            email: self.email.without_revealed_text(),
+            login: self.login.without_revealed_text(),
+            plan: self.plan.without_revealed_text(),
+        }
     }
 
     /// Reveals email text for consumer presentation.

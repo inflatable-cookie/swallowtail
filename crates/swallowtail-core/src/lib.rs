@@ -56,7 +56,8 @@ pub use connection_lifecycle::{
     AddableRouteMissingRequirement, AdmittedInstanceRecord, AuthenticatedSubjectObservation,
     ConfigFieldDescriptor, ConfigFieldId, ConfigFieldKind, CredentialFieldDescriptor,
     CredentialFieldId, CredentialFieldVisibility, EnvironmentVariableName, FieldLabel,
-    InstanceEnablement, InstanceLabel, OverlayMarker, RouteTopology, SubjectDisclosure,
+    InstanceEnablement, InstanceLabel, InstanceUpdateObservation, InvalidInstanceUpdateObservation,
+    OverlayMarker, RouteTopology, SubjectDisclosure,
 };
 pub use diagnostic::{Diagnostic, SafeDiagnostic, ValueRequired};
 pub use direct_continuation::{

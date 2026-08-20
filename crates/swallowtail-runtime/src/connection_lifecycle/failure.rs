@@ -149,3 +149,113 @@ impl fmt::Display for InstanceAdmissionFailure {
 }
 
 impl Error for InstanceAdmissionFailure {}
+
+/// Stable reason readiness refresh failed.
+#[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+pub enum ReadinessRefreshFailureKind {
+    /// The admitted instance is absent from the store.
+    InstanceAbsent,
+    /// The store rejected the refreshed record.
+    Store,
+}
+
+/// Rejection raised while refreshing access dimensions.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ReadinessRefreshFailure {
+    kind: ReadinessRefreshFailureKind,
+    diagnostic: SafeDiagnostic,
+}
+
+impl ReadinessRefreshFailure {
+    pub(super) fn instance_absent() -> Self {
+        Self {
+            kind: ReadinessRefreshFailureKind::InstanceAbsent,
+            diagnostic: SafeDiagnostic::new(
+                "swallowtail.connection_lifecycle.refresh_instance_absent",
+                "Readiness refresh requires an admitted instance in the store",
+            ),
+        }
+    }
+
+    pub(super) fn from_store(failure: ConnectionLifecycleStoreFailure) -> Self {
+        Self {
+            kind: ReadinessRefreshFailureKind::Store,
+            diagnostic: failure.diagnostic().clone(),
+        }
+    }
+
+    #[must_use]
+    /// Returns the stable failure classification.
+    pub const fn kind(&self) -> ReadinessRefreshFailureKind {
+        self.kind
+    }
+
+    #[must_use]
+    /// Returns the redacted refresh diagnostic.
+    pub const fn diagnostic(&self) -> &SafeDiagnostic {
+        &self.diagnostic
+    }
+}
+
+impl fmt::Display for ReadinessRefreshFailure {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        self.diagnostic.fmt(formatter)
+    }
+}
+
+impl Error for ReadinessRefreshFailure {}
+
+/// Stable reason authenticated-subject observation failed.
+#[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+pub enum SubjectObservationFailureKind {
+    /// The admitted instance is absent from the store.
+    InstanceAbsent,
+    /// The store rejected the instance lookup.
+    Store,
+}
+
+/// Rejection raised while observing an authenticated subject.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct SubjectObservationFailure {
+    kind: SubjectObservationFailureKind,
+    diagnostic: SafeDiagnostic,
+}
+
+impl SubjectObservationFailure {
+    pub(super) fn instance_absent() -> Self {
+        Self {
+            kind: SubjectObservationFailureKind::InstanceAbsent,
+            diagnostic: SafeDiagnostic::new(
+                "swallowtail.connection_lifecycle.subject_instance_absent",
+                "Authenticated-subject observation requires an admitted instance in the store",
+            ),
+        }
+    }
+
+    pub(super) fn from_store(failure: ConnectionLifecycleStoreFailure) -> Self {
+        Self {
+            kind: SubjectObservationFailureKind::Store,
+            diagnostic: failure.diagnostic().clone(),
+        }
+    }
+
+    #[must_use]
+    /// Returns the stable failure classification.
+    pub const fn kind(&self) -> SubjectObservationFailureKind {
+        self.kind
+    }
+
+    #[must_use]
+    /// Returns the redacted subject-observation diagnostic.
+    pub const fn diagnostic(&self) -> &SafeDiagnostic {
+        &self.diagnostic
+    }
+}
+
+impl fmt::Display for SubjectObservationFailure {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        self.diagnostic.fmt(formatter)
+    }
+}
+
+impl Error for SubjectObservationFailure {}

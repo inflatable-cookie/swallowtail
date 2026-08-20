@@ -363,6 +363,9 @@ pub swallowtail_runtime::RateLimitKind::InputTokens
 pub swallowtail_runtime::RateLimitKind::OutputTokens
 pub swallowtail_runtime::RateLimitKind::Requests
 pub swallowtail_runtime::RateLimitKind::Tokens
+pub enum swallowtail_runtime::ReadinessRefreshFailureKind
+pub swallowtail_runtime::ReadinessRefreshFailureKind::InstanceAbsent
+pub swallowtail_runtime::ReadinessRefreshFailureKind::Store
 pub enum swallowtail_runtime::RealtimeMediaEventKind
 pub swallowtail_runtime::RealtimeMediaEventKind::OutputAudio(swallowtail_runtime::MediaChunk)
 pub swallowtail_runtime::RealtimeMediaEventKind::ProviderObservation(swallowtail_runtime::ProviderObservation)
@@ -527,6 +530,9 @@ pub swallowtail_runtime::SubagentStatus::Running
 pub swallowtail_runtime::SubagentStatus::Shutdown
 pub swallowtail_runtime::SubagentStatus::Unknown
 pub swallowtail_runtime::SubagentStatus::Waiting
+pub enum swallowtail_runtime::SubjectObservationFailureKind
+pub swallowtail_runtime::SubjectObservationFailureKind::InstanceAbsent
+pub swallowtail_runtime::SubjectObservationFailureKind::Store
 pub enum swallowtail_runtime::TaskListItemPriority
 pub swallowtail_runtime::TaskListItemPriority::High
 pub swallowtail_runtime::TaskListItemPriority::Low
@@ -2057,6 +2063,18 @@ pub const fn swallowtail_runtime::RateLimitObservation::limit(&self) -> core::op
 pub const fn swallowtail_runtime::RateLimitObservation::new(swallowtail_runtime::RateLimitKind, core::option::Option<u64>, core::option::Option<u64>, core::option::Option<u64>) -> Self
 pub const fn swallowtail_runtime::RateLimitObservation::remaining(&self) -> core::option::Option<u64>
 pub const fn swallowtail_runtime::RateLimitObservation::reset_after_milliseconds(&self) -> core::option::Option<u64>
+pub struct swallowtail_runtime::ReadinessRefreshFailure
+impl swallowtail_runtime::ReadinessRefreshFailure
+pub const fn swallowtail_runtime::ReadinessRefreshFailure::diagnostic(&self) -> &swallowtail_core::diagnostic::SafeDiagnostic
+pub const fn swallowtail_runtime::ReadinessRefreshFailure::kind(&self) -> swallowtail_runtime::ReadinessRefreshFailureKind
+impl core::error::Error for swallowtail_runtime::ReadinessRefreshFailure
+impl core::fmt::Display for swallowtail_runtime::ReadinessRefreshFailure
+pub fn swallowtail_runtime::ReadinessRefreshFailure::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_runtime::ReadinessRefreshRequest
+impl swallowtail_runtime::ReadinessRefreshRequest
+pub const fn swallowtail_runtime::ReadinessRefreshRequest::access_status(&self) -> &swallowtail_core::access::AccessStatus
+pub const fn swallowtail_runtime::ReadinessRefreshRequest::instance_id(&self) -> &swallowtail_core::runtime_identity::ConfiguredInstanceId
+pub const fn swallowtail_runtime::ReadinessRefreshRequest::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::access::AccessStatus) -> Self
 pub struct swallowtail_runtime::RealtimeMediaEvent
 impl swallowtail_runtime::RealtimeMediaEvent
 pub const fn swallowtail_runtime::RealtimeMediaEvent::kind(&self) -> &swallowtail_runtime::RealtimeMediaEventKind
@@ -2422,6 +2440,13 @@ pub fn swallowtail_runtime::SubagentSnapshot::with_reasoning(self, swallowtail_c
 pub const fn swallowtail_runtime::SubagentSnapshot::with_status(self, swallowtail_runtime::SubagentStatus) -> Self
 impl core::fmt::Debug for swallowtail_runtime::SubagentSnapshot
 pub fn swallowtail_runtime::SubagentSnapshot::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_runtime::SubjectObservationFailure
+impl swallowtail_runtime::SubjectObservationFailure
+pub const fn swallowtail_runtime::SubjectObservationFailure::diagnostic(&self) -> &swallowtail_core::diagnostic::SafeDiagnostic
+pub const fn swallowtail_runtime::SubjectObservationFailure::kind(&self) -> swallowtail_runtime::SubjectObservationFailureKind
+impl core::error::Error for swallowtail_runtime::SubjectObservationFailure
+impl core::fmt::Display for swallowtail_runtime::SubjectObservationFailure
+pub fn swallowtail_runtime::SubjectObservationFailure::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub struct swallowtail_runtime::TaskListItem
 impl swallowtail_runtime::TaskListItem
 pub const fn swallowtail_runtime::TaskListItem::content(&self) -> &swallowtail_runtime::OperationContent
@@ -2737,6 +2762,8 @@ pub fn swallowtail_runtime::failure_debug_observation(swallowtail_runtime::Debug
 pub fn swallowtail_runtime::fold_idioms(&swallowtail_idioms::engine::IdiomSet) -> alloc::string::String
 pub fn swallowtail_runtime::fold_idioms_with_bound(&swallowtail_idioms::engine::IdiomSet, usize) -> alloc::string::String
 pub fn swallowtail_runtime::instance_with_capabilities(&swallowtail_core::instance::ConfiguredInstance, swallowtail_core::requirement::CapabilityProfile) -> swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_runtime::observe_authenticated_subject(&dyn swallowtail_runtime::ConnectionLifecycleStore, &swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::connection_lifecycle::records::AuthenticatedSubjectObservation) -> core::result::Result<swallowtail_core::connection_lifecycle::records::AuthenticatedSubjectObservation, swallowtail_runtime::SubjectObservationFailure>
+pub fn swallowtail_runtime::observe_instance_update(&swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim, core::option::Option<swallowtail_core::installed_executable::InstalledExecutableObservation>) -> core::result::Result<swallowtail_core::connection_lifecycle::update::InstanceUpdateObservation, swallowtail_core::connection_lifecycle::update::InvalidInstanceUpdateObservation>
 pub fn swallowtail_runtime::page_provider_session_history_window(&swallowtail_runtime::ProviderSessionHistoryPlan, &swallowtail_runtime::ProviderSessionHistoryRequest, alloc::vec::Vec<swallowtail_runtime::SessionReplayItem>, swallowtail_runtime::ProviderSessionHistoryTotal) -> core::result::Result<swallowtail_runtime::ProviderSessionHistoryWindow, swallowtail_runtime::RuntimeFailure>
 pub fn swallowtail_runtime::parse_semantic_version_binding(&swallowtail_core::interface_version::InterfaceVersionAxis, &str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
 pub fn swallowtail_runtime::poll_sign_in(&mut swallowtail_runtime::SignInSession, &swallowtail_runtime::HostServices) -> core::result::Result<swallowtail_runtime::SignInStatus, swallowtail_runtime::SignInFailure>
@@ -2746,6 +2773,7 @@ pub async fn swallowtail_runtime::probe_installed_executable_version(swallowtail
 pub fn swallowtail_runtime::probe_outcome_failure(&swallowtail_core::registration::discovery::DiscoveryOutcome, &'static str, &'static str) -> swallowtail_runtime::PreparationFailure
 pub fn swallowtail_runtime::probe_runtime_failure(&swallowtail_runtime::RuntimeFailure, &'static str) -> swallowtail_runtime::PreparationFailure
 pub fn swallowtail_runtime::provider_status(swallowtail_runtime::RuntimeFailure) -> swallowtail_runtime::TerminalStatus
+pub fn swallowtail_runtime::refresh_readiness(&dyn swallowtail_runtime::ConnectionLifecycleStore, swallowtail_runtime::ReadinessRefreshRequest) -> core::result::Result<swallowtail_core::connection_lifecycle::records::AdmittedInstanceRecord, swallowtail_runtime::ReadinessRefreshFailure>
 pub fn swallowtail_runtime::resolve_idiom_instructions(&swallowtail_runtime::HostServices, &swallowtail_runtime::SessionOptions) -> core::result::Result<core::option::Option<swallowtail_runtime::OperationContent>, swallowtail_runtime::IdiomSourceUnavailable>
 pub fn swallowtail_runtime::runtime_event_channel(usize) -> core::result::Result<(swallowtail_runtime::RuntimeEventSender, swallowtail_runtime::RuntimeEventStream), swallowtail_runtime::RuntimeFailure>
 pub fn swallowtail_runtime::settled_session_plans_share_binding(&swallowtail_core::preflight::PreflightPlan, &swallowtail_core::preflight::PreflightPlan) -> bool

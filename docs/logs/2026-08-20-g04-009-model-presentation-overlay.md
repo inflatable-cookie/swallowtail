@@ -34,4 +34,5 @@ PR: https://github.com/inflatable-cookie/swallowtail/pull/8
 
 ## Next
 
-Awaiting review. Merge is operator-authorised. First-proof stays planned.
+PR 8 fast-forwarded onto `main` at `84f6aa5d`. g04.010 first-proof
+inventory is compiled. Adapter wiring stays behind that inventory.

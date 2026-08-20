@@ -14,8 +14,8 @@ shape.
 
 ## Next Task
 
-Awaiting review: g04.009 PR https://github.com/inflatable-cookie/swallowtail/pull/8.
-First-proof stays behind merge.
+g04.010 card 027 first-proof route inventory. Adapter wiring stays
+behind that inventory.
 
 ## Index
 

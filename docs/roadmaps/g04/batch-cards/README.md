@@ -2,11 +2,12 @@
 
 ## Active
 
-None. First-proof routes compile after g04.009.
+- [027-first-proof-surface-inventory.md](./027-first-proof-surface-inventory.md)
 
 ## Planned
 
-None. First-proof routes compile after g04.009.
+- [028-first-proof-gap-and-oauth-evidence.md](./028-first-proof-gap-and-oauth-evidence.md)
+- [029-first-proof-tranche-confirmation.md](./029-first-proof-tranche-confirmation.md)
 
 ## Completed
 

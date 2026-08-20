@@ -23,6 +23,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-20 g04.009 Model Presentation Overlay](./2026-08-20-g04-009-model-presentation-overlay.md)
 - [2026-08-20 g04.009 Overlay Worker Dispatch](./2026-08-20-g04-009-overlay-worker-dispatch.md)
 - [2026-08-20 g04.008 Readiness Refresh Merged](./2026-08-20-g04-008-readiness-refresh-merged.md)
 - [2026-08-20 g04.008 Readiness Refresh, Subject, And Updates](./2026-08-20-g04-008-readiness-refresh-subject-and-updates.md)

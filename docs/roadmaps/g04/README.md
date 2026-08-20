@@ -28,20 +28,18 @@ and selection policy.
 | Realize addable-route catalog, admission, and config field descriptors. | completed | Contract 057 | `g04.006` |
 | Realize library-max sign-in loops through host ports. | completed | Contracts 057, 006, 010, 014, 017 | `g04.007` |
 | Realize readiness refresh, authenticated-subject observation, and Contract 029 updates. | completed | Contracts 057, 006, 029, 032, 047 | `g04.008` |
-| Realize the model-presentation overlay without flattening catalogues. | planned | Contracts 057, 020 | `g04.009` |
+| Realize the model-presentation overlay without flattening catalogues. | completed | Contracts 057, 020 | `g04.009` |
 | Prove representative hosted, installed, and local-runtime shapes and publish a consumer path. | planned | Contracts 011, 037, 052, 057 | later |
 | Continue Contract 029 currentness as a maintenance lane, not the title programme. | recurring | Contract 029 | evidence-gated |
 
 ## Planned Next Roadmaps
 
-- [g04.009 Model Presentation Overlay](009-model-presentation-overlay.md) — ready cards 025-026
+- first-proof hosted, installed, and local-runtime routes after g04.009 review
 
 ## Current Checkpoint
 
-- g04.001 through g04.008 are complete. PR 7 is on `main` at `8f4e3884`
-- g04.009 worker dispatched: cards 025-026, handoff
-  `docs/handoffs/20260820-111700-g04-009-model-presentation-overlay.md`
-- first-proof stays behind that overlay
+- g04.001 through g04.009 are complete on this branch; awaiting review
+- first-proof stays behind merge
 - `v0.3.3` remains `51d18620`
 
 ## Milestones
@@ -54,4 +52,4 @@ and selection policy.
 - [006 Addable Catalog, Admission, And Config Fields](./006-addable-catalog-admission-and-config-fields.md) — completed
 - [007 Sign-In Loop And Host Ports](./007-sign-in-loop-and-host-ports.md) — completed
 - [008 Readiness Refresh, Subject, And Updates](./008-readiness-refresh-subject-and-updates.md) — completed
-- [009 Model Presentation Overlay](./009-model-presentation-overlay.md) — planned
+- [009 Model Presentation Overlay](./009-model-presentation-overlay.md) — completed

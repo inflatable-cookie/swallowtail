@@ -1,6 +1,6 @@
 # 025 Apply Model Presentation Overlay
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../009-model-presentation-overlay.md`
@@ -26,9 +26,9 @@ Apply stored overlay markers to one bound catalogue result without changing
 
 ## Acceptance Criteria
 
-- [ ] markers apply only to matching catalogue identities
-- [ ] provider default is not rewritten as consumer-default
-- [ ] 047 `Ready` / `NotReady` is unchanged
+- [x] markers apply only to matching catalogue identities
+- [x] provider default is not rewritten as consumer-default
+- [x] 047 `Ready` / `NotReady` is unchanged
 
 ## Validation
 

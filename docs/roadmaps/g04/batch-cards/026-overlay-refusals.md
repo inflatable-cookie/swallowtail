@@ -1,6 +1,6 @@
 # 026 Overlay Refusals
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../009-model-presentation-overlay.md`
@@ -26,9 +26,9 @@ instance, or make `NotReady` selectable.
 
 ## Acceptance Criteria
 
-- [ ] unknown model ids are rejected
-- [ ] cross-instance markers are rejected
-- [ ] overlay cannot change selection readiness to `Ready`
+- [x] unknown model ids are rejected
+- [x] cross-instance markers are rejected
+- [x] overlay cannot change selection readiness to `Ready`
 
 ## Validation
 

@@ -1120,13 +1120,14 @@ in front of prepared integration and the Contract 047 selection snapshot.
 
 The kernel, addable-route catalog, admission API, interactive sign-in
 ports, library-owned sign-in loop, readiness refresh, authenticated-subject
-observation, and Contract 029/032 update observation are realized: portable
-records in `swallowtail-core`, catalog assembly, the store trait, host-port
-traits, the sign-in loop, `refresh_readiness`, `observe_authenticated_subject`,
-and `observe_instance_update` in `swallowtail-runtime`, and optional
-in-memory, JSON-file, and sign-in test-double adapters in
-`swallowtail-host-local`. Topology grouping is hosted / installed /
-local-runtime; it is not `ExecutionLayer`. Consumers assemble
+observation, Contract 029/032 update observation, and model-presentation
+overlay are realized: portable records in `swallowtail-core`, catalog
+assembly, the store trait, host-port traits, the sign-in loop,
+`refresh_readiness`, `observe_authenticated_subject`,
+`observe_instance_update`, and `apply_model_presentation_overlay` in
+`swallowtail-runtime`, and optional in-memory, JSON-file, and sign-in
+test-double adapters in `swallowtail-host-local`. Topology grouping is hosted
+/ installed / local-runtime; it is not `ExecutionLayer`. Consumers assemble
 `AddableRouteCatalog` from adapter-local descriptors. Testkit fixtures stand
 in until first-proof routes. `admit_instance` writes
 `AdmittedInstanceRecord` through the store. Config fields stay opaque
@@ -1139,14 +1140,19 @@ default, and can be Absent, Redacted, or Revealed. Revealed values stay out
 of `Debug`. Subject is never a configured-instance id, 047 field, default
 diagnostic, or routing key. Update observation reuses a 029 claim and
 optional 032 installed-executable evidence. It does not install, authenticate,
-or admit an instance. Optional URL-open, loopback-callback, and device-code
-ports do not collapse into Credential, Process, or Network. Registering a
-port does not start sign-in. The loop owns start, poll, complete, cancel, and
-timeout. Missing required ports fail closed. API-key collection writes opaque
-`CredentialRef` values, never secret bytes.
+or admit an instance. Overlay projection applies hide, ordinal,
+consumer-default, and favourite onto one bound 047 catalogue result. Markers
+key to exact instance, provider, and model ids. Provider catalogue defaults
+stay distinct from the consumer-default marker. Unknown models and
+cross-instance markers fail closed. Overlay copies `Ready` / `NotReady` and
+cannot make `NotReady` selectable. Mixed gateway rows remain consumer
+assembly of several catalogues. Optional URL-open, loopback-callback, and
+device-code ports do not collapse into Credential, Process, or Network.
+Registering a port does not start sign-in. The loop owns start, poll,
+complete, cancel, and timeout. Missing required ports fail closed. API-key
+collection writes opaque `CredentialRef` values, never secret bytes.
 
-Not yet realized: overlay projection, and first-proof Anthropic, Codex, or
-Ollama wiring.
+Not yet realized: first-proof Anthropic, Codex, or Ollama wiring.
 
 The remaining direction is:
 

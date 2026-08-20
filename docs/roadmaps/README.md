@@ -14,8 +14,9 @@ shape.
 
 ## Next Task
 
-Worker in flight: g04.009 cards 025-026. Handoff
-`docs/handoffs/20260820-111700-g04-009-model-presentation-overlay.md`.
+Awaiting review: g04.009 cards 025-026 on
+`t3code/read-model-presentation-overlay-handoff`. First-proof stays behind
+merge.
 
 ## Index
 

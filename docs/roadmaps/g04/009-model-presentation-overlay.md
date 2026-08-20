@@ -1,12 +1,12 @@
 # 009 Model Presentation Overlay
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Depends on: completed g04.008
 Vision tags: consumer integration, route readiness, explicit selection
 Contract refs: 020, 047, 057
-Planning state: cards 025-026 ready
+Planning state: cards 025-026 completed
 
 ## Problem
 
@@ -20,10 +20,10 @@ Realize the model-presentation overlay without flattening catalogues.
 
 ## Goals
 
-- [ ] apply overlay markers keyed to configured-instance, provider, and
+- [x] apply overlay markers keyed to configured-instance, provider, and
       model ids
-- [ ] keep provider catalogue defaults distinct from consumer-default
-- [ ] refuse invented models, cross-instance copies, and `NotReady`
+- [x] keep provider catalogue defaults distinct from consumer-default
+- [x] refuse invented models, cross-instance copies, and `NotReady`
       selectable
 
 ## Non-Goals
@@ -38,21 +38,21 @@ Realize the model-presentation overlay without flattening catalogues.
 
 ### Batch 9.1 — Apply Overlay
 
-- [ ] Execute card 025 after g04.008.
-- [ ] project hide, ordinal, consumer-default, and favourite onto one bound
+- [x] Execute card 025 after g04.008.
+- [x] project hide, ordinal, consumer-default, and favourite onto one bound
       catalogue result
 
 ### Batch 9.2 — Overlay Refusals
 
-- [ ] Execute card 026 after card 025.
-- [ ] refuse invent, copy-across-instance, and `NotReady` selectable
+- [x] Execute card 026 after card 025.
+- [x] refuse invent, copy-across-instance, and `NotReady` selectable
 
 ## Acceptance Criteria
 
-- [ ] overlay keys are exact instance, provider, and model ids
-- [ ] provider default stays distinct from consumer-default
-- [ ] mixed gateway rows remain consumer assembly of several catalogues
-- [ ] 047 selection readiness is unchanged
+- [x] overlay keys are exact instance, provider, and model ids
+- [x] provider default stays distinct from consumer-default
+- [x] mixed gateway rows remain consumer assembly of several catalogues
+- [x] 047 selection readiness is unchanged
 
 ## Lane Runway
 

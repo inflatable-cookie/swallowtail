@@ -2,8 +2,7 @@
 
 ## Active
 
-- [025-apply-model-presentation-overlay.md](./025-apply-model-presentation-overlay.md)
-- [026-overlay-refusals.md](./026-overlay-refusals.md)
+None. First-proof routes compile after g04.009.
 
 ## Planned
 
@@ -11,6 +10,8 @@ None. First-proof routes compile after g04.009.
 
 ## Completed
 
+- [026-overlay-refusals.md](./026-overlay-refusals.md)
+- [025-apply-model-presentation-overlay.md](./025-apply-model-presentation-overlay.md)
 - [024-instance-update-observation.md](./024-instance-update-observation.md)
 - [023-authenticated-subject-observation.md](./023-authenticated-subject-observation.md)
 - [022-readiness-refresh.md](./022-readiness-refresh.md)

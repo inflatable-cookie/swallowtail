@@ -23,6 +23,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-20 g04 Hosted OAuth Reassessment](./2026-08-20-g04-hosted-oauth-reassessment.md)
 - [2026-08-20 g04.014 Consumer Path Merged](./2026-08-20-g04-014-consumer-path-merged.md)
 - [2026-08-20 g04.014 Connection Lifecycle Consumer Path](./2026-08-20-g04-014-connection-lifecycle-consumer-path.md)
 - [2026-08-20 g04.014 Consumer Path Worker Dispatch](./2026-08-20-g04-014-consumer-path-worker-dispatch.md)

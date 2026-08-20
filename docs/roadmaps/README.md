@@ -14,9 +14,8 @@ shape.
 
 ## Next Task
 
-Reassess hosted interactive OAuth. It stays a remaining gate until a
-no-secret-extraction proof exists. Do not compile addable descriptors for
-the remaining production routes.
+Define the next g04 lane. Hosted interactive OAuth stays a remaining gate.
+Do not compile it without a named route and a no-secret-extraction proof.
 
 ## Index
 

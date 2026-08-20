@@ -41,8 +41,11 @@ currentness remains a recurring maintenance lane.
 
 - g04.001 through g04.014 are complete. PR 12 is on `main` at `7810453f`
 - The g04.010 first-proof-plus-consumer-path goal is complete
-- Research 169: hosted OAuth stays a remaining gate
-- Do not compile hosted OAuth without a no-secret-extraction proof
+- 2026-08-20 reassessment: hosted URL-open OAuth still has no production
+  candidate. Claude, Codex, Grok, Kimi, Cursor, and Antigravity are
+  installed or delegated logins. Hosted routes are API keys.
+- Do not compile hosted OAuth without a named route and a no-secret-extraction
+  proof
 - `v0.3.3` remains `51d18620`
 
 ## Milestones

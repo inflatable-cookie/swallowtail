@@ -76,5 +76,8 @@ are no longer open product questions. `v0.3.3` is tagged at `51d18620`. Spec
 `5cdffebb`). g04.007 is merged (PR 6, `91e14e3d`). g04.012 is merged (PR 10,
 `33a35749`). g04.013 is merged (PR 11, `e23e795f`). g04.014 is merged (PR 12,
 `7810453f`). The first-proof-plus-consumer-path goal is complete. Hosted OAuth
-stays a remaining gate. Optional 047 overlay presentation metadata stays later
-and must not change `Ready` / `NotReady`.
+stays a remaining gate. 2026-08-20 reassessment: no production adapter does
+hosted URL-open plus loopback. Claude/Codex/Grok/Kimi/Cursor/Antigravity are
+installed or delegated logins; hosted routes are API keys. Do not reclassify
+those as the 057 hosted-OAuth first-proof. Optional 047 overlay presentation
+metadata stays later and must not change `Ready` / `NotReady`.

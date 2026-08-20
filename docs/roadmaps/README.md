@@ -14,9 +14,9 @@ shape.
 
 ## Next Task
 
-Awaiting review of g04.007 sign-in loop PR. Do not merge without operator
-authorisation. After merge, compile readiness refresh, subject observation,
-and overlay projection.
+Awaiting review of [PR 6](https://github.com/inflatable-cookie/swallowtail/pull/6).
+Do not merge without operator authorisation. After merge, compile readiness
+refresh, subject observation, and overlay projection.
 
 ## Index
 

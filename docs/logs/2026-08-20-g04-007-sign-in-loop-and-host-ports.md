@@ -32,8 +32,10 @@ production adapter crate changed. 047 still has no emails or tokens.
 Worker worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-45e4be90`
 Worker branch: `t3code/sign-in-loop-host-ports`
 
+PR: https://github.com/inflatable-cookie/swallowtail/pull/6
+
 ## Next
 
-Open the review PR against pushed `main`. Merge stays a separate
-operator-authorised action. After merge, compile readiness refresh, subject
-observation, and overlay projection.
+PR 6 awaits review. Merge stays a separate operator-authorised action.
+After merge, compile readiness refresh, subject observation, and overlay
+projection.

@@ -35,14 +35,12 @@ and selection policy.
 
 ## Planned Next Roadmaps
 
-- [g04.017 Cline Stable Clippy Result Large Err](017-cline-stable-clippy-result-large-err.md) — awaiting review
-- [g04.016 Hosted API-Key DeepSeek Continuation](016-hosted-api-key-deepseek-continuation.md) — PR 13 paused until g04.017 lands
+- [g04.016 Hosted API-Key DeepSeek Continuation](016-hosted-api-key-deepseek-continuation.md) — PR 13 restack onto `47b94efc`
 
 ## Current Checkpoint
 
-- g04.017 awaiting review (PR 14): boxed ACP `start_session` Err pairs
-  on Cline, Goose, Copilot CLI, Gemini, Kiro, and Deep Agents
-- Restack g04.016 / PR 13 after g04.017 lands
+- g04.017 is complete. PR 14 is on `main` at `47b94efc`
+- Restack g04.016 / PR 13 onto that tip
 - Hosted OAuth stays a remaining gate
 - `v0.3.3` remains `51d18620`
 
@@ -64,4 +62,4 @@ and selection policy.
 - [014 Connection Lifecycle Consumer Path](./014-connection-lifecycle-consumer-path.md) — completed
 - [015 Second-Proof Addable Inventory](./015-second-proof-addable-inventory.md) — completed
 - [016 Hosted API-Key DeepSeek Continuation](./016-hosted-api-key-deepseek-continuation.md) — planned
-- [017 Cline Stable Clippy Result Large Err](./017-cline-stable-clippy-result-large-err.md) — executed, awaiting review
+- [017 Cline Stable Clippy Result Large Err](./017-cline-stable-clippy-result-large-err.md) — completed

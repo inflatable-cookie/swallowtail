@@ -1,12 +1,12 @@
 # 017 Cline Stable Clippy Result Large Err
 
-Status: executed
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Depends on: none
 Vision tags: consumer integration
 Contract refs: 001
-Planning state: cards 048-049 completed; awaiting review
+Planning state: cards 048-049 completed
 
 ## Problem
 

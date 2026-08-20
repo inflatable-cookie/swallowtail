@@ -14,8 +14,8 @@ shape.
 
 ## Next Task
 
-Await review of g04.017 PR 14 (cards 048-049). After merge, restack
-g04.016 / PR 13. Do not start Claude Agent ACP or llama.cpp.
+Implement restack of g04.016 PR 13 onto `47b94efc`. Hosted OAuth stays
+gated. Do not start Claude Agent ACP addable or llama.cpp.
 
 ## Index
 

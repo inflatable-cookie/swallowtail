@@ -2,16 +2,13 @@
 
 ## Active
 
-None. Await review of g04.017 PR 14. After merge, restack g04.016 / PR 13.
-
-## Planned
-
 - [047-deepseek-continuation-refresh-subject-and-047.md](./047-deepseek-continuation-refresh-subject-and-047.md)
 - [046-deepseek-continuation-admission-and-api-key.md](./046-deepseek-continuation-admission-and-api-key.md)
 - [045-deepseek-continuation-addable-descriptor.md](./045-deepseek-continuation-addable-descriptor.md)
 
-g04.016 / PR 13 is paused until g04.017 lands. Hosted OAuth stays a
-remaining gate.
+## Planned
+
+None. Restack PR 13 onto `47b94efc`. Hosted OAuth stays a remaining gate.
 
 ## Completed
 

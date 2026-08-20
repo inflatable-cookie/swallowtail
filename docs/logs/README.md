@@ -23,6 +23,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-20 g04.017 Cline Clippy Merged](./2026-08-20-g04-017-cline-clippy-merged.md)
 - [2026-08-20 g04.017 Cline Stable Clippy Result Large Err](./2026-08-20-g04-017-cline-clippy-result-large-err.md)
 - [2026-08-20 g04.017 Cline Clippy Worker Dispatch](./2026-08-20-g04-017-cline-clippy-worker-dispatch.md)
 - [2026-08-20 g04.016 DeepSeek Continuation Worker Dispatch](./2026-08-20-g04-016-deepseek-continuation-worker-dispatch.md)

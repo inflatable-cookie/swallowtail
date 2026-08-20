@@ -5,27 +5,40 @@
 //! Deterministic harness only: no live provider calls, no browser ports, no
 //! secret bytes in portable records.
 
+#[allow(dead_code)]
+#[path = "support/services.rs"]
+mod services;
+
+use services::ThreadServices;
 use std::sync::Arc;
 use swallowtail_adapter_deepseek::{
     DEEPSEEK_CONTINUATION_API_KEY_FIELD_ID, DEEPSEEK_ENDPOINT, DEEPSEEK_ENDPOINT_AUDIENCE,
     DeepSeekPreparationInput, deepseek_continuation_addable_route_descriptor,
-    prepare_deepseek_direct,
+    deepseek_direct_descriptor, prepare_deepseek_direct,
 };
 use swallowtail_core::{
-    AccessProfile, AccessProfileId, AccessStatus, ConfiguredInstanceId, CredentialMechanism,
-    CredentialRef, CredentialState, EndpointAudience, EndpointAuthorization, EntitlementMetering,
-    EntitlementState, ExecutionHostId, InstanceRevision, InstanceTargetRef, IntegrationFamilyId,
-    RuntimeReadiness, SupportAuthority,
+    AccessProfile, AccessProfileId, AccessRequirement, AccessStatus,
+    AuthenticatedSubjectObservation, Capability, CapabilityRequirement, ConfiguredInstanceId,
+    CredentialMechanism, CredentialRef, CredentialState, DriverRole, EndpointAudience,
+    EndpointAuthorization, EntitlementMetering, EntitlementState, ExecutionHostId, ExecutionLayer,
+    InstanceEnablement, InstanceRevision, InstanceTargetRef, IntegrationFamilyId,
+    ModelCatalogEntry, ModelId, ModelMetadata, OperationRequirements, OperationShape,
+    OverlayMarker, PreflightContext, ProviderId, RuntimeReadiness, SubjectDisclosure,
+    SupportAuthority, preflight,
 };
 use swallowtail_host_local::{
     LocalProcessHost, LocalProcessLimits, MemoryConnectionLifecycleStore,
 };
 use swallowtail_runtime::{
-    AddableRouteCatalog, ConnectionLifecycleStore, CredentialService, HostServices,
-    InstanceAdmissionRequest, PreparedAccessEvidence, ScopeId, SignInAuthorityBinding,
-    SignInMethod, SignInStatus, admit_instance, complete_sign_in, poll_sign_in, start_sign_in,
-    submit_sign_in_credential_field,
+    AddableRouteCatalog, ConfiguredProviderInstanceAdmission, ConfiguredProviderInstanceRecord,
+    ConfiguredProviderInstanceSelectionReadiness, ConfiguredProviderModelCatalogueInput,
+    ConnectionLifecycleStore, CredentialService, HostServices, InstanceAdmissionRequest,
+    PreparedAccessEvidence, PreparedOperationEvidence, ReadinessRefreshRequest, ScopeId,
+    SignInAuthorityBinding, SignInMethod, SignInStatus, admit_instance,
+    apply_stored_model_presentation_overlay, complete_sign_in, observe_authenticated_subject,
+    poll_sign_in, refresh_readiness, start_sign_in, submit_sign_in_credential_field,
 };
+use swallowtail_runtime::{BlockingWorkService, ScopedTaskService, TimeService};
 
 const INSTANCE: &str = "deepseek.work";
 const CREDENTIAL_REF: &str = "deepseek.work.api-key";
@@ -194,4 +207,214 @@ fn prepare_still_accepts_the_admitted_identity_and_access_profile() {
 
     assert_eq!(prepared.instance().id(), admitted.id());
     assert_eq!(prepared.access_profile(), &profile);
+}
+
+fn ready_access_status(profile: &AccessProfile) -> AccessStatus {
+    AccessStatus::new(
+        profile.id().clone(),
+        CredentialState::Ready,
+        EntitlementState::Available,
+        EndpointAuthorization::Allowed,
+        RuntimeReadiness::Ready,
+        SupportAuthority::ProviderSupported,
+    )
+}
+
+fn prepared_route_evidence(
+    services: &HostServices,
+    driver: &swallowtail_core::DriverDescriptor,
+    instance: &swallowtail_core::ConfiguredInstance,
+    profile: &AccessProfile,
+    evidence: &PreparedAccessEvidence,
+) -> PreparedOperationEvidence {
+    let status = evidence.status();
+    let requirements = OperationRequirements::new(
+        ExecutionLayer::DirectModelInference,
+        OperationShape::StructuredRun,
+        DriverRole::ModelCatalog,
+        instance.execution_host_id().clone(),
+        AccessRequirement::new(profile.id().clone())
+            .with_credential_states([status.credential()])
+            .with_entitlement_states([status.entitlement()])
+            .with_endpoint_authorizations([status.endpoint_authorization()])
+            .with_runtime_readiness([status.runtime_readiness()])
+            .with_support_authorities([status.support_authority()]),
+    )
+    .with_ownership_modes([instance.ownership()])
+    .with_capabilities([CapabilityRequirement::new(Capability::ModelCatalog, [])]);
+    let plan = preflight(
+        &PreflightContext::new(
+            driver,
+            instance,
+            profile,
+            status,
+            services.available_kinds(),
+        ),
+        &requirements,
+    )
+    .expect("preflight succeeds for the prepared route");
+    PreparedOperationEvidence::from_plan(plan, evidence.clone())
+        .expect("prepared evidence is accepted")
+}
+
+fn catalogue_entry(model_id: &str, provider_default: bool) -> ModelCatalogEntry {
+    ModelCatalogEntry::new(
+        ModelId::new(model_id).expect("model id is valid"),
+        ModelMetadata::default().with_default(provider_default),
+    )
+    .with_provider_id(ProviderId::new("deepseek").expect("provider id is valid"))
+}
+
+fn prepared_services() -> HostServices {
+    let host = LocalProcessHost::builder(LocalProcessLimits::default()).build();
+    let thread = Arc::new(ThreadServices::new());
+    HostServices::new(host_id())
+        .with_task(Arc::clone(&thread) as Arc<dyn ScopedTaskService>)
+        .with_blocking_work(Arc::clone(&thread) as Arc<dyn BlockingWorkService>)
+        .with_time(thread as Arc<dyn TimeService>)
+        .with_network(Arc::new(host.clone()) as Arc<dyn swallowtail_runtime::NetworkPolicyService>)
+        .with_credential(Arc::new(host) as Arc<dyn CredentialService>)
+}
+
+fn snapshot_record(services: &HostServices) -> ConfiguredProviderInstanceRecord {
+    let profile = access_profile(CredentialRef::new(CREDENTIAL_REF).expect("ref is valid"));
+    let evidence = ready_evidence(&profile);
+    let prepared = prepare_deepseek_direct(
+        DeepSeekPreparationInput::new(
+            instance_id(),
+            InstanceRevision::new("1").expect("revision is valid"),
+            host_id(),
+            InstanceTargetRef::new(DEEPSEEK_ENDPOINT).expect("target is valid"),
+            profile.clone(),
+            evidence.clone(),
+        ),
+        services,
+    )
+    .expect("instance prepares");
+    let driver = deepseek_direct_descriptor();
+    let route =
+        prepared_route_evidence(services, &driver, prepared.instance(), &profile, &evidence);
+    ConfiguredProviderInstanceRecord::admit(
+        ConfiguredProviderInstanceAdmission::new(
+            driver,
+            prepared.instance().clone(),
+            profile,
+            evidence,
+        )
+        .with_prepared_routes([route.clone()])
+        .with_model_catalogue(ConfiguredProviderModelCatalogueInput::available(
+            route,
+            [
+                catalogue_entry("deepseek-fixture-primary", true),
+                catalogue_entry("deepseek-fixture-secondary", false),
+            ],
+        )),
+    )
+    .expect("047 snapshot assembles")
+}
+
+#[test]
+fn refresh_writes_host_supplied_access_status_without_touching_enablement() {
+    let services = services();
+    let store = MemoryConnectionLifecycleStore::new();
+    let descriptor = deepseek_continuation_addable_route_descriptor(&services);
+    let catalog = AddableRouteCatalog::from_descriptors([descriptor]).expect("catalog assembles");
+    let admitted = admit_instance(
+        &catalog,
+        &store,
+        InstanceAdmissionRequest::new(
+            instance_id(),
+            family(),
+            swallowtail_core::AddableRouteId::new("deepseek.continuation")
+                .expect("route id is valid"),
+        )
+        .with_enablement(InstanceEnablement::Disabled),
+    )
+    .expect("admission succeeds");
+    assert_eq!(admitted.enablement(), InstanceEnablement::Disabled);
+    assert!(admitted.access_status().is_none());
+
+    let profile = access_profile(CredentialRef::new(CREDENTIAL_REF).expect("ref is valid"));
+    let refreshed = refresh_readiness(
+        &store,
+        ReadinessRefreshRequest::new(instance_id(), ready_access_status(&profile)),
+    )
+    .expect("refresh succeeds");
+
+    let status = refreshed.access_status().expect("access status is stored");
+    assert_eq!(status.credential(), CredentialState::Ready);
+    assert_eq!(status.entitlement(), EntitlementState::Available);
+    assert_eq!(
+        status.endpoint_authorization(),
+        EndpointAuthorization::Allowed
+    );
+    assert_eq!(status.runtime_readiness(), RuntimeReadiness::Ready);
+    assert_eq!(refreshed.enablement(), InstanceEnablement::Disabled);
+}
+
+#[test]
+fn subject_stays_absent_for_deepseek_continuation() {
+    let services = services();
+    let store = MemoryConnectionLifecycleStore::new();
+    admitted_record(&services, &store);
+
+    let observed = observe_authenticated_subject(
+        &store,
+        &instance_id(),
+        AuthenticatedSubjectObservation::undisclosed(),
+    )
+    .expect("subject observation succeeds");
+
+    assert_eq!(observed.email(), &SubjectDisclosure::Absent);
+    assert_eq!(observed.login(), &SubjectDisclosure::Absent);
+    assert_eq!(observed.plan(), &SubjectDisclosure::Absent);
+}
+
+#[test]
+fn overlay_marks_deepseek_catalogue_rows_without_changing_readiness() {
+    let services = services();
+    let store = MemoryConnectionLifecycleStore::new();
+    admitted_record(&services, &store);
+    let record = snapshot_record(&prepared_services());
+    assert_eq!(
+        record.selection_readiness(),
+        ConfiguredProviderInstanceSelectionReadiness::Ready
+    );
+    let snapshot_debug = format!("{record:?}");
+    assert!(!snapshot_debug.contains('@'));
+    assert!(!snapshot_debug.contains("sk-"));
+
+    store
+        .put_overlay_marker(
+            OverlayMarker::new(
+                instance_id(),
+                ProviderId::new("deepseek").expect("provider id is valid"),
+                ModelId::new("deepseek-fixture-secondary").expect("model id is valid"),
+            )
+            .with_favourite(true)
+            .with_ordinal(Some(0)),
+        )
+        .expect("overlay marker stores");
+
+    let overlay = apply_stored_model_presentation_overlay(&store, &record)
+        .expect("overlay projects onto the deepseek catalogue");
+
+    assert_eq!(overlay.selection_readiness(), record.selection_readiness());
+    assert_eq!(overlay.instance_id(), &instance_id());
+    let entries: Vec<_> = overlay.entries().collect();
+    assert_eq!(entries.len(), 2);
+    let secondary = entries
+        .iter()
+        .find(|entry| entry.model_id().as_str() == "deepseek-fixture-secondary")
+        .expect("secondary row is present");
+    assert!(secondary.favourite());
+    assert_eq!(secondary.ordinal(), Some(0));
+    assert!(!secondary.provider_default());
+    let primary = entries
+        .iter()
+        .find(|entry| entry.model_id().as_str() == "deepseek-fixture-primary")
+        .expect("primary row is present");
+    assert!(primary.provider_default());
+    assert!(!primary.consumer_default());
+    assert!(!primary.hidden());
 }

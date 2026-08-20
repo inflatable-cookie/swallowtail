@@ -98,7 +98,11 @@ pub use callback::{
     CallbackResult, CallbackWaitState,
 };
 pub use cancellation::{CancellationAcknowledgement, CancellationControl, ImmediateCancellation};
-pub use connection_lifecycle::{ConnectionLifecycleStore, ConnectionLifecycleStoreFailure};
+pub use connection_lifecycle::{
+    AddableRouteCatalog, AddableRouteCatalogFailure, AddableRouteCatalogFailureKind,
+    ConnectionLifecycleStore, ConnectionLifecycleStoreFailure, InstanceAdmissionFailure,
+    InstanceAdmissionFailureKind, InstanceAdmissionRequest, admit_instance,
+};
 pub use content::OperationContent;
 pub use debug_observation::{
     DEBUG_DETAIL_TRUNCATED_SUFFIX, DebugObservation, DebugObservationKind, MAX_DEBUG_DETAIL_CHARS,

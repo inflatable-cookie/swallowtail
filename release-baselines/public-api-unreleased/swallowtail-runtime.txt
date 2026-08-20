@@ -109,6 +109,8 @@ pub swallowtail_runtime::ActivityStatus::InProgress
 pub swallowtail_runtime::ActivityStatus::Pending
 impl swallowtail_runtime::ActivityStatus
 pub const fn swallowtail_runtime::ActivityStatus::is_terminal(self) -> bool
+pub enum swallowtail_runtime::AddableRouteCatalogFailureKind
+pub swallowtail_runtime::AddableRouteCatalogFailureKind::DuplicateRoute
 pub enum swallowtail_runtime::AttachmentRepresentation
 pub swallowtail_runtime::AttachmentRepresentation::BoundedBytes
 pub swallowtail_runtime::AttachmentRepresentation::ProviderUpload
@@ -236,6 +238,13 @@ pub swallowtail_runtime::HarnessUserInputQuestionKind::Choice::allow_other: bool
 pub swallowtail_runtime::HarnessUserInputQuestionKind::Choice::mode: swallowtail_runtime::HarnessUserInputChoiceMode
 pub swallowtail_runtime::HarnessUserInputQuestionKind::Text
 pub swallowtail_runtime::HarnessUserInputQuestionKind::Text::secret: bool
+pub enum swallowtail_runtime::InstanceAdmissionFailureKind
+pub swallowtail_runtime::InstanceAdmissionFailureKind::RouteAbsent
+pub swallowtail_runtime::InstanceAdmissionFailureKind::RouteUnavailable
+pub swallowtail_runtime::InstanceAdmissionFailureKind::RouteUnsupported
+pub swallowtail_runtime::InstanceAdmissionFailureKind::Store
+pub swallowtail_runtime::InstanceAdmissionFailureKind::UnknownConfigField
+pub swallowtail_runtime::InstanceAdmissionFailureKind::UnknownCredentialField
 pub enum swallowtail_runtime::InterruptedRunState
 pub swallowtail_runtime::InterruptedRunState::Active
 pub swallowtail_runtime::InterruptedRunState::Cancelled
@@ -602,6 +611,21 @@ pub fn swallowtail_runtime::ActivityObservation::with_subagents(self, impl core:
 pub fn swallowtail_runtime::ActivityObservation::with_task_list(self, swallowtail_runtime::TaskListSnapshot) -> core::result::Result<Self, swallowtail_runtime::InvalidActivityRecord>
 impl core::fmt::Display for swallowtail_runtime::ActivityObservation
 pub fn swallowtail_runtime::ActivityObservation::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_runtime::AddableRouteCatalog
+impl swallowtail_runtime::AddableRouteCatalog
+pub fn swallowtail_runtime::AddableRouteCatalog::from_descriptors(impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::connection_lifecycle::descriptor::AddableRouteDescriptor>) -> core::result::Result<Self, swallowtail_runtime::AddableRouteCatalogFailure>
+pub fn swallowtail_runtime::AddableRouteCatalog::get(&self, &swallowtail_core::connection_lifecycle::identity::AddableRouteId) -> core::option::Option<&swallowtail_core::connection_lifecycle::descriptor::AddableRouteDescriptor>
+pub fn swallowtail_runtime::AddableRouteCatalog::new() -> Self
+pub fn swallowtail_runtime::AddableRouteCatalog::routes(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = &swallowtail_core::connection_lifecycle::descriptor::AddableRouteDescriptor>
+pub fn swallowtail_runtime::AddableRouteCatalog::routes_with_topology(&self, swallowtail_core::connection_lifecycle::descriptor::RouteTopology) -> impl core::iter::traits::iterator::Iterator<Item = &swallowtail_core::connection_lifecycle::descriptor::AddableRouteDescriptor>
+pub fn swallowtail_runtime::AddableRouteCatalog::with_descriptor(self, swallowtail_core::connection_lifecycle::descriptor::AddableRouteDescriptor) -> core::result::Result<Self, swallowtail_runtime::AddableRouteCatalogFailure>
+pub struct swallowtail_runtime::AddableRouteCatalogFailure
+impl swallowtail_runtime::AddableRouteCatalogFailure
+pub const fn swallowtail_runtime::AddableRouteCatalogFailure::diagnostic(&self) -> &swallowtail_core::diagnostic::SafeDiagnostic
+pub const fn swallowtail_runtime::AddableRouteCatalogFailure::kind(&self) -> swallowtail_runtime::AddableRouteCatalogFailureKind
+impl core::error::Error for swallowtail_runtime::AddableRouteCatalogFailure
+impl core::fmt::Display for swallowtail_runtime::AddableRouteCatalogFailure
+pub fn swallowtail_runtime::AddableRouteCatalogFailure::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub struct swallowtail_runtime::ArchiveProviderSessionRequest
 impl swallowtail_runtime::ArchiveProviderSessionRequest
 pub const fn swallowtail_runtime::ArchiveProviderSessionRequest::agreement(&self) -> &swallowtail_runtime::ProviderSessionManagementAgreement
@@ -1181,6 +1205,27 @@ pub swallowtail_runtime::InstalledProbeCodes::failed: &'static str
 pub swallowtail_runtime::InstalledProbeCodes::incompatible: &'static str
 pub swallowtail_runtime::InstalledProbeCodes::malformed: &'static str
 pub swallowtail_runtime::InstalledProbeCodes::timed_out: &'static str
+pub struct swallowtail_runtime::InstanceAdmissionFailure
+impl swallowtail_runtime::InstanceAdmissionFailure
+pub const fn swallowtail_runtime::InstanceAdmissionFailure::diagnostic(&self) -> &swallowtail_core::diagnostic::SafeDiagnostic
+pub const fn swallowtail_runtime::InstanceAdmissionFailure::kind(&self) -> swallowtail_runtime::InstanceAdmissionFailureKind
+impl core::error::Error for swallowtail_runtime::InstanceAdmissionFailure
+impl core::fmt::Display for swallowtail_runtime::InstanceAdmissionFailure
+pub fn swallowtail_runtime::InstanceAdmissionFailure::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_runtime::InstanceAdmissionRequest
+impl swallowtail_runtime::InstanceAdmissionRequest
+pub fn swallowtail_runtime::InstanceAdmissionRequest::config_refs(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = (&swallowtail_core::connection_lifecycle::identity::ConfigFieldId, &swallowtail_core::runtime_identity::ConfigFieldRef)>
+pub fn swallowtail_runtime::InstanceAdmissionRequest::credential_refs(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = (&swallowtail_core::connection_lifecycle::identity::CredentialFieldId, &swallowtail_core::runtime_identity::CredentialRef)>
+pub const fn swallowtail_runtime::InstanceAdmissionRequest::enablement(&self) -> swallowtail_core::connection_lifecycle::records::InstanceEnablement
+pub const fn swallowtail_runtime::InstanceAdmissionRequest::family(&self) -> &swallowtail_core::runtime_identity::IntegrationFamilyId
+pub const fn swallowtail_runtime::InstanceAdmissionRequest::instance_id(&self) -> &swallowtail_core::runtime_identity::ConfiguredInstanceId
+pub const fn swallowtail_runtime::InstanceAdmissionRequest::label(&self) -> core::option::Option<&swallowtail_core::connection_lifecycle::identity::InstanceLabel>
+pub fn swallowtail_runtime::InstanceAdmissionRequest::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::IntegrationFamilyId, swallowtail_core::connection_lifecycle::identity::AddableRouteId) -> Self
+pub const fn swallowtail_runtime::InstanceAdmissionRequest::route_id(&self) -> &swallowtail_core::connection_lifecycle::identity::AddableRouteId
+pub fn swallowtail_runtime::InstanceAdmissionRequest::with_config_refs(self, impl core::iter::traits::collect::IntoIterator<Item = (swallowtail_core::connection_lifecycle::identity::ConfigFieldId, swallowtail_core::runtime_identity::ConfigFieldRef)>) -> Self
+pub fn swallowtail_runtime::InstanceAdmissionRequest::with_credential_refs(self, impl core::iter::traits::collect::IntoIterator<Item = (swallowtail_core::connection_lifecycle::identity::CredentialFieldId, swallowtail_core::runtime_identity::CredentialRef)>) -> Self
+pub const fn swallowtail_runtime::InstanceAdmissionRequest::with_enablement(self, swallowtail_core::connection_lifecycle::records::InstanceEnablement) -> Self
+pub fn swallowtail_runtime::InstanceAdmissionRequest::with_label(self, swallowtail_core::connection_lifecycle::identity::InstanceLabel) -> Self
 pub struct swallowtail_runtime::InvalidActivityRecord
 impl swallowtail_runtime::InvalidActivityRecord
 pub const fn swallowtail_runtime::InvalidActivityRecord::diagnostic(&self) -> &swallowtail_core::diagnostic::SafeDiagnostic
@@ -2548,6 +2593,7 @@ pub fn swallowtail_runtime::WorkingResourceService::resolve(&self, swallowtail_r
 pub trait swallowtail_runtime::WorkingStateRestorationOperation: core::marker::Send + core::marker::Sync
 pub fn swallowtail_runtime::WorkingStateRestorationOperation::method(&self) -> swallowtail_runtime::WorkingStateRestorationMethod
 pub fn swallowtail_runtime::WorkingStateRestorationOperation::restore(alloc::boxed::Box<Self>, swallowtail_runtime::HostServices) -> swallowtail_runtime::BoxFuture<'static, core::result::Result<swallowtail_runtime::WorkingStateRestorationOutcome, swallowtail_runtime::RuntimeFailure>>
+pub fn swallowtail_runtime::admit_instance(&swallowtail_runtime::AddableRouteCatalog, &dyn swallowtail_runtime::ConnectionLifecycleStore, swallowtail_runtime::InstanceAdmissionRequest) -> core::result::Result<swallowtail_core::connection_lifecycle::records::AdmittedInstanceRecord, swallowtail_runtime::InstanceAdmissionFailure>
 pub fn swallowtail_runtime::append_folded_idioms(core::option::Option<swallowtail_runtime::OperationContent>, alloc::string::String) -> core::option::Option<swallowtail_runtime::OperationContent>
 pub fn swallowtail_runtime::base_requirements(swallowtail_core::runtime_identity::ExecutionLayer, swallowtail_core::runtime_identity::OperationShape, swallowtail_core::runtime_identity::DriverRole, &swallowtail_core::instance::ConfiguredInstance, &swallowtail_core::access::AccessProfile, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::access::CredentialState>, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::requirement::CapabilityRequirement>) -> swallowtail_core::requirement::operation::OperationRequirements
 pub fn swallowtail_runtime::bound_provider_session_replay_tail(alloc::vec::Vec<swallowtail_runtime::SessionReplayItem>, swallowtail_runtime::ProviderSessionReconciliationBounds) -> (alloc::vec::Vec<swallowtail_runtime::SessionReplayItem>, bool)

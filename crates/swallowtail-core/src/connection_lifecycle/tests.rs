@@ -127,7 +127,19 @@ fn addable_route_descriptor_keeps_topology_and_sign_in_requirements() {
         AddableRouteAvailability::Unavailable(AddableRouteMissingRequirement::HostService)
     );
     assert_eq!(descriptor.credential_fields().len(), 1);
+    assert_eq!(
+        descriptor
+            .credential_field(&CredentialFieldId::new("api_key").expect("field id is valid"))
+            .map(CredentialFieldDescriptor::visibility),
+        Some(CredentialFieldVisibility::Secret)
+    );
     assert_eq!(descriptor.config_fields().len(), 1);
+    assert_eq!(
+        descriptor
+            .config_field(&ConfigFieldId::new("endpoint").expect("config id is valid"))
+            .map(ConfigFieldDescriptor::kind),
+        Some(ConfigFieldKind::ApiEndpoint)
+    );
     assert_eq!(
         descriptor.sign_in_actions().collect::<Vec<_>>(),
         vec![SignInAction::Interactive]

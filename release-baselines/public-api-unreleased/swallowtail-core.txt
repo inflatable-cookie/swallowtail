@@ -676,7 +676,9 @@ pub fn swallowtail_core::AdapterVersion::new(impl core::convert::Into<alloc::str
 pub struct swallowtail_core::AddableRouteDescriptor
 impl swallowtail_core::AddableRouteDescriptor
 pub const fn swallowtail_core::AddableRouteDescriptor::availability(&self) -> swallowtail_core::AddableRouteAvailability
+pub fn swallowtail_core::AddableRouteDescriptor::config_field(&self, &swallowtail_core::ConfigFieldId) -> core::option::Option<&swallowtail_core::ConfigFieldDescriptor>
 pub fn swallowtail_core::AddableRouteDescriptor::config_fields(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = &swallowtail_core::ConfigFieldDescriptor>
+pub fn swallowtail_core::AddableRouteDescriptor::credential_field(&self, &swallowtail_core::CredentialFieldId) -> core::option::Option<&swallowtail_core::CredentialFieldDescriptor>
 pub fn swallowtail_core::AddableRouteDescriptor::credential_fields(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = &swallowtail_core::CredentialFieldDescriptor>
 pub const fn swallowtail_core::AddableRouteDescriptor::driver(&self) -> &swallowtail_core::AdapterIdentity
 pub const fn swallowtail_core::AddableRouteDescriptor::id(&self) -> &swallowtail_core::AddableRouteId

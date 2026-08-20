@@ -1,3 +1,5 @@
+#[path = "addable_route_catalog.rs"]
+mod addable_route_catalog;
 #[path = "conformance_profiles.rs"]
 mod conformance_profiles;
 #[path = "contract_kernel.rs"]

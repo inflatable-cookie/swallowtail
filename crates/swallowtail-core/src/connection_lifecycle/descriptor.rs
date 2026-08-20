@@ -254,9 +254,21 @@ impl AddableRouteDescriptor {
         self.credential_fields.values()
     }
 
+    #[must_use]
+    /// Returns the credential-field descriptor with this id, when advertised.
+    pub fn credential_field(&self, id: &CredentialFieldId) -> Option<&CredentialFieldDescriptor> {
+        self.credential_fields.get(id)
+    }
+
     /// Iterates config-field descriptors in stable id order.
     pub fn config_fields(&self) -> impl ExactSizeIterator<Item = &ConfigFieldDescriptor> {
         self.config_fields.values()
+    }
+
+    #[must_use]
+    /// Returns the config-field descriptor with this id, when advertised.
+    pub fn config_field(&self, id: &ConfigFieldId) -> Option<&ConfigFieldDescriptor> {
+        self.config_fields.get(id)
     }
 
     /// Iterates advertised sign-in actions in stable order.

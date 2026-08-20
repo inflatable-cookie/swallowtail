@@ -1,13 +1,25 @@
-//! Connection-lifecycle store port for Contract 057.
+//! Connection-lifecycle catalog, admission, and store port for Contract 057.
 //!
-//! Runtime owns the persistence trait. Optional in-memory and JSON-file
-//! adapters live in `swallowtail-host-local`. This port never requires raw
-//! secrets and does not project 047 readiness.
+//! Runtime owns catalog assembly, instance admission, and the persistence
+//! trait. Optional in-memory and JSON-file adapters live in
+//! `swallowtail-host-local`. This surface never requires raw secrets and does
+//! not project 047 readiness.
+
+mod admission;
+mod catalog;
+mod failure;
 
 use std::error::Error;
 use std::fmt;
 use swallowtail_core::{
     AdmittedInstanceRecord, ConfiguredInstanceId, OverlayMarker, SafeDiagnostic,
+};
+
+pub use admission::{InstanceAdmissionRequest, admit_instance};
+pub use catalog::AddableRouteCatalog;
+pub use failure::{
+    AddableRouteCatalogFailure, AddableRouteCatalogFailureKind, InstanceAdmissionFailure,
+    InstanceAdmissionFailureKind,
 };
 
 /// Rejection raised by a connection-lifecycle store adapter.
@@ -73,6 +85,12 @@ pub trait ConnectionLifecycleStore: Send + Sync {
     fn list_overlay_markers(&self) -> Result<Vec<OverlayMarker>, ConnectionLifecycleStoreFailure>;
 }
 
+#[cfg(test)]
+#[path = "connection_lifecycle/admission_tests.rs"]
+mod admission_tests;
+#[cfg(test)]
+#[path = "connection_lifecycle/catalog_tests.rs"]
+mod catalog_tests;
 #[cfg(test)]
 #[path = "connection_lifecycle/tests.rs"]
 mod tests;

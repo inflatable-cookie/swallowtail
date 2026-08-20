@@ -369,6 +369,12 @@ pub fn swallowtail_testkit::assert_provider_session_management_contract()
 pub fn swallowtail_testkit::assert_reference_opacity(&swallowtail_core::provider_reference::SessionRef, &swallowtail_core::provider_reference::RunRef)
 pub fn swallowtail_testkit::assert_successful_preflight_binding()
 pub fn swallowtail_testkit::assert_unverified_newer_execution(&swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim, &swallowtail_core::interface_version::InterfaceVersion)
+pub fn swallowtail_testkit::fixture_hosted_available_descriptor() -> swallowtail_core::connection_lifecycle::descriptor::AddableRouteDescriptor
+pub fn swallowtail_testkit::fixture_hosted_missing_host_service_descriptor() -> swallowtail_core::connection_lifecycle::descriptor::AddableRouteDescriptor
+pub fn swallowtail_testkit::fixture_installed_available_with_config_descriptor() -> swallowtail_core::connection_lifecycle::descriptor::AddableRouteDescriptor
+pub fn swallowtail_testkit::fixture_installed_missing_install_descriptor() -> swallowtail_core::connection_lifecycle::descriptor::AddableRouteDescriptor
+pub fn swallowtail_testkit::fixture_installed_unsupported_descriptor() -> swallowtail_core::connection_lifecycle::descriptor::AddableRouteDescriptor
+pub fn swallowtail_testkit::fixture_local_runtime_missing_runtime_descriptor() -> swallowtail_core::connection_lifecycle::descriptor::AddableRouteDescriptor
 pub fn swallowtail_testkit::poll_immediate<T>(impl core::future::future::Future<Output = T>) -> T
 pub fn swallowtail_testkit::provider_session_catalogue_bounds(u32, u32, u32, u32, u32) -> swallowtail_core::provider_session_catalogue::ProviderSessionCatalogueBounds
 pub fn swallowtail_testkit::remote_acp_requirements(swallowtail_core::remote_acp::RemoteAcpTransport) -> swallowtail_core::remote_acp::RemoteAcpRequirements

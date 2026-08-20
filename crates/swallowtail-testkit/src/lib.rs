@@ -7,6 +7,7 @@
 #![deny(missing_docs)]
 
 mod acp_projection_assertions;
+mod addable_route_fixture;
 mod assertions;
 mod callback_fixture;
 mod direct_continuation_fixture;
@@ -61,6 +62,12 @@ mod runtime_assertions;
 mod session_access_fixture;
 mod topology_fixture;
 
+pub use addable_route_fixture::{
+    fixture_hosted_available_descriptor, fixture_hosted_missing_host_service_descriptor,
+    fixture_installed_available_with_config_descriptor,
+    fixture_installed_missing_install_descriptor, fixture_installed_unsupported_descriptor,
+    fixture_local_runtime_missing_runtime_descriptor,
+};
 pub use assertions::{
     assert_capability_rejection, assert_contract_kernel, assert_diagnostic_redaction,
     assert_extension_isolation, assert_extension_policies, assert_reference_opacity,

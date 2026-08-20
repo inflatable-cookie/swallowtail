@@ -1,3 +1,4 @@
 swallowtail-core
 swallowtail-host-local
 swallowtail-runtime
+swallowtail-testkit

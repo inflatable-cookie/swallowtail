@@ -1,12 +1,12 @@
 # 013 Local Ollama Attach
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Depends on: completed g04.012
 Vision tags: consumer integration, route readiness, explicit selection
 Contract refs: 011, 014, 029, 037, 047, 057
-Planning state: cards 036-038 ready
+Planning state: cards 036-038 completed
 Research: 169
 
 ## Problem
@@ -23,11 +23,11 @@ Prove one local-runtime shape through the 057 facade, then reuse
 
 ## Goals
 
-- [ ] expose an adapter-local local-runtime addable descriptor for
+- [x] expose an adapter-local local-runtime addable descriptor for
       `ollama.attached`
-- [ ] admit through the 057 store with no credential field
-- [ ] reuse `prepare_ollama_attached` after admission
-- [ ] refresh access status, project 029 update observation, and keep
+- [x] admit through the 057 store with no credential field
+- [x] reuse `prepare_ollama_attached` after admission
+- [x] refresh access status, project 029 update observation, and keep
       subject Absent
 
 ## Non-Goals
@@ -44,42 +44,43 @@ Prove one local-runtime shape through the 057 facade, then reuse
 
 ### Batch 13.1 — Addable Descriptor
 
-- [ ] Execute card 036.
-- [ ] ship `AddableRouteDescriptor` from `swallowtail-adapter-ollama`
-- [ ] topology local-runtime; config field API endpoint; no credential
+- [x] Execute card 036.
+- [x] ship `AddableRouteDescriptor` from `swallowtail-adapter-ollama`
+- [x] topology local-runtime; config field API endpoint; no credential
       field
 
 ### Batch 13.2 — Admission And Prepare
 
-- [ ] Execute card 037 after card 036.
-- [ ] admit through the 057 store with an opaque endpoint config ref
-- [ ] no sign-in loop
-- [ ] `prepare_ollama_attached` still prepares after admission; model tag
+- [x] Execute card 037 after card 036.
+- [x] admit through the 057 store with an opaque endpoint config ref
+- [x] no sign-in loop
+- [x] `prepare_ollama_attached` still prepares after admission; model tag
       and digest stay prepare-time
 
 ### Batch 13.3 — Refresh, Update, And Subject
 
-- [ ] Execute card 038 after card 037.
-- [ ] refresh host-supplied `AccessStatus`; subject stays Absent
-- [ ] `observe_instance_update` reuses `ollama_runtime_claim`; 032 stays
+- [x] Execute card 038 after card 037.
+- [x] refresh host-supplied `AccessStatus`; subject stays Absent
+- [x] `observe_instance_update` reuses `ollama_runtime_claim`; 032 stays
       unobserved unless an executable is supplied
-- [ ] unmarked catalogue rows stay unmarked; do not invent a provider id
+- [x] unmarked catalogue rows stay unmarked; do not invent a provider id
 
 ## Acceptance Criteria
 
-- [ ] a consumer can assemble a catalog that includes Ollama attach by
+- [x] a consumer can assemble a catalog that includes Ollama attach by
       linking the adapter
-- [ ] admission writes no secret bytes and no credential refs
-- [ ] `prepare_ollama_attached` still runs after admission
-- [ ] update observation reuses 029
-- [ ] no live runtime start or install
-- [ ] `public-api-0.3.3` stays immutable
+- [x] admission writes no secret bytes and no credential refs
+- [x] `prepare_ollama_attached` still runs after admission
+- [x] update observation reuses 029
+- [x] no live runtime start or install
+- [x] `public-api-0.3.3` stays immutable
 
 ## Lane Runway
 
 - previous: g04.012 installed Codex app-server
 - this milestone: local Ollama attach
-- later: hosted OAuth gate, Contract 052 consumer path
+- next: g04.014 Contract 052 consumer path
+- later: hosted OAuth gate
 
 ## Decision Gates
 

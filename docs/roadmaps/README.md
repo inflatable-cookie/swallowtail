@@ -14,8 +14,8 @@ shape.
 
 ## Next Task
 
-Worker in flight: g04.013 cards 036-038. Handoff
-`docs/handoffs/20260820-161601-g04-013-local-ollama-attach.md`.
+Worker in flight: g04.014 cards 039-041. Handoff
+`docs/handoffs/20260820-163734-g04-014-connection-lifecycle-consumer-path.md`.
 
 ## Index
 

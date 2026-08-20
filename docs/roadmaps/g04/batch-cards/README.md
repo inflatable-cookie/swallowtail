@@ -2,16 +2,19 @@
 
 ## Active
 
-- [036-ollama-attach-addable-descriptor.md](./036-ollama-attach-addable-descriptor.md)
-- [037-ollama-attach-admission-and-prepare.md](./037-ollama-attach-admission-and-prepare.md)
-- [038-ollama-attach-refresh-update-and-subject.md](./038-ollama-attach-refresh-update-and-subject.md)
+- [039-connection-lifecycle-feature-guide.md](./039-connection-lifecycle-feature-guide.md)
+- [040-first-proof-route-guide-amendments.md](./040-first-proof-route-guide-amendments.md)
+- [041-connection-lifecycle-examples-and-guide-map.md](./041-connection-lifecycle-examples-and-guide-map.md)
 
 ## Planned
 
-None. Hosted OAuth stays a remaining gate behind g04.013.
+None. Hosted OAuth stays a remaining gate behind g04.014.
 
 ## Completed
 
+- [038-ollama-attach-refresh-update-and-subject.md](./038-ollama-attach-refresh-update-and-subject.md)
+- [037-ollama-attach-admission-and-prepare.md](./037-ollama-attach-admission-and-prepare.md)
+- [036-ollama-attach-addable-descriptor.md](./036-ollama-attach-addable-descriptor.md)
 - [035-codex-app-server-refresh-update-and-subject.md](./035-codex-app-server-refresh-update-and-subject.md)
 - [034-codex-app-server-admission-and-prepare.md](./034-codex-app-server-admission-and-prepare.md)
 - [033-codex-app-server-addable-descriptor.md](./033-codex-app-server-addable-descriptor.md)

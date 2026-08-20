@@ -1,6 +1,6 @@
 # 037 Ollama Attach Admission And Prepare
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../013-local-ollama-attach.md`

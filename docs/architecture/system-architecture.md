@@ -1156,12 +1156,14 @@ start, poll, complete, cancel, and timeout. Missing required ports fail
 closed. API-key collection writes opaque `CredentialRef` values, never secret
 bytes.
 
-First-proof hosted API-key Anthropic Messages and installed Codex
-app-server are realized. Anthropic collects `CredentialRef` on the hosted
-API-key path and overlay-keys `anthropic` catalogue rows. Codex admits the
-ChatGPT subscription profile with no credential field; 029/032 update
-observation is reused; catalogue rows without `provider_id` stay unmarked.
-Not yet realized: local Ollama attach or hosted interactive OAuth.
+First-proof hosted API-key Anthropic Messages, installed Codex
+app-server, and local Ollama attach are realized. Anthropic collects
+`CredentialRef` and overlay-keys `anthropic` catalogue rows. Codex admits
+the ChatGPT subscription profile with no credential field and reuses 029/032
+update observation. Ollama admits a local-unauthenticated attached runtime
+with no credential field. Catalogue rows without `provider_id` stay unmarked.
+Not yet realized: hosted interactive OAuth, or a Contract 052 consumer path
+for the 057 lifecycle.
 
 The remaining direction is:
 

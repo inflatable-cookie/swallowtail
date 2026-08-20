@@ -4,6 +4,7 @@
 #![deny(missing_docs)]
 
 mod activity;
+mod addable;
 mod driver;
 mod failure;
 mod managed;
@@ -21,6 +22,11 @@ mod protocol;
 mod selection;
 mod transport;
 
+pub use addable::{
+    ANTHROPIC_MESSAGES_ADDABLE_ROUTE_ID, ANTHROPIC_MESSAGES_API_KEY_ENVIRONMENT_NAME,
+    ANTHROPIC_MESSAGES_API_KEY_FIELD_ID, ANTHROPIC_MESSAGES_ENDPOINT_FIELD_ID,
+    anthropic_messages_addable_route_descriptor,
+};
 pub use driver::{AnthropicDirectDriver, anthropic_direct_descriptor};
 pub use managed_driver::{AnthropicManagedAgentDriver, anthropic_managed_agent_descriptor};
 pub use managed_selection::{

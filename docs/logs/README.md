@@ -23,6 +23,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-20 Standing Currentness Lane](./2026-08-20-standing-currentness-lane.md)
 - [2026-08-20 g04 Hosted OAuth Parked](./2026-08-20-g04-hosted-oauth-parked.md)
 - [2026-08-20 g04.019 llama.cpp Attached Merged](./2026-08-20-g04-019-llama-cpp-attached-merged.md)
 - [2026-08-20 g04.019 Local llama.cpp Attached](./2026-08-20-g04-019-local-llama-cpp-attached.md)

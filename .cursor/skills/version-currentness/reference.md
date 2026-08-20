@@ -13,8 +13,8 @@ numbers.
 | Route + lifecycle rows | `docs/guides/provider-route-matrix.md` |
 | Decoder / help specimen | adapter `tests/fixtures/<family>-<baseline>/` |
 | Official channel | last currentness research row, adapter README/guide, changelog URL in prior identity research |
-| Current deferrals | `docs/roadmaps/g03/README.md` Current Checkpoint |
-| Next unused numbers | highest research, g03, and batch-card files plus their indexes |
+| Current deferrals | `docs/roadmaps/standing-lanes.md` |
+| Next unused numbers | highest research file plus the then-active generation's next roadmap and batch-card numbers |
 
 Do not treat a frozen currentness table as still-true official latest.
 Re-probe.
@@ -107,8 +107,9 @@ Index it in `docs/research/README.md` under Research Records.
 
 ## Roadmap and cards
 
-One g03 milestone, two batch cards. Status starts ready and is completed
-on closeout.
+One milestone in the then-active generation, two batch cards. Status
+starts ready and is completed on closeout. If no generation is active,
+stop and ask. Do not invent a generation to house currentness.
 
 Milestone name shape: `<NNN> <Family> <version> Useful Newer`.
 
@@ -155,9 +156,9 @@ Update current surfaces that name the ceiling:
 - `docs/logs/<date>-<family>-<version>-claim.md`
 - `docs/logs/README.md`
 - `docs/roadmaps/README.md` Next Task
-- `docs/roadmaps/g03/README.md` runway row, Current Checkpoint, numbered
+- then-active generation README runway, Current Checkpoint, numbered
   Milestones list
-- `docs/roadmaps/g03/batch-cards/README.md` Completed
+- then-active generation `batch-cards/README.md` Completed
 
 Leave historical research, old logs, and immutable release docs alone.
 `v0.3.2` (or whichever tagged release) keeps its recorded package/route
@@ -186,9 +187,9 @@ point UnverifiedNewer without a named incompatible reason.
 Sweep complete except current deferrals:
 
 ```
-Define the next g03 maintenance card now that remaining currentness
+Reassess the active generation now that remaining currentness
 AllowUnverified families except deferred <name> sit on current official
-stables.
+stables. Do not keep the generation open for currentness.
 ```
 
 `generation-index.md` and `long-term-plan.md` keep their pointer to the

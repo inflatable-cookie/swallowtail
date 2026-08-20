@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-19
+Updated: 2026-08-20
 
 ## Purpose
 
@@ -160,7 +160,9 @@ inside the owning driver unless two adapters prove a shared protocol boundary.
 
 Swallowtail revalidates every production route family against official stable
 points through a named currentness checkpoint, not through calendar CI or
-registry `latest`.
+registry `latest`. The checkpoint is a standing lane. It is not a generation
+runway goal and does not keep a generation open. Sequencing lives in
+[Standing Lanes](../roadmaps/standing-lanes.md).
 
 A checkpoint:
 

@@ -14,7 +14,9 @@ Run when any of these is true:
 - the operator asks for a version sweep
 - a consumer hits a defect on an unverified-newer point
 - a cluster of stables has moved since the last research currentness record
-- g03 returns to its evidence gate and currentness is the question
+
+This is a standing Contract 029 lane. It does not keep a generation open.
+See [Standing Lanes](../roadmaps/standing-lanes.md).
 
 Do not run it as CI, as a calendar cron, or as an install/update/login
 session.

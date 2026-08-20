@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-17
+Updated: 2026-08-20
 
 ## Scope
 
@@ -22,9 +22,9 @@ These rules apply to all Swallowtail work before v1.0.
 - Keep each roadmap generation as a long-lived container for roughly 30-50
   numbered roadmaps. Phase changes alone do not authorize rollover; batch cards
   do not count toward the generation range.
-- Run all-route version currentness as a named Contract 029 checkpoint. Do not
-  extend a compatibility claim from registry `latest` or local `--version`
-  alone.
+- Run all-route version currentness as a named Contract 029 checkpoint. It is
+  a standing lane, not a generation runway goal. Do not extend a
+  compatibility claim from registry `latest` or local `--version` alone.
 
 ## Closeout
 

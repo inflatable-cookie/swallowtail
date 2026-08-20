@@ -914,8 +914,9 @@ latest-qualified boundary is an explicit later-release change. No open-ended
 `latest` value participates in routing. All-route currentness is a named
 Contract 029 checkpoint: local `--version` plus official stable metadata
 against every production claim, classified without changing the claim.
-Family qualification follows the Upgrade Workflow. The operator runbook is
-the version-currentness checkpoint guide.
+It is a standing lane, not a generation runway goal. Family qualification
+follows the Upgrade Workflow. The operator runbook is the
+version-currentness checkpoint guide.
 
 The OpenCode HTTP adapter has a closed qualified server-version boundary.
 Tagged OpenAPI evidence for 59 stable releases from `1.14.48` through

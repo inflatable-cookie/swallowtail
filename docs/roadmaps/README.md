@@ -14,13 +14,20 @@ shape.
 
 ## Next Task
 
-g04 title programme is complete. Hosted OAuth is parked until a named
-production route requires URL-open plus loopback.
+Reassess g04 closeout now that currentness is a standing Contract 029 lane
+and hosted OAuth is parked.
+
+## Standing Lanes
+
+Generation-independent work lives in
+[standing-lanes.md](standing-lanes.md). Contract 029 currentness is the
+first standing lane. It does not keep a generation open.
 
 ## Index
 
 - [generation-index.md](./generation-index.md) — generation status
 - [long-term-plan.md](./long-term-plan.md) — staged multi-consumer adoption
+- [standing-lanes.md](standing-lanes.md) — generation-independent lanes
 - [backlog/README.md](backlog/README.md) — deferred work and promotion gates
 - [g01/README.md](g01/README.md) — completed foundation generation
 - [g02/README.md](g02/README.md) — completed stabilization, provider-wide

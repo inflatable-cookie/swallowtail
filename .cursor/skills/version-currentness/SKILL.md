@@ -22,8 +22,8 @@ Read [reference.md](reference.md) before writing cards, fixtures, or claims.
 Read, in order, then follow the latest of these over memory:
 
 1. this skill and `reference.md`
-2. `docs/roadmaps/README.md` Next Task
-3. `docs/roadmaps/g03/README.md` Current Checkpoint
+2. `docs/roadmaps/standing-lanes.md`
+3. `docs/roadmaps/README.md` Next Task
 4. Contract 029 Upgrade Workflow and Recurring Currentness Checkpoint
 5. `docs/guides/version-currentness-checkpoint.md`
 6. the latest currentness research (127 or its successor)
@@ -78,7 +78,9 @@ claims, matrices, or fixtures.
 **family:** execute the Upgrade Workflow for exactly one production route
 family. Identity card then claim card. One validation round at the claim.
 
-**stop:** do not start a deferred family. Do not invent the next g03 card.
+**stop:** do not start a deferred family. Do not invent a generation to
+house currentness. If a claim change is needed and no generation is
+active, ask.
 
 ## Rank the family
 
@@ -95,7 +97,7 @@ Otherwise rank from current claims, not from a frozen research table:
 4. Prefer `AllowUnverified` families whose official and/or host stable is
    newer than the qualified ceiling, and whose host already sits on a
    qualified bound.
-5. Skip current deferrals recorded in the g03 checkpoint.
+5. Skip current deferrals recorded in `docs/roadmaps/standing-lanes.md`.
 6. Skip exact-pin / qualified-only families unless the operator asked to
    reopen them.
 7. Pick one. Do not start a second family in the same run.
@@ -158,15 +160,17 @@ Typical claim shape for compatible-extension:
 
 Then update tests, the prepared guide, route + lifecycle matrix rows,
 feature-matrix CSV, architecture if it names the ceiling, `CHANGELOG.md`
-Unreleased, research/log/roadmap indexes, g03 runway + checkpoint +
-numbered milestone, batch-card index, and Next Task.
+Unreleased, research/log/roadmap indexes, the then-active generation
+runway + checkpoint + numbered milestone, batch-card index, and Next
+Task. Do not keep a generation open for currentness.
 
 Do **not** edit historical research, immutable release notes, or
 `provider-wide-harness-activity.json` unless a named gate fails.
 
-Copy the nearest prior family in the active generation for card, research,
-log, and fixture shape. Numbers: next unused research, g03, and batch
-card. Do not roll the generation.
+Copy the nearest prior family in the then-active generation for card,
+research, log, and fixture shape. Numbers: next unused research, that
+generation's next roadmap, and batch card. Do not roll a generation to
+house currentness. If none is active, stop and ask.
 
 ## Validation
 
@@ -180,7 +184,7 @@ effigy qa:northstar
 effigy qa:docs:index:research
 effigy qa:docs:index:logs
 effigy qa:docs:index:roadmaps
-effigy qa:docs:index:roadmaps:g03
+effigy qa:docs:index:roadmaps:<active-generation>
 effigy qa:docs:index:roadmaps:batch-cards
 effigy qa:docs:next-action:roadmaps
 ```
@@ -198,9 +202,10 @@ Next Task lives only in `docs/roadmaps/README.md`. Verb from
 `docs/policy/vision-next-task-verbs.txt`.
 
 - more official-newer families remain → Implement the next named family
-- sweep complete except current deferrals → Define the next g03
-  maintenance card; do not start a deferred family
+- sweep complete except current deferrals → stop currentness; resume the
+  generation's actual Next Task, or ask if none
 - identity named a stop → say so and ask
+- no active generation and a claim change is needed → stop and ask
 
 Auto-continuation: identity → claim in the same run. Claim → no. A later
 bare `continue` resumes whatever Next Task now names.

@@ -31,7 +31,6 @@ and selection policy.
 | Realize the model-presentation overlay without flattening catalogues. | completed | Contracts 057, 020 | `g04.009` |
 | Prove representative hosted, installed, and local-runtime shapes and publish a consumer path. | completed | Contracts 011, 037, 052, 057 | `g04.010` |
 | Expand addable-route coverage on the proved hosted, installed, and local-runtime shapes. | completed | Contracts 011, 037, 052, 057 | `g04.015` |
-| Continue Contract 029 currentness as a maintenance lane, not the title programme. | recurring | Contract 029 | evidence-gated |
 
 ## Planned Next Roadmaps
 
@@ -44,7 +43,7 @@ until a named production route requires URL-open plus loopback.
 - g04.001 through g04.019 are complete. PR 16 is on `main` at `576184e9`
 - Title programme is complete. Second-proof addable-route expansion is complete
 - Hosted OAuth is parked, not the next card
-- Contract 029 currentness stays evidence-gated
+- Contract 029 currentness is a standing lane, not a g04 goal
 - `v0.3.3` remains `51d18620`
 
 ## Milestones

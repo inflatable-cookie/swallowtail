@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-19
+Updated: 2026-08-20
 
 ## Generations
 
@@ -36,6 +36,10 @@ a repository-local inventory of existing Swallowtail records against the
 consumer connection lifecycle. It does not imply a connection server,
 credential store, UI, router, or implementation before evidence and operator
 decisions agree.
+
+Contract 029 currentness is a standing lane. It is not a generation runway
+goal and does not keep g04 or any later generation open. See
+[standing-lanes.md](standing-lanes.md).
 
 ## Rollover Rule
 

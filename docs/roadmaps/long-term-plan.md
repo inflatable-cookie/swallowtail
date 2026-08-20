@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-19
+Updated: 2026-08-20
 
 ## Sequence
 
@@ -261,7 +261,8 @@ surface. Consuming applications should be able to list addable routes, collect
 or launch required credentials, admit configured instances, observe readiness
 and updates, and expose the models those instances can run. Swallowtail does
 not become a connection server, credential store, UI, or router. Recurring
-currentness continues as a Contract 029 maintenance lane inside g04.
+currentness is a standing Contract 029 lane, not a g04 goal. See
+[standing-lanes.md](standing-lanes.md).
 
 ## Next Task
 

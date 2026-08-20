@@ -1,6 +1,6 @@
 # 022 Readiness Refresh
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../008-readiness-refresh-subject-and-updates.md`
@@ -29,10 +29,10 @@ without changing enablement or mutating a 047 snapshot.
 
 ## Acceptance Criteria
 
-- [ ] a disabled instance can refresh to ready access dimensions
-- [ ] an enabled instance can refresh to not-ready access dimensions
-- [ ] enablement is unchanged by refresh
-- [ ] no 047 type is written or mutated
+- [x] a disabled instance can refresh to ready access dimensions
+- [x] an enabled instance can refresh to not-ready access dimensions
+- [x] enablement is unchanged by refresh
+- [x] no 047 type is written or mutated
 
 ## Validation
 

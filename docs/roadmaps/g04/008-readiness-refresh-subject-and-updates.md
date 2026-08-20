@@ -1,12 +1,12 @@
 # 008 Readiness Refresh, Subject, And Updates
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Depends on: g04.007
 Vision tags: consumer integration, route readiness, explicit selection
 Contract refs: 006, 008, 029, 032, 047, 057
-Planning state: cards 022-024 ready
+Planning state: cards 022-024 completed
 
 ## Problem
 
@@ -22,12 +22,12 @@ Realize readiness refresh, authenticated-subject observation, and Contract
 
 ## Goals
 
-- [ ] refresh credential, entitlement, endpoint, runtime, and support
+- [x] refresh credential, entitlement, endpoint, runtime, and support
       dimensions for one admitted instance
-- [ ] expose optional redacted-by-default subject observation
-- [ ] derive instance update observation from 029 claims and 032
+- [x] expose optional redacted-by-default subject observation
+- [x] derive instance update observation from 029 claims and 032
       observations
-- [ ] keep enablement and 047 `Ready` / `NotReady` independent
+- [x] keep enablement and 047 `Ready` / `NotReady` independent
 
 ## Non-Goals
 
@@ -43,30 +43,30 @@ Realize readiness refresh, authenticated-subject observation, and Contract
 
 ### Batch 8.1 — Readiness Refresh
 
-- [ ] Execute card 022.
-- [ ] re-observe 006/008 access dimensions for one admitted instance
-- [ ] do not write enablement or invent an aggregate ready boolean
+- [x] Execute card 022.
+- [x] re-observe 006/008 access dimensions for one admitted instance
+- [x] do not write enablement or invent an aggregate ready boolean
 
 ### Batch 8.2 — Subject Observation
 
-- [ ] Execute card 023 after card 022.
-- [ ] make `SubjectDisclosure::Absent` representable
-- [ ] observe email, login, or plan; redacted by default; revealable
+- [x] Execute card 023 after card 022.
+- [x] make `SubjectDisclosure::Absent` representable
+- [x] observe email, login, or plan; redacted by default; revealable
 
 ### Batch 8.3 — Update Observation
 
-- [ ] Execute card 024 after card 023.
-- [ ] project an update affordance from 029 claims and 032 observations
-- [ ] do not install, upgrade, or authenticate
+- [x] Execute card 024 after card 023.
+- [x] project an update affordance from 029 claims and 032 observations
+- [x] do not install, upgrade, or authenticate
 
 ## Acceptance Criteria
 
-- [ ] refresh writes `AccessStatus` onto the admitted record, not enablement
-- [ ] 047 snapshots are replaced by the consumer, not mutated in place
-- [ ] subject observation is absent from 047 and from default diagnostics
-- [ ] adapters can report a field as not disclosed
-- [ ] update observation reuses 029/032; no second currentness system
-- [ ] `public-api-0.3.3` stays immutable
+- [x] refresh writes `AccessStatus` onto the admitted record, not enablement
+- [x] 047 snapshots are replaced by the consumer, not mutated in place
+- [x] subject observation is absent from 047 and from default diagnostics
+- [x] adapters can report a field as not disclosed
+- [x] update observation reuses 029/032; no second currentness system
+- [x] `public-api-0.3.3` stays immutable
 
 ## Lane Runway
 

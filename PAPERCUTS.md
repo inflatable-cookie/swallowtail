@@ -5,6 +5,15 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] rustfmt --edition 2021 cannot parse this 2024 workspace — 2026-08-20
+- Friction: `rustfmt --edition 2021 <file>` fails on let-chains in sibling
+  modules (`preflight/validation.rs`, `provider_session_history/page.rs`)
+  even when those files are not the format target.
+- Impact: file-scoped rustfmt with the wrong edition aborts instead of
+  formatting the requested sources.
+- Fix: use `cargo fmt -p <crate>` or `rustfmt --edition 2024`.
+- Surface: local rustfmt invocation vs workspace edition 2024.
+
 ### [ ] DeepSeek stream-cancellation test flakes as ProviderFailed — 2026-08-19
 - Friction: `swallowtail-adapter-deepseek::driver::active_stream_cancellation_joins_before_session_credential_release`
   expected `Cancelled` and observed `ProviderFailed` with

@@ -1,6 +1,6 @@
 # 024 Instance Update Observation
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../008-readiness-refresh-subject-and-updates.md`
@@ -27,10 +27,10 @@ Project an instance update affordance from Contract 029 claims and Contract
 
 ## Acceptance Criteria
 
-- [ ] observation reuses 029 classification and 032 evidence
-- [ ] it cannot create a configured instance or start sign-in
-- [ ] no install or upgrade side effect
-- [ ] `public-api-0.3.3` stays immutable
+- [x] observation reuses 029 classification and 032 evidence
+- [x] it cannot create a configured instance or start sign-in
+- [x] no install or upgrade side effect
+- [x] `public-api-0.3.3` stays immutable
 
 ## Validation
 

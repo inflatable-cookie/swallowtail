@@ -14,8 +14,7 @@ shape.
 
 ## Next Task
 
-Worker in flight: g04.008 cards 022-024. Handoff
-`docs/handoffs/20260820-102815-g04-008-readiness-refresh-subject-updates.md`.
+g04.008 PR awaiting review. Next after merge: g04.009 overlay projection.
 
 ## Index
 

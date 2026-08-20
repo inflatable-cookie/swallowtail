@@ -1,6 +1,6 @@
 # 023 Authenticated Subject Observation
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../008-readiness-refresh-subject-and-updates.md`
@@ -28,10 +28,10 @@ facade: email, login, or plan, redacted by default and revealable.
 
 ## Acceptance Criteria
 
-- [ ] a field can be Absent, Redacted, or Revealed
-- [ ] default observation is not revealed
-- [ ] revealed email does not appear in `Debug`
-- [ ] 047 types still have no email, login, or plan fields
+- [x] a field can be Absent, Redacted, or Revealed
+- [x] default observation is not revealed
+- [x] revealed email does not appear in `Debug`
+- [x] 047 types still have no email, login, or plan fields
 
 ## Validation
 

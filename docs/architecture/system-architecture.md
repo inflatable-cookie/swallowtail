@@ -1119,25 +1119,34 @@ Contract 057 and Research 168 place a consuming connection-lifecycle facade
 in front of prepared integration and the Contract 047 selection snapshot.
 
 The kernel, addable-route catalog, admission API, interactive sign-in
-ports, and library-owned sign-in loop are realized: portable records in
-`swallowtail-core`, catalog assembly, the store trait, host-port traits, and
-the sign-in loop in `swallowtail-runtime`, and optional in-memory, JSON-file,
-and sign-in test-double adapters in `swallowtail-host-local`. Topology
-grouping is hosted / installed / local-runtime; it is not `ExecutionLayer`.
-Consumers assemble `AddableRouteCatalog` from adapter-local descriptors.
-Testkit fixtures stand in until first-proof routes. `admit_instance` writes
+ports, library-owned sign-in loop, readiness refresh, authenticated-subject
+observation, and Contract 029/032 update observation are realized: portable
+records in `swallowtail-core`, catalog assembly, the store trait, host-port
+traits, the sign-in loop, `refresh_readiness`, `observe_authenticated_subject`,
+and `observe_instance_update` in `swallowtail-runtime`, and optional
+in-memory, JSON-file, and sign-in test-double adapters in
+`swallowtail-host-local`. Topology grouping is hosted / installed /
+local-runtime; it is not `ExecutionLayer`. Consumers assemble
+`AddableRouteCatalog` from adapter-local descriptors. Testkit fixtures stand
+in until first-proof routes. `admit_instance` writes
 `AdmittedInstanceRecord` through the store. Config fields stay opaque
 `ConfigFieldRef` values. The store holds references, enablement, labels, and
 overlay markers. It does not require raw secrets. Enablement does not change
-047 `Ready` / `NotReady`. Subject records default to redacted and do not
-enter 047. Optional URL-open, loopback-callback, and device-code ports do not
-collapse into Credential, Process, or Network. Registering a port does not
-start sign-in. The loop owns start, poll, complete, cancel, and timeout.
-Missing required ports fail closed. API-key collection writes opaque
+047 `Ready` / `NotReady`. `refresh_readiness` writes `AccessStatus` onto one
+admitted record and leaves enablement alone. After refresh, the consumer
+replaces the 047 snapshot. Subject observation is optional, redacted by
+default, and can be Absent, Redacted, or Revealed. Revealed values stay out
+of `Debug`. Subject is never a configured-instance id, 047 field, default
+diagnostic, or routing key. Update observation reuses a 029 claim and
+optional 032 installed-executable evidence. It does not install, authenticate,
+or admit an instance. Optional URL-open, loopback-callback, and device-code
+ports do not collapse into Credential, Process, or Network. Registering a
+port does not start sign-in. The loop owns start, poll, complete, cancel, and
+timeout. Missing required ports fail closed. API-key collection writes opaque
 `CredentialRef` values, never secret bytes.
 
-Not yet realized: readiness refresh, subject observation as a facade,
-overlay projection, and first-proof Anthropic, Codex, or Ollama wiring.
+Not yet realized: overlay projection, and first-proof Anthropic, Codex, or
+Ollama wiring.
 
 The remaining direction is:
 
@@ -1147,7 +1156,7 @@ adapter-local addable-route descriptors
   -> credential-field descriptors or library-owned sign-in loop via host ports
   -> admitted configured instance in a consumer store
   -> readiness refresh, optional authenticated-subject observation, version
-  -> Contract 047 selection snapshot and bound model catalogue
+  -> Contract 047 selection snapshot and bound model catalogue with overlay
   -> existing prepared facade
 ```
 

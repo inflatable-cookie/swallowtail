@@ -8,6 +8,38 @@ Reject it when the application needs a durable provider thread, working
 resource, attachments, structured output, or managed recovery.
 New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
+## Add The Connection
+
+`deepseek.continuation` currently exports an addable descriptor. Topology is
+**hosted**. It is not `ExecutionLayer`. Follow
+[connection lifecycle](connection-lifecycle.md) before the prepared facade.
+
+1. Assemble `AddableRouteCatalog` from
+   `deepseek_continuation_addable_route_descriptor`. The row is `Available`
+   when the host exposes the Credential service; otherwise
+   `Unavailable(HostService)`.
+2. `admit_instance` writes the configured instance. Admission does not
+   prepare.
+3. Collect the secret API-key field `api_key` as `CredentialRef`. There is
+   no advertised environment name. Host stores the bytes. The library-owned
+   API-key loop does not use URL-open, loopback, or device-code ports.
+4. Config field `endpoint` is an opaque `ApiEndpoint` `ConfigFieldRef`.
+5. `refresh_readiness` writes host-supplied `AccessStatus`. Enablement stays
+   independent of 047 `Ready` / `NotReady`.
+6. `observe_authenticated_subject` is `Absent`. Do not probe Open Platform
+   for identity.
+7. Overlay may mark catalogue rows whose `provider_id` is `deepseek`.
+   Overlay copies readiness and cannot change it.
+8. Then `prepare_deepseek_direct` with a host-approved
+   `InstanceTargetRef` for the exact `https://api.deepseek.com` target.
+   Stored config refs do not feed prepare.
+
+The compile-tested
+[`connection_lifecycle` example](../../crates/swallowtail-adapter-deepseek/examples/connection_lifecycle.rs)
+shows catalog through prepare. The canonical route-map example remains
+[`prepared_direct_continuation`](../../crates/swallowtail-adapter-deepseek/examples/prepared_direct_continuation.rs).
+Hosted interactive OAuth is not a realized path on this route.
+
 ## Operator Prerequisites
 
 `prepare_deepseek_direct` requires configured-instance and execution-host

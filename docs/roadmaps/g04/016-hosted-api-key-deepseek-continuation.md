@@ -1,12 +1,12 @@
 # 016 Hosted API-Key DeepSeek Continuation
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Depends on: completed g04.015
 Vision tags: consumer integration, route readiness, explicit selection
 Contract refs: 011, 014, 020, 037, 047, 057
-Planning state: cards 045-047 ready
+Planning state: cards 045-047 completed
 Research: 170
 
 ## Problem
@@ -23,13 +23,13 @@ reuse `prepare_deepseek_direct`.
 
 ## Goals
 
-- [ ] expose an adapter-local hosted addable descriptor for
+- [x] expose an adapter-local hosted addable descriptor for
       `deepseek.continuation`
-- [ ] collect a secret API-key field as `CredentialRef` and an opaque
+- [x] collect a secret API-key field as `CredentialRef` and an opaque
       endpoint config ref
-- [ ] admit the instance through the 057 store, then reuse
+- [x] admit the instance through the 057 store, then reuse
       `prepare_deepseek_direct`
-- [ ] refresh access status and observe subject as Absent without changing
+- [x] refresh access status and observe subject as Absent without changing
       047 `Ready` / `NotReady`
 
 ## Non-Goals
@@ -47,33 +47,33 @@ reuse `prepare_deepseek_direct`.
 
 ### Batch 16.1 — Addable Descriptor
 
-- [ ] Execute card 045.
-- [ ] ship `AddableRouteDescriptor` from `swallowtail-adapter-deepseek`
-- [ ] topology hosted; credential field secret API key; no invented env
+- [x] Execute card 045.
+- [x] ship `AddableRouteDescriptor` from `swallowtail-adapter-deepseek`
+- [x] topology hosted; credential field secret API key; no invented env
       name; config field endpoint
 
 ### Batch 16.2 — Admission And API-Key Collection
 
-- [ ] Execute card 046 after card 045.
-- [ ] admit through the 057 store with `CredentialRef` collection
-- [ ] no URL-open, loopback, or device-code ports
+- [x] Execute card 046 after card 045.
+- [x] admit through the 057 store with `CredentialRef` collection
+- [x] no URL-open, loopback, or device-code ports
 
 ### Batch 16.3 — Refresh, Subject, And 047 Path
 
-- [ ] Execute card 047 after card 046.
-- [ ] refresh host-supplied `AccessStatus`; subject stays Absent
-- [ ] 047 snapshot plus overlay keys `deepseek`; `Ready` / `NotReady`
+- [x] Execute card 047 after card 046.
+- [x] refresh host-supplied `AccessStatus`; subject stays Absent
+- [x] 047 snapshot plus overlay keys `deepseek`; `Ready` / `NotReady`
       unchanged
 
 ## Acceptance Criteria
 
-- [ ] a consumer can assemble a catalog that includes DeepSeek continuation
+- [x] a consumer can assemble a catalog that includes DeepSeek continuation
       by linking the adapter
-- [ ] API-key collection writes `CredentialRef`, never secret bytes
-- [ ] `prepare_deepseek_direct` still runs after admission
-- [ ] overlay can key DeepSeek catalogue rows
-- [ ] no live provider probe
-- [ ] `public-api-0.3.3` stays immutable
+- [x] API-key collection writes `CredentialRef`, never secret bytes
+- [x] `prepare_deepseek_direct` still runs after admission
+- [x] overlay can key DeepSeek catalogue rows
+- [x] no live provider probe
+- [x] `public-api-0.3.3` stays immutable
 
 ## Lane Runway
 

@@ -14,8 +14,8 @@ shape.
 
 ## Next Task
 
-Implement restack of g04.016 PR 13 onto `47b94efc`. Hosted OAuth stays
-gated. Do not start Claude Agent ACP addable or llama.cpp.
+Validate restacked g04.016 PR 13. Hosted OAuth stays gated. Do not start
+Claude Agent ACP addable or llama.cpp.
 
 ## Index
 

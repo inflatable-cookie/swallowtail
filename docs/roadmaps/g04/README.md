@@ -35,12 +35,12 @@ and selection policy.
 
 ## Planned Next Roadmaps
 
-- [g04.016 Hosted API-Key DeepSeek Continuation](016-hosted-api-key-deepseek-continuation.md) — PR 13 restack onto `47b94efc`
+- [g04.016 Hosted API-Key DeepSeek Continuation](016-hosted-api-key-deepseek-continuation.md) — restacked; awaiting re-review
 
 ## Current Checkpoint
 
 - g04.017 is complete. PR 14 is on `main` at `47b94efc`
-- Restack g04.016 / PR 13 onto that tip
+- g04.016 cards 045-047 restacked onto `ada7529b`. PR 13 awaiting re-review
 - Hosted OAuth stays a remaining gate
 - `v0.3.3` remains `51d18620`
 
@@ -61,5 +61,5 @@ and selection policy.
 - [013 Local Ollama Attach](./013-local-ollama-attach.md) — completed
 - [014 Connection Lifecycle Consumer Path](./014-connection-lifecycle-consumer-path.md) — completed
 - [015 Second-Proof Addable Inventory](./015-second-proof-addable-inventory.md) — completed
-- [016 Hosted API-Key DeepSeek Continuation](./016-hosted-api-key-deepseek-continuation.md) — planned
+- [016 Hosted API-Key DeepSeek Continuation](./016-hosted-api-key-deepseek-continuation.md) — completed; awaiting re-review
 - [017 Cline Stable Clippy Result Large Err](./017-cline-stable-clippy-result-large-err.md) — completed

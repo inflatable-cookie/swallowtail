@@ -11,11 +11,12 @@ persistence, UI, and selection policy, and keep secret bytes on the host.
 
 ## Route Applicability
 
-Only three production routes currently export an `AddableRouteDescriptor`:
+Four production routes currently export an `AddableRouteDescriptor`:
 
 | Route | Topology | Host service for Available | Credential |
 | --- | --- | --- | --- |
 | `anthropic.messages` | hosted | Credential | secret API-key field `api_key`; env name `ANTHROPIC_API_KEY` is a name, not a value |
+| `deepseek.continuation` | hosted | Credential | secret API-key field `api_key`; no environment name |
 | `codex.app-server` | installed | Process | none; cached local ChatGPT login |
 | `ollama.attached` | local-runtime | Network | none; local unauthenticated |
 
@@ -49,6 +50,7 @@ Call the adapter-local constructor with the same `HostServices` the later
 prepare will use:
 
 - `anthropic_messages_addable_route_descriptor`
+- `deepseek_continuation_addable_route_descriptor`
 - `codex_app_server_addable_route_descriptor`
 - `ollama_attached_addable_route_descriptor`
 
@@ -130,7 +132,7 @@ replaces the 047 snapshot. Refresh is not a watcher inside 047.
 
 `observe_authenticated_subject` is optional, redacted by default, and is
 not stored on the admitted record or a 047 snapshot. Adapters report only
-what the provider discloses. The three first-proofs report `Absent`. The
+what the provider discloses. Realized addable routes report `Absent`. The
 subject is never a configured-instance id, never a 047 selection field,
 never a default diagnostic, and never a routing key.
 
@@ -154,6 +156,7 @@ provider id. Overlay copies `Ready` / `NotReady` and cannot make
 Then call the existing prepare entry with host-owned targets:
 
 - `prepare_anthropic_direct`
+- `prepare_deepseek_direct`
 - `prepare_codex` with `CodexPreparedDriver::AppServer`
 - `prepare_ollama_attached`
 
@@ -179,7 +182,7 @@ Forbidden inferences:
 - overlay is not a catalogue and does not change selection readiness
 - subject is not an instance id or routing key
 - a discovered candidate is not an addable row
-- remaining production routes are not addable because three proofs exist
+- remaining production routes are not addable because four proofs exist
 
 ## Failures
 
@@ -195,12 +198,14 @@ after this handoff; this facade does not start a session.
 Compile-tested Contract 057 examples:
 
 - [Anthropic Messages](../../crates/swallowtail-adapter-anthropic/examples/connection_lifecycle.rs)
+- [DeepSeek continuation](../../crates/swallowtail-adapter-deepseek/examples/connection_lifecycle.rs)
 - [Codex app-server](../../crates/swallowtail-adapter-codex/examples/connection_lifecycle.rs)
 - [Ollama attach](../../crates/swallowtail-adapter-ollama/examples/connection_lifecycle.rs)
 
-First-proof route sequences:
+Realized addable-route sequences:
 
 - [Anthropic Messages](anthropic-direct-prepared-integration.md)
+- [DeepSeek continuation](deepseek-prepared-integration.md)
 - [Codex app-server](codex-prepared-integration.md); `codex.exec` is not
   addable
 - [Ollama attach](ollama-attached-prepared-integration.md)

@@ -38,10 +38,11 @@ The pre-session path that admits a configured instance before the prepared
 facade. See [connection lifecycle](connection-lifecycle.md).
 
 - **Addable route** — one adapter-local `AddableRouteDescriptor` a consumer
-  may offer to add. Only `anthropic.messages`, `codex.app-server`, and
-  `ollama.attached` currently export one. Remaining production routes,
-  including `codex.exec`, stay on the prepared-facade path. Topology is
-  hosted, installed, or local-runtime; it is not `ExecutionLayer`.
+  may offer to add. Only `anthropic.messages`, `deepseek.continuation`,
+  `codex.app-server`, and `ollama.attached` currently export one. Remaining
+  production routes, including `codex.exec`, stay on the prepared-facade
+  path. Topology is hosted, installed, or local-runtime; it is not
+  `ExecutionLayer`.
 - **Addable-route catalog** — the consumer-assembled list of those
   descriptors. There is no umbrella registry. Absence means the adapter was
   not linked, not that the route is unsupported.

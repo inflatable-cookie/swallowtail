@@ -1,6 +1,6 @@
 # 046 DeepSeek Continuation Admission And API-Key
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../016-hosted-api-key-deepseek-continuation.md`
@@ -27,10 +27,10 @@ the API key as `CredentialRef`.
 
 ## Acceptance Criteria
 
-- [ ] admission writes `AdmittedInstanceRecord` through the store
-- [ ] complete writes `CredentialRef`, never secret bytes
-- [ ] missing browser ports do not fail API-key collection
-- [ ] `prepare_deepseek_direct` still accepts the admitted identity and
+- [x] admission writes `AdmittedInstanceRecord` through the store
+- [x] complete writes `CredentialRef`, never secret bytes
+- [x] missing browser ports do not fail API-key collection
+- [x] `prepare_deepseek_direct` still accepts the admitted identity and
       access profile
 
 ## Validation

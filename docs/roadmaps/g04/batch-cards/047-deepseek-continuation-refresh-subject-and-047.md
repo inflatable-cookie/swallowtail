@@ -1,6 +1,6 @@
 # 047 DeepSeek Continuation Refresh, Subject, And 047
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../016-hosted-api-key-deepseek-continuation.md`
@@ -31,11 +31,11 @@ readiness.
 
 ## Acceptance Criteria
 
-- [ ] a disabled instance can refresh to ready access dimensions
-- [ ] subject fields are Absent, not 047 fields
-- [ ] overlay can mark a DeepSeek catalogue model without changing
+- [x] a disabled instance can refresh to ready access dimensions
+- [x] subject fields are Absent, not 047 fields
+- [x] overlay can mark a DeepSeek catalogue model without changing
       `Ready` / `NotReady`
-- [ ] `public-api-0.3.3` stays immutable
+- [x] `public-api-0.3.3` stays immutable
 
 ## Validation
 

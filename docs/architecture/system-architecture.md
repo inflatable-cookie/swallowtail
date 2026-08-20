@@ -1130,7 +1130,8 @@ in-memory, JSON-file, and sign-in test-double adapters in
 `swallowtail-host-local`. Topology grouping is hosted / installed /
 local-runtime; it is not `ExecutionLayer`. Consumers assemble
 `AddableRouteCatalog` from adapter-local descriptors. First-proof descriptors
-exist for Anthropic Messages, Codex app-server, and Ollama attach. Testkit
+exist for Anthropic Messages, Codex app-server, and Ollama attach. A second
+hosted API-key descriptor exists for DeepSeek continuation. Testkit
 fixtures remain for portable catalog tests. `admit_instance` writes
 `AdmittedInstanceRecord` through the store. Config fields stay opaque
 `ConfigFieldRef` values. The store holds references, enablement, labels, and
@@ -1158,12 +1159,14 @@ closed. API-key collection writes opaque `CredentialRef` values, never secret
 bytes.
 
 First-proof hosted API-key Anthropic Messages, installed Codex
-app-server, and local Ollama attach are realized. Anthropic collects
-`CredentialRef` and overlay-keys `anthropic` catalogue rows. Codex admits
+app-server, and local Ollama attach are realized. DeepSeek continuation is
+the second hosted API-key proof. Anthropic and DeepSeek collect
+`CredentialRef`; DeepSeek does not advertise an environment name. Overlay
+keys `anthropic` and `deepseek` catalogue rows. Codex admits
 the ChatGPT subscription profile with no credential field and reuses 029/032
 update observation. Ollama admits a local-unauthenticated attached runtime
 with no credential field. Catalogue rows without `provider_id` stay unmarked.
-The Contract 052 consumer path is realized for those three routes only.
+The Contract 052 consumer path is realized for those four routes.
 Remaining production routes have no addable descriptors. Hosted interactive
 OAuth is still not realized.
 

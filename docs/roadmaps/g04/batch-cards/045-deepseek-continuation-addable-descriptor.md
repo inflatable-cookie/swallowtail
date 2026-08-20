@@ -1,6 +1,6 @@
 # 045 DeepSeek Continuation Addable Descriptor
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../016-hosted-api-key-deepseek-continuation.md`
@@ -29,10 +29,10 @@ Expose an adapter-local hosted addable-route descriptor for
 
 ## Acceptance Criteria
 
-- [ ] descriptor topology is hosted
-- [ ] credential field carries no secret bytes and no invented env name
-- [ ] endpoint config is a field id, not a URL
-- [ ] `ExecutionLayer::DirectModelInference` is unchanged
+- [x] descriptor topology is hosted
+- [x] credential field carries no secret bytes and no invented env name
+- [x] endpoint config is a field id, not a URL
+- [x] `ExecutionLayer::DirectModelInference` is unchanged
 
 ## Validation
 

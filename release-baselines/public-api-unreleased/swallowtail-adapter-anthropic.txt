@@ -1,0 +1,169 @@
+pub mod swallowtail_adapter_anthropic
+pub struct swallowtail_adapter_anthropic::AnthropicCatalogueProfileInput
+impl swallowtail_adapter_anthropic::AnthropicCatalogueProfileInput
+pub const fn swallowtail_adapter_anthropic::AnthropicCatalogueProfileInput::new(swallowtail_runtime::identity::RequestId) -> Self
+pub const fn swallowtail_adapter_anthropic::AnthropicCatalogueProfileInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_adapter_anthropic::AnthropicDirectDriver
+impl swallowtail_adapter_anthropic::AnthropicDirectDriver
+pub fn swallowtail_adapter_anthropic::AnthropicDirectDriver::new() -> Self
+impl swallowtail_runtime::roles::InteractiveSessionDriver for swallowtail_adapter_anthropic::AnthropicDirectDriver
+pub fn swallowtail_adapter_anthropic::AnthropicDirectDriver::open_direct_continuation_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::direct_continuation::request::OpenDirectContinuationSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_anthropic::AnthropicDirectDriver::open_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_anthropic::AnthropicDirectDriver::resume_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::ModelCatalogDriver for swallowtail_adapter_anthropic::AnthropicDirectDriver
+pub fn swallowtail_adapter_anthropic::AnthropicDirectDriver::list_models(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::StructuredRunDriver for swallowtail_adapter_anthropic::AnthropicDirectDriver
+pub fn swallowtail_adapter_anthropic::AnthropicDirectDriver::start_run(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_anthropic::AnthropicInferenceAttemptInput
+impl swallowtail_adapter_anthropic::AnthropicInferenceAttemptInput
+pub const fn swallowtail_adapter_anthropic::AnthropicInferenceAttemptInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_anthropic::AnthropicModelSelection, swallowtail_runtime::content::OperationContent, core::num::nonzero::NonZeroU64) -> Self
+pub fn swallowtail_adapter_anthropic::AnthropicInferenceAttemptInput::with_attachments(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_runtime::attachment::AttachmentDescriptor>) -> Self
+pub const fn swallowtail_adapter_anthropic::AnthropicInferenceAttemptInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub fn swallowtail_adapter_anthropic::AnthropicInferenceAttemptInput::with_web_search(self, swallowtail_adapter_anthropic::AnthropicWebSearchInput) -> Self
+pub struct swallowtail_adapter_anthropic::AnthropicManagedAgentDriver
+impl swallowtail_adapter_anthropic::AnthropicManagedAgentDriver
+pub fn swallowtail_adapter_anthropic::AnthropicManagedAgentDriver::new() -> Self
+impl swallowtail_runtime::roles::ProviderRecoveredResourceCleanupDriver for swallowtail_adapter_anthropic::AnthropicManagedAgentDriver
+pub fn swallowtail_adapter_anthropic::AnthropicManagedAgentDriver::cleanup_recovered_resources(&self, swallowtail_runtime::provider_recovered_resource_cleanup::ProviderRecoveredResourceCleanupPlan, swallowtail_runtime::provider_recovered_resource_cleanup::ProviderRecoveredResourceCleanupRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_runtime::provider_recovered_resource_cleanup::ProviderRecoveredResourceCleanupOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::ProviderRunReconciliationDriver for swallowtail_adapter_anthropic::AnthropicManagedAgentDriver
+pub fn swallowtail_adapter_anthropic::AnthropicManagedAgentDriver::reconcile_provider_run(&self, swallowtail_runtime::provider_run_reconciliation::ProviderRunReconciliationPlan, swallowtail_runtime::provider_run_reconciliation::ProviderRunReconciliationRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_runtime::provider_run_reconciliation::ProviderRunReconciliationOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::StructuredRunDriver for swallowtail_adapter_anthropic::AnthropicManagedAgentDriver
+pub fn swallowtail_adapter_anthropic::AnthropicManagedAgentDriver::start_run(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_anthropic::AnthropicManagedAgentRunInput
+impl swallowtail_adapter_anthropic::AnthropicManagedAgentRunInput
+pub fn swallowtail_adapter_anthropic::AnthropicManagedAgentRunInput::durable_with_managed_recovery_and_one_reattachment(swallowtail_runtime::identity::RequestId, swallowtail_adapter_anthropic::AnthropicManagedModelSelection, swallowtail_runtime::content::OperationContent, swallowtail_runtime::time::Deadline, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_runtime::session_options::ToolDeclaration>) -> Self
+pub fn swallowtail_adapter_anthropic::AnthropicManagedAgentRunInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_anthropic::AnthropicManagedModelSelection, swallowtail_runtime::content::OperationContent, swallowtail_runtime::time::Deadline, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_runtime::session_options::ToolDeclaration>, swallowtail_runtime::operation_policy::ProviderRetentionPolicy, swallowtail_runtime::operation_policy::ProviderRecoveryPolicy, swallowtail_runtime::operation_policy::StreamReattachmentPolicy) -> Self
+pub const fn swallowtail_adapter_anthropic::AnthropicManagedAgentRunInput::with_cross_process_recovery(self) -> Self
+pub struct swallowtail_adapter_anthropic::AnthropicManagedModelSelection
+impl swallowtail_adapter_anthropic::AnthropicManagedModelSelection
+pub const fn swallowtail_adapter_anthropic::AnthropicManagedModelSelection::new(swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId) -> Self
+pub struct swallowtail_adapter_anthropic::AnthropicManagedPreparationInput
+impl swallowtail_adapter_anthropic::AnthropicManagedPreparationInput
+pub const fn swallowtail_adapter_anthropic::AnthropicManagedPreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence, swallowtail_core::provider_agent::ProviderAgentBinding) -> Self
+pub struct swallowtail_adapter_anthropic::AnthropicManagedPreparedEvidence
+impl swallowtail_adapter_anthropic::AnthropicManagedPreparedEvidence
+pub const fn swallowtail_adapter_anthropic::AnthropicManagedPreparedEvidence::access(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_anthropic::AnthropicManagedPreparedEvidence::operation(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub const fn swallowtail_adapter_anthropic::AnthropicManagedPreparedEvidence::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub struct swallowtail_adapter_anthropic::AnthropicManagedPreparedIntegration
+impl swallowtail_adapter_anthropic::AnthropicManagedPreparedIntegration
+pub const fn swallowtail_adapter_anthropic::AnthropicManagedPreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_anthropic::AnthropicManagedPreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_anthropic::AnthropicManagedPreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_anthropic::AnthropicManagedPreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_anthropic::AnthropicManagedPreparedIntegration::low_level_driver(&self) -> swallowtail_adapter_anthropic::AnthropicManagedAgentDriver
+pub fn swallowtail_adapter_anthropic::AnthropicManagedPreparedIntegration::validate_execution_binding(&self, &swallowtail_core::runtime_identity::ExecutionHostId, &swallowtail_core::runtime_identity::InstanceTargetRef) -> core::result::Result<(), swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_anthropic::AnthropicManagedPreparedIntegration
+pub fn swallowtail_adapter_anthropic::AnthropicManagedPreparedIntegration::prepare_managed_run(&self, swallowtail_adapter_anthropic::AnthropicManagedAgentRunInput) -> core::result::Result<swallowtail_adapter_anthropic::AnthropicPreparedManagedAgentRun, swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_anthropic::AnthropicManagedPreparedIntegration
+pub fn swallowtail_adapter_anthropic::AnthropicManagedPreparedIntegration::prepare_recovered_cleanup(&self, swallowtail_adapter_anthropic::AnthropicManagedRecoveredCleanupInput) -> core::result::Result<swallowtail_adapter_anthropic::AnthropicPreparedManagedRecoveredCleanup, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_anthropic::AnthropicManagedPreparedIntegration::prepare_run_reconciliation(&self, swallowtail_adapter_anthropic::AnthropicManagedRunReconciliationInput) -> core::result::Result<swallowtail_adapter_anthropic::AnthropicPreparedManagedRunReconciliation, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_anthropic::AnthropicManagedPreparedIntegration::prepare_working_state_restoration(&self, swallowtail_adapter_anthropic::AnthropicManagedRunReconciliationInput) -> core::result::Result<swallowtail_runtime::working_state_restoration::PreparedWorkingStateRestoration, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_anthropic::AnthropicManagedRecoveredCleanupInput
+impl swallowtail_adapter_anthropic::AnthropicManagedRecoveredCleanupInput
+pub const fn swallowtail_adapter_anthropic::AnthropicManagedRecoveredCleanupInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_anthropic::AnthropicManagedModelSelection, swallowtail_runtime::provider_recovered_resource_cleanup_binding::PersistedProviderRecoveredResourceCleanupBinding, core::option::Option<swallowtail_runtime::time::Deadline>) -> Self
+pub struct swallowtail_adapter_anthropic::AnthropicManagedRunReconciliationInput
+impl swallowtail_adapter_anthropic::AnthropicManagedRunReconciliationInput
+pub const fn swallowtail_adapter_anthropic::AnthropicManagedRunReconciliationInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_anthropic::AnthropicManagedModelSelection, swallowtail_runtime::provider_run_checkpoint::PersistedProviderRunCheckpoint, core::num::nonzero::NonZeroU64, core::option::Option<swallowtail_runtime::time::Deadline>) -> Self
+pub struct swallowtail_adapter_anthropic::AnthropicModelSelection
+impl swallowtail_adapter_anthropic::AnthropicModelSelection
+pub const fn swallowtail_adapter_anthropic::AnthropicModelSelection::new(swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId) -> Self
+pub struct swallowtail_adapter_anthropic::AnthropicPreparationInput
+impl swallowtail_adapter_anthropic::AnthropicPreparationInput
+pub const fn swallowtail_adapter_anthropic::AnthropicPreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub struct swallowtail_adapter_anthropic::AnthropicPreparedCatalogue
+impl swallowtail_adapter_anthropic::AnthropicPreparedCatalogue
+pub const fn swallowtail_adapter_anthropic::AnthropicPreparedCatalogue::evidence(&self) -> &swallowtail_adapter_anthropic::AnthropicPreparedEvidence
+pub fn swallowtail_adapter_anthropic::AnthropicPreparedCatalogue::into_parts(self) -> (swallowtail_adapter_anthropic::AnthropicPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest)
+pub fn swallowtail_adapter_anthropic::AnthropicPreparedCatalogue::list_models(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_anthropic::AnthropicPreparedCatalogue::low_level_driver(&self) -> swallowtail_adapter_anthropic::AnthropicDirectDriver
+pub const fn swallowtail_adapter_anthropic::AnthropicPreparedCatalogue::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_anthropic::AnthropicPreparedCatalogue::request(&self) -> &swallowtail_runtime::roles::ModelCatalogRequest
+pub struct swallowtail_adapter_anthropic::AnthropicPreparedEvidence
+impl swallowtail_adapter_anthropic::AnthropicPreparedEvidence
+pub const fn swallowtail_adapter_anthropic::AnthropicPreparedEvidence::access(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_anthropic::AnthropicPreparedEvidence::observable_activity(&self) -> &swallowtail_core::observable_activity::route_profile::ObservableActivityProfile
+pub const fn swallowtail_adapter_anthropic::AnthropicPreparedEvidence::operation(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub const fn swallowtail_adapter_anthropic::AnthropicPreparedEvidence::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub struct swallowtail_adapter_anthropic::AnthropicPreparedInferenceAttempt
+impl swallowtail_adapter_anthropic::AnthropicPreparedInferenceAttempt
+pub const fn swallowtail_adapter_anthropic::AnthropicPreparedInferenceAttempt::evidence(&self) -> &swallowtail_adapter_anthropic::AnthropicPreparedEvidence
+pub fn swallowtail_adapter_anthropic::AnthropicPreparedInferenceAttempt::into_parts(self) -> (swallowtail_adapter_anthropic::AnthropicPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest)
+pub fn swallowtail_adapter_anthropic::AnthropicPreparedInferenceAttempt::low_level_driver(&self) -> swallowtail_adapter_anthropic::AnthropicDirectDriver
+pub const fn swallowtail_adapter_anthropic::AnthropicPreparedInferenceAttempt::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_anthropic::AnthropicPreparedInferenceAttempt::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
+pub fn swallowtail_adapter_anthropic::AnthropicPreparedInferenceAttempt::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_anthropic::AnthropicPreparedIntegration
+impl swallowtail_adapter_anthropic::AnthropicPreparedIntegration
+pub const fn swallowtail_adapter_anthropic::AnthropicPreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_anthropic::AnthropicPreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_anthropic::AnthropicPreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_anthropic::AnthropicPreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_anthropic::AnthropicPreparedIntegration::low_level_driver(&self) -> swallowtail_adapter_anthropic::AnthropicDirectDriver
+pub fn swallowtail_adapter_anthropic::AnthropicPreparedIntegration::validate_execution_binding(&self, &swallowtail_core::runtime_identity::ExecutionHostId, &swallowtail_core::runtime_identity::InstanceTargetRef) -> core::result::Result<(), swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_anthropic::AnthropicPreparedIntegration
+pub fn swallowtail_adapter_anthropic::AnthropicPreparedIntegration::prepare_catalogue(&self, swallowtail_adapter_anthropic::AnthropicCatalogueProfileInput) -> core::result::Result<swallowtail_adapter_anthropic::AnthropicPreparedCatalogue, swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_anthropic::AnthropicPreparedIntegration
+pub fn swallowtail_adapter_anthropic::AnthropicPreparedIntegration::prepare_inference_attempt(&self, swallowtail_adapter_anthropic::AnthropicInferenceAttemptInput) -> core::result::Result<swallowtail_adapter_anthropic::AnthropicPreparedInferenceAttempt, swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_anthropic::AnthropicPreparedIntegration
+pub fn swallowtail_adapter_anthropic::AnthropicPreparedIntegration::prepare_session(&self, swallowtail_adapter_anthropic::AnthropicSessionProfileInput) -> core::result::Result<swallowtail_adapter_anthropic::AnthropicPreparedSession, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_anthropic::AnthropicPreparedManagedAgentRun
+impl swallowtail_adapter_anthropic::AnthropicPreparedManagedAgentRun
+pub const fn swallowtail_adapter_anthropic::AnthropicPreparedManagedAgentRun::evidence(&self) -> &swallowtail_adapter_anthropic::AnthropicManagedPreparedEvidence
+pub fn swallowtail_adapter_anthropic::AnthropicPreparedManagedAgentRun::into_parts(self) -> (swallowtail_adapter_anthropic::AnthropicManagedPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest)
+pub fn swallowtail_adapter_anthropic::AnthropicPreparedManagedAgentRun::low_level_driver(&self) -> swallowtail_adapter_anthropic::AnthropicManagedAgentDriver
+pub const fn swallowtail_adapter_anthropic::AnthropicPreparedManagedAgentRun::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_anthropic::AnthropicPreparedManagedAgentRun::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
+pub fn swallowtail_adapter_anthropic::AnthropicPreparedManagedAgentRun::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_anthropic::AnthropicPreparedManagedRecoveredCleanup
+impl swallowtail_adapter_anthropic::AnthropicPreparedManagedRecoveredCleanup
+pub fn swallowtail_adapter_anthropic::AnthropicPreparedManagedRecoveredCleanup::cleanup(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_recovered_resource_cleanup::ProviderRecoveredResourceCleanupOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+pub const fn swallowtail_adapter_anthropic::AnthropicPreparedManagedRecoveredCleanup::evidence(&self) -> &swallowtail_runtime::provider_recovered_resource_cleanup::PreparedProviderRecoveredResourceCleanupEvidence
+pub const fn swallowtail_adapter_anthropic::AnthropicPreparedManagedRecoveredCleanup::plan(&self) -> &swallowtail_runtime::provider_recovered_resource_cleanup::ProviderRecoveredResourceCleanupPlan
+pub const fn swallowtail_adapter_anthropic::AnthropicPreparedManagedRecoveredCleanup::request(&self) -> &swallowtail_runtime::provider_recovered_resource_cleanup::ProviderRecoveredResourceCleanupRequest
+pub struct swallowtail_adapter_anthropic::AnthropicPreparedManagedRunReconciliation
+impl swallowtail_adapter_anthropic::AnthropicPreparedManagedRunReconciliation
+pub const fn swallowtail_adapter_anthropic::AnthropicPreparedManagedRunReconciliation::evidence(&self) -> &swallowtail_runtime::provider_run_reconciliation::PreparedProviderRunReconciliationEvidence
+pub const fn swallowtail_adapter_anthropic::AnthropicPreparedManagedRunReconciliation::plan(&self) -> &swallowtail_runtime::provider_run_reconciliation::ProviderRunReconciliationPlan
+pub fn swallowtail_adapter_anthropic::AnthropicPreparedManagedRunReconciliation::reconcile(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_run_reconciliation::ProviderRunReconciliationOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+pub const fn swallowtail_adapter_anthropic::AnthropicPreparedManagedRunReconciliation::request(&self) -> &swallowtail_runtime::provider_run_reconciliation::ProviderRunReconciliationRequest
+impl swallowtail_runtime::working_state_restoration::WorkingStateRestorationOperation for swallowtail_adapter_anthropic::AnthropicPreparedManagedRunReconciliation
+pub fn swallowtail_adapter_anthropic::AnthropicPreparedManagedRunReconciliation::method(&self) -> swallowtail_runtime::working_state_restoration::WorkingStateRestorationMethod
+pub fn swallowtail_adapter_anthropic::AnthropicPreparedManagedRunReconciliation::restore(alloc::boxed::Box<Self>, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::working_state_restoration::WorkingStateRestorationOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_anthropic::AnthropicPreparedSession
+impl swallowtail_adapter_anthropic::AnthropicPreparedSession
+pub const fn swallowtail_adapter_anthropic::AnthropicPreparedSession::evidence(&self) -> &swallowtail_adapter_anthropic::AnthropicPreparedEvidence
+pub fn swallowtail_adapter_anthropic::AnthropicPreparedSession::open_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub const fn swallowtail_adapter_anthropic::AnthropicPreparedSession::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_anthropic::AnthropicPreparedSession::request(&self) -> &swallowtail_runtime::direct_continuation::request::OpenDirectContinuationSessionRequest
+impl swallowtail_adapter_anthropic::AnthropicPreparedSession
+pub fn swallowtail_adapter_anthropic::AnthropicPreparedSession::prepare_working_state_restoration(&self, swallowtail_runtime::identity::RuntimeTurnId) -> swallowtail_runtime::working_state_restoration::PreparedWorkingStateRestoration
+pub struct swallowtail_adapter_anthropic::AnthropicSessionProfileInput
+impl swallowtail_adapter_anthropic::AnthropicSessionProfileInput
+pub fn swallowtail_adapter_anthropic::AnthropicSessionProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_anthropic::AnthropicModelSelection, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_runtime::session_options::ToolDeclaration>) -> Self
+pub struct swallowtail_adapter_anthropic::AnthropicWebSearchInput
+impl swallowtail_adapter_anthropic::AnthropicWebSearchInput
+pub fn swallowtail_adapter_anthropic::AnthropicWebSearchInput::new(impl core::iter::traits::collect::IntoIterator<Item = impl core::convert::Into<alloc::string::String>>) -> Self
+pub const swallowtail_adapter_anthropic::ANTHROPIC_MANAGED_ACCESS_PROFILE_ID: &str
+pub const swallowtail_adapter_anthropic::ANTHROPIC_MANAGED_API_ENDPOINT: &str
+pub const swallowtail_adapter_anthropic::ANTHROPIC_MANAGED_ENDPOINT_AUDIENCE: &str
+pub const swallowtail_adapter_anthropic::ANTHROPIC_MANAGED_FACADE_REVISION: &str
+pub const swallowtail_adapter_anthropic::ANTHROPIC_MESSAGES_ADDABLE_ROUTE_ID: &str
+pub const swallowtail_adapter_anthropic::ANTHROPIC_MESSAGES_API_KEY_ENVIRONMENT_NAME: &str
+pub const swallowtail_adapter_anthropic::ANTHROPIC_MESSAGES_API_KEY_FIELD_ID: &str
+pub const swallowtail_adapter_anthropic::ANTHROPIC_MESSAGES_ENDPOINT_FIELD_ID: &str
+pub const swallowtail_adapter_anthropic::ANTHROPIC_MESSAGES_FACADE_REVISION: &str
+pub fn swallowtail_adapter_anthropic::anthropic_direct_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_anthropic::anthropic_managed_access_profile(swallowtail_core::runtime_identity::CredentialRef) -> swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_anthropic::anthropic_managed_agent_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_anthropic::anthropic_managed_facade_binding() -> swallowtail_core::interface_version::InterfaceVersionBinding
+pub fn swallowtail_adapter_anthropic::anthropic_managed_facade_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_anthropic::anthropic_managed_instance(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_core::runtime_identity::AccessProfileId, swallowtail_core::provider_agent::ProviderAgentBinding) -> swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_anthropic::anthropic_managed_model_route(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId) -> swallowtail_core::instance::ModelRoute
+pub fn swallowtail_adapter_anthropic::anthropic_managed_requirements(swallowtail_core::runtime_identity::ExecutionHostId) -> swallowtail_core::requirement::operation::OperationRequirements
+pub fn swallowtail_adapter_anthropic::anthropic_messages_addable_route_descriptor(&swallowtail_runtime::host_registry::HostServices) -> swallowtail_core::connection_lifecycle::descriptor::AddableRouteDescriptor
+pub fn swallowtail_adapter_anthropic::anthropic_messages_continuation_config() -> swallowtail_core::direct_continuation::DirectContinuationConfig
+pub fn swallowtail_adapter_anthropic::anthropic_messages_facade_binding() -> swallowtail_core::interface_version::InterfaceVersionBinding
+pub fn swallowtail_adapter_anthropic::anthropic_messages_facade_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_anthropic::prepare_anthropic_direct(swallowtail_adapter_anthropic::AnthropicPreparationInput, &swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_anthropic::AnthropicPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_anthropic::prepare_anthropic_managed_agent(swallowtail_adapter_anthropic::AnthropicManagedPreparationInput, &swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_anthropic::AnthropicManagedPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>

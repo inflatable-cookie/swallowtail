@@ -8,6 +8,7 @@
 #![deny(missing_docs)]
 
 mod activity;
+mod addable;
 mod driver;
 mod failure;
 mod prepared;
@@ -15,6 +16,10 @@ mod protocol;
 mod selection;
 mod transport;
 
+pub use addable::{
+    LLAMA_CPP_ATTACHED_ADDABLE_ROUTE_ID, LLAMA_CPP_ATTACHED_ENDPOINT_FIELD_ID,
+    llama_cpp_attached_addable_route_descriptor,
+};
 pub use driver::{
     LlamaCppAttachedDriver, LlamaCppOwnedDriver, llama_cpp_attached_descriptor,
     llama_cpp_owned_descriptor,

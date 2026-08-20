@@ -7,6 +7,7 @@
 #![deny(missing_docs)]
 
 mod activity;
+mod addable;
 mod driver;
 mod failure;
 mod prepared;
@@ -15,6 +16,10 @@ mod protocol;
 mod selection;
 mod transport;
 
+pub use addable::{
+    DEEPSEEK_CONTINUATION_ADDABLE_ROUTE_ID, DEEPSEEK_CONTINUATION_API_KEY_FIELD_ID,
+    DEEPSEEK_CONTINUATION_ENDPOINT_FIELD_ID, deepseek_continuation_addable_route_descriptor,
+};
 pub use driver::{DeepSeekDirectDriver, deepseek_direct_descriptor};
 pub use prepared::{
     DeepSeekPreparationInput, DeepSeekPreparedIntegration, prepare_deepseek_direct,

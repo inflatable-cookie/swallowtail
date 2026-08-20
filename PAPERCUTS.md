@@ -5,6 +5,21 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] Stable clippy `result_large_err` on ACP start_session Err pairs — 2026-08-20
+- Friction: CI Stable clippy 1.98.0 fails `result_large_err` on
+  `Result<Handle, (RuntimeFailure, ResourceLease)>` in Cline, then Goose
+  and Copilot CLI after Cline is boxed. The same signature also exists on
+  Gemini, Kiro, and Deep Agents. MSRV clippy is green. Clippy reports one
+  crate at a time. After those boxes, 1.98.0 next fails
+  `chunks_exact_to_as_chunks` in `swallowtail-protocol-acp` lifecycle
+  fixtures. Local 1.97.1 does not catch it.
+- Impact: any PR can go red on Stable without a product change.
+- Fix: box every production copy, not an allow. Replace the one
+  `chunks_exact(2)` with `as_chunks::<2>().0`. Keep this entry open until
+  CI Stable clippy is green. Do not mix into DeepSeek.
+- Surface: ACP `start_session` helpers; ACP lifecycle fixtures; Stable
+  Clippy (all features).
+
 ### [ ] rustfmt --edition 2021 cannot parse this 2024 workspace — 2026-08-20
 - Friction: `rustfmt --edition 2021 <file>` fails on let-chains in sibling
   modules (`preflight/validation.rs`, `provider_session_history/page.rs`)
@@ -28,20 +43,6 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 - Surface: DeepSeek driver cancellation test; tag CI Stable job.
 
 ## Closed
-
-### [x] Stable clippy `result_large_err` on ACP start_session Err pairs — 2026-08-20
-- Friction: CI Stable clippy 1.98.0 fails `result_large_err` on
-  `Result<Handle, (RuntimeFailure, ResourceLease)>` in Cline, then Goose
-  and Copilot CLI after Cline is boxed. The same signature also exists on
-  Gemini, Kiro, and Deep Agents. MSRV clippy is green. Clippy reports one
-  crate at a time.
-- Impact: any PR can go red on Stable without a product change.
-- Fix: box every production copy as `Box<(RuntimeFailure, ResourceLease)>`
-  on Cline, Goose, Copilot CLI, Gemini, Kiro, and Deep Agents. No allow.
-  `cargo clippy --workspace --all-targets --all-features --locked -- -D warnings`
-  exits 0 on rustc 1.97.1. PR 14. Orchestrator records the merge SHA at
-  closeout.
-- Surface: ACP `start_session` helpers; Stable Clippy (all features).
 
 ### [x] Roadmap docs policy applies parent checks to excluded child indexes — 2026-08-11
 - Friction: `effigy qa:docs` reports existing `g01/README.md`, `g02/README.md`,

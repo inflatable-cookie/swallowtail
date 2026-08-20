@@ -15,8 +15,10 @@ and Deep Agents now return
 working-resource lease on failure. DeepSeek and g04.016 files are
 unchanged. `public-api-0.3.3` is unchanged.
 
-The ACP `result_large_err` papercut is closed in `PAPERCUTS.md`.
-Orchestrator records the merge SHA at closeout.
+The ACP papercut stays open until CI Stable clippy is green. After
+boxing, 1.98.0 next failed `chunks_exact_to_as_chunks` on the one
+`chunks_exact(2)` in ACP lifecycle fixtures; that call is now
+`as_chunks::<2>().0`. Orchestrator records the merge SHA at closeout.
 
 Worker worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-8d619c23`
 Worker branch: `t3code/follow-cline-stable-clippy-handoff`

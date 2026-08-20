@@ -81,7 +81,7 @@ fn lifecycle_requests_responses_and_errors_are_bounded_and_correlated() {
 
     let errors = parse_transcript(ERRORS).expect("error transcript parses");
     assert_eq!(methods(&errors), ["session/close", "session/delete"]);
-    for pair in errors.chunks_exact(2) {
+    for pair in errors.as_chunks::<2>().0 {
         assert_eq!(pair[0].id(), pair[1].id());
         assert_eq!(pair[1].message()["error"]["code"], -32603);
         assert_eq!(pair[1].message()["error"]["message"], "Internal error");

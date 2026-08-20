@@ -1,6 +1,6 @@
 # 029 First-Proof Tranche Confirmation
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../010-first-proof-route-inventory.md`
@@ -29,11 +29,16 @@ implementation roadmap unless inventory contradicts it.
 
 ## Acceptance Criteria
 
-- [ ] g04.011 remains the named next implementation roadmap, or a
+- [x] g04.011 remains the named next implementation roadmap, or a
       contradictory inventory fact is written
-- [ ] OAuth, Codex, Ollama, and 052 stay planned
-- [ ] no adapter implementation card is marked ready
-- [ ] no production code changes
+- [x] OAuth, Codex, Ollama, and 052 stay planned
+- [x] no adapter implementation card is marked ready
+- [x] no production code changes
+
+## Evidence
+
+Research 169 does not contradict hosted API-key Anthropic Messages as the
+first adapter-local descriptor tranche.
 
 ## Validation
 

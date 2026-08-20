@@ -14,8 +14,8 @@ shape.
 
 ## Next Task
 
-g04.010 card 027 first-proof route inventory. Adapter wiring stays
-behind that inventory.
+Worker in flight: g04.011 cards 030-032. Handoff
+`docs/handoffs/20260820-142930-g04-011-hosted-api-key-anthropic-messages.md`.
 
 ## Index
 

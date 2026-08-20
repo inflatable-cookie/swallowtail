@@ -1,6 +1,6 @@
 # 027 First-Proof Surface Inventory
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../010-first-proof-route-inventory.md`
@@ -33,11 +33,18 @@ surfaces onto Contract 057 without writing adapter descriptors.
 
 ## Acceptance Criteria
 
-- [ ] each named first-proof route has an existing-surface map
-- [ ] each named route has an explicit 057 gap list
-- [ ] no credential secret, harness token, or raw provider payload is
+- [x] each named first-proof route has an existing-surface map
+- [x] each named route has an explicit 057 gap list
+- [x] no credential secret, harness token, or raw provider payload is
       proposed as a public record
-- [ ] no production code changes
+- [x] no production code changes
+
+## Evidence
+
+Research 169. Anthropic Messages is hosted API-key. Codex app-server is
+installed ChatGPT-cached login. Ollama attach is local-unauthenticated.
+No production addable descriptors. Overlay keys already work on Anthropic
+catalogue rows; Codex and Ollama catalogue rows omit `provider_id`.
 
 ## Validation
 

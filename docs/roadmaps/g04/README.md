@@ -34,14 +34,15 @@ and selection policy.
 
 ## Planned Next Roadmaps
 
-- [g04.010 First-Proof Route Inventory](010-first-proof-route-inventory.md) — ready card 027
+- [g04.011 Hosted API-Key Anthropic Messages](011-hosted-api-key-anthropic-messages.md) — ready cards 030-032
 
 ## Current Checkpoint
 
-- g04.001 through g04.009 are complete. PR 8 is on `main` at `84f6aa5d`
-- g04.010 card 027 is ready: inventory Anthropic Messages, Codex
-  app-server, and Ollama attach against Contract 057
-- adapter wiring and OAuth candidate stay behind that inventory
+- g04.001 through g04.010 are complete. PR 8 is on `main` at `84f6aa5d`
+- Research 169: hosted OAuth stays a remaining gate
+- g04.011 worker dispatched: cards 030-032, handoff
+  `docs/handoffs/20260820-142930-g04-011-hosted-api-key-anthropic-messages.md`
+- Codex, Ollama, and hosted OAuth stay behind that first proof
 - `v0.3.3` remains `51d18620`
 
 ## Milestones
@@ -55,4 +56,5 @@ and selection policy.
 - [007 Sign-In Loop And Host Ports](./007-sign-in-loop-and-host-ports.md) — completed
 - [008 Readiness Refresh, Subject, And Updates](./008-readiness-refresh-subject-and-updates.md) — completed
 - [009 Model Presentation Overlay](./009-model-presentation-overlay.md) — completed
-- [010 First-Proof Route Inventory](./010-first-proof-route-inventory.md) — planned
+- [010 First-Proof Route Inventory](./010-first-proof-route-inventory.md) — completed
+- [011 Hosted API-Key Anthropic Messages](./011-hosted-api-key-anthropic-messages.md) — planned

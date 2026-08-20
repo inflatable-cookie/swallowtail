@@ -17,4 +17,4 @@ optional evidence.
 
 ## Next
 
-Execute card 027. No adapter implementation. No live OAuth.
+Card 027 executed. Research 169 closed g04.010. g04.011 dispatched.

@@ -1,12 +1,12 @@
 # 010 First-Proof Route Inventory
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Depends on: completed g04.009
 Vision tags: consumer integration, route readiness, explicit selection
 Contract refs: 011, 014, 020, 029, 032, 037, 047, 052, 057
-Planning state: card 027 ready; cards 028-029 planned behind it
+Planning state: cards 027-029 completed
 
 ## Problem
 
@@ -27,13 +27,13 @@ against 057 and names the first implementation tranche.
 
 ## Goals
 
-- [ ] inventory Anthropic Messages, Codex app-server, and Ollama attach
+- [x] inventory Anthropic Messages, Codex app-server, and Ollama attach
       against Contract 057 descriptors, admission, sign-in, refresh, subject,
       updates, and overlay
-- [ ] record the OAuth candidate as evidence or an explicit remaining gate
-- [ ] confirm the first implementation roadmap is hosted API-key Anthropic
+- [x] record the OAuth candidate as evidence or an explicit remaining gate
+- [x] confirm the first implementation roadmap is hosted API-key Anthropic
       Messages unless inventory contradicts it
-- [ ] keep adapter wiring planned until this inventory closes
+- [x] keep adapter wiring planned until this inventory closes
 
 ## Non-Goals
 
@@ -49,36 +49,36 @@ against 057 and names the first implementation tranche.
 
 ### Batch 10.1 — Surface Inventory
 
-- [ ] Execute card 027.
-- [ ] map each named first-proof route's current driver, credential
+- [x] Execute card 027.
+- [x] map each named first-proof route's current driver, credential
       mechanism, discovery, prepared facade, 047 path, and 029/032 claim
-- [ ] name what a 057 addable descriptor would require
-- [ ] write a research note; do not promote architecture
+- [x] name what a 057 addable descriptor would require
+- [x] write a research note; do not promote architecture
 
 ### Batch 10.2 — Gap And OAuth Evidence
 
-- [ ] Execute card 028 after card 027.
-- [ ] classify each gap as reuse of a prepared facade, adapter-local
+- [x] Execute card 028 after card 027.
+- [x] classify each gap as reuse of a prepared facade, adapter-local
       descriptor work, live-only evidence, or still gated
-- [ ] settle the OAuth candidate from evidence, or keep the gate explicit
+- [x] settle the OAuth candidate from evidence, or keep the gate explicit
 
 ### Batch 10.3 — Tranche Confirmation
 
-- [ ] Execute card 029 after card 028.
-- [ ] confirm g04.011 hosted API-key Anthropic Messages as the next
+- [x] Execute card 029 after card 028.
+- [x] confirm g04.011 hosted API-key Anthropic Messages as the next
       implementation roadmap unless inventory contradicts it
-- [ ] leave OAuth, Codex, Ollama, and Contract 052 consumer-path work
+- [x] leave OAuth, Codex, Ollama, and Contract 052 consumer-path work
       planned behind that first proof
 
 ## Acceptance Criteria
 
-- [ ] each named first-proof route has an existing-surface map and a 057 gap
+- [x] each named first-proof route has an existing-surface map and a 057 gap
       list
-- [ ] OAuth is either a named candidate with evidence, or a remaining gate
-- [ ] no adapter crate changes in this milestone
-- [ ] no live OAuth or secret extraction
-- [ ] only card 027 starts ready
-- [ ] g04.011 stays uncompiled until this inventory closes
+- [x] OAuth is either a named candidate with evidence, or a remaining gate
+- [x] no adapter crate changes in this milestone
+- [x] no live OAuth or secret extraction
+- [x] only card 027 starts ready
+- [x] g04.011 compiled after this inventory, not before
 
 ## Lane Runway
 

@@ -201,6 +201,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 
 ### Connection And Readiness
 
+- [169 First-Proof Route Surface Inventory](./169-first-proof-route-surface-inventory.md)
 - [168 Route Readiness Surface Inventory](./168-route-readiness-surface-inventory.md)
 
 ### Release, Docs, And Consumer Front Door

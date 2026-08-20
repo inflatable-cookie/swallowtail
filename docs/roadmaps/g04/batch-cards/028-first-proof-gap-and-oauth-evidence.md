@@ -1,6 +1,6 @@
 # 028 First-Proof Gap And OAuth Evidence
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../010-first-proof-route-inventory.md`
@@ -30,11 +30,17 @@ evidence, or keep that gate explicit.
 
 ## Acceptance Criteria
 
-- [ ] each inventoried gap has a reuse, descriptor, harness, live, or gated
+- [x] each inventoried gap has a reuse, descriptor, harness, live, or gated
       classification
-- [ ] OAuth is a named candidate with evidence, or a remaining gate
-- [ ] Contract 011 deterministic harnesses stay first
-- [ ] no production code changes
+- [x] OAuth is a named candidate with evidence, or a remaining gate
+- [x] Contract 011 deterministic harnesses stay first
+- [x] no production code changes
+
+## Evidence
+
+Research 169. Hosted interactive OAuth remains a remaining gate. Anthropic
+Messages cannot be that proof. Claude Agent and Codex ChatGPT are
+secret-free **installed** subscription paths, not hosted URL-open OAuth.
 
 ## Validation
 

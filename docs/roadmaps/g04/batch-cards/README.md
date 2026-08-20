@@ -2,15 +2,19 @@
 
 ## Active
 
-- [027-first-proof-surface-inventory.md](./027-first-proof-surface-inventory.md)
+- [030-anthropic-messages-addable-descriptor.md](./030-anthropic-messages-addable-descriptor.md)
+- [031-anthropic-messages-admission-and-api-key.md](./031-anthropic-messages-admission-and-api-key.md)
+- [032-anthropic-messages-refresh-subject-and-047.md](./032-anthropic-messages-refresh-subject-and-047.md)
 
 ## Planned
 
-- [028-first-proof-gap-and-oauth-evidence.md](./028-first-proof-gap-and-oauth-evidence.md)
-- [029-first-proof-tranche-confirmation.md](./029-first-proof-tranche-confirmation.md)
+None. Codex, Ollama, and hosted OAuth stay behind g04.011.
 
 ## Completed
 
+- [029-first-proof-tranche-confirmation.md](./029-first-proof-tranche-confirmation.md)
+- [028-first-proof-gap-and-oauth-evidence.md](./028-first-proof-gap-and-oauth-evidence.md)
+- [027-first-proof-surface-inventory.md](./027-first-proof-surface-inventory.md)
 - [026-overlay-refusals.md](./026-overlay-refusals.md)
 - [025-apply-model-presentation-overlay.md](./025-apply-model-presentation-overlay.md)
 - [024-instance-update-observation.md](./024-instance-update-observation.md)

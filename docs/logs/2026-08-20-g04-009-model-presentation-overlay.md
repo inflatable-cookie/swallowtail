@@ -15,6 +15,11 @@ provider, and model ids. Provider catalogue default stays on the overlay
 row and is not rewritten as consumer-default. The 047 snapshot is not
 mutated. `Ready` / `NotReady` is copied unchanged.
 
+`apply_stored_model_presentation_overlay` reads the store and filters to this
+instance so other-instance markers are not copied. An unfiltered marker list
+still fails as `CrossInstance`. Catalogue rows without a provider id cannot
+receive a marker. Testkit conformance covers those cases.
+
 Unknown model ids fail closed. Markers whose instance id does not match the
 catalogue instance fail closed. Overlay cannot change selection readiness to
 `Ready`. Mixed gateway rows remain consumer assembly of several catalogues.

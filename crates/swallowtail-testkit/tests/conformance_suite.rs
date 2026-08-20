@@ -12,6 +12,8 @@ mod harness_configuration_profiles;
 mod harness_isolation_policy;
 #[path = "managed_harness_preflight.rs"]
 mod managed_harness_preflight;
+#[path = "model_presentation_overlay.rs"]
+mod model_presentation_overlay;
 #[path = "observable_activity_conformance.rs"]
 mod observable_activity_conformance;
 #[path = "prepared_integration.rs"]

@@ -1,18 +1,23 @@
-use super::{ModelPresentationOverlayFailureKind, apply_model_presentation_overlay};
+use super::{
+    ConnectionLifecycleStore, ConnectionLifecycleStoreFailure, ModelPresentationOverlayFailureKind,
+    apply_model_presentation_overlay, apply_stored_model_presentation_overlay,
+};
 use crate::{
     ConfiguredProviderInstanceAdmission, ConfiguredProviderInstanceRecord,
     ConfiguredProviderInstanceSelectionReadiness, ConfiguredProviderModelCatalogueInput,
     PreparedAccessEvidence, PreparedOperationEvidence,
 };
+use std::collections::BTreeMap;
+use std::sync::Mutex;
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessRequirement, AccessStatus, AdapterId, AdapterIdentity,
-    AdapterVersion, Capability, CapabilityProfile, CapabilityRequirement, ConfiguredInstance,
-    ConfiguredInstanceId, CredentialMechanism, CredentialRef, CredentialState, DriverDescriptor,
-    DriverRole, EndpointAudience, EndpointAuthorization, EntitlementMetering, EntitlementState,
-    ExecutionHostId, ExecutionLayer, InstanceOwnership, InstancePolicyId, InstanceRevision,
-    InstanceTargetRef, IntegrationFamilyId, ModelCatalogEntry, ModelId, ModelMetadata,
-    OperationRequirements, OperationShape, OverlayMarker, PreflightContext, ProtocolFacadeId,
-    ProviderId, RuntimeReadiness, SupportAuthority, TransportFamilyId, preflight,
+    AdapterVersion, AdmittedInstanceRecord, Capability, CapabilityProfile, CapabilityRequirement,
+    ConfiguredInstance, ConfiguredInstanceId, CredentialMechanism, CredentialRef, CredentialState,
+    DriverDescriptor, DriverRole, EndpointAudience, EndpointAuthorization, EntitlementMetering,
+    EntitlementState, ExecutionHostId, ExecutionLayer, InstanceOwnership, InstancePolicyId,
+    InstanceRevision, InstanceTargetRef, IntegrationFamilyId, ModelCatalogEntry, ModelId,
+    ModelMetadata, OperationRequirements, OperationShape, OverlayMarker, PreflightContext,
+    ProtocolFacadeId, ProviderId, RuntimeReadiness, SupportAuthority, TransportFamilyId, preflight,
 };
 
 struct Fixture {
@@ -157,6 +162,13 @@ impl Fixture {
         )
         .with_provider_id(ProviderId::new(provider_id).expect("provider id"))
     }
+
+    fn model_without_provider(model_id: &str) -> ModelCatalogEntry {
+        ModelCatalogEntry::new(
+            ModelId::new(model_id).expect("model id"),
+            ModelMetadata::default(),
+        )
+    }
 }
 
 fn ready_record() -> ConfiguredProviderInstanceRecord {
@@ -193,12 +205,101 @@ fn not_ready_record() -> ConfiguredProviderInstanceRecord {
     .expect("not-ready catalogue remains visible")
 }
 
+fn record_without_provider() -> ConfiguredProviderInstanceRecord {
+    let fixture = Fixture::ready("work");
+    let source = fixture.prepared();
+    ConfiguredProviderInstanceRecord::admit(
+        fixture
+            .admission()
+            .with_prepared_routes([source.clone()])
+            .with_model_catalogue(ConfiguredProviderModelCatalogueInput::available(
+                source,
+                [Fixture::model_without_provider("opus")],
+            )),
+    )
+    .expect("catalogue without provider id is admitted")
+}
+
 fn marker(instance_id: &str, model_id: &str) -> OverlayMarker {
     OverlayMarker::new(
         ConfiguredInstanceId::new(instance_id).expect("instance id"),
         ProviderId::new("anthropic").expect("provider id"),
         ModelId::new(model_id).expect("model id"),
     )
+}
+
+struct MemoryStore {
+    overlays: Mutex<BTreeMap<(String, String, String), OverlayMarker>>,
+    list_failure: Option<ConnectionLifecycleStoreFailure>,
+}
+
+impl MemoryStore {
+    fn new() -> Self {
+        Self {
+            overlays: Mutex::new(BTreeMap::new()),
+            list_failure: None,
+        }
+    }
+
+    fn failing_list() -> Self {
+        Self {
+            overlays: Mutex::new(BTreeMap::new()),
+            list_failure: Some(ConnectionLifecycleStoreFailure::new(
+                "swallowtail.fixture.overlay_store",
+                "Overlay store list failed",
+            )),
+        }
+    }
+}
+
+impl ConnectionLifecycleStore for MemoryStore {
+    fn put_instance(
+        &self,
+        _record: AdmittedInstanceRecord,
+    ) -> Result<(), ConnectionLifecycleStoreFailure> {
+        Ok(())
+    }
+
+    fn get_instance(
+        &self,
+        _id: &ConfiguredInstanceId,
+    ) -> Result<Option<AdmittedInstanceRecord>, ConnectionLifecycleStoreFailure> {
+        Ok(None)
+    }
+
+    fn list_instances(
+        &self,
+    ) -> Result<Vec<AdmittedInstanceRecord>, ConnectionLifecycleStoreFailure> {
+        Ok(Vec::new())
+    }
+
+    fn put_overlay_marker(
+        &self,
+        marker: OverlayMarker,
+    ) -> Result<(), ConnectionLifecycleStoreFailure> {
+        self.overlays.lock().expect("store lock poisoned").insert(
+            (
+                marker.instance_id().as_str().to_owned(),
+                marker.provider_id().as_str().to_owned(),
+                marker.model_id().as_str().to_owned(),
+            ),
+            marker,
+        );
+        Ok(())
+    }
+
+    fn list_overlay_markers(&self) -> Result<Vec<OverlayMarker>, ConnectionLifecycleStoreFailure> {
+        if let Some(failure) = &self.list_failure {
+            return Err(failure.clone());
+        }
+        Ok(self
+            .overlays
+            .lock()
+            .expect("store lock poisoned")
+            .values()
+            .cloned()
+            .collect())
+    }
 }
 
 #[test]
@@ -369,5 +470,55 @@ fn overlay_cannot_change_not_ready_to_ready() {
     assert_ne!(
         overlay.selection_readiness(),
         ConfiguredProviderInstanceSelectionReadiness::Ready
+    );
+}
+
+#[test]
+fn stored_overlay_skips_other_instance_markers() {
+    let record = ready_record();
+    let store = MemoryStore::new();
+    store
+        .put_overlay_marker(marker("work", "opus").with_favourite(true))
+        .expect("put work marker");
+    store
+        .put_overlay_marker(marker("personal", "opus").with_hidden(true))
+        .expect("put personal marker");
+
+    let overlay = apply_stored_model_presentation_overlay(&store, &record)
+        .expect("stored overlay filters by instance");
+    let opus = overlay
+        .entries()
+        .find(|entry| entry.model_id().as_str() == "opus")
+        .expect("opus remains");
+
+    assert!(opus.favourite());
+    assert!(!opus.hidden());
+    assert_eq!(
+        overlay.selection_readiness(),
+        ConfiguredProviderInstanceSelectionReadiness::Ready
+    );
+}
+
+#[test]
+fn stored_overlay_reports_store_failure() {
+    let record = ready_record();
+    let failure = apply_stored_model_presentation_overlay(&MemoryStore::failing_list(), &record)
+        .expect_err("store list failure is reported");
+    assert_eq!(failure.kind(), ModelPresentationOverlayFailureKind::Store);
+}
+
+#[test]
+fn catalogue_rows_without_provider_id_cannot_receive_a_marker() {
+    let record = record_without_provider();
+    let unmarked = apply_model_presentation_overlay(&record, &[]).expect("unmarked row remains");
+    let entry = unmarked.entries().next().expect("opus remains");
+    assert_eq!(entry.provider_id(), None);
+    assert!(!entry.favourite());
+
+    let failure = apply_model_presentation_overlay(&record, &[marker("work", "opus")])
+        .expect_err("marker cannot invent a catalogue provider id");
+    assert_eq!(
+        failure.kind(),
+        ModelPresentationOverlayFailureKind::UnknownModel
     );
 }

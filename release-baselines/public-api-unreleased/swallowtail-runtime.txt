@@ -281,6 +281,7 @@ pub enum swallowtail_runtime::ModelArtifactAccess
 pub swallowtail_runtime::ModelArtifactAccess::ReadOnly
 pub enum swallowtail_runtime::ModelPresentationOverlayFailureKind
 pub swallowtail_runtime::ModelPresentationOverlayFailureKind::CrossInstance
+pub swallowtail_runtime::ModelPresentationOverlayFailureKind::Store
 pub swallowtail_runtime::ModelPresentationOverlayFailureKind::UnknownModel
 pub enum swallowtail_runtime::OperationDetachmentAcknowledgement
 pub swallowtail_runtime::OperationDetachmentAcknowledgement::AlreadyRequested
@@ -2774,6 +2775,7 @@ pub fn swallowtail_runtime::WorkingStateRestorationOperation::restore(alloc::box
 pub fn swallowtail_runtime::admit_instance(&swallowtail_runtime::AddableRouteCatalog, &dyn swallowtail_runtime::ConnectionLifecycleStore, swallowtail_runtime::InstanceAdmissionRequest) -> core::result::Result<swallowtail_core::connection_lifecycle::records::AdmittedInstanceRecord, swallowtail_runtime::InstanceAdmissionFailure>
 pub fn swallowtail_runtime::append_folded_idioms(core::option::Option<swallowtail_runtime::OperationContent>, alloc::string::String) -> core::option::Option<swallowtail_runtime::OperationContent>
 pub fn swallowtail_runtime::apply_model_presentation_overlay(&swallowtail_runtime::ConfiguredProviderInstanceRecord, &[swallowtail_core::connection_lifecycle::records::OverlayMarker]) -> core::result::Result<swallowtail_runtime::ModelPresentationOverlay, swallowtail_runtime::ModelPresentationOverlayFailure>
+pub fn swallowtail_runtime::apply_stored_model_presentation_overlay(&dyn swallowtail_runtime::ConnectionLifecycleStore, &swallowtail_runtime::ConfiguredProviderInstanceRecord) -> core::result::Result<swallowtail_runtime::ModelPresentationOverlay, swallowtail_runtime::ModelPresentationOverlayFailure>
 pub fn swallowtail_runtime::base_requirements(swallowtail_core::runtime_identity::ExecutionLayer, swallowtail_core::runtime_identity::OperationShape, swallowtail_core::runtime_identity::DriverRole, &swallowtail_core::instance::ConfiguredInstance, &swallowtail_core::access::AccessProfile, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::access::CredentialState>, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::requirement::CapabilityRequirement>) -> swallowtail_core::requirement::operation::OperationRequirements
 pub fn swallowtail_runtime::bound_provider_session_replay_tail(alloc::vec::Vec<swallowtail_runtime::SessionReplayItem>, swallowtail_runtime::ProviderSessionReconciliationBounds) -> (alloc::vec::Vec<swallowtail_runtime::SessionReplayItem>, bool)
 pub fn swallowtail_runtime::build_plan(&swallowtail_core::registration::DriverDescriptor, &swallowtail_core::instance::ConfiguredInstance, core::option::Option<&swallowtail_core::instance::ModelRoute>, &swallowtail_core::requirement::operation::OperationRequirements, &swallowtail_core::access::AccessProfile, &swallowtail_core::access::AccessStatus, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::runtime_identity::HostServiceKind>) -> core::result::Result<swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::PreparationFailure>

@@ -5,6 +5,7 @@ use swallowtail_core::{
     ConfiguredInstanceId, ModelCatalogEntry, ModelId, OverlayMarker, ProviderId, SafeDiagnostic,
 };
 
+use super::{ConnectionLifecycleStore, ConnectionLifecycleStoreFailure};
 use crate::{ConfiguredProviderInstanceRecord, ConfiguredProviderInstanceSelectionReadiness};
 
 /// Stable reason model-presentation overlay projection failed.
@@ -14,6 +15,8 @@ pub enum ModelPresentationOverlayFailureKind {
     UnknownModel,
     /// A marker belongs to a different configured instance.
     CrossInstance,
+    /// The store rejected the overlay-marker list.
+    Store,
 }
 
 /// Rejection raised while projecting overlay markers onto a catalogue.
@@ -49,6 +52,13 @@ impl ModelPresentationOverlayFailure {
             "swallowtail.connection_lifecycle.overlay_cross_instance",
             "Overlay marker belongs to a different configured instance",
         )
+    }
+
+    pub(super) fn from_store(failure: ConnectionLifecycleStoreFailure) -> Self {
+        Self {
+            kind: ModelPresentationOverlayFailureKind::Store,
+            diagnostic: failure.diagnostic().clone(),
+        }
     }
 
     #[must_use]
@@ -173,11 +183,15 @@ impl ModelPresentationOverlay {
     }
 }
 
-/// Projects stored overlay markers onto one bound catalogue result.
+/// Projects overlay markers onto one bound catalogue result.
 ///
 /// Markers must key to this instance and to exact provider and model ids from
 /// the catalogue. Unknown models and cross-instance markers fail closed. The
 /// snapshot's `Ready` / `NotReady` value is copied, never rewritten.
+///
+/// Pass only this instance's markers. An unfiltered store list that includes
+/// another instance fails as [`ModelPresentationOverlayFailureKind::CrossInstance`].
+/// [`apply_stored_model_presentation_overlay`] filters the store first.
 pub fn apply_model_presentation_overlay(
     record: &ConfiguredProviderInstanceRecord,
     markers: &[OverlayMarker],
@@ -219,6 +233,24 @@ pub fn apply_model_presentation_overlay(
         selection_readiness: record.selection_readiness(),
         entries: entries.into_iter().map(|(_, entry)| entry).collect(),
     })
+}
+
+/// Projects stored overlay markers for one bound catalogue result.
+///
+/// Markers for other configured instances are skipped so they are not copied
+/// onto this catalogue. Same-instance unknown models still fail closed.
+pub fn apply_stored_model_presentation_overlay(
+    store: &dyn ConnectionLifecycleStore,
+    record: &ConfiguredProviderInstanceRecord,
+) -> Result<ModelPresentationOverlay, ModelPresentationOverlayFailure> {
+    let markers = store
+        .list_overlay_markers()
+        .map_err(ModelPresentationOverlayFailure::from_store)?;
+    let scoped: Vec<_> = markers
+        .into_iter()
+        .filter(|marker| marker.instance_id() == record.instance_id())
+        .collect();
+    apply_model_presentation_overlay(record, &scoped)
 }
 
 fn catalogue_identity_set(

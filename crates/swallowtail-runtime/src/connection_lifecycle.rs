@@ -33,6 +33,7 @@ pub use failure::{
 pub use overlay::{
     ModelPresentationOverlay, ModelPresentationOverlayEntry, ModelPresentationOverlayFailure,
     ModelPresentationOverlayFailureKind, apply_model_presentation_overlay,
+    apply_stored_model_presentation_overlay,
 };
 pub use refresh::{ReadinessRefreshRequest, refresh_readiness};
 pub use sign_in::{

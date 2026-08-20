@@ -38,7 +38,7 @@ Validation:
 - `effigy package:api`
 - `effigy check:examples`
 
-PR: pending
+PR: https://github.com/inflatable-cookie/swallowtail/pull/15
 
 ## Next
 

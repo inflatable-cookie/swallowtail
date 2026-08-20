@@ -14,7 +14,7 @@ shape.
 
 ## Next Task
 
-Await review of g04.018 cards 050-052. Do not merge without operator
+Await review of g04.018 PR 15. Do not merge without operator
 authorisation.
 
 ## Index

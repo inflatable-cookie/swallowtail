@@ -40,7 +40,7 @@ and selection policy.
 ## Current Checkpoint
 
 - g04.001 through g04.017 are complete. PR 13 is on `main` at `fa33de15`
-- g04.018 cards 050-052 executed; awaiting review
+- g04.018 cards 050-052 executed; PR 15 awaiting review
 - Hosted OAuth stays a remaining gate
 - `v0.3.3` remains `51d18620`
 

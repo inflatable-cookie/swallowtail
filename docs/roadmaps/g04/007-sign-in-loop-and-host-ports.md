@@ -6,7 +6,7 @@ Created: 2026-08-19
 Depends on: g04.006
 Vision tags: consumer integration, route readiness, explicit selection
 Contract refs: 006, 010, 014, 015, 017, 047, 057
-Planning state: cards 019-021 planned behind g04.006
+Planning state: cards 019-021 ready
 
 ## Problem
 

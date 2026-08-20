@@ -1,6 +1,6 @@
 # 020 Sign-In Loop
 
-Status: planned
+Status: ready
 Owner: Tom
 Created: 2026-08-19
 Milestone: `../007-sign-in-loop-and-host-ports.md`
@@ -39,7 +39,7 @@ OAuth, and delegated CLI login through the new host ports.
 
 ## Auto-Continuation
 
-Yes, into card 021, after this card is marked ready.
+Yes, into card 021.
 
 ## Stop Conditions
 

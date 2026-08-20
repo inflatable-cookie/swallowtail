@@ -1,6 +1,6 @@
 # 021 Sign-In Fail-Closed And API-Key Collection
 
-Status: planned
+Status: ready
 Owner: Tom
 Created: 2026-08-19
 Milestone: `../007-sign-in-loop-and-host-ports.md`

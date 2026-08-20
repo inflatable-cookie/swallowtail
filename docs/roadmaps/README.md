@@ -14,9 +14,8 @@ shape.
 
 ## Next Task
 
-g04.006 PR awaiting review:
-https://github.com/inflatable-cookie/swallowtail/pull/5.
-g04.007 stays planned until catalog and admission merge.
+Worker in flight: g04.007 cards 019-021. Handoff
+`docs/handoffs/20260820-095258-g04-007-sign-in-loop-and-host-ports.md`.
 
 ## Index
 

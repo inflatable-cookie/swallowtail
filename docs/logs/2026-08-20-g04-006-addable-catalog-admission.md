@@ -32,4 +32,5 @@ PR: https://github.com/inflatable-cookie/swallowtail/pull/5
 
 ## Next
 
-Merge stays operator-authorised. g04.007 stays planned.
+PR 5 fast-forwarded onto `main` at `5cdffebb`. g04.007 cards 019-021 are
+ready.

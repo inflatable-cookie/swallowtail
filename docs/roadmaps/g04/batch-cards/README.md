@@ -2,18 +2,17 @@
 
 ## Active
 
-- [016-addable-route-catalog.md](./016-addable-route-catalog.md)
-- [017-instance-admission.md](./017-instance-admission.md)
-- [018-config-field-descriptors.md](./018-config-field-descriptors.md)
-
-## Planned
-
 - [019-interactive-sign-in-host-ports.md](./019-interactive-sign-in-host-ports.md)
 - [020-sign-in-loop.md](./020-sign-in-loop.md)
 - [021-sign-in-fail-closed-and-api-key-collection.md](./021-sign-in-fail-closed-and-api-key-collection.md)
 
+## Planned
+
 ## Completed
 
+- [018-config-field-descriptors.md](./018-config-field-descriptors.md)
+- [017-instance-admission.md](./017-instance-admission.md)
+- [016-addable-route-catalog.md](./016-addable-route-catalog.md)
 - [015-host-local-simple-store-adapters.md](./015-host-local-simple-store-adapters.md)
 - [014-lifecycle-store-port.md](./014-lifecycle-store-port.md)
 - [013-lifecycle-core-records.md](./013-lifecycle-core-records.md)

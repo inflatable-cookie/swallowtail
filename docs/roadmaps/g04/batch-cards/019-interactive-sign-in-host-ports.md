@@ -1,6 +1,6 @@
 # 019 Interactive Sign-In Host Ports
 
-Status: planned
+Status: ready
 Owner: Tom
 Created: 2026-08-19
 Milestone: `../007-sign-in-loop-and-host-ports.md`
@@ -38,7 +38,7 @@ device-code display.
 
 ## Auto-Continuation
 
-Yes, into card 020, after this card is marked ready.
+Yes, into card 020.
 
 ## Stop Conditions
 

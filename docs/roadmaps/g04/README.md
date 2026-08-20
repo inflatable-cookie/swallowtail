@@ -34,14 +34,14 @@ and selection policy.
 
 ## Planned Next Roadmaps
 
-- [g04.007 Sign-In Loop And Host Ports](007-sign-in-loop-and-host-ports.md) — planned behind merged 006
+- [g04.007 Sign-In Loop And Host Ports](007-sign-in-loop-and-host-ports.md) — ready cards 019-021
 
 ## Current Checkpoint
 
-- g04.001 through g04.006 are complete on this branch. PR
-  https://github.com/inflatable-cookie/swallowtail/pull/5 awaits review.
-- g04.007 stays planned until catalog and admission land on `main`
-- sign-in, refresh, overlay, and first-proof stay behind that merge
+- g04.001 through g04.006 are complete. PR 5 is on `main` at `5cdffebb`
+- g04.007 worker dispatched: cards 019-021, handoff
+  `docs/handoffs/20260820-095258-g04-007-sign-in-loop-and-host-ports.md`
+- refresh, overlay, and first-proof stay behind that sign-in loop
 - `v0.3.3` remains `51d18620`
 
 ## Milestones

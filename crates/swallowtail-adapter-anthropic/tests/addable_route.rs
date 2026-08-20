@@ -26,10 +26,16 @@ fn services_with_credential() -> HostServices {
 fn descriptor_is_hosted_and_matches_the_direct_driver() {
     let descriptor = anthropic_messages_addable_route_descriptor(&services_with_credential());
 
-    assert_eq!(descriptor.id().as_str(), ANTHROPIC_MESSAGES_ADDABLE_ROUTE_ID);
+    assert_eq!(
+        descriptor.id().as_str(),
+        ANTHROPIC_MESSAGES_ADDABLE_ROUTE_ID
+    );
     assert_eq!(descriptor.id().as_str(), "anthropic.messages");
     assert_eq!(descriptor.topology(), RouteTopology::Hosted);
-    assert_eq!(descriptor.driver(), anthropic_direct_descriptor().identity());
+    assert_eq!(
+        descriptor.driver(),
+        anthropic_direct_descriptor().identity()
+    );
     assert_eq!(
         descriptor.availability(),
         AddableRouteAvailability::Available
@@ -87,7 +93,8 @@ fn endpoint_config_is_an_opaque_field_not_a_url() {
 #[test]
 fn direct_execution_layer_is_unchanged() {
     assert!(
-        anthropic_direct_descriptor().supports_execution_layer(ExecutionLayer::DirectModelInference)
+        anthropic_direct_descriptor()
+            .supports_execution_layer(ExecutionLayer::DirectModelInference)
     );
     assert!(
         !anthropic_direct_descriptor().supports_execution_layer(ExecutionLayer::HarnessInteraction)

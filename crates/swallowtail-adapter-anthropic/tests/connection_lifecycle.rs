@@ -8,20 +8,24 @@
 mod support;
 
 use std::sync::Arc;
+use support::ThreadServices;
 use swallowtail_adapter_anthropic::{
     ANTHROPIC_MESSAGES_API_KEY_FIELD_ID, AnthropicPreparationInput, anthropic_direct_descriptor,
     anthropic_messages_addable_route_descriptor, prepare_anthropic_direct,
 };
 use swallowtail_core::{
-    AccessProfile, AccessProfileId, AccessRequirement, AccessStatus, AuthenticatedSubjectObservation,
-    Capability, CapabilityRequirement, ConfiguredInstanceId, CredentialMechanism, CredentialRef,
-    CredentialState, DriverRole, EndpointAudience, EndpointAuthorization, EntitlementMetering,
-    EntitlementState, ExecutionHostId, ExecutionLayer, InstanceEnablement, InstanceRevision,
-    InstanceTargetRef, IntegrationFamilyId, ModelCatalogEntry, ModelId, ModelMetadata,
-    OperationRequirements, OperationShape, OverlayMarker, PreflightContext, ProviderId,
-    RuntimeReadiness, SubjectDisclosure, SupportAuthority, preflight,
+    AccessProfile, AccessProfileId, AccessRequirement, AccessStatus,
+    AuthenticatedSubjectObservation, Capability, CapabilityRequirement, ConfiguredInstanceId,
+    CredentialMechanism, CredentialRef, CredentialState, DriverRole, EndpointAudience,
+    EndpointAuthorization, EntitlementMetering, EntitlementState, ExecutionHostId, ExecutionLayer,
+    InstanceEnablement, InstanceRevision, InstanceTargetRef, IntegrationFamilyId,
+    ModelCatalogEntry, ModelId, ModelMetadata, OperationRequirements, OperationShape,
+    OverlayMarker, PreflightContext, ProviderId, RuntimeReadiness, SubjectDisclosure,
+    SupportAuthority, preflight,
 };
-use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits, MemoryConnectionLifecycleStore};
+use swallowtail_host_local::{
+    LocalProcessHost, LocalProcessLimits, MemoryConnectionLifecycleStore,
+};
 use swallowtail_runtime::{
     AddableRouteCatalog, ConfiguredProviderInstanceAdmission, ConfiguredProviderInstanceRecord,
     ConfiguredProviderInstanceSelectionReadiness, ConfiguredProviderModelCatalogueInput,
@@ -32,7 +36,6 @@ use swallowtail_runtime::{
     poll_sign_in, refresh_readiness, start_sign_in, submit_sign_in_credential_field,
 };
 use swallowtail_runtime::{BlockingWorkService, ScopedTaskService, TimeService};
-use support::ThreadServices;
 
 const INSTANCE: &str = "anthropic.work";
 const CREDENTIAL_REF: &str = "anthropic.work.api-key";
@@ -203,7 +206,6 @@ fn prepare_still_accepts_the_admitted_identity_and_access_profile() {
     assert_eq!(prepared.access_profile(), &profile);
 }
 
-
 fn ready_access_status(profile: &AccessProfile) -> AccessStatus {
     AccessStatus::new(
         profile.id().clone(),
@@ -238,7 +240,13 @@ fn prepared_route_evidence(
     .with_ownership_modes([instance.ownership()])
     .with_capabilities([CapabilityRequirement::new(Capability::ModelCatalog, [])]);
     let plan = preflight(
-        &PreflightContext::new(driver, instance, profile, status, services.available_kinds()),
+        &PreflightContext::new(
+            driver,
+            instance,
+            profile,
+            status,
+            services.available_kinds(),
+        ),
         &requirements,
     )
     .expect("preflight succeeds for the prepared route");
@@ -281,7 +289,8 @@ fn snapshot_record(services: &HostServices) -> ConfiguredProviderInstanceRecord 
     )
     .expect("instance prepares");
     let driver = anthropic_direct_descriptor();
-    let route = prepared_route_evidence(services, &driver, prepared.instance(), &profile, &evidence);
+    let route =
+        prepared_route_evidence(services, &driver, prepared.instance(), &profile, &evidence);
     ConfiguredProviderInstanceRecord::admit(
         ConfiguredProviderInstanceAdmission::new(
             driver,
@@ -306,16 +315,14 @@ fn refresh_writes_host_supplied_access_status_without_touching_enablement() {
     let services = services();
     let store = MemoryConnectionLifecycleStore::new();
     let descriptor = anthropic_messages_addable_route_descriptor(&services);
-    let catalog =
-        AddableRouteCatalog::from_descriptors([descriptor]).expect("catalog assembles");
+    let catalog = AddableRouteCatalog::from_descriptors([descriptor]).expect("catalog assembles");
     let admitted = admit_instance(
         &catalog,
         &store,
         InstanceAdmissionRequest::new(
             instance_id(),
             family(),
-            swallowtail_core::AddableRouteId::new("anthropic.messages")
-                .expect("route id is valid"),
+            swallowtail_core::AddableRouteId::new("anthropic.messages").expect("route id is valid"),
         )
         .with_enablement(InstanceEnablement::Disabled),
     )
@@ -333,7 +340,10 @@ fn refresh_writes_host_supplied_access_status_without_touching_enablement() {
     let status = refreshed.access_status().expect("access status is stored");
     assert_eq!(status.credential(), CredentialState::Ready);
     assert_eq!(status.entitlement(), EntitlementState::Available);
-    assert_eq!(status.endpoint_authorization(), EndpointAuthorization::Allowed);
+    assert_eq!(
+        status.endpoint_authorization(),
+        EndpointAuthorization::Allowed
+    );
     assert_eq!(status.runtime_readiness(), RuntimeReadiness::Ready);
     assert_eq!(refreshed.enablement(), InstanceEnablement::Disabled);
 }

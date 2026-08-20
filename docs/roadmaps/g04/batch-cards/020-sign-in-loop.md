@@ -1,6 +1,6 @@
 # 020 Sign-In Loop
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-19
 Milestone: `../007-sign-in-loop-and-host-ports.md`
@@ -27,10 +27,10 @@ OAuth, and delegated CLI login through the new host ports.
 
 ## Acceptance Criteria
 
-- [ ] start, poll, complete, cancel, and timeout are explicit
-- [ ] ACP authenticate is not called
-- [ ] 017 delegated login is not this loop
-- [ ] success does not change mechanism, account, audience, or billing
+- [x] start, poll, complete, cancel, and timeout are explicit
+- [x] ACP authenticate is not called
+- [x] 017 delegated login is not this loop
+- [x] success does not change mechanism, account, audience, or billing
 
 ## Validation
 

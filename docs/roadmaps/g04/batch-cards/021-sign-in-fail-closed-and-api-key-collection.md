@@ -1,6 +1,6 @@
 # 021 Sign-In Fail-Closed And API-Key Collection
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-19
 Milestone: `../007-sign-in-loop-and-host-ports.md`
@@ -27,10 +27,10 @@ through field descriptors into opaque credential references.
 
 ## Acceptance Criteria
 
-- [ ] missing URL, loopback, or device-code port fails the matching loop
-- [ ] API-key collection stores a reference, not the secret, in the 057 store
-- [ ] 014 acquire/release still owns leases
-- [ ] 047 still has no tokens
+- [x] missing URL, loopback, or device-code port fails the matching loop
+- [x] API-key collection stores a reference, not the secret, in the 057 store
+- [x] 014 acquire/release still owns leases
+- [x] 047 still has no tokens
 
 ## Validation
 

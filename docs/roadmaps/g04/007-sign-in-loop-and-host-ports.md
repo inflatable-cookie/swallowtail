@@ -1,12 +1,12 @@
 # 007 Sign-In Loop And Host Ports
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-19
 Depends on: g04.006
 Vision tags: consumer integration, route readiness, explicit selection
 Contract refs: 006, 010, 014, 015, 017, 047, 057
-Planning state: cards 019-021 ready
+Planning state: cards 019-021 completed
 
 ## Problem
 
@@ -21,13 +21,13 @@ Realize library-max sign-in loops through host ports.
 
 ## Goals
 
-- [ ] add optional Contract 010 ports for URL open, loopback callback, and
+- [x] add optional Contract 010 ports for URL open, loopback callback, and
       device-code display
-- [ ] own start, poll, complete, cancel, and timeout
-- [ ] fail closed when a required port is missing
-- [ ] materialize only opaque credential references through Contract 014
+- [x] own start, poll, complete, cancel, and timeout
+- [x] fail closed when a required port is missing
+- [x] materialize only opaque credential references through Contract 014
       leases
-- [ ] keep ACP authenticate and 017 delegated login distinct
+- [x] keep ACP authenticate and 017 delegated login distinct
 
 ## Non-Goals
 
@@ -41,30 +41,30 @@ Realize library-max sign-in loops through host ports.
 
 ### Batch 7.1 — Host Ports
 
-- [ ] Execute card 019 after g04.006.
-- [ ] optional URL, loopback, and device-code ports
-- [ ] spawn of an approved login helper stays process authority
+- [x] Execute card 019 after g04.006.
+- [x] optional URL, loopback, and device-code ports
+- [x] spawn of an approved login helper stays process authority
 
 ### Batch 7.2 — Sign-In Loop
 
-- [ ] Execute card 020 after card 019.
-- [ ] start, poll, complete, cancel, timeout
-- [ ] interactive OAuth, device OAuth, delegated CLI login
+- [x] Execute card 020 after card 019.
+- [x] start, poll, complete, cancel, timeout
+- [x] interactive OAuth, device OAuth, delegated CLI login
 
 ### Batch 7.3 — Fail-Closed And API-Key Collection
 
-- [ ] Execute card 021 after card 020.
-- [ ] missing required port fails the loop
-- [ ] API-key collection through field descriptors
-- [ ] success materializes a `CredentialRef` for the same route and audience
+- [x] Execute card 021 after card 020.
+- [x] missing required port fails the loop
+- [x] API-key collection through field descriptors
+- [x] success materializes a `CredentialRef` for the same route and audience
 
 ## Acceptance Criteria
 
-- [ ] ports never return secret bytes to portable records
-- [ ] presence of a port does not start sign-in
-- [ ] ACP `authenticate` is not used as this loop
-- [ ] a mechanism, account, audience, or billing change fails closed
-- [ ] 047 still has no emails, tokens, or targets
+- [x] ports never return secret bytes to portable records
+- [x] presence of a port does not start sign-in
+- [x] ACP `authenticate` is not used as this loop
+- [x] a mechanism, account, audience, or billing change fails closed
+- [x] 047 still has no emails, tokens, or targets
 
 ## Lane Runway
 

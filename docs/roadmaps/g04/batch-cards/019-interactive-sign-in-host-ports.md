@@ -1,6 +1,6 @@
 # 019 Interactive Sign-In Host Ports
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-19
 Milestone: `../007-sign-in-loop-and-host-ports.md`
@@ -26,10 +26,10 @@ device-code display.
 
 ## Acceptance Criteria
 
-- [ ] missing ports are observable
-- [ ] ports never return secret bytes
-- [ ] process-spawned login helpers stay process authority
-- [ ] 047 is unchanged
+- [x] missing ports are observable
+- [x] ports never return secret bytes
+- [x] process-spawned login helpers stay process authority
+- [x] 047 is unchanged
 
 ## Validation
 

@@ -14,8 +14,9 @@ shape.
 
 ## Next Task
 
-Worker in flight: g04.007 cards 019-021. Handoff
-`docs/handoffs/20260820-095258-g04-007-sign-in-loop-and-host-ports.md`.
+Awaiting review of g04.007 sign-in loop PR. Do not merge without operator
+authorisation. After merge, compile readiness refresh, subject observation,
+and overlay projection.
 
 ## Index
 

@@ -9,10 +9,10 @@ use crate::support::{FakeProcessService, host_services_for};
 use futures_executor::block_on;
 use std::sync::Arc;
 use swallowtail_adapter_codex::{
-    CODEX_APP_SERVER_BINARY_PATH_FIELD_ID, CODEX_APP_SERVER_ENVIRONMENT_FIELD_ID, CODEX_CLI_AXIS,
-    CodexPreparationInput, CodexPreparationProbe, CodexPreparedDriver,
-    codex_app_server_addable_route_descriptor, codex_app_server_claim, codex_app_server_descriptor,
-    codex_chatgpt_subscription_access_profile, prepare_codex,
+    CODEX_APP_SERVER_BINARY_PATH_FIELD_ID, CODEX_APP_SERVER_ENVIRONMENT_FIELD_ID,
+    CodexPreparationInput, CodexPreparationProbe, codex_app_server_addable_route_descriptor,
+    codex_app_server_claim, codex_app_server_descriptor, codex_chatgpt_subscription_access_profile,
+    prepare_codex,
 };
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessRequirement, AccessStatus,
@@ -20,21 +20,21 @@ use swallowtail_core::{
     ConfigFieldRef, ConfiguredInstanceId, CredentialState, DriverRole, EndpointAuthorization,
     EntitlementState, ExecutionHostId, ExecutionLayer, HarnessConfigurationPosture,
     HostServiceKind, InstalledExecutableCompatibility, InstanceEnablement, InstanceRevision,
-    IntegrationFamilyId, InterfaceVersionAxis, ModelCatalogEntry, ModelId, ModelMetadata,
-    OperationRequirements, OperationShape, OverlayMarker, PreflightContext, ProviderId,
-    RuntimeReadiness, SessionAccessPolicy, SessionProviderStatePolicy, SubjectDisclosure,
-    SupportAuthority, preflight,
+    IntegrationFamilyId, ModelCatalogEntry, ModelId, ModelMetadata, OperationRequirements,
+    OperationShape, OverlayMarker, PreflightContext, ProviderId, RuntimeReadiness,
+    SessionAccessPolicy, SessionProviderStatePolicy, SubjectDisclosure, SupportAuthority,
+    preflight,
 };
 use swallowtail_host_local::MemoryConnectionLifecycleStore;
 use swallowtail_runtime::{
     AddableRouteCatalog, BoxFuture, ConfiguredProviderInstanceAdmission,
     ConfiguredProviderInstanceRecord, ConfiguredProviderInstanceSelectionReadiness,
     ConfiguredProviderModelCatalogueInput, ConnectionLifecycleStore, Deadline, DeadlineObservation,
-    DiscoveryCancellation, EnvironmentRef, ExecutableRef, HostServices, InstalledExecutableTarget,
-    InstanceAdmissionRequest, ModelPresentationOverlayFailureKind, MonotonicInstant,
-    PreparedAccessEvidence, PreparedOperationEvidence, ReadinessRefreshRequest, RequestId, ScopeId,
-    TimeService, admit_instance, apply_stored_model_presentation_overlay,
-    observe_authenticated_subject, observe_instance_update, refresh_readiness,
+    DiscoveryCancellation, HostServices, InstanceAdmissionRequest,
+    ModelPresentationOverlayFailureKind, MonotonicInstant, PreparedAccessEvidence,
+    PreparedOperationEvidence, ReadinessRefreshRequest, RequestId, ScopeId, TimeService,
+    admit_instance, apply_stored_model_presentation_overlay, observe_authenticated_subject,
+    observe_instance_update, refresh_readiness,
 };
 
 const INSTANCE: &str = "codex.work";
@@ -94,12 +94,12 @@ fn admitted_record(
             (
                 ConfigFieldId::new(CODEX_APP_SERVER_BINARY_PATH_FIELD_ID)
                     .expect("config id is valid"),
-                ConfigFieldRef::new("codex.work.binary-path").expect("config ref is valid"),
+                ConfigFieldRef::new("codex-app-server").expect("config ref is valid"),
             ),
             (
                 ConfigFieldId::new(CODEX_APP_SERVER_ENVIRONMENT_FIELD_ID)
                     .expect("config id is valid"),
-                ConfigFieldRef::new("codex.work.environment").expect("config ref is valid"),
+                ConfigFieldRef::new("codex.work.login").expect("config ref is valid"),
             ),
         ]),
     )
@@ -109,17 +109,11 @@ fn admitted_record(
 fn preparation_input(
     admitted: &swallowtail_core::AdmittedInstanceRecord,
     profile: &AccessProfile,
-) -> CodexPreparationInput {
-    CodexPreparationInput::new(
-        CodexPreparedDriver::AppServer,
-        admitted.id().clone(),
+) -> Result<CodexPreparationInput, swallowtail_runtime::PreparationFailure> {
+    CodexPreparationInput::from_admitted(
+        admitted,
         InstanceRevision::new("1").expect("revision is valid"),
         host_id(),
-        InstalledExecutableTarget::new(
-            ExecutableRef::new("codex-app-server").expect("executable ref is valid"),
-            InterfaceVersionAxis::new(CODEX_CLI_AXIS).expect("version axis is valid"),
-        ),
-        EnvironmentRef::new("codex.work.login").expect("environment ref is valid"),
         profile.clone(),
         ready_evidence(profile),
     )
@@ -187,7 +181,7 @@ fn prepare_still_accepts_the_admitted_identity_and_access_profile() {
     let profile = access_profile();
 
     let prepared = block_on(prepare_codex(
-        preparation_input(&admitted, &profile),
+        preparation_input(&admitted, &profile).expect("admitted fields produce preparation input"),
         probe(),
         services,
     ))
@@ -269,7 +263,7 @@ fn snapshot_record(
     let profile = access_profile();
     let evidence = ready_evidence(&profile);
     let prepared = block_on(prepare_codex(
-        preparation_input(admitted, &profile),
+        preparation_input(admitted, &profile).expect("admitted fields produce preparation input"),
         probe(),
         services.clone(),
     ))
@@ -357,7 +351,7 @@ fn update_observation_reuses_the_app_server_claim_and_032_evidence() {
     let admitted = admitted_record(&services, &store);
     let profile = access_profile();
     let prepared = block_on(prepare_codex(
-        preparation_input(&admitted, &profile),
+        preparation_input(&admitted, &profile).expect("admitted fields produce preparation input"),
         probe(),
         services,
     ))

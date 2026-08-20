@@ -50,6 +50,7 @@ impl swallowtail_adapter_codex::CodexModelSelection
 pub const fn swallowtail_adapter_codex::CodexModelSelection::new(swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId) -> Self
 pub struct swallowtail_adapter_codex::CodexPreparationInput
 impl swallowtail_adapter_codex::CodexPreparationInput
+pub fn swallowtail_adapter_codex::CodexPreparationInput::from_admitted(&swallowtail_core::connection_lifecycle::records::AdmittedInstanceRecord, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
 pub const fn swallowtail_adapter_codex::CodexPreparationInput::new(swallowtail_adapter_codex::CodexPreparedDriver, swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_runtime::installed_executable::InstalledExecutableTarget, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
 pub struct swallowtail_adapter_codex::CodexPreparationProbe
 impl swallowtail_adapter_codex::CodexPreparationProbe

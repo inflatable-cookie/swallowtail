@@ -2,7 +2,7 @@
 
 use swallowtail_adapter_codex::{
     CODEX_APP_SERVER_BINARY_PATH_FIELD_ID, CODEX_APP_SERVER_ENVIRONMENT_FIELD_ID, CODEX_CLI_AXIS,
-    CodexPreparationInput, CodexPreparationProbe, CodexPreparedDriver, CodexPreparedIntegration,
+    CodexPreparationInput, CodexPreparationProbe, CodexPreparedIntegration,
     codex_app_server_addable_route_descriptor, codex_app_server_claim,
     codex_chatgpt_subscription_access_profile, prepare_codex,
 };
@@ -15,11 +15,11 @@ use swallowtail_core::{
 use swallowtail_host_local::MemoryConnectionLifecycleStore;
 use swallowtail_runtime::{
     AddableRouteCatalog, ConfiguredProviderInstanceRecord, Deadline, DiscoveryCancellation,
-    EnvironmentRef, ExecutableRef, HostServices, InstalledExecutableTarget,
-    InstanceAdmissionFailure, InstanceAdmissionRequest, ModelPresentationOverlay,
-    ModelPresentationOverlayFailure, PreparationFailure, PreparedAccessEvidence,
-    ReadinessRefreshRequest, RequestId, ScopeId, admit_instance,
-    apply_stored_model_presentation_overlay, observe_instance_update, refresh_readiness,
+    ExecutableRef, HostServices, InstalledExecutableTarget, InstanceAdmissionFailure,
+    InstanceAdmissionRequest, ModelPresentationOverlay, ModelPresentationOverlayFailure,
+    PreparationFailure, PreparedAccessEvidence, ReadinessRefreshRequest, RequestId, ScopeId,
+    admit_instance, apply_stored_model_presentation_overlay, observe_instance_update,
+    refresh_readiness,
 };
 
 fn admit_app_server(
@@ -42,12 +42,12 @@ fn admit_app_server(
             (
                 ConfigFieldId::new(CODEX_APP_SERVER_BINARY_PATH_FIELD_ID)
                     .expect("config id is valid"),
-                ConfigFieldRef::new("codex.work.binary-path").expect("config ref is valid"),
+                ConfigFieldRef::new("codex-app-server").expect("config ref is valid"),
             ),
             (
                 ConfigFieldId::new(CODEX_APP_SERVER_ENVIRONMENT_FIELD_ID)
                     .expect("config id is valid"),
-                ConfigFieldRef::new("codex.work.environment").expect("config ref is valid"),
+                ConfigFieldRef::new("codex.work.login").expect("config ref is valid"),
             ),
         ]),
     )
@@ -67,23 +67,18 @@ fn refresh_app_server(
 async fn prepare_after_admission(
     admitted: &AdmittedInstanceRecord,
     host: ExecutionHostId,
-    target: InstalledExecutableTarget,
-    environment: EnvironmentRef,
     access_status: AccessStatus,
     deadline: Deadline,
     services: HostServices,
 ) -> Result<CodexPreparedIntegration, PreparationFailure> {
     let profile = codex_chatgpt_subscription_access_profile(access_status.profile_id().clone());
-    let input = CodexPreparationInput::new(
-        CodexPreparedDriver::AppServer,
-        admitted.id().clone(),
+    let input = CodexPreparationInput::from_admitted(
+        admitted,
         InstanceRevision::new("1").expect("revision is valid"),
         host,
-        target,
-        environment,
         profile,
         PreparedAccessEvidence::caller_asserted(access_status),
-    );
+    )?;
     let probe = CodexPreparationProbe::new(
         RequestId::new("codex-lifecycle-prepare").expect("request id is valid"),
         ScopeId::new("codex-lifecycle-prepare").expect("scope is valid"),

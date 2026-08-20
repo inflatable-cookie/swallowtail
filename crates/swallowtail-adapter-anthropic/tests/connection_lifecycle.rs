@@ -10,18 +10,19 @@ mod support;
 use std::sync::Arc;
 use support::ThreadServices;
 use swallowtail_adapter_anthropic::{
-    ANTHROPIC_MESSAGES_API_KEY_FIELD_ID, AnthropicPreparationInput, anthropic_direct_descriptor,
+    ANTHROPIC_MESSAGES_API_KEY_FIELD_ID, ANTHROPIC_MESSAGES_ENDPOINT_FIELD_ID,
+    AnthropicPreparationInput, anthropic_direct_descriptor,
     anthropic_messages_addable_route_descriptor, prepare_anthropic_direct,
 };
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessRequirement, AccessStatus,
-    AuthenticatedSubjectObservation, Capability, CapabilityRequirement, ConfiguredInstanceId,
-    CredentialMechanism, CredentialRef, CredentialState, DriverRole, EndpointAudience,
-    EndpointAuthorization, EntitlementMetering, EntitlementState, ExecutionHostId, ExecutionLayer,
-    InstanceEnablement, InstanceRevision, InstanceTargetRef, IntegrationFamilyId,
-    ModelCatalogEntry, ModelId, ModelMetadata, OperationRequirements, OperationShape,
-    OverlayMarker, PreflightContext, ProviderId, RuntimeReadiness, SubjectDisclosure,
-    SupportAuthority, preflight,
+    AuthenticatedSubjectObservation, Capability, CapabilityRequirement, ConfigFieldId,
+    ConfigFieldRef, ConfiguredInstanceId, CredentialMechanism, CredentialRef, CredentialState,
+    DriverRole, EndpointAudience, EndpointAuthorization, EntitlementMetering, EntitlementState,
+    ExecutionHostId, ExecutionLayer, InstanceEnablement, InstanceRevision, InstanceTargetRef,
+    IntegrationFamilyId, ModelCatalogEntry, ModelId, ModelMetadata, OperationRequirements,
+    OperationShape, OverlayMarker, PreflightContext, ProviderId, RuntimeReadiness,
+    SubjectDisclosure, SupportAuthority, preflight,
 };
 use swallowtail_host_local::{
     LocalProcessHost, LocalProcessLimits, MemoryConnectionLifecycleStore,
@@ -66,7 +67,12 @@ fn admitted_record(
     admit_instance(
         &catalog,
         store,
-        InstanceAdmissionRequest::new(instance_id(), family(), descriptor_route_id(&catalog)),
+        InstanceAdmissionRequest::new(instance_id(), family(), descriptor_route_id(&catalog))
+            .with_config_refs([(
+                ConfigFieldId::new(ANTHROPIC_MESSAGES_ENDPOINT_FIELD_ID)
+                    .expect("config id is valid"),
+                ConfigFieldRef::new("anthropic.work.endpoint").expect("config ref is valid"),
+            )]),
     )
     .expect("admission succeeds")
 }
@@ -185,19 +191,23 @@ fn api_key_collection_completes_without_browser_ports() {
 fn prepare_still_accepts_the_admitted_identity_and_access_profile() {
     let services = services();
     let store = MemoryConnectionLifecycleStore::new();
-    let admitted = admitted_record(&services, &store);
+    let admitted = admitted_record(&services, &store).with_credential_refs([(
+        swallowtail_core::CredentialFieldId::new(ANTHROPIC_MESSAGES_API_KEY_FIELD_ID)
+            .expect("credential id is valid"),
+        CredentialRef::new(CREDENTIAL_REF).expect("credential ref is valid"),
+    )]);
     let profile = access_profile(CredentialRef::new(CREDENTIAL_REF).expect("ref is valid"));
     let evidence = ready_evidence(&profile);
 
     let prepared = prepare_anthropic_direct(
-        AnthropicPreparationInput::new(
-            admitted.id().clone(),
+        AnthropicPreparationInput::from_admitted(
+            &admitted,
             InstanceRevision::new("1").expect("revision is valid"),
             host_id(),
-            InstanceTargetRef::new("anthropic.work.endpoint").expect("target is valid"),
             profile.clone(),
             evidence,
-        ),
+        )
+        .expect("admitted fields produce preparation input"),
         &services,
     )
     .expect("admitted instance still prepares");

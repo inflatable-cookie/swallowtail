@@ -27,11 +27,12 @@ Both live in `swallowtail-adapter-claude-agent`:
 | `claude-code.headless` | `swallowtail.claude-code.headless`; Claude Code stream JSON over stdio | one read-only plan-mode prompt using local Claude subscription state | the application needs callbacks, writes, reusable sessions, management, or API-key billing |
 | `claude-code.response-only` | `swallowtail.claude-code.response-only`; strict Claude Code stream JSON over stdio | one bounded assistant text response with no tools, MCP, session persistence, or working resource | the application needs schema enforcement, callbacks, filesystem authority, continuation, retry, fallback, or API-key billing |
 
-The host supplies the approved executable, explicit environment, configured
-instance and host identity, matching access evidence, and the task, process,
-time, working-resource, credential, and attachment services required by the
-selected plan. Swallowtail does not install either executable, perform login,
-choose a model, select billing, search `PATH`, or infer workspace authority.
+The admitted record supplies opaque binary-path and environment refs. The host
+resolves them for preparation, then supplies matching access evidence and the
+task, process, time, working-resource, credential, and attachment services
+required by the selected plan. Swallowtail does not install either executable,
+perform login, choose a model, select billing, search `PATH`, or infer
+workspace authority.
 
 ## Add The ACP Connection
 
@@ -60,8 +61,10 @@ Follow [connection lifecycle](connection-lifecycle.md) before
    Contract 032 installed-executable observation.
 7. Session-negotiated ACP model rows omit `provider_id`. Overlay cannot
    mark them. Do not invent a catalogue provider id.
-8. Then `prepare_claude_agent` with an `InstalledExecutableTarget` and an
-   `EnvironmentRef`. Stored config refs do not feed prepare.
+8. Build `ClaudeAgentPreparationInput::from_admitted` from the admitted record,
+   then call `prepare_claude_agent`. The constructor selects the stored
+   `binary_path` and `environment` refs; the host resolves them during Contract
+   008 discovery.
 
 The compile-tested
 [`connection_lifecycle` example](../../crates/swallowtail-adapter-claude-agent/examples/connection_lifecycle.rs)

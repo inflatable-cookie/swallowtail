@@ -6,9 +6,9 @@ use swallowtail_adapter_llama_cpp::{
     llama_cpp_attached_runtime_claim, prepare_llama_cpp_attached,
 };
 use swallowtail_core::{
-    AccessStatus, AdmittedInstanceRecord, ConfigFieldId, ConfigFieldRef, ConfiguredInstanceId,
-    InstalledExecutableObservation, InstanceUpdateObservation, IntegrationFamilyId,
-    InvalidInstanceUpdateObservation,
+    AccessProfile, AccessStatus, AdmittedInstanceRecord, ConfigFieldId, ConfigFieldRef,
+    ConfiguredInstanceId, ExecutionHostId, InstalledExecutableObservation, InstanceRevision,
+    InstanceUpdateObservation, IntegrationFamilyId, InvalidInstanceUpdateObservation,
 };
 use swallowtail_host_local::MemoryConnectionLifecycleStore;
 use swallowtail_runtime::{
@@ -53,9 +53,19 @@ fn refresh_attached_runtime(
 }
 
 fn prepare_after_admission(
-    input: LlamaCppAttachedPreparationInput,
+    admitted: &AdmittedInstanceRecord,
+    host: ExecutionHostId,
+    access: AccessProfile,
+    evidence: swallowtail_runtime::PreparedAccessEvidence,
     services: &HostServices,
 ) -> Result<LlamaCppAttachedPreparedIntegration, PreparationFailure> {
+    let input = LlamaCppAttachedPreparationInput::from_admitted(
+        admitted,
+        InstanceRevision::new("1").expect("revision is valid"),
+        host,
+        access,
+        evidence,
+    )?;
     prepare_llama_cpp_attached(input, services)
 }
 

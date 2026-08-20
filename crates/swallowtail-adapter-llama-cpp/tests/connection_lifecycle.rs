@@ -23,10 +23,9 @@ use swallowtail_core::{
     AuthenticatedSubjectObservation, Capability, CapabilityRequirement, ConfigFieldId,
     ConfigFieldRef, ConfiguredInstanceId, CredentialMechanism, CredentialState, DriverRole,
     EndpointAuthorization, EntitlementState, ExecutionHostId, ExecutionLayer, HostServiceKind,
-    InstanceEnablement, InstanceRevision, InstanceTargetRef, IntegrationFamilyId,
-    ModelCatalogEntry, ModelId, ModelMetadata, OperationRequirements, OperationShape,
-    OverlayMarker, PreflightContext, ProviderId, RuntimeReadiness, SubjectDisclosure,
-    SupportAuthority, preflight,
+    InstanceEnablement, InstanceRevision, IntegrationFamilyId, ModelCatalogEntry, ModelId,
+    ModelMetadata, OperationRequirements, OperationShape, OverlayMarker, PreflightContext,
+    ProviderId, RuntimeReadiness, SubjectDisclosure, SupportAuthority, preflight,
 };
 use swallowtail_host_local::{
     LocalProcessHost, LocalProcessLimits, MemoryConnectionLifecycleStore,
@@ -43,6 +42,7 @@ use swallowtail_runtime::{
 
 const INSTANCE: &str = "llama-cpp.work";
 const MODEL: &str = "swallowtail-fixture-stories260k";
+const ENDPOINT_REF: &str = "llama-cpp-fixture-endpoint";
 
 fn host_id() -> ExecutionHostId {
     ExecutionHostId::new("llama-cpp.lifecycle.host").expect("host id is valid")
@@ -97,7 +97,7 @@ fn admitted_record(
         store,
         InstanceAdmissionRequest::new(instance_id(), family(), route_id).with_config_refs([(
             ConfigFieldId::new(LLAMA_CPP_ATTACHED_ENDPOINT_FIELD_ID).expect("config id is valid"),
-            ConfigFieldRef::new("llama-cpp.work.endpoint").expect("config ref is valid"),
+            ConfigFieldRef::new(ENDPOINT_REF).expect("config ref is valid"),
         )]),
     )
     .expect("admission succeeds")
@@ -106,12 +106,11 @@ fn admitted_record(
 fn preparation_input(
     admitted: &AdmittedInstanceRecord,
     profile: &AccessProfile,
-) -> LlamaCppAttachedPreparationInput {
-    LlamaCppAttachedPreparationInput::new(
-        admitted.id().clone(),
+) -> Result<LlamaCppAttachedPreparationInput, swallowtail_runtime::PreparationFailure> {
+    LlamaCppAttachedPreparationInput::from_admitted(
+        admitted,
         InstanceRevision::new("1").expect("revision is valid"),
         host_id(),
-        InstanceTargetRef::new("llama-cpp.work.target").expect("target is valid"),
         profile.clone(),
         ready_evidence(profile),
     )
@@ -172,8 +171,11 @@ fn prepare_still_accepts_the_admitted_identity_and_access_profile() {
     let admitted = admitted_record(&services, &store);
     let profile = access_profile();
 
-    let prepared = prepare_llama_cpp_attached(preparation_input(&admitted, &profile), &services)
-        .expect("admitted instance still prepares");
+    let prepared = prepare_llama_cpp_attached(
+        preparation_input(&admitted, &profile).expect("admitted fields produce preparation input"),
+        &services,
+    )
+    .expect("admitted instance still prepares");
 
     assert_eq!(prepared.instance().id(), admitted.id());
     assert_eq!(prepared.access_profile(), &profile);
@@ -250,8 +252,11 @@ fn update_observation_reuses_the_runtime_claim_with_032_unobserved() {
     let store = MemoryConnectionLifecycleStore::new();
     let admitted = admitted_record(&services, &store);
     let profile = access_profile();
-    let prepared = prepare_llama_cpp_attached(preparation_input(&admitted, &profile), &services)
-        .expect("admitted instance prepares");
+    let prepared = prepare_llama_cpp_attached(
+        preparation_input(&admitted, &profile).expect("admitted fields produce preparation input"),
+        &services,
+    )
+    .expect("admitted instance prepares");
     let claim = llama_cpp_attached_runtime_claim();
 
     // Attached runtime identity is the exact opaque b9910/f5525f7e7 binding,
@@ -328,8 +333,11 @@ fn snapshot_record(
 ) -> ConfiguredProviderInstanceRecord {
     let profile = access_profile();
     let evidence = ready_evidence(&profile);
-    let prepared = prepare_llama_cpp_attached(preparation_input(admitted, &profile), services)
-        .expect("admitted instance prepares");
+    let prepared = prepare_llama_cpp_attached(
+        preparation_input(admitted, &profile).expect("admitted fields produce preparation input"),
+        services,
+    )
+    .expect("admitted instance prepares");
     let route = prepared_route_evidence(services, &prepared, &profile, &evidence);
     ConfiguredProviderInstanceRecord::admit(
         ConfiguredProviderInstanceAdmission::new(

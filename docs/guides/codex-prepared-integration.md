@@ -40,9 +40,10 @@ Only `codex.app-server` currently exports an addable descriptor.
    Contract 032 installed-executable observation.
 7. Codex catalogue rows omit `provider_id`. Overlay cannot mark them. Do
    not invent a catalogue provider id.
-8. Then `prepare_codex` with `CodexPreparedDriver::AppServer`, an
-   `InstalledExecutableTarget`, and an `EnvironmentRef`. Stored config refs
-   do not feed prepare.
+8. Build `CodexPreparationInput::from_admitted` from the admitted record, then
+   call `prepare_codex` with its fixed `CodexPreparedDriver::AppServer` path.
+   The constructor selects the stored `binary_path` and `environment` refs;
+   the host resolves them during Contract 008 discovery.
 
 The compile-tested
 [`connection_lifecycle` example](../../crates/swallowtail-adapter-codex/examples/connection_lifecycle.rs)
@@ -52,13 +53,14 @@ route-map example remains
 
 ## Operator Prerequisites
 
-The host supplies one approved `codex` executable target, explicit process
-environment, configured-instance and execution-host identity, caller-selected
-access profile, matching observed or asserted access evidence, and the task,
-process, time, credential, working-resource, and attachment services required
-by the chosen plan. Local ChatGPT subscription access uses the approved local
-login state without a credential lease; API-key and enterprise access remain
-separate explicit profiles.
+The admitted record supplies the opaque binary-path and environment refs.
+Preparation resolves them on the selected execution host, then requires the
+configured-instance revision, caller-selected access profile, matching
+observed or asserted access evidence, and the task, process, time, credential,
+working-resource, and attachment services required by the chosen plan. Local
+ChatGPT subscription access uses approved local login state without a
+credential lease; API-key and enterprise access remain separate explicit
+profiles.
 
 Swallowtail does not install Codex, search `PATH`, log in, choose a model,
 select billing, read an auth store, or infer a writable workspace. Exec admits

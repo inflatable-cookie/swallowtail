@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-19
+Updated: 2026-08-20
 Research: 168
 Spec: archived 011
 
@@ -152,6 +152,13 @@ never a default diagnostic, and never a routing key.
 Per-instance configuration such as binary path, API endpoint, or environment
 is described as opaque host-owned field references. Values stay host-private.
 Public records do not carry paths, URLs, or env bodies.
+
+After admission, a route-local preparation handoff may retype the exact stored
+field reference into the opaque target, executable, environment, or endpoint
+reference required by the selected adapter. The host resolves that reference
+at the preparation or operation boundary. Admission still does not prepare,
+and the handoff never copies the value into a portable record or diagnostic.
+Contract 037 remains the boundary that binds the exact target after admission.
 
 ## Update Observation
 

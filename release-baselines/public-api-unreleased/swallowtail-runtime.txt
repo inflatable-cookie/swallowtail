@@ -1078,6 +1078,8 @@ pub struct swallowtail_runtime::EnvironmentRef(_)
 impl swallowtail_runtime::EnvironmentRef
 pub fn swallowtail_runtime::EnvironmentRef::as_host_value(&self) -> &str
 pub fn swallowtail_runtime::EnvironmentRef::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_runtime::InputValueRequired>
+impl swallowtail_runtime::EnvironmentRef
+pub fn swallowtail_runtime::EnvironmentRef::from_config_field(&swallowtail_core::runtime_identity::ConfigFieldRef) -> Self
 impl core::fmt::Debug for swallowtail_runtime::EnvironmentRef
 pub fn swallowtail_runtime::EnvironmentRef::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub struct swallowtail_runtime::EventBufferFailure
@@ -1092,6 +1094,7 @@ impl swallowtail_runtime::ExecutableRef
 pub fn swallowtail_runtime::ExecutableRef::as_host_value(&self) -> &str
 pub fn swallowtail_runtime::ExecutableRef::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_runtime::InputValueRequired>
 impl swallowtail_runtime::ExecutableRef
+pub fn swallowtail_runtime::ExecutableRef::from_config_field(&swallowtail_core::runtime_identity::ConfigFieldRef) -> Self
 pub fn swallowtail_runtime::ExecutableRef::from_instance_target(&swallowtail_core::runtime_identity::InstanceTargetRef) -> Self
 impl core::fmt::Debug for swallowtail_runtime::ExecutableRef
 pub fn swallowtail_runtime::ExecutableRef::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result

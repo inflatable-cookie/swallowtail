@@ -433,9 +433,21 @@ impl AdmittedInstanceRecord {
         self.credential_refs.iter()
     }
 
+    #[must_use]
+    /// Returns the stored credential reference for one exact field id.
+    pub fn credential_ref(&self, field_id: &CredentialFieldId) -> Option<&CredentialRef> {
+        self.credential_refs.get(field_id)
+    }
+
     /// Iterates config-field references in stable field-id order.
     pub fn config_refs(&self) -> impl ExactSizeIterator<Item = (&ConfigFieldId, &ConfigFieldRef)> {
         self.config_refs.iter()
+    }
+
+    #[must_use]
+    /// Returns the stored config-field reference for one exact field id.
+    pub fn config_ref(&self, field_id: &ConfigFieldId) -> Option<&ConfigFieldRef> {
+        self.config_refs.get(field_id)
     }
 
     #[must_use]

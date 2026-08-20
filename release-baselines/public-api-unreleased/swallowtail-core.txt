@@ -699,7 +699,9 @@ pub fn swallowtail_core::AddableRouteId::new(impl core::convert::Into<alloc::str
 pub struct swallowtail_core::AdmittedInstanceRecord
 impl swallowtail_core::AdmittedInstanceRecord
 pub const fn swallowtail_core::AdmittedInstanceRecord::access_status(&self) -> core::option::Option<&swallowtail_core::AccessStatus>
+pub fn swallowtail_core::AdmittedInstanceRecord::config_ref(&self, &swallowtail_core::ConfigFieldId) -> core::option::Option<&swallowtail_core::ConfigFieldRef>
 pub fn swallowtail_core::AdmittedInstanceRecord::config_refs(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = (&swallowtail_core::ConfigFieldId, &swallowtail_core::ConfigFieldRef)>
+pub fn swallowtail_core::AdmittedInstanceRecord::credential_ref(&self, &swallowtail_core::CredentialFieldId) -> core::option::Option<&swallowtail_core::CredentialRef>
 pub fn swallowtail_core::AdmittedInstanceRecord::credential_refs(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = (&swallowtail_core::CredentialFieldId, &swallowtail_core::CredentialRef)>
 pub const fn swallowtail_core::AdmittedInstanceRecord::driver(&self) -> &swallowtail_core::AdapterIdentity
 pub const fn swallowtail_core::AdmittedInstanceRecord::enablement(&self) -> swallowtail_core::InstanceEnablement
@@ -996,6 +998,7 @@ pub fn swallowtail_core::InstanceRevision::new(impl core::convert::Into<alloc::s
 pub struct swallowtail_core::InstanceTargetRef(_)
 impl swallowtail_core::InstanceTargetRef
 pub fn swallowtail_core::InstanceTargetRef::as_host_value(&self) -> &str
+pub fn swallowtail_core::InstanceTargetRef::from_config_field(&swallowtail_core::ConfigFieldRef) -> Self
 pub fn swallowtail_core::InstanceTargetRef::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
 impl core::fmt::Debug for swallowtail_core::InstanceTargetRef
 pub fn swallowtail_core::InstanceTargetRef::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result

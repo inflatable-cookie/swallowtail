@@ -1,13 +1,14 @@
 #![allow(dead_code)]
 
 use swallowtail_adapter_anthropic::{
-    ANTHROPIC_MESSAGES_API_KEY_FIELD_ID, AnthropicPreparationInput, AnthropicPreparedIntegration,
+    ANTHROPIC_MESSAGES_API_KEY_FIELD_ID, ANTHROPIC_MESSAGES_ENDPOINT_FIELD_ID,
+    AnthropicPreparationInput, AnthropicPreparedIntegration,
     anthropic_messages_addable_route_descriptor, prepare_anthropic_direct,
 };
 use swallowtail_core::{
-    AccessStatus, AdmittedInstanceRecord, ConfiguredInstanceId, CredentialMechanism, CredentialRef,
-    EndpointAudience, EntitlementMetering, ExecutionHostId, InstanceRevision, InstanceTargetRef,
-    IntegrationFamilyId, ModelId, OverlayMarker, ProviderId,
+    AccessStatus, AdmittedInstanceRecord, ConfigFieldId, ConfigFieldRef, ConfiguredInstanceId,
+    CredentialMechanism, CredentialRef, EndpointAudience, EntitlementMetering, ExecutionHostId,
+    InstanceRevision, IntegrationFamilyId, ModelId, OverlayMarker, ProviderId,
 };
 use swallowtail_host_local::MemoryConnectionLifecycleStore;
 use swallowtail_runtime::{
@@ -35,7 +36,11 @@ fn admit_hosted_messages(
             instance_id,
             IntegrationFamilyId::new("anthropic").expect("family id is valid"),
             route_id,
-        ),
+        )
+        .with_config_refs([(
+            ConfigFieldId::new(ANTHROPIC_MESSAGES_ENDPOINT_FIELD_ID).expect("config id is valid"),
+            ConfigFieldRef::new("anthropic.work.endpoint").expect("config ref is valid"),
+        )]),
     )
 }
 
@@ -85,20 +90,18 @@ fn refresh_hosted_messages(
 fn prepare_after_admission(
     admitted: &AdmittedInstanceRecord,
     host: ExecutionHostId,
-    target: InstanceTargetRef,
     profile: swallowtail_core::AccessProfile,
     evidence: PreparedAccessEvidence,
     services: &HostServices,
 ) -> Result<AnthropicPreparedIntegration, PreparationFailure> {
     prepare_anthropic_direct(
-        AnthropicPreparationInput::new(
-            admitted.id().clone(),
+        AnthropicPreparationInput::from_admitted(
+            admitted,
             InstanceRevision::new("1").expect("revision is valid"),
             host,
-            target,
             profile,
             evidence,
-        ),
+        )?,
         services,
     )
 }

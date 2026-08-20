@@ -40,6 +40,7 @@ use swallowtail_runtime::{
 const INSTANCE: &str = "ollama.work";
 const ACCESS: &str = "ollama.work.access";
 const MODEL: &str = "fixture-model:8b";
+const ENDPOINT_REF: &str = "ollama-fixture-endpoint";
 const DIGEST: &str = "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 
 fn instance_id() -> ConfiguredInstanceId {
@@ -87,7 +88,7 @@ fn admitted_record(
         store,
         InstanceAdmissionRequest::new(instance_id(), family(), route_id).with_config_refs([(
             ConfigFieldId::new(OLLAMA_ATTACHED_ENDPOINT_FIELD_ID).expect("config id is valid"),
-            ConfigFieldRef::new("ollama.work.endpoint").expect("config ref is valid"),
+            ConfigFieldRef::new(ENDPOINT_REF).expect("config ref is valid"),
         )]),
     )
     .expect("admission succeeds")
@@ -97,12 +98,11 @@ fn preparation_input(
     fixture: &Fixture,
     admitted: &AdmittedInstanceRecord,
     profile: &AccessProfile,
-) -> OllamaPreparationInput {
-    OllamaPreparationInput::new(
-        admitted.id().clone(),
+) -> Result<OllamaPreparationInput, swallowtail_runtime::PreparationFailure> {
+    OllamaPreparationInput::from_admitted(
+        admitted,
         InstanceRevision::new("1").expect("revision is valid"),
         fixture.host_id().clone(),
-        fixture.target().clone(),
         profile.clone(),
         ready_evidence(profile),
         OllamaModelSelection::new(
@@ -179,7 +179,8 @@ fn prepare_still_accepts_the_admitted_identity_and_access_profile() {
     let profile = access_profile(&fixture);
 
     let prepared = block_on(prepare_ollama_attached(
-        preparation_input(&fixture, &admitted, &profile),
+        preparation_input(&fixture, &admitted, &profile)
+            .expect("admitted fields produce preparation input"),
         probe(&fixture),
         services,
     ))
@@ -261,7 +262,8 @@ fn update_observation_reuses_the_runtime_claim_with_032_unobserved() {
     let admitted = admitted_record(&services, &store);
     let profile = access_profile(&fixture);
     let prepared = block_on(prepare_ollama_attached(
-        preparation_input(&fixture, &admitted, &profile),
+        preparation_input(&fixture, &admitted, &profile)
+            .expect("admitted fields produce preparation input"),
         probe(&fixture),
         services,
     ))
@@ -342,7 +344,8 @@ fn snapshot_record(
     let profile = access_profile(fixture);
     let evidence = ready_evidence(&profile);
     let prepared = block_on(prepare_ollama_attached(
-        preparation_input(fixture, admitted, &profile),
+        preparation_input(fixture, admitted, &profile)
+            .expect("admitted fields produce preparation input"),
         probe(fixture),
         services.clone(),
     ))

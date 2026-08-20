@@ -1,14 +1,15 @@
 #![allow(dead_code)]
 
 use swallowtail_adapter_deepseek::{
-    DEEPSEEK_CONTINUATION_API_KEY_FIELD_ID, DEEPSEEK_ENDPOINT_AUDIENCE, DeepSeekPreparationInput,
+    DEEPSEEK_CONTINUATION_API_KEY_FIELD_ID, DEEPSEEK_CONTINUATION_ENDPOINT_FIELD_ID,
+    DEEPSEEK_ENDPOINT, DEEPSEEK_ENDPOINT_AUDIENCE, DeepSeekPreparationInput,
     DeepSeekPreparedIntegration, deepseek_continuation_addable_route_descriptor,
     prepare_deepseek_direct,
 };
 use swallowtail_core::{
-    AccessStatus, AdmittedInstanceRecord, ConfiguredInstanceId, CredentialMechanism, CredentialRef,
-    EndpointAudience, EntitlementMetering, ExecutionHostId, InstanceRevision, InstanceTargetRef,
-    IntegrationFamilyId, ModelId, OverlayMarker, ProviderId,
+    AccessStatus, AdmittedInstanceRecord, ConfigFieldId, ConfigFieldRef, ConfiguredInstanceId,
+    CredentialMechanism, CredentialRef, EndpointAudience, EntitlementMetering, ExecutionHostId,
+    InstanceRevision, IntegrationFamilyId, ModelId, OverlayMarker, ProviderId,
 };
 use swallowtail_host_local::MemoryConnectionLifecycleStore;
 use swallowtail_runtime::{
@@ -36,7 +37,12 @@ fn admit_hosted_continuation(
             instance_id,
             IntegrationFamilyId::new("deepseek").expect("family id is valid"),
             route_id,
-        ),
+        )
+        .with_config_refs([(
+            ConfigFieldId::new(DEEPSEEK_CONTINUATION_ENDPOINT_FIELD_ID)
+                .expect("config id is valid"),
+            ConfigFieldRef::new(DEEPSEEK_ENDPOINT).expect("config ref is valid"),
+        )]),
     )
 }
 
@@ -86,20 +92,18 @@ fn refresh_hosted_continuation(
 fn prepare_after_admission(
     admitted: &AdmittedInstanceRecord,
     host: ExecutionHostId,
-    target: InstanceTargetRef,
     profile: swallowtail_core::AccessProfile,
     evidence: PreparedAccessEvidence,
     services: &HostServices,
 ) -> Result<DeepSeekPreparedIntegration, PreparationFailure> {
     prepare_deepseek_direct(
-        DeepSeekPreparationInput::new(
-            admitted.id().clone(),
+        DeepSeekPreparationInput::from_admitted(
+            admitted,
             InstanceRevision::new("1").expect("revision is valid"),
             host,
-            target,
             profile,
             evidence,
-        ),
+        )?,
         services,
     )
 }

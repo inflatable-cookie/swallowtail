@@ -57,9 +57,10 @@ Ollama.
    from preparation's `/api/version` observation.
 7. Ollama catalogue rows omit `provider_id`. Overlay cannot mark them. Do
    not invent a catalogue provider id.
-8. Then `prepare_ollama_attached` with a host-approved endpoint target.
-   Stored config refs do not feed prepare. Model tag and digest stay
-   prepare-time identities, not admission identity.
+8. Build `OllamaPreparationInput::from_admitted` from the admitted record, then
+   call `prepare_ollama_attached`. The constructor selects the stored
+   `endpoint` ref; the host resolves it for the bounded probe. Model tag and
+   digest stay prepare-time identities, not admission identity.
 
 The compile-tested
 [`connection_lifecycle` example](../../crates/swallowtail-adapter-ollama/examples/connection_lifecycle.rs)
@@ -68,9 +69,10 @@ shows catalog through prepare. The canonical route-map example remains
 
 ## Prepare The Attached Runtime
 
-Call `prepare_ollama_attached` with `OllamaPreparationInput`,
-`OllamaPreparationProbe`, and the selected host services. The probe uses only
-the host-approved native endpoint. It observes:
+Build `OllamaPreparationInput::from_admitted` with the explicit model route,
+native model tag, and manifest digest. Then call `prepare_ollama_attached` with
+that input, `OllamaPreparationProbe`, and the selected host services. The probe
+uses only the host-resolved native endpoint. It observes:
 
 - exact `/api/version`
 - bounded installed inventory from `/api/tags`

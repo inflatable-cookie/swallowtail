@@ -19,9 +19,10 @@ use std::collections::BTreeSet;
 use std::sync::Arc;
 use std::sync::atomic::AtomicBool;
 use swallowtail_core::{
-    AccessProfile, AttachedModelObservationScope, AttachedModelTag, ConfiguredInstance,
-    ConfiguredInstanceId, CredentialMechanism, EntitlementMetering, ExecutionHostId,
-    HostServiceKind, InstanceRevision, InstanceTargetRef, ModelManifestDigest, SupportAuthority,
+    AccessProfile, AdmittedInstanceRecord, AttachedModelObservationScope, AttachedModelTag,
+    ConfigFieldId, ConfiguredInstance, ConfiguredInstanceId, CredentialMechanism,
+    EntitlementMetering, ExecutionHostId, HostServiceKind, InstanceRevision, InstanceTargetRef,
+    ModelManifestDigest, SupportAuthority,
 };
 use swallowtail_runtime::{
     Deadline, DiscoveryCancellation, EndpointRef, HostServices, PreparationFailure,
@@ -70,6 +71,50 @@ impl OllamaPreparationInput {
             selected_model_tag,
             selected_manifest_digest,
         }
+    }
+
+    /// Builds preparation input from one admitted attached-runtime record.
+    ///
+    /// The host-owned endpoint remains opaque until the selected network
+    /// service resolves it during the bounded runtime probe.
+    #[allow(clippy::too_many_arguments)]
+    pub fn from_admitted(
+        admitted: &AdmittedInstanceRecord,
+        instance_revision: InstanceRevision,
+        execution_host_id: ExecutionHostId,
+        access_profile: AccessProfile,
+        access_evidence: PreparedAccessEvidence,
+        model: crate::prepared_profile::OllamaModelSelection,
+        selected_model_tag: AttachedModelTag,
+        selected_manifest_digest: ModelManifestDigest,
+    ) -> Result<Self, PreparationFailure> {
+        if admitted.route_id().as_str() != crate::OLLAMA_ATTACHED_ADDABLE_ROUTE_ID {
+            return Err(failure(
+                PreparationStage::TargetSelection,
+                "swallowtail.ollama.preparation.route_mismatch",
+                "Ollama preparation requires the admitted attached route",
+            ));
+        }
+        let endpoint_field_id = ConfigFieldId::new(crate::OLLAMA_ATTACHED_ENDPOINT_FIELD_ID)
+            .expect("static Ollama config field id is valid");
+        let endpoint = admitted.config_ref(&endpoint_field_id).ok_or_else(|| {
+            failure(
+                PreparationStage::TargetSelection,
+                "swallowtail.ollama.preparation.endpoint_ref_missing",
+                "Ollama preparation requires the admitted endpoint reference",
+            )
+        })?;
+        Ok(Self::new(
+            admitted.id().clone(),
+            instance_revision,
+            execution_host_id,
+            InstanceTargetRef::from_config_field(endpoint),
+            access_profile,
+            access_evidence,
+            model,
+            selected_model_tag,
+            selected_manifest_digest,
+        ))
     }
 }
 

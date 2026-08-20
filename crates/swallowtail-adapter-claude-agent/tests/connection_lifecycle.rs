@@ -11,28 +11,26 @@ mod support;
 use crate::support::{FixtureHost, Scenario};
 use futures_executor::block_on;
 use swallowtail_adapter_claude_agent::{
-    CLAUDE_AGENT_ACP_AXIS, CLAUDE_AGENT_ACP_BINARY_PATH_FIELD_ID,
-    CLAUDE_AGENT_ACP_ENVIRONMENT_FIELD_ID, ClaudeAgentPreparationInput,
-    ClaudeAgentPreparationProbe, claude_agent_acp_addable_route_descriptor, claude_agent_acp_claim,
-    claude_agent_acp_descriptor, claude_agent_acp_subscription_access_profile,
-    prepare_claude_agent,
+    CLAUDE_AGENT_ACP_BINARY_PATH_FIELD_ID, CLAUDE_AGENT_ACP_ENVIRONMENT_FIELD_ID,
+    ClaudeAgentPreparationInput, ClaudeAgentPreparationProbe,
+    claude_agent_acp_addable_route_descriptor, claude_agent_acp_claim, claude_agent_acp_descriptor,
+    claude_agent_acp_subscription_access_profile, prepare_claude_agent,
 };
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessStatus, AdmittedInstanceRecord,
     AuthenticatedSubjectObservation, ConfigFieldId, ConfigFieldRef, ConfiguredInstanceId,
     CredentialMechanism, CredentialState, EndpointAuthorization, EntitlementState, ExecutionHostId,
-    InstanceEnablement, InstanceRevision, IntegrationFamilyId, InterfaceVersionAxis, ModelId,
-    OverlayMarker, ProviderId, RuntimeReadiness, SubjectDisclosure, SupportAuthority,
+    InstanceEnablement, InstanceRevision, IntegrationFamilyId, ModelId, OverlayMarker, ProviderId,
+    RuntimeReadiness, SubjectDisclosure, SupportAuthority,
 };
 use swallowtail_host_local::MemoryConnectionLifecycleStore;
 use swallowtail_runtime::{
     AddableRouteCatalog, ConfiguredProviderInstanceAdmission, ConfiguredProviderInstanceRecord,
     ConfiguredProviderInstanceSelectionReadiness, ConnectionLifecycleStore, Deadline,
-    DiscoveryCancellation, EnvironmentRef, ExecutableRef, HostServices, InstalledExecutableTarget,
-    InstanceAdmissionRequest, ModelPresentationOverlayFailureKind, PreparedAccessEvidence,
-    ReadinessRefreshRequest, RequestId, ScopeId, admit_instance,
-    apply_stored_model_presentation_overlay, observe_authenticated_subject,
-    observe_instance_update, refresh_readiness,
+    DiscoveryCancellation, HostServices, InstanceAdmissionRequest,
+    ModelPresentationOverlayFailureKind, PreparedAccessEvidence, ReadinessRefreshRequest,
+    RequestId, ScopeId, admit_instance, apply_stored_model_presentation_overlay,
+    observe_authenticated_subject, observe_instance_update, refresh_readiness,
 };
 
 const INSTANCE: &str = "claude-agent.work";
@@ -93,7 +91,7 @@ fn admitted_record(
             (
                 ConfigFieldId::new(CLAUDE_AGENT_ACP_BINARY_PATH_FIELD_ID)
                     .expect("config id is valid"),
-                ConfigFieldRef::new("claude-agent.work.binary-path").expect("config ref is valid"),
+                ConfigFieldRef::new("claude-agent.acp").expect("config ref is valid"),
             ),
             (
                 ConfigFieldId::new(CLAUDE_AGENT_ACP_ENVIRONMENT_FIELD_ID)
@@ -108,16 +106,11 @@ fn admitted_record(
 fn preparation_input(
     admitted: &AdmittedInstanceRecord,
     profile: &AccessProfile,
-) -> ClaudeAgentPreparationInput {
-    ClaudeAgentPreparationInput::new(
-        admitted.id().clone(),
+) -> Result<ClaudeAgentPreparationInput, swallowtail_runtime::PreparationFailure> {
+    ClaudeAgentPreparationInput::from_admitted(
+        admitted,
         InstanceRevision::new("1").expect("revision is valid"),
         host_id(),
-        InstalledExecutableTarget::new(
-            ExecutableRef::new("claude-agent.acp").expect("executable ref is valid"),
-            InterfaceVersionAxis::new(CLAUDE_AGENT_ACP_AXIS).expect("version axis is valid"),
-        ),
-        EnvironmentRef::new("claude-agent.work.login").expect("environment ref is valid"),
         profile.clone(),
         ready_evidence(profile),
     )
@@ -186,7 +179,7 @@ fn prepare_still_accepts_the_admitted_identity_and_access_profile() {
     let profile = access_profile();
 
     let prepared = block_on(prepare_claude_agent(
-        preparation_input(&admitted, &profile),
+        preparation_input(&admitted, &profile).expect("admitted fields produce preparation input"),
         probe(),
         services,
     ))
@@ -272,7 +265,7 @@ fn update_observation_reuses_the_acp_claim_and_032_evidence() {
     let admitted = admitted_record(&services, &store);
     let profile = access_profile();
     let prepared = block_on(prepare_claude_agent(
-        preparation_input(&admitted, &profile),
+        preparation_input(&admitted, &profile).expect("admitted fields produce preparation input"),
         probe(),
         services,
     ))
@@ -301,7 +294,7 @@ fn snapshot_record(
     let profile = access_profile();
     let evidence = ready_evidence(&profile);
     let prepared = block_on(prepare_claude_agent(
-        preparation_input(admitted, &profile),
+        preparation_input(admitted, &profile).expect("admitted fields produce preparation input"),
         probe(),
         services.clone(),
     ))

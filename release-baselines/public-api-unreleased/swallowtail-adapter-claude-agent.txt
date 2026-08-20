@@ -27,6 +27,7 @@ impl swallowtail_adapter_claude_agent::ClaudeAgentModelSelection
 pub const fn swallowtail_adapter_claude_agent::ClaudeAgentModelSelection::new(swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId) -> Self
 pub struct swallowtail_adapter_claude_agent::ClaudeAgentPreparationInput
 impl swallowtail_adapter_claude_agent::ClaudeAgentPreparationInput
+pub fn swallowtail_adapter_claude_agent::ClaudeAgentPreparationInput::from_admitted(&swallowtail_core::connection_lifecycle::records::AdmittedInstanceRecord, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
 pub const fn swallowtail_adapter_claude_agent::ClaudeAgentPreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_runtime::installed_executable::InstalledExecutableTarget, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
 pub struct swallowtail_adapter_claude_agent::ClaudeAgentPreparationProbe
 impl swallowtail_adapter_claude_agent::ClaudeAgentPreparationProbe

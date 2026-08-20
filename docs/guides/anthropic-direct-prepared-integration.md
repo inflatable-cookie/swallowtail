@@ -31,8 +31,9 @@ New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
    identity.
 7. Overlay may mark catalogue rows whose `provider_id` is `anthropic`.
    Overlay copies readiness and cannot change it.
-8. Then `prepare_anthropic_direct` with a host-approved
-   `InstanceTargetRef`. Stored config refs do not feed prepare.
+8. Build `AnthropicPreparationInput::from_admitted` from the admitted record,
+   then call `prepare_anthropic_direct`. The constructor selects the stored
+   `endpoint` and `api_key` refs; the host resolves them at its boundary.
 
 The compile-tested
 [`connection_lifecycle` example](../../crates/swallowtail-adapter-anthropic/examples/connection_lifecycle.rs)
@@ -42,12 +43,11 @@ Hosted interactive OAuth is not a realized path on this route.
 
 ## Operator Prerequisites
 
-Preparation requires one configured-instance revision, execution host,
-host-approved `api.anthropic.com` endpoint target, public API-key pay-as-you-go
-profile, opaque credential reference for that audience, and matching observed
-or caller-asserted access evidence. The host supplies endpoint, credential,
-HTTP, task, time, and optional attachment services required by the prepared
-operation.
+Preparation requires one admitted instance, revision, public API-key
+pay-as-you-go profile, and matching observed or caller-asserted access
+evidence. `from_admitted` selects the stored endpoint and credential refs; the
+host supplies their resolution plus HTTP, task, time, and optional attachment
+services required by the prepared operation.
 
 Swallowtail does not read environment variables, discover an account or
 endpoint, choose a model, infer entitlement or billing, or fall back to Claude

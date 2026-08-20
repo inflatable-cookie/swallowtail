@@ -12,19 +12,20 @@ mod services;
 use services::ThreadServices;
 use std::sync::Arc;
 use swallowtail_adapter_deepseek::{
-    DEEPSEEK_CONTINUATION_API_KEY_FIELD_ID, DEEPSEEK_ENDPOINT, DEEPSEEK_ENDPOINT_AUDIENCE,
-    DeepSeekPreparationInput, deepseek_continuation_addable_route_descriptor,
-    deepseek_direct_descriptor, prepare_deepseek_direct,
+    DEEPSEEK_CONTINUATION_API_KEY_FIELD_ID, DEEPSEEK_CONTINUATION_ENDPOINT_FIELD_ID,
+    DEEPSEEK_ENDPOINT, DEEPSEEK_ENDPOINT_AUDIENCE, DeepSeekPreparationInput,
+    deepseek_continuation_addable_route_descriptor, deepseek_direct_descriptor,
+    prepare_deepseek_direct,
 };
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessRequirement, AccessStatus,
-    AuthenticatedSubjectObservation, Capability, CapabilityRequirement, ConfiguredInstanceId,
-    CredentialMechanism, CredentialRef, CredentialState, DriverRole, EndpointAudience,
-    EndpointAuthorization, EntitlementMetering, EntitlementState, ExecutionHostId, ExecutionLayer,
-    InstanceEnablement, InstanceRevision, InstanceTargetRef, IntegrationFamilyId,
-    ModelCatalogEntry, ModelId, ModelMetadata, OperationRequirements, OperationShape,
-    OverlayMarker, PreflightContext, ProviderId, RuntimeReadiness, SubjectDisclosure,
-    SupportAuthority, preflight,
+    AuthenticatedSubjectObservation, Capability, CapabilityRequirement, ConfigFieldId,
+    ConfigFieldRef, ConfiguredInstanceId, CredentialMechanism, CredentialRef, CredentialState,
+    DriverRole, EndpointAudience, EndpointAuthorization, EntitlementMetering, EntitlementState,
+    ExecutionHostId, ExecutionLayer, InstanceEnablement, InstanceRevision, InstanceTargetRef,
+    IntegrationFamilyId, ModelCatalogEntry, ModelId, ModelMetadata, OperationRequirements,
+    OperationShape, OverlayMarker, PreflightContext, ProviderId, RuntimeReadiness,
+    SubjectDisclosure, SupportAuthority, preflight,
 };
 use swallowtail_host_local::{
     LocalProcessHost, LocalProcessLimits, MemoryConnectionLifecycleStore,
@@ -69,7 +70,12 @@ fn admitted_record(
     admit_instance(
         &catalog,
         store,
-        InstanceAdmissionRequest::new(instance_id(), family(), descriptor_route_id(&catalog)),
+        InstanceAdmissionRequest::new(instance_id(), family(), descriptor_route_id(&catalog))
+            .with_config_refs([(
+                ConfigFieldId::new(DEEPSEEK_CONTINUATION_ENDPOINT_FIELD_ID)
+                    .expect("config id is valid"),
+                ConfigFieldRef::new(DEEPSEEK_ENDPOINT).expect("config ref is valid"),
+            )]),
     )
     .expect("admission succeeds")
 }
@@ -188,19 +194,23 @@ fn api_key_collection_completes_without_browser_ports() {
 fn prepare_still_accepts_the_admitted_identity_and_access_profile() {
     let services = services();
     let store = MemoryConnectionLifecycleStore::new();
-    let admitted = admitted_record(&services, &store);
+    let admitted = admitted_record(&services, &store).with_credential_refs([(
+        swallowtail_core::CredentialFieldId::new(DEEPSEEK_CONTINUATION_API_KEY_FIELD_ID)
+            .expect("credential id is valid"),
+        CredentialRef::new(CREDENTIAL_REF).expect("credential ref is valid"),
+    )]);
     let profile = access_profile(CredentialRef::new(CREDENTIAL_REF).expect("ref is valid"));
     let evidence = ready_evidence(&profile);
 
     let prepared = prepare_deepseek_direct(
-        DeepSeekPreparationInput::new(
-            admitted.id().clone(),
+        DeepSeekPreparationInput::from_admitted(
+            &admitted,
             InstanceRevision::new("1").expect("revision is valid"),
             host_id(),
-            InstanceTargetRef::new(DEEPSEEK_ENDPOINT).expect("target is valid"),
             profile.clone(),
             evidence,
-        ),
+        )
+        .expect("admitted fields produce preparation input"),
         &services,
     )
     .expect("admitted instance still prepares");

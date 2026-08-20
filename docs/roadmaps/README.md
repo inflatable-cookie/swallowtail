@@ -14,7 +14,8 @@ shape.
 
 ## Next Task
 
-Worker in flight: g04.020 cards 056-058. Handoff
+Next: [g04.021 Unmarked Overlay Rows](g04/021-unmarked-overlay-rows.md).
+g04.020 cards 056-058 are complete; its worker handoff was
 `docs/handoffs/20260820-205345-g04-020-config-ref-prepare-handoff.md`.
 
 ## Standing Lanes

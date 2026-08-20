@@ -40,9 +40,10 @@ path.
    credentials where it does not.
 4. `refresh_readiness` writes host-supplied `AccessStatus`. Optionally
    `observe_authenticated_subject`.
-5. Assemble the Contract 047 snapshot from prepared evidence and project
+5. Build the route-local `*PreparationInput::from_admitted` from the admitted
+   record and call the existing `prepare_*` entry.
+6. Assemble the Contract 047 snapshot from prepared evidence and project
    `apply_stored_model_presentation_overlay`.
-6. Call the existing `prepare_*` entry with host target refs.
 
 Preparation stays after admission. Enablement is not 047 `Ready` /
 `NotReady`. Overlay copies readiness and cannot change it.
@@ -163,17 +164,23 @@ without `provider_id` stay unmarked; do not invent a Codex, Claude Agent,
 Ollama, or llama.cpp provider id. Overlay copies `Ready` / `NotReady` and cannot make
 `NotReady` selectable.
 
-Then call the existing prepare entry with host-owned targets:
+Build the route-local preparation input from the admitted record. Each
+constructor selects the exact route fields, retypes their opaque references for
+the adapter's host service, and leaves resolution to that host boundary:
 
-- `prepare_anthropic_direct`
-- `prepare_deepseek_direct`
-- `prepare_codex` with `CodexPreparedDriver::AppServer`
-- `prepare_claude_agent`
-- `prepare_ollama_attached`
-- `prepare_llama_cpp_attached`
+- `AnthropicPreparationInput::from_admitted` then `prepare_anthropic_direct`
+- `DeepSeekPreparationInput::from_admitted` then `prepare_deepseek_direct`
+- `CodexPreparationInput::from_admitted` then `prepare_codex` with
+  `CodexPreparedDriver::AppServer`
+- `ClaudeAgentPreparationInput::from_admitted` then `prepare_claude_agent`
+- `OllamaPreparationInput::from_admitted` then `prepare_ollama_attached`
+- `LlamaCppAttachedPreparationInput::from_admitted` then
+  `prepare_llama_cpp_attached`
 
-Stored `ConfigFieldRef` values do not feed `prepare_*`. Model tag and
-digest for Ollama stay prepare-time identities, not admission identity.
+Stored `ConfigFieldRef` values feed only this exact route-local handoff; their
+path, URL, or environment body never enters a portable record or diagnostic.
+Model tag and digest for Ollama stay prepare-time identities, not admission
+identity.
 Exact opaque b9910/f5525f7e7 for llama.cpp attached stays prepare-time.
 After prepare, continue through the route guide and
 [provider selection](provider-selection-and-preparation.md).

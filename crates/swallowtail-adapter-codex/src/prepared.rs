@@ -7,11 +7,12 @@ use failure::{discovery_outcome_failure, discovery_runtime_failure, preparation_
 use instance::configured_instance;
 use std::collections::BTreeSet;
 use swallowtail_core::{
-    AccessProfile, ConfiguredInstance, ConfiguredInstanceId, DiscoveryOutcome, ExecutionHostId,
-    HostServiceKind, InstalledExecutableObservation, InstanceRevision,
+    AccessProfile, AdmittedInstanceRecord, ConfigFieldId, ConfiguredInstance, ConfiguredInstanceId,
+    DiscoveryOutcome, ExecutionHostId, HostServiceKind, InstalledExecutableObservation,
+    InstanceRevision, InterfaceVersionAxis,
 };
 use swallowtail_runtime::{
-    Deadline, DiscoveryCancellation, DiscoveryDriver, EnvironmentRef, HostServices,
+    Deadline, DiscoveryCancellation, DiscoveryDriver, EnvironmentRef, ExecutableRef, HostServices,
     InstalledExecutableDiscoveryRequest, InstalledExecutableTarget, PreparationFailure,
     PreparationStage, PreparedAccessEvidence, RequestId, ScopeId,
 };
@@ -62,6 +63,58 @@ impl CodexPreparationInput {
             access_profile,
             access_evidence,
         }
+    }
+
+    /// Builds the addable app-server preparation input from one admitted record.
+    ///
+    /// The host-owned binary path and environment remain opaque until the
+    /// selected process service resolves them during discovery.
+    pub fn from_admitted(
+        admitted: &AdmittedInstanceRecord,
+        instance_revision: InstanceRevision,
+        execution_host_id: ExecutionHostId,
+        access_profile: AccessProfile,
+        access_evidence: PreparedAccessEvidence,
+    ) -> Result<Self, PreparationFailure> {
+        if admitted.route_id().as_str() != crate::CODEX_APP_SERVER_ADDABLE_ROUTE_ID {
+            return Err(preparation_failure(
+                PreparationStage::TargetSelection,
+                "swallowtail.codex.preparation.route_mismatch",
+                "Codex preparation requires the admitted app-server route",
+            ));
+        }
+        let binary_field_id = ConfigFieldId::new(crate::CODEX_APP_SERVER_BINARY_PATH_FIELD_ID)
+            .expect("static Codex config field id is valid");
+        let binary = admitted.config_ref(&binary_field_id).ok_or_else(|| {
+            preparation_failure(
+                PreparationStage::TargetSelection,
+                "swallowtail.codex.preparation.binary_path_ref_missing",
+                "Codex preparation requires the admitted binary-path reference",
+            )
+        })?;
+        let environment_field_id = ConfigFieldId::new(crate::CODEX_APP_SERVER_ENVIRONMENT_FIELD_ID)
+            .expect("static Codex config field id is valid");
+        let environment = admitted.config_ref(&environment_field_id).ok_or_else(|| {
+            preparation_failure(
+                PreparationStage::TargetSelection,
+                "swallowtail.codex.preparation.environment_ref_missing",
+                "Codex preparation requires the admitted environment reference",
+            )
+        })?;
+        Ok(Self::new(
+            CodexPreparedDriver::AppServer,
+            admitted.id().clone(),
+            instance_revision,
+            execution_host_id,
+            InstalledExecutableTarget::new(
+                ExecutableRef::from_config_field(binary),
+                InterfaceVersionAxis::new(crate::CODEX_CLI_AXIS)
+                    .expect("static Codex version axis is valid"),
+            ),
+            EnvironmentRef::from_config_field(environment),
+            access_profile,
+            access_evidence,
+        ))
     }
 }
 

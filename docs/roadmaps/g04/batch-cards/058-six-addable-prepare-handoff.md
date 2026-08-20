@@ -1,6 +1,6 @@
 # 058 Six Addable Prepare Handoff
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../020-config-ref-prepare-handoff.md`
@@ -27,10 +27,24 @@ Prove the six addable prepare entries consume the config-ref handoff.
 
 ## Acceptance Criteria
 
-- [ ] each of the six prepares accepts the admitted identity and stored
+- [x] each of the six prepares accepts the admitted identity and stored
       refs
-- [ ] guides no longer say stored refs do not feed prepare
-- [ ] public records still carry no paths, URLs, or env bodies
+- [x] guides no longer say stored refs do not feed prepare
+- [x] public records still carry no paths, URLs, or env bodies
+
+## Evidence
+
+- Anthropic, DeepSeek, Codex app-server, Claude Agent ACP, Ollama attach, and
+  llama.cpp attached lifecycle proofs call their route-local `from_admitted`
+  constructors.
+- Connection-lifecycle examples and six route guides use the same handoff.
+- `cargo test -p swallowtail-adapter-anthropic -p swallowtail-adapter-deepseek
+  -p swallowtail-adapter-codex -p swallowtail-adapter-claude-agent
+  -p swallowtail-adapter-ollama -p swallowtail-adapter-llama-cpp
+  --test connection_lifecycle`
+- `effigy check:examples`
+- Both required focused validation batches and `git diff --check`
+- `effigy package:api`
 
 ## Validation
 

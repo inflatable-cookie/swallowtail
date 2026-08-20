@@ -16,11 +16,11 @@ use swallowtail_core::{
 use swallowtail_host_local::MemoryConnectionLifecycleStore;
 use swallowtail_runtime::{
     AddableRouteCatalog, ConfiguredProviderInstanceRecord, Deadline, DiscoveryCancellation,
-    EnvironmentRef, ExecutableRef, HostServices, InstalledExecutableTarget,
-    InstanceAdmissionFailure, InstanceAdmissionRequest, ModelPresentationOverlay,
-    ModelPresentationOverlayFailure, PreparationFailure, PreparedAccessEvidence,
-    ReadinessRefreshRequest, RequestId, ScopeId, admit_instance,
-    apply_stored_model_presentation_overlay, observe_instance_update, refresh_readiness,
+    ExecutableRef, HostServices, InstalledExecutableTarget, InstanceAdmissionFailure,
+    InstanceAdmissionRequest, ModelPresentationOverlay, ModelPresentationOverlayFailure,
+    PreparationFailure, PreparedAccessEvidence, ReadinessRefreshRequest, RequestId, ScopeId,
+    admit_instance, apply_stored_model_presentation_overlay, observe_instance_update,
+    refresh_readiness,
 };
 
 fn admit_claude_agent_acp(
@@ -43,7 +43,7 @@ fn admit_claude_agent_acp(
             (
                 ConfigFieldId::new(CLAUDE_AGENT_ACP_BINARY_PATH_FIELD_ID)
                     .expect("config id is valid"),
-                ConfigFieldRef::new("claude-agent.work.binary-path").expect("config ref is valid"),
+                ConfigFieldRef::new("claude-agent.acp").expect("config ref is valid"),
             ),
             (
                 ConfigFieldId::new(CLAUDE_AGENT_ACP_ENVIRONMENT_FIELD_ID)
@@ -68,22 +68,18 @@ fn refresh_claude_agent_acp(
 async fn prepare_after_admission(
     admitted: &AdmittedInstanceRecord,
     host: ExecutionHostId,
-    target: InstalledExecutableTarget,
-    environment: EnvironmentRef,
     access_status: AccessStatus,
     deadline: Deadline,
     services: HostServices,
 ) -> Result<ClaudeAgentPreparedIntegration, PreparationFailure> {
     let profile = claude_agent_acp_subscription_access_profile(access_status.profile_id().clone());
-    let input = ClaudeAgentPreparationInput::new(
-        admitted.id().clone(),
+    let input = ClaudeAgentPreparationInput::from_admitted(
+        admitted,
         InstanceRevision::new("1").expect("revision is valid"),
         host,
-        target,
-        environment,
         profile,
         PreparedAccessEvidence::caller_asserted(access_status),
-    );
+    )?;
     let probe = ClaudeAgentPreparationProbe::new(
         RequestId::new("claude-agent-lifecycle-prepare").expect("request id is valid"),
         ScopeId::new("claude-agent-lifecycle-prepare").expect("scope is valid"),

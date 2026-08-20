@@ -1,9 +1,12 @@
 use std::num::NonZeroU64;
 use swallowtail_core::{
-    AccessProfile, ConfiguredInstanceId, ExecutionHostId, InstanceRevision, InstanceTargetRef,
-    ModelId, ModelRouteId, ModelRouteRevision,
+    AccessProfile, AdmittedInstanceRecord, ConfigFieldId, ConfiguredInstanceId, ExecutionHostId,
+    InstanceRevision, InstanceTargetRef, ModelId, ModelRouteId, ModelRouteRevision,
 };
-use swallowtail_runtime::{Deadline, OperationContent, PreparedAccessEvidence, RequestId};
+use swallowtail_runtime::{
+    Deadline, OperationContent, PreparationFailure, PreparationStage, PreparedAccessEvidence,
+    RequestId,
+};
 
 #[derive(Clone)]
 /// Inputs for admitting one externally managed llama.cpp endpoint.
@@ -35,6 +38,43 @@ impl LlamaCppAttachedPreparationInput {
             access,
             evidence,
         }
+    }
+
+    /// Builds preparation input from one admitted attached-runtime record.
+    ///
+    /// The host-owned endpoint remains opaque until the selected network
+    /// service resolves it during preparation or operation.
+    pub fn from_admitted(
+        admitted: &AdmittedInstanceRecord,
+        instance_revision: InstanceRevision,
+        execution_host: ExecutionHostId,
+        access: AccessProfile,
+        evidence: PreparedAccessEvidence,
+    ) -> Result<Self, PreparationFailure> {
+        if admitted.route_id().as_str() != crate::LLAMA_CPP_ATTACHED_ADDABLE_ROUTE_ID {
+            return Err(super::super::failure(
+                PreparationStage::TargetSelection,
+                "swallowtail.llama_cpp.preparation.route_mismatch",
+                "llama.cpp preparation requires the admitted attached route",
+            ));
+        }
+        let endpoint_field_id = ConfigFieldId::new(crate::LLAMA_CPP_ATTACHED_ENDPOINT_FIELD_ID)
+            .expect("static llama.cpp config field id is valid");
+        let endpoint = admitted.config_ref(&endpoint_field_id).ok_or_else(|| {
+            super::super::failure(
+                PreparationStage::TargetSelection,
+                "swallowtail.llama_cpp.preparation.endpoint_ref_missing",
+                "llama.cpp preparation requires the admitted endpoint reference",
+            )
+        })?;
+        Ok(Self::new(
+            admitted.id().clone(),
+            instance_revision,
+            execution_host,
+            InstanceTargetRef::from_config_field(endpoint),
+            access,
+            evidence,
+        ))
     }
 
     pub(super) fn into_parts(

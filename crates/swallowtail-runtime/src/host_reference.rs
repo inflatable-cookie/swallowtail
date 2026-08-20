@@ -1,7 +1,7 @@
 use crate::InputValueRequired;
 use crate::input::required_text;
 use std::fmt;
-use swallowtail_core::InstanceTargetRef;
+use swallowtail_core::{ConfigFieldRef, InstanceTargetRef};
 
 macro_rules! opaque_host_reference {
     ($name:ident, $field:literal) => {
@@ -52,11 +52,29 @@ impl ExecutableRef {
     pub fn from_instance_target(reference: &InstanceTargetRef) -> Self {
         Self(reference.as_host_value().to_owned())
     }
+
+    /// Retypes an admitted binary-path config reference for host resolution.
+    ///
+    /// The binary path remains host-private behind the opaque reference.
+    #[must_use]
+    pub fn from_config_field(reference: &ConfigFieldRef) -> Self {
+        Self(reference.as_host_value().to_owned())
+    }
 }
 
 impl EndpointRef {
     /// Preserves the preflight-bound configured-instance target for host resolution.
     pub fn from_instance_target(reference: &InstanceTargetRef) -> Self {
+        Self(reference.as_host_value().to_owned())
+    }
+}
+
+impl EnvironmentRef {
+    /// Retypes an admitted environment config reference for host resolution.
+    ///
+    /// The environment body remains host-private behind the opaque reference.
+    #[must_use]
+    pub fn from_config_field(reference: &ConfigFieldRef) -> Self {
         Self(reference.as_host_value().to_owned())
     }
 }

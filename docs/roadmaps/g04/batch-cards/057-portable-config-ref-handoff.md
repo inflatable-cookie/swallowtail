@@ -1,6 +1,6 @@
 # 057 Portable Config-Ref Handoff
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../020-config-ref-prepare-handoff.md`
@@ -27,10 +27,24 @@ prepare inputs.
 
 ## Acceptance Criteria
 
-- [ ] a consumer can hand an admitted instance to prepare without a
+- [x] a consumer can hand an admitted instance to prepare without a
       second copy of the target identity
-- [ ] portable records still expose no path, URL, or env body
-- [ ] 047 still has no targets
+- [x] portable records still expose no path, URL, or env body
+- [x] 047 still has no targets
+
+## Evidence
+
+- `AdmittedInstanceRecord::{credential_ref,config_ref}` supplies exact stored
+  field lookup.
+- Opaque retyping is provided by `InstanceTargetRef::from_config_field`,
+  `ExecutableRef::from_config_field`, and
+  `EnvironmentRef::from_config_field`.
+- Contract 057 records the durable host-resolution rule; Contract 037 remains
+  the post-admission exact-target boundary.
+- `effigy validate:focused swallowtail-core swallowtail-runtime
+  swallowtail-host-local`
+- `effigy package:api`
+- `git diff --check`
 
 ## Validation
 

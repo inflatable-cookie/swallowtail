@@ -1,20 +1,21 @@
 #![allow(dead_code)]
 
 use swallowtail_adapter_ollama::{
-    OLLAMA_ATTACHED_ENDPOINT_FIELD_ID, OllamaPreparationInput, OllamaPreparationProbe,
-    OllamaPreparedIntegration, ollama_attached_addable_route_descriptor, ollama_runtime_claim,
-    prepare_ollama_attached,
+    OLLAMA_ATTACHED_ENDPOINT_FIELD_ID, OllamaModelSelection, OllamaPreparationInput,
+    OllamaPreparationProbe, OllamaPreparedIntegration, ollama_attached_addable_route_descriptor,
+    ollama_runtime_claim, prepare_ollama_attached,
 };
 use swallowtail_core::{
-    AccessStatus, AdmittedInstanceRecord, ConfigFieldId, ConfigFieldRef, ConfiguredInstanceId,
-    InstalledExecutableObservation, InstanceUpdateObservation, IntegrationFamilyId,
-    InvalidInstanceUpdateObservation,
+    AccessProfile, AccessStatus, AdmittedInstanceRecord, AttachedModelTag, ConfigFieldId,
+    ConfigFieldRef, ConfiguredInstanceId, ExecutionHostId, InstalledExecutableObservation,
+    InstanceRevision, InstanceUpdateObservation, IntegrationFamilyId,
+    InvalidInstanceUpdateObservation, ModelManifestDigest,
 };
 use swallowtail_host_local::MemoryConnectionLifecycleStore;
 use swallowtail_runtime::{
     AddableRouteCatalog, ConfiguredProviderInstanceRecord, HostServices, InstanceAdmissionFailure,
     InstanceAdmissionRequest, ModelPresentationOverlay, ModelPresentationOverlayFailure,
-    PreparationFailure, ReadinessRefreshRequest, admit_instance,
+    PreparationFailure, PreparedAccessEvidence, ReadinessRefreshRequest, admit_instance,
     apply_stored_model_presentation_overlay, observe_instance_update, refresh_readiness,
 };
 
@@ -52,11 +53,28 @@ fn refresh_attached_runtime(
     )
 }
 
+#[allow(clippy::too_many_arguments)]
 async fn prepare_after_admission(
-    input: OllamaPreparationInput,
+    admitted: &AdmittedInstanceRecord,
+    host: ExecutionHostId,
+    profile: AccessProfile,
+    evidence: PreparedAccessEvidence,
+    model: OllamaModelSelection,
+    selected_model_tag: AttachedModelTag,
+    selected_manifest_digest: ModelManifestDigest,
     probe: OllamaPreparationProbe,
     services: HostServices,
 ) -> Result<OllamaPreparedIntegration, PreparationFailure> {
+    let input = OllamaPreparationInput::from_admitted(
+        admitted,
+        InstanceRevision::new("1").expect("revision is valid"),
+        host,
+        profile,
+        evidence,
+        model,
+        selected_model_tag,
+        selected_manifest_digest,
+    )?;
     prepare_ollama_attached(input, probe, services).await
 }
 

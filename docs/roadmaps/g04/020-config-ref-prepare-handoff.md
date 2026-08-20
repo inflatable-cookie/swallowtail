@@ -1,6 +1,6 @@
 # 020 Config-Ref Prepare Handoff
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Depends on: completed g04.019
@@ -23,10 +23,10 @@ shapes.
 
 ## Goals
 
-- [ ] inventory prepare inputs versus stored config and credential refs
+- [x] inventory prepare inputs versus stored config and credential refs
       on the six addable routes
-- [ ] realize a portable handoff that keeps values host-private
-- [ ] prove the six addable `prepare_*` entries consume that handoff
+- [x] realize a portable handoff that keeps values host-private
+- [x] prove the six addable `prepare_*` entries consume that handoff
 
 ## Non-Goals
 
@@ -41,29 +41,29 @@ shapes.
 
 ### Batch 20.1 — Inventory
 
-- [ ] Execute card 056.
-- [ ] map each of the six addable prepare entries onto stored refs
-- [ ] name whether 057 or 037 needs a seam amendment
+- [x] Execute card 056.
+- [x] map each of the six addable prepare entries onto stored refs
+- [x] name whether 057 or 037 needs a seam amendment
 
 ### Batch 20.2 — Portable Handoff
 
-- [ ] Execute card 057 after card 056.
-- [ ] host still resolves refs; Swallowtail never stores values
-- [ ] 037 remains after admission and still binds an exact target
+- [x] Execute card 057 after card 056.
+- [x] host still resolves refs; Swallowtail never stores values
+- [x] 037 remains after admission and still binds an exact target
 
 ### Batch 20.3 — Six-Route Proof
 
-- [ ] Execute card 058 after card 057.
-- [ ] Anthropic, DeepSeek, Codex, Claude Agent, Ollama, and llama.cpp
+- [x] Execute card 058 after card 057.
+- [x] Anthropic, DeepSeek, Codex, Claude Agent, Ollama, and llama.cpp
       attached consume the handoff
-- [ ] guides stop saying stored refs do not feed prepare
+- [x] guides stop saying stored refs do not feed prepare
 
 ## Acceptance Criteria
 
-- [ ] admitted config refs are the prepare inputs for those six routes
-- [ ] public records still carry no paths, URLs, or env bodies
-- [ ] 047 still has no targets
-- [ ] `public-api-0.3.3` stays immutable
+- [x] admitted config refs are the prepare inputs for those six routes
+- [x] public records still carry no paths, URLs, or env bodies
+- [x] 047 still has no targets
+- [x] `public-api-0.3.3` stays immutable
 
 ## Lane Runway
 

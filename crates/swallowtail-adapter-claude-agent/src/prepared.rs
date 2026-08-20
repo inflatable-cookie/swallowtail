@@ -7,12 +7,13 @@ use failure::{discovery_outcome_failure, discovery_runtime_failure, preparation_
 use instance::configured_instance;
 use std::collections::BTreeSet;
 use swallowtail_core::{
-    AccessProfile, ConfiguredInstance, ConfiguredInstanceId, CredentialMechanism, CredentialState,
-    DiscoveryOutcome, EntitlementMetering, ExecutionHostId, HostServiceKind,
-    InstalledExecutableObservation, InstanceRevision, SupportAuthority,
+    AccessProfile, AdmittedInstanceRecord, ConfigFieldId, ConfiguredInstance, ConfiguredInstanceId,
+    CredentialMechanism, CredentialState, DiscoveryOutcome, EntitlementMetering, ExecutionHostId,
+    HostServiceKind, InstalledExecutableObservation, InstanceRevision, InterfaceVersionAxis,
+    SupportAuthority,
 };
 use swallowtail_runtime::{
-    Deadline, DiscoveryCancellation, DiscoveryDriver, EnvironmentRef, HostServices,
+    Deadline, DiscoveryCancellation, DiscoveryDriver, EnvironmentRef, ExecutableRef, HostServices,
     InstalledExecutableDiscoveryRequest, InstalledExecutableTarget, PreparationFailure,
     PreparationStage, PreparedAccessEvidence, RequestId, ScopeId,
 };
@@ -52,6 +53,57 @@ impl ClaudeAgentPreparationInput {
             access_profile,
             access_evidence,
         }
+    }
+
+    /// Builds the addable ACP preparation input from one admitted record.
+    ///
+    /// The host-owned binary path and environment remain opaque until the
+    /// selected process service resolves them during discovery.
+    pub fn from_admitted(
+        admitted: &AdmittedInstanceRecord,
+        instance_revision: InstanceRevision,
+        execution_host_id: ExecutionHostId,
+        access_profile: AccessProfile,
+        access_evidence: PreparedAccessEvidence,
+    ) -> Result<Self, PreparationFailure> {
+        if admitted.route_id().as_str() != crate::CLAUDE_AGENT_ACP_ADDABLE_ROUTE_ID {
+            return Err(preparation_failure(
+                PreparationStage::TargetSelection,
+                "swallowtail.claude_agent.preparation.route_mismatch",
+                "Claude Agent preparation requires the admitted ACP route",
+            ));
+        }
+        let binary_field_id = ConfigFieldId::new(crate::CLAUDE_AGENT_ACP_BINARY_PATH_FIELD_ID)
+            .expect("static Claude Agent config field id is valid");
+        let binary = admitted.config_ref(&binary_field_id).ok_or_else(|| {
+            preparation_failure(
+                PreparationStage::TargetSelection,
+                "swallowtail.claude_agent.preparation.binary_path_ref_missing",
+                "Claude Agent preparation requires the admitted binary-path reference",
+            )
+        })?;
+        let environment_field_id = ConfigFieldId::new(crate::CLAUDE_AGENT_ACP_ENVIRONMENT_FIELD_ID)
+            .expect("static Claude Agent config field id is valid");
+        let environment = admitted.config_ref(&environment_field_id).ok_or_else(|| {
+            preparation_failure(
+                PreparationStage::TargetSelection,
+                "swallowtail.claude_agent.preparation.environment_ref_missing",
+                "Claude Agent preparation requires the admitted environment reference",
+            )
+        })?;
+        Ok(Self::new(
+            admitted.id().clone(),
+            instance_revision,
+            execution_host_id,
+            InstalledExecutableTarget::new(
+                ExecutableRef::from_config_field(binary),
+                InterfaceVersionAxis::new(crate::CLAUDE_AGENT_ACP_AXIS)
+                    .expect("static Claude Agent version axis is valid"),
+            ),
+            EnvironmentRef::from_config_field(environment),
+            access_profile,
+            access_evidence,
+        ))
     }
 }
 

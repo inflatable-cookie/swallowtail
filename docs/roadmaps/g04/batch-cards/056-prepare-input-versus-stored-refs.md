@@ -1,6 +1,6 @@
 # 056 Prepare Input Versus Stored Refs
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../020-config-ref-prepare-handoff.md`
@@ -28,9 +28,15 @@ refs without changing prepare yet.
 
 ## Acceptance Criteria
 
-- [ ] each of the six routes has a prepare-input versus stored-ref map
-- [ ] leak and 047-target risks are named
-- [ ] no production prepare signature changes in this card
+- [x] each of the six routes has a prepare-input versus stored-ref map
+- [x] leak and 047-target risks are named
+- [x] no production prepare signature changes in this card
+
+## Evidence
+
+- Inventory: `docs/logs/2026-08-20-g04-020-config-ref-prepare-inventory.md`
+- `effigy qa:docs:index:logs`
+- `git diff --check`
 
 ## Validation
 

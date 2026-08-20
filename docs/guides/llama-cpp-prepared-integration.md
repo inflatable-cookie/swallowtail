@@ -39,8 +39,10 @@ operator-owned server.
    opaque b9910/f5525f7e7 binding stays prepare-time. No unverified-newer.
 7. llama.cpp catalogue rows omit `provider_id`. Overlay cannot mark them.
    Do not invent a catalogue provider id.
-8. Then `prepare_llama_cpp_attached` with a host-approved
-   `InstanceTargetRef`. Stored config refs do not feed prepare.
+8. Build `LlamaCppAttachedPreparationInput::from_admitted` from the admitted
+   record, then call `prepare_llama_cpp_attached`. The constructor selects the
+   stored `endpoint` ref; the host resolves it for preparation. Exact opaque
+   b9910/f5525f7e7 binding stays prepare-time.
 
 The compile-tested
 [`connection_lifecycle` example](../../crates/swallowtail-adapter-llama-cpp/examples/connection_lifecycle.rs)
@@ -49,11 +51,12 @@ shows catalog through prepare. The canonical route-map example remains
 
 ## Attached Runtime
 
-`prepare_llama_cpp_attached` requires configured-instance and authoritative
-execution-host identity, one host-approved endpoint target, local attached
-access profile and evidence. The host supplies network, task, and time services
-for health, catalogue, streaming, deadline, and cleanup work. Preparation makes
-no inference and never starts or configures the external server.
+`LlamaCppAttachedPreparationInput::from_admitted` selects the admitted route's
+opaque endpoint ref. Preparation then requires authoritative execution-host
+identity, local attached access profile and evidence. The host resolves the
+endpoint and supplies network, task, and time services for health, catalogue,
+streaming, deadline, and cleanup work. Preparation makes no inference and
+never starts or configures the external server.
 
 The route binds exact opaque b9910/f5525f7e7 behavior on
 `llama.cpp.attached-runtime`; another build does not receive unverified-newer

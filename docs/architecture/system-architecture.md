@@ -1176,6 +1176,15 @@ production routes have no addable descriptors. Hosted interactive OAuth is
 still not realized. It is parked until a named production route requires
 URL-open plus loopback.
 
+After admission, each realized route builds its preparation input from the
+admitted record through a route-local `from_admitted` handoff. The handoff
+selects the exact stored `ConfigFieldRef` and retypes it as the opaque target,
+executable, environment, or endpoint reference required by that adapter. The
+host resolves the reference at the preparation or operation boundary; no path,
+URL, environment body, or secret bytes enter a portable record or diagnostic.
+Admission still does not prepare, and Contract 037 remains the boundary that
+binds the exact target after admission.
+
 The realized consumer path is:
 
 ```text
@@ -1184,8 +1193,9 @@ adapter-local addable-route descriptors
   -> credential-field descriptors or library-owned sign-in loop via host ports
   -> admitted configured instance in a consumer store
   -> readiness refresh, optional authenticated-subject observation, version
-  -> Contract 047 selection snapshot and bound model catalogue with overlay
+  -> route-local preparation input from admitted refs
   -> existing prepared facade
+  -> Contract 047 selection snapshot and bound model catalogue with overlay
 ```
 
 Addable descriptors stay adapter-local. 047 remains a snapshot without emails,

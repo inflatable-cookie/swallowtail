@@ -30,9 +30,10 @@ New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
    for identity.
 7. Overlay may mark catalogue rows whose `provider_id` is `deepseek`.
    Overlay copies readiness and cannot change it.
-8. Then `prepare_deepseek_direct` with a host-approved
-   `InstanceTargetRef` for the exact `https://api.deepseek.com` target.
-   Stored config refs do not feed prepare.
+8. Build `DeepSeekPreparationInput::from_admitted` from the admitted record,
+   then call `prepare_deepseek_direct`. The constructor selects the stored
+   `endpoint` and `api_key` refs; the host resolves them, and preparation still
+   requires the exact `https://api.deepseek.com` endpoint.
 
 The compile-tested
 [`connection_lifecycle` example](../../crates/swallowtail-adapter-deepseek/examples/connection_lifecycle.rs)
@@ -42,11 +43,11 @@ Hosted interactive OAuth is not a realized path on this route.
 
 ## Operator Prerequisites
 
-`prepare_deepseek_direct` requires configured-instance and execution-host
-identity, the exact approved `https://api.deepseek.com` target, the Open
-Platform API-key pay-as-you-go profile, opaque credential reference, and
-matching access evidence. The host supplies endpoint, credential, HTTP, task,
-and time services.
+`DeepSeekPreparationInput::from_admitted` requires the admitted continuation
+route's endpoint and API-key refs. Preparation then requires the exact
+`https://api.deepseek.com` target, the Open Platform API-key pay-as-you-go
+profile, and matching access evidence. The host resolves the refs and supplies
+credential, HTTP, task, and time services.
 
 App credentials, OAuth, proxies, gateways, Anthropic facades, `/v1`, beta
 endpoints, model aliases, and third-party compatible APIs cannot substitute.

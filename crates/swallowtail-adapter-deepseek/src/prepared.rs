@@ -4,9 +4,9 @@ mod instance;
 use instance::configured_instance;
 use std::collections::BTreeSet;
 use swallowtail_core::{
-    AccessProfile, ConfiguredInstance, ConfiguredInstanceId, CredentialMechanism,
-    EntitlementMetering, ExecutionHostId, HostServiceKind, InstanceRevision, InstanceTargetRef,
-    SupportAuthority,
+    AccessProfile, AdmittedInstanceRecord, ConfigFieldId, ConfiguredInstance, ConfiguredInstanceId,
+    CredentialFieldId, CredentialMechanism, EntitlementMetering, ExecutionHostId, HostServiceKind,
+    InstanceRevision, InstanceTargetRef, SupportAuthority,
 };
 use swallowtail_runtime::{
     HostServices, PreparationFailure, PreparationStage, PreparedAccessEvidence,
@@ -42,6 +42,71 @@ impl DeepSeekPreparationInput {
             access_profile,
             access_evidence,
         }
+    }
+
+    /// Builds preparation input from one admitted hosted-route record.
+    ///
+    /// The host-owned endpoint and credential references remain opaque until
+    /// the selected host service resolves them during preparation or use.
+    pub fn from_admitted(
+        admitted: &AdmittedInstanceRecord,
+        instance_revision: InstanceRevision,
+        execution_host_id: ExecutionHostId,
+        access_profile: AccessProfile,
+        access_evidence: PreparedAccessEvidence,
+    ) -> Result<Self, PreparationFailure> {
+        if admitted.route_id().as_str() != crate::DEEPSEEK_CONTINUATION_ADDABLE_ROUTE_ID {
+            return Err(failure(
+                PreparationStage::TargetSelection,
+                "swallowtail.deepseek.preparation.route_mismatch",
+                "DeepSeek preparation requires the admitted continuation route",
+            ));
+        }
+        let endpoint_field_id = ConfigFieldId::new(crate::DEEPSEEK_CONTINUATION_ENDPOINT_FIELD_ID)
+            .expect("static DeepSeek config field id is valid");
+        let endpoint = admitted.config_ref(&endpoint_field_id).ok_or_else(|| {
+            failure(
+                PreparationStage::TargetSelection,
+                "swallowtail.deepseek.preparation.endpoint_ref_missing",
+                "DeepSeek preparation requires the admitted endpoint reference",
+            )
+        })?;
+        let credential_field_id =
+            CredentialFieldId::new(crate::DEEPSEEK_CONTINUATION_API_KEY_FIELD_ID)
+                .expect("static DeepSeek credential field id is valid");
+        let credential = admitted
+            .credential_ref(&credential_field_id)
+            .ok_or_else(|| {
+                failure(
+                    PreparationStage::AccessEvidence,
+                    "swallowtail.deepseek.preparation.credential_ref_missing",
+                    "DeepSeek preparation requires the admitted API-key reference",
+                )
+            })?;
+        let access_profile = bind_credential_reference(access_profile, credential)?;
+        Ok(Self::new(
+            admitted.id().clone(),
+            instance_revision,
+            execution_host_id,
+            InstanceTargetRef::from_config_field(endpoint),
+            access_profile,
+            access_evidence,
+        ))
+    }
+}
+
+fn bind_credential_reference(
+    access_profile: AccessProfile,
+    admitted: &swallowtail_core::CredentialRef,
+) -> Result<AccessProfile, PreparationFailure> {
+    match access_profile.credential_reference() {
+        None => Ok(access_profile.with_credential_reference(admitted.clone())),
+        Some(existing) if existing == admitted => Ok(access_profile),
+        Some(_) => Err(failure(
+            PreparationStage::AccessEvidence,
+            "swallowtail.deepseek.preparation.credential_ref_mismatch",
+            "DeepSeek access profile does not match the admitted API-key reference",
+        )),
     }
 }
 

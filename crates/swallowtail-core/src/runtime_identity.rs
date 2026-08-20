@@ -44,6 +44,14 @@ impl InstanceTargetRef {
         required_text("instance target reference", value).map(Self)
     }
 
+    /// Retypes one admitted config-field reference for host target resolution.
+    ///
+    /// The referenced path, URL, or service value remains host-private.
+    #[must_use]
+    pub fn from_config_field(reference: &ConfigFieldRef) -> Self {
+        Self(reference.as_host_value().to_owned())
+    }
+
     /// Passes the opaque reference back to the execution host.
     #[must_use]
     pub fn as_host_value(&self) -> &str {

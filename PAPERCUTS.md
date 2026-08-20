@@ -5,6 +5,19 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] Stable clippy `result_large_err` on unchanged Cline driver — 2026-08-20
+- Friction: CI Stable `clippy --workspace --all-features -D warnings` fails at
+  `crates/swallowtail-adapter-cline/src/driver.rs:184`
+  (`Result<ClineSessionHandle, (RuntimeFailure, ResourceLease)>`, Err ≥ 128
+  bytes). rust-clippy 1.98.0. Pinned MSRV clippy on the same SHA is green.
+  Reproduced on PR 13 run `32398520021` attempt 1 job `96521155868` and
+  failed-job rerun job `96527428659`. File is unchanged on g04.016.
+- Impact: any PR can go red on Stable without a Cline or product change.
+- Fix: box the Err pair in a Cline-owned lane. Do not mix into unrelated
+  route proofs.
+- Surface: `swallowtail-adapter-cline` session-handle constructor; Stable
+  Clippy (all features).
+
 ### [ ] rustfmt --edition 2021 cannot parse this 2024 workspace — 2026-08-20
 - Friction: `rustfmt --edition 2021 <file>` fails on let-chains in sibling
   modules (`preflight/validation.rs`, `provider_session_history/page.rs`)

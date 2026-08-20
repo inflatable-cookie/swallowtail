@@ -81,6 +81,8 @@ hosted URL-open plus loopback. Claude/Codex/Grok/Kimi/Cursor/Antigravity are
 installed or delegated logins; hosted routes are API keys. Do not reclassify
 those as the 057 hosted-OAuth first-proof. Second-proof inventory (Research
 170) names DeepSeek continuation, Claude Agent ACP subscription-only, and
-llama.cpp attached. g04.016 DeepSeek cards 045-047 are ready. Optional 047
+llama.cpp attached. g04.016 / PR 13 is paused on Stable clippy
+`result_large_err` in unchanged Cline `start_session`. g04.017 cards
+048-049 box that Err pair. Optional 047
 overlay presentation metadata stays later and must not change `Ready` /
 `NotReady`.

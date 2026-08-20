@@ -2,14 +2,17 @@
 
 ## Active
 
-- [045-deepseek-continuation-addable-descriptor.md](./045-deepseek-continuation-addable-descriptor.md)
-- [046-deepseek-continuation-admission-and-api-key.md](./046-deepseek-continuation-admission-and-api-key.md)
-- [047-deepseek-continuation-refresh-subject-and-047.md](./047-deepseek-continuation-refresh-subject-and-047.md)
+- [048-cline-box-start-session-err.md](./048-cline-box-start-session-err.md)
+- [049-cline-clippy-result-large-err-proof.md](./049-cline-clippy-result-large-err-proof.md)
 
 ## Planned
 
-None. Claude Agent ACP and llama.cpp attached stay behind g04.016.
-Hosted OAuth stays a remaining gate.
+- [047-deepseek-continuation-refresh-subject-and-047.md](./047-deepseek-continuation-refresh-subject-and-047.md)
+- [046-deepseek-continuation-admission-and-api-key.md](./046-deepseek-continuation-admission-and-api-key.md)
+- [045-deepseek-continuation-addable-descriptor.md](./045-deepseek-continuation-addable-descriptor.md)
+
+g04.016 / PR 13 is paused until g04.017 lands. Hosted OAuth stays a
+remaining gate.
 
 ## Completed
 

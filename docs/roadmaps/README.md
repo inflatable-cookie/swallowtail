@@ -14,8 +14,9 @@ shape.
 
 ## Next Task
 
-Worker in flight: g04.016 cards 045-047. Handoff
-`docs/handoffs/20260820-171558-g04-016-hosted-api-key-deepseek.md`.
+Worker in flight: g04.017 cards 048-049. Handoff
+`docs/handoffs/20260820-180328-g04-017-cline-stable-clippy.md`.
+g04.016 / PR 13 is paused until this papercut lands.
 
 ## Index
 

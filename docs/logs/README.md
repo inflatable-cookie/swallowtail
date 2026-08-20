@@ -23,6 +23,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-20 g04.017 Cline Clippy Worker Dispatch](./2026-08-20-g04-017-cline-clippy-worker-dispatch.md)
 - [2026-08-20 g04.016 DeepSeek Continuation Worker Dispatch](./2026-08-20-g04-016-deepseek-continuation-worker-dispatch.md)
 - [2026-08-20 g04.015 Second-Proof Inventory](./2026-08-20-g04-015-second-proof-inventory.md)
 - [2026-08-20 g04 Hosted OAuth Reassessment](./2026-08-20-g04-hosted-oauth-reassessment.md)

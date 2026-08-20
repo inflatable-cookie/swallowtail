@@ -35,7 +35,7 @@ and selection policy.
 
 ## Planned Next Roadmaps
 
-- [g04.020 Config-Ref Prepare Handoff](020-config-ref-prepare-handoff.md) — ready cards 056-058
+- [g04.020 Config-Ref Prepare Handoff](020-config-ref-prepare-handoff.md) — worker in flight, cards 056-058
 - [g04.021 Unmarked Overlay Rows](021-unmarked-overlay-rows.md) — planned pending 020
 - [g04.022 Further Addable Inventory](022-further-addable-inventory.md) — planned pending 021
 - [g04.023 047 Presentation Metadata](023-047-presentation-metadata.md) — planned pending 022
@@ -46,7 +46,8 @@ target 30-50. Hosted OAuth stays parked.
 ## Current Checkpoint
 
 - g04.001 through g04.019 are complete. PR 16 is on `main` at `576184e9`
-- Next lane: g04.020 config-ref prepare handoff, cards 056-058
+- g04.020 worker dispatched: cards 056-058, handoff
+  `docs/handoffs/20260820-205345-g04-020-config-ref-prepare-handoff.md`
 - Hosted OAuth is parked. Contract 029 currentness is standing
 - Generation stays active. Rollover waits for 30-50 roadmaps
 - `v0.3.3` remains `51d18620`

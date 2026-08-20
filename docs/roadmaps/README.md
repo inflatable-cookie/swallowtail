@@ -14,9 +14,8 @@ shape.
 
 ## Next Task
 
-Implement g04.020 stored config-ref prepare handoff. Cards 056-058 are
-ready. Do not start 021-023 until 020 closes. Do not roll the generation
-before 30-50 roadmaps.
+Worker in flight: g04.020 cards 056-058. Handoff
+`docs/handoffs/20260820-205345-g04-020-config-ref-prepare-handoff.md`.
 
 ## Standing Lanes
 

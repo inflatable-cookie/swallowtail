@@ -23,6 +23,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-20 g04.020 Config-Ref Prepare Worker Dispatch](./2026-08-20-g04-020-config-ref-prepare-worker-dispatch.md)
 - [2026-08-20 g04.020-023 Compiled](./2026-08-20-g04-020-023-compiled.md)
 - [2026-08-20 g04 Continues Toward 30-50](./2026-08-20-g04-continues-toward-30-50.md)
 - [2026-08-20 Standing Currentness Lane](./2026-08-20-standing-currentness-lane.md)

@@ -290,7 +290,15 @@ OpenHands adds a package without a production route.
   ambient-host RPC subset over supervised strict-LF JSONL stdio with exact
   downstream provider/model routing, prompt, steering, follow-up, correlated
   extension UI, native abort, deadlines, joined credential-last cleanup, and
-  a separate provider-suppressed `get_available_models` operation
+  a separate provider-suppressed `get_available_models` operation. The same
+  crate also implements the separate `pi.sdk-sidecar` route: Pi's official
+  TypeScript SDK at exact `0.84.2` running in a source-tagged Node sidecar
+  (exact Node `22.23.2`) over the private bounded
+  `swallowtail-pi-sdk-jsonl-v1` wire, with four qualified-only one-point
+  version axes, application-provisioned launch recipe and environment,
+  `AmbientHost` read-only tools, fresh-session parity with the RPC route, and
+  persistent new, load-with-replay, and replay-free resume gated on the exact
+  host-leased cwd
 - `swallowtail-adapter-oh-my-pi` implements the distinct OMP `17.2.9..=17.4.0` package
   and `omp` executable over negotiated RPC v2 JSONL stdio. It uses OMP local
   auth without a Swallowtail credential lease, binds exact provider, model,
@@ -1010,17 +1018,22 @@ expiry and late-response rejection, distinct provider/retry/disconnect/format
 failures, bounded prompt concurrency, redaction, and visible cleanup failure
 without weakening terminal provider truth.
 
-Pi provider-session continuity remains outside the production descriptor.
+Pi RPC provider-session continuity remains outside the RPC descriptor.
 Research 053 plus the g03.010 range corpus check every stable point from
 `0.80.10` through `0.83.0`. Research 140 plus g03.083 add published
 `0.84.0` through `0.84.2` without closing unpublished `0.83.1`.
 Public RPC session switching recreates runtime services from the cwd stored in
 the session file, checks only that the directory exists, and exposes no
-effective cwd for host-resource corroboration. The current ephemeral profile
-therefore stays provider-state prohibited. Load and resume remain paused until
-a maintained public Pi interface can bind attachment to the exact
-host-leased working resource; ambient execution does not weaken that identity
-rule.
+effective cwd for host-resource corroboration, so `pi.rpc` stays fresh-only
+with provider-state prohibited. The separate `pi.sdk-sidecar` route now
+realizes load and resume through the public SDK: `switchSession` runs with
+the host-leased cwd as `cwdOverride`, the driver compares the effective cwd
+and session reference before readiness, load completes bounded typed replay
+before readiness, and resume attaches without replay. Durable provider state
+lives in the application-provisioned session directory and is preserved on
+close. Both routes remain production; the RPC route keeps its lighter
+operational posture and the SDK route keeps the continuation surface, and
+ambient execution does not weaken that identity rule.
 
 Research 042 corrects the original Pi tranche boundary. Exact Pi `0.80.10`
 already exposes `get_available_models`; the omission was Swallowtail scope, not

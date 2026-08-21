@@ -19,20 +19,20 @@ use super::{
 use std::num::NonZeroU32;
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessRequirement, AccessStatus, Capability,
-    CapabilityConstraint, CapabilityProfile, CapabilityRequirement, ConfiguredInstance,
-    ConfiguredInstanceId, CredentialMechanism, CredentialRef, CredentialState, DriverRole,
-    EndpointAudience, EndpointAuthorization, EntitlementMetering, EntitlementState,
-    ExecutionHostId, ExecutionLayer, ExtensionNamespace, HarnessConfigurationPosture,
-    HarnessIsolation, HarnessRpcPolicy, HarnessSchedulingBounds, HostServiceKind,
-    InstanceOwnership, InstancePolicyId, InstanceRevision, InstanceTargetRef, ModelId, ModelRoute,
-    ModelRouteId, ModelRouteRevision, OperationRequirements, OperationShape, PreflightPlan,
-    ProtocolFacadeId, ProviderId, ResourceAccess, ResourceRepresentation, RuntimeReadiness,
-    SessionAccessPolicy, SessionProviderStatePolicy, SupportAuthority,
+    CapabilityConstraint, CapabilityProfile, CapabilityRequirement, ConfigFieldId,
+    ConfiguredInstance, ConfiguredInstanceId, CredentialFieldId, CredentialMechanism,
+    CredentialRef, CredentialState, DriverRole, EndpointAudience, EndpointAuthorization,
+    EntitlementMetering, EntitlementState, ExecutionHostId, ExecutionLayer, ExtensionNamespace,
+    HarnessConfigurationPosture, HarnessIsolation, HarnessRpcPolicy, HarnessSchedulingBounds,
+    HostServiceKind, InstanceOwnership, InstancePolicyId, InstanceRevision, InstanceTargetRef,
+    ModelId, ModelRoute, ModelRouteId, ModelRouteRevision, OperationRequirements, OperationShape,
+    PreflightPlan, ProtocolFacadeId, ProviderId, ResourceAccess, ResourceRepresentation,
+    RuntimeReadiness, SessionAccessPolicy, SessionProviderStatePolicy, SupportAuthority,
 };
 use swallowtail_runtime::{
     BoxFuture, EnvironmentRef, HostServices, InteractiveSessionDriver, InteractiveSessionHandle,
-    LoadSessionRequest, LoadedSession, OpenSessionRequest, PreparationFailure, RequestId,
-    ResumeSessionRequest, RuntimeFailure, SessionResumeBinding, WorkingResourceRef,
+    LoadSessionRequest, LoadedSession, OpenSessionRequest, PreparationFailure, PreparationStage,
+    RequestId, ResumeSessionRequest, RuntimeFailure, SessionResumeBinding, WorkingResourceRef,
 };
 
 /// Explicit inputs for preparing one persistent sidecar session.
@@ -96,6 +96,77 @@ impl PiSdkSidecarSessionPreparation {
     pub const fn with_image_attachments(mut self) -> Self {
         self.image_attachments = true;
         self
+    }
+
+    /// Builds session preparation input from one admitted sidecar route
+    /// record plus the explicit per-session model, resource, and request.
+    ///
+    /// The admitted launch recipe, environment, and credential references
+    /// stay opaque; the selected host services resolve them during use.
+    #[allow(clippy::too_many_arguments)]
+    pub fn from_admitted(
+        admitted: &swallowtail_core::AdmittedInstanceRecord,
+        instance_revision: InstanceRevision,
+        execution_host_id: ExecutionHostId,
+        access_profile_id: AccessProfileId,
+        route_id: ModelRouteId,
+        route_revision: ModelRouteRevision,
+        provider: ProviderId,
+        model: ModelId,
+        working_resource: WorkingResourceRef,
+        request_id: RequestId,
+    ) -> Result<Self, PreparationFailure> {
+        if admitted.route_id().as_str() != super::PI_SDK_SIDECAR_ADDABLE_ROUTE_ID {
+            return Err(failure(
+                "swallowtail.pi.sdk-sidecar.preparation.route_mismatch",
+                "Pi SDK sidecar preparation requires the admitted SDK sidecar route",
+            ));
+        }
+        if admitted.driver() != &super::pi_sdk_sidecar_descriptor().identity().clone() {
+            return Err(failure(
+                "swallowtail.pi.sdk-sidecar.preparation.driver_mismatch",
+                "Pi SDK sidecar preparation requires the sidecar driver identity",
+            ));
+        }
+        let launch_field = ConfigFieldId::new(super::PI_SDK_SIDECAR_LAUNCH_RECIPE_FIELD_ID)
+            .expect("static config field id is valid");
+        let launch_recipe = admitted.config_ref(&launch_field).ok_or_else(|| {
+            failure(
+                "swallowtail.pi.sdk-sidecar.preparation.launch_recipe_missing",
+                "Pi SDK sidecar preparation requires the admitted launch recipe reference",
+            )
+        })?;
+        let environment_field = ConfigFieldId::new(super::PI_SDK_SIDECAR_ENVIRONMENT_FIELD_ID)
+            .expect("static config field id is valid");
+        let environment = admitted.config_ref(&environment_field).ok_or_else(|| {
+            failure(
+                "swallowtail.pi.sdk-sidecar.preparation.environment_ref_missing",
+                "Pi SDK sidecar preparation requires the admitted environment reference",
+            )
+        })?;
+        let credential_field = CredentialFieldId::new(super::PI_SDK_SIDECAR_CREDENTIAL_FIELD_ID)
+            .expect("static credential field id is valid");
+        let credential = admitted.credential_ref(&credential_field).ok_or_else(|| {
+            failure(
+                "swallowtail.pi.sdk-sidecar.preparation.credential_ref_missing",
+                "Pi SDK sidecar preparation requires the admitted credential reference",
+            )
+        })?;
+        Ok(Self::new(
+            admitted.id().clone(),
+            instance_revision,
+            execution_host_id,
+            InstanceTargetRef::from_config_field(launch_recipe),
+            EnvironmentRef::from_config_field(environment),
+            credential.clone(),
+            access_profile_id,
+            route_id,
+            route_revision,
+            provider,
+            model,
+            working_resource,
+            request_id,
+        ))
     }
 }
 
@@ -205,6 +276,13 @@ impl PiSdkSidecarPreparedSession {
             driver.resume_session(plan, request, services).await
         }))
     }
+}
+
+fn failure(code: &'static str, message: &'static str) -> PreparationFailure {
+    PreparationFailure::new(
+        PreparationStage::TargetSelection,
+        swallowtail_core::Diagnostic::new(swallowtail_core::SafeDiagnostic::new(code, message)),
+    )
 }
 
 /// Prepares one persistent Pi SDK sidecar session from explicit inputs.

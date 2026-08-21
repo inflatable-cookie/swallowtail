@@ -12,7 +12,7 @@ Coverage states:
 - **missing** — no canonical task-oriented guide exists
 - **complete** — guide, example, and coverage validation meet Contract 052
 
-All 47 production route rows and every portable feature family have completed
+All 48 production route rows and every portable feature family have completed
 the checklist. Coverage state describes documentation evidence, not the
 underlying production capability.
 
@@ -63,6 +63,7 @@ conflicts or when you are qualifying a new claim.
 | `qoder.headless` | [Qoder Headless](qoder-headless-prepared-integration.md) | [prepared headless](../../crates/swallowtail-adapter-qoder/examples/prepared_qoder_headless.rs) | complete |
 | `oh-my-pi.rpc` | [Oh My Pi](oh-my-pi-prepared-integration.md) | [prepared RPC](../../crates/swallowtail-adapter-oh-my-pi/examples/prepared_oh_my_pi_rpc.rs) | complete |
 | `pi.rpc` | [Pi RPC](pi-rpc-prepared-integration.md) | [prepared RPC](../../crates/swallowtail-adapter-pi/examples/prepared_pi_rpc.rs) | complete |
+| `pi.sdk-sidecar` | [Pi SDK sidecar](pi-sdk-sidecar-prepared-integration.md) | [prepared SDK sidecar](../../crates/swallowtail-adapter-pi/examples/prepared_pi_sdk_sidecar.rs) | complete |
 | `qwen.headless` | [Qwen](qwen-headless-prepared-integration.md) | [prepared headless](../../crates/swallowtail-adapter-qwen/examples/prepared_qwen_headless.rs) | complete |
 | `kimi-code.local-server` | [Kimi Local Server](kimi-local-server-prepared-integration.md) | [prepared attached](../../crates/swallowtail-adapter-kimi/examples/prepared_local_server_attached.rs) | complete |
 | `opencode.http` | [OpenCode](opencode-attached-prepared-integration.md) | [prepared attached](../../crates/swallowtail-adapter-opencode/examples/prepared_opencode_attached.rs) | complete |

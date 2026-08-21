@@ -1,6 +1,6 @@
 # 033 Pi SDK Sidecar Route
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-21
 Depends on: completed g04.024; Research 181; amended Contracts 019 and 029
@@ -25,15 +25,15 @@ session truth while retaining the existing RPC route during proof.
 
 ## Goals
 
-- [ ] freeze a source-tagged sidecar and strict bounded protocol over Pi's
+- [x] freeze a source-tagged sidecar and strict bounded protocol over Pi's
       public SDK
-- [ ] add a separate `pi.sdk-sidecar` driver with exact runtime and package
+- [x] add a separate `pi.sdk-sidecar` driver with exact runtime and package
       qualification
-- [ ] preserve the useful fresh-session Pi surface with explicit configuration
-- [ ] realize persistent new, load-with-replay, and replay-free resume under
+- [x] preserve the useful fresh-session Pi surface with explicit configuration
+- [x] realize persistent new, load-with-replay, and replay-free resume under
       Contract 017
-- [ ] expose the route through prepared and connection-lifecycle surfaces
-- [ ] compare the proved SDK route with `pi.rpc` and record explicit
+- [x] expose the route through prepared and connection-lifecycle surfaces
+- [x] compare the proved SDK route with `pi.rpc` and record explicit
       coexistence or deprecation
 
 ## Non-Goals
@@ -70,42 +70,43 @@ them.
 
 ### Batch 33.1 — Sidecar Protocol And Frozen Corpus
 
-- [ ] Execute card 089.
-- [ ] implement the smallest source-tagged SDK sidecar over public exports
-- [ ] freeze strict correlated frames and deterministic fixtures
-- [ ] suppress ambient configuration and automatic work
+- [x] Execute card 089.
+- [x] implement the smallest source-tagged SDK sidecar over public exports
+- [x] freeze strict correlated frames and deterministic fixtures
+- [x] suppress ambient configuration and automatic work
 
 ### Batch 33.2 — Fresh Driver Parity
 
-- [ ] Execute card 090 after card 089.
-- [ ] add the separate Rust driver and exact compatibility claim
-- [ ] prove explicit fresh-session prompt, steering, follow-up, events, abort,
+- [x] Execute card 090 after card 089.
+- [x] add the separate Rust driver and exact compatibility claim
+- [x] prove explicit fresh-session prompt, steering, follow-up, events, abort,
       close, tools, model, and catalogue behavior
 
 ### Batch 33.3 — Persistent Session Attachment
 
-- [ ] Execute card 091 after card 090.
-- [ ] realize new, load-with-replay, and replay-free resume
-- [ ] prove exact cwd agreement before ready and ordered cleanup
+- [x] Execute card 091 after card 090.
+- [x] realize new, load-with-replay, and replay-free resume
+- [x] prove exact cwd agreement before ready and ordered cleanup
 
 ### Batch 33.4 — Route Admission And Acceptance
 
-- [ ] Execute card 092 after card 091.
-- [ ] expose prepared and addable connection paths
-- [ ] update realized architecture, route/feature matrices, and guides
-- [ ] record coexistence or explicit RPC deprecation from evidence
+- [x] Execute card 092 after card 091.
+- [x] expose prepared and addable connection paths
+- [x] update realized architecture, route/feature matrices, and guides
+- [x] record coexistence or explicit RPC deprecation from evidence
 
 ## Acceptance Criteria
 
-- [ ] `pi.sdk-sidecar` is independently selectable and never substitutes for
+- [x] `pi.sdk-sidecar` is independently selectable and never substitutes for
       `pi.rpc`
-- [ ] no SDK, Node, or sidecar type leaks into provider-neutral public records
-- [ ] no ambient settings, resources, updates, retries, or discovery execute
-- [ ] load and resume bind the host-leased cwd before readiness
-- [ ] load replay comes from the typed public SDK surface; resume emits none
-- [ ] cancellation and close join SDK and process work before lease release
-- [ ] default QA is deterministic and performs no install or provider call
-- [ ] the production route matrix states the evidence-backed RPC disposition
+- [x] no SDK, Node, or sidecar type leaks into provider-neutral public records
+- [x] no ambient settings, resources, updates, retries, or discovery execute
+- [x] load and resume bind the host-leased cwd before readiness
+- [x] load replay comes from the typed public SDK surface; resume emits none
+- [x] cancellation and close join SDK and process work before lease release
+- [x] default QA is deterministic and performs no install or provider call
+- [x] the production route matrix states the evidence-backed RPC disposition
+      (retain both routes)
 
 ## Lane Runway
 

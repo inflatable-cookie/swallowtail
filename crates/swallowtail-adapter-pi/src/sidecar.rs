@@ -6,6 +6,7 @@
 //! separate from one another and from the RPC route.
 
 mod activity;
+mod addable;
 mod asset;
 mod catalogue;
 mod connection;
@@ -19,6 +20,11 @@ mod selection;
 mod turn;
 pub(crate) mod wire;
 
+pub use addable::{
+    PI_SDK_SIDECAR_ADDABLE_ROUTE_ID, PI_SDK_SIDECAR_CREDENTIAL_FIELD_ID,
+    PI_SDK_SIDECAR_ENVIRONMENT_FIELD_ID, PI_SDK_SIDECAR_LAUNCH_RECIPE_FIELD_ID,
+    pi_sdk_sidecar_addable_route_descriptor,
+};
 pub use asset::{PI_SDK_SIDECAR_ENTRY_FILE, PI_SDK_SIDECAR_SOURCE, PI_SDK_SIDECAR_SOURCE_TAG};
 pub use driver::{PiSdkSidecarDriver, pi_sdk_sidecar_descriptor};
 pub use prepared::{

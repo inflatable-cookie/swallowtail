@@ -13,6 +13,15 @@ session with typed UI questions and optional bounded PNG input. Reject it when
 the application needs reasoning selection, writes, permission exchange,
 provider-session continuation, or lifecycle management.
 
+Both Pi routes remain production. `pi.rpc` needs only one installed upstream
+executable and speaks Pi's own RPC wire; it stays fresh-only because the RPC
+surface cannot prove a stored session's cwd against the host lease.
+[Pi SDK sidecar](pi-sdk-sidecar-prepared-integration.md) realizes persistent
+new, load-with-replay, and replay-free resume through the public SDK, but
+requires the application to provision an exact Node runtime, the source-tagged
+sidecar, and the exact SDK package over a Swallowtail-owned private wire.
+Neither route substitutes for the other.
+
 ## Explicit Inputs
 
 Preparation requires:

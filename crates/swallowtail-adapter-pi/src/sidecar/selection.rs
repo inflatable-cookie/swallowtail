@@ -29,29 +29,45 @@ pub const PI_SDK_SIDECAR_SIDECAR_AXIS: &str = "pi.sdk-sidecar.sidecar";
 /// Parses one exact sidecar SDK package semantic-version binding.
 #[must_use]
 pub fn pi_sdk_sidecar_package_binding(value: &str) -> Option<InterfaceVersionBinding> {
-    swallowtail_runtime::parse_semantic_version_binding(&axis(PI_SDK_SIDECAR_PACKAGE_AXIS), value)
+    swallowtail_runtime::parse_semantic_version_binding(
+        &InterfaceVersionAxis::new(PI_SDK_SIDECAR_PACKAGE_AXIS)
+            .expect("static sidecar axis is valid"),
+        value,
+    )
 }
 
 /// Parses one exact Node runtime semantic-version binding.
 #[must_use]
 pub fn pi_sdk_sidecar_node_binding(value: &str) -> Option<InterfaceVersionBinding> {
-    swallowtail_runtime::parse_semantic_version_binding(&axis(PI_SDK_SIDECAR_NODE_AXIS), value)
+    swallowtail_runtime::parse_semantic_version_binding(
+        &InterfaceVersionAxis::new(PI_SDK_SIDECAR_NODE_AXIS).expect("static sidecar axis is valid"),
+        value,
+    )
 }
 
 /// Binds the exact opaque sidecar wire identity.
 #[must_use]
 pub fn pi_sdk_sidecar_wire_binding(value: &str) -> Option<InterfaceVersionBinding> {
-    opaque_binding(PI_SDK_SIDECAR_WIRE_AXIS, PI_SDK_SIDECAR_WIRE, value)
+    if value != PI_SDK_SIDECAR_WIRE {
+        return None;
+    }
+    Some(InterfaceVersionBinding::new(
+        InterfaceVersionAxis::new(PI_SDK_SIDECAR_WIRE_AXIS).expect("static sidecar axis is valid"),
+        InterfaceVersion::new(value).ok()?,
+    ))
 }
 
 /// Binds the exact opaque sidecar source tag.
 #[must_use]
 pub fn pi_sdk_sidecar_sidecar_binding(value: &str) -> Option<InterfaceVersionBinding> {
-    opaque_binding(
-        PI_SDK_SIDECAR_SIDECAR_AXIS,
-        PI_SDK_SIDECAR_SOURCE_TAG,
-        value,
-    )
+    if value != PI_SDK_SIDECAR_SOURCE_TAG {
+        return None;
+    }
+    Some(InterfaceVersionBinding::new(
+        InterfaceVersionAxis::new(PI_SDK_SIDECAR_SIDECAR_AXIS)
+            .expect("static sidecar axis is valid"),
+        InterfaceVersion::new(value).ok()?,
+    ))
 }
 
 /// Returns the qualified-only one-point SDK package claim.
@@ -59,9 +75,10 @@ pub fn pi_sdk_sidecar_sidecar_binding(value: &str) -> Option<InterfaceVersionBin
 pub fn pi_sdk_sidecar_package_claim() -> InterfaceCompatibilityClaim {
     claim(
         "pi.sdk-sidecar.package-window-1",
-        PI_SDK_SIDECAR_PACKAGE_AXIS,
+        InterfaceVersionAxis::new(PI_SDK_SIDECAR_PACKAGE_AXIS)
+            .expect("static sidecar axis is valid"),
         InterfaceVersionScheme::Semantic,
-        PI_SDK_SIDECAR_SDK_VERSION,
+        InterfaceVersion::new(PI_SDK_SIDECAR_SDK_VERSION).expect("static sidecar version is valid"),
     )
 }
 
@@ -70,9 +87,10 @@ pub fn pi_sdk_sidecar_package_claim() -> InterfaceCompatibilityClaim {
 pub fn pi_sdk_sidecar_node_claim() -> InterfaceCompatibilityClaim {
     claim(
         "pi.sdk-sidecar.node-window-1",
-        PI_SDK_SIDECAR_NODE_AXIS,
+        InterfaceVersionAxis::new(PI_SDK_SIDECAR_NODE_AXIS).expect("static sidecar axis is valid"),
         InterfaceVersionScheme::Semantic,
-        PI_SDK_SIDECAR_NODE_RUNTIME,
+        InterfaceVersion::new(PI_SDK_SIDECAR_NODE_RUNTIME)
+            .expect("static sidecar version is valid"),
     )
 }
 
@@ -81,9 +99,9 @@ pub fn pi_sdk_sidecar_node_claim() -> InterfaceCompatibilityClaim {
 pub fn pi_sdk_sidecar_wire_claim() -> InterfaceCompatibilityClaim {
     claim(
         "pi.sdk-sidecar.wire-v1",
-        PI_SDK_SIDECAR_WIRE_AXIS,
+        InterfaceVersionAxis::new(PI_SDK_SIDECAR_WIRE_AXIS).expect("static sidecar axis is valid"),
         InterfaceVersionScheme::Opaque,
-        PI_SDK_SIDECAR_WIRE,
+        InterfaceVersion::new(PI_SDK_SIDECAR_WIRE).expect("static sidecar version is valid"),
     )
 }
 
@@ -92,9 +110,10 @@ pub fn pi_sdk_sidecar_wire_claim() -> InterfaceCompatibilityClaim {
 pub fn pi_sdk_sidecar_sidecar_claim() -> InterfaceCompatibilityClaim {
     claim(
         "pi.sdk-sidecar.sidecar-v1",
-        PI_SDK_SIDECAR_SIDECAR_AXIS,
+        InterfaceVersionAxis::new(PI_SDK_SIDECAR_SIDECAR_AXIS)
+            .expect("static sidecar axis is valid"),
         InterfaceVersionScheme::Opaque,
-        PI_SDK_SIDECAR_SOURCE_TAG,
+        InterfaceVersion::new(PI_SDK_SIDECAR_SOURCE_TAG).expect("static sidecar version is valid"),
     )
 }
 
@@ -148,17 +167,17 @@ fn validate_axis(
 
 fn claim(
     id: &str,
-    axis_name: &str,
+    axis: InterfaceVersionAxis,
     scheme: InterfaceVersionScheme,
-    version: &str,
+    version: InterfaceVersion,
 ) -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
         InterfaceCompatibilityClaimId::new(id).expect("static sidecar claim id is valid"),
-        axis(axis_name),
+        axis,
         scheme,
         InterfaceNewerVersionPosture::QualifiedOnly,
         [swallowtail_core::InterfaceVersionSegment::exact(
-            InterfaceVersion::new(version).expect("static sidecar version is valid"),
+            version,
             InterfaceBehaviorRevision::new(PI_SDK_SIDECAR_BEHAVIOR)
                 .expect("static sidecar behavior revision is valid"),
             InterfaceSupportStatus::Maintained,
@@ -166,24 +185,6 @@ fn claim(
         [],
     )
     .expect("static sidecar compatibility claim is valid")
-}
-
-fn opaque_binding(
-    axis_name: &str,
-    qualified: &str,
-    value: &str,
-) -> Option<InterfaceVersionBinding> {
-    if value != qualified {
-        return None;
-    }
-    Some(InterfaceVersionBinding::new(
-        axis(axis_name),
-        InterfaceVersion::new(value).ok()?,
-    ))
-}
-
-fn axis(name: &str) -> InterfaceVersionAxis {
-    InterfaceVersionAxis::new(name).expect("static sidecar axis is valid")
 }
 
 #[cfg(test)]

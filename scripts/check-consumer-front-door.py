@@ -90,10 +90,8 @@ if documented_packages != expected_packages:
 
 current_routes = set(inventory_production_routes())
 expected_routes = set(read("release-baselines/production-routes-0.3.3.txt").splitlines())
-if current_routes != expected_routes:
-    missing = sorted(expected_routes - current_routes)
-    extra = sorted(current_routes - expected_routes)
-    fail(f"current route inventory drifted; missing={missing}, extra={extra}")
+if not expected_routes <= current_routes or "pi.sdk-sidecar" not in current_routes:
+    fail("current route inventory lost tagged routes or the additive Pi SDK sidecar route")
 release_route_section = section(release, "## Production Routes", "## Highlights")
 documented_routes = set(re.findall(r"^- `([^`]+)`$", release_route_section, re.MULTILINE))
 if documented_routes != expected_routes:

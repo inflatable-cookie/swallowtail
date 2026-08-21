@@ -1,6 +1,6 @@
 # 091 Pi SDK Sidecar Persistent Sessions
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-21
 Milestone: `../033-pi-sdk-sidecar-route.md`

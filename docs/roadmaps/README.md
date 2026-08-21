@@ -14,9 +14,10 @@ shape.
 
 ## Next Task
 
-Execute g04.033 cards 089-092 in order. Realize the separate Pi SDK sidecar
-route, prove Contract 017 load and resume, then record explicit coexistence or
-deprecation for `pi.rpc`.
+g04.033 is complete (merge pending); both Pi routes are retained. Run the
+Gemini CLI `0.56.0` enterprise API-key requalification lane across ACP and
+headless per `docs/roadmaps/g04/README.md` and
+`docs/roadmaps/standing-lanes.md`, then serial per-route feature completion.
 
 ## Standing Lanes
 

@@ -67,10 +67,15 @@ pub fn swallowtail_adapter_pi::PiSdkSidecarPreparedSession::resume_request(&self
 pub fn swallowtail_adapter_pi::PiSdkSidecarPreparedSession::resume_session(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>, swallowtail_runtime::preparation::PreparationFailure>
 pub struct swallowtail_adapter_pi::sidecar::PiSdkSidecarSessionPreparation
 impl swallowtail_adapter_pi::PiSdkSidecarSessionPreparation
+pub fn swallowtail_adapter_pi::PiSdkSidecarSessionPreparation::from_admitted(&swallowtail_core::connection_lifecycle::records::AdmittedInstanceRecord, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::AccessProfileId, swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ProviderId, swallowtail_core::model::ModelId, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::identity::RequestId) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
 pub const fn swallowtail_adapter_pi::PiSdkSidecarSessionPreparation::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::runtime_identity::CredentialRef, swallowtail_core::runtime_identity::AccessProfileId, swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ProviderId, swallowtail_core::model::ModelId, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::identity::RequestId) -> Self
 pub const fn swallowtail_adapter_pi::PiSdkSidecarSessionPreparation::with_image_attachments(self) -> Self
+pub const swallowtail_adapter_pi::sidecar::PI_SDK_SIDECAR_ADDABLE_ROUTE_ID: &str
 pub const swallowtail_adapter_pi::sidecar::PI_SDK_SIDECAR_BEHAVIOR: &str
+pub const swallowtail_adapter_pi::sidecar::PI_SDK_SIDECAR_CREDENTIAL_FIELD_ID: &str
 pub const swallowtail_adapter_pi::sidecar::PI_SDK_SIDECAR_ENTRY_FILE: &str
+pub const swallowtail_adapter_pi::sidecar::PI_SDK_SIDECAR_ENVIRONMENT_FIELD_ID: &str
+pub const swallowtail_adapter_pi::sidecar::PI_SDK_SIDECAR_LAUNCH_RECIPE_FIELD_ID: &str
 pub const swallowtail_adapter_pi::sidecar::PI_SDK_SIDECAR_NODE_AXIS: &str
 pub const swallowtail_adapter_pi::sidecar::PI_SDK_SIDECAR_NODE_RUNTIME: &str
 pub const swallowtail_adapter_pi::sidecar::PI_SDK_SIDECAR_PACKAGE_AXIS: &str
@@ -81,6 +86,7 @@ pub const swallowtail_adapter_pi::sidecar::PI_SDK_SIDECAR_SOURCE: &str
 pub const swallowtail_adapter_pi::sidecar::PI_SDK_SIDECAR_SOURCE_TAG: &str
 pub const swallowtail_adapter_pi::sidecar::PI_SDK_SIDECAR_WIRE: &str
 pub const swallowtail_adapter_pi::sidecar::PI_SDK_SIDECAR_WIRE_AXIS: &str
+pub fn swallowtail_adapter_pi::sidecar::pi_sdk_sidecar_addable_route_descriptor(&swallowtail_runtime::host_registry::HostServices) -> swallowtail_core::connection_lifecycle::descriptor::AddableRouteDescriptor
 pub fn swallowtail_adapter_pi::sidecar::pi_sdk_sidecar_descriptor() -> swallowtail_core::registration::DriverDescriptor
 pub fn swallowtail_adapter_pi::sidecar::pi_sdk_sidecar_node_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
 pub fn swallowtail_adapter_pi::sidecar::pi_sdk_sidecar_node_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
@@ -190,6 +196,7 @@ pub fn swallowtail_adapter_pi::PiSdkSidecarPreparedSession::resume_request(&self
 pub fn swallowtail_adapter_pi::PiSdkSidecarPreparedSession::resume_session(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>, swallowtail_runtime::preparation::PreparationFailure>
 pub struct swallowtail_adapter_pi::PiSdkSidecarSessionPreparation
 impl swallowtail_adapter_pi::PiSdkSidecarSessionPreparation
+pub fn swallowtail_adapter_pi::PiSdkSidecarSessionPreparation::from_admitted(&swallowtail_core::connection_lifecycle::records::AdmittedInstanceRecord, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::AccessProfileId, swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ProviderId, swallowtail_core::model::ModelId, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::identity::RequestId) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
 pub const fn swallowtail_adapter_pi::PiSdkSidecarSessionPreparation::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::runtime_identity::CredentialRef, swallowtail_core::runtime_identity::AccessProfileId, swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ProviderId, swallowtail_core::model::ModelId, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::identity::RequestId) -> Self
 pub const fn swallowtail_adapter_pi::PiSdkSidecarSessionPreparation::with_image_attachments(self) -> Self
 pub struct swallowtail_adapter_pi::PiSessionProfileInput
@@ -200,6 +207,10 @@ pub const fn swallowtail_adapter_pi::PiSessionProfileInput::with_image_attachmen
 pub const swallowtail_adapter_pi::PI_PACKAGE_AXIS: &str
 pub const swallowtail_adapter_pi::PI_PACKAGE_BASELINE_VERSION: &str
 pub const swallowtail_adapter_pi::PI_PACKAGE_LATEST_QUALIFIED_VERSION: &str
+pub const swallowtail_adapter_pi::PI_SDK_SIDECAR_ADDABLE_ROUTE_ID: &str
+pub const swallowtail_adapter_pi::PI_SDK_SIDECAR_CREDENTIAL_FIELD_ID: &str
+pub const swallowtail_adapter_pi::PI_SDK_SIDECAR_ENVIRONMENT_FIELD_ID: &str
+pub const swallowtail_adapter_pi::PI_SDK_SIDECAR_LAUNCH_RECIPE_FIELD_ID: &str
 pub const swallowtail_adapter_pi::PI_SDK_SIDECAR_NODE_AXIS: &str
 pub const swallowtail_adapter_pi::PI_SDK_SIDECAR_PACKAGE_AXIS: &str
 pub const swallowtail_adapter_pi::PI_SDK_SIDECAR_SIDECAR_AXIS: &str
@@ -207,6 +218,7 @@ pub const swallowtail_adapter_pi::PI_SDK_SIDECAR_WIRE_AXIS: &str
 pub fn swallowtail_adapter_pi::pi_package_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
 pub fn swallowtail_adapter_pi::pi_rpc_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
 pub fn swallowtail_adapter_pi::pi_rpc_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_pi::pi_sdk_sidecar_addable_route_descriptor(&swallowtail_runtime::host_registry::HostServices) -> swallowtail_core::connection_lifecycle::descriptor::AddableRouteDescriptor
 pub fn swallowtail_adapter_pi::pi_sdk_sidecar_descriptor() -> swallowtail_core::registration::DriverDescriptor
 pub fn swallowtail_adapter_pi::pi_sdk_sidecar_node_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
 pub fn swallowtail_adapter_pi::pi_sdk_sidecar_node_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim

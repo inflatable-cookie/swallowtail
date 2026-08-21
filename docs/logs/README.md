@@ -23,6 +23,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-21 g04.033 Pi SDK Sidecar Closeout](./2026-08-21-g04-033-pi-sdk-sidecar-closeout.md)
 - [2026-08-21 Pi SDK Sidecar Route Planning](./2026-08-21-pi-sdk-sidecar-route-planning.md)
 - [2026-08-21 Post-Kimi Priority Reset](./2026-08-21-post-kimi-priority-reset.md)
 - [2026-08-21 g04.024 Kimi Platform Chat Closeout](./2026-08-21-g04-024-kimi-platform-chat-closeout.md)

@@ -11,7 +11,7 @@ persistence, UI, and selection policy, and keep secret bytes on the host.
 
 ## Route Applicability
 
-Seven production routes currently export an `AddableRouteDescriptor`:
+Eight production routes currently export an `AddableRouteDescriptor`:
 
 | Route | Topology | Host service for Available | Credential |
 | --- | --- | --- | --- |
@@ -22,6 +22,7 @@ Seven production routes currently export an `AddableRouteDescriptor`:
 | `claude-agent.acp` | installed | Process | none; inherited local Claude subscription |
 | `ollama.attached` | local-runtime | Network | none; local unauthenticated |
 | `llama-cpp.attached` | local-runtime | Network | none; local unauthenticated |
+| `pi.sdk-sidecar` | installed | Process and Credential | secret delegated harness credential field `harness_credential`; no environment name |
 
 Topology grouping is hosted / installed / local-runtime. It is not
 `ExecutionLayer` and must not be collapsed onto harness versus direct
@@ -61,6 +62,7 @@ prepare will use:
 - `claude_agent_acp_addable_route_descriptor`
 - `ollama_attached_addable_route_descriptor`
 - `llama_cpp_attached_addable_route_descriptor`
+- `pi_sdk_sidecar_addable_route_descriptor`
 
 Then `AddableRouteCatalog::from_descriptors`. There is no umbrella registry
 and no runtime inventory of every production route. Duplicate route ids fail
@@ -181,6 +183,9 @@ the adapter's host service, and leaves resolution to that host boundary:
 - `OllamaPreparationInput::from_admitted` then `prepare_ollama_attached`
 - `LlamaCppAttachedPreparationInput::from_admitted` then
   `prepare_llama_cpp_attached`
+- `PiSdkSidecarSessionPreparation::from_admitted` then
+  `prepare_pi_sdk_sidecar_session`; the admitted launch recipe, environment,
+  and credential references stay opaque
 
 Stored `ConfigFieldRef` values feed only this exact route-local handoff; their
 path, URL, or environment body never enters a portable record or diagnostic.
@@ -207,7 +212,7 @@ Forbidden inferences:
 - overlay is not a catalogue and does not change selection readiness
 - subject is not an instance id or routing key
 - a discovered candidate is not an addable row
-- remaining production routes are not addable because seven proofs exist
+- remaining production routes are not addable because eight proofs exist
 
 ## Failures
 

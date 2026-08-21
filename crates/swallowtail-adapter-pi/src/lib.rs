@@ -34,12 +34,15 @@ pub use selection::{
     pi_package_binding, pi_rpc_claim,
 };
 pub use sidecar::{
+    PI_SDK_SIDECAR_ADDABLE_ROUTE_ID, PI_SDK_SIDECAR_CREDENTIAL_FIELD_ID,
+    PI_SDK_SIDECAR_ENVIRONMENT_FIELD_ID, PI_SDK_SIDECAR_LAUNCH_RECIPE_FIELD_ID,
     PI_SDK_SIDECAR_NODE_AXIS, PI_SDK_SIDECAR_PACKAGE_AXIS, PI_SDK_SIDECAR_SIDECAR_AXIS,
     PI_SDK_SIDECAR_WIRE_AXIS, PiSdkSidecarDriver, PiSdkSidecarPreparedSession,
-    PiSdkSidecarSessionPreparation, pi_sdk_sidecar_descriptor, pi_sdk_sidecar_node_binding,
-    pi_sdk_sidecar_node_claim, pi_sdk_sidecar_package_binding, pi_sdk_sidecar_package_claim,
-    pi_sdk_sidecar_sidecar_binding, pi_sdk_sidecar_sidecar_claim, pi_sdk_sidecar_wire_binding,
-    pi_sdk_sidecar_wire_claim, prepare_pi_sdk_sidecar_session,
+    PiSdkSidecarSessionPreparation, pi_sdk_sidecar_addable_route_descriptor,
+    pi_sdk_sidecar_descriptor, pi_sdk_sidecar_node_binding, pi_sdk_sidecar_node_claim,
+    pi_sdk_sidecar_package_binding, pi_sdk_sidecar_package_claim, pi_sdk_sidecar_sidecar_binding,
+    pi_sdk_sidecar_sidecar_claim, pi_sdk_sidecar_wire_binding, pi_sdk_sidecar_wire_claim,
+    prepare_pi_sdk_sidecar_session,
 };
 
 const DRIVER_ID: &str = "swallowtail.pi.rpc";

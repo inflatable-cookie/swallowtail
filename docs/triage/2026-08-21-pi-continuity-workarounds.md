@@ -1,6 +1,6 @@
 # 2026-08-21 Pi Continuity Workarounds
 
-Status: promoted
+Status: resolved
 Owner: Tom
 Lane: g04
 
@@ -84,3 +84,16 @@ identity is a language sidecar backed by Pi's official SDK.
 - g04.033 and cards 089-092 carry implementation and final RPC disposition.
 - Consumer-owned fresh-session reconstruction remains the temporary fallback
   until that route lands.
+
+## Resolution
+
+g04.033 landed the SDK sidecar route exactly as the SDK Route section
+proposed: `pi.sdk-sidecar` switches with the host-leased `cwdOverride`,
+compares the effective cwd and session reference before readiness, and
+realizes persistent new, load-with-replay, and replay-free resume under
+Contract 017. The RPC attachment gate from Research 180 stands: `pi.rpc`
+stays fresh-only. The recorded disposition is option 1 — retain `pi.rpc` as
+the simple fresh-session route alongside the SDK route — because the SDK
+route is a continuity superset but not an operational superset (it requires
+the provisioned Node runtime, source-tagged sidecar, and exact SDK package
+over a Swallowtail-owned private wire).

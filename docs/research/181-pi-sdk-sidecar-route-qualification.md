@@ -1,6 +1,6 @@
 # 181 Pi SDK Sidecar Route Qualification
 
-Status: promoted
+Status: accepted
 Owner: Tom
 Date: 2026-08-21
 

@@ -40,7 +40,9 @@ is unchanged.
 - `effigy package:api` — passed; only `public-api-unreleased` changed.
 - `git diff --check` — passed.
 
+PR: https://github.com/inflatable-cookie/swallowtail/pull/18
+
 ## Next
 
-Open the worker PR against `main`. Do not merge. g04.022 stays planned.
-Hosted OAuth stays parked.
+PR 18 is awaiting review. Do not merge. g04.022 stays planned. Hosted
+OAuth stays parked.

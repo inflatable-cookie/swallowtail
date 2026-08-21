@@ -14,8 +14,7 @@ shape.
 
 ## Next Task
 
-Worker in flight: g04.021 cards 059-061. Handoff
-`docs/handoffs/20260821-075348-g04-021-unmarked-overlay-rows.md`.
+Awaiting review: g04.021 PR 18. Do not merge. g04.022 stays planned.
 
 ## Standing Lanes
 

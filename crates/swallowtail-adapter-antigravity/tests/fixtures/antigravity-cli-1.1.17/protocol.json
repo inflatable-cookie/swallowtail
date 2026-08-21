@@ -1,0 +1,40 @@
+{
+  "help_source": "official-1.1.17-linux-x64-binary",
+  "help_selected_flags_present": [
+    "--print",
+    "--output-format",
+    "--model",
+    "--mode",
+    "--sandbox",
+    "--effort",
+    "--json-schema",
+    "--conversation"
+  ],
+  "selected_catalogue_command": "models",
+  "selected_output_format": "stream-json",
+  "selected_permission_mode": "request-review",
+  "dangerously_skip_permissions_selected": false,
+  "continue_selected": false,
+  "input_format_present": true,
+  "map_input_format": false,
+  "models_help_lists_output_format": false,
+  "argv0_help_banner": "Usage of antigravity:",
+  "argv0_is_not_protocol_change": true,
+  "help_1_1_16_byte_identical_to_1_1_17": true,
+  "help_delta_from_1_1_15": ["mcp"],
+  "decoder_corpus": "antigravity-cli-1.1.9",
+  "unused_deltas": [
+    "--input-format",
+    "mcp",
+    "GEMINI_API_KEY",
+    "enterprise-sign-in",
+    "models --output-format",
+    "harness-consolidation",
+    "teamwork-preview",
+    "ogg-mime"
+  ],
+  "provider_prompt_sent": false,
+  "live_catalogue": false,
+  "live_print_run": false,
+  "host_install_changed": false
+}

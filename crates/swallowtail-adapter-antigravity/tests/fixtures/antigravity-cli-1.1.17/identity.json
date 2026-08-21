@@ -1,0 +1,73 @@
+{
+  "axis": "antigravity-cli.release",
+  "observed_at": "2026-08-21",
+  "github_repo": "google-antigravity/antigravity-cli",
+  "github_latest": true,
+  "not_gemini_cli": true,
+  "not_antigravity_acp": true,
+  "host": {
+    "installed": false,
+    "source": "not-on-path",
+    "note": "missing install is not a gap"
+  },
+  "official": {
+    "version": "1.1.17",
+    "source": "official-github-release",
+    "published_at": "2026-08-20T22:13:58Z",
+    "github_commit": "efa16f096dc02fb654b7e86958d268195284d014",
+    "asset": "agy_cli_linux_x64.tar.gz",
+    "tarball_sha256": "15443966494cd62938320900acfd16df906cf4da56279e4dd8f4846c09f849df",
+    "extracted_cli_name": "antigravity",
+    "extracted_cli_sha256": "d1ea7370fce2ae229a370d8cc42e91d4eeb971344c5f07918e55ce05a4e19579",
+    "extracted_cli_size": 205574400,
+    "extracted_version": "1.1.17",
+    "elf_build_id": "de253ec6ade81ddac11b45a8558af46a"
+  },
+  "official_mac_arm64_tarball_sha256": "60fe89d3aef472ddf6c7048032f7585fae732d879f3700fc3188c68c46b35cdd",
+  "published_stables_from_previous_ceiling": ["1.1.16", "1.1.17"],
+  "intermediate_1_1_16": {
+    "published_at": "2026-08-20T04:14:18Z",
+    "github_commit": "efa16f096dc02fb654b7e86958d268195284d014",
+    "asset": "agy_cli_linux_x64.tar.gz",
+    "tarball_sha256": "7742953b7835b457e9102f1357a493913657dfd147435584f609d58356ec085a",
+    "extracted_cli_sha256": "b233e6a4f38564a06a0d3220aa79f6a7c8f11da2b85fc8f0957f8a14d46e6cc9",
+    "extracted_cli_size": 205545512,
+    "extracted_version": "1.1.16"
+  },
+  "public_git_1_1_15_to_1_1_17": "changelog-only",
+  "public_git_1_1_16_to_1_1_17": "identical",
+  "shared_git_sha_does_not_unify_binaries": true,
+  "changelog_heading_still_1_1_16": true,
+  "unpublished_1_1_18": true,
+  "keep_1_1_8_incompatible": true,
+  "frozen_corpus_ceiling": "1.1.15",
+  "acp_registry_antigravity_acp": "1.0.0",
+  "flatten_to_antigravity_acp": false,
+  "claim_at_observation": {
+    "baseline": "1.1.9",
+    "latest_qualified": "1.1.15",
+    "posture": "allow_unverified",
+    "classification_of_1_1_9": "qualified_maintained",
+    "classification_of_1_1_15": "qualified_maintained",
+    "classification_of_1_1_16": "unverified_newer",
+    "classification_of_1_1_17": "unverified_newer"
+  },
+  "identity_decision": {
+    "shape": "compatible-extension",
+    "reuse_catalogue_behavior": "antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1",
+    "reuse_headless_behavior": "antigravity.stream-json.cli-1.1.8-artifact-1.1.9-v1",
+    "raise_latest_qualified_to": "1.1.17",
+    "keep_baseline": "1.1.9",
+    "qualify_intermediates": ["1.1.16"],
+    "new_milestone": false,
+    "keep_1_1_8_incompatible": true,
+    "map_input_format": false,
+    "map_mcp_subcommand": false,
+    "flatten_to_gemini_api_key": false,
+    "flatten_to_antigravity_acp": false,
+    "provider_prompt_sent": false,
+    "live_catalogue": false,
+    "live_print_run": false,
+    "host_install_changed": false
+  }
+}

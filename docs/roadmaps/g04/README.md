@@ -40,8 +40,9 @@ and selection policy.
 - [g04.025 Codex 0.149.0 Useful Newer](025-codex-0-149-0-useful-newer.md) — standing currentness, completed
 - [g04.026 Qwen Headless 0.21.15 Useful Newer](026-qwen-headless-0-21-15-useful-newer.md) — standing currentness, completed
 - [g04.027 Ollama 0.32.15 Useful Newer](027-ollama-0-32-15-useful-newer.md) — standing currentness, completed
+- [g04.028 Claude Code 2.1.238 Useful Newer](028-claude-code-2-1-238-useful-newer.md) — standing currentness, completed
 
-Do not roll over: 27 numbered roadmaps exist; 001-023 and 025-027 are
+Do not roll over: 28 numbered roadmaps exist; 001-023 and 025-028 are
 complete, 024 is ready, target 30-50. Hosted OAuth stays parked.
 
 ## Current Checkpoint
@@ -55,6 +56,8 @@ complete, 024 is ready, target 30-50. Hosted OAuth stays parked.
   qualified through PR 21
 - g04.027 standing currentness is on `main` at `0c528209`: Ollama 0.32.15
   qualified through PR 22
+- g04.028 standing currentness qualifies Claude Code headless and
+  response-only through `2.1.238` in PR 24; cards 079-080 are complete
 - Hosted OAuth is parked. Gemini stays deferred. Contract 029 currentness
   is standing
 - Generation stays active. Rollover waits for 30-50 roadmaps
@@ -89,3 +92,4 @@ complete, 024 is ready, target 30-50. Hosted OAuth stays parked.
 - [025 Codex 0.149.0 Useful Newer](./025-codex-0-149-0-useful-newer.md) — completed (standing currentness)
 - [026 Qwen Headless 0.21.15 Useful Newer](./026-qwen-headless-0-21-15-useful-newer.md) — completed (standing currentness)
 - [027 Ollama 0.32.15 Useful Newer](./027-ollama-0-32-15-useful-newer.md) — completed (standing currentness)
+- [028 Claude Code 2.1.238 Useful Newer](./028-claude-code-2-1-238-useful-newer.md) — completed (standing currentness)

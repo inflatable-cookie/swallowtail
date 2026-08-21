@@ -22,6 +22,12 @@ annotated Git tags from the canonical repository.
   structs and routes unchanged; `routes.go` changed only unselected
   scheduler cache and parser-error cancel. Exclusions `0.32.2` and
   `0.32.10` stay. Research 174, g04.027.
+- Raised qualified Claude Code headless and response-only ceilings from
+  `2.1.235` to official npm `@anthropic-ai/claude-code` `2.1.238`.
+  Compatible-extension: installer wrapper files match `2.1.235` except
+  the version pin; selected stream-JSON flags stay; published
+  intermediates `2.1.236` and `2.1.237` are qualified. Later stables
+  stay AllowUnverified. Research 175, g04.028.
 
 ## [0.3.3] - 2026-08-19
 

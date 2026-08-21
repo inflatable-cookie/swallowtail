@@ -14,6 +14,8 @@ Hosted OAuth stays parked.
 
 ## Completed
 
+- [080-claude-code-2-1-238-claim.md](./080-claude-code-2-1-238-claim.md)
+- [079-claude-code-2-1-238-identity.md](./079-claude-code-2-1-238-identity.md)
 - [067-047-presentation-fields.md](./067-047-presentation-fields.md)
 - [066-047-presentation-contract-amendment.md](./066-047-presentation-contract-amendment.md)
 - [065-047-presentation-field-inventory.md](./065-047-presentation-field-inventory.md)

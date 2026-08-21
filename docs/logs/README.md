@@ -23,6 +23,8 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-21 Claude Code 2.1.238 Claim And Acceptance](./2026-08-21-claude-code-2-1-238-claim.md)
+- [2026-08-21 Claude Code 2.1.238 Identity](./2026-08-21-claude-code-2-1-238-identity.md)
 - [2026-08-21 g04.024 Kimi Platform Cards Compiled](./2026-08-21-g04-024-kimi-platform-cards-compiled.md)
 - [2026-08-21 g04.027 Ollama 0.32.15 Useful Newer Merged](./2026-08-21-g04-027-ollama-0-32-15-merged.md)
 - [2026-08-21 g04.026 Qwen 0.21.15 Useful Newer Merged](./2026-08-21-g04-026-qwen-0-21-15-merged.md)

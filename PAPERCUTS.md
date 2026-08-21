@@ -5,6 +5,16 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] Parallel currentness branches allocate duplicate roadmap cards — 2026-08-21
+- Friction: PRs 24-30 allocated cards 076-085 from older planning bases while
+  pushed `main` already assigns 076-078 to g04.024.
+- Impact: independently correct family branches conflict at integration and
+  cannot preserve both the active generation runway and unique card identity.
+- Fix: allocate currentness roadmap and card numbers from current pushed
+  `main`, or defer final numbering to the orchestrator restack.
+- Surface: version-currentness worker handoffs; g04 roadmap and batch-card
+  indexes.
+
 ### [ ] Timing-sensitive deadline fixtures make unrelated PR heads red — 2026-08-21
 - Friction: restacked PR 23 failed Stable in Ollama
   `deadline_remains_distinct_from_cancellation`, while PR 21 failed MSRV in

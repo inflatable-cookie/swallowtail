@@ -14,6 +14,8 @@ Hosted OAuth stays parked.
 
 ## Completed
 
+- [088-kimi-code-0-38-0-claim.md](./088-kimi-code-0-38-0-claim.md)
+- [087-kimi-code-0-38-0-identity.md](./087-kimi-code-0-38-0-identity.md)
 - [086-oh-my-pi-17-4-0-claim.md](./086-oh-my-pi-17-4-0-claim.md)
 - [085-oh-my-pi-17-4-0-identity.md](./085-oh-my-pi-17-4-0-identity.md)
 - [084-antigravity-1-1-17-claim.md](./084-antigravity-1-1-17-claim.md)

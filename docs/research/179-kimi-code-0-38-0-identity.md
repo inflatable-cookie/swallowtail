@@ -3,7 +3,7 @@
 Status: promoted
 Owner: Tom
 Date: 2026-08-21
-Card: g04 batch 084
+Card: g04 batch 087
 
 ## Question
 
@@ -81,7 +81,7 @@ Changelog extras stay unmapped: `acp --region` / `login --region` on the
 already-unmapped login flow, and the WaitFor agent tool (TUI renderer
 plus agent-core-v2; not in the selected ACP event map).
 
-## Segment decision for card 085
+## Segment decision for card 088
 
 Compatible extension for all three routes through official `0.38.0`:
 

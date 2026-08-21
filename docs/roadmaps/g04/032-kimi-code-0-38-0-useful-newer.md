@@ -10,9 +10,8 @@ Qualify official npm `@moonshot-ai/kimi-code` `0.38.0` (published
 2026-08-20) on the `kimi-code.executable` axis (`kimi-code.acp`,
 `kimi-code.headless`, and `kimi-code.local-server`).
 
-This is extracurricular Contract 029 currentness work, outside the
-northstar/g04 loop. Do not edit Next Task, `docs/roadmaps/README.md`, or
-g04 front-door text.
+This is Contract 029 standing currentness work. It does not keep the
+generation open or move Next Task.
 
 ## Acceptance
 
@@ -27,7 +26,7 @@ Claim:
 - If compatible-extension: raise all three latest-qualified ceilings to
   `0.38.0`
 - Update tests, Kimi guides, and Kimi matrix rows
-- Leave architecture, contracts, Next Task, and g04 front-door alone
+- Leave architecture, contracts, and Next Task unchanged
 - Pass `effigy validate:focused swallowtail-adapter-kimi`
 - Pass `effigy package:verify-affected swallowtail-adapter-kimi`
 
@@ -43,13 +42,13 @@ consumer checks.
   `acp --login`, terminal-auth, watch-fs `runtime_id`)
 - Flattening families, including Python `kimi-cli` and Kimi Platform Chat
 - Decoder updates unless adapter mapping changed
-- Next Task, generation status, and g04 front-door edits
+- Next Task changes or Kimi Platform implementation
 - Architecture or contract ceiling rewrites
 
 ## Batch Cards
 
-- [084-kimi-code-0-38-0-identity.md](batch-cards/084-kimi-code-0-38-0-identity.md) — completed
-- [085-kimi-code-0-38-0-claim.md](batch-cards/085-kimi-code-0-38-0-claim.md) — completed
+- [087-kimi-code-0-38-0-identity.md](batch-cards/087-kimi-code-0-38-0-identity.md) — completed
+- [088-kimi-code-0-38-0-claim.md](batch-cards/088-kimi-code-0-38-0-claim.md) — completed
 
 ## References
 

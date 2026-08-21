@@ -1,4 +1,4 @@
-# 085 Kimi Code 0.38.0 Claim
+# 088 Kimi Code 0.38.0 Claim
 
 Status: completed
 Owner: Tom
@@ -8,7 +8,7 @@ Created: 2026-08-21
 ## Task
 
 Raise the three Kimi qualified ceilings from `0.37.2` to official
-`0.38.0` after identity card 084 confirms compatible-extension.
+`0.38.0` after identity card 087 confirms compatible-extension.
 
 ## Edit Set
 

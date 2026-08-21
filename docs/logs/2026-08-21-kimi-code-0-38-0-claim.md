@@ -2,7 +2,7 @@
 
 ## Result
 
-Card 085 raised all three `kimi-code.executable` ceilings through
+Card 088 raised all three `kimi-code.executable` ceilings through
 official `0.38.0` as a compatible extension. ACP and headless Maintained
 segments are now `0.29.0..=0.38.0`. Local-server heartbeat-ping is now
 `0.35.0..=0.38.0`. Later stables stay UnverifiedNewer at synthetic
@@ -11,10 +11,15 @@ segments are now `0.29.0..=0.38.0`. Local-server heartbeat-ping is now
 unmapped. Python `kimi-cli` `1.49.0` and Kimi Platform Chat stay
 separate.
 
-g04.032 is extracurricular currentness, outside the northstar/g04 loop.
-Next Task, `docs/roadmaps/README.md`, and g04 front-door text were left
-alone.
+g04.032 is standing currentness, completed. Next Task stays on g04.024.
+
+`cargo fmt -p swallowtail-adapter-kimi -- --check` passed. Focused Kimi
+proof passed: 109 tests, clippy `-D warnings` clean. Extracted-package
+verification passed: 239 files. The earlier `/workspace` substring
+failure was environment-specific and did not reproduce after restacking
+on the macOS repository path.
 
 ## Next
 
-Generation Next Task is unchanged. Gemini stays deferred.
+Generation Next Task is unchanged. Hosted OAuth stays parked. Gemini
+stays deferred.

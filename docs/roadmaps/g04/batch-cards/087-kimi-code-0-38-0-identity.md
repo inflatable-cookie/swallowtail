@@ -1,4 +1,4 @@
-# 084 Kimi Code 0.38.0 Identity
+# 087 Kimi Code 0.38.0 Identity
 
 Status: completed
 Owner: Tom
@@ -40,7 +40,7 @@ compatible-extension; check for a private milestone first.
 - No production claim edit
 - Passes focused Kimi proof at the claim card
 
-Auto-continue to claim card 085.
+Auto-continue to claim card 088.
 
 ## Out Of Scope
 

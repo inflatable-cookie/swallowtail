@@ -25,9 +25,9 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Last one-family claim: Oh My Pi RPC `17.4.0` (g04.031, PR 27). The
-immediately preceding claim is Antigravity catalogue and headless `1.1.17`
-(g04.030, PR 26). Neither changes the generation pointer.
+Last one-family claim: Kimi Code ACP, headless, and local-server `0.38.0`
+(g04.032, PR 30). The immediately preceding claim is Oh My Pi RPC `17.4.0`
+(g04.031, PR 27). Neither changes the generation pointer.
 
 ### Current Deferrals
 

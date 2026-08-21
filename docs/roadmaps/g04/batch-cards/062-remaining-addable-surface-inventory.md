@@ -1,6 +1,6 @@
 # 062 Remaining Addable Surface Inventory
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../022-further-addable-inventory.md`
@@ -27,15 +27,23 @@ writing adapter descriptors.
 
 ## Acceptance Criteria
 
-- [ ] remaining production routes have a shape, skip, or gated reason
-- [ ] sibling rows such as owned, headless, and response-only are named
-- [ ] no production code changes
+- [x] remaining production routes have a shape, skip, or gated reason
+- [x] sibling rows such as owned, headless, and response-only are named
+- [x] no production code changes
 
 ## Validation
 
 - research note and named docs indexes
 - `effigy qa:docs:index:research`
 - `git diff --check`
+
+## Evidence
+
+Research 171 inventories all 47 provider-matrix routes: the six current
+addable rows, 26 later descriptor candidates, and 15 gated rows. No adapter
+crate or production runtime file changed.
+
+Validation passed: `effigy qa:docs:index:research`; `git diff --check`.
 
 ## Auto-Continuation
 

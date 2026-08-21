@@ -31,21 +31,22 @@ and selection policy.
 | Realize the model-presentation overlay without flattening catalogues. | completed | Contracts 057, 020 | `g04.009` |
 | Prove representative hosted, installed, and local-runtime shapes and publish a consumer path. | completed | Contracts 011, 037, 052, 057 | `g04.010` |
 | Expand addable-route coverage on the proved hosted, installed, and local-runtime shapes. | completed | Contracts 011, 037, 052, 057 | `g04.015` |
-| Close remaining 057/047 seams and expand addable coverage on proved shapes. | planned | Contracts 020, 037, 047, 057 | `g04.020` |
+| Close remaining 057/047 seams and expand addable coverage on proved shapes. | completed | Contracts 020, 037, 047, 057 | `g04.020` |
 
 ## Planned Next Roadmaps
 
-- [g04.022 Further Addable Inventory](022-further-addable-inventory.md) — worker in flight, cards 062-064
-- [g04.023 047 Presentation Metadata](023-047-presentation-metadata.md) — planned pending 022
+- [g04.023 047 Presentation Metadata](023-047-presentation-metadata.md) — next, cards 065-067 ready
+- [g04.024 Hosted API-Key Kimi Platform Chat](024-hosted-api-key-kimi-platform-chat.md) — planned after 023; implementation cards not compiled
 
-Do not roll over: 21 numbered completed roadmaps, 023 compiled, target
+Do not roll over: 22 numbered completed roadmaps, 023 compiled, target
 30-50. Hosted OAuth stays parked.
 
 ## Current Checkpoint
 
 - g04.001 through g04.021 are complete. PR 18 is on `main` at `f6ee1390`
-- g04.022 worker dispatched: cards 062-064, handoff
-  `docs/handoffs/20260821-084456-g04-022-further-addable-inventory.md`
+- g04.022 cards 062-064 complete in the worker PR; Research 171 inventories
+  all 47 routes and names g04.024. Merge is pending.
+- g04.023 remains the next work and has not started.
 - Hosted OAuth is parked. Contract 029 currentness is standing
 - Generation stays active. Rollover waits for 30-50 roadmaps
 - `v0.3.3` remains `51d18620`
@@ -73,5 +74,6 @@ Do not roll over: 21 numbered completed roadmaps, 023 compiled, target
 - [019 Local llama.cpp Attached](./019-local-llama-cpp-attached.md) — completed
 - [020 Config-Ref Prepare Handoff](./020-config-ref-prepare-handoff.md) — completed
 - [021 Unmarked Overlay Rows](./021-unmarked-overlay-rows.md) — completed
-- [022 Further Addable Inventory](./022-further-addable-inventory.md) — planned
+- [022 Further Addable Inventory](./022-further-addable-inventory.md) — completed in worker PR
 - [023 047 Presentation Metadata](./023-047-presentation-metadata.md) — planned
+- [024 Hosted API-Key Kimi Platform Chat](./024-hosted-api-key-kimi-platform-chat.md) — planned, named by g04.022

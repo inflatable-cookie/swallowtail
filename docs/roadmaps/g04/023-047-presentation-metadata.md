@@ -6,7 +6,7 @@ Created: 2026-08-20
 Depends on: completed g04.022
 Vision tags: consumer integration, route readiness, explicit selection
 Contract refs: 020, 047, 057
-Planning state: cards 065-067 planned pending g04.022
+Planning state: cards 065-067 ready
 
 ## Problem
 
@@ -69,7 +69,7 @@ shapes.
 
 - previous: g04.022 further addable inventory
 - this milestone: optional 047 presentation metadata
-- later: named addable implementations from g04.022
+- later: g04.024 hosted API-key Kimi Platform Chat, then named addable implementations from g04.022
 - generation continues toward 30-50; do not roll over
 
 ## Decision Gates

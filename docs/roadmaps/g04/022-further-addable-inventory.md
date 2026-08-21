@@ -1,13 +1,13 @@
 # 022 Further Addable Inventory
 
-Status: planned
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Depends on: completed g04.021
 Vision tags: consumer integration, route readiness, explicit selection
 Contract refs: 011, 037, 047, 052, 057
-Planning state: cards 062-064 ready
-Research: 170
+Planning state: cards 062-064 completed
+Research: 171
 
 ## Problem
 
@@ -23,10 +23,10 @@ shapes.
 
 ## Goals
 
-- [ ] inventory remaining production routes against the three proved
+- [x] inventory remaining production routes against the three proved
       057 shapes
-- [ ] classify reuse versus descriptor work versus gated
-- [ ] confirm the next implementation roadmap after g04.023
+- [x] classify reuse versus descriptor work versus gated
+- [x] confirm the next implementation roadmap after g04.023
 
 ## Non-Goals
 
@@ -42,37 +42,37 @@ shapes.
 
 ### Batch 22.1 — Surface Inventory
 
-- [ ] Execute card 062.
-- [ ] map remaining production routes onto hosted API-key, installed, or
+- [x] Execute card 062.
+- [x] map remaining production routes onto hosted API-key, installed, or
       local-runtime
-- [ ] write a research note; do not compile implementation cards yet
+- [x] write a research note; do not compile implementation cards yet
 
 ### Batch 22.2 — Gap Classification
 
-- [ ] Execute card 063 after card 062.
-- [ ] keep OAuth parked
-- [ ] keep owned, headless, and response-only rows off sibling addable
+- [x] Execute card 063 after card 062.
+- [x] keep OAuth parked
+- [x] keep owned, headless, and response-only rows off sibling addable
       descriptors
 
 ### Batch 22.3 — Tranche Confirmation
 
-- [ ] Execute card 064 after card 063.
-- [ ] name the first implementation roadmap after g04.023
-- [ ] leave later named routes planned behind it
+- [x] Execute card 064 after card 063.
+- [x] name the first implementation roadmap after g04.023
+- [x] leave later named routes planned behind it
 
 ## Acceptance Criteria
 
-- [ ] each inventoried route has a shape, 057 gap, or gated reason
-- [ ] hosted OAuth stays parked
-- [ ] no adapter crate changes in this milestone
-- [ ] the next implementation roadmap is named, not started
+- [x] each inventoried route has a shape, 057 gap, or gated reason
+- [x] hosted OAuth stays parked
+- [x] no adapter crate changes in this milestone
+- [x] the next implementation roadmap is named, not started
 
 ## Lane Runway
 
 - previous: g04.021 unmarked overlay rows
-- this milestone: further addable inventory
+- this milestone: further addable inventory — complete in worker PR
 - next: g04.023 047 presentation metadata
-- later: named addable implementations from this tranche
+- later: g04.024 hosted API-key Kimi Platform Chat, then named candidates
 - generation continues toward 30-50; do not roll over
 
 ## Decision Gates

@@ -1,6 +1,6 @@
 # 064 Further Addable Tranche Confirmation
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../022-further-addable-inventory.md`
@@ -24,14 +24,23 @@ Confirm the next addable implementation roadmap after g04.023.
 
 ## Acceptance Criteria
 
-- [ ] the next implementation roadmap after g04.023 is named
-- [ ] later named routes stay planned, not started
-- [ ] no adapter crate changes
+- [x] the next implementation roadmap after g04.023 is named
+- [x] later named routes stay planned, not started
+- [x] no adapter crate changes
 
 ## Validation
 
 - `effigy qa:docs:index:roadmaps:g04`
 - `git diff --check`
+
+## Evidence
+
+Roadmap g04.024 names `kimi-platform.chat` as the first post-g04.023
+implementation tranche. Its implementation cards are not compiled or ready;
+g04.023 remains the immediate next work. Research 171 leaves the later
+installed candidates and gated routes planned behind it.
+
+Validation passed: `effigy qa:docs:index:roadmaps:g04`; `git diff --check`.
 
 ## Auto-Continuation
 

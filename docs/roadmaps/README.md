@@ -14,8 +14,9 @@ shape.
 
 ## Next Task
 
-Worker in flight: g04.022 cards 062-064. Handoff
-`docs/handoffs/20260821-084456-g04-022-further-addable-inventory.md`.
+g04.023 047 presentation metadata: cards 065-067 are ready. g04.022 cards
+062-064 are complete in the worker PR. g04.024 Kimi Platform is named behind
+023; do not start it from the current pointer.
 
 ## Standing Lanes
 

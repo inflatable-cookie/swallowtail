@@ -23,6 +23,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-21 g04.022 Further Addable Inventory](./2026-08-21-g04-022-further-addable-inventory.md)
 - [2026-08-21 g04.022 Further Addable Inventory Worker Dispatch](./2026-08-21-g04-022-further-addable-inventory-worker-dispatch.md)
 - [2026-08-21 g04.021 Unmarked Overlay Merged](./2026-08-21-g04-021-unmarked-overlay-merged.md)
 - [2026-08-21 g04.021 Unmarked Overlay Rows](./2026-08-21-g04-021-unmarked-overlay-rows.md)

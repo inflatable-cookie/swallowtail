@@ -2,6 +2,7 @@ swallowtail-adapter-anthropic
 swallowtail-adapter-claude-agent
 swallowtail-adapter-codex
 swallowtail-adapter-deepseek
+swallowtail-adapter-kimi-platform
 swallowtail-adapter-llama-cpp
 swallowtail-adapter-ollama
 swallowtail-core

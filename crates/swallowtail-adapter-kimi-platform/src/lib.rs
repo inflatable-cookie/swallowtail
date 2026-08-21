@@ -4,6 +4,7 @@
 #![deny(missing_docs)]
 
 mod activity;
+mod addable;
 mod driver;
 mod failure;
 mod prepared;
@@ -12,6 +13,10 @@ mod protocol;
 mod selection;
 mod transport;
 
+pub use addable::{
+    KIMI_PLATFORM_CHAT_ADDABLE_ROUTE_ID, KIMI_PLATFORM_CHAT_API_KEY_FIELD_ID,
+    KIMI_PLATFORM_CHAT_ENDPOINT_FIELD_ID, kimi_platform_chat_addable_route_descriptor,
+};
 pub use driver::{KimiPlatformDirectDriver, kimi_platform_direct_descriptor};
 pub use prepared::{
     KimiPlatformPreparationInput, KimiPlatformPreparedIntegration, prepare_kimi_platform_direct,

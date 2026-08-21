@@ -16,6 +16,12 @@ annotated Git tags from the canonical repository.
   Compatible-extension: selected mapped flags unchanged; `types.ts` and
   `systemController.ts` byte-identical; `config.ts` changed only unmapped
   `--session-id` occupancy. Research 173, g04.026.
+- Raised qualified Ollama attached ceiling from `0.32.14` to official
+  GitHub `ollama/ollama` `v0.32.15` on the `ollama.runtime` axis.
+  Compatible-extension: `api/types.go` byte-identical; selected native
+  structs and routes unchanged; `routes.go` changed only unselected
+  scheduler cache and parser-error cancel. Exclusions `0.32.2` and
+  `0.32.10` stay. Research 174, g04.027.
 
 ## [0.3.3] - 2026-08-19
 

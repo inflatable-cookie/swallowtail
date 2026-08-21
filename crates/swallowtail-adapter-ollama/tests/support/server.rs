@@ -215,7 +215,7 @@ fn respond(
                 VersionFixture::DriftAfterPreparation if request_index == 0 => VERSION.to_owned(),
                 VersionFixture::DriftAfterPreparation => VERSION.replace("0.30.0", "0.32.1"),
                 VersionFixture::Excluded => VERSION.replace("0.30.0", "0.32.2"),
-                VersionFixture::Newer => VERSION.replace("0.30.0", "0.32.15"),
+                VersionFixture::Newer => VERSION.replace("0.30.0", "0.32.16"),
             };
             respond_with(stream, 200, "application/json", &body);
         }
@@ -248,16 +248,13 @@ fn respond(
                         INTERACTIVE_TURN_2
                     },
                 ),
-                StreamFixture::InteractiveFailureThenSuccess => respond_with(
-                    stream,
-                    200,
-                    "application/x-ndjson",
-                    match attempt {
+                StreamFixture::InteractiveFailureThenSuccess => {
+                    respond_with(stream, 200, "application/x-ndjson", match attempt {
                         0 => INTERACTIVE_TURN_1,
                         1 => INTERACTIVE_ERROR,
                         _ => INTERACTIVE_TURN_2,
-                    },
-                ),
+                    })
+                }
             }
         }
         _ => respond_with(

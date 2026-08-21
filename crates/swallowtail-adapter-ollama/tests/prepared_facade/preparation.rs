@@ -19,7 +19,7 @@ fn exact_stable_newer_is_visible_while_known_exclusion_stays_closed() {
     else {
         panic!("newer stable Ollama must remain visibly unverified");
     };
-    assert_eq!(assessment.version().as_str(), "0.32.15");
+    assert_eq!(assessment.version().as_str(), "0.32.16");
     assert_eq!(
         prepared
             .instance()
@@ -28,7 +28,7 @@ fn exact_stable_newer_is_visible_while_known_exclusion_stays_closed() {
             .unwrap()
             .version()
             .as_str(),
-        "0.32.15"
+        "0.32.16"
     );
     let inventory = prepared
         .prepare_inventory(inventory_input("newer-inventory"))

@@ -39,9 +39,10 @@ and selection policy.
 - [g04.024 Hosted API-Key Kimi Platform Chat](024-hosted-api-key-kimi-platform-chat.md) — planned after 023; implementation cards not compiled
 - [g04.025 Codex 0.149.0 Useful Newer](025-codex-0-149-0-useful-newer.md) — standing currentness, completed
 - [g04.026 Qwen Headless 0.21.15 Useful Newer](026-qwen-headless-0-21-15-useful-newer.md) — standing currentness, completed
+- [g04.027 Ollama 0.32.15 Useful Newer](027-ollama-0-32-15-useful-newer.md) — standing currentness, completed
 
 Do not roll over: 22 numbered completed roadmaps, 023 complete on the
-worker branch, 024 named, 025-026 standing currentness completed, target
+worker branch, 024 named, 025-027 standing currentness completed, target
 30-50. Hosted OAuth stays parked.
 
 ## Current Checkpoint
@@ -52,6 +53,7 @@ worker branch, 024 named, 025-026 standing currentness completed, target
 - g04.024 is named behind 023. Do not start it until the worker PR is merged.
 - g04.025 standing currentness complete. PR 19 is on `main` at `25fc3e35`
 - g04.026 standing currentness complete: Qwen 0.21.15 qualified
+- g04.027 standing currentness complete: Ollama 0.32.15 qualified
 - Hosted OAuth is parked. Contract 029 currentness is standing
 - Generation stays active. Rollover waits for 30-50 roadmaps
 - `v0.3.3` remains `51d18620`
@@ -84,3 +86,4 @@ worker branch, 024 named, 025-026 standing currentness completed, target
 - [024 Hosted API-Key Kimi Platform Chat](./024-hosted-api-key-kimi-platform-chat.md) — planned, named by g04.022
 - [025 Codex 0.149.0 Useful Newer](./025-codex-0-149-0-useful-newer.md) — completed (standing currentness)
 - [026 Qwen Headless 0.21.15 Useful Newer](./026-qwen-headless-0-21-15-useful-newer.md) — completed (standing currentness)
+- [027 Ollama 0.32.15 Useful Newer](./027-ollama-0-32-15-useful-newer.md) — completed (standing currentness)

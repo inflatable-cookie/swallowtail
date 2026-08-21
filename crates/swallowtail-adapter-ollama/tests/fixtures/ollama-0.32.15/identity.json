@@ -1,0 +1,49 @@
+{
+  "axis": "ollama.runtime",
+  "observed_at": "2026-08-21",
+  "github_repo": "ollama/ollama",
+  "not_ollama_cloud": true,
+  "host": {
+    "not_installed": true,
+    "note": "Host install was not present; observed official GitHub tag and selected source only"
+  },
+  "official": {
+    "version": "0.32.15",
+    "source": "official-github-tag",
+    "published_at": "2026-08-19T17:25:16Z",
+    "prerelease": false,
+    "github_tag": "v0.32.15",
+    "github_commit": "b7871fc0d1d82fe109536efa3e0e8e411c766c75",
+    "github_tree": "3af3821938feefb82726c5cf6efbd51d0eacc433"
+  },
+  "research_159_host": "0.32.14",
+  "research_159_github_latest": "0.32.14",
+  "published_stables_from_previous_ceiling": ["0.32.15"],
+  "unpublished_0_32_16": true,
+  "github_prerelease_plain_versions": ["0.32.2", "0.32.10"],
+  "frozen_corpus_ceiling": "0.32.14",
+  "claim_at_observation": {
+    "baseline": "0.14.0",
+    "latest_qualified": "0.32.14",
+    "behavior_revision": "ollama.native-text-v1",
+    "posture": "allow_unverified",
+    "excluded": ["0.32.2", "0.32.10"],
+    "classification_of_0_32_14": "qualified_maintained",
+    "classification_of_0_32_15": "unverified_newer"
+  },
+  "identity_decision": {
+    "shape": "compatible-extension",
+    "reuse_behavior": "ollama.native-text-v1",
+    "raise_latest_qualified_to": "0.32.15",
+    "keep_baseline": "0.14.0",
+    "keep_exclusion_0_32_2": true,
+    "keep_exclusion_0_32_10": true,
+    "new_public_operation": false,
+    "flatten_to_cloud_or_generate": false,
+    "flatten_to_llama_cpp": false,
+    "provider_prompt_sent": false,
+    "attached_server_started": false,
+    "host_install_changed": false,
+    "official_app_archive_downloaded": false
+  }
+}

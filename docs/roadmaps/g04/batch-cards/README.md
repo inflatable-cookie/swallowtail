@@ -14,6 +14,8 @@ Hosted OAuth stays parked.
 
 ## Completed
 
+- [075-ollama-0-32-15-claim.md](./075-ollama-0-32-15-claim.md)
+- [074-ollama-0-32-15-identity.md](./074-ollama-0-32-15-identity.md)
 - [073-qwen-headless-0-21-15-claim.md](./073-qwen-headless-0-21-15-claim.md)
 - [072-qwen-headless-0-21-15-identity.md](./072-qwen-headless-0-21-15-identity.md)
 - [069-codex-0-149-0-claim.md](./069-codex-0-149-0-claim.md)

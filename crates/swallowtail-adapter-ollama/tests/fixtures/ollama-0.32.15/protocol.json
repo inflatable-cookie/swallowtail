@@ -1,0 +1,41 @@
+{
+  "selected_routes": [
+    "GET /api/version",
+    "GET /api/tags",
+    "GET /api/ps",
+    "POST /api/show",
+    "POST /api/chat"
+  ],
+  "selected_structs_identical_0_32_14_through_0_32_15": true,
+  "types_go_byte_identical_to_0_32_14": true,
+  "chat_request_sha256": "d7035a0da458f5ab354f771d2ee3eb9239f1ff40dae6700bdcd8e9806b18ae14",
+  "chat_response_sha256": "f9deac910407655aa7ecbded4820f8de5d404bb2f49e261b1a64b7db56f2b936",
+  "message_sha256": "bfc165a63e64996e5b843072e8be965a9798e214dfc1c88cc5974bc802d0c9f9",
+  "list_response_sha256": "3bd9321282acf137960e6480b523b2575f585ee0f7ea928301def363b426c6b9",
+  "process_response_sha256": "caaa50bff293aefb1d2702bf411dab49fe933225ef76a5f5591bdc8ffae1072d",
+  "show_request_sha256": "698cdcb3a9942de50bf9be2e65525e945a9ee3613d8309d2c3435b1db207852e",
+  "show_response_sha256": "eeba5938770c1ff3181e1f183a3ef9217dd44635688fd29b0940ea2ce68d7a71",
+  "options_sha256": "c615649cf6298722a03719706c4533308fa8a86e944bfeb936aad4c919ad02b7",
+  "types_go_file_hashes": {
+    "v0.32.14": "032fe8c044429afd42fd9f898c6bbd6efc5977ffeeec4dd3c5a04035e9c3d0b1",
+    "v0.32.15": "032fe8c044429afd42fd9f898c6bbd6efc5977ffeeec4dd3c5a04035e9c3d0b1"
+  },
+  "routes_go_file_hashes": {
+    "v0.32.14": "fc6a8a980168973dd1aec86aafde7ab8bbc12f56aa2f71e04a7773dc95916c42",
+    "v0.32.15": "c2ebab461d0f258340152e9207d35a4d72113a57c46043121d5b6798d8c770fa"
+  },
+  "whole_file_routes_delta": "unselected",
+  "routes_delta": "scheduleRunner model-cache plus chat/generate parser-error cancel; selected registrations unchanged",
+  "new_public_selected_operation": false,
+  "decoder_corpus": "ollama-native-v0.14.0-v0.32.1",
+  "unused_deltas": [
+    "desktop-onboarding-flow",
+    "resolved-model-metadata-cache",
+    "chat-generate-parser-error-cancel",
+    "qwen-3.8-system-message-normalize",
+    "mlx-llamacpp-dependency-updates"
+  ],
+  "provider_prompt_sent": false,
+  "attached_server_started": false,
+  "host_install_changed": false
+}

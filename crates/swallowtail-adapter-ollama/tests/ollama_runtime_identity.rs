@@ -9,6 +9,8 @@ use swallowtail_core::{
 
 const IDENTITY: &str = include_str!("fixtures/ollama-0.32.14/identity.json");
 const PROTOCOL: &str = include_str!("fixtures/ollama-0.32.14/protocol.json");
+const IDENTITY_0_32_15: &str = include_str!("fixtures/ollama-0.32.15/identity.json");
+const PROTOCOL_0_32_15: &str = include_str!("fixtures/ollama-0.32.15/protocol.json");
 
 #[test]
 fn identity_and_claim_qualify_0_32_14_as_compatible_extension() {
@@ -83,14 +85,16 @@ fn identity_and_claim_qualify_0_32_14_as_compatible_extension() {
     assert_eq!(protocol["attached_server_started"], false);
 
     assert_eq!(OLLAMA_BASELINE_VERSION, "0.14.0");
-    assert_eq!(OLLAMA_LATEST_QUALIFIED_VERSION, "0.32.14");
+    assert_eq!(OLLAMA_LATEST_QUALIFIED_VERSION, "0.32.15");
     assert_eq!(
         identity["claim_at_observation"]["latest_qualified"],
         "0.32.1"
     );
 
     let claim = ollama_runtime_claim();
-    for version in ["0.14.0", "0.32.1", "0.32.3", "0.32.9", "0.32.11", "0.32.14"] {
+    for version in [
+        "0.14.0", "0.32.1", "0.32.3", "0.32.9", "0.32.11", "0.32.14", "0.32.15",
+    ] {
         assert!(matches!(
             claim.assess(&version_value(version)),
             InterfaceCompatibilityAssessment::Qualified(matched)
@@ -102,11 +106,126 @@ fn identity_and_claim_qualify_0_32_14_as_compatible_extension() {
         assert!(!claim.permits(&version_value(version)));
     }
     assert!(matches!(
-        claim.assess(&version_value("0.32.15")),
+        claim.assess(&version_value("0.32.16")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert_eq!(
         ollama_runtime_binding("0.32.14")
+            .expect("version binds")
+            .axis()
+            .as_str(),
+        "ollama.runtime"
+    );
+}
+
+#[test]
+fn identity_and_claim_qualify_0_32_15_as_compatible_extension() {
+    let identity: Value = serde_json::from_str(IDENTITY_0_32_15)
+        .expect("Ollama 0.32.15 identity corpus is valid JSON");
+    let protocol: Value = serde_json::from_str(PROTOCOL_0_32_15)
+        .expect("Ollama 0.32.15 protocol corpus is valid JSON");
+
+    assert_eq!(identity["axis"], "ollama.runtime");
+    assert_eq!(identity["not_ollama_cloud"], true);
+    assert_eq!(identity["host"]["not_installed"], true);
+    assert_eq!(identity["official"]["version"], "0.32.15");
+    assert_eq!(identity["official"]["prerelease"], false);
+    assert_eq!(
+        identity["official"]["github_commit"],
+        "b7871fc0d1d82fe109536efa3e0e8e411c766c75"
+    );
+    assert_eq!(
+        identity["official"]["github_tree"],
+        "3af3821938feefb82726c5cf6efbd51d0eacc433"
+    );
+    assert_eq!(identity["unpublished_0_32_16"], true);
+    assert_eq!(
+        identity["github_prerelease_plain_versions"],
+        serde_json::json!(["0.32.2", "0.32.10"])
+    );
+    assert_eq!(
+        identity["claim_at_observation"]["latest_qualified"],
+        "0.32.14"
+    );
+
+    let decision = &identity["identity_decision"];
+    assert_eq!(decision["shape"], "compatible-extension");
+    assert_eq!(decision["reuse_behavior"], "ollama.native-text-v1");
+    assert_eq!(decision["raise_latest_qualified_to"], "0.32.15");
+    assert_eq!(decision["keep_baseline"], "0.14.0");
+    assert_eq!(decision["keep_exclusion_0_32_2"], true);
+    assert_eq!(decision["keep_exclusion_0_32_10"], true);
+    assert_eq!(decision["new_public_operation"], false);
+    assert_eq!(decision["flatten_to_cloud_or_generate"], false);
+    assert_eq!(decision["flatten_to_llama_cpp"], false);
+    assert_eq!(decision["provider_prompt_sent"], false);
+    assert_eq!(decision["attached_server_started"], false);
+    assert_eq!(decision["host_install_changed"], false);
+    assert_eq!(decision["official_app_archive_downloaded"], false);
+
+    let routes = protocol["selected_routes"]
+        .as_array()
+        .expect("selected routes are an array");
+    for required in [
+        "GET /api/version",
+        "GET /api/tags",
+        "GET /api/ps",
+        "POST /api/show",
+        "POST /api/chat",
+    ] {
+        assert!(
+            routes.iter().any(|route| route == required),
+            "missing selected route {required}"
+        );
+    }
+    assert_eq!(
+        protocol["selected_structs_identical_0_32_14_through_0_32_15"],
+        true
+    );
+    assert_eq!(protocol["types_go_byte_identical_to_0_32_14"], true);
+    assert_eq!(
+        protocol["chat_request_sha256"],
+        "d7035a0da458f5ab354f771d2ee3eb9239f1ff40dae6700bdcd8e9806b18ae14"
+    );
+    assert_eq!(protocol["new_public_selected_operation"], false);
+    assert_eq!(protocol["decoder_corpus"], "ollama-native-v0.14.0-v0.32.1");
+    let unused = protocol["unused_deltas"]
+        .as_array()
+        .expect("unused deltas are an array");
+    for extra in [
+        "desktop-onboarding-flow",
+        "resolved-model-metadata-cache",
+        "chat-generate-parser-error-cancel",
+        "qwen-3.8-system-message-normalize",
+        "mlx-llamacpp-dependency-updates",
+    ] {
+        assert!(
+            unused.iter().any(|value| value == extra),
+            "missing unused delta {extra}"
+        );
+    }
+    assert_eq!(protocol["provider_prompt_sent"], false);
+    assert_eq!(protocol["attached_server_started"], false);
+
+    assert_eq!(OLLAMA_LATEST_QUALIFIED_VERSION, "0.32.15");
+    let claim = ollama_runtime_claim();
+    assert!(matches!(
+        claim.assess(&version_value("0.32.14")),
+        InterfaceCompatibilityAssessment::Qualified(matched)
+            if matched.support_status() == InterfaceSupportStatus::Maintained
+    ));
+    assert!(matches!(
+        claim.assess(&version_value("0.32.15")),
+        InterfaceCompatibilityAssessment::Qualified(matched)
+            if matched.support_status() == InterfaceSupportStatus::Maintained
+                && matched.behavior_revision().as_str() == "ollama.native-text-v1"
+    ));
+    assert!(matches!(
+        claim.assess(&version_value("0.32.16")),
+        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+    ));
+    assert_eq!(
+        ollama_runtime_binding("0.32.15")
             .expect("version binds")
             .axis()
             .as_str(),

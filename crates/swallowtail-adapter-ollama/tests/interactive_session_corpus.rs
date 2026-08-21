@@ -41,7 +41,7 @@ fn interactive_corpus_covers_the_maintained_window_and_exclusion() {
         BTreeSet::from(["0.14.0", "0.18.0", "0.30.0", "0.32.1"])
     );
     assert!(points.contains(OLLAMA_BASELINE_VERSION));
-    assert_eq!(OLLAMA_LATEST_QUALIFIED_VERSION, "0.32.14");
+    assert_eq!(OLLAMA_LATEST_QUALIFIED_VERSION, "0.32.15");
     assert_eq!(
         corpus["excluded_versions"],
         serde_json::json!(["0.32.2", "0.32.10"])

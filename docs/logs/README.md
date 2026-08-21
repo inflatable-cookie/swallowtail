@@ -24,6 +24,8 @@ then conformance closeout.
 ## Entries
 
 - [2026-08-21 g04.023 047 Presentation Metadata](./2026-08-21-g04-023-047-presentation-metadata.md)
+- [2026-08-21 Ollama 0.32.15 Claim](./2026-08-21-ollama-0-32-15-claim.md)
+- [2026-08-21 Ollama 0.32.15 Identity](./2026-08-21-ollama-0-32-15-identity.md)
 - [2026-08-21 Qwen Headless 0.21.15 Claim](./2026-08-21-qwen-headless-0-21-15-claim.md)
 - [2026-08-21 Qwen Headless 0.21.15 Identity](./2026-08-21-qwen-headless-0-21-15-identity.md)
 - [2026-08-21 g04.025 Codex 0.149.0 Useful Newer Merged](./2026-08-21-g04-025-codex-0-149-0-merged.md)

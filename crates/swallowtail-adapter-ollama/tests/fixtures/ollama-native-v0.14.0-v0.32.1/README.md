@@ -2,7 +2,7 @@
 
 Offline decoder specimen for the attach-only native API subset first
 qualified from `v0.14.0` through `v0.32.1`. Production latest-qualified is
-now `0.32.14` on the same `ollama.native-text-v1` behavior. Directory name
+now `0.32.15` on the same `ollama.native-text-v1` behavior. Directory name
 stays frozen.
 
 Tagged source evidence:

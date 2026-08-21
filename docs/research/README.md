@@ -96,6 +96,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [158 Watchlist And Registry-Only Disposition](./158-watchlist-and-registry-only-disposition.md)
 - [172 Codex 0.149.0 Identity](./172-codex-0-149-0-identity.md)
 - [167 Antigravity 1.1.15 Identity](./167-antigravity-1-1-15-identity.md)
+- [174 Ollama 0.32.15 Identity](./174-ollama-0-32-15-identity.md)
 - [166 Oh My Pi 17.3.8 Identity](./166-oh-my-pi-17-3-8-identity.md)
 - [165 Kimi Code 0.37.2 Identity](./165-kimi-code-0-37-2-identity.md)
 - [173 Qwen Headless 0.21.15 Identity](./173-qwen-headless-0-21-15-identity.md)

@@ -9,7 +9,7 @@ use swallowtail_core::{
 /// Oldest Ollama runtime release qualified for the native text facade.
 pub const OLLAMA_BASELINE_VERSION: &str = "0.14.0";
 /// Newest Ollama runtime release qualified for the native text facade.
-pub const OLLAMA_LATEST_QUALIFIED_VERSION: &str = "0.32.14";
+pub const OLLAMA_LATEST_QUALIFIED_VERSION: &str = "0.32.15";
 pub(crate) const OLLAMA_RUNTIME_AXIS: &str = "ollama.runtime";
 pub(crate) const OLLAMA_DRIVER_ID: &str = "swallowtail.ollama.native-attached";
 /// Exact text-only native API facade selected by this adapter.
@@ -83,32 +83,23 @@ pub fn ollama_native_descriptor() -> DriverDescriptor {
         OperationShape::StructuredRun,
         OperationShape::InteractiveSession,
     ])
-    .with_required_host_services(
-        DriverRole::ModelCatalog,
-        [
-            HostServiceKind::BlockingWork,
-            HostServiceKind::Time,
-            HostServiceKind::Network,
-        ],
-    )
-    .with_required_host_services(
-        DriverRole::InteractiveSession,
-        [
-            HostServiceKind::Task,
-            HostServiceKind::BlockingWork,
-            HostServiceKind::Time,
-            HostServiceKind::Network,
-        ],
-    )
-    .with_required_host_services(
-        DriverRole::StructuredRun,
-        [
-            HostServiceKind::Task,
-            HostServiceKind::BlockingWork,
-            HostServiceKind::Time,
-            HostServiceKind::Network,
-        ],
-    )
+    .with_required_host_services(DriverRole::ModelCatalog, [
+        HostServiceKind::BlockingWork,
+        HostServiceKind::Time,
+        HostServiceKind::Network,
+    ])
+    .with_required_host_services(DriverRole::InteractiveSession, [
+        HostServiceKind::Task,
+        HostServiceKind::BlockingWork,
+        HostServiceKind::Time,
+        HostServiceKind::Network,
+    ])
+    .with_required_host_services(DriverRole::StructuredRun, [
+        HostServiceKind::Task,
+        HostServiceKind::BlockingWork,
+        HostServiceKind::Time,
+        HostServiceKind::Network,
+    ])
     .with_interface_compatibility(ollama_runtime_claim())
 }
 
@@ -123,7 +114,9 @@ mod tests {
         assert!(descriptor.supports_role(DriverRole::ModelCatalog));
         assert!(descriptor.supports_role(DriverRole::StructuredRun));
         assert!(descriptor.supports_role(DriverRole::InteractiveSession));
-        for version in ["0.14.0", "0.18.0", "0.30.0", "0.32.1", "0.32.9", "0.32.14"] {
+        for version in [
+            "0.14.0", "0.18.0", "0.30.0", "0.32.1", "0.32.9", "0.32.14", "0.32.15",
+        ] {
             assert_eq!(
                 descriptor
                     .classify_interface_version(
@@ -141,7 +134,7 @@ mod tests {
         }
         assert!(matches!(
             descriptor.assess_interface_version(
-                &ollama_runtime_binding("0.32.15").expect("fixture Ollama version is valid"),
+                &ollama_runtime_binding("0.32.16").expect("fixture Ollama version is valid"),
             ),
             swallowtail_core::InterfaceCompatibilityAssessment::UnverifiedNewer(_)
         ));
@@ -151,13 +144,14 @@ mod tests {
     fn reusable_testkit_asserts_the_same_closed_window() {
         let case = swallowtail_testkit::ClosedSemanticWindowCase::new(
             InterfaceVersion::new("0.14.0").unwrap(),
-            InterfaceVersion::new("0.32.14").unwrap(),
+            InterfaceVersion::new("0.32.15").unwrap(),
         )
         .with_accepted([
             InterfaceVersion::new("0.18.0").unwrap(),
             InterfaceVersion::new("0.30.0").unwrap(),
             InterfaceVersion::new("0.32.1").unwrap(),
             InterfaceVersion::new("0.32.9").unwrap(),
+            InterfaceVersion::new("0.32.14").unwrap(),
         ])
         .with_rejected([
             InterfaceVersion::new("0.13.5").unwrap(),
@@ -171,7 +165,7 @@ mod tests {
         );
         swallowtail_testkit::assert_unverified_newer_execution(
             &ollama_runtime_claim(),
-            &InterfaceVersion::new("0.32.15").unwrap(),
+            &InterfaceVersion::new("0.32.16").unwrap(),
         );
     }
 }

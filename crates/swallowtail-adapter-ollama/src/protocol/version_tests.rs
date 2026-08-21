@@ -13,7 +13,7 @@ fn exact_version_codec_separates_qualified_unverified_and_incompatible_points() 
     }
     let newer = parse_version(&response(200, fixture_bytes!("version-newer.json")))
         .expect("stable newer version is preserved for an unverified attempt");
-    assert_eq!(newer.version().as_str(), "0.32.15");
+    assert_eq!(newer.version().as_str(), "0.32.16");
     assert!(matches!(
         crate::selection::ollama_runtime_claim().assess(newer.version()),
         swallowtail_core::InterfaceCompatibilityAssessment::UnverifiedNewer(_)

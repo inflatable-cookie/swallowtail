@@ -8,7 +8,8 @@
     "0.145.0",
     "0.146.0",
     "0.147.0",
-    "0.148.0"
+    "0.148.0",
+    "0.149.0"
   ],
   "required_argv": [
     "exec",
@@ -157,6 +158,20 @@
       "classification": "candidate"
     },
     {
+      "version": "0.149.0",
+      "tag_commit": "758ef40f50c1a458425c7cfbf1eb12cbc07af0b0",
+      "npm_integrity": "sha512-i4dryj2Y1j+00Mb5n+0n71EYnTK9/KDc2cdFo/dXD0d1oTog2bhUssKDEIOnKmnEf51P0Z/HJTWvTKw/UHyOvQ==",
+      "npm_shasum": "2e38d3859f52f288a86596d0c22366a10154437b",
+      "help_sha256": "23e8b383723998a8ae8427c449ebe77a88ac82b04b4f8a18aad62925b9d3d0ee",
+      "cli_source_sha256": null,
+      "events_source_sha256": null,
+      "json": true,
+      "ephemeral": true,
+      "ignore_user_config": true,
+      "ignore_rules": true,
+      "classification": "candidate"
+    },
+    {
       "version": "0.146.0-alpha.4",
       "tag_commit": "34a3d19b2fa18fafee7236c834f8b63c584c1986",
       "npm_integrity": "sha512-vjaXlVT2yfl0RWigu7dlU8imc29EBVm6y5heN0AWDeAHl3J7r1Oo1XdLk+ZU1gqrUPaeujYo4BLLtZjVGwN8wQ==",
@@ -173,7 +188,7 @@
   ],
   "synthetic_rejections": ["not-a-version"],
   "unverified_newer": {
-    "version": "0.148.1",
+    "version": "0.149.1",
     "evidence": "synthetic-later-stable-classification",
     "execution": "permitted-with-explicit-unverified-status",
     "guaranteed": false

@@ -94,6 +94,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [156 Kiro ACP 2.18.1 Identity](./156-kiro-acp-2-18-1-identity.md)
 - [157 Deep Agents ACP 0.1.25 Identity](./157-deepagents-acp-0-1-25-identity.md)
 - [158 Watchlist And Registry-Only Disposition](./158-watchlist-and-registry-only-disposition.md)
+- [172 Codex 0.149.0 Identity](./172-codex-0-149-0-identity.md)
 - [167 Antigravity 1.1.15 Identity](./167-antigravity-1-1-15-identity.md)
 - [166 Oh My Pi 17.3.8 Identity](./166-oh-my-pi-17-3-8-identity.md)
 - [165 Kimi Code 0.37.2 Identity](./165-kimi-code-0-37-2-identity.md)

@@ -106,13 +106,13 @@ fn lifecycle_preparation_stops_unsupported_and_unverified_routes() {
 
     let newer = prepared(
         CodexPreparedDriver::AppServer,
-        "0.148.1",
+        "0.149.1",
         &RecordingHostServices::default(),
         false,
     );
     let input = CodexSessionManagementInput::new(
         RequestId::new("newer-archive").unwrap(),
-        lifecycle_binding(&newer, "0.148.1"),
+        lifecycle_binding(&newer, "0.149.1"),
     );
     assert!(newer.prepare_archive_session(input.clone()).is_err());
     assert!(

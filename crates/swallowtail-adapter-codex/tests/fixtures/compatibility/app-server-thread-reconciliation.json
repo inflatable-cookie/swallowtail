@@ -1,7 +1,7 @@
 {
   "schema": "swallowtail.codex.app-server-thread-reconciliation.v1",
   "minimum": "0.105.0",
-  "latest_qualified": "0.148.0",
+  "latest_qualified": "0.149.0",
   "request": {
     "method": "thread/read",
     "params": {"threadId":"<exact-bound-thread>","includeTurns":true}

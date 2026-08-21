@@ -10,7 +10,7 @@ fn lifecycle_corpus_freezes_every_method_and_behavior_boundary() {
     assert_eq!(corpus["axis"], "codex.cli");
     assert_eq!(corpus["facade"], "codex-app-server-v2");
     assert_eq!(corpus["claim"], "codex.app-server.lifecycle-window-1");
-    assert_eq!(corpus["qualified_range"], "0.80.0..=0.148.0");
+    assert_eq!(corpus["qualified_range"], "0.80.0..=0.149.0");
 
     let boundaries = &corpus["method_boundaries"];
     assert_eq!(boundaries["thread/archive"]["present"], "0.80.0");
@@ -73,7 +73,7 @@ fn lifecycle_segments_keep_capabilities_independent() {
     );
     assert_segment(
         &segments[6],
-        "0.140.0..=0.148.0",
+        "0.140.0..=0.149.0",
         &["archive", "delete", "restore"],
         "best-effort",
     );
@@ -127,7 +127,7 @@ fn release_evidence_covers_existing_and_lifecycle_milestones() {
     let expected = [
         "0.80.0", "0.81.0", "0.84.0", "0.91.0", "0.92.0", "0.94.0", "0.99.0", "0.100.0", "0.103.0",
         "0.104.0", "0.107.0", "0.110.0", "0.122.0", "0.123.0", "0.130.0", "0.131.0", "0.139.0",
-        "0.140.0", "0.144.6", "0.145.0", "0.146.0", "0.147.0", "0.148.0",
+        "0.140.0", "0.144.6", "0.145.0", "0.146.0", "0.147.0", "0.148.0", "0.149.0",
     ];
     assert_eq!(
         releases
@@ -207,7 +207,7 @@ fn lifecycle_exclusions_preserve_existing_app_server_window() {
         "source-tags-without-published-npm-releases"
     );
     assert_eq!(exclusions["0.146.0-alpha.4"], "prerelease");
-    assert_eq!(corpus["unverified_newer"]["example"], "0.148.1");
+    assert_eq!(corpus["unverified_newer"]["example"], "0.149.1");
     assert_eq!(
         corpus["unverified_newer"]["execution"],
         "permitted-with-explicit-unverified-status"

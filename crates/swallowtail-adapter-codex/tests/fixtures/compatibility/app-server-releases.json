@@ -10,7 +10,8 @@
     "0.145.0",
     "0.146.0",
     "0.147.0",
-    "0.148.0"
+    "0.148.0",
+    "0.149.0"
   ],
   "stable_methods": [
     "initialize",
@@ -63,7 +64,7 @@
     }
   ],
   "unverified_newer": {
-    "version": "0.148.1",
+    "version": "0.149.1",
     "evidence": "synthetic-later-stable-classification",
     "execution": "permitted-with-explicit-unverified-status",
     "guaranteed": false
@@ -180,6 +181,19 @@
       "npm_shasum": "069f15c77cf3b26c62c129bc6ca1ff269a226c09",
       "stable_bundle_sha256": "e5a20eb7211c21540a2d4e0106479285e13778e9c53d5837cfc735a71316a51e",
       "experimental_bundle_sha256": "819fe7b47288cc74da5190743390c8d1faef403f5401a1868b306dac195b1944",
+      "model_list_schema_sha256": "de29a536c00a5b8f46f34dba417dabd93365305571a8ed200e33bea85db68b5a",
+      "experimental_thread_fields": ["allowProviderModelFallback", "dynamicTools", "runtimeWorkspaceRoots"],
+      "runtime_workspace_roots": true,
+      "allow_provider_model_fallback": true,
+      "behavior_revision": "codex.app-server.v2.workspace-roots"
+    },
+    {
+      "version": "0.149.0",
+      "tag_commit": "758ef40f50c1a458425c7cfbf1eb12cbc07af0b0",
+      "npm_integrity": "sha512-i4dryj2Y1j+00Mb5n+0n71EYnTK9/KDc2cdFo/dXD0d1oTog2bhUssKDEIOnKmnEf51P0Z/HJTWvTKw/UHyOvQ==",
+      "npm_shasum": "2e38d3859f52f288a86596d0c22366a10154437b",
+      "stable_bundle_sha256": "9b3de71a5a2ffc980b792a18aa8f8dec3f85f48829560222a0264fe494b679a9",
+      "experimental_bundle_sha256": "02a4c63a638fdae4a5f6c3ad32a41a377b642c66f3abc84f6fc47c7f3d6074df",
       "model_list_schema_sha256": "de29a536c00a5b8f46f34dba417dabd93365305571a8ed200e33bea85db68b5a",
       "experimental_thread_fields": ["allowProviderModelFallback", "dynamicTools", "runtimeWorkspaceRoots"],
       "runtime_workspace_roots": true,

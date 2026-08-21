@@ -2,7 +2,7 @@
   "axis": "codex.cli",
   "facade": "codex-app-server-v2",
   "claim": "codex.app-server.lifecycle-window-1",
-  "qualified_range": "0.80.0..=0.148.0",
+  "qualified_range": "0.80.0..=0.149.0",
   "evidence_checked_at": "2026-07-30",
   "upstream_repository": "https://github.com/openai/codex",
   "schema_generation_command": "cargo run --manifest-path codex-rs/Cargo.toml -p codex-app-server-protocol --bin export -- --out <output-dir>",
@@ -65,7 +65,7 @@
       "archive_descendants": "best-effort"
     },
     {
-      "range": "0.140.0..=0.148.0",
+      "range": "0.140.0..=0.149.0",
       "behavior_revision": "codex.app-server.lifecycle.v1.strict-descendant-hard-delete",
       "support": "maintained",
       "capabilities": ["archive", "restore", "delete"],
@@ -115,7 +115,7 @@
     {"range": "0.146.0-alpha.4", "reason": "prerelease"}
   ],
   "unverified_newer": {
-    "example": "0.148.1",
+    "example": "0.149.1",
     "execution": "permitted-with-explicit-unverified-status",
     "mapped_behavior_revision": "codex.app-server.lifecycle.v1.strict-descendant-hard-delete",
     "guaranteed": false
@@ -258,6 +258,12 @@
       "tag_commit": "3ba0f711642a888aec92a611a3f3b2211157ff89",
       "schema_authority": "upstream-published",
       "aggregate_schema_sha256": ["706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a", "655aa2c690be5aebd7365cef3fd8bcb2cfea7b8b4c48d157051065081e0eb558", "6c5ac0ec799aba669d543e7ad3d8a7a702f997610e41cb9875960a30bf6bdbdc", "e5ae9078cddac333262ae392fe25558d6054b77e4beb00784b77cf606849d063"]
+    },
+    {
+      "version": "0.149.0", "published_at": "2026-08-20T21:09:05.284Z",
+      "tag_commit": "758ef40f50c1a458425c7cfbf1eb12cbc07af0b0",
+      "schema_authority": "upstream-published",
+      "aggregate_schema_sha256": ["706cf248d75027c84a3c63348d0ed507182e8eba40069dd17541793de029145a", "1024db9d23b156e04b020a5d101982841dab158b84ecc9ecec399ab119ac9a1f", "be5e648ebf969cba14befd535a20463befb0ea99ae03a923471547b7f473161e", "e5ae9078cddac333262ae392fe25558d6054b77e4beb00784b77cf606849d063"]
     }
   ],
   "current_main_observation": {

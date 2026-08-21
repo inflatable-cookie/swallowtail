@@ -1,0 +1,57 @@
+{
+  "exec_help_source": "official-extracted-0.149.0-linux-x64",
+  "exec_help_sha256": "23e8b383723998a8ae8427c449ebe77a88ac82b04b4f8a18aad62925b9d3d0ee",
+  "note_exec_help": "Identical to 0.148.0",
+  "exec_selected_flags_present": [
+    "exec",
+    "--json",
+    "--ephemeral",
+    "--ignore-user-config",
+    "--ignore-rules",
+    "--skip-git-repo-check",
+    "--sandbox",
+    "read-only"
+  ],
+  "app_server_selected_flags_present": [
+    "app-server",
+    "--listen",
+    "stdio://"
+  ],
+  "schema": {
+    "generator": "codex app-server generate-json-schema --out",
+    "v2_bundle_sha256": "9b3de71a5a2ffc980b792a18aa8f8dec3f85f48829560222a0264fe494b679a9",
+    "experimental_bundle_sha256": "02a4c63a638fdae4a5f6c3ad32a41a377b642c66f3abc84f6fc47c7f3d6074df",
+    "model_list_params_sha256": "de29a536c00a5b8f46f34dba417dabd93365305571a8ed200e33bea85db68b5a",
+    "note_schema_bundles": "Bundle hashes differ from 0.148.0 but ModelListParams is identical",
+    "methods_present": [
+      "initialize",
+      "model/list",
+      "thread/list",
+      "thread/read",
+      "thread/start",
+      "thread/resume",
+      "thread/archive",
+      "thread/delete",
+      "turn/start",
+      "turn/interrupt",
+      "item/started",
+      "item/completed",
+      "item/plan/delta",
+      "subAgentActivity",
+      "collabAgentToolCall"
+    ]
+  },
+  "decoder_corpus": "existing-codex-jsonl-and-app-server-v2",
+  "note_corpus": "Mapped protocol unchanged; no decoder update needed",
+  "unused_deltas": [
+    "exec fork",
+    "top-level fork",
+    "thread/fork",
+    "amazon-bedrock-builtin-provider",
+    "tui /export",
+    "async-hooks"
+  ],
+  "provider_prompt_sent": false,
+  "live_session": false,
+  "host_install_changed": false
+}

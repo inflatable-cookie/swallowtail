@@ -23,6 +23,8 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-08-21 Codex 0.149.0 Claim](./2026-08-21-codex-0-149-0-claim.md)
+- [2026-08-21 Codex 0.149.0 Identity](./2026-08-21-codex-0-149-0-identity.md)
 - [2026-08-21 g04.023 047 Presentation Metadata Worker Dispatch](./2026-08-21-g04-023-047-presentation-metadata-worker-dispatch.md)
 - [2026-08-21 g04.022 Further Addable Inventory Merged](./2026-08-21-g04-022-further-addable-inventory-merged.md)
 - [2026-08-21 g04.022 Further Addable Inventory](./2026-08-21-g04-022-further-addable-inventory.md)

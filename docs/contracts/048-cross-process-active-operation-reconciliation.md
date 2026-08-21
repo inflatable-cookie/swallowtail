@@ -155,7 +155,7 @@ and route proof; it cannot be inferred from reconciliation support.
 ## Current Production Mappings
 
 `codex.app-server` implements exact-turn and session-scoped reconciliation for
-the qualified thread-catalogue range `0.105.0..=0.148.0`. One read-only
+the qualified thread-catalogue range `0.105.0..=0.149.0`. One read-only
 `thread/read(includeTurns: true)` response must match the exact thread, cwd,
 source, and optional requested turn id. Exact `inProgress`, `completed`,
 `failed`, `interrupted`, and `cancelled` statuses map directly. Absent status

@@ -14,6 +14,8 @@ Hosted OAuth stays parked.
 
 ## Completed
 
+- [069-codex-0-149-0-claim.md](./069-codex-0-149-0-claim.md)
+- [068-codex-0-149-0-identity.md](./068-codex-0-149-0-identity.md)
 - [061-unmarked-addable-overlay-proof.md](./061-unmarked-addable-overlay-proof.md)
 - [064-further-addable-tranche-confirmation.md](./064-further-addable-tranche-confirmation.md)
 - [063-remaining-addable-gap-classification.md](./063-remaining-addable-gap-classification.md)

@@ -5,7 +5,7 @@ fn app_server_corpus_keeps_stable_experimental_and_milestones_separate() {
     assert_eq!(
         strings(&corpus["candidate_versions"]),
         [
-            "0.110.0", "0.120.0", "0.131.0", "0.140.0", "0.144.6", "0.145.0", "0.146.0", "0.147.0", "0.148.0"
+            "0.110.0", "0.120.0", "0.131.0", "0.140.0", "0.144.6", "0.145.0", "0.146.0", "0.147.0", "0.148.0", "0.149.0"
         ]
     );
     let methods = string_set(&corpus["stable_methods"]);
@@ -59,7 +59,7 @@ fn app_server_corpus_keeps_stable_experimental_and_milestones_separate() {
         assert!(fields.contains("dynamicTools"));
         if matches!(
             version,
-            "0.131.0" | "0.140.0" | "0.144.6" | "0.145.0" | "0.146.0" | "0.147.0" | "0.148.0"
+            "0.131.0" | "0.140.0" | "0.144.6" | "0.145.0" | "0.146.0" | "0.147.0" | "0.148.0" | "0.149.0"
         ) {
             assert_eq!(release["runtime_workspace_roots"], true);
             assert!(fields.contains("runtimeWorkspaceRoots"));
@@ -72,7 +72,7 @@ fn app_server_corpus_keeps_stable_experimental_and_milestones_separate() {
             assert!(!fields.contains("runtimeWorkspaceRoots"));
             assert_eq!(release["behavior_revision"], "codex.app-server.v2.base");
         }
-        if matches!(version, "0.144.6" | "0.145.0" | "0.146.0" | "0.147.0" | "0.148.0") {
+        if matches!(version, "0.144.6" | "0.145.0" | "0.146.0" | "0.147.0" | "0.148.0" | "0.149.0") {
             assert_eq!(release["allow_provider_model_fallback"], true);
             assert!(fields.contains("allowProviderModelFallback"));
         } else {

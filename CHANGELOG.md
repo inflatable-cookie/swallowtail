@@ -5,6 +5,13 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
+### Changed
+
+- Raised qualified Codex CLI ceiling from `0.148.0` to `0.149.0` on the
+  `codex.cli` axis (both `codex.exec` and `codex.app-server` routes).
+  Compatible-extension: exec help byte-identical, selected mapped flags
+  unchanged, ModelListParams unchanged. Research 172, g04.025.
+
 ## [0.3.3] - 2026-08-19
 
 ### Added

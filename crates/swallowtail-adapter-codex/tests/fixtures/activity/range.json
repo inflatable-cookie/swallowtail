@@ -1,11 +1,11 @@
 {
   "axis": "codex.cli",
   "facade": "codex-app-server-v2",
-  "qualified_upper": "0.148.0",
+  "qualified_upper": "0.149.0",
   "current_external_release": {
-    "version": "0.148.0",
-    "published_at": "2026-08-18T22:30:14.842Z",
-    "tag_commit": "3ba0f711642a888aec92a611a3f3b2211157ff89",
+    "version": "0.149.0",
+    "published_at": "2026-08-20T21:09:05.284Z",
+    "tag_commit": "758ef40f50c1a458425c7cfbf1eb12cbc07af0b0",
     "classification": "qualified-current",
     "execution": "guaranteed-with-exact-profile"
   },
@@ -73,7 +73,7 @@
     {"range": "0.141.0", "introduced_by": "0.141.0", "tag_commit": "3fb81667d30d9d24297216ea61fbfcc4351b2aa9", "revision": "sleep-unknown-item"},
     {"range": "0.142.0..=0.143.0", "introduced_by": "0.142.0", "tag_commit": "3a76f3ac68c8949d1cac6ea769b6ec7b8953a415", "revision": "mcp-app-context-additive"},
     {"range": "0.144.0..=0.145.0", "introduced_by": "0.144.0", "tag_commit": "767822446c7a594caa19609ca435281a9ec67e0d", "revision": "extension-backed-search-item"},
-    {"range": "0.146.0..=0.148.0", "introduced_by": "0.146.0", "tag_commit": "e363b08c9175ac1cbe5893615dd2cb9ddf95043b", "revision": "plugin-command-action-and-deferred-search-additive"}
+    {"range": "0.146.0..=0.149.0", "introduced_by": "0.146.0", "tag_commit": "e363b08c9175ac1cbe5893615dd2cb9ddf95043b", "revision": "plugin-command-action-and-deferred-search-additive"}
   ],
   "exec_segments": [
     {"range": "0.80.0..=0.81.0", "introduced_by": "0.80.0", "tag_commit": "f0679a6ab2563135e01cc922698cb54921a1719f", "revision": "jsonl-core"},
@@ -82,7 +82,7 @@
     {"range": "0.125.0..=0.131.0", "introduced_by": "0.125.0", "tag_commit": "637f7dd6d737f3961e6bf32fbb3861c4953269c5", "revision": "jsonl-reasoning-usage-additive"},
     {"range": "0.132.0..=0.144.6", "introduced_by": "0.132.0", "tag_commit": "13595c36e218fcbd13df118eeadf00d4eb0e6d31", "revision": "jsonl-mcp-meta-additive"},
     {"range": "0.145.0", "introduced_by": "0.145.0", "tag_commit": "25af12f7e61572b0bc18ddb1008be543b91519b0", "revision": "jsonl-cache-write-usage-additive"},
-    {"range": "0.146.0..=0.148.0", "introduced_by": "0.146.0", "tag_commit": "e363b08c9175ac1cbe5893615dd2cb9ddf95043b", "revision": "jsonl-deferred-search-query"}
+    {"range": "0.146.0..=0.149.0", "introduced_by": "0.146.0", "tag_commit": "e363b08c9175ac1cbe5893615dd2cb9ddf95043b", "revision": "jsonl-deferred-search-query"}
   ],
   "replacement_milestones": [
     {"version": "0.93.0", "deprecated": "thread/compacted", "replacement": "contextCompaction-item"},

@@ -35,18 +35,18 @@ and selection policy.
 
 ## Planned Next Roadmaps
 
-- [g04.021 Unmarked Overlay Rows](021-unmarked-overlay-rows.md) — planned pending 020
+- [g04.021 Unmarked Overlay Rows](021-unmarked-overlay-rows.md) — worker in flight, cards 059-061
 - [g04.022 Further Addable Inventory](022-further-addable-inventory.md) — planned pending 021
 - [g04.023 047 Presentation Metadata](023-047-presentation-metadata.md) — planned pending 022
 
-Do not roll over: 19 numbered roadmaps now, 23 when this queue is filed,
-target 30-50. Hosted OAuth stays parked.
+Do not roll over: 20 numbered completed roadmaps, 023 compiled, target
+30-50. Hosted OAuth stays parked.
 
 ## Current Checkpoint
 
-- g04.001 through g04.020 are complete. PR 16 is on `main` at `576184e9`
-- g04.020 completed: cards 056-058, handoff
-  `docs/handoffs/20260820-205345-g04-020-config-ref-prepare-handoff.md`
+- g04.001 through g04.020 are complete. PR 17 is on `main` at `3d761655`
+- g04.021 worker dispatched: cards 059-061, handoff
+  `docs/handoffs/20260821-075348-g04-021-unmarked-overlay-rows.md`
 - Hosted OAuth is parked. Contract 029 currentness is standing
 - Generation stays active. Rollover waits for 30-50 roadmaps
 - `v0.3.3` remains `51d18620`

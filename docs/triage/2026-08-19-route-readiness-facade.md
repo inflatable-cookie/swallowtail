@@ -88,8 +88,9 @@ named production route requires URL-open plus loopback
 (`docs/roadmaps/backlog/hosted-interactive-oauth.md`). Contract 029
 currentness is a standing lane (`docs/roadmaps/standing-lanes.md`), not a
 g04 goal. Operator: do not roll g04 at 19 roadmaps; continue toward 30-50.
-g04.020-023 are compiled for config-ref prepare handoff, unmarked overlay
-rows, further addable inventory, and optional 047 presentation metadata.
+g04.020 is merged (PR 17, `3d761655`). g04.021 cards 059-061 are ready
+for unmarked overlay rows. Further addable inventory and optional 047
+presentation metadata stay planned.
 Optional 047
 overlay presentation metadata stays later and must not change `Ready` /
 `NotReady`.

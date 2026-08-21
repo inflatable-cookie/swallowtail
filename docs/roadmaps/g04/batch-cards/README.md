@@ -2,15 +2,12 @@
 
 ## Active
 
-- [056-prepare-input-versus-stored-refs.md](./056-prepare-input-versus-stored-refs.md)
-- [057-portable-config-ref-handoff.md](./057-portable-config-ref-handoff.md)
-- [058-six-addable-prepare-handoff.md](./058-six-addable-prepare-handoff.md)
-
-## Planned
-
 - [059-unmarked-overlay-classification.md](./059-unmarked-overlay-classification.md)
 - [060-unmarked-overlay-rule.md](./060-unmarked-overlay-rule.md)
 - [061-unmarked-addable-overlay-proof.md](./061-unmarked-addable-overlay-proof.md)
+
+## Planned
+
 - [062-remaining-addable-surface-inventory.md](./062-remaining-addable-surface-inventory.md)
 - [063-remaining-addable-gap-classification.md](./063-remaining-addable-gap-classification.md)
 - [064-further-addable-tranche-confirmation.md](./064-further-addable-tranche-confirmation.md)
@@ -22,6 +19,9 @@ Hosted OAuth stays parked.
 
 ## Completed
 
+- [058-six-addable-prepare-handoff.md](./058-six-addable-prepare-handoff.md)
+- [057-portable-config-ref-handoff.md](./057-portable-config-ref-handoff.md)
+- [056-prepare-input-versus-stored-refs.md](./056-prepare-input-versus-stored-refs.md)
 - [055-llama-cpp-attached-refresh-update-and-subject.md](./055-llama-cpp-attached-refresh-update-and-subject.md)
 - [054-llama-cpp-attached-admission-and-prepare.md](./054-llama-cpp-attached-admission-and-prepare.md)
 - [053-llama-cpp-attached-addable-descriptor.md](./053-llama-cpp-attached-addable-descriptor.md)

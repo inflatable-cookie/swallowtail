@@ -18,7 +18,10 @@ fn identity_and_claim_qualify_1_1_14_as_compatible_extension() {
         serde_json::from_str(PROTOCOL).expect("Antigravity 1.1.14 protocol corpus is valid JSON");
 
     assert_eq!(identity["axis"], ANTIGRAVITY_RELEASE_AXIS);
-    assert_eq!(identity["github_repo"], "google-antigravity/antigravity-cli");
+    assert_eq!(
+        identity["github_repo"],
+        "google-antigravity/antigravity-cli"
+    );
     assert_eq!(identity["github_latest"], true);
     assert_eq!(identity["not_gemini_cli"], true);
     assert_eq!(identity["host"]["version"], "1.1.9");
@@ -132,13 +135,16 @@ const PROTOCOL_1_1_15: &str = include_str!("fixtures/antigravity-cli-1.1.15/prot
 
 #[test]
 fn identity_and_claim_qualify_1_1_15_as_compatible_extension() {
-    let identity: Value =
-        serde_json::from_str(IDENTITY_1_1_15).expect("Antigravity 1.1.15 identity corpus is valid JSON");
-    let protocol: Value =
-        serde_json::from_str(PROTOCOL_1_1_15).expect("Antigravity 1.1.15 protocol corpus is valid JSON");
+    let identity: Value = serde_json::from_str(IDENTITY_1_1_15)
+        .expect("Antigravity 1.1.15 identity corpus is valid JSON");
+    let protocol: Value = serde_json::from_str(PROTOCOL_1_1_15)
+        .expect("Antigravity 1.1.15 protocol corpus is valid JSON");
 
     assert_eq!(identity["axis"], ANTIGRAVITY_RELEASE_AXIS);
-    assert_eq!(identity["github_repo"], "google-antigravity/antigravity-cli");
+    assert_eq!(
+        identity["github_repo"],
+        "google-antigravity/antigravity-cli"
+    );
     assert_eq!(identity["github_latest"], true);
     assert_eq!(identity["not_gemini_cli"], true);
     assert_eq!(identity["host"]["version"], "1.1.9");
@@ -250,13 +256,16 @@ const PROTOCOL_1_1_17: &str = include_str!("fixtures/antigravity-cli-1.1.17/prot
 
 #[test]
 fn identity_and_claim_qualify_1_1_17_as_compatible_extension() {
-    let identity: Value =
-        serde_json::from_str(IDENTITY_1_1_17).expect("Antigravity 1.1.17 identity corpus is valid JSON");
-    let protocol: Value =
-        serde_json::from_str(PROTOCOL_1_1_17).expect("Antigravity 1.1.17 protocol corpus is valid JSON");
+    let identity: Value = serde_json::from_str(IDENTITY_1_1_17)
+        .expect("Antigravity 1.1.17 identity corpus is valid JSON");
+    let protocol: Value = serde_json::from_str(PROTOCOL_1_1_17)
+        .expect("Antigravity 1.1.17 protocol corpus is valid JSON");
 
     assert_eq!(identity["axis"], ANTIGRAVITY_RELEASE_AXIS);
-    assert_eq!(identity["github_repo"], "google-antigravity/antigravity-cli");
+    assert_eq!(
+        identity["github_repo"],
+        "google-antigravity/antigravity-cli"
+    );
     assert_eq!(identity["github_latest"], true);
     assert_eq!(identity["not_gemini_cli"], true);
     assert_eq!(identity["not_antigravity_acp"], true);
@@ -282,7 +291,10 @@ fn identity_and_claim_qualify_1_1_17_as_compatible_extension() {
         identity["published_stables_from_previous_ceiling"],
         serde_json::json!(["1.1.16", "1.1.17"])
     );
-    assert_eq!(identity["intermediate_1_1_16"]["extracted_version"], "1.1.16");
+    assert_eq!(
+        identity["intermediate_1_1_16"]["extracted_version"],
+        "1.1.16"
+    );
     assert_ne!(
         identity["official"]["extracted_cli_sha256"],
         identity["intermediate_1_1_16"]["extracted_cli_sha256"]
@@ -300,7 +312,10 @@ fn identity_and_claim_qualify_1_1_17_as_compatible_extension() {
     );
     assert_eq!(decision["raise_latest_qualified_to"], "1.1.17");
     assert_eq!(decision["keep_baseline"], "1.1.9");
-    assert_eq!(decision["qualify_intermediates"], serde_json::json!(["1.1.16"]));
+    assert_eq!(
+        decision["qualify_intermediates"],
+        serde_json::json!(["1.1.16"])
+    );
     assert_eq!(decision["new_milestone"], false);
     assert_eq!(decision["map_input_format"], false);
     assert_eq!(decision["map_mcp_subcommand"], false);
@@ -332,7 +347,10 @@ fn identity_and_claim_qualify_1_1_17_as_compatible_extension() {
     assert_eq!(protocol["selected_catalogue_command"], "models");
     assert_eq!(protocol["map_input_format"], false);
     assert_eq!(protocol["help_1_1_16_byte_identical_to_1_1_17"], true);
-    assert_eq!(protocol["help_delta_from_1_1_15"], serde_json::json!(["mcp"]));
+    assert_eq!(
+        protocol["help_delta_from_1_1_15"],
+        serde_json::json!(["mcp"])
+    );
     assert_eq!(protocol["decoder_corpus"], "antigravity-cli-1.1.9");
     assert_eq!(protocol["provider_prompt_sent"], false);
 

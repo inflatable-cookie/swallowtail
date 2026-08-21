@@ -14,6 +14,8 @@ Hosted OAuth stays parked.
 
 ## Completed
 
+- [084-antigravity-1-1-17-claim.md](./084-antigravity-1-1-17-claim.md)
+- [083-antigravity-1-1-17-identity.md](./083-antigravity-1-1-17-identity.md)
 - [082-opencode-http-1-18-20-claim.md](./082-opencode-http-1-18-20-claim.md)
 - [081-opencode-http-1-18-20-identity.md](./081-opencode-http-1-18-20-identity.md)
 - [080-claude-code-2-1-238-claim.md](./080-claude-code-2-1-238-claim.md)

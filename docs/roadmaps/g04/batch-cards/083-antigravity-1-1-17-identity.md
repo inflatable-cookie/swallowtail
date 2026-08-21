@@ -1,4 +1,4 @@
-# 080 Antigravity 1.1.17 Identity
+# 083 Antigravity 1.1.17 Identity
 
 Status: completed
 Owner: Tom
@@ -56,7 +56,7 @@ covers focused Antigravity proof.
 
 ## Auto-Continuation
 
-Continue to card 081 once the segment shape is named.
+Continue to card 084 once the segment shape is named.
 
 ## Out Of Scope
 
@@ -64,7 +64,7 @@ Continue to card 081 once the segment shape is named.
 - Mapping unused surfaces
 - Provider work
 - Decoder updates
-- Next Task / generation status edits
+- Next Task changes or Kimi Platform implementation
 
 ## Evidence
 
@@ -72,5 +72,5 @@ Continue to card 081 once the segment shape is named.
 - `crates/swallowtail-adapter-antigravity/tests/fixtures/antigravity-cli-1.1.17/`
 - Identity decision: compatible-extension. Reuse catalogue and
   stream-json `cli-1.1.8-artifact-1.1.9-v1`. Raise latest qualified to
-  `1.1.17`. Qualify `1.1.16`. Keep `1.1.8` incompatible. Card 081 owns
+  `1.1.17`. Qualify `1.1.16`. Keep `1.1.8` incompatible. Card 084 owns
   the claim change.

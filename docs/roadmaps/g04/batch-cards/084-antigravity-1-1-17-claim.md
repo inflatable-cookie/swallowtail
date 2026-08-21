@@ -1,15 +1,15 @@
-# 081 Antigravity 1.1.17 Claim
+# 084 Antigravity 1.1.17 Claim
 
 Status: completed
 Owner: Tom
 Milestone: [g04.030 Antigravity 1.1.17 Useful Newer](../030-antigravity-1-1-17-useful-newer.md)
 Created: 2026-08-21
-Depends on: card 080; Research 177
+Depends on: card 083; Research 177
 
 ## Task
 
 Raise the `antigravity-cli.release` qualified ceiling from `1.1.15` to
-`1.1.17` on both catalogue and headless claims after identity card 080
+`1.1.17` on both catalogue and headless claims after identity card 083
 confirms compatible-extension.
 
 ## Edit Set
@@ -39,8 +39,9 @@ In docs:
 - Add `CHANGELOG.md` Unreleased entry
 - Create the claim log
 - Index the family log
-- Do not rewrite `docs/roadmaps/README.md` Next Task
-- Do not edit `docs/roadmaps/g04/README.md`
+- Keep `docs/roadmaps/README.md` on g04.024
+- Update the g04 milestone/checkpoint, batch-card index, and standing
+  currentness pointer
 
 ## Validation
 
@@ -63,7 +64,7 @@ effigy package:verify-affected swallowtail-adapter-antigravity
 
 ## Stop Conditions
 
-- stop if card 080 did not name compatible-extension
+- stop if card 083 did not name compatible-extension
 - stop if live provider work would be required to close the claim
 - stop if `1.1.17` is no longer the official stable point
 
@@ -78,7 +79,7 @@ No. Next Task stays on the generation's actual work.
 - Mapping `mcp`, `--input-format`, or Gemini API-key sign-in
 - Flattening onto `antigravity-acp` `1.0.0`
 - Provider work
-- Next Task / generation status edits
+- Next Task changes or Kimi Platform implementation
 
 ## Evidence
 

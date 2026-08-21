@@ -3,7 +3,7 @@
 Status: promoted
 Owner: Tom
 Date: 2026-08-21
-Card: g04 batch 080
+Card: g04 batch 083
 
 ## Question
 
@@ -77,7 +77,7 @@ executable name stays `agy`.
 
 Decoder fixtures remain `antigravity-cli-1.1.9`.
 
-## Segment decision for card 081
+## Segment decision for card 084
 
 Compatible extension of the mapped catalogue and headless subset. Reuse
 `antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1` and
@@ -93,7 +93,7 @@ sign-in.
 - Synthetic later-stable UnverifiedNewer is `1.1.18`.
 - Decoder specimen remains `antigravity-cli-1.1.9`.
 
-Card 081 owns the claim change.
+Card 084 owns the claim change.
 
 ## Sources
 

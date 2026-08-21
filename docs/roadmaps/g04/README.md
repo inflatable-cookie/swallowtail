@@ -42,8 +42,9 @@ and selection policy.
 - [g04.027 Ollama 0.32.15 Useful Newer](027-ollama-0-32-15-useful-newer.md) — standing currentness, completed
 - [g04.028 Claude Code 2.1.238 Useful Newer](028-claude-code-2-1-238-useful-newer.md) — standing currentness, completed
 - [g04.029 OpenCode HTTP 1.18.20 Useful Newer](029-opencode-http-1-18-20-useful-newer.md) — standing currentness, completed
+- [g04.030 Antigravity 1.1.17 Useful Newer](030-antigravity-1-1-17-useful-newer.md) — standing currentness, completed
 
-Do not roll over: 29 numbered roadmaps exist; 001-023 and 025-029 are
+Do not roll over: 30 numbered roadmaps exist; 001-023 and 025-030 are
 complete, 024 is ready, target 30-50. Hosted OAuth stays parked.
 
 ## Current Checkpoint
@@ -61,6 +62,8 @@ complete, 024 is ready, target 30-50. Hosted OAuth stays parked.
   response-only through `2.1.238` in PR 24; cards 079-080 are complete
 - g04.029 standing currentness qualifies OpenCode HTTP through `1.18.20` in
   PR 25; cards 081-082 are complete
+- g04.030 standing currentness qualifies Antigravity catalogue and headless
+  through `1.1.17` in PR 26; cards 083-084 are complete
 - Hosted OAuth is parked. Gemini stays deferred. Contract 029 currentness
   is standing
 - Generation stays active. Rollover waits for 30-50 roadmaps
@@ -97,3 +100,4 @@ complete, 024 is ready, target 30-50. Hosted OAuth stays parked.
 - [027 Ollama 0.32.15 Useful Newer](./027-ollama-0-32-15-useful-newer.md) — completed (standing currentness)
 - [028 Claude Code 2.1.238 Useful Newer](./028-claude-code-2-1-238-useful-newer.md) — completed (standing currentness)
 - [029 OpenCode HTTP 1.18.20 Useful Newer](./029-opencode-http-1-18-20-useful-newer.md) — completed (standing currentness)
+- [030 Antigravity 1.1.17 Useful Newer](./030-antigravity-1-1-17-useful-newer.md) — completed (standing currentness)

@@ -1,6 +1,6 @@
 # 076 Kimi Platform Chat Addable Descriptor
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-21
 Milestone: `../024-hosted-api-key-kimi-platform-chat.md`

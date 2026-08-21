@@ -11,12 +11,13 @@ persistence, UI, and selection policy, and keep secret bytes on the host.
 
 ## Route Applicability
 
-Six production routes currently export an `AddableRouteDescriptor`:
+Seven production routes currently export an `AddableRouteDescriptor`:
 
 | Route | Topology | Host service for Available | Credential |
 | --- | --- | --- | --- |
 | `anthropic.messages` | hosted | Credential | secret API-key field `api_key`; env name `ANTHROPIC_API_KEY` is a name, not a value |
 | `deepseek.continuation` | hosted | Credential | secret API-key field `api_key`; no environment name |
+| `kimi-platform.chat` | hosted | Credential | secret Platform API-key field `api_key`; no environment name |
 | `codex.app-server` | installed | Process | none; cached local ChatGPT login |
 | `claude-agent.acp` | installed | Process | none; inherited local Claude subscription |
 | `ollama.attached` | local-runtime | Network | none; local unauthenticated |
@@ -55,6 +56,7 @@ prepare will use:
 
 - `anthropic_messages_addable_route_descriptor`
 - `deepseek_continuation_addable_route_descriptor`
+- `kimi_platform_chat_addable_route_descriptor`
 - `codex_app_server_addable_route_descriptor`
 - `claude_agent_acp_addable_route_descriptor`
 - `ollama_attached_addable_route_descriptor`
@@ -171,6 +173,8 @@ the adapter's host service, and leaves resolution to that host boundary:
 
 - `AnthropicPreparationInput::from_admitted` then `prepare_anthropic_direct`
 - `DeepSeekPreparationInput::from_admitted` then `prepare_deepseek_direct`
+- `KimiPlatformPreparationInput::from_admitted` then
+  `prepare_kimi_platform_direct`
 - `CodexPreparationInput::from_admitted` then `prepare_codex` with
   `CodexPreparedDriver::AppServer`
 - `ClaudeAgentPreparationInput::from_admitted` then `prepare_claude_agent`
@@ -203,7 +207,7 @@ Forbidden inferences:
 - overlay is not a catalogue and does not change selection readiness
 - subject is not an instance id or routing key
 - a discovered candidate is not an addable row
-- remaining production routes are not addable because six proofs exist
+- remaining production routes are not addable because seven proofs exist
 
 ## Failures
 
@@ -220,6 +224,7 @@ Compile-tested Contract 057 examples:
 
 - [Anthropic Messages](../../crates/swallowtail-adapter-anthropic/examples/connection_lifecycle.rs)
 - [DeepSeek continuation](../../crates/swallowtail-adapter-deepseek/examples/connection_lifecycle.rs)
+- [Kimi Platform Chat](../../crates/swallowtail-adapter-kimi-platform/examples/connection_lifecycle.rs)
 - [Codex app-server](../../crates/swallowtail-adapter-codex/examples/connection_lifecycle.rs)
 - [Claude Agent ACP](../../crates/swallowtail-adapter-claude-agent/examples/connection_lifecycle.rs)
 - [Ollama attach](../../crates/swallowtail-adapter-ollama/examples/connection_lifecycle.rs)
@@ -229,6 +234,7 @@ Realized addable-route sequences:
 
 - [Anthropic Messages](anthropic-direct-prepared-integration.md)
 - [DeepSeek continuation](deepseek-prepared-integration.md)
+- [Kimi Platform Chat](kimi-platform-prepared-integration.md)
 - [Codex app-server](codex-prepared-integration.md); `codex.exec` is not
   addable
 - [Claude Agent ACP](claude-agent-prepared-integration.md);

@@ -1,6 +1,6 @@
 # 078 Kimi Platform Chat Refresh, Catalogue, And 047
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-21
 Milestone: `../024-hosted-api-key-kimi-platform-chat.md`

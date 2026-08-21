@@ -14,9 +14,9 @@ shape.
 
 ## Next Task
 
-Implement g04.024 Hosted API-Key Kimi Platform Chat, starting with card
-076 and continuing through cards 077-078 in order. The cards are ready;
-implementation has not started.
+g04.024 Hosted API-Key Kimi Platform Chat is complete on the worker branch
+with cards 076-078 done; the worker PR awaits orchestrator review and merge.
+Do not select the next descriptor tranche until merge reality is recorded.
 
 ## Standing Lanes
 

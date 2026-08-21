@@ -24,6 +24,7 @@ then conformance closeout.
 ## Entries
 
 - [2026-08-21 Post-Kimi Priority Reset](./2026-08-21-post-kimi-priority-reset.md)
+- [2026-08-21 g04.024 Kimi Platform Chat Closeout](./2026-08-21-g04-024-kimi-platform-chat-closeout.md)
 - [2026-08-21 Currentness And Research Stack Merged](./2026-08-21-currentness-and-research-stack-merged.md)
 - [2026-08-21 Kimi Code 0.38.0 Claim](./2026-08-21-kimi-code-0-38-0-claim.md)
 - [2026-08-21 Kimi Code 0.38.0 Identity](./2026-08-21-kimi-code-0-38-0-identity.md)

@@ -24,6 +24,30 @@ The route has no ordered version range. It binds exact
 `kimi-platform-chat-2026-07-21` facade behavior; compatible syntax or later
 documentation does not create an unverified-newer posture.
 
+## Admission And Connection Lifecycle
+
+`kimi_platform_chat_addable_route_descriptor` exposes the route through the
+[connection lifecycle](connection-lifecycle.md): hosted topology, one secret
+Platform API-key field `api_key` with no environment name, and one opaque
+host-owned `endpoint` config field. The descriptor reports `Available` only
+when the host exposes the Credential service; otherwise it names the missing
+host service. Absence of the descriptor means this crate is unlinked.
+
+`admit_instance` writes the admitted record with an opaque `ConfigFieldRef`
+for the endpoint. API-key collection runs the library sign-in loop without
+URL-open, loopback, or device-code ports and stores only the submitted
+`CredentialRef`. Secret bytes and the endpoint URL never enter portable
+records or diagnostics.
+
+After admission, `KimiPlatformPreparationInput::from_admitted` retypes the
+admitted endpoint and credential refs for `prepare_kimi_platform_direct` and
+fails closed on route, endpoint-ref, credential-ref, audience, or host
+drift. `refresh_readiness` writes host-supplied access status without
+touching enablement, and the authenticated subject stays `Absent`. The
+consumer-assembled 047 snapshot keeps the exact instance, route, provider,
+model, facade, and access truth; the presentation overlay cannot change
+`Ready` / `NotReady`.
+
 ## Preparation And Catalogue
 
 Preparation is local and acquires no credential or endpoint grant. The
@@ -64,7 +88,10 @@ binding, bounded fixtures, lifecycle tests, and route-matrix coverage.
 
 The compile-tested
 [`prepared_kimi_platform_direct` example](../../crates/swallowtail-adapter-kimi-platform/examples/prepared_kimi_platform_direct.rs)
-covers normal preparation. Validate deterministically:
+covers normal preparation, and the compile-tested
+[`connection_lifecycle` example](../../crates/swallowtail-adapter-kimi-platform/examples/connection_lifecycle.rs)
+covers admission, API-key collection, refresh, and the 047 handoff.
+Validate deterministically:
 
 ```sh
 effigy validate:focused swallowtail-adapter-kimi-platform

@@ -1,6 +1,6 @@
 # 093 Gemini CLI 0.56.0 Identity
 
-Status: ready
+Status: completed
 Owner: Tom
 Milestone: [g04.034 Gemini CLI 0.56.0 Useful Newer](../034-gemini-cli-0-56-0-useful-newer.md)
 Created: 2026-08-22
@@ -56,6 +56,15 @@ or a required new public operation is a stop.
 - `effigy validate:focused swallowtail-adapter-gemini` passes
 - `effigy qa:northstar` passes
 - `git diff --check` passes
+
+## Result
+
+Research 182 and the secret-free `0.56.0` identity/protocol corpus are
+promoted. Official npm and GitHub identity stayed at `0.56.0`; host `0.53.0`
+was not changed. The selected ACP and headless surfaces are compatible
+extensions with separate behavior decisions. The only selected source deltas
+are provider-private invalid-stream classifications and error guidance; they
+remain unmapped. Production claims remain unchanged pending card 094.
 
 Auto-continue to card 094 only when neither axis is a stop.
 

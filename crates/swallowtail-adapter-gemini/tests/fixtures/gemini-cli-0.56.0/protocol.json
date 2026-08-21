@@ -1,0 +1,155 @@
+{
+  "fixture_schema": 1,
+  "observed_at": "2026-08-22",
+  "official_version": "0.56.0",
+  "selected_help": {
+    "source": "official-npm-bundle",
+    "sha256": "b5c6e1af180f48adb3700982e7b06e905f29d2965f047eaeebd0b5c4f676b632",
+    "stable_across": [
+      "0.53.0",
+      "0.53.1",
+      "0.54.0",
+      "0.54.4",
+      "0.55.1",
+      "0.56.0"
+    ],
+    "selected_flags_present": [
+      "--acp",
+      "--approval-mode",
+      "--output-format",
+      "--model",
+      "--extensions",
+      "--allowed-mcp-server-names",
+      "--skip-trust",
+      "--session-id",
+      "--delete-session"
+    ],
+    "selected_output_format": "stream-json",
+    "selected_approval_mode": "plan"
+  },
+  "acp": {
+    "axis": "gemini-cli.acp-agent",
+    "command": [
+      "gemini",
+      "--acp",
+      "--approval-mode",
+      "plan"
+    ],
+    "wire_version": 1,
+    "sdk": "@agentclientprotocol/sdk@0.16.1",
+    "selected_agent_methods": [
+      "initialize",
+      "session/new",
+      "session/prompt",
+      "session/cancel"
+    ],
+    "selected_client_methods": [
+      "session/update"
+    ],
+    "selected_callbacks": [
+      "fs.readTextFile"
+    ],
+    "permission_request": "reject-and-cancel; no approval response",
+    "auth_method": "gemini-api-key",
+    "authenticate_called": false,
+    "advertised_auth_is_evidence_only": true,
+    "load_session": "observed but not claimed",
+    "native_close": "not selected; process close and join",
+    "selected_external_shapes_unchanged_from_0.51.0": true,
+    "unmapped_additions": [
+      "provider-invalid-stream categories MAX_TOKENS_EXCEEDED, SAFETY_BLOCKED, RECITATION_BLOCKED, OTHER_BLOCKED, THINKING_ONLY_RESPONSE",
+      "provider-private ACP metadata and model selection",
+      "browser login, consumer account, Vertex, gateway, and auth negotiation"
+    ],
+    "source_sha256": {
+      "acpCommandHandler.ts": "2a9ff19a6a33724598736d95ef789dc01a251e8bf9abf8383ce003bb57b9b83d",
+      "acpRpcDispatcher.ts": "0efad1ad0db341802cc27710a5d5ab522666f3cd1a229faece8094a81a992660",
+      "acpSessionManager.ts": "63e38dfcfe035a317acc9e2943810b765e7403ecb6383597633394e8ff214f1e",
+      "acpSession.ts": "f21c78e7edc1b17972b3d3a94ea507788fcc67fdd1bb0fe857cb97218be63e3b",
+      "acpFileSystemService.ts": "5fefc5fed0e40c1ff5ad317c139412db5e5f12b669cd349998df9db411934cfd",
+      "acpStdioTransport.ts": "08f79d2b2048d0c3d817fe8d8c85f92338c879711eb8a075b41db210b58cd4a5"
+    },
+    "decoder_corpus": "acp-v1-gemini-cli-0.51.0",
+    "provider_prompt_sent": false,
+    "live_session": false,
+    "host_install_changed": false
+  },
+  "headless": {
+    "axis": "gemini-cli.headless-stream-json",
+    "command": [
+      "gemini",
+      "--output-format",
+      "stream-json",
+      "--model",
+      "<MODEL>",
+      "--approval-mode",
+      "plan",
+      "--extensions",
+      "none",
+      "--allowed-mcp-server-names",
+      "",
+      "--skip-trust",
+      "--session-id",
+      "<SESSION_ID>"
+    ],
+    "selected_event_types": [
+      "init",
+      "message",
+      "tool_use",
+      "tool_result",
+      "error",
+      "result"
+    ],
+    "selected_terminal": {
+      "result_statuses": [
+        "success",
+        "error"
+      ],
+      "native_exit_codes": [
+        41,
+        42,
+        44,
+        52,
+        53,
+        54,
+        55,
+        130
+      ],
+      "terminal_record_required": true
+    },
+    "selected_retention": {
+      "default": "durable",
+      "owned_cleanup": "one exact delete attempt; no list confirmation",
+      "sessions_source_sha256": "fa8a3ab8ce762cd4b714362d843bdd73e73f0894f0480778fcdf2254a507af50",
+      "cleanup_source_sha256": "6c7a2005d1a2054dfa0deb2ca3708a5ab1966d3e1f5dcbf284a22f0b71968189"
+    },
+    "selected_external_shapes_unchanged_from_0.51.0_to_0.52.0": true,
+    "selected_external_shapes_unchanged_through_0.56.0": true,
+    "unmapped_additions": [
+      "typed InvalidStreamError categories and provider-specific error guidance",
+      "model fallback session-id rotation",
+      "history thought filtering and merged function-response handling",
+      "Code Assist/browser authentication and account-tier behavior",
+      "unused sandbox, resume, list, and provider feature surfaces"
+    ],
+    "source_sha256": {
+      "config.ts": "5100bcd48f798d04b9463bd72680af7202f331de566321b1c29f5f8710c2c44c",
+      "nonInteractiveCli.ts": "fe569c4ac3436a851c991e0e916554b63bd9b9eb0bf5dee644f9258fad5ba298",
+      "core/geminiChat.ts": "509d03416ad093b15fdf1fa891ccc719591a4d0a02976f9086b5546033e64873",
+      "core/turn.ts": "d4f95a7d330b6065fc0c194b82375c7ed9db9ce9b1a126dae4250b668e5801aa",
+      "output/types.ts": "23f7ea24497c88a703e0e4f8b6deb8bda969c2c2a32ca213beacfae46d798341",
+      "output/stream-json-formatter.ts": "f78377bb9cbb56cfe3509655ff6ebfaef8873641942139562dc4ab7a3347e721"
+    },
+    "decoder_corpus": "gemini-headless-0.51.0-0.52.0",
+    "provider_prompt_sent": false,
+    "live_session": false,
+    "host_install_changed": false
+  },
+  "access_boundary": {
+    "selected_profile": "enterprise-owned Gemini Developer API key",
+    "browser_login": false,
+    "individual_account_service": false,
+    "provider_prompt_sent": false,
+    "account_state_inspected": false
+  }
+}

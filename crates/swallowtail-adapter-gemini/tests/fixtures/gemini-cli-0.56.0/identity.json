@@ -1,0 +1,159 @@
+{
+  "family": "gemini-cli",
+  "axes": [
+    "gemini-cli.acp-agent",
+    "gemini-cli.headless-stream-json"
+  ],
+  "observed_at": "2026-08-22",
+  "npm_package": "@google/gemini-cli",
+  "npm_latest": true,
+  "host": {
+    "version": "0.53.0",
+    "source": "installed-npm-bin",
+    "executable_sha256": "4a8f99947eae4e1ff501269ba8b9ca2d1216db044fb75e01f4ee86fd1d8f175e",
+    "bin_link_size": 55,
+    "publisher": "unsigned",
+    "codesign": "not signed",
+    "host_install_changed": false
+  },
+  "official": {
+    "version": "0.56.0",
+    "source": "official-npm-and-github",
+    "npm_published_at": "2026-08-19T19:29:01.177Z",
+    "github_release_published_at": "2026-08-19T19:29:38Z",
+    "github_tag": "v0.56.0",
+    "github_commit": "b6e23a7dc29eb15fede4bbe646d91869e948b45a",
+    "github_tree": "379c84605a494dd3adf650acb3cc2a6d82e82e53",
+    "npm_integrity": "sha512-q4oBfb/Oh/HNLMYBOJMp88/QQ8hLffnB0ykoVThi6A5isbGHJ/ylWLMosMGqukKY0Q1Jv/XRDpb46Q1BV+zQqw==",
+    "npm_shasum": "b5cd36013cb4b263e50da0337ac3a2a00571bd0c",
+    "npm_tarball_sha256": "e25443a59b22f0000d6418ce42c5c0710bc04d8f41b5567417e30e038a80120b",
+    "npm_package_json_sha256": "d8daf35daa8fdaecc100a1d50e5df28be03ff0b24e6d82230ac7969d00b4ee23",
+    "npm_bin_entry_sha256": "a196a6fa5b89124396776ab2cc647404c99e062c24574e576297f31488109d57",
+    "github_source_archive_sha256": "01da971fe62c4ee68e237c2fb501bafac4e71492c189ebc6eec2dac47aacd2ad",
+    "darwin_arm64_asset": "gemini-darwin-arm64-unsigned.zip",
+    "darwin_arm64_asset_sha256": "be0c20ccf8b6be6ce01654736847168a9328e92db4db4c0d0b776de70703fb8f",
+    "darwin_arm64_asset_size": 36499939,
+    "darwin_arm64_extracted_sha256": "fa84c229012862d3695775afafff6e07dcffaa6da22db4072a6dbe87e5265151",
+    "darwin_arm64_extracted_size": 121446224
+  },
+  "published_stables_from_previous_ceilings": [
+    {
+      "version": "0.53.0",
+      "npm_published_at": "2026-07-28T21:45:04.718Z",
+      "github_commit": "decc0b46c6e11f8cad90710dcfb38fc3cdb24a96"
+    },
+    {
+      "version": "0.53.1",
+      "npm_published_at": "2026-07-31T21:34:04.597Z",
+      "github_commit": "19a68016bdc9cd4177a155846dd51f282c3c1c59"
+    },
+    {
+      "version": "0.54.0",
+      "npm_published_at": "2026-08-06T01:35:19.679Z",
+      "github_commit": "a74b483d14a93159fa36e7ee9e32cf44bda594df"
+    },
+    {
+      "version": "0.54.4",
+      "npm_published_at": "2026-08-07T04:43:44.125Z",
+      "github_commit": "983bbb89d36718e3c97618978fb938ed9b5856c9"
+    },
+    {
+      "version": "0.55.1",
+      "npm_published_at": "2026-08-11T21:14:35.252Z",
+      "github_commit": "41327e407da58aa01c409ef6685b7b5d379f295e"
+    },
+    {
+      "version": "0.56.0",
+      "npm_published_at": "2026-08-19T19:29:01.177Z",
+      "github_commit": "b6e23a7dc29eb15fede4bbe646d91869e948b45a"
+    }
+  ],
+  "unpublished_later_stable": "0.56.1",
+  "ignored_preview": "0.57.0-preview.0",
+  "claim_at_observation": {
+    "acp": {
+      "baseline": "0.51.0",
+      "latest_qualified": "0.51.0",
+      "posture": "allow_unverified",
+      "classification_of_0.53.0": "unverified_newer",
+      "classification_of_0.56.0": "unverified_newer"
+    },
+    "headless": {
+      "baseline": "0.51.0",
+      "latest_qualified": "0.52.0",
+      "posture": "allow_unverified",
+      "classification_of_0.53.0": "unverified_newer",
+      "classification_of_0.56.0": "unverified_newer"
+    }
+  },
+  "source_comparison": {
+    "selected_help_sha256": {
+      "0.53.0": "b5c6e1af180f48adb3700982e7b06e905f29d2965f047eaeebd0b5c4f676b632",
+      "0.53.1": "b5c6e1af180f48adb3700982e7b06e905f29d2965f047eaeebd0b5c4f676b632",
+      "0.54.0": "b5c6e1af180f48adb3700982e7b06e905f29d2965f047eaeebd0b5c4f676b632",
+      "0.54.4": "b5c6e1af180f48adb3700982e7b06e905f29d2965f047eaeebd0b5c4f676b632",
+      "0.55.1": "b5c6e1af180f48adb3700982e7b06e905f29d2965f047eaeebd0b5c4f676b632",
+      "0.56.0": "b5c6e1af180f48adb3700982e7b06e905f29d2965f047eaeebd0b5c4f676b632"
+    },
+    "acp_selected_external_shapes_unchanged": true,
+    "acp_unchanged_sources": [
+      "packages/cli/src/acp/acpCommandHandler.ts",
+      "packages/cli/src/acp/acpRpcDispatcher.ts",
+      "packages/cli/src/acp/acpSessionManager.ts",
+      "packages/cli/src/acp/acpFileSystemService.ts",
+      "packages/cli/src/acp/acpStdioTransport.ts"
+    ],
+    "acp_unmapped_delta": "0.53.1 added provider-invalid-stream categories to the graceful end_turn path; wire methods, callbacks, auth advertisement, session lifecycle, and stop reason are unchanged",
+    "headless_selected_external_shapes_unchanged": true,
+    "headless_unchanged_sources": [
+      "packages/cli/src/config/config.ts",
+      "packages/core/src/output/types.ts",
+      "packages/core/src/output/stream-json-formatter.ts",
+      "packages/cli/src/utils/sessions.ts",
+      "packages/cli/src/utils/sessionCleanup.ts"
+    ],
+    "headless_unmapped_delta": "0.53.1 added typed InvalidStreamError details and more specific error text; stream-json event names, fields, terminal result shape, invocation flags, and retention behavior remain unchanged",
+    "selected_source_sha256_at_0.56.0": {
+      "acp_command_handler": "2a9ff19a6a33724598736d95ef789dc01a251e8bf9abf8383ce003bb57b9b83d",
+      "acp_rpc_dispatcher": "0efad1ad0db341802cc27710a5d5ab522666f3cd1a229faece8094a81a992660",
+      "acp_session_manager": "63e38dfcfe035a317acc9e2943810b765e7403ecb6383597633394e8ff214f1e",
+      "acp_session": "f21c78e7edc1b17972b3d3a94ea507788fcc67fdd1bb0fe857cb97218be63e3b",
+      "acp_filesystem_service": "5fefc5fed0e40c1ff5ad317c139412db5e5f12b669cd349998df9db411934cfd",
+      "acp_stdio_transport": "08f79d2b2048d0c3d817fe8d8c85f92338c879711eb8a075b41db210b58cd4a5",
+      "headless_config": "5100bcd48f798d04b9463bd72680af7202f331de566321b1c29f5f8710c2c44c",
+      "headless_cli": "fe569c4ac3436a851c991e0e916554b63bd9b9eb0bf5dee644f9258fad5ba298",
+      "headless_event_types": "23f7ea24497c88a703e0e4f8b6deb8bda969c2c2a32ca213beacfae46d798341",
+      "headless_formatter": "f78377bb9cbb56cfe3509655ff6ebfaef8873641942139562dc4ab7a3347e721",
+      "headless_sessions": "fa8a3ab8ce762cd4b714362d843bdd73e73f0894f0480778fcdf2254a507af50",
+      "headless_cleanup": "6c7a2005d1a2054dfa0deb2ca3708a5ab1966d3e1f5dcbf284a22f0b71968189"
+    }
+  },
+  "identity_decision": {
+    "acp": {
+      "shape": "compatible-extension",
+      "reuse_behavior_revision": "gemini-cli.acp.v0.51.0",
+      "raise_latest_qualified_to": "0.56.0",
+      "keep_baseline": "0.51.0",
+      "qualify_published_intermediates": true,
+      "new_milestone": false
+    },
+    "headless": {
+      "shape": "compatible-extension",
+      "reuse_behavior_revision": "gemini-cli.headless.stream-json.v1",
+      "raise_latest_qualified_to": "0.56.0",
+      "keep_baseline": "0.51.0",
+      "qualify_published_intermediates": true,
+      "new_milestone": false
+    },
+    "keep_unpublished_later_stable_unverified": true,
+    "new_public_operation": false,
+    "map_invalid_stream_error_categories": false,
+    "map_browser_login": false,
+    "map_individual_account_service": false,
+    "flatten_onto_gemini_live_or_models": false,
+    "provider_prompt_sent": false,
+    "live_catalogue": false,
+    "live_session": false,
+    "host_install_changed": false
+  }
+}

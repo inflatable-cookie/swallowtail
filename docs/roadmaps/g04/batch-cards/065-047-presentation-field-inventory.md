@@ -1,6 +1,6 @@
 # 065 047 Presentation Field Inventory
 
-Status: ready
+Status: completed
 Owner: Tom
 Created: 2026-08-20
 Milestone: `../023-047-presentation-metadata.md`
@@ -27,9 +27,33 @@ consumer chrome.
 
 ## Acceptance Criteria
 
-- [ ] a named field set or an explicit none
-- [ ] Ready/NotReady formula impact is none
-- [ ] no 047 type changes in this card
+- [x] a named field set or an explicit none
+- [x] Ready/NotReady formula impact is none
+- [x] no 047 type changes in this card
+
+## Decision
+
+The named optional 047 field set is one instance-level field:
+
+- `instance_label`: the optional host-owned `InstanceLabel` already stored by
+  Contract 057 on the admitted configured-instance record. A consumer may
+  copy that value into the 047 configured-instance snapshot for presentation.
+  It is not an identity, selection, routing, default, or readiness input.
+
+No model-level presentation fields enter 047 in this tranche. Contract 057
+overlay markers remain overlay fields: hide, ordinal, consumer-default, and
+favourite. Accent color and other pure UI chrome stay consumer-owned.
+Authenticated-subject values, emails, tokens, targets, provider defaults, and
+other authority-bearing or consumer-policy fields remain outside the snapshot.
+
+The 047 `Ready` / `NotReady` formula is unchanged. This card makes no 047 type
+changes.
+
+## Evidence
+
+Research 171 and Contracts 047/057 leave instance labels as the only named
+optional field already stored at the connection-lifecycle boundary. The
+field set is not forked, so card 066 may proceed.
 
 ## Validation
 

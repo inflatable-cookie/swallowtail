@@ -16,7 +16,7 @@ shape.
 
 Implement g04.024 Hosted API-Key Kimi Platform Chat, starting with card
 076 and continuing through cards 077-078 in order. The cards are ready;
-implementation has not started. Hosted OAuth stays parked.
+implementation has not started.
 
 ## Standing Lanes
 
@@ -28,6 +28,8 @@ first standing lane. It does not keep a generation open.
 
 - [generation-index.md](./generation-index.md) — generation status
 - [long-term-plan.md](./long-term-plan.md) — staged multi-consumer adoption
+- [per-route-feature-completion.md](g04/per-route-feature-completion.md) —
+  route-local feature delivery programme
 - [standing-lanes.md](standing-lanes.md) — generation-independent lanes
 - [backlog/README.md](backlog/README.md) — deferred work and promotion gates
 - [g01/README.md](g01/README.md) — completed foundation generation

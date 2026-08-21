@@ -32,6 +32,7 @@ and selection policy.
 | Prove representative hosted, installed, and local-runtime shapes and publish a consumer path. | completed | Contracts 011, 037, 052, 057 | `g04.010` |
 | Expand addable-route coverage on the proved hosted, installed, and local-runtime shapes. | completed | Contracts 011, 037, 052, 057 | `g04.015` |
 | Close remaining 057/047 seams and expand addable coverage on proved shapes. | planned | Contracts 020, 037, 047, 057 | `g04.020` |
+| Work through official per-route feature gaps one route and one control family at a time. | planned | Contracts 011, 020, 024, 037, 041, 047, 052; per-route feature programme | compile after the Pi and Gemini decisions |
 
 ## Planned Next Roadmaps
 
@@ -47,7 +48,7 @@ and selection policy.
 - [g04.032 Kimi Code 0.38.0 Useful Newer](032-kimi-code-0-38-0-useful-newer.md) — standing currentness, completed
 
 Do not roll over: 32 numbered roadmaps exist; 001-023 and 025-032 are
-complete, 024 is ready, target 30-50. Hosted OAuth stays parked.
+complete, 024 is ready, target 30-50.
 
 ## Current Checkpoint
 
@@ -70,13 +71,30 @@ complete, 024 is ready, target 30-50. Hosted OAuth stays parked.
   `17.4.0`; cards 085-086 are complete
 - g04.032 is on `main` at `7889cc63` through PR 30: Kimi Code ACP,
   headless, and local-server `0.38.0`; cards 087-088 are complete
-- Hosted OAuth is parked. Gemini stays deferred. Contract 029 currentness
-  is standing
+- Post-024 priority is Pi RPC resource-bound session attachment, then Gemini
+  CLI `0.56.0` enterprise API-key requalification, then serial per-route
+  feature completion. Contract 029 currentness is standing
 - Generation stays active. Rollover waits for 30-50 roadmaps
 - `v0.3.3` remains `51d18620`
 
+## Post-024 Planning Checkpoint
+
+1. Resolve the Pi RPC attachment boundary from Research 180 without weakening
+   Contract 017.
+2. Run one-family Gemini CLI currentness across ACP and headless for the
+   enterprise/API-key access posture. Stop for a keep-or-remove decision if
+   deterministic evidence cannot support the current official stable.
+3. Compile the first numbered milestone from
+   [Per-Route Feature Completion](./per-route-feature-completion.md), starting
+   with Cursor headless model parameters unless current evidence changes the
+   ranking.
+
+New route-family research does not pre-empt this sequence.
+
 ## Milestones
 
+- [Per-Route Feature Completion Programme](./per-route-feature-completion.md) —
+  post-Pi/Gemini route-local delivery sequence
 - [001 Route Availability And Readiness Evidence](./001-route-availability-and-readiness-evidence.md) — completed
 - [002 Route Readiness Spec And Contract Targets](./002-route-readiness-spec-and-contract-targets.md) — completed
 - [003 Current Source Tag Before Readiness](./003-current-source-tag-before-readiness.md) — completed

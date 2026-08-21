@@ -1,6 +1,6 @@
 # 2026-08-21 Advanced Route Features
 
-Status: assessed
+Status: promoted
 Owner: Tom
 
 ## Context
@@ -995,8 +995,9 @@ bindings).
 
 ## Orchestrator Assessment (2026-08-21)
 
-Disposition: retain as an assessed inventory. Do not promote the 85
-entries as one feature tranche.
+Disposition: promoted into
+[`docs/roadmaps/g04/per-route-feature-completion.md`](../roadmaps/g04/per-route-feature-completion.md).
+Do not promote the 85 entries as one feature tranche.
 
 The inventory mixes four different shapes: exact route-local controls,
 provider topology changes, explicit policy withholds, and surfaces that

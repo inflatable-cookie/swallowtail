@@ -10,8 +10,6 @@
 
 - None. Cards 070-071 remain unused gaps, not tasks.
 
-Hosted OAuth stays parked.
-
 ## Completed
 
 - [088-kimi-code-0-38-0-claim.md](./088-kimi-code-0-38-0-claim.md)

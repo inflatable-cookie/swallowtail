@@ -167,6 +167,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [108 Provider-Wide Session Usability Restoration](./108-provider-wide-session-usability-restoration.md)
 - [114 Paged Provider Session History](./114-paged-provider-session-history.md)
 - [115 Control-Free Provider History Wire Gate](./115-control-free-provider-history-wire-gate.md)
+- [180 Pi RPC Session Attachment Gate Revalidation](./180-pi-rpc-session-attachment-gate-revalidation.md)
 
 ### Activity, Topology, And Control
 

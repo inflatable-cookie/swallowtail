@@ -5,3 +5,4 @@
 *.swo
 .effigy
 .release-prepared.json
+.agents.local.env

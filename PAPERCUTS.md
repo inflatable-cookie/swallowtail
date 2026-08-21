@@ -51,6 +51,14 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Closed
 
+### [x] Worker-local environment file dirties the planning checkout — 2026-08-21
+- Friction: `.agents.local.env` is an intended machine-local worktree-path
+  surface but appeared as an untracked file on orchestrator `main`.
+- Impact: strict Northstar planning could not publish from a clean verified
+  base without touching or hiding operator-local configuration.
+- Fix: ignored the root-local file explicitly while keeping its contents local.
+- Surface: `.gitignore`; Northstar orchestrator planning checkout.
+
 ### [x] Stable clippy `result_large_err` on ACP start_session Err pairs — 2026-08-20
 - Friction: CI Stable clippy 1.98.0 failed `result_large_err` on
   `Result<Handle, (RuntimeFailure, ResourceLease)>` in Cline, Goose,

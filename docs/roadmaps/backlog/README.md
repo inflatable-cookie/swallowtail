@@ -16,8 +16,15 @@ historical evidence.
 
 ## Items
 
-- [Gemini CLI Range Requalification](./gemini-cli-range-requalification.md)
 - [Provider-Session Management Binding Persistence](./provider-session-management-binding-persistence.md)
+
+Gemini and Pi left backlog by operator decision on 2026-08-21. Hosted
+interactive OAuth, OpenHands, Aider, and Kiro headless moved to the compact
+`docs/triage/2026-08-21-deferred-route-surfaces.md` note.
+
+## Moved Out Of Backlog
+
+- [Gemini CLI Range Requalification](./gemini-cli-range-requalification.md)
 - [Pi RPC Session Continuity](./pi-rpc-session-continuity.md)
 - [Aider Headless Route](./aider-headless-route.md)
 - [Kiro Headless Route](./kiro-headless-route.md)

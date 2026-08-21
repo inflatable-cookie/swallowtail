@@ -29,10 +29,14 @@ Last one-family claim: Kimi Code ACP, headless, and local-server `0.38.0`
 (g04.032, PR 30). The immediately preceding claim is Oh My Pi RPC `17.4.0`
 (g04.031, PR 27). Neither changes the generation pointer.
 
-### Current Deferrals
+### Selected Family
 
-- Gemini requalification stays deferred until the operator lifts that
-  gate.
+Gemini CLI requalification is reopened by operator decision. Host `0.53.0`
+and official stable `0.56.0` require one-family identity-before-claim work on
+the separate ACP and headless axes. The selected access posture is enterprise
+API-key access; Code Assist browser login remains outside the route and
+individual-account service is not supported. No live prompt is required for
+deterministic qualification.
 
 ### Do Not
 

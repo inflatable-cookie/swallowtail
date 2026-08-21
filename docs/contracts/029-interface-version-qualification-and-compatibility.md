@@ -275,7 +275,7 @@ the `oh-my-pi.rpc-v2-v17.2.9` behavior revision. Exact npm integrity, release
 commit, RPC negotiation, frame bounds, pre-turn lifecycle, and terminal event
 are frozen together.
 
-The qualified package window currently extends through exact `17.3.8` on that
+The qualified package window currently extends through exact `17.4.0` on that
 same behavior revision. Later stable OMP releases remain unverified newer.
 They do not extend the guarantee or inherit new command, tool, session, or
 subagent authority. `pi.rpc` and `oh-my-pi.rpc` cannot substitute for each

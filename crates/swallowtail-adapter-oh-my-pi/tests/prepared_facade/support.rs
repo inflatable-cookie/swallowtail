@@ -79,7 +79,7 @@ fn latest_pi_is_qualified_and_later_stable_remains_unverified() {
     );
 
     let host_id = ExecutionHostId::new("fixture.pi.prepared.later").expect("valid host");
-    let discovery = FixtureHost::version_probe("17.3.9");
+    let discovery = FixtureHost::version_probe("17.4.1");
     let prepared = block_on(prepare_oh_my_pi_rpc(
         preparation_input(host_id.clone()),
         probe(),

@@ -97,6 +97,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 - [177 Antigravity 1.1.17 Identity](./177-antigravity-1-1-17-identity.md)
 - [176 OpenCode HTTP 1.18.20 Identity](./176-opencode-http-1-18-20-identity.md)
 - [172 Codex 0.149.0 Identity](./172-codex-0-149-0-identity.md)
+- [178 Oh My Pi 17.4.0 Identity](./178-oh-my-pi-17-4-0-identity.md)
 - [167 Antigravity 1.1.15 Identity](./167-antigravity-1-1-15-identity.md)
 - [175 Claude Code 2.1.238 Identity](./175-claude-code-2-1-238-identity.md)
 - [174 Ollama 0.32.15 Identity](./174-ollama-0-32-15-identity.md)

@@ -38,6 +38,12 @@ annotated Git tags from the canonical repository.
   the version pin; selected stream-JSON flags stay; published
   intermediates `2.1.236` and `2.1.237` are qualified. Later stables
   stay AllowUnverified. Research 175, g04.028.
+- Raised qualified Oh My Pi RPC ceiling from `17.3.8` to official npm
+  `@oh-my-pi/pi-coding-agent` `17.4.0`: maintained `17.2.9..=17.4.0` on
+  `oh-my-pi.rpc-v2-v17.2.9`. Minor-line step; private-milestone checked
+  and mapping unchanged. Unpublished `17.3.6` stays. Tokenizer JS API,
+  `omp ps`, `/cleanse`, and extended-context stay unmapped. Research 178,
+  g04.031.
 
 ## [0.3.3] - 2026-08-19
 

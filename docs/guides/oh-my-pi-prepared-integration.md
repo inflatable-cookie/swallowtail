@@ -38,7 +38,7 @@ Prepared operations bind task, process, time, read-only working-resource, and
 optional attachment services. They use no credential service. Provider-
 suppressed tools and ambient execution are not host sandboxing.
 
-Package `17.2.9..=17.3.8` is qualified on `oh-my-pi.package`. Later stable
+Package `17.2.9..=17.4.0` is qualified on `oh-my-pi.package`. Later stable
 versions remain visible unverified newer.
 
 ## Prepare The Installation

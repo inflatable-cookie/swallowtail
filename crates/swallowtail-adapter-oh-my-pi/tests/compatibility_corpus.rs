@@ -28,17 +28,18 @@ fn exact_package_identity_and_release_evidence_are_frozen() {
 
 #[test]
 fn production_claim_permits_the_qualified_window() {
-    assert_eq!(OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION, "17.3.8");
+    assert_eq!(OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION, "17.4.0");
     let claim = oh_my_pi_rpc_claim();
     assert!(claim.supports(&version("17.2.9")));
     assert!(claim.supports(&version("17.3.7")));
     assert!(claim.supports(&version("17.3.8")));
+    assert!(claim.supports(&version("17.4.0")));
     assert!(!claim.permits(&version("17.2.8")));
     assert!(matches!(
-        claim.assess(&version("17.3.9")),
+        claim.assess(&version("17.4.1")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
-    assert!(!claim.permits(&version("17.3.9-rc.1")));
+    assert!(!claim.permits(&version("17.4.1-rc.1")));
 }
 
 #[test]

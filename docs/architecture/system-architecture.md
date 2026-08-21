@@ -291,7 +291,7 @@ OpenHands adds a package without a production route.
   downstream provider/model routing, prompt, steering, follow-up, correlated
   extension UI, native abort, deadlines, joined credential-last cleanup, and
   a separate provider-suppressed `get_available_models` operation
-- `swallowtail-adapter-oh-my-pi` implements the distinct OMP `17.2.9..=17.3.8` package
+- `swallowtail-adapter-oh-my-pi` implements the distinct OMP `17.2.9..=17.4.0` package
   and `omp` executable over negotiated RPC v2 JSONL stdio. It uses OMP local
   auth without a Swallowtail credential lease, binds exact provider, model,
   and optional reasoning selection, and owns bounded physical/logical frame

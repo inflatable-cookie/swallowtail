@@ -38,6 +38,10 @@ API-key access; Code Assist browser login remains outside the route and
 individual-account service is not supported. No live prompt is required for
 deterministic qualification.
 
+g04.034 and cards 093-094 compile that work. If either selected axis cannot be
+qualified deterministically at `0.56.0`, both claims stay unchanged pending an
+explicit keep-or-remove decision.
+
 ### Do Not
 
 - treat currentness as a reason to keep a generation active

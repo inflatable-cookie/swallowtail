@@ -14,10 +14,10 @@ shape.
 
 ## Next Task
 
-g04.033 is merged; both Pi routes are retained. Run the Gemini CLI `0.56.0`
-enterprise API-key requalification lane across ACP and headless per
-`docs/roadmaps/g04/README.md` and `docs/roadmaps/standing-lanes.md`, then
-serial per-route feature completion.
+Implement g04.034 cards 093-094: qualify Gemini CLI `0.56.0` across the
+separate ACP and headless axes for enterprise API-key access. Stop for an
+explicit keep-or-remove decision if deterministic evidence cannot support
+either route. Do not start per-route feature work.
 
 ## Standing Lanes
 

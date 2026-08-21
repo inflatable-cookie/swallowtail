@@ -48,9 +48,10 @@ and selection policy.
 - [g04.031 Oh My Pi 17.4.0 Useful Newer](031-oh-my-pi-17-4-0-useful-newer.md) — standing currentness, completed
 - [g04.032 Kimi Code 0.38.0 Useful Newer](032-kimi-code-0-38-0-useful-newer.md) — standing currentness, completed
 - [g04.033 Pi SDK Sidecar Route](033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092
+- [g04.034 Gemini CLI 0.56.0 Useful Newer](034-gemini-cli-0-56-0-useful-newer.md) — standing currentness, ready
 
-Do not roll over: 33 numbered roadmaps exist; 001-033 are complete, target
-30-50.
+Do not roll over: 34 numbered roadmaps exist; 001-033 are complete and 034 is
+ready, target 30-50.
 
 ## Current Checkpoint
 
@@ -77,9 +78,10 @@ Do not roll over: 33 numbered roadmaps exist; 001-033 are complete, target
 - g04.033 is on `main` at `9aac2dd1` through PR 32: the Pi SDK sidecar
   route is realized and both Pi routes are retained; cards 089-092 are
   complete
-- Next, run Gemini CLI `0.56.0` enterprise API-key requalification,
-  then serial per-route feature completion. Contract 029 currentness is
-  standing
+- g04.034 is ready: cards 093-094 own Gemini CLI `0.56.0` enterprise
+  API-key requalification across separate ACP and headless axes
+- After g04.034 closes, compile the first numbered per-route feature
+  milestone. Contract 029 currentness is standing
 - Generation stays active. Rollover waits for 30-50 roadmaps
 - `v0.3.3` remains `51d18620`
 
@@ -87,9 +89,10 @@ Do not roll over: 33 numbered roadmaps exist; 001-033 are complete, target
 
 1. g04.033 cards 089-092 executed: the Pi SDK sidecar and Contract 017
    attachment are proved; the recorded disposition retains both Pi routes.
-2. Run one-family Gemini CLI currentness across ACP and headless for the
-   enterprise/API-key access posture. Stop for a keep-or-remove decision if
-   deterministic evidence cannot support the current official stable.
+2. Execute g04.034 cards 093-094 for one-family Gemini CLI currentness across
+   ACP and headless for the enterprise/API-key access posture. Stop for a
+   keep-or-remove decision if deterministic evidence cannot support the
+   current official stable.
 3. Compile the first numbered milestone from
    [Per-Route Feature Completion](./per-route-feature-completion.md), starting
    with Cursor headless model parameters unless current evidence changes the
@@ -101,6 +104,7 @@ New route-family research does not pre-empt this sequence.
 
 - [Per-Route Feature Completion Programme](./per-route-feature-completion.md) —
   post-Pi/Gemini route-local delivery sequence
+- [034 Gemini CLI 0.56.0 Useful Newer](./034-gemini-cli-0-56-0-useful-newer.md) — ready (standing currentness)
 - [033 Pi SDK Sidecar Route](./033-pi-sdk-sidecar-route.md) — completed and merged through PR 32 at `9aac2dd1`, cards 089-092
 - [001 Route Availability And Readiness Evidence](./001-route-availability-and-readiness-evidence.md) — completed
 - [002 Route Readiness Spec And Contract Targets](./002-route-readiness-spec-and-contract-targets.md) — completed

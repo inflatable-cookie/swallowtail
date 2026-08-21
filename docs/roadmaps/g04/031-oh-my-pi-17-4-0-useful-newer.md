@@ -10,8 +10,7 @@ Qualify official npm `@oh-my-pi/pi-coding-agent` `17.4.0` (published
 2026-08-20) on the `oh-my-pi.package` axis (`oh-my-pi.rpc` route).
 
 This is Contract 029 currentness work. It does not keep the generation
-open. Extracurricular: do not rewrite Next Task or g04 front-door
-status.
+open or move Next Task.
 
 ## Acceptance
 
@@ -39,12 +38,12 @@ consumer checks.
   extended-context, compaction extras)
 - Flattening onto `pi.package` / Pi RPC
 - Decoder updates unless adapter mapping changed
-- Next Task / g04 README / generation status edits
+- Next Task changes or Kimi Platform implementation
 
 ## Batch Cards
 
-- [082-oh-my-pi-17-4-0-identity.md](batch-cards/082-oh-my-pi-17-4-0-identity.md) — completed
-- [083-oh-my-pi-17-4-0-claim.md](batch-cards/083-oh-my-pi-17-4-0-claim.md) — completed
+- [085-oh-my-pi-17-4-0-identity.md](batch-cards/085-oh-my-pi-17-4-0-identity.md) — completed
+- [086-oh-my-pi-17-4-0-claim.md](batch-cards/086-oh-my-pi-17-4-0-claim.md) — completed
 
 ## References
 

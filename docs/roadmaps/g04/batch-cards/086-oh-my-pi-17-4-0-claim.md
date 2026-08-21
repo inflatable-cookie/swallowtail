@@ -1,15 +1,15 @@
-# 083 Oh My Pi 17.4.0 Claim
+# 086 Oh My Pi 17.4.0 Claim
 
 Status: completed
 Owner: Tom
 Milestone: [g04.031 Oh My Pi 17.4.0 Useful Newer](../031-oh-my-pi-17-4-0-useful-newer.md)
 Created: 2026-08-21
-Depends on: card 082; Research 178
+Depends on: card 085; Research 178
 
 ## Task
 
 Raise the `oh-my-pi.package` qualified ceiling from exact `17.3.8` to
-exact `17.4.0` after identity card 082 confirms compatible-extension.
+exact `17.4.0` after identity card 085 confirms compatible-extension.
 
 ## Edit Set
 

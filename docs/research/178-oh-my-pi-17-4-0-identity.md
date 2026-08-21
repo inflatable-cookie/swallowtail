@@ -13,8 +13,8 @@ a stop? This is a published minor-line step, not a patch.
 
 ## Remaining AllowUnverified rank
 
-Assigned family only. Extracurricular currentness; not a generation
-rank rewrite.
+Assigned family only. Standing currentness; not a generation rank
+rewrite.
 
 | Rank | Family | Host | Qualified bound | Why this order |
 | --- | --- | --- | --- | --- |
@@ -102,7 +102,7 @@ unmapped External Thinking description. Ready-frame v1/v2 advertisement,
 1 MiB physical cap, and 64 MiB reassembly cap remain the frozen `17.2.9`
 decoder contract. This card did not send a provider prompt.
 
-## Segment decision for card 083
+## Segment decision for card 086
 
 Compatible extension. Private-milestone checked: adapter-private mapping
 unchanged. Same axis `oh-my-pi.package`. Same behavior

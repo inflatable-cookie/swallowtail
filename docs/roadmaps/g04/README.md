@@ -43,8 +43,9 @@ and selection policy.
 - [g04.028 Claude Code 2.1.238 Useful Newer](028-claude-code-2-1-238-useful-newer.md) — standing currentness, completed
 - [g04.029 OpenCode HTTP 1.18.20 Useful Newer](029-opencode-http-1-18-20-useful-newer.md) — standing currentness, completed
 - [g04.030 Antigravity 1.1.17 Useful Newer](030-antigravity-1-1-17-useful-newer.md) — standing currentness, completed
+- [g04.031 Oh My Pi 17.4.0 Useful Newer](031-oh-my-pi-17-4-0-useful-newer.md) — standing currentness, completed
 
-Do not roll over: 30 numbered roadmaps exist; 001-023 and 025-030 are
+Do not roll over: 31 numbered roadmaps exist; 001-023 and 025-031 are
 complete, 024 is ready, target 30-50. Hosted OAuth stays parked.
 
 ## Current Checkpoint
@@ -64,6 +65,8 @@ complete, 024 is ready, target 30-50. Hosted OAuth stays parked.
   PR 25; cards 081-082 are complete
 - g04.030 standing currentness qualifies Antigravity catalogue and headless
   through `1.1.17` in PR 26; cards 083-084 are complete
+- g04.031 standing currentness qualifies Oh My Pi RPC through `17.4.0` in
+  PR 27; cards 085-086 are complete
 - Hosted OAuth is parked. Gemini stays deferred. Contract 029 currentness
   is standing
 - Generation stays active. Rollover waits for 30-50 roadmaps
@@ -101,3 +104,4 @@ complete, 024 is ready, target 30-50. Hosted OAuth stays parked.
 - [028 Claude Code 2.1.238 Useful Newer](./028-claude-code-2-1-238-useful-newer.md) — completed (standing currentness)
 - [029 OpenCode HTTP 1.18.20 Useful Newer](./029-opencode-http-1-18-20-useful-newer.md) — completed (standing currentness)
 - [030 Antigravity 1.1.17 Useful Newer](./030-antigravity-1-1-17-useful-newer.md) — completed (standing currentness)
+- [031 Oh My Pi 17.4.0 Useful Newer](./031-oh-my-pi-17-4-0-useful-newer.md) — completed (standing currentness)

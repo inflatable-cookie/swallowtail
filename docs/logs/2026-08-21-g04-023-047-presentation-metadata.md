@@ -7,6 +7,7 @@ Cards: `../roadmaps/g04/batch-cards/065-047-presentation-field-inventory.md`,
 `../roadmaps/g04/batch-cards/067-047-presentation-fields.md`
 Worker worktree: `/Users/tom/.t3/worktrees/swallowtail/t3code-1e989752`
 Worker branch: `t3code/presentation-metadata-handoff`
+Reviewable PR: https://github.com/inflatable-cookie/swallowtail/pull/23
 
 ## Result
 
